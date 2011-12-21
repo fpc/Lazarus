@@ -9,6 +9,9 @@ uses
   MacOSAll, CocoaAll,
   Types, LCLType;
 
+const
+  LCLEventSubTypeMessage = MaxShort - 1;
+
 type
   { NSLCLDebugExtension }
 

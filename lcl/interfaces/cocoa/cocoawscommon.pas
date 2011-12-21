@@ -39,6 +39,7 @@ type
     procedure MouseMove(x,y: Integer); virtual;
     procedure frameDidChange; virtual;
     procedure boundsDidChange; virtual;
+    function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; virtual;
     procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
     function ResetCursorRects: Boolean; virtual;
   end;
@@ -187,7 +188,7 @@ begin
       cy := NewBounds.Bottom - NewBounds.Top;
       flags := 0;
     end;
-    DeliverMessage(Target, PosMsg);
+    LCLMessageGlue.DeliverMessage(Target, PosMsg);
   finally
     Dispose(PosMsg.WindowPos);
   end;
@@ -223,6 +224,17 @@ begin
     LCLSendMoveMsg(Target, NewBounds.Left,
       NewBounds.Top, Move_SourceIsInterface);
   end;
+end;
+
+function TLCLCommonCallback.DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
+var
+  Message: TLMessage;
+begin
+  Message.Msg := Msg;
+  Message.WParam := WParam;
+  Message.LParam := LParam;
+  Message.Result := 0;
+  Result := LCLMessageGlue.DeliverMessage(Target, Message);
 end;
 
 procedure TLCLCommonCallback.Draw(ControlContext: NSGraphicsContext;

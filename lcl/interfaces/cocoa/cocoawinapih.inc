@@ -27,13 +27,13 @@
 
 //##apiwiz##sps##   // Do not remove, no wizard declaration before this line
 
-//function Arc(DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer): Boolean; override;
-//function AngleChord(DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer): Boolean; override;
+function Arc(DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer): Boolean; override;
+function AngleChord(DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer): Boolean; override;
 
-{function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
+function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; override;
 
-function CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer; override;
+{function CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer; override;
 function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam: WParam; lParam : lParam) : Integer; override;}
 function ClientToScreen(Handle: HWND; var P: TPoint) : Boolean; override;
 {
@@ -74,7 +74,7 @@ function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal):
 function Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean; override;
 {function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;}
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;
-{function EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer; override;}
+function EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer; override;
 procedure EnterCriticalSection(var CritSection: TCriticalSection); override;
 function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint; override;
 function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; override;
@@ -150,7 +150,7 @@ function MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean; override;
 function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous: boolean): boolean; override;}
 function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean; override;
 function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean; override;
-{function PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): Boolean; override;}
+function PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): Boolean; override;
 
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
 function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
@@ -163,7 +163,7 @@ function SaveDC(DC: HDC): Integer; override;
 function ScreenToClient(Handle: HWND; var P: TPoint): Integer; override;
 function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
 function SelectObject(ADC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; override;
-{function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; override;}
+function SendMessage(Handle: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; override;
 function SetActiveWindow(Handle: HWND): HWND; override;
 function SetBKColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetBkMode(DC: HDC; bkMode : Integer) : Integer; override;

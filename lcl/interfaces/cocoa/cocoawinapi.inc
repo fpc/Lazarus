@@ -46,6 +46,31 @@ const
  { crt_Complex   } COMPLEXREGION
   );
 
+function TCocoaWidgetSet.Arc(DC: HDC; Left, Top, Right, Bottom, angle1,
+  angle2: Integer): Boolean;
+begin
+  Result:=inherited Arc(DC, Left, Top, Right, Bottom, angle1, angle2);
+end;
+
+function TCocoaWidgetSet.AngleChord(DC: HDC; x1, y1, x2, y2, angle1,
+  angle2: Integer): Boolean;
+begin
+  Result:=inherited AngleChord(DC, x1, y1, x2, y2, angle1, angle2);
+end;
+
+function TCocoaWidgetSet.BeginPaint(Handle: hWnd; var PS: TPaintStruct): hdc;
+begin
+  Result := inherited BeginPaint(Handle, PS);
+  PS.hdc := Result;
+end;
+
+function TCocoaWidgetSet.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+  SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
+begin
+  Result := StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc,
+    Width, Height, 0, 0, 0, Rop);
+end;
+
 function TCocoaWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint): Boolean;
 begin
   Result := Handle <> 0;
@@ -335,6 +360,11 @@ begin
   Result := hWnd <> 0;
   if Result then
     NSObject(hWnd).lclSetEnabled(bEnable)
+end;
+
+function TCocoaWidgetSet.EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer;
+begin
+  Result:=inherited EndPaint(Handle, PS);
 end;
 
 function TCocoaWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
@@ -1115,6 +1145,23 @@ begin
   Result:=True;
 end;
 
+function TCocoaWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal;
+  wParam: WParam; lParam: LParam): Boolean;
+var
+  Info: NSDictionary;
+  Event: NSEvent;
+begin
+  Result := Handle <> 0;
+  if Result then
+  begin
+    Info := PrepareUserEventInfo(Handle, Msg, WParam, LParam);
+    // if we will want a postmessage using notification center
+    // NSDistributedNotificationCenter.defaultCenter.postNotificationName_object_userInfo_deliverImmediately(NSMessageNotification, nil, Info, False);
+    Event := PrepareUserEvent(Handle, Info);
+    NSApp.postEvent_atStart(Event, False);
+  end;
+end;
+
 function TCocoaWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
   ctx: TCocoaContext;
@@ -1322,6 +1369,21 @@ begin
   {$IFDEF VerboseWinAPI}
     DebugLn(Format('TCocoaWidgetSet.SelectObject Result: %x', [Result]));
   {$ENDIF}
+end;
+
+function TCocoaWidgetSet.SendMessage(Handle: HWND; Msg: Cardinal;
+  WParam: WParam; LParam: LParam): LResult;
+var
+  Info: NSDictionary;
+  Event: NSEvent;
+begin
+  if Handle <> 0 then
+  begin
+    Info := PrepareUserEventInfo(Handle, Msg, WParam, LParam);
+    Event := PrepareUserEvent(Handle, Info);
+    NSApp.sendEvent(Event);
+    Result := NSNumber(Info.objectForKey(NSMessageResult)).integerValue;
+  end;
 end;
 
 function TCocoaWidgetSet.SetActiveWindow(Handle: HWND): HWND;

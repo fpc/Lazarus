@@ -48,8 +48,8 @@ type
 
   { TCocoaTimerObject }
 
-  TCocoaTimerObject=objcclass(NSObject)
-    func : TWSTimerProc;
+  TCocoaTimerObject = objcclass(NSObject)
+    func: TWSTimerProc;
     procedure timerEvent; message 'timerEvent';
     class function initWithFunc(afunc: TWSTimerProc): TCocoaTimerObject; message 'initWithFunc:';
   end;
@@ -66,9 +66,9 @@ type
   private
     FTerminating: Boolean;
 
-    pool      : NSAutoreleasePool;
-    FNSApp    : NSApplication;
-    delegate  : TCocoaAppDelegate;
+    pool: NSAutoreleasePool;
+    FNSApp: NSApplication;
+    delegate: TCocoaAppDelegate;
   protected
     FStockNullBrush: HBRUSH;
     FStockBlackBrush: HBRUSH;
@@ -86,6 +86,9 @@ type
 
     function GetAppHandle: THandle; override;
   public
+    // post message/ send message string
+    NSMessageWnd, NSMessageMsg, NSMessageWParam, NSMessageLParam, NSMessageResult: NSString;
+
     constructor Create; override;
     destructor Destroy; override;
 
@@ -106,6 +109,9 @@ type
 
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;
     function DestroyTimer(TimerHandle: THandle): boolean; override;
+    function PrepareUserEventInfo(Handle: HWND; Msg: Cardinal; wParam: WParam;
+      lParam: LParam): NSMutableDictionary;
+    function PrepareUserEvent(Handle: HWND; Info: NSDictionary): NSEvent;
 
     procedure InitStockItems;
     procedure FreeStockItems;
