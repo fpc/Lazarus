@@ -437,7 +437,12 @@ begin
       for i := 0 to GetTimerCount()-1 do
       begin
         lTimer := GetTimer(i);
-        Inc(lTimer.NativeHandle, lTimeoutInterval);
+
+        // if selectresult = 0 then a timeout occured, in other cases guess how
+        // much time passed
+        if selectresult = 0 then Inc(lTimer.NativeHandle, lTimeoutInterval)
+        else Inc(lTimer.NativeHandle, 10);
+
         if lTimer.NativeHandle >= lTimer.Interval then
         begin
           lTimer.TimerFunc();
