@@ -3804,6 +3804,12 @@ examples/messages/uasynccall.lfm svneol=native#text/plain
 examples/messages/uasynccall.pas svneol=native#text/plain
 examples/messages/unit1.lfm svneol=native#text/plain
 examples/messages/unit1.pas svneol=native#text/pascal
+examples/motiongraphics/mainform.lfm svneol=native#text/plain
+examples/motiongraphics/mainform.pas svneol=native#text/pascal
+examples/motiongraphics/motiongraphics.ico -text
+examples/motiongraphics/motiongraphics.lpi svneol=native#text/plain
+examples/motiongraphics/motiongraphics.lpr svneol=native#text/pascal
+examples/motiongraphics/motiongraphics.res -text
 examples/multithreading/criticalsectionexample1.lpi svneol=native#text/plain
 examples/multithreading/criticalsectionexample1.lpr svneol=native#text/plain
 examples/multithreading/criticalsectionunit1.lfm svneol=native#text/plain
