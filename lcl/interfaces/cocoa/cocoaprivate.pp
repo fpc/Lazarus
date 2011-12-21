@@ -328,9 +328,6 @@ type
 
 implementation
 
-uses
-  CocoaInt;
-
 { TCocoaScrollView }
 
 function TCocoaScrollView.lclGetCallback: ICommonCallback;
@@ -598,15 +595,15 @@ begin
     begin
       // extract message data
       Message := NSMutableDictionary(event.data1);
-      Handle := NSNumber(Message.objectForKey(CocoaWidgetSet.NSMessageWnd)).unsignedIntegerValue;
-      Msg := NSNumber(Message.objectForKey(CocoaWidgetSet.NSMessageMsg)).unsignedLongValue;
-      WP := NSNumber(Message.objectForKey(CocoaWidgetSet.NSMessageWParam)).integerValue;
-      LP := NSNumber(Message.objectForKey(CocoaWidgetSet.NSMessageLParam)).integerValue;
+      Handle := NSNumber(Message.objectForKey(NSMessageWnd)).unsignedIntegerValue;
+      Msg := NSNumber(Message.objectForKey(NSMessageMsg)).unsignedLongValue;
+      WP := NSNumber(Message.objectForKey(NSMessageWParam)).integerValue;
+      LP := NSNumber(Message.objectForKey(NSMessageLParam)).integerValue;
       // deliver message and set result
       Obj := NSObject(Handle);
       // todo: check that Obj is still a valid NSView/NSWindow
       Result := NSNumber.numberWithInteger(Obj.lclDeliverMessage(Msg, WP, LP));
-      Message.setObject_forKey(Result, CocoaWidgetSet.NSMessageResult);
+      Message.setObject_forKey(Result, NSMessageResult);
       Result.release;
     end;
   end

@@ -86,9 +86,6 @@ type
 
     function GetAppHandle: THandle; override;
   public
-    // post message/ send message string
-    NSMessageWnd, NSMessageMsg, NSMessageWParam, NSMessageLParam, NSMessageResult: NSString;
-
     constructor Create; override;
     destructor Destroy; override;
 

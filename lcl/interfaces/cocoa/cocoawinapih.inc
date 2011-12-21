@@ -157,7 +157,7 @@ function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
 {function ReleaseCapture : Boolean; override;
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;}
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
-{function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean; override;}
+function RoundRect(DC: HDC; X1, Y1, X2, Y2: Integer; RX, RY : Integer): Boolean; override;
 
 function SaveDC(DC: HDC): Integer; override;
 function ScreenToClient(Handle: HWND; var P: TPoint): Integer; override;
@@ -183,12 +183,12 @@ function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function ShowCaret(hWnd: HWND): Boolean; override;}
 function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; override;
 function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;
-{function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal): Boolean; override;
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP;
   XMask, YMask: Integer; Rop: DWORD): Boolean; override;
-function SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool; override;}
+{function SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool; override;}
 
 function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
 function UpdateWindow(Handle: HWND): Boolean; override;

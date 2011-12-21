@@ -194,10 +194,10 @@ type
     // Cocoa information
     FbitsPerSample: NSInteger;  // How many bits in each color component
     FsamplesPerPixel: NSInteger;// How many color components
+    FImage: NSImage;
+    FImagerep: NSBitmapImageRep;
     function GetColorSpace: NSString;
   public
-    image: NSImage;
-    imagerep: NSBitmapImageRep;
     constructor Create(ABitmap: TCocoaBitmap);
     constructor Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
       AAlignment: TCocoaBitmapAlignment; AType: TCocoaBitmapType;
@@ -205,17 +205,19 @@ type
     destructor Destroy; override;
     procedure SetInfo(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
       AAlignment: TCocoaBitmapAlignment; AType: TCocoaBitmapType);
+
+    function CreateSubImage(const ARect: TRect): CGImageRef;
   public
     property BitmapType: TCocoaBitmapType read FType;
     property BitsPerPixel: Byte read FBitsPerPixel;
     property BitsPerSample: NSInteger read FBitsPerSample;
     property BytesPerRow: Integer read FBytesPerRow;
-//    property CGImage: CGImageRef read FCGImage write SetCGImage;
+    property Image: NSImage read FImage;
+    property ImageRep: NSBitmapImageRep read FImageRep;
     property ColorSpace: NSString read GetColorSpace;
     property Data: Pointer read FData;
     property DataSize: Integer read FDataSize;
     property Depth: Byte read FDepth;
-//    property Info: CGBitmapInfo read GetInfo;
     property Width: Integer read FWidth;
     property Height: Integer read FHeight;
   end;
@@ -301,6 +303,8 @@ type
   protected
     function SaveDCData: TCocoaDCData; virtual;
     procedure RestoreDCData(const AData: TCocoaDCData); virtual;
+    procedure SetCGFillping(Ctx: CGContextRef; Width, Height: Integer);
+    procedure RestoreCGFillping(Ctx: CGContextRef; Width, Height: Integer);
   public
     ctx: NSGraphicsContext;
     constructor Create;
@@ -324,6 +328,10 @@ type
     procedure Frame(const R: TRect);
     procedure Frame3d(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
     procedure FrameRect(const ARect: TRect; const Brush: TCocoaBrush);
+    function DrawCGImage(X, Y, Width, Height: Integer; CGImage: CGImageRef): Boolean;
+    function StretchDraw(X, Y, Width, Height: Integer; SrcDC: TCocoaContext;
+      XSrc, YSrc, SrcWidth, SrcHeight: Integer; Msk: TCocoaBitmap; XMsk,
+      YMsk: Integer; Rop: DWORD): Boolean;
 
     function GetTextExtentPoint(AStr: PChar; ACount: Integer; var Size: TSize): Boolean;
     function GetTextMetrics(var TM: TTextMetric): Boolean;
@@ -358,7 +366,10 @@ type
   end;
 
 var
-  TextLayoutClass  : TCocoaTextLayoutClass = nil;
+  TextLayoutClass: TCocoaTextLayoutClass = nil;
+  DefaultBrush: TCocoaBrush;
+  DefaultPen: TCocoaPen;
+  DefaultFont: TCocoaFont;
 
 function CheckDC(dc: HDC): TCocoaContext;
 function CheckDC(dc: HDC; Str: string): Boolean;
@@ -374,17 +385,17 @@ uses
 
 function CheckDC(dc: HDC): TCocoaContext;
 begin
-  Result:=TCocoaContext(dc);
+  Result := TCocoaContext(dc);
 end;
 
 function CheckDC(dc: HDC; Str: string): Boolean;
 begin
-  Result:=dc<>0;
+  Result := dc<>0;
 end;
 
 function CheckGDIOBJ(obj: HGDIOBJ): TCocoaGDIObject;
 begin
-  Result:=TCocoaGDIObject(obj);
+  Result := TCocoaGDIObject(obj);
 end;
 
 function CheckBitmap(ABitmap: HBITMAP; AStr: string): Boolean;
@@ -545,7 +556,7 @@ begin
     [Integer(HasAlpha)]));
   {$endif}
   // Create the associated NSImageRep
-  imagerep := NSBitmapImageRep(NSBitmapImageRep.alloc.initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(
+  FImagerep := NSBitmapImageRep(NSBitmapImageRep.alloc.initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(
     @FData, // planes, BitmapDataPlanes
     FWidth, // width, pixelsWide
     FHeight,// height, PixelsHigh
@@ -560,8 +571,8 @@ begin
     ));
 
   // Create the associated NSImage
-  image := NSImage.alloc.initWithSize(NSMakeSize(AWidth, AHeight));
-  image.addRepresentation(imagerep);
+  FImage := NSImage.alloc.initWithSize(NSMakeSize(AWidth, AHeight));
+  Image.addRepresentation(Imagerep);
 end;
 
 destructor TCocoaBitmap.Destroy;
@@ -629,6 +640,14 @@ begin
     FbitsPerSample := ABitsPerPixel div 3;
     FsamplesPerPixel := 3;
   end;
+end;
+
+function TCocoaBitmap.CreateSubImage(const ARect: TRect): CGImageRef;
+begin
+  if ImageRep = nil then
+    Result := nil
+  else
+    Result := CGImageCreateWithImageInRect(ImageRep.CGImage, RectToCGRect(ARect));
 end;
 
 function TCocoaBitmap.GetColorSpace: NSString;
@@ -879,11 +898,11 @@ begin
   FBkBrush := TCocoaBrush.CreateDefault;
   FTextBrush := TCocoaBrush.CreateDefault;
 
-  FBrush := TCocoaBrush.CreateDefault;
+  FBrush := DefaultBrush;
   FBrush.AddRef;
-  FPen := TCocoaPen.CreateDefault;
+  FPen := DefaultPen;
   FPen.AddRef;
-  FFont := TCocoaFont.CreateDefault;
+  FFont := DefaultFont;
   FFont.AddRef;
   FRegion := TCocoaRegion.CreateDefault;
   FRegion.AddRef;
@@ -898,29 +917,13 @@ begin
   FTextBrush.Free;
 
   if Assigned(FBrush) then
-  begin
     FBrush.Release;
-    if FBrush.RefCount = 0 then
-      FBrush.Free;
-  end;
   if Assigned(FPen) then
-  begin
     FPen.Release;
-    if FPen.RefCount = 0 then
-      FPen.Free;
-  end;
   if Assigned(FFont) then
-  begin
     FFont.Release;
-    if FFont.RefCount = 0 then
-      FFont.Free;
-  end;
   if Assigned(FRegion) then
-  begin
     FRegion.Release;
-    if FRegion.RefCount = 0 then
-      FRegion.Free;
-  end;
   FClipRegion.Free;
   FSavedDCList.Free;
   FText.Free;
@@ -1217,6 +1220,162 @@ begin
     Pen.Apply(Self);
   finally
     NewPen.Free;
+  end;
+end;
+
+procedure TCocoaContext.SetCGFillping(Ctx: CGContextRef; Width, Height: Integer);
+begin
+  if Width < 0 then
+  begin
+    CGContextTranslateCTM(Ctx, -Width, 0);
+    CGContextScaleCTM(Ctx, -1, 1);
+  end;
+
+  if Height < 0 then
+  begin
+    CGContextTranslateCTM(Ctx, 0, -Height);
+    CGContextScaleCTM(Ctx, 1, -1);
+  end;
+end;
+
+procedure TCocoaContext.RestoreCGFillping(Ctx: CGContextRef; Width, Height: Integer);
+begin
+  if Height < 0 then
+  begin
+    CGContextTranslateCTM(Ctx, 0, Height);
+    CGContextScaleCTM(Ctx, 1, -1);
+  end;
+
+  if Width < 0 then
+  begin
+    CGContextScaleCTM(Ctx, -1, 1);
+    CGContextTranslateCTM(Ctx, Width, 0);
+  end;
+end;
+
+function TCocoaContext.DrawCGImage(X, Y, Width, Height: Integer;
+  CGImage: CGImageRef): Boolean;
+begin
+  Result := False;
+
+  // save dest context
+  ctx.saveGraphicsState;
+
+  CGContextSetBlendMode(CGContext, kCGBlendModeNormal);
+  try
+    SetCGFillping(CGContext, Width, Height);
+    CGContextDrawImage(CGContext, GetCGRectSorted(X, Y, X + Width, Y + Height), CGImage);
+    RestoreCGFillping(CGContext, Width, Height);
+  finally
+    ctx.restoreGraphicsState;
+  end;
+
+  Result := True;
+end;
+
+function TCocoaContext.StretchDraw(X, Y, Width, Height: Integer;
+  SrcDC: TCocoaContext; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
+  Msk: TCocoaBitmap; XMsk, YMsk: Integer; Rop: DWORD): Boolean;
+var
+  Image, MskImage: CGImageRef;
+  SubImage, SubMask: Boolean;
+  Bmp: TCocoaBitmap;
+  LayRect, DstRect: CGRect;
+  ImgRect: CGRect;
+  LayerContext: CGContextRef;
+  Layer: CGLayerRef;
+  UseLayer: Boolean;
+begin
+  Result := False;
+
+  Bmp := SrcDC.Bitmap;
+  if Assigned(Bmp) then
+    Image := Bmp.ImageRep.CGImage
+  else
+    Image := nil;
+
+  if Image = nil then Exit;
+
+  DstRect := CGRectMake(X, Y, Abs(Width), Abs(Height));
+
+  SubMask := (Msk <> nil)
+         and (Msk.Image <> nil)
+         and (  (XMsk <> 0)
+             or (YMsk <> 0)
+             or (Msk.Width <> SrcWidth)
+             or (Msk.Height <> SrcHeight));
+
+  SubImage := ((Msk <> nil) and (Msk.Image <> nil))
+           or (XSrc <> 0)
+           or (YSrc <> 0)
+           or (SrcWidth <> Bmp.Width)
+           or (SrcHeight <> Bmp.Height);
+
+
+  if SubMask then
+    MskImage := Msk.CreateSubImage(Bounds(XMsk, YMsk, SrcWidth, SrcHeight))
+  else
+    if Assigned(Msk) then
+      MskImage := Msk.ImageRep.CGImage
+    else
+      MskImage := nil;
+
+  if SubImage then
+    Image := Bmp.CreateSubImage(Bounds(XSrc, YSrc, SrcWidth, SrcHeight));
+
+
+  UseLayer:=Assigned(MskImage)
+            or (CGImageGetWidth(Image)<>SrcWidth)
+            or (CGImageGetHeight(Image)<>SrcHeight);
+
+  try
+    if not UseLayer then
+    begin
+      // Normal drawing
+      Result := DrawCGImage(X, Y, Width, Height, Image);
+    end
+    else
+    begin
+      // use temp layer to mask source image
+      // todo find a way to mask "hard" when stretching, now some soft remains are visible
+      LayRect := CGRectMake(0, 0, SrcWidth, SrcHeight);
+      Layer := CGLayerCreateWithContext(SrcDC.CGContext, LayRect.size, nil);
+
+      // the sub-image is out of edges
+      if (CGImageGetWidth(Image)<>SrcWidth) or (CGImageGetHeight(Image)<>SrcHeight) then
+      begin
+        with ImgRect do
+          if XSrc<0 then origin.x:=SrcWidth-CGImageGetWidth(Image) else origin.x:=0;
+        with ImgRect do
+          if YSrc<0 then origin.y:=0 else origin.y:=SrcHeight-CGImageGetHeight(Image);
+
+        ImgRect.size.width:=CGImageGetWidth(Image);
+        ImgRect.size.height:=CGImageGetHeight(Image);
+      end
+      else
+        ImgRect:=LayRect;
+
+      try
+        LayerContext := CGLayerGetContext(Layer);
+        CGContextScaleCTM(LayerContext, 1, -1);
+        CGContextTranslateCTM(LayerContext, 0, -SrcHeight);
+
+        SetCGFillping(LayerContext, Width, Height);
+        if Assigned(MskImage) then
+          CGContextClipToMask(LayerContext, ImgRect, MskImage);
+        CGContextDrawImage(LayerContext, ImgRect, Image);
+
+        CGContextDrawLayerInRect(CGContext, DstRect, Layer);
+
+        Result := True;
+      finally
+        CGLayerRelease(Layer);
+      end;
+    end;
+
+  finally
+    if SubImage then CGImageRelease(Image);
+    if SubMask then CGImageRelease(MskImage);
   end;
 end;
 
@@ -2008,4 +2167,13 @@ begin
   end;
 end;
 
+initialization
+  DefaultBrush := TCocoaBrush.CreateDefault;
+  DefaultPen := TCocoaPen.CreateDefault;
+  DefaultFont := TCocoaFont.CreateDefault;
+
+finalization
+  DefaultBrush.Free;
+  DefaultPen.Free;
+  DefaultFont.Free;
 end.

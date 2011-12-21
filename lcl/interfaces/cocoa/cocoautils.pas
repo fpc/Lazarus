@@ -11,6 +11,9 @@ uses
 
 const
   LCLEventSubTypeMessage = MaxShort - 1;
+var
+  // post message/send message string. Created by TCocoaWidgetSet
+  NSMessageWnd, NSMessageMsg, NSMessageWParam, NSMessageLParam, NSMessageResult: NSString;
 
 type
   { NSLCLDebugExtension }
@@ -25,6 +28,7 @@ const
 function GetNSPoint(x,y: single): NSPoint; inline;
 
 function GetCGRect(x1, y1, x2, y2: Integer): CGRect; inline;
+function GetCGRectSorted(X1, Y1, X2, Y2: Integer): CGRect;
 function RectToCGRect(const R: TRect): CGRect;
 function CGRectToRect(const c: CGRect): TRect;
 
@@ -160,6 +164,31 @@ begin
     origin.y := y1;
     size.width := x2 - x1;
     size.height := y2 - y1;
+  end;
+end;
+
+function GetCGRectSorted(X1, Y1, X2, Y2: Integer): CGRect;
+begin
+  if X1 <= X2 then
+  begin
+    Result.origin.x := X1;
+    Result.size.width := X2 - X1;
+  end
+  else
+  begin
+    Result.origin.x := X2;
+    Result.size.width := X1 - X2;
+  end;
+
+  if Y1 <= Y2 then
+  begin
+    Result.origin.y := Y1;
+    Result.size.height := Y2 - Y1;
+  end
+  else
+  begin
+    Result.origin.y := Y2;
+    Result.size.height := Y1 - Y2;
   end;
 end;
 

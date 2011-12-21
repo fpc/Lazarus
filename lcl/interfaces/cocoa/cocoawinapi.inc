@@ -574,6 +574,33 @@ begin
   Result:=true;
 end;
 
+function TCocoaWidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+  SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal
+  ): Boolean;
+begin
+  Result := StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc,
+    SrcWidth, SrcHeight, 0, 0, 0, Rop);
+end;
+
+function TCocoaWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width,
+  Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
+  Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
+var
+  SrcCtx, DestCtx: TCocoaContext;
+begin
+  DestCtx := CheckDC(DestDC);
+  SrcCtx := CheckDC(SrcDC);
+
+  Result := Assigned(DestCtx) and Assigned(SrcCtx);
+
+  if not Result then
+    Exit;
+
+  Result := DestCtx.StretchDraw(X, Y, Width, Height,
+    SrcCtx, XSrc, YSrc, SrcWidth, SrcHeight,
+    TCocoaBitmap(Mask), XMask, YMask, Rop);
+end;
+
 {------------------------------------------------------------------------------
   Method:  GetWindowRect
   Params:  Handle - Handle of window
@@ -1721,6 +1748,12 @@ begin
     Result := ctx.RestoreDC(SavedDC)
   else
     Result := False;
+end;
+
+function TCocoaWidgetSet.RoundRect(DC: HDC; X1, Y1, X2, Y2: Integer; RX,
+  RY: Integer): Boolean;
+begin
+  Result:=inherited RoundRect(DC, X1, Y1, X2, Y2, RX, RY);
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

@@ -83,26 +83,22 @@ implementation
 
 function AllocCustomControl(const AWinControl: TWinControl): TCocoaCustomControl;
 begin
-  if not Assigned(AWinControl) then begin
-    Result:=nil;
-    Exit;
-  end;
-  Result:=TCocoaCustomControl(TCocoaCustomControl.alloc).init;
-  Result.callback:=TLCLCommonCallback.Create(Result, AWinControl);
+  if not Assigned(AWinControl) then
+    Exit(nil);
+  Result := TCocoaCustomControl(TCocoaCustomControl.alloc).init;
+  Result.callback := TLCLCommonCallback.Create(Result, AWinControl);
 end;
 
 function EmbedInScrollView(AView:NSView):TCocoaScrollView;
 var
-  r : TRect;
-  p : NSView;
+  r: TRect;
+  p: NSView;
 begin
-  if not Assigned(AView) then begin
-    Result:=nil;
-    Exit;
-  end;
-  r:=AView.lclFrame;
-  p:=AView.superview;
-  Result:=TCocoaScrollView.alloc.initWithFrame(NSNullRect);
+  if not Assigned(AView) then
+    Exit(nil);
+  r := AView.lclFrame;
+  p := AView.superview;
+  Result := TCocoaScrollView.alloc.initWithFrame(NSNullRect);
   if Assigned(p) then p.addSubView(Result);
   Result.lclSetFrame(r);
   Result.setDocumentView(AView);
