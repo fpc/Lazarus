@@ -142,110 +142,12 @@ end;
 
 procedure TCDWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 var
-  XEvent: TXEvent;
-  WindowEntry: TWinControl;
-  Sum: Integer;
-  NewEvent: TXEvent;
   DoBreakRun: Boolean = False;
-  CurWindowInfo: TX11WindowInfo;
 begin
   while (DoBreakRun = False) do
   begin
     AppWaitMessage();
-    XNextEvent(FDisplay, @XEvent);
-
-    // According to a comment in X.h, the valid event types start with 2!
-    if XEvent._type >= 2 then
-    begin
-      WindowEntry := FindWindowByXID(XEvent.XAny.Window, CurWindowInfo);
-
-      if not Assigned(WindowEntry) then
-      begin
-        DebugLn('LCL-CustomDrawn-X11: Received X event "%s" for unknown window %x',
-          [GetXEventName(XEvent._type), PtrInt(XEvent.XAny.Window)]);
-        Continue;
-      end;
-
-      CurWindowInfo.XEvent := @XEvent;
-
-      case XEvent._type of
-       X.DestroyNotify:
-       begin
-         //WindowList.Delete(lWindowListIndex);
-       end;
-       X.KeyPress:
-       begin
-         TCDWSCustomForm.EvKeyPressed(WindowEntry, CurWindowInfo, XEvent.xkey);
-       end;
-       X.KeyRelease:
-       begin
-         TCDWSCustomForm.EvKeyReleased(WindowEntry, CurWindowInfo, XEvent.xkey);
-       end;
-       X.ButtonPress:
-       begin
-         TCDWSCustomForm.EvMousePressed(WindowEntry, CurWindowInfo, XEvent.xbutton);
-       end;
-       X.ButtonRelease:
-       begin
-         TCDWSCustomForm.EvMouseReleased(WindowEntry, CurWindowInfo, XEvent.xbutton);
-       end;
-       X.EnterNotify:
-       begin
-         TCDWSCustomForm.EvMouseEnter(WindowEntry, CurWindowInfo);
-       end;
-       X.LeaveNotify:
-       begin
-         TCDWSCustomForm.EvMouseLeave(WindowEntry, CurWindowInfo);
-       end;
-       X.MotionNotify:
-       begin
-         TCDWSCustomForm.EvMouseMove(WindowEntry, CurWindowInfo, XEvent.xmotion);
-       end;
-       X.FocusIn:
-       begin
-         TCDWSCustomForm.EvFocusIn(WindowEntry, CurWindowInfo);
-       end;
-       X.FocusOut:
-       begin
-         TCDWSCustomForm.EvFocusOut(WindowEntry, CurWindowInfo);
-       end;
-       X.MapNotify:
-       begin
-//           WindowEntry.EvShow();
-       end;
-       X.UnmapNotify:
-       begin
-//           WindowEntry.EvHide();
-       end;
-       X.ReparentNotify:
-       begin
-//           WindowEntry.EvCreate();
-       end;
-       X.Expose:
-       begin
-         // This repeat really helps speeding up when maximized for example
-         repeat
-         until not XCheckTypedWindowEvent(FDisplay, XEvent.xexpose.window, X.Expose, @XEvent);
-         // This check for count=0 is a performance tunning documented in
-         // http://tronche.com/gui/x/xlib/events/exposure/expose.html
-         if XEvent.xexpose.count = 0 then
-         begin
-           TCDWSCustomForm.EvPaint(WindowEntry, CurWindowInfo);
-         end;
-       end;
-       X.ConfigureNotify:
-       begin
-         TCDWSCustomForm.EvConfigureNotify(WindowEntry, CurWindowInfo, XEvent.xconfigure);
-       end;
-       X.ClientMessage:
-       begin
-         TCDWSCustomForm.EvClientMessage(WindowEntry, CurWindowInfo, XEvent.xclient);
-       end;
-      else
-        DebugLn('LCL-CustomDrawn-X11: Unhandled X11 event received: ', GetXEventName(XEvent._type));
-      end;
-
-    end;
+    AppProcessMessage();
 
     DoBreakRun := Application.Terminated;
   end;
@@ -364,7 +266,118 @@ end;*)
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.AppProcessMessages;
 begin
+  while True do
+  begin
+    if XPending(FDisplay) <= 0 then Exit; // There are no more X messages to process
+    AppProcessMessage();
+  end;
 end;
+
+// Processes 1 X message
+procedure TCDWidgetSet.AppProcessMessage;
+var
+  XEvent: TXEvent;
+  WindowEntry: TWinControl;
+  Sum: Integer;
+  NewEvent: TXEvent;
+  CurWindowInfo: TX11WindowInfo;
+begin
+  XNextEvent(FDisplay, @XEvent);
+
+  // According to a comment in X.h, the valid event types start with 2!
+  if XEvent._type >= 2 then
+  begin
+    WindowEntry := FindWindowByXID(XEvent.XAny.Window, CurWindowInfo);
+
+    if not Assigned(WindowEntry) then
+    begin
+      DebugLn('LCL-CustomDrawn-X11: Received X event "%s" for unknown window %x',
+        [GetXEventName(XEvent._type), PtrInt(XEvent.XAny.Window)]);
+      Exit;
+    end;
+
+    CurWindowInfo.XEvent := @XEvent;
+
+    case XEvent._type of
+     X.DestroyNotify:
+     begin
+       //WindowList.Delete(lWindowListIndex);
+     end;
+     X.KeyPress:
+     begin
+       TCDWSCustomForm.EvKeyPressed(WindowEntry, CurWindowInfo, XEvent.xkey);
+     end;
+     X.KeyRelease:
+     begin
+       TCDWSCustomForm.EvKeyReleased(WindowEntry, CurWindowInfo, XEvent.xkey);
+     end;
+     X.ButtonPress:
+     begin
+       TCDWSCustomForm.EvMousePressed(WindowEntry, CurWindowInfo, XEvent.xbutton);
+     end;
+     X.ButtonRelease:
+     begin
+       TCDWSCustomForm.EvMouseReleased(WindowEntry, CurWindowInfo, XEvent.xbutton);
+     end;
+     X.EnterNotify:
+     begin
+       TCDWSCustomForm.EvMouseEnter(WindowEntry, CurWindowInfo);
+     end;
+     X.LeaveNotify:
+     begin
+       TCDWSCustomForm.EvMouseLeave(WindowEntry, CurWindowInfo);
+     end;
+     X.MotionNotify:
+     begin
+       TCDWSCustomForm.EvMouseMove(WindowEntry, CurWindowInfo, XEvent.xmotion);
+     end;
+     X.FocusIn:
+     begin
+       TCDWSCustomForm.EvFocusIn(WindowEntry, CurWindowInfo);
+     end;
+     X.FocusOut:
+     begin
+       TCDWSCustomForm.EvFocusOut(WindowEntry, CurWindowInfo);
+     end;
+     X.MapNotify:
+     begin
+//           WindowEntry.EvShow();
+     end;
+     X.UnmapNotify:
+     begin
+//           WindowEntry.EvHide();
+     end;
+     X.ReparentNotify:
+     begin
+//           WindowEntry.EvCreate();
+     end;
+     X.Expose:
+     begin
+       // This repeat really helps speeding up when maximized for example
+       repeat
+       until not XCheckTypedWindowEvent(FDisplay, XEvent.xexpose.window, X.Expose, @XEvent);
+       // This check for count=0 is a performance tunning documented in
+       // http://tronche.com/gui/x/xlib/events/exposure/expose.html
+       if XEvent.xexpose.count = 0 then
+       begin
+         TCDWSCustomForm.EvPaint(WindowEntry, CurWindowInfo);
+       end;
+     end;
+     X.ConfigureNotify:
+     begin
+       TCDWSCustomForm.EvConfigureNotify(WindowEntry, CurWindowInfo, XEvent.xconfigure);
+     end;
+     X.ClientMessage:
+     begin
+       TCDWSCustomForm.EvClientMessage(WindowEntry, CurWindowInfo, XEvent.xclient);
+     end;
+    else
+      DebugLn('LCL-CustomDrawn-X11: Unhandled X11 event received: ', GetXEventName(XEvent._type));
+    end;
+
+  end;
+end;
+
 (*
 procedure TWinCEWidgetSet.CheckPipeEvents;
 var
@@ -416,7 +429,11 @@ var
   i: Integer;
 begin
   {$ifndef CD_X11_DISABLETIMERS}
-  lTimeoutInterval := 50;
+  lTimeoutInterval := GetSmallestTimerInterval();
+  // Limit the maximum interval, even if only to process Application.OnIdle or
+  // for general safety
+  if (lTimeoutInterval <= 0) or (lTimeoutInterval >= 1000) then lTimeoutInterval := 1000;
+
   while True do
   begin
     xconnnum := XConnectionNumber(FDisplay);

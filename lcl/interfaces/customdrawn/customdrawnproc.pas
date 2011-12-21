@@ -7,7 +7,7 @@ interface
 uses
   // rtl+ftl
   Types, Classes, SysUtils,
-  fpimage, fpcanvas,
+  fpimage, fpcanvas, Math,
   // Custom Drawn Canvas
   IntfGraphics, lazcanvas, lazregions,
   // LCL
@@ -137,6 +137,7 @@ procedure InitTimersList();
 procedure AddTimer(ATimer: TCDTimer);
 function GetTimer(AIndex: Integer): TCDTimer;
 function GetTimerCount(): Integer;
+function GetSmallestTimerInterval(): Integer;
 procedure RemoveTimer(ATimer: TCDTimer);
 function FindTimerWithNativeHandle(ANativeHandle: PtrInt): TCDTimer;
 
@@ -617,6 +618,20 @@ function GetTimerCount: Integer;
 begin
   InitTimersList();
   Result := TimersList.Count;
+end;
+
+function GetSmallestTimerInterval: Integer;
+var
+  i: Integer;
+  lTimer: TCDTimer;
+begin
+  Result := High(Integer);
+  for i := 0 to GetTimerCount()-1 do
+  begin
+    lTimer := GetTimer(i);
+    Result := Min(Result, lTimer.Interval);
+  end;
+  if Result = High(Integer) then Result := -1;
 end;
 
 procedure RemoveTimer(ATimer: TCDTimer);

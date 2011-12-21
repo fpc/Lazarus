@@ -193,6 +193,7 @@ type
     procedure AppRun(const ALoop: TApplicationMainLoop); override;
     procedure AppWaitMessage; override;
     procedure AppProcessMessages; override;
+    procedure AppProcessMessage;
     procedure AppTerminate; override;
     procedure AppMinimize; override;
     procedure AppRestore; override;
