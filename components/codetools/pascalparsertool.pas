@@ -176,6 +176,7 @@ type
     function KeyWordFuncClassTypeSection: boolean;
     function KeyWordFuncClassVarSection: boolean;
     function KeyWordFuncClassClass: boolean;
+    function KeyWordFuncClassFinal: boolean;
     function KeyWordFuncClassMethod: boolean;
     function KeyWordFuncClassProperty: boolean;
     function KeyWordFuncClassIdentifier: boolean;
@@ -441,7 +442,11 @@ begin
   'E':
     if CompareSrcIdentifiers(p,'END') then exit(false);
   'F':
-    if CompareSrcIdentifiers(p,'FUNCTION') then exit(KeyWordFuncClassMethod);
+    case UpChars[p[1]] of
+    'U': if CompareSrcIdentifiers(p,'FUNCTION') then exit(KeyWordFuncClassMethod);
+    'I': if CompareSrcIdentifiers(p,'FINAL') and (Scanner.Values.IsDefined('JVM'))
+         then exit(KeyWordFuncClassFinal);
+    end;
   'P':
     case UpChars[p[1]] of
     'R':
@@ -1075,6 +1080,31 @@ begin
     Result:=KeyWordFuncClassVarSection;
   end else
     RaiseStringExpectedButAtomFound('procedure');
+end;
+
+function TPascalParserTool.KeyWordFuncClassFinal: boolean;
+{ parse
+    final var
+    final class var
+}
+begin
+  if CurNode.Desc in AllClassSubSections then begin
+    // end last sub section
+    CurNode.EndPos:=CurPos.StartPos;
+    EndChildNode;
+  end;
+  // start new section
+  CreateChildNode;
+  CurNode.Desc:=ctnVarSection;
+  ReadNextAtom;
+  if UpAtomIs('CLASS') then
+  begin
+    CurNode.Desc:=ctnClassClassVar;
+    ReadNextAtom;
+  end;
+  if not UpAtomIs('VAR') then
+    RaiseStringExpectedButAtomFound('var');
+  Result:=true;
 end;
 
 function TPascalParserTool.KeyWordFuncClassMethod: boolean;
