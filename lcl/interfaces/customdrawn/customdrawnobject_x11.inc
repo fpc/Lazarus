@@ -151,17 +151,8 @@ var
 begin
   while (DoBreakRun = False) do
   begin
-{    if Assigned(OnIdle) then
-    begin
-      if not XCheckMaskEvent(FDisplay, MaxInt, @XEvent) then
-      begin
-        if Assigned(OnIdle) then OnIdle(Self);
-
-        continue;
-      end;
-    end
-    else}
-      XNextEvent(FDisplay, @XEvent);
+    AppWaitMessage();
+    XNextEvent(FDisplay, @XEvent);
 
     // According to a comment in X.h, the valid event types start with 2!
     if XEvent._type >= 2 then
@@ -412,11 +403,55 @@ end;*)
   Params:  None
   Returns: Nothing
 
-  Passes execution control to Windows
+  Passes execution control to X11, but processes timer messages while waiting
  ------------------------------------------------------------------------------}
-//roozbeh:new update...whole procedure body is added.what is it?
 procedure TCDWidgetSet.AppWaitMessage;
+var
+  // timer variables
+  rfds: baseunix.TFDSet;
+  xconnnum, selectresult: integer;
+  needToWait: Boolean;
+  lTimer: TCDTimer;
+  lTimeoutInterval: Integer; // miliseconds
+  i: Integer;
 begin
+  {$ifndef CD_X11_DISABLETIMERS}
+  lTimeoutInterval := 50;
+  while True do
+  begin
+    xconnnum := XConnectionNumber(FDisplay);
+    XFlush(FDisplay);
+
+    needToWait := True;
+    if XPending(FDisplay) > 0 then Exit; // We have a X message to process
+
+    if needToWait then  // No X messages to process (we are idle). So do a timeout wait
+    begin
+      //if Assigned(FOnIdle) then
+      //  OnIdle(self);
+      fpFD_ZERO(rfds);
+      fpFD_SET(xconnnum, rfds);
+      selectresult := fpSelect(xconnnum + 1, @rfds, nil, nil, lTimeoutInterval);
+
+      // Process all timers
+      for i := 0 to GetTimerCount()-1 do
+      begin
+        lTimer := GetTimer(i);
+        Inc(lTimer.NativeHandle, lTimeoutInterval);
+        if lTimer.NativeHandle >= lTimer.Interval then
+        begin
+          lTimer.TimerFunc();
+          lTimer.NativeHandle := 0;
+        end;
+      end;
+
+      if selectresult <> 0 then  // We got a X event or the timeout happened
+        Exit
+      else
+        Continue; // nothing further to do here!
+    end;
+  end;
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -426,7 +461,6 @@ end;
 
   Tells Windows to halt and destroy
  ------------------------------------------------------------------------------}
-
 procedure TCDWidgetSet.AppTerminate;
 begin
   //DebugLn('Trace:TWinCEWidgetSet.AppTerminate - Start');
@@ -467,7 +501,14 @@ end;
     The TimerCallBackProc calls the TimerFunc.
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc) : THandle;
+var
+  lTimer: TCDTimer;
 begin
+  lTimer := TCDTimer.Create;
+  lTimer.Interval := Interval;
+  lTimer.TimerFunc := TimerFunc;
+  AddTimer(lTimer);
+  Result := THandle(lTimer);
 end;
 
 {------------------------------------------------------------------------------
@@ -476,7 +517,14 @@ end;
   Returns:
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.DestroyTimer(TimerHandle: THandle) : boolean;
+var
+  lTimer: TCDTimer absolute TimerHandle;
 begin
+  if TimerHandle <> 0 then
+  begin
+    RemoveTimer(lTimer);
+    lTimer.Free;
+  end;
 end;
 (*
 procedure TWinCEWidgetSet.HandleWakeMainThread(Sender: TObject);

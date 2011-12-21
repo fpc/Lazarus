@@ -3990,7 +3990,7 @@ end;
   Returns: True on success
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar; Count,
-  MaxWidth: Integer; MaxCount, PartialWidths: PInteger; var Size: TSize
+  MaxWidth: Integer; MaxCount, PartialWidths: PInteger; var Size: Types.TSize
   ): Boolean;
 {var
   i: Integer;
@@ -4058,7 +4058,7 @@ end;
   Params:  none
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
+function TCDWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: Types.TSize): Boolean;
 var
   LazDC: TLazCanvas absolute DC;
 begin

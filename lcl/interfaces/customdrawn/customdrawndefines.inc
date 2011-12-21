@@ -12,7 +12,7 @@
 
 
 // Check if a backend which can be utilized in multiple-systems is already defined
-{$if defined(CD_X11)}
+{$if defined(CD_X11) or defined(CD_Android)}
 {$else}
   // Choosing the default backend
   {$ifdef Windows}
@@ -32,7 +32,7 @@
 {$endif}
 
 // Default options for various backends
-{$ifdef CD_Android}
+{$if defined(CD_Android)}
   {$define CD_UseNativeText}
 {$endif}
 

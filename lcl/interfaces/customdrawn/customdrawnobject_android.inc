@@ -119,7 +119,9 @@ begin
   Screen.UpdateScreen(); // Any values read before LCLOnCreate are wrong
   // Update the font size
   CDWidgetset.DefaultFontAndroidSize := Round(16 * (Screen.PixelsPerInch / 125));
-  Application.Run;
+  // Now inform the application
+  if Assigned(CDWidgetset.ActivityOnCreate) then CDWidgetset.ActivityOnCreate()
+  else Application.Run; // <- Support for older code up to 21 dezember
 end;
 
 // This one is for all simple dialogs: MessageBox, PromptUser (MessageDlg) and AskUser

@@ -2175,21 +2175,42 @@ end;*)
   Function: ExtTextOut
   Params:  none
   Returns: Nothing
-
-
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
-  WideStr: WideString;
-//  QtDC: TQtDeviceContext absolute DC;
-  B: Boolean;
+  FontData: PXftFont;
+  Descriptor, lText: string;
+  extents: TXGlyphInfo;
+  XftDraw: PXftDraw;
+  LazDC: TLazCanvas absolute DC;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI ExtTextOut]');
   {$endif}
 
   Result := False;
+{  lText := StrPas(Str);
+  if UTF8Length(lText) < 1 then Exit(True);
+
+  // Create the handle
+  // 'Arial-10');
+  Descriptor := 'Sans-10';
+  FontData := XftFontOpenName(FDisplay, XDefaultScreen(FDisplay), PChar(Descriptor));
+  if not Assigned(FontData) then raise Exception.Create('[TCDWidgetSet.ExtTextOut] X11: Error creating font');
+
+  XftDraw := XftDrawCreate(FDisplay, Handle,
+    XDefaultVisual(GFApplication.Handle, XDefaultScreen(GFApplication.Handle)),
+    XDefaultColormap(GFApplication.Handle, XDefaultScreen(GFApplication.Handle)));
+
+  // Draw
+  XftDrawSetClip(FXftDraw, FRegion);
+  XftDrawStringUtf8(FXftDraw, FXftColor, TX11Font(FFont).FontData, APosition.x,
+    Aposition.y + TX11Font(FFont).GetAscent, PChar(AText), Length(AText));
+
+  // Cleanup
+  XftFontClose(FDisplay, FontData);    }
+  Result := True;
 
 {  if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
     exit;
@@ -4079,9 +4100,11 @@ end;*)
   Returns: Nothing
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
-{var
-  WideStr: WideString;
-  QtDC: TQtDeviceContext absolute DC;}
+var
+  FontData: PXftFont;
+  Descriptor: string;
+  extents: TXGlyphInfo;
+  LazDC: TLazCanvas absolute DC;
 begin
   {$ifdef VerboseCDWinAPI}
     DebugLn('[WinAPI GetTextExtentPoint]');
@@ -4089,13 +4112,29 @@ begin
 
   Result := False;
 
-{  if not IsValidDC(DC) then Exit;
+  // Create the handle
+  // 'Arial-10');
+  Descriptor := 'Sans-10';
+  FontData := XftFontOpenName(FDisplay, XDefaultScreen(FDisplay), PChar(Descriptor));
+  if not Assigned(FontData) then raise Exception.Create('[TCDWidgetSet.GetTextExtentPoint] X11: Error creating font');
 
-  WideStr := GetUtf8String(Str);
-  Size.cx := QtDC.Metrics.width(@WideStr, Count);
-  Size.cy := QtDC.Metrics.height;
+  // Get the size
+  if Length(AText) = 0 then
+  begin
+    Size.cx := 0;
+    Size.cy := 0;
+  end
+  else
+  begin
+    XftTextExtentsUtf8(FDisplay, FontData, Str, Count, extents);
+    Size.cx := extents.xOff;
+    Size.cy := extents.yOff;
+  end;
 
-  Result := True;  }
+  // Cleanup
+  XftFontClose(FDisplay, FontData);
+
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -4105,64 +4144,57 @@ end;
   Returns: If successfull
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
+var
+  FontData: PXftFont;
+  Descriptor: string;
+  LazDC: TLazCanvas absolute DC;
 begin
   {$ifdef VerboseCDWinAPI}
     WriteLn('[WinAPI GetTextMetrics]');
   {$endif}
 
   Result := IsValidDC(DC);
+  if not Result then Exit;
 
-{  if Result then
-  begin
-    QtFontMetrics := QtDC.Metrics;
-    TM.tmHeight := QtFontMetrics.height;
-    TM.tmAscent := QtFontMetrics.ascent;
-    TM.tmDescent := QtFontMetrics.descent;
-    TM.tmInternalLeading := 0;
-    TM.tmExternalLeading := QtFontMetrics.leading;
-    {this is due qt bug in fontmetrics::averageCharWidth() under Mac
-     http://trolltech.com/developer/task-tracker/index_html?method=entry&id=169440 }
-    {$IFDEF DARWIN}
-    TM.tmAveCharWidth := QtFontMetrics.charWidth('x',0);
-    {$ELSE}
-    TM.tmAveCharWidth := QtFontMetrics.averageCharWidth;
-    {$ENDIF}
-
-    TM.tmMaxCharWidth := QtFontMetrics.maxWidth;
-    FontWeight := QtDC.font.getWeight;
-    case FontWeight of
-      25: TM.tmWeight := FW_LIGHT;
-      50: TM.tmWeight := FW_NORMAL;
-      63: TM.tmWeight := FW_SEMIBOLD;
-      75: TM.tmWeight := FW_BOLD;
-      87: TM.tmWeight := FW_HEAVY;
-      else
-        TM.tmWeight := Round(FontWeight * 9.5);
-    end;
-    TM.tmOverhang := 0;
-    TM.tmDigitizedAspectX := 0;
-    TM.tmDigitizedAspectY := 0;
-    TM.tmFirstChar := 'a';
-    TM.tmLastChar := 'z';
-    TM.tmDefaultChar := 'x';
-    TM.tmBreakChar := '?';
-    TM.tmItalic := Ord(QtDC.Font.getItalic);
-    TM.tmUnderlined := Ord(QtDC.Font.getUnderline);
-    TM.tmStruckOut := Ord(QtDC.Font.getStrikeOut);
-
-    QtDC.font.family(@FontFamily);
-
-    { Defaults to a TrueType font.
-      Note that the meaning of the FIXED_PITCH constant is the opposite of
-      the name implies, according to MSDN docs. Just a small inconsistency
-      on Windows API that we have to mimic. }
-    if QtDC.font.fixedPitch then
-      TM.tmPitchAndFamily := TRUETYPE_FONTTYPE
+  TM.tmHeight := 10;//QtFontMetrics.height;
+  TM.tmAscent := FontData^.Ascent;
+  TM.tmDescent := FontData^.Descent;
+  TM.tmInternalLeading := 0;
+//  TM.tmExternalLeading := QtFontMetrics.leading;
+//  TM.tmAveCharWidth := QtFontMetrics.charWidth('x',0);
+//  TM.tmMaxCharWidth := QtFontMetrics.maxWidth;
+{  case FontWeight of
+    25: TM.tmWeight := FW_LIGHT;
+    50: TM.tmWeight := FW_NORMAL;
+    63: TM.tmWeight := FW_SEMIBOLD;
+    75: TM.tmWeight := FW_BOLD;
+    87: TM.tmWeight := FW_HEAVY;
     else
-      TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;
+      TM.tmWeight := Round(FontWeight * 9.5);
+  end;}
+  TM.tmOverhang := 0;
+  TM.tmDigitizedAspectX := 0;
+  TM.tmDigitizedAspectY := 0;
+  TM.tmFirstChar := 'a';
+  TM.tmLastChar := 'z';
+  TM.tmDefaultChar := 'x';
+  TM.tmBreakChar := '?';
+  TM.tmItalic := 0;//Ord(QtDC.Font.getItalic);
+  TM.tmUnderlined := 0;//Ord(QtDC.Font.getUnderline);
+  TM.tmStruckOut := 0;//Ord(QtDC.Font.getStrikeOut);
 
-    TM.tmCharSet := DEFAULT_CHARSET;
-  end;                   }
+//  QtDC.font.family(@FontFamily);
+
+  { Defaults to a TrueType font.
+    Note that the meaning of the FIXED_PITCH constant is the opposite of
+    the name implies, according to MSDN docs. Just a small inconsistency
+    on Windows API that we have to mimic. }
+//  if QtDC.font.fixedPitch then
+//    TM.tmPitchAndFamily := TRUETYPE_FONTTYPE
+//  else
+    TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;
+
+  TM.tmCharSet := DEFAULT_CHARSET;
 end;
 {$endif}
 

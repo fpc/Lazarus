@@ -33,7 +33,7 @@ uses
   fpimage, fpcanvas, fpimgcanv, ctypes,
   {$ifdef CD_Windows}Windows, customdrawn_WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, CocoaPrivate, CocoaGDIObjects,{$endif}
-  {$ifdef CD_X11}X, XLib, XUtil, customdrawn_x11proc,{unitxft, Xft font support}{$endif}
+  {$ifdef CD_X11}X, XLib, XUtil, BaseUnix, customdrawn_x11proc,{$ifdef CD_UseNativeText}unitxft,{$endif}{$endif}
   {$ifdef CD_Android}
   customdrawn_androidproc, jni, bitmap, log, keycodes,
   {$endif}
@@ -178,6 +178,9 @@ type
     ScreenBitmapHeight: Integer;
     ScreenBitmapWidth: Integer;
     ScreenImage: TLazIntfImage;
+
+    // Android Activity callbacks
+    ActivityOnCreate: TProcedure;
 
     constructor Create; override;
     destructor Destroy; override;

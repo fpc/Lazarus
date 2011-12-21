@@ -79,7 +79,7 @@ type
 
   TCDTimer = class
   public
-    NativeHandle: PtrInt;
+    NativeHandle: PtrInt; // The X11 timer uses this to store the current time which is summed up to the next interval
     Interval: integer;
     TimerFunc: TWSTimerProc;
   end;
@@ -135,6 +135,8 @@ function RemoveAccelChars(AStr: string): string;
 
 procedure InitTimersList();
 procedure AddTimer(ATimer: TCDTimer);
+function GetTimer(AIndex: Integer): TCDTimer;
+function GetTimerCount(): Integer;
 procedure RemoveTimer(ATimer: TCDTimer);
 function FindTimerWithNativeHandle(ANativeHandle: PtrInt): TCDTimer;
 
@@ -603,6 +605,18 @@ procedure AddTimer(ATimer: TCDTimer);
 begin
   InitTimersList();
   TimersList.Add(ATimer);
+end;
+
+function GetTimer(AIndex: Integer): TCDTimer;
+begin
+  InitTimersList();
+  Result := TCDTimer(TimersList.Items[AIndex]);
+end;
+
+function GetTimerCount: Integer;
+begin
+  InitTimersList();
+  Result := TimersList.Count;
 end;
 
 procedure RemoveTimer(ATimer: TCDTimer);
