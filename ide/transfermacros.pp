@@ -287,23 +287,6 @@ end;
 
 function TTransferMacroList.SubstituteStr(var s:string; const Data: PtrInt;
   Depth: integer): boolean;
-var
-  MacroStart,MacroEnd: integer;
-  MacroName, MacroStr, MacroParam: string;
-  AMacro: TTransferMacro;
-  Handled, Abort: boolean;
-  OldMacroLen: Integer;
-  NewMacroEnd: Integer;
-  NewMacroLen: Integer;
-  BehindMacroLen: Integer;
-  NewString: String;
-  InFrontOfMacroLen: Integer;
-  NewStringLen: Integer;
-  NewStringPos: Integer;
-  sLen: Integer;
-  LoopPos, LoopDepth: integer;
-  InUse: Integer;
-  i: Integer;
 
   function SearchBracketClose(Position:integer): integer;
   var BracketClose:char;
@@ -319,6 +302,16 @@ var
     Result:=Position;
   end;
 
+var
+  MacroStart,MacroEnd: integer;
+  MacroName, MacroStr, MacroParam: string;
+  Handled, Abort: boolean;
+  OldMacroLen: Integer;
+  sLen: Integer;
+  InUse: Integer;
+  i: Integer;
+  LoopDepth: Integer;
+  LoopPos: Integer;
 begin
   if Depth>10 then begin
     Result:=false;
@@ -328,8 +321,8 @@ begin
   Result:=true;
   sLen:=length(s);
   MacroStart:=1;
-  LoopPos:=0;
   LoopDepth:=1;
+  LoopPos:=1;
   repeat
     while (MacroStart<sLen) do begin
       if (s[MacroStart]<>'$') then
@@ -349,97 +342,60 @@ begin
       MacroName:=copy(s,MacroStart+1,MacroEnd-MacroStart-1);
       //debugln(['TTransferMacroList.SubstituteStr FUNC ',MacroName]);
       MacroEnd:=SearchBracketClose(MacroEnd)+1;
-      if MacroEnd>sLen+1 then break;
+      if MacroEnd>sLen+1 then
+        break; // missing closing bracket
       OldMacroLen:=MacroEnd-MacroStart;
       MacroStr:=copy(s,MacroStart,OldMacroLen);
       // Macro found
       Handled:=false;
       Abort:=false;
-      if MacroName<>'' then begin
-        //if MacroName='LCLWidgetSet' then DebugLn(['TTransferMacroList.SubstituteStr MacroStr="',MacroStr,'"']);
-        // Macro function -> substitute macro parameter first
-        MacroParam:=copy(MacroStr,length(MacroName)+3,
-                                  length(MacroStr)-length(MacroName)-3);
-        //if MacroName='PATH' then
-        //  debugln(['TTransferMacroList.SubstituteStr START MacroName=',MacroName,' Param="',MacroParam,'"']);
-        AMacro:=FindByName(MacroName);
-        InUse:=0;
-        if fBusy<>nil then begin
-          for i:=0 to fBusy.Count-1 do begin
-            if SysUtils.CompareText(fBusy[i],MacroName)=0 then begin
-              inc(InUse);
-              if InUse>MaxUsePerMacro then begin
-                // circle detected
-                Handled:=true;
-                MacroStr:='<CIRCLE:'+MacroName+'>';
-                break;
-              end;
-            end;
-          end;
-        end;
-        if not Handled then begin
-          if fBusy=nil then fBusy:=TStringList.Create;
-          try
-            fBusy.Add(MacroName);
-            if not SubstituteStr(MacroParam,Data,Depth+1) then begin
-              Result:=false;
-              exit;
-            end;
-          finally
-            fBusy.Delete(fBusy.Count-1);
-          end;
-          //if MacroName='PATH' then
-          //  debugln(['TTransferMacroList.SubstituteStr AFTER PARAM MacroName=',MacroName,' Param="',MacroParam,'"']);
-          DoSubstitution(AMacro,MacroName,MacroParam,Data,Handled,Abort,Depth+LoopDepth);
-          //if MacroName='PATH' then
-          //  debugln(['TTransferMacroList.SubstituteStr AFTER EVENT MacroName=',MacroName,' Param="',MacroParam,'"']);
-          if Handled then
-            MacroStr:=MacroParam
-          else if Abort then begin
-            Result:=false;
-            exit;
-          end;
-        end;
-        if (not Handled) and (AMacro<>nil) and (Assigned(AMacro.MacroFunction))
-        then begin
-          //if MacroName='PATH' then
-          //  debugln(['TTransferMacroList.SubstituteStr BEFORE FUNC MacroName=',MacroName,' Param="',MacroParam,'"']);
-          MacroStr:=AMacro.MacroFunction(MacroParam,Data,Abort);
-          if Abort then begin
-            Result:=false;
-            exit;
-          end;
-          Handled:=true;
-        end;  
-      end else begin
+      if MacroName='' then begin
         // Macro variable
         MacroName:=copy(s,MacroStart+2,OldMacroLen-3);
-        AMacro:=FindByName(MacroName);
-        //if MacroName='TARGETFILE' then
-        //  debugln(['TTransferMacroList.SubstituteStr VAR 1 ',MacroName,' ',AMacro<>nil]);
-        DoSubstitution(AMacro,MacroName,MacroName,Data,Handled,Abort,Depth+LoopDepth);
-        //if MacroName='TARGETFILE' then
-        //  debugln(['TTransferMacroList.SubstituteStr VAR 2 ',MacroName,' ',AMacro<>nil]);
-        if Handled then
-          MacroStr:=MacroName
-        else if Abort then begin
-          Result:=false;
-          exit;
-        end;
-        if (not Handled) and (AMacro<>nil) then begin
-          // standard macro
-          if Assigned(AMacro.MacroFunction) then begin
-            MacroStr:=AMacro.MacroFunction('',Data,Abort);
-            if Abort then begin
-              Result:=false;
-              exit;
+        MacroParam:='';
+      end else begin
+        // Macro function -> substitute macro parameter first
+        //if MacroName='LCLWidgetSet' then DebugLn(['TTransferMacroList.SubstituteStr MacroStr="',MacroStr,'"']);
+        MacroParam:=copy(MacroStr,length(MacroName)+3,
+                                  length(MacroStr)-length(MacroName)-3);
+      end;
+      //if MacroName='PATH' then
+      //  debugln(['TTransferMacroList.SubstituteStr START MacroName=',MacroName,' Param="',MacroParam,'"']);
+      // check for endless loop
+      InUse:=0;
+      if fBusy<>nil then begin
+        for i:=0 to fBusy.Count-1 do begin
+          if SysUtils.CompareText(fBusy[i],MacroName)=0 then begin
+            inc(InUse);
+            if InUse>MaxUsePerMacro then begin
+              // circle detected
+              Handled:=true;
+              MacroStr:='<CIRCLE:'+MacroName+'>';
+              break;
             end;
-          end else begin
-            MacroStr:=AMacro.Value;
           end;
-          Handled:=true;
         end;
       end;
+      if MacroParam<>'' then begin
+        // substitute param
+        if fBusy=nil then fBusy:=TStringList.Create;
+        try
+          fBusy.Add(MacroName);
+          if not SubstituteStr(MacroParam,Data,Depth+1) then begin
+            Result:=false;
+            exit;
+          end;
+        finally
+          fBusy.Delete(fBusy.Count-1);
+        end;
+      end;
+      // find macro and get value
+      ExecuteMacro(MacroName,MacroParam,Data,Handled,Abort,Depth+1);
+      if Abort then begin
+        Result:=false;
+        exit;
+      end;
+      MacroStr:=MacroParam;
       // mark unhandled macros
       if not Handled and MarkUnhandledMacros then begin
         MacroStr:=Format(lisTMunknownMacro, [MacroStr]);
@@ -447,38 +403,16 @@ begin
       end;
       // replace macro with new value
       if Handled then begin
-        if MacroStart>=LoopPos then
+        if MacroStart>LoopPos then
           LoopDepth:=1
         else begin
           inc(LoopDepth);
           //DebugLn(['TTransferMacroList.SubstituteStr double macro: ',s,' Depth=',LoopDepth,' Pos=',LoopPos]);
         end;
-        NewMacroLen:=length(MacroStr);
-        NewMacroEnd:=MacroStart+NewMacroLen;
-        InFrontOfMacroLen:=MacroStart-1;
-        BehindMacroLen:=sLen-MacroEnd+1;
-        NewString:='';
-        NewStringLen:=InFrontOfMacroLen+NewMacroLen+BehindMacroLen;
-        if NewStringLen>0 then begin
-          SetLength(NewString,NewStringLen);
-          NewStringPos:=1;
-          if InFrontOfMacroLen>0 then begin
-            Move(s[1],NewString[NewStringPos],InFrontOfMacroLen);
-            inc(NewStringPos,InFrontOfMacroLen);
-          end;
-          if NewMacroLen>0 then begin
-            Move(MacroStr[1],NewString[NewStringPos],NewMacroLen);
-            inc(NewStringPos,NewMacroLen);
-          end;
-          if BehindMacroLen>0 then begin
-            Move(s[MacroEnd],NewString[NewStringPos],BehindMacroLen);
-            inc(NewStringPos,BehindMacroLen);
-          end;
-        end;
-        s:=NewString;
+        LoopPos:=MacroStart;
+        s:=copy(s,1,MacroStart-1)+MacroStr+copy(s,MacroEnd,length(s));
         sLen:=length(s);
-        // continue after the replacement
-        if NewMacroEnd>LoopPos then LoopPos:=NewMacroEnd;
+        // continue at replacement, because a macrovalue can contain macros
         MacroEnd:=MacroStart;
       end;
     end;
