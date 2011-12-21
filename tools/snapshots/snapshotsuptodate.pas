@@ -5,7 +5,7 @@ unit SnapshotsUptodate;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testregistry, ftplister;
+  Classes, SysUtils, FileUtil, fpcunit, testregistry, ftplister;
 
 type
 
