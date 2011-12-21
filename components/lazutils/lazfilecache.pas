@@ -130,46 +130,68 @@ function FileExistsCached(const AFilename: string): boolean;
 begin
   if OnFileExistsCached<>nil then
     Result:=OnFileExistsCached(AFilename)
+  else if FileStateCache<>nil then
+    Result:=FileStateCache.FileExistsCached(AFilename)
   else
-    Result:=FileStateCache.FileExistsCached(AFilename);
+    Result:=FileExistsUTF8(AFilename);
 end;
 
 function DirPathExistsCached(const AFilename: string): boolean;
 begin
-  Result:=FileStateCache.DirPathExistsCached(AFilename);
+  if FileStateCache<>nil then
+    Result:=FileStateCache.DirPathExistsCached(AFilename)
+  else
+    Result:=DirPathExists(AFilename);
 end;
 
 function DirectoryIsWritableCached(const ADirectoryName: string): boolean;
 begin
-  Result:=FileStateCache.DirectoryIsWritableCached(ADirectoryName);
+  if FileStateCache<>nil then
+    Result:=FileStateCache.DirectoryIsWritableCached(ADirectoryName)
+  else
+    Result:=DirectoryIsWritable(ADirectoryName);
 end;
 
 function FileIsExecutableCached(const AFilename: string): boolean;
 begin
-  Result:=FileStateCache.FileIsExecutableCached(AFilename);
+  if FileStateCache<>nil then
+    Result:=FileStateCache.FileIsExecutableCached(AFilename)
+  else
+    Result:=FileIsExecutable(AFilename);
 end;
 
 function FileIsReadableCached(const AFilename: string): boolean;
 begin
-  Result:=FileStateCache.FileIsReadableCached(AFilename);
+  if FileStateCache<>nil then
+    Result:=FileStateCache.FileIsReadableCached(AFilename)
+  else
+    Result:=FileIsReadable(AFilename);
 end;
 
 function FileIsWritableCached(const AFilename: string): boolean;
 begin
-  Result:=FileStateCache.FileIsWritableCached(AFilename);
+  if FileStateCache<>nil then
+    Result:=FileStateCache.FileIsWritableCached(AFilename)
+  else
+    Result:=FileIsWritable(AFilename);
 end;
 
 function FileIsTextCached(const AFilename: string): boolean;
 begin
-  Result:=FileStateCache.FileIsTextCached(AFilename);
+  if FileStateCache<>nil then
+    Result:=FileStateCache.FileIsTextCached(AFilename)
+  else
+    Result:=FileIsText(AFilename);
 end;
 
 function FileAgeCached(const AFileName: string): Longint;
 begin
   if OnFileAgeCached<>nil then
     Result:=OnFileAgeCached(AFilename)
+  else if FileStateCache<>nil then
+    Result:=FileStateCache.FileAgeCached(AFilename)
   else
-    Result:=FileStateCache.FileAgeCached(AFilename);
+    Result:=FileAgeUTF8(AFileName);
 end;
 
 procedure InvalidateFileStateCache(const Filename: string);
