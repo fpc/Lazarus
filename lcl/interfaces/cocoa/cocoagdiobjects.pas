@@ -327,7 +327,7 @@ type
     procedure TextOut(X,Y: Integer; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
     procedure Frame(const R: TRect);
     procedure Frame3d(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
-    procedure FrameRect(const ARect: TRect; const Brush: TCocoaBrush);
+    procedure FrameRect(const ARect: TRect; const ABrush: TCocoaBrush);
     function DrawCGImage(X, Y, Width, Height: Integer; CGImage: CGImageRef): Boolean;
     function StretchDraw(X, Y, Width, Height: Integer; SrcDC: TCocoaContext;
       XSrc, YSrc, SrcWidth, SrcHeight: Integer; Msk: TCocoaBitmap; XMsk,
@@ -1200,27 +1200,15 @@ begin
   end;
 end;
 
-procedure TCocoaContext.FrameRect(const ARect: TRect; const Brush: TCocoaBrush);
-var
-  NewPen: TCocoaPen;
+procedure TCocoaContext.FrameRect(const ARect: TRect; const ABrush: TCocoaBrush);
 begin
-  NewPen := TCocoaPen.Create(Brush);
-  try
-    NewPen.Apply(Self);
-
-    MoveTo(ARect.Left, ARect.Top);
-    LineTo(ARect.Right - 1, ARect.Top);
-    MoveTo(ARect.Left, ARect.Bottom - 1);
-    LineTo(ARect.Right - 1, ARect.Bottom - 1);
-    MoveTo(ARect.Right - 1, ARect.Top);
-    LineTo(ARect.Right - 1, ARect.Bottom - 1);
-    MoveTo(ARect.Left, ARect.Top);
-    LineTo(ARect.Left, ARect.Bottom - 1);
-
-    Pen.Apply(Self);
-  finally
-    NewPen.Free;
-  end;
+  if ABrush <> Brush then
+    ABrush.Apply(Self);
+  if not ctx.currentContextDrawingToScreen then
+    ctx.setCurrentContext(ctx);
+  NSFrameRect(RectToNSRect(ARect));
+  if ABrush <> Brush then
+    Brush.Apply(Self);
 end;
 
 procedure TCocoaContext.SetCGFillping(Ctx: CGContextRef; Width, Height: Integer);
