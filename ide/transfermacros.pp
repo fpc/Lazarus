@@ -109,12 +109,16 @@ type
     function FindByName(const MacroName: string): TTransferMacro; virtual;
     function SubstituteStr(var s: string; const Data: PtrInt = 0;
       Depth: integer = 0): boolean; virtual;
+    procedure ExecuteMacro(const MacroName: string;
+      var MacroParam: string; const Data: PtrInt; out Handled, Abort: boolean;
+      Depth: integer);
     class function StrHasMacros(const s: string): boolean;
     property OnSubstitution: TOnSubstitution
        read fOnSubstitution write fOnSubstitution;
+    // error handling and loop detection
     property MarkUnhandledMacros: boolean read FMarkUnhandledMacros
                                           write SetMarkUnhandledMacros default true;
-    property MaxUsePerMacro: integer read FMaxUsePerMacro write FMaxUsePerMacro default 1;
+    property MaxUsePerMacro: integer read FMaxUsePerMacro write FMaxUsePerMacro default 3;
   end;
 
 { TLazIDEMacros }
@@ -330,12 +334,10 @@ begin
     while (MacroStart<sLen) do begin
       if (s[MacroStart]<>'$') then
         inc(MacroStart)
-      else begin
-        if (s[MacroStart+1]='$') then // skip $$
-          inc(MacroStart,2)
-        else
-          break;
-      end;
+      else if (s[MacroStart+1]='$') then // skip $$
+        inc(MacroStart,2)
+      else
+        break;
     end;
     if MacroStart>=sLen then break;
     
@@ -345,6 +347,7 @@ begin
 
     if (MacroEnd<sLen) and (s[MacroEnd] in ['(','{']) then begin
       MacroName:=copy(s,MacroStart+1,MacroEnd-MacroStart-1);
+      //debugln(['TTransferMacroList.SubstituteStr FUNC ',MacroName]);
       MacroEnd:=SearchBracketClose(MacroEnd)+1;
       if MacroEnd>sLen+1 then break;
       OldMacroLen:=MacroEnd-MacroStart;
@@ -357,6 +360,8 @@ begin
         // Macro function -> substitute macro parameter first
         MacroParam:=copy(MacroStr,length(MacroName)+3,
                                   length(MacroStr)-length(MacroName)-3);
+        //if MacroName='PATH' then
+        //  debugln(['TTransferMacroList.SubstituteStr START MacroName=',MacroName,' Param="',MacroParam,'"']);
         AMacro:=FindByName(MacroName);
         InUse:=0;
         if fBusy<>nil then begin
@@ -383,7 +388,11 @@ begin
           finally
             fBusy.Delete(fBusy.Count-1);
           end;
+          //if MacroName='PATH' then
+          //  debugln(['TTransferMacroList.SubstituteStr AFTER PARAM MacroName=',MacroName,' Param="',MacroParam,'"']);
           DoSubstitution(AMacro,MacroName,MacroParam,Data,Handled,Abort,Depth+LoopDepth);
+          //if MacroName='PATH' then
+          //  debugln(['TTransferMacroList.SubstituteStr AFTER EVENT MacroName=',MacroName,' Param="',MacroParam,'"']);
           if Handled then
             MacroStr:=MacroParam
           else if Abort then begin
@@ -393,6 +402,8 @@ begin
         end;
         if (not Handled) and (AMacro<>nil) and (Assigned(AMacro.MacroFunction))
         then begin
+          //if MacroName='PATH' then
+          //  debugln(['TTransferMacroList.SubstituteStr BEFORE FUNC MacroName=',MacroName,' Param="',MacroParam,'"']);
           MacroStr:=AMacro.MacroFunction(MacroParam,Data,Abort);
           if Abort then begin
             Result:=false;
@@ -404,7 +415,11 @@ begin
         // Macro variable
         MacroName:=copy(s,MacroStart+2,OldMacroLen-3);
         AMacro:=FindByName(MacroName);
+        //if MacroName='TARGETFILE' then
+        //  debugln(['TTransferMacroList.SubstituteStr VAR 1 ',MacroName,' ',AMacro<>nil]);
         DoSubstitution(AMacro,MacroName,MacroName,Data,Handled,Abort,Depth+LoopDepth);
+        //if MacroName='TARGETFILE' then
+        //  debugln(['TTransferMacroList.SubstituteStr VAR 2 ',MacroName,' ',AMacro<>nil]);
         if Handled then
           MacroStr:=MacroName
         else if Abort then begin
@@ -481,6 +496,27 @@ begin
   end;
 end;
 
+procedure TTransferMacroList.ExecuteMacro(const MacroName: string;
+  var MacroParam: string; const Data: PtrInt; out Handled, Abort: boolean;
+  Depth: integer);
+var
+  Macro: TTransferMacro;
+begin
+  Handled:=false;
+  Abort:=false;
+  Macro:=FindByName(MacroName);
+  DoSubstitution(Macro,MacroName,MacroParam,Data,Handled,Abort,Depth);
+  if Abort or Handled then exit;
+  if Macro=nil then exit;
+  if Assigned(Macro.MacroFunction) then begin
+    MacroParam:=Macro.MacroFunction(MacroParam,Data,Abort);
+    if Abort then exit;
+  end else begin
+    MacroParam:=Macro.Value;
+  end;
+  Handled:=true;
+end;
+
 class function TTransferMacroList.StrHasMacros(const s: string): boolean;
 // search for $( or $xxx(
 var
@@ -544,6 +580,7 @@ function TTransferMacroList.MF_Path(const Filename:string;
   const Data: PtrInt; var Abort: boolean):string;
 begin
   Result:=TrimFilename(ExtractFilePath(Filename));
+  //debugln(['TTransferMacroList.MF_Path ',Filename,' Result=',Result]);
 end;
 
 function TTransferMacroList.MF_Name(const Filename:string; 
