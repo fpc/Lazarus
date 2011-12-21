@@ -126,7 +126,10 @@ var
 begin
   Result := '';
   P := GetCurrentPrinter;
-  if P <> nil then Result := CFStringToStr(PMPrinterGetName(P));
+  if P <> nil then
+    Result := CFStringToStr(PMPrinterGetName(P));
+  if Trim(Result) = '' then
+    Result := '';
 end;
 
 procedure TCarbonPrinter.BeginPage;
