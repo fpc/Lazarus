@@ -137,6 +137,7 @@ type
     LastKey: Word;       // Used for KeyRelease event
 
     function FindWindowByXID(XWindowID: X.TWindow; out AWindowInfo: TX11WindowInfo): TWinControl;
+    procedure AppProcessMessage;
     {$endif}
     {$ifdef CD_Android}
     procedure AndroidDebugLn(AStr: string);
@@ -193,9 +194,6 @@ type
     procedure AppRun(const ALoop: TApplicationMainLoop); override;
     procedure AppWaitMessage; override;
     procedure AppProcessMessages; override;
-    {$ifdef CD_X11}
-    procedure AppProcessMessage;
-    {$endif}
     procedure AppTerminate; override;
     procedure AppMinimize; override;
     procedure AppRestore; override;
@@ -318,6 +316,19 @@ uses
   customdrawnprivate,
   LCLMessageGlue;
 
+const
+  {$ifdef CD_Windows}
+  CDBackendNativeHandle = nhtWindowsHWND;
+  {$define CD_HasNativeFormHandle}
+  {$endif}
+  {$ifdef CD_X11}
+  CDBackendNativeHandle = nhtX11TWindow;
+  {$define CD_HasNativeFormHandle}
+  {$endif}
+  {$ifdef CD_Cocoa}
+  CDBackendNativeHandle = nhtCocoaNSWindow;
+  {$define CD_HasNativeFormHandle}
+  {$endif}
 
 {$I customdrawnobject.inc}
 

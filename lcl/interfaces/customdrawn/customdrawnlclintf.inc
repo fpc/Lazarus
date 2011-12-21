@@ -237,10 +237,26 @@ begin
 	    QFontInfo_destroy(QtFontInfo);
     end;
   end;
+end;*)
+
+function TCDWidgetSet.GetAvailableNativeCanvasTypes(DC: HDC; AAllowFallbackToParent: Boolean = False): TNativeCanvasTypes;
+begin
+  Result := [nctLazCanvas];
 end;
 
+function TCDWidgetSet.GetAvailableNativeHandleTypes(Handle: HWND; AAllowFallbackToParent: Boolean = False): TNativeHandleTypes;
+var
+  lBaseControl: TCDBaseControl absolute Handle;
+begin
+  Result := [];
+  {$ifdef CD_HasNativeFormHandle}
+  if Handle = 0 then Exit;
+  if (lBaseControl is TCDForm) or AAllowFallbackToParent then
+    Result := [CDBackendNativeHandle];
+  {$endif}
+end;
 
-function TQtWidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
+(*function TQtWidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
 var
   Widget: TQtWidget;
 begin
@@ -253,6 +269,40 @@ begin
 
   if Result = 0 then
     Result := GetDC(WindowHandle);
+end;*)
+
+function TCDWidgetSet.GetNativeCanvas(DC: HDC; AHandleType: TNativeCanvasType; AAllowFallbackToParent: Boolean = False): PtrInt;
+begin
+  Result := 0;
+  if AHandleType = nctLazCanvas then Result := PtrInt(DC);
+end;
+
+function TCDWidgetSet.GetNativeHandle(Handle: HWND; AHandleType: TNativeHandleType; AAllowFallbackToParent: Boolean = False): PtrInt;
+var
+  lBaseControl: TCDBaseControl absolute Handle;
+  lFormHandle: TCDForm;
+  lForm: TCustomForm;
+begin
+  Result := 0;
+  {$ifdef CD_HasNativeFormHandle}
+  if Handle = 0 then Exit;
+  if (lBaseControl is TCDForm) or AAllowFallbackToParent then
+  begin
+    if (lBaseControl is TCDWinControl) then
+    begin
+      lForm := Forms.GetParentForm((lBaseControl as TCDWinControl).WinControl);
+      if lForm = nil then Exit;
+      lFormHandle := TCDForm(lForm.Handle);
+    end
+    else
+      lFormHandle := TCDForm(lBaseControl);
+
+    if AHandleType = CDBackendNativeHandle then
+    begin
+      Result := lFormHandle.NativeHandle;
+    end;
+  end;
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -261,7 +311,7 @@ end;
   Returns:
  ------------------------------------------------------------------------------}
 
-function TQtWidgetSet.IntfSendsUTF8KeyPress: boolean;
+(*function TQtWidgetSet.IntfSendsUTF8KeyPress: boolean;
 begin
   Result := True;
 end;

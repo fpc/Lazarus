@@ -43,9 +43,13 @@ procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); override;
 procedure DestroyRubberBand(ARubberBand: HWND); override;*)
 
 (*function FontCanUTF8(Font: HFont): boolean; override; // Dont implement, deprecated
-function FontIsMonoSpace(Font: HFont): boolean; override;
+function FontIsMonoSpace(Font: HFont): boolean; override;*)
 
-function GetDesignerDC(WindowHandle: HWND): HDC; override;*)
+function GetAvailableNativeCanvasTypes(DC: HDC; AAllowFallbackToParent: Boolean = False): TNativeCanvasTypes; override;
+function GetAvailableNativeHandleTypes(Handle: HWND; AAllowFallbackToParent: Boolean = False): TNativeHandleTypes; override;
+//function GetDesignerDC(WindowHandle: HWND): HDC; override;
+function GetNativeCanvas(DC: HDC; AHandleType: TNativeCanvasType; AAllowFallbackToParent: Boolean = False): PtrInt; override;
+function GetNativeHandle(Handle: HWND; AHandleType: TNativeHandleType; AAllowFallbackToParent: Boolean = False): PtrInt; override;
 
 procedure HideVirtualKeyboard();
 

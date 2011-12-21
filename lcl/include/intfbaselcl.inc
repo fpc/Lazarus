@@ -362,6 +362,16 @@ begin
   Result := KeyAndShiftStateToKeyString(AVKey, AShiftState);
 end;
 
+function TWidgetSet.GetAvailableNativeCanvasTypes(DC: HDC; AAllowFallbackToParent: Boolean): TNativeCanvasTypes; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+begin
+  Result := [];
+end;
+
+function TWidgetSet.GetAvailableNativeHandleTypes(Handle: HWND; AAllowFallbackToParent: Boolean): TNativeHandleTypes; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+begin
+  Result := [];
+end;
+
 function TWidgetSet.GetCaretRespondToFocus(handle: HWND;
   var ShowHideOnFocus: boolean): Boolean;
 begin
@@ -409,6 +419,16 @@ begin
   if Handle <> 0
   then Result := TObject(GetProp(Handle,'WinControl'))
   else Result := nil;
+end;
+
+function TWidgetSet.GetNativeCanvas(DC: HDC; AHandleType: TNativeCanvasType; AAllowFallbackToParent: Boolean): PtrInt;
+begin
+  Result := 0;
+end;
+
+function TWidgetSet.GetNativeHandle(Handle: HWND; AHandleType: TNativeHandleType; AAllowFallbackToParent: Boolean): PtrInt;
+begin
+  Result := 0;
 end;
 
 // TODO: remove

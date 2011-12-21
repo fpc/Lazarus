@@ -211,6 +211,16 @@ begin
   Result := WidgetSet.Frame3d(DC, ARect, FrameWidth, Style);
 end;
 
+function GetAvailableNativeCanvasTypes(DC: HDC; AAllowFallbackToParent: Boolean): TNativeCanvasTypes;
+begin
+  Result := Widgetset.GetAvailableNativeCanvasTypes(DC, AAllowFallbackToParent);
+end;
+
+function GetAvailableNativeHandleTypes(Handle: HWND; AAllowFallbackToParent: Boolean): TNativeHandleTypes;
+begin
+  Result := Widgetset.GetAvailableNativeHandleTypes(Handle, AAllowFallbackToParent);
+end;
+
 function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean;
 begin
   Result := WidgetSet.GetCaretRespondToFocus(handle,ShowHideOnFocus);
@@ -295,6 +305,16 @@ end;
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String;
 begin
   Result := WidgetSet.GetAcceleratorString(AVKey, AShiftState);
+end;
+
+function GetNativeCanvas(DC: HDC; AHandleType: TNativeCanvasType; AAllowFallbackToParent: Boolean): PtrInt;
+begin
+  Result := Widgetset.GetNativeCanvas(DC, AHandleType, AAllowFallbackToParent);
+end;
+
+function GetNativeHandle(Handle: HWND; AHandleType: TNativeHandleType; AAllowFallbackToParent: Boolean): PtrInt;
+begin
+  Result := Widgetset.GetNativeHandle(Handle, AHandleType, AAllowFallbackToParent);
 end;
 
 {------------------------------------------------------------------------------

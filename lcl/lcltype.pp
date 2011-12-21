@@ -87,6 +87,15 @@ type
 
   TDockImageOperation = (disShow, disMove, disHide);
 
+  // Types for native Handle integration
+
+  TNativeHandleType = (nhtWindowsHWND, nhtX11TWindow, nhtCocoaNSWindow,
+    nhtQtQWidget);
+  TNativeHandleTypes = set of TNativeHandleType;
+
+  TNativeCanvasType = (nctWindowsDC, nctLazCanvas);
+  TNativeCanvasTypes = set of TNativeCanvasType;
+
   {$ifndef WINDOWS}
   THandle = type PtrUInt; // define our own, because the SysUtils.THandle = System.THandle is a longint
   HANDLE = THandle;
