@@ -1367,7 +1367,20 @@ function TCDWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect:
 var
   s: AnsiString;
   w: WideString;
+  WinDC: HDC;
+  WinBitmap: HBITMAP;
+  WinDCBitmapOld: HGDIOBJ;
+  lRawImage: TRawImage;
+  WinRect: TRect;
+  LazImage: TLazIntfImage;
+  lCanvas: TLazCanvas;
+  LazDC: TLazCanvas absolute DC;
+  lSize: Types.TSize;
+  Info: Windows.TBitmapInfo;
+  BitsPtr: Pointer = nil;
 begin
+  if DC = 0 then Exit;
+
   // use temp buffer, if count is set, there might be no null terminator
   if count = -1 then
    s := str
@@ -1376,10 +1389,59 @@ begin
     SetLength(s, count);
     move(str^, PChar(s)^, count);
   end;
+  if Length(s) = 0 then Exit;
+
+  // Buffer bitmap preparation
+  WinDC := Windows.CreateCompatibleDC(0);
+  if Rect = nil then
+  begin
+    GetTextExtentPoint(WinDC, Str, Count, lSize);
+  end
+  else
+  begin
+    lSize.cx := Rect^.Right - Rect^.Left;
+    lSize.cy := Rect^.Bottom - Rect^.Top;
+  end;
+
+  // Allocate a DIBSection, Windows itself will allocate the memory for the image
+  FillChar(Info, SizeOf(Info), 0);
+  Info.bmiHeader.biSize := SizeOf(Info.bmiHeader);
+  Info.bmiHeader.biWidth := lSize.cx;
+  Info.bmiHeader.biHeight := -lSize.cy; // request top down
+  Info.bmiHeader.biPlanes := 1;
+  Info.bmiHeader.biBitCount := 32;
+  Info.bmiHeader.biCompression := BI_RGB;
+
+  WinBitmap := Windows.CreateDIBSection(WinDC, Info, DIB_RGB_COLORS, BitsPtr, 0, 0);
+
+  // Now connect the Windows bitmap to our own
+  lRawImage.Init;
+  lRawImage.Description.Init_BPP32_B8G8R8_M1_BIO_TTB(lSize.cx, lSize.cy);
+  lRawImage.Data := BitsPtr;
+  lRawImage.DataSize := lSize.cx * lSize.cy * 4;
+  LazImage := TLazIntfImage.Create(lRawImage, False);
+  lCanvas := TLazCanvas.Create(LazImage);
+  lCanvas.FillColor(colWhite, True);
+
+  WinDCBitmapOld := Windows.SelectObject(WinDC, WinBitmap);
+  Windows.SelectObject(WinDC, GetStockObject(SYSTEM_FONT));
+  Windows.SetTextColor(WinDC, clBlack);
+
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
   // TODO: use the real number of chars (and not the lenght)
   W := UTF8ToUTF16(S);
-  Result := Windows.ExtTextOutW(DC, X, Y, Options, LPRECT(Rect), PWideChar(W), Length(W), Dx);
+  WinRect := Bounds(0, 0, lSize.cx, lSize.cy);
+  Result := Windows.ExtTextOutW(WinDC, 0, 0, Options, nil, PWideChar(W), Length(W), Dx);
+
+  // Draw the output to the canvas
+  LazDC.AlphaBlendIgnoringDestPixels(lCanvas, X, Y, 0, 0, lSize.cx, lSize.cy);
+
+  // Cleanup
+  lCanvas.Free;
+  LazImage.Free;
+  Windows.SelectObject(WinDC, WinDCBitmapOld);
+  Windows.DeleteObject(WinBitmap);
+  Windows.ReleaseDC(0, WinDC);
 end;
 {$endif}
 
@@ -2033,19 +2095,17 @@ begin
   Result := Windows.GetSystemMetrics(NIndex);
 end;
 
-(*function TWin32WidgetSet.GetTextColor(DC: HDC): TColorRef;
-begin
-  Result := TColorRef(Windows.GetTextColor(DC));
-end;
-
+{$ifdef CD_UseNativeText}
 // MaxCount is provided in the number of UTF-8 characters, not bytes
-function TWin32WidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar;
+function TCDWidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar;
   Count, MaxWidth: Integer; MaxCount, PartialWidths: PInteger; var Size: TSize): Boolean;
 var
   LCLStr: string;
-  s: AnsiString;
   w: WideString;
+  WinDC: HDC;
 begin
+  WinDC := Windows.CreateCompatibleDC(0);
+
   // use temp buffer, if count is set, there might be no null terminator
   if count = -1 then
     LCLStr := Str
@@ -2055,22 +2115,14 @@ begin
     move(str^, PChar(LCLStr)^, count);
   end;
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
-  if UnicodeEnabledOS then
-  begin
-    // TODO: use the real number of chars (and not the length)
-    w := UTF8ToUTF16(LCLStr);
-    Result := Windows.GetTextExtentExPointW(DC, PWideChar(W), Length(W),
-      MaxWidth, MaxCount, PartialWidths, Size);
-  end
-  else
-  begin
-    s := Utf8ToAnsi(LCLStr);
-    Result := Windows.GetTextExtentExPoint(DC, pchar(s), length(s),
-      MaxWidth, MaxCount, PartialWidths, Size);
-  end;
-end;*)
+  // TODO: use the real number of chars (and not the length)
+  w := UTF8ToUTF16(LCLStr);
+  Result := Windows.GetTextExtentExPointW(WinDC, PWideChar(W), Length(W),
+    MaxWidth, MaxCount, PartialWidths, Size);
 
-{$ifdef CD_UseNativeText}
+  Windows.ReleaseDC(0, WinDC);
+end;
+
 {------------------------------------------------------------------------------
   Method:  GetTextExtentPoint
   Params:  DC    - handle of device context
@@ -2086,7 +2138,10 @@ function TCDWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; va
 var
   s: AnsiString;
   w: WideString;
+  WinDC: HDC;
 begin
+  WinDC := Windows.CreateCompatibleDC(0);
+
   // use temp buffer, if count is set, there might be no null terminator
   if count = -1 then
     s := str
@@ -2098,7 +2153,10 @@ begin
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
   // TODO: use the real number of chars (and not the length)
   w := UTF8ToUTF16(S);
-  Result := Windows.GetTextExtentPoint32W(DC, PWideChar(W), Length(W), @Size);
+  Result := Windows.GetTextExtentPoint32W(WinDC, PWideChar(W), Length(W), @Size);
+
+  Windows.ReleaseDC(0, WinDC);
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -2110,8 +2168,12 @@ end;
   Fills the specified buffer with the metrics for the currently selected font.
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetTextMetrics(DC: HDC; Var TM: TTextMetric): Boolean;
+var
+  WinDC: HDC;
 begin
-  Result := Boolean(Windows.GetTextMetrics(DC, @TM));
+  WinDC := Windows.CreateCompatibleDC(0);
+  Result := Boolean(Windows.GetTextMetrics(WinDC, @TM));
+  Windows.ReleaseDC(0, WinDC);
 end;
 {$endif}
 

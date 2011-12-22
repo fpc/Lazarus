@@ -120,6 +120,10 @@ type
     procedure FillRect(const ARect: TRect);
     procedure FillRect(X1,Y1,X2,Y2: Integer);
     {$endif}
+    // Fills the entire drawing with a color
+    // AIgnoreClippingAndWindowOrg speeds up the drawing a lot, but it is dangerous,
+    // don't use it unless you know what you are doing!
+    procedure FillColor(AColor: TFPColor; AIgnoreClippingAndWindowOrg: Boolean = False);
     // Utilized by LCLIntf.SelectObject and by RestoreState
     // This needed to be added because Pen/Brush.Assign raises exceptions
     procedure AssignPenData(APen: TFPCustomPen);
@@ -626,6 +630,26 @@ procedure TLazCanvas.FillRect(X1, Y1, X2, Y2: Integer);
 begin
   FillRect (Rect(X1,Y1,X2,Y2));
 end;
+
+procedure TLazCanvas.FillColor(AColor: TFPColor;
+  AIgnoreClippingAndWindowOrg: Boolean);
+var
+  x, y: Integer;
+begin
+  if AIgnoreClippingAndWindowOrg then
+  begin
+    for y := 0 to Height-1 do
+      for x := 0 to Width-1 do
+        Image.Colors[x, y] := AColor;
+  end
+  else
+  begin
+  for y := 0 to Height-1 do
+    for x := 0 to Width-1 do
+      SetColor(x, y, AColor);
+  end;
+end;
+
 {$endif}
 
 procedure TLazCanvas.AssignPenData(APen: TFPCustomPen);
