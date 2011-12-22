@@ -2055,6 +2055,11 @@ begin
       Result := GetCarbonThemeMetric(kThemeMetricScrollBarMinThumbHeight);
     SM_SWSCROLLBARSPACING:
       Result:=0;
+    SM_CYCAPTION:
+      begin
+        Result := GetCarbonThemeMetric(kThemeMetricTitleBarControlsHeight);
+        Result := Result + (Result div 2) + 1;
+      end;
   else
     DebugLn('TCarbonWidgetSet.GetSystemMetrics TODO ', DbgS(NIndex));;
   end;
