@@ -51,6 +51,7 @@ type
     //
     LastMouseDownControl: TWinControl; // Stores the control which should receive the next MouseUp
     FocusedControl: TWinControl; // The control focused in the form
+    FocusedIntfControl: TWinControl; // The intf control focused in the form
     LayoutAutoAdjusted: Boolean; // Indicates if the form layout was already auto-adjusted once
     // Counter to keep track of when we requested Invalidate
     // Some systems like X11 and Win32 will keep sending unnecessary paint messages
@@ -717,7 +718,8 @@ end;
 
 function TCDForm.GetFocusedControl: TWinControl;
 begin
-  if FocusedControl <> nil then Result := FocusedControl
+  if FocusedIntfControl <> nil then Result := FocusedIntfControl
+  else if FocusedControl <> nil then Result := FocusedControl
   else Result := LCLForm;
 end;
 

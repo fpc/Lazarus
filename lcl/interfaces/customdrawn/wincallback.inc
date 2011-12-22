@@ -737,29 +737,6 @@ begin
       CallbackMouseMove(WindowInfo, XPos, YPos, WParamShiftState);
       Result := 1;
       Exit;
-      {NotifyUserInput := True;
-      PLMsg:=@LMMouseMove;
-      with LMMouseMove Do
-      begin
-        Msg := LM_MOUSEMOVE;
-        XPos := SmallInt(Lo(LParam));
-        YPos := SmallInt(Hi(LParam));
-        Keys := WParam;
-        // check if this is a spurious WM_MOUSEMOVE message, pos not actually changed
-        if (XPos = WindowInfo.MouseX) and (YPos = WindowInfo.MouseY) then
-        begin
-          // do not fire message after all (position not changed)
-          Msg := LM_NULL;
-          NotifyUserInput := false;
-        end else
-        if (WindowInfo.MouseX <> DefaultWindowInfo.MouseX) or
-          (WindowInfo.MouseY <> DefaultWindowInfo.MouseY) then
-        begin
-          // position changed, update window info
-          WindowInfo.MouseX := XPos;
-          WindowInfo.MouseY := YPos;
-        end;
-      end;}
     end;
     WM_MOUSEWHEEL:
     begin
@@ -827,9 +804,6 @@ begin
     end;
     WM_PAINT:
     begin
-      {$IFDEF DEBUG_WINCE_LABELS}
-      DebugLn('[WM_PAINT]');
-      {$ENDIF}
       SendPaintMessage(HDC(WParam));
       // SendPaintMessage sets winprocess to false
     end;

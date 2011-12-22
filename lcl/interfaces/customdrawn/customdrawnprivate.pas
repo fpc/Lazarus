@@ -121,6 +121,7 @@ begin
   lTarget := FindControlWhichReceivedEvent(AWindowHandle.LCLForm, AWindowHandle.Children, x, y);
   AWindowHandle.LastMouseDownControl := lTarget;
   AWindowHandle.FocusedControl := lTarget;
+  AWindowHandle.FocusedIntfControl := nil;
   lEventPos := FormPosToControlPos(lTarget, x, y);
 
   LCLSendMouseDownMsg(lTarget, lEventPos.x, lEventPos.y, Button, ShiftState);
@@ -129,6 +130,7 @@ begin
   if IsIntfControl(lTarget) then
   begin
     lIntfTarget := lTarget;
+    AWindowHandle.FocusedIntfControl := lTarget;
     lTarget := lTarget.Parent;
 
     LCLSendMouseDownMsg(lTarget, lEventPos.x, lEventPos.y, Button, ShiftState);
