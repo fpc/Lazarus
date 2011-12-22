@@ -1255,6 +1255,7 @@ type
     FLayoutAdjustmentPolicy: TLayoutAdjustmentPolicy;
     FMainFormOnTaskBar: Boolean;
     FModalLevel: Integer;
+    FMoveFormFocusToChildren: Boolean;
     FOnGetMainFormHandle: TGetHandleEvent;
     FOnMessageDialogFinished: TModalDialogFinished;
     FOnModalBegin: TNotifyEvent;
@@ -1485,6 +1486,7 @@ type
     property MainFormHandle: HWND read GetMainFormHandle;
     property MainFormOnTaskBar: Boolean read FMainFormOnTaskBar write SetMainFormOnTaskBar; platform;
     property ModalLevel: Integer read FModalLevel;
+    property MoveFormFocusToChildren: Boolean read FMoveFormFocusToChildren write FMoveFormFocusToChildren default True;
     property MouseControl: TControl read FMouseControl;
     property TaskBarBehavior: TTaskBarBehavior read FTaskBarBehavior write SetTaskBarBehavior;
     property OnActionExecute: TActionEvent read FOnActionExecute write FOnActionExecute;

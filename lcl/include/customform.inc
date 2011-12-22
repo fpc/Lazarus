@@ -927,7 +927,8 @@ begin
   FActive := AValue;
   if FActive then
   begin
-    if (ActiveControl = nil) and not (csDesigning in ComponentState) then
+    if (ActiveControl = nil) and (not (csDesigning in ComponentState))
+      and Application.MoveFormFocusToChildren then
       ActiveControl := FindDefaultForActiveControl;
     SetWindowFocus;
   end;

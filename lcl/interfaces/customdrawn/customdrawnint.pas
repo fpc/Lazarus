@@ -322,16 +322,18 @@ uses
   customdrawnprivate,
   LCLMessageGlue;
 
-const
   {$ifdef CD_Windows}
+const
   CDBackendNativeHandle = nhtWindowsHWND;
   {$define CD_HasNativeFormHandle}
   {$endif}
   {$ifdef CD_X11}
+const
   CDBackendNativeHandle = nhtX11TWindow;
   {$define CD_HasNativeFormHandle}
   {$endif}
   {$ifdef CD_Cocoa}
+const
   CDBackendNativeHandle = nhtCocoaNSWindow;
   {$define CD_HasNativeFormHandle}
   {$endif}

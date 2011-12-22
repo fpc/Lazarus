@@ -108,6 +108,7 @@ begin
   FHintShortPause := DefHintShortPause;
   FHintHidePause := DefHintHidePause;
   FHintHidePausePerChar := DefHintHidePausePerChar;
+  FMoveFormFocusToChildren := True;
   FShowHint := true;
   FShowMainForm := true;
   FRestoreStayOnTop := nil;

@@ -630,6 +630,7 @@ procedure TLazCanvas.FillRect(X1, Y1, X2, Y2: Integer);
 begin
   FillRect (Rect(X1,Y1,X2,Y2));
 end;
+{$endif}
 
 procedure TLazCanvas.FillColor(AColor: TFPColor;
   AIgnoreClippingAndWindowOrg: Boolean);
@@ -644,13 +645,11 @@ begin
   end
   else
   begin
-  for y := 0 to Height-1 do
-    for x := 0 to Width-1 do
-      SetColor(x, y, AColor);
+    for y := 0 to Height-1 do
+      for x := 0 to Width-1 do
+        SetColor(x, y, AColor);
   end;
 end;
-
-{$endif}
 
 procedure TLazCanvas.AssignPenData(APen: TFPCustomPen);
 begin
