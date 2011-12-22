@@ -20,26 +20,6 @@ type
 {            callback routines                                }
 {*************************************************************}
 
-{-----------------------------------------------------------------------------
-  Function: PropEnumProc
-  Params: Window - The window with the property
-          Str    - The property name
-          Data   - The property value
-  Returns: Whether the enumeration should continue
-
-  Enumerates and removes properties for the target window
- -----------------------------------------------------------------------------}
-function PropEnumProc(Window: Hwnd; Str: PChar; Data: Handle): LongBool; stdcall;
-begin
-  Result:=false;
-  if PtrUInt(Str) <= $FFFF then exit; // global atom handle
-  //DebugLn('Trace:PropEnumProc - Start');
-  //DebugLn(Format('Trace:PropEnumProc - Property %S (with value 0x%X) from window 0x%X removed',[String(Str), Data, Window]));
-  RemoveProp(Window, Str);
-  Result := True;
-  //DebugLn('Trace:PropEnumProc - Exit');
-end;
-
 function WndClassName(Wnd: HWND): WideString; inline;
 var
   winClassName: array[0..19] of WideChar;
@@ -89,30 +69,6 @@ begin
   end;
 end;
 
-type
-  TEraseBkgndCommand = (ecDefault, ecDiscard, ecDiscardNoRemove, ecDoubleBufferNoRemove);
-const
-  EraseBkgndStackMask = $3;
-  EraseBkgndStackShift = 2;
-var
-  EraseBkgndStack: dword = 0;
-
-{$ifdef MSG_DEBUG}
-function EraseBkgndStackToString: string;
-var
-  I: dword;
-begin
-  SetLength(Result, 8);
-  for I := 0 to 7 do
-    Result[8-I] := char(ord('0') + ((EraseBkgndStack shr (I*2)) and $3));
-end;
-{$endif}
-
-procedure PushEraseBkgndCommand(Command: TEraseBkgndCommand);
-begin
-  EraseBkgndStack := (EraseBkgndStack shl EraseBkgndStackShift) or dword(Ord(Command));
-end;
-
 var
   DisabledForms: TList = nil;
 
@@ -128,13 +84,6 @@ Result := true;
   moveY := lCursorPos.Y - MouseDownPos.Y;
   Result := (-3 <= moveX) and (moveX <= 3) and (-3 <= moveY) and (moveY <= 3);}
 end;
-
-{//roozbeh...any need for this?as we do not have opaque in wince!
-function GetNeedParentPaint(AWindowInfo: PWindowInfo; AWinControl: TWinControl): boolean;
-begin
-  Result := AWindowInfo^.needParentPaint
-    and ((AWinControl = nil) or not (csOpaque in AWinControl.ControlStyle));
-end;}
 
 {------------------------------------------------------------------------------
  Function: WindowProc
@@ -183,6 +132,8 @@ Var
   // Message information
   XPos, YPos: Integer;
   WParamShiftState: TShiftState;
+  MouseButton: TMouseButton;
+  UTF8Char: TUTF8Char;
 
   NMHdr: PNMHdr absolute LParam; // used by WM_NOTIFY
   TmpSize: TSize; // used by WM_MEASUREITEM
@@ -420,22 +371,6 @@ Var
     end;
   end;
 
-  function HandleUnicodeChar(AChar: Word): boolean;
-  var
-    UTF8Char: TUTF8Char;
-  begin
-    Result := false;
-    UTF8Char := UTF8Encode(widestring(WideChar(AChar)));
-    lWinControl := WindowInfo.LCLForm;
-    if Assigned(lWinControl) then
-    begin
-      Result:= lWinControl.IntfUTF8KeyPress(UTF8Char, 1, False);
-
-      if UTF8Char='' then
-        Result:= true;
-    end;
-  end;
-
 begin
   //DebugLn('Trace:WindowProc - Start');
 
@@ -499,23 +434,11 @@ begin
     end;
     WM_CHAR:
     begin
-     if not HandleUnicodeChar(Word(WParam)) then
-      begin
-      PLMsg:=@LMChar;
-      with LMChar Do
-      begin
-        Msg := CN_CHAR;
-        KeyData := LParam;
-        CharCode := Word(Char(WideChar(WParam)));
-        OrgCharCode := CharCode;
-        Result := 0;
-        //DebugLn(Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
-      end;
-      WinProcess := false;
-    end
-     else
-       WinProcess := true;
-   end;
+      UTF8Char := UTF8Encode(widestring(WideChar(WParam)));
+      CallbackKeyChar(WindowInfo, Word(Char(WideChar(WParam))), UTF8Char);
+      Result := 1;
+      Exit;
+    end;
     WM_CLOSE:
     begin
       if (Window = TCDWidgetSet(WidgetSet).AppHandle) and
@@ -687,32 +610,15 @@ begin
 }
     WM_KEYDOWN:
     begin
-      NotifyUserInput := True;
-      PLMsg:=@LMKey;
-      with LMKey Do
-      begin
-        Msg := CN_KEYDOWN;
-        KeyData := LParam;
-        CharCode := Word(WParam);
-        Result := 0;
-        //DebugLn(Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode]));
-        //DebugLn('  lWinControl= '+TComponent(lWinControl).Name+':'+lWinControl.ClassName);
-      end;
-      WinProcess := false;
+      CallbackKeyDown(WindowInfo, Word(WParam));
+      Result := 1;
+      Exit;
     end;
     WM_KEYUP:
     begin
-      NotifyUserInput := True;
-      PLMsg:=@LMKey;
-      with LMKey Do
-      begin
-        Msg := CN_KEYUP;
-        KeyData := LParam;
-        CharCode := Word(WParam);
-        Result := 0;
-        //DebugLn(Format('WM_KEYUP KeyData= %d CharCode= %d ',[KeyData,CharCode]));
-      end;
-      WinProcess := false;
+      CallbackKeyUp(WindowInfo, Word(WParam));
+      Result := 1;
+      Exit;
     end;
     WM_KILLFOCUS:
     begin
@@ -737,20 +643,11 @@ begin
         lEventY := YPos;
       end;
     end;
-    WM_LBUTTONDOWN:
+    WM_LBUTTONDOWN, WM_MBUTTONDOWN, WM_RBUTTONDOWN:
     begin
-      // if mouse-click, focus-change, mouse-click, cursor hasn't moved:
-      // simulate double click, assume focus change due to first mouse-click
-      if (MouseDownFocusStatus = mfFocusChanged) and (MouseDownFocusWindow = Window)
-          and (GetTickCount - MouseDownTime <= GetDoubleClickTime)
-          and CheckMouseMovement then
-      begin
-        PostMessage(Window, WM_LBUTTONDBLCLK, WParam, LParam);
-      end;
-
       {$ifndef win32}
       // Gesture recognition process to enable popup menus.
-      if (lWinControl.PopupMenu <> nil) then
+      if (lWinControl.PopupMenu <> nil) and (Msg = WM_LBUTTONDOWN) then
       begin
         Info.cbSize := SizeOf(SHRGINFO);
         Info.dwFlags := SHRG_RETURNCMD;
@@ -762,24 +659,6 @@ begin
       end;
       {$endif}
 
-      MouseDownTime := GetTickCount;
-      MouseDownWindow := Window;
-      MouseDownFocusWindow := 0;
-      MouseDownFocusStatus := mfFocusSense;
-      GetCursorPos(MouseDownPos);
-
-{      NotifyUserInput := True;
-      PLMsg:=@LMMouse;
-      with LMMouse Do
-      begin
-        Msg := LM_LBUTTONDOWN;
-        XPos := SmallInt(Lo(LParam));
-        YPos := SmallInt(Hi(LParam));
-        Keys := WParam;
-        lEventX := XPos;
-        lEventY := YPos;
-      end;}
-
       XPos := SmallInt(Lo(LParam));
       YPos := SmallInt(Hi(LParam));
       if GetLCLClientBoundsOffset(WindowInfo, R) then
@@ -788,8 +667,13 @@ begin
         Dec(YPos, R.Top);
       end;
       WParamShiftState := KeysToShiftState(WParam); //MsgKeyDataToShiftState
+      case Msg of
+      WM_LBUTTONDOWN: MouseButton := mbLeft;
+      WM_MBUTTONDOWN: MouseButton := mbMiddle;
+      WM_RBUTTONDOWN: MouseButton := mbRight;
+      end;
 
-      CallbackMouseDown(WindowInfo, XPos, YPos, mbLeft, WParamShiftState);
+      CallbackMouseDown(WindowInfo, XPos, YPos, MouseButton, WParamShiftState);
       Result := 1;
 
       // focus window
@@ -799,21 +683,21 @@ begin
 
       Exit;
     end;
-    WM_LBUTTONUP:
+    WM_LBUTTONUP, WM_MBUTTONUP, WM_RBUTTONUP:
     begin
-      if (MouseDownWindow = Window) and (MouseDownFocusStatus = mfNone) then
-        MouseDownFocusStatus := mfFocusSense;
-      NotifyUserInput := True;
-      PLMsg:=@LMMouse;
-      with LMMouse Do
-      begin
-        Msg := LM_LBUTTONUP;
-        XPos := SmallInt(Lo(LParam));
-        YPos := SmallInt(Hi(LParam));
-        Keys := WParam;
-        lEventX := XPos;
-        lEventY := YPos;
+      XPos := SmallInt(Lo(LParam));
+      YPos := SmallInt(Hi(LParam));
+
+      case Msg of
+      WM_LBUTTONUP: MouseButton := mbLeft;
+      WM_MBUTTONUP: MouseButton := mbMiddle;
+      WM_RBUTTONUP: MouseButton := mbRight;
       end;
+
+      WParamShiftState := KeysToShiftState(WParam); //MsgKeyDataToShiftState
+      CallbackMouseUp(WindowInfo, XPos, YPos, MouseButton, WParamShiftState);
+      Result := 1;
+      Exit;
     end;
     WM_MBUTTONDBLCLK:
     begin
@@ -822,46 +706,6 @@ begin
       with LMMouse Do
       begin
         Msg := LM_MBUTTONDBLCLK;
-        XPos := SmallInt(Lo(LParam));
-        YPos := SmallInt(Hi(LParam));
-        Keys := WParam;
-        lEventX := XPos;
-        lEventY := YPos;
-      end;
-    end;
-    WM_MBUTTONDOWN:
-    begin
-      XPos := SmallInt(Lo(LParam));
-      YPos := SmallInt(Hi(LParam));
-      if GetLCLClientBoundsOffset(WindowInfo, R) then
-      begin
-        Dec(XPos, R.Left);
-        Dec(YPos, R.Top);
-      end;
-      WParamShiftState := KeysToShiftState(WParam); //MsgKeyDataToShiftState
-
-      CallbackMouseDown(WindowInfo, XPos, YPos, mbMiddle, WParamShiftState);
-      Result := 1;
-      Exit;
-{      NotifyUserInput := True;
-      PLMsg:=@LMMouse;
-      with LMMouse Do
-      begin
-        Msg := LM_MBUTTONDOWN;
-        XPos := SmallInt(Lo(LParam));
-        YPos := SmallInt(Hi(LParam));
-        Keys := WParam;
-        lEventX := XPos;
-        lEventY := YPos;
-      end;}
-    end;
-    WM_MBUTTONUP:
-    begin
-      NotifyUserInput := True;
-      PLMsg:=@LMMouse;
-      with LMMouse Do
-      begin
-        Msg := LM_MBUTTONUP;
         XPos := SmallInt(Lo(LParam));
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
@@ -1008,33 +852,6 @@ begin
         XPos := SmallInt(Lo(LParam));
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
-      end;
-    end;
-    WM_RBUTTONDOWN:
-    begin
-      NotifyUserInput := True;
-      PLMsg:=@LMMouse;
-      with LMMouse Do
-      begin
-        Msg := LM_RBUTTONDOWN;
-        XPos := SmallInt(Lo(LParam));
-        YPos := SmallInt(Hi(LParam));
-        Keys := WParam;
-        Result := 0;
-      end;
-    end;
-    WM_RBUTTONUP:
-    begin
-      NotifyUserInput := True;
-      WinProcess := false;
-      PLMsg:=@LMMouse;
-      with LMMouse Do
-      begin
-        Msg := LM_RBUTTONUP;
-        XPos := SmallInt(Lo(LParam));
-        YPos := SmallInt(Hi(LParam));
-        Keys := WParam;
-        Result := 0;
       end;
     end;
     WM_CONTEXTMENU:

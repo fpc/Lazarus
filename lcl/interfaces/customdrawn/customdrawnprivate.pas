@@ -103,6 +103,21 @@ var
   lIntfTarget: TWinControl = nil;
   lEventPos: TPoint;
 begin
+{  // if mouse-click, focus-change, mouse-click, cursor hasn't moved:
+  // simulate double click, assume focus change due to first mouse-click
+  if (MouseDownFocusStatus = mfFocusChanged) and (MouseDownFocusWindow = Window)
+      and (GetTickCount - MouseDownTime <= GetDoubleClickTime)
+      and CheckMouseMovement then
+  begin
+    PostMessage(Window, WM_LBUTTONDBLCLK, WParam, LParam);
+  end;
+
+  MouseDownTime := GetTickCount;
+  MouseDownWindow := Window;
+  MouseDownFocusWindow := 0;
+  MouseDownFocusStatus := mfFocusSense;
+  GetCursorPos(MouseDownPos);}
+
   lTarget := FindControlWhichReceivedEvent(AWindowHandle.LCLForm, AWindowHandle.Children, x, y);
   AWindowHandle.LastMouseDownControl := lTarget;
   AWindowHandle.FocusedControl := lTarget;
