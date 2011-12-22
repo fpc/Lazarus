@@ -22,7 +22,7 @@ uses
   Forms, Controls, Graphics, Dialogs,ComCtrls,
   ExtCtrls, Buttons, StdCtrls,Menus,
 
-  LCLType,LCLIntf,LCLProc,GraphType,Printers,
+  LCLType,LCLIntf,LCLProc,GraphType,Printers, ActnList,
 
   ObjectInspector, PropEdits,TypInfo,
   
@@ -52,7 +52,7 @@ type
   TfrReportUnits = (ruPixels, ruMM, ruInches);
   TfrShapeMode = (smFrame, smAll);
 
-  TfrUndoAction = (acInsert, acDelete, acEdit, acZOrder);
+  TfrUndoAction = (acInsert, acDelete, acEdit, acZOrder, acDuplication);
   PfrUndoObj = ^TfrUndoObj;
   TfrUndoObj = record
     Next: PfrUndoObj;
@@ -184,6 +184,9 @@ type
   { TfrDesignerForm }
 
   TfrDesignerForm = class(TfrReportDesigner)
+    acDuplicate: TAction;
+    acToggleFrames: TAction;
+    actList: TActionList;
     frSpeedButton1: TSpeedButton;
     frSpeedButton2: TSpeedButton;
     frSpeedButton3: TSpeedButton;
@@ -356,6 +359,8 @@ type
     N43: TMenuItem;
     N44: TMenuItem;
     StB1: TSpeedButton;
+    procedure acDuplicateExecute(Sender: TObject);
+    procedure acToggleFramesExecute(Sender: TObject);
     procedure C2GetItems(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -456,6 +461,7 @@ type
     {$ELSE}
     ObjInsp  : TfrObjectInspector;
     {$ENDIF}
+    procedure DuplicateSelection;
     procedure ObjInspSelect(Obj:TObject);
     procedure ObjInspRefresh;
 
@@ -524,9 +530,15 @@ type
     procedure StatusBar1DrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel;
       const Rect: TRect);
     {$endif}
-    procedure ViewsAction(OnlySel: boolean; TheAction: TViewAction; Data:Ptrint);
+  private
+    FDuplicateCount: Integer;
+    FDupDeltaX,FDupDeltaY: Integer;
+    FDuplicateList: TFpList;
+    procedure ViewsAction(Views: TFpList; TheAction:TViewAction; Data: PtrInt;
+      OnlySel:boolean=true; WithUndoAction:boolean=true; WithRedraw:boolean=true);
     procedure ToggleFrames(View: TfrView; Data: PtrInt);
     procedure DuplicateView(View: TfrView; Data: PtrInt);
+    procedure ResetDuplicateCount;
   public
     constructor Create(aOwner : TComponent); override;
     destructor Destroy; override;
@@ -1350,8 +1362,10 @@ begin
     end;
     
     GetMultipleSelected;
-    if not DontChange then
+    if not DontChange then begin
        FDesigner.SelectionChanged;
+       FDesigner.ResetDuplicateCount;
+    end;
   end;
   
   if SelNum = 0 then
@@ -2528,6 +2542,17 @@ begin
   end;
 end;
 
+procedure TfrDesignerForm.acDuplicateExecute(Sender: TObject);
+begin
+  DuplicateSelection;
+end;
+
+procedure TfrDesignerForm.acToggleFramesExecute(Sender: TObject);
+begin
+  if DelEnabled then
+    ViewsAction(nil, @ToggleFrames, -1);
+end;
+
 procedure TfrDesignerForm.FormShow(Sender: TObject);
 begin
   Screen.Cursors[crPencil] := LoadCursorFromLazarusREsource('FR_PENCIL');
@@ -3058,17 +3083,6 @@ begin
     DoClick(E1);
     Key := 0;
   end;
-  if (Chr(Key) = 'F') and (ssCtrl in Shift) and DelEnabled then
-  begin
-    FrB5.Click;
-    //ViewsAction(True, @ToggleFrames, 0);
-    Key := 0;
-  end;
-  if (Chr(Key) = 'D') and (ssCtrl in Shift) and DelEnabled then
-  begin
-    FrB6.Click;
-    Key := 0;
-  end;
   if (Chr(Key) = 'G') and (ssCtrl in Shift) then
   begin
     ShowGrid := not ShowGrid;
@@ -3595,35 +3609,95 @@ begin
     DrawStatusPanel(StatusBar.Canvas, Rect);
 end;
 
-procedure TfrDesignerForm.ViewsAction(OnlySel: boolean; TheAction: TViewAction;
-  Data: Ptrint);
+// if AList is specified always process the list being objects selected or not
+// if AList is not specified, all objects are processed but check Selected state
+procedure TfrDesignerForm.ViewsAction(Views: TFpList; TheAction: TViewAction;
+  Data: PtrInt; OnlySel:boolean=true; WithUndoAction:boolean=true;
+  WithRedraw:boolean=true);
 var
+  i, n: Integer;
   List: TFpList;
-  i: Integer;
 begin
   if not assigned(TheAction) then
     exit;
-  List := Objects;
+
+ List := Views;
+  if List=nil then
+   List := Objects;
+
+  n := 0;
   for i:=List.Count-1 downto 0 do begin
-    if OnlySel and not TfrView(List[i]).Selected then
+    if (Views=nil) and OnlySel and not TfrView(List[i]).Selected then
+      continue;
+    inc(n);
+  end;
+
+  if n=0 then
+    exit;
+
+  if WithUndoAction then
+    AddUndoAction(acEdit);
+
+  if WithRedraw then begin
+    PageView.DrawPage(dmSelection);
+    GetRegion;
+  end;
+
+  for i:=List.Count-1 downto 0 do begin
+    if (Views=nil) and OnlySel and not TfrView(List[i]).Selected then
       continue;
     TheAction(TfrView(List[i]), Data);
   end;
+
+  if WithRedraw then
+    PageView.Draw(TopSelected, ClipRgn);
 end;
 
+// data=0 remove all borders
+// data=1 set all borders
+// data=-1 toggle all borders
 procedure TfrDesignerForm.ToggleFrames(View: TfrView; Data: PtrInt);
 begin
-  if View.Frames<>[] then
+  if (Data=0) or ((Data=-1) and (View.Frames<>[])) then
     View.Frames := []
   else
+  if (Data=1) or ((Data=-1) and (View.Frames=[])) then
     View.Frames := [frbLeft, frbTop, frbRight, frbBottom];
+
   if SelNum=1 then
     LastFrames := View.Frames;
 end;
 
 procedure TfrDesignerForm.DuplicateView(View: TfrView; Data: PtrInt);
+var
+  DeltaX,DeltaY: Integer;
+  t: TfrView;
+  p,q: TPoint;
 begin
+  // check if view is unique instance band kind and if there is already one
+  if (View is TfrBandView) and
+     not (TfrBandView(View).BandType in [btMasterHeader..btSubDetailFooter,
+                                         btGroupHeader, btGroupFooter])
+     and frCheckBand(TfrBandView(View).BandType)
+  then
+    exit;
 
+  t := frCreateObject(View.Typ, View.ClassName);
+  TfrView(t).Assign(View);
+  t.y := t.y + FDuplicateCount * FDupDeltaY;
+  t.x := t.x + FDuplicateCount * FDupDeltaX;
+  t.Selected := false;
+
+  if CurReport.FindObject(t.Name) <> nil then
+    t.CreateUniqueName;
+
+  Objects.Add(t);
+end;
+
+procedure TfrDesignerForm.ResetDuplicateCount;
+begin
+  FDuplicateCount := 0;
+  FreeThenNil(FDuplicateList);
 end;
 
 {$endif}
@@ -4117,6 +4191,85 @@ begin
   {$ENDIF}
 end;
 
+procedure TfrDesignerForm.DuplicateSelection;
+var
+  t: TfrView;
+  q: TPoint;
+  p: TPoint;
+  i: Integer;
+  OldCount: Integer;
+begin
+  if not DelEnabled then
+    exit;
+
+  OldCount := Objects.Count;
+  if OldCount=0 then
+    exit;
+
+  if FDuplicateList=nil then
+  begin
+    FDuplicateList := TFpList.Create;
+    for i:=0 to OldCount-1 do
+      if TfrView(Objects[i]).Selected then
+        FDuplicateList.Add(Objects[i]);
+  end;
+
+  if (FDuplicateList.Count=0) then
+  begin
+    ResetDuplicateCount;
+    exit;
+  end;
+
+  Inc(FDuplicateCount);
+
+  if FDuplicateCount=1 then
+  begin
+
+    // find reference rect in screen coords
+    if SelNum>1 then
+    begin
+      p := OldRect.TopLeft;
+      q := OldRect.BottomRight;
+    end else
+    begin
+      t := TfrView(Objects[TopSelected]);
+      p := Point(t.x, t.y);
+      q := point(t.x+t.dx, t.y+t.dy);
+    end;
+    p := PageView.ControlToScreen(p);
+    q := PageView.ControlToScreen(q);
+
+    // find duplicates delta based on current mouse cursor position
+    FDupDeltaX := (q.x-p.x);
+    FDupDeltaY := (q.y-p.y);
+    with Mouse.CursorPos do
+    begin
+      if x < p.x then
+        FDupDeltaX := -FDupDeltaX
+      else
+      if x < q.x then
+        FDupDeltaX := 0;
+
+      if y < p.y then
+        FDupDeltaY := -FDupDeltaY
+      else
+      if y < q.y then
+        FDupDeltaY := 0;
+    end;
+  end;
+
+  ViewsAction(FDuplicateList, @DuplicateView, 0, false, false, false);
+
+  if OldCount<>Objects.Count then
+  begin
+    SendBandsToDown;
+    PageView.GetMultipleSelected;
+    RedrawPage;
+    AddUndoAction(acDuplication);
+  end else
+    Dec(FDuplicateCount);
+end;
+
 procedure TfrDesignerForm.ObjInspRefresh;
 begin
   {$IFDEF STDOI}
@@ -4532,25 +4685,45 @@ end;
 
 procedure TfrDesignerForm.AddUndoAction(a: TfrUndoAction);
 var
-  i: Integer;
+  i,j: Integer;
   t: TfrView;
   List: TFpList;
   p: PfrUndoRec1;
+
+  procedure AddCurrent;
+  begin
+    GetMem(p, SizeOf(TfrUndoRec1));
+    p^.ObjPtr := t;
+    p^.Int := i;
+    List.Add(p);
+  end;
+
 begin
   ClearRedoBuffer;
 
   List := TFpList.Create;
-  for i := 0 to Objects.Count - 1 do
+
+  // last FDuplicateList.Count objectes were duplicated
+  if a=acDuplication then
+    j := Objects.Count - FDuplicateList.Count
+  else
+    j := 0;
+
+  for i := j to Objects.Count - 1 do
   begin
     t := TfrView(Objects[i]);
-    if t.Selected or (a = acZOrder) then
-    begin
-      GetMem(p, SizeOf(TfrUndoRec1));
-      p^.ObjPtr := t;
-      p^.Int := i;
-      List.Add(p);
+    case a of
+      acDuplication, acZOrder:
+        AddCurrent;
+      else
+        if t.Selected then
+          AddCurrent;
     end;
   end;
+
+  if a=acDuplication then
+    a := acInsert;
+
   AddAction(@FUndoBuffer, a, List);
   List.Free;
 end;
