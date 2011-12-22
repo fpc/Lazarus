@@ -136,6 +136,9 @@ type
     LastKeySym: TKeySym; // Used for KeyRelease event
     LastKey: Word;       // Used for KeyRelease event
 
+    // XConnections list
+    XConnections: TFPList;
+
     function FindWindowByXID(XWindowID: X.TWindow; out AWindowInfo: TX11WindowInfo): TWinControl;
     procedure AppProcessMessage;
     {$endif}
@@ -230,7 +233,10 @@ function CDMessageBoxFunction(Text, Caption : PChar; Flags : Longint) : Integer;
 function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
   LParam: Windows.LParam): LResult; stdcall;
 {$endif}
-
+{$ifdef CD_X11}
+procedure MyXConnectionWatchProc(display: PDisplay; client_data: TXPointer;
+  fd: cint; opening: XLib.TBool; watch_data: PXPointer); cdecl;
+{$endif}
 {$ifdef CD_Android}
 function Java_com_pascal_lclproject_LCLActivity_LCLOnTouch(env:PJNIEnv;this:jobject; x, y: single; action: jint): jint; cdecl;
 function Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap(

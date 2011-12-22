@@ -23,6 +23,13 @@
 function XOpenIM(para1: PDisplay; para2: PXrmHashBucketRec; para3: Pchar; para4: Pchar): PXIM; cdecl; external;
 function XCreateIC(para1: PXIM; para2: array of const): PXIC; cdecl; external;
 
+procedure MyXConnectionWatchProc(display: PDisplay; client_data: TXPointer;
+  fd: cint; opening: XLib.TBool; watch_data: PXPointer); cdecl;
+begin
+  if opening <> 0 then CDWidgetset.XConnections.Add(Pointer(fd))
+  else CDWidgetset.XConnections.Remove(Pointer(fd));
+end;
+
 function TCDWidgetSet.FindWindowByXID(XWindowID: X.TWindow; out AWindowInfo: TX11WindowInfo): TWinControl;
 var
   i: Integer;
@@ -71,6 +78,8 @@ begin
   ScreenImage := TLazIntfImage.Create(0, 0);
   ScreenImage.SetRawImage(ScreenBitmapRawImage);
   ScreenDC := TLazCanvas.Create(ScreenImage);
+
+  XConnections := TFPList.Create;
 end;
 
 {------------------------------------------------------------------------------
@@ -82,6 +91,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.BackendDestroy;
 begin
+  XConnections.Free;
+
   { Release the screen DC and Image }
   ScreenDC.Free;
   ScreenImage.Free;
@@ -138,6 +149,9 @@ begin
     XFree(ClassHint);
     ClientLeaderAtom := XInternAtom(FDisplay, 'WM_CLIENT_LEADER', False);
   //end;
+
+  // Add watches to the XConnection
+  XAddConnectionWatch(FDisplay, @MyXConnectionWatchProc, nil);
 end;
 
 procedure TCDWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
@@ -423,12 +437,13 @@ var
   // timer variables
   rfds: baseunix.TFDSet;
   xconnnum, selectresult: integer;
-  needToWait: Boolean;
+  IsFirstTimeout: Boolean;
   lTimer: TCDTimer;
   lTimeoutInterval: Integer; // miliseconds
   i: Integer;
 begin
-  {$ifndef CD_X11_DISABLETIMERS}
+  IsFirstTimeout := True;
+
   lTimeoutInterval := GetSmallestTimerInterval();
   // Limit the maximum interval, even if only to process Application.OnIdle or
   // for general safety
@@ -441,46 +456,50 @@ begin
     xconnnum := XConnectionNumber(FDisplay);
     XFlush(FDisplay);
 
-    needToWait := True;
     if XPending(FDisplay) > 0 then Exit; // We have a X message to process
 
-    if needToWait then  // No X messages to process (we are idle). So do a timeout wait
+    // No X messages to process (we are idle). So do a timeout wait
+
+    //if Assigned(FOnIdle) then
+    //  OnIdle(self);
+    fpFD_ZERO(rfds);
+    fpFD_SET(xconnnum, rfds);
+
+    // Add all other X connections
+    for i := 0 to XConnections.Count-1 do
+      fpFD_SET(cint(PtrInt(XConnections.Items[i])), rfds);
+
+    selectresult := fpSelect(xconnnum + 1, @rfds, nil, nil, lTimeoutInterval);
+
+    // Process all timers
+    for i := 0 to GetTimerCount()-1 do
     begin
-      //if Assigned(FOnIdle) then
-      //  OnIdle(self);
-      fpFD_ZERO(rfds);
-      fpFD_SET(xconnnum, rfds);
-      selectresult := fpSelect(xconnnum + 1, @rfds, nil, nil, lTimeoutInterval);
+      lTimer := GetTimer(i);
 
-      // Process all timers
-      for i := 0 to GetTimerCount()-1 do
+      // if selectresult = 0 then a timeout occured, in other cases guess how
+      // much time passed
+      if selectresult = 0 then Inc(lTimer.NativeHandle, lTimeoutInterval)
+      else Inc(lTimer.NativeHandle, 10);
+
+      if lTimer.NativeHandle >= lTimer.Interval then
       begin
-        lTimer := GetTimer(i);
-
-        // if selectresult = 0 then a timeout occured, in other cases guess how
-        // much time passed
-        if selectresult = 0 then Inc(lTimer.NativeHandle, lTimeoutInterval)
-        else Inc(lTimer.NativeHandle, 10);
-
-        if lTimer.NativeHandle >= lTimer.Interval then
-        begin
-          lTimer.TimerFunc();
-          lTimer.NativeHandle := 0;
-        end;
-      end;
-
-      if selectresult <> 0 then  // We got a X event or the timeout happened
-        Exit
-      else
-      begin
-        // Process standard application Idle
-        if not Application.Terminated then Application.Idle(False);
-
-        Continue; // Go back and keep waiting for a message
+        lTimer.TimerFunc();
+        lTimer.NativeHandle := 0;
       end;
     end;
+
+    if selectresult <> 0 then  // We got a X event or the timeout happened
+      Exit
+    else
+    begin
+      // Process standard application Idle
+      if (not Application.Terminated) and IsFirstTimeout then Application.Idle(False);
+
+      //IsFirstTimeout := False; <- This affects ProcessAsyncCallQueue handling too, so we need LCL support for partial Idles before activating this
+
+      Continue; // Go back and keep waiting for a message
+    end;
   end;
-  {$endif}
 end;
 
 {------------------------------------------------------------------------------
