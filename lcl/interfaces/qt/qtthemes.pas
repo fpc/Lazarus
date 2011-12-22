@@ -130,6 +130,9 @@ var
   Widget: QWidgetH;
   AViewportPaint: Boolean;
   StyleState: QStyleState;
+  {$IFDEF DARWIN}
+  ClipR: TRect; // fix branch indicators (treeviews)
+  {$ENDIF}
 begin
   if (Context <> nil) then
   begin
@@ -271,12 +274,26 @@ begin
               end;
             QStylePE_IndicatorBranch:
               begin
+
                 opt := QStyleOption_create(Integer(QStyleOptionVersion),
                   Integer(QStyleOptionSO_Default));
 
                 QStyleOption_setState(opt, StyleState);
                 if AViewPortPaint then
                 begin
+                  {$IFDEF DARWIN}
+                  if (AnsiPos('macintosh', StyleName) > 0) and
+                    Context.getClipping then
+                  begin
+                    ClipR := Context.getClipRegion.getBoundingRect;
+                    if (ClipR.Left = 0) and (ClipR.Top = 0) and (ARect.Left > 0)
+                      and (ARect.Top > 0) then
+                    begin
+                      ClipR.Left := (ARect.Right - ARect.Left + 1) div 3;
+                      OffsetRect(ARect, -ClipR.Left, -1);
+                    end;
+                  end;
+                  {$ENDIF}
                   Context.translate(-1, -1);
                   ABrush := QBrush_create(QPainter_brush(Context.Widget));
                   QBrush_setStyle(ABrush, QtNoBrush);
