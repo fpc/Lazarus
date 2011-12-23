@@ -475,42 +475,36 @@ end;
 
 procedure TCustomComboBox.KeyDown(var Key: Word; Shift: TShiftState);
 var
-  skip : Boolean;
-  UserDropDown: boolean;
+  Skip, UserDropDown, PreventDropDown: Boolean;
 begin
   Skip := False;
   UserDropDown := ((Shift *[ssAlt] = [ssAlt]) and (Key = VK_DOWN));
-
+  PreventDropDown := Key in [VK_TAB, VK_RETURN, VK_ESCAPE];
+  if PreventDropDown then
+    DroppedDown := False;
   if AutoDropDown or UserDropDown or FReturnArrowState then
   begin
-    case Key of
-      VK_TAB,VK_RETURN:
-       begin
-
-        if FReturnArrowState = True then
-        begin
-          SetArrowKeysTraverseList(False); //we need this here, else we cannot traverse popup list
-          FReturnArrowState := False;
-        end;
-
-        DroppedDown := False;
-       end;
-    else
+    if PreventDropDown then
+    begin
+      if FReturnArrowState then
       begin
-        if ArrowKeysTraverseList = False then
-        begin
-          SetArrowKeysTraverseList(True); //we need this here, else we cannot traverse popup list
-          FReturnArrowState := True;
-          Skip := True;
-        end;
-        //AutoDropDown := True;
-        DroppedDown := True;
-        if UserDropDown then
-          Skip := True;
+        ArrowKeysTraverseList := False; //we need?? this here, else we cannot traverse popup list
+        FReturnArrowState := False;
       end;
+    end
+    else
+    begin
+      if not ArrowKeysTraverseList then
+      begin
+        ArrowKeysTraverseList := True; //we need?? this here, else we cannot traverse popup list
+        FReturnArrowState := True;
+        Skip := True;
+      end;
+      DroppedDown := True;
+      if UserDropDown then
+        Skip := True;
     end;
   end;
-  
   if Skip then
     Key := VK_UNKNOWN
   else
