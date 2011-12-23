@@ -7,9 +7,13 @@ interface
 uses
   Classes, SysUtils, LazUTF8, LUResStrings;
 
-{$if defined(Windows) or defined(darwin)}
+{$IFDEF Windows}
   {$define CaseInsensitiveFilenames}
-{$endif}
+  {$define HasUNCPaths}
+{$ENDIF}
+{$IFDEF darwin}
+  {$define CaseInsensitiveFilenames}
+{$ENDIF}
 {$IF defined(CaseInsensitiveFilenames) or defined(darwin)}
   {$DEFINE NotLiteralFilenames} // e.g. HFS+ normalizes file names
 {$ENDIF}
@@ -853,6 +857,10 @@ begin
   Result:=Path;
   Len:=length(Result);
   while (Len>1) and (Result[Len]=PathDelim) do dec(Len);
+  {$IFDEF HasUNCPaths}
+  if (Len=1) and (Result[1]=PathDelim) then
+    Len:=2; // keep UNC '\\', chomp 'a\' to 'a'
+  {$ENDIF}
   if Len<length(Result) then
     SetLength(Result,Len);
 end;

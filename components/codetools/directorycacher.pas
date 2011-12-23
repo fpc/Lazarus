@@ -1404,7 +1404,7 @@ begin
     if DoReference then
       Result.Reference;
   end else if DoReference or CreateIfNotExists then begin
-    Dir:=FindDiskFilename(ChompPathDelim(TrimFilename(Directory)));
+    Dir:=FindDiskFilename(Directory);
     Result:=TCTDirectoryCache.Create(Dir,Self);
     FDirectories.Add(Result);
     if DoReference then
