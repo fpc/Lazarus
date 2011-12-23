@@ -26,6 +26,7 @@ unit CocoaInt;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
+{$modeswitch objectivec2}
 
 interface
 
@@ -37,7 +38,7 @@ uses
   // interfacebase
   InterfaceBase, GraphType,
   // private
-  CocoaAll, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaTextLayout,
+  CocoaAll, CocoaPrivate, CocoaUtils, CocoaGDIObjects,
   CocoaProc,
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,

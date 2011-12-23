@@ -170,11 +170,19 @@ type
   TCocoaFontStyle = set of (cfs_Bold, cfs_Italic, cfs_Underline, cfs_Strikeout);
 
   TCocoaFont = class(TCocoaGDIObject)
-    Name  : AnsiString;
-    Size  : Integer;
-    Style : TCocoaFontStyle;
-    Antialiased: Boolean;
+  private
+    FFont: NSFont;
+    FName: AnsiString;
+    FSize: Integer;
+    FStyle: TCocoaFontStyle;
+    FAntialiased: Boolean;
+  public
     constructor CreateDefault;
+    constructor Create(const ALogFont: TLogFont; AFontName: String; AGlobal: Boolean = False);
+    class function Win32FontWeightToNSFontWeight(const Win32FontWeight: Integer): Single; static;
+    property Font: NSFont read FFont;
+    property Name: String read FName;
+    property Size: Integer read FSize;
   end;
 
   { TCocoaBitmap }
@@ -238,18 +246,6 @@ type
     property Standard: Boolean read FStandard;
   end;
 
-  { TCocoaTextLayout }
-
-  TCocoaTextLayout = class(TObject)
-  public
-    constructor Create; virtual;
-    procedure SetFont(AFont: TCocoaFont); virtual; abstract;
-    procedure SetText(UTF8Text: PChar; ByteSize: Integer); virtual; abstract;
-    function GetSize: TSize; virtual; abstract;
-
-    procedure Draw(cg: CGContextRef; X, Y: Integer; DX: PInteger); virtual; abstract;
-  end;
-  TCocoaTextLayoutClass = class of TCocoaTextLayout;
 
   // device context data for SaveDC/RestoreDC
   TCocoaDCData = class
@@ -268,6 +264,25 @@ type
 
     ROP2: Integer;
     PenPos: TPoint;
+  end;
+
+  { TCocoaTextLayout }
+
+  TCocoaTextLayout = class
+  private
+    FLayout: NSLayoutManager;
+    FTextStorage: NSTextStorage;
+    FTextContainer: NSTextContainer;
+    FText: String;
+    FFont: NSFont;
+    procedure UpdateFont;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure SetFont(AFont: TCocoaFont);
+    procedure SetText(UTF8Text: PChar; ByteSize: Integer);
+    function GetSize: TSize;
+    procedure Draw(ctx: NSGraphicsContext; X, Y: Integer; DX: PInteger);
   end;
 
   { TCocoaContext }
@@ -335,7 +350,7 @@ type
 
     function GetTextExtentPoint(AStr: PChar; ACount: Integer; var Size: TSize): Boolean;
     function GetTextMetrics(var TM: TTextMetric): Boolean;
-    procedure SetOrigin(X,Y: Integer);
+    procedure SetOrigin(X, Y: Integer);
     procedure GetOrigin(var X,Y: Integer);
 
     function CGContext: CGContextRef; virtual;
@@ -366,7 +381,6 @@ type
   end;
 
 var
-  TextLayoutClass: TCocoaTextLayoutClass = nil;
   DefaultBrush: TCocoaBrush;
   DefaultPen: TCocoaPen;
   DefaultFont: TCocoaFont;
@@ -426,6 +440,82 @@ type
 constructor TCocoaFont.CreateDefault;
 begin
   inherited Create(False);
+end;
+
+constructor TCocoaFont.Create(const ALogFont: TLogFont; AFontName: String;
+  AGlobal: Boolean);
+var
+  FontName: NSString;
+  Descriptor: NSFontDescriptor;
+  Attributes: NSDictionary;
+  Traits: NSFontSymbolicTraits;
+  Weight: Single;
+begin
+  inherited Create(AGlobal);
+
+  FName := AFontName;
+  if FName = 'default' then
+  begin
+    FName := NSStringToString(NSFont.systemFontOfSize(0).familyName);
+    FSize := Round(NSFont.systemFontSize);
+  end
+  else
+    FSize := ALogFont.lfHeight;
+
+  // create font attributes
+  Traits := 0;
+  if ALogFont.lfItalic > 0 then
+    Traits := Traits or NSFontItalicTrait;
+  if ALogFont.lfWeight > FW_NORMAL then
+    Traits := Traits or NSFontBoldTrait;
+
+  Weight := Win32FontWeightToNSFontWeight(ALogFont.lfWeight);
+
+  Attributes := NSDictionary.dictionaryWithObjectsAndKeys(
+        NSStringUTF8(FName), NSFontFamilyAttribute,
+        NSNumber.numberWithFloat(ALogFont.lfHeight), NSFontSizeAttribute,
+        NSNumber.numberWithUnsignedInt(Traits), NSFontSymbolicTrait,
+        NSNumber.numberWithFloat(Weight), NSFontWeightTrait,
+        nil);
+
+  Descriptor := NSFontDescriptor.fontDescriptorWithFontAttributes(Attributes);
+  FFont := NSFont.fontWithDescriptor_size(Descriptor, ALogFont.lfHeight);
+end;
+
+class function TCocoaFont.Win32FontWeightToNSFontWeight(const Win32FontWeight: Integer): Single;
+begin
+{
+  1. ultralight
+  2. thin W1. ultralight
+  3. light, extralight W2. extralight
+  4. book W3. light
+  5. regular, plain, display, roman W4. semilight
+  6. medium W5. medium
+  7. demi, demibold
+  8. semi, semibold W6. semibold
+  9. bold W7. bold
+  10. extra, extrabold W8. extrabold
+  11. heavy, heavyface
+  12. black, super W9. ultrabold
+  13. ultra, ultrablack, fat
+  14. extrablack, obese, nord
+
+  FW_THIN 100
+  FW_EXTRALIGHT 200
+  FW_ULTRALIGHT 200
+  FW_LIGHT 300
+  FW_NORMAL 400
+  FW_REGULAR 400
+  FW_MEDIUM 500
+  FW_SEMIBOLD 600
+  FW_DEMIBOLD 600
+  FW_BOLD 700
+  FW_EXTRABOLD 800
+  FW_ULTRABOLD 800
+  FW_HEAVY 900
+  FW_BLACK 900
+}
+  Result := 0;
 end;
 
 { TCocoaColorObject }
@@ -695,6 +785,108 @@ begin
   Result := nil;
 end;
 
+{ TCocoaTextLayout }
+
+procedure TCocoaTextLayout.UpdateFont;
+var
+  Range: NSRange;
+begin
+  Range.location := 0;
+  Range.length := FTextStorage.length;
+  FTextStorage.addAttribute_value_range(NSFontAttributeName, FFont, Range);
+  //FTextStorage.addAttribute_value_range(NSForegroundColorAttributeName, NSColor.blueColor, Range);
+end;
+
+constructor TCocoaTextLayout.Create;
+var
+  S: NSString;
+begin
+  FLayout := NSLayoutManager.alloc.init;
+  FTextContainer := NSTextContainer.alloc.init;
+  FLayout.addTextContainer(FTextContainer);
+  FTextContainer.release;
+  S := NSSTR('');
+  FTextStorage := NSTextStorage.alloc.initWithString(S);
+  S.release;
+  FTextStorage.addLayoutManager(FLayout);
+  FLayout.release;
+  FFont := NSFont.systemFontOfSize(0);
+end;
+
+destructor TCocoaTextLayout.Destroy;
+begin
+  FTextStorage.release;
+  FFont.release;
+  inherited Destroy;
+end;
+
+procedure TCocoaTextLayout.SetFont(AFont: TCocoaFont);
+begin
+  if FFont <> AFont.Font then
+  begin
+    FFont.release;
+    FFont := AFont.Font;
+    FFont.retain;
+    FTextStorage.beginEditing;
+    updateFont;
+    FTextStorage.endEditing;
+  end;
+end;
+
+procedure TCocoaTextLayout.SetText(UTF8Text: PChar; ByteSize: Integer);
+var
+  NewText: String;
+  S: NSString;
+  Range: NSRange;
+begin
+  if ByteSize >= 0 then
+    System.SetString(NewText, UTF8Text, ByteSize)
+  else
+    NewText := StrPas(UTF8Text);
+  if FText <> NewText then
+  begin
+    FText := NewText;
+    S := NSStringUTF8(NewText);
+    Range.location := 0;
+    Range.length := FTextStorage.length;
+    FTextStorage.beginEditing;
+    FTextStorage.replaceCharactersInRange_withString(Range, S);
+    updateFont;
+    FTextStorage.endEditing;
+    S.release;
+  end;
+end;
+
+function TCocoaTextLayout.GetSize: TSize;
+var
+  Range: NSRange;
+begin
+  Range := FLayout.glyphRangeForTextContainer(FTextContainer);
+  with FLayout.boundingRectForGlyphRange_inTextContainer(Range, FTextContainer).size do
+  begin
+    Result.cx := Round(width);
+    Result.cy := Round(height);
+  end;
+end;
+
+procedure TCocoaTextLayout.Draw(ctx: NSGraphicsContext; X, Y: Integer; DX: PInteger);
+var
+  Range: NSRange;
+  Pt: NSPoint;
+  Context: NSGraphicsContext;
+begin
+  if not ctx.isFlipped then
+    Context := NSGraphicsContext.graphicsContextWithGraphicsPort_flipped(ctx.graphicsPort, True)
+  else
+    Context := ctx;
+
+  ctx.setCurrentContext(Context);
+  Range := FLayout.glyphRangeForTextContainer(FTextContainer);
+  Pt.x := X;
+  Pt.y := Y;
+  FLayout.drawGlyphsForGlyphRange_atPoint(Range, Pt);
+end;
+
 { TCocoaContext }
 
 function TCocoaContext.CGContext: CGContextRef;
@@ -907,7 +1099,7 @@ begin
   FRegion := TCocoaRegion.CreateDefault;
   FRegion.AddRef;
   FClipRegion := FRegion;
-  FText := TextLayoutClass.Create;
+  FText := TCocoaTextLayout.Create;
   FClipped := False;
 end;
 
@@ -1154,23 +1346,17 @@ begin
 end;
 
 procedure TCocoaContext.TextOut(X, Y: Integer; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
-var
-  cg: CGContextRef;
 begin
-  cg := CGContext;
-  if not Assigned(cg) then Exit;
+  ctx.saveGraphicsState;
 
-  CGContextScaleCTM(cg, 1, -1);
-  CGContextTranslateCTM(cg, 0, -Size.cy);
-
+  // check flipped state
   FTextBrush.Apply(Self, False);
   FText.SetText(UTF8Chars, Count);
-  FText.Draw(cg, X, Size.cy - Y, CharsDelta);
+  FText.Draw(ctx, X, Y, CharsDelta);
 
   if Assigned(FBrush) then FBrush.Apply(Self);
 
-  CGContextTranslateCTM(cg, 0, Size.cy);
-  CGContextScaleCTM(cg, 1, -1);
+  ctx.restoreGraphicsState;
 end;
 
 procedure TCocoaContext.Frame(const R: TRect);
@@ -1376,23 +1562,10 @@ end;
 
   Computes the width and height of the specified string of text
  ------------------------------------------------------------------------------}
-function TCocoaContext.GetTextExtentPoint(AStr: PChar; ACount: Integer;
-  var Size: TSize): Boolean;
-var
-  LStr: String;
+function TCocoaContext.GetTextExtentPoint(AStr: PChar; ACount: Integer; var Size: TSize): Boolean;
 begin
-  Result := False;
-  Size.cx := 0;
-  Size.cy := 0;
-
-  if ACount = 0 then Exit(True);
-
-  if ACount < 0 then LStr := AStr
-  else LStr := Copy(AStr, 1, ACount);
-
-  fText.SetText(PChar(LStr), Length(LStr));
-  Size := fText.getSize();
-
+  FText.SetText(AStr, ACount);
+  Size := FText.GetSize;
   Result := True;
 end;
 
@@ -1490,7 +1663,7 @@ begin
   HIThemeDrawFocusRect(RectToCGRect(ARect), True, CGContext, kHIThemeOrientationNormal);
 end;
 
-procedure TCocoaContext.SetOrigin(X,Y:Integer);
+procedure TCocoaContext.SetOrigin(X, Y:Integer);
 var
   cg: CGContextRef;
 begin
@@ -1499,7 +1672,7 @@ begin
     CGContextTranslateCTM(cg, X, Y);
 end;
 
-procedure TCocoaContext.GetOrigin(var X,Y: Integer);
+procedure TCocoaContext.GetOrigin(var X, Y: Integer);
 var
   cg: CGContextRef;
   t: CGAffineTransform;
@@ -2121,13 +2294,6 @@ begin
   end
   else
     CGContextSetRGBFillColor(ADC.CGContext, RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
-end;
-
-{ TCocoaTextLayout }
-
-constructor TCocoaTextLayout.Create;
-begin
-  inherited Create;
 end;
 
 { TCocoaGDIObject }

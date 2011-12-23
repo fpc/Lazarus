@@ -176,23 +176,13 @@ end;
 
 function TCocoaWidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
 begin
-  Result:=CreateFontIndirectEx(LogFont, LogFont.lfFaceName);
+  Result := HFont(TCocoaFont.Create(LogFont, LogFont.lfFaceName));
 end;
 
 function TCocoaWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
   const LongFontName: string): HFONT;
-var
-  cf  : TCocoaFont;
 begin
-  cf:=TCocoaFont.Create(False);
-  cf.Size:=LogFont.lfHeight;
-  cf.Name:=LongFontName;
-  if LogFont.lfWeight>FW_NORMAL then Include(cf.Style, cfs_Bold);
-  if LogFont.lfItalic>0 then Include(cf.Style, cfs_Italic);
-  if LogFont.lfUnderline>0 then Include(cf.Style, cfs_Underline);
-  if LogFont.lfStrikeOut>0 then Include(cf.Style, cfs_Strikeout);
-  cf.Antialiased:=logFont.lfQuality>=ANTIALIASED_QUALITY;
-  Result:=HFONT(cf);
+  Result := HFont(TCocoaFont.Create(LogFont, LongFontName));
 end;
 
 function Create32BitAlphaBitmap(ABitmap, AMask: TCocoaBitmap): TCocoaBitmap;
@@ -370,35 +360,28 @@ end;
 function TCocoaWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
   Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint;
 var
-  fontManager : NSFontManager;
-  arr         : NSArray;
-  fname       : NSString;
-  i           : Integer;
-
-  ELogFont    : TEnumLogFontEx;
-  Metric      : TNewTextMetricEx;
-  FontName    : AnsiString;
+  fname: NSString;
+  ELogFont: TEnumLogFontEx;
+  Metric: TNewTextMetricEx;
+  FontName: AnsiString;
 begin
-  Result:=0;
+  Result := 0;
   if not Assigned(Callback) then Exit;
-  fontManager:=NSFontManager.sharedFontManager;
-  arr:=fontManager.availableFontFamilies;
-  for i:=0 to arr.count-1 do begin
-    fname:=NSString(arr.objectAtIndex(i));
+  for fname in NSFontManager.sharedFontManager.availableFontFamilies do
+  begin
     try
-      FontName:=NSStringToString(fname);
+      FontName := NSStringToString(fname);
       FillChar(ELogFont, SizeOf(ELogFont), #0);
       FillChar(Metric, SizeOf(Metric), #0);
       ELogFont.elfLogFont.lfFaceName := FontName;
       ELogFont.elfFullName := FontName;
       //todo: read the data from all fonts of the fontfamily
-      Result:=CallBack(ELogFont, Metric, TRUETYPE_FONTTYPE, lparam);
-      if Result=0 then Break;
+      Result := CallBack(ELogFont, Metric, TRUETYPE_FONTTYPE, lparam);
+      if Result = 0 then Break;
     except
       Break;
     end;
   end;
-  arr.release;
 end;
 
 function TCocoaWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;

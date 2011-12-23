@@ -2,7 +2,6 @@
 unit AllLCLIntfUnits;
 interface
 uses
-  cocoatextlayout,
   cocoawsfactory,
   cocoawsmenus,
   cocoaprivate,
