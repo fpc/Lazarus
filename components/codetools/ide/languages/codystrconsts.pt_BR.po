@@ -154,7 +154,7 @@ msgstr "&Fechar"
 
 #: codystrconsts.crscloseotherpackageandopennew
 msgid "Close other package and open new"
-msgstr ""
+msgstr "Fechar outro pacote e abrir um novo"
 
 #: codystrconsts.crscodenodeinformation
 msgid "Code Node Information"
@@ -245,7 +245,7 @@ msgstr "Expressão"
 
 #: codystrconsts.crsextendunitpath
 msgid "Extend unit path"
-msgstr ""
+msgstr "Extender caminho de unidades"
 
 #: codystrconsts.crsfile
 msgid "File"
@@ -253,15 +253,15 @@ msgstr "Arquivo"
 
 #: codystrconsts.crsfiledoesnotexistanymore
 msgid "File \"%s\" does not exist anymore."
-msgstr ""
+msgstr "Arquivo \"%s\" não existe mais."
 
 #: codystrconsts.crsfilenotfound
 msgid "File not found"
-msgstr ""
+msgstr "Arquivo não encontrado"
 
 #: codystrconsts.crsfilereaderror
 msgid "File read error"
-msgstr ""
+msgstr "Erro de leitura no arquivo"
 
 #: codystrconsts.crsfilter
 msgid "(Filter)"
@@ -273,7 +273,7 @@ msgstr "Flags"
 
 #: codystrconsts.crsfpcunitwithoutppu
 msgid "FPC unit without ppu"
-msgstr ""
+msgstr "Unidade FPC sem ppu"
 
 #: codystrconsts.crsframeworks
 msgid "Frameworks"
@@ -289,19 +289,19 @@ msgstr "&Ajuda"
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
-msgstr ""
+msgstr "Ocultar unidades de outros projetos"
 
 #: codystrconsts.crsidentifiernotfound
 msgid "Identifier not found"
-msgstr ""
+msgstr "Identificador não encontrado"
 
 #: codystrconsts.crsidentifiernotfoundinunit
 msgid "Identifier \"%s\" not found in unit \"%s\". Maybe the identifier does not exist for this platform or maybe the identifier was deleted/renamed."
-msgstr ""
+msgstr "Identificador \"%s\" não encontrado na unidade \"%s\". Talvez o identificador não exista para esta plataforma ou talvez tenha sido excluído/renomeado."
 
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
-msgstr ""
+msgstr "Dependência impossível"
 
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
@@ -313,7 +313,7 @@ msgstr "Na interface"
 
 #: codystrconsts.crsinsertcallinherited
 msgid "Insert Call Inherited"
-msgstr ""
+msgstr "Inserir chamada à \"Inherited\""
 
 #: codystrconsts.crsinsertfileatcursor
 #| msgid "Insert file at cursor ..."
@@ -322,7 +322,7 @@ msgstr "Inserir arquivo na posição do cursor ..."
 
 #: codystrconsts.crsjumpto
 msgid "Jump to"
-msgstr ""
+msgstr "Saltar para"
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -354,7 +354,7 @@ msgstr "faltando ..."
 
 #: codystrconsts.crsnoneselected
 msgid "none selected"
-msgstr ""
+msgstr "nada selecionado"
 
 #: codystrconsts.crsnoproject
 msgid "No project"
@@ -390,25 +390,24 @@ msgstr "Pacote"
 
 #: codystrconsts.crspackage2
 msgid "Package: %s"
-msgstr ""
+msgstr "Pacote: %s"
 
 #: codystrconsts.crspackagenotfound
 msgid "Package not found"
-msgstr ""
+msgstr "Pacote não encontrado"
 
 #: codystrconsts.crspackagenotfounditshouldbein
 msgid "Package \"%s\" not found. It should be in \"%s\"."
-msgstr ""
+msgstr "Pacote \"%s\" não encontrado. Deveria estar em \"%s\"."
 
 #: codystrconsts.crspackagesunitsidentifiersfile
-#, fuzzy
 #| msgid "Packages: %s, Units: %s, Identifiers: %s%sFile: %s"
 msgid "Packages: %s, Units: %s, Identifiers: %s%sDatabase: %s"
-msgstr "Pacotes: %s, Unidades: %s, Identificadores: %s%sArquivo: %s"
+msgstr "Pacotes: %s, Unidades: %s, Identificadores: %s%sBase de dados: %s"
 
 #: codystrconsts.crspackagewithsamename
 msgid "Package with same name"
-msgstr ""
+msgstr "Pacote com mesmo nome"
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."
@@ -519,19 +518,19 @@ msgstr "O identificador \"%s\" já foi definido."
 
 #: codystrconsts.crsthereisalreadyanotherpackageloadedwiththesamenameo
 msgid "There is already another package loaded with the same name.%sOpen package: %s%sNew package: %s%sOnly one package can be loaded at a time."
-msgstr ""
+msgstr "Já existe um outro pacote carregado com o mesmo nome.%sAbrir pacote: %s%sNovo pacote: %s%sApenas uma pacote pode ser carregado por vez."
 
 #: codystrconsts.crsthetargetunithasthesamenameasthecurrentunitfreepas
 msgid "The target unit has the same name as the current unit.%s Free Pascal does not support that."
-msgstr ""
+msgstr "A unidade alvo tem o mesmo nome da unidade atual.%s Isto não é suportado pelo Free Pascal."
 
 #: codystrconsts.crstheunitispartofitcannotuseanotherpackagewiththesam
 msgid "The unit \"%s\"%sis part of \"%s\".%sIt can not use another package with the same name:%s\"%s\""
-msgstr ""
+msgstr "A unidade \"%s\"%sé parte de \"%s\".%sEla não pode usar outro pacote com o mesmo nome:%s\"%s\""
 
 #: codystrconsts.crsthisunitislocatedinthefreepascalsourcesbutnoppufil
 msgid "This unit is located in the Free Pascal sources, but no ppu file is installed. Maybe this unit is not available for this target platform."
-msgstr ""
+msgstr "A unidade está localizada nos fontes do Free Pascal, mas nennhum arquivo ppu está instalado. Talvez a unidade não esteja disponível nesta plataforma alvo."
 
 #: codystrconsts.crstotal
 msgid "Total"
@@ -543,11 +542,11 @@ msgstr "Tipo"
 
 #: codystrconsts.crsunabletoreadfile
 msgid "Unable to read file \"%s\"."
-msgstr ""
+msgstr "Incapaz de ler o arquivo \"%s\"."
 
 #: codystrconsts.crsunabletorenameto
 msgid "unable to rename \"%s\" to \"%s\""
-msgstr ""
+msgstr "Incapaz de renomear \"%s\" para \"%s\""
 
 #: codystrconsts.crsunit
 msgid "Unit"
@@ -559,7 +558,7 @@ msgstr "Unidade: %s"
 
 #: codystrconsts.crsunitnameclash
 msgid "Unit name clash"
-msgstr ""
+msgstr "Conflito em nome de unidade"
 
 #: codystrconsts.crsunitobjectfiles
 msgid "Unit object files"
@@ -583,7 +582,7 @@ msgstr "Usado por"
 
 #: codystrconsts.crsuseidentifier
 msgid "Use identifier"
-msgstr ""
+msgstr "Identificador \"Use\""
 
 #: codystrconsts.crsuses
 msgid "Uses"
@@ -600,7 +599,7 @@ msgstr "Where"
 
 #: codystrconsts.lisaddunittoimplementationusessection
 msgid "Add unit to implementation uses section"
-msgstr ""
+msgstr "Adicionar unidade à seção \"uses\" da implementação"
 
 #: codystrconsts.liscogeneral
 msgid "General"
@@ -612,5 +611,5 @@ msgstr "Caminho \"uses\""
 
 #: codystrconsts.lisifidentifierisaddedtotheimplementationsectionandne
 msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
-msgstr ""
+msgstr "Se o identificador for adicionado à seção de implementação e a unidade necessária precisar ser adicionada, adicionar à seção \"uses\" da implementação"
 

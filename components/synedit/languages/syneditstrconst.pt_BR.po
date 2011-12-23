@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 
 #: syneditstrconst.syns_attrasp
@@ -127,7 +127,7 @@ msgstr "Exceção"
 
 #: syneditstrconst.syns_attrflags
 msgid "Flags"
-msgstr ""
+msgstr "Flags"
 
 #: syneditstrconst.syns_attrfloat
 msgid "Float"
@@ -271,7 +271,7 @@ msgstr "Pré-processador"
 
 #: syneditstrconst.syns_attrprevvalue
 msgid "Previous value"
-msgstr ""
+msgstr "Valor anterior"
 
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
@@ -507,43 +507,43 @@ msgstr "Comando IDE"
 
 #: syneditstrconst.syns_emcwheelhorizscrolldown
 msgid "Wheel scroll down (Horizontal)"
-msgstr ""
+msgstr "Roda, rolar para baixo (horizontal)"
 
 #: syneditstrconst.syns_emcwheelhorizscrollup
 msgid "Wheel scroll up (Horizontal)"
-msgstr ""
+msgstr "Roda, rolar para cima (horizontal)"
 
 #: syneditstrconst.syns_emcwheelscrolldown
 msgid "Wheel scroll down"
-msgstr ""
+msgstr "Roda, rolar para baixo"
 
 #: syneditstrconst.syns_emcwheelscrollup
 msgid "Wheel scroll up"
-msgstr ""
+msgstr "Roda, rolar para cima"
 
 #: syneditstrconst.syns_emcwheelscroll_opt
 msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
-msgstr ""
+msgstr "Velocidade, \"Definições de sistema\",Linhas,Páginas,\"Páginas (menos uma linha)\""
 
 #: syneditstrconst.syns_emcwheelvertscrolldown
 msgid "Wheel scroll down (Vertical)"
-msgstr ""
+msgstr "Roda, rolar para baixo (vertical)"
 
 #: syneditstrconst.syns_emcwheelvertscrollup
 msgid "Wheel scroll up (Vertical)"
-msgstr ""
+msgstr "Roda, rolar para cima (vertical)"
 
 #: syneditstrconst.syns_emcwheelzoomin
 msgid "Wheel zoom in"
-msgstr ""
+msgstr "Roda, mais zoom"
 
 #: syneditstrconst.syns_emcwheelzoomnorm
 msgid "Wheel zoom default"
-msgstr ""
+msgstr "Roda, zoom padrão"
 
 #: syneditstrconst.syns_emcwheelzoomout
 msgid "Wheel zoom out"
-msgstr ""
+msgstr "Roda, menos zoom"
 
 #: syneditstrconst.syns_exporterformathtml
 msgid "HTML"
@@ -675,7 +675,7 @@ msgstr "Arquivos PHP (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
 
 #: syneditstrconst.syns_filterpo
 msgid "Po Files (*.po)|*.po"
-msgstr ""
+msgstr "Arquivos PO (*.po)|*.po"
 
 #: syneditstrconst.syns_filterprogress
 msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"

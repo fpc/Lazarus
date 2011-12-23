@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 
 #: lr_const.saboutformcapt
@@ -2208,7 +2208,7 @@ msgstr "Variáveis ..."
 
 #: lr_const.sroundrectsqrcorners
 msgid "Squared corners"
-msgstr ""
+msgstr "Cantos quadrados"
 
 #: lr_const.srtffile
 msgid "Rich Text file"

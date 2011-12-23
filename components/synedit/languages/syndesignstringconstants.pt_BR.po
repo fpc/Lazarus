@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -31,7 +31,7 @@ msgstr "Resumo Linha"
 
 #: syndesignstringconstants.syndsresetmouseactions
 msgid "Reset mouse actions"
-msgstr ""
+msgstr "Redefinir ações do  \"mouse\""
 
 #: syndesignstringconstants.syndsseparator
 msgid "Separator"
