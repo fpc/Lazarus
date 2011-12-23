@@ -179,7 +179,7 @@ type
   public
     constructor CreateDefault;
     constructor Create(const ALogFont: TLogFont; AFontName: String; AGlobal: Boolean = False);
-    class function Win32FontWeightToNSFontWeight(const Win32FontWeight: Integer): Single; static;
+    class function CocoaFontWeightToWin32FontWeight(const CocoaFontWeight: Integer): Integer; static;
     property Font: NSFont read FFont;
     property Name: String read FName;
     property Size: Integer read FSize;
@@ -457,8 +457,9 @@ var
   FontName: NSString;
   Descriptor: NSFontDescriptor;
   Attributes: NSDictionary;
-  Weight: Single;
   Pool: NSAutoreleasePool;
+  Win32Weight, LoopCount: Integer;
+  CocoaWeight: NSInteger;
 begin
   inherited Create(AGlobal);
 
@@ -474,17 +475,17 @@ begin
     FSize := ALogFont.lfHeight;
 
   // create font attributes
+  Win32Weight := ALogFont.lfWeight;
   FStyle := [];
   if ALogFont.lfItalic > 0 then
     include(FStyle, cfs_Italic);
-  if ALogFont.lfWeight > FW_NORMAL then
+  if Win32Weight > FW_NORMAL then
     include(FStyle, cfs_Bold);
   if ALogFont.lfUnderline > 0 then
     include(FStyle, cfs_Underline);
   if ALogFont.lfStrikeOut > 0 then
     include(FStyle, cfs_StrikeOut);
 
-  Weight := Win32FontWeightToNSFontWeight(ALogFont.lfWeight);
 
   Attributes := NSDictionary.dictionaryWithObjectsAndKeys(
         NSStringUTF8(FName), NSFontFamilyAttribute,
@@ -492,51 +493,56 @@ begin
         nil);
 
   Descriptor := NSFontDescriptor.fontDescriptorWithFontAttributes(Attributes);
-  FFont := NSFont.fontWithDescriptor_size(Descriptor, ALogFont.lfHeight);
+  FFont := NSFont.fontWithDescriptor_textTransform(Descriptor, nil);
   // we could use NSFontTraitsAttribute to request the desired font style (Bold/Italic)
   // but in this case we may get NIL as result. This way is safer.
   if cfs_Italic in Style then
     FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSItalicFontMask);
   if cfs_Bold in Style then
     FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSBoldFontMask);
+  case ALogFont.lfPitchAndFamily and $F of
+    FIXED_PITCH, MONO_FONT:
+      FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSFixedPitchFontMask);
+    VARIABLE_PITCH:
+      FFont := NSFontManager.sharedFontManager.convertFont_toNotHaveTrait(FFont, NSFixedPitchFontMask);
+  end;
+  if Win32Weight <> FW_DONTCARE then
+  begin
+    // currently if we request the desired waight by Attributes we may get a nil font
+    // so we need to get font weight and to convert it to lighter/havier
+    LoopCount := 0;
+    repeat
+      // protection from endless loop
+      if LoopCount > 12 then
+        Exit;
+      CocoaWeight := CocoaFontWeightToWin32FontWeight(NSFontManager.sharedFontManager.weightOfFont(FFont));
+      if CocoaWeight < Win32Weight then
+        FFont := NSFontManager.sharedFontManager.convertWeight_ofFont(True, FFont)
+      else
+      if CocoaWeight > Win32Weight then
+        FFont := NSFontManager.sharedFontManager.convertWeight_ofFont(False, FFont);
+      inc(LoopCount);
+    until CocoaWeight = Win32Weight;
+  end;
   FFont.retain;
   Pool.release;
 end;
 
-class function TCocoaFont.Win32FontWeightToNSFontWeight(const Win32FontWeight: Integer): Single;
+class function TCocoaFont.CocoaFontWeightToWin32FontWeight(const CocoaFontWeight: Integer): Integer; static;
 begin
-{
-  1. ultralight
-  2. thin W1. ultralight
-  3. light, extralight W2. extralight
-  4. book W3. light
-  5. regular, plain, display, roman W4. semilight
-  6. medium W5. medium
-  7. demi, demibold
-  8. semi, semibold W6. semibold
-  9. bold W7. bold
-  10. extra, extrabold W8. extrabold
-  11. heavy, heavyface
-  12. black, super W9. ultrabold
-  13. ultra, ultrablack, fat
-  14. extrablack, obese, nord
-
-  FW_THIN 100
-  FW_EXTRALIGHT 200
-  FW_ULTRALIGHT 200
-  FW_LIGHT 300
-  FW_NORMAL 400
-  FW_REGULAR 400
-  FW_MEDIUM 500
-  FW_SEMIBOLD 600
-  FW_DEMIBOLD 600
-  FW_BOLD 700
-  FW_EXTRABOLD 800
-  FW_ULTRABOLD 800
-  FW_HEAVY 900
-  FW_BLACK 900
-}
-  Result := 0;
+  case CocoaFontWeight of
+    0, 1: Result := FW_THIN;
+    2: Result := FW_ULTRALIGHT;
+    3: Result := FW_EXTRALIGHT;
+    4: Result := FW_LIGHT;
+    5: Result := FW_NORMAL;
+    6: Result := FW_MEDIUM;
+    7, 8: Result := FW_SEMIBOLD;
+    9: Result := FW_BOLD;
+    10: Result := FW_EXTRABOLD;
+  else
+    Result := FW_HEAVY;
+  end;
 end;
 
 { TCocoaColorObject }
