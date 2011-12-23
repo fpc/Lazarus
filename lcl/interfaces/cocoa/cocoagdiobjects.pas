@@ -183,6 +183,7 @@ type
     property Font: NSFont read FFont;
     property Name: String read FName;
     property Size: Integer read FSize;
+    property Style: TCocoaFontStyle read FStyle;
   end;
 
   { TCocoaBitmap }
@@ -268,7 +269,7 @@ type
   { TCocoaTextLayout }
 
   TCocoaTextLayout = class
-  private
+  strict private
     FColor: TColor;
     FLayout: NSLayoutManager;
     FTextStorage: NSTextStorage;
@@ -302,7 +303,6 @@ type
     FText   : TCocoaTextLayout;
     FBrush  : TCocoaBrush;
     FPen    : TCocoaPen;
-    FFont   : TCocoaFont;
     FRegion : TCocoaRegion;
     FBitmap : TCocoaBitmap;
     FClipped: Boolean;
@@ -310,6 +310,7 @@ type
     FSavedDCList: TFPObjectList;
     FPenPos: TPoint;
     FSize: TSize;
+    function GetFont: TCocoaFont;
     function GetTextColor: TColor;
     procedure SetBitmap(const AValue: TCocoaBitmap);
     procedure SetBkColor(AValue: TColor);
@@ -379,7 +380,7 @@ type
     // selected GDI objects
     property Brush: TCocoaBrush read FBrush write SetBrush;
     property Pen: TCocoaPen read FPen write SetPen;
-    property Font: TCocoaFont read FFont write SetFont;
+    property Font: TCocoaFont read GetFont write SetFont;
     property Region: TCocoaRegion read FRegion write SetRegion;
     property Bitmap: TCocoaBitmap read FBitmap write SetBitmap;
   end;
@@ -444,6 +445,10 @@ type
 constructor TCocoaFont.CreateDefault;
 begin
   inherited Create(False);
+  FFont := NSFont.systemFontOfSize(0);
+  FName := NSStringToString(FFont.familyName);
+  FSize := Round(NSFont.systemFontSize);
+  FStyle := [];
 end;
 
 constructor TCocoaFont.Create(const ALogFont: TLogFont; AFontName: String;
@@ -467,11 +472,22 @@ begin
     FSize := ALogFont.lfHeight;
 
   // create font attributes
+  FStyle := [];
   Traits := 0;
   if ALogFont.lfItalic > 0 then
+  begin
     Traits := Traits or NSFontItalicTrait;
+    include(FStyle, cfs_Italic);
+  end;
   if ALogFont.lfWeight > FW_NORMAL then
+  begin
     Traits := Traits or NSFontBoldTrait;
+    include(FStyle, cfs_Bold);
+  end;
+  if ALogFont.lfUnderline > 0 then
+    include(FStyle, cfs_Underline);
+  if ALogFont.lfStrikeOut > 0 then
+    include(FStyle, cfs_StrikeOut);
 
   Weight := Win32FontWeightToNSFontWeight(ALogFont.lfWeight);
 
@@ -792,9 +808,22 @@ end;
 { TCocoaTextLayout }
 
 procedure TCocoaTextLayout.UpdateFont;
+const
+  UnderlineStyle = NSUnderlineStyleSingle or NSUnderlinePatternSolid;
+var
+  Range: NSRange;
 begin
   if Assigned(FFont) then
-    FTextStorage.addAttribute_value_range(NSFontAttributeName, FFont.Font, GetTextRange);
+  begin
+    Range := GetTextRange;
+    // apply font itself
+    FTextStorage.addAttribute_value_range(NSFontAttributeName, FFont.Font, Range);
+    // aply font attributes which are not in NSFont
+    if cfs_Underline in FFont.Style then
+      FTextStorage.addAttribute_value_range(NSUnderlineStyleAttributeName, NSNumber.numberWithInteger(UnderlineStyle), Range);
+    if cfs_Strikeout in FFont.Style then
+      FTextStorage.addAttribute_value_range(NSStrikethroughStyleAttributeName, NSNumber.numberWithInteger(UnderlineStyle), Range);
+  end;
 end;
 
 procedure TCocoaTextLayout.UpdateColor;
@@ -832,7 +861,8 @@ begin
   S.release;
   FTextStorage.addLayoutManager(FLayout);
   FLayout.release;
-  FFont := nil;
+  FFont := DefaultFont;
+  FFont.AddRef;
 end;
 
 destructor TCocoaTextLayout.Destroy;
@@ -846,11 +876,7 @@ procedure TCocoaTextLayout.SetFont(AFont: TCocoaFont);
 begin
   if FFont <> AFont then
   begin
-    if Assigned(FFont) then
-      FFont.Release;
     FFont := AFont;
-    if Assigned(FFont) then
-      FFont.AddRef;
     FTextStorage.beginEditing;
     updateFont;
     FTextStorage.endEditing;
@@ -972,6 +998,11 @@ begin
   Result := FText.ForegroundColor;
 end;
 
+function TCocoaContext.GetFont: TCocoaFont;
+begin
+  Result := FText.Font;
+end;
+
 procedure TCocoaContext.SetBkColor(AValue: TColor);
 begin
   AValue := TColor(ColorToRGB(AValue));
@@ -999,11 +1030,7 @@ end;
 
 procedure TCocoaContext.SetFont(const AValue: TCocoaFont);
 begin
-  if FFont <> AValue then
-  begin
-    FFont := AValue;
-
-  end;
+  FText.Font := AValue;
 end;
 
 procedure TCocoaContext.SetPen(const AValue: TCocoaPen);
@@ -1043,7 +1070,7 @@ function TCocoaContext.SaveDCData: TCocoaDCData;
 begin
   Result := TCocoaDCData.Create;
 
-  Result.CurrentFont := FFont;
+  Result.CurrentFont := Font;
   Result.CurrentBrush := FBrush;
   Result.CurrentPen := FPen;
   Result.CurrentRegion := FRegion;
@@ -1060,38 +1087,38 @@ end;
 
 procedure TCocoaContext.RestoreDCData(const AData: TCocoaDCData);
 begin
-  if (FFont <> AData.CurrentFont) then
+  if (Font <> AData.CurrentFont) then
   begin
-    if (FFont <> nil) then
-      FFont.Release;
-    if (AData.CurrentFont <> nil) then
+    if Assigned(Font) then
+      Font.Release;
+    if Assigned(AData.CurrentFont) then
       AData.CurrentFont.AddRef;
   end;
-  FFont := AData.CurrentFont;
+  Font := AData.CurrentFont;
 
   if (FBrush <> AData.CurrentBrush) then
   begin
-    if (FBrush <> nil) then
+    if Assigned(FBrush) then
       FBrush.Release;
-    if (AData.CurrentBrush <> nil) then
+    if Assigned(AData.CurrentBrush) then
       AData.CurrentBrush.AddRef;
   end;
   FBrush := AData.CurrentBrush;
 
   if (FPen <> AData.CurrentPen) then
   begin
-    if (FPen <> nil) then
+    if Assigned(FPen) then
       FPen.Release;
-    if (AData.CurrentPen <> nil) then
+    if Assigned(AData.CurrentPen) then
       AData.CurrentPen.AddRef;
   end;
   FPen := AData.CurrentPen;
 
   if (FRegion <> AData.CurrentRegion) then
   begin
-    if (FRegion <> nil) then
+    if Assigned(FRegion) then
       FRegion.Release;
-    if (AData.CurrentRegion <> nil) then
+    if Assigned(AData.CurrentRegion) then
       AData.CurrentRegion.AddRef;
   end;
   FRegion := AData.CurrentRegion;
@@ -1116,8 +1143,6 @@ begin
   FBrush.AddRef;
   FPen := DefaultPen;
   FPen.AddRef;
-  FFont := DefaultFont;
-  FFont.AddRef;
   FRegion := TCocoaRegion.CreateDefault;
   FRegion.AddRef;
   FClipRegion := FRegion;
@@ -1133,8 +1158,6 @@ begin
     FBrush.Release;
   if Assigned(FPen) then
     FPen.Release;
-  if Assigned(FFont) then
-    FFont.Release;
   if Assigned(FRegion) then
     FRegion.Release;
   FClipRegion.Free;
