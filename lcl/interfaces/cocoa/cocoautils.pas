@@ -60,6 +60,7 @@ function GetNSControlValue(c: NSControl): String; inline;
 procedure ColorToRGBFloat(cl: TColorRef; var r,g,b: Single); inline;
 function RGBToColorFloat(r,g,b: Single): TColorRef; inline;
 function NSColorToRGB(const Color: NSColor): TColorRef; inline;
+function ColorToNSColor(const Color: TColorRef): NSColor; inline;
 
 implementation
 
@@ -82,6 +83,14 @@ function NSColorToRGB(const Color: NSColor): TColorRef; inline;
 begin
   with Color do
     Result := RGBToColorFloat(redComponent, greenComponent, blueComponent);
+end;
+
+function ColorToNSColor(const Color: TColorRef): NSColor; inline;
+begin
+  Result := NSColor.colorWithCalibratedRed_green_blue_alpha(
+    (Color and $FF) / $FF,
+    ((Color shr 8) and $FF) / $FF,
+    ((Color shr 16) and $FF) / $FF, 1)
 end;
 
 function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): String;

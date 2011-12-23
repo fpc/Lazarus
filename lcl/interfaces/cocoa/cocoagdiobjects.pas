@@ -260,7 +260,6 @@ type
     BkBrush: TCocoaBrush;
 
     TextColor: TColor;
-    TextBrush: TCocoaBrush;
 
     ROP2: Integer;
     PenPos: TPoint;
@@ -270,19 +269,26 @@ type
 
   TCocoaTextLayout = class
   private
+    FColor: TColor;
     FLayout: NSLayoutManager;
     FTextStorage: NSTextStorage;
     FTextContainer: NSTextContainer;
     FText: String;
-    FFont: NSFont;
+    FFont: TCocoaFont;
+    procedure SetColor(AValue: TColor);
+    procedure SetFont(AFont: TCocoaFont);
     procedure UpdateFont;
+    procedure UpdateColor;
+    function GetTextRange: NSRange;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure SetFont(AFont: TCocoaFont);
     procedure SetText(UTF8Text: PChar; ByteSize: Integer);
     function GetSize: TSize;
     procedure Draw(ctx: NSGraphicsContext; X, Y: Integer; DX: PInteger);
+
+    property Font: TCocoaFont read FFont write SetFont;
+    property ForegroundColor: TColor read FColor write SetColor;
   end;
 
   { TCocoaContext }
@@ -292,8 +298,6 @@ type
     FBkBrush: TCocoaBrush;
     FBkColor: TColor;
     FBkMode: Integer;
-    FTextBrush: TCocoaBrush;
-    FTextColor: TColor;
     FROP2: Integer;
     FText   : TCocoaTextLayout;
     FBrush  : TCocoaBrush;
@@ -306,6 +310,7 @@ type
     FSavedDCList: TFPObjectList;
     FPenPos: TPoint;
     FSize: TSize;
+    function GetTextColor: TColor;
     procedure SetBitmap(const AValue: TCocoaBitmap);
     procedure SetBkColor(AValue: TColor);
     procedure SetBkMode(AValue: Integer);
@@ -369,8 +374,7 @@ type
     property BkMode: Integer read FBkMode write SetBkMode;
     property BkBrush: TCocoaBrush read FBkBrush;
 
-    property TextColor: TColor read FTextColor write SetTextColor;
-    property TextBrush: TCocoaBrush read FTextBrush;
+    property TextColor: TColor read GetTextColor write SetTextColor;
 
     // selected GDI objects
     property Brush: TCocoaBrush read FBrush write SetBrush;
@@ -788,13 +792,31 @@ end;
 { TCocoaTextLayout }
 
 procedure TCocoaTextLayout.UpdateFont;
-var
-  Range: NSRange;
 begin
-  Range.location := 0;
-  Range.length := FTextStorage.length;
-  FTextStorage.addAttribute_value_range(NSFontAttributeName, FFont, Range);
-  //FTextStorage.addAttribute_value_range(NSForegroundColorAttributeName, NSColor.blueColor, Range);
+  if Assigned(FFont) then
+    FTextStorage.addAttribute_value_range(NSFontAttributeName, FFont.Font, GetTextRange);
+end;
+
+procedure TCocoaTextLayout.UpdateColor;
+begin
+  FTextStorage.addAttribute_value_range(NSForegroundColorAttributeName, ColorToNSColor(FColor), GetTextRange);
+end;
+
+function TCocoaTextLayout.GetTextRange: NSRange;
+begin
+  Result.location := 0;
+  Result.length := FTextStorage.length;
+end;
+
+procedure TCocoaTextLayout.SetColor(AValue: TColor);
+begin
+  if FColor <> AValue then
+  begin
+    FColor := AValue;
+    FTextStorage.beginEditing;
+    UpdateColor;
+    FTextStorage.endEditing;
+  end;
 end;
 
 constructor TCocoaTextLayout.Create;
@@ -810,7 +832,7 @@ begin
   S.release;
   FTextStorage.addLayoutManager(FLayout);
   FLayout.release;
-  FFont := NSFont.systemFontOfSize(0);
+  FFont := nil;
 end;
 
 destructor TCocoaTextLayout.Destroy;
@@ -822,11 +844,13 @@ end;
 
 procedure TCocoaTextLayout.SetFont(AFont: TCocoaFont);
 begin
-  if FFont <> AFont.Font then
+  if FFont <> AFont then
   begin
-    FFont.release;
-    FFont := AFont.Font;
-    FFont.retain;
+    if Assigned(FFont) then
+      FFont.Release;
+    FFont := AFont;
+    if Assigned(FFont) then
+      FFont.AddRef;
     FTextStorage.beginEditing;
     updateFont;
     FTextStorage.endEditing;
@@ -837,7 +861,6 @@ procedure TCocoaTextLayout.SetText(UTF8Text: PChar; ByteSize: Integer);
 var
   NewText: String;
   S: NSString;
-  Range: NSRange;
 begin
   if ByteSize >= 0 then
     System.SetString(NewText, UTF8Text, ByteSize)
@@ -847,11 +870,10 @@ begin
   begin
     FText := NewText;
     S := NSStringUTF8(NewText);
-    Range.location := 0;
-    Range.length := FTextStorage.length;
     FTextStorage.beginEditing;
-    FTextStorage.replaceCharactersInRange_withString(Range, S);
+    FTextStorage.replaceCharactersInRange_withString(GetTextRange, S);
     updateFont;
+    updateColor;
     FTextStorage.endEditing;
     S.release;
   end;
@@ -945,6 +967,11 @@ begin
   end;
 end;
 
+function TCocoaContext.GetTextColor: TColor;
+begin
+  Result := FText.ForegroundColor;
+end;
+
 procedure TCocoaContext.SetBkColor(AValue: TColor);
 begin
   AValue := TColor(ColorToRGB(AValue));
@@ -1009,9 +1036,7 @@ end;
 
 procedure TCocoaContext.SetTextColor(AValue: TColor);
 begin
-  AValue := TColor(ColorToRGB(AValue));
-  FTextColor := AValue;
-  TextBrush.SetColor(AValue, True);
+  FText.ForegroundColor := TColor(ColorToRGB(AValue));
 end;
 
 function TCocoaContext.SaveDCData: TCocoaDCData;
@@ -1027,8 +1052,7 @@ begin
   Result.BkMode := FBkMode;
   Result.BkBrush := FBkBrush;
 
-  Result.TextColor := FTextColor;
-  Result.TextBrush := FTextBrush;
+  Result.TextColor := TextColor;
 
   Result.ROP2 := FROP2;
   Result.PenPos := FPenPos;
@@ -1076,8 +1100,7 @@ begin
   FBkMode := AData.BkMode;
   FBkBrush := AData.BkBrush;
 
-  FTextColor := AData.TextColor;
-  FTextBrush := AData.TextBrush;
+  TextColor := AData.TextColor;
 
   FROP2 := AData.ROP2;
   FPenPos := AData.PenPos;
@@ -1088,7 +1111,6 @@ begin
   inherited Create;
 
   FBkBrush := TCocoaBrush.CreateDefault;
-  FTextBrush := TCocoaBrush.CreateDefault;
 
   FBrush := DefaultBrush;
   FBrush.AddRef;
@@ -1106,7 +1128,6 @@ end;
 destructor TCocoaContext.Destroy;
 begin
   FBkBrush.Free;
-  FTextBrush.Free;
 
   if Assigned(FBrush) then
     FBrush.Release;
@@ -1350,11 +1371,8 @@ begin
   ctx.saveGraphicsState;
 
   // check flipped state
-  FTextBrush.Apply(Self, False);
   FText.SetText(UTF8Chars, Count);
   FText.Draw(ctx, X, Y, CharsDelta);
-
-  if Assigned(FBrush) then FBrush.Apply(Self);
 
   ctx.restoreGraphicsState;
 end;
