@@ -485,16 +485,12 @@ procedure TWinPrinter.DoResetPrintersList;
 var i   : Integer;
     Obj : TObject;
 begin
-  if Printers.Count>0 then
+  for i:=0 to Printers.Count-1 do
   begin
-    for i:=0 to Printers.Count-1 do
-    begin
-      Obj:=Printers.Objects[i];
-      Printers.Objects[i]:=nil;
-      FreeAndNil(Obj);
-    end;
+    Obj:=Printers.Objects[i];
+    Printers.Objects[i]:=nil;
+    Obj.Free;
   end;
-  
   inherited DoResetPrintersList;
 end;
 
@@ -688,11 +684,12 @@ function TWinPrinter.DoGetCopies: Integer;
 var
   dm: PDeviceMode;
 begin
-  Result:=inherited DoGetCopies;
   if GetCurrentDevMode(dm) then begin
     if dm^.dmCopies<>0 then
       result := dm^.dmCopies;
-  end;
+  end
+  else
+    Result:=inherited DoGetCopies;
 end;
 
 procedure TWinPrinter.DoSetCopies(aValue: Integer);
@@ -735,7 +732,6 @@ var
   Size: Dword;
   InfoPrt: Pointer;
 begin
-  Result := inherited GetPrinterType;
   Result := ptLocal;
   //On Win9X all printers are local
   if Win32Platform <> VER_PLATFORM_WIN32_NT then Exit;
@@ -761,7 +757,6 @@ var
   Size, Status, Jobs : DWord;
   InfoPrt: Pointer;
 begin
-  Result := inherited DoGetPrinterState;
   Result := psNoDefine;
   GetPrinter(fPrinterHandle, 2, nil, 0, @Size);
   GetMem(InfoPrt,Size);
@@ -803,7 +798,6 @@ end;
 
 function TWinPrinter.GetCanPrint: Boolean;
 begin
- Result := inherited GetCanPrint;
  Result := (DoGetPrinterState <> psStopped);
 end;
 
@@ -812,14 +806,15 @@ var
  pDev : TPrinterDevice;
   Count : Integer;
 begin
- Result := inherited GetCanRenderCopies;
   if (Printers.Count>0) then
   begin
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
     Count := DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),
                                 DC_COPIES,nil,PDev.DevMode);
     Result := (Count>1);
-  end;
+  end
+  else
+    Result := inherited GetCanRenderCopies;
 end;
 
 procedure TWinPrinter.AdvancedProperties;
