@@ -457,10 +457,12 @@ var
   FontName: NSString;
   Descriptor: NSFontDescriptor;
   Attributes: NSDictionary;
-  Traits: NSFontSymbolicTraits;
   Weight: Single;
+  Pool: NSAutoreleasePool;
 begin
   inherited Create(AGlobal);
+
+  Pool := NSAutoreleasePool.alloc.init;
 
   FName := AFontName;
   if FName = 'default' then
@@ -473,17 +475,10 @@ begin
 
   // create font attributes
   FStyle := [];
-  Traits := 0;
   if ALogFont.lfItalic > 0 then
-  begin
-    Traits := Traits or NSFontItalicTrait;
     include(FStyle, cfs_Italic);
-  end;
   if ALogFont.lfWeight > FW_NORMAL then
-  begin
-    Traits := Traits or NSFontBoldTrait;
     include(FStyle, cfs_Bold);
-  end;
   if ALogFont.lfUnderline > 0 then
     include(FStyle, cfs_Underline);
   if ALogFont.lfStrikeOut > 0 then
@@ -494,12 +489,18 @@ begin
   Attributes := NSDictionary.dictionaryWithObjectsAndKeys(
         NSStringUTF8(FName), NSFontFamilyAttribute,
         NSNumber.numberWithFloat(ALogFont.lfHeight), NSFontSizeAttribute,
-        NSNumber.numberWithUnsignedInt(Traits), NSFontSymbolicTrait,
-        NSNumber.numberWithFloat(Weight), NSFontWeightTrait,
         nil);
 
   Descriptor := NSFontDescriptor.fontDescriptorWithFontAttributes(Attributes);
   FFont := NSFont.fontWithDescriptor_size(Descriptor, ALogFont.lfHeight);
+  // we could use NSFontTraitsAttribute to request the desired font style (Bold/Italic)
+  // but in this case we may get NIL as result. This way is safer.
+  if cfs_Italic in Style then
+    FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSItalicFontMask);
+  if cfs_Bold in Style then
+    FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSBoldFontMask);
+  FFont.retain;
+  Pool.release;
 end;
 
 class function TCocoaFont.Win32FontWeightToNSFontWeight(const Win32FontWeight: Integer): Single;
