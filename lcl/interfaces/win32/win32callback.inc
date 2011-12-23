@@ -1107,7 +1107,7 @@ begin
     WM_IME_ENDCOMPOSITION:
     begin
       {IME Windows the composition has finished}
-      if Assigned(WindowInfo) then WindowInfo^.IMEComposed:=True;    
+      WindowInfo^.IMEComposed:=True;
     end;
     WM_CANCELMODE:
     begin
@@ -1582,7 +1582,7 @@ begin
         CharCode := Word(WParam);
         Result := 0;
       end;
-      if Assigned(WindowInfo) then WindowInfo^.IMEComposed:=False;
+      WindowInfo^.IMEComposed:=False;
       WinProcess := false;
     end;
     WM_KEYUP:
@@ -1597,7 +1597,8 @@ begin
         Result := 0;
       end;
       WinProcess := false;
-      if Assigned(WindowInfo) and WindowInfo^.IMEComposed then LMKey.Msg:=LM_NULL;
+      if WindowInfo^.IMEComposed then
+        LMKey.Msg:=LM_NULL;
     end;
     WM_KILLFOCUS:
     begin
@@ -1889,7 +1890,7 @@ begin
 {$ifdef MSG_DEBUG}
       DebugLn([MessageStackDepth, 'Notify code: ', PNMHdr(LParam)^.code]);
 {$endif}
-      if Assigned(WindowInfo) and Assigned(WindowInfo^.ParentMsgHandler) then
+      if Assigned(WindowInfo^.ParentMsgHandler) then
       begin
         LMNotify.Result := 0;
         if WindowInfo^.ParentMsgHandler(WindowInfo^.WinControl,
