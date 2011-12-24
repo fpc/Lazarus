@@ -1123,11 +1123,7 @@ begin
   g_object_unref(im_context);
   im_context:=nil;
   im_context_widget:=nil;
-  if StayOnTopList <> nil then
-  begin
-    StayOnTopList.Free;
-    StayOnTopList := nil;
-  end;
+  FreeAndNil(StayOnTopList);
   Gtk2Destroy;
   {$IFDEF HASX}
   if FDesktopWidget <> nil then
@@ -1302,8 +1298,7 @@ begin
       end;
     end;
   end;
-  StayOnTopList.Free;
-  StayOnTopList := nil;
+  FreeAndNil(StayOnTopList);
 end;
 
 
@@ -1604,8 +1599,7 @@ procedure TGtk2WidgetSet.FreeAllStyles;
 begin
   If Assigned(Styles) then begin
     ReleaseAllStyles;
-    Styles.Free;
-    Styles:=nil;
+    FreeAndNil(Styles);
   end;
 end;
 
