@@ -32,7 +32,6 @@ end;
 
 procedure TDBLookupComboBox.UpdateData(Sender: TObject);
 begin
-  //FLookup.UpdateData(Text);
   if ItemIndex <> -1 then
     FLookup.UpdateData(ItemIndex);
 end;
@@ -53,6 +52,12 @@ begin
   ItemIndex := i;
   if i = -1 then
     Text := '';
+end;
+
+procedure TDBLookupComboBox.Select;
+begin
+  FDataLink.Modified;
+  inherited Select;
 end;
 
 procedure TDBLookupComboBox.KeyDown(var Key: Word; Shift: TShiftState);
@@ -159,5 +164,12 @@ begin
     if i = -1 then
       Text := '';
   end;
+end;
+
+procedure TDBLookupComboBox.CloseUp;
+begin
+  if Style = csDropDownList then
+    FDataLink.UpdateRecord;
+  inherited CloseUp;
 end;
 

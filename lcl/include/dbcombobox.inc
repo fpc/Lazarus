@@ -62,3 +62,13 @@ begin
         Key:=#0;
   end;//case
 end;
+
+procedure TDBComboBox.Select;
+begin
+  //avoid reseting text when calling select
+  FDataLink.OnDataChange := nil;
+  FDataLink.Edit;
+  FDataLink.Modified;
+  FDataLink.OnDataChange := @DataChange;
+  inherited Select;
+end;
