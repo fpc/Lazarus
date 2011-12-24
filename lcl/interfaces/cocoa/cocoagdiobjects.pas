@@ -1034,6 +1034,8 @@ end;
 
 procedure TCocoaContext.SetBkColor(AValue: TColor);
 begin
+  if AValue = clBtnFace then
+    AValue := AValue;
   AValue := TColor(ColorToRGB(AValue));
   FBkColor := AValue;
   FBkBrush.SetColor(AValue, BkMode = OPAQUE);
