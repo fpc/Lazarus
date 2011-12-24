@@ -4931,7 +4931,7 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
   begin
     Result:=(TheWidget<>nil)
       and (PGtkWidget(AWinControl.Handle)<>TheWidget)
-      and (GetMainWidget(TheWidget)=nil);
+      and (gtk_object_get_data(PGtkObject(TheWidget), 'Main')=nil);
   end;
 
   procedure ConnectSignals(TheWidget: PGtkWidget); forward;
