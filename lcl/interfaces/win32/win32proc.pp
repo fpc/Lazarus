@@ -626,8 +626,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  function GetLCLClientOriginOffset(Sender: TObject;
-    var LeftOffset, TopOffset: integer): boolean;
+  function GetLCLClientBoundsOffset(Sender: TObject; out ORect: TRect): boolean;
 
   Returns the difference between the client origin of a win32 handle
   and the definition of the LCL counterpart.
@@ -639,19 +638,25 @@ end;
 -------------------------------------------------------------------------------}
 function GetLCLClientBoundsOffset(Sender: TObject; out ORect: TRect): boolean;
 var
-  TM: TextMetricA;
+  TM: Windows.TextMetric;
   DC: HDC;
   Handle: HWND;
-  TheWinControl: TWinControl;
+  TheWinControl: TWinControl absolute Sender;
   ARect: TRect;
 begin
   Result := False;
-  if (Sender = nil) or (not (Sender is TWinControl)) then exit;
-  TheWinControl := TWinControl(Sender);
+  if not (Sender is TWinControl) then exit;
   if not TheWinControl.HandleAllocated then exit;
   Handle := TheWinControl.Handle;
   FillChar(ORect, SizeOf(ORect), 0);
   if TheWinControl is TScrollingWinControl then
+  begin
+    {$ifdef RedirectDestroyMessages}
+    with TScrollingWinControl(TheWinControl) do
+    begin
+      OffsetRect(ORect, -HorzScrollBar.Position, -VertScrollBar.Position);
+    end;
+    {$else}
     with TScrollingWinControl(TheWinControl) do
     begin
       if HorzScrollBar <> nil then
@@ -667,6 +672,8 @@ begin
         ORect.Bottom := -VertScrollBar.Position;
       end;
     end;
+    {$endif}
+  end else
   if (TheWinControl is TCustomGroupBox) then
   begin
     // The client area of a groupbox under winapi is the whole size, including
@@ -674,7 +681,7 @@ begin
     // -> Adjust the position
     // add the upper frame with the caption
     DC := Windows.GetDC(Handle);
-    GetTextMetrics(DC, TM);
+    Windows.GetTextMetrics(DC, TM);
     ORect.Top := TM.TMHeight;
     Windows.ReleaseDC(Handle, DC);
     // add the left, right and bottom frame borders
