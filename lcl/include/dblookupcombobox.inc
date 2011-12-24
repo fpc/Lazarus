@@ -31,9 +31,15 @@ begin
 end;
 
 procedure TDBLookupComboBox.UpdateData(Sender: TObject);
+var
+  i: Integer;
 begin
-  if ItemIndex <> -1 then
-    FLookup.UpdateData(ItemIndex);
+  // combo that has edit control may have unreliable itemindex like bug 20950
+  if Style <> csDropDownList then
+    ItemIndex := Items.IndexOf(Text);
+  i := ItemIndex;
+  if i <> -1 then
+    FLookup.UpdateData(i);
 end;
 
 procedure TDBLookupComboBox.ActiveChange(Sender: TObject);
