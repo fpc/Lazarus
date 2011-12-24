@@ -52,7 +52,7 @@ Type
     PWinControl: TWinControl; // control to paint for
     AWinControl: TWinControl; // control associated with (for buddy controls)
     List: TStrings;
-    StayOnTopList: TList;     // a list of windows that were normalized when showing modal
+    StayOnTopList: TFPList;   // a list of windows that were normalized when showing modal
     needParentPaint: boolean; // has a tabpage as parent, and is winxp themed
     isTabPage: boolean;       // is window of tabpage
     isComboEdit: boolean;     // is buddy of combobox, the edit control
@@ -124,14 +124,14 @@ type
   PStayOnTopWindowsInfo = ^TStayOnTopWindowsInfo;
   TStayOnTopWindowsInfo = record
     AppHandle: HWND;
+    StayOnTopList: TFPList;
     SystemTopAlso: Boolean;
-    StayOnTopList: TList;
   end;
 
   PPopupOwnersWindowInfo = ^TPopupOwnersWindowInfo;
   TPopupOwnersWindowInfo = record
     AppHandle: HWND;
-    OwnersList: TList;
+    OwnersList: TFPList;
   end;
   
   TWindowsVersion = (
@@ -153,7 +153,7 @@ type
 var
   DefaultWindowInfo: TWin32WindowInfo;
   WindowInfoAtom: ATOM;
-  ChangedMenus: TList; // list of HWNDs which menus needs to be redrawn
+  ChangedMenus: TFPList; // list of HWNDs which menus needs to be redrawn
   UnicodeEnabledOS: Boolean = False;
 
   WindowsVersion: TWindowsVersion = wvUnknown;
@@ -173,7 +173,7 @@ uses
 
 var
   InRemoveStayOnTopFlags: Integer = 0;
-  PopupOwnersList: TList = nil;
+  PopupOwnersList: TFPList = nil;
 {------------------------------------------------------------------------------
   function: WM_To_String
   Params: WM_Message - a WinDows message
@@ -830,7 +830,7 @@ begin
     New(StayOnTopWindowsInfo);
     StayOnTopWindowsInfo^.AppHandle := AppHandle;
     StayOnTopWindowsInfo^.SystemTopAlso := ASystemTopAlso;
-    StayOnTopWindowsInfo^.StayOnTopList := TList.Create;
+    StayOnTopWindowsInfo^.StayOnTopList := TFPList.Create;
     WindowInfo := GetWin32WindowInfo(AppHandle);
     WindowInfo^.StayOnTopList := StayOnTopWindowsInfo^.StayOnTopList;
     EnumThreadWindows(GetWindowThreadProcessId(AppHandle, nil),
@@ -882,7 +882,7 @@ var
 begin
   if not Assigned(PopupOwnersList) then
   begin
-    PopupOwnersList := TList.Create;
+    PopupOwnersList := TFPList.Create;
     New(Info);
     try
       Info^.AppHandle := AppHandle;
@@ -1579,7 +1579,7 @@ begin
   FillChar(DefaultWindowInfo, sizeof(DefaultWindowInfo), 0);
   DefaultWindowInfo.DrawItemIndex := -1;
   WindowInfoAtom := Windows.GlobalAddAtom('WindowInfo');
-  ChangedMenus := TList.Create;
+  ChangedMenus := TFPList.Create;
 
   {$ifdef WindowsUnicodeSupport}
   UnicodeEnabledOS := (Win32Platform = VER_PLATFORM_WIN32_NT);
