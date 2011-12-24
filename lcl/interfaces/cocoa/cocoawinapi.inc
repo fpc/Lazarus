@@ -417,12 +417,12 @@ end;
 function TCocoaWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
-  ctx : TCocoaContext;
+  ctx: TCocoaContext;
 begin
-  ctx:=CheckDC(DC);
-  Result:=Assigned(ctx);
-  if not Assigned(ctx) then Exit;
-  ctx.TextOut(X,Y, Str, Count, Dx);
+  ctx := CheckDC(DC);
+  Result := Assigned(ctx);
+  if Assigned(ctx) then
+    ctx.TextOut(X, Y, Options, Rect, Str, Count, Dx);
 end;
 
 function TCocoaWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
@@ -1670,9 +1670,9 @@ begin
   {$ENDIF}
 end;
 
-function TCocoaWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
+function TCocoaWidgetSet.TextOut(DC: HDC; X,Y: Integer; Str: Pchar; Count: Integer) : Boolean;
 begin
-  Result:=ExtTextOut(DC, X, Y, 0, nil, Str, Count, nil);
+  Result := ExtTextOut(DC, X, Y, 0, nil, Str, Count, nil);
 end;
 
 function TCocoaWidgetSet.SaveDC(DC: HDC): Integer;

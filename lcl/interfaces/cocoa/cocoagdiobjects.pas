@@ -270,13 +270,15 @@ type
 
   TCocoaTextLayout = class
   strict private
-    FColor: TColor;
+    FBackgroundColor: TColor;
+    FForegroundColor: TColor;
     FLayout: NSLayoutManager;
     FTextStorage: NSTextStorage;
     FTextContainer: NSTextContainer;
     FText: String;
     FFont: TCocoaFont;
-    procedure SetColor(AValue: TColor);
+    procedure SetBackgoundColor(AValue: TColor);
+    procedure SetForegoundColor(AValue: TColor);
     procedure SetFont(AFont: TCocoaFont);
     procedure UpdateFont;
     procedure UpdateColor;
@@ -286,10 +288,11 @@ type
     destructor Destroy; override;
     procedure SetText(UTF8Text: PChar; ByteSize: Integer);
     function GetSize: TSize;
-    procedure Draw(ctx: NSGraphicsContext; X, Y: Integer; DX: PInteger);
+    procedure Draw(ctx: NSGraphicsContext; X, Y: Integer; FillBackground: Boolean; DX: PInteger);
 
     property Font: TCocoaFont read FFont write SetFont;
-    property ForegroundColor: TColor read FColor write SetColor;
+    property BackgroundColor: TColor read FBackgroundColor write SetBackgoundColor;
+    property ForegroundColor: TColor read FForegroundColor write SetForegoundColor;
   end;
 
   { TCocoaContext }
@@ -345,7 +348,7 @@ type
     procedure Polyline(const Points: array of TPoint; NumPts: Integer);
     procedure Rectangle(X1, Y1, X2, Y2: Integer; FillRect: Boolean; UseBrush: TCocoaBrush);
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
-    procedure TextOut(X,Y: Integer; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
+    procedure TextOut(X, Y: Integer; Options: Longint; Rect: PRect; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
     procedure Frame(const R: TRect);
     procedure Frame3d(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
     procedure FrameRect(const ARect: TRect; const ABrush: TCocoaBrush);
@@ -835,7 +838,8 @@ end;
 
 procedure TCocoaTextLayout.UpdateColor;
 begin
-  FTextStorage.addAttribute_value_range(NSForegroundColorAttributeName, ColorToNSColor(FColor), GetTextRange);
+  FTextStorage.addAttribute_value_range(NSForegroundColorAttributeName, ColorToNSColor(ForegroundColor), GetTextRange);
+  FTextStorage.addAttribute_value_range(NSBackgroundColorAttributeName, ColorToNSColor(BackgroundColor), GetTextRange);
 end;
 
 function TCocoaTextLayout.GetTextRange: NSRange;
@@ -844,11 +848,22 @@ begin
   Result.length := FTextStorage.length;
 end;
 
-procedure TCocoaTextLayout.SetColor(AValue: TColor);
+procedure TCocoaTextLayout.SetForegoundColor(AValue: TColor);
 begin
-  if FColor <> AValue then
+  if FForegroundColor <> AValue then
   begin
-    FColor := AValue;
+    FForegroundColor := AValue;
+    FTextStorage.beginEditing;
+    UpdateColor;
+    FTextStorage.endEditing;
+  end;
+end;
+
+procedure TCocoaTextLayout.SetBackgoundColor(AValue: TColor);
+begin
+  if FBackgroundColor <> AValue then
+  begin
+    FBackgroundColor := AValue;
     FTextStorage.beginEditing;
     UpdateColor;
     FTextStorage.endEditing;
@@ -870,6 +885,9 @@ begin
   FLayout.release;
   FFont := DefaultFont;
   FFont.AddRef;
+  FText := '';
+  FBackgroundColor := clWhite;
+  FForegroundColor := clBlack;
 end;
 
 destructor TCocoaTextLayout.Destroy;
@@ -924,7 +942,7 @@ begin
   end;
 end;
 
-procedure TCocoaTextLayout.Draw(ctx: NSGraphicsContext; X, Y: Integer; DX: PInteger);
+procedure TCocoaTextLayout.Draw(ctx: NSGraphicsContext; X, Y: Integer; FillBackground: Boolean; DX: PInteger);
 var
   Range: NSRange;
   Pt: NSPoint;
@@ -939,6 +957,8 @@ begin
   Range := FLayout.glyphRangeForTextContainer(FTextContainer);
   Pt.x := X;
   Pt.y := Y;
+  if FillBackground then
+    FLayout.drawBackgroundForGlyphRange_atPoint(Range, Pt);
   FLayout.drawGlyphsForGlyphRange_atPoint(Range, Pt);
 end;
 
@@ -1359,7 +1379,7 @@ begin
   CGContextStrokePath(cg);
 end;
 
-procedure TCocoaContext.Rectangle(X1,Y1,X2,Y2:Integer;FillRect:Boolean; UseBrush: TCocoaBrush);
+procedure TCocoaContext.Rectangle(X1, Y1, X2, Y2: Integer; FillRect: Boolean; UseBrush: TCocoaBrush);
 var
   cg: CGContextRef;
 begin
@@ -1396,13 +1416,30 @@ begin
   CGContextDrawPath(CGContext, kCGPathFillStroke);
 end;
 
-procedure TCocoaContext.TextOut(X, Y: Integer; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
+procedure TCocoaContext.TextOut(X, Y: Integer; Options: Longint; Rect: PRect; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
+var
+  BrushSolid, FillBg: Boolean;
 begin
   ctx.saveGraphicsState;
 
-  // check flipped state
+  if Assigned(Rect) then
+  begin
+    // fill background
+    if (Options and ETO_OPAQUE) <> 0 then
+    begin
+      BrushSolid := BkBrush.Solid;
+      BkBrush.Solid := True;
+      with Rect^ do
+        Rectangle(Left, Top, Right, Bottom, True, BkBrush);
+      BkBrush.Solid := BrushSolid;
+    end;
+  end;
+
+  FillBg := not Assigned(Rect) and ((Options and ETO_OPAQUE) <> 0);
+  if FillBg then
+    FText.BackgroundColor := BkBrush.ColorRef;
   FText.SetText(UTF8Chars, Count);
-  FText.Draw(ctx, X, Y, CharsDelta);
+  FText.Draw(ctx, X, Y, FillBg, CharsDelta);
 
   ctx.restoreGraphicsState;
 end;
