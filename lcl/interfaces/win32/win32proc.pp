@@ -53,18 +53,18 @@ Type
     AWinControl: TWinControl; // control associated with (for buddy controls)
     List: TStrings;
     StayOnTopList: TFPList;   // a list of windows that were normalized when showing modal
+    MaxLength: integer;
+    MouseX, MouseY: smallint; // noticing spurious WM_MOUSEMOVE messages
+    DispInfoTextA: array [0..LV_DISP_INFO_COUNT-1] of AnsiString; // buffer for ListView LVN_GETDISPINFO notification
+    DispInfoTextW: array [0..LV_DISP_INFO_COUNT-1] of WideString; // it's recommended to keep buffer unchanged
+    DispInfoIndex: Integer;                    // between 2 calls of LVN_GETDISPINFO
+    DrawItemIndex: integer;   // in case of listbox, when handling WM_DRAWITEM
+    DrawItemSelected: boolean;// whether this item is selected LB_GETSEL not uptodate yet
     needParentPaint: boolean; // has a tabpage as parent, and is winxp themed
     isTabPage: boolean;       // is window of tabpage
     isComboEdit: boolean;     // is buddy of combobox, the edit control
     isChildEdit: boolean;     // is buddy edit of a control
     ThemedCustomDraw: boolean;// controls needs themed drawing in wm_notify/nm_customdraw
-    MaxLength: integer;
-    DrawItemIndex: integer;   // in case of listbox, when handling WM_DRAWITEM
-    DrawItemSelected: boolean;// whether this item is selected LB_GETSEL not uptodate yet
-    MouseX, MouseY: smallint; // noticing spurious WM_MOUSEMOVE messages
-    DispInfoTextA: array [0..LV_DISP_INFO_COUNT-1] of AnsiString; // buffer for ListView LVN_GETDISPINFO notification
-    DispInfoTextW: array [0..LV_DISP_INFO_COUNT-1] of WideString; // it's recommended to keep buffer unchanged
-    DispInfoIndex: Integer;                    // between 2 calls of LVN_GETDISPINFO  
     IMEComposed: Boolean;
     case integer of
       0: (spinValue: Double);
