@@ -553,38 +553,34 @@ end;
   Returns the Window handle of the given object, 0 if no object available
  ------------------------------------------------------------------------------}
 function ObjectToHWND(const AObject: TObject): HWND;
-var
-  Handle: HWND;
 begin
-  Handle := 0;
+  Result := 0;
   if not assigned(AObject) then
     Assert (False, 'TRACE:[ObjectToHWND] Object not assigned')
   else
   if (AObject is TWinControl) then
   begin
     if TWinControl(AObject).HandleAllocated then
-      Handle := TWinControl(AObject).Handle
+      Result := TWinControl(AObject).Handle
   end
   else
   if (AObject is TMenuItem) then
   begin
     if TMenuItem(AObject).HandleAllocated then
-      Handle := TMenuItem(AObject).Handle
+      Result := TMenuItem(AObject).Handle
   end
   else
   if (AObject is TMenu) then
   begin
     if TMenu(AObject).HandleAllocated then
-      Handle := TMenu(AObject).Items.Handle
+      Result := TMenu(AObject).Items.Handle
   end
   else
   if (AObject is TCommonDialog) then
   begin
     {if TCommonDialog(AObject).HandleAllocated then }
-    Handle := TCommonDialog(AObject).Handle
+    Result := TCommonDialog(AObject).Handle
   end;
-
-  Result := Handle;
 end;
 
 (***********************************************************************
