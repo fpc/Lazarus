@@ -42,3 +42,4 @@
 {$ENDIF}
 
 {$DEFINE UseVistaDialogs}
+{.$DEFINE RedirectDestroyMessages}

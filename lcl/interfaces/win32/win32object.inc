@@ -82,7 +82,12 @@ begin
     DeleteObject(FDotsPatternBitmap);
 
   if FAppHandle <> 0 then
+  begin
+    {$ifdef RedirectDestroyMessages}
+    SetWindowLong(FAppHandle, GWL_WNDPROC, PtrInt(@DestroyWindowProc));
+    {$endif}
     DestroyWindow(FAppHandle);
+  end;
 
   if UnicodeEnabledOS then
   begin

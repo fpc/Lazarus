@@ -237,6 +237,10 @@ function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
 function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
   LParam: Windows.LParam): LResult;
+{$ifdef RedirectDestroyMessages}
+function DestroyWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+{$endif}
 
 implementation
 

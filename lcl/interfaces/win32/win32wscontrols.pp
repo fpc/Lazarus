@@ -574,6 +574,9 @@ var
   Handle: HWND;
 begin
   Handle := AWinControl.Handle;
+  {$ifdef RedirectDestroyMessages}
+  SetWindowLong(Handle, GWL_WNDPROC, PtrInt(@DestroyWindowProc));
+  {$endif}
   DestroyWindow(Handle);
 end;
 

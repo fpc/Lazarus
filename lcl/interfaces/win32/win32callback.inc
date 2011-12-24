@@ -209,6 +209,18 @@ begin
     Result := Result or (Assigned(AWinControl) and ([csParentBackground, csOpaque] * AWinControl.ControlStyle = [csParentBackground]));
 end;
 
+procedure DisposeComboEditWindowInfo(ComboBox: TCustomComboBox);
+var
+  Buddy: HWND;
+  Info: TComboboxInfo;
+begin
+  Info.cbSize := SizeOf(Info);
+  Win32Extra.GetComboBoxInfo(Combobox.Handle, @Info);
+  Buddy := Info.hwndItem;
+  if (Buddy <> Info.hwndCombo) and (Buddy <> 0) then
+    DisposeWindowInfo(Buddy);
+end;
+
 {------------------------------------------------------------------------------
  Function: WindowProc
  Params: Window - The window that receives a message
@@ -603,21 +615,6 @@ var
         EnableChildWindows(ChildControl, Enable);
       end;
     end;
-  end;
-
-  procedure DisposeComboEditWindowInfo(ComboBox: TCustomComboBox);
-  var
-    Buddy: HWND;
-    Info: TComboboxInfo;
-  begin
-    Info.cbSize := SizeOf(Info);
-    Win32Extra.GetComboBoxInfo(Combobox.Handle, @Info);
-    if Info.hwndItem <> Info.hwndCombo then
-      Buddy := Info.hwndItem
-    else
-      Buddy := 0;
-    if Buddy <> 0 then
-      DisposeWindowInfo(Buddy);
   end;
 
   procedure HandleScrollMessage(LMsg: integer);
@@ -1037,7 +1034,8 @@ begin
       WindowInfo^.IMEComposed:=True;
     
     // filter messages we want to pass on to LCL
-    if (Msg <> WM_KILLFOCUS) and (Msg <> WM_SETFOCUS) and (Msg <> WM_NCDESTROY)
+    if (Msg <> WM_KILLFOCUS) and (Msg <> WM_SETFOCUS)
+      {$ifndef RedirectDestroyMessages}and (Msg <> WM_NCDESTROY){$endif}
       and not ((Msg >= WM_CUT) and (Msg <= WM_CLEAR))
       and ((Msg < WM_KEYFIRST) or (Msg > WM_KEYLAST))
       and ((Msg < WM_MOUSEFIRST) or (Msg > WM_MOUSELAST)) then
@@ -1373,6 +1371,7 @@ begin
     begin
       LMessage.Msg := LM_CUT;
     end;
+    {$ifndef RedirectDestroyMessages}
     WM_DESTROY:
     begin
       if CurrentWindow=Window then
@@ -1383,6 +1382,7 @@ begin
         Windows.DestroyWindow(WindowInfo^.Overlay);
       LMessage.Msg := LM_DESTROY;
     end;
+    {$endif}
     WM_DESTROYCLIPBOARD:
     begin
       if assigned(OnClipBoardRequest) then begin
@@ -2449,6 +2449,7 @@ begin
         if MouseDownFocusStatus = mfFocusSense then
           MouseDownFocusStatus := mfNone;
       end;
+      {$ifndef RedirectDestroyMessages}
       WM_NCDESTROY:
       begin
         // free our own data associated with window
@@ -2456,6 +2457,7 @@ begin
           WindowInfo := nil;
         EnumProps(Window, @PropEnumProc);
       end;
+      {$endif}
     end;
   end;
 
@@ -2647,6 +2649,57 @@ begin
     else Result := Windows.DefWindowProc(Window, Msg, WParam, LParam);
   end;
 end;
+
+{$ifdef RedirectDestroyMessages}
+{------------------------------------------------------------------------------
+ Function: DestroyWindowProc
+ Params: Window - The window that receives a message
+         Msg    - The message received
+         WParam - Word parameter
+         LParam - Long-integer parameter
+  Returns: 0 if Msg is handled; non-zero long-integer result otherwise
+
+  Handles messages after handle is destroyed
+ ------------------------------------------------------------------------------}
+
+function DestroyWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+var
+  LMessage: TLMessage;
+  WindowInfo: PWin32WindowInfo;
+  lWinControl: TWinControl;
+begin
+  CallDefaultWindowProc(Window, Msg, WParam, LParam);
+  case Msg of
+    WM_DESTROY:
+    begin
+      WindowInfo := GetWin32WindowInfo(Window);
+      if WindowInfo^.isChildEdit then
+        lWinControl := WindowInfo^.AWinControl
+      else
+        lWinControl := WindowInfo^.WinControl;
+      if CurrentWindow = Window then
+        CurrentWindow := 0;
+      if lWinControl is TCustomComboBox then
+        DisposeComboEditWindowInfo(TCustomComboBox(lWinControl));
+      if WindowInfo^.Overlay<>HWND(nil) then
+        Windows.DestroyWindow(WindowInfo^.Overlay);
+      if lWinControl <> nil then
+      begin
+        FillChar(LMessage, SizeOf(LMessage), 0);
+        LMessage.Msg := LM_DESTROY;
+        DeliverMessage(lWinControl, LMessage);
+      end;
+    end;
+    WM_NCDESTROY:
+    begin
+      // free our own data associated with window
+      DisposeWindowInfo(Window);
+      EnumProps(Window, @PropEnumProc);
+    end;
+  end;
+end;
+{$endif}
 
 {------------------------------------------------------------------------------
  Procedure: TimerCallBackProc
