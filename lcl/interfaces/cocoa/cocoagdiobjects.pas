@@ -42,7 +42,7 @@ type
   { TCocoaGDIObject }
 
   TCocoaGDIObject = class(TObject)
-  private
+  strict private
     FRefCount: Integer;
     FGlobal: Boolean;
   public
@@ -71,7 +71,7 @@ type
 
   //todo: Remove HIShape usage. HIShape is legacy
   TCocoaRegion = class(TCocoaGDIObject)
-  private
+  strict private
     FShape: HIShapeRef;
   public
     constructor CreateDefault;
@@ -93,7 +93,7 @@ type
   { TCocoaColorObject }
 
   TCocoaColorObject = class(TCocoaGDIObject)
-  private
+  strict private
     FR, FG, FB: Byte;
     FA: Boolean; // alpha: True - solid, False - clear
     function GetColorRef: TColorRef;
@@ -113,11 +113,13 @@ type
   { TCocoaBrush }
 
   TCocoaBrush = class(TCocoaColorObject)
+  strict private
     FCGPattern: CGPatternRef;
     FColored: Boolean;
     FBitmap: TCocoaBitmap;
+  private
     FImage: CGImageRef;
-  protected
+  strict protected
     procedure SetHatchStyle(AHatch: PtrInt);
     procedure SetBitmap(ABitmap: TCocoaBitmap);
     procedure SetImage(AImage: NSImage);
@@ -142,7 +144,7 @@ type
   { TCocoaPen }
 
   TCocoaPen = class(TCocoaColorObject)
-  private
+  strict private
     FWidth: Integer;
     FStyle: LongWord;
     FIsExtPen: Boolean;
@@ -170,7 +172,7 @@ type
   TCocoaFontStyle = set of (cfs_Bold, cfs_Italic, cfs_Underline, cfs_Strikeout);
 
   TCocoaFont = class(TCocoaGDIObject)
-  private
+  strict private
     FFont: NSFont;
     FName: AnsiString;
     FSize: Integer;
@@ -189,7 +191,7 @@ type
   { TCocoaBitmap }
 
   TCocoaBitmap = class(TCocoaGDIObject)
-  private
+  strict private
     FData: Pointer;
     FAlignment: TCocoaBitmapAlignment;
     FFreeData: Boolean;
@@ -234,7 +236,7 @@ type
   { TCocoaCursor }
 
   TCocoaCursor = class(TObject)
-  private
+  strict private
     FStandard: Boolean;
     FBitmap: TCocoaBitmap;
     FCursor: NSCursor;
