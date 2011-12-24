@@ -99,7 +99,6 @@ var
     listitem: TListItem;
   begin
     LVInfo:= GetWin32WindowInfo(ALV.Handle);
-    if not Assigned(LVInfo) then Exit;
     DataInfo := PNMLVOwnerData(NMHdr);
     if not Assigned(DataInfo) or (not ALV.OwnerData) then Exit;
 
