@@ -391,7 +391,8 @@ end;
 
 function RegisterCustomTrayIcon: Boolean; alias : 'WSRegisterCustomTrayIcon';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomTrayIcon, TCDWSCustomTrayIcon);
+  Result := True;
 end;
 
 //ExtDlgs

@@ -384,7 +384,7 @@ begin
   ACanvas.Brush.FPColor := TColorToFPColor(ColorToRGB(clForm));
   ACanvas.Pen.FPColor := TColorToFPColor(ColorToRGB(clForm));
   ACanvas.Rectangle(0, 0, AImage.Width, AImage.Height);
-  ACanvas.RestoreState;
+  ACanvas.RestoreState(-1);
 end;
 
 // This does not render the win control itself, only it's children
@@ -461,7 +461,7 @@ begin
     ACanvas.Brush.FPColor := TColorToFPColor((lWinControl as TCustomPanel).GetRGBColorResolvingParent());
     ACanvas.Pen.FPColor := ACanvas.Brush.FPColor;
     ACanvas.Rectangle(Bounds(0, 0, lWinControl.Width, lWinControl.Height));
-    ACanvas.RestoreState;
+    ACanvas.RestoreState(-1);
   end;
 
   // Send the drawing message
@@ -474,7 +474,7 @@ begin
   {$endif}
 
   // Now restore it
-  ACanvas.RestoreState;
+  ACanvas.RestoreState(-1);
 
   Result := True;
 end;

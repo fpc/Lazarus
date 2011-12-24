@@ -2764,7 +2764,7 @@ begin
     OBJ_FONT: Result := HGDIOBJ(QtDC.vFont);
     OBJ_PEN: Result := HGDIOBJ(QtDC.vPen);
   end;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: GetCursorPos
@@ -2772,19 +2772,17 @@ end;
   Returns: True if succesful
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
-var
-  vPoint: TQtPoint;
+function TCDWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
 begin
-  QCursor_pos(@vPoint);
+//  QCursor_pos(@vPoint);
 
-  lpPoint.x := vPoint.x;
-  lpPoint.y := vPoint.y;
+  lpPoint.x := 1;
+  lpPoint.y := 1;
 
   Result := True;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: GetDC
   Params:  hWnd is any widget.
   Returns: Nothing

@@ -473,6 +473,13 @@ begin
     QtCaret.CreateCaret(TQtWidget(Handle), Bitmap, Width, Height);
 end;*)
 
+{ In LCL-CustomDrawn it is completely irrelevant if a Bitmap is compatible with the screen,
+  so just create any standard bitmap }
+function TCDWidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
+begin
+  Result := CreateBitmap(Width, Height, 1, 32, nil);
+end;
+
 {------------------------------------------------------------------------------
   Function: CreateCompatibleDC
   Params:  DC - handle to memory device context
@@ -590,14 +597,14 @@ begin
     QtFont.setStyleStrategy(QStyleStategy[LogFont.lfQuality]);*)
 end;
 
-(*function TQtWidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
-var
-  AIcon: TQtIcon;
-  APixmap, ATemp: QPixmapH;
-  AMask: QBitmapH;
+function TCDWidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
+//var
+//  AIcon: TCDIcon;
+{  APixmap, ATemp: QPixmapH;
+  AMask: QBitmapH;}
 begin
   Result := 0;
-  if IsValidGDIObject(IconInfo^.hbmColor) then
+{  if IsValidGDIObject(IconInfo^.hbmColor) then
   begin
     APixmap := QPixmap_create();
     QPixmap_fromImage(APixmap, TQtImage(IconInfo^.hbmColor).FHandle);
@@ -618,25 +625,24 @@ begin
     end else
       Result := HCURSOR(TQtCursor.Create(APixmap, IconInfo^.xHotspot, IconInfo^.yHotspot));
     QPixmap_destroy(APixmap);
-  end;
+  end;}
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function:  CreatePatternBrush
   Params:  HBITMAP
   Returns: HBRUSH
  ------------------------------------------------------------------------------}
-
-function TQtWidgetSet.CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;
-var
+function TCDWidgetSet.CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;
+{var
   Image: QImageH;
-  QtBrush: TQtBrush;
+  QtBrush: TQtBrush;}
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI CreatePatternBrush]',' Bitmap=', dbghex(ABitmap));
   {$endif}
   Result := 0;
-  if ABitmap = 0 then
+{  if ABitmap = 0 then
     exit;
   QtBrush := TQtBrush.Create(True);
   Image := QImage_create(TQtImage(ABitmap).FHandle);
@@ -646,7 +652,7 @@ begin
     QImage_destroy(Image);
   end;
 
-  Result := HBRUSH(QtBrush);
+  Result := //HBRUSH(QtBrush);}
 end;*)
 
 {------------------------------------------------------------------------------
@@ -687,57 +693,51 @@ begin
   lPen.Width := LogPen.lopnWidth.X;
 end;
 
-(*{------------------------------------------------------------------------------
+{------------------------------------------------------------------------------
   Function: CreatePolygonRgn
   Params:  none
   Returns: HRGN
-
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN;
+function TCDWidgetSet.CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN;
 var
-  QtRegion: TQtRegion;
-  QtPoints: PQtPoint;
+  lLazRegion: TLazRegion;
+  lPoints: array of TPoint;
   i: Integer;
-  Poly: QPolygonH;
+  lFillMode: TLazRegionFillMode;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace: [WinAPI CreatePolygonRgn] ');
+  lLazRegion := TLazRegion.Create;
+  SetLength(lPoints, NumPts);
+  for i := 0 to NumPts-1 do
+    lPoints[i] := Points[i];
+
+  {fillmode can be ALTERNATE or WINDING as msdn says}
+  if FillMode = ALTERNATE then lFillMode := rfmOddEven
+  else lFillMode := rfmWinding;
+
+  lLazRegion.AddPolygon(lPoints, lFillMode);
+  Result := HRGN(lLazRegion);
+
+  {$ifdef VerboseCDWinAPI}
+    DebugLn('[WinAPI CreatePolygonRgn] Result: ', dbghex(Result));
   {$endif}
-  GetMem(QtPoints, NumPts * SizeOf(TQtPoint));
-  for i := 0 to NumPts - 1 do
-    QtPoints[i] := QtPoint(Points[i].x, Points[i].y);
-  Poly := QPolygon_create(NumPts, PInteger(QtPoints));
-  FreeMem(QtPoints);
-  try
-    {fillmode can be ALTERNATE or WINDING as msdn says}
-    if FillMode = ALTERNATE then
-      QtRegion := TQtRegion.Create(True, Poly, QtOddEvenFill)
-    else
-      QtRegion := TQtRegion.Create(True, Poly, QtWindingFill);
-    Result := HRGN(QtRegion);
-  finally
-    QPolygon_destroy(Poly);
-  end;
 end;
 
 {------------------------------------------------------------------------------
   Function: CreateRectRgn
   Params:  none
   Returns: HRGN
-
-
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
+function TCDWidgetSet.CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
 var
-  QtRegion: TQtRegion;
+  lLazRegion: TLazRegion;
 begin
-  QtRegion := TQtRegion.Create(True, X1, Y1, X2, Y2);
-  Result := HRGN(QtRegion);
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace: [WinAPI CreateRectRgn] Result: ', dbghex(Result),
-     ' QRegionH: ', dbghex(PtrInt(QtRegion.Widget)));
+  lLazRegion := TLazRegion.Create;
+  lLazRegion.SetAsSimpleRectRegion(Types.Rect(X1, Y1, X2, Y2));
+  Result := HRGN(lLazRegion);
+  {$ifdef VerboseCDWinAPI}
+    DebugLn('Trace: [WinAPI CreateRectRgn] Result: ', dbghex(Result));
   {$endif}
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Procedure: DeleteCriticalSection
@@ -3276,36 +3276,27 @@ begin
     result := nil;
 end;
 
-(*function TQtWidgetSet.GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint;
+function TCDWidgetSet.GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint;
 var
-  R: TRect;
+  lLazRegion: TLazRegion absolute RGN;
 begin
-  {$ifdef VerboseQtWinAPI}
-  writeln('Trace:> [WinAPI GetRgnBox] Handle: ' + dbghex(RGN));
-  {$endif}
-  Result := SIMPLEREGION;
-  if lpRect <> nil then
-    lpRect^ := Rect(0,0,0,0);
-  if not IsValidGDIObject(RGN) then
-    Result := ERROR
-  else
+  if RGN = 0 then
   begin
-    Result := TQtRegion(RGN).GetRegionType;
-    if not (Result in [ERROR, NULLREGION]) and (lpRect <> nil) then
-    begin
-      R := TQtRegion(RGN).getBoundingRect;
-      with lpRect^ do
-      begin
-        Left   := R.Left;
-        Top    := R.Top;
-        Right  := R.Left + R.Right;
-        Bottom := R.Top + R.Bottom;
-      end;
-    end;
+    Result := ERROR;
+    if lpRect <> nil then lpRect^ := Types.Rect(0,0,0,0);
+    Exit();
   end;
+
+  //Result := lLazRegion.IsSimpleRectRegion(); TQtRegion(RGN).GetRegionType;
+  Result := SIMPLEREGION;
+  if lpRect <> nil then lpRect^ := lLazRegion.GetBoundingRect();
+
+  {$ifdef VerboseCDWinAPI}
+  Debugln('Trace:> [WinAPI GetRgnBox] Handle: ' + dbghex(RGN));
+  {$endif}
 end;
 
-function TQtWidgetSet.GetROP2(DC: HDC): Integer;
+(*function TQtWidgetSet.GetROP2(DC: HDC): Integer;
 var
   QtDC: TQtDeviceContext absolute DC;
 begin
@@ -4653,27 +4644,34 @@ begin
   Result := True;
 end;
 
-(*{------------------------------------------------------------------------------
+{------------------------------------------------------------------------------
   Function: InvalidateRgn
   Params: aHandle:
           Rect:
           bErase:
   Returns: True if invalidate is successfull.
   Invalidates region of widget.
+
+  Felipe: Invalidating a non-rectangular region is unusual and complicated,
+  so for now lets just get the bounding rect and invalidate that instead.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.InvalidateRgn(aHandle: HWND; Rgn: HRGN; Erase: Boolean
-  ): Boolean;
+function TCDWidgetSet.InvalidateRgn(aHandle: HWND; Rgn: HRGN; Erase: Boolean): Boolean;
+var
+  lLazRegion: TLazRegion absolute Rgn;
+  localRect: TRect;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI InvalidateRgn]');
+  {$ifdef VerboseCDWinAPI}
+    DebugLn('[WinAPI InvalidateRgn]');
   {$endif}
-  if aHandle = 0 then
-    exit(False);
-  if IsValidGDIObject(Rgn) and (TQtRegion(Rgn).FHandle <> nil) then
-    TQtWidget(aHandle).UpdateRegion(TQtRegion(Rgn).FHandle)
+  if aHandle = 0 then Exit(False);
+  if Rgn <> 0 then
+  begin
+    localRect := lLazRegion.GetBoundingRect();
+    Result := InvalidateRect(aHandle, @localRect, Erase);
+  end
   else
-    TQtWidget(aHandle).Update;
-end;*)
+    Result := InvalidateRect(aHandle, nil, Erase);
+end;
 
 {------------------------------------------------------------------------------
   Procedure: LeaveCriticalSection
@@ -5038,8 +5036,7 @@ begin
   if IsValidDC(DC) then Exit;
 
   Result := 1;
-end;
-
+end;*)
 
 {------------------------------------------------------------------------------
   Function: RestoreDC: Restore a previously saved DC state
@@ -5048,46 +5045,24 @@ end;
     SavedDC: Index of saved state that needs to be restored
   Returns: True if state was successfuly restored.
 -------------------------------------------------------------------------------}
-function TQtWidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
+function TCDWidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 var
-  DCData: PQtDCData;
+  LazDC: TLazCanvas absolute DC;
 begin
   {$ifdef VerboseQTWinAPI}
   WriteLn('Trace:> [WinAPI RestoreDC] DC=', dbghex(DC),' SavedDC=',SavedDC);
   {$Endif}
-  // if SavedDC is positive, it represents the wished saved dc instance
-  // if SavedDC is negative, it's a relative number from last pushed state
   Result := False;
-  if SavedDCList=nil then
-  begin
-    {$ifdef VerboseQTWinAPI}
-    WriteLn('Trace:< [WinAPI RestoreDC] there is no List yet, result=', result);
-    {$Endif}
-    exit;
-  end;
+  if not IsValidDC(DC) then Exit;
 
-  if SavedDC < 0 then
-    SavedDC := SavedDC + SavedDCList.Count;
-
-  // check index
-  Result := (SavedDC > 0) and (SavedDC < SavedDCList.Count);
-  if Result then
-  begin
-    Result := true;
-    while SavedDC > 0 do
-    begin
-      DCData := PQtDcData(SavedDCList[SavedDC]);
-      SavedDCList.Delete(SavedDC);
-      Result := TQtDeviceContext(DC).RestoreDCData(DCData);
-      Dec(SavedDC);
-    end;
-  end;
+  LazDC.RestoreState(SavedDC);
+  Result := True;
   {$ifdef VerboseQTWinAPI}
   WriteLn('Trace:< [WinAPI RestoreDC]');
   {$Endif}
 end;
 
-function TQtWidgetSet.RoundRect(DC: hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;
+(*function TQtWidgetSet.RoundRect(DC: hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;
 begin
   Result := False;
   if not IsValidDC(DC) then
@@ -5098,15 +5073,16 @@ begin
     Exit;
   end;
   Result := inherited RoundRect(DC, X1, Y1, X2, Y2, RX, RY);
-end;
+end;*)
+
 {------------------------------------------------------------------------------
   Function: SaveDC: save DC state information to a stack
   Params:  DC
   Returns: The index assigned to the or 0 if DC is not valid
 -------------------------------------------------------------------------------}
-function TQtWidgetSet.SaveDC(DC: HDC): Integer;
+function TCDWidgetSet.SaveDC(DC: HDC): Integer;
 var
-  DCData: PQtDCData;
+  LazDC: TLazCanvas absolute DC;
 begin
   {$ifdef VerboseQTWinAPI}
   WriteLn('Trace:> [WinAPI SaveDC] DC=', dbghex(DC));
@@ -5122,22 +5098,14 @@ begin
     exit;
   end;
 
-  if SavedDCList=nil then
-  begin
-    SavedDCList := TFPList.Create;
-    SavedDCList.Add(nil); // start at index 1, 0 is an invalid saved state
-  end;
-
-  DCData := TQtDeviceContext(DC).CreateDCData;
-  Result := 1;
-  SavedDCList.Insert(Result, DCData);
+  Result := LazDC.SaveState();
 
   {$ifdef VerboseQTWinAPI}
   WriteLn('Trace:< [WinAPI SaveDC] result=', Result);
   {$Endif}
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: ScreenToClient
   Params:  Handle: HWND; var P: TPoint
   Returns:

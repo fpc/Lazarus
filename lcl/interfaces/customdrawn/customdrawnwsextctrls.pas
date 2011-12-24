@@ -1,6 +1,6 @@
 {
  *****************************************************************************
- *                          CustomDrawnWSExtCtrls.pp                         *
+ *                          CustomDrawnWSExtCtrls.pas                        *
  *                              ---------------                              * 
  *                                                                           *
  *                                                                           *
@@ -23,15 +23,23 @@ unit CustomDrawnWSExtCtrls;
 
 {$mode objfpc}{$H+}
 
+{$I customdrawndefines.inc}
+
 interface
 
 //{$I qtdefines.inc}
 
 uses
+  // RTL
+  Types,
+//  {$ifdef CD_Windows}Windows, customdrawn_WinProc,{$endif}
+  {$ifdef CD_Cocoa}MacOSAll, CocoaAll, CocoaPrivate, CocoaGDIObjects,{$endif}
+//  {$ifdef CD_X11}X, XLib, XUtil, BaseUnix, customdrawn_x11proc,{$ifdef CD_UseNativeText}xft, fontconfig,{$endif}{$endif}
+//  {$ifdef CD_Android}customdrawn_androidproc, jni, bitmap, log, keycodes,{$endif}
   // LCL
   LCLProc,
   SysUtils, Classes, Controls, Graphics, Forms, ExtCtrls, LCLType,
-  ImgList,
+  ImgList, InterfaceBase,
   // Widgetset
   WSExtCtrls, WSProc, WSLCLClasses,
   customdrawncontrols, customdrawnwscontrols, customdrawnproc;
@@ -150,11 +158,11 @@ type
 
   TCDWSCustomTrayIcon = class(TWSCustomTrayIcon)
   published
-{    class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
+    class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
     class function ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean; override;
-    class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;}
+    class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;
   end;
 
 implementation
@@ -230,117 +238,19 @@ begin
   lCDWinControl := TCDWinControl(Result);
 end;
 
-(*{ TCDWSCustomTrayIcon }
+{ TCDWSCustomTrayIcon }
 
-class function TCDWSCustomTrayIcon.Hide(const ATrayIcon: TCustomTrayIcon): Boolean;
-var
-  SystemTrayIcon: TQtSystemTrayIcon;
-begin
-  Result := False;
-
-  SystemTrayIcon := TQtSystemTrayIcon(ATrayIcon.Handle);
-
-  SystemTrayIcon.Hide;
-
-  SystemTrayIcon.Free;
-
-  ATrayIcon.Handle := 0;
-
-  Result := True;
-end;
-
-class function TCDWSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
-var
-  Text: WideString;
-  SystemTrayIcon: TQtSystemTrayIcon;
-  IconH: QIconH;
-begin
-  Result := False;
-
-  if ATrayIcon.Icon.Handle = 0 then
-    IconH := nil
-  else
-    IconH := TQtIcon(ATrayIcon.Icon.Handle).Handle;
-    
-  SystemTrayIcon := TQtSystemTrayIcon.Create(IconH);
-  SystemTrayIcon.FTrayIcon := ATrayIcon;
-
-  ATrayIcon.Handle := HWND(SystemTrayIcon);
-
-  Text := UTF8ToUTF16(ATrayIcon.Hint);
-  SystemTrayIcon.setToolTip(Text);
-
-  if Assigned(ATrayIcon.PopUpMenu) then
-    if TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget <> nil then
-      SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget));
-
-  SystemTrayIcon.show;
-
-  Result := True;
-end;
-
-{*******************************************************************
-*  TCDWSCustomTrayIcon.InternalUpdate ()
-*
-*  DESCRIPTION:    Makes modifications to the Icon while running
-*                  i.e. without hiding it and showing again
-*******************************************************************}
-class procedure TCDWSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayIcon);
-var
-  SystemTrayIcon: TQtSystemTrayIcon;
-  AIcon: QIconH;
-begin
-  if (ATrayIcon.Handle = 0) then Exit;
-
-  SystemTrayIcon := TQtSystemTrayIcon(ATrayIcon.Handle);
-  if Assigned(ATrayIcon.Icon) then
-  begin
-    // normal icon
-    if (ATrayIcon.Icon.HandleAllocated) then
-      SystemTrayIcon.setIcon(TQtIcon(ATrayIcon.Icon.Handle).Handle)
-    else
-    // image list (animate)
-    if (ATrayIcon.Icon.BitmapHandle <> 0) then
-      SystemTrayIcon.setIcon(TQtImage(ATrayIcon.Icon.BitmapHandle).AsIcon)
-    else
-    begin
-      AIcon := QIcon_create;
-      SystemTrayIcon.setIcon(AIcon);
-      QIcon_destroy(AIcon);
-    end;
-  end else
-  begin
-    AIcon := QIcon_create;
-    SystemTrayIcon.setIcon(AIcon);
-    QIcon_destroy(AIcon);
-  end;
-
-
-  { PopUpMenu }
-  if Assigned(ATrayIcon.PopUpMenu) then
-    if TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget <> nil then
-      SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget));
-end;
-
-class function TCDWSCustomTrayIcon.ShowBalloonHint(
-  const ATrayIcon: TCustomTrayIcon): Boolean;
-var
-  QtTrayIcon: TQtSystemTrayIcon;
-begin
-  Result := False;
-  if (ATrayIcon.Handle = 0) then Exit;
-  QtTrayIcon := TQtSystemTrayIcon(ATrayIcon.Handle);
-
-  QtTrayIcon.showBaloonHint(ATrayIcon.BalloonTitle, ATrayIcon.BalloonHint,
-    QSystemTrayIconMessageIcon(Ord(ATrayIcon.BalloonFlags)),
-    ATrayIcon.BalloonTimeout);
-
-  Result := True;
-end;
-
-class function TCDWSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
-begin
-  Result := Point(0, 0);
-end;             *)
+{$ifdef CD_Windows}
+  {$I customdrawntrayicon_win.inc}
+{$endif}
+{$ifdef CD_Cocoa}
+  {$I customdrawntrayicon_cocoa.inc}
+{$endif}
+{$ifdef CD_X11}
+  {$I customdrawntrayicon_x11.inc}
+{$endif}
+{$ifdef CD_Android}
+  {$I customdrawntrayicon_android.inc}
+{$endif}
 
 end.

@@ -386,50 +386,6 @@ begin
 end;
 {$endif}
 
-{------------------------------------------------------------------------------
-  Function: GetDeviceCaps
-  Params: DC: HDC; Index: Integer
-  Returns: Integer
- ------------------------------------------------------------------------------}
-function TCDWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
-var
-  LazDC: TLazCanvas;
-begin
-  {$ifdef VerboseCDWinAPI}
-    DebugLn('[WinAPI GetDeviceCaps] DC ' + dbghex(DC));
-  {$endif}
-
-  Result := 0;
-
-  if DC = 0 then DC := HDC(ScreenDC);
-  LazDC := TLazCanvas(DC);
-
-  case Index of
-//    HORZSIZE:
-//      Result := QPaintDevice_widthMM(PaintDevice);
-//    VERTSIZE:
-//      Result := QPaintDevice_heightMM(PaintDevice);
-//    HORZRES:
-//      Result := QPaintDevice_width(PaintDevice);
-//    BITSPIXEL:
-//      Result := QPaintDevice_depth(PaintDevice);
-    PLANES:
-      Result := 1;
-//    SIZEPALETTE:
-//      Result := QPaintDevice_numColors(PaintDevice);
-{    LOGPIXELSX:
-      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclxdpi;
-    LOGPIXELSY:
-      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclydpi;}
-//    VERTRES:
-//      Result := QPaintDevice_height(PaintDevice);
-    NUMRESERVED:
-      Result := 0;
-    else
-      Result := 0;
-  end;
-end;
-
 (*{------------------------------------------------------------------------------
   Method:  GetWindowRect
   Params:  Handle - Handle of window
@@ -492,20 +448,63 @@ begin
     MoveRect(ARect, dx, dy);
   end else
     Result:=False;
-end;
+end;*)
 
-function TCocoaWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
+function TCDWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
 begin
-  with NSEvent.mouseLocation do
-  begin
-    lpPoint.x := Round(x);
+  lpPoint.x := Round(NSEvent.mouseLocation.x);
     // cocoa returns cursor with inverted y coordinate
-    lpPoint.y := Round(NSScreen.mainScreen.frame.size.height-y);
-  end;
+  lpPoint.y := Round(NSScreen.mainScreen.frame.size.height -
+    NSEvent.mouseLocation.y);
+
   Result := True;
 end;
 
-function TCocoaWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
+{------------------------------------------------------------------------------
+  Function: GetDeviceCaps
+  Params: DC: HDC; Index: Integer
+  Returns: Integer
+ ------------------------------------------------------------------------------}
+function TCDWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+var
+  LazDC: TLazCanvas;
+begin
+  {$ifdef VerboseCDWinAPI}
+    DebugLn('[WinAPI GetDeviceCaps] DC ' + dbghex(DC));
+  {$endif}
+
+  Result := 0;
+
+  if DC = 0 then DC := HDC(ScreenDC);
+  LazDC := TLazCanvas(DC);
+
+  case Index of
+//    HORZSIZE:
+//      Result := QPaintDevice_widthMM(PaintDevice);
+//    VERTSIZE:
+//      Result := QPaintDevice_heightMM(PaintDevice);
+//    HORZRES:
+//      Result := QPaintDevice_width(PaintDevice);
+//    BITSPIXEL:
+//      Result := QPaintDevice_depth(PaintDevice);
+    PLANES:
+      Result := 1;
+//    SIZEPALETTE:
+//      Result := QPaintDevice_numColors(PaintDevice);
+{    LOGPIXELSX:
+      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclxdpi;
+    LOGPIXELSY:
+      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclydpi;}
+//    VERTRES:
+//      Result := QPaintDevice_height(PaintDevice);
+    NUMRESERVED:
+      Result := 0;
+    else
+      Result := 0;
+  end;
+end;
+
+(*function TCocoaWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
 var
   ScreenID: NSScreen absolute hMonitor;
 begin
@@ -526,6 +525,129 @@ begin
   else
     Result:=0;
 end;*)
+
+{------------------------------------------------------------------------------
+  Method:  GetSystemMetrics
+  Params:  NIndex - System metric to retrieve
+  Returns: The requested system metric value
+
+  Retrieves various system metrics.
+ ------------------------------------------------------------------------------}
+function TCDWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
+begin
+  Result := 0;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaWidgetSet.GetSystemMetrics NIndex: ' + DbgS(NIndex));
+  {$ENDIF}
+
+  case NIndex of
+{    SM_CXHSCROLL,
+    SM_CYHSCROLL,
+    SM_CXVSCROLL,
+    SM_CYVSCROLL:
+      Result := 10;//GetCarbonThemeMetric(kThemeMetricScrollBarWidth);}
+    SM_CXSCREEN,
+    SM_CXVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.size.width);
+    SM_CYSCREEN,
+    SM_CYVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.size.height);
+    SM_XVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.origin.x);
+    SM_YVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.origin.y);
+    SM_CXSMICON,
+    SM_CYSMICON:
+      Result := 16;
+    SM_CXICON,
+    SM_CYICON:
+      Result := 128;
+    SM_CXCURSOR,
+    SM_CYCURSOR:
+      begin
+{        if TCarbonCursor.HardwareCursorsSupported then
+          Result := 64 else}
+          Result := 16;
+      end;
+{    SM_CXHTHUMB:
+      Result := 16;//GetCarbonThemeMetric(kThemeMetricScrollBarMinThumbWidth);
+    SM_CYVTHUMB:
+      Result := 16;//GetCarbonThemeMetric(kThemeMetricScrollBarMinThumbHeight);}
+    SM_SWSCROLLBARSPACING:
+      Result:=0;
+  else
+    DebugLn('TCocoaWidgetSet.GetSystemMetrics TODO ', DbgS(NIndex));;
+  end;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaWidgetSet.GetSystemMetrics Result: ' + DbgS(Result));
+  {$ENDIF}
+end;
+
+{$ifdef CD_UseNativeText}
+{------------------------------------------------------------------------------
+  Method:  GetTextExtentPoint
+  Params:  DC    - Handle of device context
+           Str   - Text string
+           Count - Number of characters in string
+           Size  - The record for the dimensions of the string
+  Returns: If the function succeeds
+
+  Computes the width and height of the specified string of text
+ ------------------------------------------------------------------------------}
+function TCDWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
+var
+  ctx: TCocoaContext;
+  lazdc: TLazCanvas;
+begin
+  {$IFDEF VerboseCDText}
+    DebugLn('[TCDWidgetSet.GetTextExtentPoint] DC: %x Str: %s Count: %d', [DC, Str, Count]);
+  {$ENDIF}
+
+  if not IsValidDC(DC) then Exit;
+
+  lazdc := TLazCanvas(DC);
+  if lazdc.NativeDC = 0 then Exit;
+  ctx := TCocoaContext(lazdc.NativeDC);
+
+  Result := ctx.GetTextExtentPoint(Str, Count, Size);
+
+  {$IFDEF VerboseCDText}
+    DebugLn('[TCDWidgetSet.GetTextExtentPoint] Size: %d,%d', [Size.cx, Size.cy]);
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
+  Method:  GetTextMetrics
+  Params:  DC - Handle of device context
+           TM - The Record for the text metrics
+  Returns: If the function succeeds
+
+  Fills the specified buffer with the metrics for the currently selected font
+  TODO: get exact max. and av. char width, pitch and charset
+ ------------------------------------------------------------------------------}
+function TCDWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
+var
+  ctx: TCocoaContext;
+  lazdc: TLazCanvas;
+begin
+  Result := False;
+
+  {$IFDEF VerboseCDText}
+    DebugLn('TCDWidgetSet.GetTextMetrics DC: ' + DbgS(DC));
+  {$ENDIF}
+
+  if not IsValidDC(DC) then Exit;
+
+  lazdc := TLazCanvas(DC);
+  if lazdc.NativeDC = 0 then Exit;
+  ctx := TCocoaContext(lazdc.NativeDC);
+
+  Result := ctx.GetTextMetrics(TM);
+
+  {$IFDEF VerboseCDText}
+    DebugLn('TCDWidgetSet.GetTextMetrics Result: ' + DbgS(Result) +
+      ' TextMetric: ' + DbgS(TM));
+  {$ENDIF}
+end;
+{$endif}
 
 function TCDWidgetSet.BackendGetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean;
 begin
@@ -751,129 +873,6 @@ begin
   Result := True;
 end;
 *)
-
-{------------------------------------------------------------------------------
-  Method:  GetSystemMetrics
-  Params:  NIndex - System metric to retrieve
-  Returns: The requested system metric value
-
-  Retrieves various system metrics.
- ------------------------------------------------------------------------------}
-function TCDWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
-begin
-  Result := 0;
-
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCocoaWidgetSet.GetSystemMetrics NIndex: ' + DbgS(NIndex));
-  {$ENDIF}
-
-  case NIndex of
-{    SM_CXHSCROLL,
-    SM_CYHSCROLL,
-    SM_CXVSCROLL,
-    SM_CYVSCROLL:
-      Result := 10;//GetCarbonThemeMetric(kThemeMetricScrollBarWidth);}
-    SM_CXSCREEN,
-    SM_CXVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.size.width);
-    SM_CYSCREEN,
-    SM_CYVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.size.height);
-    SM_XVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.origin.x);
-    SM_YVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.origin.y);
-    SM_CXSMICON,
-    SM_CYSMICON:
-      Result := 16;
-    SM_CXICON,
-    SM_CYICON:
-      Result := 128;
-    SM_CXCURSOR,
-    SM_CYCURSOR:
-      begin
-{        if TCarbonCursor.HardwareCursorsSupported then
-          Result := 64 else}
-          Result := 16;
-      end;
-{    SM_CXHTHUMB:
-      Result := 16;//GetCarbonThemeMetric(kThemeMetricScrollBarMinThumbWidth);
-    SM_CYVTHUMB:
-      Result := 16;//GetCarbonThemeMetric(kThemeMetricScrollBarMinThumbHeight);}
-    SM_SWSCROLLBARSPACING:
-      Result:=0;
-  else
-    DebugLn('TCocoaWidgetSet.GetSystemMetrics TODO ', DbgS(NIndex));;
-  end;
-
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCocoaWidgetSet.GetSystemMetrics Result: ' + DbgS(Result));
-  {$ENDIF}
-end;
-
-{$ifdef CD_UseNativeText}
-{------------------------------------------------------------------------------
-  Method:  GetTextExtentPoint
-  Params:  DC    - Handle of device context
-           Str   - Text string
-           Count - Number of characters in string
-           Size  - The record for the dimensions of the string
-  Returns: If the function succeeds
-
-  Computes the width and height of the specified string of text
- ------------------------------------------------------------------------------}
-function TCDWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
-var
-  ctx: TCocoaContext;
-  lazdc: TLazCanvas;
-begin
-  {$IFDEF VerboseCDText}
-    DebugLn('[TCDWidgetSet.GetTextExtentPoint] DC: %x Str: %s Count: %d', [DC, Str, Count]);
-  {$ENDIF}
-
-  if not IsValidDC(DC) then Exit;
-
-  lazdc := TLazCanvas(DC);
-  if lazdc.NativeDC = 0 then Exit;
-  ctx := TCocoaContext(lazdc.NativeDC);
-
-  Result := ctx.GetTextExtentPoint(Str, Count, Size);
-
-  {$IFDEF VerboseCDText}
-    DebugLn('[TCDWidgetSet.GetTextExtentPoint] Size: %d,%d', [Size.cx, Size.cy]);
-  {$ENDIF}
-end;
-
-{------------------------------------------------------------------------------
-  Method:  GetTextMetrics
-  Params:  DC - Handle of device context
-           TM - The Record for the text metrics
-  Returns: If the function succeeds
-
-  Fills the specified buffer with the metrics for the currently selected font
-  TODO: get exact max. and av. char width, pitch and charset
- ------------------------------------------------------------------------------}
-function TCDWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
-var
-  ctx: TCocoaContext;
-  lazdc: TLazCanvas;
-begin
-  Result := False;
-
-  {$IFDEF VerboseCDText}
-    DebugLn('TCDWidgetSet.GetTextMetrics DC: ' + DbgS(DC));
-  {$ENDIF}
-
-  if not IsValidDC(DC) then Exit;
-
-  lazdc := TLazCanvas(DC);
-  if lazdc.NativeDC = 0 then Exit;
-  ctx := TCocoaContext(lazdc.NativeDC);
-
-  Result := ctx.GetTextMetrics(TM);
-
-  {$IFDEF VerboseCDText}
-    DebugLn('TCDWidgetSet.GetTextMetrics Result: ' + DbgS(Result) +
-      ' TextMetric: ' + DbgS(TM));
-  {$ENDIF}
-end;
-{$endif}
 
 (*function TCocoaWidgetSet.SaveDC(DC: HDC): Integer;
 var

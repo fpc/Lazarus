@@ -13,6 +13,9 @@ uses
   Classes, SysUtils, fpcanvas;
 
 type
+  TLazRegionFillMode = (rfmOddEven, rfmWinding);
+
+  TPointArray = array of TPoint;
 
   { TLazRegionPart }
 
@@ -26,6 +29,15 @@ type
   TLazRegionRect = class(TLazRegionPart)
   public
     Rect: TRect;
+    function IsPointInPart(AX, AY: Integer): Boolean; override;
+  end;
+
+  { TLazRegionPolygon }
+
+  TLazRegionPolygon = class(TLazRegionPart)
+  public
+    Points: array of TPoint;
+    FillMode: TLazRegionFillMode;
     function IsPointInPart(AX, AY: Integer): Boolean; override;
   end;
 
@@ -48,6 +60,7 @@ type
     constructor Create; virtual;
     destructor Destroy; override;
     procedure AddRectangle(ARect: TRect);
+    procedure AddPolygon(var APoints: TPointArray; AFillMode: TLazRegionFillMode);
     procedure SetAsSimpleRectRegion(ARect: TRect);
     function GetBoundingRect: TRect; override;
     function IsPointInRegion(AX, AY: Integer): Boolean; override;
@@ -139,6 +152,13 @@ begin
     (AY >= Rect.Top) and (AY <= Rect.Bottom);
 end;
 
+{ TLazRegionPolygon }
+
+function TLazRegionPolygon.IsPointInPart(AX, AY: Integer): Boolean;
+begin
+  Result := IsPointInPolygon(AX, AY, Points);
+end;
+
 { TLazRegion }
 
 constructor TLazRegion.Create;
@@ -161,6 +181,17 @@ begin
   lNewRect := TLazRegionRect.Create;
   lNewRect.Rect := ARect;
   Parts.Add(lNewRect);
+end;
+
+procedure TLazRegion.AddPolygon(var APoints: TPointArray;
+  AFillMode: TLazRegionFillMode);
+var
+  lNewPolygon: TLazRegionPolygon;
+begin
+  lNewPolygon := TLazRegionPolygon.Create;
+  lNewPolygon.Points := APoints;
+  lNewPolygon.FillMode := AFillMode;
+  Parts.Add(lNewPolygon);
 end;
 
 procedure TLazRegion.SetAsSimpleRectRegion(ARect: TRect);

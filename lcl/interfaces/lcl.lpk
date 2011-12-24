@@ -100,6 +100,11 @@ end;"/>
           <ValueDescriptions Count="2"/>
         </Item2>
       </BuildMacros>
+      <Linking>
+        <Debugging>
+          <DebugInfoType Value="dsDwarf2"/>
+        </Debugging>
+      </Linking>
       <Other>
         <CompilerMessages>
           <IgnoredMessages idx5044="True"/>
@@ -114,7 +119,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="387">
+    <Files Count="391">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1919,6 +1924,22 @@ end;"/>
         <Filename Value="customdrawn/customdrawnlclintf_x11.inc"/>
         <Type Value="Include"/>
       </Item387>
+      <Item388>
+        <Filename Value="customdrawn/customdrawntrayicon_android.inc"/>
+        <Type Value="Include"/>
+      </Item388>
+      <Item389>
+        <Filename Value="customdrawn/customdrawntrayicon_cocoa.inc"/>
+        <Type Value="Include"/>
+      </Item389>
+      <Item390>
+        <Filename Value="customdrawn/customdrawntrayicon_win.inc"/>
+        <Type Value="Include"/>
+      </Item390>
+      <Item391>
+        <Filename Value="customdrawn/customdrawntrayicon_x11.inc"/>
+        <Type Value="Include"/>
+      </Item391>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>

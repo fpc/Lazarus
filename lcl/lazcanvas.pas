@@ -33,6 +33,7 @@
 unit lazcanvas;
 
 {$mode objfpc}{$H+}
+{.$define lazcanvas_debug}
 
 interface
 
@@ -43,7 +44,7 @@ uses
   fpimgcanv, fpcanvas, fpimage, clipping, pixtools, fppixlcanv,
   // regions
   lazregions
-  {, LCLProc for debugging};
+  {$ifdef lazcanvas_debug}, LCLProc{$endif};
 
 type
 
@@ -82,7 +83,7 @@ type
     FLazClipRegion: TFPCustomRegion;
     {$endif}
     FWindowOrg: TPoint; // already in absolute coords with BaseWindowOrg summed up
-    GraphicStateStack: TObjectStack; // TLazCanvasState
+    GraphicStateList: TFPList; // TLazCanvasState
     function GetAssignedBrush: TFPCustomBrush;
     function GetAssignedPen: TFPCustomPen;
     function GetAssignedFont: TFPCustomFont;
@@ -103,9 +104,9 @@ type
     constructor create (AnImage : TFPCustomImage);
     destructor destroy; override;
     procedure SetLazClipRegion(ARegion: TLazRegion);
-    // Canvas states stack
-    procedure SaveState;
-    procedure RestoreState;
+    // Canvas states list
+    function SaveState: Integer;
+    procedure RestoreState(AIndex: Integer);
     // A simple operation to bring the Canvas in the default LCL TCanvas state
     procedure ResetCanvasState;
     // Alpha blending operations
@@ -193,6 +194,9 @@ procedure TLazCanvas.SetWindowOrg(AValue: TPoint);
 begin
   FWindowOrg.X := AValue.X+FBaseWindowOrg.X;
   FWindowOrg.Y := AValue.Y+FBaseWindowOrg.Y;
+  {$ifdef lazcanvas_debug}
+  DebugLn(Format('[TLazCanvas.SetWindowOrg] AValue=%d,%d BaseWindowOrg=%d,%d', [AValue.X, AValue.Y, FBaseWindowOrg.X, FBaseWindowOrg.y]));
+  {$endif}
 end;
 
 procedure TLazCanvas.SetColor(x, y: integer; const AValue: TFPColor);
@@ -397,13 +401,13 @@ end;
 constructor TLazCanvas.create(AnImage: TFPCustomImage);
 begin
   inherited Create(AnImage);
-  GraphicStateStack := TObjectStack.Create;
+  GraphicStateList := TFPList.Create;
   HasNoImage := AnImage = nil;
 end;
 
 destructor TLazCanvas.destroy;
 begin
-  GraphicStateStack.Free;
+  GraphicStateList.Free;
   if FAssignedBrush <> nil then FAssignedBrush.Free;
   if FAssignedPen <> nil then FAssignedPen.Free;
   inherited destroy;
@@ -420,7 +424,7 @@ begin
   {$endif}
 end;
 
-procedure TLazCanvas.SaveState;
+function TLazCanvas.SaveState: Integer;
 var
   lState: TLazCanvasState;
 begin
@@ -433,14 +437,18 @@ begin
   lState.WindowOrg := WindowOrg;
   lState.Clipping := Clipping;
 
-  GraphicStateStack.Push(lState);
+  GraphicStateList.Add(lState);
 end;
 
-procedure TLazCanvas.RestoreState;
+// if AIndex is positive, it represents the wished saved dc instance
+// if AIndex is negative, it's a relative number from last pushed state
+procedure TLazCanvas.RestoreState(AIndex: Integer);
 var
   lState: TLazCanvasState;
 begin
-  lState := TLazCanvasState(GraphicStateStack.Pop());
+  if AIndex < 0 then AIndex := AIndex + GraphicStateList.Count;
+  lState := TLazCanvasState(GraphicStateList.Items[AIndex]);
+  GraphicStateList.Delete(AIndex);
   if lState = nil then Exit;
 
   AssignPenData(lState.Pen);

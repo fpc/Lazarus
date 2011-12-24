@@ -34,7 +34,7 @@
 //##apiwiz##sps##   // Do not remove, no wizard declaration before this line
 
 function Arc(DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer): Boolean; override;
-(*function AngleChord(DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer): Boolean; override;*)
+//function AngleChord(DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer): Boolean; override;
 
 function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; override;
@@ -57,17 +57,17 @@ function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; ove
 function CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;  override;*)
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
-(*function CreateCaret(Handle : HWND; Bitmap : hBitmap; Width, Height : Integer) : Boolean; override;
-function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;*)
+(*function CreateCaret(Handle : HWND; Bitmap : hBitmap; Width, Height : Integer) : Boolean; override;*)
+function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
 function CreateCompatibleDC(DC: HDC): HDC; override;
 //function CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
-(*function CreateIconIndirect(IconInfo: PIconInfo): HICON; override;
-function CreatePatternBrush(ABitmap: HBITMAP): HBRUSH; override;*)
+function CreateIconIndirect(IconInfo: PIconInfo): HICON; override;
+//function CreatePatternBrush(ABitmap: HBITMAP): HBRUSH; override;
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
-(*function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; override;
-function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; override;*)
+function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; override;
+function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; override;
 
 procedure DeleteCriticalSection(var CritSection: TCriticalSection); override;
 function DeleteDC(hDC: HDC): Boolean; override;
@@ -110,13 +110,13 @@ function GetClientRect(handle : HWND; var ARect : TRect) : Boolean; override;
 (*function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;
 function GetClipRGN(DC: hDC; RGN: hRGN): Longint; override;
 function GetCmdLineParamDescForInterface: string; override;
-function GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ; override;
-function GetCursorPos(var lpPoint: TPoint ): Boolean; override;*)
+function GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ; override;*)
+function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
 function GetDC(hWnd: HWND): HDC; override;
 //function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; override;
-(*function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
-function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
+//function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
+(*function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
 function GetDoubleClickTime: UINT; override;*)
 function GetFocus: HWND; override;
 (*function GetForegroundWindow: HWND; override;
@@ -126,8 +126,8 @@ function GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean; overrid
 function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
 function GetParent(Handle : HWND): HWND; override;*)
 function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
-(*function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;
-function GetROP2(DC: HDC): Integer; override;
+function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;
+(*function GetROP2(DC: HDC): Integer; override;
 function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; override;
 function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; override;
 function GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean; override;
@@ -156,7 +156,7 @@ function HideCaret(hWnd: HWND): Boolean; override;*)
 
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
 function BackendInvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean;
-(*function InvalidateRgn(aHandle: HWND; Rgn: HRGN; Erase: Boolean): Boolean; override;*)
+function InvalidateRgn(aHandle: HWND; Rgn: HRGN; Erase: Boolean): Boolean; override;
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
 (*function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
 function IsIconic(Handle: HWND): boolean; override;
@@ -185,14 +185,14 @@ function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
 function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
 (*function RedrawWindow(Wnd: HWND; lprcUpdate: PRECT; hrgnUpdate: HRGN; flags: UINT): Boolean; override;
 function ReleaseCapture : Boolean; override;
-function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;
+function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;*)
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
-function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean; override;
+//function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean; override;
 
 function SaveDC(DC: HDC): Integer; override;
-function ScreenToClient(Handle : HWND; var P : TPoint) : Integer; override;
-function ScrollWindowEx(HWnd: HWND; DX, DY: Integer; PRcScroll, PRcClip: PRect; HRgnUpdate: HRGN; PRcUpdate: PRect; Flags: UINT): Boolean; override;
-function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;*)
+//function ScreenToClient(Handle : HWND; var P : TPoint) : Integer; override;
+//function ScrollWindowEx(HWnd: HWND; DX, DY: Integer; PRcScroll, PRcClip: PRect; HRgnUpdate: HRGN; PRcUpdate: PRect; Flags: UINT): Boolean; override;
+//function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
 function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; override;
 (*function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; override;
 function SetActiveWindow(Handle: HWND): HWND; override;

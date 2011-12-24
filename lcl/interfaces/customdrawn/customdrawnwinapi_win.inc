@@ -1692,7 +1692,7 @@ end;
 function TWin32WidgetSet.GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ;
 begin
   Result := Windows.GetCurrentObject(DC, uObjectType);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method:  GetCursorPos
@@ -1701,12 +1701,12 @@ end;
 
   Gets the cursor position, in screen coordinates.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetCursorPos(Var LPPoint: TPoint): Boolean;
+function TCDWidgetSet.GetCursorPos(Var LPPoint: TPoint): Boolean;
 begin
   Result := Boolean(Windows.GetCursorPos(@LPPoint));
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Method:  GetDC
   Params:  HWND - handle of window
   Returns: value identifying the device context for the given window's client
