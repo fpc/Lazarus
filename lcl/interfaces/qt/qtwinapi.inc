@@ -2295,25 +2295,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: Frame
-  Params:  none
-  Returns: Nothing
-
-  Draws the border of a rectangle.
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.Frame(DC: HDC; const ARect: TRect): Integer;
-begin
-  Result := 0;
-
-  if not IsValidDC(DC) then Exit;
-
-  TQtDeviceContext(DC).drawRect(ARect.Left, ARect.Top,
-   ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
-
-  Result := 1;
-end;
-
-{------------------------------------------------------------------------------
   Function: Frame3D
   Params:  none
   Returns: Nothing

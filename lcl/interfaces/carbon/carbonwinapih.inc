@@ -91,7 +91,6 @@ function FloodFill(DC: HDC; X, Y: Integer;
                    Color: TGraphicsColor;
                    FillStyle: TGraphicsFillStyle;
                    Brush: HBRUSH): Boolean; override;
-function Frame(DC: HDC; const ARect: TRect): Integer; override;
 function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const Style : TBevelCut): Boolean; override;
 function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; override;
 

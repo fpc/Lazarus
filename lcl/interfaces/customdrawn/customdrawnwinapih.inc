@@ -93,8 +93,7 @@ function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  overr
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
-(*function FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool; override;
-function Frame(DC: HDC; const ARect: TRect): Integer; override;*)
+//function FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool; override;
 function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const Style : TBevelCut): Boolean; override;
 (*function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; override;
 

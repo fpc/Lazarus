@@ -1015,10 +1015,15 @@ end;
   Drawing the border of a rectangle with the current pen
  ------------------------------------------------------------------------------}
 procedure TCanvas.Frame(const ARect: TRect);
+var
+  OldBrushStyle: TFPBrushStyle;
 begin
   Changing;
   RequiredState([csHandleValid, csPenValid]);
-  LCLIntf.Frame(FHandle, ARect);
+  OldBrushStyle := Brush.Style;
+  Brush.Style := bsClear;
+  Rectangle(ARect);
+  Brush.Style := OldBrushStyle;
   Changed;
 end;
 

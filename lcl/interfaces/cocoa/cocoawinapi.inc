@@ -476,20 +476,6 @@ begin
   end;
 end;
 
-function TCocoaWidgetSet.Frame(DC: HDC; const ARect: TRect): Integer;
-var
-  ctx: TCocoaContext;
-begin
-  ctx := CheckDC(DC);
-  if Assigned(ctx) then
-  begin
-    ctx.Frame(ARect);
-    Result := 1;
-  end
-  else
-    Result := 0;
-end;
-
 function TCocoaWidgetSet.Frame3d(DC: HDC; var ARect: TRect;
   const FrameWidth: integer; const Style: TBevelCut): Boolean;
 var

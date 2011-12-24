@@ -344,11 +344,6 @@ begin
   Result:=false;
 end;
 
-function TWidgetSet.Frame(DC: HDC; const ARect: TRect): integer;
-begin
-  Result:= 0;
-end;
-
 function TWidgetSet.Frame3d(DC: HDC; var ARect: TRect;
   const FrameWidth: integer; const Style: TGraphicsBevelCut): boolean;
 begin

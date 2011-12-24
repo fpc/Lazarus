@@ -200,11 +200,6 @@ begin
   Result := WidgetSet.FontIsMonoSpace(Font);
 end;
 
-function Frame(DC: HDC; const ARect: TRect): Integer;
-begin
-  Result := WidgetSet.Frame(DC, ARect);
-end;
-
 function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth: integer;
   const Style: TGraphicsBevelCut): boolean;
 begin

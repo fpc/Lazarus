@@ -1025,29 +1025,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  Frame
-  Params:  DC    - Handle to device context
-           ARect - Bounding box of frame
-  Returns: > 0 if the function succeeds
-
-  Draws a border in Carbon native style
- ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.Frame(DC: HDC; const ARect: TRect): Integer;
-begin
-  Result := 0;
-
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCarbonWidgetSet.Frame DC: ' + DbgS(DC) + ' R: ' + DbgS(ARect));
-  {$ENDIF}
-  
-  if not CheckDC(DC, 'Frame') then Exit;
-  
-  TCarbonDeviceContext(DC).Frame(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
-  
-  Result := 1;
-end;
-
-{------------------------------------------------------------------------------
   Method:  Frame3D
   Params:  DC         - Handle to device context
            ARect      - Bounding box of frame
