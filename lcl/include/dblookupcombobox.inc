@@ -39,7 +39,7 @@ begin
     ItemIndex := Items.IndexOf(Text);
   i := ItemIndex;
   if i <> -1 then
-    FLookup.UpdateData(i)
+    FLookup.UpdateData(i, FScrollListDataset)
   else
     Text := '';
 end;

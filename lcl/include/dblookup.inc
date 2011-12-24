@@ -328,7 +328,7 @@ begin
     Result := Null;
 end;
 
-procedure TDBLookup.UpdateData(ValueIndex: Integer);
+procedure TDBLookup.UpdateData(ValueIndex: Integer; ScrollDataset: Boolean);
 var
   I: Integer;
   Key: Variant;
@@ -351,6 +351,8 @@ begin
     for I := 0 to FDataFields.Count -1 do
       TField(FDataFields[I]).Value := Key[I];
   end;
+  if ScrollDataset then
+    FListLink.DataSet.Locate(FKeyFieldNames, Key, []);
 end;
 
 function TDBLookup.GetKeyValue(ValueIndex: Integer): Variant;

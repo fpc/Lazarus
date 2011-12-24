@@ -33,7 +33,7 @@ procedure TDBLookupListBox.UpdateData(Sender: TObject);
 begin
   if (ItemIndex < 0) then
     Exit;
-  FLookup.UpdateData(ItemIndex);
+  FLookup.UpdateData(ItemIndex, FScrollListDataset);
 end;
 
 procedure TDBLookupListBox.ActiveChange(Sender: TObject);

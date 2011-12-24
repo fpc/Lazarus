@@ -156,7 +156,7 @@ Type
     destructor Destroy; override;
     procedure Initialize(AControlDataLink: TFieldDataLink; AControlItems: TStrings);
     function KeyFieldValue: Variant;
-    procedure UpdateData(ValueIndex: Integer);
+    procedure UpdateData(ValueIndex: Integer; ScrollDataset: Boolean);
     function  GetKeyValue(ValueIndex: Integer): Variant;
     function  GetKeyIndex: Integer;
     function  GetKeyIndex(const AKeyValue: Variant): Integer;
@@ -419,6 +419,7 @@ Type
   TDBLookupListBox = class(TCustomDBListBox)
   private
     FLookup: TDBLookup;
+    FScrollListDataset: Boolean;
     procedure ActiveChange(Sender: TObject);
     function GetKeyField: string;
     function GetKeyValue: Variant;
@@ -485,6 +486,7 @@ Type
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
+    property ScrollListDataset: Boolean read FScrollListDataset write FScrollListDataset default False;
     property ShowHint;
     property Sorted;
 //    property Style;
@@ -739,6 +741,7 @@ Type
   TDBLookupComboBox = class(TCustomDBComboBox)
   private
     FLookup: TDBLookup;
+    FScrollListDataset: Boolean;
     procedure ActiveChange(Sender: TObject);
     function GetKeyField: string;
     function GetKeyValue: variant;
@@ -819,6 +822,7 @@ Type
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
+    property ScrollListDataset: Boolean read FScrollListDataset write FScrollListDataset default False;
     property ShowHint;
     property Sorted;
     property Style;
