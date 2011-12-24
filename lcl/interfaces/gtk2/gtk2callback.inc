@@ -242,8 +242,6 @@ begin
     // this is a normal lcl wigdet
 
     MainWidget:=GetMainWidget(Widget);
-    if MainWidget=nil then
-      MainWidget:=Widget;
     WinWidgetInfo:=GetWidgetInfo(MainWidget,true);
     LCLObject:=GetLCLObject(MainWidget);
     if (LCLObject<>nil) and (WinWidgetInfo<>nil) then begin

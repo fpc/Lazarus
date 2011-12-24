@@ -4851,8 +4851,6 @@ begin
   if (csfUpdateSignalMask in ASFlags) and (AReqSignalMask <> 0)
   then begin
     MainWidget := GetMainWidget(PGtkWidget(AnObject));
-    if MainWidget=nil
-    then MainWidget := PGtkWidget(AnObject);
     WinWidgetInfo := GetWidgetInfo(MainWidget,true);
     WinWidgetInfo^.EventMask := WinWidgetInfo^.EventMask or AReqSignalMask;
   end;
@@ -4982,8 +4980,6 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
     DesignFlags: TConnectSignalFlags;
   begin
     //if AWinControl is TListView then DebugLn('ConnectSignals A ',DbgS(TheWidget));
-    if TheWidget=nil then exit;
-    
     // check if TheWidget belongs to another LCL object
     LCLObject:=GetLCLObject(TheWidget);
     HiddenLCLObject:=GetHiddenLCLObject(TheWidget);

@@ -477,8 +477,6 @@ begin
     // gCore is the working widget (e.g. TListBox has a scrolling widget (=main widget) and a tree widget (=core widget))
     gCore:=PGtkObject(Info^.CoreWidget);
     gMain:=GetMainWidget(gObject);
-    if (gMain=nil) then
-      gMain:=gObject;
     if (gMain<>gObject) then
       DebugLn(['TGtkWidgetSet.SetCallback WARNING: gObject<>MainWidget ',DbgSName(ALCLObject)]);
 
