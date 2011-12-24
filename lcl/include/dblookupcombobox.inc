@@ -39,7 +39,9 @@ begin
     ItemIndex := Items.IndexOf(Text);
   i := ItemIndex;
   if i <> -1 then
-    FLookup.UpdateData(i);
+    FLookup.UpdateData(i)
+  else
+    Text := '';
 end;
 
 procedure TDBLookupComboBox.ActiveChange(Sender: TObject);
