@@ -1113,19 +1113,17 @@ begin
   // clipboard
   for i:=0 to ClipboardSelectionData.Count-1 do begin
     ced:=PClipboardEventData(ClipboardSelectionData[i]);
-    if ced^.Data.Data<>nil then FreeMem(ced^.Data.Data);
+    FreeMem(ced^.Data.Data);
     Dispose(ced);
   end;
   for c:=Low(TClipboardType) to High(TClipboardType) do
     FreeClipboardTargetEntries(c);
-  ClipboardSelectionData.Free;
-  ClipboardSelectionData:=nil;
+  FreeAndNil(ClipboardSelectionData);
 
   // charset encodings
   if CharSetEncodingList<>nil then begin
     ClearCharSetEncodings;
-    CharSetEncodingList.Free;
-    CharSetEncodingList:=nil;
+    FreeAndNil(CharSetEncodingList);
   end;
 end;
 
