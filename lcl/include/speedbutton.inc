@@ -490,6 +490,15 @@ begin
     Result := inherited DialogChar(Message);
 end;
 
+procedure TCustomSpeedButton.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  r: TRect;
+begin
+  r:=Rect(0,0,0,0);
+  MeasureDraw(false,r,PreferredWidth,PreferredHeight);
+end;
+
 procedure TCustomSpeedButton.MeasureDraw(Draw: boolean;
   PaintRect: TRect; out PreferredWidth, PreferredHeight: integer);
 var

@@ -301,6 +301,8 @@ type
     function GetNumGlyphs: Integer;
     procedure GlyphChanged(Sender: TObject);
     function  DialogChar(var Message: TLMKey): boolean; override;
+    procedure CalculatePreferredSize(var PreferredWidth,
+      PreferredHeight: integer; WithThemeSpace: Boolean); override;
     procedure MeasureDraw(Draw: boolean; PaintRect: TRect;
                           out PreferredWidth, PreferredHeight: integer);
     procedure MouseEnter; override;
