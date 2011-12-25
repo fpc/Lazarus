@@ -161,6 +161,8 @@ public class LCLActivity extends Activity
     localpaint.setTextSize(lcltextsize);
     localpaint.getTextBounds(lcltext, 0, lcltext.length(), localbounds);
     lclwidth = localbounds.width();
+    // Painter.getTextBounds consistently gives us a too small size, so work around that
+    lclwidth = lclwidth + (3 * lcltextsize) / 16;
     // Don't use just localbounds.height() from the source text
     // because it will calculate the minimum necessary height,
     // but we can't easily use that to draw text because it draws relative to the baseline
