@@ -1937,22 +1937,14 @@ class procedure TGtk2WSCustomComboBox.SetText(const AWinControl: TWinControl;
 var
   WidgetInfo: PWidgetInfo;
   Entry: PGtkWidget;
-  Index: Integer;
 begin
   WidgetInfo := GetWidgetInfo(Pointer(AWinControl.Handle));
   // we use user ChangeLock to not signal onchange
   Inc(WidgetInfo^.ChangeLock);
-  if gtk_is_combo_box_entry(WidgetInfo^.CoreWidget) then begin
+  if gtk_is_combo_box_entry(WidgetInfo^.CoreWidget) then
+  begin
     Entry := GTK_BIN(WidgetInfo^.CoreWidget)^.child;
     gtk_entry_set_text(PGtkEntry(Entry), PChar(AText));
-  end
-  else begin
-    // if not an entry it is a readonly list so we will try to comply by matching the text to an item
-    if AText = '' then
-      Index := -1
-    else
-      Index := TCustomComboBox(AWinControl).Items.IndexOf(AText);
-    SetItemIndex(TCustomComboBox(AWinControl), Index);
   end;
   Dec(WidgetInfo^.ChangeLock);
 end;
