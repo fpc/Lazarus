@@ -63,6 +63,7 @@ uses
   Translations,
   FileUtil,
   LConvEncoding,
+  contnrs,
   {$ELSE}
   Windows,
   {$ENDIF}

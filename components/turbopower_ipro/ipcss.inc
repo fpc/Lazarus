@@ -96,7 +96,7 @@
  { TCSSGlobalProps }
 
  TCSSGlobalProps = class
-   FElements: TStringList;
+   FElements: TFPObjectHashTable;
  public
    constructor Create;
    destructor Destroy; override;
@@ -481,6 +481,7 @@ begin
     's': if S = 'solid' then Result := cbsSolid;
   end;
 end;
+
 
 { TCSSReader }
 
@@ -870,15 +871,13 @@ end;
 
 constructor TCSSGlobalProps.Create;
 begin
-  FElements := TStringList.Create;
+  FElements := TFPObjectHashTable.Create(True);
 end;
 
 destructor TCSSGlobalProps.Destroy;
 var
   i: Integer;
 begin
-  for i := 0 to FElements.Count-1 do
-    FElements.Objects[i].Free;
   FElements.Free;
   inherited Destroy;
 end;
@@ -889,21 +888,26 @@ var
   ElementName: String;
 
   procedure LookForElement(const aElement: string);
-  var
-    ElementIndex: Integer;
   begin
     if length(ClassID) > 0 then
-      ElementName := Lowercase(aElement+'.'+ClassId)
+      ElementName := aElement + '.' + ClassId
     else
-      ElementName := lowercase(aElement);
+      ElementName := aElement;
 
-    ElementIndex := FElements.IndexOf(ElementName);
-
-    if ElementIndex>=0 then begin
-      result := TCSSProps(FElements.Objects[ElementIndex]);
-    end;
-
+    // The element names are already lowercase, this is
+    // already done in the css parser. And the html parser
+    // can only deliver its own built-in node names anyways.
+    // Also the names are not expected to be longer than
+    // ShortString (this would need to be a ridiculously
+    // long ClassID), should this ever happen then
+    // it would be silently truncated in the following
+    // type conversion to ShortString.
+    {$warning GetElement() is called a *lot* of times, this
+    is one of the hot spots, maybe some of the AnsiString
+    usage around here could be avoided a little bit}
+    Result := TCSSProps(FElements.Items[ElementName]);
   end;
+
 begin
   Result := nil;
   if (length(ClassID) = 0) and (length(AElementID) = 0) then
@@ -916,7 +920,7 @@ begin
   if (Result = nil) and CreateIfNotExist then
   begin
     Result := TCSSProps.Create;
-    FElements.AddObject(ElementName, Result);
+    FElements.Add(ElementName, Result);
   end;
 end;
 
