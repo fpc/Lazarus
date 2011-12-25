@@ -137,15 +137,23 @@ implementation
 
 {$I gtk2stdpixmaps.inc}
 
-function GetColumnButtonFromTreeView(AWidget: PGtkWidget): PGtkWidget;
+function GetColumnButtonFromTreeView(AWidget: PGtkWidget; Part: Integer): PGtkWidget;
 var
   AColumn: PGtkTreeViewColumn;
+  AIndex: Integer;
 begin
   Result := nil;
   if not GTK_IS_TREE_VIEW(AWidget) then
     exit;
 
-  AColumn := gtk_tree_view_get_column(PGtkTreeView(AWidget), 0);
+  if Part = HP_HEADERITEMLEFT then
+    AIndex := 0
+  else if Part = HP_HEADERITEMRIGHT then
+    AIndex := 2
+  else
+    AIndex := 1;
+
+  AColumn := gtk_tree_view_get_column(PGtkTreeView(AWidget), AIndex);
   if AColumn = nil then
     Exit;
   Result := AColumn^.button;
@@ -484,7 +492,7 @@ begin
     case Details.Element of
       teHeader:
         begin
-          Result.Widget := GetColumnButtonFromTreeView(GetStyleWidget(lgsTreeView));
+          Result.Widget := GetColumnButtonFromTreeView(GetStyleWidget(lgsTreeView), Details.Part);
           if Result.Widget = nil then
             Result.Widget := GetStyleWidget(lgsTreeView);
           Result.Style := gtk_widget_get_style(Result.Widget);

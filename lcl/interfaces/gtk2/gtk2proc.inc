@@ -7902,9 +7902,11 @@ begin
         if not GtkWidgetIsA(StyleObject^.Widget,GTK_WINDOW_GET_TYPE) then begin
           //DebugLn(['GetStyleWithName realizing ...']);
           gtk_widget_realize(StyleObject^.Widget);
-          //columns of treeview should be added after realize otherwise they will have invalid styles
+          //treeview columns must be added after realize otherwise they will have invalid styles
           if lgs = lgsTreeView then
           begin
+            gtk_tree_view_append_column(PGtkTreeView(StyleObject^.Widget), gtk_tree_view_column_new);
+            gtk_tree_view_append_column(PGtkTreeView(StyleObject^.Widget), gtk_tree_view_column_new);
             gtk_tree_view_append_column(PGtkTreeView(StyleObject^.Widget), gtk_tree_view_column_new);
           end;
           //DebugLn('AddToStyleWindow realized: ',WName,' ',GetWidgetDebugReport(StyleObject^.Widget));
