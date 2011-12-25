@@ -11,9 +11,9 @@ inherited CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompl
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 22
+    Height = 18
     Top = 6
-    Width = 206
+    Width = 185
     BorderSpacing.Around = 6
     Caption = 'ICAddSemicolonCheckBox'
     TabOrder = 0
@@ -23,9 +23,9 @@ inherited CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompl
     AnchorSideTop.Control = ICAddSemicolonCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 22
-    Top = 34
-    Width = 243
+    Height = 18
+    Top = 30
+    Width = 219
     BorderSpacing.Around = 6
     Caption = 'ICAddAssignOperatorCheckBox'
     TabOrder = 1
@@ -35,9 +35,9 @@ inherited CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompl
     AnchorSideTop.Control = ICAddAssignOperatorCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 22
-    Top = 62
-    Width = 247
+    Height = 18
+    Top = 54
+    Width = 217
     BorderSpacing.Around = 6
     Caption = 'ICAutoStartAfterPointCheckBox'
     TabOrder = 2
@@ -47,25 +47,40 @@ inherited CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompl
     AnchorSideTop.Control = ICAutoStartAfterPointCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 22
-    Top = 90
-    Width = 300
+    Height = 18
+    Top = 78
+    Width = 267
     BorderSpacing.Around = 6
     Caption = 'ICAutoAddParameterBracketsCheckBox'
     TabOrder = 3
   end
   object ICShowHelpCheckBox: TCheckBox[4]
     AnchorSideLeft.Control = ICAddSemicolonCheckBox
-    AnchorSideTop.Control = ICAutoAddParameterBracketsCheckBox
+    AnchorSideTop.Control = ICReplaceCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 22
-    Top = 132
-    Width = 175
+    Height = 18
+    Top = 146
+    Width = 157
     BorderSpacing.Top = 20
     Caption = 'ICShowHelpCheckBox'
     ParentShowHint = False
     ShowHint = True
     TabOrder = 4
+  end
+  object ICReplaceCheckBox: TCheckBox[5]
+    AnchorSideLeft.Control = ICAddSemicolonCheckBox
+    AnchorSideTop.Control = ICAutoAddParameterBracketsCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 18
+    Top = 108
+    Width = 144
+    BorderSpacing.Top = 12
+    BorderSpacing.Bottom = 6
+    Caption = 'ICReplaceCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 5
   end
 end

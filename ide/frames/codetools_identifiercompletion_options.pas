@@ -37,9 +37,9 @@ type
     ICAutoStartAfterPointCheckBox: TCheckBox;
     ICAddAssignOperatorCheckBox: TCheckBox;
     ICAddSemicolonCheckBox: TCheckBox;
+    ICReplaceCheckBox: TCheckBox;
     ICShowHelpCheckBox: TCheckBox;
   private
-    { private declarations }
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -66,6 +66,8 @@ begin
   ICAddAssignOperatorCheckBox.Caption:=dlgAddAssignmentOperator;
   ICAutoStartAfterPointCheckBox.Caption:=lisAutomaticallyInvokeAfterPoint;
   ICAutoAddParameterBracketsCheckBox.Caption:=lisAddParameterBrackets;
+  ICReplaceCheckBox.Caption:=lisReplaceWholeIdentifier;
+  ICReplaceCheckBox.Hint:=lisEnableReplaceWholeIdentifierDisableReplacePrefix;
   ICShowHelpCheckBox.Caption:=lisShowHelp;
   ICShowHelpCheckBox.Hint:=lisBestViewedByInstallingAHTMLControlLikeTurbopowerip;
 end;
@@ -79,6 +81,7 @@ begin
     ICAddAssignOperatorCheckBox.Checked := IdentComplAddAssignOperator;
     ICAutoStartAfterPointCheckBox.Checked := IdentComplAutoStartAfterPoint;
     ICAutoAddParameterBracketsCheckBox.Checked:=IdentComplAddParameterBrackets;
+    ICReplaceCheckBox.Checked:=IdentComplReplaceIdentifier;
     ICShowHelpCheckBox.Checked:=IdentComplShowHelp;
   end;
 end;
@@ -92,6 +95,7 @@ begin
     IdentComplAddAssignOperator := ICAddAssignOperatorCheckBox.Checked;
     IdentComplAutoStartAfterPoint := ICAutoStartAfterPointCheckBox.Checked;
     IdentComplAddParameterBrackets:=ICAutoAddParameterBracketsCheckBox.Checked;
+    IdentComplReplaceIdentifier:=ICReplaceCheckBox.Checked;
     IdentComplShowHelp:=ICShowHelpCheckBox.Checked;
   end;
 end;

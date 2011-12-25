@@ -5031,6 +5031,9 @@ resourcestring
   lisInsertPrintShortTag = 'Insert PrintShort tag';
   lisAutomaticallyInvokeAfterPoint = 'Automatically invoke after point';
   lisAddParameterBrackets = 'Add parameter brackets';
+  lisReplaceWholeIdentifier = 'Replace whole identifier';
+  lisEnableReplaceWholeIdentifierDisableReplacePrefix = 'Enable = replace '
+    +'whole identifier, Disable = replace prefix';
   lisShowHelp = 'Show help';
   lisBestViewedByInstallingAHTMLControlLikeTurbopowerip = 'Best viewed by '
     +'installing a HTML control like turbopoweriprodsgn';

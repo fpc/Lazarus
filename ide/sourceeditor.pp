@@ -1652,30 +1652,34 @@ Begin
   case CurrentCompletionType of
 
     ctIdentCompletion:
-      if Manager.ActiveCompletionPlugin<>nil then
       begin
-        Manager.ActiveCompletionPlugin.Complete(Value,SourceValue,
-           SourceStart,SourceEnd,KeyChar,Shift);
-        Manager.FActiveCompletionPlugin:=nil;
-      end else begin
-        // add to history
-        CodeToolBoss.IdentifierHistory.Add(
-          CodeToolBoss.IdentifierList.FilteredItems[Position]);
-        // get value
-        NewValue:=GetIdentCompletionValue(self, KeyChar, ValueType, CursorToLeft);
-        if ValueType=icvIdentifier then ;
-        // insert value plus special chars like brackets, semicolons, ...
-        if ValueType <> icvNone then
-          Editor.TextBetweenPointsEx[SourceStart, SourceEnd, scamEnd] := NewValue;
-        if CursorToLeft>0 then
+        if not CodeToolsOpts.IdentComplReplaceIdentifier then
+          SourceEnd:=Editor.LogicalCaretXY;
+        if Manager.ActiveCompletionPlugin<>nil then
         begin
-          NewCaretXY:=Editor.CaretXY;
-          dec(NewCaretXY.X,CursorToLeft);
-          Editor.CaretXY:=NewCaretXY;
+          Manager.ActiveCompletionPlugin.Complete(Value,SourceValue,
+             SourceStart,SourceEnd,KeyChar,Shift);
+          Manager.FActiveCompletionPlugin:=nil;
+        end else begin
+          // add to history
+          CodeToolBoss.IdentifierHistory.Add(
+            CodeToolBoss.IdentifierList.FilteredItems[Position]);
+          // get value
+          NewValue:=GetIdentCompletionValue(self, KeyChar, ValueType, CursorToLeft);
+          if ValueType=icvIdentifier then ;
+          // insert value plus special chars like brackets, semicolons, ...
+          if ValueType <> icvNone then
+            Editor.TextBetweenPointsEx[SourceStart, SourceEnd, scamEnd] := NewValue;
+          if CursorToLeft>0 then
+          begin
+            NewCaretXY:=Editor.CaretXY;
+            dec(NewCaretXY.X,CursorToLeft);
+            Editor.CaretXY:=NewCaretXY;
+          end;
+          ccSelection := '';
+          Value:='';
+          SourceEnd := SourceStart;
         end;
-        ccSelection := '';
-        Value:='';
-        SourceEnd := SourceStart;
       end;
 
     ctTemplateCompletion:
