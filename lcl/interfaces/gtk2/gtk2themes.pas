@@ -487,6 +487,7 @@ begin
           Result.Widget := GetColumnButtonFromTreeView(GetStyleWidget(lgsTreeView));
           if Result.Widget = nil then
             Result.Widget := GetStyleWidget(lgsTreeView);
+          Result.Style := gtk_widget_get_style(Result.Widget);
           Result.State := GtkButtonMap[Details.State];
           if Details.State = PBS_PRESSED then
             Result.Shadow := GTK_SHADOW_IN
