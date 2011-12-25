@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="PoChecker"/>
+    <AddToProjectUsesSection Value="True"/>
+    <Author Value="Bart Broersma"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <UseMsgFile Value="True"/>
+        </CompilerMessages>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Check the validity of translated PO files.
+"/>
+    <Version Major="1"/>
+    <Files Count="7">
+      <Item1>
+        <Filename Value="resultdlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item1>
+      <Item2>
+        <Filename Value="resultdlg.pp"/>
+        <UnitName Value="ResultDlg"/>
+      </Item2>
+      <Item3>
+        <Filename Value="pofamilies.pp"/>
+        <UnitName Value="PoFamilies"/>
+      </Item3>
+      <Item4>
+        <Filename Value="pocheckermain.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="pocheckermain"/>
+      </Item4>
+      <Item5>
+        <Filename Value="simplepofiles.pp"/>
+        <UnitName Value="SimplePoFiles"/>
+      </Item5>
+      <Item6>
+        <Filename Value="resultdlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item6>
+      <Item7>
+        <Filename Value="pocheckermain.lfm"/>
+        <Type Value="LFM"/>
+      </Item7>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="4">
+      <Item1>
+        <PackageName Value="FCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="SynEdit"/>
+      </Item3>
+      <Item4>
+        <PackageName Value="LCL"/>
+      </Item4>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
