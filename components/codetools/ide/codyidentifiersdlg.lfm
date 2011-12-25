@@ -13,8 +13,8 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
   LCLVersion = '0.9.31'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 278
+    Height = 30
+    Top = 288
     Width = 540
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -29,9 +29,9 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
   end
   object InfoLabel: TLabel
     Left = 8
-    Height = 18
+    Height = 17
     Top = 8
-    Width = 61
+    Width = 59
     Caption = 'InfoLabel'
     ParentColor = False
     WordWrap = True
@@ -42,9 +42,9 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = StartsSpeedButton
     Left = 6
-    Height = 27
-    Top = 64
-    Width = 466
+    Height = 22
+    Top = 59
+    Width = 409
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 10
@@ -62,8 +62,8 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = UnitLabel
     Left = 6
-    Height = 118
-    Top = 91
+    Height = 144
+    Top = 81
     Width = 540
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
@@ -72,17 +72,15 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     ItemHeight = 0
     OnClick = ItemsListBoxClick
     OnSelectionChange = ItemsListBoxSelectionChange
-    ScrollWidth = 538
     TabOrder = 2
-    TopIndex = -1
   end
   object UnitLabel: TLabel
     AnchorSideLeft.Control = InfoLabel
     AnchorSideBottom.Control = PackageLabel
     Left = 8
-    Height = 18
-    Top = 210
-    Width = 63
+    Height = 17
+    Top = 226
+    Width = 60
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 1
     Caption = 'UnitLabel'
@@ -92,9 +90,9 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideLeft.Control = InfoLabel
     AnchorSideBottom.Control = AddToImplementationUsesCheckBox
     Left = 8
-    Height = 18
-    Top = 229
-    Width = 90
+    Height = 17
+    Top = 244
+    Width = 85
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 1
     Caption = 'PackageLabel'
@@ -105,9 +103,9 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideTop.Control = InfoLabel
     AnchorSideTop.Side = asrBottom
     Left = 8
-    Height = 22
-    Top = 32
-    Width = 207
+    Height = 18
+    Top = 31
+    Width = 197
     BorderSpacing.Top = 6
     Caption = 'HideOtherProjectsCheckBox'
     OnChange = HideOtherProjectsCheckBoxChange
@@ -117,9 +115,9 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideLeft.Control = PackageLabel
     AnchorSideBottom.Control = ButtonPanel1
     Left = 8
-    Height = 22
-    Top = 250
-    Width = 264
+    Height = 18
+    Top = 264
+    Width = 253
     Anchors = [akLeft, akBottom]
     BorderSpacing.Top = 3
     BorderSpacing.Bottom = 3
@@ -133,10 +131,10 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideRight.Control = ContainsSpeedButton
     AnchorSideBottom.Control = FilterEdit
     AnchorSideBottom.Side = asrBottom
-    Left = 472
-    Height = 27
-    Top = 64
-    Width = 51
+    Left = 415
+    Height = 22
+    Top = 59
+    Width = 71
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
     Caption = 'Starts with'
@@ -152,16 +150,17 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = FilterEdit
     AnchorSideBottom.Side = asrBottom
-    Left = 523
-    Height = 27
-    Top = 64
-    Width = 23
+    Left = 486
+    Height = 22
+    Top = 59
+    Width = 60
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
     Caption = 'Contains'
     GroupIndex = 1
     NumGlyphs = 0
+    OnClick = ContainsSpeedButtonClick
     ShowHint = True
     ParentShowHint = False
   end

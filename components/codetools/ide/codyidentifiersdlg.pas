@@ -130,6 +130,7 @@ type
     StartsSpeedButton: TSpeedButton;
     UnitLabel: TLabel;
     procedure ButtonPanel1OKButtonClick(Sender: TObject);
+    procedure ContainsSpeedButtonClick(Sender: TObject);
     procedure FilterEditChange(Sender: TObject);
     procedure FilterEditExit(Sender: TObject);
     procedure FilterEditKeyDown(Sender: TObject; var Key: Word;
@@ -619,6 +620,11 @@ begin
   SetDlgAction(cidaUseIdentifier);
 end;
 
+procedure TCodyIdentifiersDlg.ContainsSpeedButtonClick(Sender: TObject);
+begin
+  UpdateItemsList;
+end;
+
 procedure TCodyIdentifiersDlg.FilterEditExit(Sender: TObject);
 begin
   if FItems=nil then exit;
@@ -787,7 +793,7 @@ var
         cifStartsWith:
           if not ComparePrefixIdent(FilterP,PChar(Pointer(Item.Name))) then continue;
         cifContains:
-          if System.Pos(FLastFilter,Item.Name)<1 then continue;
+          if IdentifierPos(FilterP,PChar(Pointer(Item.Name)))<0 then continue;
         end;
       end;
       if Found>MaxItems then begin
