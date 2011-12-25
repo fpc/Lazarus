@@ -176,6 +176,18 @@ public class LCLActivity extends Activity
     lcltexttop = (int) localpaint.getFontMetrics().top;
   }
 
+  // input: String lcltext, int lclmaxwidth, int lcltextsize
+  // output: int lclmaxcount
+  public void LCLDoGetTextPartialWidths()
+  {
+    Paint localpaint = new Paint();
+    Rect localbounds = new Rect();
+    localpaint.setTextSize(lcltextsize);
+
+    float localmaxwidth = (float) lclmaxwidth;
+    lclmaxcount = localpaint.breakText(lcltext, true, localmaxwidth, lclpartialwidths);
+  }
+
   // input: String lcltext, int lclwidth, int lclheight
   // output: lclbitmap
   public void LCLDoDrawText()
@@ -319,6 +331,9 @@ public class LCLActivity extends Activity
   public int lcltextdescent;
   public int lcltextleading;
   public int lcltexttop;
+  public int lclmaxwidth;
+  public int lclmaxcount;
+  public float[] lclpartialwidths;
   //
   public int lcltimerinterval;
   public Runnable lcltimerid;

@@ -329,6 +329,9 @@ begin
   javaField_lcltextdescent := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltextdescent', 'I');
   javaField_lcltextleading := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltextleading', 'I');
   javaField_lcltexttop := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltexttop', 'I');
+  javaField_lclmaxwidth := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclmaxwidth', 'I');
+  javaField_lclmaxcount := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclmaxcount', 'I');
+  javaField_lclpartialwidths := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclpartialwidths', '[F');
   // Timer
   javaField_lcltimerinterval := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltimerinterval', 'I');
   javaField_lcltimerid := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltimerid', 'Ljava/lang/Runnable;');
@@ -348,6 +351,7 @@ begin
 
   // Read all method IDs
   javaMethod_LCLDoGetTextBounds := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoGetTextBounds', '()V');
+  javaMethod_LCLDoGetTextPartialWidths := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoGetTextPartialWidths', '()V');
   javaMethod_LCLDoDrawText := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoDrawText', '()V');
   javaMethod_LCLDoShowMessageBox := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoShowMessageBox', '()V');
   javaMethod_LCLDoCreateTimer := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoCreateTimer', '()V');

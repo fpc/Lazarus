@@ -282,6 +282,9 @@ var
   javaField_lcltextdescent: JfieldID=nil;
   javaField_lcltextleading: JfieldID=nil;
   javaField_lcltexttop: JfieldID=nil;
+  javaField_lclmaxwidth: JfieldID=nil;
+  javaField_lclmaxcount: JfieldID=nil;
+  javaField_lclpartialwidths: JfieldID=nil;
   // Timer
   javaField_lcltimerinterval: JfieldID=nil;
   javaField_lcltimerid: JfieldID=nil;
@@ -295,6 +298,7 @@ var
 
   // Methods of our Activity
   javaMethod_LCLDoGetTextBounds: jmethodid = nil;
+  javaMethod_LCLDoGetTextPartialWidths: jmethodid = nil;
   javaMethod_LCLDoDrawText: jmethodid = nil;
   javaMethod_LCLDoShowMessageBox: jmethodid = nil;
   javaMethod_LCLDoCreateTimer: jmethodid = nil;

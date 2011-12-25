@@ -4066,69 +4066,66 @@ end;
 function TCDWidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar; Count,
   MaxWidth: Integer; MaxCount, PartialWidths: PInteger; var Size: TSize
   ): Boolean;
-{var
+var
+  LazDC: TLazCanvas absolute DC;
+  lTextStr: string;
+  lMaxCount: Integer;
+  arraydata_obj: JFloatArray;
+  arraydata: PSingle;
   i: Integer;
-  w: Integer;
-  AStr: WideString;
-  Accu: Integer;}
+  lFontSize: Integer;
+  lJavaString: jstring;
+  lIsCopy: jboolean;
 begin
   {$ifdef VerboseCDText}
     DebugLn(Format('[WinAPI GetTextExtentExPoint] DC=%x javaEnvRef=%x Str=%s',
       [DC, PtrInt(javaEnvRef), StrPas(Str)]));
   {$endif}
+//  Result := inherited GetTextExtentExPoint(DC, Str, Count, MaxWidth, MaxCount, PartialWidths, Size);
+
   Result := False;
-  Size.cx := 200;
-  Size.cy := 200;
-{  if not IsValidDC(DC) then Exit;
-  with TQtDeviceContext(DC) do
+
+  if not IsValidDC(DC) then Exit;
+
+  lTextStr := StrPas(Str);
+  if Count <> Length(lTextStr) then SetLength(lTextStr, Count);
+
+  if (LazDC.Font = nil) or (LazDC.Font.Size = 0) then lFontSize := DefaultFontAndroidSize
+  else lFontSize := LazDC.Font.Size;
+
+  if (javaEnvRef = nil) then Exit;
+
+  // Prepare the input
+  lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(lTextStr));
+  javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, lFontSize);
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lclmaxwidth, MaxWidth);
+
+  // Call the method
+  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoGetTextBounds);
+
+  // Read the output
+  lMaxCount := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclmaxcount);
+
+  if MaxCount <> nil then MaxCount^ := lMaxCount;
+
+  if PartialWidths <> nil then
   begin
-    AStr := GetUtf8String(Str);
-    Size.cx := 0;
-    Size.cY := Font.Metrics.Height;
-    if PartialWidths = nil then
-    begin
-      if MaxCount <> nil then
-      begin
-        Size.cx := Font.Metrics.width(@AStr);
-        Accu := 0;
-        if MaxWidth <= 0 then
-          MaxCount^ := 0
-        else
-          for i := 0 to Count - 1 do
-          begin
-            W := QFontMetrics_charWidth(Font.Metrics.FHandle, @AStr, i);
-            Accu := Accu + W;
-            if Accu <= MaxWidth then
-              MaxCount^ := i + 1
-            else
-              break;
-          end;
-      end;
-    end else
-    begin
-      if MaxCount <> nil then
-        MaxCount^ := 0;
-      for i := 0 to Count - 1 do
-      begin
-        w := QFontMetrics_charWidth(Font.Metrics.FHandle, @AStr, i);
-        Inc(Size.cx, w);
-        if MaxCount <> nil then
-        begin
-          if Size.cx <= MaxWidth then
-          begin
-            inc(MaxCount^);
-            PartialWidths[i] := Size.cx;
-          end else
-          begin
-            Dec(Size.cx, w);
-            break;
-          end;
-        end else
-          PartialWidths[i] := Size.cx;
-      end;
-    end;
-  end;}
-  Result := True;
+    lIsCopy := 0;
+    // Get the object field, returns JObject (because Array is instance of Object)
+    arraydata_obj := javaEnvRef^^.GetObjectField(javaEnvRef, javaActivityObject, javaField_lclpartialwidths);
+    // Get the elements (you probably have to fetch the length of the array as well
+    arraydata := javaEnvRef^^.GetFloatArrayElements(javaEnvRef, arraydata_obj, lIsCopy);
+
+    for i := 0 to lMaxCount-1 do
+      PartialWidths[i] := Round(arraydata[i]);
+
+    // Don't forget to release it
+    javaEnvRef^^.ReleaseFloatArrayElements(javaEnvRef, arraydata_obj, arraydata, 0);
+  end;
+
+  // Now calculate the general size
+  GetTextExtentPoint(DC, PChar(lTextStr), lMaxCount, Size);
 end;
 
 {------------------------------------------------------------------------------
