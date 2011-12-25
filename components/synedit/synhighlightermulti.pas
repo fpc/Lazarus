@@ -306,8 +306,7 @@ type
     property CurrentRanges: TSynHighlighterMultiRangeList read GetCurrentRanges;
     property KnownRanges[Index: Integer]: TSynHighlighterMultiRangeList read GetKnownMultiRanges;
   public
-    {$IFNDEF SYN_CPPB_1} class {$ENDIF}
-    function GetLanguageName: string; override;
+    class function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1151,8 +1150,7 @@ begin
     Result := inherited GetIdentChars;
 end;
 
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}
-function TSynMultiSyn.GetLanguageName: string;
+class function TSynMultiSyn.GetLanguageName: string;
 begin
   Result := SYNS_LangGeneralMulti;
 end;

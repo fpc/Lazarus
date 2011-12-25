@@ -363,8 +363,7 @@ type
   protected
     function GetIdentChars: TSynIdentChars; override;
   public
-    {$IFNDEF SYN_CPPB_1} class {$ENDIF}                                         //mh 2000-07-14
-    function GetLanguageName: string; override;
+    class function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
@@ -2594,16 +2593,14 @@ begin
   Result := ['%', '@', '$', '_', '0'..'9', 'a'..'z', 'A'..'Z'] + TSynSpecialChars;
 end;
 
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}                                             //mh 2000-07-14
-function TSynPerlSyn.GetLanguageName: string;
+class function TSynPerlSyn.GetLanguageName: string;
 begin
   Result := SYNS_LangPerl;
 end;
 
 initialization
   MakeIdentTable;
-{$IFNDEF SYN_CPPB_1}                                                            //mh 2000-07-14
   RegisterPlaceableHighlighter(TSynPerlSyn);
-{$ENDIF}
+
 end.
 

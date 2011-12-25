@@ -82,8 +82,7 @@ type
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource: String; override;
   public
-    {$IFNDEF SYN_CPPB_1} class {$ENDIF}                                         //mh 2000-07-14
-    function GetLanguageName: string; override;
+    class function GetLanguageName: string; override;
     function IsKeyword(const AKeyword: string): boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -91,7 +90,7 @@ type
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber:Integer); override;
+    procedure SetLine(const NewValue: String; LineNumber:Integer); override;
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
@@ -180,14 +179,14 @@ begin
   MakeMethodTables;
 end; { Create }
 
-procedure TSynPoSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber:Integer);
+procedure TSynPoSyn.SetLine(const NewValue: String; LineNumber:Integer);
 begin
   inherited;
   fLine := PChar(NewValue);
   Run := 0;
   fLineNumber := LineNumber;
   Next;
-end; { SetLine }
+end;
 
 
 procedure TSynPoSyn.IdentProc;
@@ -369,13 +368,11 @@ begin
   Result := inherited GetIdentChars; //TSynValidStringChars;
 end;
 
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}                                             //mh 2000-07-14
-function TSynPoSyn.GetLanguageName: string;
+class function TSynPoSyn.GetLanguageName: string;
 begin
   Result := SYNS_LangPo;
 end;
 
-{$IFNDEF SYN_CPPB_1}                                                            //mh 2000-07-14
 function TSynPoSyn.GetSampleSource: String;
 begin
   Result := '"Project-Id-Version: \n"' + LineEnding +
@@ -415,5 +412,5 @@ end;
 
 initialization
   RegisterPlaceableHighlighter(TSynPoSyn);
-{$ENDIF}
+
 end.

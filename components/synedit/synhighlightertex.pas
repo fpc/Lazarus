@@ -106,8 +106,7 @@ type
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource : String; override;
   public
-    {$IFNDEF SYN_CPPB_1} class {$ENDIF}
-    function GetLanguageName: string; override;
+    class function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
@@ -383,8 +382,7 @@ begin
   Result := ['_', '0'..'9', 'a'..'z', 'A'..'Z'];
 end;  { GetIdentChars }
 
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}
-function TSynTeXSyn.GetLanguageName: string;
+class function TSynTeXSyn.GetLanguageName: string;
 begin
   Result := SYNS_LangTeX;
 end;  { GetLanguageName }
@@ -411,8 +409,7 @@ begin
           '\end{document}';
 end;
 
-{$IFNDEF SYN_CPPB_1}
 initialization
   RegisterPlaceableHighlighter(TSynTeXSyn);
-{$ENDIF}
+
 end.

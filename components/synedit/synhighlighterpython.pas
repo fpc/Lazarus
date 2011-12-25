@@ -1267,9 +1267,8 @@ begin
 end;
 
 initialization
-{$IFNDEF SYN_CPPB_1}                                                            //mh 2000-07-14
   RegisterPlaceableHighlighter(TSynPythonSyn);
-{$ENDIF}
+
 finalization
   GlobalKeywords.Free;
 end.

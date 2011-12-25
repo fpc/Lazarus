@@ -162,8 +162,7 @@ type
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource : String; override;
   public
-    {$IFNDEF SYN_CPPB_1} class {$ENDIF}
-    function GetLanguageName: string; override;
+    class function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1532,8 +1531,7 @@ begin
 {end}                                                                           // DJLP 2000-08-11
 end;
 
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}
-function TSynSQLSyn.GetLanguageName: string;
+class function TSynSQLSyn.GetLanguageName: string;
 begin
   Result := SYNS_LangSQL;
 end;
@@ -1786,7 +1784,6 @@ end;
 
 initialization
   MakeIdentTable;
-{$IFNDEF SYN_CPPB_1}
   RegisterPlaceableHighlighter(TSynSQLSyn);
-{$ENDIF}
+
 end.

@@ -331,8 +331,7 @@ type
     function GetSampleSource: string; override;
     procedure SetSampleSource(Value: string); override;
   public
-    {$IFNDEF SYN_CPPB_1} class {$ENDIF}
-    function GetLanguageName: string; override;
+    class function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -2801,9 +2800,8 @@ begin
 end;
 
 initialization
-{$IFNDEF SYN_CPPB_1}
   RegisterPlaceableHighlighter(TSynUniSyn);
-{$ENDIF}
+
 end.
 
 

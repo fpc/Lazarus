@@ -163,8 +163,7 @@ type
   protected
     function GetIdentChars: TSynIdentChars; override;
   public
-    {$IFNDEF SYN_CPPB_1} class {$ENDIF}
-    function GetLanguageName: string; override;
+    class function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -903,8 +902,7 @@ begin
   DefHighLightChange(nil);
 end;
 
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}
-function TSynAnySyn.GetLanguageName: string;
+class function TSynAnySyn.GetLanguageName: string;
 begin
   Result := SYNS_LangGeneral;
 end;
@@ -1367,10 +1365,8 @@ end;
 
 initialization
   MakeIdentTable;
-{$IFNDEF SYN_CPPB_1}
 {$IFNDEF FPC}
   RegisterPlaceableHighlighter(TSynAnySyn);
-{$ENDIF}
 {$ENDIF}
 end.
 

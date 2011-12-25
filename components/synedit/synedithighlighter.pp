@@ -324,10 +324,8 @@ type
   public
     procedure DefHighlightChange(Sender: TObject);
     property  AttributeChangeNeedScan: Boolean read FAttributeChangeNeedScan;
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}
-    function GetCapabilities: TSynHighlighterCapabilities; virtual;
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}
-    function GetLanguageName: string; virtual;
+    class function GetCapabilities: TSynHighlighterCapabilities; virtual;
+    class function GetLanguageName: string; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -415,7 +413,6 @@ type
 
   TSynCustomHighlighterClass = class of TSynCustomHighlighter;
 
-{$IFNDEF SYN_CPPB_1}
   TSynHighlighterList = class(TList)
   private
     hlList: TList;
@@ -430,10 +427,8 @@ type
       read GetItem; default;
   end;
 
-  procedure RegisterPlaceableHighlighter(highlighter:
-    TSynCustomHighlighterClass);
+  procedure RegisterPlaceableHighlighter(highlighter: TSynCustomHighlighterClass);
   function GetPlaceableHighlighters: TSynHighlighterList;
-{$ENDIF}
 
 implementation
 
@@ -467,7 +462,6 @@ const
   end; { TBetterRegistry.OpenKeyReadOnly }
 {$ENDIF _Gp_MustEnhanceRegistry}
 
-{$IFNDEF SYN_CPPB_1}
 { THighlighterList }
 
 function TSynHighlighterList.Count: integer;
@@ -531,7 +525,6 @@ begin
   if G_PlaceableHighlighters.hlList.IndexOf(highlighter) < 0 then
     G_PlaceableHighlighters.hlList.Add(highlighter);
 end;
-{$ENDIF}
 
 { TLazSynCustomTextAttributes }
 
@@ -1315,8 +1308,7 @@ begin
     Result := TSynHighlighterAttributes(fAttributes.Objects[idx]);
 end;
 
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}
-function TSynCustomHighlighter.GetCapabilities: TSynHighlighterCapabilities;
+class function TSynCustomHighlighter.GetCapabilities: TSynHighlighterCapabilities;
 begin
   Result := [hcRegistry]; //registry save/load supported by default
 end;
@@ -1341,8 +1333,7 @@ begin
   fWordBreakChars := AChars;
 end;
 
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}
-function TSynCustomHighlighter.GetLanguageName: string;
+class function TSynCustomHighlighter.GetLanguageName: string;
 begin
 {$IFDEF SYN_DEVELOPMENT_CHECKS}
   raise Exception.CreateFmt('%s.GetLanguageName not implemented', [ClassName]);

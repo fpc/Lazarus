@@ -1869,7 +1869,6 @@ end;
 
 initialization
   MakeIdentTable;
-{$IFNDEF SYN_CPPB_1}
   RegisterPlaceableHighlighter(TSynJScriptSyn);
-{$ENDIF}
+
 end.

@@ -510,10 +510,8 @@ type
     function GetFoldConfigInternalCount: Integer; override;
     procedure DoFoldConfigChanged(Sender: TObject); override;
   public
-    {$IFNDEF SYN_CPPB_1} class {$ENDIF}
-    function GetCapabilities: TSynHighlighterCapabilities; override;
-    {$IFNDEF SYN_CPPB_1} class {$ENDIF}
-    function GetLanguageName: string; override;
+    class function GetCapabilities: TSynHighlighterCapabilities; override;
+    class function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -4169,14 +4167,12 @@ begin
   Result := ['_', '0'..'9', 'a'..'z', 'A'..'Z'];
 end;
 
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}
-function TSynPasSyn.GetLanguageName: string;
+class function TSynPasSyn.GetLanguageName: string;
 begin
   Result := SYNS_LangPascal;
 end;
 
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}
-function TSynPasSyn.GetCapabilities: TSynHighlighterCapabilities;
+class function TSynPasSyn.GetCapabilities: TSynHighlighterCapabilities;
 begin
   Result := inherited GetCapabilities + [hcUserSettings];
 end;
@@ -4358,9 +4354,7 @@ end;
 
 initialization
   MakeIdentTable;
-{$IFNDEF SYN_CPPB_1}
   RegisterPlaceableHighlighter(TSynPasSyn);
-{$ENDIF}
 
 finalization
   FreeAndNil(KeywordsList);

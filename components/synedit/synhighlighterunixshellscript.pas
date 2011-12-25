@@ -122,8 +122,7 @@ type
   protected
     function GetIdentChars: TSynIdentChars; override;
   public
-    {$IFNDEF SYN_CPPB_1} class {$ENDIF}                                  
-    function GetLanguageName: string; override;
+    class function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -791,8 +790,7 @@ end;
 resourcestring
   LangName = 'UNIX Shell Script';
 
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}
-function TSynUNIXShellScriptSyn.GetLanguageName: string;
+class function TSynUNIXShellScriptSyn.GetLanguageName: string;
 /////TL 11-06-2003: FPC complained about local declaration... moved to the global scope
 /////TL resourcestring
 /////TL  LangName = 'UNIX Shell Script';
@@ -802,8 +800,7 @@ end;
 
 initialization
   MakeIdentTable;
-{$IFNDEF SYN_CPPB_1}
   RegisterPlaceableHighlighter(TSynUNIXShellScriptSyn);
-{$ENDIF}
+
 end.
 

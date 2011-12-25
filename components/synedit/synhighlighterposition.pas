@@ -68,8 +68,7 @@ type
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
       override;
   public
-    {$IFNDEF SYN_CPPB_1} class {$ENDIF}
-    function GetLanguageName: string; override;
+    class function GetLanguageName: string; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -146,8 +145,7 @@ begin
   Result:=nil;
 end;
 
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}
-function TSynPositionHighlighter.GetLanguageName: string;
+class function TSynPositionHighlighter.GetLanguageName: string;
 begin
   Result:='Position based highlighter';
 end;

@@ -198,8 +198,7 @@ type
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource: string; override;
   public
-    {$IFNDEF SYN_CPPB_1} class {$ENDIF}                                         //mh 2000-07-14
-    function GetLanguageName: string; override;
+    class function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
@@ -1435,10 +1434,7 @@ begin
 end;
 {$ENDIF}
 
-
-
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}                                             //mh 2000-07-14
-function TSynPHPSyn.GetLanguageName: string;
+class function TSynPHPSyn.GetLanguageName: string;
 begin
   Result := SYNS_LangPHP;
 end;
@@ -1463,8 +1459,7 @@ end;
 
 initialization
   MakeIdentTable;
-{$IFNDEF SYN_CPPB_1}                                                            //mh 2000-07-14
   RegisterPlaceableHighlighter(TSynPHPSyn);
-{$ENDIF}
+
 end.
 

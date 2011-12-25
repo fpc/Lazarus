@@ -202,7 +202,7 @@ type
     function GetSampleSource: String; override;
     function IsFilterStored: Boolean; override;
   public
-    {$IFNDEF SYN_CPPB_1} class {$ENDIF} function GetLanguageName: string; override;
+    class function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
@@ -1251,7 +1251,7 @@ begin
   Result := fDefaultFilter <> SYNS_FilterVisualBASIC;
 end;
 
-{$IFNDEF SYN_CPPB_1} class {$ENDIF} function TSynVBSyn.GetLanguageName: string;
+class function TSynVBSyn.GetLanguageName: string;
 begin
   Result := SYNS_LangVisualBASIC;
 end;
@@ -1278,7 +1278,6 @@ end;
 
 initialization
   MakeIdentTable;
-{$IFNDEF SYN_CPPB_1}
   RegisterPlaceableHighlighter(TSynVBSyn);
-{$ENDIF}
+
 end.

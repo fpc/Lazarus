@@ -145,8 +145,7 @@ type
     procedure ResetRange; override;
 
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes; override;
-    {$IFNDEF SYN_CPPB_1} class {$ENDIF}
-    function GetLanguageName: string; override;
+    class function GetLanguageName: string; override;
   protected
     // folding
     procedure CreateRootCodeFoldBlock; override;
@@ -689,8 +688,7 @@ begin
   Result := nil;
 end;
 
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}                                             //mh 2000-07-14
-function TSynDiffSyn.GetLanguageName: string;
+class function TSynDiffSyn.GetLanguageName: string;
 begin
   Result := SYNS_LangDiff;
 end;
@@ -799,8 +797,7 @@ begin
     Result := 0;
 end;
 
- {$IFNDEF SYN_CPPB_1}                                                            //mh 2000-07-14
 initialization
   RegisterPlaceableHighlighter(TSynDiffSyn);
-{$ENDIF}
+
 end.

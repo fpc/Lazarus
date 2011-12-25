@@ -198,8 +198,7 @@ type
     function GetSampleSource: string; override;
     function GetExtTokenID: TxtkTokenKind;
   public
-    {$IFNDEF SYN_CPPB_1} class {$ENDIF}                                         //mh 2000-07-14
-    function GetLanguageName: string; override;
+    class function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;    
@@ -1367,8 +1366,7 @@ begin
   Result := ['_', '$', '0'..'9', 'a'..'z', 'A'..'Z'] + TSynSpecialChars;
 end;
 
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}                                             //mh 2000-07-14
-function TSynJavaSyn.GetLanguageName: string;
+class function TSynJavaSyn.GetLanguageName: string;
 begin
   Result := SYNS_LangJava;
 end;
@@ -1390,8 +1388,7 @@ end;
 
 initialization
   MakeIdentTable;
-{$IFNDEF SYN_CPPB_1}                                                            //mh 2000-07-14
   RegisterPlaceableHighlighter(TSynJavaSyn);
-{$ENDIF}
+
 end.
 

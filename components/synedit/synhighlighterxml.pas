@@ -180,8 +180,7 @@ type
     function GetFoldConfigCount: Integer; override;
     function GetFoldConfigInternalCount: Integer; override;
   public
-    {$IFNDEF SYN_CPPB_1} class {$ENDIF}
-    function GetLanguageName: string; override;
+    class function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
@@ -954,8 +953,7 @@ begin
   Result := ['0'..'9', 'a'..'z', 'A'..'Z', '_', '.', '-'] + TSynSpecialChars;
 end;
 
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}
-function TSynXMLSyn.GetLanguageName: string;
+class function TSynXMLSyn.GetLanguageName: string;
 begin
   Result := SYNS_LangXML;
 end;
@@ -1068,10 +1066,7 @@ begin
 end;
 
 initialization
-
-  {$IFNDEF SYN_CPPB_1}
   RegisterPlaceableHighlighter(TSynXMLSyn);
-  {$ENDIF}
 
 end.
 
