@@ -135,7 +135,7 @@ const
 
 function ExtractFormatArgs(S: String): String;
 const
-  FormatSpecs = ['D','E','F','G','N','M','P','S','X'];
+  FormatSpecs = ['D','E','F','G','M','N','P','S','U','X'];
 var
   i,p: Integer;
   InFormat: Boolean;
