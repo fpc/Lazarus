@@ -73,12 +73,11 @@ type
     procedure InternalDrawParentBackground(Window: HWND; Target: HDC; Bounds: PRect); override;
     function GetBaseDetailsSize(Details: TThemedElementDetails): TSize;
 
-    function GetGtkStyleParams(DC: HDC; Details: TThemedElementDetails; AIndex: Integer): TGtkStyleParams; virtual;
     function GetParamsCount(Details: TThemedElementDetails): Integer; virtual;
 
-    procedure Gtk1DrawElement(DC: HDC; Details: TThemedElementDetails;
+    procedure GtkDrawElement(DC: HDC; Details: TThemedElementDetails;
       const R: TRect; ClipRect: PRect);
-    function GetGtk1StyleParams(DC: HDC; Details: TThemedElementDetails;
+    function GetGtkStyleParams(DC: HDC; Details: TThemedElementDetails;
       AIndex: Integer): TGtkStyleParams;
   public
     function GetDetailSize(Details: TThemedElementDetails): TSize; override;
@@ -225,7 +224,7 @@ begin
 end;
 
 
-function TGtk2ThemeServices.GetGtk1StyleParams(DC: HDC;
+function TGtk2ThemeServices.GetGtkStyleParams(DC: HDC;
   Details: TThemedElementDetails; AIndex: Integer): TGtkStyleParams;
 var
   DevCtx: TGtkDeviceContext absolute DC;
@@ -309,16 +308,17 @@ begin
       end;
     teHeader:
       begin
-        Result.Widget := GetStyleWidget(lgsButton);
-        if Result.Style = nil then
-          Result.Style := GetStyle(lgsButton);
+        Result.Widget := GetColumnButtonFromTreeView(GetStyleWidget(lgsTreeView), Details.Part);
+        if Result.Widget = nil then
+          Result.Widget := GetStyleWidget(lgsTreeView);
+        Result.Style := gtk_widget_get_style(Result.Widget);
         Result.State := GtkButtonMap[Details.State];
         if Details.State = PBS_PRESSED then
           Result.Shadow := GTK_SHADOW_IN
         else
           Result.Shadow := GTK_SHADOW_OUT;
 
-        Result.IsHot := Result.State = GTK_STATE_PRELIGHT;
+        Result.IsHot:= Result.State = GTK_STATE_PRELIGHT;
 
         Result.Detail := 'button';
         Result.Painter := gptBox;
@@ -402,35 +402,22 @@ begin
             begin
               Result.State := GTK_STATE_NORMAL;
               Result.Shadow := GTK_SHADOW_NONE;
-{ This code has problems with some (is not most) of gtk1 themes.
-But at least Ubuntu >= 6.10 works fine. So it is commented out and switched
-to alternate splitter painting}
-
+              Result.Detail := 'paned';
+              Result.Painter := gptHandle;
               if Details.Part = RP_GRIPPER then
               begin
-                Result.Detail := 'hpaned';
-                Result.Widget := GetStyleWidget(lgsHorizontalPaned);
-                if Result.Style = nil then
-                  Result.Style := GetStyle(lgsHorizontalPaned);
+                Result.Orientation := GTK_ORIENTATION_VERTICAL;
+                Result.Widget := GetStyleWidget(lgsVerticalPaned);
               end
               else
               begin
-                Result.Detail := 'vpaned';
-                Result.Widget := GetStyleWidget(lgsVerticalPaned);
-                if Result.Style = nil then
-                  Result.Style := GetStyle(lgsVerticalPaned);
+                Result.Orientation := GTK_ORIENTATION_HORIZONTAL;
+                Result.Widget := GetStyleWidget(lgsHorizontalPaned);
               end;
-              Result.Painter := gptBox;
-
-{                  Result.Detail := 'paned';
-              Result.Painter := gptHandle;
-              if Details.Part = RP_GRIPPER then
-                Result.Orientation := GTK_ORIENTATION_VERTICAL
-              else
-                Result.Orientation := GTK_ORIENTATION_HORIZONTAL;}
             end;
           RP_BAND:
             begin
+              Result.Widget := GetStyleWidget(lgsVerticalPaned);
               Result.State := GtkButtonMap[Details.State];
               Result.Shadow := GTK_SHADOW_NONE;
               Result.Detail := 'paned';
@@ -476,124 +463,66 @@ to alternate splitter painting}
         if Details.Part = TTP_STANDARD then
           Result.Painter := gptFlatBox;
       end;
+    teTreeview:
+      begin
+        if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then
+        begin
+          Result.Painter := gptExpander;
+          Result.Shadow := GTK_SHADOW_NONE;
+          if Details.Part = TVP_GLYPH then
+            Result.State := GTK_STATE_NORMAL
+          else
+            Result.State := GTK_STATE_PRELIGHT;
+          Result.Widget := GetStyleWidget(lgsTreeView);
+          Result.Detail := 'treeview';
+          if Details.State = GLPS_CLOSED then
+            Result.Expander := GTK_EXPANDER_COLLAPSED
+          else
+            Result.Expander := GTK_EXPANDER_EXPANDED;
+
+          Result.ExpanderSize := GetDetailSize(Details).cx;
+        end
+        else
+        if Details.Part = TVP_TREEITEM then
+        begin
+          Result.Widget := GetStyleWidget(lgsTreeView);
+          Result.Shadow := GTK_SHADOW_NONE;
+          if AIndex = 0 then
+          begin
+            Result.Painter := gptFlatBox;
+            case Details.State of
+              TREIS_SELECTED,
+              TREIS_HOTSELECTED: Result.State := GTK_STATE_SELECTED;
+              TREIS_SELECTEDNOTFOCUS: Result.State := GTK_STATE_SELECTED; //Was: GTK_STATE_ACTIVE;
+              TREIS_HOT: Result.State := GTK_STATE_PRELIGHT;
+              TREIS_DISABLED: Result.State := GTK_STATE_INSENSITIVE;
+            else
+              Result.State := GTK_STATE_NORMAL;
+            end;
+            Result.Detail := 'cell_even';
+          end
+          else
+          if AIndex = 1 then
+          begin
+            Result.Detail := 'treeview';
+            if Details.State = TREIS_SELECTED then
+            begin
+              Result.State := GTK_STATE_SELECTED;
+              Result.Painter := gptFocus
+            end
+            else
+            begin
+              Result.State := GTK_STATE_NORMAL;
+              Result.Painter := gptNone;
+            end;
+          end;
+        end;
+      end;
   end;
   if Result.Style = nil then
     Result.Style := gtk_widget_get_default_style();
 end;
 
-
-function TGtk2ThemeServices.GetGtkStyleParams(DC: HDC;
-  Details: TThemedElementDetails; AIndex: Integer): TGtkStyleParams;
-begin
-  Result := GetGtk1StyleParams(DC, Details, AIndex);
-  
-  // override some styles
-  if Result.Style <> nil then
-    case Details.Element of
-      teHeader:
-        begin
-          Result.Widget := GetColumnButtonFromTreeView(GetStyleWidget(lgsTreeView), Details.Part);
-          if Result.Widget = nil then
-            Result.Widget := GetStyleWidget(lgsTreeView);
-          Result.Style := gtk_widget_get_style(Result.Widget);
-          Result.State := GtkButtonMap[Details.State];
-          if Details.State = PBS_PRESSED then
-            Result.Shadow := GTK_SHADOW_IN
-          else
-            Result.Shadow := GTK_SHADOW_OUT;
-
-          Result.IsHot:= Result.State = GTK_STATE_PRELIGHT;
-
-          Result.Detail := 'button';
-          Result.Painter := gptBox;
-        end;
-      teRebar:
-        begin
-          case Details.Part of
-            RP_GRIPPER, RP_GRIPPERVERT:
-              begin
-                Result.State := GTK_STATE_NORMAL;
-                Result.Shadow := GTK_SHADOW_NONE;
-                Result.Detail := 'paned';
-                Result.Painter := gptHandle;
-                if Details.Part = RP_GRIPPER then
-                begin
-                  Result.Orientation := GTK_ORIENTATION_VERTICAL;
-                  Result.Widget := GetStyleWidget(lgsVerticalPaned);
-                end
-                else
-                begin
-                  Result.Orientation := GTK_ORIENTATION_HORIZONTAL;
-                  Result.Widget := GetStyleWidget(lgsHorizontalPaned);
-                end;
-              end;
-            RP_BAND:
-              begin
-                Result.Widget := GetStyleWidget(lgsVerticalPaned);
-                Result.State := GtkButtonMap[Details.State];
-                Result.Shadow := GTK_SHADOW_NONE;
-                Result.Detail := 'paned';
-                Result.Painter := gptFlatBox;
-              end;
-          end;
-        end;
-      teTreeview:
-        begin
-          if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then
-          begin
-            Result.Painter := gptExpander;
-            Result.Shadow := GTK_SHADOW_NONE;
-            if Details.Part = TVP_GLYPH then
-              Result.State := GTK_STATE_NORMAL
-            else
-              Result.State := GTK_STATE_PRELIGHT;
-            Result.Widget := GetStyleWidget(lgsTreeView);
-            Result.Detail := 'treeview';
-            if Details.State = GLPS_CLOSED then
-              Result.Expander := GTK_EXPANDER_COLLAPSED
-            else
-              Result.Expander := GTK_EXPANDER_EXPANDED;
-
-            Result.ExpanderSize := GetDetailSize(Details).cx;
-          end
-          else
-          if Details.Part = TVP_TREEITEM then
-          begin
-            Result.Widget := GetStyleWidget(lgsTreeView);
-            Result.Shadow := GTK_SHADOW_NONE;
-            if AIndex = 0 then
-            begin
-              Result.Painter := gptFlatBox;
-              case Details.State of
-                TREIS_SELECTED,
-                TREIS_HOTSELECTED: Result.State := GTK_STATE_SELECTED;
-                TREIS_SELECTEDNOTFOCUS: Result.State := GTK_STATE_SELECTED; //Was: GTK_STATE_ACTIVE;
-                TREIS_HOT: Result.State := GTK_STATE_PRELIGHT;
-                TREIS_DISABLED: Result.State := GTK_STATE_INSENSITIVE;
-              else
-                Result.State := GTK_STATE_NORMAL;
-              end;
-              Result.Detail := 'cell_even';
-            end
-            else
-            if AIndex = 1 then
-            begin
-              Result.Detail := 'treeview';
-              if Details.State = TREIS_SELECTED then
-              begin
-                Result.State := GTK_STATE_SELECTED;
-                Result.Painter := gptFocus
-              end
-              else
-              begin
-                Result.State := GTK_STATE_NORMAL;
-                Result.Painter := gptNone;
-              end;
-            end;
-          end;
-        end;
-    end;
-end;
 
 function TGtk2ThemeServices.GetParamsCount(Details: TThemedElementDetails): Integer;
 begin
@@ -753,7 +682,7 @@ begin
   end;
 end;
 
-procedure TGtk2ThemeServices.Gtk1DrawElement(DC: HDC;
+procedure TGtk2ThemeServices.GtkDrawElement(DC: HDC;
   Details: TThemedElementDetails; const R: TRect; ClipRect: PRect);
 var
   DevCtx: TGtkDeviceContext absolute DC;
@@ -929,17 +858,17 @@ begin
     // lie to cleanlooks theme
     Widget := GetStyleWidget(lgsTreeView);
     GTK_WIDGET_SET_FLAGS(Widget, GTK_HAS_FOCUS);
-    Gtk1DrawElement(DC, Details, R, ClipRect);
+    GtkDrawElement(DC, Details, R, ClipRect);
     GTK_WIDGET_UNSET_FLAGS(Widget, GTK_HAS_FOCUS);
   end
   else
-    Gtk1DrawElement(DC, Details, R, ClipRect);
+    GtkDrawElement(DC, Details, R, ClipRect);
 end;
 
 procedure TGtk2ThemeServices.DrawIcon(DC: HDC; Details: TThemedElementDetails;
   const R: TRect; himl: HIMAGELIST; Index: Integer);
 begin
-
+  //
 end;
 
 procedure TGtk2ThemeServices.DrawText(ACanvas: TPersistent;
