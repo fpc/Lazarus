@@ -41,7 +41,7 @@ uses
   SynHighlighterLFM, SynHighlighterMulti, SynHighlighterUNIXShellScript,
   SynHighlighterCss, SynHighlighterPHP, SynHighlighterTeX, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterVB, SynHighlighterAny, SynHighlighterDiff,
-  SynHighlighterBat, SynHighlighterIni,
+  SynHighlighterBat, SynHighlighterIni, SynHighlighterPo,
   SynPropertyEditObjectList, SynDesignStringConstants,
   LazarusPackageIntf, LResources, PropEdits, ComponentEditors;
 
@@ -164,6 +164,11 @@ begin
   RegisterComponents('SynEdit',[TSynIniSyn]);
 end;
 
+procedure RegisterSynHighlighterPo;
+begin
+  RegisterComponents('SynEdit',[TSynPoSyn]);
+end;
+
 procedure RegisterSynHighlighterVB;
 begin
   RegisterComponents('SynEdit',[TSynVBSyn]);
@@ -230,6 +235,7 @@ begin
   RegisterUnit('SynHighlighterMulti',@RegisterSynHighlighterMulti);
   RegisterUnit('SynHighlighterBat',@RegisterSynHighlighterBat);
   RegisterUnit('SynHighlighterIni',@RegisterSynHighlighterIni);
+  RegisterUnit('SynHighlighterPo',@RegisterSynHighlighterPo);
 
   RegisterClasses([TSynGutterPartList, TSynGutterSeparator, TSynGutterCodeFolding,
                   TSynGutterLineNumber, TSynGutterChanges, TSynGutterMarks]);
