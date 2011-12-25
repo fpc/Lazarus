@@ -206,6 +206,18 @@
           <Section Style="fsBold"/>
         </SchemeDefault>
       </LangINI_file>
+    <Color Version="8">
+      <Langpo_language_files Version="8">
+        <SchemeDefault>
+          <Key Style="fsBold"/>
+          <Flags Foreground="clTeal"/>
+          <String Foreground="clFuchsia"/>
+          <Comment Style="fsItalic" Foreground="clGreen"/>
+          <Identifier Style="fsBold" Foreground="clGreen"/>
+          <Previous_value Style="fsItalic" Foreground="clOlive"/>
+        </SchemeDefault>
+      </Langpo_language_files>
+    </Color>
     </ColorSchemes>
   </Lazarus>
 </CONFIG>
