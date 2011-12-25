@@ -214,7 +214,6 @@ begin
             end;
           end;
           g_list_free(Widgets^.OldTreeSelection);
-          Widgets^.OldTreeSelection := nil;
           Widgets^.OldTreeSelection := g_list_alloc;
           // we must iterate because of multiselections
           for i := 0 to g_list_length(List) - 1 do
@@ -253,7 +252,6 @@ begin
             end;
           end;
           g_list_free(Widgets^.OldTreeSelection);
-          Widgets^.OldTreeSelection := nil;
           Widgets^.OldTreeSelection := g_list_alloc;
         end;
       end;
@@ -1563,6 +1561,7 @@ begin
   begin
     ItemCache := TStringList.Create;
     Images := nil;
+    OldTreeSelection := nil;
 
     {$IFDEF USEORIGTREEMODEL}
     PtrType := G_TYPE_POINTER;
@@ -1626,8 +1625,10 @@ begin
     Widgets^.ItemCache.Free;
   Widgets^.ItemCache := nil;
   if Widgets^.OldTreeSelection <> nil then
+  begin
     g_list_free(Widgets^.OldTreeSelection);
-  Widgets^.OldTreeSelection := nil;
+    Widgets^.OldTreeSelection := nil;
+  end;
   if Widgets^.Images <> nil then
   begin
     for i := 0 to Widgets^.Images.Count-1 do
