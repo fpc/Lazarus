@@ -1192,11 +1192,17 @@ begin
           inc(p);
         CurPos.EndPos:=p-PChar(Src)+1;
       end;
-    '&': // octal number
+    '&': // octal number or keyword as identifier
       begin
         inc(p);
-        while p^ in ['0'..'7'] do
-          inc(p);
+        if p^ in ['0'..'7'] then begin
+          while p^ in ['0'..'7'] do
+            inc(p);
+        end else if IsIdentChar[p^] then begin
+          CurPos.Flag:=cafWord;
+          while IsIdentChar[p^] do
+            inc(p);
+        end;
         CurPos.EndPos:=p-PChar(Src)+1;
       end;
     '$': // hex number

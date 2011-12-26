@@ -1896,11 +1896,16 @@ begin
       while IsHexNumberChar[Src^] do
         inc(Src);
     end;
-  '&':  // octal constant
+  '&':  // octal constant or keyword as identifier (e.g. &label)
     begin
       inc(Src);
-      while (Src^ in ['0'..'7']) do
-        inc(Src);
+      if Src^ in ['0'..'7'] then begin
+        while Src^ in ['0'..'7'] do
+          inc(Src);
+      end else begin
+        while IsIdentChar[Src^] do
+          inc(Src);
+      end;
     end;
   '{':  // compiler directive
     begin
@@ -3892,7 +3897,13 @@ end;
 function GetIdentifier(Identifier: PChar): string;
 var len: integer;
 begin
-  if (Identifier<>nil) and IsIdentStartChar[Identifier^] then begin
+  if (Identifier=nil) then begin
+    Result:='';
+    exit;
+  end;
+  if (Identifier^='&') and (IsIdentChar[Identifier[1]]) then
+    inc(Identifier);
+  if IsIdentStartChar[Identifier^] then begin
     len:=0;
     while (IsIdentChar[Identifier[len]]) do inc(len);
     SetLength(Result,len);
