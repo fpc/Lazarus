@@ -2380,7 +2380,7 @@ begin
   if FCGPattern <> nil then
   begin
     CGPatternRelease(FCGPattern);
-    FGGPattern := nil;
+    FCGPattern := nil;
   end;
 
   FreeAndNil(FBitmap);

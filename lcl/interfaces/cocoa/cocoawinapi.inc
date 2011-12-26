@@ -1785,9 +1785,9 @@ begin
       Exit;
     Color := ColorToNSColor(PLongArray(lpaRgbValues)^[n]);
     if (FSysColorBrushes[Element] <> 0) then
-      FSysColorBrushes[Element].Color := Color
+      TCocoaBrush(FSysColorBrushes[Element]).Color := Color
     else
-      FSysColorBrushes[Element] := HBrush(TCocoaBrush.Create(SysColorToNSColor(nIndex), True));
+      FSysColorBrushes[Element] := HBrush(TCocoaBrush.Create(Color, True));
   end;
 
   Result := True;
