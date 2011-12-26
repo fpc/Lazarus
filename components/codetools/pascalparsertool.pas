@@ -1132,11 +1132,14 @@ var IsFunction, HasForwardModifier: boolean;
   ParseAttr: TParseProcHeadAttributes;
 begin
   if (CurNode.Desc in AllClassSubSections)
-  and (CurNode.Parent.Desc in AllClassBaseSections) then begin
+  and (CurNode.Parent.Desc in (AllClassBaseSections+AllClassInterfaces)) then begin
     CurNode.EndPos:=CurPos.StartPos;
     EndChildNode;
-  end else if not (CurNode.Desc in (AllClassBaseSections+AllClassInterfaces)) then
+  end else if not (CurNode.Desc in (AllClassBaseSections+AllClassInterfaces))
+  then begin
+    //debugln(['TPascalParserTool.KeyWordFuncClassMethod ',CurNode.Parent.DescAsString,' ',CurNode.DescAsString]);
     RaiseIdentExpectedButAtomFound;
+  end;
 
   HasForwardModifier:=false;
   // create class method node
