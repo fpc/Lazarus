@@ -818,9 +818,14 @@ begin
 end;
 
 function TCustomCodeTool.AtomIsNumber: boolean;
+var
+  p: PChar;
 begin
-  Result:=(CurPos.StartPos<=SrcLen)
-      and (Src[CurPos.StartPos] in ['0'..'9','%','$','&']);
+  if CurPos.StartPos>SrcLen then exit(false);
+  p:=@Src[CurPos.StartPos];
+  if p^ in ['0'..'9','%','$'] then exit(true);
+  if (p^='&') and (p[1] in ['0'..'7']) then exit(true);
+  Result:=false;
 end;
 
 function TCustomCodeTool.AtomIsRealNumber: boolean;
