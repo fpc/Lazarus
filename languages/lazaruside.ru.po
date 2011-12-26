@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-12-27 00:04+0400\n"
+"PO-Revision-Date: 2011-12-27 00:26+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3881,7 +3881,7 @@ msgstr "Имя модуля %s%s%s не соответствует имени ф
 
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
 msgid "The unit name %s%s%s is the same as an registered component.%sUsing this can cause strange error messages."
-msgstr "Имя модуля совпадает с зарегистрированным компонентом.%sЭто может привести к странным сообщениям об ошибках."
+msgstr "Имя модуля %s%s%s совпадает с зарегистрированным компонентом.%sЭто может привести к странным сообщениям об ошибках."
 
 #: lazarusidestrconsts.lisa2punitfilename
 msgid "Unit file name:"
@@ -13242,7 +13242,7 @@ msgstr "Lazarus"
 
 #: lazarusidestrconsts.lispkgmangloadingpackagewillreplacepackage
 msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave old package %s?"
-msgstr "Загрузка пакета %s заменит пакет %s%sиз файла %s.%sСтарый пакет изменён. Сохранить старый пакет %s?"
+msgstr "Загрузка пакета %s заменит пакет %s%sиз файла %s.%sСтарый пакет изменён.%s%sСохранить старый пакет %s?"
 
 #: lazarusidestrconsts.lispkgmangnewpackage
 msgid "NewPackage"
@@ -14523,7 +14523,7 @@ msgstr "Сохранить файл как"
 
 #: lazarusidestrconsts.lissavefilebeforeclosingform
 msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
-msgstr "Сохранить файл %s%s%sперед закрытием формы %s%s%s?"
+msgstr "Сохранить файл %s%s%s%sперед закрытием формы %s%s%s?"
 
 #: lazarusidestrconsts.lissaveinfoofclosededitorfiles
 msgid "Save info of closed editor files"
