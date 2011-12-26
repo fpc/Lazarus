@@ -8625,9 +8625,6 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.SetSysColors(cElements: Integer; const lpaElements;
   const lpaRgbValues): Boolean;
-type
-  TLongArray = array[0..0] of Longint;
-  PLongArray = ^TLongArray;
 var
   n: Integer;
   Element: LongInt;
@@ -8637,11 +8634,10 @@ begin
 
   for n := 0 to cElements - 1 do
   begin
-    Element := PLongArray(lpaElements)^[n];
-    if (Element > MAX_SYS_COLORS)
-    or (Element < 0)
-    then Exit;
-    SysColorMap[PLongArray(lpaElements)^[n]] := PLongArray(lpaRgbValues)^[n];
+    Element := PInteger(lpaElements)[n];
+    if (Element > MAX_SYS_COLORS) or (Element < 0) then 
+      Exit;
+    SysColorMap[Element] := PDword(@lpaRgbValues)[n];
     //DebugLn(Format('Trace:[TGtk2WidgetSet.SetSysColor] Index %d (%8x) --> %8x', [PLongArray(lpaElements)^[n], SysColorMap[PLongArray(lpaElements)^[n]], PLongArray(lpaRgbValues)^[n]]));
   end;
 
