@@ -1038,10 +1038,23 @@ begin
 end;
 
 procedure TCocoaContext.SetBkColor(AValue: TColor);
+var
+  SysBrush: TCocoaBrush;
+  Color: NSColor;
 begin
-  AValue := TColor(ColorToRGB(AValue));
-  FBkColor := AValue;
-  FBkBrush.SetColor(AValue, BkMode = OPAQUE);
+  if IsSysColor(AValue) then
+  begin
+    SysBrush := TCocoaBrush(CocoaWidgetSet.GetSysColorBrush(SysColorToSysColorIndex(AValue)));
+    Color := TCocoaBrush(SysBrush).Color;
+    FBkColor := NSColorToColorRef(Color);
+    FBkBrush.Color := Color;
+    FBkBrush.Solid := BkMode = OPAQUE;
+  end
+  else
+  begin
+    FBkColor := AValue;
+    FBkBrush.SetColor(AValue, BkMode = OPAQUE);
+  end;
 end;
 
 procedure TCocoaContext.SetBkMode(AValue: Integer);

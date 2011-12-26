@@ -59,7 +59,10 @@ function GetNSControlValue(c: NSControl): String; inline;
 
 procedure ColorToRGBFloat(cl: TColorRef; var r,g,b: Single); inline;
 function RGBToColorFloat(r,g,b: Single): TColorRef; inline;
+// extract ColorRef from NSColor in RGB colorspace
 function NSColorToRGB(const Color: NSColor): TColorRef; inline;
+// extract ColorRef from any NSColor
+function NSColorToColorRef(const Color: NSColor): TColorRef;
 function ColorToNSColor(const Color: TColorRef): NSColor; inline;
 
 implementation
@@ -83,6 +86,66 @@ function NSColorToRGB(const Color: NSColor): TColorRef; inline;
 begin
   with Color do
     Result := RGBToColorFloat(redComponent, greenComponent, blueComponent);
+end;
+
+function NSColorToColorRef(const Color: NSColor): TColorRef;
+
+function AverageColor(Color1, Color2: TColorRef): TColorRef; inline;
+  begin
+    if Color1 = Color2 then
+      Result := Color1
+    else
+      Result :=
+        (((Color1 and $FF) + (Color2 and $FF)) shr 1) and $FF or
+        (((((Color1 shr 8) and $FF) + ((Color2 shr 8) and $FF)) shr 1) and $FF) shl 8 or
+        (((((Color1 shr 16) and $FF) + ((Color2 shr 16) and $FF)) shr 1) and $FF) shl 16;
+  end;
+
+var
+  LocalPool: NSAutoReleasePool;
+  RGBColor, PatternColor: NSColor;
+  ImageRep: NSImageRep;
+  x, y: Integer;
+begin
+  LocalPool := NSAutoReleasePool.alloc.init;
+  RGBColor := Color.colorUsingColorSpaceName(NSCalibratedRGBColorSpace);
+  // if color is a pattern it can't be converted as is to a solid color value
+  if RGBColor = nil then
+  begin
+    PatternColor := Color.colorUsingColorSpaceName(NSPatternColorSpace);
+    if PatternColor = nil then
+      Result := 0
+    else
+    begin
+      // compute an average color of the top left 2x2 rectangle
+      ImageRep := PatternColor.patternImage.bestRepresentationForRect_context_hints(RectToNSRect(Types.Rect(0, 0, 1, 1)), nil, nil);
+      if (ImageRep = nil) or not ImageRep.isKindOfClass(NSBitmapImageRep) then
+        Result := 0
+      else
+      begin
+        for y := 0 to ImageRep.pixelsHigh - 1 do
+          for x := 0 to ImageRep.pixelsWide - 1 do
+          begin
+            RGBColor := NSBitmapImageRep(ImageRep).colorAtX_y(x, y).colorUsingColorSpaceName(NSCalibratedRGBColorSpace);
+            if Assigned(RGBColor) then
+            begin
+              if (x = 0) and (y = 0) then
+                Result := NSColorToRGB(RGBColor)
+              else
+                Result := AverageColor(Result, NSColorToRGB(RGBColor))
+            end
+            else
+            begin
+              Result := 0;
+              break;
+            end
+          end;
+      end;
+    end;
+  end
+  else
+    Result := NSColorToRGB(RGBColor);
+  LocalPool.release;
 end;
 
 function ColorToNSColor(const Color: TColorRef): NSColor; inline;
