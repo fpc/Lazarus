@@ -97,10 +97,12 @@ implementation
 
 procedure ShowHeapTrcViewForm(JumpProc: TJumpProc);
 begin
-  if not Assigned(HeapTrcViewForm) then HeapTrcViewForm := THeapTrcViewForm.Create(Application);
-  if not Assigned(JumpProc)
-    then HeapTrcViewForm.OnJumpProc := @HeapTrcViewForm.LazarusJump
-    else HeapTrcViewForm.OnJumpProc := JumpProc;
+  if not Assigned(HeapTrcViewForm) then
+    HeapTrcViewForm := THeapTrcViewForm.Create(Application);
+  if Assigned(JumpProc) then
+    HeapTrcViewForm.OnJumpProc := JumpProc
+  else
+    HeapTrcViewForm.OnJumpProc := @HeapTrcViewForm.LazarusJump;
   HeapTrcViewForm.Show;
 end;
 
@@ -275,7 +277,8 @@ procedure THeapTrcViewForm.ClearItems;
 var
   i : integer;
 begin
-  for i := 0 to fItems.Count - 1 do TObject(fItems[i]).Free;
+  for i := 0 to fItems.Count - 1 do
+    TObject(fItems[i]).Free;
   fItems.Clear;
 end;
 
@@ -385,7 +388,8 @@ end;
 
 function THeapTrcViewForm.GetStackLineText(const Line: TStackLine; useRaw: boolean): string;
 begin
-  if useRaw then Result := Line.RawLineData;
+  if useRaw then
+    Result := Line.RawLineData;
   if not useRaw or (Result = '') then
     with Line do
       if FileName <> ''
@@ -499,7 +503,8 @@ var
 begin
   if not FileExistsUTF8(SourceFile) then begin
     nm := LazarusIDE.FindSourceFile(SourceFile, '', [fsfUseIncludePaths] );
-    if nm = '' then nm := SourceFile;
+    if nm = '' then
+      nm := SourceFile;
   end else
     nm := SourceFile;
   LazarusIDE.DoOpenFileAndJumpToPos(nm, Point(1, Line), -1, -1, -1, [ofOnlyIfExists, ofRegularFile]);
