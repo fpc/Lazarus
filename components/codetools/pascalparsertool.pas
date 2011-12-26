@@ -3168,9 +3168,11 @@ begin
         RaiseCharExpectedButAtomFound(';');
       ReadNextAtom;
     end;
-    if (CurNode.Parent.Desc=ctnVarSection)
-    and (CurNode.Parent.Parent.Desc in AllCodeSections)
-    and (UpAtomIs('PUBLIC') or UpAtomIs('EXPORT') or UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL') or UpAtomIs('CVAR')) then
+    if (CurNode.Parent.Desc in [ctnVarSection,ctnClassClassVar])
+    and ((CurNode.Parent.Parent.Desc in AllCodeSections)
+         or ((CurNode.Parent.Parent.Desc in AllClassBaseSections) and Scanner.Values.IsDefined('JVM')))
+    and (UpAtomIs('PUBLIC') or UpAtomIs('EXPORT') or UpAtomIs('EXTERNAL')
+      or UpAtomIs('WEAKEXTERNAL') or UpAtomIs('CVAR')) then
     begin
       // examples:
       //   a: b; public;
