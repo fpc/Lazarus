@@ -2291,7 +2291,8 @@ begin
   FillChar(ACallBacks, SizeOf(ACallBacks), 0);
   ACallBacks.drawPattern := @DrawBitmapPattern;
   FImage := AImage.CGImageForProposedRect_context_hints(nil, nil, nil);
-  FColored := True;
+  CGImageRetain(FImage);
+  FColored := False;
   Rect.origin.x := 0;
   Rect.origin.y := 0;
   Rect.size := CGSize(AImage.size);
@@ -2318,7 +2319,7 @@ begin
     PatternColor := AColor.colorUsingColorSpaceName(NSPatternColorSpace);
     if Assigned(PatternColor) then
     begin
-      SetColor(0, False);
+      SetColor(NSColorToColorRef(PatternColor.patternImage.backgroundColor), False);
       SetImage(PatternColor.patternImage);
     end
     else
@@ -2381,7 +2382,7 @@ begin
     PatternColor := AColor.colorUsingColorSpaceName(NSPatternColorSpace);
     if Assigned(PatternColor) then
     begin
-      inherited Create(0, False, AGlobal);
+      inherited Create(NSColorToColorRef(PatternColor.patternImage.backgroundColor), False, AGlobal);
       SetImage(PatternColor.patternImage);
     end
     else
@@ -2423,7 +2424,7 @@ var
   RGBA: array[0..3] of Single;
   AROP2: Integer;
   APatternSpace: CGColorSpaceRef;
-  BaseSpace : CGColorSpaceRef;
+  BaseSpace: CGColorSpaceRef;
 begin
   if ADC = nil then Exit;
 
@@ -2439,13 +2440,13 @@ begin
   else
     CGContextSetBlendMode(ADC.CGContext, kCGBlendModeDifference);
 
-  if FCGPattern <> nil then
+  if Assigned(FCGPattern) then
   begin
     if not FColored then
-      BaseSpace:=CGColorSpaceCreateDeviceRGB
+      BaseSpace := CGColorSpaceCreateDeviceRGB
     else
     begin
-      BaseSpace:=nil;
+      BaseSpace := nil;
       RGBA[0] := 1.0;
     end;
     APatternSpace := CGColorSpaceCreatePattern(BaseSpace);

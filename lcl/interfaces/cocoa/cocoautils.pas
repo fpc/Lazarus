@@ -118,7 +118,7 @@ begin
     else
     begin
       // compute an average color of the top left 2x2 rectangle
-      ImageRep := PatternColor.patternImage.bestRepresentationForRect_context_hints(RectToNSRect(Types.Rect(0, 0, 1, 1)), nil, nil);
+      ImageRep := PatternColor.patternImage.bestRepresentationForRect_context_hints(NSNullRect, nil, nil);
       if (ImageRep = nil) or not ImageRep.isKindOfClass(NSBitmapImageRep) then
         Result := 0
       else
