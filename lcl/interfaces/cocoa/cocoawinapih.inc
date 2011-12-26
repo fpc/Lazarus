@@ -177,6 +177,7 @@ function SetForegroundWindow(HWnd: HWND): boolean; override;
 function SetProp(Handle: hwnd; Str: PChar; Data: Pointer) : Boolean; override;
 function SetROP2(DC: HDC; Mode: Integer): Integer; override;
 function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
+function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; override;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 {function SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean; override;
 function ShowCaret(hWnd: HWND): Boolean; override;}

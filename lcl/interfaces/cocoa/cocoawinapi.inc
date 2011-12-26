@@ -1064,8 +1064,18 @@ var
   Color, RGBColor, PatternColor: NSColor;
   ImageRep: NSImageRep;
   x, y: Integer;
+  SysBrush: HBrush;
 begin
-  Color := SysColorToNSColor(nIndex);
+  // 1. get the system brush - it has a NSColor reference
+  SysBrush := GetSysColorBrush(nIndex);
+  if SysBrush = 0 then
+  begin
+    Result := 0;
+    Exit;
+  end;
+
+  Color := TCocoaBrush(SysBrush).Color;
+
   if Assigned(Color) then
   begin
     LocalPool := NSAutoReleasePool.alloc.init;
@@ -1754,6 +1764,33 @@ end;
 function TCocoaWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
 begin
   Result := ExtSelectClipRgn(DC, RGN, RGN_COPY);
+end;
+
+function TCocoaWidgetSet.SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean;
+type
+  TLongArray = array[0..0] of Longint;
+  PLongArray = ^TLongArray;
+var
+  n: Integer;
+  Element: LongInt;
+  Color: NSColor;
+begin
+  Result := False;
+  if cElements > MAX_SYS_COLORS then Exit;
+
+  for n := 0 to cElements - 1 do
+  begin
+    Element := PLongArray(lpaElements)^[n];
+    if (Element > MAX_SYS_COLORS) or (Element < 0) then 
+      Exit;
+    Color := ColorToNSColor(PLongArray(lpaRgbValues)^[n]);
+    if (FSysColorBrushes[Element] <> 0) then
+      FSysColorBrushes[Element].Color := Color
+    else
+      FSysColorBrushes[Element] := HBrush(TCocoaBrush.Create(SysColorToNSColor(nIndex), True));
+  end;
+
+  Result := True;
 end;
 
 function TCocoaWidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;

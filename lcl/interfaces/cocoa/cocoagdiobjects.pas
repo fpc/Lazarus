@@ -117,18 +117,25 @@ type
     FCGPattern: CGPatternRef;
     FColored: Boolean;
     FBitmap: TCocoaBitmap;
+    FColor: NSColor;
   private
     FImage: CGImageRef;
   strict protected
+    procedure Clear;
+
     procedure SetHatchStyle(AHatch: PtrInt);
     procedure SetBitmap(ABitmap: TCocoaBitmap);
     procedure SetImage(AImage: NSImage);
+    procedure SetColor(AColor: NSColor); overload;
   public
     constructor CreateDefault(const AGlobal: Boolean = False);
     constructor Create(const ALogBrush: TLogBrush; const AGlobal: Boolean = False);
     constructor Create(const AColor: NSColor; const AGlobal: Boolean = False);
     destructor Destroy; override;
     procedure Apply(ADC: TCocoaContext; UseROP2: Boolean = True);
+
+    // for brushes created by NCColor
+    property Color: NSColor read FColor write SetColor;
   end;
 
 const
@@ -557,8 +564,7 @@ begin
   Result := TColorRef(RGBToColor(FR, FG, FB));
 end;
 
-constructor TCocoaColorObject.Create(const AColor: TColor; ASolid,
-  AGlobal: Boolean);
+constructor TCocoaColorObject.Create(const AColor: TColor; ASolid, AGlobal: Boolean);
 begin
   inherited Create(AGlobal);
 
@@ -571,8 +577,7 @@ begin
   FA := ASolid;
 end;
 
-procedure TCocoaColorObject.GetRGBA(AROP2: Integer; out AR, AG, AB, AA: Single
-  );
+procedure TCocoaColorObject.GetRGBA(AROP2: Integer; out AR, AG, AB, AA: Single);
 begin
   case AROP2 of
     R2_BLACK:
@@ -2275,12 +2280,39 @@ begin
     Ord(FColored), ACallBacks);
 end;
 
+procedure TCocoaBrush.SetColor(AColor: NSColor);
+var
+  RGBColor, PatternColor: NSColor;
+begin
+  Clear;
+
+  FColor := AColor;
+  FColor.retain;
+
+  RGBColor := AColor.colorUsingColorSpaceName(NSCalibratedRGBColorSpace);
+
+  if Assigned(RGBColor) then
+    SetColor(NSColorToRGB(RGBColor), True)
+  else
+  begin
+    PatternColor := AColor.colorUsingColorSpaceName(NSPatternColorSpace);
+    if Assigned(PatternColor) then
+    begin
+      SetColor(0, False);
+      SetImage(PatternColor.patternImage);
+    end
+    else
+      SetColor(0, True);
+  end;
+end;
+
 constructor TCocoaBrush.CreateDefault(const AGlobal: Boolean = False);
 begin
   inherited Create(clWhite, True, AGlobal);
   FBitmap := nil;
   FImage := nil;
   FCGPattern := nil;
+  FColor := nil;
 end;
 
 constructor TCocoaBrush.Create(const ALogBrush: TLogBrush; const AGlobal: Boolean = False);
@@ -2288,6 +2320,7 @@ begin
   FCGPattern := nil;
   FBitmap := nil;
   FImage := nil;
+  FColor := nil;
   case ALogBrush.lbStyle of
     BS_SOLID:
         inherited Create(ColorToRGB(TColor(ALogBrush.lbColor)), True, AGlobal);
@@ -2314,6 +2347,9 @@ constructor TCocoaBrush.Create(const AColor: NSColor; const AGlobal: Boolean);
 var
   RGBColor, PatternColor: NSColor;
 begin
+  FColor := AColor;
+  FColor.retain;
+
   FCGPattern := nil;
   FBitmap := nil;
   FImage := nil;
@@ -2333,13 +2369,32 @@ begin
   end;
 end;
 
+procedure TCocoaBrush.Clear;
+begin
+  if FColor <> nil then
+  begin
+    FColor.release;
+    FColor := nil;
+  end;
+
+  if FCGPattern <> nil then
+  begin
+    CGPatternRelease(FCGPattern);
+    FGGPattern := nil;
+  end;
+
+  FreeAndNil(FBitmap);
+
+  if FImage <> nil then
+  begin
+    CGImageRelease(FImage);
+    FImage := nil;
+  end;
+end;
+
 destructor TCocoaBrush.Destroy;
 begin
-  if FCGPattern <> nil then
-    CGPatternRelease(FCGPattern);
-  FBitmap.Free;
-  if FImage <> nil then
-    CGImageRelease(FImage);
+  Clear;
   inherited Destroy;
 end;
 
