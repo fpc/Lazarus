@@ -1099,49 +1099,46 @@ type
 
 function TCocoaWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
 var
-  ctx : TCocoaContext;
+  ctx: TCocoaContext;
 begin
-  ctx:=CheckDC(DC);
-  Result:=Assigned(ctx);
-  if not Result then Exit;
-
-  ctx.LineTo(x,y);
+  ctx := CheckDC(DC);
+  Result := Assigned(ctx);
+  if Result then
+    ctx.LineTo(X, Y);
 end;
 
 function TCocoaWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
 var
-  ctx : TCocoaContext;
+  ctx: TCocoaContext;
 begin
-  ctx:=CheckDC(DC);
-  Result:=Assigned(ctx);
-  if not Result then Exit;
-
-  if Assigned(OldPoint) then OldPoint^:=ctx.PenPos;
-  ctx.MoveTo(x,y);
+  ctx := CheckDC(DC);
+  Result := Assigned(ctx);
+  if Result then
+  begin
+    if Assigned(OldPoint) then
+      OldPoint^ := ctx.PenPos;
+    ctx.MoveTo(X, Y);
+  end;
 end;
 
 function TCocoaWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean;
 var
-  ctx : TCocoaContext;
+  ctx: TCocoaContext;
 begin
-  ctx:=CheckDC(DC);
-  Result:=Assigned(ctx) and Assigned(Points) and (NumPts>=2);
-  if not Result then Exit;
-
-  ctx.Polygon(PPointArray(Points)^, NumPts, Winding);
-  Result:=True;
+  ctx := CheckDC(DC);
+  Result := Assigned(ctx) and Assigned(Points) and (NumPts >= 2);
+  if Result then
+    ctx.Polygon(PPointArray(Points)^, NumPts, Winding);
 end;
 
 function TCocoaWidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
 var
-  ctx : TCocoaContext;
+  ctx: TCocoaContext;
 begin
-  ctx:=CheckDC(DC);
-  Result:=Assigned(ctx) and Assigned(Points) and (NumPts>0);
-  if not Result then Exit;
-
-  ctx.Polyline(PPointArray(Points)^, NumPts);
-  Result:=True;
+  ctx := CheckDC(DC);
+  Result := Assigned(ctx) and Assigned(Points) and (NumPts > 0);
+  if Result then
+    ctx.Polyline(PPointArray(Points)^, NumPts);
 end;
 
 function TCocoaWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal;
