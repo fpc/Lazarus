@@ -3171,9 +3171,12 @@ begin
         RaiseCharExpectedButAtomFound(';');
       ReadNextAtom;
     end;
+    //if UpAtomIs('EXTERNAL') then
+    //  debugln(['TPascalParserTool.ReadVariableType ',CurNode.Parent.Parent.DescAsString,' ',CurNode.Parent.DescAsString,' ',CurNode.DescAsString]);
     if (CurNode.Parent.Desc in [ctnVarSection,ctnClassClassVar])
     and ((CurNode.Parent.Parent.Desc in AllCodeSections)
-         or ((CurNode.Parent.Parent.Desc in AllClassBaseSections) and Scanner.Values.IsDefined('JVM')))
+         or ((CurNode.Parent.Parent.Desc in (AllClassBaseSections+AllClassInterfaces))
+              and Scanner.Values.IsDefined('JVM')))
     and (UpAtomIs('PUBLIC') or UpAtomIs('EXPORT') or UpAtomIs('EXTERNAL')
       or UpAtomIs('WEAKEXTERNAL') or UpAtomIs('CVAR')) then
     begin
