@@ -3894,8 +3894,8 @@ begin
           EndChildNode;
           ReadNextAtom;
         end;
-      end
-      else if UpAtomIs('EXTERNAL') then begin
+      end;
+      if UpAtomIs('EXTERNAL') then begin
         if (ClassDesc in [ctnObjCClass,ctnObjCCategory])
         or Scanner.Values.IsDefined('JVM') then begin
           // objcclass external [name '']
