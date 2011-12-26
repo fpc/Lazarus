@@ -7772,6 +7772,10 @@ msgstr ""
 msgid "Enable Macros"
 msgstr "Permet Macroinstruccions"
 
+#: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
+msgid "Enable = replace whole identifier, Disable = replace prefix"
+msgstr ""
+
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
 msgstr "Tanca"
@@ -14337,6 +14341,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisreplaceremoveunknown
 msgid "Fix unknown properties and types"
+msgstr ""
+
+#: lazarusidestrconsts.lisreplacewholeidentifier
+msgid "Replace whole identifier"
 msgstr ""
 
 #: lazarusidestrconsts.lisreplacingselectionfailed

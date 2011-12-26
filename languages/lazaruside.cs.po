@@ -7582,6 +7582,10 @@ msgstr "Povolit internacionalizaci a podporu překladů"
 msgid "Enable Macros"
 msgstr "Povolit makra"
 
+#: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
+msgid "Enable = replace whole identifier, Disable = replace prefix"
+msgstr ""
+
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
 msgstr "Ohraničit"
@@ -13880,6 +13884,10 @@ msgstr "Náhrady"
 #: lazarusidestrconsts.lisreplaceremoveunknown
 msgid "Fix unknown properties and types"
 msgstr "Opravit neznámé vlastnosti a typy"
+
+#: lazarusidestrconsts.lisreplacewholeidentifier
+msgid "Replace whole identifier"
+msgstr ""
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."

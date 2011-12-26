@@ -7835,6 +7835,10 @@ msgstr ""
 msgid "Enable Macros"
 msgstr "Макрос доступний"
 
+#: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
+msgid "Enable = replace whole identifier, Disable = replace prefix"
+msgstr ""
+
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
 msgstr "Задужкувати"
@@ -14417,6 +14421,10 @@ msgstr "Заміни"
 #: lazarusidestrconsts.lisreplaceremoveunknown
 msgid "Fix unknown properties and types"
 msgstr "Виправити невідомі властивості і типи"
+
+#: lazarusidestrconsts.lisreplacewholeidentifier
+msgid "Replace whole identifier"
+msgstr ""
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."

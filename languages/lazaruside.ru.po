@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-12-21 00:29+0400\n"
+"PO-Revision-Date: 2011-12-27 00:04+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -7788,6 +7788,10 @@ msgstr "Включить поддержку интернационализаци
 msgid "Enable Macros"
 msgstr "Включить макросы"
 
+#: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
+msgid "Enable = replace whole identifier, Disable = replace prefix"
+msgstr "Включено = заменять идентификатор целиком; выключено = заменять префикс"
+
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
 msgstr "Заключить"
@@ -14314,6 +14318,10 @@ msgstr "Замены"
 #| msgid "Replace unknown types and properties"
 msgid "Fix unknown properties and types"
 msgstr "Исправить неизвестные свойства и типы"
+
+#: lazarusidestrconsts.lisreplacewholeidentifier
+msgid "Replace whole identifier"
+msgstr "Заменять идентификатор целиком"
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."

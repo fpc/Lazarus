@@ -7552,6 +7552,10 @@ msgstr ""
 msgid "Enable Macros"
 msgstr "Salli makrot"
 
+#: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
+msgid "Enable = replace whole identifier, Disable = replace prefix"
+msgstr ""
+
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
 msgstr "Kapseloi"
@@ -13827,6 +13831,10 @@ msgstr "Korvaukset"
 #: lazarusidestrconsts.lisreplaceremoveunknown
 msgid "Fix unknown properties and types"
 msgstr "Korjaa tuntemattomat ominaisuudet ja tyypit"
+
+#: lazarusidestrconsts.lisreplacewholeidentifier
+msgid "Replace whole identifier"
+msgstr ""
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."

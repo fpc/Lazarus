@@ -7912,6 +7912,10 @@ msgstr "Activer l'internationalisation et le support de la traduction"
 msgid "Enable Macros"
 msgstr "Permettre les macros"
 
+#: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
+msgid "Enable = replace whole identifier, Disable = replace prefix"
+msgstr ""
+
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
 msgstr "Entourer"
@@ -14580,6 +14584,10 @@ msgstr ""
 #| msgid "Replace unknown types and properties"
 msgid "Fix unknown properties and types"
 msgstr "Remplacer les types et les propriétées inconnus"
+
+#: lazarusidestrconsts.lisreplacewholeidentifier
+msgid "Replace whole identifier"
+msgstr ""
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."

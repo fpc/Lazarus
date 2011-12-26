@@ -7924,6 +7924,10 @@ msgstr "国際化と翻訳のサポートを有効に"
 msgid "Enable Macros"
 msgstr "マクロを有効にする"
 
+#: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
+msgid "Enable = replace whole identifier, Disable = replace prefix"
+msgstr ""
+
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
 msgstr "囲む"
@@ -14616,6 +14620,10 @@ msgstr "置換"
 #: lazarusidestrconsts.lisreplaceremoveunknown
 msgid "Fix unknown properties and types"
 msgstr "不明なプロパティと型を修正"
+
+#: lazarusidestrconsts.lisreplacewholeidentifier
+msgid "Replace whole identifier"
+msgstr ""
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."

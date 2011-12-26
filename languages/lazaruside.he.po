@@ -7897,6 +7897,10 @@ msgstr "אפשר בינאום ותמיכה בתרגום"
 msgid "Enable Macros"
 msgstr "אפשר מאקרו"
 
+#: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
+msgid "Enable = replace whole identifier, Disable = replace prefix"
+msgstr ""
+
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
 msgstr "צרף "
@@ -14588,6 +14592,10 @@ msgstr "תחליפים"
 #| msgid "Replace unknown types and properties"
 msgid "Fix unknown properties and types"
 msgstr "תקן תכונות וסוגים לא מוכרים"
+
+#: lazarusidestrconsts.lisreplacewholeidentifier
+msgid "Replace whole identifier"
+msgstr ""
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."
