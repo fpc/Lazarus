@@ -803,9 +803,10 @@ function TCustomCodeTool.AtomIsIdentifier(ExceptionOnNotFound: boolean):boolean;
 
 begin
   if (CurPos.StartPos<=SrcLen)
-  and IsIdentStartChar[Src[CurPos.StartPos]]
-  and not WordIsKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
-             CurPos.EndPos-CurPos.StartPos)
+  and ((IsIdentStartChar[Src[CurPos.StartPos]]
+        and not WordIsKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
+                                                 CurPos.EndPos-CurPos.StartPos))
+  or (Src[CurPos.StartPos]='&') and IsIdentChar[Src[CurPos.StartPos+1]])
   then
     exit(true);
   if not ExceptionOnNotFound then
