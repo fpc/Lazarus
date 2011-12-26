@@ -2377,7 +2377,7 @@ var
     if (Best<>nil) then begin
       if (BestEndPos=CleanPos) and (NodeData.EndPos>CleanPos) then begin
         // for example  a,|b  then b is better
-      end else if BestEndPos-BestStartPos<NodeData.EndPos-NodeData.StartPos then begin
+      end else if BestEndPos-BestStartPos > NodeData.EndPos-NodeData.StartPos then begin
         // smaller range is better
       end else
         exit;
