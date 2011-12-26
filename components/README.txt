@@ -63,6 +63,9 @@ lazthread
 leakview
   Extends the IDE with a graphical viewer for the heaptrc output.
 
+pochecker
+  Validates translated PO files.
+
 macfiles
   Package to create OS X application bundles.
 
