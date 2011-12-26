@@ -928,8 +928,7 @@ begin
   if CurNode.Desc = ctnTypeSection then begin
     // create type definition node
     ReadTypeNameAndDefinition;
-  end else
-  if CurNode.Desc = ctnConstSection then begin
+  end else if CurNode.Desc = ctnConstSection then begin
     // create const definition node
     CreateChildNode;
     CurNode.Desc:=ctnConstDefinition;
@@ -3643,35 +3642,38 @@ begin
   // optional: hint modifier
   ReadHintModifier;
   if CurPos.Flag=cafSemicolon then begin
-    repeat
-      ReadNextAtom;
-      if UpAtomIs('PUBLIC') then begin
+    if (CurNode.Parent.Desc=ctnConstSection)
+    and (CurNode.Parent.Desc in AllCodeSections) then begin
+      repeat
         ReadNextAtom;
-        if UpAtomIs('NAME') then begin
+        if UpAtomIs('PUBLIC') then begin
           ReadNextAtom;
-          if not AtomIsStringConstant then
-            RaiseStringExpectedButAtomFound(ctsStringConstant);
-          ReadNextAtom;
-          if UpAtomIs('SECTION') then begin
+          if UpAtomIs('NAME') then begin
             ReadNextAtom;
             if not AtomIsStringConstant then
               RaiseStringExpectedButAtomFound(ctsStringConstant);
             ReadNextAtom;
+            if UpAtomIs('SECTION') then begin
+              ReadNextAtom;
+              if not AtomIsStringConstant then
+                RaiseStringExpectedButAtomFound(ctsStringConstant);
+              ReadNextAtom;
+            end;
           end;
+          if CurPos.Flag<>cafSemicolon then
+            RaiseStringExpectedButAtomFound(';');
+        end else
+        if UpAtomIs('CVAR') then begin
+          ReadNextAtom;
+          if CurPos.Flag<>cafSemicolon then
+            RaiseStringExpectedButAtomFound(';');
+        end else
+        begin
+          UndoReadNextAtom;
+          break;
         end;
-        if CurPos.Flag<>cafSemicolon then
-          RaiseStringExpectedButAtomFound(';');
-      end else
-      if UpAtomIs('CVAR') then begin
-        ReadNextAtom;
-        if CurPos.Flag<>cafSemicolon then
-          RaiseStringExpectedButAtomFound(';');
-      end else
-      begin
-        UndoReadNextAtom;
-        break;
-      end;
-    until false;
+      until false;
+    end;
   end;
 end;
 
