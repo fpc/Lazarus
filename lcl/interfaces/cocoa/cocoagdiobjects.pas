@@ -1453,6 +1453,13 @@ begin
         Rectangle(Left, Top, Right, Bottom, True, BkBrush);
       BkBrush.Solid := BrushSolid;
     end;
+
+    if (Options and ETO_CLIPPED) <> 0 then
+    begin
+      CGContextBeginPath(CGContext);
+      CGContextAddRect(CGContext, RectToCGrect(Rect^));
+      CGContextClip(CGContext);
+    end;
   end;
 
   FillBg := not Assigned(Rect) and ((Options and ETO_OPAQUE) <> 0);
