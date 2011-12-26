@@ -1767,9 +1767,6 @@ begin
 end;
 
 function TCocoaWidgetSet.SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean;
-type
-  TLongArray = array[0..0] of Longint;
-  PLongArray = ^TLongArray;
 var
   n: Integer;
   Element: LongInt;
@@ -1780,10 +1777,10 @@ begin
 
   for n := 0 to cElements - 1 do
   begin
-    Element := PLongArray(lpaElements)^[n];
+    Element := PInteger(@lpaElements)[n];
     if (Element > MAX_SYS_COLORS) or (Element < 0) then 
       Exit;
-    Color := ColorToNSColor(PLongArray(lpaRgbValues)^[n]);
+    Color := ColorToNSColor(PDWord(@lpaRgbValues)[n]);
     if (FSysColorBrushes[Element] <> 0) then
       TCocoaBrush(FSysColorBrushes[Element]).Color := Color
     else
