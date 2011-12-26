@@ -180,8 +180,7 @@ procedure TUseUnitDialog.AllUnitsCheckBoxChange(Sender: TObject);
 var
   i: Integer;
 begin
-  if not (Assigned(FMainUsedUnits) and Assigned(FImplUsedUnits)
-      and Assigned(FOtherUnits)) then Exit;
+  if not (Assigned(FMainUsedUnits) and Assigned(FImplUsedUnits)) then Exit;
   if AllUnitsCheckBox.Checked then begin    // Add other units
     CreateOtherUnitsList;
     FilterEdit.Data.AddStrings(FOtherUnits);
