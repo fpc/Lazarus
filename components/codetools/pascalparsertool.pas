@@ -3896,22 +3896,15 @@ begin
         end;
       end
       else if UpAtomIs('EXTERNAL') then begin
-        if (ClassDesc in [ctnObjCClass,ctnObjCCategory]) then begin
+        if (ClassDesc in [ctnObjCClass,ctnObjCCategory])
+        or Scanner.Values.IsDefined('JVM') then begin
+          // objcclass external [name '']
+          // jvm: class external '' [name '']
           CreateChildNode;
           CurNode.Desc:=ctnClassExternal;
           ReadNextAtom;
-          if UpAtomIs('NAME') then begin
-            ReadNextAtom;
+          if Scanner.Values.IsDefined('JVM') then
             ReadConstant(true,false,[]);
-          end;
-          CurNode.EndPos:=CurPos.StartPos;
-          EndChildNode;
-        end else if (ClassDesc in [ctnClass]) and (Scanner.Values.IsDefined('JVM'))
-        then begin
-          CreateChildNode;
-          CurNode.Desc:=ctnClassExternal;
-          ReadNextAtom;
-          ReadConstant(true,false,[]);
           if UpAtomIs('NAME') then begin
             ReadNextAtom;
             ReadConstant(true,false,[]);
@@ -4003,6 +3996,7 @@ function TPascalParserTool.KeyWordFuncTypeClassInterface: boolean;
 var
   IntfAtomPos: TAtomPosition;
   IntfDesc: TCodeTreeNodeDesc;
+  IsJVM: Boolean;
 begin
   if not (CurNode.Desc in [ctnTypeDefinition,ctnGenericType]) then
     SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,['interface']);
@@ -4024,25 +4018,28 @@ begin
   ReadNextAtom;
   if (CurPos.Flag<>cafSemicolon) then begin
     if CurPos.Flag=cafWord then begin
-      if UpAtomIs('EXTERNAL') and (IntfDesc=ctnObjCProtocol) then
-      begin
-        CreateChildNode;
-        CurNode.Desc:=ctnClassExternal;
-        ReadNextAtom;
-        if UpAtomIs('NAME') then begin
+      if UpAtomIs('EXTERNAL') then begin
+        IsJVM:=Scanner.Values.IsDefined('JVM');
+        if IsJVM or (IntfDesc=ctnObjCProtocol) then begin
+          CreateChildNode;
+          CurNode.Desc:=ctnClassExternal;
           ReadNextAtom;
-          ReadConstant(true,false,[]);
+          if IsJVM then
+            ReadConstant(true,false,[]);
+          if UpAtomIs('NAME') then begin
+            ReadNextAtom;
+            ReadConstant(true,false,[]);
+          end;
+          CurNode.EndPos:=CurPos.StartPos;
+          EndChildNode;
         end;
-        CurNode.EndPos:=CurPos.StartPos;
-        EndChildNode;
       end;
     end;
     if (CurPos.Flag=cafRoundBracketOpen) then begin
       // read inheritage brackets
       ReadClassInheritance(true);
-    end else
-      UndoReadNextAtom;
-    ReadNextAtom;
+      ReadNextAtom;
+    end;
     if IntfDesc=ctnObjCProtocol then begin
       // start the first class section (the one without a keyword)
       CreateChildNode;
@@ -4050,16 +4047,18 @@ begin
     end;
     if CurPos.Flag=cafEdgedBracketOpen then
       ReadGUID;
-    // parse till "end" of interface/dispinterface/objcprotocol
-    repeat
-      if not ParseInnerClass(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
-      begin
-        if CurPos.Flag<>cafEnd then
-          RaiseStringExpectedButAtomFound('end');
-        break;
-      end;
-      ReadNextAtom;
-    until false;
+    if CurPos.Flag<>cafSemicolon then begin
+      // parse till "end" of interface/dispinterface/objcprotocol
+      repeat
+        if not ParseInnerClass(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
+        begin
+          if CurPos.Flag<>cafEnd then
+            RaiseStringExpectedButAtomFound('end');
+          break;
+        end;
+        ReadNextAtom;
+      until false;
+    end;
     // end last sub section
     if CurNode.Desc in AllClassSubSections then begin
       CurNode.EndPos:=CurPos.StartPos;
