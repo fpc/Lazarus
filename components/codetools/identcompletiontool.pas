@@ -1906,6 +1906,7 @@ var
   EndPos: Integer;
   InnerStart: Integer;
   Directive: String;
+  ms: TCompilerModeSwitch;
 begin
   Result:=false;
   Line:=CursorPos.Code.GetLine(CursorPos.Y-1);
@@ -2015,6 +2016,9 @@ begin
         or (Directive='ifc')
         then begin
           AddMacros;
+        end else if Directive='modeswitch' then begin
+          for ms:=low(TCompilerModeSwitch) to high(TCompilerModeSwitch) do
+            Key(lowercase(CompilerModeSwitchNames[ms]));
         end;
       end;
       exit;
