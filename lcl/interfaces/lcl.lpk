@@ -1942,6 +1942,7 @@ end;"/>
       </Item391>
       <Item392>
         <Filename Value="cocoa/cocoacaret.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaCaret"/>
       </Item392>
     </Files>
