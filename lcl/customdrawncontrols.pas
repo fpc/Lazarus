@@ -11,7 +11,7 @@ unit customdrawncontrols;
 
 {$mode objfpc}{$H+}
 
-{$if defined(LCLWin32)}
+{$if defined(Windows)} // LCL defines like LCLWin32 don't reach the LCL
   {$define CDControlsDoDoubleBuffer}
 {$endif}
 
@@ -910,19 +910,7 @@ var
 begin
   inherited Paint;
 
-  (*{$ifdef CDControlsDoDoubleBuffer}
-  ABmp := TBitmap.Create;
-  try
-    ABmp.Width := Width;
-    ABmp.Height := Height;
-    DrawToCanvas(ABmp.Canvas);
-    Canvas.Draw(0, 0, ABmp);
-  finally
-    ABmp.Free;
-  end;
-  {$else}*)
   DrawToCanvas(Canvas);
-  //{$endif}
 end;
 
 procedure TCDControl.DrawToCanvas(ACanvas: TCanvas);
