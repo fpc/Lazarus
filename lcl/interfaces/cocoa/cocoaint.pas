@@ -138,6 +138,9 @@ var
 
 implementation
 
+uses
+  CocoaCaret;
+
 var
   ScreenContext : TCocoaContext = nil;
 

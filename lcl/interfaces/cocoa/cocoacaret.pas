@@ -25,18 +25,19 @@
 
 unit CocoaCaret;
 {$mode objfpc}{$H+}
+{$modeswitch objectivec1}
 
 interface
 
 uses
   // Bindings
-  MacOSAll,
+  CocoaAll,
   // Free Pascal
   Classes, SysUtils, Types,
   // Widgetset
-  CarbonDef, CarbonGDIObjects, CarbonInt,
+  CocoaGDIObjects, CocoaInt, CocoaPrivate,
   // LCL
-  LCLType, LCLIntf, LCLProc, Graphics, ExtCtrls, Forms;
+  LCLType, LCLIntf, LCLProc, Graphics, Controls, ExtCtrls, Forms;
 
 type
   { TEmulatedCaret }
@@ -45,8 +46,8 @@ type
   private
     FTimer: TTimer;
     FOldRect: TRect;
-    FWidget: TCarbonWidget;
-    FBitmap: TCarbonBitmap;
+    FView: NSView;
+    FBitmap: TCocoaBitmap;
     FWidth, FHeight: Integer;
     FPos: TPoint;
     FVisible: Boolean;
@@ -60,7 +61,7 @@ type
   protected
     procedure DoTimer(Sender: TObject);
     procedure DrawCaret; virtual;
-    procedure SetWidget(AWidget: TCarbonWidget);
+    procedure SetView(AView: NSView);
     procedure UpdateCaret;
   public
     constructor Create(AOwner: TComponent); override;
@@ -69,12 +70,12 @@ type
     procedure Lock;
     procedure UnLock;
 
-    function CreateCaret(AWidget: TCarbonWidget; Bitmap: PtrUInt; Width, Height: Integer): Boolean;
+    function CreateCaret(AView: NSView; Bitmap: PtrUInt; Width, Height: Integer): Boolean;
     function DestroyCaret: Boolean;
 
     function IsValid: Boolean;
 
-    function Show(AWidget: TCarbonWidget): Boolean;
+    function Show(AView: NSView): Boolean;
     function Hide: Boolean;
 
     property Timer: TTimer read FTimer;
@@ -82,9 +83,9 @@ type
     property RespondToFocus: Boolean read FRespondToFocus write FRespondToFocus;
   end;
 
-function CreateCaret(Widget: TCarbonWidget; Bitmap: PtrUInt; Width, Height: Integer): Boolean; overload;
-function HideCaret(Widget: TCarbonWidget): Boolean;
-function ShowCaret(Widget: TCarbonWidget): Boolean;
+function CreateCaret(View: NSView; Bitmap: PtrUInt; Width, Height: Integer): Boolean; overload;
+function HideCaret(View: NSView): Boolean;
+function ShowCaret(View: NSView): Boolean;
 function SetCaretPos(X, Y: Integer): Boolean;
 function GetCaretPos(var P: TPoint): Boolean;
 function GetCarbonCaretRespondToFocus: Boolean;
@@ -92,12 +93,10 @@ procedure SetCarbonCaretRespondToFocus(Value: Boolean);
 function DestroyCaret: Boolean;
 procedure DrawCaret;
 procedure DestroyGlobalCaret;
-//todo: make a better solution for the Widgetset released before GlobalCaret
-procedure CaretWidgetSetReleased;
+//todo: make a better solution for the Viewset released before GlobalCaret
+procedure CaretViewSetReleased;
 
 implementation
-
-uses CocoaGDIObjects;
 
 var
   GlobalCaret: TEmulatedCaret = nil;
@@ -126,7 +125,7 @@ begin
   FreeAndNil(GlobalCaret);
 end;
 
-function CreateCaret(Widget: TCarbonWidget; Bitmap: PtrUInt; Width, Height: Integer): Boolean;
+function CreateCaret(View: NSView; Bitmap: PtrUInt; Width, Height: Integer): Boolean;
 begin
   GlobalCaretNeeded;
 
@@ -134,7 +133,7 @@ begin
   begin
     GlobalCaret.Lock;
     try
-      Result := GlobalCaret.CreateCaret(Widget, Bitmap, Width, Height);
+      Result := GlobalCaret.CreateCaret(View, Bitmap, Width, Height);
     finally
       GlobalCaret.UnLock;
     end;
@@ -147,7 +146,7 @@ begin
   Result := 600; // our default value
 end;
 
-function HideCaret(Widget: TCarbonWidget): Boolean;
+function HideCaret(View: NSView): Boolean;
 begin
   Result := False;
   GlobalCaretNeeded;
@@ -163,7 +162,7 @@ begin
   end;
 end;
 
-function ShowCaret(Widget: TCarbonWidget): Boolean;
+function ShowCaret(View: NSView): Boolean;
 begin
   Result := False;
   GlobalCaretNeeded;
@@ -172,7 +171,7 @@ begin
   begin
     GlobalCaret.Lock;
     try
-      Result := GlobalCaret.Show(Widget);
+      Result := GlobalCaret.Show(View);
     finally
       GlobalCaret.UnLock;
     end;
@@ -280,16 +279,16 @@ begin
   System.LeaveCriticalsection(FCaretCS^);
 end;
 
-function TEmulatedCaret.CreateCaret(AWidget: TCarbonWidget; Bitmap: PtrUInt;
+function TEmulatedCaret.CreateCaret(AView: NSView; Bitmap: PtrUInt;
   Width, Height: Integer): Boolean;
 begin
   DestroyCaret;
-  SetWidget(AWidget);
+  SetView(AView);
   
   FWidth := Width;
   FHeight := Height;
   if Bitmap > 1 then
-    FBitmap := TCarbonBitmap.Create(TCarbonBitmap(Bitmap))
+    FBitmap := TCocoaBitmap.Create(TCocoaBitmap(Bitmap))
   else
     FBitmap := nil;
 
@@ -304,9 +303,8 @@ begin
   FVisibleState := False;
   UpdateCaret;
   
-  if Assigned(FBitmap) then FBitmap.Free;
-  FWidget := nil;
-  FBitmap := nil;
+  FreeAndNil(FBitmap);
+  FView := nil;
   FWidth := 0;
   FHeight := 0;
   Result := not IsValid;
@@ -314,29 +312,29 @@ end;
 
 procedure TEmulatedCaret.DrawCaret;
 begin
-  //DebugLn('DrawCaret ' + DbgSName(FWidget.LCLObject) + ' ' + DbgS(FPos) + ' ' + DbgS(FVisible) + ' ' + DbgS(FVisibleState));
-  if IsValid and FVisible and FVisibleState and FWidget.Painting then
+  //DebugLn('DrawCaret ' + DbgSName(FView.LCLObject) + ' ' + DbgS(FPos) + ' ' + DbgS(FVisible) + ' ' + DbgS(FVisibleState));
+  if IsValid and FVisible and FVisibleState and FView.lclIsPainting then
   begin
     if FBitmap = nil then
-      (FWidget.Context as TCarbonDeviceContext).InvertRectangle(FPos.X, FPos.Y,
+      FView.lclGetCallback.GetContext.InvertRectangle(FPos.X, FPos.Y,
         FPos.X + FWidth, FPos.Y + FHeight)
     else
-      (FWidget.Context as TCarbonDeviceContext).DrawCGImage(FPos.X, FPos.Y,
-        FBitmap.Width, FBitmap.Height, FBitmap.CGImage);
+      FView.lclGetCallback.GetContext.DrawBitmap(FPos.X, FPos.Y,
+        FBitmap);
   end;
 end;
 
-function TEmulatedCaret.Show(AWidget: TCarbonWidget): Boolean;
+function TEmulatedCaret.Show(AView: NSView): Boolean;
 begin
   Result := False;
-  if AWidget = nil then Exit;
+  if AView = nil then Exit;
 
-  //DebugLn('ShowCaret ' + DbgSName(AWidget.LCLObject));
+  //DebugLn('ShowCaret ' + DbgSName(AView.LCLObject));
   
-  if FWidget <> AWidget then
+  if FView <> AView then
   begin
     Hide;
-    SetWidget(AWidget);
+    SetView(AView);
     
     UpdateCaret;
   end;
@@ -369,14 +367,14 @@ begin
     FTimer.Enabled := False;
     FVisible := False;
     UpdateCaret;
-    FVisibleRealized := (FWidget = nil) or not FWidget.Painting;
+    FVisibleRealized := (FView = nil) or not FView.lclIsPainting;
   end;
 end;
 
 procedure TEmulatedCaret.SetPos(const Value: TPoint);
 begin
-  //DebugLn('SetCaretPos ' + DbgSName(FWidget.LCLObject));
-  if FWidget = nil then
+  //DebugLn('SetCaretPos ' + DbgSName(FView.LCLObject));
+  if FView = nil then
   begin
     FPos.X := 0;
     FPos.Y := 0;
@@ -388,7 +386,7 @@ begin
     FPos := Value;
     FTimer.Enabled := False;
     FTimer.Enabled := True;
-    if not FWidget.Painting then FVisibleState := True;
+    if not FView.lclIsPainting then FVisibleState := True;
     UpdateCaret;
   end;
 end;
@@ -401,38 +399,37 @@ end;
 
 function TEmulatedCaret.IsValid: Boolean;
 begin
-  Result := (FWidth > 0) and (FHeight > 0) and (FWidget <> nil) and FWidget.IsVisible and
-    not (csDestroying in FWidget.LCLObject.ComponentState);
+  Result := (FWidth > 0) and (FHeight > 0) and (FView <> nil) and FView.lclIsVisible and
+    not (csDestroying in TControl(FView.lclGetTarget).ComponentState);
 end;
 
-procedure TEmulatedCaret.SetWidget(AWidget: TCarbonWidget);
+procedure TEmulatedCaret.SetView(AView: NSView);
 begin
-  //DebugLn('SetCaretWidget ', DbgSName(AWidget.LCLObject));
-  if FWidget <> nil then FWidget.HasCaret := False;
+  if FView <> nil then FView.lclGetCallback.HasCaret := False;
 
-  FWidget := AWidget;
-  if FWidget <> nil then FWidget.HasCaret := True;
+  FView := AView;
+  if FView <> nil then FView.lclGetCallback.HasCaret := True;
   FTimer.Enabled := False;
-  FTimer.Enabled := FWidget <> nil;
+  FTimer.Enabled := FView <> nil;
 end;
 
 procedure TEmulatedCaret.UpdateCaret;
 var
   R: TRect;
 begin
-  if (FWidget = nil) or FWidgetSetReleased then Exit;
-  if FWidget.Painting then Exit;
+  if (FView = nil) or FWidgetSetReleased then Exit;
+  if FView.lclIsPainting then Exit;
   if not IsValid then Exit;
 
-  //DebugLn('UpdateCaret ' + DbgSName(FWidget.LCLObject) + ' ' + DbgS(FPos) + ' ' + DbgS(FVisible) + ' ' + DbgS(FVisibleState));
+  //DebugLn('UpdateCaret ' + DbgSName(FView.LCLObject) + ' ' + DbgS(FPos) + ' ' + DbgS(FVisible) + ' ' + DbgS(FVisibleState));
   R.Left := FPos.x;
   R.Top := FPos.y;
   R.Right := R.Left + FWidth + 2;
   R.Bottom := R.Top + FHeight + 2;
   
-  if not EqualRect(FOldRect, R) then FWidget.Invalidate(@FOldRect);
-  FWidget.Invalidate(@R);
-  FWidget.Update;
+  if not EqualRect(FOldRect, R) then FView.lclInvalidateRect(FOldRect);
+  FView.lclInvalidateRect(R);
+  FView.lclUpdate;
     
   FOldRect := R;
 end;
@@ -442,9 +439,10 @@ begin
   UpdateCaret;
 end;
 
-procedure CaretWidgetSetReleased;
+procedure CaretViewSetReleased;
 begin
-  if Assigned(GlobalCaret) then begin
+  if Assigned(GlobalCaret) then
+  begin
     GlobalCaret.fTimer.Free;
     GlobalCaret.fTimer:=nil;
     GlobalCaret.FWidgetSetReleased:=True;

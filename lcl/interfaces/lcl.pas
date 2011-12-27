@@ -7,7 +7,7 @@ unit LCL;
 interface
 
 uses
-  AllLCLIntfUnits, LazarusPackageIntf;
+  AllLCLIntfUnits, CocoaCaret, LazarusPackageIntf;
 
 implementation
 

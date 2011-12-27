@@ -119,7 +119,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="391">
+    <Files Count="392">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1940,6 +1940,10 @@ end;"/>
         <Filename Value="customdrawn/customdrawntrayicon_x11.inc"/>
         <Type Value="Include"/>
       </Item391>
+      <Item392>
+        <Filename Value="cocoa/cocoacaret.pas"/>
+        <UnitName Value="CocoaCaret"/>
+      </Item392>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>

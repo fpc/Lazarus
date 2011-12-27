@@ -26,13 +26,18 @@ type
   TLCLCommonCallback = class(TObject, ICommonCallBack)
   private
     FPropStorage: TStringList;
+    FContext: TCocoaContext;
+    FHasCaret: Boolean;
+    function GetHasCaret: Boolean;
+    procedure SetHasCaret(AValue: Boolean);
   public
     Owner: NSObject;
     Target: TWinControl;
-    Context: TCocoaContext;
     constructor Create(AOwner: NSObject; ATarget: TWinControl); virtual;
     destructor Destroy; override;
     function GetPropStorage: TStringList;
+    function GetContext: TCocoaContext;
+    function GetTarget: TObject;
     procedure MouseDown(x,y: Integer); virtual;
     procedure MouseUp(x,y: Integer); virtual;
     procedure MouseClick(clickCount: Integer); virtual;
@@ -42,6 +47,8 @@ type
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; virtual;
     procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
     function ResetCursorRects: Boolean; virtual;
+
+    property HasCaret: Boolean read GetHasCaret write SetHasCaret;
   end;
 
   TLCLCommonCallBackClass = class of TLCLCommonCallBack;
@@ -114,11 +121,22 @@ end;
 
 { TLCLCommonCallback }
 
+function TLCLCommonCallback.GetHasCaret: Boolean;
+begin
+  Result := FHasCaret;
+end;
+
+procedure TLCLCommonCallback.SetHasCaret(AValue: Boolean);
+begin
+  FHasCaret := AValue;
+end;
+
 constructor TLCLCommonCallback.Create(AOwner: NSObject; ATarget: TWinControl);
 begin
   inherited Create;
   Owner := AOwner;
   Target := ATarget;
+  FContext := nil;
   FPropStorage := TStringList.Create;
   FPropStorage.Sorted := True;
   FPropStorage.Duplicates := dupAccept;
@@ -126,7 +144,7 @@ end;
 
 destructor TLCLCommonCallback.Destroy;
 begin
-  Context.Free;
+  FContext.Free;
   FPropStorage.Free;
   inherited Destroy;
 end;
@@ -134,6 +152,16 @@ end;
 function TLCLCommonCallback.GetPropStorage: TStringList;
 begin
   Result := FPropStorage;
+end;
+
+function TLCLCommonCallback.GetContext: TCocoaContext;
+begin
+  Result := FContext;
+end;
+
+function TLCLCommonCallback.GetTarget: TObject;
+begin
+  Result := Target;
 end;
 
 procedure TLCLCommonCallback.MouseDown(x, y: Integer);
@@ -236,22 +264,19 @@ end;
 procedure TLCLCommonCallback.Draw(ControlContext: NSGraphicsContext;
   const bounds, dirty:NSRect);
 var
-  struct : TPaintStruct;
+  struct: TPaintStruct;
 begin
-  if not Assigned(Context) then Context:=TCocoaContext.Create;
-
-  Context.ctx:=ControlContext;
-  if Context.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then
-  begin
-    FillChar(struct, SizeOf(TPaintStruct), 0);
-    struct.hdc := HDC(Context);
-    {$IFDEF VerboseWinAPI}
-      DebugLn(Format('[TLCLCommonCallback.Draw] OnPaint event started context: %x', [HDC(context)]));
-    {$ENDIF}
-    LCLSendPaintMsg(Target, HDC(Context), @struct);
-    {$IFDEF VerboseWinAPI}
-      DebugLn('[TLCLCommonCallback.Draw] OnPaint event ended');
-    {$ENDIF}
+  FContext := TCocoaContext.Create;
+  try
+    FContext.ctx := ControlContext;
+    if FContext.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then
+    begin
+      FillChar(struct, SizeOf(TPaintStruct), 0);
+      struct.hdc := HDC(FContext);
+      LCLSendPaintMsg(Target, HDC(FContext), @struct);
+    end;
+  finally
+    FreeAndNil(FContext);
   end;
 end;
 

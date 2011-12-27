@@ -31,7 +31,7 @@ uses
   Types, Classes, SysUtils,
   CGGeometry,
   // Libs
-  MacOSAll, CocoaAll, CocoaUtils,
+  MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   // LCL
   LCLType;
 
@@ -51,7 +51,14 @@ type
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
     procedure Draw(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
     function GetPropStorage: TStringList;
+    function GetContext: TCocoaContext;
+    function GetTarget: TObject;
+    function GetHasCaret: Boolean;
+    procedure SetHasCaret(AValue: Boolean);
     function ResetCursorRects: Boolean;
+
+    // properties
+    property HasCaret: Boolean read GetHasCaret write SetHasCaret;
   end;
 
   { LCLObjectExtension }
@@ -64,6 +71,7 @@ type
 
     procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:';
     procedure lclInvalidate; message 'lclInvalidate';
+    procedure lclUpdate; message 'lclUpdate';
     procedure lclRelativePos(var Left, Top: Integer); message 'lclRelativePos::';
     procedure lclLocalToScreen(var X, Y: Integer); message 'lclLocalToScreen::';
     procedure lclScreenToLocal(var X, Y: Integer); message 'lclScreenToLocal::';
@@ -73,6 +81,7 @@ type
     function lclClientFrame: TRect; message 'lclClientFrame';
     function lclGetCallback: ICommonCallback; message 'lclGetCallback';
     function lclGetPropStorage: TStringList; message 'lclGetPropStorage';
+    function lclGetTarget: TObject; message 'lclGetTarget';
     function lclDeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; message 'lclDeliverMessage:::';
   end;
 
@@ -80,8 +89,10 @@ type
 
   LCLViewExtension = objccategory(NSView)
     function lclIsVisible: Boolean; message 'lclIsVisible'; reintroduce;
+    function lclIsPainting: Boolean; message 'lclIsPainting';
     procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:'; reintroduce;
     procedure lclInvalidate; message 'lclInvalidate'; reintroduce;
+    procedure lclUpdate; message 'lclUpdate'; reintroduce;
     procedure lclRelativePos(var Left, Top: Integer); message 'lclRelativePos::'; reintroduce;
     procedure lclLocalToScreen(var X, Y: Integer); message 'lclLocalToScreen::'; reintroduce;
     procedure lclScreenToLocal(var X, Y: Integer); message 'lclScreenToLocal::'; reintroduce;
@@ -109,6 +120,7 @@ type
     function lclWindowState: Integer; message 'lclWindowState'; reintroduce;
     procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:'; reintroduce;
     procedure lclInvalidate; message 'lclInvalidate'; reintroduce;
+    procedure lclUpdate; message 'lclUpdate'; reintroduce;
     procedure lclRelativePos(var Left, Top: Integer); message 'lclRelativePos::'; reintroduce;
     procedure lclLocalToScreen(var X, Y: Integer); message 'lclLocalToScreen::'; reintroduce;
     procedure lclScreenToLocal(var X, Y: Integer); message 'lclScreenToLocal::'; reintroduce;
@@ -706,12 +718,14 @@ end;
 
 procedure LCLObjectExtension.lclInvalidateRect(const r:TRect);
 begin
-
 end;
 
 procedure LCLObjectExtension.lclInvalidate;
 begin
+end;
 
+procedure LCLObjectExtension.lclUpdate;
+begin
 end;
 
 procedure LCLObjectExtension.lclRelativePos(var Left,Top:Integer);
@@ -762,6 +776,17 @@ begin
     Result := nil;
 end;
 
+function LCLObjectExtension.lclGetTarget: TObject;
+var
+  Callback: ICommonCallback;
+begin
+  Callback := lclGetCallback;
+  if Assigned(Callback) then
+    Result := Callback.GetTarget
+  else
+    Result := nil;
+end;
+
 function LCLObjectExtension.lclDeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
 var
   Callback: ICommonCallback;
@@ -805,6 +830,11 @@ begin
   Result := not isHidden;
 end;
 
+function LCLViewExtension.lclIsPainting: Boolean;
+begin
+  Result := Assigned(lclGetCallback) and Assigned(lclGetCallback.GetContext);
+end;
+
 procedure LCLViewExtension.lclInvalidateRect(const r:TRect);
 begin
   setNeedsDisplayInRect(RectToViewCoord(Self, r));
@@ -813,6 +843,11 @@ end;
 procedure LCLViewExtension.lclInvalidate;
 begin
   setNeedsDisplay_(True);
+end;
+
+procedure LCLViewExtension.lclUpdate;
+begin
+  display;
 end;
 
 procedure LCLViewExtension.lclRelativePos(var Left, Top: Integer);
@@ -927,6 +962,11 @@ end;
 procedure LCLWindowExtension.lclInvalidate;
 begin
   contentView.lclInvalidate;
+end;
+
+procedure LCLWindowExtension.lclUpdate;
+begin
+  contentView.lclUpdate;
 end;
 
 procedure LCLWindowExtension.lclRelativePos(var Left, Top: Integer);

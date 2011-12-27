@@ -187,7 +187,7 @@ type
     FAntialiased: Boolean;
   public
     constructor CreateDefault;
-    constructor Create(const ALogFont: TLogFont; AFontName: String; AGlobal: Boolean = False);
+    constructor Create(const ALogFont: TLogFont; AFontName: String; AGlobal: Boolean = False); reintroduce;
     class function CocoaFontWeightToWin32FontWeight(const CocoaFontWeight: Integer): Integer; static;
     property Font: NSFont read FFont;
     property Name: String read FName;
@@ -352,10 +352,11 @@ type
     function InitDraw(width, height: Integer): Boolean;
 
     // drawing functions
-    procedure DrawBitmap(X,Y: Integer; ABitmap: TCocoaBitmap);
+    procedure DrawBitmap(X, Y: Integer; ABitmap: TCocoaBitmap);
     procedure DrawFocusRect(ARect: TRect);
-    procedure MoveTo(x,y: Integer);
-    procedure LineTo(x,y: Integer);
+    procedure InvertRectangle(X1, Y1, X2, Y2: Integer);
+    procedure MoveTo(X, Y: Integer);
+    procedure LineTo(X, Y: Integer);
     procedure Polygon(const Points: array of TPoint; NumPts: Integer; Winding: boolean);
     procedure Polyline(const Points: array of TPoint; NumPts: Integer);
     procedure Rectangle(X1, Y1, X2, Y2: Integer; FillRect: Boolean; UseBrush: TCocoaBrush);
@@ -1279,13 +1280,27 @@ begin
   FPenPos.y := 0;
 end;
 
-procedure TCocoaContext.MoveTo(x, y: Integer);
+procedure TCocoaContext.InvertRectangle(X1, Y1, X2, Y2: Integer);
 begin
-  FPenPos.x := x;
-  FPenPos.y := y;
+  // save dest context
+  CGContextSaveGState(CGContext);
+  try
+    DefaultBrush.Apply(Self, False);
+    CGContextSetBlendMode(CGContext, kCGBlendModeDifference);
+
+    CGContextFillRect(CGContext, GetCGRectSorted(X1, Y1, X2, Y2));
+  finally
+    CGContextRestoreGState(CGContext);
+  end;
 end;
 
-procedure TCocoaContext.LineTo(x, y: Integer);
+procedure TCocoaContext.MoveTo(X, Y: Integer);
+begin
+  FPenPos.x := X;
+  FPenPos.y := Y;
+end;
+
+procedure TCocoaContext.LineTo(X, Y: Integer);
 var
   cg: CGContextRef;
   p: array [0..1] of CGPoint;
@@ -1749,7 +1764,7 @@ begin
   Result := True;
 end;
 
-procedure TCocoaContext.DrawBitmap(X,Y:Integer; ABitmap: TCocoaBitmap);
+procedure TCocoaContext.DrawBitmap(X, Y: Integer; ABitmap: TCocoaBitmap);
 begin
   NSGraphicsContext.saveGraphicsState();
   NSGraphicsContext.setCurrentContext(ctx);

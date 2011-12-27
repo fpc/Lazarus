@@ -851,7 +851,9 @@ end;
 
 function TCocoaWidgetSet.UpdateWindow(Handle: HWND): Boolean;
 begin
-  Result := InvalidateRect(Handle, nil, False);
+  Result := Handle <> 0;
+  if Result then
+    NSObject(Handle).lclUpdate;
 end;
 
 function TCocoaWidgetSet.GetProp(Handle: hwnd; Str: PChar): Pointer;
