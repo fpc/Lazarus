@@ -1652,22 +1652,10 @@ end;
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 var
-  ctx : TCocoaContext;
+  ctx: TCocoaContext;
 begin
-  Result := False;
-
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCocoaWidgetSet.GetTextMetrics DC: ' + DbgS(DC));
-  {$ENDIF}
-
-  ctx:=CheckDC(DC);
-  if not Assigned(ctx) then Exit(False);
-  Result := ctx.GetTextMetrics(TM);
-
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCocoaWidgetSet.GetTextMetrics Result: ' + DbgS(Result) +
-      ' TextMetric: ' + DbgS(TM));
-  {$ENDIF}
+  ctx := CheckDC(DC);
+  Result := Assigned(ctx) and ctx.GetTextMetrics(TM);
 end;
 
 function TCocoaWidgetSet.TextOut(DC: HDC; X,Y: Integer; Str: Pchar; Count: Integer) : Boolean;

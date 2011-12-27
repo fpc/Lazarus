@@ -275,6 +275,8 @@ type
     PenPos: TPoint;
   end;
 
+  TGlyphArray = array of NSGlyph;
+
   { TCocoaTextLayout }
 
   TCocoaTextLayout = class
@@ -297,6 +299,7 @@ type
     destructor Destroy; override;
     procedure SetText(UTF8Text: PChar; ByteSize: Integer);
     function GetSize: TSize;
+    function GetGlyphs: TGlyphArray;
     procedure Draw(ctx: NSGraphicsContext; X, Y: Integer; FillBackground: Boolean; DX: PInteger);
 
     property Font: TCocoaFont read FFont write SetFont;
@@ -949,6 +952,15 @@ begin
   end;
 end;
 
+function TCocoaTextLayout.GetGlyphs: TGlyphArray;
+var
+  Range: NSRange;
+begin
+  Range := FLayout.glyphRangeForTextContainer(FTextContainer);
+  SetLength(Result, Range.length);
+  FLayout.getGlyphs_range(@Result[0], Range);
+end;
+
 procedure TCocoaTextLayout.Draw(ctx: NSGraphicsContext; X, Y: Integer; FillBackground: Boolean; DX: PInteger);
 var
   Range: NSRange;
@@ -1038,23 +1050,10 @@ begin
 end;
 
 procedure TCocoaContext.SetBkColor(AValue: TColor);
-var
-  SysBrush: TCocoaBrush;
-  Color: NSColor;
 begin
-  if IsSysColor(AValue) then
-  begin
-    SysBrush := TCocoaBrush(CocoaWidgetSet.GetSysColorBrush(SysColorToSysColorIndex(AValue)));
-    Color := TCocoaBrush(SysBrush).Color;
-    FBkColor := NSColorToColorRef(Color);
-    FBkBrush.Color := Color;
-    FBkBrush.Solid := BkMode = OPAQUE;
-  end
-  else
-  begin
-    FBkColor := AValue;
-    FBkBrush.SetColor(AValue, BkMode = OPAQUE);
-  end;
+  AValue := ColorToRGB(AValue);
+  FBkColor := AValue;
+  FBkBrush.SetColor(AValue, BkMode = OPAQUE);
 end;
 
 procedure TCocoaContext.SetBkMode(AValue: Integer);
@@ -1689,41 +1688,38 @@ end;
   Fills the specified buffer with the metrics for the currently selected font
  ------------------------------------------------------------------------------}
 function TCocoaContext.GetTextMetrics(var TM: TTextMetric): Boolean;
-{var
-  TextStyle: ATSUStyle;
-  M: ATSUTextMeasurement;
-  B: Boolean;
-  TextLayout: TCarbonTextLayout;
-const
-  SName = 'GetTextMetrics';
-  SGetAttrName = 'ATSUGetAttribute';}
+var
+  Glyphs: TGlyphArray;
+  Adjustments: array of NSSize;
+  I: Integer;
+  A: Single;
 begin
-  Result := False;
-
-//  TextStyle := CurrentFont.Style;
-
   FillChar(TM, SizeOf(TM), 0);
 
-{  // According to the MSDN library, TEXTMETRIC:
-  // the average char width is generally defined as the width of the letter x
-  if not BeginTextRender('x', 1, TextLayout) then Exit;
-  try}
+  TM.tmAscent := Round(Font.Font.ascender);
+  TM.tmDescent := -Round(Font.Font.descender);
+  TM.tmHeight := TM.tmAscent + TM.tmDescent;
 
-    TM.tmAscent := 5;//RoundFixed(TextLayout.Ascent);
-    TM.tmDescent := 5;//RoundFixed(TextLayout.Descent);
-    TM.tmHeight := 15;//RoundFixed(TextLayout.Ascent + TextLayout.Descent);
+  TM.tmInternalLeading := Round(Font.Font.leading);
+  TM.tmExternalLeading := 0;
 
-//    if OSError(ATSUGetAttribute(TextStyle, kATSULeadingTag, SizeOf(M), @M, nil),
-//      Self, SName, SGetAttrName, 'kATSULeadingTag', kATSUNotSetErr) then Exit;
-//    TM.tmInternalLeading := RoundFixed(M);
-    TM.tmExternalLeading := 0;
+  TM.tmMaxCharWidth := Round(Font.Font.maximumAdvancement.width);
+  FText.SetText('WMTigq[_|^', 10);
+  Glyphs := FText.GetGlyphs;
+  if Length(Glyphs) > 0 then
+  begin
+    SetLength(Adjustments, Length(Glyphs));
+    Font.Font.getAdvancements_forGlyphs_count(@Adjustments[0], @Glyphs[0], Length(Glyphs));
+    A := 0;
+    for I := 0 to High(Adjustments) do
+      A := A + Adjustments[I].width;
+    TM.tmAveCharWidth := Round(A / Length(Adjustments));
+    SetLength(Adjustments, 0);
+    SetLength(Glyphs, 0);
+  end
+  else
+    TM.tmAveCharWidth := TM.tmMaxCharWidth;
 
-    TM.tmAveCharWidth := 15;//RoundFixed(TextLayout.TextAfter - TextLayout.TextBefore);
-//  finally
-//    EndTextRender(TextLayout);
-//  end;
-
-  TM.tmMaxCharWidth := 15;//TM.tmAscent; // TODO: don't know how to determine this right
   TM.tmOverhang := 0;
   TM.tmDigitizedAspectX := 0;
   TM.tmDigitizedAspectY := 0;
@@ -1732,25 +1728,22 @@ begin
   TM.tmDefaultChar := 'x';
   TM.tmBreakChar := '?';
 
-//  if OSError(ATSUGetAttribute(TextStyle, kATSUQDBoldfaceTag, SizeOf(B), @B, nil),
-//    Self, SName, SGetAttrName, 'kATSUQDBoldfaceTag', kATSUNotSetErr) then Exit;
-{  if B then} TM.tmWeight := FW_NORMAL;
-//       else TM.tmWeight := FW_BOLD;
+  TM.tmWeight := Font.CocoaFontWeightToWin32FontWeight(NSFontManager.sharedFontManager.weightOfFont(Font.Font));
 
-{  if OSError(ATSUGetAttribute(TextStyle, kATSUQDItalicTag, SizeOf(B), @B, nil),
-    Self, SName, SGetAttrName, 'kATSUQDItalicTag', kATSUNotSetErr) then Exit;
-  TM.tmItalic := Byte(B);}
+  if cfs_Italic in Font.Style then
+    TM.tmItalic := 1;
 
-{  if OSError(ATSUGetAttribute(TextStyle, kATSUQDUnderlineTag, SizeOf(B), @B, nil),
-    Self, SName, SGetAttrName, 'kATSUQDUnderlineTag', kATSUNotSetErr) then Exit;
-  TM.tmUnderlined := Byte(B);
+  if cfs_Underline in Font.Style then
+    TM.tmUnderlined := 1;
 
-  if OSError(ATSUGetAttribute(TextStyle, kATSUStyleStrikeThroughTag, SizeOf(B), @B, nil),
-    Self, SName, SGetAttrName, 'kATSUStyleStrikeThroughTag', kATSUNotSetErr) then Exit;
-  TM.tmStruckOut := Byte(B);}
+  if cfs_StrikeOut in Font.Style then
+    TM.tmStruckOut := 1;
 
-  // TODO: get these from font
-  TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;
+  TM.tmPitchAndFamily := TRUETYPE_FONTTYPE;
+  if Font.Font.isFixedPitch then
+    TM.tmPitchAndFamily := TM.tmPitchAndFamily or FIXED_PITCH;
+
+  // we can take charset from Font.Charset also but leave it to default for now
   TM.tmCharSet := DEFAULT_CHARSET;
 
   Result := True;
