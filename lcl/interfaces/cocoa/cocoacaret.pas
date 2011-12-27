@@ -35,7 +35,7 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // Widgetset
-  CocoaGDIObjects, CocoaInt, CocoaPrivate,
+  CocoaGDIObjects, CocoaPrivate,
   // LCL
   LCLType, LCLIntf, LCLProc, Graphics, Controls, ExtCtrls, Forms;
 

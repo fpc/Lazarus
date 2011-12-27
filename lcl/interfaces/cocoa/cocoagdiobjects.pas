@@ -1283,14 +1283,14 @@ end;
 procedure TCocoaContext.InvertRectangle(X1, Y1, X2, Y2: Integer);
 begin
   // save dest context
-  CGContextSaveGState(CGContext);
+  ctx.saveGraphicsState;
   try
     DefaultBrush.Apply(Self, False);
     CGContextSetBlendMode(CGContext, kCGBlendModeDifference);
 
     CGContextFillRect(CGContext, GetCGRectSorted(X1, Y1, X2, Y2));
   finally
-    CGContextRestoreGState(CGContext);
+    ctx.restoreGraphicsState;
   end;
 end;
 

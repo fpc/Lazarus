@@ -11,7 +11,7 @@ uses
   Classes, Controls, SysUtils,
   //
   WSControls, LCLType, LMessages, LCLProc, Forms,
-  CocoaPrivate, CocoaGDIObjects, CocoaUtils, LCLMessageGlue;
+  CocoaPrivate, CocoaGDIObjects, CocoaCaret, CocoaUtils, LCLMessageGlue;
 
 type
 
@@ -137,6 +137,7 @@ begin
   Owner := AOwner;
   Target := ATarget;
   FContext := nil;
+  FHasCaret := False;
   FPropStorage := TStringList.Create;
   FPropStorage.Sorted := True;
   FPropStorage.Duplicates := dupAccept;
@@ -274,6 +275,8 @@ begin
       FillChar(struct, SizeOf(TPaintStruct), 0);
       struct.hdc := HDC(FContext);
       LCLSendPaintMsg(Target, HDC(FContext), @struct);
+      if FHasCaret then
+        DrawCaret;
     end;
   finally
     FreeAndNil(FContext);

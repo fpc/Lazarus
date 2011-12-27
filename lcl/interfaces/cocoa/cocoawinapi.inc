@@ -116,10 +116,6 @@ function TCocoaWidgetSet.CreateBitmap(Width, Height: Integer;
 var
   bmpType: TCocoaBitmapType;
 begin
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCocoaWidgetSet.CreateBitmap');
-  {$ENDIF}
-
   // WORKAROUND: force context supported depths
   if BitmapBits = nil then
   begin
@@ -144,12 +140,27 @@ begin
   Result := HBrush(TCocoaBrush.Create(LogBrush));
 end;
 
+function TCocoaWidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap; Width,
+  Height: Integer): Boolean;
+var
+  Obj: NSObject;
+begin
+  Result := (Handle <> 0);
+  if Result then
+  begin
+    Obj := NSObject(Handle);
+    if Obj.isKindOfClass(NSView) then
+      Result := CocoaCaret.CreateCaret(NSView(Handle), Bitmap, Width, Height)
+    else
+    if Obj.isKindOfClass(NSWindow) then
+      Result := CocoaCaret.CreateCaret(NSWindow(Handle).contentView, Bitmap, Width, Height)
+    else
+      Result := False;
+  end;
+end;
+
 function TCocoaWidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
 begin
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCocoaWidgetSet.CreateCompatibleBitmap');
-  {$ENDIF}
-
   Result := HBITMAP(TCocoaBitmap.Create(Width, Height, 32, 32, cbaDQWord, cbtARGB, nil));
 end;
 
@@ -162,10 +173,6 @@ end;
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.CreateCompatibleDC(DC: HDC): HDC;
 begin
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCocoaWidgetSet.CreateCompatibleDC');
-  {$ENDIF}
-
   Result := HDC(TCocoaContext.Create);
 end;
 
@@ -304,6 +311,11 @@ begin
     Exit;
 
   if gdi.RefCount = 0 then gdi.Destroy;
+end;
+
+function TCocoaWidgetSet.DestroyCaret(Handle: HWND): Boolean;
+begin
+  Result := CocoaCaret.DestroyCaret;
 end;
 
 function TCocoaWidgetSet.DestroyIcon(Handle: HICON): Boolean;
@@ -516,6 +528,17 @@ begin
     Result := ctx.BkColor
   else
     Result := CLR_INVALID;
+end;
+
+function TCocoaWidgetSet.GetCaretPos(var lpPoint: TPoint): Boolean;
+begin
+  Result := CocoaCaret.GetCaretPos(lpPoint);
+end;
+
+function TCocoaWidgetSet.GetCaretRespondToFocus(handle: HWND;
+  var ShowHideOnFocus: boolean): Boolean;
+begin
+  Result := inherited GetCaretRespondToFocus(handle, ShowHideOnFocus);
 end;
 
 {------------------------------------------------------------------------------
@@ -834,6 +857,24 @@ begin
     r := NSObject(Handle).lclFrame;
     Width := R.Right - R.Left;
     Height := R.Bottom - R.Top;
+  end;
+end;
+
+function TCocoaWidgetSet.HideCaret(Handle: HWND): Boolean;
+var
+  Obj: NSObject;
+begin
+  Result := (Handle <> 0);
+  if Result then
+  begin
+    Obj := NSObject(Handle);
+    if Obj.isKindOfClass(NSView) then
+      Result := CocoaCaret.HideCaret(NSView(Handle))
+    else
+    if Obj.isKindOfClass(NSWindow) then
+      Result := CocoaCaret.HideCaret(NSWindow(Handle).contentView)
+    else
+      Result := False;
   end;
 end;
 
@@ -1430,6 +1471,22 @@ begin
     Result := 0;
 end;
 
+function TCocoaWidgetSet.SetCaretPos(X, Y: Integer): Boolean;
+begin
+  Result := CocoaCaret.SetCaretPos(X, Y);
+end;
+
+function TCocoaWidgetSet.SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean;
+begin
+  Result := CocoaCaret.SetCaretPos(X, Y);
+end;
+
+function TCocoaWidgetSet.SetCaretRespondToFocus(handle: HWND;
+  ShowHideOnFocus: boolean): Boolean;
+begin
+  Result:=inherited SetCaretRespondToFocus(handle, ShowHideOnFocus);
+end;
+
 function TCocoaWidgetSet.RectVisible(DC: HDC; const ARect: TRect): Boolean;
 var
   ClipBox: CGRect;
@@ -1549,6 +1606,24 @@ begin
   end
   else
     Result := CLR_INVALID;
+end;
+
+function TCocoaWidgetSet.ShowCaret(Handle: HWND): Boolean;
+var
+  Obj: NSObject;
+begin
+  Result := (Handle <> 0);
+  if Result then
+  begin
+    Obj := NSObject(Handle);
+    if Obj.isKindOfClass(NSView) then
+      Result := CocoaCaret.ShowCaret(NSView(Handle))
+    else
+    if Obj.isKindOfClass(NSWindow) then
+      Result := CocoaCaret.ShowCaret(NSWindow(Handle).contentView)
+    else
+      Result := False;
+  end;
 end;
 
 {------------------------------------------------------------------------------
