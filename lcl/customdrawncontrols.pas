@@ -910,7 +910,7 @@ var
 begin
   inherited Paint;
 
-  {$ifdef CDControlsDoDoubleBuffer}
+  (*{$ifdef CDControlsDoDoubleBuffer}
   ABmp := TBitmap.Create;
   try
     ABmp.Width := Width;
@@ -920,9 +920,9 @@ begin
   finally
     ABmp.Free;
   end;
-  {$else}
+  {$else}*)
   DrawToCanvas(Canvas);
-  {$endif}
+  //{$endif}
 end;
 
 procedure TCDControl.DrawToCanvas(ACanvas: TCanvas);
@@ -963,6 +963,9 @@ begin
   inherited Create(AOwner);
   CreateControlStateEx;
   PrepareCurrentDrawer();
+  {$ifdef CDControlsDoDoubleBuffer}
+  DoubleBuffered := True;
+  {$endif}
 end;
 
 destructor TCDControl.Destroy;
