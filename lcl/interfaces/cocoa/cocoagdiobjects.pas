@@ -2290,14 +2290,13 @@ var
 begin
   FillChar(ACallBacks, SizeOf(ACallBacks), 0);
   ACallBacks.drawPattern := @DrawBitmapPattern;
-  FImage := AImage.CGImageForProposedRect_context_hints(nil, nil, nil);
-  CGImageRetain(FImage);
-  FColored := False;
+  FImage := CGImageCreateCopy(AImage.CGImageForProposedRect_context_hints(nil, nil, nil));
+  FColored := True;
   Rect.origin.x := 0;
   Rect.origin.y := 0;
   Rect.size := CGSize(AImage.size);
   FCGPattern := CGPatternCreate(Self, Rect,
-    CGAffineTransformIdentity, AImage.size.width, AImage.size.height, kCGPatternTilingConstantSpacing,
+    CGAffineTransformIdentity, Rect.size.width, Rect.size.height, kCGPatternTilingConstantSpacing,
     Ord(FColored), ACallBacks);
 end;
 
