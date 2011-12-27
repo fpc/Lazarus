@@ -4083,41 +4083,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function Frame(DC: HDC; const ARect: TRect): Integer; override;
-
-  Draws the border of a rectangle.
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.Frame(DC: HDC; const ARect: TRect): Integer;
-var
-  DCOrigin: TPoint;
-  DevCtx: TGtkDeviceContext absolute DC;
-  R: TRect;
-begin
-  Result:=0;
-  if not IsValidDC(DC) then exit;
-  
-  // Draw outline
-  DevCtx.SelectPenProps;
-  if not (dcfPenSelected in DevCtx.Flags) then Exit;
-
-  Result := 1;
-  if DevCtx.IsNullPen then Exit;
-
-  if DevCtx.HasTransf then
-  begin
-    R :=DevCtx.TransfRectIndirect(ARect);
-    DevCtx.TransfNormalize(R.Left, R.Right);
-    DevCtx.TransfNormalize(R.Top, R.Bottom);
-  end else
-    R := ARect;
-
-  DCOrigin := DevCtx.Offset;
-  gdk_draw_rectangle(DevCtx.Drawable, DevCtx.GC, 0,
-                     R.Left+DCOrigin.X, R.Top+DCOrigin.Y,
-                     R.Right-R.Left, R.Bottom-R.Top);
-end;
-
-{------------------------------------------------------------------------------
   Function: Frame3d
   Params: -
   Returns: Nothing
