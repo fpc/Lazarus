@@ -96,17 +96,10 @@ var
   i, j: Integer;
   s: string;
   clb: TCustomCheckListBox;
-  TempOnItemClick: TCheckListClicked;
 begin
   clb:=Nil;
-  TempOnItemClick:=Nil;
-  if fFilteredListbox is TCustomCheckListBox then begin
+  if fFilteredListbox is TCustomCheckListBox then
     clb:=TCustomCheckListBox(fFilteredListbox);
-    if Assigned(clb.OnItemClick) then begin
-      TempOnItemClick:=clb.OnItemClick;
-      clb.OnItemClick:=Nil;            // Disable OnItemClick temporarily.
-    end;
-  end;
   fFilteredListbox.Clear;
   fFilteredListbox.Items.BeginUpdate;
   for i:=0 to fSortedData.Count-1 do begin
@@ -118,8 +111,6 @@ begin
       clb.Checked[j]:=OnCheckItem(fSortedData.Objects[i]);
   end;
   fFilteredListbox.Items.EndUpdate;
-  if Assigned(TempOnItemClick) then
-    clb.OnItemClick:=TempOnItemClick;  // Restore OnItemClick.
 end;
 
 function TListFilterEdit.CompareFNs(AFilename1,AFilename2: string): integer;
