@@ -5420,6 +5420,7 @@ lcl/interfaces/cocoa/Makefile svneol=native#text/plain
 lcl/interfaces/cocoa/Makefile.compiled svneol=native#text/plain
 lcl/interfaces/cocoa/Makefile.fpc svneol=native#text/plain
 lcl/interfaces/cocoa/alllclintfunits.pas svneol=native#text/plain
+lcl/interfaces/cocoa/cocoacaret.pas svneol=native#text/pascal
 lcl/interfaces/cocoa/cocoagdiobjects.pas svneol=native#text/plain
 lcl/interfaces/cocoa/cocoaint.pas svneol=native#text/plain
 lcl/interfaces/cocoa/cocoalclintf.inc svneol=native#text/pascal
