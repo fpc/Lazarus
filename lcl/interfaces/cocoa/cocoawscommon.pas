@@ -31,7 +31,8 @@ type
     function GetHasCaret: Boolean;
     procedure SetHasCaret(AValue: Boolean);
   protected
-    function CocoaModifiersToKeyState(AModifiers: NSUInteger): PtrInt;
+    class function CocoaModifiersToKeyState(AModifiers: NSUInteger): PtrInt; static;
+    class function CocoaPressedMouseButtonsToKeyState(AMouseButtons: NSUInteger): PtrInt; static;
     procedure OffsetMousePos(var Point: NSPoint);
   public
     Owner: NSObject;
@@ -150,7 +151,7 @@ begin
   FHasCaret := AValue;
 end;
 
-function TLCLCommonCallback.CocoaModifiersToKeyState(AModifiers: NSUInteger): PtrInt;
+class function TLCLCommonCallback.CocoaModifiersToKeyState(AModifiers: NSUInteger): PtrInt;
 begin
   Result := 0;
   if AModifiers and NSShiftKeyMask <> 0 then
@@ -159,6 +160,21 @@ begin
     Result := Result or MK_CONTROL;
   if AModifiers and NSAlternateKeyMask <> 0 then
     Result := Result or $20000000;
+end;
+
+class function TLCLCommonCallback.CocoaPressedMouseButtonsToKeyState(AMouseButtons: NSUInteger): PtrInt;
+begin
+  Result := 0;
+  if AMouseButtons and (1 shl 0) <> 0 then
+    Result := Result or MK_LBUTTON;
+  if AMouseButtons and (1 shl 1) <> 0 then
+    Result := Result or MK_RBUTTON;
+  if AMouseButtons and (1 shl 2) <> 0 then
+    Result := Result or MK_MBUTTON;
+  if AMouseButtons and (1 shl 3) <> 0 then
+    Result := Result or MK_XBUTTON1;
+  if AMouseButtons and (1 shl 4) <> 0 then
+    Result := Result or MK_XBUTTON2;
 end;
 
 procedure TLCLCommonCallback.OffsetMousePos(var Point: NSPoint);
@@ -210,63 +226,25 @@ end;
 function TLCLCommonCallback.MouseUpDownEvent(Event: NSEvent): Boolean;
 const
   // array of clickcount x buttontype
-  MSGKIND: array[0..2, 1..4] of Integer =
+  MSGKIND: array[0..3, 1..4] of Integer =
   (
     (LM_LBUTTONDOWN, LM_LBUTTONDBLCLK, LM_LBUTTONTRIPLECLK, LM_LBUTTONQUADCLK),
     (LM_RBUTTONDOWN, LM_RBUTTONDBLCLK, LM_RBUTTONTRIPLECLK, LM_RBUTTONQUADCLK),
-    (LM_MBUTTONDOWN, LM_MBUTTONDBLCLK, LM_MBUTTONTRIPLECLK, LM_MBUTTONQUADCLK)
+    (LM_MBUTTONDOWN, LM_MBUTTONDBLCLK, LM_MBUTTONTRIPLECLK, LM_MBUTTONQUADCLK),
+    (LM_XBUTTONDOWN, LM_XBUTTONDBLCLK, LM_XBUTTONTRIPLECLK, LM_XBUTTONQUADCLK)
   );
-  MSGKINDUP: array[0..2] of Integer = (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP);
+  MSGKINDUP: array[0..3] of Integer = (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP, LM_XBUTTONUP);
 
 var
   Msg: TLMMouse;
   MousePos: NSPoint;
-  MButton: Integer;
+  MButton: NSInteger;
 
   function CheckMouseButtonDown(AButton: Integer): Cardinal;
-
-    function LastClickInSameOwner: boolean;
-    begin
-      Result := (LastMouse.Owner <> nil) and
-                (LastMouse.Owner = Owner);
-    end;
-
-    function LastClickAtSamePosition: boolean;
-    begin
-      Result := (Abs(MousePos.X - LastMouse.MousePos.X) <= DblClickThreshold) and
-                (Abs(MousePos.Y - LastMouse.MousePos.Y) <= DblClickThreshold);
-    end;
-
-    function LastClickInTime: boolean;
-    begin
-      Result := (Event.timestamp - LastMouse.TimeStamp) <= Event.doubleClickInterval;
-    end;
-
-    function TestIfMultiClick: boolean;
-    begin
-      Result := LastClickInSameOwner and
-                LastClickAtSamePosition and
-                LastClickInTime;
-    end;
-
-  var
-    IsMultiClick: boolean;
   begin
-    Result := LM_NULL;
-
-    IsMultiClick := TestIfMultiClick;
-
-    inc(LastMouse.ClickCount);
-
-    if (LastMouse.ClickCount <= 4) and IsMultiClick then
-    begin
-      // multi click
-    end else
-    begin
-      // normal click
-      LastMouse.ClickCount := 1;
-    end;
-
+    LastMouse.ClickCount := Event.clickCount;
+    if LastMouse.clickCount > 4 then
+      LastMouse.clickCount := 1;
     LastMouse.TimeStamp := Event.timestamp;
     LastMouse.MousePos := MousePos;
     LastMouse.Owner := Owner;
@@ -286,24 +264,19 @@ begin
   MousePos := Event.locationInWindow;
   OffsetMousePos(MousePos);
 
-  Msg.Keys := CocoaModifiersToKeyState(Event.modifierFlags);
+  Msg.Keys := CocoaModifiersToKeyState(Event.modifierFlags) or CocoaPressedMouseButtonsToKeyState(Event.pressedMouseButtons);
 
   Msg.XPos := Round(MousePos.X);
   Msg.YPos := Round(MousePos.Y);
 
-  case Event.type_ of
-    NSLeftMouseDown,
-    NSLeftMouseUp:
-      MButton := 0;
-    NSRightMouseDown,
-    NSRightMouseUp:
-      MButton := 1;
-    NSOtherMouseDown,
-    NSOtherMouseUp:
-      MButton := 2;
-  else
-    Exit;
+  MButton := event.buttonNumber;
+  if MButton >= 3 then
+  begin
+    // high word of XButton messages indicate the X button which is pressed
+    Msg.Keys := Msg.Keys or (MButton - 2) shl 16;
+    MButton := 3;
   end;
+
 
   case Event.type_ of
     NSLeftMouseDown,
@@ -313,7 +286,7 @@ begin
       Msg.Msg := CheckMouseButtonDown(MButton);
 
       NotifyApplicationUserInput(Msg.Msg);
-      DeliverMessage(Msg);
+      Result := DeliverMessage(Msg) = 0;
     end;
     NSLeftMouseUp,
     NSRightMouseUp,
@@ -324,7 +297,7 @@ begin
       Msg.Msg := MSGKINDUP[MButton];
 
       NotifyApplicationUserInput(Msg.Msg);
-      DeliverMessage(Msg);
+      Result := DeliverMessage(Msg) = 0;
     end;
   end;
 end;

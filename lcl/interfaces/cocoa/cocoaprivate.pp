@@ -179,12 +179,18 @@ type
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
+    // mouse
     procedure mouseDown(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
+
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseEntered(event: NSEvent); override;
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
-    procedure mouseUp(event: NSEvent); override;
     procedure resetCursorRects; override;
   end;
 
@@ -239,8 +245,13 @@ type
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
-    procedure mouseUp(event: NSEvent); override;
+    // mouse
     procedure mouseDown(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseEntered(event: NSEvent); override;
     procedure mouseExited(event: NSEvent); override;
@@ -258,12 +269,17 @@ type
     function resignFirstResponder: Boolean; override;
     procedure drawRect(dirtyRect: NSRect); override;
     function lclGetCallback: ICommonCallback; override;
+    // mouse
     procedure mouseDown(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseEntered(event: NSEvent); override;
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
-    procedure mouseUp(event: NSEvent); override;
     procedure resetCursorRects; override;
   end;
 
@@ -529,6 +545,30 @@ begin
     inherited mouseUp(event);
 end;
 
+procedure TCocoaButton.rightMouseDown(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaButton.rightMouseUp(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaButton.otherMouseDown(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaButton.otherMouseUp(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
+end;
+
 procedure TCocoaButton.resetCursorRects;
 begin
   if not callback.resetCursorRects then
@@ -688,6 +728,30 @@ begin
     inherited mouseUp(event);
 end;
 
+procedure TCocoaWindow.rightMouseDown(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaWindow.rightMouseUp(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaWindow.otherMouseDown(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaWindow.otherMouseUp(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
+end;
+
 procedure TCocoaWindow.mouseDown(event: NSEvent);
 begin
   if not callback.MouseUpDownEvent(event) then
@@ -842,6 +906,30 @@ procedure TCocoaCustomControl.mouseUp(event: NSEvent);
 begin
   if not callback.MouseUpDownEvent(event) then
     inherited mouseUp(event);
+end;
+
+procedure TCocoaCustomControl.rightMouseDown(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaCustomControl.rightMouseUp(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaCustomControl.otherMouseDown(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaCustomControl.otherMouseUp(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
 end;
 
 procedure TCocoaCustomControl.resetCursorRects;
