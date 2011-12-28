@@ -77,6 +77,13 @@ type
   end;
 
 
+  { TLCLCustomControlCallback }
+
+  TLCLCustomControlCallback = class(TLCLCommonCallback)
+  public
+    function MouseUpDownEvent(Event: NSEvent): Boolean; override;
+  end;
+
   { TCocoaWSCustomControl }
 
   TCocoaWSCustomControl = class(TWSCustomControl)
@@ -136,6 +143,14 @@ procedure SetViewDefaults(AView:NSView);
 begin
   if not Assigned(AView) then Exit;
   AView.setAutoresizingMask(NSViewMinYMargin or NSViewMaxXMargin);
+end;
+
+{ TLCLCustomControlCallback }
+
+function TLCLCustomControlCallback.MouseUpDownEvent(Event: NSEvent): Boolean;
+begin
+  inherited MouseUpDownEvent(Event);
+  Result := True;
 end;
 
 
@@ -570,11 +585,11 @@ end;
 class function TCocoaWSCustomControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  ctrl  : TCocoaCustomControl;
+  ctrl: TCocoaCustomControl;
 begin
-  ctrl:=TCocoaCustomControl( NSView(TCocoaCustomControl.alloc).lclInitWithCreateParams(AParams));
-  ctrl.callback:=TLCLCommonCallback.Create(ctrl, AWinControl);
-  Result:=TLCLIntfHandle(ctrl);
+  ctrl := TCocoaCustomControl(NSView(TCocoaCustomControl.alloc).lclInitWithCreateParams(AParams));
+  ctrl.callback := TLCLCustomControlCallback.Create(ctrl, AWinControl);
+  Result := TLCLIntfHandle(ctrl);
 end;
 
 { LCLWSViewExtension }

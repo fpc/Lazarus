@@ -209,7 +209,7 @@ begin
 
   win := TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(CreateParamsToNSRect(AParams), WinMask, NSBackingStoreBuffered, False));
   win.enableCursorRects;
-  TCocoaWindow(win).callback:=TLCLWindowCallback.Create(win, AWinControl);
+  TCocoaWindow(win).callback := TLCLWindowCallback.Create(win, AWinControl);
   win.setDelegate(win);
   ns := NSStringUtf8(AWinControl.Caption);
   win.setTitle(ns);
