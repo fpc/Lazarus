@@ -350,6 +350,11 @@ end;
 
 function TCustomTabControl.CanChangePageIndex: boolean;
 begin
+  Result := CanChange;
+end;
+
+function TCustomTabControl.CanChange: Boolean;
+begin
   Result := True;
   if ([csDesigning, csDestroying] * ComponentState = []) and Assigned(OnChanging) then
     OnChanging(Self, Result);

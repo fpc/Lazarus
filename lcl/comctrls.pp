@@ -395,6 +395,7 @@ type
     procedure InsertPage(APage: TCustomPage; Index: Integer); virtual;
     procedure RemovePage(Index: Integer); virtual;
   //Delphi compatible properties
+    function CanChange: Boolean; virtual;
     property DisplayRect: TRect read GetDisplayRect;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property MultiSelect: Boolean read FMultiSelect write FMultiSelect default False;
@@ -402,6 +403,7 @@ type
     property RaggedRight: Boolean read FRaggedRight write FRaggedRight default False;
     property ScrollOpposite: Boolean read FScrollOpposite write FScrollOpposite default False;
     property Style: TTabStyle read FStyle write FStyle default tsTabs;
+    property Tabs: TStrings read FAccess write SetPages;
     property TabHeight: Smallint read FTabHeight write FTabHeight default 0;
     property TabIndex: Integer read FPageIndex write SetPageIndex default -1;
     property TabWidth: Smallint read FTabWidth write FTabWidth default 0;
@@ -720,7 +722,7 @@ type
     procedure SetTabs(const AValue: TStrings);
     procedure SetTabWidth(const AValue: Smallint);
   protected
-    function CanChange: Boolean; virtual;
+    function CanChange: Boolean; override;
     function CanShowTab(ATabIndex: Integer): Boolean; virtual;
     procedure Change; override;
     function GetImageIndex(ATabIndex: Integer): Integer; override;
