@@ -286,7 +286,7 @@ begin
       Msg.Msg := CheckMouseButtonDown(MButton);
 
       NotifyApplicationUserInput(Msg.Msg);
-      Result := DeliverMessage(Msg) = 0;
+      Result := DeliverMessage(Msg) <> 0;
     end;
     NSLeftMouseUp,
     NSRightMouseUp,
@@ -297,7 +297,7 @@ begin
       Msg.Msg := MSGKINDUP[MButton];
 
       NotifyApplicationUserInput(Msg.Msg);
-      Result := DeliverMessage(Msg) = 0;
+      Result := DeliverMessage(Msg) <> 0;
     end;
   end;
 end;
