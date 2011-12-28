@@ -447,6 +447,9 @@ const
   cLineCaption    = '-';
   cDialogSuffix   = '...';
 
+  ValidMenuHotkeys: string = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+
 
 implementation
 
