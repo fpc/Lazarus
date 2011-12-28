@@ -5,8 +5,9 @@ unit compiler_messages_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, ListFilterEdit, StdCtrls, CheckLst, IDEOptionsIntf,
-  LazarusIDEStrConsts, EnvironmentOpts, CompilerOptions, IDEMsgIntf;
+  Classes, SysUtils, FileUtil, ListFilterEdit, StdCtrls, CheckLst, Dialogs,
+  IDEOptionsIntf, LazarusIDEStrConsts, EnvironmentOpts, CompilerOptions,
+  IDEMsgIntf, IDEDialogs;
 
 type
 
@@ -17,8 +18,13 @@ type
     editMsgFilter: TListFilterEdit;
     grpCompilerMessages: TGroupBox;
     lblFilter: TLabel;
+    MsgFileBrowseButton: TButton;
+    MsgFileEdit: TEdit;
+    UseMsgFileCheckBox: TCheckBox;
     procedure chklistCompMsgItemClick(Sender: TObject; Index: integer);
     function CheckItem(Item: TObject): Boolean;
+    procedure MsgFileBrowseButtonClick(Sender: TObject);
+    procedure UseMsgFileCheckBoxChange(Sender: TObject);
   private
     TempMessages: TCompilerMessagesList;
   public
@@ -64,6 +70,32 @@ begin
     Result := m.State = msOn;
 end;
 
+procedure TCompilerMessagesOptionsFrame.MsgFileBrowseButtonClick(Sender: TObject
+  );
+var
+  OpenDialog: TOpenDialog;
+begin
+  OpenDialog:=TOpenDialog.Create(nil);
+  try
+    InitIDEFileDialog(OpenDialog);
+    OpenDialog.Title:=lisChooseAnFPCMessageFile;
+    OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
+    OpenDialog.Filter:=lisFPCMessageFile+' (*.msg)|*.msg|'+dlgAllFiles+'|'+
+      GetAllFilesMask;
+    if OpenDialog.Execute then
+      MsgFileEdit.Text:=OpenDialog.FileName;
+  finally
+    OpenDialog.Free;
+  end;
+end;
+
+procedure TCompilerMessagesOptionsFrame.UseMsgFileCheckBoxChange(Sender: TObject
+  );
+begin
+  MsgFileEdit.Enabled:=UseMsgFileCheckBox.Checked;
+  MsgFileBrowseButton.Enabled:=UseMsgFileCheckBox.Checked;
+end;
+
 constructor TCompilerMessagesOptionsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -88,6 +120,8 @@ procedure TCompilerMessagesOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDia
 begin
   grpCompilerMessages.Caption:=dlgCompilerMessage;
   lblFilter.Caption:=lisFilter;
+  UseMsgFileCheckBox.Caption:=lisUseMessageFile;
+  MsgFileBrowseButton.Caption:=lisPathEditBrowse;
 end;
 
 procedure TCompilerMessagesOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -97,18 +131,15 @@ var
   topidx, i: Integer;
   m: TCompilerMessageConfig;
   s: String;
+  CompOpts: TBaseCompilerOptions;
 begin
-  TempMessages.Assign((AOptions as TBaseCompilerOptions).CompilerMessages);
+  CompOpts:=AOptions as TBaseCompilerOptions;
+  TempMessages.Assign(CompOpts.CompilerMessages);
   topidx := chklistCompMsg.TopIndex;
-  if FileExistsUTF8(EnvironmentOptions.CompilerMessagesFilename) then begin
-    try
-      // FPC messages file is expected to be UTF8 encoded, no matter for the current code page is
-      TempMessages.LoadMsgFile(EnvironmentOptions.CompilerMessagesFilename);
-    except
-      TempMessages.SetDefault;
-    end;
-  end else
-    TempMessages.SetDefault;
+  UseMsgFileCheckBox.Checked:=CompOpts.UseMsgFile;
+  MsgFileEdit.Text:=CompOpts.MsgFileName;
+  MsgFileEdit.Enabled:=UseMsgFileCheckBox.Checked;
+  MsgFileBrowseButton.Enabled:=UseMsgFileCheckBox.Checked;
 
   // Copy data to filter component
   editMsgFilter.Data.Clear;
@@ -129,8 +160,8 @@ procedure TCompilerMessagesOptionsFrame.WriteSettings(AOptions: TAbstractIDEOpti
 begin
   with AOptions as TBaseCompilerOptions do
   begin
-    UseMsgFile:=True;
-    MsgFileName:=EnvironmentOptions.CompilerMessagesFilename;
+    UseMsgFile:=UseMsgFileCheckBox.Checked;
+    MsgFileName:=MsgFileEdit.Text;
     CompilerMessages.Assign(TempMessages);
   end;
 end;

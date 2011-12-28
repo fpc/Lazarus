@@ -1835,6 +1835,8 @@ resourcestring
   dlgCOLinking = 'Linking';
   dlgCOVerbosity = 'Verbosity';
   dlgCOCfgCmpMessages = 'Messages';
+  lisChooseAnFPCMessageFile = 'Choose an FPC message file';
+  lisFPCMessageFile = 'FPC message file';
   dlgCOOther = 'Other';
   dlgCOInherited = 'Inherited';
   dlgCOCompilation = 'Compilation';
@@ -2225,6 +2227,7 @@ resourcestring
   lisShowUnits = 'Show units';
   lisShowIdentifiers = 'Show identifiers';
   lisFilter = 'Filter';
+  lisUseMessageFile = 'Use message file:';
   lisRegularExpression = 'Regular expression';
   lisInvalidFilter = 'Invalid filter';
   lisInvalidExpression = 'Invalid expression:%s%s%s%s';

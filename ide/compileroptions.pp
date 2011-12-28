@@ -161,7 +161,8 @@ type
     pcosCustomOptions,// additional options
     pcosOutputDir,    // the output directory
     pcosCompilerPath, // the filename of the compiler
-    pcosDebugPath     // additional debug search path
+    pcosDebugPath,    // additional debug search path
+    pcosMsgFile       // fpc message file (errore.msg)
     );
   TParsedCompilerOptStrings = set of TParsedCompilerOptString;
 
@@ -169,7 +170,7 @@ type
 const
   ParsedCompilerSearchPaths = [pcosUnitPath,pcosIncludePath,pcosObjectPath,
                                pcosLibraryPath,pcosSrcPath,pcosDebugPath];
-  ParsedCompilerFilenames = [pcosCompilerPath];
+  ParsedCompilerFilenames = [pcosCompilerPath,pcosMsgFile];
   ParsedCompilerDirectories = [pcosOutputDir];
   ParsedCompilerOutDirectories = [pcosOutputDir];
   ParsedCompilerFiles =
@@ -187,7 +188,8 @@ const
     'CustomOptions',
     'OutputDir',
     'CompilerPath',
-    'DebugPath'
+    'DebugPath',
+    'MsgFile'
     );
   ParsedCompilerOptsUsageVars: array[TParsedCompilerOptString] of string = (
     '',
@@ -201,7 +203,8 @@ const
     'UsageCustomOptions',
     '',
     '',
-    'UsageDebugPath'
+    'UsageDebugPath',
+    ''
     );
   InheritedToParsedCompilerOption: array[TInheritedCompilerOption] of
     TParsedCompilerOptString = (
@@ -474,6 +477,8 @@ type
     procedure SetTargetOS(const AValue: string); override;
     procedure SetTargetFilename(const AValue: String); override;
     procedure SetLCLWidgetType(const AValue: string); override;
+    procedure SetUseMsgFile(AValue: Boolean);
+    procedure SetMsgFileName(AValue: String);
     procedure SetModified(const AValue: boolean); override;
   protected
     procedure ClearInheritedOptions;
@@ -562,6 +567,7 @@ type
     function TrimCustomOptions(o: string): string; override;
     function GetOptionsForCTDefines: string;
     function GetEffectiveLCLWidgetType: string; virtual;
+    function GetParsedMsgFilename: string;
 
     procedure RenameMacro(const OldName, NewName: string;
               ChangeConditionals: boolean); virtual; // rename macro in paths and options, not in BuildMacros, not in dependencies
@@ -572,7 +578,7 @@ type
     property DefaultMakeOptionsFlags: TCompilerCmdLineOptions
                  read FDefaultMakeOptionsFlags write SetDefaultMakeOptionsFlags;
 
-    // for dialog only
+    // for dialog only (used to store options once)
     property UseAsDefault: Boolean read FUseAsDefault write FUseAsDefault;
 
     // stored properties
@@ -587,8 +593,8 @@ type
                                             
     // compiler messages
     property CompilerMessages: TCompilerMessagesList read fCompilerMessages;
-    property UseMsgFile: Boolean read fUseMsgFile write fUseMsgFile;
-    property MsgFileName: String read fMsgFileName write fMsgFileName;
+    property UseMsgFile: Boolean read fUseMsgFile write SetUseMsgFile;
+    property MsgFileName: String read fMsgFileName write SetMsgFileName;
   end;
   
   TBaseCompilerOptionsClass = class of TBaseCompilerOptions;
@@ -1158,6 +1164,21 @@ begin
     IncreaseBuildMacroChangeStamp;
 end;
 
+procedure TBaseCompilerOptions.SetUseMsgFile(AValue: Boolean);
+begin
+  if fUseMsgFile=AValue then Exit;
+  fUseMsgFile:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TBaseCompilerOptions.SetMsgFileName(AValue: String);
+begin
+  AValue:=TrimFilename(AValue);
+  if fMsgFileName=AValue then Exit;
+  fMsgFileName:=AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TBaseCompilerOptions.OnItemChanged(Sender: TObject);
 begin
   IncreaseChangeStamp;
@@ -1485,11 +1506,12 @@ begin
   WriteFPCLogo := aXMLConfig.GetValue(p+'WriteFPCLogo/Value', true);
   StopAfterErrCount := aXMLConfig.GetValue(p+'ConfigFile/StopAfterErrCount/Value', 1);
 
+  // messages
   if fCompilerMessages.Count = 0 then fCompilerMessages.SetDefault; 
   UseMsgFile := aXMLConfig.GetValue(p+'CompilerMessages/UseMsgFile/Value', False);
   MsgFileName := aXMLConfig.GetValue(p+'CompilerMessages/MsgFileName/Value', '');
-  if UseMsgFile and FileExistsCached(MsgFileName) then
-    fCompilerMessages.LoadMsgFile(MsgFileName);
+  if UseMsgFile and FileExistsCached(GetParsedMsgFilename) then
+    fCompilerMessages.LoadMsgFile(GetParsedMsgFilename);
 
   for i := 0 to fCompilerMessages.Count - 1 do begin
     with fCompilerMessages.Msg[i] do
@@ -2238,6 +2260,11 @@ begin
     Result:= LCLPlatformDirNames[GetDefaultLCLWidgetType];
 end;
 
+function TBaseCompilerOptions.GetParsedMsgFilename: string;
+begin
+  Result:=ParsedOpts.GetParsedValue(pcosMsgFile);
+end;
+
 procedure TBaseCompilerOptions.RenameMacro(const OldName, NewName: string;
   ChangeConditionals: boolean);
 var
@@ -2298,8 +2325,7 @@ end;
   Get all the options and create a string that can be passed to the compiler
 ------------------------------------------------------------------------------}
 function TBaseCompilerOptions.MakeOptionsString(
-  const MainSourceFilename: string;
-  Flags: TCompilerCmdLineOptions): String;
+  const MainSourceFileName: string; Flags: TCompilerCmdLineOptions): String;
 var
   switches, tempsw, t: String;
   InhLinkerOpts: String;
@@ -2830,8 +2856,8 @@ begin
   t := GetMsgsIndexesWithState(CompilerMessages, ',', msOn);
   if t <> '' then
     switches := switches + ' ' + PrepareCmdLineOption('-vm-'+t);
-  if fUseMsgFile and FileExistsCached(MsgFileName)then
-    switches := switches + ' ' + PrepareCmdLineOption('-Fr'+MsgFileName);
+  if fUseMsgFile and FileExistsCached(GetParsedMsgFilename) then
+    switches := switches + ' ' + PrepareCmdLineOption('-Fr'+GetParsedMsgFilename);
 
 
   { ----------------------------------------------- }
