@@ -86,6 +86,11 @@ begin
     inherited AlignControls(AControl, ARect);
 end;
 
+function TScrollingWinControl.AutoScrollEnabled: Boolean;
+begin
+  Result := not (AutoSize or (DockSite and UseDockManager));
+end;
+
 procedure TScrollingWinControl.DoOnResize;
 begin
   inherited DoOnResize;

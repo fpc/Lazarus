@@ -164,6 +164,7 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure AlignControls(AControl: TControl; var ARect: TRect); override;
+    function AutoScrollEnabled: Boolean; virtual;
     procedure CreateWnd; override;
     function GetClientScrollOffset: TPoint; override;
     function GetLogicalClientRect: TRect; override;// logical size of client area
