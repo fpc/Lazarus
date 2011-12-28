@@ -1620,16 +1620,20 @@ type
 
   TUDAlignButton = (udLeft, udRight, udTop, udBottom);
   TUDOrientation = (udHorizontal, udVertical);
+  TUpDownDirection = (updNone, updUp, updDown);
   TUDBtnType = (btNext, btPrev);
   TUDClickEvent = procedure (Sender: TObject; Button: TUDBtnType) of object;
   TUDChangingEvent = procedure (Sender: TObject; var AllowChange: Boolean) of object;
+  TUDChangingEventEx = procedure (Sender: TObject; var AllowChange: Boolean; NewValue: SmallInt; Direction: TUpDownDirection) of object;
 
   { TCustomUpDown }
 
   TCustomUpDown = class(TCustomControl)
   private
-    MinBtn: TControl;// TSpeedButton
-    MaxBtn: TControl;// TSpeedButton
+    FOnChangingEx: TUDChangingEventEx;
+    FOnChanging: TUDChangingEvent;
+    MinBtn: TControl; // TSpeedButton
+    MaxBtn: TControl; // TSpeedButton
     BTimerProc: procedure of Object;
     BTimerBounds : TRect;
     FArrowKeys: Boolean;
@@ -1643,7 +1647,13 @@ type
     FOnClick: TUDClickEvent;
     FAlignButton: TUDAlignButton;
     FOrientation: TUDOrientation;
-    FOnChanging: TUDChangingEvent;
+    FCanChange: record
+      // some temp info needed for can changeex
+      // it would have been better to pass this to the CanChange() function,
+      // but that would break compatebility, so we do it the vcl way
+      Pos: SmallInt;
+      Dir: TUpDownDirection;
+    end;
     function GetPosition: SmallInt;
     procedure BTimerExec(Sender : TObject);
     procedure SetAlignButton(Value: TUDAlignButton);
@@ -1682,6 +1692,7 @@ type
     property Thousands: Boolean read FThousands write SetThousands default True;
     property Wrap: Boolean read FWrap write SetWrap;
     property OnChanging: TUDChangingEvent read FOnChanging write FOnChanging;
+    property OnChangingEx: TUDChangingEventEx read FOnChangingEx write FOnChangingEx;
     property OnClick: TUDClickEvent read FOnClick write FOnClick;
   public
     constructor Create(AOwner: TComponent); override;

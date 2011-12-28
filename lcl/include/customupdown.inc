@@ -79,32 +79,41 @@ end;
 
 procedure TUpDownButton.Click;
 begin
-  With FUpDown do begin
-    If not CanChange then
-      exit;
-    Case FButtonType of
+  with FUpDown do
+  begin
+    FCanChange.Pos := Position;
+    FCanChange.Dir := updNone;
+
+    case FButtonType of
       btPrev :
         begin
-          If Position - Increment >= Min then
-            Position := Position - Increment
+          FCanChange.Dir := updUp;
+
+          if Position - Increment >= Min then
+            FCanChange.Pos := Position - Increment
           else
-            If Wrap then
-              Position := Max + (Position - Increment - Min) + 1
+            if Wrap then
+              FCanChange.Pos := Max + (Position - Increment - Min) + 1
           else
-            Position := Min;
+            FCanChange.Pos := Min;
         end;
       btNext :
         begin
-          If Position + Increment <= Max then
-            Position := Position + Increment
+          FCanChange.Dir := updUp;
+
+          if Position + Increment <= Max then
+            FCanChange.Pos := Position + Increment
           else
             If Wrap then
-              Position := Min + (Position + Increment - Max) - 1
+              FCanChange.Pos := Min + (Position + Increment - Max) - 1
           else
-            Position := Max;
+            FCanChange.Pos := Max;
         end;
         
     end;
+    if not CanChange then Exit;
+    Position := FCanChange.Pos;
+
     Click(FButtonType);
   end;
 end;
@@ -317,8 +326,13 @@ end;}
 function TCustomUpDown.CanChange: Boolean;
 begin
   Result := True;
+
   if Assigned(FOnChanging) then
     FOnChanging(Self, Result);
+
+  if Assigned(FOnChangingEx) then
+    FOnChangingEx(Self, Result, FCanChange.Pos, FCanChange.Dir);
+
 end;
 
 procedure TCustomUpDown.Click(Button: TUDBtnType);
