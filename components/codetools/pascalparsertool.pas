@@ -444,7 +444,7 @@ begin
   'F':
     case UpChars[p[1]] of
     'U': if CompareSrcIdentifiers(p,'FUNCTION') then exit(KeyWordFuncClassMethod);
-    'I': if CompareSrcIdentifiers(p,'FINAL') and (Scanner.Values.IsDefined('JVM'))
+    'I': if CompareSrcIdentifiers(p,'FINAL') and (Scanner.Values.IsDefined('CPUJVM'))
          then exit(KeyWordFuncClassFinal);
     end;
   'P':
@@ -3177,7 +3177,7 @@ begin
     if (CurNode.Parent.Desc in [ctnVarSection,ctnClassClassVar])
     and ((CurNode.Parent.Parent.Desc in AllCodeSections)
          or ((CurNode.Parent.Parent.Desc in (AllClassBaseSections+AllClassInterfaces))
-              and Scanner.Values.IsDefined('JVM')))
+              and Scanner.Values.IsDefined('CPUJVM')))
     and (UpAtomIs('PUBLIC') or UpAtomIs('EXPORT') or UpAtomIs('EXTERNAL')
       or UpAtomIs('WEAKEXTERNAL') or UpAtomIs('CVAR')) then
     begin
@@ -3906,13 +3906,13 @@ begin
       end;
       if UpAtomIs('EXTERNAL') then begin
         if (ClassDesc in [ctnObjCClass,ctnObjCCategory])
-        or Scanner.Values.IsDefined('JVM') then begin
+        or Scanner.Values.IsDefined('CPUJVM') then begin
           // objcclass external [name '']
-          // jvm: class external '' [name '']
+          // cpujvm: class external '' [name '']
           CreateChildNode;
           CurNode.Desc:=ctnClassExternal;
           ReadNextAtom;
-          if Scanner.Values.IsDefined('JVM') then
+          if Scanner.Values.IsDefined('CPUJVM') then
             ReadConstant(true,false,[]);
           if UpAtomIs('NAME') then begin
             ReadNextAtom;
@@ -4028,7 +4028,7 @@ begin
   if (CurPos.Flag<>cafSemicolon) then begin
     if CurPos.Flag=cafWord then begin
       if UpAtomIs('EXTERNAL') then begin
-        IsJVM:=Scanner.Values.IsDefined('JVM');
+        IsJVM:=Scanner.Values.IsDefined('CPUJVM');
         if IsJVM or (IntfDesc=ctnObjCProtocol) then begin
           CreateChildNode;
           CurNode.Desc:=ctnClassExternal;
