@@ -7,7 +7,7 @@ interface
 
 uses
   Types,
-  MacOSAll, CocoaAll,
+  CocoaAll,
   Classes, Controls, SysUtils,
   //
   WSControls, LCLType, LMessages, LCLProc, Forms,

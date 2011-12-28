@@ -119,6 +119,9 @@ type
 
   LCLWindowExtension = objccategory(NSWindow)
     function lclIsVisible: Boolean; message 'lclIsVisible'; reintroduce;
+    function lclIsEnabled: Boolean; message 'lclIsEnabled'; reintroduce;
+    procedure lclSetEnabled(AEnabled: Boolean); message 'lclSetEnabled:'; reintroduce;
+
     function lclWindowState: Integer; message 'lclWindowState'; reintroduce;
     procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:'; reintroduce;
     procedure lclInvalidate; message 'lclInvalidate'; reintroduce;
@@ -849,18 +852,18 @@ end;
 
 { LCLObjectExtension }
 
-function LCLObjectExtension.lclIsEnabled:Boolean;
+function LCLObjectExtension.lclIsEnabled: Boolean;
 begin
   Result := False;
 end;
 
-procedure LCLObjectExtension.lclSetEnabled(AEnabled:Boolean);
+procedure LCLObjectExtension.lclSetEnabled(AEnabled: Boolean);
 begin
 end;
 
-function LCLObjectExtension.lclIsVisible:Boolean;
+function LCLObjectExtension.lclIsVisible: Boolean;
 begin
-  Result:=False;
+  Result := False;
 end;
 
 function LCLObjectExtension.lclWindowState: Integer;
@@ -868,7 +871,7 @@ begin
   Result := SIZENORMAL;
 end;
 
-procedure LCLObjectExtension.lclInvalidateRect(const r:TRect);
+procedure LCLObjectExtension.lclInvalidateRect(const r: TRect);
 begin
 end;
 
@@ -880,11 +883,11 @@ procedure LCLObjectExtension.lclUpdate;
 begin
 end;
 
-procedure LCLObjectExtension.lclRelativePos(var Left,Top:Integer);
+procedure LCLObjectExtension.lclRelativePos(var Left,Top: Integer);
 begin
 end;
 
-procedure LCLObjectExtension.lclLocalToScreen(var X,Y:Integer);
+procedure LCLObjectExtension.lclLocalToScreen(var X,Y: Integer);
 begin
 end;
 
@@ -1093,6 +1096,16 @@ end;
 function LCLWindowExtension.lclIsVisible:Boolean;
 begin
   Result := isVisible;
+end;
+
+function LCLWindowExtension.lclIsEnabled: Boolean;
+begin
+  Result := contentView.lclIsEnabled;
+end;
+
+procedure LCLWindowExtension.lclSetEnabled(AEnabled: Boolean);
+begin
+  contentView.lclSetEnabled(AEnabled);
 end;
 
 function LCLWindowExtension.lclWindowState: Integer;
