@@ -95,7 +95,7 @@ function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; {$IFDEF IF_BASE_MEM
 
 procedure LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure LazDeviceAPIs_SendMessage(AMsg: TLazDeviceMessage); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-procedure LazDeviceAPIs_UpdateAccelerometerData(); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure LazDeviceAPIs_StartReadingAccelerometerData(); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 

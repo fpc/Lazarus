@@ -527,7 +527,7 @@ begin
 
 end;
 
-procedure TWidgetSet.LazDeviceAPIs_UpdateAccelerometerData();
+procedure TWidgetSet.LazDeviceAPIs_StartReadingAccelerometerData();
 begin
 
 end;

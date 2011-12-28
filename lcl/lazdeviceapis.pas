@@ -41,7 +41,7 @@ type
   public
     // These fields store the last data read, to get fresh data use UpdateAccelerometerData;
     xaxis, yaxis, zaxis: Double; // in m/s^2
-    procedure UpdateAccelerometerData();
+    procedure StartReadingAccelerometerData();
   end;
 
   // TLazMessaging
@@ -95,9 +95,9 @@ implementation
 
 { TLazAccelerometer }
 
-procedure TLazAccelerometer.UpdateAccelerometerData;
+procedure TLazAccelerometer.StartReadingAccelerometerData;
 begin
-  LCLIntf.LazDeviceAPIs_UpdateAccelerometerData();
+  LCLIntf.LazDeviceAPIs_StartReadingAccelerometerData();
 end;
 
 { TLazPositionInfo }

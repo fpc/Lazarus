@@ -360,9 +360,9 @@ begin
   Widgetset.LazDeviceAPIs_SendMessage(AMsg);
 end;
 
-procedure LazDeviceAPIs_UpdateAccelerometerData();
+procedure LazDeviceAPIs_StartReadingAccelerometerData();
 begin
-  Widgetset.LazDeviceAPIs_UpdateAccelerometerData();
+  Widgetset.LazDeviceAPIs_StartReadingAccelerometerData();
 end;
 
 function MoveWindowOrgEx(dc: hdc; dX,dY: Integer): boolean;
