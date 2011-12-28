@@ -38,7 +38,7 @@ implementation
 {$R *.lfm}
 
 const
-  sSaveError = 'Error saving file:'^m'%s';
+  sSaveError = 'Error saving file:' + LineEnding + '%s';
 
 { TResultDlgForm }
 
