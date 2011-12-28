@@ -536,7 +536,7 @@ function TWidgetSet.MoveWindowOrgEx(dc: hdc; dX,dY: Integer): boolean;
 var
   P: TPoint;
   lResult: Integer;
-Begin
+begin
   lResult := GetWindowOrgEx(dc, @P);
   if lResult <> 0 then
     Result:=SetWindowOrgEx(dc, P.x-dX, P.y-dY, @P)

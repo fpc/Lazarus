@@ -1072,12 +1072,12 @@ var
   NewState: TCDControlState;
 begin
   NewState := FState;
-  if csfSunken in FState then NewState := FState - [csfSunken];
+  if csfSunken in FState then NewState := NewState - [csfSunken];
 
   // For grouped buttons, call DoButtonUp for all other buttons on the same parent
   if FIsGrouped then
   begin
-    NewState := FState + [csfOn] - [csfOff, csfPartiallyOn];
+    NewState := NewState + [csfOn] - [csfOff, csfPartiallyOn];
     if Parent <> nil then
     begin
       for i := 0 to Parent.ControlCount - 1 do
@@ -1097,18 +1097,18 @@ begin
     if FAllowGrayed then
     begin
       if csfOn in FState then
-        NewState := FState + [csfOff] - [csfOn, csfPartiallyOn]
+        NewState := NewState + [csfOff] - [csfOn, csfPartiallyOn]
       else if csfPartiallyOn in FState then
-        NewState := FState + [csfOn] - [csfOff, csfPartiallyOn]
+        NewState := NewState + [csfOn] - [csfOff, csfPartiallyOn]
       else
-        NewState := FState + [csfPartiallyOn] - [csfOn, csfOff];
+        NewState := NewState + [csfPartiallyOn] - [csfOn, csfOff];
     end
     else
     begin
       if csfOn in FState then
-        NewState := FState + [csfOff] - [csfOn]
+        NewState := NewState + [csfOff] - [csfOn]
       else
-        NewState := FState + [csfOn] - [csfOff];
+        NewState := NewState + [csfOn] - [csfOff];
     end;
   end;
 
