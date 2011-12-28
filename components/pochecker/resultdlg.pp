@@ -27,11 +27,9 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
   private
-    { private declarations }
     PoHL: TSynPoSyn;
     procedure SaveToFile;
   public
-    { public declarations }
     property Log: TStringList read FLog write FLog;
   end; 
 

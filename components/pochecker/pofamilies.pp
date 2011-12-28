@@ -8,7 +8,6 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, StringHashList,
-  {LConvEncoding}
   //{$IFDEF UNIX}{$IFNDEF DisableCWString}, cwstring{$ENDIF}{$ENDIF},
   SimplePoFiles;
 
@@ -23,10 +22,14 @@ const
     optRunAllTests: TPoTestOptions = [];
     optRunAllTestsOnAllChilds: TPoTestOptions = [];
 
-    PoTestOptionNames: array[TPoTestOption] of String = ('Check number of items', 'Check for incompatible format arguments',
-                   'Check missing identifiers','Check for mismatches in untranslated strings',
-                   'Check for duplicate untranslated values',
-                   'Find all translated po-files');
+    PoTestOptionNames: array[TPoTestOption] of String = (
+      'Check number of items',
+      'Check for incompatible format arguments',
+      'Check missing identifiers',
+      'Check for mismatches in untranslated strings',
+      'Check for duplicate untranslated values',
+      'Find all translated po-files'
+    );
 
 Type
   { TPoFamily }
@@ -79,7 +82,6 @@ function ExtractFormatArgs(S: String): String;
 function IsMasterPoName(const Fn: String): Boolean;
 function ExtractMasterNameFromChildName(const AChildName: String): String;
 function FindAllTranslatedPoFiles(const Filename: string): TStringList;
-
 
 
 implementation
@@ -663,15 +665,11 @@ begin
         ErrorCount := CurrErrCnt + ErrorCount;
       end;
 
-
       if (ptoCheckMismatchedOriginals in Options) then
       begin
         CheckMismatchedOriginals(CurrErrCnt, ErrorLog);
         ErrorCount := CurrErrCnt + ErrorCount;
       end;
-
-
-
 
        {
         if (pto in Options) then

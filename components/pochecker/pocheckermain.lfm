@@ -1,29 +1,37 @@
 object PoCheckerForm: TPoCheckerForm
-  Left = 409
-  Height = 295
-  Top = 133
-  Width = 463
+  Left = 349
+  Height = 311
+  Top = 189
+  Width = 581
   Caption = 'GUI Po-file checking tool'
-  ClientHeight = 295
-  ClientWidth = 463
+  ClientHeight = 311
+  ClientWidth = 581
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   LCLVersion = '0.9.31'
+  Visible = True
   object TestListBox: TCheckListBox
-    Left = 168
-    Height = 163
-    Top = 44
-    Width = 288
+    AnchorSideLeft.Control = SelectTestLabel
+    AnchorSideTop.Control = SelectTestLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 201
+    Height = 169
+    Top = 33
+    Width = 373
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 6
     Enabled = False
     ItemHeight = 0
-    OnItemClick = TestListBoxItemClick
     TabOrder = 0
   end
-  object Label1: TLabel
-    Left = 168
-    Height = 15
-    Top = 24
-    Width = 105
+  object SelectTestLabel: TLabel
+    AnchorSideLeft.Control = OpenBtn
+    AnchorSideLeft.Side = asrBottom
+    Left = 201
+    Height = 19
+    Top = 8
+    Width = 144
+    BorderSpacing.Left = 9
     Caption = 'Select test types'
     Font.Style = [fsBold]
     ParentColor = False
@@ -31,9 +39,9 @@ object PoCheckerForm: TPoCheckerForm
   end
   object OpenBtn: TBitBtn
     Left = 8
-    Height = 79
-    Top = 44
-    Width = 144
+    Height = 63
+    Top = 33
+    Width = 184
     Caption = '&Open a po-file'
     Glyph.Data = {
       36040000424D3604000000000000360000002800000010000000100000000100
@@ -75,10 +83,17 @@ object PoCheckerForm: TPoCheckerForm
     TabOrder = 1
   end
   object RunBtn: TBitBtn
+    AnchorSideLeft.Control = OpenBtn
+    AnchorSideTop.Control = OpenBtn
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = OpenBtn
+    AnchorSideRight.Side = asrBottom
     Left = 8
-    Height = 79
-    Top = 128
-    Width = 144
+    Height = 63
+    Top = 102
+    Width = 184
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
     Caption = '&Run Selected Tests'
     Enabled = False
     Kind = bkOK
@@ -87,43 +102,56 @@ object PoCheckerForm: TPoCheckerForm
   end
   object StatusPanel: TPanel
     Left = 0
-    Height = 48
-    Top = 247
-    Width = 463
+    Height = 49
+    Top = 262
+    Width = 581
     Align = alBottom
     BevelOuter = bvLowered
-    ClientHeight = 48
-    ClientWidth = 463
+    ClientHeight = 49
+    ClientWidth = 581
     TabOrder = 3
-    object Label2: TLabel
+    object CurTestHeaderLabel: TLabel
       Left = 8
-      Height = 15
+      Height = 19
       Top = 8
-      Width = 74
+      Width = 96
       Caption = 'Current Test:'
       ParentColor = False
     end
-    object Label3: TLabel
+    object CurPoHeaderLabel: TLabel
+      AnchorSideLeft.Control = CurTestHeaderLabel
+      AnchorSideTop.Control = CurTestHeaderLabel
+      AnchorSideTop.Side = asrBottom
       Left = 8
-      Height = 15
-      Top = 24
-      Width = 87
+      Height = 19
+      Top = 27
+      Width = 111
       Caption = 'Current po-file:'
       ParentColor = False
     end
     object CurTestLabel: TLabel
-      Left = 104
-      Height = 15
+      AnchorSideLeft.Control = CurTestHeaderLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = CurTestHeaderLabel
+      AnchorSideTop.Side = asrCenter
+      Left = 110
+      Height = 19
       Top = 8
-      Width = 73
+      Width = 95
+      BorderSpacing.Around = 6
       Caption = 'CurTestLabel'
       ParentColor = False
     end
     object CurPoLabel: TLabel
-      Left = 104
-      Height = 15
-      Top = 24
-      Width = 65
+      AnchorSideLeft.Control = CurPoHeaderLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = CurPoHeaderLabel
+      AnchorSideTop.Side = asrCenter
+      Left = 125
+      Height = 19
+      Top = 27
+      Width = 82
+      BorderSpacing.Around = 6
       Caption = 'CurPoLabel'
       ParentColor = False
     end
@@ -131,14 +159,29 @@ object PoCheckerForm: TPoCheckerForm
   object NoErrLabel: TLabel
     Left = 8
     Height = 24
-    Top = 216
+    Top = 232
     Width = 171
+    Anchors = [akLeft, akBottom]
     Caption = 'No errors found'
-    Font.Color = clRed
+    Font.Color = clGreen
     Font.Height = -19
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
+  end
+  object SelectAllCheckBox: TCheckBox
+    AnchorSideLeft.Control = TestListBox
+    AnchorSideTop.Control = TestListBox
+    AnchorSideTop.Side = asrBottom
+    Left = 201
+    Height = 23
+    Top = 208
+    Width = 97
+    BorderSpacing.Top = 6
+    Caption = 'Select All'
+    Enabled = False
+    OnClick = SelectAllCheckBoxClick
+    TabOrder = 4
   end
   object OpenDialog: TOpenDialog
     Filter = 'po-files (*.po)|*.po|all files|*'

@@ -33,8 +33,9 @@ type
   { TPoCheckerForm }
 
   TPoCheckerForm = class(TForm)
-    Label2: TLabel;
-    Label3: TLabel;
+    SelectAllCheckBox: TCheckBox;
+    CurTestHeaderLabel: TLabel;
+    CurPoHeaderLabel: TLabel;
     CurTestLabel: TLabel;
     CurPoLabel: TLabel;
     NoErrLabel: TLabel;
@@ -42,14 +43,14 @@ type
     RunBtn: TBitBtn;
     OpenBtn: TBitBtn;
     Button3: TButton;
-    Label1: TLabel;
+    SelectTestLabel: TLabel;
     OpenDialog: TOpenDialog;
     TestListBox: TCheckListBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure OpenBtnClick(Sender: TObject);
     procedure RunBtnClick(Sender: TObject);
-    procedure TestListBoxItemClick(Sender: TObject; Index: integer);
+    procedure SelectAllCheckBoxClick(Sender: TObject);
   private
     PoFamily: TPoFamily;
     FChoosenMasterName: String;
@@ -70,10 +71,10 @@ resourcestring
   rsPoChecker = 'PO File Checker';
   sSelectAllTests = 'Select all tests';
   sUnSelectAllTests = 'Unselect all tests';
-  sCannotFindMaster = 'Cannot find master po file:'^m'%s'^m'for selected file'^m'%s';
-  sNotAProperFileName = 'Selected filename'^m'%s'^m'does not seem to be a proper name for a po-file';
-  sErrorOnCreate = 'Error creating an instance of TPoFamily:'^m'%s';
-  sErrorOnCleanup = 'An unrecoverable error occurred'^m'%s'^m'Please close the program';
+  sCannotFindMaster = 'Cannot find master po file:' + LineEnding + '%s' + LineEnding + 'for selected file' + LineEnding + '%s';
+  sNotAProperFileName = 'Selected filename' + LineEnding + '%s' + LineEnding + 'does not seem to be a proper name for a po-file';
+  sErrorOnCreate = 'Error creating an instance of TPoFamily:' + LineEnding + '%s';
+  sErrorOnCleanup = 'An unrecoverable error occurred' + LineEnding + '%s' + LineEnding + 'Please close the program';
 
   sTotalErrors = 'Total errors found: %d';
   //sNoErrorsFound = 'No errors found.';
@@ -116,11 +117,12 @@ begin
   begin
     RunBtn.Enabled := True;
     TestListBox.Enabled := True;
+    SelectAllCheckBox.Enabled := True;
   end
-  else
-  begin
-    RunBtn.Enabled      := False;
+  else begin
+    RunBtn.Enabled := False;
     TestListBox.Enabled := False;
+    SelectAllCheckBox.Enabled := False;
   end;
 end;
 
@@ -129,20 +131,20 @@ begin
   RunSelectedTests;
 end;
 
-procedure TPoCheckerForm.TestListBoxItemClick(Sender: TObject; Index: integer);
+procedure TPoCheckerForm.SelectAllCheckBoxClick(Sender: TObject);
 var
-  Check: Boolean;
+  cb: TCheckBox;
   i: Integer;
 begin
-  if (Index = TestListBox.Count - 1) then
-  begin//Run All Test checkbox
-    Check := TestListBox.Checked[Index];
-    for i := 0 to TestListBox.Count - 2 do TestListBox.Checked[i] := Check;
-    if Check then
-      TestListBox.Items[Index] := sUnSelectAllTests
-    else
-      TestListBox.Items[Index] := sSelectAllTests;
-  end;
+  cb := Sender as TCheckBox;
+  // Caption text : select all / unselect all
+  if cb.Checked then
+    cb.Caption := sUnSelectAllTests
+  else
+    cb.Caption := sSelectAllTests;
+  // Set / reset all CheckListBox items.
+  for i := 0 to TestListBox.Count - 1 do
+    TestListBox.Checked[i] := cb.Checked;
 end;
 
 procedure TPoCheckerForm.OnTestStart(const ATestName, APoFileName: String);
@@ -166,10 +168,8 @@ var
   Opt: TPoTestOption;
 begin
   for Opt := Low(PoTestOptionNames) to High(PoTestOptionNames) do
-  begin
     TestListBox.Items.Add(PoTestOptionNames[Opt]);
-  end;
-  TestListBox.Items.Add(sSelectAllTests);
+  SelectAllCheckBox.Caption := sSelectAllTests;
 end;
 
 function TPoCheckerForm.GetOptionsFromListBox: TPoTestOptions;
@@ -183,7 +183,8 @@ begin
     Index := Ord(Opt);
     if (Index < TestListBox.Count) then
     begin
-      if TestListBox.Checked[Index] then Result := Result + [Opt];
+      if TestListBox.Checked[Index] then
+        Result := Result + [Opt];
     end;
   end;
 end;
@@ -230,7 +231,8 @@ begin
     OK := (FChoosenMasterName <> '');
     if OK then
     begin
-      if Assigned(PoFamily) then PoFamily.Free;
+      if Assigned(PoFamily) then
+        PoFamily.Free;
       try
         PoFamily := TPoFamily.Create(FChoosenMasterName, FChoosenChildName);
         PoFamily.OnTestStart := @OnTestStart;
@@ -276,8 +278,9 @@ begin
   SL := TStringList.Create;
   try
     StatusPanel.Enabled := True;
-    if (not (ptoFindAllChilds in Options)) and Assigned(PoFamily.Child) and
-      (PoFamily.ChildName <> FChoosenChildName) then PoFamily.ChildName := FChoosenChildName;
+    if (not (ptoFindAllChilds in Options)) and Assigned(PoFamily.Child)
+        and (PoFamily.ChildName <> FChoosenChildName) then
+      PoFamily.ChildName := FChoosenChildName;
     PoFamily.RunTests(Options, ErrorCount, SL);
     if (ErrorCount > 0) then
     begin
@@ -292,10 +295,8 @@ begin
         ResultDlg.Free;
       end;
     end
-    else
-    begin//no errors
+    else  //no errors
       NoErrLabel.Visible := True;
-    end;
   finally
     if Assigned(SL) then
       SL.Free;

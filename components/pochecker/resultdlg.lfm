@@ -1,7 +1,7 @@
 object ResultDlgForm: TResultDlgForm
-  Left = 284
+  Left = 275
   Height = 635
-  Top = 108
+  Top = 100
   Width = 742
   ActiveControl = CopyBtn
   Caption = 'Results'
@@ -27,11 +27,12 @@ object ResultDlgForm: TResultDlgForm
     object CloseBtn: TBitBtn
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      Left = 657
+      Left = 652
       Height = 30
       Top = 10
-      Width = 75
+      Width = 80
       Anchors = [akRight]
+      AutoSize = True
       BorderSpacing.Right = 10
       DefaultCaption = True
       Kind = bkClose
@@ -40,22 +41,24 @@ object ResultDlgForm: TResultDlgForm
     end
     object SaveBtn: TBitBtn
       AnchorSideRight.Control = CloseBtn
-      Left = 572
+      Left = 536
       Height = 30
       Top = 10
-      Width = 75
+      Width = 106
       Anchors = [akRight]
+      AutoSize = True
       BorderSpacing.Around = 10
       Caption = '&Save to file'
       TabOrder = 1
     end
     object CopyBtn: TBitBtn
       AnchorSideRight.Control = SaveBtn
-      Left = 487
+      Left = 452
       Height = 30
       Top = 10
-      Width = 75
+      Width = 74
       Anchors = [akRight]
+      AutoSize = True
       BorderSpacing.Around = 10
       Caption = 'CopyBtn'
       OnClick = CopyBtnClick
