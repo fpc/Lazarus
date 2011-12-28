@@ -469,7 +469,6 @@ begin
   'R':
     if CompareSrcIdentifiers(p,'REQUIRED')
     and (CurNode.Parent.Desc=ctnObjCProtocol)
-    and ([cmsObjectiveC1,cmsObjectiveC2]*Scanner.CompilerModeSwitches<>[])
     then exit(KeyWordFuncClassSection);
   'S':
     if CompareSrcIdentifiers(p,'STATIC')
@@ -482,7 +481,6 @@ begin
   'O':
     if CompareSrcIdentifiers(p,'OPTIONAL')
     and (CurNode.Parent.Desc=ctnObjCProtocol)
-    and ([cmsObjectiveC1,cmsObjectiveC2]*Scanner.CompilerModeSwitches<>[])
     then exit(KeyWordFuncClassSection);
   'V':
     if CompareSrcIdentifiers(p,'VAR') then exit(KeyWordFuncClassVarSection);
