@@ -48,14 +48,17 @@ type
     procedure frameDidChange;
     procedure boundsDidChange;
     // misc events
-    function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
     procedure Draw(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
+    function ResetCursorRects: Boolean;
+    procedure BecomeFirstResponder;
+    procedure ResignFirstResponder;
+    // non event methods
+    function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
     function GetPropStorage: TStringList;
     function GetContext: TCocoaContext;
     function GetTarget: TObject;
     function GetHasCaret: Boolean;
     procedure SetHasCaret(AValue: Boolean);
-    function ResetCursorRects: Boolean;
 
     // properties
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
@@ -171,6 +174,8 @@ type
     callback: IButtonCallback;
     function initWithFrame(frameRect: NSRect): id; override;
     function acceptsFirstResponder: Boolean; override;
+    function becomeFirstResponder: Boolean; override;
+    function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseDragged(event: NSEvent); override;
@@ -186,6 +191,8 @@ type
   TCocoaTextField = objcclass(NSTextField)
     callback: ICommonCallback;
     function acceptsFirstResponder: Boolean; override;
+    function becomeFirstResponder: Boolean; override;
+    function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure resetCursorRects; override;
   end;
@@ -193,8 +200,11 @@ type
   { TCocoaSecureTextField }
 
   TCocoaSecureTextField = objcclass(NSSecureTextField)
+  public
     callback  : ICommonCallback;
     function acceptsFirstResponder: Boolean; override;
+    function becomeFirstResponder: Boolean; override;
+    function resignFirstResponder: Boolean; override;
     procedure resetCursorRects; override;
   end;
 
@@ -202,8 +212,11 @@ type
   { TCocoaTextView }
 
   TCocoaTextView = objcclass(NSTextView)
+  public
     callback: ICommonCallback;
     function acceptsFirstResponder: Boolean; override;
+    function becomeFirstResponder: Boolean; override;
+    function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure resetCursorRects; override;
   end;
@@ -221,6 +234,8 @@ type
   public
     callback: IWindowCallback;
     function acceptsFirstResponder: Boolean; override;
+    function becomeFirstResponder: Boolean; override;
+    function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure mouseUp(event: NSEvent); override;
     procedure mouseDown(event: NSEvent); override;
@@ -234,7 +249,11 @@ type
   { TCocoaCustomControl }
 
   TCocoaCustomControl = objcclass(NSControl)
+  public
     callback: ICommonCallback;
+    function acceptsFirstResponder: Boolean; override;
+    function becomeFirstResponder: Boolean; override;
+    function resignFirstResponder: Boolean; override;
     procedure drawRect(dirtyRect: NSRect); override;
     function lclGetCallback: ICommonCallback; override;
     procedure mouseDown(event: NSEvent); override;
@@ -249,7 +268,11 @@ type
   { TCocoaScrollView }
 
   TCocoaScrollView = objcclass(NSScrollView)
+  public
     callback: ICommonCallback;
+    function acceptsFirstResponder: Boolean; override;
+    function becomeFirstResponder: Boolean; override;
+    function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure resetCursorRects; override;
   end;
@@ -279,13 +302,15 @@ type
   { TCocoaComboBox }
 
   TCocoaComboBox = objcclass(NSComboBox, NSComboBoxDataSourceProtocol, NSComboBoxDelegateProtocol)
+  public
     callback: IComboboxCallBack;
     list: TCocoaComboBoxList;
     resultNS: NSString;  //use to return values to combo
-    function comboBox_objectValueForItemAtIndex_(combo: TCocoaComboBox; row: NSInteger): id;
-      message 'comboBox:objectValueForItemAtIndex:';
-    function numberOfItemsInComboBox(combo: TCocoaComboBox): NSInteger;
-      message 'numberOfItemsInComboBox:';
+    function acceptsFirstResponder: Boolean; override;
+    function becomeFirstResponder: Boolean; override;
+    function resignFirstResponder: Boolean; override;
+    function comboBox_objectValueForItemAtIndex_(combo: TCocoaComboBox; row: NSInteger): id; message 'comboBox:objectValueForItemAtIndex:';
+    function numberOfItemsInComboBox(combo: TCocoaComboBox): NSInteger; message 'numberOfItemsInComboBox:';
     procedure dealloc; override;
     function lclGetCallback: ICommonCallback; override;
     procedure resetCursorRects; override;
@@ -298,7 +323,11 @@ type
   { TCocoaScrollBar }
 
   TCocoaScrollBar = objcclass(NSScroller)
+  public
     callback: ICommonCallback;
+    function acceptsFirstResponder: Boolean; override;
+    function becomeFirstResponder: Boolean; override;
+    function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure resetCursorRects; override;
   end;
@@ -318,9 +347,13 @@ type
   { TCocoaListView }
 
   TCocoaListView = objcclass(NSTableView, NSTableViewDataSourceProtocol)
+  public
     callback: ICommonCallback;
     list: TCocoaStringList;
     resultNS: NSString;  //use to return values to combo
+    function acceptsFirstResponder: Boolean; override;
+    function becomeFirstResponder: Boolean; override;
+    function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     function numberOfRowsInTableView(aTableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
     function tableView_objectValueForTableColumn_row(tableView: NSTableView;
@@ -333,7 +366,11 @@ type
   { TCocoaGroupBox }
 
   TCocoaGroupBox = objcclass(NSBox)
+  public
     callback: ICommonCallback;
+    function acceptsFirstResponder: Boolean; override;
+    function becomeFirstResponder: Boolean; override;
+    function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure resetCursorRects; override;
   end;
@@ -341,6 +378,23 @@ type
 implementation
 
 { TCocoaScrollView }
+
+function TCocoaScrollView.acceptsFirstResponder: Boolean;
+begin
+  Result := True;
+end;
+
+function TCocoaScrollView.becomeFirstResponder: Boolean;
+begin
+  Result := inherited becomeFirstResponder;
+  callback.BecomeFirstResponder;
+end;
+
+function TCocoaScrollView.resignFirstResponder: Boolean;
+begin
+  Result := inherited resignFirstResponder;
+  callback.ResignFirstResponder;
+end;
 
 function TCocoaScrollView.lclGetCallback: ICommonCallback;
 begin
@@ -355,6 +409,23 @@ end;
 
 { TCocoaScrollBar }
 
+function TCocoaScrollBar.acceptsFirstResponder: Boolean;
+begin
+  Result := True;
+end;
+
+function TCocoaScrollBar.becomeFirstResponder: Boolean;
+begin
+  Result := inherited becomeFirstResponder;
+  callback.BecomeFirstResponder;
+end;
+
+function TCocoaScrollBar.resignFirstResponder: Boolean;
+begin
+  Result := inherited resignFirstResponder;
+  callback.ResignFirstResponder;
+end;
+
 function TCocoaScrollBar.lclGetCallback: ICommonCallback;
 begin
   Result := callback;
@@ -367,6 +438,23 @@ begin
 end;
 
 { TCocoaGroupBox }
+
+function TCocoaGroupBox.acceptsFirstResponder: Boolean;
+begin
+  Result := True;
+end;
+
+function TCocoaGroupBox.becomeFirstResponder: Boolean;
+begin
+  Result := inherited becomeFirstResponder;
+  callback.BecomeFirstResponder;
+end;
+
+function TCocoaGroupBox.resignFirstResponder: Boolean;
+begin
+  Result := inherited resignFirstResponder;
+  callback.ResignFirstResponder;
+end;
 
 function TCocoaGroupBox.lclGetCallback: ICommonCallback;
 begin
@@ -414,6 +502,18 @@ end;
 function TCocoaButton.acceptsFirstResponder: Boolean;
 begin
   Result := True;
+end;
+
+function TCocoaButton.becomeFirstResponder: Boolean;
+begin
+  Result := inherited becomeFirstResponder;
+  callback.BecomeFirstResponder;
+end;
+
+function TCocoaButton.resignFirstResponder: Boolean;
+begin
+  Result := inherited resignFirstResponder;
+  callback.ResignFirstResponder;
 end;
 
 function TCocoaButton.lclGetCallback: ICommonCallback;
@@ -472,6 +572,18 @@ begin
   Result := True;
 end;
 
+function TCocoaTextField.becomeFirstResponder: Boolean;
+begin
+  Result := inherited becomeFirstResponder;
+  callback.BecomeFirstResponder;
+end;
+
+function TCocoaTextField.resignFirstResponder: Boolean;
+begin
+  Result := inherited resignFirstResponder;
+  callback.ResignFirstResponder;
+end;
+
 function TCocoaTextField.lclGetCallback: ICommonCallback;
 begin
   Result := callback;
@@ -491,6 +603,18 @@ end;
 function TCocoaTextView.acceptsFirstResponder: Boolean;
 begin
   Result := True;
+end;
+
+function TCocoaTextView.becomeFirstResponder: Boolean;
+begin
+  Result := inherited becomeFirstResponder;
+  callback.BecomeFirstResponder;
+end;
+
+function TCocoaTextView.resignFirstResponder: Boolean;
+begin
+  Result := inherited resignFirstResponder;
+  callback.ResignFirstResponder;
 end;
 
 function TCocoaTextView.lclGetCallback: ICommonCallback;
@@ -543,6 +667,18 @@ end;
 function TCocoaWindow.acceptsFirstResponder: Boolean;
 begin
   Result := True;
+end;
+
+function TCocoaWindow.becomeFirstResponder: Boolean;
+begin
+  Result := inherited becomeFirstResponder;
+  callback.BecomeFirstResponder;
+end;
+
+function TCocoaWindow.resignFirstResponder: Boolean;
+begin
+  Result := inherited resignFirstResponder;
+  callback.ResignFirstResponder;
 end;
 
 function TCocoaWindow.lclGetCallback: ICommonCallback;
@@ -637,7 +773,19 @@ end;
 
 function TCocoaSecureTextField.acceptsFirstResponder: Boolean;
 begin
-  Result:=True;
+  Result := True;
+end;
+
+function TCocoaSecureTextField.becomeFirstResponder: Boolean;
+begin
+  Result := inherited becomeFirstResponder;
+  callback.BecomeFirstResponder;
+end;
+
+function TCocoaSecureTextField.resignFirstResponder: Boolean;
+begin
+  Result := inherited resignFirstResponder;
+  callback.ResignFirstResponder;
 end;
 
 procedure TCocoaSecureTextField.resetCursorRects;
@@ -647,6 +795,23 @@ begin
 end;
 
 { TCocoaCustomControl }
+
+function TCocoaCustomControl.acceptsFirstResponder: Boolean;
+begin
+  Result := True;
+end;
+
+function TCocoaCustomControl.becomeFirstResponder: Boolean;
+begin
+  Result := inherited becomeFirstResponder;
+  callback.BecomeFirstResponder;
+end;
+
+function TCocoaCustomControl.resignFirstResponder: Boolean;
+begin
+  Result := inherited resignFirstResponder;
+  callback.ResignFirstResponder;
+end;
 
 procedure TCocoaCustomControl.drawRect(dirtyRect:NSRect);
 begin
@@ -1038,6 +1203,23 @@ end;
 
 { TCocoaListView }
 
+function TCocoaListView.acceptsFirstResponder: Boolean;
+begin
+  Result := True;
+end;
+
+function TCocoaListView.becomeFirstResponder: Boolean;
+begin
+  Result := inherited becomeFirstResponder;
+  callback.BecomeFirstResponder;
+end;
+
+function TCocoaListView.resignFirstResponder: Boolean;
+begin
+  Result := inherited resignFirstResponder;
+  callback.ResignFirstResponder;
+end;
+
 function TCocoaListView.lclGetCallback: ICommonCallback;
 begin
   Result := callback;
@@ -1108,6 +1290,23 @@ begin
 end;
 
 { TCocoaComboBox }
+
+function TCocoaComboBox.acceptsFirstResponder: Boolean;
+begin
+  Result := True;
+end;
+
+function TCocoaComboBox.becomeFirstResponder: Boolean;
+begin
+  Result := inherited becomeFirstResponder;
+  callback.BecomeFirstResponder;
+end;
+
+function TCocoaComboBox.resignFirstResponder: Boolean;
+begin
+  Result := inherited resignFirstResponder;
+  callback.ResignFirstResponder;
+end;
 
 function TCocoaComboBox.comboBox_objectValueForItemAtIndex_(combo:TCocoaComboBox;
   row: NSInteger):id;

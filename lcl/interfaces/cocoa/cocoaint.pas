@@ -65,6 +65,7 @@ type
 
   TCocoaWidgetSet = class(TWidgetSet)
   private
+    FFocusedObject: NSObject;
     FTerminating: Boolean;
 
     pool: NSAutoreleasePool;
@@ -107,8 +108,7 @@ type
 
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;
     function DestroyTimer(TimerHandle: THandle): boolean; override;
-    function PrepareUserEventInfo(Handle: HWND; Msg: Cardinal; wParam: WParam;
-      lParam: LParam): NSMutableDictionary;
+    function PrepareUserEventInfo(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): NSMutableDictionary;
     function PrepareUserEvent(Handle: HWND; Info: NSDictionary): NSEvent;
 
     procedure InitStockItems;

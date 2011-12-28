@@ -44,6 +44,8 @@ type
     procedure MouseMove(x,y: Integer); virtual;
     procedure frameDidChange; virtual;
     procedure boundsDidChange; virtual;
+    procedure BecomeFirstResponder; virtual;
+    procedure ResignFirstResponder; virtual;
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; virtual;
     procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
     function ResetCursorRects: Boolean; virtual;
@@ -87,6 +89,9 @@ function EmbedInScrollView(AView: NSView): TCocoaScrollView;
 procedure SetViewDefaults(AView: NSView);
 
 implementation
+
+uses
+  CocoaInt;
 
 function AllocCustomControl(const AWinControl: TWinControl): TCocoaCustomControl;
 begin
@@ -251,6 +256,16 @@ begin
   end;
 end;
 
+procedure TLCLCommonCallback.BecomeFirstResponder;
+begin
+  LCLSendSetFocusMsg(Target);
+end;
+
+procedure TLCLCommonCallback.ResignFirstResponder;
+begin
+  LCLSendKillFocusMsg(Target);
+end;
+
 function TLCLCommonCallback.DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
 var
   Message: TLMessage;
@@ -263,10 +278,13 @@ begin
 end;
 
 procedure TLCLCommonCallback.Draw(ControlContext: NSGraphicsContext;
-  const bounds, dirty:NSRect);
+  const bounds, dirty: NSRect);
 var
   struct: TPaintStruct;
 begin
+  // todo: think more about draw call while previous draw still active
+  if Assigned(FContext) then
+    Exit;
   FContext := TCocoaContext.Create;
   try
     FContext.ctx := ControlContext;
