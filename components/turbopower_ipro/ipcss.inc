@@ -52,8 +52,10 @@
    property Width: Integer read FWidth write FWidth;
  end;
 
- { TCSSProps }
-
+ { TCSSProps represents a set of properties from the CSS stylesheet, for
+   example everything within one selector or the contents of a style attribute
+   or even many applicable CSS styles for one node merged into one. It has
+   methods for parsing CSS text and for merging two such objects into one}
  TCSSProps = class
  private
    FBorder: TCSSBorder;
@@ -91,10 +93,14 @@
    constructor Create;
    destructor Destroy; override;
    procedure ReadCommands(ACommands: TStrings);
+   procedure MergeAdditionalProps(AProps: TCSSProps);
  end;
 
- { TCSSGlobalProps }
-
+ { TCSSGlobalProps serves as a global list of TCSSProps objects, it is
+   populated when parsing the CSS and then used to look up the CSS styles
+   for a certain CSS selector (the selector is supplied as a string and it
+   returns a reference to the TCSSProps object for this selector). The
+   contained TCSSProps objects are created and owned by TCSSGlobalProps }
  TCSSGlobalProps = class
    FElements: TFPObjectHashTable;
  public
@@ -103,7 +109,7 @@
    {$IFDEF IP_LAZARUS_DBG}
    procedure DumpProps;
    {$ENDIF}
-   function GetElement(AElementID: String; ClassID: String = ''; CreateIfNotExist: Boolean = False): TCSSProps;
+   function GetPropsObject(ATagName: String; AClassID: String = ''; CreateIfNotExist: Boolean = False): TCSSProps;
  end;
 
 {$ELSE implementation}
@@ -510,12 +516,12 @@ begin
     fpos := Pos('.', Element);
     if fpos = 0 then
     begin
-      Result.Objects[i] := FGlobalProps.GetElement(Element, '', True);
+      Result.Objects[i] := FGlobalProps.GetPropsObject(Element, '', True);
     end
     else begin
       ElementClass := LowerCase(Copy(Element, FPos+1, Length(Element)));
       Element := LowerCase(Copy(Element, 1, FPos-1));
-      Result.Objects[i] := FGlobalProps.GetElement(Element, ElementClass, True);
+      Result.Objects[i] := FGlobalProps.GetPropsObject(Element, ElementClass, True);
     end;
   end;
 
@@ -867,6 +873,39 @@ begin
   end;
 end;
 
+procedure TCSSProps.MergeAdditionalProps(AProps: TCSSProps);
+begin
+  if AProps.Color <> -1 then Color := AProps.Color;
+  if AProps.BGColor <> -1 then BGColor := AProps.BGColor;
+  if AProps.Alignment <> haUnknown then Alignment := AProps.Alignment;
+  if AProps.Font.Name <> '' then Font.Name := AProps.Font.Name;
+  if AProps.Font.Size <> '' then Font.Size := AProps.Font.Size;
+  if AProps.Font.Style <> cfsNormal then Font.Style := AProps.Font.Style;
+  if AProps.Font.Weight <> cfwNormal then Font.Weight := AProps.Font.Weight;
+
+  if AProps.MarginBottom.Style <> cmsNone then
+    FMarginBottom.Style := AProps.MarginBottom.Style;
+  if AProps.MarginBottom.Size <> 0 then
+    FMarginBottom.Size := AProps.MarginBottom.Size;
+
+  if AProps.MarginLeft.Style <> cmsNone then
+    FMarginLeft.Style := AProps.MarginLeft.Style;
+  if AProps.MarginLeft.Size <> 0 then
+    FMarginLeft.Size := AProps.MarginLeft.Size;
+
+  if AProps.MarginRight.Style <> cmsNone then
+    FMarginRight.Style := AProps.MarginRight.Style;
+  if AProps.MarginRight.Size <> 0 then
+    FMarginRight.Size := AProps.MarginRight.Size;
+
+  if AProps.MarginTop.Style <> cmsNone then
+    FMarginTop.Style := AProps.MarginTop.Style;
+  if AProps.MarginTop.Size <> 0 then
+    FMarginTop.Size := AProps.MarginTop.Size;
+
+
+end;
+
 { TCSSGlobalProps }
 
 constructor TCSSGlobalProps.Create;
@@ -882,45 +921,42 @@ begin
   inherited Destroy;
 end;
 
-function TCSSGlobalProps.GetElement(AElementID: String;
-  ClassID: String; CreateIfNotExist: Boolean): TCSSProps;
+function TCSSGlobalProps.GetPropsObject(ATagName: String;
+  AClassID: String; CreateIfNotExist: Boolean): TCSSProps;
 var
-  ElementName: String;
+  Selector: String;
 
-  procedure LookForElement(const aElement: string);
+  procedure Lookup(const AName: String);
   begin
-    if length(ClassID) > 0 then
-      ElementName := aElement + '.' + ClassId
+    if length(AClassID) > 0 then
+      Selector := AName + '.' + AClassID
     else
-      ElementName := aElement;
+      Selector := AName;
 
-    // The element names are already lowercase, this is
+    // The css selectors are already lowercase, this is
     // already done in the css parser. And the html parser
-    // can only deliver its own built-in node names anyways.
+    // can only deliver its own built-in tag names anyways.
     // Also the names are not expected to be longer than
     // ShortString (this would need to be a ridiculously
     // long ClassID), should this ever happen then
     // it would be silently truncated in the following
     // type conversion to ShortString.
-    {$warning GetElement() is called a *lot* of times, this
-    is one of the hot spots, maybe some of the AnsiString
-    usage around here could be avoided a little bit}
-    Result := TCSSProps(FElements.Items[ElementName]);
+    Result := TCSSProps(FElements.Items[Selector]);
   end;
 
 begin
   Result := nil;
-  if (length(ClassID) = 0) and (length(AElementID) = 0) then
+  if (length(AClassID) = 0) and (length(ATagName) = 0) then
     exit;
 
-  LookForElement(aElementID);
+  Lookup(ATagName);
   if (Result=nil) and not CreateIfNotExist then
-    LookForelement('*');
+    Lookup('*');
 
   if (Result = nil) and CreateIfNotExist then
   begin
     Result := TCSSProps.Create;
-    FElements.Add(ElementName, Result);
+    FElements.Add(Selector, Result);
   end;
 end;
 

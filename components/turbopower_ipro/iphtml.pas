@@ -1292,9 +1292,11 @@ type
   TIpHtmlNodeCore = class(TIpHtmlNodeMulti)
   private
     {$IFDEF IP_LAZARUS}
-    FCSS: TCSSProps;
+    FInlineCSSProps: TCSSProps;  // props from the style attribute
+    FCombinedCSSProps: TCSSProps; // props from all matching CSS selectors plus inline CSS combined
+    FHoverPropsLookupDone: Boolean;
+    FHoverPropsRef: TCSSProps; // props for :hover (this is only a cached reference, we don't own it)
     FElementName: String;
-    //FCSSPropsLoaded: boolean;
     {$ENDIF}
     FStyle: string;
     FClassId: string;
@@ -1304,8 +1306,8 @@ type
     procedure ParseBaseProps(aOwner : TIpHtml); {virtual;}              {!!.12}
     {$IFDEF IP_LAZARUS}
     function SelectCSSFont(const aFont: string): string;
-    procedure ApplyCSSProps(const Element: TCSSProps; const props: TIpHtmlProps);
-    procedure LoadCSSProps(aOwner : TIpHtml; var Element: TCSSProps; const Props: TIpHtmlProps); virtual;
+    procedure ApplyCSSProps(const ACSSProps: TCSSProps; const props: TIpHtmlProps);
+    procedure LoadAndApplyCSSProps; virtual;
     function ElementName: String;
     function GetFontSizeFromCSS(CurrentFontSize:Integer; aFontSize: string):Integer;
     {$ENDIF}
@@ -1318,7 +1320,7 @@ type
     property Style : string read FStyle write FStyle;
     property Title : string read FTitle write FTitle;
     {$IFDEF IP_LAZARUS}
-    property CSS: TCSSProps read FCSS write FCSS;
+    property InlineCSS: TCSSProps read FInlineCSSProps write FInlineCSSProps;
     {$ENDIF}
   end;
 
@@ -1407,7 +1409,7 @@ type
     procedure SetBgColor(const AValue: TColor);
     procedure SetTextColor(const AValue: TColor);
     {$IFDEF IP_LAZARUS}
-    procedure LoadCSSProps(Owner : TIpHtml; var Element: TCSSProps; const Props: TIpHtmlProps); override;
+    procedure LoadAndApplyCSSProps; override;
     {$ENDIF}
   public
     constructor Create(ParentNode : TIpHtmlNode);
@@ -1661,7 +1663,7 @@ type
     BGPicture : TPicture;
     procedure Render(const RenderProps: TIpHtmlProps); override;
     {$IFDEF IP_LAZARUS}
-    procedure LoadCSSProps(Owner : TIpHtml; var Element: TCSSProps; const Props: TIpHtmlProps); override;
+    procedure LoadAndApplyCSSProps; override;
     {$ENDIF}
   public
     constructor Create(ParentNode : TIpHtmlNode);
@@ -2284,7 +2286,7 @@ type
     procedure WidthChanged(Sender: TObject);                           {!!.10}
     function ExpParentWidth: Integer; override;                        {!!.10}
     {$IFDEF IP_LAZARUS}
-    procedure LoadCSSProps(Owner : TIpHtml; var Element: TCSSProps; const Props: TIpHtmlProps); override;
+    procedure LoadAndApplyCSSProps; override;
     {$ENDIF}
   public
     constructor Create(ParentNode : TIpHtmlNode);
@@ -5102,15 +5104,12 @@ var
   savedColor, savedBgColor : TColor;
   IsMouseOver: boolean;
   //propb : TIpHtmlPropB;
-{$IFDEF IP_LAZARUS}
-  Elem: TCSSProps = nil;
-{$ENDIF}
 begin
 //DebugLn(ClassName, ':', FParentNode.className, ':', IntToStr(RenderProps.BgColor));
   Props.Assign(RenderProps);
   {$IFDEF IP_LAZARUS}
   if Self.InheritsFrom(TIpHtmlNodeCore)then
-    TIpHtmlNodeCore(Self).LoadCSSProps(Owner, Elem, Props);
+    TIpHtmlNodeCore(Self).LoadAndApplyCSSProps;
   {$ENDIF}
 //DebugLn(ClassName, ':', FParentNode.className, ':', IntToStr(RenderProps.BgColor));
 //  Inc(DebugParseLevel);
@@ -5276,21 +5275,21 @@ begin
 end;
 
 {$IFDEF IP_LAZARUS}
-procedure TIpHtmlNodeBODY.LoadCSSProps(Owner: TIpHtml; var Element: TCSSProps; const Props: TIpHtmlProps);
+procedure TIpHtmlNodeBODY.LoadAndApplyCSSProps;
 var
-  LinkElement: TCSSProps;
+  LinkProps: TCSSProps;
 begin
   Props.DelayCache := True;
-  inherited LoadCSSProps(Owner, Element, Props);
-  LinkElement := Owner.CSS.GetElement('a:link', '');
-  if (LinkElement <> nil) and (LinkElement.Color <> -1) then
-    Link := LinkElement.Color;
-  LinkElement := Owner.CSS.GetElement('a:visited', '');
-  if (LinkElement <> nil) and (LinkElement.Color <> -1) then
-    VLink := LinkElement.Color;
-  LinkElement := Owner.CSS.GetElement('a:active', '');
-  if (LinkElement <> nil) and (LinkElement.Color <> -1) then
-    ALink := LinkElement.Color;
+  inherited LoadAndApplyCSSProps;
+  LinkProps := Owner.CSS.GetPropsObject('a:link', '');
+  if (LinkProps <> nil) and (LinkProps.Color <> -1) then
+    Link := LinkProps.Color;
+  LinkProps := Owner.CSS.GetPropsObject('a:visited', '');
+  if (LinkProps <> nil) and (LinkProps.Color <> -1) then
+    VLink := LinkProps.Color;
+  LinkProps := Owner.CSS.GetPropsObject('a:active', '');
+  if (LinkProps <> nil) and (LinkProps.Color <> -1) then
+    ALink := LinkProps.Color;
   Props.DelayCache := True;
 end;
 {$ENDIF}
@@ -7314,9 +7313,6 @@ procedure TIpHtml.ParseTableRows(Parent: TIpHtmlNode;
 
 var
   CurRow : TIpHtmlNodeTR;
-  {$IFDEF IP_LAZARUS}
-  Element: TCSSProps = nil;
-  {$ENDIF}
 begin
   CurRow := nil;                                                       {!!.12}
   while not (CurToken in EndTokens) do
@@ -7329,7 +7325,7 @@ begin
           CurRow.ParseBaseProps(Self);
           CurRow.Align := ParseAlignment;
           CurRow.VAlign := ParseVAlignment;
-          CurRow.LoadCSSProps(CurRow.Owner, Element, CurRow.Props);
+          CurRow.LoadAndApplyCSSProps;
           NextRealToken;
           ParseTableRow(CurRow,
                         EndTokens + [IpHtmlTagTRend, IpHtmlTagTR] -
@@ -8317,9 +8313,6 @@ procedure TIpHtml.ParseBody(Parent : TIpHtmlNode;
 var                                                                    {!!.12}
   i : Integer;                                                         {!!.12}
   Node : TIpHtmlNode;                                                  {!!.12}
-  {$IFDEF IP_LAZARUS}
-  Element: TCSSProps = nil;
-  {$ENDIF}
 begin
 //  while CurToken = IpHtmlTagText do                                  {Deleted !!.12}
 //    NextToken;                                                       {Deleted !!.12}
@@ -8339,7 +8332,7 @@ begin
       Background := FindAttribute(htmlAttrBACKGROUND);
       ParseBaseProps(Self);
       {$IFDEF IP_LAZARUS}
-      LoadCSSProps(Owner, Element, props);
+      LoadAndApplyCSSProps;
       {$ENDIF}
     end;
 
@@ -8357,7 +8350,7 @@ begin
       with TIpHtmlNodeHtml(Parent) do begin
         with TIpHtmlNodeBODY.Create(Parent) do
           {$IFDEF IP_LAZARUS}
-          LoadCSSProps(Owner, Element, props)
+          LoadAndApplyCSSProps;
           {$ENDIF};
 
         { Make each of FHtml's current children the children of the
@@ -10241,15 +10234,11 @@ begin
 end;
 
 procedure TIpHtmlNodeBlock.Render(const RenderProps: TIpHtmlProps);
-{$IFDEF IP_LAZARUS}
-var
-  Elem: TCSSProps = nil;
-{$ENDIF}
 begin
   if not RenderProps.IsEqualTo(Props) then
   begin
     Props.Assign(RenderProps);
-    LoadCSSProps(Owner, Elem, Props);
+    LoadAndApplyCSSProps;
     SetProps(Props);
   end;
   if ElementQueue.Count = 0 then
@@ -10297,18 +10286,15 @@ begin
   end;
 end;
 
-procedure TIpHtmlNodeBlock.LoadCSSProps(Owner: TIpHtml; var Element: TCSSProps;
-  const Props: TIpHtmlProps);
+procedure TIpHtmlNodeBlock.LoadAndApplyCSSProps;
 begin
-  inherited LoadCSSProps(Owner, Element, Props);
-  if Element = nil then
-    exit;
-
-  if Element.Color <> -1 then
-    TextColor := Element.Color;
-
-  if Element.BGColor <> -1 then
-    BgColor := Element.BGColor;
+  inherited LoadAndApplyCSSProps;
+  if FCombinedCSSProps <> nil then begin
+    if FCombinedCSSProps.Color <> -1 then
+      TextColor := FCombinedCSSProps.Color;
+    if FCombinedCSSProps.BgColor <> -1 then
+      BgColor := FCombinedCSSProps.BGColor;
+  end;
 end;
 
 procedure TIpHtmlNodeBlock.CalcMinMaxQueueWidth(
@@ -10552,10 +10538,6 @@ end;
 
 procedure TIpHtmlNodeBlock.CalcMinMaxWidth(const RenderProps: TIpHtmlProps;
       var Min, Max: Integer);
-{$IFDEF IP_LAZARUS}
-var
-  Elem: TCSSProps = nil;
-{$ENDIF}
 begin
   if RenderProps.IsEqualTo(Props) and (FMin <> -1) and (FMax <> -1) then begin
     Min := FMin;
@@ -10563,7 +10545,7 @@ begin
     Exit;
   end;
   Props.Assign(RenderProps);
-  LoadCSSProps(Owner, Elem, Props);
+  LoadAndApplyCSSProps;
   SetProps(Props);
   if ElementQueue.Count = 0 then
     Enqueue;
@@ -10608,16 +10590,12 @@ end;
 
 procedure TIpHtmlNodeBlock.Layout(const RenderProps: TIpHtmlProps;
   const TargetRect: TRect);
-{$IFDEF IP_LAZARUS}
-var
-  Elem: TCSSProps = nil;
-{$ENDIF}
 begin
   if EqualRect(TargetRect, PageRect) then Exit;
   if not RenderProps.IsEqualTo(Props) then
   begin
     Props.Assign(RenderProps);
-    LoadCSSProps(Owner, Elem, Props);
+    LoadAndApplyCSSProps;
     SetProps(Props);
   end;
   if ElementQueue.Count = 0 then
@@ -12334,15 +12312,11 @@ begin
 end;
 
 procedure TIpHtmlNodeDIV.SetProps(const RenderProps: TIpHtmlProps);
-{$IFDEF IP_LAZARUS}
-var
-  Elem: TCSSProps = nil;
-{$ENDIF}
 begin
   Props.Assign(RenderProps);
   Props.Alignment := Align;
   {$IFDEF IP_LAZARUS}
-  LoadCSSProps(Owner, Elem, Props);
+  LoadAndApplyCSSProps;
   {$ENDIF}
   inherited SetProps(Props);
 end;
@@ -12371,16 +12345,12 @@ end;
 { TIpHtmlNodeSPAN }
 
 procedure TIpHtmlNodeSPAN.ApplyProps(const RenderProps: TIpHtmlProps);
-{$IFDEF IP_LAZARUS}
-var
-  Elem: TCSSProps = nil;
-{$ENDIF}
 begin
   Props.Assign(RenderProps);
   Props.DelayCache:=True;
   Props.Alignment := Align;
   {$IFDEF IP_LAZARUS}
-  LoadCSSProps(Owner, Elem, Props);
+  LoadAndApplyCSSProps;
   {$ENDIF}
   Props.DelayCache:=False;
 end;
@@ -14026,19 +13996,18 @@ begin
 end;
 
 {$IFDEF IP_LAZARUS}
-procedure TIpHtmlNodeTABLE.LoadCSSProps(Owner: TIpHtml; var Element: TCSSProps;
-  const Props: TIpHtmlProps);
+procedure TIpHtmlNodeTABLE.LoadAndApplyCSSProps;
 begin
-  inherited LoadCSSProps(Owner, Element, Props);
-  if Element = nil then
+  inherited LoadAndApplyCSSProps;
+  if FCombinedCSSProps = nil then
     exit;
-//  if Element.BGColor <> -1 then
-//    BgColor := Element.BGColor;
-  if Element.Border.Style <> cbsNone then
+//  if FCombinedCSSProps.BGColor <> -1 then
+//    BgColor := FCombinedCSSProps.BGColor;
+  if FCombinedCSSProps.Border.Style <> cbsNone then
   begin
-    FBorder := Element.Border.Width;
-    BorderColor := Element.Border.Color;
-    BorderStyle := Element.Border.Style;
+    FBorder := FCombinedCSSProps.Border.Width;
+    BorderColor := FCombinedCSSProps.Border.Color;
+    BorderStyle := FCombinedCSSProps.Border.Style;
     if Frame = hfVoid then
     begin
       Frame := hfBorder;
@@ -15167,11 +15136,11 @@ end;
 procedure TIpHtmlNodeINPUT.Draw;
 begin
 {
-  if Assigned(FCSS) then
+  if Assigned(FInlineCSSProps) then
   begin
-       if FCSS.BGColor <> -1 then FControl.Color := FCSS.BGColor;
-       if FCSS.Color <> -1 then FControl.Font.Color := FCSS.Color;
-       if FCSS.Font.Size <> '' then FControl.Font.size := GetFontSizeFromCSS(FControl.Font.size, FCSS.Font.Size);
+       if FInlineCSSProps.BGColor <> -1 then FControl.Color := FInlineCSSProps.BGColor;
+       if FInlineCSSProps.Color <> -1 then FControl.Font.Color := FInlineCSSProps.Color;
+       if FInlineCSSProps.Font.Size <> '' then FControl.Font.size := GetFontSizeFromCSS(FControl.Font.size, FInlineCSSProps.Font.Size);
   end;
 }
   inherited;
@@ -15754,83 +15723,80 @@ begin
   {$IFDEF IP_LAZARUS}
   if Style <> '' then
   begin
-    if CSS = nil then
-      CSS := TCSSProps.Create;
+    if InlineCSS = nil then
+      InlineCSS := TCSSProps.Create;
     Commands := SeperateCommands(Style);
-    CSS.ReadCommands(Commands);
+    InlineCSS.ReadCommands(Commands);
     Commands.Free;
   end;
   {$ENDIF}
 end;
 
 {$IFDEF IP_LAZARUS}
-procedure TIpHtmlNodeCore.LoadCSSProps(aOwner: TIpHtml; var Element: TCSSProps; const Props: TIpHtmlProps);
+(* look up the props for all CSS selectors that directly match this node, merge
+   them all into one object (FCombinedCSSProps) and then apply them to Props.
+   When FCombinedCSSProps already exists then the expensive lookup is skipped
+   and the existing object is used. *)
+procedure TIpHtmlNodeCore.LoadAndApplyCSSProps;
 var
-  TmpElement, Hover: TCSSProps;
+  TmpProps: TCSSProps;
+
 begin
-  if aOwner.CSS = nil then
+  if Owner.CSS = nil then
     exit;
-  {
-  WriteLn('FCSSPropsLoaded=',TIpHtmlNodeCore(Self).FCSSPropsLoaded);
-  if FCSSPropsLoaded then
-    exit;
-  FCSSPropsLoaded:=True;
-  }
+
+  if FCombinedCSSProps = nil then
+  begin
+    FCombinedCSSProps := TCSSProps.Create;
+
+    // first look for tag name only
+    TmpProps := Owner.CSS.GetPropsObject(ElementName);
+    if TmpProps <> nil then
+      FCombinedCSSProps.MergeAdditionalProps(TmpProps);
+
+    // look for .class if there is one
+    if ClassID <> '' then
+    begin
+      TmpProps := Owner.CSS.GetPropsObject('', ClassId);
+      if TmpProps <> nil then
+        FCombinedCSSProps.MergeAdditionalProps(TmpProps);
+
+      // then look for a tag.class selector if there is one
+      TmpProps := Owner.CSS.GetPropsObject(ElementName, ClassId);
+      if TmpProps <> nil then
+        FCombinedCSSProps.MergeAdditionalProps(TmpProps);
+    end;
+
+    // lookup props for an id selector
+    TmpProps := Owner.CSS.GetPropsObject(Id);
+    if TmpProps <> nil then
+      FCombinedCSSProps.MergeAdditionalProps(TmpProps);
+
+    // inline css, not from the stylesheet
+    if InlineCSS <> nil then
+      FCombinedCSSProps.MergeAdditionalProps(InlineCSS);
+
+  end;
+
+  // look for :hover styles...
+  if not FHoverPropsLookupDone then
+  begin
+    FHoverPropsRef := Owner.CSS.GetPropsObject(ElementName + ':hover');
+    FHoverPropsLookupDone := True;
+  end;
+  // ...apply them if there are any.
+  if FHoverPropsRef <> nil then
+  begin
+    Props.DelayCache:=True;
+    if FHoverPropsRef.Color <> -1 then
+      Props.HoverColor := FHoverPropsRef.Color;
+    if FHoverPropsRef.BgColor <> -1 then
+      Props.HoverBgColor := FHoverPropsRef.BgColor;
+    Props.DelayCache:=False;
+  end;
+
   Props.DelayCache:=True;
-  TmpElement := Element;
-  if Element = nil then
-  begin
-
-    // process first the Main element
-    Element := aOwner.CSS.GetElement(ElementName, '');
-    if Element <> nil then begin
-      ApplyCSSProps(Element, Props);
-    end;
-
-    // process Main element hover
-    Hover := aOwner.CSS.GetElement(ElementName + ':hover', '');
-    if Hover <> nil then begin
-      Props.DelayCache:=True;
-      if Hover.Color <> -1 then
-        Props.HoverColor := Hover.Color;
-      if Hover.BgColor <> -1 then
-        Props.HoverBgColor := Hover.BgColor;
-      Props.DelayCache:=False;
-      //ApplyCSSProps(Element, Props);
-    end;
-
-    // load the .class if there is one
-    if ClassID<>'' then begin
-      Element := Owner.CSS.GetElement('', ClassId);
-      if Element <> nil then begin
-        ApplyCSSProps(Element, Props);
-      end;
-    end;
-    
-    // then load the element + class if there is one
-    if (Element=nil)and(ClassID<>'') then begin
-      Element := Owner.CSS.GetElement(ElementName, ClassId);
-      if Element=nil then
-      else begin
-        ApplyCSSProps(Element, Props);
-      end;
-    end;
-    
-  end;
-  
-  if TmpElement = nil then
-  begin
-    // lookup id elements
-    TmpElement := aOwner.CSS.GetElement(Id);
-    if TmpElement <> nil then begin
-      ApplyCSSProps(TmpElement, Props);
-    end;
-    // lookup local elements for this tag, not from the stylesheet
-    TmpElement := CSS;
-    if TmpElement <> nil then begin
-      ApplyCSSProps(TmpElement, Props);
-    end;
-  end;
+  ApplyCSSProps(FCombinedCSSProps, Props);
   Props.DelayCache:=False;
 end;
 
@@ -15840,7 +15806,7 @@ begin
   result := FirstString(aFont);
 end;
 
-procedure TIpHtmlNodeCore.ApplyCSSProps(const Element: TCSSProps;
+procedure TIpHtmlNodeCore.ApplyCSSProps(const ACSSProps: TCSSProps;
   const props: TIpHtmlProps);
 
   function CssMarginToProps(CssMargin: TCSSMargin;
@@ -15861,43 +15827,43 @@ procedure TIpHtmlNodeCore.ApplyCSSProps(const Element: TCSSProps;
 var
   ElemMargin: TIpHtmlElemMargin;
 begin
-  if (Element<>nil) and (props<>nil) then
+  if (ACSSProps<>nil) and (props<>nil) then
   begin
     props.DelayCache:=True;
     {$WARNING Setting these font colors and name messes up the alignment for some reason}
-    if Element.Color <> -1 then begin
-      Props.FontColor := Element.Color;
+    if ACSSProps.Color <> -1 then begin
+      Props.FontColor := ACSSProps.Color;
     end;
 
-    if Element.BGColor <> -1 then begin
-      Props.BgColor := Element.BGColor;
+    if ACSSProps.BGColor <> -1 then begin
+      Props.BgColor := ACSSProps.BGColor;
     end;
 
-    if Element.Alignment <> haUnknown then begin
-      Props.Alignment := Element.Alignment;
+    if ACSSProps.Alignment <> haUnknown then begin
+      Props.Alignment := ACSSProps.Alignment;
     end;
 
-    if Element.Font.Name <> '' then begin
+    if ACSSProps.Font.Name <> '' then begin
       // put the code here, later refactore it
-      Props.FontName := SelectCSSFont(Element.Font.Name);
+      Props.FontName := SelectCSSFont(ACSSProps.Font.Name);
     end;
 
      {$WARNING TODO Set Font size from CSS Value}
-    // see http://xhtml.com/en/css/reference/font-size/
-    if Element.Font.Size <> '' then begin
-      // Props.FontSize :=  Element.Font.Size;
-      props.FontSize:=GetFontSizeFromCSS(Props.FontSize, Element.Font.Size);
+    // see http://xhtml.com/en/CSS/reference/font-size/
+    if ACSSProps.Font.Size <> '' then begin
+      // Props.FontSize :=  ACSSProps.Font.Size;
+      props.FontSize:=GetFontSizeFromCSS(Props.FontSize, ACSSProps.Font.Size);
     end;
 
-    if Element.Font.Style <> cfsNormal then begin
-      case Element.Font.Style of
+    if ACSSProps.Font.Style <> cfsNormal then begin
+      case ACSSProps.Font.Style of
         cfsItalic,cfsOblique: Props.FontStyle := Props.FontStyle + [fsItalic];
         cfsInherit: ; // what to do?: search through parent nodes looking for a computed value
       end;
     end;
 
-    if Element.Font.Weight <> cfwNormal then begin
-      case Element.Font.Weight of
+    if ACSSProps.Font.Weight <> cfwNormal then begin
+      case ACSSProps.Font.Weight of
         cfwBold    : Props.FontStyle := Props.FontStyle + [fsBold];
         cfwBolder  : Props.FontStyle := Props.FontStyle + [fsBold];
         cfwLighter : Props.FontStyle := Props.FontStyle - [fsBold];
@@ -15913,13 +15879,13 @@ begin
       end;
     end;
 
-    if CssMarginToProps(Element.MarginTop,ElemMargin) then
+    if CssMarginToProps(ACSSProps.MarginTop,ElemMargin) then
       props.ElemMarginTop:=ElemMargin;
-    if CssMarginToProps(Element.MarginRight,ElemMargin) then
+    if CssMarginToProps(ACSSProps.MarginRight,ElemMargin) then
       props.ElemMarginRight:=ElemMargin;
-    if CssMarginToProps(Element.MarginBottom,ElemMargin) then
+    if CssMarginToProps(ACSSProps.MarginBottom,ElemMargin) then
       props.ElemMarginBottom:=ElemMargin;
-    if CssMarginToProps(Element.MarginLeft,ElemMargin) then
+    if CssMarginToProps(ACSSProps.MarginLeft,ElemMargin) then
       props.ElemMarginLeft:=ElemMargin;
 
     props.DelayCache:=False;
@@ -15998,8 +15964,10 @@ end;
 
 destructor TIpHtmlNodeCore.Destroy;
 begin
-  if Assigned(FCSS) then
-    FCSS.Free;
+  if Assigned(FInlineCSSProps) then
+    FInlineCSSProps.Free;
+  if Assigned(FCombinedCSSProps) then
+    FCombinedCSSProps.Free;
   inherited Destroy;
 end;
 {$ENDIF}
@@ -16918,14 +16886,11 @@ procedure TIpHtmlNodeTableHeaderOrCell.Render(
   const RenderProps: TIpHtmlProps);
 var
   R : TRect;
-{$IFDEF IP_LAZARUS}
-  Elem: TCSSProps = nil;
-{$ENDIF}
 begin
   Props.Assign(RenderProps);
   Props.DelayCache:=True;
   {$IFDEF IP_LAZARUS}
-  LoadCSSProps(Owner, Elem, Props);
+  LoadAndApplyCSSProps;
   {$ENDIF}
 //DebugLn('td :', IntToStr(Integer(Props.Alignment)));
   if BgColor <> -1 then
@@ -17102,14 +17067,10 @@ begin
 end;
 
 function TIpHtmlNodeControl.adjustFromCss:boolean;
-{$IFDEF IP_LAZARUS}
-var
-  Elem: TCSSProps = nil;
-{$ENDIF}
 begin
    result := false;
    {$IFDEF IP_LAZARUS}
-   LoadCSSProps(Owner, Elem, Props);
+   LoadAndApplyCSSProps;
    if (props.FontSize <> -1) then
      FControl.Font.Size:= Props.FontSize;
      if Props.FontColor <> -1 then
@@ -17121,14 +17082,10 @@ begin
 end;
 
 procedure TIpHtmlNodeControl.SetProps(const RenderProps: TIpHtmlProps);
-{$IFDEF IP_LAZARUS}
-var
-  Elem: TCSSProps = nil;
-{$ENDIF}
 begin
   Props.Assign(RenderProps);
   {$IFDEF IP_LAZARUS}
-  LoadCSSProps(Owner, Elem, Props);
+  LoadAndApplyCSSProps;
   {$ENDIF}
 end;
 
