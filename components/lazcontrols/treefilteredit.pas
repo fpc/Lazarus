@@ -422,31 +422,13 @@ begin
 end;
 
 procedure TTreeFilterEdit.MoveNext;
-var
-  tn: TTreeNode;
 begin
-  tn := fFilteredTreeview.Selected;
-  if not Assigned(tn) then
-  begin
-    tn := fFilteredTreeview.TopItem;
-    if Assigned(tn) then
-      fFilteredTreeview.Selected := tn;
-    Exit;
-  end;
-  tn := tn.GetNext;
-  if Assigned(tn) then
-    fFilteredTreeview.Selected := tn;
+  fFilteredTreeview.MoveToNextNode;
 end;
 
 procedure TTreeFilterEdit.MovePrev;
-var
-  tn: TTreeNode;
 begin
-  tn := fFilteredTreeview.Selected;
-  if not Assigned(tn) then Exit;
-  tn := tn.GetPrev;
-  if Assigned(tn) then
-    fFilteredTreeview.Selected := tn;
+  fFilteredTreeview.MoveToPrevNode;
 end;
 
 end.

@@ -3332,6 +3332,14 @@ begin
   end;
 end;
 
+procedure TCustomTreeView.SetSeparatorColor(const AValue: TColor);
+begin
+  if fSeparatorColor=AValue then exit;
+  fSeparatorColor:=AValue;
+  if tvoShowSeparators in Options then
+    Invalidate;
+end;
+
 procedure TCustomTreeView.SetShowButton(Value: Boolean);
 begin
   if ShowButtons <> Value then begin
@@ -5435,12 +5443,42 @@ begin
   ANode.MakeVisible;
 end;
 
-procedure TCustomTreeView.SetSeparatorColor(const AValue: TColor);
+procedure TCustomTreeView.MoveToNextNode;
+var
+  lNode: TTreeNode;
 begin
-  if fSeparatorColor=AValue then exit;
-  fSeparatorColor:=AValue;
-  if tvoShowSeparators in Options then
-    Invalidate;
+  if tvoAllowMultiSelect in FOptions then
+    lNode := FTreeNodes.FLastMultiSelected
+  else
+    lNode := Selected;
+  if lNode <> nil then
+    lNode := lNode.GetNextExpanded
+  else if Items.Count > 0 then
+    lNode := FTreeNodes.GetFirstNode;
+  if lNode <> nil then
+    if tvoAllowMultiSelect in FOptions then
+      FTreeNodes.SelectOnlyThis(lNode)
+    else
+      Selected := lNode;
+end;
+
+procedure TCustomTreeView.MoveToPrevNode;
+var
+  lNode: TTreeNode;
+begin
+  if tvoAllowMultiSelect in FOptions then
+    lNode := FTreeNodes.FLastMultiSelected
+  else
+    lNode := Selected;
+  if lNode <> nil then
+    lNode := lNode.GetPrevExpanded
+  else if Items.Count > 0 then
+    lNode := Items.GetLastExpandedSubNode;
+  if lNode <> nil then
+    if tvoAllowMultiSelect in FOptions then
+      FTreeNodes.SelectOnlyThis(lNode)
+    else
+      Selected := lNode;
 end;
 
 // back to comctrls.pp

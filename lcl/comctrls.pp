@@ -2914,6 +2914,8 @@ type
     function GetLastMultiSelected: TTreeNode;
     function SelectionVisible: boolean;
     procedure MakeSelectionVisible;
+    procedure MoveToNextNode;
+    procedure MoveToPrevNode;
   public
     property BackgroundColor: TColor
       read FBackgroundColor write SetBackgroundColor default clWindow;
