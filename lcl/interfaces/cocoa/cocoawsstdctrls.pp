@@ -324,15 +324,15 @@ end;
 
   Sets button default indication in Cocoa interface
  ------------------------------------------------------------------------------}
-class procedure TCocoaWSButton.SetDefault(const AButton: TCustomButton;
-  ADefault: Boolean);
+class procedure TCocoaWSButton.SetDefault(const AButton: TCustomButton; ADefault: Boolean);
 var
-  cf :NSString;
+  cf: NSString;
 const
-  DefEq : array [Boolean] of String = (#0, #13);
+  DefEq: array [Boolean] of String = (#0, #13);
 begin
-  if AButton.Handle=0 then Exit;
-  cf:=NSStringUtf8(DefEq[ADefault]);
+  if not AButton.HandleAllocated then
+    Exit;
+  cf := NSStringUtf8(DefEq[ADefault]);
 
   NSButton(AButton.Handle).setKeyEquivalent(cf);
   cf.release;

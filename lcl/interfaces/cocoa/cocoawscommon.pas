@@ -10,7 +10,7 @@ uses
   CocoaAll,
   Classes, Controls, SysUtils,
   //
-  WSControls, LCLType, LMessages, LCLProc, Forms,
+  WSControls, LCLType, LMessages, LCLProc, Graphics, Forms,
   CocoaPrivate, CocoaGDIObjects, CocoaCaret, CocoaUtils, LCLMessageGlue;
 
 type
@@ -74,6 +74,7 @@ type
     class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
   end;
 
 
@@ -577,6 +578,18 @@ begin
     else
     if Obj.isKindOfClass_(NSView) then
       NSView(Obj).resetCursorRects;
+  end;
+end;
+
+class procedure TCocoaWSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
+var
+  Obj: NSObject;
+begin
+  if (AWinControl.Handle <> 0) then
+  begin
+    Obj := NSObject(AWinControl.Handle);
+    if Obj.isKindOfClass(NSControl) then
+      NSCell(NSControl(Obj).cell).setFont(TCocoaFont(AFont.Reference.Handle).Font);
   end;
 end;
 
