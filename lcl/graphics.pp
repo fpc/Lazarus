@@ -2102,7 +2102,9 @@ var
 begin
   Bmp := TBitmap.Create;
   try
-    Bmp.LoadFromResourceName(hInstance, lpBitmapName);
+    if PtrUInt(lpBitmapName) > High(Word)
+    then Bmp.LoadFromResourceName(hInstance, lpBitmapName)
+    else Bmp.LoadFromResourceID(hInstance, PtrInt(lpBitmapName));
     Result := Bmp.ReleaseHandle;
   finally
     Bmp.Free;
@@ -2115,7 +2117,9 @@ var
 begin
   Cur := TCursorImage.Create;
   try
-    Cur.LoadFromResourceName(hInstance, lpCursorName);
+    if PtrUInt(lpCursorName) > High(Word)
+    then Cur.LoadFromResourceName(hInstance, lpCursorName)
+    else Cur.LoadFromResourceID(hInstance, PtrInt(lpCursorName));
     Result := Cur.ReleaseHandle;
   finally
     Cur.Free;
@@ -2128,7 +2132,9 @@ var
 begin
   Ico := TIcon.Create;
   try
-    Ico.LoadFromResourceName(hInstance, lpIconName);
+    if PtrUInt(lpIconName) > High(Word)
+    then Ico.LoadFromResourceName(hInstance, lpIconName)
+    else Ico.LoadFromResourceID(hInstance, PtrInt(lpIconName));
     Result := Ico.ReleaseHandle;
   finally
     Ico.Free;
