@@ -182,7 +182,8 @@ var
 begin
   if not (Assigned(FMainUsedUnits) and Assigned(FImplUsedUnits)) then Exit;
   if AllUnitsCheckBox.Checked then begin    // Add other units
-    CreateOtherUnitsList;
+    if not Assigned(FOtherUnits) then
+      CreateOtherUnitsList;
     FilterEdit.Data.AddStrings(FOtherUnits);
   end
   else
@@ -316,7 +317,6 @@ var
   i: Integer; curUnit: string;
   SrcEdit: TSourceEditor;
 begin
-  if Assigned(FOtherUnits) then Exit;
   if not (Assigned(FMainUsedUnits) and Assigned(FImplUsedUnits)) then Exit;
   Screen.Cursor:=crHourGlass;
   try
