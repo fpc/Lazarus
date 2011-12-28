@@ -472,7 +472,10 @@ begin
     and ([cmsObjectiveC1,cmsObjectiveC2]*Scanner.CompilerModeSwitches<>[])
     then exit(KeyWordFuncClassSection);
   'S':
-    if CompareSrcIdentifiers(p,'STATIC') then exit(KeyWordFuncClassMethod)
+    if CompareSrcIdentifiers(p,'STATIC')
+    and (CurNode.Parent.Desc=ctnObject) and (Scanner.Values.IsDefined('STATIC'))
+    then
+      exit(KeyWordFuncClassMethod)
     else if CompareSrcIdentifiers(p,'STRICT') then exit(KeyWordFuncClassSection);
   'T':
     if CompareSrcIdentifiers(p,'TYPE') then exit(KeyWordFuncClassTypeSection);
