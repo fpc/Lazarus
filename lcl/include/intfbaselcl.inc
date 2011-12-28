@@ -517,6 +517,21 @@ begin
   Result := False;
 end;
 
+procedure TWidgetSet.LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
+begin
+
+end;
+
+procedure TWidgetSet.LazDeviceAPIs_SendMessage(AMsg: TLazDeviceMessage);
+begin
+
+end;
+
+procedure TWidgetSet.LazDeviceAPIs_UpdateAccelerometerData();
+begin
+
+end;
+
 function TWidgetSet.MoveWindowOrgEx(dc: hdc; dX,dY: Integer): boolean;
 var
   P: TPoint;

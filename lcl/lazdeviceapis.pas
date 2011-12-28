@@ -46,32 +46,6 @@ type
 
   // TLazMessaging
 
-  TLazDeviceMessageKind = (dmkSMS, dmkMMS, dmkEMail);
-
-  { TLazDeviceMessage }
-
-  TLazDeviceMessage = class
-  public
-    Kind: TLazDeviceMessageKind;
-    // The commends indicate in which message kind each field is available
-    // in this order:                  SMS     MMS     EMail
-    //bccAddress	N	N	Y
-    Body: string;                    //	Y	Y	Y
-    {callbackNumber	Y	N	N
-    ccAddress	N	N	Y}
-    destinationAddress: TstringList; //	Y	Y	Y
-    {isRead	Y	Y	Y
-    messageId	Y	Y	Y
-    messagePriority	Y	Y	Y
-    messageType	Y	Y	Y
-    sourceAddress	Y	Y	Y
-    Subject	N	Y	Y
-    Time	Y	Y	Y
-    validityPeriodHours	Y	N	N}
-    constructor Create; virtual;
-    destructor Destroy; override;
-  end;
-
   TLazMessageSendingStatus = (mssSuccess, mssGeneralError);
 
   TOnMessageSendingFinished = procedure (AMessage: TLazDeviceMessage;
@@ -84,15 +58,13 @@ type
     FTOnMessageSendingFinished: TOnMessageSendingFinished;
   public
     // Attempt to send the specified message.
-    procedure sendMessage(AMsg: TLazDeviceMessage);
+    procedure SendMessage(AMsg: TLazDeviceMessage);
     // Called asynchronously when the message sending is finished
     property OnMessageSendingFinished: TOnMessageSendingFinished read FTOnMessageSendingFinished
       write FTOnMessageSendingFinished;
   end;
 
   // TLazPositionInfo
-
-  TLazPositionMethod = (pmCellID, pmGPS, pmAGPS);
 
   TOnPositionRetrieved = procedure of object;
 
@@ -125,35 +97,21 @@ implementation
 
 procedure TLazAccelerometer.UpdateAccelerometerData;
 begin
-  //LCLIntf.UpdateAccelerometerData(Self);
+  LCLIntf.LazDeviceAPIs_UpdateAccelerometerData();
 end;
 
 { TLazPositionInfo }
 
 procedure TLazPositionInfo.RequestPositionInfo(AMethod: TLazPositionMethod);
 begin
-
-end;
-
-{ TLazDeviceMessage }
-
-constructor TLazDeviceMessage.Create;
-begin
-  inherited Create;
-  destinationAddress := TStringList.Create;
-end;
-
-destructor TLazDeviceMessage.Destroy;
-begin
-  destinationAddress.Free;
-  inherited Destroy;
+  LCLIntf.LazDeviceAPIs_RequestPositionInfo(AMethod);
 end;
 
 { TLazMessaging }
 
-procedure TLazMessaging.sendMessage(AMsg: TLazDeviceMessage);
+procedure TLazMessaging.SendMessage(AMsg: TLazDeviceMessage);
 begin
-  //LCLIntf.LazMessaging_SendMessage(Self, AMsg);
+  LCLIntf.LazDeviceAPIs_SendMessage(AMsg);
 end;
 
 initialization

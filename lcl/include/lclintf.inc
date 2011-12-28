@@ -350,6 +350,21 @@ begin
   Result := WidgetSet.IsDesignerDC(WindowHandle, DC);
 end;
 
+procedure LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
+begin
+  Widgetset.LazDeviceAPIs_RequestPositionInfo(AMethod);
+end;
+
+procedure LazDeviceAPIs_SendMessage(AMsg: TLazDeviceMessage);
+begin
+  Widgetset.LazDeviceAPIs_SendMessage(AMsg);
+end;
+
+procedure LazDeviceAPIs_UpdateAccelerometerData();
+begin
+  Widgetset.LazDeviceAPIs_UpdateAccelerometerData();
+end;
+
 function MoveWindowOrgEx(dc: hdc; dX,dY: Integer): boolean;
 begin
   Result := WidgetSet.MoveWindowOrgEx(DC, dX, dY);

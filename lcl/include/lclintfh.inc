@@ -91,8 +91,11 @@ function GetWindowRelativePosition(Handle : hwnd; var Left, Top: integer): boole
 
 function IntfSendsUTF8KeyPress: Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF} deprecated;
 function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean; BorderWidth: integer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
 function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+
+procedure LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure LazDeviceAPIs_SendMessage(AMsg: TLazDeviceMessage); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure LazDeviceAPIs_UpdateAccelerometerData(); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
