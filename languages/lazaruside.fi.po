@@ -3779,7 +3779,7 @@ msgstr "Tietoja Lazaruksesta"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
 msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
-msgstr "Lisenssi: GPL/LGPL. Katso Lazaruksen ja Free Pascalin lähdekoodeista tarkemmat lisenssit.%sLazarus on IDE millä voi tehdä (graafisia ja komentorivi-) sovelluksia Free Pascalille. Free Pascal on (L)GPL-lisensoitu (mm oliopohjainen) Pascal kääntäjä joka toimii mm. Linux, Win32, OS/2, Mac OS X ja FreeBSD käyttöjärjestelmissä."
+msgstr "Lisenssi: GPL/LGPL. Katso Lazaruksen ja Free Pascalin lähdekoodeista tarkemmat lisenssit.%sLazarus on IDE millä voi tehdä graafisia ja komentorivi-sovelluksia Free Pascal kielellä. Free Pascal on (Object) Pascal kääntäjä, mikä toimii mm. Windows, Linux, Mac OS X, FreeBSD ym. käyttöjärjestelmissä.%sLazarus on puuttuva lenkki, mikä sallii ohjelmoinnin kaikille em. alustoille Delphin kaltaisessa ympäristössä. IDE on RAD työkalu, missä mukana on lomakeiden suunnittelu.%sLazaruksen kasvaessa tarvitsemme lisää kehittäjiä."
 
 #: lazarusidestrconsts.lisaboutnocontributors
 msgid "Cannot find contributors list."
@@ -8713,11 +8713,11 @@ msgstr "Mahdoton"
 
 #: lazarusidestrconsts.lisinasourcedirectoryofthepackage
 msgid "In a source directory of the package \"%s\"."
-msgstr "Paketin \"%s\". lähdekoodihakemistossa."
+msgstr "Paketin \"%s\" lähdekoodihakemistossa."
 
 #: lazarusidestrconsts.lisinasourcedirectoryoftheprojectcheckforduplicates
 msgid "In a source directory of the project. Check for duplicates."
-msgstr "Projektin \"%s\". lähdekoodihakemistossa. Tarkista kaksoiskappaleet."
+msgstr "Projektin lähdekoodihakemistossa. Tarkista kaksoiskappaleet."
 
 #: lazarusidestrconsts.lisincludeexamples
 msgid "Include Examples"
@@ -11687,7 +11687,7 @@ msgstr "Selitys:  "
 
 #: lazarusidestrconsts.lisoipdescriptiondescription
 msgid "%sDescription:  %s"
-msgstr "Selitys:  %s"
+msgstr "%sSelitys:  %s"
 
 #: lazarusidestrconsts.lisoipfilename
 msgid "Filename:  %s"
@@ -12626,11 +12626,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
 msgid "%sAdding new Dependency for package %s: package %s%s"
-msgstr "Lisätään uusi riippuvuus paketille %s: paketti %s%s"
+msgstr "%sLisätään uusi riippuvuus paketille %s: paketti %s%s"
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforprojectpackage
 msgid "%sAdding new Dependency for project %s: package %s%s"
-msgstr "Lisätään uusi riippuvuus projektille %s: paketti %s%s"
+msgstr "%sLisätään uusi riippuvuus projektille %s: paketti %s%s"
 
 #: lazarusidestrconsts.lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
 msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
@@ -12908,7 +12908,7 @@ msgstr "Seuraavien komponenttipakettien lataaminen epäonnistui:"
 
 #: lazarusidestrconsts.lispkgmangthefollowingunitswillbeaddedtotheusessectionof
 msgid "%sThe following units will be added to the uses section of%s%s:%s%s%s"
-msgstr "%sSeuraavat käännösyksiköt lisätään tiedoston %s uses-lauseeseen :%s%s%s"
+msgstr "%sSeuraavat käännösyksiköt lisätään tiedoston %s%s uses-lauseeseen :%s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
 msgid "The package %s%s%s failed to compile.%sRemove it from the installation list?"
@@ -12928,7 +12928,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
 msgid "The package %s%s%s is marked for installation, but can not be found.%sRemove dependency from the installation list of packages?"
-msgstr "Komponenttipaketti %s%s%s oli merkitty asennettavaksi mutta sitä ei löydetty. Poistetaanko tämä riippuvuus komponettipakettien asennusluettelosta?"
+msgstr "Komponenttipaketti %s%s%s on merkitty asennettavaksi mutta sitä ei löydy.%sPoistetaanko riippuvuus pakettien asennusluettelosta?"
 
 #: lazarusidestrconsts.lispkgmangthepackageisrequiredbywhichismarkedforinstallation
 msgid "The package %s is required by %s, which is marked for installation.%sSee package graph."
@@ -13951,7 +13951,7 @@ msgstr "IDE:llä on kiire"
 
 #: lazarusidestrconsts.lissamisanabstractclassithasabstractmethods
 msgid "%s is an abstract class, it has %s abstract methods."
-msgstr "%s on abstrakti luokka, sillä on abstrakteja methodeja"
+msgstr "%s on abstrakti luokka, sillä on %s abstraktia methodia."
 
 #: lazarusidestrconsts.lissamnoabstractmethodsfound
 msgid "No abstract methods found"
@@ -13971,7 +13971,7 @@ msgstr "Valinta pois"
 
 #: lazarusidestrconsts.lissamthereareabstractmethodstooverrideselectthemethodsf
 msgid "There are %s abstract methods to override.%sSelect the methods for which stubs should be created:"
-msgstr "Löytyi %s abstraktia metodia. Valitse ne, joihin tahdot luoda koodirungon:"
+msgstr "Löytyi %s abstraktia metodia.%sValitse ne, joihin tahdot luoda koodirungon:"
 
 #: lazarusidestrconsts.lissamtherearenoabstractmethodslefttooverride
 msgid "There are no abstract methods left to override."
@@ -14606,11 +14606,11 @@ msgstr ""
 
 #: lazarusidestrconsts.listhecomponentisinheritedfromtodeleteaninheritedcomp
 msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."
-msgstr "Komponentti %s kuuluu luokkaan %s. Komponentin voi poistaa avaamalla kyseisen luokan ja poistamalla sen sieltä."
+msgstr "Komponentti %s periytyy luokasta %s.%sSen voi poistaa avaamalla kyseinen luokka ja poistamalla sen sieltä."
 
 #: lazarusidestrconsts.listhecomponentisinheritedfromtorenameaninheritedcomp
 msgid "The component %s is inherited from %s.%sTo rename an inherited component open the ancestor and rename it there."
-msgstr ""
+msgstr "Komponentti %s periytyy luokasta %s.%sSen voi nimetä avaamalla kyseinen luokka ja nimeämällä sen siellä."
 
 #: lazarusidestrconsts.listhecomponentnamemustbeuniqueinallcomponentsonthefo
 msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal pascal identifier."
@@ -14750,11 +14750,11 @@ msgstr "Free Pascal kääntäjän nimi on tyypillisesti \"%s\". Se voi olla myö
 
 #: lazarusidestrconsts.listhefreepascalcompilerfilenamewasnotfounditisrecomm
 msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
-msgstr "Free Pascal kääntäjää (%s) ei löydy. On suositeltavaa asentaa fpc."
+msgstr "Free Pascal kääntäjää (%s) ei löydy.%sOn suositeltavaa asentaa fpc."
 
 #: lazarusidestrconsts.listhefreepascalsourcedirectorywasnotfoundsomecodefun
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sTools -> Options -> Files"
-msgstr "Free Pascalin lähdekoodi hakemistoa ei löytynyt. Jotkut toiminnot eivät toimi.%sOn suositeltavaa että lähdekoodit on asennettu ja niiden hakupolku asetettu %sTyökalut -> Asetukset -> Tiedostot"
+msgstr "Free Pascalin lähdekoodi hakemistoa ei löytynyt.%sJotkut toiminnot eivät toimi.%sOn suositeltavaa että lähdekoodit on asennettu ja niiden hakupolku asetettu%sTyökalut -> Asetukset -> Tiedostot"
 
 #: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
 msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client filename, the hostname with an optional username and the filename of gdb on the remote computer. For example: %s/usr/bin/ssh username@hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
@@ -14922,7 +14922,7 @@ msgstr "On jo käännösyksikkö nimeltään %s%s%s. Pascalin tunnisteiden pitä
 
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
 msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
-msgstr "Projektissa on käännösyksikkö nimeltään %s%s%s. Valitse toinen nimi"
+msgstr "Projektissa on käännösyksikkö nimeltään %s%s%s.%sValitse toinen nimi"
 
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
@@ -14970,7 +14970,7 @@ msgstr "Testi hakemistoa ei löydy:%s%s%s%s%s(katso IDE asetukset)"
 
 #: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
-msgstr "Käännösyksikön %s%s%s nimi on jo käytössä.%sVoit kaikesta huolimatta nimetä näin jolloin nimenvaihto tapahtuu,%sMahdollista on myös perua tämä tallennus tai sitten keskeyttää kaikki tallennukset."
+msgstr "Käännösyksikkö %s%s%s on jo olemassa.%sOhita pakottaa nimeämisen,%sPeru peruuttaa tämän tiedoston talletuksen ja%sPoistu lopettaa koko talletuksen."
 
 #: lazarusidestrconsts.listheunitbelongstopackage
 msgid "The unit belongs to package %s."
@@ -15014,7 +15014,7 @@ msgstr "tämä avusteviesti"
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
-msgstr "Tämä vaikuttaa pascal-tiedostolta.%sOn suositeltavaa käyttää pieniä kirjaimia tiedoston nimessä jotta vältytään ongelmilta joissakin tiedostojärjestelmissä.%Vaihdetaanko tiedoston nimi pienillä kirjaimilla kirjoitetuksi?"
+msgstr "Tämä vaikuttaa pascal-tiedostolta.%sOn suositeltavaa käyttää pieniä kirjaimia tiedoston nimessä, jotta vältytään ongelmilta joissakin tiedostojärjestelmissä.%sVaihdetaanko nimi pieniksi kirjaimiksi?"
 
 #: lazarusidestrconsts.listhisprojecthasnomainsourcefile
 msgid "This project has no main source file"
@@ -15314,7 +15314,7 @@ msgstr "Ei voida tehdä varmuuskopiota tiedostosta %s%s%s tiedostoon %s%s%s!"
 
 #: lazarusidestrconsts.lisunabletochangeclassofto
 msgid "%s%sUnable to change class of %s to %s"
-msgstr "Ei voida muuttaa luokkaa %s luokaksi %s"
+msgstr "%s%sEi voida muuttaa luokkaa %s luokaksi %s"
 
 #: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
 msgid "Unable to change project title in source.%s%s"
@@ -15834,7 +15834,7 @@ msgstr "Varoitus: ristiriitainen tiedosto löytyi: %s%s%s. Lähdekooditiedosto o
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas
 msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
-msgstr "Varoitus: Tämä on pää-käännösyksikkö ja tulee olemaan %s.pas."
+msgstr "%sVaroitus: Tämä on pää-käännösyksikkö. Uusi pää-käännösyksikkö tulee olemaan %s.pas."
 
 #: lazarusidestrconsts.liswatch
 msgid "&Watch"
