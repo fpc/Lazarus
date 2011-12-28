@@ -33,16 +33,15 @@ uses
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   // LCL
-  LCLType;
+  LCLType, Controls;
 
 type
   { ICommonCallback }
 
   ICommonCallback = interface
     // mouse events
-    procedure MouseDown(x,y: Integer);
-    procedure MouseUp(x,y: Integer);
-    procedure MouseClick(ClickCount: Integer);
+    function MouseUpDownEvent(Event: NSEvent): Boolean;
+    procedure MouseClick;
     procedure MouseMove(x,y: Integer);
     // size,pos events
     procedure frameDidChange;
@@ -522,12 +521,9 @@ begin
 end;
 
 procedure TCocoaButton.mouseUp(event: NSEvent);
-var
-  mp: NSPoint;
 begin
-  mp := event.locationInWindow;
-  callback.MouseUp(round(mp.x), round(mp.y));
-  inherited mouseUp(event);
+  if not callback.MouseUpDownEvent(event) then
+    inherited mouseUp(event);
 end;
 
 procedure TCocoaButton.resetCursorRects;
@@ -537,12 +533,9 @@ begin
 end;
 
 procedure TCocoaButton.mouseDown(event: NSEvent);
-var
-  mp : NSPoint;
 begin
-  mp := event.locationInWindow;
-  callback.MouseDown(round(mp.x), round(mp.y));
-  inherited mouseDown(event);
+  if not callback.MouseUpDownEvent(event) then
+    inherited mouseDown(event);
 end;
 
 procedure TCocoaButton.mouseDragged(event: NSEvent);
@@ -687,23 +680,15 @@ begin
 end;
 
 procedure TCocoaWindow.mouseUp(event: NSEvent);
-var
-  mp: NSPoint;
 begin
-  mp := event.locationInWindow;
-  mp.y := NSView(event.window.contentView).bounds.size.height-mp.y;
-  callback.MouseUp(round(mp.x), round(mp.y));
-  inherited mouseUp(event);
+  if not callback.MouseUpDownEvent(event) then
+    inherited mouseUp(event);
 end;
 
 procedure TCocoaWindow.mouseDown(event: NSEvent);
-var
-  mp: NSPoint;
 begin
-  mp := event.locationInWindow;
-  mp.y := NSView(event.window.contentView).bounds.size.height-mp.y;
-  callback.MouseDown(round(mp.x), round(mp.y));
-  inherited mouseDown(event);
+  if not callback.MouseUpDownEvent(event) then
+    inherited mouseDown(event);
 end;
 
 procedure TCocoaWindow.mouseDragged(event: NSEvent);
@@ -813,7 +798,7 @@ begin
   callback.ResignFirstResponder;
 end;
 
-procedure TCocoaCustomControl.drawRect(dirtyRect:NSRect);
+procedure TCocoaCustomControl.drawRect(dirtyRect: NSRect);
 begin
   inherited drawRect(dirtyRect);
   callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
@@ -826,7 +811,8 @@ end;
 
 procedure TCocoaCustomControl.mouseDown(event: NSEvent);
 begin
-  inherited mouseDown(event);
+  if not callback.MouseUpDownEvent(event) then
+    inherited mouseDown(event);
 end;
 
 procedure TCocoaCustomControl.mouseDragged(event: NSEvent);
@@ -851,7 +837,8 @@ end;
 
 procedure TCocoaCustomControl.mouseUp(event: NSEvent);
 begin
-  inherited mouseUp(event);
+  if not callback.MouseUpDownEvent(event) then
+    inherited mouseUp(event);
 end;
 
 procedure TCocoaCustomControl.resetCursorRects;
@@ -864,7 +851,7 @@ end;
 
 function LCLObjectExtension.lclIsEnabled:Boolean;
 begin
-  Result:=False;
+  Result := False;
 end;
 
 procedure LCLObjectExtension.lclSetEnabled(AEnabled:Boolean);

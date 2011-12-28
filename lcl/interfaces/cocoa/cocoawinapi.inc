@@ -593,6 +593,22 @@ begin
     TCocoaBitmap(Mask), XMask, YMask, Rop);
 end;
 
+function TCocoaWidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord;
+  pvParam: Pointer; fWinIni: DWord): LongBool;
+begin
+  Result := True;
+  case uiAction of
+    SPI_GETWHEELSCROLLLINES: PDword(pvPAram)^ := 3;
+    SPI_GETWORKAREA:
+      TRect(pvParam^) := Bounds(GetSystemMetrics(SM_XVIRTUALSCREEN),
+                                GetSystemMetrics(SM_YVIRTUALSCREEN),
+                                GetSystemMetrics(SM_CXVIRTUALSCREEN),
+                                GetSystemMetrics(SM_CYVIRTUALSCREEN));
+  else
+    Result := False;
+  end
+end;
+
 {------------------------------------------------------------------------------
   Method:  GetWindowRect
   Params:  Handle - Handle of window

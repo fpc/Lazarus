@@ -188,7 +188,7 @@ function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP;
   XMask, YMask: Integer; Rop: DWORD): Boolean; override;
-{function SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool; override;}
+function SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool; override;
 
 function TextOut(DC: HDC; X,Y: Integer; Str: Pchar; Count: Integer) : Boolean; override;
 function UpdateWindow(Handle: HWND): Boolean; override;

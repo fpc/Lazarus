@@ -65,7 +65,6 @@ type
 
   TCocoaWidgetSet = class(TWidgetSet)
   private
-    FFocusedObject: NSObject;
     FTerminating: Boolean;
 
     pool: NSAutoreleasePool;
