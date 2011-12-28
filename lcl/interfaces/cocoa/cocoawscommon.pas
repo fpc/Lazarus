@@ -239,7 +239,7 @@ var
 
     function LastClickInTime: boolean;
     begin
-      Result := ((Event.timestamp - LastMouse.TimeStamp) <= ((1/86400)*(Event.doubleClickInterval/1000)));
+      Result := (Event.timestamp - LastMouse.TimeStamp) <= Event.doubleClickInterval;
     end;
 
     function TestIfMultiClick: boolean;
