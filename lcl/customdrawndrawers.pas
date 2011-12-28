@@ -74,8 +74,8 @@ type
     // drawers base on
     dsCommon,
     // Operating system styles
-    dsWinCE, dsWin2000, dsWinXP,
-    dsKDE, dsGNOME, dsMacOSX,
+    dsWinCE, dsWin2000, dsWinXP, dsWindows7,
+    dsKDEPlastique, dsGNOME, dsMacOSX,
     dsAndroid,
     // Other special styles for the user
     dsExtra1, dsExtra2, dsExtra3, dsExtra4, dsExtra5,
@@ -376,7 +376,7 @@ implementation
 
 var
   RegisteredDrawers: array[TCDDrawStyle] of TCDDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
 
 procedure RegisterDrawer(ADrawer: TCDDrawer; AStyle: TCDDrawStyle);
 begin

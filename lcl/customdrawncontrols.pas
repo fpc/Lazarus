@@ -1665,6 +1665,7 @@ end;
 
 destructor TCDButton.Destroy;
 begin
+  FGlyph.Free;
   inherited Destroy;
 end;
 
