@@ -26,14 +26,14 @@ uses
   WSReferences, WSSpin, WSStdCtrls, WSToolwin, ActnList, Arrow, AsyncProcess, 
   ButtonPanel, Buttons, Calendar, RegisterLCL, ValEdit, lazcanvas, lazdialogs, 
   lazregions, customdrawn_common, customdrawncontrols, customdrawndrawers, 
-  LazarusPackageIntf;
+  lazdeviceapis, LazarusPackageIntf;
 
 implementation
 
 procedure Register; 
 begin
   RegisterUnit('RegisterLCL', @RegisterLCL.Register); 
-end;
+end; 
 
 initialization
   RegisterPackage('LCLBase', @Register); 
