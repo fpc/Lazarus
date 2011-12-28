@@ -1,0 +1,768 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    lazcanvas
+  ====================================================================
+-->
+
+<module name="lazcanvas">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TFPSharpInterpolation">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TFPSharpInterpolation.Execute">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPSharpInterpolation.Execute.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPSharpInterpolation.Execute.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPSharpInterpolation.Execute.w">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPSharpInterpolation.Execute.h">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TLazCanvasState">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazCanvasState.Brush">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazCanvasState.Pen">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazCanvasState.Font">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazCanvasState.BaseWindowOrg">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazCanvasState.WindowOrg">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazCanvasState.Clipping">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazCanvasState.ClipRegion">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TLazCanvasState.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TLazCanvas">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazCanvas.FAssignedBrush">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazCanvas.FAssignedFont">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazCanvas.FAssignedPen">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazCanvas.FBaseWindowOrg">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazCanvas.FWindowOrg">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazCanvas.GraphicStateList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TLazCanvas.GetAssignedBrush">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazCanvas.GetAssignedBrush.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TLazCanvas.GetAssignedPen">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazCanvas.GetAssignedPen.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TLazCanvas.GetAssignedFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazCanvas.GetAssignedFont.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TLazCanvas.GetWindowOrg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazCanvas.GetWindowOrg.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TLazCanvas.SetWindowOrg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.SetWindowOrg.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazCanvas.SetColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.SetColor.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.SetColor.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.SetColor.AValue">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TLazCanvas.DoCreateDefaultFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazCanvas.DoCreateDefaultFont.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazCanvas.DoRectangle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.DoRectangle.Bounds">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazCanvas.DoRectangleFill">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.DoRectangleFill.Bounds">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazCanvas.DoPolygonFill">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.DoPolygonFill.points">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazCanvas.DoLine">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.DoLine.x1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.DoLine.y1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.DoLine.x2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.DoLine.y2">
+<short></short>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazCanvas.HasNoImage">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazCanvas.NativeDC">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TLazCanvas.create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.create.AnImage">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TLazCanvas.destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazCanvas.SetLazClipRegion">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.SetLazClipRegion.ARegion">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazCanvas.SaveState">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazCanvas.SaveState.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazCanvas.RestoreState">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.RestoreState.AIndex">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazCanvas.ResetCanvasState">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazCanvas.AlphaBlend">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.AlphaBlend.ASource">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.AlphaBlend.ADestX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.AlphaBlend.ADestY">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.AlphaBlend.ASourceX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.AlphaBlend.ASourceY">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.AlphaBlend.ASourceWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.AlphaBlend.ASourceHeight">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazCanvas.AlphaBlendIgnoringDestPixels">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.AlphaBlendIgnoringDestPixels.ASource">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.AlphaBlendIgnoringDestPixels.ADestX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.AlphaBlendIgnoringDestPixels.ADestY">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.AlphaBlendIgnoringDestPixels.ASourceX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.AlphaBlendIgnoringDestPixels.ASourceY">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.AlphaBlendIgnoringDestPixels.ASourceWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.AlphaBlendIgnoringDestPixels.ASourceHeight">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazCanvas.CanvasCopyRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.CanvasCopyRect.ASource">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.CanvasCopyRect.ADestX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.CanvasCopyRect.ADestY">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.CanvasCopyRect.ASourceX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.CanvasCopyRect.ASourceY">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.CanvasCopyRect.ASourceWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.CanvasCopyRect.ASourceHeight">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazCanvas.FillColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.FillColor.AColor">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.FillColor.AIgnoreClippingAndWindowOrg">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazCanvas.AssignPenData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.AssignPenData.APen">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazCanvas.AssignBrushData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.AssignBrushData.ABrush">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazCanvas.AssignFontData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazCanvas.AssignFontData.AFont">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazCanvas.AssignedPen">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazCanvas.AssignedBrush">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazCanvas.AssignedFont">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazCanvas.BaseWindowOrg">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazCanvas.WindowOrg">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- lazcanvas -->
+
+</package>
+</fpdoc-descriptions>

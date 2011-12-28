@@ -3168,6 +3168,9 @@ docs/xml/lcl/comctrls/ttoolbutton.pas svneol=native#text/plain
 docs/xml/lcl/comctrls/ttreenode_data.pas svneol=native#text/plain
 docs/xml/lcl/commctrl.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/controls.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/customdrawn_common.xml svneol=native#text/plain
+docs/xml/lcl/customdrawncontrols.xml svneol=native#text/plain
+docs/xml/lcl/customdrawndrawers.xml svneol=native#text/plain
 docs/xml/lcl/customtimer.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dbactns.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dbctrls.xml svneol=LF#text/xml eol=lf
@@ -3241,10 +3244,14 @@ docs/xml/lcl/interfaces/gtk/gtkwstoolwin.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/interfaces/gtk/interfaces.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/interfaces/win32/win32int.xml svneol=native#text/xml
 docs/xml/lcl/intfgraphics.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/lazcanvas.xml svneol=native#text/plain
 docs/xml/lcl/lazconfigstorage.xml svneol=native#text/plain
+docs/xml/lcl/lazdeviceapis.xml svneol=native#text/plain
+docs/xml/lcl/lazdialogs.xml svneol=native#text/plain
 docs/xml/lcl/lazhelphtml.xml svneol=native#text/plain
 docs/xml/lcl/lazhelpintf.xml svneol=native#text/plain
 docs/xml/lcl/lazlinkedlist.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/lazregions.xml svneol=native#text/plain
 docs/xml/lcl/lazutf8classes.xml svneol=native#text/plain
 docs/xml/lcl/lcl.xml svneol=LF#text/plain eol=lf
 docs/xml/lcl/lclbase.xml svneol=native#text/plain

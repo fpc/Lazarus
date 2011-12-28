@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    lazdialogs
+  ====================================================================
+-->
+
+<module name="lazdialogs">
+<short></short>
+<descr>
+</descr>
+
+<!-- enumeration type Visibility: default -->
+<element name="TLazFileDialogKind">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazFileDialogKind.ldkOpenDesktop">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazFileDialogKind.ldkSaveDesktop">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazFileDialogKind.ldkOpenPDA">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazFileDialogKind.ldkSavePDA">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazFileDialogKind.ldkSelectDirectory">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TLazarusFileDialogForm">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazarusFileDialogForm.FKind">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TLazarusFileDialogForm.SetFilter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazarusFileDialogForm.SetFilter.AFilter">
+<short></short>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazarusFileDialogForm.ButtonPanel">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazarusFileDialogForm.ShellTreeView">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazarusFileDialogForm.ShellListView">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazarusFileDialogForm.SaveEdit">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazarusFileDialogForm.FilterComboBox">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazarusFileDialogForm.FileName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazarusFileDialogForm.Filter">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazarusFileDialogForm.InitialDir">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazarusFileDialogForm.Title">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TLazarusFileDialogForm.CreateNew">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazarusFileDialogForm.CreateNew.AOwner">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazarusFileDialogForm.CreateNew.Num">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazarusFileDialogForm.Initialize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazarusFileDialogForm.Initialize.AKind">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazarusFileDialogForm.HandleOkClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazarusFileDialogForm.HandleOkClick.ASender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazarusFileDialogForm.HandleCancelClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazarusFileDialogForm.HandleCancelClick.ASender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazarusFileDialogForm.HandleCloseQuery">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazarusFileDialogForm.HandleCloseQuery.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazarusFileDialogForm.HandleCloseQuery.CanClose">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazarusFileDialogForm.HandleEditChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazarusFileDialogForm.HandleEditChange.ASender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazarusFileDialogForm.HandleSelectItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazarusFileDialogForm.HandleSelectItem.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazarusFileDialogForm.HandleSelectItem.Item">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazarusFileDialogForm.HandleSelectItem.Selected">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazarusFileDialogForm.HandleTreeViewSelectionChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazarusFileDialogForm.HandleTreeViewSelectionChanged.ASender">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TLazOpenDialog">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TLazOpenDialog.FForm">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class procedure Visibility: protected -->
+<element name="TLazOpenDialog.WSRegisterClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TLazOpenDialog.DoExecute">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazOpenDialog.DoExecute.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazOpenDialog.DoInitialize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TLazOpenDialog.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazOpenDialog.Create.TheOwner">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TLazSaveDialog">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazSaveDialog.DoInitialize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TLazSelectDirectoryDialog">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazSelectDirectoryDialog.DoInitialize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- lazdialogs -->
+
+</package>
+</fpdoc-descriptions>

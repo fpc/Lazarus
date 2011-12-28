@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    lazregions
+  ====================================================================
+-->
+
+<module name="lazregions">
+<short></short>
+<descr>
+</descr>
+
+<!-- enumeration type Visibility: default -->
+<element name="TLazRegionFillMode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazRegionFillMode.rfmOddEven">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazRegionFillMode.rfmWinding">
+<short></short>
+</element>
+
+<!-- array type Visibility: default -->
+<element name="TPointArray">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TLazRegionPart">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazRegionPart.IsPointInPart">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazRegionPart.IsPointInPart.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazRegionPart.IsPointInPart.AX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazRegionPart.IsPointInPart.AY">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TLazRegionRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazRegionRect.Rect">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazRegionRect.IsPointInPart">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazRegionRect.IsPointInPart.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazRegionRect.IsPointInPart.AX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazRegionRect.IsPointInPart.AY">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TLazRegionPolygon">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazRegionPolygon.Points">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazRegionPolygon.FillMode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazRegionPolygon.IsPointInPart">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazRegionPolygon.IsPointInPart.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazRegionPolygon.IsPointInPart.AX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazRegionPolygon.IsPointInPart.AY">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TLazRegion">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazRegion.Parts">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazRegion.IsSimpleRectRegion">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazRegion.Rect">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TLazRegion.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TLazRegion.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazRegion.AddRectangle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazRegion.AddRectangle.ARect">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazRegion.AddPolygon">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazRegion.AddPolygon.APoints">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazRegion.AddPolygon.AFillMode">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazRegion.SetAsSimpleRectRegion">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazRegion.SetAsSimpleRectRegion.ARect">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazRegion.GetBoundingRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazRegion.GetBoundingRect.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazRegion.IsPointInRegion">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazRegion.IsPointInRegion.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazRegion.IsPointInRegion.AX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazRegion.IsPointInRegion.AY">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TLazRegionWithChilds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazRegionWithChilds.Parent">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazRegionWithChilds.Childs">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazRegionWithChilds.UserData">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TLazRegionWithChilds.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TLazRegionWithChilds.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazRegionWithChilds.IsPointInRegion">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazRegionWithChilds.IsPointInRegion.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazRegionWithChilds.IsPointInRegion.AX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazRegionWithChilds.IsPointInRegion.AY">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="IsPointInPolygon">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="IsPointInPolygon.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IsPointInPolygon.AX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IsPointInPolygon.AY">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IsPointInPolygon.APolygon">
+<short></short>
+</element>
+
+</module> <!-- lazregions -->
+
+</package>
+</fpdoc-descriptions>

@@ -1,0 +1,1286 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    customdrawn_common
+  ====================================================================
+-->
+
+<module name="customdrawn_common">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TCDDrawerCommon">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCDDrawerCommon.PalDefaultUsesNativePalette">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCDDrawerCommon.PalDefaultUsesNativePalette.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.LoadFallbackPaletteColors">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCDDrawerCommon.GetMeasures">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCDDrawerCommon.GetMeasures.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.GetMeasures.AMeasureID">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCDDrawerCommon.GetMeasuresEx">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCDDrawerCommon.GetMeasuresEx.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.GetMeasuresEx.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.GetMeasuresEx.AMeasureID">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.GetMeasuresEx.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.GetMeasuresEx.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.CalculatePreferredSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.CalculatePreferredSize.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.CalculatePreferredSize.AControlId">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.CalculatePreferredSize.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.CalculatePreferredSize.AStateEx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.CalculatePreferredSize.PreferredWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.CalculatePreferredSize.PreferredHeight">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.CalculatePreferredSize.WithThemeSpace">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCDDrawerCommon.GetColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCDDrawerCommon.GetColor.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.GetColor.AColorID">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCDDrawerCommon.GetClientArea">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCDDrawerCommon.GetClientArea.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.GetClientArea.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.GetClientArea.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.GetClientArea.AControlId">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.GetClientArea.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.GetClientArea.AStateEx">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCDDrawerCommon.DPIAdjustment">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCDDrawerCommon.DPIAdjustment.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DPIAdjustment.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawFocusRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawFocusRect.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawFocusRect.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawFocusRect.ASize">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawRaisedFrame">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawRaisedFrame.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawRaisedFrame.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawRaisedFrame.ASize">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawFrame3D">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawFrame3D.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawFrame3D.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawFrame3D.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawFrame3D.FrameWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawFrame3D.Style">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawSunkenFrame">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawSunkenFrame.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawSunkenFrame.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawSunkenFrame.ASize">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawShallowSunkenFrame">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawShallowSunkenFrame.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawShallowSunkenFrame.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawShallowSunkenFrame.ASize">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawTickmark">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTickmark.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTickmark.ADestPos">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawSlider">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawSlider.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawSlider.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawSlider.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawSlider.AState">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawCompactArrow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCompactArrow.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCompactArrow.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCompactArrow.ADirection">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawSmallCloseButton">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawSmallCloseButton.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawSmallCloseButton.ADestPos">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawControl.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawControl.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawControl.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawControl.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawButton">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawButton.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawButton.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawButton.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawButton.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawEditBackground">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawEditBackground.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawEditBackground.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawEditBackground.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawEditBackground.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawEditBackground.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawEditFrame">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawEditFrame.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawEditFrame.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawEditFrame.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawEditFrame.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawEditFrame.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawCaret">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCaret.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCaret.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCaret.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCaret.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCaret.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawEdit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawEdit.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawEdit.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawEdit.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawEdit.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawCheckBoxSquare">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCheckBoxSquare.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCheckBoxSquare.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCheckBoxSquare.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCheckBoxSquare.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCheckBoxSquare.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawCheckBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCheckBox.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCheckBox.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCheckBox.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCheckBox.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawRadioButtonCircle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawRadioButtonCircle.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawRadioButtonCircle.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawRadioButtonCircle.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawRadioButtonCircle.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawRadioButtonCircle.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawRadioButton">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawRadioButton.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawRadioButton.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawRadioButton.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawRadioButton.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawScrollBar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawScrollBar.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawScrollBar.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawScrollBar.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawScrollBar.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawGroupBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawGroupBox.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawGroupBox.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawGroupBox.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawGroupBox.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawPanel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawPanel.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawPanel.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawPanel.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawPanel.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawStaticText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawStaticText.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawStaticText.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawStaticText.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawStaticText.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawTrackBar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTrackBar.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTrackBar.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTrackBar.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTrackBar.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawProgressBar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawProgressBar.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawProgressBar.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawProgressBar.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawProgressBar.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawListView">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawListView.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawListView.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawListView.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawListView.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawReportListView">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawReportListView.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawReportListView.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawReportListView.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawReportListView.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawReportListView.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawReportListViewItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawReportListViewItem.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawReportListViewItem.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawReportListViewItem.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawReportListViewItem.ACurItem">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawReportListViewItem.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawReportListViewItem.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawCTabControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCTabControl.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCTabControl.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCTabControl.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCTabControl.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawCTabControlFrame">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCTabControlFrame.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCTabControlFrame.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCTabControlFrame.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCTabControlFrame.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawCTabControlFrame.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawTabSheet">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTabSheet.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTabSheet.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTabSheet.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTabSheet.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTabSheet.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawTabs">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTabs.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTabs.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTabs.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTabs.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTabs.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerCommon.DrawTab">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTab.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTab.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTab.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTab.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerCommon.DrawTab.AStateEx">
+<short></short>
+</element>
+
+</module> <!-- customdrawn_common -->
+
+</package>
+</fpdoc-descriptions>
