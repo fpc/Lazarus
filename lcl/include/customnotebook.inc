@@ -483,7 +483,7 @@ begin
     PageIndex := FPageList.IndexOf(AValue);
 end;
 
-procedure TCustomTabControl.SetImages(const AValue: TImageList);
+procedure TCustomTabControl.SetImages(const AValue: TCustomImageList);
 begin
   if FImages = AValue then Exit;
   if FImages <> nil then

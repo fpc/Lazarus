@@ -320,7 +320,7 @@ type
     FAccess: TStrings; // TNBPages
     FAddingPages: boolean;
     FHotTrack: Boolean;
-    FImages: TImageList;
+    FImages: TCustomImageList;
     FImageListChangeLink: TChangeLink;
     FLoadedPageIndex: integer;
     FMultiSelect: Boolean;
@@ -359,7 +359,7 @@ type
     procedure PageRemoved(Index: Integer);
     procedure SetActivePage(const Value: String);
     procedure SetActivePageComponent(const AValue: TCustomPage);
-    procedure SetImages(const AValue: TImageList);
+    procedure SetImages(const AValue: TCustomImageList);
     procedure SetOptions(const AValue: TCTabControlOptions);
     procedure SetPageIndex(AValue: Integer);
     procedure SetPages(AValue: TStrings);
@@ -424,7 +424,7 @@ type
     function IndexOfTabAt(X, Y: Integer): Integer;
   public
     procedure DoCloseTabClicked(APage: TCustomPage); virtual;
-    property Images: TImageList read FImages write SetImages;
+    property Images: TCustomImageList read FImages write SetImages;
     property MultiLine: Boolean read GetMultiLine write SetMultiLine default False;
     property OnChanging: TTabChangingEvent read FOnChanging write FOnChanging;
     property OnCloseTabClicked: TNotifyEvent read FOnCloseTabClicked
