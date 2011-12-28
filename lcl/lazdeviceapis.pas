@@ -38,10 +38,14 @@ type
   }
 
   TLazAccelerometer = class
+  private
+    FOnSensorChanged: TNotifyEvent;
   public
     // These fields store the last data read, to get fresh data use UpdateAccelerometerData;
     xaxis, yaxis, zaxis: Double; // in m/s^2
     procedure StartReadingAccelerometerData();
+    procedure StopReadingAccelerometerData();
+    property OnSensorChanged: TNotifyEvent read FOnSensorChanged write FOnSensorChanged;
   end;
 
   // TLazMessaging
@@ -98,6 +102,11 @@ implementation
 procedure TLazAccelerometer.StartReadingAccelerometerData;
 begin
   LCLIntf.LazDeviceAPIs_StartReadingAccelerometerData();
+end;
+
+procedure TLazAccelerometer.StopReadingAccelerometerData;
+begin
+
 end;
 
 { TLazPositionInfo }

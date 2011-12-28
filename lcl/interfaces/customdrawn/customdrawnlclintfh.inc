@@ -56,6 +56,10 @@ procedure HideVirtualKeyboard();
 (*function IntfSendsUTF8KeyPress: boolean; override;
 function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; override;*)
 
+procedure LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod); override;
+procedure LazDeviceAPIs_SendMessage(AMsg: TLazDeviceMessage); override;
+procedure LazDeviceAPIs_StartReadingAccelerometerData(); override;
+
 function PromptUser(const DialogCaption : string;
                     const DialogMessage : string;
                           DialogType    : LongInt;

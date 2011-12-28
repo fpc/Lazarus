@@ -41,7 +41,7 @@ uses
   customdrawnproc,
   // LCL
   customdrawn_common, customdrawncontrols, customdrawndrawers,
-  lazcanvas, lazregions,
+  lazcanvas, lazregions, lazdeviceapis,
   InterfaceBase,
   Controls,  Forms, lclproc, IntfGraphics, GraphType,
   LCLType, LMessages, Graphics, LCLStrConsts;
@@ -252,6 +252,8 @@ function Java_com_pascal_lclproject_LCLActivity_LCLOnTimer(
     env:PJNIEnv; this:jobject; ATimer: jobject): jint; cdecl;
 function Java_com_pascal_lclproject_LCLActivity_LCLOnConfigurationChanged(
     env:PJNIEnv; this:jobject; ANewDPI, ANewWidth: jint): jint; cdecl;
+function Java_com_pascal_lclproject_LCLActivity_LCLOnSensorChanged(
+    env:PJNIEnv; this:jobject; ASensorKind: jint; AValues: JFloatArray): jint; cdecl;
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
 procedure JNI_OnUnload(vm:PJavaVM;reserved:pointer); cdecl;
 
@@ -305,6 +307,7 @@ var
   javaMethod_LCLDoDestroyTimer: jmethodid = nil;
   javaMethod_LCLDoHideVirtualKeyboard: jmethodid = nil;
   javaMethod_LCLDoShowVirtualKeyboard: jmethodid = nil;
+  javaMethod_LCLDoStartReadingAccelerometer: jmethodid = nil;
 
   // This is utilized to store the information such as invalidate requests in events
   eventResult: jint;

@@ -113,6 +113,21 @@ begin
 
 end;
 
+procedure TCDWidgetSet.LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
+begin
+
+end;
+
+procedure TCDWidgetSet.LazDeviceAPIs_SendMessage(AMsg: TLazDeviceMessage);
+begin
+
+end;
+
+procedure TCDWidgetSet.LazDeviceAPIs_StartReadingAccelerometerData();
+begin
+
+end;
+
 {------------------------------------------------------------------------------
   Function: PromptUser
   Params:

@@ -9,9 +9,15 @@ import android.graphics.*;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.content.res.Configuration;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 
-public class LCLActivity extends Activity 
+public class LCLActivity extends Activity implements SensorEventListener
 {
+  private SensorManager localSensorManager;
+
   // -------------------------------------------
   // Our drawing surface
   // -------------------------------------------
@@ -147,6 +153,7 @@ public class LCLActivity extends Activity
   public native int LCLOnKey(int kind, int keyCode, KeyEvent event, char AChar);
   public native int LCLOnTimer(Runnable timerid);
   public native int LCLOnConfigurationChanged(int ANewDPI, int ANewWidth);
+  public native int LCLOnSensorChanged(int ASensorKind, float[] AValues);
 
   // -------------------------------------------
   // Functions exported to the Pascal side
@@ -307,6 +314,32 @@ public class LCLActivity extends Activity
   {
     InputMethodManager localInputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
     localInputManager.showSoftInput(lclsurface, 0);
+  };
+
+  @Override
+  public void onSensorChanged(SensorEvent event)
+  {
+    int eventKind = event.sensor.getType();
+    int eventResult = LCLOnSensorChanged(eventKind, event.values);
+    if (((eventResult | 1) != 0) && (lclsurface != null)) lclsurface.postInvalidate();
+  }
+
+  @Override
+  public void onAccuracyChanged(Sensor sensor, int accuracy)
+  {
+  }
+
+  public void LCLDoStartReadingAccelerometer()
+  {
+    localSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+    localSensorManager.registerListener(this,
+      localSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+      SensorManager.SENSOR_DELAY_NORMAL);
+  };
+
+  public void LCLDoStopReadingAccelerometer()
+  {
+    localSensorManager.unregisterListener(this);
   };
 
   // -------------------------------------------

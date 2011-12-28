@@ -1,7 +1,7 @@
 object Form2: TForm2
-  Left = 1158
+  Left = 154
   Height = 259
-  Top = 220
+  Top = 137
   Width = 320
   Caption = 'Form2'
   ClientHeight = 259
@@ -10,7 +10,7 @@ object Form2: TForm2
   object Button1: TButton
     Left = 8
     Height = 25
-    Top = 16
+    Top = 0
     Width = 304
     Caption = 'Hide'
     OnClick = Button1Click
@@ -19,7 +19,7 @@ object Form2: TForm2
   object Edit1: TEdit
     Left = 12
     Height = 25
-    Top = 50
+    Top = 32
     Width = 80
     OnExit = Edit1Exit
     OnKeyDown = Edit1KeyDown
@@ -29,10 +29,10 @@ object Form2: TForm2
     Text = 'Edit1'
   end
   object Image1: TImage
-    Left = 32
+    Left = 96
     Height = 138
-    Top = 96
-    Width = 274
+    Top = 32
+    Width = 210
     Picture.Data = {
       07545069786D617044DA00002F2A2058504D202A2F0A73746174696320636861
       72202A206C617A617275735F61626F75745F6C6F676F5F78706D5B5D203D207B
@@ -1782,5 +1782,22 @@ object Form2: TForm2
       2E202E202E202E202E202E202E202E202E202E202E202E202E202E202E202E20
       2E202E202E202E202E202E20227D3B0A
     }
+  end
+  object Button2: TButton
+    Left = 8
+    Height = 25
+    Top = 194
+    Width = 304
+    Caption = 'Read Accelerometer'
+    OnClick = Button2Click
+    TabOrder = 2
+  end
+  object labelSensorData: TLabel
+    Left = 8
+    Height = 18
+    Top = 168
+    Width = 81
+    Caption = 'Sensor Data'
+    ParentColor = False
   end
 end

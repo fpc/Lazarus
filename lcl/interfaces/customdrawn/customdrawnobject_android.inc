@@ -250,7 +250,37 @@ begin
   CDWidgetset.DefaultFontAndroidSize := Round(16 * (ANewDPI / 125));
 end;
 
-const NativeMethods: array[0..6] of JNINativeMethod=
+function Java_com_pascal_lclproject_LCLActivity_LCLOnSensorChanged(
+  env:PJNIEnv; this:jobject; ASensorKind: jint; AValues: JFloatArray): jint; cdecl;
+var
+  arraydata: PSingle;
+  arraylen: jsize;
+  lIsCopy: jboolean;
+begin
+  Result := 0;
+
+  if (javaEnvRef = nil) then Exit;
+
+  // Get the elements and length
+  lIsCopy := 0;
+  arraylen := javaEnvRef^^.GetArrayLength(javaEnvRef, AValues);
+  arraydata := javaEnvRef^^.GetFloatArrayElements(javaEnvRef, AValues, lIsCopy);
+
+  // Send the data to the LCL
+  if ASensorKind = 1 then
+  begin
+    Accelerometer.xaxis := arraydata[0];
+    Accelerometer.yaxis := arraydata[1];
+    Accelerometer.zaxis := arraydata[2];
+    if Assigned(Accelerometer.OnSensorChanged) then
+      Accelerometer.OnSensorChanged(nil);
+  end;
+
+  // Don't forget to release it
+  javaEnvRef^^.ReleaseFloatArrayElements(javaEnvRef, AValues, arraydata, 0);
+end;
+
+const NativeMethods: array[0..7] of JNINativeMethod=
   ((name:'LCLDrawToBitmap';
     signature:'(IILandroid/graphics/Bitmap;)I';
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap;),
@@ -271,7 +301,10 @@ const NativeMethods: array[0..6] of JNINativeMethod=
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnTimer;),
    (name:'LCLOnConfigurationChanged';
     signature:'(II)I';
-    fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnConfigurationChanged;)
+    fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnConfigurationChanged;),
+   (name:'LCLOnSensorChanged';
+    signature:'(I[F)I';
+    fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnSensorChanged;)
   );
 
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
@@ -358,6 +391,7 @@ begin
   javaMethod_LCLDoDestroyTimer := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoDestroyTimer', '()V');
   javaMethod_LCLDoHideVirtualKeyboard := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoHideVirtualKeyboard', '()V');
   javaMethod_LCLDoShowVirtualKeyboard := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoShowVirtualKeyboard', '()V');
+  javaMethod_LCLDoStartReadingAccelerometer := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoStartReadingAccelerometer', '()V');
 
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', 'JNI_OnLoad finished');
   result:=JNI_VERSION_1_4;// 1_6 is another option

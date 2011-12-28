@@ -163,6 +163,22 @@ begin
   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoHideVirtualKeyboard);
 end;
 
+procedure TCDWidgetSet.LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
+begin
+
+end;
+
+procedure TCDWidgetSet.LazDeviceAPIs_SendMessage(AMsg: TLazDeviceMessage);
+begin
+
+end;
+
+procedure TCDWidgetSet.LazDeviceAPIs_StartReadingAccelerometerData();
+begin
+  // Call the method
+  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoStartReadingAccelerometer);
+end;
+
 function TCDWidgetSet.PromptUser(const DialogCaption : string;
                     const DialogMessage : string;
                           DialogType    : LongInt;
