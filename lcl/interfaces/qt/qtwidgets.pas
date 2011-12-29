@@ -5376,7 +5376,6 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
         QFontMetrics_boundingRect(AFontMetrics, PRect(@R3), 0, 0,
           QWidget_width(Widget), QWidget_height(Widget), QtAlignLeft or $0800,
           PWideString(@AText));
-        // QFontMetrics_boundingRect(AFontMetrics, PRect(@R3), PWideString(@AText));
 
         QFontMetrics_destroy(AFontMetrics);
 
@@ -5387,27 +5386,27 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
           IconAlign := QtAlignHCenter or QtAlignVCenter
         else
         case GlyphLayout of
-          1:
+          1: // right
           begin
             DTFLAGS := DT_RIGHT or DT_VCENTER;
             dec(R2.Right, BMargin div 2);
             IconAlign := QtAlignRight or QtAlignVCenter;
             dec(R2.Right, FIconSize.cx);
           end;
-          2:
+          2: // top
           begin
             inc(R2.Top, BMargin div 2);
             IconAlign := QtAlignTop or QtAlignHCenter;
             inc(R2.Top, FIconSize.cy);
           end;
-          3:
+          3: // bottom
           begin
             dec(R2.Bottom, BMargin div 2);
             IconAlign := QtAlignBottom or QtAlignHCenter;
             dec(R2.Bottom, FIconSize.cy);
           end;
           else
-          begin
+          begin // left
             DTFLAGS := DT_LEFT or DT_VCENTER;
             inc(R2.Left, BMargin div 2);
             IconAlign := QtAlignLeft or QtAlignVCenter;
