@@ -14258,8 +14258,12 @@ begin
       if QDesktopWidget_isVirtualDesktop(QApplication_desktop()) then
         ScreenNumber := QDesktopWidget_screenNumber(QApplication_desktop(), @P)
       else
-        ScreenNumber := QDesktopWidget_screenNumber(QApplication_desktop(), Widget);
-
+      begin
+        if Widget <> nil then
+          ScreenNumber := QDesktopWidget_screenNumber(QApplication_desktop(), Widget)
+        else
+          ScreenNumber := 0;
+      end;
       {$IFDEF DARWIN}
       QDesktopWidget_availableGeometry(QApplication_desktop() ,@D, ScreenNumber);
       {$ELSE}
