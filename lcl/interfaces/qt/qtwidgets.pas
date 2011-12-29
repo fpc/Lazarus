@@ -5482,6 +5482,7 @@ var
     BtnWidth: Integer;
     BtnHeight: Integer;
     IconSize: TSize;
+    R: TRect;
     {style pixel metrics}
     BtnMargin, FocusH, FocusV, ShiftH, ShiftV: Integer;
   begin
@@ -5493,7 +5494,13 @@ var
     AMetrics := QFontMetrics_create(QWidget_font(Widget));
     try
       QStyleOption_fontMetrics(AOpt, AMetrics);
-      BtnWidth := QFontMetrics_width(AMetrics, PWideString(@AText));
+
+      // QtTextShowMnemonic = $0800
+      QFontMetrics_boundingRect(AMetrics, PRect(@R), 0, 0,
+        QWidget_maximumWidth(Widget), QWidget_maximumHeight(Widget),
+        QtAlignLeft or $0800, PWideString(@AText));
+
+      BtnWidth := R.Right - R.Left; // QFontMetrics_width(AMetrics, PWideString(@AText));
       BtnHeight := QFontMetrics_height(AMetrics);
       Result.cx := BtnWidth;
       Result.cy := BtnHeight;
@@ -5515,7 +5522,7 @@ var
         if not QIcon_isNull(FIcon) then
         begin
           IconSize := Self.FIconSize;
-          Result.cx := Result.cx + IconSize.cx + (FocusH * 2) + (ShiftH * 2) + IconDistance;
+          Result.cx := Result.cx + IconSize.cx + (FocusH * 2) + (ShiftH * 2);
           if IconSize.cy + BtnMargin + (FocusV * 2) + (ShiftV * 2) > Result.cy then
             Result.cy := IconSize.cy + BtnMargin + (FocusV * 2) + (ShiftV * 2);
           if FText <> '' then
@@ -5523,6 +5530,8 @@ var
             if FGlyphLayout in [2, 3] then
               inc(Result.cy, BtnHeight + IconDistance);
           end;
+          if ShiftV = 0 then
+            inc(Result.cy, 1);
         end;
       end;
 
