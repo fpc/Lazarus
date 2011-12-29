@@ -5558,7 +5558,8 @@ begin
     FIcon := nil;
   end;
   FIcon := QIcon_create(AIcon);
-  Update();
+  if getVisible then
+    Update(nil);
 end;
 
 procedure TQtBitBtn.setIconSize(Size: PSize);
@@ -5567,14 +5568,15 @@ begin
   FIconSize.cy := 0;
   if Size <> nil then
     FIconSize := Size^;
-  Update();
+  if getVisible then
+    Update(nil);
 end;
 
 procedure TQtBitBtn.setText(const W: WideString);
 begin
   FText := W;
   if getVisible then
-    Update();
+    Update(nil);
 end;
 
 { TQtToggleBox }
