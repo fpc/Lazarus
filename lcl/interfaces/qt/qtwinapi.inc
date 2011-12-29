@@ -3881,7 +3881,7 @@ begin
     SM_CXSMICON,
     SM_CYSMICON:
       begin
-        Result := 16
+        Result := QStyle_pixelMetric(QApplication_style(), QStylePM_SmallIconSize, nil, nil);
       end;
     SM_CXSMSIZE:
       begin
