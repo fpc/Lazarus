@@ -9,6 +9,7 @@ import android.graphics.*;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.content.res.Configuration;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -17,6 +18,7 @@ import android.telephony.SmsManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import java.util.*;
 
 public class LCLActivity extends Activity implements SensorEventListener, LocationListener
 {
@@ -73,8 +75,12 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
 
     @Override public boolean onKeyUp (int keyCode, KeyEvent event)
     {
+      // First handle the KeyUp event
       int eventResult = LCLOnKey(KeyEvent.ACTION_UP, keyCode, event, event.getDisplayLabel());
       if ((eventResult & 1) != 0) postInvalidate();
+
+      // Now KeyPress
+      //KeyCharacterMap localMap = event.getKeyCharacterMap();
 
       // Handling of the Back hardware key
       super.onKeyUp(keyCode, event);
@@ -111,6 +117,12 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
     for (int i = 0; i < input.length; i++)
     {  output[i] = input[i]; }
     return output;
+  }
+
+  public void ProcessEventResult(int eventResult)
+  {
+    if (((eventResult | 1) != 0) && (lclsurface != null)) lclsurface.postInvalidate();
+    //if ((eventResult | 2) != 0) reserved for BACK key handling
   }
 
   // -------------------------------------------
@@ -295,7 +307,7 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
     public void run()
     {
       int eventResult = LCLOnTimer(this);
-      if (((eventResult | 1) != 0) && (lclsurface != null)) lclsurface.postInvalidate();
+      ProcessEventResult(eventResult);
       if (this.Destroyed == false) LocalHandler.postDelayed(this, lcltimerinterval);
     }
   };
@@ -361,10 +373,74 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   {
     if (lclkind == 1)
     {
-      PendingIntent pi = PendingIntent.getActivity(this, 0,
-        new Intent(this, Object.class), 0);
+      PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
+        new Intent("SMS_SENT"), 0);
+
+      PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
+        new Intent("SMS_DELIVERED"), 0);
+
+      //---when the SMS has been sent---
+      registerReceiver(new BroadcastReceiver()
+      {
+        @Override public void onReceive(Context arg0, Intent arg1)
+        {
+          double[] statusArray = new double[1];
+          int eventResult = 0;
+          switch (getResultCode())
+          {
+            case Activity.RESULT_OK:
+              statusArray[0] = 1.0;
+              eventResult = LCLOnSensorChanged(-11, statusArray);
+              break;
+            case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+              statusArray[0] = 2.0;
+              eventResult = LCLOnSensorChanged(-11, statusArray);
+              break;
+            case SmsManager.RESULT_ERROR_NO_SERVICE:
+              statusArray[0] = 3.0;
+              eventResult = LCLOnSensorChanged(-11, statusArray);
+              break;
+            case SmsManager.RESULT_ERROR_NULL_PDU:
+              statusArray[0] = 2.0;
+              eventResult = LCLOnSensorChanged(-11, statusArray);
+              break;
+            case SmsManager.RESULT_ERROR_RADIO_OFF:
+              statusArray[0] = 5.0;
+              eventResult = LCLOnSensorChanged(-11, statusArray);
+              break;
+          }
+          ProcessEventResult(eventResult);
+        }
+      }, new IntentFilter("SMS_SENT"));
+
+      //---when the SMS has been delivered---
+      registerReceiver(new BroadcastReceiver()
+      {
+        @Override public void onReceive(Context arg0, Intent arg1)
+        {
+          double[] statusArray = new double[1];
+          int eventResult = 0;
+          switch (getResultCode())
+          {
+            case Activity.RESULT_OK:
+              statusArray[0] = 10.0;
+              eventResult = LCLOnSensorChanged(-11, statusArray);
+              break;
+            case Activity.RESULT_CANCELED:
+              statusArray[0] = 11.0;
+              eventResult = LCLOnSensorChanged(-11, statusArray);
+              break;
+          }
+          ProcessEventResult(eventResult);
+        }
+      }, new IntentFilter("SMS_DELIVERED"));
+
       SmsManager sms = SmsManager.getDefault();
-      sms.sendTextMessage(lcldestination, null, lcltext, pi, null);
+      Log.i("lclapp", "[LCLDoSendMessage] lcldestination="+lcldestination
+        +" lcltext="+lcltext);
+      ArrayList<String> parts = sms.divideMessage(lcltext);
+      //sms.sendMultipartTextMessage(lcldestination, null, parts, sentPI, deliveredPI);
+      sms.sendTextMessage(lcldestination, null, lcltext, sentPI, deliveredPI);
     }
   };
 
