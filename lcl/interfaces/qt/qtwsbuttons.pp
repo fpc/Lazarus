@@ -45,7 +45,9 @@ type
 
   TQtWSBitBtn = class(TWSBitBtn)
   published
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); override;
+    class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); override;
   end;
 
   { TQtWSSpeedButton }
@@ -60,6 +62,16 @@ implementation
 uses QtWSControls;
 
 { TQtWSBitBtn }
+
+class function TQtWSBitBtn.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  QtBitBtn: TQtBitBtn;
+begin
+  QtBitBtn := TQtBitBtn.Create(AWinControl, AParams);
+  QtBitBtn.AttachEvents;
+  Result := TLCLIntfHandle(QtBitBtn);
+end;
 
 {------------------------------------------------------------------------------
   Function: TQtWSBitBtn.SetGlyph
@@ -87,7 +99,8 @@ var
 begin
   if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph') then
     Exit;
-    
+
+  TQtBitBtn(ABitBtn.Handle).GlyphLayout := Ord(ABitBtn.Layout);
   AIcon := QIcon_create();
   if ABitBtn.CanShowGlyph then
   begin
@@ -106,11 +119,21 @@ begin
 
     ASize.cx := AValue.Images.Width;
     ASize.cy := AValue.Images.Height;
-    TQtAbstractButton(ABitBtn.Handle).setIconSize(@ASize);
+    TQtBitBtn(ABitBtn.Handle).setIconSize(@ASize);
   end;
 
-  TQtAbstractButton(ABitBtn.Handle).setIcon(AIcon);
+  TQtBitBtn(ABitBtn.Handle).setIcon(AIcon);
   QIcon_destroy(AIcon);
+end;
+
+class procedure TQtWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
+  const AValue: TButtonLayout);
+begin
+  if not WSCheckHandleAllocated(ABitBtn, 'SetLayout') then
+    Exit;
+  TQtBitBtn(ABitBtn.Handle).GlyphLayout := Ord(ABitBtn.Layout);
+  if TQtBitBtn(ABitBtn.Handle).getVisible then
+    TQtBitBtn(ABitBtn.Handle).Update(nil);
 end;
 
 end.

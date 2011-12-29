@@ -496,10 +496,10 @@ type
   TQtAbstractButton = class(TQtWidget)
   public
     function CanPaintBackground: Boolean; override;
-    function getIconSize: TSize;
+    function getIconSize: TSize; virtual;
     function getText: WideString; override;
-    procedure setIcon(AIcon: QIconH);
-    procedure setIconSize(Size: PSize);
+    procedure setIcon(AIcon: QIconH); virtual;
+    procedure setIconSize(Size: PSize); virtual;
     procedure setShortcut(AShortCutK1, AShortCutK2: TShortcut);
     procedure setText(const W: WideString); override;
     procedure Toggle;
@@ -531,6 +531,29 @@ type
     procedure DetachEvents; override;
     procedure SlotClicked; cdecl; virtual;
     procedure SlotToggled(AChecked: Boolean); cdecl; virtual;
+  end;
+
+  { TQtBitBtn }
+
+  TQtBitBtn = class(TQtPushButton)
+  private
+    FGlyphLayout: Integer;
+    FIcon: QIconH;
+    FIconSize: TSize;
+  protected
+    function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
+  public
+    destructor Destroy; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
+
+    function getIconSize: TSize; override;
+    function getText: WideString; override;
+    procedure setIcon(AIcon: QIconH); override;
+    procedure setIconSize(Size: PSize); override;
+    procedure setText(const W: WideString); override;
+
+    property GlyphLayout: Integer read FGlyphLayout write FGlyphLayout;
   end;
 
   { TQtToggleBox }
@@ -5245,6 +5268,313 @@ end;
 procedure TQtPushButton.SlotToggled(AChecked: Boolean); cdecl;
 begin
   // override later (eg. TQtToggleBox)
+end;
+
+{ TQtBitBtn }
+
+function TQtBitBtn.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH;
+begin
+  HasPaint := True;
+  FGlyphLayout := 0;
+  FText := '';
+  FIcon := nil;
+  FIconSize.cx := 0;
+  FIconSize.cy := 0;
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget
+  else
+    Parent := nil;
+  Result := QPushButton_create(Parent);
+end;
+
+destructor TQtBitBtn.Destroy;
+begin
+  if Assigned(FIcon) then
+    QIcon_destroy(FIcon);
+  inherited Destroy;
+end;
+
+function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+
+  function IconValid: boolean;
+  begin
+    Result := Assigned(FIcon) and not QIcon_isNull(FIcon) and
+      (FIconSize.cx > 0) and (FIconSize.cy > 0);
+  end;
+
+  function PaintBtn: Boolean;
+  const
+    IconDistance = 4; // hardcoded in qt libs (distance between icon and text)
+  var
+    APainter: QPainterH;
+    R: TRect;
+    R2: TRect;
+    R3: TRect;
+    BMargin, HMargin, VMargin, SHorz, SVert: Integer;
+    IconMode: QIconMode;
+    IconAlign: QtAlignment;
+    CenterOffset, W, H: Integer;
+    AFontMetrics: QFontMetricsH;
+    AText: WideString;
+    DTFLAGS: DWord;
+    ContentSize: TSize;
+  begin
+    Result := False;
+    if (FIcon = nil) then
+      exit;
+
+    // paint button
+    QObject_event(Widget, Event);
+
+    // now we paint icon & text
+    APainter := QPainter_create(QWidget_to_QPaintDevice(Widget));
+    AText := FText;
+    try
+      QPainter_setBackgroundMode(APainter, QtTransparentMode);
+      QWidget_rect(Widget, @R);
+
+      BMargin := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonMargin, nil, Widget);
+      VMargin := QStyle_pixelMetric(QApplication_style(), QStylePM_FocusFrameVMargin, nil, Widget);
+      HMargin := QStyle_pixelMetric(QApplication_style(), QStylePM_FocusFrameHMargin, nil, Widget);
+      SHorz := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonShiftHorizontal, nil, Widget);
+      SVert := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonShiftVertical, nil, Widget);
+
+      if SHorz = 0 then
+        SHorz := HMargin;
+
+      if not getEnabled then
+        IconMode := QIconDisabled
+      else
+      if QWidget_underMouse(Widget) then
+        IconMode := QIconActive
+      else
+        IconMode := QIconNormal;
+
+      inc(R.Left, HMargin + SHorz);
+      inc(R.Top, VMargin + SVert);
+      dec(R.Right, HMargin + SHorz);
+      dec(R.Bottom, VMargin + SVert);
+
+      W := R.Right - R.Left;
+      H := R.Bottom - R.Top;
+
+      ContentSize.CX := 0;
+      ContentSize.CY := 0;
+      R3 := Rect(0, 0, 0, 0);
+
+      DTFlags := DT_CENTER or DT_VCENTER;
+      if IconValid then
+      begin
+        R2 := R;
+        AFontMetrics := QFontMetrics_create(QPainter_font(APainter));
+        QPainter_fontMetrics(APainter, AFontMetrics);
+
+        // QtTextShowMnemonic = $0800
+        QFontMetrics_boundingRect(AFontMetrics, PRect(@R3), 0, 0,
+          QWidget_width(Widget), QWidget_height(Widget), QtAlignLeft or $0800,
+          PWideString(@AText));
+        // QFontMetrics_boundingRect(AFontMetrics, PRect(@R3), PWideString(@AText));
+
+        QFontMetrics_destroy(AFontMetrics);
+
+        ContentSize.cx := (R3.Right - R3.Left) + FIconSize.cx + IconDistance;
+        ContentSize.cy := FIconSize.cy + IconDistance + (R3.Bottom - R3.Top);
+
+        if FText = '' then
+          IconAlign := QtAlignHCenter or QtAlignVCenter
+        else
+        case GlyphLayout of
+          1:
+          begin
+            DTFLAGS := DT_RIGHT or DT_VCENTER;
+            dec(R2.Right, BMargin div 2);
+            IconAlign := QtAlignRight or QtAlignVCenter;
+            dec(R2.Right, FIconSize.cx);
+          end;
+          2:
+          begin
+            inc(R2.Top, BMargin div 2);
+            IconAlign := QtAlignTop or QtAlignHCenter;
+            inc(R2.Top, FIconSize.cy);
+          end;
+          3:
+          begin
+            dec(R2.Bottom, BMargin div 2);
+            IconAlign := QtAlignBottom or QtAlignHCenter;
+            dec(R2.Bottom, FIconSize.cy);
+          end;
+          else
+          begin
+            DTFLAGS := DT_LEFT or DT_VCENTER;
+            inc(R2.Left, BMargin div 2);
+            IconAlign := QtAlignLeft or QtAlignVCenter;
+            inc(R2.Left, FIconSize.cx);
+          end;
+        end;
+      end;
+
+      if IconValid then
+      begin
+        if FGlyphLayout in [0, 1] then
+        begin
+          CenterOffset := ((R.Right - R.Left) div 2) - (ContentSize.cx div 2);
+          if W - ContentSize.cx - CenterOffset < 0 then
+            CenterOffset := 0;
+        end else
+          CenterOffset := ((R.Bottom - R.Top) div 2) - (ContentSize.cy div 2);
+
+        if FText <> '' then
+        begin
+          if FGlyphLayout = 0 then
+            inc(R.Left, CenterOffset)
+          else
+          if FGlyphLayout = 1 then
+            dec(R.Right, CenterOffset)
+          else
+          if FGlyphLayout = 2 then
+            inc(R.Top, CenterOffset)
+          else
+          if FGlyphLayout = 3 then
+            dec(R.Bottom, CenterOffset);
+        end;
+
+        QIcon_paint(FIcon, APainter, @R, IconAlign, IconMode);
+
+        R := R2;
+        if FGlyphLayout = 0 then
+          inc(R.Left, CenterOffset)
+        else
+        if FGlyphLayout = 1 then
+          dec(R.Right, CenterOffset);
+      end;
+      if AText <> '' then
+        QPainter_drawText(APainter, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
+          DTFlagsToQtFlags(DTFLAGS), @AText);
+
+      QPainter_end(APainter);
+      Result := True;
+    finally
+      QPainter_destroy(APainter);
+    end;
+  end;
+begin
+  Result := False;
+  if (LCLObject <> nil) and (QEvent_type(Event) = QEventPaint) then
+    Result := PaintBtn
+  else
+    Result:=inherited EventFilter(Sender, Event);
+end;
+
+procedure TQtBitBtn.preferredSize(var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+var
+  Size: TSize;
+
+  function AutoSizeButtonFromStyle(const ASize: TSize): TSize;
+  const
+    IconDistance = 4; // hardcoded in qt libs
+  var
+    AOpt: QStyleOptionButtonH;
+    AText: WideString;
+    AMetrics: QFontMetricsH;
+    BtnWidth: Integer;
+    BtnHeight: Integer;
+    IconSize: TSize;
+    {style pixel metrics}
+    BtnMargin, FocusH, FocusV, ShiftH, ShiftV: Integer;
+  begin
+    Result := ASize;
+    AOpt := QStyleOptionButton_create();
+    QStyleOption_initFrom(AOpt, Widget);
+    AText := getText;
+    QStyleOptionButton_setText(AOpt, @AText);
+    AMetrics := QFontMetrics_create(QWidget_font(Widget));
+    try
+      QStyleOption_fontMetrics(AOpt, AMetrics);
+      BtnWidth := QFontMetrics_width(AMetrics, PWideString(@AText));
+      BtnHeight := QFontMetrics_height(AMetrics);
+      Result.cx := BtnWidth;
+      Result.cy := BtnHeight;
+      BtnMargin := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonMargin, nil, Widget);
+      FocusV := QStyle_pixelMetric(QApplication_style(), QStylePM_FocusFrameVMargin, nil, Widget);
+      FocusH := QStyle_pixelMetric(QApplication_style(), QStylePM_FocusFrameHMargin, nil, Widget);
+      ShiftH := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonShiftHorizontal, nil, Widget);
+      ShiftV := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonShiftVertical, nil, Widget);
+
+      if ShiftH = 0 then
+        ShiftH := FocusH;
+
+      Result.cx := Result.cx + BtnMargin + (FocusH * 2) + (ShiftH * 2);
+      Result.cy := Result.cy + BtnMargin + (FocusV * 2) + (ShiftV * 2);
+
+      // now check if we have icon
+      if Assigned(FIcon) then
+      begin
+        if not QIcon_isNull(FIcon) then
+        begin
+          IconSize := Self.FIconSize;
+          Result.cx := Result.cx + IconSize.cx + (FocusH * 2) + (ShiftH * 2) + IconDistance;
+          if IconSize.cy + BtnMargin + (FocusV * 2) + (ShiftV * 2) > Result.cy then
+            Result.cy := IconSize.cy + BtnMargin + (FocusV * 2) + (ShiftV * 2);
+          if FText <> '' then
+          begin
+            if FGlyphLayout in [2, 3] then
+              inc(Result.cy, BtnHeight + IconDistance);
+          end;
+        end;
+      end;
+
+    finally
+      QStyleOptionButton_destroy(AOpt);
+      QFontMetrics_destroy(AMetrics);
+    end;
+  end;
+begin
+  QPushButton_sizeHint(QPushButtonH(Widget), @Size);
+  if Assigned(LCLObject) and LCLObject.AutoSize then
+    Size := AutoSizeButtonFromStyle(Size);
+  PreferredWidth := Size.cx;
+  PreferredHeight := Size.cy;
+end;
+
+function TQtBitBtn.getIconSize: TSize;
+begin
+  Result := FIconSize;
+end;
+
+function TQtBitBtn.getText: WideString;
+begin
+  Result := FText;
+end;
+
+procedure TQtBitBtn.setIcon(AIcon: QIconH);
+begin
+  if Assigned(FIcon) then
+  begin
+    QIcon_destroy(FIcon);
+    FIcon := nil;
+  end;
+  FIcon := QIcon_create(AIcon);
+  Update();
+end;
+
+procedure TQtBitBtn.setIconSize(Size: PSize);
+begin
+  FIconSize.cx := 0;
+  FIconSize.cy := 0;
+  if Size <> nil then
+    FIconSize := Size^;
+  Update();
+end;
+
+procedure TQtBitBtn.setText(const W: WideString);
+begin
+  FText := W;
+  if getVisible then
+    Update();
 end;
 
 { TQtToggleBox }
