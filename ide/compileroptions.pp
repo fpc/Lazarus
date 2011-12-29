@@ -1509,7 +1509,7 @@ begin
   // messages
   if fCompilerMessages.Count = 0 then fCompilerMessages.SetDefault; 
   UseMsgFile := aXMLConfig.GetValue(p+'CompilerMessages/UseMsgFile/Value', False);
-  MsgFileName := aXMLConfig.GetValue(p+'CompilerMessages/MsgFileName/Value', '');
+  MsgFileName := aXMLConfig.GetValue(p+'CompilerMessages/MsgFileName/Value', '$(FPCMsgFile)');
   if UseMsgFile and FileExistsCached(GetParsedMsgFilename) then
     fCompilerMessages.LoadMsgFile(GetParsedMsgFilename);
 
@@ -1711,7 +1711,7 @@ begin
     end;
   end;
   aXMLConfig.SetDeleteValue(p+'CompilerMessages/UseMsgFile/Value', UseMsgFile, False);
-  aXMLConfig.SetDeleteValue(p+'CompilerMessages/MsgFileName/Value', MsgFileName, '');
+  aXMLConfig.SetDeleteValue(p+'CompilerMessages/MsgFileName/Value', MsgFileName, '$(FPCMsgFile)');
   
   aXMLConfig.SetDeleteValue(p+'CompilerMessages/ErrorNames/Hint',    CompilerMessages.ErrorNames[etHint],    FPCErrorTypeNames[etHint]);
   aXMLConfig.SetDeleteValue(p+'CompilerMessages/ErrorNames/Note',    CompilerMessages.ErrorNames[etNote],    FPCErrorTypeNames[etNote]);
