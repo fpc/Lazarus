@@ -17,4 +17,5 @@ exit 1
 fi
 
 export HTMLFMT=chm
-sh build_lcl_html.sh fpdoc `pwd`/locallclfooter.xml $FPCDIREXP 1>std1.txt 2>err2.txt
+sh build_lazutils_html.sh fpdoc `pwd`/locallclfooter.xml $FPCDIREXP 1>lazutilsoutput.log 2>lazutilserror.log
+sh build_lcl_html.sh fpdoc `pwd`/locallclfooter.xml $FPCDIREXP 1>lcloutput.log 2>lclerror.log

@@ -1,0 +1,974 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    LazUTF8
+  ====================================================================
+-->
+
+<module name="LazUTF8">
+<short></short>
+<descr>
+</descr>
+
+<!-- function Visibility: default -->
+<element name="NeedRTLAnsi">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="NeedRTLAnsi.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SetNeedRTLAnsi">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetNeedRTLAnsi.NewValue">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF8ToSys">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF8ToSys.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8ToSys.s">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="SysToUTF8">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="SysToUTF8.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SysToUTF8.s">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF8CharacterLength">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF8CharacterLength.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8CharacterLength.p">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF8Length">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF8Length.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8Length.s">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8Length.p">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8Length.ByteCount">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF8CharacterToUnicode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF8CharacterToUnicode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8CharacterToUnicode.p">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8CharacterToUnicode.CharLen">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UnicodeToUTF8">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UnicodeToUTF8.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UnicodeToUTF8.u">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UnicodeToUTF8.Buf">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UnicodeToUTF8SkipErrors">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UnicodeToUTF8SkipErrors.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UnicodeToUTF8SkipErrors.u">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UnicodeToUTF8SkipErrors.Buf">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF8ToDoubleByteString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF8ToDoubleByteString.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8ToDoubleByteString.s">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF8ToDoubleByte">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF8ToDoubleByte.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8ToDoubleByte.UTF8Str">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8ToDoubleByte.Len">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8ToDoubleByte.DBStr">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF8FindNearestCharStart">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF8FindNearestCharStart.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8FindNearestCharStart.UTF8Str">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8FindNearestCharStart.Len">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8FindNearestCharStart.BytePos">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF8CharStart">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF8CharStart.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8CharStart.UTF8Str">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8CharStart.Len">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8CharStart.CharIndex">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF8CharToByteIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF8CharToByteIndex.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8CharToByteIndex.UTF8Str">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8CharToByteIndex.Len">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8CharToByteIndex.CharIndex">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="UTF8FixBroken">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8FixBroken.P">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF8CharacterStrictLength">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF8CharacterStrictLength.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8CharacterStrictLength.P">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF8CStringToUTF8String">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF8CStringToUTF8String.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8CStringToUTF8String.SourceStart">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8CStringToUTF8String.SourceLen">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF8Pos">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF8Pos.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8Pos.SearchForText">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8Pos.SearchInText">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF8Copy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF8Copy.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8Copy.s">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8Copy.StartCharIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8Copy.CharCount">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="UTF8Delete">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8Delete.s">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8Delete.StartCharIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8Delete.CharCount">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="UTF8Insert">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8Insert.source">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8Insert.s">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8Insert.StartCharIndex">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF8LowerCase">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF8LowerCase.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8LowerCase.AInStr">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8LowerCase.ALanguage">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF8UpperCase">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF8UpperCase.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8UpperCase.AInStr">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8UpperCase.ALanguage">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="FindInvalidUTF8Character">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="FindInvalidUTF8Character.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FindInvalidUTF8Character.p">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FindInvalidUTF8Character.Count">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FindInvalidUTF8Character.StopOnNonASCII">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ValidUTF8String">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ValidUTF8String.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ValidUTF8String.s">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="AssignUTF8ListToAnsi">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="AssignUTF8ListToAnsi.UTF8List">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="AssignUTF8ListToAnsi.AnsiList">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF8CompareStr">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF8CompareStr.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8CompareStr.S1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8CompareStr.S2">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF8CompareText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF8CompareText.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8CompareText.S1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8CompareText.S2">
+<short></short>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TConvertResult">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TConvertResult.trNoError">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TConvertResult.trNullSrc">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TConvertResult.trNullDest">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TConvertResult.trDestExhausted">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TConvertResult.trInvalidChar">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TConvertResult.trUnfinishedChar">
+<short></short>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TConvertOption">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TConvertOption.toInvalidCharError">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TConvertOption.toInvalidCharToSymbol">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TConvertOption.toUnfinishedCharError">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TConvertOption.toUnfinishedCharToSymbol">
+<short></short>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TConvertOptions">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ConvertUTF8ToUTF16">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ConvertUTF8ToUTF16.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConvertUTF8ToUTF16.Dest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConvertUTF8ToUTF16.DestWideCharCount">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConvertUTF8ToUTF16.Src">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConvertUTF8ToUTF16.SrcCharCount">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConvertUTF8ToUTF16.Options">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConvertUTF8ToUTF16.ActualWideCharCount">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ConvertUTF16ToUTF8">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ConvertUTF16ToUTF8.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConvertUTF16ToUTF8.Dest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConvertUTF16ToUTF8.DestCharCount">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConvertUTF16ToUTF8.Src">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConvertUTF16ToUTF8.SrcWideCharCount">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConvertUTF16ToUTF8.Options">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConvertUTF16ToUTF8.ActualCharCount">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF8ToUTF16">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF8ToUTF16.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8ToUTF16.S">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF16ToUTF8">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF16ToUTF8.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF16ToUTF8.S">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="LazGetLanguageIDs">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LazGetLanguageIDs.Lang">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LazGetLanguageIDs.FallbackLang">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="LazGetShortLanguageID">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LazGetShortLanguageID.Lang">
+<short></short>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="FPUpChars">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- LazUTF8 -->
+
+</package>
+</fpdoc-descriptions>

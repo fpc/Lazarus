@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+<short>Lazutils</short>
+<descr>
+<p>
+The Lazutils package contains units that are extracted from the LCL because
+they are not really visual. This for usage in services and the like.
+</p>
+</descr>
+</package>
+</fpdoc-descriptions>

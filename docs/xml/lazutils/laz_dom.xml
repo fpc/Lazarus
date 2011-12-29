@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    Laz_DOM
+  ====================================================================
+-->
+
+<module name="Laz_DOM">
+<short></short>
+<descr>
+</descr>
+
+</module> <!-- Laz_DOM -->
+
+</package>
+</fpdoc-descriptions>

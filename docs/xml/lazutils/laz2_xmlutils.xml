@@ -1,0 +1,1377 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    laz2_xmlutils
+  ====================================================================
+-->
+
+<module name="laz2_xmlutils">
+<short></short>
+<descr>
+</descr>
+
+<!-- alias type Visibility: default -->
+<element name="TXMLUtilString">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="TXMLUtilChar">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="PXMLUtilChar">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PXMLUtilString">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="IsXmlName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="IsXmlName.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IsXmlName.Value">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IsXmlName.Xml11">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IsXmlName.Len">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="IsXmlNames">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="IsXmlNames.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IsXmlNames.Value">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IsXmlNames.Xml11">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="IsXmlNmToken">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="IsXmlNmToken.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IsXmlNmToken.Value">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IsXmlNmToken.Xml11">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="IsXmlNmTokens">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="IsXmlNmTokens.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IsXmlNmTokens.Value">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IsXmlNmTokens.Xml11">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="IsValidXmlEncoding">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="IsValidXmlEncoding.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IsValidXmlEncoding.Value">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Xml11NamePages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Xml11NamePages.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="NormalizeSpaces">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="NormalizeSpaces.Value">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="IsXmlWhiteSpace">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="IsXmlWhiteSpace.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IsXmlWhiteSpace.c">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Hash">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Hash.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Hash.InitValue">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Hash.Key">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Hash.KeyLen">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="WStrLIComp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="WStrLIComp.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WStrLIComp.S1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WStrLIComp.S2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WStrLIComp.Len">
+<short></short>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PPHashItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PHashItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="THashItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="THashItem.Key">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="THashItem.HashValue">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="THashItem.Next">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="THashItem.Data">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- array type Visibility: default -->
+<element name="THashItemArray">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PHashItemArray">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function type Visibility: default -->
+<element name="THashForEach">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THashForEach.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashForEach.Entry">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashForEach.arg">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="THashTable">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THashTable.FCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THashTable.FBucketCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THashTable.FBucket">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THashTable.FOwnsObjects">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="THashTable.Lookup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THashTable.Lookup.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashTable.Lookup.Key">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashTable.Lookup.KeyLength">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashTable.Lookup.Found">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashTable.Lookup.CanCreate">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="THashTable.Resize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashTable.Resize.NewCapacity">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THashTable.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashTable.Create.InitSize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashTable.Create.OwnObjects">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="THashTable.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THashTable.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THashTable.Find">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THashTable.Find.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashTable.Find.Key">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashTable.Find.KeyLen">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THashTable.FindOrAdd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THashTable.FindOrAdd.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashTable.FindOrAdd.Key">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashTable.FindOrAdd.KeyLen">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashTable.FindOrAdd.Found">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THashTable.Get">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THashTable.Get.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashTable.Get.Key">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashTable.Get.KeyLen">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THashTable.Remove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THashTable.Remove.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashTable.Remove.Entry">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THashTable.RemoveData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THashTable.RemoveData.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashTable.RemoveData.aData">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THashTable.ForEach">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashTable.ForEach.proc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashTable.ForEach.arg">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THashTable.Count">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TExpHashEntry">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TExpHashEntry.rev">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TExpHashEntry.hash">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TExpHashEntry.uriPtr">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TExpHashEntry.lname">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TExpHashEntry.lnameLen">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- array type Visibility: default -->
+<element name="TExpHashEntryArray">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PExpHashEntryArray">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDblHashArray">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDblHashArray.FSizeLog">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDblHashArray.FRevision">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDblHashArray.FData">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDblHashArray.Init">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDblHashArray.Init.NumSlots">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDblHashArray.Locate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDblHashArray.Locate.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDblHashArray.Locate.uri">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDblHashArray.Locate.localName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDblHashArray.Locate.localLength">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TDblHashArray.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TBinding">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TBinding.uri">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TBinding.next">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TBinding.prevPrefixBinding">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TBinding.Prefix">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TAttributeAction">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAttributeAction.aaUnchanged">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAttributeAction.aaPrefix">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAttributeAction.aaBoth">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TNSSupport">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TNSSupport.FNesting">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TNSSupport.FPrefixSeqNo">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TNSSupport.FFreeBindings">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TNSSupport.FBindings">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TNSSupport.FBindingStack">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TNSSupport.FPrefixes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TNSSupport.FDefaultPrefix">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TNSSupport.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TNSSupport.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TNSSupport.DefineBinding">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNSSupport.DefineBinding.Prefix">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNSSupport.DefineBinding.nsURI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNSSupport.DefineBinding.Binding">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TNSSupport.CheckAttribute">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TNSSupport.CheckAttribute.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNSSupport.CheckAttribute.Prefix">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNSSupport.CheckAttribute.nsURI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNSSupport.CheckAttribute.Binding">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TNSSupport.IsPrefixBound">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TNSSupport.IsPrefixBound.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNSSupport.IsPrefixBound.P">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNSSupport.IsPrefixBound.Len">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNSSupport.IsPrefixBound.Prefix">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TNSSupport.GetPrefix">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TNSSupport.GetPrefix.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNSSupport.GetPrefix.P">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNSSupport.GetPrefix.Len">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TNSSupport.BindPrefix">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TNSSupport.BindPrefix.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNSSupport.BindPrefix.nsURI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNSSupport.BindPrefix.aPrefix">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TNSSupport.DefaultNSBinding">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TNSSupport.DefaultNSBinding.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TNSSupport.StartElement">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TNSSupport.EndElement">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TSetOfByte">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ns_ASCII">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ns_0200">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ns_0300">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ns_0400">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ns_0500">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ns_0600">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ns_0900">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ns_0A00">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ns_0B00">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ns_0C00">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ns_0D00">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ns_0E00">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ns_0F00">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ns_3000">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="namingBitmap">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="Xml11HighPages">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="NamePages">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- laz2_xmlutils -->
+
+</package>
+</fpdoc-descriptions>

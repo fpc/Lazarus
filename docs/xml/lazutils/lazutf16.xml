@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    lazutf16
+  ====================================================================
+-->
+
+<module name="lazutf16">
+<short></short>
+<descr>
+</descr>
+
+<!-- function Visibility: default -->
+<element name="UTF16CharacterLength">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF16CharacterLength.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF16CharacterLength.p">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF16Length">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF16Length.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF16Length.s">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF16Length.p">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF16Length.WordCount">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF16CharacterToUnicode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF16CharacterToUnicode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF16CharacterToUnicode.p">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF16CharacterToUnicode.CharLen">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UnicodeToUTF16">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UnicodeToUTF16.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UnicodeToUTF16.u">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UnicodeLowercase">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UnicodeLowercase.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UnicodeLowercase.u">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UTF8LowerCaseViaTables">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UTF8LowerCaseViaTables.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UTF8LowerCaseViaTables.s">
+<short></short>
+</element>
+
+</module> <!-- lazutf16 -->
+
+</package>
+</fpdoc-descriptions>

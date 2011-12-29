@@ -1,0 +1,6265 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    laz2_DOM
+  ====================================================================
+-->
+
+<module name="laz2_DOM">
+<short></short>
+<descr>
+</descr>
+
+<!-- constant Visibility: default -->
+<element name="INDEX_SIZE_ERR">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="DOMSTRING_SIZE_ERR">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="HIERARCHY_REQUEST_ERR">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="WRONG_DOCUMENT_ERR">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="INVALID_CHARACTER_ERR">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="NO_DATA_ALLOWED_ERR">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="NO_MODIFICATION_ALLOWED_ERR">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="NOT_FOUND_ERR">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="NOT_SUPPORTED_ERR">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="INUSE_ATTRIBUTE_ERR">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="INVALID_STATE_ERR">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="SYNTAX_ERR">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="INVALID_MODIFICATION_ERR">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="NAMESPACE_ERR">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="INVALID_ACCESS_ERR">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ELEMENT_NODE">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ATTRIBUTE_NODE">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="TEXT_NODE">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="CDATA_SECTION_NODE">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ENTITY_REFERENCE_NODE">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ENTITY_NODE">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="PROCESSING_INSTRUCTION_NODE">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="COMMENT_NODE">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="DOCUMENT_NODE">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="DOCUMENT_TYPE_NODE">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="DOCUMENT_FRAGMENT_NODE">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="NOTATION_NODE">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMDocument">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMNodeList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMNamedNodeMap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMAttr">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMElement">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMComment">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMCDATASection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMDocumentType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMEntityReference">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMProcessingInstruction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMAttrDef">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TNodePool">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PNodePoolArray">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- array type Visibility: default -->
+<element name="TNodePoolArray">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TSetOfChar">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="DOMString">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="DOMPChar">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="DOMChar">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PDOMString">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="EDOMError">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="EDOMError.Code">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="EDOMError.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EDOMError.Create.ACode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EDOMError.Create.ASituation">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="EDOMIndexSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="EDOMIndexSize.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EDOMIndexSize.Create.ASituation">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="EDOMHierarchyRequest">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="EDOMHierarchyRequest.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EDOMHierarchyRequest.Create.ASituation">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="EDOMWrongDocument">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="EDOMWrongDocument.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EDOMWrongDocument.Create.ASituation">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="EDOMNotFound">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="EDOMNotFound.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EDOMNotFound.Create.ASituation">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="EDOMNotSupported">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="EDOMNotSupported.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EDOMNotSupported.Create.ASituation">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="EDOMInUseAttribute">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="EDOMInUseAttribute.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EDOMInUseAttribute.Create.ASituation">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="EDOMInvalidState">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="EDOMInvalidState.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EDOMInvalidState.Create.ASituation">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="EDOMSyntax">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="EDOMSyntax.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EDOMSyntax.Create.ASituation">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="EDOMInvalidModification">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="EDOMInvalidModification.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EDOMInvalidModification.Create.ASituation">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="EDOMNamespace">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="EDOMNamespace.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EDOMNamespace.Create.ASituation">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="EDOMInvalidAccess">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="EDOMInvalidAccess.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EDOMInvalidAccess.Create.ASituation">
+<short></short>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TNodeFlagEnum">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TNodeFlagEnum.nfReadonly">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TNodeFlagEnum.nfRecycled">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TNodeFlagEnum.nfLevel2">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TNodeFlagEnum.nfIgnorableWS">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TNodeFlagEnum.nfSpecified">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TNodeFlagEnum.nfDestroying">
+<short></short>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TNodeFlags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMNode.FPool">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMNode.FFlags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMNode.FParentNode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMNode.FPreviousSibling">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMNode.FNextSibling">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMNode.FOwnerDocument">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode.GetNodeName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.GetNodeName.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode.GetNodeValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.GetNodeValue.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMNode.SetNodeValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.SetNodeValue.AValue">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode.GetFirstChild">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.GetFirstChild.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode.GetLastChild">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.GetLastChild.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode.GetAttributes">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.GetAttributes.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode.GetRevision">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.GetRevision.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode.GetNodeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.GetNodeType.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode.GetTextContent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.GetTextContent.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMNode.SetTextContent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.SetTextContent.AValue">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode.GetLocalName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.GetLocalName.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode.GetNamespaceURI">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.GetNamespaceURI.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode.GetPrefix">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.GetPrefix.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMNode.SetPrefix">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.SetPrefix.Value">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode.GetOwnerDocument">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.GetOwnerDocument.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode.GetBaseURI">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.GetBaseURI.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMNode.SetReadOnly">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.SetReadOnly.Value">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMNode.Changing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TDOMNode.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.Create.AOwner">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TDOMNode.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDOMNode.FreeInstance">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode.GetChildNodes">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.GetChildNodes.Result">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNode.NodeName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNode.NodeValue">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNode.NodeType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNode.ParentNode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNode.FirstChild">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNode.LastChild">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNode.ChildNodes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNode.PreviousSibling">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNode.NextSibling">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNode.Attributes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNode.OwnerDocument">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode.InsertBefore">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.InsertBefore.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.InsertBefore.NewChild">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.InsertBefore.RefChild">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode.ReplaceChild">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.ReplaceChild.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.ReplaceChild.NewChild">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.ReplaceChild.OldChild">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode.DetachChild">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.DetachChild.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.DetachChild.OldChild">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode.RemoveChild">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.RemoveChild.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.RemoveChild.OldChild">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode.AppendChild">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.AppendChild.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.AppendChild.NewChild">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode.HasChildNodes">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.HasChildNodes.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode.CloneNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.CloneNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.CloneNode.deep">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode.IsSupported">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.IsSupported.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.IsSupported.Feature">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.IsSupported.Version">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode.HasAttributes">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.HasAttributes.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDOMNode.Normalize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNode.NamespaceURI">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNode.LocalName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNode.Prefix">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNode.TextContent">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode.LookupPrefix">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.LookupPrefix.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.LookupPrefix.nsURI">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode.LookupNamespaceURI">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.LookupNamespaceURI.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.LookupNamespaceURI.APrefix">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode.IsDefaultNamespace">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.IsDefaultNamespace.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.IsDefaultNamespace.nsURI">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNode.baseURI">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.CloneNode.ACloneOwner">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode.FindNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.FindNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.FindNode.ANodeName">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode.CompareName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode.CompareName.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode.CompareName.name">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNode.Flags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- "class of" type Visibility: default -->
+<element name="TDOMNodeClass">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMNode_WithChildren">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMNode_WithChildren.FFirstChild">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMNode_WithChildren.FLastChild">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMNode_WithChildren.FChildNodes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode_WithChildren.GetFirstChild">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode_WithChildren.GetFirstChild.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode_WithChildren.GetLastChild">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode_WithChildren.GetLastChild.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMNode_WithChildren.CloneChildren">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode_WithChildren.CloneChildren.ACopy">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode_WithChildren.CloneChildren.ACloneOwner">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMNode_WithChildren.FreeChildren">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode_WithChildren.GetTextContent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode_WithChildren.GetTextContent.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMNode_WithChildren.SetTextContent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode_WithChildren.SetTextContent.AValue">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TDOMNode_WithChildren.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode_WithChildren.InsertBefore">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode_WithChildren.InsertBefore.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode_WithChildren.InsertBefore.NewChild">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode_WithChildren.InsertBefore.RefChild">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode_WithChildren.ReplaceChild">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode_WithChildren.ReplaceChild.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode_WithChildren.ReplaceChild.NewChild">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode_WithChildren.ReplaceChild.OldChild">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode_WithChildren.DetachChild">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode_WithChildren.DetachChild.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode_WithChildren.DetachChild.OldChild">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode_WithChildren.HasChildNodes">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode_WithChildren.HasChildNodes.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode_WithChildren.FindNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode_WithChildren.FindNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode_WithChildren.FindNode.ANodeName">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDOMNode_WithChildren.InternalAppend">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode_WithChildren.InternalAppend.NewChild">
+<short></short>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TFilterResult">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TFilterResult.frFalse">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TFilterResult.frNorecurseFalse">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TFilterResult.frTrue">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TFilterResult.frNorecurseTrue">
+<short></short>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMNodeList.FNode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMNodeList.FRevision">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMNodeList.FList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNodeList.GetCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNodeList.GetCount.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNodeList.GetItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNodeList.GetItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNodeList.GetItem.index">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNodeList.NodeFilter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNodeList.NodeFilter.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNodeList.NodeFilter.aNode">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMNodeList.BuildList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TDOMNodeList.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNodeList.Create.ANode">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TDOMNodeList.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNodeList.Item">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNodeList.Item.index">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNodeList.Count">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNodeList.Length">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMElementList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMElementList.filter">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMElementList.FNSIndexFilter">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMElementList.localNameFilter">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMElementList.FMatchNS">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMElementList.FMatchAnyNS">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMElementList.UseFilter">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMElementList.NodeFilter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMElementList.NodeFilter.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElementList.NodeFilter.aNode">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TDOMElementList.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElementList.Create.ANode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElementList.Create.AFilter">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElementList.Create.nsURI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElementList.Create.localName">
+<short></short>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMNamedNodeMap.FOwner">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMNamedNodeMap.FNodeType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMNamedNodeMap.FList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNamedNodeMap.GetItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNamedNodeMap.GetItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNamedNodeMap.GetItem.index">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNamedNodeMap.GetLength">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNamedNodeMap.GetLength.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNamedNodeMap.Find">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNamedNodeMap.Find.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNamedNodeMap.Find.name">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNamedNodeMap.Find.Index">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNamedNodeMap.Delete">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNamedNodeMap.Delete.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNamedNodeMap.Delete.index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMNamedNodeMap.RestoreDefault">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNamedNodeMap.RestoreDefault.name">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNamedNodeMap.InternalRemove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNamedNodeMap.InternalRemove.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNamedNodeMap.InternalRemove.name">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNamedNodeMap.ValidateInsert">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNamedNodeMap.ValidateInsert.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNamedNodeMap.ValidateInsert.arg">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TDOMNamedNodeMap.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNamedNodeMap.Create.AOwner">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNamedNodeMap.Create.ANodeType">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TDOMNamedNodeMap.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNamedNodeMap.GetNamedItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNamedNodeMap.GetNamedItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNamedNodeMap.GetNamedItem.name">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNamedNodeMap.SetNamedItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNamedNodeMap.SetNamedItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNamedNodeMap.SetNamedItem.arg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNamedNodeMap.RemoveNamedItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNamedNodeMap.RemoveNamedItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNamedNodeMap.RemoveNamedItem.name">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNamedNodeMap.getNamedItemNS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNamedNodeMap.getNamedItemNS.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNamedNodeMap.getNamedItemNS.namespaceURI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNamedNodeMap.getNamedItemNS.localName">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNamedNodeMap.setNamedItemNS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNamedNodeMap.setNamedItemNS.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNamedNodeMap.setNamedItemNS.arg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNamedNodeMap.removeNamedItemNS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNamedNodeMap.removeNamedItemNS.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNamedNodeMap.removeNamedItemNS.namespaceURI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNamedNodeMap.removeNamedItemNS.localName">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNamedNodeMap.Item">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNamedNodeMap.Item.index">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNamedNodeMap.Length">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMCharacterData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDOMCharacterData.FNodeValue">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMCharacterData.GetLength">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMCharacterData.GetLength.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMCharacterData.GetNodeValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMCharacterData.GetNodeValue.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMCharacterData.SetNodeValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMCharacterData.SetNodeValue.AValue">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMCharacterData.Data">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMCharacterData.Length">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMCharacterData.SubstringData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMCharacterData.SubstringData.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMCharacterData.SubstringData.offset">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMCharacterData.SubstringData.count">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDOMCharacterData.AppendData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMCharacterData.AppendData.arg">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDOMCharacterData.InsertData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMCharacterData.InsertData.offset">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMCharacterData.InsertData.arg">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDOMCharacterData.DeleteData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMCharacterData.DeleteData.offset">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMCharacterData.DeleteData.count">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDOMCharacterData.ReplaceData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMCharacterData.ReplaceData.offset">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMCharacterData.ReplaceData.count">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMCharacterData.ReplaceData.arg">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMImplementation">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMImplementation.HasFeature">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMImplementation.HasFeature.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMImplementation.HasFeature.feature">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMImplementation.HasFeature.version">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMImplementation.CreateDocumentType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMImplementation.CreateDocumentType.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMImplementation.CreateDocumentType.QualifiedName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMImplementation.CreateDocumentType.PublicID">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMImplementation.CreateDocumentType.SystemID">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMImplementation.CreateDocument">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMImplementation.CreateDocument.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMImplementation.CreateDocument.NamespaceURI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMImplementation.CreateDocument.QualifiedName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMImplementation.CreateDocument.doctype">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMDocumentFragment">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMDocumentFragment.GetNodeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocumentFragment.GetNodeType.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMDocumentFragment.GetNodeName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocumentFragment.GetNodeName.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocumentFragment.CloneNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocumentFragment.CloneNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocumentFragment.CloneNode.deep">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocumentFragment.CloneNode.ACloneOwner">
+<short></short>
+</element>
+
+<!-- array type Visibility: default -->
+<element name="TNamespaces">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMDocument.FIDList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMDocument.FRevision">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMDocument.FXML11">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMDocument.FImplementation">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMDocument.FNamespaces">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMDocument.FNames">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMDocument.FEmptyNode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMDocument.FNodeLists">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMDocument.FMaxPoolSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMDocument.FPools">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMDocument.FDocumentURI">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMDocument.GetDocumentElement">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.GetDocumentElement.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMDocument.GetDocType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.GetDocType.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMDocument.GetNodeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.GetNodeType.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMDocument.GetNodeName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.GetNodeName.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMDocument.GetTextContent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.GetTextContent.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMDocument.GetOwnerDocument">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.GetOwnerDocument.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMDocument.SetTextContent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.SetTextContent.value">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMDocument.RemoveID">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.RemoveID.Elem">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMDocument.GetChildNodeList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.GetChildNodeList.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.GetChildNodeList.aNode">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMDocument.GetElementList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.GetElementList.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.GetElementList.aNode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.GetElementList.nsURI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.GetElementList.aLocalName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.GetElementList.UseNS">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMDocument.NodeListDestroyed">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.NodeListDestroyed.aList">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMDocument.Alloc">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.Alloc.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.Alloc.AClass">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.IndexOfNS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.IndexOfNS.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.IndexOfNS.nsURI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.IndexOfNS.AddIfAbsent">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.InsertBefore">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.InsertBefore.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.InsertBefore.NewChild">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.InsertBefore.RefChild">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.ReplaceChild">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.ReplaceChild.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.ReplaceChild.NewChild">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.ReplaceChild.OldChild">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMDocument.DocType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMDocument.Impl">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMDocument.DocumentElement">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.CreateElement">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.CreateElement.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateElement.tagName">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.CreateElementBuf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.CreateElementBuf.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateElementBuf.Buf">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateElementBuf.Length">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.CreateDocumentFragment">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.CreateDocumentFragment.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.CreateTextNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.CreateTextNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateTextNode.data">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.CreateTextNodeBuf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.CreateTextNodeBuf.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateTextNodeBuf.Buf">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateTextNodeBuf.Length">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateTextNodeBuf.IgnWS">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.CreateComment">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.CreateComment.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateComment.data">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.CreateCommentBuf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.CreateCommentBuf.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateCommentBuf.Buf">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateCommentBuf.Length">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.CreateCDATASection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.CreateCDATASection.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateCDATASection.data">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.CreateProcessingInstruction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.CreateProcessingInstruction.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateProcessingInstruction.target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateProcessingInstruction.data">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.CreateAttribute">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.CreateAttribute.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateAttribute.name">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.CreateAttributeBuf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.CreateAttributeBuf.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateAttributeBuf.Buf">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateAttributeBuf.Length">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.CreateAttributeDef">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.CreateAttributeDef.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateAttributeDef.Buf">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateAttributeDef.Length">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.CreateEntityReference">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.CreateEntityReference.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateEntityReference.name">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.GetElementsByTagName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.GetElementsByTagName.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.GetElementsByTagName.tagname">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.ImportNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.ImportNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.ImportNode.ImportedNode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.ImportNode.Deep">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.CreateElementNS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.CreateElementNS.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateElementNS.nsURI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateElementNS.QualifiedName">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.CreateAttributeNS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.CreateAttributeNS.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateAttributeNS.nsURI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.CreateAttributeNS.QualifiedName">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.GetElementsByTagNameNS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.GetElementsByTagNameNS.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.GetElementsByTagNameNS.nsURI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.GetElementsByTagNameNS.alocalName">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.GetElementById">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.GetElementById.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.GetElementById.ElementID">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMDocument.documentURI">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TDOMDocument.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TDOMDocument.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMDocument.AddID">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocument.AddID.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMDocument.AddID.Attr">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMDocument.Names">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXMLDocument">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXMLDocument.FXMLVersion">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TXMLDocument.SetXMLVersion">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLDocument.SetXMLVersion.aValue">
+<short></short>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TXMLDocument.Encoding">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TXMLDocument.StylesheetType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TXMLDocument.StylesheetHRef">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLDocument.CreateCDATASection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLDocument.CreateCDATASection.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLDocument.CreateCDATASection.data">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLDocument.CreateProcessingInstruction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLDocument.CreateProcessingInstruction.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLDocument.CreateProcessingInstruction.target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLDocument.CreateProcessingInstruction.data">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLDocument.CreateEntityReference">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLDocument.CreateEntityReference.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLDocument.CreateEntityReference.name">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXMLDocument.XMLVersion">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TNamespaceInfo">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TNamespaceInfo.NSIndex">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TNamespaceInfo.PrefixLen">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TNamespaceInfo.QName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TAttrDataType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAttrDataType.dtCdata">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAttrDataType.dtId">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAttrDataType.dtIdRef">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAttrDataType.dtIdRefs">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAttrDataType.dtEntity">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAttrDataType.dtEntities">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAttrDataType.dtNmToken">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAttrDataType.dtNmTokens">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAttrDataType.dtNotation">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMNode_NS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMNode_NS.FNSI">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode_NS.GetNodeName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode_NS.GetNodeName.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode_NS.GetLocalName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode_NS.GetLocalName.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode_NS.GetNamespaceURI">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode_NS.GetNamespaceURI.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNode_NS.GetPrefix">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode_NS.GetPrefix.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMNode_NS.SetPrefix">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode_NS.SetPrefix.Value">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDOMNode_NS.SetNSI">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode_NS.SetNSI.nsUri">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode_NS.SetNSI.ColonPos">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNode_NS.CompareName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNode_NS.CompareName.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNode_NS.CompareName.AName">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNode_NS.NSI">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMAttr.FOwnerElement">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMAttr.FDataType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMAttr.GetNodeValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMAttr.GetNodeValue.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMAttr.GetNodeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMAttr.GetNodeType.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMAttr.GetSpecified">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMAttr.GetSpecified.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMAttr.GetIsID">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMAttr.GetIsID.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMAttr.SetNodeValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMAttr.SetNodeValue.AValue">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TDOMAttr.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMAttr.CloneNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMAttr.CloneNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMAttr.CloneNode.deep">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMAttr.CloneNode.ACloneOwner">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMAttr.Name">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMAttr.Specified">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMAttr.Value">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMAttr.OwnerElement">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMAttr.IsID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMAttr.DataType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMElement.FAttributes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMElement.GetNodeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMElement.GetNodeType.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMElement.GetAttributes">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMElement.GetAttributes.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMElement.AttachDefaultAttrs">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMElement.InternalLookupPrefix">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMElement.InternalLookupPrefix.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.InternalLookupPrefix.nsURI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.InternalLookupPrefix.Original">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMElement.RestoreDefaultAttr">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.RestoreDefaultAttr.AttrDef">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TDOMElement.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMElement.CloneNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMElement.CloneNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.CloneNode.deep">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.CloneNode.ACloneOwner">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMElement.IsEmpty">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMElement.IsEmpty.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDOMElement.Normalize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMElement.TagName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMElement.GetAttribute">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMElement.GetAttribute.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.GetAttribute.name">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDOMElement.SetAttribute">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.SetAttribute.name">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.SetAttribute.value">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDOMElement.RemoveAttribute">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.RemoveAttribute.name">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMElement.GetAttributeNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMElement.GetAttributeNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.GetAttributeNode.name">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMElement.SetAttributeNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMElement.SetAttributeNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.SetAttributeNode.NewAttr">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMElement.RemoveAttributeNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMElement.RemoveAttributeNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.RemoveAttributeNode.OldAttr">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMElement.GetElementsByTagName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMElement.GetElementsByTagName.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.GetElementsByTagName.name">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMElement.GetAttributeNS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMElement.GetAttributeNS.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.GetAttributeNS.nsURI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.GetAttributeNS.aLocalName">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDOMElement.SetAttributeNS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.SetAttributeNS.nsURI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.SetAttributeNS.qualifiedName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.SetAttributeNS.value">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDOMElement.RemoveAttributeNS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.RemoveAttributeNS.nsURI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.RemoveAttributeNS.aLocalName">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMElement.GetAttributeNodeNS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMElement.GetAttributeNodeNS.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.GetAttributeNodeNS.nsURI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.GetAttributeNodeNS.aLocalName">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMElement.SetAttributeNodeNS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMElement.SetAttributeNodeNS.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.SetAttributeNodeNS.newAttr">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMElement.GetElementsByTagNameNS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMElement.GetElementsByTagNameNS.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.GetElementsByTagNameNS.nsURI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.GetElementsByTagNameNS.aLocalName">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMElement.hasAttribute">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMElement.hasAttribute.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.hasAttribute.name">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMElement.hasAttributeNS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMElement.hasAttributeNS.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.hasAttributeNS.nsURI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.hasAttributeNS.aLocalName">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMElement.HasAttributes">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMElement.HasAttributes.Result">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMElement.AttribStrings">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMElement.AttribStrings.Name">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMText.GetNodeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMText.GetNodeType.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMText.GetNodeName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMText.GetNodeName.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMText.SetNodeValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMText.SetNodeValue.aValue">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMText.CloneNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMText.CloneNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMText.CloneNode.deep">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMText.CloneNode.ACloneOwner">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMText.SplitText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMText.SplitText.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMText.SplitText.offset">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMText.IsElementContentWhitespace">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMText.IsElementContentWhitespace.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMComment.GetNodeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMComment.GetNodeType.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMComment.GetNodeName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMComment.GetNodeName.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMComment.CloneNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMComment.CloneNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMComment.CloneNode.deep">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMComment.CloneNode.ACloneOwner">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMCDATASection.GetNodeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMCDATASection.GetNodeType.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMCDATASection.GetNodeName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMCDATASection.GetNodeName.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMCDATASection.CloneNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMCDATASection.CloneNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMCDATASection.CloneNode.deep">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMCDATASection.CloneNode.ACloneOwner">
+<short></short>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMDocumentType.FName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMDocumentType.FPublicID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMDocumentType.FSystemID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMDocumentType.FInternalSubset">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMDocumentType.FEntities">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMDocumentType.FNotations">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMDocumentType.GetEntities">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocumentType.GetEntities.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMDocumentType.GetNotations">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocumentType.GetNotations.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMDocumentType.GetNodeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocumentType.GetNodeType.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMDocumentType.GetNodeName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMDocumentType.GetNodeName.Result">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TDOMDocumentType.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMDocumentType.Name">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMDocumentType.Entities">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMDocumentType.Notations">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMDocumentType.PublicID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMDocumentType.SystemID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMDocumentType.InternalSubset">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMNotation">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMNotation.FName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMNotation.FPublicID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMNotation.FSystemID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNotation.GetNodeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNotation.GetNodeType.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMNotation.GetNodeName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNotation.GetNodeName.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMNotation.CloneNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMNotation.CloneNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNotation.CloneNode.deep">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMNotation.CloneNode.ACloneOwner">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNotation.PublicID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMNotation.SystemID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMEntity">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMEntity.FName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMEntity.FPublicID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMEntity.FSystemID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMEntity.FNotationName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMEntity.GetNodeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMEntity.GetNodeType.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMEntity.GetNodeName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMEntity.GetNodeName.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMEntity.CloneNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMEntity.CloneNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMEntity.CloneNode.deep">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMEntity.CloneNode.aCloneOwner">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMEntity.PublicID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMEntity.SystemID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMEntity.NotationName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMEntityReference.FName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMEntityReference.GetNodeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMEntityReference.GetNodeType.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMEntityReference.GetNodeName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMEntityReference.GetNodeName.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMEntityReference.CloneNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMEntityReference.CloneNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMEntityReference.CloneNode.deep">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMEntityReference.CloneNode.ACloneOwner">
+<short></short>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDOMProcessingInstruction.FTarget">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDOMProcessingInstruction.FNodeValue">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMProcessingInstruction.GetNodeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMProcessingInstruction.GetNodeType.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMProcessingInstruction.GetNodeName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMProcessingInstruction.GetNodeName.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDOMProcessingInstruction.GetNodeValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMProcessingInstruction.GetNodeValue.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDOMProcessingInstruction.SetNodeValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMProcessingInstruction.SetNodeValue.AValue">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMProcessingInstruction.CloneNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMProcessingInstruction.CloneNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMProcessingInstruction.CloneNode.deep">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMProcessingInstruction.CloneNode.ACloneOwner">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMProcessingInstruction.Target">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMProcessingInstruction.Data">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TAttrDefault">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAttrDefault.adImplied">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAttrDefault.adDefault">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAttrDefault.adRequired">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAttrDefault.adFixed">
+<short></short>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMAttrDef.FExternallyDeclared">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMAttrDef.FDefault">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMAttrDef.FTag">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TDOMAttrDef.FEnumeration">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMAttrDef.AddEnumToken">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMAttrDef.AddEnumToken.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMAttrDef.AddEnumToken.Buf">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMAttrDef.AddEnumToken.Len">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMAttrDef.HasEnumToken">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMAttrDef.HasEnumToken.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMAttrDef.HasEnumToken.aValue">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMAttrDef.CloneNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMAttrDef.CloneNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMAttrDef.CloneNode.deep">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMAttrDef.CloneNode.ACloneOwner">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMAttrDef.Default">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMAttrDef.ExternallyDeclared">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMAttrDef.Tag">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PExtent">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TExtent">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TExtent.Next">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TNodePool.FCurrExtent">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TNodePool.FCurrExtentSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TNodePool.FElementSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TNodePool.FCurrBlock">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TNodePool.FFirstFree">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TNodePool.AddExtent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNodePool.AddExtent.AElemCount">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TNodePool.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNodePool.Create.AElementSize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNodePool.Create.AElementCount">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TNodePool.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TNodePool.AllocNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TNodePool.AllocNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNodePool.AllocNode.AClass">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TNodePool.FreeNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNodePool.FreeNode.ANode">
+<short></short>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="stduri_xml">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="stduri_xmlns">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- laz2_DOM -->
+
+</package>
+</fpdoc-descriptions>

@@ -2,7 +2,7 @@
 #
 # Author: Mattias Gaertner
 #
-# Creates the fpdoc HTML output for the LCL
+# Creates the fpdoc HTML output for the Lazutils package
 # Creates an chm file, if HTMLFMT is set to chm,
 # otherwise it create html docs
 #
@@ -18,20 +18,21 @@ fi
 FPDocFooter=$2
 FPCDocDir=$3
 
-PackageName=lcl
-XMLSrcDir=../xml/lcl/
-PasSrcDir=../../lcl/
+PackageName=lazutils
+XMLSrcDir=../xml/lazutils/
+PasSrcDir=../../components/lazutils/
 InputFileList=inputfile.txt
 
 # list with units in a preseeded order.
 # missing units will be dropped from this list, other units added.
 # units not in import order will mutilate links.
 
-PreorderUnitList=( lclbase fpcadds lclstrconsts masks fileutil utf8process lcltype lclproc tmschema  lresources lclclasses )
-PreorderUnitList+=( avglvltree graphmath graphtype lmessages interfacebase lclrescache graphics imglist themes actnlist clipbrd stdactns )
-PreorderUnitList+=( graphics controls forms stdctrls extctrls buttons dialogs comctrls )
-PreorderUnitList+=( lazhelpintf printers grids dbgrids menus  )
-
+PreorderUnitList=( lazutilstrconsts luresstrings lazutf8sysutils lazmethodlist avglvltree )
+PreorderUnitList+=( lazutf8 lazutf16 masks fileutil lazutf8classes lconvencoding paswstring )
+PreorderUnitList+=( lazdbglog lazfileutils lazfilecache  lazutils ) 
+PreorderUnitList+=( laz2_xmlutils laz2_dom laz2_xmlread laz2_xmlwrite )
+PreorderUnitList+=( laz_dom lazxmlread laz_xmlwrite )
+PreorderUnitList+=( laz_xmlcfg laz2_xmlcfg  laz_xmlstreaming )
 #------------------
 
 inarray() 
@@ -48,7 +49,7 @@ mkdir -p $PackageName
 
 # create unit list
 cd $PasSrcDir
-FindUnitList=(*.pp *.pas)
+FindUnitList=(*.pas)
 cd -
 
 # test for preorder unit existance, add them to unitlist.
@@ -98,9 +99,9 @@ if [ -z "$HTMLFMT" ]; then
   HTMLFMT=html
 fi
 
-FPDocParams="--content=lcl.xct --package=lcl --descr=../${XMLSrcDir}lcl.xml --format=$HTMLFMT"
+FPDocParams="--content=lazutils.xct --package=lazutils --descr=../${XMLSrcDir}lazutils.xml --format=$HTMLFMT"
 if [ "$HTMLFMT" == "chm" ]; then
-  FPDocParams="$FPDocParams --css-file=../fpdoc.css --auto-toc --auto-index --make-searchable --output=lcl.chm"
+  FPDocParams="$FPDocParams --css-file=../fpdoc.css --auto-toc --auto-index --make-searchable --output=lazutils.chm"
 fi
 if [ -n "$FOOTERDATE" ]; then
   FPDocParams="$FPDocParams --footer-date=$FOOTERDATE"
@@ -111,18 +112,13 @@ fi
 if [ -n "$FPCDocDir" ]; then
   if [ "$HTMLFMT" == "chm" ]; then
     FPDocParams="$FPDocParams --import=$FPCDocDir/rtl.xct,ms-its:rtl.chm::/ --import=$FPCDocDir/fcl.xct,ms-its:fcl.chm::/"
-    if [ -f lazutils/lazutils.xct ]
-    then
-    FPDocParams="$FPDocParams --import=../lazutils/lazutils.xct,ms-its:lazutils.chm::/"
-    else
-      echo lazutils/lazutils.xct not found!
-    fi
   else
     FPDocParams="$FPDocParams --import=$FPCDocDir/rtl.xct,../rtl/ --import=$FPCDocDir/fcl.xct,../fcl/"
   fi
 fi
 
 cd $PackageName
+pwd
 $FPDoc $DescrFiles --input=@$InputFileList $FPDocParams
 cd -
    

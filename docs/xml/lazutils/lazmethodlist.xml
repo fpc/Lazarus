@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    LazMethodList
+  ====================================================================
+-->
+
+<module name="LazMethodList">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TMethodList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TMethodList.FItems">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TMethodList.FCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TMethodList.GetItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TMethodList.GetItems.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMethodList.GetItems.Index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TMethodList.SetItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMethodList.SetItems.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMethodList.SetItems.AValue">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TMethodList.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TMethodList.Count">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TMethodList.Count.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TMethodList.NextDownIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TMethodList.NextDownIndex.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMethodList.NextDownIndex.Index">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TMethodList.IndexOf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TMethodList.IndexOf.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMethodList.IndexOf.AMethod">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TMethodList.Delete">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMethodList.Delete.Index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TMethodList.Remove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMethodList.Remove.AMethod">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TMethodList.Add">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMethodList.Add.AMethod">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMethodList.Add.AsLast">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TMethodList.Insert">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMethodList.Insert.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMethodList.Insert.AMethod">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TMethodList.Move">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMethodList.Move.OldIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMethodList.Move.NewIndex">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TMethodList.RemoveAllMethodsOfObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMethodList.RemoveAllMethodsOfObject.AnObject">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TMethodList.CallNotifyEvents">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMethodList.CallNotifyEvents.Sender">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TMethodList.Items">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMethodList.Items.Index">
+<short></short>
+</element>
+
+</module> <!-- LazMethodList -->
+
+</package>
+</fpdoc-descriptions>

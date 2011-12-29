@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    laz2_XMLWrite
+  ====================================================================
+-->
+
+<module name="laz2_XMLWrite">
+<short></short>
+<descr>
+</descr>
+
+<!-- enumeration type Visibility: default -->
+<element name="TXMLWriterFlag">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXMLWriterFlag.xwfSpecialCharsInAttributeValue">
+<short></short>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TXMLWriterFlags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="WriteXMLFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WriteXMLFile.doc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WriteXMLFile.AFileName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WriteXMLFile.Flags">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WriteXMLFile.AFile">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WriteXMLFile.AStream">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="WriteXML">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WriteXML.Element">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WriteXML.AFileName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WriteXML.AFile">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WriteXML.AStream">
+<short></short>
+</element>
+
+</module> <!-- laz2_XMLWrite -->
+
+</package>
+</fpdoc-descriptions>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    paswstring
+  ====================================================================
+-->
+
+<module name="paswstring">
+<short></short>
+<descr>
+</descr>
+
+<!-- procedure Visibility: default -->
+<element name="SetPasWidestringManager">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- paswstring -->
+
+</package>
+</fpdoc-descriptions>

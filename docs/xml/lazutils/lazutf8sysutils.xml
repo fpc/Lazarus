@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    lazutf8sysutils
+  ====================================================================
+-->
+
+<module name="lazutf8sysutils">
+<short></short>
+<descr>
+</descr>
+
+<!-- function Visibility: default -->
+<element name="NowUTC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="NowUTC.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetTickCount64">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetTickCount64.Result">
+<short></short>
+</element>
+
+</module> <!-- lazutf8sysutils -->
+
+</package>
+</fpdoc-descriptions>

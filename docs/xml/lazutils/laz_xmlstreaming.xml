@@ -1,0 +1,1098 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    Laz_XMLStreaming
+  ====================================================================
+-->
+
+<module name="Laz_XMLStreaming">
+<short></short>
+<descr>
+</descr>
+
+<!-- enumeration type Visibility: default -->
+<element name="TXMLObjectWriterStackElType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXMLObjectWriterStackElType.elUnknown">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXMLObjectWriterStackElType.elPropertyList">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXMLObjectWriterStackElType.elChildrenList">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXMLObjectWriterStackEl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TXMLObjectWriterStackEl.Element">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TXMLObjectWriterStackEl.Parent">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TXMLObjectWriterStackEl.ElemType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TXMLObjectWriterStackEl.PropertyName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXMLObjectWriter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXMLObjectWriter.FDoc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXMLObjectWriter.FRootEl">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXMLObjectWriter.FStack">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXMLObjectWriter.StackEl">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TXMLObjectWriter.StackPush">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.StackPush.Element">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.StackPush.ElementType">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TXMLObjectWriter.StackPop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXMLObjectWriter.GetPropertyElement">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLObjectWriter.GetPropertyElement.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.GetPropertyElement.TypeName">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXMLObjectWriter.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.Create.ADoc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.Create.APath">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.Create.Append">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectWriter.BeginCollection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectWriter.BeginComponent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.BeginComponent.Component">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.BeginComponent.Flags">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.BeginComponent.ChildPos">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectWriter.BeginList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectWriter.EndList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectWriter.BeginProperty">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.BeginProperty.PropName">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectWriter.EndProperty">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectWriter.WriteBinary">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.WriteBinary.Buffer">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.WriteBinary.Count">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectWriter.WriteBoolean">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.WriteBoolean.Value">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectWriter.WriteFloat">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.WriteFloat.Value">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectWriter.WriteSingle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.WriteSingle.Value">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectWriter.WriteCurrency">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.WriteCurrency.Value">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectWriter.WriteDate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.WriteDate.Value">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectWriter.WriteIdent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.WriteIdent.Ident">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectWriter.WriteInteger">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.WriteInteger.Value">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectWriter.WriteMethodName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.WriteMethodName.Name">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectWriter.WriteSet">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.WriteSet.Value">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.WriteSet.SetType">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectWriter.WriteString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.WriteString.Value">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectWriter.WriteWideString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.WriteWideString.Value">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectWriter.Write">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.Write.Buffer">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectWriter.Write.Count">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXMLObjectWriter.Doc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- "class of" type Visibility: default -->
+<element name="TXMLObjectWriterClass">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXMLObjectReader">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXMLObjectReader.FDoc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXMLObjectReader.FElement">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXMLObjectReader.FElementPosition">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXMLObjectReader.FRootEl">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXMLObjectReader.ReadNextValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLObjectReader.ReadNextValue.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectReader.ReadNextValue.Stay">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXMLObjectReader.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectReader.Create.ADoc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectReader.Create.APath">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TXMLObjectReader.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLObjectReader.GetRootClassName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLObjectReader.GetRootClassName.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectReader.GetRootClassName.IsInherited">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLObjectReader.NextValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLObjectReader.NextValue.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLObjectReader.ReadValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLObjectReader.ReadValue.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectReader.BeginRootComponent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectReader.BeginComponent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectReader.BeginComponent.Flags">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectReader.BeginComponent.AChildPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectReader.BeginComponent.CompClassName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectReader.BeginComponent.CompName">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLObjectReader.BeginProperty">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLObjectReader.BeginProperty.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectReader.ReadBinary">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectReader.ReadBinary.DestData">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLObjectReader.ReadFloat">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLObjectReader.ReadFloat.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLObjectReader.ReadSingle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLObjectReader.ReadSingle.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLObjectReader.ReadCurrency">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLObjectReader.ReadCurrency.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLObjectReader.ReadDate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLObjectReader.ReadDate.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLObjectReader.ReadIdent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLObjectReader.ReadIdent.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectReader.ReadIdent.ValueType">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLObjectReader.ReadInt8">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLObjectReader.ReadInt8.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLObjectReader.ReadInt16">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLObjectReader.ReadInt16.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLObjectReader.ReadInt32">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLObjectReader.ReadInt32.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLObjectReader.ReadInt64">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLObjectReader.ReadInt64.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLObjectReader.ReadSet">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLObjectReader.ReadSet.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectReader.ReadSet.SetType">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLObjectReader.ReadStr">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLObjectReader.ReadStr.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLObjectReader.ReadString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLObjectReader.ReadString.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectReader.ReadString.StringType">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLObjectReader.ReadWideString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLObjectReader.ReadWideString.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectReader.SkipComponent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectReader.SkipComponent.SkipComponentInfos">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectReader.SkipValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLObjectReader.Read">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectReader.Read.Buf">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLObjectReader.Read.Count">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXMLObjectReader.Doc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXMLObjectReader.Element">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXMLObjectReader.ElementPosition">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- "class of" type Visibility: default -->
+<element name="TXMLObjectReaderClass">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="WriteComponentToXMLStream">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WriteComponentToXMLStream.AComponent">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WriteComponentToXMLStream.AStream">
+<short></short>
+</element>
+
+</module> <!-- Laz_XMLStreaming -->
+
+</package>
+</fpdoc-descriptions>

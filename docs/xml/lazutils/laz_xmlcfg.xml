@@ -1,0 +1,918 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    Laz_XMLCfg
+  ====================================================================
+-->
+
+<module name="Laz_XMLCfg">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TXMLConfig">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXMLConfig.FFilename">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXMLConfig.FReadFlags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXMLConfig.FWriteFlags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TXMLConfig.SetFilename">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.SetFilename.AFilename">
+<short></short>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TXMLConfig.doc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TXMLConfig.FModified">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TXMLConfig.fDoNotLoadFromFile">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TXMLConfig.fAutoLoadFromSource">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TXMLConfig.fPathCache">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TXMLConfig.fPathNodeCache">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TXMLConfig.Loaded">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXMLConfig.ExtendedToStr">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLConfig.ExtendedToStr.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.ExtendedToStr.e">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXMLConfig.StrToExtended">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLConfig.StrToExtended.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.StrToExtended.s">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.StrToExtended.ADefault">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TXMLConfig.ReadXMLFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.ReadXMLFile.ADoc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.ReadXMLFile.AFilename">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TXMLConfig.WriteXMLFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.WriteXMLFile.ADoc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.WriteXMLFile.AFileName">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TXMLConfig.FreeDoc">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TXMLConfig.SetPathNodeCache">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.SetPathNodeCache.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.SetPathNodeCache.Node">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXMLConfig.GetPathNodeCache">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLConfig.GetPathNodeCache.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.GetPathNodeCache.Index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TXMLConfig.InvalidateCacheTilEnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.InvalidateCacheTilEnd.StartIndex">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXMLConfig.InternalFindNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLConfig.InternalFindNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.InternalFindNode.APath">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.InternalFindNode.PathLen">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.InternalFindNode.CreateNodes">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TXMLConfig.InternalCleanNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.InternalCleanNode.Node">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXMLConfig.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.Create.AOwner">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.Create.AFilename">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXMLConfig.CreateClean">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.CreateClean.AFilename">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXMLConfig.CreateWithSource">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.CreateWithSource.AFilename">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.CreateWithSource.Source">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TXMLConfig.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLConfig.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLConfig.Flush">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLConfig.ReadFromStream">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.ReadFromStream.s">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLConfig.WriteToStream">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.WriteToStream.s">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLConfig.GetValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLConfig.GetValue.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.GetValue.APath">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.GetValue.ADefault">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLConfig.GetExtendedValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLConfig.GetExtendedValue.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.GetExtendedValue.APath">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.GetExtendedValue.ADefault">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLConfig.SetValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.SetValue.APath">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.SetValue.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLConfig.SetDeleteValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.SetDeleteValue.APath">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.SetDeleteValue.AValue">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.SetDeleteValue.DefValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLConfig.SetExtendedValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.SetExtendedValue.APath">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.SetExtendedValue.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLConfig.SetDeleteExtendedValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.SetDeleteExtendedValue.APath">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.SetDeleteExtendedValue.AValue">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.SetDeleteExtendedValue.DefValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLConfig.DeletePath">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.DeletePath.APath">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLConfig.DeleteValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.DeleteValue.APath">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLConfig.FindNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLConfig.FindNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.FindNode.APath">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.FindNode.PathHasValue">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLConfig.HasPath">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLConfig.HasPath.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.HasPath.APath">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.HasPath.PathHasValue">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXMLConfig.HasChildPaths">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXMLConfig.HasChildPaths.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLConfig.HasChildPaths.APath">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXMLConfig.Modified">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXMLConfig.InvalidatePathCache">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TXMLConfig.Filename">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TXMLConfig.Document">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TXMLConfig.ReadFlags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TXMLConfig.WriteFlags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TRttiXMLConfig">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TRttiXMLConfig.WriteProperty">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRttiXMLConfig.WriteProperty.Path">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRttiXMLConfig.WriteProperty.Instance">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRttiXMLConfig.WriteProperty.PropInfo">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRttiXMLConfig.WriteProperty.DefInstance">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRttiXMLConfig.WriteProperty.OnlyProperty">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TRttiXMLConfig.ReadProperty">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRttiXMLConfig.ReadProperty.Path">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRttiXMLConfig.ReadProperty.Instance">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRttiXMLConfig.ReadProperty.PropInfo">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRttiXMLConfig.ReadProperty.DefInstance">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRttiXMLConfig.ReadProperty.OnlyProperty">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TRttiXMLConfig.WriteObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRttiXMLConfig.WriteObject.Path">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRttiXMLConfig.WriteObject.Obj">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRttiXMLConfig.WriteObject.DefObject">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRttiXMLConfig.WriteObject.OnlyProperty">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TRttiXMLConfig.ReadObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRttiXMLConfig.ReadObject.Path">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRttiXMLConfig.ReadObject.Obj">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRttiXMLConfig.ReadObject.DefObject">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRttiXMLConfig.ReadObject.OnlyProperty">
+<short></short>
+</element>
+
+</module> <!-- Laz_XMLCfg -->
+
+</package>
+</fpdoc-descriptions>

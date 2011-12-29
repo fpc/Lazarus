@@ -1,0 +1,1046 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    LazFileCache
+  ====================================================================
+-->
+
+<module name="LazFileCache">
+<short></short>
+<descr>
+</descr>
+
+<!-- enumeration type Visibility: default -->
+<element name="TFileStateCacheItemFlag">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TFileStateCacheItemFlag.fsciExists">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TFileStateCacheItemFlag.fsciDirectory">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TFileStateCacheItemFlag.fsciReadable">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TFileStateCacheItemFlag.fsciWritable">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TFileStateCacheItemFlag.fsciDirectoryReadable">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TFileStateCacheItemFlag.fsciDirectoryWritable">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TFileStateCacheItemFlag.fsciText">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TFileStateCacheItemFlag.fsciExecutable">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TFileStateCacheItemFlag.fsciAge">
+<short></short>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TFileStateCacheItemFlags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TFileStateCacheItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFileStateCacheItem.FAge">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFileStateCacheItem.FFilename">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFileStateCacheItem.FFlags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFileStateCacheItem.FTestedFlags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFileStateCacheItem.FTimeStamp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TFileStateCacheItem.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCacheItem.Create.TheFilename">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCacheItem.Create.NewTimeStamp">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFileStateCacheItem.CalcMemSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFileStateCacheItem.CalcMemSize.Result">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TFileStateCacheItem.Filename">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TFileStateCacheItem.Flags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TFileStateCacheItem.TestedFlags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TFileStateCacheItem.TimeStamp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TFileStateCacheItem.Age">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="TOnChangeFileStateTimeStamp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnChangeFileStateTimeStamp.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnChangeFileStateTimeStamp.AFilename">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TFileStateCache">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFileStateCache.FFiles">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFileStateCache.FTimeStamp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFileStateCache.FLockCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFileStateCache.FChangeTimeStampHandler">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFileStateCache.SetFlag">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.SetFlag.AFile">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.SetFlag.AFlag">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.SetFlag.NewValue">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TFileStateCache.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TFileStateCache.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFileStateCache.Lock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFileStateCache.Unlock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFileStateCache.Locked">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFileStateCache.Locked.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFileStateCache.IncreaseTimeStamp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.IncreaseTimeStamp.AFilename">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFileStateCache.FileExistsCached">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFileStateCache.FileExistsCached.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.FileExistsCached.AFilename">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFileStateCache.DirPathExistsCached">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFileStateCache.DirPathExistsCached.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.DirPathExistsCached.AFilename">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFileStateCache.DirectoryIsWritableCached">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFileStateCache.DirectoryIsWritableCached.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.DirectoryIsWritableCached.DirectoryName">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFileStateCache.FileIsExecutableCached">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFileStateCache.FileIsExecutableCached.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.FileIsExecutableCached.AFilename">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFileStateCache.FileIsReadableCached">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFileStateCache.FileIsReadableCached.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.FileIsReadableCached.AFilename">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFileStateCache.FileIsWritableCached">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFileStateCache.FileIsWritableCached.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.FileIsWritableCached.AFilename">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFileStateCache.FileIsTextCached">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFileStateCache.FileIsTextCached.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.FileIsTextCached.AFilename">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFileStateCache.FileAgeCached">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFileStateCache.FileAgeCached.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.FileAgeCached.AFileName">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFileStateCache.FindFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFileStateCache.FindFile.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.FindFile.Filename">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.FindFile.CreateIfNotExists">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFileStateCache.Check">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFileStateCache.Check.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.Check.Filename">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.Check.AFlag">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.Check.AFile">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.Check.FlagIsSet">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFileStateCache.WriteDebugReport">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFileStateCache.AddChangeTimeStampHandler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.AddChangeTimeStampHandler.Handler">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFileStateCache.RemoveChangeTimeStampHandler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStateCache.RemoveChangeTimeStampHandler.Handler">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFileStateCache.CalcMemSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFileStateCache.CalcMemSize.Result">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TFileStateCache.TimeStamp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="FileStateCache">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="FileExistsCached">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="FileExistsCached.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FileExistsCached.AFilename">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="DirPathExistsCached">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="DirPathExistsCached.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DirPathExistsCached.AFilename">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="DirectoryIsWritableCached">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="DirectoryIsWritableCached.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DirectoryIsWritableCached.ADirectoryName">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="FileIsExecutableCached">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="FileIsExecutableCached.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FileIsExecutableCached.AFilename">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="FileIsReadableCached">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="FileIsReadableCached.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FileIsReadableCached.AFilename">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="FileIsWritableCached">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="FileIsWritableCached.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FileIsWritableCached.AFilename">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="FileIsTextCached">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="FileIsTextCached.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FileIsTextCached.AFilename">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="FileAgeCached">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="FileAgeCached.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FileAgeCached.AFileName">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="InvalidateFileStateCache">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="InvalidateFileStateCache.Filename">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CompareFileStateItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CompareFileStateItems.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CompareFileStateItems.Data1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CompareFileStateItems.Data2">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CompareFilenameWithFileStateCacheItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CompareFilenameWithFileStateCacheItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CompareFilenameWithFileStateCacheItem.Key">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CompareFilenameWithFileStateCacheItem.Data">
+<short></short>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="FileStateCacheItemFlagNames">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="LUInvalidChangeStamp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="LUInvalidChangeStamp64">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="LUIncreaseChangeStamp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LUIncreaseChangeStamp.ChangeStamp">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="LUIncreaseChangeStamp64">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LUIncreaseChangeStamp64.ChangeStamp">
+<short></short>
+</element>
+
+<!-- function type Visibility: default -->
+<element name="TOnFileExistsCached">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TOnFileExistsCached.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnFileExistsCached.Filename">
+<short></short>
+</element>
+
+<!-- function type Visibility: default -->
+<element name="TOnFileAgeCached">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TOnFileAgeCached.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnFileAgeCached.Filename">
+<short></short>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="OnFileExistsCached">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="OnFileAgeCached">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- LazFileCache -->
+
+</package>
+</fpdoc-descriptions>

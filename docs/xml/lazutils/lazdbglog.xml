@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    LazDbgLog
+  ====================================================================
+-->
+
+<module name="LazDbgLog">
+<short></short>
+<descr>
+</descr>
+
+<!-- function Visibility: default -->
+<element name="MemSizeString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="MemSizeString.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MemSizeString.s">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="MemSizeFPList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="MemSizeFPList.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MemSizeFPList.List">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetStringRefCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetStringRefCount.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetStringRefCount.s">
+<short></short>
+</element>
+
+</module> <!-- LazDbgLog -->
+
+</package>
+</fpdoc-descriptions>

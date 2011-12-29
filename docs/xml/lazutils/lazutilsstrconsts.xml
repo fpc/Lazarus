@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    LazUtilsStrConsts
+  ====================================================================
+-->
+
+<module name="LazUtilsStrConsts">
+<short></short>
+<descr>
+</descr>
+
+<!-- resource string Visibility: default -->
+<element name="rsModified">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="sInvalidCharSet">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- LazUtilsStrConsts -->
+
+</package>
+</fpdoc-descriptions>

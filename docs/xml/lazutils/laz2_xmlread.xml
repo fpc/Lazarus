@@ -1,0 +1,909 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    laz2_XMLRead
+  ====================================================================
+-->
+
+<module name="laz2_XMLRead">
+<short></short>
+<descr>
+</descr>
+
+<!-- enumeration type Visibility: default -->
+<element name="TErrorSeverity">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TErrorSeverity.esWarning">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TErrorSeverity.esError">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TErrorSeverity.esFatal">
+<short></short>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TXMLReaderFlag">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXMLReaderFlag.xrfAllowLowerThanInAttributeValue">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXMLReaderFlag.xrfAllowSpecialCharsInAttributeValue">
+<short></short>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TXMLReaderFlags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="EXMLReadError">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="EXMLReadError.FSeverity">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="EXMLReadError.FErrorMessage">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="EXMLReadError.FLine">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="EXMLReadError.FLinePos">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="EXMLReadError.Severity">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="EXMLReadError.ErrorMessage">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="EXMLReadError.Line">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="EXMLReadError.LinePos">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="EXMLReadError.LineCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="EXMLReadError.LineCol.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ReadXMLFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadXMLFile.ADoc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadXMLFile.AFilename">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadXMLFile.Flags">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadXMLFile.f">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadXMLFile.ABaseURI">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ReadXMLFragment">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadXMLFragment.AParentNode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadXMLFragment.AFilename">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadXMLFragment.Flags">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadXMLFragment.f">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadXMLFragment.ABaseURI">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ReadDTDFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadDTDFile.ADoc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadDTDFile.AFilename">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadDTDFile.f">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadDTDFile.ABaseURI">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMParseOptions">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDOMParseOptions.FValidate">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDOMParseOptions.FPreserveWhitespace">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDOMParseOptions.FExpandEntities">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDOMParseOptions.FIgnoreComments">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDOMParseOptions.FCDSectionsAsText">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDOMParseOptions.FResolveExternals">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDOMParseOptions.FNamespaces">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDOMParseOptions.FDisallowDoctype">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDOMParseOptions.FCanonical">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDOMParseOptions.FMaxChars">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TDOMParseOptions.GetCanonical">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMParseOptions.GetCanonical.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TDOMParseOptions.SetCanonical">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMParseOptions.SetCanonical.aValue">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMParseOptions.Validate">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMParseOptions.PreserveWhitespace">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMParseOptions.ExpandEntities">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMParseOptions.IgnoreComments">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMParseOptions.CDSectionsAsText">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMParseOptions.ResolveExternals">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMParseOptions.Namespaces">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMParseOptions.DisallowDoctype">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMParseOptions.MaxChars">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMParseOptions.CanonicalForm">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TXMLContextAction">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXMLContextAction.xaAppendAsChildren">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXMLContextAction.xaReplaceChildren">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXMLContextAction.xaInsertBefore">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXMLContextAction.xaInsertAfter">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXMLContextAction.xaReplace">
+<short></short>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="TXMLErrorEvent">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLErrorEvent.Error">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXMLInputSource">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXMLInputSource.FStream">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXMLInputSource.FStringData">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXMLInputSource.FBaseURI">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXMLInputSource.FSystemID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXMLInputSource.FPublicID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXMLInputSource.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLInputSource.Create.AStream">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXMLInputSource.Create.AStringData">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXMLInputSource.Stream">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXMLInputSource.StringData">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXMLInputSource.BaseURI">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXMLInputSource.SystemID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXMLInputSource.PublicID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDOMParser">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDOMParser.FOptions">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDOMParser.FOnError">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TDOMParser.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TDOMParser.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDOMParser.Parse">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMParser.Parse.Src">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMParser.Parse.ADoc">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDOMParser.ParseUri">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMParser.ParseUri.URI">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMParser.ParseUri.ADoc">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDOMParser.ParseWithContext">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDOMParser.ParseWithContext.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMParser.ParseWithContext.Src">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMParser.ParseWithContext.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDOMParser.ParseWithContext.Action">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMParser.Options">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDOMParser.OnError">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TDecoder">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TDecoder.Context">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDecoder.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDecoder.InBuf">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDecoder.InCnt">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDecoder.OutBuf">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDecoder.OutCnt">
+<short></short>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TDecoder.Decode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TDecoder.Cleanup">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function type Visibility: default -->
+<element name="TGetDecoderProc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGetDecoderProc.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGetDecoderProc.AEncoding">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGetDecoderProc.Decoder">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="RegisterDecoder">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RegisterDecoder.Proc">
+<short></short>
+</element>
+
+</module> <!-- laz2_XMLRead -->
+
+</package>
+</fpdoc-descriptions>

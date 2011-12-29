@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    Laz_XMLRead
+  ====================================================================
+-->
+
+<module name="Laz_XMLRead">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="EXMLReadError">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="EXMLReadError.Position">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="EXMLReadError.LineCol">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="EXMLReadError.Descr">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ReadXMLFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadXMLFile.ADoc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadXMLFile.AFilename">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadXMLFile.f">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ReadXMLFragment">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadXMLFragment.AParentNode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadXMLFragment.AFilename">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadXMLFragment.f">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ReadDTDFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadDTDFile.ADoc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadDTDFile.AFilename">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReadDTDFile.f">
+<short></short>
+</element>
+
+</module> <!-- Laz_XMLRead -->
+
+</package>
+</fpdoc-descriptions>

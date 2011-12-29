@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    LUResStrings
+  ====================================================================
+-->
+
+<module name="LUResStrings">
+<short></short>
+<descr>
+</descr>
+
+<!-- resource string Visibility: default -->
+<element name="ctsFileDoesNotExists">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ctsFileIsNotExecutable">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- LUResStrings -->
+
+</package>
+</fpdoc-descriptions>
