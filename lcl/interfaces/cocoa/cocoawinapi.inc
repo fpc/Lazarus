@@ -1077,11 +1077,12 @@ begin
       Result := NSColor.controlTextColor;
     COLOR_APPWORKSPACE:
       Result := NSColor.windowBackgroundColor;
-    COLOR_HIGHLIGHT,
+    COLOR_HIGHLIGHT:
+      Result := NSColor.selectedControlColor;
     COLOR_HOTLIGHT:
       Result := NSColor.alternateSelectedControlColor;
     COLOR_HIGHLIGHTTEXT:
-      Result := NSColor.alternateSelectedControlTextColor;
+      Result := NSColor.selectedControlTextColor;
     COLOR_SCROLLBAR:
       Result := NSColor.scrollBarColor;
     COLOR_BTNFACE:
@@ -1372,6 +1373,46 @@ begin
     Result := HWND(NSApp.keyWindow)
   else
     Result := 0;
+end;
+
+function TCocoaWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
+const
+  StateDown    = SmallInt($FF80);
+  StateToggled = SmallInt($0001);
+  DownMap: array[Boolean] of SmallInt = (0, StateDown);
+  ToggleMap: array[Boolean] of SmallInt = (0, StateToggled);
+var
+  Modifiers: NSUInteger;
+begin
+  Modifiers := NSApp.currentEvent.modifierFlags;
+  case nVirtKey of
+    VK_MENU,
+    VK_LMENU:
+      // the ssAlt/VK_MENU is mapped to optionKey under MacOS
+      Result := DownMap[(Modifiers and NSAlternateKeyMask) <> 0];
+    VK_SHIFT,
+    VK_LSHIFT:
+      Result := DownMap[(Modifiers and NSShiftKeyMask) <> 0];
+    VK_CONTROL,
+    VK_LCONTROL:
+      Result := DownMap[(Modifiers and NSControlKeyMask) <> 0];
+    VK_LWIN, VK_RWIN:
+      Result := DownMap[(Modifiers and NSCommandKeyMask) <> 0];
+    VK_CAPITAL:
+      Result := ToggleMap[(Modifiers and NSAlphaShiftKeyMask) <> 0];
+    VK_LBUTTON:
+      Result := DownMap[(GetCurrentEventButtonState and $01) <> 0];
+    VK_RBUTTON:
+      Result := DownMap[(GetCurrentEventButtonState and $02) <> 0];
+    VK_MBUTTON:
+      Result := DownMap[(GetCurrentEventButtonState and $03) <> 0];
+    VK_XBUTTON1:
+      Result := DownMap[(GetCurrentEventButtonState and $04) <> 0];
+    VK_XBUTTON2:
+      Result := DownMap[(GetCurrentEventButtonState and $05) <> 0];
+    else
+      Result := 0;
+  end;
 end;
 
 function TCocoaWidgetSet.SelectObject(ADC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
