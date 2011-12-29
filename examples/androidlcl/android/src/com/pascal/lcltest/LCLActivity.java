@@ -14,11 +14,12 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.telephony.SmsManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 
-public class LCLActivity extends Activity implements SensorEventListener
+public class LCLActivity extends Activity implements SensorEventListener, LocationListener
 {
-  private SensorManager localSensorManager;
-
   // -------------------------------------------
   // Our drawing surface
   // -------------------------------------------
@@ -100,14 +101,24 @@ public class LCLActivity extends Activity implements SensorEventListener
 
   // Global objects
   LCLSurface lclsurface;
+  SensorManager localSensorManager;
+
+  // Utility routines
+  public static double[] convertFloatsToDoubles(float[] input)
+  {
+    if (input == null) return null;
+    double[] output = new double[input.length];
+    for (int i = 0; i < input.length; i++)
+    {  output[i] = input[i]; }
+    return output;
+  }
 
   // -------------------------------------------
   // Activity Events
   // -------------------------------------------
 
   /** Called when the activity is first created. */
-  @Override
-  public void onCreate(Bundle savedInstanceState) 
+  @Override public void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
           
@@ -154,7 +165,7 @@ public class LCLActivity extends Activity implements SensorEventListener
   public native int LCLOnKey(int kind, int keyCode, KeyEvent event, char AChar);
   public native int LCLOnTimer(Runnable timerid);
   public native int LCLOnConfigurationChanged(int ANewDPI, int ANewWidth);
-  public native int LCLOnSensorChanged(int ASensorKind, float[] AValues);
+  public native int LCLOnSensorChanged(int ASensorKind, double[] AValues);
 
   // -------------------------------------------
   // Functions exported to the Pascal side
@@ -193,6 +204,7 @@ public class LCLActivity extends Activity implements SensorEventListener
     localpaint.setTextSize(lcltextsize);
 
     float localmaxwidth = (float) lclmaxwidth;
+    //Log.i("lclapp", "[LCLDoGetTextPartialWidths] lcltext="+lcltext+" localmaxwidth="+Float.toString(localmaxwidth));
     lclmaxcount = localpaint.breakText(lcltext, true, localmaxwidth, lclpartialwidths);
   }
 
@@ -317,16 +329,17 @@ public class LCLActivity extends Activity implements SensorEventListener
     localInputManager.showSoftInput(lclsurface, 0);
   };
 
-  @Override
-  public void onSensorChanged(SensorEvent event)
+  // SensorEventListener overrides
+
+  @Override public void onSensorChanged(SensorEvent event)
   {
+    double[] eventValues = convertFloatsToDoubles(event.values);
     int eventKind = event.sensor.getType();
-    int eventResult = LCLOnSensorChanged(eventKind, event.values);
+    int eventResult = LCLOnSensorChanged(eventKind, eventValues);
     if (((eventResult | 1) != 0) && (lclsurface != null)) lclsurface.postInvalidate();
   }
 
-  @Override
-  public void onAccuracyChanged(Sensor sensor, int accuracy)
+  @Override public void onAccuracyChanged(Sensor sensor, int accuracy)
   {
   }
 
@@ -355,8 +368,36 @@ public class LCLActivity extends Activity implements SensorEventListener
     }
   };
 
+  // LocationListener overrides
+
+  @Override public void onLocationChanged(Location loc)
+  {
+    if (loc != null)
+    {
+      double[] positionArray = new double[2];
+      positionArray[0] = loc.getLatitude();
+      positionArray[1] = loc.getLongitude();
+      int eventResult = LCLOnSensorChanged(-10, positionArray);
+      if (((eventResult | 1) != 0) && (lclsurface != null)) lclsurface.postInvalidate();
+    }
+  }
+
+  @Override public void onProviderDisabled(String provider)
+  {
+  }
+
+  @Override public void onProviderEnabled(String provider)
+  {
+  }
+
+  @Override public void onStatusChanged(String provider, int status, Bundle extras)
+  {
+  }
+
   public void LCLDoRequestPositionInfo()
   {
+    LocationManager mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+    mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
   }
 
   // -------------------------------------------

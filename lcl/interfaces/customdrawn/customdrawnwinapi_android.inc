@@ -4077,10 +4077,10 @@ var
   lJavaString: jstring;
   lIsCopy: jboolean;
 begin
-  {$ifdef VerboseCDText}
-    DebugLn(Format('[WinAPI GetTextExtentExPoint] DC=%x javaEnvRef=%x Str=%s',
-      [DC, PtrInt(javaEnvRef), StrPas(Str)]));
-  {$endif}
+  {.$ifdef VerboseCDText}
+    DebugLn(Format('[WinAPI GetTextExtentExPoint] DC=%x javaEnvRef=%x Str=%s MaxWidth=%d',
+      [DC, PtrInt(javaEnvRef), StrPas(Str), MaxWidth]));
+  {.$endif}
 //  Result := inherited GetTextExtentExPoint(DC, Str, Count, MaxWidth, MaxCount, PartialWidths, Size);
 
   Result := False;
@@ -4102,10 +4102,13 @@ begin
   javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lclmaxwidth, MaxWidth);
 
   // Call the method
-  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoGetTextBounds);
+  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoGetTextPartialWidths);
 
   // Read the output
   lMaxCount := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclmaxcount);
+  {.$ifdef VerboseCDText}
+  DebugLn(Format(':[WinAPI GetTextExtentExPoint] MaxCount=%d', [lMaxCount]));
+  {.$endif}
 
   if MaxCount <> nil then MaxCount^ := lMaxCount;
 
@@ -4118,7 +4121,13 @@ begin
     arraydata := javaEnvRef^^.GetFloatArrayElements(javaEnvRef, arraydata_obj, lIsCopy);
 
     for i := 0 to lMaxCount-1 do
+    begin
       PartialWidths[i] := Round(arraydata[i]);
+      {.$ifdef VerboseCDText}
+      DebugLn(Format(':[WinAPI GetTextExtentExPoint] i=%d PartialWidth=%d',
+        [i, PartialWidths[i]]));
+      {.$endif}
+    end;
 
     // Don't forget to release it
     javaEnvRef^^.ReleaseFloatArrayElements(javaEnvRef, arraydata_obj, arraydata, 0);

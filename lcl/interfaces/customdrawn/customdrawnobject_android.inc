@@ -251,9 +251,9 @@ begin
 end;
 
 function Java_com_pascal_lclproject_LCLActivity_LCLOnSensorChanged(
-  env:PJNIEnv; this:jobject; ASensorKind: jint; AValues: JFloatArray): jint; cdecl;
+  env:PJNIEnv; this:jobject; ASensorKind: jint; AValues: JDoubleArray): jint; cdecl;
 var
-  arraydata: PSingle;
+  arraydata: PDouble;
   arraylen: jsize;
   lIsCopy: jboolean;
 begin
@@ -264,20 +264,32 @@ begin
   // Get the elements and length
   lIsCopy := 0;
   arraylen := javaEnvRef^^.GetArrayLength(javaEnvRef, AValues);
-  arraydata := javaEnvRef^^.GetFloatArrayElements(javaEnvRef, AValues, lIsCopy);
+  arraydata := javaEnvRef^^.GetDoubleArrayElements(javaEnvRef, AValues, lIsCopy);
 
   // Send the data to the LCL
-  if ASensorKind = 1 then
-  begin
-    Accelerometer.xaxis := arraydata[0];
-    Accelerometer.yaxis := arraydata[1];
-    Accelerometer.zaxis := arraydata[2];
-    if Assigned(Accelerometer.OnSensorChanged) then
-      Accelerometer.OnSensorChanged(nil);
+  case ASensorKind of
+    -10: // Defined by ourselves for PositionInfo
+    begin
+      PositionInfo.latitude := arraydata[0];
+      PositionInfo.longitude := arraydata[1];
+      if Assigned(PositionInfo.OnPositionRetrieved) then
+        PositionInfo.OnPositionRetrieved(PositionInfo);
+    end;
+    1: // ACCELEROMETER
+    begin
+      Accelerometer.xaxis := arraydata[0];
+      Accelerometer.yaxis := arraydata[1];
+      Accelerometer.zaxis := arraydata[2];
+      if Assigned(Accelerometer.OnSensorChanged) then
+        Accelerometer.OnSensorChanged(Accelerometer);
+    end;
   end;
 
   // Don't forget to release it
-  javaEnvRef^^.ReleaseFloatArrayElements(javaEnvRef, AValues, arraydata, 0);
+  javaEnvRef^^.ReleaseDoubleArrayElements(javaEnvRef, AValues, arraydata, 0);
+
+  // This sends messages like Invalidate requests
+  Result := eventResult;
 end;
 
 const NativeMethods: array[0..7] of JNINativeMethod=
@@ -303,7 +315,7 @@ const NativeMethods: array[0..7] of JNINativeMethod=
     signature:'(II)I';
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnConfigurationChanged;),
    (name:'LCLOnSensorChanged';
-    signature:'(I[F)I';
+    signature:'(I[D)I';
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnSensorChanged;)
   );
 

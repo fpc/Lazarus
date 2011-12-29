@@ -165,6 +165,8 @@ end;
 
 procedure TCDWidgetSet.LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
 begin
+  // Call the method
+  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoRequestPositionInfo);
 end;
 
 procedure TCDWidgetSet.LazDeviceAPIs_SendMessage(AMsg: TLazDeviceMessage);
