@@ -143,8 +143,11 @@ procedure TCustomBitBtn.SetLayout(AValue: TButtonLayout);
 begin
   if FLayout = AValue then Exit;
   FLayout := AValue;
-  if HandleAllocated 
-  then TWSBitBtnClass(WidgetSetClass).SetLayout(Self, FLayout);
+  if HandleAllocated then
+  begin
+    TWSBitBtnClass(WidgetSetClass).SetLayout(Self, FLayout);
+    InvalidatePreferredSize;
+  end;
   AdjustSize;
 end;
 
