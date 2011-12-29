@@ -66,6 +66,8 @@ type
                                         PlatformIndependent: boolean): string;
     function MacroFuncEnv(const Param: string; const Data: PtrInt;
                           var Abort: boolean): string;
+    function MacroFuncFPCMsgFile(const Param: string; const Data: PtrInt;
+                          var Abort: boolean): string;
     function MacroFuncFPCVer(const Param: string; const Data: PtrInt;
                              var Abort: boolean): string;
     function MacroFuncLCLWidgetType(const Param: string; const Data: PtrInt;
@@ -327,6 +329,8 @@ begin
                       lisProjectOutDir,@MacroFuncProjOutDir,[]));
   GlobalMacroList.Add(TTransferMacro.Create('Env','',
                      lisEnvironmentVariableNameAsParameter, @MacroFuncEnv, []));
+  GlobalMacroList.Add(TTransferMacro.Create('FPCMsgFile','',
+                     lisFPCMessageFile, @MacroFuncFPCMsgFile, []));
   GlobalMacroList.Add(TTransferMacro.Create('MakeExe','',
                       lisMakeExe,@MacroFuncMakeExe,[]));
   GlobalMacroList.Add(TTransferMacro.Create('MakeLib','',
@@ -1670,6 +1674,12 @@ function TBuildManager.MacroFuncEnv(const Param: string; const Data: PtrInt;
   var Abort: boolean): string;
 begin
   Result:=GetEnvironmentVariableUTF8(Param);
+end;
+
+function TBuildManager.MacroFuncFPCMsgFile(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  Result:=EnvironmentOptions.CompilerMessagesFilename;
 end;
 
 function TBuildManager.MacroFuncMake(const Param: string; const Data: PtrInt;
