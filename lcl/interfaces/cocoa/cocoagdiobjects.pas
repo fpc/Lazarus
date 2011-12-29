@@ -189,6 +189,7 @@ type
     constructor CreateDefault;
     constructor Create(const ALogFont: TLogFont; AFontName: String; AGlobal: Boolean = False); reintroduce;
     class function CocoaFontWeightToWin32FontWeight(const CocoaFontWeight: Integer): Integer; static;
+    property Antialiased: Boolean read FAntialiased;
     property Font: NSFont read FFont;
     property Name: String read FName;
     property Size: Integer read FSize;
@@ -465,10 +466,10 @@ begin
   FName := NSStringToString(FFont.familyName);
   FSize := Round(NSFont.systemFontSize);
   FStyle := [];
+  FAntialiased := True;
 end;
 
-constructor TCocoaFont.Create(const ALogFont: TLogFont; AFontName: String;
-  AGlobal: Boolean);
+constructor TCocoaFont.Create(const ALogFont: TLogFont; AFontName: String; AGlobal: Boolean);
 var
   FontName: NSString;
   Descriptor: NSFontDescriptor;
@@ -501,7 +502,6 @@ begin
     include(FStyle, cfs_Underline);
   if ALogFont.lfStrikeOut > 0 then
     include(FStyle, cfs_StrikeOut);
-
 
   Attributes := NSDictionary.dictionaryWithObjectsAndKeys(
         NSStringUTF8(FName), NSFontFamilyAttribute,
@@ -541,6 +541,7 @@ begin
     until CocoaWeight = Win32Weight;
   end;
   FFont.retain;
+  FAntialiased := ALogFont.lfQuality <> NONANTIALIASED_QUALITY;
   Pool.release;
 end;
 
@@ -974,6 +975,7 @@ begin
     Context := ctx;
 
   ctx.setCurrentContext(Context);
+  ctx.setShouldAntialias(FFont.Antialiased);
   Range := FLayout.glyphRangeForTextContainer(FTextContainer);
   Pt.x := X;
   Pt.y := Y;
