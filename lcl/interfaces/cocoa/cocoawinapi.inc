@@ -1031,23 +1031,10 @@ begin
     WHITE_PEN:           // White pen.
       Result := FStockWhitePen;
 
-    {System font. By default, Windows uses the system font to draw menus,
-     dialog box controls, and text. In Windows versions 3.0 and later,
-     the system font is a proportionally spaced font; earlier versions of
-     Windows used a monospace system font.}
-{    DEFAULT_GUI_FONT, SYSTEM_FONT:
-      begin
-
-        If FStockSystemFont <> 0 then
-        begin
-          DeleteObject(FStockSystemFont);
-          FStockSystemFont := 0;
-        end;
-
-        If FStockSystemFont = 0 then
-          FStockSystemFont := CreateDefaultFont;
-        Result := FStockSystemFont;
-      end;}
+    DEFAULT_GUI_FONT, SYSTEM_FONT:
+      Result := FStockSystemFont;
+    SYSTEM_FIXED_FONT:
+      Result := FStockFixedFont;
   end;
 end;
 

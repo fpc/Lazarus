@@ -82,6 +82,7 @@ type
     FStockBlackPen: HPEN;
     FStockWhitePen: HPEN;
     FStockSystemFont: HFONT;
+    FStockFixedFont: HFONT;
 
     FSysColorBrushes: array[0..MAX_SYS_COLORS] of HBrush;
 

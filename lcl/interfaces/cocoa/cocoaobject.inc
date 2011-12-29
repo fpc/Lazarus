@@ -328,9 +328,9 @@ end;
 procedure TCocoaWidgetSet.InitStockItems;
 var
   LogBrush: TLogBrush;
-  logPen : TLogPen;
+  logPen: TLogPen;
 begin
-  FillChar(LogBrush,SizeOf(TLogBrush),0);
+  FillChar(LogBrush, SizeOf(TLogBrush),0);
   LogBrush.lbStyle := BS_NULL;
   FStockNullBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
 
@@ -350,20 +350,19 @@ begin
   LogBrush.lbColor := $FFFFFF;
   FStockWhiteBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
 
-{  LogPen.lopnStyle := PS_NULL;
-  LogPen.lopnWidth := Point(0, 0); // create cosmetic pens
+  LogPen.lopnStyle := PS_NULL;
+  LogPen.lopnWidth := Types.Point(0, 0); // create cosmetic pens
   LogPen.lopnColor := $FFFFFF;
-  FStockNullPen := CreatePenIndirect(LogPen);
-  TQtPen(FStockNullPen).FShared := True;
+  FStockNullPen := HPen(TCocoaPen.Create(LogPen, True));
 
   LogPen.lopnStyle := PS_SOLID;
-  FStockWhitePen := CreatePenIndirect(LogPen);
-  TQtPen(FStockWhitePen).FShared := True;
+  FStockWhitePen := HPen(TCocoaPen.Create(LogPen, True));
 
   LogPen.lopnColor := $000000;
-  FStockBlackPen := CreatePenIndirect(LogPen);
-  TQtPen(FStockBlackPen).FShared := True;
-  }
+  FStockBlackPen := HPen(TCocoaPen.Create(LogPen, True));
+
+  FStockSystemFont := HFont(TCocoaFont.CreateDefault(True));
+  FStockFixedFont := HFont(TCocoaFont.Create(NSFont.userFixedPitchFontOfSize(0), True));
 end;
 
 procedure TCocoaWidgetSet.FreeStockItems;
@@ -389,6 +388,7 @@ begin
   DeleteAndNilObject(FStockWhitePen);
 
   DeleteAndNilObject(FStockSystemFont);
+  DeleteAndNilObject(FStockFixedFont);
 end;
 
 procedure TCocoaWidgetSet.FreeSysColorBrushes;

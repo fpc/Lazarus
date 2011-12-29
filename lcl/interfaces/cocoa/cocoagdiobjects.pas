@@ -186,8 +186,9 @@ type
     FStyle: TCocoaFontStyle;
     FAntialiased: Boolean;
   public
-    constructor CreateDefault;
-    constructor Create(const ALogFont: TLogFont; AFontName: String; AGlobal: Boolean = False); reintroduce;
+    constructor CreateDefault(AGlobal: Boolean = False);
+    constructor Create(const ALogFont: TLogFont; AFontName: String; AGlobal: Boolean = False); reintroduce; overload;
+    constructor Create(const AFont: NSFont; AGlobal: Boolean = False); overload;
     class function CocoaFontWeightToWin32FontWeight(const CocoaFontWeight: Integer): Integer; static;
     property Antialiased: Boolean read FAntialiased;
     property Font: NSFont read FFont;
@@ -459,14 +460,9 @@ type
 
 { TCocoaFont }
 
-constructor TCocoaFont.CreateDefault;
+constructor TCocoaFont.CreateDefault(AGlobal: Boolean = False);
 begin
-  inherited Create(False);
-  FFont := NSFont.systemFontOfSize(0);
-  FName := NSStringToString(FFont.familyName);
-  FSize := Round(NSFont.systemFontSize);
-  FStyle := [];
-  FAntialiased := True;
+  Create(NSFont.systemFontOfSize(0));
 end;
 
 constructor TCocoaFont.Create(const ALogFont: TLogFont; AFontName: String; AGlobal: Boolean);
@@ -543,6 +539,16 @@ begin
   FFont.retain;
   FAntialiased := ALogFont.lfQuality <> NONANTIALIASED_QUALITY;
   Pool.release;
+end;
+
+constructor TCocoaFont.Create(const AFont: NSFont; AGlobal: Boolean);
+begin
+  inherited Create(AGlobal);
+  FFont := AFont;
+  FName := NSStringToString(FFont.familyName);
+  FSize := Round(FFont.pointSize);
+  FStyle := [];
+  FAntialiased := True;
 end;
 
 class function TCocoaFont.CocoaFontWeightToWin32FontWeight(const CocoaFontWeight: Integer): Integer; static;
