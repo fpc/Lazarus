@@ -584,8 +584,11 @@ function TQtThemeServices.GetStockImage(StockID: LongInt; out Image,
 var
   APixmap: QPixmapH;
   AImage: QImageH;
+  AScaledImage: QImageH;
   AStdPixmap: QStyleStandardPixmap;
   opt: QStyleOptionH;
+  IconSize: Integer;
+  R: TRect;
 begin
   case StockID of
     idButtonOk: AStdPixmap := QStyleSP_DialogOkButton;
@@ -617,6 +620,10 @@ begin
 
   opt := QStyleOption_create(Integer(QStyleOptionVersion), Integer(QStyleOptionSO_Default));
   APixmap := QPixmap_create();
+  if StockID in [idButtonOk..idButtonShield] then
+    IconSize := QStyle_pixelMetric(QApplication_style(), QStylePM_SmallIconSize, opt)
+  else
+    IconSize := 0;
   QStyle_standardPixmap(QApplication_style(), APixmap, AStdPixmap, opt);
   QStyleOption_Destroy(opt);
 
@@ -631,6 +638,20 @@ begin
   AImage := QImage_create();
   QPixmap_toImage(APixmap, AImage);
   QPixmap_destroy(APixmap);
+
+  // we must respect theme size , qt is buggy somehow, some icons are 22 some 16px.
+  if IconSize > 0 then
+  begin
+    if (QImage_width(AImage) > IconSize) and (QImage_height(AImage) > IconSize) then
+    begin
+      AScaledImage := QImage_create();
+      QImage_scaled(AImage, AScaledImage, IconSize, IconSize, QtKeepAspectRatio, QtSmoothTransformation);
+      QImage_destroy(AImage);
+      AImage := QImage_create(AScaledImage);
+      QImage_destroy(AScaledImage);
+    end;
+  end;
+
   Image := HBitmap(TQtImage.Create(AImage));
   Mask := 0;
   Result := True;
