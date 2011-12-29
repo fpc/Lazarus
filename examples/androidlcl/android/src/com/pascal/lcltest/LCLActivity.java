@@ -76,11 +76,8 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
     @Override public boolean onKeyUp (int keyCode, KeyEvent event)
     {
       // First handle the KeyUp event
-      int eventResult = LCLOnKey(KeyEvent.ACTION_UP, keyCode, event, event.getDisplayLabel());
+      int eventResult = LCLOnKey(KeyEvent.ACTION_UP, keyCode, event, event.getUnicodeChar());
       if ((eventResult & 1) != 0) postInvalidate();
-
-      // Now KeyPress
-      //KeyCharacterMap localMap = event.getKeyCharacterMap();
 
       // Handling of the Back hardware key
       super.onKeyUp(keyCode, event);
@@ -174,7 +171,7 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   public native int LCLOnTouch(float x, float y, int action);
   public native int LCLOnCreate(LCLActivity lclactivity);
   public native int LCLOnMessageBoxFinished(int Result);
-  public native int LCLOnKey(int kind, int keyCode, KeyEvent event, char AChar);
+  public native int LCLOnKey(int kind, int keyCode, KeyEvent event, int AChar);
   public native int LCLOnTimer(Runnable timerid);
   public native int LCLOnConfigurationChanged(int ANewDPI, int ANewWidth);
   public native int LCLOnSensorChanged(int ASensorKind, double[] AValues);

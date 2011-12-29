@@ -143,6 +143,7 @@ type
     procedure AppProcessMessage;
     {$endif}
     {$ifdef CD_Android}
+    CombiningAccent: Cardinal;
     procedure AndroidDebugLn(AStr: string);
     function AndroidKeyCodeToLCLKeyCode(AAndroidKeyCode: Integer): Word;
     {$endif}
@@ -247,7 +248,7 @@ function Java_com_pascal_lclproject_LCLActivity_LCLOnMessageBoxFinished(
     env:PJNIEnv; this:jobject; AResult: jint): jint; cdecl;
 function Java_com_pascal_lclproject_LCLActivity_LCLOnKey(
     env:PJNIEnv; this:jobject; AKind: jint; AKeyCode: jint;
-    AEvent: jobject; AChar: jchar): jint; cdecl;
+    AEvent: jobject; AChar: jint): jint; cdecl;
 function Java_com_pascal_lclproject_LCLActivity_LCLOnTimer(
     env:PJNIEnv; this:jobject; ATimer: jobject): jint; cdecl;
 function Java_com_pascal_lclproject_LCLActivity_LCLOnConfigurationChanged(

@@ -44,7 +44,7 @@ function UTF8Length(p: PChar; ByteCount: PtrInt): PtrInt;
 function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal;
 function UnicodeToUTF8(u: cardinal; Buf: PChar): integer; inline;
 function UnicodeToUTF8SkipErrors(u: cardinal; Buf: PChar): integer;
-function UnicodeToUTF8(u: cardinal): shortstring; inline;
+function UnicodeToUTF8(u: cardinal): string;
 function UTF8ToDoubleByteString(const s: string): string;
 function UTF8ToDoubleByte(UTF8Str: PChar; Len: PtrInt; DBStr: PByte): PtrInt;
 function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
@@ -340,9 +340,12 @@ begin
   end;
 end;
 
-function UnicodeToUTF8(u: cardinal): shortstring;
+function UnicodeToUTF8(u: cardinal): string;
+var
+  Buf: array[0..6] of Char;
 begin
-  Result[0]:=chr(UnicodeToUTF8(u,@Result[1]));
+  UnicodeToUTF8SkipErrors(u, @Buf[0]);
+  Result := StrPas(@Buf[0]);
 end;
 
 function UTF8ToDoubleByteString(const s: string): string;

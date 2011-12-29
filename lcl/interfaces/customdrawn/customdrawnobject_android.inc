@@ -30,6 +30,9 @@ const
   ACTION_MULTIPLE = 2;
   // Keys are in KeyCodes.pas
 
+  // from android.view.KeyCharacterMap
+  COMBINING_ACCENT = $80000000;
+
 function Java_com_pascal_lclproject_LCLActivity_LCLOnTouch(env:PJNIEnv;this:jobject; x, y: single; action: jint): jint; cdecl;
 var
   lCurForm: TCDNonNativeForm;
@@ -136,19 +139,21 @@ end;
 
 function Java_com_pascal_lclproject_LCLActivity_LCLOnKey(
     env:PJNIEnv; this:jobject; AKind: jint; AKeyCode: jint;
-    AEvent: jobject; AChar: jchar): jint; cdecl;
+    AEvent: jobject; AChar: jint): jint; cdecl;
 var
   lCurForm: TCDNonNativeForm;
   lTarget, lFocusedControl: TWinControl;
   lKey: Word;
-  AWideText: widestring;
+  lCombinedAChar: jint;
+  lChar: Cardinal;
   AUTF8Text: string;
   AUTF8Char: TUTF8Char;
   lForm: TCDNonNativeForm;
 begin
+  lChar := Cardinal(AChar);
   {$ifdef VerboseCDEvents}
   __android_log_write(ANDROID_LOG_INFO,'lclapp',PChar(
-    Format('[LCLOnKey] called AKind=%d AKeyCode=%x AChar=%s', [AKind, AKeyCode, UTF8Encode(WideChar(AChar))])));
+    Format('[LCLOnKey] called AKind=%d AKeyCode=%x AChar=%s', [AKind, AKeyCode, UnicodeToUTF8(lChar)])));
   {$endif}
   eventResult := 0;
 
@@ -160,13 +165,32 @@ begin
     ACTION_UP:
     begin
       CallbackKeyUp(lCurForm, lKey);
-      if AChar <> 0 then
+      if (lChar <> 0) and ((COMBINING_ACCENT and lChar) = 0) then
       begin
-        SetLength(AWideText, 1);
-        AWideText[1] := WideChar(AChar);
-        AUTF8Text := UTF16ToUTF8(AWideText);
+        if CDWidgetset.CombiningAccent <> 0 then
+        begin
+(*          // Prepare the input
+          lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, Str);
+          javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
+          javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, lFontSize);
+
+          // Call the method
+          javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoGetTextBounds);
+
+          // Read the output
+          Size.cx := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclwidth);
+          Size.cy := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclheight);
+          //
+          lCombinedAChar := getDeadChar();*)
+        end;
+        AUTF8Text := UnicodeToUTF8(lChar);
         AUTF8Char := AUTF8Text;
         CallbackKeyChar(lCurForm, lKey, AUTF8Char);
+        CDWidgetset.CombiningAccent := 0;
+      end
+      else if (lChar <> 0) and ((COMBINING_ACCENT and lChar) <> 0) then
+      begin
+        CDWidgetset.CombiningAccent := lChar;
       end;
 
       // Handle the Back hardware key
@@ -333,7 +357,7 @@ const NativeMethods: array[0..7] of JNINativeMethod=
     signature:'(I)I';
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnMessageBoxFinished;),
    (name:'LCLOnKey';
-    signature:'(IILandroid/view/KeyEvent;C)I';
+    signature:'(IILandroid/view/KeyEvent;I)I';
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnKey;),
    (name:'LCLOnTimer';
     signature:'(Ljava/lang/Runnable;)I';
