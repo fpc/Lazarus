@@ -258,6 +258,7 @@ var
   lIsCopy: jboolean;
   lSensorDataInt: Integer;
   lMessagingStatus: TLazMessagingStatus;
+  lUnixTimeStamp: Int64;
 begin
   Result := 0;
 
@@ -291,6 +292,13 @@ begin
     begin
       PositionInfo.latitude := arraydata[0];
       PositionInfo.longitude := arraydata[1];
+      PositionInfo.altitude := arraydata[2];
+      PositionInfo.accuracy := arraydata[3];
+      PositionInfo.altitudeAccuracy := PositionInfo.accuracy;
+      PositionInfo.speed := arraydata[4];
+      lUnixTimeStamp := Round(arraydata[5]);
+      PositionInfo.timeStamp :=  UnixToDateTime(lUnixTimeStamp);
+
       if Assigned(PositionInfo.OnPositionRetrieved) then
         PositionInfo.OnPositionRetrieved(PositionInfo);
     end;

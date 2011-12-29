@@ -88,9 +88,9 @@ type
     accuracy: Double; // The horizontal accuracy of the position in meters
     altitude: Double; // Altitude in meters using the World Geodetic System 1984 (WGS84) datum.
     altitudeAccuracy: Double; // The vertical accuracy of the position in meters, or null if not available.
-    cellID: Double; // This is the id of the cell.
     latitude: Double; // Latitude in degrees using the World Geodetic System 1984 (WGS84) datum.
     longitude: Double; // Longitude in degrees using the World Geodetic System 1984 (WGS84) datum.
+    speed: Double; // In meters / second
     timeStamp: TDateTime; // The time when the location was established.
     procedure RequestPositionInfo(AMethod: TLazPositionMethod);
     // Called asynchronously when the position is read

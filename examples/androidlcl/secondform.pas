@@ -84,7 +84,7 @@ end;
 
 procedure TForm2.btnGetPosClick(Sender: TObject);
 begin
-  PositionInfo.RequestPositionInfo([]);
+  PositionInfo.RequestPositionInfo(pmGPS);
   PositionInfo.OnPositionRetrieved := @HandlePositionRetrieved;
 end;
 
@@ -93,8 +93,7 @@ begin
   DebugLn('[Edit1Exit]');
 end;
 
-procedure TForm2.textDestKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
-  );
+procedure TForm2.textDestKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   DebugLn('[Edit1KeyDown] Key=' + DbgsVKCode(Key));
 end;

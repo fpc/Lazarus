@@ -98,18 +98,7 @@ type
 
   // Types for LazDeviceAPIs
 
-  TLazPositionMethodCriteria = (
-    // about quality
-    pmcBest,     // Will try the best available quality
-    // about price
-    pmcMightCostMoney, // Might choose a position method which incurs money cost
-    // about speed
-    pmFastest,
-    // about one should try to select a method which gives speed measures
-    pmMustGiveSpeed
-    );
-
-  TLazPositionMethod = set of TLazPositionMethodCriteria;
+  TLazPositionMethod = (pmGPS, pmNetwork);
 
   { TLazDeviceMessage }
 

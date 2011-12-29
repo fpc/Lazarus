@@ -164,7 +164,17 @@ begin
 end;
 
 procedure TCDWidgetSet.LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
+var
+  lPositionMethod: jint;
 begin
+  // Prepare the input
+  case AMethod of
+    pmGPS: lPositionMethod := 1;
+    pmNetwork: lPositionMethod := 2;
+  else
+    Exit;
+  end;
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclkind, lPositionMethod);
   // Call the method
   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoRequestPositionInfo);
 end;

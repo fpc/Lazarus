@@ -435,12 +435,20 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
         }
       }, new IntentFilter("SMS_DELIVERED"));
 
-      SmsManager sms = SmsManager.getDefault();
-      Log.i("lclapp", "[LCLDoSendMessage] lcldestination="+lcldestination
-        +" lcltext="+lcltext);
-      ArrayList<String> parts = sms.divideMessage(lcltext);
-      //sms.sendMultipartTextMessage(lcldestination, null, parts, sentPI, deliveredPI);
-      sms.sendTextMessage(lcldestination, null, lcltext, sentPI, deliveredPI);
+      // SMS sending seams to cause an awful lot of exceptions
+      // See: http://stackoverflow.com/questions/4580952/why-do-i-get-nullpointerexception-when-sending-an-sms-on-an-htc-desire-or-what
+      // See: http://code.google.com/p/android/issues/detail?id=3718
+      try
+      {
+        SmsManager sms = SmsManager.getDefault();
+        Log.i("lclapp", "[LCLDoSendMessage] lcldestination="+lcldestination+" lcltext="+lcltext);
+        ArrayList<String> parts = sms.divideMessage(lcltext);
+        //sms.sendMultipartTextMessage(lcldestination, null, parts, sentPI, deliveredPI);
+        sms.sendTextMessage(lcldestination, null, lcltext, sentPI, deliveredPI);
+      }
+      catch (Exception e)
+      {
+      }
     }
   };
 
@@ -450,9 +458,13 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   {
     if (loc != null)
     {
-      double[] positionArray = new double[2];
+      double[] positionArray = new double[6];
       positionArray[0] = loc.getLatitude();
       positionArray[1] = loc.getLongitude();
+      positionArray[2] = loc.getAltitude();
+      positionArray[3] = (double)loc.getAccuracy();
+      positionArray[4] = (double)loc.getSpeed();
+      positionArray[5] = (double)loc.getTime();
       int eventResult = LCLOnSensorChanged(-10, positionArray);
       if (((eventResult | 1) != 0) && (lclsurface != null)) lclsurface.postInvalidate();
     }
@@ -470,10 +482,16 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   {
   }
 
+  // input:  int lclkind
   public void LCLDoRequestPositionInfo()
   {
     LocationManager mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-    mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+    switch (lclkind)
+    {
+      case 1: mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+      case 2: mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+      default: Log.i("lclapp", "[LCLDoRequestPositionInfo] Wrong lclkind parameter");
+    }
   }
 
   // -------------------------------------------
