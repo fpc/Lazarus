@@ -297,6 +297,9 @@ var
   javaField_lclformheight: JfieldID=nil;
   javaField_lclscreenwidth: JfieldID=nil;
   javaField_lclscreenheight: JfieldID=nil;
+  // For LazDeviceAPIs
+  javaField_lcldestination: JfieldID=nil;
+  javaField_lclkind: JfieldID=nil;
 
   // Methods of our Activity
   javaMethod_LCLDoGetTextBounds: jmethodid = nil;
@@ -308,6 +311,9 @@ var
   javaMethod_LCLDoHideVirtualKeyboard: jmethodid = nil;
   javaMethod_LCLDoShowVirtualKeyboard: jmethodid = nil;
   javaMethod_LCLDoStartReadingAccelerometer: jmethodid = nil;
+  javaMethod_LCLDoStopReadingAccelerometer: jmethodid = nil;
+  javaMethod_LCLDoSendMessage: jmethodid = nil;
+  javaMethod_LCLDoRequestPositionInfo: jmethodid = nil;
 
   // This is utilized to store the information such as invalidate requests in events
   eventResult: jint;

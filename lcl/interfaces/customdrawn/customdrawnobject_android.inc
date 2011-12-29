@@ -375,6 +375,9 @@ begin
   javaField_lclformheight := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclformheight', 'I');
   javaField_lclscreenwidth := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclscreenwidth', 'I');
   javaField_lclscreenheight := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclscreenheight', 'I');
+  // For LazDeviceAPIs
+  javaField_lcldestination := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcldestination', 'Ljava/lang/String;');
+  javaField_lclkind := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclkind', 'I');
   //
   if not assigned(JavaField_lcltext) then
   begin
@@ -392,6 +395,9 @@ begin
   javaMethod_LCLDoHideVirtualKeyboard := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoHideVirtualKeyboard', '()V');
   javaMethod_LCLDoShowVirtualKeyboard := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoShowVirtualKeyboard', '()V');
   javaMethod_LCLDoStartReadingAccelerometer := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoStartReadingAccelerometer', '()V');
+  javaMethod_LCLDoStopReadingAccelerometer := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoStopReadingAccelerometer', '()V');
+  javaMethod_LCLDoSendMessage := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoSendMessage', '()V');
+  javaMethod_LCLDoRequestPositionInfo := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoRequestPositionInfo', '()V');
 
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', 'JNI_OnLoad finished');
   result:=JNI_VERSION_1_4;// 1_6 is another option

@@ -532,6 +532,11 @@ begin
 
 end;
 
+procedure TWidgetSet.LazDeviceAPIs_StopReadingAccelerometerData();
+begin
+
+end;
+
 function TWidgetSet.MoveWindowOrgEx(dc: hdc; dX,dY: Integer): boolean;
 var
   P: TPoint;

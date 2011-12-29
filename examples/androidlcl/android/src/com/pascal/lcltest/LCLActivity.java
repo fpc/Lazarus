@@ -13,6 +13,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.telephony.SmsManager;
 
 public class LCLActivity extends Activity implements SensorEventListener
 {
@@ -342,6 +343,22 @@ public class LCLActivity extends Activity implements SensorEventListener
     localSensorManager.unregisterListener(this);
   };
 
+  // input: String lcldestination, String lcltext (Body)
+  public void LCLDoSendMessage()
+  {
+    if (lclkind == 1)
+    {
+      PendingIntent pi = PendingIntent.getActivity(this, 0,
+        new Intent(this, Object.class), 0);
+      SmsManager sms = SmsManager.getDefault();
+      sms.sendTextMessage(lcldestination, null, lcltext, pi, null);
+    }
+  };
+
+  public void LCLDoRequestPositionInfo()
+  {
+  }
+
   // -------------------------------------------
   // Fields exported to the Pascal side for easier data communication
   // -------------------------------------------
@@ -377,6 +394,9 @@ public class LCLActivity extends Activity implements SensorEventListener
   public int lclformheight;
   public int lclscreenwidth;
   public int lclscreenheight;
+  // for LazDeviceAPIs
+  public String lcldestination;
+  public int lclkind;
 
   static
   {

@@ -129,6 +129,11 @@ begin
 
 end;
 
+procedure TCDWidgetSet.LazDeviceAPIs_StopReadingAccelerometerData();
+begin
+
+end;
+
 {------------------------------------------------------------------------------
   Function: PromptUser
   Params:

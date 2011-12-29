@@ -365,6 +365,11 @@ begin
   Widgetset.LazDeviceAPIs_StartReadingAccelerometerData();
 end;
 
+procedure LazDeviceAPIs_StopReadingAccelerometerData();
+begin
+  Widgetset.LazDeviceAPIs_StopReadingAccelerometerData();
+end;
+
 function MoveWindowOrgEx(dc: hdc; dX,dY: Integer): boolean;
 begin
   Result := WidgetSet.MoveWindowOrgEx(DC, dX, dY);

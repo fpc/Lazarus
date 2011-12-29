@@ -16,20 +16,20 @@ object Form2: TForm2
     OnClick = Button1Click
     TabOrder = 0
   end
-  object Edit1: TEdit
-    Left = 12
+  object textDest: TEdit
+    Left = 8
     Height = 25
-    Top = 32
+    Top = 56
     Width = 80
-    OnExit = Edit1Exit
-    OnKeyDown = Edit1KeyDown
-    OnKeyUp = Edit1KeyUp
-    OnUTF8KeyPress = Edit1UTF8KeyPress
+    OnExit = textDestExit
+    OnKeyDown = textDestKeyDown
+    OnKeyUp = textDestKeyUp
+    OnUTF8KeyPress = textDestUTF8KeyPress
     TabOrder = 1
-    Text = 'Edit1'
+    Text = 'textDest'
   end
   object Image1: TImage
-    Left = 96
+    Left = 102
     Height = 138
     Top = 32
     Width = 210
@@ -1783,13 +1783,13 @@ object Form2: TForm2
       2E202E202E202E202E202E20227D3B0A
     }
   end
-  object Button2: TButton
+  object btnStartAccel: TButton
     Left = 8
     Height = 25
     Top = 194
-    Width = 304
-    Caption = 'Read Accelerometer'
-    OnClick = Button2Click
+    Width = 112
+    Caption = 'Read Accel.'
+    OnClick = btnStartAccelClick
     TabOrder = 2
   end
   object labelSensorData: TLabel
@@ -1798,6 +1798,57 @@ object Form2: TForm2
     Top = 168
     Width = 81
     Caption = 'Sensor Data'
+    ParentColor = False
+  end
+  object btnStopAccel: TButton
+    Left = 128
+    Height = 25
+    Top = 194
+    Width = 91
+    Caption = 'Stop Accel.'
+    OnClick = btnStopAccelClick
+    TabOrder = 3
+  end
+  object btnGetPos: TButton
+    Left = 224
+    Height = 25
+    Top = 194
+    Width = 88
+    Caption = 'Get Position'
+    OnClick = btnGetPosClick
+    TabOrder = 4
+  end
+  object Label1: TLabel
+    Left = 10
+    Height = 18
+    Top = 88
+    Width = 63
+    Caption = 'SMS Text:'
+    ParentColor = False
+  end
+  object textBody: TEdit
+    Left = 8
+    Height = 25
+    Top = 104
+    Width = 80
+    TabOrder = 5
+    Text = 'textBody'
+  end
+  object btnSendSMS: TButton
+    Left = 8
+    Height = 25
+    Top = 136
+    Width = 75
+    Caption = 'Send SMS'
+    OnClick = btnSendSMSClick
+    TabOrder = 6
+  end
+  object Label2: TLabel
+    Left = 8
+    Height = 18
+    Top = 32
+    Width = 53
+    Caption = 'Number'
     ParentColor = False
   end
 end

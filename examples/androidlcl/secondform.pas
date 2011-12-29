@@ -14,21 +14,31 @@ type
 
   TForm2 = class(TForm)
     Button1: TButton;
-    Button2: TButton;
-    Edit1: TEdit;
+    btnStartAccel: TButton;
+    btnStopAccel: TButton;
+    btnGetPos: TButton;
+    btnSendSMS: TButton;
+    textDest: TEdit;
+    textBody: TEdit;
     Image1: TImage;
+    Label1: TLabel;
+    Label2: TLabel;
     labelSensorData: TLabel;
+    procedure btnSendSMSClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
-    procedure Edit1Exit(Sender: TObject);
-    procedure Edit1KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure Edit1KeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure Edit1UTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+    procedure btnStartAccelClick(Sender: TObject);
+    procedure btnStopAccelClick(Sender: TObject);
+    procedure btnGetPosClick(Sender: TObject);
+    procedure textDestExit(Sender: TObject);
+    procedure textDestKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure textDestKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure textDestUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
   private
     { private declarations }
   public
     { public declarations }
     procedure HandleAccelerometerChanged(Sender: TObject);
+    procedure HandlePositionRetrieved(Sender: TObject);
   end; 
 
 var
@@ -45,29 +55,50 @@ begin
   Hide;
 end;
 
-procedure TForm2.Button2Click(Sender: TObject);
+procedure TForm2.btnSendSMSClick(Sender: TObject);
+var
+  lMessage: TLazDeviceMessage;
+begin
+  lMessage := Messaging.CreateMessage();
+  lMessage.Body := textBody.Text;
+  lMessage.destinationAddress.Text := textDest.Text;
+  Messaging.SendMessage(lMessage);
+end;
+
+procedure TForm2.btnStartAccelClick(Sender: TObject);
 begin
   Accelerometer.OnSensorChanged := @HandleAccelerometerChanged;
   Accelerometer.StartReadingAccelerometerData();
 end;
 
-procedure TForm2.Edit1Exit(Sender: TObject);
+procedure TForm2.btnStopAccelClick(Sender: TObject);
+begin
+  Accelerometer.StopReadingAccelerometerData();
+end;
+
+procedure TForm2.btnGetPosClick(Sender: TObject);
+begin
+  PositionInfo.RequestPositionInfo([]);
+  PositionInfo.OnPositionRetrieved := @HandlePositionRetrieved;
+end;
+
+procedure TForm2.textDestExit(Sender: TObject);
 begin
   DebugLn('[Edit1Exit]');
 end;
 
-procedure TForm2.Edit1KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
+procedure TForm2.textDestKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
   );
 begin
   DebugLn('[Edit1KeyDown] Key=' + DbgsVKCode(Key));
 end;
 
-procedure TForm2.Edit1KeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TForm2.textDestKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   DebugLn('[Edit1KeyUp] Key=' + DbgsVKCode(Key));
 end;
 
-procedure TForm2.Edit1UTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+procedure TForm2.textDestUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
 begin
   DebugLn('[Edit1UTF8KeyPress] Char=' + UTF8Key);
 end;
@@ -76,6 +107,13 @@ procedure TForm2.HandleAccelerometerChanged(Sender: TObject);
 begin
   labelSensorData.Caption := Format('X=%f Y=%f Z=%f', [Accelerometer.xaxis,
     Accelerometer.yaxis, Accelerometer.zaxis]);
+  DebugLn(labelSensorData.Caption);
+end;
+
+procedure TForm2.HandlePositionRetrieved(Sender: TObject);
+begin
+  labelSensorData.Caption := Format('latitude=%f longitude=%f',
+    [PositionInfo.latitude, PositionInfo.longitude]);
   DebugLn(labelSensorData.Caption);
 end;
 

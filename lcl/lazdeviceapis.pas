@@ -40,6 +40,7 @@ type
   TLazAccelerometer = class
   private
     FOnSensorChanged: TNotifyEvent;
+    FReadingStarted: Boolean;
   public
     // These fields store the last data read, to get fresh data use UpdateAccelerometerData;
     xaxis, yaxis, zaxis: Double; // in m/s^2
@@ -63,6 +64,8 @@ type
   public
     // Attempt to send the specified message.
     procedure SendMessage(AMsg: TLazDeviceMessage);
+    //
+    function CreateMessage: TLazDeviceMessage;
     // Called asynchronously when the message sending is finished
     property OnMessageSendingFinished: TOnMessageSendingFinished read FTOnMessageSendingFinished
       write FTOnMessageSendingFinished;
@@ -70,11 +73,9 @@ type
 
   // TLazPositionInfo
 
-  TOnPositionRetrieved = procedure of object;
-
   TLazPositionInfo = class
   private
-    FOnPositionRetrieved: TOnPositionRetrieved;
+    FOnPositionRetrieved: TNotifyEvent;
   public
     IsPositionDataAvailable: Boolean; // Indicates if position info was read in the life of this program
     // These fields hold the last position information read
@@ -87,7 +88,7 @@ type
     timeStamp: TDateTime; // The time when the location was established.
     procedure RequestPositionInfo(AMethod: TLazPositionMethod);
     // Called asynchronously when the position is read
-    property OnPositionRetrieved: TOnPositionRetrieved read FOnPositionRetrieved write FOnPositionRetrieved;
+    property OnPositionRetrieved: TNotifyEvent read FOnPositionRetrieved write FOnPositionRetrieved;
   end;
 
 var
@@ -101,12 +102,16 @@ implementation
 
 procedure TLazAccelerometer.StartReadingAccelerometerData;
 begin
+  if FReadingStarted then Exit;
   LCLIntf.LazDeviceAPIs_StartReadingAccelerometerData();
+  FReadingStarted := True;
 end;
 
 procedure TLazAccelerometer.StopReadingAccelerometerData;
 begin
-
+  if not FReadingStarted then Exit;
+  LCLIntf.LazDeviceAPIs_StopReadingAccelerometerData();
+  FReadingStarted := False;
 end;
 
 { TLazPositionInfo }
@@ -121,6 +126,11 @@ end;
 procedure TLazMessaging.SendMessage(AMsg: TLazDeviceMessage);
 begin
   LCLIntf.LazDeviceAPIs_SendMessage(AMsg);
+end;
+
+function TLazMessaging.CreateMessage: TLazDeviceMessage;
+begin
+  Result := TLazDeviceMessage.Create;
 end;
 
 initialization
