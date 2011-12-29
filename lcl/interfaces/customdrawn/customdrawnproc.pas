@@ -40,6 +40,7 @@ type
     Region: TLazRegionWithChilds;
     WinControl: TWinControl;
     CDControl: TCDControl;
+    CDControlInjected: Boolean;
   end;
 
   { TCDForm }

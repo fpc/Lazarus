@@ -140,7 +140,7 @@ type
 
   TCDWSCustomEdit = class(TWSCustomEdit)
   public
-    class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
+    class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
     // TWSWinControl
     class function CreateHandle(const AWinControl: TWinControl;
@@ -847,15 +847,13 @@ end;*)
 
 { TCDWSCustomEdit }
 
-class procedure TCDWSCustomEdit.CreateCDControl(const AWinControl: TWinControl;
+class procedure TCDWSCustomEdit.InjectCDControl(const AWinControl: TWinControl;
   var ACDControlField: TCDControl);
 begin
-  ACDControlField := TCDIntfEdit.Create(AWinControl);
   TCDIntfEdit(ACDControlField).LCLControl := TCustomEdit(AWinControl);
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
-  TCDIntfEdit(ACDControlField).Text := TCustomEdit(AWinControl).Text;
 end;
 
 {------------------------------------------------------------------------------
@@ -870,6 +868,7 @@ var
 begin
   Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
   lCDWinControl := TCDWinControl(Result);
+  lCDWinControl.CDControl := TCDIntfEdit.Create(AWinControl);
 end;
 
 class procedure TCDWSCustomEdit.DestroyHandle(const AWinControl: TWinControl);
@@ -877,6 +876,7 @@ var
   lCDWinControl: TCDWinControl;
 begin
   lCDWinControl := TCDWinControl(AWinControl.Handle);
+  lCDWinControl.CDControl.Free;
   lCDWinControl.Free;
 end;
 
@@ -889,7 +889,7 @@ begin
   lCDWinControl := TCDWinControl(AWinControl.Handle);
   if lCDWinControl.CDControl = nil then Exit;
   AText := TCDIntfEdit(lCDWinControl.CDControl).Text;
-  DebugLn('[TCDWSCustomEdit.GetText] AText='+AText);
+  //DebugLn('[TCDWSCustomEdit.GetText] AWinControl=' + AWinControl.Name + ' AText='+AText);
   Result := True;
 end;
 
@@ -911,8 +911,11 @@ begin
 
   TCDWSWinControl.ShowHide(AWinControl);
 
-  if lCDWinControl.CDControl = nil then
-    CreateCDControl(AWinControl, lCDWinControl.CDControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
 end;
 
 (*class procedure TCDWSCustomEdit.SetAlignment(const ACustomEdit: TCustomEdit;
