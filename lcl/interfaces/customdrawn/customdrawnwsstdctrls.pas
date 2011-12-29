@@ -142,9 +142,44 @@ type
   public
     class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
+    // TWSWinControl
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure ShowHide(const AWinControl: TWinControl); override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+
+{    //class function  CanFocus(const AWincontrol: TWinControl): Boolean; override;
+
+  class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
+  class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
+  class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
+  class function  GetDefaultClientRect(const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect): boolean; override;
+  class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;}
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+//  class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
+
+{  class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar : Boolean); override;
+  class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
+  class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
+  class procedure SetColor(const AWinControl: TWinControl); override;
+  class procedure SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TFPList); override;
+  class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
+  class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
+  class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;}
+  class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+{  class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
+  class procedure SetShape(const AWinControl: TWinControl; const AShape: HBITMAP); override;}
+
+{  class procedure AdaptBounds(const AWinControl: TWinControl;
+        var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
+
+  class procedure ConstraintsChange(const AWinControl: TWinControl); override;
+  class procedure DefaultWndHandler(const AWinControl: TWinControl; var AMessage); override;
+  class procedure Invalidate(const AWinControl: TWinControl); override;
+  class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;}
+  class procedure ShowHide(const AWinControl: TWinControl); override;
+
+  // TWSCustomEdit
+
 {    class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
     class function GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; override;
     class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
@@ -820,6 +855,7 @@ begin
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
+  TCDIntfEdit(ACDControlField).Text := TCustomEdit(AWinControl).Text;
 end;
 
 {------------------------------------------------------------------------------
@@ -834,6 +870,37 @@ var
 begin
   Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
   lCDWinControl := TCDWinControl(Result);
+end;
+
+class procedure TCDWSCustomEdit.DestroyHandle(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  lCDWinControl.Free;
+end;
+
+class function TCDWSCustomEdit.GetText(const AWinControl: TWinControl;
+  var AText: String): Boolean;
+var
+  lCDWinControl: TCDWinControl;
+begin
+  Result := False;
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  AText := TCDIntfEdit(lCDWinControl.CDControl).Text;
+  DebugLn('[TCDWSCustomEdit.GetText] AText='+AText);
+  Result := True;
+end;
+
+class procedure TCDWSCustomEdit.SetText(const AWinControl: TWinControl;
+  const AText: String);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  TCDIntfEdit(lCDWinControl.CDControl).Text := AText;
 end;
 
 class procedure TCDWSCustomEdit.ShowHide(const AWinControl: TWinControl);

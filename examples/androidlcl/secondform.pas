@@ -39,12 +39,16 @@ type
     { public declarations }
     procedure HandleAccelerometerChanged(Sender: TObject);
     procedure HandlePositionRetrieved(Sender: TObject);
+    procedure HandleMessagingStatus(AMessage: TLazDeviceMessage;
+      AStatus: TLazMessagingStatus);
   end; 
 
 var
   Form2: TForm2; 
 
 implementation
+
+uses TypInfo;
 
 {$R *.lfm}
 
@@ -59,9 +63,11 @@ procedure TForm2.btnSendSMSClick(Sender: TObject);
 var
   lMessage: TLazDeviceMessage;
 begin
+  Messaging.OnMessagingStatus := @HandleMessagingStatus;
   lMessage := Messaging.CreateMessage();
   lMessage.Body := textBody.Text;
   lMessage.destinationAddress.Text := textDest.Text;
+  DebugLn('[TForm2.btnSendSMSClick] dest='+textDest.Text);
   Messaging.SendMessage(lMessage);
 end;
 
@@ -114,6 +120,14 @@ procedure TForm2.HandlePositionRetrieved(Sender: TObject);
 begin
   labelSensorData.Caption := Format('latitude=%f longitude=%f',
     [PositionInfo.latitude, PositionInfo.longitude]);
+  DebugLn(labelSensorData.Caption);
+end;
+
+procedure TForm2.HandleMessagingStatus(AMessage: TLazDeviceMessage;
+  AStatus: TLazMessagingStatus);
+begin
+  labelSensorData.Caption := '[HandleMessagingStatus] ' +
+    GetEnumName(TypeInfo(TLazMessagingStatus), integer(AStatus));
   DebugLn(labelSensorData.Caption);
 end;
 

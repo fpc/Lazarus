@@ -4077,10 +4077,10 @@ var
   lJavaString: jstring;
   lIsCopy: jboolean;
 begin
-  {.$ifdef VerboseCDText}
+  {$ifdef VerboseCDText}
     DebugLn(Format('[WinAPI GetTextExtentExPoint] DC=%x javaEnvRef=%x Str=%s MaxWidth=%d',
       [DC, PtrInt(javaEnvRef), StrPas(Str), MaxWidth]));
-  {.$endif}
+  {$endif}
 //  Result := inherited GetTextExtentExPoint(DC, Str, Count, MaxWidth, MaxCount, PartialWidths, Size);
 
   Result := False;
@@ -4106,9 +4106,9 @@ begin
 
   // Read the output
   lMaxCount := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclmaxcount);
-  {.$ifdef VerboseCDText}
+  {$ifdef VerboseCDText}
   DebugLn(Format(':[WinAPI GetTextExtentExPoint] MaxCount=%d', [lMaxCount]));
-  {.$endif}
+  {$endif}
 
   if MaxCount <> nil then MaxCount^ := lMaxCount;
 
@@ -4123,10 +4123,10 @@ begin
     for i := 0 to lMaxCount-1 do
     begin
       PartialWidths[i] := Round(arraydata[i]);
-      {.$ifdef VerboseCDText}
+      {$ifdef VerboseCDText}
       DebugLn(Format(':[WinAPI GetTextExtentExPoint] i=%d PartialWidth=%d',
         [i, PartialWidths[i]]));
-      {.$endif}
+      {$endif}
     end;
 
     // Don't forget to release it

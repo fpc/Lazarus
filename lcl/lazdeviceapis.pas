@@ -51,24 +51,30 @@ type
 
   // TLazMessaging
 
-  TLazMessageSendingStatus = (mssSuccess, mssGeneralError);
+  TLazMessagingStatus = (
+    // Message sending status
+    mssSentSuccessfully, mssSendingGeneralError, mssRadioOff, mssNoService,
+    // Message receiving status (by the destination)
+    mssReceivedSuccessfully, mssReceivingGeneralError
+    );
 
-  TOnMessageSendingFinished = procedure (AMessage: TLazDeviceMessage;
-    ASendingStatus: TLazMessageSendingStatus; AErrorMsg: string) of object;
+  TOnMessagingStatus = procedure (AMessage: TLazDeviceMessage;
+    AStatus: TLazMessagingStatus) of object;
 
   { TLazMessaging }
 
   TLazMessaging = class
   private
-    FTOnMessageSendingFinished: TOnMessageSendingFinished;
+    FOnMessagingStatus: TOnMessagingStatus;
+    FMessages: TFPList; // of TLazDeviceMessage
   public
-    // Attempt to send the specified message.
-    procedure SendMessage(AMsg: TLazDeviceMessage);
-    //
+    constructor Create; virtual;
+    destructor Destroy; override;
+    procedure SendMessage(AMsg: TLazDeviceMessage); // Attempt to send the specified message.
     function CreateMessage: TLazDeviceMessage;
-    // Called asynchronously when the message sending is finished
-    property OnMessageSendingFinished: TOnMessageSendingFinished read FTOnMessageSendingFinished
-      write FTOnMessageSendingFinished;
+    procedure FreeMessage(AMessage: TLazDeviceMessage);
+    // Called asynchronously when there is a message sending status
+    property OnMessagingStatus: TOnMessagingStatus read FOnMessagingStatus write FOnMessagingStatus;
   end;
 
   // TLazPositionInfo
@@ -123,6 +129,22 @@ end;
 
 { TLazMessaging }
 
+constructor TLazMessaging.Create;
+begin
+  FMessages := TFPList.Create;
+end;
+
+destructor TLazMessaging.Destroy;
+var
+  i: Integer;
+begin
+  // Free all messages
+  for i := 0 to FMessages.Count-1 do
+    TLazDeviceMessage(FMessages.Items[i]).Free;
+  FMessages.Free;
+  inherited Destroy;
+end;
+
 procedure TLazMessaging.SendMessage(AMsg: TLazDeviceMessage);
 begin
   LCLIntf.LazDeviceAPIs_SendMessage(AMsg);
@@ -131,6 +153,13 @@ end;
 function TLazMessaging.CreateMessage: TLazDeviceMessage;
 begin
   Result := TLazDeviceMessage.Create;
+  FMessages.Add(Result);
+end;
+
+procedure TLazMessaging.FreeMessage(AMessage: TLazDeviceMessage);
+begin
+  FMessages.Remove(AMessage);
+  AMessage.Free;
 end;
 
 initialization

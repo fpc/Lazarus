@@ -26,7 +26,7 @@ object Form2: TForm2
     OnKeyUp = textDestKeyUp
     OnUTF8KeyPress = textDestUTF8KeyPress
     TabOrder = 1
-    Text = 'textDest'
+    Text = '8284'
   end
   object Image1: TImage
     Left = 102

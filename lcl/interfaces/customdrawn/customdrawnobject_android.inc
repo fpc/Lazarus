@@ -256,6 +256,8 @@ var
   arraydata: PDouble;
   arraylen: jsize;
   lIsCopy: jboolean;
+  lSensorDataInt: Integer;
+  lMessagingStatus: TLazMessagingStatus;
 begin
   Result := 0;
 
@@ -268,6 +270,23 @@ begin
 
   // Send the data to the LCL
   case ASensorKind of
+    -11: // Defined by ourselves for Messaging Status
+    begin
+      lSensorDataInt := Round(arraydata[0]);
+      case lSensorDataInt of
+        1: lMessagingStatus := mssSentSuccessfully;
+        2: lMessagingStatus := mssSendingGeneralError;
+        3: lMessagingStatus := mssNoService;
+        5: lMessagingStatus := mssRadioOff;
+        10:lMessagingStatus := mssReceivedSuccessfully;
+        11:lMessagingStatus := mssReceivingGeneralError;
+      else
+        lMessagingStatus := mssSendingGeneralError;
+      end;
+
+      if Assigned(Messaging.OnMessagingStatus) then
+        Messaging.OnMessagingStatus(nil, lMessagingStatus);
+    end;
     -10: // Defined by ourselves for PositionInfo
     begin
       PositionInfo.latitude := arraydata[0];
