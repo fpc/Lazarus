@@ -351,16 +351,16 @@ end;
 
 function NSStringToString(ns: NSString): String;
 begin
-  Result:=CFStringToStr(CFStringRef(ns));
+  Result := CFStringToStr(CFStringRef(ns));
 end;
 
 procedure SetNSText(text: NSText; const s: String); inline;
 var
-  ns : NSString;
+  ns: NSString;
 begin
   if Assigned(text) then
   begin
-    ns:=NSStringUTF8(s);
+    ns := NSStringUTF8(s);
     text.setString(ns);
     ns.release;
   end;
@@ -371,16 +371,16 @@ begin
   if Assigned(text) then
     Result := NSStringToString(text.string_)
   else
-    Result:='';
+    Result := '';
 end;
 
 procedure SetNSControlValue(c: NSControl; const S: String); inline;
 var
-  ns : NSString;
+  ns: NSString;
 begin
   if Assigned(c) then
   begin
-    ns:=NSStringUtf8(S);
+    ns := NSStringUtf8(S);
     c.setStringValue(ns);
     ns.release;
   end;
@@ -389,9 +389,9 @@ end;
 function GetNSControlValue(c: NSControl): String; inline;
 begin
   if Assigned(c) then
-    Result:=NSStringToString(c.stringValue)
+    Result := NSStringToString(c.stringValue)
   else
-    Result:='';
+    Result := '';
 end;
 
 
@@ -399,7 +399,7 @@ end;
 
 function NSLCLDebugExtension.lclClassName: shortstring;
 begin
-  Result:=NSStringToString(self.className);
+  Result := NSStringToString(self.className);
 end;
 
 initialization

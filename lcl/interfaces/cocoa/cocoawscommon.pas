@@ -477,50 +477,51 @@ end;
 class function TCocoaWSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 begin
-  Result:=TCocoaWSCustomControl.CreateHandle(AWinControl, AParams);
+  Result := TCocoaWSCustomControl.CreateHandle(AWinControl, AParams);
 end;
 
 class procedure TCocoaWSWinControl.SetText(const AWinControl: TWinControl; const AText: String);
 var
-  obj : NSObject;
+  obj: NSObject;
 begin
-  // sanity check
-  obj:=NSObject(AWinControl.Handle);
-  if not Assigned(obj) or not obj.isKindOfClass_(NSControl) then Exit;
-
-  SetNSControlValue(NSControl(obj), AText);
+  if not AWinControl.HandleAllocated then
+    Exit;
+  obj := NSObject(AWinControl.Handle);
+  if obj.isKindOfClass_(NSControl) then
+    SetNSControlValue(NSControl(obj), AText);
 end;
 
 class function TCocoaWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 var
-  obj   : NSObject;
+  obj: NSObject;
 begin
-  Result:=false;
-
-  // sanity check
-  obj:=NSObject(AWinControl.Handle);
-  Result:=Assigned(obj) and obj.isKindOfClass_(NSControl);
-  if not Result then Exit;
-
-  AText:=GetNSControlValue(NSControl(obj));
-  Result:=true;
+  Result := AWinControl.HandleAllocated;
+  if not Result then
+    Exit;
+  obj := NSObject(AWinControl.Handle);
+  Result := obj.isKindOfClass_(NSControl);
+  if Result then
+    AText := GetNSControlValue(NSControl(obj));
 end;
 
 class function TCocoaWSWinControl.GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean;
 var
-  obj : NSObject;
-  s   : NSString;
+  obj: NSObject;
+  s: NSString;
 begin
-  Result:=false;
+  Result := AWinControl.HandleAllocated;
+  if not Result then
+    Exit;
 
-  // sanity check
-  obj:=NSObject(AWinControl.Handle);
-  Result:= Assigned(obj) and obj.isKindOfClass_(NSControl);
+  obj := NSObject(AWinControl.Handle);
+  Result := obj.isKindOfClass_(NSControl);
   if not Result then Exit;
 
-  s:=NSControl(obj).stringValue;
-  if Assigned(s) then ALength:=s.length
-  else ALength:=0
+  s := NSControl(obj).stringValue;
+  if Assigned(s) then
+    ALength := s.length
+  else
+    ALength := 0
 end;
 
 class function TCocoaWSWinControl.GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean;
@@ -584,12 +585,45 @@ end;
 class procedure TCocoaWSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
 var
   Obj: NSObject;
+  Cell: NSCell;
+  Str: NSAttributedString;
+  NewStr: NSMutableAttributedString;
+  Dict: NSDictionary;
+  Range: NSRange;
 begin
-  if (AWinControl.Handle <> 0) then
+  if (AWinControl.HandleAllocated) then
   begin
     Obj := NSObject(AWinControl.Handle);
+    if Obj.isKindOfClass(NSScrollView) then
+      Obj := NSScrollView(Obj).documentView;
     if Obj.isKindOfClass(NSControl) then
-      NSCell(NSControl(Obj).cell).setFont(TCocoaFont(AFont.Reference.Handle).Font);
+    begin
+      Cell := NSCell(NSControl(Obj).cell);
+      Cell.setFont(TCocoaFont(AFont.Reference.Handle).Font);
+      // try to assign foreground color?
+      Str := Cell.attributedStringValue;
+      if Assigned(Str) then
+      begin
+        NewStr := NSMutableAttributedString.alloc.initWithAttributedString(Str);
+        Range.location := 0;
+        Range.length := NewStr.length;
+        if AFont.Color = clDefault then
+          NewStr.removeAttribute_range(NSForegroundColorAttributeName, Range)
+        else
+          NewStr.addAttribute_value_range(NSForegroundColorAttributeName, ColorToNSColor(ColorToRGB(AFont.Color)), Range);
+        Cell.setAttributedStringValue(NewStr);
+        NewStr.release;
+      end;
+    end
+    else
+    if Obj.isKindOfClass(NSText) then
+    begin
+      NSText(Obj).setFont(TCocoaFont(AFont.Reference.Handle).Font);
+      if AFont.Color = clDefault then
+        NSText(Obj).setTextColor(nil)
+      else
+        NSText(Obj).setTextColor(ColorToNSColor(ColorToRGB(AFont.Color)));
+    end;
   end;
 end;
 
