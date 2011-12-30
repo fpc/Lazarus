@@ -3300,10 +3300,8 @@ begin
       QWidget_frameGeometry(W, @R);
 
       // exclude borders from frame
-      FrameBorder := QStyle_pixelMetric(QApplication_style(),
-        QStylePM_DefaultFrameWidth, nil, W);
-      TitleBarHeight := QStyle_pixelMetric(QApplication_style(),
-        QStylePM_TitleBarHeight, nil, W);
+      FrameBorder := GetPixelMetric(QStylePM_DefaultFrameWidth, nil, W);
+      TitleBarHeight := GetPixelMetric(QStylePM_TitleBarHeight, nil, W);
 
       inc(R.Left, FrameBorder);
       inc(R.Top, TitleBarHeight);
@@ -5173,11 +5171,12 @@ var
       BtnHeight := QFontMetrics_height(AMetrics);
       Result.cx := BtnWidth;
       Result.cy := BtnHeight;
-      BtnMargin := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonMargin, nil, Widget);
-      FocusV := QStyle_pixelMetric(QApplication_style(), QStylePM_FocusFrameVMargin, nil, Widget);
-      FocusH := QStyle_pixelMetric(QApplication_style(), QStylePM_FocusFrameHMargin, nil, Widget);
-      ShiftH := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonShiftHorizontal, nil, Widget);
-      ShiftV := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonShiftVertical, nil, Widget);
+
+      BtnMargin := GetPixelMetric(QStylePM_ButtonMargin, nil, Widget);
+      FocusV := GetPixelMetric(QStylePM_FocusFrameVMargin, nil, Widget);
+      FocusH := GetPixelMetric(QStylePM_FocusFrameHMargin, nil, Widget);
+      ShiftH := GetPixelMetric(QStylePM_ButtonShiftHorizontal, nil, Widget);
+      ShiftV := GetPixelMetric(QStylePM_ButtonShiftVertical, nil, Widget);
 
       if ShiftH = 0 then
         ShiftH := FocusH;
@@ -5336,11 +5335,11 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
       QPainter_setBackgroundMode(APainter, QtTransparentMode);
       QWidget_rect(Widget, @R);
 
-      BMargin := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonMargin, nil, Widget);
-      VMargin := QStyle_pixelMetric(QApplication_style(), QStylePM_FocusFrameVMargin, nil, Widget);
-      HMargin := QStyle_pixelMetric(QApplication_style(), QStylePM_FocusFrameHMargin, nil, Widget);
-      SHorz := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonShiftHorizontal, nil, Widget);
-      SVert := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonShiftVertical, nil, Widget);
+      BMargin := GetPixelMetric(QStylePM_ButtonMargin, nil, Widget);
+      VMargin := GetPixelMetric(QStylePM_FocusFrameVMargin, nil, Widget);
+      HMargin := GetPixelMetric(QStylePM_FocusFrameHMargin, nil, Widget);
+      SHorz := GetPixelMetric(QStylePM_ButtonShiftHorizontal, nil, Widget);
+      SVert := GetPixelMetric(QStylePM_ButtonShiftVertical, nil, Widget);
 
       if SHorz = 0 then
         SHorz := HMargin;
@@ -5508,11 +5507,11 @@ var
       BtnHeight := TextSize.cy;
       Result.cx := BtnWidth;
       Result.cy := BtnHeight;
-      BtnMargin := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonMargin, nil, Widget);
-      FocusV := QStyle_pixelMetric(QApplication_style(), QStylePM_FocusFrameVMargin, nil, Widget);
-      FocusH := QStyle_pixelMetric(QApplication_style(), QStylePM_FocusFrameHMargin, nil, Widget);
-      ShiftH := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonShiftHorizontal, nil, Widget);
-      ShiftV := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonShiftVertical, nil, Widget);
+      BtnMargin := GetPixelMetric(QStylePM_ButtonMargin, nil, Widget);
+      FocusV := GetPixelMetric(QStylePM_FocusFrameVMargin, nil, Widget);
+      FocusH := GetPixelMetric(QStylePM_FocusFrameHMargin, nil, Widget);
+      ShiftH := GetPixelMetric(QStylePM_ButtonShiftHorizontal, nil, Widget);
+      ShiftV := GetPixelMetric(QStylePM_ButtonShiftVertical, nil, Widget);
 
       if ShiftH = 0 then
         ShiftH := FocusH;
@@ -5987,8 +5986,8 @@ begin
     begin
       if IsMdiChild then
       begin
-        if QMouseEvent_y(QMouseEventH(Event)) <= QStyle_pixelMetric(
-            QApplication_style(), QStylePM_TitleBarHeight, nil, Widget) then
+        if QMouseEvent_y(QMouseEventH(Event)) <= GetPixelMetric(
+          QStylePM_TitleBarHeight, nil, Widget) then
           QEvent_ignore(Event)
         else
           Result := SlotMouse(Sender, Event);
@@ -8308,8 +8307,7 @@ begin
   begin
     R := TQtTabWidget(FOwner).getGeometry;
     R1 := getGeometry;
-    BaseHeight := QStyle_pixelMetric(QApplication_style(),
-      QStylePM_TabBarBaseHeight);
+    BaseHeight := GetPixelMetric(QStylePM_TabBarBaseHeight, nil, nil);
 
     case TQtTabWidget(FOwner).getTabPosition of
       QTabWidgetNorth:
@@ -10433,8 +10431,7 @@ begin
           if (Item <> nil) and
             ((QListWidgetItem_flags(Item) and QtItemIsUserCheckable) <> 0) then
           begin
-            x := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorWidth,
-              nil, Widget);
+            x := GetPixelMetric(QStylePM_IndicatorWidth, nil, Widget);
             if ((MousePos.X > 2) and (MousePos.X < (X + 2))) then
             begin
               FCheckBoxClicked := True;

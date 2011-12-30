@@ -3723,8 +3723,7 @@ begin
     SM_CXBORDER, SM_CYBORDER:
       begin
         // size of frame around controls
-        Result := QStyle_pixelMetric(QApplication_style(),
-                    QStylePM_DefaultFrameWidth, nil, nil);
+        Result := GetPixelMetric(QStylePM_DefaultFrameWidth, nil, nil);
       end;
     SM_CXCURSOR:
       begin
@@ -3817,11 +3816,11 @@ begin
       end;
     SM_CXMENUSIZE:
       begin
-        Result := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorWidth, nil, nil);
+        Result := GetPixelMetric(QStylePM_IndicatorWidth, nil, nil);
       end;
     SM_CYMENUSIZE:
       begin
-        Result := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorHeight, nil, nil);
+        Result := GetPixelMetric(QStylePM_IndicatorHeight, nil, nil);
       end;
     SM_CXMIN:
       begin
@@ -3876,12 +3875,12 @@ begin
     SM_CXSIZEFRAME,
     SM_CYSIZEFRAME:
       begin
-        Result := QStyle_pixelMetric(QApplication_style(), QStylePM_MDIFrameWidth, nil, nil);
+        Result := GetPixelMetric(QStylePM_MDIFrameWidth, nil, nil);
       end;
     SM_CXSMICON,
     SM_CYSMICON:
       begin
-        Result := QStyle_pixelMetric(QApplication_style(), QStylePM_SmallIconSize, nil, nil);
+        Result := GetPixelMetric(QStylePM_SmallIconSize, nil, nil);
       end;
     SM_CXSMSIZE:
       begin
@@ -3904,11 +3903,11 @@ begin
     SM_CXHSCROLL,
     SM_CYHSCROLL:
       begin
-        Result := QStyle_pixelMetric(QApplication_Style, QStylePM_ScrollBarExtent, nil, nil);
+        Result := GetPixelMetric(QStylePM_ScrollBarExtent, nil, nil);
       end;
     SM_CYCAPTION:
       begin
-        Result := QStyle_pixelMetric(QApplication_Style, QStylePM_TitleBarHeight, nil, nil);
+        Result := GetPixelMetric(QStylePM_TitleBarHeight, nil, nil);
       end;
     SM_CYKANJIWINDOW:
       begin

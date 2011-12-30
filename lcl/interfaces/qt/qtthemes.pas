@@ -621,7 +621,7 @@ begin
   opt := QStyleOption_create(Integer(QStyleOptionVersion), Integer(QStyleOptionSO_Default));
   APixmap := QPixmap_create();
   if StockID in [idButtonOk..idButtonShield] then
-    IconSize := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonIconSize, opt)
+    IconSize := GetPixelMetric(QStylePM_ButtonIconSize, opt, nil)
   else
     IconSize := 0;
   QStyle_standardPixmap(QApplication_style(), APixmap, AStdPixmap, opt);

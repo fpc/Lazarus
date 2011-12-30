@@ -1297,10 +1297,10 @@ begin
   begin
   end else
   begin
-    dx := QStyle_pixelMetric(QApplication_style(), QStylePM_LayoutLeftMargin) +
-          QStyle_pixelMetric(QApplication_style(), QStylePM_LayoutRightMargin);
-    dy := QStyle_pixelMetric(QApplication_style(), QStylePM_LayoutTopMargin) +
-          QStyle_pixelMetric(QApplication_style(), QStylePM_LayoutBottomMargin);
+    dx := GetPixelMetric(QStylePM_LayoutLeftMargin, nil, nil) +
+          GetPixelMetric(QStylePM_LayoutRightMargin, nil, nil);
+    dy := GetPixelMetric(QStylePM_LayoutTopMargin, nil, nil) +
+          GetPixelMetric(QStylePM_LayoutBottomMargin, nil, nil);
 
     aClientRect:=Rect(0,0,
                  Max(0, aWidth - dx),

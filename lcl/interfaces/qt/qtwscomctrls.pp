@@ -259,6 +259,7 @@ type
 
 
 implementation
+uses qtint;
 
 {$include qtpagecontrol.inc}
 
@@ -2064,8 +2065,7 @@ begin
   case AValue of
     vsIcon:
        begin
-        x := QStyle_pixelMetric(QApplication_style(), QStylePM_IconViewIconSize,
-          nil, ItemViewWidget);
+        x := GetPixelMetric(QStylePM_IconViewIconSize, nil, ItemViewWidget);
         Size.cx := x;
         Size.cy := x;
         if Assigned(TListView(ALV).LargeImages) then
@@ -2076,8 +2076,7 @@ begin
       end;
     vsSmallIcon:
       begin
-        x := QStyle_pixelMetric(QApplication_style(), QStylePM_ListViewIconSize,
-          nil, ItemViewWidget);
+        x := GetPixelMetric(QStylePM_ListViewIconSize, nil, ItemViewWidget);
         Size.cx := x;
         Size.cy := x;
         if Assigned(TListView(ALV).SmallImages) then
@@ -2088,8 +2087,7 @@ begin
       end;
     vsList, vsReport:
       begin
-        x := QStyle_pixelMetric(QApplication_style(), QStylePM_ListViewIconSize,
-          nil, ItemViewWidget);
+        x := GetPixelMetric(QStylePM_ListViewIconSize, nil, ItemViewWidget);
         Size.cx := x;
         Size.cy := x;
       end;

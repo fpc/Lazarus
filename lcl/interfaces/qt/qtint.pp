@@ -207,6 +207,8 @@ type
 
   function HwndFromWidgetH(const WidgetH: QWidgetH): HWND;
   function DTFlagsToQtFlags(const Flags: Cardinal): Integer;
+  function GetPixelMetric(AMetric: QStylePixelMetric; AOption: QStyleOptionH;
+    AWidget: QWidgetH): Integer;
   function GetQtVersion: String;
   function QtVersionCheck(const AMajor, AMinor, AMicro: Integer): Boolean;
   {$IFDEF HASX11}
@@ -304,7 +306,14 @@ begin
   if Flags and DT_EXPANDTABS <> 0 then
     Result := Result or QtTextExpandTabs;
 end;
-  
+
+function GetPixelMetric(AMetric: QStylePixelMetric; AOption: QStyleOptionH;
+  AWidget: QWidgetH): Integer;
+begin
+  Result := QStyle_pixelMetric(QApplication_style(),
+    AMetric, AOption, AWidget);
+end;
+
 function QtObjectFromWidgetH(const WidgetH: QWidgetH): TQtWidget;
 var
   V: QVariantH;
