@@ -15,7 +15,7 @@ uses
   IniPropStorage, InterfaceBase, IntfGraphics, LazConfigStorage, LazHelpHTML, 
   LazHelpIntf, LazLinkedList, LCLClasses, LCLIntf, LCLMemManager, 
   LCLMessageGlue, LCLProc, LCLResCache, LCLStrConsts, LCLType, Menus, 
-  LCLUnicodeData, LCLVersion, LDockTree, LMessages, LResources, maps, 
+  LCLUnicodeData, LCLVersion, LMessages, LResources, maps, 
   MaskEdit, PairSplitter, PopupNotifier, PostScriptCanvas, PostScriptPrinter, 
   postscriptunicode, Printers, PropertyStorage, RubberBand, ShellCtrls, Spin, 
   StdActns, StdCtrls, StringHashList, TextStrings, Themes, TmSchema, Toolwin, 
