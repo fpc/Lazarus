@@ -164,7 +164,9 @@ end;
 
 procedure TTestSynEdit.SimulatePaintText;
 begin
-  PaintTextLines(Rect(0,0,1000,1000), 0, Lines.Count - 1, 1, 100);
+  Canvas.ClipRect := Rect(0,0,1000,1000);
+  Paint;
+  //PaintTextLines(Rect(0,0,1000,1000), 0, Lines.Count - 1, 1, 100);
 end;
 
 { TTestBase }

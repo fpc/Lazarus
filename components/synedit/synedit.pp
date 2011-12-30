@@ -5283,6 +5283,7 @@ begin
       fMarkupHighCaret.Highlighter := nil;
       fMarkupWordGroup.Highlighter := nil;
       FFoldedLinesView.Highlighter := nil;
+      FTextArea.Highlighter := nil;
 {begin}                                                                         //mh 2000-10-01
       if not (csDestroying in ComponentState) then begin
         RecalcCharExtent;
