@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-12-15 18:24+0100\n"
+"PO-Revision-Date: 2011-12-28 13:38+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -1240,10 +1240,9 @@ msgid "Buttons - "
 msgstr "Buttons -"
 
 #: lazarusidestrconsts.dlgdesktopfiles
-#, fuzzy
 #| msgid "Desktop files"
 msgid "Desktop Files"
-msgstr "Desktopeinstellungen"
+msgstr "Desktopdateien"
 
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
@@ -1354,7 +1353,6 @@ msgid "Code Templates"
 msgstr "Quelltextvorlagen"
 
 #: lazarusidestrconsts.dlgedcompleteblocks
-#, fuzzy
 #| msgid "Complete blocks"
 msgid "Add close statement for pascal blocks"
 msgstr "Blöcke vervollständigen"
@@ -1400,7 +1398,6 @@ msgid "Invert"
 msgstr "Umkehren"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionignlockedoldedit
-#, fuzzy
 #| msgid "Ignore Locks, longest unused editor"
 msgid "Ignore Locks, use longest unused editor"
 msgstr "Sperren übergehen, am längsten unbenutzter Editor"
@@ -7923,11 +7920,11 @@ msgstr "Ungültige Einstellung bei %d: »%s«"
 
 #: lazarusidestrconsts.liserrnooptionallowed
 msgid "Option at position %d does not allow an argument: %s"
-msgstr "Die Einstellung an %s erlaubt keinen Parameter: %s"
+msgstr "Die Einstellung an %d erlaubt keinen Parameter: %s"
 
 #: lazarusidestrconsts.liserroptionneeded
 msgid "Option at position %d needs an argument : %s"
-msgstr "Die Einstellung an %s benötigt einen Parameter: %s"
+msgstr "Die Einstellung an %d benötigt einen Parameter: %s"
 
 #: lazarusidestrconsts.liserror
 msgid "Error: "
@@ -10693,7 +10690,6 @@ msgid "Close Project"
 msgstr "Projekt schließen"
 
 #: lazarusidestrconsts.lismenucodetoolsdefineseditor
-#, fuzzy
 #| msgid "CodeTools defines editor ..."
 msgid "CodeTools Defines Editor ..."
 msgstr "Editor für CodeTools-Eigenschaften ..."
@@ -10726,7 +10722,6 @@ msgid "Configure Build+Run File ..."
 msgstr "Kompilieren+Starten der Datei einrichten..."
 
 #: lazarusidestrconsts.lismenuconfigcustomcomps
-#, fuzzy
 #| msgid "Configure custom components ..."
 msgid "Configure Custom Components ..."
 msgstr "Externe Komponenten einrichten ..."
@@ -11325,7 +11320,6 @@ msgid "Run &Parameters ..."
 msgstr "Start&parameter ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
-#, fuzzy
 #| msgid "Run to &cursor"
 msgid "Run to &Cursor"
 msgstr "Start bis &Cursor"
@@ -12393,7 +12387,7 @@ msgstr "%süberschreibt die Projekt-CPU, z.B. i386, x86_64, powerpc, powerpc_64 
 
 #: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
 msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
-msgstr "%überschreibt das Betriebssystem des Projekts, z.B. win32, linux. Voreinstellung: %s"
+msgstr "%süberschreibt das Betriebssystem des Projekts, z.B. win32, linux. Voreinstellung: %s"
 
 #: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
 msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
@@ -14388,7 +14382,7 @@ msgstr "Unbekannte Typen und Eigenschaften ersetzen"
 
 #: lazarusidestrconsts.lisreplacewholeidentifier
 msgid "Replace whole identifier"
-msgstr ""
+msgstr "Ganzen Bezeichner ersetzen"
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."
@@ -15079,7 +15073,7 @@ msgstr "Tabulatorreihenfolge von %s"
 
 #: lazarusidestrconsts.listabordersorthint
 msgid "Calculate the tab order of controls by their X- and Y- positions"
-msgstr "Tab-Reihenfolge aller untergeordneten Elemente von\"%s\" nach ihren Positionen sortieren?"
+msgstr "Tab-Reihenfolge aller untergeordneten Elemente nach ihren Positionen sortieren?"
 
 #: lazarusidestrconsts.listaborderuphint
 msgid "Move the selected control up in tab order"
@@ -15150,7 +15144,7 @@ msgstr "Die Klasse %s%s%s ist ein TControl und kann nicht auf ein Nicht-Control 
 
 #: lazarusidestrconsts.listhecodetoolsfoundanerror
 msgid "The codetools found an error:%s%s%s"
-msgstr "Die Codetools fanden einen Fehler:%s%s%"
+msgstr "Die Codetools fanden einen Fehler:%s%s%s"
 
 #: lazarusidestrconsts.listhecommandafterisnotexecutable
 msgid "The command after %s%s%s is not executable."
@@ -15796,7 +15790,7 @@ msgstr "Suchbegriff »%s« nicht gefunden!"
 
 #: lazarusidestrconsts.lisuethecurre
 msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrect.%sYou can select another font in the editor options."
-msgstr "Die aktuelle Editorschriftart unterstützt UTF-8 nicht, aber das System scheint das zu tun.%sDas bedeutet, daß Nicht-ASCII-Zeichen möglicherweise falsch angezeigt werden.%In den Editoreinstellungen sollten Sie eine andere Schriftart einstellen."
+msgstr "Die aktuelle Editorschriftart unterstützt UTF-8 nicht, aber das System scheint das zu tun.%sDas bedeutet, daß Nicht-ASCII-Zeichen möglicherweise falsch angezeigt werden.%sSie sollten in den Editoreinstellungen eine andere Schriftart einstellen."
 
 #: lazarusidestrconsts.lisuiclearincludedbyreference
 msgid "Clear include cache"
@@ -17831,10 +17825,9 @@ msgid "Show Abstract Methods"
 msgstr "Abstrakte Methoden anzeigen"
 
 #: lazarusidestrconsts.srkmecshowcodecontext
-#, fuzzy
 #| msgid "Show code context"
 msgid "Show Code Context"
-msgstr "Code-Context anzeigen"
+msgstr "Code-Kontext anzeigen"
 
 #: lazarusidestrconsts.srkmecshowexecutionpoint
 msgid "show execution point"
@@ -18395,4 +18388,5 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+
 
