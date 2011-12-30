@@ -195,6 +195,16 @@
           <Section Style="fsBold"/>
         </SchemeDelphi>
       </LangINI_file>
+      <Langpo_language_files Version="8">
+        <SchemeDelphi>
+          <Key Style="fsBold"/>
+          <Flags Foreground="clTeal"/>
+          <String Foreground="clFuchsia"/>
+          <Comment Style="fsItalic" Foreground="clGreen"/>
+          <Identifier Style="fsBold" Foreground="clGreen"/>
+          <Previous_value Style="fsItalic" Foreground="clOlive"/>
+        </SchemeDelphi>
+      </Langpo_language_files>
     </ColorSchemes>
   </Lazarus>
 </CONFIG>

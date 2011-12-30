@@ -207,6 +207,16 @@
           <Number Foreground="clFuchsia"/>
         </SchemeTwilight>
       </LangINI_file>
+      <Langpo_language_files Version="8">
+        <SchemeTwilight>
+          <Key Style="fsBold"/>
+          <Flags Foreground="clTeal"/>
+          <String Foreground="clFuchsia"/>
+          <Comment Style="fsItalic" Foreground="clGreen"/>
+          <Identifier Style="fsBold" Foreground="clGreen"/>
+          <Previous_value Style="fsItalic" Foreground="clOlive"/>
+        </SchemeTwilight>
+      </Langpo_language_files>
     </ColorSchemes>
   </Lazarus>
 </CONFIG>
