@@ -5880,6 +5880,7 @@ lcl/lclstrconsts.pas svneol=native#text/pascal
 lcl/lcltype.pp svneol=native#text/pascal
 lcl/lclunicodedata.pas svneol=native#text/pascal
 lcl/lclversion.pas svneol=native#text/pascal
+lcl/ldocktree.pas svneol=native#text/plain
 lcl/lmessages.pp svneol=native#text/pascal
 lcl/lresources.pp svneol=native#text/pascal
 lcl/maps.pp svneol=native#text/pascal

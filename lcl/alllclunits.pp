@@ -15,8 +15,8 @@ uses
   IniPropStorage, InterfaceBase, IntfGraphics, LazConfigStorage, LazHelpHTML, 
   LazHelpIntf, LazLinkedList, LCLClasses, LCLIntf, LCLMemManager, 
   LCLMessageGlue, LCLProc, LCLResCache, LCLStrConsts, LCLType, Menus, 
-  LCLUnicodeData, LCLVersion, LMessages, LResources, maps, 
-  MaskEdit, PairSplitter, PopupNotifier, PostScriptCanvas, PostScriptPrinter, 
+  LCLUnicodeData, LCLVersion, LMessages, LResources, maps, MaskEdit, 
+  PairSplitter, PopupNotifier, PostScriptCanvas, PostScriptPrinter, 
   postscriptunicode, Printers, PropertyStorage, RubberBand, ShellCtrls, Spin, 
   StdActns, StdCtrls, StringHashList, TextStrings, Themes, TmSchema, Toolwin, 
   Translations, UTF8Process, UTrace, XMLPropStorage, Messages, WSArrow, 
@@ -26,7 +26,7 @@ uses
   WSStdCtrls, WSToolwin, ActnList, Arrow, AsyncProcess, ButtonPanel, Buttons, 
   Calendar, RegisterLCL, ValEdit, lazcanvas, lazdialogs, lazregions, 
   customdrawn_common, customdrawncontrols, customdrawndrawers, lazdeviceapis, 
-  LazarusPackageIntf;
+  LDockTree, LazarusPackageIntf;
 
 implementation
 
