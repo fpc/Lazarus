@@ -43,6 +43,7 @@ type
     function MouseUpDownEvent(Event: NSEvent): Boolean;
     procedure MouseClick;
     procedure MouseMove(x,y: Integer);
+    function KeyEvent(Event: NSEvent): Boolean;
     // size,pos events
     procedure frameDidChange;
     procedure boundsDidChange;
@@ -280,6 +281,11 @@ type
     procedure mouseEntered(event: NSEvent); override;
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
+    // key
+    procedure keyDown(event: NSEvent); override;
+    procedure keyUp(event: NSEvent); override;
+    procedure flagsChanged(event: NSEvent); override;
+    // other
     procedure resetCursorRects; override;
   end;
 
@@ -900,6 +906,24 @@ end;
 procedure TCocoaCustomControl.mouseMoved(event: NSEvent);
 begin
   inherited mouseMoved(event);
+end;
+
+procedure TCocoaCustomControl.keyDown(event: NSEvent);
+begin
+  if not callback.KeyEvent(event) then
+    inherited keyDown(event);
+end;
+
+procedure TCocoaCustomControl.keyUp(event: NSEvent);
+begin
+  if not callback.KeyEvent(event) then
+    inherited keyUp(event);
+end;
+
+procedure TCocoaCustomControl.flagsChanged(event: NSEvent);
+begin
+  if not callback.KeyEvent(event) then
+    inherited flagsChanged(event);
 end;
 
 procedure TCocoaCustomControl.mouseUp(event: NSEvent);
