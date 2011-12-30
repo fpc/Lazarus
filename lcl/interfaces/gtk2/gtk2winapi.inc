@@ -289,8 +289,6 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean;
-type
-  PGdkAtom = ^TGdkAtom;
 var
   FormatAtom, FormatTry: TGdkAtom;
   SupportedCnt, i: integer;
@@ -455,8 +453,6 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
   var Count: integer; var List: PClipboardFormat): boolean;
-type
-  PGdkAtom = ^TGdkAtom;
 var
   AllID: TGdkAtom;
   FormatAtoms: PGdkAtom;
@@ -2452,7 +2448,6 @@ function TGtk2WidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
 const
   TabString = '        ';
 var
-  DevCtx: TGtkDeviceContext absolute DC;
   pIndex: Longint;
   AStr: String;
 
@@ -2926,8 +2921,6 @@ end;
 function TGtk2WidgetSet.EnumFontFamilies(DC: HDC; Family: Pchar;
   EnumFontFamProc: FontEnumProc; LParam:Lparam):longint;
 var
-  DevCtx: TGtkDeviceContext absolute DC;
-
   xFonts: PPChar;
   FontList: TStringList;
   EnumLogFont: TEnumLogFont;
@@ -2999,10 +2992,6 @@ end;
 
 function TGtk2WidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
   Callback: FontEnumExProc; Lparam:LParam; Flags: dword): longint;
-  
-var
-  DevCtx: TGtkDeviceContext absolute DC;
-  
 type
   TXLFD=record
     Foundry: string[15];
@@ -5662,8 +5651,6 @@ end;
   Gets the Font Color currently assigned to the Device Context
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.GetTextColor(DC: HDC) : TColorRef;
-var
-  DevCtx: TGtkDeviceContext absolute DC;
 begin
   Result := 0;
   if IsValidDC(DC) then
@@ -5948,9 +5935,6 @@ end;
 function TGtk2WidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
   NumVertices : Longint; Meshes: Pointer; NumMeshes : Longint; Mode : Longint
   ): Boolean;
-
-var
-  DevCtx: TGtkDeviceContext absolute DC;
 
   function DoFillTriangle : Boolean;
   begin
@@ -6567,7 +6551,6 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
 var
-  DevCtx: TGtkDeviceContext absolute DC;
   NewOrigin: TPoint;
 begin
   Result:=IsValidDC(DC);
@@ -6990,8 +6973,6 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.RealizePalette(DC: HDC): Cardinal;
-var
-  DevCtx: TGtkDeviceContext absolute DC;
 begin
   Result := 0;
   if IsValidDC(DC)
@@ -7177,8 +7158,6 @@ end;
 
 function TGtk2WidgetSet.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 var
-  DevCtx: TGtkDeviceContext absolute DC;
-
   aDC, pSavedDC: TGtkDeviceContext;
   g: TGDIType;
   CurGDIObject: PGDIObject;
@@ -7654,8 +7633,6 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.SelectPalette(DC: HDC; Palette: HPALETTE; ForceBackground: Boolean): HPALETTE;
-var
-  DevCtx: TGtkDeviceContext absolute DC;
 begin
   //TODO: Implement this;
   Result := 0;
@@ -8653,8 +8630,6 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.SetTextCharacterExtra(DC : hdc; nCharExtra : Integer):Integer;
-var
-  DevCtx: TGtkDeviceContext absolute DC;
 begin
   // Your code here
   Result:=0;
@@ -8670,8 +8645,6 @@ end;
   context to the specified color.
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
-var
-  DevCtx: TGtkDeviceContext absolute DC;
 begin
   Result := CLR_INVALID;
   if IsValidDC(DC)
@@ -8818,7 +8791,6 @@ end;
 function TGtk2WidgetSet.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer;
   OldPoint: PPoint) : Boolean;
 var
-  DevCtx: TGtkDeviceContext absolute DC;
   OldP: TPoint;
 begin
   //DebugLn('[TGtk2WidgetSet.SetWindowOrgEx] ',NewX,' ',NewY);
@@ -9123,7 +9095,6 @@ end;
 function TGtk2WidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 var
   GtkWindow: PGtkWindow;
-  GdkWindow: PGdkWindow;
   B: Boolean;
   Widget: PGtkWidget;
 begin

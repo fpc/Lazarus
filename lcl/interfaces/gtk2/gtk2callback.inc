@@ -141,8 +141,10 @@ begin
 end;
 
 function FilterFuc(xevent: PGdkXEvent; event: PGdkEvent; data: gpointer): TGdkFilterReturn; cdecl;
+{$ifdef windows}
 var
   AForm: TCustomForm absolute data;
+{$endif}
 begin
   Result := GDK_FILTER_CONTINUE;
   {$ifdef windows}

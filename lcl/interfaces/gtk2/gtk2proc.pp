@@ -667,7 +667,7 @@ procedure SendCachedGtkResizeNotifications;
 procedure ResizeHandle(LCLControl: TWinControl);
 procedure SetWidgetSizeAndPosition(LCLControl: TWinControl);// for child controls
 procedure SetWindowSizeAndPosition(Window: PGtkWindow; AWinControl: TWinControl);// for top level control
-procedure GetWidgetRelativePosition(aWidget: PGtkWidget; var Left, Top: integer);
+procedure GetWidgetRelativePosition(aWidget: PGtkWidget; out Left, Top: integer);
 procedure UnsetResizeRequest(Widget: PGtkWidget);
 procedure SetResizeRequest(Widget: PGtkWidget);
 function WidgetSizeIsEditable(Widget: PGtkWidget): boolean;

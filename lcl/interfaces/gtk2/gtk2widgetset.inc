@@ -4391,12 +4391,10 @@ var
   ActualFormatReturn: LongInt;
   NItemsReturn, BytesAfterReturn: Cardinal;
   Ptr: PByte;
-  screen: PGdkScreen;
   Valid: Boolean;
 begin
   Result := 0;
 
-  screen:=gdk_screen_get_default;
   Display := gdk_x11_get_default_xdisplay;
 
   if Display = nil then Exit;

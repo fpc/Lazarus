@@ -6792,7 +6792,7 @@ end;
   
   Returns the Left, Top, relative to the client origin of its parent
 -------------------------------------------------------------------------------}
-procedure GetWidgetRelativePosition(aWidget: PGtkWidget; var Left, Top: integer);
+procedure GetWidgetRelativePosition(aWidget: PGtkWidget; out Left, Top: integer);
 var
   GdkWindow: PGdkWindow;
   LCLControl: TWinControl;
@@ -7600,7 +7600,6 @@ var
 var
   Tp : Pointer;
   l : Longint;
-  NoName: PGChar;
   lgs: TLazGtkStyle;
   WidgetName: String;
   AddToStyleWindow: Boolean;
@@ -7648,7 +7647,6 @@ begin
         lgs:=lgsDefault;
         AddToStyleWindow:=false;
         AddReference:=false;
-        NoName:=nil;
         // GTK2 does not allow to instantiate the abstract base Widget
         // so we use the "invisible" widget, which should never be defined
         // by the theme.

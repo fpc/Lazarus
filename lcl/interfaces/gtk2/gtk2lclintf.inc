@@ -31,8 +31,6 @@
 //##apiwiz##sps##   // Do not remove
 
 function TGtk2WidgetSet.CreateRubberBand(const ARect: TRect; const ABrush: HBrush): HWND;
-const
-  LineWidth = 2;
 var
   Widget: PGtkWidget absolute Result;
   dx, dy: integer;
