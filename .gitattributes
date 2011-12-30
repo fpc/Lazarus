@@ -3292,9 +3292,6 @@ docs/xml/lcl/lcltype.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lclunicodedata.xml svneol=native#text/plain
 docs/xml/lcl/lclversion.xml svneol=native#text/plain
 docs/xml/lcl/lconvencoding.xml svneol=LF#text/plain eol=lf
-docs/xml/lcl/ldockctrl.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/ldockctrledit.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/ldocktree.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lmessages.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lresources.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/maps.xml svneol=native#text/plain
@@ -5887,10 +5884,6 @@ lcl/lclstrconsts.pas svneol=native#text/pascal
 lcl/lcltype.pp svneol=native#text/pascal
 lcl/lclunicodedata.pas svneol=native#text/pascal
 lcl/lclversion.pas svneol=native#text/pascal
-lcl/ldockctrl.pas svneol=native#text/pascal
-lcl/ldockctrledit.lfm svneol=native#text/plain
-lcl/ldockctrledit.pas svneol=native#text/pascal
-lcl/ldocktree.pas svneol=native#text/pascal
 lcl/lmessages.pp svneol=native#text/pascal
 lcl/lresources.pp svneol=native#text/pascal
 lcl/maps.pp svneol=native#text/pascal

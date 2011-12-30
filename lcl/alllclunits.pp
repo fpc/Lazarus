@@ -15,18 +15,18 @@ uses
   IniPropStorage, InterfaceBase, IntfGraphics, LazConfigStorage, LazHelpHTML, 
   LazHelpIntf, LazLinkedList, LCLClasses, LCLIntf, LCLMemManager, 
   LCLMessageGlue, LCLProc, LCLResCache, LCLStrConsts, LCLType, Menus, 
-  LCLUnicodeData, LCLVersion, LDockCtrl, LDockCtrlEdit, LDockTree, LMessages, 
-  LResources, maps, MaskEdit, PairSplitter, PopupNotifier, PostScriptCanvas, 
-  PostScriptPrinter, postscriptunicode, Printers, PropertyStorage, RubberBand, 
-  ShellCtrls, Spin, StdActns, StdCtrls, StringHashList, TextStrings, Themes, 
-  TmSchema, Toolwin, Translations, UTF8Process, UTrace, XMLPropStorage, 
-  Messages, WSArrow, WSButtons, WSCalendar, WSCheckLst, WSComCtrls, 
-  WSControls, WSDesigner, WSDialogs, WSExtCtrls, WSExtDlgs, WSFactory, 
-  WSForms, WSGrids, WSImgList, WSLCLClasses, WSMenus, WSPairSplitter, WSProc, 
-  WSReferences, WSSpin, WSStdCtrls, WSToolwin, ActnList, Arrow, AsyncProcess, 
-  ButtonPanel, Buttons, Calendar, RegisterLCL, ValEdit, lazcanvas, lazdialogs, 
-  lazregions, customdrawn_common, customdrawncontrols, customdrawndrawers, 
-  lazdeviceapis, LazarusPackageIntf;
+  LCLUnicodeData, LCLVersion, LDockTree, LMessages, LResources, maps, 
+  MaskEdit, PairSplitter, PopupNotifier, PostScriptCanvas, PostScriptPrinter, 
+  postscriptunicode, Printers, PropertyStorage, RubberBand, ShellCtrls, Spin, 
+  StdActns, StdCtrls, StringHashList, TextStrings, Themes, TmSchema, Toolwin, 
+  Translations, UTF8Process, UTrace, XMLPropStorage, Messages, WSArrow, 
+  WSButtons, WSCalendar, WSCheckLst, WSComCtrls, WSControls, WSDesigner, 
+  WSDialogs, WSExtCtrls, WSExtDlgs, WSFactory, WSForms, WSGrids, WSImgList, 
+  WSLCLClasses, WSMenus, WSPairSplitter, WSProc, WSReferences, WSSpin, 
+  WSStdCtrls, WSToolwin, ActnList, Arrow, AsyncProcess, ButtonPanel, Buttons, 
+  Calendar, RegisterLCL, ValEdit, lazcanvas, lazdialogs, lazregions, 
+  customdrawn_common, customdrawncontrols, customdrawndrawers, lazdeviceapis, 
+  LazarusPackageIntf;
 
 implementation
 
