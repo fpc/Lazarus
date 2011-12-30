@@ -333,7 +333,7 @@ end;
 function TControlScrollBar.GetAutoScroll: boolean;
 begin
   if FControl is TScrollingWinControl then
-    Result := TScrollingWinControl(FControl).AutoScrollEnabled
+    Result := TScrollingWinControl(FControl).AutoScroll
   else
     Result := False;
 end;
