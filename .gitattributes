@@ -3324,10 +3324,6 @@ docs/xml/lcl/wscontrols.xml svneol=native#text/plain
 docs/xml/lcl/xmlpropstorage.xml svneol=LF#text/xml eol=lf
 docs/xml/mkhtml.bat svneol=native#text/plain
 docs/xml/multi_makeskel.pl svneol=native#text/plain
-docs/xml/rtl/README.txt svneol=native#text/plain
-docs/xml/rtl/classes.xml svneol=native#text/xml
-docs/xml/rtl/system.xml svneol=native#text/xml
-docs/xml/rtl/sysutils.xml svneol=native#text/xml
 docs/xml/updateXML.bat svneol=native#text/plain
 examples/SynEdit/Completion/README.txt svneol=native#text/plain
 examples/SynEdit/Completion/SynCompletionSample.ico -text
