@@ -4938,6 +4938,10 @@ msgstr "Valitse näppäin ..."
 msgid "Choose a name for the new component"
 msgstr "Anna nimi uudelle komponentille"
 
+#: lazarusidestrconsts.lischooseanfpcmessagefile
+msgid "Choose an FPC message file"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a pascal file for indentation examples"
 msgstr "Valitse pascal-tiedosto sisennys-esimerkiksi"
@@ -8227,6 +8231,10 @@ msgstr "fpc.cfg puuttuu"
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "fpcmake epäonnistui"
+
+#: lazarusidestrconsts.lisfpcmessagefile
+msgid "FPC message file"
+msgstr ""
 
 #: lazarusidestrconsts.lisfpcomponents
 msgctxt "lazarusidestrconsts.lisfpcomponents"
@@ -15725,6 +15733,10 @@ msgstr "Käytä mukaan ottavaa suodatinta"
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"
 msgstr "Käynnistävä ohjelma"
+
+#: lazarusidestrconsts.lisusemessagefile
+msgid "Use message file:"
+msgstr ""
 
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"

@@ -5163,6 +5163,10 @@ msgstr "Taste auswählen..."
 msgid "Choose a name for the new component"
 msgstr "Geben Sie den Namen der neuen Komponente an"
 
+#: lazarusidestrconsts.lischooseanfpcmessagefile
+msgid "Choose an FPC message file"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a pascal file for indentation examples"
 msgstr "Geben Sie eine Pascal-Datei für die Einrückungsbeispiele an"
@@ -8503,6 +8507,10 @@ msgstr "fpc.cfg fehlt."
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "fpcmake fehlgeschlagen"
+
+#: lazarusidestrconsts.lisfpcmessagefile
+msgid "FPC message file"
+msgstr ""
 
 #: lazarusidestrconsts.lisfpcomponents
 msgctxt "lazarusidestrconsts.lisfpcomponents"
@@ -16307,6 +16315,10 @@ msgstr "Include-Filter anwenden"
 msgid "Launching application"
 msgstr "Startprogramm"
 
+#: lazarusidestrconsts.lisusemessagefile
+msgid "Use message file:"
+msgstr ""
+
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"
 msgstr "Verwende Package %s in Ppackage %s"
@@ -18388,5 +18400,4 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
 

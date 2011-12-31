@@ -5178,6 +5178,10 @@ msgstr "Виберіть клавішу ..."
 msgid "Choose a name for the new component"
 msgstr "Виберіть ім'я для нового компоненту"
 
+#: lazarusidestrconsts.lischooseanfpcmessagefile
+msgid "Choose an FPC message file"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a pascal file for indentation examples"
 msgstr "Виберіть файл Паскаля для прикладу відступів"
@@ -8515,6 +8519,10 @@ msgstr "fpc.cfg загубився."
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "fpcmake провалився"
+
+#: lazarusidestrconsts.lisfpcmessagefile
+msgid "FPC message file"
+msgstr ""
 
 #: lazarusidestrconsts.lisfpcomponents
 msgctxt "lazarusidestrconsts.lisfpcomponents"
@@ -16329,6 +16337,10 @@ msgstr "Використовувати фільтр включень"
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"
 msgstr "Запуск програми"
+
+#: lazarusidestrconsts.lisusemessagefile
+msgid "Use message file:"
+msgstr ""
 
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"

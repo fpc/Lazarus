@@ -5220,6 +5220,10 @@ msgstr "Nurodykite klavišą…"
 msgid "Choose a name for the new component"
 msgstr "Naujai komponentei suteikite pavadinimą"
 
+#: lazarusidestrconsts.lischooseanfpcmessagefile
+msgid "Choose an FPC message file"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a pascal file for indentation examples"
 msgstr "Lygiavimo pavyzdžiams parinkite paskalio failą"
@@ -8566,6 +8570,10 @@ msgstr ""
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "„fpcmake“ nepavyko"
+
+#: lazarusidestrconsts.lisfpcmessagefile
+msgid "FPC message file"
+msgstr ""
 
 #: lazarusidestrconsts.lisfpcomponents
 msgctxt "lazarusidestrconsts.lisfpcomponents"
@@ -16503,6 +16511,10 @@ msgstr "Naudoti įterpimo filtrą"
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"
 msgstr "Paleidžiančioji programa"
+
+#: lazarusidestrconsts.lisusemessagefile
+msgid "Use message file:"
+msgstr ""
 
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"

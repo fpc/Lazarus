@@ -5217,6 +5217,10 @@ msgstr "Seleccione una tecla ..."
 msgid "Choose a name for the new component"
 msgstr "Elija un nombre para el nuevo componente"
 
+#: lazarusidestrconsts.lischooseanfpcmessagefile
+msgid "Choose an FPC message file"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a pascal file for indentation examples"
 msgstr "Elija un archivo pascal para ejemplos de sangrado"
@@ -8585,6 +8589,10 @@ msgstr ""
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "Falló fpcmake"
+
+#: lazarusidestrconsts.lisfpcmessagefile
+msgid "FPC message file"
+msgstr ""
 
 #: lazarusidestrconsts.lisfpcomponents
 msgctxt "lazarusidestrconsts.lisfpcomponents"
@@ -16519,6 +16527,10 @@ msgstr "Usar filtro de inclusión"
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"
 msgstr "Lanzador de aplicaciones"
+
+#: lazarusidestrconsts.lisusemessagefile
+msgid "Use message file:"
+msgstr ""
 
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"

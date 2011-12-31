@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-12-27 00:26+0400\n"
+"PO-Revision-Date: 2011-12-31 21:15+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5131,6 +5131,10 @@ msgstr "Выберите клавишу ..."
 msgid "Choose a name for the new component"
 msgstr "Выберите имя нового компонента"
 
+#: lazarusidestrconsts.lischooseanfpcmessagefile
+msgid "Choose an FPC message file"
+msgstr "Выберите файл сообщений FPC"
+
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a pascal file for indentation examples"
 msgstr "Выберите файл Паскаля для получения образцов отступов"
@@ -8471,6 +8475,10 @@ msgstr "отсутствует файл fpc.cfg."
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "ошибка fpcmake"
+
+#: lazarusidestrconsts.lisfpcmessagefile
+msgid "FPC message file"
+msgstr "Файл сообщений FPC"
 
 #: lazarusidestrconsts.lisfpcomponents
 msgctxt "lazarusidestrconsts.lisfpcomponents"
@@ -16246,6 +16254,10 @@ msgstr "Использовать включающий фильтр"
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"
 msgstr "Запускающее приложение"
+
+#: lazarusidestrconsts.lisusemessagefile
+msgid "Use message file:"
+msgstr "Использовать файл сообщений:"
 
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"

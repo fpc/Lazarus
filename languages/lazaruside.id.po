@@ -5156,6 +5156,10 @@ msgstr ""
 msgid "Choose a name for the new component"
 msgstr ""
 
+#: lazarusidestrconsts.lischooseanfpcmessagefile
+msgid "Choose an FPC message file"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a pascal file for indentation examples"
 msgstr ""
@@ -8490,6 +8494,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpcmessagefile
+msgid "FPC message file"
 msgstr ""
 
 #: lazarusidestrconsts.lisfpcomponents
@@ -16366,6 +16374,10 @@ msgstr "Gunakan Filter Include"
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"
 msgstr "Meluncurkan aplikasi"
+
+#: lazarusidestrconsts.lisusemessagefile
+msgid "Use message file:"
+msgstr ""
 
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"
