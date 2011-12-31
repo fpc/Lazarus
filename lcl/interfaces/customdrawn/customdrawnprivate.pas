@@ -9,7 +9,7 @@ uses
   Types, Classes, SysUtils,
   // LCL
   Controls, Graphics, stdctrls, extctrls, comctrls,
-  customdrawnproc, customdrawncontrols, lcltype, lclproc;
+  customdrawnproc, customdrawncontrols, lcltype, lclproc, lclintf;
 
 type
 
@@ -95,6 +95,9 @@ begin
     LCLSendMouseUpMsg(lTarget, lEventPos.x, lEventPos.y, Button, ShiftState);
     if lEventEndsInsideTheControl then LCLSendClickedMsg(lTarget);
   end;
+
+  // Form scrolling
+  AWindowHandle.IsScrolling := False;
 end;
 
 procedure CallbackMouseDown(AWindowHandle: TCDForm; x, y: Integer; Button: TMouseButton; ShiftState: TShiftState = []);
@@ -138,12 +141,20 @@ begin
 
   // If the target is focusable, a mouse down will give it focus
   CDWidgetset.CDSetFocusToControl(lTarget, lIntfTarget);
+
+  // Check if we are scrolling the form
+  if lTarget = AWindowHandle.LCLForm then
+  begin
+    AWindowHandle.IsScrolling := True;
+    AWindowHandle.LastMousePos := lEventPos;
+  end;
 end;
 
 procedure CallbackMouseMove(AWindowHandle: TCDForm; x, y: Integer; ShiftState: TShiftState = []);
 var
   lTarget: TWinControl;
   lEventPos: TPoint;
+  lOldScrollY: Integer;
 begin
   if AWindowHandle.LastMouseDownControl = nil then
     lTarget := FindControlWhichReceivedEvent(AWindowHandle.LCLForm, AWindowHandle.Children, x, y)
@@ -159,6 +170,15 @@ begin
     lTarget := lTarget.Parent;
 
     LCLSendMouseMoveMsg(lTarget, lEventPos.x, lEventPos.y, ShiftState);
+  end;
+
+  // form scrolling
+  if AWindowHandle.IsScrolling then
+  begin
+    lOldScrollY := AWindowHandle.ScrollY;
+    AWindowHandle.ScrollY := lEventPos.Y - AWindowHandle.LastMousePos.Y;
+    AWindowHandle.SanityCheckScrollPos();
+    if AWindowHandle.ScrollY <> lOldScrollY then LCLIntf.InvalidateRect(HWND(AWindowHandle), nil, False);
   end;
 end;
 

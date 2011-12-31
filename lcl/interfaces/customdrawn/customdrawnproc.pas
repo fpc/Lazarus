@@ -61,9 +61,16 @@ type
     // painting objects
     Image: TLazIntfImage;
     Canvas: TLazCanvas;
+    // For scrolling the form
+    ScrollX, ScrollY: Integer;
+    LastMousePos: TPoint;
+    IsScrolling: Boolean;
+    FormRealSize: TSize; // the size in the screen
     constructor Create; virtual;
     procedure IncInvalidateCount;
     function GetFocusedControl: TWinControl;
+    function GetFormBufferHeight(AScreenHeight: Integer): Integer;
+    procedure SanityCheckScrollPos();
   end;
 
   TCDNonNativeForm = class(TCDForm)
@@ -722,6 +729,26 @@ begin
   if FocusedIntfControl <> nil then Result := FocusedIntfControl
   else if FocusedControl <> nil then Result := FocusedControl
   else Result := LCLForm;
+end;
+
+function TCDForm.GetFormBufferHeight(AScreenHeight: Integer): Integer;
+var
+  i, lControlRequiredHeight: Integer;
+  lControl: TControl;
+begin
+  Result := AScreenHeight;
+  for i := 0 to LCLForm.ControlCount-1 do
+  begin
+    lControl := LCLForm.Controls[i];
+    lControlRequiredHeight := lControl.Top + lControl.Height;
+    Result := Max(lControlRequiredHeight, Result);
+  end;
+end;
+
+procedure TCDForm.SanityCheckScrollPos;
+begin
+  ScrollY := Max(ScrollY, 0);
+  ScrollY := Min(ScrollY, Image.Height - FormRealSize.cy);
 end;
 
 end.

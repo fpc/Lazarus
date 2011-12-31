@@ -639,6 +639,8 @@ begin
   Context.ctx:=ControlContext;
   lWidth := Round(bounds.size.width);
   lHeight := Round(bounds.size.height);
+  WindowHandle.FormRealSize := Types.Size(lWidth, lHeight);
+  lHeight := WindowHandle.GetFormBufferHeight(lHeight);
   if Context.InitDraw(lWidth, lHeight) then
   begin
     // Prepare the non-native image and canvas
@@ -653,7 +655,7 @@ begin
     // Now render it into the control
     WindowHandle.Image.GetRawImage(lRawImage);
     Cocoa_RawImage_CreateBitmaps(lRawImage, lBitmap, lMask, True);
-    Context.DrawBitmap(0, 0, TCocoaBitmap(lBitmap));
+    Context.DrawBitmap(0, WindowHandle.ScrollY, TCocoaBitmap(lBitmap));
   end;
   {$IFDEF VerboseCDPaintProfiler}
   DebugLn(Format('[TCocoaCustomControl.Draw] Paint duration: %d ms', [DateTimeToMilliseconds(NowUTC() - lTimeStart)]));

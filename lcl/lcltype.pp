@@ -107,20 +107,20 @@ type
   TLazDeviceMessage = class
   public
     // The commends indicate in which message kind each field is available
-    // in this order:                  SMS     MMS     EMail
-    bccAddress: TStringList;         //	N	N	Y
-    Body: string;                    //	Y	Y	Y
-    callbackNumber: string;          //	Y	N	N
-    ccAddress: TstringList;          //	N	N	Y
-    destinationAddress: TStringList; //	Y	Y	Y
-    isRead: Boolean;                 //	Y	Y	Y
-    messageId: string;               // Y	Y	Y
+    // in this order:                  SMS   MMS  EMail
+    bccAddress: TStringList;         //	N     N    Y
+    Body: string;                    //	Y     Y	   Y
+    callbackNumber: string;          //	Y     N    N
+    ccAddress: TstringList;          //	N     N    Y
+    destinationAddress: TStringList; //	Y     Y    Y
+    isRead: Boolean;                 //	Y     Y    Y
+    messageId: string;               // Y     Y    Y
     //messagePriority	Y	Y	Y
-    messageType: TLazDeviceMessageKind;//Y	Y	Y
-    sourceAddress: string;           // Y	Y	Y
-    Subject: string;                 //	N	Y	Y
-    Time: TDateTime;                 // Y	Y	Y
-    validityPeriod:TTime;            // Y	N	N
+    messageType: TLazDeviceMessageKind;//Y    Y    Y
+    sourceAddress: string;           // Y     Y    Y
+    Subject: string;                 //	N     Y    Y
+    Time: TDateTime;                 // Y     Y    Y
+    validityPeriod:TTime;            // Y     N    N
     constructor Create; virtual;
     destructor Destroy; override;
   end;
