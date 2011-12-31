@@ -138,7 +138,8 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
     OpenDialog.Title:=lisChooseCompilerMessages;
-    OpenDialog.Filter:='FPC message file (*.msg)|*.msg|Any file|'+AllFilesMask;
+    OpenDialog.Filter:=lisFPCMessageFile+' (*.msg)|*.msg|'+dlgAllFiles+'|'+
+      GetAllFilesMask;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       SetComboBoxText(CompilerMessagesComboBox,AFilename,cstFilename);
