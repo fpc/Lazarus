@@ -176,7 +176,7 @@ begin
   if AWindowHandle.IsScrolling then
   begin
     lOldScrollY := AWindowHandle.ScrollY;
-    AWindowHandle.ScrollY := lEventPos.Y - AWindowHandle.LastMousePos.Y;
+    AWindowHandle.ScrollY := AWindowHandle.LastMousePos.Y - lEventPos.Y;
     AWindowHandle.SanityCheckScrollPos();
     if AWindowHandle.ScrollY <> lOldScrollY then LCLIntf.InvalidateRect(HWND(AWindowHandle), nil, False);
   end;

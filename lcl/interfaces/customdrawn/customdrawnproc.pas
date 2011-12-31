@@ -65,11 +65,10 @@ type
     ScrollX, ScrollY: Integer;
     LastMousePos: TPoint;
     IsScrolling: Boolean;
-    FormRealSize: TSize; // the size in the screen
     constructor Create; virtual;
     procedure IncInvalidateCount;
     function GetFocusedControl: TWinControl;
-    function GetFormBufferHeight(AScreenHeight: Integer): Integer;
+    function GetFormVirtualHeight(AScreenHeight: Integer): Integer;
     procedure SanityCheckScrollPos();
   end;
 
@@ -120,11 +119,11 @@ procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage;
   AFreeImageOnUpdate: Boolean = True; ADataOwner: Boolean = True);
 procedure DrawFormBackground(var AImage: TLazIntfImage; var ACanvas: TLazCanvas);
 procedure RenderChildWinControls(var AImage: TLazIntfImage;
-  var ACanvas: TLazCanvas; ACDControlsList: TFPList);
+  var ACanvas: TLazCanvas; ACDControlsList: TFPList; ACDForm: TCDForm);
 function RenderWinControl(var AImage: TLazIntfImage;
-  var ACanvas: TLazCanvas; ACDWinControl: TCDWinControl): Boolean;
+  var ACanvas: TLazCanvas; ACDWinControl: TCDWinControl; ACDForm: TCDForm): Boolean;
 procedure RenderWinControlAndChildren(var AImage: TLazIntfImage;
-  var ACanvas: TLazCanvas; ACDWinControl: TCDWinControl);
+  var ACanvas: TLazCanvas; ACDWinControl: TCDWinControl; ACDForm: TCDForm);
 procedure RenderForm(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; AForm: TCustomForm);
 function FindControlWhichReceivedEvent(AForm: TCustomForm;
@@ -398,7 +397,7 @@ end;
 // This does not render the win control itself, only it's children
 // The WinControls themselves will render child TControls not descending from TWinControl
 procedure RenderChildWinControls(var AImage: TLazIntfImage;
-  var ACanvas: TLazCanvas; ACDControlsList: TFPList);
+  var ACanvas: TLazCanvas; ACDControlsList: TFPList; ACDForm: TCDForm);
 var
   i, lChildrenCount: Integer;
   lCDWinControl: TCDWinControl;
@@ -417,14 +416,14 @@ begin
 
     lCDWinControl := TCDWinControl(ACDControlsList.Items[i]);
 
-    RenderWinControlAndChildren(AImage, ACanvas, lCDWinControl);
+    RenderWinControlAndChildren(AImage, ACanvas, lCDWinControl, ACDForm);
   end;
 end;
 
 // Renders a WinControl, but not it's children
 // Returns if the control is visible and therefore if its children should be rendered
 function RenderWinControl(var AImage: TLazIntfImage; var ACanvas: TLazCanvas;
-  ACDWinControl: TCDWinControl): Boolean;
+  ACDWinControl: TCDWinControl; ACDForm: TCDForm): Boolean;
 var
   lWinControl, lParentControl: TWinControl;
   struct : TPaintStruct;
@@ -453,12 +452,13 @@ begin
   // lBaseWindowOrg makes debugging easier
   // Iterate to find the appropriate BaseWindowOrg relative to the parent control
   lBaseWindowOrg := FindControlPositionRelativeToTheForm(lWinControl);
-  ACanvas.BaseWindowOrg := lBaseWindowOrg;
+  ACanvas.BaseWindowOrg := Point(lBaseWindowOrg.X, lBaseWindowOrg.Y - ACDForm.ScrollY);
   ACanvas.WindowOrg := Point(0, 0);
 
   // Prepare the clippping relative to the form
   ACanvas.Clipping := True;
-  ACDWinControl.Region.Rect := Bounds(lBaseWindowOrg.X, lBaseWindowOrg.Y, lWinControl.Width, lWinControl.Height);
+  ACDWinControl.Region.Rect := Bounds(lBaseWindowOrg.X, lBaseWindowOrg.Y - ACDForm.ScrollY,
+    lWinControl.Width, lWinControl.Height);
   ACanvas.ClipRegion := ACDWinControl.Region;
 
   // Special drawing for some native controls
@@ -489,14 +489,14 @@ end;
 
 // Render a WinControl and all it's children
 procedure RenderWinControlAndChildren(var AImage: TLazIntfImage;
-  var ACanvas: TLazCanvas; ACDWinControl: TCDWinControl);
+  var ACanvas: TLazCanvas; ACDWinControl: TCDWinControl; ACDForm: TCDForm);
 begin
   // Draw the control
-  if not RenderWinControl(AImage, ACanvas, ACDWinControl) then Exit;
+  if not RenderWinControl(AImage, ACanvas, ACDWinControl, ACDForm) then Exit;
 
   // Now Draw all sub-controls
   if ACDWinControl.Children <> nil then
-    RenderChildWinControls(AImage, ACanvas, ACDWinControl.Children);
+    RenderChildWinControls(AImage, ACanvas, ACDWinControl.Children, ACDForm);
 end;
 
 // Draws a form and all of its child controls
@@ -504,11 +504,16 @@ procedure RenderForm(var AImage: TLazIntfImage; var ACanvas: TLazCanvas;
   AForm: TCustomForm);
 var
   struct : TPaintStruct;
+  lWindowHandle: TCDForm;
 begin
+  lWindowHandle := TCDForm(AForm.Handle);
   DrawFormBackground(AImage, ACanvas);
 
   FillChar(struct, SizeOf(TPaintStruct), 0);
   struct.hdc := HDC(ACanvas);
+
+  // Consider the form scrolling
+  ACanvas.BaseWindowOrg := Point(0, - lWindowHandle.ScrollY);
 
   // Send the paint message to the LCL
   {$IFDEF VerboseCDForms}
@@ -520,7 +525,7 @@ begin
   {$ENDIF}
 
   // Now paint all child win controls
-  RenderChildWinControls(AImage, ACanvas, GetCDWinControlList(AForm));
+  RenderChildWinControls(AImage, ACanvas, GetCDWinControlList(AForm), lWindowHandle);
 end;
 
 function FindControlWhichReceivedEvent(AForm: TCustomForm;
@@ -731,7 +736,7 @@ begin
   else Result := LCLForm;
 end;
 
-function TCDForm.GetFormBufferHeight(AScreenHeight: Integer): Integer;
+function TCDForm.GetFormVirtualHeight(AScreenHeight: Integer): Integer;
 var
   i, lControlRequiredHeight: Integer;
   lControl: TControl;
@@ -748,7 +753,7 @@ end;
 procedure TCDForm.SanityCheckScrollPos;
 begin
   ScrollY := Max(ScrollY, 0);
-  ScrollY := Min(ScrollY, Image.Height - FormRealSize.cy);
+  ScrollY := Min(ScrollY, GetFormVirtualHeight(Image.Height) - Image.Height);
 end;
 
 end.
