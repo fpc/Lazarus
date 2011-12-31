@@ -68,9 +68,6 @@ var
   pixels: PCardinal;
   lCurForm: TCDNonNativeForm;
 
-  struct : TPaintStruct;
-  lBitmap, lMask: HBITMAP;
-  lRawImage: TRawImage;
   {$IFDEF VerboseCDPaintProfiler}
   lTimeStart: TDateTime;
   {$ENDIF}
@@ -88,25 +85,10 @@ begin
     DebugLn(Format('[Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap] lCurForm:TCDNonNativeForm=%x', [PtrInt(lCurForm)]));
     {$ENDIF}
 
-    FillChar(struct, SizeOf(TPaintStruct), 0);
-
     // Prepare the non-native image and canvas
     UpdateControlLazImageAndCanvas(lCurForm.Image, lCurForm.Canvas, Width, Height, clfRGBA32, pixels, True, False);
-    DrawFormBackground(lCurForm.Image, lCurForm.Canvas);
 
-    struct.hdc := HDC(lCurForm.Canvas);
-
-    // Send the paint message to the LCL
-    {$IFDEF VerboseCDPaintEvent}
-    //DebugLn(Format('[TCDWSCustomForm.EvPaint] OnPaint event started context: %x', [struct.hdc]));
-    {$ENDIF}
-    LCLSendPaintMsg(lCurForm.LCLForm, struct.hdc, @struct);
-    {$IFDEF VerboseCDPaintEvent}
-    //DebugLn('[TCDWSCustomForm.EvPaint] OnPaint event ended');
-    {$ENDIF}
-
-    // Now paint all child win controls
-    RenderChildWinControls(lCurForm.Image, lCurForm.Canvas, lCurForm.Children);
+    RenderForm(lCurForm.Image, lCurForm.Canvas, lCurForm.LCLForm);
   end;
 
   // Now returns the bitmap buffer to LCLActivity so that it can render it
