@@ -5120,6 +5120,10 @@ msgstr "Escolha uma tecla ..."
 msgid "Choose a name for the new component"
 msgstr "Escolha um nome para o novo componente"
 
+#: lazarusidestrconsts.lischooseanfpcmessagefile
+msgid "Choose an FPC message file"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a pascal file for indentation examples"
 msgstr "Escolha um arquivo pascal para exemplos recuo"
@@ -7778,7 +7782,7 @@ msgstr "Ativar Macros"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = replace whole identifier, Disable = replace prefix"
-msgstr ""
+msgstr "Habilitar = substituir o identificador inteiro, Desabilitar = substituir o prefixo"
 
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
@@ -8458,6 +8462,10 @@ msgstr "fpc.cfg está faltando."
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "\"fpcmake\" falhou"
+
+#: lazarusidestrconsts.lisfpcmessagefile
+msgid "FPC message file"
+msgstr ""
 
 #: lazarusidestrconsts.lisfpcomponents
 msgctxt "lazarusidestrconsts.lisfpcomponents"
@@ -14299,7 +14307,7 @@ msgstr "Corrigir propriedades e tipos desconhecidos"
 
 #: lazarusidestrconsts.lisreplacewholeidentifier
 msgid "Replace whole identifier"
-msgstr ""
+msgstr "Substituir o identificador inteiro"
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."
@@ -16222,6 +16230,10 @@ msgstr "Usar filtro de inclusão"
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"
 msgstr "Inicializando aplicação"
+
+#: lazarusidestrconsts.lisusemessagefile
+msgid "Use message file:"
+msgstr ""
 
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"
