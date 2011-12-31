@@ -513,7 +513,9 @@ begin
   struct.hdc := HDC(ACanvas);
 
   // Consider the form scrolling
-  ACanvas.BaseWindowOrg := Point(0, - lWindowHandle.ScrollY);
+  // ToDo: Figure out why this "div 2" factor is necessary for drawing non-windows controls and remove this factor
+  ACanvas.BaseWindowOrg := Point(0, - lWindowHandle.ScrollY div 2);
+  ACanvas.WindowOrg := Point(0, 0);
 
   // Send the paint message to the LCL
   {$IFDEF VerboseCDForms}
