@@ -645,9 +645,38 @@ type
     procedure InternalBeginUndoBlock(aList: TSynEditUndoList = nil); // includes paintlock
     procedure InternalEndUndoBlock(aList: TSynEditUndoList = nil);
   protected
+    {$IFDEF EnableDoubleBuf}
+    BufferBitmap: TBitmap; // the double buffer
+    {$ENDIF}
+    SavedCanvas: TCanvas; // the normal TCustomControl canvas during paint
+
+    procedure Paint; override;
+    procedure StartPaintBuffer(const ClipRect: TRect);
+    procedure EndPaintBuffer(const ClipRect: TRect);
+    procedure DoOnPaint; virtual;
+
+    procedure IncPaintLock;
+    procedure DecPaintLock;
+    procedure DoIncPaintLock(Sender: TObject);
+    procedure DoDecPaintLock(Sender: TObject);
+    procedure DoIncForeignPaintLock(Sender: TObject);
+    procedure DoDecForeignPaintLock(Sender: TObject);
+    procedure SetUpdateState(NewUpdating: Boolean; Sender: TObject); virtual;      // Called *before* paintlock, and *after* paintlock
+
+    property PaintLockOwner: TSynEditBase read GetPaintLockOwner write SetPaintLockOwner;
+  protected
     procedure CreateHandle; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
+    procedure DestroyWnd; override;
+    procedure Loaded; override;
+    function  GetChildOwner: TComponent; override;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure UTF8KeyPress(var Key: TUTF8Char); override;
+    procedure KeyPress(var Key: Char); override;
+    procedure KeyUp(var Key : Word; Shift : TShiftState); override;
 
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
       Integer); override;
@@ -656,13 +685,15 @@ type
       override;
     procedure ScrollTimerHandler(Sender: TObject);
     procedure DoContextPopup(MousePos: TPoint; var Handled: Boolean); override;
-
     procedure FindAndHandleMouseAction(AButton: TSynMouseButton; AShift: TShiftState;
                                 X, Y: Integer; ACCount:TSynMAClickCount;
                                 ADir: TSynMAClickDir);
     function DoHandleMouseAction(AnActionList: TSynEditMouseActions;
                                  AnInfo: TSynEditMouseActionInfo): Boolean;
 
+  protected
+    procedure DragOver(Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean); override;
     procedure DoOnResize; override;
     function  RealGetText: TCaption; override;
     procedure RealSetText(const Value: TCaption); override;
@@ -673,26 +704,12 @@ type
     procedure SetLines(Value: TStrings);  override;
     function GetMarkupMgr: TObject; override;
     function GetCaretObj: TSynEditCaret; override;
-    procedure IncPaintLock;
-    procedure DecPaintLock;
-    procedure DoIncPaintLock(Sender: TObject);
-    procedure DoDecPaintLock(Sender: TObject);
-    procedure DoIncForeignPaintLock(Sender: TObject);
-    procedure DoDecForeignPaintLock(Sender: TObject);
-    procedure SetUpdateState(NewUpdating: Boolean; Sender: TObject); virtual;      // Called *before* paintlock, and *after* paintlock
-    procedure DestroyWnd; override;
-    procedure DragOver(Source: TObject; X, Y: Integer;
-      State: TDragState; var Accept: Boolean); override;
     procedure FontChanged(Sender: TObject); override;
     function GetReadOnly: boolean; virtual;
     procedure HighlighterAttrChanged(Sender: TObject);
     // note: FirstLine and LastLine don't need to be in correct order
     procedure InvalidateGutterLines(FirstLine, LastLine: integer);
     procedure InvalidateLines(FirstLine, LastLine: integer);
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure UTF8KeyPress(var Key: TUTF8Char); override;
-    procedure KeyPress(var Key: Char); override;
-    procedure KeyUp(var Key : Word; Shift : TShiftState); override;
     Procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     Procedure LineTextChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     procedure DoHighlightChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
@@ -700,7 +717,6 @@ type
     procedure FoldChanged(Index: integer);
     function GetTopView : Integer;
     procedure SetTopView(const AValue : Integer);
-    procedure Loaded; override;
     procedure MarkListChange(Sender: TSynEditMark; Changes: TSynEditMarkChangeReasons);
 {$IFDEF SYN_MBCSSUPPORT}
     procedure MBCSGetSelRangeInLineWhenColumnSelectionMode(const s: string;
@@ -710,9 +726,6 @@ type
       var Command: TSynEditorCommand;
       var AChar: TUTF8Char;
       Data: pointer); virtual;
-    procedure Paint; override;
-    procedure StartPaintBuffer(const ClipRect: TRect);
-    procedure EndPaintBuffer(const ClipRect: TRect);
     function NextWordLogicalPos(WordEndForDelete : Boolean = false): TPoint;
     function PrevWordLogicalPos: TPoint;
     procedure RecalcCharExtent;
@@ -725,19 +738,10 @@ type
       AddToUndoList: Boolean = false);
     procedure UndoItem(Item: TSynEditUndoItem);
     procedure UpdateCursor;
-    property PaintLockOwner: TSynEditBase read GetPaintLockOwner write SetPaintLockOwner;
-  protected
-    {$IFDEF EnableDoubleBuf}
-    BufferBitmap: TBitmap; // the double buffer
-    {$ENDIF}
-    SavedCanvas: TCanvas; // the normal TCustomControl canvas during paint
-    function GetChildOwner: TComponent; override;
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure DoOnCommandProcessed(Command: TSynEditorCommand;
       AChar: TUTF8Char;
       Data: pointer); virtual;
     // no method DoOnDropFiles, intercept the WM_DROPFILES instead
-    procedure DoOnPaint; virtual;
     procedure DoOnProcessCommand(var Command: TSynEditorCommand;
       var AChar: TUTF8Char;
       Data: pointer); virtual;
@@ -757,52 +761,95 @@ type
     function CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
                           ATextDrawer: TheTextDrawer): TSynGutter; virtual;
   public
-    procedure FindMatchingBracket; virtual;
-    function FindMatchingBracket(PhysStartBracket: TPoint;
-                                 StartIncludeNeighborChars, MoveCaret,
-                                 SelectBrackets, OnlyVisible: Boolean
-                                 ): TPoint; virtual;
-    //code fold
-    procedure CodeFoldAction(iLine: integer); deprecated;
-    procedure UnfoldAll;
-    procedure FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
-    procedure EraseBackground(DC: HDC); override;
-
-    procedure AddKey(Command: TSynEditorCommand; Key1: word; SS1: TShiftState;
-      Key2: word; SS2: TShiftState);
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure AfterLoadFromFile;
+
     procedure BeginUndoBlock;
     procedure BeginUpdate(WithUndoBlock: Boolean = True);
-    function CaretXPix: Integer;
-    function CaretYPix: Integer;
-    procedure ClearAll;
-    procedure ClearBookMark(BookMark: Integer);
-    procedure ClearSelection;
-    procedure CommandProcessor(Command:TSynEditorCommand;
-      AChar: TUTF8Char;
-      Data:pointer); virtual;
-    procedure ClearUndo;
-    procedure CopyToClipboard;
-    constructor Create(AOwner: TComponent); override;
-    procedure CutToClipboard;
-    destructor Destroy; override;
-    procedure DoCopyToClipboard(SText: string; FoldInfo: String = '');
-    procedure DragDrop(Source: TObject; X, Y: Integer); override;
     procedure EndUndoBlock;
     procedure EndUpdate;
+
+  public
+    // Caret
+    function CaretXPix: Integer;
+    function CaretYPix: Integer;
     procedure EnsureCursorPosVisible;
+    procedure MoveCaretToVisibleArea;
+    procedure MoveCaretIgnoreEOL(const NewCaret: TPoint);
+    procedure MoveLogicalCaretIgnoreEOL(const NewLogCaret: TPoint);
+
+    property CaretX: Integer read GetCaretX write SetCaretX;
+    property CaretY: Integer read GetCaretY write SetCaretY;
+    property CaretXY: TPoint read GetCaretXY write SetCaretXY;// screen position
+    property LogicalCaretXY: TPoint read GetLogicalCaretXY write SetLogicalCaretXY;
+
+    // Selection
+    procedure ClearSelection;
+    procedure SelectAll;
+    procedure SelectToBrace;
+    procedure SelectWord;
+    procedure SelectLine(WithLeadSpaces: Boolean = True);
+    procedure SelectParagraph;
+
+    property BlockBegin: TPoint read GetBlockBegin write SetBlockBegin;         // Set Blockbegin. For none persistent also sets Blockend. Setting Caret may undo this and should be done before setting block
+    property BlockEnd: TPoint read GetBlockEnd write SetBlockEnd;
+    property SelStart: Integer read GetSelStart write SetSelStart;
+    property SelEnd: Integer read GetSelEnd write SetSelEnd;
+    property SelAvail: Boolean read GetSelAvail;
+    property SelText: string read GetSelText write SetSelTextExternal;
+
+    // Text
+    procedure ClearAll;
+    procedure InsertTextAtCaret(aText: String; aCaretMode : TSynCaretAdjustMode = scamEnd);
+
+    property TextBetweenPoints[aStartPoint, aEndPoint: TPoint]: String              // Logical Points
+      read GetTextBetweenPoints write SetTextBetweenPoints;
+    property TextBetweenPointsEx[aStartPoint, aEndPoint: TPoint; CaretMode: TSynCaretAdjustMode]: String
+      write SetTextBetweenPointsEx;
+    property LineText: string read GetLineText write SetLineText;
+    property Text: string read SynGetText write SynSetText;                     // No uncommited (trailing/trimmable) spaces
+
+    function GetLineState(ALine: Integer): TSynLineState;
+    procedure MarkTextAsSaved;
+
+    // BoorMark
+    procedure ClearBookMark(BookMark: Integer);
+    function  GetBookMark(BookMark: integer; var X, Y: integer): boolean;
+    procedure GotoBookMark(BookMark: Integer);
+    function  IsBookmark(BookMark: integer): boolean;
+    procedure SetBookMark(BookMark: Integer; X: Integer; Y: Integer);
+    property Marks: TSynEditMarkList read fMarkList;
+
+    // Undo/Redo
+    procedure ClearUndo;
+    procedure Redo;
+    procedure Undo;
+    property CanRedo: boolean read GetCanRedo;
+    property CanUndo: boolean read GetCanUndo;
+
+    // Clipboard
+    procedure CopyToClipboard;
+    procedure CutToClipboard;
+    procedure PasteFromClipboard;
+    procedure DoCopyToClipboard(SText: string; FoldInfo: String = '');
+    property CanPaste: Boolean read GetCanPaste;
+
+    procedure DragDrop(Source: TObject; X, Y: Integer); override;
 {$IFDEF SYN_COMPILER_4_UP}
     function ExecuteAction(ExeAction: TBasicAction): boolean; override;
 {$ENDIF}
+    procedure CommandProcessor(Command:TSynEditorCommand;
+      AChar: TUTF8Char;
+      Data:pointer); virtual;
     procedure ExecuteCommand(Command: TSynEditorCommand;
       const AChar: TUTF8Char; Data: pointer); virtual;
-    function GetBookMark(BookMark: integer; var X, Y: integer): boolean;
+
     function GetHighlighterAttriAtRowCol(XY: TPoint; var Token: string;
       var Attri: TSynHighlighterAttributes): boolean;
     function GetHighlighterAttriAtRowColEx(XY: TPoint; var Token: string;
       var TokenType, Start: Integer;
       var Attri: TSynHighlighterAttributes): boolean;                           //L505
-
     procedure GetWordBoundsAtRowCol(const XY: TPoint; var StartX, EndX: integer);
     function GetWordAtRowCol(XY: TPoint): string;
     function NextTokenPos: TPoint; virtual; deprecated; // use next word pos instead
@@ -812,11 +859,9 @@ type
     function IsIdentChar(const c: TUTF8Char): boolean;
 
     function IsLinkable(Y, X1, X2: Integer): Boolean;
-    procedure GotoBookMark(BookMark: Integer);
     procedure InvalidateGutter;
     procedure InvalidateLine(Line: integer);
-    function IsBookmark(BookMark: integer): boolean;
-    procedure MarkTextAsSaved;
+
     // Byte to Char
     function LogicalToPhysicalPos(const p: TPoint): TPoint;
     function LogicalToPhysicalCol(const Line: String; Index, LogicalPos
@@ -826,18 +871,19 @@ type
     function PhysicalToLogicalCol(const Line: string;
                                   Index, PhysicalPos: integer): integer;
     function PhysicalLineLength(Line: String; Index: integer): integer;
+
+    // Pixel
     function ScreenColumnToXValue(Col: integer): integer;  // map screen column to screen pixel
-    procedure MoveCaretToVisibleArea;
-    procedure MoveCaretIgnoreEOL(const NewCaret: TPoint);
-    procedure MoveLogicalCaretIgnoreEOL(const NewLogCaret: TPoint);
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
-    procedure PasteFromClipboard;
+    // RowColumnToPixels: Physical coords
+    function RowColumnToPixels(const RowCol: TPoint): TPoint;
     function PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinateMappingFlags = [scmLimitToLines]): TPoint;
     function PixelsToLogicalPos(const Pixels: TPoint): TPoint;
+    //
     function ScreenRowToRow(ScreenRow: integer; LimitToLines: Boolean = True): integer;
     function RowToScreenRow(PhysicalRow: integer): integer;
-    procedure Redo;
+
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
     procedure RegisterCommandHandler(AHandlerProc: THookedCommandEvent;
       AHandlerData: pointer);
     procedure UnregisterCommandHandler(AHandlerProc: THookedCommandEvent);
@@ -853,80 +899,56 @@ type
     procedure RegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent; AChanges: TSynStatusChanges);
     procedure UnRegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent);
 
-    // RowColumnToPixels: Physical coords
-    function RowColumnToPixels(const RowCol: TPoint): TPoint;
     function SearchReplace(const ASearch, AReplace: string;
       AOptions: TSynSearchOptions): integer;
     function SearchReplaceEx(const ASearch, AReplace: string;
       AOptions: TSynSearchOptions; AStart: TPoint): integer;
-    procedure SelectAll;
-    Procedure SetHighlightSearch(const ASearch: String; AOptions: TSynSearchOptions);
-    procedure SelectToBrace;
-    procedure SelectWord;
-    procedure SelectLine(WithLeadSpaces: Boolean = True);
-    procedure SelectParagraph;
+
     procedure SetUseIncrementalColor(const AValue : Boolean);
-    procedure SetBookMark(BookMark: Integer; X: Integer; Y: Integer);
     procedure SetDefaultKeystrokes; virtual;
     procedure ResetMouseActions;  // set mouse-actions according to current Options / may clear them
     procedure SetOptionFlag(Flag: TSynEditorOption; Value: boolean);
-    procedure Undo;
-    function GetLineState(ALine: Integer): TSynLineState;
+    Procedure SetHighlightSearch(const ASearch: String; AOptions: TSynSearchOptions);
 {$IFDEF SYN_COMPILER_4_UP}
     function UpdateAction(TheAction: TBasicAction): boolean; override;
 {$ENDIF}
     procedure WndProc(var Msg: TMessage); override;
+    procedure EraseBackground(DC: HDC); override;
   public
-    procedure InsertTextAtCaret(aText: String; aCaretMode : TSynCaretAdjustMode = scamEnd);
-    property BlockBegin: TPoint read GetBlockBegin write SetBlockBegin;         // Set Blockbegin. For none persistent also sets Blockend. Setting Caret may undo this and should be done before setting block
-    property BlockEnd: TPoint read GetBlockEnd write SetBlockEnd;
+    procedure FindMatchingBracket; virtual;
+    function FindMatchingBracket(PhysStartBracket: TPoint;
+                                 StartIncludeNeighborChars, MoveCaret,
+                                 SelectBrackets, OnlyVisible: Boolean
+                                 ): TPoint; virtual;
+    //code fold
+    procedure CodeFoldAction(iLine: integer); deprecated;
+    procedure UnfoldAll;
+    procedure FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
     property FoldState: String read GetFoldState write SetFoldState;
-    property CanPaste: Boolean read GetCanPaste;
-    property CanRedo: boolean read GetCanRedo;
-    property CanUndo: boolean read GetCanUndo;
-    property CaretX: Integer read GetCaretX write SetCaretX;
-    property CaretY: Integer read GetCaretY write SetCaretY;
-    property CaretXY: TPoint read GetCaretXY write SetCaretXY;// screen position
-    property LogicalCaretXY: TPoint read GetLogicalCaretXY write SetLogicalCaretXY;
+
+    procedure AddKey(Command: TSynEditorCommand; Key1: word; SS1: TShiftState;
+      Key2: word; SS2: TShiftState);
+  public
     property CharsInWindow: Integer read fCharsInWindow;
     property CharWidth: integer read fCharWidth;
-    property Color default clWhite;
-    property Beautifier: TSynCustomBeautifier read fBeautifier write SetBeautifier;
-    property SelStart: Integer read GetSelStart write SetSelStart;
-    property SelEnd: Integer read GetSelEnd write SetSelEnd;
-    property UseIncrementalColor : Boolean write SetUseIncrementalColor;
-    property Highlighter: TSynCustomHighlighter
-      read fHighlighter write SetHighlighter;
     property LeftChar: Integer read fLeftChar write SetLeftChar;
     property LineHeight: integer read fTextHeight;
     property LinesInWindow: Integer read fLinesInWindow; // MG: fully visible lines
-    property LineText: string read GetLineText write SetLineText;
-    property Text: string read SynGetText write SynSetText;                     // No uncommited (trailing/trimmable) spaces
-    property Marks: TSynEditMarkList read fMarkList;
     property MaxLeftChar: integer read fMaxLeftChar write SetMaxLeftChar
       default 1024;
+    property TopLine: Integer read fTopLine write SetTopLine;
+
+    property UseIncrementalColor : Boolean write SetUseIncrementalColor;
     property Modified: Boolean read GetModified write SetModified;
     property PaintLock: Integer read fPaintLock;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default FALSE;
-    property SelAvail: Boolean read GetSelAvail;
-    property SelText: string read GetSelText write SetSelTextExternal;
-    // Logical Points
-    property TextBetweenPoints[aStartPoint, aEndPoint: TPoint]: String
-      read GetTextBetweenPoints write SetTextBetweenPoints;
-    property TextBetweenPointsEx[aStartPoint, aEndPoint: TPoint; CaretMode: TSynCaretAdjustMode]: String
-      write SetTextBetweenPointsEx;
-    property TopLine: Integer read fTopLine write SetTopLine;
+
     property UseUTF8: boolean read FUseUTF8;
     procedure Update; override;
     procedure Invalidate; override;
     property ChangeStamp: int64 read GetChangeStamp;
     procedure ShareTextBufferFrom(AShareEditor: TCustomSynEdit);
     procedure UnShareTextBuffer;
-  public
-    property OnKeyDown;
-    property OnKeyPress;
-    property OnProcessCommand: TProcessCommandEvent
-      read FOnProcessCommand write FOnProcessCommand;
+
     function PluginCount: Integer;
     property Plugin[Index: Integer]: TSynEditPlugin read GetPlugin;
     function MarkupCount: Integer;
@@ -935,20 +957,35 @@ type
       read GetMarkupByClass;
     property TrimSpaceType: TSynEditStringTrimmingType
       read GetTrimSpaceType write SetTrimSpaceType;
-    property BookMarkOptions: TSynBookMarkOpt
-      read fBookMarkOpt write fBookMarkOpt;
+  public
+    // Caret
+    property InsertCaret: TSynEditCaretType read FInsertCaret write SetInsertCaret default ctVerticalLine;
+    property OverwriteCaret: TSynEditCaretType read FOverwriteCaret write SetOverwriteCaret default ctBlock;
+
+    // Selection
+    property HideSelection: boolean read fHideSelection write SetHideSelection default false;
+    property DefaultSelectionMode: TSynSelectionMode read GetDefSelectionMode write SetDefSelectionMode default smNormal;
+    property SelectionMode: TSynSelectionMode read GetSelectionMode write SetSelectionMode default smNormal;
+    property SelectedColor: TSynSelectedColor read GetSelectedColor write SetSelectedColor;  // Setter for compatibility
+
+    // Colors
+    property Color default clWhite;
+    property IncrementColor: TSynSelectedColor read GetIncrementColor;
+    property HighlightAllColor: TSynSelectedColor read GetHighlightAllColor;
+    property BracketMatchColor: TSynSelectedColor read GetBracketMatchColor;
+    property MouseLinkColor: TSynSelectedColor read GetMouseLinkColor;
+    property LineHighlightColor: TSynSelectedColor read GetLineHighlightColor;
+    property FoldedCodeColor: TSynSelectedColor read GetFoldedCodeColor;
+
+    property Beautifier: TSynCustomBeautifier read fBeautifier write SetBeautifier;
+    property BookMarkOptions: TSynBookMarkOpt read fBookMarkOpt write fBookMarkOpt;
     property BlockIndent: integer read FBlockIndent write SetBlockIndent default 2;
     property BlockTabIndent: integer read FBlockTabIndent write SetBlockTabIndent default 0;
-    property ExtraCharSpacing: integer
-      read fExtraCharSpacing write SetExtraCharSpacing default 0;
-    property ExtraLineSpacing: integer
-      read fExtraLineSpacing write SetExtraLineSpacing default 0;
+    property ExtraCharSpacing: integer read fExtraCharSpacing write SetExtraCharSpacing default 0;
+    property ExtraLineSpacing: integer read fExtraLineSpacing write SetExtraLineSpacing default 0;
+    property Highlighter: TSynCustomHighlighter read fHighlighter write SetHighlighter;
     property Gutter: TSynGutter read FLeftGutter write SetGutter;
     property RightGutter: TSynGutter read FRightGutter write SetRightGutter;
-    property HideSelection: boolean read fHideSelection write SetHideSelection
-      default false;
-    property InsertCaret: TSynEditCaretType read FInsertCaret
-      write SetInsertCaret default ctVerticalLine;
     property InsertMode: boolean read fInserting write SetInsertMode
       default true;
     property Keystrokes: TSynEditKeyStrokes
@@ -969,54 +1006,38 @@ type
     property ShareOptions: TSynEditorShareOptions read FShareOptions write SetShareOptions
       default SYNEDIT_DEFAULT_SHARE_OPTIONS; experimental;
     property VisibleSpecialChars: TSynVisibleSpecialChars read FVisibleSpecialChars write SetVisibleSpecialChars;
-    property OverwriteCaret: TSynEditCaretType read FOverwriteCaret
-      write SetOverwriteCaret default ctBlock;
-  protected
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default FALSE;
     property RightEdge: Integer read fRightEdge write SetRightEdge default 80;
     property RightEdgeColor: TColor
       read fRightEdgeColor write SetRightEdgeColor default clSilver;
     property ScrollBars: TScrollStyle
       read FScrollBars write SetScrollBars default ssBoth;
-    property SelectedColor: TSynSelectedColor
-    read GetSelectedColor write SetSelectedColor;  // Setter for compatibility
-    property IncrementColor: TSynSelectedColor read GetIncrementColor;
-    property HighlightAllColor: TSynSelectedColor read GetHighlightAllColor;
-    property BracketMatchColor: TSynSelectedColor read GetBracketMatchColor;
-    property MouseLinkColor: TSynSelectedColor read GetMouseLinkColor;
-    property LineHighlightColor: TSynSelectedColor read GetLineHighlightColor;
-    property FoldedCodeColor: TSynSelectedColor read GetFoldedCodeColor;
     property BracketHighlightStyle: TSynEditBracketHighlightStyle
       read GetBracketHighlightStyle write SetBracketHighlightStyle;
-    property DefaultSelectionMode: TSynSelectionMode
-      read GetDefSelectionMode write SetDefSelectionMode default smNormal;
-    property SelectionMode: TSynSelectionMode
-      read GetSelectionMode write SetSelectionMode default smNormal;
     property TabWidth: integer read fTabWidth write SetTabWidth default 8;
     property WantTabs: boolean read fWantTabs write SetWantTabs default FALSE;
+
+    // Events
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnChangeUpdating: TChangeUpdatingEvent read FOnChangeUpdating write FOnChangeUpdating;
     property OnCutCopy: TSynCopyPasteEvent read FOnCutCopy write FOnCutCopy;
     property OnPaste: TSynCopyPasteEvent read FOnPaste write FOnPaste;
-    property OnCommandProcessed: TProcessCommandEvent
-      read fOnCommandProcessed write fOnCommandProcessed;
     property OnDropFiles: TSynDropFilesEvent read fOnDropFiles write fOnDropFiles;
-    property OnGutterClick: TGutterClickEvent
-      read GetOnGutterClick write SetOnGutterClick;
+    property OnGutterClick: TGutterClickEvent read GetOnGutterClick write SetOnGutterClick;
     property OnPaint: TPaintEvent read fOnPaint write fOnPaint;
     // OnPlaceBookmark only triggers for Bookmarks
     property OnPlaceBookmark: TPlaceMarkEvent read FOnPlaceMark write FOnPlaceMark;
     // OnClearBookmark only triggers for Bookmarks
     property OnClearBookmark: TPlaceMarkEvent read FOnClearMark write FOnClearMark;
-    property OnProcessUserCommand: TProcessCommandEvent
-      read FOnProcessUserCommand write FOnProcessUserCommand;
-    property OnReplaceText: TReplaceTextEvent read fOnReplaceText
-      write fOnReplaceText;
-    property OnSpecialLineColors: TSpecialLineColorsEvent
-      read FOnSpecialLineColors write SetSpecialLineColors;  deprecated;
-    property OnSpecialLineMarkup: TSpecialLineMarkupEvent
-      read FOnSpecialLineMarkup write SetSpecialLineMarkup;
-    property OnStatusChange: TStatusChangeEvent
-      read fOnStatusChange write fOnStatusChange;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnProcessCommand: TProcessCommandEvent read FOnProcessCommand write FOnProcessCommand;
+    property OnProcessUserCommand: TProcessCommandEvent  read FOnProcessUserCommand write FOnProcessUserCommand;
+    property OnCommandProcessed: TProcessCommandEvent read fOnCommandProcessed write fOnCommandProcessed;
+    property OnReplaceText: TReplaceTextEvent read fOnReplaceText write fOnReplaceText;
+    property OnSpecialLineColors: TSpecialLineColorsEvent read FOnSpecialLineColors write SetSpecialLineColors;  deprecated;
+    property OnSpecialLineMarkup: TSpecialLineMarkupEvent read FOnSpecialLineMarkup write SetSpecialLineMarkup;
+    property OnStatusChange: TStatusChangeEvent read fOnStatusChange write fOnStatusChange;
   end;
 
   TSynEdit = class(TCustomSynEdit)
