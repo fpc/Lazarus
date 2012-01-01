@@ -607,12 +607,20 @@ end;
 function TProjectInspectorForm.ChooseImageIndex(Str: String; Data: TObject;
                                                 var AIsEnabled: Boolean): Integer;
 begin
-  if FilenameIsPascalUnit((Data as TUnitInfo).Filename) then
-    Result:=ImageIndexUnit
-  else if (LazProject<>nil) and (LazProject.MainUnitinfo=Data) then
-    Result:=ImageIndexProject
-  else
-    Result:=ImageIndexText;
+  if Data is TUnitInfo then begin
+    if FilenameIsPascalUnit(TUnitInfo(Data).Filename) then
+      Result:=ImageIndexUnit
+    else if (LazProject<>nil) and (LazProject.MainUnitinfo=Data) then
+      Result:=ImageIndexProject
+    else
+      Result:=ImageIndexText;
+  end
+  else if Data is TPkgDependency then begin
+    if TPkgDependency(Data).LoadPackageResult=lprSuccess then
+      Result:=ImageIndexRequired
+    else
+      Result:=ImageIndexConflict;
+  end;
 end;
 
 procedure TProjectInspectorForm.UpdateProjectFiles(Immediately: boolean);
@@ -650,11 +658,11 @@ var
   NodeText, AFilename: String;
   CurNode: TTreeNode;
   NextNode: TTreeNode;
+  FilteredBranch: TBranch;
 begin
-  ItemsTreeView.BeginUpdate;
+  FilteredBranch := FilterEdit.GetBranch(DependenciesNode);
   if LazProject<>nil then begin
     Dependency:=LazProject.FirstRequiredDependency;
-    CurNode:=DependenciesNode.GetFirstChild;
     while Dependency<>nil do begin
       NodeText:=Dependency.AsString;
       if Dependency.DefaultFilename<>'' then begin
@@ -664,29 +672,13 @@ begin
         else
           NodeText:=Format(lisPckEditDefault, [NodeText, AFilename]);
       end;
-      if CurNode=nil then
-        CurNode:=ItemsTreeView.Items.AddChild(DependenciesNode,NodeText)
-      else
-        CurNode.Text:=NodeText;
-      if Dependency.LoadPackageResult=lprSuccess then
-        CurNode.ImageIndex:=ImageIndexRequired
-      else
-        CurNode.ImageIndex:=ImageIndexConflict;
-      CurNode.SelectedIndex:=CurNode.ImageIndex;
+      FilteredBranch.AddNodeData(NodeText, Dependency);
       Dependency:=Dependency.NextRequiresDependency;
-      CurNode:=CurNode.GetNextSibling;
     end;
-    while CurNode<>nil do begin
-      NextNode:=CurNode.GetNextSibling;
-      CurNode.Free;
-      CurNode:=NextNode;
-    end;
-    DependenciesNode.Expanded:=true;
   end else begin
     // delete dependency nodes
     DependenciesNode.HasChildren:=false;
   end;
-  ItemsTreeView.EndUpdate;
 end;
 
 procedure TProjectInspectorForm.UpdateRemovedRequiredPackages;

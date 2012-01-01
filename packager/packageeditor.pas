@@ -813,8 +813,7 @@ begin
   SetDependencyDefaultFilename(true);
 end;
 
-procedure TPackageEditorForm.ClearDependencyFilenameMenuItemClick(
-  Sender: TObject);
+procedure TPackageEditorForm.ClearDependencyFilenameMenuItemClick(Sender: TObject);
 var
   Removed: boolean;
   CurDependency: TPkgDependency;
@@ -1612,20 +1611,28 @@ end;
 function TPackageEditorForm.ChooseImageIndex(Str: String; Data: TObject;
                                              var AIsEnabled: Boolean): Integer;
 begin
-  case TPkgFile(Data).FileType of
-    pftUnit,pftVirtualUnit,pftMainUnit:
-      if TPkgFile(Data).HasRegisterProc then
-        Result:=ImageIndexRegisterUnit
+  if Data is TPkgFile then begin
+    case TPkgFile(Data).FileType of
+      pftUnit,pftVirtualUnit,pftMainUnit:
+        if TPkgFile(Data).HasRegisterProc then
+          Result:=ImageIndexRegisterUnit
+        else
+          Result:=ImageIndexUnit;
+      pftLFM: Result:=ImageIndexLFM;
+      pftLRS: Result:=ImageIndexLRS;
+      pftInclude: Result:=ImageIndexInclude;
+      pftIssues: Result:=ImageIndexIssues;
+      pftText: Result:=ImageIndexText;
+      pftBinary: Result:=ImageIndexBinary;
       else
-        Result:=ImageIndexUnit;
-    pftLFM: Result:=ImageIndexLFM;
-    pftLRS: Result:=ImageIndexLRS;
-    pftInclude: Result:=ImageIndexInclude;
-    pftIssues: Result:=ImageIndexIssues;
-    pftText: Result:=ImageIndexText;
-    pftBinary: Result:=ImageIndexBinary;
+        Result:=-1;
+    end;
+  end
+  else if Data is TPkgDependency then begin
+    if TPkgDependency(Data).LoadPackageResult=lprSuccess then
+      Result:=ImageIndexRequired
     else
-      Result:=-1;
+      Result:=ImageIndexConflict;
   end;
 end;
 
@@ -1657,9 +1664,8 @@ begin
   // removed files
   if LazPackage.RemovedFilesCount>0 then begin
     if FRemovedFilesNode=nil then begin
-      FRemovedFilesNode:=
-        FilesTreeView.Items.Add(FRequiredPackagesNode,
-                lisPckEditRemovedFilesTheseEntriesAreNotSavedToTheLpkFile);
+      FRemovedFilesNode:=FilesTreeView.Items.Add(FRequiredPackagesNode,
+                      lisPckEditRemovedFilesTheseEntriesAreNotSavedToTheLpkFile);
       FRemovedFilesNode.ImageIndex:=ImageIndexRemovedFiles;
       FRemovedFilesNode.SelectedIndex:=FRemovedFilesNode.ImageIndex;
     end;
@@ -1669,7 +1675,7 @@ begin
       if CurNode=nil then
         CurNode:=FilesTreeView.Items.AddChild(FRemovedFilesNode,'');
       CurFile:=LazPackage.RemovedFiles[i];
-      CurNode.Text:=CurFile.GetShortFilename(true); // SetImageIndex(CurNode,CurFile);
+      CurNode.Text:=CurFile.GetShortFilename(true);
       CurNode.ImageIndex:=ChooseImageIndex('', CurFile, ena);
       CurNode:=CurNode.GetNextSibling;
     end;
@@ -1689,50 +1695,36 @@ var
   CurNode: TTreeNode;
   CurDependency: TPkgDependency;
   NextNode: TTreeNode;
+  FilteredBranch: TBranch;
   CurNodeText, aFilename: String;
 begin
   if LazPackage=nil then exit;
   FilesTreeView.BeginUpdate;
   
   // required packages
-  CurNode:=FRequiredPackagesNode.GetFirstChild;
+  FilteredBranch := FilterEdit.GetBranch(FRequiredPackagesNode);
+  FilterEdit.SelectedPart:=FNextSelectedPart;
   CurDependency:=LazPackage.FirstRequiredDependency;
   while CurDependency<>nil do begin
-    if CurNode=nil then
-      CurNode:=FilesTreeView.Items.AddChild(FRequiredPackagesNode,'');
     CurNodeText:=CurDependency.AsString;
     if CurDependency.DefaultFilename<>'' then begin
-      aFilename:=CurDependency.MakeFilenameRelativeToOwner(
-                                                 CurDependency.DefaultFilename);
+      aFilename:=CurDependency.MakeFilenameRelativeToOwner(CurDependency.DefaultFilename);
       if CurDependency.PreferDefaultFilename then
-        CurNodeText:=CurNodeText+' in '+aFilename // like the 'in' keyword the uses section
+        CurNodeText:=CurNodeText+' in '+aFilename // like the 'in' keyword in uses section
       else
         CurNodeText:=Format(lisPckEditDefault, [CurNodeText, aFilename]);
     end;
-    CurNode.Text:=CurNodeText;
-    if CurDependency.LoadPackageResult=lprSuccess then
-      CurNode.ImageIndex:=ImageIndexRequired
-    else
-      CurNode.ImageIndex:=ImageIndexConflict;
-    CurNode.Selected:=CurDependency=FNextSelectedPart;
-    CurNode.SelectedIndex:=CurNode.ImageIndex;
-    CurNode:=CurNode.GetNextSibling;
+    FilteredBranch.AddNodeData(CurNodeText, CurDependency);
     CurDependency:=CurDependency.NextRequiresDependency;
   end;
-  while CurNode<>nil do begin
-    NextNode:=CurNode.GetNextSibling;
-    CurNode.Free;
-    CurNode:=NextNode;
-  end;
-  FRequiredPackagesNode.Expanded:=true;
+//  FRequiredPackagesNode.Expanded:=true;
   
   // removed required packages
   CurDependency:=LazPackage.FirstRemovedDependency;
   if CurDependency<>nil then begin
     if FRemovedRequiredNode=nil then begin
-      FRemovedRequiredNode:=
-        FilesTreeView.Items.Add(nil,
-          lisPckEditRemovedRequiredPackagesTheseEntriesAreNotSaved);
+      FRemovedRequiredNode:=FilesTreeView.Items.Add(nil,
+                       lisPckEditRemovedRequiredPackagesTheseEntriesAreNotSaved);
       FRemovedRequiredNode.ImageIndex:=ImageIndexRemovedRequired;
       FRemovedRequiredNode.SelectedIndex:=FRemovedRequiredNode.ImageIndex;
     end;
