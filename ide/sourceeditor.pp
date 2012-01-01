@@ -374,7 +374,7 @@ type
     function SelectionAvailable: boolean; override;
     function GetText(OnlySelection: boolean): string; override;
     procedure SelectText(const StartPos, EndPos: TPoint); override;
-    procedure ReplaceLines(StartLine, EndLine: integer; const NewText: string); override;
+    procedure ReplaceLines(StartLine, EndLine: integer; const NewText: string; aKeepMarks: Boolean = False); override;
     procedure EncloseSelection;
     procedure UpperCaseSelection;
     procedure LowerCaseSelection;
@@ -3194,23 +3194,13 @@ end;
   Turns current text selection uppercase.
 -------------------------------------------------------------------------------}
 procedure TSourceEditor.UpperCaseSelection;
-var
-  OldBlockBegin, OldBlockEnd: TPoint;
-  OldMode: TSynSelectionMode;
 begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
-  OldBlockBegin:=FEditor.BlockBegin;
-  OldBlockEnd:=FEditor.BlockEnd;
-  OldMode:=FEditor.SelectionMode;
-  FEditor.BeginUpdate;
-  FEditor.BeginUndoBlock;
-  FEditor.SelText:=UpperCase(EditorComponent.SelText);
-  FEditor.BlockBegin:=OldBlockBegin;
-  FEditor.BlockEnd:=OldBlockEnd;
-  FEditor.SelectionMode := OldMode;
-  FEditor.EndUndoBlock;
-  FEditor.EndUpdate;
+  FEditor.SetTextBetweenPoints(FEditor.BlockBegin, FEditor.BlockEnd,
+                               UpperCase(EditorComponent.SelText),
+                               [setSelect], scamIgnore, smaKeep, smCurrent
+                              );
 end;
 
 {-------------------------------------------------------------------------------
@@ -3219,43 +3209,23 @@ end;
   Turns current text selection lowercase.
 -------------------------------------------------------------------------------}
 procedure TSourceEditor.LowerCaseSelection;
-var
-  OldBlockBegin, OldBlockEnd: TPoint;
-  OldMode: TSynSelectionMode;
 begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
-  OldBlockBegin:=FEditor.BlockBegin;
-  OldBlockEnd:=FEditor.BlockEnd;
-  OldMode:=FEditor.SelectionMode;
-  FEditor.BeginUpdate;
-  FEditor.BeginUndoBlock;
-  FEditor.SelText:=LowerCase(EditorComponent.SelText);
-  FEditor.BlockBegin:=OldBlockBegin;
-  FEditor.BlockEnd:=OldBlockEnd;
-  FEditor.SelectionMode := OldMode;
-  FEditor.EndUndoBlock;
-  FEditor.EndUpdate;
+  FEditor.SetTextBetweenPoints(FEditor.BlockBegin, FEditor.BlockEnd,
+                               LowerCase(EditorComponent.SelText),
+                               [setSelect], scamIgnore, smaKeep, smCurrent
+                              );
 end;
 
 procedure TSourceEditor.SwapCaseSelection;
-var
-  OldBlockBegin, OldBlockEnd: TPoint;
-  OldMode: TSynSelectionMode;
 begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
-  OldBlockBegin:=FEditor.BlockBegin;
-  OldBlockEnd:=FEditor.BlockEnd;
-  OldMode:=FEditor.SelectionMode;
-  FEditor.BeginUpdate;
-  FEditor.BeginUndoBlock;
-  FEditor.SelText:=SwapCase(EditorComponent.SelText);
-  FEditor.BlockBegin:=OldBlockBegin;
-  FEditor.BlockEnd:=OldBlockEnd;
-  FEditor.SelectionMode := OldMode;
-  FEditor.EndUndoBlock;
-  FEditor.EndUpdate;
+  FEditor.SetTextBetweenPoints(FEditor.BlockBegin, FEditor.BlockEnd,
+                               SwapCase(EditorComponent.SelText),
+                               [setSelect], scamIgnore, smaKeep, smCurrent
+                              );
 end;
 
 {-------------------------------------------------------------------------------
@@ -3264,25 +3234,13 @@ end;
   Convert all tabs into spaces in current text selection.
 -------------------------------------------------------------------------------}
 procedure TSourceEditor.TabsToSpacesInSelection;
-var
-  OldBlockBegin, OldBlockEnd: TPoint;
-  OldMode: TSynSelectionMode;
 begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
-  OldBlockBegin:=FEditor.BlockBegin;
-  OldBlockEnd:=FEditor.BlockEnd;
-  OldMode:=FEditor.SelectionMode;
-  FEditor.BeginUpdate;
-  FEditor.BeginUndoBlock;
-  // ToDo: replace step by step to keep bookmarks and breakpoints
-  FEditor.SelText:=TabsToSpaces(EditorComponent.SelText,
-                                EditorComponent.TabWidth,FEditor.UseUTF8);
-  FEditor.BlockBegin:=OldBlockBegin;
-  FEditor.BlockEnd:=OldBlockEnd;
-  FEditor.SelectionMode := OldMode;
-  FEditor.EndUndoBlock;
-  FEditor.EndUpdate;
+  FEditor.SetTextBetweenPoints(FEditor.BlockBegin, FEditor.BlockEnd,
+                               TabsToSpaces(EditorComponent.SelText, EditorComponent.TabWidth, FEditor.UseUTF8),
+                               [setSelect], scamAdjust, smaKeep, smCurrent
+                              );
 end;
 
 procedure TSourceEditor.CommentSelection;
@@ -4246,12 +4204,16 @@ Begin
 end;
 
 procedure TSourceEditor.ReplaceLines(StartLine, EndLine: integer;
-  const NewText: string);
+  const NewText: string; aKeepMarks: Boolean = False);
+var
+  mm: TSynMarksAdjustMode;
 begin
   if ReadOnly then Exit;
-  FEditor.TextBetweenPointsEx[Point(1,StartLine),
-                            Point(length(FEditor.Lines[Endline-1])+1,EndLine),
-                            scamEnd] := NewText;
+  mm := smaMoveUp;
+  if aKeepMarks then
+    mm := smaKeep;
+  FEditor.SetTextBetweenPoints(Point(1,StartLine), Point(length(FEditor.Lines[Endline-1])+1,EndLine),
+                               NewText, [], scamEnd, mm);
 end;
 
 procedure TSourceEditor.EncloseSelection;

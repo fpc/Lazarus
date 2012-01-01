@@ -116,7 +116,7 @@ type
     function GetText(OnlySelection: boolean): string; virtual; abstract;
     procedure SelectText(LineNum, CharStart, LineNum2, CharEnd: Integer);
     procedure SelectText(const StartPos, EndPos: TPoint); virtual; abstract;
-    procedure ReplaceLines(StartLine, EndLine: integer; const NewText: string); virtual; abstract;
+    procedure ReplaceLines(StartLine, EndLine: integer; const NewText: string; aKeepMarks: Boolean = False); virtual; abstract;
     procedure ReplaceText(const StartPos, EndPos: TPoint; const NewText: string);
     procedure AskReplace(Sender: TObject; const ASearch, AReplace: string;
                         Line, Column: integer;
