@@ -402,23 +402,21 @@ end;
 function TTreeFilterEdit.GetBranch(ARootNode: TTreeNode): TBranch;
 // Get a new or existing branch for a node.
 var
-  branch: TBranch;
   i: Integer;
 begin
   if not Assigned(fBranches) then
     fBranches := TBranchList.Create;
-  branch := Nil;
+  Result := Nil;
   for i := 0 to fBranches.Count-1 do
     if fBranches[i].fRootNode = ARootNode then begin
-      branch := fBranches[i];
-      branch.fOriginalData.Clear;
+      Result := fBranches[i];
+      Result.fOriginalData.Clear;
       Break;
     end;
-  if branch = Nil then begin
-    branch := TBranch.Create(Self, ARootNode);
-    fBranches.Add(branch);
+  if Result = Nil then begin
+    Result := TBranch.Create(Self, ARootNode);
+    fBranches.Add(Result);
   end;
-  Result := branch;
 end;
 
 procedure TTreeFilterEdit.MoveNext;
