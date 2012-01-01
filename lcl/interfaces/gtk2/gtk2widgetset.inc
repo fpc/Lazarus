@@ -4894,6 +4894,7 @@ var
   AWindow: PGdkWindow;
   ACustomForm: TCustomForm;
   CurWindowState: TWindowState;
+  WidgetInfo: PWidgetInfo;
 begin
   if not (Sender is TWinControl) then
     RaiseWrongClass;
@@ -4985,8 +4986,15 @@ begin
       case CurWindowState of
         wsNormal:
         begin
-          gtk_window_deiconify(PGtkWindow(SenderWidget));
-          gtk_window_unmaximize(PGtkWindow(SenderWidget));
+          WidgetInfo := GetWidgetInfo(SenderWidget);
+          with WidgetInfo^.FormWindowState do
+          begin
+            if new_window_state and GDK_WINDOW_STATE_ICONIFIED <> 0 then
+              gtk_window_deiconify(PGtkWindow(SenderWidget));
+            if (new_window_state and GDK_WINDOW_STATE_MAXIMIZED <> 0) or
+              (new_window_state and GDK_WINDOW_STATE_FULLSCREEN <> 0) then
+                gtk_window_unmaximize(PGtkWindow(SenderWidget));
+          end;
         end;
         wsMaximized: gtk_window_maximize(PGtkWindow(SenderWidget));
         wsMinimized: gtk_window_iconify(PGtkWindow(SenderWidget));
