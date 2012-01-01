@@ -128,7 +128,7 @@ type
     constructor Create(ALines: TSynEditStrings; aActOnLineChanges: Boolean);
     destructor Destroy; override;
     procedure AssignFrom(Src: TSynEditSelection);
-    procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar);
+    procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar; AReplace: Boolean = False);
     function  SelAvail: Boolean;
     function  SelCanContinue(ACaret: TSynEditCaret): Boolean;
     function  IsBackwardSel: Boolean; // SelStart < SelEnd ?
@@ -1060,18 +1060,67 @@ begin
 end;
 
 procedure TSynEditSelection.SetSelTextPrimitive(PasteMode : TSynSelectionMode;
-  Value : PChar);
+  Value : PChar; AReplace: Boolean = False);
 var
   BB, BE: TPoint;
 
   procedure DeleteSelection;
   var
     y, l, r, xb, xe: Integer;
+    Str: string;
+    Start, P: PChar;
+    //LogCaretXY: TPoint;
   begin
     case ActiveSelectionMode of
-      smNormal:
+      smNormal, smLine:
         begin
           if FLines.Count > 0 then begin
+
+            if AReplace and (Value <> nil) then begin
+              // AReplace = True
+              while Value^ <> #0 do begin
+                Start := PChar(Value);
+                P := GetEOL(Start);
+                Value := P;
+
+                if Value^ = #13 then Inc(Value);
+                if Value^ = #10 then Inc(Value);
+
+                SetString(Str, Start, P - Start);
+
+                if BE.y > BB.y then begin
+                  FLines.EditDelete(BB.x, BB.Y, 1+Length(FLines[BB.y-1]) - BB.x);
+                  FLines.EditInsert(BB.x, BB.Y, Str);
+                  if (PasteMode = smLine) or (Value > P) then begin
+                    inc(BB.y);
+                    BB.x := 1;
+                  end
+                  else
+                    BB.X := BB.X + length(Str);
+                end
+                else begin
+                  FLines.EditDelete(BB.x, BB.Y, BE.x - BB.x);
+                  // BE will be block-.nd, also used by SynEdit to set caret
+                  if (ActiveSelectionMode = smLine) or (Value > P) then begin
+                    FLines.EditLineBreak(BB.x, BB.Y);
+                    inc(BE.y);
+                    BE.x := 1;
+                  end
+                  else
+                    BE.X := BB.X + length(Str);
+                  FLines.EditInsert(BB.x, BB.Y, Str);
+                  BB := BE; // end of selection
+                end;
+
+                if (BB.Y = BE.Y) and (BB.X = BE.X) then begin
+                  FInternalCaret.LineBytePos := BB;
+                  exit;
+                end;
+
+              end;
+            end;
+
+            // AReplace = False
             if BE.Y > BB.Y + 1 then begin
               FLines.EditLinesDelete(BB.Y + 1, BE.Y - BB.Y - 1);
               BE.Y := BB.Y + 1;
@@ -1089,6 +1138,7 @@ var
         end;
       smColumn:
         begin
+          // AReplace has no effect
           FInternalCaret.LineBytePos := BB;
           l := FInternalCaret.CharPos;
           FInternalCaret.LineBytePos := BE;
@@ -1114,20 +1164,8 @@ var
           end;
           FInternalCaret.LineCharPos := Point(l, BB.Y);
           BB := FInternalCaret.LineBytePos;
-          // Column deletion never removes a line entirely, so no mark
-          // updating is needed here.
-        end;
-      smLine:
-        begin
-          if BE.Y = FLines.Count then begin
-            // Keep the (CrLf of) last line, since no Line exists to replace it
-            FLines.EditDelete(1, BE.Y, length(FLines[BE.Y - 1]));
-            dec(BE.Y)
-          end;
-          if BE.Y >= BB.Y then
-            FLines.EditLinesDelete(BB.Y, BE.Y - BB.Y + 1);
-          BB.X := 1;
-          FInternalCaret.LineCharPos := BB;
+          // Column deletion never removes a line entirely,
+          // so no (vertical) mark updating is needed here.
         end;
     end;
   end;
@@ -1288,9 +1326,17 @@ begin
     BB := FirstLineBytePos;
     BE := LastLineBytePos;
     if SelAvail then begin
-      DeleteSelection;
-      if FActiveSelectionMode = smLine then
+      if FActiveSelectionMode = smLine then begin
         BB.X := 1;
+        if BE.Y = FLines.Count then begin
+          // Keep the (CrLf of) last line, since no Line exists to replace it
+          BE.x := 1 + length(FLines[BE.Y - 1]);
+        end else begin
+          inc(BE.Y);
+          BE.x := 1;
+        end;
+      end;
+      DeleteSelection;
       StartLineBytePos := BB; // deletes selection // calls selection changed
       // Need to update caret (syncro edit follows on every edit)
       if FCaret <> nil then

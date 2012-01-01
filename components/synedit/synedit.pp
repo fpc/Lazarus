@@ -163,12 +163,27 @@ type
     var AnAction: TSynCopyPasteAction) of object;
 
   TSynEditCaretType = SynEditPointClasses.TSynCaretType;
+
   TSynCaretAdjustMode = ( // used in TextBetweenPointsEx
     scamIgnore, // Caret stays at the same numeric values, if text is inserted before caret, the text moves, but the caret stays
     scamAdjust, // Caret moves with text, if text is inserted
     scamEnd,
     scamBegin
   );
+
+  (* This is used, if text is *replaced*.
+     What to do with marks in text that is deleted/replaced
+  *)
+  TSynMarksAdjustMode = ( // used in SetTextBetweenPoints
+    smaMoveUp, //
+    smaKeep
+    // smaDrop
+  );
+
+  TSynEditTextFlag = (
+    setSelect // select the new text
+  );
+  TSynEditTextFlags = set of TSynEditTextFlag;
 
   TSynStateFlag = (sfCaretChanged, sfHideCursor,
     sfEnsureCursorPos, sfEnsureCursorPosAtResize,
@@ -514,7 +529,7 @@ type
     procedure SetMouseTextActions(AValue: TSynEditMouseActions);
     procedure SetPaintLockOwner(const AValue: TSynEditBase);
     procedure SetShareOptions(const AValue: TSynEditorShareOptions);
-    procedure SetTextBetweenPoints(aStartPoint, aEndPoint: TPoint; const AValue: String);
+    procedure SetTextBetweenPointsSimple(aStartPoint, aEndPoint: TPoint; const AValue: String);
     procedure SetTextBetweenPointsEx(aStartPoint, aEndPoint: TPoint;
       aCaretMode: TSynCaretAdjustMode; const AValue: String);
     procedure SetVisibleSpecialChars(AValue: TSynVisibleSpecialChars);
@@ -804,9 +819,17 @@ type
     procedure InsertTextAtCaret(aText: String; aCaretMode : TSynCaretAdjustMode = scamEnd);
 
     property TextBetweenPoints[aStartPoint, aEndPoint: TPoint]: String              // Logical Points
-      read GetTextBetweenPoints write SetTextBetweenPoints;
+      read GetTextBetweenPoints write SetTextBetweenPointsSimple;
     property TextBetweenPointsEx[aStartPoint, aEndPoint: TPoint; CaretMode: TSynCaretAdjustMode]: String
       write SetTextBetweenPointsEx;
+    procedure SetTextBetweenPoints(aStartPoint, aEndPoint: TPoint;
+                                   const AValue: String;
+                                   aFlags: TSynEditTextFlags = [];
+                                   aCaretMode: TSynCaretAdjustMode = scamIgnore;
+                                   aMarksMode: TSynMarksAdjustMode = smaMoveUp;
+                                   aSelectionMode: TSynSelectionMode = smNormal
+                                  );
+
     property LineText: string read GetLineText write SetLineText;
     property Text: string read SynGetText write SynSetText;                     // No uncommited (trailing/trimmable) spaces
 
@@ -5007,7 +5030,7 @@ begin
   UpdateScrollBars;
 end;
 
-procedure TCustomSynEdit.SetTextBetweenPoints(aStartPoint, aEndPoint: TPoint;
+procedure TCustomSynEdit.SetTextBetweenPointsSimple(aStartPoint, aEndPoint: TPoint;
   const AValue: String);
 begin
   InternalBeginUndoBlock;
@@ -5024,18 +5047,42 @@ end;
 procedure TCustomSynEdit.SetTextBetweenPointsEx(aStartPoint, aEndPoint: TPoint;
   aCaretMode: TSynCaretAdjustMode; const AValue: String);
 begin
+  SetTextBetweenPoints(aStartPoint, aEndPoint, AValue, [], aCaretMode);
+end;
+
+procedure TCustomSynEdit.SetTextBetweenPoints(aStartPoint, aEndPoint: TPoint;
+  const AValue: String; aFlags: TSynEditTextFlags; aCaretMode: TSynCaretAdjustMode;
+  aMarksMode: TSynMarksAdjustMode; aSelectionMode: TSynSelectionMode);
+begin
   InternalBeginUndoBlock;
   try
     if aCaretMode = scamAdjust then
       FCaret.IncAutoMoveOnEdit;
-    FInternalBlockSelection.SelectionMode := smNormal;
+
+    if aSelectionMode = smCurrent then
+      FInternalBlockSelection.SelectionMode    := FBlockSelection.ActiveSelectionMode
+    else
+      FInternalBlockSelection.SelectionMode    := aSelectionMode;
     FInternalBlockSelection.StartLineBytePos := aStartPoint;
-    FInternalBlockSelection.EndLineBytePos := aEndPoint;
+    FInternalBlockSelection.EndLineBytePos   := aEndPoint;
+    aStartPoint := FInternalBlockSelection.FirstLineBytePos;
+
     if aCaretMode = scamBegin then
-      FCaret.LineBytePos := FInternalBlockSelection.StartLineBytePos;
-    FInternalBlockSelection.SelText := AValue;
+      FCaret.LineBytePos := aStartPoint;
+
+    FInternalBlockSelection.SetSelTextPrimitive(FInternalBlockSelection.ActiveSelectionMode,
+                                                PChar(AValue),
+                                                aMarksMode = smaKeep
+                                               );
     if aCaretMode = scamEnd then
       FCaret.LineBytePos := FInternalBlockSelection.StartLineBytePos;
+    if setSelect in aFlags then begin
+      FBlockSelection.StartLineBytePos    := aStartPoint;
+      FBlockSelection.ActiveSelectionMode := FInternalBlockSelection.SelectionMode;
+      FBlockSelection.EndLineBytePos      := FInternalBlockSelection.StartLineBytePos;
+      if FBlockSelection.ActiveSelectionMode = smLine then
+        FBlockSelection.EndLineBytePos := Point(FBlockSelection.StartBytePos + 1, FBlockSelection.EndLinePos - 1);
+    end;
   finally
     if aCaretMode = scamAdjust then
       FCaret.DecAutoMoveOnEdit;

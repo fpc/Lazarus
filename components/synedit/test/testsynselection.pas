@@ -1003,6 +1003,8 @@ procedure TTestSynSelection.ReplaceSelText;
     SkipUndo2: Boolean;
   begin
     PushBaseName(Name);
+
+    {%region }
     SetLines(TheText);
     SetCaretAndSel(X1,Y1, X2,Y2);
     TestIsBlock    ('Sanity, selection at begin of test', X1,Y1, X2,Y2, Before);
@@ -1036,7 +1038,9 @@ procedure TTestSynSelection.ReplaceSelText;
       TestIsNoBlock  ('After Undo,Replace');
       TestIsFullText ('After Undo,Replace', TheText, ExpLineRepl);
     end;
+    {%endregion }
 
+    {%region }
     // *** do in 2 steps, explicit set to empty
     SetLines(TheText);
     SetCaretAndSel(X1,Y1, X2,Y2);
@@ -1060,7 +1064,9 @@ procedure TTestSynSelection.ReplaceSelText;
       TestIsNoBlock  ('After Redo (2 step)');
       TestIsFullText ('After Redo (2 step)', TheText, ExpLineRepl);
     end;
+    {%endregion }
 
+    {%region }
     // *** do in 2 steps, explicit set to empty // inside Lock and UndoBlock
     SetLines(TheText);
     SetCaretAndSel(X1,Y1, X2,Y2);
@@ -1085,7 +1091,9 @@ procedure TTestSynSelection.ReplaceSelText;
       TestIsNoBlock  ('After Redo (2 step, locked)');
       TestIsFullText ('After Redo (2 step, locked)', TheText, ExpLineRepl);
     end;
+    {%endregion }
 
+    {%region }
     // *** Do Action and Undo in the same lock (not undo block)
     if not SkipUndo then begin
       SetLines(TheText);
@@ -1104,7 +1112,9 @@ procedure TTestSynSelection.ReplaceSelText;
       TestIsNoBlock  ('After Redo (locked together)');
       TestIsFullText ('After Redo (locked)', TheText, ExpLineRepl);
     end;
+    {%endregion }
 
+    {%region }
     // *** Apply selection backward
     SetLines(TheText);
     SetCaretAndSel(X2,Y2, X1,Y1);
@@ -1128,6 +1138,89 @@ procedure TTestSynSelection.ReplaceSelText;
       TestIsBlock    ('After Undo 2 (backward)', X1,Y1, X2,Y2, Before);
       TestIsFullText ('After Undo 2 (backward)', TheText);
     end;
+    {%endregion }
+
+    {%region TextBetweenPoints}
+    PopPushBaseName(Name + ' TextBetweenPoints(smaMoveUp)');
+    SetLines(TheText);
+    if (X1 < 1) then begin
+      X1 := X2;
+      Y1 := Y2;
+    end;
+    SetCaret(X1,Y1);
+    //TestIsBlock    ('Sanity, selection at begin of test', X1,Y1, X2,Y2, Before);
+    SynEdit.SetTextBetweenPoints(Point(X1,Y1), Point(X2,Y2), LinesToText(Replace), [], scamEnd, smaMoveUp, SelInsertMode);
+    TestIsCaretPhys('After Replace', ExpCaretX, ExpCaretY);
+    TestIsNoBlock  ('After Replace');
+    TestIsFullText ('After Replace', TheText, ExpLineRepl);
+
+    if not SkipUndo then begin
+      SynEdit.Undo;
+      //TestIsBlock    ('After Undo', X1,Y1, X2,Y2, Before);
+      TestIsFullText ('After Undo', TheText);
+
+      SynEdit.Redo;
+      TestIsCaretPhys('After Redo', ExpCaretX, ExpCaretY);
+      TestIsNoBlock  ('After Redo');
+      TestIsFullText ('After Redo', TheText, ExpLineRepl);
+
+      SynEdit.Undo;
+      //TestIsBlock    ('After Undo 2', X1,Y1, X2,Y2, Before);
+      TestIsFullText ('After Undo 2', TheText);
+
+      SynEdit.Redo;
+      TestIsCaretPhys('After Redo 2', ExpCaretX, ExpCaretY);
+      TestIsNoBlock  ('After Redo 2');
+      TestIsFullText ('After Redo 2', TheText, ExpLineRepl);
+
+      SynEdit.Undo;
+      SynEdit.SetTextBetweenPoints(Point(X1,Y1), Point(X2,Y2), LinesToText(Replace), [], scamEnd, smaMoveUp, SelInsertMode);
+      TestIsCaretPhys('After Undo,Replace', ExpCaretX, ExpCaretY);
+      TestIsNoBlock  ('After Undo,Replace');
+      TestIsFullText ('After Undo,Replace', TheText, ExpLineRepl);
+    end;
+    {%endregion }
+
+    {%region TextBetweenPoints}
+    PopPushBaseName(Name + ' TextBetweenPoints(smaKeep)');
+    SetLines(TheText);
+    if (X1 < 1) then begin
+      X1 := X2;
+      Y1 := Y2;
+    end;
+    SetCaret(X1,Y1);
+    //TestIsBlock    ('Sanity, selection at begin of test', X1,Y1, X2,Y2, Before);
+    SynEdit.SetTextBetweenPoints(Point(X1,Y1), Point(X2,Y2), LinesToText(Replace), [], scamEnd, smaKeep, SelInsertMode);
+    TestIsCaretPhys('After Replace', ExpCaretX, ExpCaretY);
+    TestIsNoBlock  ('After Replace');
+    TestIsFullText ('After Replace', TheText, ExpLineRepl);
+
+    if not SkipUndo then begin
+      SynEdit.Undo;
+      //TestIsBlock    ('After Undo', X1,Y1, X2,Y2, Before);
+      TestIsFullText ('After Undo', TheText);
+
+      SynEdit.Redo;
+      TestIsCaretPhys('After Redo', ExpCaretX, ExpCaretY);
+      TestIsNoBlock  ('After Redo');
+      TestIsFullText ('After Redo', TheText, ExpLineRepl);
+
+      SynEdit.Undo;
+      //TestIsBlock    ('After Undo 2', X1,Y1, X2,Y2, Before);
+      TestIsFullText ('After Undo 2', TheText);
+
+      SynEdit.Redo;
+      TestIsCaretPhys('After Redo 2', ExpCaretX, ExpCaretY);
+      TestIsNoBlock  ('After Redo 2');
+      TestIsFullText ('After Redo 2', TheText, ExpLineRepl);
+
+      SynEdit.Undo;
+      SynEdit.SetTextBetweenPoints(Point(X1,Y1), Point(X2,Y2), LinesToText(Replace), [], scamEnd, smaKeep, SelInsertMode);
+      TestIsCaretPhys('After Undo,Replace', ExpCaretX, ExpCaretY);
+      TestIsNoBlock  ('After Undo,Replace');
+      TestIsFullText ('After Undo,Replace', TheText, ExpLineRepl);
+    end;
+    {%endregion }
 
     PopBaseName;
   end;
@@ -1216,6 +1309,7 @@ procedure TTestSynSelection.ReplaceSelText;
     TestReplace('Full Line + CrLf = utf8',    1,3,  1,4, [t[2], ''],     ['Ä'],       2,3,  [3, 3, 'Ä' + t[3]]);
     TestReplace('Full Line + CrLf = tab',     1,3,  1,4, [t[2], ''],     [#9],        5,3,  [3, 3, #9 + t[3]]);
     TestReplace('Full Line + CrLf = CrLf',    1,3,  1,4, [t[2], ''],     ['', ''],    1,4,  [3, '']);
+    TestReplace('Full Line + CrLf = X Cr *2', 1,3,  1,4, [t[2], ''],     ['X', 'X', ''],  1,5,  [3, 'X'+LineEnding+'X']);
 
     TestReplace('Full Line, CrLf, Chr= empty',1,3,  2,4, [t[2], ' '],    [''],        1,3,  [3, 3, ' abc;']);
     TestReplace('Full Line, CrLf, Chr= X',    1,3,  2,4, [t[2], ' '],    ['X'],       2,3,  [3, 3, 'X abc;']);

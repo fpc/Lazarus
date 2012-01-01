@@ -13,13 +13,23 @@ type
 
   TStringArray = array of string;
 
+  TTestSetSelFlag = (
+    tssEmptyFirst,
+    tssSkipUndoBlock,
+    tssUpdateBlock
+  );
+  TTestSetSelFlags = set of TTestSetSelFlag;
+
   { TTestSynEdit }
 
   TTestSynEdit = class(TSynEdit)
   public
     procedure TestKeyPress(Key: Word; Shift: TShiftState);
     function  TestFullText: String;
-    procedure TestSetSelText(Value: String; PasteMode: TSynSelectionMode = smNormal);
+    procedure TestSetSelText(Value: String;
+                             PasteMode: TSynSelectionMode = smNormal;
+                             AFlags: TTestSetSelFlags = []
+                            );
     procedure SimulatePaintText;
     property ViewedTextBuffer;
     property TextBuffer;
@@ -155,11 +165,22 @@ begin
   Result := ViewedTextBuffer.Text;
 end;
 
-procedure TTestSynEdit.TestSetSelText(Value: String; PasteMode: TSynSelectionMode);
+procedure TTestSynEdit.TestSetSelText(Value: String; PasteMode: TSynSelectionMode;
+  AFlags: TTestSetSelFlags);
 begin
-  BeginUndoBlock;
+  if not(tssSkipUndoBlock in AFlags) then
+    BeginUndoBlock;
+  if (tssUpdateBlock in AFlags) then
+    BeginUpdate(False);
+
+  if tssEmptyFirst in AFlags then
+    SelText := '';
   SetSelTextPrimitive(PasteMode, PChar(Value), True);
-  EndUndoBlock;
+
+  if (tssUpdateBlock in AFlags) then
+    EndUpdate;
+  if not(tssSkipUndoBlock in AFlags) then
+    EndUndoBlock;
 end;
 
 procedure TTestSynEdit.SimulatePaintText;
