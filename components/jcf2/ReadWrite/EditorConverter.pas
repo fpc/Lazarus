@@ -166,7 +166,7 @@ procedure TEditorConverter.WriteToIDE(const pcUnit: TSourceEditorInterface; cons
 begin
   if pcUnit = nil then
     exit;
-  pcUnit.ReplaceLines(0, pcUnit.LineCount, psText);
+  pcUnit.ReplaceLines(0, pcUnit.LineCount, psText, True);
 end;
 
 {$else}
