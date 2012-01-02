@@ -1975,11 +1975,11 @@ var
     //DebugLn(['AddComponent ',dbgsName(NewComponentClass)]);
     if NewComponentClass = nil then exit;
 
-    // check circles
+    // check cycles
     if TheFormEditor.ClassDependsOnComponent(NewComponentClass, LookupRoot) then
     begin
-      IDEMessageDialog(lisInvalidCircle,
-        Format(lisIsAThisCircleDependencyIsNotAllowed, [dbgsName(LookupRoot),
+      IDEMessageDialog(lisInvalidCycle,
+        Format(lisIsAThisCycleDependencyIsNotAllowed, [dbgsName(LookupRoot),
           dbgsName(NewComponentClass), #13]),
         mtError,[mbOk],'');
       exit;

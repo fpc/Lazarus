@@ -193,9 +193,9 @@ type
     function FindBrokenDependencyPath(APackage: TLazPackage;
                                       FirstDependency: TPkgDependency): TFPList;
     function FindAllBrokenDependencies(APackage: TLazPackage;
-                                        FirstDependency: TPkgDependency): TFPList;
-    function FindCircleDependencyPath(APackage: TLazPackage;
-                                      FirstDependency: TPkgDependency): TFPList;
+                                       FirstDependency: TPkgDependency): TFPList;
+    function FindCycleDependencyPath(APackage: TLazPackage;
+                                     FirstDependency: TPkgDependency): TFPList;
     function FindPkgOutputInFPCSearchPath(APackage: TLazPackage;
                                       FirstDependency: TPkgDependency): TFPList; // find a package with auto compile and output dir is in FPC default search path
     function FindUnsavedDependencyPath(APackage: TLazPackage;
@@ -2496,10 +2496,10 @@ begin
   FindBroken(FirstDependency,Result);
 end;
 
-function TLazPackageGraph.FindCircleDependencyPath(APackage: TLazPackage;
+function TLazPackageGraph.FindCycleDependencyPath(APackage: TLazPackage;
   FirstDependency: TPkgDependency): TFPList;
 
-  procedure FindCircle(Dependency: TPkgDependency; var PathList: TFPList);
+  procedure FindCycle(Dependency: TPkgDependency; var PathList: TFPList);
   var
     RequiredPackage: TLazPackage;
   begin
@@ -2507,22 +2507,22 @@ function TLazPackageGraph.FindCircleDependencyPath(APackage: TLazPackage;
       if Dependency.LoadPackageResult=lprSuccess then begin
         // dependency ok
         RequiredPackage:=Dependency.RequiredPackage;
-        if lpfCircle in RequiredPackage.Flags then begin
-          // circle detected
+        if lpfCycle in RequiredPackage.Flags then begin
+          // cycle detected
           PathList:=TFPList.Create;
           PathList.Add(RequiredPackage);
           exit;
         end;
         if not (lpfVisited in RequiredPackage.Flags) then begin
-          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited,lpfCircle];
-          FindCircle(RequiredPackage.FirstRequiredDependency,PathList);
+          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited,lpfCycle];
+          FindCycle(RequiredPackage.FirstRequiredDependency,PathList);
           if PathList<>nil then begin
-            // circle detected
+            // cycle detected
             // -> add current package to list
             PathList.Insert(0,RequiredPackage);
             exit;
           end;
-          RequiredPackage.Flags:=RequiredPackage.Flags-[lpfCircle];
+          RequiredPackage.Flags:=RequiredPackage.Flags-[lpfCycle];
         end;
       end;
       Dependency:=Dependency.NextRequiresDependency;
@@ -2535,16 +2535,16 @@ var
 begin
   Result:=nil;
   if (Count=0) then exit;
-  // mark all packages as not visited and circle free
+  // mark all packages as not visited and cycle free
   for i:=FItems.Count-1 downto 0 do begin
     Pkg:=TLazPackage(FItems[i]);
-    Pkg.Flags:=Pkg.Flags-[lpfVisited,lpfCircle];
+    Pkg.Flags:=Pkg.Flags-[lpfVisited,lpfCycle];
   end;
   if APackage<>nil then begin
     APackage.Flags:=APackage.Flags+[lpfVisited];
     FirstDependency:=APackage.FirstRequiredDependency;
   end;
-  FindCircle(FirstDependency,Result);
+  FindCycle(FirstDependency,Result);
   if (Result<>nil) and (APackage<>nil) then
     Result.Insert(0,APackage);
 end;
@@ -2572,7 +2572,7 @@ var
       Dir:=ChompPathDelim(CfgCache.UnitPaths[i]);
       if CompareFilenames(Dir,OutputDir)=0 then begin
         // this package changes the units in the default FPC search path
-        // => a circle, because the dependencies use FPC search path too
+        // => a cycle, because the dependencies use FPC search path too
         Result:=false;
         PathList:=TFPList.Create;
         PathList.Add(Pkg);
@@ -2592,7 +2592,7 @@ var
           if CheckPkg(RequiredPackage,PathList) then exit;
           CheckDependencyList(RequiredPackage.FirstRequiredDependency,PathList);
           if PathList<>nil then begin
-            // circle detected
+            // cycle detected
             // -> add current package to list
             PathList.Insert(0,RequiredPackage);
             exit;
