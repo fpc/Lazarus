@@ -81,7 +81,7 @@ end;
 
 constructor TMacroPrompDialog.Create(AnOwner: TComponent);
 begin
-  inherited Create(AnOwner);
+  inherited CreateNew(AnOwner);
   if LazarusResources.Find(ClassName)=nil then begin
     Width:=300;
     Height:=150;
