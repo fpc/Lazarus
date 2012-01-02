@@ -578,7 +578,7 @@ begin
       Error(ErrorLoadPackageFailed,'Broken dependency: '+PathListToString(PathList));
 
     // check for circle dependencies
-    PathList:=PackageGraph.FindCircleDependencyPath(APackage,FirstDependency);
+    PathList:=PackageGraph.FindCycleDependencyPath(APackage,FirstDependency);
     if PathList<>nil then
       Error(ErrorLoadPackageFailed,'Circle dependency: '+PathListToString(PathList));
   finally
