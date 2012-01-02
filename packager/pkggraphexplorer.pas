@@ -599,8 +599,10 @@ var
       Node:=FindMainNodeWithText(NodeText)
     else begin
       Node.Expanded:=true;
-      i:=Node.IndexOfText(NodeText);
-      if i>=0 then
+      i:=0;
+      while (i<=Node.Count) and (SysUtils.CompareText(Node[i].Text,NodeText)<>0)
+      do inc(i);
+      if i<Node.Count then
         Node:=Node.Items[i]
       else
         Node:=nil;
