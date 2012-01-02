@@ -81,7 +81,7 @@ type
     ImgIndexInstallPackage: integer;
     ImgIndexInstalledPackage: integer;
     ImgIndexUninstallPackage: integer;
-    ImgIndexCirclePackage: integer;
+    ImgIndexCyclePackage: integer;
     ImgIndexMissingPackage: integer;
     FOnOpenPackage: TOnOpenPackage;
     fSortedPackages: TAVLTree;
@@ -213,7 +213,7 @@ begin
         // package found
         NodeText:=ChildPackage.IDAsString;
         if SearchParentNodeWithText(Node,NodeText)<>nil then
-          NodeImgIndex:=ImgIndexCirclePackage
+          NodeImgIndex:=ImgIndexCyclePackage
         else
           NodeImgIndex:=GetPackageImageIndex(ChildPackage);
       end else begin
@@ -278,7 +278,7 @@ begin
   ImgIndexInstalledPackage := IDEImages.LoadImage(16, 'pkg_installed');
   ImgIndexInstallPackage := IDEImages.LoadImage(16, 'pkg_package_autoinstall');
   ImgIndexUninstallPackage := IDEImages.LoadImage(16, 'pkg_package_uninstall');
-  ImgIndexCirclePackage := IDEImages.LoadImage(16, 'pkg_package_circle');
+  ImgIndexCyclePackage := IDEImages.LoadImage(16, 'pkg_package_circle');
   ImgIndexMissingPackage := IDEImages.LoadImage(16, 'pkg_conflict');
 
   PkgTreeLabel.Caption:=lisPckExplLoadedPackages;

@@ -373,6 +373,8 @@ var
   RequiredPackage: TLazPackage;
   ProvidingAPackage: TLazPackage;
   ConflictDependency: TPkgDependency;
+  PathList: TFPList;
+  s: String;
 begin
   Result:=mrCancel;
 
@@ -437,16 +439,20 @@ begin
     end;
 
     // check if there is a cycle
-    ConflictDependency:=PackageGraph.FindDependencyRecursively(
-      RequiredPackage.FirstRequiredDependency,LazPackage.Name);
-    if ConflictDependency<>nil then begin
-      DebugLn(['CheckAddingDependency ',LazPackage.Name,' requiring ',RequiredPackage.IDAsString,' conflicts with ',ConflictDependency.AsString]);
-      if not Quiet then
-        IDEMessageDialog(lisCycleDetected,
-          Format(lisUnableToAddTheDependencyBecauseThisWouldCreateACyc, [
-            RequiredPackage.IDAsString, ConflictDependency.AsString(true)]),
-          mtError,[mbCancel]);
-      exit(mrCancel);
+    PathList:=PackageGraph.FindPath(RequiredPackage,nil,LazPackage.Name);
+    if PathList<>nil then begin
+      try
+        s:=PackagePathToStr(PathList);
+        DebugLn(['CheckAddingDependency ',LazPackage.Name,' requiring ',RequiredPackage.IDAsString,' creates cycles with ',s]);
+        if not Quiet then
+          IDEMessageDialog(lisCycleDetected,
+            Format(lisUnableToAddTheDependencyBecauseThisWouldCreateACyc, [
+              RequiredPackage.IDAsString, s]),
+            mtError,[mbCancel]);
+        exit(mrCancel);
+      finally
+        PathList.Free;
+      end;
     end;
   end;
 

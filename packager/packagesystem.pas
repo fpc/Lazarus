@@ -196,6 +196,8 @@ type
                                        FirstDependency: TPkgDependency): TFPList;
     function FindCycleDependencyPath(APackage: TLazPackage;
                                      FirstDependency: TPkgDependency): TFPList;
+    function FindPath(StartPackage: TLazPackage; StartDependency: TPkgDependency;
+                      const EndPackageName: string): TFPList;
     function FindPkgOutputInFPCSearchPath(APackage: TLazPackage;
                                       FirstDependency: TPkgDependency): TFPList; // find a package with auto compile and output dir is in FPC default search path
     function FindUnsavedDependencyPath(APackage: TLazPackage;
@@ -2547,6 +2549,55 @@ begin
   FindCycle(FirstDependency,Result);
   if (Result<>nil) and (APackage<>nil) then
     Result.Insert(0,APackage);
+end;
+
+function TLazPackageGraph.FindPath(StartPackage: TLazPackage;
+  StartDependency: TPkgDependency; const EndPackageName: string): TFPList;
+
+  procedure Find(Dependency: TPkgDependency; var PathList: TFPList);
+  var
+    RequiredPackage: TLazPackage;
+  begin
+    while Dependency<>nil do begin
+      if SysUtils.CompareText(Dependency.PackageName,EndPackageName)=0 then begin
+        // path found
+        PathList:=TFPList.Create;
+        if Dependency.LoadPackageResult=lprSuccess then begin
+          PathList.Add(Dependency.RequiredPackage);
+        end else begin
+          PathList.Add(Dependency);
+        end;
+        exit;
+      end;
+      if Dependency.LoadPackageResult=lprSuccess then begin
+        // dependency ok
+        RequiredPackage:=Dependency.RequiredPackage;
+        if not (lpfVisited in RequiredPackage.Flags) then begin
+          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
+          Find(RequiredPackage.FirstRequiredDependency,PathList);
+          if PathList<>nil then begin
+            // path found
+            // -> add current package to list
+            PathList.Insert(0,RequiredPackage);
+            exit;
+          end;
+        end;
+      end;
+      Dependency:=Dependency.NextRequiresDependency;
+    end;
+  end;
+
+begin
+  Result:=nil;
+  if (Count=0) then exit;
+  MarkAllPackagesAsNotVisited;
+  if StartPackage<>nil then begin
+    StartPackage.Flags:=StartPackage.Flags+[lpfVisited];
+    StartDependency:=StartPackage.FirstRequiredDependency;
+  end;
+  Find(StartDependency,Result);
+  if (Result<>nil) and (StartPackage<>nil) then
+    Result.Insert(0,StartPackage);
 end;
 
 function TLazPackageGraph.FindPkgOutputInFPCSearchPath(APackage: TLazPackage;

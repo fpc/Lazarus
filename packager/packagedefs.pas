@@ -932,6 +932,7 @@ var
   Package1: TLazPackage; // don't use it - only for options dialog
 
 function dbgs(p: TPackageUpdatePolicy): string; overload;
+function PackagePathToStr(PathList: TFPList): string;
 
 implementation
 
@@ -1408,6 +1409,30 @@ end;
 function dbgs(p: TPackageUpdatePolicy): string;
 begin
   Result:=GetEnumName(TypeInfo(p),ord(p));
+end;
+
+function PackagePathToStr(PathList: TFPList): string;
+var
+  i: Integer;
+  Item: TObject;
+  Dep: TPkgDependency;
+begin
+  Result:='';
+  if PathList=nil then exit;
+  for i:=0 to PathList.Count-1 do begin
+    if i>0 then
+      Result:=Result+' -> ';
+    Item:=TObject(PathList[i]);
+    if Item is TPkgDependency then begin
+      Dep:=TPkgDependency(Item);
+      Result:=Result+GetDependencyOwnerAsString(Dep);
+      if i=PathList.Count-1 then
+        Result:=Result+' -> '+Dep.AsString;
+    end else if Item is TLazPackage then
+      Result:=Result+TLazPackage(Item).Name
+    else
+      Result:=Result+DbgSName(Item);
+  end;
 end;
 
 function IndexOfDependencyInList(First: TPkgDependency;
@@ -1964,10 +1989,8 @@ begin
     Result:=Result+' (>='+MinVersion.AsString+')';
   if pdfMaxVersion in FFlags then
     Result:=Result+' (<='+MaxVersion.AsString+')';
-  if WithOwner then begin
-    if Owner is TLazPackage then
-      Result:=TLazPackage(Owner).Name+' uses '+Result;
-  end;
+  if WithOwner and (Owner<>nil) then
+    Result:=GetDependencyOwnerAsString(Self)+' uses '+Result;
 end;
 
 function TPkgDependency.NextUsedByDependency: TPkgDependency;
