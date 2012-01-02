@@ -1,0 +1,20 @@
+object LogView: TLogView
+  Left = 485
+  Height = 394
+  Top = 249
+  Width = 611
+  Caption = 'LogView'
+  ClientHeight = 394
+  ClientWidth = 611
+  OnClose = FormClose
+  LCLVersion = '0.9.31'
+  object edLog: TMemo
+    Left = 0
+    Height = 394
+    Top = 0
+    Width = 611
+    Align = alClient
+    ScrollBars = ssAutoBoth
+    TabOrder = 0
+  end
+end

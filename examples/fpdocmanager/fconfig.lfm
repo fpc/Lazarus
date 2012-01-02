@@ -1,0 +1,216 @@
+object CfgWizard: TCfgWizard
+  Left = 362
+  Height = 302
+  Top = 165
+  Width = 318
+  Caption = 'Configuration Assistant'
+  ClientHeight = 302
+  ClientWidth = 318
+  OnShow = FormShow
+  LCLVersion = '0.9.31'
+  object Steps: TPageControl
+    Left = 0
+    Height = 241
+    Top = 0
+    Width = 318
+    ActivePage = MkRTL
+    Align = alClient
+    TabIndex = 2
+    TabOrder = 0
+    object SelRoot: TTabSheet
+      Caption = 'RootDir'
+      ClientHeight = 195
+      ClientWidth = 312
+      OnShow = SelRootShow
+      object Label1: TLabel
+        Left = 10
+        Height = 121
+        Top = 10
+        Width = 264
+        Caption = 'The Root directory contains the configuration '#13#10'and all generated documentation.'#13#10#13#10'You can make this directory the working directory'#13#10'of the Documentation Manager, so that you don''t'#13#10'have to specify the root directory on every start.'#13#10#13#10'Please select this directory now.'
+        ParentColor = False
+      end
+      object buSelRoot: TButton
+        Left = 10
+        Height = 25
+        Top = 152
+        Width = 75
+        Caption = 'Browse...'
+        OnClick = buSelRootClick
+        TabOrder = 0
+      end
+      object edRoot: TEdit
+        Left = 92
+        Height = 23
+        Top = 154
+        Width = 216
+        OnChange = edRootChange
+        TabOrder = 1
+      end
+    end
+    object SelFPDir: TTabSheet
+      Caption = 'FPC'
+      ClientHeight = 195
+      ClientWidth = 312
+      OnShow = SelFPDirShow
+      object Label2: TLabel
+        Left = 10
+        Height = 91
+        Top = 10
+        Width = 272
+        Caption = 'The Free Pascal documentation is used everywhere.'#13#10'If you didn''t download the documentation sources'#13#10'already, you should do so now.'#13#10#13#10'Select the FPC documentation directory,'#13#10'or skip to the Lazarus configuration page.'
+        ParentColor = False
+      end
+      object buDownload: TButton
+        Left = 10
+        Height = 25
+        Top = 112
+        Width = 90
+        Caption = 'Download...'
+        Enabled = False
+        TabOrder = 0
+      end
+      object buSelFpc: TButton
+        Left = 12
+        Height = 25
+        Top = 144
+        Width = 75
+        Caption = 'Browse...'
+        OnClick = buSelFpcClick
+        TabOrder = 1
+      end
+      object edFpcDir: TEdit
+        Left = 100
+        Height = 23
+        Top = 144
+        Width = 200
+        Anchors = [akTop, akLeft, akRight]
+        OnChange = edFpcDirChange
+        TabOrder = 2
+      end
+      object Button2: TButton
+        Left = 124
+        Height = 25
+        Top = 112
+        Width = 75
+        Caption = 'Goto LCL'
+        Enabled = False
+        TabOrder = 3
+      end
+    end
+    object MkRTL: TTabSheet
+      Caption = 'RTL'
+      ClientHeight = 213
+      ClientWidth = 310
+      object Label3: TLabel
+        Left = 10
+        Height = 136
+        Top = 10
+        Width = 264
+        Caption = 'Now we''ll create the RTL documentation projects.'#13#10'Please open a console, '#13#10'CD to the FPC documentation directory,'#13#10'and enter "make rtl.chk -n >rtl.bat".'#13#10'Then select the just created file (i.e. rtl.bat), '#13#10'from which the RTL project will be created.'#13#10#13#10'Repeat with "make fcl.chk -n > fcl.bat" '#13#10'and select this file for the FCL project.'
+        ParentColor = False
+      end
+      object buRtlBat: TButton
+        Left = 10
+        Height = 25
+        Top = 152
+        Width = 43
+        Caption = 'RTL'
+        OnClick = buRtlBatClick
+        TabOrder = 0
+      end
+      object edRtlBat: TEdit
+        Left = 60
+        Height = 23
+        Top = 152
+        Width = 238
+        Anchors = [akTop, akLeft, akRight]
+        OnChange = edRtlBatChange
+        TabOrder = 1
+      end
+      object edFclBat: TEdit
+        Left = 60
+        Height = 23
+        Top = 182
+        Width = 238
+        Anchors = [akTop, akLeft, akRight]
+        OnChange = edRtlBatChange
+        TabOrder = 2
+      end
+      object buFclBat: TButton
+        Left = 10
+        Height = 25
+        Top = 182
+        Width = 43
+        Caption = 'FCL'
+        OnClick = buFclBatClick
+        TabOrder = 3
+      end
+    end
+  end
+  object sb: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 279
+    Width = 318
+    Panels = <>
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 38
+    Top = 241
+    Width = 318
+    Align = alBottom
+    ClientHeight = 38
+    ClientWidth = 318
+    TabOrder = 2
+    object buBack: TButton
+      Left = 8
+      Height = 25
+      Top = 5
+      Width = 75
+      Caption = 'Back'
+      OnClick = buBackClick
+      TabOrder = 0
+    end
+    object buCancel: TButton
+      Left = 96
+      Height = 25
+      Top = 5
+      Width = 75
+      Cancel = True
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 1
+    end
+    object buNext: TButton
+      Left = 230
+      Height = 25
+      Top = 5
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = 'Next'
+      OnClick = buNextClick
+      TabOrder = 2
+    end
+    object Button1: TButton
+      Left = 182
+      Height = 25
+      Top = 5
+      Width = 35
+      Anchors = [akTop, akRight]
+      Caption = 'OK'
+      ModalResult = 1
+      TabOrder = 3
+    end
+  end
+  object dlgSelRoot: TSelectDirectoryDialog
+    Title = 'Select Documentation Root Directory'
+    left = 280
+    top = 128
+  end
+  object dlgOpen: TOpenDialog
+    left = 280
+    top = 80
+  end
+end

@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="FPDocEngine"/>
+    <Author Value="DoDi"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <UseMsgFile Value="True"/>
+        </CompilerMessages>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="FPDoc tools as a package."/>
+    <Version Major="1"/>
+    <Files Count="18">
+      <Item1>
+        <Filename Value="dglobals.pp"/>
+        <UnitName Value="dGlobals"/>
+      </Item1>
+      <Item2>
+        <Filename Value="dwlinear.pp"/>
+        <UnitName Value="dwlinear"/>
+      </Item2>
+      <Item3>
+        <Filename Value="dwriter.pp"/>
+        <UnitName Value="dWriter"/>
+      </Item3>
+      <Item4>
+        <Filename Value="dw_dxml.pp"/>
+        <UnitName Value="dw_dXML"/>
+      </Item4>
+      <Item5>
+        <Filename Value="dw_html.pp"/>
+        <UnitName Value="dw_HTML"/>
+      </Item5>
+      <Item6>
+        <Filename Value="dw_htmlchm.inc"/>
+        <Type Value="Include"/>
+      </Item6>
+      <Item7>
+        <Filename Value="dw_ipflin.pas"/>
+        <UnitName Value="dw_ipflin"/>
+      </Item7>
+      <Item8>
+        <Filename Value="dw_latex.pp"/>
+        <UnitName Value="dw_LaTeX"/>
+      </Item8>
+      <Item9>
+        <Filename Value="dw_linrtf.pp"/>
+        <UnitName Value="dw_LinRTF"/>
+      </Item9>
+      <Item10>
+        <Filename Value="dw_lintmpl.pp"/>
+        <UnitName Value="dw_lintmpl"/>
+      </Item10>
+      <Item11>
+        <Filename Value="dw_man.pp"/>
+        <UnitName Value="dw_man"/>
+      </Item11>
+      <Item12>
+        <Filename Value="dw_txt.pp"/>
+        <UnitName Value="dw_txt"/>
+      </Item12>
+      <Item13>
+        <Filename Value="dw_xml.pp"/>
+        <UnitName Value="dw_XML"/>
+      </Item13>
+      <Item14>
+        <Filename Value="fpdocproj.pas"/>
+        <UnitName Value="fpdocproj"/>
+      </Item14>
+      <Item15>
+        <Filename Value="fpdocxmlopts.pas"/>
+        <UnitName Value="fpdocxmlopts"/>
+      </Item15>
+      <Item16>
+        <Filename Value="mgrfpdocproj.pp"/>
+        <UnitName Value="mgrfpdocproj"/>
+      </Item16>
+      <Item17>
+        <Filename Value="mkfpdoc.pp"/>
+        <UnitName Value="mkfpdoc"/>
+      </Item17>
+      <Item18>
+        <Filename Value="sh_pas.pp"/>
+        <UnitName Value="sh_pas"/>
+      </Item18>
+    </Files>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="FCL"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

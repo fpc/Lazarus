@@ -1,0 +1,1176 @@
+{
+
+    FPDoc  -  Free Pascal Documentation Tool
+    Copyright (C) 2000 - 2003 by
+      Areca Systems GmbH / Sebastian Guenther, sg@freepascal.org
+
+    * Skeleton XML description file generator
+
+    See the file COPYING, included in this distribution,
+    for details about the copyright.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+}
+
+(* --- Version 1.0 ---
+The TFPDocMaker class shall support the following functionality:
+- Project generation from a commandline.
+- FPDoc documentation generation, optionally syntax check only.
+- MakeSkel skeleton generation or update.
+
+Everything else is done in a separate documentation manager.
+The documentation manager maintains its own projects
+and creates temporary TFPDocProjects and TFPDocPackages on demand.
+*)
+
+(* Version 0.0 - requires patched FPDoc units!
+The TFPDocMaker class supports the following functionality:
+- documentation generation (FPDoc),
+  - for all units in a package
+  - for a selected unit (optionally syntax check only)
+- project generation
+  - from input and description directories
+  - from a commandline
+- skeleton generation
+  - for all units in a package
+  - for selected unit (MakeSkel)
+- documentation sync with source (MakeSkel UpdateMode)
+  - for all units in a package
+    - output into one or more files
+  - for selected unit
+- skeleton and sync at once
+*)
+unit umakeskel;
+
+interface
+
+{$mode objfpc}
+{$h+}
+
+uses
+  SysUtils, Classes, Gettext,
+  dGlobals, PasTree, PParser,PScanner,
+  mkfpdoc, fpdocproj;
+
+resourcestring
+  STitle = 'MakeSkel - FPDoc skeleton XML description file generator';
+  SVersion = 'Version %s [%s]';
+  SCopyright = '(c) 2000 - 2003 Areca Systems GmbH / Sebastian Guenther, sg@freepascal.org';
+  SCmdLineHelp = 'See documentation for usage.';
+  SCmdLineInvalidOption = 'Ignoring unknown option "%s"';
+  SNoPackageNameProvided = 'Please specify a package name with --package=<name>';
+  SOutputMustNotBeDescr = 'Output file must be different from description filenames.';
+  SCreatingNewNode = 'Creating documentation for new node : %s';
+  SNodeNotReferenced = 'Documentation node "%s" no longer used';
+  SDone = 'Done.';
+
+type
+  TCmdLineAction = (actionHelp, actionConvert);
+
+  TCmdOptions = class(TEngineOptions)
+  public
+    WriteDeclaration,
+    UpdateMode,
+    SortNodes,
+    DisableOverride,
+    DisableErrors,
+    DisableSeealso,
+    DisableArguments,
+    DisableProtected,
+    DisablePrivate,
+    DisableFunctionResults: Boolean;
+    EmitClassSeparator: Boolean;
+  end;
+
+  { TSkelEngine }
+
+  TSkelEngine = class(TFPDocEngine)
+  Private
+    FEmittedList, 
+    FNodeList,
+    FModules : TStringList;
+    FOptions: TCmdOptions;
+    Procedure  DoWriteUnReferencedNodes(N : TDocNode; NodePath : String);
+    procedure SetOptions(AValue: TCmdOptions);
+  public
+    Destructor Destroy; override;
+    Function MustWriteElement(El : TPasElement; Full : Boolean) : Boolean;
+    Function WriteElement(Var F : Text; El : TPasElement; ADocNode : TDocNode) : Boolean;
+    function FindModule(const AName: String): TPasModule; override;
+    function CreateElement(AClass: TPTreeElement; const AName: String;
+      AParent: TPasElement; AVisibility :TPasMemberVisibility;
+      const ASourceFilename: String; ASourceLinenumber: Integer): TPasElement; override;
+    procedure WriteUnReferencedNodes;
+    Procedure WriteNodes(Var F : Text; AModule : TPasModule; List : TStrings);
+    Procedure DocumentFile(Var F : Text; Const AFileName,ATarget,ACPU : String);
+    Property NodeList : TStringList Read FNodeList;
+    Property EmittedList : TStringList Read FEmittedList;
+    property Options: TCmdOptions read FOptions write SetOptions;
+  end;
+
+  THandleOption = function(const Cmd, Arg: string): boolean;
+
+  TCreatorAction = (
+    caDefault,
+    caDryRun,
+    caUsage, //explicit or on all errors?
+    caInvalid,
+    caWriteProject
+  );
+
+  { TFPDocMaker }
+(* MakeSkel functionality as a class.
+*)
+  TFPDocMaker = class(TFPDocCreator)
+  private
+    FDescrDir: string;
+    FInputDir: string;
+    FOnOption: THandleOption;
+    FOptions: TCmdOptions;
+    function GetDescrDir: string;
+    function GetInputDir: string;
+    procedure SetDescrDir(AValue: string);
+    procedure SetInputDir(AValue: string);
+    procedure SetOnOption(AValue: THandleOption);
+    procedure SetOptions(AValue: TCmdOptions);
+  protected
+    FCmdAction: TCreatorAction;
+    FDryRun: boolean;
+    FPackage: TFPDocPackage;
+    FProjectFile: boolean;
+    FWriteProjectFile: string;
+    FTranslated: string;
+    procedure SetCmdAction(AValue: TCreatorAction);
+    procedure SetDryRun(AValue: boolean);
+    procedure SetPackage(AValue: TFPDocPackage);
+    procedure SetWriteProjectFile(AValue: string);
+    function ParseCommon(var Cmd, Arg: string): TCreatorAction;
+  public
+    Function  DocumentPackage(Const APackageName,AOutputName: string; InputFiles, DescrFiles : TStrings) : String;
+    procedure CreateUnitDocumentation(APackage: TFPDocPackage; const AUnit: string; ParseOnly: Boolean);
+  public
+    ImportDir: string;
+    SelectedUnit: string;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure AddDirToFileList(List: TStrings; const ADirName, AMask: String);
+    procedure AddToFileList(List: TStrings; const FileName: String);
+    function  UnitName(AList: TStrings; AIndex: integer): string;
+    function  UnitSpec(AUnit: string): string;
+    function  ImportName(AIndex: integer): string;
+    procedure LogToStdOut(Sender: TObject; const msg: string);
+    procedure LogToStdErr(Sender: TObject; const msg: string);
+  //parsing
+    function  ParseFPDocOption(const S: string):  TCreatorAction;
+    function  ParseUpdateOption(const S: string):  TCreatorAction;
+    function  CheckSkelOptions: string;
+    function  CreateProject(const AFileName: string; APackage: TFPDocPackage): boolean; virtual;
+  {$IFDEF v0}
+    function  ParseOption(const S: string):  TCreatorAction;
+    function  Exec: string;
+  {$ELSE}
+  {$ENDIF}
+    function  SelectedPackage: TFPDocPackage;
+    property Package: TFPDocPackage read SelectedPackage write SetPackage;
+    property CmdAction: TCreatorAction read FCmdAction write SetCmdAction;
+    property DryRun: boolean read FDryRun write SetDryRun;
+    property ReadProject: boolean read FProjectFile;
+    property WriteProjectFile: string read FWriteProjectFile write SetWriteProjectFile;
+    property OnOption: THandleOption read FOnOption write SetOnOption;
+    property InputDir: string read GetInputDir write SetInputDir;
+    property DescrDir: string read GetDescrDir write SetDescrDir;
+    property Options: TCmdOptions read FOptions write SetOptions;
+  end;
+
+{$IFDEF v0}
+var
+  FCreator: TFPDocMaker; //created by application
+  WriteDeclaration,
+  UpdateMode,
+  SortNodes,
+  DisableOverride,
+  DisableErrors,
+  DisableSeealso,
+  DisableArguments,
+  DisableProtected,
+  DisablePrivate,
+  DisableFunctionResults: Boolean;
+  EmitClassSeparator: Boolean;
+{$ELSE}
+{$ENDIF}
+
+Function GetNextWord(Var s : string) : String;
+
+implementation
+
+uses
+  dom,
+  dWriter, fpdocxmlopts;
+
+type
+(* special save/load options
+*)
+
+  { TXMLPackageOptions }
+
+  TXMLPackageOptions = class(TXMLFPDocOptions)
+  public
+    Pkg: TFPDocPackage;
+    procedure SaveOptionsToFile(AProject: TFPDocProject; const AFileName: String; APackage: TFPDocPackage);
+    procedure SaveToXML(AProject: TFPDocProject; ADoc: TXMLDocument); override;
+  end;
+
+  TNodePair = Class(TObject)
+  Private
+    FEl : TPasElement;
+    FNode : TDocNode;
+  Public
+    Constructor Create(AnElement : TPasElement; ADocNode : TDocNode);
+    Property Element : TPasElement Read FEl;
+    Property DocNode : TDocNode Read FNode;
+  end;
+
+{ TXMLPackageOptions }
+
+procedure TXMLPackageOptions.SaveOptionsToFile(AProject: TFPDocProject;
+  const AFileName: String; APackage: TFPDocPackage);
+begin
+  Pkg := APackage; //for use in SaveXML
+  inherited SaveOptionsToFile(AProject, AFileName);
+end;
+
+procedure TXMLPackageOptions.SaveToXML(AProject: TFPDocProject;
+  ADoc: TXMLDocument);
+var
+  i: integer;
+  E,PE: TDOMElement;
+begin
+  if false then inherited SaveToXML(AProject, ADoc);
+  E:=ADoc.CreateElement('docproject');
+  ADoc.AppendChild(E);
+  E:=ADoc.CreateElement('options');
+  ADoc.DocumentElement.AppendChild(E);
+  SaveEngineOptions(AProject.Options,ADoc,E);
+  E:=ADoc.CreateElement('packages');
+  ADoc.DocumentElement.AppendChild(E);
+  if assigned(Pkg) then begin
+      PE:=ADoc.CreateElement('package');
+      E.AppendChild(PE);
+      SavePackage(Pkg,ADoc,PE);
+  end else begin
+    for i := 0 to AProject.Packages.Count - 1 do
+      begin
+      PE:=ADoc.CreateElement('package');
+      E.AppendChild(PE);
+      SavePackage(AProject.Packages[i],ADoc,PE);
+      end;
+  end;
+end;
+
+Constructor TNodePair.Create(AnElement : TPasElement; ADocNode : TDocNode);
+
+begin
+  Fel:=Anelement;
+  FNode:=ADocNode;
+end;
+
+Function GetNextWord(Var s : string) : String;
+Const
+  WhiteSpace = [' ',#9,#10,#13];
+var
+  i,j: integer;
+  quoted: boolean;
+begin
+  I:=1;
+  quoted := False;
+  While (I<=Length(S)) and (S[i] in WhiteSpace) do
+    Inc(I);
+  J:=I;
+{
+    While (J<=Length(S)) and (not (S[J] in WhiteSpace)) do
+      Inc(J);
+}
+  While (J<=Length(S)) do begin
+    if (s[j] = '"') then begin
+      if quoted then
+        break;
+      quoted := True;
+    end else if not quoted and (S[J] in WhiteSpace) then
+      break;
+    Inc(J);
+  end;
+  if (I<=Length(S)) then
+    Result:=Copy(S,I,J-I);
+  Delete(S,1,J);
+end;
+
+function TSkelEngine.FindModule(const AName: String): TPasModule; 
+
+Var
+  I : Integer;
+
+begin
+  Result:=Inherited FindModule(AName);
+  If (Result=Nil) then
+    begin // Create dummy list and search in that.
+    If (FModules=Nil) then
+      begin
+      FModules:=TStringList.Create;
+      FModules.Sorted:=True;
+      end;
+    I:=FModules.IndexOf(AName);
+    IF (I=-1) then
+      begin
+      Result:=TPasModule.Create(AName,Nil);
+      FModules.AddObject(AName,Result);
+      end
+    else
+      Result:=FModules.Objects[i] as TPasModule;  
+    end;  
+end;
+
+Destructor TSkelEngine.Destroy; 
+
+Var
+  I : Integer;
+
+begin
+  If Assigned(FModules) then 
+    begin
+    For I:=0 to FModules.Count-1 do
+      FModules.Objects[i].Free;
+    FreeAndNil(FModules);    
+    end;
+end;
+
+Function TSkelEngine.MustWriteElement(El : TPasElement; Full : Boolean) : Boolean;
+
+Var
+  ParentVisible:Boolean;
+  PT,PP : TPasElement;
+begin
+  ParentVisible:=True;
+  If (El is TPasArgument) or (El is TPasResultElement) then
+    begin
+    PT:=El.Parent;
+    // Skip ProcedureType or PasFunctionType
+    If (PT<>Nil) then
+      begin
+      if (PT is TPasProcedureType) or (PT is TPasFunctionType) then
+        PT:=PT.Parent;
+      If (PT<>Nil) and ((PT is TPasProcedure) or (PT is TPasProcedure))   then
+        PP:=PT.Parent
+      else
+        PP:=Nil;
+      If (PP<>Nil) and (PP is TPasClassType) then
+        begin
+        ParentVisible:=((not Options.DisablePrivate or (PT.Visibility<>visPrivate)) and
+                       (not Options.DisableProtected or (PT.Visibility<>visProtected)));
+        end;
+      end;
+    end;
+  Result:=Assigned(El.Parent) and (Length(El.Name) > 0) and
+          (ParentVisible and (not Options.DisableArguments or (El.ClassType <> TPasArgument))) and
+          (ParentVisible and (not Options.DisableFunctionResults or (El.ClassType <> TPasResultElement))) and
+          (not Options.DisablePrivate or (el.Visibility<>visPrivate)) and
+          (not Options.DisableProtected or (el.Visibility<>visProtected));
+  If Result and Full then
+    begin
+    Result:=(Not Assigned(FEmittedList) or (FEmittedList.IndexOf(El.FullName)=-1));
+    If Options.DisableOverride and (El is TPasProcedure) then
+      Result:=Not TPasProcedure(El).IsOverride;
+    end;  
+end;
+
+
+function TSkelEngine.CreateElement(AClass: TPTreeElement; const AName: String;
+  AParent: TPasElement; AVisibility : TPasMemberVisibility;
+  const ASourceFilename: String; ASourceLinenumber: Integer): TPasElement;
+
+Var
+  DN : TDocNode;
+
+begin
+  Result := AClass.Create(AName, AParent);
+  Result.Visibility:=AVisibility;
+  if AClass.InheritsFrom(TPasModule) then
+    CurModule := TPasModule(Result);
+  // Track this element
+  If Options.UpdateMode then
+    begin
+    DN:=FindDocNode(Result);    
+    If Assigned(DN) then
+      DN.IncRefCount;
+    end
+  else
+    DN:=Nil;  
+  // See if we need to write documentation for it
+  If MustWriteElement(Result,False) then
+    FNodeList.AddObject(Result.PathName,TNodePair.Create(Result,DN));
+end;
+
+Function TSkelEngine.WriteElement(Var F : Text;El : TPasElement; ADocNode : TDocNode) : Boolean;
+
+  Function WriteOnlyShort(APasElement : TPasElement) : Boolean;
+
+  begin
+    Result:=(APasElement.ClassType=TPasArgument) or
+            (APasElement.ClassType=TPasResultElement) or
+            (APasElement.ClassType=TPasEnumValue);
+  end;
+
+  Function IsTypeVarConst(APasElement : TPasElement) : Boolean;
+
+  begin
+    With APasElement do
+      Result:=(InheritsFrom(TPasType) and not InheritsFrom(TPasClassType)) or
+              (InheritsFrom(TPasResString)) or
+              (InheritsFrom(TPasVariable));
+  end;
+  
+  Function NeedDeclaration(El : TPasElement) : boolean;
+  
+  begin
+    Result:=IsTypeVarConst(El) 
+            or WriteOnlyShort(El) 
+            or EL.InheritsFrom(TPasProcedure) 
+  end;
+    
+begin
+  // Check again, this time with full declaration.
+  Result:=MustWriteElement(El,True);
+  If Result and Options.UpdateMode then
+     Result:=(ADocNode=Nil);
+  If Not Result Then
+    Exit;
+  If Options.UpdateMode then
+    DoLog(Format(ScreatingNewNode,[el.PathName]));
+  FEmittedList.Add(El.FullName); // So we don't emit again.
+  WriteLn(f);
+  if Options.EmitClassSeparator and (El.ClassType = TPasClassType) then
+    begin
+    WriteLn(f, '<!--');
+    WriteLn(f, '  ********************************************************************');
+    WriteLn(f, '    ', El.PathName);
+    WriteLn(f, '  ********************************************************************');
+    WriteLn(f, '-->');
+    WriteLn(f);
+    end;
+  If Not (Options.WriteDeclaration and NeedDeclaration(El)) then
+    Writeln(F,'<!-- ', El.ElementTypeName,' Visibility: ',VisibilityNames[El.Visibility], ' -->')
+  else  
+    begin
+    Writeln(F,'<!-- ',El.ElementTypeName,' Visibility: ',VisibilityNames[El.Visibility]);
+    Writeln(F,'     Declaration: ',El.GetDeclaration(True),' -->');
+    end;
+  WriteLn(f,'<element name="', El.FullName, '">');
+  WriteLn(f, '<short></short>');
+  if Not WriteOnlyShort(El) then
+    begin
+    WriteLn(f, '<descr>');
+    WriteLn(f, '</descr>');
+    if not (Options.DisableErrors or IsTypeVarConst(El)) then
+      begin
+      WriteLn(f, '<errors>');
+      WriteLn(f, '</errors>');
+      end;
+    if not Options.DisableSeealso then
+      begin
+      WriteLn(f, '<seealso>');
+      WriteLn(f, '</seealso>');
+      end;
+    end;
+  WriteLn(f, '</element>');
+end;
+
+Procedure  TSkelEngine.DoWriteUnReferencedNodes(N : TDocNode; NodePath : String);
+
+begin
+  If (N<>Nil) then
+    begin
+    If (NodePath<>'') then
+      NodePath:=NodePath+'.';
+    DoWriteUnReferencedNodes(N.FirstChild,NodePath+N.Name);
+    While (N<>Nil) do
+      begin
+      if (N.RefCount=0) and (N.Node<>Nil) and (Not N.TopicNode) then
+        DoLog(Format(SNodeNotReferenced,[NodePath+N.Name]));
+      N:=N.NextSibling;
+      end;
+    end;
+end;
+
+procedure TSkelEngine.SetOptions(AValue: TCmdOptions);
+begin
+  if FOptions=AValue then Exit;
+  FOptions:=AValue;
+end;
+
+procedure TSkelEngine.WriteUnReferencedNodes;
+
+begin
+  DoWriteUnReferencedNodes(RootDocNode,'');
+end;
+
+Procedure TSkelEngine.WriteNodes(Var F : Text; AModule : TPasModule; List : TStrings);
+
+Var
+  P : TNodePair;
+  I : integer;
+
+begin
+  WriteLn(f);
+  WriteLn(f, '<!--');
+  WriteLn(f, '  ====================================================================');
+  WriteLn(f, '    ', Amodule.Name);
+  WriteLn(f, '  ====================================================================');
+  WriteLn(f, '-->');
+  WriteLn(f);
+  WriteLn(f, '<module name="', AModule.Name, '">');
+  if not Options.UpdateMode then
+    begin
+    WriteLn(f, '<short></short>');
+    WriteLn(f, '<descr>');
+    WriteLn(f, '</descr>');
+    end;
+  Try 
+    For I:=0 to List.Count-1 do
+      begin
+      P:=List.Objects[i] as TNodePair;
+      If (P.Element<>AModule) then
+        WriteElement(F,P.Element,P.DocNode);
+      end;
+  Finally
+    WriteLn(f, '');
+    WriteLn(f, '</module> <!-- ', AModule.Name, ' -->');
+    WriteLn(f, '');
+  end;
+end;
+
+Procedure TSkelEngine.DocumentFile(Var F : Text; Const AFileName,ATarget,ACPU : String);
+
+Var
+  Module : TPasModule;
+  I : Integer;
+  N : TDocNode;
+     
+begin
+  FNodeList:=TStringList.Create;
+  Try
+    FEmittedList:=TStringList.Create;
+    FEmittedList.Sorted:=True;
+    try
+      Module:=ParseSource(Self,AFileName,ATarget,ACPU);
+      If Options.UpdateMode then
+        begin
+        N:=FindDocNode(Module);
+        If Assigned(N) then
+           N.IncRefCount;
+         end;
+      If Options.SortNodes then
+        FNodelist.Sorted:=True;   
+      WriteNodes(F,Module,FNodeList);  
+      If Options.UpdateMode then
+        WriteUnReferencedNodes;
+    Finally
+      FEmittedList.Free;
+    end;  
+  Finally  
+    For I:=0 to FNodeList.Count-1 do
+      FNodeList.Objects[i].Free;
+    FNodeList.Free;  
+  end;  
+end;
+
+{ ---------------------------------------------------------------------
+  Main program. Document all units.    
+  ---------------------------------------------------------------------}
+
+{ TFPDocMaker }
+
+constructor TFPDocMaker.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FOptions := TCmdOptions.Create;
+end;
+
+destructor TFPDocMaker.Destroy;
+begin
+  FreeAndNil(FOptions);
+  inherited Destroy;
+end;
+
+function TFPDocMaker.SelectedPackage: TFPDocPackage;
+begin
+  Result:=FPackage;
+  if (FPackage=Nil) or (FPackage.Name='') then
+    begin
+    DoLog(SNeedPackageName);
+    //Usage(1); - in application
+    end;
+end;
+
+procedure TFPDocMaker.SetOnOption(AValue: THandleOption);
+begin
+  if FOnOption=AValue then Exit;
+  FOnOption:=AValue;
+end;
+
+procedure TFPDocMaker.SetDescrDir(AValue: string);
+begin
+  if FDescrDir=AValue then Exit;
+  FDescrDir:=AValue;
+  AddDirToFileList(SelectedPackage.Descriptions, AValue, '*.xml');
+end;
+
+function TFPDocMaker.GetDescrDir: string;
+begin
+  if FDescrDir = '' then begin
+    if SelectedPackage.Descriptions.Count > 0 then begin
+      Result := FPackage.Descriptions[0];
+      FDescrDir := ExtractFilePath(Result); //include separator
+    end;
+  end;
+  Result := FDescrDir;
+end;
+
+(* Unit name from Inputs[i] or Descriptions[i]
+  Package name from Imports?
+*)
+function TFPDocMaker.UnitName(AList: TStrings; AIndex: integer): string;
+var
+  w: string;
+begin
+  Result := AList[AIndex];
+  while Result <> '' do begin
+    w := GetNextWord(Result);
+    if (w <> '') and (w[1] <> '-') then begin
+      Result := ChangeFileExt(ExtractFileName(w), '');
+      break;
+    end;
+  end;
+end;
+
+function TFPDocMaker.UnitSpec(AUnit: string): string;
+var
+  i: integer;
+  s, w: string;
+begin
+  for i := 0 to SelectedPackage.Inputs.Count - 1 do begin
+    w := UnitName(FPackage.Inputs, i);
+    if CompareText(w, AUnit) = 0 then begin
+      Result := FPackage.Inputs[i];
+      exit;
+    end;
+  end;
+  Result := '';
+end;
+
+function TFPDocMaker.ImportName(AIndex: integer): string;
+var
+  i: integer;
+begin
+  Result := SelectedPackage.Imports[AIndex];
+  i := Pos(',', Result);
+  if i > 1 then
+    SetLength(Result, i-1);
+  Result := ExtractFileName(Result);
+  Result := ChangeFileExt(Result, '');
+end;
+
+function TFPDocMaker.GetInputDir: string;
+var
+  W: string;
+begin
+  if (FInputDir = '') and (SelectedPackage.Inputs.Count > 0) then begin
+    Result := FPackage.Inputs[0];
+    while Result <> '' do begin
+      w := GetNextWord(Result);
+      if (w <> '') and (w[1] <> '-') then begin
+        FInputDir := ExtractFilePath(W); //include separator
+        break;
+      end;
+    end;
+  end;
+  Result := FInputDir;
+end;
+
+procedure TFPDocMaker.SetInputDir(AValue: string);
+begin
+  if FInputDir=AValue then Exit;
+  FInputDir:=AValue;
+  AddDirToFileList(SelectedPackage.Inputs, AValue, '*.pp');
+  AddDirToFileList(SelectedPackage.Inputs, AValue, '*.pas');
+end;
+
+procedure TFPDocMaker.SetOptions(AValue: TCmdOptions);
+begin
+  if FOptions=AValue then Exit;
+  FOptions:=AValue;
+end;
+
+(* Check the options, return errors as message strings.
+*)
+function TFPDocMaker.CheckSkelOptions: string;
+
+Const
+{$IFDEF Unix}
+  MoFileTemplate = '/usr/local/share/locale/%s/LC_MESSAGES/makeskel.mo';
+{$ELSE}
+  MoFileTemplate ='intl/makeskel.%s.mo';
+{$ENDIF}
+
+Var
+  MOFilename: string;
+
+begin
+  Result := '';
+//translate strings - only once?
+  If (Options.Language<>FTranslated) then begin
+    MOFilename:=Format(MOFileTemplate,[Options.Language]);
+    if FileExists(MOFilename) then
+      gettext.TranslateResourceStrings(MoFileName)
+    else begin
+      Result := ('NOTE: unable to find translation file ' + MOFilename);
+      exit;
+    end;
+    // Translate internal documentation strings
+    TranslateDocStrings(Options.Language);
+    FTranslated:=Options.Language;
+  end;
+  // Action is to create the XML skeleton
+  if (Package.Name = '') and (CmdAction<>caUsage) then begin
+    Result := (SNoPackageNameProvided);
+    exit;
+  end;
+  if Options.UpdateMode
+  and (SelectedPackage.Descriptions.IndexOf(Package.Output)<>-1) then begin
+    Result := (SOutputMustNotBeDescr);
+    exit;
+  end;
+end;
+
+function TFPDocMaker.CreateProject(const AFileName: string; APackage: TFPDocPackage): boolean;
+var
+  f: TXMLPackageOptions;
+begin
+  try
+    f := TXMLPackageOptions.Create(nil);
+    try
+      f.SaveOptionsToFile(Project, AFileName, APackage);
+      Result := True;
+    finally
+      f.Free;
+    end;
+  except
+    Result := False;
+  end;
+end;
+
+procedure TFPDocMaker.SetCmdAction(AValue: TCreatorAction);
+begin
+  if FCmdAction=AValue then Exit;
+  FCmdAction:=AValue;
+end;
+
+procedure TFPDocMaker.SetDryRun(AValue: boolean);
+begin
+  if FDryRun=AValue then Exit;
+  FDryRun:=AValue;
+end;
+
+procedure TFPDocMaker.SetPackage(AValue: TFPDocPackage);
+begin
+  if FPackage=AValue then Exit;
+  FPackage:=AValue;
+end;
+
+procedure TFPDocMaker.SetWriteProjectFile(AValue: string);
+begin
+  if FWriteProjectFile=AValue then Exit;
+  FWriteProjectFile:=AValue;
+end;
+
+procedure TFPDocMaker.AddDirToFileList(List: TStrings; const ADirName, AMask: String);
+
+Var
+  Info : TSearchRec;
+  D : String;
+
+begin
+  if (ADirName<>'') and not DirectoryExists(ADirName) then
+     DoLog('Directory '+ADirName+' does not exist')
+  else
+    begin
+    if (ADirName='.') or (ADirName='') then
+      D:=''
+    else
+      D:=IncludeTrailingPathDelimiter(ADirName);
+    If (FindFirst(D+AMask,0,Info)=0) then
+      try
+        Repeat
+          If (Info.Attr and faDirectory)=0 then
+            List.Add(D+Info.name);
+        Until FindNext(Info)<>0;
+      finally
+        FindClose(Info);
+      end;
+    end;
+end;
+
+procedure TFPDocMaker.AddToFileList(List: TStrings; const FileName: String);
+var
+  f: Text;
+  s: String;
+begin
+  if Copy(FileName, 1, 1) = '@' then
+  begin
+    AssignFile(f, Copy(FileName, 2, Length(FileName)));
+    Reset(f);
+    while not EOF(f) do
+    begin
+      ReadLn(f, s);
+      List.Add(s);
+    end;
+    Close(f);
+  end else
+    List.Add(FileName);
+end;
+
+function TFPDocMaker.ParseCommon(var Cmd, Arg: string):  TCreatorAction;
+var
+  i: Integer;
+begin
+  if (Cmd = '-h') or (Cmd = '--help') then begin
+    //Usage(0)
+    CmdAction := caUsage;
+    exit(caUsage);
+  end;
+{$IFDEF v0}
+  if Cmd = '--makeskel' then
+    Options.CreateSkeleton := True
+  else
+{$ELSE}
+{$ENDIF}
+  if Cmd = '--update' then
+    Options.UpdateMode := True
+  else if (Cmd = '-n') or (Cmd = '--dry-run') then
+    begin
+    DryRun:=True;
+    CmdAction := caDryRun;
+    end
+//project options
+  else if Cmd = '--hide-protected' then
+    Options.HideProtected := True
+  else if Cmd = '--warn-no-node' then
+    Options.WarnNoNode := True
+  else if Cmd = '--show-private' then
+    Options.ShowPrivate := True  //DoDi: was False???
+  else if Cmd = '--stop-on-parser-error' then
+    Options.StopOnParseError := True
+  else if Cmd = '--dont-trim' then
+    Options.DontTrim := True
+  else if Cmd = '--parse-impl' then
+    Options.InterfaceOnly:=false //is default really True???
+  else begin
+  //split option
+    i := Pos('=', Cmd);
+    if i > 0 then begin
+      Arg := Copy(Cmd, i + 1, Length(Cmd));
+      SetLength(Cmd, i - 1);
+      if (Arg <> '') and (Arg[1] = '"') then begin
+      //remove quotes
+        Arg := StringReplace(Arg, '"', '', [rfReplaceAll]);
+      end;
+    end else begin
+      SetLength(Arg, 0);
+      exit(caInvalid); //options without values unhandled here!
+    end;
+  //more options
+    Result := caDefault; //assume succ
+    if (Cmd = '--project') or (Cmd='-p') then begin
+      FProjectFile:=True; //means: project loaded
+      WriteProjectFile := Arg; //do *not* normally overwrite!
+      LoadProjectFile(Arg);
+    end else if (Cmd = '--descr') then begin
+      if FileExists(Arg) then
+        AddToFileList(SelectedPackage.Descriptions, Arg)
+    end else if (Cmd = '--descr-dir') then
+      DescrDir:=Arg
+    else if (Cmd = '-i') or (Cmd = '--input') then
+      AddToFileList(SelectedPackage.Inputs, Arg)
+    else if (Cmd = '--input-dir') then
+      InputDir:=Arg
+    else if Cmd = '--package' then begin
+      If FProjectFile then
+        FPackage:=Packages.FindPackage(Arg)
+      else begin
+        if FPackage = nil then
+          FPackage := (Packages.Add) as TFPDocPackage;
+        FPackage.Name:=Arg;
+      end
+    end else if Cmd = '--ostarget' then
+      Options.OSTarget := Arg
+    else if Cmd = '--cputarget' then
+      Options.CPUTarget := Arg
+    else if (Cmd = '-l') or (Cmd = '--lang') then
+      Options.Language := Arg
+  {$IFDEF new}
+    else if (Cmd = '--common-options') then
+      SelectedPackage.CommonOptions:=Arg
+  {$ELSE}
+  {$ENDIF}
+    else if Cmd = '--mo-dir' then
+      Options.modir := Arg
+    else if (Cmd = '-o') or (Cmd = '--output') then
+      SelectedPackage.Output := Arg
+    else if (Cmd = '--unit') then //-u= UpdateMode
+      SelectedUnit:= Arg
+    else if (Cmd = '-v') or (Cmd = '--verbose') then
+      Verbose:=true
+    else if Cmd = '--write-project' then begin
+      CmdAction := caWriteProject;
+      WriteProjectFile:=Arg
+    end
+  //else no match
+    else
+      Result := caInvalid;
+  end;
+end;
+
+function TFPDocMaker.ParseFPDocOption(const S: string):  TCreatorAction;
+//procedure TFPDocAplication.Parseoption(Const S : String);
+var
+  Cmd, Arg: String;
+begin
+  Cmd:=S;
+  Result := ParseCommon(Cmd, Arg);
+  if Result <> caInvalid then
+    exit;
+  Result := caDefault; //assume succ
+  if Cmd = '--content' then
+    SelectedPackage.ContentFile := Arg
+  else if Cmd = '--import' then
+    SelectedPackage.Imports.Add(Arg)
+//this should not be a project option
+  else if (Cmd = '-f') or (Cmd = '--format') then
+    begin
+    Arg:=UpperCase(Arg);
+    If FindWriterClass(Arg)=-1 then
+      WriteLn(StdErr, Format(SCmdLineInvalidFormat, [Arg]))
+    else
+      Options.BackEnd:=Arg;
+    end
+  else
+    begin
+    Options.BackendOptions.Add(Cmd);
+    Options.BackendOptions.Add(Arg);
+    end;
+end;
+
+procedure TFPDocMaker.LogToStdOut(Sender: TObject; const msg: string);
+begin
+  WriteLn(msg);
+end;
+
+procedure TFPDocMaker.LogToStdErr(Sender: TObject; const msg: string);
+begin
+  WriteLn(stderr, msg);
+end;
+
+(* Write *all* updates into AOutputName (=DescrFile for Create, UpdFile for Update).
+*)
+Function TFPDocMaker.DocumentPackage(Const APackageName,AOutputName: string; InputFiles, DescrFiles : TStrings) : String;
+Var
+  F : Text;
+  I,J : Integer;
+  Engine: TSkelEngine;
+begin
+  Result:='';
+  AssignFile(f, AOutputName);
+  Rewrite(f);
+  Try
+    WriteLn(f, '<?xml version="1.0" encoding="ISO-8859-1"?>');
+    WriteLn(f, '<fpdoc-descriptions>');
+    WriteLn(f, '<package name="', APackageName, '">');
+    I:=0;
+    While (Result='') And (I<InputFiles.Count) do
+      begin
+      Engine := TSkelEngine.Create;
+    //configure engine
+    {$IFDEF v0}
+      InitEngine(Engine);
+    {$ELSE}
+      Engine.OnLog:=Self.OnLog;
+      Engine.ScannerLogEvents:=Self.ScannerLogEvents;
+      Engine.ParserLogEvents:=Self.ParserLogEvents;
+    {$ENDIF}
+      Engine.Options := Options;
+      Try
+        Engine.SetPackageName(APackageName);
+        if Options.UpdateMode then
+          For J:=0 to DescrFiles.Count-1 do
+            Engine.AddDocFile(DescrFiles[J]);
+        Try
+          Engine.DocumentFile(F,InputFiles[i],Options.OSTarget,Options.CPUTarget);
+        except
+          on E:Exception do
+          begin
+            Result:='Error while documenting: '+E.message;
+          end;
+        end;
+      Finally
+        Engine.Free;
+      end;
+      Inc(I);
+      end;
+  Finally
+    WriteLn(f, '</package>');
+    WriteLn(f, '</fpdoc-descriptions>');
+    Close(f);
+  end;
+end;
+
+procedure TFPDocMaker.CreateUnitDocumentation(APackage: TFPDocPackage;
+  const AUnit: string; ParseOnly: Boolean);
+var
+  il: TStringList;
+  spec: string;
+begin
+  if AUnit <> '' then begin
+  //selected unit only
+    spec := UnitSpec(AUnit);
+    il := TStringList.Create;
+    il.Assign(APackage.Inputs);
+    APackage.Inputs.Clear;
+    APackage.Inputs.Add(spec);
+    try
+      inherited CreateDocumentation(APackage, ParseOnly);
+    finally
+      APackage.Inputs.Assign(il);
+      il.Free;
+    end;
+  end else begin
+    CreateDocumentation(APackage,ParseOnly);
+  end;
+end;
+
+
+function TFPDocMaker.ParseUpdateOption(const s: String):  TCreatorAction;
+//procedure ParseOption(const s: String; Options: TEngineOptions);
+var
+  Cmd, Arg: String;
+begin
+  Cmd:=S;
+  Result := ParseCommon(Cmd, Arg);
+  if Result <> caInvalid then
+    exit;
+  Result := caDefault; //assume succ
+  if s = '--disable-arguments' then
+    Options.DisableArguments := True
+  else if s = '--disable-errors' then
+    Options.DisableErrors := True
+  else if s = '--disable-function-results' then
+    Options.DisableFunctionResults := True
+  else if s = '--disable-seealso' then
+    Options.DisableSeealso := True
+  else if s = '--disable-private' then
+    Options.DisablePrivate := True
+  else if s = '--disable-override' then
+    Options.DisableOverride := True
+  else if s = '--disable-protected' then
+    begin
+    Options.DisableProtected := True;
+    Options.DisablePrivate :=True;
+    end
+  else if (s = '--emitclassseparator') or (s='--emit-class-separator') then
+    Options.EmitClassSeparator := True
+  else if (s = '--emit-declaration') then
+    Options.WriteDeclaration := True
+  else if (s = '--sort-nodes') then
+    Options.SortNodes := True
+  else if (Cmd = '-i') or (Cmd = '--input') then
+    AddToFileList(SelectedPackage.Inputs, Arg)
+  else if not assigned(OnOption) or not OnOption(Cmd, Arg) then begin
+    DoLog(SCmdLineInvalidOption, [s]);
+    CmdAction := caInvalid;
+    Result := caInvalid;
+  end;
+end;
+
+{$IFDEF v0}
+function TFPDocMaker.ParseOption(const S: string): TCreatorAction;
+begin
+  if Options.CreateSkeleton or Options.UpdateMode then
+    Result := ParseUpdateOption(s)
+  else
+    Result := ParseFPDocOption(s);
+end;
+
+(* An experimental version for executing all functionality.
+  Applications better should use the basic methods, and implement the framework
+  for all handled cases.
+*)
+function TFPDocMaker.Exec: string;
+var
+  Pkg: TFPDocPackage;
+  s, OutputName: string;
+  i: integer;
+begin
+  if Options.UpdateMode or Options.CreateSkeleton then begin
+  //MakeSkel
+    Result := CheckSkelOptions;
+    if Result <> '' then
+      exit;
+  end else
+    Result := '';
+  if SelectedUnit <> '' then begin
+  //create fake package
+    Pkg := TFPDocPackage.Create(nil);
+    try
+      Pkg.Name := Package.Name;
+      s := UnitSpec(SelectedUnit);
+      Pkg.Inputs.Add(s);
+
+      Pkg.Output := Package.Output; //fpdoc
+      OutputName:=DescrDir + SelectedUnit + '.xml';
+      if Options.UpdateMode then begin
+        if not FileExists(OutputName) then begin
+          Result := 'Not found: ' + OutputName;
+          exit;
+        end;
+        Pkg.Descriptions.Add(OutputName);
+        OutputName := 'upd.' + SelectedUnit + '.xml';
+        Result := DocumentPackage(Package.Name, OutputName, Pkg.Inputs, Pkg.Descriptions);
+        exit;
+      end;
+      if Options.CreateSkeleton then begin
+        if FileExists(OutputName) then begin
+          Result := 'File already exists: ' + OutputName;
+          exit;
+        end;
+        Result := DocumentPackage(Package.Name, OutputName, Pkg.Inputs, Pkg.Descriptions);
+      end else begin //fpdoc
+        CreateDocumentation(Pkg, DryRun);
+      end;
+    finally
+      Pkg.Free;
+    end;
+    exit;
+  end;
+//process package
+  if Options.UpdateMode or Options.CreateSkeleton then begin
+    Result := DocumentPackage(Package.Name, Package.Output, Package.Inputs, Package.Descriptions);
+  end else begin
+  //FPDoc
+  //todo: all or single unit?
+    CreateDocumentation(SelectedPackage, DryRun);
+  end;
+end;
+{$ELSE}
+{$ENDIF}
+
+end.
+
