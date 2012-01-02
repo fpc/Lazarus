@@ -656,8 +656,6 @@ procedure TProjectInspectorForm.UpdateRequiredPackages;
 var
   Dependency: TPkgDependency;
   NodeText, AFilename: String;
-  CurNode: TTreeNode;
-  NextNode: TTreeNode;
   FilteredBranch: TBranch;
 begin
   FilteredBranch := FilterEdit.GetBranch(DependenciesNode);
