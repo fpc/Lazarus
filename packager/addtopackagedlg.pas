@@ -422,7 +422,6 @@ begin
 
   RequiredPackage:=PackageGraph.FindPackageWithName(NewPkgName,nil);
   if RequiredPackage<>nil then begin
-
     // check if there is a dependency, that requires another version
     ConflictDependency:=PackageGraph.FindConflictRecursively(
       LazPackage.FirstRequiredDependency,RequiredPackage);
@@ -430,7 +429,22 @@ begin
       DebugLn(['CheckAddingDependency ',LazPackage.Name,' requiring ',RequiredPackage.IDAsString,' conflicts with ',ConflictDependency.AsString]);
       if not Quiet then
         IDEMessageDialog(lisVersionMismatch,
-          'Unable to add the dependency '+RequiredPackage.IDAsString+', because the package '+LazPackage.Name+' has already a dependency '+ConflictDependency.AsString,
+          Format(lisUnableToAddTheDependencyBecauseThePackageHasAlread, [
+            RequiredPackage.IDAsString, LazPackage.Name, ConflictDependency.
+            AsString]),
+          mtError,[mbCancel]);
+      exit(mrCancel);
+    end;
+
+    // check if there is a cycle
+    ConflictDependency:=PackageGraph.FindDependencyRecursively(
+      RequiredPackage.FirstRequiredDependency,LazPackage.Name);
+    if ConflictDependency<>nil then begin
+      DebugLn(['CheckAddingDependency ',LazPackage.Name,' requiring ',RequiredPackage.IDAsString,' conflicts with ',ConflictDependency.AsString]);
+      if not Quiet then
+        IDEMessageDialog(lisCycleDetected,
+          Format(lisUnableToAddTheDependencyBecauseThisWouldCreateACyc, [
+            RequiredPackage.IDAsString, ConflictDependency.AsString(true)]),
           mtError,[mbCancel]);
       exit(mrCancel);
     end;
@@ -444,7 +458,8 @@ begin
     DebugLn(['CheckAddingDependency ',LazPackage.Name,' requiring ',NewPkgName,', but is already provided by ',ProvidingAPackage.IDAsString]);
     if WarnIfAlreadyThere then
       IDEMessageDialog(lisProjAddDependencyAlreadyExists,
-        'Unable to add the dependency '+RequiredPackage.IDAsString+', because the package '+LazPackage.Name+' has already a dependency to '+ProvidingAPackage.Name,
+        Format(lisUnableToAddTheDependencyBecauseThePackageHasAlread2, [
+          RequiredPackage.IDAsString, LazPackage.Name, ProvidingAPackage.Name]),
         mtError,[mbCancel]);
     exit(mrIgnore);
   end;

@@ -293,7 +293,7 @@ type
     procedure ConsistencyCheck;
     function IsCompatible(Pkg: TLazPackageID): boolean;
     procedure MakeCompatible(const PkgName: string; const Version: TPkgVersion);
-    function AsString: string;
+    function AsString(WithOwner: boolean = false): string;
     function NextUsedByDependency: TPkgDependency;
     function PrevUsedByDependency: TPkgDependency;
     function NextRequiresDependency: TPkgDependency;
@@ -1955,13 +1955,19 @@ begin
   if MaxVersion.Compare(Version)<0 then MaxVersion.Assign(Version);
 end;
 
-function TPkgDependency.AsString: string;
+function TPkgDependency.AsString(WithOwner: boolean): string;
 begin
+  if Self=nil then
+    exit('(nil)');
   Result:=FPackageName;
   if pdfMinVersion in FFlags then
     Result:=Result+' (>='+MinVersion.AsString+')';
   if pdfMaxVersion in FFlags then
     Result:=Result+' (<='+MaxVersion.AsString+')';
+  if WithOwner then begin
+    if Owner is TLazPackage then
+      Result:=TLazPackage(Owner).Name+' uses '+Result;
+  end;
 end;
 
 function TPkgDependency.NextUsedByDependency: TPkgDependency;

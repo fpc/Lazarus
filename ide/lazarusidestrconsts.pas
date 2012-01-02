@@ -3392,7 +3392,14 @@ resourcestring
   lisProjAddThePackageNameIsInvalidPlaseChooseAnExistingPackag = 'The package '
     +'name %s%s%s is invalid.%sPlase choose an existing package.';
   lisProjAddDependencyAlreadyExists = 'Dependency already exists';
+  lisUnableToAddTheDependencyBecauseThePackageHasAlread2 = 'Unable to add the '
+    +'dependency %s, because the package %s has already a dependency to %s';
   lisVersionMismatch = 'Version mismatch';
+  lisUnableToAddTheDependencyBecauseThePackageHasAlread = 'Unable to add the '
+    +'dependency %s, because the package %s has already a dependency %s';
+  lisCycleDetected = 'Cycle detected';
+  lisUnableToAddTheDependencyBecauseThisWouldCreateACyc = 'Unable to add the '
+    +'dependency %s, because this would create a cycle. Dependency %s';
   lisProjAddTheProjectHasAlreadyADependency = 'The project has already a '
     +'dependency for the package %s%s%s.';
   lisProjAddPackageNotFound = 'Package not found';
