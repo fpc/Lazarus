@@ -832,7 +832,7 @@ begin
   OldDrawer := FDrawer;
   FDrawer := GetDrawer(FDrawStyle);
   if FDrawer = nil then FDrawer := GetDrawer(dsCommon); // avoid exceptions in the object inspector if an invalid drawer is selected
-  if FDrawer = nil then raise Exception.Create('No registered drawers were found');
+  if FDrawer = nil then raise Exception.Create('[TCDControl.PrepareCurrentDrawer] No registered drawers were found. Please add the unit customdrawn_common to your uses clause and also the units of any other utilized drawers.');
   if OldDrawer <> FDrawer then FDrawer.LoadPalette();
 end;
 
