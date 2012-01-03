@@ -4980,6 +4980,7 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
     DesignFlags: TConnectSignalFlags;
   begin
     //if AWinControl is TListView then DebugLn('ConnectSignals A ',DbgS(TheWidget));
+    if TheWidget=nil then exit;
     // check if TheWidget belongs to another LCL object
     LCLObject:=GetLCLObject(TheWidget);
     HiddenLCLObject:=GetHiddenLCLObject(TheWidget);
