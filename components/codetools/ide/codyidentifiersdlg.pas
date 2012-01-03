@@ -25,6 +25,8 @@
     Dialog to view and search the whole list.
 
   ToDo:
+    -option to hide fpcsrcdir units not in fpc path
+    -sort identifiers for directory distance
     -quickfix for identifier not found
     -use identifier: check package version
     -check for conflict: other unit with same name already in search path
@@ -288,7 +290,7 @@ begin
     end;
   except
     on E: Exception do begin
-      debugln('WARNING: TCodyUDLoadSaveThread.Execute '+E.Message);
+      debugln(['WARNING: TCodyUDLoadSaveThread.Execute Load=',Load,' ',E.Message]);
       Dictionary.LoadSaveError:=E.Message;
     end;
   end;
