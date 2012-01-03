@@ -2399,8 +2399,13 @@ begin
   if (FDatalink<>nil) and FDatalink.Active then begin
     inherited SelectEditor;
 
-    if (Editor is TCustomEdit) and (SelectedField is TStringField) then
-      TCustomEdit(Editor).MaxLength := SelectedField.Size;
+    if (SelectedField is TStringField) then begin
+      if (Editor is TCustomEdit) then
+        TCustomEdit(Editor).MaxLength := SelectedField.Size
+      else
+      if (Editor is TCompositeCellEditor) then
+        TCompositeCellEditor(Editor).MaxLength := SelectedField.Size;
+    end;
 
     if Assigned(OnSelectEditor) then begin
       aEditor:=Editor;

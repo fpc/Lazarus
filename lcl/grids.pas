@@ -276,6 +276,8 @@ type
     FEditors: array of TEditorItem;
     procedure DispatchMsg(msg: TGridMessage);
     function GetActiveControl: TWinControl;
+    function GetMaxLength: Integer;
+    procedure SetMaxLength(AValue: Integer);
   protected
     function  DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean; override;
     procedure msg_GetValue(var Msg: TGridMessage); message GM_GETVALUE;
@@ -294,6 +296,7 @@ type
     destructor Destroy; override;
     procedure AddEditor(aEditor: TWinControl; aAlign: TAlign; ActiveCtrl:boolean);
     procedure SetFocus; override;
+    property MaxLength: Integer read GetMaxLength write SetMaxLength;
   end;
 
 
@@ -11520,6 +11523,25 @@ begin
       Feditors[i].Editor.Dispatch(msg);
 end;
 
+function TCompositeCellEditor.GetMaxLength: Integer;
+var
+  AEditor: TWinControl;
+begin
+  result := 0;
+  AEditor := GetActiveControl;
+  if AEditor is TCustomEdit then
+    result := TCustomEdit(AEditor).MaxLength;
+end;
+
+procedure TCompositeCellEditor.SetMaxLength(AValue: Integer);
+var
+  AEditor: TWinControl;
+begin
+  AEditor := GetActiveControl;
+  if AEditor is TCustomEdit then
+    TCustomEdit(AEditor).MaxLength := AValue;
+end;
+
 function TCompositeCellEditor.GetActiveControl: TWinControl;
 var
   i: Integer;
@@ -11703,7 +11725,7 @@ begin
   end;
 end;
 
-destructor TCompositeCellEditor.destroy;
+destructor TCompositeCellEditor.Destroy;
 begin
   SetLength(FEditors, 0);
   inherited destroy;
