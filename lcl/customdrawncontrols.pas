@@ -802,6 +802,9 @@ end;
 
 destructor TCDScrollableControl.Destroy;
 begin
+  FRightScrollBar.Free;
+  FBottomScrollBar.Free;
+  FSpacer.Free;
   inherited Destroy;
 end;
 
