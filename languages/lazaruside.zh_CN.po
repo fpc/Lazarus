@@ -3791,13 +3791,13 @@ msgstr "文件不是单元文件"
 msgid "Invalid Ancestor Type"
 msgstr "无效的父类"
 
-#: lazarusidestrconsts.lisa2pinvalidcircle
-msgid "Invalid Circle"
-msgstr "无效循环"
-
 #: lazarusidestrconsts.lisa2pinvalidclassname
 msgid "Invalid Class Name"
 msgstr "无效的类名"
+
+#: lazarusidestrconsts.lisa2pinvalidcycle
+msgid "Invalid Cycle"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pinvalidfile
 msgid "Invalid file"
@@ -5282,10 +5282,6 @@ msgstr "选择一个结构封装所选"
 #: lazarusidestrconsts.lischoosetestbuilddir
 msgid "Choose the directory for tests"
 msgstr "选择测试目录"
-
-#: lazarusidestrconsts.liscircleinmacros
-msgid "Circle in macros"
-msgstr ""
 
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
@@ -6844,6 +6840,14 @@ msgstr "自定义程序"
 #| msgid "Custom Program%sA freepascal program."
 msgid "Custom Program%sA Free Pascal program."
 msgstr "自定义 freepascal 程序 %s."
+
+#: lazarusidestrconsts.liscycledetected
+msgid "Cycle detected"
+msgstr ""
+
+#: lazarusidestrconsts.liscycleinmacros
+msgid "Cycle in macros"
+msgstr ""
 
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
@@ -9292,10 +9296,6 @@ msgstr ""
 msgid "Invalid build macro \"%s\". The name is a keyword."
 msgstr ""
 
-#: lazarusidestrconsts.lisinvalidcircle
-msgid "Invalid circle"
-msgstr ""
-
 #: lazarusidestrconsts.lisinvalidcommand
 msgid "Invalid command"
 msgstr "无效的命令"
@@ -9303,6 +9303,10 @@ msgstr "无效的命令"
 #: lazarusidestrconsts.lisinvalidcompilerfilename
 msgid "Invalid Compiler Filename"
 msgstr "无效的编译器文件名"
+
+#: lazarusidestrconsts.lisinvalidcycle
+msgid "Invalid cycle"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -9392,9 +9396,9 @@ msgstr "%s 已经是工程的一部分"
 msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgstr "%s%s%s 是无效的工程名.%s请选择另一个 (例如 project1.lpi)"
 
-#: lazarusidestrconsts.lisisathiscircledependencyisnotallowed
-msgid "%s is a %s.%sThis circle dependency is not allowed."
-msgstr "%s 是%s.%s回环依赖不被允许"
+#: lazarusidestrconsts.lisisathiscycledependencyisnotallowed
+msgid "%s is a %s.%sThis cycle dependency is not allowed."
+msgstr ""
 
 #: lazarusidestrconsts.lisisddirectorynotfound
 msgid "directory not found"
@@ -12839,13 +12843,14 @@ msgstr "移除依赖关系?"
 msgid "Remove dependency %s%s%s%sfrom package %s%s%s?"
 msgstr "移除依赖关系 %s%s%s%s 从包 %s%s%s?"
 
-#: lazarusidestrconsts.lispckeditremovedfilestheseentriesarenotsavedtothelpkfile
-msgid "Removed Files (these entries are not saved to the lpk file)"
-msgstr "移除文件 (这些条目将不会保存到 lpk 文件)"
+#: lazarusidestrconsts.lispckeditremovedfiles
+msgid "Removed Files"
+msgstr ""
 
-#: lazarusidestrconsts.lispckeditremovedrequiredpackagestheseentriesarenotsaved
-msgid "Removed required packages (these entries are not saved to the lpk file)"
-msgstr "移除需要的包 (这些条目将不会保存到 lpk 文件)"
+#: lazarusidestrconsts.lispckeditremovedrequiredpackages
+msgctxt "lazarusidestrconsts.lispckeditremovedrequiredpackages"
+msgid "Removed required packages"
+msgstr "移除需要的包"
 
 #: lazarusidestrconsts.lispckeditremovefile
 msgid "Remove file"
@@ -13331,12 +13336,12 @@ msgstr "%s两个包相互关联. 这意味着它们中某一个需要另一个,�
 msgid "Broken dependency"
 msgstr "取消依赖关系"
 
-#: lazarusidestrconsts.lispkgmangcircleinpackagedependencies
-msgid "Circle in package dependencies"
-msgstr "包循环依赖"
-
 #: lazarusidestrconsts.lispkgmangcompilingpackage
 msgid "Compiling package %s"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmangcycleinpackagedependencies
+msgid "Cycle in package dependencies"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangdeletefailed
@@ -13601,7 +13606,7 @@ msgid "The package %s is a runtime only package.%sRuntime only packages can not 
 msgstr "包 %s 是一个运行包.%s运行包不能安装到 IDE."
 
 #: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
-msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also uses the default unit search of the compiler. This creates a circle.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
+msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also uses the default unit search of the compiler. This creates a cycle.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
@@ -13636,9 +13641,9 @@ msgstr "工程需要包 %s%s%s.%s但是未找到包. 查看 工程 -> 工程浏�
 msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
 msgstr "两个单元名字相同:%s%s1. %s%s%s 与 %s%s2. %s%s%s 与 %s%s%s"
 
-#: lazarusidestrconsts.lispkgmangthereisacircleintherequiredpackages
-msgid "There is a circle in the required packages. See package graph."
-msgstr "已经有一个包依赖循环. 查看包图表."
+#: lazarusidestrconsts.lispkgmangthereisacycleintherequiredpackages
+msgid "There is a cycle in the required packages. See package graph."
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenameasapackage
 msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
@@ -14239,6 +14244,7 @@ msgid "Project Inspector - %s"
 msgstr "工程浏览 - %s"
 
 #: lazarusidestrconsts.lisprojinspremovedrequiredpackages
+msgctxt "lazarusidestrconsts.lisprojinspremovedrequiredpackages"
 msgid "Removed required packages"
 msgstr "移除需要的包"
 
@@ -15766,8 +15772,8 @@ msgstr ""
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "语句无法分析.%s请选择一段代码用来分析 procedure/method."
 
-#: lazarusidestrconsts.listhiswillcreateacircle
-msgid "This will create a circle."
+#: lazarusidestrconsts.listhiswillcreateacycle
+msgid "This will create a cycle."
 msgstr ""
 
 #: lazarusidestrconsts.listhreads
@@ -16042,6 +16048,18 @@ msgstr "无法添加资源 T%s:FORMDATA 到资源文件 %s%s%s%s.%s可能是语�
 
 #: lazarusidestrconsts.lisunabletoaddsetting
 msgid "Unable to add setting"
+msgstr ""
+
+#: lazarusidestrconsts.lisunabletoaddthedependencybecausethepackagehasalread
+msgid "Unable to add the dependency %s, because the package %s has already a dependency %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisunabletoaddthedependencybecausethepackagehasalread2
+msgid "Unable to add the dependency %s, because the package %s has already a dependency to %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisunabletoaddthedependencybecausethiswouldcreateacyc
+msgid "Unable to add the dependency %s, because this would create a cycle. Dependency %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoaddtoprojectbecausethereisalreadyaunitwith
