@@ -1832,7 +1832,6 @@ end;
 
 procedure TCDPositionedControl.CreateControlStateEx;
 begin
-  inherited CreateControlStateEx;
   FPCState := TCDPositionedCStateEx.Create;
   FStateEx := FPCState;
 end;
