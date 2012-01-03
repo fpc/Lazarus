@@ -24,8 +24,8 @@ unit pocheckermain;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, SynEdit, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, LCLProc, CheckLst, Buttons, ExtCtrls, IDEIntf, MenuIntf,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
+  StdCtrls, LCLProc, CheckLst, Buttons, ExtCtrls,
   SimplePoFiles, PoFamilies, ResultDlg;
 
 type
@@ -83,19 +83,9 @@ resourcestring
 var
   PoCheckerForm: TPoCheckerForm;
 
-procedure Register;
-
 implementation
 
 {$R *.lfm}
-
-procedure ShowPoCheckerForm();
-begin
-  if not Assigned(PoCheckerForm) then
-    PoCheckerForm := TPoCheckerForm.Create(Application);
-  PoCheckerForm.Show;
-end;
-
 
 { TPoCheckerForm }
 
@@ -320,16 +310,6 @@ begin
             (Item1.Flags = Item2.Flags) and
             (Item1.PreviousID = Item2.PreviousID) and
             (Item1.Translation = Item2.Translation);
-end;
-
-procedure IDEMenuClicked(Sender: TObject);
-begin
-  ShowPoCheckerForm;
-end;
-
-procedure Register;
-begin
-  RegisterIDEMenuCommand(itmSecondaryTools, 'mnuPoChecker', rsPoChecker, nil, @IDEMenuClicked);
 end;
 
 end.

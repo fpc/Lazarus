@@ -24,7 +24,7 @@ unit pocheckermain;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, SynEdit, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, LCLProc, CheckLst, Buttons, ExtCtrls, IDEIntf, MenuIntf,
   SimplePoFiles, PoFamilies, ResultDlg;
 
