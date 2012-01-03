@@ -4066,10 +4066,8 @@ resourcestring
   lisPckEditMaximumVersion = 'Maximum Version:';
   lisPckEditApplyChanges = 'Apply changes';
   lisPckEditPackage = 'Package %s';
-  lisPckEditRemovedFilesTheseEntriesAreNotSavedToTheLpkFile = 'Removed Files ('
-    +'these entries are not saved to the lpk file)';
-  lisPckEditRemovedRequiredPackagesTheseEntriesAreNotSaved = 'Removed '
-    +'required packages (these entries are not saved to the lpk file)';
+  lisPckEditRemovedFiles = 'Removed Files';
+  lisPckEditRemovedRequiredPackages = 'Removed required packages';
   lisPckEditDefault = '%s, default: %s';
   lisPckEditDependencyProperties = 'Dependency Properties';
   lisPckEditpackageNotSaved = 'package %s not saved';

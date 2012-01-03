@@ -1629,7 +1629,9 @@ begin
     end;
   end
   else if Data is TPkgDependency then begin
-    if TPkgDependency(Data).LoadPackageResult=lprSuccess then
+    if TPkgDependency(Data).Removed then
+      Result:=ImageIndexRemovedRequired
+    else if TPkgDependency(Data).LoadPackageResult=lprSuccess then
       Result:=ImageIndexRequired
     else
       Result:=ImageIndexConflict;
@@ -1638,15 +1640,15 @@ end;
 
 procedure TPackageEditorForm.UpdateFiles;
 var
-  Cnt, i: Integer;
+  i: Integer;
   CurFile: TPkgFile;
-  CurNode: TTreeNode;
-  NextNode: TTreeNode;
-  FilesBranch: TTreeFilterBranch;
+  FilesBranch, RemovedBranch: TTreeFilterBranch;
   Filename: String;
   ena: Boolean;
 begin
   if LazPackage=nil then exit;
+
+  // files belonging to package
   FilesBranch:=FilterEdit.GetBranch(FFilesNode);
   FilterEdit.SelectedPart:=FNextSelectedPart;
   FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
@@ -1659,48 +1661,39 @@ begin
     if Filename<>'' then
       FilesBranch.AddNodeData(Filename, CurFile, CurFile.Filename);
   end;
-  FilterEdit.InvalidateFilter;               // Data is shown by FilterEdit.
 
   // removed files
   if LazPackage.RemovedFilesCount>0 then begin
+    // Create root node for removed dependencies if not done yet.
     if FRemovedFilesNode=nil then begin
       FRemovedFilesNode:=FilesTreeView.Items.Add(FRequiredPackagesNode,
-                      lisPckEditRemovedFilesTheseEntriesAreNotSavedToTheLpkFile);
+                                                 lisPckEditRemovedFiles);
       FRemovedFilesNode.ImageIndex:=ImageIndexRemovedFiles;
       FRemovedFilesNode.SelectedIndex:=FRemovedFilesNode.ImageIndex;
     end;
-    CurNode:=FRemovedFilesNode.GetFirstChild;
-    Cnt:=LazPackage.RemovedFilesCount;
-    for i:=0 to Cnt-1 do begin
-      if CurNode=nil then
-        CurNode:=FilesTreeView.Items.AddChild(FRemovedFilesNode,'');
+    RemovedBranch:=FilterEdit.GetBranch(FRemovedFilesNode);
+    for i:=0 to LazPackage.RemovedFilesCount-1 do begin
       CurFile:=LazPackage.RemovedFiles[i];
-      CurNode.Text:=CurFile.GetShortFilename(true);
-      CurNode.ImageIndex:=ChooseImageIndex('', CurFile, ena);
-      CurNode:=CurNode.GetNextSibling;
+      RemovedBranch.AddNodeData(CurFile.GetShortFilename(true), CurFile);
     end;
-    while CurNode<>nil do begin
-      NextNode:=CurNode.GetNextSibling;
-      CurNode.Free;
-      CurNode:=NextNode;
-    end;
-    FRemovedFilesNode.Expanded:=true;
   end else begin
-    FreeAndNil(FRemovedFilesNode);
+    // No removed dependencies -> delete the root node
+    if FRemovedFilesNode<>nil then begin
+      FilterEdit.DeleteBranch(FRemovedFilesNode);
+      FreeAndNil(FRemovedFilesNode);
+    end;
   end;
+  FilterEdit.InvalidateFilter;               // Data is shown by FilterEdit.
 end;
 
 procedure TPackageEditorForm.UpdateRequiredPkgs;
 var
-  CurNode: TTreeNode;
   CurDependency: TPkgDependency;
-  NextNode: TTreeNode;
-  RequiredBranch: TTreeFilterBranch;
+  RequiredBranch, RemovedBranch: TTreeFilterBranch;
   CurNodeText, aFilename: String;
 begin
   if LazPackage=nil then exit;
-  FilesTreeView.BeginUpdate;
-  
+
   // required packages
   RequiredBranch:=FilterEdit.GetBranch(FRequiredPackagesNode);
   FilterEdit.SelectedPart:=FNextSelectedPart;
@@ -1722,32 +1715,21 @@ begin
   CurDependency:=LazPackage.FirstRemovedDependency;
   if CurDependency<>nil then begin
     if FRemovedRequiredNode=nil then begin
-      FRemovedRequiredNode:=FilesTreeView.Items.Add(nil,
-                       lisPckEditRemovedRequiredPackagesTheseEntriesAreNotSaved);
+      FRemovedRequiredNode:=FilesTreeView.Items.Add(nil,lisPckEditRemovedRequiredPackages);
       FRemovedRequiredNode.ImageIndex:=ImageIndexRemovedRequired;
       FRemovedRequiredNode.SelectedIndex:=FRemovedRequiredNode.ImageIndex;
     end;
-    CurNode:=FRemovedRequiredNode.GetFirstChild;
+    RemovedBranch:=FilterEdit.GetBranch(FRemovedRequiredNode);
     while CurDependency<>nil do begin
-      if CurNode=nil then
-        CurNode:=FilesTreeView.Items.AddChild(FRemovedRequiredNode,'');
-      CurNode.Text:=CurDependency.AsString;
-      CurNode.ImageIndex:=FRemovedRequiredNode.ImageIndex;
-      CurNode.SelectedIndex:=CurNode.ImageIndex;
-      CurNode:=CurNode.GetNextSibling;
+      RemovedBranch.AddNodeData(CurDependency.AsString, CurDependency);
       CurDependency:=CurDependency.NextRequiresDependency;
     end;
-    while CurNode<>nil do begin
-      NextNode:=CurNode.GetNextSibling;
-      CurNode.Free;
-      CurNode:=NextNode;
-    end;
-    FRemovedRequiredNode.Expanded:=true;
   end else begin
-    FreeAndNil(FRemovedRequiredNode);
+    if FRemovedRequiredNode<>nil then begin
+      FilterEdit.DeleteBranch(FRemovedRequiredNode);
+      FreeAndNil(FRemovedRequiredNode);
+    end;
   end;
-
-  FilesTreeView.EndUpdate;
   FNextSelectedPart:=nil;
 end;
 

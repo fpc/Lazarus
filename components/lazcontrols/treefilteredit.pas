@@ -67,7 +67,9 @@ type
     destructor Destroy; override;
     procedure StoreSelection; override;
     procedure RestoreSelection; override;
+    function GetExistingBranch(ARootNode: TTreeNode): TTreeFilterBranch;
     function GetBranch(ARootNode: TTreeNode): TTreeFilterBranch;
+    function DeleteBranch(ARootNode: TTreeNode): Boolean;
   public
     property ImageIndexDirectory: integer read fImageIndexDirectory write fImageIndexDirectory;
     property SelectionList: TStringList read fSelectionList;
@@ -399,24 +401,48 @@ begin
     fFilteredTreeview.Selected:=ANode;
 end;
 
-function TTreeFilterEdit.GetBranch(ARootNode: TTreeNode): TTreeFilterBranch;
-// Get a new or existing branch for a node.
+function TTreeFilterEdit.GetExistingBranch(ARootNode: TTreeNode): TTreeFilterBranch;
+// Get an existing branch for a given tree-node, or Nil if there is none.
 var
   i: Integer;
 begin
-  if not Assigned(fBranches) then
-    fBranches := TBranchList.Create;
   Result := Nil;
+  if not Assigned(fBranches) then Exit;
   for i := 0 to fBranches.Count-1 do
     if fBranches[i].fRootNode = ARootNode then begin
       Result := fBranches[i];
       Result.fOriginalData.Clear;
       Break;
     end;
+end;
+
+function TTreeFilterEdit.GetBranch(ARootNode: TTreeNode): TTreeFilterBranch;
+// Get a new or existing branch for a given tree-node.
+var
+  i: Integer;
+begin
+  if not Assigned(fBranches) then
+    fBranches := TBranchList.Create;
+  Result := GetExistingBranch(ARootNode);
   if Result = Nil then begin
     Result := TTreeFilterBranch.Create(Self, ARootNode);
     fBranches.Add(Result);
   end;
+end;
+
+function TTreeFilterEdit.DeleteBranch(ARootNode: TTreeNode): Boolean;
+// Delete the branch connected to a given root node. Returns True if found and deleted.
+var
+  i: Integer;
+begin
+  Result := False;
+  if not Assigned(fBranches) then Exit;
+  for i := 0 to fBranches.Count-1 do
+    if fBranches[i].fRootNode = ARootNode then begin
+      fBranches.Delete(i);
+      Result := True;
+      Break;
+    end;
 end;
 
 procedure TTreeFilterEdit.MoveNext;

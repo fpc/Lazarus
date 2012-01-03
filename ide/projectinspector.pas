@@ -704,8 +704,10 @@ begin
     end;
   end else begin
     // No removed dependencies -> delete the root node
-    if RemovedDependenciesNode<>nil then
+    if RemovedDependenciesNode<>nil then begin
+      FilterEdit.DeleteBranch(RemovedDependenciesNode);
       FreeThenNil(RemovedDependenciesNode); // ItemsTreeView.Items.Delete() ?
+    end;
   end;
 end;
 
