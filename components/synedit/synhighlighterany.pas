@@ -86,6 +86,8 @@ type
     procedure ReadSectionNames(asection:string;alist:TStrings);
   end;
 
+  { TSynAnySyn }
+
   TSynAnySyn = class(TSynCustomHighlighter)
   private
     fUserData:TIniList;
@@ -135,6 +137,7 @@ type
     procedure NullProc;
     procedure NumberProc;
     procedure RoundOpenProc;
+    procedure RoundCloseProc;
     procedure SlashProc;
     procedure SpaceProc;
     procedure StringProc;
@@ -390,6 +393,7 @@ begin
       #0: fProcTable[I] := {$ifdef FPC}@{$endif}NullProc;
       '0'..'9': fProcTable[I] := {$ifdef FPC}@{$endif}NumberProc;
       '(': fProcTable[I] := {$ifdef FPC}@{$endif}RoundOpenProc;
+      ')': fProcTable[I] := {$ifdef FPC}@{$endif}RoundCloseProc;
       '/': fProcTable[I] := {$ifdef FPC}@{$endif}SlashProc;
       #1..#9, #11, #12, #14..#32: fProcTable[I] := {$ifdef FPC}@{$endif}SpaceProc;
       else fProcTable[I] := {$ifdef FPC}@{$endif}UnknownProc;
@@ -692,6 +696,12 @@ begin
       end;
     end;
   end else fTokenId := tkSymbol;
+end;
+
+procedure TSynAnySyn.RoundCloseProc;
+begin
+  inc(Run);
+  FTokenID := tkSymbol;
 end;
 
 procedure TSynAnySyn.SlashProc;
