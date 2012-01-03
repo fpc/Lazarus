@@ -79,7 +79,9 @@ begin
       // TDlgSelectPrinter will setup directoy cups printer options
       // yet, TPrintDialog should return information about user choice
       // modifying fields accordingly.
-      
+
+      self.PrintRange:=dlg.PrintRange;
+
       // Page range. This migth get really complex because it's free enty
       //             textbox. To fill FromPage and ToPage we will use some
       //             simple rules.
