@@ -51,19 +51,16 @@
       </Item7>
     </Files>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="4">
+    <RequiredPkgs Count="3">
       <Item1>
-        <PackageName Value="FCL"/>
+        <PackageName Value="IDEIntf"/>
       </Item1>
       <Item2>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="SynEdit"/>
       </Item2>
       <Item3>
-        <PackageName Value="SynEdit"/>
-      </Item3>
-      <Item4>
         <PackageName Value="LCL"/>
-      </Item4>
+      </Item3>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
