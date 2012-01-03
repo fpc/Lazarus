@@ -369,7 +369,7 @@ type
                               SaveData, SaveSession: boolean;
                               UsePathDelim: TPathDelimSwitch);
     procedure UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
-    procedure UpdateUsageCount(TheUsage: TUnitUsage; const Factor: extended);
+    procedure UpdateUsageCount(TheUsage: TUnitUsage; const Factor: TDateTime);
     procedure UpdateSourceDirectoryReference;
 
     procedure SetSourceText(const SourceText: string); override;
@@ -800,6 +800,7 @@ type
     FUnitList: TFPList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
     FUseAsDefault: Boolean;
+    procedure ClearBuildModes;
     function GetAllEditorsInfo(Index: Integer): TUnitEditorInfo;
     function GetFirstAutoRevertLockedUnit: TUnitInfo;
     function GetFirstLoadedUnit: TUnitInfo;
@@ -887,7 +888,8 @@ type
     procedure GetUnitsChangedOnDisk(var AnUnitList: TFPList);
     function HasProjectInfoFileChangedOnDisk: boolean;
     procedure IgnoreProjectInfoFileOnDisk;
-    function ReadProject(const NewProjectInfoFile: string): TModalResult;
+    function ReadProject(const NewProjectInfoFile: string;
+                         ReadFlags: TProjectReadFlags = []): TModalResult;
     function WriteProject(ProjectWriteFlags: TProjectWriteFlags;
                           const OverrideProjectInfoFile: string): TModalResult;
     procedure UpdateExecutableType; override;
@@ -1112,7 +1114,8 @@ type
   
 const
   ResourceFileExt = '.lrs';
-  DefaultProjectCompilerOptionsFilename = 'compileroptions.xml';
+  DefaultProjectOptionsFilename = 'projectoptions.xml';
+  DefaultProjectCompilerOptionsFilename = 'compileroptions.xml'; // old way < 0.9.31
 
 var
   Project1: TProject = nil;// the main project
@@ -2074,7 +2077,7 @@ begin
 end;
 
 procedure TUnitInfo.UpdateUsageCount(TheUsage: TUnitUsage;
-  const Factor: extended);
+  const Factor: TDateTime);
 begin
   case TheUsage of
   uuIsPartOfProject: UpdateUsageCount(20,200,2*Factor);
@@ -2620,16 +2623,15 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
   
   procedure UpdateUsageCounts(const ConfigFilename: string);
   var
-    UnitUsageCount: extended;
+    UnitUsageCount: TDateTime;
     DiffTime: TDateTime;
     i: Integer;
   begin
     UnitUsageCount:=0;
     if CompareFileNames(ConfigFilename,fLastReadLPIFilename)=0 then begin
       DiffTime:=Now-fLastReadLPIFileDate;
-      if DiffTime>0 then begin
+      if DiffTime>0 then
         UnitUsageCount:= DiffTime*24; // one step every hour
-      end;
       fLastReadLPIFileDate:=Now;
     end;
     for i:=0 to UnitCount-1 do begin
@@ -2651,7 +2653,7 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
       if (pwfSaveOnlyProjectUnits in ProjectWriteFlags) then exit;
       if (not Units[i].Loaded) then begin
         if (not (pfSaveClosedUnits in Flags)) then exit;
-        if (pwfDontSaveClosedUnits in ProjectWriteFlags) then exit;
+        if (pwfSkipClosedUnits in ProjectWriteFlags) then exit;
         if Units[i].fUsageCount<=0 then exit;
       end;
     end;
@@ -2762,7 +2764,7 @@ begin
   CfgFilename:=SetDirSeparators(CfgFilename);
 
   CurSessionFilename := '';
-  if (not (pwfDoNotSaveSessionInfo in ProjectWriteFlags))
+  if (not (pwfSkipSeparateSessionInfo in ProjectWriteFlags))
   and (SessionStorage in [pssInProjectDir,pssInIDEConfig]) then begin
     // save session in separate file .lps
 
@@ -2775,11 +2777,12 @@ begin
   end;
 
   // first save the .lpi file
-  SaveSessionInfoInLPI:=(CurSessionFilename='')
-                        or (CompareFilenames(CurSessionFilename,CfgFilename)=0);
-  if (pwfDoNotSaveSessionInfo in ProjectWriteFlags)
+  if (pwfSkipSeparateSessionInfo in ProjectWriteFlags)
   or (SessionStorage=pssNone) then
-    SaveSessionInfoInLPI:=false;
+    SaveSessionInfoInLPI:=false
+  else
+    SaveSessionInfoInLPI:=(CurSessionFilename='')
+                          or (CompareFilenames(CurSessionFilename,CfgFilename)=0);
 
   // check if modified
   if not (pwfIgnoreModified in ProjectWriteFlags) then
@@ -2889,13 +2892,15 @@ begin
           SaveSessionInfo(XMLConfig,Path);
         end;
 
+        // notifiy hooks
         if Assigned(OnSaveProjectInfo) then begin
           CurFlags:=ProjectWriteFlags;
           if not SaveSessionInfoInLPI then
-            CurFlags:=CurFlags+[pwfDoNotSaveSessionInfo];
+            CurFlags:=CurFlags+[pwfSkipSeparateSessionInfo];
           OnSaveProjectInfo(Self,XMLConfig,CurFlags);
         end;
 
+        // save lpi to disk
         InvalidateFileStateCache;
         xmlconfig.Flush;
         Modified:=false;
@@ -2911,6 +2916,7 @@ begin
         end;
       end;
       if CompareFilenames(ProjectInfoFile,xmlconfig.Filename)=0 then begin
+        // update file buffer
         fProjectInfoFileBuffer:=CodeToolBoss.LoadFile(ProjectInfoFile,true,true);
         fProjectInfoFileDate:=FileAgeCached(ProjectInfoFile);
         if fProjectInfoFileBuffer<>nil then
@@ -2968,8 +2974,9 @@ begin
         // save session
         SaveSessionInfo(XMLConfig,Path);
 
+        // notifiy hooks
         if Assigned(OnSaveProjectInfo) then begin
-          CurFlags:=ProjectWriteFlags+[pwfDoNotSaveProjectInfo];
+          CurFlags:=ProjectWriteFlags+[pwfSkipProjectInfo];
           OnSaveProjectInfo(Self,XMLConfig,CurFlags);
         end;
 
@@ -3078,7 +3085,8 @@ end;
 {------------------------------------------------------------------------------
   TProject ReadProject
  ------------------------------------------------------------------------------}
-function TProject.ReadProject(const NewProjectInfoFile: string): TModalResult;
+function TProject.ReadProject(const NewProjectInfoFile: string;
+  ReadFlags: TProjectReadFlags): TModalResult;
 type
   TOldProjectType = (ptApplication, ptProgram, ptCustomProgram);
 const
@@ -3086,6 +3094,7 @@ const
       'Application', 'Program', 'Custom program'
     );
 var
+  Merge: boolean;
   FileVersion: Integer;
   NewMainUnitID: LongInt;
 
@@ -3101,6 +3110,11 @@ var
     MacroValsPath: String;
     ActiveIdentifier: String;
   begin
+    if Merge then begin
+      if not (prfMergeBuildModes in ReadFlags) then exit;
+      ClearBuildModes;
+    end;
+
     Cnt:=XMLConfig.GetValue(Path+'BuildModes/Count',0);
     //debugln(['LoadBuildModes Cnt=',Cnt,' LoadData=',LoadData]);
     if Cnt>0 then begin
@@ -3320,39 +3334,56 @@ var
   xmlconfig: TXMLConfig;
 begin
   Result := mrCancel;
+  Merge:=prfMerge in ReadFlags;
   BeginUpdate(true);
   try
-    Clear;
+    if Merge then begin
+      // read only parts of the lpi, keep other values
+      try
+        xmlconfig := TCodeBufXMLConfig.CreateWithCache(NewProjectInfoFile,true)
+      except
+        on E: Exception do begin
+          MessageDlg(lisUnableToReadLpi,
+               Format(lisUnableToReadTheProjectInfoFile, [#13, '"',NewProjectInfoFile, '"'])+#13
+               +E.Message
+              ,mtError,[mbOk],0);
+          Result:=mrCancel;
+          exit;
+        end;
+      end;
+    end else begin
+      // read the whole lpi, clear any old values
+      Clear;
+      ProjectInfoFile:=NewProjectInfoFile;
+      fProjectInfoFileBuffer:=CodeToolBoss.LoadFile(ProjectInfoFile,true,true);
+      fProjectInfoFileBufChangeStamp:=CTInvalidChangeStamp;
+      try
+        fProjectInfoFileDate:=FileAgeCached(ProjectInfoFile);
+        {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject A reading lpi');{$ENDIF}
+        if fProjectInfoFileBuffer=nil then
+          xmlconfig := TCodeBufXMLConfig.CreateWithCache(ProjectInfoFile,false)
+        else begin
+          xmlconfig := TCodeBufXMLConfig.CreateWithCache(ProjectInfoFile,false,true,
+                                                   fProjectInfoFileBuffer.Source);
+          fProjectInfoFileBufChangeStamp:=fProjectInfoFileBuffer.ChangeStep;
+        end;
+        {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject B done lpi');{$ENDIF}
+      except
+        on E: Exception do begin
+          MessageDlg(lisUnableToReadLpi,
+               Format(lisUnableToReadTheProjectInfoFile, [#13, '"',ProjectInfoFile, '"'])+#13
+               +E.Message
+              ,mtError,[mbOk],0);
+          Result:=mrCancel;
+          exit;
+        end;
+      end;
 
-    ProjectInfoFile:=NewProjectInfoFile;
-    fProjectInfoFileBuffer:=CodeToolBoss.LoadFile(ProjectInfoFile,true,true);
-    fProjectInfoFileBufChangeStamp:=CTInvalidChangeStamp;
-    try
-      fProjectInfoFileDate:=FileAgeCached(ProjectInfoFile);
-      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject A reading lpi');{$ENDIF}
-      if fProjectInfoFileBuffer=nil then
-        xmlconfig := TCodeBufXMLConfig.CreateWithCache(ProjectInfoFile,false)
-      else begin
-        xmlconfig := TCodeBufXMLConfig.CreateWithCache(ProjectInfoFile,false,true,
-                                                 fProjectInfoFileBuffer.Source);
-        fProjectInfoFileBufChangeStamp:=fProjectInfoFileBuffer.ChangeStep;
-      end;
-      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject B done lpi');{$ENDIF}
-    except
-      on E: Exception do begin
-        MessageDlg('Unable to read project',
-             Format(lisUnableToReadTheProjectInfoFile, [#13, '"',ProjectInfoFile, '"'])+#13
-             +E.Message
-            ,mtError,[mbOk],0);
-        Result:=mrCancel;
-        exit;
-      end;
+      fLastReadLPIFilename:=ProjectInfoFile;
+      fLastReadLPIFileDate:=Now;
+      NewMainUnitID:=-1;
     end;
 
-    fLastReadLPIFilename:=ProjectInfoFile;
-    fLastReadLPIFileDate:=Now;
-
-    NewMainUnitID:=-1;
     try
       Path:='ProjectOptions/';
       // get format
@@ -3362,19 +3393,21 @@ begin
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
       FileVersion:= XMLConfig.GetValue(Path+'Version/Value',0);
-      if (Fileversion=0) and (xmlconfig.GetValue(Path+'Units/Count',0)=0) then
+      if (Fileversion=0) and (not Merge)
+      and (xmlconfig.GetValue(Path+'Units/Count',0)=0) then
       begin
         if MessageDlg(lisStrangeLpiFile,
           Format(lisTheFileDoesNotLookLikeALpiFile, [ProjectInfoFile]),
           mtConfirmation,[mbIgnore,mbAbort],0)<>mrIgnore then exit;
       end;
 
-      LoadFlags(XMLConfig,Path);
-      
-      SessionStorage:=StrToProjectSessionStorage(
+      if not Merge then begin
+        LoadFlags(XMLConfig,Path);
+        SessionStorage:=StrToProjectSessionStorage(
                         XMLConfig.GetValue(Path+'General/SessionStorage/Value',
                      ProjectSessionStorageNames[DefaultProjectSessionStorage]));
-      //DebugLn('TProject.ReadProject SessionStorage=',dbgs(ord(SessionStorage)),' ProjectSessionFile=',ProjectSessionFile);
+        //DebugLn('TProject.ReadProject SessionStorage=',dbgs(ord(SessionStorage)),' ProjectSessionFile=',ProjectSessionFile);
+      end;
 
       // load properties
       // Note: in FileVersion<9 the default value was -1
@@ -3382,59 +3415,73 @@ begin
       //   added to the lpi.
       //   Changing the default value to 0 avoids the redundancy and
       //   automatically fixes broken lpi files.
-      NewMainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', 0);
-      AutoCreateForms := xmlconfig.GetValue(
-         Path+'General/AutoCreateForms/Value', true);
-      Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
-      UseAppBundle := xmlconfig.GetValue(Path+'General/UseAppBundle/Value', True);
-
-      // Lazdoc
-      LazDocPaths := SwitchPathDelims(xmlconfig.GetValue(Path+'LazDoc/Paths', ''),
-                             fPathDelimChanged);
-
-      // i18n
-      if FileVersion<6 then begin
-        POOutputDirectory := SwitchPathDelims(
-                   xmlconfig.GetValue(Path+'RST/OutDir', ''),fPathDelimChanged);
-        EnableI18N := POOutputDirectory <> '';
-      end else begin
-        EnableI18N := xmlconfig.GetValue(Path+'i18n/EnableI18N/Value', False);
-        EnableI18NForLFM := xmlconfig.GetValue(Path+'i18n/EnableI18N/LFM', True);
-        POOutputDirectory := SwitchPathDelims(
-             xmlconfig.GetValue(Path+'i18n/OutDir/Value', ''),fPathDelimChanged);
+      if not Merge then begin
+        NewMainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', 0);
+        Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
+        UseAppBundle := xmlconfig.GetValue(Path+'General/UseAppBundle/Value', True);
+        AutoCreateForms := xmlconfig.GetValue(
+           Path+'General/AutoCreateForms/Value', true);
       end;
 
-      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
+      // Lazdoc
+      if not Merge then begin
+        LazDocPaths := SwitchPathDelims(xmlconfig.GetValue(Path+'LazDoc/Paths', ''),
+                               fPathDelimChanged);
+      end;
+
+      // i18n
+      if not Merge then begin
+        if FileVersion<6 then begin
+          POOutputDirectory := SwitchPathDelims(
+                     xmlconfig.GetValue(Path+'RST/OutDir', ''),fPathDelimChanged);
+          EnableI18N := POOutputDirectory <> '';
+        end else begin
+          EnableI18N := xmlconfig.GetValue(Path+'i18n/EnableI18N/Value', False);
+          EnableI18NForLFM := xmlconfig.GetValue(Path+'i18n/EnableI18N/LFM', True);
+          POOutputDirectory := SwitchPathDelims(
+               xmlconfig.GetValue(Path+'i18n/OutDir/Value', ''),fPathDelimChanged);
+        end;
+        {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
+      end;
+
       // load MacroValues and compiler options
       LoadBuildModes(XMLConfig,Path,true);
 
       // Resources
-      ProjResources.ReadFromProjectFile(xmlconfig, Path);
+      if not Merge then
+        ProjResources.ReadFromProjectFile(xmlconfig, Path);
 
       // load custom data
-      LoadStringToStringTree(xmlconfig,CustomData,Path+'CustomData/');
+      if not Merge then
+        LoadStringToStringTree(xmlconfig,CustomData,Path+'CustomData/');
       
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
-      CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
-                                                               ProjectDirectory;
-      CodeToolBoss.DefineTree.ClearCache;
-      
+      if not Merge then begin
+        CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
+                                                                 ProjectDirectory;
+        CodeToolBoss.DefineTree.ClearCache;
+      end;
+
       // load the dependencies
-      LoadPkgDependencyList(XMLConfig,Path+'RequiredPackages/',
+      if not Merge then
+        LoadPkgDependencyList(XMLConfig,Path+'RequiredPackages/',
                           FFirstRequiredDependency,pdlRequires,Self,true,false);
 
       // load the Run and Build parameter Options
-      RunParameterOptions.Load(xmlconfig,Path,fPathDelimChanged);
+      if not Merge then
+        RunParameterOptions.Load(xmlconfig,Path,fPathDelimChanged);
 
       // load the Publish Options
-      PublishOptions.LoadFromXMLConfig(xmlconfig,
+      if not Merge then
+        PublishOptions.LoadFromXMLConfig(xmlconfig,
                                        Path+'PublishOptions/',fPathDelimChanged);
 
       // load session info
-      LoadSessionInfo(XMLConfig,Path,false);
+      if not Merge then
+        LoadSessionInfo(XMLConfig,Path,false);
 
       // call hooks to read their info (e.g. DebugBoss)
-      if Assigned(OnLoadProjectInfo) then begin
+      if (not Merge) and Assigned(OnLoadProjectInfo) then begin
         OnLoadProjectInfo(Self,XMLConfig,false);
       end;
     finally
@@ -3449,7 +3496,8 @@ begin
     end;
 
     // load session file (if available)
-    if (SessionStorage in [pssInProjectDir,pssInIDEConfig])
+    if (not Merge)
+    and (SessionStorage in [pssInProjectDir,pssInIDEConfig])
     and (CompareFilenames(ProjectInfoFile,ProjectSessionFile)<>0) then begin
       if FileExistsUTF8(ProjectSessionFile) then begin
         //DebugLn('TProject.ReadProject loading Session ProjectSessionFile=',ProjectSessionFile);
@@ -3694,10 +3742,7 @@ begin
   FEnableI18N:=false;
   FEnableI18NForLFM:=true;
   FBookmarks.Clear;
-  ActiveBuildMode:=nil;
-  FBuildModes.Clear;
-  if not fDestroying then
-    ActiveBuildMode:=FBuildModes.Add('default');
+  ClearBuildModes;
   FDefineTemplates.Clear;
   FJumpHistory.Clear;
   fMainUnitID := -1;
@@ -4253,6 +4298,14 @@ end;
 function TProject.GetAllEditorsInfo(Index: Integer): TUnitEditorInfo;
 begin
   Result := FAllEditorsInfoList[Index];
+end;
+
+procedure TProject.ClearBuildModes;
+begin
+  ActiveBuildMode:=nil;
+  FBuildModes.Clear;
+  if not fDestroying then
+    ActiveBuildMode:=FBuildModes.Add('default');
 end;
 
 function TProject.GetFirstUnitWithComponent: TUnitInfo;

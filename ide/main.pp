@@ -882,7 +882,7 @@ type
       ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
 
     // project(s)
-    procedure DoLoadDefaultCompilerOptions(AProject: TProject);
+    procedure DoMergeDefaultProjectOptions(AProject: TProject);
     function DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult; override;
     function DoSaveProject(Flags: TSaveFlags): TModalResult; override;
     function DoCloseProject: TModalResult; override;
@@ -5130,8 +5130,8 @@ begin
   MainBuildBoss.SetBuildTargetProject1(false);
   if (not Restore) and AProject.UseAsDefault then
   begin
-    aFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectCompilerOptionsFilename;
-    AProject.CompilerOptions.SaveToFile(aFilename);
+    aFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectOptionsFilename;
+    AProject.WriteProject([pwfSkipSeparateSessionInfo,pwfIgnoreModified],aFilename);
   end;
   if Restore then
     AProject.RestoreSession;
@@ -10503,17 +10503,27 @@ begin
   end;
 end;
 
-procedure TMainIDE.DoLoadDefaultCompilerOptions(AProject: TProject);
+procedure TMainIDE.DoMergeDefaultProjectOptions(AProject: TProject);
 var
   AFilename: String;
 begin
-  // load default compiler options if exists
-  AFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectCompilerOptionsFilename;
+  // load default project options if exists
+  AFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectOptionsFilename;
   if not FileExistsUTF8(AFilename) then
-    CopySecondaryConfigFile(DefaultProjectCompilerOptionsFilename);
-  if not FileExistsUTF8(AFilename) then exit;
-  if AProject.CompilerOptions.LoadFromFile(AFilename)<>mrOk then
-    DebugLn(['TMainIDE.DoLoadDefaultCompilerOptions failed']);
+    CopySecondaryConfigFile(DefaultProjectOptionsFilename);
+  if FileExistsUTF8(AFilename) then begin
+    if AProject.ReadProject(AFilename,[prfMerge,prfMergeBuildModes])<>mrOk then
+      DebugLn(['TMainIDE.DoLoadDefaultCompilerOptions failed']);
+  end else begin
+    // old way (<0.9.31)
+    // load default compiler options if exists
+    AFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectCompilerOptionsFilename;
+    if not FileExistsUTF8(AFilename) then
+      CopySecondaryConfigFile(DefaultProjectCompilerOptionsFilename);
+    if not FileExistsUTF8(AFilename) then exit;
+    if AProject.CompilerOptions.LoadFromFile(AFilename)<>mrOk then
+      DebugLn(['TMainIDE.DoLoadDefaultCompilerOptions failed']);
+  end;
 end;
 
 function TMainIDE.DoNewProject(ProjectDesc: TProjectDescriptor):TModalResult;
@@ -10567,7 +10577,7 @@ begin
     try
       Project1.CompilerOptions.CompilerPath:='$(CompPath)';
       if pfUseDefaultCompilerOptions in Project1.Flags then begin
-        DoLoadDefaultCompilerOptions(Project1);
+        DoMergeDefaultProjectOptions(Project1);
         Project1.Flags:=Project1.Flags-[pfUseDefaultCompilerOptions];
       end;
       Project1.AutoAddOutputDirToIncPath;
@@ -11121,7 +11131,7 @@ begin
     MainUnitInfo:=Project1.MainUnitInfo;
     MainUnitInfo.Source:=ProgramBuf;
     Project1.ProjectInfoFile:=ChangeFileExt(ProgramBuf.Filename,'.lpi');
-    DoLoadDefaultCompilerOptions(Project1);
+    DoMergeDefaultProjectOptions(Project1);
     UpdateCaption;
     IncreaseCompilerParseStamp;
 
@@ -13290,8 +13300,7 @@ begin
     NewProjectFilename:=DestDir+ExtractFilename(CurProject.ProjectInfoFile);
     DeleteFileUTF8(NewProjectFilename);
     Result:=CurProject.WriteProject(CurProject.PublishOptions.WriteFlags
-           +[pwfSkipDebuggerSettings,pwfSkipJumpPoints,pwfDoNotSaveSessionInfo,
-             pwfIgnoreModified],
+           +pwfSkipSessionInfo+[pwfIgnoreModified],
            NewProjectFilename);
     if Result<>mrOk then begin
       debugln('TMainIDE.DoPublishModule CurProject.WriteProject failed');

@@ -672,6 +672,7 @@ resourcestring
   lisUnableToReadFile2 = 'Unable to read file %s%s%s!';
   lisUnableToReadTheProjectInfoFile = 'Unable to read the project info file%s%'
     +'s%s%s.';
+  lisUnableToReadLpi = 'Unable to read lpi';
   lisStrangeLpiFile = 'Strange lpi file';
   lisTheFileDoesNotLookLikeALpiFile = 'The file %s does not look like a lpi file.';
   lisUnableToReadTheProjectInfoFile2 = 'Unable to read the project info file%s%s%s%s.';

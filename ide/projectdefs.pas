@@ -46,21 +46,26 @@ uses
 type
   TOnLoadSaveFilename = procedure(var Filename:string; Load:boolean) of object;
 
+  TProjectReadFlag = (
+    prfMerge,
+    prfMergeBuildModes
+    );
+  TProjectReadFlags = set of TProjectReadFlag;
+
   TProjectWriteFlag = (
-    pwfDontSaveClosedUnits,
+    pwfSkipClosedUnits,         // skip history data
     pwfSaveOnlyProjectUnits,
     pwfSkipDebuggerSettings,
     pwfSkipJumpPoints,
-    pwfDoNotSaveProjectInfo,
-    pwfDoNotSaveSessionInfo,
+    pwfSkipProjectInfo,         // do not write lpi file
+    pwfSkipSeparateSessionInfo, // do not write lps file
     pwfIgnoreModified  // write always even if nothing modified (e.g. to upgrade to a newer lpi version)
     );
   TProjectWriteFlags = set of TProjectWriteFlag;
-
 const
-  pwfSkipSessionInfo = [pwfSaveOnlyProjectUnits,pwfSkipDebuggerSettings,
-                        pwfSkipJumpPoints];
-  
+  pwfSkipSessionInfo = [pwfSkipSeparateSessionInfo,pwfSaveOnlyProjectUnits,
+                        pwfSkipDebuggerSettings,pwfSkipJumpPoints];
+
 type
   TNewUnitType = (
     nuEmpty,      // no code
@@ -881,7 +886,7 @@ begin
   if not SaveEditorInfoOfNonProjectFiles then
     Include(Result,pwfSaveOnlyProjectUnits);
   if not SaveClosedEditorFilesInfo then
-    Include(Result,pwfDontSaveClosedUnits);
+    Include(Result,pwfSkipClosedUnits);
 end;
 
 

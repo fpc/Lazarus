@@ -1847,7 +1847,7 @@ end;
 procedure TDebugManager.SaveProjectSpecificInfo(XMLConfig: TXMLConfig;
   Flags: TProjectWriteFlags);
 begin
-  if not (pwfDoNotSaveSessionInfo in Flags) then 
+  if not (pwfSkipSeparateSessionInfo in Flags) then
   begin
     FBreakPointGroups.SaveToXMLConfig(XMLConfig,
                                       'Debugging/'+XMLBreakPointGroupsNode+'/');
@@ -1855,7 +1855,7 @@ begin
                                  @Project1.ConvertToLPIFilename);
     FWatches.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLWatchesNode+'/');
   end;
-  if not (pwfDoNotSaveProjectInfo in Flags) then
+  if not (pwfSkipProjectInfo in Flags) then
   begin
     // exceptions are not part of the project info (#0015256)
     FExceptions.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLExceptionsNode+'/');
