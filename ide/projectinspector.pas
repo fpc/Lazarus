@@ -155,7 +155,6 @@ type
     function ChooseImageIndex(Str: String; Data: TObject; var AIsEnabled: Boolean): Integer;
     procedure UpdateProjectFiles(Immediately: boolean);
     procedure UpdateRequiredPackages;
-    procedure UpdateRemovedRequiredPackages;
     procedure OnProjectBeginUpdate(Sender: TObject);
     procedure OnProjectEndUpdate(Sender: TObject; ProjectChanged: boolean);
   protected
@@ -657,37 +656,31 @@ end;
 procedure TProjectInspectorForm.UpdateRequiredPackages;
 var
   Dependency: TPkgDependency;
-  RequiredBranch: TTreeFilterBranch;
+  RequiredBranch, RemovedBranch: TTreeFilterBranch;
   NodeText, AFilename: String;
 begin
-  RequiredBranch:=FilterEdit.GetBranch(DependenciesNode);
-  if LazProject<>nil then begin
-    Dependency:=LazProject.FirstRequiredDependency;
-    while Dependency<>nil do begin
-      // Figure out the item's caption
-      NodeText:=Dependency.AsString;
-      if Dependency.DefaultFilename<>'' then begin
-        AFilename:=Dependency.MakeFilenameRelativeToOwner(Dependency.DefaultFilename);
-        if Dependency.PreferDefaultFilename then
-          NodeText:=Format(lisCEIn, [NodeText,AFilename])  // like the 'in' keyword in the uses section
-        else
-          NodeText:=Format(lisPckEditDefault, [NodeText, AFilename]);
-      end;
-      // Add the required package under the branch
-      RequiredBranch.AddNodeData(NodeText, Dependency);
-      Dependency:=Dependency.NextRequiresDependency;
-    end;
-  end;
-end;
+  if LazProject=nil then exit;
 
-procedure TProjectInspectorForm.UpdateRemovedRequiredPackages;
-var
-  Dependency: TPkgDependency;
-  RemovedBranch: TTreeFilterBranch;
-begin
-  Dependency:=Nil;
-  if LazProject<>nil then
-    Dependency:=LazProject.FirstRemovedDependency;
+  // required packages
+  RequiredBranch:=FilterEdit.GetBranch(DependenciesNode);
+  Dependency:=LazProject.FirstRequiredDependency;
+  while Dependency<>nil do begin
+    // Figure out the item's caption
+    NodeText:=Dependency.AsString;
+    if Dependency.DefaultFilename<>'' then begin
+      AFilename:=Dependency.MakeFilenameRelativeToOwner(Dependency.DefaultFilename);
+      if Dependency.PreferDefaultFilename then
+        NodeText:=Format(lisCEIn, [NodeText,AFilename])  // like the 'in' keyword in the uses section
+      else
+        NodeText:=Format(lisPckEditDefault, [NodeText, AFilename]);
+    end;
+    // Add the required package under the branch
+    RequiredBranch.AddNodeData(NodeText, Dependency);
+    Dependency:=Dependency.NextRequiresDependency;
+  end;
+
+  // removed required packages
+  Dependency:=LazProject.FirstRemovedDependency;
   if Dependency<>nil then begin
     // Create root node for removed dependencies if not done yet.
     if RemovedDependenciesNode=nil then begin
@@ -895,7 +888,6 @@ begin
   ItemsTreeView.BeginUpdate;
   UpdateProjectFiles(true);
   UpdateRequiredPackages;
-  UpdateRemovedRequiredPackages;
   ItemsTreeView.EndUpdate;
 end;
 
