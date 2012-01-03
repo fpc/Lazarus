@@ -435,7 +435,6 @@ type
     fInheritedOptParseStamps: integer;
     FParsedOpts: TParsedCompilerOptions;
     FStorePathDelim: TPathDelimSwitch;
-    FUseAsDefault: Boolean;
 
     // Compilation
     fExecuteBefore: TCompilationToolOptions;
@@ -577,9 +576,6 @@ type
     property BaseDirectory: string read GetBaseDirectory write SetBaseDirectory;
     property DefaultMakeOptionsFlags: TCompilerCmdLineOptions
                  read FDefaultMakeOptionsFlags write SetDefaultMakeOptionsFlags;
-
-    // for dialog only (used to store options once)
-    property UseAsDefault: Boolean read FUseAsDefault write FUseAsDefault;
 
     // stored properties
     property StorePathDelim: TPathDelimSwitch read FStorePathDelim write FStorePathDelim;

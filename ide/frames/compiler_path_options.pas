@@ -776,10 +776,14 @@ begin
 end;
 
 procedure TCompilerPathOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+var
+  ProjCompOpts: TProjectCompilerOptions;
 begin
   if AOptions is TProjectCompilerOptions then begin
-    TProjectCompilerOptions(AOptions).TargetFilename:=ProjTargetFileEdit.Text;
-    TProjectCompilerOptions(AOptions).TargetFilenameApplyConventions:=ProjTargetApplyConventionsCheckBox.Checked;
+    ProjCompOpts:=TProjectCompilerOptions(AOptions);
+    ProjCompOpts.TargetFilename:=ProjTargetFileEdit.Text;
+    ProjCompOpts.TargetFilenameApplyConventions:=ProjTargetApplyConventionsCheckBox.Checked;
+    ProjCompOpts.LazProject.UseAsDefault := chkUseAsDefault.Checked;
   end;
 
   with AOptions as TBaseCompilerOptions do
@@ -790,7 +794,6 @@ begin
     SrcPath := OtherSourcesEdit.Text;
     UnitOutputDirectory := UnitOutputDirEdit.Text;
     DebugPath := DebugPathEdit.Text;
-    UseAsDefault := chkUseAsDefault.Checked;
   end;
 end;
 

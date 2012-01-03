@@ -799,6 +799,7 @@ type
     FStorePathDelim: TPathDelimSwitch;
     FUnitList: TFPList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
+    FUseAsDefault: Boolean;
     function GetAllEditorsInfo(Index: Integer): TUnitEditorInfo;
     function GetFirstAutoRevertLockedUnit: TUnitInfo;
     function GetFirstLoadedUnit: TUnitInfo;
@@ -1105,6 +1106,7 @@ type
                                  read GetTargetFilename write SetTargetFilename;
     property Units[Index: integer]: TUnitInfo read GetUnits;
     property UpdateLock: integer read FUpdateLock;
+    property UseAsDefault: Boolean read FUseAsDefault write FUseAsDefault; // for dialog only (used to store options once)
   end;
 
   

@@ -5019,7 +5019,7 @@ begin
   AProject.BackupSession;
   AProject.BackupBuildModes;
   AProject.UpdateExecutableType;
-  AProject.CompilerOptions.UseAsDefault := False;
+  AProject.UseAsDefault := False;
 end;
 
 procedure TMainIDE.DoProjectOptionsAfterWrite(Sender: TObject; Restore: boolean);
@@ -5128,7 +5128,7 @@ begin
     AProject.RestoreBuildModes;
   IncreaseCompilerParseStamp;
   MainBuildBoss.SetBuildTargetProject1(false);
-  if (not Restore) and AProject.CompilerOptions.UseAsDefault then
+  if (not Restore) and AProject.UseAsDefault then
   begin
     aFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectCompilerOptionsFilename;
     AProject.CompilerOptions.SaveToFile(aFilename);
@@ -10559,7 +10559,7 @@ begin
   CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
     VirtualDirectory;
 
-  // create new project (TProject will automatically create the mainunit)
+  // create new project
 
   Project1:=CreateProjectObject(ProjectDesc,ProjectDescriptorProgram);
   try
