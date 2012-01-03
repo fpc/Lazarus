@@ -153,8 +153,16 @@ msgstr ""
 msgid "Debugger Directory"
 msgstr ""
 
+#: codetoolsstrconsts.ctsdefaultancestornotfound
+msgid "default ancestor %s not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdefaultclassancestortobjectnotfound
 msgid "default class ancestor TObject not found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultdispinterfaceancestoridispatchnotfound
+msgid "default dispinterface ancestor IDispatch not found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsdefaultfpcsource2operatingsystem
@@ -179,6 +187,10 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsdefaultinterfaceancestoriinterfacenotfound
 msgid "default interface ancestor IInterface not found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultjavaclassancestorjlobjectnotfound
+msgid "default java class ancestor JLObject not found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound

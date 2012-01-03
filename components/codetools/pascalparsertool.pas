@@ -444,7 +444,7 @@ begin
   'F':
     case UpChars[p[1]] of
     'U': if CompareSrcIdentifiers(p,'FUNCTION') then exit(KeyWordFuncClassMethod);
-    'I': if CompareSrcIdentifiers(p,'FINAL') and (Scanner.Values.IsDefined('CPUJVM'))
+    'I': if CompareSrcIdentifiers(p,'FINAL') and Scanner.Values.IsDefined('CPUJVM')
          then exit(KeyWordFuncClassFinal);
     end;
   'P':

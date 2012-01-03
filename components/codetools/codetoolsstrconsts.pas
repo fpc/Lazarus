@@ -136,6 +136,11 @@ ResourceString
   ctsDefaultClassAncestorTObjectNotFound = 'default class ancestor TObject not found';
   ctsDefaultInterfaceAncestorIInterfaceNotFound =
     'default interface ancestor IInterface not found';
+  ctsDefaultDispinterfaceAncestorIDispatchNotFound = 'default dispinterface '
+    +'ancestor IDispatch not found';
+  ctsDefaultJavaClassAncestorJLObjectNotFound = 'default java class ancestor '
+    +'JLObject not found';
+  ctsDefaultAncestorNotFound = 'default ancestor %s not found';
   ctsExprTypeMustBeClassOrRecord = 'expression type must be class or record type';
   ctsClassWithoutName = 'class without name';
   ctsBinaryOperator = 'binary operator';

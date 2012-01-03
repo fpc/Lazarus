@@ -4147,8 +4147,24 @@ function TFindDeclarationTool.FindDefaultAncestorOfClass(
 var
   OldInput: TFindDeclarationInput;
   AncestorNode, ClassIdentNode: TCodeTreeNode;
-  SearchBaseClass: boolean;
   AncestorContext: TFindContext;
+  BaseClassName: PChar;
+
+  procedure RaiseBaseClassNotFound;
+  begin
+    MoveCursorToNodeStart(ClassNode);
+    if BaseClassName='TObject' then
+      RaiseException(ctsDefaultClassAncestorTObjectNotFound)
+    else if BaseClassName='IInterface' then
+      RaiseException(ctsDefaultInterfaceAncestorIInterfaceNotFound)
+    else if BaseClassName='IDispatch' then
+      RaiseException(ctsDefaultDispinterfaceAncestorIDispatchNotFound)
+    else if BaseClassName='JLObject' then
+      RaiseException(ctsDefaultJavaClassAncestorJLObjectNotFound)
+    else
+      RaiseException(Format(ctsDefaultAncestorNotFound, [BaseClassName]))
+  end;
+
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(ClassNode);{$ENDIF}
   if (ClassNode=nil) or (not (ClassNode.Desc in AllClasses))
@@ -4167,62 +4183,44 @@ begin
   begin
     ClassIdentNode:=nil;
   end;
+  if ClassIdentNode<>nil then exit;
+  BaseClassName:=nil;
   if ClassNode.Desc=ctnClass then begin
-    // if this class is not TObject, TObject is class ancestor
-    SearchBaseClass:=(ClassIdentNode=nil)
-              or (not CompareSrcIdentifiers(ClassIdentNode.StartPos,'TObject'));
+    if Scanner.Values.IsDefined('CPUJVM') then
+      BaseClassName:='JLObject'
+    else
+      BaseClassName:='TObject';
   end else if ClassNode.Desc=ctnDispinterface then begin
     // default interface is IDispatch
-    SearchBaseClass:=(ClassIdentNode=nil)
-            or (not CompareSrcIdentifiers(ClassIdentNode.StartPos,'IDispatch'));
+    BaseClassName:='IDispatch';
   end else if ClassNode.Desc in AllClassInterfaces then begin
     // Delphi has as default interface IInterface
     // FPC has as default interface IUnknown and an alias IInterface = IUnknown
-    SearchBaseClass:=(ClassIdentNode=nil)
-         or   ((not CompareSrcIdentifiers(ClassIdentNode.StartPos,'IInterface'))
-           and (not CompareSrcIdentifiers(ClassIdentNode.StartPos,'IUnknown')));
+    if CompareSrcIdentifiers(ClassIdentNode.StartPos,'IUnknown') then exit;
+    BaseClassName:='IInterface';
   end else
     exit; // has no default ancestor (e.g. record)
-  if not SearchBaseClass then exit;
+  if CompareSrcIdentifiers(ClassIdentNode.StartPos,BaseClassName) then exit;
 
   {$IFDEF ShowTriedContexts}
   DebugLn('[TFindDeclarationTool.FindAncestorOfClass] ',
-  ' search default ancestor class');
+  ' search default ancestor class '+BaseClassName);
   {$ENDIF}
 
-  // search ancestor
+  // search default ancestor
   Params.Save(OldInput);
   Params.Flags:=[fdfSearchInParentNodes,fdfIgnoreCurContextNode,
                  fdfExceptionOnNotFound]
                 +(fdfGlobals*Params.Flags)
                 -[fdfTopLvlResolving];
-  if ClassNode.Desc=ctnClass then
-    Params.SetIdentifier(Self,'TObject',nil)
-  else if ClassNode.Desc=ctnClassInterface then
-    Params.SetIdentifier(Self,'IInterface',nil)
-  else if ClassNode.Desc=ctnDispinterface then
-    Params.SetIdentifier(Self,'IDispatch',nil)
-  else
-    exit;
+  Params.SetIdentifier(Self,BaseClassName,nil);
   Params.ContextNode:=ClassNode;
-  if not FindIdentifierInContext(Params) then begin
-    MoveCursorToNodeStart(ClassNode);
-    if ClassNode.Desc=ctnClass then
-      RaiseException(ctsDefaultClassAncestorTObjectNotFound)
-    else
-      RaiseException(ctsDefaultInterfaceAncestorIInterfaceNotFound);
-    exit;
-  end;
+  if not FindIdentifierInContext(Params) then
+    RaiseBaseClassNotFound;
 
   // check result
   if not (Params.NewNode.Desc in [ctnTypeDefinition,ctnGenericType]) then
-  begin
-    MoveCursorToNodeStart(ClassNode);
-    if ClassNode.Desc=ctnClass then
-      RaiseException(ctsDefaultClassAncestorTObjectNotFound)
-    else
-      RaiseException(ctsDefaultInterfaceAncestorIInterfaceNotFound);
-  end;
+    RaiseBaseClassNotFound;
 
   // search ancestor class context
   if FindClassContext then begin
@@ -4234,13 +4232,8 @@ begin
 
     // check result
     if not (Params.NewNode.Desc in [ctnClass,ctnClassInterface])
-    then begin
-      MoveCursorToNodeStart(ClassNode);
-      if ClassNode.Desc=ctnClass then
-        RaiseException(ctsDefaultClassAncestorTObjectNotFound)
-      else
-        RaiseException(ctsDefaultInterfaceAncestorIInterfaceNotFound);
-    end;
+    then
+      RaiseBaseClassNotFound;
   end;
   Result:=true;
   Params.Load(OldInput,true);
