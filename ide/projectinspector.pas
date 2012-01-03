@@ -78,7 +78,6 @@ type
   TProjectInspectorFlag = (
     pifAllChanged,
     pifItemsChanged,
-    pifFilesChanged,
     pifButtonsChanged,
     pifTitleChanged
     );
@@ -153,7 +152,7 @@ type
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
     function ChooseImageIndex(Str: String; Data: TObject; var AIsEnabled: Boolean): Integer;
-    procedure UpdateProjectFiles(Immediately: boolean);
+    procedure UpdateProjectFiles;
     procedure UpdateRequiredPackages;
     procedure OnProjectBeginUpdate(Sender: TObject);
     procedure OnProjectEndUpdate(Sender: TObject; ProjectChanged: boolean);
@@ -479,7 +478,7 @@ begin
   end;
   if HasChanged then begin
     LazProject.Modified:=true;
-    UpdateProjectFiles(false);
+    UpdateProjectFiles;
   end;
 end;
 
@@ -624,18 +623,12 @@ begin
   end;
 end;
 
-procedure TProjectInspectorForm.UpdateProjectFiles(Immediately: boolean);
+procedure TProjectInspectorForm.UpdateProjectFiles;
 var
   CurFile: TUnitInfo;
   FilesBranch: TTreeFilterBranch;
   Filename: String;
 begin
-  if (not Immediately) or (FUpdateLock>0) or (not Visible) then begin
-    Include(FFlags,pifFilesChanged);
-    IdleConnected:=true;
-    exit;
-  end;
-  Exclude(FFlags,pifFilesChanged);
   if LazProject=nil then Exit;
   FilesBranch:=FilterEdit.GetBranch(FFilesNode);
   FilterEdit.SelectedPart:=FNextSelectedPart;
@@ -732,8 +725,6 @@ begin
     UpdateAll(true)
   else if pifItemsChanged in FFlags then
     UpdateItems(true)
-  else if pifFilesChanged in FFlags then
-    UpdateProjectFiles(true)
   else if pifTitleChanged in FFlags then
     UpdateTitle
   else if pifButtonsChanged in FFlags then
@@ -886,7 +877,7 @@ begin
   end;
   Exclude(FFlags,pifItemsChanged);
   ItemsTreeView.BeginUpdate;
-  UpdateProjectFiles(true);
+  UpdateProjectFiles;
   UpdateRequiredPackages;
   ItemsTreeView.EndUpdate;
 end;
