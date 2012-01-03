@@ -166,6 +166,8 @@ begin
       Add('morphos');
       Add('embedded');
       Add('symbian');
+      Add('java');
+      Add('android');
     end;
     ItemIndex := 0;
   end;
@@ -183,6 +185,9 @@ begin
       Add('powerpc');
       Add('sparc');
       Add('x86_64');
+      Add('mipsel');
+      Add('mips');
+      Add('jvm');
     end;
     ItemIndex := 0;
   end;
