@@ -1644,7 +1644,6 @@ var
   CurFile: TPkgFile;
   FilesBranch, RemovedBranch: TTreeFilterBranch;
   Filename: String;
-  ena: Boolean;
 begin
   if LazPackage=nil then exit;
 
