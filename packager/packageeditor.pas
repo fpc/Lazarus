@@ -1642,12 +1642,12 @@ var
   CurFile: TPkgFile;
   CurNode: TTreeNode;
   NextNode: TTreeNode;
-  FilteredBranch: TBranch;
+  FilesBranch: TTreeFilterBranch;
   Filename: String;
   ena: Boolean;
 begin
   if LazPackage=nil then exit;
-  FilteredBranch := FilterEdit.GetBranch(FFilesNode);
+  FilesBranch:=FilterEdit.GetBranch(FFilesNode);
   FilterEdit.SelectedPart:=FNextSelectedPart;
   FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
   FilterEdit.SortData:=SortAlphabetically;
@@ -1657,7 +1657,7 @@ begin
     CurFile:=LazPackage.Files[i];
     Filename:=CurFile.GetShortFilename(true);
     if Filename<>'' then
-      FilteredBranch.AddNodeData(Filename, CurFile, CurFile.Filename);
+      FilesBranch.AddNodeData(Filename, CurFile, CurFile.Filename);
   end;
   FilterEdit.InvalidateFilter;               // Data is shown by FilterEdit.
 
@@ -1695,14 +1695,14 @@ var
   CurNode: TTreeNode;
   CurDependency: TPkgDependency;
   NextNode: TTreeNode;
-  FilteredBranch: TBranch;
+  RequiredBranch: TTreeFilterBranch;
   CurNodeText, aFilename: String;
 begin
   if LazPackage=nil then exit;
   FilesTreeView.BeginUpdate;
   
   // required packages
-  FilteredBranch := FilterEdit.GetBranch(FRequiredPackagesNode);
+  RequiredBranch:=FilterEdit.GetBranch(FRequiredPackagesNode);
   FilterEdit.SelectedPart:=FNextSelectedPart;
   CurDependency:=LazPackage.FirstRequiredDependency;
   while CurDependency<>nil do begin
@@ -1714,11 +1714,10 @@ begin
       else
         CurNodeText:=Format(lisPckEditDefault, [CurNodeText, aFilename]);
     end;
-    FilteredBranch.AddNodeData(CurNodeText, CurDependency);
+    RequiredBranch.AddNodeData(CurNodeText, CurDependency);
     CurDependency:=CurDependency.NextRequiresDependency;
   end;
-//  FRequiredPackagesNode.Expanded:=true;
-  
+
   // removed required packages
   CurDependency:=LazPackage.FirstRemovedDependency;
   if CurDependency<>nil then begin

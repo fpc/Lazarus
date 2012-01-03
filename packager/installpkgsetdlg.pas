@@ -373,7 +373,7 @@ var
   Pkg: TLazPackageID;
   PkgName: String;
   DuplCheck: TStringList;  // Add pkg names also here to filter out duplicates.
-  FilteredBranch: TBranch;
+  FilteredBranch: TTreeFilterBranch;
 begin
   DuplCheck:=TStringList.Create;
   try

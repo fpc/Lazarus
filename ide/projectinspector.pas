@@ -616,7 +616,9 @@ begin
       Result:=ImageIndexText;
   end
   else if Data is TPkgDependency then begin
-    if TPkgDependency(Data).LoadPackageResult=lprSuccess then
+    if TPkgDependency(Data).Removed then
+      Result:=ImageIndexRemovedRequired
+    else if TPkgDependency(Data).LoadPackageResult=lprSuccess then
       Result:=ImageIndexRequired
     else
       Result:=ImageIndexConflict;
@@ -626,8 +628,8 @@ end;
 procedure TProjectInspectorForm.UpdateProjectFiles(Immediately: boolean);
 var
   CurFile: TUnitInfo;
+  FilesBranch: TTreeFilterBranch;
   Filename: String;
-  FilteredBranch: TBranch;
 begin
   if (not Immediately) or (FUpdateLock>0) or (not Visible) then begin
     Include(FFlags,pifFilesChanged);
@@ -636,7 +638,7 @@ begin
   end;
   Exclude(FFlags,pifFilesChanged);
   if LazProject=nil then Exit;
-  FilteredBranch := FilterEdit.GetBranch(FFilesNode);
+  FilesBranch:=FilterEdit.GetBranch(FFilesNode);
   FilterEdit.SelectedPart:=FNextSelectedPart;
   FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
   FilterEdit.SortData:=SortAlphabetically;
@@ -646,7 +648,7 @@ begin
   while CurFile<>nil do begin
     Filename:=CurFile.GetShortFilename(true);
     if Filename<>'' then
-      FilteredBranch.AddNodeData(Filename, CurFile, CurFile.Filename);
+      FilesBranch.AddNodeData(Filename, CurFile, CurFile.Filename);
     CurFile:=CurFile.NextPartOfProject;
   end;
   FilterEdit.InvalidateFilter;            // Data is shown by FilterEdit.
@@ -655,13 +657,14 @@ end;
 procedure TProjectInspectorForm.UpdateRequiredPackages;
 var
   Dependency: TPkgDependency;
+  RequiredBranch: TTreeFilterBranch;
   NodeText, AFilename: String;
-  FilteredBranch: TBranch;
 begin
-  FilteredBranch := FilterEdit.GetBranch(DependenciesNode);
+  RequiredBranch:=FilterEdit.GetBranch(DependenciesNode);
   if LazProject<>nil then begin
     Dependency:=LazProject.FirstRequiredDependency;
     while Dependency<>nil do begin
+      // Figure out the item's caption
       NodeText:=Dependency.AsString;
       if Dependency.DefaultFilename<>'' then begin
         AFilename:=Dependency.MakeFilenameRelativeToOwner(Dependency.DefaultFilename);
@@ -670,55 +673,40 @@ begin
         else
           NodeText:=Format(lisPckEditDefault, [NodeText, AFilename]);
       end;
-      FilteredBranch.AddNodeData(NodeText, Dependency);
+      // Add the required package under the branch
+      RequiredBranch.AddNodeData(NodeText, Dependency);
       Dependency:=Dependency.NextRequiresDependency;
     end;
-  end else begin
-    // delete dependency nodes
-    DependenciesNode.HasChildren:=false;
   end;
 end;
 
 procedure TProjectInspectorForm.UpdateRemovedRequiredPackages;
 var
   Dependency: TPkgDependency;
-  NodeText: String;
-  CurNode: TTreeNode;
-  NextNode: TTreeNode;
+  RemovedBranch: TTreeFilterBranch;
 begin
-  ItemsTreeView.BeginUpdate;
-  if (LazProject<>nil) and (LazProject.FirstRemovedDependency<>nil) then begin
+  Dependency:=Nil;
+  if LazProject<>nil then
     Dependency:=LazProject.FirstRemovedDependency;
+  if Dependency<>nil then begin
+    // Create root node for removed dependencies if not done yet.
     if RemovedDependenciesNode=nil then begin
       RemovedDependenciesNode:=ItemsTreeView.Items.Add(DependenciesNode,
                                               lisProjInspRemovedRequiredPackages);
       RemovedDependenciesNode.ImageIndex:=ImageIndexRemovedRequired;
       RemovedDependenciesNode.SelectedIndex:=RemovedDependenciesNode.ImageIndex;
     end;
-    CurNode:=RemovedDependenciesNode.GetFirstChild;
+    RemovedBranch:=FilterEdit.GetBranch(RemovedDependenciesNode);
+    // Add all removed dependencies under the branch
     while Dependency<>nil do begin
-      NodeText:=Dependency.AsString;
-      if CurNode=nil then
-        CurNode:=ItemsTreeView.Items.AddChild(RemovedDependenciesNode,NodeText)
-      else
-        CurNode.Text:=NodeText;
-      CurNode.ImageIndex:=RemovedDependenciesNode.ImageIndex;
-      CurNode.SelectedIndex:=CurNode.ImageIndex;
+      RemovedBranch.AddNodeData(Dependency.AsString, Dependency);
       Dependency:=Dependency.NextRequiresDependency;
-      CurNode:=CurNode.GetNextSibling;
     end;
-    while CurNode<>nil do begin
-      NextNode:=CurNode.GetNextSibling;
-      CurNode.Free;
-      CurNode:=NextNode;
-    end;
-    RemovedDependenciesNode.Expanded:=true;
   end else begin
-    // delete removed dependency nodes
+    // No removed dependencies -> delete the root node
     if RemovedDependenciesNode<>nil then
-      FreeThenNil(RemovedDependenciesNode);
+      FreeThenNil(RemovedDependenciesNode); // ItemsTreeView.Items.Delete() ?
   end;
-  ItemsTreeView.EndUpdate;
 end;
 
 procedure TProjectInspectorForm.OnProjectBeginUpdate(Sender: TObject);

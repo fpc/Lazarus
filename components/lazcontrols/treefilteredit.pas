@@ -16,10 +16,10 @@ type
   TTreeFilterEdit = class;
   TTreeNodeList = specialize TFPGList<TTreeNode>;
 
-  { TBranch }
+  { TTreeFilterBranch }
 
   // A branch in the tree which can be sorted
-  TBranch = class
+  TTreeFilterBranch = class
   private
     fOwner: TTreeFilterEdit;
     fRootNode: TTreeNode;
@@ -42,7 +42,7 @@ type
     procedure AddNodeData(ANodeText: string; AData: TObject; AFullFilename: string = '');
   end;
 
-  TBranchList = specialize TFPGObjectList<TBranch>;
+  TBranchList = specialize TFPGObjectList<TTreeFilterBranch>;
 
   { TTreeFilterEdit }
 
@@ -67,7 +67,7 @@ type
     destructor Destroy; override;
     procedure StoreSelection; override;
     procedure RestoreSelection; override;
-    function GetBranch(ARootNode: TTreeNode): TBranch;
+    function GetBranch(ARootNode: TTreeNode): TTreeFilterBranch;
   public
     property ImageIndexDirectory: integer read fImageIndexDirectory write fImageIndexDirectory;
     property SelectionList: TStringList read fSelectionList;
@@ -100,9 +100,9 @@ begin
   RegisterComponents('LazControls',[TTreeFilterEdit]);
 end;
 
-{ TBranch }
+{ TTreeFilterBranch }
 
-constructor TBranch.Create(AOwner: TTreeFilterEdit; ARootNode: TTreeNode);
+constructor TTreeFilterBranch.Create(AOwner: TTreeFilterEdit; ARootNode: TTreeNode);
 begin
   inherited Create;
   fOwner:=AOwner;
@@ -113,7 +113,7 @@ begin
   fImgIndex:=-1;
 end;
 
-destructor TBranch.Destroy;
+destructor TTreeFilterBranch.Destroy;
 begin
   fFilenameMap.Free;
   fSortedData.Free;
@@ -122,14 +122,14 @@ begin
   inherited Destroy;
 end;
 
-procedure TBranch.AddNodeData(ANodeText: string; AData: TObject; AFullFilename: string);
+procedure TTreeFilterBranch.AddNodeData(ANodeText: string; AData: TObject; AFullFilename: string);
 begin
   fOriginalData.AddObject(ANodeText, AData);
   if AFullFilename <> '' then
     fFilenameMap[ANodeText]:=AFullFilename;
 end;
 
-function TBranch.CompareFNs(AFilename1,AFilename2: string): integer;
+function TTreeFilterBranch.CompareFNs(AFilename1,AFilename2: string): integer;
 begin
   if fOwner.SortData then
     Result:=CompareFilenames(AFilename1, AFilename2)
@@ -139,7 +139,7 @@ begin
     Result:=0;
 end;
 
-procedure TBranch.SortAndFilter;
+procedure TTreeFilterBranch.SortAndFilter;
 // Copy data from fOriginalData to fSortedData in sorted order
 var
   Origi, i: Integer;
@@ -159,7 +159,7 @@ begin
   end;
 end;
 
-procedure TBranch.ApplyFilter;
+procedure TTreeFilterBranch.ApplyFilter;
 var
   TVNode: TTreeNode;
   i: Integer;
@@ -203,7 +203,7 @@ begin
     fRootNode.Expanded:=True;
 end;
 
-procedure TBranch.FreeTVNodeData(Node: TTreeNode);
+procedure TTreeFilterBranch.FreeTVNodeData(Node: TTreeNode);
 var
   Child: TTreeNode;
 begin
@@ -220,7 +220,7 @@ begin
   end;
 end;
 
-procedure TBranch.TVDeleteUnneededNodes(p: integer);
+procedure TTreeFilterBranch.TVDeleteUnneededNodes(p: integer);
 // delete all nodes behind the nodes in the stack, and depth>=p
 var
   i: Integer;
@@ -234,7 +234,7 @@ begin
   fTVNodeStack.Count:=p;
 end;
 
-procedure TBranch.TVClearUnneededAndCreateHierachy(Filename: string);
+procedure TTreeFilterBranch.TVClearUnneededAndCreateHierachy(Filename: string);
 // TVNodeStack contains a path of TTreeNode for the last filename
 var
   DelimPos: Integer;
@@ -399,7 +399,7 @@ begin
     fFilteredTreeview.Selected:=ANode;
 end;
 
-function TTreeFilterEdit.GetBranch(ARootNode: TTreeNode): TBranch;
+function TTreeFilterEdit.GetBranch(ARootNode: TTreeNode): TTreeFilterBranch;
 // Get a new or existing branch for a node.
 var
   i: Integer;
@@ -414,7 +414,7 @@ begin
       Break;
     end;
   if Result = Nil then begin
-    Result := TBranch.Create(Self, ARootNode);
+    Result := TTreeFilterBranch.Create(Self, ARootNode);
     fBranches.Add(Result);
   end;
 end;
