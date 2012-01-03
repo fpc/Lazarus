@@ -2647,11 +2647,13 @@ begin
     begin
       { Target OS }
       CurTargetOS:=GetFPCTargetOS(Vars.Values['TargetOS']);
-      if (CurTargetOS<>'') and (CurTargetOS<>GetDefaultTargetOS) then
+      if (CurTargetOS<>'')
+      and ((TargetOS<>'') or (CurTargetOS<>GetDefaultTargetOS)) then
         switches := switches + ' -T' + CurTargetOS;
       { Target CPU }
       CurTargetCPU:=GetFPCTargetCPU(Vars.Values['TargetCPU']);
-      if (CurTargetCPU<>'') and (CurTargetCPU<>GetDefaultTargetCPU) then
+      if (CurTargetCPU<>'')
+      and ((TargetCPU<>'') or (CurTargetCPU<>GetDefaultTargetCPU)) then
         switches := switches + ' -P' + CurTargetCPU;
     end;
   end;
