@@ -4181,9 +4181,8 @@ begin
   if (ClassIdentNode<>nil)
   and (not (ClassIdentNode.Desc in [ctnTypeDefinition,ctnGenericType])) then
   begin
-    ClassIdentNode:=nil;
+    exit;
   end;
-  if ClassIdentNode<>nil then exit;
   BaseClassName:=nil;
   if ClassNode.Desc=ctnClass then begin
     if Scanner.Values.IsDefined('CPUJVM') then
