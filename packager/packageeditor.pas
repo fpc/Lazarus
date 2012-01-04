@@ -1503,7 +1503,6 @@ begin
   FRequiredPackagesNode.SelectedIndex:=FRequiredPackagesNode.ImageIndex;
   FilesTreeView.EndUpdate;
   FilesTreeView.Images := IDEImages.Images_16;
-  // ToDo: Options:=Options+[tvoRightClickSelect]
 
   FilePropsGroupBox.Caption:=lisPckEditFileProperties;
 

@@ -145,10 +145,8 @@ inherited PackageEditorForm: TPackageEditorForm
         Align = alClient
         ItemHeight = 0
         OnDrawItem = RegisteredListBoxDrawItem
-        ScrollWidth = 565
         Style = lbOwnerDrawFixed
         TabOrder = 0
-        TopIndex = -1
       end
     end
   end
@@ -191,11 +189,12 @@ inherited PackageEditorForm: TPackageEditorForm
       DefaultItemHeight = 18
       PopupMenu = FilesPopupMenu
       ReadOnly = True
+      RightClickSelect = True
       TabOrder = 1
       OnDblClick = FilesTreeViewDblClick
       OnKeyPress = FilesTreeViewKeyPress
       OnSelectionChanged = FilesTreeViewSelectionChanged
-      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
     object DirectoryHierarchySpeedButton: TSpeedButton
       AnchorSideLeft.Control = ItemsPanel
