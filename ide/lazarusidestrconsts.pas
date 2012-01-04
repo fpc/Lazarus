@@ -621,8 +621,7 @@ resourcestring
   lisWriteError = 'Write Error';
   lisFileDoesNotLookLikeATextFileOpenItAnyway2 = 'File %s%s%s%sdoes not look '
     +'like a text file.%sOpen it anyway?';
-  lisUnableToCreateBackupDirectory =
-    'Unable to create backup directory %s%s%s.';
+  lisUnableToCreateBackupDirectory = 'Unable to create backup directory %s%s%s.';
   lisSourceAndDestinationAreTheSame =
     'Source and Destination are the same:%s%s';
   lisUnableToRenameFileTo2 = 'Unable to rename file %s%s%s%sto %s%s%s.';
@@ -662,16 +661,14 @@ resourcestring
   lisExecutingCommandBefore = 'Executing command before';
   lisExecutingCommandAfter = 'Executing command after';
   lisNoProgramFileSFound = 'No program file %s%s%s found.';
-  lisErrorInitializingProgramSErrorS = 'Error initializing program%s%s%s%s%s'
-    +'Error: %s';
+  lisErrorInitializingProgramSErrorS = 'Error initializing program%s%s%s%s%sError: %s';
   lisNotNow = 'Not now';
   lisYouCanNotBuildLazarusWhileDebuggingOrCompiling = 'You can not build '
     +'lazarus while debugging or compiling.';
   lisUnableToSaveFile = 'Unable to save file %s%s%s';
   lisReadError = 'Read Error';
   lisUnableToReadFile2 = 'Unable to read file %s%s%s!';
-  lisUnableToReadTheProjectInfoFile = 'Unable to read the project info file%s%'
-    +'s%s%s.';
+  lisUnableToReadTheProjectInfoFile = 'Unable to read the project info file%s%s%s%s.';
   lisUnableToReadLpi = 'Unable to read lpi';
   lisStrangeLpiFile = 'Strange lpi file';
   lisTheFileDoesNotLookLikeALpiFile = 'The file %s does not look like a lpi file.';
@@ -746,8 +743,7 @@ resourcestring
   lisUnableToRenameVariableInSource = 'Unable to rename variable in source.';
   lisUnableToUpdateCreateFormStatementInProjectSource = 'Unable to update '
     +'CreateForm statement in project source';
-  lisThereIsAlreadyAFormWithTheName = 'There is already a form with the name %'
-    +'s%s%s';
+  lisThereIsAlreadyAFormWithTheName = 'There is already a form with the name %s%s%s';
   lisThereIsAlreadyAUnitWithTheNamePascalIdentifiersMus = 'There is already a '
     +'unit with the name %s%s%s. Pascal identifiers must be unique.';
   lisSeeMessages = 'See messages.';
