@@ -54,7 +54,8 @@ type
     fShowDirHierarchy: Boolean;     // Show direcories / files as a tree structure.
     fBranches: TBranchList;         // Items are under these nodes can be sorted.
     fOnGetImageIndex: TImageIndexEvent;
-    procedure SetFilteredTreeview(const AValue: TTreeview);
+    function GetFilteredTreeview: TCustomTreeview;
+    procedure SetFilteredTreeview(const AValue: TCustomTreeview);
     procedure SetShowDirHierarchy(const AValue: Boolean);
   protected
     procedure MoveNext; override;
@@ -76,9 +77,8 @@ type
     property ShowDirHierarchy: Boolean read fShowDirHierarchy write SetShowDirHierarchy;
     property Branches: TBranchList read fBranches write fBranches;
   published
-    property FilteredTreeview: TTreeview read fFilteredTreeview write SetFilteredTreeview;
+    property FilteredTreeview: TCustomTreeview read GetFilteredTreeview write SetFilteredTreeview;
     property OnGetImageIndex: TImageIndexEvent read fOnGetImageIndex write fOnGetImageIndex;
-//                                  deprecated 'use OnGetImageIndex handler in FilteredTreeview';
   end;
 
   { TFileNameItem }
@@ -173,7 +173,7 @@ begin
   if Assigned(fRootNode) then
     fRootNode.DeleteChildren      // Delete old tree nodes.
   else
-    fOwner.FilteredTreeview.Items.Clear;
+    fOwner.fFilteredTreeview.Items.Clear;
   if fOwner.ShowDirHierarchy then
     fTVNodeStack:=TTreeNodeList.Create;
   for i:=0 to fSortedData.Count-1 do begin
@@ -183,7 +183,7 @@ begin
       TVNode:=fTVNodeStack[fTVNodeStack.Count-1];
     end
     else
-      TVNode:=fOwner.FilteredTreeview.Items.AddChild(fRootNode,FileN);
+      TVNode:=fOwner.fFilteredTreeview.Items.AddChild(fRootNode,FileN);
 //    else  TVNode:=fFilteredTreeview.Items.Add(Nil,FileN);
     if fFilenameMap.Count > 0 then begin
       s:=FileN;
@@ -270,7 +270,7 @@ begin
           Node.Text:=FilePart;
         end
         else
-          Node:=fOwner.FilteredTreeview.Items.Add(Node,FilePart);
+          Node:=fOwner.fFilteredTreeview.Items.Add(Node,FilePart);
         fTVNodeStack[p]:=Node;
       end;
     end else begin
@@ -284,7 +284,7 @@ begin
         Node.Text:=FilePart;
       end
       else
-        Node:=fOwner.FilteredTreeview.Items.AddChild(Node,FilePart);
+        Node:=fOwner.fFilteredTreeview.Items.AddChild(Node,FilePart);
       fTVNodeStack.Add(Node);
     end;
     if (Filename<>'') then begin
@@ -323,11 +323,16 @@ begin
   Result := TreeFilterGlyph;
 end;
 
-procedure TTreeFilterEdit.SetFilteredTreeview(const AValue: TTreeview);
+procedure TTreeFilterEdit.SetFilteredTreeview(const AValue: TCustomTreeview);
 begin
   if fFilteredTreeview = AValue then Exit;
-  fFilteredTreeview:=AValue;
+  fFilteredTreeview := TTreeview(AValue);
   if AValue = nil then Exit;
+end;
+
+function TTreeFilterEdit.GetFilteredTreeview: TCustomTreeview;
+begin
+  Result:=fFilteredTreeview;
 end;
 
 procedure TTreeFilterEdit.SetShowDirHierarchy(const AValue: Boolean);
