@@ -867,7 +867,7 @@ begin
 
   // check classname<>ancestortype
   if AnsiCompareText(Params.NewClassName,Params.AncestorType)=0 then begin
-    IDEMessageDialog(lisA2PInvalidCycle,
+    IDEMessageDialog(lisA2PInvalidCircularDependency,
       Format(lisA2PTheClassNameAndAncestorTypeAreTheSame, ['"',
         Params.NewClassName, '"', '"', Params.AncestorType, '"']),
       mtError,[mbCancel]);

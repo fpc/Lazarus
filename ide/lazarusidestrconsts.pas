@@ -3644,16 +3644,16 @@ resourcestring
     +'Project Inspector.';
   lisPkgMangARequiredPackagesWasNotFound = 'A required packages was not '
     +'found. See package graph.';
-  lisPkgMangCycleInPackageDependencies = 'Cycle in package dependencies';
+  lisPkgMangCircularDependencies = 'Circular dependencies found';
   lisPkgMangThePackageIsCompiledAutomaticallyAndItsOutputDirec = 'The package '
     +'%s is compiled automatically and its output directory is "%s", which is '
     +'in the default unit search path of the compiler. The package uses other '
     +'packages which also uses the default unit search of the compiler. This '
-    +'creates a cycle.%sYou can fix this issue%sby removing the path from '
+    +'creates an endless loop.%sYou can fix this issue%sby removing the path from '
     +'your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of '
     +'this package%sor by removing dependencies.';
-  lisPkgMangThereIsACycleInTheRequiredPackages = 'There is a cycle in the '
-    +'required packages. See package graph.';
+  lisPkgMangThereIsACircularDependency = 'There is a circular dependency in the '
+    +'packages. See package graph.';
   lisPkgMangThereAreTwoUnitsWithTheSameName1From2From = 'There are two units '
     +'with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s';
   lisPkgMangThereIsAUnitWithTheSameNameAsAPackage1From2 = 'There is a unit '
@@ -3923,7 +3923,7 @@ resourcestring
   lisA2PInvalidClassName = 'Invalid Class Name';
   lisA2PTheClassNameIsNotAValidPascalIdentifier = 'The class name %s%s%s is '
     +'not a valid pascal identifier.';
-  lisA2PInvalidCycle = 'Invalid Cycle';
+  lisA2PInvalidCircularDependency = 'Invalid Circular Dependency';
   lisA2PTheClassNameAndAncestorTypeAreTheSame = 'The class name %s%s%s and '
     +'ancestor type %s%s%s are the same.';
   lisA2PAmbiguousAncestorType = 'Ambiguous Ancestor Type';
@@ -4486,7 +4486,7 @@ resourcestring
   lisLeftGroupBoxCaption = 'Left anchoring';
   lisBottomGroupBoxCaption = 'Bottom anchoring';
   lisUnableToSetAnchorSideControl = 'Unable to set AnchorSide Control';
-  lisThisWillCreateACycle = 'This will create a cycle.';
+  lisThisWillCreateACircularDependency = 'This will create a circular dependency.';
   lisAnchorEditorNoControlSelected = 'Anchor Editor - no control selected';
   lisAnchorsOfSelectedControls = 'Anchors of selected controls';
   lisDebugOptionsFrmAdditionalSearchPath = 'Additional search path';
@@ -4798,8 +4798,7 @@ resourcestring
   lisPWOpenRecentProject = 'Open Recent Project';
   lisPWViewExampleProjects = 'View Example Projects';
   lisPWConvertProject = 'Convert Delphi Project';
-  lisInvalidCycle = 'Invalid cycle';
-  lisIsAThisCycleDependencyIsNotAllowed = '%s is a %s.%sThis cycle '
+  lisIsAThisCircularDependencyIsNotAllowed = '%s is a %s.%sThis circular '
     +'dependency is not allowed.';
   lisTheComponentCanNotBeDeletedBecauseItIsNotOwnedBy = 'The component %s can '
     +'not be deleted, because it is not owned by %s.';

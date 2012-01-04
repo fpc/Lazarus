@@ -1978,8 +1978,8 @@ var
     // check cycles
     if TheFormEditor.ClassDependsOnComponent(NewComponentClass, LookupRoot) then
     begin
-      IDEMessageDialog(lisInvalidCycle,
-        Format(lisIsAThisCycleDependencyIsNotAllowed, [dbgsName(LookupRoot),
+      IDEMessageDialog(lisA2PInvalidCircularDependency,
+        Format(lisIsAThisCircularDependencyIsNotAllowed, [dbgsName(LookupRoot),
           dbgsName(NewComponentClass), #13]),
         mtError,[mbOk],'');
       exit;

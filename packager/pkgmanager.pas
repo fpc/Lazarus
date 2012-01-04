@@ -1251,8 +1251,8 @@ begin
     PathList:=PackageGraph.FindCycleDependencyPath(APackage,FirstDependency);
     if PathList<>nil then begin
       DoShowPackageGraphPathList(PathList);
-      Result:=IDEMessageDialogAb(lisPkgMangCycleInPackageDependencies,
-        lisPkgMangThereIsACycleInTheRequiredPackages,
+      Result:=IDEMessageDialogAb(lisPkgMangCircularDependencies,
+        lisPkgMangThereIsACircularDependency,
         mtError,Btns,ShowAbort);
       if not ShowAbort then
         Result := mrCancel; // User confirmed error, implicitly cancel the action
@@ -1264,7 +1264,7 @@ begin
     if PathList<>nil then begin
       ConflictPkg:=TObject(PathList[PathList.Count-1]) as TLazPackage;
       DoShowPackageGraphPathList(PathList);
-      Result:=IDEMessageDialogAb(lisPkgMangCycleInPackageDependencies,
+      Result:=IDEMessageDialogAb(lisPkgMangCircularDependencies,
         Format(lisPkgMangThePackageIsCompiledAutomaticallyAndItsOutputDirec, [
           ConflictPkg.Name, ConflictPkg.GetOutputDirectory, #13#13, #13, #13,
           #13]),

@@ -318,7 +318,7 @@ begin
         ReferenceControl,ReferenceSide,CheckPosition))
       then begin
         if MessageDlg(lisCCOWarningCaption,
-          lisThisWillCreateACycle, mtWarning, [mbIgnore, mbCancel], 0)<>
+          lisThisWillCreateACircularDependency, mtWarning, [mbIgnore, mbCancel], 0)<>
             mrIgnore
         then begin
           Refresh(false);
@@ -538,7 +538,7 @@ begin
         ReferenceControl,ReferenceSide,CheckPosition))
       then begin
         if MessageDlg(lisCCOWarningCaption,
-          lisThisWillCreateACycle, mtWarning, [mbIgnore, mbCancel], 0)<>
+          lisThisWillCreateACircularDependency, mtWarning, [mbIgnore, mbCancel], 0)<>
             mrIgnore
         then begin
           Refresh(false);
@@ -649,7 +649,7 @@ begin
         ReferenceControl,ReferenceSide,CheckPosition))
       then begin
         if MessageDlg(lisCCOWarningCaption,
-          lisThisWillCreateACycle, mtWarning, [mbIgnore, mbCancel], 0)<>
+          lisThisWillCreateACircularDependency, mtWarning, [mbIgnore, mbCancel], 0)<>
             mrIgnore
         then begin
           Refresh(false);
