@@ -15396,11 +15396,12 @@ var
       for i:=0 to Options.ExtraFiles.Count-1 do begin
         CurFileMask:=Options.ExtraFiles[i];
         if not GlobalMacroList.SubstituteStr(CurFileMask) then exit;
-        CurFileMask:=ChompPathDelim(TrimFilename(CurFileMask));
+        CurFileMask:=ChompPathDelim(CurFileMask);
         if not FilenameIsAbsolute(CurFileMask) then begin
           if Project1.IsVirtual then continue;
-          CurFileMask:=AppendPathDelim(Project1.ProjectDirectory)+CurFileMask;
+          CurFileMask:=AppendPathDelim(Project1.ProjectDirectory+CurFileMask);
         end;
+        CurFileMask:=TrimFilename(CurFileMask);
         OnlyPascalSources:=false;
         if DirPathExistsCached(CurFileMask) then begin
           // a whole directory
