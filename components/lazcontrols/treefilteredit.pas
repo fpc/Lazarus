@@ -423,8 +423,6 @@ end;
 
 function TTreeFilterEdit.GetBranch(ARootNode: TTreeNode): TTreeFilterBranch;
 // Get a new or existing branch for a given tree-node.
-var
-  i: Integer;
 begin
   if not Assigned(fBranches) then
     fBranches := TBranchList.Create;
