@@ -405,8 +405,6 @@ type
     fMarkupSpecialLine : TSynEditMarkupSpecialLine;
     fMarkupSelection : TSynEditMarkupSelection;
     fMarkupSpecialChar : TSynEditMarkupSpecialChar;
-    fCharsInWindow: Integer;
-    fCharWidth: Integer;
     fFontDummy: TFont;
     FLastSetFontSize: Integer;
     {$IFDEF SYN_MBCSSUPPORT}
@@ -435,7 +433,6 @@ type
     FTextArea: TLazSynTextArea;
 
     fExtraCharSpacing: integer;
-    fLinesInWindow: Integer;// MG: fully visible lines in window
     fLeftChar: Integer;    // first visible screen column
     fMaxLeftChar: Integer; // 1024
     FOldWidth, FOldHeight: Integer;
@@ -450,7 +447,6 @@ type
     fRightEdge: Integer;
     fRightEdgeColor: TColor;
     FScrollBars: TScrollStyle;
-    fTextHeight: Integer;
     fTopLine: Integer;
     FOldTopLine, FOldTopView: Integer;
     FLastTextChangeStamp: Int64;
@@ -512,8 +508,12 @@ type
 
     procedure AquirePrimarySelection;
     function GetChangeStamp: int64;
+    function GetCharsInWindow: Integer;
+    function GetCharWidth: integer;
     function GetDefSelectionMode: TSynSelectionMode;
     function GetFoldState: String;
+    function GetLineHeight: integer;
+    function GetLinesInWindow: Integer;
     function GetModified: Boolean;
     function GetMouseActions: TSynEditMouseActions;
     function GetMouseSelActions: TSynEditMouseActions;
@@ -953,11 +953,11 @@ type
     procedure AddKey(Command: TSynEditorCommand; Key1: word; SS1: TShiftState;
       Key2: word; SS2: TShiftState);
   public
-    property CharsInWindow: Integer read fCharsInWindow;
-    property CharWidth: integer read fCharWidth;
+    property CharsInWindow: Integer read GetCharsInWindow;
+    property CharWidth: integer read GetCharWidth;
     property LeftChar: Integer read fLeftChar write SetLeftChar;
-    property LineHeight: integer read fTextHeight;
-    property LinesInWindow: Integer read fLinesInWindow; // MG: fully visible lines
+    property LineHeight: integer read GetLineHeight;
+    property LinesInWindow: Integer read GetLinesInWindow;
     property MaxLeftChar: integer read fMaxLeftChar write SetMaxLeftChar
       default 1024;
     property TopLine: Integer read fTopLine write SetTopLine;
@@ -1536,6 +1536,16 @@ begin
   Result := TSynEditStringList(FLines).TextChangeStamp;
 end;
 
+function TCustomSynEdit.GetCharsInWindow: Integer;
+begin
+  Result := FTextArea.CharsInWindow;
+end;
+
+function TCustomSynEdit.GetCharWidth: integer;
+begin
+  Result := FTextArea.CharWidth;
+end;
+
 function TCustomSynEdit.GetDefSelectionMode: TSynSelectionMode;
 begin
   Result := FBlockSelection.SelectionMode;
@@ -1544,6 +1554,16 @@ end;
 function TCustomSynEdit.GetFoldState: String;
 begin
   Result := FFoldedLinesView.GetFoldDescription(0, 0, -1, -1, True);
+end;
+
+function TCustomSynEdit.GetLineHeight: integer;
+begin
+  Result := FTextArea.LineHeight;
+end;
+
+function TCustomSynEdit.GetLinesInWindow: Integer;
+begin
+  Result := FTextArea.LinesInWindow;
 end;
 
 function TCustomSynEdit.GetModified: Boolean;
@@ -1607,18 +1627,18 @@ function TCustomSynEdit.PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinate
 // To get the text/logical position use PixelsToLogicalPos
 begin
   Result.X := ( (Pixels.X
-                + (fLeftChar-1) * FCharWidth
+                + (fLeftChar-1) * CharWidth
                 - FTextArea.TextBounds.Left
-                + (FCharWidth div 2)
-               ) div FCharWidth
+                + (CharWidth div 2)
+               ) div CharWidth
              )+1;
   Pixels.Y := Pixels.Y - FTextArea.TextBounds.Top;
-  if (not(scmIncludePartVisible in aFlags)) and (Pixels.Y >= FLinesInWindow * FTextHeight) then begin
+  if (not(scmIncludePartVisible in aFlags)) and (Pixels.Y >= LinesInWindow * LineHeight) then begin
     // don't return a partially visible last line
-    Pixels.Y := fLinesInWindow * fTextHeight - 1;
+    Pixels.Y := LinesInWindow * LineHeight - 1;
     if Pixels.Y < 0 then Pixels.Y := 0;
   end;
-  Result := Point(Result.X, ScreenRowToRow(Pixels.Y div fTextHeight, scmLimitToLines in aFlags));
+  Result := Point(Result.X, ScreenRowToRow(Pixels.Y div LineHeight, scmLimitToLines in aFlags));
 end;
 
 function TCustomSynEdit.PixelsToLogicalPos(const Pixels: TPoint): TPoint;
@@ -1654,8 +1674,8 @@ function TCustomSynEdit.RowColumnToPixels(
 // to client area coordinate (0,0 based on canvas)
 begin
   Result:=RowCol;
-  Result.X := (Result.X - 1) * fCharWidth + FTextArea.TextBounds.Left - (LeftChar - 1) * fCharWidth;
-  Result.Y := RowToScreenRow(RowCol.Y) * fTextHeight + FTextArea.TextBounds.Top;
+  Result.X := (Result.X - 1) * CharWidth + FTextArea.TextBounds.Left - (LeftChar - 1) * CharWidth;
+  Result.Y := RowToScreenRow(RowCol.Y) * LineHeight + FTextArea.TextBounds.Top;
 end;
 
 procedure TCustomSynEdit.ComputeCaret(X, Y: Integer);
@@ -1921,8 +1941,6 @@ begin
   fTabWidth := 8;
   fLeftChar := 1;
   fTopLine := 1;
-  fLinesInWindow := -1;
-  fCharsInWindow := -1;
   FOldTopLine := 1;
   FOldTopView := 1;
   FFoldedLinesView.TopLine := 1;
@@ -2212,7 +2230,6 @@ procedure TCustomSynEdit.FontChanged(Sender: TObject);
 begin
   FLastSetFontSize := Font.Height;
   RecalcCharExtent;
-  SizeOrFontChanged(TRUE);
 end;
 
 function TCustomSynEdit.GetTextBuffer: TSynEditStrings;
@@ -2466,8 +2483,8 @@ begin
       { any line visible? }
       if (LastLine >= FirstLine) then begin
         if FLeftGutter.Visible then begin;
-          rcInval := Rect(0, fTextHeight * FirstLine,
-            FLeftGutter.Width, fTextHeight * LastLine);
+          rcInval := Rect(0, LineHeight * FirstLine,
+            FLeftGutter.Width, LineHeight * LastLine);
           {$IFDEF VerboseSynEditInvalidate}
           DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self),' PART ',dbgs(rcInval)]);
           {$ENDIF}
@@ -2522,8 +2539,8 @@ begin
       f := Max(0, f);
       { any line visible? }
       if (l >= f) then begin
-        rcInval := Rect(TextLeftPixelOffset(False), fTextHeight * f,
-          ClientWidth - TextRightPixelOffset - ScrollBarWidth, fTextHeight * l);
+        rcInval := Rect(TextLeftPixelOffset(False), LineHeight * f,
+          ClientWidth - TextRightPixelOffset - ScrollBarWidth, LineHeight * l);
         {$IFDEF VerboseSynEditInvalidate}
         DebugLn(['TCustomSynEdit.InvalidateLines ',DbgSName(self),' PART ',dbgs(rcInval)]);
         {$ENDIF}
@@ -2891,13 +2908,13 @@ begin
         end;
       emcWheelHorizScrollDown, emcWheelHorizScrollUp:
         begin
-          i := GetWheelScrollAmount(fCharsInWindow);
+          i := GetWheelScrollAmount(CharsInWindow);
           if ACommand = emcWheelHorizScrollUp then i := -i;
           if i <> 0 then LeftChar := LeftChar + i;
         end;
       emcWheelVertScrollDown, emcWheelVertScrollUp:
         begin
-          i := GetWheelScrollAmount(fLinesInWindow);
+          i := GetWheelScrollAmount(LinesInWindow);
           if ACommand = emcWheelVertScrollUp then i := -i;
           if i <> 0 then TopView := TopView + i;
         end;
@@ -3072,8 +3089,8 @@ begin
   UpdateCursor;
 
   if (sfWaitForMouseSelecting in fStateFlags) and MouseCapture and
-     ( (abs(fMouseDownX-X) >= MinMax(fCharWidth div 2, 2, 4)) or
-       (abs(fMouseDownY-Y) >= MinMax(fTextHeight div 2, 2, 4)) )
+     ( (abs(fMouseDownX-X) >= MinMax(CharWidth div 2, 2, 4)) or
+       (abs(fMouseDownY-Y) >= MinMax(LineHeight div 2, 2, 4)) )
   then
     FStateFlags := FStateFlags - [sfWaitForMouseSelecting] + [sfMouseSelecting];
 
@@ -3114,28 +3131,28 @@ begin
       // begin scrolling?
       Dec(X, TextLeftPixelOffset(False));
       // calculate chars past right
-      Z := X - (fCharsInWindow * fCharWidth);
+      Z := X - (CharsInWindow * CharWidth);
       if Z > 0 then
-        Inc(Z, fCharWidth);
-      fScrollDeltaX := Max(Z div fCharWidth, 0);
+        Inc(Z, CharWidth);
+      fScrollDeltaX := Max(Z div CharWidth, 0);
       if fScrollDeltaX = 0 then begin
         // calculate chars past left
         Z := X;
         if Z < 0 then
-          Dec(Z, fCharWidth);
-        fScrollDeltaX := Min(Z div fCharWidth, 0);
+          Dec(Z, CharWidth);
+        fScrollDeltaX := Min(Z div CharWidth, 0);
       end;
       // calculate lines past bottom
-      Z := Y - (fLinesInWindow * fTextHeight);
+      Z := Y - (LinesInWindow * LineHeight);
       if Z > 0 then
-        Inc(Z, fTextHeight);
-      fScrollDeltaY := Max(Z div fTextHeight, 0);
+        Inc(Z, LineHeight);
+      fScrollDeltaY := Max(Z div LineHeight, 0);
       if fScrollDeltaY = 0 then begin
         // calculate lines past top
         Z := Y;
         if Z < 0 then
-          Dec(Z, fTextHeight);
-        fScrollDeltaY := Min(Z div fTextHeight, 0);
+          Dec(Z, LineHeight);
+        fScrollDeltaY := Min(Z div LineHeight, 0);
       end;
       fScrollTimer.Enabled := (fScrollDeltaX <> 0) or (fScrollDeltaY <> 0);
       if (sfMouseSelecting in fStateFlags) and ((fScrollDeltaX <> 0) or (fScrollDeltaY <> 0)) then
@@ -3172,28 +3189,28 @@ begin
     // recalculate scroll deltas
     Dec(CurMousePos.X, TextLeftPixelOffset(False));
     // calculate chars past right
-    Z := CurMousePos.X - (fCharsInWindow * fCharWidth);
+    Z := CurMousePos.X - (CharsInWindow * CharWidth);
     if Z > 0 then
-      Inc(Z, fCharWidth);
-    fScrollDeltaX := Max(Z div fCharWidth, 0);
+      Inc(Z, CharWidth);
+    fScrollDeltaX := Max(Z div CharWidth, 0);
     if fScrollDeltaX = 0 then begin
       // calculate chars past left
       Z := CurMousePos.X;
       if Z < 0 then
-        Dec(Z, fCharWidth);
-      fScrollDeltaX := Min(Z div fCharWidth, 0);
+        Dec(Z, CharWidth);
+      fScrollDeltaX := Min(Z div CharWidth, 0);
     end;
     // calculate lines past bottom
-    Z := CurMousePos.Y - (fLinesInWindow * fTextHeight);
+    Z := CurMousePos.Y - (LinesInWindow * LineHeight);
     if Z > 0 then
-      Inc(Z, fTextHeight);
-    fScrollDeltaY := Max(Z div fTextHeight, 0);
+      Inc(Z, LineHeight);
+    fScrollDeltaY := Max(Z div LineHeight, 0);
     if fScrollDeltaY = 0 then begin
       // calculate lines past top
       Z := CurMousePos.Y;
       if Z < 0 then
-        Dec(Z, fTextHeight);
-      fScrollDeltaY := Min(Z div fTextHeight, 0);
+        Dec(Z, LineHeight);
+      fScrollDeltaY := Min(Z div LineHeight, 0);
     end;
     fScrollTimer.Enabled := (fScrollDeltaX <> 0) or (fScrollDeltaY <> 0);
     // now scroll
@@ -3346,8 +3363,8 @@ begin
   Include(fStateFlags,sfPainting);
   Exclude(fStateFlags, sfHasScrolled);
   // columns
-  nL1 := Max(rcClip.Top div fTextHeight, 0);
-  nL2 := Min((rcClip.Bottom-1) div fTextHeight,
+  nL1 := Max(rcClip.Top div LineHeight, 0);
+  nL2 := Min((rcClip.Bottom-1) div LineHeight,
              FFoldedLinesView.Count - FFoldedLinesView.TopLine);
   {$IFDEF SYNSCROLLDEBUG}
   debugln(['PAINT ',DbgSName(self),' rect=',dbgs(rcClip), ' L1=',nL1, '  Nl2=',nL2]);
@@ -3773,7 +3790,7 @@ begin
   Result := FTheLinesView.LengthOfLongestLine;
   if (eoScrollPastEol in Options) and (Result < fMaxLeftChar) then
     Result := fMaxLeftChar;
-  Result := Result - fCharsInWindow + 1 + FScreenCaret.ExtraLineChars;
+  Result := Result - CharsInWindow + 1 + FScreenCaret.ExtraLineChars;
 end;
 
 function TCustomSynEdit.CurrentMaxLineLen: Integer;
@@ -3897,7 +3914,7 @@ begin
   if (eoScrollPastEof in Options) then
     Result := FTheLinesView.Count
   else
-    Result := FFoldedLinesView.TextPosAddLines(FTheLinesView.Count+1, -Max(0, fLinesInWindow));
+    Result := FFoldedLinesView.TextPosAddLines(FTheLinesView.Count+1, -Max(0, LinesInWindow));
   Result := Max(Result, 1);
 end;
 
@@ -3946,13 +3963,13 @@ begin
   {$ENDIF}
   if Delta <> 0 then begin
     // TODO: SW_SMOOTHSCROLL --> can't get it work
-    if (Abs(Delta) >= fLinesInWindow) or (sfHasScrolled in FStateFlags) then begin
+    if (Abs(Delta) >= LinesInWindow) or (sfHasScrolled in FStateFlags) then begin
       {$IFDEF SYNSCROLLDEBUG}
       debugln(['ScrollAfterTopLineChanged does invalidet Delta=',Delta]);
       {$ENDIF}
       Invalidate;
     end else
-    if ScrollWindowEx(Handle, 0, fTextHeight * Delta, nil, nil, 0, nil, SW_INVALIDATE)
+    if ScrollWindowEx(Handle, 0, LineHeight * Delta, nil, nil, 0, nil, SW_INVALIDATE)
     then begin
       {$IFDEF SYNSCROLLDEBUG}
       debugln(['ScrollAfterTopLineChanged did scroll Delta=',Delta]);
@@ -3987,12 +4004,12 @@ begin
   NewCaretXY:=CaretXY;
   if NewCaretXY.X < fLeftChar then
     NewCaretXY.X := fLeftChar
-  else if NewCaretXY.X > fLeftChar + fCharsInWindow - FScreenCaret.ExtraLineChars then
-    NewCaretXY.X := fLeftChar + fCharsInWindow - FScreenCaret.ExtraLineChars;
+  else if NewCaretXY.X > fLeftChar + CharsInWindow - FScreenCaret.ExtraLineChars then
+    NewCaretXY.X := fLeftChar + CharsInWindow - FScreenCaret.ExtraLineChars;
   if NewCaretXY.Y < fTopLine then
     NewCaretXY.Y := fTopLine
   else begin
-    MaxY:= ScreenRowToRow(Max(0,fLinesInWindow-1));
+    MaxY:= ScreenRowToRow(Max(0,LinesInWindow-1));
     if NewCaretXY.Y > MaxY then
       NewCaretXY.Y := MaxY;
   end;
@@ -4175,9 +4192,9 @@ begin
     SB_LINEUP: LeftChar := LeftChar - 1;
       // Scrolls one page of chars left / right
     SB_PAGEDOWN: LeftChar := LeftChar
-      + Max(1, (fCharsInWindow - Ord(eoScrollByOneLess in fOptions)));
+      + Max(1, (CharsInWindow - Ord(eoScrollByOneLess in fOptions)));
     SB_PAGEUP: LeftChar := LeftChar
-      - Max(1, (fCharsInWindow - Ord(eoScrollByOneLess in fOptions)));
+      - Max(1, (CharsInWindow - Ord(eoScrollByOneLess in fOptions)));
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION,
     SB_THUMBTRACK: LeftChar := Msg.Pos;
@@ -4275,9 +4292,9 @@ begin
     SB_LINEUP: TopView := TopView - 1;
       // Scrolls one page of lines up / down
     SB_PAGEDOWN: TopView := TopView
-      + Max(1, (fLinesInWindow - Ord(eoScrollByOneLess in fOptions))); // TODO: scroll half page ?
+      + Max(1, (LinesInWindow - Ord(eoScrollByOneLess in fOptions))); // TODO: scroll half page ?
     SB_PAGEUP: TopView := TopView
-      - Max(1, (fLinesInWindow - Ord(eoScrollByOneLess in fOptions)));
+      - Max(1, (LinesInWindow - Ord(eoScrollByOneLess in fOptions)));
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION,
     SB_THUMBTRACK:
@@ -5330,7 +5347,7 @@ begin
   if fRightEdgeColor <> Value then begin
     fRightEdgeColor := Value;
     if HandleAllocated then begin
-      nX := FTextArea.TextBounds.Left - (LeftChar - 1) * fCharWidth + fRightEdge * fCharWidth;
+      nX := FTextArea.TextBounds.Left - (LeftChar - 1) * CharWidth + fRightEdge * CharWidth;
       rcInval := Rect(nX - 1, 0, nX + 1, ClientHeight-ScrollBarWidth);
       {$IFDEF VerboseSynEditInvalidate}
       DebugLn(['TCustomSynEdit.SetRightEdgeColor ',dbgs(rcInval)]);
@@ -5365,13 +5382,10 @@ begin
       fMarkupWordGroup.Highlighter := nil;
       FFoldedLinesView.Highlighter := nil;
       FTextArea.Highlighter := nil;
-{begin}                                                                         //mh 2000-10-01
       if not (csDestroying in ComponentState) then begin
         RecalcCharExtent;
-        SizeOrFontChanged(TRUE);                                                //jr 2000-10-01
         Invalidate;
       end;
-{end}                                                                           //mh 2000-10-01
     end;
     if (fBookmarkOpt <> nil) then
       if (AComponent = fBookmarkOpt.BookmarkImages) then begin
@@ -5422,7 +5436,6 @@ begin
     finally
       DecPaintLock;
     end;
-    SizeOrFontChanged(TRUE);
   end;
 end;
 
@@ -5526,8 +5539,8 @@ begin
       ' LeftChar='+dbgs(LeftChar), '');}
     if MinX < LeftChar then
       LeftChar := MinX
-    else if LeftChar < MaxX - (CharsInWindow - 1 - FScreenCaret.ExtraLineChars) then
-      LeftChar := MaxX - (CharsInWindow - 1 - FScreenCaret.ExtraLineChars)
+    else if LeftChar < MaxX - (Max(1, CharsInWindow) - 1 - FScreenCaret.ExtraLineChars) then
+      LeftChar := MaxX - (Max(1, CharsInWindow) - 1 - FScreenCaret.ExtraLineChars)
     else
       LeftChar := LeftChar;                                                     //mh 2000-10-19
     //DebugLn(['TCustomSynEdit.EnsureCursorPosVisible B LeftChar=',LeftChar,' MinX=',MinX,' MaxX=',MaxX,' CharsInWindow=',CharsInWindow]);
@@ -5698,11 +5711,11 @@ begin
         end;
       ecPageLeft, ecSelPageLeft, ecColSelPageLeft:
         begin
-          MoveCaretHorz(-CharsInWindow);
+          MoveCaretHorz(-Max(1, CharsInWindow));
         end;
       ecPageRight, ecSelPageRight, ecColSelPageRight:
         begin
-          MoveCaretHorz(CharsInWindow);
+          MoveCaretHorz(Max(1, CharsInWindow));
         end;
       ecLineStart, ecSelLineStart, ecColSelLineStart:
         begin
@@ -5727,7 +5740,7 @@ begin
         end;
       ecPageUp, ecSelPageUp, ecPageDown, ecSelPageDown, ecColSelPageUp, ecColSelPageDown:
         begin
-          counter := fLinesInWindow;
+          counter := LinesInWindow;
           if (eoHalfPageScroll in fOptions) then counter:=counter div 2;
           if eoScrollByOneLess in fOptions then
             Dec(counter);
@@ -5974,8 +5987,8 @@ begin
               {$ENDIF}
 
               CaretX := CaretX + 1;
-              if CaretX >= LeftChar + fCharsInWindow then
-                LeftChar := LeftChar + Min(25, fCharsInWindow - 1);
+              if CaretX >= LeftChar + CharsInWindow then
+                LeftChar := LeftChar + Min(25, CharsInWindow - 1);
             finally
               FCaret.DecForceAdjustToNextChar;
               FCaret.DecForcePastEOL;
@@ -6176,8 +6189,8 @@ begin
               fUndoList.AddChange(crInsert, StartOfBlock,
                 LogicalCaretXY,
                 Helper, smNormal);
-              if CaretX >= LeftChar + fCharsInWindow then
-                LeftChar := LeftChar + min(25, fCharsInWindow - 1);
+              if CaretX >= LeftChar + CharsInWindow then
+                LeftChar := LeftChar + min(25, CharsInWindow - 1);
             finally
               FCaret.DecForcePastEOL;
             end;
@@ -6988,8 +7001,8 @@ begin
     LastMouseCaret:=Point(-1,-1);
     RecalcCharsAndLinesInWin(False);
 
-    //DebugLn('TCustomSynEdit.SizeOrFontChanged fLinesInWindow=',dbgs(fLinesInWindow),' ClientHeight=',dbgs(ClientHeight),' ',dbgs(fTextHeight));
-    //debugln('TCustomSynEdit.SizeOrFontChanged A ClientWidth=',dbgs(ClientWidth),' FLeftGutter.Width=',dbgs(FLeftGutter.Width),' ScrollBarWidth=',dbgs(ScrollBarWidth),' fCharWidth=',dbgs(fCharWidth),' fCharsInWindow=',dbgs(fCharsInWindow),' Width=',dbgs(Width));
+    //DebugLn('TCustomSynEdit.SizeOrFontChanged LinesInWindow=',dbgs(LinesInWindow),' ClientHeight=',dbgs(ClientHeight),' ',dbgs(LineHeight));
+    //debugln('TCustomSynEdit.SizeOrFontChanged A ClientWidth=',dbgs(ClientWidth),' FLeftGutter.Width=',dbgs(FLeftGutter.Width),' ScrollBarWidth=',dbgs(ScrollBarWidth),' CharWidth=',dbgs(CharWidth),' CharsInWindow=',dbgs(CharsInWindow),' Width=',dbgs(Width));
     if bFont then begin
       UpdateScrollbars;
       Exclude(fStateFlags, sfCaretChanged);
@@ -7006,7 +7019,7 @@ end;
 
 procedure TCustomSynEdit.RecalcCharsAndLinesInWin(CheckCaret: Boolean);
 var
-  NewLinesInWindow: Integer;
+  OldLinesInWindow: Integer;
   w, l, r: Integer;
 begin
   w := ClientWidth - TextLeftPixelOffset - TextRightPixelOffset - ScrollBarWidth;
@@ -7017,6 +7030,9 @@ begin
   if FRightGutter.Visible
   then r := FRightGutter.Width
   else r := 0;
+
+  OldLinesInWindow := FTextArea.LinesInWindow;
+  // TODO: lock FTextArea, so size re-calc is done once only
   FTextArea.SetBounds(0, l, ClientHeight - ScrollBarWidth, ClientWidth - r - ScrollBarWidth);
 
   if FLeftGutter.Visible
@@ -7026,23 +7042,19 @@ begin
   then FTextArea.Padding[bsRight] := 0 //GutterTextDist
   else FTextArea.Padding[bsRight] := 0;
 
-  FCharsInWindow := Max(1, w div fCharWidth);
+  //CharsInWindow := Max(1, w div CharWidth);
+  if OldLinesInWindow <> FTextArea.LinesInWindow then
+    StatusChanged([scLinesInWindow]);
 
-  NewLinesInWindow := Max(0,ClientHeight - ScrollBarWidth) div Max(1,fTextHeight);
-  if NewLinesInWindow <> FLinesInWindow then begin
-    if fLinesInWindow >= 0 then
-      StatusChanged([scLinesInWindow]);
-    FLinesInWindow := NewLinesInWindow;
-    FFoldedLinesView.LinesInWindow := fLinesInWindow;
-    FMarkupManager.LinesInWindow:= fLinesInWindow;
-  end;
+  FFoldedLinesView.LinesInWindow := LinesInWindow;
+  FMarkupManager.LinesInWindow := LinesInWindow;
 
   FScreenCaret.Lock;
   FScreenCaret.ClipRect := FTextArea.Bounds;
   //FScreenCaret.ClipRect := Rect(TextLeftPixelOffset(False), 0,
   //                              ClientWidth - TextRightPixelOffset - ScrollBarWidth + 1,
   //                              ClientHeight - ScrollBarWidth);
-  FScreenCaret.ClipExtraPixel := w - fCharsInWindow * fCharWidth;
+  FScreenCaret.ClipExtraPixel := w - CharsInWindow * CharWidth;
   FScreenCaret.UnLock;
 
   if CheckCaret then begin
@@ -7167,7 +7179,11 @@ end;
 procedure TCustomSynEdit.RecalcCharExtent;
 var
   i: Integer;
+  OldLinesInWindow: Integer;
 begin
+  (* Highlighter or Font changed *)
+  OldLinesInWindow := FTextArea.LinesInWindow;
+
   FFontDummy.Assign(Font);
   with FFontDummy do begin
     // Keep GTK happy => By ensuring a change the XFLD fontname gets cleared
@@ -7178,34 +7194,33 @@ begin
     Style := [];        // Reserved for Highlighter
   end;
   //debugln(['TCustomSynEdit.RecalcCharExtent ',fFontDummy.Name,' ',fFontDummy.Size]);
-  with fTextDrawer do begin
-    //debugln('TCustomSynEdit.RecalcCharExtent A UseUTF8=',dbgs(UseUTF8),
-    //  ' Font.CanUTF8='+dbgs(Font.CanUTF8)+' CharHeight=',dbgs(CharHeight));
-    BaseFont := FFontDummy;
+  //debugln('TCustomSynEdit.RecalcCharExtent A UseUTF8=',dbgs(UseUTF8),
+  //  ' Font.CanUTF8='+dbgs(Font.CanUTF8)+' CharHeight=',dbgs(CharHeight));
 
-    if Assigned(fHighlighter) then
-      for i := 0 to Pred(fHighlighter.AttrCount) do
-        BaseStyle := fHighlighter.Attribute[i].Style;
+  fTextDrawer.BaseFont := FFontDummy;
+  if Assigned(fHighlighter) then
+    for i := 0 to Pred(fHighlighter.AttrCount) do
+      fTextDrawer.BaseStyle := fHighlighter.Attribute[i].Style;
+  fTextDrawer.CharExtra := fExtraCharSpacing;
 
-    CharExtra := fExtraCharSpacing;
-    fTextHeight := CharHeight + fExtraLineSpacing;
-    fCharWidth := CharWidth;
-    FScreenCaret.Lock;
-    FScreenCaret.CharWidth := fCharWidth;
-    FScreenCaret.CharHeight := fTextHeight;
-    FScreenCaret.UnLock;
-
-    FTextArea.FontChanged;
-  end;
   FUseUTF8:=fTextDrawer.UseUTF8;
   FLines.IsUtf8 := FUseUTF8;
+
+  FScreenCaret.Lock;
+  try
+    FScreenCaret.CharWidth := CharWidth;
+    FScreenCaret.CharHeight := LineHeight;
+    SizeOrFontChanged(TRUE);
+  finally
+    FScreenCaret.UnLock;
+  end;
+
   //debugln('TCustomSynEdit.RecalcCharExtent UseUTF8=',dbgs(UseUTF8),' Font.CanUTF8=',dbgs(Font.CanUTF8));
 end;
 
 procedure TCustomSynEdit.HighlighterAttrChanged(Sender: TObject);
 begin
   RecalcCharExtent;
-  SizeOrFontChanged(TRUE);                                                      //jr 2000-10-01
   Invalidate;
   // TODO: obey paintlock
   if fHighlighter.AttributeChangeNeedScan then begin

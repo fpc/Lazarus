@@ -180,15 +180,17 @@ end;
 
 procedure TLazSynTextArea.FontChanged;
 begin
+  // ToDo: wait for handle creation
+  // Report FLinesInWindow=-1 if no handle
   FCharWidth := FTextDrawer.CharWidth;  // includes extra
   FTextHeight := FTextDrawer.CharHeight + FExtraLineSpacing;
 
   FCharsInWindow :=  0;
   FLinesInWindow :=  0;
   if FCharWidth > 0 then
-    FCharsInWindow := (FTextBounds.Right - FTextBounds.Left) div FCharWidth;
+    FCharsInWindow := Max(0, (FTextBounds.Right - FTextBounds.Left) div FCharWidth);
   if FTextHeight > 0 then
-    FLinesInWindow := (FTextBounds.Bottom - FTextBounds.Top) div FTextHeight;
+    FLinesInWindow := Max(0, (FTextBounds.Bottom - FTextBounds.Top) div FTextHeight);
 end;
 
 procedure TLazSynTextArea.Paint(ACanvas: TCanvas; AClip: TRect);
