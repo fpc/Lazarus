@@ -12073,7 +12073,7 @@ Const
       <!-- function type Visibility: default -->
       <element name="TTreeNodeCompare">
         <short>
-          <var>TTreeNodeCompare</var> - generic function to compare Tree Nodes: returns -1 if Node1 less than Node2, zero if equal, +1 if Node 2 greater</short>
+          <var>TTreeNodeCompare</var> - generic function to compare Tree Nodes: returns -1 if Node1 is less than Node2, zero if equal, +1 if Node1 is greater</short>
         <descr/>
         <seealso/>
       </element>
