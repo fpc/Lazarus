@@ -684,11 +684,11 @@ end;
 
 function TSearchResultsView.BeautifyPageName(const APageName: string): string;
 const
-  MaxPageName = 22;
+  MaxPageName = 25;
 begin
   Result:=SpecialCharsToHex(APageName);
   if UTF8Length(Result)>MaxPageName then
-    Result:=UTF8Copy(Result,1,15)+'...';
+    Result:=UTF8Copy(Result,1,MaxPageName-5)+'...';
 end;
 
 procedure TSearchResultsView.AddMatch(const APageIndex: integer;
