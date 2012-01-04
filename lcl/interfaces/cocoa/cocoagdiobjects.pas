@@ -894,6 +894,7 @@ var
 begin
   FLayout := NSLayoutManager.alloc.init;
   FTextContainer := NSTextContainer.alloc.init;
+  FTextContainer.setLineFragmentPadding(0);
   FLayout.addTextContainer(FTextContainer);
   FTextContainer.release;
   S := NSSTR('');
