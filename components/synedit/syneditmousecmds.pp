@@ -81,7 +81,7 @@ type
     NewCaret: TSynEditCaret;
     Button: TSynMouseButton;
     Shift: TShiftState;
-    MouseX, MouseY: Integer;
+    MouseX, MouseY, WheelDelta: Integer;
     CCount: TSynMAClickCount;
     Dir: TSynMAClickDir;
     CaretDone: Boolean; // Return Value

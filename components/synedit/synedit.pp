@@ -461,7 +461,7 @@ type
     fMouseDownX: integer;
     fMouseDownY: integer;
     fBookMarkOpt: TSynBookMarkOpt;
-    FMouseWheelAccumulator: integer;
+    FMouseWheelAccumulator, FMouseWheelLinesAccumulator: integer;
     fHideSelection: boolean;
     fOverwriteCaret: TSynEditCaretType;
     fInsertCaret: TSynEditCaretType;
@@ -702,7 +702,8 @@ type
     procedure DoContextPopup(MousePos: TPoint; var Handled: Boolean); override;
     procedure FindAndHandleMouseAction(AButton: TSynMouseButton; AShift: TShiftState;
                                 X, Y: Integer; ACCount:TSynMAClickCount;
-                                ADir: TSynMAClickDir);
+                                ADir: TSynMAClickDir;
+                                AWheelDelta: Integer = 0);
     function DoHandleMouseAction(AnActionList: TSynEditMouseActions;
                                  AnInfo: TSynEditMouseActionInfo): Boolean;
 
@@ -2673,37 +2674,48 @@ var
 
   function GetWheelScrollAmount(APageSize: integer): integer;
   const
-    WHEEL_PAGESCROLL = MAXDWORD;
+    WHEEL_DELTA = 120;
+    //WHEEL_PAGESCROLL = MAXDWORD;
+  var
+    WClicks, WLines: Integer;
   begin
+    Inc(FMouseWheelAccumulator, AnInfo.WheelDelta);
+    Inc(FMouseWheelLinesAccumulator, MinMax(Mouse.WheelScrollLines, 1, APageSize) * AnInfo.WheelDelta);
+    WClicks := FMouseWheelAccumulator div WHEEL_DELTA;
+    WLines  := FMouseWheelLinesAccumulator div WHEEL_DELTA;
+    dec(FMouseWheelAccumulator, WClicks * WHEEL_DELTA);
+    dec(FMouseWheelLinesAccumulator, WLines * WHEEL_DELTA);
+
     case AnAction.Option of
       emcoWheelScrollSystem:
         begin
-          Result := Mouse.WheelScrollLines;
-          if (Result = WHEEL_PAGESCROLL) or (Result > APageSize) then
-            Result := APageSize;
+          Result := Abs(WLines);
         end;
       emcoWheelScrollLines:
         begin
-          Result := 1;
+          Result := Abs(WClicks);
+          If Result = 0 then
+            exit;
           if AnAction.Option2 > 0 then
-            Result := AnAction.Option2;
+            Result := Result * AnAction.Option2;
           if (Result > APageSize) then
             Result := APageSize;
           exit;
         end;
       emcoWheelScrollPages:
-          Result := APageSize;
+          Result := Abs(WClicks) * APageSize;
       emcoWheelScrollPagesLessOne:
-          Result := APageSize - 1;
+          Result := Abs(WClicks) * (APageSize - 1);
       else
         begin
-          Result := Mouse.WheelScrollLines;
-          if (Result = WHEEL_PAGESCROLL) or (Result > APageSize) then
-            Result := APageSize;
-          if (Result < 1) then Result := 1;
+          Result := Abs(WLines);
           exit;
         end;
     end;
+
+    If Result = 0 then
+      exit;
+
     if AnAction.Option2 > 0 then
       Result := MulDiv(Result, AnAction.Option2, 100);
     if (Result > APageSize) then
@@ -2881,13 +2893,13 @@ begin
         begin
           i := GetWheelScrollAmount(fCharsInWindow);
           if ACommand = emcWheelHorizScrollUp then i := -i;
-          LeftChar := LeftChar + i;
+          if i <> 0 then LeftChar := LeftChar + i;
         end;
       emcWheelVertScrollDown, emcWheelVertScrollUp:
         begin
           i := GetWheelScrollAmount(fLinesInWindow);
           if ACommand = emcWheelVertScrollUp then i := -i;
-          TopView := TopView + i;
+          if i <> 0 then TopView := TopView + i;
         end;
       emcWheelZoomOut, emcWheelZoomIn:
         begin
@@ -2923,7 +2935,7 @@ end;
 
 procedure TCustomSynEdit.FindAndHandleMouseAction(AButton: TSynMouseButton;
   AShift: TShiftState; X, Y: Integer; ACCount:TSynMAClickCount;
-  ADir: TSynMAClickDir);
+  ADir: TSynMAClickDir; AWheelDelta: Integer = 0);
 var
   Info: TSynEditMouseActionInfo;
 begin
@@ -2935,6 +2947,7 @@ begin
     Shift := AShift;
     MouseX := X;
     MouseY := Y;
+    WheelDelta := AWheelDelta;
     CCount := ACCount;
     Dir := ADir;
     IgnoreUpClick := False;
@@ -6567,8 +6580,6 @@ end;
 procedure TCustomSynEdit.WMMouseWheel(var Message: TLMMouseEvent);
 var
   lState: TShiftState;
-const
-  WHEEL_DELTA = 120;
 begin
   if ((sfHorizScrollbarVisible in fStateFlags) and (Message.Y > ClientHeight)) or
      ((sfVertScrollbarVisible in fStateFlags) and (Message.X > ClientWidth))
@@ -6578,19 +6589,16 @@ begin
    end;
 
   lState := Message.State - [ssCaps, ssNum, ssScroll]; // Remove unreliable states, see http://bugs.freepascal.org/view.php?id=20065
-  Inc(FMouseWheelAccumulator, Message.WheelDelta);
 
   FMouseClickDoPopUp := False;
   IncPaintLock;
   try
-    while FMouseWheelAccumulator > WHEEL_DELTA do begin
-      dec(FMouseWheelAccumulator, WHEEL_DELTA);
-      FindAndHandleMouseAction(mbXWheelUp, lState, Message.X, Message.Y, ccSingle, cdDown);
-    end;
-
-    while FMouseWheelAccumulator < WHEEL_DELTA do begin
-      inc(FMouseWheelAccumulator, WHEEL_DELTA);
-      FindAndHandleMouseAction(mbXWheelDown, lState, Message.X, Message.Y, ccSingle, cdDown);
+    if Message.WheelDelta > 0 then begin
+      FindAndHandleMouseAction(mbXWheelUp, lState, Message.X, Message.Y, ccSingle, cdDown, Message.WheelDelta);
+    end
+    else begin
+      // send megative delta
+      FindAndHandleMouseAction(mbXWheelDown, lState, Message.X, Message.Y, ccSingle, cdDown, Message.WheelDelta);
     end;
   finally
     DecPaintLock;
