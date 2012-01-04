@@ -127,6 +127,7 @@ type
     procedure AmpersandProc;
     procedure AsciiCharProc;
     procedure BraceOpenProc;
+    procedure BraceCloseProc;
     procedure PointCommaProc;
     procedure CRProc;
     procedure DotProc;    
@@ -379,6 +380,7 @@ begin
            end;
       '#': fProcTable[I] := {$ifdef FPC}@{$endif}AsciiCharProc;
       '{': fProcTable[I] := {$ifdef FPC}@{$endif}BraceOpenProc;
+      '}': fProcTable[I] := {$ifdef FPC}@{$endif}BraceCloseProc;
       ';': fProcTable[I] := {$ifdef FPC}@{$endif}PointCommaProc;
       #13: fProcTable[I] := {$ifdef FPC}@{$endif}CRProc;
       'A'..'Z', 'a'..'z', '_': fProcTable[I] := {$ifdef FPC}@{$endif}IdentProc;
@@ -575,6 +577,12 @@ begin
     inc(Run);
     fTokenID := tkSymbol;
   end;
+end;
+
+procedure TSynAnySyn.BraceCloseProc;
+begin
+  inc(Run);
+  FTokenID := tkSymbol;
 end;
 
 procedure TSynAnySyn.PointCommaProc;
