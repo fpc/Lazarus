@@ -144,14 +144,20 @@ begin
 
   case AKind of
     ACTION_DOWN: CallbackKeyDown(lCurForm, lKey);
+    -1: // This indicates a key char event
+    begin
+      AUTF8Text := UnicodeToUTF8(lChar);
+      AUTF8Char := AUTF8Text;
+      CallbackKeyChar(lCurForm, lKey, AUTF8Char);
+    end;
     ACTION_UP:
     begin
       CallbackKeyUp(lCurForm, lKey);
-      if (lChar <> 0) and ((COMBINING_ACCENT and lChar) = 0) then
+(*      if (lChar <> 0) and ((COMBINING_ACCENT and lChar) = 0) then
       begin
         if CDWidgetset.CombiningAccent <> 0 then
         begin
-(*          // Prepare the input
+          // Prepare the input
           lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, Str);
           javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
           javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, lFontSize);
@@ -163,7 +169,7 @@ begin
           Size.cx := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclwidth);
           Size.cy := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclheight);
           //
-          lCombinedAChar := getDeadChar();*)
+          lCombinedAChar := getDeadChar();
         end;
         AUTF8Text := UnicodeToUTF8(lChar);
         AUTF8Char := AUTF8Text;
@@ -173,7 +179,7 @@ begin
       else if (lChar <> 0) and ((COMBINING_ACCENT and lChar) <> 0) then
       begin
         CDWidgetset.CombiningAccent := lChar;
-      end;
+      end;*)
 
       // Handle the Back hardware key
       if AKeyCode = AKEYCODE_BACK then

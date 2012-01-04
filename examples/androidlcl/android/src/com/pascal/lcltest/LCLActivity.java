@@ -6,8 +6,9 @@ import android.os.*;
 import android.widget.*;
 import android.util.*;
 import android.graphics.*;
+import android.text.*;
 import android.view.*;
-import android.view.inputmethod.InputMethodManager;
+import android.view.inputmethod.*;
 import android.content.res.Configuration;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -22,6 +23,47 @@ import java.util.*;
 
 public class LCLActivity extends Activity implements SensorEventListener, LocationListener
 {
+  // -------------------------------------------
+  // Input connection to get character events
+  // -------------------------------------------
+  private class LCLInputConnection extends BaseInputConnection
+  {
+    private SpannableStringBuilder _editable;
+    View _lclView;
+
+    public LCLInputConnection(View targetView, boolean fullEditor)
+    {
+      super(targetView, fullEditor);
+      _lclView = (View) targetView;
+    }
+
+/*    public Editable getEditable()
+    {
+      if (_editable == null)
+      {
+        _editable = (SpannableStringBuilder) Editable.Factory.getInstance()
+        .newEditable("Placeholder");
+      }
+      return _editable;
+    } This crashes in HTC */
+
+    // This method sends a text to be added at the current cursor position
+    public boolean commitText(CharSequence text, int newCursorPosition)
+    {
+      //if (_editable != null) _editable.append(text);
+      Log.v("lclproject", "LCLInputConnection.commitText =" + text);
+
+      // Send each character of the string
+      int eventResult, i;
+      for (i = 0; i<text.length(); i++)
+      {
+        eventResult = LCLOnKey(-1, 0, null, (int) text.charAt(i));
+        if ((eventResult & 1) != 0) lclsurface.postInvalidate();
+      }
+      return true;
+    }
+  }
+
   // -------------------------------------------
   // Our drawing surface
   // -------------------------------------------
@@ -98,6 +140,20 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
     {
       int eventResult = LCLOnTouch(event.getX(), event.getY(), event.getAction());
       if ((eventResult | 1) != 0) postInvalidate();
+      return true;
+    }
+
+    @Override public InputConnection onCreateInputConnection(EditorInfo outAttrs)
+    {
+      outAttrs.actionLabel = null;
+      outAttrs.label = "Test text";
+      outAttrs.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
+      outAttrs.imeOptions = EditorInfo.IME_ACTION_DONE;
+      return new LCLInputConnection(this, true);
+    }
+
+    @Override public boolean onCheckIsTextEditor()
+    {
       return true;
     }
   }
