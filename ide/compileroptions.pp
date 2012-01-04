@@ -3709,7 +3709,7 @@ begin
   if ParsedStamp[Option]<>CompilerParseStamp then begin
     if Parsing[Option] then begin
       DebugLn('TParsedCompilerOptions.GetParsedValue Circle in Options: ',EnumToStr(Option),' Unparsed="',UnparsedValues[Option],'"');
-      ParsedError(Option, lisCycleInMacros);
+      ParsedError(Option, lisEndlessLoopInMacros);
       exit('');
     end;
     Parsing[Option]:=true;

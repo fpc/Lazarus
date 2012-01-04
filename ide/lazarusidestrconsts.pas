@@ -3394,9 +3394,9 @@ resourcestring
   lisVersionMismatch = 'Version mismatch';
   lisUnableToAddTheDependencyBecauseThePackageHasAlread = 'Unable to add the '
     +'dependency %s, because the package %s has already a dependency %s';
-  lisCycleDetected = 'Cycle detected';
-  lisUnableToAddTheDependencyBecauseThisWouldCreateACyc = 'Unable to add the '
-    +'dependency %s, because this would create a cycle. Dependency %s';
+  lisCircularDependencyDetected = 'Circular dependency detected';
+  lisUnableToAddTheDependencyBecauseThisWouldCreateA = 'Unable to add the '
+    +'dependency %s, because this would create a circular dependency. Dependency %s';
   lisProjAddTheProjectHasAlreadyADependency = 'The project has already a '
     +'dependency for the package %s%s%s.';
   lisProjAddPackageNotFound = 'Package not found';
@@ -5274,7 +5274,7 @@ resourcestring
   lisPEDirectories = 'Directories';
   lisSelectAnotherLCLWidgetSetMacroLCLWidgetType = 'Select another LCL widget '
     +'set (macro LCLWidgetType)';
-  lisCycleInMacros = 'Cycle in macros';
+  lisEndlessLoopInMacros = 'Endless loop in macros';
 
   // Uses Unit dialog
   dlgAlreadyUsesAllOtherUnits = '"%s" already uses all the units in this project';

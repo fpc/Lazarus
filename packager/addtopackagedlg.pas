@@ -445,8 +445,8 @@ begin
         s:=PackagePathToStr(PathList);
         DebugLn(['CheckAddingDependency ',LazPackage.Name,' requiring ',RequiredPackage.IDAsString,' creates cycles with ',s]);
         if not Quiet then
-          IDEMessageDialog(lisCycleDetected,
-            Format(lisUnableToAddTheDependencyBecauseThisWouldCreateACyc, [
+          IDEMessageDialog(lisCircularDependencyDetected,
+            Format(lisUnableToAddTheDependencyBecauseThisWouldCreateA, [
               RequiredPackage.IDAsString, s]),
             mtError,[mbCancel]);
         exit(mrCancel);
