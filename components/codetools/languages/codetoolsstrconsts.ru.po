@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-08-20 21:14+0300\n"
+"PO-Revision-Date: 2012-01-05 00:27+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -155,7 +155,7 @@ msgstr "Каталог отладчика"
 
 #: codetoolsstrconsts.ctsdefaultancestornotfound
 msgid "default ancestor %s not found"
-msgstr ""
+msgstr "предок по умолчанию %s не найден"
 
 #: codetoolsstrconsts.ctsdefaultclassancestortobjectnotfound
 msgid "default class ancestor TObject not found"
@@ -163,7 +163,7 @@ msgstr "класс-предок по умолчанию - TObject - не най�
 
 #: codetoolsstrconsts.ctsdefaultdispinterfaceancestoridispatchnotfound
 msgid "default dispinterface ancestor IDispatch not found"
-msgstr ""
+msgstr "предок DispInterface по умолчанию (IDispatch) не найден"
 
 #: codetoolsstrconsts.ctsdefaultfpcsource2operatingsystem
 msgid "Default fpc source Operating System 2"
@@ -191,7 +191,7 @@ msgstr "интерфейс-предок по умолчанию - IInterface - �
 
 #: codetoolsstrconsts.ctsdefaultjavaclassancestorjlobjectnotfound
 msgid "default java class ancestor JLObject not found"
-msgstr ""
+msgstr "предок классов Java по умолчанию (JLObject) не найден"
 
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
 msgid "default parameter expected, but %s found"

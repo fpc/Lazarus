@@ -16157,6 +16157,10 @@ msgstr "Tidak bisa membaca file %s%s%s%sKesalahan: %s"
 msgid "Unable to read file %s%s%s."
 msgstr "Tidak bisa membaca file %s%s%s."
 
+#: lazarusidestrconsts.lisunabletoreadlpi
+msgid "Unable to read lpi"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
 msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile"
 msgid "Unable to read the project info file%s%s%s%s."

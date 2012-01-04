@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-01-03 19:35+0400\n"
+"PO-Revision-Date: 2012-01-05 01:09+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -16039,6 +16039,10 @@ msgstr "Невозможно прочитать файл %s%s%s%sОшибка: %
 #: lazarusidestrconsts.lisunabletoreadfilename
 msgid "Unable to read file %s%s%s."
 msgstr "Невозможно прочитать файл %s%s%s."
+
+#: lazarusidestrconsts.lisunabletoreadlpi
+msgid "Unable to read lpi"
+msgstr "Невозможно прочитать файл LPI"
 
 #: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
 msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile"
