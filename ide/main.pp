@@ -15389,25 +15389,41 @@ var
     FileInfo: TSearchRec;
     CurDirectory: String;
     CurFilename: String;
+    OnlyPascalSources: Boolean;
   begin
     Result:=mrCancel;
-    if (Options.ExtraFiles=nil) then begin
+    if (Options.ExtraFiles<>nil) then begin
       for i:=0 to Options.ExtraFiles.Count-1 do begin
         CurFileMask:=Options.ExtraFiles[i];
         if not GlobalMacroList.SubstituteStr(CurFileMask) then exit;
+        CurFileMask:=ChompPathDelim(TrimFilename(CurFileMask));
+        if not FilenameIsAbsolute(CurFileMask) then
+          CurFileMask:=AppendPathDelim(Project1.ProjectDirectory)+CurFileMask;
+        OnlyPascalSources:=false;
+        if DirPathExistsCached(CurFileMask) then begin
+          // a whole directory
+          OnlyPascalSources:=true;
+          CurFileMask:=AppendPathDelim(CurFileMask)+GetAllFilesMask;
+        end else if FileExistsCached(CurFileMask) then begin
+          // single file
+          Files.Add(CurFileMask);
+          continue;
+        end else begin
+          // a mask
+        end;
         if FindFirstUTF8(CurFileMask,faAnyFile,FileInfo)=0
         then begin
           CurDirectory:=AppendPathDelim(ExtractFilePath(CurFileMask));
-          if not FilenameIsAbsolute(CurDirectory) then begin
-            CurDirectory:=AppendPathDelim(Project1.ProjectDirectory)
-                          +CurDirectory;
-          end;
           repeat
             // check if special file
             if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
             then
               continue;
+            if OnlyPascalSources and not FilenameIsPascalSource(FileInfo.Name)
+            then
+              continue;
             CurFilename:=CurDirectory+FileInfo.Name;
+            debugln(['AddExtraFiles ',CurFilename]);
             if FileIsText(CurFilename) then
               Files.Add(CurFilename);
           until FindNextUTF8(FileInfo)<>0;
