@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -54,7 +54,7 @@ msgstr "Documento vazio"
 
 #: msgjsonviewer.serrcreatingconfigdir
 msgid "Could not create the configuration files directory \"s\""
-msgstr "Impossível criar diretório de configurações de arquivo \"%s\""
+msgstr "Impossível criar diretório de configurações de arquivo \"s\""
 
 #: msgjsonviewer.serrinvalidvalue
 msgid "Invalid value or wrong type: \"%s\""

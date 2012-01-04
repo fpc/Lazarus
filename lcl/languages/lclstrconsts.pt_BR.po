@@ -806,7 +806,7 @@ msgstr "Rótulo Inativo"
 
 #: lclstrconsts.rsindexoutofbounds
 msgid "%s Index %d out of bounds 0 .. %d"
-msgstr "%s Índice %s fora dos limites 0 .. %d"
+msgstr "%s Índice %d fora dos limites 0 .. %d"
 
 #: lclstrconsts.rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
@@ -1266,7 +1266,7 @@ msgstr " AVISO: Há %d estruturas \"TimerInfo\" restantes. Liberando"
 
 #: lclstrconsts.rswarningunremovedpaintmessages
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
-msgstr " AVISO: Há %d, vínculos de mensagem \"LM_PAINT/LM_GtkPAINT\" não removidos, restantes."
+msgstr " AVISO: Há %s, vínculos de mensagem \"LM_PAINT/LM_GtkPAINT\" não removidos, restantes."
 
 #: lclstrconsts.rswhitecolorcaption
 msgid "White"

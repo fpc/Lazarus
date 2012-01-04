@@ -3729,7 +3729,7 @@ msgstr "Nome da Classe inválido"
 
 #: lazarusidestrconsts.lisa2pinvalidcycle
 msgid "Invalid Cycle"
-msgstr ""
+msgstr "Referência circular inválida"
 
 #: lazarusidestrconsts.lisa2pinvalidfile
 msgid "Invalid file"
@@ -5122,7 +5122,7 @@ msgstr "Escolha um nome para o novo componente"
 
 #: lazarusidestrconsts.lischooseanfpcmessagefile
 msgid "Choose an FPC message file"
-msgstr ""
+msgstr "Escolha um arquivo de mensagens FPC"
 
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a pascal file for indentation examples"
@@ -6755,11 +6755,11 @@ msgstr "Programa personalizado%sUm programa Free Pascal."
 
 #: lazarusidestrconsts.liscycledetected
 msgid "Cycle detected"
-msgstr ""
+msgstr "Referência circular detectada"
 
 #: lazarusidestrconsts.liscycleinmacros
 msgid "Cycle in macros"
-msgstr ""
+msgstr "Referência circular em macros"
 
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
@@ -8469,7 +8469,7 @@ msgstr "\"fpcmake\" falhou"
 
 #: lazarusidestrconsts.lisfpcmessagefile
 msgid "FPC message file"
-msgstr ""
+msgstr "Arquivo de mensagem FPC"
 
 #: lazarusidestrconsts.lisfpcomponents
 msgctxt "lazarusidestrconsts.lisfpcomponents"
@@ -9213,7 +9213,7 @@ msgstr "Nome de arquivo do compilador inválido"
 
 #: lazarusidestrconsts.lisinvalidcycle
 msgid "Invalid cycle"
-msgstr ""
+msgstr "Referência circular inválida"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -9305,7 +9305,7 @@ msgstr "%s%s%s é um nome de projeto inválido.%sFavor escolher outro nome (ex. 
 
 #: lazarusidestrconsts.lisisathiscycledependencyisnotallowed
 msgid "%s is a %s.%sThis cycle dependency is not allowed."
-msgstr ""
+msgstr "%s é um %s.%sEsta dependência circular não é permitida."
 
 #: lazarusidestrconsts.lisisddirectorynotfound
 msgid "directory not found"
@@ -11988,7 +11988,7 @@ msgstr "sem nome"
 
 #: lazarusidestrconsts.lisnone
 msgid "%snone"
-msgstr "%nenhum"
+msgstr "%snenhum"
 
 #: lazarusidestrconsts.lisnone2
 msgid "none"
@@ -12632,7 +12632,7 @@ msgstr "Remover dependência %s%s%s%s do pacote %s%s%s?"
 
 #: lazarusidestrconsts.lispckeditremovedfiles
 msgid "Removed Files"
-msgstr ""
+msgstr "Arquivos excluídos"
 
 #: lazarusidestrconsts.lispckeditremovedrequiredpackages
 msgctxt "lazarusidestrconsts.lispckeditremovedrequiredpackages"
@@ -12952,7 +12952,7 @@ msgstr "Ordenar arquivos alfabeticamente"
 
 #: lazarusidestrconsts.lispethefileiscurrentlynotintheincludepathofthepackagea
 msgid "The file \"%s\" is currently not in the include path of the package.%sAdd \"%s\" to the include path?"
-msgstr "O arquivo \"%s\" não está atualmente no caminho de inclusões do pacote.%sAdicioná-lo?"
+msgstr "O arquivo \"%s\" não está atualmente no caminho de inclusões do pacote.%sAdicionar \"%s\" ao caminho de inclusões?"
 
 #: lazarusidestrconsts.lispethereisalreadyanunitwiththisnamefile
 msgctxt "lazarusidestrconsts.lispethereisalreadyanunitwiththisnamefile"
@@ -13123,7 +13123,7 @@ msgstr "Compilando pacote %s"
 
 #: lazarusidestrconsts.lispkgmangcycleinpackagedependencies
 msgid "Cycle in package dependencies"
-msgstr ""
+msgstr "Referência circular nas dependências do pacote"
 
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"
@@ -13386,10 +13386,9 @@ msgid "The package %s is a runtime only package.%sRuntime only packages can not 
 msgstr "O pacote %s é um pacote somente de tempo de execução.%sOs pacotes somente de tempo de execução, não podem ser instalados no IDE."
 
 #: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
-#, fuzzy
 #| msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also uses the default unit search of the compiler. This creates a circle.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
 msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also uses the default unit search of the compiler. This creates a cycle.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
-msgstr "O pacote %s é compilado automaticamente e seu diretório de saída é \"%s\", ao qual está no caminho padrão de buscas de unidades do compilador. O pacote usa outros pacotes que também usam o caminho padrão de buscas de unidades do compilador. Isto cria uma referência circular.%sVocê pode resolver este problema%sremovendo o caminho de sua configuração de compilador (i.e. fpc.cfg)%ou desabilitando a auto atualização deste pacote%sou removendo dependências."
+msgstr "O pacote %s é compilado automaticamente e seu diretório de saída é \"%s\", ao qual está no caminho padrão de buscas de unidades do compilador. O pacote usa outros pacotes que também usam o caminho padrão de buscas de unidades do compilador. Isto cria uma referência circular.%sVocê pode resolver este problema%sremovendo o caminho de sua configuração de compilador (i.e. fpc.cfg)%sou desabilitando a auto atualização deste pacote%sou removendo dependências."
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
 msgid "The package %s%s%s is marked for installation, but can not be found.%sRemove dependency from the installation list of packages?"
@@ -13425,7 +13424,7 @@ msgstr "Há duas unidades com o mesmo nome:%s%s1. %s%s%s de %s%s2. %s%s%s de %s%
 
 #: lazarusidestrconsts.lispkgmangthereisacycleintherequiredpackages
 msgid "There is a cycle in the required packages. See package graph."
-msgstr ""
+msgstr "Há uma referência circular nos pacotes requeridos. Veja o gráfico de pacotes."
 
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenameasapackage
 msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
@@ -15096,7 +15095,7 @@ msgstr "O editor de componente da classe %s%s%s criou o erro:%s%s%s%s"
 
 #: lazarusidestrconsts.listhecomponenteditorofclassinvokedwithverbhascreated
 msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
-msgstr "O componente editor da classe %s%s%schamado com o verbob #%s %s%s%s%sfoi criado com o erro:%s%s%s%s"
+msgstr "O componente editor da classe %s%s%s%schamado com o verbob #%s %s%s%s%sfoi criado com o erro:%s%s%s%s"
 
 #: lazarusidestrconsts.listhecomponentisinheritedfromtodeleteaninheritedcomp
 msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."
@@ -15203,7 +15202,7 @@ msgstr "O índice de arquivo é necessário para funcções como a localização
 
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
-msgstr "O arquivo %s%s%s é um vínculo simbólico;%s%sAbrir %s%s% ao invés dele?"
+msgstr "O arquivo %s%s%s é um vínculo simbólico.%s%sAbrir %s%s%s ao invés dele?"
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"
@@ -15537,7 +15536,7 @@ msgstr "Esta declaração não pode ser extraída.%sFavor selecionar algum códi
 
 #: lazarusidestrconsts.listhiswillcreateacycle
 msgid "This will create a cycle."
-msgstr ""
+msgstr "Isto criará uma referência circular."
 
 #: lazarusidestrconsts.listhreads
 msgctxt "lazarusidestrconsts.listhreads"
@@ -15806,7 +15805,7 @@ msgstr "Impossível adicionar comentário de cabeçalho de recurso no arquivo de
 
 #: lazarusidestrconsts.lisunabletoaddresourcetformdatatoresourcefileprobably
 msgid "Unable to add resource T%s:FORMDATA to resource file %s%s%s%s.%sProbably a syntax error."
-msgstr "Impossível adicionar recurso T%s:FORMDATA para arquivo de recurso %s%s%s%s.Provavelmente um erro de sintaxe."
+msgstr "Impossível adicionar recurso T%s:FORMDATA para arquivo de recurso %s%s%s%s.%sProvavelmente um erro de sintaxe."
 
 #: lazarusidestrconsts.lisunabletoaddsetting
 msgid "Unable to add setting"
@@ -15814,15 +15813,15 @@ msgstr "Impossível adicionar configuração"
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethepackagehasalread
 msgid "Unable to add the dependency %s, because the package %s has already a dependency %s"
-msgstr ""
+msgstr "Incapaz de adicionar a dependência %s, porque o pacote %s já tem uma dependência %s"
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethepackagehasalread2
 msgid "Unable to add the dependency %s, because the package %s has already a dependency to %s"
-msgstr ""
+msgstr "Incapaz de adicionar a dependência %s, porque o pacote %s já tem uma dependência para %s"
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethiswouldcreateacyc
 msgid "Unable to add the dependency %s, because this would create a cycle. Dependency %s"
-msgstr ""
+msgstr "Incapaz de adicionar a dependência %s, porque isto criará uma referência circular. Dependência %s"
 
 #: lazarusidestrconsts.lisunabletoaddtoprojectbecausethereisalreadyaunitwith
 msgid "Unable to add %s to project, because there is already a unit with the same name in the Project."
@@ -15862,7 +15861,7 @@ msgstr "Impossível converter LFM para LRS e escrever arquivo LRS"
 
 #: lazarusidestrconsts.lisunabletoconverttextformdataoffileintobinarystream
 msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
-msgstr "Impossível converter os dados texto do arquivo %s%s%s%s em um fluxo binário (%s)"
+msgstr "Impossível converter os dados texto do arquivo %s%s%s%s%sem um fluxo binário (%s)"
 
 #: lazarusidestrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
@@ -15870,7 +15869,7 @@ msgstr "Impossível copiar arquivo"
 
 #: lazarusidestrconsts.lisunabletocopyfileto
 msgid "Unable to copy file %s%s%s%sto %s%s%s"
-msgstr "Impossível copiar o arquivo %s%s%spara %s%s%s"
+msgstr "Impossível copiar o arquivo %s%s%s%spara %s%s%s"
 
 #: lazarusidestrconsts.lisunabletocopyfileto2
 msgid "Unable to copy file %s%s%s%sto %s%s%s."
@@ -16253,7 +16252,7 @@ msgstr "Inicializando aplicação"
 
 #: lazarusidestrconsts.lisusemessagefile
 msgid "Use message file:"
-msgstr ""
+msgstr "Usar o arquivo de mensagem:"
 
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"

@@ -155,7 +155,7 @@ msgstr "Diretório Depurador"
 
 #: codetoolsstrconsts.ctsdefaultancestornotfound
 msgid "default ancestor %s not found"
-msgstr ""
+msgstr "ancestral padrão %s não encontrado"
 
 #: codetoolsstrconsts.ctsdefaultclassancestortobjectnotfound
 msgid "default class ancestor TObject not found"
@@ -163,7 +163,7 @@ msgstr "classe ancestral padrão \"TObject\" não encontrada"
 
 #: codetoolsstrconsts.ctsdefaultdispinterfaceancestoridispatchnotfound
 msgid "default dispinterface ancestor IDispatch not found"
-msgstr ""
+msgstr "ancestral padrão \"IDispatch\" da \"dispinterface\" não encontrado"
 
 #: codetoolsstrconsts.ctsdefaultfpcsource2operatingsystem
 msgid "Default fpc source Operating System 2"
@@ -191,7 +191,7 @@ msgstr "interface ancestral padrão \"IInterface\" não encontrada"
 
 #: codetoolsstrconsts.ctsdefaultjavaclassancestorjlobjectnotfound
 msgid "default java class ancestor JLObject not found"
-msgstr ""
+msgstr "classe ancestral padrão java \"JLObject\" não encontrada"
 
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
 msgid "default parameter expected, but %s found"

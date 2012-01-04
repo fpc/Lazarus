@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 
 #: ipconst.cacheadding
@@ -430,7 +430,7 @@ msgstr "Pingando %s com %d bytes dados"
 
 #: ipconst.sicmpthreadexecute
 msgid "Thread %d executing (Hop number = %d)"
-msgstr "Thread %s executando (Número salto = %d)"
+msgstr "Thread %d executando (Número salto = %d)"
 
 #: ipconst.sicmpthreadterminate
 msgid "Thread %d terminating (Hop number = %d)"

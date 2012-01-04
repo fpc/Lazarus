@@ -415,7 +415,7 @@ msgstr "Favor abrir um projeto primeiro."
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
 msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
-msgstr "Favor colocar o cursor do editor de código em um identificador na afirmação.%sPor exemplo:%MyVar:=3;"
+msgstr "Favor colocar o cursor do editor de código em um identificador na afirmação.%sPor exemplo:%sMyVar:=3;"
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoronanidentifie
 msgid "Please place the cursor of the source editor on an identifier of a declaration."
