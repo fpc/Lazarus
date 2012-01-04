@@ -7785,31 +7785,42 @@ var
   procedure DoFindMatchingQuote(q: char);
   var
     Test: char;
-    Len: integer;
+    Len, PrevPosX, PrevCnt: integer;
   begin
     StartPt:=Point(PosX,PosY);
     GetHighlighterAttriAtRowColEx(StartPt, s1, BracketKind, TmpStart, TmpAttr);
-    if (TmpStart = PosX) and (Length(s1)>0) and (s1[Length(s1)] = q) then begin
+    // Checck if we have a complete token, e.g. Highlightec returned entire "string"
+    if (TmpStart = PosX) and (Length(s1)>1) and (s1[Length(s1)] = q) then begin
       PosX := PosX + Length(s1) - 1;
       DoMatchingBracketFound;
       exit;
     end;
-    if (TmpStart + Length(s1) - 1 = PosX) and (Length(s1)>0) and (s1[1] = q) then begin
+    if (TmpStart + Length(s1) - 1 = PosX) and (Length(s1)>1) and (s1[1] = q) then begin
       PosX := PosX - Length(s1) + 1;
       DoMatchingBracketFound;
       exit;
     end;
+
     MaxKnownTokenPos := 0;
     Len := PosX;
+    PrevPosX := -1;
+    PrevCnt := 0;
     // search until start of line
-    while PosX > 1 do begin
+     while PosX > 1 do begin
       Dec(PosX);
       Test := Line[PosX];
       if (Test = q) and IsContextBracket then begin
-        DoMatchingBracketFound;
-        exit;
+        inc(PrevCnt);
+        if PrevPosX < 0 then PrevPosX := PosX;
       end;
     end;
+    // 1st, 3rd, 5th, ... are opening
+    if (PrevPosX > 0) and (PrevCnt mod 2 = 1) then begin
+      PosX := PrevPosX;
+      DoMatchingBracketFound;
+      exit;
+    end;
+
     PosX := Len;
     Len := Length(Line);
     while PosX < Len do begin
@@ -7819,6 +7830,12 @@ var
         DoMatchingBracketFound;
         exit;
       end;
+    end;
+
+    if (PrevPosX > 0) then begin
+      PosX := PrevPosX;
+      DoMatchingBracketFound;
+      exit;
     end;
   end;
 
