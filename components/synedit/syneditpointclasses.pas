@@ -87,6 +87,7 @@ type
     FHookedLines: Boolean;
     FIsSettingText: Boolean;
     FActiveSelectionMode: TSynSelectionMode;
+    FOnSelAvailChange: TNotifyEvent;
     FSelectionMode:       TSynSelectionMode;
     FStartLinePos: Integer; // 1 based
     FStartBytePos: Integer; // 1 based
@@ -165,6 +166,7 @@ type
     // (depends if caret was at block border or not)
     property  AutoExtend: Boolean read FAutoExtend write FAutoExtend;
     property  Hide: Boolean read FHide write SetHide;
+    property  OnSelAvailChange: TNotifyEvent read FOnSelAvailChange write FOnSelAvailChange;
   end;
 
   { TSynEditCaret }
@@ -1376,8 +1378,9 @@ procedure TSynEditSelection.SetStartLineBytePos(Value : TPoint);
 // logical position (byte)
 var
   nInval1, nInval2: integer;
-  SelChanged: boolean;
+  SelChanged, WasAvail: boolean;
 begin
+  WasAvail := SelAvail;
   Value.y := MinMax(Value.y, 1, fLines.Count);
   if (FCaret = nil) or FCaret.AllowPastEOL then
     Value.x := Max(Value.x, 1)
@@ -1412,6 +1415,8 @@ begin
     FLastCarePos := Point(FCaret.OldCharPos, FCaret.OldLinePos);
   if SelChanged then
     fOnChangeList.CallNotifyEvents(self);
+  if assigned(FOnSelAvailChange) and (WasAvail <> SelAvail) then
+    FOnSelAvailChange(Self);
 end;
 
 procedure TSynEditSelection.AdjustStartLineBytePos(Value: TPoint);
@@ -1455,6 +1460,8 @@ procedure TSynEditSelection.SetEndLineBytePos(Value : TPoint);
 var
   s: string;
 {$ENDIF}
+var
+  WasAvail: Boolean;
 begin
   if FEnabled then begin
     Value.y := MinMax(Value.y, 1, fLines.Count);
@@ -1475,7 +1482,9 @@ begin
           Dec(Value.X);
       end;
       {$ENDIF}
+
       if (Value.X <> FEndBytePos) or (Value.Y <> FEndLinePos) then begin
+        WasAvail := SelAvail;
         if (ActiveSelectionMode = smColumn) and (Value.X <> FEndBytePos) then
           FInvalidateLinesMethod(Min(FStartLinePos, Min(FEndLinePos, Value.Y)),
                                  Max(FStartLinePos, Max(FEndLinePos, Value.Y)))
@@ -1487,6 +1496,8 @@ begin
         if FCaret <> nil then
           FLastCarePos := Point(FCaret.OldCharPos, FCaret.OldLinePos);
         FOnChangeList.CallNotifyEvents(self);
+        if assigned(FOnSelAvailChange) and (WasAvail <> SelAvail) then
+          FOnSelAvailChange(Self);
       end;
     end;
   end;

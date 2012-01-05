@@ -194,7 +194,8 @@ type
     sfLeftGutterClick, sfRightGutterClick,
     sfDblClicked, sfTripleClicked, sfQuadClicked,
     sfWaitForDragging, sfIsDragging, sfWaitForMouseSelecting, sfMouseSelecting, sfMouseDoneSelecting,
-    sfIgnoreUpClick
+    sfIgnoreUpClick,
+    sfSelChanged
     );                                           //mh 2000-10-30
   TSynStateFlags = set of TSynStateFlag;
 
@@ -372,6 +373,7 @@ type
   { TCustomSynEdit }
 
   TCustomSynEdit = class(TSynEditBase)
+    procedure SelAvailChange(Sender: TObject);
   private
     procedure WMDropFiles(var Msg: TMessage); message WM_DROPFILES;
     procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
@@ -1829,6 +1831,7 @@ begin
   FBlockSelection.Caret := FCaret;
   FBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
   FBlockSelection.AddChangeHandler({$IFDEF FPC}@{$ENDIF}DoBlockSelectionChanged);
+  FBlockSelection.OnSelAvailChange  := @SelAvailChange;
 
   FInternalBlockSelection := TSynEditSelection.Create(FTheLinesView, False);
   FInternalBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
@@ -2130,6 +2133,8 @@ begin
         DumpStack;
         {$ENDIF}
       end;
+      if sfSelChanged in FStateFlags then
+        SelAvailChange(nil);
     end;
   end;
 end;
@@ -3300,8 +3305,6 @@ begin
     Exclude(fStateFlags, sfWaitForDragging);
   end;
 
-  if SelAvail then
-    AquirePrimarySelection;
   if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
     exit;
   LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
@@ -4127,6 +4130,18 @@ begin
       ShowScrollBar(Handle, SB_Vert, False);
     {$ENDIF} {$ENDIF}
   end;
+end;
+
+procedure TCustomSynEdit.SelAvailChange(Sender: TObject);
+begin
+  if PaintLock > 0 then begin
+    Include(FStateFlags, sfSelChanged);
+    exit;
+  end;
+  Exclude(FStateFlags, sfSelChanged);
+  if SelAvail
+  then AquirePrimarySelection
+  else SurrenderPrimarySelection;
 end;
 
 procedure TCustomSynEdit.WMDropFiles(var Msg: TMessage);
@@ -5686,9 +5701,6 @@ begin
       FBlockSelection.ActiveSelectionMode := FBlockSelection.SelectionMode;
 
     FBlockSelection.AutoExtend := Command in [ecSelectionStart..ecSelectionEnd];
-    if Command in [ecSelectionStart..ecSelectionEnd] then
-      AquirePrimarySelection;
-
     FCaret.ChangeOnTouch;
 
     case Command of
@@ -7135,7 +7147,6 @@ begin
   SetBlockEnd(ptAfter);
   if Mode <> smCurrent then
     FBlockSelection.ActiveSelectionMode := Mode;
-  AquirePrimarySelection;
 
   if MakeSelectionVisible then begin
     //l1 := FBlockSelection.FirstLineBytePos;;
