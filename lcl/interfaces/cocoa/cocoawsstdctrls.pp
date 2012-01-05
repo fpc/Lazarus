@@ -367,7 +367,8 @@ var
   state : NSInteger;
 begin
   Result := cbUnchecked;
-  if ACustomCheckBox.Handle=0 then Exit;
+  if not ACustomCheckBox.HandleAllocated then
+    Exit;
   state := NSButton(ACustomCheckBox.Handle).state;
   case state of
     NSOnState: Result := cbChecked;
@@ -387,8 +388,8 @@ class procedure TCocoaWSCustomCheckBox.SetState(
 const
   buttonState: array [TcheckBoxState] of NSInteger = (NSOffState, NSOnState, NSMixedState);
 begin
-  if ACustomCheckBox.Handle=0 then Exit;
-  NSButton(ACustomCheckBox.Handle).setState( buttonState[NewState]);
+  if ACustomCheckBox.HandleAllocated then
+    NSButton(ACustomCheckBox.Handle).setState(buttonState[NewState]);
 end;
 
 { TCocoaWSRadioButton }
