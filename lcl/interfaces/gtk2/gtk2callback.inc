@@ -225,7 +225,7 @@ end;
 function gtkRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 var
   WinWidgetInfo: PWidgetInfo;
-  HiddenLCLObject, LCLObject: TObject;
+  LCLObject: TObject;
   NewEventMask: TGdkEventMask;
   TheWinControl: TWinControl;
   ClientWidget: PGtkWidget;
@@ -239,65 +239,56 @@ begin
   EventTrace('realizeafter', nil);
   {$ENDIF}
 
-  HiddenLCLObject:=GetHiddenLCLObject(Widget);
-  if HiddenLCLObject=nil then begin
-    // this is a normal lcl wigdet
+  MainWidget:=GetMainWidget(Widget);
+  WinWidgetInfo:=GetWidgetInfo(MainWidget,true);
+  LCLObject:=GetLCLObject(MainWidget);
+  if (LCLObject<>nil) and (WinWidgetInfo<>nil) then begin
+    ClientWidget:=GetFixedWidget(Widget);
+    if (LCLObject is TWinControl) then
+      TheWinControl:=TWinControl(LCLObject)
+    else
+      TheWinControl:=nil;
 
-    MainWidget:=GetMainWidget(Widget);
-    WinWidgetInfo:=GetWidgetInfo(MainWidget,true);
-    LCLObject:=GetLCLObject(MainWidget);
-    if (LCLObject<>nil) and (WinWidgetInfo<>nil) then begin
-      ClientWidget:=GetFixedWidget(Widget);
-      if (LCLObject is TWinControl) then
-        TheWinControl:=TWinControl(LCLObject)
-      else
-        TheWinControl:=nil;
+    // set extra signal masks after the widget window is created
+    // define extra events we're interrested in
+    //write('GTKRealizeAfterCB ');
+    //if TheWinControl<>nil then DbgOut(' ',TheWinControl.Name,':',TheWinControl.ClassName,' ',DbgS(TheWinControl.Handle));
+    //DebugLn(' Widget=',DbgS(Widget),' Fixed=',DbgS(GetFixedWidget(Widget)),' Main=',DbgS(GetMainWidget(Widget)));
+    if (TheWinControl<>nil) then begin
+      //DebugLn(['gtkRealizeAfterCB ',GetWidgetDebugReport(Widget)]);
+      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
 
-      // set extra signal masks after the widget window is created
-      // define extra events we're interrested in
-      //write('GTKRealizeAfterCB ');
-      //if TheWinControl<>nil then DbgOut(' ',TheWinControl.Name,':',TheWinControl.ClassName,' ',DbgS(TheWinControl.Handle));
-      //DebugLn(' Widget=',DbgS(Widget),' Fixed=',DbgS(GetFixedWidget(Widget)),' Main=',DbgS(GetMainWidget(Widget)));
-      if (TheWinControl<>nil) then begin
-        //DebugLn(['gtkRealizeAfterCB ',GetWidgetDebugReport(Widget)]);
-        {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+      NewEventMask:=gdk_window_get_events(GetControlWindow(Widget))
+                    or WinWidgetInfo^.EventMask;
+      gtk_widget_add_events(Widget,NewEventMask);
+      gdk_window_set_events(GetControlWindow(Widget),NewEventMask);
 
-        NewEventMask:=gdk_window_get_events(GetControlWindow(Widget))
+      if (ClientWidget<>nil) and (GetControlWindow(ClientWidget)<>nil)
+      and (GetControlWindow(ClientWidget)<>GetControlWindow(Widget)) then begin
+        //DebugLn(['gtkRealizeAfterCB ClientWindow<>Window']);
+        NewEventMask:=gdk_window_get_events(GetControlWindow(ClientWidget))
                       or WinWidgetInfo^.EventMask;
-        gtk_widget_add_events(Widget,NewEventMask);
-        gdk_window_set_events(GetControlWindow(Widget),NewEventMask);
-
-        if (ClientWidget<>nil) and (GetControlWindow(ClientWidget)<>nil)
-        and (GetControlWindow(ClientWidget)<>GetControlWindow(Widget)) then begin
-          //DebugLn(['gtkRealizeAfterCB ClientWindow<>Window']);
-          NewEventMask:=gdk_window_get_events(GetControlWindow(ClientWidget))
-                        or WinWidgetInfo^.EventMask;
-          gtk_widget_add_events(ClientWidget,WinWidgetInfo^.EventMask);
-          gdk_window_set_events(GetControlWindow(ClientWidget),NewEventMask);
-        end;
-        //DebugLn('BBB1 ',DbgS(NewEventMask),8),' ',DbgS(Cardinal(gdk_window_get_events(Widget^.Window)));
-        {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
+        gtk_widget_add_events(ClientWidget,WinWidgetInfo^.EventMask);
+        gdk_window_set_events(GetControlWindow(ClientWidget),NewEventMask);
       end;
-
-      if TheWinControl<>nil then 
-      begin
-        TheWinControl.CNPreferredSizeChanged;
-        TGtkPrivateWidgetClass(TheWinControl.WidgetSetClass.WSPrivate).UpdateCursor(WinWidgetInfo);
-        ConnectInternalWidgetsSignals(MainWidget,TheWinControl);
-
-        if TheWinControl is TCustomPage then
-          UpdateNotebookPageTab(nil,TheWinControl);
- 
-        if TheWinControl is TCustomForm then
-          SetFormShowInTaskbar(TCustomForm(TheWinControl),
-                               TCustomForm(TheWinControl).ShowInTaskbar);
-      end;
-
+      //DebugLn('BBB1 ',DbgS(NewEventMask),8),' ',DbgS(Cardinal(gdk_window_get_events(Widget^.Window)));
+      {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
     end;
-  end else begin
-    // this is a hidden child widget of a lcl widget
-    if HiddenLCLObject is TWinControl then
-      ConnectInternalWidgetsSignals(Widget,TWinControl(HiddenLCLObject));
+
+    if TheWinControl<>nil then
+    begin
+      TheWinControl.CNPreferredSizeChanged;
+      TGtkPrivateWidgetClass(TheWinControl.WidgetSetClass.WSPrivate).UpdateCursor(WinWidgetInfo);
+      ConnectInternalWidgetsSignals(MainWidget,TheWinControl);
+
+      if TheWinControl is TCustomPage then
+        UpdateNotebookPageTab(nil,TheWinControl);
+
+      if TheWinControl is TCustomForm then
+        SetFormShowInTaskbar(TCustomForm(TheWinControl),
+                             TCustomForm(TheWinControl).ShowInTaskbar);
+    end;
+
   end;
 end;
 

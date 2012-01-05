@@ -341,8 +341,6 @@ procedure DestroyWidget(Widget: PGtkWidget);
 procedure SetLCLObject(const Widget: Pointer; const AnObject: TObject);
 function GetLCLObject(const Widget: Pointer): TObject;
 function GetNearestLCLObject(Widget: PGtkWidget): TObject;
-procedure SetHiddenLCLObject(const Widget: Pointer; const AnObject: TObject);
-function GetHiddenLCLObject(const Widget: Pointer): TObject;
 function GetWinControlWidget(Child: PGtkWidget): PGtkWidget;
 function GetWinControlFixedWidget(Child: PGtkWidget): PGtkWidget;
 function FindFixedChildListItem(ParentFixed: PGtkFixed; Child: PGtkWidget): PGList;

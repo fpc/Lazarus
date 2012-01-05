@@ -3709,22 +3709,6 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
- Some need the HiddenLCLobject which created a parent of this widget.
-
- MWE: is this obsolete ?
--------------------------------------------------------------------------------}
-procedure SetHiddenLCLObject(const Widget: Pointer; const AnObject: TObject);
-begin
-  if (Widget <> nil) then
-    gtk_object_set_data(Widget, 'LCLHiddenClass', Pointer(AnObject));
-end;
-
-function GetHiddenLCLObject(const Widget: Pointer): TObject;
-begin
-  Result := TObject(gtk_object_get_data(Widget, 'LCLHiddenClass'));
-end;
-
-{-------------------------------------------------------------------------------
   function GetNearestLCLObject(Widget: PGtkWidget): TObject;
   
   Retrieves the LCLObject belonging to the widget. If the widget is created as
@@ -4927,13 +4911,6 @@ end;
 procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
   AWinControl: TWinControl);
 
-  function WidgetIsInternal(TheWidget: PGtkWidget): boolean;
-  begin
-    Result:=(TheWidget<>nil)
-      and (PGtkWidget(AWinControl.Handle)<>TheWidget)
-      and (gtk_object_get_data(PGtkObject(TheWidget), 'Main')=nil);
-  end;
-
   procedure ConnectSignals(TheWidget: PGtkWidget); forward;
 
   procedure ConnectChilds(TheWidget: PGtkWidget);
@@ -4975,7 +4952,7 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
 
   procedure ConnectSignals(TheWidget: PGtkWidget);
   var
-    LCLObject, HiddenLCLObject: TObject;
+    LCLObject: TObject;
     DesignSignalType: TDesignSignalType;
     DesignFlags: TConnectSignalFlags;
   begin
@@ -4983,11 +4960,7 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
     if TheWidget=nil then exit;
     // check if TheWidget belongs to another LCL object
     LCLObject:=GetLCLObject(TheWidget);
-    HiddenLCLObject:=GetHiddenLCLObject(TheWidget);
     if (LCLObject<>nil) and (LCLObject<>AWinControl) then begin
-      exit;
-    end;
-    if (HiddenLCLObject<>nil) and (HiddenLCLObject<>AWinControl) then begin
       exit;
     end;
 
@@ -5007,10 +4980,6 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
                     DesignSignalFuncs[DesignSignalType],AWinControl,0,
                     DesignFlags);
     end;
-
-    if WidgetIsInternal(TheWidget) then
-      // mark widget as 'hidden' connected
-      SetHiddenLCLObject(TheWidget,AWinControl);
 
     // connect recursively ...
     ConnectChilds(TheWidget);
