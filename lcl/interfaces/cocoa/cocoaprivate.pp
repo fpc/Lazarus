@@ -70,6 +70,7 @@ type
     function lclIsEnabled: Boolean; message 'lclIsEnabled';
     procedure lclSetEnabled(AEnabled: Boolean); message 'lclSetEnabled:';
     function lclIsVisible: Boolean; message 'lclIsVisible';
+    procedure lclSetVisible(AVisible: Boolean); message 'lclSetVisible:';
     function lclWindowState: Integer; message 'lclWindowState';
 
     procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:';
@@ -92,6 +93,7 @@ type
 
   LCLViewExtension = objccategory(NSView)
     function lclIsVisible: Boolean; message 'lclIsVisible'; reintroduce;
+    procedure lclSetVisible(AVisible: Boolean); message 'lclSetVisible:'; reintroduce;
     function lclIsPainting: Boolean; message 'lclIsPainting';
     procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:'; reintroduce;
     procedure lclInvalidate; message 'lclInvalidate'; reintroduce;
@@ -120,6 +122,7 @@ type
 
   LCLWindowExtension = objccategory(NSWindow)
     function lclIsVisible: Boolean; message 'lclIsVisible'; reintroduce;
+    procedure lclSetVisible(AVisible: Boolean); message 'lclSetVisible:'; reintroduce;
     function lclIsEnabled: Boolean; message 'lclIsEnabled'; reintroduce;
     procedure lclSetEnabled(AEnabled: Boolean); message 'lclSetEnabled:'; reintroduce;
 
@@ -978,6 +981,10 @@ begin
   Result := False;
 end;
 
+procedure LCLObjectExtension.lclSetVisible(AVisible: Boolean);
+begin
+end;
+
 function LCLObjectExtension.lclWindowState: Integer;
 begin
   Result := SIZENORMAL;
@@ -1092,9 +1099,14 @@ begin
   SetEnabled(AEnabled);
 end;
 
-function LCLViewExtension.lclIsVisible:Boolean;
+function LCLViewExtension.lclIsVisible: Boolean;
 begin
   Result := not isHidden;
+end;
+
+procedure LCLViewExtension.lclSetVisible(AVisible: Boolean);
+begin
+  setHidden(not AVisible);
 end;
 
 function LCLViewExtension.lclIsPainting: Boolean;
@@ -1205,9 +1217,17 @@ end;
 
 { LCLWindowExtension }
 
-function LCLWindowExtension.lclIsVisible:Boolean;
+function LCLWindowExtension.lclIsVisible: Boolean;
 begin
   Result := isVisible;
+end;
+
+procedure LCLWindowExtension.lclSetVisible(AVisible: Boolean);
+begin
+  if AVisible then
+    orderFrontRegardless
+  else
+    orderOut(nil);
 end;
 
 function LCLWindowExtension.lclIsEnabled: Boolean;

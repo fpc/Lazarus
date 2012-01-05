@@ -82,6 +82,7 @@ type
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
 
@@ -910,9 +911,9 @@ end;
 
 class function TCocoaWSWinControl.GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean;
 begin
-  Result:=(AWinControl.Handle<>0);
-  if not Result then Exit;
-  ARect:=NSObject(AWinControl.Handle).lclClientFrame;
+  Result := AWinControl.HandleAllocated;
+  if Result then
+    ARect := NSObject(AWinControl.Handle).lclClientFrame;
 end;
 
 class function TCocoaWSWinControl.GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean;
@@ -929,7 +930,7 @@ var
   Obj: NSObject;
   Size: NSSize;
 begin
-  if (AWinControl.Handle <> 0) then
+  if AWinControl.HandleAllocated then
   begin
     Obj := NSObject(AWinControl.Handle);
 {
@@ -946,7 +947,7 @@ end;
 class procedure TCocoaWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 begin
-  if (AWinControl.Handle<>0) then
+  if AWinControl.HandleAllocated then
     NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
 end;
 
@@ -1011,6 +1012,12 @@ begin
   end;
 end;
 
+class procedure TCocoaWSWinControl.ShowHide(const AWinControl: TWinControl);
+begin
+  if AWinControl.HandleAllocated then
+    NSObject(AWinControl.Handle).lclSetVisible(AWinControl.HandleObjectShouldBeVisible);
+end;
+
 { TCocoaWSCustomControl }
 
 class function TCocoaWSCustomControl.CreateHandle(const AWinControl: TWinControl;
@@ -1025,27 +1032,33 @@ end;
 
 { LCLWSViewExtension }
 
-function LCLWSViewExtension.lclInitWithCreateParams(const AParams:TCreateParams): id;
+function LCLWSViewExtension.lclInitWithCreateParams(const AParams: TCreateParams): id;
 var
   p: NSView;
   ns: NSRect;
 begin
-  p:=nil;
-  if (AParams.WndParent<>0) then begin
+  p := nil;
+  setHidden(AParams.Style and WS_VISIBLE = 0);
+  if (AParams.WndParent <> 0) then
+  begin
     if (NSObject(AParams.WndParent).isKindOfClass_(NSView)) then
-      p:=NSView(AParams.WndParent)
-    else if (NSObject(AParams.WndParent).isKindOfClass_(NSWindow)) then
-      p:=NSWindow(AParams.WndParent).contentView;
+      p := NSView(AParams.WndParent)
+    else
+    if (NSObject(AParams.WndParent).isKindOfClass_(NSWindow)) then
+      p := NSWindow(AParams.WndParent).contentView;
   end;
   with AParams do
-    if Assigned(p)
-      then LCLToNSRect(Types.Bounds(X,Y,Width, Height), p.frame.size.height, ns)
-      else LCLToNSRect(Types.Bounds(X,Y,Width, Height), ns);
+    if Assigned(p) then
+      LCLToNSRect(Types.Bounds(X,Y,Width, Height), p.frame.size.height, ns)
+    else
+      LCLToNSRect(Types.Bounds(X,Y,Width, Height), ns);
 
-  Result:=initWithFrame(ns);
-  if not Assigned(Result) then Exit;
+  Result := initWithFrame(ns);
+  if not Assigned(Result) then
+    Exit;
 
-  if Assigned(p) then p.addSubview(Self);
+  if Assigned(p) then
+    p.addSubview(Self);
   SetViewDefaults(Self);
 end;
 

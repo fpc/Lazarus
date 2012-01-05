@@ -91,8 +91,6 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
-    class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
-
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class function GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
@@ -221,16 +219,6 @@ begin
   win.setContentView(cnt);
 
   Result := TLCLIntfHandle(win);
-end;
-
-class procedure TCocoaWSCustomForm.ShowHide(const AWinControl: TWinControl);
-begin
-  if not AWinControl.HandleAllocated then
-    Exit;
-  if AWinControl.HandleObjectShouldBeVisible then
-    NSWindow(AWinControl.Handle).orderFrontRegardless
-  else
-    NSWindow(AWinControl.Handle).orderOut(nil);
 end;
 
 class function TCocoaWSCustomForm.GetText(const AWinControl: TWinControl; var AText: String): Boolean;

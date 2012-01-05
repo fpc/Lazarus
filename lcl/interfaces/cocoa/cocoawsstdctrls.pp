@@ -158,7 +158,7 @@ type
 
   TCocoaWSButton = class(TWSButton)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
   end;
 
@@ -221,7 +221,8 @@ begin
     cap := NSStringUTF8(AParams.Caption);
     Result.setTitle(cap);
     cap.release;
-    if btnBezel<>0 then Result.setBezelStyle(btnBezel);
+    if btnBezel <> 0 then
+      Result.setBezelStyle(btnBezel);
     Result.setButtonType(btnType);
   end;
 end;
