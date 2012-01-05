@@ -173,7 +173,7 @@ resourcestring
   crsJumpTo = 'Jump to';
   crsUseIdentifier = 'Use identifier';
   crsAndMoreIdentifiers = '... and %s more identifiers';
-  crsCodyIdentifierDictionary = 'Cody Identifier Dictionary';
+  crsCodyIdentifierDictionary = 'Identifier Dictionary';
   crsUnableToRenameTo = 'unable to rename "%s" to "%s"';
   crsPackagesUnitsIdentifiersFile = 'Packages: %s, Units: %s, Identifiers: %s%'
     +'sDatabase: %s';

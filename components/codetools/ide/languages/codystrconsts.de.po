@@ -158,7 +158,7 @@ msgid "Code Node Information"
 msgstr ""
 
 #: codystrconsts.crscodyidentifierdictionary
-msgid "Cody Identifier Dictionary"
+msgid "Identifier Dictionary"
 msgstr ""
 
 #: codystrconsts.crscopydeclarationtoclipboard

@@ -162,7 +162,7 @@ msgid "Code Node Information"
 msgstr "Інформація про Вузол Коду"
 
 #: codystrconsts.crscodyidentifierdictionary
-msgid "Cody Identifier Dictionary"
+msgid "Identifier Dictionary"
 msgstr ""
 
 #: codystrconsts.crscopydeclarationtoclipboard

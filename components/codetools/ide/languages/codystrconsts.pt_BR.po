@@ -161,7 +161,9 @@ msgid "Code Node Information"
 msgstr "Informação Nó de Código"
 
 #: codystrconsts.crscodyidentifierdictionary
-msgid "Cody Identifier Dictionary"
+#, fuzzy
+#| msgid "Cody Identifier Dictionary"
+msgid "Identifier Dictionary"
 msgstr "Dicionário de identificadores do \"Cody\""
 
 #: codystrconsts.crscopydeclarationtoclipboard

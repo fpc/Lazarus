@@ -25,7 +25,7 @@
     Dialog to view and search the whole list.
 
   ToDo:
-    -option to hide fpcsrcdir units not in fpc path
+    -hide fpcsrcdir units not in fpc path
     -sort identifiers for directory distance
     -quickfix for identifier not found
     -use identifier: check package version
@@ -131,6 +131,7 @@ type
     PackageLabel: TLabel;
     StartsSpeedButton: TSpeedButton;
     UnitLabel: TLabel;
+    procedure ButtonPanel1HelpButtonClick(Sender: TObject);
     procedure ButtonPanel1OKButtonClick(Sender: TObject);
     procedure ContainsSpeedButtonClick(Sender: TObject);
     procedure FilterEditChange(Sender: TObject);
@@ -622,6 +623,11 @@ begin
   SetDlgAction(cidaUseIdentifier);
 end;
 
+procedure TCodyIdentifiersDlg.ButtonPanel1HelpButtonClick(Sender: TObject);
+begin
+  OpenCodyHelp('#Identifier_Dictionary');
+end;
+
 procedure TCodyIdentifiersDlg.ContainsSpeedButtonClick(Sender: TObject);
 begin
   UpdateItemsList;
@@ -670,6 +676,7 @@ end;
 procedure TCodyIdentifiersDlg.FormCreate(Sender: TObject);
 begin
   Caption:=crsCodyIdentifierDictionary;
+  ButtonPanel1.HelpButton.OnClick:=@ButtonPanel1HelpButtonClick;
   ButtonPanel1.OKButton.Caption:=crsUseIdentifier;
   ButtonPanel1.OKButton.OnClick:=@ButtonPanel1OKButtonClick;
   FMaxItems:=20;
@@ -821,10 +828,12 @@ var
           // => check if it is the current one
           Dir:=ChompPathDelim(ExtractFilePath(Group.Filename));
           if CompareFilenames(Dir,FPCSrcDir)<>0 then continue;
+          // some units have multiple sources in FPC => check target platform
           FPCSrcFilename:=UnitSet.GetUnitSrcFile(Item.DUnit.Name);
           if (FPCSrcFilename<>'')
           and (CompareFilenames(FPCSrcFilename,Item.DUnit.Filename)<>0)
           then continue; // this is not the source for this target platform
+          // Note: some units do no exists on all targets (e.g. windows.pp)
         end else if FileExistsCached(Group.Filename) then begin
           // lpk exists
         end else begin
