@@ -224,8 +224,8 @@ end;
 class function TCocoaWSCustomForm.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 begin
   Result := AWinControl.HandleAllocated;
-  if not Result then Exit;
-  AText := NSStringToString(TCocoaWindow(AWinControl.Handle).title);
+  if Result then
+    AText := NSStringToString(TCocoaWindow(AWinControl.Handle).title);
 end;
 
 class function TCocoaWSCustomForm.GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean;

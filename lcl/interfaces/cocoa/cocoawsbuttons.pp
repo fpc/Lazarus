@@ -73,8 +73,6 @@ var
   btn: NSButton;
 begin
   btn := AllocButton(AWinControl, TLCLButtonCallBack, AParams, NSRoundedBezelStyle, NSMomentaryPushInButton);
-  if Assigned(btn) then
-    AddViewToNSObject(btn, NSObject(AParams.WndParent), AParams.X, AParams.Y);
   Result := TLCLIntfHandle(btn);
 end;
 

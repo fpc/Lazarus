@@ -217,7 +217,6 @@ begin
   if Assigned(Result) then
   begin
     TCocoaButton(Result).callback := ACallBackClass.Create(Result, ATarget);
-    Result.initWithFrame(CreateParamsToNSRect(AParams));
     cap := NSStringUTF8(AParams.Caption);
     Result.setTitle(cap);
     cap.release;
@@ -313,9 +312,7 @@ var
   btn: NSButton;
 begin
   btn := AllocButton(AWinControl, TLCLButtonCallback, AParams, NSRoundedBezelStyle, NSMomentaryPushInButton);
-  if Assigned(btn) then
-    AddViewToNSObject(btn, NSObject(AParams.WndParent), AParams.X, AParams.Y);
-  Result:=TLCLIntfHandle(btn);
+  Result := TLCLIntfHandle(btn);
 end;
 
 {------------------------------------------------------------------------------
@@ -355,8 +352,6 @@ var
   btn: NSButton;
 begin
   btn := AllocButton(AWinControl, TLCLCheckBoxCallBack, AParams, 0, NSSwitchButton);
-  if Assigned(btn) then
-    AddViewToNSObject(btn, NSObject(AParams.WndParent), AParams.X, AParams.Y);
   Result := TLCLIntfHandle(btn);
 end;
 
