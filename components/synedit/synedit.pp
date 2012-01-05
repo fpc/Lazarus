@@ -1831,7 +1831,6 @@ begin
   FBlockSelection.Caret := FCaret;
   FBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
   FBlockSelection.AddChangeHandler({$IFDEF FPC}@{$ENDIF}DoBlockSelectionChanged);
-  FBlockSelection.OnSelAvailChange  := @SelAvailChange;
 
   FInternalBlockSelection := TSynEditSelection.Create(FTheLinesView, False);
   FInternalBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
@@ -3700,6 +3699,7 @@ end;
 procedure TCustomSynEdit.DoBlockSelectionChanged(Sender : TObject);
 begin
   StatusChanged([scSelection]);
+  SelAvailChange(nil);
 end;
 
 procedure TCustomSynEdit.SetBlockBegin(Value: TPoint); // logical position (byte)
