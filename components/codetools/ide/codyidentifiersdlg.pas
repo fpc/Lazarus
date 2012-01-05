@@ -25,7 +25,6 @@
     Dialog to view and search the whole list.
 
   ToDo:
-    -hide fpcsrcdir units not in fpc path
     -quickfix for identifier not found
     -use identifier: check package version
     -check for conflict: other unit with same name already in search path
@@ -382,6 +381,7 @@ begin
     on E: Exception do begin
       debugln(['WARNING: TCodyUDLoadSaveThread.Execute Load=',Load,' ',E.Message]);
       Dictionary.LoadSaveError:=E.Message;
+      DumpExceptionBackTrace;
     end;
   end;
   Done:=true;
@@ -669,6 +669,8 @@ begin
   if fLoaded then exit;
   StartLoadSaveThread;
   WaitForThread;
+  //debugln(['TCodyUnitDictionary.Load ']);
+  //ConsistencyCheck;
 end;
 
 procedure TCodyUnitDictionary.Save;
@@ -862,8 +864,9 @@ procedure TCodyIdentifiersDlg.UpdateItemsList;
 var
   FilterP: PChar;
   Found: Integer;
-  FPCSrcDir: String;
   UnitSet: TFPCUnitSetCache;
+  FPCSrcDir: String;
+  CfgCache: TFPCTargetConfigCache;
 
   procedure AddItems(AddExactMatches: boolean);
   var
@@ -918,11 +921,17 @@ var
           Dir:=ChompPathDelim(ExtractFilePath(Group.Filename));
           if CompareFilenames(Dir,FPCSrcDir)<>0 then continue;
           // some units have multiple sources in FPC => check target platform
-          FPCSrcFilename:=UnitSet.GetUnitSrcFile(Item.DUnit.Name);
-          if (FPCSrcFilename<>'')
-          and (CompareFilenames(FPCSrcFilename,Item.DUnit.Filename)<>0)
-          then continue; // this is not the source for this target platform
-          // Note: some units do no exists on all targets (e.g. windows.pp)
+          if UnitSet<>nil then begin
+            FPCSrcFilename:=UnitSet.GetUnitSrcFile(Item.DUnit.Name);
+            if (FPCSrcFilename<>'')
+            and (CompareFilenames(FPCSrcFilename,Item.DUnit.Filename)<>0)
+            then continue; // this is not the source for this target platform
+            if FLastHideOtherProjects then begin
+              // Note: some units do no exists on all targets (e.g. windows.pp)
+              if CfgCache.Units[Item.DUnit.Name]='' then
+                continue; // the unit has no ppu file
+            end;
+          end;
         end else if FileExistsCached(Group.Filename) then begin
           // lpk exists
         end else begin
@@ -963,8 +972,10 @@ begin
     Found:=0;
     UnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
     FPCSrcDir:='';
-    if (UnitSet<>nil) then
+    if (UnitSet<>nil) then begin
       FPCSrcDir:=ChompPathDelim(UnitSet.FPCSourceDirectory);
+      CfgCache:=UnitSet.GetConfigCache(false);
+    end;
     AddItems(true);
     AddItems(false);
 

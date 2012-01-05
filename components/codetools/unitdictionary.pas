@@ -79,10 +79,9 @@ type
     constructor Create(const aName, aFilename: string);
     destructor Destroy; override;
     function AddIdentifier(Item: TUDIdentifier): TUDIdentifier;
-    procedure ClearIdentifiers;
     function IsInGroup(Group: TUDUnitGroup): boolean;
     function GetDictionary: TUnitDictionary;
-    function HasIdentifier(Item: TUDIdentifier): boolean;
+    function HasIdentifier(Item: TUDIdentifier): boolean; // very slow
   end;
 
   { TUDIdentifier }
@@ -107,6 +106,7 @@ type
     FUnitGroupsByName: TMTAVLTree; // tree of TUDUnitGroup sorted with CompareIDItems
     FUnitGroupsByFilename: TMTAVLTree; // tree of TUDUnitGroup sorted with CompareIDFileItems
     procedure RemoveIdentifier(Item: TUDIdentifier);
+    procedure ClearIdentifiersOfUnit(TheUnit: TUDUnit);
   public
     constructor Create;
     destructor Destroy; override;
@@ -229,6 +229,7 @@ end;
 
 function TUDUnit.AddIdentifier(Item: TUDIdentifier): TUDIdentifier;
 begin
+  if Item.DUnit<>nil then RaiseCatchableException('');
   Result:=Item;
   Result.DUnit:=Self;
   if LastIdentifier<>nil then
@@ -237,22 +238,6 @@ begin
     FirstIdentifier:=Result;
   Result.NextInUnit:=nil;
   LastIdentifier:=Result;
-end;
-
-procedure TUDUnit.ClearIdentifiers;
-var
-  Item: TUDIdentifier;
-  Dictionary: TUnitDictionary;
-begin
-  Dictionary:=GetDictionary;
-  while FirstIdentifier<>nil do begin
-    Item:=FirstIdentifier;
-    FirstIdentifier:=Item.NextInUnit;
-    Item.NextInUnit:=nil;
-    Dictionary.RemoveIdentifier(Item);
-    Item.Free;
-  end;
-  LastIdentifier:=nil;
 end;
 
 function TUDUnit.IsInGroup(Group: TUDUnitGroup): boolean;
@@ -268,11 +253,15 @@ end;
 function TUDUnit.HasIdentifier(Item: TUDIdentifier): boolean;
 var
   i: TUDIdentifier;
+  j: Integer;
 begin
   i:=FirstIdentifier;
+  j:=0;
   while i<>nil do begin
     if i=Item then exit(true);
     i:=i.NextInUnit;
+    inc(j);
+    if j>10000000 then RaiseCatchableException('');
   end;
   Result:=false;
 end;
@@ -327,6 +316,20 @@ begin
   AVLRemovePointer(FIdentifiers,Item);
 end;
 
+procedure TUnitDictionary.ClearIdentifiersOfUnit(TheUnit: TUDUnit);
+var
+  Item: TUDIdentifier;
+begin
+  while TheUnit.FirstIdentifier<>nil do begin
+    Item:=TheUnit.FirstIdentifier;
+    TheUnit.FirstIdentifier:=Item.NextInUnit;
+    Item.NextInUnit:=nil;
+    RemoveIdentifier(Item);
+    Item.Free;
+  end;
+  TheUnit.LastIdentifier:=nil;
+end;
+
 constructor TUnitDictionary.Create;
 begin
   FIdentifiers:=TMTAVLTree.Create(@CompareIDItems);
@@ -375,6 +378,7 @@ var
   SubAVLNode: TAVLTreeNode;
   LastUnit: TUDUnit;
   LastGroup: TUDUnitGroup;
+  IdentifiersCount: Integer;
 begin
   if NoGroup=nil then
     e('DefaultGroup=nil');
@@ -392,6 +396,7 @@ begin
     e('UnitsByName.ConsistencyCheck<>0');
   if UnitsByFilename.ConsistencyCheck<>0 then
     e('UnitsByFilename.ConsistencyCheck<>0');
+  IdentifiersCount:=0;
 
   // check UnitsByName
   AVLNode:=UnitsByName.FindLowest;
@@ -422,9 +427,25 @@ begin
       LastGroup:=Group;
       SubAVLNode:=CurUnit.Groups.FindSuccessor(SubAVLNode);
     end;
+    Item:=CurUnit.FirstIdentifier;
+    while Item<>nil do begin
+      if Item.Name='' then
+        e('identifier without name');
+      if Item.DUnit=nil then
+        e('identifier '+Item.Name+' without unit');
+      if Item.DUnit<>CurUnit then
+        e('identifier '+Item.Name+' not in unit '+CurUnit.Name);
+      if FIdentifiers.Find(Item)=nil then
+        e('identifier '+Item.Name+' in unit, but not in global tree');
+      inc(IdentifiersCount);
+      Item:=Item.NextInUnit;
+    end;
     LastUnit:=CurUnit;
     AVLNode:=UnitsByName.FindSuccessor(AVLNode);
   end;
+
+  if IdentifiersCount<>FIdentifiers.Count then
+    e('IdentifiersCount='+IntToStr(IdentifiersCount)+'<>FIdentifiers.Count='+IntToStr(FIdentifiers.Count));
 
   // UnitsByFilename
   AVLNode:=UnitsByFilename.FindLowest;
@@ -493,10 +514,9 @@ begin
       e('identifier without name');
     if Item.DUnit=nil then
       e('identifier '+Item.Name+' without unit');
-    if not Item.DUnit.HasIdentifier(Item) then
-      e('identifier '+Item.Name+' not in unit '+Item.DUnit.Name);
     AVLNode:=Identifiers.FindSuccessor(AVLNode);
   end;
+  debugln(['TUnitDictionary.ConsistencyCheck GOOD']);
 end;
 
 procedure TUnitDictionary.SaveToFile(const Filename: string);
@@ -784,6 +804,7 @@ var
           Item:=TUDIdentifier.Create(Identifier);
           FIdentifiers.Add(Item);
           CurUnit.AddIdentifier(Item);
+          //if not CurUnit.HasIdentifier(Item) then RaiseCatchableException('');
         end;
       until false;
       ReadLineEnding;
@@ -1040,15 +1061,15 @@ begin
   // remove unit from groups
   while Node<>nil do begin
     Group:=TUDUnitGroup(Node.Data);
+    Node:=TheUnit.Groups.FindSuccessor(Node);
     AVLRemovePointer(Group.Units,TheUnit);
     if DeleteEmptyGroups and (Group.Units.Count=0)
     and (Group<>NoGroup) then
       DeleteGroup(Group,false);
-    Node:=TheUnit.Groups.FindSuccessor(Node);
   end;
   TheUnit.Groups.Clear;
   // free identifiers
-  TheUnit.ClearIdentifiers;
+  ClearIdentifiersOfUnit(TheUnit);
   // remove unit from dictionary
   AVLRemovePointer(UnitsByFilename,TheUnit);
   AVLRemovePointer(UnitsByName,TheUnit);
