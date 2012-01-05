@@ -32,6 +32,11 @@ interface
 
 uses
   {$IFDEF Darwin}MacOSAll, {$ENDIF}
+  {$IFDEF Windows}
+  {$IFDEF VER2_6}
+  Win9xWsManager,        // Make case-insensitive search work on Win9x
+  {$ENDIF}
+  {$ENDIF}
   Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, FileUtil,
   LCLStrConsts, LCLType, WSReferences, LazMethodList, LazUTF8;
 
