@@ -433,7 +433,6 @@ type
     FTextArea: TLazSynTextArea;
 
     fExtraCharSpacing: integer;
-    fLeftChar: Integer;    // first visible screen column
     fMaxLeftChar: Integer; // 1024
     FOldWidth, FOldHeight: Integer;
 
@@ -512,6 +511,7 @@ type
     function GetCharWidth: integer;
     function GetDefSelectionMode: TSynSelectionMode;
     function GetFoldState: String;
+    function GetLeftChar: Integer;
     function GetLineHeight: integer;
     function GetLinesInWindow: Integer;
     function GetModified: Boolean;
@@ -955,7 +955,7 @@ type
   public
     property CharsInWindow: Integer read GetCharsInWindow;
     property CharWidth: integer read GetCharWidth;
-    property LeftChar: Integer read fLeftChar write SetLeftChar;
+    property LeftChar: Integer read GetLeftChar write SetLeftChar;
     property LineHeight: integer read GetLineHeight;
     property LinesInWindow: Integer read GetLinesInWindow;
     property MaxLeftChar: integer read fMaxLeftChar write SetMaxLeftChar
@@ -1556,6 +1556,11 @@ begin
   Result := FFoldedLinesView.GetFoldDescription(0, 0, -1, -1, True);
 end;
 
+function TCustomSynEdit.GetLeftChar: Integer;
+begin
+  Result := FTextArea.LeftChar;
+end;
+
 function TCustomSynEdit.GetLineHeight: integer;
 begin
   Result := FTextArea.LineHeight;
@@ -1627,7 +1632,7 @@ function TCustomSynEdit.PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinate
 // To get the text/logical position use PixelsToLogicalPos
 begin
   Result.X := ( (Pixels.X
-                + (fLeftChar-1) * CharWidth
+                + (LeftChar-1) * CharWidth
                 - FTextArea.TextBounds.Left
                 + (CharWidth div 2)
                ) div CharWidth
@@ -1939,7 +1944,6 @@ begin
 {$ENDIF}
   fWantTabs := False;
   fTabWidth := 8;
-  fLeftChar := 1;
   fTopLine := 1;
   FOldTopLine := 1;
   FOldTopView := 1;
@@ -3115,7 +3119,7 @@ begin
     FInternalCaret.AssignFrom(FCaret);
     FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
 
-    if ((X >= TextLeftPixelOffset(False)) or (fLeftChar <= 1)) and
+    if ((X >= TextLeftPixelOffset(False)) or (LeftChar <= 1)) and
        ( (X < ClientWidth - TextRightPixelOffset)
          or (LeftChar >= CurrentMaxLeftChar)) and
        ((Y >= 0) or (fTopLine <= 1)) and
@@ -3806,8 +3810,8 @@ procedure TCustomSynEdit.SetLeftChar(Value: Integer);
 begin
   Value := Min(Value, CurrentMaxLeftChar);
   Value := Max(Value, 1);
-  if Value <> fLeftChar then begin
-    fLeftChar := Value;
+  if Value <> FTextArea.LeftChar then begin
+    FTextArea.LeftChar := Value;
     UpdateScrollBars;
     InvalidateLines(-1, -1);
     StatusChanged([scLeftChar]);
@@ -4002,10 +4006,10 @@ begin
     exit;
 
   NewCaretXY:=CaretXY;
-  if NewCaretXY.X < fLeftChar then
-    NewCaretXY.X := fLeftChar
-  else if NewCaretXY.X > fLeftChar + CharsInWindow - FScreenCaret.ExtraLineChars then
-    NewCaretXY.X := fLeftChar + CharsInWindow - FScreenCaret.ExtraLineChars;
+  if NewCaretXY.X < LeftChar then
+    NewCaretXY.X := LeftChar
+  else if NewCaretXY.X > LeftChar + CharsInWindow - FScreenCaret.ExtraLineChars then
+    NewCaretXY.X := LeftChar + CharsInWindow - FScreenCaret.ExtraLineChars;
   if NewCaretXY.Y < fTopLine then
     NewCaretXY.Y := fTopLine
   else begin
