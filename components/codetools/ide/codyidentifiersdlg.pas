@@ -26,7 +26,6 @@
 
   ToDo:
     -hide fpcsrcdir units not in fpc path
-    -sort identifiers for directory distance
     -quickfix for identifier not found
     -use identifier: check package version
     -check for conflict: other unit with same name already in search path
@@ -40,11 +39,11 @@ unit CodyIdentifiersDlg;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, LResources, LCLProc, avl_tree, Forms, Controls,
-  Graphics, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType, Buttons,
-  PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf, CompOptsIntf, IDEDialogs,
-  CodeCache, BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary,
-  CodeTree, LinkScanner, DefineTemplates, CodeToolsStructs,
+  Classes, SysUtils, FileProcs, LResources, LCLProc, avl_tree, contnrs, Forms,
+  Controls, Graphics, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType,
+  Buttons, PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf, CompOptsIntf,
+  IDEDialogs, CodeCache, BasicCodeTools, CustomCodeTool, CodeToolManager,
+  UnitDictionary, CodeTree, LinkScanner, DefineTemplates, CodeToolsStructs,
   CodyStrConsts, CodyUtils, CodyOpts;
 
 const
@@ -118,6 +117,23 @@ type
     cifContains
     );
 
+  { TCodyIdentifier }
+
+  TCodyIdentifier = class
+  public
+    Identifier: string;
+    Unit_Name: string;
+    UnitFile: string;
+    GroupName: string;
+    GroupFile: string;
+    MatchExactly: boolean;
+    DirectUnit: boolean; // belongs to same owner
+    InUsedPackage: boolean;
+    PathDistance: integer; // how far is UnitFile from the current unit
+    constructor Create(const TheIdentifier, TheUnitName, TheUnitFile,
+      ThePackageName, ThePackageFile: string; TheMatchExactly: boolean);
+  end;
+
   { TCodyIdentifiersDlg }
 
   TCodyIdentifiersDlg = class(TForm)
@@ -154,13 +170,14 @@ type
     FIdleConnected: boolean;
     FMaxItems: integer;
     FNoFilterText: string;
-    FItems: TStringList;
+    FItems: TObjectList; // list of TCodyIdentifier
     FLastFilterType: TCodyIdentifierFilter;
     procedure SetDlgAction(NewAction: TCodyIdentifierDlgAction);
     procedure SetIdleConnected(AValue: boolean);
     procedure SetMaxItems(AValue: integer);
     procedure UpdateGeneralInfo;
     procedure UpdateItemsList;
+    procedure SortItems;
     procedure UpdateIdentifierInfo;
     function GetFilterEditText: string;
     function FindSelectedItem(out Identifier, UnitFilename,
@@ -184,7 +201,7 @@ type
     CurMainCode: TCodeBuffer;
     CurInImplementation: Boolean;
 
-    CurOwner: TObject;
+    CurOwner: TObject; // only valid after UpdateCurOwnerOfUnit and till next event
     CurUnitPath: String; // depends on CurOwner
 
     NewIdentifier: string;
@@ -207,6 +224,11 @@ var
 
 procedure ShowUnitDictionaryDialog(Sender: TObject);
 procedure InitUnitDictionary;
+
+function CompareCodyIdentifiersAlphaScope(Item1, Item2: Pointer): integer;
+function CompareCodyIdentifiersScopeAlpha(Item1, Item2: Pointer): integer;
+function CompareCodyIdentifiersAlpha(Item1, Item2: Pointer): integer;
+function CompareCodyIdentifiersScope(Item1, Item2: Pointer): integer;
 
 implementation
 
@@ -233,6 +255,73 @@ end;
 procedure InitUnitDictionary;
 begin
   CodyUnitDictionary:=TCodyUnitDictionary.Create;
+end;
+
+function CompareCodyIdentifiersAlphaScope(Item1, Item2: Pointer): integer;
+begin
+  Result:=CompareCodyIdentifiersAlpha(Item1,Item2);
+  if Result<>0 then exit;
+  Result:=CompareCodyIdentifiersScope(Item1,Item2);
+end;
+
+function CompareCodyIdentifiersScopeAlpha(Item1, Item2: Pointer): integer;
+begin
+  Result:=CompareCodyIdentifiersScope(Item1,Item2);
+  if Result<>0 then exit;
+  Result:=CompareCodyIdentifiersAlpha(Item1,Item2);
+end;
+
+function CheckFlag(Flag1, Flag2: boolean; var r: integer): boolean;
+begin
+  if Flag1=Flag2 then exit(false);
+  Result:=true;
+  if Flag1 then r:=-1 else r:=1;
+end;
+
+function CompareCodyIdentifiersAlpha(Item1, Item2: Pointer): integer;
+// positive is sorted on top
+var
+  i1: TCodyIdentifier absolute Item1;
+  i2: TCodyIdentifier absolute Item2;
+begin
+  Result:=0;
+  // an exact match is better
+  if CheckFlag(i1.MatchExactly,i2.MatchExactly,Result) then exit;
+  // otherwise alphabetically
+  Result:=-CompareIdentifiers(PChar(i1.Identifier),PChar(i2.Identifier));
+end;
+
+function CompareCodyIdentifiersScope(Item1, Item2: Pointer): integer;
+// positive is sorted on top
+var
+  i1: TCodyIdentifier absolute Item1;
+  i2: TCodyIdentifier absolute Item2;
+begin
+  Result:=0;
+  // an exact match is better
+  if CheckFlag(i1.MatchExactly,i2.MatchExactly,Result) then exit;
+  // an unit of the owner is better
+  if CheckFlag(i1.DirectUnit,i2.DirectUnit,Result) then exit;
+  // an unit in a used package is better
+  if CheckFlag(i1.InUsedPackage,i2.InUsedPackage,Result) then exit;
+  // a fpc unit is better
+  if CheckFlag(i1.GroupName=PackageNameFPCSrcDir,i2.GroupName=PackageNameFPCSrcDir,Result) then exit;
+  // a near directory is better
+  Result:=i2.PathDistance-i1.PathDistance;
+end;
+
+{ TCodyIdentifier }
+
+constructor TCodyIdentifier.Create(const TheIdentifier, TheUnitName,
+  TheUnitFile, ThePackageName, ThePackageFile: string; TheMatchExactly: boolean
+  );
+begin
+  Identifier:=TheIdentifier;
+  Unit_Name:=TheUnitName;
+  UnitFile:=TheUnitFile;
+  GroupName:=ThePackageName;
+  GroupFile:=ThePackageFile;
+  MatchExactly:=TheMatchExactly;
 end;
 
 { TCodyUDLoadSaveThread }
@@ -679,9 +768,9 @@ begin
   ButtonPanel1.HelpButton.OnClick:=@ButtonPanel1HelpButtonClick;
   ButtonPanel1.OKButton.Caption:=crsUseIdentifier;
   ButtonPanel1.OKButton.OnClick:=@ButtonPanel1OKButtonClick;
-  FMaxItems:=20;
+  FMaxItems:=40;
   FNoFilterText:=crsFilter;
-  FItems:=TStringList.Create;
+  FItems:=TObjectList.Create;
   HideOtherProjectsCheckBox.Checked:=true;
   HideOtherProjectsCheckBox.Caption:=crsHideUnitsOfOtherProjects;
   AddToImplementationUsesCheckBox.Caption:=
@@ -772,7 +861,6 @@ end;
 procedure TCodyIdentifiersDlg.UpdateItemsList;
 var
   FilterP: PChar;
-  sl: TStringList;
   Found: Integer;
   FPCSrcDir: String;
   UnitSet: TFPCUnitSetCache;
@@ -783,7 +871,6 @@ var
     Dir: String;
     Group: TUDUnitGroup;
     GroupNode: TAVLTreeNode;
-    s: String;
     Item: TUDIdentifier;
     Node: TAVLTreeNode;
   begin
@@ -819,8 +906,10 @@ var
           if FLastHideOtherProjects then begin
             // check if unit is in unit path of current owner
             if CurUnitPath='' then continue;
-            if FindPathInSearchPath(PChar(CurUnitPath),length(CurUnitPath),
-                PChar(CurUnitPath),length(CurUnitPath))=nil
+            Dir:=ExtractFilePath(Item.DUnit.Filename);
+            if (Dir<>'')
+            and (FindPathInSearchPath(PChar(Dir),length(Dir),
+                PChar(CurUnitPath),length(CurUnitPath))=nil)
             then continue;
           end;
         end else if Group.Name=PackageNameFPCSrcDir then begin
@@ -840,14 +929,12 @@ var
           // lpk does not exist any more
           CodyUnitDictionary.CheckFileAsync(Group.Filename);
         end;
-        s:=Item.Name+' in '+Item.DUnit.Name;
-        if Group.Name<>'' then
-          s:=s+' of '+Group.Name;
         if FileExistsCached(Item.DUnit.Filename) then begin
           inc(Found);
           if Found<MaxItems then begin
-            FItems.Add(Item.Name+#10+Item.DUnit.Filename+#10+Group.Name+#10+Group.Filename);
-            sl.Add(s);
+            FItems.Add(TCodyIdentifier.Create(Item.Name,
+              Item.DUnit.Name,Item.DUnit.Filename,
+              Group.Name,Group.Filename,AddExactMatches));
           end;
         end else begin
           // unit does not exist any more
@@ -857,13 +944,18 @@ var
     end;
   end;
 
+var
+  sl: TStringList;
+  i: Integer;
+  Item: TCodyIdentifier;
+  s: String;
 begin
   if not CodyUnitDictionary.Loaded then exit;
   FLastFilter:=GetFilterEditText;
   FilterP:=PChar(FLastFilter);
-
   FLastHideOtherProjects:=HideOtherProjectsCheckBox.Checked;
   FLastFilterType:=GetFilterType;
+  UpdateCurOwnerOfUnit;
 
   FItems.Clear;
   sl:=TStringList.Create;
@@ -875,6 +967,16 @@ begin
       FPCSrcDir:=ChompPathDelim(UnitSet.FPCSourceDirectory);
     AddItems(true);
     AddItems(false);
+
+    SortItems;
+
+    for i:=0 to FItems.Count-1 do begin
+      Item:=TCodyIdentifier(FItems[i]);
+      s:=Item.Identifier+' in '+Item.Unit_Name;
+      if Item.GroupName<>'' then
+        s:=s+' of '+Item.GroupName;
+      sl.Add(s);
+    end;
     if Found>sl.Count then
       sl.Add(Format(crsAndMoreIdentifiers, [IntToStr(Found-sl.Count)]));
 
@@ -885,6 +987,44 @@ begin
   finally
     sl.Free;
   end;
+end;
+
+procedure TCodyIdentifiersDlg.SortItems;
+var
+  i: Integer;
+  Item: TCodyIdentifier;
+  DepOwner: TObject;
+  BaseDir: String;
+  Dir: String;
+begin
+  BaseDir:=ExtractFilePath(CurMainFilename);
+  for i:=0 to FItems.Count-1 do begin
+    Item:=TCodyIdentifier(FItems[i]);
+    Item.PathDistance:=length(CreateRelativePath(ExtractFilePath(Item.UnitFile),BaseDir));
+    Dir:=ChompPathDelim(ExtractFilePath(Item.UnitFile));
+    if (not FilenameIsAbsolute(Item.UnitFile)) or (Dir='') then begin
+      // new unit is always very near
+      Item.DirectUnit:=true;
+      continue;
+    end;
+    if (CurUnitPath<>'')
+    and (FindPathInSearchPath(PChar(Dir),length(Dir),
+      PChar(CurUnitPath),length(CurUnitPath))<>nil)
+    then begin
+      // unit is in search path of current unit
+      Item.DirectUnit:=true;
+      continue;
+    end;
+    if Item.GroupName='' then
+      continue; // other project is always far away
+    if Item.GroupName=PackageNameFPCSrcDir then
+      continue; // FPC unit
+    if CurOwner=nil then continue;
+    // package unit
+    Item.InUsedPackage:=PackageEditingInterface.IsOwnerDependingOnPkg(CurOwner,
+                                                       Item.GroupName,DepOwner);
+  end;
+  FItems.Sort(@CompareCodyIdentifiersAlphaScope);
 end;
 
 procedure TCodyIdentifiersDlg.UpdateIdentifierInfo;
@@ -932,8 +1072,7 @@ function TCodyIdentifiersDlg.FindSelectedItem(out Identifier, UnitFilename,
   GroupName, GroupFilename: string): boolean;
 var
   i: Integer;
-  s: String;
-  p: SizeInt;
+  Item: TCodyIdentifier;
 begin
   Result:=false;
   Identifier:='';
@@ -943,22 +1082,11 @@ begin
   if FItems=nil then exit;
   i:=ItemsListBox.ItemIndex;
   if (i<0) or (i>=FItems.Count) then exit;
-  s:=FItems[i];
-  p:=Pos(#10,s);
-  if p<1 then exit;
-  Identifier:=copy(s,1,p-1);
-  System.Delete(s,1,p);
-  p:=Pos(#10,s);
-  if p<1 then begin
-    UnitFilename:=s;
-  end else begin
-    UnitFilename:=copy(s,1,p-1);
-    System.Delete(s,1,p);
-    p:=Pos(#10,s);
-    GroupName:=copy(s,1,p-1);
-    System.Delete(s,1,p);
-    GroupFilename:=s;
-  end;
+  Item:=TCodyIdentifier(FItems[i]);
+  Identifier:=Item.Identifier;
+  UnitFilename:=Item.UnitFile;
+  GroupName:=Item.GroupName;
+  GroupFilename:=Item.GroupFile;
   //debugln(['TCodyIdentifiersDlg.FindSelectedItem ',Identifier,' Unit=',UnitFilename,' Pkg=',GroupFilename]);
   Result:=true;
 end;
