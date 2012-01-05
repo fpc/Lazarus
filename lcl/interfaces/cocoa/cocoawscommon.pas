@@ -1018,7 +1018,7 @@ class function TCocoaWSCustomControl.CreateHandle(const AWinControl: TWinControl
 var
   ctrl: TCocoaCustomControl;
 begin
-  ctrl := TCocoaCustomControl(NSView(TCocoaCustomControl.alloc).lclInitWithCreateParams(AParams));
+  ctrl := TCocoaCustomControl(TCocoaCustomControl.alloc.lclInitWithCreateParams(AParams));
   ctrl.callback := TLCLCustomControlCallback.Create(ctrl, AWinControl);
   Result := TLCLIntfHandle(ctrl);
 end;

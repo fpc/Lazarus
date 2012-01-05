@@ -89,12 +89,12 @@ type
   TCocoaWSCustomFormClass = class of TCocoaWSCustomForm;
   TCocoaWSCustomForm = class(TWSCustomForm)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
 
-    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-    class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
+    class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class function GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
 
 //    class procedure CloseModal(const ACustomForm: TCustomForm); override;
@@ -224,82 +224,63 @@ begin
 end;
 
 class procedure TCocoaWSCustomForm.ShowHide(const AWinControl: TWinControl);
-var
-  win : NSWindow;
 begin
-  win:=NSWindow(AWinControl.Handle);
-  if not Assigned(win) then Exit;
-
-  if AWinControl.Visible then
-    win.orderFrontRegardless
+  if not AWinControl.HandleAllocated then
+    Exit;
+  if AWinControl.HandleObjectShouldBeVisible then
+    NSWindow(AWinControl.Handle).orderFrontRegardless
   else
-    win.orderOut(nil);
+    NSWindow(AWinControl.Handle).orderOut(nil);
 end;
 
 class function TCocoaWSCustomForm.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
-var
-  win   : TCocoaWindow;
 begin
-  win:=TCocoaWindow(AWinControl.Handle);
-  Result:=Assigned(win);
+  Result := AWinControl.HandleAllocated;
   if not Result then Exit;
-  AText:=NSStringToString(win.title);
-  Result:=true;
+  AText := NSStringToString(TCocoaWindow(AWinControl.Handle).title);
 end;
 
 class function TCocoaWSCustomForm.GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean;
-var
-  win   : TCocoaWindow;
 begin
-  win:=TCocoaWindow(AWinControl.Handle);
-  Result:=Assigned(win);
-  if not Result then Exit;
-  ALength:=win.title.length;
+  Result := AWinControl.HandleAllocated;
+  if Result then
+    ALength := TCocoaWindow(AWinControl.Handle).title.length;
 end;
 
 class procedure TCocoaWSCustomForm.SetText(const AWinControl: TWinControl; const AText: String);
 var
-  win : TCocoaWindow;
-  ns  : NSString;
+  ns: NSString;
 begin
-  win:=TCocoaWindow(AWinControl.Handle);
-  if not Assigned(win) then Exit;
-  ns:=NSStringUtf8(AText);
-  win.setTitle(ns);
+  if not AWinControl.HandleAllocated then Exit;
+  ns := NSStringUtf8(AText);
+  TCocoaWindow(AWinControl.Handle).setTitle(ns);
   ns.release;
 end;
 
 class function TCocoaWSCustomForm.GetClientBounds(const AWinControl: TWinControl; var ARect: TRect): Boolean;
 begin
-  Result:=AWinControl.Handle<>0;
-  if not Result then Exit;
-  ARect:=NSObject(AWinControl.Handle).lclClientFrame;
+  if AWinControl.HandleAllocated then
+    ARect := NSObject(AWinControl.Handle).lclClientFrame;
 end;
 
 class function TCocoaWSCustomForm.GetClientRect(const AWinControl: TWinControl; var ARect: TRect): Boolean;
 var
-  x,y : Integer;
+  x, y: Integer;
 begin
-  Result:=AWinControl.Handle<>0;
+  Result := AWinControl.HandleAllocated;
   if not Result then Exit;
-  ARect:=NSObject(AWinControl.Handle).lclClientFrame;
-  x:=0;y:=0;
-  NSObject(AWinControl.Handle).lclLocalToScreen(x,y);
-  MoveRect(ARect, x,y);
+  ARect := NSObject(AWinControl.Handle).lclClientFrame;
+  x := 0;
+  y := 0;
+  NSObject(AWinControl.Handle).lclLocalToScreen(x, y);
+  MoveRect(ARect, x, y);
 end;
 
 class procedure TCocoaWSCustomForm.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 begin
-  if AWinControl.Handle=0 then Exit;
-  {todo: setFrame_display(, true)? }
-  //sf:=NSScreen.mainScreen.frame;
-  NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
-
-  //LCLToCocoaRect( GetNSRect(ALeft,ATop,AWidth,AHeight), sf, wf);
-  //NSWindow(AWinControl.Handle).setFrame_display(wf, false);
-  //NSWindow(AWinControl.Handle).setFrame_display( GetNSRect(ALeft,ATop, AWidth, AHeight), false);
-  //NSWindow(AWinControl.Handle).setFrameTopLeftPoint( GetNSPoint(ALeft, ATop));
+  if AWinControl.HandleAllocated then
+    NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
 end;
 
 end.
