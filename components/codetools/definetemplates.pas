@@ -963,7 +963,7 @@ procedure ReadMakefileFPC(const Filename: string; List: TStrings);
 procedure ParseMakefileFPC(const Filename, SrcOS: string;
                            var Dirs, SubDirs: string);
 
-function CompareFPCSourceRulesViaFilenameStart(Rule1, Rule2: Pointer): integer;
+function CompareFPCSourceRulesViaFilename(Rule1, Rule2: Pointer): integer;
 function CompareFPCTargetConfigCacheItems(CacheItem1, CacheItem2: Pointer): integer;
 function CompareFPCSourceCacheItems(CacheItem1, CacheItem2: Pointer): integer;
 function CompareDirectoryWithFPCSourceCacheItem(AString, CacheItem: Pointer): integer;
@@ -2433,7 +2433,7 @@ begin
   Params.Free;
 end;
 
-function CompareFPCSourceRulesViaFilenameStart(Rule1, Rule2: Pointer): integer;
+function CompareFPCSourceRulesViaFilename(Rule1, Rule2: Pointer): integer;
 var
   SrcRule1: TFPCSourceRule absolute Rule1;
   SrcRule2: TFPCSourceRule absolute Rule2;
@@ -6420,6 +6420,7 @@ begin
   if FItems.Count=0 then exit;
   for i:=0 to FItems.Count-1 do
     TObject(FItems[i]).Free;
+  FItems.Clear;
   IncreaseChangeStamp;
 end;
 
@@ -6499,7 +6500,7 @@ var
 begin
   if RulesSortedForFilenameStart=nil then
     RulesSortedForFilenameStart:=
-                        TAVLTree.Create(@CompareFPCSourceRulesViaFilenameStart);
+                             TAVLTree.Create(@CompareFPCSourceRulesViaFilename);
   for i:=0 to Count-1 do
     if Items[i].FitsTargets(Targets) then
       RulesSortedForFilenameStart.Add(Items[i]);
