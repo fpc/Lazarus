@@ -60,6 +60,18 @@ end;
 
 procedure TTestCodetoolsCompleteBlock.CompleteBlock(Src, ExpectedSrc: string;
   OnlyIfCursorBlockIndented: boolean);
+
+  function CreateFullSrc(Src: string; out Cursor: integer): string;
+  begin
+    Result:='unit testcompleteblock;'+LineEnding
+           +'interface'+LineEnding
+           +Src;
+    if not (Result[length(Result)] in [#10,#13]) then
+      Result:=Result+LineEnding;
+    Cursor:=System.Pos('|',Result);
+    System.Delete(Result,Cursor,1);
+  end;
+
 var
   Code: TCodeBuffer;
   p: integer;
@@ -73,28 +85,27 @@ var
   ep: integer;
   eY: integer;
   eX: integer;
+  FullSrc: String;
+  FullExpectedSrc: String;
 begin
   AssertEquals('Src is empty',Trim(Src)<>'',true);
   AssertEquals('ExpectedSrc is empty',Trim(ExpectedSrc)<>'',true);
-  if not (Src[length(Src)] in [#10,#13]) then Src:=Src+LineEnding;
 
   ExpectedCode:=TCodeBuffer.Create;
   try
     // replace cursor | marker in Src
     Code:=CodeToolBoss.CreateFile('TestCompleteBlock.pas');
-    p:=System.Pos('|',Src);
+    FullSrc:=CreateFullSrc(Src,p);
     if p<1 then
       AssertEquals('missing cursor | in test source: "'+dbgstr(Src)+'"',true,false);
-    System.Delete(Src,p,1);
-    Code.Source:=Src;
+    Code.Source:=FullSrc;
     Code.AbsoluteToLineCol(p,Y,X);
 
     // replace cursor | marker in ExpectedSrc
-    ep:=System.Pos('|',ExpectedSrc);
+    FullExpectedSrc:=CreateFullSrc(ExpectedSrc,ep);
     if ep<1 then
       AssertEquals('missing cursor | in expected source: "'+dbgstr(ExpectedSrc)+'"',true,false);
-    System.Delete(ExpectedSrc,ep,1);
-    ExpectedCode.Source:=ExpectedSrc;
+    ExpectedCode.Source:=FullExpectedSrc;
     ExpectedCode.AbsoluteToLineCol(ep,eY,eX);
 
     if not CodeToolBoss.CompleteBlock(Code,X,Y,OnlyIfCursorBlockIndented,
@@ -103,7 +114,14 @@ begin
       AssertEquals('completing block failed src="'+dbgstr(Src)+'"',true,false);
       exit;
     end;
-    AssertEquals('CompleteBlock did no or the wrong completion: ',dbgstr(Trim(ExpectedSrc)),dbgstr(Trim(Code.Source)));
+    if Trim(FullExpectedSrc)<>Trim(Code.Source) then begin
+      debugln(['TTestCodetoolsCompleteBlock.CompleteBlock FAILED Expected:']);
+      debugln(FullExpectedSrc);
+      debugln(['TTestCodetoolsCompleteBlock.CompleteBlock FAILED Found:']);
+      debugln(Code.Source);
+      debugln(['TTestCodetoolsCompleteBlock.CompleteBlock FAILED end']);
+    end;
+    AssertEquals('CompleteBlock did no or the wrong completion: ',dbgstr(Trim(FullExpectedSrc)),dbgstr(Trim(Code.Source)));
 
   finally
     ExpectedCode.Free;
@@ -133,20 +151,24 @@ begin
                +'  |end;'+LineEnding
                +LineEnding
                +'implementation');
-  CompleteBlock('begin'+LineEnding
+  {CompleteBlock('implementation'+LineEnding
+               +'begin'+LineEnding
                +'  while do begin|'+LineEnding
                +'end.',
-                'begin'+LineEnding
+                'implementation'+LineEnding
+               +'begin'+LineEnding
                +'  while do begin|'+LineEnding
                +'  end;'+LineEnding
                +'end.');
-  CompleteBlock('begin'+LineEnding
+  CompleteBlock('implementation'+LineEnding
+               +'begin'+LineEnding
                +'  repeat|'+LineEnding
                +'end.',
-                'begin'+LineEnding
+                'implementation'+LineEnding
+               +'begin'+LineEnding
                +'  repeat|'+LineEnding
                +'  until ;'+LineEnding
-               +'end.');
+               +'end.');}
 end;
 
 initialization
