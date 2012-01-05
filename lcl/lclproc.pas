@@ -33,8 +33,8 @@ interface
 uses
   {$IFDEF Darwin}MacOSAll, {$ENDIF}
   {$IFDEF Windows}
-  {$IFDEF VER2_6}
-  Win9xWsManager,        // Make case-insensitive search work on Win9x
+  {$IFnDEF VER2_4}
+  Win9xWsManager, // Support for Lower/UpperWideStringProc on Win9x, also used by some Utf8 string handling functions
   {$ENDIF}
   {$ENDIF}
   Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, FileUtil,
