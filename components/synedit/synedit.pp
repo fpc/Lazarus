@@ -1175,6 +1175,7 @@ type
     property OnProcessCommand;
     property OnProcessUserCommand;
     property OnReplaceText;
+    property OnShowHint;
     property OnSpecialLineColors; deprecated;
     property OnSpecialLineMarkup;
     property OnStatusChange;
