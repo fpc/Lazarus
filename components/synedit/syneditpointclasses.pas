@@ -87,7 +87,6 @@ type
     FHookedLines: Boolean;
     FIsSettingText: Boolean;
     FActiveSelectionMode: TSynSelectionMode;
-    FOnSelAvailChange: TNotifyEvent;
     FSelectionMode:       TSynSelectionMode;
     FStartLinePos: Integer; // 1 based
     FStartBytePos: Integer; // 1 based
@@ -166,7 +165,6 @@ type
     // (depends if caret was at block border or not)
     property  AutoExtend: Boolean read FAutoExtend write FAutoExtend;
     property  Hide: Boolean read FHide write SetHide;
-    property  OnSelAvailChange: TNotifyEvent read FOnSelAvailChange write FOnSelAvailChange;
   end;
 
   { TSynEditCaret }
@@ -1378,7 +1376,7 @@ procedure TSynEditSelection.SetStartLineBytePos(Value : TPoint);
 // logical position (byte)
 var
   nInval1, nInval2: integer;
-  SelChanged, WasAvail: boolean;
+  WasAvail: boolean;
 begin
   WasAvail := SelAvail;
   Value.y := MinMax(Value.y, 1, fLines.Count);
@@ -1400,10 +1398,6 @@ begin
       nInval2 := Max(Value.Y, FStartLinePos);
     end;
     FInvalidateLinesMethod(nInval1, nInval2);
-    SelChanged := TRUE;
-  end else begin
-    SelChanged := (FStartBytePos <> Value.X) or (FStartLinePos <> Value.Y) or
-                  (FEndBytePos <> Value.X) or (FEndLinePos <> Value.Y);
   end;
   FActiveSelectionMode := FSelectionMode;
   FHide := False;
@@ -1413,10 +1407,8 @@ begin
   FEndBytePos := Value.X;
   if FCaret <> nil then
     FLastCarePos := Point(FCaret.OldCharPos, FCaret.OldLinePos);
-  if SelChanged then
+  if WasAvail then
     fOnChangeList.CallNotifyEvents(self);
-  if assigned(FOnSelAvailChange) and (WasAvail <> SelAvail) then
-    FOnSelAvailChange(Self);
 end;
 
 procedure TSynEditSelection.AdjustStartLineBytePos(Value: TPoint);
@@ -1496,8 +1488,6 @@ begin
         if FCaret <> nil then
           FLastCarePos := Point(FCaret.OldCharPos, FCaret.OldLinePos);
         FOnChangeList.CallNotifyEvents(self);
-        if assigned(FOnSelAvailChange) and (WasAvail <> SelAvail) then
-          FOnSelAvailChange(Self);
       end;
     end;
   end;
