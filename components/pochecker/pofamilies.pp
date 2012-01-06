@@ -97,10 +97,12 @@ const
   //sPrevMsgID = '#| msgid "';
   //sPrevStr = '#| "';
 
-  Divider = '--------------------------------------------------';
+  Divider = '-------------------------------------------------------';
+
+resourcestring
   sOriginal = 'Original';
   sTranslation = 'Translation';
-  sErrorsByTest = 'Errors reported by %s for:';
+  sErrorsByTest = 'Errors / warnings reported by %s for:';
   sCheckFormatArgs = 'CheckFormatArgs';
   sCheckMissingIdentifiers = 'CheckMissingIdentifiers';
   sCheckNrOfItems =  'CheckNrOfItems';
@@ -108,8 +110,7 @@ const
   sCheckDuplicateOriginals = 'CheckDiplicateOriginals';
   sIncompatibleFormatArgs = '[Line: %d] Incompatible format() arguments for:' ;
 
-
-  sNrErrorsFound = 'Found %d errors.';
+  sNrErrorsFound = 'Found %d errors / warnings.';
   sLineInFileName = '[Line %d] in %s:';
   sIdentifierNotFoundIn = 'Identifier [%s] not found in %s';
   sMissingMasterIdentifier = 'Identifier [%s] found in %s, but it does not exist in %s';
@@ -131,7 +132,7 @@ const
   sDuplicateOriginal = 'msgid "%s"';
   sDuplicateContext = 'msgctxt "%s"';
   sDuplicateOriginals2 = 'has the same value as idenftifier %s at line %d';
-  sDuplicateOriginals3 = 'For this entry it is recommended to set: msgctxt="%s"';
+  //sDuplicateOriginals3 = 'For this entry it is recommended to set: msgctxt="%s"';
 
 //Helper functions
 
@@ -527,7 +528,7 @@ begin
   begin
     PoItem := FMaster.PoItems[i];
     Dup := FMaster.OriginalToItem(PoItem.Original);
-    if Assigned(Dup) and (Dup.Identifier <> PoItem.Identifier) and (Dup.Context = '') then
+    if Assigned(Dup) and (Dup.Identifier <> PoItem.Identifier) {and (Dup.Context = '')} then
     begin
       if (ErrorCount = 0) then
       begin
@@ -544,7 +545,7 @@ begin
       ErrorLog.Add(Format(sDuplicateOriginal,[PoItem.Original]));
       ErrorLog.Add(Format(sDuplicateContext,[PoItem.Context]));
       ErrorLog.Add(Format(sDuplicateOriginals2,[Dup.Identifier,Dup.LineNr]));
-      ErrorLog.Add(Format(sDuplicateOriginals3,[PoItem.Identifier]));
+      //ErrorLog.Add(Format(sDuplicateOriginals3,[PoItem.Identifier]));
       ErrorLog.Add('');
     end;
   end;

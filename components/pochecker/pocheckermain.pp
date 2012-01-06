@@ -76,7 +76,7 @@ resourcestring
   sErrorOnCreate = 'Error creating an instance of TPoFamily:' + LineEnding + '%s';
   sErrorOnCleanup = 'An unrecoverable error occurred' + LineEnding + '%s' + LineEnding + 'Please close the program';
 
-  sTotalErrors = 'Total errors found: %d';
+  sTotalErrors = 'Total errors / warnings found: %d';
   //sNoErrorsFound = 'No errors found.';
   sNoTestSelected = 'There are no tests selected.';
 
