@@ -485,7 +485,7 @@ type
     FStatusChangedList: TObject;
     FPlugins: TList;
     fScrollTimer: TTimer;
-    fScrollDeltaX, fScrollDeltaY: Integer;
+    FScrollDeltaX, FScrollDeltaY: Integer;
     FInMouseClickEvent: Boolean;
     FMouseClickDoPopUp: Boolean;
     // event handlers
@@ -901,7 +901,7 @@ type
     // Pixel
     function ScreenColumnToXValue(Col: integer): integer;  // map screen column to screen pixel
     // RowColumnToPixels: Physical coords
-    function RowColumnToPixels(const RowCol: TPoint): TPoint;
+    function RowColumnToPixels(RowCol: TPoint): TPoint;
     function PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinateMappingFlags = [scmLimitToLines]): TPoint;
     function PixelsToLogicalPos(const Pixels: TPoint): TPoint;
     //
@@ -1633,19 +1633,8 @@ function TCustomSynEdit.PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinate
 // to Caret position (physical position, (1,1) based)
 // To get the text/logical position use PixelsToLogicalPos
 begin
-  Result.X := ( (Pixels.X
-                + (LeftChar-1) * CharWidth
-                - FTextArea.TextBounds.Left
-                + (CharWidth div 2)
-               ) div CharWidth
-             )+1;
-  Pixels.Y := Pixels.Y - FTextArea.TextBounds.Top;
-  if (not(scmIncludePartVisible in aFlags)) and (Pixels.Y >= LinesInWindow * LineHeight) then begin
-    // don't return a partially visible last line
-    Pixels.Y := LinesInWindow * LineHeight - 1;
-    if Pixels.Y < 0 then Pixels.Y := 0;
-  end;
-  Result := Point(Result.X, ScreenRowToRow(Pixels.Y div LineHeight, scmLimitToLines in aFlags));
+  Result := FTextArea.PixelsToRowColumn(Pixels, aFlags);
+  Result := Point(Result.X, ScreenRowToRow(Result.Y, scmLimitToLines in aFlags));
 end;
 
 function TCustomSynEdit.PixelsToLogicalPos(const Pixels: TPoint): TPoint;
@@ -1675,14 +1664,12 @@ begin
 //  DebugLn(['=== Row TO ScreenRow   In:',PhysicalRow,'  out:',Result]);
 end;
 
-function TCustomSynEdit.RowColumnToPixels(
-  const RowCol: TPoint): TPoint;
+function TCustomSynEdit.RowColumnToPixels(RowCol: TPoint): TPoint;
 // converts screen position (1,1) based
 // to client area coordinate (0,0 based on canvas)
 begin
-  Result:=RowCol;
-  Result.X := (Result.X - 1) * CharWidth + FTextArea.TextBounds.Left - (LeftChar - 1) * CharWidth;
-  Result.Y := RowToScreenRow(RowCol.Y) * LineHeight + FTextArea.TextBounds.Top;
+  RowCol.Y := RowToScreenRow(RowCol.Y);
+  Result := FTextArea.RowColumnToPixels(RowCol);
 end;
 
 procedure TCustomSynEdit.ComputeCaret(X, Y: Integer);
@@ -1901,8 +1888,6 @@ begin
   fBlockIndent := 2;
 
   FTextArea := TLazSynTextArea.Create(FTextDrawer);
-  FTextArea.TopLine := 1;
-  FTextArea.LeftChar := 1;
   if eoHideRightMargin in SYNEDIT_DEFAULT_OPTIONS // follow default
   then FTextArea.RightEdgeColumn := -1
   else FTextArea.RightEdgeColumn := fRightEdge;
@@ -2523,8 +2508,8 @@ begin
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
       rcInval := ClientRect;
-      rcInval.Left := TextLeftPixelOffset(False);
-      rcInval.Right := ClientWidth - TextRightPixelOffset - ScrollBarWidth;
+      rcInval.Left := FTextArea.Bounds.Left;
+      rcInval.Right := FTextArea.Bounds.Right;
       {$IFDEF VerboseSynEditInvalidate}
       DebugLn(['TCustomSynEdit.InvalidateLines ',DbgSName(self),' ALL ',dbgs(rcInval)]);
       {$ENDIF}
@@ -2547,8 +2532,8 @@ begin
       f := Max(0, f);
       { any line visible? }
       if (l >= f) then begin
-        rcInval := Rect(TextLeftPixelOffset(False), LineHeight * f,
-          ClientWidth - TextRightPixelOffset - ScrollBarWidth, LineHeight * l);
+        rcInval := Rect(FTextArea.Bounds.Left, LineHeight * f,
+          FTextArea.Bounds.Right, LineHeight * l);
         {$IFDEF VerboseSynEditInvalidate}
         DebugLn(['TCustomSynEdit.InvalidateLines ',DbgSName(self),' PART ',dbgs(rcInval)]);
         {$ENDIF}
@@ -2998,8 +2983,8 @@ begin
     else
     begin
       // mouse event occured in selected block ?
-      if SelAvail and (X >= TextLeftPixelOffset) and
-         //(x < ClientWidth - TextRightPixelOffset - ScrollBarWidth) and
+      if SelAvail and (X >= FTextArea.Bounds.Left) and (X < FTextArea.Bounds.Right) and
+         (Y >= FTextArea.Bounds.Top) and (Y < FTextArea.Bounds.Bottom) and
          IsPointInSelection(FInternalCaret.LineBytePos)
       then
         if DoHandleMouseAction(FMouseSelActions.GetActionsForOptions(FMouseOptions), Info) then
@@ -3123,11 +3108,11 @@ begin
     FInternalCaret.AssignFrom(FCaret);
     FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
 
-    if ((X >= TextLeftPixelOffset(False)) or (LeftChar <= 1)) and
-       ( (X < ClientWidth - TextRightPixelOffset)
-         or (LeftChar >= CurrentMaxLeftChar)) and
-       ((Y >= 0) or (fTopLine <= 1)) and
-       ((Y < ClientHeight-ScrollBarWidth) or (fTopLine >= CurrentMaxTopLine))
+    // compare to Bounds => Padding area does not scroll
+    if ( (X >= FTextArea.Bounds.Left)   or (LeftChar <= 1) ) and
+       ( (X <  FTextArea.Bounds.Right)  or (LeftChar >= CurrentMaxLeftChar) ) and
+       ( (Y >= FTextArea.Bounds.Top)    or (fTopLine <= 1) ) and
+       ( (Y <  FTextArea.Bounds.Bottom) or (fTopLine >= CurrentMaxTopLine) )
     then begin
       if (sfMouseSelecting in fStateFlags) and not FInternalCaret.IsAtPos(FCaret) then
         Include(fStateFlags, sfMouseDoneSelecting);
@@ -3137,31 +3122,20 @@ begin
     end
     else begin
       // begin scrolling?
-      Dec(X, TextLeftPixelOffset(False));
-      // calculate chars past right
-      Z := X - (CharsInWindow * CharWidth);
-      if Z > 0 then
-        Inc(Z, CharWidth);
-      fScrollDeltaX := Max(Z div CharWidth, 0);
-      if fScrollDeltaX = 0 then begin
-        // calculate chars past left
-        Z := X;
-        if Z < 0 then
-          Dec(Z, CharWidth);
-        fScrollDeltaX := Min(Z div CharWidth, 0);
-      end;
-      // calculate lines past bottom
-      Z := Y - (LinesInWindow * LineHeight);
-      if Z > 0 then
-        Inc(Z, LineHeight);
-      fScrollDeltaY := Max(Z div LineHeight, 0);
-      if fScrollDeltaY = 0 then begin
-        // calculate lines past top
-        Z := Y;
-        if Z < 0 then
-          Dec(Z, LineHeight);
-        fScrollDeltaY := Min(Z div LineHeight, 0);
-      end;
+      if X < FTextArea.Bounds.Left then
+        FScrollDeltaX := Min((X - FTextArea.Bounds.Left - CharWidth) div CharWidth, -1)
+      else if x >= FTextArea.Bounds.Right then
+        FScrollDeltaX := Max((X - FTextArea.Bounds.Right + 1 + CharWidth) div CharWidth, 1)
+      else
+        FScrollDeltaX := 0;
+
+      if Y < FTextArea.Bounds.Top then
+        FScrollDeltaY := Min((Y - FTextArea.Bounds.Top - LineHeight) div LineHeight, -1)
+      else if Y >= FTextArea.Bounds.Bottom then
+        FScrollDeltaY := Max((Y - FTextArea.Bounds.Bottom + 1 + LineHeight) div LineHeight, 1)
+      else
+        FScrollDeltaY := 0;
+
       fScrollTimer.Enabled := (fScrollDeltaX <> 0) or (fScrollDeltaY <> 0);
       if (sfMouseSelecting in fStateFlags) and ((fScrollDeltaX <> 0) or (fScrollDeltaY <> 0)) then
         Include(fStateFlags, sfMouseDoneSelecting);
@@ -3194,32 +3168,22 @@ begin
     GetCursorPos(CurMousePos);
     CurMousePos:=ScreenToClient(CurMousePos);
     C := PixelsToLogicalPos(CurMousePos);
+
     // recalculate scroll deltas
-    Dec(CurMousePos.X, TextLeftPixelOffset(False));
-    // calculate chars past right
-    Z := CurMousePos.X - (CharsInWindow * CharWidth);
-    if Z > 0 then
-      Inc(Z, CharWidth);
-    fScrollDeltaX := Max(Z div CharWidth, 0);
-    if fScrollDeltaX = 0 then begin
-      // calculate chars past left
-      Z := CurMousePos.X;
-      if Z < 0 then
-        Dec(Z, CharWidth);
-      fScrollDeltaX := Min(Z div CharWidth, 0);
-    end;
-    // calculate lines past bottom
-    Z := CurMousePos.Y - (LinesInWindow * LineHeight);
-    if Z > 0 then
-      Inc(Z, LineHeight);
-    fScrollDeltaY := Max(Z div LineHeight, 0);
-    if fScrollDeltaY = 0 then begin
-      // calculate lines past top
-      Z := CurMousePos.Y;
-      if Z < 0 then
-        Dec(Z, LineHeight);
-      fScrollDeltaY := Min(Z div LineHeight, 0);
-    end;
+    if CurMousePos.X < FTextArea.Bounds.Left then
+      FScrollDeltaX := Min((CurMousePos.X - FTextArea.Bounds.Left - CharWidth) div CharWidth, -1)
+    else if CurMousePos.x >= FTextArea.Bounds.Right then
+      FScrollDeltaX := Max((CurMousePos.X - FTextArea.Bounds.Right + 1 + CharWidth) div CharWidth, 1)
+    else
+      FScrollDeltaX := 0;
+
+    if CurMousePos.Y < FTextArea.Bounds.Top then
+      FScrollDeltaY := Min((CurMousePos.Y - FTextArea.Bounds.Top - LineHeight) div LineHeight, -1)
+    else if CurMousePos.Y >= FTextArea.Bounds.Bottom then
+      FScrollDeltaY := Max((CurMousePos.Y - FTextArea.Bounds.Bottom + 1 + LineHeight) div LineHeight, 1)
+    else
+      FScrollDeltaY := 0;
+
     fScrollTimer.Enabled := (fScrollDeltaX <> 0) or (fScrollDeltaY <> 0);
     // now scroll
     if fScrollDeltaX <> 0 then begin
@@ -3390,7 +3354,6 @@ begin
     FTextArea.BackgroundColor := Color;
     FTextArea.RightEdgeColor := RightEdgeColor;
     FTextArea.TopLine := TopView;
-    FTextArea.LeftChar := LeftChar;
     FTextArea.Paint(Canvas, rcClip);
     // right gutter
     if FRightGutter.Visible and (rcClip.Right > ClientWidth - FRightGutter.Width - ScrollBarWidth) then begin
@@ -3699,7 +3662,8 @@ end;
 procedure TCustomSynEdit.DoBlockSelectionChanged(Sender : TObject);
 begin
   StatusChanged([scSelection]);
-  SelAvailChange(nil);
+  //if HandleAllocated and Focused then
+    SelAvailChange(nil);
 end;
 
 procedure TCustomSynEdit.SetBlockBegin(Value: TPoint); // logical position (byte)
@@ -4699,10 +4663,9 @@ begin
     exit;
   end;
 
-  if (FLastMousePoint.X >= TextLeftPixelOffset(False)) and
-     (FLastMousePoint.X < ClientWidth - TextRightPixelOffset - ScrollBarWidth) and
-     (FLastMousePoint.Y >= 0) and (FLastMousePoint.Y < ClientHeight - ScrollBarWidth) then
-  begin
+  if (FLastMousePoint.X >= FTextArea.Bounds.Left) and (FLastMousePoint.X <  FTextArea.Bounds.Right) and
+     (FLastMousePoint.Y >= FTextArea.Bounds.Top) and (FLastMousePoint.Y < FTextArea.Bounds.Bottom)
+  then begin
     if Assigned(FMarkupCtrlMouse) and (FMarkupCtrlMouse.Cursor <> crDefault) then
       Cursor := FMarkupCtrlMouse.Cursor
     else
@@ -5366,7 +5329,7 @@ begin
   if fRightEdgeColor <> Value then begin
     fRightEdgeColor := Value;
     if HandleAllocated then begin
-      nX := FTextArea.TextBounds.Left - (LeftChar - 1) * CharWidth + fRightEdge * CharWidth;
+      nX := FTextArea.ScreenColumnToXValue(fRightEdge + 1);
       rcInval := Rect(nX - 1, 0, nX + 1, ClientHeight-ScrollBarWidth);
       {$IFDEF VerboseSynEditInvalidate}
       DebugLn(['TCustomSynEdit.SetRightEdgeColor ',dbgs(rcInval)]);
@@ -7036,10 +6999,8 @@ end;
 procedure TCustomSynEdit.RecalcCharsAndLinesInWin(CheckCaret: Boolean);
 var
   OldLinesInWindow: Integer;
-  w, l, r: Integer;
+  l, r: Integer;
 begin
-  w := ClientWidth - TextLeftPixelOffset - TextRightPixelOffset - ScrollBarWidth;
-
   if FLeftGutter.Visible
   then l := FLeftGutter.Width
   else l := 0;
@@ -7070,7 +7031,7 @@ begin
   //FScreenCaret.ClipRect := Rect(TextLeftPixelOffset(False), 0,
   //                              ClientWidth - TextRightPixelOffset - ScrollBarWidth + 1,
   //                              ClientHeight - ScrollBarWidth);
-  FScreenCaret.ClipExtraPixel := w - CharsInWindow * CharWidth;
+  FScreenCaret.ClipExtraPixel := FTextArea.Bounds.Right - FTextArea.Bounds.Left - CharsInWindow * CharWidth;
   FScreenCaret.UnLock;
 
   if CheckCaret then begin

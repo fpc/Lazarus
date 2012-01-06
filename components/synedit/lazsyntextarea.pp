@@ -56,7 +56,10 @@ type
     constructor Create(ATextDrawer: TheTextDrawer);
     //constructor Create(AOwner : TSynEditBase; ATextDrawer: TheTextDrawer);
     destructor Destroy; override;
+
     function ScreenColumnToXValue(Col: integer): integer;  // map screen column to screen pixel
+    function RowColumnToPixels(const RowCol: TPoint): TPoint;
+    function PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinateMappingFlags): TPoint; // ignores scmLimitToLines
 
     procedure FontChanged; // must be called by owner of shared tetdrawer
     procedure Paint(ACanvas: TCanvas; AClip: TRect);
@@ -156,7 +159,33 @@ end;
 
 function TLazSynTextArea.ScreenColumnToXValue(Col: integer): integer;
 begin
-  Result := FTextBounds.Left - (LeftChar - 1) * fCharWidth + Pred(Col) * FCharWidth;
+  Result := FTextBounds.Left + (Col - LeftChar) * fCharWidth;
+end;
+
+function TLazSynTextArea.RowColumnToPixels(const RowCol: TPoint): TPoint;
+begin
+  // Inludes LeftChar, but not Topline
+  Result.X := FTextBounds.Left + (RowCol.X - LeftChar) * CharWidth;
+  Result.Y := FTextBounds.Top + RowCol.Y * LineHeight;
+end;
+
+function TLazSynTextArea.PixelsToRowColumn(Pixels: TPoint;
+  aFlags: TSynCoordinateMappingFlags): TPoint;
+begin
+  // Inludes LeftChar, but not Topline
+  Result.X := (Pixels.X
+               - FTextBounds.Left
+               + (CharWidth div 2)  // nearest side of char
+              ) div CharWidth
+              + LeftChar;
+  Result.Y := (Pixels.Y - FTextBounds.Top) div LineHeight;
+
+  if (not(scmIncludePartVisible in aFlags)) and (Result.Y >= LinesInWindow) then begin
+    // don't return a partially visible last line
+    Result.Y := LinesInWindow - 1;
+  end;
+  if Result.X < 0 then Result.X := 0;
+  if Result.Y < 0 then Result.Y := 0;
 end;
 
 constructor TLazSynTextArea.Create(ATextDrawer: TheTextDrawer);
@@ -168,6 +197,8 @@ begin
   FPaintLineColor2 := TSynSelectedColor.Create;
   for i := low(TLazSynBorderSide) to high(TLazSynBorderSide) do
     FPadding[i] := 0;
+  FTopLine := 1;
+  FLeftChar := 1;
   FontChanged;
 end;
 
