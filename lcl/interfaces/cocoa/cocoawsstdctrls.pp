@@ -228,29 +228,29 @@ end;
 
 function AllocTextView(ATarget: TWinControl; const AParams: TCreateParams; fieldEditor: Boolean): NSTextView;
 begin
-  Result:=TCocoaTextView.alloc;
-  if Assigned(Result) then begin
-    TCocoaTextView(Result).callback:=TLCLCommonCallback.Create(Result, ATarget);
-    Result.initWithFrame(CreateParamsToNSRect(AParams));
+  Result := TCocoaTextView.alloc.lclInitWithCreateParams(AParams);
+  if Assigned(Result) then
+  begin
+    TCocoaTextView(Result).callback := TLCLCommonCallback.Create(Result, ATarget);
   end;
 end;
 
 function AllocTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaTextField;
 begin
-  Result:=TCocoaTextField(TCocoaTextField.alloc.lclInitWithCreateParams(AParams));
-  if Assigned(Result) then begin
-    TCocoaTextField(Result).callback:=TLCLCommonCallback.Create(Result, ATarget);
-    Result.initWithFrame(CreateParamsToNSRect(AParams));
+  Result := TCocoaTextField.alloc.lclInitWithCreateParams(AParams);
+  if Assigned(Result) then
+  begin
+    Result.callback := TLCLCommonCallback.Create(Result, ATarget);
     SetNSControlValue(Result, AParams.Caption);
   end;
 end;
 
 function AllocSecureTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaSecureTextField;
 begin
-  Result:=TCocoaSecureTextField(TCocoaSecureTextField.alloc);
-  if Assigned(Result) then begin
-    TCocoaSecureTextField(Result).callback:=TLCLCommonCallback.Create(Result, ATarget);
-    Result.initWithFrame(CreateParamsToNSRect(AParams));
+  Result := TCocoaSecureTextField.alloc.lclInitWithCreateParams(AParams);
+  if Assigned(Result) then
+  begin
+    TCocoaSecureTextField(Result).callback := TLCLCommonCallback.Create(Result, ATarget);
     SetNSText(Result.currentEditor, AParams.Caption);
   end;
 end;

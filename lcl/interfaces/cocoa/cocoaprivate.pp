@@ -92,6 +92,8 @@ type
   { LCLViewExtension }
 
   LCLViewExtension = objccategory(NSView)
+    function lclInitWithCreateParams(const AParams: TCreateParams): id; message 'lclInitWithCreateParams:';
+
     function lclIsVisible: Boolean; message 'lclIsVisible'; reintroduce;
     procedure lclSetVisible(AVisible: Boolean); message 'lclSetVisible:'; reintroduce;
     function lclIsPainting: Boolean; message 'lclIsPainting';
@@ -402,7 +404,15 @@ type
     procedure resetCursorRects; override;
   end;
 
+procedure SetViewDefaults(AView: NSView);
+
 implementation
+
+procedure SetViewDefaults(AView: NSView);
+begin
+  if not Assigned(AView) then Exit;
+  AView.setAutoresizingMask(NSViewMinYMargin or NSViewMaxXMargin);
+end;
 
 { TCocoaScrollView }
 
@@ -1097,6 +1107,36 @@ end;
 procedure LCLControlExtension.lclSetEnabled(AEnabled:Boolean);
 begin
   SetEnabled(AEnabled);
+end;
+
+function LCLViewExtension.lclInitWithCreateParams(const AParams: TCreateParams): id;
+var
+  p: NSView;
+  ns: NSRect;
+begin
+  p := nil;
+  setHidden(AParams.Style and WS_VISIBLE = 0);
+  if (AParams.WndParent <> 0) then
+  begin
+    if (NSObject(AParams.WndParent).isKindOfClass_(NSView)) then
+      p := NSView(AParams.WndParent)
+    else
+    if (NSObject(AParams.WndParent).isKindOfClass_(NSWindow)) then
+      p := NSWindow(AParams.WndParent).contentView;
+  end;
+  with AParams do
+    if Assigned(p) then
+      LCLToNSRect(Types.Bounds(X,Y,Width, Height), p.frame.size.height, ns)
+    else
+      LCLToNSRect(Types.Bounds(X,Y,Width, Height), ns);
+
+  Result := initWithFrame(ns);
+  if not Assigned(Result) then
+    Exit;
+
+  if Assigned(p) then
+    p.addSubview(Self);
+  SetViewDefaults(Self);
 end;
 
 function LCLViewExtension.lclIsVisible: Boolean;

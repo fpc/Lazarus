@@ -14,13 +14,6 @@ uses
   CocoaPrivate, CocoaGDIObjects, CocoaCaret, CocoaUtils, LCLMessageGlue;
 
 type
-
-  { LCLWSViewExtension }
-
-  LCLWSViewExtension = objccategory(NSView)
-    function lclInitWithCreateParams(const AParams: TCreateParams): id; message 'lclInitWithCreateParams:';
-  end;
-
   { TLCLCommonCallback }
 
   TLCLCommonCallback = class(TObject, ICommonCallBack)
@@ -117,7 +110,6 @@ const
 
 function AllocCustomControl(const AWinControl: TWinControl): TCocoaCustomControl;
 function EmbedInScrollView(AView: NSView): TCocoaScrollView;
-procedure SetViewDefaults(AView: NSView);
 
 implementation
 
@@ -148,12 +140,6 @@ begin
   Result.lclSetFrame(r);
   Result.setDocumentView(AView);
   SetViewDefaults(Result);
-end;
-
-procedure SetViewDefaults(AView:NSView);
-begin
-  if not Assigned(AView) then Exit;
-  AView.setAutoresizingMask(NSViewMinYMargin or NSViewMaxXMargin);
 end;
 
 { TLCLCustomControlCallback }
@@ -1028,38 +1014,6 @@ begin
   ctrl := TCocoaCustomControl(TCocoaCustomControl.alloc.lclInitWithCreateParams(AParams));
   ctrl.callback := TLCLCustomControlCallback.Create(ctrl, AWinControl);
   Result := TLCLIntfHandle(ctrl);
-end;
-
-{ LCLWSViewExtension }
-
-function LCLWSViewExtension.lclInitWithCreateParams(const AParams: TCreateParams): id;
-var
-  p: NSView;
-  ns: NSRect;
-begin
-  p := nil;
-  setHidden(AParams.Style and WS_VISIBLE = 0);
-  if (AParams.WndParent <> 0) then
-  begin
-    if (NSObject(AParams.WndParent).isKindOfClass_(NSView)) then
-      p := NSView(AParams.WndParent)
-    else
-    if (NSObject(AParams.WndParent).isKindOfClass_(NSWindow)) then
-      p := NSWindow(AParams.WndParent).contentView;
-  end;
-  with AParams do
-    if Assigned(p) then
-      LCLToNSRect(Types.Bounds(X,Y,Width, Height), p.frame.size.height, ns)
-    else
-      LCLToNSRect(Types.Bounds(X,Y,Width, Height), ns);
-
-  Result := initWithFrame(ns);
-  if not Assigned(Result) then
-    Exit;
-
-  if Assigned(p) then
-    p.addSubview(Self);
-  SetViewDefaults(Self);
 end;
 
 end.
