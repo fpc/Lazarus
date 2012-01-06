@@ -15426,7 +15426,7 @@ var
             then
               continue;
             CurFilename:=CurDirectory+FileInfo.Name;
-            debugln(['AddExtraFiles ',CurFilename]);
+            //debugln(['AddExtraFiles ',CurFilename]);
             if FileIsText(CurFilename) then
               Files.Add(CurFilename);
           until FindNextUTF8(FileInfo)<>0;

@@ -611,6 +611,10 @@ type
     function FindDeclarationInUsesSection(UsesNode: TCodeTreeNode;
       CleanPos: integer;
       out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+    function FindUnitFileInUsesSection(UsesNode: TCodeTreeNode;
+      const AFilename: string): TCodeTreeNode;
+    function FindUnitFileInAllUsesSections(const AFilename: string;
+      CheckMain: boolean = true; CheckImplementation: boolean = true): TCodeTreeNode;
     function IsIncludeDirectiveAtPos(CleanPos, CleanCodePosInFront: integer;
       var IncludeCode: TCodeBuffer): boolean;
     function FindEnumInContext(Params: TFindDeclarationParams): boolean;
@@ -2039,6 +2043,44 @@ begin
   {$IFDEF ShowTriedContexts}
   DebugLn('TFindDeclarationTool.FindDeclarationInUsesSection END cursor not on AUnitName');
   {$ENDIF}
+end;
+
+function TFindDeclarationTool.FindUnitFileInUsesSection(
+  UsesNode: TCodeTreeNode; const AFilename: string): TCodeTreeNode;
+var
+  AUnitName, UnitInFilename: string;
+  Code: TCodeBuffer;
+begin
+  Result:=nil;
+  if (UsesNode=nil) or (UsesNode.Desc<>ctnUsesSection) then exit;
+  Result:=UsesNode.LastChild;
+  while Result<>nil do begin
+    MoveCursorToNodeStart(Result);
+    ReadNextAtom;
+    AUnitName:=ExtractUsedUnitNameAtCursor(@UnitInFilename);
+    if AUnitName<>'' then begin
+      Code:=FindUnitSource(AUnitName,UnitInFilename,false);
+      if (Code<>nil) and (CompareFilenames(Code.Filename,AFilename)=0) then
+        exit;
+    end;
+    Result:=Result.PriorBrother;
+  end;
+end;
+
+function TFindDeclarationTool.FindUnitFileInAllUsesSections(
+  const AFilename: string; CheckMain: boolean; CheckImplementation: boolean
+  ): TCodeTreeNode;
+begin
+  Result:=nil;
+  //debugln(['TFindDeclarationTool.FindUnitFileInAllUsesSections Self=',ExtractFilename(MainFilename),' Search=',ExtractFilename(AFilename)]);
+  if AFilename='' then exit;
+  if CheckMain then begin
+    Result:=FindUnitFileInUsesSection(FindMainUsesSection,AFilename);
+    //debugln(['TFindDeclarationTool.FindUnitFileInAllUsesSections Self=',ExtractFilename(MainFilename),' Search=',ExtractFilename(AFilename),' used in main uses=',Result<>nil]);
+    if Result<>nil then exit;
+  end;
+  if CheckImplementation then
+    Result:=FindUnitFileInUsesSection(FindImplementationUsesSection,AFilename);
 end;
 
 function TFindDeclarationTool.FindUnitSource(const AnUnitName,
@@ -4248,6 +4290,7 @@ end;
 function TFindDeclarationTool.FindReferences(const CursorPos: TCodeXYPosition;
   SkipComments: boolean; out ListOfPCodeXYPosition: TFPList): boolean;
 var
+  DeclarationFound: boolean;
   Identifier: string;
   DeclarationTool: TFindDeclarationTool;
   DeclarationNode: TCodeTreeNode;
@@ -4493,6 +4536,21 @@ var
       end;
     end;
   end;
+
+  function GetDeclarationTool: boolean;
+  begin
+    Result:=false;
+    DeclarationTool:=nil;
+    if Assigned(FOnGetCodeToolForBuffer) then
+      DeclarationTool:=FOnGetCodeToolForBuffer(Self,CursorPos.Code,true)
+    else if CursorPos.Code=TObject(Scanner.MainCode) then
+      DeclarationTool:=Self;
+    if DeclarationTool=nil then begin
+      debugln('WARNING: TFindDeclarationTool.FindReferences DeclarationTool=nil');
+      exit;
+    end;
+    Result:=true;
+  end;
   
   function FindDeclarationNode: boolean;
   const
@@ -4503,18 +4561,10 @@ var
     CommentEnd: integer;
     p: LongInt;
   begin
+    if DeclarationFound then exit(true);
     Result:=false;
 
     // find the main declaration node and identifier
-    DeclarationTool:=nil;
-    if Assigned(FOnGetCodeToolForBuffer) then
-      DeclarationTool:=FOnGetCodeToolForBuffer(Self,CursorPos.Code,true)
-    else if CursorPos.Code=TObject(Scanner.MainCode) then
-      DeclarationTool:=Self;
-    if DeclarationTool=nil then begin
-      debugln('WARNING: TFindDeclarationTool.FindReferences DeclarationTool=nil');
-      exit;
-    end;
     DeclarationTool.BuildTreeAndGetCleanPos(CursorPos,CleanDeclCursorPos);
     DeclarationNode:=DeclarationTool.BuildSubTreeAndFindDeepestNodeAtPos(
                                            CleanDeclCursorPos,true);
@@ -4592,6 +4642,7 @@ var
       end;
     end;
 
+    DeclarationFound:=true;
     Result:=true;
   end;
 
@@ -4652,12 +4703,22 @@ begin
   ListOfPCodeXYPosition:=nil;
   Params:=nil;
   PosTree:=nil;
+  DeclarationFound:=false;
 
   ActivateGlobalWriteLock;
   try
-    BuildTree(lsrEnd);
+    // get the tool of the declaration
+    if not GetDeclarationTool then exit;
+
+    // check if this unit uses the declaration unit
+    if Self<>DeclarationTool then begin
+      BuildTree(lsrImplementationUsesSectionEnd);
+      if FindUnitFileInAllUsesSections(DeclarationTool.MainFilename)=nil then
+        exit(true); // the declaration unit is not used
+    end;
 
     // find declaration nodes and identifier
+    BuildTree(lsrEnd);
     if not FindDeclarationNode then exit;
 
     // search identifiers
