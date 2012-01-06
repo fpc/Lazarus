@@ -2048,21 +2048,42 @@ end;
 function TFindDeclarationTool.FindUnitFileInUsesSection(
   UsesNode: TCodeTreeNode; const AFilename: string): TCodeTreeNode;
 var
-  AUnitName, UnitInFilename: string;
-  Code: TCodeBuffer;
+  TargetLoUnitName: string;
+  TargetLoShortFilename: string;
+
+  function CheckUseNode(Node: TCodeTreeNode): boolean;
+  var
+    Code: TCodeBuffer;
+    UnitInFilename: string;
+    AUnitName: string;
+  begin
+    Result:=false;
+    MoveCursorToNodeStart(Node);
+    ReadNextAtom;
+    AUnitName:=ExtractUsedUnitNameAtCursor(@UnitInFilename);
+    if AUnitName='' then exit;
+
+    // quick check: compare unitname
+    if UnitInFilename<>'' then begin
+      DoDirSeparators(UnitInFilename);
+      if lowercase(ExtractFilename(UnitInFilename))<>TargetLoShortFilename then
+        exit;
+    end else if LowerCase(AUnitName)<>TargetLoUnitName then
+      exit;
+
+    // search in search paths
+    Code:=FindUnitSource(AUnitName,UnitInFilename,false);
+    Result:=(Code<>nil) and (CompareFilenames(Code.Filename,AFilename)=0);
+  end;
+
 begin
   Result:=nil;
   if (UsesNode=nil) or (UsesNode.Desc<>ctnUsesSection) then exit;
+  TargetLoUnitName:=LowerCase(ExtractFileNameOnly(AFilename));
+  TargetLoShortFilename:=LowerCase(ExtractFileName(AFilename));
   Result:=UsesNode.LastChild;
   while Result<>nil do begin
-    MoveCursorToNodeStart(Result);
-    ReadNextAtom;
-    AUnitName:=ExtractUsedUnitNameAtCursor(@UnitInFilename);
-    if AUnitName<>'' then begin
-      Code:=FindUnitSource(AUnitName,UnitInFilename,false);
-      if (Code<>nil) and (CompareFilenames(Code.Filename,AFilename)=0) then
-        exit;
-    end;
+    if CheckUseNode(Result) then exit;
     Result:=Result.PriorBrother;
   end;
 end;
