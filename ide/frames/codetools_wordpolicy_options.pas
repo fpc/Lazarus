@@ -115,7 +115,7 @@ begin
       // wpNone
       IdentifierPolicyRadioGroup.ItemIndex:=0;
     end;
-    WordExceptionsMemo.Lines.Assign(WordExceptions);
+    WordExceptionsMemo.Lines.Assign(WordPolicyExceptions);
   end;
 end;
 
@@ -136,7 +136,7 @@ begin
       2: IdentifierPolicy:=wpUpperCase;
       3: IdentifierPolicy:=wpLowerCaseFirstLetterUp;
     end;
-    WordExceptions.Assign(WordExceptionsMemo.Lines);
+    WordPolicyExceptions.Assign(WordExceptionsMemo.Lines);
   end;
 end;
 

@@ -92,13 +92,13 @@ const
   DefaultUsesInsertPolicy = uipBehindRelated;
 
 type
-  TWordException = class
+  TWordPolicyException = class
     Word: string;
   end;
 
-  { TWordExceptions }
+  { TWordPolicyExceptions }
 
-  TWordExceptions = class
+  TWordPolicyExceptions = class
   private
     FWords: TAVLTree;
   public
@@ -133,7 +133,7 @@ type
     TabWidth: integer;
     KeyWordPolicy: TWordPolicy;
     IdentifierPolicy: TWordPolicy;
-    WordExceptions: TWordExceptions;
+    WordExceptions: TWordPolicyExceptions;
     DoNotSplitLineInFront: TAtomTypes;
     DoNotSplitLineAfter: TAtomTypes;
     DoInsertSpaceInFront: TAtomTypes;
@@ -160,7 +160,7 @@ type
     
     NestedComments: boolean;
 
-    procedure SetupWordExceptions(ws: TStrings);
+    procedure SetupWordPolicyExceptions(ws: TStrings);
     function BeautifyProc(const AProcCode: string; IndentSize: integer;
         AddBeginEnd: boolean): string;
     function BeautifyStatement(const AStatement: string; IndentSize: integer
@@ -448,23 +448,23 @@ end;
 function CompareWordExceptions(p1, p2: Pointer): Integer;
 var w1, w2: string;
 begin
-  w1 := TWordException(p1).Word;
-  w2 := TWordException(p2).Word;
+  w1 := TWordPolicyException(p1).Word;
+  w2 := TWordPolicyException(p2).Word;
   Result := CompareIdentifiers(PChar(w1), PChar(w2));
 end;
 
 function CompareKeyWordExceptions(Item1, Item2: Pointer): Integer;
 begin
-  Result := CompareIdentifiers(PChar(Item1), PChar(TWordException(Item2).Word));
+  Result := CompareIdentifiers(PChar(Item1), PChar(TWordPolicyException(Item2).Word));
 end;
 
-{ TWordExceptions }
+{ TWordPolicyExceptions }
 
-constructor TWordExceptions.Create(AWords: TStrings);
+constructor TWordPolicyExceptions.Create(AWords: TStrings);
 var
   i, j: Integer;
   s1, s2: string;
-  we: TWordException;
+  we: TWordPolicyException;
 begin
   FWords := TAVLTree.Create(@CompareWordExceptions);
   for i := 0 to AWords.Count - 1 do
@@ -481,7 +481,7 @@ begin
       Delete(s1, 1, Pos(' ', s1));
       if s2 <> '' then
       begin
-        we := TWordException.Create;
+        we := TWordPolicyException.Create;
         we.Word := s2;
         FWords.Add(we);
       end;
@@ -489,19 +489,19 @@ begin
   end;
 end;
 
-destructor TWordExceptions.Destroy;
+destructor TWordPolicyExceptions.Destroy;
 begin
   FWords.FreeAndClear;
   FWords.Free;
   inherited Destroy;
 end;
 
-function TWordExceptions.CheckExceptions(var AWord: string): Boolean;
+function TWordPolicyExceptions.CheckExceptions(var AWord: string): Boolean;
 var n: TAVLTreeNode;
 begin
   n := FWords.FindKey(PChar(AWord), @CompareKeyWordExceptions);
   Result := Assigned(n);
-  if Result then AWord := TWordException(n.Data).Word;
+  if Result then AWord := TWordPolicyException(n.Data).Word;
 end;
 
 { TSourceChangeCacheEntry }
@@ -1593,10 +1593,10 @@ begin
     Result:=false;
 end;
 
-procedure TBeautifyCodeOptions.SetupWordExceptions(ws: TStrings);
+procedure TBeautifyCodeOptions.SetupWordPolicyExceptions(ws: TStrings);
 begin
   if Assigned(WordExceptions) then WordExceptions.Free;
-  WordExceptions := TWordExceptions.Create(ws);
+  WordExceptions := TWordPolicyExceptions.Create(ws);
 end;
 
 function TBeautifyCodeOptions.BeautifyProc(const AProcCode: string;

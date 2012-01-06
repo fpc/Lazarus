@@ -80,7 +80,7 @@ type
     FMethodInsertPolicy: TMethodInsertPolicy;
     FKeyWordPolicy : TWordPolicy;
     FIdentifierPolicy: TWordPolicy;
-    FWordExceptions: TStringList;
+    FWordPolicyExceptions: TStringList;
     FDoNotSplitLineInFront: TAtomTypes;
     FDoNotSplitLineAfter: TAtomTypes;
     FDoInsertSpaceInFront: TAtomTypes;
@@ -167,8 +167,8 @@ type
       read FKeyWordPolicy write FKeyWordPolicy;
     property IdentifierPolicy: TWordPolicy
       read FIdentifierPolicy write FIdentifierPolicy;
-    property WordExceptions: TStringList
-      read FWordExceptions write FWordExceptions;
+    property WordPolicyExceptions: TStringList
+      read FWordPolicyExceptions write FWordPolicyExceptions;
     property DoNotSplitLineInFront: TAtomTypes
       read FDoNotSplitLineInFront write FDoNotSplitLineInFront;
     property DoNotSplitLineAfter: TAtomTypes
@@ -307,14 +307,14 @@ constructor TCodeToolsOptions.Create;
 begin
   inherited Create;
   FFilename:='';
-  FWordExceptions := TStringList.Create;
+  FWordPolicyExceptions := TStringList.Create;
   Clear;
 end;
 
 destructor TCodeToolsOptions.Destroy;
 begin
   ClearGlobalDefineTemplates;
-  FWordExceptions.Free;
+  FWordPolicyExceptions.Free;
   inherited Destroy;
 end;
 
@@ -417,8 +417,8 @@ begin
     FIdentifierPolicy:=WordPolicyNameToPolicy(XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierPolicy/Value',
       WordPolicyNames[wpNone]));
-    WordExceptions.Text:=LineBreaksToSystemLineBreaks(XMLConfig.GetValue(
-      'CodeToolsOptions/WordExceptions/Value', ''));
+    WordPolicyExceptions.Text:=LineBreaksToSystemLineBreaks(XMLConfig.GetValue(
+      'CodeToolsOptions/WordPolicyExceptions/Value', ''));
     FDoNotSplitLineInFront:=ReadAtomTypesFromXML(XMLConfig,
       'CodeToolsOptions/DoNotSplitLineInFront/',DefaultDoNotSplitLineInFront);
     FDoNotSplitLineAfter:=ReadAtomTypesFromXML(XMLConfig,
@@ -545,9 +545,8 @@ begin
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierPolicy/Value',
       WordPolicyNames[FIdentifierPolicy],
       WordPolicyNames[wpNone]);
-    XMLConfig.SetDeleteValue('CodeToolsOptions/WordExceptions/Value',
-      LineBreaksToSystemLineBreaks(WordExceptions.Text),
-      '');
+    XMLConfig.SetDeleteValue('CodeToolsOptions/WordPolicyExceptions/Value',
+      Trim(LineBreaksToSystemLineBreaks(WordPolicyExceptions.Text)),'');
     WriteAtomTypesToXML(XMLConfig,'CodeToolsOptions/DoNotSplitLineInFront/',
       FDoNotSplitLineInFront,DefaultDoNotSplitLineInFront);
     WriteAtomTypesToXML(XMLConfig,'CodeToolsOptions/DoNotSplitLineAfter/',
@@ -876,7 +875,7 @@ begin
     BeautifyCodeOptions.MethodInsertPolicy:=MethodInsertPolicy;
     BeautifyCodeOptions.KeyWordPolicy:=KeyWordPolicy;
     BeautifyCodeOptions.IdentifierPolicy:=IdentifierPolicy;
-    BeautifyCodeOptions.SetupWordExceptions(WordExceptions);
+    BeautifyCodeOptions.SetupWordPolicyExceptions(WordPolicyExceptions);
     BeautifyCodeOptions.DoNotSplitLineInFront:=DoNotSplitLineInFront;
     BeautifyCodeOptions.DoNotSplitLineAfter:=DoNotSplitLineAfter;
     BeautifyCodeOptions.DoInsertSpaceInFront:=DoInsertSpaceInFront;
