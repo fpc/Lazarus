@@ -31,7 +31,7 @@ uses
   // RTL,FCL
   MacOSAll, CocoaAll, Classes,
   // LCL
-  Controls, Graphics, LCLType, LMessages, LCLProc,
+  Controls, Forms, Graphics, LCLType, LMessages, LCLProc,
   // Widgetset
   WSForms, WSLCLClasses, WSProc, LCLMessageGlue,
   // LCL Cocoa
@@ -88,6 +88,8 @@ type
   { TCocoaWSCustomForm }
   TCocoaWSCustomFormClass = class of TCocoaWSCustomForm;
   TCocoaWSCustomForm = class(TWSCustomForm)
+  private
+    class procedure SetStyleMaskFor(AWindow: NSWindow; ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons; ADesigning: Boolean);
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
@@ -98,8 +100,8 @@ type
 //    class procedure CloseModal(const ACustomForm: TCustomForm); override;
 //    class procedure ShowModal(const ACustomForm: TCustomForm); override;
     
-//    class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
-//    class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
+    class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
+    class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
 
     {need to override these }
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
@@ -188,6 +190,49 @@ end;
   Creates new window in Cocoa interface with the specified parameters
  ------------------------------------------------------------------------------}
 
+class procedure TCocoaWSCustomForm.SetStyleMaskFor(AWindow: NSWindow;
+  ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons;
+  ADesigning: Boolean);
+
+  procedure SetWindowButtonState(AButton: NSWindowButton; AEnabled, AVisible: Boolean);
+  var
+    Btn: NSButton;
+  begin
+    Btn := AWindow.standardWindowButton(AButton);
+    if Assigned(Btn) then
+    begin
+      Btn.setHidden(not AVisible);
+      Btn.setEnabled(AEnabled);
+    end;
+  end;
+
+var
+  StyleMask: NSUInteger;
+begin
+  if ADesigning then
+    ABorderStyle := bsSingle;
+
+  case ABorderStyle of
+    bsSizeable, bsSizeToolWin:
+      StyleMask := NSTitledWindowMask or NSResizableWindowMask;
+    bsSingle, bsDialog, bsToolWindow:
+      StyleMask := NSTitledWindowMask;
+  else
+    StyleMask := NSBorderlessWindowMask;
+  end;
+  if biSystemMenu in ABorderIcons then
+  begin
+    StyleMask := StyleMask or NSClosableWindowMask;
+    if biMinimize in ABorderIcons then
+      StyleMask := StyleMask or NSMiniaturizableWindowMask;
+  end;
+  AWindow.setStyleMask(StyleMask);
+  // also change enable state for standard window buttons
+  SetWindowButtonState(NSWindowMiniaturizeButton, biMinimize in ABorderIcons, (ABorderStyle in [bsSingle, bsSizeable]) and (biSystemMenu in ABorderIcons));
+  SetWindowButtonState(NSWindowZoomButton, (biMaximize in ABorderIcons) and (ABorderStyle in [bsSizeable, bsSizeToolWin]), (ABorderStyle in [bsSingle, bsSizeable]) and (biSystemMenu in ABorderIcons));
+  SetWindowButtonState(NSWindowCloseButton, True, (ABorderStyle <> bsNone) and (biSystemMenu in ABorderIcons));
+end;
+
 class function TCocoaWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
@@ -243,6 +288,20 @@ begin
   ns := NSStringUtf8(AText);
   TCocoaWindow(AWinControl.Handle).setTitle(ns);
   ns.release;
+end;
+
+class procedure TCocoaWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
+  const ABorderIcons: TBorderIcons);
+begin
+  if NSObject(AForm.Handle).isKindOfClass(NSWindow) then
+    SetStyleMaskFor(NSWindow(AForm.Handle), AForm.BorderStyle, ABorderIcons, csDesigning in AForm.ComponentState);
+end;
+
+class procedure TCocoaWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
+  const AFormBorderStyle: TFormBorderStyle);
+begin
+  if NSObject(AForm.Handle).isKindOfClass(NSWindow) then
+    SetStyleMaskFor(NSWindow(AForm.Handle), AFormBorderStyle, AForm.BorderIcons, csDesigning in AForm.ComponentState);
 end;
 
 class function TCocoaWSCustomForm.GetClientBounds(const AWinControl: TWinControl; var ARect: TRect): Boolean;
