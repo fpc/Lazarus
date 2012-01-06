@@ -345,6 +345,8 @@ begin
     SetFontColor(ForegroundColor);
     ACanvas.Font.Style:=ACanvas.Font.Style+[fsBold];
     s:=IdentItem.Identifier;
+    with CodeToolBoss.SourceChangeCache.BeautifyCodeOptions do
+      WordExceptions.CheckExceptions(s);
     if MeasureOnly then
       Inc(Result.X, 1+ACanvas.TextWidth(s))
     else begin
@@ -570,6 +572,8 @@ begin
   IsReadOnly:=false;
 
   Result:=IdentItem.Identifier;
+  with CodeToolBoss.SourceChangeCache.BeautifyCodeOptions do
+    WordExceptions.CheckExceptions(Result);
 
   case IdentItem.GetDesc of
 

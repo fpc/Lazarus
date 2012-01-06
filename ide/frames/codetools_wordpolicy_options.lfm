@@ -1,12 +1,12 @@
 inherited CodetoolsWordPolicyOptionsFrame: TCodetoolsWordPolicyOptionsFrame
-  Height = 270
+  Height = 355
   Width = 483
-  ClientHeight = 270
+  ClientHeight = 355
   ClientWidth = 483
   TabOrder = 0
   Visible = False
   DesignLeft = 340
-  DesignTop = 308
+  DesignTop = 252
   object KeyWordPolicyRadioGroup: TRadioGroup[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -38,7 +38,7 @@ inherited CodetoolsWordPolicyOptionsFrame: TCodetoolsWordPolicyOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 100
+    Height = 102
     Top = 106
     Width = 483
     Anchors = [akTop, akLeft, akRight]
@@ -56,5 +56,32 @@ inherited CodetoolsWordPolicyOptionsFrame: TCodetoolsWordPolicyOptionsFrame
     ChildSizing.ControlsPerLine = 1
     Constraints.MinHeight = 100
     TabOrder = 1
+  end
+  object WordExceptionsGroupBox: TGroupBox[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = IdentifierPolicyRadioGroup
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 138
+    Top = 214
+    Width = 483
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    Caption = 'WordExceptionsGroupBox'
+    ClientHeight = 120
+    ClientWidth = 479
+    TabOrder = 2
+    object WordExceptionsMemo: TMemo
+      Left = 6
+      Height = 108
+      Top = 6
+      Width = 467
+      Align = alClient
+      BorderSpacing.Around = 6
+      ScrollBars = ssAutoVertical
+      TabOrder = 0
+    end
   end
 end

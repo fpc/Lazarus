@@ -1772,6 +1772,7 @@ resourcestring
   dlgCDTUPPERCASE = 'UPPERCASE';
   dlg1UP2low = 'Lowercase, first letter up';
   dlgIdentifierPolicy = 'Identifier policy';
+  dlgWordExceptions = 'Exceptions';
   dlgPropertyCompletion = 'Property completion';
   lisHeaderCommentForClass = 'Header comment for class';
   lisImplementationCommentForClass = 'Implementation comment for class';

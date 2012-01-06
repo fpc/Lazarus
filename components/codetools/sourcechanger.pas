@@ -92,6 +92,21 @@ const
   DefaultUsesInsertPolicy = uipBehindRelated;
 
 type
+  TWordException = class
+    Word: string;
+  end;
+
+  { TWordExceptions }
+
+  TWordExceptions = class
+  private
+    FWords: TAVLTree;
+  public
+    constructor Create(AWords: TStrings);
+    destructor Destroy; override;
+    function CheckExceptions(var AWord: string): Boolean;
+  end;
+
   { TBeautifyCodeOptions }
 
   TBeautifyCodeOptions = class(TPersistent)
@@ -118,6 +133,7 @@ type
     TabWidth: integer;
     KeyWordPolicy: TWordPolicy;
     IdentifierPolicy: TWordPolicy;
+    WordExceptions: TWordExceptions;
     DoNotSplitLineInFront: TAtomTypes;
     DoNotSplitLineAfter: TAtomTypes;
     DoInsertSpaceInFront: TAtomTypes;
@@ -144,6 +160,7 @@ type
     
     NestedComments: boolean;
 
+    procedure SetupWordExceptions(ws: TStrings);
     function BeautifyProc(const AProcCode: string; IndentSize: integer;
         AddBeginEnd: boolean): string;
     function BeautifyStatement(const AStatement: string; IndentSize: integer
@@ -160,6 +177,7 @@ type
     procedure ConsistencyCheck;
     procedure WriteDebugReport;
     constructor Create;
+    destructor Destroy; override;
   end;
 
 
@@ -425,6 +443,65 @@ begin
         Result:=-1;
     end;
   end;
+end;
+
+function CompareWordExceptions(p1, p2: Pointer): Integer;
+var w1, w2: string;
+begin
+  w1 := TWordException(p1).Word;
+  w2 := TWordException(p2).Word;
+  Result := CompareIdentifiers(PChar(w1), PChar(w2));
+end;
+
+function CompareKeyWordExceptions(Item1, Item2: Pointer): Integer;
+begin
+  Result := CompareIdentifiers(PChar(Item1), PChar(TWordException(Item2).Word));
+end;
+
+{ TWordExceptions }
+
+constructor TWordExceptions.Create(AWords: TStrings);
+var
+  i, j: Integer;
+  s1, s2: string;
+  we: TWordException;
+begin
+  FWords := TAVLTree.Create(@CompareWordExceptions);
+  for i := 0 to AWords.Count - 1 do
+  begin
+    s1 := AWords[i] + ' ';
+    for j := 1 to Length(s1) do
+      if not (s1[j] in [' ', 'a'..'z', 'A'..'Z', '0'..'9', '_']) then
+        s1[j] := ' ';
+    while Pos('  ', s1) > 0 do
+      Delete(s1, Pos('  ', s1), 1);
+    while s1 <> '' do
+    begin
+      s2 := Copy(s1, 1, Pos(' ', s1) - 1);
+      Delete(s1, 1, Pos(' ', s1));
+      if s2 <> '' then
+      begin
+        we := TWordException.Create;
+        we.Word := s2;
+        FWords.Add(we);
+      end;
+    end;
+  end;
+end;
+
+destructor TWordExceptions.Destroy;
+begin
+  FWords.FreeAndClear;
+  FWords.Free;
+  inherited Destroy;
+end;
+
+function TWordExceptions.CheckExceptions(var AWord: string): Boolean;
+var n: TAVLTreeNode;
+begin
+  n := FWords.FindKey(PChar(AWord), @CompareKeyWordExceptions);
+  Result := Assigned(n);
+  if Result then AWord := TWordException(n.Data).Word;
 end;
 
 { TSourceChangeCacheEntry }
@@ -1168,6 +1245,12 @@ begin
   NestedComments:=true;
 end;
 
+destructor TBeautifyCodeOptions.Destroy;
+begin
+  WordExceptions.Free;
+  inherited Destroy;
+end;
+
 procedure TBeautifyCodeOptions.AddAtom(var CurCode: string; NewAtom: string);
 var
   RestLineLen, LastLineEndInAtom: integer;
@@ -1510,6 +1593,12 @@ begin
     Result:=false;
 end;
 
+procedure TBeautifyCodeOptions.SetupWordExceptions(ws: TStrings);
+begin
+  if Assigned(WordExceptions) then WordExceptions.Free;
+  WordExceptions := TWordExceptions.Create(ws);
+end;
+
 function TBeautifyCodeOptions.BeautifyProc(const AProcCode: string;
   IndentSize: integer; AddBeginEnd: boolean): string;
 begin
@@ -1711,13 +1800,14 @@ end;
 function TBeautifyCodeOptions.BeautifyWord(const AWord: string;
   WordPolicy: TWordPolicy): string;
 begin
+  Result := AWord;
+  if Assigned(WordExceptions) and WordExceptions.CheckExceptions(Result) then
+    Exit;
   case WordPolicy of
     wpLowerCase: Result:=lowercase(AWord);
     wpUpperCase: Result:=UpperCaseStr(AWord);
     wpLowerCaseFirstLetterUp: Result:=UpperCaseStr(copy(AWord,1,1))
                                      +lowercase(copy(AWord,2,length(AWord)-1));
-  else
-    Result:=AWord;
   end;
 end;
 

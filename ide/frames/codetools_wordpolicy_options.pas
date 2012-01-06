@@ -25,7 +25,7 @@ unit codetools_wordpolicy_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, ExtCtrls,
+  Classes, SysUtils, FileUtil, Forms, ExtCtrls, StdCtrls,
   SourceChanger, CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
 
 type
@@ -33,6 +33,8 @@ type
   { TCodetoolsWordPolicyOptionsFrame }
 
   TCodetoolsWordPolicyOptionsFrame = class(TAbstractIDEOptionsEditor)
+    WordExceptionsMemo: TMemo;
+    WordExceptionsGroupBox: TGroupBox;
     IdentifierPolicyRadioGroup: TRadioGroup;
     KeyWordPolicyRadioGroup: TRadioGroup;
   private
@@ -82,6 +84,8 @@ begin
       EndUpdate;
     end;
   end;
+
+  WordExceptionsGroupBox.Caption := dlgWordExceptions;
 end;
 
 procedure TCodetoolsWordPolicyOptionsFrame.ReadSettings(
@@ -111,6 +115,7 @@ begin
       // wpNone
       IdentifierPolicyRadioGroup.ItemIndex:=0;
     end;
+    WordExceptionsMemo.Lines.Assign(WordExceptions);
   end;
 end;
 
@@ -131,6 +136,7 @@ begin
       2: IdentifierPolicy:=wpUpperCase;
       3: IdentifierPolicy:=wpLowerCaseFirstLetterUp;
     end;
+    WordExceptions.Assign(WordExceptionsMemo.Lines);
   end;
 end;
 
