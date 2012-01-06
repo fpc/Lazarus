@@ -2684,6 +2684,7 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
     for i:=0 to BuildModes.Count-1 do
     begin
       CurMode:=BuildModes[i];
+      //debugln(['SaveBuildModes ',i,'/',BuildModes.Count,' Identifier=',CurMode.Identifier,' InSession=',CurMode.InSession,' SaveSession=',SaveSession,' SaveData=',SaveData]);
       if (CurMode.InSession and SaveSession)
         or ((not CurMode.InSession) and SaveData) then
       begin
@@ -2701,6 +2702,7 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
     XMLConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);
 
     // save what mode is currently active in the session
+    //debugln(['SaveBuildModes SaveSession=',SaveSession,' ActiveBuildMode.Identifier=',ActiveBuildMode.Identifier]);
     if SaveSession then
       XMLConfig.SetDeleteValue(Path+'BuildModes/Active',ActiveBuildMode.Identifier,'default');
   end;
@@ -3094,7 +3096,7 @@ const
       'Application', 'Program', 'Custom program'
     );
 var
-  Merge: boolean;
+  LoadParts: boolean;
   FileVersion: Integer;
   NewMainUnitID: LongInt;
 
@@ -3110,9 +3112,10 @@ var
     MacroValsPath: String;
     ActiveIdentifier: String;
   begin
-    if Merge then begin
-      if not (prfMergeBuildModes in ReadFlags) then exit;
-      ClearBuildModes;
+    if LoadParts then begin
+      if not (prfLoadPartBuildModes in ReadFlags) then exit;
+      if LoadData then
+        ClearBuildModes;
     end;
 
     Cnt:=XMLConfig.GetValue(Path+'BuildModes/Count',0);
@@ -3148,11 +3151,6 @@ var
         CurMode.CompilerOptions.LoadFromXMLConfig(XMLConfig,CompOptsPath);
       end;
 
-      ActiveIdentifier:=XMLConfig.GetValue(Path+'BuildModes/Active','default');
-      CurMode:=BuildModes.Find(ActiveIdentifier);
-      if CurMode=nil then
-        CurMode:=BuildModes[0];
-      ActiveBuildMode:=CurMode;
     end else if LoadData then begin
       // no build modes => an old file format
       CompOptsPath:='CompilerOptions/';
@@ -3164,8 +3162,14 @@ var
       CurMode:=BuildModes[0];
       CurMode.MacroValues.LoadFromXMLConfig(XMLConfig,MacroValsPath);
       CurMode.CompilerOptions.LoadFromXMLConfig(XMLConfig,CompOptsPath);
-      ActiveBuildMode:=BuildModes[0];
     end;
+
+    // set active mode
+    ActiveIdentifier:=XMLConfig.GetValue(Path+'BuildModes/Active','default');
+    CurMode:=BuildModes.Find(ActiveIdentifier);
+    if CurMode=nil then
+      CurMode:=BuildModes[0];
+    ActiveBuildMode:=CurMode;
   end;
 
   function ReadOldProjectType(XMLConfig: TXMLConfig;
@@ -3334,10 +3338,10 @@ var
   xmlconfig: TXMLConfig;
 begin
   Result := mrCancel;
-  Merge:=prfMerge in ReadFlags;
+  LoadParts:=prfLoadParts in ReadFlags;
   BeginUpdate(true);
   try
-    if Merge then begin
+    if LoadParts then begin
       // read only parts of the lpi, keep other values
       try
         xmlconfig := TCodeBufXMLConfig.CreateWithCache(NewProjectInfoFile,true)
@@ -3393,7 +3397,7 @@ begin
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
       FileVersion:= XMLConfig.GetValue(Path+'Version/Value',0);
-      if (Fileversion=0) and (not Merge)
+      if (Fileversion=0) and (not LoadParts)
       and (xmlconfig.GetValue(Path+'Units/Count',0)=0) then
       begin
         if MessageDlg(lisStrangeLpiFile,
@@ -3401,7 +3405,7 @@ begin
           mtConfirmation,[mbIgnore,mbAbort],0)<>mrIgnore then exit;
       end;
 
-      if not Merge then begin
+      if not LoadParts then begin
         LoadFlags(XMLConfig,Path);
         SessionStorage:=StrToProjectSessionStorage(
                         XMLConfig.GetValue(Path+'General/SessionStorage/Value',
@@ -3415,7 +3419,7 @@ begin
       //   added to the lpi.
       //   Changing the default value to 0 avoids the redundancy and
       //   automatically fixes broken lpi files.
-      if not Merge then begin
+      if not LoadParts then begin
         NewMainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', 0);
         Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
         UseAppBundle := xmlconfig.GetValue(Path+'General/UseAppBundle/Value', True);
@@ -3424,13 +3428,13 @@ begin
       end;
 
       // Lazdoc
-      if not Merge then begin
+      if not LoadParts then begin
         LazDocPaths := SwitchPathDelims(xmlconfig.GetValue(Path+'LazDoc/Paths', ''),
                                fPathDelimChanged);
       end;
 
       // i18n
-      if not Merge then begin
+      if not LoadParts then begin
         if FileVersion<6 then begin
           POOutputDirectory := SwitchPathDelims(
                      xmlconfig.GetValue(Path+'RST/OutDir', ''),fPathDelimChanged);
@@ -3448,40 +3452,40 @@ begin
       LoadBuildModes(XMLConfig,Path,true);
 
       // Resources
-      if not Merge then
+      if not LoadParts then
         ProjResources.ReadFromProjectFile(xmlconfig, Path);
 
       // load custom data
-      if not Merge then
+      if not LoadParts then
         LoadStringToStringTree(xmlconfig,CustomData,Path+'CustomData/');
       
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
-      if not Merge then begin
+      if not LoadParts then begin
         CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
                                                                  ProjectDirectory;
         CodeToolBoss.DefineTree.ClearCache;
       end;
 
       // load the dependencies
-      if not Merge then
+      if not LoadParts then
         LoadPkgDependencyList(XMLConfig,Path+'RequiredPackages/',
                           FFirstRequiredDependency,pdlRequires,Self,true,false);
 
       // load the Run and Build parameter Options
-      if not Merge then
+      if not LoadParts then
         RunParameterOptions.Load(xmlconfig,Path,fPathDelimChanged);
 
       // load the Publish Options
-      if not Merge then
+      if not LoadParts then
         PublishOptions.LoadFromXMLConfig(xmlconfig,
                                        Path+'PublishOptions/',fPathDelimChanged);
 
       // load session info
-      if not Merge then
+      if not LoadParts then
         LoadSessionInfo(XMLConfig,Path,false);
 
       // call hooks to read their info (e.g. DebugBoss)
-      if (not Merge) and Assigned(OnLoadProjectInfo) then begin
+      if (not LoadParts) and Assigned(OnLoadProjectInfo) then begin
         OnLoadProjectInfo(Self,XMLConfig,false);
       end;
     finally
@@ -3496,7 +3500,7 @@ begin
     end;
 
     // load session file (if available)
-    if (not Merge)
+    if (not LoadParts)
     and (SessionStorage in [pssInProjectDir,pssInIDEConfig])
     and (CompareFilenames(ProjectInfoFile,ProjectSessionFile)<>0) then begin
       if FileExistsUTF8(ProjectSessionFile) then begin

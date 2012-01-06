@@ -47,8 +47,8 @@ type
   TOnLoadSaveFilename = procedure(var Filename:string; Load:boolean) of object;
 
   TProjectReadFlag = (
-    prfMerge,
-    prfMergeBuildModes
+    prfLoadParts,
+    prfLoadPartBuildModes
     );
   TProjectReadFlags = set of TProjectReadFlag;
 
