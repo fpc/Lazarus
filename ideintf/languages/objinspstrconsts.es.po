@@ -260,27 +260,39 @@ msgid "Set value"
 msgstr "Establecer valor"
 
 #: objinspstrconsts.nbcesaddpage
-msgid "Add page"
+#, fuzzy
+#| msgid "Add page"
+msgid "Add Page"
 msgstr "Añadir página"
 
 #: objinspstrconsts.nbcesdeletepage
-msgid "Delete page"
+#, fuzzy
+#| msgid "Delete page"
+msgid "Delete Page"
 msgstr "Borrar página"
 
 #: objinspstrconsts.nbcesinsertpage
-msgid "Insert page"
+#, fuzzy
+#| msgid "Insert page"
+msgid "Insert Page"
 msgstr "Insertar página"
 
 #: objinspstrconsts.nbcesmovepageleft
-msgid "Move page left"
+#, fuzzy
+#| msgid "Move page left"
+msgid "Move Page Left"
 msgstr "Mover página a la izquierda"
 
 #: objinspstrconsts.nbcesmovepageright
-msgid "Move page right"
+#, fuzzy
+#| msgid "Move page right"
+msgid "Move Page Right"
 msgstr "Mover página a la derecha"
 
 #: objinspstrconsts.nbcesshowpage
-msgid "Show page ..."
+#, fuzzy
+#| msgid "Show page ..."
+msgid "Show Page"
 msgstr "Mostrar página ..."
 
 #: objinspstrconsts.oicoleditadd

@@ -56,8 +56,10 @@ var
   ShowCodeNodeInfoCommand: TIDECommand;
   CmdCatView: TIDECommandCategory;
   ViewCodyWindowCommand: TIDECommand;
+  {$IFDEF EnableCodyExperiments}
   CopyDeclarationToClipboardCommand: TIDECommand;
   CutDeclarationToClipboardCommand: TIDECommand;
+  {$ENDIF}
   ShowIdentifierDictionaryCommand: TIDECommand;
 begin
   CodyOptions:=TCodyMiscOptions.Create;
@@ -138,22 +140,26 @@ begin
     crsAddAssignMethod2,nil,nil,AddAssignMethodCommand);
 
   // Copy declaration to clipboard
+  {$IFDEF EnableCodyExperiments}
   CopyDeclarationToClipboardCommand:=RegisterIDECommand(CmdCatCodeTools,
     'CopyDeclarationToClipboard', crsCopyDeclarationToClipboard,
     CleanIDEShortCut,CleanIDEShortCut,nil,@CopyDeclarationToClipboard);
   RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'SrcEditCopyDeclarationToClipboard',
-    crsCopyDeclarationToClipboard,nil,nil,CopyDeclarationToClipboardCommand){$IFNDEF EnableCodyExperiments}.Visible:=false{$ENDIF};
+    crsCopyDeclarationToClipboard,nil,nil,CopyDeclarationToClipboardCommand);
   RegisterIDEMenuCommand(itmRefactorCodeTools, 'CopyDeclarationToClipboard',
-    crsCopyDeclarationToClipboard,nil,nil,CopyDeclarationToClipboardCommand){$IFNDEF EnableCodyExperiments}.Visible:=false{$ENDIF};
+    crsCopyDeclarationToClipboard,nil,nil,CopyDeclarationToClipboardCommand);
+  {$ENDIF}
 
   // Cut declaration to clipboard
+  {$IFDEF EnableCodyExperiments}
   CutDeclarationToClipboardCommand:=RegisterIDECommand(CmdCatCodeTools,
     'CutDeclarationToClipboard', crsCutDeclarationToClipboard,
     CleanIDEShortCut,CleanIDEShortCut,nil,@CutDeclarationToClipboard);
   RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'SrcEditCutDeclarationToClipboard',
-    crsCutDeclarationToClipboard,nil,nil,CutDeclarationToClipboardCommand){$IFNDEF EnableCodyExperiments}.Visible:=false{$ENDIF};
+    crsCutDeclarationToClipboard,nil,nil,CutDeclarationToClipboardCommand);
   RegisterIDEMenuCommand(itmRefactorCodeTools, 'CutDeclarationToClipboard',
-    crsCutDeclarationToClipboard,nil,nil,CutDeclarationToClipboardCommand){$IFNDEF EnableCodyExperiments}.Visible:=false{$ENDIF};
+    crsCutDeclarationToClipboard,nil,nil,CutDeclarationToClipboardCommand);
+  {$ENDIF}
 
   // explode a With block
   ExplodeAWithBlockCommand:=RegisterIDECommand(CmdCatCodeTools, 'ExplodeAWithBlock',

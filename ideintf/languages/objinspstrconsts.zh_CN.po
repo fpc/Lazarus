@@ -265,27 +265,39 @@ msgid "Set value"
 msgstr "设置值"
 
 #: objinspstrconsts.nbcesaddpage
-msgid "Add page"
+#, fuzzy
+#| msgid "Add page"
+msgid "Add Page"
 msgstr "添加页面"
 
 #: objinspstrconsts.nbcesdeletepage
-msgid "Delete page"
+#, fuzzy
+#| msgid "Delete page"
+msgid "Delete Page"
 msgstr "删除页面"
 
 #: objinspstrconsts.nbcesinsertpage
-msgid "Insert page"
+#, fuzzy
+#| msgid "Insert page"
+msgid "Insert Page"
 msgstr "插入页面"
 
 #: objinspstrconsts.nbcesmovepageleft
-msgid "Move page left"
+#, fuzzy
+#| msgid "Move page left"
+msgid "Move Page Left"
 msgstr "左移页面"
 
 #: objinspstrconsts.nbcesmovepageright
-msgid "Move page right"
+#, fuzzy
+#| msgid "Move page right"
+msgid "Move Page Right"
 msgstr "右移页面"
 
 #: objinspstrconsts.nbcesshowpage
-msgid "Show page ..."
+#, fuzzy
+#| msgid "Show page ..."
+msgid "Show Page"
 msgstr "显示页面 ..."
 
 #: objinspstrconsts.oicoleditadd

@@ -29,7 +29,8 @@ uses
   SynPluginSyncronizedEditBase, SynPluginTemplateEdit, 
   SynPropertyEditObjectList, SynRegExpr, SynTextDrawer, 
   SynEditMarkupGutterMark, SynHighlighterBat, SynHighlighterIni, 
-  SynEditMarkupSpecialChar, SynHighlighterPo, LazarusPackageIntf;
+  SynEditMarkupSpecialChar, LazSynEditText, LazSynTextArea, 
+  LazSynEditMouseCmdsTypes, SynHighlighterPo, LazarusPackageIntf;
 
 implementation
 
