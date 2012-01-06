@@ -336,6 +336,9 @@ begin
     if Load then begin
       // load
       //debugln('TCodyUDLoadSaveThread.Execute loading '+Filename+' exists='+dbgs(FileExistsUTF8(Filename)));
+      // Note: if loading fails, then the format or read permissions are wrong
+      // mark as loaded, so that the next save will create a valid one
+      Dictionary.fLoaded:=true;
       if FileExistsUTF8(Filename) then begin
         UncompressedMS:=TMemoryStream.Create;
         try
@@ -343,9 +346,6 @@ begin
           UncompressedMS.Position:=0;
           Dictionary.BeginCritSec;
           try
-            // Note: if loading fails, then the format or read permissions are wrong
-            // mark as loaded, so that the next save will create a valid one
-            Dictionary.fLoaded:=true;
             Dictionary.LoadFromStream(UncompressedMS,true);
           finally
             Dictionary.EndCritSec;
