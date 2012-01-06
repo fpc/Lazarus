@@ -1799,7 +1799,7 @@ begin
     if ErrorCode<>nil then DbgOut(' in "',ErrorCode.Filename,'"');
     DebugLn('');
     {$IFDEF CTDEBUG}
-    WriteDebugReport(true,false,false,false,false);
+    WriteDebugReport(true,false,false,false,false,false);
     {$ENDIF}
   end;
 end;
@@ -1962,7 +1962,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.FindDeclarationOfIdentifier A ',Code.Filename,' x=',x,' y=',y,' Identifier=',GetIdentifier(Identifier));
+  DebugLn(['TCodeToolManager.FindDeclarationOfIdentifier A ',Code.Filename,' x=',x,' y=',y,' Identifier=',GetIdentifier(Identifier)]);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
@@ -2579,7 +2579,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.RemoveIdentifierDefinition A ',Code.Filename,' X=',X,' Y=',Y);
+  DebugLn(['TCodeToolManager.RemoveIdentifierDefinition A ',Code.Filename,' X=',X,' Y=',Y]);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
@@ -2599,7 +2599,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.RemoveWithBlock A ',Code.Filename,' X=',X,' Y=',Y);
+  DebugLn(['TCodeToolManager.RemoveWithBlock A ',Code.Filename,' X=',X,' Y=',Y]);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
@@ -2619,7 +2619,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.AddWithBlock A ',Code.Filename,' X1=',X1,' Y1=',Y1,' X2=',X2,' Y2=',Y2,' WithExpr="',WithExpr,'"');
+  DebugLn(['TCodeToolManager.AddWithBlock A ',Code.Filename,' X1=',X1,' Y1=',Y1,' X2=',X2,' Y2=',Y2,' WithExpr="',WithExpr,'"']);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   StartPos.X:=X1;
@@ -3489,7 +3489,7 @@ function TCodeToolManager.GetCompatiblePublishedMethods(Code: TCodeBuffer;
   const Proc: TGetStrProc): boolean;
 begin
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.GetCompatiblePublishedMethods A ',Code.Filename,' Classname=',AClassname,' Instance=',DbgSName(Instance),' PropName=',PropName);
+  DebugLn(['TCodeToolManager.GetCompatiblePublishedMethods A ',Code.Filename,' Classname=',AClassname,' Instance=',DbgSName(PropInstance),' PropName=',PropName]);
   {$ENDIF}
   Result:=false;
   if not InitCurCodeTool(Code) then exit;

@@ -1632,7 +1632,7 @@ begin
 
   // build code tree
   {$IFDEF CTDEBUG}
-  DebugLn('TIdentCompletionTool.ParseSourceTillCollectionStart A CursorPos=',dbgs(CursorPos.X),',',dbgs(CursorPos.Y),' ',Dbgs(IdentStartXYPos));
+  DebugLn(['TIdentCompletionTool.ParseSourceTillCollectionStart A CursorPos=',dbgs(CursorPos)]);
   {$ENDIF}
   BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
                           [btSetIgnoreErrorPos]);
