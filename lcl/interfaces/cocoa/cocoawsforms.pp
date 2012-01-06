@@ -100,12 +100,13 @@ type
 //    class procedure CloseModal(const ACustomForm: TCustomForm); override;
 //    class procedure ShowModal(const ACustomForm: TCustomForm); override;
     
+    class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte); override;
     class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
 
     {need to override these }
-    class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
-    class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
+    class function GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
+    class function GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
 
@@ -290,17 +291,26 @@ begin
   ns.release;
 end;
 
+class procedure TCocoaWSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte);
+begin
+  if ACustomForm.HandleAllocated then
+    if AlphaBlend then
+      NSWindow(ACustomForm.Handle).setAlphaValue(Alpha / 255)
+    else
+      NSWindow(ACustomForm.Handle).setAlphaValue(1);
+end;
+
 class procedure TCocoaWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
   const ABorderIcons: TBorderIcons);
 begin
-  if NSObject(AForm.Handle).isKindOfClass(NSWindow) then
+  if AForm.HandleAllocated then
     SetStyleMaskFor(NSWindow(AForm.Handle), AForm.BorderStyle, ABorderIcons, csDesigning in AForm.ComponentState);
 end;
 
 class procedure TCocoaWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
   const AFormBorderStyle: TFormBorderStyle);
 begin
-  if NSObject(AForm.Handle).isKindOfClass(NSWindow) then
+  if AForm.HandleAllocated then
     SetStyleMaskFor(NSWindow(AForm.Handle), AFormBorderStyle, AForm.BorderIcons, csDesigning in AForm.ComponentState);
 end;
 

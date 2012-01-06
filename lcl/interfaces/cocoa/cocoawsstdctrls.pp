@@ -44,7 +44,7 @@ type
 
   TCocoaWSScrollBar = class(TWSScrollBar)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
   end;
 
@@ -794,14 +794,21 @@ end;
 
 { TCocoaWSCustomGroupBox }
 
-class function TCocoaWSCustomGroupBox.CreateHandle(const AWinControl:TWinControl;
-  const AParams:TCreateParams):TLCLIntfHandle;
+class function TCocoaWSCustomGroupBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
 var
-  box : TCocoaGroupBox;
+  box: TCocoaGroupBox;
+  cap: NSString;
 begin
   box := NSView(TCocoaGroupBox.alloc).lclInitWithCreateParams(AParams);
-  box.callback:=TLCLCommonCallback.Create(box, AWinControl);
-  Result:=TLCLIntfHandle(box);
+  if Assigned(box) then
+  begin
+    box.callback := TLCLCommonCallback.Create(box, AWinControl);
+    cap := NSStringUTF8(AParams.Caption);
+    box.setTitle(cap);
+    cap.release;
+  end;
+  Result := TLCLIntfHandle(box);
 end;
 
 { TCocoaWSCustomListBox }
@@ -809,9 +816,9 @@ end;
 function GetListView(AWinControl: TWinControl): TCocoaListView;
 begin
   if not Assigned(AWinControl) or (AWinControl.Handle=0) then
-    Result:=nil
+    Result := nil
   else
-    Result:=TCocoaListView(TCocoaScrollView(AWinControl.Handle).documentView);
+    Result := TCocoaListView(TCocoaScrollView(AWinControl.Handle).documentView);
 end;
 
 class function TCocoaWSCustomListBox.CreateHandle(const AWinControl:TWinControl;
