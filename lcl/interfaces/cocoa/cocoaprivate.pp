@@ -42,7 +42,7 @@ type
     // mouse events
     function MouseUpDownEvent(Event: NSEvent): Boolean;
     procedure MouseClick;
-    procedure MouseMove(x,y: Integer);
+    function MouseMove(Event: NSEvent): Boolean;
     function KeyEvent(Event: NSEvent): Boolean;
     // size,pos events
     procedure frameDidChange;
@@ -778,23 +778,15 @@ begin
 end;
 
 procedure TCocoaWindow.mouseDragged(event: NSEvent);
-var
-  mp: NSPoint;
 begin
-  mp := event.locationInWindow;
-  mp.y := NSView(event.window.contentView).bounds.size.height - mp.y;
-  callback.MouseMove(round(mp.x), round(mp.y));
-  inherited mouseMoved(event);
+  if not callback.MouseMove(event) then
+    inherited mouseDragged(event);
 end;
 
 procedure TCocoaWindow.mouseMoved(event: NSEvent);
-var
-  mp: NSPoint;
 begin
-  mp := event.locationInWindow;
-  mp.y := NSView(event.window.contentView).bounds.size.height - mp.y;
-  callback.MouseMove(round(mp.x), round(mp.y));
-  inherited mouseMoved(event);
+  if not callback.MouseMove(event) then
+    inherited mouseMoved(event);
 end;
 
 procedure TCocoaWindow.sendEvent(event: NSEvent);

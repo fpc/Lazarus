@@ -44,7 +44,7 @@ type
     function MouseUpDownEvent(Event: NSEvent): Boolean; virtual;
     function KeyEvent(Event: NSEvent): Boolean; virtual;
     procedure MouseClick; virtual;
-    procedure MouseMove(x,y: Integer); virtual;
+    function MouseMove(Event: NSEvent): Boolean; virtual;
     procedure frameDidChange; virtual;
     procedure boundsDidChange; virtual;
     procedure BecomeFirstResponder; virtual;
@@ -694,9 +694,27 @@ begin
   LCLSendClickedMsg(Target);
 end;
 
-procedure TLCLCommonCallback.MouseMove(x, y: Integer);
+function TLCLCommonCallback.MouseMove(Event: NSEvent): Boolean;
+var
+  Msg: TLMMouseMove;
+  MousePos: NSPoint;
 begin
-  LCLSendMouseMoveMsg(Target, x,y, []);
+  Result := False; // allow cocoa to handle message
+
+  if Assigned(Target) and (not (csDesigning in Target.ComponentState) and not Owner.lclIsEnabled) then
+    Exit;
+
+  MousePos := Event.locationInWindow;
+  OffsetMousePos(MousePos);
+
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := LM_MOUSEMOVE;
+  Msg.Keys := CocoaModifiersToKeyState(Event.modifierFlags) or CocoaPressedMouseButtonsToKeyState(Event.pressedMouseButtons);
+  Msg.XPos := Round(MousePos.X);
+  Msg.YPos := Round(MousePos.Y);
+
+  NotifyApplicationUserInput(Msg.Msg);
+  Result := DeliverMessage(Msg) <> 0;
 end;
 
 procedure TLCLCommonCallback.frameDidChange;
