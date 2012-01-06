@@ -97,8 +97,8 @@ type
     class function GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
 
-//    class procedure CloseModal(const ACustomForm: TCustomForm); override;
-//    class procedure ShowModal(const ACustomForm: TCustomForm); override;
+    class procedure CloseModal(const ACustomForm: TCustomForm); override;
+    class procedure ShowModal(const ACustomForm: TCustomForm); override;
     
     class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte); override;
     class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
@@ -146,6 +146,9 @@ type
 
 implementation
 
+uses
+  CocoaInt;
+
 { TLCLWindowCallback }
 
 procedure TLCLWindowCallback.Activate;
@@ -181,15 +184,6 @@ end;
 
 
 { TCocoaWSCustomForm }
-
-{------------------------------------------------------------------------------
-  Method:  TCocoaWSCustomForm.CreateHandle
-  Params:  AWinControl - LCL control
-           AParams     - Creation parameters
-  Returns: Handle to the window in Cocoa interface
-
-  Creates new window in Cocoa interface with the specified parameters
- ------------------------------------------------------------------------------}
 
 class procedure TCocoaWSCustomForm.SetStyleMaskFor(AWindow: NSWindow;
   ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons;
@@ -289,6 +283,19 @@ begin
   ns := NSStringUtf8(AText);
   TCocoaWindow(AWinControl.Handle).setTitle(ns);
   ns.release;
+end;
+
+class procedure TCocoaWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
+begin
+  if ACustomForm.HandleAllocated then
+    if CocoaWidgetSet.NSApp.modalWindow = NSWindow(ACustomForm.Handle) then
+      CocoaWidgetSet.NSApp.stopModal;
+end;
+
+class procedure TCocoaWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+begin
+  if ACustomForm.HandleAllocated then
+    CocoaWidgetSet.NSApp.runModalForWindow(NSWindow(ACustomForm.Handle));
 end;
 
 class procedure TCocoaWSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte);
