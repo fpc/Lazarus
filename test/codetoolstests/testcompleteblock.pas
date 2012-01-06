@@ -63,9 +63,10 @@ procedure TTestCodetoolsCompleteBlock.CompleteBlock(Src, ExpectedSrc: string;
 
   function CreateFullSrc(Src: string; out Cursor: integer): string;
   begin
-    Result:='unit testcompleteblock;'+LineEnding
+    Result:=Src;
+    {Result:='unit testcompleteblock;'+LineEnding
            +'interface'+LineEnding
-           +Src;
+           +Src;}
     if not (Result[length(Result)] in [#10,#13]) then
       Result:=Result+LineEnding;
     Cursor:=System.Pos('|',Result);
@@ -151,24 +152,20 @@ begin
                +'  |end;'+LineEnding
                +LineEnding
                +'implementation');
-  {CompleteBlock('implementation'+LineEnding
-               +'begin'+LineEnding
+  CompleteBlock('begin'+LineEnding
                +'  while do begin|'+LineEnding
                +'end.',
-                'implementation'+LineEnding
-               +'begin'+LineEnding
+                'begin'+LineEnding
                +'  while do begin|'+LineEnding
                +'  end;'+LineEnding
                +'end.');
-  CompleteBlock('implementation'+LineEnding
-               +'begin'+LineEnding
+  CompleteBlock('begin'+LineEnding
                +'  repeat|'+LineEnding
                +'end.',
-                'implementation'+LineEnding
-               +'begin'+LineEnding
+                'begin'+LineEnding
                +'  repeat|'+LineEnding
                +'  until ;'+LineEnding
-               +'end.');}
+               +'end.');
 end;
 
 initialization
