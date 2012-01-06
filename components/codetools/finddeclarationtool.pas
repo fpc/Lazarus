@@ -2065,7 +2065,6 @@ var
 
     // quick check: compare unitname
     if UnitInFilename<>'' then begin
-      DoDirSeparators(UnitInFilename);
       if lowercase(ExtractFilename(UnitInFilename))<>TargetLoShortFilename then
         exit;
     end else if LowerCase(AUnitName)<>TargetLoUnitName then
@@ -2081,6 +2080,7 @@ begin
   if (UsesNode=nil) or (UsesNode.Desc<>ctnUsesSection) then exit;
   TargetLoUnitName:=LowerCase(ExtractFileNameOnly(AFilename));
   TargetLoShortFilename:=LowerCase(ExtractFileName(AFilename));
+  if TargetLoShortFilename='' then exit;
   Result:=UsesNode.LastChild;
   while Result<>nil do begin
     if CheckUseNode(Result) then exit;
