@@ -178,12 +178,12 @@ resourcestring
   sccsSBEditPanels    = 'Panels Editor ...';
 
   // component editors
-  nbcesAddPage  = 'Add page';
-  nbcesInsertPage = 'Insert page';
-  nbcesDeletePage = 'Delete page';
-  nbcesMovePageLeft = 'Move page left';
-  nbcesMovePageRight = 'Move page right';
-  nbcesShowPage = 'Show page ...';
+  nbcesAddPage  = 'Add Page';
+  nbcesInsertPage = 'Insert Page';
+  nbcesDeletePage = 'Delete Page';
+  nbcesMovePageLeft = 'Move Page Left';
+  nbcesMovePageRight = 'Move Page Right';
+  nbcesShowPage = 'Show Page';
   oisCreateDefaultEvent = 'Create default event';
   tccesAddTab  = 'Add tab';
   tccesInsertTab = 'Insert tab';

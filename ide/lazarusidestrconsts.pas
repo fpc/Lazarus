@@ -2420,7 +2420,8 @@ resourcestring
   fdmSnapToGridOption='Option: Snap to grid';
   fdmSnapToGuideLinesOption='Option: Snap to guide lines';
   lisViewSourceLfm = 'View Source (.lfm)';
-  fdmSaveFormAsXML = 'Save form as XML';
+  lisCenterForm = 'Center Form';
+  fdmSaveFormAsXML = 'Save Form as XML';
 
   //-----------------------
   // keyMapping
@@ -5049,7 +5050,6 @@ resourcestring
   lisUsePackageInProject2 = 'Use package in project';
   lisUseIdentifier = 'Use identifier';
   lisUsePackageInPackage2 = 'Use package in package';
-  lisCenterForm = 'Center form';
   lisFindMissingUnit = 'Find missing unit';
   lisAskNameOnCreate = 'Ask name on create';
   lisAskForComponentNameAfterPuttingItOnForm = 'Ask for component '
