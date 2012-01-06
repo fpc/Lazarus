@@ -24,6 +24,7 @@ unit CocoaWSStdCtrls;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
+{$modeswitch objectivec2}
 
 interface
 
@@ -185,6 +186,13 @@ type
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
+  { TLCLRadioButtonCallback }
+
+  TLCLRadioButtonCallback = class(TLCLCheckBoxCallback)
+  public
+    procedure ButtonClick; override;
+  end;
+
   { TCocoaWSRadioButton }
 
   TCocoaWSRadioButton = class(TWSRadioButton)
@@ -253,6 +261,21 @@ begin
     TCocoaSecureTextField(Result).callback := TLCLCommonCallback.Create(Result, ATarget);
     SetNSText(Result.currentEditor, AParams.Caption);
   end;
+end;
+
+{ TLCLRadioButtonCallback }
+
+procedure TLCLRadioButtonCallback.ButtonClick;
+var
+  SubView: NSView;
+begin
+  if NSButton(Owner).state = NSOnState then
+  begin
+    for SubView in NSButton(Owner).superView.subviews do
+      if (SubView <> Owner) and (SubView.lclGetTarget is TRadioButton) then
+        NSButton(SubView).setState(NSOffState);
+  end;
+  inherited ButtonClick;
 end;
 
 { TLCLButtonCallback }
@@ -399,7 +422,7 @@ class function TCocoaWSRadioButton.CreateHandle(const AWinControl: TWinControl;
 var
   btn: NSButton;
 begin
-  btn := AllocButton(AWinControl, TLCLCheckBoxCallBack, AParams, 0, NSRadioButton);
+  btn := AllocButton(AWinControl, TLCLRadioButtonCallback, AParams, 0, NSRadioButton);
   Result := TLCLIntfHandle(btn);
 end;
 
