@@ -2597,6 +2597,7 @@ begin
       FreeMem(Data);
   end;
   UpdateCursor;
+  SelAvailChange(nil);
   //DebugLn('[TCustomSynEdit.KeyDown] END ',dbgs(Key),' ',dbgs(Shift));
 end;
 
@@ -3063,6 +3064,7 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
   LCLIntf.SetFocus(Handle);
   UpdateCaret;
+  SelAvailChange(nil);
   //debugln('TCustomSynEdit.MouseDown END sfWaitForDragging=',dbgs(sfWaitForDragging in fStateFlags),' ');
 end;
 
@@ -3293,6 +3295,7 @@ begin
     PopupMenu.PopupComponent:=self;
     PopupMenu.PopUp;
   end;
+  SelAvailChange(nil);
   //DebugLn('TCustomSynEdit.MouseUp END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
 end;
 
@@ -3662,7 +3665,7 @@ end;
 procedure TCustomSynEdit.DoBlockSelectionChanged(Sender : TObject);
 begin
   StatusChanged([scSelection]);
-  //if HandleAllocated and Focused then
+  if HandleAllocated and Focused then
     SelAvailChange(nil);
 end;
 
