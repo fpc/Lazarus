@@ -70,11 +70,13 @@ type
   public
     constructor Create; virtual;
     destructor Destroy; override;
-    procedure SendMessage(AMsg: TLazDeviceMessage); // Attempt to send the specified message.
+    // Attempt to send the specified message.
+    procedure SendMessage(AMsg: TLazDeviceMessage);
     function CreateMessage: TLazDeviceMessage;
     procedure FreeMessage(AMessage: TLazDeviceMessage);
-    // Called asynchronously when there is a message sending status
-    property OnMessagingStatus: TOnMessagingStatus read FOnMessagingStatus write FOnMessagingStatus;
+    // Called asynchronously when there is a message status
+    property OnMessagingStatus: TOnMessagingStatus
+      read FOnMessagingStatus write FOnMessagingStatus;
   end;
 
   // TLazPositionInfo
@@ -86,12 +88,12 @@ type
     IsPositionDataAvailable: Boolean; // Indicates if position info was read in the life of this program
     // These fields hold the last position information read
     accuracy: Double; // The horizontal accuracy of the position in meters
-    altitude: Double; // Altitude in meters using the World Geodetic System 1984 (WGS84) datum.
-    altitudeAccuracy: Double; // The vertical accuracy of the position in meters, or null if not available.
+    altitude: Double; // Altitude in meters in relation to the sea level using the World Geodetic System 1984 (WGS84) datum.
+    altitudeAccuracy: Double; // The vertical accuracy of the position in meters, or zero if not available.
     latitude: Double; // Latitude in degrees using the World Geodetic System 1984 (WGS84) datum.
     longitude: Double; // Longitude in degrees using the World Geodetic System 1984 (WGS84) datum.
     speed: Double; // In meters / second
-    timeStamp: TDateTime; // The time when the location was established.
+    timeStamp: TDateTime; // The time when the latest location was established.
     procedure RequestPositionInfo(AMethod: TLazPositionMethod);
     // Called asynchronously when the position is read
     property OnPositionRetrieved: TNotifyEvent read FOnPositionRetrieved write FOnPositionRetrieved;

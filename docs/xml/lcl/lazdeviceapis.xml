@@ -165,8 +165,12 @@ because there is no signal here.</short>
 
 <!-- procedure Visibility: public -->
 <element name="TLazMessaging.SendMessage">
-<short></short>
-<descr>
+<short>Sends a message to the target specified on it</short>
+<descr><p>The message to be sent should be created with the method CreateMessage
+from this same class and later released with FreeMessage. The same message can be
+sent multiple times, but ideally it should not be edited after sending the first 
+time to avoid confusion when obtaining the message object back in the status
+callback.<p>
 </descr>
 <errors>
 </errors>
@@ -181,7 +185,7 @@ because there is no signal here.</short>
 
 <!-- procedure Visibility: public -->
 <element name="TLazMessaging.CreateMessage">
-<short></short>
+<short>Creates a new message which can be sent with SendMessage</short>
 <descr>
 </descr>
 <errors>
@@ -197,7 +201,7 @@ because there is no signal here.</short>
 
 <!-- procedure Visibility: public -->
 <element name="TLazMessaging.FreeMessage">
-<short></short>
+<short>Removes a message created with CreateMessage</short>
 <descr>
 </descr>
 <errors>
@@ -222,7 +226,7 @@ because there is no signal here.</short>
 
 <!-- class Visibility: default -->
 <element name="TLazPositionInfo">
-<short></short>
+<short>Represents the hardware GPS device</short>
 <descr>
 </descr>
 <errors>
@@ -233,7 +237,7 @@ because there is no signal here.</short>
 
 <!-- variable Visibility: public -->
 <element name="TLazPositionInfo.IsPositionDataAvailable">
-<short></short>
+<short>Indicates if position info was read in the life of this program</short>
 <descr>
 </descr>
 <seealso>
@@ -242,7 +246,7 @@ because there is no signal here.</short>
 
 <!-- variable Visibility: public -->
 <element name="TLazPositionInfo.accuracy">
-<short></short>
+<short>The horizontal accuracy of the position in meters</short>
 <descr>
 </descr>
 <seealso>
@@ -251,7 +255,7 @@ because there is no signal here.</short>
 
 <!-- variable Visibility: public -->
 <element name="TLazPositionInfo.altitude">
-<short></short>
+<short>Altitude in meters in relation to the sea level using the World Geodetic System 1984 (WGS84) datum</short>
 <descr>
 </descr>
 <seealso>
@@ -260,16 +264,7 @@ because there is no signal here.</short>
 
 <!-- variable Visibility: public -->
 <element name="TLazPositionInfo.altitudeAccuracy">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: public -->
-<element name="TLazPositionInfo.cellID">
-<short></short>
+<short>The vertical accuracy of the position in meters, or zero if not available</short>
 <descr>
 </descr>
 <seealso>
@@ -278,7 +273,7 @@ because there is no signal here.</short>
 
 <!-- variable Visibility: public -->
 <element name="TLazPositionInfo.latitude">
-<short></short>
+<short>Latitude in degrees using the World Geodetic System 1984 (WGS84) datum</short>
 <descr>
 </descr>
 <seealso>
@@ -287,7 +282,16 @@ because there is no signal here.</short>
 
 <!-- variable Visibility: public -->
 <element name="TLazPositionInfo.longitude">
-<short></short>
+<short>Longitude in degrees using the World Geodetic System 1984 (WGS84) datum</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazPositionInfo.longitude">
+<short>In meters / second</short>
 <descr>
 </descr>
 <seealso>
@@ -296,7 +300,7 @@ because there is no signal here.</short>
 
 <!-- variable Visibility: public -->
 <element name="TLazPositionInfo.timeStamp">
-<short></short>
+<short>The time when the latest location was established</short>
 <descr>
 </descr>
 <seealso>
@@ -321,7 +325,7 @@ because there is no signal here.</short>
 
 <!-- property Visibility: public -->
 <element name="TLazPositionInfo.OnPositionRetrieved">
-<short></short>
+<short>Called asynchronously when the position is read</short>
 <descr>
 </descr>
 <seealso>
