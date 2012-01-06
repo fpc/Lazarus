@@ -6988,7 +6988,7 @@ begin
       Invalidate;
     end else
       UpdateScrollbars;
-    Exclude(fStateFlags, sfScrollbarChanged);
+    Exclude(fStateFlags, sfScrollbarChanged); // TODO: Why?
     if not (eoScrollPastEol in Options) then
       LeftChar := LeftChar;
     if not (eoScrollPastEof in Options) then
@@ -7190,6 +7190,7 @@ begin
   finally
     FScreenCaret.UnLock;
   end;
+  UpdateScrollBars;
 
   //debugln('TCustomSynEdit.RecalcCharExtent UseUTF8=',dbgs(UseUTF8),' Font.CanUTF8=',dbgs(Font.CanUTF8));
 end;
