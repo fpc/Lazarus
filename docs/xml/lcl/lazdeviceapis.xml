@@ -15,7 +15,7 @@
 
 <!-- class Visibility: default -->
 <element name="TLazAccelerometer">
-<short></short>
+<short>Represents the hardware accelerometer</short>
 <descr>
 </descr>
 <errors>
@@ -26,7 +26,7 @@
 
 <!-- variable Visibility: public -->
 <element name="TLazAccelerometer.xaxis">
-<short></short>
+<short>The last value measured for the X axis of the accelerometer</short>
 <descr>
 </descr>
 <seealso>
@@ -35,7 +35,7 @@
 
 <!-- variable Visibility: public -->
 <element name="TLazAccelerometer.yaxis">
-<short></short>
+<short>The last value measured for the Y axis of the accelerometer</short>
 <descr>
 </descr>
 <seealso>
@@ -44,7 +44,7 @@
 
 <!-- variable Visibility: public -->
 <element name="TLazAccelerometer.zaxis">
-<short></short>
+<short>The last value measured for the Z axis of the accelerometer</short>
 <descr>
 </descr>
 <seealso>
@@ -52,8 +52,38 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TLazAccelerometer.UpdateAccelerometerData">
-<short></short>
+<element name="TLazAccelerometer.StartReadingAccelerometerData">
+<short>Starts monitoring the accelerometer sensor</short>
+<descr><p>After calling this method, the accelerometer sensor will be monitored.
+If the accelerometer native API sends an event for value changes, then the event
+OnSensorChanged will be called on every change and before calling it the xaxis,
+yaxis and zaxis properties of the Accelerometer global object will be updated to
+reflect the last value read. If the native accelerometer API requires pooling, then
+the accelerometer state will be pooled at a rate not faster then once per millisecond.</p>
+<p>Remember to call StopReadingAccelerometerData when the accelerometer is no
+longer needed, because this may save energy in some mobile platforms.</p>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazAccelerometer.StopReadingAccelerometerData">
+<short>Stops monitoring the accelerometer sensor</short>
+<descr><p>After calling this method OnSensorChange will no longer be called and
+the xaxis, yaxis and zaxis properties will remain stopped at the last value read</p>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazAccelerometer.OnSensorChanged">
+<short>Called when the accelerometer value changes or is updated from the sensor</short>
 <descr>
 </descr>
 <errors>
@@ -63,7 +93,7 @@
 </element>
 
 <!-- enumeration type Visibility: default -->
-<element name="TLazMessageSendingStatus">
+<element name="TLazMessagingStatus">
 <short></short>
 <descr>
 </descr>
@@ -72,17 +102,39 @@
 </element>
 
 <!-- enumeration value Visibility: default -->
-<element name="TLazMessageSendingStatus.mssSuccess">
-<short></short>
+<element name="TLazMessagingStatus.mssSentSuccessfully">
+<short>Indicates that the message was sent successfully to the server</short>
 </element>
 
 <!-- enumeration value Visibility: default -->
-<element name="TLazMessageSendingStatus.mssGeneralError">
-<short></short>
+<element name="TLazMessagingStatus.mssSendingGeneralError">
+<short>The message was not successfully sent to the server, but no particular reason for the failure is known.</short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazMessagingStatus.mssRadioOff">
+<short>The hardware device which would send the message is off. The user should activate
+his Radio Network (CDMA, GMS or another one) or activate his WiFi (for EMail only)</short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazMessagingStatus.mssNoService">
+<short>The hardware device which would send the message could not connect to the network
+because there is no signal here.</short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazMessagingStatus.mssReceivedSuccessfully">
+<short>The message was succesfully received by the destionation</short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazMessagingStatus.mssReceivingGeneralError">
+<short>The message was not successfully received by the target, but no particular reason for the failure is known.</short>
 </element>
 
 <!-- procedure type Visibility: default -->
-<element name="TOnMessageSendingFinished">
+<element name="TOnMessagingStatus">
 <short></short>
 <descr>
 </descr>
@@ -91,17 +143,12 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TOnMessageSendingFinished.AMessage">
+<element name="TOnMessagingStatus.AMessage">
 <short></short>
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TOnMessageSendingFinished.ASendingStatus">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TOnMessageSendingFinished.AErrorMsg">
+<element name="TOnMessagingStatus.AStatus">
 <short></short>
 </element>
 
@@ -112,15 +159,6 @@
 </descr>
 <errors>
 </errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TLazMessaging.FTOnMessageSendingFinished">
-<short></short>
-<descr>
-</descr>
 <seealso>
 </seealso>
 </element>
@@ -141,17 +179,40 @@
 <short></short>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TLazMessaging.OnMessageSendingFinished">
+<!-- procedure Visibility: public -->
+<element name="TLazMessaging.CreateMessage">
 <short></short>
 <descr>
 </descr>
+<errors>
+</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure type Visibility: default -->
-<element name="TOnPositionRetrieved">
+<!-- argument Visibility: default -->
+<element name="TLazMessaging.CreateMessage.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazMessaging.FreeMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazMessaging.FreeMessage.AMessage">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazMessaging.OnMessagingStatus">
 <short></short>
 <descr>
 </descr>
@@ -166,15 +227,6 @@
 </descr>
 <errors>
 </errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TLazPositionInfo.FOnPositionRetrieved">
-<short></short>
-<descr>
-</descr>
 <seealso>
 </seealso>
 </element>
