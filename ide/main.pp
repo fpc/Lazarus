@@ -15470,13 +15470,13 @@ begin
 
   GetCurrentUnit(DeclarationSrcEdit,DeclarationUnitInfo);
   DeclarationCaretXY:=DeclarationSrcEdit.EditorComponent.LogicalCaretXY;
-  debugln('TMainIDE.DoFindRenameIdentifier A DeclarationCaretXY=x=',dbgs(DeclarationCaretXY.X),' y=',dbgs(DeclarationCaretXY.Y));
+  //debugln('TMainIDE.DoFindRenameIdentifier A DeclarationCaretXY=x=',dbgs(DeclarationCaretXY.X),' y=',dbgs(DeclarationCaretXY.Y));
 
   // let user choose the search scope
   Result:=ShowFindRenameIdentifierDialog(DeclarationUnitInfo.Source.Filename,
     DeclarationCaretXY,true,Rename,nil);
   if Result<>mrOk then begin
-    debugln('TMainIDE.DoFindRenameIdentifier failed: let user choose the search scope');
+    debugln('TMainIDE.DoFindRenameIdentifier failed: user cancelled dialog');
     exit;
   end;
 

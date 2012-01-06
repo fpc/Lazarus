@@ -862,7 +862,7 @@ type
       SkipComments: boolean; out ListOfPCodeXYPosition: TFPList): boolean;
 
     function CleanPosIsDeclarationIdentifier(CleanPos: integer;
-                                 Node: TCodeTreeNode): boolean;
+                                             Node: TCodeTreeNode): boolean;
 
     function FindIdentifierInContext(Params: TFindDeclarationParams): boolean;
     function FindNthParameterNode(Node: TCodeTreeNode;
@@ -4313,10 +4313,10 @@ function TFindDeclarationTool.FindReferences(const CursorPos: TCodeXYPosition;
 var
   DeclarationFound: boolean;
   Identifier: string;
+  CleanDeclCursorPos: integer;
   DeclarationTool: TFindDeclarationTool;
   DeclarationNode: TCodeTreeNode;
-  CleanDeclCursorPos: integer;
-  AliasDeclarationNode: TCodeTreeNode;
+  AliasDeclarationNode: TCodeTreeNode; // if exists: always in front of DeclarationNode
   StartPos: Integer;
   Params: TFindDeclarationParams;
   PosTree: TAVLTree; // tree of PChar positions in Src
@@ -4364,83 +4364,81 @@ var
   
   procedure ReadIdentifier(IsComment: boolean);
   var
-    IdentEndPos: LongInt;
+    IdentStartPos: Integer;
+    IdentEndPos: integer;
   begin
-    if (not IsComment) then begin
+    if (not IsComment) then
       UnitStartFound:=true;
-    end;
-    IdentEndPos:=StartPos;
+    IdentStartPos:=StartPos;
+    IdentEndPos:=IdentStartPos;
     while (IdentEndPos<=MaxPos) and (IsIdentChar[Src[IdentEndPos]]) do
       inc(IdentEndPos);
-    //debugln('ReadIdentifier ',CleanPosToStr(StartPos,true),' ',copy(Src,StartPos,IdentEndPos-StartPos));
-    if (IdentEndPos-StartPos=length(Identifier))
-    and (CompareIdentifiers(PChar(Pointer(Identifier)),@Src[StartPos])=0)
-    and ((not IsComment)
-         or ((not SkipComments) and UnitStartFound))
+    StartPos:=IdentEndPos;
+    //debugln(['ReadIdentifier ',CleanPosToStr(IdentStartPos,true),' ',copy(Src,IdentStartPos,IdentEndPos-IdentStartPos),' ',CompareIdentifiers(PChar(Pointer(Identifier)),@Src[IdentStartPos])]);
+    if IdentEndPos-IdentStartPos<>length(Identifier) then exit;
+    if CompareIdentifiers(PChar(Pointer(Identifier)),@Src[IdentStartPos])<>0 then exit;
+    if IsComment and (SkipComments or (not UnitStartFound)) then exit;
+    {debugln(['Identifier with same name found at: ',
+      IdentStartPos,'=',CleanPosToStr(StartPos),' ',GetIdentifier(@Src[IdentStartPos]),
+      ' CleanDeclCursorPos=',CleanDeclCursorPos,
+      ' MaxPos=',MaxPos,
+      ' IsComment=',IsComment,
+      ' SkipComments=',SkipComments,
+      ' UnitStartFound=',UnitStartFound
+      ]);}
+
+    CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(IdentStartPos,true);
+    //debugln('  CursorNode=',CursorNode.DescAsString,' Forward=',dbgs(CursorNode.SubDesc and ctnsForwardDeclaration));
+
+    if (DeclarationTool=Self)
+    and ((IdentStartPos=CleanDeclCursorPos) or (CursorNode=AliasDeclarationNode))
     then begin
-      {debugln(['Identifier with same name found at: ',
-        StartPos,'=',CleanPosToStr(StartPos),' ',GetIdentifier(@Src[StartPos]),
-        ' CleanDeclCursorPos=',CleanDeclCursorPos,
-        ' MaxPos=',MaxPos,
-        ' IsComment=',IsComment,
-        ' SkipComments=',SkipComments,
-        ' UnitStartFound=',UnitStartFound
-        ]);}
+      // declaration itself found
+      //debugln(['ReadIdentifier declaration itself found, adding ...']);
+      AddReference(IdentStartPos)
+    end
+    else if CleanPosIsDeclarationIdentifier(IdentStartPos,CursorNode) then
+      // this identifier is another declaration with the same name
+    else begin
+      // find declaration
+      if Params=nil then
+        Params:=TFindDeclarationParams.Create
+      else
+        Params.Clear;
+      Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
+                     fdfIgnoreCurContextNode];
+      Params.ContextNode:=CursorNode;
+      //debugln(copy(Src,Params.ContextNode.StartPos,200));
+      Params.SetIdentifier(Self,@Src[IdentStartPos],@CheckSrcIdentifier);
 
-      CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(StartPos,true);
-      //debugln('  CursorNode=',CursorNode.DescAsString,' Forward=',dbgs(CursorNode.SubDesc and ctnsForwardDeclaration));
-
-      if (DeclarationTool=Self)
-      and ((StartPos=CleanDeclCursorPos) or (CursorNode=AliasDeclarationNode))
-      then begin
-        // declaration itself found
-        //debugln(['ReadIdentifier declaration itself found, adding ...']);
-        AddReference(StartPos)
-      end
-      else if CleanPosIsDeclarationIdentifier(StartPos,CursorNode) then
-        // this identifier is another declaration with the same name
-      else begin
-        // find declaration
-        if Params=nil then
-          Params:=TFindDeclarationParams.Create
-        else
-          Params.Clear;
-        Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
-                       fdfIgnoreCurContextNode];
-        Params.ContextNode:=CursorNode;
-        //debugln(copy(Src,Params.ContextNode.StartPos,200));
-        Params.SetIdentifier(Self,@Src[StartPos],@CheckSrcIdentifier);
-
-        // search identifier in comment -> if not found, this is no bug
-        // => silently ignore
-        try
-          Found:=FindDeclarationOfIdentAtParam(Params);
-        except
-          on E: ECodeToolError do begin
-            if E.Sender<>Self then begin
-              // there is an error in another unit, which prevetns searching
-              // stop further searching in this unit
-              raise;
-            end;
-            // continue
-          end;
-          on E: Exception do
+      // search identifier in comment -> if not found, this is no bug
+      // => silently ignore
+      try
+        Found:=FindDeclarationOfIdentAtParam(Params);
+      except
+        on E: ECodeToolError do begin
+          if E.Sender<>Self then begin
+            // there is an error in another unit, which prevetns searching
+            // stop further searching in this unit
             raise;
-        end;
-
-        //debugln(' Found=',dbgs(Found));
-        if Found and (Params.NewNode<>nil) then begin
-          UseProcHead(Params.NewNode);
-          //debugln('Context=',Params.NewNode.DescAsString,' ',dbgs(Params.NewNode.StartPos),' ',dbgs(DeclarationNode.StartPos));
-          if (Params.NewNode=DeclarationNode)
-          or (Params.NewNode=AliasDeclarationNode) then begin
-            //debugln(['ReadIdentifier reference found, adding ...']);
-            AddReference(StartPos);
           end;
+          // continue
+        end;
+        on E: Exception do
+          raise;
+      end;
+
+      //debugln(' Found=',dbgs(Found));
+      if Found and (Params.NewNode<>nil) then begin
+        UseProcHead(Params.NewNode);
+        //debugln('Context=',Params.NewNode.DescAsString,' ',dbgs(Params.NewNode.StartPos),' ',dbgs(DeclarationNode.StartPos));
+        if (Params.NewNode=DeclarationNode)
+        or (Params.NewNode=AliasDeclarationNode) then begin
+          //debugln(['ReadIdentifier reference found, adding ...']);
+          AddReference(IdentStartPos);
         end;
       end;
     end;
-    StartPos:=IdentEndPos;
   end;
   
   procedure SearchIdentifiers;
@@ -4678,6 +4676,10 @@ var
     if DeclarationTool<>Self then exit;
 
     Node:=DeclarationNode;
+    if (AliasDeclarationNode<>nil) then
+      Node:=AliasDeclarationNode;
+    if Node.Desc=ctnProcedureHead then
+      MinPos:=Node.StartPos;
     while Node<>nil do begin
       case Node.Desc of
       ctnImplementation:
@@ -4753,7 +4755,7 @@ begin
       AVLNode:=PosTree.FindHighest;
       while AVLNode<>nil do begin
         StartPos:=PChar(AVLNode.Data)-PChar(Pointer(Src))+1;
-        // ToDo: if an include file is included twice a code position could be duplicated
+        // Note: if an include file is included twice a code position could be duplicated
         if CleanPosToCaret(StartPos,ReferencePos) then
           AddCodePosition(ListOfPCodeXYPosition,ReferencePos);
         AVLNode:=PosTree.FindPrecessor(AVLNode);
@@ -8345,9 +8347,9 @@ begin
     // => proc identifiers can not be identified by the name alone
     // -> do not cache
     // 2. Even if there is only one proc. With different search flags,
-    // different routes will be searched and then there can be another proc.
-    // The only solution is to store the param expression list and all flags
-    // in the cache. This is a ToDo
+    //    different routes will be searched and then there can be another proc.
+    //    The only solution is to store the param expression list and all flags
+    //    in the cache. This is a ToDo
     Include(Params.Flags,fdfDoNotCache);
     Include(Params.NewFlags,fodDoNotCache);
 
