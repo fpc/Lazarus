@@ -32,7 +32,7 @@ Alternatively, the contents of these files may be used under the terms of the GN
 If you wish to allow use of your version of these files only under the terms of the GPL and not to allow others to use your version of this file under the MPL, indicate your decision by deleting the provisions above and replace them with the notice and other provisions required by the GPL. If you do not delete the provisions above, a recipient may use your version of this file under either the MPL or the GPL.
 "/>
     <Version Major="1"/>
-    <Files Count="79">
+    <Files Count="82">
       <Item1>
         <Filename Value="synbeautifier.pas"/>
         <UnitName Value="SynBeautifier"/>
@@ -349,9 +349,21 @@ If you wish to allow use of your version of these files only under the terms of 
         <UnitName Value="SynEditMarkupSpecialChar"/>
       </Item78>
       <Item79>
+        <Filename Value="lazsynedittext.pas"/>
+        <UnitName Value="LazSynEditText"/>
+      </Item79>
+      <Item80>
+        <Filename Value="lazsyntextarea.pp"/>
+        <UnitName Value="LazSynTextArea"/>
+      </Item80>
+      <Item81>
+        <Filename Value="lazsyneditmousecmdstypes.pp"/>
+        <UnitName Value="lazsyneditmousecmdstypes"/>
+      </Item81>
+      <Item82>
         <Filename Value="synhighlighterpo.pp"/>
         <UnitName Value="SynHighlighterPo"/>
-      </Item79>
+      </Item82>
     </Files>
     <LazDoc Paths="docs/xml"/>
     <i18n>
@@ -359,10 +371,16 @@ If you wish to allow use of your version of these files only under the terms of 
       <OutDir Value="languages"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="1">
+    <RequiredPkgs Count="3">
       <Item1>
         <PackageName Value="IDEIntf"/>
       </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="LazUtils"/>
+      </Item3>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
