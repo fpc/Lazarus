@@ -4411,6 +4411,8 @@ var
               end;
             '''':
               InStrConst:=not InStrConst;
+            #10,#13:
+              InStrConst:=false;
             end;
             inc(StartPos);
           end;
@@ -4461,6 +4463,8 @@ var
               end;
             '''':
               InStrConst:=not InStrConst;
+            #10,#13:
+              InStrConst:=false;
             end;
             inc(StartPos);
           end;
