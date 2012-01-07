@@ -2038,6 +2038,7 @@ begin
 
   IDECmdScopeObjectInspectorOnly.AddWindowClass(TObjectInspectorDlg);
 
+  CreateObjectInspector;
   IDEWindowCreators.Add(DefaultObjectInspectorName,nil,@CreateIDEWindow,
    '0','120','+230','-120','',alNone,false,@OnGetLayout);
 
