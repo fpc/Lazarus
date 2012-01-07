@@ -377,8 +377,7 @@ begin
         // check syntax
         if (S='') or (not IsValidIdent(S)) then begin
           MessageDlg(lisCCOErrorCaption,
-            Format(lisInvalidBuildMacroTheBuildMacroMustBeAPascalIdentifie, ['"',
-              S, '"']),
+            Format(lisInvalidMacroTheMacroMustBeAPascalIdentifie, ['"', S, '"']),
             mtError,[mbCancel],0);
           exit;
         end;
@@ -389,7 +388,7 @@ begin
         then  begin
           BetterName:=GetMacroNamePrefix(cbmpMedium)+S;
           DlgResult:=QuestionDlg(lisCCOWarningCaption,
-            Format(lisTheBuildMacroDoesNotBeginWith, [S, Prefix]),
+            Format(lisTheMacroDoesNotBeginWith, [S, Prefix]),
             mtWarning, [mrCancel, mrYes, Format(lisRenameTo, [BetterName]),
               mrIgnore], 0);
           if DlgResult=mrIgnore then begin
@@ -403,7 +402,7 @@ begin
         // check for keyword
         if WordIsKeyWord.DoItCaseInsensitive(S) then begin
           MessageDlg(lisCCOErrorCaption,
-            Format(lisInvalidBuildMacroTheNameIsAKeyword, [S]),
+            Format(lisInvalidMacroTheNameIsAKeyword, [S]),
             mtError,[mbCancel],0);
           exit;
         end;
@@ -426,7 +425,7 @@ begin
         or (SysUtils.CompareText('LCLWidgetType',S)=0)
         then begin
           MessageDlg(lisCCOErrorCaption,
-            Format(lisThereIsAlreadyABuildMacroWithTheName, ['"', S, '"']),
+            Format(lisThereIsAlreadyAMacroWithTheName, ['"', S, '"']),
             mtError,[mbCancel],0);
           exit;
         end;
@@ -437,7 +436,7 @@ begin
           Vars:=GetBuildMacroValues(TBaseCompilerOptions(BuildMacros.Owner),false);
           if (Vars<>nil) and Vars.IsDefined(PChar(S)) then begin
             DlgResult:=MessageDlg(lisCCOWarningCaption,
-              Format(lisThereIsAlreadyABuildMacroWithTheName, ['"', S, '"']),
+              Format(lisThereIsAlreadyAMacroWithTheName, ['"', S, '"']),
               mtWarning,[mbCancel,mbIgnore],0);
             if DlgResult<>mrIgnore then
               exit;
@@ -540,7 +539,7 @@ begin
     if i>=0 then aBuildMacro.Values.Delete(i);
   end else begin
     if MessageDlg(lisConfirmDelete,
-      Format(lisDeleteBuildMacro, ['"', aBuildMacro.Identifier, '"']),
+      Format(lisDeleteMacro, ['"', aBuildMacro.Identifier, '"']),
       mtConfirmation,[mbYes,mbCancel],0)<>mrYes
     then exit;
     i:=BuildMacros.IndexOfIdentifier(aBuildMacro.Identifier);
@@ -712,7 +711,7 @@ begin
     BuildMacroDescriptionEdit.Text:=aBuildMacro.Description;
     BMAddMacroValueSpeedButton.Hint:=Format(lisAddValueToMacro, [aBuildMacro.Identifier]);
     if NodeType=cbmntBuildMacro then
-      BMDeleteMacroSpeedButton.Hint:=Format(lisDeleteMacro, [aBuildMacro.Identifier])
+      BMDeleteMacroSpeedButton.Hint:=Format(lisDeleteMacro, ['"',aBuildMacro.Identifier,'"'])
     else
       BMDeleteMacroSpeedButton.Hint:=Format(lisDeleteValue2, [BuildMacrosTreeView.
         Selected.Text]);
@@ -964,7 +963,7 @@ begin
   FBuildMacros:=TIDEBuildMacros.Create(nil);
   fEngine:=TCTConfigScriptEngine.Create;
 
-  MacrosGroupBox.Caption:=lisBuildMacros2;
+  MacrosGroupBox.Caption:=lisIDEMacros;
   BuildMacrosTreeView.Images := IDEImages.Images_24;
   fVarImgID:=IDEImages.LoadImage(24,'da_define');
   fValueImgID:=IDEImages.LoadImage(24,'da_define');
@@ -1008,7 +1007,7 @@ end;
 
 function TCompOptBuildMacrosFrame.GetTitle: String;
 begin
-  Result:=lisBuildMacros;
+  Result:=lisIDEMacros;
 end;
 
 procedure TCompOptBuildMacrosFrame.ReadSettings(AOptions: TAbstractIDEOptions);

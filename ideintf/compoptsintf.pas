@@ -28,8 +28,8 @@ uses
 type
 
   { TLazBuildMacro
-    Every package/project can define build macros. A build macro has a name,
-    a description, a list of possible values and a default value.
+    Every package/project can define build macros / ide macros. A build macro
+    has a name, a description, a list of possible values and a default value.
     The default value can be an expression using other build macros.
     The IDE defines basic macros like TargetOS and TargetCPU.
     The LCL package defines the macro LCLWidgetType. }

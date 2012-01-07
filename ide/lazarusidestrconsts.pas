@@ -4935,16 +4935,14 @@ resourcestring
   lisValue = 'Value:';
   lisValues = 'Values';
   lisDefaultValue = 'Default value';
-  lisBuildMacros = 'Build Macros';
-  lisBuildMacros2 = 'Build macros';
-  //lisCustomBuildMacros = 'Custom build macros';
+  lisIDEMacros = 'IDE Macros';
   lisConfirmDelete = 'Confirm delete';
-  lisDeleteBuildMacro = 'Delete build macro %s%s%s?';
+  lisDeleteMacro = 'Delete macro %s%s%s?';
   lisValue2 = 'Value%s';
   lisDeleteValue = 'Delete value %s%s%s';
-  lisInvalidBuildMacroTheBuildMacroMustBeAPascalIdentifie = 'Invalid build '
-    +'macro %s%s%s. The build macro must be a pascal identifier.';
-  lisThereIsAlreadyABuildMacroWithTheName = 'There is already a build macro '
+  lisInvalidMacroTheMacroMustBeAPascalIdentifie = 'Invalid '
+    +'macro %s%s%s. The macro name must be a pascal identifier.';
+  lisThereIsAlreadyAMacroWithTheName = 'There is already a macro '
     +'with the name %s%s%s.';  
   lisDuplicateFoundOfValue = 'Duplicate found of value %s%s%s.';
   lisSetValue = 'Set value';
@@ -5153,12 +5151,11 @@ resourcestring
   synfHideCommentsInSelection   = 'Hide comments in selection';
   lisCanNotCompileProject = 'Cannot compile project';
   lisTheProjectHasNoMainSourceFile = 'The project has no main source file.';
-  lisInvalidBuildMacroTheNameIsAKeyword = 'Invalid build macro "%s". The name '
+  lisInvalidMacroTheNameIsAKeyword = 'Invalid macro name "%s". The name '
     +'is a keyword.';
-  lisTheBuildMacroDoesNotBeginWith = 'The build macro "%s" does not begin with "%s".';
+  lisTheMacroDoesNotBeginWith = 'The macro "%s" does not begin with "%s".';
   lisRenameTo = 'Rename to %s';
   lisAddValueToMacro = 'Add value to macro %s';
-  lisDeleteMacro = 'Delete macro %s';
   lisDeleteValue2 = 'Delete value %s';
   lisNoMacroSelected = 'No macro selected';
   lisMacro = 'Macro %s';
