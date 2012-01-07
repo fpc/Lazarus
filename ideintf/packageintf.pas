@@ -180,7 +180,8 @@ type
     piiifQuiet,
     piiifClear, // replace, clear the old list
     piiifRebuildIDE,
-    piiifSkipChecks
+    piiifSkipChecks,
+    piiifRemoveConflicts
     );
   TPkgInstallInIDEFlags = set of TPkgInstallInIDEFlag;
 

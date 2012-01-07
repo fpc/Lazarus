@@ -157,7 +157,8 @@ type
     procedure GetDependencyOwnerDirectory(Dependency: TPkgDependency;
                                           out Directory: string);
     procedure PackageFileLoaded(Sender: TObject);
-    procedure OnCheckInstallPackageList(PkgIDList: TObjectList; out Ok: boolean);
+    procedure OnCheckInstallPackageList(PkgIDList: TObjectList;
+                                     RemoveConflicts: boolean; out Ok: boolean);
     function LoadDependencyList(FirstDependency: TPkgDependency;
                                 Quiet: boolean): TModalResult;
     procedure CreateIDEWindow(Sender: TObject; aFormName: string;
@@ -305,7 +306,8 @@ type
     function DoUninstallPackage(APackage: TLazPackage;
                    Flags: TPkgUninstallFlags; ShowAbort: boolean): TModalResult;
     function CheckInstallPackageList(PkgIDList: TObjectList;
-                          Flags: TPkgInstallInIDEFlags = []): boolean; override;
+                          Flags: TPkgInstallInIDEFlags = []
+                          ): boolean; override;
     function InstallPackages(PkgIdList: TObjectList;
                              Flags: TPkgInstallInIDEFlags = []): TModalResult; override;
     procedure DoTranslatePackage(APackage: TLazPackage);
@@ -481,7 +483,7 @@ begin
 end;
 
 procedure TPkgManager.OnCheckInstallPackageList(PkgIDList: TObjectList;
-  out Ok: boolean);
+  RemoveConflicts: boolean; out Ok: boolean);
 begin
   Ok:=CheckInstallPackageList(PkgIDList);
 end;
@@ -3814,6 +3816,24 @@ function TPkgManager.CheckInstallPackageList(PkgIDList: TObjectList;
   Flags: TPkgInstallInIDEFlags): boolean;
 var
   NewFirstAutoInstallDependency: TPkgDependency;
+
+  procedure DeleteDependency(ADependency: TPkgDependency);
+  var
+    i: Integer;
+    PkgID: TLazPackageID;
+  begin
+    DeleteDependencyInList(ADependency,NewFirstAutoInstallDependency,pdlRequires);
+    if piiifRemoveConflicts in Flags then
+      for i:=PkgIDList.Count-1 downto 0 do begin
+        PkgID:=TLazPackageID(PkgIDList[i]);
+        if SysUtils.CompareText(PkgID.Name,ADependency.PackageName)=0 then begin
+          PkgIDList.Delete(i);
+          PkgID.Free;
+        end;
+      end;
+  end;
+
+var
   PkgList: TFPList;
   i: Integer;
   APackage: TLazPackage;
@@ -3841,24 +3861,34 @@ begin
         if (ADependency.RequiredPackage.PackageType in [lptRunTime,lptRunTimeOnly])
         then begin
           // top level dependency on runtime package => delete
-          DeleteDependencyInList(ADependency,NewFirstAutoInstallDependency,pdlRequires);
+          DeleteDependency(ADependency);
         end else begin
           ConflictDep:=PackageGraph.FindRuntimePkgOnlyRecursively(
             ADependency.RequiredPackage.FirstRequiredDependency);
           //debugln(['TPkgManager.CheckInstallPackageList ',ADependency.RequiredPackage.Name,' ',ConflictDep<>nil]);
           if ConflictDep<>nil then begin
-            if not (piiifQuiet in Flags) then begin
-              if IDEQuestionDialog(lisNotADesigntimePackage,
+            if piiifRemoveConflicts in Flags then begin
+              // can remove conflict
+              if not (piiifQuiet in Flags)
+              and (IDEQuestionDialog(lisNotADesigntimePackage,
                 Format(lisThePackageCanNotBeInstalledBecauseItRequiresWhichI, [
                   ADependency.RequiredPackage.Name, ConflictDep.AsString]),
                 mtError,
                 [mrYes, Format(lisUninstall, [ADependency.RequiredPackage.Name]), mrCancel]
-                )<>mrYes
+                )<>mrYes)
               then
                 exit;
+            end else begin
+              // can not remove conflict
+              if not (piiifQuiet in Flags) then
+                IDEQuestionDialog(lisNotADesigntimePackage,
+                  Format(lisThePackageCanNotBeInstalledBecauseItRequiresWhichI, [
+                    ADependency.RequiredPackage.Name, ConflictDep.AsString]),
+                  mtError,[mrCancel]);
+              exit;
             end;
             // dependency needs a runtime only package => delete
-            DeleteDependencyInList(ADependency,NewFirstAutoInstallDependency,pdlRequires);
+            DeleteDependency(ADependency);
           end;
         end;
       end;
@@ -3972,7 +4002,7 @@ begin
 
     if not (piiifSkipChecks in Flags) then
     begin
-      if not CheckInstallPackageList(PkgIDList) then
+      if not CheckInstallPackageList(PkgIDList,Flags*[piiifQuiet,piiifRemoveConflicts]) then
         exit(mrCancel);
     end;
 

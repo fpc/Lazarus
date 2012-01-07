@@ -46,7 +46,7 @@ uses
 
 type
   TOnCheckInstallPackageList =
-                      procedure(PkgIDs: TObjectList; out Ok: boolean) of object;
+    procedure(PkgIDs: TObjectList; RemoveConflicts: boolean; out Ok: boolean) of object;
 
   { TInstallPkgSetDialog }
 
@@ -84,7 +84,7 @@ type
     procedure SaveAndExitButtonClick(Sender: TObject);
     procedure UninstallButtonClick(Sender: TObject);
   private
-    FNewInstalledPackages: TObjectList;
+    FNewInstalledPackages: TObjectList; // list of TLazPackageID (not TLazPackage)
     FOldInstalledPackages: TPkgDependency;
     FOnCheckInstallPackageList: TOnCheckInstallPackageList;
     fAvailablePackages: TAVLTree;// tree of TLazPackageID (all available packages and links)
@@ -466,7 +466,7 @@ end;
 
 function TInstallPkgSetDialog.CheckSelection: boolean;
 begin
-  OnCheckInstallPackageList(FNewInstalledPackages,Result);
+  OnCheckInstallPackageList(FNewInstalledPackages,true,Result);
 end;
 
 procedure TInstallPkgSetDialog.UpdateButtonStates;
