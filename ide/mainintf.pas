@@ -218,9 +218,8 @@ type
   end;
 
 var
-  MainIDEInterface: TMainIDEInterface;
-  ObjectInspector1: TObjectInspectorDlg = nil;
-  MainIDEIntf: TMainIDEInterface = nil;
+  MainIDEInterface: TMainIDEInterface = nil;
+  ObjectInspector1: TObjectInspectorDlg = nil; // created by the IDE
 
 const
   OpenFlagNames: array[TOpenFlag] of string = (

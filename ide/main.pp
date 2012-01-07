@@ -468,6 +468,7 @@ type
     procedure OnSrcNoteBookCloseQuery(Sender: TObject; var CloseAction: TCloseAction);
 
     // ObjectInspector + PropertyEditorHook events
+    procedure CreateObjectInspector;
     procedure OIOnSelectPersistents(Sender: TObject);
     procedure OIOnShowOptions(Sender: TObject);
     procedure OIOnViewRestricted(Sender: TObject);
@@ -2037,39 +2038,10 @@ begin
 
   IDECmdScopeObjectInspectorOnly.AddWindowClass(TObjectInspectorDlg);
 
-  ObjectInspector1 := TObjectInspectorDlg.Create(OwningComponent);
-  ObjectInspector1.Name:=DefaultObjectInspectorName;
-  ObjectInspector1.ShowFavorites:=True;
-  ObjectInspector1.ShowRestricted:=True;
-  ObjectInspector1.Favourites:=LoadOIFavouriteProperties;
-  ObjectInspector1.FindDeclarationPopupmenuItem.Visible:=true;
-  ObjectInspector1.OnAddToFavourites:=@OIOnAddToFavourites;
-  ObjectInspector1.OnFindDeclarationOfProperty:=@OIOnFindDeclarationOfProperty;
-  ObjectInspector1.OnUpdateRestricted := @OIOnUpdateRestricted;
-  ObjectInspector1.OnRemainingKeyDown:=@OIRemainingKeyDown;
-  ObjectInspector1.OnRemoveFromFavourites:=@OIOnRemoveFromFavourites;
-  ObjectInspector1.OnSelectPersistentsInOI:=@OIOnSelectPersistents;
-  ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
-  ObjectInspector1.OnViewRestricted:=@OIOnViewRestricted;
-  ObjectInspector1.OnSelectionChange:=@OIOnSelectionChange;
-  ObjectInspector1.OnPropertyHint:=@OIOnPropertyHint;
-  ObjectInspector1.OnDestroy:=@OIOnDestroy;
-  ObjectInspector1.OnAutoShow:=@OIOnAutoShow;
-  ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
-
-  // after OI changes the hints needs to be updated
-  // do that after some idle time
-  OIChangedTimer:=TIdleTimer.Create(OwningComponent);
-  with OIChangedTimer do begin
-    Name:='OIChangedTimer';
-    Interval:=400;
-    OnTimer:=@OIChangedTimerTimer;
-  end;
-
-  IDEWindowCreators.Add(ObjectInspector1.Name,nil,@CreateIDEWindow,
+  CreateObjectInspector;
+  IDEWindowCreators.Add(ObjectInspectorDlgName,nil,@CreateIDEWindow,
    '0','120','+230','-120','',alNone,false,@OnGetLayout);
 
-  EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
   ShowAnchorDesigner:=@mnuViewAnchorEditorClicked;
   ShowTabOrderEditor:=@mnuViewTabOrderClicked;
 end;
@@ -17105,6 +17077,40 @@ begin
     mrNo : CloseAction := caHide;
     mrCancel : CloseAction := caNone;
   end;
+end;
+
+procedure TMainIDE.CreateObjectInspector;
+begin
+  if ObjectInspector1<>nil then exit;
+  ObjectInspector1 := TObjectInspectorDlg.Create(OwningComponent);
+  ObjectInspector1.Name:=DefaultObjectInspectorName;
+  ObjectInspector1.ShowFavorites:=True;
+  ObjectInspector1.ShowRestricted:=True;
+  ObjectInspector1.Favourites:=LoadOIFavouriteProperties;
+  ObjectInspector1.FindDeclarationPopupmenuItem.Visible:=true;
+  ObjectInspector1.OnAddToFavourites:=@OIOnAddToFavourites;
+  ObjectInspector1.OnFindDeclarationOfProperty:=@OIOnFindDeclarationOfProperty;
+  ObjectInspector1.OnUpdateRestricted := @OIOnUpdateRestricted;
+  ObjectInspector1.OnRemainingKeyDown:=@OIRemainingKeyDown;
+  ObjectInspector1.OnRemoveFromFavourites:=@OIOnRemoveFromFavourites;
+  ObjectInspector1.OnSelectPersistentsInOI:=@OIOnSelectPersistents;
+  ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
+  ObjectInspector1.OnViewRestricted:=@OIOnViewRestricted;
+  ObjectInspector1.OnSelectionChange:=@OIOnSelectionChange;
+  ObjectInspector1.OnPropertyHint:=@OIOnPropertyHint;
+  ObjectInspector1.OnDestroy:=@OIOnDestroy;
+  ObjectInspector1.OnAutoShow:=@OIOnAutoShow;
+  ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
+
+  // after OI changes the hints needs to be updated
+  // do that after some idle time
+  OIChangedTimer:=TIdleTimer.Create(OwningComponent);
+  with OIChangedTimer do begin
+    Name:='OIChangedTimer';
+    Interval:=400;
+    OnTimer:=@OIChangedTimerTimer;
+  end;
+  EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
 end;
 
 procedure TMainIDE.OnApplicationUserInput(Sender: TObject; Msg: Cardinal);

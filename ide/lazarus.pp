@@ -104,7 +104,7 @@ begin
     Application.ProcessMessages; // process splash paint message
   end;
 
-  MainIDE:=TMainIDE.Create(Application);
+  TMainIDE.Create(Application);
   if not Application.Terminated then
   begin
     MainIDE.CreateOftenUsedForms;
@@ -133,6 +133,5 @@ begin
 
   // free the IDE, so everything is freed before the finalization sections
   MainIDE.Free;
-  MainIDE:=nil;
 end.
 

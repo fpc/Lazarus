@@ -59,11 +59,11 @@ uses
   SysUtils, Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms,
   CodeToolManager, CodeCache, AVL_Tree, SynEditKeyCmds,
   // IDEIntf
-  LazConf, LazarusIDEStrConsts, SrcEditorIntf, LazIDEIntf, MenuIntf,
+  IDEImagesIntf, SrcEditorIntf, LazIDEIntf, MenuIntf,
   IDECommands, IDEMsgIntf, IDEWindowIntf,
   // IDE
-  ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,
-  ComponentReg, OutputFilter,
+  LazConf, LazarusIDEStrConsts, ProjectDefs, Project, PublishModule,
+  BuildLazDialog, Compiler, ComponentReg, OutputFilter,
   TransferMacros, ObjectInspector, PropEdits, IDEDefs, MsgView,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
   Debugger, IDEOptionDefs, CodeToolsDefines, Splash, Designer,
@@ -176,9 +176,8 @@ type
   end;
 
 function  GetMainIde: TMainIDEBase;
-procedure SetMainIde(AValue: TMainIDEBase);
 
-property MainIDE: TMainIDEBase read GetMainIde write SetMainIde;
+property MainIDE: TMainIDEBase read GetMainIde;
 
   { Normally the IDE builds itself with packages named in config files.
     When the IDE should keep the packages installed in the current executable
@@ -187,17 +186,9 @@ var KeepInstalledPackages: boolean = false;
 
 implementation
 
-uses
-  IDEImagesIntf;
-
 function GetMainIde: TMainIDEBase;
 begin
-  Result := TMainIDEBase(MainIDEIntf)
-end;
-
-procedure SetMainIde(AValue: TMainIDEBase);
-begin
-  MainIDEIntf := AValue;
+  Result := TMainIDEBase(MainIDEInterface)
 end;
 
 //{$IFDEF LCLCarbon}
@@ -256,7 +247,6 @@ end;
 
 constructor TMainIDEBase.Create(TheOwner: TComponent);
 begin
-  MainIDE:=Self;
   // Do not own everything in one big component hierachy. Otherwise the
   // notifications slow down everything
   fOwningComponent:=TComponent.Create(nil);
@@ -267,7 +257,6 @@ destructor TMainIDEBase.Destroy;
 begin
   FreeThenNil(fOwningComponent);
   inherited Destroy;
-  MainIDE:=nil;
 end;
 
 procedure TMainIDEBase.GetUnitInfoForDesigner(ADesigner: TIDesigner;
