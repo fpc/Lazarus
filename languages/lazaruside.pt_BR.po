@@ -3464,7 +3464,7 @@ msgstr "Posições de janela"
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"
-msgstr ""
+msgstr "Exceções"
 
 #: lazarusidestrconsts.dlgwordspolicies
 msgctxt "lazarusidestrconsts.dlgwordspolicies"
@@ -3530,7 +3530,6 @@ msgid "Move to Front"
 msgstr "Mover para frente"
 
 #: lazarusidestrconsts.fdmsaveformasxml
-#, fuzzy
 #| msgid "Save form as XML"
 msgid "Save Form as XML"
 msgstr "Salvar formulário como XML"
@@ -3730,7 +3729,7 @@ msgstr "Tipo Ancestral inválido"
 
 #: lazarusidestrconsts.lisa2pinvalidcirculardependency
 msgid "Invalid Circular Dependency"
-msgstr ""
+msgstr "Dependência circular inválida"
 
 #: lazarusidestrconsts.lisa2pinvalidclassname
 msgid "Invalid Class Name"
@@ -4812,7 +4811,6 @@ msgid "Center control vertically relative to the given sibling"
 msgstr "Centralizar controle verticalmente em relação ao controle-irmão especificado"
 
 #: lazarusidestrconsts.liscenterform
-#, fuzzy
 #| msgid "Center form"
 msgid "Center Form"
 msgstr "Centralizar formulário"
@@ -5199,7 +5197,7 @@ msgstr "Escolha o diretório para testes"
 
 #: lazarusidestrconsts.liscirculardependencydetected
 msgid "Circular dependency detected"
-msgstr ""
+msgstr "Dependência circular detectada"
 
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
@@ -7191,10 +7189,9 @@ msgid "Delete file failed"
 msgstr "Falha na exclusão do arquivo"
 
 #: lazarusidestrconsts.lisdeletemacro
-#, fuzzy
 #| msgid "Delete macro %s"
 msgid "Delete macro %s%s%s?"
-msgstr "Excluir macro %s"
+msgstr "Excluir macro %s%s%s?"
 
 #: lazarusidestrconsts.lisdeletemode
 msgid "Delete mode \"%s\""
@@ -7799,7 +7796,7 @@ msgstr "Codificação no arquivo %s%s%s%sno disco é %s. Nova codificação é %
 
 #: lazarusidestrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
-msgstr ""
+msgstr "Laço infinito em macros"
 
 #: lazarusidestrconsts.lisentertransla
 msgid "Enter translation language"
@@ -8840,7 +8837,7 @@ msgstr "AVISO: nome unidade inválido %s, pacote=%s"
 
 #: lazarusidestrconsts.lisidemacros
 msgid "IDE Macros"
-msgstr ""
+msgstr "Macros IDE"
 
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
@@ -9232,11 +9229,11 @@ msgstr "Linha, coluna inválida na mensagem%s%s"
 
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
 msgid "Invalid macro %s%s%s. The macro name must be a pascal identifier."
-msgstr ""
+msgstr "Macro %s%s%s inválida. O nome da macro deve ser um identificador pascal."
 
 #: lazarusidestrconsts.lisinvalidmacrothenameisakeyword
 msgid "Invalid macro name \"%s\". The name is a keyword."
-msgstr ""
+msgstr "Nome de macro \"%s\" inválido. O nome é uma palavra-chave."
 
 #: lazarusidestrconsts.lisinvalidmask
 msgid "Invalid Mask"
@@ -9300,7 +9297,7 @@ msgstr "%s%s%s é um nome de projeto inválido.%sFavor escolher outro nome (ex. 
 
 #: lazarusidestrconsts.lisisathiscirculardependencyisnotallowed
 msgid "%s is a %s.%sThis circular dependency is not allowed."
-msgstr ""
+msgstr "%s é um %s.%sEsta dependência circular não é permitida."
 
 #: lazarusidestrconsts.lisisddirectorynotfound
 msgid "directory not found"
@@ -10923,16 +10920,14 @@ msgid "Goto Line ..."
 msgstr "Ir para linha ..."
 
 #: lazarusidestrconsts.lismenuguessmisplacedifdef
-#, fuzzy
 #| msgid "Guess misplaced IFDEF/ENDIF"
 msgid "Guess Misplaced IFDEF/ENDIF"
-msgstr "Tentar identificar IFDEF/ENDIF fora de lugar"
+msgstr "Tenta identificar IFDEF/ENDIF fora de lugar"
 
 #: lazarusidestrconsts.lismenuguessunclosedblock
-#, fuzzy
 #| msgid "Guess unclosed block"
 msgid "Guess Unclosed Block"
-msgstr "Tentar identificar bloco não fechado"
+msgstr "Tenta identificar bloco não fechado"
 
 #: lazarusidestrconsts.lismenuhelp
 msgid "&Help"
@@ -13114,7 +13109,7 @@ msgstr "Dependência quebrada"
 
 #: lazarusidestrconsts.lispkgmangcirculardependencies
 msgid "Circular dependencies found"
-msgstr ""
+msgstr "Dependências circulares encontradas"
 
 #: lazarusidestrconsts.lispkgmangcompilingpackage
 msgid "Compiling package %s"
@@ -13381,10 +13376,9 @@ msgid "The package %s is a runtime only package.%sRuntime only packages can not 
 msgstr "O pacote %s é um pacote somente de tempo de execução.%sOs pacotes somente de tempo de execução, não podem ser instalados no IDE."
 
 #: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
-#, fuzzy
 #| msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also uses the default unit search of the compiler. This creates a cycle.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
 msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also uses the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
-msgstr "O pacote %s é compilado automaticamente e seu diretório de saída é \"%s\", ao qual está no caminho padrão de buscas de unidades do compilador. O pacote usa outros pacotes que também usam o caminho padrão de buscas de unidades do compilador. Isto cria uma referência circular.%sVocê pode resolver este problema%sremovendo o caminho de sua configuração de compilador (i.e. fpc.cfg)%sou desabilitando a auto atualização deste pacote%sou removendo dependências."
+msgstr "O pacote %s é compilado automaticamente e seu diretório de saída é \"%s\", ao qual está no caminho padrão de buscas de unidades do compilador. O pacote usa outros pacotes que também usam o caminho padrão de buscas de unidades do compilador. Isto cria um laço infinito.%sVocê pode resolver este problema%sremovendo o caminho de sua configuração de compilador (i.e. fpc.cfg)%sou desabilitando a auto atualização deste pacote%sou removendo dependências."
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
 msgid "The package %s%s%s is marked for installation, but can not be found.%sRemove dependency from the installation list of packages?"
@@ -13420,7 +13414,7 @@ msgstr "Há duas unidades com o mesmo nome:%s%s1. %s%s%s de %s%s2. %s%s%s de %s%
 
 #: lazarusidestrconsts.lispkgmangthereisacirculardependency
 msgid "There is a circular dependency in the packages. See package graph."
-msgstr ""
+msgstr "Há uma dependência circular nos pacotes. Veja gráfico de pacotes."
 
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenameasapackage
 msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
@@ -15285,7 +15279,7 @@ msgstr "O arquivo LFM (Formulário Lazarus) contém propriedades inválidas. Ist
 
 #: lazarusidestrconsts.listhemacrodoesnotbeginwith
 msgid "The macro \"%s\" does not begin with \"%s\"."
-msgstr ""
+msgstr "A macro \"%s\" não se inicia com \"%s\"."
 
 #: lazarusidestrconsts.listhenameisnotavalidpascalidentifier
 msgid "The name %s%s%s is not a valid pascal identifier."
@@ -15410,7 +15404,7 @@ msgstr "Já existe um formulário com o nome %s%s%s"
 
 #: lazarusidestrconsts.listhereisalreadyamacrowiththename
 msgid "There is already a macro with the name %s%s%s."
-msgstr ""
+msgstr "Já existe uma macro com o nome %s%s%s."
 
 #: lazarusidestrconsts.listhereisalreadyanidemacrowiththename
 msgid "There is already an IDE macro with the name \"%s\""
@@ -15532,7 +15526,7 @@ msgstr "Esta declaração não pode ser extraída.%sFavor selecionar algum códi
 
 #: lazarusidestrconsts.listhiswillcreateacirculardependency
 msgid "This will create a circular dependency."
-msgstr ""
+msgstr "Isto criará uma dependência circular."
 
 #: lazarusidestrconsts.listhreads
 msgctxt "lazarusidestrconsts.listhreads"
@@ -15817,7 +15811,7 @@ msgstr "Incapaz de adicionar a dependência %s, porque o pacote %s já tem uma d
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethiswouldcreatea
 msgid "Unable to add the dependency %s, because this would create a circular dependency. Dependency %s"
-msgstr ""
+msgstr "Incapaz de adiconar a dependência %s, porque isto criará uma dependência circular. Dependência %s"
 
 #: lazarusidestrconsts.lisunabletoaddtoprojectbecausethereisalreadyaunitwith
 msgid "Unable to add %s to project, because there is already a unit with the same name in the Project."
@@ -16014,7 +16008,7 @@ msgstr "Impossível ler arquivo %s%s%s."
 
 #: lazarusidestrconsts.lisunabletoreadlpi
 msgid "Unable to read lpi"
-msgstr ""
+msgstr "Incapaz de ler lpi"
 
 #: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
 msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile"
@@ -17357,10 +17351,9 @@ msgid "Goto XY"
 msgstr "Ir para XY"
 
 #: lazarusidestrconsts.srkmecguessmisplacedifdef
-#, fuzzy
 #| msgid "Guess misplaced $IFDEF"
 msgid "Guess Misplaced $IFDEF"
-msgstr "Adivinhar $IFDEF mal colocado"
+msgstr "Tenta identificar $IFDEF mal colocado"
 
 #: lazarusidestrconsts.srkmecimestr
 msgid "Ime Str"
