@@ -3027,6 +3027,18 @@ resourcestring
   lisUnableToRead = 'Unable to read %s';
   lisErrorReadingPackageListFromFile = 'Error reading package list from file%'
     +'s%s%s%s';
+  lisDuplicate = 'Duplicate';
+  lisThePackageIsAlreadyInTheList = 'The package %s is already in the list';
+  lisConflict = 'Conflict';
+  lisThereIsAlreadyAPackageInTheList = 'There is already a package %s in the '
+    +'list';
+  lisNotADesigntimePackage = 'Not a designtime package';
+  lisThePackageCanNotBeInstalledBecauseItRequiresWhichI = 'The package %s can '
+    +'not be installed, because it requires the package "%s", which is a runtime only '
+    +'package.';
+  lisUninstall = 'Uninstall %s';
+  lisThePackageIsNotADesignTimePackageItCanNotBeInstall = 'The package %s is '
+    +'not a design time package. It can not be installed in the IDE';
   lisUninstallImpossible = 'Uninstall impossible';
   lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh = 'The package %s can '
     +'not be uninstalled, because it is needed by the IDE itself.';
@@ -4105,9 +4117,11 @@ resourcestring
   lisBuildNumber = 'Build number';
   lisPckOptsAutomaticallyIncrementVersionOnBuild = 'Automatically increment version on build';
   lisPckOptsPackageType = 'Package type';
-  lisPckOptsDesigntimeOnly = 'Designtime only';
-  lisPckOptsRuntimeOnly = 'Runtime only';
+  lisPckOptsDesigntime = 'Designtime';
+  lisPckOptsRuntime = 'Runtime';
   lisPckOptsDesigntimeAndRuntime = 'Designtime and runtime';
+  lisRuntimeOnlyCanNotBeInstalledInIDE = 'Runtime only, can not be installed '
+    +'in IDE';
   lisPckOptsUpdateRebuild = 'Update / Rebuild';
   lisPckOptsAutomaticallyRebuildAsNeeded = 'Automatically rebuild as needed';
   lisPckOptsAutoRebuildWhenRebuildingAll = 'Auto rebuild when rebuilding all';

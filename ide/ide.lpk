@@ -1896,6 +1896,7 @@
         <UnitName Value="WatchPropertyDlg"/>
       </Item421>
     </Files>
+    <Type Value="RunTimeOnly"/>
     <RequiredPkgs Count="6">
       <Item1>
         <PackageName Value="LCL"/>

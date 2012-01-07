@@ -41,8 +41,8 @@ uses
   Classes, SysUtils, contnrs, LCLProc, Forms, Controls, Graphics, Dialogs,
   KeywordFuncLists, StdCtrls, Buttons, FileUtil, ExtCtrls, ComCtrls, EditBtn,
   AVL_Tree, Laz_XMLCfg, TreeFilterEdit, PackageIntf, IDEImagesIntf, IDEHelpIntf,
-  LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf, IDEProcs,
-  PackageDefs, PackageSystem, PackageLinks, IDEContextHelpEdit;
+  IDEDialogs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf,
+  IDEProcs, PackageDefs, PackageSystem, PackageLinks, IDEContextHelpEdit;
 
 type
   TOnCheckInstallPackageList =
@@ -696,6 +696,7 @@ var
   Additions: TObjectList;
   TVNode: TTreeNode;
   PkgName: String;
+  ConflictDep: TPkgDependency;
 begin
   Additions:=TObjectList.Create(false);
   NewPackageID:=TLazPackageID.Create;
@@ -713,8 +714,8 @@ begin
       end;
       // check if already in list
       if NewInstalledPackagesContains(NewPackageID) then begin
-        MessageDlg('Double',
-          'The package '+NewPackageID.Name+' is already in the list',mtError,
+        MessageDlg(lisDuplicate,
+          Format(lisThePackageIsAlreadyInTheList, [NewPackageID.Name]), mtError,
           [mbCancel],0);
         TVNode.Selected:=false;
         exit;
@@ -722,8 +723,8 @@ begin
       // check if a package with same name is already in the list
       j:=IndexOfNewInstalledPkgByName(NewPackageID.Name);
       if j>=0 then begin
-        MessageDlg('Conflict',
-          'There is already a package '+NewPackageID.Name+' in the list',
+        MessageDlg(lisConflict,
+          Format(lisThereIsAlreadyAPackageInTheList, [NewPackageID.Name]),
           mtError,[mbCancel],0);
         TVNode.Selected:=false;
         exit;
@@ -732,15 +733,26 @@ begin
       // installation in the IDE
       APackage:=PackageGraph.FindPackageWithID(NewPackageID);
       if APackage<>nil then begin
-        if APackage.PackageType=lptRunTime then begin
-          MessageDlg('Not a designtime package',
-            'The package '+APackage.IDAsString+' is not a design time package.'
-            +' It can not be installed in the IDE',mtError,
-            [mbCancel],0);
+        if APackage.PackageType in [lptRunTime,lptRunTimeOnly] then begin
+          IDEMessageDialog(lisNotADesigntimePackage,
+            Format(lisThePackageIsNotADesignTimePackageItCanNotBeInstall, [
+              APackage.IDAsString]), mtError,
+            [mbCancel]);
+          TVNode.Selected:=false;
+          exit;
+        end;
+        ConflictDep:=PackageGraph.FindRuntimePkgOnlyRecursively(
+          APackage.FirstRequiredDependency);
+        if ConflictDep<>nil then begin
+          IDEMessageDialog(lisNotADesigntimePackage,
+            Format(lisThePackageCanNotBeInstalledBecauseItRequiresWhichI, [
+              APackage.Name, ConflictDep.AsString]),
+            mtError,[mbCancel]);
           TVNode.Selected:=false;
           exit;
         end;
       end;
+
       // ok => add to list
       Additions.Add(NewPackageID);
       NewPackageID:=TLazPackageID.Create;

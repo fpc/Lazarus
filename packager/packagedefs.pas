@@ -489,11 +489,14 @@ type
   
   TLazPackageType = (
     lptRunTime,         // RunTime packages can't register anything in the IDE.
+                        // They can be used by designtime packages.
     lptDesignTime,      // DesignTime packages can register anything in the IDE
                         // and should not be compiled into projects.
                         // The IDE calls the 'register' procedures of each unit.
-    lptRunAndDesignTime // RunAndDesignTime packages can do anything.
+    lptRunAndDesignTime,// RunAndDesignTime packages can do anything.
+    lptRunTimeOnly      // as lptRunTime, but they can not be used in the IDE
     );
+  TLazPackageTypes = set of TLazPackageType;
     
   TLazPackageFlag = (
     lpfAutoIncrementVersionOnBuild, // increment version before
@@ -850,7 +853,7 @@ const
     'Unit', 'Virtual Unit', 'Main Unit',
     'LFM', 'LRS', 'Include', 'Issues', 'Text', 'Binary');
   LazPackageTypeIdents: array[TLazPackageType] of string = (
-    'RunTime', 'DesignTime', 'RunAndDesignTime');
+    'RunTime', 'DesignTime', 'RunAndDesignTime', 'RunTimeOnly');
   AutoUpdateNames: array[TPackageUpdatePolicy] of string = (
     'Manually', 'OnRebuildingAll', 'AsNeeded');
     
@@ -932,6 +935,7 @@ var
   Package1: TLazPackage; // don't use it - only for options dialog
 
 function dbgs(p: TPackageUpdatePolicy): string; overload;
+function dbgs(p: TLazPackageType): string; overload;
 function PackagePathToStr(PathList: TFPList): string;
 
 implementation
@@ -1409,6 +1413,11 @@ end;
 function dbgs(p: TPackageUpdatePolicy): string;
 begin
   Result:=GetEnumName(TypeInfo(p),ord(p));
+end;
+
+function dbgs(p: TLazPackageType): string;
+begin
+  Result:=LazPackageTypeIdents[p];
 end;
 
 function PackagePathToStr(PathList: TFPList): string;

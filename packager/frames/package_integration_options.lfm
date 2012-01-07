@@ -12,11 +12,12 @@ inherited PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 116
+    Height = 124
     Top = 0
     Width = 461
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
+    AutoSize = True
     Caption = 'PackageType'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
@@ -26,13 +27,14 @@ inherited PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 98
+    ClientHeight = 108
     ClientWidth = 457
     ItemIndex = 2
     Items.Strings = (
-      'Designtime only'
-      'Runtime only'
+      'Designtime'
+      'Runtime'
       'Designtime and Runtime'
+      'Runtime only, can not be installed in IDE'
     )
     OnClick = PkgTypeRadioGroupClick
     TabOrder = 0
@@ -44,11 +46,12 @@ inherited PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 116
-    Top = 122
+    Height = 100
+    Top = 130
     Width = 461
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
+    AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'Update/Rebuild'
     ChildSizing.LeftRightSpacing = 6
@@ -59,7 +62,7 @@ inherited PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 98
+    ClientHeight = 84
     ClientWidth = 457
     ItemIndex = 0
     Items.Strings = (
@@ -76,21 +79,21 @@ inherited PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 53
-    Top = 244
+    Height = 52
+    Top = 236
     Width = 461
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'LazDoc - Lazarus documentation'
-    ClientHeight = 35
+    ClientHeight = 36
     ClientWidth = 457
     TabOrder = 2
     object LazDocPathEdit: TEdit
       AnchorSideLeft.Control = LazDocGroupBox
       AnchorSideTop.Control = LazDocGroupBox
       Left = 6
-      Height = 23
+      Height = 24
       Top = 6
       Width = 365
       Anchors = [akTop, akLeft, akRight]

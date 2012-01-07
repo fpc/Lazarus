@@ -238,6 +238,8 @@ type
                                        const PkgName: string): TPkgDependency;
     function FindConflictRecursively(FirstDependency: TPkgDependency;
                                      PkgID: TLazPackageID): TPkgDependency;
+    function FindRuntimePkgOnlyRecursively(FirstDependency: TPkgDependency
+                                           ): TPkgDependency;
     function FindUnit(StartPackage: TLazPackage; const TheUnitName: string;
                       WithRequiredPackages, IgnoreDeleted: boolean): TPkgFile;
     function FindUnitInAllPackages(const TheUnitName: string;
@@ -1108,6 +1110,35 @@ function TLazPackageGraph.FindConflictRecursively(
       if CurDependency.LoadPackageResult=lprSuccess then begin
         RequiredPackage:=CurDependency.RequiredPackage;
         if (not (lpfVisited in RequiredPackage.Flags)) then begin
+          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
+          Result:=Find(RequiredPackage.FirstRequiredDependency);
+          if Result<>nil then exit;
+        end;
+      end;
+      CurDependency:=CurDependency.NextRequiresDependency;
+    end;
+    Result:=nil;
+  end;
+
+begin
+  MarkAllPackagesAsNotVisited;
+  Result:=Find(FirstDependency);
+end;
+
+function TLazPackageGraph.FindRuntimePkgOnlyRecursively(
+  FirstDependency: TPkgDependency): TPkgDependency;
+// returns one dependency using a runtime only package
+
+  function Find(CurDependency: TPkgDependency): TPkgDependency;
+  var
+    RequiredPackage: TLazPackage;
+  begin
+    while CurDependency<>nil do begin
+      if CurDependency.LoadPackageResult=lprSuccess then begin
+        RequiredPackage:=CurDependency.RequiredPackage;
+        if (not (lpfVisited in RequiredPackage.Flags)) then begin
+          if RequiredPackage.PackageType=lptRunTimeOnly then
+            exit(CurDependency);
           RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
           Result:=Find(RequiredPackage.FirstRequiredDependency);
           if Result<>nil then exit;
@@ -2319,7 +2350,7 @@ begin
         APackage:=TLazPackage(PkgList[i]);
         if (APackage=nil) or APackage.AutoCreated
         or IsStaticBasePackage(APackage.Name)
-        or (APackage.PackageType=lptRunTime)
+        or (APackage.PackageType in [lptRunTime,lptRunTimeOnly])
         then continue;
         StaticPackagesInc:=StaticPackagesInc
             +ExtractFileNameOnly(APackage.GetCompileSourceFilename)

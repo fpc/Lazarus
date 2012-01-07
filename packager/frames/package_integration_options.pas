@@ -33,6 +33,8 @@ type
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
+    function PkgTypeToCaption(t: TLazPackageType): string;
+    function CaptionToPkgType(s: string): TLazPackageType;
   end;
 
 implementation
@@ -42,10 +44,14 @@ implementation
 { TPackageIntegrationOptionsFrame }
 
 procedure TPackageIntegrationOptionsFrame.PkgTypeRadioGroupClick(Sender: TObject);
+var
+  NewPkgType: TLazPackageType;
 begin
-  if (PkgTypeRadioGroup.ItemIndex = 1) and (FLazPackage.PackageType <> lptRunTime) then
-  begin
-    // user sets to runtime only
+  NewPkgType:=CaptionToPkgType(PkgTypeRadioGroup.Items[PkgTypeRadioGroup.ItemIndex]);
+  if (FStoredPkgType<>PkgTypeRadioGroup.ItemIndex)
+  and (NewPkgType in [lptRunTime,lptRunTimeOnly])
+  then begin
+    // user sets to runtime
     if (FLazPackage.AutoInstall <> pitNope) then
       ShowMsgPackageTypeMustBeDesign;
   end;
@@ -118,9 +124,10 @@ end;
 procedure TPackageIntegrationOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   PkgTypeRadioGroup.Caption := lisPckOptsPackageType;
-  PkgTypeRadioGroup.Items[0] := lisPckOptsDesigntimeOnly;
-  PkgTypeRadioGroup.Items[1] := lisPckOptsRuntimeOnly;
-  PkgTypeRadioGroup.Items[2] := lisPckOptsDesigntimeAndRuntime;
+  PkgTypeRadioGroup.Items[0] := PkgTypeToCaption(lptRunAndDesignTime);
+  PkgTypeRadioGroup.Items[1] := PkgTypeToCaption(lptDesignTime);
+  PkgTypeRadioGroup.Items[2] := PkgTypeToCaption(lptRunTime);
+  PkgTypeRadioGroup.Items[3] := PkgTypeToCaption(lptRunTimeOnly);
   UpdateRadioGroup.Caption := lisPckOptsUpdateRebuild;
   UpdateRadioGroup.Items[0] := lisPckOptsAutomaticallyRebuildAsNeeded;
   UpdateRadioGroup.Items[1] := lisPckOptsAutoRebuildWhenRebuildingAll;
@@ -147,14 +154,12 @@ end;
 procedure TPackageIntegrationOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   LazPackage: TLazPackage absolute AOptions;
+  i: Integer;
 begin
   FLazPackage := LazPackage;
-  case LazPackage.PackageType of
-    lptDesignTime: PkgTypeRadioGroup.ItemIndex := 0;
-    lptRunTime: PkgTypeRadioGroup.ItemIndex := 1;
-    else
-      PkgTypeRadioGroup.ItemIndex := 2;
-  end;
+  for i:=0 to PkgTypeRadioGroup.Items.Count-1 do
+    if PkgTypeRadioGroup.Items[i]=PkgTypeToCaption(LazPackage.PackageType) then
+      PkgTypeRadioGroup.ItemIndex:=i;
   FStoredPkgType := PkgTypeRadioGroup.ItemIndex;
   case LazPackage.AutoUpdate of
     pupAsNeeded: UpdateRadioGroup.ItemIndex := 0;
@@ -181,17 +186,13 @@ end;
 
 function TPackageIntegrationOptionsFrame.Check: Boolean;
 var
-  NewPackageType: TLazPackageType;
+  NewPkgType: TLazPackageType;
 begin
-  case PkgTypeRadioGroup.ItemIndex of
-    0: NewPackageType := lptDesignTime;
-    1: NewPackageType := lptRunTime;
-    else
-      NewPackageType := lptRunAndDesignTime;
-  end;
-  if NewPackageType <> FLazPackage.PackageType then
+  NewPkgType:=CaptionToPkgType(PkgTypeRadioGroup.Items[PkgTypeRadioGroup.ItemIndex]);
+  if NewPkgType <> FLazPackage.PackageType then
   begin
-    if (NewPackageType = lptRunTime) and (FLazPackage.AutoInstall <> pitNope) then
+    if (NewPkgType in [lptRunTime,lptRunTimeOnly])
+    and (FLazPackage.AutoInstall <> pitNope) then
     begin
       if ShowMsgPackageTypeMustBeDesign then
         Exit(False);
@@ -203,28 +204,44 @@ end;
 procedure TPackageIntegrationOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   LazPackage: TLazPackage absolute AOptions;
-  NewPackageType: TLazPackageType;
+  NewPkgType: TLazPackageType;
 begin
-  case PkgTypeRadioGroup.ItemIndex of
-    0: NewPackageType := lptDesignTime;
-    1: NewPackageType := lptRunTime;
-    else
-      NewPackageType := lptRunAndDesignTime;
-  end;
-  LazPackage.PackageType := NewPackageType;
+  NewPkgType:=CaptionToPkgType(PkgTypeRadioGroup.Items[PkgTypeRadioGroup.ItemIndex]);
+  LazPackage.PackageType := NewPkgType;
   case UpdateRadioGroup.ItemIndex of
     2: LazPackage.AutoUpdate := pupManually;
     1: LazPackage.AutoUpdate := pupOnRebuildingAll;
     else
       LazPackage.AutoUpdate := pupAsNeeded;
   end;
-
   LazPackage.LazDocPaths := LazDocPathEdit.Text;
 end;
 
 class function TPackageIntegrationOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
   Result := TLazPackage;
+end;
+
+function TPackageIntegrationOptionsFrame.PkgTypeToCaption(t: TLazPackageType
+  ): string;
+begin
+  case t of
+  lptRunTime: Result:=lisPckOptsRuntime;
+  lptDesignTime: Result:=lisPckOptsDesigntime;
+  lptRunAndDesignTime: Result:=lisPckOptsDesigntimeAndRuntime;
+  lptRunTimeOnly: Result:=lisRuntimeOnlyCanNotBeInstalledInIDE;
+  else Result:='?'+IntToStr(ord(t));
+  end;
+end;
+
+function TPackageIntegrationOptionsFrame.CaptionToPkgType(s: string
+  ): TLazPackageType;
+var
+  t: TLazPackageType;
+begin
+  for t:=Low(TLazPackageType) to high(TLazPackageType) do
+    if s=PkgTypeToCaption(t) then exit(t);
+  Result:=lptRunTime;
 end;
 
 initialization

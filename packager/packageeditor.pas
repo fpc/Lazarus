@@ -663,7 +663,8 @@ begin
       PkgEditMenuSectionDependency.Visible:=false;
 
     SetItem(PkgEditMenuAddToProject,@AddToProjectClick,true,CanBeAddedToProject);
-    SetItem(PkgEditMenuInstall,@InstallClick,true,not LazPackage.AutoCreated);
+    SetItem(PkgEditMenuInstall,@InstallClick,true,(not LazPackage.AutoCreated)
+           and (LazPackage.PackageType in [lptDesignTime,lptRunAndDesignTime]));
     SetItem(PkgEditMenuUninstall,@UninstallClick,true,
             (LazPackage.Installed<>pitNope) or (LazPackage.AutoInstall<>pitNope));
 
@@ -720,7 +721,8 @@ begin
 
   AddPopupMenuItem(lisPckEditAddToProject, @AddToProjectClick,
                    CanBeAddedToProject);
-  AddPopupMenuItem(lisPckEditInstall, @InstallClick,not LazPackage.AutoCreated);
+  AddPopupMenuItem(lisPckEditInstall, @InstallClick,(not LazPackage.AutoCreated)
+           and (LazPackage.PackageType in [lptDesignTime,lptRunAndDesignTime]));
   AddPopupMenuItem(lisPckEditUninstall, @UninstallClick,
           (LazPackage.Installed<>pitNope) or (LazPackage.AutoInstall<>pitNope));
 

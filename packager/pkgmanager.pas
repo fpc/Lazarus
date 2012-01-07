@@ -1373,7 +1373,7 @@ begin
     and (not Dependency.RequiredPackage.AutoCreated)
     and (not PackageGraph.IsStaticBasePackage(Dependency.PackageName))
     and (not Dependency.RequiredPackage.Missing)
-    and (Dependency.RequiredPackage.PackageType<>lptRunTime)
+    and (not (Dependency.RequiredPackage.PackageType in [lptRunTime,lptRunTimeOnly]))
     then begin
       if sl.IndexOf(Dependency.PackageName)<0 then begin
         sl.Add(Dependency.PackageName);
@@ -3596,6 +3596,8 @@ var
   RequiredPackage: TLazPackage;
   BuildIDEFlags: TBuildLazarusFlags;
   Msg: string;
+  Btns: TMsgDlgButtons;
+  ConflictDep: TPkgDependency;
 begin
   if not MainIDE.DoResetToolStatus([rfInteractive]) then exit(mrCancel);
 
@@ -3603,14 +3605,29 @@ begin
   PkgList:=nil;
   try
     // check if package is designtime package
-    if APackage.PackageType=lptRunTime then begin
+    if APackage.PackageType in [lptRunTime,lptRunTimeOnly] then begin
+      Btns:=[mbAbort];
+      if APackage.PackageType=lptRunTime then
+        Include(Btns,mbIgnore);
       Result:=IDEMessageDialog(lisPkgMangPackageIsNoDesigntimePackage,
         Format(lisPkgMangThePackageIsARuntimeOnlyPackageRuntimeOnlyPackages,
                [APackage.IDAsString, #13]),
-        mtError,[mbIgnore,mbAbort]);
+        mtError,Btns);
       if Result<>mrIgnore then exit;
     end;
-  
+    // check if package requires a runtime only package
+    ConflictDep:=PackageGraph.FindRuntimePkgOnlyRecursively(
+      APackage.FirstRequiredDependency);
+    if ConflictDep<>nil then begin
+      IDEQuestionDialog(lisNotADesigntimePackage,
+        Format(lisThePackageCanNotBeInstalledBecauseItRequiresWhichI, [
+          APackage.Name, ConflictDep.AsString]),
+        mtError,
+        [mrCancel]
+        );
+      exit;
+    end;
+
     // save package
     if APackage.IsVirtual or APackage.Modified then begin
       Result:=DoSavePackage(APackage,[]);
@@ -3803,6 +3820,7 @@ var
   ADependency: TPkgDependency;
   NextDependency: TPkgDependency;
   SaveFlags: TPkgSaveFlags;
+  ConflictDep: TPkgDependency;
 begin
   Result:=false;
   PkgList:=nil;
@@ -3819,10 +3837,30 @@ begin
     ADependency:=NewFirstAutoInstallDependency;
     while ADependency<>nil do begin
       NextDependency:=ADependency.NextRequiresDependency;
-      if (ADependency.RequiredPackage<>nil)
-      and (ADependency.RequiredPackage.PackageType=lptRunTime) then begin
-        // top level dependency on runtime package => delete
-        DeleteDependencyInList(ADependency,NewFirstAutoInstallDependency,pdlRequires);
+      if (ADependency.RequiredPackage<>nil) then begin
+        if (ADependency.RequiredPackage.PackageType in [lptRunTime,lptRunTimeOnly])
+        then begin
+          // top level dependency on runtime package => delete
+          DeleteDependencyInList(ADependency,NewFirstAutoInstallDependency,pdlRequires);
+        end else begin
+          ConflictDep:=PackageGraph.FindRuntimePkgOnlyRecursively(
+            ADependency.RequiredPackage.FirstRequiredDependency);
+          //debugln(['TPkgManager.CheckInstallPackageList ',ADependency.RequiredPackage.Name,' ',ConflictDep<>nil]);
+          if ConflictDep<>nil then begin
+            if not (piiifQuiet in Flags) then begin
+              if IDEQuestionDialog(lisNotADesigntimePackage,
+                Format(lisThePackageCanNotBeInstalledBecauseItRequiresWhichI, [
+                  ADependency.RequiredPackage.Name, ConflictDep.AsString]),
+                mtError,
+                [mrYes, Format(lisUninstall, [ADependency.RequiredPackage.Name]), mrCancel]
+                )<>mrYes
+              then
+                exit;
+            end;
+            // dependency needs a runtime only package => delete
+            DeleteDependencyInList(ADependency,NewFirstAutoInstallDependency,pdlRequires);
+          end;
+        end;
       end;
       ADependency:=NextDependency;
     end;
