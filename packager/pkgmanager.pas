@@ -1767,29 +1767,27 @@ var
   procedure TranslateWithFileMask(APackage: TLazPackage;
     const Directory, Language: string);
   var
-    FileInfo: TSearchRec;
     CurUnitName: string;
     CurLang: string;
-    FileMask: String;
+    Files: TStrings;
+    Filename: String;
   begin
     if Language='' then exit;
-    FileMask:=Directory+'*.'+Language+'.po';
-    //DebugLn(['TranslateWithFileMask APackage=',APackage.IDAsString,' FileMask="',FileMask,'"']);
-    if FindFirstUTF8(FileMask,faAnyFile,FileInfo)=0
-    then begin
-      repeat
-        // check if special file
-        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
-          continue;
-        if GetPOFilenameParts(FileInfo.Name,CurUnitName,CurLang)
+    Files:=nil;
+    try
+      CodeToolBoss.DirectoryCachePool.GetListing(Directory,Files,false);
+      for Filename in Files do begin
+        if CompareFileExt(Filename,'.po',false)<>0 then continue;
+        if GetPOFilenameParts(Filename,CurUnitName,CurLang)
         and (CurLang=Language)
         and (APackage.FindUnit(CurUnitName)<>nil)
         and not UnitTranslated(CurUnitName) then begin
-          TranslateUnit(Directory+FileInfo.Name,CurUnitName);
+          TranslateUnit(AppendPathDelim(Directory)+Filename,CurUnitName);
         end;
-      until FindNextUTF8(FileInfo)<>0;
+      end;
+    finally
+      Files.Free;
     end;
-    FindCloseUTF8(FileInfo);
   end;
 
 var
@@ -1798,7 +1796,7 @@ var
   FallbackLang: String;
   Language: String;
 begin
-  //DebugLn(['TPkgManager.DoTranslatePackage ', APackage.Name, 'from ', APackage.POOutputDirectory]);
+  //DebugLn(['TPkgManager.DoTranslatePackage ',APackage.Name,' from ', APackage.POOutputDirectory]);
   if (APackage.POOutputDirectory='') then exit;
   Directory:=AppendPathDelim(APackage.GetPOOutDirectory);
 
@@ -1811,6 +1809,7 @@ begin
     FallbackLang:='';
   end;
   
+  //DebugLn(['TPkgManager.DoTranslatePackage ', APackage.Name,' from ', APackage.POOutputDirectory,', Translated=',APackage.Translated,' Lang=',Lang]);
   if APackage.Translated=Lang then exit;
   APackage.Translated:=Lang;
   
@@ -1818,7 +1817,8 @@ begin
   try
     //DebugLn(['TPkgManager.DoTranslatePackage ',APackage.Name,' Directory=',Directory,' Lang=',Lang,' FallbackLang=',FallbackLang]);
     TranslateWithFileMask(APackage,Directory,Lang);
-    TranslateWithFileMask(APackage,Directory,FallbackLang);
+    if FallbackLang<>Lang then
+      TranslateWithFileMask(APackage,Directory,FallbackLang);
   finally
     TranslatedUnits.Free;
   end;

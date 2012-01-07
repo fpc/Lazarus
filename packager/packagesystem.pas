@@ -4887,7 +4887,7 @@ procedure TLazPackageGraph.RegisterStaticBasePackages;
 begin
   BeginUpdate(true);
   
-  // register IDE built-in packages (Note: codetools do not need this)
+  // IDE built-in packages
   if Assigned(OnTranslatePackage) then OnTranslatePackage(CodeToolsPackage);
 
   // register custom IDE components

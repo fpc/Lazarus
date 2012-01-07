@@ -225,6 +225,8 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure CalcMemSize(Stats: TCTMemStats);
+    procedure GetListing(const aDirectory: string; var Files: TStrings;
+                         IncludeDirs: boolean = true);
     function GetCache(const Directory: string;
                       CreateIfNotExists: boolean = true;
                       DoReference: boolean = true): TCTDirectoryCache;
@@ -1318,7 +1320,7 @@ var
 begin
   if Files=nil then
     Files:=TStringList.Create;
-  if Directory='' then exit;
+  if (Self=nil) or (Directory='') then exit;
   UpdateListing;
   ListedFiles:=FListing.Files;
   for i:=0 to FListing.Count-1 do begin
@@ -1389,6 +1391,12 @@ begin
     TCTDirectoryCache(Node.Data).CalcMemSize(Stats);
     Node:=FDirectories.FindSuccessor(Node);
   end;
+end;
+
+procedure TCTDirectoryCachePool.GetListing(const aDirectory: string;
+  var Files: TStrings; IncludeDirs: boolean);
+begin
+  GetCache(aDirectory,true,false).GetFiles(Files,IncludeDirs);
 end;
 
 function TCTDirectoryCachePool.GetCache(const Directory: string;
