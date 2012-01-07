@@ -103,6 +103,9 @@ type
     class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte); override;
     class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
+    class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle, AOldFormStyle: TFormStyle); override;
+    class procedure SetPopupParent(const ACustomForm: TCustomForm;
+      const APopupMode: TPopupMode; const APopupParent: TCustomForm); override;
 
     {need to override these }
     class function GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
@@ -258,6 +261,16 @@ begin
   cnt.callback := TCocoaWindow(win).callback;
   win.setContentView(cnt);
 
+  if (AParams.Style and WS_CHILD) = 0 then
+  begin
+    if AParams.WndParent <> 0 then
+      NSWindow(AParams.WndParent).addChildWindow_ordered(win, NSWindowAbove);
+  end
+  else
+  begin
+    // TODO: docked forms
+  end;
+
   Result := TLCLIntfHandle(win);
 end;
 
@@ -319,6 +332,45 @@ class procedure TCocoaWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
 begin
   if AForm.HandleAllocated then
     SetStyleMaskFor(NSWindow(AForm.Handle), AFormBorderStyle, AForm.BorderIcons, csDesigning in AForm.ComponentState);
+end;
+
+class procedure TCocoaWSCustomForm.SetFormStyle(const AForm: TCustomform;
+  const AFormStyle, AOldFormStyle: TFormStyle);
+const
+  FormStyleToWindowLevel: array[TFormStyle] of NSInteger = (
+ { fsNormal          } 0, // NSNormalWindowLevel,
+ { fsMDIChild        } 0, // NSNormalWindowLevel,
+ { fsMDIForm         } 0, // NSNormalWindowLevel,
+ { fsStayOnTop       } 3, // NSFloatingWindowLevel,
+ { fsSplash          } 3, // NSFloatingWindowLevel,
+ { fsSystemStayOnTop } 8  // NSModalPanelWindowLevel or maybe NSStatusWindowLevel?
+  );
+begin
+  if AForm.HandleAllocated then
+    NSWindow(AForm.Handle).setLevel(FormStyleToWindowLevel[AFormStyle]);
+end;
+
+class procedure TCocoaWSCustomForm.SetPopupParent(
+  const ACustomForm: TCustomForm; const APopupMode: TPopupMode;
+  const APopupParent: TCustomForm);
+var
+  PopupParent: TCustomForm;
+begin
+  if not ACustomForm.HandleAllocated then Exit;
+  case APopupMode of
+    pmNone:
+      PopupParent := nil;
+    pmAuto:
+      PopupParent := Screen.ActiveForm;
+    pmExplicit:
+      PopupParent := APopupParent;
+  end;
+
+  if Assigned(PopupParent) then
+    NSWindow(PopupParent.Handle).addChildWindow_ordered(NSWindow(ACustomForm.Handle), NSWindowAbove)
+  else
+  if Assigned(NSWindow(ACustomForm.Handle).parentWindow) then
+    NSWindow(ACustomForm.Handle).parentWindow.removeChildWindow(NSWindow(ACustomForm.Handle));
 end;
 
 class function TCocoaWSCustomForm.GetClientBounds(const AWinControl: TWinControl; var ARect: TRect): Boolean;
