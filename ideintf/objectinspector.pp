@@ -61,8 +61,6 @@ const
   DefGutterColor = DefBackgroundColor;
   DefGutterEdgeColor = cl3DShadow;
 
-  ObjectInspectorDlgName = 'ObjectInspectorDlg';
-
 type
   EObjectInspectorException = class(Exception);
 
