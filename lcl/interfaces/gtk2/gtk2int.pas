@@ -70,6 +70,8 @@ type
   private
     {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
     FMainPoll: PGPollFD;
+    FIsLibraryInstance: Boolean;
+    FGtkTerminated: Boolean;
     {$ENDIF}
     FMultiThreadingEnabled: boolean;
     FocusTimer: cardinal;
@@ -309,6 +311,10 @@ type
     {$ENDIF}
     procedure StartFocusTimer;
     property AppActive: Boolean read GetAppActive write SetAppActive;
+    {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
+    property IsLibraryInstance: Boolean read FIsLibraryInstance;
+    property GtkIsTerminated: Boolean read FGtkTerminated;
+    {$ENDIF}
     property LastFocusIn: PGtkWidget read FLastFocusIn write FLastFocusIn;
     property LastFocusOut: PGtkWidget read FLastFocusOut write FLastFocusOut;
     property MultiThreadingEnabled: boolean read FMultiThreadingEnabled;

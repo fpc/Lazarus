@@ -1091,8 +1091,12 @@ begin
   Gtk2Create;
   {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
   FMainPoll := nil;
-  Gtk2MPF := g_main_context_get_poll_func(g_main_context_default);
-  g_main_context_set_poll_func(g_main_context_default, @Gtk2PollFunction);
+  if not FIsLibraryInstance then
+  begin
+    Gtk2MPF := g_main_context_get_poll_func(g_main_context_default);
+    g_main_context_set_poll_func(g_main_context_default, @Gtk2PollFunction);
+  end else
+    Gtk2MPF := nil;
   {$ENDIF}
   StayOnTopList := nil;
   im_context:=gtk_im_multicontext_new;
@@ -1445,6 +1449,7 @@ procedure TGtk2WidgetSet.Gtk2Create;
 {$IFNDEF Win32}
 var
   TM: TThreadManager;
+  GtkThread: PGThread;
 {$ENDIF}
 {$ENDIF}
 begin
@@ -1456,9 +1461,21 @@ begin
   FLastFocusOut := nil;
 
   LastWFPMousePos := Point(MaxInt, MaxInt);
+  {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
+  FIsLibraryInstance := False;
+  FGtkTerminated := False;
+  {$ENDIF}
 
   {$IFDEF EnabledGtkThreading}
     {$IFNDEF Win32}
+      GtkThread := g_thread_self();
+      if GtkThread <> nil then
+      begin
+        if GtkThread^.data = nil then
+          GtkThread^.data := @Self
+        else
+          FIsLibraryInstance := True;
+      end;
       if GetThreadManager(TM) and Assigned(TM.InitManager) and g_thread_supported then
       begin
         g_thread_init(nil);
@@ -2408,11 +2425,15 @@ begin
       dec(i);
     end;
     {$ELSE}
-    while g_main_context_pending(g_main_context_default) and (i>0) do
-    begin
-      g_main_context_iteration(g_main_context_default, False);
-      dec(i);
-    end;
+    if not FGtkTerminated then
+      while g_main_context_pending(g_main_context_default) and (i>0) do
+      begin
+        if FGtkTerminated then
+          break;
+        if not g_main_context_iteration(g_main_context_default, False) then
+          break;
+        dec(i);
+      end;
     {$ENDIF}
 
     //DebugLn(['TGtk2WidgetSet.AppProcessMessages SendCachedGtkMessages']);
@@ -2484,7 +2505,8 @@ begin
   {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
   gtk_main_iteration_do(True);
   {$ELSE}
-  g_main_context_iteration(g_main_context_default, True);
+  if not FGtkTerminated then
+    g_main_context_iteration(g_main_context_default, True);
   {$ENDIF}
   WaitingForMessages:=false;
 end;
@@ -2571,6 +2593,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtk2WidgetSet.AppTerminate;
 begin
+  {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
+  if FIsLibraryInstance then
+  begin
+    FGtkTerminated := True;
+    // writeln('TGtk2WidgetSet.AppTerminate called from library ...');
+    // g_main_context_wakeup(g_main_context_default);
+  end;
+  {$ENDIF}
   // MG: using gtk_main_quit is not a clean way to close
   //gtk_main_quit;
 end;
