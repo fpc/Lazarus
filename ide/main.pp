@@ -1580,6 +1580,7 @@ end;
 
 procedure TMainIDE.OIOnSelectPersistents(Sender: TObject);
 begin
+  if ObjectInspector1=nil then exit;
   TheControlSelection.AssignSelection(ObjectInspector1.Selection);
   GlobalDesignHook.SetSelection(ObjectInspector1.Selection);
 end;
@@ -1593,6 +1594,7 @@ procedure TMainIDE.OIOnViewRestricted(Sender: TObject);
 var
   C: TClass;
 begin
+  if ObjectInspector1=nil then exit;
   C := nil;
   if (ObjectInspector1.Selection <> nil) and
       (ObjectInspector1.Selection.Count > 0) then
@@ -1643,11 +1645,13 @@ end;
 
 procedure TMainIDE.OIOnAddToFavourites(Sender: TObject);
 begin
+  if ObjectInspector1=nil then exit;
   ShowAddRemoveFavouriteDialog(ObjectInspector1,true);
 end;
 
 procedure TMainIDE.OIOnRemoveFromFavourites(Sender: TObject);
 begin
+  if ObjectInspector1=nil then exit;
   ShowAddRemoveFavouriteDialog(ObjectInspector1,false);
 end;
 
@@ -1687,6 +1691,7 @@ begin
   AHint:='';
   HintWinRect:=Rect(0,0,0,0);
   if not BeginCodeTools then exit;
+  if ObjectInspector1=nil then exit;
   if FindDeclarationOfOIProperty(ObjectInspector1,PointedRow,Code,Caret,NewTopLine)
   then begin
     if TIDEHelpManager(HelpBoss).GetHintForSourcePosition(Code.Filename,
@@ -4757,12 +4762,14 @@ begin
   IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(
     NonModalIDEWindowNames[nmiwSearchResultsViewName]).Visible:=false;
 
-  TheEnvironmentOptions.ObjectInspectorOptions.Assign(ObjectInspector1);
+  if ObjectInspector1<>nil then
+    TheEnvironmentOptions.ObjectInspectorOptions.Assign(ObjectInspector1);
 end;
 
 procedure TMainIDE.LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
 begin
-  TheEnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
+  if ObjectInspector1<>nil then
+    TheEnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
 end;
 
 procedure TMainIDE.UpdateDefaultPascalFileExtensions;
@@ -4909,7 +4916,8 @@ var
 
   procedure UpdateObjectInspector;
   begin
-    EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
+    if ObjectInspector1<>nil then
+      EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
   end;
 
 begin
@@ -5239,11 +5247,14 @@ begin
 
   // Figure out where we want to put the new form
   // if there is more place left of the OI put it left, otherwise right
-  p:=ObjectInspector1.ClientOrigin;
+  if ObjectInspector1<>nil then
+    p:=ObjectInspector1.ClientOrigin
+  else
+    new_x:=200;
   new_x:=p.X;
   if new_x>Screen.Width div 2 then
     new_x:=new_x-500
-  else
+  else if ObjectInspector1<>nil then
     new_x:=new_x+ObjectInspector1.Width;
   new_y:=p.Y+10;
   r:=Screen.PrimaryMonitor.WorkareaRect;
@@ -5994,7 +6005,8 @@ begin
   if (AnUnitInfo.Component=nil) then exit;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   // unselect methods in ObjectInspector1
-  if (ObjectInspector1.PropertyEditorHook.LookupRoot=AnUnitInfo.Component) then
+  if (ObjectInspector1<>nil)
+  and (ObjectInspector1.PropertyEditorHook.LookupRoot=AnUnitInfo.Component) then
   begin
     ObjectInspector1.EventGrid.ItemIndex:=-1;
     ObjectInspector1.FavouriteGrid.ItemIndex:=-1;
@@ -6005,6 +6017,7 @@ begin
                                ComponentModified);
   // update ObjectInspector1
   if ComponentModified
+  and (ObjectInspector1<>nil)
   and (ObjectInspector1.PropertyEditorHook.LookupRoot=AnUnitInfo.Component) then
   begin
     ObjectInspector1.EventGrid.RefreshPropertyValues;
@@ -14308,7 +14321,8 @@ end;
 
 procedure TMainIDE.OnDesignerPropertiesChanged(Sender: TObject);
 begin
-  ObjectInspector1.RefreshPropertyValues;
+  if ObjectInspector1<>nil then
+    ObjectInspector1.RefreshPropertyValues;
 end;
 
 procedure TMainIDE.OnDesignerPersistentDeleted(Sender: TObject;
@@ -14319,7 +14333,8 @@ var
 begin
   CurDesigner := TDesigner(Sender);
   if dfDestroyingForm in CurDesigner.Flags then exit;
-  ObjectInspector1.FillPersistentComboBox;
+  if ObjectInspector1<>nil then
+    ObjectInspector1.FillPersistentComboBox;
 end;
 
 procedure TMainIDE.OnPropHookPersistentDeleting(APersistent: TPersistent);
@@ -14412,9 +14427,11 @@ end;
 procedure TMainIDE.OnControlSelectionPropsChanged(Sender: TObject);
 begin
   if (TheControlSelection=nil) or (FormEditor1=nil) then exit;
-  if not TheControlSelection.Equals(ObjectInspector1.Selection) then
-    ObjectInspector1.SaveChanges;
-  ObjectInspector1.RefreshPropertyValues;
+  if ObjectInspector1<>nil then begin
+    if not TheControlSelection.Equals(ObjectInspector1.Selection) then
+      ObjectInspector1.SaveChanges;
+    ObjectInspector1.RefreshPropertyValues;
+  end;
 end;
 
 procedure TMainIDE.OnControlSelectionFormChanged(Sender: TObject; OldForm,
@@ -17101,6 +17118,8 @@ begin
   ObjectInspector1.OnDestroy:=@OIOnDestroy;
   ObjectInspector1.OnAutoShow:=@OIOnAutoShow;
   ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
+  if FormEditor1<>nil then
+    FormEditor1.Obj_Inspector := ObjectInspector1;
 
   // after OI changes the hints needs to be updated
   // do that after some idle time
@@ -17675,7 +17694,7 @@ function TMainIDE.OIHelpProvider: TAbstractIDEHTMLProvider;
 var
   HelpControl: TControl;
 begin
-  if FOIHelpProvider = nil then
+  if (FOIHelpProvider = nil) and (ObjectInspector1<>nil) then
   begin
     HelpControl := CreateIDEHTMLControl(ObjectInspector1, FOIHelpProvider, [ihcScrollable]);
     HelpControl.Parent := ObjectInspector1.InfoPanel;
@@ -17992,7 +18011,8 @@ end;
 procedure TMainIDE.OnPropHookModified(Sender: TObject);
 begin
   // any change of property can cause a change of a display name
-  ObjectInspector1.FillPersistentComboBox;
+  if ObjectInspector1<>nil then
+    ObjectInspector1.FillPersistentComboBox;
 end;
 
 {-------------------------------------------------------------------------------
@@ -18070,7 +18090,8 @@ begin
                                    Ancestor);
   end;
 
-  ObjectInspector1.FillPersistentComboBox;
+  if ObjectInspector1<>nil then
+    ObjectInspector1.FillPersistentComboBox;
 
   //writeln('TMainIDE.OnPropHookPersistentAdded D ',AComponent.Name,':',AComponent.ClassName,' ',Select);
   // select component
