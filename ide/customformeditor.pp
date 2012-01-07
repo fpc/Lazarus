@@ -439,9 +439,10 @@ procedure TCustomFormEditor.SetSelection(
   const ASelection: TPersistentSelectionList);
 begin
   FSelection.Assign(ASelection);
+  if Obj_Inspector=nil then exit;
   if FSelection.Count>0 then begin
-    Obj_Inspector.PropertyEditorHook.LookupRoot:=
-      GetLookupRootForComponent(FSelection[0]);
+      Obj_Inspector.PropertyEditorHook.LookupRoot:=
+        GetLookupRootForComponent(FSelection[0]);
   end;
   Obj_Inspector.Selection := FSelection;
 end;
@@ -449,7 +450,8 @@ end;
 Function TCustomFormEditor.AddSelected(Value : TComponent) : Integer;
 Begin
   Result := FSelection.Add(Value) + 1;
-  Obj_Inspector.Selection := FSelection;
+  if Obj_Inspector<>nil then
+    Obj_Inspector.Selection := FSelection;
 end;
 
 Procedure TCustomFormEditor.DeleteComponent(AComponent: TComponent;
@@ -2067,7 +2069,9 @@ end;
 
 function TCustomFormEditor.GetPropertyEditorHook: TPropertyEditorHook;
 begin
-  Result:=Obj_Inspector.PropertyEditorHook;
+  Result:=nil;
+  if Obj_Inspector<>nil then
+    Result:=Obj_Inspector.PropertyEditorHook;
 end;
 
 function TCustomFormEditor.FindDefinePropertyNode(

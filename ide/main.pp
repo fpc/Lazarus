@@ -872,6 +872,7 @@ type
     procedure DoShowCodeBrowser(Show: boolean);
     procedure DoShowRestrictionBrowser(Show: boolean; const RestrictedName: String = '');
     procedure DoShowComponentList(Show: boolean);
+    procedure DoShowInspector(Show: boolean);
     procedure CreateIDEWindow(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean);
     function CreateNewUniqueFilename(const Prefix, Ext: string;
@@ -2043,7 +2044,6 @@ begin
 
   IDECmdScopeObjectInspectorOnly.AddWindowClass(TObjectInspectorDlg);
 
-  CreateObjectInspector;
   IDEWindowCreators.Add(DefaultObjectInspectorName,nil,@CreateIDEWindow,
    '0','120','+230','-120','',alNone,false,@OnGetLayout);
 
@@ -6787,6 +6787,7 @@ begin
     FDisplayState := dsForm;
     GlobalDesignHook.LookupRoot := NewComponent;
     TheControlSelection.AssignPersistent(NewComponent);
+    CreateObjectInspector;
   end;
 
   // show new form
@@ -8694,6 +8695,7 @@ begin
     // show form and select form
     if NewUnitInfo.Component<>nil then begin
       // show form
+      CreateObjectInspector;
       DoShowDesignerFormOfCurrentSrc;
     end else begin
       FDisplayState:= dsSource;
@@ -9919,6 +9921,20 @@ begin
     ComponentListForm.Show;
 end;
 
+procedure TMainIDE.DoShowInspector(Show: boolean);
+begin
+  CreateObjectInspector;
+  if Show then begin
+    IDEWindowCreators.ShowForm(ObjectInspector1,true);
+    if ObjectInspector1.IsVisible then
+    begin
+      ObjectInspector1.FocusGrid;
+      if FDisplayState <> high(TDisplayState) then
+        FDisplayState:= Succ(FDisplayState);
+    end;
+  end;
+end;
+
 procedure TMainIDE.CreateIDEWindow(Sender: TObject; aFormName: string; var
   AForm: TCustomForm; DoDisableAutoSizing: boolean);
 
@@ -9985,6 +10001,11 @@ begin
   begin
     DoShowComponentList(false);
     AForm:=ComponentListForm;
+  end
+  else if ItIs(DefaultObjectInspectorName) then
+  begin
+    DoShowInspector(false);
+    AForm:=ObjectInspector1;
   end;
   if (AForm<>nil) and DoDisableAutoSizing then
     AForm.DisableAutoSizing;
@@ -13450,22 +13471,9 @@ begin
 end;
 
 procedure TMainIDE.DoBringToFrontFormOrInspector(ForceInspector: boolean);
-
-  procedure ShowInspector;
-  begin
-    if ObjectInspector1=nil then exit;
-    IDEWindowCreators.ShowForm(ObjectInspector1,true);
-    if ObjectInspector1.IsVisible then
-    begin
-      ObjectInspector1.FocusGrid;
-      if FDisplayState <> high(TDisplayState) then
-        FDisplayState:= Succ(FDisplayState);
-    end;
-  end;
-
 begin
   if ForceInspector then begin
-    ShowInspector;
+    DoShowInspector(true);
     exit;
   end;
   case FDisplayState of
@@ -13477,7 +13485,7 @@ begin
       DoShowSourceOfActiveDesignerForm;
 
     else
-      ShowInspector;
+      DoShowInspector(true);
   end;
 end;
 
