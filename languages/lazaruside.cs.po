@@ -3588,7 +3588,7 @@ msgstr "Neplatné jméno třídy"
 
 #: lazarusidestrconsts.lisa2pinvalidcycle
 msgid "Invalid Cycle"
-msgstr ""
+msgstr "Neplatný cykl"
 
 #: lazarusidestrconsts.lisa2pinvalidfile
 msgid "Invalid file"
@@ -4960,7 +4960,7 @@ msgstr "Vyberte jméno pro novou komponentu"
 
 #: lazarusidestrconsts.lischooseanfpcmessagefile
 msgid "Choose an FPC message file"
-msgstr ""
+msgstr "Vyberte soubor FPC zpráv"
 
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a pascal file for indentation examples"
@@ -6568,11 +6568,11 @@ msgstr "Vlastní program%sFree Pascal program."
 
 #: lazarusidestrconsts.liscycledetected
 msgid "Cycle detected"
-msgstr ""
+msgstr "Detekován cykl"
 
 #: lazarusidestrconsts.liscycleinmacros
 msgid "Cycle in macros"
-msgstr ""
+msgstr "Cykl v makrech"
 
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
@@ -7592,7 +7592,7 @@ msgstr "Povolit makra"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = replace whole identifier, Disable = replace prefix"
-msgstr ""
+msgstr "Povolit = nahrazení celého identifikátoru, Zakázat = nahrazení prefixu"
 
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
@@ -8268,7 +8268,7 @@ msgstr "fpcmake selhal"
 
 #: lazarusidestrconsts.lisfpcmessagefile
 msgid "FPC message file"
-msgstr ""
+msgstr "Soubor FPC zpráv"
 
 #: lazarusidestrconsts.lisfpcomponents
 msgctxt "lazarusidestrconsts.lisfpcomponents"
@@ -9001,7 +9001,7 @@ msgstr "Neplatný název souboru Překladače"
 
 #: lazarusidestrconsts.lisinvalidcycle
 msgid "Invalid cycle"
-msgstr ""
+msgstr "Neplatný cykl"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -9093,7 +9093,7 @@ msgstr "%s%s%s je chybné jméno projektu.%sProsím vyberte jiné (např. projec
 
 #: lazarusidestrconsts.lisisathiscycledependencyisnotallowed
 msgid "%s is a %s.%sThis cycle dependency is not allowed."
-msgstr ""
+msgstr "%s je %s.%sTato kruhová závislost není povolena."
 
 #: lazarusidestrconsts.lisisddirectorynotfound
 msgid "directory not found"
@@ -11916,7 +11916,7 @@ msgstr "Otevřít projekt %s?"
 
 #: lazarusidestrconsts.lisopenxml
 msgid "Open XML"
-msgstr ""
+msgstr "Otevřít XML"
 
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
@@ -12246,7 +12246,7 @@ msgstr "Odstranit závislost %s%s%s%sz balíčku %s%s%s?"
 
 #: lazarusidestrconsts.lispckeditremovedfiles
 msgid "Removed Files"
-msgstr ""
+msgstr "Odstraněné soubory"
 
 #: lazarusidestrconsts.lispckeditremovedrequiredpackages
 msgctxt "lazarusidestrconsts.lispckeditremovedrequiredpackages"
@@ -12725,7 +12725,7 @@ msgstr "Překládání balíčku %s"
 
 #: lazarusidestrconsts.lispkgmangcycleinpackagedependencies
 msgid "Cycle in package dependencies"
-msgstr ""
+msgstr "Cykl v závislostech balíčku"
 
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"
@@ -13026,7 +13026,7 @@ msgstr "Dvě jednotky mají stejné jméno:%s%s1. %s%s%s z %s%s2. %s%s%s z %s%s%
 
 #: lazarusidestrconsts.lispkgmangthereisacycleintherequiredpackages
 msgid "There is a cycle in the required packages. See package graph."
-msgstr ""
+msgstr "Ve vyžadovaných balíčcích se vyskytuje cykl. Viz graf balíčku."
 
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenameasapackage
 msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
@@ -13903,7 +13903,7 @@ msgstr "Opravit neznámé vlastnosti a typy"
 
 #: lazarusidestrconsts.lisreplacewholeidentifier
 msgid "Replace whole identifier"
-msgstr ""
+msgstr "Nahradit celý identifikátor"
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."
@@ -15104,7 +15104,7 @@ msgstr "Tento příkaz nelze vyjmout.%sProsím, vyberte nějaký kód pro vyjmut
 
 #: lazarusidestrconsts.listhiswillcreateacycle
 msgid "This will create a cycle."
-msgstr ""
+msgstr "Toto vytvoří cykl."
 
 #: lazarusidestrconsts.listhreads
 msgctxt "lazarusidestrconsts.listhreads"
@@ -15380,15 +15380,15 @@ msgstr "Nelze přidat nastavení"
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethepackagehasalread
 msgid "Unable to add the dependency %s, because the package %s has already a dependency %s"
-msgstr ""
+msgstr "Nelze přidat závislost %s, neboť balíček %s má již závislost %s"
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethepackagehasalread2
 msgid "Unable to add the dependency %s, because the package %s has already a dependency to %s"
-msgstr ""
+msgstr "Nelze přidat závislost %s, neboť balíček %s již závisí na %s"
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethiswouldcreateacyc
 msgid "Unable to add the dependency %s, because this would create a cycle. Dependency %s"
-msgstr ""
+msgstr "Nelze přidat závislost %s, protože by došlo k vytvoření cyklu. Závislost %s"
 
 #: lazarusidestrconsts.lisunabletoaddtoprojectbecausethereisalreadyaunitwith
 msgid "Unable to add %s to project, because there is already a unit with the same name in the Project."
@@ -15584,7 +15584,7 @@ msgstr "Nelze přečíst soubor %s%s%s."
 
 #: lazarusidestrconsts.lisunabletoreadlpi
 msgid "Unable to read lpi"
-msgstr ""
+msgstr "Nelze číst lpi"
 
 #: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
 msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile"
@@ -15818,7 +15818,7 @@ msgstr "Spouštím aplikaci"
 
 #: lazarusidestrconsts.lisusemessagefile
 msgid "Use message file:"
-msgstr ""
+msgstr "Použít soubor zpráv:"
 
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"
