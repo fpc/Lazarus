@@ -472,7 +472,6 @@ type
     DoubleBuffer: PGdkPixmap;
     CursorPos: integer;               // needed for delayed SetSelStart
     ControlCursor: HCursor;           // current widget cursor
-    DefaultCursor: HCursor;           // default widget cursor
     Flags: TWidgetInfoFlags;
     ChangeLock: Integer;              // lock events
     PaintDepth: integer;              // increased/decreased by Begin/EndPaint

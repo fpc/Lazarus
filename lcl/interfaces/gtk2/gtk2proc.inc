@@ -3918,7 +3918,6 @@ begin
     New(Result);
     FillChar(Result^, SizeOf(Result^), 0);
     gtk_object_set_data(AWidget, 'widgetinfo', Result);
-    Result^.DefaultCursor := HCursor(-1);
   end;
 end;
 

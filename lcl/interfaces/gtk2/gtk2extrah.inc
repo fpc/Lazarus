@@ -228,6 +228,7 @@ function gdk_screen_is_composited(screen: PGdkScreen): gboolean; cdecl; external
 var
   gtk_window_set_opacity: procedure(window: PGtkWindow; opacity: gdouble); cdecl;
   g_object_ref_sink: function(anObject: PGObject): gpointer; cdecl;
+  gdk_window_get_cursor: function(window: PGdkWindow): PGdkCursor; cdecl;
 
 {$ifdef ver2_2}
 {$ifdef darwin}

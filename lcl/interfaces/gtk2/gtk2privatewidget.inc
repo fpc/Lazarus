@@ -29,14 +29,9 @@ begin
   // always recurse windows which do not accept controls.
   // this way we will catch all widgets with double windows
   if not (csAcceptsControls in TControl(AInfo^.LCLObject).ControlStyle) then
-    SetWindowCursor(Window, AInfo^.ControlCursor, True)
+    SetWindowCursor(Window, AInfo^.ControlCursor, False, True)
   else
-    SetCursorForWindowsWithInfo(Window, AInfo);
-end;
-
-class procedure TGtkPrivateWidget.SetDefaultCursor(AInfo: PWidgetInfo);
-begin
-  AInfo^.DefaultCursor := Screen.Cursors[crDefault];
+    SetCursorForWindowsWithInfo(Window, AInfo, True);
 end;
 
 class procedure TGtkPrivateWidget.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);
@@ -70,16 +65,11 @@ begin
   Widget := AInfo^.CoreWidget;
   Window := PGTkPaned(Widget)^.handle;
   if Window = nil then Exit;
-  SetWindowCursor(Window, AInfo^.ControlCursor, False);
+  SetWindowCursor(Window, AInfo^.ControlCursor, False, True);
 end;
 
 
 { TGtkPrivateEntry }
-
-class procedure TGtkPrivateEntry.SetDefaultCursor(AInfo: PWidgetInfo);
-begin
-  AInfo^.DefaultCursor := Screen.Cursors[crIBeam];
-end;
 
 class procedure TGtk2PrivateButton.UpdateCursor(AInfo: PWidgetInfo);
 var
@@ -90,7 +80,7 @@ begin
   if (Widget = nil) or not GTK_IS_BUTTON(Widget) then Exit;
   Window := PGtkButton(Widget)^.event_window;
   if Window = nil then Exit;
-  SetWindowCursor(Window, AInfo^.ControlCursor, False);
+  SetWindowCursor(Window, AInfo^.ControlCursor, False, True);
 end;
 
 class procedure TGtk2PrivateNotebook.UpdateCursor(AInfo: PWidgetInfo);
@@ -110,9 +100,9 @@ var
     // always recurse windows which do not accept controls.
     // this way we will catch all widgets with double windows
     if not (csAcceptsControls in TControl(AInfo^.LCLObject).ControlStyle) then
-      SetWindowCursor(Window, AInfo^.ControlCursor, True)
+      SetWindowCursor(Window, AInfo^.ControlCursor, True, True)
     else
-      SetCursorForWindowsWithInfo(Window, AInfo);
+      SetCursorForWindowsWithInfo(Window, AInfo, True);
   end;
 
 begin
@@ -124,7 +114,7 @@ begin
   Widget := AInfo^.CoreWidget;
   Window := PGTkNotebook(Widget)^.event_window;
   if Window <> nil then
-    SetWindowCursor(Window, AInfo^.ControlCursor, False);
+    SetWindowCursor(Window, AInfo^.ControlCursor, False, True);
   // do not know how to set cursor under tabs
 end;
 

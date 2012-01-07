@@ -7932,97 +7932,13 @@ end;
   Returns : current cursor
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.SetCursor(ACursor: HCURSOR): HCURSOR;
-var
-  DefaultCursor: HCursor;
-
-
-  procedure SetGlobalCursor;
-  var
-    TopList, List: PGList;
-  begin
-    TopList := gdk_window_get_toplevels;
-    List := TopList;
-    while List <> nil do
-    begin
-      if (List^.Data <> nil) then
-        SetWindowCursor(PGDKWindow(List^.Data), ACursor, True);
-      list := g_list_next(list);
-    end;
-
-    if TopList <> nil then
-      g_list_free(TopList);
-  end;
-
-  procedure ResetGlobalCursor;
-    procedure SetToWindow(AWindow: PGDKWindow);
-    var
-      data: gpointer;
-      Widget: PGTKWidget absolute data;
-      WidgetInfo: PWidgetInfo;
-      WSPrivate: TWSPrivateClass;
-    begin
-      gdk_window_get_user_data(AWindow, @data);
-
-      if GtkWidgetIsA(Widget, gtk_widget_get_type)
-      then begin
-        WidgetInfo := GetWidgetInfo(Widget);
-        if  (WidgetInfo <> nil)
-        and (WidgetInfo^.LCLObject <> nil)
-        and (WidgetInfo^.LCLObject is TWinControl)
-        then begin
-          WSPrivate := TWinControl(WidgetInfo^.LCLObject).WidgetSetClass.WSPrivate;
-          TGtkPrivateWidgetClass(WSPrivate).UpdateCursor(WidgetInfo);
-          Exit;
-        end;
-      end;
-      
-      // no lcl cursor, so reset to default
-      //gdk_window_set_cursor(AWindow, PGdkCursor(DefaultCursor));
-      SetWindowCursor(AWindow, DefaultCursor, True);
-    end;
-
-    procedure Traverse(AWindow: PGDKWindow);
-    var
-      ChildWindows, ListEntry: PGList;
-    begin
-      SetToWindow(AWindow);
-
-      ChildWindows := gdk_window_get_children(AWindow);
-
-      ListEntry := ChildWindows;
-      while ListEntry <> nil do
-      begin
-        Traverse(PGdkWindow(ListEntry^.Data));
-        ListEntry := ListEntry^.Next;
-      end;
-      g_list_free(ChildWindows);
-    end;
-  var
-    TopList, List: PGList;
-  begin
-    TopList := gdk_window_get_toplevels;
-    List := TopList;
-    while List <> nil do
-    begin
-      if (List^.Data <> nil) then
-        Traverse(PGDKWindow(List^.Data));
-      list := g_list_next(list);
-    end;
-
-    if TopList <> nil then
-      g_list_free(TopList);
-  end;
-
-
 begin
   // set global gtk cursor
   Result := FGlobalCursor;
   if ACursor = FGlobalCursor then Exit;
-  
-  DefaultCursor := Screen.Cursors[crDefault];
-  if ACursor <> DefaultCursor
-  then SetGlobalCursor
-  else ResetGlobalCursor;
+  if ACursor = Screen.Cursors[crDefault]
+  then SetGlobalCursor(0)
+  else SetGlobalCursor(ACursor);
   FGlobalCursor := ACursor;
 end;
 

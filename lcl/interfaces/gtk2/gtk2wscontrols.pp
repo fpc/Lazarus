@@ -592,22 +592,21 @@ end;
 class procedure TGtk2WSWinControl.SetCursor(const AWinControl: TWinControl; const ACursor: HCursor);
 var
   WidgetInfo: PWidgetInfo;
+  NewCursor: HCURSOR;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetCursor')
   then Exit;
 
-  WidgetInfo := GetWidgetInfo(Pointer(AWinControl.Handle));
-  if (WidgetInfo^.ControlCursor = ACursor) and
-     (WidgetInfo^.DefaultCursor <> HCursor(-1)) then Exit;
   if ACursor <> Screen.Cursors[crDefault] then
-    WidgetInfo^.ControlCursor := ACursor
+    NewCursor := ACursor
   else
+    NewCursor := 0;
+  WidgetInfo := GetWidgetInfo(Pointer(AWinControl.Handle));
+  if WidgetInfo^.ControlCursor <> NewCursor then
   begin
-    if WidgetInfo^.DefaultCursor = HCursor(-1) then
-      TGtkPrivateWidgetClass(AWinControl.WidgetSetClass.WSPrivate).SetDefaultCursor(WidgetInfo);
-    WidgetInfo^.ControlCursor := WidgetInfo^.DefaultCursor;
+    WidgetInfo^.ControlCursor := NewCursor;
+    TGtkPrivateWidgetClass(AWinControl.WidgetSetClass.WSPrivate).UpdateCursor(WidgetInfo);
   end;
-  TGtkPrivateWidgetClass(AWinControl.WidgetSetClass.WSPrivate).UpdateCursor(WidgetInfo);
 end;
 
 class procedure TGtk2WSWinControl.SetFont(const AWinControl: TWinControl;

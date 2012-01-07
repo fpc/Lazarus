@@ -56,6 +56,7 @@ end;
 var
   gtkhandle: tlibhandle;
   glibhandle: tlibhandle;
+  gdklibhandle: tlibhandle;
   libIter: Integer;
 
 initialization
@@ -77,9 +78,14 @@ initialization
       break;
     end;
   end;
+  gdklibhandle := LoadLibrary(gdklib);
+  if gdklibhandle <> 0
+  then pointer(gdk_window_get_cursor):=GetProcAddress(gdklibhandle,'gdk_window_get_cursor');
 
 finalization
   if gtkhandle <> 0 then
     FreeLibrary(gtkhandle);
   if glibhandle <> 0 then
     FreeLibrary(glibhandle);
+  if gdklibhandle <> 0 then
+    FreeLibrary(gdklibhandle);
