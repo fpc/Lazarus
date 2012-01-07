@@ -583,6 +583,7 @@ type
     constructor Create; override;
     destructor Destroy; override;
     procedure AttachEvents; override;
+    procedure DetachEvents; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
 
     function Clipboard: QClipboardH; inline;
@@ -3827,6 +3828,8 @@ begin
     FSelTimer.Free;
   {$ENDIF}
   FClipBoardFormats.Free;
+  // This is global QApplication object so do NOT destroy it !!
+  TheObject := nil;
   inherited Destroy;
 end;
 
@@ -3840,6 +3843,19 @@ begin
   QClipboard_hook_hook_selectionChanged(FClipSelectionChangedHook,
     @signalSelectionChanged);
   {$ENDIF}
+end;
+
+procedure TQtClipboard.DetachEvents;
+begin
+  if Assigned(FClipDataChangedHook) then
+    QClipboard_hook_destroy(FClipDataChangedHook);
+  FClipDataChangedHook := nil;
+  {$IFDEF HASX11}
+  if Assigned(FClipSelectionChangedHook) then
+    QClipboard_hook_destroy(FClipSelectionChangedHook);
+  FClipSelectionChangedHook := nil;
+  {$ENDIF}
+  inherited DetachEvents;
 end;
 
 procedure TQtClipboard.signalDataChanged; cdecl;
