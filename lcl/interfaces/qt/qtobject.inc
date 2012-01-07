@@ -80,11 +80,18 @@ begin
   FLastWFPResult := 0;
 
   inherited Create;
-
-  App := QApplication_Create(@argc, argv);
+  FIsLibraryInstance := QCoreApplication_instance() <> nil;
+  if FIsLibraryInstance then
+    App := QApplicationH(QCoreApplication_instance())
+  else
+    App := QApplication_Create(@argc, argv);
   {$J+}
   QtVersionInt(QtVersionMajor, QtVersionMinor, QtVersionMicro);
   {$J-}
+
+  FAppEvenFilterHook := nil;
+  FAppFocusChangedHook := nil;
+
   QtGDIObjects := TQtGDIObjects.Create;
   InitStockItems;
   QtWidgetSet := Self;
@@ -99,13 +106,14 @@ begin
   {$IFDEF HASX11}
   FMinimizedByPager := False;
   FLastMinimizeEvent := 0;
-  if ((QtVersionMajor = 4) and (QtVersionMinor < 6)) or IsOldKDEInstallation then
-    QtX11InitializePalettes;
+  if not FIsLibraryInstance and
+    ((QtVersionMajor = 4) and (QtVersionMinor < 6)) or IsOldKDEInstallation then
+      QtX11InitializePalettes;
   FWindowManagerName := LowerCase(GetWindowManager);
   {$ENDIF}
   {$IFDEF DARWIN}
   // do not swap meta and ctrl keys, issue #20897
-  if (QtVersionMajor = 4) and (QtVersionMinor > 5) then
+  if not FIsLibraryInstance then (QtVersionMajor = 4) and (QtVersionMinor > 5) then
     QCoreApplication_setAttribute(QtAA_MacDontSwapCtrlAndMeta, True);
   {$ENDIF}
   FGlobalActions := TFPList.Create;
@@ -209,8 +217,8 @@ begin
   // install global event filter
   FAppEvenFilterHook := QObject_hook_create(App);
   QObject_hook_hook_events(FAppEvenFilterHook, @EventFilter);
-  
-  // install focus change slot
+
+    // install focus change slot
 
   FAppFocusChangedHook := QApplication_hook_create(App);
   QApplication_hook_hook_focusChanged(FAppFocusChangedHook, @FocusChanged);
@@ -289,8 +297,9 @@ begin
   // free hooks
   QObject_hook_destroy(FAppEvenFilterHook);
   QApplication_hook_destroy(FAppFocusChangedHook);
-
-  QCoreApplication_quit;
+  // do not quit application if we are library
+  if not FIsLibraryInstance then
+    QCoreApplication_quit;
 end;
 
 procedure TQtWidgetSet.AppMinimize;

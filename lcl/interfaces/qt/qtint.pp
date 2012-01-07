@@ -57,6 +57,7 @@ type
   TQtWidgetSet = Class(TWidgetSet)
   private
     App: QApplicationH;
+    FIsLibraryInstance: Boolean;
 
     // cache for WindowFromPoint
     FLastWFPMousePos: TPoint;
@@ -185,6 +186,10 @@ type
     procedure FreeSysColorBrushes(const AInvalidateHandlesOnly: Boolean = False);
 
     property DragImageLock: Boolean read FDragImageLock write FDragImageLock;
+
+    {do not create new QApplication object if we are called from library }
+    property IsLibraryInstance: Boolean read FIsLibraryInstance;
+
     property OverrideCursor: TObject read FOverrideCursor write SetOverrideCursor;
     {$IFDEF HASX11}
     property WindowManagerName: String read FWindowManagerName;
