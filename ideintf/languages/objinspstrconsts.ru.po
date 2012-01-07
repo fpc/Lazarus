@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-07-31 16:05+0300\n"
+"PO-Revision-Date: 2012-01-07 17:18+0400\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -264,37 +264,31 @@ msgid "Set value"
 msgstr "Установить значение"
 
 #: objinspstrconsts.nbcesaddpage
-#, fuzzy
 #| msgid "Add page"
 msgid "Add Page"
 msgstr "Добавить страницу"
 
 #: objinspstrconsts.nbcesdeletepage
-#, fuzzy
 #| msgid "Delete page"
 msgid "Delete Page"
 msgstr "Удалить страницу"
 
 #: objinspstrconsts.nbcesinsertpage
-#, fuzzy
 #| msgid "Insert page"
 msgid "Insert Page"
 msgstr "Вставить страницу"
 
 #: objinspstrconsts.nbcesmovepageleft
-#, fuzzy
 #| msgid "Move page left"
 msgid "Move Page Left"
-msgstr "Переместить страницу налево"
+msgstr "Переместить страницу влево"
 
 #: objinspstrconsts.nbcesmovepageright
-#, fuzzy
 #| msgid "Move page right"
 msgid "Move Page Right"
-msgstr "Переместить страницу направо"
+msgstr "Переместить страницу вправо"
 
 #: objinspstrconsts.nbcesshowpage
-#, fuzzy
 #| msgid "Show page ..."
 msgid "Show Page"
 msgstr "Показать страницу"
@@ -1505,9 +1499,9 @@ msgstr "Вставить вкладку"
 
 #: objinspstrconsts.tccesmovetableft
 msgid "Move tab left"
-msgstr "Переместить вкладку налево"
+msgstr "Переместить вкладку влево"
 
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
-msgstr "Переместить вкладку направо"
+msgstr "Переместить вкладку вправо"
 
