@@ -5,19 +5,13 @@
     <Name Value="ide"/>
     <AutoUpdate Value="Manually"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <IncludeFiles Value="include;include\$(TargetOS)"/>
         <OtherUnitFiles Value="frames;$(LazarusDir)\converter;$(LazarusDir)\debugger;$(LazarusDir)\debugger\frames;$(LazarusDir)\packager;$(LazarusDir)\designer;..\packager\frames"/>
         <UnitOutputDirectory Value="$(LazarusDir)\units\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Linking>
-        <Debugging>
-          <GenerateDebugInfo Value="True"/>
-          <DebugInfoType Value="dsAuto"/>
-        </Debugging>
-      </Linking>
       <Other>
         <CompilerMessages>
           <UseMsgFile Value="True"/>
@@ -26,7 +20,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="427">
+    <Files Count="421">
       <Item1>
         <Filename Value="aboutfrm.lfm"/>
         <Type Value="LFM"/>
@@ -727,1208 +721,1181 @@
         <UnitName Value="desktop_options"/>
       </Item153>
       <Item154>
-        <Filename Value="frames\divider_group_frame.lfm"/>
+        <Filename Value="frames\editor_codefolding_options.lfm"/>
         <Type Value="LFM"/>
       </Item154>
       <Item155>
-        <Filename Value="frames\divider_group_frame.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="divider_group_frame"/>
-      </Item155>
-      <Item156>
-        <Filename Value="frames\editor_codefolding_global_options.lfm"/>
-        <Type Value="LFM"/>
-      </Item156>
-      <Item157>
-        <Filename Value="frames\editor_codefolding_global_options.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="editor_codefolding_global_options"/>
-      </Item157>
-      <Item158>
-        <Filename Value="frames\editor_codefolding_options.lfm"/>
-        <Type Value="LFM"/>
-      </Item158>
-      <Item159>
         <Filename Value="frames\editor_codefolding_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="editor_codefolding_options"/>
-      </Item159>
-      <Item160>
+      </Item155>
+      <Item156>
         <Filename Value="frames\editor_codetools_options.lfm"/>
         <Type Value="LFM"/>
-      </Item160>
-      <Item161>
+      </Item156>
+      <Item157>
         <Filename Value="frames\editor_codetools_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="editor_codetools_options"/>
-      </Item161>
-      <Item162>
+      </Item157>
+      <Item158>
         <Filename Value="frames\editor_color_options.lfm"/>
         <Type Value="LFM"/>
-      </Item162>
-      <Item163>
+      </Item158>
+      <Item159>
         <Filename Value="frames\editor_color_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="editor_color_options"/>
-      </Item163>
-      <Item164>
+      </Item159>
+      <Item160>
         <Filename Value="frames\editor_display_options.lfm"/>
         <Type Value="LFM"/>
-      </Item164>
-      <Item165>
+      </Item160>
+      <Item161>
         <Filename Value="frames\editor_display_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="editor_display_options"/>
-      </Item165>
-      <Item166>
+      </Item161>
+      <Item162>
         <Filename Value="frames\editor_dividerdraw_options.lfm"/>
         <Type Value="LFM"/>
-      </Item166>
-      <Item167>
+      </Item162>
+      <Item163>
         <Filename Value="frames\editor_dividerdraw_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="editor_dividerdraw_options"/>
-      </Item167>
-      <Item168>
+      </Item163>
+      <Item164>
         <Filename Value="frames\editor_general_misc_options.lfm"/>
         <Type Value="LFM"/>
-      </Item168>
-      <Item169>
+      </Item164>
+      <Item165>
         <Filename Value="frames\editor_general_misc_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="editor_general_misc_options"/>
-      </Item169>
-      <Item170>
+      </Item165>
+      <Item166>
         <Filename Value="frames\editor_general_options.lfm"/>
         <Type Value="LFM"/>
-      </Item170>
-      <Item171>
+      </Item166>
+      <Item167>
         <Filename Value="frames\editor_general_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="editor_general_options"/>
-      </Item171>
-      <Item172>
+      </Item167>
+      <Item168>
         <Filename Value="frames\editor_keymapping_options.lfm"/>
         <Type Value="LFM"/>
-      </Item172>
-      <Item173>
+      </Item168>
+      <Item169>
         <Filename Value="frames\editor_keymapping_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="editor_keymapping_options"/>
-      </Item173>
-      <Item174>
+      </Item169>
+      <Item170>
         <Filename Value="frames\editor_mouseaction_options.lfm"/>
         <Type Value="LFM"/>
-      </Item174>
-      <Item175>
+      </Item170>
+      <Item171>
         <Filename Value="frames\editor_mouseaction_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="editor_mouseaction_options"/>
-      </Item175>
-      <Item176>
+      </Item171>
+      <Item172>
         <Filename Value="frames\editor_mouseaction_options_advanced.lfm"/>
         <Type Value="LFM"/>
-      </Item176>
-      <Item177>
+      </Item172>
+      <Item173>
         <Filename Value="frames\editor_mouseaction_options_advanced.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="editor_mouseaction_options_advanced"/>
-      </Item177>
-      <Item178>
+      </Item173>
+      <Item174>
         <Filename Value="frames\editor_multiwindow_options.lfm"/>
         <Type Value="LFM"/>
-      </Item178>
-      <Item179>
+      </Item174>
+      <Item175>
         <Filename Value="frames\editor_multiwindow_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="editor_multiwindow_options"/>
-      </Item179>
-      <Item180>
+      </Item175>
+      <Item176>
         <Filename Value="frames\files_options.lfm"/>
         <Type Value="LFM"/>
-      </Item180>
-      <Item181>
+      </Item176>
+      <Item177>
         <Filename Value="frames\files_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="files_options"/>
-      </Item181>
-      <Item182>
+      </Item177>
+      <Item178>
         <Filename Value="frames\formed_options.lfm"/>
         <Type Value="LFM"/>
-      </Item182>
-      <Item183>
+      </Item178>
+      <Item179>
         <Filename Value="frames\formed_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="formed_options"/>
-      </Item183>
-      <Item184>
+      </Item179>
+      <Item180>
         <Filename Value="frames\fpdoc_options.lfm"/>
         <Type Value="LFM"/>
-      </Item184>
-      <Item185>
+      </Item180>
+      <Item181>
         <Filename Value="frames\fpdoc_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="fpdoc_options"/>
-      </Item185>
-      <Item186>
+      </Item181>
+      <Item182>
         <Filename Value="frames\help_general_options.lfm"/>
         <Type Value="LFM"/>
-      </Item186>
-      <Item187>
+      </Item182>
+      <Item183>
         <Filename Value="frames\help_general_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="help_general_options"/>
-      </Item187>
-      <Item188>
+      </Item183>
+      <Item184>
         <Filename Value="frames\naming_options.lfm"/>
         <Type Value="LFM"/>
-      </Item188>
-      <Item189>
+      </Item184>
+      <Item185>
         <Filename Value="frames\naming_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="naming_options"/>
-      </Item189>
-      <Item190>
+      </Item185>
+      <Item186>
         <Filename Value="frames\oi_options.lfm"/>
         <Type Value="LFM"/>
-      </Item190>
-      <Item191>
+      </Item186>
+      <Item187>
         <Filename Value="frames\oi_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="OI_options"/>
-      </Item191>
-      <Item192>
+      </Item187>
+      <Item188>
         <Filename Value="frames\project_application_options.lfm"/>
         <Type Value="LFM"/>
-      </Item192>
-      <Item193>
+      </Item188>
+      <Item189>
         <Filename Value="frames\project_application_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="project_application_options"/>
-      </Item193>
-      <Item194>
+      </Item189>
+      <Item190>
         <Filename Value="frames\project_forms_options.lfm"/>
         <Type Value="LFM"/>
-      </Item194>
-      <Item195>
+      </Item190>
+      <Item191>
         <Filename Value="frames\project_forms_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="project_forms_options"/>
-      </Item195>
-      <Item196>
+      </Item191>
+      <Item192>
         <Filename Value="frames\project_i18n_options.lfm"/>
         <Type Value="LFM"/>
-      </Item196>
-      <Item197>
+      </Item192>
+      <Item193>
         <Filename Value="frames\project_i18n_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="project_i18n_options"/>
-      </Item197>
-      <Item198>
+      </Item193>
+      <Item194>
         <Filename Value="frames\project_lazdoc_options.lfm"/>
         <Type Value="LFM"/>
-      </Item198>
-      <Item199>
+      </Item194>
+      <Item195>
         <Filename Value="frames\project_lazdoc_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="project_lazdoc_options"/>
-      </Item199>
-      <Item200>
+      </Item195>
+      <Item196>
         <Filename Value="frames\project_misc_options.lfm"/>
         <Type Value="LFM"/>
-      </Item200>
-      <Item201>
+      </Item196>
+      <Item197>
         <Filename Value="frames\project_misc_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="project_misc_options"/>
-      </Item201>
-      <Item202>
+      </Item197>
+      <Item198>
         <Filename Value="frames\project_save_options.lfm"/>
         <Type Value="LFM"/>
-      </Item202>
-      <Item203>
+      </Item198>
+      <Item199>
         <Filename Value="frames\project_save_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="project_save_options"/>
-      </Item203>
-      <Item204>
+      </Item199>
+      <Item200>
         <Filename Value="frames\project_versioninfo_options.lfm"/>
         <Type Value="LFM"/>
-      </Item204>
-      <Item205>
+      </Item200>
+      <Item201>
         <Filename Value="frames\project_versioninfo_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="project_versioninfo_options"/>
-      </Item205>
-      <Item206>
+      </Item201>
+      <Item202>
         <Filename Value="frames\window_options.lfm"/>
         <Type Value="LFM"/>
-      </Item206>
-      <Item207>
+      </Item202>
+      <Item203>
         <Filename Value="frames\window_options.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="window_options"/>
-      </Item207>
-      <Item208>
+      </Item203>
+      <Item204>
         <Filename Value="frmcustomapplicationoptions.lfm"/>
         <Type Value="LFM"/>
-      </Item208>
-      <Item209>
+      </Item204>
+      <Item205>
         <Filename Value="frmcustomapplicationoptions.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="frmCustomApplicationOptions"/>
-      </Item209>
-      <Item210>
+      </Item205>
+      <Item206>
         <Filename Value="gotofrm.lfm"/>
         <Type Value="LFM"/>
-      </Item210>
-      <Item211>
+      </Item206>
+      <Item207>
         <Filename Value="gotofrm.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="GotoFrm"/>
-      </Item211>
-      <Item212>
+      </Item207>
+      <Item208>
         <Filename Value="helpfpcmessages.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="HelpFPCMessages"/>
-      </Item212>
-      <Item213>
+      </Item208>
+      <Item209>
         <Filename Value="helpoptions.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="HelpOptions"/>
-      </Item213>
-      <Item214>
+      </Item209>
+      <Item210>
         <Filename Value="idecmdline.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="IDECmdLine"/>
-      </Item214>
-      <Item215>
+      </Item210>
+      <Item211>
         <Filename Value="idecontexthelpedit.lfm"/>
         <Type Value="LFM"/>
-      </Item215>
-      <Item216>
+      </Item211>
+      <Item212>
         <Filename Value="idecontexthelpedit.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="IDEContextHelpEdit"/>
-      </Item216>
-      <Item217>
+      </Item212>
+      <Item213>
         <Filename Value="idedefs.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="IDEDefs"/>
-      </Item217>
-      <Item218>
+      </Item213>
+      <Item214>
         <Filename Value="idefpcinfo.lfm"/>
         <Type Value="LFM"/>
-      </Item218>
-      <Item219>
+      </Item214>
+      <Item215>
         <Filename Value="idefpcinfo.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="IDEFPCInfo"/>
-      </Item219>
-      <Item220>
+      </Item215>
+      <Item216>
         <Filename Value="ideoptiondefs.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="IDEOptionDefs"/>
-      </Item220>
-      <Item221>
+      </Item216>
+      <Item217>
         <Filename Value="ideoptionsdlg.lfm"/>
         <Type Value="LFM"/>
-      </Item221>
-      <Item222>
+      </Item217>
+      <Item218>
         <Filename Value="ideoptionsdlg.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="IdeOptionsDlg"/>
-      </Item222>
-      <Item223>
+      </Item218>
+      <Item219>
         <Filename Value="ideprocs.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="IDEProcs"/>
-      </Item223>
-      <Item224>
+      </Item219>
+      <Item220>
         <Filename Value="ideprotocol.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="IDEProtocol"/>
-      </Item224>
-      <Item225>
+      </Item220>
+      <Item221>
         <Filename Value="idetranslations.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="IDETranslations"/>
-      </Item225>
-      <Item226>
+      </Item221>
+      <Item222>
         <Filename Value="idewindowhelp.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="IDEWindowHelp"/>
-      </Item226>
-      <Item227>
+      </Item222>
+      <Item223>
         <Filename Value="imexportcompileropts.lfm"/>
         <Type Value="LFM"/>
-      </Item227>
-      <Item228>
+      </Item223>
+      <Item224>
         <Filename Value="imexportcompileropts.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="ImExportCompilerOpts"/>
+      </Item224>
+      <Item225>
+        <Filename Value="include\darwin\lazconf.inc"/>
+        <Type Value="Include"/>
+      </Item225>
+      <Item226>
+        <Filename Value="include\freebsd\lazconf.inc"/>
+        <Type Value="Include"/>
+      </Item226>
+      <Item227>
+        <Filename Value="include\haiku\lazconf.inc"/>
+        <Type Value="Include"/>
+      </Item227>
+      <Item228>
+        <Filename Value="include\ide.inc"/>
+        <Type Value="Include"/>
       </Item228>
       <Item229>
-        <Filename Value="include\darwin\lazconf.inc"/>
+        <Filename Value="include\linux\lazconf.inc"/>
         <Type Value="Include"/>
       </Item229>
       <Item230>
-        <Filename Value="include\freebsd\lazconf.inc"/>
+        <Filename Value="include\netbsd\lazconf.inc"/>
         <Type Value="Include"/>
       </Item230>
       <Item231>
-        <Filename Value="include\haiku\lazconf.inc"/>
+        <Filename Value="include\solaris\lazconf.inc"/>
         <Type Value="Include"/>
       </Item231>
       <Item232>
-        <Filename Value="include\ide.inc"/>
+        <Filename Value="include\unix\lazbaseconf.inc"/>
         <Type Value="Include"/>
       </Item232>
       <Item233>
-        <Filename Value="include\linux\lazconf.inc"/>
+        <Filename Value="include\win\lazbaseconf.inc"/>
         <Type Value="Include"/>
       </Item233>
       <Item234>
-        <Filename Value="include\netbsd\lazconf.inc"/>
+        <Filename Value="include\win32\lazconf.inc"/>
         <Type Value="Include"/>
       </Item234>
       <Item235>
-        <Filename Value="include\solaris\lazconf.inc"/>
+        <Filename Value="include\win64\lazconf.inc"/>
         <Type Value="Include"/>
       </Item235>
       <Item236>
-        <Filename Value="include\unix\lazbaseconf.inc"/>
-        <Type Value="Include"/>
-      </Item236>
-      <Item237>
-        <Filename Value="include\win\lazbaseconf.inc"/>
-        <Type Value="Include"/>
-      </Item237>
-      <Item238>
-        <Filename Value="include\win32\lazconf.inc"/>
-        <Type Value="Include"/>
-      </Item238>
-      <Item239>
-        <Filename Value="include\win64\lazconf.inc"/>
-        <Type Value="Include"/>
-      </Item239>
-      <Item240>
         <Filename Value="infobuild.lfm"/>
         <Type Value="LFM"/>
-      </Item240>
-      <Item241>
+      </Item236>
+      <Item237>
         <Filename Value="infobuild.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="InfoBuild"/>
-      </Item241>
-      <Item242>
+      </Item237>
+      <Item238>
         <Filename Value="initialsetupdlgs.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="InitialSetupDlgs"/>
-      </Item242>
-      <Item243>
+      </Item238>
+      <Item239>
         <Filename Value="inputfiledialog.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="InputFileDialog"/>
-      </Item243>
-      <Item244>
+      </Item239>
+      <Item240>
         <Filename Value="inputhistory.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="InputHistory"/>
-      </Item244>
-      <Item245>
+      </Item240>
+      <Item241>
         <Filename Value="invertassigntool.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="InvertAssignTool"/>
-      </Item245>
-      <Item246>
+      </Item241>
+      <Item242>
         <Filename Value="jumphistoryview.lfm"/>
         <Type Value="LFM"/>
-      </Item246>
-      <Item247>
+      </Item242>
+      <Item243>
         <Filename Value="jumphistoryview.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="JumpHistoryView"/>
-      </Item247>
-      <Item248>
+      </Item243>
+      <Item244>
         <Filename Value="keymapping.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="KeyMapping"/>
-      </Item248>
-      <Item249>
+      </Item244>
+      <Item245>
         <Filename Value="keymapschemedlg.lfm"/>
         <Type Value="LFM"/>
-      </Item249>
-      <Item250>
+      </Item245>
+      <Item246>
         <Filename Value="keymapschemedlg.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="KeymapSchemeDlg"/>
-      </Item250>
-      <Item251>
+      </Item246>
+      <Item247>
         <Filename Value="keymapshortcutdlg.lfm"/>
         <Type Value="LFM"/>
-      </Item251>
-      <Item252>
+      </Item247>
+      <Item248>
         <Filename Value="keymapshortcutdlg.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="KeyMapShortCutDlg"/>
-      </Item252>
-      <Item253>
+      </Item248>
+      <Item249>
         <Filename Value="lazarus.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Lazarus"/>
-      </Item253>
-      <Item254>
+      </Item249>
+      <Item250>
         <Filename Value="lazarusidestrconsts.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="LazarusIDEStrConsts"/>
-      </Item254>
-      <Item255>
+      </Item250>
+      <Item251>
         <Filename Value="lazarusmanager.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="LazarusManager"/>
-      </Item255>
-      <Item256>
+      </Item251>
+      <Item252>
         <Filename Value="lazconf.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="LazConf"/>
-      </Item256>
-      <Item257>
+      </Item252>
+      <Item253>
         <Filename Value="macropromptdlg.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="MacroPromptDlg"/>
-      </Item257>
-      <Item258>
+      </Item253>
+      <Item254>
         <Filename Value="main.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Main"/>
-      </Item258>
-      <Item259>
+      </Item254>
+      <Item255>
         <Filename Value="mainbar.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="MainBar"/>
-      </Item259>
-      <Item260>
+      </Item255>
+      <Item256>
         <Filename Value="mainbase.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="MainBase"/>
-      </Item260>
-      <Item261>
+      </Item256>
+      <Item257>
         <Filename Value="mainintf.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="MainIntf"/>
-      </Item261>
-      <Item262>
+      </Item257>
+      <Item258>
         <Filename Value="makeresstrdlg.lfm"/>
         <Type Value="LFM"/>
-      </Item262>
-      <Item263>
+      </Item258>
+      <Item259>
         <Filename Value="makeresstrdlg.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="MakeResStrDlg"/>
-      </Item263>
-      <Item264>
+      </Item259>
+      <Item260>
         <Filename Value="miscoptions.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="MiscOptions"/>
-      </Item264>
-      <Item265>
+      </Item260>
+      <Item261>
         <Filename Value="mouseactiondialog.lfm"/>
         <Type Value="LFM"/>
-      </Item265>
-      <Item266>
+      </Item261>
+      <Item262>
         <Filename Value="mouseactiondialog.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="MouseActionDialog"/>
-      </Item266>
-      <Item267>
+      </Item262>
+      <Item263>
         <Filename Value="msgquickfixes.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="MsgQuickFixes"/>
-      </Item267>
-      <Item268>
+      </Item263>
+      <Item264>
         <Filename Value="msgview.lfm"/>
         <Type Value="LFM"/>
-      </Item268>
-      <Item269>
+      </Item264>
+      <Item265>
         <Filename Value="msgview.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="MsgView"/>
-      </Item269>
-      <Item270>
+      </Item265>
+      <Item266>
         <Filename Value="msgvieweditor.lfm"/>
         <Type Value="LFM"/>
-      </Item270>
-      <Item271>
+      </Item266>
+      <Item267>
         <Filename Value="msgvieweditor.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="MsgViewEditor"/>
-      </Item271>
-      <Item272>
+      </Item267>
+      <Item268>
         <Filename Value="multireplacedlg.lfm"/>
         <Type Value="LFM"/>
-      </Item272>
-      <Item273>
+      </Item268>
+      <Item269>
         <Filename Value="multireplacedlg.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="MultiReplaceDlg"/>
-      </Item273>
-      <Item274>
+      </Item269>
+      <Item270>
         <Filename Value="newdialog.lfm"/>
         <Type Value="LFM"/>
-      </Item274>
-      <Item275>
+      </Item270>
+      <Item271>
         <Filename Value="newdialog.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="NewDialog"/>
-      </Item275>
-      <Item276>
+      </Item271>
+      <Item272>
         <Filename Value="newprojectdlg.lfm"/>
         <Type Value="LFM"/>
-      </Item276>
-      <Item277>
+      </Item272>
+      <Item273>
         <Filename Value="newprojectdlg.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="NewProjectDlg"/>
-      </Item277>
-      <Item278>
+      </Item273>
+      <Item274>
         <Filename Value="objectlists.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="ObjectLists"/>
-      </Item278>
-      <Item279>
+      </Item274>
+      <Item275>
         <Filename Value="outputfilter.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="OutputFilter"/>
-      </Item279>
-      <Item280>
+      </Item275>
+      <Item276>
         <Filename Value="patheditordlg.lfm"/>
         <Type Value="LFM"/>
-      </Item280>
-      <Item281>
+      </Item276>
+      <Item277>
         <Filename Value="patheditordlg.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="PathEditorDlg"/>
-      </Item281>
-      <Item282>
+      </Item277>
+      <Item278>
         <Filename Value="procedurelist.lfm"/>
         <Type Value="LFM"/>
-      </Item282>
-      <Item283>
+      </Item278>
+      <Item279>
         <Filename Value="procedurelist.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="ProcedureList"/>
-      </Item283>
-      <Item284>
+      </Item279>
+      <Item280>
         <Filename Value="progressdlg.lfm"/>
         <Type Value="LFM"/>
-      </Item284>
-      <Item285>
+      </Item280>
+      <Item281>
         <Filename Value="progressdlg.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="ProgressDlg"/>
-      </Item285>
-      <Item286>
+      </Item281>
+      <Item282>
         <Filename Value="progresswnd.lfm"/>
         <Type Value="LFM"/>
-      </Item286>
-      <Item287>
+      </Item282>
+      <Item283>
         <Filename Value="progresswnd.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="ProgressWnd"/>
-      </Item287>
-      <Item288>
+      </Item283>
+      <Item284>
         <Filename Value="project.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Project"/>
-      </Item288>
-      <Item289>
+      </Item284>
+      <Item285>
         <Filename Value="projectdefs.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="ProjectDefs"/>
-      </Item289>
-      <Item290>
+      </Item285>
+      <Item286>
         <Filename Value="projecticon.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="ProjectIcon"/>
-      </Item290>
-      <Item291>
+      </Item286>
+      <Item287>
         <Filename Value="projectinspector.lfm"/>
         <Type Value="LFM"/>
-      </Item291>
-      <Item292>
+      </Item287>
+      <Item288>
         <Filename Value="projectinspector.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="ProjectInspector"/>
-      </Item292>
-      <Item293>
+      </Item288>
+      <Item289>
         <Filename Value="projectresources.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="ProjectResources"/>
-      </Item293>
-      <Item294>
+      </Item289>
+      <Item290>
         <Filename Value="projectwizarddlg.lfm"/>
         <Type Value="LFM"/>
-      </Item294>
-      <Item295>
+      </Item290>
+      <Item291>
         <Filename Value="projectwizarddlg.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="ProjectWizardDlg"/>
-      </Item295>
-      <Item296>
+      </Item291>
+      <Item292>
         <Filename Value="publishmodule.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="PublishModule"/>
-      </Item296>
-      <Item297>
+      </Item292>
+      <Item293>
         <Filename Value="publishprojectdlg.lfm"/>
         <Type Value="LFM"/>
-      </Item297>
-      <Item298>
+      </Item293>
+      <Item294>
         <Filename Value="publishprojectdlg.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="PublishProjectDlg"/>
-      </Item298>
-      <Item299>
+      </Item294>
+      <Item295>
         <Filename Value="restrictionbrowser.lfm"/>
         <Type Value="LFM"/>
-      </Item299>
-      <Item300>
+      </Item295>
+      <Item296>
         <Filename Value="restrictionbrowser.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="RestrictionBrowser"/>
-      </Item300>
-      <Item301>
+      </Item296>
+      <Item297>
         <Filename Value="revision.inc"/>
         <Type Value="Include"/>
-      </Item301>
-      <Item302>
+      </Item297>
+      <Item298>
         <Filename Value="runparamsopts.lfm"/>
         <Type Value="LFM"/>
-      </Item302>
-      <Item303>
+      </Item298>
+      <Item299>
         <Filename Value="runparamsopts.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="RunParamsOpts"/>
-      </Item303>
-      <Item304>
+      </Item299>
+      <Item300>
         <Filename Value="searchfrm.lfm"/>
         <Type Value="LFM"/>
-      </Item304>
-      <Item305>
+      </Item300>
+      <Item301>
         <Filename Value="searchfrm.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="SearchFrm"/>
-      </Item305>
-      <Item306>
+      </Item301>
+      <Item302>
         <Filename Value="searchresultview.lfm"/>
         <Type Value="LFM"/>
-      </Item306>
-      <Item307>
+      </Item302>
+      <Item303>
         <Filename Value="searchresultview.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="SearchResultView"/>
-      </Item307>
-      <Item308>
+      </Item303>
+      <Item304>
         <Filename Value="showcompileropts.lfm"/>
         <Type Value="LFM"/>
-      </Item308>
-      <Item309>
+      </Item304>
+      <Item305>
         <Filename Value="showcompileropts.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="ShowCompilerOpts"/>
-      </Item309>
-      <Item310>
+      </Item305>
+      <Item306>
         <Filename Value="showdeletingfilesdlg.lfm"/>
         <Type Value="LFM"/>
-      </Item310>
-      <Item311>
+      </Item306>
+      <Item307>
         <Filename Value="showdeletingfilesdlg.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="ShowDeletingFilesDlg"/>
-      </Item311>
-      <Item312>
+      </Item307>
+      <Item308>
         <Filename Value="sortselectiondlg.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="SortSelectionDlg"/>
-      </Item312>
-      <Item313>
+      </Item308>
+      <Item309>
         <Filename Value="sourceeditor.lfm"/>
         <Type Value="LFM"/>
-      </Item313>
-      <Item314>
+      </Item309>
+      <Item310>
         <Filename Value="sourceeditor.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="SourceEditor"/>
-      </Item314>
-      <Item315>
+      </Item310>
+      <Item311>
         <Filename Value="sourceeditprocs.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="SourceEditProcs"/>
-      </Item315>
-      <Item316>
+      </Item311>
+      <Item312>
         <Filename Value="sourcemarks.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="SourceMarks"/>
-      </Item316>
-      <Item317>
+      </Item312>
+      <Item313>
         <Filename Value="sourcesyneditor.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="SourceSynEditor"/>
-      </Item317>
-      <Item318>
+      </Item313>
+      <Item314>
         <Filename Value="splash.lfm"/>
         <Type Value="LFM"/>
-      </Item318>
-      <Item319>
+      </Item314>
+      <Item315>
         <Filename Value="splash.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Splash"/>
-      </Item319>
-      <Item320>
+      </Item315>
+      <Item316>
         <Filename Value="srcedithintfrm.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="SrcEditHintFrm"/>
-      </Item320>
-      <Item321>
+      </Item316>
+      <Item317>
         <Filename Value="sysvaruseroverridedlg.lfm"/>
         <Type Value="LFM"/>
-      </Item321>
-      <Item322>
+      </Item317>
+      <Item318>
         <Filename Value="sysvaruseroverridedlg.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="SysVarUserOverrideDlg"/>
-      </Item322>
-      <Item323>
+      </Item318>
+      <Item319>
         <Filename Value="transfermacros.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="TransferMacros"/>
-      </Item323>
-      <Item324>
+      </Item319>
+      <Item320>
         <Filename Value="unitdependencies.lfm"/>
         <Type Value="LFM"/>
-      </Item324>
-      <Item325>
+      </Item320>
+      <Item321>
         <Filename Value="unitdependencies.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="UnitDependencies"/>
-      </Item325>
-      <Item326>
+      </Item321>
+      <Item322>
         <Filename Value="unitinfodlg.lfm"/>
         <Type Value="LFM"/>
-      </Item326>
-      <Item327>
+      </Item322>
+      <Item323>
         <Filename Value="unitinfodlg.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="UnitInfoDlg"/>
-      </Item327>
-      <Item328>
+      </Item323>
+      <Item324>
         <Filename Value="unusedunitsdlg.lfm"/>
         <Type Value="LFM"/>
-      </Item328>
-      <Item329>
+      </Item324>
+      <Item325>
         <Filename Value="unusedunitsdlg.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="UnusedUnitsDlg"/>
-      </Item329>
-      <Item330>
+      </Item325>
+      <Item326>
         <Filename Value="version.inc"/>
         <Type Value="Include"/>
-      </Item330>
-      <Item331>
+      </Item326>
+      <Item327>
         <Filename Value="viewunit_dlg.lfm"/>
         <Type Value="LFM"/>
-      </Item331>
-      <Item332>
+      </Item327>
+      <Item328>
         <Filename Value="viewunit_dlg.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="ViewUnit_Dlg"/>
-      </Item332>
-      <Item333>
+      </Item328>
+      <Item329>
         <Filename Value="w32manifest.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="W32Manifest"/>
-      </Item333>
-      <Item334>
+      </Item329>
+      <Item330>
         <Filename Value="w32versioninfo.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="W32VersionInfo"/>
-      </Item334>
-      <Item335>
+      </Item330>
+      <Item331>
         <Filename Value="wordcompletion.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WordCompletion"/>
-      </Item335>
-      <Item336>
+      </Item331>
+      <Item332>
         <Filename Value="..\packager\packagesystem.pas"/>
         <UnitName Value="PackageSystem"/>
+      </Item332>
+      <Item333>
+        <Filename Value="..\packager\adddirtopkgdlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item333>
+      <Item334>
+        <Filename Value="..\packager\adddirtopkgdlg.pas"/>
+        <UnitName Value="AddDirToPkgDlg"/>
+      </Item334>
+      <Item335>
+        <Filename Value="..\packager\addfiletoapackagedlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item335>
+      <Item336>
+        <Filename Value="..\packager\addfiletoapackagedlg.pas"/>
+        <UnitName Value="AddFileToAPackageDlg"/>
       </Item336>
       <Item337>
-        <Filename Value="..\packager\adddirtopkgdlg.lfm"/>
+        <Filename Value="..\packager\addtopackagedlg.lfm"/>
         <Type Value="LFM"/>
       </Item337>
       <Item338>
-        <Filename Value="..\packager\adddirtopkgdlg.pas"/>
-        <UnitName Value="AddDirToPkgDlg"/>
+        <Filename Value="..\packager\addtopackagedlg.pas"/>
+        <UnitName Value="AddToPackageDlg"/>
       </Item338>
       <Item339>
-        <Filename Value="..\packager\addfiletoapackagedlg.lfm"/>
-        <Type Value="LFM"/>
+        <Filename Value="..\packager\basepkgmanager.pas"/>
+        <UnitName Value="BasePkgManager"/>
       </Item339>
       <Item340>
-        <Filename Value="..\packager\addfiletoapackagedlg.pas"/>
-        <UnitName Value="AddFileToAPackageDlg"/>
+        <Filename Value="..\packager\brokendependenciesdlg.pas"/>
+        <UnitName Value="BrokenDependenciesDlg"/>
       </Item340>
       <Item341>
-        <Filename Value="..\packager\addtopackagedlg.lfm"/>
+        <Filename Value="..\packager\confirmpkglistdlg.lfm"/>
         <Type Value="LFM"/>
       </Item341>
       <Item342>
-        <Filename Value="..\packager\addtopackagedlg.pas"/>
-        <UnitName Value="AddToPackageDlg"/>
+        <Filename Value="..\packager\confirmpkglistdlg.pas"/>
+        <UnitName Value="ConfirmPkgListDlg"/>
       </Item342>
       <Item343>
-        <Filename Value="..\packager\basepkgmanager.pas"/>
-        <UnitName Value="BasePkgManager"/>
+        <Filename Value="..\packager\frames\package_description_options.lfm"/>
+        <Type Value="LFM"/>
       </Item343>
       <Item344>
-        <Filename Value="..\packager\brokendependenciesdlg.pas"/>
-        <UnitName Value="BrokenDependenciesDlg"/>
+        <Filename Value="..\packager\frames\package_description_options.pas"/>
+        <UnitName Value="package_description_options"/>
       </Item344>
       <Item345>
-        <Filename Value="..\packager\confirmpkglistdlg.lfm"/>
+        <Filename Value="..\packager\frames\package_i18n_options.lfm"/>
         <Type Value="LFM"/>
       </Item345>
       <Item346>
-        <Filename Value="..\packager\confirmpkglistdlg.pas"/>
-        <UnitName Value="ConfirmPkgListDlg"/>
+        <Filename Value="..\packager\frames\package_i18n_options.pas"/>
+        <UnitName Value="package_i18n_options"/>
       </Item346>
       <Item347>
-        <Filename Value="..\packager\frames\package_description_options.lfm"/>
+        <Filename Value="..\packager\frames\package_integration_options.lfm"/>
         <Type Value="LFM"/>
       </Item347>
       <Item348>
-        <Filename Value="..\packager\frames\package_description_options.pas"/>
-        <UnitName Value="package_description_options"/>
+        <Filename Value="..\packager\frames\package_integration_options.pas"/>
+        <UnitName Value="package_integration_options"/>
       </Item348>
       <Item349>
-        <Filename Value="..\packager\frames\package_i18n_options.lfm"/>
+        <Filename Value="..\packager\frames\package_provides_options.lfm"/>
         <Type Value="LFM"/>
       </Item349>
       <Item350>
-        <Filename Value="..\packager\frames\package_i18n_options.pas"/>
-        <UnitName Value="package_i18n_options"/>
+        <Filename Value="..\packager\frames\package_provides_options.pas"/>
+        <UnitName Value="package_provides_options"/>
       </Item350>
       <Item351>
-        <Filename Value="..\packager\frames\package_integration_options.lfm"/>
+        <Filename Value="..\packager\frames\package_usage_options.lfm"/>
         <Type Value="LFM"/>
       </Item351>
       <Item352>
-        <Filename Value="..\packager\frames\package_integration_options.pas"/>
-        <UnitName Value="package_integration_options"/>
-      </Item352>
-      <Item353>
-        <Filename Value="..\packager\frames\package_provides_options.lfm"/>
-        <Type Value="LFM"/>
-      </Item353>
-      <Item354>
-        <Filename Value="..\packager\frames\package_provides_options.pas"/>
-        <UnitName Value="package_provides_options"/>
-      </Item354>
-      <Item355>
-        <Filename Value="..\packager\frames\package_usage_options.lfm"/>
-        <Type Value="LFM"/>
-      </Item355>
-      <Item356>
         <Filename Value="..\packager\frames\package_usage_options.pas"/>
         <UnitName Value="package_usage_options"/>
-      </Item356>
-      <Item357>
+      </Item352>
+      <Item353>
         <Filename Value="..\packager\globallinks\README.txt"/>
         <Type Value="Text"/>
+      </Item353>
+      <Item354>
+        <Filename Value="..\packager\installpkgsetdlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item354>
+      <Item355>
+        <Filename Value="..\packager\installpkgsetdlg.pas"/>
+        <UnitName Value="InstallPkgSetDlg"/>
+      </Item355>
+      <Item356>
+        <Filename Value="..\packager\missingpkgfilesdlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item356>
+      <Item357>
+        <Filename Value="..\packager\missingpkgfilesdlg.pas"/>
+        <UnitName Value="MissingPkgFilesDlg"/>
       </Item357>
       <Item358>
-        <Filename Value="..\packager\installpkgsetdlg.lfm"/>
+        <Filename Value="..\packager\openinstalledpkgdlg.lfm"/>
         <Type Value="LFM"/>
       </Item358>
       <Item359>
-        <Filename Value="..\packager\installpkgsetdlg.pas"/>
-        <UnitName Value="InstallPkgSetDlg"/>
-      </Item359>
-      <Item360>
-        <Filename Value="..\packager\missingpkgfilesdlg.lfm"/>
-        <Type Value="LFM"/>
-      </Item360>
-      <Item361>
-        <Filename Value="..\packager\missingpkgfilesdlg.pas"/>
-        <UnitName Value="MissingPkgFilesDlg"/>
-      </Item361>
-      <Item362>
-        <Filename Value="..\packager\openinstalledpkgdlg.lfm"/>
-        <Type Value="LFM"/>
-      </Item362>
-      <Item363>
         <Filename Value="..\packager\openinstalledpkgdlg.pas"/>
         <UnitName Value="OpenInstalledPkgDlg"/>
-      </Item363>
-      <Item364>
+      </Item359>
+      <Item360>
         <Filename Value="..\packager\packagedefs.pas"/>
         <UnitName Value="PackageDefs"/>
+      </Item360>
+      <Item361>
+        <Filename Value="..\packager\packageeditor.lfm"/>
+        <Type Value="LFM"/>
+      </Item361>
+      <Item362>
+        <Filename Value="..\packager\packageeditor.pas"/>
+        <UnitName Value="PackageEditor"/>
+      </Item362>
+      <Item363>
+        <Filename Value="..\packager\packagelinks.pas"/>
+        <UnitName Value="PackageLinks"/>
+      </Item363>
+      <Item364>
+        <Filename Value="..\packager\pkgfileslcl.inc"/>
+        <Type Value="Include"/>
       </Item364>
       <Item365>
-        <Filename Value="..\packager\packageeditor.lfm"/>
+        <Filename Value="..\packager\pkggraphexplorer.lfm"/>
         <Type Value="LFM"/>
       </Item365>
       <Item366>
-        <Filename Value="..\packager\packageeditor.pas"/>
-        <UnitName Value="PackageEditor"/>
-      </Item366>
-      <Item367>
-        <Filename Value="..\packager\packagelinks.pas"/>
-        <UnitName Value="PackageLinks"/>
-      </Item367>
-      <Item368>
-        <Filename Value="..\packager\pkgfileslcl.inc"/>
-        <Type Value="Include"/>
-      </Item368>
-      <Item369>
-        <Filename Value="..\packager\pkggraphexplorer.lfm"/>
-        <Type Value="LFM"/>
-      </Item369>
-      <Item370>
         <Filename Value="..\packager\pkggraphexplorer.pas"/>
         <UnitName Value="PkgGraphExplorer"/>
-      </Item370>
-      <Item371>
+      </Item366>
+      <Item367>
         <Filename Value="..\packager\pkglinksdlg.lfm"/>
         <Type Value="LFM"/>
-      </Item371>
-      <Item372>
+      </Item367>
+      <Item368>
         <Filename Value="..\packager\pkglinksdlg.pas"/>
         <UnitName Value="PkgLinksDlg"/>
-      </Item372>
-      <Item373>
+      </Item368>
+      <Item369>
         <Filename Value="..\packager\pkgmanager.pas"/>
         <UnitName Value="PkgManager"/>
+      </Item369>
+      <Item370>
+        <Filename Value="..\packager\pkgvirtualuniteditor.lfm"/>
+        <Type Value="LFM"/>
+      </Item370>
+      <Item371>
+        <Filename Value="..\packager\pkgvirtualuniteditor.pas"/>
+        <UnitName Value="PkgVirtualUnitEditor"/>
+      </Item371>
+      <Item372>
+        <Filename Value="..\packager\ucomponentmanmain.lfm"/>
+        <Type Value="LFM"/>
+      </Item372>
+      <Item373>
+        <Filename Value="..\packager\ucomponentmanmain.pas"/>
+        <UnitName Value="UComponentManMain"/>
       </Item373>
       <Item374>
-        <Filename Value="..\packager\pkgvirtualuniteditor.lfm"/>
+        <Filename Value="..\packager\ufrmaddcomponent.lfm"/>
         <Type Value="LFM"/>
       </Item374>
       <Item375>
-        <Filename Value="..\packager\pkgvirtualuniteditor.pas"/>
-        <UnitName Value="PkgVirtualUnitEditor"/>
+        <Filename Value="..\packager\ufrmaddcomponent.pas"/>
+        <UnitName Value="UFrmAddComponent"/>
       </Item375>
       <Item376>
-        <Filename Value="..\packager\ucomponentmanmain.lfm"/>
+        <Filename Value="..\debugger\assemblerdlg.lfm"/>
         <Type Value="LFM"/>
       </Item376>
       <Item377>
-        <Filename Value="..\packager\ucomponentmanmain.pas"/>
-        <UnitName Value="UComponentManMain"/>
+        <Filename Value="..\debugger\assemblerdlg.pp"/>
+        <UnitName Value="AssemblerDlg"/>
       </Item377>
       <Item378>
-        <Filename Value="..\packager\ufrmaddcomponent.lfm"/>
+        <Filename Value="..\debugger\breakpointsdlg.lfm"/>
         <Type Value="LFM"/>
       </Item378>
       <Item379>
-        <Filename Value="..\packager\ufrmaddcomponent.pas"/>
-        <UnitName Value="UFrmAddComponent"/>
+        <Filename Value="..\debugger\breakpointsdlg.pp"/>
+        <UnitName Value="BreakPointsDlg"/>
       </Item379>
       <Item380>
-        <Filename Value="..\debugger\assemblerdlg.lfm"/>
+        <Filename Value="..\debugger\breakpropertydlg.lfm"/>
         <Type Value="LFM"/>
       </Item380>
       <Item381>
-        <Filename Value="..\debugger\assemblerdlg.pp"/>
-        <UnitName Value="AssemblerDlg"/>
+        <Filename Value="..\debugger\breakpropertydlg.pas"/>
+        <UnitName Value="BreakPropertyDlg"/>
       </Item381>
       <Item382>
-        <Filename Value="..\debugger\breakpointsdlg.lfm"/>
+        <Filename Value="..\debugger\breakpropertydlggroups.lfm"/>
         <Type Value="LFM"/>
       </Item382>
       <Item383>
-        <Filename Value="..\debugger\breakpointsdlg.pp"/>
-        <UnitName Value="BreakPointsDlg"/>
+        <Filename Value="..\debugger\breakpropertydlggroups.pas"/>
+        <UnitName Value="breakpropertydlggroups"/>
       </Item383>
       <Item384>
-        <Filename Value="..\debugger\breakpropertydlg.lfm"/>
+        <Filename Value="..\debugger\callstackdlg.lfm"/>
         <Type Value="LFM"/>
       </Item384>
       <Item385>
-        <Filename Value="..\debugger\breakpropertydlg.pas"/>
-        <UnitName Value="BreakPropertyDlg"/>
-      </Item385>
-      <Item386>
-        <Filename Value="..\debugger\breakpropertydlggroups.lfm"/>
-        <Type Value="LFM"/>
-      </Item386>
-      <Item387>
-        <Filename Value="..\debugger\breakpropertydlggroups.pas"/>
-        <UnitName Value="breakpropertydlggroups"/>
-      </Item387>
-      <Item388>
-        <Filename Value="..\debugger\callstackdlg.lfm"/>
-        <Type Value="LFM"/>
-      </Item388>
-      <Item389>
         <Filename Value="..\debugger\callstackdlg.pp"/>
         <UnitName Value="CallStackDlg"/>
-      </Item389>
-      <Item390>
+      </Item385>
+      <Item386>
         <Filename Value="..\debugger\cmdlinedebugger.pp"/>
         <UnitName Value="CmdLineDebugger"/>
+      </Item386>
+      <Item387>
+        <Filename Value="..\debugger\debugeventsform.lfm"/>
+        <Type Value="LFM"/>
+      </Item387>
+      <Item388>
+        <Filename Value="..\debugger\debugeventsform.pp"/>
+        <UnitName Value="DebugEventsForm"/>
+      </Item388>
+      <Item389>
+        <Filename Value="..\debugger\debugger.pp"/>
+        <UnitName Value="Debugger"/>
+      </Item389>
+      <Item390>
+        <Filename Value="..\debugger\debuggerdlg.pp"/>
+        <UnitName Value="DebuggerDlg"/>
       </Item390>
       <Item391>
-        <Filename Value="..\debugger\debugeventsform.lfm"/>
+        <Filename Value="..\debugger\debugoutputform.lfm"/>
         <Type Value="LFM"/>
       </Item391>
       <Item392>
-        <Filename Value="..\debugger\debugeventsform.pp"/>
-        <UnitName Value="DebugEventsForm"/>
+        <Filename Value="..\debugger\debugoutputform.pp"/>
+        <UnitName Value="DebugOutputForm"/>
       </Item392>
       <Item393>
-        <Filename Value="..\debugger\debugger.pp"/>
-        <UnitName Value="Debugger"/>
+        <Filename Value="..\debugger\debugutils.pp"/>
+        <UnitName Value="DebugUtils"/>
       </Item393>
       <Item394>
-        <Filename Value="..\debugger\debuggerdlg.lfm"/>
+        <Filename Value="..\debugger\evaluatedlg.lfm"/>
         <Type Value="LFM"/>
       </Item394>
       <Item395>
-        <Filename Value="..\debugger\debuggerdlg.lrs"/>
-        <Type Value="LRS"/>
-      </Item395>
-      <Item396>
-        <Filename Value="..\debugger\debuggerdlg.pp"/>
-        <UnitName Value="DebuggerDlg"/>
-      </Item396>
-      <Item397>
-        <Filename Value="..\debugger\debugoutputform.lfm"/>
-        <Type Value="LFM"/>
-      </Item397>
-      <Item398>
-        <Filename Value="..\debugger\debugoutputform.pp"/>
-        <UnitName Value="DebugOutputForm"/>
-      </Item398>
-      <Item399>
-        <Filename Value="..\debugger\debugutils.pp"/>
-        <UnitName Value="DebugUtils"/>
-      </Item399>
-      <Item400>
-        <Filename Value="..\debugger\evaluatedlg.lfm"/>
-        <Type Value="LFM"/>
-      </Item400>
-      <Item401>
         <Filename Value="..\debugger\evaluatedlg.pp"/>
         <UnitName Value="EvaluateDlg"/>
-      </Item401>
-      <Item402>
+      </Item395>
+      <Item396>
         <Filename Value="..\debugger\exceptiondlg.lfm"/>
         <Type Value="LFM"/>
-      </Item402>
-      <Item403>
+      </Item396>
+      <Item397>
         <Filename Value="..\debugger\exceptiondlg.pas"/>
         <UnitName Value="ExceptionDlg"/>
-      </Item403>
-      <Item404>
+      </Item397>
+      <Item398>
         <Filename Value="..\debugger\feedbackdlg.lfm"/>
         <Type Value="LFM"/>
-      </Item404>
-      <Item405>
+      </Item398>
+      <Item399>
         <Filename Value="..\debugger\feedbackdlg.pp"/>
         <UnitName Value="FeedbackDlg"/>
-      </Item405>
-      <Item406>
+      </Item399>
+      <Item400>
         <Filename Value="..\debugger\gdbmidebugger.pp"/>
         <UnitName Value="GDBMIDebugger"/>
-      </Item406>
-      <Item407>
+      </Item400>
+      <Item401>
         <Filename Value="..\debugger\gdbmimiscclasses.pp"/>
         <UnitName Value="GDBMIMiscClasses"/>
-      </Item407>
-      <Item408>
+      </Item401>
+      <Item402>
         <Filename Value="..\debugger\gdbtypeinfo.pp"/>
         <UnitName Value="GDBTypeInfo"/>
-      </Item408>
-      <Item409>
+      </Item402>
+      <Item403>
         <Filename Value="..\debugger\historydlg.lfm"/>
         <Type Value="LFM"/>
-      </Item409>
-      <Item410>
+      </Item403>
+      <Item404>
         <Filename Value="..\debugger\historydlg.pp"/>
         <UnitName Value="HistoryDlg"/>
+      </Item404>
+      <Item405>
+        <Filename Value="..\debugger\inspectdlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item405>
+      <Item406>
+        <Filename Value="..\debugger\inspectdlg.pas"/>
+        <UnitName Value="InspectDlg"/>
+      </Item406>
+      <Item407>
+        <Filename Value="..\debugger\localsdlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item407>
+      <Item408>
+        <Filename Value="..\debugger\localsdlg.pp"/>
+        <UnitName Value="LocalsDlg"/>
+      </Item408>
+      <Item409>
+        <Filename Value="..\debugger\processdebugger.pp"/>
+        <UnitName Value="ProcessDebugger"/>
+      </Item409>
+      <Item410>
+        <Filename Value="..\debugger\processlist.pas"/>
+        <UnitName Value="ProcessList"/>
       </Item410>
       <Item411>
-        <Filename Value="..\debugger\inspectdlg.lfm"/>
+        <Filename Value="..\debugger\pseudoterminaldlg.lfm"/>
         <Type Value="LFM"/>
       </Item411>
       <Item412>
-        <Filename Value="..\debugger\inspectdlg.pas"/>
-        <UnitName Value="InspectDlg"/>
+        <Filename Value="..\debugger\pseudoterminaldlg.pp"/>
+        <UnitName Value="PseudoTerminalDlg"/>
       </Item412>
       <Item413>
-        <Filename Value="..\debugger\localsdlg.lfm"/>
+        <Filename Value="..\debugger\registersdlg.lfm"/>
         <Type Value="LFM"/>
       </Item413>
       <Item414>
-        <Filename Value="..\debugger\localsdlg.pp"/>
-        <UnitName Value="LocalsDlg"/>
-      </Item414>
-      <Item415>
-        <Filename Value="..\debugger\processdebugger.pp"/>
-        <UnitName Value="ProcessDebugger"/>
-      </Item415>
-      <Item416>
-        <Filename Value="..\debugger\processlist.pas"/>
-        <UnitName Value="ProcessList"/>
-      </Item416>
-      <Item417>
-        <Filename Value="..\debugger\pseudoterminaldlg.lfm"/>
-        <Type Value="LFM"/>
-      </Item417>
-      <Item418>
-        <Filename Value="..\debugger\pseudoterminaldlg.pp"/>
-        <UnitName Value="PseudoTerminalDlg"/>
-      </Item418>
-      <Item419>
-        <Filename Value="..\debugger\registersdlg.lfm"/>
-        <Type Value="LFM"/>
-      </Item419>
-      <Item420>
         <Filename Value="..\debugger\registersdlg.pp"/>
         <UnitName Value="RegistersDlg"/>
-      </Item420>
-      <Item421>
+      </Item414>
+      <Item415>
         <Filename Value="..\debugger\sshgdbmidebugger.pas"/>
         <UnitName Value="SSHGDBMIDebugger"/>
-      </Item421>
-      <Item422>
+      </Item415>
+      <Item416>
         <Filename Value="..\debugger\threaddlg.lfm"/>
         <Type Value="LFM"/>
-      </Item422>
-      <Item423>
+      </Item416>
+      <Item417>
         <Filename Value="..\debugger\threaddlg.pp"/>
         <UnitName Value="ThreadDlg"/>
-      </Item423>
-      <Item424>
+      </Item417>
+      <Item418>
         <Filename Value="..\debugger\watchesdlg.lfm"/>
         <Type Value="LFM"/>
-      </Item424>
-      <Item425>
+      </Item418>
+      <Item419>
         <Filename Value="..\debugger\watchesdlg.pp"/>
         <UnitName Value="WatchesDlg"/>
-      </Item425>
-      <Item426>
+      </Item419>
+      <Item420>
         <Filename Value="..\debugger\watchpropertydlg.lfm"/>
         <Type Value="LFM"/>
-      </Item426>
-      <Item427>
+      </Item420>
+      <Item421>
         <Filename Value="..\debugger\watchpropertydlg.pp"/>
         <UnitName Value="WatchPropertyDlg"/>
-      </Item427>
+      </Item421>
     </Files>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="6">
       <Item1>
         <PackageName Value="LCL"/>
