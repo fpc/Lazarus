@@ -57,6 +57,7 @@ type
     function GetFilteredTreeview: TCustomTreeview;
     procedure SetFilteredTreeview(const AValue: TCustomTreeview);
     procedure SetShowDirHierarchy(const AValue: Boolean);
+    function FilterTree(Node: TTreeNode): Boolean;
   protected
     procedure MoveNext; override;
     procedure MovePrev; override;
@@ -75,7 +76,7 @@ type
     property ImageIndexDirectory: integer read fImageIndexDirectory write fImageIndexDirectory;
     property SelectionList: TStringList read fSelectionList;
     property ShowDirHierarchy: Boolean read fShowDirHierarchy write SetShowDirHierarchy;
-    property Branches: TBranchList read fBranches write fBranches;
+    //property Branches: TBranchList read fBranches write fBranches;
   published
     property FilteredTreeview: TCustomTreeview read GetFilteredTreeview write SetFilteredTreeview;
     property OnGetImageIndex: TImageIndexEvent read fOnGetImageIndex write fOnGetImageIndex;
@@ -168,7 +169,7 @@ var
   FileN, s: string;
   ena: Boolean;
 begin
-  if fFilenameMap.Count > 0 then
+  if fFilenameMap.Count > 0 then  // FilenameMap stores short filename -> long filename
     FreeTVNodeData(fRootNode);    // Free node data now, it will be filled later.
   if Assigned(fRootNode) then
     fRootNode.DeleteChildren      // Delete old tree nodes.
@@ -184,13 +185,14 @@ begin
     end
     else
       TVNode:=fOwner.fFilteredTreeview.Items.AddChild(fRootNode,FileN);
-//    else  TVNode:=fFilteredTreeview.Items.Add(Nil,FileN);
+    // Save the long filename to Node.Data
     if fFilenameMap.Count > 0 then begin
       s:=FileN;
       if fFilenameMap.Contains(FileN) then
         s:=fFilenameMap[FileN];           // Full file name.
       TVNode.Data:=TFileNameItem.Create(s);
     end;
+    // Get ImageIndex for Node
     ena := True;
     if Assigned(fOwner.OnGetImageIndex) then
       fImgIndex:=fOwner.OnGetImageIndex(FileN, fSortedData.Objects[i], ena);
@@ -237,7 +239,7 @@ begin
 end;
 
 procedure TTreeFilterBranch.TVClearUnneededAndCreateHierachy(Filename: string);
-// TVNodeStack contains a path of TTreeNode for the last filename
+// TVNodeStack contains a path of TTreeNode for the filename
 var
   DelimPos: Integer;
   FilePart: String;
@@ -343,20 +345,21 @@ begin
   fShowDirHierarchy:=AValue;
 end;
 
-procedure TTreeFilterEdit.ApplyFilterCore;
-var
-  i: Integer;
+function TTreeFilterEdit.FilterTree(Node: TTreeNode): Boolean;
+// Filter all tree branches recursively, setting Node.Visible as needed.
+// Returns True if Node or its siblings or child nodes have visible items.
 begin
-  fFilteredTreeview.BeginUpdate;
-  if Assigned(fBranches) then begin      // Filter the brances
-    for i:=0 to fBranches.Count-1 do
-      fBranches[i].ApplyFilter;
-  end
-  else begin                             // Filter the whole tree.
-    fFilteredTreeview.Items.Clear;
-    // ToDo ...
+  Result:=False;
+  if Node=nil then exit;
+  while Node<>nil do
+  begin
+    // Recursive call for child nodes.
+    Node.Visible:=FilterTree(Node.GetFirstChild)
+                  or (Filter='') or (Pos(Filter,lowercase(Node.Text))>0);
+    if Node.Visible then
+      Result:=True;
+    Node:=Node.GetNextSibling;
   end;
-  fFilteredTreeview.EndUpdate;
 end;
 
 procedure TTreeFilterEdit.SortAndFilter;
@@ -369,8 +372,24 @@ begin
       fBranches[i].SortAndFilter;
   end
   else begin                             // Filter the whole tree.
-    // ToDo ...
+    //
   end;
+end;
+
+procedure TTreeFilterEdit.ApplyFilterCore;
+var
+  i: Integer;
+begin
+  fFilteredTreeview.BeginUpdate;
+  if Assigned(fBranches) then begin      // Filter the brances
+    for i:=0 to fBranches.Count-1 do
+      fBranches[i].ApplyFilter;
+  end
+  else begin                             // Filter the whole tree.
+    FilterTree(fFilteredTreeview.Items.GetFirstNode);
+  end;
+  fFilteredTreeview.ClearInvisibleSelection;
+  fFilteredTreeview.EndUpdate;
 end;
 
 procedure TTreeFilterEdit.StoreSelection;
