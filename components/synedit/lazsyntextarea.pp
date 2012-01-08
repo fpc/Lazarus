@@ -38,6 +38,7 @@ type
     FExtraLineSpacing: integer;
     FVisibleSpecialChars: TSynVisibleSpecialChars;
     FRightEdgeColumn: integer;
+    FRightEdgeVisible: boolean;
 
     FTopLine: TLinePos;
     FLeftChar: Integer;
@@ -65,23 +66,25 @@ type
     procedure FontChanged; // must be called by owner of shared tetdrawer
     procedure Paint(ACanvas: TCanvas; AClip: TRect);
 
+    // Settings controlled by SynEdit
     procedure SetBounds(ATop, ALeft, ABottom, ARight: Integer);
+    property Padding[Side: TLazSynBorderSide]: integer read GetPadding write SetPadding;
     property ForegroundColor: TColor read FForegroundColor write FForegroundColor;
     property BackgroundColor: TColor read FBackgroundColor write FBackgroundColor;
-    property RightEdgeColor: TColor read FRightEdgeColor write FRightEdgeColor;
-    property Padding[Side: TLazSynBorderSide]: integer read GetPadding write SetPadding;
     property ExtraCharSpacing: integer read FExtraCharSpacing write SetExtraCharSpacing;
     property ExtraLineSpacing: integer read FExtraLineSpacing write SetExtraLineSpacing;
     property VisibleSpecialChars: TSynVisibleSpecialChars read FVisibleSpecialChars write FVisibleSpecialChars;
-    property RightEdgeColumn: integer read FRightEdgeColumn write FRightEdgeColumn;  // -1 = hide
+    property RightEdgeColumn: integer  read FRightEdgeColumn write FRightEdgeColumn;
+    property RightEdgeVisible: boolean read FRightEdgeVisible write FRightEdgeVisible;
+    property RightEdgeColor: TColor    read FRightEdgeColor write FRightEdgeColor;
 
     property TopLine: TLinePos read FTopLine write SetTopLine; // TopView
     property LeftChar: Integer read FLeftChar write SetLeftChar;
 
-    property TheLinesView: TSynEditStrings read FTheLinesView write FTheLinesView;
-    property DisplayView: TLazSynDisplayView read FDisplayView write FDisplayView;
-    property Highlighter: TSynCustomHighlighter read FHighlighter write FHighlighter;
-    property MarkupManager : TSynEditMarkupManager read FMarkupManager write FMarkupManager;
+    property TheLinesView:  TSynEditStrings       read FTheLinesView  write FTheLinesView;
+    property DisplayView:   TLazSynDisplayView    read FDisplayView   write FDisplayView;
+    property Highlighter:   TSynCustomHighlighter read FHighlighter   write FHighlighter;
+    property MarkupManager: TSynEditMarkupManager read FMarkupManager write FMarkupManager;
   public
     property Left: Integer   read FBounds.Left;
     property Top: Integer    read FBounds.Top;
@@ -207,6 +210,9 @@ begin
     FPadding[i] := 0;
   FTopLine := 1;
   FLeftChar := 1;
+  FRightEdgeColumn  := 80;
+  FRightEdgeVisible := True;
+  FRightEdgeColor   := clSilver;
   FontChanged;
 end;
 
@@ -493,7 +499,7 @@ var
     // Draw the right edge under the text if necessary
     nX := ScreenColumnToXValue(FirstPhysical); // == rcToken.Left
     if ForceEto then fTextDrawer.ForceNextTokenWithEto;
-    if bDoRightEdge and (RightEdgeColumn >= 0)
+    if bDoRightEdge
     and (nRightEdge<rcToken.Right) and (nRightEdge>=rcToken.Left)
     then begin
       // draw background (use rcToken, so we do not delete the divider-draw-line)
@@ -626,7 +632,7 @@ var
       until nX1 >= rcLine.Right;
 
       // Draw the right edge if necessary.
-      if bDoRightEdge and (RightEdgeColumn >= 0)
+      if bDoRightEdge
       and (nRightEdge >= eolx) then begin // xx rc Token
         LCLIntf.MoveToEx(dc, nRightEdge, rcLine.Top, nil);
         LCLIntf.LineTo(dc, nRightEdge, rcLine.Bottom + 1);
@@ -963,7 +969,7 @@ begin
   // If the right edge is visible and in the invalid area, prepare to paint it.
   // Do this first to realize the pen when getting the dc variable.
   bDoRightEdge := FALSE;
-  if (RightEdgeColumn > 0) then begin // column value
+  if FRightEdgeVisible then begin // column value
     nRightEdge := FTextBounds.Left + (RightEdgeColumn - LeftChar + 1) * CharWidth; // pixel value
     if (nRightEdge >= AClip.Left) and (nRightEdge <= AClip.Right) then
       bDoRightEdge := TRUE;
@@ -1019,7 +1025,7 @@ begin
     AClip.Left := DrawLeft;
 
     // Draw the right edge if necessary.
-    if bDoRightEdge and (RightEdgeColumn >= 0) then begin
+    if bDoRightEdge then begin
       LCLIntf.MoveToEx(dc, nRightEdge, AClip.Top, nil);
       LCLIntf.LineTo(dc, nRightEdge, AClip.Bottom + 1);
     end;

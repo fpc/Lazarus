@@ -445,8 +445,6 @@ type
     FInvalidateRect: TRect;
     FIsInDecPaintLock: Boolean;
     fReadOnly: Boolean;
-    fRightEdge: Integer;
-    fRightEdgeColor: TColor;
     FScrollBars: TScrollStyle;
     FOldTopView: Integer;
     FLastTextChangeStamp: Int64;
@@ -521,6 +519,8 @@ type
     function GetMouseTextActions: TSynEditMouseActions;
     function GetPaintLockOwner: TSynEditBase;
     function GetPlugin(Index: Integer): TSynEditPlugin;
+    function GetRightEdge: Integer;
+    function GetRightEdgeColor: TColor;
     function GetTextBetweenPoints(aStartPoint, aEndPoint: TPoint): String;
     function GetTopLine: Integer;
     procedure SetBlockTabIndent(AValue: integer);
@@ -1033,9 +1033,8 @@ type
       default SYNEDIT_DEFAULT_SHARE_OPTIONS; experimental;
     property VisibleSpecialChars: TSynVisibleSpecialChars read FVisibleSpecialChars write SetVisibleSpecialChars;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default FALSE;
-    property RightEdge: Integer read fRightEdge write SetRightEdge default 80;
-    property RightEdgeColor: TColor
-      read fRightEdgeColor write SetRightEdgeColor default clSilver;
+    property RightEdge: Integer read GetRightEdge write SetRightEdge default 80;
+    property RightEdgeColor: TColor read GetRightEdgeColor write SetRightEdgeColor default clSilver;
     property ScrollBars: TScrollStyle
       read FScrollBars write SetScrollBars default ssBoth;
     property BracketHighlightStyle: TSynEditBracketHighlightStyle
@@ -1604,6 +1603,16 @@ begin
   Result := TSynEditPlugin(fPlugins[Index]);
 end;
 
+function TCustomSynEdit.GetRightEdge: Integer;
+begin
+  Result := FTextArea.RightEdgeColumn;
+end;
+
+function TCustomSynEdit.GetRightEdgeColor: TColor;
+begin
+  Result := FTextArea.RightEdgeColor;
+end;
+
 function TCustomSynEdit.GetTextBetweenPoints(aStartPoint, aEndPoint: TPoint): String;
 begin
   FInternalBlockSelection.SelectionMode := smNormal;
@@ -1844,8 +1853,7 @@ begin
   FPaintLineColor2 := TSynSelectedColor.Create;
   fBookMarkOpt := TSynBookMarkOpt.Create(Self);
   fBookMarkOpt.OnChange := {$IFDEF FPC}@{$ENDIF}BookMarkOptionsChanged;
-// fRightEdge has to be set before FontChanged is called for the first time
-  fRightEdge := 80;
+
   FLeftGutter := CreateGutter(self, gsLeft, FTextDrawer);
   FLeftGutter.OnChange := {$IFDEF FPC}@{$ENDIF}GutterChanged;
   FLeftGutter.OnResize := {$IFDEF FPC}@{$ENDIF}GutterResized;
@@ -1894,9 +1902,7 @@ begin
   fBlockIndent := 2;
 
   FTextArea := TLazSynTextArea.Create(FTextDrawer);
-  if eoHideRightMargin in SYNEDIT_DEFAULT_OPTIONS // follow default
-  then FTextArea.RightEdgeColumn := -1
-  else FTextArea.RightEdgeColumn := fRightEdge;
+  FTextArea.RightEdgeVisible := not(eoHideRightMargin in SYNEDIT_DEFAULT_OPTIONS);
   FTextArea.ExtraCharSpacing := 0;
   FTextArea.ExtraLineSpacing := 0;
   FTextArea.MarkupManager := fMarkupManager;
@@ -1930,7 +1936,6 @@ begin
   FMouseActionSearchHandlerList := TSynEditMouseActionSearchList.Create;
   FMouseActionExecHandlerList  := TSynEditMouseActionExecList.Create;
 
-  fRightEdgeColor := clSilver;
 {$IFDEF SYN_MBCSSUPPORT}
   fImeCount := 0;
   fMBCSStepAside := False;
@@ -3358,7 +3363,6 @@ begin
     // Then paint the text area if it was (partly) invalidated.
     FTextArea.ForegroundColor := Font.Color;
     FTextArea.BackgroundColor := Color;
-    FTextArea.RightEdgeColor := RightEdgeColor;
     FTextArea.Paint(Canvas, rcClip);
     // right gutter
     if FRightGutter.Visible and (rcClip.Right > ClientWidth - FRightGutter.Width - ScrollBarWidth) then begin
@@ -5327,12 +5331,10 @@ end;
 
 procedure TCustomSynEdit.SetRightEdge(Value: Integer);
 begin
-  if fRightEdge <> Value then begin
-    fRightEdge := Value;
-    if eoHideRightMargin in Options
-    then FTextArea.RightEdgeColumn := -1
-    else FTextArea.RightEdgeColumn := Value;
-    Invalidate;
+  if FTextArea.RightEdgeColumn <> Value then begin
+    FTextArea.RightEdgeColumn := Value;
+    if FTextArea.RightEdgeVisible then
+      Invalidate;
   end;
 end;
 
@@ -5341,10 +5343,10 @@ var
   nX: integer;
   rcInval: TRect;
 begin
-  if fRightEdgeColor <> Value then begin
-    fRightEdgeColor := Value;
+  if RightEdgeColor <> Value then begin
+    FTextArea.RightEdgeColor := Value;
     if HandleAllocated then begin
-      nX := FTextArea.ScreenColumnToXValue(fRightEdge + 1);
+      nX := FTextArea.ScreenColumnToXValue(FTextArea.RightEdgeColumn + 1);
       rcInval := Rect(nX - 1, 0, nX + 1, ClientHeight-ScrollBarWidth);
       {$IFDEF VerboseSynEditInvalidate}
       DebugLn(['TCustomSynEdit.SetRightEdgeColor ',dbgs(rcInval)]);
@@ -6892,11 +6894,8 @@ begin
   end;
   fMarkupSpecialChar.Enabled := (eoShowSpecialChars in fOptions);
 
-  if (eoHideRightMargin in ChangedOptions) then begin
-    if eoHideRightMargin in FOptions
-    then FTextArea.RightEdgeColumn := -1
-    else FTextArea.RightEdgeColumn := fRightEdge;
-  end;
+  if (eoHideRightMargin in ChangedOptions) then
+    FTextArea.RightEdgeVisible := not(eoHideRightMargin in FOptions);
 
   (* Deal with deprecated Mouse values
      Those are all controlled by mouse-actions.
