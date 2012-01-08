@@ -251,6 +251,7 @@ type
   end;
 
   TSynCaretType = (ctVerticalLine, ctHorizontalLine, ctHalfBlock, ctBlock);
+  TSynCaretLockFlags = set of (sclfUpdateDisplay, sclfUpdateDisplayType);
 
   { TSynEditScreenCaret }
 
@@ -287,7 +288,7 @@ type
     FCurrentVisible, FCurrentCreated: Boolean;
     FCurrentClippedWidth: Integer;
     FLockCount: Integer;
-    FLockedUpdateNeeded: Boolean;
+    FLockFlags: TSynCaretLockFlags;
     procedure SetClipBottom(const AValue: Integer);
     procedure SetClipExtraPixel(AValue: Integer);
     procedure SetClipLeft(const AValue: Integer);
@@ -1683,8 +1684,10 @@ end;
 procedure TSynEditScreenCaret.UnLock;
 begin
   dec(FLockCount);
-  if (FLockCount=0) and FLockedUpdateNeeded then
-    UpdateDisplay;
+  if (FLockCount=0) then begin
+    if (sclfUpdateDisplayType in FLockFlags) then UpdateDisplayType;
+    if (sclfUpdateDisplay in FLockFlags)     then UpdateDisplay;
+  end;
 end;
 
 procedure TSynEditScreenCaret.SetClipRight(const AValue: Integer);
@@ -1744,6 +1747,12 @@ end;
 
 procedure TSynEditScreenCaret.UpdateDisplayType;
 begin
+  if FLockCount > 0 then begin
+    Include(FLockFlags, sclfUpdateDisplayType);
+    exit;
+  end;
+  Exclude(FLockFlags, sclfUpdateDisplayType);
+
   case FDisplayType of
     ctVerticalLine:
       begin
@@ -1845,10 +1854,11 @@ end;
 procedure TSynEditScreenCaret.UpdateDisplay;
 begin
   if FLockCount > 0 then begin
-    FLockedUpdateNeeded := True;
+    Include(FLockFlags, sclfUpdateDisplay);
     exit;
   end;
-  FLockedUpdateNeeded := False;
+  Exclude(FLockFlags, sclfUpdateDisplay);
+
   if FVisible then
     ShowCaret
   else
