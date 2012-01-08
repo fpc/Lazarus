@@ -77,25 +77,49 @@ function IndexOfNodeAtTop(NodeArray: TTreeNodeArray; Count, y: integer): integer
 // NodeArray must be sorted via Top
 // returns index of Node with Node.Top <= y < Node[+1].Top
 var
-  l, m, r: integer;
+  l, m, r, VisibleCount: integer;
+  VisibleNodes: TTreeNodeArray;
 begin
   if (Count = 0) or (NodeArray = nil) then
     Exit(-1);
-  l := 0;
-  r := Count - 1;
-  while (l <= r) do
-  begin
-    m := (l + r) shr 1;
-    //DebugLn(':0 [IndexOfNodeAtTop] m=',m,' y=',y,' ',NodeArray[m].Text,' NodeArray[m].Top=',NodeArray[m].Top,' NodeArray[m].BottomExpanded=',NodeArray[m].BottomExpanded);
-    if NodeArray[m].Top > y then
-      r := m - 1
+  // Count the visible nodes
+  VisibleCount := 0;
+  for l := 0 to Count-1 do
+    if NodeArray[l].Visible then
+      Inc(VisibleCount);
+  try
+    // Make a temporary array of visible nodes
+    if VisibleCount > 0 then begin
+      GetMem(VisibleNodes,SizeOf(Pointer)*VisibleCount);
+      m := 0;
+      for l := 0 to Count-1 do
+        if NodeArray[l].Visible then begin
+          VisibleNodes[m] := NodeArray[l];
+          Inc(m);
+        end;
+      Count := VisibleCount;
+    end
     else
-    if NodeArray[m].BottomExpanded <= y then
-      l := m + 1
-    else
-      Exit(m);
+      VisibleNodes := NodeArray;
+    // Binary search for the Y coordinate
+    l := 0;
+    r := Count - 1;
+    while (l <= r) do
+    begin
+      m := (l + r) shr 1;
+      //DebugLn(':0 [IndexOfNodeAtTop] m=',m,' y=',y,' ',NodeArray[m].Text,' NodeArray[m].Top=',NodeArray[m].Top,' NodeArray[m].BottomExpanded=',NodeArray[m].BottomExpanded);
+      if VisibleNodes[m].Top > y then
+        r := m - 1
+      else if VisibleNodes[m].BottomExpanded <= y then
+        l := m + 1
+      else
+        Exit(VisibleNodes[m].Index);
+    end;
+    Result := -1;
+  finally
+    if VisibleCount > 0 then
+      Freemem(VisibleNodes);
   end;
-  Result := -1;
 end;
 
 // procedure for sorting a TTreeNodeArray
@@ -775,14 +799,19 @@ begin
 end;
 
 function TTreeNode.BottomExpanded: integer;
+var
+  Node: TTreeNode;
 begin
-  if GetNextSibling <> nil then
-    Result := GetNextSibling.Top
-  else
-  if Expanded and (GetLastChild <> nil) then
-    Result := GetLastChild.BottomExpanded
-  else
-    Result := Bottom;
+  Node := GetNextVisibleSibling;
+  if Node <> nil then
+    Result := Node.Top
+  else begin
+    Node := GetLastVisibleChild;
+    if Expanded and (Node <> nil) then
+      Result := Node.BottomExpanded
+    else
+      Result := Bottom;
+  end;
 end;
 
 function TTreeNode.GetFocused: Boolean;
@@ -842,9 +871,9 @@ function TTreeNode.GetPrevVisible: TTreeNode;
 var
   ANode: TTreeNode;
 begin
-  Result:=GetPrevSibling;
+  Result:=GetPrevVisibleSibling;
   if Result <> nil then begin
-    while Result.Expanded do begin
+    while Result.Visible and Result.Expanded do begin
       ANode:=Result.GetLastChild;
       if ANode=nil then break;
       Result:=ANode;
@@ -856,19 +885,30 @@ begin
     Result:=nil;
 end;
 
+function TTreeNode.GetPrevVisibleSibling: TTreeNode;
+begin
+  Result := Self;
+  repeat
+    Result := Result.GetPrevSibling;
+  until ((Result=nil) or (Result.FVisible));
+  if (Result<>nil) and (not Result.FVisible) then
+    Result := nil
+end;
+
 function TTreeNode.GetPrevExpanded: TTreeNode;
 var
   ANode: TTreeNode;
 begin
-  Result:=GetPrevSibling;
+  Result:=GetPrevVisibleSibling;
   if Result <> nil then begin
-    while Result.Expanded do begin
-      ANode:=Result.GetLastChild;
+    while Result.Visible and Result.Expanded do begin
+      ANode:=Result.GetLastVisibleChild;
       if ANode=nil then break;
       Result:=ANode;
     end;
-  end else
-    Result := Parent;
+  end
+  else
+    Result:=Parent;
 end;
 
 function TTreeNode.GetNextChild(AValue: TTreeNode): TTreeNode;
@@ -880,14 +920,18 @@ begin
 end;
 
 function TTreeNode.GetNextExpanded: TTreeNode;
+var
+  ANode: TTreeNode;
 begin
-  if Expanded and (GetFirstChild<>nil) then
-    Result:=GetFirstChild
+  ANode := GetFirstVisibleChild;
+  if Expanded and (ANode<>nil) then
+    Result:=ANode
   else begin
     Result:=Self;
-    while (Result<>nil) and (Result.GetNextSibling=nil) do
+    while (Result<>nil) and (Result.GetNextVisibleSibling=nil) do
       Result:=Result.Parent;
-    if Result<>nil then Result:=Result.GetNextSibling;
+    if Result<>nil then
+      Result:=Result.GetNextVisibleSibling;
   end;
 end;
 
@@ -943,8 +987,20 @@ begin
     Result := nil;
 end;
 
+function TTreeNode.GetLastVisibleChild: TTreeNode;
+begin
+  Result := GetLastChild;
+  if Assigned(Result) and not Result.Visible then begin
+    Result := Result.GetPrevVisible;
+    // ToDo: implement this better. Now it works only when Self is visible.
+    if Result = Self then                      // No visible nodes found.
+      Result := Nil;
+  end;
+end;
+
 function TTreeNode.GetLastSubChild: TTreeNode;
-var Node: TTreeNode;
+var
+  Node: TTreeNode;
 begin
   Result:=GetLastChild;
   if Result<>nil then begin
@@ -957,7 +1013,8 @@ end;
 function TTreeNode.GetNext: TTreeNode;
 begin
   Result:=GetFirstChild;
-  if Result=nil then Result:=GetNextSkipChildren;
+  if Result=nil then
+    Result:=GetNextSkipChildren;
 end;
 
 function TTreeNode.GetNextSkipChildren: TTreeNode;
@@ -965,7 +1022,8 @@ begin
   Result:=Self;
   while (Result<>nil) and (Result.FNextBrother=nil) do
     Result:=Result.Parent;
-  if Result<>nil then Result:=Result.FNextBrother;
+  if Result<>nil then
+    Result:=Result.FNextBrother;
 end;
 
 function TTreeNode.GetPrev: TTreeNode;
@@ -2166,12 +2224,44 @@ begin
   //Result := GetNode(TreeView_GetRoot(Handle));
 end;
 
+function TTreeNodes.GetFirstVisibleNode: TTreeNode;
+var
+  Node: TTreeNode;
+  i: Integer;
+begin
+  Result := nil;
+  if Assigned(FTopLvlItems) then
+    for i := 0 to FTopLvlCount-1 do begin
+      Node := FTopLvlItems[i];
+      if Node.Visible then begin
+        Result := Node;
+        Break;
+      end;
+    end;
+end;
+
 function TTreeNodes.GetLastNode: TTreeNode;
 begin
   if Assigned(FTopLvlItems) then
     Result := FTopLvlItems[FTopLvlCount - 1]
   else
     Result := nil;
+end;
+
+function TTreeNodes.GetLastVisibleNode: TTreeNode;
+var
+  Node: TTreeNode;
+  i: Integer;
+begin
+  Result := nil;
+  if Assigned(FTopLvlItems) then
+    for i := FTopLvlCount-1 downto 0 do begin
+      Node := FTopLvlItems[i];
+      if Node.Visible then begin
+        Result := Node;
+        Break;
+      end;
+    end;
 end;
 
 function TTreeNodes.GetLastSubNode: TTreeNode;
@@ -2716,7 +2806,8 @@ begin
   Result := '';
   Node := Owner.GetNodeFromIndex(Index);
   Level := Node.Level;
-  for I := 0 to Level - 1 do Result := Result + TabChar;
+  for I := 0 to Level - 1 do
+    Result := Result + TabChar;
   Result := Result + Node.Text;
 end;
 
@@ -3181,7 +3272,8 @@ begin
     EndEditing;
   if (tvoAllowMultiselect in ChangedOptions) then begin
     if (tvoAllowMultiselect in FOptions) then begin
-      if Selected<>nil then Selected.MultiSelected:=true;
+      if Selected<>nil then
+        Selected.MultiSelected:=true;
     end else begin
       Items.ClearMultiSelection;
     end;
@@ -3217,25 +3309,26 @@ begin
 end;
 
 procedure TCustomTreeView.UpdateAllTops;
+var
+  CurTop: integer;
 
-  procedure CalculateTops(FirstSibling: TTreeNode; var CurTop: integer);
+  procedure CalculateTops(Node: TTreeNode);
   begin
-    while FirstSibling<>nil do begin
-      if FirstSibling.FVisible then begin;
-        FirstSibling.fTop:=CurTop;
-        inc(CurTop,FirstSibling.Height);
-        if FirstSibling.Expanded then
-          CalculateTops(FirstSibling.GetFirstChild,CurTop);
+    while Node<>nil do begin
+      if Node.FVisible then begin
+        Node.fTop:=CurTop;
+        inc(CurTop, Node.Height);
+        if Node.Expanded then
+          CalculateTops(Node.GetFirstChild);
       end;
-      FirstSibling:=FirstSibling.GetNextSibling;
+      Node:=Node.GetNextSibling;
     end;
   end;
 
-var i: integer;
 begin
   if not (tvsTopsNeedsUpdate in FStates) then exit;
-  i:=0;
-  CalculateTops(Items.GetFirstNode,i);
+  CurTop:=0;
+  CalculateTops(Items.GetFirstVisibleNode);
   Exclude(FStates,tvsTopsNeedsUpdate);
   Include(FStates,tvsScrollbarChanged);
 end;
@@ -3480,7 +3573,7 @@ begin
   if i >= 0 then
   begin
     Result := Items.FTopLvlItems[i];
-    while Result.Expanded do
+    while Result.Visible and Result.Expanded do
     begin
       i := IndexOfNodeAtTop(Result.FItems, Result.FCount, Y);
       if i >= 0 then
@@ -3520,11 +3613,8 @@ begin
   if (X >= BorderWidth) and (X < ClientWidth - BorderWidth) then
   begin
     Result := GetNodeAtY(Y);
-    if Result <> nil then
-    begin
-      if (X < Result.DisplayExpandSignLeft) then
-        Result := nil;
-    end;
+    if (Result <> nil) and (X < Result.DisplayExpandSignLeft) then
+      Result := nil;
   end;
 end;
 
@@ -3725,7 +3815,7 @@ const
   EditKeyShift = [];
 var
   I: Integer;
-  lNode: TTreeNode;
+  lNode, tempNode: TTreeNode;
 begin
   inherited KeyDown(Key, Shift);
 
@@ -3784,13 +3874,19 @@ begin
       lNode.Expanded := False;
 
   VK_HOME:
-    if Items.GetFirstNode<>nil then
-      lNode := Items.GetFirstNode;
+    begin
+      tempNode := Items.GetFirstVisibleNode;
+      if tempNode<>nil then
+        lNode := tempNode;
+    end;
 
   VK_END:
-    if Items.GetFirstNode<>nil then
-      lNode := Items.GetLastExpandedSubNode;
-      
+    begin
+      tempNode := Items.GetLastExpandedSubNode;
+      if tempNode<>nil then
+        lNode := tempNode;
+    end;
+
   VK_PRIOR: // Page Up
     if lNode <> nil then
     begin
@@ -5443,42 +5539,57 @@ begin
   ANode.MakeVisible;
 end;
 
+procedure TCustomTreeView.ClearInvisibleSelection;
+var
+  ANode: TTreeNode;
+begin
+  if tvoAllowMultiSelect in FOptions then begin
+    ANode := FTreeNodes.FLastMultiSelected;
+    Items.ClearMultiSelection(True);       // Now clears all multi-selections
+  end
+  else begin
+    ANode := Selected;
+    if not ANode.Visible then      // Clear a single selection only if not visible
+      ANode.Selected:=False;       // Selected := nil;
+  end;
+end;
+
 procedure TCustomTreeView.MoveToNextNode;
 var
-  lNode: TTreeNode;
+  ANode: TTreeNode;
 begin
   if tvoAllowMultiSelect in FOptions then
-    lNode := FTreeNodes.FLastMultiSelected
+    ANode := FTreeNodes.FLastMultiSelected
   else
-    lNode := Selected;
-  if lNode <> nil then
-    lNode := lNode.GetNextExpanded
+    ANode := Selected;
+  if ANode <> nil then
+    ANode := ANode.GetNextExpanded
   else if Items.Count > 0 then
-    lNode := FTreeNodes.GetFirstNode;
-  if lNode <> nil then
+    ANode := FTreeNodes.GetFirstVisibleNode;
+  if ANode <> nil then
     if tvoAllowMultiSelect in FOptions then
-      FTreeNodes.SelectOnlyThis(lNode)
+      FTreeNodes.SelectOnlyThis(ANode)
     else
-      Selected := lNode;
+      Selected := ANode;
 end;
 
 procedure TCustomTreeView.MoveToPrevNode;
 var
-  lNode: TTreeNode;
+  ANode: TTreeNode;
 begin
   if tvoAllowMultiSelect in FOptions then
-    lNode := FTreeNodes.FLastMultiSelected
+    ANode := FTreeNodes.FLastMultiSelected
   else
-    lNode := Selected;
-  if lNode <> nil then
-    lNode := lNode.GetPrevExpanded
+    ANode := Selected;
+  if ANode <> nil then
+    ANode := ANode.GetPrevExpanded
   else if Items.Count > 0 then
-    lNode := Items.GetLastExpandedSubNode;
-  if lNode <> nil then
+    ANode := Items.GetLastExpandedSubNode;
+  if ANode <> nil then
     if tvoAllowMultiSelect in FOptions then
-      FTreeNodes.SelectOnlyThis(lNode)
+      FTreeNodes.SelectOnlyThis(ANode)
     else
-      Selected := lNode;
+      Selected := ANode;
 end;
 
 // back to comctrls.pp

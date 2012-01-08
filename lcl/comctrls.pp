@@ -2407,6 +2407,7 @@ type
     function GetHandle: THandle;
     function GetLastSibling: TTreeNode;
     function GetLastChild: TTreeNode;
+    function GetLastVisibleChild: TTreeNode;
     function GetLastSubChild: TTreeNode;
     function GetNext: TTreeNode;
     function GetNextSkipChildren: TTreeNode;
@@ -2422,6 +2423,7 @@ type
     function GetPrevMultiSelected: TTreeNode;
     function GetPrevSibling: TTreeNode;
     function GetPrevVisible: TTreeNode;
+    function GetPrevVisibleSibling: TTreeNode;
     function HasAsParent(AValue: TTreeNode): Boolean;
     function IndexOf(AValue: TTreeNode): Integer;
     function IndexOfText(const NodeText: string): Integer;
@@ -2553,7 +2555,9 @@ type
     procedure EndUpdate;
     function GetEnumerator: TTreeNodesEnumerator;
     function GetFirstNode: TTreeNode;
+    function GetFirstVisibleNode: TTreeNode;
     function GetLastNode: TTreeNode; // last top level node
+    function GetLastVisibleNode: TTreeNode;
     function GetLastSubNode: TTreeNode; // absolute last node
     function GetLastExpandedSubNode: TTreeNode; // absolute last node
     function GetSelections(const AIndex: Integer): TTreeNode;
@@ -2927,6 +2931,7 @@ type
     function GetLastMultiSelected: TTreeNode;
     function SelectionVisible: boolean;
     procedure MakeSelectionVisible;
+    procedure ClearInvisibleSelection;
     procedure MoveToNextNode;
     procedure MoveToPrevNode;
   public
