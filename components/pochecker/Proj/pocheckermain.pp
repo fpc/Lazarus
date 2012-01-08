@@ -273,9 +273,9 @@ begin
         and (PoFamily.ChildName <> FChoosenChildName) then
       PoFamily.ChildName := FChoosenChildName;
     PoFamily.RunTests(Options, ErrorCount, WarningCount, SL);
-    if (ErrorCount > 0) or (WarningCount > 0) then
     debugln('RunSelectedTests: ',Format(sTotalErrors,[ErrorCount]));
     debugln('                  ',Format(sTotalWarnings,[WarningCount]));
+    if (ErrorCount > 0) or (WarningCount > 0) then
     begin
       SL.Add(Format(sTotalErrors,[ErrorCount]));
       SL.Add(Format(sTotalWarnings,[WarningCount]));
