@@ -24,9 +24,12 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Buttons, StdCtrls, ComCtrls, MenuIntf, editortoolbar_str;
+  Buttons, StdCtrls, ComCtrls, MenuIntf, editortoolbar_str, TreeFilterEdit;
 
 type
+
+  { TEdtTbConfigForm }
+
   TEdtTbConfigForm = class(TForm)
     Bevel1: TBevel;
     btnAdd: TSpeedButton;
@@ -40,15 +43,17 @@ type
     lblToolbar: TLabel;
     lbToolbar: TListBox;
     pnlButtons: TPanel;
+    FilterEdit: TTreeFilterEdit;
     TV: TTreeView;
     procedure FormCreate(Sender: TObject);
-    procedure TVChange(Sender: TObject; Node: TTreeNode);
+    procedure lbToolbarSelectionChange(Sender: TObject; User: boolean);
     procedure btnAddClick(Sender: TObject);
     procedure btnAddDividerClick(Sender: TObject);
     procedure btnMoveDownClick(Sender: TObject);
     procedure btnMoveUpClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
+    procedure TVSelectionChanged(Sender: TObject);
   private
     procedure SetupCaptions;
     procedure LoadCategories;
@@ -80,25 +85,38 @@ begin
   pnlButtons.Color := clBtnFace;
 
   // load button images
-  btnRemove.LoadGlyphFromLazarusResource('arrow_left');
   btnAdd.LoadGlyphFromLazarusResource('arrow_right');
+  btnRemove.LoadGlyphFromLazarusResource('arrow_left');
   btnMoveUp.LoadGlyphFromLazarusResource('arrow_up');
   btnMoveDown.LoadGlyphFromLazarusResource('arrow_down');
+
+  btnAdd.Hint      := rsAddSelected;
+  btnRemove.Hint   := rsRemoveSelected;
+  btnMoveUp.Hint   := rsMoveSelectedUp;
+  btnMoveDown.Hint := rsMoveSelectedDown;
 
   TV.Images := IDEImages.Images_16;
   SetupCaptions;
   LoadCategories;
   LoadSettings;
+  TV.FullExpand;
 end;
 
-procedure TEdtTbConfigForm.TVChange(Sender: TObject; Node: TTreeNode);
+procedure TEdtTbConfigForm.lbToolbarSelectionChange(Sender: TObject; User: boolean);
+var
+  i: Integer;
+begin
+  i := lbToolbar.ItemIndex;
+  btnRemove.Enabled := i > -1;
+  btnMoveUp.Enabled := i > 0;
+  btnMoveDown.Enabled := (i > -1) and (i < lbToolbar.Items.Count-1);
+end;
+
+procedure TEdtTbConfigForm.TVSelectionChanged(Sender: TObject);
 var
   n: TTreeNode;
 begin
-  if Sender = nil then ;
-  if Node = nil then ;
   n := TV.Selected;
-
   btnAdd.Enabled := (Assigned(n) and Assigned(n.Data));
 end;
 
@@ -109,7 +127,19 @@ begin
   n := TV.Selected;
   if (Assigned(n) and Assigned(n.Data)) then
   begin
+    btnAdd.Enabled := False;
     lbToolbar.Items.AddObject(TIDEMenuItem(n.Data).Caption, TObject(n.Data));
+    lbToolbar.ItemIndex := lbToolbar.Items.Count-1;
+    lbToolbarSelectionChange(lblToolbar, False);
+  end;
+end;
+
+procedure TEdtTbConfigForm.btnRemoveClick(Sender: TObject);
+begin
+  if lbToolbar.ItemIndex > -1 then begin
+    lbToolbar.Items.Delete(lbToolbar.ItemIndex);
+    lbToolbarSelectionChange(lbToolbar, False);
+    TVSelectionChanged(TV);
   end;
 end;
 
@@ -143,12 +173,6 @@ end;
 procedure TEdtTbConfigForm.btnOKClick(Sender: TObject);
 begin
   SaveSettings;
-end;
-
-procedure TEdtTbConfigForm.btnRemoveClick(Sender: TObject);
-begin
-  if lbToolbar.ItemIndex > -1 then
-    lbToolbar.Items.Delete(lbToolbar.ItemIndex);
 end;
 
 procedure TEdtTbConfigForm.SetupCaptions;
@@ -228,8 +252,7 @@ begin
   end;
 end;
 
-procedure TEdtTbConfigForm.AddMenuItem(ParentNode: TTreeNode;
-    Item: TIDEMenuItem);
+procedure TEdtTbConfigForm.AddMenuItem(ParentNode: TTreeNode; Item: TIDEMenuItem);
 var
   n: TTreeNode;
   i: integer;
@@ -238,13 +261,14 @@ begin
   n := TV.Items.AddChild(ParentNode, Format('%s', [Item.Caption]));
   n.ImageIndex := Item.ImageIndex;
   n.SelectedIndex := Item.ImageIndex;
-  n.Data := Item;
   if Item is TIDEMenuSection then
   begin
     sec := (Item as TIDEMenuSection);
     for i := 0 to sec.Count-1 do
       AddMenuItem(n, sec.Items[i]);
-  end;
+  end
+  else
+    n.Data := Item;
 end;
 
 class function TEdtTbConfigForm.Execute: boolean;

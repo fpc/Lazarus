@@ -1,70 +1,96 @@
 object EdtTbConfigForm: TEdtTbConfigForm
   Left = 375
-  Height = 330
+  Height = 437
   Top = 200
   Width = 651
   ActiveControl = btnOK
   Caption = 'EdtTbConfigForm'
-  ClientHeight = 330
+  ClientHeight = 437
   ClientWidth = 651
   OnCreate = FormCreate
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.31'
   object lblMenuTree: TLabel
     Left = 16
-    Height = 18
+    Height = 15
     Top = 10
-    Width = 76
+    Width = 69
     Caption = 'lblMenuTree'
     ParentColor = False
   end
   object lblToolbar: TLabel
+    AnchorSideLeft.Control = btnAdd
+    AnchorSideLeft.Side = asrBottom
     Left = 456
-    Height = 18
+    Height = 15
     Top = 10
-    Width = 60
+    Width = 55
+    BorderSpacing.Left = 13
     Caption = 'lblToolbar'
     ParentColor = False
   end
   object btnRemove: TSpeedButton
-    Left = 432
+    AnchorSideLeft.Control = btnAdd
+    AnchorSideTop.Control = btnAdd
+    AnchorSideTop.Side = asrBottom
+    Left = 421
+    Height = 26
+    Top = 101
+    Width = 22
+    BorderSpacing.Top = 1
+    Enabled = False
+    NumGlyphs = 0
+    OnClick = btnRemoveClick
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object btnAdd: TSpeedButton
+    AnchorSideLeft.Control = TV
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Side = asrBottom
+    Left = 421
     Height = 26
     Top = 74
     Width = 22
-    Color = clBtnFace
-    NumGlyphs = 0
-    OnClick = btnRemoveClick
-  end
-  object btnAdd: TSpeedButton
-    Left = 432
-    Height = 26
-    Top = 99
-    Width = 22
-    Color = clBtnFace
+    Anchors = [akLeft]
+    BorderSpacing.Left = 13
+    BorderSpacing.Top = 1
+    Enabled = False
     NumGlyphs = 0
     OnClick = btnAddClick
+    ShowHint = True
+    ParentShowHint = False
   end
   object btnMoveUp: TSpeedButton
-    Left = 432
+    AnchorSideLeft.Control = btnRemove
+    Left = 421
     Height = 26
     Top = 157
     Width = 22
-    Color = clBtnFace
+    Enabled = False
     NumGlyphs = 0
     OnClick = btnMoveUpClick
+    ShowHint = True
+    ParentShowHint = False
   end
   object btnMoveDown: TSpeedButton
-    Left = 432
+    AnchorSideLeft.Control = btnMoveUp
+    AnchorSideTop.Control = btnMoveUp
+    AnchorSideTop.Side = asrBottom
+    Left = 421
     Height = 26
-    Top = 182
+    Top = 184
     Width = 22
-    Color = clBtnFace
+    BorderSpacing.Top = 1
+    Enabled = False
     NumGlyphs = 0
     OnClick = btnMoveDownClick
+    ShowHint = True
+    ParentShowHint = False
   end
   object pnlButtons: TPanel
     Left = 0
     Height = 42
-    Top = 288
+    Top = 395
     Width = 651
     Align = alBottom
     BevelOuter = bvNone
@@ -72,7 +98,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
     ClientWidth = 651
     Color = clGreen
     ParentColor = False
-    TabOrder = 0
+    TabOrder = 4
     object Bevel1: TBevel
       Left = 0
       Height = 2
@@ -84,7 +110,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
       AnchorSideRight.Control = btnCancel
       AnchorSideBottom.Control = pnlButtons
       AnchorSideBottom.Side = asrBottom
-      Left = 480
+      Left = 488
       Height = 25
       Top = 11
       Width = 75
@@ -106,10 +132,10 @@ object EdtTbConfigForm: TEdtTbConfigForm
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = pnlButtons
       AnchorSideBottom.Side = asrBottom
-      Left = 561
+      Left = 569
       Height = 25
       Top = 11
-      Width = 84
+      Width = 76
       Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Right = 6
@@ -125,39 +151,68 @@ object EdtTbConfigForm: TEdtTbConfigForm
     end
   end
   object btnAddDivider: TButton
-    Left = 497
+    AnchorSideBottom.Control = pnlButtons
+    Left = 504
     Height = 25
-    Top = 256
-    Width = 110
+    Top = 364
+    Width = 96
     Anchors = [akRight, akBottom]
     AutoSize = True
+    BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 4
     Caption = 'btnAddDivider'
     Constraints.MaxHeight = 25
     Constraints.MinHeight = 25
     Constraints.MinWidth = 75
     OnClick = btnAddDividerClick
-    TabOrder = 1
+    TabOrder = 3
   end
   object lbToolbar: TListBox
+    AnchorSideLeft.Control = lblToolbar
+    AnchorSideTop.Control = TV
+    AnchorSideBottom.Control = btnAddDivider
     Left = 456
-    Height = 225
-    Top = 28
+    Height = 301
+    Top = 57
     Width = 183
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Bottom = 6
     ItemHeight = 0
+    OnSelectionChange = lbToolbarSelectionChange
     TabOrder = 2
-    TopIndex = -1
   end
   object TV: TTreeView
+    AnchorSideLeft.Control = lblMenuTree
+    AnchorSideTop.Control = FilterEdit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = pnlButtons
     Left = 16
-    Height = 253
-    Top = 28
+    Height = 332
+    Top = 57
     Width = 392
-    DefaultItemHeight = 19
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+    DefaultItemHeight = 16
     ReadOnly = True
     ScrollBars = ssAutoBoth
-    TabOrder = 3
-    OnChange = TVChange
+    TabOrder = 1
+    OnSelectionChanged = TVSelectionChanged
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+  end
+  object FilterEdit: TTreeFilterEdit
+    AnchorSideLeft.Control = lblMenuTree
+    AnchorSideTop.Control = lblMenuTree
+    AnchorSideTop.Side = asrBottom
+    Left = 16
+    Height = 20
+    Top = 31
+    Width = 192
+    ButtonWidth = 23
+    NumGlyphs = 0
+    BorderSpacing.Top = 6
+    MaxLength = 0
+    TabOrder = 0
+    FilteredTreeview = TV
   end
 end

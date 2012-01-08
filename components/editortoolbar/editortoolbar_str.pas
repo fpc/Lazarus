@@ -14,9 +14,13 @@ resourcestring
   rsEditorToolbarConfigForm = 'Editor Toolbar Configuration';
   rsOK                      = 'OK';
   rsCancel                  = 'Cancel';
-  rsToolbar                 = 'Toolbar';
-  rsMenuTree                = 'Menu Tree';
+  rsToolbar                 = 'Toolbar Items';
+  rsMenuTree                = 'Available Menu Items';
   rsAddDivider              = 'Add Divider';
+  rsAddSelected             = 'Add selected item to toolbar';
+  rsRemoveSelected          = 'Remove selected item from toolbar';
+  rsMoveSelectedUp          = 'Move selected toolbar item up';
+  rsMoveSelectedDown        = 'Move selected toolbar item down';
 
 implementation
 
