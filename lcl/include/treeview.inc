@@ -78,18 +78,20 @@ function IndexOfNodeAtTop(NodeArray: TTreeNodeArray; Count, y: integer): integer
 // returns index of Node with Node.Top <= y < Node[+1].Top
 var
   l, m, r, VisibleCount: integer;
+  VisibleNodesAlloc: Boolean;
   VisibleNodes: TTreeNodeArray;
 begin
   if (Count = 0) or (NodeArray = nil) then
     Exit(-1);
   // Count the visible nodes
   VisibleCount := 0;
+  VisibleNodesAlloc := False;
   for l := 0 to Count-1 do
     if NodeArray[l].Visible then
       Inc(VisibleCount);
   try
-    // Make a temporary array of visible nodes
-    if VisibleCount > 0 then begin
+    // Make a temporary array of visible nodes if there are hidden nodes
+    if VisibleCount < Count then begin
       GetMem(VisibleNodes,SizeOf(Pointer)*VisibleCount);
       m := 0;
       for l := 0 to Count-1 do
@@ -98,6 +100,7 @@ begin
           Inc(m);
         end;
       Count := VisibleCount;
+      VisibleNodesAlloc := True;
     end
     else
       VisibleNodes := NodeArray;
@@ -117,7 +120,7 @@ begin
     end;
     Result := -1;
   finally
-    if VisibleCount > 0 then
+    if VisibleNodesAlloc then
       Freemem(VisibleNodes);
   end;
 end;
