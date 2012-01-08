@@ -76,7 +76,8 @@ resourcestring
   sErrorOnCreate = 'Error creating an instance of TPoFamily:' + LineEnding + '%s';
   sErrorOnCleanup = 'An unrecoverable error occurred' + LineEnding + '%s' + LineEnding + 'Please close the program';
 
-  sTotalErrors = 'Total errors found: %d';
+  sTotalErrors =   'Total errors found  : %d';
+  sTotalWarnings = 'Total warnings found: %d';
   //sNoErrorsFound = 'No errors found.';
   sNoTestSelected = 'There are no tests selected.';
 
@@ -181,7 +182,7 @@ end;
 
 procedure TPoCheckerForm.ShowError(const Msg: String);
 begin
-  MessageDlg('GPoCheck', Msg, mtError, [mbOk], 0);
+  MessageDlg('Po-checker', Msg, mtError, [mbOk], 0);
 end;
 
 function TPoCheckerForm.TrySelectFile: Boolean;
@@ -253,7 +254,7 @@ end;
 procedure TPoCheckerForm.RunSelectedTests;
 var
   Options: TPoTestOptions;
-  ErrorCount: Integer;
+  ErrorCount, WarningCount: Integer;
   SL: TStrings;
   ResultDlg: TResultDlgForm;
 begin
@@ -271,11 +272,13 @@ begin
     if (not (ptoFindAllChilds in Options)) and Assigned(PoFamily.Child)
         and (PoFamily.ChildName <> FChoosenChildName) then
       PoFamily.ChildName := FChoosenChildName;
-    PoFamily.RunTests(Options, ErrorCount, SL);
-    if (ErrorCount > 0) then
+    PoFamily.RunTests(Options, ErrorCount, WarningCount, SL);
+    if (ErrorCount > 0) or (WarningCount > 0) then
+    debugln('RunSelectedTests: ',Format(sTotalErrors,[ErrorCount]));
+    debugln('                  ',Format(sTotalWarnings,[WarningCount]));
     begin
-      debugln('RunSelectedTests: ',Format(sTotalErrors,[ErrorCount]));
       SL.Add(Format(sTotalErrors,[ErrorCount]));
+      SL.Add(Format(sTotalWarnings,[WarningCount]));
       ResultDlg := TResultDlgForm.Create(Nil);
       try
         ResultDlg.Log.Assign(SL);
@@ -284,9 +287,8 @@ begin
       finally
         ResultDlg.Free;
       end;
-    end
-    else  //no errors
-      NoErrLabel.Visible := True;
+    end;
+    NoErrLabel.Visible := (ErrorCount = 0);
   finally
     if Assigned(SL) then
       SL.Free;

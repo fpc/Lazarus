@@ -102,6 +102,8 @@ type
   protected
     property Items: TFPList read FItems;
   public
+    property OriginalList: TStringHashList read FOriginalToItem;
+  public
     constructor Create(const AFilename: String; const Full: Boolean = True);
     constructor Create(AStream: TStream; const Full: Boolean = True);
     destructor Destroy; override;
@@ -147,6 +149,9 @@ var
 function UTF8ToSystemCharSet(const s: string): string; inline;
 
 //function UpdatePoFile(Files: TStrings; const POFilename: string): boolean;
+
+const
+  tgHasDup = $01;
 
 implementation
 
@@ -914,7 +919,8 @@ end;
 procedure TSimplePOFile.Add(const Identifier, OriginalValue, TranslatedValue,
   Comments, Context, Flags, PreviousID: string; LineNr: Integer);
 var
-  Item: TPOFileItem;
+  Item, OItem: TPOFileItem;
+  OIndex: Integer;
   //p: Integer;
 begin
   if (not FAllEntries) and (TranslatedValue='') then exit;
@@ -924,7 +930,7 @@ begin
   Item.Context:=Context;
   Item.Flags:=Flags;
   Item.PreviousID:=PreviousID;
-  Item.Tag:=FTag;
+  Item.Tag:=0;
   Item.LineNr := LineNr;
   FItems.Add(Item);
 
@@ -942,6 +948,14 @@ begin
   }
 
   //if FIdentifierToItem.Data[UpperCase(Identifier)]=nil then raise Exception.Create('');
+  OIndex := FOriginalToItem.Find(OriginalValue);
+  if (OIndex > -1) then
+  begin
+    //TPoFileItem(FOriginalToItem.List[OIndex]^.Data).Tag := TPoFileItem(FOriginalToItem.List[OIndex]^.Data).Tag or tgHasDup;
+    OItem := TPoFileItem(FOriginalToItem.List[OIndex]^.Data);
+    OItem.Tag := OItem.Tag or tgHasDup;
+    Item.Tag := Item.Tag or tgHasDup;
+  end;
   FOriginalToItem.Add(OriginalValue,Item);
   //if FOriginalToItem.Data[OriginalValue]=nil then raise Exception.Create('');
 end;

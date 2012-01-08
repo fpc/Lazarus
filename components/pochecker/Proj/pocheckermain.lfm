@@ -15,8 +15,8 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideTop.Control = SelectTestLabel
     AnchorSideTop.Side = asrBottom
     Left = 201
-    Height = 169
-    Top = 33
+    Height = 174
+    Top = 28
     Width = 373
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
@@ -28,9 +28,9 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideLeft.Control = OpenBtn
     AnchorSideLeft.Side = asrBottom
     Left = 201
-    Height = 19
+    Height = 14
     Top = 8
-    Width = 144
+    Width = 97
     BorderSpacing.Left = 9
     Caption = 'Select test types'
     Font.Style = [fsBold]
@@ -112,9 +112,9 @@ object PoCheckerForm: TPoCheckerForm
     TabOrder = 3
     object CurTestHeaderLabel: TLabel
       Left = 8
-      Height = 19
+      Height = 14
       Top = 8
-      Width = 96
+      Width = 62
       Caption = 'Current Test:'
       ParentColor = False
     end
@@ -123,9 +123,9 @@ object PoCheckerForm: TPoCheckerForm
       AnchorSideTop.Control = CurTestHeaderLabel
       AnchorSideTop.Side = asrBottom
       Left = 8
-      Height = 19
-      Top = 27
-      Width = 111
+      Height = 14
+      Top = 22
+      Width = 69
       Caption = 'Current po-file:'
       ParentColor = False
     end
@@ -134,10 +134,10 @@ object PoCheckerForm: TPoCheckerForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = CurTestHeaderLabel
       AnchorSideTop.Side = asrCenter
-      Left = 110
-      Height = 19
+      Left = 76
+      Height = 14
       Top = 8
-      Width = 95
+      Width = 64
       BorderSpacing.Around = 6
       Caption = 'CurTestLabel'
       ParentColor = False
@@ -147,10 +147,10 @@ object PoCheckerForm: TPoCheckerForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = CurPoHeaderLabel
       AnchorSideTop.Side = asrCenter
-      Left = 125
-      Height = 19
-      Top = 27
-      Width = 82
+      Left = 83
+      Height = 14
+      Top = 22
+      Width = 56
       BorderSpacing.Around = 6
       Caption = 'CurPoLabel'
       ParentColor = False
@@ -158,9 +158,9 @@ object PoCheckerForm: TPoCheckerForm
   end
   object NoErrLabel: TLabel
     Left = 8
-    Height = 24
-    Top = 232
-    Width = 171
+    Height = 25
+    Top = 231
+    Width = 149
     Anchors = [akLeft, akBottom]
     Caption = 'No errors found'
     Font.Color = clGreen
@@ -174,9 +174,9 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideTop.Control = TestListBox
     AnchorSideTop.Side = asrBottom
     Left = 201
-    Height = 23
+    Height = 17
     Top = 208
-    Width = 97
+    Width = 64
     BorderSpacing.Top = 6
     Caption = 'Select All'
     Enabled = False

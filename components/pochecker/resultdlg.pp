@@ -26,6 +26,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
+    procedure SaveBtnClick(Sender: TObject);
   private
     PoHL: TSynPoSyn;
     procedure SaveToFile;
@@ -37,8 +38,11 @@ implementation
 
 {$R *.lfm}
 
-const
+ResourceString
   sSaveError = 'Error saving file:' + LineEnding + '%s';
+  sSaveCaption = 'Save to file';
+  sCopyCaption = 'Copy to clipboard';
+
 
 { TResultDlgForm }
 
@@ -49,6 +53,8 @@ begin
   FLog := TStringList.Create;
   PoHL := TSynPoSyn.Create(Self);
   LogMemo.Highlighter := PoHL;
+  SaveBtn.Caption := sSaveCaption;
+  CopyBtn.Caption := sCopyCaption;
 end;
 
 procedure TResultDlgForm.FormClose(Sender: TObject;
@@ -82,6 +88,18 @@ end;
 procedure TResultDlgForm.FormShow(Sender: TObject);
 begin
   LogMemo.Lines.Assign(FLog);
+end;
+
+procedure TResultDlgForm.SaveBtnClick(Sender: TObject);
+begin
+  if SaveDialog.Execute then
+  begin
+    try
+      LogMemo.Lines.SaveToFile(SaveDialog.FileName);
+    except
+      on E: EStreamError do MessageDlg('Po-checker',Format(sSaveError,[SaveDialog.FileName]),mtError, [mbOk],0);
+    end;
+  end;
 end;
 
 procedure TResultDlgForm.SaveToFile;

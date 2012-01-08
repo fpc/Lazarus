@@ -63,10 +63,10 @@ Type
     procedure CheckFormatArgs(out ErrorCount: Integer; ErrorLog: TStrings);
     procedure CheckMissingIdentifiers(out ErrorCount: Integer; ErrorLog: TStrings);
     procedure CheckMismatchedOriginals(out ErrorCount: Integer; ErrorLog: TStrings);
-    procedure CheckDuplicateOriginals(out ErrorCount: Integer; ErrorLog: TStrings);
+    procedure CheckDuplicateOriginals(out WarningCount: Integer; ErrorLog: TStrings);
 
   public
-    procedure RunTests(const Options: TPoTestOptions; out ErrorCount: Integer; ErrorLog: TStrings);
+    procedure RunTests(const Options: TPoTestOptions; out ErrorCount, WarningCount: Integer; ErrorLog: TStrings);
 
     property Master: TSimplePoFile read FMaster;
     property Child: TSimplePoFile read FChild;
@@ -107,10 +107,11 @@ resourcestring
   sCheckMissingIdentifiers = 'CheckMissingIdentifiers';
   sCheckNrOfItems =  'CheckNrOfItems';
   sCheckMismatchedOriginals = 'CheckMismatchedOriginals';
-  sCheckDuplicateOriginals = 'CheckDiplicateOriginals';
+  sCheckDuplicateOriginals = 'CheckDuplicateOriginals';
   sIncompatibleFormatArgs = '[Line: %d] Incompatible format() arguments for:' ;
 
-  sNrErrorsFound = 'Found %d errors / warnings.';
+  sNrErrorsFound = 'Found %d errors.';
+  sNrWarningsFound = 'Found %d warnings.';
   sLineInFileName = '[Line %d] in %s:';
   sIdentifierNotFoundIn = 'Identifier [%s] not found in %s';
   sMissingMasterIdentifier = 'Identifier [%s] found in %s, but it does not exist in %s';
@@ -127,12 +128,8 @@ resourcestring
   sMismatchOriginalsM = '%s: %s';
   sMismatchOriginalsC = '%s: %s';
 
-  sDuplicateOriginals = 'This resourcestring:';
-  sDuplicateIdentifier = '#: %s';
-  sDuplicateOriginal = 'msgid "%s"';
-  sDuplicateContext = 'msgctxt "%s"';
-  sDuplicateOriginals2 = 'has the same value as idenftifier %s at line %d';
-  //sDuplicateOriginals3 = 'For this entry it is recommended to set: msgctxt="%s"';
+  sDuplicateOriginals = 'The (untranslated) value "%s" is used for more than 1 entry:';
+  sDuplicateLineNrWithValue = '[Line %d] %s';
 
 //Helper functions
 
@@ -515,49 +512,61 @@ begin
   //debugln('TPoFamily.CheckMismatchedOriginals: ',Dbgs(ErrorCount),' Errors');
 end;
 
-procedure TPoFamily.CheckDuplicateOriginals(out ErrorCount: Integer;
+procedure TPoFamily.CheckDuplicateOriginals(out WarningCount: Integer;
   ErrorLog: TStrings);
 var
   i: Integer;
-  PoItem, Dup: TPOFileItem;
+  PoItem: TPOFileItem;
+  LastHash, CurHash: Cardinal;
 begin
   //debugln('TPoFamily.CheckMismatchedOriginals');
   DoTestStart(PoTestOptionNames[ptoCheckDuplicateOriginals], ShortMasterName);
-  ErrorCount := NoError;
-  for i := FMaster.Count - 1 downto 0 do
+  WarningCount := 0;
+
+  //debugln('TPoFamily.CehckDuplicateOriginals');
+  //debugln('FMaster.OriginalList.Count = ',DbgS(FMaster.OriginalList.Count));
+  LastHash := 0;
+  for i := 0 to FMaster.OriginalList.Count - 1 do
   begin
-    PoItem := FMaster.PoItems[i];
-    Dup := FMaster.OriginalToItem(PoItem.Original);
-    if Assigned(Dup) and (Dup.Identifier <> PoItem.Identifier) {and (Dup.Context = '')} then
+    PoItem := TPoFileItem(FMaster.OriginalList.List[i]^.Data);
+    if Assigned(PoItem) then
     begin
-      if (ErrorCount = 0) then
+      CurHash := FMaster.OriginalList.List[i]^.HashValue ;
+      if ((PoItem.Tag and tgHasDup) = tgHasDup) then
       begin
-        ErrorLog.Add(Divider);
-        ErrorLog.Add(Format(sErrorsByTest,[sCheckDuplicateOriginals]));
-        ErrorLog.Add(ShortMasterName);
-        ErrorLog.Add(Divider);
-        ErrorLog.Add('');
+        if (WarningCount = 0) then
+        begin
+          ErrorLog.Add(Divider);
+          ErrorLog.Add(Format(sErrorsByTest,[sCheckDuplicateOriginals]));
+          ErrorLog.Add(ShortMasterName);
+          ErrorLog.Add(Divider);
+          ErrorLog.Add('');
+        end;
+        if (CurHash <> LastHash) then
+        begin//new value for PoItem.Original
+          LastHash := CurHash;
+          Inc(WarningCount);
+          if (WarningCount > 1) then ErrorLog.Add('');
+          ErrorLog.Add(Format(sDuplicateOriginals,[PoItem.Original]));
+          //debugln(format('The (untranslated) value "%s" is used for more than 1 entry:',[PoItem.Original]));
+        end;
+        ErrorLog.Add(format(sDuplicateLineNrWithValue,[PoItem.LineNr,PoItem.Identifier]));
+        //debugln(format(sDuplicateLineNrWithValue,[PoItem.LineNr,PoItem.Identifier]));
       end;
-      Inc(ErrorCount);
-      ErrorLog.Add(Format(sLineNr,[PoItem.LineNr]));
-      ErrorLog.Add(sDuplicateOriginals);
-      ErrorLog.Add(Format(sDuplicateIdentifier,[PoItem.Identifier]));
-      ErrorLog.Add(Format(sDuplicateOriginal,[PoItem.Original]));
-      ErrorLog.Add(Format(sDuplicateContext,[PoItem.Context]));
-      ErrorLog.Add(Format(sDuplicateOriginals2,[Dup.Identifier,Dup.LineNr]));
-      //ErrorLog.Add(Format(sDuplicateOriginals3,[PoItem.Identifier]));
-      ErrorLog.Add('');
     end;
   end;
-  if (ErrorCount > 0) then
+
+  if (WarningCount > 0) then
   begin
-    ErrorLog.Add(Format(sNrErrorsFound,[ErrorCount]));
+    ErrorLog.Add('');
+    ErrorLog.Add(Format(sNrWarningsFound,[WarningCount]));
     ErrorLog.Add(Divider);
     ErrorLog.Add('');
     ErrorLog.Add('');
   end;
-  DoTestEnd(PoTestOptionNames[ptoCheckDuplicateOriginals], ErrorCount);
-  //debugln('TPoFamily.CheckDuplicateOriginals: ',Dbgs(ErrorCount),' Errors');
+
+  DoTestEnd(PoTestOptionNames[ptoCheckDuplicateOriginals], WarningCount);
+  //debugln('TPoFamily.CheckDuplicateOriginals: ',Dbgs(WarningCount),' Errors');
 end;
 
 {
@@ -567,16 +576,17 @@ Pre conditions:
   * If a Child is assigned it must be child of Master
 }
 procedure TPoFamily.RunTests(const Options: TPoTestOptions; out
-  ErrorCount: Integer; ErrorLog: TStrings);
+  ErrorCount, WarningCount: Integer; ErrorLog: TStrings);
 var
   SL: TStringList;
-  CurrErrCnt: Integer;
+  CurrErrCnt, CurrWarnCnt: Integer;
   i: Integer;
   CurrChildName: String;
   S: String;
 begin
   SL := nil;
   ErrorCount := NoError;
+  WarningCount := NoError;
   if (not Assigned(FMaster)) and (not Assigned(FChild)) then
   begin
     {$ifdef DebugSimplePoFiles}
@@ -626,7 +636,7 @@ begin
   else
   begin
     SL := TStringList.Create;
-    Sl.Add(FChildName);
+    if Assigned(FChild) then Sl.Add(FChildName);
   end;
 
 //  for i := 0 to sl.count - 1 do debugln(extractfilename(sl.strings[i]));
@@ -636,8 +646,23 @@ begin
     //First run checks that are Master-only
     if (ptoCheckDuplicateOriginals in Options) then
     begin
-      CheckDuplicateOriginals(CurrErrCnt, ErrorLog);
-      ErrorCount := CurrErrCnt + ErrorCount;
+      CheckDuplicateOriginals(CurrWarnCnt, ErrorLog);
+      WarningCount := CurrWarnCnt + WarningCount;
+    end;
+
+    {$ifdef DebugSimplePoFiles}
+    Debugln('TPoFamily.RunTests: number of childs for testing = ',DbgS(Sl.Count));
+    {$endif}
+
+    if (Options - [ptoCheckDuplicateOriginals] <> []) and (Sl.Count = 0) then
+    begin
+      {$ifdef DebugSimplePoFiles}
+      Debugln('TPoFamily.RunTests: Warning: No child selected or found for selected tests');
+      {$endif}
+      Inc(WarningCount);
+      ErrorLog.Add(Divider);
+      ErrorLog.Add('Warning: No child selected (or found) for selected tests.');
+      ErrorLog.Add(Divider);
     end;
 
     //then iterate all Children
