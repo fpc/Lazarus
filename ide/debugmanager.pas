@@ -2082,6 +2082,7 @@ begin
     if EnvironmentOptions.DebuggerEventLogClearOnRun then
       ClearDebugEventsLog;
 
+    //ensure to unset all evemts in SetDebugger()
     FDebugger.OnBreakPointHit := @DebuggerBreakPointHit;
     FDebugger.OnBeforeState   := @DebuggerBeforeChangeState;
     FDebugger.OnState         := @DebuggerChangeState;
@@ -2635,6 +2636,19 @@ begin
 
   FRunTimer.Enabled:=false;
   Exclude(FManagerStates,dmsWaitForRun);
+
+  if FDebugger <> nil then begin
+    FDebugger.OnBreakPointHit := nil;
+    FDebugger.OnBeforeState   := nil;
+    FDebugger.OnState         := nil;
+    FDebugger.OnCurrent       := nil;
+    FDebugger.OnDbgOutput     := nil;
+    FDebugger.OnDbgEvent      := nil;
+    FDebugger.OnException     := nil;
+    FDebugger.OnConsoleOutput := nil;
+    FDebugger.OnFeedback      := nil;
+    FDebugger.OnIdle          := nil;
+  end;
 
   FDebugger := ADebugger;
   if FDebugger = nil
