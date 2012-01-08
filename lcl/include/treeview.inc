@@ -5556,8 +5556,8 @@ begin
     Items.ClearMultiSelection(True);       // Now clears all multi-selections
   end
   else begin
-    ANode := Selected;
-    if not ANode.Visible then      // Clear a single selection only if not visible
+    ANode := Selected;            // Clear a single selection only if not visible
+    if Assigned(ANode) and not ANode.Visible then
       ANode.Selected:=False;       // Selected := nil;
   end;
 end;
