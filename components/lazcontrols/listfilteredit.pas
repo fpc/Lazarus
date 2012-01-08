@@ -91,28 +91,6 @@ begin
   fOriginalData.Assign(fFilteredListbox.Items);
 end;
 
-procedure TListFilterEdit.ApplyFilterCore;
-var
-  i, j: Integer;
-  s: string;
-  clb: TCustomCheckListBox;
-begin
-  clb:=Nil;
-  if fFilteredListbox is TCustomCheckListBox then
-    clb:=TCustomCheckListBox(fFilteredListbox);
-  fFilteredListbox.Clear;
-  fFilteredListbox.Items.BeginUpdate;
-  for i:=0 to fSortedData.Count-1 do begin
-    s:=fSortedData[i];
-    j:=fFilteredListbox.Items.AddObject(s, fSortedData.Objects[i]);
-    if Assigned(fSelectedPart) then
-      fFilteredListbox.Selected[i]:=fSelectedPart=fSortedData.Objects[i];
-    if Assigned(clb) and Assigned(OnCheckItem) then
-      clb.Checked[j]:=OnCheckItem(fSortedData.Objects[i]);
-  end;
-  fFilteredListbox.Items.EndUpdate;
-end;
-
 function TListFilterEdit.CompareFNs(AFilename1,AFilename2: string): integer;
 begin
   if SortData then
@@ -148,6 +126,28 @@ begin
       fSortedData.InsertObject(i+1, s, fOriginalData.Objects[Origi]);
     end;
   end;
+end;
+
+procedure TListFilterEdit.ApplyFilterCore;
+var
+  i, j: Integer;
+  s: string;
+  clb: TCustomCheckListBox;
+begin
+  clb:=Nil;
+  if fFilteredListbox is TCustomCheckListBox then
+    clb:=TCustomCheckListBox(fFilteredListbox);
+  fFilteredListbox.Clear;
+  fFilteredListbox.Items.BeginUpdate;
+  for i:=0 to fSortedData.Count-1 do begin
+    s:=fSortedData[i];
+    j:=fFilteredListbox.Items.AddObject(s, fSortedData.Objects[i]);
+    if Assigned(fSelectedPart) then
+      fFilteredListbox.Selected[i]:=fSelectedPart=fSortedData.Objects[i];
+    if Assigned(clb) and Assigned(OnCheckItem) then
+      clb.Checked[j]:=OnCheckItem(fSortedData.Objects[i]);
+  end;
+  fFilteredListbox.Items.EndUpdate;
 end;
 
 procedure TListFilterEdit.StoreSelection;
