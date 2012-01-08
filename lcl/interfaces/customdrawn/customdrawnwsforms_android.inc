@@ -2,6 +2,16 @@
 
 { TCDWSCustomForm }
 
+// For non-mobile forms, so no implementation in LCL-CustomDrawn-Android
+class function TCDWSCustomForm.DoCreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+end;
+
+class procedure TCDWSCustomForm.DoShowHide(const AWinControl: TWinControl);
+begin
+end;
+
 {------------------------------------------------------------------------------
   Method: TCDWSCustomForm.CreateHandle
   Params:  None

@@ -2444,6 +2444,15 @@ begin
   if Result = 0 then DebugLn('[X11KeyToLCLKey] Unknown KeySym: $' + IntToHex(AX11Key, 4));
 end;
 
+class function TCDWSCustomForm.DoCreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+end;
+
+class procedure TCDWSCustomForm.DoShowHide(const AWinControl: TWinControl);
+begin
+end;
+
 {------------------------------------------------------------------------------
   Method: TCDWSCustomForm.CreateHandle
   Params:  None

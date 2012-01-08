@@ -1578,7 +1578,7 @@ Begin
 end;
 
 function GetWinCEPlatform: TApplicationType;
-{$ifdef Win32}
+{$ifdef MSWindows}
 begin
   Result := atDesktop;
 end;
@@ -1608,7 +1608,7 @@ end;
 {$endif}
 
 function GetWinCEVersion: TWinCEVersion;
-{$ifdef Win32}
+{$ifdef MSWindows}
 begin
   Result := wince_other;
 end;
@@ -1641,7 +1641,7 @@ end;
 
 function IsHiResMode: Boolean;
 begin
-  {$ifdef Win32}
+  {$ifdef MSWindows}
   Result := False;
   {$else}
   Result := Screen.Width > 240;

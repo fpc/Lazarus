@@ -163,6 +163,9 @@ type
     // Default Fonts
     DefaultFont: TFPCustomFont;
     DefaultFontAndroidSize: Integer;
+    // Mobile emulator
+    MobileEmulator: Boolean;
+    MobileMainForm: TLCLIntfHandle;
     // For unusual implementations of DebugLn/DebugOut
     procedure AccumulatingDebugOut(AStr: string);
     //

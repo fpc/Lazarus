@@ -2,22 +2,14 @@
 
 { TCDWSCustomForm }
 
-{------------------------------------------------------------------------------
-  Method:  TCDWSCustomForm.CreateHandle
-  Params:  AWinControl - LCL control
-           AParams     - Creation parameters
-  Returns: Handle to the window in Cocoa interface
-
-  Creates new window in Cocoa interface with the specified parameters
- ------------------------------------------------------------------------------}
-
-class function TCDWSCustomForm.CreateHandle(const AWinControl: TWinControl;
+class function TCDWSCustomForm.DoCreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   win : TCocoaForm;
   winhandle: TCocoaWindow;
   cnt : TCocoaCustomControl;
   ns  : NSString;
+  lRect: NSRect;
 const
   WinMask = NSTitledWindowMask or NSClosableWindowMask or NSMiniaturizableWindowMask or NSResizableWindowMask;
 begin
@@ -32,7 +24,9 @@ begin
   winhandle := TCocoaWindow.Create;
   winhandle.LCLForm := TCustomForm(AWinControl);
 
-  win:=TCocoaForm(win.initWithContentRect_styleMask_backing_defer(CreateParamsToNSRect(AParams), WinMask, NSBackingStoreBuffered, False));
+  if CDWidgetset.MobileEmulator then lRect := GetNSRect(200, 200, 240, 320)
+  else lRect := CreateParamsToNSRect(AParams);
+  win:=TCocoaForm(win.initWithContentRect_styleMask_backing_defer(lRect, WinMask, NSBackingStoreBuffered, False));
   win.WindowHandle := winhandle;
   win.setDelegate(win);
   ns:=NSStringUtf8(AWinControl.Caption);
@@ -46,6 +40,40 @@ begin
 
   winhandle.CocoaForm := win;
   Result := TLCLIntfHandle(winhandle);
+end;
+
+class procedure TCDWSCustomForm.DoShowHide(const AWinControl: TWinControl);
+var
+  win: TCocoaWindow;
+begin
+  win := TCocoaWindow(AWinControl.Handle);
+  if not Assigned(win) then Exit;
+
+  if AWinControl.Visible then
+    win.CocoaForm.orderFrontRegardless
+  else
+    win.CocoaForm.orderOut(nil);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCDWSCustomForm.CreateHandle
+  Params:  AWinControl - LCL control
+           AParams     - Creation parameters
+  Returns: Handle to the window in Cocoa interface
+
+  Creates new window in Cocoa interface with the specified parameters
+ ------------------------------------------------------------------------------}
+class function TCDWSCustomForm.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  if CDWidgetset.MobileEmulator then
+  begin
+    Result := TLCLIntfhandle(AddNewForm(TCustomForm(AWinControl)));
+    if AWinControl = Application.MainForm then
+      CDWidgetset.MobileMainForm := DoCreateHandle(AWinControl, AParams);
+  end
+  else
+    Result := DoCreateHandle(AWinControl, AParams);
 end;
 
 class procedure TCDWSCustomForm.DestroyHandle(const AWinControl: TWinControl);
@@ -89,16 +117,8 @@ begin
 end;
 
 class procedure TCDWSCustomForm.ShowHide(const AWinControl: TWinControl);
-var
-  win: TCocoaWindow;
 begin
-  win := TCocoaWindow(AWinControl.Handle);
-  if not Assigned(win) then Exit;
-
-  if AWinControl.Visible then
-    win.CocoaForm.orderFrontRegardless
-  else
-    win.CocoaForm.orderOut(nil);
+  DoShowHide(AWinControl);
 end;
 
 class function TCDWSCustomForm.GetText(const AWinControl: TWinControl; var AText: String): Boolean;

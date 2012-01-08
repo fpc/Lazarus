@@ -169,6 +169,15 @@ begin
   LCLControlSizeNeedsUpdate(AWinControl, True);
 end;
 
+class function TCDWSCustomForm.DoCreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+end;
+
+class procedure TCDWSCustomForm.DoShowHide(const AWinControl: TWinControl);
+begin
+end;
+
 {------------------------------------------------------------------------------
   Method: TCDWSCustomForm.CreateHandle
   Params:  None
