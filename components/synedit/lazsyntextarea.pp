@@ -48,6 +48,7 @@ type
     procedure SetLeftChar(AValue: Integer);
     procedure SetPadding(Side: TLazSynBorderSide; AValue: integer);
     procedure SetTopLine(AValue: TLinePos);
+    procedure DoDrawerFontChanged(Sender: TObject);
   protected
     procedure PaintTextLines(AClip: TRect; FirstLine, LastLine,
       FirstCol, LastCol: integer); virtual;
@@ -158,6 +159,11 @@ begin
   FTopLine := AValue;
 end;
 
+procedure TLazSynTextArea.DoDrawerFontChanged(Sender: TObject);
+begin
+  FontChanged;
+end;
+
 function TLazSynTextArea.ScreenColumnToXValue(Col: integer): integer;
 begin
   Result := FTextBounds.Left + (Col - LeftChar) * fCharWidth;
@@ -194,6 +200,7 @@ var
   i: TLazSynBorderSide;
 begin
   FTextDrawer := ATextDrawer;
+  FTextDrawer.RegisterOnFontChangeHandler(@DoDrawerFontChanged);
   FPaintLineColor := TSynSelectedColor.Create;
   FPaintLineColor2 := TSynSelectedColor.Create;
   for i := low(TLazSynBorderSide) to high(TLazSynBorderSide) do
@@ -205,6 +212,7 @@ end;
 
 destructor TLazSynTextArea.Destroy;
 begin
+  FTextDrawer.UnRegisterOnFontChangeHandler(@DoDrawerFontChanged);
   FreeAndNil(FPaintLineColor);
   FreeAndNil(FPaintLineColor2);
   inherited Destroy;

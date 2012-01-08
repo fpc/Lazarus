@@ -2223,7 +2223,7 @@ begin
 end;
 
 procedure TCustomSynEdit.FontChanged(Sender: TObject);
-begin
+begin // TODO: inherited ?
   FLastSetFontSize := Font.Height;
   RecalcCharExtent;
 end;
@@ -7200,7 +7200,7 @@ begin
   FScreenCaret.Lock;
   try
     FScreenCaret.CharWidth := CharWidth;
-    FScreenCaret.CharHeight := LineHeight;
+    FScreenCaret.CharHeight := LineHeight - Max(0, ExtraLineSpacing);
     SizeOrFontChanged(TRUE);
   finally
     FScreenCaret.UnLock;
