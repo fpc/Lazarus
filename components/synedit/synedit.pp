@@ -448,8 +448,7 @@ type
     fRightEdge: Integer;
     fRightEdgeColor: TColor;
     FScrollBars: TScrollStyle;
-    fTopLine: Integer;
-    FOldTopLine, FOldTopView: Integer;
+    FOldTopView: Integer;
     FLastTextChangeStamp: Int64;
     fHighlighter: TSynCustomHighlighter;
     fUndoList: TSynEditUndoList;
@@ -523,6 +522,7 @@ type
     function GetPaintLockOwner: TSynEditBase;
     function GetPlugin(Index: Integer): TSynEditPlugin;
     function GetTextBetweenPoints(aStartPoint, aEndPoint: TPoint): String;
+    function GetTopLine: Integer;
     procedure SetBlockTabIndent(AValue: integer);
     procedure SetDefSelectionMode(const AValue: TSynSelectionMode);
     procedure SetFoldState(const AValue: String);
@@ -638,7 +638,7 @@ type
     procedure SetSelTextExternal(const Value: string);
     procedure SetTabWidth(Value: integer);
     procedure SynSetText(const Value: string);
-    function  CurrentMaxTopLine: Integer;
+    function  CurrentMaxTopView: Integer;
     procedure SetTopLine(Value: Integer);
     procedure ScrollAfterTopLineChanged;
     procedure SetWantTabs(const Value: boolean);
@@ -733,8 +733,8 @@ type
     procedure DoHighlightChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     procedure ListCleared(Sender: TObject);
     procedure FoldChanged(Index: integer);
-    function GetTopView : Integer;
-    procedure SetTopView(const AValue : Integer);
+    function  GetTopView : Integer;
+    procedure SetTopView(AValue : Integer);
     procedure MarkListChange(Sender: TSynEditMark; Changes: TSynEditMarkChangeReasons);
 {$IFDEF SYN_MBCSSUPPORT}
     procedure MBCSGetSelRangeInLineWhenColumnSelectionMode(const s: string;
@@ -962,7 +962,7 @@ type
     property LinesInWindow: Integer read GetLinesInWindow;
     property MaxLeftChar: integer read fMaxLeftChar write SetMaxLeftChar
       default 1024;
-    property TopLine: Integer read fTopLine write SetTopLine;
+    property TopLine: Integer read GetTopLine write SetTopLine;
 
     property UseIncrementalColor : Boolean write SetUseIncrementalColor;
     property Modified: Boolean read GetModified write SetModified;
@@ -1612,6 +1612,11 @@ begin
   Result := FInternalBlockSelection.SelText;
 end;
 
+function TCustomSynEdit.GetTopLine: Integer;
+begin
+  Result := FFoldedLinesView.ViewPosToTextIndex(FTextArea.TopLine) + 1;
+end;
+
 procedure TCustomSynEdit.SetBlockTabIndent(AValue: integer);
 begin
   if FBlockTabIndent = AValue then Exit;
@@ -1932,8 +1937,6 @@ begin
 {$ENDIF}
   fWantTabs := False;
   fTabWidth := 8;
-  fTopLine := 1;
-  FOldTopLine := 1;
   FOldTopView := 1;
   FFoldedLinesView.TopLine := 1;
   // find / replace
@@ -2044,7 +2047,6 @@ begin
   if FPaintLock = 0 then begin
     SetUpdateState(True, Self);
     FInvalidateRect := Rect(-1, -1, -2, -2);
-    FOldTopLine := FTopLine;
     FOldTopView := TopView;
     FLastTextChangeStamp := TSynEditStringList(FLines).TextChangeStamp;
   end;
@@ -2461,8 +2463,8 @@ begin
     end else begin
       // pretend we haven't scrolled
       TopFoldLine := FFoldedLinesView.TopLine;
-      if FOldTopLine <> FTopLine then
-        FFoldedLinesView.TopTextIndex := FOldTopLine - 1;
+      if FOldTopView <> TopView then
+        FFoldedLinesView.TopLine := FOldTopView;
 
       { find the visible lines first }
       if LastLine >= 0 then begin
@@ -2472,7 +2474,7 @@ begin
       end
       else
         LastLine := LinesInWindow + 1;
-      FirstLine := RowToScreenRow(Max(FirstLine, TopLine));
+      FirstLine := RowToScreenRow(FirstLine);
       FirstLine := Max(0, FirstLine);
       { any line visible? }
       if (LastLine >= FirstLine) then begin
@@ -2518,8 +2520,8 @@ begin
     end else begin
       // pretend we haven't scrolled
       TopFoldLine := FFoldedLinesView.TopLine;
-      if FOldTopLine <> FTopLine then
-        FFoldedLinesView.TopTextIndex := FOldTopLine - 1;
+      if FOldTopView <> TopView then
+        FFoldedLinesView.TopLine := FOldTopView;
 
       { find the visible lines first }
       if LastLine >= 0 then begin
@@ -2529,7 +2531,7 @@ begin
       end
       else
         l := LinesInWindow + 1;
-      f := RowToScreenRow(Max(FirstLine, TopLine));
+      f := RowToScreenRow(FirstLine);
       f := Max(0, f);
       { any line visible? }
       if (l >= f) then begin
@@ -3114,8 +3116,8 @@ begin
     // compare to Bounds => Padding area does not scroll
     if ( (X >= FTextArea.Bounds.Left)   or (LeftChar <= 1) ) and
        ( (X <  FTextArea.Bounds.Right)  or (LeftChar >= CurrentMaxLeftChar) ) and
-       ( (Y >= FTextArea.Bounds.Top)    or (fTopLine <= 1) ) and
-       ( (Y <  FTextArea.Bounds.Bottom) or (fTopLine >= CurrentMaxTopLine) )
+       ( (Y >= FTextArea.Bounds.Top)    or (TopView <= 1) ) and
+       ( (Y <  FTextArea.Bounds.Bottom) or (TopView >= CurrentMaxTopView) )
     then begin
       if (sfMouseSelecting in fStateFlags) and not FInternalCaret.IsAtPos(FCaret) then
         Include(fStateFlags, sfMouseDoneSelecting);
@@ -3357,7 +3359,6 @@ begin
     FTextArea.ForegroundColor := Font.Color;
     FTextArea.BackgroundColor := Color;
     FTextArea.RightEdgeColor := RightEdgeColor;
-    FTextArea.TopLine := TopView;
     FTextArea.Paint(Canvas, rcClip);
     // right gutter
     if FRightGutter.Visible and (rcClip.Right > ClientWidth - FRightGutter.Width - ScrollBarWidth) then begin
@@ -3884,46 +3885,28 @@ begin
   FLines.Text := Value; // Do not trim
 end;
 
-function TCustomSynEdit.CurrentMaxTopLine: Integer;
+function TCustomSynEdit.CurrentMaxTopView: Integer;
 begin
-  if (eoScrollPastEof in Options) then
-    Result := FTheLinesView.Count
-  else
-    Result := FFoldedLinesView.TextPosAddLines(FTheLinesView.Count+1, -Max(0, LinesInWindow));
+  Result := FFoldedLinesView.Count;
+  if not(eoScrollPastEof in Options) then
+    Result := Result + 1 - Max(0, LinesInWindow);
   Result := Max(Result, 1);
 end;
 
 procedure TCustomSynEdit.SetTopLine(Value: Integer);
+var
+  NewTopView: Integer;
 begin
-  // don't use MinMax here, it will fail in design mode (Lines.Count is zero,
-  // but the painting code relies on TopLine >= 1)
-  {$IFDEF SYNSCROLLDEBUG}
-  if fPaintLock = 0 then debugln(['SetTopline outside Paintlock']);
-  if (sfHasScrolled in fStateFlags) then debugln(['SetTopline with sfHasScrolled Value=',Value, '  FOldTopLine=',FOldTopLine,'  FOldTopView=',FOldTopView ]);
-  {$ENDIF}
-  Value := Min(Value, CurrentMaxTopLine);
-  Value := Max(Value, 1);
+  // TODO : Above hidden line only if folded, if hidden then use below
   if FFoldedLinesView.FoldedAtTextIndex[Value-1] then
     Value := FindNextUnfoldedLine(Value, False);
   if FFoldedLinesView.FoldedAtTextIndex[Value-1] then
     Value := FindNextUnfoldedLine(Value, True);
-  Value := Min(Value, CurrentMaxTopLine);
-  FFoldedLinesView.TopTextIndex := fTopLine - 1;
-  if Value <> fTopLine then begin
-    fTopLine := Value;
-    FFoldedLinesView.TopTextIndex := Value-1;
-    UpdateScrollBars;
-    // call MarkupMgr before ScrollAfterTopLineChanged, in case we aren't in a PaintLock
-    fMarkupManager.TopLine:= fTopLine;
-    if (sfPainting in fStateFlags) then debugln('SetTopline inside paint');
-    ScrollAfterTopLineChanged;
-    StatusChanged([scTopLine]);
-  end
-  else
-    fMarkupManager.TopLine:= fTopLine;
-  {$IFDEF SYNSCROLLDEBUG}
-  if fPaintLock = 0 then debugln('SetTopline outside Paintlock EXIT');
-  {$ENDIF}
+
+  NewTopView := FFoldedLinesView.TextIndexToViewPos(Value-1);
+  if NewTopView <> TopView then begin
+    TopView := NewTopView;
+  end;
 end;
 
 procedure TCustomSynEdit.ScrollAfterTopLineChanged;
@@ -3934,7 +3917,7 @@ begin
     exit;
   Delta := FOldTopView - TopView;
   {$IFDEF SYNSCROLLDEBUG}
-  if (sfHasScrolled in fStateFlags) then debugln(['ScrollAfterTopLineChanged with sfHasScrolled Delta=',Delta,' Ftopline=',FTopLine, '  FOldTopLine=',FOldTopLine,'  FOldTopView=',FOldTopView ]);
+  if (sfHasScrolled in fStateFlags) then debugln(['ScrollAfterTopLineChanged with sfHasScrolled Delta=',Delta,' topline=',TopLine, '  FOldTopView=',FOldTopView ]);
   {$ENDIF}
   if Delta <> 0 then begin
     // TODO: SW_SMOOTHSCROLL --> can't get it work
@@ -3957,7 +3940,6 @@ begin
       {$ENDIF}
     end;
   end;
-  FOldTopLine := FTopLine;
   FOldTopView := TopView;
   if (Delta <> 0) and (eoAlwaysVisibleCaret in fOptions2) then
     MoveCaretToVisibleArea;
@@ -3981,8 +3963,8 @@ begin
     NewCaretXY.X := LeftChar
   else if NewCaretXY.X > LeftChar + CharsInWindow - FScreenCaret.ExtraLineChars then
     NewCaretXY.X := LeftChar + CharsInWindow - FScreenCaret.ExtraLineChars;
-  if NewCaretXY.Y < fTopLine then
-    NewCaretXY.Y := fTopLine
+  if NewCaretXY.Y < TopLine then
+    NewCaretXY.Y := TopLine
   else begin
     MaxY:= ScreenRowToRow(Max(0,LinesInWindow-1));
     if NewCaretXY.Y > MaxY then
@@ -4091,7 +4073,7 @@ begin
       RecalcCharsAndLinesInWin(True);
     end;
     ScrollInfo.nPage := LinesInWindow;
-    ScrollInfo.nPos := FFoldedLinesView.TextIndexToViewPos(TopLine-1);
+    ScrollInfo.nPos := TopView;
     SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
     {$IFNDEF LCLWin32} {$IFnDEF SynScrollBarWorkaround}
     if not (sfVertScrollbarVisible in fStateFlags) then
@@ -4272,8 +4254,8 @@ begin
   //debugln('TCustomSynEdit.WMVScroll A ',DbgSName(Self),' Msg.ScrollCode=',dbgs(Msg.ScrollCode),' SB_PAGEDOWN=',dbgs(SB_PAGEDOWN),' SB_PAGEUP=',dbgs(SB_PAGEUP));
   case Msg.ScrollCode of
       // Scrolls to start / end of the text
-    SB_TOP: TopLine := 1;
-    SB_BOTTOM: TopLine := FTheLinesView.Count;
+    SB_TOP: TopView := 1;
+    SB_BOTTOM: TopView := FFoldedLinesView.Count;
       // Scrolls one line up / down
     SB_LINEDOWN: TopView := TopView + 1;
     SB_LINEUP: TopView := TopView - 1;
@@ -4331,7 +4313,7 @@ begin
       // TODO: see TSynEditFoldedView.LineCountChanged, this is only needed, because NeedFixFrom does not always work
       FFoldedLinesView.FixFoldingAtTextIndex(FChangedLinesStart, FChangedLinesEnd);
     end;
-    Topline := TopLine;
+    TopView := TopView;
     exit;
   end;
   FHighlighter.CurrentLines := FLines; // Trailing spaces are not needed
@@ -4340,7 +4322,7 @@ begin
   // Todo: text may not have changed
   if ATextChanged then
     fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd);
-  Topline := TopLine;
+  TopView := TopView;
 end;
 
 procedure TCustomSynEdit.IdleScanRanges(Sender: TObject; var Done: Boolean);
@@ -4433,7 +4415,7 @@ begin
   SetBlockBegin(Point(1, 1));
   SetCaretXY(Point(1, 1));
   // scroll to start of text
-  TopLine := 1;
+  TopView := 1;
   LeftChar := 1;
   StatusChanged(scTextCleared);
 end;
@@ -4442,8 +4424,8 @@ procedure TCustomSynEdit.FoldChanged(Index : integer);
 var
   i: Integer;
 begin
-  {$IFDEF SynFoldDebug}debugln(['FOLD-- FoldChanged; Index=', Index, ' topline=', TopLine, '  ScreenRowToRow(LinesInWindow + 1)=', ScreenRowToRow(LinesInWindow + 1)]);{$ENDIF}
-  TopLine := TopLine;
+  {$IFDEF SynFoldDebug}debugln(['FOLD-- FoldChanged; Index=', Index, ' TopView=', TopView, '  ScreenRowToRow(LinesInWindow + 1)=', ScreenRowToRow(LinesInWindow + 1)]);{$ENDIF}
+  TopView := TopView;
   i := FFoldedLinesView.CollapsedLineForFoldAtLine(CaretY);
   if i > 0 then begin
     SetCaretXY(Point(1, i));
@@ -4459,14 +4441,43 @@ begin
   InvalidateGutterLines(Index + 1, -1);
 end;
 
-procedure TCustomSynEdit.SetTopView(const AValue : Integer);
+procedure TCustomSynEdit.SetTopView(AValue : Integer);
 begin
-  TopLine := FFoldedLinesView.ViewPosToTextIndex(AValue)+1;
+  // don't use MinMax here, it will fail in design mode (Lines.Count is zero,
+  // but the painting code relies on TopLine >= 1)
+  {$IFDEF SYNSCROLLDEBUG}
+  if fPaintLock = 0 then debugln(['SetTopView outside Paintlock']);
+  if (sfHasScrolled in fStateFlags) then debugln(['SetTopView with sfHasScrolled Value=',AValue, '  FOldTopView=',FOldTopView ]);
+  {$ENDIF}
+  AValue := Min(AValue, CurrentMaxTopView);
+  AValue := Max(AValue, 1);
+
+  (* ToDo: FFoldedLinesView.TopLine := AValue;
+    Required, if "TopView := TopView" or "TopLine := TopLine" is called,
+    after ScanRanges (used to be: LineCountChanged / LineTextChanged)
+  *)
+  FFoldedLinesView.TopLine := AValue;
+
+  if FTextArea.TopLine <> AValue then begin
+    FTextArea.TopLine := AValue;
+    UpdateScrollBars;
+    // call MarkupMgr before ScrollAfterTopLineChanged, in case we aren't in a PaintLock
+    fMarkupManager.TopLine := TopLine;
+    if (sfPainting in fStateFlags) then debugln('SetTopline inside paint');
+    ScrollAfterTopLineChanged;
+    StatusChanged([scTopLine]);
+  end
+  else
+    fMarkupManager.TopLine := TopLine;
+
+  {$IFDEF SYNSCROLLDEBUG}
+  if fPaintLock = 0 then debugln('SetTopline outside Paintlock EXIT');
+  {$ENDIF}
 end;
 
 function TCustomSynEdit.GetTopView : Integer;
 begin
-  Result := FFoldedLinesView.TextIndexToViewPos(TopLine-1);
+  Result := FTextArea.TopLine;
 end;
 
 procedure TCustomSynEdit.SetWordBlock(Value: TPoint);
@@ -4794,7 +4805,7 @@ begin
   end;
   FFoldedLinesView.Lock;
   FFoldedLinesView.ApplyFoldDescription(0, 0, -1, -1, PChar(AValue), length(AValue), True);
-  TopLine := TopLine; // Todo: reset topline on foldedview
+  TopView := TopView; // Todo: reset TopView on foldedview
   FFoldedLinesView.UnLock;
   FPendingFoldState := '';
 end;
@@ -5536,7 +5547,7 @@ begin
     else if CaretY > ScreenRowToRow(Max(1, LinesInWindow) - 1) then             //mh 2000-10-19
       TopLine := FFoldedLinesView.TextPosAddLines(CaretY, -Max(0, LinesInWindow-1))
     else
-      TopLine := TopLine;                                                       //mh 2000-10-19
+      TopView := TopView;                                                       //mh 2000-10-19
   finally
     DoDecPaintLock(Self);
   end;
@@ -6327,7 +6338,7 @@ begin
     FFoldedLinesView.CollapseDefaultFolds;
     if FPendingFoldState <> '' then
       SetFoldState(FPendingFoldState);
-    TopLine := TopLine;
+    TopView := TopView;
   end;
 end;
 
@@ -6862,7 +6873,7 @@ begin
     LeftChar := LeftChar;
   if (eoScrollPastEol in Options) or (eoScrollPastEof in Options) then begin
     UpdateScrollBars;
-    TopLine := TopLine;
+    TopView := TopView;
   end;
   // (un)register HWND as drop target
   if (eoDropFiles in ChangedOptions) and not (csDesigning in ComponentState) and HandleAllocated then
@@ -6996,7 +7007,7 @@ begin
     if not (eoScrollPastEol in Options) then
       LeftChar := LeftChar;
     if not (eoScrollPastEof in Options) then
-      TopLine := TopLine;
+      TopView := TopView;
   end;
 end;
 
@@ -7042,7 +7053,7 @@ begin
     if not (eoScrollPastEol in Options) then
       LeftChar := LeftChar;
     if not (eoScrollPastEof in Options) then
-      TopLine := TopLine;
+      TopView := TopView;
   end;
 end;
 
@@ -7208,7 +7219,7 @@ begin
     FHighlighter.CurrentLines := FTheLinesView;
     FHighlighter.ScanAllRanges;
     fMarkupManager.TextChanged(0, FTheLinesView.Count - 1);
-    TopLine := TopLine;
+    TopView := TopView;
   end;
 end;
 

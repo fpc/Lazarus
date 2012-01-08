@@ -39,7 +39,7 @@ type
     FVisibleSpecialChars: TSynVisibleSpecialChars;
     FRightEdgeColumn: integer;
 
-    FTopLine: Integer;
+    FTopLine: TLinePos;
     FLeftChar: Integer;
 
     function GetPadding(Side: TLazSynBorderSide): integer;
@@ -47,7 +47,7 @@ type
     procedure SetExtraLineSpacing(AValue: integer);
     procedure SetLeftChar(AValue: Integer);
     procedure SetPadding(Side: TLazSynBorderSide; AValue: integer);
-    procedure SetTopLine(AValue: Integer);
+    procedure SetTopLine(AValue: TLinePos);
   protected
     procedure PaintTextLines(AClip: TRect; FirstLine, LastLine,
       FirstCol, LastCol: integer); virtual;
@@ -74,7 +74,7 @@ type
     property VisibleSpecialChars: TSynVisibleSpecialChars read FVisibleSpecialChars write FVisibleSpecialChars;
     property RightEdgeColumn: integer read FRightEdgeColumn write FRightEdgeColumn;  // -1 = hide
 
-    property TopLine: Integer read FTopLine write SetTopLine; // TopView
+    property TopLine: TLinePos read FTopLine write SetTopLine; // TopView
     property LeftChar: Integer read FLeftChar write SetLeftChar;
 
     property TheLinesView: TSynEditStrings read FTheLinesView write FTheLinesView;
@@ -151,8 +151,9 @@ begin
   FontChanged;
 end;
 
-procedure TLazSynTextArea.SetTopLine(AValue: Integer);
+procedure TLazSynTextArea.SetTopLine(AValue: TLinePos);
 begin
+  if AValue < 1 then AValue := 1;
   if FTopLine = AValue then Exit;
   FTopLine := AValue;
 end;
