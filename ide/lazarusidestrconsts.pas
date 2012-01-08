@@ -4596,13 +4596,9 @@ resourcestring
   rsFoundButNotListedHere = 'Found, but not listed here: ';
   rsStartANewSearch = 'Start a new search';
   rsCloseCurrentPage = 'Close current page';
-  rsFilterTheListWithTheCurrentFilterExpression = 'Filter the list with the '
-    +'current filter expression';
-  rsGoToTheNextItemInTheSearchList = 'Go to the next item in the search list';
-  rsResetFilter = 'Reset filter';
-  rsEnterOneOrMorePhrasesThatYouWantToSearchOrFilterIn = 'Enter one or more '
-    +'phrases that you want to Search or Filter in the list, separated by '
-    +'space, or comma';
+  rsFilterTheListWithString = 'Filter the lines in list with a string';
+  //rsEnterOneOrMorePhrasesThatYouWantToFilter = 'Enter one or more phrases '
+  //  +'that you want to Filter in the list, separated by space, or comma';
 
   // Application Bundle
   lisABCreationFailed = 'Error occured during Application Bundle creation: ';

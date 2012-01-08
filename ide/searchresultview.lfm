@@ -1,7 +1,7 @@
 object SearchResultsView: TSearchResultsView
-  Left = 299
+  Left = 344
   Height = 273
-  Top = 325
+  Top = 327
   Width = 799
   BorderStyle = bsSizeToolWin
   Caption = 'SearchResultsView'
@@ -14,13 +14,15 @@ object SearchResultsView: TSearchResultsView
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object ResultsNoteBook: TPageControl
+    AnchorSideTop.Control = ToolBar
+    AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 248
-    Top = 25
+    Height = 249
+    Top = 24
     Width = 799
-    Align = alClient
+    Anchors = [akTop, akLeft, akRight, akBottom]
     MultiLine = True
-    TabOrder = 0
+    TabOrder = 1
     OnChange = ResultsNoteBookPageChanged
     OnCloseTabClicked = ResultsNoteBookClosetabclicked
     OnMouseDown = ResultsNoteBookMouseDown
@@ -28,13 +30,13 @@ object SearchResultsView: TSearchResultsView
   end
   object ToolBar: TToolBar
     Left = 0
-    Height = 25
+    Height = 24
     Top = 0
-    Width = 799
+    Width = 57
+    Align = alNone
     AutoSize = True
-    Caption = 'ToolBar'
     Images = ImageList
-    TabOrder = 1
+    TabOrder = 2
     object SearchAgainButton: TToolButton
       Left = 1
       Top = 2
@@ -56,39 +58,22 @@ object SearchResultsView: TSearchResultsView
       Caption = 'ToolButton3'
       Style = tbsSeparator
     end
-    object FilterButton: TToolButton
-      Left = 57
-      Top = 2
-      Caption = 'FilterButton'
-      ImageIndex = 2
-      OnClick = FilterButtonClick
-    end
-    object ForwardSearchButton: TToolButton
-      Left = 80
-      Top = 2
-      Caption = 'ForwardSearchButton'
-      ImageIndex = 3
-      OnClick = ForwardSearchButtonClick
-    end
-    object ResetResultsButton: TToolButton
-      Left = 451
-      Top = 2
-      Caption = 'ResetResultsButton'
-      ImageIndex = 4
-      OnClick = ResetResultsButtonClick
-    end
-    object SearchInListEdit: TEdit
-      Left = 103
-      Height = 23
-      Top = 2
-      Width = 348
-      BorderSpacing.Around = 6
-      OnChange = edSearchInListChange
-      OnKeyDown = SearchInListEditKeyDown
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 0
-    end
+  end
+  object SearchInListEdit: TTreeFilterEdit
+    AnchorSideLeft.Control = ToolBar
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = ToolBar
+    AnchorSideTop.Side = asrCenter
+    Left = 63
+    Height = 20
+    Top = 2
+    Width = 296
+    ButtonWidth = 23
+    NumGlyphs = 0
+    BorderSpacing.Left = 6
+    MaxLength = 0
+    TabOrder = 0
+    OnChange = SearchInListChange
   end
   object ImageList: TImageList
     left = 33
