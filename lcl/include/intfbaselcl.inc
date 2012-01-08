@@ -517,6 +517,23 @@ begin
   Result := False;
 end;
 
+function TWidgetSet.IsMobilePlatform: Boolean;
+begin
+  Result := False;
+  // A good default would be: Result := Application.ApplicationType in [atPDA, atKeyPadDevice, atTV, atMobileEmulator];
+  // But Forms is not in the uses clause
+end;
+
+procedure TWidgetSet.LazAccessibility_SendTextChangedNotification(const ANewText: string);
+begin
+
+end;
+
+procedure TWidgetSet.LazAccessibility_SendSelectionChangedNotification(const ASelStart, ASelEnd: Integer);
+begin
+
+end;
+
 procedure TWidgetSet.LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
 begin
 

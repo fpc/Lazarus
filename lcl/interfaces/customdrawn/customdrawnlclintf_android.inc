@@ -163,6 +163,21 @@ begin
   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoHideVirtualKeyboard);
 end;
 
+function TCDWidgetSet.IsMobilePlatform: Boolean;
+begin
+  Result := True;
+end;
+
+procedure TCDWidgetSet.LazAccessibility_SendTextChangedNotification(const ANewText: string);
+begin
+
+end;
+
+procedure TCDWidgetSet.LazAccessibility_SendSelectionChangedNotification(const ASelStart, ASelEnd: Integer);
+begin
+
+end;
+
 procedure TCDWidgetSet.LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
 var
   lPositionMethod: jint;

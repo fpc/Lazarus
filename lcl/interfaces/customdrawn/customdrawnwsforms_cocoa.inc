@@ -24,7 +24,8 @@ begin
   winhandle := TCocoaWindow.Create;
   winhandle.LCLForm := TCustomForm(AWinControl);
 
-  if CDWidgetset.MobileMode then lRect := GetNSRect(200, 200, 240, 320)
+  if Application.ApplicationType = atMobileEmulator then lRect := GetNSRect(200, 200, 240, 320)
+  // else ToDo: for atPDA make it fullscreen
   else lRect := CreateParamsToNSRect(AParams);
   win:=TCocoaForm(win.initWithContentRect_styleMask_backing_defer(lRect, WinMask, NSBackingStoreBuffered, False));
   win.WindowHandle := winhandle;
@@ -66,7 +67,7 @@ end;
 class function TCDWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 begin
-  if CDWidgetset.MobileMode then
+  if LCLIntf.IsMobilePlatform() then
   begin
     Result := TLCLIntfhandle(AddNewForm(TCustomForm(AWinControl)));
     if AWinControl = Application.MainForm then

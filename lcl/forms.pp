@@ -1211,7 +1211,9 @@ type
     atPDA,         // For smartphones and other devices with touch screen and a small screen
     atKeyPadDevice,// Devices without any pointing device, such as keypad feature phones or kiosk machines
     atTablet,      // Similar to a PDA/Smartphone, but with a large screen
-    atTV           // The device is a television
+    atTV,          // The device is a television
+    atMobileEmulator// For desktop platforms. It will create a main windows of 240x320
+                   // and place all forms there to immitate a mobile platform
   );
 
   TApplicationShowGlyphs = (

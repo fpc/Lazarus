@@ -39,8 +39,6 @@ begin
   if Application.ApplicationType = atDefault then
     Application.ApplicationType := atDesktop;
 
-  MobileMode := Application.ApplicationType in [atPDA, atKeyPadDevice];
-
   if Application.LayoutAdjustmentPolicy = lapDefault then
     Application.LayoutAdjustmentPolicy := lapFixedLayout;
 
@@ -63,7 +61,7 @@ begin
     DebugLn('TCDWidgetSet.AppRun');
   {$ENDIF}
 
-  if MobileMode and (Application.MainForm <> nil) then
+  if LCLIntf.IsMobilePlatform() and (Application.MainForm <> nil) then
     TCDWSCustomForm.DoShowHide(Application.MainForm);
 
   { Enters main message loop }

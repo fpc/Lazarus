@@ -113,6 +113,21 @@ begin
 
 end;
 
+function TCDWidgetSet.IsMobilePlatform: Boolean;
+begin
+  Result := Application.ApplicationType in [atPDA, atKeyPadDevice, atTV, atMobileEmulator];
+end;
+
+procedure TCDWidgetSet.LazAccessibility_SendTextChangedNotification(const ANewText: string);
+begin
+
+end;
+
+procedure TCDWidgetSet.LazAccessibility_SendSelectionChangedNotification(const ASelStart, ASelEnd: Integer);
+begin
+
+end;
+
 procedure TCDWidgetSet.LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
 begin
 

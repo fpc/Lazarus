@@ -350,6 +350,22 @@ begin
   Result := WidgetSet.IsDesignerDC(WindowHandle, DC);
 end;
 
+// Indicates of we have fullscreen-only forms like in a mobile platform
+function IsMobilePlatform: Boolean;
+begin
+  Result := WidgetSet.IsMobilePlatform();
+end;
+
+procedure LazAccessibility_SendTextChangedNotification(const ANewText: string);
+begin
+  WidgetSet.LazAccessibility_SendTextChangedNotification(ANewText);
+end;
+
+procedure LazAccessibility_SendSelectionChangedNotification(const ASelStart, ASelEnd: Integer);
+begin
+  WidgetSet.LazAccessibility_SendSelectionChangedNotification(ASelStart, ASelEnd);
+end;
+
 procedure LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
 begin
   Widgetset.LazDeviceAPIs_RequestPositionInfo(AMethod);

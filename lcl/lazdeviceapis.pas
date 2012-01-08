@@ -63,6 +63,10 @@ type
 
   { TLazMessaging }
 
+  TLazDeviceMessageKind = LCLType.TLazDeviceMessageKind;
+
+  TLazDeviceMessage = LCLType.TLazDeviceMessage;
+
   TLazMessaging = class
   private
     FOnMessagingStatus: TOnMessagingStatus;
@@ -80,6 +84,8 @@ type
   end;
 
   // TLazPositionInfo
+
+  TLazPositionMethod = LCLType.TLazPositionMethod;
 
   TLazPositionInfo = class
   private
