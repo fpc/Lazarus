@@ -710,6 +710,7 @@ type
                                  AnInfo: TSynEditMouseActionInfo): Boolean;
 
   protected
+    procedure SetColor(Value: TColor); override;
     procedure DragOver(Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean); override;
     procedure DoOnResize; override;
@@ -1891,7 +1892,6 @@ begin
   fMarkupManager.Caret := FCaret;
   fMarkupManager.InvalidateLinesMethod := @InvalidateLines;
 
-  Color := clWhite;
   fFontDummy.Name := SynDefaultFontName;
   fFontDummy.Height := SynDefaultFontHeight;
   fFontDummy.Pitch := SynDefaultFontPitch;
@@ -1909,9 +1909,8 @@ begin
   FTextArea.TheLinesView := FTheLinesView;
   FTextArea.DisplayView := FDisplayView;
   FTextArea.Highlighter := nil;
-  // colors are currently set in paint
 
-
+  Color := clWhite;
   Font.Assign(fFontDummy);
   Font.OnChange := {$IFDEF FPC}@{$ENDIF}FontChanged;
   FontChanged(nil);
@@ -2229,6 +2228,7 @@ end;
 
 procedure TCustomSynEdit.FontChanged(Sender: TObject);
 begin // TODO: inherited ?
+  FTextArea.ForegroundColor := Font.Color;
   FLastSetFontSize := Font.Height;
   RecalcCharExtent;
 end;
@@ -2952,6 +2952,12 @@ begin
   end;
 end;
 
+procedure TCustomSynEdit.SetColor(Value: TColor);
+begin
+  inherited SetColor(Value);
+  FTextArea.BackgroundColor := Color;
+end;
+
 procedure TCustomSynEdit.FindAndHandleMouseAction(AButton: TSynMouseButton;
   AShift: TShiftState; X, Y: Integer; ACCount:TSynMAClickCount;
   ADir: TSynMAClickDir; AWheelDelta: Integer = 0);
@@ -3361,8 +3367,6 @@ begin
       FLeftGutter.Paint(Canvas, rcDraw, nL1, nL2);
     end;
     // Then paint the text area if it was (partly) invalidated.
-    FTextArea.ForegroundColor := Font.Color;
-    FTextArea.BackgroundColor := Color;
     FTextArea.Paint(Canvas, rcClip);
     // right gutter
     if FRightGutter.Visible and (rcClip.Right > ClientWidth - FRightGutter.Width - ScrollBarWidth) then begin
