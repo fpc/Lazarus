@@ -2308,6 +2308,7 @@ type
     FCount: integer;      // # of first level children in FItems
     FData: Pointer;       // custom data
     FHeight: integer;     // height in pixels
+    FNodeEffect: TGraphicsDrawEffect;
     FImageIndex: TImageIndex;
     FIndex: integer;      // index in parent
     FItems: TTreeNodeArray;  // first level child nodes
@@ -2361,6 +2362,7 @@ type
     procedure SetFocused(AValue: Boolean);
     procedure SetHasChildren(AValue: Boolean);
     procedure SetHeight(AValue: integer);
+    procedure SetImageEffect(AValue: TGraphicsDrawEffect);
     procedure SetImageIndex(AValue: TImageIndex);
     procedure SetIndex(const AValue: Integer);
     procedure SetItems(AnIndex: Integer; AValue: TTreeNode);
@@ -2446,6 +2448,7 @@ type
     property Handle: THandle read GetHandle;
     property HasChildren: Boolean read GetHasChildren write SetHasChildren;
     property Height: integer read GetHeight write SetHeight;
+    property NodeEffect: TGraphicsDrawEffect read FNodeEffect write SetImageEffect;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property Index: Integer read GetIndex write SetIndex;
     property IsVisible: Boolean read IsNodeVisible;

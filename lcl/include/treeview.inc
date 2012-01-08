@@ -288,6 +288,7 @@ end;
 constructor TTreeNode.Create(AnOwner: TTreeNodes);
 begin
   inherited Create;
+  FNodeEffect := gdeNormal;
   FImageIndex := -1;
   FOverlayIndex := -1;
   FSelectedIndex := -1;
@@ -433,6 +434,13 @@ begin
   FHeight:=AValue;
   if TreeView<>nil then
     TreeView.FStates:=TreeView.FStates+[tvsScrollbarChanged,tvsTopsNeedsUpdate];
+  Update;
+end;
+
+procedure TTreeNode.SetImageEffect(AValue: TGraphicsDrawEffect);
+begin
+  if FNodeEffect=AValue then exit;
+  FNodeEffect := AValue;
   Update;
 end;
 
@@ -4838,7 +4846,7 @@ begin
       end;
       if (ImgIndex >= 0) and (ImgIndex < Images.Count) then
         Images.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
-          ImgIndex, True);
+            ImgIndex, Node.FNodeEffect);
       inc(x, Images.Width + 2);
     end;
 
