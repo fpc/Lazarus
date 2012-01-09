@@ -598,6 +598,7 @@ class procedure TGtk2WSCustomForm.ShowHide(const AWinControl: TWinControl);
 var
   AForm: TCustomForm;
   GtkWindow: PGtkWindow;
+  Geometry: TGdkGeometry;
 begin
   AForm := TCustomForm(AWinControl);
   if not (csDesigning in AForm.ComponentState) then
@@ -611,9 +612,10 @@ begin
       not (csDestroying in AWinControl.ComponentState) then
         gtk_window_set_keep_above(PGtkWindow(AForm.Handle), GBoolean(False));
   end;
+
+  GtkWindow := PGtkWindow(AForm.Handle);
   if (fsModal in AForm.FormState) and AForm.HandleObjectShouldBeVisible then
   begin
-    GtkWindow := PGtkWindow(AForm.Handle);
     gtk_window_set_default_size(GtkWindow, Max(1,AForm.Width), Max(1,AForm.Height));
     gtk_widget_set_uposition(PGtkWidget(GtkWindow), AForm.Left, AForm.Top);
     GtkWindowShowModal(AForm, GtkWindow);
@@ -623,11 +625,36 @@ begin
       (ModalWindows <> nil) and (ModalWindows.Count > 0) and
       (AForm.PopupParent = nil) and (AForm.BorderStyle = bsNone) then
     begin
-      GtkWindow := PGtkWindow(AForm.Handle);
       gtk_window_set_transient_for(GtkWindow, nil);
       gtk_window_set_modal(GtkWindow, True);
     end;
     Gtk2WidgetSet.SetVisible(AWinControl, AForm.HandleObjectShouldBeVisible);
+  end;
+
+  if not (csDesigning in AForm.ComponentState) and
+    AForm.HandleObjectShouldBeVisible and
+    (AForm.BorderStyle in [bsDialog, bsSingle]) then
+  begin
+    // we must set fixed size, gtk_window_set_resizable does not work
+    // as expected for some reason.issue #20741
+    with Geometry do
+    begin
+      min_width := AForm.Width;
+      max_width := AForm.Width;
+      min_height := AForm.Height;
+      max_height := AForm.Height;
+
+      base_width := AForm.Width;
+      base_height := AForm.Height;
+      width_inc := 1;
+      height_inc := 1;
+      min_aspect := 0;
+      max_aspect := 1;
+      win_gravity := gtk_window_get_gravity(GtkWindow);
+    end;
+    //debugln('TGtk2WSWinControl.ConstraintsChange A ',GetWidgetDebugReport(Widget),' max=',dbgs(Geometry.max_width),'x',dbgs(Geometry.max_height));
+    gtk_window_set_geometry_hints(GtkWindow, nil, @Geometry,
+      GDK_HINT_POS or GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
   end;
   InvalidateLastWFPResult(AWinControl, AWinControl.BoundsRect);
 end;
