@@ -1005,7 +1005,8 @@ begin
   end else
   begin
     gtk_widget_show(PGtkBin(BoxWidget)^.child);
-    gtk_button_set_label(PGtkButton(BoxWidget), PChar(AText));
+    gtk_button_set_label(PGtkButton(BoxWidget), PChar(Ampersands2Underscore(AText)));
+    gtk_button_set_use_underline(PGtkButton(BoxWidget), True);
   end;
 end;
 
