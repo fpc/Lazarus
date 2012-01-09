@@ -9,6 +9,11 @@ A package FPDocEngine is supplied for use in commandline or GUI applications.
 uMakeSkel is a copy of parts of the FPDoc and MakeSkel programs, modified
 with workarounds for known problems with these FPC tools.
 
+Organization
+------------
+A dedicated directory contains all package specifications and documentation.
+INI files are created for the manager itself and every package.
+
 Release notes 1.0
 -----------------
 

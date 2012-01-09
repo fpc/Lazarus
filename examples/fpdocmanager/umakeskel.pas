@@ -65,10 +65,17 @@ resourcestring
   SCreatingNewNode = 'Creating documentation for new node : %s';
   SNodeNotReferenced = 'Documentation node "%s" no longer used';
   SDone = 'Done.';
+//from fpdocxmlopts
+  SErrInvalidRootNode = 'Invalid options root node: Got "%s", expected "docproject"';
+  SErrNoPackagesNode = 'No "packages" node found in docproject';
 
 type
   TCmdLineAction = (actionHelp, actionConvert);
 
+(* EngineOptions plus MakeSkel options.
+  Used in the commandline parsers, passed to the Engine.
+  Project.Options are ignored by TFDocMaker.(?)
+*)
   TCmdOptions = class(TEngineOptions)
   public
     WriteDeclaration,
@@ -157,7 +164,6 @@ type
     destructor Destroy; override;
     procedure AddDirToFileList(List: TStrings; const ADirName, AMask: String);
     procedure AddToFileList(List: TStrings; const FileName: String);
-    function  UnitName(AList: TStrings; AIndex: integer): string;
     function  UnitSpec(AUnit: string): string;
     function  ImportName(AIndex: integer): string;
     procedure LogToStdOut(Sender: TObject; const msg: string);
@@ -166,8 +172,10 @@ type
     function  ParseFPDocOption(const S: string):  TCreatorAction;
     function  ParseUpdateOption(const S: string):  TCreatorAction;
     function  CheckSkelOptions: string;
-    function  CreateProject(const AFileName: string; APackage: TFPDocPackage): boolean; virtual;
+    function  CleanXML(const FileName: string): boolean;
   {$IFDEF v0}
+    function  CreateProject(const AFileName: string; APackage: TFPDocPackage): boolean; virtual;
+    procedure LoadXMLProject(const AFileName: string);
     function  ParseOption(const S: string):  TCreatorAction;
     function  Exec: string;
   {$ELSE}
@@ -201,81 +209,27 @@ var
 {$ELSE}
 {$ENDIF}
 
+//Extract next commandline option from a string
 Function GetNextWord(Var s : string) : String;
+
+//Get package name from Imports spec
+function ExtractImportName(const s: string): string;
+//Get Unit filename from Inputs or Descriptions
+function UnitFile(AList: TStrings; AIndex: integer): string;
+//Get Unit name from Inputs or Descriptions
+function ExtractUnitName(AList: TStrings; AIndex: integer): string;
+function ExtractUnitName(s: string): string;
 
 implementation
 
 uses
   dom,
-  dWriter, fpdocxmlopts;
+  dWriter;
 
-type
-(* special save/load options
+(* Extract (remove!) next commandline option from a string.
+  Handle quoted arguments, but do not unquote.
+  Option may be partially quoted, e.g. -opt="arg with blanks"
 *)
-
-  { TXMLPackageOptions }
-
-  TXMLPackageOptions = class(TXMLFPDocOptions)
-  public
-    Pkg: TFPDocPackage;
-    procedure SaveOptionsToFile(AProject: TFPDocProject; const AFileName: String; APackage: TFPDocPackage);
-    procedure SaveToXML(AProject: TFPDocProject; ADoc: TXMLDocument); override;
-  end;
-
-  TNodePair = Class(TObject)
-  Private
-    FEl : TPasElement;
-    FNode : TDocNode;
-  Public
-    Constructor Create(AnElement : TPasElement; ADocNode : TDocNode);
-    Property Element : TPasElement Read FEl;
-    Property DocNode : TDocNode Read FNode;
-  end;
-
-{ TXMLPackageOptions }
-
-procedure TXMLPackageOptions.SaveOptionsToFile(AProject: TFPDocProject;
-  const AFileName: String; APackage: TFPDocPackage);
-begin
-  Pkg := APackage; //for use in SaveXML
-  inherited SaveOptionsToFile(AProject, AFileName);
-end;
-
-procedure TXMLPackageOptions.SaveToXML(AProject: TFPDocProject;
-  ADoc: TXMLDocument);
-var
-  i: integer;
-  E,PE: TDOMElement;
-begin
-  if false then inherited SaveToXML(AProject, ADoc);
-  E:=ADoc.CreateElement('docproject');
-  ADoc.AppendChild(E);
-  E:=ADoc.CreateElement('options');
-  ADoc.DocumentElement.AppendChild(E);
-  SaveEngineOptions(AProject.Options,ADoc,E);
-  E:=ADoc.CreateElement('packages');
-  ADoc.DocumentElement.AppendChild(E);
-  if assigned(Pkg) then begin
-      PE:=ADoc.CreateElement('package');
-      E.AppendChild(PE);
-      SavePackage(Pkg,ADoc,PE);
-  end else begin
-    for i := 0 to AProject.Packages.Count - 1 do
-      begin
-      PE:=ADoc.CreateElement('package');
-      E.AppendChild(PE);
-      SavePackage(AProject.Packages[i],ADoc,PE);
-      end;
-  end;
-end;
-
-Constructor TNodePair.Create(AnElement : TPasElement; ADocNode : TDocNode);
-
-begin
-  Fel:=Anelement;
-  FNode:=ADocNode;
-end;
-
 Function GetNextWord(Var s : string) : String;
 Const
   WhiteSpace = [' ',#9,#10,#13];
@@ -304,6 +258,69 @@ begin
   if (I<=Length(S)) then
     Result:=Copy(S,I,J-I);
   Delete(S,1,J);
+end;
+
+function ExtractImportName(const s: string): string;
+var
+  i: integer;
+begin
+  Result := s;
+  i := Pos(',', Result);
+  if i > 1 then
+    SetLength(Result, i-1);
+  Result := ChangeFileExt(ExtractFileName(Result), '');
+end;
+
+function ExtractUnitName(s: string): string;
+begin
+  Result := ChangeFileExt(ExtractFileName(s), '');
+end;
+
+(* Unit name from Inputs[i] or Descriptions[i]
+  Package name from Imports?
+*)
+function ExtractUnitName(AList: TStrings; AIndex: integer): string;
+begin
+  Result := UnitFile(AList, AIndex);
+  if Result <> '' then
+    Result := ChangeFileExt(ExtractFileName(Result), '');
+end;
+
+(* Extract a file reference from Inputs or Descriptions list.
+  Check for existing list and item.
+*)
+function UnitFile(AList: TStrings; AIndex: integer): string;
+var
+  s: string;
+begin
+  if assigned(AList) and (AIndex < AList.Count) then begin
+    s := AList[AIndex];
+    while s <> '' do begin
+      Result := GetNextWord(s);
+      if (Result <> '') and (Result[1] <> '-') then
+        exit; //found a non-option
+    end;
+  end;
+  Result := ''; //should never happen!
+end;
+
+type
+
+  TNodePair = Class(TObject)
+  Private
+    FEl : TPasElement;
+    FNode : TDocNode;
+  Public
+    Constructor Create(AnElement : TPasElement; ADocNode : TDocNode);
+    Property Element : TPasElement Read FEl;
+    Property DocNode : TDocNode Read FNode;
+  end;
+
+Constructor TNodePair.Create(AnElement : TPasElement; ADocNode : TDocNode);
+
+begin
+  Fel:=Anelement;
+  FNode:=ADocNode;
 end;
 
 function TSkelEngine.FindModule(const AName: String): TPasModule; 
@@ -636,30 +653,13 @@ begin
   Result := FDescrDir;
 end;
 
-(* Unit name from Inputs[i] or Descriptions[i]
-  Package name from Imports?
-*)
-function TFPDocMaker.UnitName(AList: TStrings; AIndex: integer): string;
-var
-  w: string;
-begin
-  Result := AList[AIndex];
-  while Result <> '' do begin
-    w := GetNextWord(Result);
-    if (w <> '') and (w[1] <> '-') then begin
-      Result := ChangeFileExt(ExtractFileName(w), '');
-      break;
-    end;
-  end;
-end;
-
 function TFPDocMaker.UnitSpec(AUnit: string): string;
 var
   i: integer;
   s, w: string;
 begin
   for i := 0 to SelectedPackage.Inputs.Count - 1 do begin
-    w := UnitName(FPackage.Inputs, i);
+    w := ExtractUnitName(FPackage.Inputs, i);
     if CompareText(w, AUnit) = 0 then begin
       Result := FPackage.Inputs[i];
       exit;
@@ -669,15 +669,8 @@ begin
 end;
 
 function TFPDocMaker.ImportName(AIndex: integer): string;
-var
-  i: integer;
 begin
-  Result := SelectedPackage.Imports[AIndex];
-  i := Pos(',', Result);
-  if i > 1 then
-    SetLength(Result, i-1);
-  Result := ExtractFileName(Result);
-  Result := ChangeFileExt(Result, '');
+  Result := ExtractImportName(SelectedPackage.Imports[AIndex]);
 end;
 
 function TFPDocMaker.GetInputDir: string;
@@ -752,12 +745,13 @@ begin
   end;
 end;
 
+{$IFDEF v0}
 function TFPDocMaker.CreateProject(const AFileName: string; APackage: TFPDocPackage): boolean;
 var
-  f: TXMLPackageOptions;
+  f: TXMLPackageProject;
 begin
   try
-    f := TXMLPackageOptions.Create(nil);
+    f := TXMLPackageProject.Create(nil);
     try
       f.SaveOptionsToFile(Project, AFileName, APackage);
       Result := True;
@@ -768,6 +762,21 @@ begin
     Result := False;
   end;
 end;
+
+procedure TFPDocMaker.LoadXMLProject(const AFileName: string);
+var
+  f: TXMLPackageProject;
+begin
+  //LoadProjectFile();
+  f := TXMLPackageProject.Create(self);
+  try
+    f.LoadOptionsFromFile(Project, AFileName);
+  finally
+    f.Free;
+  end;
+end;
+{$ELSE}
+{$ENDIF}
 
 procedure TFPDocMaker.SetCmdAction(AValue: TCreatorAction);
 begin
@@ -1055,6 +1064,32 @@ begin
   end else begin
     CreateDocumentation(APackage,ParseOnly);
   end;
+end;
+
+(* Return True and (try) kill file if no "<element" found.
+*)
+function TFPDocMaker.CleanXML(const FileName: string): boolean;
+var
+  f: TextFile;
+  s: string;
+begin
+  AssignFile(f, FileName);
+  Reset(f);
+  try
+    while not EOF(f) do begin
+      ReadLn(f, s);
+      if Pos('<element ', s) > 0 then
+        exit(False); //file not empty
+    end;
+  finally
+    CloseFile(f);
+  end;
+//nothing found, delete the file
+  if DeleteFile(FileName) then
+    DoLog('File ' + FileName + ' has no elements. Deleted.')
+  else
+    DoLog('File ' + FileName + ' has no elements. Delete failed.');
+  Result := True;
 end;
 
 

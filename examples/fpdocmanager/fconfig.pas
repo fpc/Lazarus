@@ -48,10 +48,11 @@ type
     procedure edRootChange(Sender: TObject);
     procedure edRtlBatChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure MkRTLShow(Sender: TObject);
     procedure SelFPDirShow(Sender: TObject);
     procedure SelRootShow(Sender: TObject);
   private
-    { private declarations }
+    NoRun: boolean;
   public
     { public declarations }
   end; 
@@ -62,7 +63,7 @@ var
 implementation
 
 uses
-  uManager, uCmdLine;
+  uManager;
 
 {$R *.lfm}
 
@@ -95,6 +96,14 @@ begin
   Steps.ActivePage := SelRoot;
 end;
 
+procedure TCfgWizard.MkRTLShow(Sender: TObject);
+begin
+  NoRun:=True; //lock updates!
+  edRtlBat.Text := Manager.Packages.Values['rtl'];
+  edFclBat.Text := Manager.Packages.Values['fcl'];
+  NoRun:=False;
+end;
+
 procedure TCfgWizard.SelFPDirShow(Sender: TObject);
 begin
   edFpcDir.Text := Manager.FpcDocDir;
@@ -120,7 +129,9 @@ begin
   fn := ed.Text;
   if fn = '' then
     exit;
-  uCmdLine.CmdToPrj(fn);
+  //uCmdLine.CmdToPrj(fn);
+  if not NoRun then
+    Manager.ImportCmd(fn);
 end;
 
 procedure TCfgWizard.buFclBatClick(Sender: TObject);

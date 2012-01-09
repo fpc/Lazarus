@@ -20,22 +20,22 @@ uses
   Classes, SysUtils,
   uManager;
 
-//function ImportLpk(const AFile: string): boolean;
 function ImportLpk(const AFile: string): TDocPackage;
+//function ImportCompiled(const LpkFile: string): boolean;
 
 implementation
 
 //uses
 
 type
-  eKey = (kvEof, kvName, kvIncl, kvOther, kvFilename, kvDocPaths, kvReq
+  eKey = (kvEof, kvName, kvIncl, kvOther, kvFilename, kvDocPaths, kvReq, kvTitle
   );
 const
   aKey: array[eKey] of string = (
     '', 'Name', 'IncludeFiles', 'OtherUnitFiles',
-    'Filename', 'LazDoc' ,'PackageName'
+    'Filename', 'LazDoc' ,'PackageName', 'Title'
   );
-  FirstKeys = 'NIOFLP';
+  FirstKeys = 'NIOFLPT';
 
 var
   f: TextFile;
@@ -59,6 +59,7 @@ begin
   //parse
     ReadLn(f, ln);
     //todo...
+    //ImportCommandline (CmdToPrj?)
   finally
     CloseFile(f);
   end;
@@ -79,8 +80,10 @@ begin
     if i < 1 then
       continue;
     key := eKey(i);
-    if Copy(ln, lt+1, Length(aKey[key])) <> aKey[key] then
-      continue;
+    if CompareText(Copy(ln, lt+1, Length(aKey[key])), aKey[key]) <> 0 then
+      continue; //diff. case in "FileName", "Filename"
+    if key = kvTitle then
+      key := kvName; //LPR
   //check value
     eq := Pos('=', ln);
     if (eq <= lt) or (ln[eq+1] <> '"') then
@@ -97,6 +100,7 @@ end;
 function ImportLpk(const AFile: string): TDocPackage;
 var
   pkg: TDocPackage;
+  dir: string;
 begin
   Result := Nil;  // False; //assume fail
   AssignFile(f, AFile);
@@ -112,7 +116,8 @@ begin
       value := 'lcl';
     pkg := Manager.AddPackage(value);
     pkg.LazPkg := AFile;
-    //Manager.Package := pkg; //!DocPkg
+    dir := ExtractFilePath(AFile);
+    pkg.ProjectDir := dir; //ChDir on exec
   //remaining keys
     while GetLine do begin
       case key of
@@ -121,18 +126,14 @@ begin
       kvOther: pkg.UnitPath := value;
       kvFilename:
         begin
+          if not FileExists(dir + value) then
+            continue;
           ext := ExtractFileExt(value);
           if (ext = '.pas') or (ext = '.pp') then
             pkg.Units.Add(value); //!!! no dupes!?
         end;
       kvDocPaths: pkg.DescrDir := value;
       kvReq: pkg.Requires.Add(LowerCase(value));
-      {
-        begin
-          ext := Manager.RootDir + '/' + value + ',../' + value;
-          pkg.Imports.Add(ext);
-        end;
-      }
       end;
     end;
     Result := pkg;  // True;

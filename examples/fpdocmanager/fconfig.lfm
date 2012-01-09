@@ -50,8 +50,8 @@ object CfgWizard: TCfgWizard
     end
     object SelFPDir: TTabSheet
       Caption = 'FPC'
-      ClientHeight = 195
-      ClientWidth = 312
+      ClientHeight = 213
+      ClientWidth = 310
       OnShow = SelFPDirShow
       object Label2: TLabel
         Left = 10
@@ -83,7 +83,7 @@ object CfgWizard: TCfgWizard
         Left = 100
         Height = 23
         Top = 144
-        Width = 200
+        Width = 198
         Anchors = [akTop, akLeft, akRight]
         OnChange = edFpcDirChange
         TabOrder = 2
@@ -102,6 +102,7 @@ object CfgWizard: TCfgWizard
       Caption = 'RTL'
       ClientHeight = 213
       ClientWidth = 310
+      OnShow = MkRTLShow
       object Label3: TLabel
         Left = 10
         Height = 136

@@ -129,6 +129,7 @@ begin
       end;
     end;
   end;
+  //UpdateDocs; //package objects seem to be missing?
 end;
 
 procedure TMain.FormResize(Sender: TObject);
@@ -255,8 +256,10 @@ var
   i: integer;
 begin
   lbPackages.Clear;
-  for i := 0 to Manager.Projects.Count - 1 do begin
-    lbPackages.AddItem(Manager.Projects.Names[i], Manager.Projects.Objects[i]);
+  for i := 0 to Manager.Packages.Count - 1 do begin
+    if (Manager.Packages.ValueFromIndex[i] <> '')
+    and (Manager.Packages.Objects[i] <> nil) then
+      lbPackages.AddItem(Manager.Packages.Names[i], Manager.Packages.Objects[i]);
   end;
 end;
 

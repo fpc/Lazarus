@@ -11,6 +11,7 @@
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
     </General>
+    <LazDoc Paths="docs"/>
     <i18n>
       <EnableI18N LFM="False"/>
     </i18n>
@@ -42,7 +43,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="10">
+    <Units Count="9">
       <Unit0>
         <Filename Value="FPDocManager.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -63,44 +64,39 @@
         <UnitName Value="fConfig"/>
       </Unit2>
       <Unit3>
-        <Filename Value="ucmdline.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="uCmdLine"/>
-      </Unit3>
-      <Unit4>
         <Filename Value="umakeskel.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="umakeskel"/>
-      </Unit4>
-      <Unit5>
+      </Unit3>
+      <Unit4>
         <Filename Value="umanager.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uManager"/>
-      </Unit5>
-      <Unit6>
+      </Unit4>
+      <Unit5>
         <Filename Value="flogview.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="LogView"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fLogView"/>
-      </Unit6>
-      <Unit7>
+      </Unit5>
+      <Unit6>
         <Filename Value="fupdateview.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="UpdateView"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fUpdateView"/>
-      </Unit7>
-      <Unit8>
+      </Unit6>
+      <Unit7>
         <Filename Value="ulpk.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uLpk"/>
-      </Unit8>
-      <Unit9>
+      </Unit7>
+      <Unit8>
         <Filename Value="$(FPCDir)\utils\fpdoc\dw_html.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="dw_HTML"/>
-      </Unit9>
+      </Unit8>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
