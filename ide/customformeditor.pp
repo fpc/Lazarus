@@ -2069,7 +2069,7 @@ end;
 
 function TCustomFormEditor.GetPropertyEditorHook: TPropertyEditorHook;
 begin
-  Result:=nil;
+  Result:=GlobalDesignHook;
   if Obj_Inspector<>nil then
     Result:=Obj_Inspector.PropertyEditorHook;
 end;
