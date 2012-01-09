@@ -94,8 +94,8 @@ function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean; Border
 function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function IsMobilePlatform: Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
-procedure LazAccessibility_SendTextChangedNotification(const ANewText: string); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-procedure LazAccessibility_SendSelectionChangedNotification(const ASelStart, ASelEnd: Integer); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure LazAccessibility_SendNotification(ANotification: TLazAccessibilityNotification; const ATextParam: string; const AIntParam1, AIntParam2: Integer); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure LazAccessibility_SetFields(AHandle: HWND; const ADescription, AName: string; ARole: TLazAccessibilityRole); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure LazDeviceAPIs_SendMessage(AMsg: TLazDeviceMessage); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure LazDeviceAPIs_StartReadingAccelerometerData(); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

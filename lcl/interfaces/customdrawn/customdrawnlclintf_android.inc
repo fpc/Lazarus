@@ -168,12 +168,12 @@ begin
   Result := True;
 end;
 
-procedure TCDWidgetSet.LazAccessibility_SendTextChangedNotification(const ANewText: string);
+procedure TCDWidgetSet.LazAccessibility_SendNotification(ANotification: TLazAccessibilityNotification; const ATextParam: string; const AIntParam1, AIntParam2: Integer);
 begin
 
 end;
 
-procedure TCDWidgetSet.LazAccessibility_SendSelectionChangedNotification(const ASelStart, ASelEnd: Integer);
+procedure TCDWidgetSet.LazAccessibility_SetFields(AHandle: HWND; const ADescription, AName: string; ARole: TLazAccessibilityRole);
 begin
 
 end;

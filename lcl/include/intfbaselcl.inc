@@ -524,12 +524,12 @@ begin
   // But Forms is not in the uses clause
 end;
 
-procedure TWidgetSet.LazAccessibility_SendTextChangedNotification(const ANewText: string);
+procedure TWidgetSet.LazAccessibility_SendNotification(ANotification: TLazAccessibilityNotification; const ATextParam: string; const AIntParam1, AIntParam2: Integer);
 begin
 
 end;
 
-procedure TWidgetSet.LazAccessibility_SendSelectionChangedNotification(const ASelStart, ASelEnd: Integer);
+procedure TWidgetSet.LazAccessibility_SetFields(AHandle: HWND; const ADescription, AName: string; ARole: TLazAccessibilityRole);
 begin
 
 end;

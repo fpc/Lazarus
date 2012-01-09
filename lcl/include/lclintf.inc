@@ -356,14 +356,14 @@ begin
   Result := WidgetSet.IsMobilePlatform();
 end;
 
-procedure LazAccessibility_SendTextChangedNotification(const ANewText: string);
+procedure LazAccessibility_SendNotification(ANotification: TLazAccessibilityNotification; const ATextParam: string; const AIntParam1, AIntParam2: Integer);
 begin
-  WidgetSet.LazAccessibility_SendTextChangedNotification(ANewText);
+  WidgetSet.LazAccessibility_SendNotification(ANotification, ATextParam, AIntParam1, AIntParam2);
 end;
 
-procedure LazAccessibility_SendSelectionChangedNotification(const ASelStart, ASelEnd: Integer);
+procedure LazAccessibility_SetFields(AHandle: HWND; const ADescription, AName: string; ARole: TLazAccessibilityRole);
 begin
-  WidgetSet.LazAccessibility_SendSelectionChangedNotification(ASelStart, ASelEnd);
+  WidgetSet.LazAccessibility_SetFields(AHandle, ADescription, AName, ARole);
 end;
 
 procedure LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);

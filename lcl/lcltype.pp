@@ -125,6 +125,37 @@ type
     destructor Destroy; override;
   end;
 
+  { LazAccessibility }
+
+  TLazAccessibilityNotification = (
+    lanTextChanged, // The text or current line of text of the object has changed
+    lanCursorOrSelectionChanged // The cursor or the text selection changed
+    );
+
+  TLazAccessibilityRole = (
+    larAlertMessage, // An object that is used to alert the user.
+    larAnimation, // An object that displays an animation.
+    larButton, // A button.
+    larButtonDropDown, // A button that drops down a list of items or drops down something else
+    larCell, // A cell in a table.
+    larChart, // An object that displays a graphical representation of data.
+    larCheckBox, // An object that can be checked or unchecked, or sometimes in an intermediary state
+    larClock, // A clock displaying time.
+    larComboBox, // A list of choices that the user can select from.
+    larEditableText, //	Editable text
+    larIgnore, // Something to be ignored. For example a blank space between other objects.
+    larImage, // A graphic or picture or an icon.
+    larGrip, // A grip that the user can drag to change the size of widgets.
+    larHotkeyField, // A hotkey field that allows the user to enter a key sequence.
+    larHotLink, // A link to something else.
+    larLabel, // A text label as usually placed near other widgets.
+    larList, // A list of items, from which the user can select one or more items.
+    larListItem, // An item in a list of items.
+    larTree, // A list of items in a tree structure.
+    larTreeItem, // An item in a tree structure.
+    larWindow // A top level window.
+  );
+
   {$ifndef WINDOWS}
   THandle = type PtrUInt; // define our own, because the SysUtils.THandle = System.THandle is a longint
   HANDLE = THandle;

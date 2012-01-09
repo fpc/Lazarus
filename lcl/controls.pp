@@ -1700,6 +1700,9 @@ type
 
   TWinControl = class(TControl)
   private
+    FAccessibleDescription: TCaption;
+    FAccessibleName: TCaption;
+    FAccessibleRole: TLazAccessibilityRole;
     FAlignOrder: TFPList; // list of TControl. Last moved (SetBounds) comes first. Used by AlignControls.
     FBorderWidth: TBorderWidth;
     FBoundsLockCount: integer;
@@ -1749,6 +1752,9 @@ type
     function GetIsResizing: boolean;
     function GetTabOrder: TTabOrder;
     function GetVisibleDockClientCount: Integer;
+    procedure SetAccessibleDescription(AValue: TCaption);
+    procedure SetAccessibleName(AValue: TCaption);
+    procedure SetAccessibleRole(AValue: TLazAccessibilityRole);
     procedure SetChildSizing(const AValue: TControlChildSizing);
     procedure SetDockSite(const NewDockSite: Boolean);
     procedure SetHandle(NewHandle: HWND);
@@ -1932,6 +1938,9 @@ type
     property OnGetDockCaption: TGetDockCaptionEvent read FOnGetDockCaption write FOnGetDockCaption;
   public
     // properties which are supported by all descendents
+    property AccessibleDescription: TCaption read FAccessibleDescription write SetAccessibleDescription;
+    property AccessibleName: TCaption read FAccessibleName write SetAccessibleName;
+    property AccessibleRole: TLazAccessibilityRole read FAccessibleRole write SetAccessibleRole;
     property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 0;
     property BoundsLockCount: integer read FBoundsLockCount;
     property Brush: TBrush read GetBrush;

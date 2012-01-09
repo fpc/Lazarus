@@ -57,8 +57,8 @@ procedure HideVirtualKeyboard();
 function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; override;*)
 function IsMobilePlatform: Boolean; override;
 
-procedure LazAccessibility_SendTextChangedNotification(const ANewText: string); override;
-procedure LazAccessibility_SendSelectionChangedNotification(const ASelStart, ASelEnd: Integer); override;
+procedure LazAccessibility_SendNotification(ANotification: TLazAccessibilityNotification; const ATextParam: string; const AIntParam1, AIntParam2: Integer); override;
+procedure LazAccessibility_SetFields(AHandle: HWND; const ADescription, AName: string; ARole: TLazAccessibilityRole); override;
 procedure LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod); override;
 procedure LazDeviceAPIs_SendMessage(AMsg: TLazDeviceMessage); override;
 procedure LazDeviceAPIs_StartReadingAccelerometerData(); override;
