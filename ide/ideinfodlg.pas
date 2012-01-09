@@ -31,22 +31,31 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  DefineTemplates, EnvironmentOpts, AboutFrm, LazConf, LazarusIDEStrConsts;
+  ComCtrls, DefineTemplates, EnvironmentOpts, AboutFrm, LazConf,
+  LazarusIDEStrConsts, Project, SourceEditor;
 
 type
 
   { TIDEInfoDialog }
 
   TIDEInfoDialog = class(TForm)
-    Memo1: TMemo;
+    GeneralMemo: TMemo;
+    ModifiedMemo: TMemo;
+    PageControl1: TPageControl;
+    GeneralTabSheet: TTabSheet;
+    ModifiedTabSheet: TTabSheet;
     procedure FormCreate(Sender: TObject);
   private
+    // general
     procedure GatherIDEVersion(sl: TStrings);
     procedure GatherParameters(sl: TStrings);
     procedure GatherEnvironmentVars(sl: TStrings);
     procedure GatherGlobalOptions(sl: TStrings);
+    // modified
+    procedure GatherModifiedProject(AProject: TProject; sl: TStrings);
   public
-    procedure UpdateMemo;
+    procedure UpdateGeneralMemo;
+    procedure UpdateModifiedMemo;
   end;
 
 var
@@ -77,7 +86,8 @@ procedure TIDEInfoDialog.FormCreate(Sender: TObject);
 begin
   Caption:=lisIDEInfoInformationAboutTheIDE;
 
-  UpdateMemo;
+  UpdateGeneralMemo;
+  UpdateModifiedMemo;
 end;
 
 procedure TIDEInfoDialog.GatherIDEVersion(sl: TStrings);
@@ -130,7 +140,53 @@ begin
   sl.Add('');
 end;
 
-procedure TIDEInfoDialog.UpdateMemo;
+procedure TIDEInfoDialog.GatherModifiedProject(AProject: TProject; sl: TStrings);
+var
+  aFile: TUnitInfo;
+  HeaderWritten: Boolean;
+  s: String;
+begin
+  // summary
+  if AProject.Modified then
+    sl.Add('Project.Modified');
+  if AProject.SessionModified then
+    sl.Add('Project.SessionModified');
+  if Project1.SomethingModified(true,false) then
+    sl.Add('Project.SomethingModified Data');
+  if Project1.SomethingModified(false,true) then
+    sl.Add('Project.SomethingModified Session');
+  if SourceEditorManager.SomethingModified(false) then
+    sl.Add('SourceEditorManager.SomethingModified');
+  if AProject.BuildModes.IsModified(false) then
+    sl.Add('Project.BuildModes.IsModified data');
+  if AProject.BuildModes.IsModified(true) then
+    sl.Add('Project.BuildModes.IsModified session');
+
+  // details
+  HeaderWritten:=false;
+  aFile:=AProject.FirstPartOfProject;
+  while aFile<>nil do begin
+    if aFile.Modified or aFile.SessionModified
+    or ((aFile.Source<>nil) and aFile.Source.Modified)
+    then begin
+      if not HeaderWritten then begin
+        sl.Add('');
+        sl.Add('Project units:');
+        s:=aFile.GetShortFilename(true);
+        if aFile.Modified then
+          s:=s+' Modified';
+        if aFile.SessionModified then
+          s:=s+' SessionModified';
+        if (aFile.Source<>nil) and (aFile.Source.Modified) then
+          s:=s+' Source.Modified';
+        sl.Add(s);
+      end;
+    end;
+    aFile:=aFile.NextPartOfProject;
+  end;
+end;
+
+procedure TIDEInfoDialog.UpdateGeneralMemo;
 var
   sl: TStringList;
 begin
@@ -140,7 +196,20 @@ begin
     GatherGlobalOptions(sl);
     GatherParameters(sl);
     GatherEnvironmentVars(sl);
-    Memo1.Lines.Assign(sl);
+    GeneralMemo.Lines.Assign(sl);
+  finally
+    sl.Free;
+  end;
+end;
+
+procedure TIDEInfoDialog.UpdateModifiedMemo;
+var
+  sl: TStringList;
+begin
+  sl:=TStringList.Create;
+  try
+    GatherModifiedProject(Project1,sl);
+    ModifiedMemo.Lines.Assign(sl);
   finally
     sl.Free;
   end;

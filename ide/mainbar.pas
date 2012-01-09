@@ -197,7 +197,6 @@ type
           itmViewPackageLinks: TIDEMenuCommand;
           itmViewFPCInfo: TIDEMenuCommand;
           itmViewIDEInfo: TIDEMenuCommand;
-          itmViewIDEModifiedInfo: TIDEMenuCommand;
 
     // source menu
     //mnuSource: TIDEMenuSection;

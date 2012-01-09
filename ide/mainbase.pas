@@ -538,7 +538,6 @@ begin
       CreateMenuItem(itmViewIDEInternalsWindows, itmViewPackageLinks, 'itmViewPackageLinks', lisMenuPackageLinks);
       CreateMenuItem(itmViewIDEInternalsWindows, itmViewFPCInfo, 'itmViewFPCInfo', lisMenuAboutFPC);
       CreateMenuItem(itmViewIDEInternalsWindows, itmViewIDEInfo, 'itmViewIDEInfo', lisAboutIDE);
-      CreateMenuItem(itmViewIDEInternalsWindows, itmViewIDEModifiedInfo, 'itmViewIDEModifiedInfo', lisAboutModifiedItemsInTheIDE);
     end;
   end;
 end;
