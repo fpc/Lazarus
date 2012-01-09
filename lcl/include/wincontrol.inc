@@ -7754,24 +7754,6 @@ begin
     if TControl(FDockClients[I]).Visible then inc(Result);
 end;
 
-procedure TWinControl.SetAccessibleDescription(AValue: TCaption);
-begin
-  if FAccessibleDescription=AValue then Exit;
-  FAccessibleDescription:=AValue;
-end;
-
-procedure TWinControl.SetAccessibleName(AValue: TCaption);
-begin
-  if FAccessibleName=AValue then Exit;
-  FAccessibleName:=AValue;
-end;
-
-procedure TWinControl.SetAccessibleRole(AValue: TLazAccessibilityRole);
-begin
-  if FAccessibleRole=AValue then Exit;
-  FAccessibleRole:=AValue;
-end;
-
 {------------------------------------------------------------------------------
   procedure TWinControl.SetChildSizing(const AValue: TControlChildSizing);
  ------------------------------------------------------------------------------}

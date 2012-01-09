@@ -173,11 +173,6 @@ begin
 
 end;
 
-procedure TCDWidgetSet.LazAccessibility_SetFields(AHandle: HWND; const ADescription, AName: string; ARole: TLazAccessibilityRole);
-begin
-
-end;
-
 procedure TCDWidgetSet.LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
 var
   lPositionMethod: jint;

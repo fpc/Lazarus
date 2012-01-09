@@ -529,11 +529,6 @@ begin
 
 end;
 
-procedure TWidgetSet.LazAccessibility_SetFields(AHandle: HWND; const ADescription, AName: string; ARole: TLazAccessibilityRole);
-begin
-
-end;
-
 procedure TWidgetSet.LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
 begin
 

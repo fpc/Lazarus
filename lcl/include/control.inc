@@ -1337,6 +1337,24 @@ begin
   if Assigned(FOnDragDrop) then FOnDragDrop(Self, Source,X,Y);
 end;
 
+procedure TControl.SetAccessibleDescription(AValue: TCaption);
+begin
+  if FAccessibleDescription=AValue then Exit;
+  FAccessibleDescription:=AValue;
+end;
+
+procedure TControl.SetAccessibleName(AValue: TCaption);
+begin
+  if FAccessibleName=AValue then Exit;
+  FAccessibleName:=AValue;
+end;
+
+procedure TControl.SetAccessibleRole(AValue: TLazAccessibilityRole);
+begin
+  if FAccessibleRole=AValue then Exit;
+  FAccessibleRole:=AValue;
+end;
+
 {------------------------------------------------------------------------------
   TControl Method SetColor  "Sets the default color and tells the widget set"
 ------------------------------------------------------------------------------}

@@ -361,11 +361,6 @@ begin
   WidgetSet.LazAccessibility_SendNotification(ANotification, ATextParam, AIntParam1, AIntParam2);
 end;
 
-procedure LazAccessibility_SetFields(AHandle: HWND; const ADescription, AName: string; ARole: TLazAccessibilityRole);
-begin
-  WidgetSet.LazAccessibility_SetFields(AHandle, ADescription, AName, ARole);
-end;
-
 procedure LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
 begin
   Widgetset.LazDeviceAPIs_RequestPositionInfo(AMethod);

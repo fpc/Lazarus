@@ -95,7 +95,6 @@ function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; {$IFDEF IF_BASE_MEM
 function IsMobilePlatform: Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 procedure LazAccessibility_SendNotification(ANotification: TLazAccessibilityNotification; const ATextParam: string; const AIntParam1, AIntParam2: Integer); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-procedure LazAccessibility_SetFields(AHandle: HWND; const ADescription, AName: string; ARole: TLazAccessibilityRole); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure LazDeviceAPIs_SendMessage(AMsg: TLazDeviceMessage); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure LazDeviceAPIs_StartReadingAccelerometerData(); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
