@@ -24,5 +24,9 @@
 		<issue name="TTabControl.MultiLine">
 			<short>MultiLine property is not supported</short>
 		</issue>
+		<issue name="TDateEdit.CalendarDisplaySettings.dsStartMon">	
+			<short>TDateEdit.CalendarDisplaySettings.dsStartMon is ignored in GTK+ since 2.4</short>
+			<descr>Since GTK+ 2.4, this option is deprecated and ignored by GTK+. The information on which day the calendar week starts is derived from the locale.</descr>
+		</issue>.
 	</widgetset>
 </package>
