@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-12-28 13:38+0100\n"
+"PO-Revision-Date: 2012-01-08 17:50+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -475,7 +475,6 @@ msgid "Modified line"
 msgstr "Geänderte Zeile"
 
 #: lazarusidestrconsts.dlgaddhiattrmouselink
-#, fuzzy
 msgid "Mouse link"
 msgstr "Maus-Link"
 
@@ -2639,7 +2638,7 @@ msgstr "Kein automatisches Umbenennen"
 
 #: lazarusidestrconsts.dlgnoavailableunits
 msgid "No available units to add."
-msgstr ""
+msgstr "Keine verfügbaren Units zum Hinzufügen."
 
 #: lazarusidestrconsts.dlgnobrackethighlight
 msgid "No Highlight"
@@ -3493,7 +3492,7 @@ msgstr "Fensterpositionen"
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"
-msgstr ""
+msgstr "Ausnahmen"
 
 #: lazarusidestrconsts.dlgwordspolicies
 msgctxt "lazarusidestrconsts.dlgwordspolicies"
@@ -3561,7 +3560,6 @@ msgid "Move to Front"
 msgstr "Nach vorn bewegen"
 
 #: lazarusidestrconsts.fdmsaveformasxml
-#, fuzzy
 #| msgid "Save form as XML"
 msgid "Save Form as XML"
 msgstr "Form im XML-Format speichern"
@@ -4855,7 +4853,6 @@ msgid "Center control vertically relative to the given sibling"
 msgstr "Kontrollelement senkrecht relativ zum angegebenen Geschwister zentrieren"
 
 #: lazarusidestrconsts.liscenterform
-#, fuzzy
 #| msgid "Center form"
 msgid "Center Form"
 msgstr "Form zentrieren"
@@ -5693,7 +5690,7 @@ msgstr "Knoten löschen"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectorydesc
 msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: C:/Programme/Borland/Delphi%s"
-msgstr "Das %s Hauptverzeichnis%sin dem Borland alle %s Quellen installiert hat,%s.Beispielsweise C:/Programme/Borland/Delphi%s"
+msgstr "Das %s Hauptverzeichnis,%sin dem Borland alle %s Quellen installiert hat,%s.Beispielsweise C:/Programme/Borland/Delphi%s"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectoryforproject
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: C:/Programme/Borland/Delphi%s"
@@ -7237,10 +7234,9 @@ msgid "Delete file failed"
 msgstr "Löschen der Datei fehlgeschlagen"
 
 #: lazarusidestrconsts.lisdeletemacro
-#, fuzzy
 #| msgid "Delete macro %s"
 msgid "Delete macro %s%s%s?"
-msgstr "Lösche Makro %s"
+msgstr "Lösche Makro %s%s%s?"
 
 #: lazarusidestrconsts.lisdeletemode
 msgid "Delete mode \"%s\""
@@ -8885,7 +8881,7 @@ msgstr "WARNUNG: Unit-Name ungültig %s, Package=%s"
 
 #: lazarusidestrconsts.lisidemacros
 msgid "IDE Macros"
-msgstr ""
+msgstr "IDE Makros"
 
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
@@ -9280,11 +9276,11 @@ msgstr "Ungültige Zeile, Spalte in Nachricht %s%s"
 
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
 msgid "Invalid macro %s%s%s. The macro name must be a pascal identifier."
-msgstr ""
+msgstr "Ungültiges Makro %s%s%s. Der Makroname muß ein gültiger Pascal-Bezeichner sein."
 
 #: lazarusidestrconsts.lisinvalidmacrothenameisakeyword
 msgid "Invalid macro name \"%s\". The name is a keyword."
-msgstr ""
+msgstr "Ungültiger Makroname \"%s\". Der Name ist ein Schlüsselwort."
 
 #: lazarusidestrconsts.lisinvalidmask
 msgid "Invalid Mask"
@@ -10510,7 +10506,6 @@ msgid "Main unit has Uses section containing all units of project"
 msgstr "Die Hauptunit enthält einen uses-Abschnitt mit allen Units des Projekts."
 
 #: lazarusidestrconsts.lismainunitispascalsource
-#, fuzzy
 #| msgid "Main Unit is Pascal Source"
 msgid "Main unit is Pascal source"
 msgstr "Hauptunit ist ein Pascal-Quelltext"
@@ -10976,7 +10971,6 @@ msgid "Goto Include Directive"
 msgstr "Zu Include-Anweisung springen"
 
 #: lazarusidestrconsts.lismenugotoline
-#, fuzzy
 #| msgid "Goto line ..."
 msgid "Goto Line ..."
 msgstr "Zu Zeile springen ..."
@@ -11681,7 +11675,6 @@ msgid "History"
 msgstr "Historie"
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
-#, fuzzy
 #| msgid "IDE speed buttons"
 msgctxt "lazarusidestrconsts.lismenuviewidespeedbuttons"
 msgid "IDE Speed Buttons"
@@ -12386,7 +12379,7 @@ msgstr "%süberschreibt den voreingestellten Compiler, z.B. ppc386, ppcx64, ppcp
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
 msgid "%soverride the project build mode."
-msgstr "%hebt den Projekt-Erstellmodus auf"
+msgstr "%shebt den Projekt-Erstellmodus auf"
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
 msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
@@ -12703,7 +12696,7 @@ msgstr "Abhängigkeit %s%s%s%saus dem package %s%s%s entfernen?"
 
 #: lazarusidestrconsts.lispckeditremovedfiles
 msgid "Removed Files"
-msgstr ""
+msgstr "Entfernte Dateien"
 
 #: lazarusidestrconsts.lispckeditremovedrequiredpackages
 msgctxt "lazarusidestrconsts.lispckeditremovedrequiredpackages"
@@ -15369,7 +15362,7 @@ msgstr "Die LFM-Datei (Lazarus Form) enthält ungültige Eigenschaften. Das bede
 
 #: lazarusidestrconsts.listhemacrodoesnotbeginwith
 msgid "The macro \"%s\" does not begin with \"%s\"."
-msgstr ""
+msgstr "Das Makro \"%s\" beginnt nicht mit \"%s\"."
 
 #: lazarusidestrconsts.listhenameisnotavalidpascalidentifier
 msgid "The name %s%s%s is not a valid pascal identifier."
@@ -15466,7 +15459,7 @@ msgstr "Die Projektinformationsdatei %s%s%s%sauf dem Datenträger hat sich geän
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
 #| msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
 msgid "The project must be saved before building%sIf you set the Test Directory in the IDE options,%syou can create new projects and build them at once.%sSave project?"
-msgstr "Das Projekt muß vor dem Kompilieren gesichert werden.%sWenn Sie das Testverzeichnis in den Umgebungseinstellungen setzen,%können Sie neue Projekte erzeugen und sofort kompilieren.%sProjekt speichern?"
+msgstr "Das Projekt muß vor dem Kompilieren gesichert werden.%sWenn Sie das Testverzeichnis in den Umgebungseinstellungen setzen,%skönnen Sie neue Projekte erzeugen und sofort kompilieren.%sProjekt speichern?"
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories. %sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
@@ -15494,7 +15487,7 @@ msgstr "Es gibt schon ein Formular mit dem Namen %s%s%s"
 
 #: lazarusidestrconsts.listhereisalreadyamacrowiththename
 msgid "There is already a macro with the name %s%s%s."
-msgstr ""
+msgstr "Es gibt bereits ein Makro namens %s%s%s."
 
 #: lazarusidestrconsts.listhereisalreadyanidemacrowiththename
 msgid "There is already an IDE macro with the name \"%s\""

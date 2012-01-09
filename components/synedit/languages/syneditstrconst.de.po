@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-17 18:24+0100\n"
-"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
+"PO-Revision-Date: 2012-01-08 18:13+0100\n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -155,7 +155,7 @@ msgstr "Icon-Verweis"
 
 #: syneditstrconst.syns_attridedirective
 msgid "IDE Directive"
-msgstr ""
+msgstr "IDE Direktive"
 
 #: syneditstrconst.syns_attridentifier
 msgid "Identifier"
@@ -190,17 +190,14 @@ msgid "Label"
 msgstr "Marke"
 
 #: syneditstrconst.syns_attrlineadded
-#, fuzzy
 msgid "Diff Added line"
 msgstr "Von Diff eingefügte Zeile"
 
 #: syneditstrconst.syns_attrlinechanged
-#, fuzzy
 msgid "Diff Changed Line"
 msgstr "Geänderte Diff-Zeile"
 
 #: syneditstrconst.syns_attrlinecontext
-#, fuzzy
 msgid "Diff Context Line"
 msgstr "Diff-Kontextzeile"
 
@@ -278,7 +275,7 @@ msgstr "Präprozessor"
 
 #: syneditstrconst.syns_attrprevvalue
 msgid "Previous value"
-msgstr ""
+msgstr "Vorheriger Wert"
 
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
@@ -683,7 +680,7 @@ msgstr "PHP-Dateien (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
 
 #: syneditstrconst.syns_filterpo
 msgid "Po Files (*.po)|*.po"
-msgstr ""
+msgstr "po-Dateien (*.po)|*.po"
 
 #: syneditstrconst.syns_filterprogress
 msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"
