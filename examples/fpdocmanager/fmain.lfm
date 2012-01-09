@@ -656,7 +656,7 @@ object Main: TMain
     object mnPackage: TMenuItem
       Caption = 'P&ackage'
       object mnImportLpk: TMenuItem
-        Caption = 'Import &LPK'
+        Caption = 'Import...'
         OnClick = mnImportLpkClick
       end
     end
@@ -688,7 +688,8 @@ object Main: TMain
   end
   object dlgSelLpk: TOpenDialog
     Title = 'Open Lazarus package file'
-    Filter = 'Lazarus Package|*.lpk'
+    Filter = 'Lazarus Package|*.lpk|Lazarus Project|*.lpi|Both|*.lpi;*.lpk'
+    FilterIndex = 3
     Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
     left = 16
     top = 200

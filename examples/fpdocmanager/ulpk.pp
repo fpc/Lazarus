@@ -130,7 +130,8 @@ begin
             continue;
           ext := ExtractFileExt(value);
           if (ext = '.pas') or (ext = '.pp') then
-            pkg.Units.Add(value); //!!! no dupes!?
+            //pkg.Units.Add(value + '='); //!!! no dupes!? no options so far?
+            pkg.AddUnit(value);
         end;
       kvDocPaths: pkg.DescrDir := value;
       kvReq: pkg.Requires.Add(LowerCase(value));

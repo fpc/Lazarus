@@ -71,6 +71,7 @@ type
     property Loaded: boolean read FLoaded write SetLoaded;
     property ProjectFile: string read FProjectFile write SetProjectFile; //xml?
   //from LazPkg
+    procedure AddUnit(const AFile: string);
     property LazPkg: string read FLazPkg write SetLazPkg; //LPK name?
     property ProjectDir: string read FProjectDir write SetProjectDir;
     property DescrDir: string read FDescrDir write SetDescrDir;
@@ -144,7 +145,7 @@ type
     function  LoadConfig(const ADir: string; Force: boolean = False): boolean;
     function  SaveConfig: boolean;
     function  AddProject(const APkg, AFile: string; UpdateCfg: boolean): boolean; //from config
-    function CreateProject(const AFileName: string; APkg: TDocPackage): boolean;
+    function  CreateProject(const AFileName: string; APkg: TDocPackage): boolean;
     function  AddPackage(AName: string): TDocPackage;
     function  ImportLpk(const AFile: string): TDocPackage;
     procedure ImportProject(APkg: TFPDocPackage; const AFile: string);
@@ -285,7 +286,12 @@ procedure TDocPackage.SetLoaded(AValue: boolean);
 begin
   if FLoaded=AValue then Exit;
   FLoaded:=AValue;
-  Manager.RegisterPackage(self); //now definitely loaded
+  if not FLoaded then
+    exit; //???
+  if Manager.RegisterPackage(self) < 0 then //now definitely loaded
+    exit; //really exit?
+  if Config = nil then
+    UpdateConfig; //create INI file when loaded
 end;
 
 procedure TDocPackage.SetName(AValue: string);
@@ -356,7 +362,7 @@ begin
   for i := 0 to Units.Count - 1 do begin
     s := Units.ValueFromIndex[i];
     //add further options?
-    pkg.Inputs.Add(Units.ValueFromIndex[i]);
+    pkg.Inputs.Add(s);
   end;
 //add Descriptions
   if DescrDir <> '' then begin
@@ -438,8 +444,10 @@ begin
     Config := TIniFile.Create(Manager.RootDir + Name + '.ini');
 //check config
   s := Config.ReadString(SecDoc, 'projectdir', '');
-  if s = '' then
+  if s = '' then begin
+    FreeAndNil(Config); //must create and fill later!
     exit; //project directory MUST be known
+  end;
   ProjectFile := Config.ReadString(SecDoc, 'projectfile', '');
   FInputDir := Config.ReadString(SecDoc, 'inputdir', '');
   FDescrDir := Config.ReadString(SecDoc, 'descrdir', '');
@@ -472,7 +480,7 @@ var
 begin
 //create ini file, if not already created
   if Config = nil then
-    Config := TIniFile.Create(Name + '.ini'); //in document RootDir
+    Config := TIniFile.Create(Manager.RootDir + Name + '.ini'); //in document RootDir
 //general information
   Config.WriteString(SecDoc, 'projectdir', ProjectDir);
   Config.WriteString(SecDoc, 'projectfile', ProjectFile);
@@ -484,6 +492,17 @@ begin
   WriteSection('descrs', Descriptions);
 //all done
   Loaded := True;
+end;
+
+procedure TDocPackage.AddUnit(const AFile: string);
+var
+  s: string;
+begin
+  s := ExtractUnitName(AFile);
+  if s = '' then
+    Manager.DoLog('No unit: ' + AFile)
+  else
+    Units.Add(s + '=' + AFile);
 end;
 
 { TFPDocManager }
@@ -649,9 +668,17 @@ begin
     Packages.Objects[Result] := APkg;
   if APkg.Loaded then begin
   //check/create project file?
+    if APkg.ProjectFile = '' then begin
+      if APkg.ProjectDir = '' then begin
+        DoLog('Missing project directory for package ' + APkg.Name);
+        exit(-1); //???
+      end;
+      APkg.ProjectFile := APkg.ProjectDir + APkg.Name; //to be fixed by pkg
+    end;
     if (ExtractFileExt(APkg.ProjectFile) <> '.xml') then begin
     //create project file
       CreateProject(APkg.ProjectFile, APkg);
+      //APkg.UpdateConfig; - required?
     //update Packages[] string
       Packages[Result] := APkg.Name + '=' + APkg.ProjectFile;
     end;
@@ -677,6 +704,10 @@ begin
   if ExtractFileExt(AFile) <> '.xml' then begin
     DoLog('Not a project file: ' + AFile);
     Exit(False);
+  end;
+  if not FileExists(AFile) then begin
+    DoLog('Missing project file: ' + AFile);
+    exit(False);
   end;
 //create helper
   BeginTest(AFile);
@@ -763,8 +794,10 @@ begin
     DoLog('Import failed on ' + AFile)
   else begin
     //todo: ImportCompiled - where?
-    CreateProject(AFile, Result);
-    FModified := True; //always?
+    //RegisterPackage(Result);
+    Result.Loaded := True; //should write config file!?
+    //CreateProject(AFile, Result);
+    //FModified := True; //always?
     //Changed;
   end;
   EndUpdate;

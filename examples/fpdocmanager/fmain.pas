@@ -305,27 +305,12 @@ end;
 
 procedure TMain.mnImportLpkClick(Sender: TObject);
 var
-  pkName, pkPrj: string;
+  pkName: string;
 begin
   if not dlgSelLpk.Execute then
     exit;
   pkName:=dlgSelLpk.FileName;
   Manager.ImportLpk(pkName);
-{
-  Manager.BeginUpdate;
-  try
-    if not uLpk.ImportLpk(pkName) then begin
-      LogToMsgBox(self, 'Import failed on ' + pkName);
-      exit;
-    end;
-  //create project file - preprocess options!?
-    pkPrj:=ChangeFileExt(pkName, '.xml');
-    Manager.CreateProject(pkPrj, Manager.SelectedPackage);
-  finally
-    Manager.EndUpdate; //not modified???
-  end;
-//
-}
 end;
 
 procedure TMain.edXMLExit(Sender: TObject);
