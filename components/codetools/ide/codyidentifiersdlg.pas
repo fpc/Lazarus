@@ -368,8 +368,10 @@ begin
         UncompressedMS.Position:=0;
         // reduce the risk of file corruption due to crashes while saving:
         // save to a temporary file and then rename
-        TempFilename:=FileProcs.GetTempFilename(Filename,'unitdictionary');
+        TempFilename:=FileProcs.GetTempFilename(Filename,'writing_tmp_');
         UncompressedMS.SaveToFile(TempFilename);
+        if not DeleteFileUTF8(Filename) then
+          raise Exception.Create(Format(crsUnableToDelete, [Filename]));
         if not RenameFileUTF8(TempFilename,Filename) then
           raise Exception.Create(Format(crsUnableToRenameTo, [TempFilename,
             Filename]));

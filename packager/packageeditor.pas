@@ -294,7 +294,7 @@ type
   
   TPackageEditors = class
   private
-    FItems: TList; // list of TPackageEditorForm
+    FItems: TFPList; // list of TPackageEditorForm
     FOnAddToProject: TOnAddPkgToProject;
     FOnAfterWritePackage: TIDEOptionsWriteEvent;
     FOnBeforeReadPackage: TNotifyEvent;
@@ -2293,13 +2293,13 @@ end;
 
 constructor TPackageEditors.Create;
 begin
-  FItems:=TList.Create;
+  FItems:=TFPList.Create;
 end;
 
 destructor TPackageEditors.Destroy;
 begin
   Clear;
-  FItems.Free;
+  FreeAndNil(FItems);
   inherited Destroy;
 end;
 
@@ -2315,7 +2315,8 @@ end;
 
 procedure TPackageEditors.Remove(Editor: TPackageEditorForm);
 begin
-  FItems.Remove(Editor);
+  if FItems<>nil then
+    FItems.Remove(Editor);
 end;
 
 function TPackageEditors.IndexOfPackage(Pkg: TLazPackage): integer;
@@ -2378,7 +2379,8 @@ end;
 
 procedure TPackageEditors.DoFreeEditor(Pkg: TLazPackage);
 begin
-  FItems.Remove(Pkg.Editor);
+  if FItems<>nil then
+    FItems.Remove(Pkg.Editor);
   if Assigned(OnFreeEditor) then OnFreeEditor(Pkg);
 end;
 

@@ -175,6 +175,7 @@ resourcestring
   crsAndMoreIdentifiers = '... and %s more identifiers';
   crsCodyIdentifierDictionary = 'Identifier Dictionary';
   crsUnableToRenameTo = 'unable to rename "%s" to "%s"';
+  crsUnableToDelete = 'Unable to delete "%s"';
   crsPackagesUnitsIdentifiersFile = 'Packages: %s, Units: %s, Identifiers: %s%'
     +'sDatabase: %s';
   crsNoneSelected = 'none selected';

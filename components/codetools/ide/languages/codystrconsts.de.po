@@ -529,6 +529,10 @@ msgstr "Total"
 msgid "Type"
 msgstr "Typ"
 
+#: codystrconsts.crsunabletodelete
+msgid "Unable to delete \"%s\""
+msgstr ""
+
 #: codystrconsts.crsunabletoreadfile
 msgid "Unable to read file \"%s\"."
 msgstr "Kann Datei \"%s\" nicht lesen."
