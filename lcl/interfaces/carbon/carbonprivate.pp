@@ -720,6 +720,22 @@ begin
       RegisterEventHandler(@CarbonScrollable_ScrollTo),
       1, @TmpSpec, Pointer(Self), nil);
   end;
+
+  // Accessibility
+  TmpSpec := MakeEventSpec(kEventClassAccessibility, kEventAccessibleGetNamedAttribute);
+  InstallControlEventHandler(Content,
+    RegisterEventHandler(@CarbonControl_AccessibleGetNamedAttribute),
+    1, @TmpSpec, Pointer(Self), nil);
+{   kEventAccessibleGetChildAtPoint = 1,
+   kEventAccessibleGetFocusedChild = 2,
+   kEventAccessibleGetAllAttributeNames = 21,
+   kEventAccessibleGetAllParameterizedAttributeNames = 25,
+   kEventAccessibleGetNamedAttribute = 22,
+   kEventAccessibleSetNamedAttribute = 23,
+   kEventAccessibleIsNamedAttributeSettable = 24,
+   kEventAccessibleGetAllActionNames = 41,
+   kEventAccessiblePerformNamedAction = 42,
+   kEventAccessibleGetNamedActionDescription = 44}
 end;
 
 {------------------------------------------------------------------------------

@@ -125,6 +125,98 @@ begin
   Result := CallNextEventHandler(ANextHandler, AEvent);
 end;
 
+{------------------------------------------------------------------------------
+  Name: CarbonControl_AccessibleGetNamedAttribute
+  Accessibility
+
+  The named attributes are:
+
+  AXRole
+  AXRoleDescription
+  AXDescription
+  AXHelp
+  AXParent
+  AXChildren
+  AXWindow
+  AXTopLevelUIElement
+  AXEnabled
+  AXSize
+  AXPosition
+ ------------------------------------------------------------------------------}
+function CarbonControl_AccessibleGetNamedAttribute(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  lAXRole, lInputStr, lOutputStr: CFStringRef;
+  lInputPasStr: string;
+  lLazControl: TControl;
+  lLazAXRole: TLazAccessibilityRole;
+  Command: HICommandExtended;
+const SName = 'CarbonControl_AccessibleGetNamedAttribute';
+begin
+  {$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
+    DebugLn('CarbonControl_AccessibleGetNamedAttribute LCLObject=', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+
+  Result := CallNextEventHandler(ANextHandler, AEvent); // Must be called at the event handling start
+
+  lLazControl := TControl((AWidget as TCarbonControl).LCLObject);
+
+  if not OSError(
+    GetEventParameter(AEvent, kEventParamAccessibleAttributeName,
+      typeCFStringRef, nil, SizeOf(CFStringRef), nil, @lInputStr),
+    SName, 'GetEventParameter') then
+  begin
+    lInputPasStr := CFStringToStr(lInputStr);
+
+    {$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
+      DebugLn('CarbonControl_AccessibleGetNamedAttribute kEventParamAccessibleAttributeName=' + lInputPasStr);
+    {$ENDIF}
+
+    lLazAXRole := lLazControl.AccessibleRole;
+
+    if lInputPasStr = 'AXRole' then
+    begin
+      case lLazAXRole of
+        // kAXApplicationRole
+        // kAXBrowserRole
+        larTreeView: lAXRole := CFSTR('AXBrowser'); // alternatively
+        // kAXButtonRole
+        // kAXCheckBoxRole
+        // kAXColumnRole
+        // kAXDrawerRole
+        // kAXGrowAreaRole
+        // kAXImageRole
+        // kAXMenuButtonRole
+        // kAXOutlineRole
+        // kAXPopUpButtonRole
+        // kAXRadioButtonRole
+        // kAXRowRole
+        // kAXSheetRole
+        // kAXSystemWideRole
+        // kAXTabGroupRole
+        // kAXTableRole
+        // kAXWindowRole
+        larWindow: lAXRole := CFSTR('AXWindow'); // alternatively
+      // kAXUnknownRole
+      else
+        lAXRole := CFSTR('AXUnknown');
+      end;
+
+      //if OSError(
+      SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFStringRef,
+        SizeOf(CFStringRef), @lAXRole);//, SName, SSetEvent, SControlAction) then Exit;
+    end
+    else if lInputPasStr = 'AXRoleDescription' then
+    begin
+      CreateCFString(lLazControl.AccessibleDescription, lOutputStr);
+      SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFStringRef,
+        SizeOf(CFStringRef), @lOutputStr);
+      FreeCFString(lOutputStr);
+    end;
+  end;
+end;
+
 { TCarbonToolBar }
 
 procedure TCarbonToolBar.CreateWidget(const AParams: TCreateParams);

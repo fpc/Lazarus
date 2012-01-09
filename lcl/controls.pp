@@ -1313,6 +1313,8 @@ type
     function ReplaceDockedControl(Control: TControl; NewDockSite: TWinControl;
                            DropControl: TControl; ControlSide: TAlign): Boolean;
     function Dragging: Boolean;
+    // accessibility
+    procedure SetAccesibilityFields(const ADescription, AName: string; const ARole: TLazAccessibilityRole);
   public
     // size
     procedure AdjustSize; virtual;// smart calling DoAutoSize

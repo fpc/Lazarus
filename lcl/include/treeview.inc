@@ -3019,6 +3019,7 @@ begin
   FTreeLineColor := clWindowFrame;
   FTreeLinePenStyle := psPattern;
   FExpandSignColor := clWindowFrame;
+  SetAccesibilityFields('A tree of items', 'T Tree View', larTreeView);
 end;
 
 destructor TCustomTreeView.Destroy;

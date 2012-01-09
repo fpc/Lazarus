@@ -1340,19 +1340,19 @@ end;
 procedure TControl.SetAccessibleDescription(AValue: TCaption);
 begin
   if FAccessibleDescription=AValue then Exit;
-  FAccessibleDescription:=AValue;
+  SetAccesibilityFields(AValue, FAccessibleName, FAccessibleRole);
 end;
 
 procedure TControl.SetAccessibleName(AValue: TCaption);
 begin
   if FAccessibleName=AValue then Exit;
-  FAccessibleName:=AValue;
+  SetAccesibilityFields(FAccessibleDescription, AValue, FAccessibleRole);
 end;
 
 procedure TControl.SetAccessibleRole(AValue: TLazAccessibilityRole);
 begin
   if FAccessibleRole=AValue then Exit;
-  FAccessibleRole:=AValue;
+  SetAccesibilityFields(FAccessibleDescription, FAccessibleName, AValue);
 end;
 
 {------------------------------------------------------------------------------
@@ -1402,6 +1402,15 @@ end;
 function TControl.Dragging: Boolean;
 begin
   Result := DragManager.Dragging(Self);
+end;
+
+// accessibility
+procedure TControl.SetAccesibilityFields(const ADescription, AName: string; const ARole: TLazAccessibilityRole);
+begin
+  FAccessibleDescription := ADescription;
+  FAccessibleName := AName;
+  FAccessibleRole := ARole;
+  TWSControl.LazAccessibility_SetFields(Self, ADescription, AName, ARole);
 end;
 
 {------------------------------------------------------------------------------
