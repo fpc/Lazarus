@@ -617,9 +617,18 @@ begin
     gtk_window_set_default_size(GtkWindow, Max(1,AForm.Width), Max(1,AForm.Height));
     gtk_widget_set_uposition(PGtkWidget(GtkWindow), AForm.Left, AForm.Top);
     GtkWindowShowModal(AForm, GtkWindow);
-  end
-  else
+  end else
+  begin
+    if (AForm.FormStyle <> fsMDIChild) and AForm.HandleObjectShouldBeVisible and
+      (ModalWindows <> nil) and (ModalWindows.Count > 0) and
+      (AForm.PopupParent = nil) and (AForm.BorderStyle = bsNone) then
+    begin
+      GtkWindow := PGtkWindow(AForm.Handle);
+      gtk_window_set_transient_for(GtkWindow, nil);
+      gtk_window_set_modal(GtkWindow, True);
+    end;
     Gtk2WidgetSet.SetVisible(AWinControl, AForm.HandleObjectShouldBeVisible);
+  end;
   InvalidateLastWFPResult(AWinControl, AWinControl.BoundsRect);
 end;
 
