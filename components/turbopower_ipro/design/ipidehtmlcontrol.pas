@@ -191,15 +191,15 @@ procedure TLazIPHtmlControl.IPHTMLPanelHotClick(Sender: TObject);
 var
   HotNode: TIpHtmlNode;
   HRef: String;
-  Target: String;
+  //Target: String;
 begin
   HotNode:=FIPHTMLPanel.HotNode;
   if HotNode is TIpHtmlNodeA then begin
     HRef := TIpHtmlNodeA(HotNode).HRef;
-    Target := TIpHtmlNodeA(HotNode).Target;
+    //Target := TIpHtmlNodeA(HotNode).Target;
   end else begin
     HRef := TIpHtmlNodeAREA(HotNode).HRef;
-    Target := TIpHtmlNodeAREA(HotNode).Target;
+    //Target := TIpHtmlNodeAREA(HotNode).Target;
   end;
   //debugln(['TLazIPHtmlControl.IPHTMLPanelHotClick HRef="',HRef,'" Target="',Target,'"']);
   IDEProvider.OpenURLAsync(HRef);
