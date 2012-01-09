@@ -6,7 +6,7 @@ set -e
 #------------------------------------------------------------------------------
 # parse parameters
 #------------------------------------------------------------------------------
-Usage="Usage: $0 [nodocs] [notemp] [deb] <FPCSrcDir> [release]"
+Usage="Usage: $0 [nodocs] [notemp] <FPCSrcDir> [release]"
 
 WithDOCS=yes
 if [ "x$1" = "xnodocs" ]; then
@@ -21,10 +21,6 @@ if [ "x$1" = "xnotemp" ]; then
 fi
 
 PkgType=rpm
-if [ "x$1" = "xdeb" ]; then
-  PkgType=deb
-  shift
-fi
 
 FPCSrcDir=$1
 if [ "x$FPCSrcDir" = "x" ]; then
@@ -94,78 +90,34 @@ perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$CompilerVersionStr -m 'Makefile
 # update smart_strip.sh
 #ATM: not needed: cp $SmartStripScript $TmpDir/fpc/install/
 
-if [ "$PkgType" = "deb" ]; then
-  # build fpc debs
+# build fpc rpm
 
-  # change debian files
-  DebianRulezDir=$TmpDir/fpc/install/debian/
-  Date=`date --rfc-822`
+echo "creating spec file ..."
+SpecFileTemplate=rpm/fpc.spec.template
+SpecFile=rpm/fpc.spec
 
-  # prepend changelog information, needed for version
-  cd $DebianRulezDir
-  File=changelog
-  OldFile=changelog.old.fpc
-  cp $File $OldFile
-  echo "fpc ($FPCVersion-$FPCRelease) unstable; urgency=low" > $File
-  echo '  * Unofficial snapshot build for lazarus' >> $File
-  echo " -- Mattias Gaertner <mattias@freepascal.org>  $Date" >> $File
-  echo "" >> $File
-  cat $OldFile >> $File
-  rm $OldFile
-  cd -
-
-  # fix debian/rules
-  # - copy the complete examples directory
-  # - do not install non existing files Changes.fcl Changes.utils
-  cd $DebianRulezDir
-  cat rules | \
-    sed -e 's/^\(.*mv .*\)uncgi\( .*examples.*\)$/\1???*\2/' \
-        -e 's/^.*logs\/Changes\.fcl.*$//' \
-        -e 's/^.*logs\/Changes\.utils.*$//' \
-    > rules.laz
-  cp rules.laz rules # use cp to preserve file attribs
-  rm rules.laz
-  cd -
-
-
-  # compile
-  cd $TmpDir/fpc
-  make debcopy
-  cd -
-  cd /usr/src/fpc-$FPCVersion
-  ./debian/rules binary-arch
-  cd -
-  
-else
-  # build fpc rpm
-
-  echo "creating spec file ..."
-  SpecFileTemplate=rpm/fpc.spec.template
-  SpecFile=rpm/fpc.spec
-
-  # change spec file
-  cat $SpecFileTemplate | \
+# change spec file
+cat $SpecFileTemplate | \
     sed -e 's/^Version: .*/Version: '"$FPCVersion/" \
         -e 's/^Release: .*/Release: '"$FPCRelease/" \
         -e 's/^%define fpcversion .*/%define fpcversion '"$FPCVersion/" \
     > $SpecFile
-  #      -e 's/\(%define builddocdir.*\)/%define __strip smart_strip.sh\n\n\1/' \
-  #      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
+#      -e 's/\(%define builddocdir.*\)/%define __strip smart_strip.sh\n\n\1/' \
+#      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
   
-  SrcTGZ=$(rpm/get_rpm_source_dir.sh)/SOURCES/fpc-$CompilerVersionStr-$FPCRelease.source.tar.gz
-  echo "creating $SrcTGZ ..."
-  tar czf $SrcTGZ -C $TmpDir fpc
+SrcTGZ=$(rpm/get_rpm_source_dir.sh)/SOURCES/fpc-$CompilerVersionStr-$FPCRelease.source.tar.gz
+echo "creating $SrcTGZ ..."
+tar czf $SrcTGZ -C $TmpDir fpc
 
-  #----------------------------------------------------------------------------
-  # compile
-  #----------------------------------------------------------------------------
-  if [ "$WithDOCS" = "no" ]; then
-    export NODOCS=1
-  fi
-  rpmbuild --nodeps -ba $SpecFile
-
-  echo "The new rpm can be found in $(./rpm/get_rpm_source_dir.sh)/RPMS/$Arch/fpc-$FPCVersion-$FPCRelease.$Arch.rpm"
+#----------------------------------------------------------------------------
+# compile
+#----------------------------------------------------------------------------
+if [ "$WithDOCS" = "no" ]; then
+  export NODOCS=1
 fi
+rpmbuild --nodeps -ba $SpecFile
+
+echo "The new rpm can be found in $(./rpm/get_rpm_source_dir.sh)/RPMS/$Arch/fpc-$FPCVersion-$FPCRelease.$Arch.rpm"
 
 # end.
 

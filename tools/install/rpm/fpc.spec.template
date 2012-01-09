@@ -1,7 +1,11 @@
 Name:           fpc
-Version:        2.2.0
+Version:        1.2.3
 Release:        1
 Summary:        Free Pascal Compiler
+
+# Because this rpm is used on different systems, with different names
+# of packages/dependencies. Do not add dependencies automatically.
+AutoReqProv: no
 
 Group:          Development/Languages
 License:        GPL and modified LGPL
@@ -32,16 +36,15 @@ and ibase.
 #
 #The fpc-doc package contains the documentation (in pdf format) and examples
 #of Freepascal.
+#The fpc-doc package contains the sources of Freepascal, for documentation or
+#automatical-code generation purposes.
 
 %package src
 Summary:        Free Pascal Compiler - sources
 Group:          Development/Languages
 
 %description src
-
-The fpc-doc package contains the sources of Freepascal, for documentation or
-automatical-code generation purposes.
-
+The sources of FPC - the Free Pascal Compiler and its packages.
 
 %ifarch ppc
 %define ppcname ppcppc
@@ -49,9 +52,14 @@ automatical-code generation purposes.
 %ifarch x86_64
 %define ppcname ppcx64
 %else
+%ifarch amd64
+%define ppcname amd64
+%else
 %define ppcname ppc386
 %endif
 %endif
+%endif
+
 
 %prep
 #%setup -q -a0 -n %{name}
@@ -71,7 +79,7 @@ fi
 NEWPP=`pwd`/compiler/%{ppcname}
 NEWFPDOC=`pwd`/utils/fpdoc/fpdoc
 DATA2INC=`pwd`/utils/data2inc
-make clean all FPC=${STARTPP}
+make distclean all FPC=${STARTPP}
 
 # disable the debuginfo package
 %define debug_package %{nil}
@@ -122,19 +130,22 @@ cp -a fpcsrc/* %{buildroot}%{_datadir}/fpcsrc/
 # newer rpm versions do not allow garbage
 # delete lexyacc
 rm -rf %{buildroot}%{_libdir}/%{name}/lexyacc
+rm -rf %{buildroot}%{_defaultdocdir}/fpc-libc-*
+rm -rf %{buildroot}%{_defaultdocdir}/fpc-symbolic-*
 
 %clean
 rm -rf %{buildroot}
 
 %post
 # Create a version independent config
-%define fpcversion 2.2.0
+%define fpcversion 1.2.3
 %{_libdir}/%{name}/%{fpcversion}/samplecfg %{_libdir}/%{name}/%{fpcversion} > /dev/null
 
 %files
 %defattr(-,root,root,-)
 %{_bindir}/*
 %{_libdir}/%{name}
+%dir %{_defaultdocdir}
 #%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/NEWS
 #%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/README
 #%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/readme.ide
