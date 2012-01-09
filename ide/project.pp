@@ -5293,7 +5293,7 @@ end;
 
 function TProject.SomeDataModified(Verbose: boolean): boolean;
 var
-  i: Integer;
+  AnUnitInfo: TUnitInfo;
 begin
   Result:=true;
   if Modified then
@@ -5308,13 +5308,16 @@ begin
       DebugLn(['TProject.SomeDataModified CompilerOptions/BuildModes']);
     Exit;
   end;
-  for i := 0 to UnitCount - 1 do
-    if (Units[i].IsPartOfProject) and Units[i].Modified then
+  AnUnitInfo:=FirstPartOfProject;
+  while AnUnitInfo<>nil do begin
+    if AnUnitInfo.Modified then
     begin
       if Verbose then
-        DebugLn('TProject.SomeDataModified PartOfProject ',Units[i].Filename);
+        DebugLn('TProject.SomeDataModified PartOfProject ',AnUnitInfo.Filename);
       Exit;
     end;
+    AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+  end;
   Result:=false;
 end;
 

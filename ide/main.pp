@@ -145,10 +145,11 @@ uses
   OutputFilter, JumpHistoryView, ManageExamples,
   BuildLazDialog, BuildProfileManager, BuildManager, CheckCompOptsForNewUnitDlg,
   MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
-  IDEFPCInfo, IDEInfoDlg, ProcessList, InitialSetupDlgs, NewDialog,
-  MakeResStrDlg, DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer,
-  BuildFileDlg, ProcedureList, ExtractProcDlg, FindRenameIdentifier,
-  AbstractsMethodsDlg, EmptyMethodsDlg, UnusedUnitsDlg, UseUnitDlg, FindOverloadsDlg,
+  IDEFPCInfo, IDEInfoDlg, IDEModifiedInfo, ProcessList, InitialSetupDlgs,
+  NewDialog, MakeResStrDlg, DialogProcs, FindReplaceDialog, FindInFilesDlg,
+  CodeExplorer, BuildFileDlg, ProcedureList, ExtractProcDlg,
+  FindRenameIdentifier, AbstractsMethodsDlg, EmptyMethodsDlg, UnusedUnitsDlg,
+  UseUnitDlg, FindOverloadsDlg,
   CleanDirDlg, CodeContextForm, AboutFrm, CompatibilityRestrictions,
   RestrictionBrowser, ProjectWizardDlg, IDECmdLine, IDEGuiCmdLine, CodeExplOpts,
   // main ide
@@ -259,6 +260,7 @@ type
     procedure mnuViewIDESpeedButtonsClicked(Sender: TObject);
     procedure mnuViewFPCInfoClicked(Sender: TObject);
     procedure mnuViewIDEInfoClicked(Sender: TObject);
+    procedure mnuViewIDEModifiedInfoClicked(Sender: TObject);
 
     // source menu
     procedure mnuSourceClicked(Sender: TObject);
@@ -2525,6 +2527,7 @@ begin
 
     itmViewFPCInfo.OnClick:=@mnuViewFPCInfoClicked;
     itmViewIDEInfo.OnClick:=@mnuViewIDEInfoClicked;
+    itmViewIDEModifiedInfo.OnClick:=@mnuViewIDEModifiedInfoClicked;
   end;
 end;
 
@@ -2720,6 +2723,11 @@ end;
 procedure TMainIDE.mnuViewIDEInfoClicked(Sender: TObject);
 begin
   ShowIDEInfo;
+end;
+
+procedure TMainIDE.mnuViewIDEModifiedInfoClicked(Sender: TObject);
+begin
+  ShowIDEModifiedInfo;
 end;
 
 procedure TMainIDE.SetDesigning(AComponent: TComponent; Value: Boolean);
