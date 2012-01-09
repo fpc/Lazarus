@@ -2551,10 +2551,10 @@ begin
   QStrList := QStringList_create();
   try
     QMimeData_formats(MimeData, QStrList);
-    for i := 0 to QStringList_size(QStrList) - 1 do
+    for i := QStringList_size(QStrList) - 1 downto 0 do
     begin
       QStringList_at(QStrList, @WStr, i);
-      GotFiles := WStr = 'text/plain';
+      GotFiles := (WStr = 'text/plain') or (WStr = 'text/uri-list');
       if GotFiles then
         break;
     end;
