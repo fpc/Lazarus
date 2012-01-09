@@ -724,9 +724,6 @@ type
     function FindNonForwardClass(Params: TFindDeclarationParams): boolean;
     function FindExpressionResultType(Params: TFindDeclarationParams;
       StartPos, EndPos: integer; AliasType: PFindContext = nil): TExpressionType;
-    function FindCodeToolForUsedUnit(UnitNameAtom,
-      UnitInFileAtom: TAtomPosition;
-      ExceptionOnNotFound: boolean): TFindDeclarationTool;
     function FindCodeToolForUsedUnit(const AnUnitName, AnUnitInFilename: string;
       ExceptionOnNotFound: boolean): TFindDeclarationTool;
     function FindUnitSourceWithUnitIdentifier(UsesNode: TCodeTreeNode;
@@ -767,8 +764,6 @@ type
       CleanCursorPos: integer; out ParameterAtom, ProcNameAtom: TAtomPosition;
       out ParameterIndex: integer): boolean;
   protected
-    function OpenCodeToolForUnit(UnitNameAtom, UnitInFileAtom: TAtomPosition;
-      ExceptionOnNotFound: boolean): TFindDeclarationTool;
     function CheckDirectoryCache: boolean;
   public
     constructor Create;
@@ -5842,31 +5837,25 @@ function TFindDeclarationTool.FindIdentifierInUsesSection(
    compare first the all unit names, then load the units and search there
 }
 var
-  InAtom, UnitNameAtom: TAtomPosition;
   NewCodeTool: TFindDeclarationTool;
   OldFlags: TFindDeclarationFlags;
   Node: TCodeTreeNode;
   CollectResult: TIdentifierFoundResult;
-  MissingUnitNamePos: Integer;
+  MissingUnit: TCodeTreeNode;
 
   procedure RaiseUnitNotFound;
   var
     AnUnitName: String;
-    aFilename: String;
+    InFilename: String;
   begin
-    MoveCursorToCleanPos(MissingUnitNamePos);
-    ReadNextAtom;
-    AnUnitName:=GetAtom;
-    ReadNextAtom;
-    if UpAtomIs('IN') then begin
-      ReadNextAtom;
-      aFilename:=GetAtom;
-    end else
-      aFilename:=AnUnitName;
+    AnUnitName:=ExtractUsedUnitName(MissingUnit,@InFilename);
     RaiseExceptionInstance(
-      ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[AnUnitName]),aFilename));
+      ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[AnUnitName]),InFilename));
   end;
 
+var
+  AnUnitName: string;
+  InFilename: string;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(UsesNode);{$ENDIF}
   {$IFDEF ShowTriedParentContexts}
@@ -5899,66 +5888,36 @@ begin
   end;
 
   if not (fdfIgnoreUsedUnits in Params.Flags) then begin
-    MissingUnitNamePos:=0;
+    MissingUnit:=nil;
     // search in units
     Node:=UsesNode.LastChild;
     while Node<>nil do begin
-      MoveCursorToCleanPos(Node.StartPos);
-      ReadNextAtom;
-      UnitNameAtom:=CurPos;
-      ReadNextAtom;
-      if UpAtomIs('IN') then begin
-        ReadNextAtom;
-        InAtom:=CurPos;
-      end else
-        InAtom.StartPos:=0;
-      NewCodeTool:=OpenCodeToolForUnit(UnitNameAtom,InAtom,false);
-      if NewCodeTool<>nil then begin
-        // search the identifier in the interface of the used unit
-        OldFlags:=Params.Flags;
-        Params.Flags:=[fdfIgnoreUsedUnits]+(fdfGlobalsSameIdent*Params.Flags)
-                     -[fdfExceptionOnNotFound];
-        Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
-        Params.Flags:=OldFlags;
-        if Result and Params.IsFoundProcFinal then exit;
-      end else if MissingUnitNamePos=0 then begin
-        MissingUnitNamePos:=UnitNameAtom.StartPos;
+      AnUnitName:=ExtractUsedUnitName(Node,@InFilename);
+      if AnUnitName<>'' then begin
+        NewCodeTool:=FindCodeToolForUsedUnit(AnUnitName,InFilename,false);
+        if NewCodeTool<>nil then begin
+          // search the identifier in the interface of the used unit
+          OldFlags:=Params.Flags;
+          Params.Flags:=[fdfIgnoreUsedUnits]+(fdfGlobalsSameIdent*Params.Flags)
+                       -[fdfExceptionOnNotFound];
+          Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
+          Params.Flags:=OldFlags;
+          if Result and Params.IsFoundProcFinal then exit;
+        end else if MissingUnit=nil then begin
+          MissingUnit:=Node;
+        end;
+        {$IFDEF ShowTriedParentContexts}
+        DebugLn(['TFindDeclarationTool.FindIdentifierInUsesSection ',GetAtom(UnitNameAtom),' Result=',Result,' IsFinal=',Params.IsFinal]);
+        {$ENDIF}
       end;
-      {$IFDEF ShowTriedParentContexts}
-      DebugLn(['TFindDeclarationTool.FindIdentifierInUsesSection ',GetAtom(UnitNameAtom),' Result=',Result,' IsFinal=',Params.IsFinal]);
-      {$ENDIF}
       Node:=Node.PriorBrother;
     end;
 
-    if (not Result) and (MissingUnitNamePos>0) then begin
+    if (not Result) and (MissingUnit<>nil) then begin
       // identifier not found and there is a missing unit
       RaiseUnitNotFound;
     end;
   end;
-end;
-
-function TFindDeclarationTool.FindCodeToolForUsedUnit(UnitNameAtom,
-  UnitInFileAtom: TAtomPosition;
-  ExceptionOnNotFound: boolean): TFindDeclarationTool;
-var AnUnitName, AnUnitInFilename: string;
-begin
-  Result:=nil;
-  if (UnitNameAtom.StartPos<1) or (UnitNameAtom.EndPos<=UnitNameAtom.StartPos)
-  or (UnitNameAtom.EndPos>SrcLen+1) then
-    exit;
-  AnUnitName:=copy(Src,UnitNameAtom.StartPos,
-                   UnitNameAtom.EndPos-UnitNameAtom.StartPos);
-  if UnitInFileAtom.StartPos>=1 then begin
-    if (UnitInFileAtom.StartPos<1)
-    or (UnitInFileAtom.EndPos<=UnitInFileAtom.StartPos)
-    or (UnitInFileAtom.EndPos>SrcLen+1) then
-      RaiseException('[TFindDeclarationTool.FindCodeToolForUsedUnit] '
-        +'internal error: invalid UnitInFileAtom');
-    AnUnitInFilename:=copy(Src,UnitInFileAtom.StartPos+1,
-                   UnitInFileAtom.EndPos-UnitInFileAtom.StartPos-2);
-  end else
-    AnUnitInFilename:='';
-  Result:=FindCodeToolForUsedUnit(AnUnitName,AnUnitInFilename,ExceptionOnNotFound);
 end;
 
 function TFindDeclarationTool.FindCodeToolForUsedUnit(const AnUnitName,
@@ -6308,12 +6267,7 @@ begin
   Result:=false;
   // open the unit and search the identifier in the interface
   NewCode:=FindUnitSource(AnUnitName,'',true);
-  if (NewCode=nil) then begin
-    // no source found
-    CurPos.StartPos:=-1;
-    RaiseExceptionInstance(
-      ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[AnUnitName]),AnUnitName));
-  end else if NewCode=TCodeBuffer(Scanner.MainCode) then begin
+  if NewCode=TCodeBuffer(Scanner.MainCode) then begin
     // Searching again in hidden unit
     DebugLn('WARNING: Searching again in hidden unit: "',NewCode.Filename,'"');
   end else begin
@@ -7073,13 +7027,27 @@ var
     end;
   end;
 
-  procedure ResolveChilds;
+  procedure ResolveUseUnit;
   var
+    AnUnitName: string;
+    InFilename: string;
     aTool: TFindDeclarationTool;
-    UnitNameAtom: TAtomPosition;
-    InAtom: TAtomPosition;
     NewCodeTool: TFindDeclarationTool;
     NewNode: TCodeTreeNode;
+  begin
+    {$IFDEF ShowExprEval}
+    debugln(['  FindExpressionTypeOfTerm ResolveChilds used unit -> interface node ',dbgstr(ExprType.Context.Tool.ExtractNode(ExprType.Context.Node,[]))]);
+    {$ENDIF}
+    aTool:=ExprType.Context.Tool;
+    AnUnitName:=aTool.ExtractUsedUnitName(ExprType.Context.Node,@InFilename);
+    NewCodeTool:=aTool.FindCodeToolForUsedUnit(AnUnitName,InFilename,true);
+    NewCodeTool.BuildInterfaceIdentifierCache(true);
+    NewNode:=NewCodeTool.FindInterfaceNode;
+    ExprType.Context.Tool:=NewCodeTool;
+    ExprType.Context.Node:=NewNode;
+  end;
+
+  procedure ResolveChilds;
   begin
     if (ExprType.Context.Node=nil) then exit;
     {$IFDEF ShowExprEval}
@@ -7096,24 +7064,7 @@ var
     end
     else if (ExprType.Context.Node.Desc=ctnUseUnit) then begin
       // uses unit name => interface of used unit
-      {$IFDEF ShowExprEval}
-      debugln(['  FindExpressionTypeOfTerm ResolveChilds used unit -> interface node ',dbgstr(ExprType.Context.Tool.ExtractNode(ExprType.Context.Node,[]))]);
-      {$ENDIF}
-      aTool:=ExprType.Context.Tool;
-      aTool.MoveCursorToCleanPos(ExprType.Context.Node.StartPos);
-      aTool.ReadNextAtom;
-      UnitNameAtom:=aTool.CurPos;
-      aTool.ReadNextAtom;
-      if aTool.UpAtomIs('IN') then begin
-        aTool.ReadNextAtom;
-        InAtom:=aTool.CurPos;
-      end else
-        InAtom.StartPos:=0;
-      NewCodeTool:=aTool.OpenCodeToolForUnit(UnitNameAtom,InAtom,true);
-      NewCodeTool.BuildInterfaceIdentifierCache(true);
-      NewNode:=NewCodeTool.FindInterfaceNode;
-      ExprType.Context.Tool:=NewCodeTool;
-      ExprType.Context.Node:=NewNode;
+      ResolveUseUnit;
     end
     else if (ExprType.Context.Node.Desc=ctnClassOfType) then begin
       // 'class of' => jump to the class
@@ -9184,27 +9135,6 @@ begin
       inc(i);
     end;
     Result:=ParameterNode;
-  end;
-end;
-
-function TFindDeclarationTool.OpenCodeToolForUnit(UnitNameAtom,
-  UnitInFileAtom: TAtomPosition;
-  ExceptionOnNotFound: boolean): TFindDeclarationTool;
-begin
-  // open the unit
-  Result:=FindCodeToolForUsedUnit(UnitNameAtom,UnitInFileAtom,
-                                  ExceptionOnNotFound);
-  if Result=nil then begin
-    if ExceptionOnNotFound then begin
-      MoveCursorToCleanPos(UnitNameAtom.StartPos);
-      RaiseExceptionInstance(
-        ECodeToolUnitNotFound.Create(Self,
-                                     Format(ctsUnitNotFound,[GetAtom(UnitNameAtom)]),
-                                     GetAtom(UnitNameAtom)));
-    end;
-  end else if Result=Self then begin
-    MoveCursorToCleanPos(UnitNameAtom.StartPos);
-    RaiseExceptionFmt(ctsIllegalCircleInUsedUnits,[GetAtom(UnitNameAtom)]);
   end;
 end;
 

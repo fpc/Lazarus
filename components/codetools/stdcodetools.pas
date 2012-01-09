@@ -3644,42 +3644,36 @@ function TStandardCodeTool.GatherResourceStringSections(
   
   function SearchInUsesSection(UsesNode: TCodeTreeNode): boolean;
   var
-    InAtom, UnitNameAtom: TAtomPosition;
     NewCodeTool: TPascalReaderTool;
-    ANode: TCodeTreeNode;
+    IntfNode: TCodeTreeNode;
     NewCaret: TCodeXYPosition;
+    Node: TCodeTreeNode;
+    AnUnitName, InFilename: string;
   begin
     Result:=false;
-    MoveCursorToUsesEnd(UsesNode);
-    repeat
-      ReadPriorUsedUnit(UnitNameAtom, InAtom);
-      //DebugLn('TStandardCodeTool.GatherResourceStringSections Uses ',GetAtom(UnitNameAtom));
+    if UsesNode=nil then exit(true);
+    Node:=UsesNode.LastChild;
+    while Node<>nil do begin
+      AnUnitName:=ExtractUsedUnitName(Node,@InFilename);
       // open the unit
-      NewCodeTool:=OpenCodeToolForUnit(UnitNameAtom,InAtom,false);
-      if NewCodeTool=nil then begin
-        MoveCursorToAtomPos(UnitNameAtom);
-        RaiseException(Format(ctsSourceOfUnitNotFound, [GetAtom]));
-      end;
+      NewCodeTool:=FindCodeToolForUsedUnit(AnUnitName,InFilename,true);
       NewCodeTool.BuildTree(lsrImplementationStart);
       // search all resource string sections in the interface
-      ANode:=NewCodeTool.FindInterfaceNode;
-      if (ANode<>nil) and (ANode.LastChild<>nil) then begin
-        ANode:=ANode.LastChild;
-        while ANode<>nil do begin
-          if ANode.Desc=ctnResStrSection then begin
-            if not NewCodeTool.CleanPosToCaret(ANode.StartPos,NewCaret) then
+      IntfNode:=NewCodeTool.FindInterfaceNode;
+      if (IntfNode<>nil) and (IntfNode.LastChild<>nil) then begin
+        IntfNode:=IntfNode.LastChild;
+        while IntfNode<>nil do begin
+          if IntfNode.Desc=ctnResStrSection then begin
+            if not NewCodeTool.CleanPosToCaret(IntfNode.StartPos,NewCaret) then
               break;
             //DebugLn('TStandardCodeTool.GatherResourceStringSections Found Other ',NewCodeTool.MainFilename,' Y=',NewCaret.Y);
             PositionList.Add(NewCaret);
           end;
-          ANode:=ANode.PriorBrother;
+          IntfNode:=IntfNode.PriorBrother;
         end;
       end;
-      // restore the cursor
-      MoveCursorToCleanPos(UnitNameAtom.StartPos);
-      ReadPriorAtom; // read keyword 'uses' or comma
-      //DebugLn('TStandardCodeTool.GatherResourceStringSections Uses B ',GetAtom);
-    until not AtomIsChar(',');
+      Node:=Node.PriorBrother;
+    end;
     Result:=true;
   end;
   
