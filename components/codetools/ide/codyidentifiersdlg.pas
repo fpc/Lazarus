@@ -1111,6 +1111,7 @@ function TCodyIdentifiersDlg.Init: boolean;
 var
   ErrorHandled: boolean;
   Line: String;
+  ImplNode: TCodeTreeNode;
 begin
   Result:=true;
   CurInitError:=ParseTilCursor(CurTool, CurCleanPos, CurNode, ErrorHandled, false, @CurCodePos);
@@ -1125,9 +1126,12 @@ begin
       CurIdentifier:=copy(Line,CurIdentStart,CurIdentEnd-CurIdentStart);
   end;
   CurInImplementation:=false;
-  if (CurNode<>nil) and (CurTool.FindImplementationNode.StartPos<=CurNode.StartPos)
-  then
-    CurInImplementation:=true;
+  if (CurNode<>nil) then begin
+    ImplNode:=CurTool.FindImplementationNode;
+    if (ImplNode<>nil) and (ImplNode.StartPos<=CurNode.StartPos)
+    then
+      CurInImplementation:=true;
+  end;
   AddToImplementationUsesCheckBox.Enabled:=CurInImplementation;
   AddToImplementationUsesCheckBox.Checked:=
                                     CodyOptions.PreferImplementationUsesSection;
