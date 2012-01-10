@@ -788,7 +788,7 @@ begin
                     'to detect words for this macro: [\w\-+*\(\)\[\].^@]+',
                     @CodeMacroPrevWord,nil);
   RegisterCodeMacroEx('Param', lisTemplateEditParamCell,
-                    lisTemplateEditParamCellHelp,
+                    Format(lisTemplateEditParamCellHelp, [LineEnding]),
                     @CodeMacroEditParam,nil);
 end;
 

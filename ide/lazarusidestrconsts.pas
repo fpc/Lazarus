@@ -5023,9 +5023,29 @@ resourcestring
     +'all values of case variable in front of variable';
   lisGetWordAtCurrentCursorPosition = 'get word at current cursor position';
   lisTemplateEditParamCell = 'Editable Cell';
-  lisTemplateEditParamCellHelp = 'Inserts an editable Cell, with a default value'
-    + LineEnding + '"",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell'
-    + LineEnding + '"default",Sync, to Sync with a previous cell of equal default';
+  lisTemplateEditParamCellHelp =
+     'Inserts an editable Cell. Cells can be navigated using the tab key.%0:s' +
+     'The "param" macro takes a list of comma separated arguments.%0:s' +
+     'The first argument is the default value.%0:s' +
+     'The 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s' +
+     '%0:s' +
+     '  while param("foo") do param(foo);%0:s' +
+     'Inserts 2 independent cells, both with the default text "foo"%0:s' +
+     'The quotes are optional%0:s' +
+     '%0:s' +
+     '  if param("foo") > 0 and param("foo",sync=1) < 99 then%0:s' +
+     'Inserts 2 linked cells, editing either one, will change the other one too%0:s' +
+     'The value "1" refers to the position of the other "param()", so if there are more params:%0:s' +
+     '  if param("bar") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:s' +
+     'The 2nd and third are linked. (the 3rd refers to "2") %0:s' +
+     '%0:s' +
+     '"sync can be shortened to "s":%0:s' +
+     '  if param("foo") > 0 and param("foo",s=1) < 99 then%0:s' +
+     '%0:s' +
+     '  if param("bar") and param("foo") > 0 and param("foo",sync) < 99 then%0:s' +
+     'The 2nd and third are linked.%0:s' +
+     'Note: "Sync has no position and no "=", so it syncs to the previous cell with the same default (in this case "foo")' ;
+
   lisPrecedingWord = 'Preceding word';
   lisForm = 'Form';
   lisInheritedProjectComponent = 'Inherited project component';
