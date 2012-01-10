@@ -2146,8 +2146,10 @@ begin
               ReleaseDC(Window, menuHDC);
               Winprocess := False;
             end
+            {$ifdef MSG_DEBUG}
             else
               DebugLn('WM_MEASUREITEM for a menuitem catched but menuitem is not TmenuItem');
+            {$endif}
           end;
         else
         if WParam <> 0 then
