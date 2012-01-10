@@ -1938,6 +1938,9 @@ begin
   if ParentBiDiMode then
     BiDiMode := Application.BidiMode;
 
+  // Accessibility
+  SetAccesibilityFields('A window', 'T Form', larWindow);
+
   // the EndFormUpdate is done in AfterConstruction
 end;
 

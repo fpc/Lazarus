@@ -710,6 +710,7 @@ end;
 procedure TCarbonCustomControl.RegisterEvents;
 var
   TmpSpec: EventTypeSpec;
+  AccessibilitySpec: array [0..2] of EventTypeSpec;
 begin
   inherited RegisterEvents;
   
@@ -722,20 +723,23 @@ begin
   end;
 
   // Accessibility
-  TmpSpec := MakeEventSpec(kEventClassAccessibility, kEventAccessibleGetNamedAttribute);
+  AccessibilitySpec[0].eventClass := kEventClassAccessibility;
+  AccessibilitySpec[0].eventKind := kEventAccessibleGetChildAtPoint;
+  AccessibilitySpec[1].eventClass := kEventClassAccessibility;
+  AccessibilitySpec[1].eventKind := kEventAccessibleGetFocusedChild;
+  // kEventAccessibleGetAllAttributeNames
+  // kEventAccessibleGetAllParameterizedAttributeNames
+  AccessibilitySpec[2].eventClass := kEventClassAccessibility;
+  AccessibilitySpec[2].eventKind := kEventAccessibleGetNamedAttribute;
+  // kEventAccessibleSetNamedAttribute
+  // kEventAccessibleIsNamedAttributeSettable
+  // kEventAccessibleGetAllActionNames
+  // kEventAccessiblePerformNamedAction
+  // kEventAccessibleGetNamedActionDescription
+
   InstallControlEventHandler(Content,
-    RegisterEventHandler(@CarbonControl_AccessibleGetNamedAttribute),
-    1, @TmpSpec, Pointer(Self), nil);
-{   kEventAccessibleGetChildAtPoint = 1,
-   kEventAccessibleGetFocusedChild = 2,
-   kEventAccessibleGetAllAttributeNames = 21,
-   kEventAccessibleGetAllParameterizedAttributeNames = 25,
-   kEventAccessibleGetNamedAttribute = 22,
-   kEventAccessibleSetNamedAttribute = 23,
-   kEventAccessibleIsNamedAttributeSettable = 24,
-   kEventAccessibleGetAllActionNames = 41,
-   kEventAccessiblePerformNamedAction = 42,
-   kEventAccessibleGetNamedActionDescription = 44}
+    RegisterEventHandler(@CarbonControl_Accessibility),
+    3, @AccessibilitySpec[0], Pointer(Self), nil);
 end;
 
 {------------------------------------------------------------------------------
