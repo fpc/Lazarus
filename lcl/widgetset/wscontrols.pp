@@ -76,7 +76,7 @@ type
     class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; virtual;
     class procedure ConstraintWidth(const AControl: TControl; const AConstraints: TObject; var aWidth: integer); virtual;
     class procedure ConstraintHeight(const AControl: TControl; const AConstraints: TObject; var aHeight: integer); virtual;
-    class procedure LazAccessibility_SetFields(const AControl: TControl; const ADescription, AName: string; const ARole: TLazAccessibilityRole); virtual;
+    //class procedure LazAccessibility_SetFields(const AControl: TControl; const ADescription, AName: string; const ARole: TLazAccessibilityRole); virtual;
   end;
 
   TWSControlClass = class of TWSControl;
@@ -181,11 +181,11 @@ begin
 
 end;
 
-class procedure TWSControl.LazAccessibility_SetFields(const AControl: TControl;
+{class procedure TWSControl.LazAccessibility_SetFields(const AControl: TControl;
   const ADescription, AName: string; const ARole: TLazAccessibilityRole);
 begin
 
-end;
+end;}
 
 { TWSWinControl }
 

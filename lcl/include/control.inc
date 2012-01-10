@@ -1410,7 +1410,7 @@ begin
   FAccessibleDescription := ADescription;
   FAccessibleName := AName;
   FAccessibleRole := ARole;
-  TWSControl.LazAccessibility_SetFields(Self, ADescription, AName, ARole);
+  //TWSControl(WidgetSetClass).LazAccessibility_SetFields(Self, ADescription, AName, ARole);
 end;
 
 {------------------------------------------------------------------------------
