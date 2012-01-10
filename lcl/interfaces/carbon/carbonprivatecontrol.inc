@@ -196,9 +196,12 @@ begin
         DebugLn('CarbonControl_Accessibility kEventAccessibleGetAllAttributeNames After GetEventParameter');
       {$ENDIF}
 
-      // AXFocused interrests all classes
-      lOutputStr := CFSTR('AXFocused');
-      CFArrayAppendValue(lInputMutableArray, lOutputStr);
+      // AXFocused interrests all focusable classes
+      if (lLazControl is TWinControl) then
+      begin
+        lOutputStr := CFSTR('AXFocused');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+      end;
     end; // kEventAccessibleGetAllAttributeNames
     kEventAccessibleGetNamedAttribute:
     begin
@@ -215,12 +218,18 @@ begin
 
       if lInputPasStr = 'AXRole' then
       begin
+        if (lLazControl is TWinControl) and (not (lLazControl is TCustomForm))
+          and (not (lLazControl is TCustomControl)) then Exit;
+
         case lLazAXRole of
           // kAXApplicationRole
+          // There is nothing in the LCL for this role, it comes automatically in the application hierarchy
           // kAXBrowserRole
-          larTreeView: lAXRole := CFSTR('AXBrowser'); // alternatively
+          larTreeView: lAXRole := CFSTR('AXBrowser');
           // kAXButtonRole
+          larButton, larButtonDropDown: lAXRole := CFSTR('AXButton');
           // kAXCheckBoxRole
+          larCheckBox: lAXRole := CFSTR('AXCheckBox');
           // kAXColumnRole
           // kAXDrawerRole
           // kAXGrowAreaRole
@@ -235,7 +244,7 @@ begin
           // kAXTabGroupRole
           // kAXTableRole
           // kAXWindowRole
-          larWindow: lAXRole := CFSTR('AXWindow'); // alternatively
+          larWindow: lAXRole := CFSTR('AXWindow'); // Maybe AXDrawer since this is the client area of the window not the window itself?
         // kAXUnknownRole
         else
           lAXRole := CFSTR('AXUnknown');
@@ -247,6 +256,7 @@ begin
       end
       else if lInputPasStr = 'AXRoleDescription' then
       begin
+        if lLazControl.AccessibleDescription = '' then Exit;
         CreateCFString(lLazControl.AccessibleDescription, lOutputStr);
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFStringRef,
           SizeOf(CFStringRef), @lOutputStr);
@@ -254,9 +264,8 @@ begin
       end
       else if lInputPasStr = 'AXFocused' then
       begin
-        if not (lLazControl is TWinControl) then Exit;
-
-        if TWinControl(lLazControl).Focused then lOutputBool := kCFBooleanTrue
+        if not (lLazControl is TWinControl) then lOutputBool := kCFBooleanFalse
+        else if TWinControl(lLazControl).Focused then lOutputBool := kCFBooleanTrue
         else lOutputBool := kCFBooleanFalse;
 
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFBooleanRef,
@@ -374,6 +383,7 @@ procedure TCarbonControl.RegisterEvents;
 var
   TmpSpec: EventTypeSpec;
   Events: TCarbonControlEvents;
+  AccessibilitySpec: array [0..3] of EventTypeSpec;
 begin
   Events := GetValidEvents;
 
@@ -442,6 +452,26 @@ begin
       RegisterEventHandler(@CarbonControl_IndicatorMoved),
       1, @TmpSpec, Pointer(Self), nil);
   end;
+
+  // Accessibility
+  AccessibilitySpec[0].eventClass := kEventClassAccessibility;
+  AccessibilitySpec[0].eventKind := kEventAccessibleGetChildAtPoint;
+  AccessibilitySpec[1].eventClass := kEventClassAccessibility;
+  AccessibilitySpec[1].eventKind := kEventAccessibleGetFocusedChild;
+  AccessibilitySpec[2].eventClass := kEventClassAccessibility;
+  AccessibilitySpec[2].eventKind := kEventAccessibleGetAllAttributeNames;
+  // kEventAccessibleGetAllParameterizedAttributeNames
+  AccessibilitySpec[3].eventClass := kEventClassAccessibility;
+  AccessibilitySpec[3].eventKind := kEventAccessibleGetNamedAttribute;
+  // kEventAccessibleSetNamedAttribute
+  // kEventAccessibleIsNamedAttributeSettable
+  // kEventAccessibleGetAllActionNames
+  // kEventAccessiblePerformNamedAction
+  // kEventAccessibleGetNamedActionDescription
+
+  InstallControlEventHandler(Content,
+    RegisterEventHandler(@CarbonControl_Accessibility),
+    4, @AccessibilitySpec[0], Pointer(Self), nil);
 
   {$IFDEF VerboseControlEvent}
     DebugLn('TCarbonControl.RegisterEvents ', ClassName, ' ',

@@ -18,12 +18,13 @@ object InitialSetupDialog: TInitialSetupDialog
     AnchorSideRight.Control = Splitter1
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 282
+    Height = 289
     Top = 54
     Width = 159
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
+    DefaultItemHeight = 18
     Images = ImageList1
     ReadOnly = True
     ScrollBars = ssNone
@@ -39,7 +40,7 @@ object InitialSetupDialog: TInitialSetupDialog
     AnchorSideBottom.Control = PropertiesTreeView
     AnchorSideBottom.Side = asrBottom
     Left = 165
-    Height = 282
+    Height = 289
     Top = 54
     Width = 5
     Align = alNone
@@ -47,21 +48,21 @@ object InitialSetupDialog: TInitialSetupDialog
   end
   object BtnPanel: TPanel
     Left = 10
-    Height = 29
-    Top = 346
+    Height = 22
+    Top = 353
     Width = 600
     Align = alBottom
     AutoSize = True
     BorderSpacing.Around = 10
     BevelOuter = bvNone
-    ClientHeight = 29
+    ClientHeight = 22
     ClientWidth = 600
     TabOrder = 2
     object StartIDEBitBtn: TBitBtn
-      Left = 495
-      Height = 29
+      Left = 489
+      Height = 22
       Top = 0
-      Width = 105
+      Width = 111
       Align = alRight
       AutoSize = True
       Caption = 'StartIDEBitBtn'
@@ -79,7 +80,7 @@ object InitialSetupDialog: TInitialSetupDialog
     AnchorSideBottom.Control = Splitter1
     AnchorSideBottom.Side = asrBottom
     Left = 170
-    Height = 282
+    Height = 289
     Top = 54
     Width = 444
     ActivePage = FPCSourcesTabSheet
@@ -162,13 +163,13 @@ object InitialSetupDialog: TInitialSetupDialog
       ChildSizing.TopBottomSpacing = 6
       ChildSizing.HorizontalSpacing = 6
       ChildSizing.VerticalSpacing = 6
-      ClientHeight = 255
-      ClientWidth = 442
+      ClientHeight = 250
+      ClientWidth = 438
       object CompilerLabel: TLabel
         Left = 6
-        Height = 14
+        Height = 17
         Top = 6
-        Width = 424
+        Width = 426
         Align = alTop
         Caption = 'CompilerLabel'
         ParentColor = False
@@ -182,8 +183,8 @@ object InitialSetupDialog: TInitialSetupDialog
         AnchorSideRight.Side = asrBottom
         Left = 6
         Height = 21
-        Top = 26
-        Width = 424
+        Top = 29
+        Width = 426
         Anchors = [akTop, akLeft, akRight]
         ItemHeight = 0
         OnChange = CompilerComboBoxChange
@@ -195,9 +196,9 @@ object InitialSetupDialog: TInitialSetupDialog
         AnchorSideTop.Control = CompilerComboBox
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 23
-        Top = 53
-        Width = 134
+        Height = 20
+        Top = 56
+        Width = 168
         AutoSize = True
         Caption = 'CompilerBrowseButton'
         OnClick = CompilerBrowseButtonClick
@@ -212,9 +213,9 @@ object InitialSetupDialog: TInitialSetupDialog
         AnchorSideBottom.Control = CompilerTabSheet
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 174
+        Height = 162
         Top = 82
-        Width = 424
+        Width = 426
         Anchors = [akTop, akLeft, akRight, akBottom]
         Lines.Strings = (
           'CompilerMemo'
@@ -231,13 +232,13 @@ object InitialSetupDialog: TInitialSetupDialog
       ChildSizing.TopBottomSpacing = 6
       ChildSizing.HorizontalSpacing = 6
       ChildSizing.VerticalSpacing = 6
-      ClientHeight = 255
-      ClientWidth = 442
+      ClientHeight = 250
+      ClientWidth = 438
       object FPCSrcDirLabel: TLabel
         Left = 6
-        Height = 18
+        Height = 17
         Top = 6
-        Width = 430
+        Width = 426
         Align = alTop
         Caption = 'FPCSrcDirLabel'
         ParentColor = False
@@ -245,9 +246,9 @@ object InitialSetupDialog: TInitialSetupDialog
       end
       object FPCSrcDirComboBox: TComboBox
         Left = 6
-        Height = 29
-        Top = 30
-        Width = 430
+        Height = 21
+        Top = 29
+        Width = 426
         Align = alTop
         ItemHeight = 0
         OnChange = FPCSrcDirComboBoxChange
@@ -259,9 +260,9 @@ object InitialSetupDialog: TInitialSetupDialog
         AnchorSideTop.Control = FPCSrcDirComboBox
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 29
-        Top = 65
-        Width = 167
+        Height = 20
+        Top = 56
+        Width = 171
         AutoSize = True
         Caption = 'FPCSrcDirBrowseButton'
         OnClick = FPCSrcDirBrowseButtonClick
@@ -271,9 +272,9 @@ object InitialSetupDialog: TInitialSetupDialog
         AnchorSideTop.Control = FPCSrcDirBrowseButton
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 149
-        Top = 100
-        Width = 430
+        Height = 162
+        Top = 82
+        Width = 426
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
         Lines.Strings = (

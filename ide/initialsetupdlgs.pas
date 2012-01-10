@@ -894,6 +894,9 @@ begin
   FPCSrcDirLabel.Caption:=Format(
     lisTheSourcesOfTheFreePascalPackagesAreRequiredForBro, [SetDirSeparators('rtl'
     +'/linux/system.pp')]);
+
+  PropertiesTreeView.AccessibleDescription := lisInitialSetupDialogTreeViewAccessibleDescription;
+  PropertiesPageControl.AccessibleDescription := lisInitialSetupDialogPageControlAccessibleDescription;
 end;
 
 procedure TInitialSetupDialog.CompilerComboBoxChange(Sender: TObject);

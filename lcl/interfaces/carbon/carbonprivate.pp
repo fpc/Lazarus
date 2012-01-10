@@ -710,7 +710,6 @@ end;
 procedure TCarbonCustomControl.RegisterEvents;
 var
   TmpSpec: EventTypeSpec;
-  AccessibilitySpec: array [0..2] of EventTypeSpec;
 begin
   inherited RegisterEvents;
   
@@ -721,25 +720,6 @@ begin
       RegisterEventHandler(@CarbonScrollable_ScrollTo),
       1, @TmpSpec, Pointer(Self), nil);
   end;
-
-  // Accessibility
-  AccessibilitySpec[0].eventClass := kEventClassAccessibility;
-  AccessibilitySpec[0].eventKind := kEventAccessibleGetChildAtPoint;
-  AccessibilitySpec[1].eventClass := kEventClassAccessibility;
-  AccessibilitySpec[1].eventKind := kEventAccessibleGetFocusedChild;
-  // kEventAccessibleGetAllAttributeNames
-  // kEventAccessibleGetAllParameterizedAttributeNames
-  AccessibilitySpec[2].eventClass := kEventClassAccessibility;
-  AccessibilitySpec[2].eventKind := kEventAccessibleGetNamedAttribute;
-  // kEventAccessibleSetNamedAttribute
-  // kEventAccessibleIsNamedAttributeSettable
-  // kEventAccessibleGetAllActionNames
-  // kEventAccessiblePerformNamedAction
-  // kEventAccessibleGetNamedActionDescription
-
-  InstallControlEventHandler(Content,
-    RegisterEventHandler(@CarbonControl_Accessibility),
-    3, @AccessibilitySpec[0], Pointer(Self), nil);
 end;
 
 {------------------------------------------------------------------------------
