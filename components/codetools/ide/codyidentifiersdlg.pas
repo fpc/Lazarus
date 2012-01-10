@@ -357,6 +357,7 @@ begin
     end else begin
       // save
       //debugln('TCodyUDLoadSaveThread.Execute saving '+Filename);
+      TempFilename:='';
       UncompressedMS:=TMemoryStream.Create;
       try
         Dictionary.BeginCritSec;
@@ -370,13 +371,15 @@ begin
         // save to a temporary file and then rename
         TempFilename:=FileProcs.GetTempFilename(Filename,'writing_tmp_');
         UncompressedMS.SaveToFile(TempFilename);
-        if not DeleteFileUTF8(Filename) then
+        if FileExistsUTF8(Filename) and (not DeleteFileUTF8(Filename)) then
           raise Exception.Create(Format(crsUnableToDelete, [Filename]));
         if not RenameFileUTF8(TempFilename,Filename) then
           raise Exception.Create(Format(crsUnableToRenameTo, [TempFilename,
             Filename]));
       finally
         UncompressedMS.Free;
+        if FileExistsUTF8(TempFilename) then
+          DeleteFileUTF8(TempFilename);
       end;
     end;
   except
