@@ -785,12 +785,16 @@ function ShowQuestionDialog(const aCaption, aMsg: string; DlgType: LongInt;
 }
 var
   QuestionDialog: TQuestionDlg;
+  last_cur: TCursor;
 begin
   QuestionDialog := TQuestionDlg.CreateQuestionDlg(aCaption, aMsg, DlgType, Buttons, HelpCtx);
+  last_cur := Screen.Cursor;
+  Screen.Cursor := crDefault;
   try
     Result := QuestionDialog.ShowModal;
   finally
     QuestionDialog.Free;
+    Screen.Cursor := last_cur;
   end;
 end;
 
