@@ -904,12 +904,14 @@ type
     ParentControl: TControl;
     Parent: TLazAccessibleObject;
     DataObject: TObject; // Availble to be used to connect to an object
+    Handle: PtrInt;
     constructor Create; virtual;
     destructor Destroy; override;
     function AddChildAccessibleObject: TLazAccessibleObject; virtual;
     procedure ClearChildAccessibleObjects;
     procedure RemoveChildAccessibleObject(AObject: TLazAccessibleObject);
     function GetChildAccessibleObject(AIndex: Integer): TLazAccessibleObject;
+    function GetChildAccessibleObjectWithDataObject(ADataObject: TObject): TLazAccessibleObject;
     function GetChildAccessibleObjectsCount: Integer;
     function GetSelectedChildAccessibleObject: TLazAccessibleObject; virtual;
     function GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject; virtual;

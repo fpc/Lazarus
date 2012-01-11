@@ -29,6 +29,34 @@
 
 { $DEFINE TREEVIEW_DEBUG}
 
+{ TTreeViewAccessibleObject }
+
+function TTreeViewAccessibleObject.GetSelectedChildAccessibleObject: TLazAccessibleObject;
+var
+  lTreeView: TCustomTreeView;
+  lNode: TTreeNode;
+begin
+  Result := inherited GetSelectedChildAccessibleObject();
+  if (Result <> nil) or (ParentControl = nil) then Exit;
+  lTreeView := TCustomTreeView(ParentControl);
+  lNode := lTreeView.GetSelection();
+  if lNode = nil then Exit;
+  Result := GetChildAccessibleObjectWithDataObject(lNode);
+end;
+
+function TTreeViewAccessibleObject.GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject;
+var
+  lTreeView: TCustomTreeView;
+  lNode: TTreeNode;
+begin
+  Result := inherited GetChildAccessibleObjectAtPos(APos);
+  if (Result <> nil) or (ParentControl = nil) then Exit;
+  lTreeView := TCustomTreeView(ParentControl);
+  lNode := lTreeView.GetNodeAt(APos.X, APos.Y);
+  if lNode = nil then Exit;
+  Result := GetChildAccessibleObjectWithDataObject(lNode);
+end;
+
 const
   TTreeNodeWithPointerStreamVersion : word = 1;
   TTreeNodeStreamVersion : word = 2;
@@ -5317,6 +5345,12 @@ begin
   FStates:=FStates+[tvsScrollbarChanged,
                     tvsBottomItemNeedsUpdate];
   inherited Resize;
+end;
+
+function TCustomTreeView.CreateAccessibleObject: TLazAccessibleObject;
+begin
+  Result := TTreeViewAccessibleObject.Create;
+  Result.ParentControl := Self;
 end;
 
 procedure TCustomTreeView.InternalSelectionChanged;

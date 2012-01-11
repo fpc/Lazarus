@@ -163,6 +163,8 @@ var
   lAXRole, lInputStr, lOutputStr: CFStringRef;
   lInputPasStr: string;
   lInputMutableArray: CFMutableArrayRef;
+  lInputHIPoint: HIPoint;
+  lInputPoint: TPoint;
   lOutputBool: Boolean;
   lLazControl: TControl;
   lLazAXRole: TLazAccessibilityRole;
@@ -173,6 +175,7 @@ var
   lElement: AXUIElementRef;
   lCount: Integer;
   i: Integer;
+  lAccessibleObj: TLazAccessibleObject;
 const SName = 'CarbonControl_Accessibility';
 begin
   {$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
@@ -186,6 +189,27 @@ begin
 
   EventKind := GetEventKind(AEvent);
   case EventKind of
+    kEventAccessibleGetChildAtPoint:
+    begin
+      if lLazControl = nil then Exit;
+      if (lLazControl is TWinControl) and (not (lLazControl is TCustomControl)) then Exit;
+
+      // The location in global coordinates.
+      GetEventParameter(AEvent, kEventParamMouseLocation,
+        typeHIPoint, nil, SizeOf(HIPoint), nil, @lInputHIPoint);
+
+      // <-- kEventParamAccessibleChild (out, typeCFTypeRef)
+      // On exit, contains the child of the accessible object at the
+      // specified point, in the form of an AXUIElementRef.
+      lInputPoint := Types.Point(Round(lInputHIPoint.x), Round(lInputHIPoint.y));
+      lInputPoint := TWinControl(lLazControl).ScreenToClient(lInputPoint);
+      lAccessibleObj := lLazControl.GetAccessibleObject();
+      if lAccessibleObj = nil then Exit;
+      lAccessibleObj := lAccessibleObj.GetChildAccessibleObjectAtPos(lInputPoint);
+      if (lAccessibleObj = nil) or (lAccessibleObj.Handle = 0) then Exit;
+      SetEventParameter(AEvent, kEventParamAccessibleChild, typeCFTypeRef,
+        SizeOf(AXUIElementRef), @lAccessibleObj.Handle);
+    end;
     kEventAccessibleGetAllAttributeNames:
     begin
       {$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
@@ -293,12 +317,20 @@ begin
       begin
         // Create and return an array of AXUIElements describing the children of this view.
         lCount := lLazControl.GetAccessibleObject().GetChildAccessibleObjectsCount;
-        lArray := CFArrayCreateMutable( kCFAllocatorDefault, lCount, @kCFTypeArrayCallBacks);
+        lArray := CFArrayCreateMutable(kCFAllocatorDefault, lCount, @kCFTypeArrayCallBacks);
         for i := 0 to lCount - 1 do
         begin
-          lElement := MacOSAll.AXUIElementCreateSystemWide();
+          if lLazControl.GetAccessibleObject().Handle <> 0 then
+          begin
+            lElement := AXUIElementRef(lLazControl.GetAccessibleObject().Handle)
+          end
+          else
+          begin
+            lElement := MacOSAll.AXUIElementCreateSystemWide();
+            lLazControl.GetAccessibleObject().Handle := PtrInt(lElement);
+          end;
           CFArrayAppendValue(lArray, lElement);
-          CFRelease(lElement);
+          //CFRelease(lElement);
         end;
 
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFTypeRef,

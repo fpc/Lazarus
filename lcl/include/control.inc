@@ -42,6 +42,7 @@ end;
 
 function TLazAccessibleObject.AddChildAccessibleObject: TLazAccessibleObject;
 begin
+  Result := nil;
   if FChildren = nil then Exit;
   Result := TLazAccessibleObject.Create;
   Result.Parent := Self;
@@ -70,12 +71,29 @@ end;
 
 function TLazAccessibleObject.GetChildAccessibleObject(AIndex: Integer): TLazAccessibleObject;
 begin
+  Result := nil;
   if FChildren = nil then Exit;
   Result := TLazAccessibleObject(FChildren.Items[AIndex]);
 end;
 
+function TLazAccessibleObject.GetChildAccessibleObjectWithDataObject(
+  ADataObject: TObject): TLazAccessibleObject;
+var
+  i: Integer;
+  lCurObject: TLazAccessibleObject;
+begin
+  Result := nil;
+  if FChildren = nil then Exit;
+  for i := 0 to FChildren.Count - 1 do
+  begin
+    lCurObject := TLazAccessibleObject(FChildren.Items[i]);
+    if lCurObject.DataObject = ADataObject then Exit(lCurObject);
+  end;
+end;
+
 function TLazAccessibleObject.GetChildAccessibleObjectsCount: Integer;
 begin
+  Result := 0;
   if FChildren = nil then Exit;
   Result := FChildren.Count;
 end;
