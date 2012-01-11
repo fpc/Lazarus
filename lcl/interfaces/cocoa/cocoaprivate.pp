@@ -149,12 +149,18 @@ type
   { IWindowCallback }
 
   IWindowCallback = interface(ICommonCallBack)
+    function CanActivate: Boolean;
     procedure Activate;
     procedure Deactivate;
     procedure CloseQuery(var CanClose: Boolean);
     procedure Close;
     procedure Resize;
     procedure Move;
+
+    function GetEnabled: Boolean;
+    procedure SetEnabled(AValue: Boolean);
+
+    property Enabled: Boolean read GetEnabled write SetEnabled;
   end;
 
   { TCocoaMenu }
@@ -235,9 +241,9 @@ type
     procedure resetCursorRects; override;
   end;
 
-  { TCocoaWindow }
+  { TCocoaPanel }
 
-  TCocoaWindow = objcclass(NSWindow, NSWindowDelegateProtocol)
+  TCocoaPanel = objcclass(NSPanel, NSWindowDelegateProtocol)
   protected
     function windowShouldClose(sender : id): LongBool; message 'windowShouldClose:';
     procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
@@ -248,6 +254,7 @@ type
   public
     callback: IWindowCallback;
     function acceptsFirstResponder: Boolean; override;
+    function canBecomeKeyWindow: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
@@ -412,6 +419,160 @@ procedure SetViewDefaults(AView: NSView);
 begin
   if not Assigned(AView) then Exit;
   AView.setAutoresizingMask(NSViewMinYMargin or NSViewMaxXMargin);
+end;
+
+{ TCocoaPanel }
+
+function TCocoaPanel.windowShouldClose(sender: id): LongBool;
+var
+  canClose: Boolean;
+begin
+  canClose := True;
+  callback.CloseQuery(canClose);
+  Result := canClose;
+end;
+
+procedure TCocoaPanel.windowWillClose(notification: NSNotification);
+begin
+  callback.Close;
+end;
+
+procedure TCocoaPanel.windowDidBecomeKey(notification: NSNotification);
+begin
+  callback.Activate;
+end;
+
+procedure TCocoaPanel.windowDidResignKey(notification: NSNotification);
+begin
+  callback.Deactivate;
+end;
+
+procedure TCocoaPanel.windowDidResize(notification: NSNotification);
+begin
+  callback.Resize;
+end;
+
+procedure TCocoaPanel.windowDidMove(notification: NSNotification);
+begin
+  callback.Move;
+end;
+
+function TCocoaPanel.acceptsFirstResponder: Boolean;
+begin
+  Result := True;
+end;
+
+function TCocoaPanel.canBecomeKeyWindow: Boolean;
+begin
+  Result := callback.CanActivate;
+end;
+
+function TCocoaPanel.becomeFirstResponder: Boolean;
+begin
+  Result := inherited becomeFirstResponder;
+  callback.BecomeFirstResponder;
+end;
+
+function TCocoaPanel.resignFirstResponder: Boolean;
+begin
+  Result := inherited resignFirstResponder;
+  callback.ResignFirstResponder;
+end;
+
+function TCocoaPanel.lclGetCallback: ICommonCallback;
+begin
+  Result := callback;
+end;
+
+procedure TCocoaPanel.mouseDown(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited mouseDown(event);
+end;
+
+procedure TCocoaPanel.mouseUp(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited mouseUp(event);
+end;
+
+procedure TCocoaPanel.rightMouseDown(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaPanel.rightMouseUp(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaPanel.otherMouseDown(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaPanel.otherMouseUp(event: NSEvent);
+begin
+  if not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
+end;
+
+procedure TCocoaPanel.mouseDragged(event: NSEvent);
+begin
+  if not callback.MouseMove(event) then
+    inherited mouseDragged(event);
+end;
+
+procedure TCocoaPanel.mouseEntered(event: NSEvent);
+begin
+  inherited mouseEntered(event);
+end;
+
+procedure TCocoaPanel.mouseExited(event: NSEvent);
+begin
+  inherited mouseExited(event);
+end;
+
+procedure TCocoaPanel.mouseMoved(event: NSEvent);
+begin
+  if not callback.MouseMove(event) then
+    inherited mouseMoved(event);
+end;
+
+procedure TCocoaPanel.sendEvent(event: NSEvent);
+var
+  Message: NSMutableDictionary;
+  Handle: HWND;
+  Msg: Cardinal;
+  WP: WParam;
+  LP: LParam;
+  Result: NSNumber;
+  Obj: NSObject;
+begin
+  if event.type_ = NSApplicationDefined then
+  begin
+    // event which we get through PostMessage or SendMessage
+    if event.subtype = LCLEventSubTypeMessage then
+    begin
+      // extract message data
+      Message := NSMutableDictionary(event.data1);
+      Handle := NSNumber(Message.objectForKey(NSMessageWnd)).unsignedIntegerValue;
+      Msg := NSNumber(Message.objectForKey(NSMessageMsg)).unsignedLongValue;
+      WP := NSNumber(Message.objectForKey(NSMessageWParam)).integerValue;
+      LP := NSNumber(Message.objectForKey(NSMessageLParam)).integerValue;
+      // deliver message and set result
+      Obj := NSObject(Handle);
+      // todo: check that Obj is still a valid NSView/NSWindow
+      Result := NSNumber.numberWithInteger(Obj.lclDeliverMessage(Msg, WP, LP));
+      Message.setObject_forKey(Result, NSMessageResult);
+      Result.release;
+    end;
+  end
+  else
+    inherited sendEvent(event);
 end;
 
 { TCocoaScrollView }
@@ -602,7 +763,8 @@ end;
 
 procedure TCocoaButton.mouseDragged(event: NSEvent);
 begin
-  inherited mouseDragged(event);
+  if not callback.MouseMove(event) then
+    inherited mouseDragged(event);
 end;
 
 procedure TCocoaButton.mouseEntered(event: NSEvent);
@@ -617,7 +779,8 @@ end;
 
 procedure TCocoaButton.mouseMoved(event: NSEvent);
 begin
-  inherited mouseMoved(event);
+  if not callback.MouseMove(event) then
+    inherited mouseMoved(event);
 end;
 
 { TCocoaTextField }
@@ -681,155 +844,6 @@ procedure TCocoaTextView.resetCursorRects;
 begin
   if not callback.resetCursorRects then
     inherited resetCursorRects;
-end;
-
-{ TCocoaWindow }
-
-function TCocoaWindow.windowShouldClose(sender: id): LongBool;
-var
-  canClose: Boolean;
-begin
-  canClose := True;
-  callback.CloseQuery(canClose);
-  Result := canClose;
-end;
-
-procedure TCocoaWindow.windowWillClose(notification: NSNotification);
-begin
-  callback.Close;
-end;
-
-procedure TCocoaWindow.windowDidBecomeKey(notification: NSNotification);
-begin
-  callback.Activate;
-end;
-
-procedure TCocoaWindow.windowDidResignKey(notification: NSNotification);
-begin
-  callback.Deactivate;
-end;
-
-procedure TCocoaWindow.windowDidResize(notification: NSNotification);
-begin
-  callback.Resize;
-end;
-
-procedure TCocoaWindow.windowDidMove(notification: NSNotification);
-begin
-  callback.Move;
-end;
-
-function TCocoaWindow.acceptsFirstResponder: Boolean;
-begin
-  Result := True;
-end;
-
-function TCocoaWindow.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaWindow.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
-end;
-
-function TCocoaWindow.lclGetCallback: ICommonCallback;
-begin
-  Result := callback;
-end;
-
-procedure TCocoaWindow.mouseUp(event: NSEvent);
-begin
-  if not callback.MouseUpDownEvent(event) then
-    inherited mouseUp(event);
-end;
-
-procedure TCocoaWindow.rightMouseDown(event: NSEvent);
-begin
-  if not callback.MouseUpDownEvent(event) then
-    inherited rightMouseDown(event);
-end;
-
-procedure TCocoaWindow.rightMouseUp(event: NSEvent);
-begin
-  if not callback.MouseUpDownEvent(event) then
-    inherited rightMouseUp(event);
-end;
-
-procedure TCocoaWindow.otherMouseDown(event: NSEvent);
-begin
-  if not callback.MouseUpDownEvent(event) then
-    inherited otherMouseDown(event);
-end;
-
-procedure TCocoaWindow.otherMouseUp(event: NSEvent);
-begin
-  if not callback.MouseUpDownEvent(event) then
-    inherited otherMouseUp(event);
-end;
-
-procedure TCocoaWindow.mouseDown(event: NSEvent);
-begin
-  if not callback.MouseUpDownEvent(event) then
-    inherited mouseDown(event);
-end;
-
-procedure TCocoaWindow.mouseDragged(event: NSEvent);
-begin
-  if not callback.MouseMove(event) then
-    inherited mouseDragged(event);
-end;
-
-procedure TCocoaWindow.mouseMoved(event: NSEvent);
-begin
-  if not callback.MouseMove(event) then
-    inherited mouseMoved(event);
-end;
-
-procedure TCocoaWindow.sendEvent(event: NSEvent);
-var
-  Message: NSMutableDictionary;
-  Handle: HWND;
-  Msg: Cardinal;
-  WP: WParam;
-  LP: LParam;
-  Result: NSNumber;
-  Obj: NSObject;
-begin
-  if event.type_ = NSApplicationDefined then
-  begin
-    // event which we get through PostMessage or SendMessage
-    if event.subtype = LCLEventSubTypeMessage then
-    begin
-      // extract message data
-      Message := NSMutableDictionary(event.data1);
-      Handle := NSNumber(Message.objectForKey(NSMessageWnd)).unsignedIntegerValue;
-      Msg := NSNumber(Message.objectForKey(NSMessageMsg)).unsignedLongValue;
-      WP := NSNumber(Message.objectForKey(NSMessageWParam)).integerValue;
-      LP := NSNumber(Message.objectForKey(NSMessageLParam)).integerValue;
-      // deliver message and set result
-      Obj := NSObject(Handle);
-      // todo: check that Obj is still a valid NSView/NSWindow
-      Result := NSNumber.numberWithInteger(Obj.lclDeliverMessage(Msg, WP, LP));
-      Message.setObject_forKey(Result, NSMessageResult);
-      Result.release;
-    end;
-  end
-  else
-    inherited sendEvent(event);
-end;
-
-procedure TCocoaWindow.mouseEntered(event: NSEvent);
-begin
-  inherited mouseEntered(event);
-end;
-
-procedure TCocoaWindow.mouseExited(event: NSEvent);
-begin
-  inherited mouseExited(event);
 end;
 
 { TCocoaSecureTextField }
@@ -1263,13 +1277,25 @@ begin
 end;
 
 function LCLWindowExtension.lclIsEnabled: Boolean;
+var
+  Callback: ICommonCallback;
 begin
-  Result := contentView.lclIsEnabled;
+  Callback := lclGetCallback;
+  if Assigned(Callback) then
+    Result := IWindowCallback(Callback).Enabled
+  else
+    Result := contentView.lclIsEnabled;
 end;
 
 procedure LCLWindowExtension.lclSetEnabled(AEnabled: Boolean);
+var
+  Callback: ICommonCallback;
 begin
-  contentView.lclSetEnabled(AEnabled);
+  Callback := lclGetCallback;
+  if Assigned(Callback) then
+    IWindowCallback(Callback).Enabled := AEnabled
+  else
+    contentView.lclSetEnabled(AEnabled);
 end;
 
 function LCLWindowExtension.lclWindowState: Integer;

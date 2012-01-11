@@ -42,12 +42,18 @@ type
 
   TLCLWindowCallback = class(TLCLCommonCallBack, IWindowCallback)
   public
+    function CanActivate: Boolean; virtual;
     procedure Activate; virtual;
     procedure Deactivate; virtual;
     procedure CloseQuery(var CanClose: Boolean); virtual;
     procedure Close; virtual;
     procedure Resize; virtual;
     procedure Move; virtual;
+
+    function GetEnabled: Boolean; virtual;
+    procedure SetEnabled(AValue: Boolean); virtual;
+
+    property Enabled: Boolean read GetEnabled write SetEnabled;
   end;
 
 
@@ -127,7 +133,7 @@ type
   private
   protected
   public
-//    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TCocoaWSScreen }
@@ -152,7 +158,43 @@ implementation
 uses
   CocoaInt;
 
+{ TCocoaWSHintWindow }
+
+class function TCocoaWSHintWindow.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  win: TCocoaPanel;
+  cnt: TCocoaCustomControl;
+const
+  WinMask = NSBorderlessWindowMask or NSUtilityWindowMask;
+begin
+  win := TCocoaPanel(TCocoaPanel.alloc);
+
+  if not Assigned(win) then
+  begin
+    Result := 0;
+    Exit;
+  end;
+
+  win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer(CreateParamsToNSRect(AParams), WinMask, NSBackingStoreBuffered, False));
+  win.enableCursorRects;
+  TCocoaPanel(win).callback := TLCLWindowCallback.Create(win, AWinControl);
+  win.setDelegate(win);
+  win.setAcceptsMouseMovedEvents(True);
+
+  cnt := TCocoaCustomControl.alloc.init;
+  cnt.callback := TCocoaPanel(win).callback;
+  win.setContentView(cnt);
+
+  Result := TLCLIntfHandle(win);
+end;
+
 { TLCLWindowCallback }
+
+function TLCLWindowCallback.CanActivate: Boolean;
+begin
+  Result := Enabled;
+end;
 
 procedure TLCLWindowCallback.Activate;
 begin
@@ -167,7 +209,7 @@ end;
 procedure TLCLWindowCallback.CloseQuery(var CanClose: Boolean);
 begin
   // Message results : 0 - do nothing, 1 - destroy window
-  CanClose:=LCLSendCloseQueryMsg(Target)>0;
+  CanClose := LCLSendCloseQueryMsg(Target) > 0;
 end;
 
 procedure TLCLWindowCallback.Close;
@@ -183,6 +225,16 @@ end;
 procedure TLCLWindowCallback.Move;
 begin
   boundsDidChange;
+end;
+
+function TLCLWindowCallback.GetEnabled: Boolean;
+begin
+  Result := NSWindow(Owner).contentView.lclIsEnabled;
+end;
+
+procedure TLCLWindowCallback.SetEnabled(AValue: Boolean);
+begin
+  NSWindow(Owner).contentView.lclSetEnabled(AValue);
 end;
 
 
@@ -234,13 +286,13 @@ end;
 class function TCocoaWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  win: TCocoaWindow;
+  win: TCocoaPanel;
   cnt: TCocoaCustomControl;
   ns: NSString;
 const
-  WinMask = NSTitledWindowMask or NSClosableWindowMask or NSMiniaturizableWindowMask or NSResizableWindowMask;
+  WinMask= NSTitledWindowMask or NSClosableWindowMask or NSMiniaturizableWindowMask or NSResizableWindowMask;
 begin
-  win := TCocoaWindow(TCocoaWindow.alloc);
+  win := TCocoaPanel(TCocoaPanel.alloc);
 
   if not Assigned(win) then
   begin
@@ -248,9 +300,9 @@ begin
     Exit;
   end;
 
-  win := TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(CreateParamsToNSRect(AParams), WinMask, NSBackingStoreBuffered, False));
+  win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer(CreateParamsToNSRect(AParams), WinMask, NSBackingStoreBuffered, False));
   win.enableCursorRects;
-  TCocoaWindow(win).callback := TLCLWindowCallback.Create(win, AWinControl);
+  TCocoaPanel(win).callback := TLCLWindowCallback.Create(win, AWinControl);
   win.setDelegate(win);
   ns := NSStringUtf8(AWinControl.Caption);
   win.setTitle(ns);
@@ -258,7 +310,7 @@ begin
   win.setAcceptsMouseMovedEvents(True);
 
   cnt := TCocoaCustomControl.alloc.init;
-  cnt.callback := TCocoaWindow(win).callback;
+  cnt.callback := TCocoaPanel(win).callback;
   win.setContentView(cnt);
 
   if (AParams.Style and WS_CHILD) = 0 then
@@ -278,14 +330,14 @@ class function TCocoaWSCustomForm.GetText(const AWinControl: TWinControl; var AT
 begin
   Result := AWinControl.HandleAllocated;
   if Result then
-    AText := NSStringToString(TCocoaWindow(AWinControl.Handle).title);
+    AText := NSStringToString(NSWindow(AWinControl.Handle).title);
 end;
 
 class function TCocoaWSCustomForm.GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean;
 begin
   Result := AWinControl.HandleAllocated;
   if Result then
-    ALength := TCocoaWindow(AWinControl.Handle).title.length;
+    ALength := NSWindow(AWinControl.Handle).title.length;
 end;
 
 class procedure TCocoaWSCustomForm.SetText(const AWinControl: TWinControl; const AText: String);
@@ -294,21 +346,20 @@ var
 begin
   if not AWinControl.HandleAllocated then Exit;
   ns := NSStringUtf8(AText);
-  TCocoaWindow(AWinControl.Handle).setTitle(ns);
+  NSwindow(AWinControl.Handle).setTitle(ns);
   ns.release;
 end;
 
 class procedure TCocoaWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
 begin
-  if ACustomForm.HandleAllocated then
-    if CocoaWidgetSet.NSApp.modalWindow = NSWindow(ACustomForm.Handle) then
-      CocoaWidgetSet.NSApp.stopModal;
+//  if ACustomForm.HandleAllocated then
+//    NSPanel(ACustomForm.Handle).setStyleMask(NSwindow(ACustomForm.Handle).styleMask and not NSDocModalWindowMask);
 end;
 
 class procedure TCocoaWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
-  if ACustomForm.HandleAllocated then
-    CocoaWidgetSet.NSApp.runModalForWindow(NSWindow(ACustomForm.Handle));
+//  if ACustomForm.HandleAllocated then
+//    NSPanel(ACustomForm.Handle).setStyleMask(NSwindow(ACustomForm.Handle).styleMask or NSDocModalWindowMask);
 end;
 
 class procedure TCocoaWSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte);
