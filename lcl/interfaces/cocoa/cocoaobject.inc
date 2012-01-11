@@ -70,7 +70,7 @@ begin
     DebugLn('TCocoaWidgetSet.AppProcessMessages');
   {$ENDIF}
 
-  event:=NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, nil, NSDefaultRunLoopMode, true);
+  event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, nil, NSDefaultRunLoopMode, true);
   NSApp.sendEvent(event);
 
   {$IFDEF VerboseObject}
@@ -90,7 +90,7 @@ begin
   {$IFDEF VerboseObject}
     DebugLn('TCocoaWidgetSet.AppWaitMessage');
   {$ENDIF}
-  event:=NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, NSDate.distantFuture, NSDefaultRunLoopMode, true);
+  event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, NSDate.distantFuture, NSDefaultRunLoopMode, true);
   NSApp.sendEvent(event);
 end;
 
@@ -143,10 +143,6 @@ end;
 procedure TCocoaWidgetSet.AppTerminate;
 begin
   if FTerminating then Exit;
-  {$IFDEF VerboseObject}
-    DebugLn('TCocoaWidgetSet.AppTerminate');
-  {$ENDIF}
-
   NSApp.terminate(nil);
 end;
 
@@ -157,10 +153,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppMinimize;
 begin
-  {$IFDEF VerboseObject}
-    DebugLn('TCocoaWidgetSet.AppMinimize');
-  {$ENDIF}
-  NSApp.miniaturizeAll(nil);
+  NSApp.hide(NSApp);
 end;
 
 {------------------------------------------------------------------------------
@@ -170,10 +163,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppRestore;
 begin
-  {$IFDEF VerboseObject}
-    DebugLn('TCocoaWidgetSet.AppRestore');
-  {$ENDIF}
-  NSApp.activateIgnoringOtherApps(False);
+  NSApp.unhide(NSApp);
 end;
 
 {------------------------------------------------------------------------------
@@ -183,9 +173,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppBringToFront;
 begin
-  {$IFDEF VerboseObject}
-    DebugLn('TCocoaWidgetSet.AppBringToFront');
-  {$ENDIF}
   NSApp.activateIgnoringOtherApps(True);
 end;
 
