@@ -100,11 +100,6 @@ end;"/>
           <ValueDescriptions Count="2"/>
         </Item2>
       </BuildMacros>
-      <Linking>
-        <Debugging>
-          <DebugInfoType Value="dsDwarf2"/>
-        </Debugging>
-      </Linking>
       <Other>
         <CompilerMessages>
           <IgnoredMessages idx5044="True"/>
