@@ -1374,6 +1374,7 @@ resourcestring
   dlfMouseSimpleButtonSetFreeBookmark  = 'Set free bookmark';
   dlfMouseSimpleButtonZoomReset        = 'Reset zoom';
   dlfMouseSimpleButtonContextMenu      = 'Context Menu';
+  dlfMouseSimpleButtonContextMenuDbg   = 'Context Menu (debug)';
 
   dlfMouseSimpleWheelNothing           = 'Nothing/Default';
   dlfMouseSimpleWheelSrollDef          = 'Scroll (System speed)';

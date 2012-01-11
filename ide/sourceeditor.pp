@@ -234,6 +234,7 @@ type
     FPageName: string;
 
     FPopUpMenu: TPopupMenu;
+    FMouseActionPopUpMenu: TPopupMenu;
     FSyntaxHighlighterType: TLazSyntaxHighlighter;
     FErrorLine: integer;
     FErrorColumn: integer;
@@ -265,6 +266,8 @@ type
     procedure EditorActivateSyncro(Sender: TObject);
     procedure EditorDeactivateSyncro(Sender: TObject);
     procedure EditorChangeUpdating(ASender: TObject; AnUpdating: Boolean);
+    function  EditorHandleMouseAction(AnAction: TSynEditMouseAction;
+                                      var AnInfo: TSynEditMouseActionInfo): Boolean;
     function GetCodeBuffer: TCodeBuffer;
     function GetExecutionLine: integer;
     function GetHasExecutionMarks: Boolean;
@@ -554,7 +557,7 @@ type
     FNotebook: TExtendedNotebook;
     FBaseCaption: String;
     FIsClosing: Boolean;
-    SrcPopUpMenu: TPopupMenu;
+    SrcPopUpMenu, DbgPopUpMenu: TPopupMenu;
   protected
     procedure CompleteCodeMenuItemClick(Sender: TObject);
     procedure ExtractProcMenuItemClick(Sender: TObject);
@@ -573,6 +576,7 @@ type
     procedure OpenAtCursorClicked(Sender: TObject);
     procedure OnPopupMenuOpenFile(Sender: TObject);
     procedure SrcPopUpMenuPopup(Sender: TObject);
+    procedure DbgPopUpMenuPopup(Sender: TObject);
     procedure InsertCharacter(const C: TUTF8Char);
     procedure SrcEditMenuCopyToExistingWindowClicked(Sender: TObject);
     procedure SrcEditMenuMoveToExistingWindowClicked(Sender: TObject);
@@ -4010,6 +4014,7 @@ Begin
       OnPlaceBookmark := @EditorPlaceBookmark;
       OnClearBookmark := @EditorClearBookmark;
       OnChangeUpdating  := @EditorChangeUpdating;
+      RegisterMouseActionExecHandler(@EditorHandleMouseAction);
       // IMPORTANT: when you change above, don't forget updating UnbindEditor
       Parent := AParent;
     end;
@@ -4457,6 +4462,7 @@ begin
     if not FInEditorChangedUpdating then
       DebugBoss.LockCommandProcessing;
     FInEditorChangedUpdating := True;
+    FMouseActionPopUpMenu := nil;
   end else
   begin
     //if not FInEditorChangedUpdating then
@@ -4464,6 +4470,31 @@ begin
     if FInEditorChangedUpdating then
       DebugBoss.UnLockCommandProcessing;
     FInEditorChangedUpdating := False;
+    //FMouseActionPopUpMenu :=
+    if (FMouseActionPopUpMenu <> nil) then begin
+      FMouseActionPopUpMenu.PopupComponent := FEditor;
+      FMouseActionPopUpMenu.PopUp;
+      FMouseActionPopUpMenu := nil;
+    end;
+  end;
+end;
+
+function TSourceEditor.EditorHandleMouseAction(AnAction: TSynEditMouseAction;
+  var AnInfo: TSynEditMouseActionInfo): Boolean;
+begin
+  Result := AnAction.Command = emcContextMenu;
+  if not Result then exit;
+
+  case AnAction.Option2 of
+    1: FMouseActionPopUpMenu := SourceNotebook.DbgPopUpMenu;
+    else
+      FMouseActionPopUpMenu := PopupMenu;
+  end;
+
+  if (not FInEditorChangedUpdating) and (FMouseActionPopUpMenu <> nil) then begin
+    FMouseActionPopUpMenu.PopupComponent := FEditor;
+    FMouseActionPopUpMenu.PopUp;
+    FMouseActionPopUpMenu := nil;
   end;
 end;
 
@@ -4937,6 +4968,7 @@ begin
     OnPlaceBookmark := nil;
     OnClearBookmark := nil;
     OnChangeUpdating := nil;
+    UnregisterMouseActionExecHandler(@EditorHandleMouseAction);
   end;
   for i := 0 to EditorComponent.PluginCount - 1 do
     if EditorComponent.Plugin[i] is TSynPluginSyncronizedEditBase then begin
@@ -5462,6 +5494,11 @@ begin
   end;
 end;
 
+procedure TSourceNotebook.DbgPopUpMenuPopup(Sender: TObject);
+begin
+  SrcEditSubMenuDebug.MenuItem:=DbgPopUpMenu.Items;
+end;
+
 procedure TSourceNotebook.NotebookShowTabHint(Sender: TObject;
   HintInfo: PHintInfo);
 var
@@ -5492,6 +5529,14 @@ begin
   begin
     AutoPopup := True;
     OnPopup :=@SrcPopupMenuPopup;
+    Images := IDEImages.Images_16;
+  end;
+
+  DbgPopUpMenu := TPopupMenu.Create(Self);
+  with DbgPopupMenu do
+  begin
+    AutoPopup := True;
+    OnPopup :=@DbgPopupMenuPopup;
     Images := IDEImages.Images_16;
   end;
 

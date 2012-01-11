@@ -692,6 +692,7 @@ type
     mbaSetFreeBookmark,
     mbaZoomReset,
     mbaContextMenu,
+    mbaContextMenuDebug,
 
     // Old values, needed to load old config
     moTCLNone, moTMIgnore,
@@ -700,7 +701,7 @@ type
     moTCLJumpOrBlock
   );
 
-  TMouseOptButtonAction = mbaNone..mbaContextMenu;
+  TMouseOptButtonAction = mbaNone..mbaContextMenuDebug;
 
 const
   MouseOptButtonActionOld: Array [moTCLNone..moTCLJumpOrBlock] of TMouseOptButtonActionOld = (
@@ -2718,7 +2719,9 @@ procedure TEditorMouseOptions.ResetTextToDefault;
             FMainActions.AddCommand(emcWheelZoomNorm,    False,  AButton, AClickCount, ADir, AShift, AShiftMask);
           end;
         mbaContextMenu:
-            AddCommand(emcContextMenu, AMoveCaret, AButton, AClickCount, ADir, [], [], emcoSelectionCaretMoveNever);
+            AddCommand(emcContextMenu, AMoveCaret, AButton, AClickCount, ADir, AShift, AShiftMask, emcoSelectionCaretMoveNever);
+        mbaContextMenuDebug:
+            AddCommand(emcContextMenu, True,       AButton, AClickCount, ADir, AShift, AShiftMask, emcoSelectionCaretMoveOutside, 0, 1);
       end;
     end;
   end;
