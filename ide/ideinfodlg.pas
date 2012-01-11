@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ComCtrls, DefineTemplates, EnvironmentOpts, AboutFrm, LazConf,
-  LazarusIDEStrConsts, Project, SourceEditor;
+  LazarusIDEStrConsts, Project, SourceEditor, PackageSystem, PackageDefs;
 
 type
 
@@ -53,6 +53,7 @@ type
     procedure GatherGlobalOptions(sl: TStrings);
     // modified
     procedure GatherModifiedProject(AProject: TProject; sl: TStrings);
+    procedure GatherModifiedPackages(sl: TStrings);
   public
     procedure UpdateGeneralMemo;
     procedure UpdateModifiedMemo;
@@ -88,6 +89,7 @@ begin
 
   UpdateGeneralMemo;
   UpdateModifiedMemo;
+  PageControl1.ActivePage:=GeneralTabSheet;
 end;
 
 procedure TIDEInfoDialog.GatherIDEVersion(sl: TStrings);
@@ -161,6 +163,7 @@ begin
     sl.Add('Project.BuildModes.IsModified data');
   if AProject.BuildModes.IsModified(true) then
     sl.Add('Project.BuildModes.IsModified session');
+  sl.Add('');
 
   // details
   HeaderWritten:=false;
@@ -170,7 +173,6 @@ begin
     or ((aFile.Source<>nil) and aFile.Source.Modified)
     then begin
       if not HeaderWritten then begin
-        sl.Add('');
         sl.Add('Project units:');
         s:=aFile.GetShortFilename(true);
         if aFile.Modified then
@@ -184,6 +186,29 @@ begin
     end;
     aFile:=aFile.NextPartOfProject;
   end;
+  if HeaderWritten then
+    sl.Add('');
+end;
+
+procedure TIDEInfoDialog.GatherModifiedPackages(sl: TStrings);
+var
+  i: Integer;
+  Pkg: TLazPackage;
+  HeaderWritten: Boolean;
+begin
+  HeaderWritten:=false;
+  for i:=0 to PackageGraph.Count-1 do begin
+    Pkg:=PackageGraph[i];
+    if Pkg.Modified then begin
+      if not HeaderWritten then begin
+        HeaderWritten:=true;
+        sl.Add('Packages:');
+      end;
+      sl.Add(Pkg.Name);
+    end;
+  end;
+  if HeaderWritten then
+    sl.Add('');
 end;
 
 procedure TIDEInfoDialog.UpdateGeneralMemo;
@@ -209,6 +234,7 @@ begin
   sl:=TStringList.Create;
   try
     GatherModifiedProject(Project1,sl);
+    GatherModifiedPackages(sl);
     ModifiedMemo.Lines.Assign(sl);
   finally
     sl.Free;
