@@ -28,7 +28,7 @@ object Main: TMain
     Height = 270
     Top = 0
     Width = 317
-    ActivePage = TabSheet2
+    ActivePage = ViewUnits
     Align = alClient
     TabIndex = 1
     TabOrder = 1
@@ -483,6 +483,7 @@ object Main: TMain
           ''
         )
         VisibleSpecialChars = [vscSpace, vscTabAtLast]
+        ScrollBars = ssAutoBoth
         BracketHighlightStyle = sbhsBoth
         inline SynLeftGutterPartList1: TSynGutterPartList
           object SynGutterMarks1: TSynGutterMarks
@@ -519,7 +520,7 @@ object Main: TMain
         end
       end
     end
-    object TabSheet2: TTabSheet
+    object ViewUnits: TTabSheet
       Caption = 'Units'
       ClientHeight = 242
       ClientWidth = 309
@@ -633,6 +634,23 @@ object Main: TMain
           OnChange = swShowUpdateChange
           TabOrder = 9
         end
+      end
+    end
+    object ViewINI: TTabSheet
+      Caption = 'INI'
+      ClientHeight = 242
+      ClientWidth = 309
+      object edINI: TMemo
+        Left = 0
+        Height = 242
+        Top = 0
+        Width = 309
+        Align = alClient
+        Lines.Strings = (
+          'edINI'
+        )
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
       end
     end
   end

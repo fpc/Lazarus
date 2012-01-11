@@ -3,7 +3,9 @@
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="FPDocEngine"/>
+    <AddToProjectUsesSection Value="True"/>
     <Author Value="DoDi"/>
+    <AutoUpdate Value="Manually"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
@@ -18,6 +20,7 @@
       </Other>
     </CompilerOptions>
     <Description Value="FPDoc tools as a package."/>
+    <License Value="LGPL"/>
     <Version Major="1"/>
     <Files Count="18">
       <Item1>
@@ -93,6 +96,7 @@
         <UnitName Value="sh_pas"/>
       </Item18>
     </Files>
+    <LazDoc Paths="docs"/>
     <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="FCL"/>

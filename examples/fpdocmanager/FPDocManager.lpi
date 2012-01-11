@@ -43,7 +43,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="9">
+    <Units Count="8">
       <Unit0>
         <Filename Value="FPDocManager.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -92,11 +92,6 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="uLpk"/>
       </Unit7>
-      <Unit8>
-        <Filename Value="$(FPCDir)\utils\fpdoc\dw_html.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="dw_HTML"/>
-      </Unit8>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -107,7 +102,6 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="$(FPCDir)\utils\fpdoc"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
@@ -121,7 +115,7 @@
       <CompilerMessages>
         <UseMsgFile Value="True"/>
       </CompilerMessages>
-      <CustomOptions Value="-dDoDi"/>
+      <CustomOptions Value="-uDoDi"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

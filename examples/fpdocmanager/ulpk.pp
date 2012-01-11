@@ -25,7 +25,8 @@ function ImportLpk(const AFile: string): TDocPackage;
 
 implementation
 
-//uses
+uses
+  umakeskel;
 
 type
   eKey = (kvEof, kvName, kvIncl, kvOther, kvFilename, kvDocPaths, kvReq, kvTitle
@@ -43,11 +44,18 @@ var
   lt, eq, q2: integer;
   key: eKey;
 
-function ImportCompiled(const LpkFile: string): boolean;
+function ImportCompiled(const LpkFile: string; APkg: TDocPackage): boolean;
 var
   mfc: string;
   f: TextFile;
 begin
+(* Makefile.compiled is an XML file, containing
+  <Params Value=" ..." --> extract -Fi and other options.
+  -Fu is quite unusable, contains units/%(CPU_TARGET)-%(OS_TARGET)
+  other options seem omittable?
+
+  Try use <prj>.compiled in unit output dir?
+*)
   mfc := ExtractFilePath(LpkFile) + 'Makefile.compiled';
   Result := FileExists(mfc);
   if not Result then
@@ -57,9 +65,22 @@ begin
   Reset(f);
   try
   //parse
-    ReadLn(f, ln);
-    //todo...
-    //ImportCommandline (CmdToPrj?)
+    while not EOF(f) do begin
+      ReadLn(f, ln);
+      if Pos('<Params ', ln) < 1 then
+        continue;
+      eq := Pos('"', ln);
+      if eq < 1 then
+        continue;
+      ln := Copy(ln, eq+1, Length(ln) - eq);
+      while ln <> '' do begin
+        value := GetNextWord(ln);
+        if (Copy(value,1,2) = '-d') or (Copy(value,1,3) = '-Fi') then begin
+          APkg.CompOpts := value; //collects all options
+        end;
+      end;
+      //todo...
+    end;
   finally
     CloseFile(f);
   end;
@@ -141,6 +162,7 @@ begin
   finally
     CloseFile(f);
   end;
+  ImportCompiled(AFile, pkg); //ignore result, is optional
 end;
 
 end.

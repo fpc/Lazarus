@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="fpdocmanager">
+
+<!--
+  ====================================================================
+    fConfig
+  ====================================================================
+-->
+
+<module name="fConfig">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TCfgWizard">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.buBack">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.buNext">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.buFclBat">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.buSelRoot">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.buDownload">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.buSelFpc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.Button1">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.Button2">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.buCancel">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.buRtlBat">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.edFpcDir">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.edRtlBat">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.edRoot">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.edFclBat">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.Label1">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.dlgSelRoot">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.Label2">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.Label3">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.dlgOpen">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.Panel1">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.Steps">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.sb">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.SelRoot">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.SelFPDir">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCfgWizard.MkRTL">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TCfgWizard.buBackClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCfgWizard.buBackClick.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TCfgWizard.buFclBatClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCfgWizard.buFclBatClick.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TCfgWizard.buNextClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCfgWizard.buNextClick.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TCfgWizard.buRtlBatClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCfgWizard.buRtlBatClick.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TCfgWizard.buSelFpcClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCfgWizard.buSelFpcClick.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TCfgWizard.buSelRootClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCfgWizard.buSelRootClick.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TCfgWizard.edFpcDirChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCfgWizard.edFpcDirChange.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TCfgWizard.edRootChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCfgWizard.edRootChange.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TCfgWizard.edRtlBatChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCfgWizard.edRtlBatChange.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TCfgWizard.FormShow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCfgWizard.FormShow.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TCfgWizard.MkRTLShow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCfgWizard.MkRTLShow.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TCfgWizard.SelFPDirShow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCfgWizard.SelFPDirShow.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TCfgWizard.SelRootShow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCfgWizard.SelRootShow.Sender">
+<short></short>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCfgWizard.NoRun">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="CfgWizard">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- fConfig -->
+
+</package>
+</fpdoc-descriptions>

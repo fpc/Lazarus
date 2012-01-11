@@ -656,7 +656,7 @@ end;
 function TFPDocMaker.UnitSpec(AUnit: string): string;
 var
   i: integer;
-  s, w: string;
+  w: string;
 begin
   for i := 0 to SelectedPackage.Inputs.Count - 1 do begin
     w := ExtractUnitName(FPackage.Inputs, i);
@@ -955,6 +955,7 @@ var
   Cmd, Arg: String;
 begin
   Cmd:=S;
+  Arg := ''; //make compiler happy
   Result := ParseCommon(Cmd, Arg);
   if Result <> caInvalid then
     exit;
@@ -1094,11 +1095,11 @@ end;
 
 
 function TFPDocMaker.ParseUpdateOption(const s: String):  TCreatorAction;
-//procedure ParseOption(const s: String; Options: TEngineOptions);
 var
   Cmd, Arg: String;
 begin
   Cmd:=S;
+  Arg := ''; //make compiler happy
   Result := ParseCommon(Cmd, Arg);
   if Result <> caInvalid then
     exit;

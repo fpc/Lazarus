@@ -26,6 +26,7 @@ type
     buShowLog: TButton;
     buTest: TButton;
     dlgSelLpk: TOpenDialog;
+    edINI: TMemo;
     swShowUpdate: TCheckBox;
     edLog: TEdit;
     lbPackages: TComboBox;
@@ -40,13 +41,14 @@ type
     MenuItem3: TMenuItem;
     mnExit: TMenuItem;
     dlgSelRoot: TSelectDirectoryDialog;
+    ViewINI: TTabSheet;
     Units: TPageControl;
     swAll: TRadioButton;
     swSingle: TRadioButton;
     edXML: TSynEdit;
     SynXMLSyn1: TSynXMLSyn;
     ViewXML: TTabSheet;
-    TabSheet2: TTabSheet;
+    ViewUnits: TTabSheet;
     procedure buRefreshClick(Sender: TObject);
     procedure buTestClick(Sender: TObject);
     procedure edLogChange(Sender: TObject);
@@ -83,9 +85,9 @@ var
 implementation
 
 uses
-  fConfig, fLogView, fUpdateView,
+  fConfig, fLogView, fUpdateView;
   //dw_HTML, //more writers?
-  uLpk;
+  //uLpk;
 
 {$R *.lfm}
 
@@ -288,6 +290,9 @@ begin
   fn := pkg.ProjectFile; //initialized where?
   if fn <> '' then
     edXML.Lines.LoadFromFile(fn);
+  fn := pkg.IniFileName;
+  if FileExists(fn) then
+    edINI.Lines.LoadFromFile(fn);
   //load units...
   lbUnits.Items.BeginUpdate;
   lbUnits.Clear;

@@ -34,6 +34,7 @@ type
 *)
   TDocPackage = class
   private
+    FCompOpts: string;
     FDescrDir: string;
     FDescriptions: TStrings;
     FIncludePath: string;
@@ -46,6 +47,7 @@ type
     FRequires: TStrings;
     FUnitPath: string;
     FUnits: TStrings;
+    procedure SetCompOpts(AValue: string);
     procedure SetDescrDir(AValue: string);
     procedure SetDescriptions(AValue: TStrings);
     procedure SetIncludePath(AValue: string);
@@ -61,6 +63,7 @@ type
   protected
     Config: TIniFile;
     procedure ReadConfig;
+    function  IniFileName: string;
   public
     constructor Create;
     destructor Destroy; override;
@@ -72,6 +75,7 @@ type
     property ProjectFile: string read FProjectFile write SetProjectFile; //xml?
   //from LazPkg
     procedure AddUnit(const AFile: string);
+    property CompOpts: string read FCompOpts write SetCompOpts;
     property LazPkg: string read FLazPkg write SetLazPkg; //LPK name?
     property ProjectDir: string read FProjectDir write SetProjectDir;
     property DescrDir: string read FDescrDir write SetDescrDir;
@@ -91,7 +95,6 @@ type
   TFPDocHelper = class(TFPDocMaker)
   private
     FProjectDir: string;
-    procedure CleanXML(const FileName: string);
     procedure SetProjectDir(AValue: string);
   public
     InputList, DescrList: TStringList; //still required?
@@ -138,7 +141,7 @@ type
     Procedure DoLog(Const Msg : String);
   public
     Config: TIniFile; //extend class?
-    constructor Create(AOwner: TComponent);
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -156,7 +159,7 @@ type
     function  Update(APkg: TDocPackage; const AUnit: string): boolean;
   public //published?
     property FpcDocDir: string read FFPDocDir write SetFPDocDir;
-    property LazarusDir: string read FLazarusDir write SetLazarusDir;
+    //property LazarusDir: string read FLazarusDir write SetLazarusDir;
     property RootDir: string read FRootDir write SetRootDir;
     property Packages: TStrings read FPackages;
     property Package: TDocPackage read FPackage write SetPackage;
@@ -183,6 +186,18 @@ procedure TDocPackage.SetDescrDir(AValue: string);
 begin
   if FDescrDir=AValue then Exit;
   FDescrDir:=AValue;
+end;
+
+procedure TDocPackage.SetCompOpts(AValue: string);
+begin
+(* collect all compiler options
+*)
+  if FCompOpts=AValue then Exit;
+  if AValue = '' then exit;
+  if FCompOpts = '' then
+    FCompOpts:=AValue
+  else
+    FCompOpts:= FCompOpts + ' ' + AValue;
 end;
 
 procedure TDocPackage.SetDescriptions(AValue: TStrings);
@@ -212,17 +227,20 @@ begin
     Import;
 end;
 
+(* Requires[] only contain package names.
+  Internal use: Get/Set CommaText
+*)
 procedure TDocPackage.SetRequires(AValue: TStrings);
 
   procedure Import;
   var
-    i, j: integer;
+    i: integer;
     s: string;
   begin
     FRequires.Clear; //assume full replace
     for i := 0 to AValue.Count - 1 do begin
       s := AValue[i]; //<name.xct>,<prefix>
-      FRequires.Add(ExtractImportName(s) + '=' + s);
+      FRequires.Add(ExtractImportName(s));  // + '=' + s);
     end;
   end;
 
@@ -230,10 +248,12 @@ begin
   if FRequires=AValue then Exit;
   if AValue = nil then exit;
   if AValue.Count = 0 then exit;
+{
   if Pos('=', AValue[0]) > 0 then
     FRequires.Assign(AValue) //clears previous content
   else
-    Import;
+}
+  Import;
 end;
 
 procedure TDocPackage.SetUnits(AValue: TStrings);
@@ -361,21 +381,25 @@ begin
   //todo: common options? OS options?
   for i := 0 to Units.Count - 1 do begin
     s := Units.ValueFromIndex[i];
+    if CompOpts <> '' then
+      s := s + ' ' + CompOpts;
     //add further options?
     pkg.Inputs.Add(s);
   end;
-//add Descriptions
-  if DescrDir <> '' then begin
+//add Descriptions - either explicit or implicit
+  if (DescrDir <> '') and (Descriptions.Count = 0) then begin
   //first check for existing directory
     if not DirectoryExists(DescrDir) then begin
       MkDir(DescrDir); //exclude \?
     end else if Descriptions.Count = 0 then begin
       APrj.ParseFPDocOption('--descr-dir=' + DescrDir); //adds all XML files
     end;
-  end;
-  for i := 0 to Descriptions.Count - 1 do begin
-    s := Descriptions[i];
-    pkg.Descriptions.Add(s);
+  end else begin
+    APrj.DescrDir := DescrDir; //needed by Update
+    for i := 0 to Descriptions.Count - 1 do begin
+      s := Descriptions[i];
+      pkg.Descriptions.Add(s);
+    end;
   end;
 //add Imports
   for i := 0 to Requires.Count - 1 do begin
@@ -401,7 +425,6 @@ end;
 *)
 function TDocPackage.ImportProject(APrj: TFPDocHelper; APkg: TFPDocPackage; const AFile: string): boolean;
 var
-  j: integer;
   s: string;
 begin
 //check loaded
@@ -441,7 +464,7 @@ begin
   if Loaded then
     exit;
   if Config = nil then
-    Config := TIniFile.Create(Manager.RootDir + Name + '.ini');
+    Config := TIniFile.Create(IniFileName);
 //check config
   s := Config.ReadString(SecDoc, 'projectdir', '');
   if s = '' then begin
@@ -450,6 +473,7 @@ begin
   end;
   ProjectFile := Config.ReadString(SecDoc, 'projectfile', '');
   FInputDir := Config.ReadString(SecDoc, 'inputdir', '');
+  FCompOpts := Config.ReadString(SecDoc, 'options', '');
   FDescrDir := Config.ReadString(SecDoc, 'descrdir', '');
   Requires.CommaText := Config.ReadString(SecDoc, 'requires', '');
 //units
@@ -475,16 +499,15 @@ procedure TDocPackage.UpdateConfig;
     end;
   end;
 
-var
-  i: integer;
 begin
 //create ini file, if not already created
   if Config = nil then
-    Config := TIniFile.Create(Manager.RootDir + Name + '.ini'); //in document RootDir
+    Config := TIniFile.Create(IniFileName); //in document RootDir
 //general information
   Config.WriteString(SecDoc, 'projectdir', ProjectDir);
   Config.WriteString(SecDoc, 'projectfile', ProjectFile);
   Config.WriteString(SecDoc, 'inputdir', InputDir);
+  Config.WriteString(SecDoc, 'options', CompOpts);
   Config.WriteString(SecDoc, 'descrdir', DescrDir);
   Config.WriteString(SecDoc, 'requires', Requires.CommaText);
 //units
@@ -492,6 +515,11 @@ begin
   WriteSection('descrs', Descriptions);
 //all done
   Loaded := True;
+end;
+
+function TDocPackage.IniFileName: string;
+begin
+  Result := Manager.RootDir + Name + '.ini';
 end;
 
 procedure TDocPackage.AddUnit(const AFile: string);
@@ -606,7 +634,6 @@ function TFPDocManager.LoadConfig(const ADir: string; Force: boolean): boolean;
 var
   s, pf, cf: string;
   i: integer;
-  pkg: TDocPackage;
 begin
   s := IncludeTrailingPathDelimiter(ADir);
   cf := s + ConfigName;
@@ -652,6 +679,7 @@ begin
 (* Protection against excessive saves requires a subclass of TIniFile,
   which flushes the file only if Dirty.
 *)
+  Result := True; //for now
 end;
 
 (* Add a DocPackage to Packages and INI.
@@ -784,8 +812,6 @@ begin
 end;
 
 function TFPDocManager.ImportLpk(const AFile: string): TDocPackage;
-var
-  s: string;
 begin
   BeginUpdate;
 //import the LPK file into? Here: TDocPackage, could be FPDocProject?
@@ -793,12 +819,7 @@ begin
   if Result = nil then
     DoLog('Import failed on ' + AFile)
   else begin
-    //todo: ImportCompiled - where?
-    //RegisterPackage(Result);
-    Result.Loaded := True; //should write config file!?
-    //CreateProject(AFile, Result);
-    //FModified := True; //always?
-    //Changed;
+    Result.Loaded := True; //import and write config file
   end;
   EndUpdate;
 end;
@@ -855,6 +876,9 @@ function TFPDocManager.Update(APkg: TDocPackage; const AUnit: string): boolean;
 begin
   BeginTest(APkg.ProjectFile);
   try
+    Result := APkg.CreateProject(Helper, ''); //only configure, don't create file
+    if not Result then
+      exit;
     Result := Helper.Update(APkg, AUnit);
   finally
     EndTest;
@@ -886,8 +910,6 @@ end;
 (* Prepare MakeSkel on temporary FPDocPackage
 *)
 function TFPDocHelper.BeginTest(APkg: TDocPackage): boolean;
-var
-  pf: string;
 begin
   if not assigned(APkg) then
     exit(False);
@@ -956,8 +978,6 @@ begin
 end;
 
 function TFPDocHelper.TestRun(APkg: TDocPackage; AUnit: string): boolean;
-var
-  pf, dir: string;
 begin
 (* more detailed error handling?
   Must CD to the project file directory!?
@@ -990,10 +1010,12 @@ function TFPDocHelper.Update(APkg: TDocPackage; const AUnit: string): boolean;
     InputList.Clear;
     InputList.Add(UnitSpec(AUnit));
     DescrList.Clear;
-    OutName := DescrDir + AUnit + '.xml';
+    OutName := AUnit + '.xml';
+    if DescrDir <> '' then
+      OutName := IncludeTrailingBackslash(DescrDir) + OutName;
     Options.UpdateMode := FileExists(OutName);
     if Options.UpdateMode then begin
-      DescrList.Add(APkg.DescrDir + AUnit + '.xml');
+      DescrList.Add(OutName);
       OutName:=Manager.RootDir + 'upd.' + AUnit + '.xml';
       DoLog('Update ' + OutName);
     end else begin
@@ -1024,31 +1046,6 @@ begin
     end;
   end;
   EndTest;
-end;
-
-(* Kill file if no "<element" found
-*)
-procedure TFPDocHelper.CleanXML(const FileName: string);
-var
-  f: TextFile;
-  s: string;
-begin
-  AssignFile(f, FileName);
-  Reset(f);
-  try
-    while not EOF(f) do begin
-      ReadLn(f, s);
-      if Pos('<element ', s) > 0 then
-        exit; //file not empty
-    end;
-  finally
-    CloseFile(f);
-  end;
-//nothing found, delete the file
-  if DeleteFile(FileName) then
-    DoLog('File ' + FileName + ' has no elements. Deleted.')
-  else
-    DoLog('File ' + FileName + ' has no elements. Delete failed.');
 end;
 
 procedure TFPDocHelper.SetProjectDir(AValue: string);

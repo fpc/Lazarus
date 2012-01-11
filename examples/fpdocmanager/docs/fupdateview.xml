@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="fpdocmanager">
+
+<!--
+  ====================================================================
+    fUpdateView
+  ====================================================================
+-->
+
+<module name="fUpdateView">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TUpdateView">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TUpdateView.edUpdate">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="UpdateView">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- fUpdateView -->
+
+</package>
+</fpdoc-descriptions>

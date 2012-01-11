@@ -1,0 +1,693 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="fpdocmanager">
+
+<!--
+  ====================================================================
+    fMain
+  ====================================================================
+-->
+
+<module name="fMain">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TMain">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.buSkel">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.buUpdate">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.buRefresh">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.buShowLog">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.buTest">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.dlgSelLpk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.edINI">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.swShowUpdate">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.edLog">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.lbPackages">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.edUnit">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.GroupBox1">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.lbUnits">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.MainMenu1">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.MenuItem1">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.mnImportLpk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.mnPackage">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.mnConfig">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.MenuItem3">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.mnExit">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.dlgSelRoot">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.ViewINI">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.Units">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.swAll">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.swSingle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.edXML">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.SynXMLSyn1">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.ViewXML">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMain.ViewUnits">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TMain.buRefreshClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.buRefreshClick.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TMain.buTestClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.buTestClick.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TMain.edLogChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.edLogChange.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TMain.edXMLExit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.edXMLExit.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TMain.FormCloseQuery">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.FormCloseQuery.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.FormCloseQuery.CanClose">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TMain.FormCreate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.FormCreate.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TMain.FormResize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.FormResize.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TMain.lbPackagesClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.lbPackagesClick.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TMain.lbUnitsClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.lbUnitsClick.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TMain.mnConfigClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.mnConfigClick.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TMain.mnExitClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.mnExitClick.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TMain.mnImportLpkClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.mnImportLpkClick.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TMain.swShowUpdateChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.swShowUpdateChange.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TMain.swSingleClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.swSingleClick.Sender">
+<short></short>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TMain.LogName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TMain.LogFile">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TMain.ProjectsChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.ProjectsChanged.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TMain.LogToFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.LogToFile.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.LogToFile.msg">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TMain.LogToMsgBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.LogToMsgBox.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.LogToMsgBox.msg">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TMain.LogStart">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TMain.LogDone">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TMain.ShowUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TMain.OnParseImport">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.OnParseImport.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.OnParseImport.ASource">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMain.OnParseImport.ALink">
+<short></short>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TMain.CurPkg">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TMain.CurUnit">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TMain.UpdateDocs">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="Main">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- fMain -->
+
+</package>
+</fpdoc-descriptions>

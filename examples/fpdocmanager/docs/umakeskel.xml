@@ -1,0 +1,1001 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="fpdocmanager">
+    <!--
+  ====================================================================
+    umakeskel
+  ====================================================================
+-->
+    <module name="umakeskel">
+      <short>An extract from the FPC MakeSkel program, with some extensions.
+</short>
+      <descr>TFPDocMaker extends FPDoc TFPDocCreator, with ability to update the XML files.
+
+</descr>
+      <!-- resource string Visibility: default -->
+      <element name="STitle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- resource string Visibility: default -->
+      <element name="SVersion">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- resource string Visibility: default -->
+      <element name="SCopyright">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- resource string Visibility: default -->
+      <element name="SCmdLineHelp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- resource string Visibility: default -->
+      <element name="SCmdLineInvalidOption">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- resource string Visibility: default -->
+      <element name="SNoPackageNameProvided">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- resource string Visibility: default -->
+      <element name="SOutputMustNotBeDescr">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- resource string Visibility: default -->
+      <element name="SCreatingNewNode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- resource string Visibility: default -->
+      <element name="SNodeNotReferenced">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- resource string Visibility: default -->
+      <element name="SDone">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- resource string Visibility: default -->
+      <element name="SErrInvalidRootNode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- resource string Visibility: default -->
+      <element name="SErrNoPackagesNode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TCmdLineAction">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TCmdLineAction.actionHelp">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TCmdLineAction.actionConvert">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TCmdOptions">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TCmdOptions.WriteDeclaration">
+        <short>[?]</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TCmdOptions.UpdateMode">
+        <short>Specifies the MakeSkel engine mode (create skeleton or update file).</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TCmdOptions.SortNodes">
+        <short>Sorts the Element nodes when True.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TCmdOptions.DisableOverride">
+        <short>[?]</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TCmdOptions.DisableErrors">
+        <short>Suppress Errors sections?</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TCmdOptions.DisableSeealso">
+        <short>Suppress SeeAlso sections?</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TCmdOptions.DisableArguments">
+        <short>Suppress subroutine parameter entries?</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TCmdOptions.DisableProtected">
+        <short>Suppress Elements for protected class members?</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TCmdOptions.DisablePrivate">
+        <short>Suppress Elements for private class members?</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TCmdOptions.DisableFunctionResults">
+        <short>Suppress Elements for function results?</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TCmdOptions.EmitClassSeparator">
+        <short>Generate class separator comment?</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TSkelEngine">
+        <short>The MakeSkel engine, used to create documentation skeleton or update files.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TSkelEngine.FEmittedList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TSkelEngine.FNodeList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TSkelEngine.FModules">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TSkelEngine.FOptions">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TSkelEngine.DoWriteUnReferencedNodes">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.DoWriteUnReferencedNodes.N">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.DoWriteUnReferencedNodes.NodePath">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TSkelEngine.SetOptions">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.SetOptions.AValue">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TSkelEngine.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TSkelEngine.MustWriteElement">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TSkelEngine.MustWriteElement.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.MustWriteElement.El">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.MustWriteElement.Full">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TSkelEngine.WriteElement">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TSkelEngine.WriteElement.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.WriteElement.F">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.WriteElement.El">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.WriteElement.ADocNode">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TSkelEngine.FindModule">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TSkelEngine.FindModule.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.FindModule.AName">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TSkelEngine.CreateElement">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TSkelEngine.CreateElement.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.CreateElement.AClass">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.CreateElement.AName">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.CreateElement.AParent">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.CreateElement.AVisibility">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.CreateElement.ASourceFilename">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.CreateElement.ASourceLinenumber">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TSkelEngine.WriteUnReferencedNodes">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TSkelEngine.WriteNodes">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.WriteNodes.F">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.WriteNodes.AModule">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.WriteNodes.List">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TSkelEngine.DocumentFile">
+        <short>Writes the skeleton or update elements for AFileName into the XML text file.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.DocumentFile.F">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.DocumentFile.AFileName">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.DocumentFile.ATarget">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSkelEngine.DocumentFile.ACPU">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TSkelEngine.NodeList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TSkelEngine.EmittedList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TSkelEngine.Options">
+        <short>The general commandline options for MakeSkel.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function type Visibility: default -->
+      <element name="THandleOption">
+        <short>Type of an OnOption handler for unknown commanline options.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="THandleOption.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="THandleOption.Cmd">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="THandleOption.Arg">
+        <short/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TCreatorAction">
+        <short>The action to perform after all FPDoc commandline options have been parsed.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TCreatorAction.caDefault">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TCreatorAction.caDryRun">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TCreatorAction.caUsage">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TCreatorAction.caInvalid">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TCreatorAction.caWriteProject">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TFPDocMaker">
+        <short>FPDoc and MakeSkel functionality as a class.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPDocMaker.FDescrDir">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPDocMaker.FInputDir">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPDocMaker.FOnOption">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPDocMaker.FOptions">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPDocMaker.GetDescrDir">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocMaker.GetDescrDir.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPDocMaker.GetInputDir">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocMaker.GetInputDir.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPDocMaker.SetDescrDir">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.SetDescrDir.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPDocMaker.SetInputDir">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.SetInputDir.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPDocMaker.SetOnOption">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.SetOnOption.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPDocMaker.SetOptions">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.SetOptions.AValue">
+        <short/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPDocMaker.FCmdAction">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPDocMaker.FDryRun">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPDocMaker.FPackage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPDocMaker.FProjectFile">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPDocMaker.FWriteProjectFile">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPDocMaker.FTranslated">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPDocMaker.SetCmdAction">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.SetCmdAction.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPDocMaker.SetDryRun">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.SetDryRun.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPDocMaker.SetPackage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.SetPackage.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPDocMaker.SetWriteProjectFile">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.SetWriteProjectFile.AValue">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPDocMaker.ParseCommon">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocMaker.ParseCommon.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.ParseCommon.Cmd">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.ParseCommon.Arg">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocMaker.DocumentPackage">
+        <short>Creates or updates XML documentation sources.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocMaker.DocumentPackage.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.DocumentPackage.APackageName">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.DocumentPackage.AOutputName">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.DocumentPackage.InputFiles">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.DocumentPackage.DescrFiles">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TFPDocMaker.CreateUnitDocumentation">
+        <short>Creates final documentation, for a package or a single unit.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.CreateUnitDocumentation.APackage">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.CreateUnitDocumentation.AUnit">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.CreateUnitDocumentation.ParseOnly">
+        <short/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TFPDocMaker.ImportDir">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TFPDocMaker.SelectedUnit">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFPDocMaker.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.Create.AOwner">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TFPDocMaker.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TFPDocMaker.AddDirToFileList">
+        <short>Adds files in a directory to a stringlist, using a filename mask.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.AddDirToFileList.List">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.AddDirToFileList.ADirName">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.AddDirToFileList.AMask">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TFPDocMaker.AddToFileList">
+        <short>Adds lines from an file to a stringlist.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.AddToFileList.List">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.AddToFileList.FileName">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocMaker.UnitSpec">
+        <short>Returns the full input specification (command options) for a unit in the selected package.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocMaker.UnitSpec.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.UnitSpec.AUnit">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocMaker.ImportName">
+        <short>Returns the package name from an Imports specifier.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocMaker.ImportName.Result"/>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.ImportName.AIndex">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TFPDocMaker.LogToStdOut">
+        <short>Standard OnLog handler, writing to stdout.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.LogToStdOut.Sender">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.LogToStdOut.msg">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TFPDocMaker.LogToStdErr">
+        <short>Standard OnLog handler, writing to stderr.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.LogToStdErr.Sender">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.LogToStdErr.msg">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocMaker.ParseFPDocOption">
+        <short>Parses and stores an FPDoc commanline option.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocMaker.ParseFPDocOption.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.ParseFPDocOption.S">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocMaker.ParseUpdateOption">
+        <short>Parses and stores an MakeSkel commanline option.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocMaker.ParseUpdateOption.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.ParseUpdateOption.S">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocMaker.CheckSkelOptions">
+        <short>Sanity check before starting a MakeSkel operation (DocumentPackage).</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocMaker.CheckSkelOptions.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocMaker.CleanXML">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocMaker.CleanXML.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocMaker.CleanXML.FileName">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocMaker.SelectedPackage">
+        <short>Returns the currently selected package.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocMaker.SelectedPackage.Result">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPDocMaker.Package">
+        <short>The currently selected package.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPDocMaker.CmdAction">
+        <short>Action to perform after commandline arguments have been parsed.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPDocMaker.DryRun">
+        <short>Allows to perform syntax checks of documentation source files, instead of creating final documentation.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPDocMaker.ReadProject">
+        <short>True when a project file has been read (--project option)</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPDocMaker.WriteProjectFile">
+        <short>The name of an project file to create (--write-project argument)</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPDocMaker.OnOption">
+        <short>User supplied handler for unknown commandline options.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPDocMaker.InputDir">
+        <short>The directory containing Inputs files. Writing adds all source files in the directory to Inputs[].</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPDocMaker.DescrDir">
+        <short>The directory containing Description files. Writing adds all XML files in the directory to Descriptions[].</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPDocMaker.Options">
+        <short>Holds all parsed FPDoc and MakeSkel commandline options.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetNextWord">
+        <short>Extracts next commandline option from an string.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="GetNextWord.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetNextWord.s">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ExtractImportName">
+        <short>Get package name from an Imports specifier.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="ExtractImportName.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ExtractImportName.s">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UnitFile">
+        <short>Get an filename from an Inputs or Descriptions list.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="UnitFile.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="UnitFile.AList">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="UnitFile.AIndex">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ExtractUnitName">
+        <short>Get the unit name from Inputs or Descriptions, or from an string containing such an element.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="ExtractUnitName.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ExtractUnitName.AList">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ExtractUnitName.AIndex">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ExtractUnitName.s">
+        <short/>
+      </element>
+    </module>
+    <!-- umakeskel -->
+  </package>
+</fpdoc-descriptions>

@@ -1,0 +1,1021 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="fpdocmanager">
+    <!--
+  ====================================================================
+    uManager
+  ====================================================================
+-->
+    <module name="uManager">
+      <short>The documentation manager.</short>
+      <descr/>
+      <!-- class Visibility: default -->
+      <element name="TFPDocHelper">
+        <short>Interface between the documentation manager and FPDoc engines.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TDocPackage">
+        <short>TDocPackage describes a package documentation project.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDocPackage.FCompOpts">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDocPackage.FDescrDir">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDocPackage.FDescriptions">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDocPackage.FIncludePath">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDocPackage.FInputDir">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDocPackage.FLazPkg">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDocPackage.FLoaded">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDocPackage.FName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDocPackage.FProjectDir">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDocPackage.FProjectFile">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDocPackage.FRequires">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDocPackage.FUnitPath">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDocPackage.FUnits">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TDocPackage.SetCompOpts">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDocPackage.SetCompOpts.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TDocPackage.SetDescrDir">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDocPackage.SetDescrDir.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TDocPackage.SetDescriptions">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDocPackage.SetDescriptions.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TDocPackage.SetIncludePath">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDocPackage.SetIncludePath.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TDocPackage.SetInputDir">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDocPackage.SetInputDir.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TDocPackage.SetLazPkg">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDocPackage.SetLazPkg.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TDocPackage.SetLoaded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDocPackage.SetLoaded.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TDocPackage.SetName">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDocPackage.SetName.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TDocPackage.SetProjectDir">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDocPackage.SetProjectDir.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TDocPackage.SetProjectFile">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDocPackage.SetProjectFile.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TDocPackage.SetRequires">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDocPackage.SetRequires.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TDocPackage.SetUnitPath">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDocPackage.SetUnitPath.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TDocPackage.SetUnits">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDocPackage.SetUnits.AValue">
+        <short/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TDocPackage.Config">
+        <short>The INI file for this package.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDocPackage.ReadConfig">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TDocPackage.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TDocPackage.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDocPackage.CreateProject">
+        <short>Configures an engine for this project, optionally creates an project file.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TDocPackage.CreateProject.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDocPackage.CreateProject.APrj">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDocPackage.CreateProject.AFile">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDocPackage.ImportProject">
+        <short>Init from TFPDocPackage, into which project AFile has been loaded.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TDocPackage.ImportProject.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDocPackage.ImportProject.APrj">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDocPackage.ImportProject.APkg">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDocPackage.ImportProject.AFile">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TDocPackage.UpdateConfig">
+        <short>Write package config.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDocPackage.IniFileName">
+        <short>Returns the INI filename for this package.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TDocPackage.IniFileName.Result">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDocPackage.Name">
+        <short>The package name. Writing loads the package INI file.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDocPackage.Loaded">
+        <short>Setting to True registers the package with the Manager, and updates the config file.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDocPackage.ProjectFile">
+        <short>The XML project file. Writing also sets ProjectDir.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TDocPackage.AddUnit">
+        <short>Adds an unit to the package, from an --input specifier.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDocPackage.AddUnit.AFile">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDocPackage.CompOpts">
+        <short>Common compiler options, extracted from an .lpk file.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDocPackage.LazPkg">
+        <short>The Lazarus package file, from which the package is created.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDocPackage.ProjectDir">
+        <short>The project directory, required to resolve relative file references.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDocPackage.DescrDir">
+        <short>Description directory, where new skeletons are created.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDocPackage.Descriptions">
+        <short>The list of all description files. When empty, all files in DescrDir are used.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDocPackage.InputDir">
+        <short>Input file directory (unused?)</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDocPackage.Units">
+        <short>The units belonging to the package.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDocPackage.Requires">
+        <short>Packages required by this package (names only).</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDocPackage.IncludePath">
+        <short>-Fi specifiers.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDocPackage.UnitPath">
+        <short>-Fu specifiers.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPDocHelper.FProjectDir">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPDocHelper.CleanXML">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocHelper.CleanXML.FileName">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPDocHelper.SetProjectDir">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocHelper.SetProjectDir.AValue">
+        <short/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TFPDocHelper.InputList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TFPDocHelper.DescrList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFPDocHelper.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocHelper.Create.AOwner">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TFPDocHelper.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocHelper.BeginTest">
+        <short>Sets the current directory as appropriate for relative file references.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocHelper.BeginTest.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocHelper.BeginTest.APkg">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocHelper.BeginTest.AFile">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TFPDocHelper.EndTest">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocHelper.CmdToPrj">
+        <short>Imports an FPDoc commandline from an script file.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocHelper.CmdToPrj.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocHelper.CmdToPrj.AFileName">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocHelper.TestRun">
+        <short>Performs FPDoc tests on a package or single unit.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocHelper.TestRun.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocHelper.TestRun.APkg">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocHelper.TestRun.AUnit">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocHelper.Update">
+        <short>Creates skeletons or updates for a package or a single unit.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocHelper.Update.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocHelper.Update.APkg">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocHelper.Update.AUnit">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPDocHelper.ProjectDir">
+        <short>The project root directory, required to resolve relative file references.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TLogHandler">
+        <short>Type of an message output handler (dupe of PParser handler type).</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLogHandler.Sender">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLogHandler.Msg">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TFPDocManager">
+        <short>Documentation manager class, holding packages and common settings.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPDocManager.FFPDocDir">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPDocManager.FLazarusDir">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPDocManager.FModified">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPDocManager.FOnChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPDocManager.FOnLog">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPDocManager.FPackage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPDocManager.FPackages">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPDocManager.FRootDir">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPDocManager.UpdateCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPDocManager.SetFPDocDir">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.SetFPDocDir.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPDocManager.SetLazarusDir">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.SetLazarusDir.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPDocManager.SetOnChange">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.SetOnChange.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPDocManager.SetPackage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.SetPackage.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPDocManager.SetRootDir">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.SetRootDir.AValue">
+        <short/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPDocManager.Helper">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPDocManager.Changed">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPDocManager.BeginTest">
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocManager.BeginTest.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.BeginTest.AFile">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPDocManager.EndTest">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPDocManager.RegisterPackage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocManager.RegisterPackage.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.RegisterPackage.APkg">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPDocManager.DoLog">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.DoLog.Msg">
+        <short/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TFPDocManager.Config">
+        <short>The global INI file.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFPDocManager.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.Create.AOwner">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TFPDocManager.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TFPDocManager.BeginUpdate">
+        <short>Blocks nested application update events.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TFPDocManager.EndUpdate">
+        <short>Unlock nested updates, finally invokes the OnChange handler.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocManager.LoadConfig">
+        <short>Try load config and all packages, when INI file found.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocManager.LoadConfig.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.LoadConfig.ADir">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.LoadConfig.Force">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocManager.SaveConfig">
+        <short>Dummy procedure for now, should flush an Dirty INI file.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocManager.SaveConfig.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocManager.AddProject">
+        <short>Adds a (new) package project and initializes it from the project file, if not already Loaded.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocManager.AddProject.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.AddProject.APkg">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.AddProject.AFile">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.AddProject.UpdateCfg">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocManager.CreateProject">
+        <short>Asks the DocPackage to create an projectfile.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocManager.CreateProject.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.CreateProject.AFileName">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.CreateProject.APkg">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocManager.AddPackage">
+        <short>Return the named package, create a new one if not found.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocManager.AddPackage.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.AddPackage.AName">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocManager.ImportLpk">
+        <short>Imports an Lazarus package or program project file.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocManager.ImportLpk.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.ImportLpk.AFile">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TFPDocManager.ImportProject">
+        <short>Add a package, just created from cmdline or projectfile.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.ImportProject.APkg">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.ImportProject.AFile">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocManager.ImportCmd">
+        <short>Create a package from a script, containing an FPDoc commandline.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocManager.ImportCmd.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.ImportCmd.AFile">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocManager.TestRun">
+        <short>Test a package or single unit documentation.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocManager.TestRun.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.TestRun.APkg">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.TestRun.AUnit">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFPDocManager.Update">
+        <short>Update documentation file(s) of a package or single unit (MakeSkel).</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPDocManager.Update.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.Update.APkg">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDocManager.Update.AUnit">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPDocManager.FpcDocDir">
+        <short>Free Pascal documentation directory for RTL and FCL.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPDocManager.LazarusDir">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPDocManager.RootDir">
+        <short>The global documentation directory, containing all INI files and final documents.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPDocManager.Packages">
+        <short>The registered packages.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPDocManager.Package">
+        <short>The currently processed package.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPDocManager.Modified">
+        <short>Triggers OnChange event on last EndUpdate.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPDocManager.OnChange">
+        <short>Application handler for changes (added packages).</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPDocManager.OnLog">
+        <short>Application handler for log messages.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="Manager">
+        <short>The global documentation manager object.</short>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- uManager -->
+  </package>
+</fpdoc-descriptions>
