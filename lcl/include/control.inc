@@ -1413,6 +1413,54 @@ begin
   //TWSControl(WidgetSetClass).LazAccessibility_SetFields(Self, ADescription, AName, ARole);
 end;
 
+function TControl.AddChildAccessibleObject: TLazAccessibleObject;
+begin
+  if FAccessibleChildren = nil then Exit;
+  Result := TLazAccessibleObject.Create;
+  Result.Parent := Self;
+  FAccessibleChildren.Add(Result);
+  //DebugLn('[TControl.AddChildAccessibleObject] Name=%s', [Name]);
+end;
+
+procedure TControl.ClearChildAccessibleObjects;
+var
+  i: Integer;
+begin
+  if FAccessibleChildren = nil then Exit;
+  //DebugLn(Format('[TControl.ClearChildAccessibleObjects] Name=%s Count=%d', [Name, FAccessibleChildren.Count]));
+  for i := 0 to FAccessibleChildren.Count - 1 do
+    TLazAccessibleObject(FAccessibleChildren.Items[i]).Free;
+  FAccessibleChildren.Clear;
+end;
+
+procedure TControl.RemoveChildAccessibleObject(AObject: TLazAccessibleObject);
+begin
+  if FAccessibleChildren = nil then Exit;
+  FAccessibleChildren.Remove(@AObject);
+end;
+
+function TControl.GetChildAccessibleObject(AIndex: Integer): TLazAccessibleObject;
+begin
+  if FAccessibleChildren = nil then Exit;
+  Result := TLazAccessibleObject(FAccessibleChildren.Items[AIndex]);
+end;
+
+function TControl.GetChildAccessibleObjectsCount: Integer;
+begin
+  if FAccessibleChildren = nil then Exit;
+  Result := FAccessibleChildren.Count;
+end;
+
+function TControl.GetSelectedChildAccessibleObject: TLazAccessibleObject;
+begin
+  Result := nil;
+end;
+
+function TControl.GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject;
+begin
+  Result := nil;
+end;
+
 {------------------------------------------------------------------------------
        TControl GetBoundsRect
 ------------------------------------------------------------------------------}
@@ -4457,6 +4505,8 @@ begin
   FreeThenNil(FBorderSpacing);
   FreeThenNil(FConstraints);
   FreeThenNil(FFont);
+  ClearChildAccessibleObjects();
+  FreeThenNil(FAccessibleChildren);
   //DebugLn('[TControl.Destroy] B ',DbgSName(Self));
   inherited Destroy;
   //DebugLn('[TControl.Destroy] END ',DbgSName(Self));
@@ -4487,6 +4537,7 @@ begin
     // no csOpaque: delphi compatible, win32 themes notebook depend on it
     // csOpaque means entire client area will be drawn
     // (most controls are semi-transparent)
+    FAccessibleChildren := TFPList.Create;
     FControlStyle := FControlStyle
                    +[csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks];
     FConstraints:= TSizeConstraints.Create(Self);

@@ -889,6 +889,15 @@ type
     lapAutoAdjustForDPI // For desktops using High DPI, scale x and y to fit the DPI
   );
 
+  TLazAccessibleObject = class
+  public
+    AccessibleDescription: TCaption;
+    AccessibleName: TCaption;
+    AccessibleRole: TLazAccessibilityRole;
+    Parent: TControl;
+    DataObject: TObject; // Availble to be used to connect to an object
+  end;
+
 {* Note on TControl.Caption
  * The VCL implementation relies on the virtual Get/SetTextBuf to
  * exchange text between widgets and VCL. This means a lot of
@@ -909,6 +918,7 @@ type
     FAccessibleDescription: TCaption;
     FAccessibleName: TCaption;
     FAccessibleRole: TLazAccessibilityRole;
+    FAccessibleChildren: TFPList; // of TLazAccessibleObject
     FActionLink: TControlActionLink;
     FAlign: TAlign;
     FAnchors: TAnchors;
@@ -1315,6 +1325,15 @@ type
     function Dragging: Boolean;
     // accessibility
     procedure SetAccesibilityFields(const ADescription, AName: string; const ARole: TLazAccessibilityRole);
+    // The Child Accessible Objects are designed for non-TControl children
+    // of a TCustomControl descendent, for example the items of a TTreeView
+    function AddChildAccessibleObject: TLazAccessibleObject;
+    procedure ClearChildAccessibleObjects;
+    procedure RemoveChildAccessibleObject(AObject: TLazAccessibleObject);
+    function GetChildAccessibleObject(AIndex: Integer): TLazAccessibleObject;
+    function GetChildAccessibleObjectsCount: Integer;
+    function GetSelectedChildAccessibleObject: TLazAccessibleObject; virtual;
+    function GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject; virtual;
   public
     // size
     procedure AdjustSize; virtual;// smart calling DoAutoSize

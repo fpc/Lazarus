@@ -1993,6 +1993,8 @@ begin
       Owner.Invalidate;
   end;
   FSelection.Clear;
+  if (FOwner <> nil) then
+    FOwner.ClearChildAccessibleObjects();
   EndUpdate;
 end;
 
@@ -2190,8 +2192,10 @@ function TTreeNodes.InternalAddObject(Node: TTreeNode; const S: string;
   taAddFirst: add Result as first child of Node
   taInsert:   add Result in front of Node
 }
-//var Item: HTreeItem;
-var ok: boolean;
+var
+  ok: boolean;
+  // Item: HTreeItem;
+  lAccessibleObject: TLazAccessibleObject;
 begin
   if Owner=nil then
     TreeNodeError('TTreeNodes.InternalAddObject Owner=nil');
@@ -2219,6 +2223,13 @@ begin
     if (FUpdateCount=0) and (Owner<>nil) then
       Owner.Invalidate;
     ok:=true;
+    if ok and (Owner<>nil) then
+    begin
+      lAccessibleObject := FOwner.AddChildAccessibleObject();
+      lAccessibleObject.AccessibleDescription := S;
+      lAccessibleObject.AccessibleRole := larTreeItem;
+      lAccessibleObject.DataObject := Result;
+    end;
   finally
     // this construction creates nicer exception output
     if not ok then
