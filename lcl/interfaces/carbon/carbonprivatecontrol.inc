@@ -176,6 +176,7 @@ var
   lCount: Integer;
   i: Integer;
   lAccessibleObj: TLazAccessibleObject;
+  lHandle: PtrInt;
 const SName = 'CarbonControl_Accessibility';
 begin
   {$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
@@ -207,8 +208,9 @@ begin
       if lAccessibleObj = nil then Exit;
       lAccessibleObj := lAccessibleObj.GetChildAccessibleObjectAtPos(lInputPoint);
       if (lAccessibleObj = nil) or (lAccessibleObj.Handle = 0) then Exit;
+      lHandle := lAccessibleObj.Handle;
       SetEventParameter(AEvent, kEventParamAccessibleChild, typeCFTypeRef,
-        SizeOf(AXUIElementRef), @lAccessibleObj.Handle);
+        SizeOf(AXUIElementRef), @lHandle);
     end;
     kEventAccessibleGetAllAttributeNames:
     begin
@@ -320,17 +322,9 @@ begin
         lArray := CFArrayCreateMutable(kCFAllocatorDefault, lCount, @kCFTypeArrayCallBacks);
         for i := 0 to lCount - 1 do
         begin
-          if lLazControl.GetAccessibleObject().Handle <> 0 then
-          begin
-            lElement := AXUIElementRef(lLazControl.GetAccessibleObject().Handle)
-          end
-          else
-          begin
-            lElement := MacOSAll.AXUIElementCreateSystemWide();
-            lLazControl.GetAccessibleObject().Handle := PtrInt(lElement);
-          end;
+          //lElement := AXUIElementRef(lLazControl.GetAccessibleObject().Handle);
+          lElement := MacOSAll.AXUIElementCreateSystemWide();
           CFArrayAppendValue(lArray, lElement);
-          //CFRelease(lElement);
         end;
 
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFTypeRef,

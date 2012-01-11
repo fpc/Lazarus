@@ -67,6 +67,17 @@ type
 
   TWSDragImageListClass = class of TWSDragImageList;
 
+  { TWSLazAccessibleObject }
+
+{  TWSLazAccessibleObject = class(TWSLCLComponent)
+  published
+    class procedure SetFields(const AObject: TLazAccessibleObject; const ADescription, AName: string; const ARole: TLazAccessibilityRole); virtual;
+    class function CreateHandle(const AObject: TLazAccessibleObject): HWND; virtual;
+    class procedure DestroyHandle(const AObject: TLazAccessibleObject); virtual;
+  end;}
+  //lElement := MacOSAll.AXUIElementCreateSystemWide();
+  //CFRelease(lElement);
+
   { TWSControl }
 
   TWSControl = class(TWSLCLComponent)
@@ -76,7 +87,6 @@ type
     class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; virtual;
     class procedure ConstraintWidth(const AControl: TControl; const AConstraints: TObject; var aWidth: integer); virtual;
     class procedure ConstraintHeight(const AControl: TControl; const AConstraints: TObject; var aHeight: integer); virtual;
-    //class procedure LazAccessibility_SetFields(const AControl: TControl; const ADescription, AName: string; const ARole: TLazAccessibilityRole); virtual;
   end;
 
   TWSControlClass = class of TWSControl;
@@ -144,14 +154,35 @@ type
   published
   end;
 
-  procedure RegisterDragImageList;
-  procedure RegisterControl;
-  procedure RegisterWinControl;
-  procedure RegisterGraphicControl;
-  procedure RegisterCustomControl;
+procedure RegisterDragImageList;
+//procedure RegisterLazAccessibleObject;
+procedure RegisterControl;
+procedure RegisterWinControl;
+procedure RegisterGraphicControl;
+procedure RegisterCustomControl;
 
 implementation
 
+{ TWSLazAccessibleObject }
+
+(*class procedure TWSLazAccessibleObject.SetFields(
+  const AObject: TLazAccessibleObject; const ADescription, AName: string;
+  const ARole: TLazAccessibilityRole);
+begin
+
+end;
+
+class function TWSLazAccessibleObject.CreateHandle(
+  const AObject: TLazAccessibleObject): HWND;
+begin
+  Result := 0;
+end;
+
+class procedure TWSLazAccessibleObject.DestroyHandle(
+  const AObject: TLazAccessibleObject);
+begin
+
+end;*)
 
 { TWSControl }
 
@@ -180,12 +211,6 @@ class procedure TWSControl.ConstraintHeight(const AControl: TControl;
 begin
 
 end;
-
-{class procedure TWSControl.LazAccessibility_SetFields(const AControl: TControl;
-  const ADescription, AName: string; const ARole: TLazAccessibilityRole);
-begin
-
-end;}
 
 { TWSWinControl }
 
@@ -383,6 +408,16 @@ begin
     RegisterWSComponent(TDragImageList, TWSDragImageList);
   Done := True;
 end;
+
+{procedure RegisterLazAccessibleObject;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  if not WSRegisterControl then
+    RegisterWSComponent(TLazAccessibleObject, TWSLazAccessibleObject);
+  Done := True;
+end;}
 
 procedure RegisterControl;
 const

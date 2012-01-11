@@ -895,17 +895,20 @@ type
   { TLazAccessibleObject }
 
   TLazAccessibleObject = class
+  private
+    FHandle: PtrInt;
+    function GetHandle: PtrInt;
   protected
     FChildren: TFPList; // of TLazAccessibleObject
+    class procedure WSRegisterClass; virtual;//override;
   public
     AccessibleDescription: TCaption;
     AccessibleName: TCaption;
     AccessibleRole: TLazAccessibilityRole;
-    ParentControl: TControl;
+    OwnerControl: TControl;
     Parent: TLazAccessibleObject;
     DataObject: TObject; // Availble to be used to connect to an object
-    Handle: PtrInt;
-    constructor Create; virtual;
+    constructor Create(AOwner: TControl); virtual;
     destructor Destroy; override;
     function AddChildAccessibleObject: TLazAccessibleObject; virtual;
     procedure ClearChildAccessibleObjects;
@@ -915,6 +918,7 @@ type
     function GetChildAccessibleObjectsCount: Integer;
     function GetSelectedChildAccessibleObject: TLazAccessibleObject; virtual;
     function GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject; virtual;
+    property Handle: PtrInt read GetHandle;
   end;
 
 {* Note on TControl.Caption
@@ -934,7 +938,6 @@ type
 
   TControl = class(TLCLComponent)
   private
-    FAccessibleObject: TLazAccessibleObject;
     FActionLink: TControlActionLink;
     FAlign: TAlign;
     FAnchors: TAnchors;
@@ -1092,6 +1095,7 @@ type
     procedure SetTop(Value: Integer);
     procedure SetWidth(Value: Integer);
   protected
+    FAccessibleObject: TLazAccessibleObject;
     FControlState: TControlState;
     FCursor: TCursor;
     class procedure WSRegisterClass; override;
@@ -1346,6 +1350,8 @@ type
     procedure SetAccesibilityFields(const ADescription, AName: string; const ARole: TLazAccessibilityRole);
     function GetAccessibleObject: TLazAccessibleObject;
     function CreateAccessibleObject: TLazAccessibleObject; virtual;
+    function GetSelectedChildAccessibleObject: TLazAccessibleObject; virtual;
+    function GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject; virtual;
   public
     // size
     procedure AdjustSize; virtual;// smart calling DoAutoSize

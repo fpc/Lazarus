@@ -2654,14 +2654,6 @@ type
     tvimAsPrevSibling
   );
 
-  { TTreeViewAccessibleObject }
-
-  TTreeViewAccessibleObject = class(TLazAccessibleObject)
-  public
-    function GetSelectedChildAccessibleObject: TLazAccessibleObject; override;
-    function GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject; override;
-  end;
-
   TCustomTreeView = class(TCustomControl)
   private
     FBackgroundColor: TColor;
@@ -2860,7 +2852,9 @@ type
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
     procedure Resize; override;
-    function CreateAccessibleObject: TLazAccessibleObject; override;
+    // Accessibility
+    function GetSelectedChildAccessibleObject: TLazAccessibleObject; override;
+    function GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject; override;
   protected
     property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand default False;
     property BorderStyle default bsSingle;

@@ -28,15 +28,29 @@
 
 { TLazAccessibleObject }
 
-constructor TLazAccessibleObject.Create;
+function TLazAccessibleObject.GetHandle: PtrInt;
 begin
-  inherited Create;
+//  if FHandle = 0 then FHandle := TWSLazAccessibleObject(WidgetsetClass).CreateHandle(Self);
+  Result := FHandle;
+end;
+
+class procedure TLazAccessibleObject.WSRegisterClass;
+begin
+//  inherited WSRegisterClass;
+//  RegisterLazAccessibleObject;
+end;
+
+constructor TLazAccessibleObject.Create(AOwner: TControl);
+begin
+  inherited Create;//(AOwner);
+  OwnerControl := AOwner;
   FChildren := TFPList.Create;
 end;
 
 destructor TLazAccessibleObject.Destroy;
 begin
   ClearChildAccessibleObjects();
+//  if FHandle <> 0 then TWSLazAccessibleObject(WidgetsetClass).DestroyHandle(Self);
   inherited Destroy;
 end;
 
@@ -44,9 +58,8 @@ function TLazAccessibleObject.AddChildAccessibleObject: TLazAccessibleObject;
 begin
   Result := nil;
   if FChildren = nil then Exit;
-  Result := TLazAccessibleObject.Create;
+  Result := TLazAccessibleObject.Create(OwnerControl);
   Result.Parent := Self;
-  Result.ParentControl := Self.ParentControl;
   FChildren.Add(Result);
   //DebugLn('[TControl.AddChildAccessibleObject] Name=%s', [Name]);
 end;
@@ -101,11 +114,15 @@ end;
 function TLazAccessibleObject.GetSelectedChildAccessibleObject: TLazAccessibleObject;
 begin
   Result := nil;
+  if OwnerControl = nil then Exit;
+  Result := OwnerControl.GetSelectedChildAccessibleObject();
 end;
 
 function TLazAccessibleObject.GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject;
 begin
   Result := nil;
+  if OwnerControl = nil then Exit;
+  Result := OwnerControl.GetChildAccessibleObjectAtPos(APos);
 end;
 
 {------------------------------------------------------------------------------
@@ -1502,8 +1519,17 @@ end;
 
 function TControl.CreateAccessibleObject: TLazAccessibleObject;
 begin
-  Result := TLazAccessibleObject.Create;
-  Result.ParentControl := Self;
+  Result := TLazAccessibleObject.Create(Self);
+end;
+
+function TControl.GetSelectedChildAccessibleObject: TLazAccessibleObject;
+begin
+  Result := nil;
+end;
+
+function TControl.GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject;
+begin
+  Result := nil;
 end;
 
 {------------------------------------------------------------------------------
