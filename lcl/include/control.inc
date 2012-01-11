@@ -26,6 +26,70 @@
 
 { $DEFINE CHECK_POSITION}
 
+{ TLazAccessibleObject }
+
+constructor TLazAccessibleObject.Create;
+begin
+  inherited Create;
+  FChildren := TFPList.Create;
+end;
+
+destructor TLazAccessibleObject.Destroy;
+begin
+  ClearChildAccessibleObjects();
+  inherited Destroy;
+end;
+
+function TLazAccessibleObject.AddChildAccessibleObject: TLazAccessibleObject;
+begin
+  if FChildren = nil then Exit;
+  Result := TLazAccessibleObject.Create;
+  Result.Parent := Self;
+  Result.ParentControl := Self.ParentControl;
+  FChildren.Add(Result);
+  //DebugLn('[TControl.AddChildAccessibleObject] Name=%s', [Name]);
+end;
+
+procedure TLazAccessibleObject.ClearChildAccessibleObjects;
+var
+  i: Integer;
+begin
+  if FChildren = nil then Exit;
+  //DebugLn(Format('[TControl.ClearChildAccessibleObjects] Name=%s Count=%d', [Name, FAccessibleChildren.Count]));
+  for i := 0 to FChildren.Count - 1 do
+    TLazAccessibleObject(FChildren.Items[i]).Free;
+  FChildren.Clear;
+end;
+
+procedure TLazAccessibleObject.RemoveChildAccessibleObject(
+  AObject: TLazAccessibleObject);
+begin
+  if FChildren = nil then Exit;
+  FChildren.Remove(@AObject);
+end;
+
+function TLazAccessibleObject.GetChildAccessibleObject(AIndex: Integer): TLazAccessibleObject;
+begin
+  if FChildren = nil then Exit;
+  Result := TLazAccessibleObject(FChildren.Items[AIndex]);
+end;
+
+function TLazAccessibleObject.GetChildAccessibleObjectsCount: Integer;
+begin
+  if FChildren = nil then Exit;
+  Result := FChildren.Count;
+end;
+
+function TLazAccessibleObject.GetSelectedChildAccessibleObject: TLazAccessibleObject;
+begin
+  Result := nil;
+end;
+
+function TLazAccessibleObject.GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject;
+begin
+  Result := nil;
+end;
+
 {------------------------------------------------------------------------------
   TControl.AdjustSize
 
@@ -1339,20 +1403,20 @@ end;
 
 procedure TControl.SetAccessibleDescription(AValue: TCaption);
 begin
-  if FAccessibleDescription=AValue then Exit;
-  SetAccesibilityFields(AValue, FAccessibleName, FAccessibleRole);
+  if FAccessibleObject.AccessibleDescription=AValue then Exit;
+  SetAccesibilityFields(AValue, FAccessibleObject.AccessibleName, FAccessibleObject.AccessibleRole);
 end;
 
 procedure TControl.SetAccessibleName(AValue: TCaption);
 begin
-  if FAccessibleName=AValue then Exit;
-  SetAccesibilityFields(FAccessibleDescription, AValue, FAccessibleRole);
+  if FAccessibleObject.AccessibleName=AValue then Exit;
+  SetAccesibilityFields(FAccessibleObject.AccessibleDescription, AValue, FAccessibleObject.AccessibleRole);
 end;
 
 procedure TControl.SetAccessibleRole(AValue: TLazAccessibilityRole);
 begin
-  if FAccessibleRole=AValue then Exit;
-  SetAccesibilityFields(FAccessibleDescription, FAccessibleName, AValue);
+  if FAccessibleObject.AccessibleRole=AValue then Exit;
+  SetAccesibilityFields(FAccessibleObject.AccessibleDescription, FAccessibleObject.AccessibleName, AValue);
 end;
 
 {------------------------------------------------------------------------------
@@ -1407,58 +1471,21 @@ end;
 // accessibility
 procedure TControl.SetAccesibilityFields(const ADescription, AName: string; const ARole: TLazAccessibilityRole);
 begin
-  FAccessibleDescription := ADescription;
-  FAccessibleName := AName;
-  FAccessibleRole := ARole;
+  FAccessibleObject.AccessibleDescription := ADescription;
+  FAccessibleObject.AccessibleName := AName;
+  FAccessibleObject.AccessibleRole := ARole;
   //TWSControl(WidgetSetClass).LazAccessibility_SetFields(Self, ADescription, AName, ARole);
 end;
 
-function TControl.AddChildAccessibleObject: TLazAccessibleObject;
+function TControl.GetAccessibleObject: TLazAccessibleObject;
 begin
-  if FAccessibleChildren = nil then Exit;
+  Result := FAccessibleObject;
+end;
+
+function TControl.CreateAccessibleObject: TLazAccessibleObject;
+begin
   Result := TLazAccessibleObject.Create;
-  Result.Parent := Self;
-  FAccessibleChildren.Add(Result);
-  //DebugLn('[TControl.AddChildAccessibleObject] Name=%s', [Name]);
-end;
-
-procedure TControl.ClearChildAccessibleObjects;
-var
-  i: Integer;
-begin
-  if FAccessibleChildren = nil then Exit;
-  //DebugLn(Format('[TControl.ClearChildAccessibleObjects] Name=%s Count=%d', [Name, FAccessibleChildren.Count]));
-  for i := 0 to FAccessibleChildren.Count - 1 do
-    TLazAccessibleObject(FAccessibleChildren.Items[i]).Free;
-  FAccessibleChildren.Clear;
-end;
-
-procedure TControl.RemoveChildAccessibleObject(AObject: TLazAccessibleObject);
-begin
-  if FAccessibleChildren = nil then Exit;
-  FAccessibleChildren.Remove(@AObject);
-end;
-
-function TControl.GetChildAccessibleObject(AIndex: Integer): TLazAccessibleObject;
-begin
-  if FAccessibleChildren = nil then Exit;
-  Result := TLazAccessibleObject(FAccessibleChildren.Items[AIndex]);
-end;
-
-function TControl.GetChildAccessibleObjectsCount: Integer;
-begin
-  if FAccessibleChildren = nil then Exit;
-  Result := FAccessibleChildren.Count;
-end;
-
-function TControl.GetSelectedChildAccessibleObject: TLazAccessibleObject;
-begin
-  Result := nil;
-end;
-
-function TControl.GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject;
-begin
-  Result := nil;
+  Result.ParentControl := Self;
 end;
 
 {------------------------------------------------------------------------------
@@ -1620,6 +1647,21 @@ end;
 procedure TControl.DoActionChange(Sender: TObject);
 begin
   if Sender = Action then ActionChange(Sender, False);
+end;
+
+function TControl.GetAccessibleDescription: TCaption;
+begin
+  Result := FAccessibleObject.AccessibleDescription;
+end;
+
+function TControl.GetAccessibleName: TCaption;
+begin
+  Result := FAccessibleObject.AccessibleName;
+end;
+
+function TControl.GetAccessibleRole: TLazAccessibilityRole;
+begin
+  Result := FAccessibleObject.AccessibleRole;
 end;
 
 function TControl.CaptureMouseButtonsIsStored: boolean;
@@ -4505,8 +4547,7 @@ begin
   FreeThenNil(FBorderSpacing);
   FreeThenNil(FConstraints);
   FreeThenNil(FFont);
-  ClearChildAccessibleObjects();
-  FreeThenNil(FAccessibleChildren);
+  FreeThenNil(FAccessibleObject);
   //DebugLn('[TControl.Destroy] B ',DbgSName(Self));
   inherited Destroy;
   //DebugLn('[TControl.Destroy] END ',DbgSName(Self));
@@ -4537,7 +4578,7 @@ begin
     // no csOpaque: delphi compatible, win32 themes notebook depend on it
     // csOpaque means entire client area will be drawn
     // (most controls are semi-transparent)
-    FAccessibleChildren := TFPList.Create;
+    FAccessibleObject := CreateAccessibleObject();
     FControlStyle := FControlStyle
                    +[csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks];
     FConstraints:= TSizeConstraints.Create(Self);

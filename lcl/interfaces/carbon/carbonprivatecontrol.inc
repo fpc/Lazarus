@@ -207,7 +207,7 @@ begin
         lOutputStr := CFSTR('AXFocused');
         CFArrayAppendValue(lInputMutableArray, lOutputStr);
       end;
-      lCount := lLazControl.GetChildAccessibleObjectsCount;
+      lCount := lLazControl.GetAccessibleObject().GetChildAccessibleObjectsCount;
       if lCount > 0 then
       begin
         lOutputStr := CFSTR('AXChildren');
@@ -292,7 +292,7 @@ begin
       else if (CFStringCompare(lInputStr, CFSTR('AXChildren'), 0) = kCFCompareEqualTo) then // kAXChildrenAttribute
       begin
         // Create and return an array of AXUIElements describing the children of this view.
-        lCount := lLazControl.GetChildAccessibleObjectsCount;
+        lCount := lLazControl.GetAccessibleObject().GetChildAccessibleObjectsCount;
         lArray := CFArrayCreateMutable( kCFAllocatorDefault, lCount, @kCFTypeArrayCallBacks);
         for i := 0 to lCount - 1 do
         begin

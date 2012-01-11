@@ -889,13 +889,30 @@ type
     lapAutoAdjustForDPI // For desktops using High DPI, scale x and y to fit the DPI
   );
 
+  // The Child Accessible Objects are designed for non-TControl children
+  // of a TCustomControl descendent, for example the items of a TTreeView
+
+  { TLazAccessibleObject }
+
   TLazAccessibleObject = class
+  protected
+    FChildren: TFPList; // of TLazAccessibleObject
   public
     AccessibleDescription: TCaption;
     AccessibleName: TCaption;
     AccessibleRole: TLazAccessibilityRole;
-    Parent: TControl;
+    ParentControl: TControl;
+    Parent: TLazAccessibleObject;
     DataObject: TObject; // Availble to be used to connect to an object
+    constructor Create; virtual;
+    destructor Destroy; override;
+    function AddChildAccessibleObject: TLazAccessibleObject; virtual;
+    procedure ClearChildAccessibleObjects;
+    procedure RemoveChildAccessibleObject(AObject: TLazAccessibleObject);
+    function GetChildAccessibleObject(AIndex: Integer): TLazAccessibleObject;
+    function GetChildAccessibleObjectsCount: Integer;
+    function GetSelectedChildAccessibleObject: TLazAccessibleObject; virtual;
+    function GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject; virtual;
   end;
 
 {* Note on TControl.Caption
@@ -915,10 +932,7 @@ type
 
   TControl = class(TLCLComponent)
   private
-    FAccessibleDescription: TCaption;
-    FAccessibleName: TCaption;
-    FAccessibleRole: TLazAccessibilityRole;
-    FAccessibleChildren: TFPList; // of TLazAccessibleObject
+    FAccessibleObject: TLazAccessibleObject;
     FActionLink: TControlActionLink;
     FAlign: TAlign;
     FAnchors: TAnchors;
@@ -1017,6 +1031,9 @@ type
     FVisible: Boolean;
     function CaptureMouseButtonsIsStored: boolean;
     procedure DoActionChange(Sender: TObject);
+    function GetAccessibleDescription: TCaption;
+    function GetAccessibleName: TCaption;
+    function GetAccessibleRole: TLazAccessibilityRole;
     function GetAutoSizingAll: Boolean;
     function GetAnchorSide(Kind: TAnchorKind): TAnchorSide;
     function GetAnchoredControls(Index: integer): TControl;
@@ -1325,15 +1342,8 @@ type
     function Dragging: Boolean;
     // accessibility
     procedure SetAccesibilityFields(const ADescription, AName: string; const ARole: TLazAccessibilityRole);
-    // The Child Accessible Objects are designed for non-TControl children
-    // of a TCustomControl descendent, for example the items of a TTreeView
-    function AddChildAccessibleObject: TLazAccessibleObject;
-    procedure ClearChildAccessibleObjects;
-    procedure RemoveChildAccessibleObject(AObject: TLazAccessibleObject);
-    function GetChildAccessibleObject(AIndex: Integer): TLazAccessibleObject;
-    function GetChildAccessibleObjectsCount: Integer;
-    function GetSelectedChildAccessibleObject: TLazAccessibleObject; virtual;
-    function GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject; virtual;
+    function GetAccessibleObject: TLazAccessibleObject;
+    function CreateAccessibleObject: TLazAccessibleObject; virtual;
   public
     // size
     procedure AdjustSize; virtual;// smart calling DoAutoSize
@@ -1458,9 +1468,9 @@ type
     procedure RemoveHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent);
   public
     // standard properties, which should be supported by all descendants
-    property AccessibleDescription: TCaption read FAccessibleDescription write SetAccessibleDescription;
-    property AccessibleName: TCaption read FAccessibleName write SetAccessibleName;
-    property AccessibleRole: TLazAccessibilityRole read FAccessibleRole write SetAccessibleRole;
+    property AccessibleDescription: TCaption read GetAccessibleDescription write SetAccessibleDescription;
+    property AccessibleName: TCaption read GetAccessibleName write SetAccessibleName;
+    property AccessibleRole: TLazAccessibilityRole read GetAccessibleRole write SetAccessibleRole;
     property Action: TBasicAction read GetAction write SetAction;
     property Align: TAlign read FAlign write SetAlign default alNone;
     property Anchors: TAnchors read FAnchors write SetAnchors stored IsAnchorsStored default [akLeft, akTop];

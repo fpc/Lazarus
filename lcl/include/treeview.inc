@@ -1994,7 +1994,7 @@ begin
   end;
   FSelection.Clear;
   if (FOwner <> nil) then
-    FOwner.ClearChildAccessibleObjects();
+    FOwner.GetAccessibleObject().ClearChildAccessibleObjects();
   EndUpdate;
 end;
 
@@ -2225,7 +2225,7 @@ begin
     ok:=true;
     if ok and (Owner<>nil) then
     begin
-      lAccessibleObject := FOwner.AddChildAccessibleObject();
+      lAccessibleObject := FOwner.GetAccessibleObject().AddChildAccessibleObject();
       lAccessibleObject.AccessibleDescription := S;
       lAccessibleObject.AccessibleRole := larTreeItem;
       lAccessibleObject.DataObject := Result;
