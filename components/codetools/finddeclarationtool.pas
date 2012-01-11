@@ -722,8 +722,6 @@ type
     function FindForwardIdentifier(Params: TFindDeclarationParams;
       var IsForward: boolean): boolean;
     function FindNonForwardClass(Params: TFindDeclarationParams): boolean;
-    function FindExpressionResultType(Params: TFindDeclarationParams;
-      StartPos, EndPos: integer; AliasType: PFindContext = nil): TExpressionType;
     function FindCodeToolForUsedUnit(const AnUnitName, AnUnitInFilename: string;
       ExceptionOnNotFound: boolean): TFindDeclarationTool;
     function FindUnitSourceWithUnitIdentifier(UsesNode: TCodeTreeNode;
@@ -830,12 +828,16 @@ type
       NodeStack: PCodeTreeNodeStack = nil): TFindContext;
     function ConvertNodeToExpressionType(Node: TCodeTreeNode;
       Params: TFindDeclarationParams; AliasType: PFindContext = nil): TExpressionType;
+    function FindExpressionResultType(Params: TFindDeclarationParams;
+      StartPos, EndPos: integer; AliasType: PFindContext = nil): TExpressionType;
 
     function FindDeclarationAndOverload(const CursorPos: TCodeXYPosition;
       out ListOfPCodeXYPosition: TFPList;
       Flags: TFindDeclarationListFlags): boolean;
     function FindIdentifierContextsAtStatement(CleanPos: integer;
       out IsSubIdentifier: boolean; out ListOfPFindContext: TFPList): boolean;
+
+    // ancestors
     function FindClassAndAncestors(ClassNode: TCodeTreeNode;
       out ListOfPFindContext: TFPList; ExceptionOnNotFound: boolean
       ): boolean; // without interfaces
@@ -851,6 +853,7 @@ type
       var ListOfPFindContext: TFPList;
       Params: TFindDeclarationParams; FindClassContext: boolean;
       ExceptionOnNotFound: boolean = true): boolean; // with interfaces
+
     function FindReferences(const CursorPos: TCodeXYPosition;
       SkipComments: boolean; out ListOfPCodeXYPosition: TFPList): boolean;
     function FindUnitReferences(UnitCode: TCodeBuffer;

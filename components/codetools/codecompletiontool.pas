@@ -37,7 +37,7 @@
       - insert header comment for classes
 
   ToDo:
-    -add code for index properties (TList, TFPList, array of, Pointer array)
+    -add code for array properties (TList, TFPList, array of, Pointer array)
       TList:
         property Items[Index: integer]: AType;
         -> creates via dialog
@@ -61,7 +61,6 @@
               inherited Destroy;
             end;
 
-    -ProcExists: search procs in ancestors too
     -VarExists: search vars in ancestors too
 }
 unit CodeCompletionTool;
@@ -1856,6 +1855,9 @@ var
   ProcStartPos: LongInt;
   ExprType: TExpressionType;
   Context: TFindContext;
+  HasAtOperator: Boolean;
+  TypeTool: TFindDeclarationTool;
+  AliasType: TFindContext;
 begin
   Result:=false;
 
@@ -1876,6 +1878,15 @@ begin
                               VarNameAtom,ProcNameAtom,ParameterIndex)
   then
     exit;
+  HasAtOperator:=false;
+  if (VarNameAtom.StartPos<=SrcLen)
+  and (Src[VarNameAtom.StartPos]='@') then begin
+    HasAtOperator:=true;
+    inc(VarNameAtom.StartPos);
+    // ToDo: resolve pointer: @p to a PFindContext create p:TFindContext
+    // ToDo: create event: @OnClick to a TNotifyEvent create a method
+    exit;
+  end;
   if not IsValidIdent(GetAtom(VarNameAtom)) then exit;
 
   {$IFDEF CTDEBUG}
@@ -1914,6 +1925,7 @@ begin
     end;
 
     // find declaration of parameter list
+    // ToDo: search in all overloads for the best fit
     Params.ContextNode:=Context.Node;
     Params.SetIdentifier(Self,@Src[ProcNameAtom.StartPos],nil);
     Params.Flags:=fdfDefaultForExpressions+[fdfSearchInAncestors,fdfFindVariable];
@@ -1940,16 +1952,33 @@ begin
       end;
       if ParameterNode<>nil then begin
         //DebugLn('TCodeCompletionCodeTool.CompleteLocalVariableAsParameter ParameterNode=',ParameterNode.DescAsString,' ',copy(Params.NewCodeTool.Src,ParameterNode.StartPos,50));
+        TypeTool:=Params.NewCodeTool;
         TypeNode:=FindTypeNodeOfDefinition(ParameterNode);
         if TypeNode=nil then begin
           DebugLn('  CompleteLocalVariableAsParameter Parameter has no type');
           exit;
         end;
-        NewType:=Trim(copy(Params.NewCodeTool.Src,TypeNode.StartPos,
-                      TypeNode.EndPos-TypeNode.StartPos));
+        // default: copy the type
+        NewType:=TypeTool.ExtractCode(TypeNode.StartPos,TypeNode.EndPos,[]);
 
-        // ToDo: find unit of type declaration
-        MissingUnitName:=''; //GetUnitForUsesSection(Params.NewCodeTool);
+        // search type
+        Params.Clear;
+        Params.ContextNode:=TypeNode;
+        Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
+                       fdfTopLvlResolving];
+        AliasType:=CleanFindContext;
+        ExprType:=TypeTool.FindExpressionResultType(Params,
+                                  TypeNode.StartPos,TypeNode.EndPos,@AliasType);
+        //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter AliasType=',FindContextToString(AliasType)]);
+        if AliasType.Node<>nil then begin
+          // an identifier
+          MissingUnitName:=GetUnitNameForUsesSection(AliasType.Tool);
+          //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter MissingUnitName=',MissingUnitName]);
+        end;
+
+        if HasAtOperator then begin
+
+        end;
 
         DebugLn('TCodeCompletionCodeTool.CompleteLocalVariableAsParameter NewType=',NewType);
         if NewType='' then
