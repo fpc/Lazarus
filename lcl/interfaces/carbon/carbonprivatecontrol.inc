@@ -163,11 +163,16 @@ var
   lAXRole, lInputStr, lOutputStr: CFStringRef;
   lInputPasStr: string;
   lInputMutableArray: CFMutableArrayRef;
-  lOutputBool: CFBooleanRef;
+  lOutputBool: Boolean;
   lLazControl: TControl;
   lLazAXRole: TLazAccessibilityRole;
   Command: HICommandExtended;
   EventKind: UInt32;
+  // array
+  lArray: CFMutableArrayRef;
+  lElement: AXUIElementRef;
+  lCount: Integer;
+  i: Integer;
 const SName = 'CarbonControl_Accessibility';
 begin
   {$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
@@ -200,6 +205,12 @@ begin
       if (lLazControl is TWinControl) then
       begin
         lOutputStr := CFSTR('AXFocused');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+      end;
+      lCount := lLazControl.GetChildAccessibleObjectsCount;
+      if lCount > 0 then
+      begin
+        lOutputStr := CFSTR('AXChildren');
         CFArrayAppendValue(lInputMutableArray, lOutputStr);
       end;
     end; // kEventAccessibleGetAllAttributeNames
@@ -262,14 +273,38 @@ begin
           SizeOf(CFStringRef), @lOutputStr);
         FreeCFString(lOutputStr);
       end
+      //if (CFStringCompare(lInputStr, kAXFocusedAttribute, 0) = kCFCompareEqualTo) then
       else if lInputPasStr = 'AXFocused' then
       begin
-        if not (lLazControl is TWinControl) then lOutputBool := kCFBooleanFalse
-        else if TWinControl(lLazControl).Focused then lOutputBool := kCFBooleanTrue
-        else lOutputBool := kCFBooleanFalse;
+        if not (lLazControl is TWinControl) then lOutputBool := False
+        else if TWinControl(lLazControl).Focused then lOutputBool := True
+        else lOutputBool := False;
 
-        SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFBooleanRef,
-          SizeOf(CFBooleanRef), @lOutputBool);
+        {$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
+          DebugLn('CarbonControl_Accessibility AXFocused');
+        {$ENDIF}
+
+        SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeBoolean,
+          SizeOf(Boolean), @lOutputBool);
+
+        Result := noErr;
+      end
+      else if (CFStringCompare(lInputStr, CFSTR('AXChildren'), 0) = kCFCompareEqualTo) then // kAXChildrenAttribute
+      begin
+        // Create and return an array of AXUIElements describing the children of this view.
+        lCount := lLazControl.GetChildAccessibleObjectsCount;
+        lArray := CFArrayCreateMutable( kCFAllocatorDefault, lCount, @kCFTypeArrayCallBacks);
+        for i := 0 to lCount - 1 do
+        begin
+          lElement := MacOSAll.AXUIElementCreateSystemWide();
+          CFArrayAppendValue(lArray, lElement);
+          CFRelease(lElement);
+        end;
+
+        SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFTypeRef,
+          SizeOf(lArray), @lArray);
+        CFRelease(lArray);
+        Result := noErr;
       end;
     end; // kEventAccessibleGetNamedAttribute
   end; // case EventKind of
