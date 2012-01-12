@@ -29,15 +29,19 @@
 { TLazAccessibleObject }
 
 function TLazAccessibleObject.GetHandle: PtrInt;
+var
+  WidgetsetClass: TWSLazAccessibleObjectClass;
 begin
-//  if FHandle = 0 then FHandle := TWSLazAccessibleObject(WidgetsetClass).CreateHandle(Self);
+  WidgetsetClass := TWSLazAccessibleObjectClass(GetWSLazAccessibleObject());
+  if (WidgetsetClass <> nil) and (FHandle = 0) then
+    FHandle := WidgetsetClass.CreateHandle(Self);
   Result := FHandle;
 end;
 
 class procedure TLazAccessibleObject.WSRegisterClass;
 begin
 //  inherited WSRegisterClass;
-//  RegisterLazAccessibleObject;
+  RegisterLazAccessibleObject;
 end;
 
 constructor TLazAccessibleObject.Create(AOwner: TControl);
@@ -45,12 +49,17 @@ begin
   inherited Create;//(AOwner);
   OwnerControl := AOwner;
   FChildren := TFPList.Create;
+  WSRegisterClass();
 end;
 
 destructor TLazAccessibleObject.Destroy;
+var
+  WidgetsetClass: TWSLazAccessibleObjectClass;
 begin
+  WidgetsetClass := TWSLazAccessibleObjectClass(GetWSLazAccessibleObject());
   ClearChildAccessibleObjects();
-//  if FHandle <> 0 then TWSLazAccessibleObject(WidgetsetClass).DestroyHandle(Self);
+  if (WidgetsetClass <> nil) and (FHandle <> 0) then
+    WidgetsetClass.DestroyHandle(Self);
   inherited Destroy;
 end;
 

@@ -48,6 +48,16 @@ type
   published
   end;
 
+  { TCarbonWSLazAccessibleObject }
+
+  TCarbonWSLazAccessibleObject = class(TWSLazAccessibleObject)
+  public
+    // No need to implement SetFields in Carbon since Carbon requests the info
+    //class procedure SetFields(const AObject: TLazAccessibleObject; const ADescription, AName: string; const ARole: TLazAccessibilityRole); virtual;
+    class function CreateHandle(const AObject: TLazAccessibleObject): HWND; override;
+    class procedure DestroyHandle(const AObject: TLazAccessibleObject); override;
+  end;
+
   { TCarbonWSControl }
 
   TCarbonWSControl = class(TWSControl)
@@ -106,6 +116,27 @@ implementation
 
 uses
   CarbonProc;
+
+{ TCarbonWSLazAccessibleObject }
+
+class function TCarbonWSLazAccessibleObject.CreateHandle(
+  const AObject: TLazAccessibleObject): HWND;
+var
+  lElement: AXUIElementRef;
+begin
+  lElement := MacOSAll.AXUIElementCreateSystemWide();
+  Result := HWND(lElement);
+end;
+
+class procedure TCarbonWSLazAccessibleObject.DestroyHandle(
+  const AObject: TLazAccessibleObject);
+var
+  lElement: AXUIElementRef;
+begin
+  if AObject.Handle = 0 then Exit;
+  lElement := AXUIElementRef(AObject.Handle);
+  CFRelease(lElement);
+end;
 
 { TCarbonWSWinControl }
 

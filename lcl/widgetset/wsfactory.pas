@@ -8,6 +8,7 @@ interface
 function WSRegisterCustomImageList: Boolean; external name 'WSRegisterCustomImageList';
 // controls
 function WSRegisterDragImageList: Boolean;   external name 'WSRegisterDragImageList';
+function WSRegisterLazAccessibleObject: Boolean; external name 'WSRegisterLazAccessibleObject';
 function WSRegisterControl: Boolean;         external name 'WSRegisterControl';
 function WSRegisterWinControl: Boolean;      external name 'WSRegisterWinControl';
 function WSRegisterGraphicControl: Boolean;  external name 'WSRegisterGraphicControl';

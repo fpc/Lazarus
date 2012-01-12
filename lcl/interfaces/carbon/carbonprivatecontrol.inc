@@ -322,8 +322,7 @@ begin
         lArray := CFArrayCreateMutable(kCFAllocatorDefault, lCount, @kCFTypeArrayCallBacks);
         for i := 0 to lCount - 1 do
         begin
-          //lElement := AXUIElementRef(lLazControl.GetAccessibleObject().Handle);
-          lElement := MacOSAll.AXUIElementCreateSystemWide();
+          lElement := AXUIElementRef(lLazControl.GetAccessibleObject().Handle);
           CFArrayAppendValue(lArray, lElement);
         end;
 

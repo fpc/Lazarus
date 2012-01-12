@@ -56,6 +56,13 @@ type
   end;
   TWSPrivateClass = class of TWSPrivate;
 
+  { For non-TComponent WS objects }
+
+  TWSObject = class(TObject)
+  public
+  end;
+  TWSObjectClass = class of TWSObject;
+
   { TWSLCLComponent }
 
 {$M+}
@@ -79,6 +86,9 @@ function FindWSComponentClass(const AComponent: TComponentClass): TWSLCLComponen
 procedure RegisterWSComponent(const AComponent: TComponentClass;
                               const AWSComponent: TWSLCLComponentClass;
                               const AWSPrivate: TWSPrivateClass = nil);
+// Only for non-TComponent based objects
+function GetWSLazAccessibleObject: TWSObjectClass;
+procedure RegisterWSLazAccessibleObject(const AWSObject: TWSObjectClass);
 
 implementation
 
@@ -116,6 +126,7 @@ const
 var
   MComponentIndex: TStringList;
   MWSRegisterIndex: TStringList;
+  WSLazAccessibleObjectClass: TWSObjectClass;
 
 function FindWSComponentClass(
   const AComponent: TComponentClass): TWSLCLComponentClass;
@@ -420,6 +431,16 @@ begin
 
   // Since child classes may depend on us, recreate them
   UpdateChildren(Node, OldPrivate);
+end;
+
+function GetWSLazAccessibleObject: TWSObjectClass;
+begin
+  Result := WSLazAccessibleObjectClass;
+end;
+
+procedure RegisterWSLazAccessibleObject(const AWSObject: TWSObjectClass);
+begin
+  WSLazAccessibleObjectClass := AWSObject;
 end;
 
 

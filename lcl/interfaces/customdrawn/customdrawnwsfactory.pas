@@ -12,6 +12,7 @@ uses
 function RegisterCustomImageList: Boolean;
 // controls
 function RegisterDragImageList: Boolean;
+function RegisterLazAccessibleObject: Boolean;
 function RegisterControl: Boolean;
 function RegisterWinControl: Boolean;
 function RegisterGraphicControl: Boolean;
@@ -124,6 +125,13 @@ end;
 function RegisterDragImageList: Boolean; alias : 'WSRegisterDragImageList';
 begin
 //  RegisterWSComponent(TDragImageList, TWinCEWSDragImageList);
+  Result := False;
+end;
+
+function RegisterLazAccessibleObject: Boolean; alias : 'WSRegisterLazAccessibleObject';
+begin
+//      RegisterWSLazAccessibleObject(TGtk2WSLazAccessibleObject);
+//      Result := True;
   Result := False;
 end;
 

@@ -69,14 +69,13 @@ type
 
   { TWSLazAccessibleObject }
 
-{  TWSLazAccessibleObject = class(TWSLCLComponent)
-  published
+  TWSLazAccessibleObject = class(TWSObject)
+  public
     class procedure SetFields(const AObject: TLazAccessibleObject; const ADescription, AName: string; const ARole: TLazAccessibilityRole); virtual;
     class function CreateHandle(const AObject: TLazAccessibleObject): HWND; virtual;
     class procedure DestroyHandle(const AObject: TLazAccessibleObject); virtual;
-  end;}
-  //lElement := MacOSAll.AXUIElementCreateSystemWide();
-  //CFRelease(lElement);
+  end;
+  TWSLazAccessibleObjectClass = class of TWSLazAccessibleObject;
 
   { TWSControl }
 
@@ -155,7 +154,7 @@ type
   end;
 
 procedure RegisterDragImageList;
-//procedure RegisterLazAccessibleObject;
+procedure RegisterLazAccessibleObject;
 procedure RegisterControl;
 procedure RegisterWinControl;
 procedure RegisterGraphicControl;
@@ -165,7 +164,7 @@ implementation
 
 { TWSLazAccessibleObject }
 
-(*class procedure TWSLazAccessibleObject.SetFields(
+class procedure TWSLazAccessibleObject.SetFields(
   const AObject: TLazAccessibleObject; const ADescription, AName: string;
   const ARole: TLazAccessibilityRole);
 begin
@@ -182,7 +181,7 @@ class procedure TWSLazAccessibleObject.DestroyHandle(
   const AObject: TLazAccessibleObject);
 begin
 
-end;*)
+end;
 
 { TWSControl }
 
@@ -409,15 +408,15 @@ begin
   Done := True;
 end;
 
-{procedure RegisterLazAccessibleObject;
+procedure RegisterLazAccessibleObject;
 const
   Done: Boolean = False;
 begin
   if Done then exit;
-  if not WSRegisterControl then
-    RegisterWSComponent(TLazAccessibleObject, TWSLazAccessibleObject);
+  if not WSRegisterLazAccessibleObject then
+    RegisterWSLazAccessibleObject(TWSLazAccessibleObject);
   Done := True;
-end;}
+end;
 
 procedure RegisterControl;
 const
