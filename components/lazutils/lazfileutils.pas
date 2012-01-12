@@ -852,15 +852,31 @@ end;
 
 function ChompPathDelim(const Path: string): string;
 var
-  Len: Integer;
+  Len, MinLen: Integer;
 begin
+  if Path = '' then
+    exit;
+
   Result:=Path;
   Len:=length(Result);
-  while (Len>1) and (Result[Len]=PathDelim) do dec(Len);
-  {$IFDEF HasUNCPaths}
-  if (Len=1) and (Result[1]=PathDelim) then
-    Len:=2; // keep UNC '\\', chomp 'a\' to 'a'
-  {$ENDIF}
+  if (Result[1]=PathDelim) then begin
+    MinLen := 1;
+    {$IFDEF HasUNCPaths}
+    if (Len >= 2) and (Result[2]=PathDelim) then
+      MinLen := 2; // keep UNC '\\', chomp 'a\' to 'a'
+    {$ENDIF}
+  end
+  else begin
+    MinLen := 0;
+    {$IFdef MSWindows}
+    if (Len >= 3) and (Result[1] in ['a'..'z', 'A'..'Z'])  and
+       (Result[2] = ':') and (Result[3]=PathDelim)
+    then
+      MinLen := 3;
+    {$ENDIF}
+  end;
+
+  while (Len > MinLen) and (Result[Len]=PathDelim) do dec(Len);
   if Len<length(Result) then
     SetLength(Result,Len);
 end;
