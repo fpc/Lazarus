@@ -1848,11 +1848,22 @@ begin
 
     // check project
     if SomethingOfProjectIsModified then begin
-      MsgResult:=QuestionDlg(lisProjectChanged,
-        Format(lisSaveChangesToProject, [Project1.GetTitleOrName]), mtConfirmation,
-        [mrYes, lisMenuSave, mrNoToAll, lisDiscardChanges,
-         mrAbort, lisDoNotCloseTheIDE],
-        0);
+      if (Project1.SessionStorage=pssInProjectInfo)
+      or (Project1.SomeDataModified(false)) then begin
+        // lpi file will change => ask
+        MsgResult:=QuestionDlg(lisProjectChanged,
+          Format(lisSaveChangesToProject, [Project1.GetTitleOrName]), mtConfirmation,
+          [mrYes, lisMenuSave, mrNoToAll, lisDiscardChanges,
+           mrAbort, lisDoNotCloseTheIDE],
+          0);
+      end
+      else if Project1.SessionStorage=pssNone then begin
+        // only session data changed and session is not saved => skip
+        MsgResult:=mrNone;
+      end else begin
+        // only session data changed and session is saved separately => save without asking
+        MsgResult:=mrYes;
+      end;
       case MsgResult of
 
       mrYes:
