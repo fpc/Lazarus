@@ -875,7 +875,6 @@ begin
     Add('LIBRARY'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FINAL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ENUMERATOR'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('DEPRECATED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('VARARGS'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXTERNAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue); //jvm
   end;
