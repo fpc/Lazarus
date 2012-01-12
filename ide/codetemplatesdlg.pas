@@ -374,7 +374,7 @@ begin
   CodeBuf.LineColToPosition(XY.Y,XY.X,p);
   if p>0 then begin
     StartPos:=GetIdentStartPosition(CodeBuf.Source,p);
-    XY.X += StartPos-p;
+    XY.X := XY.X + StartPos-p;
   end;
   if not CodeToolBoss.ExtractProcedureHeader(CodeBuf,XY.X,XY.Y,Attributes,Value)
   then begin
