@@ -10820,11 +10820,21 @@ var
 begin
   // close the old project
   if SomethingOfProjectIsModified then begin
-    Result:=IDEQuestionDialog(lisProjectChanged,
-      Format(lisSaveChangesToProject, [Project1.GetTitleOrName]),
-      mtconfirmation, [mrYes, mrNoToAll, lisNo, mbCancel], '');
-    if Result=mrNoToAll then
-      Result:=mrOk;
+    if (Project1.SessionStorage=pssInProjectInfo)
+    or (Project1.SomeDataModified(false)) then begin
+      // lpi file will change => ask
+      Result:=IDEQuestionDialog(lisProjectChanged,
+        Format(lisSaveChangesToProject, [Project1.GetTitleOrName]),
+        mtconfirmation, [mrYes, mrNoToAll, lisNo, mbCancel], '');
+      if Result in [mrCancel,mrAbort] then exit;
+    end
+    else if Project1.SessionStorage=pssNone then begin
+      // only session data changed and session is not saved => skip
+      Result:=mrNone;
+    end else begin
+      // only session data changed and session is saved separately => save without asking
+      Result:=mrYes;
+    end;
     if Result=mrYes then begin
       Result:=DoSaveProject([sfCanAbort]);
       if Result=mrAbort then exit;
@@ -10832,9 +10842,9 @@ begin
         Result:=IDEQuestionDialog(lisChangesWereNotSaved,
           lisDoYouStillWantToOpenAnotherProject,
           mtConfirmation, [mrOk, lisDiscardChangesAndOpenProject, mrAbort]);
+        if Result<>mrOk then exit(mrCancel);
       end;
     end;
-    if Result<>mrOk then exit(mrCancel);
   end;
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
