@@ -1883,9 +1883,8 @@ begin
   and (Src[VarNameAtom.StartPos]='@') then begin
     HasAtOperator:=true;
     inc(VarNameAtom.StartPos);
-    // ToDo: resolve pointer: @p to a PFindContext create p:TFindContext
     // ToDo: create event: @OnClick to a TNotifyEvent create a method
-    exit;
+    //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter HasAtOperator ',GetAtom(VarNameAtom)]);
   end;
   if not IsValidIdent(GetAtom(VarNameAtom)) then exit;
 
@@ -1934,7 +1933,6 @@ begin
     CleanPosToCodePos(VarNameAtom.StartPos,IgnorePos);
     IgnoreErrorAfter:=IgnorePos;
     try
-      debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter ToDo: check for overloads']);
       if not Context.Tool.FindIdentifierInContext(Params) then exit;
     finally
       ClearIgnoreErrorAfter;
@@ -1947,7 +1945,7 @@ begin
                                                              ParameterIndex);
       if (ParameterNode=nil)
       and (Params.NewNode.Desc in [ctnProperty,ctnProcedure]) then begin
-        DebugLn('  CompleteLocalVariableAsParameter Procedure does not have so many parameters');
+        DebugLn(['  CompleteLocalVariableAsParameter Procedure has less than ',ParameterIndex+1,' parameters']);
         exit;
       end;
       if ParameterNode<>nil then begin
@@ -1969,15 +1967,45 @@ begin
         AliasType:=CleanFindContext;
         ExprType:=TypeTool.FindExpressionResultType(Params,
                                   TypeNode.StartPos,TypeNode.EndPos,@AliasType);
-        //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter AliasType=',FindContextToString(AliasType)]);
+        //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter parameter type: AliasType=',FindContextToString(AliasType)]);
+
+        if HasAtOperator then begin
+          //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter HasAtOperator ExprType=',ExprTypeToString(ExprType)]);
+          NewType:='';
+          if (ExprType.Desc=xtContext)
+          and (ExprType.Context.Node<>nil) then begin
+            TypeNode:=ExprType.Context.Node;
+            TypeTool:=ExprType.Context.Tool;
+            if (TypeNode.Desc=ctnPointerType) then begin
+              // for example PMapID = ^...
+              if (TypeNode.FirstChild<>nil)
+              and (TypeNode.FirstChild.Desc=ctnIdentifier) then begin
+                // for example PMapID = ^TMapID
+                NewType:=TypeTool.ExtractCode(TypeNode.FirstChild.StartPos,
+                                              TypeNode.FirstChild.EndPos,[]);
+                debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter pointer to ',NewType]);
+                Params.Clear;
+                Params.ContextNode:=TypeNode;
+                Params.Flags:=fdfDefaultForExpressions;
+                AliasType:=CleanFindContext;
+                ExprType:=TypeTool.FindExpressionResultType(Params,
+                  TypeNode.FirstChild.StartPos,TypeNode.FirstChild.EndPos,
+                  @AliasType);
+                debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter parameter is pointer to type: AliasType=',FindContextToString(AliasType)]);
+              end;
+            end else begin
+
+            end;
+          end;
+          if NewType='' then begin
+            debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter parameter has @ operator, but this is not implemented for ',ExprTypeToString(ExprType)]);
+            exit;
+          end;
+        end;
         if AliasType.Node<>nil then begin
           // an identifier
           MissingUnitName:=GetUnitNameForUsesSection(AliasType.Tool);
           //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter MissingUnitName=',MissingUnitName]);
-        end;
-
-        if HasAtOperator then begin
-
         end;
 
         DebugLn('TCodeCompletionCodeTool.CompleteLocalVariableAsParameter NewType=',NewType);

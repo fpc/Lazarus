@@ -182,7 +182,7 @@ const
                 fdfOnlyCompatibleProc, fdfSearchInAncestors, fdfCollect];
   // initial flags for searches
   fdfDefaultForExpressions = [fdfSearchInParentNodes, fdfSearchInAncestors,
-                              fdfExceptionOnNotFound];
+                              fdfExceptionOnNotFound,fdfIgnoreCurContextNode];
 
   // for nicer output
   FindDeclarationFlagNames: array[TFindDeclarationFlag] of string = (
@@ -6324,7 +6324,7 @@ begin
     try
       TypeParams.ContextNode:=TypeNode;
       TypeParams.SetIdentifier(Self,nil,nil);
-      TypeParams.Flags:=fdfDefaultForExpressions+[fdfIgnoreCurContextNode];
+      TypeParams.Flags:=fdfDefaultForExpressions;
       ExprType:=FindExpressionTypeOfTerm(TypeNode.StartPos,-1,TypeParams,false);
       //debugln(['TFindDeclarationTool.FindIdentifierInTypeOfConstant ExprType=',ExprTypeToString(ExprType)]);
     finally
@@ -9009,10 +9009,12 @@ function TFindDeclarationTool.CheckParameterSyntax(CursorNode: TCodeTreeNode;
         ReadNextAtom;
         {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList Atom="',GetAtom,'"');{$ENDIF}
         if (CurPos.EndPos>CleanCursorPos)
-        or ((CurPos.EndPos=CleanCursorPos) and (CurPos.Flag=cafWord)) then begin
+        or ((CurPos.EndPos=CleanCursorPos)
+          and ((CurPos.Flag=cafWord) or AtomIsChar('@')))
+        then begin
           // parameter found => search parameter expression bounds e.g. ', parameter ,'
-          // important: this function should work, even the code behind
-          // CleanCursorPos is buggy
+          // important: this function should work, even if the code
+          //            behind CleanCursorPos has syntax errors
           {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList Parameter found, search range ...');{$ENDIF}
           ProcNameAtom:=CurProcNameAtom;
           ParameterIndex:=CurParameterIndex;
@@ -9023,20 +9025,27 @@ function TFindDeclarationTool.CheckParameterSyntax(CursorNode: TCodeTreeNode;
             ReadNextAtom;
             {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList parameter atom "',GetAtom,'"');{$ENDIF}
             if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then
-              ReadTilBracketClose(false)
+            begin
+              // atom belongs to the parameter expression
+              if ParameterAtom.StartPos=ParameterAtom.EndPos then
+                ParameterAtom.StartPos:=CurPos.StartPos;
+              ReadTilBracketClose(false);
+              ParameterAtom.EndPos:=CurPos.EndPos;
+            end
             else
-            if (CurPos.Flag in [cafNone,cafComma,cafSemicolon,cafEnd,
+            if (CurPos.StartPos>SrcLen)
+            or (CurPos.Flag in [cafComma,cafSemicolon,cafEnd,
                 cafRoundBracketClose,cafEdgedBracketClose])
             or ((CurPos.Flag=cafWord)
                 and (LastAtoms.GetValueAt(0).Flag=cafWord)
                 and (not LastUpAtomIs(0,'INHERITED'))) then
             begin
               // end of parameter expression found
-              {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList end of parameter found');{$ENDIF}
+              {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList end of parameter found "',GetAtom,'" Parameter="',dbgstr(Src,ParameterAtom.StartPos,ParameterAtom.EndPos-ParameterAtom.StartPos),'"');{$ENDIF}
               exit(true);
             end else begin
               // atom belongs to the parameter expression
-              if ParameterAtom.StartPos=ParameterStart then
+              if ParameterAtom.StartPos=ParameterAtom.EndPos then
                 ParameterAtom.StartPos:=CurPos.StartPos;
               ParameterAtom.EndPos:=CurPos.EndPos;
             end;
