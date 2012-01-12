@@ -1856,6 +1856,7 @@ begin
           [mrYes, lisMenuSave, mrNoToAll, lisDiscardChanges,
            mrAbort, lisDoNotCloseTheIDE],
           0);
+        if MsgResult in [mrCancel,mrAbort] then exit;
       end
       else if Project1.SessionStorage=pssNone then begin
         // only session data changed and session is not saved => skip
@@ -1864,24 +1865,16 @@ begin
         // only session data changed and session is saved separately => save without asking
         MsgResult:=mrYes;
       end;
-      case MsgResult of
-
-      mrYes:
-        begin
-          MsgResult:=DoSaveProject([sfCanAbort]);
-          if MsgResult<>mrOk then begin
-            MsgResult:=IDEQuestionDialog(lisChangesWereNotSaved,
-              lisDoYouStillWantToQuit,
-              mtConfirmation, [mrOk, lisDiscardChangesAndQuit, mrAbort]);
-          end;
-          CanClose := MsgResult=mrOk;
-          if not CanClose then exit;
+      if MsgResult=mrYes then
+      begin
+        MsgResult:=DoSaveProject([sfCanAbort]);
+        if MsgResult<>mrOk then begin
+          MsgResult:=IDEQuestionDialog(lisChangesWereNotSaved,
+            lisDoYouStillWantToQuit,
+            mtConfirmation, [mrOk, lisDiscardChangesAndQuit, mrAbort]);
         end;
-
-      mrCancel, mrAbort:
-        begin
-          Exit;
-        end;
+        CanClose := MsgResult=mrOk;
+        if not CanClose then exit;
       end;
     end;
 
@@ -10558,11 +10551,24 @@ begin
   // close current project first
   If Project1<>nil then begin
     if SomethingOfProjectIsModified then begin
-      Result:=IDEQuestionDialog(lisProjectChanged, Format(lisSaveChangesToProject,
-       [Project1.GetTitleOrName]),
-        mtConfirmation, [mrYes, lisHintSave, mrNo, lisDiscardChanges, mrAbort,
-          dlgCancel]);
-      if Result=mrYes then begin
+      if (Project1.SessionStorage=pssInProjectInfo)
+      or (Project1.SomeDataModified(false)) then begin
+        // lpi file will change => ask
+        Result:=IDEQuestionDialog(lisProjectChanged, Format(lisSaveChangesToProject,
+         [Project1.GetTitleOrName]),
+          mtConfirmation, [mrYes, lisHintSave, mrNo, lisDiscardChanges, mrAbort,
+            dlgCancel]);
+        if Result in [mrCancel,mrAbort] then exit;
+      end
+      else if Project1.SessionStorage=pssNone then begin
+        // only session data changed and session is not saved => skip
+        Result:=mrNone;
+      end else begin
+        // only session data changed and session is saved separately => save without asking
+        Result:=mrYes;
+      end;
+      if Result=mrYes then
+      begin
         Result:=DoSaveProject([sfCanAbort]);
         if Result=mrAbort then exit;
         if Result<>mrOk then begin
@@ -10571,8 +10577,7 @@ begin
             mtConfirmation, [mrYes, lisDiscardChangesCreateNewProject, mrAbort]);
           if Result<>mrYes then exit;
         end;
-      end else if Result<>mrNo then
-        exit;
+      end;
     end;
     Result:=DoCloseProject;
     if Result=mrAbort then exit;
