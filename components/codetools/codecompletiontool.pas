@@ -174,6 +174,10 @@ type
     procedure AdjustCursor(OldCodePos: TCodePosition; OldTopLine: integer;
                           out NewPos: TCodeXYPosition; out NewTopLine: integer);
     procedure AddNeededUnitToMainUsesSection(AnUnitName: PChar);
+    function AddMethodCompatibleToProcType(AClassNode: TCodeTreeNode;
+                  const AnEventName: string; ProcContext: TFindContext; out
+                  MethodDefinition: string; out MethodAttr: TProcHeadAttributes;
+                  SourceChangeCache: TSourceChangeCache): boolean;
     function CompleteClass(AClassNode: TCodeTreeNode;
                            CleanCursorPos, OldTopLine: integer;
                            CursorNode: TCodeTreeNode;
@@ -1152,6 +1156,62 @@ begin
   Pointer(s):=nil;
 end;
 
+function TCodeCompletionCodeTool.AddMethodCompatibleToProcType(
+  AClassNode: TCodeTreeNode;
+  const AnEventName: string; ProcContext: TFindContext;
+  out MethodDefinition: string; out MethodAttr: TProcHeadAttributes;
+  SourceChangeCache: TSourceChangeCache
+  ): boolean;
+var
+  CleanMethodDefinition: string;
+begin
+  Result:=false;
+  MethodDefinition:='';
+  MethodAttr:=[];
+
+  {$IFDEF CTDEBUG}
+  DebugLn('  CompleteEventAssignment: Extract method param list...');
+  {$ENDIF}
+  // extract method param list and result type
+  CleanMethodDefinition:=UpperCaseStr(AnEventName)
+                +ProcContext.Tool.ExtractProcHead(ProcContext.Node,
+                     [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
+
+  {$IFDEF CTDEBUG}
+  DebugLn('  CompleteEventAssignment: Initializing CodeCompletion...');
+  {$ENDIF}
+  // initialize class for code completion
+  CodeCompleteClassNode:=AClassNode;
+  CodeCompleteSrcChgCache:=SourceChangeCache;
+
+  // insert new published method to class
+  MethodAttr:=[phpWithStart, phpWithoutClassKeyword, phpWithVarModifiers,
+               phpWithParameterNames,phpWithDefaultValues,phpWithResultType];
+  MethodDefinition:=TrimCodeSpace(ProcContext.Tool.ExtractProcHead(
+                       ProcContext.Node,
+                       MethodAttr+[phpWithoutClassName,phpWithoutName]));
+  MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
+                 AddClassAndNameToProc(MethodDefinition, '', AnEventName);
+  {$IFDEF CTDEBUG}
+  DebugLn('  CompleteEventAssignment: Add Method To Class...');
+  {$ENDIF}
+  if not ProcExistsInCodeCompleteClass(CleanMethodDefinition) then begin
+    // insert method definition into class
+    AddClassInsertion(CleanMethodDefinition, MethodDefinition,
+                      AnEventName, ncpPublishedProcs);
+  end;
+  MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
+                 AddClassAndNameToProc(MethodDefinition,
+                   ExtractClassName(AClassNode,false,true), AnEventName);
+  if not InsertAllNewClassParts then
+    RaiseException(ctsErrorDuringInsertingNewClassParts);
+
+  // insert all missing proc bodies
+  if not CreateMissingProcBodies then
+    RaiseException(ctsErrorDuringCreationOfNewProcBodies);
+  Result:=true;
+end;
+
 procedure TCodeCompletionCodeTool.AddNeededUnitsToMainUsesSectionForRange(
   StartPos, EndPos: integer; CompletionTool: TCodeCompletionCodeTool);
 var
@@ -1606,60 +1666,12 @@ var
     Result:=true;
   end;
 
-  function AddEventAndCompleteAssignment(AClassNode: TCodeTreeNode;
-    const AnEventName: string; ProcContext: TFindContext;
+  function CompleteAssignment(const AnEventName: string;
     AssignmentOperator, AddrOperatorPos, SemicolonPos: integer;
-    UserEventAtom: TAtomPosition;
-    out MethodDefinition: string; out MethodAttr: TProcHeadAttributes
-    ): boolean;
-  var RValue, CleanMethodDefinition: string;
+    UserEventAtom: TAtomPosition): boolean;
+  var RValue: string;
     StartInsertPos, EndInsertPos: integer;
   begin
-    Result:=false;
-    MethodDefinition:='';
-    MethodAttr:=[];
-
-    {$IFDEF CTDEBUG}
-    DebugLn('  CompleteEventAssignment: Extract method param list...');
-    {$ENDIF}
-    // extract method param list and result type
-    CleanMethodDefinition:=UpperCaseStr(AnEventName)
-                  +ProcContext.Tool.ExtractProcHead(ProcContext.Node,
-                       [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
-
-    {$IFDEF CTDEBUG}
-    DebugLn('  CompleteEventAssignment: Initializing CodeCompletion...');
-    {$ENDIF}
-    // initialize class for code completion
-    CodeCompleteClassNode:=AClassNode;
-    CodeCompleteSrcChgCache:=SourceChangeCache;
-
-    // insert new published method to class
-    MethodAttr:=[phpWithStart, phpWithoutClassKeyword, phpWithVarModifiers,
-                 phpWithParameterNames,phpWithDefaultValues,phpWithResultType];
-    MethodDefinition:=TrimCodeSpace(ProcContext.Tool.ExtractProcHead(
-                         ProcContext.Node,
-                         MethodAttr+[phpWithoutClassName,phpWithoutName]));
-    MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
-                   AddClassAndNameToProc(MethodDefinition, '', AnEventName);
-    {$IFDEF CTDEBUG}
-    DebugLn('  CompleteEventAssignment: Add Method To Class...');
-    {$ENDIF}
-    if not ProcExistsInCodeCompleteClass(CleanMethodDefinition) then begin
-      // insert method definition into class
-      AddClassInsertion(CleanMethodDefinition, MethodDefinition,
-                        AnEventName, ncpPublishedProcs);
-    end;
-    MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
-                   AddClassAndNameToProc(MethodDefinition,
-                     ExtractClassName(AClassNode,false,true), AnEventName);
-    if not InsertAllNewClassParts then
-      RaiseException(ctsErrorDuringInsertingNewClassParts);
-
-    // insert all missing proc bodies
-    if not CreateMissingProcBodies then
-      RaiseException(ctsErrorDuringCreationOfNewProcBodies);
-
     {$IFDEF CTDEBUG}
     DebugLn('  CompleteEventAssignment: Changing right side of assignment...');
     {$ENDIF}
@@ -1680,16 +1692,8 @@ var
       EndInsertPos:=AddrOperatorPos;
     if EndInsertPos<1 then
       EndInsertPos:=AssignmentOperator+2;
-    SourceChangeCache.Replace(gtNone,gtNewLine,StartInsertPos,EndInsertPos,
-                              RValue);
-
-    {$IFDEF CTDEBUG}
-    DebugLn('  CompleteEventAssignment: Applying changes...');
-    {$ENDIF}
-    // apply the changes
-    if not SourceChangeCache.Apply then
-      RaiseException(ctsUnableToApplyChanges);
-    Result:=true;
+    Result:=SourceChangeCache.Replace(gtNone,gtNewLine,
+                                      StartInsertPos,EndInsertPos,RValue);
   end;
 
 // function CompleteEventAssignment: boolean
@@ -1752,11 +1756,20 @@ begin
   end;
 
   // add published method and method body and right side of assignment
-  if not AddEventAndCompleteAssignment(AClassNode,FullEventName,ProcContext,
-    AssignmentOperator,AddrOperatorPos,SemicolonPos,UserEventAtom,
-    AMethodDefinition, AMethodAttr)
+  if not AddMethodCompatibleToProcType(AClassNode,FullEventName,ProcContext,
+    AMethodDefinition,AMethodAttr,SourceChangeCache)
   then
-    RaiseException('CompleteEventAssignment Internal Error 1');
+    RaiseException('CompleteEventAssignment AddEvent failed');
+  if not CompleteAssignment(FullEventName,AssignmentOperator,
+    AddrOperatorPos,SemicolonPos,UserEventAtom)
+  then
+    RaiseException('CompleteEventAssignment CompleteAssignment failed');
+  {$IFDEF CTDEBUG}
+  DebugLn('  CompleteEventAssignment: Applying changes...');
+  {$ENDIF}
+  // apply the changes
+  if not SourceChangeCache.Apply then
+    RaiseException(ctsUnableToApplyChanges);
 
   {$IFDEF CTDEBUG}
   DebugLn('  CompleteEventAssignment: jumping to new method body...');
@@ -1970,7 +1983,7 @@ begin
         //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter parameter type: AliasType=',FindContextToString(AliasType)]);
 
         if HasAtOperator then begin
-          //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter HasAtOperator ExprType=',ExprTypeToString(ExprType)]);
+          debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter HasAtOperator ExprType=',ExprTypeToString(ExprType)]);
           NewType:='';
           if (ExprType.Desc=xtContext)
           and (ExprType.Context.Node<>nil) then begin
@@ -1993,8 +2006,11 @@ begin
                   @AliasType);
                 //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter parameter is pointer to type: AliasType=',FindContextToString(AliasType)]);
               end;
-            end else begin
+            end else if TypeNode.Desc=ctnProcedureType then begin
+              // for example TNotifyEvent = procedure(...
 
+              //Result:=AddMethodCompatibleToProcType();
+              //exit;
             end;
           end;
           if NewType='' then begin
