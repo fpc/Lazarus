@@ -6698,6 +6698,7 @@ var
   OldInput: TFindDeclarationInput;
   StartFlags: TFindDeclarationFlags;
   IsIdentEndOfVar: TIsIdentEndOfVar;
+  FlagCanBeForwardDefined, FlagCanBeForwardDefinedValid: boolean;
   ExprType: TExpressionType;
 
   procedure RaiseIdentExpected;
@@ -6767,6 +6768,7 @@ var
       NextAtomType:=vatSpace;
     MoveCursorToCleanPos(CurAtom.StartPos);
     IsIdentEndOfVar:=iieovUnknown;
+    FlagCanBeForwardDefinedValid:=false;
     Result:=true;
   end;
   
@@ -6819,6 +6821,26 @@ var
       end;
     end;
     Result:=(IsIdentEndOfVar=iieovYes);
+  end;
+
+  function CanBeForwardDefined: boolean;
+  var
+    Node: TCodeTreeNode;
+  begin
+    if not FlagCanBeForwardDefinedValid then begin
+      FlagCanBeForwardDefinedValid:=true;
+      FlagCanBeForwardDefined:=false;
+      Node:=StartNode;
+      while Node<>nil do begin
+        if Node.Desc in [ctnTypeDefinition,ctnGenericType] then begin
+          FlagCanBeForwardDefined:=true;
+          break;
+        end else if not (Node.Desc in AllPascalTypes) then
+          break;
+        Node:=Node.Parent;
+      end;
+    end;
+    Result:=FlagCanBeForwardDefined;
   end;
   
   procedure ResolveBaseTypeOfIdentifier;
@@ -6902,6 +6924,7 @@ var
     IsStart: Boolean;
     Context: TFindContext;
     IsEnd: Boolean;
+    SearchForwardToo: Boolean;
   begin
     // for example  'AnObject[3]'
     
@@ -6975,9 +6998,16 @@ var
       else
         Context:=ExprType.Context;
       Params.ContextNode:=Context.Node;
+      SearchForwardToo:=false;
       if Context.Node=StartNode then begin
         // there is no special context -> search in parent contexts too
         Params.Flags:=Params.Flags+[fdfSearchInParentNodes,fdfIgnoreCurContextNode];
+        // check if searching forward too
+        if CanBeForwardDefined then begin
+          SearchForwardToo:=true;
+          Params.Flags:=Params.Flags-[fdfExceptionOnNotFound]
+                   +[fdfIgnoreCurContextNode,fdfSearchForward];
+        end;
       end else begin
         // only search in special context
         Params.Flags:=Params.Flags+[fdfIgnoreUsedUnits];
@@ -6988,13 +7018,33 @@ var
       then
         Include(Params.Flags,fdfIgnoreOverloadedProcs);
 
-      // search ...
       Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
+
+      // search ...
       {$IFDEF ShowExprEval}
-      DebugLn(['  FindExpressionTypeOfTerm ResolveIdentifier SubIdent="',GetIdentifier(Params.Identifier),'" ContextNode="',Params.ContextNode.DescAsString,'" "',dbgstr(Context.Tool.Src,Params.ContextNode.StartPos,15),'" ',dbgs(Params.Flags)]);
+      DebugLn(['  FindExpressionTypeOfTerm ResolveIdentifier backward SubIdent="',GetIdentifier(Params.Identifier),'" ContextNode="',Params.ContextNode.DescAsString,'" "',dbgstr(Context.Tool.Src,Params.ContextNode.StartPos,15),'" ',dbgs(Params.Flags)]);
       {$ENDIF}
+      ExprType.Desc:=xtNone;
+      // first search backwards
       if Context.Tool.FindIdentifierInContext(Params) then begin
         ExprType.Desc:=xtContext;
+      end else if SearchForwardToo then begin
+        // then search forwards
+        Params.Load(OldInput,false);
+        Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
+        Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
+                       fdfIgnoreCurContextNode,fdfSearchForward]
+                      +(fdfGlobals*Params.Flags);
+        Params.ContextNode:=Context.Node;
+        {$IFDEF ShowExprEval}
+        DebugLn(['  FindExpressionTypeOfTerm ResolveIdentifier forward SubIdent="',GetIdentifier(Params.Identifier),'" ContextNode="',Params.ContextNode.DescAsString,'" "',dbgstr(Context.Tool.Src,Params.ContextNode.StartPos,15),'" ',dbgs(Params.Flags)]);
+        {$ENDIF}
+        if FindIdentifierInContext(Params) then begin
+          ExprType.Desc:=xtContext;
+        end;
+      end;
+      if ExprType.Desc=xtContext then begin
+        // identifier found
         if Params.NewCodeTool.NodeIsConstructor(Params.NewNode) then begin
           // identifier is a constructor
           if (Context.Node.Desc in AllClassObjects) then begin

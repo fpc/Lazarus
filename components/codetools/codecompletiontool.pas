@@ -1983,7 +1983,7 @@ begin
                 // for example PMapID = ^TMapID
                 NewType:=TypeTool.ExtractCode(TypeNode.FirstChild.StartPos,
                                               TypeNode.FirstChild.EndPos,[]);
-                debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter pointer to ',NewType]);
+                //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter pointer to ',NewType]);
                 Params.Clear;
                 Params.ContextNode:=TypeNode;
                 Params.Flags:=fdfDefaultForExpressions;
@@ -1991,7 +1991,7 @@ begin
                 ExprType:=TypeTool.FindExpressionResultType(Params,
                   TypeNode.FirstChild.StartPos,TypeNode.FirstChild.EndPos,
                   @AliasType);
-                debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter parameter is pointer to type: AliasType=',FindContextToString(AliasType)]);
+                //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter parameter is pointer to type: AliasType=',FindContextToString(AliasType)]);
               end;
             end else begin
 
@@ -2008,7 +2008,7 @@ begin
           //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter MissingUnitName=',MissingUnitName]);
         end;
 
-        DebugLn('TCodeCompletionCodeTool.CompleteLocalVariableAsParameter NewType=',NewType);
+        //DebugLn('TCodeCompletionCodeTool.CompleteLocalVariableAsParameter NewType=',NewType);
         if NewType='' then
           RaiseException('CompleteLocalVariableAsParameter Internal error: NewType=""');
       end;
