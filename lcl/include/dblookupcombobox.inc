@@ -79,10 +79,17 @@ begin
   inherited KeyDown(Key, Shift);
 end;
 
+procedure TDBLookupComboBox.Loaded;
+begin
+  inherited Loaded;
+  UpdateLookup;
+end;
+
 procedure TDBLookupComboBox.InitializeWnd;
 begin
   inherited InitializeWnd;
-  UpdateLookup;
+  //after handle allocation Items address changes
+  FLookup.ControlItems := Items;
 end;
 
 function TDBLookupComboBox.GetKeyField: string;

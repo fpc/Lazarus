@@ -160,6 +160,7 @@ Type
     function  GetKeyValue(ValueIndex: Integer): Variant;
     function  GetKeyIndex: Integer;
     function  GetKeyIndex(const AKeyValue: Variant): Integer;
+    property ControlItems: TStrings read FControlItems write FControlItems;
     property LookupCache: boolean read FLookupCache  write SetLookupCache;
     // properties to be published by owner control
     // these are not used where data control Field is dbLookup
@@ -441,6 +442,7 @@ Type
     procedure DoSelectionChange(User: Boolean); override;
     procedure InitializeWnd; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure Loaded; override;
     procedure UpdateData(Sender: TObject); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -762,6 +764,7 @@ Type
     procedure CloseUp; override;
     procedure InitializeWnd; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure Loaded; override;
     procedure UpdateData(Sender: TObject); override;
     procedure DataChange(Sender: TObject); override;
     procedure Select; override;
