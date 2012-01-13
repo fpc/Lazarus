@@ -126,6 +126,7 @@ type
     function PositionInFuncResultName(ProcNode: TCodeTreeNode;
                                       CleanPos: integer): boolean;
     function ProcNodeHasParamList(ProcNode: TCodeTreeNode): boolean;
+    function ProcNodeHasOfObject(ProcNode: TCodeTreeNode): boolean;
     function GetProcParamList(ProcNode: TCodeTreeNode;
                               Parse: boolean = true): TCodeTreeNode;
     function NodeIsInAMethod(Node: TCodeTreeNode): boolean;
@@ -837,9 +838,10 @@ end;
 procedure TPascalReaderTool.MoveCursorToFirstProcSpecifier(ProcNode: TCodeTreeNode);
 // After the call,
 // CurPos will stand on the first proc specifier or on a semicolon
+// this can be 'of object'
 begin
   //DebugLn(['TPascalReaderTool.MoveCursorToFirstProcSpecifier ',ProcNode.DescAsString,' ',ProcNode.StartPos]);
-  if (ProcNode<>nil) and (ProcNode.Desc<>ctnProcedureHead) then
+  if (ProcNode<>nil) and (ProcNode.Desc in [ctnProcedureType,ctnProcedure]) then
     ProcNode:=ProcNode.FirstChild;
   if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedureHead) then begin
     SaveRaiseException('Internal Error in'
@@ -863,9 +865,9 @@ begin
     if AtomIsIdentifier(false) then begin
       // read name
       ReadNextAtom;
-      if (CurPos.Flag=cafPoint) then begin
-        // read method name
+      while (CurPos.Flag=cafPoint) do begin
         ReadNextAtom;
+        if CurPos.Flag<>cafWord then break;
         ReadNextAtom;
       end;
     end;
@@ -880,10 +882,10 @@ begin
     ReadNextAtom;
     if AtomIsIdentifier(false) then begin
       ReadNextAtom;
-      if CurPos.Flag=cafPoint then begin
+      while CurPos.Flag=cafPoint do begin
         ReadNextAtom;
-        if AtomIsIdentifier(false) then
-          ReadNextAtom;
+        if not AtomIsIdentifier(false) then break;
+        ReadNextAtom;
       end;
     end;
   end;
@@ -2454,6 +2456,18 @@ begin
   end;
   MoveCursorBehindProcName(ProcNode);
   Result:=CurPos.Flag=cafRoundBracketOpen;
+end;
+
+function TPascalReaderTool.ProcNodeHasOfObject(ProcNode: TCodeTreeNode
+  ): boolean;
+begin
+
+  // ToDo: ppu, dcu
+
+  Result:=false;
+  if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedureType) then exit;
+  MoveCursorToFirstProcSpecifier(ProcNode);
+  Result:=UpAtomIs('OF') and ReadNextUpAtomIs('OBJECT');
 end;
 
 function TPascalReaderTool.GetProcParamList(ProcNode: TCodeTreeNode;
