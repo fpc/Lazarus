@@ -7005,8 +7005,7 @@ var
         // check if searching forward too
         if CanBeForwardDefined then begin
           SearchForwardToo:=true;
-          Params.Flags:=Params.Flags-[fdfExceptionOnNotFound]
-                   +[fdfIgnoreCurContextNode,fdfSearchForward];
+          Params.Flags:=Params.Flags-[fdfExceptionOnNotFound];
         end;
       end else begin
         // only search in special context
