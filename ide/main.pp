@@ -8329,8 +8329,9 @@ function TMainIDE.AskSaveProject(const ContinueText, ContinueBtn: string
   ): TModalResult;
 begin
   if not SomethingOfProjectIsModified then exit(mrOk);
-  if (Project1.SomeDataModified(false))
-  or (Project1.SessionStorage=pssInProjectInfo)
+
+  if (Project1.SessionStorage=pssInProjectInfo)
+  or Project1.SomeDataModified(false)
   then begin
     // lpi file will change => ask
     Result:=IDEQuestionDialog(lisProjectChanged,
@@ -8344,7 +8345,13 @@ begin
   else if not SomethingOfProjectIsModified then
     exit(mrOk)
   else begin
-    // only session data changed and session is saved separately => save without asking
+    // only session data changed and session is saved separately
+    if EnvironmentOptions.AskSaveSessionOnly then begin
+      Result:=IDEQuestionDialog(lisProjectSessionChanged,
+        Format(lisSaveSessionChangesToProject, [Project1.GetTitleOrName]),
+        mtConfirmation, [mrYes, mrNoToAll, lisNo, mbCancel], '');
+      if Result in [mrCancel,mrNoToAll] then exit(mrCancel);
+    end;
   end;
   Result:=DoSaveProject([sfCanAbort]);
   if Result=mrAbort then exit;

@@ -847,8 +847,10 @@ resourcestring
   lisXMLFiles = 'XML files';
 
   // dialogs
-  lisSaveChangesToProject = 'Save changes to project %s?';
   lisProjectChanged = 'Project changed';
+  lisSaveChangesToProject = 'Save changes to project %s?';
+  lisProjectSessionChanged = 'Project session changed';
+  lisSaveSessionChangesToProject = 'Save session changes to project %s?';
 
   lisFPCSourceDirectoryError = 'FPC Source Directory error';
   lisCompilerError = 'Compiler error';
@@ -1060,6 +1062,7 @@ resourcestring
   lisA2PCreateNewFile = 'Create new file';
   dlgEnvLanguage = 'Language';
   dlgAutoSave = 'Auto Save';
+  lisAskBeforeSavingProjectSSession = 'Ask before saving project''s session';
   dlgEdFiles = 'Editor Files';
   dlgEnvProject = 'Project';
   lisNumberOfFilesToConvert = 'Number of files to convert: %s';

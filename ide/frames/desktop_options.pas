@@ -34,22 +34,23 @@ type
   { TDesktopOptionsFrame }
 
   TDesktopOptionsFrame = class(TAbstractIDEOptionsEditor)
+    AskSavingOnlySessionCheckBox: TCheckBox;
     AutoSaveEditorFilesCheckBox: TCheckBox;
     AutoSaveIntervalInSecsComboBox: TComboBox;
     AutoSaveIntervalInSecsLabel: TLabel;
     AutoSaveProjectCheckBox: TCheckBox;
-    Bevel1: TBevel;
-    Bevel10: TBevel;
-    Bevel11: TBevel;
-    Bevel12: TBevel;
-    Bevel2: TBevel;
-    Bevel3: TBevel;
-    Bevel4: TBevel;
-    Bevel5: TBevel;
-    Bevel6: TBevel;
-    Bevel7: TBevel;
-    Bevel8: TBevel;
-    Bevel9: TBevel;
+    BevelLanguageLeft: TBevel;
+    BevelHintsRight: TBevel;
+    Bevel1MiscLeft: TBevel;
+    Bevel1MiscRight: TBevel;
+    BevelLanguageRight: TBevel;
+    BevelAutoSaveLeft: TBevel;
+    BevelAutoSizeRight: TBevel;
+    BevelDesktopFilesLeft: TBevel;
+    BevelDesktopFilesRight: TBevel;
+    BevelGlyphsLeft: TBevel;
+    BevelGlyphsRight: TBevel;
+    BevelHintsLeft: TBevel;
     CheckDiskChangesWithLoadingCheckBox: TCheckBox;
     lblButtons: TLabel;
     lblCenter: TLabel;
@@ -64,8 +65,8 @@ type
     LoadDesktopSettingsFromFileButton: TButton;
     MsgViewDblClickJumpsCheckBox: TCheckBox;
     MsgViewFocusCheckBox: TCheckBox;
-    Panel1: TPanel;
-    Panel2: TPanel;
+    PanelGlyphsButtonsOptions: TPanel;
+    PanelGlyphsMenusOptions: TPanel;
     rbMenuGlyphShowAlways: TRadioButton;
     rbMenuGlyphShowNever: TRadioButton;
     rbMenuGlyphShowSystem: TRadioButton;
@@ -126,6 +127,7 @@ begin
 
   // auto save
   lblAutoSave.Caption := dlgAutoSave;
+  AskSavingOnlySessionCheckBox.Caption:=lisAskBeforeSavingProjectSSession;
   AutoSaveEditorFilesCheckBox.Caption := dlgEdFiles;
   AutoSaveProjectCheckBox.Caption := dlgEnvProject;
   AutoSaveIntervalInSecsLabel.Caption := dlgIntvInSec;
@@ -168,6 +170,7 @@ begin
     //debugln('TEnvironmentOptionsDialog.ReadSettings LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' LanguageID="',LanguageID,'" LanguageComboBox.Text="',LanguageComboBox.Text,'"');
 
     // auto save
+    AskSavingOnlySessionCheckBox.Checked:=AskSaveSessionOnly;
     AutoSaveEditorFilesCheckBox.Checked:=AutoSaveEditorFiles;
     AutoSaveProjectCheckBox.Checked:=AutoSaveProject;
     SetComboBoxText(AutoSaveIntervalInSecsComboBox
@@ -208,6 +211,7 @@ begin
     //debugln('TEnvironmentOptionsDialog.WriteSettings A LanguageID="',LanguageID,'" LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' LanguageComboBox.Text=',LanguageComboBox.Text);
 
     // auto save
+    AskSaveSessionOnly:=AskSavingOnlySessionCheckBox.Checked;
     AutoSaveEditorFiles:=AutoSaveEditorFilesCheckBox.Checked;
     AutoSaveProject:=AutoSaveProjectCheckBox.Checked;
     AutoSaveIntervalInSecs:=StrToIntDef(

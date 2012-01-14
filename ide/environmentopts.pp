@@ -178,6 +178,7 @@ type
     FFilename: string;
     FFileAge: longint;
     FFileHasChangedOnDisk: boolean;
+
     FIDESpeedButtonsVisible: boolean;
     FIDETitleStartsWithProject: boolean;
     FIDEProjectDirectoryInIdeTitle: boolean;
@@ -192,7 +193,8 @@ type
     FAutoSaveProject: boolean;
     FAutoSaveIntervalInSecs: integer;
     FLastSavedProjectFile: string;
-    
+    FAskSaveSessionOnly: boolean;
+
     // window layout
     FIDEDialogLayoutList: TIDEDialogLayoutList;
     FSingleTaskBarButton: boolean;
@@ -374,12 +376,10 @@ type
     property  DebuggerConfig: TDebuggerConfigStore read FDebuggerConfig;
 
     // auto save
-    property AutoSaveEditorFiles: boolean read FAutoSaveEditorFiles
-                                          write FAutoSaveEditorFiles;
-    property AutoSaveProject: boolean read FAutoSaveProject
-                                      write FAutoSaveProject;
-    property AutoSaveIntervalInSecs: integer read FAutoSaveIntervalInSecs
-                                             write FAutoSaveIntervalInSecs;
+    property AskSaveSessionOnly: boolean read FAskSaveSessionOnly write FAskSaveSessionOnly; // ask even if only project session needs saving
+    property AutoSaveEditorFiles: boolean read FAutoSaveEditorFiles write FAutoSaveEditorFiles;
+    property AutoSaveProject: boolean read FAutoSaveProject write FAutoSaveProject;
+    property AutoSaveIntervalInSecs: integer read FAutoSaveIntervalInSecs write FAutoSaveIntervalInSecs;
        
     // window layouts
     property IDEDialogLayoutList: TIDEDialogLayoutList
@@ -402,7 +402,7 @@ type
     property CompletionWindowHeight: Integer read FCompletionWindowHeight
                                              write FCompletionWindowHeight;
 
-    // EnvironmentOptionsDialog editor
+    // form editor
     property ShowBorderSpacing: boolean read FShowBorderSpacing write FShowBorderSpacing;
     property ShowGrid: boolean read FShowGrid write FShowGrid;
     property SnapToGrid: boolean read FSnapToGrid write FSnapToGrid;
@@ -712,6 +712,7 @@ begin
   LanguageID:='';
 
   // auto save
+  FAskSaveSessionOnly:=false;
   FAutoSaveEditorFiles:=true;
   FAutoSaveProject:=true;
   FAutoSaveIntervalInSecs:=300; // 5 minutes
@@ -983,6 +984,8 @@ begin
       LoadLanguage;
 
       // auto save
+      FAskSaveSessionOnly:=XMLConfig.GetValue(
+         Path+'AutoSave/AskSaveSessionOnly',false);
       FAutoSaveEditorFiles:=XMLConfig.GetValue(
          Path+'AutoSave/EditorFiles',true);
       FAutoSaveProject:=XMLConfig.GetValue(
@@ -1325,6 +1328,8 @@ begin
       XMLConfig.SetDeleteValue(Path+'Language/ID',LanguageID,'');
 
       // auto save
+      XMLConfig.SetDeleteValue(Path+'AutoSave/AskSaveSessionOnly'
+         ,FAskSaveSessionOnly,false);
       XMLConfig.SetDeleteValue(Path+'AutoSave/EditorFiles'
          ,FAutoSaveEditorFiles,true);
       XMLConfig.SetDeleteValue(Path+'AutoSave/Project',
