@@ -254,6 +254,7 @@ type
        AControlSelection: TControlSelection);
     procedure PrepareFreeDesigner(AFreeComponent: boolean);
     procedure FinalizeFreeDesigner;
+    procedure DisconnectComponent; override;
     destructor Destroy; override;
 
     procedure Modified; override;
@@ -590,6 +591,7 @@ constructor TDesigner.Create(TheDesignerForm: TCustomForm;
   AControlSelection: TControlSelection);
 begin
   inherited Create;
+  //debugln(['TDesigner.Create Self=',dbgs(Pointer(Self)),' TheDesignerForm=',DbgSName(TheDesignerForm)]);
   FForm := TheDesignerForm;
   if FForm is TNonControlDesignerForm then begin
     FLookupRoot := TNonControlDesignerForm(FForm).LookupRoot;
@@ -628,42 +630,32 @@ begin
 end;
 
 procedure TDesigner.FinalizeFreeDesigner;
-var
-  i: Integer;
 begin
+  //debugln(['TDesigner.FinalizeFreeDesigner Self=',dbgs(Pointer(Self))]);
   Include(FFlags, dfDestroyingForm);
   if FLookupRoot is TComponent then
   begin
-    // unselect
-    if TheControlSelection.LookupRoot = FLookupRoot then
-    begin
-      TheControlSelection.BeginUpdate;
-      TheControlSelection.Clear;
-      TheControlSelection.EndUpdate;
-    end;
-    if GlobalDesignHook.LookupRoot = FLookupRoot then
-      GlobalDesignHook.LookupRoot := nil;
-    if FFreeComponent then
-    begin
-      // tell hooks about deleting
-      for i := FLookupRoot.ComponentCount - 1 downto 0 do
-        GlobalDesignHook.PersistentDeleting(FLookupRoot.Components[i]);
-      GlobalDesignHook.PersistentDeleting(FLookupRoot);
-    end;
-    // delete
-    if Form <> nil then
-      Form.Designer := nil;
-    if Mediator<>nil then
-      Mediator.Designer:=nil;
     // free or hide the form
-    TheFormEditor.DeleteComponent(FLookupRoot,FFreeComponent);
+    TheFormEditor.DeleteComponent(TComponent(FLookupRoot),FFreeComponent);
+  end;
+  DisconnectComponent;
+  Free;
+end;
+
+procedure TDesigner.DisconnectComponent;
+begin
+  //debugln(['TDesigner.DisconnectComponent Self=',dbgs(Pointer(Self))]);
+  inherited DisconnectComponent;
+  if Mediator<>nil then begin
+    Mediator.Designer:=nil;
     FMediator:=nil;
   end;
-  Free;
+  FLookupRoot:=nil;
 end;
 
 destructor TDesigner.Destroy;
 begin
+  //debugln(['TDesigner.Destroy Self=',dbgs(Pointer(Self))]);
   PopupMenuComponentEditor := nil;
   FreeAndNil(FDesignerPopupMenu);
   FreeAndNil(FHintWIndow);

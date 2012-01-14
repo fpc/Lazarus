@@ -74,6 +74,7 @@ type
     property PropertyEditorHook: TPropertyEditorHook read GetPropertyEditorHook;
     property Form: TCustomForm read FForm;
     property ChangeStamp: int64 read FChangeStamp;// increased on calling Modified
+    procedure DisconnectComponent; virtual;
   public
     // Handlers
     procedure RemoveAllHandlersForObject(const HandlerObject: TObject);
@@ -1472,6 +1473,13 @@ begin
   else
     FChangeStamp:=Low(FChangeStamp);
   FHandlers[cedhtModified].CallNotifyEvents(Self);
+end;
+
+procedure TComponentEditorDesigner.DisconnectComponent;
+begin
+  if Form=nil then exit;
+  Form.Designer:=nil;
+  FForm:=nil;
 end;
 
 procedure TComponentEditorDesigner.RemoveAllHandlersForObject(

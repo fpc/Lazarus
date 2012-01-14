@@ -45,7 +45,7 @@ uses
   // IDEIntf
   PropEdits, PropEditUtils, ObjectInspector, IDECommands, FormEditingIntf,
   // IDE
-  LazarusIDEStrConsts, Project, JITForms, MainIntf,
+  LazarusIDEStrConsts, ControlSelection, Project, JITForms, MainIntf,
   CustomNonFormDesigner, NonControlDesigner, FrameDesigner,
   ComponentReg, IDEProcs, ComponentEditors, KeyMapping, EditorOptions,
   EnvironmentOpts, DesignerProcs;
@@ -460,28 +460,52 @@ var
   AForm: TCustomForm;
   AWinControl: TWinControl;
   IsJIT: Boolean;
+  i: Integer;
+  aDesigner: TIDesigner;
 Begin
+  IsJIT:=IsJITComponent(AComponent);
   {$IFDEF IDE_DEBUG}
-  DebugLn(['TCustomFormEditor.DeleteComponent ',DbgSName(AComponent),' IsJITComponent=',IsJITComponent(AComponent),' FreeComponent=',FreeComponent]);
+  DebugLn(['TCustomFormEditor.DeleteComponent ',DbgSName(AComponent),' IsJITComponent=',IsJIT,' FreeComponent=',FreeComponent]);
   {$ENDIF}
+  if TheControlSelection.LookupRoot = AComponent then
+  begin
+    TheControlSelection.BeginUpdate;
+    try
+      TheControlSelection.Clear;
+    finally
+      TheControlSelection.EndUpdate;
+    end;
+  end;
   if PropertyEditorHook.LookupRoot=AComponent then
     PropertyEditorHook.LookupRoot:=nil;
-  IsJIT:=IsJITComponent(AComponent);
+
   if IsJIT then begin
-    // value is a top level component
+    // AComponent is a top level component
+    if FreeComponent then
+    begin
+      // tell hooks about deleting
+      for i := AComponent.ComponentCount - 1 downto 0 do
+        PropertyEditorHook.PersistentDeleting(AComponent.Components[i]);
+      PropertyEditorHook.PersistentDeleting(AComponent);
+    end;
+    // disconnect designer
+    aDesigner:=GetDesignerByComponent(AComponent);
+    if aDesigner is TComponentEditorDesigner then
+      TComponentEditorDesigner(aDesigner).DisconnectComponent;
+
     if JITFormList.IsJITForm(AComponent) then begin
       // free/unbind a form component
       if FreeComponent then
         JITFormList.DestroyJITComponent(AComponent);
     end else if JITNonFormList.IsJITNonForm(AComponent) then begin
       // free/unbind a non form component and its designer form
-      AForm:=GetDesignerForm(AComponent);
+      aForm:=GetDesignerForm(AComponent);
       if (AForm<>nil) and (not (AForm is TCustomNonFormDesignerForm)) then
         RaiseException(Format(
           lisCFETCustomFormEditorDeleteComponentWhereIsTheTCustomN, [AComponent.
           ClassName]));
 
-      if (AForm <> nil) and (AForm is TCustomNonFormDesignerForm) then
+      if (AForm <> nil) then
       begin
         FNonFormForms.Remove(AForm);
         TCustomNonFormDesignerForm(AForm).LookupRoot := nil;

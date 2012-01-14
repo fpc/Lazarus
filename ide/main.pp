@@ -635,7 +635,7 @@ type
             out aBounds: TRect; out DockSibling: string; out DockAlign: TAlign);
   private
     FUserInputSinceLastIdle: boolean;
-    FDesignerToBeFreed: TDesigner;   // Will be freed in OnIdle.
+    FDesignerToBeFreed: TFilenameToStringTree; // form file names to be freed OnIdle.
     FDisplayState: TDisplayState;
     FLastFormActivated: TCustomForm;// used to find the last form so you can
                                     // display the correct tab
@@ -1508,6 +1508,7 @@ begin
     TheControlSelection.OnSelectionFormChanged:=nil;
   end;
 
+  FreeAndNil(FDesignerToBeFreed);
   FreeAndNil(JumpHistoryViewWin);
   FreeAndNil(ComponentListForm);
   FreeThenNil(ProjInspector);
@@ -7461,10 +7462,7 @@ procedure TMainIDE.FreeDesigner(AnUnitInfo: TUnitInfo; ADesigner: TDesigner;
 begin
   AnUnitInfo.LoadedDesigner:=false;
   ADesigner.PrepareFreeDesigner(AFreeComponent);
-  if ADesigner.ProcessingDesignerEvent > 0 then
-    FDesignerToBeFreed:=ADesigner               // Free it later on idle time.
-  else
-    ADesigner.FinalizeFreeDesigner;             // Free it now.
+  ADesigner.FinalizeFreeDesigner;
 end;
 
 {-------------------------------------------------------------------------------
@@ -16447,7 +16445,9 @@ begin
       Exit;
     end;
   end;
-  CloseUnitComponent(AnUnitInfo,[]);
+  if FDesignerToBeFreed=nil then
+    FDesignerToBeFreed:=TFilenameToStringTree.Create(false);
+  FDesignerToBeFreed[AnUnitInfo.Filename]:='1';
 end;
 
 procedure TMainIDE.OnDesignerRenameComponent(ADesigner: TDesigner;
@@ -17140,6 +17140,7 @@ var
   AnUnitInfo: TUnitInfo;
   AnIDesigner: TIDesigner;
   HasResources: Boolean;
+  FileItem: PStringToStringTreeItem;
 begin
   if FNeedUpdateHighlighters then begin
     {$IFDEF VerboseIdle}
@@ -17152,8 +17153,14 @@ begin
   if (SplashForm<>nil) then FreeThenNil(SplashForm);
 
   if Assigned(FDesignerToBeFreed) then begin
-    FDesignerToBeFreed.FinalizeFreeDesigner;
-    FDesignerToBeFreed:=Nil;
+    for FileItem in FDesignerToBeFreed do begin
+      if Project1=nil then break;
+      AnUnitInfo:=Project1.UnitInfoWithFilename(FileItem^.Name);
+      if AnUnitInfo=nil then continue;
+      if AnUnitInfo.Component=nil then continue;
+      CloseUnitComponent(AnUnitInfo,[]);
+    end;
+    FreeAndNil(FDesignerToBeFreed);
   end;
   if FUserInputSinceLastIdle then
   begin
