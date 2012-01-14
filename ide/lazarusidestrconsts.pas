@@ -2633,8 +2633,8 @@ resourcestring
   srkmecInsertCVSRevision        = 'Insert CVS keyword Revision';
   srkmecInsertCVSSource          = 'Insert CVS keyword Source';
   srkmecInsertGUID               = 'Insert a GUID';
-  srkmecInsertFilename           = 'Insert full Filename';
-  lisMenuInsertFilename          = 'Insert full Filename ...';
+  srkmecInsertFilename           = 'Insert Full Filename';
+  lisMenuInsertFilename          = 'Insert Full Filename ...';
 
   // search menu
   srkmecFind                      = 'Find Text';

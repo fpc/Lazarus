@@ -68,7 +68,7 @@ resourcestring
   crsOtherSharedLibraries = 'Other shared libraries';
   crsFrameworks = 'Frameworks';
   crsShowUsedPpuFiles = 'Show Used .ppu Files ...';
-  crsInsertFileAtCursor = 'Insert File at Cursor ...';
+  crsInsertFileAtCursor = 'Insert File Contents at Cursor ...';
   crsVirtualUnit = 'Virtual Unit';
   crsProjectOutput = 'Project Output';
   crsHelp = '&Help';
