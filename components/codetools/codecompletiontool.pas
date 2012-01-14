@@ -2061,24 +2061,43 @@ begin
     ProcStartPos:=FindStartOfTerm(ProcNameAtom.EndPos,false);
     if ProcStartPos<ProcNameAtom.StartPos then begin
       // for example: Canvas.Line
-      //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter Call="',ExtractCode(ProcStartPos,ProcNameAtom.EndPos,[]),'"']);
+      // find class
+      {$IFDEF CTDEBUG}
+      debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter Call="',ExtractCode(ProcStartPos,ProcNameAtom.EndPos,[]),'"']);
+      {$ENDIF}
       Params.ContextNode:=Context.Node;
+      Params.Flags:=fdfDefaultForExpressions+[fdfFunctionResult,fdfFindChilds];
       ExprType:=FindExpressionResultType(Params,ProcStartPos,ProcNameAtom.StartPos);
-      if ExprType.Desc<>xtContext then exit;
+      if ExprType.Desc<>xtContext then begin
+        debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter Call="',ExtractCode(ProcStartPos,ProcNameAtom.StartPos,[]),'" gives ',ExprTypeToString(ExprType)]);
+        exit;
+      end;
+      // resolve point '.'
       Context:=ExprType.Context;
-      //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter search proc in sub context: ',ExprTypeToString(ExprType)]);
+      //debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter base class: ',FindContextToString(Context)]);
+      Params.Clear;
+      Params.Flags:=fdfDefaultForExpressions;
+      Context:=Context.Tool.FindBaseTypeOfNode(Params,Context.Node);
+      {$IFDEF CTDEBUG}
+      debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter search proc in sub context: ',FindContextToString(Context)]);
+      {$ENDIF}
     end;
 
     // find declaration of parameter list
     // ToDo: search in all overloads for the best fit
     Params.ContextNode:=Context.Node;
     Params.SetIdentifier(Self,@Src[ProcNameAtom.StartPos],nil);
-    Params.Flags:=fdfDefaultForExpressions+[fdfSearchInAncestors,fdfFindVariable];
+    Params.Flags:=fdfDefaultForExpressions+[fdfFindVariable];
     if Context.Node=CursorNode then
-      Params.Flags:=Params.Flags+[fdfSearchInParentNodes,fdfIgnoreCurContextNode];
+      Params.Flags:=Params.Flags+[fdfSearchInParentNodes,fdfIgnoreCurContextNode]
+    else
+      Params.Flags:=Params.Flags-[fdfSearchInParentNodes,fdfIgnoreCurContextNode];
     CleanPosToCodePos(VarNameAtom.StartPos,IgnorePos);
     IgnoreErrorAfter:=IgnorePos;
     try
+      {$IFDEF CTDEBUG}
+      debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter searching ',GetIdentifier(Params.Identifier),' [',dbgs(Params.Flags),'] in ',FindContextToString(Context)]);
+      {$ENDIF}
       if not Context.Tool.FindIdentifierInContext(Params) then exit;
     finally
       ClearIgnoreErrorAfter;
