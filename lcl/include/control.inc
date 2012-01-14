@@ -60,6 +60,7 @@ begin
   ClearChildAccessibleObjects();
   if (WidgetsetClass <> nil) and (FHandle <> 0) then
     WidgetsetClass.DestroyHandle(Self);
+  FreeAndNil(FChildren);
   inherited Destroy;
 end;
 
