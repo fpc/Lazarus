@@ -785,6 +785,7 @@ type
     procedure SaveSrcEditorProjectSpecificSettings(AnEditorInfo: TUnitEditorInfo);
     procedure SaveSourceEditorProjectSpecificSettings;
     function DoShowSaveProjectAsDialog(UseMainSourceFile: boolean): TModalResult;
+    function AskSaveProject(const ContinueText, ContinueBtn: string): TModalResult;
 
     // methods for open project, create project from source
     function DoCompleteLoadingProjectInfo: TModalResult;
@@ -1825,8 +1826,6 @@ begin
 end;
 
 procedure TMainIDE.MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
-var
-  MsgResult: integer;
 const IsClosing: Boolean = False;
 begin
   CanClose := True;
@@ -1841,40 +1840,12 @@ begin
     // check foreign windows
     if not CloseQueryIDEWindows then exit;
 
-    // check packages
+    // save packages
     if PkgBoss.DoCloseAllPackageEditors<>mrOk then exit;
 
-    // check project
-    if SomethingOfProjectIsModified then begin
-      if (Project1.SessionStorage=pssInProjectInfo)
-      or (Project1.SomeDataModified(false)) then begin
-        // lpi file will change => ask
-        MsgResult:=QuestionDlg(lisProjectChanged,
-          Format(lisSaveChangesToProject, [Project1.GetTitleOrName]), mtConfirmation,
-          [mrYes, lisMenuSave, mrNoToAll, lisDiscardChanges,
-           mrAbort, lisDoNotCloseTheIDE],
-          0);
-        if MsgResult in [mrCancel,mrAbort] then exit;
-      end
-      else if Project1.SessionStorage=pssNone then begin
-        // only session data changed and session is not saved => skip
-        MsgResult:=mrNone;
-      end else begin
-        // only session data changed and session is saved separately => save without asking
-        MsgResult:=mrYes;
-      end;
-      if MsgResult=mrYes then
-      begin
-        MsgResult:=DoSaveProject([sfCanAbort]);
-        if MsgResult<>mrOk then begin
-          MsgResult:=IDEQuestionDialog(lisChangesWereNotSaved,
-            lisDoYouStillWantToQuit,
-            mtConfirmation, [mrOk, lisDiscardChangesAndQuit, mrAbort]);
-        end;
-        CanClose := MsgResult=mrOk;
-        if not CanClose then exit;
-      end;
-    end;
+    // save project
+    if AskSaveProject(lisDoYouStillWantToQuit,lisDiscardChangesAndQuit)<>mrOk then
+      exit;
 
     CanClose:=(DoCloseProject <> mrAbort);
   finally
@@ -8354,6 +8325,37 @@ begin
   //DebugLn(['TMainIDE.DoShowSaveProjectAsDialog END OK']);
 end;
 
+function TMainIDE.AskSaveProject(const ContinueText, ContinueBtn: string
+  ): TModalResult;
+begin
+  if not SomethingOfProjectIsModified then exit(mrOk);
+  if (Project1.SomeDataModified(false))
+  or (Project1.SessionStorage=pssInProjectInfo)
+  then begin
+    // lpi file will change => ask
+    Result:=IDEQuestionDialog(lisProjectChanged,
+      Format(lisSaveChangesToProject, [Project1.GetTitleOrName]),
+      mtConfirmation, [mrYes, mrNoToAll, lisNo, mbCancel], '');
+    if Result in [mrCancel,mrNoToAll] then exit(mrCancel);
+  end
+  else if Project1.SessionStorage=pssNone then
+    // only session data changed and session is not saved => skip
+    exit(mrOk)
+  else if not SomethingOfProjectIsModified then
+    exit(mrOk)
+  else begin
+    // only session data changed and session is saved separately => save without asking
+  end;
+  Result:=DoSaveProject([sfCanAbort]);
+  if Result=mrAbort then exit;
+  if Result<>mrOk then begin
+    Result:=IDEQuestionDialog(lisChangesWereNotSaved,
+      ContinueText,
+      mtConfirmation, [mrOk, ContinueBtn, mrAbort]);
+    if Result<>mrOk then exit(mrCancel);
+  end;
+end;
+
 function TMainIDE.DoCompleteLoadingProjectInfo: TModalResult;
 begin
   UpdateCaption;
@@ -10547,36 +10549,10 @@ begin
   if Result<>mrOk then exit;
 
   // close current project first
-  If Project1<>nil then begin
-    if SomethingOfProjectIsModified then begin
-      if (Project1.SessionStorage=pssInProjectInfo)
-      or (Project1.SomeDataModified(false)) then begin
-        // lpi file will change => ask
-        Result:=IDEQuestionDialog(lisProjectChanged, Format(lisSaveChangesToProject,
-         [Project1.GetTitleOrName]),
-          mtConfirmation, [mrYes, lisHintSave, mrNo, lisDiscardChanges, mrAbort,
-            dlgCancel]);
-        if Result in [mrCancel,mrAbort] then exit;
-      end
-      else if Project1.SessionStorage=pssNone then begin
-        // only session data changed and session is not saved => skip
-        Result:=mrNone;
-      end else begin
-        // only session data changed and session is saved separately => save without asking
-        Result:=mrYes;
-      end;
-      if Result=mrYes then
-      begin
-        Result:=DoSaveProject([sfCanAbort]);
-        if Result=mrAbort then exit;
-        if Result<>mrOk then begin
-          Result:=IDEQuestionDialog(lisChangesWereNotSaved,
-            lisDoYouStillWantToCreateTheNewProject,
-            mtConfirmation, [mrYes, lisDiscardChangesCreateNewProject, mrAbort]);
-          if Result<>mrYes then exit;
-        end;
-      end;
-    end;
+  if Project1<>nil then begin
+    if AskSaveProject(lisDoYouStillWantToCreateTheNewProject,
+      lisDiscardChangesCreateNewProject)<>mrOK then exit;
+
     Result:=DoCloseProject;
     if Result=mrAbort then exit;
   end;
@@ -10816,39 +10792,16 @@ var
   HandlerResult: TModalResult;
   AnEditorInfo: TUnitEditorInfo;
 begin
-  // close the old project
-  if SomethingOfProjectIsModified then begin
-    if (Project1.SessionStorage=pssInProjectInfo)
-    or (Project1.SomeDataModified(false)) then begin
-      // lpi file will change => ask
-      Result:=IDEQuestionDialog(lisProjectChanged,
-        Format(lisSaveChangesToProject, [Project1.GetTitleOrName]),
-        mtconfirmation, [mrYes, mrNoToAll, lisNo, mbCancel], '');
-      if Result in [mrCancel,mrAbort] then exit;
-    end
-    else if Project1.SessionStorage=pssNone then begin
-      // only session data changed and session is not saved => skip
-      Result:=mrNone;
-    end else begin
-      // only session data changed and session is saved separately => save without asking
-      Result:=mrYes;
-    end;
-    if Result=mrYes then begin
-      Result:=DoSaveProject([sfCanAbort]);
-      if Result=mrAbort then exit;
-      if Result<>mrOk then begin
-        Result:=IDEQuestionDialog(lisChangesWereNotSaved,
-          lisDoYouStillWantToOpenAnotherProject,
-          mtConfirmation, [mrOk, lisDiscardChangesAndOpenProject, mrAbort]);
-        if Result<>mrOk then exit(mrCancel);
-      end;
-    end;
-  end;
+  Result:=mrCancel;
+
+  // save old project
+  if AskSaveProject(lisDoYouStillWantToOpenAnotherProject,
+    lisDiscardChangesAndOpenProject)<>mrOk then exit;
+
   {$IFDEF IDE_VERBOSE}
-  writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
+  debugln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile A');{$ENDIF}
-  Result:=mrCancel;
   if ExtractFileNameOnly(AFileName)='' then exit;
   //debugln('TMainIDE.DoOpenProjectFile A1 "'+AFileName+'"');
   AFilename:=ExpandFileNameUTF8(TrimFilename(AFilename));

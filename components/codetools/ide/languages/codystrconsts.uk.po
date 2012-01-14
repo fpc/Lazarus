@@ -321,8 +321,8 @@ msgstr ""
 
 #: codystrconsts.crsinsertfileatcursor
 #, fuzzy
-#| msgid "Insert file at cursor ..."
-msgid "Insert File at Cursor ..."
+#| msgid "Insert File at Cursor ..."
+msgid "Insert File Contents at Cursor ..."
 msgstr "Вставити файл під курсором ..."
 
 #: codystrconsts.crsjumpto

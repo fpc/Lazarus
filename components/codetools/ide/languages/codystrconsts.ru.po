@@ -318,8 +318,9 @@ msgid "Insert Call Inherited"
 msgstr "Вставить вызов унаследованного"
 
 #: codystrconsts.crsinsertfileatcursor
-#| msgid "Insert file at cursor ..."
-msgid "Insert File at Cursor ..."
+#, fuzzy
+#| msgid "Insert File at Cursor ..."
+msgid "Insert File Contents at Cursor ..."
 msgstr "Вставить содержимое файла в месте расположения курсора ..."
 
 #: codystrconsts.crsjumpto

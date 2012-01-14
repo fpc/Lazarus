@@ -302,7 +302,7 @@ msgid "Insert Call Inherited"
 msgstr ""
 
 #: codystrconsts.crsinsertfileatcursor
-msgid "Insert File at Cursor ..."
+msgid "Insert File Contents at Cursor ..."
 msgstr ""
 
 #: codystrconsts.crsjumpto
