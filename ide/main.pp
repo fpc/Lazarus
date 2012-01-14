@@ -10803,10 +10803,6 @@ var
 begin
   Result:=mrCancel;
 
-  // save old project
-  if AskSaveProject(lisDoYouStillWantToOpenAnotherProject,
-    lisDiscardChangesAndOpenProject)<>mrOk then exit;
-
   {$IFDEF IDE_VERBOSE}
   debugln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
   {$ENDIF}
@@ -10856,6 +10852,10 @@ begin
 
   if ofAddToRecent in Flags then
     AddRecentProjectFileToEnvironment(AFileName);
+
+  // save old project
+  if AskSaveProject(lisDoYouStillWantToOpenAnotherProject,
+    lisDiscardChangesAndOpenProject)<>mrOk then exit;
 
   Result:=DoCloseProject;
   if Result=mrAbort then exit;
