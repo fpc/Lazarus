@@ -294,8 +294,10 @@ type
 
 procedure TProjectExceptions.SetIgnoreAll(const AValue: Boolean);
 begin
+  // Todo: move to Chamged or Update, but they are called to often...
+  if (IgnoreAll <> AValue) and (Project1 <> nil) then
+    Project1.Modified := True;
   inherited SetIgnoreAll(AValue);
-  Project1.Modified := True;
 end;
 
 procedure TProjectExceptions.Notify(Item: TCollectionItem; Action: TCollectionNotification);
