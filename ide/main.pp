@@ -8337,7 +8337,8 @@ begin
     Result:=IDEQuestionDialog(lisProjectChanged,
       Format(lisSaveChangesToProject, [Project1.GetTitleOrName]),
       mtConfirmation, [mrYes, mrNoToAll, lisNo, mbCancel], '');
-    if Result in [mrCancel,mrNoToAll] then exit(mrCancel);
+    if Result=mrNoToAll then exit(mrOk);
+    if Result<>mrYes then exit(mrCancel);
   end
   else if Project1.SessionStorage=pssNone then
     // only session data changed and session is not saved => skip
@@ -8350,7 +8351,8 @@ begin
       Result:=IDEQuestionDialog(lisProjectSessionChanged,
         Format(lisSaveSessionChangesToProject, [Project1.GetTitleOrName]),
         mtConfirmation, [mrYes, mrNoToAll, lisNo, mbCancel], '');
-      if Result in [mrCancel,mrNoToAll] then exit(mrCancel);
+      if Result=mrNoToAll then exit(mrOk);
+      if Result<>mrYes then exit(mrCancel);
     end;
   end;
   Result:=DoSaveProject([sfCanAbort]);
