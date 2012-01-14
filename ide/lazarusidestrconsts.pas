@@ -269,7 +269,7 @@ resourcestring
   lisMenuJumpToImplementation = 'Jump to Implementation';
   lisMenuViewUnits = 'Units ...';
   lisMenuViewForms = 'Forms ...';
-  lisMenuViewUnitDependencies = 'Unit Dependencies';
+  lisMenuViewUnitDependencies = 'Unit Dependencies ...';
   lisKMViewUnitInfo = 'View Unit Info';
   lisMenuViewUnitInfo = 'Unit Information ...';
   lisMenuViewToggleFormUnit = 'Toggle Form/Unit View';
@@ -2876,10 +2876,9 @@ resourcestring
   rsLanguageCzech        = 'Czech';
 
   // Unit dependencies
-  dlgUnitDepCaption      = 'Unit dependencies';
+  dlgUnitDepCaption      = 'Unit Dependencies';
   dlgUnitDepBrowse       = 'Open';
   dlgUnitDepRefresh      = 'Refresh';
-  lisPrint = 'Print';
 
   // Doc Editor
   lisDocumentationEditor = 'Documentation Editor';

@@ -163,6 +163,7 @@ type
     // view menu
     //mnuView: TIDEMenuSection;
       //itmViewMainWindows: TIDEMenuSection;
+        itmViewToggleFormUnit: TIDEMenuCommand;
         itmViewInspector: TIDEMenuCommand;
         itmViewSourceEditor: TIDEMenuCommand;
         itmViewCodeExplorer: TIDEMenuCommand;
@@ -171,9 +172,6 @@ type
         itmViewRestrictionBrowser: TIDEMenuCommand;
         itmViewComponents: TIDEMenuCommand;
         itmJumpHistory: TIDEMenuCommand;
-      //itmViewUnitWindows: TIDEMenuSection;
-        itmViewUnitDependencies: TIDEMenuCommand;
-        itmViewToggleFormUnit: TIDEMenuCommand;
       //itmViewSecondaryWindows: TIDEMenuSection;
         itmViewAnchorEditor: TIDEMenuCommand;
         itmViewTabOrder: TIDEMenuCommand;
@@ -233,6 +231,7 @@ type
       itmSourceInsertFilename: TIDEMenuCommand;
     // itmSourceTools
       itmSourceUnitInfo: TIDEMenuCommand;
+      itmSourceUnitDependencies: TIDEMenuCommand;
 
     // refactor menu
     //mnuRefactor: TIDEMenuSection;

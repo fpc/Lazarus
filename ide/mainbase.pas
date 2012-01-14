@@ -491,6 +491,7 @@ begin
   with MainIDEBar do begin
     CreateMenuSeparatorSection(mnuView,itmViewMainWindows,'itmViewMainWindows');
     ParentMI:=itmViewMainWindows;
+    CreateMenuItem(ParentMI,itmViewToggleFormUnit,'itmViewToggleFormUnit',lisMenuViewToggleFormUnit, 'menu_view_toggle_form_unit');
     CreateMenuItem(ParentMI,itmViewInspector,'itmViewInspector',lisMenuViewObjectInspector, 'menu_view_inspector');
     CreateMenuItem(ParentMI,itmViewSourceEditor,'itmViewSourceEditor',lisMenuViewSourceEditor, 'menu_view_source_editor');
     CreateMenuItem(ParentMI,itmViewMessage,'itmViewMessage',lisMenuViewMessages);
@@ -500,11 +501,6 @@ begin
     CreateMenuItem(ParentMI,itmViewRestrictionBrowser,'itmViewRestrictionBrowser',lisMenuViewRestrictionBrowser, 'menu_view_rectriction_browser');
     CreateMenuItem(ParentMI,itmViewComponents,'itmViewComponents',lisMenuViewComponents);
     CreateMenuItem(ParentMI,itmJumpHistory,'itmJumpHistory',lisMenuViewJumpHistory);
-
-    CreateMenuSeparatorSection(mnuView,itmViewUnitWindows,'itmViewUnitWindows');
-    ParentMI:=itmViewUnitWindows;
-    CreateMenuItem(ParentMI,itmViewUnitDependencies,'itmViewUnitDependencies',lisMenuViewUnitDependencies);
-    CreateMenuItem(ParentMI,itmViewToggleFormUnit,'itmViewToggleFormUnit',lisMenuViewToggleFormUnit, 'menu_view_toggle_form_unit');
 
     CreateMenuSeparatorSection(mnuView,itmViewDesignerWindows,'itmViewDesignerWindows');
     ParentMI:=itmViewDesignerWindows;
@@ -617,6 +613,7 @@ begin
     CreateMenuSeparatorSection(mnuSource,itmSourceTools,'itmSourceTools');
     ParentMI:=itmSourceTools;
     CreateMenuItem(ParentMI,itmSourceUnitInfo,'itmViewUnitInfo',lisMenuViewUnitInfo, 'menu_view_unit_info');
+    CreateMenuItem(ParentMI,itmSourceUnitDependencies,'itmSourceUnitDependencies',lisMenuViewUnitDependencies);
   end;
 end;
 
@@ -885,6 +882,7 @@ begin
     itmSearchProcedureList.Command:=GetCommand(ecProcedureList);
 
     // view menu
+    itmViewToggleFormUnit.Command:=GetCommand(ecToggleFormUnit);
     itmViewInspector.Command:=GetCommand(ecToggleObjectInsp);
     itmViewSourceEditor.Command:=GetCommand(ecToggleSourceEditor);
     itmViewCodeExplorer.Command:=GetCommand(ecToggleCodeExpl);
@@ -893,8 +891,6 @@ begin
     itmViewRestrictionBrowser.Command:=GetCommand(ecToggleRestrictionBrowser);
     itmViewComponents.Command:=GetCommand(ecViewComponents);
     itmJumpHistory.Command:=GetCommand(ecViewJumpHistory);
-    itmViewUnitDependencies.Command:=GetCommand(ecViewUnitDependencies);
-    itmViewToggleFormUnit.Command:=GetCommand(ecToggleFormUnit);
     itmViewMessage.Command:=GetCommand(ecToggleMessages);
     itmViewSearchResults.Command:=GetCommand(ecToggleSearchResults);
     itmViewAnchorEditor.Command:=GetCommand(ecViewAnchorEditor);
@@ -935,6 +931,7 @@ begin
     itmSourceInsertFilename.Command:=GetCommand(ecInsertFilename);
 
     itmSourceUnitInfo.Command:=GetCommand(ecViewUnitInfo);
+    itmSourceUnitDependencies.Command:=GetCommand(ecViewUnitDependencies);
 
     // refactor menu
     itmRefactorRenameIdentifier.Command:=GetCommand(ecRenameIdentifier);

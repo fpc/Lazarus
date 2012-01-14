@@ -245,7 +245,6 @@ type
     // view menu
     procedure mnuViewInspectorClicked(Sender: TObject);
     procedure mnuViewSourceEditorClicked(Sender: TObject);
-    procedure mnuViewUnitDependenciesClicked(Sender: TObject);
     procedure mnuViewFPDocEditorClicked(Sender: TObject);
     procedure mnuViewCodeExplorerClick(Sender: TObject);
     procedure mnuViewCodeBrowserClick(Sender: TObject);
@@ -294,6 +293,7 @@ type
     procedure mnuSourceInsertFilename(Sender: TObject);
     // source->Tools
     procedure mnuSourceUnitInfoClicked(Sender: TObject);
+    procedure mnuSourceUnitDependenciesClicked(Sender: TObject);
 
     // refactor menu
     procedure mnuRefactorRenameIdentifierClicked(Sender: TObject);
@@ -573,10 +573,8 @@ type
 
     // unit dependencies events
     procedure UnitDependenciesViewAccessingSources(Sender: TObject);
-    function UnitDependenciesViewGetProjectMainFilename(
-        Sender: TObject): string;
-    procedure UnitDependenciesViewOpenFile(Sender: TObject;
-        const Filename: string);
+    function UnitDependenciesViewGetProjectMainFilename(Sender: TObject): string;
+    procedure UnitDependenciesViewOpenFile(Sender: TObject; const Filename: string);
 
     // code explorer events
     procedure OnCodeExplorerGetDirectivesTree(Sender: TObject;
@@ -2512,6 +2510,7 @@ procedure TMainIDE.SetupViewMenu;
 begin
   inherited SetupViewMenu;
   with MainIDEBar do begin
+    itmViewToggleFormUnit.OnClick := @mnuToggleFormUnitClicked;
     itmViewInspector.OnClick := @mnuViewInspectorClicked;
     itmViewSourceEditor.OnClick := @mnuViewSourceEditorClicked;
     itmViewCodeExplorer.OnClick := @mnuViewCodeExplorerClick;
@@ -2519,8 +2518,6 @@ begin
     itmViewRestrictionBrowser.OnClick := @mnuViewRestrictionBrowserClick;
     itmViewComponents.OnClick := @mnuViewComponentsClick;
     itmViewFPDocEditor.OnClick := @mnuViewFPDocEditorClicked;
-    itmViewUnitDependencies.OnClick := @mnuViewUnitDependenciesClicked;
-    itmViewToggleFormUnit.OnClick := @mnuToggleFormUnitClicked;
     itmViewMessage.OnClick := @mnuViewMessagesClick;
     itmViewSearchResults.OnClick := @mnuViewSearchResultsClick;
     itmViewAnchorEditor.OnClick := @mnuViewAnchorEditorClicked;
@@ -2582,6 +2579,7 @@ begin
     itmSourceInsertFilename.OnClick:=@mnuSourceInsertFilename;
     // Tools
     itmSourceUnitInfo.OnClick := @mnuSourceUnitInfoClicked;
+    itmSourceUnitDependencies.OnClick := @mnuSourceUnitDependenciesClicked;
   end;
 end;
 
@@ -3999,7 +3997,7 @@ Begin
   DoViewUnitsAndForms(true);
 end;
 
-procedure TMainIDE.mnuViewUnitDependenciesClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceUnitDependenciesClicked(Sender: TObject);
 begin
   DoViewUnitDependencies(true);
 end;
@@ -14488,8 +14486,7 @@ begin
   SaveSourceEditorChangesToCodeCache(nil);
 end;
 
-function TMainIDE.UnitDependenciesViewGetProjectMainFilename(Sender: TObject
-  ): string;
+function TMainIDE.UnitDependenciesViewGetProjectMainFilename(Sender: TObject): string;
 begin
   if Project1.MainUnitID>=0 then
     Result:=Project1.MainUnitInfo.Filename
@@ -14497,8 +14494,7 @@ begin
     Result:='';
 end;
 
-procedure TMainIDE.UnitDependenciesViewOpenFile(Sender: TObject;
-  const Filename: string);
+procedure TMainIDE.UnitDependenciesViewOpenFile(Sender: TObject; const Filename: string);
 begin
   DoOpenEditorFile(Filename,-1,-1,[]);
 end;
