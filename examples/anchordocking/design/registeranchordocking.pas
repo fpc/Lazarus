@@ -617,7 +617,6 @@ begin
   if not (AOptions is SupportedOptionsClass) then exit;
   IDEAnchorDockMaster.Enabled:=EnableCheckBox.Checked;
   OptionsFrame.SaveToMaster;
-
 end;
 
 class function TAnchorDockIDEFrame.

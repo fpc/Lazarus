@@ -515,7 +515,7 @@ type
     property DragTreshold: integer read FDragTreshold write FDragTreshold default 4;
     property DockOutsideMargin: integer read FDockOutsideMargin write FDockOutsideMargin default 10; // max distance for outside mouse snapping
     property DockParentMargin: integer read FDockParentMargin write FDockParentMargin default 10; // max distance for snap to parent
-    property PageAreaInPercent: integer read FPageAreaInPercent write FPageAreaInPercent default 40; // size of inner mosue snapping area for page docking
+    property PageAreaInPercent: integer read FPageAreaInPercent write FPageAreaInPercent default 40; // size of inner mouse snapping area for page docking
     property HeaderAlignTop: integer read FHeaderAlignTop write SetHeaderAlignTop default 80; // move header to top, when (width/height)*100<=HeaderAlignTop
     property HeaderAlignLeft: integer read FHeaderAlignLeft write SetHeaderAlignLeft default 120; // move header to left, when (width/height)*100>=HeaderAlignLeft
     property HeaderHint: string read FHeaderHint write FHeaderHint;
