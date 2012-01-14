@@ -364,7 +364,7 @@ type
     procedure mnuToolConfigBuildLazClicked(Sender: TObject);
     procedure mnuCustomExtToolClick(Sender: TObject);
 
-    // environment menu
+    // options menu
     procedure mnuEnvGeneralOptionsClicked(Sender: TObject);
     procedure mnuEnvEditorOptionsClicked(Sender: TObject);
     procedure mnuEnvCodeTemplatesClicked(Sender: TObject);

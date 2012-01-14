@@ -3870,6 +3870,13 @@ end;
 
 procedure TProject.SetModified(const AValue: boolean);
 begin
+  {$IFDEF VerboseTProjectSetModified}
+  if (not Modified) and AValue then begin
+    debugln(['TProject.SetModified ']);
+    DumpStack;
+  end;
+  {$ENDIF}
+
   if fDestroying then exit;
   inherited SetModified(AValue);
   if not AValue then
