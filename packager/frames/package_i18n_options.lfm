@@ -4,8 +4,8 @@ inherited PackageI18NOptionsFrame: TPackageI18NOptionsFrame
   ClientHeight = 322
   ClientWidth = 551
   TabOrder = 0
-  DesignLeft = 245
-  DesignTop = 173
+  DesignLeft = 851
+  DesignTop = 207
   object I18NGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = EnableI18NCheckBox
@@ -13,23 +13,23 @@ inherited PackageI18NOptionsFrame: TPackageI18NOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 75
-    Top = 25
+    Height = 97
+    Top = 30
     Width = 551
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'i18n Options'
-    ClientHeight = 57
+    ClientHeight = 81
     ClientWidth = 547
     TabOrder = 0
     object PoOutDirLabel: TLabel
       AnchorSideLeft.Control = I18NGroupBox
       AnchorSideTop.Control = I18NGroupBox
       Left = 6
-      Height = 16
+      Height = 15
       Top = 6
-      Width = 112
+      Width = 113
       BorderSpacing.Around = 6
       Caption = 'PO Output Directory:'
       ParentColor = False
@@ -40,9 +40,9 @@ inherited PackageI18NOptionsFrame: TPackageI18NOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = POOutDirButton
       Left = 6
-      Height = 23
-      Top = 28
-      Width = 494
+      Height = 24
+      Top = 27
+      Width = 508
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       TabOrder = 0
@@ -53,10 +53,10 @@ inherited PackageI18NOptionsFrame: TPackageI18NOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = POOutDirEdit
       AnchorSideBottom.Side = asrBottom
-      Left = 506
-      Height = 23
-      Top = 28
-      Width = 35
+      Left = 520
+      Height = 24
+      Top = 27
+      Width = 21
       Anchors = [akTop, akRight, akBottom]
       AutoSize = True
       BorderSpacing.Right = 6
@@ -64,14 +64,27 @@ inherited PackageI18NOptionsFrame: TPackageI18NOptionsFrame
       OnClick = POOutDirButtonClick
       TabOrder = 1
     end
+    object PoForFormsCheckBox: TCheckBox
+      AnchorSideLeft.Control = PoOutDirLabel
+      AnchorSideTop.Control = POOutDirEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 24
+      Top = 57
+      Width = 145
+      Caption = 'PoForFormsCheckBox'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+    end
   end
   object EnableI18NCheckBox: TCheckBox[1]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 0
-    Height = 19
+    Height = 24
     Top = 0
-    Width = 80
+    Width = 91
     Caption = 'Enable i18n'
     OnChange = EnableI18NCheckBoxChange
     TabOrder = 1

@@ -171,6 +171,7 @@ type
     function GetIDEPackage: TIDEPackage; override;
     procedure SetFilename(const AValue: string); override;
     procedure SetRemoved(const AValue: boolean); override;
+    procedure SetDisableI18NForLFM(AValue: boolean); override;
   public
     constructor Create(ThePackage: TLazPackage);
     destructor Destroy; override;
@@ -575,6 +576,7 @@ type
     FDirectoryExpanded: string;
     FDirectoryExpandedChangeStamp: integer;
     FEnableI18N: boolean;
+    FEnableI18NForLFM: boolean;
     FFileReadOnly: boolean;
     FFiles: TFPList; // TFPList of TPkgFile
     FFirstRemovedDependency: TPkgDependency;
@@ -622,6 +624,7 @@ type
     procedure SetAutoInstall(const AValue: TPackageInstallType);
     procedure SetAutoUpdate(const AValue: TPackageUpdatePolicy);
     procedure SetDescription(const AValue: string);
+    procedure SetEnableI18NForLFM(AValue: boolean);
     procedure SetFileReadOnly(const AValue: boolean);
     procedure SetFlags(const AValue: TLazPackageFlags);
     procedure SetIconFile(const AValue: string);
@@ -792,6 +795,7 @@ type
     property Editor: TBasePackageEditor read FPackageEditor
                                         write SetPackageEditor;
     property EnableI18N: Boolean read FEnableI18N write SetEnableI18N;
+    property EnableI18NForLFM: boolean read FEnableI18NForLFM write SetEnableI18NForLFM;
     property FileReadOnly: boolean read FFileReadOnly write SetFileReadOnly;
     property Files[Index: integer]: TPkgFile read GetFiles;
     property FirstRemovedDependency: TPkgDependency
@@ -1537,6 +1541,13 @@ begin
   UpdateSourceDirectoryReference;
 end;
 
+procedure TPkgFile.SetDisableI18NForLFM(AValue: boolean);
+begin
+  if DisableI18NForLFM=AValue then exit;
+  inherited SetDisableI18NForLFM(AValue);
+  LazPackage.Modified:=true;
+end;
+
 function TPkgFile.GetComponents(Index: integer): TPkgComponent;
 begin
   Result:=TPkgComponent(FComponents[Index]);
@@ -1686,6 +1697,7 @@ begin
   HasRegisterProc:=XMLConfig.GetValue(Path+'HasRegisterProc/Value',false);
   AddToUsesPkgSection:=XMLConfig.GetValue(Path+'AddToUsesPkgSection/Value',
                                           FileType in PkgFileUnitTypes);
+  DisableI18NForLFM:=XMLConfig.GetValue(Path+'DisableI18NForLFM/Value',false);
   fUnitName:=XMLConfig.GetValue(Path+'UnitName/Value','');
   if FileType in PkgFileUnitTypes then begin
     // make sure the unitname makes sense
@@ -1710,6 +1722,7 @@ begin
                            false);
   XMLConfig.SetDeleteValue(Path+'AddToUsesPkgSection/Value',AddToUsesPkgSection,
                            FileType in PkgFileUnitTypes);
+  XMLConfig.SetDeleteValue(Path+'DisableI18NForLFM/Value',DisableI18NForLFM,false);
   XMLConfig.SetDeleteValue(Path+'Type/Value',PkgFileTypeIdents[FileType],
                            PkgFileTypeIdents[pftUnit]);
   XMLConfig.SetDeleteValue(Path+'UnitName/Value',FUnitName,'');
@@ -2283,6 +2296,7 @@ begin
     IconFile:=aSource.IconFile;
     UsageOptions.AssignOptions(aSource.UsageOptions);
     EnableI18N:=aSource.EnableI18N;
+    EnableI18NForLFM:=aSource.EnableI18NForLFM;
     Description:=aSource.Description;
     AutoUpdate:=aSource.AutoUpdate;
     AutoIncrementVersionOnBuild:=aSource.AutoIncrementVersionOnBuild;
@@ -2366,6 +2380,13 @@ procedure TLazPackage.SetDescription(const AValue: string);
 begin
   if FDescription=AValue then exit;
   FDescription:=AValue;
+  Modified:=true;
+end;
+
+procedure TLazPackage.SetEnableI18NForLFM(AValue: boolean);
+begin
+  if FEnableI18NForLFM=AValue then Exit;
+  FEnableI18NForLFM:=AValue;
   Modified:=true;
 end;
 
@@ -2650,6 +2671,9 @@ begin
     FDescription:='';
     FDirectory:='';
     FDirectoryExpandedChangeStamp:=InvalidParseStamp;
+    FEnableI18N:=false;
+    FEnableI18NForLFM:=false;
+    FPOOutputDirectory:='';
     FHasDirectory:=false;
     FHasStaticDirectory:=false;
     FVersion.Clear;
@@ -2813,6 +2837,7 @@ begin
     FPOOutputDirectory := SwitchPathDelims(
              xmlconfig.GetValue(Path+'i18n/OutDir/Value', ''),PathDelimChanged);
   end;
+  EnableI18NForLFM:=xmlconfig.GetValue(Path+'i18n/EnableI18NForLFM/Value', false);
 
   LoadFiles(Path+'Files/',FFiles);
   UpdateSourceDirectories;
@@ -2892,6 +2917,7 @@ begin
 
   XMLConfig.SetDeleteValue(Path+'i18n/EnableI18N/Value', EnableI18N, false);
   XMLConfig.SetDeleteValue(Path+'i18n/OutDir/Value',f(FPOOutputDirectory), '');
+  XMLConfig.SetDeleteValue(Path+'i18n/EnableI18NForLFM/Value', EnableI18NForLFM, false);
 
   XMLConfig.SetDeleteValue(Path+'Type/Value',LazPackageTypeIdents[FPackageType],
                            LazPackageTypeIdents[lptRunTime]);

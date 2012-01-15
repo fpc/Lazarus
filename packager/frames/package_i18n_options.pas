@@ -18,6 +18,7 @@ type
     POOutDirButton: TButton;
     POOutDirEdit: TEdit;
     PoOutDirLabel: TLabel;
+    PoForFormsCheckBox: TCheckBox;
     procedure EnableI18NCheckBoxChange(Sender: TObject);
     procedure POOutDirButtonClick(Sender: TObject);
   private
@@ -63,6 +64,9 @@ begin
   EnableI18NCheckBox.Caption := rsEnableI18n;
   I18NGroupBox.Caption := rsI18nOptions;
   PoOutDirlabel.Caption := rsPOOutputDirectory;
+  PoForFormsCheckBox.Caption:=lisCreateUpdatePoFileWhenSavingALfmFile;
+  PoForFormsCheckBox.Hint:=
+    lisYouCanDisableThisForIndividualFormsViaThePackageEd;
 end;
 
 procedure TPackageI18NOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -73,6 +77,7 @@ begin
   EnableI18NCheckBox.Checked := LazPackage.EnableI18N;
   I18NGroupBox.Enabled := LazPackage.EnableI18N;
   POOutDirEdit.Text := LazPackage.POOutputDirectory;
+  PoForFormsCheckBox.Checked:=LazPackage.EnableI18NForLFM;
 end;
 
 procedure TPackageI18NOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -81,6 +86,7 @@ var
 begin
   LazPackage.EnableI18N := EnableI18NCheckBox.Checked;
   LazPackage.POOutputDirectory := POOutDirEdit.Text;
+  LazPackage.EnableI18NForLFM := PoForFormsCheckBox.Checked;
 end;
 
 class function TPackageI18NOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

@@ -6,8 +6,8 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
   ClientHeight = 346
   ClientWidth = 352
   TabOrder = 0
-  DesignLeft = 456
-  DesignTop = 222
+  DesignLeft = 471
+  DesignTop = 220
   object DragThresholdLabel: TLabel
     Left = 10
     Height = 15

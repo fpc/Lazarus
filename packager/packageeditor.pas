@@ -141,6 +141,7 @@ type
 
   TPackageEditorForm = class(TBasePackageEditor)
     DirectoryHierarchySpeedButton: TSpeedButton;
+    DisableI18NForLFMCheckBox: TCheckBox;
     FilterEdit: TTreeFilterEdit;
     ItemsPanel: TPanel;
     SortAlphabeticallySpeedButton: TSpeedButton;
@@ -189,6 +190,7 @@ type
     procedure CompileCleanClick(Sender: TObject);
     procedure CreateMakefileClick(Sender: TObject);
     procedure DirectoryHierarchySpeedButtonClick(Sender: TObject);
+    procedure DisableI18NForLFMCheckBoxChange(Sender: TObject);
     procedure EditVirtualUnitMenuItemClick(Sender: TObject);
     procedure ExpandDirectoryMenuItemClick(Sender: TObject);
     procedure FilesPopupMenuPopup(Sender: TObject);
@@ -1418,6 +1420,20 @@ begin
   ShowDirectoryHierarchy:=DirectoryHierarchySpeedButton.Down;
 end;
 
+procedure TPackageEditorForm.DisableI18NForLFMCheckBoxChange(Sender: TObject);
+var
+  CurFile: TPkgFile;
+  Removed: boolean;
+begin
+  if LazPackage=nil then exit;
+  CurFile:=GetCurrentFile(Removed);
+  if (CurFile=nil) then exit;
+  if CurFile.DisableI18NForLFM=DisableI18NForLFMCheckBox.Checked then exit;
+  CurFile.DisableI18NForLFM:=DisableI18NForLFMCheckBox.Checked;
+  if not Removed then
+    LazPackage.Modified:=true;
+end;
+
 procedure TPackageEditorForm.SetLazPackage(const AValue: TLazPackage);
 begin
   if FLazPackage=AValue then exit;
@@ -1431,8 +1447,6 @@ begin
   FLazPackage.Editor:=Self;
   // update components
   UpdateAll(true);
-  // show files
-//  FFilesNode.Expanded:=true;
 end;
 
 procedure TPackageEditorForm.SetupComponents;
@@ -1513,6 +1527,9 @@ begin
 
   AddToUsesPkgSectionCheckBox.Caption:=lisPkgMangUseUnit;
   AddToUsesPkgSectionCheckBox.Hint:=lisPkgMangAddUnitToUsesClauseOfPackageDisableThisOnlyForUnit;
+
+  DisableI18NForLFMCheckBox.Caption:=lisPckDisableI18NOfLfm;
+  DisableI18NForLFMCheckBox.Hint:=lisPckWhenTheFormIsSavedTheIDECanStoreAllTTranslateString;
 
   UseMinVersionCheckBox.Caption:=lisPckEditMinimumVersion;
   UseMaxVersionCheckBox.Caption:=lisPckEditMaximumVersion;
@@ -1748,6 +1765,8 @@ var
   FileCount: integer;
   HasRegisterProcCount: integer;
   AddToUsesPkgSectionCount: integer;
+  HasLFM: Boolean;
+  CurFilename: String;
 begin
   if LazPackage=nil then exit;
   FPlugins.Clear;
@@ -1757,6 +1776,13 @@ begin
     Dependency:=GetCurrentDependency(Removed);
   CurNode:=FilesTreeView.Selected;
   IsDir:=IsDirectoryNode(CurNode) or (CurNode=FFilesNode);
+  CurFilename:='';
+  HasLFM:=false;
+  if (CurFile<>nil) and (CurFile.FileType in PkgFileRealUnitTypes) then begin
+    CurFilename:=CurFile.GetFullFilename;
+    HasLFM:=FilenameIsAbsolute(CurFilename)
+        and FileExistsCached(ChangeFileExt(CurFilename,'.lfm'));
+  end;
 
   // make components visible
   UseMinVersionCheckBox.Visible:=Dependency<>nil;
@@ -1768,6 +1794,8 @@ begin
   CallRegisterProcCheckBox.Visible:=CurFile<>nil;
   AddToUsesPkgSectionCheckBox.Visible:=CurFile<>nil;
   RegisteredPluginsGroupBox.Visible:=CurFile<>nil;
+  DisableI18NForLFMCheckBox.Visible:=HasLFM and LazPackage.EnableI18N
+                                     and LazPackage.EnableI18NForLFM;
 
   FDirSummaryLabel.Visible:=IsDir;
 
@@ -1782,6 +1810,8 @@ begin
                                               or (CurFile.FileType=pftMainUnit);
     AddToUsesPkgSectionCheckBox.Enabled:=(not LazPackage.ReadOnly)
                              and (CurFile.FileType in [pftUnit,pftVirtualUnit]);
+    DisableI18NForLFMCheckBox.Checked:=CurFile.DisableI18NForLFM;
+    DisableI18NForLFMCheckBox.Enabled:=not LazPackage.ReadOnly;
     // fetch all registered plugins
     CurListIndex:=0;
     RegCompCnt:=CurFile.ComponentCount;

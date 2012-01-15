@@ -2123,6 +2123,8 @@ resourcestring
     +'po files';
   lisCreateUpdatePoFileWhenSavingALfmFile = 'Create/update .po file when '
     +'saving a lfm file';
+  lisYouCanDisableThisForIndividualFormsViaThePackageEd = 'You can disable '
+    +'this for individual forms via the package editor';
   lisYouCanDisableThisForIndividualFormsViaThePopupMenu = 'You can disable '
     +'this for individual forms via the popup menu in the project inspector';
   rsIncludeVersionInfoInExecutable = 'Include version info in executable';
@@ -4076,6 +4078,11 @@ resourcestring
   lisPkgMangAddUnitToUsesClauseOfPackageDisableThisOnlyForUnit = 'Add unit to '
     +'uses clause of package. Disable this only for units, that should not be '
     +'compiled in all cases.';
+  lisPckDisableI18NOfLfm = 'Disable I18N of lfm';
+  lisPckWhenTheFormIsSavedTheIDECanStoreAllTTranslateString = 'When the form is'
+    +' saved, the IDE can store all TTranslateString properties to the package '
+    +'po file. For this you must enable I18N for this package, provide a po '
+    +'output directory and leave this option unchecked.';
   lisPkgMangUseUnit = 'Use unit';
   lisPckEditMinimumVersion = 'Minimum Version:';
   lisPckEditMaximumVersion = 'Maximum Version:';

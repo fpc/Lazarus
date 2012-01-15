@@ -67,12 +67,14 @@ type
 
   TLazPackageFile = class
   private
+    FDisableI18NForLFM: boolean;
     FFilename: string;
     FRemoved: boolean;
   protected
     procedure SetFilename(const AValue: string); virtual;
     function GetIDEPackage: TIDEPackage; virtual; abstract;
     procedure SetRemoved(const AValue: boolean); virtual;
+    procedure SetDisableI18NForLFM(AValue: boolean); virtual;
   public
     function GetFullFilename: string; virtual; abstract;
     function GetShortFilename(UseUp: boolean): string; virtual; abstract;
@@ -80,6 +82,7 @@ type
     property Filename: string read FFilename write SetFilename; // can contain macros if package was auto created
     property LazPackage: TIDEPackage read GetIDEPackage;
     property Removed: boolean read FRemoved write SetRemoved;
+    property DisableI18NForLFM: boolean read FDisableI18NForLFM write SetDisableI18NForLFM;
   end;
 
   { TLazPackageID }
@@ -745,6 +748,11 @@ begin
 end;
 
 { TLazPackageFile }
+
+procedure TLazPackageFile.SetDisableI18NForLFM(AValue: boolean);
+begin
+  FDisableI18NForLFM:=AValue;
+end;
 
 procedure TLazPackageFile.SetFilename(const AValue: string);
 begin

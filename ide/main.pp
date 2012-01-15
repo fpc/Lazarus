@@ -5647,6 +5647,37 @@ end;
 
 function TMainIDE.DoSaveUnitComponent(AnUnitInfo: TUnitInfo;
   ResourceCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
+
+  function IsI18NEnabled(UnitOwners: TFPList): boolean;
+  var
+    i: Integer;
+    APackage: TLazPackage;
+    PkgFile: TPkgFile;
+  begin
+    if AnUnitInfo.IsPartOfProject then begin
+      // a project unit
+      Result:=AnUnitInfo.Project.EnableI18N and AnUnitInfo.Project.EnableI18NForLFM
+         and (not AnUnitInfo.DisableI18NForLFM);
+      exit;
+    end;
+    if (UnitOwners<>nil) then begin
+      for i:=0 to UnitOwners.Count-1 do begin
+        if TObject(UnitOwners[i]) is TLazPackage then begin
+          // a package unit
+          APackage:=TLazPackage(UnitOwners[i]);
+          Result:=false;
+          if APackage.EnableI18N and APackage.EnableI18NForLFM then begin
+            PkgFile:=APackage.FindPkgFile(AnUnitInfo.Filename,true,true);
+            Result:=(PkgFile<>nil) and (not PkgFile.DisableI18NForLFM);
+          end;
+          exit;
+        end;
+      end;
+    end;
+    // a rogue unit
+    Result:=false;
+  end;
+
 var
   ComponentSavingOk: boolean;
   MemStream, BinCompStream, TxtCompStream: TExtMemoryStream;
@@ -5661,8 +5692,6 @@ var
   Ancestor: TComponent;
   HasI18N: Boolean;
   UnitOwners: TFPList;
-  APackage: TLazPackage;
-  i: Integer;
   LRSFilename: String;
   PropPath: String;
   ResType: TResourceType;
@@ -5719,17 +5748,7 @@ begin
           BinCompStream.Position:=0;
           Writer:=CreateLRSWriter(BinCompStream,DestroyDriver);
           // used to save lrt files
-          HasI18N:=AnUnitInfo.IsPartOfProject and (not AnUnitInfo.DisableI18NForLFM)
-             and AnUnitInfo.Project.EnableI18N and AnUnitInfo.Project.EnableI18NForLFM;
-          if (not HasI18N) and (UnitOwners<>nil) then begin
-            for i:=0 to UnitOwners.Count-1 do begin
-              if TObject(UnitOwners[i]) is TLazPackage then begin
-                APackage:=TLazPackage(UnitOwners[i]);
-                if APackage.EnableI18N then
-                  HasI18N:=true;
-              end;
-            end;
-          end;
+          HasI18N:=IsI18NEnabled(UnitOwners);
           if HasI18N then
             Grubber:=TLRTGrubber.Create(Writer);
           Writer.OnWriteMethodProperty:=@FormEditor1.WriteMethodPropertyEvent;
