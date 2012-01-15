@@ -184,31 +184,6 @@ const
   fdfDefaultForExpressions = [fdfSearchInParentNodes, fdfSearchInAncestors,
                               fdfExceptionOnNotFound,fdfIgnoreCurContextNode];
 
-  // for nicer output
-  FindDeclarationFlagNames: array[TFindDeclarationFlag] of string = (
-    'fdfSearchInAncestors',
-    'fdfSearchInParentNodes',
-    'fdfIgnoreCurContextNode',
-    'fdfIgnoreUsedUnits',
-    'fdfSearchForward',
-    'fdfExceptionOnNotFound',
-    'fdfExceptionOnPredefinedIdent',
-    'fdfIgnoreClassVisibility',
-    'fdfIgnoreMissingParams',
-    'fdfOnlyCompatibleProc',
-    'fdfIgnoreOverloadedProcs',
-    'fdfFindVariable',
-    'fdfFunctionResult',
-    'fdfEnumIdentifier',
-    'fdfFindChilds',
-    'fdfSkipClassForward',
-    'fdfCollect',
-    'fdfTopLvlResolving',
-    'fdfDoNotCache',
-    'fdfExtractOperand',
-    'fdfPropertyResolving'
-  );
-
 type
   // flags/states for result
   TFoundDeclarationFlag = (
@@ -216,11 +191,6 @@ type
     );
   TFoundDeclarationFlags = set of TFoundDeclarationFlag;
   
-const
-  FoundDeclarationFlagNames: array[TFoundDeclarationFlag] of string = (
-      'fodDoNotCache'
-    );
-
   //----------------------------------------------------------------------------
 type
   TFindDeclarationParams = class;
@@ -934,30 +904,34 @@ function dbgs(const Flags: TFoundDeclarationFlags): string; overload;
 implementation
 
 
-function dbgs(
-  const Flags: TFindDeclarationFlags): string;
-var Flag: TFindDeclarationFlag;
+function dbgs(const Flags: TFindDeclarationFlags): string;
+var
+  Flag: TFindDeclarationFlag;
+  s: string;
 begin
   Result:='';
   for Flag:=Low(TFindDeclarationFlag) to High(TFindDeclarationFlag) do begin
     if Flag in Flags then begin
       if Result<>'' then
         Result:=Result+', ';
-      Result:=Result+FindDeclarationFlagNames[Flag];
+      WriteStr(s, Flag);
+      Result:=Result+s;
     end;
   end;
 end;
 
-function dbgs(
-  const Flags: TFoundDeclarationFlags): string;
-var Flag: TFoundDeclarationFlag;
+function dbgs(const Flags: TFoundDeclarationFlags): string;
+var
+  Flag: TFoundDeclarationFlag;
+  s: string;
 begin
   Result:='';
   for Flag:=Low(TFoundDeclarationFlag) to High(TFoundDeclarationFlag) do begin
     if Flag in Flags then begin
       if Result<>'' then
         Result:=Result+', ';
-      Result:=Result+FoundDeclarationFlagNames[Flag];
+      WriteStr(s, Flag);
+      Result:=Result+s;
     end;
   end;
 end;

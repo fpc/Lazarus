@@ -1543,12 +1543,10 @@ function TExtractProcTool.ScanNodesForVariables(const StartPos,
   ): boolean;
 type
   TParameterType = (ptNone, ptConst, ptVar, ptOut, ptNoSpecifier);
-  {$IFDEF CTDebug}
-const
-  ParameterTypeNames: array[TParameterType] of string = (
-    'ptNone', 'ptConst', 'ptVar', 'ptOut', 'ptNoSpecifier');
-  {$ENDIF}
 var
+  {$IFDEF CTDebug}
+  s: string;
+  {$ENDIF}
   VarCandidates: TAVLTree; // tree of PChar
 
   procedure ScanForLocalVariables(Node: TCodeTreeNode);
@@ -1571,9 +1569,9 @@ var
     ProcVar: TExtractedProcVariable;
   begin
     {$IFDEF CTDebug}
+    WriteStr(s, ParameterType);
     DebugLn(['AddVariableToTree A Ident=',GetIdentifier(@Src[VarNode.StartPos]),
-      ' IsInSelection=',dbgs(IsInSelection),
-      ' ParameterType=',ParameterTypeNames[ParameterType]]);
+      ' IsInSelection=',dbgs(IsInSelection),' ParameterType=',s]);
     {$ENDIF}
     if VarTree=nil then exit;
     

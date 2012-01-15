@@ -98,19 +98,6 @@ function CompareFileStateItems(Data1, Data2: Pointer): integer;
 function CompareFilenameWithFileStateCacheItem(Key, Data: Pointer): integer;
 
 const
-  FileStateCacheItemFlagNames: array[TFileStateCacheItemFlag] of string = (
-    'fsciExists',
-    'fsciDirectory',
-    'fsciReadable',
-    'fsciWritable',
-    'fsciDirectoryReadable',
-    'fsciDirectoryWritable',
-    'fsciText',
-    'fsciExecutable',
-    'fsciAge'
-    );
-
-const
   LUInvalidChangeStamp = Low(integer);
   LUInvalidChangeStamp64 = Low(int64); // using a value outside integer to spot wrong types early
 procedure LUIncreaseChangeStamp(var ChangeStamp: integer); inline;
@@ -256,7 +243,8 @@ begin
     Include(AFile.FFlags,AFlag)
   else
     Exclude(AFile.FFlags,AFlag);
-  //debugln('TFileStateCache.SetFlag AFile.Filename=',AFile.Filename,' ',FileStateCacheItemFlagNames[AFlag],'=',dbgs(AFlag in AFile.FFlags),' Valid=',dbgs(AFlag in AFile.FTestedFlags));
+  //WriteStr(s, AFlag);
+  //debugln('TFileStateCache.SetFlag AFile.Filename=',AFile.Filename,' ',s,'=',dbgs(AFlag in AFile.FFlags),' Valid=',dbgs(AFlag in AFile.FTestedFlags));
 end;
 
 constructor TFileStateCache.Create;
@@ -446,7 +434,8 @@ begin
     Result:=false;
     FlagIsSet:=false;
   end;
-  //debugln('TFileStateCache.Check Filename=',Filename,' AFile.Filename=',AFile.Filename,' ',FileStateCacheItemFlagNames[AFlag],'=',dbgs(FlagIsSet),' Valid=',dbgs(Result));
+  //WriteStr(s, AFlag);
+  //debugln('TFileStateCache.Check Filename=',Filename,' AFile.Filename=',AFile.Filename,' ',s,'=',dbgs(FlagIsSet),' Valid=',dbgs(Result));
 end;
 
 procedure TFileStateCache.WriteDebugReport;
