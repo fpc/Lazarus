@@ -248,36 +248,6 @@ type
   PRawImageLineStarts = ^TRawImageLineStarts;
 
 const
-  RawImageColorFormatNames: array[TRawImageColorFormat] of string = (
-    'ricfNone',
-    'ricfRGBA',
-    'ricfGray'
-    );
-
-  RawImageByteOrderNames: array[TRawImageByteOrder] of string = (
-    'riboLSBFirst',
-    'riboMSBFirst'
-    );
-
-  RawImageBitOrderNames: array[TRawImageBitOrder] of string = (
-    'riboBitsInOrder',
-    'riboReversedBits'
-    );
-
-  RawImageLineEndNames: array[TRawImageLineEnd] of string = (
-    'rileTight',
-    'rileByteBoundary',
-    'rileWordBoundary',
-    'rileDWordBoundary',
-    'rileQWordBoundary',
-    'rileDQWordBoundary'
-    );
-
-  RawImageLineOrderNames: array[TRawImageLineOrder] of string = (
-    'riloTopToBottom',
-    'riloBottomToTop'
-    );
-    
   DefaultByteOrder = {$IFDEF Endian_Little}riboLSBFirst{$ELSE}riboMSBFirst{$ENDIF};
 
 
@@ -991,18 +961,44 @@ begin
 end;
 
 function TRawImageDescription.AsString: string;
+
+  function EnumToString(AEnum: TRawImageColorFormat): string;
+  begin
+    WriteStr(Result, AEnum);
+  end;
+
+  function EnumToString(AEnum: TRawImageByteOrder): string;
+  begin
+    WriteStr(Result, AEnum);
+  end;
+
+  function EnumToString(AEnum: TRawImageBitOrder): string;
+  begin
+    WriteStr(Result, AEnum);
+  end;
+
+  function EnumToString(AEnum: TRawImageLineEnd): string;
+  begin
+    WriteStr(Result, AEnum);
+  end;
+
+  function EnumToString(AEnum: TRawImageLineOrder): string;
+  begin
+    WriteStr(Result, AEnum);
+  end;
+
 begin
   Result:=
-     ' Format='+RawImageColorFormatNames[Format]
+     ' Format='+EnumToString(Format)
     +' HasPalette->'+dbgs(PaletteColorCount <> 0)
     +' HasMask->'+dbgs(PaletteColorCount <> 0)
     +' Depth='+IntToStr(Depth)
     +' Width='+IntToStr(Width)
     +' Height='+IntToStr(Height)
-    +' BitOrder='+RawImageBitOrderNames[BitOrder]
-    +' ByteOrder='+RawImageByteOrderNames[ByteOrder]
-    +' LineOrder='+RawImageLineOrderNames[LineOrder]
-    +' LineEnd='+RawImageLineEndNames[LineEnd]
+    +' BitOrder='+EnumToString(BitOrder)
+    +' ByteOrder='+EnumToString(ByteOrder)
+    +' LineOrder='+EnumToString(LineOrder)
+    +' LineEnd='+EnumToString(LineEnd)
     +' BitsPerPixel='+IntToStr(BitsPerPixel)
     +' BytesPerLine->'+IntToStr(GetBytesPerLine(Width,BitsPerPixel,LineEnd))
     +' RedPrec='+IntToStr(RedPrec)
@@ -1016,16 +1012,16 @@ begin
     +' ~~~mask~~~'
     +' MaskBitsPerPixel='+IntToStr(MaskBitsPerPixel)
     +' MaskShift='+IntToStr(MaskShift)
-    +' MaskLineEnd='+RawImageLineEndNames[MaskLineEnd]
-    +' MaskBitOrder='+RawImageBitOrderNames[MaskBitOrder]
+    +' MaskLineEnd='+EnumToString(MaskLineEnd)
+    +' MaskBitOrder='+EnumToString(MaskBitOrder)
     +' MaskBytesPerLine->'+IntToStr(GetBytesPerLine(Width,MaskBitsPerPixel,MaskLineEnd))
     +' ~~~palette~~~'
     +' PaletteColorCount='+IntToStr(PaletteColorCount)
     +' PaletteBitsPerIndex='+IntToStr(PaletteBitsPerIndex)
     +' PaletteShift='+IntToStr(PaletteShift)
-    +' PaletteLineEnd='+RawImageLineEndNames[PaletteLineEnd]
-    +' PaletteBitOrder='+RawImageBitOrderNames[PaletteBitOrder]
-    +' PaletteByteOrder='+RawImageByteOrderNames[PaletteByteOrder]
+    +' PaletteLineEnd='+EnumToString(PaletteLineEnd)
+    +' PaletteBitOrder='+EnumToString(PaletteBitOrder)
+    +' PaletteByteOrder='+EnumToString(PaletteByteOrder)
     +' PaletteBytesPerLine->'+IntToStr(GetBytesPerLine(Width,PaletteBitsPerIndex,PaletteLineEnd))
     +'';
 end;
