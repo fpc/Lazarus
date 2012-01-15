@@ -97,7 +97,7 @@
   <Node52 Name="TAddDirToPkgDialog" Path="Add_directory_to_package" HasHelp="True"/>
   <Node53 Name="TChgEncodingDialog" Path="Change_Encoding_Dialog" HasHelp="True"/>
   <Node54 Name="TChooseKeySchemeDlg" Path="Choose_Key_Scheme" HasHelp="True"/>
-  <Node55 Name="TIDEOptionsDialog" Path="IDE_Options_Dialog" HasHelp="True" ChildCount="48">
+  <Node55 Name="TIDEOptionsDialog" Path="IDE_Options_Dialog" HasHelp="True" ChildCount="50">
     <Node1 Name="EditorGeneralOptionsFrame" Path="Editor_Options_General" IsRoot="True" HasHelp="True"/>
     <Node2 Name="FilesOptionsFrame" Path="Environment_Options" IsRoot="True" HasHelp="True"/>
     <Node3 Name="DesktopOptionsFrame" Path="Environment_Options" IsRoot="True" HasHelp="True"/>
@@ -146,6 +146,8 @@
     <Node46 Name="ProjectSaveOptionsFrame" Path="Project_Options" IsRoot="True" HasHelp="True"/>
     <Node47 Name="PackageUsageOptionsFrame" Path="Package_Options" IsRoot="True" HasHelp="True"/>
     <Node48 Name="PackageI18NOptionsFrame" Path="Package_Options" IsRoot="True" HasHelp="True"/>
+    <Node49 Name="PackageDescriptionOptionsFrame" Path="Package_Options" IsRoot="True" HasHelp="True"/>
+    <Node50 Name="PackageIntegrationOptionsFrame" Path="Package_Options" IsRoot="True" HasHelp="True"/>
   </Node55>
   <Node56 Name="UnusedUnitsDialog" Path="Find_Unused_Units" HasHelp="True"/>
   <Node57 Name="TUnusedUnitsDialog" Path="Find_Unused_Units" HasHelp="True"/>
