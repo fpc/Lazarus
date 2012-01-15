@@ -355,23 +355,6 @@ function  FindOwnedComponent(const AName: string; AOwner: TComponent): TComponen
 
 const
   CustomDockSiteID = 1;
-const
-  AlignNames: array[TAlign] of string = (
-    'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient', 'alCustom'
-  );
-  PartNames: array[TEasyZonePart] of string =
-  (
-    'zpNowhere',        // not in any zone
-    'zpClient',         // on client control
-    'zpAll',            // total header rect
-    'zpCaption',        // header caption
-    'zpSizer',          // splitter/sizer
-  {$IFDEF restore}
-    'zpRestoreButton',  // header restore button
-  {$ENDIF}
-    'zpCloseButton'     // header close button
-  );
-
 //var  AppDockBookClass: TDockBookClass;
 
 var //debug only, these are valid only until drop
@@ -2049,6 +2032,7 @@ function TEasyDockManager.GetDockEdge(ADockObject: TDragDockObject): boolean;
 var
   CanDock: boolean; //dummy
   r: TRect;
+  s: string;
 begin
 (* Determine dock target(?) and align.
   Called with current DockRect (should use InfluenceRect?)
@@ -2058,17 +2042,18 @@ begin
 //test
   exit(false);
 
-  if false then Result:=inherited GetDockEdge(ADockObject);
+  if false then
+    Result:=inherited GetDockEdge(ADockObject);
 {$IFDEF old}
   //ADockObject.DockRect
   Result := DockSite.DockClientCount = 0; //do nothing if docked clients exist!
   if Result then begin
     ADockObject.DropAlign := DetectAlign(ADockObject.DockRect, ADockObject.DragPos);
   {$IFDEF VerboseDrag}
+    WriteStr(s, ADockObject.DropAlign);
     DebugLn('dockedge x(%d-%d) y(%d-%d) %s', [
       ADockObject.DockRect.Left, ADockObject.DockRect.Right,
-      ADockObject.DockRect.Top, ADockObject.DockRect.Bottom,
-      AlignNames[ADockObject.DropAlign]
+      ADockObject.DockRect.Top, ADockObject.DockRect.Bottom, s
       ]);
   {$ELSE}
   {$ENDIF}
@@ -2082,11 +2067,11 @@ begin
 {$ELSE}
   DebugLn('DropOnControl ', DbgS(ADockObject.DropOnControl));
   ADockObject.DropAlign := DetectAlign(ADockObject.DockRect, ADockObject.DragPos);
+  WriteStr(s, ADockObject.DropAlign);
   Result := True;
   DebugLn('dockedge x(%d-%d) y(%d-%d) %s', [
     ADockObject.DockRect.Left, ADockObject.DockRect.Right,
-    ADockObject.DockRect.Top, ADockObject.DockRect.Bottom,
-    AlignNames[ADockObject.DropAlign]
+    ADockObject.DockRect.Top, ADockObject.DockRect.Bottom, s
     ]);
 {$ENDIF}
 end;
