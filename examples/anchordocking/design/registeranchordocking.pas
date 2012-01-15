@@ -224,6 +224,7 @@ begin
   IDEAnchorDockMaster:=Self;
   DockMaster.OnCreateControl:=@DockMasterCreateControl;
   DockMaster.OnShowOptions:=@ShowAnchorDockOptions;
+  DockMaster.ShowMenuItemShowHeader:=true;
   FHideSimpleLayoutOptions:=true;
 end;
 

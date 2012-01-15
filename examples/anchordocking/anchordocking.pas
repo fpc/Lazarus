@@ -66,16 +66,16 @@
     - dnd move page index
     - dnd move page to another pagecontrol
     - on close button: save a restore layout
+    - option to show/hide dock headers
 
   ToDo:
     - keep custom dock site content visible
     - restore custom dock site splitter without resizing content, only resize docked site
     - undock on hide
-    - option to show/hide dock headers of children
     - popup menu
        - shrink side left, top, right, bottom
-    - simple way to make forms dockable at designtime without any code
-    - on show again: restore layout
+    - simple way to make designer forms dockable at designtime without any code
+    - on show again (hide form, show form): restore layout
     - close button for pages
 }
 unit AnchorDocking;
@@ -116,7 +116,7 @@ type
     caption when the form is docked. The header can be shown at any of the four
     sides, shows a hint for long captions, starts dragging and shows the popup
     menu of the dockmaster.
-    Hiding and aligning is done by its Parent a TAnchorDockHostSite }
+    Hiding and aligning is done by its Parent, which is a TAnchorDockHostSite }
 
   TAnchorDockHeader = class(TCustomPanel)
   private
@@ -159,6 +159,7 @@ type
     FDockRestoreBounds: TRect;
   protected
     procedure SetResizeAnchor(const AValue: TAnchorKind); override;
+    procedure PopupMenuPopup(Sender: TObject); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     property DockBounds: TRect read FDockBounds write FDockBounds;
@@ -427,6 +428,7 @@ type
     FShowHeader: boolean;
     FShowHeaderCaption: boolean;
     FHideHeaderCaptionFloatingControl: boolean;
+    FShowMenuItemShowHeader: boolean;
     FSiteClass: TAnchorDockHostSiteClass;
     FSplitterClass: TAnchorDockSplitterClass;
     FSplitterWidth: integer;
@@ -447,6 +449,7 @@ type
     procedure ClearLayoutProperties(AControl: TControl);
     procedure PopupMenuPopup(Sender: TObject);
     procedure ChangeLockButtonClick(Sender: TObject);
+    procedure ShowHeadersButtonClick(Sender: TObject);
     procedure OptionsClick(Sender: TObject);
     procedure SetIdleConnected(const AValue: Boolean);
     procedure SetQueueSimplify(const AValue: Boolean);
@@ -550,6 +553,7 @@ type
     property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth default 4;
     property ScaleOnResize: boolean read FScaleOnResize write FScaleOnResize default true; // scale children when resizing a site
     property ShowHeader: boolean read FShowHeader write SetShowHeader default true; // set to false to hide all headers
+    property ShowMenuItemShowHeader: boolean read FShowMenuItemShowHeader write FShowMenuItemShowHeader default false;
     property ShowHeaderCaption: boolean read FShowHeaderCaption write SetShowHeaderCaption default true; // set to false to remove the text in the headers
     property HideHeaderCaptionFloatingControl: boolean read FHideHeaderCaptionFloatingControl
                           write SetHideHeaderCaptionFloatingControl default true;
@@ -1589,6 +1593,7 @@ procedure TAnchorDockMaster.PopupMenuPopup(Sender: TObject);
 var
   Popup: TPopupMenu;
   ChangeLockItem: TMenuItem;
+  ShowHeadersItem: TMenuItem;
 begin
   if not (Sender is TPopupMenu) then exit;
   Popup:=TPopupMenu(Sender);
@@ -1596,15 +1601,24 @@ begin
 
   // top popup menu item can be clicked by accident, so use something simple:
   // lock/unlock
-  ChangeLockItem:=AddPopupMenuItem('ChangeLockMenuItem', adrsLocked,
-                                    @ChangeLockButtonClick);
+  ChangeLockItem:=AddPopupMenuItem('AnchorDockMasterChangeLockMenuItem',
+                                   adrsLocked,@ChangeLockButtonClick);
   ChangeLockItem.Checked:=not AllowDragging;
   ChangeLockItem.ShowAlwaysCheckable:=true;
 
   if Popup.PopupComponent is TAnchorDockHeader then
     TAnchorDockHeader(Popup.PopupComponent).PopupMenuPopup(Sender)
   else if Popup.PopupComponent is TAnchorDockPageControl then
-    TAnchorDockPageControl(Popup.PopupComponent).PopupMenuPopup(Sender);
+    TAnchorDockPageControl(Popup.PopupComponent).PopupMenuPopup(Sender)
+  else if Popup.PopupComponent is TAnchorDockSplitter then
+    TAnchorDockSplitter(Popup.PopupComponent).PopupMenuPopup(Sender);
+
+  if ShowMenuItemShowHeader or (not ShowHeader) then begin
+    ShowHeadersItem:=AddPopupMenuItem('AnchorDockMasterShowHeaderMenuItem',
+                                      adrsShowHeaders, @ShowHeadersButtonClick);
+    ShowHeadersItem.Checked:=ShowHeader;
+    ShowHeadersItem.ShowAlwaysCheckable:=true;
+  end;
 
   if Assigned(OnShowOptions) then
     AddPopupMenuItem('OptionsMenuItem', adrsDockingOptions, @OptionsClick);
@@ -1658,6 +1672,11 @@ end;
 procedure TAnchorDockMaster.ChangeLockButtonClick(Sender: TObject);
 begin
   AllowDragging:=not AllowDragging;
+end;
+
+procedure TAnchorDockMaster.ShowHeadersButtonClick(Sender: TObject);
+begin
+  ShowHeader:=not ShowHeader;
 end;
 
 procedure TAnchorDockMaster.OptionsClick(Sender: TObject);
@@ -5311,6 +5330,11 @@ begin
   //debugln(['TAnchorDockSplitter.SetResizeAnchor ',DbgSName(Self),' ResizeAnchor=',dbgs(ResizeAnchor),' Align=',dbgs(Align),' Anchors=',dbgs(Anchors)]);
 end;
 
+procedure TAnchorDockSplitter.PopupMenuPopup(Sender: TObject);
+begin
+
+end;
+
 procedure TAnchorDockSplitter.UpdateDockBounds;
 begin
   FDockBounds:=BoundsRect;
@@ -5398,6 +5422,7 @@ begin
   // make sure the splitter never vanish
   Constraints.MinWidth:=2;
   Constraints.MinHeight:=2;
+  PopupMenu:=DockMaster.GetPopupMenu;
 end;
 
 { TAnchorDockPageControl }
