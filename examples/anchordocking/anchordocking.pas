@@ -367,6 +367,27 @@ type
   end;
   TAnchorDockManagerClass = class of TAnchorDockManager;
 
+  { TAnchorDockSettings }
+
+  TAnchorDockSettings = class
+  public
+    DragTreshold: integer;
+    DockOutsideMargin: integer;
+    DockParentMargin: integer;
+    PageAreaInPercent: integer;
+    HeaderAlignTop: integer;
+    HeaderAlignLeft: integer;
+    HeaderHint: string;
+    SplitterWidth: integer;
+    ScaleOnResize: boolean;
+    ShowHeaderCaption: boolean;
+    HideHeaderCaptionFloatingControl: boolean;
+    AllowDragging: boolean;
+    HeaderButtonSize: integer;
+    procedure LoadFromConfig(Config: TConfigStorage);
+    procedure SaveToConfig(Config: TConfigStorage);
+  end;
+
   TAnchorDockMaster = class;
 
   { TAnchorDockMaster
@@ -490,6 +511,8 @@ type
     property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
     procedure LoadSettingsFromConfig(Config: TConfigStorage);
     procedure SaveSettingsToConfig(Config: TConfigStorage);
+    procedure LoadSettings(Settings: TAnchorDockSettings);
+    procedure SaveSettings(Settings: TAnchorDockSettings);
 
     // manual docking
     procedure ManualFloat(AControl: TControl);
@@ -940,6 +963,44 @@ begin
 
   // use flood fill to find the rest
   Fill(LeftTopControl);
+end;
+
+{ TAnchorDockSettings }
+
+procedure TAnchorDockSettings.LoadFromConfig(Config: TConfigStorage);
+begin
+  Config.AppendBasePath('Settings/');
+  DragTreshold:=Config.GetValue('DragThreshold',4);
+  DockOutsideMargin:=Config.GetValue('DockOutsideMargin',10);
+  DockParentMargin:=Config.GetValue('DockParentMargin',10);
+  PageAreaInPercent:=Config.GetValue('PageAreaInPercent',40);
+  HeaderAlignTop:=Config.GetValue('HeaderAlignTop',80);
+  HeaderAlignLeft:=Config.GetValue('HeaderAlignLeft',120);
+  SplitterWidth:=Config.GetValue('SplitterWidth',4);
+  ScaleOnResize:=Config.GetValue('ScaleOnResize',true);
+  ShowHeaderCaption:=Config.GetValue('ShowHeaderCaption',true);
+  HideHeaderCaptionFloatingControl:=Config.GetValue('HideHeaderCaptionFloatingControl',true);
+  AllowDragging:=Config.GetValue('AllowDragging',true);
+  HeaderButtonSize:=Config.GetValue('HeaderButtonSize',10);
+  Config.UndoAppendBasePath;
+end;
+
+procedure TAnchorDockSettings.SaveToConfig(Config: TConfigStorage);
+begin
+  Config.AppendBasePath('Settings/');
+  Config.SetDeleteValue('DragThreshold',DragTreshold,4);
+  Config.SetDeleteValue('DockOutsideMargin',DockOutsideMargin,10);
+  Config.SetDeleteValue('DockParentMargin',DockParentMargin,10);
+  Config.SetDeleteValue('PageAreaInPercent',PageAreaInPercent,40);
+  Config.SetDeleteValue('HeaderAlignTop',HeaderAlignTop,80);
+  Config.SetDeleteValue('HeaderAlignLeft',HeaderAlignLeft,120);
+  Config.SetDeleteValue('SplitterWidth',SplitterWidth,4);
+  Config.SetDeleteValue('ScaleOnResize',ScaleOnResize,true);
+  Config.SetDeleteValue('ShowHeaderCaption',ShowHeaderCaption,true);
+  Config.SetDeleteValue('HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
+  Config.SetDeleteValue('AllowDragging',AllowDragging,true);
+  Config.SetDeleteValue('HeaderButtonSize',HeaderButtonSize,10);
+  Config.UndoAppendBasePath;
 end;
 
 { TAnchorDockMaster }
@@ -2243,45 +2304,61 @@ begin
 end;
 
 procedure TAnchorDockMaster.LoadSettingsFromConfig(Config: TConfigStorage);
+var
+  Settings: TAnchorDockSettings;
 begin
-  Config.AppendBasePath('Settings/');
-  DragTreshold:=Config.GetValue('DragThreshold',4);
-  DockOutsideMargin:=Config.GetValue('DockOutsideMargin',10);
-  DockParentMargin:=Config.GetValue('DockParentMargin',10);
-  PageAreaInPercent:=Config.GetValue('PageAreaInPercent',40);
-  HeaderAlignTop:=Config.GetValue('HeaderAlignTop',80);
-  HeaderAlignLeft:=Config.GetValue('HeaderAlignLeft',120);
-  SplitterWidth:=Config.GetValue('SplitterWidth',4);
-  ScaleOnResize:=Config.GetValue('ScaleOnResize',true);
-  ShowHeaderCaption:=Config.GetValue('ShowHeaderCaption',true);
-  HideHeaderCaptionFloatingControl:=Config.GetValue('HideHeaderCaptionFloatingControl',true);
-  AllowDragging:=Config.GetValue('AllowDragging',true);
-  HeaderButtonSize:=Config.GetValue('HeaderButtonSize',10);
-
-  //property HeaderHint: string read FHeaderHint write FHeaderHint;
-
-  Config.UndoAppendBasePath;
+  Settings:=TAnchorDockSettings.Create;
+  try
+    Settings.LoadFromConfig(Config);
+    LoadSettings(Settings);
+  finally
+    Settings.Free;
+  end;
 end;
 
 procedure TAnchorDockMaster.SaveSettingsToConfig(Config: TConfigStorage);
+var
+  Settings: TAnchorDockSettings;
 begin
-  Config.AppendBasePath('Settings/');
-  Config.SetDeleteValue('DragThreshold',DragTreshold,4);
-  Config.SetDeleteValue('DockOutsideMargin',DockOutsideMargin,10);
-  Config.SetDeleteValue('DockParentMargin',DockParentMargin,10);
-  Config.SetDeleteValue('PageAreaInPercent',PageAreaInPercent,40);
-  Config.SetDeleteValue('HeaderAlignTop',HeaderAlignTop,80);
-  Config.SetDeleteValue('HeaderAlignLeft',HeaderAlignLeft,120);
-  Config.SetDeleteValue('SplitterWidth',SplitterWidth,4);
-  Config.SetDeleteValue('ScaleOnResize',ScaleOnResize,true);
-  Config.SetDeleteValue('ShowHeaderCaption',ShowHeaderCaption,true);
-  Config.SetDeleteValue('HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
-  Config.SetDeleteValue('AllowDragging',AllowDragging,true);
-  Config.SetDeleteValue('HeaderButtonSize',HeaderButtonSize,10);
+  Settings:=TAnchorDockSettings.Create;
+  try
+    SaveSettings(Settings);
+    Settings.SaveToConfig(Config);
+  finally
+    Settings.Free;
+  end;
+end;
 
-  //property HeaderHint: string read FHeaderHint write FHeaderHint;
+procedure TAnchorDockMaster.LoadSettings(Settings: TAnchorDockSettings);
+begin
+  DragTreshold                     := Settings.DragTreshold;
+  DockOutsideMargin                := Settings.DockOutsideMargin;
+  DockParentMargin                 := Settings.DockParentMargin;
+  PageAreaInPercent                := Settings.PageAreaInPercent;
+  HeaderAlignTop                   := Settings.HeaderAlignTop;
+  HeaderAlignLeft                  := Settings.HeaderAlignLeft;
+  SplitterWidth                    := Settings.SplitterWidth;
+  ScaleOnResize                    := Settings.ScaleOnResize;
+  ShowHeaderCaption                := Settings.ShowHeaderCaption;
+  HideHeaderCaptionFloatingControl := Settings.HideHeaderCaptionFloatingControl;
+  AllowDragging                    := Settings.AllowDragging;
+  HeaderButtonSize                 := Settings.HeaderButtonSize;
+end;
 
-  Config.UndoAppendBasePath;
+procedure TAnchorDockMaster.SaveSettings(Settings: TAnchorDockSettings);
+begin
+  Settings.DragTreshold:=DragTreshold;
+  Settings.DockOutsideMargin:=DockOutsideMargin;
+  Settings.DockParentMargin:=DockParentMargin;
+  Settings.PageAreaInPercent:=PageAreaInPercent;
+  Settings.HeaderAlignTop:=HeaderAlignTop;
+  Settings.HeaderAlignLeft:=HeaderAlignLeft;
+  Settings.SplitterWidth:=SplitterWidth;
+  Settings.ScaleOnResize:=ScaleOnResize;
+  Settings.ShowHeaderCaption:=ShowHeaderCaption;
+  Settings.HideHeaderCaptionFloatingControl:=HideHeaderCaptionFloatingControl;
+  Settings.AllowDragging:=AllowDragging;
+  Settings.HeaderButtonSize:=HeaderButtonSize;
 end;
 
 procedure TAnchorDockMaster.ManualFloat(AControl: TControl);
