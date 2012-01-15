@@ -10,9 +10,9 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
   DesignTop = 222
   object DragThresholdLabel: TLabel
     Left = 10
-    Height = 18
+    Height = 15
     Top = 10
-    Width = 131
+    Width = 112
     Caption = 'DragThresholdLabel'
     ParentColor = False
   end
@@ -21,9 +21,9 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideTop.Control = HideHeaderCaptionForFloatingCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 10
-    Height = 18
-    Top = 192
-    Width = 138
+    Height = 15
+    Top = 246
+    Width = 117
     BorderSpacing.Top = 10
     Caption = 'HeaderAlignTopLabel'
     ParentColor = False
@@ -33,9 +33,9 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideTop.Control = HeaderAlignTopTrackBar
     AnchorSideTop.Side = asrBottom
     Left = 10
-    Height = 18
-    Top = 245
-    Width = 141
+    Height = 15
+    Top = 311
+    Width = 119
     BorderSpacing.Top = 10
     Caption = 'HeaderAlignLeftLabel'
     ParentColor = False
@@ -45,9 +45,9 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideTop.Control = DragThresholdTrackBar
     AnchorSideTop.Side = asrBottom
     Left = 10
-    Height = 18
-    Top = 63
-    Width = 121
+    Height = 15
+    Top = 75
+    Width = 102
     BorderSpacing.Top = 10
     Caption = 'SplitterWidthLabel'
     ParentColor = False
@@ -57,9 +57,9 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideTop.Control = SplitterWidthTrackBar
     AnchorSideTop.Side = asrBottom
     Left = 10
-    Height = 22
-    Top = 116
-    Width = 188
+    Height = 24
+    Top = 140
+    Width = 163
     BorderSpacing.Top = 10
     Caption = 'ScaleOnResizeCheckBox'
     ParentShowHint = False
@@ -73,8 +73,8 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 10
-    Height = 25
-    Top = 28
+    Height = 40
+    Top = 25
     Width = 332
     Max = 20
     OnChange = DragThresholdTrackBarChange
@@ -92,8 +92,8 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideRight.Control = DragThresholdTrackBar
     AnchorSideRight.Side = asrBottom
     Left = 10
-    Height = 25
-    Top = 210
+    Height = 40
+    Top = 261
     Width = 332
     Frequency = 10
     Max = 150
@@ -112,8 +112,8 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideRight.Control = DragThresholdTrackBar
     AnchorSideRight.Side = asrBottom
     Left = 10
-    Height = 25
-    Top = 263
+    Height = 40
+    Top = 326
     Width = 332
     Frequency = 10
     Max = 200
@@ -132,8 +132,8 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideRight.Control = DragThresholdTrackBar
     AnchorSideRight.Side = asrBottom
     Left = 10
-    Height = 25
-    Top = 81
+    Height = 40
+    Top = 90
     Width = 332
     Min = 1
     OnChange = SplitterWidthTrackBarChange
@@ -145,12 +145,12 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
   end
   object ShowHeaderCaptionCheckBox: TCheckBox
     AnchorSideLeft.Control = ScaleOnResizeCheckBox
-    AnchorSideTop.Control = ScaleOnResizeCheckBox
+    AnchorSideTop.Control = ShowHeaderCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 10
-    Height = 22
-    Top = 138
-    Width = 225
+    Height = 24
+    Top = 188
+    Width = 193
     Caption = 'ShowHeaderCaptionCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -161,12 +161,25 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideTop.Control = ShowHeaderCaptionCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 10
-    Height = 22
-    Top = 160
-    Width = 294
+    Height = 24
+    Top = 212
+    Width = 249
     Caption = 'HideHeaderCaptionForFloatingCheckBox'
     ParentShowHint = False
     ShowHint = True
     TabOrder = 5
+  end
+  object ShowHeaderCheckBox: TCheckBox
+    AnchorSideLeft.Control = ScaleOnResizeCheckBox
+    AnchorSideTop.Control = ScaleOnResizeCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 24
+    Top = 164
+    Width = 150
+    Caption = 'ShowHeaderCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 7
   end
 end

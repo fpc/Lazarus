@@ -85,6 +85,10 @@ msgstr ""
 msgid "Duplicate name: "
 msgstr ""
 
+#: anchordockstr.adrseachdockedwindowhasaheaderthatallowsdragginghasaco
+msgid "Each docked window has a header that allows dragging, has a context menu with extra layout functions and shows the caption of the docked window"
+msgstr ""
+
 #: anchordockstr.adrsemptyname
 msgid "Empty name: "
 msgstr ""
@@ -235,6 +239,10 @@ msgstr ""
 
 #: anchordockstr.adrsshowheadercaptions
 msgid "Show header captions"
+msgstr ""
+
+#: anchordockstr.adrsshowheaders
+msgid "Show headers"
 msgstr ""
 
 #: anchordockstr.adrssplitterthickness

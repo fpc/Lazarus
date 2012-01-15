@@ -575,6 +575,7 @@ begin
   OptionsFrame:=TAnchorDockOptionsFrame.Create(Self);
   with OptionsFrame do begin
     Name:='OptionsFrame';
+    Flags:=[adofShow_ShowHeader];
   end;
 end;
 

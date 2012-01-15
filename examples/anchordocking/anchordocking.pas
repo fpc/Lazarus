@@ -380,6 +380,7 @@ type
     HeaderHint: string;
     SplitterWidth: integer;
     ScaleOnResize: boolean;
+    ShowHeader: boolean;
     ShowHeaderCaption: boolean;
     HideHeaderCaptionFloatingControl: boolean;
     AllowDragging: boolean;
@@ -423,6 +424,7 @@ type
     FRestoreLayouts: TAnchorDockRestoreLayouts;
     FRestoring: boolean;
     FScaleOnResize: boolean;
+    FShowHeader: boolean;
     FShowHeaderCaption: boolean;
     FHideHeaderCaptionFloatingControl: boolean;
     FSiteClass: TAnchorDockHostSiteClass;
@@ -462,6 +464,7 @@ type
     procedure SetHeaderAlignLeft(const AValue: integer);
     procedure SetHeaderAlignTop(const AValue: integer);
     procedure SetHeaderButtonSize(const AValue: integer);
+    procedure SetShowHeader(AValue: boolean);
     procedure SetShowHeaderCaption(const AValue: boolean);
     procedure SetHideHeaderCaptionFloatingControl(const AValue: boolean);
     procedure SetSplitterWidth(const AValue: integer);
@@ -546,7 +549,8 @@ type
     property HeaderHint: string read FHeaderHint write FHeaderHint;
     property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth default 4;
     property ScaleOnResize: boolean read FScaleOnResize write FScaleOnResize default true; // scale children when resizing a site
-    property ShowHeaderCaption: boolean read FShowHeaderCaption write SetShowHeaderCaption default true; // set to false to disable showing header captions
+    property ShowHeader: boolean read FShowHeader write SetShowHeader default true; // set to false to hide all headers
+    property ShowHeaderCaption: boolean read FShowHeaderCaption write SetShowHeaderCaption default true; // set to false to remove the text in the headers
     property HideHeaderCaptionFloatingControl: boolean read FHideHeaderCaptionFloatingControl
                           write SetHideHeaderCaptionFloatingControl default true;
     property OnCreateControl: TADCreateControlEvent read FOnCreateControl write FOnCreateControl;
@@ -980,6 +984,7 @@ begin
   HeaderAlignLeft:=Config.GetValue('HeaderAlignLeft',120);
   SplitterWidth:=Config.GetValue('SplitterWidth',4);
   ScaleOnResize:=Config.GetValue('ScaleOnResize',true);
+  ShowHeader:=Config.GetValue('ShowHeader',true);
   ShowHeaderCaption:=Config.GetValue('ShowHeaderCaption',true);
   HideHeaderCaptionFloatingControl:=Config.GetValue('HideHeaderCaptionFloatingControl',true);
   AllowDragging:=Config.GetValue('AllowDragging',true);
@@ -998,6 +1003,7 @@ begin
   Config.SetDeleteValue('HeaderAlignLeft',HeaderAlignLeft,120);
   Config.SetDeleteValue('SplitterWidth',SplitterWidth,4);
   Config.SetDeleteValue('ScaleOnResize',ScaleOnResize,true);
+  Config.SetDeleteValue('ShowHeader',ShowHeader,true);
   Config.SetDeleteValue('ShowHeaderCaption',ShowHeaderCaption,true);
   Config.SetDeleteValue('HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
   Config.SetDeleteValue('AllowDragging',AllowDragging,true);
@@ -1007,7 +1013,6 @@ end;
 
 function TAnchorDockSettings.IsEqual(Settings: TAnchorDockSettings): boolean;
 begin
-  debugln(['TAnchorDockSettings.IsEqual ',DragTreshold,' ',Settings.DragTreshold]);
   Result:=(DragTreshold=Settings.DragTreshold)
       and (DockOutsideMargin=Settings.DockOutsideMargin)
       and (DockParentMargin=Settings.DockParentMargin)
@@ -1017,6 +1022,7 @@ begin
       and (HeaderHint=Settings.HeaderHint)
       and (SplitterWidth=Settings.SplitterWidth)
       and (ScaleOnResize=Settings.ScaleOnResize)
+      and (ShowHeader=Settings.ShowHeader)
       and (ShowHeaderCaption=Settings.ShowHeaderCaption)
       and (HideHeaderCaptionFloatingControl=Settings.HideHeaderCaptionFloatingControl)
       and (AllowDragging=Settings.AllowDragging)
@@ -1707,6 +1713,24 @@ begin
   AutoSizeAllHeaders(true);
 end;
 
+procedure TAnchorDockMaster.SetShowHeader(AValue: boolean);
+var
+  i: Integer;
+  Site: TAnchorDockHostSite;
+begin
+  if FShowHeader=AValue then exit;
+  FShowHeader:=AValue;
+  for i:=0 to ComponentCount-1 do begin
+    Site:=TAnchorDockHostSite(Components[i]);
+    if not (Site is TAnchorDockHostSite) then continue;
+    if (Site.Header<>nil) then begin
+      DisableControlAutoSizing(Site);
+      Site.UpdateHeaderShowing;
+    end;
+  end;
+  EnableAllAutoSizing;
+end;
+
 procedure TAnchorDockMaster.SetShowHeaderCaption(const AValue: boolean);
 var
   i: Integer;
@@ -1801,6 +1825,7 @@ begin
   FHeaderAlignTop:=80;
   HeaderAlignLeft:=120;
   FHeaderHint:=adrsDragAndDockC;
+  FShowHeader:=true;
   FShowHeaderCaption:=true;
   FHideHeaderCaptionFloatingControl:=true;
   FSplitterWidth:=4;
@@ -2359,6 +2384,7 @@ begin
   HeaderAlignLeft                  := Settings.HeaderAlignLeft;
   SplitterWidth                    := Settings.SplitterWidth;
   ScaleOnResize                    := Settings.ScaleOnResize;
+  ShowHeader                       := Settings.ShowHeader;
   ShowHeaderCaption                := Settings.ShowHeaderCaption;
   HideHeaderCaptionFloatingControl := Settings.HideHeaderCaptionFloatingControl;
   AllowDragging                    := Settings.AllowDragging;
@@ -2375,6 +2401,7 @@ begin
   Settings.HeaderAlignLeft:=HeaderAlignLeft;
   Settings.SplitterWidth:=SplitterWidth;
   Settings.ScaleOnResize:=ScaleOnResize;
+  Settings.ShowHeader:=ShowHeader;
   Settings.ShowHeaderCaption:=ShowHeaderCaption;
   Settings.HideHeaderCaptionFloatingControl:=HideHeaderCaptionFloatingControl;
   Settings.AllowDragging:=AllowDragging;
@@ -3736,7 +3763,9 @@ end;
 
 function TAnchorDockHostSite.HeaderNeedsShowing: boolean;
 begin
-  Result:=(SiteType<>adhstLayout) and (not (Parent is TAnchorDockPage));
+  Result:=(SiteType<>adhstLayout)
+      and (not (Parent is TAnchorDockPage))
+      and DockMaster.ShowHeader;
 end;
 
 procedure TAnchorDockHostSite.DoClose(var CloseAction: TCloseAction);

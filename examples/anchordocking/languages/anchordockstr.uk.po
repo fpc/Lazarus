@@ -85,6 +85,10 @@ msgstr "Поріг перетягування"
 msgid "Duplicate name: "
 msgstr "Дубльоване ім'я: "
 
+#: anchordockstr.adrseachdockedwindowhasaheaderthatallowsdragginghasaco
+msgid "Each docked window has a header that allows dragging, has a context menu with extra layout functions and shows the caption of the docked window"
+msgstr ""
+
 #: anchordockstr.adrsemptyname
 msgid "Empty name: "
 msgstr "Порожнє ім'я: "
@@ -236,6 +240,10 @@ msgstr "Показувати назви пристикованих об'єкті
 #: anchordockstr.adrsshowheadercaptions
 msgid "Show header captions"
 msgstr "Показувати назви в заголовках"
+
+#: anchordockstr.adrsshowheaders
+msgid "Show headers"
+msgstr ""
 
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"

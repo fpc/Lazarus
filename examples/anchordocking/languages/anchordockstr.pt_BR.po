@@ -87,6 +87,10 @@ msgstr "Limiar do arraste"
 msgid "Duplicate name: "
 msgstr "Nome duplicado:"
 
+#: anchordockstr.adrseachdockedwindowhasaheaderthatallowsdragginghasaco
+msgid "Each docked window has a header that allows dragging, has a context menu with extra layout functions and shows the caption of the docked window"
+msgstr ""
+
 #: anchordockstr.adrsemptyname
 msgid "Empty name: "
 msgstr "Nome vazio:"
@@ -238,6 +242,10 @@ msgstr "Exibir títulos de controles ancorados no cabeçalho"
 #: anchordockstr.adrsshowheadercaptions
 msgid "Show header captions"
 msgstr "Exibir títulos de cabeçalho"
+
+#: anchordockstr.adrsshowheaders
+msgid "Show headers"
+msgstr ""
 
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"

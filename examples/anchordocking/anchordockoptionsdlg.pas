@@ -38,6 +38,10 @@ uses
   StdCtrls, ComCtrls, LCLProc, AnchorDocking, AnchorDockStr;
 
 type
+  TAnchorDockOptionsFlag = (
+    adofShow_ShowHeader
+    );
+  TAnchorDockOptionsFlags = set of TAnchorDockOptionsFlag;
 
   { TAnchorDockOptionsFrame }
 
@@ -51,6 +55,7 @@ type
     HideHeaderCaptionForFloatingCheckBox: TCheckBox;
     ScaleOnResizeCheckBox: TCheckBox;
     ShowHeaderCaptionCheckBox: TCheckBox;
+    ShowHeaderCheckBox: TCheckBox;
     SplitterWidthLabel: TLabel;
     SplitterWidthTrackBar: TTrackBar;
     procedure OkClick(Sender: TObject);
@@ -59,14 +64,17 @@ type
     procedure HeaderAlignTopTrackBarChange(Sender: TObject);
     procedure SplitterWidthTrackBarChange(Sender: TObject);
   private
+    FFlags: TAnchorDockOptionsFlags;
     FMaster: TAnchorDockMaster;
     FSettings: TAnchorDockSettings;
+    procedure SetFlags(AValue: TAnchorDockOptionsFlags);
     procedure SetMaster(const AValue: TAnchorDockMaster);
     procedure SetSettings(AValue: TAnchorDockSettings);
     procedure UpdateDragThresholdLabel;
     procedure UpdateHeaderAlignTopLabel;
     procedure UpdateHeaderAlignLeftLabel;
     procedure UpdateSplitterWidthLabel;
+    procedure ApplyFlags;
   public
     procedure SaveToMaster;
     procedure LoadFromMaster;
@@ -74,6 +82,7 @@ type
     procedure LoadFromSettings(TheSettings: TAnchorDockSettings);
     property Master: TAnchorDockMaster read FMaster write SetMaster;
     property Settings: TAnchorDockSettings read FSettings write SetSettings;
+    property Flags: TAnchorDockOptionsFlags read FFlags write SetFlags;
   end;
 
 function ShowAnchorDockOptions(ADockMaster: TAnchorDockMaster): TModalResult;
@@ -149,6 +158,13 @@ begin
     LoadFromMaster;
 end;
 
+procedure TAnchorDockOptionsFrame.SetFlags(AValue: TAnchorDockOptionsFlags);
+begin
+  if FFlags=AValue then Exit;
+  FFlags:=AValue;
+  ApplyFlags;
+end;
+
 procedure TAnchorDockOptionsFrame.SetSettings(AValue: TAnchorDockSettings);
 begin
   if FSettings=AValue then Exit;
@@ -181,6 +197,11 @@ begin
                              +' ('+IntToStr(SplitterWidthTrackBar.Position)+')';
 end;
 
+procedure TAnchorDockOptionsFrame.ApplyFlags;
+begin
+  ShowHeaderCheckBox.Visible:=adofShow_ShowHeader in Flags;
+end;
+
 procedure TAnchorDockOptionsFrame.SaveToMaster;
 var
   CurSettings: TAnchorDockSettings;
@@ -210,14 +231,14 @@ end;
 procedure TAnchorDockOptionsFrame.SaveToSettings(
   TheSettings: TAnchorDockSettings);
 begin
-  TheSettings.DragTreshold    := DragThresholdTrackBar.Position;
-  DebugLn(['TAnchorDockOptionsFrame.SaveToSettings ',TheSettings.DragTreshold,' ',DragThresholdTrackBar.Position]);
-  TheSettings.HeaderAlignTop  := HeaderAlignTopTrackBar.Position;
-  TheSettings.HeaderAlignLeft := HeaderAlignLeftTrackBar.Position;
-  TheSettings.SplitterWidth   := SplitterWidthTrackBar.Position;
-  TheSettings.ScaleOnResize   := ScaleOnResizeCheckBox.Checked;
-  TheSettings.ShowHeaderCaption   := ShowHeaderCaptionCheckBox.Checked;
-  TheSettings.HideHeaderCaptionFloatingControl   := HideHeaderCaptionForFloatingCheckBox.Checked;
+  TheSettings.DragTreshold:=DragThresholdTrackBar.Position;
+  TheSettings.HeaderAlignTop:=HeaderAlignTopTrackBar.Position;
+  TheSettings.HeaderAlignLeft:=HeaderAlignLeftTrackBar.Position;
+  TheSettings.SplitterWidth:=SplitterWidthTrackBar.Position;
+  TheSettings.ScaleOnResize:=ScaleOnResizeCheckBox.Checked;
+  TheSettings.ShowHeader:=ShowHeaderCheckBox.Checked;
+  TheSettings.ShowHeaderCaption:=ShowHeaderCaptionCheckBox.Checked;
+  TheSettings.HideHeaderCaptionFloatingControl:=HideHeaderCaptionForFloatingCheckBox.Checked;
 end;
 
 procedure TAnchorDockOptionsFrame.LoadFromSettings(
@@ -245,6 +266,11 @@ begin
   ScaleOnResizeCheckBox.Caption:=adrsScaleOnResize;
   ScaleOnResizeCheckBox.Hint:=adrsScaleSubSitesWhenASiteIsResized;
   ScaleOnResizeCheckBox.Checked:=TheSettings.ScaleOnResize;
+
+  ShowHeaderCheckBox.Caption:=adrsShowHeaders;
+  ShowHeaderCheckBox.Hint:=
+    adrsEachDockedWindowHasAHeaderThatAllowsDraggingHasACo;
+  ShowHeaderCheckBox.Checked:=TheSettings.ShowHeader;
 
   ShowHeaderCaptionCheckBox.Caption:=adrsShowHeaderCaptions;
   ShowHeaderCaptionCheckBox.Hint:=adrsShowCaptionsOfDockedControlsInTheHeader;

@@ -87,6 +87,10 @@ msgstr "Soglia di trascinamento"
 msgid "Duplicate name: "
 msgstr "Nome duplicato: "
 
+#: anchordockstr.adrseachdockedwindowhasaheaderthatallowsdragginghasaco
+msgid "Each docked window has a header that allows dragging, has a context menu with extra layout functions and shows the caption of the docked window"
+msgstr ""
+
 #: anchordockstr.adrsemptyname
 msgid "Empty name: "
 msgstr "Nome vuoto: "
@@ -238,6 +242,10 @@ msgstr "Mostra il titolo dei controlli ospiti nell'intestazione"
 #: anchordockstr.adrsshowheadercaptions
 msgid "Show header captions"
 msgstr "Mostra titolo delle intestazioni"
+
+#: anchordockstr.adrsshowheaders
+msgid "Show headers"
+msgstr ""
 
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"

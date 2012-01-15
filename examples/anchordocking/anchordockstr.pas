@@ -93,6 +93,10 @@ resourcestring
   adrsShowHeaderCaptions = 'Show header captions';
   adrsShowCaptionsOfDockedControlsInTheHeader = 'Show captions of docked '
     +'controls in the header';
+  adrsShowHeaders = 'Show headers';
+  adrsEachDockedWindowHasAHeaderThatAllowsDraggingHasACo = 'Each docked window'
+    +' has a header that allows dragging, has a context menu with extra layout'
+    +' functions and shows the caption of the docked window';
   adrsNoCaptionsForFloatingSites = 'No captions for floating sites';
   adrsHideHeaderCaptionsForSitesWithOnlyOneDockedControl = 'Hide header '
     +'captions for sites with only one docked control, as that is already '
