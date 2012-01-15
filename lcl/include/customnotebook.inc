@@ -307,9 +307,21 @@ end;
                NoteBook1.ScreenToClient(Mouse.CursorPos));
  ------------------------------------------------------------------------------}
 function TCustomTabControl.TabIndexAtClientPos(ClientPos: TPoint): integer;
+var
+  i, VisiblePageInd: Integer;
 begin
-  if HandleAllocated then
-    Result:=TWSCustomTabControlClass(WidgetSetClass).GetTabIndexAtPos(Self, ClientPos)
+  if HandleAllocated then begin
+    Result:=TWSCustomTabControlClass(WidgetSetClass).GetTabIndexAtPos(Self, ClientPos);
+    VisiblePageInd:=-1;
+    for i:=0 to PageCount-1 do begin
+      if Page[i].TabVisible then
+        Inc(VisiblePageInd)
+      else begin
+        if VisiblePageInd < Result then
+          Inc(Result);
+      end;
+    end;
+  end
   else
     Result:=-1;
 end;
