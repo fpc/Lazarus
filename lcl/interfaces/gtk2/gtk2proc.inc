@@ -3060,14 +3060,10 @@ type
   end;
   
   procedure UpdateModifierMap(const AModMap: TModMap; AKeyCode: Byte; AKeySym: Cardinal);
-  {$ifdef VerboseModifiermap}
-  const
-    STATE_NAME: array[TShiftStateEnum] of String = ('ssShift', 'ssAlt', 'ssCtrl',
-      'ssLeft', 'ssRight', 'ssMiddle', 'ssDouble',
-      'ssMeta', 'ssSuper', 'ssHyper', 'ssAltGr', 'ssCaps', 'ssNum',
-      'ssScroll', 'ssTriple', 'ssQuad', 'ssExtra1', 'ssExtra2');
-  {$endif}
   var
+  {$ifdef VerboseModifiermap}
+    s: string;
+  {$endif}
     ShiftState: TShiftStateEnum;
   begin
     if AModMap[AKeyCode] = 0 then Exit;
@@ -3102,7 +3098,9 @@ type
     MModifiers[ShiftState].UseValue := False;
     
     {$ifdef VerboseModifiermap}
-    DebugLn('Mapped keycode=%u, keysym=$%x, modifier=$%2.2x to shiftstate %s', [AKeyCode, AKeySym, AModMap[AKeyCode], STATE_NAME[ShiftState]]);
+    WriteStr(s, ShiftState);
+    DebugLn('Mapped keycode=%u, keysym=$%x, modifier=$%2.2x to shiftstate %s',
+            [AKeyCode, AKeySym, AModMap[AKeyCode], s]);
     {$endif}
 
   end;
