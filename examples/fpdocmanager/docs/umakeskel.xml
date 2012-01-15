@@ -107,7 +107,7 @@
       </element>
       <!-- variable Visibility: public -->
       <element name="TCmdOptions.WriteDeclaration">
-        <short>[?]</short>
+        <short>Emit declaration for elements (--emit-declaration).</short>
         <descr/>
         <seealso/>
       </element>
@@ -125,7 +125,7 @@
       </element>
       <!-- variable Visibility: public -->
       <element name="TCmdOptions.DisableOverride">
-        <short>[?]</short>
+        <short>Do not create nodes for override methods.</short>
         <descr/>
         <seealso/>
       </element>

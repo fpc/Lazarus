@@ -1,20 +1,19 @@
 object Main: TMain
-  Left = 373
-  Height = 290
+  Left = 335
+  Height = 423
   Top = 146
-  Width = 411
+  Width = 569
   Align = alClient
   Caption = 'Main'
-  ClientHeight = 270
-  ClientWidth = 411
+  ClientHeight = 403
+  ClientWidth = 569
   Menu = MainMenu1
-  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnResize = FormResize
   LCLVersion = '0.9.31'
   object lbPackages: TComboBox
     Left = 0
-    Height = 270
+    Height = 403
     Top = 0
     Width = 94
     Align = alLeft
@@ -25,22 +24,348 @@ object Main: TMain
   end
   object Units: TPageControl
     Left = 94
-    Height = 270
+    Height = 403
     Top = 0
-    Width = 317
+    Width = 475
     ActivePage = ViewUnits
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 1
+    object ViewUnits: TTabSheet
+      Caption = 'Units'
+      ClientHeight = 375
+      ClientWidth = 467
+      object lbUnits: TListBox
+        Left = 0
+        Height = 375
+        Top = 0
+        Width = 100
+        Align = alLeft
+        ItemHeight = 0
+        OnClick = lbUnitsClick
+        TabOrder = 0
+      end
+      object GroupBox1: TGroupBox
+        Left = 100
+        Height = 375
+        Top = 0
+        Width = 367
+        Align = alClient
+        Caption = 'Actions'
+        ClientHeight = 357
+        ClientWidth = 363
+        TabOrder = 1
+        object swAll: TRadioButton
+          Left = 10
+          Height = 19
+          Top = 10
+          Width = 32
+          Caption = 'all'
+          Checked = True
+          TabOrder = 0
+          TabStop = True
+        end
+        object swSingle: TRadioButton
+          Left = 48
+          Height = 19
+          Top = 10
+          Width = 43
+          Caption = 'only'
+          OnClick = swSingleClick
+          TabOrder = 1
+        end
+        object edUnit: TEdit
+          Left = 96
+          Height = 23
+          Top = 10
+          Width = 262
+          Anchors = [akTop, akLeft, akRight]
+          ReadOnly = True
+          TabOrder = 2
+        end
+        object buRefresh: TButton
+          Left = 96
+          Height = 25
+          Top = 40
+          Width = 75
+          Caption = 'Refresh'
+          OnClick = buRefreshClick
+          TabOrder = 3
+        end
+        object buShowLog: TButton
+          Left = 10
+          Height = 25
+          Top = 208
+          Width = 68
+          Caption = 'Show Log'
+          TabOrder = 4
+        end
+        object edLog: TEdit
+          Left = 88
+          Height = 23
+          Top = 208
+          Width = 269
+          Anchors = [akTop, akLeft, akRight]
+          OnChange = edLogChange
+          TabOrder = 5
+        end
+        object buTest: TButton
+          Left = 9
+          Height = 25
+          Top = 40
+          Width = 75
+          Caption = 'Test only'
+          OnClick = buTestClick
+          TabOrder = 6
+        end
+        object swShowUpdate: TCheckBox
+          Left = 248
+          Height = 19
+          Top = 176
+          Width = 90
+          Caption = 'Show Update'
+          OnChange = swShowUpdateChange
+          TabOrder = 7
+        end
+        object optUpd: TCheckGroup
+          Left = 8
+          Height = 129
+          Top = 72
+          Width = 216
+          AutoFill = True
+          Caption = 'Hide...'
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.TopBottomSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsScaleChilds
+          ChildSizing.ShrinkVertical = crsScaleChilds
+          ChildSizing.Layout = cclLeftToRightThenTopToBottom
+          ChildSizing.ControlsPerLine = 2
+          Columns = 2
+          Items.Strings = (
+            'Declaration'
+            'Overrides'
+            'Errors'
+            'SeeAlso'
+            'Arguments'
+            'Results'
+            'Private'
+            'Protected'
+            'Class Separators'
+          )
+          OnItemClick = optUpdItemClick
+          TabOrder = 8
+          Data = {
+            09000000020202020202030202
+          }
+        end
+        object swSortNodes: TCheckBox
+          Left = 248
+          Height = 19
+          Top = 96
+          Width = 78
+          Caption = 'Sort Nodes'
+          TabOrder = 9
+        end
+      end
+    end
+    object ViewFinal: TTabSheet
+      Caption = 'Document'
+      ClientHeight = 375
+      ClientWidth = 467
+      object Label1: TLabel
+        Left = 10
+        Height = 16
+        Top = 74
+        Width = 39
+        Caption = 'Format'
+        ParentColor = False
+      end
+      object cbFormat: TComboBox
+        Left = 70
+        Height = 23
+        Top = 72
+        Width = 375
+        ItemHeight = 15
+        OnSelect = cbFormatSelect
+        ParentColor = True
+        Style = csDropDownList
+        TabOrder = 0
+      end
+      object swDocOpts: TCheckGroup
+        Left = 10
+        Height = 136
+        Top = 106
+        Width = 220
+        AutoFill = True
+        Caption = 'Options'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 1
+        Items.Strings = (
+          'Stop on parser error'
+          'Warn on missing description'
+          'Hide protected'
+          'Show privates'
+          'Interface only'
+          'Don''t trim'
+        )
+        OnItemClick = optUpdItemClick
+        TabOrder = 1
+        Data = {
+          06000000020302020302
+        }
+      end
+      object Label2: TLabel
+        Left = 10
+        Height = 16
+        Top = 250
+        Width = 50
+        Caption = 'OSTarget'
+        ParentColor = False
+      end
+      object Label3: TLabel
+        Left = 10
+        Height = 16
+        Top = 278
+        Width = 58
+        Caption = 'CPUTarget'
+        ParentColor = False
+      end
+      object Label4: TLabel
+        Left = 10
+        Height = 16
+        Top = 307
+        Width = 53
+        Caption = 'Language'
+        ParentColor = False
+      end
+      object Label5: TLabel
+        Left = 10
+        Height = 16
+        Top = 346
+        Width = 34
+        Caption = 'MoDir'
+        ParentColor = False
+      end
+      object Label6: TLabel
+        Left = 246
+        Height = 16
+        Top = 106
+        Width = 91
+        Caption = 'Backend Options'
+        ParentColor = False
+      end
+      object buMakeDoc: TButton
+        Left = 296
+        Height = 25
+        Top = 8
+        Width = 146
+        AutoSize = True
+        Caption = 'Create Documentation'
+        OnClick = buMakeDocClick
+        TabOrder = 2
+      end
+      object edOS: TEdit
+        Left = 82
+        Height = 23
+        Top = 250
+        Width = 148
+        OnExit = edOSExit
+        TabOrder = 3
+      end
+      object edCPU: TEdit
+        Left = 82
+        Height = 23
+        Top = 278
+        Width = 148
+        OnExit = edOSExit
+        TabOrder = 4
+      end
+      object edLang: TEdit
+        Left = 82
+        Height = 23
+        Top = 307
+        Width = 148
+        OnExit = edOSExit
+        TabOrder = 5
+      end
+      object edMoDir: TEdit
+        Left = 82
+        Height = 23
+        Top = 339
+        Width = 364
+        OnExit = edOSExit
+        TabOrder = 6
+      end
+      object Label7: TLabel
+        Left = 10
+        Height = 16
+        Top = 10
+        Width = 35
+        Caption = 'Profile'
+        ParentColor = False
+      end
+      object cbProfile: TComboBox
+        Left = 66
+        Height = 23
+        Top = 8
+        Width = 100
+        ItemHeight = 15
+        OnSelect = cbProfileSelect
+        TabOrder = 7
+      end
+      object buNewProfile: TButton
+        Left = 174
+        Height = 25
+        Top = 8
+        Width = 51
+        Caption = 'Save'
+        OnClick = buNewProfileClick
+        TabOrder = 8
+      end
+      object Label8: TLabel
+        Left = 10
+        Height = 16
+        Top = 40
+        Width = 39
+        Caption = 'Output'
+        ParentColor = False
+      end
+      object edOutput: TEdit
+        Left = 66
+        Height = 23
+        Top = 40
+        Width = 376
+        TabOrder = 9
+      end
+      object edBackend: TMemo
+        Left = 246
+        Height = 200
+        Hint = 'Enter command=value pairs'
+        Top = 128
+        Width = 200
+        OnExit = lbBackendExit
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 10
+      end
+    end
     object ViewXML: TTabSheet
       Caption = 'Project'
-      ClientHeight = 242
-      ClientWidth = 309
+      ClientHeight = 315
+      ClientWidth = 467
       inline edXML: TSynEdit
         Left = 0
-        Height = 242
+        Height = 315
         Top = 0
-        Width = 309
+        Width = 467
         Align = alClient
         Font.Height = -13
         Font.Name = 'Courier New'
@@ -520,131 +845,15 @@ object Main: TMain
         end
       end
     end
-    object ViewUnits: TTabSheet
-      Caption = 'Units'
-      ClientHeight = 242
-      ClientWidth = 309
-      object lbUnits: TListBox
-        Left = 0
-        Height = 242
-        Top = 0
-        Width = 100
-        Align = alLeft
-        ItemHeight = 0
-        OnClick = lbUnitsClick
-        TabOrder = 0
-      end
-      object GroupBox1: TGroupBox
-        Left = 100
-        Height = 242
-        Top = 0
-        Width = 209
-        Align = alClient
-        Caption = 'Actions'
-        ClientHeight = 224
-        ClientWidth = 205
-        TabOrder = 1
-        object swAll: TRadioButton
-          Left = 10
-          Height = 19
-          Top = 10
-          Width = 32
-          Caption = 'all'
-          Checked = True
-          TabOrder = 0
-          TabStop = True
-        end
-        object swSingle: TRadioButton
-          Left = 48
-          Height = 19
-          Top = 10
-          Width = 43
-          Caption = 'only'
-          OnClick = swSingleClick
-          TabOrder = 1
-        end
-        object edUnit: TEdit
-          Left = 96
-          Height = 23
-          Top = 10
-          Width = 104
-          Anchors = [akTop, akLeft, akRight]
-          ReadOnly = True
-          TabOrder = 2
-        end
-        object buRefresh: TButton
-          Left = 10
-          Height = 25
-          Top = 40
-          Width = 188
-          Caption = 'Refresh'
-          OnClick = buRefreshClick
-          TabOrder = 3
-        end
-        object buSkel: TButton
-          Left = 20
-          Height = 25
-          Top = 72
-          Width = 104
-          Caption = 'Create Skeleton'
-          Enabled = False
-          TabOrder = 4
-        end
-        object buUpdate: TButton
-          Left = 132
-          Height = 25
-          Top = 72
-          Width = 54
-          Caption = 'Update'
-          Enabled = False
-          TabOrder = 5
-        end
-        object buShowLog: TButton
-          Left = 9
-          Height = 25
-          Top = 184
-          Width = 68
-          Caption = 'Show Log'
-          TabOrder = 6
-        end
-        object edLog: TEdit
-          Left = 87
-          Height = 23
-          Top = 184
-          Width = 111
-          Anchors = [akTop, akLeft, akRight]
-          OnChange = edLogChange
-          TabOrder = 7
-        end
-        object buTest: TButton
-          Left = 10
-          Height = 25
-          Top = 144
-          Width = 75
-          Caption = 'Test only'
-          OnClick = buTestClick
-          TabOrder = 8
-        end
-        object swShowUpdate: TCheckBox
-          Left = 10
-          Height = 19
-          Top = 104
-          Width = 90
-          Caption = 'Show Update'
-          OnChange = swShowUpdateChange
-          TabOrder = 9
-        end
-      end
-    end
     object ViewINI: TTabSheet
       Caption = 'INI'
-      ClientHeight = 242
-      ClientWidth = 309
+      ClientHeight = 375
+      ClientWidth = 467
       object edINI: TMemo
         Left = 0
-        Height = 242
+        Height = 375
         Top = 0
-        Width = 309
+        Width = 467
         Align = alClient
         Lines.Strings = (
           'edINI'

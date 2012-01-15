@@ -52,6 +52,7 @@ interface
 uses
   SysUtils, Classes, Gettext,
   dGlobals, PasTree, PParser,PScanner,
+  IniFiles,
   mkfpdoc, fpdocproj;
 
 resourcestring
@@ -72,10 +73,25 @@ resourcestring
 type
   TCmdLineAction = (actionHelp, actionConvert);
 
+(* Extended INI file
+*)
+
+  { TConfigFile }
+
+  TConfigFile = class(TIniFile)
+  public
+    function IsDirty: boolean;
+    procedure Flush;
+    procedure WriteSectionValues(const Section: string; Strings: TStrings);
+  end;
+
 (* EngineOptions plus MakeSkel options.
   Used in the commandline parsers, passed to the Engine.
   Project.Options are ignored by TFDocMaker.(?)
 *)
+
+  { TCmdOptions }
+
   TCmdOptions = class(TEngineOptions)
   public
     WriteDeclaration,
@@ -89,6 +105,12 @@ type
     DisablePrivate,
     DisableFunctionResults: Boolean;
     EmitClassSeparator: Boolean;
+    Modified: boolean;
+    procedure Assign(Source: TPersistent); override;
+    procedure LoadConfig(cf: TConfigFile; AProfile: string);
+    procedure SaveConfig(cf: TConfigFile; AProfile: string);
+    procedure BackendToPairs(Dest: TStrings);
+    procedure BackendFromPairs(Source: TStrings);
   end;
 
   { TSkelEngine }
@@ -156,7 +178,7 @@ type
     function ParseCommon(var Cmd, Arg: string): TCreatorAction;
   public
     Function  DocumentPackage(Const APackageName,AOutputName: string; InputFiles, DescrFiles : TStrings) : String;
-    procedure CreateUnitDocumentation(APackage: TFPDocPackage; const AUnit: string; ParseOnly: Boolean);
+    procedure CreateUnitDocumentation(const AUnit: string; ParseOnly: Boolean);
   public
     ImportDir: string;
     SelectedUnit: string;
@@ -315,6 +337,149 @@ type
     Property Element : TPasElement Read FEl;
     Property DocNode : TDocNode Read FNode;
   end;
+
+{ TConfigFile }
+
+function TConfigFile.IsDirty: boolean;
+begin
+  Result := Dirty;
+end;
+
+procedure TConfigFile.Flush;
+begin
+  if Dirty then
+    UpdateFile; //only if dirty
+end;
+
+procedure TConfigFile.WriteSectionValues(const Section: string; Strings: TStrings);
+var
+  i: integer;
+begin
+//add missing: write Strings as a section
+  if (Strings = nil) or (Strings.Count = 0) then
+    exit; //nothing to write
+  for i := 0 to Strings.Count - 1 do begin
+    WriteString(Section, Strings.Names[i], Strings.ValueFromIndex[i]);
+    //WriteString(Section, Strings[i], ''); //???
+  end;
+end;
+
+{ TCmdOptions }
+
+procedure TCmdOptions.Assign(Source: TPersistent);
+var
+  s: TCmdOptions absolute Source;
+begin
+  inherited Assign(Source);
+  if Source is TCmdOptions then begin
+    WriteDeclaration := s.WriteDeclaration;
+    DisableOverride := s.DisableOverride;
+    DisableErrors:=s.DisableErrors;
+    DisableSeealso:=s.DisableSeealso;
+    DisableArguments:=s.DisableArguments;
+    DisableFunctionResults := s.DisableFunctionResults;
+    ShowPrivate := s.ShowPrivate;
+    DisableProtected:=s.DisableProtected;
+    SortNodes := s.SortNodes;
+  end;
+end;
+
+const SecOpts = 'default';
+
+procedure TCmdOptions.LoadConfig(cf: TConfigFile; AProfile: string);
+var
+  s, sec: string;
+begin
+//MakeSkel
+  WriteDeclaration := cf.ReadBool(SecOpts, 'WriteDeclaration', True);
+  DisableOverride := cf.ReadBool(SecOpts, 'DisableOverride', False);
+  DisableErrors := cf.ReadBool(SecOpts, 'DisableErrors', False);
+  DisableSeealso := cf.ReadBool(SecOpts, 'DisableSeealso', False);
+  DisableArguments := cf.ReadBool(SecOpts, 'DisableArguments', False);
+  DisableFunctionResults := cf.ReadBool(SecOpts, 'DisableFunctionResults', False);
+  ShowPrivate := cf.ReadBool(SecOpts, 'ShowPrivate', True);
+  DisableProtected := cf.ReadBool(SecOpts, 'DisableProtected', False);
+  SortNodes := cf.ReadBool(SecOpts, 'SortNodes', False);
+//Engine
+  StopOnParseError :=  cf.ReadBool(SecOpts, 'StopOnParseError', False);
+  WarnNoNode :=  cf.ReadBool(SecOpts, 'WarnNoNode', True);
+  InterfaceOnly :=  cf.ReadBool(SecOpts, 'InterfaceOnly', True);
+  if AProfile = '' then
+    AProfile := SecOpts;
+  OSTarget := cf.ReadString(AProfile, 'OSTarget', DefOSTarget);
+  CPUTarget := cf.ReadString(AProfile, 'CPUTarget', DefCPUTarget);
+  Language := cf.ReadString(AProfile, 'Language', '');
+  Backend :=  cf.ReadString(AProfile, 'Backend', 'html');
+  MoDir :=  cf.ReadString(AProfile, 'MoDir', '');
+  HideProtected :=  cf.ReadBool(AProfile, 'HideProtected', False);
+  ShowPrivate :=  cf.ReadBool(AProfile, 'ShowPrivate', False);
+  DontTrim := cf.ReadBool(AProfile, 'DontTrim', False);
+//Backend
+  s := cf.ReadString(AProfile, 'BackendOptions', '');
+  BackendOptions.CommaText := s;
+//finally
+  Modified := False;
+end;
+
+procedure TCmdOptions.SaveConfig(cf: TConfigFile; AProfile: string);
+begin
+//MakeSkel
+  cf.WriteBool(SecOpts, 'WriteDeclaration', WriteDeclaration);
+  cf.WriteBool(SecOpts, 'DisableOverride', DisableOverride);
+  cf.WriteBool(SecOpts, 'DisableErrors', DisableErrors);
+  cf.WriteBool(SecOpts, 'DisableSeealso', DisableSeealso);
+  cf.WriteBool(SecOpts, 'DisableArguments', DisableArguments);
+  cf.WriteBool(SecOpts, 'DisableFunctionResults', DisableFunctionResults);
+  cf.WriteBool(SecOpts, 'DisablePrivate', DisablePrivate);
+  cf.WriteBool(SecOpts, 'DisableProtected', DisableProtected);
+  cf.WriteBool(SecOpts, 'SortNodes', SortNodes);
+//Engine
+  cf.WriteBool(SecOpts, 'StopOnParseError', StopOnParseError);
+  cf.WriteBool(SecOpts, 'WarnNoNode', WarnNoNode);
+  cf.WriteBool(SecOpts, 'DontTrim', DontTrim);
+  if AProfile = '' then
+    AProfile := SecOpts;
+  cf.WriteString(AProfile, 'OSTarget', OSTarget);
+  cf.WriteString(AProfile, 'CPUTarget', CPUTarget);
+  cf.WriteString(AProfile, 'Language', Language);
+  cf.WriteString(AProfile, 'Backend', Backend);
+  cf.WriteString(AProfile, 'MoDir', MoDir);
+  cf.WriteBool(AProfile, 'HideProtected', HideProtected);
+  cf.WriteBool(AProfile, 'ShowPrivate', ShowPrivate);
+  cf.WriteBool(AProfile, 'InterfaceOnly', InterfaceOnly);
+//Backend
+  if BackendOptions.Count > 0 then
+    cf.WriteString(AProfile, 'BackendOptions', BackendOptions.CommaText);
+//finally
+  Modified := False;
+end;
+
+procedure TCmdOptions.BackendToPairs(Dest: TStrings);
+var
+  i, n: integer;
+begin
+  Dest.Clear;
+  n := BackendOptions.Count div 2;
+  if n = 0 then
+    exit;
+  Dest.Capacity := n;
+  for i := 0 to n-1 do begin
+    Dest.Add(BackendOptions[i*2] + '=' + BackendOptions[i*2 + 1]);
+  end;
+end;
+
+procedure TCmdOptions.BackendFromPairs(Source: TStrings);
+var
+  i: integer;
+begin
+  BackendOptions.Clear;
+  BackendOptions.Capacity:=Source.Count * 2;
+  for i := 0 to Source.Count - 1 do begin
+    BackendOptions.Add(Source.Names[i]);
+    BackendOptions.Add(Source.ValueFromIndex[i]);
+  end;
+  Modified := True; //todo: only if really changed?
+end;
 
 Constructor TNodePair.Create(AnElement : TPasElement; ADocNode : TDocNode);
 
@@ -701,7 +866,7 @@ end;
 procedure TFPDocMaker.SetOptions(AValue: TCmdOptions);
 begin
   if FOptions=AValue then Exit;
-  FOptions:=AValue;
+  FOptions.Assign(AValue);
 end;
 
 (* Check the options, return errors as message strings.
@@ -1043,8 +1208,7 @@ begin
   end;
 end;
 
-procedure TFPDocMaker.CreateUnitDocumentation(APackage: TFPDocPackage;
-  const AUnit: string; ParseOnly: Boolean);
+procedure TFPDocMaker.CreateUnitDocumentation(const AUnit: string; ParseOnly: Boolean);
 var
   il: TStringList;
   spec: string;
@@ -1053,17 +1217,17 @@ begin
   //selected unit only
     spec := UnitSpec(AUnit);
     il := TStringList.Create;
-    il.Assign(APackage.Inputs);
-    APackage.Inputs.Clear;
-    APackage.Inputs.Add(spec);
+    il.Assign(Package.Inputs);
+    Package.Inputs.Clear;
+    Package.Inputs.Add(spec);
     try
-      inherited CreateDocumentation(APackage, ParseOnly);
+      inherited CreateDocumentation(Package, ParseOnly);
     finally
-      APackage.Inputs.Assign(il);
+      Package.Inputs.Assign(il);
       il.Free;
     end;
   end else begin
-    CreateDocumentation(APackage,ParseOnly);
+    CreateDocumentation(Package,ParseOnly);
   end;
 end;
 

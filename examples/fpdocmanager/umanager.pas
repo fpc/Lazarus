@@ -22,7 +22,7 @@ This version is decoupled from the fpdoc classes, introduces the classes
 interface
 
 uses
-  Classes, SysUtils, IniFiles,
+  Classes, SysUtils,
   umakeskel, fpdocproj, dw_HTML;
 
 type
@@ -61,12 +61,12 @@ type
     procedure SetUnitPath(AValue: string);
     procedure SetUnits(AValue: TStrings);
   protected
-    Config: TIniFile;
+    Config: TConfigFile;
     procedure ReadConfig;
-    function  IniFileName: string;
   public
     constructor Create;
     destructor Destroy; override;
+    function  IniFileName: string;
     function  CreateProject(APrj: TFPDocHelper; const AFile: string): boolean; //new package project
     function  ImportProject(APrj: TFPDocHelper; APkg: TFPDocPackage; const AFile: string): boolean;
     procedure UpdateConfig;
@@ -107,6 +107,7 @@ type
     function  CmdToPrj(const AFileName: string): boolean;
     function  TestRun(APkg: TDocPackage; AUnit: string): boolean;
     function  Update(APkg: TDocPackage; const AUnit: string): boolean;
+    function  MakeDocs(APkg: TDocPackage; const AUnit: string; AOutput: string): boolean;
     property ProjectDir: string read FProjectDir write SetProjectDir;
   end;
 
@@ -123,14 +124,18 @@ type
     FModified: boolean;
     FOnChange: TNotifyEvent;
     FOnLog: TLogHandler;
+    FOptions: TCmdOptions;
     FPackage: TDocPackage;
     FPackages: TStrings;
+    FProfile: string;
+    FProfiles: string; //CSV list of profile names
     FRootDir: string;
     UpdateCount: integer;
     procedure SetFPDocDir(AValue: string);
     procedure SetLazarusDir(AValue: string);
     procedure SetOnChange(AValue: TNotifyEvent);
     procedure SetPackage(AValue: TDocPackage);
+    procedure SetProfile(AValue: string);
     procedure SetRootDir(AValue: string);
   protected
     Helper: TFPDocHelper; //temporary
@@ -140,13 +145,14 @@ type
     function  RegisterPackage(APkg: TDocPackage): integer;
     Procedure DoLog(Const Msg : String);
   public
-    Config: TIniFile; //extend class?
+    Config: TConfigFile; //extend class
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure BeginUpdate;
     procedure EndUpdate;
     function  LoadConfig(const ADir: string; Force: boolean = False): boolean;
     function  SaveConfig: boolean;
+    procedure AddProfile(const AName: string);
     function  AddProject(const APkg, AFile: string; UpdateCfg: boolean): boolean; //from config
     function  CreateProject(const AFileName: string; APkg: TDocPackage): boolean;
     function  AddPackage(AName: string): TDocPackage;
@@ -154,13 +160,16 @@ type
     procedure ImportProject(APkg: TFPDocPackage; const AFile: string);
     function  ImportCmd(const AFile: string): boolean;
   //actions
-    //function MakeDoc(APkg: TDocPackage; AUnit: string): boolean; configure???
+    function  MakeDoc(APkg: TDocPackage; AUnit: string): boolean;
     function  TestRun(APkg: TDocPackage; AUnit: string): boolean;
     function  Update(APkg: TDocPackage; const AUnit: string): boolean;
   public //published?
     property FpcDocDir: string read FFPDocDir write SetFPDocDir;
     //property LazarusDir: string read FLazarusDir write SetLazarusDir;
     property RootDir: string read FRootDir write SetRootDir;
+    property Options: TCmdOptions read FOptions;
+    property Profile: string read FProfile write SetProfile;
+    property Profiles: string read FProfiles;
     property Packages: TStrings read FPackages;
     property Package: TDocPackage read FPackage write SetPackage;
     property Modified: boolean read FModified; //app
@@ -332,8 +341,11 @@ begin
   if FProjectFile=AValue then Exit;
   FProjectFile:=AValue;
 //really do more?
-  if FProjectFile <> '' then
-    FProjectDir:=ExtractFilePath(FProjectFile);
+  if FProjectFile = '' then
+    exit;
+  FProjectDir:=ExtractFilePath(FProjectFile);
+  if ExtractFileExt(FProjectFile) <> '.xml' then
+    ; //really change here???
   //import requires fpdocproject - must be created by Manager!
 end;
 
@@ -408,7 +420,8 @@ begin
     APrj.ParseFPDocOption('--import=' + imp);
   end;
 //add options
-  pkg.Output := Manager.RootDir + Name;
+  APrj.Options.Assign(Manager.Options);
+  pkg.Output := Manager.RootDir + Name; //???
   pkg.ContentFile := Manager.RootDir + Name + '.xct';
 //now create project file
   if AFile <> '' then begin
@@ -455,6 +468,7 @@ begin
 end;
 
 const
+  SecGen = 'dirs';
   SecDoc = 'project';
 
 procedure TDocPackage.ReadConfig;
@@ -464,7 +478,7 @@ begin
   if Loaded then
     exit;
   if Config = nil then
-    Config := TIniFile.Create(IniFileName);
+    Config := TConfigFile.Create(IniFileName);
 //check config
   s := Config.ReadString(SecDoc, 'projectdir', '');
   if s = '' then begin
@@ -477,8 +491,13 @@ begin
   FDescrDir := Config.ReadString(SecDoc, 'descrdir', '');
   Requires.CommaText := Config.ReadString(SecDoc, 'requires', '');
 //units
+{$IFDEF v0}
   Config.ReadSectionRaw('units', Units);
   Config.ReadSectionRaw('descrs', Descriptions);
+{$ELSE}
+  Config.ReadSectionValues('units', Units);
+  Config.ReadSectionValues('descrs', Descriptions);
+{$ENDIF}
 //more?
 //all done
   Loaded := True;
@@ -488,6 +507,7 @@ end;
 *)
 procedure TDocPackage.UpdateConfig;
 
+{$IFDEF v0}
   procedure WriteSection(const SecName: string; AList: TStrings);
   var
     j: integer;
@@ -498,11 +518,13 @@ procedure TDocPackage.UpdateConfig;
       Config.WriteString(SecName, AList.Names[j], AList.ValueFromIndex[j]);
     end;
   end;
+{$ELSE}
+{$ENDIF}
 
 begin
 //create ini file, if not already created
   if Config = nil then
-    Config := TIniFile.Create(IniFileName); //in document RootDir
+    Config := TConfigFile.Create(IniFileName); //in document RootDir
 //general information
   Config.WriteString(SecDoc, 'projectdir', ProjectDir);
   Config.WriteString(SecDoc, 'projectfile', ProjectFile);
@@ -511,8 +533,13 @@ begin
   Config.WriteString(SecDoc, 'descrdir', DescrDir);
   Config.WriteString(SecDoc, 'requires', Requires.CommaText);
 //units
+{$IFDEF v0}
   WriteSection('units', Units);
   WriteSection('descrs', Descriptions);
+{$ELSE}
+  Config.WriteSectionValues('units', Units);
+  Config.WriteSectionValues('descrs', Descriptions);
+{$ENDIF}
 //all done
   Loaded := True;
 end;
@@ -543,12 +570,15 @@ begin
   lst := TStringList.Create;
   lst.OwnsObjects := True;
   FPackages := lst;
+  FOptions := TCmdOptions.Create;
 end;
 
 destructor TFPDocManager.Destroy;
 begin
+  SaveConfig;
   FreeAndNil(Config); //save?
   FreeAndNil(FPackages);
+  FreeAndNil(FOptions);
   inherited Destroy;
 end;
 
@@ -574,6 +604,21 @@ procedure TFPDocManager.SetPackage(AValue: TDocPackage);
 begin
   if FPackage=AValue then Exit;
   FPackage:=AValue;
+end;
+
+procedure TFPDocManager.SetProfile(AValue: string);
+begin
+  if AValue = '' then exit;
+  if FProfile=AValue then Exit;
+  if Options.Modified then
+    Options.SaveConfig(Config, FProfile);
+  FProfile:=AValue;
+  if not Config.SectionExists(AValue) then begin
+    FProfiles := FProfiles + ',' + AValue;
+    Config.WriteString(SecGen, 'Profiles', FProfiles);
+  end;
+  Config.WriteString(SecGen, 'Profile', FProfile);
+  Options.LoadConfig(Config, Profile);
 end;
 
 (* Try load config from new dir - this may fail on the first run.
@@ -603,6 +648,8 @@ begin
   Helper := TFPDocHelper.Create(nil);
   Helper.OnLog := OnLog;
   Result := Helper.BeginTest(AFile);
+  if Result then
+    Helper.Options := Options;
 end;
 
 procedure TFPDocManager.EndTest;
@@ -649,13 +696,12 @@ begin
       Config.Free;
     //clear packages???
   end;
-  Config := TIniFile.Create(cf);
+  Config := TConfigFile.Create(cf);
   Config.CacheUpdates := True;
-  //FDirty := True; //to be saved
   if not Result then
     exit; //nothing to read
 //read directories
-  FFPDocDir := Config.ReadString('dirs', 'fpc', '');
+  FFPDocDir := Config.ReadString(SecGen, 'fpc', '');
 //read packages
   Config.ReadSectionValues(SecProjects, FPackages); //<prj>=<file>
 //read detailed package information - possibly multiple packages per project!
@@ -670,6 +716,9 @@ begin
     end;
   end;
 //more? (preferences?)
+  FProfiles:=Config.ReadString(SecGen, 'Profiles', 'default');
+  FProfile := Config.ReadString(SecGen,'Profile', 'default');
+  Options.LoadConfig(Config, Profile);
 //done, nothing modified
   EndUpdate;
 end;
@@ -679,7 +728,18 @@ begin
 (* Protection against excessive saves requires a subclass of TIniFile,
   which flushes the file only if Dirty.
 *)
+//Options? assume saved by application?
+  if Options.Modified then begin
+    Options.SaveConfig(Config, Profile);
+  end;
+  Config.Flush;
   Result := True; //for now
+end;
+
+procedure TFPDocManager.AddProfile(const AName: string);
+begin
+//add and select - obsolete!
+  Profile := AName;
 end;
 
 (* Add a DocPackage to Packages and INI.
@@ -705,6 +765,7 @@ begin
     end;
     if (ExtractFileExt(APkg.ProjectFile) <> '.xml') then begin
     //create project file
+      APkg.ProjectFile := ChangeFileExt(APkg.ProjectFile, '_prj.xml');
       CreateProject(APkg.ProjectFile, APkg);
       //APkg.UpdateConfig; - required?
     //update Packages[] string
@@ -862,6 +923,21 @@ begin
     Changed;
 end;
 
+function TFPDocManager.MakeDoc(APkg: TDocPackage; AUnit: string): boolean;
+begin
+  Result := assigned(APkg) and BeginTest(APkg.ProjectFile);
+  if not Result then
+    exit;
+  try
+  //output specification depends on the choosen format!
+    Helper.ParseFPDocOption('--output="' + RootDir + APkg.Name + '"');
+    //Result :=
+    Helper.CreateUnitDocumentation(AUnit, False);
+  finally
+    EndTest;
+  end;
+end;
+
 function TFPDocManager.TestRun(APkg: TDocPackage; AUnit: string): boolean;
 begin
   BeginTest(APkg.ProjectFile);
@@ -913,11 +989,13 @@ function TFPDocHelper.BeginTest(APkg: TDocPackage): boolean;
 begin
   if not assigned(APkg) then
     exit(False);
-  Result := BeginTest(APkg.ProjectFile);
+  Result := BeginTest(APkg.ProjectFile); //directory would be sufficient!
   if not Result then
     exit;
-  ParseFPDocOption('--project='+APkg.ProjectFile);
+  APkg.CreateProject(self, ''); //create project file?
+  //ParseFPDocOption('--project='+APkg.ProjectFile);
   Package := Packages.FindPackage(APkg.Name);
+  //Options?
 //okay, so far
   Result := assigned(Package);
 end;
@@ -977,6 +1055,20 @@ begin
   Result := True;
 end;
 
+function TFPDocHelper.MakeDocs(APkg: TDocPackage; const AUnit: string;
+  AOutput: string): boolean;
+begin
+  Result := BeginTest(APkg); //configure and select package
+  if not Result then
+    exit;
+  try
+    ParseFPDocOption(Format('--output="%s"', [AOutput]));
+    CreateDocumentation(Package, False);
+  finally
+    EndTest;
+  end;
+end;
+
 function TFPDocHelper.TestRun(APkg: TDocPackage; AUnit: string): boolean;
 begin
 (* more detailed error handling?
@@ -986,12 +1078,16 @@ begin
   if not Result then
     exit;
   try
+  //override options for test
     ParseFPDocOption('--format=html');
     ParseFPDocOption('-n');
+  {$IFDEF v0}
     Package := Packages.FindPackage(APkg.Name);
     Result := Package <> nil;
     if Result then
-      CreateUnitDocumentation(Package, AUnit, True);
+  {$ELSE}
+  {$ENDIF}
+    CreateUnitDocumentation(AUnit, True);
   finally
     EndTest;
   end;

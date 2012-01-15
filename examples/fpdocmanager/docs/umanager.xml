@@ -1015,6 +1015,9 @@
         <descr/>
         <seealso/>
       </element>
+      <element name="TFPDocManager.OptsFile">
+        <short>File to use for output options (FPDoc).</short>
+      </element>
     </module>
     <!-- uManager -->
   </package>

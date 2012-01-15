@@ -11,8 +11,8 @@ unit fMain;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, SynHighlighterXML, SynEdit, Forms,
-  Controls, Graphics, Dialogs, Menus, StdCtrls, ComCtrls,
+  Classes, SysUtils, FileUtil, SynHighlighterXML, SynEdit, Forms, Controls,
+  Graphics, Dialogs, Menus, StdCtrls, ComCtrls, ExtCtrls,
   uManager;
 
 type
@@ -20,11 +20,30 @@ type
   { TMain }
 
   TMain = class(TForm)
-    buSkel: TButton;
-    buUpdate: TButton;
     buRefresh: TButton;
     buShowLog: TButton;
     buTest: TButton;
+    buMakeDoc: TButton;
+    buNewProfile: TButton;
+    cbFormat: TComboBox;
+    cbProfile: TComboBox;
+    edOutput: TEdit;
+    edOS: TEdit;
+    edCPU: TEdit;
+    edLang: TEdit;
+    edMoDir: TEdit;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    edBackend: TMemo;
+    swDocOpts: TCheckGroup;
+    Label1: TLabel;
+    swSortNodes: TCheckBox;
+    optUpd: TCheckGroup;
     dlgSelLpk: TOpenDialog;
     edINI: TMemo;
     swShowUpdate: TCheckBox;
@@ -41,6 +60,7 @@ type
     MenuItem3: TMenuItem;
     mnExit: TMenuItem;
     dlgSelRoot: TSelectDirectoryDialog;
+    ViewFinal: TTabSheet;
     ViewINI: TTabSheet;
     Units: TPageControl;
     swAll: TRadioButton;
@@ -49,23 +69,31 @@ type
     SynXMLSyn1: TSynXMLSyn;
     ViewXML: TTabSheet;
     ViewUnits: TTabSheet;
+    procedure buMakeDocClick(Sender: TObject);
+    procedure buNewProfileClick(Sender: TObject);
     procedure buRefreshClick(Sender: TObject);
     procedure buTestClick(Sender: TObject);
+    procedure cbFormatSelect(Sender: TObject);
+    procedure cbProfileSelect(Sender: TObject);
     procedure edLogChange(Sender: TObject);
+    procedure edOSExit(Sender: TObject);
     procedure edXMLExit(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure lbBackendExit(Sender: TObject);
     procedure lbPackagesClick(Sender: TObject);
     procedure lbUnitsClick(Sender: TObject);
     procedure mnConfigClick(Sender: TObject);
     procedure mnExitClick(Sender: TObject);
     procedure mnImportLpkClick(Sender: TObject);
+    procedure optUpdItemClick(Sender: TObject; Index: integer);
     procedure swShowUpdateChange(Sender: TObject);
     procedure swSingleClick(Sender: TObject);
   private
     LogName: string;
     LogFile: TStream;
+    Profile: string;
     procedure ProjectsChanged(Sender: TObject);
     procedure LogToFile(Sender: TObject; const msg: string);
     procedure LogToMsgBox(Sender: TObject; const msg: string);
@@ -73,6 +101,11 @@ type
     procedure LogDone;
     procedure ShowUpdate;
     procedure OnParseImport(Sender: TObject; var ASource, ALink: string);
+    procedure SaveOptions;
+    procedure GetOptions;
+    procedure GetEngines;
+    procedure GetProfile(const AName: string);
+    procedure SelectFormat(AFmt: string);
   public
     CurPkg: TDocPackage;
     CurUnit: string;
@@ -85,7 +118,8 @@ var
 implementation
 
 uses
-  fConfig, fLogView, fUpdateView;
+  fConfig, fLogView, fUpdateView,
+  dWriter;
   //dw_HTML, //more writers?
   //uLpk;
 
@@ -132,6 +166,7 @@ begin
     end;
   end;
   //UpdateDocs; //package objects seem to be missing?
+  GetEngines;
 end;
 
 procedure TMain.FormResize(Sender: TObject);
@@ -147,8 +182,8 @@ end;
 procedure TMain.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
 //is this really required?
-  //CanClose :=
-  Manager.SaveConfig; //what if fails?
+  CanClose := True; //make compiler happy
+  //Manager.SaveConfig; //what if fails?
 end;
 
 procedure TMain.mnExitClick(Sender: TObject);
@@ -160,11 +195,6 @@ procedure TMain.swShowUpdateChange(Sender: TObject);
 begin
   if swShowUpdate.Checked then
     ShowUpdate;
-end;
-
-procedure TMain.edLogChange(Sender: TObject);
-begin
-  LogName:=edLog.Text;
 end;
 
 procedure TMain.LogStart;
@@ -248,6 +278,132 @@ and provide the list of imports.
   ALink := '../' + pn + '/';
 end;
 
+type
+  SkelOpts = (
+    soDecl, soOverrides, soErrors, soSeeAlso, soArgs, soResults,
+    soPriv, soProt, soClassSep
+  );
+procedure TMain.SaveOptions;
+begin
+  Manager.Options.WriteDeclaration := not optUpd.Checked[ord(soDecl)];
+  Manager.Options.DisableOverride := optUpd.Checked[ord(soOverrides)];
+  Manager.Options.DisableErrors := optUpd.Checked[ord(soErrors)];
+  Manager.Options.DisableSeealso := optUpd.Checked[ord(soSeeAlso)];
+  Manager.Options.DisableArguments := optUpd.Checked[ord(soArgs)];
+  Manager.Options.DisableFunctionResults := optUpd.Checked[ord(soResults)];
+  Manager.Options.ShowPrivate := not optUpd.Checked[ord(soPriv)];
+  Manager.Options.DisableProtected := optUpd.Checked[ord(soProt)];
+  Manager.Options.EmitClassSeparator := not optUpd.Checked[ord(soClassSep)];
+  Manager.Options.SortNodes := swSortNodes.Checked;
+  Manager.Options.Modified := True; //assume!
+//Backend
+  //if cbFormat.Caption = '' then exit; //no valid options
+  if cbFormat.ItemIndex < 0 then
+    SelectFormat('html');
+  Manager.Options.Backend := cbFormat.Items.Names[cbFormat.ItemIndex];
+  Manager.Options.StopOnParseError := swDocOpts.Checked[0];
+  Manager.Options.WarnNoNode := swDocOpts.Checked[1];
+  Manager.Options.HideProtected := swDocOpts.Checked[2];
+  Manager.Options.ShowPrivate := swDocOpts.Checked[3];
+  Manager.Options.InterfaceOnly := swDocOpts.Checked[4];
+  Manager.Options.DontTrim := swDocOpts.Checked[5];
+  Manager.Options.OSTarget := edOS.Text;
+  Manager.Options.CPUTarget := edCPU.Text;
+  Manager.Options.Language := edLang.Text;
+  Manager.Options.MoDir := edMoDir.Text;
+  Manager.Options.BackendFromPairs(edBackend.Lines);
+end;
+
+procedure TMain.GetOptions;
+begin
+  optUpd.Checked[ord(soDecl)] := not Manager.Options.WriteDeclaration;
+  optUpd.Checked[ord(soOverrides)] := Manager.Options.DisableOverride;
+  optUpd.Checked[ord(soErrors)] := Manager.Options.DisableErrors;
+  optUpd.Checked[ord(soSeeAlso)] := Manager.Options.DisableSeealso;
+  optUpd.Checked[ord(soArgs)] := Manager.Options.DisableArguments;
+  optUpd.Checked[ord(soResults)] := Manager.Options.DisableFunctionResults;
+  optUpd.Checked[ord(soPriv)] := not Manager.Options.ShowPrivate;
+  optUpd.Checked[ord(soProt)] := Manager.Options.DisableProtected;
+  optUpd.Checked[ord(soClassSep)] := not Manager.Options.EmitClassSeparator;
+  swSortNodes.Checked := Manager.Options.SortNodes;
+//backend
+  if Profile = '' then begin
+    Profile:=Manager.Profile;
+    cbProfile.Items.CommaText := Manager.Profiles;
+    cbProfile.Caption := Profile;
+  end;
+  GetProfile(Profile);
+end;
+
+procedure TMain.GetProfile(const AName: string);
+begin
+  //if Profile = AName then exit; //nothing changed?
+  Manager.Profile := AName;
+  //cbFormat.Caption := Manager.Options.Backend; //select from CB?
+  SelectFormat(Manager.Options.Backend);
+  swDocOpts.Checked[0] := Manager.Options.StopOnParseError;
+  swDocOpts.Checked[1] := Manager.Options.WarnNoNode;
+  swDocOpts.Checked[2] := Manager.Options.HideProtected;
+  swDocOpts.Checked[3] := Manager.Options.ShowPrivate;
+  swDocOpts.Checked[4] := Manager.Options.InterfaceOnly;
+  swDocOpts.Checked[5] := Manager.Options.DontTrim;
+//these should be global options?
+  edOS.Text := Manager.Options.OSTarget;
+  edCPU.Text := Manager.Options.CPUTarget;
+  edLang.Text := Manager.Options.Language;
+  edMoDir.Text := Manager.Options.MoDir;
+//backend options
+  Manager.Options.BackendToPairs(edBackend.Lines);
+end;
+
+procedure TMain.SelectFormat(AFmt: string);
+var
+  i: integer;
+begin
+  i := cbFormat.Items.IndexOfName(AFmt);
+  if i < 0 then
+    i := cbFormat.Items.Count - 1;
+  cbFormat.ItemIndex := i;
+end;
+
+procedure TMain.edLogChange(Sender: TObject);
+begin
+  LogName:=edLog.Text;
+end;
+
+procedure TMain.edOSExit(Sender: TObject);
+var
+  ed: TEdit absolute Sender;
+begin
+  if ed.Modified then begin
+    SaveOptions;
+    ed.Modified := False;
+  end;
+end;
+
+procedure TMain.lbBackendExit(Sender: TObject);
+begin
+//Modified never True???
+  if edBackend.Modified then begin
+    SaveOptions;
+    edBackend.Modified := False;
+  end;
+end;
+
+procedure TMain.cbFormatSelect(Sender: TObject);
+begin
+  SaveOptions;
+  //edOutput.Text := ???;
+end;
+
+procedure TMain.GetEngines;
+begin
+//should separate: writers (format) and settings!
+  dWriter.EnumWriters(cbFormat.Items);
+  cbProfile.Items.CommaText := Manager.Profiles;
+  cbProfile.Caption := Manager.Profile; //select???
+end;
+
 procedure TMain.ProjectsChanged(Sender: TObject);
 begin
   UpdateDocs; //immediately or delayed (OnIdle?)
@@ -288,8 +444,12 @@ begin
   if pkg = nil then
     exit; //not really created?
   fn := pkg.ProjectFile; //initialized where?
-  if fn <> '' then
-    edXML.Lines.LoadFromFile(fn);
+  if fn <> '' then begin
+    if FileExists(fn) then
+      edXML.Lines.LoadFromFile(fn)
+    else
+      edXML.Lines.Clear;
+  end;
   fn := pkg.IniFileName;
   if FileExists(fn) then
     edINI.Lines.LoadFromFile(fn);
@@ -316,6 +476,11 @@ begin
     exit;
   pkName:=dlgSelLpk.FileName;
   Manager.ImportLpk(pkName);
+end;
+
+procedure TMain.optUpdItemClick(Sender: TObject; Index: integer);
+begin
+  SaveOptions;
 end;
 
 procedure TMain.edXMLExit(Sender: TObject);
@@ -367,6 +532,12 @@ begin
   LogDone;
 end;
 
+procedure TMain.cbProfileSelect(Sender: TObject);
+begin
+  Profile:=cbProfile.Caption;
+  GetProfile(Profile);
+end;
+
 procedure TMain.buRefreshClick(Sender: TObject);
 var
   u: string;
@@ -378,6 +549,22 @@ begin
     u := '';
   Manager.Update(CurPkg, u);
   LogDone;
+end;
+
+procedure TMain.buNewProfileClick(Sender: TObject);
+begin
+  Profile := cbProfile.Caption;
+  if Profile = '' then
+    exit; //need name
+  if cbProfile.Items.IndexOf(Profile) < 0 then begin
+    cbProfile.AddItem(Profile, nil);
+    Manager.AddProfile(Profile);
+  end;
+end;
+
+procedure TMain.buMakeDocClick(Sender: TObject);
+begin
+  Manager.MakeDoc(Manager.Package, '');
 end;
 
 end.
