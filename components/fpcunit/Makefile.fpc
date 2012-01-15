@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for FPCUnitTestRunner 0.1
 #
-#   This file was generated on 07.02.2011
+#   This file was generated on 01/15/2012
 
 [package]
 name=fpcunittestrunner
@@ -10,8 +10,8 @@ version=0.1
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../synedit/units/$(CPU_TARGET)-$(OS_TARGET) ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
-options= -MObjFPC -Scgi -O1 -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
+unitdir=../synedit/units/$(CPU_TARGET)-$(OS_TARGET) ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+options= -MObjFPC -Scgi -O1 -g -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]
 units=fpcunittestrunner.pas
