@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls, ComCtrls, AnchorDocking, AnchorDockStr;
+  StdCtrls, ComCtrls, LCLProc, AnchorDocking, AnchorDockStr;
 
 type
 
@@ -60,7 +60,9 @@ type
     procedure SplitterWidthTrackBarChange(Sender: TObject);
   private
     FMaster: TAnchorDockMaster;
+    FSettings: TAnchorDockSettings;
     procedure SetMaster(const AValue: TAnchorDockMaster);
+    procedure SetSettings(AValue: TAnchorDockSettings);
     procedure UpdateDragThresholdLabel;
     procedure UpdateHeaderAlignTopLabel;
     procedure UpdateHeaderAlignLeftLabel;
@@ -68,7 +70,10 @@ type
   public
     procedure SaveToMaster;
     procedure LoadFromMaster;
+    procedure SaveToSettings(TheSettings: TAnchorDockSettings);
+    procedure LoadFromSettings(TheSettings: TAnchorDockSettings);
     property Master: TAnchorDockMaster read FMaster write SetMaster;
+    property Settings: TAnchorDockSettings read FSettings write SetSettings;
   end;
 
 function ShowAnchorDockOptions(ADockMaster: TAnchorDockMaster): TModalResult;
@@ -125,7 +130,10 @@ end;
 
 procedure TAnchorDockOptionsFrame.OkClick(Sender: TObject);
 begin
-  SaveToMaster;
+  if Settings<>nil then
+    SaveToSettings(Settings);
+  if Master<>nil then
+    SaveToMaster;
 end;
 
 procedure TAnchorDockOptionsFrame.DragThresholdTrackBarChange(Sender: TObject);
@@ -139,6 +147,14 @@ begin
   FMaster:=AValue;
   if Master<>nil then
     LoadFromMaster;
+end;
+
+procedure TAnchorDockOptionsFrame.SetSettings(AValue: TAnchorDockSettings);
+begin
+  if FSettings=AValue then Exit;
+  FSettings:=AValue;
+  if Settings<>nil then
+    LoadFromSettings(Settings);
 end;
 
 procedure TAnchorDockOptionsFrame.UpdateDragThresholdLabel;
@@ -166,49 +182,79 @@ begin
 end;
 
 procedure TAnchorDockOptionsFrame.SaveToMaster;
+var
+  CurSettings: TAnchorDockSettings;
 begin
-  Master.DragTreshold    := DragThresholdTrackBar.Position;
-  Master.HeaderAlignTop  := HeaderAlignTopTrackBar.Position;
-  Master.HeaderAlignLeft := HeaderAlignLeftTrackBar.Position;
-  Master.SplitterWidth   := SplitterWidthTrackBar.Position;
-  Master.ScaleOnResize   := ScaleOnResizeCheckBox.Checked;
-  Master.ShowHeaderCaption   := ShowHeaderCaptionCheckBox.Checked;
-  Master.HideHeaderCaptionFloatingControl   := HideHeaderCaptionForFloatingCheckBox.Checked;
+  CurSettings:=TAnchorDockSettings.Create;
+  try
+    SaveToSettings(CurSettings);
+    Master.LoadSettings(CurSettings);
+  finally
+    CurSettings.Free;
+  end;
 end;
 
 procedure TAnchorDockOptionsFrame.LoadFromMaster;
+var
+  CurSettings: TAnchorDockSettings;
+begin
+  CurSettings:=TAnchorDockSettings.Create;
+  try
+    Master.SaveSettings(CurSettings);
+    LoadFromSettings(CurSettings);
+  finally
+    CurSettings.Free;
+  end;
+end;
+
+procedure TAnchorDockOptionsFrame.SaveToSettings(
+  TheSettings: TAnchorDockSettings);
+begin
+  TheSettings.DragTreshold    := DragThresholdTrackBar.Position;
+  DebugLn(['TAnchorDockOptionsFrame.SaveToSettings ',TheSettings.DragTreshold,' ',DragThresholdTrackBar.Position]);
+  TheSettings.HeaderAlignTop  := HeaderAlignTopTrackBar.Position;
+  TheSettings.HeaderAlignLeft := HeaderAlignLeftTrackBar.Position;
+  TheSettings.SplitterWidth   := SplitterWidthTrackBar.Position;
+  TheSettings.ScaleOnResize   := ScaleOnResizeCheckBox.Checked;
+  TheSettings.ShowHeaderCaption   := ShowHeaderCaptionCheckBox.Checked;
+  TheSettings.HideHeaderCaptionFloatingControl   := HideHeaderCaptionForFloatingCheckBox.Checked;
+end;
+
+procedure TAnchorDockOptionsFrame.LoadFromSettings(
+  TheSettings: TAnchorDockSettings);
 begin
   DragThresholdTrackBar.Hint:=
     adrsAmountOfPixelTheMouseHasToDragBeforeDragStarts;
-  DragThresholdTrackBar.Position:=Master.DragTreshold;
+  DragThresholdTrackBar.Position:=TheSettings.DragTreshold;
   UpdateDragThresholdLabel;
 
   HeaderAlignTopTrackBar.Hint:=
     adrsMoveHeaderToTopWhenWidthHeight100HeaderAlignTop;
-  HeaderAlignTopTrackBar.Position:=Master.HeaderAlignTop;
+  HeaderAlignTopTrackBar.Position:=TheSettings.HeaderAlignTop;
   UpdateHeaderAlignTopLabel;
 
   HeaderAlignLeftTrackBar.Hint:=
     adrsMoveHeaderToLeftWhenWidthHeight100HeaderAlignLeft;
-  HeaderAlignLeftTrackBar.Position:=Master.HeaderAlignLeft;
+  HeaderAlignLeftTrackBar.Position:=TheSettings.HeaderAlignLeft;
   UpdateHeaderAlignLeftLabel;
 
   SplitterWidthTrackBar.Hint:=adrsSplitterThickness;
-  SplitterWidthTrackBar.Position:=Master.SplitterWidth;
+  SplitterWidthTrackBar.Position:=TheSettings.SplitterWidth;
   UpdateSplitterWidthLabel;
 
   ScaleOnResizeCheckBox.Caption:=adrsScaleOnResize;
   ScaleOnResizeCheckBox.Hint:=adrsScaleSubSitesWhenASiteIsResized;
-  ScaleOnResizeCheckBox.Checked:=Master.ScaleOnResize;
+  ScaleOnResizeCheckBox.Checked:=TheSettings.ScaleOnResize;
 
   ShowHeaderCaptionCheckBox.Caption:=adrsShowHeaderCaptions;
   ShowHeaderCaptionCheckBox.Hint:=adrsShowCaptionsOfDockedControlsInTheHeader;
-  ShowHeaderCaptionCheckBox.Checked:=Master.ShowHeaderCaption;
+  ShowHeaderCaptionCheckBox.Checked:=TheSettings.ShowHeaderCaption;
 
   HideHeaderCaptionForFloatingCheckBox.Caption:=adrsNoCaptionsForFloatingSites;
   HideHeaderCaptionForFloatingCheckBox.Hint:=
     adrsHideHeaderCaptionsForSitesWithOnlyOneDockedControl;
-  HideHeaderCaptionForFloatingCheckBox.Checked:=Master.HideHeaderCaptionFloatingControl;
+  HideHeaderCaptionForFloatingCheckBox.Checked:=
+    TheSettings.HideHeaderCaptionFloatingControl;
 end;
 
 end.

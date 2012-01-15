@@ -386,6 +386,7 @@ type
     HeaderButtonSize: integer;
     procedure LoadFromConfig(Config: TConfigStorage);
     procedure SaveToConfig(Config: TConfigStorage);
+    function IsEqual(Settings: TAnchorDockSettings): boolean; reintroduce;
   end;
 
   TAnchorDockMaster = class;
@@ -513,6 +514,7 @@ type
     procedure SaveSettingsToConfig(Config: TConfigStorage);
     procedure LoadSettings(Settings: TAnchorDockSettings);
     procedure SaveSettings(Settings: TAnchorDockSettings);
+    function SettingsAreEqual(Settings: TAnchorDockSettings): boolean;
 
     // manual docking
     procedure ManualFloat(AControl: TControl);
@@ -1001,6 +1003,24 @@ begin
   Config.SetDeleteValue('AllowDragging',AllowDragging,true);
   Config.SetDeleteValue('HeaderButtonSize',HeaderButtonSize,10);
   Config.UndoAppendBasePath;
+end;
+
+function TAnchorDockSettings.IsEqual(Settings: TAnchorDockSettings): boolean;
+begin
+  debugln(['TAnchorDockSettings.IsEqual ',DragTreshold,' ',Settings.DragTreshold]);
+  Result:=(DragTreshold=Settings.DragTreshold)
+      and (DockOutsideMargin=Settings.DockOutsideMargin)
+      and (DockParentMargin=Settings.DockParentMargin)
+      and (PageAreaInPercent=Settings.PageAreaInPercent)
+      and (HeaderAlignTop=Settings.HeaderAlignTop)
+      and (HeaderAlignLeft=Settings.HeaderAlignLeft)
+      and (HeaderHint=Settings.HeaderHint)
+      and (SplitterWidth=Settings.SplitterWidth)
+      and (ScaleOnResize=Settings.ScaleOnResize)
+      and (ShowHeaderCaption=Settings.ShowHeaderCaption)
+      and (HideHeaderCaptionFloatingControl=Settings.HideHeaderCaptionFloatingControl)
+      and (AllowDragging=Settings.AllowDragging)
+      and (HeaderButtonSize=Settings.HeaderButtonSize);
 end;
 
 { TAnchorDockMaster }
@@ -2359,6 +2379,20 @@ begin
   Settings.HideHeaderCaptionFloatingControl:=HideHeaderCaptionFloatingControl;
   Settings.AllowDragging:=AllowDragging;
   Settings.HeaderButtonSize:=HeaderButtonSize;
+end;
+
+function TAnchorDockMaster.SettingsAreEqual(Settings: TAnchorDockSettings
+  ): boolean;
+var
+  Cur: TAnchorDockSettings;
+begin
+  Cur:=TAnchorDockSettings.Create;
+  try
+    SaveSettings(Cur);
+    Result:=Cur.IsEqual(Settings);
+  finally
+    Cur.Free;
+  end;
 end;
 
 procedure TAnchorDockMaster.ManualFloat(AControl: TControl);

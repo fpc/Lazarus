@@ -81,7 +81,7 @@ type
     procedure MakeIDEWindowDockSite(AForm: TCustomForm; ASides: TDockSides = [alBottom]); override;
     procedure MakeIDEWindowDockable(AControl: TWinControl); override;
     function AddableInWindowMenu(AForm: TCustomForm): boolean; override;
-    function GetDefaultLayoutFilename: string;
+    function GetDefaultLayoutFilename(Full: boolean): string;
     procedure LoadDefaultLayout;
     procedure LoadUserLayout;
     procedure SaveUserLayout;
@@ -107,6 +107,8 @@ type
   TAnchorDockIDEFrame = class(TAbstractIDEOptionsEditor)
     EnableCheckBox: TCheckBox;
     NoteLabel: TLabel;
+  private
+    FSettings: TAnchorDockSettings;
   public
     OptionsFrame: TAnchorDockOptionsFrame;
     constructor Create(TheOwner: TComponent); override;
@@ -261,9 +263,11 @@ begin
   Result:=true;
 end;
 
-function TIDEAnchorDockMaster.GetDefaultLayoutFilename: string;
+function TIDEAnchorDockMaster.GetDefaultLayoutFilename(Full: boolean): string;
 begin
-  Result:=AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+DefaultConfigFileName;
+  Result:=DefaultConfigFileName;
+  if Full then
+    Result:=AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+Result;
 end;
 
 procedure TIDEAnchorDockMaster.LoadDefaultLayout;
@@ -285,7 +289,7 @@ var
   Filename: String;
   Config: TConfigStorage;
 begin
-  Filename:=DefaultConfigFileName;
+  Filename:=GetDefaultLayoutFilename(false);
   try
     debugln(['TIDEAnchorDockMaster.LoadUserLayout ',Filename]);
     Config:=GetIDEConfigStorage(Filename,true);
@@ -315,7 +319,7 @@ var
   Filename: String;
   Config: TConfigStorage;
 begin
-  Filename:=DefaultConfigFileName;
+  Filename:=GetDefaultLayoutFilename(false);
   try
     debugln(['TIDEAnchorDockMaster.SaveDefaultLayout ',Filename]);
     Config:=GetIDEConfigStorage(Filename,false);
@@ -558,7 +562,7 @@ begin
   if FChangeStamp<High(FChangeStamp) then
     inc(FChangeStamp)
   else
-    FChangeStamp:=low(FChangeStamp);
+   FChangeStamp:=low(FChangeStamp);
 end;
 
 { TAnchorDockIDEFrame }
@@ -567,6 +571,7 @@ constructor TAnchorDockIDEFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
 
+  FSettings:=TAnchorDockSettings.Create;
   OptionsFrame:=TAnchorDockOptionsFrame.Create(Self);
   with OptionsFrame do begin
     Name:='OptionsFrame';
@@ -575,6 +580,7 @@ end;
 
 destructor TAnchorDockIDEFrame.Destroy;
 begin
+  FreeAndNil(FSettings);
   inherited Destroy;
 end;
 
@@ -609,14 +615,21 @@ procedure TAnchorDockIDEFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   if not (AOptions is SupportedOptionsClass) then exit;
   EnableCheckBox.Checked:=IDEAnchorDockMaster.Enabled;
-  OptionsFrame.Master:=DockMaster;
+  DockMaster.SaveSettings(FSettings);
+  OptionsFrame.LoadFromSettings(FSettings);
 end;
 
 procedure TAnchorDockIDEFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   if not (AOptions is SupportedOptionsClass) then exit;
   IDEAnchorDockMaster.Enabled:=EnableCheckBox.Checked;
-  OptionsFrame.SaveToMaster;
+  OptionsFrame.SaveToSettings(FSettings);
+  if (not DockMaster.SettingsAreEqual(FSettings))
+  or (not FileExistsUTF8(IDEAnchorDockMaster.GetDefaultLayoutFilename(true)))
+  then begin
+    DockMaster.LoadSettings(FSettings);
+    IDEAnchorDockMaster.SaveUserLayout;
+  end;
 end;
 
 class function TAnchorDockIDEFrame.
