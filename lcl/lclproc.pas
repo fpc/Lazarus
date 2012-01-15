@@ -32,7 +32,7 @@ interface
 
 uses
   {$IFDEF Darwin}MacOSAll, {$ENDIF}
-  {$IFDEF Windows}
+  {$IFDEF win32}
   {$IFnDEF VER2_4}
   Win9xWsManager, // Support for Lower/UpperWideStringProc on Win9x, also used by some Utf8 string handling functions
   {$ENDIF}
