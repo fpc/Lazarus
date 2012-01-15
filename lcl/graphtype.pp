@@ -1635,9 +1635,6 @@ var
   P: Pointer;
   i, j: integer;
 begin
-  // check here for Description. Only RGBA data can be processed here.
-  if not CheckDescription then
-    Exit;
   if CreateNewData then
   begin
     GetMem(AData, DataSize);
@@ -1650,6 +1647,11 @@ begin
     AData := P;
   end;
 
+  // check here for Description. Only RGBA data can be processed here.
+  if not CheckDescription then
+    Exit;
+  
+  
   case ADrawEffect of
     gdeNormal: ;
     gdeDisabled:
@@ -1717,13 +1719,6 @@ begin
             inc(AData);
           end;
       end;
-  end;
-
-  if CreateNewData then
-  begin
-    Move(AData^, Data^, DataSize);
-    P := Data;
-    FreeMem(AData, DataSize);
   end;
   Data := P;
 end;
