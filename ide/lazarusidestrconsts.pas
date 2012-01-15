@@ -4531,8 +4531,9 @@ resourcestring
   lisDebugOptionsFrmOSExceptions = 'OS Exceptions';
   lisDebugOptionsFrmSignals = 'Signals';
   lisDebugOptionsFrmName = 'Name';
-  lisSetMacroValues = 'Set macro values';
   lisMacroName = 'Macro name';
+  lisIDEMacroValuesForFPCMacrosUseCustomOptions = 'IDE macro values (for FPC '
+    +'macros use custom options)';
   lisMacroValue = 'Macro value';
   lisDebugOptionsFrmID = 'ID';
   lisDebugOptionsFrmHandledBy = 'Handled by';
