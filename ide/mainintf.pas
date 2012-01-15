@@ -221,36 +221,6 @@ var
   MainIDEInterface: TMainIDEInterface = nil;
   ObjectInspector1: TObjectInspectorDlg = nil; // created by the IDE
 
-const
-  OpenFlagNames: array[TOpenFlag] of string = (
-     'ofProjectLoading',
-     'ofOnlyIfExists',
-     'ofRevert',
-     'ofQuiet',
-     'ofAddToRecent',
-     'ofRegularFile',
-     'ofVirtualFile',
-     'ofConvertMacros',
-     'ofUseCache',
-     'ofMultiOpen',
-     'ofDoNotLoadResource',
-     'ofDoLoadResource',
-     'ofLoadHiddenResource',
-     'ofAddToProject'
-    );
-
-  SaveFlagNames: array[TSaveFlag] of string = (
-     'sfSaveAs',
-     'sfSaveToTestDir',
-     'sfProjectSaving',
-     'sfCheckAmbiguousFiles',
-     'sfSaveNonProjectFiles',
-     'sfDoNotSaveVirtualFiles',
-     'sfCanAbort',
-     'sfSaveMainSourceAs',
-     'sfQuietUnitCheck'
-    );
-
 function OpenFlagsToString(Flags: TOpenFlags): string;
 function SaveFlagsToString(Flags: TSaveFlags): string;
 
@@ -342,17 +312,18 @@ type
   
 implementation
 
-
 function OpenFlagsToString(Flags: TOpenFlags): string;
 var
   Flag: TOpenFlag;
+  s: string;
 begin
   Result:='';
   for Flag:=Low(TOpenFlag) to High(TOpenFlag) do begin
     if Flag in Flags then begin
       if Result<>'' then
         Result:=Result+',';
-      Result:=Result+OpenFlagNames[Flag];
+      WriteStr(s, Flag);
+      Result:=Result+s;
     end;
   end;
   Result:='['+Result+']';
@@ -361,13 +332,15 @@ end;
 function SaveFlagsToString(Flags: TSaveFlags): string;
 var
   Flag: TSaveFlag;
+  s: string;
 begin
   Result:='';
   for Flag:=Low(TSaveFlag) to High(TSaveFlag) do begin
     if Flag in Flags then begin
       if Result<>'' then
         Result:=Result+',';
-      Result:=Result+SaveFlagNames[Flag];
+      WriteStr(s, Flag);
+      Result:=Result+s;
     end;
   end;
   Result:='['+Result+']';
