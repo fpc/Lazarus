@@ -53,6 +53,7 @@ end;
 
 class procedure TTabSheet.WSRegisterClass;
 begin
+  RegisterPropertyToSkip(TTabSheet, 'Visible', 'Use TabVisible instead.', '');
   inherited WSRegisterClass;
   RegisterTabSheet;
 end;
