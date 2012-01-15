@@ -8999,50 +8999,16 @@ end;
 
 function TGDBMIExpression.DumpExpression: String;
 // Mainly used for debugging purposes
-const
-  OPERATOR_TEXT: array[TDBGExpressionOperator] of string = (
-    'eoNone',
-    'eoNegate',
-    'eoPlus',
-    'eoSubstract',
-    'eoAdd',
-    'eoMultiply',
-    'eoPower',
-    'eoDivide',
-    'eoDereference',
-    'eoAddress',
-    'eoEqual',
-    'eoLess',
-    'eoLessOrEqual',
-    'eoGreater',
-    'eoGreaterOrEqual',
-    'eoNotEqual',
-    'eoIn',
-    'eoIs',
-    'eoAs',
-    'eoDot',
-    'eoComma',
-    'eoBracket',
-    'eoIndex',
-    'eoClose',
-    'eoAnd',
-    'eoOr',
-    'eoMod',
-    'eoNot',
-    'eoDiv',
-    'eoXor',
-    'eoShl',
-    'eoShr'
-  );
-
 var
   Sub: PGDBMISubExpression;
+  s: string;
 begin
   Result := '';
   Sub := FList;
   while Sub <> nil do
   begin
-    Result := Result + Sub^.Operand + ' ' +  OPERATOR_TEXT[Sub^.Opertor] + ' ';
+    WriteStr(s, Sub^.Opertor);
+    Result := Result + Sub^.Operand + ' ' +  s + ' ';
     Sub := Sub^.Next;
   end;
 end;
