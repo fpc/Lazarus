@@ -497,7 +497,6 @@ type
     property ShowHint;
     property TabVisible default True;
     property Top stored False;
-    property Visible stored False;
     property Width stored False;
   end;
 
