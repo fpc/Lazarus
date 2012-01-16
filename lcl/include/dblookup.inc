@@ -334,22 +334,25 @@ var
   Key: Variant;
   SavedEvent: TNotifyEvent;
 begin
-  if not FControlLink.Active or (ValueIndex < 0) or (ValueIndex >= Length(FListKeys)) then
+  if (ValueIndex < 0) or (ValueIndex >= Length(FListKeys)) then
     Exit;
   Key := FListKeys[ValueIndex];
-  if VarSameValue(Key, FControlLink.DataSet.FieldValues[FDataFieldNames]) then
-    Exit;
-  SavedEvent := FControlLink.OnDataChange;
-  FControlLink.OnDataChange := nil;
-  FControlLink.Modified;
-  FControlLink.Edit;
-  FControlLink.OnDataChange := SavedEvent;
-  if FDataFields.Count = 1 then
-    TField(FDataFields[0]).Value := Key
-  else
+  if FControlLink.Active then
   begin
-    for I := 0 to FDataFields.Count -1 do
-      TField(FDataFields[I]).Value := Key[I];
+    if VarSameValue(Key, FControlLink.DataSet.FieldValues[FDataFieldNames]) then
+      Exit;
+    SavedEvent := FControlLink.OnDataChange;
+    FControlLink.OnDataChange := nil;
+    FControlLink.Modified;
+    FControlLink.Edit;
+    FControlLink.OnDataChange := SavedEvent;
+    if FDataFields.Count = 1 then
+      TField(FDataFields[0]).Value := Key
+    else
+    begin
+      for I := 0 to FDataFields.Count -1 do
+        TField(FDataFields[I]).Value := Key[I];
+    end;
   end;
   if ScrollDataset then
     FListLink.DataSet.Locate(FKeyFieldNames, Key, []);
