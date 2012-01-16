@@ -2568,9 +2568,7 @@ begin
     QMimeData_data(MimeData, ByteArr, @WStr);
     if not QByteArray_isNull(ByteArr) then
     begin
-      WStr := '';
-      for i := 0 to QByteArray_size(ByteArr) - 1 do
-        WStr := WStr + QByteArray_at(ByteArr, i);
+      WStr := QByteArray_constData(ByteArr);
       FilesList := TStringList.Create;
       try
         FilesList.Text := UTF16ToUTF8(WStr);
