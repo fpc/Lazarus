@@ -14,6 +14,11 @@ Organization
 A dedicated directory contains all package specifications and documentation.
 INI files are created for the manager itself and every package.
 
+Release notes 1.1
+-----------------
+An optional patch has been added for the FPDoc engines, see fMain $DEFINE FileExt.
+Please apply it to $FPC/utils/fpdoc/.
+
 Release notes 1.0
 -----------------
 

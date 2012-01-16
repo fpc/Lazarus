@@ -1,11 +1,11 @@
 object Main: TMain
   Left = 335
-  Height = 423
+  Height = 462
   Top = 146
   Width = 569
   Align = alClient
   Caption = 'Main'
-  ClientHeight = 403
+  ClientHeight = 442
   ClientWidth = 569
   Menu = MainMenu1
   OnCreate = FormCreate
@@ -13,7 +13,7 @@ object Main: TMain
   LCLVersion = '0.9.31'
   object lbPackages: TComboBox
     Left = 0
-    Height = 403
+    Height = 442
     Top = 0
     Width = 94
     Align = alLeft
@@ -24,7 +24,7 @@ object Main: TMain
   end
   object Units: TPageControl
     Left = 94
-    Height = 403
+    Height = 442
     Top = 0
     Width = 475
     ActivePage = ViewUnits
@@ -33,11 +33,11 @@ object Main: TMain
     TabOrder = 1
     object ViewUnits: TTabSheet
       Caption = 'Units'
-      ClientHeight = 375
+      ClientHeight = 414
       ClientWidth = 467
       object lbUnits: TListBox
         Left = 0
-        Height = 375
+        Height = 414
         Top = 0
         Width = 100
         Align = alLeft
@@ -47,12 +47,12 @@ object Main: TMain
       end
       object GroupBox1: TGroupBox
         Left = 100
-        Height = 375
+        Height = 414
         Top = 0
         Width = 367
         Align = alClient
         Caption = 'Actions'
-        ClientHeight = 357
+        ClientHeight = 396
         ClientWidth = 363
         TabOrder = 1
         object swAll: TRadioButton
@@ -172,20 +172,20 @@ object Main: TMain
     end
     object ViewFinal: TTabSheet
       Caption = 'Document'
-      ClientHeight = 375
+      ClientHeight = 414
       ClientWidth = 467
       object Label1: TLabel
         Left = 10
         Height = 16
-        Top = 74
+        Top = 40
         Width = 39
         Caption = 'Format'
         ParentColor = False
       end
       object cbFormat: TComboBox
-        Left = 70
+        Left = 71
         Height = 23
-        Top = 72
+        Top = 40
         Width = 375
         ItemHeight = 15
         OnSelect = cbFormatSelect
@@ -196,7 +196,7 @@ object Main: TMain
       object swDocOpts: TCheckGroup
         Left = 10
         Height = 136
-        Top = 106
+        Top = 144
         Width = 220
         AutoFill = True
         Caption = 'Options'
@@ -225,7 +225,7 @@ object Main: TMain
       object Label2: TLabel
         Left = 10
         Height = 16
-        Top = 250
+        Top = 288
         Width = 50
         Caption = 'OSTarget'
         ParentColor = False
@@ -233,7 +233,7 @@ object Main: TMain
       object Label3: TLabel
         Left = 10
         Height = 16
-        Top = 278
+        Top = 316
         Width = 58
         Caption = 'CPUTarget'
         ParentColor = False
@@ -241,7 +241,7 @@ object Main: TMain
       object Label4: TLabel
         Left = 10
         Height = 16
-        Top = 307
+        Top = 345
         Width = 53
         Caption = 'Language'
         ParentColor = False
@@ -249,7 +249,7 @@ object Main: TMain
       object Label5: TLabel
         Left = 10
         Height = 16
-        Top = 346
+        Top = 384
         Width = 34
         Caption = 'MoDir'
         ParentColor = False
@@ -257,7 +257,7 @@ object Main: TMain
       object Label6: TLabel
         Left = 246
         Height = 16
-        Top = 106
+        Top = 144
         Width = 91
         Caption = 'Backend Options'
         ParentColor = False
@@ -275,7 +275,7 @@ object Main: TMain
       object edOS: TEdit
         Left = 82
         Height = 23
-        Top = 250
+        Top = 288
         Width = 148
         OnExit = edOSExit
         TabOrder = 3
@@ -283,7 +283,7 @@ object Main: TMain
       object edCPU: TEdit
         Left = 82
         Height = 23
-        Top = 278
+        Top = 316
         Width = 148
         OnExit = edOSExit
         TabOrder = 4
@@ -291,7 +291,7 @@ object Main: TMain
       object edLang: TEdit
         Left = 82
         Height = 23
-        Top = 307
+        Top = 345
         Width = 148
         OnExit = edOSExit
         TabOrder = 5
@@ -299,7 +299,7 @@ object Main: TMain
       object edMoDir: TEdit
         Left = 82
         Height = 23
-        Top = 339
+        Top = 377
         Width = 364
         OnExit = edOSExit
         TabOrder = 6
@@ -330,31 +330,48 @@ object Main: TMain
         OnClick = buNewProfileClick
         TabOrder = 8
       end
-      object Label8: TLabel
-        Left = 10
-        Height = 16
-        Top = 40
-        Width = 39
-        Caption = 'Output'
-        ParentColor = False
-      end
       object edOutput: TEdit
-        Left = 66
+        Left = 93
         Height = 23
-        Top = 40
-        Width = 376
+        Top = 72
+        Width = 353
         TabOrder = 9
       end
       object edBackend: TMemo
         Left = 246
         Height = 200
         Hint = 'Enter command=value pairs'
-        Top = 128
+        Top = 166
         Width = 200
         OnExit = lbBackendExit
         ParentShowHint = False
         ShowHint = True
         TabOrder = 10
+      end
+      object edDefOut: TEdit
+        Left = 93
+        Height = 23
+        Top = 100
+        Width = 354
+        TabOrder = 11
+      end
+      object swOutput: TRadioButton
+        Left = 14
+        Height = 19
+        Top = 72
+        Width = 58
+        Caption = 'Output'
+        TabOrder = 13
+      end
+      object swDefOut: TRadioButton
+        Left = 14
+        Height = 19
+        Top = 100
+        Width = 58
+        Caption = 'Default'
+        Checked = True
+        TabOrder = 12
+        TabStop = True
       end
     end
     object ViewXML: TTabSheet

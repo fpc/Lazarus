@@ -6,6 +6,8 @@ unit fMain;
   Create documentation (final, test)
 *)
 
+{.$DEFINE FileExt} //using class function FilenameExtension?
+
 {$mode objfpc}{$H+}
 
 interface
@@ -32,14 +34,16 @@ type
     edCPU: TEdit;
     edLang: TEdit;
     edMoDir: TEdit;
+    edDefOut: TEdit;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
-    Label8: TLabel;
     edBackend: TMemo;
+    swOutput: TRadioButton;
+    swDefOut: TRadioButton;
     swDocOpts: TCheckGroup;
     Label1: TLabel;
     swSortNodes: TCheckBox;
@@ -104,8 +108,9 @@ type
     procedure SaveOptions;
     procedure GetOptions;
     procedure GetEngines;
-    procedure GetProfile(const AName: string);
+    procedure GetProfile;
     procedure SelectFormat(AFmt: string);
+    procedure FormatSelected;
   public
     CurPkg: TDocPackage;
     CurUnit: string;
@@ -119,9 +124,12 @@ implementation
 
 uses
   fConfig, fLogView, fUpdateView,
+{$IFDEF FileExt}
+  dwlinear,
+{$ELSE}
+  //fix how?
+{$ENDIF}
   dWriter;
-  //dw_HTML, //more writers?
-  //uLpk;
 
 {$R *.lfm}
 
@@ -332,13 +340,13 @@ begin
     cbProfile.Items.CommaText := Manager.Profiles;
     cbProfile.Caption := Profile;
   end;
-  GetProfile(Profile);
+  GetProfile;
 end;
 
-procedure TMain.GetProfile(const AName: string);
+procedure TMain.GetProfile;
 begin
   //if Profile = AName then exit; //nothing changed?
-  Manager.Profile := AName;
+  //Manager.Profile := AName;
   //cbFormat.Caption := Manager.Options.Backend; //select from CB?
   SelectFormat(Manager.Options.Backend);
   swDocOpts.Checked[0] := Manager.Options.StopOnParseError;
@@ -354,16 +362,6 @@ begin
   edMoDir.Text := Manager.Options.MoDir;
 //backend options
   Manager.Options.BackendToPairs(edBackend.Lines);
-end;
-
-procedure TMain.SelectFormat(AFmt: string);
-var
-  i: integer;
-begin
-  i := cbFormat.Items.IndexOfName(AFmt);
-  if i < 0 then
-    i := cbFormat.Items.Count - 1;
-  cbFormat.ItemIndex := i;
 end;
 
 procedure TMain.edLogChange(Sender: TObject);
@@ -393,7 +391,43 @@ end;
 procedure TMain.cbFormatSelect(Sender: TObject);
 begin
   SaveOptions;
-  //edOutput.Text := ???;
+  FormatSelected;
+end;
+
+procedure TMain.SelectFormat(AFmt: string);
+var
+  i: integer;
+begin
+  i := cbFormat.Items.IndexOfName(AFmt);
+  if i < 0 then
+    i := cbFormat.Items.Count - 1;
+  cbFormat.ItemIndex := i;
+  FormatSelected;
+end;
+
+procedure TMain.FormatSelected;
+var
+  i: integer;
+  s: string;
+  wc: TFPDocWriterClass;
+begin
+  edDefOut.Text := '';
+  if not assigned(Manager.Package) then
+    exit; //cannot create package name
+  i := cbFormat.ItemIndex;
+  if i < 0 then
+    exit; //no format selected???
+  s := cbFormat.Items.Names[i];
+  wc := GetWriterClass(s);
+  if not assigned(wc) then exit; //should never happen
+  s := Manager.RootDir + Manager.Package.Name;
+{$IFDEF FileExt}
+  if wc.InheritsFrom(TLinearWriter) then begin
+    s := s + wc.FileNameExtension;
+  end;
+{$ELSE}
+{$ENDIF}
+  edDefOut.Text := s;
 end;
 
 procedure TMain.GetEngines;
@@ -402,6 +436,7 @@ begin
   dWriter.EnumWriters(cbFormat.Items);
   cbProfile.Items.CommaText := Manager.Profiles;
   cbProfile.Caption := Manager.Profile; //select???
+  cbProfileSelect(cbProfile);
 end;
 
 procedure TMain.ProjectsChanged(Sender: TObject);
@@ -443,6 +478,7 @@ begin
   pkg := lbPackages.Items.Objects[i] as TDocPackage;
   if pkg = nil then
     exit; //not really created?
+  Manager.Package := pkg;
   fn := pkg.ProjectFile; //initialized where?
   if fn <> '' then begin
     if FileExists(fn) then
@@ -535,7 +571,8 @@ end;
 procedure TMain.cbProfileSelect(Sender: TObject);
 begin
   Profile:=cbProfile.Caption;
-  GetProfile(Profile);
+  Manager.Profile := Profile;
+  GetProfile;
 end;
 
 procedure TMain.buRefreshClick(Sender: TObject);
@@ -564,7 +601,10 @@ end;
 
 procedure TMain.buMakeDocClick(Sender: TObject);
 begin
-  Manager.MakeDoc(Manager.Package, '');
+  if swDefOut.Checked then
+    Manager.MakeDoc(Manager.Package, '', edDefOut.Text)
+  else
+    Manager.MakeDoc(Manager.Package, '', edOutput.Text);
 end;
 
 end.

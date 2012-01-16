@@ -3701,6 +3701,7 @@ examples/fontenum/mainunit.lrs svneol=native#text/pascal
 examples/fontenum/mainunit.pas svneol=native#text/pascal
 examples/fpdocmanager/FPDocManager.lpi svneol=native#text/plain
 examples/fpdocmanager/FPDocManager.lpr svneol=native#text/plain
+examples/fpdocmanager/FilenameExtension.patch svneol=native#text/pascal
 examples/fpdocmanager/README.txt svneol=native#text/plain
 examples/fpdocmanager/docs/fconfig.xml svneol=native#text/plain
 examples/fpdocmanager/docs/flogview.xml svneol=native#text/plain

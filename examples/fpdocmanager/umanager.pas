@@ -17,6 +17,28 @@ This version is decoupled from the fpdoc classes, introduces the classes
   TFPDocHelper for fpdoc projects
 *)
 
+(* Currently registered writers:
+TFPDocWriter in 'dwriter.pp'
+  template: TTemplateWriter(TFPDocWriter) in 'dw_tmpl.pp'
+  man:  TMANWriter(TFPDocWriter) in 'dw_man.pp' --> <pkg>.man /unit.
+  dxml:  TDXMLWriter(TFPDocWriter) in 'dw_dxml.pp'
+  xml:  TXMLWriter(TFPDocWriter) in 'dw_xml.pp'
+  html: THTMLWriter(TFPDocWriter) in 'dw_html.pp'
+    htm:  THTMWriter(THTMLWriter)
+    chm:  TCHMHTMLWriter(THTMLWriter)
+  TLinearWriter in 'dwlinear.pp'
+    template: TTemplateWriter(TLinearWriter) in 'dw_lintmpl.pp'
+    ipf:  TIPFNewWriter(TLinearWriter) in 'dw_ipflin.pas'
+    latex:  TLaTeXWriter(TLinearWriter) in 'dw_latex.pp'
+    rtf:  TRTFWriter(TLinearWriter) in 'dw_linrtf.pp'
+    txt:  TTXTWriter(TLinearWriter) in 'dw_txt.pp'
+
+TLinearWriter based writers create an single output file for a package:
+  <path>/pkg .<ext>
+TFPDocWriter based writers create an file for every module:
+  <path>/pkg /unit.<ext>
+
+*)
 {$mode objfpc}{$H+}
 
 interface
@@ -160,7 +182,7 @@ type
     procedure ImportProject(APkg: TFPDocPackage; const AFile: string);
     function  ImportCmd(const AFile: string): boolean;
   //actions
-    function  MakeDoc(APkg: TDocPackage; AUnit: string): boolean;
+    function  MakeDoc(APkg: TDocPackage; const AUnit, AOutput: string): boolean;
     function  TestRun(APkg: TDocPackage; AUnit: string): boolean;
     function  Update(APkg: TDocPackage; const AUnit: string): boolean;
   public //published?
@@ -923,14 +945,16 @@ begin
     Changed;
 end;
 
-function TFPDocManager.MakeDoc(APkg: TDocPackage; AUnit: string): boolean;
+function TFPDocManager.MakeDoc(APkg: TDocPackage; const AUnit, AOutput: string): boolean;
 begin
-  Result := assigned(APkg) and BeginTest(APkg.ProjectFile);
+  Result := assigned(APkg)
+  and BeginTest(APkg.ProjectFile)
+  and APkg.CreateProject(Helper, ''); //only configure, don't create file
   if not Result then
     exit;
   try
   //output specification depends on the choosen format!
-    Helper.ParseFPDocOption('--output="' + RootDir + APkg.Name + '"');
+    Helper.ParseFPDocOption('--output=' + AOutput);
     //Result :=
     Helper.CreateUnitDocumentation(AUnit, False);
   finally
@@ -950,7 +974,10 @@ end;
 
 function TFPDocManager.Update(APkg: TDocPackage; const AUnit: string): boolean;
 begin
-  BeginTest(APkg.ProjectFile);
+  Result := assigned(APkg)
+  and BeginTest(APkg.ProjectFile);
+  if not Result then
+    exit;
   try
     Result := APkg.CreateProject(Helper, ''); //only configure, don't create file
     if not Result then
