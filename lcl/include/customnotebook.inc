@@ -318,7 +318,9 @@ begin
         Inc(VisiblePageInd)
       else begin
         if VisiblePageInd < Result then
-          Inc(Result);
+          Inc(Result)
+        else
+          Break;
       end;
     end;
   end
