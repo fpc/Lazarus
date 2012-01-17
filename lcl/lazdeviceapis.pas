@@ -25,7 +25,9 @@ type
 
   { The accelerometer geometry is the following:
 
-    Consider the device with the screen facing the user:
+    Consider the device with the screen facing the user
+    Typically it will have some buttons in the bottom part (represented by []):
+
        ^ Y axis
        |
     ________
@@ -42,7 +44,7 @@ type
     FOnSensorChanged: TNotifyEvent;
     FReadingStarted: Boolean;
   public
-    // These fields store the last data read, to get fresh data use UpdateAccelerometerData;
+    // These fields store the last data read
     xaxis, yaxis, zaxis: Double; // in m/s^2
     procedure StartReadingAccelerometerData();
     procedure StopReadingAccelerometerData();
@@ -179,3 +181,4 @@ finalization
   Messaging.Free;
   PositionInfo.Free;
 end.
+
