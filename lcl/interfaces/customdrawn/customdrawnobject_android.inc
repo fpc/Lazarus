@@ -316,9 +316,9 @@ begin
     end;
     1: // ACCELEROMETER
     begin
-      Accelerometer.xaxis := arraydata[0];
-      Accelerometer.yaxis := arraydata[1];
-      Accelerometer.zaxis := arraydata[2];
+      Accelerometer.xaxis := -1*arraydata[0];
+      Accelerometer.yaxis := -1*arraydata[1];
+      Accelerometer.zaxis := -1*arraydata[2];
       if Assigned(Accelerometer.OnSensorChanged) then
         Accelerometer.OnSensorChanged(Accelerometer);
     end;
@@ -385,6 +385,9 @@ begin
     __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'javaEnvRef^.FindClass failed');
     Exit(JNI_ERR);
   end;
+  // Now other classes
+  javaAndroidAppActivityClass := javaEnvRef^^.FindClass(javaEnvRef,'android/app/Activity');
+  javaJavaLandSystemClass := javaEnvRef^^.FindClass(javaEnvRef,'java/lang/System');
 
   // Register Pascal exported calls
   if javaEnvRef^^.RegisterNatives(javaEnvRef, javaActivityClass, @NativeMethods[0],length(NativeMethods))<0 then
@@ -449,6 +452,10 @@ begin
   javaMethod_LCLDoStopReadingAccelerometer := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoStopReadingAccelerometer', '()V');
   javaMethod_LCLDoSendMessage := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoSendMessage', '()V');
   javaMethod_LCLDoRequestPositionInfo := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoRequestPositionInfo', '()V');
+  // Methods from android.app.Activity
+  javaMethod_Activity_finish := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidAppActivityClass, 'finish', '()V');
+  // Methods from java.lang.System
+  javaMethod_System_exit := javaEnvRef^^.GetStaticMethodID(javaEnvRef, javaJavaLandSystemClass, 'exit', '(I)V');
 
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', 'JNI_OnLoad finished');
   result:=JNI_VERSION_1_4;// 1_6 is another option
@@ -697,7 +704,8 @@ end;*)
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.AppMinimize;
 begin
-//  Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+  // calling Activity.Free doesnt close the app, only hides it, so it is good for AppMinimize
+   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_Activity_finish);
 end;
 
 {------------------------------------------------------------------------------
@@ -833,18 +841,24 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWinCEWidgetSet.AppTerminate
+  Method: TCDWidgetSet.AppTerminate
   Params:  None
   Returns: Nothing
 
-  Tells Windows to halt and destroy
+  Terminates the application
  ------------------------------------------------------------------------------}
-
 procedure TCDWidgetSet.AppTerminate;
+var
+  lParams: array[0..0] of JValue;
 begin
-  //DebugLn('Trace:TWinCEWidgetSet.AppTerminate - Start');
-end;
+  DebugLn('[TCDWidgetSet.AppTerminate] Start');
 
+  // Call the method
+  lParams[0].i := 0;
+  javaEnvRef^^.CallStaticVoidMethodA(javaEnvRef, javaJavaLandSystemClass, javaMethod_System_exit, @lParams[0]);
+
+  DebugLn('[TCDWidgetSet.AppTerminate] End');
+end;
 
 procedure TCDWidgetSet.AppSetIcon(const Small, Big: HICON);
 begin

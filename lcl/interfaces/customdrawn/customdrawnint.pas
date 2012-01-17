@@ -266,6 +266,10 @@ var
   javaActivityClass: JClass = nil;
   javaActivityObject: jobject = nil;
 
+  // Other classes and objects
+  javaAndroidAppActivityClass: JClass = nil;
+  javaJavaLandSystemClass: JClass = nil;
+
   // Fields of our Activity
   // Strings
   javaField_lcltext: JfieldID=nil;
@@ -317,6 +321,10 @@ var
   javaMethod_LCLDoStopReadingAccelerometer: jmethodid = nil;
   javaMethod_LCLDoSendMessage: jmethodid = nil;
   javaMethod_LCLDoRequestPositionInfo: jmethodid = nil;
+  // Methods from android.app.Activity
+  javaMethod_Activity_finish: jmethodid = nil;
+  // Methods from java.lang.System
+  javaMethod_System_exit: jmethodid = nil;
 
   // This is utilized to store the information such as invalidate requests in events
   eventResult: jint;
