@@ -14,11 +14,6 @@ Organization
 A dedicated directory contains all package specifications and documentation.
 INI files are created for the manager itself and every package.
 
-Release notes 1.1
------------------
-An optional patch has been added for the FPDoc engines, see fMain $DEFINE FileExt.
-Please apply it to $FPC/utils/fpdoc/.
-
 Release notes 1.0
 -----------------
 
@@ -27,10 +22,5 @@ FPDoc units.
 
 A package FPDocEngine.lpk has been created for the FPDoc units, please move it
 into your $FPC/utils/fpdoc/ directory and compile the package there.
-
-The project (FPDocManager.lpi) did not fully compile on my machine. Unit
-dw_HTML could not be found, even if all other units of the package worked.
-Adding the unit directly to the project made it compile, please remove or
-update this entry as required, and give hints on how to fix the problem.
 
 DoDi

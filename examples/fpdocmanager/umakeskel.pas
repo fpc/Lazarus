@@ -105,6 +105,7 @@ type
     DisablePrivate,
     DisableFunctionResults: Boolean;
     EmitClassSeparator: Boolean;
+    Verbose,
     Modified: boolean;
     procedure Assign(Source: TPersistent); override;
     procedure LoadConfig(cf: TConfigFile; AProfile: string);
@@ -195,13 +196,6 @@ type
     function  ParseUpdateOption(const S: string):  TCreatorAction;
     function  CheckSkelOptions: string;
     function  CleanXML(const FileName: string): boolean;
-  {$IFDEF v0}
-    function  CreateProject(const AFileName: string; APackage: TFPDocPackage): boolean; virtual;
-    procedure LoadXMLProject(const AFileName: string);
-    function  ParseOption(const S: string):  TCreatorAction;
-    function  Exec: string;
-  {$ELSE}
-  {$ENDIF}
     function  SelectedPackage: TFPDocPackage;
     property Package: TFPDocPackage read SelectedPackage write SetPackage;
     property CmdAction: TCreatorAction read FCmdAction write SetCmdAction;
@@ -211,25 +205,8 @@ type
     property OnOption: THandleOption read FOnOption write SetOnOption;
     property InputDir: string read GetInputDir write SetInputDir;
     property DescrDir: string read GetDescrDir write SetDescrDir;
-    property Options: TCmdOptions read FOptions write SetOptions;
+    property CmdOptions: TCmdOptions read FOptions write SetOptions;
   end;
-
-{$IFDEF v0}
-var
-  FCreator: TFPDocMaker; //created by application
-  WriteDeclaration,
-  UpdateMode,
-  SortNodes,
-  DisableOverride,
-  DisableErrors,
-  DisableSeealso,
-  DisableArguments,
-  DisableProtected,
-  DisablePrivate,
-  DisableFunctionResults: Boolean;
-  EmitClassSeparator: Boolean;
-{$ELSE}
-{$ENDIF}
 
 //Extract next commandline option from a string
 Function GetNextWord(Var s : string) : String;
@@ -370,7 +347,7 @@ procedure TCmdOptions.Assign(Source: TPersistent);
 var
   s: TCmdOptions absolute Source;
 begin
-  inherited Assign(Source);
+  inherited Assign(Source); //writes to the local copy!
   if Source is TCmdOptions then begin
     WriteDeclaration := s.WriteDeclaration;
     DisableOverride := s.DisableOverride;
@@ -381,6 +358,7 @@ begin
     ShowPrivate := s.ShowPrivate;
     DisableProtected:=s.DisableProtected;
     SortNodes := s.SortNodes;
+    Verbose:=s.Verbose;
   end;
 end;
 
@@ -865,8 +843,10 @@ end;
 
 procedure TFPDocMaker.SetOptions(AValue: TCmdOptions);
 begin
-  if FOptions=AValue then Exit;
-  FOptions.Assign(AValue);
+  //if FOptions=AValue then Exit;
+  FOptions.Assign(AValue);  //the local MakeSkel options
+  Options.Assign(AValue);   //the FPDoc Engine options
+  Verbose := AValue.Verbose; //not in Options
 end;
 
 (* Check the options, return errors as message strings.
@@ -903,45 +883,12 @@ begin
     Result := (SNoPackageNameProvided);
     exit;
   end;
-  if Options.UpdateMode
+  if CmdOptions.UpdateMode
   and (SelectedPackage.Descriptions.IndexOf(Package.Output)<>-1) then begin
     Result := (SOutputMustNotBeDescr);
     exit;
   end;
 end;
-
-{$IFDEF v0}
-function TFPDocMaker.CreateProject(const AFileName: string; APackage: TFPDocPackage): boolean;
-var
-  f: TXMLPackageProject;
-begin
-  try
-    f := TXMLPackageProject.Create(nil);
-    try
-      f.SaveOptionsToFile(Project, AFileName, APackage);
-      Result := True;
-    finally
-      f.Free;
-    end;
-  except
-    Result := False;
-  end;
-end;
-
-procedure TFPDocMaker.LoadXMLProject(const AFileName: string);
-var
-  f: TXMLPackageProject;
-begin
-  //LoadProjectFile();
-  f := TXMLPackageProject.Create(self);
-  try
-    f.LoadOptionsFromFile(Project, AFileName);
-  finally
-    f.Free;
-  end;
-end;
-{$ELSE}
-{$ENDIF}
 
 procedure TFPDocMaker.SetCmdAction(AValue: TCreatorAction);
 begin
@@ -1029,7 +976,7 @@ begin
 {$ELSE}
 {$ENDIF}
   if Cmd = '--update' then
-    Options.UpdateMode := True
+    CmdOptions.UpdateMode := True
   else if (Cmd = '-n') or (Cmd = '--dry-run') then
     begin
     DryRun:=True;
@@ -1175,17 +1122,13 @@ begin
       begin
       Engine := TSkelEngine.Create;
     //configure engine
-    {$IFDEF v0}
-      InitEngine(Engine);
-    {$ELSE}
       Engine.OnLog:=Self.OnLog;
       Engine.ScannerLogEvents:=Self.ScannerLogEvents;
       Engine.ParserLogEvents:=Self.ParserLogEvents;
-    {$ENDIF}
-      Engine.Options := Options;
+      Engine.Options := CmdOptions;
       Try
         Engine.SetPackageName(APackageName);
-        if Options.UpdateMode then
+        if CmdOptions.UpdateMode then
           For J:=0 to DescrFiles.Count-1 do
             Engine.AddDocFile(DescrFiles[J]);
         Try
@@ -1269,28 +1212,28 @@ begin
     exit;
   Result := caDefault; //assume succ
   if s = '--disable-arguments' then
-    Options.DisableArguments := True
+    CmdOptions.DisableArguments := True
   else if s = '--disable-errors' then
-    Options.DisableErrors := True
+    CmdOptions.DisableErrors := True
   else if s = '--disable-function-results' then
-    Options.DisableFunctionResults := True
+    CmdOptions.DisableFunctionResults := True
   else if s = '--disable-seealso' then
-    Options.DisableSeealso := True
+    CmdOptions.DisableSeealso := True
   else if s = '--disable-private' then
-    Options.DisablePrivate := True
+    CmdOptions.DisablePrivate := True
   else if s = '--disable-override' then
-    Options.DisableOverride := True
+    CmdOptions.DisableOverride := True
   else if s = '--disable-protected' then
     begin
-    Options.DisableProtected := True;
-    Options.DisablePrivate :=True;
+    CmdOptions.DisableProtected := True;
+    CmdOptions.DisablePrivate :=True;
     end
   else if (s = '--emitclassseparator') or (s='--emit-class-separator') then
-    Options.EmitClassSeparator := True
+    CmdOptions.EmitClassSeparator := True
   else if (s = '--emit-declaration') then
-    Options.WriteDeclaration := True
+    CmdOptions.WriteDeclaration := True
   else if (s = '--sort-nodes') then
-    Options.SortNodes := True
+    CmdOptions.SortNodes := True
   else if (Cmd = '-i') or (Cmd = '--input') then
     AddToFileList(SelectedPackage.Inputs, Arg)
   else if not assigned(OnOption) or not OnOption(Cmd, Arg) then begin
@@ -1299,78 +1242,6 @@ begin
     Result := caInvalid;
   end;
 end;
-
-{$IFDEF v0}
-function TFPDocMaker.ParseOption(const S: string): TCreatorAction;
-begin
-  if Options.CreateSkeleton or Options.UpdateMode then
-    Result := ParseUpdateOption(s)
-  else
-    Result := ParseFPDocOption(s);
-end;
-
-(* An experimental version for executing all functionality.
-  Applications better should use the basic methods, and implement the framework
-  for all handled cases.
-*)
-function TFPDocMaker.Exec: string;
-var
-  Pkg: TFPDocPackage;
-  s, OutputName: string;
-  i: integer;
-begin
-  if Options.UpdateMode or Options.CreateSkeleton then begin
-  //MakeSkel
-    Result := CheckSkelOptions;
-    if Result <> '' then
-      exit;
-  end else
-    Result := '';
-  if SelectedUnit <> '' then begin
-  //create fake package
-    Pkg := TFPDocPackage.Create(nil);
-    try
-      Pkg.Name := Package.Name;
-      s := UnitSpec(SelectedUnit);
-      Pkg.Inputs.Add(s);
-
-      Pkg.Output := Package.Output; //fpdoc
-      OutputName:=DescrDir + SelectedUnit + '.xml';
-      if Options.UpdateMode then begin
-        if not FileExists(OutputName) then begin
-          Result := 'Not found: ' + OutputName;
-          exit;
-        end;
-        Pkg.Descriptions.Add(OutputName);
-        OutputName := 'upd.' + SelectedUnit + '.xml';
-        Result := DocumentPackage(Package.Name, OutputName, Pkg.Inputs, Pkg.Descriptions);
-        exit;
-      end;
-      if Options.CreateSkeleton then begin
-        if FileExists(OutputName) then begin
-          Result := 'File already exists: ' + OutputName;
-          exit;
-        end;
-        Result := DocumentPackage(Package.Name, OutputName, Pkg.Inputs, Pkg.Descriptions);
-      end else begin //fpdoc
-        CreateDocumentation(Pkg, DryRun);
-      end;
-    finally
-      Pkg.Free;
-    end;
-    exit;
-  end;
-//process package
-  if Options.UpdateMode or Options.CreateSkeleton then begin
-    Result := DocumentPackage(Package.Name, Package.Output, Package.Inputs, Package.Descriptions);
-  end else begin
-  //FPDoc
-  //todo: all or single unit?
-    CreateDocumentation(SelectedPackage, DryRun);
-  end;
-end;
-{$ELSE}
-{$ENDIF}
 
 end.
 

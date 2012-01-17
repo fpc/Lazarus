@@ -1,11 +1,11 @@
 object Main: TMain
   Left = 335
-  Height = 462
+  Height = 507
   Top = 146
   Width = 569
   Align = alClient
   Caption = 'Main'
-  ClientHeight = 442
+  ClientHeight = 487
   ClientWidth = 569
   Menu = MainMenu1
   OnCreate = FormCreate
@@ -13,7 +13,7 @@ object Main: TMain
   LCLVersion = '0.9.31'
   object lbPackages: TComboBox
     Left = 0
-    Height = 442
+    Height = 464
     Top = 0
     Width = 94
     Align = alLeft
@@ -24,12 +24,12 @@ object Main: TMain
   end
   object Units: TPageControl
     Left = 94
-    Height = 442
+    Height = 464
     Top = 0
     Width = 475
-    ActivePage = ViewUnits
+    ActivePage = ViewFinal
     Align = alClient
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 1
     object ViewUnits: TTabSheet
       Caption = 'Units'
@@ -172,7 +172,7 @@ object Main: TMain
     end
     object ViewFinal: TTabSheet
       Caption = 'Document'
-      ClientHeight = 414
+      ClientHeight = 436
       ClientWidth = 467
       object Label1: TLabel
         Left = 10
@@ -185,6 +185,7 @@ object Main: TMain
       object cbFormat: TComboBox
         Left = 71
         Height = 23
+        Hint = 'The document output format'
         Top = 40
         Width = 375
         ItemHeight = 15
@@ -195,7 +196,7 @@ object Main: TMain
       end
       object swDocOpts: TCheckGroup
         Left = 10
-        Height = 136
+        Height = 160
         Top = 144
         Width = 220
         AutoFill = True
@@ -215,17 +216,18 @@ object Main: TMain
           'Show privates'
           'Interface only'
           'Don''t trim'
+          'Verbose'
         )
         OnItemClick = optUpdItemClick
         TabOrder = 1
         Data = {
-          06000000020302020302
+          0700000002030202030202
         }
       end
       object Label2: TLabel
         Left = 10
         Height = 16
-        Top = 288
+        Top = 314
         Width = 50
         Caption = 'OSTarget'
         ParentColor = False
@@ -233,7 +235,7 @@ object Main: TMain
       object Label3: TLabel
         Left = 10
         Height = 16
-        Top = 316
+        Top = 342
         Width = 58
         Caption = 'CPUTarget'
         ParentColor = False
@@ -241,7 +243,7 @@ object Main: TMain
       object Label4: TLabel
         Left = 10
         Height = 16
-        Top = 345
+        Top = 371
         Width = 53
         Caption = 'Language'
         ParentColor = False
@@ -249,7 +251,7 @@ object Main: TMain
       object Label5: TLabel
         Left = 10
         Height = 16
-        Top = 384
+        Top = 410
         Width = 34
         Caption = 'MoDir'
         ParentColor = False
@@ -265,6 +267,7 @@ object Main: TMain
       object buMakeDoc: TButton
         Left = 296
         Height = 25
+        Hint = 'Create the docs for the selected package'
         Top = 8
         Width = 146
         AutoSize = True
@@ -275,7 +278,7 @@ object Main: TMain
       object edOS: TEdit
         Left = 82
         Height = 23
-        Top = 288
+        Top = 314
         Width = 148
         OnExit = edOSExit
         TabOrder = 3
@@ -283,7 +286,7 @@ object Main: TMain
       object edCPU: TEdit
         Left = 82
         Height = 23
-        Top = 316
+        Top = 342
         Width = 148
         OnExit = edOSExit
         TabOrder = 4
@@ -291,7 +294,7 @@ object Main: TMain
       object edLang: TEdit
         Left = 82
         Height = 23
-        Top = 345
+        Top = 371
         Width = 148
         OnExit = edOSExit
         TabOrder = 5
@@ -299,7 +302,7 @@ object Main: TMain
       object edMoDir: TEdit
         Left = 82
         Height = 23
-        Top = 377
+        Top = 403
         Width = 364
         OnExit = edOSExit
         TabOrder = 6
@@ -315,6 +318,7 @@ object Main: TMain
       object cbProfile: TComboBox
         Left = 66
         Height = 23
+        Hint = 'Available build profiles'
         Top = 8
         Width = 100
         ItemHeight = 15
@@ -324,6 +328,7 @@ object Main: TMain
       object buNewProfile: TButton
         Left = 174
         Height = 25
+        Hint = 'Create a new profile'
         Top = 8
         Width = 51
         Caption = 'Save'
@@ -333,15 +338,16 @@ object Main: TMain
       object edOutput: TEdit
         Left = 93
         Height = 23
+        Hint = 'Create the docs in this location,'#13#10'in the project directory if empty.'
         Top = 72
         Width = 353
         TabOrder = 9
       end
       object edBackend: TMemo
         Left = 246
-        Height = 200
+        Height = 224
         Hint = 'Enter command=value pairs'
-        Top = 166
+        Top = 168
         Width = 200
         OnExit = lbBackendExit
         ParentShowHint = False
@@ -353,11 +359,13 @@ object Main: TMain
         Height = 23
         Top = 100
         Width = 354
+        ReadOnly = True
         TabOrder = 11
       end
       object swOutput: TRadioButton
         Left = 14
         Height = 19
+        Hint = 'Write the docs into the specified location'
         Top = 72
         Width = 58
         Caption = 'Output'
@@ -366,6 +374,7 @@ object Main: TMain
       object swDefOut: TRadioButton
         Left = 14
         Height = 19
+        Hint = 'Select to use the default location,'#13#10'in your global documentation directory'
         Top = 100
         Width = 58
         Caption = 'Default'
@@ -879,6 +888,13 @@ object Main: TMain
         TabOrder = 0
       end
     end
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 464
+    Width = 569
+    Panels = <>
   end
   object MainMenu1: TMainMenu
     left = 10

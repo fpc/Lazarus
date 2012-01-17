@@ -6,8 +6,6 @@ unit fMain;
   Create documentation (final, test)
 *)
 
-{.$DEFINE FileExt} //using class function FilenameExtension?
-
 {$mode objfpc}{$H+}
 
 interface
@@ -42,6 +40,7 @@ type
     Label6: TLabel;
     Label7: TLabel;
     edBackend: TMemo;
+    StatusBar1: TStatusBar;
     swOutput: TRadioButton;
     swDefOut: TRadioButton;
     swDocOpts: TCheckGroup;
@@ -104,7 +103,10 @@ type
     procedure LogStart;
     procedure LogDone;
     procedure ShowUpdate;
+  {$IFDEF v0}
     procedure OnParseImport(Sender: TObject; var ASource, ALink: string);
+  {$ELSE}
+  {$ENDIF}
     procedure SaveOptions;
     procedure GetOptions;
     procedure GetEngines;
@@ -124,11 +126,7 @@ implementation
 
 uses
   fConfig, fLogView, fUpdateView,
-{$IFDEF FileExt}
   dwlinear,
-{$ELSE}
-  //fix how?
-{$ENDIF}
   dWriter;
 
 {$R *.lfm}
@@ -207,12 +205,13 @@ end;
 
 procedure TMain.LogStart;
 begin
+  Screen.Cursor := crHourGlass;
   if LogName = '' then
     edLog.Text := Manager.RootDir + 'doclog.txt';
   LogFile.Free;
   LogFile := TFileStream.Create(LogName, fmCreate); //fmWrite
   Manager.OnLog := @LogToFile;
-  //Manager.OnImport:=@OnParseImport;
+  StatusBar1.SimpleText := 'Starting...';
 end;
 
 procedure TMain.LogDone;
@@ -225,6 +224,7 @@ begin
   LogView.Caption := 'View ' + LogName;
   LogView.edLog.Lines.LoadFromFile(LogName); //direct log???
   LogView.Show;
+  Screen.Cursor := crDefault;
 end;
 
 procedure TMain.ShowUpdate;
@@ -255,7 +255,10 @@ var
 begin
   if assigned(LogFile) then begin
     s := msg + LineEnding;
-    LogFile.WriteBuffer(s[1], Length(s))
+    LogFile.WriteBuffer(s[1], Length(s));
+  //give immediate feedback
+    StatusBar1.SimpleText := msg;
+    Application.ProcessMessages;
   end
   else
     LogToMsgBox(Sender, msg);
@@ -266,6 +269,7 @@ begin
   ShowMessage(msg);
 end;
 
+{$IFDEF v0}
 procedure TMain.OnParseImport(Sender: TObject; var ASource, ALink: string);
 var
   i: integer;
@@ -285,6 +289,8 @@ and provide the list of imports.
   //if Manager.Options.??? - where's the output format?
   ALink := '../' + pn + '/';
 end;
+{$ELSE}
+{$ENDIF}
 
 type
   SkelOpts = (
@@ -315,6 +321,7 @@ begin
   Manager.Options.ShowPrivate := swDocOpts.Checked[3];
   Manager.Options.InterfaceOnly := swDocOpts.Checked[4];
   Manager.Options.DontTrim := swDocOpts.Checked[5];
+  Manager.Options.Verbose := swDocOpts.Checked[6];
   Manager.Options.OSTarget := edOS.Text;
   Manager.Options.CPUTarget := edCPU.Text;
   Manager.Options.Language := edLang.Text;
@@ -407,26 +414,12 @@ end;
 
 procedure TMain.FormatSelected;
 var
-  i: integer;
   s: string;
-  wc: TFPDocWriterClass;
 begin
-  edDefOut.Text := '';
-  if not assigned(Manager.Package) then
-    exit; //cannot create package name
-  i := cbFormat.ItemIndex;
-  if i < 0 then
-    exit; //no format selected???
-  s := cbFormat.Items.Names[i];
-  wc := GetWriterClass(s);
-  if not assigned(wc) then exit; //should never happen
-  s := Manager.RootDir + Manager.Package.Name;
-{$IFDEF FileExt}
-  if wc.InheritsFrom(TLinearWriter) then begin
-    s := s + wc.FileNameExtension;
-  end;
-{$ELSE}
-{$ENDIF}
+  if assigned(Manager.Package) then
+    s := Manager.RootDir + Manager.Package.Name
+  else
+    s := '';
   edDefOut.Text := s;
 end;
 
@@ -479,6 +472,7 @@ begin
   if pkg = nil then
     exit; //not really created?
   Manager.Package := pkg;
+  edDefOut.Text := Manager.RootDir + pkg.Name;
   fn := pkg.ProjectFile; //initialized where?
   if fn <> '' then begin
     if FileExists(fn) then
@@ -600,11 +594,19 @@ begin
 end;
 
 procedure TMain.buMakeDocClick(Sender: TObject);
+var
+  res: boolean;
 begin
+  LogStart;
   if swDefOut.Checked then
-    Manager.MakeDoc(Manager.Package, '', edDefOut.Text)
+    res := Manager.MakeDoc(Manager.Package, '', edDefOut.Text)
   else
-    Manager.MakeDoc(Manager.Package, '', edOutput.Text);
+    res := Manager.MakeDoc(Manager.Package, '', edOutput.Text);
+  LogDone;
+  if res then
+    StatusBar1.SimpleText := 'Done :-)'
+  else
+    StatusBar1.SimpleText := 'There were errors, see log';
 end;
 
 end.

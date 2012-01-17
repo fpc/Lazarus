@@ -443,6 +443,9 @@ begin
   end;
 //add options
   APrj.Options.Assign(Manager.Options);
+//debug, looks good here!?
+  if APrj.Options.Backend = '' then
+    Manager.DoLog('No format, should be ' + Manager.Options.Backend);
   pkg.Output := Manager.RootDir + Name; //???
   pkg.ContentFile := Manager.RootDir + Name + '.xct';
 //now create project file
@@ -513,13 +516,8 @@ begin
   FDescrDir := Config.ReadString(SecDoc, 'descrdir', '');
   Requires.CommaText := Config.ReadString(SecDoc, 'requires', '');
 //units
-{$IFDEF v0}
-  Config.ReadSectionRaw('units', Units);
-  Config.ReadSectionRaw('descrs', Descriptions);
-{$ELSE}
   Config.ReadSectionValues('units', Units);
   Config.ReadSectionValues('descrs', Descriptions);
-{$ENDIF}
 //more?
 //all done
   Loaded := True;
@@ -528,21 +526,6 @@ end;
 (* Initialize the package, write global config (+local?)
 *)
 procedure TDocPackage.UpdateConfig;
-
-{$IFDEF v0}
-  procedure WriteSection(const SecName: string; AList: TStrings);
-  var
-    j: integer;
-  begin
-    if AList = nil then
-      exit; //how that?
-    for j := 0 to AList.Count - 1 do begin
-      Config.WriteString(SecName, AList.Names[j], AList.ValueFromIndex[j]);
-    end;
-  end;
-{$ELSE}
-{$ENDIF}
-
 begin
 //create ini file, if not already created
   if Config = nil then
@@ -555,13 +538,8 @@ begin
   Config.WriteString(SecDoc, 'descrdir', DescrDir);
   Config.WriteString(SecDoc, 'requires', Requires.CommaText);
 //units
-{$IFDEF v0}
-  WriteSection('units', Units);
-  WriteSection('descrs', Descriptions);
-{$ELSE}
   Config.WriteSectionValues('units', Units);
   Config.WriteSectionValues('descrs', Descriptions);
-{$ENDIF}
 //all done
   Loaded := True;
 end;
@@ -671,7 +649,7 @@ begin
   Helper.OnLog := OnLog;
   Result := Helper.BeginTest(AFile);
   if Result then
-    Helper.Options := Options;
+    Helper.CmdOptions := Options; //set reference AND propagate!?
 end;
 
 procedure TFPDocManager.EndTest;
@@ -836,13 +814,7 @@ begin
       pkg := AddPackage(Helper.Package.Name);
       if pkg.Loaded then
         continue; //already initialized
-    {$IFDEF v0}
-      if pkg.ImportProject(Helper, Helper.Package, '') then //force create new project file?
-        RegisterPackage(pkg);
-    {$ELSE}
       pkg.ImportProject(Helper, Helper.Package, '');
-    //create new project file?
-    {$ENDIF}
     end;
   finally
     EndTest;
@@ -953,7 +925,6 @@ begin
   if not Result then
     exit;
   try
-  //output specification depends on the choosen format!
     Helper.ParseFPDocOption('--output=' + AOutput);
     //Result :=
     Helper.CreateUnitDocumentation(AUnit, False);
@@ -1108,12 +1079,7 @@ begin
   //override options for test
     ParseFPDocOption('--format=html');
     ParseFPDocOption('-n');
-  {$IFDEF v0}
-    Package := Packages.FindPackage(APkg.Name);
-    Result := Package <> nil;
-    if Result then
-  {$ELSE}
-  {$ENDIF}
+    //verbose?
     CreateUnitDocumentation(AUnit, True);
   finally
     EndTest;
@@ -1136,8 +1102,8 @@ function TFPDocHelper.Update(APkg: TDocPackage; const AUnit: string): boolean;
     OutName := AUnit + '.xml';
     if DescrDir <> '' then
       OutName := IncludeTrailingBackslash(DescrDir) + OutName;
-    Options.UpdateMode := FileExists(OutName);
-    if Options.UpdateMode then begin
+    CmdOptions.UpdateMode := FileExists(OutName);
+    if CmdOptions.UpdateMode then begin
       DescrList.Add(OutName);
       OutName:=Manager.RootDir + 'upd.' + AUnit + '.xml';
       DoLog('Update ' + OutName);
@@ -1148,7 +1114,7 @@ function TFPDocHelper.Update(APkg: TDocPackage; const AUnit: string): boolean;
     Result := msg = '';
     if not Result then
       DoLog(msg) //+unit?
-    else if Options.UpdateMode then begin
+    else if CmdOptions.UpdateMode then begin
       CleanXML(OutName);
     end;
   end;
