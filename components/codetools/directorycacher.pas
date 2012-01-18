@@ -1610,7 +1610,7 @@ function TCTDirectoryCachePool.FindDiskFilename(const Filename: string;
 var
   ADirectory: String;
   Cache: TCTDirectoryCache;
-  ShortFilename: String;
+  DiskShortFilename: String;
 begin
   Result:=ChompPathDelim(TrimFilename(Filename));
   if Result='' then exit;
@@ -1622,9 +1622,9 @@ begin
   if ADirectory=Result then
     exit; // e.g. / under Linux
   Cache:=GetCache(ADirectory,true,false);
-  ShortFilename:=ExtractFileName(Result);
-  Result:=Cache.FindFile(ShortFilename,ctsfcAllCase);
-  if Result='' then exit;
+  Result:=ExtractFileName(Result);
+  DiskShortFilename:=Cache.FindFile(Result,ctsfcAllCase);
+  if DiskShortFilename<>'' then Result:=DiskShortFilename;
   Result:=Cache.Directory+Result;
 end;
 
