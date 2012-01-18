@@ -1948,6 +1948,7 @@ end;
 
 function TFindDeclarationTool.IsHiddenUsedUnit(TheUnitName: PChar): boolean;
 begin
+  // HiddenUnits:=Scan
   if (CompareIdentifiers(TheUnitName,'system')=0)
   or ((Scanner.CompilerMode in [cmDELPHI,cmOBJFPC])
     and (Scanner.PascalCompiler=pcFPC)

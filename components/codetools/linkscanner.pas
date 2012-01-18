@@ -606,6 +606,7 @@ function IndexOfCodeInUniqueList(ACode: Pointer;
 function IndexOfCodeInUniqueList(ACode: Pointer;
                                  UniqueSortedCodeList: TFPList): integer;
 function dbgs(r: TLinkScannerRange): string; overload;
+function dbgs(const ModeSwitches: TCompilerModeSwitches): string; overload;
 
 implementation
 
@@ -657,6 +658,18 @@ end;
 function dbgs(r: TLinkScannerRange): string; overload;
 begin
   WriteStr(Result, r);
+end;
+
+function dbgs(const ModeSwitches: TCompilerModeSwitches): string;
+var
+  ms: TCompilerModeSwitch;
+begin
+  for ms:=Low(TCompilerModeSwitches) to high(TCompilerModeSwitches) do
+    if ms in ModeSwitches then begin
+      Result:=Result+CompilerModeSwitchNames[ms]+',';
+    end;
+  System.Delete(Result,length(Result),1); // cut comma
+  Result:='['+Result+']';
 end;
 
 procedure AddCodeToUniqueList(ACode: Pointer; UniqueSortedCodeList: TFPList);
@@ -1320,8 +1333,8 @@ begin
   if Values.IsDefined(ExternalMacroStart+'NestedComments') then
     FNestedComments:=true;
 
-  //DebugLn(['TLinkScanner.Scan ',MainFilename,' ',PascalCompilerNames[PascalCompiler],' ',CompilerModeNames[CompilerMode],' FNestedComments=',FNestedComments]);
-    
+  //DebugLn(['TLinkScanner.Scan ',MainFilename,' ',PascalCompilerNames[PascalCompiler],' ',CompilerModeNames[CompilerMode],' FNestedComments=',FNestedComments,' ModeSwitches=',dbgs(CompilerModeSwitches)]);
+
   //DebugLn(Values.AsString);
   FMacrosOn:=(Values.Variables['MACROS']<>'0');
   if Src='' then exit;
@@ -2635,9 +2648,9 @@ begin
       if ModeSwitch=cmsObjectiveC2 then
         Include(s,cmsObjectiveC1);
       if (SrcPos<=SrcLen) and (Src[SrcPos]='-') then
-        FCompilerModeSwitches:=FCompilerModeSwitches+s
+        FCompilerModeSwitches:=FCompilerModeSwitches-s
       else
-        FCompilerModeSwitches:=FCompilerModeSwitches-s;
+        FCompilerModeSwitches:=FCompilerModeSwitches+s;
       exit;
     end;
   end;
