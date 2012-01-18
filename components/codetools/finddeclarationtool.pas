@@ -4201,6 +4201,7 @@ var
   end;
 
 begin
+  //debugln(['TFindDeclarationTool.FindAncestorOfClass ',CleanPosToStr(ClassNode.StartPos,true)]);
   {$IFDEF CheckNodeTool}CheckNodeTool(ClassNode);{$ENDIF}
   if (ClassNode=nil) or (not (ClassNode.Desc in AllClasses))
   then
@@ -5558,22 +5559,30 @@ function TFindDeclarationTool.FindIdentifierInAncestors(
 var
   InheritanceNode: TCodeTreeNode;
   Node: TCodeTreeNode;
+  SearchDefaultAncestor: Boolean;
 begin
   Result:=false;
 
   if not (fdfSearchInAncestors in Params.Flags) then exit;
 
+  SearchDefaultAncestor:=true;
   InheritanceNode:=FindInheritanceNode(ClassNode);
   if (InheritanceNode<>nil) then begin
     Node:=InheritanceNode.FirstChild;
     while Node<>nil do begin
       if not FindAncestorOfClassInheritance(Node,Params,true) then exit;
+      if (ClassNode.Desc in AllClassInterfaces)
+      or (Params.NewNode.Desc in AllClassObjects) then
+        SearchDefaultAncestor:=false;
       if Search(Params.NewCodeTool,Params.NewNode) then exit(true);
       Node:=Node.NextBrother;
     end;
   end;
-  if not FindDefaultAncestorOfClass(ClassNode,Params,true) then exit;
-  Result:=Search(Params.NewCodeTool,Params.NewNode);
+  //debugln(['TFindDeclarationTool.FindIdentifierInAncestors SearchDefaultAncestor=',SearchDefaultAncestor,' ',CleanPosToStr(ClassNode.StartPos,true)]);
+  if not SearchDefaultAncestor then begin
+    if not FindDefaultAncestorOfClass(ClassNode,Params,true) then exit;
+    Result:=Search(Params.NewCodeTool,Params.NewNode);
+  end;
 end;
 
 {$IFDEF DebugPrefix}
