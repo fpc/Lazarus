@@ -687,43 +687,70 @@ end;
 procedure TCustomChartSource.ValuesInRange(
   AParams: TValuesInRangeParams; var AValues: TChartValueTextArray);
 
-var
-  cnt: Integer;
-
-  procedure Push(AValue: Double; AIndex: Integer);
+  procedure Put(
+    out ADest: TChartValueText; AValue: Double; AIndex: Integer); inline;
   begin
-    AValues[cnt].FValue := AValue;
-    AValues[cnt].FText := FormatItem(AParams.FFormat, AIndex, 0);
+    ADest.FValue := AValue;
+    ADest.FText := FormatItem(AParams.FFormat, AIndex, 0);
+  end;
+
+var
+  i, vi, pvi, cnt, start: Integer;
+  v: Double;
+  lo, hi: TChartValueText;
+begin
+  // Select all values in a given range, plus lower and upper bound values.
+  // Proceed through data source in a single pass. Do not assume sorted source.
+  start := Length(AValues);
+  SetLength(AValues, start + Count + 2);
+  cnt := start;
+  pvi := MaxInt;
+  lo.FValue := NegInfinity;
+  hi.FValue := SafeInfinity;
+  AValues[start].FValue := SafeNan;
+  for i := 0 to Count - 1 do begin
+    with Item[I]^ do
+      v := IfThen(AParams.FUseY, Y, X);
+    if IsNan(v) then continue;
+    if v < AParams.FMin then begin
+      if v > lo.FValue then
+        Put(lo, v, i);
+    end
+    else if v > AParams.FMax then begin
+      if v < hi.FValue then
+        Put(hi, v, i);
+    end
+    else begin
+      with AParams do
+        if aipUseMinLength in FIntervals.Options then begin
+          // TODO: This check may be unsifficient for unsorted values.
+          vi := ToImage(v);
+          if Abs(vi - pvi) < FScale(FIntervals.MinLength) then continue;
+          pvi := vi;
+        end;
+      if not IsInfinite(lo.FValue) and (cnt = start) then
+        cnt += 1;
+      Put(AValues[cnt], v, i);
+      cnt += 1;
+    end;
+  end;
+
+  if not IsInfinite(lo.FValue) then begin
+    if not IsNan(AValues[start].FValue) then begin
+      // The lower bound value occured after the first in-range value,
+      // so we did not reserve space for it. Hopefully rare case.
+      for i := cnt downto start + 1 do
+        AValues[i] := AValues[i - 1];
+      cnt += 1;
+    end;
+    AValues[start] := lo;
+    if cnt = start then
+      cnt += 1;
+  end;
+  if not IsInfinite(hi.FValue) then begin
+    AValues[cnt] := hi;
     cnt += 1;
   end;
-
-var
-  i, li, vi, pvi: Integer;
-  pv, v: Double;
-begin
-  cnt := Length(AValues);
-  SetLength(AValues, cnt + Count + 2);
-  v := 0;
-  li := 0;
-  pvi := MaxInt;
-  for i := 0 to Count - 1 do begin
-    pv := v;
-    v := IfThen(AParams.FUseY, Item[i]^.Y, Item[i]^.X);
-    if not InRange(v, AParams.FMin, AParams.FMax) then continue;
-    with AParams do
-      if aipUseMinLength in FIntervals.Options then begin
-        vi := ToImage(v);
-        if Abs(vi - pvi) < FScale(FIntervals.MinLength) then continue;
-        pvi := vi;
-      end;
-    if (cnt = 0) and (i > 0) then
-      Push(pv, i - 1);
-    Push(v, i);
-    li := i;
-  end;
-  if li < Count - 1 then
-    with Item[li + 1]^ do
-      Push(IfThen(AParams.FUseY, Y, X), li + 1);
   SetLength(AValues, cnt);
 end;
 
