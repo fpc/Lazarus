@@ -1044,18 +1044,21 @@ begin
   if (FDebugger.State in [dsRun])
   then FCurrentBreakpoint := nil;
 
-  // Notify FSnapshots of new state (while dialogs still in updating)
-  // TODO: Maybe move to TIDEBreakPoint.DoHit
-  if (FCurrentBreakpoint <> nil) and (bpaTakeSnapshot in FCurrentBreakpoint.Actions) and
-     (State in [dsPause, dsInternalPause])
-  then begin
-    FSnapshots.DoStateChange(OldState);
-    FSnapshots.Current.AddToSnapshots;
-    FSnapshots.DoDebuggerIdle(True);
-  end
-  else
-  if FDebugger.State <> dsInternalPause
-  then FSnapshots.DoStateChange(OldState);
+  if not((OldState = dsInternalPause) and (State = dsPause)) then begin
+    // OldState=dsInternalPause means we already have a snapshot
+    // Notify FSnapshots of new state (while dialogs still in updating)
+    // TODO: Maybe move to TIDEBreakPoint.DoHit
+    if (FCurrentBreakpoint <> nil) and (bpaTakeSnapshot in FCurrentBreakpoint.Actions) and
+       (State in [dsPause, dsInternalPause])
+    then begin
+      FSnapshots.DoStateChange(OldState);
+      FSnapshots.Current.AddToSnapshots;
+      FSnapshots.DoDebuggerIdle(True);
+    end
+    else
+    if FDebugger.State <> dsInternalPause
+    then FSnapshots.DoStateChange(OldState);
+  end;
 
   UnlockDialogs;
 

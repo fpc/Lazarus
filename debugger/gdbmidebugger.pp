@@ -1875,7 +1875,8 @@ begin
     // If a ExecCmd is running, then defer exec until the exec cmd is done
     ForceQueue := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
               and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
-              and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued);
+              and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued)
+              and (Debugger.State <> dsInternalPause);
     TGDBMIDebugger(Debugger).QueueCommand(FGetThreadsCmdObj, ForceQueue);
     (* DoEvaluationFinished may be called immediately at this point *)
   end;
@@ -1929,7 +1930,8 @@ begin
   // If a ExecCmd is running, then defer exec until the exec cmd is done
   ForceQueue := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
             and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
-            and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued);
+            and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued)
+            and (Debugger.State <> dsInternalPause);
   TGDBMIDebugger(Debugger).QueueCommand(FChangeThreadsCmdObj, ForceQueue);
   (* DoEvaluationFinished may be called immediately at this point *)
 end;
@@ -1971,49 +1973,51 @@ begin
   List := TGDBMINameValueList.Create(R);
   EList := TGDBMINameValueList.Create;
   ArgList := TGDBMINameValueList.Create;
+  try
+    FCurrentThreadId := StrToIntDef(List.Values['current-thread-id'], -1);
+    FTheDebugger.FInternalThreadId := FTheDebugger.FCurrentThreadId;
+    if FCurrentThreadId < 0 then exit;
+    FSuccess := True;
 
-  FCurrentThreadId := StrToIntDef(List.Values['current-thread-id'], -1);
-  FTheDebugger.FInternalThreadId := FTheDebugger.FCurrentThreadId;
-  if FCurrentThreadId < 0 then exit;
-  FSuccess := True;
+    List.SetPath('threads');
+    SetLength(FThreads, List.Count);
+    for i := 0 to List.Count - 1 do begin
+      EList.Init(List.Items[i]^.Name);
+      ThrId    := StrToIntDef(EList.Values['id'], -2);
+      ThrName  := EList.Values['target-id'];
+      ThrState := EList.Values['state'];
+      EList.SetPath('frame');
+      addr := StrToQWordDef(EList.Values['addr'], 0);
+      func := EList.Values['func'];
+      filename := ConvertGdbPathAndFile(EList.Values['file']);
+      fullname := ConvertGdbPathAndFile(EList.Values['fullname']);
+      line := StrToIntDef(EList.Values['line'], 0);
 
-  List.SetPath('threads');
-  SetLength(FThreads, List.Count);
-  for i := 0 to List.Count - 1 do begin
-    EList.Init(List.Items[i]^.Name);
-    ThrId    := StrToIntDef(EList.Values['id'], -2);
-    ThrName  := EList.Values['target-id'];
-    ThrState := EList.Values['state'];
-    EList.SetPath('frame');
-    addr := StrToQWordDef(EList.Values['addr'], 0);
-    func := EList.Values['func'];
-    filename := ConvertGdbPathAndFile(EList.Values['file']);
-    fullname := ConvertGdbPathAndFile(EList.Values['fullname']);
-    line := StrToIntDef(EList.Values['line'], 0);
+      EList.SetPath('args');
+      Arguments := TStringList.Create;
+      for j := 0 to EList.Count - 1 do begin
+        ArgList.Init(EList.Items[j]^.Name);
+        Arguments.Add(ArgList.Values['name'] + '=' + DeleteEscapeChars(ArgList.Values['value']));
+      end;
 
-    EList.SetPath('args');
-    Arguments := TStringList.Create;
-    for j := 0 to EList.Count - 1 do begin
-      ArgList.Init(EList.Items[j]^.Name);
-      Arguments.Add(ArgList.Values['name'] + '=' + DeleteEscapeChars(ArgList.Values['value']));
+
+      FThreads[i] := TThreadEntry.Create(
+        0, addr,
+        Arguments,
+        func,
+        FTheDebugger.UnitInfoProvider.GetUnitInfoFor(filename, fullname),
+        line,
+        ThrId,ThrName, ThrState
+      );
+
+      Arguments.Free;
     end;
 
-
-    FThreads[i] := TThreadEntry.Create(
-      0, addr,
-      Arguments,
-      func,
-      FTheDebugger.UnitInfoProvider.GetUnitInfoFor(filename, fullname),
-      line,
-      ThrId,ThrName, ThrState
-    );
-
-    Arguments.Free;
+  finally
+    FreeAndNil(ArgList);
+    FreeAndNil(EList);
+    FreeAndNil(List);
   end;
-
-  FreeAndNil(ArgList);
-  FreeAndNil(EList);
-  FreeAndNil(List);
 end;
 
 constructor TGDBMIDebuggerCommandThreads.Create(AOwner: TGDBMIDebugger);
@@ -2562,7 +2566,8 @@ begin
   FDisassembleEvalCmdObj.Properties := [dcpCancelOnRun];
   ForceQueue := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
             and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
-            and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued);
+            and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued)
+            and (Debugger.State <> dsInternalPause);
   TGDBMIDebugger(Debugger).QueueCommand(FDisassembleEvalCmdObj, ForceQueue);
   (* DoDepthCommandExecuted may be called immediately at this point *)
   Result := FDisassembleEvalCmdObj = nil; // already executed
@@ -5142,7 +5147,7 @@ begin
       then ContinueExecution := ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
       if ContinueExecution
       then begin
-        ContinueStep := DoContinueStepping;
+        ContinueStep := DoContinueStepping; // will set dsPause, if step has finished
 
         if (not ContinueStep) and (FCommand <> '') then begin
           // - Fall back to "old" behaviour and queue a new exec-continue
@@ -8165,7 +8170,8 @@ begin
   EvaluationCmdObj.Properties := [dcpCancelOnRun];
   ForceQueue := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
             and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
-            and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued);
+            and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued)
+            and (Debugger.State <> dsInternalPause);
   FCommandList.add(EvaluationCmdObj);
   TGDBMIDebugger(Debugger).QueueCommand(EvaluationCmdObj, ForceQueue);
   (* DoEvaluationFinished may be called immediately at this point *)
@@ -8333,7 +8339,8 @@ begin
     FGetRegisterCmdObj.Properties := [dcpCancelOnRun];
     ForceQueue := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
               and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
-              and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued);
+              and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued)
+              and (Debugger.State <> dsInternalPause);
     TGDBMIDebugger(Debugger).QueueCommand(FGetRegisterCmdObj, ForceQueue);
     (* DoEvaluationFinished may be called immediately at this point *)
     FInRegistersNeeded := False;
@@ -8390,7 +8397,8 @@ begin
   FGetValuesCmdObj[AFormat].Properties := [dcpCancelOnRun];
   ForceQueue := (Debugger.FCurrentCommand <> nil)
             and (Debugger.FCurrentCommand is TGDBMIDebuggerCommandExecute)
-            and (not TGDBMIDebuggerCommandExecute(Debugger.FCurrentCommand).NextExecQueued);
+            and (not TGDBMIDebuggerCommandExecute(Debugger.FCurrentCommand).NextExecQueued)
+            and (Debugger.State <> dsInternalPause);
   Debugger.QueueCommand(FGetValuesCmdObj[AFormat], ForceQueue);
   (* DoEvaluationFinished may be called immediately at this point *)
   FInValuesNeeded[AFormat] := False;
@@ -8434,7 +8442,8 @@ begin
   FGetModifiedCmd.Properties := [dcpCancelOnRun];
   ForceQueue := (Debugger.FCurrentCommand <> nil)
             and (Debugger.FCurrentCommand is TGDBMIDebuggerCommandExecute)
-            and (not TGDBMIDebuggerCommandExecute(Debugger.FCurrentCommand).NextExecQueued);
+            and (not TGDBMIDebuggerCommandExecute(Debugger.FCurrentCommand).NextExecQueued)
+            and (Debugger.State <> dsInternalPause);
   Debugger.QueueCommand(FGetModifiedCmd, ForceQueue);
   (* DoEvaluationFinished may be called immediately at this point *)
   FInModifiedNeeded := False;
@@ -8506,7 +8515,8 @@ begin
   // If a ExecCmd is running, then defer exec until the exec cmd is done
   ForceQueue := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
             and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
-            and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued);
+            and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued)
+            and (Debugger.State <> dsInternalPause);
   FCommandList.Add(EvaluationCmdObj);
   TGDBMIDebugger(Debugger).QueueCommand(EvaluationCmdObj, ForceQueue);
   (* DoEvaluationFinished may be called immediately at this point *)

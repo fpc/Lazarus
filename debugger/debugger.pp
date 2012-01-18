@@ -2326,9 +2326,13 @@ type
     FLocals: TLocalsMonitor;
     FWatches: TWatchesMonitor;
     FCallStack: TCallStackMonitor;
+    FCallStackNotification: TCallStackNotification;
     FThreads: TThreadsMonitor;
+    procedure SetCallStack(AValue: TCallStackMonitor);
+    procedure DoCallStackChanged(Sender: TObject);
   private
     FActive: Boolean;
+    FForcedIdle: Boolean;
     FUnitInfoProvider: TDebuggerUnitInfoProvider;
     FUpdateLock: Integer;
     FUpdateFlags: set of (ufSnapChanged, ufSnapCurrent, ufInDebuggerIdle);
@@ -2398,7 +2402,7 @@ type
   public
     property Locals: TLocalsMonitor read FLocals write FLocals;
     property Watches: TWatchesMonitor read FWatches write FWatches;
-    property CallStack: TCallStackMonitor read FCallStack write FCallStack;
+    property CallStack: TCallStackMonitor read FCallStack write SetCallStack;
     property Threads: TThreadsMonitor read FThreads write FThreads;
     property Debugger: TDebugger read FDebugger write FDebugger;
     property UnitInfoProvider: TDebuggerUnitInfoProvider read FUnitInfoProvider write FUnitInfoProvider;
@@ -3671,6 +3675,33 @@ begin
   then DoDebuggerIdle;
 end;
 
+procedure TSnapshotManager.DoCallStackChanged(Sender: TObject);
+begin
+  if FForcedIdle then
+    DoDebuggerIdle(True);
+end;
+
+procedure TSnapshotManager.SetCallStack(AValue: TCallStackMonitor);
+begin
+  if FCallStack = AValue then Exit;
+
+  if (FCallStackNotification <> nil) and (FCallStack <> nil) then begin
+    FCallStack.RemoveNotification(FCallStackNotification);
+  end;
+
+  FCallStack := AValue;
+
+  if (FCallStack <> nil) then begin
+    if FCallStackNotification = nil then begin
+      FCallStackNotification := TCallStackNotification.Create;
+      FCallStackNotification.AddReference;
+      FCallStackNotification.OnChange  := @DoCallStackChanged;
+    end;
+    FCallStack.AddNotification(FCallStackNotification);
+  end;
+
+end;
+
 procedure TSnapshotManager.SetHistoryindex(const AValue: Integer);
 begin
   if FHistoryindex = AValue then exit;
@@ -3922,10 +3953,10 @@ end;
 
 procedure TSnapshotManager.RemoveHistoryEntryFromMonitors(AnEntry: TSnapshot);
 begin
-  FThreads.RemoveSnapshot(AnEntry);
-  FCallStack.RemoveSnapshot(AnEntry);
-  FLocals.RemoveSnapshot(AnEntry);
-  FWatches.RemoveSnapshot(AnEntry);
+  if FThreads <> nil then   FThreads.RemoveSnapshot(AnEntry);
+  if FCallStack <> nil then FCallStack.RemoveSnapshot(AnEntry);
+  if FLocals <> nil then    FLocals.RemoveSnapshot(AnEntry);
+  if FWatches <> nil then   FWatches.RemoveSnapshot(AnEntry);
 end;
 
 procedure TSnapshotManager.AddSnapshotEntry(ASnapShot: TSnapshot);
@@ -3966,9 +3997,12 @@ end;
 
 destructor TSnapshotManager.Destroy;
 begin
+  FCallStackNotification.OnChange := nil;
   FNotificationList.Clear;
   ReleaseRefAndNil(FCurrentSnapshot);
   Clear;
+  CallStack := nil;
+  ReleaseRefAndNil(FCallStackNotification);
   inherited Destroy;
   FreeAndNil(FHistoryList);
   FreeAndNil(FSnapshotList);
@@ -3989,6 +4023,7 @@ procedure TSnapshotManager.DoStateChange(const AOldState: TDBGState);
 begin
   if FDebugger = nil then exit;
   FCurrentState := Debugger.State;
+  FForcedIdle := False;
   {$IFDEF DBG_DATA_MONITORS} DebugLnEnter(['DebugDataMonitor: >>ENTER: TSnapshotManager.DoStateChange  New-State=', DBGStateNames[FCurrentState]]); {$ENDIF}
 
   BeginUpdate;
@@ -4038,6 +4073,25 @@ begin
       if (not Debugger.IsIdle) and (not AForce) then exit;
       if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
     end;
+
+    if not(smrCallStack in FRequestsDone) then begin
+      i := FThreads.CurrentThreads.CurrentThreadId;
+      k := FCallStack.CurrentCallStackList.EntriesForThreads[i].Count;
+      if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
+      if (k > 0) or (smrCallStackCnt in FRequestsDone) then begin
+        // Since DoDebuggerIdle was re-entered
+        // and smrCallStackCnt is set, the count should be valid
+        include(FRequestsDone, smrCallStack);
+        if k > 0
+        then FCallStack.CurrentCallStackList.EntriesForThreads[i].PrepareRange(0, Min(5, k));
+        if (not Debugger.IsIdle) and (not AForce) then exit;
+        if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
+      end
+      else
+      if AForce then // request re-entry, even if not idle
+        FForcedIdle := True;
+    end;
+
     if not(smrCallStackCnt in FRequestsDone) then begin
       include(FRequestsDone, smrCallStackCnt);
       i := FThreads.CurrentThreads.CurrentThreadId;
@@ -4045,15 +4099,7 @@ begin
       if (not Debugger.IsIdle) and (not AForce) then exit;
       if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
     end;
-    if not(smrCallStack in FRequestsDone) then begin
-      include(FRequestsDone, smrCallStack);
-      i := FThreads.CurrentThreads.CurrentThreadId;
-      k := FCallStack.CurrentCallStackList.EntriesForThreads[i].Count;
-      if k > 0
-      then FCallStack.CurrentCallStackList.EntriesForThreads[i].PrepareRange(0, Min(5, k));
-      if (not Debugger.IsIdle) and (not AForce) then exit;
-      if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
-    end;
+
     if not(smrLocals in FRequestsDone) then begin
       include(FRequestsDone, smrLocals);
       i := FThreads.CurrentThreads.CurrentThreadId;
@@ -4062,6 +4108,7 @@ begin
       if (not Debugger.IsIdle) and (not AForce) then exit;
       if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
     end;
+
     if not(smrWatches in FRequestsDone) then begin
       include(FRequestsDone, smrWatches);
       i := FThreads.CurrentThreads.CurrentThreadId;
@@ -5063,7 +5110,8 @@ procedure TCurrentCallStack.SetCount(ACount: Integer);
 begin
   if FCount = ACount then exit;
   FCount := ACount;
-  FMonitor.NotifyChange;
+  if FCountValidity =ddsValid then
+    FMonitor.NotifyChange;
 end;
 
 function TCurrentCallStack.GetEntry(AIndex: Integer): TCallStackEntry;
@@ -5177,6 +5225,8 @@ begin
   if FCurrentValidity = AValidity then exit;
   {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCurrentCallStack.SetCurrentValidity: FThreadId=', FThreadId, ' AValidity=',dbgs(AValidity)]); {$ENDIF}
   FCurrentValidity := AValidity;
+  if FCountValidity =ddsValid then
+    FMonitor.NotifyChange;
   FMonitor.NotifyCurrent;
 end;
 
