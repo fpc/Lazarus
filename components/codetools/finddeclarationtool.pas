@@ -475,7 +475,6 @@ type
     procedure ConvertResultCleanPosToCaretPos;
     procedure ClearResult(CopyCacheFlags: boolean);
     procedure ClearInput;
-    procedure WriteDebugReport;
   public
     // input parameters:
     Flags: TFindDeclarationFlags;
@@ -508,6 +507,7 @@ type
     procedure SetResult(NodeCacheEntry: PCodeTreeNodeCacheEntry);
     procedure SetIdentifier(NewIdentifierTool: TFindDeclarationTool;
                 NewIdentifier: PChar; NewOnIdentifierFound: TOnIdentifierFound);
+    procedure WriteDebugReport;
   end;
   
   
@@ -2685,14 +2685,13 @@ var
         end;
 
       if CallOnIdentifierFound then begin
-        {
-        debugln('[TFindDeclarationTool.FindIdentifierInContext.CheckResult] CallOnIdentifierFound Ident=',
+        {debugln(['[TFindDeclarationTool.FindIdentifierInContext.CheckResult] CallOnIdentifierFound Ident=',
         '"',GetIdentifier(Params.Identifier),'"',
         ' StartContext="',StartContextNode.DescAsString,'" "',copy(Src,StartContextNode.StartPos,20),'"',
         ' File="',ExtractFilename(MainFilename)+'"',
-        ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
-        );
-        }
+        ' Flags=[',dbgs(Params.Flags),']'
+        ]);}
+
         IdentFoundResult:=Params.NewCodeTool.DoOnIdentifierFound(Params,
                                                                 Params.NewNode);
         {$IFDEF ShowProcSearch}
@@ -5884,7 +5883,7 @@ begin
           MissingUnit:=Node;
         end;
         {$IFDEF ShowTriedParentContexts}
-        DebugLn(['TFindDeclarationTool.FindIdentifierInUsesSection ',GetAtom(UnitNameAtom),' Result=',Result,' IsFinal=',Params.IsFinal]);
+        DebugLn(['TFindDeclarationTool.FindIdentifierInUsesSection ',AnUnitName,' Result=',Result]);
         {$ENDIF}
       end;
       Node:=Node.PriorBrother;

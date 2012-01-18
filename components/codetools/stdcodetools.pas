@@ -42,7 +42,8 @@ interface
 {$I codetools.inc}
 
 { $DEFINE VerboseGetStringConstBounds}
-{ $DEFINE ShowCompleteBlock}
+{ $DEFINE VerboseCompleteBlock}
+{ $DEFINE VerboseCheckLFM}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -2287,13 +2288,18 @@ var
       Identifier:=StartTool.GetPropertyTypeIdentifier(DefinitionNode)
     else
       Identifier:=nil;
-    if Identifier=nil then exit;
+    if Identifier=nil then begin
+      {$IFDEF VerboseCheckLFM}
+      debugln(['FindClassNodeForLFMObject LFMNode=',LFMNode.GetPath,' definition node has no identifier: ',FindContextToString(CreateFindContext(StartTool,DefinitionNode))]);
+      {$ENDIF}
+      exit;
+    end;
     Params:=TFindDeclarationParams.Create;
     try
       Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound,
         fdfSearchInParentNodes,
         fdfExceptionOnPredefinedIdent,fdfIgnoreMissingParams,
-        fdfIgnoreOverloadedProcs];
+        fdfIgnoreOverloadedProcs,fdfIgnoreCurContextNode];
       Params.ContextNode:=DefinitionNode;
       Params.SetIdentifier(StartTool,Identifier,nil);
       try
@@ -2301,13 +2307,25 @@ var
         if StartTool.FindIdentifierInContext(Params) then begin
           Params.Load(OldInput,true);
           Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
-          if (Result.Node=nil)
-          or (not (Result.Node.Desc in AllClasses)) then
+          if (Result.Node=nil) then begin
+            {$IFDEF VerboseCheckLFM}
+            debugln(['FindClassNodeForLFMObject FindBaseTypeOfNode failed. LFMNode=',LFMNode.GetPath,' ',FindContextToString(CreateFindContext(StartTool,DefinitionNode))]);
+            {$ENDIF}
             Result:=CleanFindContext;
+          end else if (not (Result.Node.Desc in AllClasses)) then begin
+            {$IFDEF VerboseCheckLFM}
+            debugln(['FindClassNodeForLFMObject base type is not a class. LFMNode=',LFMNode.GetPath,' ',FindContextToString(Result)]);
+            {$ENDIF}
+            Result:=CleanFindContext;
+          end;
         end;
       except
         // ignore search/parse errors
-        on E: ECodeToolError do ;
+        on E: ECodeToolError do begin
+          {$IFDEF VerboseCheckLFM}
+          debugln(['FindClassNodeForLFMObject ',E.Message]);
+          {$ENDIF}
+        end;
       end;
     finally
       Params.Free;
@@ -2389,12 +2407,14 @@ var
                        LFMObject.StartPos);
       exit;
     end;
-    
+
+    ChildContext:=CleanFindContext;
     IdentifierFound:=(not ContextIsDefault) and
       FindLFMIdentifier(LFMObject,LFMObject.NamePosition,
       LFMObjectName,RootContext,SearchAlsoInDefineProperties,ObjectsMustExist,
       ChildContext);
 
+    //debugln(['CheckLFMChildObject LFMObjectName="',LFMObjectName,'" IdentifierFound=',IdentifierFound,' ObjectsMustExist=',ObjectsMustExist,' ',FindContextToString(ChildContext)]);
     if IdentifierFound and (ObjectsMustExist or (ChildContext.Node<>nil)) then
     begin
       if ChildContext.Node=nil then begin
@@ -2408,22 +2428,16 @@ var
       if (ChildContext.Node.Desc=ctnVarDefinition) then begin
         DefinitionNode:=ChildContext.Tool.FindTypeNodeOfDefinition(
                                                              ChildContext.Node);
-        if DefinitionNode=nil then begin
-          ChildContext.Node:=DefinitionNode;
-          LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
-                           LFMObjectName+' is not a variable.'
-                           +CreateFootNote(ChildContext),
-                           LFMObject.NamePosition);
-          exit;
-        end;
-
-        VariableTypeName:=ChildContext.Tool.ExtractDefinitionNodeType(
+        if DefinitionNode<>nil then begin
+          VariableTypeName:=ChildContext.Tool.ExtractDefinitionNodeType(
                                                              ChildContext.Node);
+        end;
       end else if (ChildContext.Node.Desc=ctnProperty) then begin
         DefinitionNode:=ChildContext.Node;
         VariableTypeName:=
                ChildContext.Tool.ExtractPropType(ChildContext.Node,false,false);
-      end else begin
+      end;
+      if DefinitionNode=nil then begin
         LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
                          LFMObjectName+' is not a variable'
                          +CreateFootNote(ChildContext),
@@ -2451,8 +2465,10 @@ var
 
 
       // find class node
+      //debugln(['CheckLFMChildObject searching class node: LFMObjectName="',LFMObjectName,'" ',FindContextToString(CreateFindContext(ChildContext.Tool,DefinitionNode))]);
       ClassContext:=FindClassNodeForLFMObject(LFMObject,LFMObject.TypeNamePosition,
                                               ChildContext.Tool,DefinitionNode);
+      //debugln(['CheckLFMChildObject LFMObjectName="',LFMObjectName,'" class context: ',FindContextToString(ClassContext)]);
     end else begin
       // try the object type
       ClassContext:=FindClassContext(LFMObject.TypeName);
@@ -5217,7 +5233,7 @@ var
         Stack.Capacity:=Stack.Capacity*2;
       ReAllocMem(Stack.Stack,SizeOf(TBlock)*Stack.Capacity);
     end;
-    {$IFDEF ShowCompleteBlock}
+    {$IFDEF VerboseCompleteBlock}
     DebugLn([GetIndentStr(Stack.Top*2),'BeginBlock ',CleanPosToStr(StartPos),' ',GetAtom]);
     {$ENDIF}
     Block:=@Stack.Stack[Stack.Top];
@@ -5229,7 +5245,7 @@ var
 
   procedure EndBlock(var Stack: TBlockStack);
   begin
-    {$IFDEF ShowCompleteBlock}
+    {$IFDEF VerboseCompleteBlock}
     DebugLn([GetIndentStr(Stack.Top*2),'EndBlock ',GetAtom,' ',CleanPosToStr(CurPos.StartPos),', started at ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
     {$ENDIF}
     dec(Stack.Top);
@@ -5298,7 +5314,7 @@ var
         NewCode:=NewCode+GetIndentStr(GetLineIndent(Src,ToPos));
       AfterGap:=gtNone;
     end;
-    {$IFDEF ShowCompleteBlock}
+    {$IFDEF VerboseCompleteBlock}
     debugln(['Replace Indent=',Indent,' NewCode="',dbgstr(NewCode),'" Replace: InFront="',DbgStr(copy(Src,FromPos-15,15)),'",Replace="',dbgstr(copy(Src,FromPos,ToPos-FromPos)),'",Behind="',dbgstr(copy(Src,ToPos,15)),'" FrontGap=',dbgs(FrontGap),' AfterGap=',dbgs(AfterGap)]);
     {$ENDIF}
     // insert
@@ -5338,7 +5354,7 @@ var
       and (Stack.Top=CursorBlockLvl)
       and (GetLineIndent(Src,CurPos.StartPos)=CursorBlockOuterIndent) then begin
         // cursor block is properly closed => do not complete
-        {$IFDEF ShowCompleteBlock}
+        {$IFDEF VerboseCompleteBlock}
         debugln(['EndBlockIsOk cursor block is properly closed at ',CleanPosToStr(CurPos.StartPos)]);
         {$ENDIF}
         NeedCompletion:=0;
@@ -5394,7 +5410,7 @@ var
         CursorBlockLvl:=Stack.Top;
         if CursorBlockLvl<0 then begin
           // cursor outside blocks or on first atom of first block
-          {$IFDEF ShowCompleteBlock}
+          {$IFDEF VerboseCompleteBlock}
           DebugLn(['ReadStatements no completion: cursor outside blocks or on first atom of first block ',CleanPosToStr(CurPos.StartPos)]);
           {$ENDIF}
           exit;
@@ -5405,7 +5421,7 @@ var
           if (CursorBlockInnerIndent<=CursorBlockOuterIndent)
           and OnlyIfCursorBlockIndented then begin
             // cursor block not indented
-            {$IFDEF ShowCompleteBlock}
+            {$IFDEF VerboseCompleteBlock}
             DebugLn(['ReadStatements no completion: cursor block not indented ',CleanPosToStr(CurPos.StartPos),' CursorBlockOuterIndent=',CursorBlockOuterIndent,' CursorBlockInnerIndent=',CursorBlockInnerIndent]);
             {$ENDIF}
             exit;
@@ -5431,7 +5447,7 @@ var
       if (CurPos.StartPos>SrcLen) or (CurPos.StartPos>=StartNode.EndPos) then
       begin
         if InCursorBlock and (NeedCompletion=0) then begin
-          {$IFDEF ShowCompleteBlock}
+          {$IFDEF VerboseCompleteBlock}
           DebugLn(['ReadStatements NeedCompletion: source end found at ',CleanPosToStr(CurPos.StartPos)]);
           {$ENDIF}
           NeedCompletion:=CleanCursorPos;
@@ -5459,7 +5475,7 @@ var
                 begin|
                 Code;
             }
-            {$IFDEF ShowCompleteBlock}
+            {$IFDEF VerboseCompleteBlock}
             DebugLn(['ReadStatements NeedCompletion: between same indented ',CleanPosToStr(CurPos.StartPos),' Indent=',Indent,' < CursorBlockOuterIndent=',CursorBlockOuterIndent,' < CursorBlockInnerIndent=',CursorBlockInnerIndent,' Parent.InnerStartPos=',CleanPosToStr(Stack.Stack[CursorBlockLvl-1].InnerStartPos)]);
             {$ENDIF}
             NeedCompletion:=InsertPosAtCursor;
@@ -5475,7 +5491,7 @@ var
             //    begin
             //      Code;
             //  |end;
-            {$IFDEF ShowCompleteBlock}
+            {$IFDEF VerboseCompleteBlock}
             DebugLn(['ReadStatements NeedCompletion: at out indented ',CleanPosToStr(CurPos.StartPos),' Indent=',Indent,' < CursorBlockOuterIndent=',CursorBlockOuterIndent,' < CursorBlockInnerIndent=',CursorBlockInnerIndent]);
             {$ENDIF}
             NeedCompletion:=InsertPosAtCursor;
@@ -5492,7 +5508,7 @@ var
                   |
                 end;
             }
-            {$IFDEF ShowCompleteBlock}
+            {$IFDEF VerboseCompleteBlock}
             DebugLn(['ReadStatements NeedCompletion: at empty line ',CleanPosToStr(CleanCursorPos),' Indent=',Indent,' < CursorBlockOuterIndent=',CursorBlockOuterIndent,' < CursorBlockInnerIndent=',CursorBlockInnerIndent]);
             {$ENDIF}
             NeedCompletion:=CleanCursorPos;
@@ -5531,11 +5547,11 @@ var
             if not EndBlockIsOk then exit; // close main begin
           end else begin
             // unexpected end of source
-            {$IFDEF ShowCompleteBlock}
+            {$IFDEF VerboseCompleteBlock}
             DebugLn(['ReadStatements unexpected end. at ',CleanPosToStr(CurPos.StartPos)]);
             {$ENDIF}
             if InCursorBlock and (NeedCompletion=0) then begin
-              {$IFDEF ShowCompleteBlock}
+              {$IFDEF VerboseCompleteBlock}
               DebugLn(['ReadStatements NeedCompletion: unexpected end. at ',CleanPosToStr(CurPos.StartPos)]);
               {$ENDIF}
               NeedCompletion:=CleanCursorPos;
@@ -5557,7 +5573,7 @@ var
               DebugLn(['ReadStatements CursorBlockLvl=',CursorBlockLvl,' Stack.Top=',Stack.Top,' BehindCursorBlock=',BehindCursorBlock]);
               DebugLn(['ReadStatements unexpected end at ',CleanPosToStr(CurPos.StartPos),': missing finally ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
               if InCursorBlock and (NeedCompletion=0) then begin
-                {$IFDEF ShowCompleteBlock}
+                {$IFDEF VerboseCompleteBlock}
                 DebugLn(['ReadStatements NeedCompletion: unexpected end at ',CleanPosToStr(CurPos.StartPos),': missing semicolon or until ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
                 {$ENDIF}
                 NeedCompletion:=CleanCursorPos;
@@ -5570,7 +5586,7 @@ var
               DebugLn(['ReadStatements CursorBlockLvl=',CursorBlockLvl,' Stack.Top=',Stack.Top,' BehindCursorBlock=',BehindCursorBlock]);
               DebugLn(['ReadStatements unexpected end at ',CleanPosToStr(CurPos.StartPos),': missing finally ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
               if InCursorBlock and (NeedCompletion=0) then begin
-                {$IFDEF ShowCompleteBlock}
+                {$IFDEF VerboseCompleteBlock}
                 DebugLn(['ReadStatements NeedCompletion: unexpected end at ',CleanPosToStr(CurPos.StartPos),': missing finally ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
                 {$ENDIF}
                 NeedCompletion:=CleanCursorPos;
@@ -5670,7 +5686,7 @@ var
               begin
                 // missing end
                 if InCursorBlock and (NeedCompletion=0) then begin
-                  {$IFDEF ShowCompleteBlock}
+                  {$IFDEF VerboseCompleteBlock}
                   DebugLn(['ReadStatements NeedCompletion: unexpected else at ',CleanPosToStr(CurPos.StartPos),': missing end. block start: ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
                   {$ENDIF}
                   NeedCompletion:=InsertPosAtCursor;
@@ -5681,7 +5697,7 @@ var
               begin
                 // missing semicolon
                 if InCursorBlock and (NeedCompletion=0) then begin
-                  {$IFDEF ShowCompleteBlock}
+                  {$IFDEF VerboseCompleteBlock}
                   DebugLn(['ReadStatements NeedCompletion: unexpected else at ',CleanPosToStr(CurPos.StartPos),': missing semicolon or until. block start: ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
                   {$ENDIF}
                   NeedCompletion:=InsertPosAtCursor;
@@ -5697,7 +5713,7 @@ var
           then begin
             // unexpected keyword => block not closed
             if InCursorBlock and (NeedCompletion=0) then begin
-              {$IFDEF ShowCompleteBlock}
+              {$IFDEF VerboseCompleteBlock}
               DebugLn(['ReadStatements NeedCompletion: unexpected keyword ',GetAtom,' at ',CleanPosToStr(CurPos.StartPos)]);
               {$ENDIF}
               NeedCompletion:=CleanCursorPos;
@@ -5723,7 +5739,7 @@ var
             //    Code;
             //  Code;
             //DebugLn(['ReadStatements Indent=',Indent,' < CursorBlockIndent=',CursorBlockIndent]);
-            {$IFDEF ShowCompleteBlock}
+            {$IFDEF VerboseCompleteBlock}
             DebugLn(['ReadStatements NeedCompletion: at ',CleanPosToStr(CurPos.StartPos),' Indent=',Indent,' < CursorBlockInnerIndent=',CursorBlockInnerIndent]);
             {$ENDIF}
             NeedCompletion:=InsertPosAtCursor;
@@ -5732,7 +5748,7 @@ var
             // begin
             // |
             // Code;
-            {$IFDEF ShowCompleteBlock}
+            {$IFDEF VerboseCompleteBlock}
             DebugLn(['ReadStatements NeedCompletion: at ',CleanPosToStr(CleanCursorPos),' Indent=',Indent,' CursorBlockInnerIndent=',CursorBlockInnerIndent]);
             {$ENDIF}
             NeedCompletion:=CleanCursorPos;
@@ -5744,13 +5760,13 @@ var
       LastPos:=CurPos.StartPos;
     until Stack.Top<0;
 
-    {$IFDEF ShowCompleteBlock}
+    {$IFDEF VerboseCompleteBlock}
     DebugLn(['ReadStatements END Stack.Top=',Stack.Top,' CursorBlockLvl=',CursorBlockLvl,' BehindCursorBlock=',BehindCursorBlock]);
     {$ENDIF}
 
     if Stack.Top<0 then begin
       // all blocks closed
-      {$IFDEF ShowCompleteBlock}
+      {$IFDEF VerboseCompleteBlock}
       if NeedCompletion>0 then
         DebugLn(['ReadStatements all blocks closed: no completion needed']);
       {$ENDIF}
@@ -5769,7 +5785,7 @@ var
         if (not CursorInEmptyStatement)
         and PositionsInSameLine(Src,InsertPos,BehindPos) then begin
           // target line not empty
-          {$IFDEF ShowCompleteBlock}
+          {$IFDEF VerboseCompleteBlock}
           DebugLn(['CompleteStatements target line not empty => skip']);
           {$ENDIF}
           exit;
@@ -5781,7 +5797,7 @@ var
           //   |
           //     DoSomething;
           debugln(['CompleteStatements BehindPos ',dbgstr(copy(Src,BehindPos-8,8)),'|',dbgstr(copy(Src,BehindPos,8))]);
-          {$IFDEF ShowCompleteBlock}
+          {$IFDEF VerboseCompleteBlock}
           DebugLn(['CompleteStatements code behind is indented more (Behind=',GetLineIndent(Src,BehindPos),' > Indent=',Indent,') => skip']);
           {$ENDIF}
           exit;
