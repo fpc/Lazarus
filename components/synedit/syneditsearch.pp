@@ -47,12 +47,15 @@ uses
   , LCLProc, SynRegExpr, SynEditMiscProcs, SynEditTypes
   {$ENDIF};
 
-procedure MakeCompTable(Sensitive: boolean);
+procedure MakeCompTable;
 {$IFNDEF SYN_LAZARUS}
 procedure MakeDelimiterTable;
 {$ENDIF}
 
 type
+  TByteArray256 = array[#0..#255] of Byte;
+  PByteArray256 = ^TByteArray256;
+
   {$IFDEF SYN_LAZARUS}
   TSynEditSearchResult = class
   public
@@ -89,6 +92,7 @@ type
     fRegExprReplace: string;
     fReplacement: string;
     FBackwards: boolean;
+    CompTable: PByteArray256;
     function GetResultLen(Index: integer): integer;
     procedure SetRegExpr(const NewValue: boolean);
     {$ENDIF}
@@ -152,29 +156,18 @@ uses
   SysUtils;
 
 var
-  CompTableSensitive: boolean;
-  CompTable: array[#0..#255] of Byte;
+  CompTableSensitive: TByteArray256;
+  CompTableNoneSensitive: TByteArray256;
   {$IFNDEF SYN_LAZARUS}
   DelimTable: array[#0..#255] of boolean;
   {$ENDIF}
 
-procedure MakeCompTable(Sensitive: Boolean);
+procedure MakeCompTable;
 var
   I: Char;
 begin
-  if CompTableSensitive <> Sensitive then
-  begin
-    CompTableSensitive := Sensitive;
-    {$IFDEF FPC}
-    if Sensitive then
-      for I := #0 to #255 do CompTable[I] := ord(I)
-    else
-      for I := #0 to #255 do CompTable[I] := ord(uppercase(I)[1]);
-    {$ELSE}
-    for I := #0 to #255 do CompTable[I] := ord(I);
-    if not Sensitive then CharLowerBuff(PChar(@CompTable[#0]), 256);
-    {$ENDIF}
-  end;
+  for I := #0 to #255 do CompTableSensitive[I] := ord(I);
+  for I := #0 to #255 do CompTableNoneSensitive[I] := ord(uppercase(I)[1]);
 end;
 
 {$IFNDEF SYN_LAZARUS}
@@ -263,6 +256,8 @@ end;
 constructor TSynEditSearch.Create;
 begin
   inherited Create;
+  fSensitive := False;
+  CompTable := @CompTableNoneSensitive;
   fResults := TList.Create;
   {$IFDEF SYN_LAZARUS}
   RegExprEngine:=TRegExpr.Create;
@@ -325,10 +320,10 @@ begin
   PatLenPlus := PatLen + 1;
   Look_At := 1;
   for I := 0 to 255 do Shift[I] := PatLenPlus;
-  for I := 1 to PatLen do Shift[CompTable[Pat[i]]] := PatLenPlus - I;
+  for I := 1 to PatLen do Shift[CompTable^[Pat[i]]] := PatLenPlus - I;
   while Look_at < PatLen do
   begin
-    if CompTable[Pat[PatLen]] = CompTable[Pat[PatLen - (Look_at)]] then exit;
+    if CompTable^[Pat[PatLen]] = CompTable^[Pat[PatLen - (Look_at)]] then exit;
     inc(Look_at);
   end;
   fShiftInitialized := TRUE;
@@ -361,13 +356,13 @@ begin
     FoundLen:=PatLen;
     while Run < TheEnd do
     begin
-      if CompTable[Pat[Patlen]] <> CompTable[Run^] then
-        inc(Run, Shift[CompTable[(Run + 1)^]])
+      if CompTable^[Pat[Patlen]] <> CompTable^[Run^] then
+        inc(Run, Shift[CompTable^[(Run + 1)^]])
       else
       begin
         J := Run - PatLen + 1;
         I := 1;
-        while CompTable[Pat[I]] = CompTable[J^] do
+        while CompTable^[Pat[I]] = CompTable^[J^] do
         begin
           if I = PatLen then
           begin
@@ -382,11 +377,11 @@ begin
           inc(J);
         end;
 {begin}                                                                         //mh 2000-08-29
-//        inc(Run, Look_At + Shift[CompTable[(Run + Look_at)^]] - 1);
+//        inc(Run, Look_At + Shift[CompTable^[(Run + Look_at)^]] - 1);
         Inc(Run, Look_At);
         if Run >= TheEnd then
           break;
-        Inc(Run, Shift[CompTable[Run^]] - 1);
+        Inc(Run, Shift[CompTable^[Run^]] - 1);
 {end}                                                                           //mh 2000-08-29
       end;
     end;
@@ -522,7 +517,7 @@ var
       if fSensitive then begin
         if p1^<>p2^ then exit(false);
       end else begin
-        if CompTable[p1^]<>CompTable[p2^] then exit(false);
+        if CompTable^[p1^]<>CompTable^[p2^] then exit(false);
       end;
       inc(p1);
       inc(p2);
@@ -936,7 +931,7 @@ begin
         while (x>=0) and (x<=MaxPos) do begin
           //DebugLn(['TSynEditSearch.FindNextOne x=',x]);
           if ASupportUnicodeCase then FCondition := (SearchLen=0) or (Line[x]=SearchFor^)
-          else FCondition := (SearchLen=0) or (CompTable[Line[x]]=CompTable[SearchFor^]);
+          else FCondition := (SearchLen=0) or (CompTable^[Line[x]]=CompTable^[SearchFor^]);
           if FCondition then
           begin
             //DebugLn(['TSynEditSearch.FindNextOne First character found x=',x,' Line[x]=',Line[x]]);
@@ -951,7 +946,7 @@ begin
               end
               else
               begin
-                while (i<SearchLen) and (CompTable[Line[x+i]]=CompTable[SearchFor[i]]) do
+                while (i<SearchLen) and (CompTable^[Line[x+i]]=CompTable^[SearchFor[i]]) do
                   inc(i);
               end;
 
@@ -1008,7 +1003,9 @@ procedure TSynEditSearch.SetSensitive(const Value: Boolean);
 begin
   if fSensitive <> Value then begin
     fSensitive := Value;
-    MakeCompTable(Value);
+    if fSensitive
+    then CompTable := @CompTableSensitive
+    else CompTable := @CompTableNoneSensitive;
     fShiftInitialized := FALSE;
     {$IFDEF SYN_LAZARUS}
     RegExprEngine.ModifierI:=not fSensitive;
@@ -1125,8 +1122,7 @@ end;
 {$ENDIF}
 
 initialization
-  CompTableSensitive := True; // force the table initialization
-  MakeCompTable(False);
+  MakeCompTable;
   {$IFNDEF SYN_LAZARUS}
   MakeDelimiterTable;
   {$ENDIF}
