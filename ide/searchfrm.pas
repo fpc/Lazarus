@@ -32,7 +32,7 @@ interface
 
 uses
   // LCL
-  Classes, SysUtils, LCLProc, LCLType, LCLIntf, Forms, Controls,
+  Classes, SysUtils, types, LCLProc, LCLType, LCLIntf, Forms, Controls,
   Graphics, Dialogs, ExtCtrls, StdCtrls, Buttons, FileProcs, FileUtil, ComCtrls,
   // synedit, codetools
   SynEditSearch, SynRegExpr, SourceLog, KeywordFuncLists, BasicCodeTools,
@@ -79,6 +79,7 @@ type
     fSearchProject: boolean;
     fTheDirectory: string;
     fAborting: boolean;
+    fLastUpdateProgress: DWORD;
     procedure DoFindInFiles(ADirectory: string);
     procedure DoFindInSearchList;
     procedure SetResultsList(const AValue: TStrings);
@@ -847,10 +848,18 @@ begin
 end;
 
 procedure TSearchProgressForm.UpdateProgress(FileName: string);
+const
+  UpdateAfterTicks = 200; // update not more than 5 times per second
 var
   DisplayFileName: string;
   ShorterFileName: String;
+  CurTick: DWORD;
 begin
+  CurTick:=GetTickCount;
+  if Abs(int64(CurTick)-int64(fLastUpdateProgress))<UpdateAfterTicks then
+    exit;
+  fLastUpdateProgress:=CurTick;
+
   DisplayFileName := FileName;
   //DebugLn(['TSearchForm.UpdateProgress DisplayFileName="',dbgstr(DisplayFileName),'"']);
   lblProgress.Caption:= DisplayFileName;
@@ -897,7 +906,7 @@ begin
                                         SearchMask, SearchOptions);
   try
     (* BeginUpdate prevents ListPage from being closed,
-      other pages can stil be closed or inserted, so PageIndex can change *)
+      other pages can still be closed or inserted, so PageIndex can change *)
     SearchResultsView.BeginUpdate(ListPage.PageIndex);
     ResultsList:= SearchResultsView.Items[ListPage.PageIndex];
     ResultsList.Clear;
