@@ -3476,7 +3476,7 @@ function TPascalParserTool.KeyWordFuncResourceString: boolean;
     implementation
 
     procedure c;
-    ResourceString b='';
+    ResourceString b=''; c=d+'';
 }
 begin
   if not (CurSection in [ctnProgram,ctnLibrary,ctnInterface,ctnImplementation])
@@ -3498,7 +3498,7 @@ begin
         RaiseCharExpectedButAtomFound('=');
       // read string constant
       ReadNextAtom;
-      if not AtomIsStringConstant then
+      if (not AtomIsStringConstant) and (not AtomIsIdentifier(false)) then
         RaiseStringExpectedButAtomFound(ctsStringConstant);
       ReadConstant(true,false,[]);
       // read hint modifier
