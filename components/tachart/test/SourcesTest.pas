@@ -22,7 +22,7 @@ interface
 
 uses
   Classes, SysUtils, FPCUnit, TestRegistry,
-  TAChartUtils, TACustomSource, TASources;
+  TAChartUtils, TACustomSource, TAIntervalSources, TASources;
 
 type
 
@@ -70,10 +70,64 @@ type
     procedure Reorder;
   end;
 
+  TIntervalSourceTest = class(TTestCase)
+  private
+    procedure AssertValueEquals(
+      const AExpected: array of Double; const AActual: TChartValueTextArray);
+  published
+    procedure IntervalSource;
+    procedure ListSource;
+  end;
+
 implementation
 
 uses
   Math, TAMath;
+
+type
+  TDummyTransform = object
+  public
+    function IdentityDouble(AX: Double): Double;
+    function IdentityInteger(AX: Integer): Integer;
+    function PrepareValuesInRangeParams: TValuesInRangeParams;
+    function Round(AX: Double): Integer;
+  end;
+
+var
+  VDummyTransform: TDummyTransform;
+
+{ TDummyTransform }
+
+function TDummyTransform.IdentityDouble(AX: Double): Double;
+begin
+  Result := AX;
+end;
+
+function TDummyTransform.IdentityInteger(AX: Integer): Integer;
+begin
+  Result := AX;
+end;
+
+function TDummyTransform.PrepareValuesInRangeParams: TValuesInRangeParams;
+begin
+  with Result do begin
+    FAxisToGraph := @IdentityDouble;
+    FGraphToAxis := @IdentityDouble;
+    FFormat := '';
+    FGraphToImage := @Round;
+    FMin := 30;
+    FMax := 69;
+    FMinStep := 0;
+    FScale := @IdentityInteger;
+    FUseY := false;
+    FIntervals := TChartAxisIntervalParams.Create(nil);
+  end;
+end;
+
+function TDummyTransform.Round(AX: Double): Integer;
+begin
+  Result := System.Round(AX);
+end;
 
 { TCalculatedSourceTest }
 
@@ -242,15 +296,15 @@ var
   oldSeparator: Char;
 begin
   FSource.Clear;
-  oldSeparator := DecimalSeparator;
+  oldSeparator := DefaultFormatSettings.DecimalSeparator;
   try
-    DecimalSeparator := ':';
+    DefaultFormatSettings.DecimalSeparator := ':';
     FSource.DataPoints.Add('3:5');
     AssertEquals(3.5, FSource[0]^.X);
     FSource.DataPoints[0] := '4.5';
     AssertEquals(4.5, FSource[0]^.X);
   finally
-    DecimalSeparator := oldSeparator;
+    DefaultFormatSettings.DecimalSeparator := oldSeparator;
   end;
 end;
 
@@ -377,9 +431,78 @@ begin
   end;
 end;
 
+{ TIntervalSourceTest }
+
+procedure TIntervalSourceTest.AssertValueEquals(
+  const AExpected: array of Double; const AActual: TChartValueTextArray);
+var
+  i: Integer;
+begin
+  AssertEquals(Length(AExpected), Length(AActual));
+  for i := 0 to High(AExpected) do
+    AssertEquals(AExpected[i], AActual[i].FValue);
+end;
+
+procedure TIntervalSourceTest.IntervalSource;
+var
+  p: TValuesInRangeParams;
+  src: TIntervalChartSource;
+  r: TChartValueTextArray = nil;
+begin
+  p := VDummyTransform.PrepareValuesInRangeParams;
+  src := TIntervalChartSource.Create(nil);
+  try
+    src.Params.MaxLength := 15;
+    src.ValuesInRange(p, r);
+    AssertValueEquals([20, 30, 40, 50, 60, 70], r);
+  finally
+    p.FIntervals.Free;
+    src.Free;
+  end;
+end;
+
+procedure TIntervalSourceTest.ListSource;
+var
+  i: Integer;
+  p: TValuesInRangeParams;
+  r: TChartValueTextArray = nil;
+  src: TListChartSource;
+
+  procedure Check(const AExpected: array of Double);
+  begin
+    r := nil;
+    src.ValuesInRange(p, r);
+    AssertValueEquals(AExpected, r);
+  end;
+
+begin
+  p := VDummyTransform.PrepareValuesInRangeParams;
+  src := TListChartSource.Create(nil);
+  for i := 1 to 10 do
+    src.Add(10 * i, i);
+  try
+    Check([20, 30, 40, 50, 60, 70]);
+    p.FIntervals.MinLength := 20;
+    Check([20, 30, 50, 70]);
+    p.FMin := 81;
+    p.FMax := 82;
+    Check([80, 90]);
+    p.FMin := 9;
+    p.FMax := 11;
+    Check([10, 20]);
+    src.Add(8, 11);
+    Check([8, 10, 20]);
+  finally
+    p.FIntervals.Free;
+    src.Free;
+  end;
+end;
+
 initialization
 
-  RegisterTests([TListSourceTest, TRandomSourceTest, TCalculatedSourceTest]);
+  RegisterTests([
+    TListSourceTest, TRandomSourceTest, TCalculatedSourceTest,
+    TIntervalSourceTest]);
 
 end.
 
