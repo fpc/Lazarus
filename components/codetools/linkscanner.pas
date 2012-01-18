@@ -3547,7 +3547,7 @@ begin
     if TokenType=lsttWord then begin
       if SourceName<>'' then
         SourceName:=SourceName+'.';
-      SourceName:=SourceName+GetIdentifier(@Src[SrcPos]);
+      SourceName:=SourceName+GetIdentifier(@Src[TokenStart]);
       ReadNextToken; // read ';' or '.' or hint modifier
     end;
   until TokenType<>lsttPoint;
@@ -3610,7 +3610,7 @@ end;
 
 function TLinkScanner.TokenIsWord(p: PChar): boolean;
 begin
-  Result:=(TokenType=lsttWord) and (CompareIdentifiers(p,@Src[SrcPos])=0);
+  Result:=(TokenType=lsttWord) and (CompareIdentifiers(p,@Src[TokenStart])=0);
 end;
 
 function TLinkScanner.DoImplementationToken: boolean;

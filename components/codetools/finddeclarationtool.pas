@@ -6358,7 +6358,7 @@ begin
   if (Tree.Root<>nil) and (not (fdfIgnoreUsedUnits in Params.Flags)) then begin
     HiddenUnits:=Scanner.GetHiddenUsedUnits;
     {$IFDEF ShowTriedContexts}
-    debugln(['TFindDeclarationTool.FindIdentifierInHiddenUsedUnits ',Scanner.MainFilename,' SourceName=',Scanner.SourceName,' HiddenUnits=',HiddenUnits]);
+    debugln(['TFindDeclarationTool.FindIdentifierInHiddenUsedUnits Identifier=',GetIdentifier(Params.Identifier),' ',Scanner.MainFilename,' SourceName=',Scanner.SourceName,' HiddenUnits=',HiddenUnits]);
     {$ENDIF}
     p:=length(HiddenUnits);
     while p>=1 do begin
