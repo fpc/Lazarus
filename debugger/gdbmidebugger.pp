@@ -95,8 +95,9 @@ type
   TGDBMITargetFlags = set of TGDBMITargetFlag;
 
   TGDBMIDebuggerFlags = set of (
-    dfImplicidTypes,    // Debugger supports implicit types (^Type)
-    dfForceBreak        // Debugger supports insertion of not yet known brekpoints
+    dfImplicidTypes,     // Debugger supports implicit types (^Type)
+    dfForceBreak,        // Debugger supports insertion of not yet known brekpoints
+    dfForceBreakDetected
   );
 
   // Target info
@@ -1664,6 +1665,10 @@ begin
   // ignore the error on other platforms
   FSuccess := ExecuteCommand('-gdb-set new-console off', R);
   if (not FSuccess) then exit;
+
+  // set the output width to a great value to avoid unexpected
+  // new lines like in large functions or procedures
+  ExecuteCommand('set width 50000', []);
 
   ParseGDBVersionMI;
 end;
@@ -3823,59 +3828,14 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
     FTheDebugger.FMainAddr := StrToQWordDef(ResultList.Values['addr'], 0);
     ResultList.Free;
   end;
-var
-  R: TGDBMIExecResult;
-  FileType, EntryPoint: String;
-  List: TGDBMINameValueList;
-  TargetPIDPart: String;
-  TempInstalled, CanContinue, HadTimeout: Boolean;
-  CommandObj: TGDBMIDebuggerCommandExecute;
+
   {$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
-  s: String;
-  h: THandle;
-  isConsole: Boolean;
-  {$ENDIF}
-begin
-  Result := True;
-  FSuccess := False;
-
-  try
-    if not (DebuggerState in [dsStop])
-    then begin
-      Result := True;
-      Exit;
-    end;
-
-    {$IFDEF DBGMI_QUEUE_DEBUG}
-    // results may be prefixed by "verbose" info, so IDE gets confused
-    //ExecuteCommand('set verbose on', []);
-    //ExecuteCommand('set complaints 99', []);
-    {$ENDIF}
-
-    DebugLn(['TGDBMIDebugger.StartDebugging WorkingDir="', FTheDebugger.WorkingDir,'"']);
-    if FTheDebugger.WorkingDir <> ''
-    then begin
-      // to workaround a possible bug in gdb, first set the workingdir to .
-      // otherwise on second run within the same gdb session the workingdir
-      // is set to c:\windows
-      ExecuteCommand('-environment-cd %s', ['.'], []);
-      ExecuteCommand('-environment-cd %s', [FTheDebugger.ConvertToGDBPath(UTF8ToSys(FTheDebugger.WorkingDir), cgptCurDir)], [cfCheckError]);
-    end;
-
-    TargetInfo^.TargetFlags := [tfHasSymbols]; // Set until proven otherwise
-
-    // check if the exe is compiled with FPC >= 1.9.2
-    // then the rtl is compiled with regcalls
-    RetrieveRegCall;
-
-    // also call execute -exec-arguments if there are no arguments in this run
-    // so the possible arguments of a previous run are cleared
-    ExecuteCommand('-exec-arguments %s', [FTheDebugger.Arguments], [cfCheckState]);
-
-    // set the output width to a great value to avoid unexpected
-    // new lines like in large functions or procedures
-    ExecuteCommand('set width 50000', []);
-    {$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
+  procedure InitConsole;
+  var
+    s: String;
+    h: THandle;
+    isConsole: Boolean;
+  begin
       isConsole := False;
       // Make sure consule output will ot be mixed with gbd output
       {$IFDEF DBG_ENABLE_TERMINAL}
@@ -3909,18 +3869,52 @@ begin
         isConsole := ExecuteCommand('set inferior-tty %s', [s], R) and (r.State <> dsError);
       if not isConsole then
         ExecuteCommand('set inferior-tty /dev/null', []);
+  end;
+  {$ENDIF}
+
+var
+  R: TGDBMIExecResult;
+  FileType, EntryPoint: String;
+  List: TGDBMINameValueList;
+  TargetPIDPart: String;
+  TempInstalled, CanContinue, HadTimeout: Boolean;
+  CommandObj: TGDBMIDebuggerCommandExecute;
+begin
+  Result := True;
+  FSuccess := False;
+
+  try
+    if not (DebuggerState in [dsStop])
+    then begin
+      Result := True;
+      Exit;
+    end;
+
+    DebugLn(['TGDBMIDebugger.StartDebugging WorkingDir="', FTheDebugger.WorkingDir,'"']);
+    if FTheDebugger.WorkingDir <> ''
+    then begin
+      // to workaround a possible bug in gdb, first set the workingdir to .
+      // otherwise on second run within the same gdb session the workingdir
+      // is set to c:\windows
+      ExecuteCommand('-environment-cd %s', ['.'], []);
+      ExecuteCommand('-environment-cd %s', [FTheDebugger.ConvertToGDBPath(UTF8ToSys(FTheDebugger.WorkingDir), cgptCurDir)], [cfCheckError]);
+    end;
+
+    TargetInfo^.TargetFlags := [tfHasSymbols]; // Set until proven otherwise
+
+    // check if the exe is compiled with FPC >= 1.9.2
+    // then the rtl is compiled with regcalls
+    RetrieveRegCall;
+
+    // also call execute -exec-arguments if there are no arguments in this run
+    // so the possible arguments of a previous run are cleared
+    ExecuteCommand('-exec-arguments %s', [FTheDebugger.Arguments], [cfCheckState]);
+
+    {$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
+    InitConsole;
     {$ENDIF}
 
-    if tfHasSymbols in TargetInfo^.TargetFlags
-    then begin
-      // Make sure we are talking pascal
-      ExecuteCommand('-gdb-set language pascal', [cfCheckError]);
-      TempInstalled := SetTempMainBreak;
-    end
-    else begin
-      DebugLn('TGDBMIDebugger.StartDebugging Note: Target has no symbols');
-      TempInstalled := False;
-    end;
+    ExecuteCommand('-gdb-set language pascal', [cfCheckError]);
 
     // collect timeouts
     HadTimeout := False;
@@ -3952,15 +3946,6 @@ begin
 
     if HadTimeout then DoTimeoutFeedback;
 
-    // try Insert Break breakpoint
-    // we might have rtl symbols
-    if FTheDebugger.FExceptionBreakID = -1
-    then FTheDebugger.FExceptionBreakID := InsertBreakPoint('FPC_RAISEEXCEPTION');
-    if FTheDebugger.FBreakErrorBreakID = -1
-    then FTheDebugger.FBreakErrorBreakID := InsertBreakPoint('FPC_BREAK_ERROR');
-    if FTheDebugger.FRunErrorBreakID = -1
-    then FTheDebugger.FRunErrorBreakID := InsertBreakPoint('FPC_RUNERROR');
-
     TargetInfo^.TargetCPU := '';
     TargetInfo^.TargetOS := FTheDebugger.FGDBOS; // try to detect ??
 
@@ -3987,6 +3972,33 @@ begin
 
     SetTargetInfo(FileType);
 
+    (* Set breakpoints *)
+
+    if not (dfForceBreakDetected in FTheDebugger.FDebuggerFlags) then begin
+      // detect if we can insert a not yet known break
+      ExecuteCommand('-break-insert -f foo', R);
+      if R.State <> dsError
+      then begin
+        Include(FTheDebugger.FDebuggerFlags, dfForceBreak);
+        List := TGDBMINameValueList.Create(R, ['bkpt']);
+        ExecuteCommand('-break-delete ' + List.Values['number']);
+        List.Free;
+      end
+      else Exclude(FTheDebugger.FDebuggerFlags, dfForceBreak);
+      Include(FTheDebugger.FDebuggerFlags, dfForceBreakDetected);
+    end;
+
+    // try Insert Break breakpoint
+    // we might have rtl symbols
+    if tfHasSymbols in TargetInfo^.TargetFlags
+    then begin
+      TempInstalled := SetTempMainBreak;
+    end
+    else begin
+      DebugLn('TGDBMIDebugger.StartDebugging Note: Target has no symbols');
+      TempInstalled := False;
+    end;
+
     if not TempInstalled and (EntryPoint <> '')
     then begin
       // We could not set our initial break to get info and allow stepping
@@ -3996,16 +4008,12 @@ begin
       TempInstalled := R.State <> dsError;
     end;
 
-    // detect if we can insert a not yet known break
-    ExecuteCommand('-break-insert -f foo', R);
-    if R.State <> dsError
-    then begin
-      Include(FTheDebugger.FDebuggerFlags, dfForceBreak);
-      List := TGDBMINameValueList.Create(R, ['bkpt']);
-      ExecuteCommand('-break-delete ' + List.Values['number']);
-      List.Free;
-    end
-    else Exclude(FTheDebugger.FDebuggerFlags, dfForceBreak);
+    if FTheDebugger.FExceptionBreakID = -1
+    then FTheDebugger.FExceptionBreakID := InsertBreakPoint('FPC_RAISEEXCEPTION');
+    if FTheDebugger.FBreakErrorBreakID = -1
+    then FTheDebugger.FBreakErrorBreakID := InsertBreakPoint('FPC_BREAK_ERROR');
+    if FTheDebugger.FRunErrorBreakID = -1
+    then FTheDebugger.FRunErrorBreakID := InsertBreakPoint('FPC_RUNERROR');
 
     TargetInfo^.TargetPID := 0;
 
@@ -6949,6 +6957,7 @@ var
   Options: String;
   Cmd: TGDBMIDebuggerCommandInitDebugger;
 begin
+  Exclude(FDebuggerFlags, dfForceBreakDetected);
   LockRelease;
   try
     FPauseWaitState := pwsNone;
