@@ -1947,20 +1947,20 @@ begin
 end;
 
 function TFindDeclarationTool.IsHiddenUsedUnit(TheUnitName: PChar): boolean;
+var
+  HiddenUnits: String;
+  p: PChar;
 begin
-  // HiddenUnits:=Scan
-  if (CompareIdentifiers(TheUnitName,'system')=0)
-  or ((Scanner.CompilerMode in [cmDELPHI,cmOBJFPC])
-    and (Scanner.PascalCompiler=pcFPC)
-    and (CompareIdentifiers(TheUnitName,'ObjPas')=0))
-  or ((Scanner.CompilerMode=cmMacPas)
-    and (Scanner.PascalCompiler=pcFPC)
-    and (CompareIdentifiers(TheUnitName,'MacPas')=0))
-  or (([cmsObjectiveC1,cmsObjectiveC2]*Scanner.CompilerModeSwitches<>[])
-    and ((CompareIdentifiers(TheUnitName,'ObjC')=0)
-        or (CompareIdentifiers(TheUnitName,'ObjCBase')=0)))
-  then begin
-    exit(true);
+  if TheUnitName=nil then exit(false);
+  HiddenUnits:=Scanner.GetHiddenUsedUnits;
+  if HiddenUnits<>'' then begin
+    p:=PChar(HiddenUnits);
+    while p^<>#0 do begin
+      if CompareDottedIdentifiers(TheUnitName,p)=0 then
+        exit(true);
+      while not (p^ in [',',#0]) do inc(p);
+      while p^=',' do inc(p);
+    end;
   end;
   Result:=false;
 end;
@@ -6345,21 +6345,10 @@ end;
 
 function TFindDeclarationTool.FindIdentifierInHiddenUsedUnits(
   Params: TFindDeclarationParams): boolean;
-type
-  SystemUnitType = (
-    sutSystem,
-    sutMacPas,
-    sutObjPas,
-    sutObjC,
-    sutObjCBase,
-    sutLineInfo,
-    sutHeapTrc,
-    sutSysThrds,
-    sutNone);
 var
-  OldInput: TFindDeclarationInput;
-  SystemAlias: string;
-  CurUnitType: SystemUnitType;
+  HiddenUnits: String;
+  p: Integer;
+  AnUnitName: String;
 begin
   Result:=false;
   {$IFDEF ShowTriedContexts}
@@ -6367,105 +6356,21 @@ begin
   '"',GetIdentifier(Params.Identifier),'" IgnoreUsedUnits=',dbgs(fdfIgnoreUsedUnits in Params.Flags));
   {$ENDIF}
   if (Tree.Root<>nil) and (not (fdfIgnoreUsedUnits in Params.Flags)) then begin
-    // check, if this is a special unit
-    MoveCursorToNodeStart(Tree.Root);
-    ReadNextAtom;
-    ReadNextAtom;
-    SystemAlias:='SYSTEM';
-    if (Scanner.PascalCompiler=pcDelphi) then begin
-      SystemAlias:='System';
-    end else begin
-      // FPC
-      if Scanner.InitialValues.IsDefined('VER1_0')
-      then begin
-        if Scanner.InitialValues.IsDefined('LINUX') then
-          SystemAlias:='SYSLINUX'
-        else if Scanner.InitialValues.IsDefined('BSD') then
-          SystemAlias:='SYSBSD'
-        else if Scanner.InitialValues.IsDefined('WIN32') then
-          SystemAlias:='SYSWIN32';
+    HiddenUnits:=Scanner.GetHiddenUsedUnits;
+    {$IFDEF ShowTriedContexts}
+    debugln(['TFindDeclarationTool.FindIdentifierInHiddenUsedUnits ',Scanner.MainFilename,' SourceName=',Scanner.SourceName,' HiddenUnits=',HiddenUnits]);
+    {$ENDIF}
+    p:=length(HiddenUnits);
+    while p>=1 do begin
+      while (p>1) and (HiddenUnits[p-1]<>',') do dec(p);
+      AnUnitName:=GetDottedIdentifier(@HiddenUnits[p]);
+      if AnUnitName<>'' then begin
+        // try hidden used unit
+        Result:=FindIdentifierInUsedUnit(AnUnitName,Params);
+        if Result and Params.IsFoundProcFinal then exit;
       end;
+      dec(p);
     end;
-    if UpAtomIs(SystemAlias) or UpAtomIs('SYSTEM') then
-      CurUnitType:=sutSystem
-    else if UpAtomIs('MACPAS') then
-      CurUnitType:=sutMacPas
-    else if UpAtomIs('OBJPAS') then
-      CurUnitType:=sutObjPas
-    else if UpAtomIs('OBJC') then
-      CurUnitType:=sutObjC
-    else if UpAtomIs('OBJCBASE') then
-      CurUnitType:=sutObjCBase
-    else if UpAtomIs('LINEINFO') then
-      CurUnitType:=sutLineInfo
-    else if UpAtomIs('HEAPTRC') then
-      CurUnitType:=sutHeapTrc
-    else if UpAtomIs('SYSTHRDS') then
-      CurUnitType:=sutSysThrds
-    else
-      CurUnitType:=sutNone;
-    // try hidden units
-    if (CurUnitType>sutSysThrds)
-    and Scanner.InitialValues.IsDefined(ExternalMacroStart+'UseSysThrds')
-    then begin
-      // try hidden used unit 'systhrds'
-      Result:=FindIdentifierInUsedUnit('SysThrds',Params);
-      if Result and Params.IsFoundProcFinal then exit;
-    end;
-    if (CurUnitType>sutHeapTrc)
-    and Scanner.InitialValues.IsDefined(ExternalMacroStart+'UseHeapTrcUnit')
-    then begin
-      // try hidden used unit 'heaptrc'
-      Result:=FindIdentifierInUsedUnit('HeapTrc',Params);
-      if Result and Params.IsFoundProcFinal then exit;
-    end;
-    if (CurUnitType>sutLineInfo)
-    and Scanner.InitialValues.IsDefined(ExternalMacroStart+'UseLineInfo')
-    then begin
-      // try hidden used unit 'lineinfo'
-      Result:=FindIdentifierInUsedUnit('LineInfo',Params);
-      if Result and Params.IsFoundProcFinal then exit;
-    end;
-    if (CurUnitType>sutObjPas)
-    and (Scanner.CompilerMode in [cmDELPHI,cmOBJFPC])
-    and (Scanner.PascalCompiler=pcFPC) then begin
-      // try hidden used fpc unit 'objpas'
-      Result:=FindIdentifierInUsedUnit('ObjPas',Params);
-      if Result and Params.IsFoundProcFinal then exit;
-    end;
-    if (CurUnitType>sutObjCBase)
-    and (cmsObjectiveC1 in Scanner.CompilerModeSwitches) then begin
-      // try hidden used fpc unit 'objcbase'
-      Result:=FindIdentifierInUsedUnit('ObjCBase',Params);
-      if Result and Params.IsFoundProcFinal then exit;
-    end;
-    if (CurUnitType>sutObjC)
-    and (cmsObjectiveC1 in Scanner.CompilerModeSwitches) then begin
-      // try hidden used fpc unit 'objc'
-      Result:=FindIdentifierInUsedUnit('ObjC',Params);
-      if Result and Params.IsFoundProcFinal then exit;
-    end;
-    if (CurUnitType>sutMacPas)
-    and (Scanner.CompilerMode=cmMacPas)
-    and (Scanner.PascalCompiler=pcFPC) then begin
-      // try hidden used fpc unit 'macpas'
-      Result:=FindIdentifierInUsedUnit('MacPas',Params);
-      if Result and Params.IsFoundProcFinal then exit;
-    end;
-    if (CurUnitType>sutSystem) then begin
-      // try hidden used unit 'system'
-      if not CompareSrcIdentifiers(Params.Identifier,'system')
-      then begin
-        Result:=FindIdentifierInUsedUnit(SystemAlias,Params);
-      end else begin
-        // the system unit name itself is searched -> rename searched identifier
-        Params.Save(OldInput);
-        Params.SetIdentifier(Self,PChar(Pointer(SystemAlias)),nil);
-        Result:=FindIdentifierInUsedUnit(SystemAlias,Params);
-        Params.Load(OldInput,true);
-      end;
-    end;
-    if Result and Params.IsFoundProcFinal then exit;
   end;
 end;
 

@@ -61,11 +61,13 @@ uses
 
 const
   PascalCompilerDefine = ExternalMacroStart+'Compiler';
+  MacroUseHeapTrc = ExternalMacroStart+'UseHeapTrcUnit';
   MacroUseLineInfo = ExternalMacroStart+'UseLineInfo';
   MacroUselnfodwrf = ExternalMacroStart+'Uselnfodwrf';
   MacroUseValgrind = ExternalMacroStart+'UseValgrind';
   MacroUseProfiler = ExternalMacroStart+'UseProfiler';
   MacroUseFPCylix = ExternalMacroStart+'UseFPCylix';
+  MacroUseSysThrds = ExternalMacroStart+'UseSysThrds';
   MacroControllerUnit = ExternalMacroStart+'ControllerUnit';
 
   MissingIncludeFileCode = Pointer(1);
@@ -183,14 +185,14 @@ const
     [cmsResult,cmsProperty,cmsNested_comment,cmsCvar_support],
     // cmDELPHI
     [cmsDefault_ansistring,cmsResult,cmsAdvancedRecords,cmsProperty,
-     cmsCvar_support,cmsOut],
+     cmsCvar_support,cmsOut,cmsObjpas],
     // cmGPC
     [],
     // cmTP
     [cmsResult,cmsTp_procvar],
     // cmOBJFPC
     [cmsDefault_ansistring,cmsResult,cmsProperty,cmsNested_comment,
-     cmsCvar_support,cmsOut],
+     cmsCvar_support,cmsOut,cmsObjpas],
     // cmMacPas
     [cmsMac_procvar,cmsProperty],
     // cmISO
@@ -2322,14 +2324,25 @@ begin
   if FHiddenUsedUnits='' then begin
     // see fpc/compiler/pmodules.pp loaddefaultunits
     FHiddenUsedUnits:='system';
+    if InitialValues.IsDefined('VER1_0')
+    then begin
+      if InitialValues.IsDefined('LINUX') then
+        FHiddenUsedUnits:='SYSLINUX'
+      else if InitialValues.IsDefined('BSD') then
+        FHiddenUsedUnits:='SYSBSD'
+      else if InitialValues.IsDefined('WIN32') then
+        FHiddenUsedUnits:='SYSWIN32';
+    end;
     // ToDo: heaptrc
-    if Values.IsDefined(MacroUseLineInfo) then
+    if InitialValues.IsDefined(MacroUseLineInfo) then
       FHiddenUsedUnits:=FHiddenUsedUnits+',lineinfo'
-    else if Values.IsDefined(MacroUselnfodwrf) then
+    else if InitialValues.IsDefined(MacroUselnfodwrf) then
       FHiddenUsedUnits:=FHiddenUsedUnits+',lnfodwrf';
-    if Values.IsDefined(MacroUseValgrind) then
+    if InitialValues.IsDefined(MacroUseValgrind) then
       FHiddenUsedUnits:=FHiddenUsedUnits+',cmem';
-    if Values.IsDefined('haswinlikeresources') then begin
+    if InitialValues.IsDefined(MacroUseHeapTrc) then
+      FHiddenUsedUnits:=FHiddenUsedUnits+',HeapTrc';
+    if InitialValues.IsDefined('FPC_HAS_WinLikeResources') then begin
       // ToDo: fpintres
       FHiddenUsedUnits:=FHiddenUsedUnits+',fpextres';
     end;
@@ -2340,12 +2353,14 @@ begin
       FHiddenUsedUnits:=FHiddenUsedUnits+',iso7185';
     if cmsObjectiveC1 in CompilerModeSwitches then
       FHiddenUsedUnits:=FHiddenUsedUnits+',ObjC,ObjCBase';
-    if Values.IsDefined(MacroUseProfiler) then
+    if InitialValues.IsDefined(MacroUseProfiler) then
       // Note: only valid on i386_go32v2,i386_watcom
       FHiddenUsedUnits:=FHiddenUsedUnits+',profile';
-    if Values.IsDefined(MacroUseFPCylix) then
+    if InitialValues.IsDefined(MacroUseSysThrds) then
+      FHiddenUsedUnits:=FHiddenUsedUnits+',SysThrds';
+    if InitialValues.IsDefined(MacroUseFPCylix) then
       FHiddenUsedUnits:=FHiddenUsedUnits+',fpcylix,dynlibs';
-    Controller:=Values[MacroControllerUnit];
+    Controller:=InitialValues[MacroControllerUnit];
     if (Controller<>'') and IsDottedIdentifier(Controller) then
       FHiddenUsedUnits:=FHiddenUsedUnits+','+Controller;
 
@@ -2361,21 +2376,27 @@ begin
         AnUnitName:=ExtractFileNameOnly(MainFilename);
     end;
     if AnUnitName<>'' then begin
-      p:=length(FHiddenUsedUnits);
-      while p>=1 do begin
-        while (p>1) and (FHiddenUsedUnits[p]<>',') do dec(p);
-        if CompareDottedIdentifiers(@FHiddenUsedUnits[p],PChar(AnUnitName))=0 then
-        begin
-          // this unit is a hidden unit => remove this and all behind from list
-          if p>1 then
-            System.Delete(FHiddenUsedUnits,p,length(FHiddenUsedUnits))
-          else
-            FHiddenUsedUnits:='';
-          break;
+      if AnUnitName='system' then
+        FHiddenUsedUnits:=''
+      else begin
+        p:=length(FHiddenUsedUnits);
+        while p>=1 do begin
+          while (p>1) and (FHiddenUsedUnits[p]<>',') do dec(p);
+          if CompareDottedIdentifiers(@FHiddenUsedUnits[p],PChar(AnUnitName))=0 then
+          begin
+            // this unit is a hidden unit => remove this and all behind from list
+            if p>1 then
+              System.Delete(FHiddenUsedUnits,p,length(FHiddenUsedUnits))
+            else
+              FHiddenUsedUnits:='';
+            break;
+          end;
+          dec(p); // skip comma
         end;
-        dec(p); // skip comma
       end;
     end;
+
+    //debugln(['TLinkScanner.GetHiddenUsedUnits ',dbgs(CompilerModeSwitches),' ',PascalCompilerNames[PascalCompiler],' Mode=',CompilerModeNames[CompilerMode],' units=',FHiddenUsedUnits]);
   end;
   Result:=FHiddenUsedUnits;
 end;
