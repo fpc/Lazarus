@@ -174,6 +174,8 @@ function CompareStringConstants(p1, p2: PChar): integer; // compare case sensiti
 function CompareComments(p1, p2: PChar; NestedComments: boolean): integer; // compare case insensitive
 
 // dotted identifiers
+function DottedIdentifierLength(Identifier: PChar): integer;
+function GetDottedIdentifier(Identifier: PChar): string;
 function IsDottedIdentifier(const Identifier: string): boolean;
 function CompareDottedIdentifiers(Identifier1, Identifier2: PChar): integer;
 
@@ -4213,6 +4215,34 @@ begin
   if LengthOfLastLine=0 then ;
 end;
 
+function DottedIdentifierLength(Identifier: PChar): integer;
+var
+  p: PChar;
+begin
+  Result:=0;
+  if Identifier=nil then exit;
+  p:=Identifier;
+  repeat
+    if not IsIdentStartChar[p^] then exit;
+    repeat
+      inc(p);
+    until not IsIdentChar[p^];
+    if p^<>'.' then break;
+    inc(p);
+  until false;
+  Result:=p-Identifier;
+end;
+
+function GetDottedIdentifier(Identifier: PChar): string;
+var
+  l: Integer;
+begin
+  l:=DottedIdentifierLength(Identifier);
+  SetLength(Result,l);
+  if l>0 then
+    System.Move(Identifier^,Result[1],l);
+end;
+
 function IsDottedIdentifier(const Identifier: string): boolean;
 var
   p: PChar;
@@ -4222,9 +4252,9 @@ begin
   p:=PChar(Identifier);
   repeat
     if not IsIdentStartChar[p^] then exit;
-    inc(p);
-    while IsIdentChar[p^] do
+    repeat
       inc(p);
+    until not IsIdentChar[p^];
     if p^<>'.' then break;
     inc(p);
   until false;

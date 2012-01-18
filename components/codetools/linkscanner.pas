@@ -61,6 +61,12 @@ uses
 
 const
   PascalCompilerDefine = ExternalMacroStart+'Compiler';
+  MacroUseLineInfo = ExternalMacroStart+'UseLineInfo';
+  MacroUselnfodwrf = ExternalMacroStart+'Uselnfodwrf';
+  MacroUseValgrind = ExternalMacroStart+'UseValgrind';
+  MacroUseProfiler = ExternalMacroStart+'UseProfiler';
+  MacroUseFPCylix = ExternalMacroStart+'UseFPCylix';
+  MacroControllerUnit = ExternalMacroStart+'ControllerUnit';
 
   MissingIncludeFileCode = Pointer(1);
 
@@ -162,7 +168,7 @@ type
     cmsDefault_inline,     { allow inline proc directive }
     cmsExcept,             { allow exception-related keywords }
     cmsObjectiveC1,        { support interfacing with Objective-C (1.0) }
-    cmsObjectiveC2,        { support interfacing with Objective-C (2.0) }
+    cmsObjectiveC2,        { support interfacing with Objective-C (2.0), includes cmsObjectiveC1 }
     cmsNestedProcVars,     { support nested procedural variables }
     cmsNonLocalGoto,       { support non local gotos (like iso pascal) }
     cmsAdvancedRecords,    { advanced record syntax with visibility sections, methods and properties }
@@ -295,6 +301,7 @@ type
     FScanTill: TLinkScannerRange;
     FNestedComments: boolean; // for speed reasons keep this is flag redundant with the CompilerModeSwitches
     FStates: TLinkScannerStates;
+    FHiddenUsedUnits: string; // comma separated
     // global write lock
     FOnSetGlobalWriteLock: TOnSetWriteLock;
     FGlobalSourcesChangeStep: int64;
@@ -346,8 +353,7 @@ type
     function DoFinalizationToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
     function DoInitializationToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
     function DoUsesToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
-    function IsUsesToken: boolean;
-    function TokenIsWord(p: PChar): boolean;
+    function TokenIsWord(p: PChar): boolean; {$IFDEF UseInline}inline;{$ENDIF}
   private
     // directives
     FDirectiveName: shortstring;
@@ -438,10 +444,13 @@ type
     Code: pointer;   // current code object
     Values: TExpressionEvaluator;
     SrcFilename: string;// current parsed filename
+    IsUnit: boolean;
+    SourceName: string;
 
     ScannedRange: TLinkScannerRange;
 
     function MainFilename: string;
+    property ChangeStep: integer read FChangeStep; // see CTInvalidChangeStamp
 
     // links
     property Links[Index: integer]: TSourceLink read GetLinks write SetLinks;
@@ -493,7 +502,7 @@ type
                                       out EndCursorPos: integer;
                                       out EndCode: Pointer): boolean;
 
-    property ChangeStep: integer read FChangeStep; // see CTInvalidChangeStamp
+    function GetHiddenUsedUnits: string; // comma separated
 
     // global write lock
     procedure ActivateGlobalWriteLock;
@@ -738,6 +747,9 @@ var i: integer;
   PLink: PSourceLink;
   PStamp: PSourceChangeStep;
 begin
+  IsUnit:=false;
+  SourceName:='';
+  FHiddenUsedUnits:='';
   ClearMacros;
   ClearLastError;
   ClearMissingIncludeFiles;
@@ -1275,6 +1287,8 @@ begin
   DebugLn('TLinkScanner.Scan C ',dbgs(SrcLen));
   {$ENDIF}
   ScannedRange:=lsrNone;
+  IsUnit:=false;
+  SourceName:='';
   CommentStyle:=CommentNone;
   CommentLevel:=0;
   PascalCompiler:=pcFPC;
@@ -1324,7 +1338,7 @@ begin
   try
     try
       ReadNextToken;
-      if IsUsesToken then
+      if TokenIsWord('USES') then
         DoUsesToken
       else
         SrcPos:=TokenStart;
@@ -2286,6 +2300,73 @@ begin
   end;
 end;
 
+function TLinkScanner.GetHiddenUsedUnits: string;
+var
+  Controller: String;
+  AnUnitName: String;
+  p: Integer;
+begin
+  if FHiddenUsedUnits='' then begin
+    // see fpc/compiler/pmodules.pp loaddefaultunits
+    FHiddenUsedUnits:='system';
+    // ToDo: heaptrc
+    if Values.IsDefined(MacroUseLineInfo) then
+      FHiddenUsedUnits:=FHiddenUsedUnits+',lineinfo'
+    else if Values.IsDefined(MacroUselnfodwrf) then
+      FHiddenUsedUnits:=FHiddenUsedUnits+',lnfodwrf';
+    if Values.IsDefined(MacroUseValgrind) then
+      FHiddenUsedUnits:=FHiddenUsedUnits+',cmem';
+    if Values.IsDefined('haswinlikeresources') then begin
+      // ToDo: fpintres
+      FHiddenUsedUnits:=FHiddenUsedUnits+',fpextres';
+    end;
+    if (cmsObjpas in CompilerModeSwitches)
+    and (PascalCompiler=pcFPC) then
+      FHiddenUsedUnits:=FHiddenUsedUnits+',ObjPas';
+    if CompilerMode=cmISO then
+      FHiddenUsedUnits:=FHiddenUsedUnits+',iso7185';
+    if cmsObjectiveC1 in CompilerModeSwitches then
+      FHiddenUsedUnits:=FHiddenUsedUnits+',ObjC,ObjCBase';
+    if Values.IsDefined(MacroUseProfiler) then
+      // Note: only valid on i386_go32v2,i386_watcom
+      FHiddenUsedUnits:=FHiddenUsedUnits+',profile';
+    if Values.IsDefined(MacroUseFPCylix) then
+      FHiddenUsedUnits:=FHiddenUsedUnits+',fpcylix,dynlibs';
+    Controller:=Values[MacroControllerUnit];
+    if (Controller<>'') and IsDottedIdentifier(Controller) then
+      FHiddenUsedUnits:=FHiddenUsedUnits+','+Controller;
+
+    // check if this is a hidden used unit
+    AnUnitName:='';
+    if (ord(ScannedRange)<ord(lsrSourceType)) then
+      // not yet parsed, or parse error => maybe a unit => use filename
+      AnUnitName:=ExtractFileNameOnly(MainFilename)
+    else if IsUnit then begin
+      if (SourceName<>'') then
+        AnUnitName:=SourceName
+      else
+        AnUnitName:=ExtractFileNameOnly(MainFilename);
+    end;
+    if AnUnitName<>'' then begin
+      p:=length(FHiddenUsedUnits);
+      while p>=1 do begin
+        while (p>1) and (FHiddenUsedUnits[p]<>',') do dec(p);
+        if CompareDottedIdentifiers(@FHiddenUsedUnits[p],PChar(AnUnitName))=0 then
+        begin
+          // this unit is a hidden unit => remove this and all behind from list
+          if p>1 then
+            System.Delete(FHiddenUsedUnits,p,length(FHiddenUsedUnits))
+          else
+            FHiddenUsedUnits:='';
+          break;
+        end;
+        dec(p); // skip comma
+      end;
+    end;
+  end;
+  Result:=FHiddenUsedUnits;
+end;
+
 procedure TLinkScanner.SetMainCode(const Value: pointer);
 begin
   if FMainCode=Value then exit;
@@ -2539,6 +2620,7 @@ function TLinkScanner.ModeSwitchDirective: boolean;
 var
   ValStart: LongInt;
   ModeSwitch: TCompilerModeSwitch;
+  s: TCompilerModeSwitches;
 begin
   SkipSpace;
   ValStart:=SrcPos;
@@ -2549,10 +2631,13 @@ begin
     if CompareUpToken(CompilerModeSwitchNames[ModeSwitch],Src,ValStart,SrcPos)
     then begin
       Result:=true;
+      s:=[ModeSwitch];
+      if ModeSwitch=cmsObjectiveC2 then
+        Include(s,cmsObjectiveC1);
       if (SrcPos<=SrcLen) and (Src[SrcPos]='-') then
-        Exclude(FCompilerModeSwitches,ModeSwitch)
+        FCompilerModeSwitches:=FCompilerModeSwitches+s
       else
-        Include(FCompilerModeSwitches,ModeSwitch);
+        FCompilerModeSwitches:=FCompilerModeSwitches-s;
       exit;
     end;
   end;
@@ -3421,11 +3506,16 @@ begin
   if ScannedRange<>lsrInit then exit(false);
   Result:=true;
   ScannedRange:=lsrSourceType;
+  IsUnit:=TokenIsWord('UNIT');
   if ScannedRange=ScanTill then exit;
   repeat
     ReadNextToken; // read identifier
-    if TokenType=lsttWord then
+    if TokenType=lsttWord then begin
+      if SourceName<>'' then
+        SourceName:=SourceName+'.';
+      SourceName:=SourceName+GetIdentifier(@Src[SrcPos]);
       ReadNextToken; // read ';' or '.' or hint modifier
+    end;
   until TokenType<>lsttPoint;
   ScannedRange:=lsrSourceName;
   if ScannedRange=ScanTill then exit;
@@ -3482,11 +3572,6 @@ begin
   until false;
   ScannedRange:=succ(ScannedRange);   // lsrMainUsesSectionEnd, lsrImplementationUsesSectionEnd;
   Result:=true;
-end;
-
-function TLinkScanner.IsUsesToken: boolean;
-begin
-  Result:=(TokenType=lsttWord) and (CompareIdentifiers(@Src[SrcPos],'USES')=0);
 end;
 
 function TLinkScanner.TokenIsWord(p: PChar): boolean;
