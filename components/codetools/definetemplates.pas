@@ -54,7 +54,7 @@ interface
 uses
   Classes, SysUtils, LazUTF8, CodeToolsStrConsts, ExprEval, DirectoryCacher,
   BasicCodeTools, Laz_XMLCfg, AVL_Tree, CodeToolsStructs,
-  Process, KeywordFuncLists, FileProcs;
+  Process, KeywordFuncLists, LinkScanner, FileProcs;
 
 const
   ExternalMacroStart = ExprEval.ExternalMacroStart;
@@ -6252,6 +6252,7 @@ function TDefinePool.CreateFPCCommandLineDefines(const Name, CmdLine: string;
   var
     NewAction: TDefineAction;
   begin
+    //debugln(['AddDefine Name="',AName,'" Var="',AVariable,'" Value="',AValue,'"']);
     if RecursiveDefines then
       NewAction:=da_DefineRecurse
     else
@@ -6345,6 +6346,22 @@ begin
           // syntax
           inc(StartPos,2);
           CompilerMode:=copy(CmdLine,StartPos,EndPos-StartPos);
+        end;
+
+      'W':
+        begin
+          inc(StartPos,2);
+          if StartPos<EndPos then begin
+            case CmdLine[StartPos] of
+            'p':
+              begin
+                // controller unit
+                AddDefine('Define '+MacroControllerUnit,
+                  ctsDefine+MacroControllerUnit,MacroControllerUnit,
+                  copy(CmdLine,StartPos+1,EndPos-StartPos-1));
+              end;
+            end;
+          end;
         end;
 
       end;
