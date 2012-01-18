@@ -1995,8 +1995,8 @@ begin
       Owner.Invalidate;
   end;
   FSelection.Clear;
-  if (FOwner <> nil) then
-    FOwner.GetAccessibleObject().ClearChildAccessibleObjects();
+  //if (FOwner <> nil) then
+  //  FOwner.GetAccessibleObject().ClearChildAccessibleObjects();
   EndUpdate;
 end;
 
@@ -2225,13 +2225,13 @@ begin
     if (FUpdateCount=0) and (Owner<>nil) then
       Owner.Invalidate;
     ok:=true;
-    if ok and (Owner<>nil) then
+    {if ok and (Owner<>nil) then
     begin
       lAccessibleObject := FOwner.GetAccessibleObject().AddChildAccessibleObject();
       lAccessibleObject.AccessibleDescription := S;
       lAccessibleObject.AccessibleRole := larTreeItem;
       lAccessibleObject.DataObject := Result;
-    end;
+    end;}
   finally
     // this construction creates nicer exception output
     if not ok then
@@ -4281,7 +4281,17 @@ begin
 end;
 
 procedure TCustomTreeView.DoSelectionChanged;
+var
+  lAccessibleObject: TLazAccessibleObject;
+  lSelection: TTreeNode;
 begin
+  // Update the accessibility information
+  lAccessibleObject := GetAccessibleObject();
+  lSelection := Self.Selected;
+  if lSelection = nil then lAccessibleObject.SelectedText := ''
+  else lAccessibleObject.SelectedText := lSelection.Text;
+  lAccessibleObject.SendNotification(lanSelectedTextChanged);
+
   if Assigned(OnSelectionChanged) then OnSelectionChanged(Self);
 end;
 
@@ -5337,6 +5347,8 @@ var
 begin
   Result := nil;
   lNode := GetNodeAt(APos.X, APos.Y);
+  //if lNode = nil then DebugLn('[TCustomTreeView.GetChildAccessibleObjectAtPos] lNode=nil')
+  //else DebugLn('[TCustomTreeView.GetChildAccessibleObjectAtPos] lNode=' + lNode.Text);
   if lNode = nil then Exit;
   Result := FAccessibleObject.GetChildAccessibleObjectWithDataObject(lNode);
 end;

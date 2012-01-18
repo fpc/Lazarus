@@ -74,6 +74,7 @@ type
     class procedure SetFields(const AObject: TLazAccessibleObject; const ADescription, AName: string; const ARole: TLazAccessibilityRole); virtual;
     class function CreateHandle(const AObject: TLazAccessibleObject): HWND; virtual;
     class procedure DestroyHandle(const AObject: TLazAccessibleObject); virtual;
+    class procedure SendNotification(const AObject: TLazAccessibleObject; ANotification: TLazAccessibilityNotification); virtual;
   end;
   TWSLazAccessibleObjectClass = class of TWSLazAccessibleObject;
 
@@ -179,6 +180,13 @@ end;
 
 class procedure TWSLazAccessibleObject.DestroyHandle(
   const AObject: TLazAccessibleObject);
+begin
+
+end;
+
+class procedure TWSLazAccessibleObject.SendNotification(
+  const AObject: TLazAccessibleObject;
+  ANotification: TLazAccessibilityNotification);
 begin
 
 end;

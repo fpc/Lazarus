@@ -168,11 +168,6 @@ begin
   Result := True;
 end;
 
-procedure TCDWidgetSet.LazAccessibility_SendNotification(ANotification: TLazAccessibilityNotification; const ATextParam: string; const AIntParam1, AIntParam2: Integer);
-begin
-
-end;
-
 procedure TCDWidgetSet.LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
 var
   lPositionMethod: jint;

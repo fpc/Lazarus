@@ -135,6 +135,15 @@ begin
   Result := OwnerControl.GetChildAccessibleObjectAtPos(APos);
 end;
 
+procedure TLazAccessibleObject.SendNotification(
+  ANotification: TLazAccessibilityNotification);
+var
+  WidgetsetClass: TWSLazAccessibleObjectClass;
+begin
+  WidgetsetClass := TWSLazAccessibleObjectClass(GetWSLazAccessibleObject());
+  WidgetsetClass.SendNotification(Self, ANotification);
+end;
+
 {------------------------------------------------------------------------------
   TControl.AdjustSize
 

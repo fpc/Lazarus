@@ -41,8 +41,12 @@ function GetDesignerDC(WindowHandle: HWND): HDC; override;
 function GetLCLOwnerObject(Handle: HWnd): TObject; override;
 
 function IntfSendsUTF8KeyPress: boolean; override;
-
 function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; override;
+
+{procedure LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod); override;
+procedure LazDeviceAPIs_SendMessage(AMsg: TLazDeviceMessage); override;
+procedure LazDeviceAPIs_StartReadingAccelerometerData(); override;
+procedure LazDeviceAPIs_StopReadingAccelerometerData(); override;}
 
 function PromptUser(const DialogCaption : string;
                     const DialogMessage : string;

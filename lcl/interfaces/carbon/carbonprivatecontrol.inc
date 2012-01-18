@@ -262,7 +262,7 @@ begin
           // kAXApplicationRole
           // There is nothing in the LCL for this role, it comes automatically in the application hierarchy
           // kAXBrowserRole
-          larTreeView: lAXRole := CFSTR('AXBrowser');
+          larTreeView: lAXRole := CFSTR('AXList');//Browser');
           // kAXButtonRole
           larButton, larButtonDropDown: lAXRole := CFSTR('AXButton');
           // kAXCheckBoxRole

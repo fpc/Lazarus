@@ -889,6 +889,37 @@ type
     lapAutoAdjustForDPI // For desktops using High DPI, scale x and y to fit the DPI
   );
 
+  TLazAccessibilityNotification = (
+    lanSelectedTextChanged,
+    lanValueChanged
+    );
+
+  TLazAccessibilityRole = (
+    larAlertMessage, // An object that is used to alert the user.
+    larAnimation, // An object that displays an animation.
+    larButton, // A button.
+    larButtonDropDown, // A button that drops down a list of items or drops down something else
+    larCell, // A cell in a table.
+    larChart, // An object that displays a graphical representation of data.
+    larCheckBox, // An object that can be checked or unchecked, or sometimes in an intermediary state
+    larClock, // A clock displaying time.
+    larComboBox, // A list of choices that the user can select from.
+    larGrid, // A grid control which displays cells
+    larIgnore, // Something to be ignored. For example a blank space between other objects.
+    larImage, // A graphic or picture or an icon.
+    larHotkeyField, // A hotkey field that allows the user to enter a key sequence.
+    larHotLink, // A link to something else.
+    larLabel, // A text label as usually placed near other widgets.
+    larListView, // A list of items, from which the user can select one or more items.
+    larListItem, // An item in a list of items.
+    larResizeGrip, // A grip that the user can drag to change the size of widgets.
+    larTextEditorMultiline, // A multi-line text editor (for example: TMemo, SynEdit)
+    larTextEditorSingleline, // A single-line text editor (for example: TEdit)
+    larTreeView, // A list of items in a tree structure.
+    larTreeItem, // An item in a tree structure.
+    larWindow // A top level window.
+  );
+
   // The Child Accessible Objects are designed for non-TControl children
   // of a TCustomControl descendent, for example the items of a TTreeView
 
@@ -902,12 +933,17 @@ type
     FChildren: TFPList; // of TLazAccessibleObject
     class procedure WSRegisterClass; virtual;//override;
   public
+    // Primary information
     AccessibleDescription: TCaption;
-    AccessibleName: TCaption;
+    AccessibleName: TCaption; // currently unused
     AccessibleRole: TLazAccessibilityRole;
+    // Secondary information for notifications
+    SelectedText: string;
+    //
     OwnerControl: TControl;
     Parent: TLazAccessibleObject;
     DataObject: TObject; // Availble to be used to connect to an object
+    SecondaryHandle: PtrInt; // Available for Widgetsets to use
     constructor Create(AOwner: TControl); virtual;
     destructor Destroy; override;
     function AddChildAccessibleObject: TLazAccessibleObject; virtual;
@@ -918,6 +954,7 @@ type
     function GetChildAccessibleObjectsCount: Integer;
     function GetSelectedChildAccessibleObject: TLazAccessibleObject; virtual;
     function GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject; virtual;
+    procedure SendNotification(ANotification: TLazAccessibilityNotification);
     property Handle: PtrInt read GetHandle;
   end;
 

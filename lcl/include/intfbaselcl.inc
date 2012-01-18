@@ -524,11 +524,6 @@ begin
   // But Forms is not in the uses clause
 end;
 
-procedure TWidgetSet.LazAccessibility_SendNotification(ANotification: TLazAccessibilityNotification; const ATextParam: string; const AIntParam1, AIntParam2: Integer);
-begin
-
-end;
-
 procedure TWidgetSet.LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
 begin
 

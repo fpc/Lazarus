@@ -356,11 +356,6 @@ begin
   Result := WidgetSet.IsMobilePlatform();
 end;
 
-procedure LazAccessibility_SendNotification(ANotification: TLazAccessibilityNotification; const ATextParam: string; const AIntParam1, AIntParam2: Integer);
-begin
-  WidgetSet.LazAccessibility_SendNotification(ANotification, ATextParam, AIntParam1, AIntParam2);
-end;
-
 procedure LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
 begin
   Widgetset.LazDeviceAPIs_RequestPositionInfo(AMethod);

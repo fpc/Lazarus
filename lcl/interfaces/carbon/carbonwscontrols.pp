@@ -124,6 +124,8 @@ class function TCarbonWSLazAccessibleObject.CreateHandle(
 var
   lElement: AXUIElementRef;
 begin
+{  lObject := HIObjectCreate();
+  AObject.SecondaryHandle := PtrInt(lObject); AXUIElementCreateWithHIObjectAndIdentifier}
   lElement := MacOSAll.AXUIElementCreateSystemWide();
   Result := HWND(lElement);
 end;
