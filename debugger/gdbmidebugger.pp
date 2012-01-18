@@ -3832,6 +3832,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
   {$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
   procedure InitConsole;
   var
+    R: TGDBMIExecResult;
     s: String;
     h: THandle;
     isConsole: Boolean;
