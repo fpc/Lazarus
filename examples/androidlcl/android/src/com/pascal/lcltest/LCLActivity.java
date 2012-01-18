@@ -48,10 +48,10 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
     } This crashes in HTC */
 
     // This method sends a text to be added at the current cursor position
-    public boolean commitText(CharSequence text, int newCursorPosition)
+    @Override public boolean commitText(CharSequence text, int newCursorPosition)
     {
       //if (_editable != null) _editable.append(text);
-      Log.v("lclproject", "LCLInputConnection.commitText =" + text);
+      Log.v("lclproject", "LCLInputConnection.commitText =" + text + " newCursorPosition=" + Integer.toString(newCursorPosition));
 
       // Send each character of the string
       int eventResult, i;
@@ -61,6 +61,33 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
         if ((eventResult & 1) != 0) lclsurface.postInvalidate();
       }
       return true;
+    }
+
+    @Override public boolean deleteSurroundingText(int leftLength, int rightLength)
+    {
+      Log.v("lclproject", "LCLInputConnection.deleteSurroundingText left=" + Integer.toString(leftLength) + " right=" + Integer.toString(rightLength));
+
+      // For each left surrounding text deletion, send a backspace key
+      int eventResult, i;
+      for (i = 0; i<leftLength; i++)
+      {
+        eventResult = LCLOnKey(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL, null, (char) 0);
+        if ((eventResult & 1) != 0) lclsurface.postInvalidate();
+        eventResult = LCLOnKey(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL, null, (char) 0);
+        if ((eventResult & 1) != 0) lclsurface.postInvalidate();
+      }
+
+      // For each right surrounding text deletion, send a del key
+      // KEYCODE_FORWARD_DEL Since: API Level 11
+      /*for (i = 0; i<leftLength; i++)
+      {
+        eventResult = LCLOnKey(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_FORWARD_DEL, null, (char) 0);
+        if ((eventResult & 1) != 0) lclsurface.postInvalidate();
+        eventResult = LCLOnKey(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_FORWARD_DEL, null, (char) 0);
+        if ((eventResult & 1) != 0) lclsurface.postInvalidate();
+      }*/
+
+      return super.deleteSurroundingText(leftLength, rightLength);
     }
   }
 
