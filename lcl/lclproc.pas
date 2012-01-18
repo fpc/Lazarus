@@ -2264,9 +2264,9 @@ begin
   VK_TILDE     :Result:='VK_TILDE';
   VK_QUOTE     :Result:='VK_QUOTE';
   //
-  VK_POWER: Result:='VK_POWER';
-  VK_CALL: Result:='VK_CALL';
-  VK_ENDCALL: Result:='VK_ENDCALL';
+  VK_LCL_POWER: Result:='VK_LCL_POWER';
+  VK_LCL_CALL: Result:='VK_LCL_CALL';
+  VK_LCL_ENDCALL: Result:='VK_LCL_ENDCALL';
   VK_LCL_AT: Result:='VK_LCL_AT';
   else
     Result:='VK_('+dbgs(c)+')';

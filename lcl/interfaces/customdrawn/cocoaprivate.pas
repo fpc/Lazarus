@@ -417,7 +417,7 @@ begin
 {    MK_F13      : Result:=VK_SNAPSHOT;
     MK_F14      : Result:=VK_SCROLL;
     MK_F15      : Result:=VK_PAUSE;}
-    MK_POWER    : Result:=VK_POWER;
+    MK_POWER    : Result:=VK_LCL_POWER;
     MK_TAB      : Result:=VK_TAB; //strangely enough, tab is "non printable"
     MK_INS      : Result:=VK_INSERT;
     MK_DEL      : Result:=VK_DELETE;

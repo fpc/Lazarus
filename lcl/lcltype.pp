@@ -444,8 +444,8 @@ const
   VK_SHIFT      = 16; // See also VK_LSHIFT, VK_RSHIFT
   VK_CONTROL    = 17; // See also VK_LCONTROL, VK_RCONTROL
   VK_MENU       = 18; // The ALT key. Also called "Option" in Mac OS X. See also VK_LMENU, VK_RMENU
-  VK_PAUSE      = 19;
-  VK_CAPITAL    = 20;
+  VK_PAUSE      = 19; // Pause/Break key
+  VK_CAPITAL    = 20; // CapsLock key
   VK_KANA       = 21;
   VK_HANGUL     = 21;
   VK_JUNJA      = 23;
@@ -467,7 +467,7 @@ const
   VK_RIGHT      = 39;
   VK_DOWN       = 40;
   VK_SELECT     = 41;
-  VK_PRINT      = 42;
+  VK_PRINT      = 42; // PrintScreen key
   VK_EXECUTE    = 43;
   VK_SNAPSHOT   = 44;
   VK_INSERT     = 45;
@@ -511,9 +511,9 @@ const
   VK_Y          = $59;
   VK_Z          = $5A;
 
-  VK_LWIN       = $5B; // In Mac OS X this is the Apple, or Command key
-  VK_RWIN       = $5C; // In Mac OS X this is the Apple, or Command key
-  VK_APPS       = $5D;
+  VK_LWIN       = $5B; // In Mac OS X this is the Apple, or Command key. Windows Key in PC keyboards
+  VK_RWIN       = $5C; // In Mac OS X this is the Apple, or Command key. Windows Key in PC keyboards
+  VK_APPS       = $5D; // The PopUp key in PC keyboards
   // $5E reserved
   VK_SLEEP      = $5F;
 
@@ -527,7 +527,7 @@ const
   VK_NUMPAD7    = 103;
   VK_NUMPAD8    = 104;
   VK_NUMPAD9    = 105;
-  VK_MULTIPLY   = 106;
+  VK_MULTIPLY   = 106; // VK_MULTIPLY up to VK_DIVIDE are usually in the numeric keypad in PC keyboards
   VK_ADD        = 107;
   VK_SEPARATOR  = 108;
   VK_SUBTRACT   = 109;
@@ -674,13 +674,19 @@ const
   VK_TILDE          = VK_OEM_3;     // The "`~" Key
   VK_QUOTE          = VK_OEM_7;     // The "'"" Key
 
+  VK_LCL_ALT        = VK_MENU;
+  VK_LCL_LALT       = VK_LMENU;
+  VK_LCL_RALT       = VK_RMENU;
+
+  VK_LCL_CAPSLOCK   = VK_CAPITAL;
+
 //==============================================
 // New LCL defined keys
 //==============================================
 
-  VK_POWER      = $100;
-  VK_CALL       = $101;
-  VK_ENDCALL    = $102;
+  VK_LCL_POWER      = $100;
+  VK_LCL_CALL       = $101;
+  VK_LCL_ENDCALL    = $102;
   VK_LCL_AT     = $103; // Not equivalent to anything < $FF, will only be sent by a primary "@" key
                         // but not for a @ key as secondary action of a "2" key for example
 
