@@ -215,7 +215,7 @@ type
     procedure ReleaseData;
     procedure ExtractRect(const ARect: TRect; out ADst: TRawImage);
 
-    procedure PerformEffect(const ADrawEffect: TGraphicsDrawEffect; CreateNewData: Boolean = True);
+    procedure PerformEffect(const ADrawEffect: TGraphicsDrawEffect; CreateNewData: Boolean = True; FreeOldData: boolean = false);
     function  ReadBits(const APosition: TRawImagePosition; APrec, AShift: Byte): Word;
     procedure ReadChannels(const APosition: TRawImagePosition; out ARed, AGreen, ABlue, AAlpha: Word);
     procedure ReadMask(const APosition: TRawImagePosition; out AMask: Boolean);
@@ -1592,7 +1592,7 @@ begin
 end;
 
 procedure TRawImage.PerformEffect(const ADrawEffect: TGraphicsDrawEffect;
-  CreateNewData: Boolean);
+  CreateNewData: Boolean; FreeOldData: boolean);
   
   function CheckDescription: Boolean;
   begin
@@ -1641,8 +1641,7 @@ begin
     Move(Data^, AData^, DataSize);
     P := AData;
   end
-  else
-  begin
+  else begin
     P := Data;
     AData := P;
   end;
@@ -1715,6 +1714,9 @@ begin
           end;
       end;
   end;
+
+  if FreeOldData then
+    ReAllocMem(Data,0);
   Data := P;
 end;
 
