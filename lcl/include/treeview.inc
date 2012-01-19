@@ -4291,7 +4291,7 @@ begin
   if lSelection = nil then lAccessibleObject.SelectedText := ''
   else lAccessibleObject.SelectedText := lSelection.Text;
   lAccessibleObject.SetAccesibilityFields(lAccessibleObject.AccessibleDescription,
-    lSelection.Text, lAccessibleObject.AccessibleRole);
+    lAccessibleObject.SelectedText, lAccessibleObject.AccessibleRole);
   lAccessibleObject.SendNotification(lanSelectedTextChanged);
 
   if Assigned(OnSelectionChanged) then OnSelectionChanged(Self);
