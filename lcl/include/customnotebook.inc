@@ -312,6 +312,8 @@ var
 begin
   if HandleAllocated then begin
     Result:=TWSCustomTabControlClass(WidgetSetClass).GetTabIndexAtPos(Self, ClientPos);
+    // Result is the index in visible tabs because invisible tabs are removed
+    //  from the native control. Calculate the real tab index here.
     VisiblePageInd:=-1;
     for i:=0 to PageCount-1 do begin
       if Page[i].TabVisible then
