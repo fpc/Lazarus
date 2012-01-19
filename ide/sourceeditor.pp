@@ -8951,13 +8951,13 @@ var TempEditor: TSourceEditor;
   i:integer;
 begin
   TempEditor:=GetActiveSE;
-  if SourceIndex=0 then begin
+  if (SourceIndex=0) and (TempEditor<>nil) then begin
     Source:=TempEditor.EditorComponent.Lines;
   end else begin
     i:=0;
     while (i < SourceEditorCount) do begin
       if SourceEditors[i] <> TempEditor then dec(SourceIndex);
-      if SourceIndex = 0 then begin
+      if SourceIndex <= 0 then begin
         Source := SourceEditors[i].EditorComponent.Lines;
         exit;
       end;
