@@ -318,7 +318,6 @@ msgid "Insert Call Inherited"
 msgstr "Вставить вызов унаследованного"
 
 #: codystrconsts.crsinsertfileatcursor
-#, fuzzy
 #| msgid "Insert File at Cursor ..."
 msgid "Insert File Contents at Cursor ..."
 msgstr "Вставить содержимое файла в месте расположения курсора ..."
@@ -546,7 +545,7 @@ msgstr "Тип"
 
 #: codystrconsts.crsunabletodelete
 msgid "Unable to delete \"%s\""
-msgstr ""
+msgstr "Невозможно удалить \"%s\""
 
 #: codystrconsts.crsunabletoreadfile
 msgid "Unable to read file \"%s\"."

@@ -59,6 +59,10 @@ msgstr ""
 msgid "Context Menu"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenudbg
+msgid "Context Menu (debug)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr ""
@@ -3418,7 +3422,9 @@ msgid "Open"
 msgstr "Atverti"
 
 #: lazarusidestrconsts.dlgunitdepcaption
-msgid "Unit dependencies"
+#, fuzzy
+#| msgid "Unit dependencies"
+msgid "Unit Dependencies"
 msgstr "Modulio priklausomybės"
 
 #: lazarusidestrconsts.dlgunitdeprefresh
@@ -4347,6 +4353,10 @@ msgstr "Įprastas Paskalio programos failas.%sŠitai galite naudoti greitam bei 
 #: lazarusidestrconsts.lisaskbeforereplacingeachfoundtext
 msgid "Ask before replacing each found text"
 msgstr "Klausti patvirtinimo kiekvienąkart prieš pakeičiant rastą tekstą"
+
+#: lazarusidestrconsts.lisaskbeforesavingprojectssession
+msgid "Ask before saving project's session"
+msgstr ""
 
 #: lazarusidestrconsts.lisaskforcomponentnameafterputtingitonform
 msgid "Ask for component name after putting it on a designer form"
@@ -6328,6 +6338,10 @@ msgstr "Naujas paketo rinkinys"
 msgid "Old package set"
 msgstr "Senas paketo rinkinys"
 
+#: lazarusidestrconsts.lisconflict
+msgid "Conflict"
+msgstr ""
+
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
 msgstr "Terminalo programa"
@@ -7634,6 +7648,10 @@ msgstr "Įterpti pažymėtas komponentes iš iškarpinės"
 #: lazarusidestrconsts.lisdsgselectparentcomponent
 msgid "Select parent component"
 msgstr "Pažymėti tėvinę komponentę"
+
+#: lazarusidestrconsts.lisduplicate
+msgid "Duplicate"
+msgstr ""
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value %s%s%s."
@@ -8954,6 +8972,10 @@ msgstr ""
 msgid "IDE Macros"
 msgstr ""
 
+#: lazarusidestrconsts.lisidemacrovaluesforfpcmacrosusecustomoptions
+msgid "IDE macro values (for FPC macros use custom options)"
+msgstr ""
+
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
 msgstr "Identifikatorius"
@@ -9197,6 +9219,14 @@ msgstr "Paveldėtas elementas"
 
 #: lazarusidestrconsts.lisinheritedprojectcomponent
 msgid "Inherited project component"
+msgstr ""
+
+#: lazarusidestrconsts.lisinitialsetupdialogpagecontrolaccessibledescription
+msgid "Tab control to select the visible properties page"
+msgstr ""
+
+#: lazarusidestrconsts.lisinitialsetupdialogtreeviewaccessibledescription
+msgid "List to select the visible properties page"
 msgstr ""
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
@@ -11153,7 +11183,7 @@ msgid "Current Date and Time"
 msgstr "Dabartinė data ir laikas"
 
 #: lazarusidestrconsts.lismenuinsertfilename
-msgid "Insert full Filename ..."
+msgid "Insert Full Filename ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertgeneral
@@ -11915,8 +11945,9 @@ msgid "Toggle Form/Unit View"
 msgstr "Rodyti formą arba modulį"
 
 #: lazarusidestrconsts.lismenuviewunitdependencies
-#| msgid "View Unit Dependencies"
-msgid "Unit Dependencies"
+#, fuzzy
+#| msgid "Unit Dependencies"
+msgid "Unit Dependencies ..."
 msgstr "Modulio priklausomybės"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
@@ -12249,6 +12280,10 @@ msgstr "Įprastai filtre nurodomas reguliarusis reiškinys. Paprastojoje sintaks
 #: lazarusidestrconsts.lisnostringconstantfound
 msgid "No string constant found"
 msgstr "Nerasta teksto konstanta"
+
+#: lazarusidestrconsts.lisnotadesigntimepackage
+msgid "Not a designtime package"
+msgstr ""
 
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
@@ -12679,6 +12714,10 @@ msgstr "Kelias iki programos „make“"
 msgid "Path to failed Instance:"
 msgstr "Kelias iki nesėkmingojo:"
 
+#: lazarusidestrconsts.lispckdisablei18noflfm
+msgid "Disable I18N of lfm"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditaddanitem
 msgid "Add an item"
 msgstr "Pridėti elementą"
@@ -12992,15 +13031,15 @@ msgstr "Naudotojo"
 msgid "Description / Abstract"
 msgstr "Aprašymas/Santrauka"
 
+#: lazarusidestrconsts.lispckoptsdesigntime
+msgid "Designtime"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptsdesigntimeandruntime
 #, fuzzy
 #| msgid "Designtime and Runtime"
 msgid "Designtime and runtime"
 msgstr "Konstravimo bei vykdymo metu"
-
-#: lazarusidestrconsts.lispckoptsdesigntimeonly
-msgid "Designtime only"
-msgstr "Tik konstravimo metu"
 
 #: lazarusidestrconsts.lispckoptsideintegration
 msgid "IDE Integration"
@@ -13062,9 +13101,9 @@ msgstr "Pateiktys"
 msgid "Release"
 msgstr "Laida"
 
-#: lazarusidestrconsts.lispckoptsruntimeonly
-msgid "Runtime only"
-msgstr "Tik vykdymo metu"
+#: lazarusidestrconsts.lispckoptsruntime
+msgid "Runtime"
+msgstr ""
 
 #: lazarusidestrconsts.lispckoptsthepackagehastheautoinstallflagthismeans
 msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
@@ -13083,6 +13122,10 @@ msgstr "Atnaujinti/Daryti"
 #: lazarusidestrconsts.lispckoptsusage
 msgid "Usage"
 msgstr "Naudojimas"
+
+#: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
+msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
+msgstr ""
 
 #: lazarusidestrconsts.lispdabort
 msgctxt "lazarusidestrconsts.lispdabort"
@@ -13979,10 +14022,6 @@ msgstr "Pirminis aplankas nustatymų failams, kuriame Lazarus laikys savo nustat
 msgid "Primary config path"
 msgstr ""
 
-#: lazarusidestrconsts.lisprint
-msgid "Print"
-msgstr "Print"
-
 #: lazarusidestrconsts.lisprivate
 msgid "Private"
 msgstr "Private"
@@ -14195,6 +14234,10 @@ msgstr "Kelias iki projekto:"
 
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsessionchanged
+msgid "Project session changed"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectsourcedirectories
@@ -14663,6 +14706,10 @@ msgstr "Failas nėra vykdomasis"
 msgid "The host application %s%s%s is not executable."
 msgstr "Programa-šeimininkas %s%s%s nėra vykdomasis failas."
 
+#: lazarusidestrconsts.lisruntimeonlycannotbeinstalledinide
+msgid "Runtime only, can not be installed in IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisruntofailed
 msgid "Run-to failed"
 msgstr "Nepavyko Startuoti-Iki"
@@ -14783,6 +14830,10 @@ msgstr "Įrašyti informaciją apie užvertus rengyklės failus"
 msgid "Save project %s (*%s)"
 msgstr "Įrašyti projektą „%s“ (*%s)"
 
+#: lazarusidestrconsts.lissavesessionchangestoproject
+msgid "Save session changes to project %s?"
+msgstr ""
+
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
 msgstr "Įrašyti nuostatas"
@@ -14895,10 +14946,6 @@ msgstr "Parinkti aktyvią darymo veikseną"
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "Grąžinti numatytąjį"
-
-#: lazarusidestrconsts.lissetmacrovalues
-msgid "Set macro values"
-msgstr ""
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Setup default indentation)"
@@ -15307,10 +15354,12 @@ msgid "Editable Cell"
 msgstr "Langelis, kurį galima keisti"
 
 #: lazarusidestrconsts.listemplateeditparamcellhelp
-msgid ""
-"Inserts an editable Cell, with a default value\n"
-"\"\",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell\n"
-"\"default\",Sync, to Sync with a previous cell of equal default\n"
+#, fuzzy
+#| msgid ""
+#| "serts an editable Cell, with a default value\n"
+#| "\"\",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell\n"
+#| "\"default\",Sync, to Sync with a previous cell of equal default\n"
+msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
 msgstr ""
 "Įterpia langelį su numatytąja vertę, langelio turinį galima keist.\n"
 "\"\",Sync=n (,S=n), – sinchronizuos su ankstesniu langeliu (anksčiausiojo langelio atveju: n=1)\n"
@@ -15619,12 +15668,24 @@ msgstr ""
 msgid "The package already contains a unit with this name."
 msgstr "Pakete jau yra modulis tokiu pavadinimu."
 
+#: lazarusidestrconsts.listhepackagecannotbeinstalledbecauseitrequireswhichi
+msgid "The package %s can not be installed, because it requires the package \"%s\", which is a runtime only package."
+msgstr ""
+
 #: lazarusidestrconsts.listhepackagecannotbeuninstalledbecauseitisneededbyth
 msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
 msgstr "Paketo „%s“ negalima išdiegti, nes jis būtinas pačiam IKA."
 
 #: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
 msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%s%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
+msgstr ""
+
+#: lazarusidestrconsts.listhepackageisalreadyinthelist
+msgid "The package %s is already in the list"
+msgstr ""
+
+#: lazarusidestrconsts.listhepackageisnotadesigntimepackageitcannotbeinstall
+msgid "The package %s is not a design time package. It can not be installed in the IDE"
 msgstr ""
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
@@ -15687,6 +15748,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyanidemacrowiththename
 msgid "There is already an IDE macro with the name \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.listhereisalreadyapackageinthelist
+msgid "There is already a package %s in the list"
 msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
@@ -16417,6 +16482,10 @@ msgstr "Neina rašyti xml srauto į %s%sKlaida: %s"
 msgid "Unexpected result:%sThe debugger will terminate"
 msgstr "Netikėtas rezultatas:%Derintuvė nutraukia darbą"
 
+#: lazarusidestrconsts.lisuninstall
+msgid "Uninstall %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
 msgstr "Išdiegti neįmanoma"
@@ -16819,6 +16888,10 @@ msgstr "XML failai"
 msgid "XML parser error in file %s%sError: %s"
 msgstr "XML analizatorius klaida, failas: %s%sKlaida: %s"
 
+#: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
+msgid "You can disable this for individual forms via the package editor"
+msgstr ""
+
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
 msgid "You can disable this for individual forms via the popup menu in the project inspector"
 msgstr ""
@@ -16911,14 +16984,9 @@ msgstr "Šioje platformoje neįmanoma kurti simbolinių nuorodų!"
 msgid "Enable i18n"
 msgstr "Įgalinti internacionalizaciją"
 
-#: lazarusidestrconsts.rsenteroneormorephrasesthatyouwanttosearchorfilterin
-#| msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
-msgid "Enter one or more phrases that you want to Search or Filter in the list, separated by space, or comma"
-msgstr "Įveskite vieną ar daugiau ieškomų frazių, arba jomis filtruokite sąrašą. Frazės atskiriamos tarpo arba kablelio simboliais."
-
-#: lazarusidestrconsts.rsfilterthelistwiththecurrentfilterexpression
-msgid "Filter the list with the current filter expression"
-msgstr "Sąrašą filtruoti nurodyto reiškinio filtru"
+#: lazarusidestrconsts.rsfilterthelistwithstring
+msgid "Filter the lines in list with a string"
+msgstr ""
 
 #: lazarusidestrconsts.rsformdatafiledfm
 msgid "Form data file (*.dfm)|*.dfm"
@@ -16927,10 +16995,6 @@ msgstr "Formos duomenų failas (*.dfm)|*.dfm"
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
 msgid "Found, but not listed here: "
 msgstr "Rastas, tačiau neįtrauktas į šį sąrašą:"
-
-#: lazarusidestrconsts.rsgotothenextiteminthesearchlist
-msgid "Go to the next item in the search list"
-msgstr "Rodyti tolesnį elementą iš paieškos sąrašo"
 
 #: lazarusidestrconsts.rsi18noptions
 msgid "i18n Options"
@@ -17118,10 +17182,6 @@ msgstr "PO išvesties aplankas:"
 #: lazarusidestrconsts.rsremove
 msgid "&Remove"
 msgstr "&Pašalinti"
-
-#: lazarusidestrconsts.rsresetfilter
-msgid "Reset filter"
-msgstr "Atstatyti filtrą"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
@@ -17709,7 +17769,7 @@ msgid "Insert current date and time"
 msgstr "Įterpti dabartinę datą ir laiką"
 
 #: lazarusidestrconsts.srkmecinsertfilename
-msgid "Insert full Filename"
+msgid "Insert Full Filename"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertgplnotice

@@ -57,6 +57,10 @@ msgstr "Adicionar ponto de histórico"
 msgid "Context Menu"
 msgstr "Menu contexto"
 
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenudbg
+msgid "Context Menu (debug)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr "Saltar para implementação"
@@ -3347,7 +3351,9 @@ msgid "Open"
 msgstr "Abrir"
 
 #: lazarusidestrconsts.dlgunitdepcaption
-msgid "Unit dependencies"
+#, fuzzy
+#| msgid "Unit dependencies"
+msgid "Unit Dependencies"
 msgstr "Dependências da unidade"
 
 #: lazarusidestrconsts.dlgunitdeprefresh
@@ -4261,6 +4267,10 @@ msgstr "Um simples arquivo de programa Pascal.%sEle pode ser usado para um teste
 #: lazarusidestrconsts.lisaskbeforereplacingeachfoundtext
 msgid "Ask before replacing each found text"
 msgstr "Perguntar antes de substituir cada texto encontrado"
+
+#: lazarusidestrconsts.lisaskbeforesavingprojectssession
+msgid "Ask before saving project's session"
+msgstr ""
 
 #: lazarusidestrconsts.lisaskforcomponentnameafterputtingitonform
 msgid "Ask for component name after putting it on a designer form"
@@ -6216,6 +6226,10 @@ msgstr "Novo conjunto pacote"
 msgid "Old package set"
 msgstr "Antigo conjunto pacote"
 
+#: lazarusidestrconsts.lisconflict
+msgid "Conflict"
+msgstr ""
+
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
 msgstr "Aplicação console"
@@ -7525,6 +7539,10 @@ msgstr "Colar componentes selecionados da Área de Transferência"
 #: lazarusidestrconsts.lisdsgselectparentcomponent
 msgid "Select parent component"
 msgstr "Selecionar componente pai"
+
+#: lazarusidestrconsts.lisduplicate
+msgid "Duplicate"
+msgstr ""
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value %s%s%s."
@@ -8839,6 +8857,10 @@ msgstr "AVISO: nome unidade inválido %s, pacote=%s"
 msgid "IDE Macros"
 msgstr "Macros IDE"
 
+#: lazarusidestrconsts.lisidemacrovaluesforfpcmacrosusecustomoptions
+msgid "IDE macro values (for FPC macros use custom options)"
+msgstr ""
+
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
 msgstr "identificador"
@@ -9078,6 +9100,14 @@ msgstr "Item herdado"
 #: lazarusidestrconsts.lisinheritedprojectcomponent
 msgid "Inherited project component"
 msgstr "Componente projeto herdado"
+
+#: lazarusidestrconsts.lisinitialsetupdialogpagecontrolaccessibledescription
+msgid "Tab control to select the visible properties page"
+msgstr ""
+
+#: lazarusidestrconsts.lisinitialsetupdialogtreeviewaccessibledescription
+msgid "List to select the visible properties page"
+msgstr ""
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
@@ -10968,7 +10998,9 @@ msgid "Current Date and Time"
 msgstr "Data e hora atuais"
 
 #: lazarusidestrconsts.lismenuinsertfilename
-msgid "Insert full Filename ..."
+#, fuzzy
+#| msgid "Insert full Filename ..."
+msgid "Insert Full Filename ..."
 msgstr "Inserir nome-de-arquivo completo ..."
 
 #: lazarusidestrconsts.lismenuinsertgeneral
@@ -11684,8 +11716,9 @@ msgid "Toggle Form/Unit View"
 msgstr "Alternar exibição formulário/unidade"
 
 #: lazarusidestrconsts.lismenuviewunitdependencies
-#| msgid "View Unit Dependencies"
-msgid "Unit Dependencies"
+#, fuzzy
+#| msgid "Unit Dependencies"
+msgid "Unit Dependencies ..."
 msgstr "Dependências da Unidade"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
@@ -12012,6 +12045,10 @@ msgstr "Normalmente o filtro é uma expressão regular. Em sintaxe simples \".\"
 #: lazarusidestrconsts.lisnostringconstantfound
 msgid "No string constant found"
 msgstr "Nenhuma constante de sequência de caracteres encontrada"
+
+#: lazarusidestrconsts.lisnotadesigntimepackage
+msgid "Not a designtime package"
+msgstr ""
 
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
@@ -12439,6 +12476,10 @@ msgstr "Caminho do utilitário \"make\""
 msgid "Path to failed Instance:"
 msgstr "Caminho para Instância com falha:"
 
+#: lazarusidestrconsts.lispckdisablei18noflfm
+msgid "Disable I18N of lfm"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditaddanitem
 msgid "Add an item"
 msgstr "Adicionar um item"
@@ -12745,14 +12786,14 @@ msgstr "Personalizado"
 msgid "Description / Abstract"
 msgstr "Descrição / Abstrato"
 
+#: lazarusidestrconsts.lispckoptsdesigntime
+msgid "Designtime"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptsdesigntimeandruntime
 #| msgid "Designtime and Runtime"
 msgid "Designtime and runtime"
 msgstr "Tempo de projeto e tempo de execução"
-
-#: lazarusidestrconsts.lispckoptsdesigntimeonly
-msgid "Designtime only"
-msgstr "Apenas em Tempo Projeto"
 
 #: lazarusidestrconsts.lispckoptsideintegration
 msgid "IDE Integration"
@@ -12812,9 +12853,9 @@ msgstr "Provisão"
 msgid "Release"
 msgstr "Lançamento"
 
-#: lazarusidestrconsts.lispckoptsruntimeonly
-msgid "Runtime only"
-msgstr "Apenas em Tempo Execução"
+#: lazarusidestrconsts.lispckoptsruntime
+msgid "Runtime"
+msgstr ""
 
 #: lazarusidestrconsts.lispckoptsthepackagehastheautoinstallflagthismeans
 msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
@@ -12832,6 +12873,10 @@ msgstr "Atualizar / Reconstruir"
 #: lazarusidestrconsts.lispckoptsusage
 msgid "Usage"
 msgstr "Uso"
+
+#: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
+msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
+msgstr ""
 
 #: lazarusidestrconsts.lispdabort
 msgctxt "lazarusidestrconsts.lispdabort"
@@ -13728,10 +13773,6 @@ msgstr "diretório primário de configuração, onde Lazarus armazena seus arqui
 msgid "Primary config path"
 msgstr "Caminho primário configuração"
 
-#: lazarusidestrconsts.lisprint
-msgid "Print"
-msgstr "Imprimir"
-
 #: lazarusidestrconsts.lisprivate
 msgid "Private"
 msgstr "Privado"
@@ -13942,6 +13983,10 @@ msgstr "Caminho Projeto:"
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
 msgstr "Diretório onde o arquivo principal do projeto deve estar"
+
+#: lazarusidestrconsts.lisprojectsessionchanged
+msgid "Project session changed"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojectsourcedirectories
 msgid "Project source directories"
@@ -14400,6 +14445,10 @@ msgstr "Arquivo não executável"
 msgid "The host application %s%s%s is not executable."
 msgstr "A aplicação servidora %s%s%s não é executável."
 
+#: lazarusidestrconsts.lisruntimeonlycannotbeinstalledinide
+msgid "Runtime only, can not be installed in IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisruntofailed
 msgid "Run-to failed"
 msgstr "Falha executar até"
@@ -14516,6 +14565,10 @@ msgstr "Salvar informações de arquivos fechados do editor"
 msgid "Save project %s (*%s)"
 msgstr "Salvar projeto %s (*%s)"
 
+#: lazarusidestrconsts.lissavesessionchangestoproject
+msgid "Save session changes to project %s?"
+msgstr ""
+
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
 msgstr "Salvar Configurações"
@@ -14628,10 +14681,6 @@ msgstr "Selecione o modo construção ativo"
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "Definir padrão"
-
-#: lazarusidestrconsts.lissetmacrovalues
-msgid "Set macro values"
-msgstr "Definir valores macro"
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Setup default indentation)"
@@ -15038,10 +15087,12 @@ msgid "Editable Cell"
 msgstr "Célula Editável"
 
 #: lazarusidestrconsts.listemplateeditparamcellhelp
-msgid ""
-"Inserts an editable Cell, with a default value\n"
-"\"\",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell\n"
-"\"default\",Sync, to Sync with a previous cell of equal default\n"
+#, fuzzy
+#| msgid ""
+#| "serts an editable Cell, with a default value\n"
+#| "\"\",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell\n"
+#| "\"default\",Sync, to Sync with a previous cell of equal default\n"
+msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
 msgstr ""
 "Insere uma Célula editável, com um valor padrão\n"
 "\"\",Sync=n (,S=n), para Sincr. com uma célula anterior (n=1 maior célula anterior\n"
@@ -15341,6 +15392,10 @@ msgstr "O pacote %s adiciona o caminho \"%s\" ao caminho de unidades da IDE.%sPr
 msgid "The package already contains a unit with this name."
 msgstr "O pacote já contém uma unidade com este nome."
 
+#: lazarusidestrconsts.listhepackagecannotbeinstalledbecauseitrequireswhichi
+msgid "The package %s can not be installed, because it requires the package \"%s\", which is a runtime only package."
+msgstr ""
+
 #: lazarusidestrconsts.listhepackagecannotbeuninstalledbecauseitisneededbyth
 msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
 msgstr "O pacote %s não pode ser desinstalado, porque é necessário pela própria IDE."
@@ -15348,6 +15403,14 @@ msgstr "O pacote %s não pode ser desinstalado, porque é necessário pela próp
 #: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
 msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%s%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
 msgstr "O pacote %s não tem nenhum procedimento \"Register\", o que tipicamente significa que não é para a IDE. Instalá-lo provavelmente apenas aumentará o tamanho da IDE, tornando-a instável.%s%sDica: Se deseja usar um pacote em seu projeto, use o item de menu \"Adicionar ao projeto\""
+
+#: lazarusidestrconsts.listhepackageisalreadyinthelist
+msgid "The package %s is already in the list"
+msgstr ""
+
+#: lazarusidestrconsts.listhepackageisnotadesigntimepackageitcannotbeinstall
+msgid "The package %s is not a design time package. It can not be installed in the IDE"
+msgstr ""
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
@@ -15409,6 +15472,10 @@ msgstr "Já existe uma macro com o nome %s%s%s."
 #: lazarusidestrconsts.listhereisalreadyanidemacrowiththename
 msgid "There is already an IDE macro with the name \"%s\""
 msgstr "Já existe uma macro IDE com o nome \"%s\"."
+
+#: lazarusidestrconsts.listhereisalreadyapackageinthelist
+msgid "There is already a package %s in the list"
+msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
@@ -16133,6 +16200,10 @@ msgstr "Impossível escrever fluxo xml para %s%sErro: %s"
 msgid "Unexpected result:%sThe debugger will terminate"
 msgstr "Resultado inesperado:%sO depurador irá encerrar"
 
+#: lazarusidestrconsts.lisuninstall
+msgid "Uninstall %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
 msgstr "Impossível desinstalar"
@@ -16532,6 +16603,10 @@ msgstr "Arquivos XML"
 msgid "XML parser error in file %s%sError: %s"
 msgstr "Erro análise XML no arquivo %s%sErro: %s"
 
+#: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
+msgid "You can disable this for individual forms via the package editor"
+msgstr ""
+
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
 msgid "You can disable this for individual forms via the popup menu in the project inspector"
 msgstr "Você pode desativar esta opção para formulários individuais através do menu de contexto no inspetor de projeto"
@@ -16624,13 +16699,9 @@ msgstr "Criação de vínculos simbólicos não suportada por esta plataforma!"
 msgid "Enable i18n"
 msgstr "Ativar \"i18n\""
 
-#: lazarusidestrconsts.rsenteroneormorephrasesthatyouwanttosearchorfilterin
-msgid "Enter one or more phrases that you want to Search or Filter in the list, separated by space, or comma"
-msgstr "Digite uma ou mais frases que deseja Localizar ou Filtrar na lista, separadas por espaço ou vírgula"
-
-#: lazarusidestrconsts.rsfilterthelistwiththecurrentfilterexpression
-msgid "Filter the list with the current filter expression"
-msgstr "Filtrar a lista com a expressão atual de filtro"
+#: lazarusidestrconsts.rsfilterthelistwithstring
+msgid "Filter the lines in list with a string"
+msgstr ""
 
 #: lazarusidestrconsts.rsformdatafiledfm
 msgid "Form data file (*.dfm)|*.dfm"
@@ -16639,10 +16710,6 @@ msgstr "Arquivo dados de formulário (*.dfm)|*.dfm"
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
 msgid "Found, but not listed here: "
 msgstr "Encontrado, mas não listado aqui:"
-
-#: lazarusidestrconsts.rsgotothenextiteminthesearchlist
-msgid "Go to the next item in the search list"
-msgstr "Vá para o próximo item na lista de busca"
 
 #: lazarusidestrconsts.rsi18noptions
 msgid "i18n Options"
@@ -16828,10 +16895,6 @@ msgstr "Diretório de saída PO"
 #: lazarusidestrconsts.rsremove
 msgid "&Remove"
 msgstr "&Remover"
-
-#: lazarusidestrconsts.rsresetfilter
-msgid "Reset filter"
-msgstr "Redefinir filtro"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
@@ -17404,7 +17467,9 @@ msgid "Insert current date and time"
 msgstr "Inserir data e hora atual"
 
 #: lazarusidestrconsts.srkmecinsertfilename
-msgid "Insert full Filename"
+#, fuzzy
+#| msgid "Insert full Filename"
+msgid "Insert Full Filename"
 msgstr "Inserir nome-de-arquivo completo"
 
 #: lazarusidestrconsts.srkmecinsertgplnotice

@@ -58,6 +58,10 @@ msgstr ""
 msgid "Context Menu"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenudbg
+msgid "Context Menu (debug)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr ""
@@ -3402,7 +3406,9 @@ msgid "Open"
 msgstr "打开"
 
 #: lazarusidestrconsts.dlgunitdepcaption
-msgid "Unit dependencies"
+#, fuzzy
+#| msgid "Unit dependencies"
+msgid "Unit Dependencies"
 msgstr "单元依赖关系"
 
 #: lazarusidestrconsts.dlgunitdeprefresh
@@ -4337,6 +4343,10 @@ msgstr "一个简单的 Pascal 程序文件.%s用来快速简洁的测试.%s最�
 #: lazarusidestrconsts.lisaskbeforereplacingeachfoundtext
 msgid "Ask before replacing each found text"
 msgstr "在替换每个匹配文本时提醒 "
+
+#: lazarusidestrconsts.lisaskbeforesavingprojectssession
+msgid "Ask before saving project's session"
+msgstr ""
 
 #: lazarusidestrconsts.lisaskforcomponentnameafterputtingitonform
 msgid "Ask for component name after putting it on a designer form"
@@ -6309,6 +6319,10 @@ msgstr ""
 msgid "Old package set"
 msgstr ""
 
+#: lazarusidestrconsts.lisconflict
+msgid "Conflict"
+msgstr ""
+
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
 msgstr "控制台应用程序"
@@ -7610,6 +7624,10 @@ msgstr "从剪切板粘贴组件"
 #: lazarusidestrconsts.lisdsgselectparentcomponent
 msgid "Select parent component"
 msgstr "选择父组件"
+
+#: lazarusidestrconsts.lisduplicate
+msgid "Duplicate"
+msgstr ""
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value %s%s%s."
@@ -8928,6 +8946,10 @@ msgstr ""
 msgid "IDE Macros"
 msgstr ""
 
+#: lazarusidestrconsts.lisidemacrovaluesforfpcmacrosusecustomoptions
+msgid "IDE macro values (for FPC macros use custom options)"
+msgstr ""
+
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
 msgstr ""
@@ -9171,6 +9193,14 @@ msgstr "继承自对象"
 
 #: lazarusidestrconsts.lisinheritedprojectcomponent
 msgid "Inherited project component"
+msgstr ""
+
+#: lazarusidestrconsts.lisinitialsetupdialogpagecontrolaccessibledescription
+msgid "Tab control to select the visible properties page"
+msgstr ""
+
+#: lazarusidestrconsts.lisinitialsetupdialogtreeviewaccessibledescription
+msgid "List to select the visible properties page"
 msgstr ""
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
@@ -11120,7 +11150,7 @@ msgid "Current Date and Time"
 msgstr "当前时间日期"
 
 #: lazarusidestrconsts.lismenuinsertfilename
-msgid "Insert full Filename ..."
+msgid "Insert Full Filename ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertgeneral
@@ -11883,8 +11913,8 @@ msgstr "切换 窗体/单元 视图"
 
 #: lazarusidestrconsts.lismenuviewunitdependencies
 #, fuzzy
-#| msgid "View Unit Dependencies"
-msgid "Unit Dependencies"
+#| msgid "Unit Dependencies"
+msgid "Unit Dependencies ..."
 msgstr "查看单元依赖关系"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
@@ -12219,6 +12249,10 @@ msgstr "通常的过滤器提供正则表达式. 简单语法 a . 是一个正�
 #: lazarusidestrconsts.lisnostringconstantfound
 msgid "No string constant found"
 msgstr "未找到字符串常量"
+
+#: lazarusidestrconsts.lisnotadesigntimepackage
+msgid "Not a designtime package"
+msgstr ""
 
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
@@ -12650,6 +12684,10 @@ msgstr ""
 msgid "Path to failed Instance:"
 msgstr ""
 
+#: lazarusidestrconsts.lispckdisablei18noflfm
+msgid "Disable I18N of lfm"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditaddanitem
 msgid "Add an item"
 msgstr "添加一个项目"
@@ -12963,15 +13001,15 @@ msgstr "自定义"
 msgid "Description / Abstract"
 msgstr "描述及概要"
 
+#: lazarusidestrconsts.lispckoptsdesigntime
+msgid "Designtime"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptsdesigntimeandruntime
 #, fuzzy
 #| msgid "Designtime and Runtime"
 msgid "Designtime and runtime"
 msgstr "设计时和运行时"
-
-#: lazarusidestrconsts.lispckoptsdesigntimeonly
-msgid "Designtime only"
-msgstr "只在设计时"
 
 #: lazarusidestrconsts.lispckoptsideintegration
 msgid "IDE Integration"
@@ -13033,9 +13071,9 @@ msgstr "提供"
 msgid "Release"
 msgstr "发布"
 
-#: lazarusidestrconsts.lispckoptsruntimeonly
-msgid "Runtime only"
-msgstr "只在运行时"
+#: lazarusidestrconsts.lispckoptsruntime
+msgid "Runtime"
+msgstr ""
 
 #: lazarusidestrconsts.lispckoptsthepackagehastheautoinstallflagthismeans
 msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
@@ -13054,6 +13092,10 @@ msgstr "更新/重新编译"
 #: lazarusidestrconsts.lispckoptsusage
 msgid "Usage"
 msgstr "用法"
+
+#: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
+msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
+msgstr ""
 
 #: lazarusidestrconsts.lispdabort
 msgctxt "lazarusidestrconsts.lispdabort"
@@ -13950,10 +13992,6 @@ msgstr "主要配置目录, Lazrus 将默认在此保存配置文件.默认"
 msgid "Primary config path"
 msgstr ""
 
-#: lazarusidestrconsts.lisprint
-msgid "Print"
-msgstr "打印"
-
 #: lazarusidestrconsts.lisprivate
 msgid "Private"
 msgstr "私有"
@@ -14167,6 +14205,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsessionchanged
+msgid "Project session changed"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectsourcedirectories
@@ -14629,6 +14671,10 @@ msgstr "文件不是可执行程序"
 msgid "The host application %s%s%s is not executable."
 msgstr "宿主程序 %s%s%s 不是可执行程序."
 
+#: lazarusidestrconsts.lisruntimeonlycannotbeinstalledinide
+msgid "Runtime only, can not be installed in IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisruntofailed
 msgid "Run-to failed"
 msgstr "运行到失败处"
@@ -14749,6 +14795,10 @@ msgstr "保存已经关闭的代码编辑器文件的信息"
 msgid "Save project %s (*%s)"
 msgstr ""
 
+#: lazarusidestrconsts.lissavesessionchangestoproject
+msgid "Save session changes to project %s?"
+msgstr ""
+
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
 msgstr "保存设置"
@@ -14861,10 +14911,6 @@ msgstr ""
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "设为默认"
-
-#: lazarusidestrconsts.lissetmacrovalues
-msgid "Set macro values"
-msgstr ""
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Setup default indentation)"
@@ -15273,10 +15319,7 @@ msgid "Editable Cell"
 msgstr ""
 
 #: lazarusidestrconsts.listemplateeditparamcellhelp
-msgid ""
-"Inserts an editable Cell, with a default value\n"
-"\"\",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell\n"
-"\"default\",Sync, to Sync with a previous cell of equal default\n"
+msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
 msgstr ""
 
 #: lazarusidestrconsts.listestdirectory
@@ -15582,12 +15625,24 @@ msgstr ""
 msgid "The package already contains a unit with this name."
 msgstr "包已经包含了这个单元."
 
+#: lazarusidestrconsts.listhepackagecannotbeinstalledbecauseitrequireswhichi
+msgid "The package %s can not be installed, because it requires the package \"%s\", which is a runtime only package."
+msgstr ""
+
 #: lazarusidestrconsts.listhepackagecannotbeuninstalledbecauseitisneededbyth
 msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
 msgstr ""
 
 #: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
 msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%s%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
+msgstr ""
+
+#: lazarusidestrconsts.listhepackageisalreadyinthelist
+msgid "The package %s is already in the list"
+msgstr ""
+
+#: lazarusidestrconsts.listhepackageisnotadesigntimepackageitcannotbeinstall
+msgid "The package %s is not a design time package. It can not be installed in the IDE"
 msgstr ""
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
@@ -15650,6 +15705,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyanidemacrowiththename
 msgid "There is already an IDE macro with the name \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.listhereisalreadyapackageinthelist
+msgid "There is already a package %s in the list"
 msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
@@ -16374,6 +16433,10 @@ msgstr "不能写 xml 流到 %s%s错误: %s"
 msgid "Unexpected result:%sThe debugger will terminate"
 msgstr ""
 
+#: lazarusidestrconsts.lisuninstall
+msgid "Uninstall %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
 msgstr ""
@@ -16774,6 +16837,10 @@ msgstr "XML 文件"
 msgid "XML parser error in file %s%sError: %s"
 msgstr "XML 解析错误的文件 %s%s错误: %s"
 
+#: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
+msgid "You can disable this for individual forms via the package editor"
+msgstr ""
+
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
 msgid "You can disable this for individual forms via the popup menu in the project inspector"
 msgstr ""
@@ -16867,12 +16934,8 @@ msgstr ""
 msgid "Enable i18n"
 msgstr "启用多语言支持"
 
-#: lazarusidestrconsts.rsenteroneormorephrasesthatyouwanttosearchorfilterin
-msgid "Enter one or more phrases that you want to Search or Filter in the list, separated by space, or comma"
-msgstr ""
-
-#: lazarusidestrconsts.rsfilterthelistwiththecurrentfilterexpression
-msgid "Filter the list with the current filter expression"
+#: lazarusidestrconsts.rsfilterthelistwithstring
+msgid "Filter the lines in list with a string"
 msgstr ""
 
 #: lazarusidestrconsts.rsformdatafiledfm
@@ -16882,10 +16945,6 @@ msgstr "窗体数据文件 (*.dfm)|*.dfm"
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
 msgid "Found, but not listed here: "
 msgstr ""
-
-#: lazarusidestrconsts.rsgotothenextiteminthesearchlist
-msgid "Go to the next item in the search list"
-msgstr "在搜索列表中定位下一项"
 
 #: lazarusidestrconsts.rsi18noptions
 msgid "i18n Options"
@@ -17073,10 +17132,6 @@ msgstr "PO 输出目录:"
 #: lazarusidestrconsts.rsremove
 msgid "&Remove"
 msgstr "移除(&R)"
-
-#: lazarusidestrconsts.rsresetfilter
-msgid "Reset filter"
-msgstr ""
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
@@ -17663,7 +17718,7 @@ msgid "Insert current date and time"
 msgstr "插入当前日期和时间"
 
 #: lazarusidestrconsts.srkmecinsertfilename
-msgid "Insert full Filename"
+msgid "Insert Full Filename"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertgplnotice

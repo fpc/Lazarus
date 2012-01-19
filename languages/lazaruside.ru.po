@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-01-07 18:40+0400\n"
+"PO-Revision-Date: 2012-01-20 01:53+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -57,6 +57,10 @@ msgstr "Добавить точку перехода в историю"
 #: lazarusidestrconsts.dlfmousesimplebuttoncontextmenu
 msgid "Context Menu"
 msgstr "Контекстное меню"
+
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenudbg
+msgid "Context Menu (debug)"
+msgstr "Контекстное меню (отладка)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
@@ -3356,7 +3360,8 @@ msgid "Open"
 msgstr "Открыть"
 
 #: lazarusidestrconsts.dlgunitdepcaption
-msgid "Unit dependencies"
+#| msgid "Unit dependencies"
+msgid "Unit Dependencies"
 msgstr "Зависимости модуля"
 
 #: lazarusidestrconsts.dlgunitdeprefresh
@@ -4269,6 +4274,10 @@ msgstr "Файл простой программы на Паскале.%sМож�
 #: lazarusidestrconsts.lisaskbeforereplacingeachfoundtext
 msgid "Ask before replacing each found text"
 msgstr "Спросить перед заменой каждого фрагмента"
+
+#: lazarusidestrconsts.lisaskbeforesavingprojectssession
+msgid "Ask before saving project's session"
+msgstr "Спрашивать перед сохранением сеанса работы с проектом"
 
 #: lazarusidestrconsts.lisaskforcomponentnameafterputtingitonform
 msgid "Ask for component name after putting it on a designer form"
@@ -6225,6 +6234,10 @@ msgstr "Новый набор пакетов"
 msgid "Old package set"
 msgstr "Старый набор пакетов"
 
+#: lazarusidestrconsts.lisconflict
+msgid "Conflict"
+msgstr "Конфликт"
+
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
 msgstr "Консольное приложение"
@@ -7537,6 +7550,10 @@ msgstr "Вставить выбранные компоненты из буфер
 #: lazarusidestrconsts.lisdsgselectparentcomponent
 msgid "Select parent component"
 msgstr "Выбрать родительский компонент"
+
+#: lazarusidestrconsts.lisduplicate
+msgid "Duplicate"
+msgstr "Дубликат"
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value %s%s%s."
@@ -8852,6 +8869,10 @@ msgstr "ПРЕДУПРЕЖДЕНИЕ: некорректное имя модул
 msgid "IDE Macros"
 msgstr "Макросы IDE"
 
+#: lazarusidestrconsts.lisidemacrovaluesforfpcmacrosusecustomoptions
+msgid "IDE macro values (for FPC macros use custom options)"
+msgstr "Значения макросов IDE (для задания макросов FPC используйте параметры пользователя)"
+
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
 msgstr "идентификатор"
@@ -9091,6 +9112,14 @@ msgstr "Унаследованный объект"
 #: lazarusidestrconsts.lisinheritedprojectcomponent
 msgid "Inherited project component"
 msgstr "Унаследованный от компонента проекта"
+
+#: lazarusidestrconsts.lisinitialsetupdialogpagecontrolaccessibledescription
+msgid "Tab control to select the visible properties page"
+msgstr "Элемент управления выбором видимой страницы свойств"
+
+#: lazarusidestrconsts.lisinitialsetupdialogtreeviewaccessibledescription
+msgid "List to select the visible properties page"
+msgstr "Список выбора видимой страницы свойств"
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
@@ -10985,7 +11014,8 @@ msgid "Current Date and Time"
 msgstr "Текущие дата и время"
 
 #: lazarusidestrconsts.lismenuinsertfilename
-msgid "Insert full Filename ..."
+#| msgid "Insert full Filename ..."
+msgid "Insert Full Filename ..."
 msgstr "Вставить полное имя файла ..."
 
 #: lazarusidestrconsts.lismenuinsertgeneral
@@ -11702,9 +11732,9 @@ msgid "Toggle Form/Unit View"
 msgstr "Переключить форму/модуль"
 
 #: lazarusidestrconsts.lismenuviewunitdependencies
-#| msgid "View Unit Dependencies"
-msgid "Unit Dependencies"
-msgstr "Зависимости модулей"
+#| msgid "Unit Dependencies"
+msgid "Unit Dependencies ..."
+msgstr "Зависимости модуля ..."
 
 #: lazarusidestrconsts.lismenuviewunitinfo
 #| msgid "Unit Information"
@@ -12033,6 +12063,10 @@ msgstr "Обычно фильтр - это регулярное выражени
 #: lazarusidestrconsts.lisnostringconstantfound
 msgid "No string constant found"
 msgstr "Не найдено строковой константы"
+
+#: lazarusidestrconsts.lisnotadesigntimepackage
+msgid "Not a designtime package"
+msgstr "Не пакет времени разработки"
 
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
@@ -12459,6 +12493,10 @@ msgstr "Путь к утилите Make"
 msgid "Path to failed Instance:"
 msgstr "Путь к необработанному экземпляру:"
 
+#: lazarusidestrconsts.lispckdisablei18noflfm
+msgid "Disable I18N of lfm"
+msgstr "Отключить i18n для LFM"
+
 #: lazarusidestrconsts.lispckeditaddanitem
 msgid "Add an item"
 msgstr "Добавить элемент"
@@ -12765,14 +12803,14 @@ msgstr "Пользовательские"
 msgid "Description / Abstract"
 msgstr "Описание или аннотация"
 
+#: lazarusidestrconsts.lispckoptsdesigntime
+msgid "Designtime"
+msgstr "Времени разработки"
+
 #: lazarusidestrconsts.lispckoptsdesigntimeandruntime
 #| msgid "Designtime and Runtime"
 msgid "Designtime and runtime"
 msgstr "Времени разработки и исполнения"
-
-#: lazarusidestrconsts.lispckoptsdesigntimeonly
-msgid "Designtime only"
-msgstr "Только времени разработки"
 
 #: lazarusidestrconsts.lispckoptsideintegration
 msgid "IDE Integration"
@@ -12832,13 +12870,13 @@ msgstr "Возможности"
 msgid "Release"
 msgstr "Релиз"
 
-#: lazarusidestrconsts.lispckoptsruntimeonly
-msgid "Runtime only"
-msgstr "Только времени исполнения"
+#: lazarusidestrconsts.lispckoptsruntime
+msgid "Runtime"
+msgstr "Времени исполнения"
 
 #: lazarusidestrconsts.lispckoptsthepackagehastheautoinstallflagthismeans
 msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
-msgstr "Пакет %s%s%s имеет метку Автоинсталляция.%sЭто значит, что он автоматически встроится в IDE. Устанавливаемые пакеты%sдолжны быть для разработки."
+msgstr "Пакет %s%s%s имеет флаг автоматической установки.%sЭто значит, что он будет установлен в IDE. Устанавливаемые пакеты%sдолжны быть пакетами времени разработки."
 
 #: lazarusidestrconsts.lispckoptsthispackageprovidesthesameasthefollowingpackages
 msgid "This package provides the same as the following packages:"
@@ -12852,6 +12890,10 @@ msgstr "Обновление и пересборка"
 #: lazarusidestrconsts.lispckoptsusage
 msgid "Usage"
 msgstr "Использование"
+
+#: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
+msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
+msgstr "При сохранении формы IDE может помещать значения всех свойств типа TTranslateString в файл PO пакета. Для этого следует включить i18n для этого пакета, указать каталог вывода файлов PO и отключить данный параметр."
 
 #: lazarusidestrconsts.lispdabort
 msgctxt "lazarusidestrconsts.lispdabort"
@@ -13752,10 +13794,6 @@ msgstr "первичный каталог настройки, где Lazarus х�
 msgid "Primary config path"
 msgstr "Первичный путь к каталогу настройки"
 
-#: lazarusidestrconsts.lisprint
-msgid "Print"
-msgstr "Печать"
-
 #: lazarusidestrconsts.lisprivate
 msgid "Private"
 msgstr "Private"
@@ -13966,6 +14004,10 @@ msgstr "Каталог проекта:"
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
 msgstr "Каталог, в котором располагается главный файл проекта"
+
+#: lazarusidestrconsts.lisprojectsessionchanged
+msgid "Project session changed"
+msgstr "Сеанс работы с проектом изменён"
 
 #: lazarusidestrconsts.lisprojectsourcedirectories
 msgid "Project source directories"
@@ -14424,6 +14466,10 @@ msgstr "Файл не является исполнимым"
 msgid "The host application %s%s%s is not executable."
 msgstr "Главное приложение %s%s%s не является исполнимым файлом."
 
+#: lazarusidestrconsts.lisruntimeonlycannotbeinstalledinide
+msgid "Runtime only, can not be installed in IDE"
+msgstr "Только времени исполнения, не может быть установлен в IDE"
+
 #: lazarusidestrconsts.lisruntofailed
 msgid "Run-to failed"
 msgstr "Запуск до курсора не удался"
@@ -14540,6 +14586,10 @@ msgstr "Сохранять информацию о файлах, закрыты�
 msgid "Save project %s (*%s)"
 msgstr "Сохранить проект %s (*%s)"
 
+#: lazarusidestrconsts.lissavesessionchangestoproject
+msgid "Save session changes to project %s?"
+msgstr "Сохранить изменения сеанса работы с проектом %s?"
+
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
 msgstr "Сохранить параметры"
@@ -14652,10 +14702,6 @@ msgstr "Выбрать текущий режим сборки"
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "Установить по умолчанию"
-
-#: lazarusidestrconsts.lissetmacrovalues
-msgid "Set macro values"
-msgstr "Установка значений макросов"
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Setup default indentation)"
@@ -15062,14 +15108,12 @@ msgid "Editable Cell"
 msgstr "Редактируемое поле"
 
 #: lazarusidestrconsts.listemplateeditparamcellhelp
-msgid ""
-"Inserts an editable Cell, with a default value\n"
-"\"\",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell\n"
-"\"default\",Sync, to Sync with a previous cell of equal default\n"
-msgstr ""
-"Вставить редактируемое поле со значением по умолчанию:\n"
-"\"\",Sync=n (,S=n) для синхронизации с предыдущим полем (n может принимать значения от 1 до наибольшего номера предыдущего поля);\n"
-"\"default\",Sync, для синхронизации с предыдущим полем с таким же значением 'default'.\n"
+#| msgid ""
+#| "serts an editable Cell, with a default value\n"
+#| "\"\",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell\n"
+#| "\"default\",Sync, to Sync with a previous cell of equal default\n"
+msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
+msgstr "Вставить редактируемое поле. По полям можно перемещаться при помощи клавиши ТАБ.%0:sВходные параметры макроса \"Param\" представляют собой список аргументов, разделённых запятыми.%0:sПервый аргумент - значение по умолчанию.%0:sВторой аргумент (необязательный) может использоваться для связи редактируемых полей (синхронное редактирование).%0:s%0:s  while param(\"foo\") do param(foo);%0:sвставляет два независимых поля, каждое с текстом по умолчанию \"foo\".%0:sКавычки необязательны.%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sвставляет два связанных поля. Редактирование любого из них меняет другое.%0:sЗначение \"1\" содержит позицию другого \"param()\", поэтому выражение (полей больше двух):%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sсвязывает второе и третье поле (третье поле ссылается на \"2\").%0:s%0:s\"Sync\" может быть сокращено до \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sсвязывает второе и третье поле.%0:sПримечание: Параметру \"Sync\" не присвоена позиция другого поля, поэтому синхронизация производится с предыдущим полем с тем же значением по умолчанию (в данном случае \"foo\")."
 
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
@@ -15366,6 +15410,10 @@ msgstr "Пакет %s добавляет путь \"%s\" к списку пут�
 msgid "The package already contains a unit with this name."
 msgstr "Пакет уже содержит модуль с таким именем."
 
+#: lazarusidestrconsts.listhepackagecannotbeinstalledbecauseitrequireswhichi
+msgid "The package %s can not be installed, because it requires the package \"%s\", which is a runtime only package."
+msgstr "Пакет %s не может быть установлен, так как он зависит от пакета только времени исполнения \"%s\"."
+
 #: lazarusidestrconsts.listhepackagecannotbeuninstalledbecauseitisneededbyth
 msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
 msgstr "Пакет %s не может быть удалён, так как требуется самой IDE."
@@ -15373,6 +15421,14 @@ msgstr "Пакет %s не может быть удалён, так как тр�
 #: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
 msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%s%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
 msgstr "Пакет %s не имеет процедуры \"Register\". Обычно это означает, что он не предоставляет расширений IDE. Его установка, вероятно, только увеличит размер IDE, и даже может вызвать её нестабильную работу.%s%sПодсказка: Если вы хотите использовать пакет в вашем проекте, используйте пункт меню \"Добавить к проекту\"."
+
+#: lazarusidestrconsts.listhepackageisalreadyinthelist
+msgid "The package %s is already in the list"
+msgstr "Пакет %s уже имеется в списке"
+
+#: lazarusidestrconsts.listhepackageisnotadesigntimepackageitcannotbeinstall
+msgid "The package %s is not a design time package. It can not be installed in the IDE"
+msgstr "Пакет %s не является пакетом времени разработки. Он не может быть установлен в IDE."
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
@@ -15434,6 +15490,10 @@ msgstr "Макрос с именем %s%s%s уже существует."
 #: lazarusidestrconsts.listhereisalreadyanidemacrowiththename
 msgid "There is already an IDE macro with the name \"%s\""
 msgstr "Макрос IDE с именем \"%s\" уже имеется"
+
+#: lazarusidestrconsts.listhereisalreadyapackageinthelist
+msgid "There is already a package %s in the list"
+msgstr "Пакет с именем %s уже имеется в списке"
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
@@ -16159,6 +16219,10 @@ msgstr "Невозможно записать поток XML в %s%sОшибка
 msgid "Unexpected result:%sThe debugger will terminate"
 msgstr "Неожиданный результат:%sОтладчик прервёт работу."
 
+#: lazarusidestrconsts.lisuninstall
+msgid "Uninstall %s"
+msgstr "Удалить %s"
+
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
 msgstr "Удаление невозможно"
@@ -16558,6 +16622,10 @@ msgstr "Файлы XML"
 msgid "XML parser error in file %s%sError: %s"
 msgstr "Ошибка разбора XML в файле %s%sОшибка: %s"
 
+#: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
+msgid "You can disable this for individual forms via the package editor"
+msgstr "Это поведение можно отключить для отдельных форм через редактор пакета"
+
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
 #| msgid "You can disable this for individual forms via the popup menu in the source editor, file settings, i18n for lfm strings"
 msgid "You can disable this for individual forms via the popup menu in the project inspector"
@@ -16651,14 +16719,9 @@ msgstr "Создание символических ссылок не подде
 msgid "Enable i18n"
 msgstr "Включить i18n"
 
-#: lazarusidestrconsts.rsenteroneormorephrasesthatyouwanttosearchorfilterin
-#| msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
-msgid "Enter one or more phrases that you want to Search or Filter in the list, separated by space, or comma"
-msgstr "Введите одну или более фраз, которые вы хотите найти или отфильтровать в списке, разделяя их пробелами либо запятыми"
-
-#: lazarusidestrconsts.rsfilterthelistwiththecurrentfilterexpression
-msgid "Filter the list with the current filter expression"
-msgstr "Фильтровать список результатов поиска по текущему выражению"
+#: lazarusidestrconsts.rsfilterthelistwithstring
+msgid "Filter the lines in list with a string"
+msgstr "Отфильтровывайте значения списка при помощи строки"
 
 #: lazarusidestrconsts.rsformdatafiledfm
 msgid "Form data file (*.dfm)|*.dfm"
@@ -16667,10 +16730,6 @@ msgstr "Файл данных формы (*.dfm)|*.dfm"
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
 msgid "Found, but not listed here: "
 msgstr "Найденных, но не отображаемых здесь: "
-
-#: lazarusidestrconsts.rsgotothenextiteminthesearchlist
-msgid "Go to the next item in the search list"
-msgstr "Перейти к следующему элементу списка результатов поиска"
 
 #: lazarusidestrconsts.rsi18noptions
 msgid "i18n Options"
@@ -16856,10 +16915,6 @@ msgstr "Каталог вывода файлов PO:"
 #: lazarusidestrconsts.rsremove
 msgid "&Remove"
 msgstr "&Удалить"
-
-#: lazarusidestrconsts.rsresetfilter
-msgid "Reset filter"
-msgstr "Сбросить фильтр"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
@@ -17433,7 +17488,8 @@ msgid "Insert current date and time"
 msgstr "Вставить текущие дату и время"
 
 #: lazarusidestrconsts.srkmecinsertfilename
-msgid "Insert full Filename"
+#| msgid "Insert full Filename"
+msgid "Insert Full Filename"
 msgstr "Вставить полное имя файла"
 
 #: lazarusidestrconsts.srkmecinsertgplnotice

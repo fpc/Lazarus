@@ -87,7 +87,7 @@ msgstr "Имя уже существует: "
 
 #: anchordockstr.adrseachdockedwindowhasaheaderthatallowsdragginghasaco
 msgid "Each docked window has a header that allows dragging, has a context menu with extra layout functions and shows the caption of the docked window"
-msgstr ""
+msgstr "Каждое пристыкованное окно имеет заголовок, позволяющий осуществить перетаскивание, имеющий контекстное меню с дополнительными функциями разбивки и отображающий его название"
 
 #: anchordockstr.adrsemptyname
 msgid "Empty name: "
@@ -243,7 +243,7 @@ msgstr "Показывать названия в заголовках"
 
 #: anchordockstr.adrsshowheaders
 msgid "Show headers"
-msgstr ""
+msgstr "Показывать заголовки"
 
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"
