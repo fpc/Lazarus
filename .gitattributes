@@ -6132,6 +6132,7 @@ packager/pkgvirtualuniteditor.lfm svneol=native#text/plain
 packager/pkgvirtualuniteditor.pas svneol=native#text/pascal
 packager/registration/Makefile.compiled svneol=native#text/plain
 packager/registration/README.txt svneol=native#text/plain
+packager/registration/docs/lazaruspackageintf.xml svneol=native#text/plain
 packager/registration/fcl.lpk svneol=native#text/plain
 packager/registration/fcllaz.pas svneol=native#text/plain
 packager/registration/lazaruspackageintf.pas svneol=native#text/pascal

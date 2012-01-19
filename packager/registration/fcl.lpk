@@ -1,11 +1,10 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="FCL"/>
-    <AddToProjectUsesSection Value="False"/>
     <Author Value="Lazarus"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
@@ -65,6 +64,7 @@
         <UnitName Value="ServiceManager"/>
       </Item9>
     </Files>
+    <LazDoc Paths="docs"/>
     <Type Value="RunAndDesignTime"/>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

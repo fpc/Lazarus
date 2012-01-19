@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="FCL">
+    <module name="LazarusPackageIntf">
+      <element name="RegisterUnit">
+        <descr>The IDE needs this information at designtime. Called after RegisterPackage for every unit with a register procedure. The IDE automatically creates these calls. You will only call this function if a unit should be registered in a different package or if a unit is only registered on some platforms. Although the unit is registered via RegisterUnit in the initialization section, the RegisterProc is called after the IDE has started and setup its package system.</descr>
+        <short>Registers an unit in the currently registering package.</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>
