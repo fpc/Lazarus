@@ -9,6 +9,19 @@ uses
 
 type
 
+  { TValueListStrings }
+
+  TValueListEditor = class;
+
+  TValueListStrings = class(TStringList)
+  private
+    FOwner: TValueListEditor;
+  public
+    constructor Create(AOwner: TValueListEditor);
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+  end;
+
   { TValueListEditor }
 
   TDisplayOption = (doColumnTitles, doAutoColResize, doKeyColFixed);
@@ -26,7 +39,7 @@ type
   TValueListEditor = class(TCustomStringGrid)
   private
     FTitleCaptions: TStrings;
-    FStrings: TStrings;          // Should be a specialized type here.
+    FStrings: TStrings;
     FKeyOptions: TKeyOptions;
     FDisplayOptions: TDisplayOptions;
     FDropDownRows: Integer;
@@ -193,13 +206,40 @@ procedure Register;
 
 implementation
 
+{ TValueListStrings }
+
+constructor TValueListStrings.Create(AOwner: TValueListEditor);
+begin
+  inherited Create;
+  FOwner := AOwner;
+end;
+
+destructor TValueListStrings.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TValueListStrings.Assign(Source: TPersistent);
+var
+  IsShowingEditor: Boolean;
+begin
+  with FOwner do begin
+    // Don't show editor while changing values. Edited cell would not be changed.
+    IsShowingEditor := goAlwaysShowEditor in Options;
+    Options := Options - [goAlwaysShowEditor];
+    inherited Assign(Source);
+    if IsShowingEditor then
+      Options := Options + [goAlwaysShowEditor];
+  end;
+end;
+
 { TValueListEditor }
 
 constructor TValueListEditor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FStrings := TStringList.Create;       // ToDo: create a specialized type.
-  // NOTE: here there should be a handler for Strings.OnChange event
+  FStrings := TValueListStrings.Create(Self);
+  // NOTE: here should be a handler for Strings.OnChange event
   //       so changing externally any value (or count) would be
   //       reflected in grid
   FTitleCaptions := TStringList.Create;
@@ -424,7 +464,6 @@ begin
     Strings[I]:=Line;
 end;
 
-
 function TValueListEditor.GetEditText(ACol, ARow: Longint): string;
 begin
   Result:= Cells[ACol, ARow];
@@ -440,7 +479,6 @@ begin
   //  not be triggered while the user is typing.
   // The error must be postponed until user moves to other cell.
 end;
-
 
 procedure TValueListEditor.TitlesChanged(Sender: TObject);
 begin
