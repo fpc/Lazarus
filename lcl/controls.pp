@@ -4033,14 +4033,15 @@ end;
 
 initialization
   //DebugLn('controls.pp - initialization');
-  RegisterPropertyToSkip(TControl, 'Ctl3D', 'VCL compatibility property', '');
-  RegisterPropertyToSkip(TControl, 'ParentCtl3D', 'VCL compatibility property', '');
-  RegisterPropertyToSkip(TControl, 'IsControl', 'VCL compatibility property', '');
-  RegisterPropertyToSkip(TControl, 'DesignSize', 'VCL compatibility property', '');
-  RegisterPropertyToSkip(TControl, 'ExplicitLeft', 'VCL compatibility property', '');
-  RegisterPropertyToSkip(TControl, 'ExplicitHeight', 'VCL compatibility property', '');
-  RegisterPropertyToSkip(TControl, 'ExplicitTop', 'VCL compatibility property', '');
-  RegisterPropertyToSkip(TControl, 'ExplicitWidth', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TControl, 'AlignWithMargins', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TControl, 'Ctl3D',            'VCL compatibility property', '');
+  RegisterPropertyToSkip(TControl, 'ParentCtl3D',      'VCL compatibility property', '');
+  RegisterPropertyToSkip(TControl, 'IsControl',        'VCL compatibility property', '');
+  RegisterPropertyToSkip(TControl, 'DesignSize',       'VCL compatibility property', '');
+  RegisterPropertyToSkip(TControl, 'ExplicitLeft',     'VCL compatibility property', '');
+  RegisterPropertyToSkip(TControl, 'ExplicitHeight',   'VCL compatibility property', '');
+  RegisterPropertyToSkip(TControl, 'ExplicitTop',      'VCL compatibility property', '');
+  RegisterPropertyToSkip(TControl, 'ExplicitWidth',    'VCL compatibility property', '');
   Mouse := TMouse.Create;
   DefaultDockManagerClass := TDockTree;
   DragManager := TDragManagerDefault.Create(nil);

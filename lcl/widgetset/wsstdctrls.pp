@@ -710,7 +710,6 @@ const
 begin
   if Done then exit;
   WSRegisterCustomMemo;
-  RegisterPropertyToSkip(TCustomMemo, 'AlignWithMargins', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TCustomMemo, 'BevelInner', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TCustomMemo, 'BevelOuter', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TCustomMemo, 'BevelEdges', 'VCL compatibility property', '');

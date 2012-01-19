@@ -494,6 +494,7 @@ class procedure TCustomLabel.WSRegisterClass;
 begin
   inherited WSRegisterClass;
   RegisterCustomLabel;
+  RegisterPropertyToSkip(TCustomLabel, 'EllipsisPosition', 'VCL compatibility property', '');
 end;
 
  // included by stdctrls.pp

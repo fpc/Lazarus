@@ -368,6 +368,9 @@ class procedure TCustomEdit.WSRegisterClass;
 begin
   inherited WSRegisterClass;
   RegisterCustomEdit;
+  RegisterPropertyToSkip(TCustomEdit, 'BevelInner', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomEdit, 'BevelKind', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomEdit, 'BevelOuter', 'VCL compatibility property', '');
 end;
 
 {------------------------------------------------------------------------------
