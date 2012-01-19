@@ -233,12 +233,19 @@ begin
         lOutputStr := CFSTR('AXFocused');
         CFArrayAppendValue(lInputMutableArray, lOutputStr);
       end;
+      // AXChildren
       lCount := lLazControl.GetAccessibleObject().GetChildAccessibleObjectsCount;
       if lCount > 0 then
       begin
         lOutputStr := CFSTR('AXChildren');
         CFArrayAppendValue(lInputMutableArray, lOutputStr);
       end;
+{      // AXValue
+      if lLazControl.GetAccessibleObject().AccessibleValue <> '' then
+      begin
+        lOutputStr := CFSTR('AXValue');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+      end;}
     end; // kEventAccessibleGetAllAttributeNames
     kEventAccessibleGetNamedAttribute:
     begin
@@ -262,7 +269,7 @@ begin
           // kAXApplicationRole
           // There is nothing in the LCL for this role, it comes automatically in the application hierarchy
           // kAXBrowserRole
-          larTreeView: lAXRole := CFSTR('AXList');//Browser');
+          larTreeView: lAXRole := CFSTR('AXList');//AXBrowser');
           // kAXButtonRole
           larButton, larButtonDropDown: lAXRole := CFSTR('AXButton');
           // kAXCheckBoxRole
@@ -299,6 +306,14 @@ begin
           SizeOf(CFStringRef), @lOutputStr);
         FreeCFString(lOutputStr);
       end
+{      else if lInputPasStr = 'AXValue' then
+      begin
+        if lLazControl.AccessibleValue = '' then Exit;
+        CreateCFString(lLazControl.AccessibleValue, lOutputStr);
+        SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFStringRef,
+          SizeOf(CFStringRef), @lOutputStr);
+        FreeCFString(lOutputStr);
+      end}
       //if (CFStringCompare(lInputStr, kAXFocusedAttribute, 0) = kCFCompareEqualTo) then
       else if lInputPasStr = 'AXFocused' then
       begin
@@ -323,7 +338,8 @@ begin
         for i := 0 to lCount - 1 do
         begin
           lElement := AXUIElementRef(lLazControl.GetAccessibleObject().Handle);
-          CFArrayAppendValue(lArray, lElement);
+          if lElement <> nil then
+            CFArrayAppendValue(lArray, lElement);
         end;
 
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFTypeRef,

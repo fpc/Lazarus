@@ -71,7 +71,7 @@ type
 
   TWSLazAccessibleObject = class(TWSObject)
   public
-    class procedure SetFields(const AObject: TLazAccessibleObject; const ADescription, AName: string; const ARole: TLazAccessibilityRole); virtual;
+    class procedure SetFields(const AObject: TLazAccessibleObject; const ADescription, AValue: string; const ARole: TLazAccessibilityRole); virtual;
     class function CreateHandle(const AObject: TLazAccessibleObject): HWND; virtual;
     class procedure DestroyHandle(const AObject: TLazAccessibleObject); virtual;
     class procedure SendNotification(const AObject: TLazAccessibleObject; ANotification: TLazAccessibilityNotification); virtual;
@@ -166,7 +166,7 @@ implementation
 { TWSLazAccessibleObject }
 
 class procedure TWSLazAccessibleObject.SetFields(
-  const AObject: TLazAccessibleObject; const ADescription, AName: string;
+  const AObject: TLazAccessibleObject; const ADescription, AValue: string;
   const ARole: TLazAccessibilityRole);
 begin
 

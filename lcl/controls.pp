@@ -935,17 +935,19 @@ type
   public
     // Primary information
     AccessibleDescription: TCaption;
-    AccessibleName: TCaption; // currently unused
+    AccessibleValue: TCaption;
     AccessibleRole: TLazAccessibilityRole;
     // Secondary information for notifications
     SelectedText: string;
     //
     OwnerControl: TControl;
     Parent: TLazAccessibleObject;
-    DataObject: TObject; // Availble to be used to connect to an object
+    DataObject: TObject; // Available to be used to connect to an object
     SecondaryHandle: PtrInt; // Available for Widgetsets to use
     constructor Create(AOwner: TControl); virtual;
     destructor Destroy; override;
+    procedure SetAccesibilityFields(const ADescription, AValue: string; const ARole: TLazAccessibilityRole);
+    function FindOwnerWinControl: TWinControl;
     function AddChildAccessibleObject: TLazAccessibleObject; virtual;
     procedure ClearChildAccessibleObjects;
     procedure RemoveChildAccessibleObject(AObject: TLazAccessibleObject);
@@ -1074,7 +1076,7 @@ type
     function CaptureMouseButtonsIsStored: boolean;
     procedure DoActionChange(Sender: TObject);
     function GetAccessibleDescription: TCaption;
-    function GetAccessibleName: TCaption;
+    function GetAccessibleValue: TCaption;
     function GetAccessibleRole: TLazAccessibilityRole;
     function GetAutoSizingAll: Boolean;
     function GetAnchorSide(Kind: TAnchorKind): TAnchorSide;
@@ -1104,7 +1106,7 @@ type
                           Shift: TShiftState);
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
     procedure SetAccessibleDescription(AValue: TCaption);
-    procedure SetAccessibleName(AValue: TCaption);
+    procedure SetAccessibleValue(AValue: TCaption);
     procedure SetAccessibleRole(AValue: TLazAccessibilityRole);
     procedure SetAnchorSide(Kind: TAnchorKind; AValue: TAnchorSide);
     procedure SetBorderSpacing(const AValue: TControlBorderSpacing);
@@ -1384,7 +1386,7 @@ type
                            DropControl: TControl; ControlSide: TAlign): Boolean;
     function Dragging: Boolean;
     // accessibility
-    procedure SetAccesibilityFields(const ADescription, AName: string; const ARole: TLazAccessibilityRole);
+    procedure SetAccesibilityFields(const ADescription, AValue: string; const ARole: TLazAccessibilityRole);
     function GetAccessibleObject: TLazAccessibleObject;
     function CreateAccessibleObject: TLazAccessibleObject; virtual;
     function GetSelectedChildAccessibleObject: TLazAccessibleObject; virtual;
@@ -1514,7 +1516,7 @@ type
   public
     // standard properties, which should be supported by all descendants
     property AccessibleDescription: TCaption read GetAccessibleDescription write SetAccessibleDescription;
-    property AccessibleName: TCaption read GetAccessibleName write SetAccessibleName;
+    property AccessibleValue: TCaption read GetAccessibleValue write SetAccessibleValue;
     property AccessibleRole: TLazAccessibilityRole read GetAccessibleRole write SetAccessibleRole;
     property Action: TBasicAction read GetAction write SetAction;
     property Align: TAlign read FAlign write SetAlign default alNone;

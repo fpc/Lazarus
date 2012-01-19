@@ -51,11 +51,13 @@ type
   { TCarbonWSLazAccessibleObject }
 
   TCarbonWSLazAccessibleObject = class(TWSLazAccessibleObject)
+  private
+    class procedure GetCarbonAXIdentifiers(const AObject: TLazAccessibleObject; out AHIObject: HIObjectRef; out AID64: UInt64);
   public
-    // No need to implement SetFields in Carbon since Carbon requests the info
-    //class procedure SetFields(const AObject: TLazAccessibleObject; const ADescription, AName: string; const ARole: TLazAccessibilityRole); virtual;
+    class procedure SetFields(const AObject: TLazAccessibleObject; const ADescription, AValue: string; const ARole: TLazAccessibilityRole); override;
     class function CreateHandle(const AObject: TLazAccessibleObject): HWND; override;
     class procedure DestroyHandle(const AObject: TLazAccessibleObject); override;
+    class procedure SendNotification(const AObject: TLazAccessibleObject; ANotification: TLazAccessibilityNotification); override;
   end;
 
   { TCarbonWSControl }
@@ -119,15 +121,65 @@ uses
 
 { TCarbonWSLazAccessibleObject }
 
+class procedure TCarbonWSLazAccessibleObject.GetCarbonAXIdentifiers(
+  const AObject: TLazAccessibleObject; out AHIObject: HIObjectRef; out
+  AID64: UInt64);
+var
+  lControlHandle: TCarbonControl;
+  lWinControl: TWinControl;
+begin
+  AHIObject := nil;
+  AID64 := 0;
+  lWinControl := AObject.FindOwnerWinControl();
+  if lWinControl = nil then Exit;
+  // Requesting a handle allocation here might be too soon and crash, so cancel the whole action
+  if not lWinControl.HandleAllocated then Exit;
+
+  if (AObject.OwnerControl <> nil) and (AObject.OwnerControl is TWinControl) then
+  begin
+    lControlHandle := TCarbonControl(TWinControl(AObject.OwnerControl).Handle);
+    AHIObject := lControlHandle.Widget;
+    AID64 := 0;
+  end
+  else
+  begin
+    lControlHandle := TCarbonControl(lWinControl.Handle);
+    // If this is an internal sub-element, then simply represent it with the
+    // memory address of the object
+    AID64 := UInt64(PtrInt(AObject));
+    AHIObject := lControlHandle.Widget;
+  end;
+end;
+
+class procedure TCarbonWSLazAccessibleObject.SetFields(
+  const AObject: TLazAccessibleObject; const ADescription, AValue: string;
+  const ARole: TLazAccessibilityRole);
+var
+  lElement: AXUIElementRef;
+  lHIObject: HIObjectRef;
+  lID64: UInt64;
+  lValueStr: CFStringRef;
+begin
+  GetCarbonAXIdentifiers(AObject, lHIObject, lID64);
+  if lHIObject = nil then Exit;
+
+  CreateCFString(AValue, lValueStr);
+  HIObjectSetAuxiliaryAccessibilityAttribute(lHIObject, lID64, CFStr('AXValue'), lValueStr);
+  FreeCFString(lValueStr);
+end;
+
 class function TCarbonWSLazAccessibleObject.CreateHandle(
   const AObject: TLazAccessibleObject): HWND;
 var
   lElement: AXUIElementRef;
+  lHIObject: HIObjectRef;
+  lID64: UInt64;
 begin
-{  lObject := HIObjectCreate();
-  AObject.SecondaryHandle := PtrInt(lObject); AXUIElementCreateWithHIObjectAndIdentifier}
-  lElement := MacOSAll.AXUIElementCreateSystemWide();
-  Result := HWND(lElement);
+  Result := 0;
+  GetCarbonAXIdentifiers(AObject, lHIObject, lID64);
+  if lHIObject = nil then Exit;
+
+  lElement := AXUIElementCreateWithHIObjectAndIdentifier(lHIObject, lID64);
 end;
 
 class procedure TCarbonWSLazAccessibleObject.DestroyHandle(
@@ -138,6 +190,27 @@ begin
   if AObject.Handle = 0 then Exit;
   lElement := AXUIElementRef(AObject.Handle);
   CFRelease(lElement);
+end;
+
+class procedure TCarbonWSLazAccessibleObject.SendNotification(
+  const AObject: TLazAccessibleObject;
+  ANotification: TLazAccessibilityNotification);
+var
+  lNotification: CFStringRef;
+  lHIObject: HIObjectRef;
+  lID64: UInt64;
+begin
+  GetCarbonAXIdentifiers(AObject, lHIObject, lID64);
+  if lHIObject = nil then Exit;
+
+  case ANotification of
+  lanSelectedTextChanged: lNotification := CFSTR('AXValueChanged');
+  lanValueChanged:        lNotification := CFSTR('AXValueChanged');
+  else
+    Exit;
+  end;
+
+  AXNotificationHIObjectNotify(lNotification, lHIObject, lID64);
 end;
 
 { TCarbonWSWinControl }

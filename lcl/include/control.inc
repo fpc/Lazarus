@@ -64,6 +64,26 @@ begin
   inherited Destroy;
 end;
 
+procedure TLazAccessibleObject.SetAccesibilityFields(const ADescription,
+  AValue: string; const ARole: TLazAccessibilityRole);
+var
+  WidgetsetClass: TWSLazAccessibleObjectClass;
+begin
+  AccessibleDescription := ADescription;
+  AccessibleValue := AValue;
+  AccessibleRole := ARole;
+  WidgetsetClass := TWSLazAccessibleObjectClass(GetWSLazAccessibleObject());
+  WidgetsetClass.SetFields(Self, ADescription, AValue, ARole);
+end;
+
+function TLazAccessibleObject.FindOwnerWinControl: TWinControl;
+begin
+  Result := nil;
+  if (OwnerControl <> nil) and (OwnerControl is TWinControl) then Exit(OwnerControl as TWinControl);
+  if Self.Parent = nil then Exit;
+  Result := Self.Parent.FindOwnerWinControl();
+end;
+
 function TLazAccessibleObject.AddChildAccessibleObject: TLazAccessibleObject;
 begin
   Result := nil;
@@ -1458,19 +1478,19 @@ end;
 procedure TControl.SetAccessibleDescription(AValue: TCaption);
 begin
   if FAccessibleObject.AccessibleDescription=AValue then Exit;
-  SetAccesibilityFields(AValue, FAccessibleObject.AccessibleName, FAccessibleObject.AccessibleRole);
+  SetAccesibilityFields(AValue, FAccessibleObject.AccessibleValue, FAccessibleObject.AccessibleRole);
 end;
 
-procedure TControl.SetAccessibleName(AValue: TCaption);
+procedure TControl.SetAccessibleValue(AValue: TCaption);
 begin
-  if FAccessibleObject.AccessibleName=AValue then Exit;
+  if FAccessibleObject.AccessibleValue=AValue then Exit;
   SetAccesibilityFields(FAccessibleObject.AccessibleDescription, AValue, FAccessibleObject.AccessibleRole);
 end;
 
 procedure TControl.SetAccessibleRole(AValue: TLazAccessibilityRole);
 begin
   if FAccessibleObject.AccessibleRole=AValue then Exit;
-  SetAccesibilityFields(FAccessibleObject.AccessibleDescription, FAccessibleObject.AccessibleName, AValue);
+  SetAccesibilityFields(FAccessibleObject.AccessibleDescription, FAccessibleObject.AccessibleValue, AValue);
 end;
 
 {------------------------------------------------------------------------------
@@ -1523,12 +1543,9 @@ begin
 end;
 
 // accessibility
-procedure TControl.SetAccesibilityFields(const ADescription, AName: string; const ARole: TLazAccessibilityRole);
+procedure TControl.SetAccesibilityFields(const ADescription, AValue: string; const ARole: TLazAccessibilityRole);
 begin
-  FAccessibleObject.AccessibleDescription := ADescription;
-  FAccessibleObject.AccessibleName := AName;
-  FAccessibleObject.AccessibleRole := ARole;
-  //TWSControl(WidgetSetClass).LazAccessibility_SetFields(Self, ADescription, AName, ARole);
+  FAccessibleObject.SetAccesibilityFields(ADescription, AValue, ARole);
 end;
 
 function TControl.GetAccessibleObject: TLazAccessibleObject;
@@ -1717,9 +1734,9 @@ begin
   Result := FAccessibleObject.AccessibleDescription;
 end;
 
-function TControl.GetAccessibleName: TCaption;
+function TControl.GetAccessibleValue: TCaption;
 begin
-  Result := FAccessibleObject.AccessibleName;
+  Result := FAccessibleObject.AccessibleValue;
 end;
 
 function TControl.GetAccessibleRole: TLazAccessibilityRole;
