@@ -454,6 +454,10 @@ class procedure TCustomComboBox.WSRegisterClass;
 begin
   inherited WSRegisterClass;
   RegisterCustomComboBox;
+  RegisterPropertyToSkip(TCustomComboBox, 'BevelInner', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomComboBox, 'BevelKind',  'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomComboBox, 'BevelOuter', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomComboBox, 'ImeMode',    'VCL compatibility property', '');
 end;
 
 procedure TCustomComboBox.CreateParams(var Params: TCreateParams);

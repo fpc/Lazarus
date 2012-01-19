@@ -476,7 +476,7 @@ type
 
   { TCustomListBox }
 
-  TListBoxStyle = (lbStandard, lbOwnerDrawFixed, lbOwnerDrawVariable);
+  TListBoxStyle = (lbStandard, lbOwnerDrawFixed, lbOwnerDrawVariable, lbVirtual);
   TSelectionChangeEvent = procedure(Sender: TObject; User: boolean) of object;
 
   { TCustomListBox }

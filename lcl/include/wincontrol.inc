@@ -6108,6 +6108,9 @@ class procedure TWinControl.WSRegisterClass;
 begin
   inherited WSRegisterClass;
   RegisterWinControl;
+  RegisterPropertyToSkip(TWinControl, 'ParentDoubleBuffered', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TWinControl, 'ImeMode', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TWinControl, 'ImeName', 'VCL compatibility property', '');
 end;
 
 function TWinControl.IsClientHeightStored: boolean;

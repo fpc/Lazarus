@@ -506,6 +506,7 @@ class procedure TCustomRadioGroup.WSRegisterClass;
 begin
   inherited WSRegisterClass;
   RegisterCustomRadioGroup;
+  RegisterPropertyToSkip(TCustomRadioGroup, 'DoubleBuffered', 'VCL compatibility property', '');
 end;
 
 procedure TCustomRadioGroup.SetAutoFill(const AValue: Boolean);

@@ -674,9 +674,6 @@ const
 begin
   if Done then exit;
   WSRegisterCustomComboBox;
-  RegisterPropertyToSkip(TCustomComboBox, 'BevelInner', 'VCL compatibility property', '');
-  RegisterPropertyToSkip(TCustomComboBox, 'BevelKind', 'VCL compatibility property', '');
-  RegisterPropertyToSkip(TCustomComboBox, 'BevelOuter', 'VCL compatibility property', '');
 //  if not WSRegisterCustomComboBox then
 //    RegisterWSComponent(TCustomComboBox, TWSCustomComboBox);
   Done := True;
@@ -713,7 +710,8 @@ begin
   RegisterPropertyToSkip(TCustomMemo, 'BevelInner', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TCustomMemo, 'BevelOuter', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TCustomMemo, 'BevelEdges', 'VCL compatibility property', '');
-  RegisterPropertyToSkip(TCustomMemo, 'Margins', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomMemo, 'Margins',    'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomMemo, 'DoubleBuffered', 'VCL compatibility property', '');
 //  if not WSRegisterCustomMemo then
 //    RegisterWSComponent(TCustomMemo, TWSCustomMemo);
   Done := True;

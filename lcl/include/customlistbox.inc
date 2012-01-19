@@ -352,6 +352,7 @@ class procedure TCustomListBox.WSRegisterClass;
 begin
   inherited WSRegisterClass;
   RegisterCustomListBox;
+  RegisterPropertyToSkip(TCustomListBox, 'DoubleBuffered', 'VCL compatibility property', '');
 end;
 
 {------------------------------------------------------------------------------}

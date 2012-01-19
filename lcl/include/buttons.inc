@@ -247,6 +247,15 @@ class procedure TCustomButton.WSRegisterClass;
 begin
   inherited WSRegisterClass;
   RegisterCustomButton;
+  RegisterPropertyToSkip(TCustomButton, 'DoubleBuffered',     'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomButton, 'ElevationRequired',  'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomButton, 'ImageAlignment',     'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomButton, 'ImageMargins',       'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomButton, 'ImageIndex',         'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomButton, 'DisabledImageIndex', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomButton, 'HotImageIndex',      'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomButton, 'PressedImageIndex',  'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomButton, 'SelectedImageIndex', 'VCL compatibility property', '');
 end;
 
 function TCustomButton.ChildClassAllowed(ChildClass: TClass): boolean;
