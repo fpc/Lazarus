@@ -1137,6 +1137,8 @@ const
 var
   NewItem: TIdentifierListItem;
   ProcNode: TCodeTreeNode;
+  HidddnUnits: String;
+  p: PChar;
 begin
   if not (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) then exit;
 
@@ -1258,16 +1260,15 @@ begin
   AddBaseConstant('False');
 
   // system units
-  AddSystemUnit('System');
-  if (Scanner.CompilerMode in [cmDELPHI,cmOBJFPC])
-  and (Scanner.PascalCompiler=pcFPC) then
-    AddSystemUnit('ObjPas');
-  if (Scanner.CompilerMode=cmMacPas)
-  and (Scanner.PascalCompiler=pcFPC) then
-    AddSystemUnit('MacPas');
-  if (cmsObjectiveC1 in Scanner.CompilerModeSwitches) then begin
-    AddSystemUnit('ObjC');
-    AddSystemUnit('ObjCBase');
+  HidddnUnits:=Scanner.GetHiddenUsedUnits;
+  if HidddnUnits<>'' then begin
+    p:=PChar(HidddnUnits);
+    while p^<>#0 do begin
+      while p^=',' do inc(p);
+      if GetIdentLen(p)>0 then
+        AddSystemUnit(p);
+      while not (p^ in [',',#0]) do inc(p);
+    end;
   end;
 end;
 
