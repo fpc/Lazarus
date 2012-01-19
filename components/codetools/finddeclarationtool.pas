@@ -4217,6 +4217,7 @@ begin
   if (ClassIdentNode<>nil)
   and (not (ClassIdentNode.Desc in [ctnTypeDefinition,ctnGenericType])) then
   begin
+    debugln(['TFindDeclarationTool.FindDefaultAncestorOfClass not a type']);
     exit;
   end;
   BaseClassName:=nil;
@@ -5579,8 +5580,9 @@ begin
     end;
   end;
   //debugln(['TFindDeclarationTool.FindIdentifierInAncestors SearchDefaultAncestor=',SearchDefaultAncestor,' ',CleanPosToStr(ClassNode.StartPos,true)]);
-  if not SearchDefaultAncestor then begin
+  if SearchDefaultAncestor then begin
     if not FindDefaultAncestorOfClass(ClassNode,Params,true) then exit;
+    //debugln(['TFindDeclarationTool.FindIdentifierInAncestors search in default ancestor ',FindContextToString(CreateFindContext(Params.NewCodeTool,Params.NewNode))]);
     Result:=Search(Params.NewCodeTool,Params.NewNode);
   end;
 end;
