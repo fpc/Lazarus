@@ -308,7 +308,6 @@ resourcestring
   lisMenuPackageLinks = 'Package Links ...';
   lisMenuAboutFPC = 'About FPC';
   lisAboutIDE = 'About IDE';
-  lisAboutModifiedItemsInTheIDE = 'About modified items in the IDE';
 
   lisMenuNewProject = 'New Project ...';
   lisMenuNewProjectFromFile = 'New Project from File ...';
