@@ -1312,13 +1312,6 @@ begin
   Result := Integer(DrawFocusRect(DC,Arect));
 end;
 
-
-function TWinCEWidgetSet.Frame(DC: HDC; const ARect: TRect): Integer;
-begin
-//roozbeh....works for now!
-  Result := Integer(DrawFocusRect(DC,Arect));
-end;
-
 {------------------------------------------------------------------------------
   Method:  GetActiveWindow
   Params: none
