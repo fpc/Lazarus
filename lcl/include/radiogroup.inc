@@ -40,7 +40,7 @@ begin
   TStringList(FItems).OnChange := @ItemsChanged;
   FItemIndex  := -1;
   FLastClickedItemIndex := -1;
-  FButtonList := TList.Create;
+  FButtonList := TFPList.Create;
   FColumns  := 1;
   FColumnLayout := clHorizontalThenVertical;
   ChildSizing.Layout:=cclLeftToRightThenTopToBottom;

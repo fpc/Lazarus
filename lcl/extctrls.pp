@@ -597,7 +597,7 @@ type
   TCustomRadioGroup = class(TCustomGroupBox)
   private
     FAutoFill: Boolean;
-    FButtonList: TList; // list of TRadioButton
+    FButtonList: TFPList; // list of TRadioButton
     FColumnLayout: TColumnLayout;
     FColumns: integer;
     FCreatingWnd: boolean;
