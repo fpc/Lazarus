@@ -353,7 +353,8 @@ type
       const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
     procedure GatherUnitnames;
     procedure GatherSourceNames(const Context: TFindContext);
-    procedure GatherContextKeywords(const Context: TFindContext; CleanPos: integer);
+    procedure GatherContextKeywords(const Context: TFindContext;
+      CleanPos: integer; BeautifyCodeOptions: TBeautifyCodeOptions);
     procedure InitCollectIdentifiers(const CursorPos: TCodeXYPosition;
       var IdentifierList: TIdentifierList);
     procedure ParseSourceTillCollectionStart(const CursorPos: TCodeXYPosition;
@@ -1422,18 +1423,20 @@ begin
   end;
 end;
 
-procedure TIdentCompletionTool.GatherContextKeywords(const Context: TFindContext;
-   CleanPos: integer);
+procedure TIdentCompletionTool.GatherContextKeywords(
+  const Context: TFindContext; CleanPos: integer;
+  BeautifyCodeOptions: TBeautifyCodeOptions);
 type
   TPropertySpecifier = (
     psIndex,psRead,psWrite,psStored,psImplements,psDefault,psNoDefault
   );
   TPropertySpecifiers = set of TPropertySpecifier;
 
-  procedure Add(const Keyword: string);
+  procedure Add(Keyword: string);
   var
     NewItem: TIdentifierListItem;
   begin
+    KeyWord:=BeautifyCodeOptions.BeautifyKeyWord(Keyword);
     NewItem:=TIdentifierListItem.Create(
         icompExact,false,0,
         CurrentIdentifierList.CreateIdentifier(Keyword),
@@ -1503,12 +1506,31 @@ type
     until (CleanPos<CurPos.StartPos) or (CurPos.EndPos>SrcLen);
   end;
 
+  procedure AddMethodSpecifiers;
+  var
+    i: Integer;
+  begin
+    for i:=0 to IsKeyWordMethodSpecifier.Count-1 do
+      Add(IsKeyWordMethodSpecifier.GetItem(i).KeyWord+';');
+  end;
+
 var
   Node: TCodeTreeNode;
   SubNode: TCodeTreeNode;
+  NodeInFront: TCodeTreeNode;
+  p: Integer;
 begin
   Node:=Context.Node;
   //debugln(['TIdentCompletionTool.GatherContextKeywords ',Node.DescAsString]);
+  NodeInFront:=Node;
+  repeat
+    NodeInFront:=NodeInFront.FirstChild;
+    while (NodeInFront<>nil) and (NodeInFront.EndPos<=CleanPos)
+    and (NodeInFront.NextBrother<>nil)
+    and (NodeInFront.NextBrother.StartPos<=CleanPos) do
+      NodeInFront:=NodeInFront.NextBrother;
+  until (NodeInFront=nil) or (NodeInFront.FirstChild=nil);
+  //debugln(['TIdentCompletionTool.GatherContextKeywords ',Node.DescAsString,' ',NodeInFront.DescAsString]);
 
   case Node.Desc of
   ctnClass,ctnObject,ctnRecordType,ctnObjCCategory,ctnObjCClass,
@@ -1536,6 +1558,10 @@ begin
         if SubNode.Desc=ctnProperty then begin
           CheckProperty(SubNode);
         end;
+      end;
+      if NodeInFront<>nil then begin
+        if NodeInFront.Desc=ctnProcedure then
+          AddMethodSpecifiers;
       end;
     end;
 
@@ -1570,6 +1596,15 @@ begin
       Add('const');
       Add('procedure');
       Add('function');
+    end;
+
+  ctnProcedureHead:
+    begin
+      MoveCursorBehindProcName(Node);
+      p:=CurPos.StartPos;
+      while (p>=1) and (Src[p] in [' ',#9]) do dec(p);
+      if CleanPos>=p then
+        AddMethodSpecifiers;
     end;
 
   ctnVarDefinition:
@@ -2141,7 +2176,7 @@ begin
         FindContextClassAndAncestors(IdentStartXY, FICTClassAndAncestors);
 
       CursorContext:=CreateFindContext(Self,CursorNode);
-      GatherContextKeywords(CursorContext,IdentStartPos);
+      GatherContextKeywords(CursorContext,IdentStartPos,BeautifyCodeOptions);
 
       // search and gather identifiers in context
       if (GatherContext.Tool<>nil) and (GatherContext.Node<>nil) then begin
