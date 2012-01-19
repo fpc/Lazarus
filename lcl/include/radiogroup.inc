@@ -498,8 +498,6 @@ begin
     RadioBtn := TRadioButton(FButtonList[i]);
     RadioBtn.TabStop := RadioBtn.Checked;
   end;
-  if (FItemIndex=-1) and (Items.Count>0) then
-    TRadioButton(FButtonList[0]).TabStop := True;
 end;
 
 class procedure TCustomRadioGroup.WSRegisterClass;
