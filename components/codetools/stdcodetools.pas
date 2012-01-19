@@ -2177,7 +2177,6 @@ var
     out IdentContext: TFindContext): boolean;
   var
     Params: TFindDeclarationParams;
-    IdentifierNotPublished: Boolean;
     IsPublished: Boolean;
     CurContext: TFindContext;
   begin
@@ -2205,7 +2204,6 @@ var
           ' Flags=['+FindDeclarationFlagsAsString(Params.Flags)+']'
           );}
         if ClassContext.Tool.FindIdentifierInContext(Params) then begin
-          Result:=true;
           IdentContext:=CleanFindContext;
           repeat
             CurContext:=CreateFindContext(Params);
@@ -2250,22 +2248,23 @@ var
       Params.Free;
     end;
 
-    IdentifierNotPublished:=not IsPublished;
-
-    if (IdentContext.Node=nil) or IdentifierNotPublished then begin
+    if (IdentContext.Node<>nil) and IsPublished then begin
+      Result:=true;
+    end else begin
       // no proper node found
       // -> search in DefineProperties
       if SearchInDefinePropertiesToo then begin
-        //debugln('FindLFMIdentifier A SearchAlsoInDefineProperties=',dbgs(SearchInDefinePropertiesToo));
+        //debugln('FindLFMIdentifier A SearchAlsoInDefineProperties=',dbgs(SearchInDefinePropertiesToo),' Identifier=',IdentName);
         if FindNonPublishedDefineProperty(LFMNode,DefaultErrorPosition,
           IdentName,ClassContext)
         then begin
+          //debugln(['FindLFMIdentifier "',IdentName,'" is defined via DefineProperties']);
           Result:=true;
         end;
       end;
     end;
     if (not Result) and ErrorOnNotFound then begin
-      if (IdentContext.Node<>nil) and IdentifierNotPublished then begin
+      if (IdentContext.Node<>nil) and (not IsPublished) then begin
         LFMTree.AddError(lfmeIdentifierNotPublished,LFMNode,
                          'identifier '+IdentName+' is not published in class '
                          +'"'+ClassContext.Tool.ExtractClassName(ClassContext.Node,false,true)+'"',
@@ -2670,7 +2669,6 @@ begin
   finally
     DeactivateGlobalWriteLock;
   end;
-
   Result:=LFMTree.FirstError=nil;
 end;
 
