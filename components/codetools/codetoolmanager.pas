@@ -671,7 +671,7 @@ type
     function CheckLFM(UnitCode, LFMBuf: TCodeBuffer;
           out LFMTree: TLFMTree;
           RootMustBeClassInUnit, RootMustBeClassInIntf,
-          ObjectsMustExists: boolean): boolean;
+          ObjectsMustExist: boolean): boolean;
     function FindNextResourceFile(Code: TCodeBuffer;
           var LinkIndex: integer): TCodeBuffer;
     function AddLazarusResourceHeaderComment(Code: TCodeBuffer;
@@ -4709,7 +4709,7 @@ end;
 
 function TCodeToolManager.CheckLFM(UnitCode, LFMBuf: TCodeBuffer;
   out LFMTree: TLFMTree; RootMustBeClassInUnit, RootMustBeClassInIntf,
-  ObjectsMustExists: boolean): boolean;
+  ObjectsMustExist: boolean): boolean;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -4718,7 +4718,7 @@ begin
   if not InitCurCodeTool(UnitCode) then exit;
   try
     Result:=FCurCodeTool.CheckLFM(LFMBuf,LFMTree,OnFindDefinePropertyForContext,
-                 RootMustBeClassInUnit,RootMustBeClassInIntf,ObjectsMustExists);
+                 RootMustBeClassInUnit,RootMustBeClassInIntf,ObjectsMustExist);
   except
     on e: Exception do HandleException(e);
   end;

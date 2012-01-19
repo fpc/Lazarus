@@ -12767,7 +12767,7 @@ begin
   try
     LFMChecker.RootMustBeClassInUnit:=true;
     LFMChecker.RootMustBeClassInIntf:=true;
-    LFMChecker.ObjectsMustExists:=true;
+    LFMChecker.ObjectsMustExist:=true;
     if LFMChecker.Repair=mrOk then begin
       if not Quiet then begin
         IDEMessageDialog(lisLFMIsOk,

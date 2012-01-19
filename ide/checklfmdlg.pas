@@ -59,7 +59,7 @@ type
     fLFMTree: TLFMTree;
     fRootMustBeClassInUnit: boolean;
     fRootMustBeClassInIntf: boolean;
-    fObjectsMustExists: boolean;
+    fObjectsMustExist: boolean;
     // References to controls in UI:
     fLFMSynEdit: TSynEdit;
     fErrorsListBox: TListBox;
@@ -92,8 +92,8 @@ type
                                            write fRootMustBeClassInUnit;
     property RootMustBeClassInIntf: boolean read fRootMustBeClassInIntf
                                            write fRootMustBeClassInIntf;
-    property ObjectsMustExists: boolean read fObjectsMustExists
-                                       write fObjectsMustExists;
+    property ObjectsMustExist: boolean read fObjectsMustExist
+                                       write fObjectsMustExist;
   end;
 
   { TCheckLFMDialog }
@@ -131,11 +131,11 @@ function QuickCheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
 function RepairLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
   const OnOutput: TOnAddFilteredLine;
   RootMustBeClassInUnit, RootMustBeClassInIntf,
-  ObjectsMustExists: boolean): TModalResult;
+  ObjectsMustExist: boolean): TModalResult;
 // Not use anywhere.
 {function RepairLFMText(PascalBuffer: TCodeBuffer; var LFMText: string;
   const OnOutput: TOnAddFilteredLine;
-  RootMustBeClassInIntf, ObjectsMustExists: boolean): TModalResult;
+  RootMustBeClassInIntf, ObjectsMustExist: boolean): TModalResult;
 }
 // dangling events
 function RemoveDanglingEvents(RootComponent: TComponent;
@@ -255,7 +255,7 @@ end;
 function RepairLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
   const OnOutput: TOnAddFilteredLine;
   RootMustBeClassInUnit, RootMustBeClassInIntf,
-  ObjectsMustExists: boolean): TModalResult;
+  ObjectsMustExist: boolean): TModalResult;
 var
   LFMChecker: TLFMChecker;
 begin
@@ -263,7 +263,7 @@ begin
   try
     LFMChecker.RootMustBeClassInUnit:=RootMustBeClassInUnit;
     LFMChecker.RootMustBeClassInIntf:=RootMustBeClassInIntf;
-    LFMChecker.ObjectsMustExists:=ObjectsMustExists;
+    LFMChecker.ObjectsMustExist:=ObjectsMustExist;
     Result:=LFMChecker.Repair;
   finally
     LFMChecker.Free;
@@ -273,7 +273,7 @@ end;
 {
 function RepairLFMText(PascalBuffer: TCodeBuffer; var LFMText: string;
   const OnOutput: TOnAddFilteredLine;
-  RootMustBeClassInIntf, ObjectsMustExists: boolean): TModalResult;
+  RootMustBeClassInIntf, ObjectsMustExist: boolean): TModalResult;
 var
   LFMBuf: TCodeBuffer;
 begin
@@ -282,7 +282,7 @@ begin
   try
     LFMBuf.Source:=LFMText;
     Result:=RepairLFMBuffer(PascalBuffer,LFMBuf,OnOutput,RootMustBeClassInIntf,
-                            ObjectsMustExists);
+                            ObjectsMustExist);
     LFMText:=LFMBuf.Source;
   finally
     CodeToolBoss.ReleaseTempFile(LFMBuf);
@@ -386,7 +386,7 @@ begin
   fLFMBuffer:=ALFMBuffer;
   fOnOutput:=AOnOutput;
   fRootMustBeClassInIntf:=false;
-  fObjectsMustExists:=false;
+  fObjectsMustExist:=false;
 end;
 
 destructor TLFMChecker.Destroy;
@@ -421,7 +421,7 @@ begin
   Result:=mrCancel;
   if not CheckUnit then exit;
   if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
-               fRootMustBeClassInUnit,fRootMustBeClassInIntf,fObjectsMustExists)
+               fRootMustBeClassInUnit,fRootMustBeClassInIntf,fObjectsMustExist)
   then begin
     Result:=mrOk;
     exit;
@@ -520,7 +520,7 @@ begin
 
     // check LFM again
     if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
-               fRootMustBeClassInUnit,fRootMustBeClassInIntf,fObjectsMustExists)
+               fRootMustBeClassInUnit,fRootMustBeClassInIntf,fObjectsMustExist)
     then begin
       Result:=mrOk;
     end else begin

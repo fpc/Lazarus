@@ -615,7 +615,7 @@ begin
       LfmFixer.UsedUnitsTool:=fUsedUnitsTool;
       LfmFixer.RootMustBeClassInUnit:=true;
       LfmFixer.RootMustBeClassInIntf:=true;
-      LfmFixer.ObjectsMustExists:=true;
+      LfmFixer.ObjectsMustExist:=true;
       if LfmFixer.Repair<>mrOk then begin
         LazarusIDE.DoJumpToCompilerMessage(-1,true);
         exit(mrAbort);

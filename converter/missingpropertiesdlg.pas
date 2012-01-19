@@ -483,7 +483,7 @@ begin
   LoopCount:=0;
   repeat
     if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
-        fRootMustBeClassInUnit,fRootMustBeClassInIntf,fObjectsMustExists) then
+        fRootMustBeClassInUnit,fRootMustBeClassInIntf,fObjectsMustExist) then
       Result:=mrOk
     else                     // Rename/remove properties and types interactively.
       Result:=ShowRepairLFMWizard;  // Can return mrRetry.
