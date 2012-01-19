@@ -2102,6 +2102,7 @@ var
   function FindNonPublishedDefineProperty(LFMNode: TLFMTreeNode;
     DefaultErrorPosition: integer;
     const IdentName: string; const ClassContext: TFindContext): boolean;
+  // properties can be defined via DefineProperties
   var
     PropertyNode: TLFMPropertyNode;
     ObjectNode: TLFMObjectNode;
@@ -2172,12 +2173,13 @@ var
   function FindLFMIdentifier(LFMNode: TLFMTreeNode;
     DefaultErrorPosition: integer;
     const IdentName: string; const ClassContext: TFindContext;
-    SearchAlsoInDefineProperties, ErrorOnNotFound: boolean;
+    SearchInDefinePropertiesToo, ErrorOnNotFound: boolean;
     out IdentContext: TFindContext): boolean;
   var
     Params: TFindDeclarationParams;
     IdentifierNotPublished: Boolean;
     IsPublished: Boolean;
+    CurContext: TFindContext;
   begin
     Result:=false;
     IdentContext:=CleanFindContext;
@@ -2204,37 +2206,41 @@ var
           );}
         if ClassContext.Tool.FindIdentifierInContext(Params) then begin
           Result:=true;
+          IdentContext:=CleanFindContext;
           repeat
-            IdentContext:=CreateFindContext(Params);
+            CurContext:=CreateFindContext(Params);
             if (not IsPublished)
-            and (IdentContext.Node.HasParentOfType(ctnClassPublished)) then
+            and (CurContext.Node.HasParentOfType(ctnClassPublished)) then
               IsPublished:=true;
-            
-            if (IdentContext.Node<>nil)
-            and (IdentContext.Node.Desc=ctnProperty)
-            and (IdentContext.Tool.PropNodeIsTypeLess(IdentContext.Node)) then
+
+            if (IdentContext.Node=nil) then begin
+              if (LFMNode.TheType<>lfmnProperty)
+              or ((CurContext.Node.Desc=ctnProperty)
+                  and (not CurContext.Tool.PropNodeIsTypeLess(CurContext.Node)))
+              then
+                IdentContext:=CurContext;
+            end;
+
+            if (IdentContext.Node<>nil) and IsPublished then break;
+
+            // search further
+            Params.Clear;
+            Params.Flags:=[fdfSearchInAncestors,
+                           fdfIgnoreMissingParams,
+                           fdfIgnoreCurContextNode,
+                           fdfIgnoreOverloadedProcs];
+            Params.ContextNode:=CurContext.Node.Parent;
+            while (Params.ContextNode<>nil)
+            and (not (Params.ContextNode.Desc in AllClasses)) do
+              Params.ContextNode:=Params.ContextNode.Parent;
+            if Params.ContextNode=nil then break;
+            Params.SetIdentifier(ClassContext.Tool,PChar(Pointer(IdentName)),nil);
+            if not CurContext.Tool.FindIdentifierInContext(Params) then
             begin
-              // this is a typeless property -> search further
-              Params.Clear;
-              Params.Flags:=[fdfSearchInAncestors,
-                             fdfIgnoreMissingParams,
-                             fdfIgnoreCurContextNode,
-                             fdfIgnoreOverloadedProcs];
-              Params.ContextNode:=IdentContext.Node.Parent;
-              while (Params.ContextNode<>nil)
-              and (not (Params.ContextNode.Desc in AllClasses)) do
-                Params.ContextNode:=Params.ContextNode.Parent;
-              if Params.ContextNode<>nil then begin
-                Params.SetIdentifier(ClassContext.Tool,PChar(Pointer(IdentName)),nil);
-                if not IdentContext.Tool.FindIdentifierInContext(Params) then
-                begin
-                  DebugLn(['FindLFMIdentifier ERROR ancestor of property not found: ',FindContextToString(IdentContext),' IdentName=',IdentName]);
-                  break;
-                end;
-              end;
-            end else
+              DebugLn(['FindLFMIdentifier ERROR ancestor of '+LFMNode.GetPath+' not found: ',FindContextToString(IdentContext),' IdentName=',IdentName]);
               break;
-          until false;
+            end;
+          until Params.NewNode=nil;
         end;
       except
         // ignore search/parse errors
@@ -2249,8 +2255,8 @@ var
     if (IdentContext.Node=nil) or IdentifierNotPublished then begin
       // no proper node found
       // -> search in DefineProperties
-      if SearchAlsoInDefineProperties then begin
-        //debugln('FindLFMIdentifier A SearchAlsoInDefineProperties=',dbgs(SearchAlsoInDefineProperties));
+      if SearchInDefinePropertiesToo then begin
+        //debugln('FindLFMIdentifier A SearchAlsoInDefineProperties=',dbgs(SearchInDefinePropertiesToo));
         if FindNonPublishedDefineProperty(LFMNode,DefaultErrorPosition,
           IdentName,ClassContext)
         then begin
