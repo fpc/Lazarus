@@ -3652,7 +3652,7 @@ begin
   ReadHintModifier;
   if CurPos.Flag=cafSemicolon then begin
     if (CurNode.Parent.Desc=ctnConstSection)
-    and (CurNode.Parent.Desc in AllCodeSections) then begin
+    and (CurNode.Parent.Parent.Desc in AllCodeSections) then begin
       repeat
         ReadNextAtom;
         if UpAtomIs('PUBLIC') then begin
