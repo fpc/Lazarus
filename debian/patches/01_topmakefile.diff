@@ -21,25 +21,22 @@ diff -urNad lazarus-0.9.26.1-0~/Makefile.fpc lazarus-0.9.26.1-0/Makefile.fpc
 -	$(MAKE) -C ide ide
 -
 -#-----------------------------------------------------------------------------
- idepkg:
- 	$(MAKE) -C ide idepkg
- 
-@@ -82,8 +78,7 @@
+ lazutils: 
+ 	$(MAKE) -C packager/registration
+ 	$(MAKE) -C components/lazutils
+@@ -87,13 +83,12 @@
  
  #-----------------------------------------------------------------------------
  tools: lcl
 -	$(MAKE) -C tools
--	
-+
+ 	
  #-----------------------------------------------------------------------------
  examples: lcl components
  
-@@ -88,7 +84,7 @@ tools: lcl
- examples: lcl components
- 
  #-----------------------------------------------------------------------------
--all: packager/registration lcl ideintf components ide starter lazbuilder
-+all: packager/registration lcl ideintf components bigidecomponents bigide starter lazbuilder tools examples
+-all: packager/registration lazutils lcl ideintf components ide starter lazbuilder
++all: packager/registration lazutils lcl ideintf bigidecomponents bigide starter lazbuilder tools examples
  
  #-----------------------------------------------------------------------------
  cleannogui:
+
