@@ -13,9 +13,9 @@ object IDEInfoDialog: TIDEInfoDialog
     Height = 397
     Top = 0
     Width = 735
-    ActivePage = ModifiedTabSheet
+    ActivePage = HelpTabSheet
     Align = alClient
-    TabIndex = 1
+    TabIndex = 2
     TabOrder = 0
     object GeneralTabSheet: TTabSheet
       Caption = 'General'
@@ -47,6 +47,22 @@ object IDEInfoDialog: TIDEInfoDialog
         Align = alClient
         Lines.Strings = (
           'ModifiedMemo'
+        )
+        TabOrder = 0
+      end
+    end
+    object HelpTabSheet: TTabSheet
+      Caption = 'Help'
+      ClientHeight = 361
+      ClientWidth = 727
+      object HelpMemo: TMemo
+        Left = 0
+        Height = 361
+        Top = 0
+        Width = 727
+        Align = alClient
+        Lines.Strings = (
+          'HelpMemo'
         )
         TabOrder = 0
       end

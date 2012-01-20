@@ -31,8 +31,9 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ComCtrls, DefineTemplates, EnvironmentOpts, AboutFrm, LazConf,
-  LazarusIDEStrConsts, Project, SourceEditor, PackageSystem, PackageDefs;
+  ComCtrls, LCLProc, LazHelpHTML, LazHelpIntf, DefineTemplates, EnvironmentOpts,
+  AboutFrm, LazConf, IDEHelpIntf, LazarusIDEStrConsts, Project, SourceEditor,
+  PackageSystem, PackageDefs;
 
 type
 
@@ -40,10 +41,12 @@ type
 
   TIDEInfoDialog = class(TForm)
     GeneralMemo: TMemo;
+    HelpMemo: TMemo;
     ModifiedMemo: TMemo;
     PageControl1: TPageControl;
     GeneralTabSheet: TTabSheet;
     ModifiedTabSheet: TTabSheet;
+    HelpTabSheet: TTabSheet;
     procedure FormCreate(Sender: TObject);
   private
     // general
@@ -54,9 +57,13 @@ type
     // modified
     procedure GatherModifiedProject(AProject: TProject; sl: TStrings);
     procedure GatherModifiedPackages(sl: TStrings);
+    // help
+    procedure GatherHelpDB(sl: TStrings);
+    procedure GatherFPCMessagesHelpDB(sl: TStrings);
   public
     procedure UpdateGeneralMemo;
     procedure UpdateModifiedMemo;
+    procedure UpdateHelpMemo;
   end;
 
 var
@@ -89,6 +96,7 @@ begin
 
   UpdateGeneralMemo;
   UpdateModifiedMemo;
+  UpdateHelpMemo;
   PageControl1.ActivePage:=GeneralTabSheet;
 end;
 
@@ -211,6 +219,69 @@ begin
     sl.Add('');
 end;
 
+procedure TIDEInfoDialog.GatherHelpDB(sl: TStrings);
+begin
+  // LazarusHelp
+
+end;
+
+procedure TIDEInfoDialog.GatherFPCMessagesHelpDB(sl: TStrings);
+var
+  HTMLHelp: THTMLHelpDatabase;
+  i: Integer;
+  DBItem: THelpDBItem;
+  DBISourceFile: THelpDBISourceFile;
+  DBISourceDirectory: THelpDBISourceDirectory;
+  DBISourceDirectories: THelpDBISourceDirectories;
+  DBIRegExprMessage: THelpDBIRegExprMessage;
+begin
+  sl.Add(DbgSName(FPCMessagesHelpDB));
+  sl.Add('ID='+FPCMessagesHelpDB.ID);
+  sl.Add('LocalizedName='+dbgstr(FPCMessagesHelpDB.GetLocalizedName));
+  sl.Add('BasePathObject='+DbgSName(FPCMessagesHelpDB.BasePathObject));
+  sl.Add('Registered='+dbgs(FPCMessagesHelpDB.Registered));
+  if FPCMessagesHelpDB.SupportedMimeTypes<>nil then begin
+    sl.Add('SupportedMimeTypes: '+IntToStr(FPCMessagesHelpDB.SupportedMimeTypes.Count));
+    sl.AddStrings(FPCMessagesHelpDB.SupportedMimeTypes);
+    sl.Add('');
+  end;
+  if FPCMessagesHelpDB is THTMLHelpDatabase then begin
+    HTMLHelp:=THTMLHelpDatabase(FPCMessagesHelpDB);
+    sl.Add('BaseURL='+dbgstr(HTMLHelp.BaseURL));
+    if HTMLHelp.BaseURL='' then
+      sl.Add('DefaultBaseURL='+dbgstr(HTMLHelp.DefaultBaseURL));
+    sl.Add('KeywordPrefix='+dbgstr(HTMLHelp.KeywordPrefix));
+  end;
+
+  // registered items
+  sl.Add('Items:');
+  for i:=0 to FPCMessagesHelpDB.RegisteredItemCount-1 do begin
+    DBItem:=FPCMessagesHelpDB.GetRegisteredItem(i);
+    sl.Add(IntToStr(i+1)+'/'+IntToStr(FPCMessagesHelpDB.RegisteredItemCount)+': '+DbgSName(DBItem));
+    if DBItem is THelpDBISourceFile then begin
+      DBISourceFile:=THelpDBISourceFile(DBItem);
+      sl.Add('  Filename='+DBISourceFile.Filename);
+      sl.Add('  FullFilename='+DBISourceFile.GetFullFilename);
+      sl.Add('  BasePath='+DBISourceFile.GetBasePath);
+      if DBISourceFile is THelpDBISourceDirectory then begin
+        DBISourceDirectory:=THelpDBISourceDirectory(DBISourceFile);
+        sl.Add('  FileMask='+DBISourceDirectory.FileMask);
+        sl.Add('  WithSubDirectories='+dbgs(DBISourceDirectory.WithSubDirectories));
+        if DBISourceDirectory is THelpDBISourceDirectories then begin
+          DBISourceDirectories:=THelpDBISourceDirectories(DBISourceDirectory);
+          sl.Add('  BaseDirectory='+DBISourceDirectories.BaseDirectory);
+        end;
+      end;
+    end else if DBItem is THelpDBIClass then begin
+      sl.Add('  Class='+DbgSName(THelpDBIClass(DBItem)));
+    end else if DBItem is THelpDBIRegExprMessage then begin
+      DBIRegExprMessage:=THelpDBIRegExprMessage(DBItem);
+      sl.Add('  Expression='+DBIRegExprMessage.Expression);
+      sl.Add('  ModifierStr='+DBIRegExprMessage.ModifierStr);
+    end;
+  end;
+end;
+
 procedure TIDEInfoDialog.UpdateGeneralMemo;
 var
   sl: TStringList;
@@ -236,6 +307,20 @@ begin
     GatherModifiedProject(Project1,sl);
     GatherModifiedPackages(sl);
     ModifiedMemo.Lines.Assign(sl);
+  finally
+    sl.Free;
+  end;
+end;
+
+procedure TIDEInfoDialog.UpdateHelpMemo;
+var
+  sl: TStringList;
+begin
+  sl:=TStringList.Create;
+  try
+    GatherHelpDB(sl);
+    GatherFPCMessagesHelpDB(sl);
+    HelpMemo.Lines.Assign(sl);
   finally
     sl.Free;
   end;
