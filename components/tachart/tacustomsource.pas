@@ -79,6 +79,7 @@ type
     FText: String;
     FValue: Double;
   end;
+  PChartValueText = ^TChartValueText;
 
   TChartValueTextArray = array of TChartValueText;
 
@@ -133,6 +134,9 @@ type
   strict private
     FBroadcaster: TBroadcaster;
     FUpdateCount: Integer;
+
+    procedure SortValuesInRange(
+      var AValues: TChartValueTextArray; AStart, AEnd: Integer);
   strict protected
     FExtent: TDoubleRect;
     FExtentIsValid: Boolean;
@@ -206,6 +210,23 @@ implementation
 
 uses
   Math, StrUtils, SysUtils, TAMath;
+
+function CompareChartValueTextPtr(AItem1, AItem2: Pointer): Integer;
+begin
+  Result := CompareValue(
+    PChartValueText(AItem1)^.FValue,
+    PChartValueText(AItem2)^.FValue);
+end;
+
+function IsValueTextsSorted(
+  const AValues: TChartValueTextArray; AStart, AEnd: Integer): Boolean;
+var
+  i: Integer;
+begin
+  for i := AStart to AEnd - 1 do
+    if AValues[i].FValue > AValues[i + 1].FValue then exit(false);
+  Result := true;
+end;
 
 procedure SetDataItemDefaults(var AItem: TChartDataItem);
 var
@@ -684,6 +705,41 @@ begin
     FBroadcaster.Broadcast(Self);
 end;
 
+procedure TCustomChartSource.SortValuesInRange(
+  var AValues: TChartValueTextArray; AStart, AEnd: Integer);
+var
+  i, j, next: Integer;
+  lst: TFPList;
+  p: PChartValueText;
+  tmp: TChartValueText;
+begin
+  lst := TFPList.Create;
+  try
+    lst.Count := AEnd - AStart + 1;
+    for i := AStart to AEnd do
+      lst[i - AStart] := @AValues[i];
+    lst.Sort(@CompareChartValueTextPtr);
+    for i := AStart to AEnd do begin
+      if lst[i - AStart] = nil then continue;
+      j := i;
+      tmp := AValues[j];
+      while true do begin
+        p := PChartValueText(lst[j - AStart]);
+        lst[j - AStart] := nil;
+        {$HINTS OFF} // Work around the fpc bug #19582.
+        next := (PtrUInt(p) - PtrUInt(@AValues[0])) div SizeOf(p^);
+        {$HINTS ON}
+        if next = i then break;
+        AValues[j] := p^;
+        j := next;
+      end;
+      AValues[j] := tmp;
+    end;
+  finally
+    lst.Free;
+  end;
+end;
+
 procedure TCustomChartSource.ValuesInRange(
   AParams: TValuesInRangeParams; var AValues: TChartValueTextArray);
 
@@ -695,16 +751,31 @@ procedure TCustomChartSource.ValuesInRange(
   end;
 
 var
-  i, vi, pvi, cnt, start: Integer;
+  prevImagePos: Integer = MaxInt;
+
+  function IsTooClose(AValue: Double): Boolean;
+  var
+    imagePos: Integer;
+  begin
+    with AParams do
+      if aipUseMinLength in FIntervals.Options then begin
+        imagePos := ToImage(AValue);
+        Result := Abs(imagePos - prevImagePos) < FScale(FIntervals.MinLength);
+      end;
+    if not Result then
+      prevImagePos := imagePos;
+  end;
+
+var
+  i, j, cnt, start: Integer;
   v: Double;
   lo, hi: TChartValueText;
 begin
   // Select all values in a given range, plus lower and upper bound values.
-  // Proceed through data source in a single pass. Do not assume sorted source.
+  // Proceed through the (possibly unsorted) data source in a single pass.
   start := Length(AValues);
   SetLength(AValues, start + Count + 2);
   cnt := start;
-  pvi := MaxInt;
   lo.FValue := NegInfinity;
   hi.FValue := SafeInfinity;
   AValues[start].FValue := SafeNan;
@@ -721,13 +792,8 @@ begin
         Put(hi, v, i);
     end
     else begin
-      with AParams do
-        if aipUseMinLength in FIntervals.Options then begin
-          // TODO: This check may be unsifficient for unsorted values.
-          vi := ToImage(v);
-          if Abs(vi - pvi) < FScale(FIntervals.MinLength) then continue;
-          pvi := vi;
-        end;
+      if (aipUseMinLength in AParams.FIntervals.Options) and IsTooClose(v) then
+        continue;
       if not IsInfinite(lo.FValue) and (cnt = start) then
         cnt += 1;
       Put(AValues[cnt], v, i);
@@ -752,6 +818,20 @@ begin
     cnt += 1;
   end;
   SetLength(AValues, cnt);
+
+  if IsSorted or IsValueTextsSorted(AValues, start, cnt - 1) then exit;
+  SortValuesInRange(AValues, start, cnt - 1);
+  if aipUseMinLength in AParams.FIntervals.Options then begin
+    prevImagePos := MaxInt;
+    j := start;
+    for i := start to cnt - 1 do begin
+      v := AValues[i].FValue;
+      if InRange(v, AParams.FMin, AParams.FMax) and IsTooClose(v) then continue;
+      AValues[j] := AValues[i];
+      j += 1;
+    end;
+    SetLength(AValues, j);
+  end;
 end;
 
 function TCustomChartSource.ValuesTotal: Double;

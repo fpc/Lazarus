@@ -492,6 +492,13 @@ begin
     Check([10, 20]);
     src.Add(8, 11);
     Check([8, 10, 20]);
+    p.FMin := 1;
+    p.FMax := 20;
+    p.FIntervals.Options := p.FIntervals.Options - [aipUseMinLength];
+    Check([8, 10, 20, 30]);
+    p.FIntervals.Options := p.FIntervals.Options + [aipUseMinLength];
+    p.FMax := 50;
+    Check([8, 30, 50, 60]);
   finally
     p.FIntervals.Free;
     src.Free;
