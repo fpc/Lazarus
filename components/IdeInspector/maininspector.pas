@@ -446,14 +446,17 @@ begin
 end;
 
 procedure TIdeInspectForm.btnRemoveSelectedClick(Sender: TObject);
+var
+  CurSel: TTreeNode;
 begin
-  if TreeView1.Selected = nil then
+  CurSel:= TreeView1.Selected;
+  if CurSel = nil then
     exit;
-  if TreeView1.Selected.Parent <> nil then
+  if CurSel.Parent <> nil then
     SetSelected(TComponent(TreeView1.Selected.Parent.Data))
   else
     SetSelected(nil);
-  TreeView1.Selected.Delete;
+  CurSel.Delete;
   UpdateTree;
 end;
 
