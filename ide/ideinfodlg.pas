@@ -49,6 +49,7 @@ type
     HelpTabSheet: TTabSheet;
     procedure FormCreate(Sender: TObject);
   private
+    procedure GatherHelpDB(Prefix: string; const HelpDB: THelpDatabase; const sl: TStrings);
     // general
     procedure GatherIDEVersion(sl: TStrings);
     procedure GatherParameters(sl: TStrings);
@@ -58,8 +59,7 @@ type
     procedure GatherModifiedProject(AProject: TProject; sl: TStrings);
     procedure GatherModifiedPackages(sl: TStrings);
     // help
-    procedure GatherHelpDB(sl: TStrings);
-    procedure GatherFPCMessagesHelpDB(sl: TStrings);
+    procedure GatherHelpDatabases(sl: TStrings);
   public
     procedure UpdateGeneralMemo;
     procedure UpdateModifiedMemo;
@@ -98,6 +98,68 @@ begin
   UpdateModifiedMemo;
   UpdateHelpMemo;
   PageControl1.ActivePage:=GeneralTabSheet;
+end;
+
+procedure TIDEInfoDialog.GatherHelpDB(Prefix: string;
+  const HelpDB: THelpDatabase; const sl: TStrings);
+var
+  DBIRegExprMessage: THelpDBIRegExprMessage;
+  DBISourceDirectories: THelpDBISourceDirectories;
+  DBISourceDirectory: THelpDBISourceDirectory;
+  DBISourceFile: THelpDBISourceFile;
+  DBItem: THelpDBItem;
+  i: Integer;
+  HTMLHelp: THTMLHelpDatabase;
+begin
+  sl.Add(Prefix+DbgSName(HelpDB));
+  sl.Add(Prefix+'ID='+HelpDB.ID);
+  sl.Add(Prefix+'LocalizedName='+dbgstr(HelpDB.GetLocalizedName));
+  if HelpDB.BasePathObject<>nil then
+    sl.Add(Prefix+'BasePathObject='+DbgSName(HelpDB.BasePathObject));
+  sl.Add(Prefix+'Registered='+dbgs(HelpDB.Registered));
+  if HelpDB.SupportedMimeTypes<>nil then begin
+    sl.Add(Prefix+'SupportedMimeTypes: '+IntToStr(HelpDB.SupportedMimeTypes.Count));
+    for i:=0 to HelpDB.SupportedMimeTypes.Count-1 do
+      sl.Add(Prefix+'  '+HelpDB.SupportedMimeTypes[i]);
+  end;
+  if HelpDB is THTMLHelpDatabase then begin
+    HTMLHelp:=THTMLHelpDatabase(HelpDB);
+    sl.Add(Prefix+'BaseURL='+dbgstr(HTMLHelp.BaseURL));
+    if HTMLHelp.BaseURL='' then
+      sl.Add(Prefix+'DefaultBaseURL='+dbgstr(HTMLHelp.DefaultBaseURL));
+    sl.Add(Prefix+'KeywordPrefix='+dbgstr(HTMLHelp.KeywordPrefix));
+  end;
+
+  // registered items
+  sl.Add(Prefix+'Items:');
+  for i:=0 to HelpDB.RegisteredItemCount-1 do begin
+    DBItem:=HelpDB.GetRegisteredItem(i);
+    sl.Add(Prefix+'  '+IntToStr(i+1)+'/'+IntToStr(HelpDB.RegisteredItemCount)+': '+DbgSName(
+      DBItem));
+    if DBItem is THelpDBISourceFile then begin
+      DBISourceFile:=THelpDBISourceFile(DBItem);
+      sl.Add(Prefix+'    Filename='+DBISourceFile.Filename);
+      sl.Add(Prefix+'    FullFilename='+DBISourceFile.GetFullFilename);
+      sl.Add(Prefix+'    BasePath='+DBISourceFile.GetBasePath);
+      if DBISourceFile is THelpDBISourceDirectory then begin
+        DBISourceDirectory:=THelpDBISourceDirectory(DBISourceFile);
+        sl.Add(Prefix+'    FileMask='+DBISourceDirectory.FileMask);
+        sl.Add(Prefix+'    WithSubDirectories='+dbgs(DBISourceDirectory.
+          WithSubDirectories));
+        if DBISourceDirectory is THelpDBISourceDirectories then begin
+          DBISourceDirectories:=THelpDBISourceDirectories(DBISourceDirectory);
+          sl.Add(Prefix+'    BaseDirectory='+DBISourceDirectories.BaseDirectory);
+        end;
+      end;
+    end else if DBItem is THelpDBIClass then begin
+      sl.Add(Prefix+'    Class='+DbgSName(THelpDBIClass(DBItem)));
+    end else if DBItem is THelpDBIRegExprMessage then begin
+      DBIRegExprMessage:=THelpDBIRegExprMessage(DBItem);
+      sl.Add(Prefix+'    Expression='+DBIRegExprMessage.Expression);
+      sl.Add(Prefix+'    ModifierStr='+DBIRegExprMessage.ModifierStr);
+    end;
+  end;
+  sl.Add('');
 end;
 
 procedure TIDEInfoDialog.GatherIDEVersion(sl: TStrings);
@@ -219,66 +281,15 @@ begin
     sl.Add('');
 end;
 
-procedure TIDEInfoDialog.GatherHelpDB(sl: TStrings);
-begin
-  // LazarusHelp
-
-end;
-
-procedure TIDEInfoDialog.GatherFPCMessagesHelpDB(sl: TStrings);
+procedure TIDEInfoDialog.GatherHelpDatabases(sl: TStrings);
 var
-  HTMLHelp: THTMLHelpDatabase;
   i: Integer;
-  DBItem: THelpDBItem;
-  DBISourceFile: THelpDBISourceFile;
-  DBISourceDirectory: THelpDBISourceDirectory;
-  DBISourceDirectories: THelpDBISourceDirectories;
-  DBIRegExprMessage: THelpDBIRegExprMessage;
 begin
-  sl.Add(DbgSName(FPCMessagesHelpDB));
-  sl.Add('ID='+FPCMessagesHelpDB.ID);
-  sl.Add('LocalizedName='+dbgstr(FPCMessagesHelpDB.GetLocalizedName));
-  sl.Add('BasePathObject='+DbgSName(FPCMessagesHelpDB.BasePathObject));
-  sl.Add('Registered='+dbgs(FPCMessagesHelpDB.Registered));
-  if FPCMessagesHelpDB.SupportedMimeTypes<>nil then begin
-    sl.Add('SupportedMimeTypes: '+IntToStr(FPCMessagesHelpDB.SupportedMimeTypes.Count));
-    sl.AddStrings(FPCMessagesHelpDB.SupportedMimeTypes);
-    sl.Add('');
-  end;
-  if FPCMessagesHelpDB is THTMLHelpDatabase then begin
-    HTMLHelp:=THTMLHelpDatabase(FPCMessagesHelpDB);
-    sl.Add('BaseURL='+dbgstr(HTMLHelp.BaseURL));
-    if HTMLHelp.BaseURL='' then
-      sl.Add('DefaultBaseURL='+dbgstr(HTMLHelp.DefaultBaseURL));
-    sl.Add('KeywordPrefix='+dbgstr(HTMLHelp.KeywordPrefix));
-  end;
-
-  // registered items
-  sl.Add('Items:');
-  for i:=0 to FPCMessagesHelpDB.RegisteredItemCount-1 do begin
-    DBItem:=FPCMessagesHelpDB.GetRegisteredItem(i);
-    sl.Add(IntToStr(i+1)+'/'+IntToStr(FPCMessagesHelpDB.RegisteredItemCount)+': '+DbgSName(DBItem));
-    if DBItem is THelpDBISourceFile then begin
-      DBISourceFile:=THelpDBISourceFile(DBItem);
-      sl.Add('  Filename='+DBISourceFile.Filename);
-      sl.Add('  FullFilename='+DBISourceFile.GetFullFilename);
-      sl.Add('  BasePath='+DBISourceFile.GetBasePath);
-      if DBISourceFile is THelpDBISourceDirectory then begin
-        DBISourceDirectory:=THelpDBISourceDirectory(DBISourceFile);
-        sl.Add('  FileMask='+DBISourceDirectory.FileMask);
-        sl.Add('  WithSubDirectories='+dbgs(DBISourceDirectory.WithSubDirectories));
-        if DBISourceDirectory is THelpDBISourceDirectories then begin
-          DBISourceDirectories:=THelpDBISourceDirectories(DBISourceDirectory);
-          sl.Add('  BaseDirectory='+DBISourceDirectories.BaseDirectory);
-        end;
-      end;
-    end else if DBItem is THelpDBIClass then begin
-      sl.Add('  Class='+DbgSName(THelpDBIClass(DBItem)));
-    end else if DBItem is THelpDBIRegExprMessage then begin
-      DBIRegExprMessage:=THelpDBIRegExprMessage(DBItem);
-      sl.Add('  Expression='+DBIRegExprMessage.Expression);
-      sl.Add('  ModifierStr='+DBIRegExprMessage.ModifierStr);
-    end;
+  sl.Add('LazarusHelp='+DbgSName(LazarusHelp));
+  sl.Add('HelpDatabases='+DbgSName(HelpDatabases));
+  for i:=0 to HelpDatabases.Count-1 do begin
+    sl.Add('DB '+IntToStr(i+1)+'/'+IntToStr(HelpDatabases.Count));
+    GatherHelpDB('  ',HelpDatabases.Items[i],sl);
   end;
 end;
 
@@ -318,8 +329,7 @@ var
 begin
   sl:=TStringList.Create;
   try
-    GatherHelpDB(sl);
-    GatherFPCMessagesHelpDB(sl);
+    GatherHelpDatabases(sl);
     HelpMemo.Lines.Assign(sl);
   finally
     sl.Free;

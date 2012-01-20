@@ -48,6 +48,7 @@ object IDEInfoDialog: TIDEInfoDialog
         Lines.Strings = (
           'ModifiedMemo'
         )
+        ScrollBars = ssAutoBoth
         TabOrder = 0
       end
     end
@@ -64,6 +65,7 @@ object IDEInfoDialog: TIDEInfoDialog
         Lines.Strings = (
           'HelpMemo'
         )
+        ScrollBars = ssAutoBoth
         TabOrder = 0
       end
     end
