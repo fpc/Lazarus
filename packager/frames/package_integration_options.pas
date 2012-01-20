@@ -21,6 +21,8 @@ type
     FPDocSearchPathsEdit: TEdit;
     PkgTypeRadioGroup: TRadioGroup;
     UpdateRadioGroup: TRadioGroup;
+    procedure FPDocPackageNameEditEnter(Sender: TObject);
+    procedure FPDocPackageNameEditExit(Sender: TObject);
     procedure PkgTypeRadioGroupClick(Sender: TObject);
   private
     FLazPackage: TLazPackage;
@@ -58,6 +60,20 @@ begin
     if (FLazPackage.AutoInstall <> pitNope) then
       ShowMsgPackageTypeMustBeDesign;
   end;
+end;
+
+procedure TPackageIntegrationOptionsFrame.FPDocPackageNameEditEnter(
+  Sender: TObject);
+begin
+  if FPDocPackageNameEdit.Text=lisDefaultPlaceholder then
+    FPDocPackageNameEdit.Text:='';
+end;
+
+procedure TPackageIntegrationOptionsFrame.FPDocPackageNameEditExit(
+  Sender: TObject);
+begin
+  if FPDocPackageNameEdit.Text='' then
+    FPDocPackageNameEdit.Text:=lisDefaultPlaceholder;
 end;
 
 procedure TPackageIntegrationOptionsFrame.PathEditBtnClick(Sender: TObject);
@@ -176,7 +192,10 @@ begin
       UpdateRadioGroup.ItemIndex := 2;
   end;
   FPDocSearchPathsEdit.Text:=LazPackage.FPDocPaths;
-  FPDocPackageNameEdit.Text:=LazPackage.FPDocPackageName;
+  if LazPackage.FPDocPackageName='' then
+    FPDocPackageNameEdit.Text:=lisDefaultPlaceholder
+  else
+    FPDocPackageNameEdit.Text:=LazPackage.FPDocPackageName;
 end;
 
 function TPackageIntegrationOptionsFrame.ShowMsgPackageTypeMustBeDesign: boolean;
@@ -224,7 +243,10 @@ begin
       LazPackage.AutoUpdate := pupAsNeeded;
   end;
   LazPackage.FPDocPaths := FPDocSearchPathsEdit.Text;
-  LazPackage.FPDocPackageName := FPDocPackageNameEdit.Text;
+  if FPDocPackageNameEdit.Text=lisDefaultPlaceholder then
+    LazPackage.FPDocPackageName := ''
+  else
+    LazPackage.FPDocPackageName := FPDocPackageNameEdit.Text;
 end;
 
 class function TPackageIntegrationOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

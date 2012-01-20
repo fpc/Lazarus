@@ -141,6 +141,8 @@ inherited PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
       Top = 36
       Width = 116
       BorderSpacing.Around = 6
+      OnEnter = FPDocPackageNameEditEnter
+      OnExit = FPDocPackageNameEditExit
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
