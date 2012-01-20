@@ -32,7 +32,7 @@ type
   strict private
     FParams: TChartAxisIntervalParams;
     procedure RoundToImage(
-      AParams: TValuesInRangeParams; var AValues: TChartValueTextArray);
+      const AParams: TValuesInRangeParams; var AValues: TChartValueTextArray);
     procedure SetParams(AValue: TChartAxisIntervalParams);
   strict protected
     procedure CalculateIntervals(
@@ -274,21 +274,26 @@ begin
 end;
 
 procedure TIntervalChartSource.RoundToImage(
-  AParams: TValuesInRangeParams; var AValues: TChartValueTextArray);
-const
-  MAX_DIGITS = 17;
+  const AParams: TValuesInRangeParams; var AValues: TChartValueTextArray);
+
+  function A2I(AX: Double): Integer; inline;
+  begin
+    Result := AParams.FGraphToImage(AParams.FAxisToGraph(AX));
+  end;
+
 var
-  i, x, d: Integer;
+  i, x: Integer;
   v, p, rv: Double;
 begin
+  if AParams.FIntervals.Tolerance = 0 then exit;
   for i := 0 to High(AValues) do begin
     v := AValues[i].FValue;
     if v = 0 then continue;
-    x := AParams.ToImage(v);
-    p := Power(10, Floor(Log10(Abs(v))) - MAX_DIGITS);
-    for d := 1 to MAX_DIGITS do begin
+    x := A2I(v);
+    p := Power(10, Floor(Log10(Abs(v)) - Log10(High(Int64)) + 1));
+    while true do begin
       rv := Round(v / p) * p;
-      if AParams.ToImage(rv) <> x then break;
+      if Cardinal(Abs(A2I(rv) - x)) >= AParams.FIntervals.Tolerance then break;
       v := rv;
       p *= 10;
     end;

@@ -45,6 +45,7 @@ type
     FOptions: TAxisIntervalParamOptions;
     FOwner: TPersistent;
     FStepValues: TDoubleDynArray;
+    FTolerance: Cardinal;
     function NiceStepsIsStored: Boolean;
     procedure ParseNiceSteps;
     procedure SetCount(AValue: Integer);
@@ -52,6 +53,7 @@ type
     procedure SetMinLength(AValue: Integer);
     procedure SetNiceSteps(const AValue: String);
     procedure SetOptions(AValue: TAxisIntervalParamOptions);
+    procedure SetTolerance(AValue: Cardinal);
   strict protected
     procedure Changed; virtual;
   protected
@@ -68,6 +70,7 @@ type
       read FNiceSteps write SetNiceSteps stored NiceStepsIsStored;
     property Options: TAxisIntervalParamOptions
       read FOptions write SetOptions default DEF_INTERVAL_OPTIONS;
+    property Tolerance: Cardinal read FTolerance write SetTolerance default 0;
   end;
 
 type
@@ -357,6 +360,13 @@ procedure TChartAxisIntervalParams.SetOptions(
 begin
   if FOptions = AValue then exit;
   FOptions := AValue;
+  Changed;
+end;
+
+procedure TChartAxisIntervalParams.SetTolerance(AValue: Cardinal);
+begin
+  if FTolerance = AValue then exit;
+  FTolerance := AValue;
   Changed;
 end;
 
