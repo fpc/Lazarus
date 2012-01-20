@@ -4292,7 +4292,7 @@ begin
   else lAccessibleObject.SelectedText := lSelection.Text;
   lAccessibleObject.SetAccesibilityFields(lAccessibleObject.AccessibleDescription,
     lAccessibleObject.SelectedText, lAccessibleObject.AccessibleRole);
-  lAccessibleObject.SendNotification(lanSelectedTextChanged);
+  lAccessibleObject.SendNotification(lanValueChanged);
 
   if Assigned(OnSelectionChanged) then OnSelectionChanged(Self);
 end;

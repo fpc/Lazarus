@@ -895,26 +895,32 @@ type
     );
 
   TLazAccessibilityRole = (
-    larAlertMessage, // An object that is used to alert the user.
     larAnimation, // An object that displays an animation.
     larButton, // A button.
-    larButtonDropDown, // A button that drops down a list of items or drops down something else
     larCell, // A cell in a table.
     larChart, // An object that displays a graphical representation of data.
     larCheckBox, // An object that can be checked or unchecked, or sometimes in an intermediary state
     larClock, // A clock displaying time.
+    larColorPicker, // A control which allows selecting a color.
     larComboBox, // A list of choices that the user can select from.
+    larDateField, // A controls which displays and possibly allows to choose a date.
     larGrid, // A grid control which displays cells
+    larGroup, // A control which groups others, such as a TGroupBox.
     larIgnore, // Something to be ignored. For example a blank space between other objects.
     larImage, // A graphic or picture or an icon.
-    larHotkeyField, // A hotkey field that allows the user to enter a key sequence.
-    larHotLink, // A link to something else.
     larLabel, // A text label as usually placed near other widgets.
-    larListView, // A list of items, from which the user can select one or more items.
+    larListBox, // A list of items, from which the user can select one or more items.
     larListItem, // An item in a list of items.
+    larMenuBar, // A main menu bar.
+    larMenuItem, // A item in a menu.
+    larProgressIndicator, // A control which shows a progress indication.
     larResizeGrip, // A grip that the user can drag to change the size of widgets.
+    larScrollBar, // A control to scroll another one
+    larSpinner, // A control which allows to increment / decrement a value.
+    larTabControl, // A control with tabs, like TPageControl.
     larTextEditorMultiline, // A multi-line text editor (for example: TMemo, SynEdit)
     larTextEditorSingleline, // A single-line text editor (for example: TEdit)
+    larTrackBar, // A control which allows to drag a slider.
     larTreeView, // A list of items in a tree structure.
     larTreeItem, // An item in a tree structure.
     larWindow // A top level window.
