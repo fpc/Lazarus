@@ -31,6 +31,8 @@ type
   TIntervalChartSource = class(TCustomChartSource)
   strict private
     FParams: TChartAxisIntervalParams;
+    procedure RoundToImage(
+      AParams: TValuesInRangeParams; var AValues: TChartValueTextArray);
     procedure SetParams(AValue: TChartAxisIntervalParams);
   strict protected
     procedure CalculateIntervals(
@@ -271,6 +273,29 @@ begin
   Result := nil;
 end;
 
+procedure TIntervalChartSource.RoundToImage(
+  AParams: TValuesInRangeParams; var AValues: TChartValueTextArray);
+const
+  MAX_DIGITS = 17;
+var
+  i, x, d: Integer;
+  v, p, rv: Double;
+begin
+  for i := 0 to High(AValues) do begin
+    v := AValues[i].FValue;
+    if v = 0 then continue;
+    x := AParams.ToImage(v);
+    p := Power(10, Floor(Log10(Abs(v))) - MAX_DIGITS);
+    for d := 1 to MAX_DIGITS do begin
+      rv := Round(v / p) * p;
+      if AParams.ToImage(rv) <> x then break;
+      v := rv;
+      p *= 10;
+    end;
+    AValues[i].FValue := v;
+  end;
+end;
+
 procedure TIntervalChartSource.SetParams(AValue: TChartAxisIntervalParams);
 begin
   if FParams = AValue then exit;
@@ -316,6 +341,7 @@ begin
   if aipGraphCoords in Params.Options then
     for i := 0 to High(AValues) do
       AValues[i].FValue := AParams.FGraphToAxis(AValues[i].FValue);
+  RoundToImage(AParams, AValues);
   for i := 0 to High(AValues) do
     // Extra format arguments for compatibility with FormatItem.
     AValues[i].FText := Format(

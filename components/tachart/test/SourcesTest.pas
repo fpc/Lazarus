@@ -455,6 +455,10 @@ begin
     src.Params.MaxLength := 15;
     src.ValuesInRange(p, r);
     AssertValueEquals([20, 30, 40, 50, 60, 70], r);
+    src.Params.Options := [aipUseCount];
+    src.Params.Count := 7;
+    src.ValuesInRange(p, r);
+    AssertValueEquals([24, 30, 36, 41, 47, 52, 58, 63, 69, 75], r);
   finally
     p.FIntervals.Free;
     src.Free;
