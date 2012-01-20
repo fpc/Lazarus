@@ -50,6 +50,7 @@ type
     procedure FormCreate(Sender: TObject);
   private
     procedure GatherHelpDB(Prefix: string; const HelpDB: THelpDatabase; const sl: TStrings);
+    procedure GatherHelpViewer(Prefix: string; const Viewer: THelpViewer; const sl: TStrings);
     // general
     procedure GatherIDEVersion(sl: TStrings);
     procedure GatherParameters(sl: TStrings);
@@ -60,6 +61,7 @@ type
     procedure GatherModifiedPackages(sl: TStrings);
     // help
     procedure GatherHelpDatabases(sl: TStrings);
+    procedure GatherHelpViewers(sl: TStrings);
   public
     procedure UpdateGeneralMemo;
     procedure UpdateModifiedMemo;
@@ -158,6 +160,23 @@ begin
       sl.Add(Prefix+'    Expression='+DBIRegExprMessage.Expression);
       sl.Add(Prefix+'    ModifierStr='+DBIRegExprMessage.ModifierStr);
     end;
+  end;
+  sl.Add('');
+end;
+
+procedure TIDEInfoDialog.GatherHelpViewer(Prefix: string;
+  const Viewer: THelpViewer; const sl: TStrings);
+var
+  i: Integer;
+begin
+  sl.Add(Prefix+DbgSName(Viewer));
+  sl.Add(Prefix+'StorageName='+Viewer.StorageName);
+  sl.Add(Prefix+'ParameterHelp='+Viewer.ParameterHelp);
+  sl.Add(Prefix+'LocalizedName='+dbgstr(Viewer.GetLocalizedName));
+  if Viewer.SupportedMimeTypes<>nil then begin
+    sl.Add(Prefix+'SupportedMimeTypes: '+IntToStr(Viewer.SupportedMimeTypes.Count));
+    for i:=0 to Viewer.SupportedMimeTypes.Count-1 do
+      sl.Add(Prefix+'  '+Viewer.SupportedMimeTypes[i]);
   end;
   sl.Add('');
 end;
@@ -293,6 +312,17 @@ begin
   end;
 end;
 
+procedure TIDEInfoDialog.GatherHelpViewers(sl: TStrings);
+var
+  i: Integer;
+begin
+  sl.Add('HelpViewers='+DbgSName(HelpViewers));
+  for i:=0 to HelpViewers.Count-1 do begin
+    sl.Add('DB '+IntToStr(i+1)+'/'+IntToStr(HelpViewers.Count));
+    GatherHelpViewer('  ',HelpViewers.Items[i],sl);
+  end;
+end;
+
 procedure TIDEInfoDialog.UpdateGeneralMemo;
 var
   sl: TStringList;
@@ -330,6 +360,7 @@ begin
   sl:=TStringList.Create;
   try
     GatherHelpDatabases(sl);
+    GatherHelpViewers(sl);
     HelpMemo.Lines.Assign(sl);
   finally
     sl.Free;
