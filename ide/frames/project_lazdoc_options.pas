@@ -10,22 +10,26 @@ uses
 
 type
 
-  { TProjectLazDocOptionsFrame }
+  { TProjectFPDocOptionsFrame }
 
-  TProjectLazDocOptionsFrame = class(TAbstractIDEOptionsEditor)
-    LazDocAddPathButton: TBitBtn;
-    LazDocBrowseButton: TButton;
-    LazDocDeletePathButton: TBitBtn;
-    LazDocListBox: TListBox;
-    LazDocPathEdit: TEdit;
+  TProjectFPDocOptionsFrame = class(TAbstractIDEOptionsEditor)
+    AddPathButton: TBitBtn;
+    BrowseButton: TButton;
+    DeletePathButton: TBitBtn;
+    FPDocPackageNameEdit: TEdit;
+    FPDocPackageNameLabel: TLabel;
+    PathsListBox: TListBox;
+    PathEdit: TEdit;
+    SearchPathsGroupBox: TGroupBox;
     SelectDirectoryDialog: TSelectDirectoryDialog;
-    procedure LazDocAddPathButtonClick(Sender: TObject);
-    procedure LazDocBrowseButtonClick(Sender: TObject);
-    procedure LazDocDeletePathButtonClick(Sender: TObject);
-    procedure LazDocListBoxSelectionChange(Sender: TObject; User: boolean);
-    procedure LazDocPathEditChange(Sender: TObject);
+    procedure AddPathButtonClick(Sender: TObject);
+    procedure BrowseButtonClick(Sender: TObject);
+    procedure DeletePathButtonClick(Sender: TObject);
+    procedure FPDocPackageNameEditEnter(Sender: TObject);
+    procedure FPDocPackageNameEditExit(Sender: TObject);
+    procedure PathsListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure PathEditChange(Sender: TObject);
   private
-    { private declarations }
   public
     function GetTitle: string; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -38,74 +42,98 @@ implementation
 
 {$R *.lfm}
 
-{ TProjectLazDocOptionsFrame }
+{ TProjectFPDocOptionsFrame }
 
-function TProjectLazDocOptionsFrame.GetTitle: string;
+function TProjectFPDocOptionsFrame.GetTitle: string;
 begin
   Result := lisFPDocEditor;
 end;
 
-procedure TProjectLazDocOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+procedure TProjectFPDocOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  LazDocAddPathButton.Caption := lisCodeHelpAddPathButton;
-  LazDocDeletePathButton.Caption := lisCodeHelpDeletePathButton;
-  LazDocDeletePathButton.LoadGlyphFromLazarusResource('laz_delete');
-  LazDocAddPathButton.LoadGlyphFromLazarusResource('laz_add');
+  FPDocPackageNameEdit.Hint:=lisFPDocPackageNameDefaultIsProjectFileName;
+  FPDocPackageNameLabel.Caption:=lisFPDocPackageName;
+  AddPathButton.Caption := lisCodeHelpAddPathButton;
+  DeletePathButton.Caption := lisCodeHelpDeletePathButton;
+  DeletePathButton.LoadGlyphFromLazarusResource('laz_delete');
+  AddPathButton.LoadGlyphFromLazarusResource('laz_add');
 
-  LazDocPathEdit.Clear;
+  PathEdit.Clear;
 end;
 
-procedure TProjectLazDocOptionsFrame.LazDocBrowseButtonClick(Sender: TObject);
+procedure TProjectFPDocOptionsFrame.BrowseButtonClick(Sender: TObject);
 begin
   if SelectDirectoryDialog.Execute then
-    LazDocPathEdit.Text := SelectDirectoryDialog.FileName;
+    PathEdit.Text := SelectDirectoryDialog.FileName;
 end;
 
-procedure TProjectLazDocOptionsFrame.LazDocAddPathButtonClick(Sender: TObject);
+procedure TProjectFPDocOptionsFrame.AddPathButtonClick(Sender: TObject);
 begin
-  if LazDocPathEdit.Text <> '' then begin
-    LazDocListBox.Items.Add(LazDocPathEdit.Text);
-    LazDocPathEdit.Text := '';
+  if PathEdit.Text <> '' then begin
+    PathsListBox.Items.Add(PathEdit.Text);
+    PathEdit.Text := '';
   end;
 end;
 
-procedure TProjectLazDocOptionsFrame.LazDocDeletePathButtonClick(Sender: TObject);
+procedure TProjectFPDocOptionsFrame.DeletePathButtonClick(Sender: TObject);
 begin
-  if (LazDocListBox.ItemIndex >= 0) then begin
-    LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
-    LazDocListBoxSelectionChange(LazDocListBox, True);
+  if (PathsListBox.ItemIndex >= 0) then begin
+    PathsListBox.Items.Delete(PathsListBox.ItemIndex);
+    PathsListBoxSelectionChange(PathsListBox, True);
   end;
 end;
 
-procedure TProjectLazDocOptionsFrame.LazDocListBoxSelectionChange(Sender: TObject; User: boolean);
+procedure TProjectFPDocOptionsFrame.FPDocPackageNameEditEnter(Sender: TObject);
 begin
-  LazDocDeletePathButton.Enabled:=(Sender as TListBox).ItemIndex <> -1;
+  if FPDocPackageNameEdit.Text=lisDefaultPlaceholder then
+    FPDocPackageNameEdit.Text:='';
 end;
 
-procedure TProjectLazDocOptionsFrame.LazDocPathEditChange(Sender: TObject);
+procedure TProjectFPDocOptionsFrame.FPDocPackageNameEditExit(Sender: TObject);
 begin
-  LazDocAddPathButton.Enabled:=(Sender as TEdit).Text <> '';
+  if FPDocPackageNameEdit.Text='' then
+    FPDocPackageNameEdit.Text:=lisDefaultPlaceholder;
 end;
 
-procedure TProjectLazDocOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+procedure TProjectFPDocOptionsFrame.PathsListBoxSelectionChange(Sender: TObject; User: boolean);
 begin
-  with AOptions as TProject do
-    SplitString(FPDocPaths, ';', LazDocListBox.Items, True);
+  DeletePathButton.Enabled:=(Sender as TListBox).ItemIndex <> -1;
 end;
 
-procedure TProjectLazDocOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+procedure TProjectFPDocOptionsFrame.PathEditChange(Sender: TObject);
 begin
-  with AOptions as TProject do
-    FPDocPaths := StringListToText(LazDocListBox.Items, ';', True);
+  AddPathButton.Enabled:=(Sender as TEdit).Text <> '';
 end;
 
-class function TProjectLazDocOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+procedure TProjectFPDocOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+begin
+  with AOptions as TProject do begin
+    SplitString(FPDocPaths, ';', PathsListBox.Items, True);
+    if FPDocPackageName='' then
+      FPDocPackageNameEdit.Text:=lisDefaultPlaceholder
+    else
+      FPDocPackageNameEdit.Text:=FPDocPackageName;
+  end;
+end;
+
+procedure TProjectFPDocOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+begin
+  with AOptions as TProject do begin
+    FPDocPaths := StringListToText(PathsListBox.Items, ';', True);
+    if FPDocPackageNameEdit.Text=lisDefaultPlaceholder then
+      FPDocPackageName:=''
+    else
+      FPDocPackageName:=FPDocPackageNameEdit.Text;
+  end;
+end;
+
+class function TProjectFPDocOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
   Result := TProject;
 end;
 
 initialization
-  RegisterIDEOptionsEditor(GroupProject, TProjectLazDocOptionsFrame, ProjectOptionsLazDoc);
+  RegisterIDEOptionsEditor(GroupProject, TProjectFPDocOptionsFrame, ProjectOptionsLazDoc);
 
 end.
 

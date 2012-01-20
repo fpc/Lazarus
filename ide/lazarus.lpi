@@ -429,7 +429,7 @@
       <Unit53>
         <Filename Value="frames/project_lazdoc_options.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="ProjectLazDocOptionsFrame"/>
+        <ComponentName Value="ProjectFPDocOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="project_lazdoc_options"/>
       </Unit53>

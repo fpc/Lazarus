@@ -1,4 +1,4 @@
-inherited ProjectLazDocOptionsFrame: TProjectLazDocOptionsFrame
+inherited ProjectFPDocOptionsFrame: TProjectFPDocOptionsFrame
   Height = 269
   Width = 478
   ClientHeight = 269
@@ -6,89 +6,132 @@ inherited ProjectLazDocOptionsFrame: TProjectLazDocOptionsFrame
   TabOrder = 0
   DesignLeft = 422
   DesignTop = 407
-  object LazDocListBox: TListBox[0]
+  object FPDocPackageNameLabel: TLabel[0]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 0
-    Height = 108
-    Top = 0
-    Width = 478
-    Anchors = [akTop, akLeft, akRight]
-    ItemHeight = 0
-    OnSelectionChange = LazDocListBoxSelectionChange
-    TabOrder = 0
-  end
-  object LazDocPathEdit: TEdit[1]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = LazDocListBox
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = LazDocBrowseButton
-    Left = 0
-    Height = 21
-    Top = 114
-    Width = 454
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 6
-    BorderSpacing.Bottom = 6
-    OnChange = LazDocPathEditChange
-    TabOrder = 1
-    Text = 'LazDocPathEdit'
-  end
-  object LazDocBrowseButton: TButton[2]
-    AnchorSideLeft.Control = LazDocPathEdit
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = LazDocPathEdit
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = LazDocPathEdit
-    AnchorSideBottom.Side = asrBottom
-    Left = 454
-    Height = 21
-    Top = 114
-    Width = 24
-    Anchors = [akTop, akRight, akBottom]
-    Caption = '...'
-    OnClick = LazDocBrowseButtonClick
-    TabOrder = 2
-  end
-  object LazDocAddPathButton: TBitBtn[3]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = LazDocPathEdit
-    AnchorSideTop.Side = asrBottom
-    Left = 0
-    Height = 23
-    Top = 141
-    Width = 133
-    AutoSize = True
-    BorderSpacing.Top = 6
-    Caption = 'LazDocAddPathButton'
-    Enabled = False
-    NumGlyphs = 0
-    OnClick = LazDocAddPathButtonClick
-    TabOrder = 3
-  end
-  object LazDocDeletePathButton: TBitBtn[4]
-    AnchorSideLeft.Control = LazDocAddPathButton
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = LazDocPathEdit
-    AnchorSideTop.Side = asrBottom
-    Left = 139
-    Height = 23
-    Top = 141
+    AnchorSideTop.Control = FPDocPackageNameEdit
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 15
+    Top = 11
     Width = 145
-    AutoSize = True
     BorderSpacing.Around = 6
-    Caption = 'LazDocDeletePathButton'
-    Enabled = False
-    NumGlyphs = 0
-    OnClick = LazDocDeletePathButtonClick
-    TabOrder = 4
+    Caption = 'FPDocPackageNameLabel'
+    ParentColor = False
   end
-  object SelectDirectoryDialog: TSelectDirectoryDialog[5]
+  object FPDocPackageNameEdit: TEdit[1]
+    AnchorSideLeft.Control = FPDocPackageNameLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 157
+    Height = 24
+    Top = 6
+    Width = 120
+    BorderSpacing.Around = 6
+    OnEnter = FPDocPackageNameEditEnter
+    OnExit = FPDocPackageNameEditExit
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 0
+    Text = 'FPDocPackageNameEdit'
+  end
+  object SearchPathsGroupBox: TGroupBox[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = FPDocPackageNameEdit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 233
+    Top = 36
+    Width = 478
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Caption = 'SearchPathsGroupBox'
+    ClientHeight = 217
+    ClientWidth = 474
+    TabOrder = 1
+    object PathsListBox: TListBox
+      Left = 0
+      Height = 108
+      Top = 0
+      Width = 474
+      Align = alTop
+      ItemHeight = 0
+      OnSelectionChange = PathsListBoxSelectionChange
+      ScrollWidth = 472
+      TabOrder = 0
+      TopIndex = -1
+    end
+    object PathEdit: TEdit
+      AnchorSideLeft.Control = SearchPathsGroupBox
+      AnchorSideTop.Control = PathsListBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = BrowseButton
+      Left = 0
+      Height = 24
+      Top = 114
+      Width = 450
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      OnChange = PathEditChange
+      TabOrder = 1
+      Text = 'PathEdit'
+    end
+    object AddPathButton: TBitBtn
+      AnchorSideLeft.Control = SearchPathsGroupBox
+      AnchorSideTop.Control = PathEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 26
+      Top = 144
+      Width = 94
+      AutoSize = True
+      BorderSpacing.Top = 6
+      Caption = 'AddPathButton'
+      Enabled = False
+      NumGlyphs = 0
+      OnClick = AddPathButtonClick
+      TabOrder = 2
+    end
+    object DeletePathButton: TBitBtn
+      AnchorSideLeft.Control = AddPathButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = PathEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 100
+      Height = 26
+      Top = 144
+      Width = 109
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'DeletePathButton'
+      Enabled = False
+      NumGlyphs = 0
+      OnClick = DeletePathButtonClick
+      TabOrder = 3
+    end
+    object BrowseButton: TButton
+      AnchorSideLeft.Control = PathEdit
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = PathEdit
+      AnchorSideRight.Control = SearchPathsGroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = PathEdit
+      AnchorSideBottom.Side = asrBottom
+      Left = 450
+      Height = 24
+      Top = 114
+      Width = 24
+      Anchors = [akTop, akRight, akBottom]
+      Caption = '...'
+      OnClick = BrowseButtonClick
+      TabOrder = 4
+    end
+  end
+  object SelectDirectoryDialog: TSelectDirectoryDialog[3]
     FilterIndex = 0
-    left = 116
-    top = 241
+    left = 370
   end
 end

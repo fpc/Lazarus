@@ -4457,7 +4457,11 @@ resourcestring
   lisCodeHelpErrorsTag = 'Errors';
   lisCodeHelpSeeAlsoTag = 'See also';
   lisCodeHelpAddPathButton = 'Add path';
+  lisFPDocPackageName = 'FPDoc package name:';
+  lisFPDocPackageNameDefaultIsProjectFileName = 'FPDoc package name. Default '
+    +'is project file name.';
   lisCodeHelpDeletePathButton = 'Remove path';
+  lisDefaultPlaceholder = '(default)';
   lisEONOTEOnlyAbsolutePathsAreSupportedNow = 'NOTE: only absolute paths are supported now';
   lisCodeHelpConfirmreplace = 'Confirm replace';
   lisCodeHelpReplaceButton = 'Replace';

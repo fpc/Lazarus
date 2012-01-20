@@ -156,7 +156,8 @@ type
   public
     CodeContext: TFindContext;
     CodeXYPos: TCodeXYPosition;
-    ElementOwnerName: string;// the 'fpdoc package' = the name of the lazarus package or project
+    ElementOwnerName: string;// the name of the lazarus package or project
+    ElementFPDocPackageName: string;
     ElementUnitName: string;
     ElementUnitFileName: string;
     ElementName: string;
@@ -1858,7 +1859,7 @@ begin
   if TheOwner is TLazPackage then
     Result:=TLazPackage(TheOwner).GetFPDocPackageName
   else if TheOwner is TLazProject then
-    Result:=ExtractFileNameOnly(TLazProject(TheOwner).ProjectInfoFile)
+    Result:=TLazProject(TheOwner).GetFPDocPackageName
   else if TheOwner=LazarusHelp then
     Result:=IDEProjectName
   else
@@ -1935,7 +1936,7 @@ begin
     if AddUnit then
       Result:=DefaultUnitName+'.'+Result;
   end;
-  Result:='#'+GetModuleOwnerName(TheOwner)+'.'+Result;
+  Result:='#'+GetFPDocPackageNameByOwner(TheOwner)+'.'+Result;
 end;
 
 function TCodeHelpManager.CodeNodeToElementName(Tool: TFindDeclarationTool;
@@ -2287,6 +2288,7 @@ begin
       FPDocFilename:=GetFPDocFilenameForSource(CHElement.ElementUnitFileName,
                                                false,CacheWasUsed,AnOwner);
       CHElement.ElementOwnerName:=GetModuleOwnerName(AnOwner);
+      CHElement.ElementFPDocPackageName:=GetFPDocPackageNameByOwner(AnOwner);
       //DebugLn(['TCodeHelpManager.GetElementChain FPDocFilename=',FPDocFilename]);
       if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
@@ -3075,7 +3077,7 @@ end;
 
 procedure TCodeHelpElement.WriteDebugReport;
 begin
-  DebugLn(['  ',CodeXYPos.Code.Filename,' X=',CodeXYPos.X,' Y=',CodeXYPos.Y,' ElementOwnerName=',ElementOwnerName,' ElementUnitName=',ElementUnitName,' ElementUnitFileName=',ElementUnitFileName,' ElementName=',ElementName]);
+  DebugLn(['  ',CodeXYPos.Code.Filename,' X=',CodeXYPos.X,' Y=',CodeXYPos.Y,' ElementOwnerName=',ElementOwnerName,' ElementFPDocPackageName=',ElementFPDocPackageName,' ElementUnitName=',ElementUnitName,' ElementUnitFileName=',ElementUnitFileName,' ElementName=',ElementName]);
 end;
 
 end.

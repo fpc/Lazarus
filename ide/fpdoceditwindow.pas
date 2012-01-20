@@ -185,7 +185,7 @@ type
     function CreateElement(Element: TCodeHelpElement): Boolean;
     procedure UpdateButtons;
     function GetCurrentUnitName: string;
-    function GetCurrentModuleName: string;
+    function GetCurrentOwnerName: string;
     procedure JumpToError(Item : TFPDocItem; LineCol: TPoint);
     procedure OpenXML;
     function GUIModified: boolean;
@@ -999,7 +999,7 @@ begin
     Result:='';
 end;
 
-function TFPDocEditor.GetCurrentModuleName: string;
+function TFPDocEditor.GetCurrentOwnerName: string;
 begin
   if (fChain<>nil) and (fChain.Count>0) then
     Result:=fChain[0].ElementOwnerName
@@ -1509,8 +1509,8 @@ begin
   Link:=Element.ElementName;
   if Element.ElementUnitName<>'' then begin
     Link:=Element.ElementUnitName+'.'+Link;
-    if Element.ElementOwnerName<>'' then
-      Link:='#'+Element.ElementOwnerName+'.'+Link;
+    if Element.ElementFPDocPackageName<>'' then
+      Link:='#'+Element.ElementFPDocPackageName+'.'+Link;
   end;
   if Link<>LinkEdit.Text then begin
     LinkEdit.Text:=Link;

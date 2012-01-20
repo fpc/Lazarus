@@ -396,7 +396,7 @@ begin
       exit;
     end;
     CHElement:=Chain[0];
-    DebugLn(['GatherFPDocReferences OwnerName=',CHElement.ElementOwnerName,' Name=',CHElement.ElementName]);
+    DebugLn(['GatherFPDocReferences OwnerName=',CHElement.ElementOwnerName,' FPDocPkg=',CHElement.ElementFPDocPackageName,' Name=',CHElement.ElementName]);
 
     // search FPDoc files
     AVLNode:=FPDocFilenames.Tree.FindLowest;
@@ -404,7 +404,7 @@ begin
       Item:=PStringToStringItem(AVLNode.Data);
       FPDocFilename:=Item^.Name;
       Result:=GatherReferencesInFPDocFile(
-                CHElement.ElementOwnerName,CHElement.ElementUnitName,
+                CHElement.ElementFPDocPackageName,CHElement.ElementUnitName,
                 CHElement.ElementName,
                 FPDocFilename,ListOfLazFPDocNode);
       if Result<>mrOk then exit;

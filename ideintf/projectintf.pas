@@ -378,6 +378,7 @@ type
     FCustomData: TStringToStringTree;
     FCustomSessionData: TStringToStringTree;
     FExecutableType: TProjectExecutableType;
+    FFPDocPackageName: string;
     fModified: boolean;
     FProjectSessionFile: string;
     FSessionModified: boolean;
@@ -387,6 +388,7 @@ type
     FUseAppBundle: Boolean;
     procedure SetCleanOutputFileMask(const AValue: string);
     procedure SetCleanSourcesFileMask(const AValue: string);
+    procedure SetFPDocPackageName(AValue: string);
     procedure SetFPDocPaths(const AValue: string);
   protected
     FLazCompilerOptions: TLazCompilerOptions;
@@ -431,6 +433,7 @@ type
     procedure ConvertToLPIFilename(var AFilename: string); virtual; abstract;
     procedure ConvertFromLPIFilename(var AFilename: string); virtual; abstract;
     procedure LoadDefaultIcon; virtual;
+    function GetFPDocPackageName: string;
   public
     property MainFileID: Integer read GetMainFileID write SetMainFileID;
     property Files[Index: integer]: TLazProjectFile read GetFiles;
@@ -455,6 +458,7 @@ type
                        // project session data (not units, data),
                        // units have their own SessionModified
     property FPDocPaths: string read FFPDocPaths write SetFPDocPaths;
+    property FPDocPackageName: string read FFPDocPackageName write SetFPDocPackageName;
     property LazDocPaths: string read FFPDocPaths write SetFPDocPaths; deprecated;
     property CleanOutputFileMask: string read FCleanOutputFileMask write SetCleanOutputFileMask; // saved in session
     property CleanSourcesFileMask: string read FCleanSourcesFileMask write SetCleanSourcesFileMask; // saved in session
@@ -1068,6 +1072,13 @@ begin
   SessionModified:=true;
 end;
 
+procedure TLazProject.SetFPDocPackageName(AValue: string);
+begin
+  if FFPDocPackageName=AValue then Exit;
+  FFPDocPackageName:=AValue;
+  Modified:=true;
+end;
+
 function TLazProject.GetModified: boolean;
 begin
   Result:=fModified;
@@ -1114,6 +1125,7 @@ begin
   FTitle:='';
   FSessionStorage:=DefaultNewProjectSessionStorage;
   FFPDocPaths:='';
+  FFPDocPackageName:='';
 end;
 
 function TLazProject.ShortDescription: string;
@@ -1138,6 +1150,14 @@ end;
 procedure TLazProject.LoadDefaultIcon;
 begin
 
+end;
+
+function TLazProject.GetFPDocPackageName: string;
+begin
+  if FPDocPackageName<>'' then
+    Result:=FPDocPackageName
+  else
+    Result:=ExtractFileNameOnly(ProjectInfoFile);
 end;
 
 { TLazProjectFile }

@@ -2858,6 +2858,7 @@ begin
            SwitchPathDelims(CreateRelativeSearchPath(FPDocPaths,ProjectDirectory),
                             fCurStorePathDelim),
            '');
+        xmlconfig.SetDeleteValue(Path+'LazDoc/PackageName',FPDocPackageName,'');
 
         // i18n
         xmlconfig.SetDeleteValue(Path+'i18n/EnableI18N/Value', EnableI18N, false);
@@ -3431,6 +3432,7 @@ begin
       if not LoadParts then begin
         FPDocPaths := SwitchPathDelims(xmlconfig.GetValue(Path+'LazDoc/Paths', ''),
                                fPathDelimChanged);
+        FPDocPackageName:=xmlconfig.GetValue(Path+'LazDoc/PackageName','');
       end;
 
       // i18n
