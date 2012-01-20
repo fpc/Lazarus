@@ -363,6 +363,7 @@ function ToOSLineEnding(const s: String): String;
 function ReplaceLineEndings(const s, NewLineEnds: string): string;
 function AppendLineEnding(const s: string): string; // append if not empty and there is not already a line ending
 function XMLUnescape(s: string): string; // convert escape characters
+function MakeValidFPDocPackageName(const s: string): string;
 
 implementation
 
@@ -521,6 +522,17 @@ begin
       inc(p);
   until false;
   Result:=s;
+end;
+
+function MakeValidFPDocPackageName(const s: string): string;
+var
+  i: Integer;
+begin
+  Result:=s;
+  for i:=length(Result) downto 1 do
+    if not (Result[i] in ['a'..'z','A'..'Z','0'..'9','_',' ',',','+','-','/','(',')'])
+    then
+      system.Delete(Result,i,1);
 end;
 
 function CompareLazFPDocFilenames(Data1, Data2: Pointer): integer;

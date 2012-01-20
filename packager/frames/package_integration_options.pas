@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, ExtCtrls, StdCtrls, Dialogs,
   IDEOptionsIntf, MacroIntf,
-  LazarusIDEStrConsts, PackageDefs, PathEditorDlg, IDEProcs;
+  LazarusIDEStrConsts, PackageDefs, PathEditorDlg, IDEProcs, CodeHelp;
 
 type
 
@@ -31,6 +31,7 @@ type
     procedure PathEditBtnClick(Sender: TObject);
     procedure PathEditBtnExecuted(Sender: TObject);
     function ShowMsgPackageTypeMustBeDesign: boolean;
+    function GetFPDocPkgNameEditValue: string;
   public
     function Check: Boolean; override;
     function GetTitle: string; override;
@@ -72,8 +73,10 @@ end;
 procedure TPackageIntegrationOptionsFrame.FPDocPackageNameEditExit(
   Sender: TObject);
 begin
-  if FPDocPackageNameEdit.Text='' then
-    FPDocPackageNameEdit.Text:=lisDefaultPlaceholder;
+  if GetFPDocPkgNameEditValue='' then
+    FPDocPackageNameEdit.Text:=lisDefaultPlaceholder
+  else
+    FPDocPackageNameEdit.Text:=GetFPDocPkgNameEditValue;
 end;
 
 procedure TPackageIntegrationOptionsFrame.PathEditBtnClick(Sender: TObject);
@@ -212,6 +215,14 @@ begin
     Result := False;
 end;
 
+function TPackageIntegrationOptionsFrame.GetFPDocPkgNameEditValue: string;
+begin
+  if FPDocPackageNameEdit.Text=lisDefaultPlaceholder then
+    Result:=''
+  else
+    Result:=MakeValidFPDocPackageName(FPDocPackageNameEdit.Text);
+end;
+
 function TPackageIntegrationOptionsFrame.Check: Boolean;
 var
   NewPkgType: TLazPackageType;
@@ -243,10 +254,7 @@ begin
       LazPackage.AutoUpdate := pupAsNeeded;
   end;
   LazPackage.FPDocPaths := FPDocSearchPathsEdit.Text;
-  if FPDocPackageNameEdit.Text=lisDefaultPlaceholder then
-    LazPackage.FPDocPackageName := ''
-  else
-    LazPackage.FPDocPackageName := FPDocPackageNameEdit.Text;
+  LazPackage.FPDocPackageName := GetFPDocPkgNameEditValue;
 end;
 
 class function TPackageIntegrationOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

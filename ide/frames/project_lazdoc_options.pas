@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, Project, IDEOptionsIntf, LazarusIDEStrConsts, IDEProcs;
+  StdCtrls, Buttons, Project, IDEOptionsIntf, LazarusIDEStrConsts, IDEProcs,
+  FPDocEditWindow, CodeHelp;
 
 type
 
@@ -30,6 +31,7 @@ type
     procedure PathsListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure PathEditChange(Sender: TObject);
   private
+    function GetFPDocPkgNameEditValue: string;
   public
     function GetTitle: string; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -91,8 +93,10 @@ end;
 
 procedure TProjectFPDocOptionsFrame.FPDocPackageNameEditExit(Sender: TObject);
 begin
-  if FPDocPackageNameEdit.Text='' then
-    FPDocPackageNameEdit.Text:=lisDefaultPlaceholder;
+  if GetFPDocPkgNameEditValue='' then
+    FPDocPackageNameEdit.Text:=lisDefaultPlaceholder
+  else
+    FPDocPackageNameEdit.Text:=GetFPDocPkgNameEditValue;
 end;
 
 procedure TProjectFPDocOptionsFrame.PathsListBoxSelectionChange(Sender: TObject; User: boolean);
@@ -103,6 +107,14 @@ end;
 procedure TProjectFPDocOptionsFrame.PathEditChange(Sender: TObject);
 begin
   AddPathButton.Enabled:=(Sender as TEdit).Text <> '';
+end;
+
+function TProjectFPDocOptionsFrame.GetFPDocPkgNameEditValue: string;
+begin
+  if FPDocPackageNameEdit.Text=lisDefaultPlaceholder then
+    Result:=''
+  else
+    Result:=MakeValidFPDocPackageName(FPDocPackageNameEdit.Text);
 end;
 
 procedure TProjectFPDocOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -120,10 +132,7 @@ procedure TProjectFPDocOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions)
 begin
   with AOptions as TProject do begin
     FPDocPaths := StringListToText(PathsListBox.Items, ';', True);
-    if FPDocPackageNameEdit.Text=lisDefaultPlaceholder then
-      FPDocPackageName:=''
-    else
-      FPDocPackageName:=FPDocPackageNameEdit.Text;
+    FPDocPackageName:=GetFPDocPkgNameEditValue;
   end;
 end;
 
