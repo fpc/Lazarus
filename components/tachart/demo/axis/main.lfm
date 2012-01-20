@@ -340,13 +340,11 @@ object Form1: TForm1
     top = 232
     object ChartToolset1ZoomIn: TZoomClickTool
       Shift = [ssLeft]
-      FixedPoint = True
       ZoomFactor = 4
       ZoomRatio = 0.25
     end
     object ChartToolset1ZoomOut: TZoomClickTool
       Shift = [ssRight]
-      FixedPoint = True
       ZoomFactor = 0.25
       ZoomRatio = 4
     end

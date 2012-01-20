@@ -56,6 +56,7 @@ type
     edDataCount: TSpinEdit;
     fseIndependent1: TFloatSpinEdit;
     fseIndependent2: TFloatSpinEdit;
+    lblTolerance: TLabel;
     lblDataCount: TLabel;
     lblIndependentScale1: TLabel;
     lblIndependentScale2: TLabel;
@@ -68,6 +69,7 @@ type
     rcsTSummer: TRandomChartSource;
     rcsTWinter: TRandomChartSource;
     rgRandDistr: TRadioGroup;
+    seTolerance: TSpinEdit;
     tsLinear: TTabSheet;
     tsCumulNormDistr: TTabSheet;
     tsIndependent: TTabSheet;
@@ -85,6 +87,7 @@ type
     procedure fseIndependent1Change(Sender: TObject);
     procedure fseIndependent2Change(Sender: TObject);
     procedure rgRandDistrClick(Sender: TObject);
+    procedure seToleranceChange(Sender: TObject);
   private
     procedure FillIndependentSource;
     procedure FillCumulNormDistrSource;
@@ -242,6 +245,7 @@ begin
   end;
   FillIndependentSource;
   FillCumulNormDistrSource;
+  seTolerance.Value := ChartLog.LeftAxis.Intervals.Tolerance;
 end;
 
 procedure TForm1.fseIndependent1Change(Sender: TObject);
@@ -257,6 +261,11 @@ end;
 procedure TForm1.rgRandDistrClick(Sender: TObject);
 begin
   FillCumulNormDistrSource;
+end;
+
+procedure TForm1.seToleranceChange(Sender: TObject);
+begin
+  ChartLog.LeftAxis.Intervals.Tolerance := seTolerance.Value;
 end;
 
 end.

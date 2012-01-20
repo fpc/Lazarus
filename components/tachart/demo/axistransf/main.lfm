@@ -224,15 +224,14 @@ object Form1: TForm1
       ClientWidth = 525
       object ChartLog: TChart
         Left = 0
-        Height = 379
+        Height = 378
         Top = 0
         Width = 525
         AxisList = <        
           item
             Intervals.Count = 10
-            Intervals.MaxLength = 200
-            Intervals.NiceSteps = '1.0'
             Intervals.Options = [aipGraphCoords, aipUseCount, aipUseMinLength, aipUseNiceSteps]
+            Intervals.Tolerance = 5
             Marks.Stripes = csStripes
             Minors = <            
               item
@@ -295,11 +294,11 @@ object Form1: TForm1
       end
       object pnlLogControls: TPanel
         Left = 0
-        Height = 29
-        Top = 379
+        Height = 30
+        Top = 378
         Width = 525
         Align = alBottom
-        ClientHeight = 29
+        ClientHeight = 30
         ClientWidth = 525
         TabOrder = 1
         object cbLog: TCheckBox
@@ -312,6 +311,22 @@ object Form1: TForm1
           OnChange = cbLogChange
           State = cbChecked
           TabOrder = 0
+        end
+        object seTolerance: TSpinEdit
+          Left = 140
+          Height = 21
+          Top = 5
+          Width = 50
+          OnChange = seToleranceChange
+          TabOrder = 1
+        end
+        object lblTolerance: TLabel
+          Left = 88
+          Height = 14
+          Top = 8
+          Width = 48
+          Caption = 'Tolerance'
+          ParentColor = False
         end
       end
     end
@@ -330,6 +345,7 @@ object Form1: TForm1
             Grid.Visible = False
             Intervals.Count = 30
             Intervals.Options = [aipUseCount, aipUseNiceSteps]
+            Intervals.Tolerance = 1
             Marks.OverlapPolicy = opHideNeighbour
             Minors = <>
             Title.LabelFont.Orientation = 900
