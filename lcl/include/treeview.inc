@@ -3032,7 +3032,9 @@ begin
   FTreeLineColor := clWindowFrame;
   FTreeLinePenStyle := psPattern;
   FExpandSignColor := clWindowFrame;
-  SetAccesibilityFields('A tree of items', '', larTreeView);
+  // Accessibility
+  AccessibleDescription := 'A tree of items';
+  AccessibleRole := larTreeView;
 end;
 
 destructor TCustomTreeView.Destroy;
@@ -4284,15 +4286,14 @@ procedure TCustomTreeView.DoSelectionChanged;
 var
   lAccessibleObject: TLazAccessibleObject;
   lSelection: TTreeNode;
+  lSelectedText: string;
 begin
   // Update the accessibility information
   lAccessibleObject := GetAccessibleObject();
   lSelection := Self.Selected;
-  if lSelection = nil then lAccessibleObject.SelectedText := ''
-  else lAccessibleObject.SelectedText := lSelection.Text;
-  lAccessibleObject.SetAccesibilityFields(lAccessibleObject.AccessibleDescription,
-    lAccessibleObject.SelectedText, lAccessibleObject.AccessibleRole);
-  lAccessibleObject.SendNotification(lanValueChanged);
+  if lSelection = nil then lSelectedText := ''
+  else lSelectedText := lSelection.Text;
+  lAccessibleObject.AccessibleValue := lSelectedText;
 
   if Assigned(OnSelectionChanged) then OnSelectionChanged(Self);
 end;

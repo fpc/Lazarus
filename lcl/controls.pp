@@ -889,11 +889,6 @@ type
     lapAutoAdjustForDPI // For desktops using High DPI, scale x and y to fit the DPI
   );
 
-  TLazAccessibilityNotification = (
-    lanSelectedTextChanged,
-    lanValueChanged
-    );
-
   TLazAccessibilityRole = (
     larAnimation, // An object that displays an animation.
     larButton, // A button.
@@ -937,22 +932,20 @@ type
     function GetHandle: PtrInt;
   protected
     FChildren: TFPList; // of TLazAccessibleObject
+    FAccessibleDescription: TCaption;
+    FAccessibleValue: TCaption;
+    FAccessibleRole: TLazAccessibilityRole;
     class procedure WSRegisterClass; virtual;//override;
   public
-    // Primary information
-    AccessibleDescription: TCaption;
-    AccessibleValue: TCaption;
-    AccessibleRole: TLazAccessibilityRole;
-    // Secondary information for notifications
-    SelectedText: string;
-    //
     OwnerControl: TControl;
     Parent: TLazAccessibleObject;
     DataObject: TObject; // Available to be used to connect to an object
     SecondaryHandle: PtrInt; // Available for Widgetsets to use
     constructor Create(AOwner: TControl); virtual;
     destructor Destroy; override;
-    procedure SetAccesibilityFields(const ADescription, AValue: string; const ARole: TLazAccessibilityRole);
+    procedure SetAccessibleDescription(const ADescription: TCaption);
+    procedure SetAccessibleValue(const AValue: TCaption);
+    procedure SetAccessibleRole(const ARole: TLazAccessibilityRole);
     function FindOwnerWinControl: TWinControl;
     function AddChildAccessibleObject: TLazAccessibleObject; virtual;
     procedure ClearChildAccessibleObjects;
@@ -962,7 +955,10 @@ type
     function GetChildAccessibleObjectsCount: Integer;
     function GetSelectedChildAccessibleObject: TLazAccessibleObject; virtual;
     function GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject; virtual;
-    procedure SendNotification(ANotification: TLazAccessibilityNotification);
+    // Primary information
+    property AccessibleDescription: TCaption read FAccessibleDescription write SetAccessibleDescription;
+    property AccessibleValue: TCaption read FAccessibleValue write SetAccessibleValue;
+    property AccessibleRole: TLazAccessibilityRole read FAccessibleRole write SetAccessibleRole;
     property Handle: PtrInt read GetHandle;
   end;
 
@@ -1392,7 +1388,6 @@ type
                            DropControl: TControl; ControlSide: TAlign): Boolean;
     function Dragging: Boolean;
     // accessibility
-    procedure SetAccesibilityFields(const ADescription, AValue: string; const ARole: TLazAccessibilityRole);
     function GetAccessibleObject: TLazAccessibleObject;
     function CreateAccessibleObject: TLazAccessibleObject; virtual;
     function GetSelectedChildAccessibleObject: TLazAccessibleObject; virtual;

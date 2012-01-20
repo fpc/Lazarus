@@ -54,10 +54,11 @@ type
   private
     class procedure GetCarbonAXIdentifiers(const AObject: TLazAccessibleObject; out AHIObject: HIObjectRef; out AID64: UInt64);
   public
-    class procedure SetFields(const AObject: TLazAccessibleObject; const ADescription, AValue: string; const ARole: TLazAccessibilityRole); override;
     class function CreateHandle(const AObject: TLazAccessibleObject): HWND; override;
     class procedure DestroyHandle(const AObject: TLazAccessibleObject); override;
-    class procedure SendNotification(const AObject: TLazAccessibleObject; ANotification: TLazAccessibilityNotification); override;
+    class procedure SetAccessibleDescription(const AObject: TLazAccessibleObject; const ADescription: string); override;
+    class procedure SetAccessibleValue(const AObject: TLazAccessibleObject; const AValue: string); override;
+    class procedure SetAccessibleRole(const AObject: TLazAccessibleObject; const ARole: TLazAccessibilityRole); override;
   end;
 
   { TCarbonWSControl }
@@ -151,23 +152,6 @@ begin
   end;
 end;
 
-class procedure TCarbonWSLazAccessibleObject.SetFields(
-  const AObject: TLazAccessibleObject; const ADescription, AValue: string;
-  const ARole: TLazAccessibilityRole);
-var
-  lElement: AXUIElementRef;
-  lHIObject: HIObjectRef;
-  lID64: UInt64;
-  lValueStr: CFStringRef;
-begin
-  GetCarbonAXIdentifiers(AObject, lHIObject, lID64);
-  if lHIObject = nil then Exit;
-
-  CreateCFString(AValue, lValueStr);
-  HIObjectSetAuxiliaryAccessibilityAttribute(lHIObject, lID64, CFStr('AXValue'), lValueStr);
-  FreeCFString(lValueStr);
-end;
-
 class function TCarbonWSLazAccessibleObject.CreateHandle(
   const AObject: TLazAccessibleObject): HWND;
 var
@@ -192,25 +176,32 @@ begin
   CFRelease(lElement);
 end;
 
-class procedure TCarbonWSLazAccessibleObject.SendNotification(
-  const AObject: TLazAccessibleObject;
-  ANotification: TLazAccessibilityNotification);
+class procedure TCarbonWSLazAccessibleObject.SetAccessibleDescription(const AObject: TLazAccessibleObject; const ADescription: string);
+begin
+
+end;
+
+class procedure TCarbonWSLazAccessibleObject.SetAccessibleValue(const AObject: TLazAccessibleObject; const AValue: string);
 var
-  lNotification: CFStringRef;
+  lElement: AXUIElementRef;
   lHIObject: HIObjectRef;
   lID64: UInt64;
+  lValueStr, lNotification: CFStringRef;
 begin
   GetCarbonAXIdentifiers(AObject, lHIObject, lID64);
   if lHIObject = nil then Exit;
 
-  case ANotification of
-  lanSelectedTextChanged: lNotification := CFSTR('AXValueChanged');
-  lanValueChanged:        lNotification := CFSTR('AXValueChanged');
-  else
-    Exit;
-  end;
+  CreateCFString(AValue, lValueStr);
+  HIObjectSetAuxiliaryAccessibilityAttribute(lHIObject, lID64, CFStr('AXValue'), lValueStr);
+  FreeCFString(lValueStr);
 
+  lNotification := CFSTR('AXValueChanged');
   AXNotificationHIObjectNotify(lNotification, lHIObject, lID64);
+end;
+
+class procedure TCarbonWSLazAccessibleObject.SetAccessibleRole(const AObject: TLazAccessibleObject; const ARole: TLazAccessibilityRole);
+begin
+
 end;
 
 { TCarbonWSWinControl }

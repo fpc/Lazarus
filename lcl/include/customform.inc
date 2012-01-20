@@ -1939,7 +1939,8 @@ begin
     BiDiMode := Application.BidiMode;
 
   // Accessibility
-  SetAccesibilityFields('A window', 'T Form', larWindow);
+  AccessibleDescription := 'A window';
+  AccessibleRole := larWindow;
 
   // the EndFormUpdate is done in AfterConstruction
 end;
