@@ -3331,6 +3331,8 @@ resourcestring
   // path edit dialog
   lisPathEditSelectDirectory = 'Select directory';
   lisPathEditSearchPaths = 'Search paths:';
+  lisPckSearchPathsForFpdocXmlFilesMultiplePathsMustBeSepa = 'Search paths for'
+    +' fpdoc xml files. Multiple paths must be separated by semicolon.';
   lisPathEditMovePathDown = 'Move path down';
   lisPathEditMovePathUp = 'Move path up';
   lisPathEditBrowse = 'Browse';
@@ -3422,9 +3424,9 @@ resourcestring
   lisLDTheUnitIsNotOwnedBeAnyPackageOrProjectPleaseAddThe = 'The unit %s is '
     +'not owned be any package or project.%sPlease add the unit to a package '
     +'or project.%sUnable to create the fpdoc file.';
-  lisLDNoValidLazDocPath = 'No valid LazDoc path';
-  lisLDDoesNotHaveAnyValidLazDocPathUnableToCreateTheFpdo = '%s does not have '
-    +'any valid LazDoc path.%sUnable to create the fpdoc file for %s';
+  lisLDNoValidFPDocPath = 'No valid FPDoc path';
+  lisLDDoesNotHaveAnyValidFPDocPathUnableToCreateTheFpdo = '%s does not have '
+    +'any valid FPDoc path.%sUnable to create the fpdoc file for %s';
   lisErrorReadingXML = 'Error reading XML';
   lisErrorReadingXmlFile = 'Error reading xml file %s%s%s%s%s';
   lisPkgThisFileIsNotInAnyLoadedPackage = 'This file is not in any loaded package.';
@@ -4136,6 +4138,8 @@ resourcestring
   lisPckOptsAutomaticallyRebuildAsNeeded = 'Automatically rebuild as needed';
   lisPckOptsAutoRebuildWhenRebuildingAll = 'Auto rebuild when rebuilding all';
   lisPckOptsManualCompilationNeverAutomatically = 'Manual compilation (never automatically)';
+  lisPckPackage = 'Package:';
+  lisPckClearToUseThePackageName = 'Clear to use the package name';
   lisPckOptsAddPathsToDependentPackagesProjects = 'Add paths to dependent packages/projects';
   lisPckOptsInclude = 'Include';
   lisPckOptsObject = 'Object';
@@ -4457,7 +4461,7 @@ resourcestring
   lisEONOTEOnlyAbsolutePathsAreSupportedNow = 'NOTE: only absolute paths are supported now';
   lisCodeHelpConfirmreplace = 'Confirm replace';
   lisCodeHelpReplaceButton = 'Replace';
-  lisCodeHelpPathsGroupBox = 'FPDoc files path';
+  lisCodeHelpGroupBox = 'FPDoc settings';
   lisCodeHelpHintBoldFormat = 'Insert bold formatting tag';
   lisCodeHelpHintItalicFormat = 'Insert italic formatting tag';
   lisCodeHelpHintUnderlineFormat = 'Insert underline formatting tag';

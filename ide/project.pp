@@ -2853,9 +2853,9 @@ begin
         xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
         xmlconfig.SetDeleteValue(Path+'General/UseAppBundle/Value', UseAppBundle, True);
 
-        // lazdoc
+        // fpdoc
         xmlconfig.SetDeleteValue(Path+'LazDoc/Paths',
-           SwitchPathDelims(CreateRelativeSearchPath(LazDocPaths,ProjectDirectory),
+           SwitchPathDelims(CreateRelativeSearchPath(FPDocPaths,ProjectDirectory),
                             fCurStorePathDelim),
            '');
 
@@ -3427,9 +3427,9 @@ begin
            Path+'General/AutoCreateForms/Value', true);
       end;
 
-      // Lazdoc
+      // fpdoc
       if not LoadParts then begin
-        LazDocPaths := SwitchPathDelims(xmlconfig.GetValue(Path+'LazDoc/Paths', ''),
+        FPDocPaths := SwitchPathDelims(xmlconfig.GetValue(Path+'LazDoc/Paths', ''),
                                fPathDelimChanged);
       end;
 

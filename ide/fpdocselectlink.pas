@@ -353,7 +353,7 @@ var
 begin
   for i:=0 to PackageGraph.Count-1 do begin
     Pkg:=PackageGraph.Packages[i];
-    if Pkg.LazDocPaths='' then continue;
+    if Pkg.FPDocPaths='' then continue;
     if (SysUtils.CompareText(Prefix,copy(Pkg.Name,1,length(Prefix)))=0) then
       fItems.AddPackage(Pkg);
   end;

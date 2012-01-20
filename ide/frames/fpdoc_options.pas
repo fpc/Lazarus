@@ -67,7 +67,7 @@ end;
 
 procedure TFpDocOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  LazDocPathsGroupBox.Caption := lisCodeHelpPathsGroupBox;
+  LazDocPathsGroupBox.Caption := lisCodeHelpGroupBox;
   LazDocAddPathButton.Caption := lisCodeHelpAddPathButton;
   LazDocDeletePathButton.Caption := lisCodeHelpDeletePathButton;
 
@@ -77,13 +77,13 @@ end;
 procedure TFpDocOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TEnvironmentOptions do
-    SplitString(LazDocPaths, ';', LazDocListBox.Items);
+    SplitString(FPDocPaths, ';', LazDocListBox.Items);
 end;
 
 procedure TFpDocOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TEnvironmentOptions do
-    LazDocPaths := StringListToText(LazDocListBox.Items, ';', true);
+    FPDocPaths := StringListToText(LazDocListBox.Items, ';', true);
 end;
 
 procedure TFpDocOptionsFrame.LazDocAddPathButtonClick(Sender: TObject);

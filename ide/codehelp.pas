@@ -28,12 +28,12 @@ unit CodeHelp;
 
 {$mode objfpc}{$H+}
 
-{off $DEFINE VerboseLazDoc}
-{off $DEFINE VerboseLazDocFails}
+{off $DEFINE VerboseCodeHelp}
+{off $DEFINE VerboseCodeHelpFails}
 {off $DEFINE VerboseHints}
 
-{$IFDEF VerboseLazDoc}
-  {$DEFINE VerboseLazDocFails}
+{$IFDEF VerboseCodeHelp}
+  {$DEFINE VerboseCodeHelpFails}
 {$ENDIF}
 
 interface
@@ -828,7 +828,7 @@ begin
   finally
     MemStream.Free;
   end;
-  {$ifdef VerboseLazDoc}
+  {$ifdef VerboseCodeHelp}
   if Result<>'' then
     DebugLn(['TLazFPDocFile.GetChildValuesAsString Node=',Node.NodeName,' Result=',Result]);
   {$endif}
@@ -1100,9 +1100,9 @@ function TCodeHelpManager.DoCreateFPDocFileForSource(const SrcFilename: string;
     end;
   end;
   
-  function SelectNewLazDocPaths(const Title, BaseDir: string): string;
+  function SelectNewFPDocPaths(const Title, BaseDir: string): string;
   begin
-    Result:=LazSelectDirectory('Choose LazDoc directory for '+Title,BaseDir);
+    Result:=LazSelectDirectory('Choose FPDoc directory for '+Title,BaseDir);
     if (Result<>'') then
       Result:=CreateRelativePath(Result,BaseDir);
   end;
@@ -1112,8 +1112,8 @@ var
   AProject: TLazProject;
   APackage: TLazPackage;
   p: Integer;
-  LazDocPaths: String;
-  LazDocPackageName: String;
+  FPDocPaths: String;
+  FPDocPackageName: String;
   NewPath: String;
   BaseDir: String;
   Code: TCodeBuffer;
@@ -1154,32 +1154,32 @@ begin
     if NewOwner is TLazProject then begin
       AProject:=TLazProject(NewOwner);
       BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
-      if AProject.LazDocPaths='' then
-        AProject.LazDocPaths:=SelectNewLazDocPaths(AProject.ShortDescription,BaseDir);
-      LazDocPaths:=AProject.LazDocPaths;
-      LazDocPackageName:=GetModuleOwnerName(AProject);
+      if AProject.FPDocPaths='' then
+        AProject.FPDocPaths:=SelectNewFPDocPaths(AProject.ShortDescription,BaseDir);
+      FPDocPaths:=AProject.FPDocPaths;
+      FPDocPackageName:=GetModuleOwnerName(AProject);
     end else if NewOwner is TLazPackage then begin
       APackage:=TLazPackage(NewOwner);
       BaseDir:=APackage.DirectoryExpanded;
-      if APackage.LazDocPaths='' then
-        APackage.LazDocPaths:=SelectNewLazDocPaths(APackage.Name,BaseDir);
-      LazDocPaths:=APackage.LazDocPaths;
-      LazDocPackageName:=GetModuleOwnerName(APackage);
+      if APackage.FPDocPaths='' then
+        APackage.FPDocPaths:=SelectNewFPDocPaths(APackage.Name,BaseDir);
+      FPDocPaths:=APackage.FPDocPaths;
+      FPDocPackageName:=GetModuleOwnerName(APackage);
     end else if NewOwner=LazarusHelp then begin
       BaseDir:=EnvironmentOptions.LazarusDirectory;
-      LazDocPaths:=GetIDESrcFPDocPath;
-      LazDocPackageName:=IDEProjectName;
+      FPDocPaths:=GetIDESrcFPDocPath;
+      FPDocPackageName:=IDEProjectName;
     end else begin
       DebugLn(['TCodeHelpManager.DoCreateFPDocFileForSource unknown owner type ',dbgsName(NewOwner)]);
       NewOwner:=nil;
       exit;
     end;
 
-    IDEMacros.CreateAbsoluteSearchPath(LazDocPaths,BaseDir);
+    IDEMacros.CreateAbsoluteSearchPath(FPDocPaths,BaseDir);
 
     p:=1;
     repeat
-      NewPath:=GetNextDirectoryInSearchPath(LazDocPaths,p);
+      NewPath:=GetNextDirectoryInSearchPath(FPDocPaths,p);
       if not FilenameIsAbsolute(NewPath) then
         NewPath:=AppendPathDelim(BaseDir)+NewPath;
       if DirPathExistsCached(NewPath) then begin
@@ -1196,17 +1196,17 @@ begin
         if AVLNode<>nil then
           FSrcToDocMap.FreeAndDelete(AVLNode);
         // create fpdoc file
-        if CreateFPDocFile(Result,LazDocPackageName,CurUnitName)=nil then
+        if CreateFPDocFile(Result,FPDocPackageName,CurUnitName)=nil then
           Result:='';
         exit;
       end;
     until false;
     
     // no valid directory found
-    DebugLn(['TCodeHelpManager.DoCreateFPDocFileForSource LazDocModul="',LazDocPackageName,'" LazDocPaths="',LazDocPaths,'" ']);
-    MessageDlg(lisLDNoValidLazDocPath,
-      Format(lisLDDoesNotHaveAnyValidLazDocPathUnableToCreateTheFpdo, [
-        LazDocPackageName, #13, SrcFilename]), mtError, [mbCancel], 0);
+    DebugLn(['TCodeHelpManager.DoCreateFPDocFileForSource FPDocModul="',FPDocPackageName,'" FPDocPaths="',FPDocPaths,'" ']);
+    MessageDlg(lisLDNoValidFPDocPath,
+      Format(lisLDDoesNotHaveAnyValidFPDocPathUnableToCreateTheFpdo, [
+        FPDocPackageName, #13, SrcFilename]), mtError, [mbCancel], 0);
   finally
     PkgList.Free;
   end;
@@ -1345,7 +1345,7 @@ begin
   end;
   CacheWasUsed:=false;
   
-  {$IFDEF VerboseLazDoc}
+  {$IFDEF VerboseCodeHelp}
   DebugLn(['TCodeHelpManager.LoadFPDocFile parsing ',ADocFile.Filename]);
   {$ENDIF}
   CallDocChangeEvents(chmhDocChanging,ADocFile);
@@ -1518,20 +1518,20 @@ var
         if TObject(PkgList[i]) is TLazProject then begin
           AProject:=TLazProject(PkgList[i]);
           AnOwner:=AProject;
-          if AProject.LazDocPaths='' then continue;
+          if AProject.FPDocPaths='' then continue;
           BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
           if BaseDir='' then continue;
-          // add lazdoc paths of project
-          if SearchInPath(AProject.LazDocPaths,BaseDir,Filename) then
+          // add fpdoc paths of project
+          if SearchInPath(AProject.FPDocPaths,BaseDir,Filename) then
             exit(true);
         end else if TObject(PkgList[i]) is TLazPackage then begin
           APackage:=TLazPackage(PkgList[i]);
           AnOwner:=APackage;
-          if APackage.LazDocPaths='' then continue;
+          if APackage.FPDocPaths='' then continue;
           BaseDir:=APackage.Directory;
           if BaseDir='' then continue;
-          // add lazdoc paths of package
-          if SearchInPath(APackage.LazDocPaths,BaseDir,Filename) then begin
+          // add fpdoc paths of package
+          if SearchInPath(APackage.FPDocPaths,BaseDir,Filename) then begin
             exit(true);
           end else if AnOwner=nil then
             AnOwner:=APackage;
@@ -1555,7 +1555,7 @@ var
     end;
 
     // finally: check if in user directories
-    if SearchInPath(EnvironmentOptions.LazDocPaths,'',Filename) then
+    if SearchInPath(EnvironmentOptions.FPDocPaths,'',Filename) then
     begin
       AnOwner:=nil;
       exit(true);
@@ -1602,7 +1602,7 @@ begin
     end;
     CacheWasUsed:=false;
 
-    {$IFDEF VerboseLazDoc}
+    {$IFDEF VerboseCodeHelp}
     DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource searching SrcFilename=',SrcFilename]);
     {$ENDIF}
 
@@ -1617,7 +1617,7 @@ begin
       if AnOwner=nil then
         DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource Hint: file without owner: ',SrcFilename])
       else
-        debugln(['TCodeHelpManager.GetFPDocFilenameForSource Hint: Owner has no lazdoc paths: ',SrcFilename]);
+        debugln(['TCodeHelpManager.GetFPDocFilenameForSource Hint: Owner has no fpdoc paths: ',SrcFilename]);
     end;
 
     // save to cache
@@ -1633,11 +1633,11 @@ begin
     if (Result='') and CreateIfNotExists then begin
       Result:=DoCreateFPDocFileForSource(SrcFilename,AnOwner);
     end;
-    {$IFDEF VerboseLazDoc}
+    {$IFDEF VerboseCodeHelp}
     DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource SrcFilename="',SrcFilename,'" Result="',Result,'"']);
     {$ENDIF}
   end;
-  {$ifdef VerboseLazDoc}
+  {$ifdef VerboseCodeHelp}
   DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource ',dbgsName(AnOwner)]);
   {$endif}
 end;
@@ -1654,7 +1654,7 @@ begin
   Result:='';
   CacheWasUsed:=false;
   APackage:=TLazPackage(PkgFile.LazPackage);
-  if APackage.LazDocPaths='' then exit;
+  if APackage.FPDocPaths='' then exit;
   BaseDir:=APackage.DirectoryExpanded;
   if BaseDir='' then exit;
 
@@ -1672,7 +1672,7 @@ begin
   if not FilenameIsPascalUnit(SrcFilename) then exit;
   SrcFilename:=ExtractFileNameOnly(SrcFilename)+'.xml';
 
-  Result:=SearchFileInPath(SrcFilename,BaseDir,APackage.LazDocPaths,';',
+  Result:=SearchFileInPath(SrcFilename,BaseDir,APackage.FPDocPaths,';',
                            ctsfcDefault);
 end;
 
@@ -1765,10 +1765,10 @@ var
     SearchPath: String;
   begin
     Result:=false;
-    if (Pkg=nil) or (Pkg.LazDocPaths='') then exit;
+    if (Pkg=nil) or (Pkg.FPDocPaths='') then exit;
     // check if the file is in the search path
     Path:=ExtractFilePath(FPDocFile.Filename);
-    SearchPath:=Pkg.LazDocPaths;
+    SearchPath:=Pkg.FPDocPaths;
     if not IDEMacros.CreateAbsoluteSearchPath(SearchPath,Pkg.Directory)
     then
       exit;
@@ -1798,10 +1798,10 @@ begin
   end;
 
   // check if in the doc path of the project
-  if (AProject<>nil) and (AProject.LazDocPaths<>'')
+  if (AProject<>nil) and (AProject.FPDocPaths<>'')
   and FilenameIsAbsolute(AProject.ProjectInfoFile) then begin
     Path:=ExtractFilePath(FPDocFile.Filename);
-    SearchPath:=AProject.LazDocPaths;
+    SearchPath:=AProject.FPDocPaths;
     IDEMacros.CreateAbsoluteSearchPath(SearchPath,
                                      ExtractFilePath(AProject.ProjectInfoFile));
     SearchPath:=TrimSearchPath(SearchPath,'');
@@ -1857,7 +1857,7 @@ end;
 function TCodeHelpManager.ExpandFPDocLinkID(const LinkID,
   DefaultUnitName: string; TheOwner: TObject): string;
   
-  function SearchLazDocFile(SearchPath: string;
+  function SearchFPDocFile(SearchPath: string;
     const BaseDir, AUnitname: string): string;
   var
     FPDocFilename: String;
@@ -1891,7 +1891,7 @@ begin
       APackage:=TLazPackage(TheOwner);
       if (APackage.FindUnit(FirstIdentifier)=nil) then begin
         // the unit is not owned.
-        if SearchLazDocFile(APackage.LazDocPaths,APackage.DirectoryExpanded,
+        if SearchFPDocFile(APackage.FPDocPaths,APackage.DirectoryExpanded,
           FirstIdentifier)='' then
         begin
           // and there is no fpdoc file for this identifier
@@ -1901,7 +1901,7 @@ begin
       end;
     end else if TheOwner is TLazProject then begin
       AProject:=TLazProject(TheOwner);
-      if SearchLazDocFile(AProject.LazDocPaths,
+      if SearchFPDocFile(AProject.FPDocPaths,
         ExtractFilePath(AProject.ProjectInfoFile),FirstIdentifier)='' then
       begin
         // there is no fpdoc file for this identifier
@@ -2089,15 +2089,15 @@ begin
   FPDocFilename:='';
   if ModuleOwner is TLazProject then begin
     AProject:=TLazProject(ModuleOwner);
-    if (AProject.LazDocPaths<>'') then begin
+    if (AProject.FPDocPaths<>'') then begin
       BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
-      FPDocFilename:=FindFPDocFilename(BaseDir,AProject.LazDocPaths,AUnitName);
+      FPDocFilename:=FindFPDocFilename(BaseDir,AProject.FPDocPaths,AUnitName);
     end;
   end else if ModuleOwner is TLazPackage then begin
     Pkg:=TLazPackage(ModuleOwner);
-    if Pkg.LazDocPaths<>'' then begin
+    if Pkg.FPDocPaths<>'' then begin
       BaseDir:=Pkg.Directory;
-      FPDocFilename:=FindFPDocFilename(BaseDir,Pkg.LazDocPaths,AUnitName);
+      FPDocFilename:=FindFPDocFilename(BaseDir,Pkg.FPDocPaths,AUnitName);
     end;
   end;
   //DebugLn(['TCodeHelpManager.GetLinkedFPDocNode FPDocFilename=',FPDocFilename]);
@@ -2221,14 +2221,14 @@ begin
     // get the declaration chain
     Result:=GetDeclarationChain(Code,X,Y,ListOfPCodeXYPosition,CacheWasUsed);
     if Result<>chprSuccess then begin
-      {$IFDEF VerboseLazDocFails}
+      {$IFDEF VerboseCodeHelpFails}
       DebugLn(['TCodeHelpManager.GetElementChain GetDeclarationChain failed ',Code.Filename,' x=',x,' y=',y]);
       {$ENDIF}
       exit;
     end;
     if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
-    {$IFDEF VerboseLazDoc}
+    {$IFDEF VerboseCodeHelp}
     DebugLn(['TCodeHelpManager.GetElementChain init the element chain: ListOfPCodeXYPosition.Count=',ListOfPCodeXYPosition.Count,' ...']);
     {$ENDIF}
     // init the element chain
@@ -2342,7 +2342,7 @@ begin
       //DumpExceptionBackTrace;
     end;
   end;
-  {$ifdef VerboseLazDoc}
+  {$ifdef VerboseCodeHelp}
   debugln(['TCodeHelpManager.GetHTMLHint ',HTMLHint]);
   {$endif}
 end;
@@ -2451,7 +2451,7 @@ begin
         or ((CTNode.Desc in [ctnProcedure,ctnProcedureHead])
             and (CTTool.ProcNodeHasSpecifier(CTNode,psOVERRIDE)))
         then begin
-          {$ifdef VerboseLazDoc}
+          {$ifdef VerboseCodeHelp}
           debugln(['TCodeHelpManager.GetHTMLHint searching for inherited of ',CTNode.DescAsString,' ',dbgs(XYPos)]);
           {$endif}
           OldXYPos:=XYPos;
@@ -2462,13 +2462,13 @@ begin
           or (CTNode=OldCTNode)
           or (CTNode=nil)
           then begin
-            {$ifdef VerboseLazDoc}
+            {$ifdef VerboseCodeHelp}
             debugln(['TCodeHelpManager.GetHTMLHint inherited not found: ',dbgs(OldXYPos)]);
             {$endif}
             break;
           end;
         end else begin
-          {$ifdef VerboseLazDoc}
+          {$ifdef VerboseCodeHelp}
           debugln(['TCodeHelpManager.GetHTMLHint not searching inherited for ',CTNode.DescAsString]);
           {$endif}
           break;
@@ -2504,7 +2504,7 @@ begin
     end else
       Result:=chprFailed;
   end;
-  {$ifdef VerboseLazDoc}
+  {$ifdef VerboseCodeHelp}
   debugln(['TCodeHelpManager.GetHTMLHint ',HTMLHint]);
   {$endif}
 end;

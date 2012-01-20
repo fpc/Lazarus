@@ -90,13 +90,13 @@ end;
 procedure TProjectLazDocOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TProject do
-    SplitString(LazDocPaths, ';', LazDocListBox.Items, True);
+    SplitString(FPDocPaths, ';', LazDocListBox.Items, True);
 end;
 
 procedure TProjectLazDocOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TProject do
-    LazDocPaths := StringListToText(LazDocListBox.Items, ';', True);
+    FPDocPaths := StringListToText(LazDocListBox.Items, ';', True);
 end;
 
 class function TProjectLazDocOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

@@ -307,8 +307,8 @@ type
     FAskForFilenameOnNewFile: boolean;
     FLowercaseDefaultFilename: boolean;
 
-    // lazdoc
-    FLazDocPaths: string;
+    // fpdoc
+    FFPDocPaths: string;
 
     // language ID (see LazarusTranslations in translations.pas)
     fLanguageID: string;
@@ -554,8 +554,8 @@ type
     property LowercaseDefaultFilename: boolean read FLowercaseDefaultFilename
                                                write FLowercaseDefaultFilename;
 
-    // lazdoc
-    property LazDocPaths: string read FLazDocPaths write FLazDocPaths;
+    // fpdoc
+    property FPDocPaths: string read FFPDocPaths write FFPDocPaths;
 
     // language
     property LanguageID: string read fLanguageID write fLanguageID;
@@ -593,7 +593,7 @@ function SimpleDirectoryCheck(const OldDir, NewDir,
   NotFoundErrMsg: string; out StopChecking: boolean): boolean;
 
 const
-  DefaultLazDocPath = '$(LazarusDir)/docs/xml/lcl';
+  DefaultFPDocPath = '$(LazarusDir)/docs/xml/lcl';
   DefaultMsgViewFocus = {$IFDEF Windows}true{$ELSE}false{$ENDIF};
   MaxComboBoxCount: integer = 20;
   EnvOptsConfFileName = 'environmentoptions.xml';
@@ -835,8 +835,8 @@ begin
   (* TODO: maybe revert relations. Create this in Debugger, and call environmentoptions for the configstore only? *)
   FDebuggerConfig := TDebuggerConfigStore.Create;
 
-  // lazdoc
-  FLazDocPaths:=SetDirSeparators(DefaultLazDocPath);
+  // FPdoc
+  FFPDocPaths:=SetDirSeparators(DefaultFPDocPath);
 end;
 
 destructor TEnvironmentOptions.Destroy;
@@ -1242,10 +1242,10 @@ begin
       FLowercaseDefaultFilename:=XMLConfig.GetValue(
         Path+'LowercaseDefaultFilename/Value',true);
 
-      //lazdoc
-      FLazDocPaths := XMLConfig.GetValue(Path+'LazDoc/Paths', DefaultLazDocPath);
+      // fpdoc
+      FFPDocPaths := XMLConfig.GetValue(Path+'LazDoc/Paths', DefaultFPDocPath);
       if FileVersion<=105 then
-        FLazDocPaths:=LineBreaksToDelimiter(FLazDocPaths,';');
+        FFPDocPaths:=LineBreaksToDelimiter(FFPDocPaths,';');
 
       // 'new items'
       FNewUnitTemplate:=XMLConfig.GetValue(Path+'New/UnitTemplate/Value',FileDescNamePascalUnit);
@@ -1554,8 +1554,8 @@ begin
       XMLConfig.SetDeleteValue(Path+'LowercaseDefaultFilename/Value',
                                FLowercaseDefaultFilename,true);
 
-      // lazdoc
-      XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',FLazDocPaths,DefaultLazDocPath);
+      // fpdoc
+      XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',FFPDocPaths,DefaultFPDocPath);
 
       // 'new items'
       XMLConfig.SetDeleteValue(Path+'New/UnitTemplate/Value',FNewUnitTemplate,FileDescNamePascalUnit);

@@ -112,7 +112,7 @@ begin
   if (Position<0) or (Position>=CodeToolBoss.IdentifierList.GetFilteredCount) then
     exit;
   Item:=CodeToolBoss.IdentifierList.FilteredItems[Position];
-  DebugLn(['TFPDocHintProvider.ReadLazDocData Identifier=',Item.Identifier]);
+  DebugLn(['TFPDocHintProvider.DoUpdateHint Identifier=',Item.Identifier]);
   try
     FBaseURL:='';
     FHTMLHint:='<HTML><BODY>No help available.</BODY></HTML>';
@@ -126,15 +126,15 @@ begin
                                         [chhoDeclarationHeader],
                                         FBaseURL,FHTMLHint,CacheWasUsed);
         if HelpResult<>chprSuccess then begin
-          DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED Unit=',Item.Identifier]);
+          DebugLn(['TFPDocHintProvider.DoUpdateHint FAILED Unit=',Item.Identifier]);
         end;
         exit;
       end;
-      DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED no node ',NodeDescriptionAsString(Item.DefaultDesc),' Identifier=',Item.Identifier]);
+      DebugLn(['TFPDocHintProvider.DoUpdateHint FAILED no node ',NodeDescriptionAsString(Item.DefaultDesc),' Identifier=',Item.Identifier]);
       exit;
     end;
     if (Item.Tool.Scanner=nil) then exit;
-    //DebugLn(['TFPDocHintProvider.ReadLazDocData Src=',copy(Item.Tool.Src,Node.StartPos,30),' ',Node.DescAsString]);
+    //DebugLn(['TFPDocHintProvider.DoUpdateHint Src=',copy(Item.Tool.Src,Node.StartPos,30),' ',Node.DescAsString]);
     
     // search the position of the identifier, not the keyword
     CleanPos:=Node.StartPos;
@@ -153,15 +153,15 @@ begin
     
     // get help text
     if (not Item.Tool.CleanPosToCaret(CleanPos,Caret)) then begin
-      DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED CleanPosToCaret Tool=',Item.Tool.MainFilename,' CleanPos=',CleanPos,' SrcLen=',Item.Tool.SrcLen]);
+      DebugLn(['TFPDocHintProvider.DoUpdateHint FAILED CleanPosToCaret Tool=',Item.Tool.MainFilename,' CleanPos=',CleanPos,' SrcLen=',Item.Tool.SrcLen]);
       exit;
     end;
-    //DebugLn(['TFPDocHintProvider.ReadLazDocData ',Item.Identifier,' ',Item.Tool.MainFilename,' ',Caret.Code.Filename,' ',Caret.X,',',Caret.Y]);
+    //DebugLn(['TFPDocHintProvider.DoUpdateHint ',Item.Identifier,' ',Item.Tool.MainFilename,' ',Caret.Code.Filename,' ',Caret.X,',',Caret.Y]);
     HelpResult:=CodeHelpBoss.GetHTMLHint(Caret.Code,Caret.X,Caret.Y,
                                     [chhoDeclarationHeader],
                                     FBaseURL,FHTMLHint,CacheWasUsed);
     if HelpResult<>chprSuccess then begin
-      DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED Identifier=',Item.Identifier]);
+      DebugLn(['TFPDocHintProvider.DoUpdateHint FAILED Identifier=',Item.Identifier]);
       exit;
     end;
   finally

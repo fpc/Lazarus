@@ -176,8 +176,8 @@ type
     procedure UpdateCaption;
     procedure UpdateValueControls;
     procedure UpdateInheritedControls;
-    procedure OnLazDocChanging(Sender: TObject; LazDocFPFile: TLazFPDocFile);
-    procedure OnLazDocChanged(Sender: TObject; LazDocFPFile: TLazFPDocFile);
+    procedure OnFPDocChanging(Sender: TObject; FPDocFPFile: TLazFPDocFile);
+    procedure OnFPDocChanged(Sender: TObject; FPDocFPFile: TLazFPDocFile);
     procedure LoadGUIValues(Element: TCodeHelpElement);
     procedure MoveToInherited(Element: TCodeHelpElement);
     function GetDefaultDocFile(CreateIfNotExists: Boolean = False): TLazFPDocFile;
@@ -285,8 +285,8 @@ begin
 
   Reset;
   
-  CodeHelpBoss.AddHandlerOnChanging(@OnLazDocChanging);
-  CodeHelpBoss.AddHandlerOnChanged(@OnLazDocChanged);
+  CodeHelpBoss.AddHandlerOnChanging(@OnFPDocChanging);
+  CodeHelpBoss.AddHandlerOnChanged(@OnFPDocChanged);
   Application.AddOnIdleHandler(@ApplicationIdle);
   
   Name := NonModalIDEWindowNames[nmiwFPDocEditorName];
@@ -700,7 +700,7 @@ begin
   end else
     Caption := strCaption + lisCodeHelpNoTagCaption;
   {$IFDEF VerboseCodeHelp}
-  DebugLn(['TLazDocForm.UpdateCaption ',Caption]);
+  DebugLn(['TFPDocEditor.UpdateCaption ',Caption]);
   {$ENDIF}
 end;
 
@@ -788,20 +788,20 @@ begin
       exit;
     end;
 
-    // start getting the lazdoc element chain
+    // start getting the fpdoc element chain
     LDResult:=CodeHelpBoss.GetElementChain(Code,CaretXY.X,CaretXY.Y,true,
                                            NewChain,CacheWasUsed);
     case LDResult of
     chprParsing:
       begin
         Include(FFlags,fpdefChainNeedsUpdate);
-        DebugLn(['TFPDocEditForm.UpdateChain ToDo: still parsing LazDocBoss.GetElementChain for ',fSourceFilename,' ',dbgs(CaretXY)]);
+        DebugLn(['TFPDocEditForm.UpdateChain ToDo: still parsing CodeHelpBoss.GetElementChain for ',fSourceFilename,' ',dbgs(CaretXY)]);
         exit;
       end;
     chprFailed:
       begin
-        {$IFDEF VerboseLazDocFails}
-        DebugLn(['TFPDocEditForm.UpdateChain failed LazDocBoss.GetElementChain for ',fSourceFilename,' ',dbgs(CaretXY)]);
+        {$IFDEF VerboseFPDocFails}
+        DebugLn(['TFPDocEditForm.UpdateChain failed CodeHelpBoss.GetElementChain for ',fSourceFilename,' ',dbgs(CaretXY)]);
         {$ENDIF}
         exit;
       end;
@@ -827,18 +827,18 @@ begin
     OpenXMLButton.Hint:='';
 end;
 
-procedure TFPDocEditor.OnLazDocChanging(Sender: TObject;
-  LazDocFPFile: TLazFPDocFile);
+procedure TFPDocEditor.OnFPDocChanging(Sender: TObject;
+  FPDocFPFile: TLazFPDocFile);
 begin
   if fpdefWriting in FFlags then exit;
-  if (fChain<>nil) and (fChain.IndexOfFile(LazDocFPFile)>=0) then
+  if (fChain<>nil) and (fChain.IndexOfFile(FPDocFPFile)>=0) then
     InvalidateChain
-  else if (fDocFile<>nil) and (fDocFile=LazDocFPFile) then
+  else if (fDocFile<>nil) and (fDocFile=FPDocFPFile) then
     Include(FFlags,fpdefTopicNeedsUpdate);
 end;
 
-procedure TFPDocEditor.OnLazDocChanged(Sender: TObject;
-  LazDocFPFile: TLazFPDocFile);
+procedure TFPDocEditor.OnFPDocChanged(Sender: TObject;
+  FPDocFPFile: TLazFPDocFile);
 begin
   if fpdefWriting in FFlags then exit;
 
@@ -1266,7 +1266,7 @@ begin
       if fChain.DocFile=TopicDocFile then
         TopicChanged:=false;
     end else begin
-      DebugLn(['TLazDocForm.Save WriteNode FAILED']);
+      DebugLn(['TFPDocEditor.Save WriteNode FAILED']);
     end;
   end;
   if TopicChanged then begin
@@ -1351,7 +1351,7 @@ var
   begin
     Result:=Test;
     if not Test then exit;
-    DebugLn(['TLazDocForm.WriteNode  ERROR ',Msg]);
+    DebugLn(['TFPDocEditor.WriteNode  ERROR ',Msg]);
     if Interactive then begin;
       if Element.FPDocFile<>nil then
         CurName:=Element.FPDocFile.Filename
@@ -1570,6 +1570,6 @@ end;
 
 initialization
   // then the items
-  {$I lazdoc.lrs}
+  {$I fpdocediticons.lrs}
 
 end.
