@@ -383,11 +383,11 @@ type
     FSessionModified: boolean;
     FTitle: String;
     FSessionStorage: TProjectSessionStorage;
-    FLazDocPaths: string;
+    FFPDocPaths: string;
     FUseAppBundle: Boolean;
     procedure SetCleanOutputFileMask(const AValue: string);
     procedure SetCleanSourcesFileMask(const AValue: string);
-    procedure SetLazDocPaths(const AValue: string);
+    procedure SetFPDocPaths(const AValue: string);
   protected
     FLazCompilerOptions: TLazCompilerOptions;
     FFlags: TProjectFlags;
@@ -454,7 +454,8 @@ type
                        write SetSessionModified;
                        // project session data (not units, data),
                        // units have their own SessionModified
-    property LazDocPaths: string read FLazDocPaths write SetLazDocPaths;
+    property FPDocPaths: string read FFPDocPaths write SetFPDocPaths;
+    property LazDocPaths: string read FFPDocPaths write SetFPDocPaths; deprecated;
     property CleanOutputFileMask: string read FCleanOutputFileMask write SetCleanOutputFileMask; // saved in session
     property CleanSourcesFileMask: string read FCleanSourcesFileMask write SetCleanSourcesFileMask; // saved in session
     property CustomData: TStringToStringTree read FCustomData;
@@ -1046,10 +1047,10 @@ begin
   SessionModified:=true;
 end;
 
-procedure TLazProject.SetLazDocPaths(const AValue: string);
+procedure TLazProject.SetFPDocPaths(const AValue: string);
 begin
-  if FLazDocPaths=AValue then exit;
-  FLazDocPaths:=AValue;
+  if FFPDocPaths=AValue then exit;
+  FFPDocPaths:=AValue;
   Modified:=true;
 end;
 
@@ -1112,7 +1113,7 @@ begin
   FExecutableType:=petNone;
   FTitle:='';
   FSessionStorage:=DefaultNewProjectSessionStorage;
-  FLazDocPaths:='';
+  FFPDocPaths:='';
 end;
 
 function TLazProject.ShortDescription: string;

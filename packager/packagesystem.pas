@@ -1535,7 +1535,7 @@ begin
     CompilerOptions.UnitOutputDirectory:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/';
     POOutputDirectory:='languages';
     Translated:=SystemLanguageID1;
-    LazDocPaths:=SetDirSeparators('$(LazarusDir)/docs/xml/lcl');
+    FPDocPaths:=SetDirSeparators('$(LazarusDir)/docs/xml/lcl');
     AddToProjectUsesSection:=false;
 
     // add requirements
@@ -1586,7 +1586,7 @@ begin
     CompilerOptions.UnitOutputDirectory:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgeType)';
     POOutputDirectory:='languages';
     Translated:=SystemLanguageID1;
-    LazDocPaths:=SetDirSeparators('$(LazarusDir)/docs/xml/lcl');
+    FPDocPaths:=SetDirSeparators('$(LazarusDir)/docs/xml/lcl');
     AddToProjectUsesSection:=false;
 
     // add requirements
@@ -1701,7 +1701,7 @@ begin
     CompilerOptions.UnitOutputDirectory:='';
     POOutputDirectory:='languages';
     Translated:=SystemLanguageID1;
-    LazDocPaths:=SetDirSeparators('$(LazarusDir)/components/synedit/docs/xml');
+    FPDocPaths:=SetDirSeparators('$(LazarusDir)/components/synedit/docs/xml');
     AddToProjectUsesSection:=false;
 
     // add requirements
@@ -1822,7 +1822,7 @@ begin
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
     POOutputDirectory:='languages';
-    LazDocPaths:='docs';
+    FPDocPaths:='docs';
     Translated:=SystemLanguageID1;
     AddToProjectUsesSection:=false;
 
@@ -1864,7 +1864,7 @@ begin
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
     POOutputDirectory:='languages';
-    LazDocPaths:='docs';
+    FPDocPaths:='docs';
     Translated:=SystemLanguageID1;
     AddToProjectUsesSection:=false;
 
@@ -1904,7 +1904,7 @@ begin
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
     POOutputDirectory:='languages';
-    LazDocPaths:='docs';
+    FPDocPaths:='docs';
     Translated:=SystemLanguageID1;
     AddToProjectUsesSection:=false;
 
@@ -1986,7 +1986,7 @@ begin
     CompilerOptions.UnitOutputDirectory:='';
     POOutputDirectory:='languages';
     Translated:=SystemLanguageID1;
-    LazDocPaths:='docs';
+    FPDocPaths:='docs';
     EnableI18N:=true;
     AddToProjectUsesSection:=false;
 

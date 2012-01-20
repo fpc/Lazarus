@@ -272,9 +272,10 @@ type
                       );
     function GetIDESrcFPDocPath: string; // $(LazarusDir)/docs/xml/ide/
     function IsIDESrcFile(const SrcFilename: string): boolean;
-    function FindModuleOwner(const Modulename: string): TObject;
+    function FindFPDocPackageOwner(const PackageName: string): TObject;
     function FindModuleOwner(FPDocFile: TLazFPDocFile): TObject;
     function GetModuleOwnerName(TheOwner: TObject): string;
+    function GetFPDocPackageNameByOwner(TheOwner: TObject): string;
     function ExpandFPDocLinkID(const LinkID, DefaultUnitName,
                                DefaultOwnerName: string): string;
     function ExpandFPDocLinkID(const LinkID, DefaultUnitName: string;
@@ -1157,14 +1158,14 @@ begin
       if AProject.FPDocPaths='' then
         AProject.FPDocPaths:=SelectNewFPDocPaths(AProject.ShortDescription,BaseDir);
       FPDocPaths:=AProject.FPDocPaths;
-      FPDocPackageName:=GetModuleOwnerName(AProject);
+      FPDocPackageName:=GetFPDocPackageNameByOwner(AProject);
     end else if NewOwner is TLazPackage then begin
       APackage:=TLazPackage(NewOwner);
       BaseDir:=APackage.DirectoryExpanded;
       if APackage.FPDocPaths='' then
         APackage.FPDocPaths:=SelectNewFPDocPaths(APackage.Name,BaseDir);
       FPDocPaths:=APackage.FPDocPaths;
-      FPDocPackageName:=GetModuleOwnerName(APackage);
+      FPDocPackageName:=GetFPDocPackageNameByOwner(APackage);
     end else if NewOwner=LazarusHelp then begin
       BaseDir:=EnvironmentOptions.LazarusDirectory;
       FPDocPaths:=GetIDESrcFPDocPath;
@@ -1730,23 +1731,29 @@ begin
     Result:=true;
 end;
 
-function TCodeHelpManager.FindModuleOwner(const Modulename: string): TObject;
+function TCodeHelpManager.FindFPDocPackageOwner(const PackageName: string
+  ): TObject;
 var
   AProject: TLazProject;
+  i: Integer;
+  Pkg: TLazPackage;
 begin
   // check project
   AProject:=LazarusIDE.ActiveProject;
   if (AProject<>nil)
-  and (SysUtils.CompareText(GetModuleOwnerName(AProject),Modulename)=0)
+  and (SysUtils.CompareText(GetFPDocPackageNameByOwner(AProject),PackageName)=0)
   then begin
     Result:=AProject;
     exit;
   end;
   // check package
-  Result:=PackageGraph.FindPackageWithName(Modulename,nil);
-  if Result<>nil then exit;
+  for i:=0 to PackageGraph.Count-1 do begin
+    Pkg:=PackageGraph[i];
+    if SysUtils.CompareText(Pkg.GetFPDocPackageName,PackageName)=0 then
+      exit(Pkg);
+  end;
   // check IDE as project
-  if SysUtils.CompareText(IDEProjectName,Modulename)=0 then begin
+  if SysUtils.CompareText(IDEProjectName,PackageName)=0 then begin
     Result:=LazarusHelp;
     exit;
   end;
@@ -1845,13 +1852,26 @@ begin
     Result:='';
 end;
 
+function TCodeHelpManager.GetFPDocPackageNameByOwner(TheOwner: TObject
+  ): string;
+begin
+  if TheOwner is TLazPackage then
+    Result:=TLazPackage(TheOwner).GetFPDocPackageName
+  else if TheOwner is TLazProject then
+    Result:=ExtractFileNameOnly(TLazProject(TheOwner).ProjectInfoFile)
+  else if TheOwner=LazarusHelp then
+    Result:=IDEProjectName
+  else
+    Result:='';
+end;
+
 function TCodeHelpManager.ExpandFPDocLinkID(const LinkID, DefaultUnitName,
   DefaultOwnerName: string): string;
 begin
   Result:=LinkID;
   if (LinkID='') or (LinkID[1]='#') then exit;
   Result:=ExpandFPDocLinkID(LinkId,DefaultUnitName,
-                            FindModuleOwner(DefaultOwnerName));
+                            FindFPDocPackageOwner(DefaultOwnerName));
 end;
 
 function TCodeHelpManager.ExpandFPDocLinkID(const LinkID,

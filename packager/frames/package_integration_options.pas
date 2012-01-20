@@ -14,14 +14,17 @@ type
   { TPackageIntegrationOptionsFrame }
 
   TPackageIntegrationOptionsFrame = class(TAbstractIDEOptionsEditor)
-    LazDocGroupBox: TGroupBox;
-    LazDocPathEdit: TEdit;
+    FPDocPackageNameEdit: TEdit;
+    FPDocPackageNameLabel: TLabel;
+    FPDocSearchPathsLabel: TLabel;
+    DocGroupBox: TGroupBox;
+    FPDocSearchPathsEdit: TEdit;
     PkgTypeRadioGroup: TRadioGroup;
     UpdateRadioGroup: TRadioGroup;
     procedure PkgTypeRadioGroupClick(Sender: TObject);
   private
     FLazPackage: TLazPackage;
-    LazDocPathButton: TPathEditorButton;
+    FPDocPathButton: TPathEditorButton;
     FStoredPkgType: Integer;
     procedure PathEditBtnClick(Sender: TObject);
     procedure PathEditBtnExecuted(Sender: TObject);
@@ -61,7 +64,7 @@ procedure TPackageIntegrationOptionsFrame.PathEditBtnClick(Sender: TObject);
 var
   AButton: TPathEditorButton absolute Sender;
 begin
-  AButton.CurrentPathEditor.Path := LazDocPathEdit.Text;
+  AButton.CurrentPathEditor.Path := FPDocSearchPathsEdit.Text;
   AButton.CurrentPathEditor.Templates := '';
 end;
 
@@ -78,7 +81,7 @@ begin
   if AButton.CurrentPathEditor.ModalResult <> mrOk then
     Exit;
   NewPath := AButton.CurrentPathEditor.Path;
-  OldPath := LazDocPathEdit.Text;
+  OldPath := FPDocSearchPathsEdit.Text;
   if OldPath <> NewPath then
   begin
     // check NewPath
@@ -113,7 +116,7 @@ begin
       end;
     until StartPos > length(NewPath);
   end;
-  LazDocPathEdit.Text := NewPath;
+  FPDocSearchPathsEdit.Text := NewPath;
 end;
 
 function TPackageIntegrationOptionsFrame.GetTitle: string;
@@ -132,23 +135,28 @@ begin
   UpdateRadioGroup.Items[0] := lisPckOptsAutomaticallyRebuildAsNeeded;
   UpdateRadioGroup.Items[1] := lisPckOptsAutoRebuildWhenRebuildingAll;
   UpdateRadioGroup.Items[2] := lisPckOptsManualCompilationNeverAutomatically;
-  LazDocGroupBox.Caption := lisCodeHelpPathsGroupBox;
+  DocGroupBox.Caption := lisCodeHelpGroupBox;
 
-  LazDocPathButton := TPathEditorButton.Create(Self);
-  with LazDocPathButton do
+  FPDocPackageNameLabel.Caption:=lisPckPackage;
+  FPDocPackageNameEdit.Hint:=lisPckClearToUseThePackageName;
+  FPDocSearchPathsLabel.Caption:=lisPathEditSearchPaths;
+  FPDocSearchPathsEdit.Hint:=lisPckSearchPathsForFpdocXmlFilesMultiplePathsMustBeSepa;
+
+  FPDocPathButton := TPathEditorButton.Create(Self);
+  with FPDocPathButton do
   begin
-    Name := 'LazDocPathButton';
+    Name := 'FPDocPathButton';
     Caption := '...';
     AutoSize := True;
     Anchors := [akRight];
-    AnchorParallel(akRight, 6, LazDocGroupBox);
-    AnchorParallel(akTop, 0, LazDocPathEdit);
-    AnchorParallel(akBottom, 0, LazDocPathEdit);
+    AnchorParallel(akRight, 6, DocGroupBox);
+    AnchorParallel(akTop, 0, FPDocSearchPathsEdit);
+    AnchorParallel(akBottom, 0, FPDocSearchPathsEdit);
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
-    Parent := LazDocGroupBox;
+    Parent := DocGroupBox;
   end;
-  LazDocPathEdit.AnchorToNeighbour(akRight, 0, LazDocPathButton);
+  FPDocSearchPathsEdit.AnchorToNeighbour(akRight, 0, FPDocPathButton);
 end;
 
 procedure TPackageIntegrationOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -167,7 +175,8 @@ begin
     else
       UpdateRadioGroup.ItemIndex := 2;
   end;
-  LazDocPathEdit.Text := LazPackage.LazDocPaths;
+  FPDocSearchPathsEdit.Text:=LazPackage.FPDocPaths;
+  FPDocPackageNameEdit.Text:=LazPackage.FPDocPackageName;
 end;
 
 function TPackageIntegrationOptionsFrame.ShowMsgPackageTypeMustBeDesign: boolean;
@@ -214,7 +223,8 @@ begin
     else
       LazPackage.AutoUpdate := pupAsNeeded;
   end;
-  LazPackage.LazDocPaths := LazDocPathEdit.Text;
+  LazPackage.FPDocPaths := FPDocSearchPathsEdit.Text;
+  LazPackage.FPDocPackageName := FPDocPackageNameEdit.Text;
 end;
 
 class function TPackageIntegrationOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

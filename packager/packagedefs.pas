@@ -567,6 +567,7 @@ type
     FAutoCreated: boolean;
     FAutoInstall: TPackageInstallType;
     FAutoUpdate: TPackageUpdatePolicy;
+    FFPDocPackageName: string;
     FOptionsBackup: TLazPackage;
     FCompilerOptions: TPkgCompilerOptions;
     FComponents: TFPList; // TFPList of TPkgComponent
@@ -588,7 +589,7 @@ type
     FHoldPackageCount: integer;
     FIconFile: string;
     FInstalled: TPackageInstallType;
-    FLazDocPaths: string;
+    FFPDocPaths: string;
     FLicense: string;
     FLPKSource: TCodeBuffer;
     FLPKSourceChangeStep: integer;
@@ -627,9 +628,10 @@ type
     procedure SetEnableI18NForLFM(AValue: boolean);
     procedure SetFileReadOnly(const AValue: boolean);
     procedure SetFlags(const AValue: TLazPackageFlags);
+    procedure SetFPDocPackageName(AValue: string);
     procedure SetIconFile(const AValue: string);
     procedure SetInstalled(const AValue: TPackageInstallType);
-    procedure SetLazDocPaths(const AValue: string);
+    procedure SetFPDocPaths(const AValue: string);
     procedure SetLicense(const AValue: string);
     procedure SetLPKSource(const AValue: TCodeBuffer);
     procedure SetLPKSourceChangeStep(const AValue: integer);
@@ -770,6 +772,8 @@ type
     function ProvidesPackage(const AName: string): boolean;
     // ID
     procedure ChangeID(const NewName: string; NewVersion: TPkgVersion);
+
+    function GetFPDocPackageName: string;
   public
     LastCompile: array[TPkgOutputDir] of TPkgLastCompileStats;
     function GetOutputDirType: TPkgOutputDir;
@@ -807,7 +811,8 @@ type
     property HoldPackageCount: integer read FHoldPackageCount;
     property IconFile: string read FIconFile write SetIconFile;
     property Installed: TPackageInstallType read FInstalled write SetInstalled;
-    property LazDocPaths: string read FLazDocPaths write SetLazDocPaths;
+    property FPDocPaths: string read FFPDocPaths write SetFPDocPaths;
+    property FPDocPackageName: string read FFPDocPackageName write SetFPDocPackageName;
     property License: string read FLicense write SetLicense;
     property LPKSource: TCodeBuffer read FLPKSource write SetLPKSource;// can be nil when file on disk was removed
     property LPKSourceChangeStep: integer read FLPKSourceChangeStep write SetLPKSourceChangeStep;
@@ -2292,7 +2297,8 @@ begin
     PackageType:=aSource.PackageType;
     OutputStateFile:=aSource.OutputStateFile;
     License:=aSource.License;
-    LazDocPaths:=aSource.LazDocPaths;
+    FPDocPaths:=aSource.FPDocPaths;
+    FPDocPackageName:=aSource.FPDocPackageName;
     IconFile:=aSource.IconFile;
     UsageOptions.AssignOptions(aSource.UsageOptions);
     EnableI18N:=aSource.EnableI18N;
@@ -2427,6 +2433,13 @@ begin
     Modified:=true;
 end;
 
+procedure TLazPackage.SetFPDocPackageName(AValue: string);
+begin
+  if FFPDocPackageName=AValue then Exit;
+  FFPDocPackageName:=AValue;
+  Modified:=true;
+end;
+
 procedure TLazPackage.SetIconFile(const AValue: string);
 begin
   if FIconFile=AValue then exit;
@@ -2440,13 +2453,13 @@ begin
   FInstalled:=AValue;
 end;
 
-procedure TLazPackage.SetLazDocPaths(const AValue: string);
+procedure TLazPackage.SetFPDocPaths(const AValue: string);
 var
   NewValue: String;
 begin
   NewValue:=TrimSearchPath(AValue,'');
-  if FLazDocPaths=NewValue then exit;
-  FLazDocPaths:=NewValue;
+  if FFPDocPaths=NewValue then exit;
+  FFPDocPaths:=NewValue;
   Modified:=true;
 end;
 
@@ -2683,6 +2696,8 @@ begin
     FName:='';
     FPackageType:=lptRunAndDesignTime;
     FRegistered:=false;
+    FFPDocPaths:='';
+    FFPDocPackageName:='';
     ClearCustomOptions;
   end;
   for i:=FComponents.Count-1 downto 0 do Components[i].Free;
@@ -2825,8 +2840,9 @@ begin
   OutputStateFile:=SwitchPathDelims(
                             XMLConfig.GetValue(Path+'OutputStateFile/Value',''),
                             PathDelimChanged);
-  fLazDocPaths:=SwitchPathDelims(XMLConfig.GetValue(Path+'LazDoc/Paths',''),
+  FFPDocPaths:=SwitchPathDelims(XMLConfig.GetValue(Path+'LazDoc/Paths',''),
                             PathDelimChanged);
+  FFPDocPackageName:=XMLConfig.GetValue(Path+'LazDoc/PackageName','');
   // i18n
   if FileVersion<3 then begin
     FPOOutputDirectory := SwitchPathDelims(
@@ -2913,7 +2929,8 @@ begin
   XMLConfig.SetDeleteValue(Path+'IconFile/Value',f(FIconFile),'');
   XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
   XMLConfig.SetDeleteValue(Path+'OutputStateFile/Value',f(OutputStateFile),'');
-  XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',f(FLazDocPaths),'');
+  XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',f(FFPDocPaths),'');
+  XMLConfig.SetDeleteValue(Path+'LazDoc/PackageName',FFPDocPackageName,'');
 
   XMLConfig.SetDeleteValue(Path+'i18n/EnableI18N/Value', EnableI18N, false);
   XMLConfig.SetDeleteValue(Path+'i18n/OutDir/Value',f(FPOOutputDirectory), '');
@@ -3564,6 +3581,14 @@ procedure TLazPackage.ChangeID(const NewName: string; NewVersion: TPkgVersion);
 begin
   Version.Assign(NewVersion);
   Name:=NewName;
+end;
+
+function TLazPackage.GetFPDocPackageName: string;
+begin
+  if FPDocPackageName<>'' then
+    Result:=FPDocPackageName
+  else
+    Result:=Name;
 end;
 
 function TLazPackage.GetOutputDirType: TPkgOutputDir;

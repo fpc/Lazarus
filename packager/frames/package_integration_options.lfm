@@ -72,33 +72,79 @@ inherited PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
     )
     TabOrder = 1
   end
-  object LazDocGroupBox: TGroupBox[2]
+  object DocGroupBox: TGroupBox[2]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = UpdateRadioGroup
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 52
+    Height = 82
     Top = 236
     Width = 461
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
-    Caption = 'LazDoc - Lazarus documentation'
-    ClientHeight = 36
+    Caption = 'FPDoc settings'
+    ClientHeight = 66
     ClientWidth = 457
     TabOrder = 2
-    object LazDocPathEdit: TEdit
-      AnchorSideLeft.Control = LazDocGroupBox
-      AnchorSideTop.Control = LazDocGroupBox
-      Left = 6
+    object FPDocSearchPathsEdit: TEdit
+      AnchorSideLeft.Control = FPDocSearchPathsLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = DocGroupBox
+      AnchorSideRight.Control = DocGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 146
       Height = 24
       Top = 6
-      Width = 365
+      Width = 305
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
+      Text = 'FPDocSearchPathsEdit'
+    end
+    object FPDocSearchPathsLabel: TLabel
+      AnchorSideLeft.Control = DocGroupBox
+      AnchorSideTop.Control = FPDocSearchPathsEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 15
+      Top = 11
+      Width = 134
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      Caption = 'FPDocSearchPathsLabel'
+      ParentColor = False
+    end
+    object FPDocPackageNameLabel: TLabel
+      AnchorSideLeft.Control = DocGroupBox
+      AnchorSideTop.Control = FPDocPackageNameEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 15
+      Top = 41
+      Width = 145
+      BorderSpacing.Left = 6
+      Caption = 'FPDocPackageNameLabel'
+      ParentColor = False
+    end
+    object FPDocPackageNameEdit: TEdit
+      AnchorSideLeft.Control = FPDocPackageNameLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = FPDocSearchPathsEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 157
+      Height = 24
+      Top = 36
+      Width = 116
+      BorderSpacing.Around = 6
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+      Text = 'FPDocPackageNameEdit'
     end
   end
 end
