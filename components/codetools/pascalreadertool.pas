@@ -792,11 +792,11 @@ begin
   Result:=ProcNode;
   if Result=nil then exit;
   if Result.Desc<>ctnProcedure then exit;
-  Result:=Result.FirstChild;
+  Result:=Result.LastChild;
   while Result<>nil do begin
     if Result.Desc in [ctnBeginBlock,ctnAsmBlock] then
       exit;
-    Result:=Result.NextBrother;
+    Result:=Result.PriorBrother;
   end;
 end;
 

@@ -4642,6 +4642,7 @@ var
   procedure LimitScope;
   var
     Node: TCodeTreeNode;
+    StartNode: TCodeTreeNode;
   begin
     MinPos:=Tree.FindFirstPosition;
     MaxPos:=Tree.FindLastPosition;
@@ -4649,11 +4650,10 @@ var
 
     if DeclarationTool<>Self then exit;
 
-    Node:=DeclarationNode;
+    StartNode:=DeclarationNode;
     if (AliasDeclarationNode<>nil) then
-      Node:=AliasDeclarationNode;
-    if Node.Desc=ctnProcedureHead then
-      MinPos:=Node.StartPos;
+      StartNode:=AliasDeclarationNode;
+    Node:=StartNode;
     while Node<>nil do begin
       case Node.Desc of
       ctnImplementation:
@@ -4671,15 +4671,16 @@ var
           if MinPos<Node.StartPos then MinPos:=Node.StartPos;
         end;
 
+      ctnProcedureHead:
+        MinPos:=Node.StartPos;
+
       ctnProcedure:
         begin
-          if (DeclarationNode<>Node)
-          and (DeclarationNode<>Node.FirstChild)
-          and (AliasDeclarationNode<>Node)
-          and (AliasDeclarationNode<>Node.FirstChild)
-          then begin
+          if (FindProcBody(Node)<>nil) and (StartNode<>Node.FirstChild) then
+          begin
             // DeclarationNode is a local identifier
             // limit scope to procedure
+            //debugln(['LimitScope ProcNode=',CleanPosToStr(Node.StartPos),'..',CleanPosToStr(Node.EndPos)]);
             if MinPos<Node.FirstChild.EndPos then
               MinPos:=Node.FirstChild.EndPos;
             if MaxPos>Node.EndPos then
@@ -4687,7 +4688,17 @@ var
           end;
         end;
 
+      ctnOnBlock:
+        begin
+          // a declaration in an on block is only accessible in the on block
+          if MinPos<Node.StartPos then
+            MinPos:=Node.StartPos;
+          if MaxPos>Node.EndPos then
+            MaxPos:=Node.EndPos;
+        end;
+
       end;
+      //debugln(['scope limited to node: ',Node.DescAsString,' ',CleanPosToStr(MinPos),'..',CleanPosToStr(MaxPos),': ',dbgstr(copy(Src,MinPos,20)),'..',dbgstr(copy(Src,MaxPos-20,20))]);
       Node:=Node.Parent;
     end;
     //debugln(['LimitScope ',CleanPosToStr(MinPos),'..',CleanPosToStr(MaxPos),': ',dbgstr(copy(Src,MinPos,20)),'..',dbgstr(copy(Src,MaxPos-20,20))]);
@@ -4721,7 +4732,7 @@ begin
     // search identifiers
     LimitScope;
 
-    //debugln('FindReferences MinPos=',dbgs(MinPos),' MaxPos=',dbgs(MaxPos));
+    //debugln('FindReferences MinPos=',CleanPosToStr(MinPos),' MaxPos=',CleanPosToStr(MaxPos));
     SearchIdentifiers;
 
     // create the reference list
