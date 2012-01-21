@@ -35,7 +35,7 @@ diff -urNad lazarus-0.9.26.1-0~/Makefile.fpc lazarus-0.9.26.1-0/Makefile.fpc
  
  #-----------------------------------------------------------------------------
 -all: packager/registration lazutils lcl ideintf components ide starter lazbuilder
-+all: packager/registration lazutils lcl ideintf bigidecomponents bigide starter lazbuilder tools examples
++all: packager/registration lazutils lcl ideintf components bigidecomponents bigide starter lazbuilder tools examples
  
  #-----------------------------------------------------------------------------
  cleannogui:
