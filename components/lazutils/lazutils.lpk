@@ -145,7 +145,7 @@
         <UnitName Value="AvgLvlTree"/>
       </Item31>
     </Files>
-    <LazDoc Paths="docs"/>
+    <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
