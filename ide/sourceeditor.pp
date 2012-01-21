@@ -5442,8 +5442,11 @@ begin
     // add context specific menu items
     CurFilename:=ASrcEdit.FileName;
     ShortFileName:=ExtractFileName(CurFilename);
+    MainCodeBuf:=nil;
     if (FilenameIsAbsolute(CurFilename)) then begin
-      MainCodeBuf:=CodeToolBoss.GetMainCode(ASrcEdit.CodeBuffer);
+      if FilenameIsPascalUnit(ShortFileName)
+      or (CompareFileExt(ShortFileName,'.inc',true)=0) then
+        MainCodeBuf:=CodeToolBoss.GetMainCode(ASrcEdit.CodeBuffer);
       if (MainCodeBuf<>nil) and (MainCodeBuf<>ASrcEdit.CodeBuffer)
       and (not MainCodeBuf.IsVirtual) then begin
         // this is an include file => add link to open unit
@@ -5453,20 +5456,20 @@ begin
         CurFilename:=MainCodeBuf.Filename;
         ShortFileName:=ExtractFileName(CurFilename);
       end;
-      if FilenameIsPascalUnit(CurFilename) then begin
+      if FilenameIsPascalUnit(ShortFileName) then begin
         MaybeAddPopup('.lfm');
         MaybeAddPopup('.dfm');
         MaybeAddPopup('.lrs');
         MaybeAddPopup('.s');
       end;
-      if (CompareFileExt(CurFilename,'.lfm',true)=0)
-      or (CompareFileExt(CurFilename,'.dfm',true)=0) then begin
+      if (CompareFileExt(ShortFileName,'.lfm',true)=0)
+      or (CompareFileExt(ShortFileName,'.dfm',true)=0) then begin
         MaybeAddPopup('.pas');
         MaybeAddPopup('.pp');
         MaybeAddPopup('.p');
       end;
-      if (CompareFileExt(CurFilename,'.lpi',true)=0)
-      or (CompareFileExt(CurFilename,'.lpk',true)=0) then
+      if (CompareFileExt(ShortFileName,'.lpi',true)=0)
+      or (CompareFileExt(ShortFileName,'.lpk',true)=0) then
         AddContextPopupMenuItem(Format(lisOpenLfm,[ShortFileName]),true,@OnPopupMenuOpenFile);
     end;
 
