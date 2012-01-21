@@ -71,6 +71,7 @@ files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) \
 options=-gl  
 unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
         ../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+        ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
         ../components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) \
         ../components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) \
         .
