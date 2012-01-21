@@ -4291,10 +4291,8 @@ var
   DeclarationTool: TFindDeclarationTool;
   DeclarationNode: TCodeTreeNode;
   AliasDeclarationNode: TCodeTreeNode; // if exists: always in front of DeclarationNode
-  StartPos: Integer;
   Params: TFindDeclarationParams;
   PosTree: TAVLTree; // tree of PChar positions in Src
-  AVLNode: TAVLTreeNode;
   ReferencePos: TCodeXYPosition;
   MinPos, MaxPos: Integer;
   CursorNode: TCodeTreeNode;
@@ -4336,7 +4334,7 @@ var
       Node:=Node.FirstChild;
   end;
   
-  procedure ReadIdentifier(IsComment: boolean);
+  procedure ReadIdentifier(StartPos: integer; IsComment: boolean);
   var
     IdentStartPos: Integer;
     IdentEndPos: integer;
@@ -4419,6 +4417,7 @@ var
   var
     CommentLvl: Integer;
     InStrConst: Boolean;
+    StartPos: Integer;
     //CommentStart: LongInt;
   begin
     StartPos:=MinPos;
@@ -4442,7 +4441,7 @@ var
               end;
             'a'..'z','A'..'Z','_':
               if not InStrConst then begin
-                ReadIdentifier(true);
+                ReadIdentifier(StartPos,true);
                 dec(StartPos);
               end;
             '''':
@@ -4468,7 +4467,7 @@ var
               break;
             'a'..'z','A'..'Z','_':
               if not InStrConst then begin
-                ReadIdentifier(true);
+                ReadIdentifier(StartPos,true);
                 dec(StartPos);
               end;
             '''':
@@ -4494,7 +4493,7 @@ var
               if Src[StartPos-1]='*' then break;
             'a'..'z','A'..'Z','_':
               if not InStrConst then begin
-                ReadIdentifier(true);
+                ReadIdentifier(StartPos,true);
                 dec(StartPos);
               end;
             '''':
@@ -4508,7 +4507,7 @@ var
         end;
         
       'a'..'z','A'..'Z','_':
-        ReadIdentifier(false);
+        ReadIdentifier(StartPos,false);
         
       '''':
         begin
@@ -4639,7 +4638,7 @@ var
     Result:=true;
   end;
 
-  procedure LimitScope;
+  procedure LimitScope(UseNode: TCodeTreeNode);
   var
     Node: TCodeTreeNode;
     StartNode: TCodeTreeNode;
@@ -4648,7 +4647,10 @@ var
     MaxPos:=Tree.FindLastPosition;
     if MaxPos>SrcLen then MaxPos:=SrcLen;
 
-    if DeclarationTool<>Self then exit;
+    if DeclarationTool<>Self then begin
+      MinPos:=UseNode.Parent.EndPos;
+      exit;
+    end;
 
     StartNode:=DeclarationNode;
     if (AliasDeclarationNode<>nil) then
@@ -4704,6 +4706,10 @@ var
     //debugln(['LimitScope ',CleanPosToStr(MinPos),'..',CleanPosToStr(MaxPos),': ',dbgstr(copy(Src,MinPos,20)),'..',dbgstr(copy(Src,MaxPos-20,20))]);
   end;
   
+var
+  UseNode: TCodeTreeNode;
+  AVLNode: TAVLTreeNode;
+  StartPos: integer;
 begin
   Result:=false;
   //debugln('FindReferences ',MainFilename,' CursorPos=',CursorPos.Code.Filename,' x=',dbgs(CursorPos.X),' y=',dbgs(CursorPos.Y),' SkipComments=',dbgs(SkipComments));
@@ -4719,9 +4725,11 @@ begin
     if not GetDeclarationTool then exit;
 
     // check if this unit uses the declaration unit
+    UseNode:=nil;
     if Self<>DeclarationTool then begin
       BuildTree(lsrImplementationUsesSectionEnd);
-      if FindUnitFileInAllUsesSections(DeclarationTool.MainFilename)=nil then
+      UseNode:=FindUnitFileInAllUsesSections(DeclarationTool.MainFilename);
+      if UseNode=nil then
         exit(true); // the declaration unit is not used
     end;
 
@@ -4730,7 +4738,7 @@ begin
     if not FindDeclarationNode then exit;
 
     // search identifiers
-    LimitScope;
+    LimitScope(UseNode);
 
     //debugln('FindReferences MinPos=',CleanPosToStr(MinPos),' MaxPos=',CleanPosToStr(MaxPos));
     SearchIdentifiers;
