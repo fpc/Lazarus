@@ -44,7 +44,7 @@ uses
   // codetools
   CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, BasicCodeTools,
   KeywordFuncLists, PascalParserTool, CodeCache, CacheCodeTools, CustomCodeTool,
-  FileProcs, CTXMLFixFragment,
+  FileProcs, CTXMLFixFragment, DefineTemplates,
   {$IFNDEF OldXMLCfg}
   Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
   {$ELSE}
@@ -61,6 +61,7 @@ uses
 
 const
   IDEProjectName = 'Lazarus';
+  FPCDocsRepositoryURL = 'http://svn.freepascal.org/svn/fpcdocs/trunk';
 type
   TFPDocItem = (
     fpdiShort,
@@ -1120,12 +1121,30 @@ function TCodeHelpManager.DoCreateFPDocFileForSource(const SrcFilename: string;
     if (Result<>'') then
       Result:=CreateRelativePath(Result,BaseDir);
   end;
+
+  function FindSuitableDirectory(SearchPath, BaseDir: string; Writable: boolean): string;
+  var
+    p: Integer;
+  begin
+    //debugln(['FindSuitableDirectory SearchPath="',SearchPath,'"']);
+    p:=1;
+    repeat
+      Result:=GetNextDirectoryInSearchPath(SearchPath,p);
+      if Result='' then exit;
+      if not FilenameIsAbsolute(Result) then
+        Result:=ChompPathDelim(AppendPathDelim(BaseDir)+Result);
+      //debugln(['FindSuitableDirectory Dir="',Result,'" exists=',DirPathExistsCached(Result),' writable=',DirectoryIsWritableCached(Result)]);
+      if not DirPathExistsCached(Result) then continue;
+      if Writable and not DirectoryIsWritableCached(Result) then
+        continue;
+      exit;
+    until false;
+  end;
   
 var
-  PkgList: TFPList;
+  OwnerList: TFPList;
   AProject: TLazProject;
   APackage: TLazPackage;
-  p: Integer;
   FPDocPaths: String;
   FPDocPackageName: String;
   NewPath: String;
@@ -1133,6 +1152,8 @@ var
   Code: TCodeBuffer;
   CurUnitName: String;
   AVLNode: TAvgLvlTreeNode;
+  UnitSet: TFPCUnitSetCache;
+  IsInFPCSrc: Boolean;
 begin
   Result:='';
   NewOwner:=nil;
@@ -1142,87 +1163,105 @@ begin
     exit;
   end;
 
-  PkgList:=nil;
+  OwnerList:=nil;
   try
+    IsInFPCSrc:=false;
     // get all packages owning the file
-    PkgList:=PackageEditingInterface.GetOwnersOfUnit(SrcFilename);
-    CleanUpPkgList(PkgList);
-    if (PkgList=nil) then begin
-      PkgList:=PackageEditingInterface.GetPossibleOwnersOfUnit(SrcFilename,
+    OwnerList:=PackageEditingInterface.GetOwnersOfUnit(SrcFilename);
+    CleanUpPkgList(OwnerList);
+    if (OwnerList=nil) then begin
+      OwnerList:=PackageEditingInterface.GetPossibleOwnersOfUnit(SrcFilename,
                                                [piosfIncludeSourceDirectories]);
-      CleanUpPkgList(PkgList);
+      CleanUpPkgList(OwnerList);
     end;
-    if (PkgList=nil) and IsIDESrcFile(SrcFilename) then begin
-      PkgList:=TFPList.Create;
-      PkgList.Add(LazarusHelp);
+    if (OwnerList=nil) and IsIDESrcFile(SrcFilename) then begin
+      OwnerList:=TFPList.Create;
+      OwnerList.Add(LazarusHelp);
     end;
-    if PkgList=nil then begin
-      // no package/project found
-      MessageDlg(lisProjAddPackageNotFound,
-        Format(lisLDTheUnitIsNotOwnedBeAnyPackageOrProjectPleaseAddThe, [
-          SrcFilename, #13, #13]), mtError, [mbCancel], 0);
-      exit;
-    end;
-
-    NewOwner:=TObject(PkgList[0]);
-    if NewOwner is TLazProject then begin
-      AProject:=TLazProject(NewOwner);
-      BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
-      if AProject.FPDocPaths='' then
-        AProject.FPDocPaths:=SelectNewFPDocPaths(AProject.ShortDescription,BaseDir);
-      FPDocPaths:=AProject.FPDocPaths;
-      FPDocPackageName:=GetFPDocPackageNameByOwner(AProject);
-    end else if NewOwner is TLazPackage then begin
-      APackage:=TLazPackage(NewOwner);
-      BaseDir:=APackage.DirectoryExpanded;
-      if APackage.FPDocPaths='' then
-        APackage.FPDocPaths:=SelectNewFPDocPaths(APackage.Name,BaseDir);
-      FPDocPaths:=APackage.FPDocPaths;
-      FPDocPackageName:=GetFPDocPackageNameByOwner(APackage);
-    end else if NewOwner=LazarusHelp then begin
-      BaseDir:=EnvironmentOptions.LazarusDirectory;
-      FPDocPaths:=GetIDESrcFPDocPath;
-      FPDocPackageName:=IDEProjectName;
+    if OwnerList=nil then begin
+      UnitSet:=CodeToolBoss.GetUnitSetForDirectory(ExtractFilePath(SrcFilename));
+      if (UnitSet<>nil) and FileIsInPath(SrcFilename,UnitSet.FPCSourceDirectory)
+      then begin
+        // in FPC sources
+        IsInFPCSrc:=true;
+        BaseDir:=GetCurrentDirUTF8;
+        FPDocPaths:=EnvironmentOptions.FPDocPaths;
+        FPDocPackageName:='fcl';
+        NewPath:=CreateRelativePath(SrcFilename,UnitSet.FPCSourceDirectory);
+        if copy(NewPath,1,4)='rtl'+PathDelim then
+          FPDocPackageName:='rtl';
+      end else begin
+        // no package/project found
+        MessageDlg(lisProjAddPackageNotFound,
+          Format(lisLDTheUnitIsNotOwnedBeAnyPackageOrProjectPleaseAddThe, [
+            SrcFilename, #13, #13]), mtError, [mbCancel], 0);
+        exit;
+      end;
     end else begin
-      DebugLn(['TCodeHelpManager.DoCreateFPDocFileForSource unknown owner type ',dbgsName(NewOwner)]);
-      NewOwner:=nil;
-      exit;
+      NewOwner:=TObject(OwnerList[0]);
+      if NewOwner is TLazProject then begin
+        AProject:=TLazProject(NewOwner);
+        BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
+        if AProject.FPDocPaths='' then
+          AProject.FPDocPaths:=SelectNewFPDocPaths(AProject.ShortDescription,BaseDir);
+        FPDocPaths:=AProject.FPDocPaths;
+        FPDocPackageName:=GetFPDocPackageNameByOwner(AProject);
+      end else if NewOwner is TLazPackage then begin
+        APackage:=TLazPackage(NewOwner);
+        BaseDir:=APackage.DirectoryExpanded;
+        if APackage.FPDocPaths='' then
+          APackage.FPDocPaths:=SelectNewFPDocPaths(APackage.Name,BaseDir);
+        FPDocPaths:=APackage.FPDocPaths;
+        FPDocPackageName:=GetFPDocPackageNameByOwner(APackage);
+      end else if NewOwner=LazarusHelp then begin
+        // in IDE
+        BaseDir:=EnvironmentOptions.LazarusDirectory;
+        FPDocPaths:=GetIDESrcFPDocPath;
+        FPDocPackageName:=IDEProjectName;
+      end else begin
+        DebugLn(['TCodeHelpManager.DoCreateFPDocFileForSource unknown owner type ',dbgsName(NewOwner)]);
+        NewOwner:=nil;
+        exit;
+      end;
     end;
 
     IDEMacros.CreateAbsoluteSearchPath(FPDocPaths,BaseDir);
 
-    p:=1;
-    repeat
-      NewPath:=GetNextDirectoryInSearchPath(FPDocPaths,p);
-      if not FilenameIsAbsolute(NewPath) then
-        NewPath:=AppendPathDelim(BaseDir)+NewPath;
-      if DirPathExistsCached(NewPath) then begin
-        // fpdoc directory found
-        Result:=AppendPathDelim(NewPath)+lowercase(ExtractFileNameOnly(SrcFilename))+'.xml';
-        Code:=CodeToolBoss.LoadFile(SrcFilename,true,false);
-        // get unitname
-        CurUnitName:=ExtractFileNameOnly(SrcFilename);
-        if Code<>nil then
-          CurUnitName:=CodeToolBoss.GetSourceName(Code,false);
-        // remove cache (source to fpdoc filename)
-        AVLNode:=FSrcToDocMap.FindKey(Pointer(SrcFilename),
-                                      @CompareAnsistringWithLDSrc2DocSrcFile);
-        if AVLNode<>nil then
-          FSrcToDocMap.FreeAndDelete(AVLNode);
-        // create fpdoc file
-        if CreateFPDocFile(Result,FPDocPackageName,CurUnitName)=nil then
-          Result:='';
-        exit;
-      end;
-    until false;
-    
-    // no valid directory found
-    DebugLn(['TCodeHelpManager.DoCreateFPDocFileForSource FPDocModul="',FPDocPackageName,'" FPDocPaths="',FPDocPaths,'" ']);
-    MessageDlg(lisLDNoValidFPDocPath,
-      Format(lisLDDoesNotHaveAnyValidFPDocPathUnableToCreateTheFpdo, [
-        FPDocPackageName, #13, SrcFilename]), mtError, [mbCancel], 0);
+    // search a writable directory
+    NewPath:=FindSuitableDirectory(FPDocPaths,BaseDir,true);
+    if NewPath='' then
+      NewPath:=FindSuitableDirectory(FPDocPaths,BaseDir,false);
+    if NewPath='' then begin
+      // no valid directory found
+      DebugLn(['TCodeHelpManager.DoCreateFPDocFileForSource FPDocPackageName="',FPDocPackageName,'" FPDocPaths="',FPDocPaths,'" ']);
+      if IsInFPCSrc then
+        MessageDlg(lisLDNoValidFPDocPath,
+          Format(lisTheUnitIsPartOfTheFPCSourcesButTheCorrespondingFpd, [
+            SrcFilename, #13, #13, FPCDocsRepositoryURL, #13, #13])
+            , mtError, [mbCancel], 0)
+      else
+        MessageDlg(lisLDNoValidFPDocPath,
+          Format(lisLDDoesNotHaveAnyValidFPDocPathUnableToCreateTheFpdo, [
+            FPDocPackageName, #13, SrcFilename]), mtError, [mbCancel], 0);
+      exit;
+    end;
+    // fpdoc directory found
+    Result:=AppendPathDelim(NewPath)+lowercase(ExtractFileNameOnly(SrcFilename))+'.xml';
+    Code:=CodeToolBoss.LoadFile(SrcFilename,true,false);
+    // get unitname
+    CurUnitName:=ExtractFileNameOnly(SrcFilename);
+    if Code<>nil then
+      CurUnitName:=CodeToolBoss.GetSourceName(Code,false);
+    // remove cache (source to fpdoc filename)
+    AVLNode:=FSrcToDocMap.FindKey(Pointer(SrcFilename),
+                                  @CompareAnsistringWithLDSrc2DocSrcFile);
+    if AVLNode<>nil then
+      FSrcToDocMap.FreeAndDelete(AVLNode);
+    // create fpdoc file
+    if CreateFPDocFile(Result,FPDocPackageName,CurUnitName)=nil then
+      Result:='';
   finally
-    PkgList.Free;
+    OwnerList.Free;
   end;
 end;
 
@@ -1740,6 +1779,7 @@ begin
   or FileIsInPath(SrcFilename,LazDir+'debugger')
   or FileIsInPath(SrcFilename,LazDir+'packager')
   or FileIsInPath(SrcFilename,LazDir+'converter')
+  or FileIsInPath(SrcFilename,LazDir+'designer')
   then
     Result:=true;
 end;

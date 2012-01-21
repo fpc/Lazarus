@@ -25,7 +25,7 @@ unit FPDocEditWindow;
 
 {$mode objfpc}{$H+}
 
-{ $define VerboseCodeHelp}
+{off $define VerboseCodeHelp}
 
 interface
 

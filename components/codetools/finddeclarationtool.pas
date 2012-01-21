@@ -4297,7 +4297,7 @@ var
   MinPos, MaxPos: Integer;
   CursorNode: TCodeTreeNode;
   UnitStartFound, Found: Boolean;
-  StartPos: integer;
+  StartPos: integer; // keep this here, it is modified at several places
 
   procedure AddReference(ACleanPos: integer);
   var

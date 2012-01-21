@@ -3425,6 +3425,13 @@ resourcestring
     +'not owned be any package or project.%sPlease add the unit to a package '
     +'or project.%sUnable to create the fpdoc file.';
   lisLDNoValidFPDocPath = 'No valid FPDoc path';
+  lisTheUnitIsPartOfTheFPCSourcesButTheCorrespondingFpd = 'The unit %s is part'
+    +' of the FPC sources, but the corresponding fpdoc xml file was not found.'
+    +'%sEither you have not yet added the fpcdocs directory to the search path or the '
+    +'unit is not yet documented.%sThe fpdoc files for the FPC sources can be'
+    +' downloaded from: %s%sPlease add the directory in the '
+    +'fpdoc editor options.%sIn order to create a new file the directory must '
+    +'be writable.';
   lisLDDoesNotHaveAnyValidFPDocPathUnableToCreateTheFpdo = '%s does not have '
     +'any valid FPDoc path.%sUnable to create the fpdoc file for %s';
   lisErrorReadingXML = 'Error reading XML';
