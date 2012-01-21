@@ -194,6 +194,7 @@ var
   //
   lLazControl: TControl;
   lLazAXRole: TLazAccessibilityRole;
+  lCurAccessibleObject: TLazAccessibleObject;
   Command: HICommandExtended;
   EventKind: UInt32;
   // array
@@ -503,7 +504,9 @@ begin
           lArray := CFArrayCreateMutable(kCFAllocatorDefault, lCount, @kCFTypeArrayCallBacks);
           for i := 0 to lCount - 1 do
           begin
-            lElement := AXUIElementRef(lInputAccessibleObject.Handle);
+            lCurAccessibleObject := lInputAccessibleObject.GetChildAccessibleObject(i);
+            if lCurAccessibleObject = nil then Continue;
+            lElement := AXUIElementRef(lCurAccessibleObject.Handle);
             if lElement <> nil then
               CFArrayAppendValue(lArray, lElement);
           end;
@@ -518,8 +521,8 @@ begin
       begin
         if not (lLazControl is TCustomControl) then Exit;
         {$ifdef CarbonUseCocoaAll}
-        SetEventParameter(AEvent, kEventParamAccessibleAttributeParameter, typeCFStringRef,
-          SizeOf(CFStringRef), @NSAccessibilityHorizontalOrientationValue);
+        SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFStringRef,
+          SizeOf(CFStringRef), @NSAccessibilityVerticalOrientationValue);
         Result := noErr;
         {$endif}
       end
