@@ -94,7 +94,7 @@ type
       const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
-  TLastMouseInfo = record
+  TLastMouseInfo = class
     Owner: NSObject;
     MousePos: NSPoint;
     TimeStamp: NSTimeInterval;
@@ -102,7 +102,7 @@ type
   end;
 
 var
-  LastMouse: TLastMouseInfo = (Owner: nil; MousePos: (x:0; y:0); TimeStamp:0; ClickCount: 0);
+  LastMouse: TLastMouseInfo;
 const
   DblClickThreshold = 3;// max Movement between two clicks of a DblClick
 
@@ -1034,5 +1034,7 @@ begin
   Result := TLCLIntfHandle(ctrl);
 end;
 
+initialization
+  LastMouse := TLastMouseInfo.Create;
 end.
 
