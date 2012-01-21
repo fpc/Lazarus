@@ -2035,7 +2035,7 @@ begin
     SrcEditHintWindow.Provider:=TFPDocHintProvider.Create(SrcEditHintWindow);
   end;
   SrcEditHintWindow.AnchorForm := TheForm;
-  debugln(['TSourceEditCompletion.StartShowCodeHelp ',CodeToolsOpts.IdentComplShowHelp]);
+  //debugln(['TSourceEditCompletion.StartShowCodeHelp ',CodeToolsOpts.IdentComplShowHelp]);
   if CodeToolsOpts.IdentComplShowHelp then begin
     TheForm.LongLineHintType:=sclpNone;
     SrcEditHintWindow.HelpEnabled:=true;
@@ -5443,17 +5443,21 @@ begin
     CurFilename:=ASrcEdit.FileName;
     ShortFileName:=ExtractFileName(CurFilename);
     if (FilenameIsAbsolute(CurFilename)) then begin
+      MainCodeBuf:=CodeToolBoss.GetMainCode(ASrcEdit.CodeBuffer);
+      if (MainCodeBuf<>nil) and (MainCodeBuf<>ASrcEdit.CodeBuffer)
+      and (not MainCodeBuf.IsVirtual) then begin
+        // this is an include file => add link to open unit
+        AddContextPopupMenuItem(
+          Format(lisOpenLfm,[CreateRelativePath(MainCodeBuf.Filename,ASrcEdit.Filename)]),
+          true,@OnPopupMenuOpenFile);
+        CurFilename:=MainCodeBuf.Filename;
+        ShortFileName:=ExtractFileName(CurFilename);
+      end;
       if FilenameIsPascalUnit(CurFilename) then begin
         MaybeAddPopup('.lfm');
         MaybeAddPopup('.dfm');
         MaybeAddPopup('.lrs');
         MaybeAddPopup('.s');
-      end else if CompareFileExt(CurFilename,'.inc',false)=0 then begin
-        // include file => check unit
-        MainCodeBuf:=CodeToolBoss.GetMainCode(ASrcEdit.CodeBuffer);
-        if (MainCodeBuf<>nil) then begin
-          MaybeAddPopup('.lfm', nil,MainCodeBuf.Filename);
-        end;
       end;
       if (CompareFileExt(CurFilename,'.lfm',true)=0)
       or (CompareFileExt(CurFilename,'.dfm',true)=0) then begin
