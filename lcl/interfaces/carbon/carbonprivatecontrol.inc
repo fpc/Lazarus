@@ -265,6 +265,8 @@ begin
         DebugLn('CarbonControl_Accessibility kEventAccessibleGetAllAttributeNames After GetEventParameter');
       {$ENDIF}
 
+      // For TCustomForm get out immediately, otherwise we disturbe the navigation of VoiceOver
+      if lLazControl is TCustomForm then Exit;
       // AXFocused interrests all focusable classes
       if (lLazControl is TWinControl) then
       begin
@@ -349,6 +351,9 @@ begin
     end;// kEventAccessibleGetAllParameterizedAttributeNames
     kEventAccessibleGetNamedAttribute:
     begin
+      // For TCustomForm get out immediately, otherwise we disturbe the navigation of VoiceOver
+      if lLazControl is TCustomForm then Exit;
+
       if OSError(
         GetEventParameter(AEvent, kEventParamAccessibleAttributeName,
           typeCFStringRef, nil, SizeOf(CFStringRef), nil, @lInputStr),
@@ -392,7 +397,7 @@ begin
           larTrackBar: lAXRole := CFSTR('AXSlider');
           larTreeView: lAXRole := CFSTR('AXList');
           larTreeItem: lAXRole := CFSTR('AXStaticText');
-          larWindow: lAXRole := CFSTR('AXWindow'); // Maybe AXDrawer since this is the client area of the window not the window itself?
+          larWindow: lAXRole := CFSTR('AXUnknown'); // We report for the client are of the window, not the window itself
         else
           lAXRole := CFSTR('AXUnknown');
         end;
