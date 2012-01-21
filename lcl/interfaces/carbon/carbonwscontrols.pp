@@ -136,7 +136,8 @@ begin
   // Requesting a handle allocation here might be too soon and crash, so cancel the whole action
   if not lWinControl.HandleAllocated then Exit;
 
-  if (AObject.OwnerControl <> nil) and (AObject.OwnerControl is TWinControl) then
+  if (AObject.OwnerControl <> nil) and (AObject.OwnerControl is TWinControl) and
+   (AObject.OwnerControl.GetAccessibleObject() = AObject) then
   begin
     lControlHandle := TCarbonControl(TWinControl(AObject.OwnerControl).Handle);
     AHIObject := lControlHandle.Widget;
@@ -164,6 +165,7 @@ begin
   if lHIObject = nil then Exit;
 
   lElement := AXUIElementCreateWithHIObjectAndIdentifier(lHIObject, lID64);
+  Result := HWND(lElement);
 end;
 
 class procedure TCarbonWSLazAccessibleObject.DestroyHandle(

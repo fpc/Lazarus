@@ -959,7 +959,7 @@ type
     property AccessibleDescription: TCaption read FAccessibleDescription write SetAccessibleDescription;
     property AccessibleValue: TCaption read FAccessibleValue write SetAccessibleValue;
     property AccessibleRole: TLazAccessibilityRole read FAccessibleRole write SetAccessibleRole;
-    property Handle: PtrInt read GetHandle;
+    property Handle: PtrInt read GetHandle write FHandle;
   end;
 
 {* Note on TControl.Caption

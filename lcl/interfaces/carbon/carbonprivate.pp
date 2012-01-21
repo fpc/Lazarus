@@ -29,10 +29,13 @@ interface
 {$I carbondefines.inc}
 
 uses
- // rtl+ftl
+  // rtl+ftl
   Types, Classes, SysUtils, Math, Contnrs,
- // carbon bindings
+  // carbon bindings
   MacOSAll,
+  {$ifdef CarbonUseCocoaAll}
+  CocoaAll,
+  {$endif}
  // widgetset
   WSControls, WSLCLClasses, WSProc,
  // LCL Carbon

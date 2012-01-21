@@ -165,12 +165,17 @@ end;
 
   http://developer.apple.com/library/mac/#documentation/Accessibility/Reference/AccessibilityCarbonRef/Reference/reference.html
 
+  Documentation explaining in details which attributes are required for each Role:
+
+  http://developer.apple.com/library/mac/#documentation/UserExperience/Reference/Accessibility_RoleAttribute_Ref/Attributes.html
+
  ------------------------------------------------------------------------------}
 function CarbonControl_Accessibility(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
-  lAXRole, lInputStr, lOutputStr: CFStringRef;
+  // Inputs
+  lAXRole, lInputStr: CFStringRef;
   lInputAXObject: AXUIElementRef;
   lInputID64: UInt64;
   lInputAccessibleObject: TLazAccessibleObject;
@@ -178,9 +183,12 @@ var
   lInputMutableArray: CFMutableArrayRef;
   lInputHIPoint: HIPoint;
   lInputPoint: TPoint;
+  // Outputs
+  lOutputStr: CFStringRef;
   lOutputBool: Boolean;
   lOutputInt: SInt64;
   lOutputNum: CFNumberRef;
+  //
   lLazControl: TControl;
   lLazAXRole: TLazAccessibilityRole;
   Command: HICommandExtended;
@@ -192,6 +200,7 @@ var
   i: Integer;
   lAccessibleObj: TLazAccessibleObject;
   lHandle: PtrInt;
+  lSelection: TLazAccessibleObject;
 const SName = 'CarbonControl_Accessibility';
 begin
   {$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
@@ -209,15 +218,9 @@ begin
   // Check if this is an event to a child accessible object
   AXUIElementGetIdentifier(lInputAXObject, lInputID64);
   if (lLazControl is TCustomControl) and (lInputID64 <> 0) then
-  begin
-    lInputAccessibleObject := TLazAccessibleObject(PtrInt(lInputID64));
-    lLazAXRole := lLazControl.AccessibleRole;
-  end
-  else
-  begin
-    lInputAccessibleObject := lLazControl.GetAccessibleObject();
-    lLazAXRole := lLazControl.AccessibleRole;
-  end;
+    lInputAccessibleObject := TLazAccessibleObject(PtrInt(lInputID64))
+  else lInputAccessibleObject := lLazControl.GetAccessibleObject();
+  lLazAXRole := lInputAccessibleObject.AccessibleRole;
 
   EventKind := GetEventKind(AEvent);
   case EventKind of
@@ -234,9 +237,8 @@ begin
       // specified point, in the form of an AXUIElementRef.
       lInputPoint := Types.Point(Round(lInputHIPoint.x), Round(lInputHIPoint.y));
       lInputPoint := TWinControl(lLazControl).ScreenToClient(lInputPoint);
-      lAccessibleObj := lLazControl.GetAccessibleObject();
-      if lAccessibleObj = nil then Exit;
-      lAccessibleObj := lAccessibleObj.GetChildAccessibleObjectAtPos(lInputPoint);
+      if lInputAccessibleObject = nil then Exit;
+      lAccessibleObj := lInputAccessibleObject.GetChildAccessibleObjectAtPos(lInputPoint);
       if (lAccessibleObj = nil) or (lAccessibleObj.Handle = 0) then Exit;
       lHandle := lAccessibleObj.Handle;
       SetEventParameter(AEvent, kEventParamAccessibleChild, typeCFTypeRef,
@@ -266,7 +268,7 @@ begin
         CFArrayAppendValue(lInputMutableArray, lOutputStr);
       end;
       // AXChildren
-      lCount := lLazControl.GetAccessibleObject().GetChildAccessibleObjectsCount;
+      lCount := lInputAccessibleObject.GetChildAccessibleObjectsCount;
       if lCount > 0 then
       begin
         lOutputStr := CFSTR('AXChildren');
@@ -278,6 +280,24 @@ begin
         (lLazAXRole in [larClock, larLabel, larListItem, larTreeItem]) then
       begin
         lOutputStr := CFSTR('AXNumberOfCharacters');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+      end;
+      // Now elements for each role
+      // AXList
+      if (lLazControl is TCustomControl) and
+        (lLazAXRole in [larListBox, larTreeView]) then
+      begin
+        lOutputStr := CFSTR('AXOrientation');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXSelectedChildren');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXVisibleChildren');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+      end;
+      // Basic elements for non-windowed accessible objects
+      if (lLazControl is TCustomControl) and (lInputID64 <> 0) then
+      begin
+        lOutputStr := CFSTR('AXValue');
         CFArrayAppendValue(lInputMutableArray, lOutputStr);
       end;
     end; // kEventAccessibleGetAllAttributeNames
@@ -321,12 +341,14 @@ begin
 
       lInputPasStr := CFStringToStr(lInputStr);
 
+      {$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
+        DebugLn('CarbonControl_Accessibility kEventAccessibleGetNamedAttribute kEventParamAccessibleAttributeName=' + lInputPasStr);
+      {$ENDIF}
+
       // AXRole overrides TCustomControl and TCustomWindow values
       if lInputPasStr = 'AXRole' then
       begin
-        if (lLazControl is TWinControl) and (not (lLazControl is TCustomForm))
-          and (not (lLazControl is TCustomControl)) then Exit;
-
+        if not (lLazControl is TCustomControl) then Exit;
         case lLazAXRole of
           larAnimation: lAXRole := CFSTR('AXImage');
           larButton: lAXRole := CFSTR('AXButton');
@@ -366,36 +388,31 @@ begin
 
         Result := noErr;
         Exit;
-      end;
+      end
       // Specially only AXRoleDescription is allowed to override non-TCustomControl values
-      if lInputPasStr = 'AXRoleDescription' then
+      else if lInputPasStr = 'AXRoleDescription' then
       begin
-        if lLazControl.AccessibleDescription = '' then Exit;
-        CreateCFString(lLazControl.AccessibleDescription, lOutputStr);
+        if lInputAccessibleObject.AccessibleDescription = '' then Exit;
+        CreateCFString(lInputAccessibleObject.AccessibleDescription, lOutputStr);
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFStringRef,
           SizeOf(CFStringRef), @lOutputStr);
         FreeCFString(lOutputStr);
         Result := noErr;
         Exit;
-      end;
-
-      if not (lLazControl is TCustomControl) then Exit;
-
-      {$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
-        DebugLn('CarbonControl_Accessibility kEventAccessibleGetNamedAttribute kEventParamAccessibleAttributeName=' + lInputPasStr);
-      {$ENDIF}
-
-{      else if lInputPasStr = 'AXValue' then
+      end
+      else if lInputPasStr = 'AXValue' then
       begin
-        if lLazControl.AccessibleValue = '' then Exit;
-        CreateCFString(lLazControl.AccessibleValue, lOutputStr);
+        if not (lLazControl is TCustomControl) then Exit;
+        if (lInputID64 = 0) then Exit;
+        CreateCFString(lInputAccessibleObject.AccessibleValue, lOutputStr);
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFStringRef,
           SizeOf(CFStringRef), @lOutputStr);
         FreeCFString(lOutputStr);
-      end}
-      if (lInputPasStr = 'AXNumberOfCharacters') then
+      end
+      else if (lInputPasStr = 'AXNumberOfCharacters') then
       begin
-        lOutputInt := UTF8Length(lLazControl.AccessibleValue);
+        if not (lLazControl is TCustomControl) then Exit;
+        lOutputInt := UTF8Length(lInputAccessibleObject.AccessibleValue);
         lOutputNum := CFNumberCreate(nil, kCFNumberSInt64Type, @lOutputInt);
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFNumberRef,
           SizeOf(lOutputNum), @lOutputNum);
@@ -405,25 +422,25 @@ begin
       //
       // Parameterized attributes
       //
-      else if (lLazControl is TCustomControl) and (lInputPasStr = 'AXStringForRange') then
+      else if (lInputPasStr = 'AXStringForRange') then
       begin
-        if lLazControl.AccessibleValue = '' then Exit;
-        CreateCFString(lLazControl.AccessibleValue, lOutputStr);
+        if not (lLazControl is TCustomControl) then Exit;
+        if lInputAccessibleObject.AccessibleValue = '' then Exit;
+        CreateCFString(lInputAccessibleObject.AccessibleValue, lOutputStr);
         SetEventParameter(AEvent, kEventParamAccessibleAttributeParameter, typeCFStringRef,
           SizeOf(CFStringRef), @lOutputStr);
         FreeCFString(lOutputStr);
         Result := noErr;
       end
-      else if (lLazControl is TCustomControl) and
-        ((lInputPasStr = 'AXAttributedStringForRange') or
+      else if (lInputPasStr = 'AXAttributedStringForRange') or
          (lInputPasStr = 'AXBoundsForRange') or
          (lInputPasStr = 'AXRangeForIndex') or
          (lInputPasStr = 'AXRangeForLine') or
          (lInputPasStr = 'AXRangeForPosition') or
          (lInputPasStr = 'AXRTFForRange') or
-         (lInputPasStr = 'AXStyleRangeForIndex')
-        ) then
+         (lInputPasStr = 'AXStyleRangeForIndex') then
       begin
+        if not (lLazControl is TCustomControl) then Exit;
         SetEventParameter(AEvent, kEventParamAccessibleAttributeParameter, typeCFTypeRef,
           0, nil);
         Result := noErr;
@@ -431,6 +448,7 @@ begin
       //if (CFStringCompare(lInputStr, kAXFocusedAttribute, 0) = kCFCompareEqualTo) then
       else if lInputPasStr = 'AXFocused' then
       begin
+        //if not (lLazControl is TCustomControl) then Exit;
         if not (lLazControl is TWinControl) then lOutputBool := False
         else if TWinControl(lLazControl).Focused then lOutputBool := True
         else lOutputBool := False;
@@ -444,23 +462,60 @@ begin
 
         Result := noErr;
       end
-      else if (CFStringCompare(lInputStr, CFSTR('AXChildren'), 0) = kCFCompareEqualTo) then // kAXChildrenAttribute
+      //else if (CFStringCompare(lInputStr, CFSTR('AXChildren'), 0) = kCFCompareEqualTo) then // kAXChildrenAttribute
+      else if (lInputPasStr = 'AXChildren') or (lInputPasStr = 'AXVisibleChildren')
+        or (lInputPasStr = 'AXSelectedChildren') then
       begin
         if not (lLazControl is TCustomControl) then Exit;
 
         // Create and return an array of AXUIElements describing the children of this view.
-        lCount := lLazControl.GetAccessibleObject().GetChildAccessibleObjectsCount;
-        lArray := CFArrayCreateMutable(kCFAllocatorDefault, lCount, @kCFTypeArrayCallBacks);
-        for i := 0 to lCount - 1 do
+        if (lInputPasStr = 'AXSelectedChildren') then
         begin
-          lElement := AXUIElementRef(lLazControl.GetAccessibleObject().Handle);
-          if lElement <> nil then
-            CFArrayAppendValue(lArray, lElement);
+          lSelection := lInputAccessibleObject.GetSelectedChildAccessibleObject();
+          if lSelection = nil then
+            lArray := CFArrayCreateMutable(kCFAllocatorDefault, 0, @kCFTypeArrayCallBacks)
+          else
+          begin
+            lArray := CFArrayCreateMutable(kCFAllocatorDefault, 1, @kCFTypeArrayCallBacks);
+            lElement := AXUIElementRef(lSelection.Handle);
+            if lElement <> nil then
+              CFArrayAppendValue(lArray, lElement);
+          end;
+        end
+        else
+        begin
+          lCount := lInputAccessibleObject.GetChildAccessibleObjectsCount;
+          lArray := CFArrayCreateMutable(kCFAllocatorDefault, lCount, @kCFTypeArrayCallBacks);
+          for i := 0 to lCount - 1 do
+          begin
+            lElement := AXUIElementRef(lInputAccessibleObject.Handle);
+            if lElement <> nil then
+              CFArrayAppendValue(lArray, lElement);
+          end;
         end;
 
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFTypeRef,
           SizeOf(lArray), @lArray);
         CFRelease(lArray);
+        Result := noErr;
+      end
+      else if lInputPasStr = 'AXOrientation' then
+      begin
+        if not (lLazControl is TCustomControl) then Exit;
+        {$ifdef CarbonUseCocoaAll}
+        SetEventParameter(AEvent, kEventParamAccessibleAttributeParameter, typeCFStringRef,
+          SizeOf(CFStringRef), @NSAccessibilityHorizontalOrientationValue);
+        Result := noErr;
+        {$endif}
+      end
+      else if lInputPasStr = 'AXParent' then
+      begin
+        if lInputID64 = 0 then Exit;
+        if not (lLazControl is TCustomControl) then Exit;
+        if lInputAccessibleObject.Parent = nil then Exit;
+        lElement := AXUIElementRef(lInputAccessibleObject.Parent.Handle);
+        SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFTypeRef,
+          SizeOf(AXUIElementRef), @lElement);
         Result := noErr;
       end;
     end; // kEventAccessibleGetNamedAttribute
@@ -475,18 +530,22 @@ begin
 
       lInputPasStr := CFStringToStr(lInputStr);
 
-{      // Now elements for each role
-      // AXStaticText
-      if lLazAXRole in [larClock, larLabel, larListItem, larTreeItem] then
-      begin}
-      if (lInputPasStr = 'AXFocused') or (lInputPasStr = 'AXStringForRange') or
-         (lInputPasStr = 'AXNumberOfCharacters') then
+      if (lInputPasStr = 'AXFocused') then
+      begin
+        lOutputBool := TCustomControl(lLazControl).TabStop;
+        SetEventParameter(AEvent, kEventParamAccessibleAttributeSettable, typeBoolean,
+          SizeOf(Boolean), @lOutputBool);
+        Result := noErr;
+      end
+      else if (lInputPasStr = 'AXStringForRange') or
+         (lInputPasStr = 'AXNumberOfCharacters') or (lInputPasStr = 'AXChildren') or
+         (lInputPasStr = 'AXSelectedChildren') or (lInputPasStr = 'AXVisibleChildren') then
       begin
         lOutputBool := False;
         SetEventParameter(AEvent, kEventParamAccessibleAttributeSettable, typeBoolean,
           SizeOf(Boolean), @lOutputBool);
         Result := noErr;
-      end
+      end;
     end; // kEventAccessibleIsNamedAttributeSettable
   end; // case EventKind of
 end;

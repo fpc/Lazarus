@@ -29,8 +29,6 @@
 
 { $DEFINE TREEVIEW_DEBUG}
 
-{ TTreeViewAccessibleObject }
-
 const
   TTreeNodeWithPointerStreamVersion : word = 1;
   TTreeNodeStreamVersion : word = 2;
@@ -398,6 +396,8 @@ begin
 end;
 
 procedure TTreeNode.SetText(const S: string);
+var
+  lSelfAX: TLazAccessibleObject;
 begin
   if S=FText then exit;
   FText := S;
@@ -409,6 +409,10 @@ begin
     else TreeView.AlphaSort;
   end;
   Update;
+  // Update accessibility information
+  lSelfAX := TreeView.GetAccessibleObject.GetChildAccessibleObjectWithDataObject(Self);
+  if lSelfAX <> nil then
+    lSelfAX.AccessibleValue := S;
 end;
 
 procedure TTreeNode.SetData(AValue: Pointer);
@@ -1740,6 +1744,7 @@ var
   OldInfo: TOldTreeNodeInfo;
   Info: TTreeNodeInfo;
   Node: TTreeNode;
+  lSelfAX: TLazAccessibleObject;
 begin
   if Owner<>nil then Owner.ClearCache;
   if StreamVersion=TTreeNodeWithPointerStreamVersion then
@@ -1768,7 +1773,16 @@ begin
     SetLength(FText,Info.TextLen);
   end;
   if FText<>'' then
+  begin
     Stream.Read(FText[1],length(FText));
+    // Update accessibility information
+    if TreeView<>nil then
+    begin
+     lSelfAX := TreeView.GetAccessibleObject.GetChildAccessibleObjectWithDataObject(Self);
+     if lSelfAX <> nil then
+       lSelfAX.AccessibleValue := FText;
+    end;
+  end;
   if Owner<>nil then begin
     for I := 0 to ItemCount - 1 do begin
       Node:=Owner.AddChild(Self, '');
@@ -2228,7 +2242,8 @@ begin
     if ok and (Owner<>nil) then
     begin
       lAccessibleObject := FOwner.GetAccessibleObject().AddChildAccessibleObject();
-      lAccessibleObject.AccessibleDescription := S;
+      lAccessibleObject.AccessibleDescription := 'Item';
+      lAccessibleObject.AccessibleValue := S;
       lAccessibleObject.AccessibleRole := larTreeItem;
       lAccessibleObject.DataObject := Result;
     end;
