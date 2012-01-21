@@ -6,7 +6,8 @@
 # Creates an chm file, if HTMLFMT is set to chm,
 # otherwise it create html docs
 #
-#
+# Usage: $0 <fpdoc-program-path> <footer-path> <fpcdocs-dir (http://svn.freepascal.org/svn/fpcdocs/trunk)>
+# Example: $0 fpdoc ../locallclfooter.xml ../../../fpcdocs
 
 #set -x
 set -e
