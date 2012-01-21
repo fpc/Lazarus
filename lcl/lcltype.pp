@@ -662,17 +662,17 @@ const
 // LCL aliases for more clear naming of keys
 //==============================================
 
-  VK_LCL_EQUAL      = VK_OEM_PLUS;  // The "=+" Key
-  VK_LCL_COMMA      = VK_OEM_COMMA; // The ",<" Key
-  VK_LCL_POINT      = VK_OEM_PERIOD;// The ".>" Key
-  VK_LCL_SLASH      = VK_OEM_2;     // The "/?" Key
-  VK_SEMI_COMMA     = VK_OEM_1;     // The ";:" Key
-  VK_MINUS          = VK_OEM_MINUS; // The "-_" Key
-  VK_OPEN_BRAKET    = VK_OEM_4;     // The "[{" Key
-  VK_CLOSE_BRAKET   = VK_OEM_6;     // The "]}" Key
-  VK_BACKSLASH      = VK_OEM_5;     // The "\|" Key
-  VK_TILDE          = VK_OEM_3;     // The "`~" Key
-  VK_QUOTE          = VK_OEM_7;     // The "'"" Key
+  VK_LCL_EQUAL       = VK_OEM_PLUS;  // The "=+" Key
+  VK_LCL_COMMA       = VK_OEM_COMMA; // The ",<" Key
+  VK_LCL_POINT       = VK_OEM_PERIOD;// The ".>" Key
+  VK_LCL_SLASH       = VK_OEM_2;     // The "/?" Key
+  VK_LCL_SEMI_COMMA  = VK_OEM_1;     // The ";:" Key
+  VK_LCL_MINUS       = VK_OEM_MINUS; // The "-_" Key
+  VK_LCL_OPEN_BRAKET = VK_OEM_4;     // The "[{" Key
+  VK_LCL_CLOSE_BRAKET= VK_OEM_6;     // The "]}" Key
+  VK_LCL_BACKSLASH   = VK_OEM_5;     // The "\|" Key
+  VK_LCL_TILDE       = VK_OEM_3;     // The "`~" Key
+  VK_LCL_QUOTE       = VK_OEM_7;     // The "'"" Key
 
   VK_LCL_ALT        = VK_MENU;
   VK_LCL_LALT       = VK_LMENU;

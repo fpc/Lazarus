@@ -469,14 +469,14 @@ begin
       Result:=VK_RETURN;
       AUTF8Char:=#13;
     end;
-    MK_TILDE:        Result := VK_TILDE; // `/~ key
-    MK_MINUS:        Result := VK_MINUS;
+    MK_TILDE:        Result := VK_LCL_TILDE; // `/~ key
+    MK_MINUS:        Result := VK_LCL_MINUS;
     MK_EQUAL:        Result := VK_LCL_EQUAL;
-    MK_BACKSLASH:    Result := VK_BACKSLASH;
-    MK_LEFTBRACKET:  Result := VK_OPEN_BRAKET;
-    MK_RIGHTBRACKET: Result := VK_CLOSE_BRAKET;
-    MK_SEMICOLON:    Result := VK_SEMI_COMMA;
-    MK_QUOTE:        Result := VK_QUOTE;
+    MK_BACKSLASH:    Result := VK_LCL_BACKSLASH;
+    MK_LEFTBRACKET:  Result := VK_LCL_OPEN_BRAKET;
+    MK_RIGHTBRACKET: Result := VK_LCL_CLOSE_BRAKET;
+    MK_SEMICOLON:    Result := VK_LCL_SEMI_COMMA;
+    MK_QUOTE:        Result := VK_LCL_QUOTE;
     MK_COMMA:        Result := VK_LCL_COMMA;
     MK_PERIOD:       Result := VK_LCL_POINT;
     MK_SLASH:        Result := VK_LCL_SLASH;
