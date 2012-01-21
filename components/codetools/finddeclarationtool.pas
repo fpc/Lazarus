@@ -4297,6 +4297,7 @@ var
   MinPos, MaxPos: Integer;
   CursorNode: TCodeTreeNode;
   UnitStartFound, Found: Boolean;
+  StartPos: integer;
 
   procedure AddReference(ACleanPos: integer);
   var
@@ -4334,7 +4335,7 @@ var
       Node:=Node.FirstChild;
   end;
   
-  procedure ReadIdentifier(StartPos: integer; IsComment: boolean);
+  procedure ReadIdentifier(IsComment: boolean);
   var
     IdentStartPos: Integer;
     IdentEndPos: integer;
@@ -4417,7 +4418,6 @@ var
   var
     CommentLvl: Integer;
     InStrConst: Boolean;
-    StartPos: Integer;
     //CommentStart: LongInt;
   begin
     StartPos:=MinPos;
@@ -4441,7 +4441,7 @@ var
               end;
             'a'..'z','A'..'Z','_':
               if not InStrConst then begin
-                ReadIdentifier(StartPos,true);
+                ReadIdentifier(true);
                 dec(StartPos);
               end;
             '''':
@@ -4467,7 +4467,7 @@ var
               break;
             'a'..'z','A'..'Z','_':
               if not InStrConst then begin
-                ReadIdentifier(StartPos,true);
+                ReadIdentifier(true);
                 dec(StartPos);
               end;
             '''':
@@ -4493,7 +4493,7 @@ var
               if Src[StartPos-1]='*' then break;
             'a'..'z','A'..'Z','_':
               if not InStrConst then begin
-                ReadIdentifier(StartPos,true);
+                ReadIdentifier(true);
                 dec(StartPos);
               end;
             '''':
@@ -4507,7 +4507,7 @@ var
         end;
         
       'a'..'z','A'..'Z','_':
-        ReadIdentifier(StartPos,false);
+        ReadIdentifier(false);
         
       '''':
         begin
@@ -4709,7 +4709,6 @@ var
 var
   UseNode: TCodeTreeNode;
   AVLNode: TAVLTreeNode;
-  StartPos: integer;
 begin
   Result:=false;
   //debugln('FindReferences ',MainFilename,' CursorPos=',CursorPos.Code.Filename,' x=',dbgs(CursorPos.X),' y=',dbgs(CursorPos.Y),' SkipComments=',dbgs(SkipComments));
