@@ -231,6 +231,8 @@ begin
     kEventAccessibleGetChildAtPoint:
     begin
       if not (lLazControl is TCustomControl) then Exit;
+      // For TCustomForm get out immediately, otherwise we disturbe the navigation of VoiceOver
+      if lLazControl is TCustomForm then Exit;
 
       // The location in global coordinates.
       GetEventParameter(AEvent, kEventParamMouseLocation,
@@ -255,6 +257,8 @@ begin
       {$ENDIF}
 
       if not (lLazControl is TCustomControl) then Exit;
+      // For TCustomForm get out immediately, otherwise we disturbe the navigation of VoiceOver
+      if lLazControl is TCustomForm then Exit;
 
       if OSError(
         GetEventParameter(AEvent, kEventParamAccessibleAttributeNames,
@@ -265,14 +269,9 @@ begin
         DebugLn('CarbonControl_Accessibility kEventAccessibleGetAllAttributeNames After GetEventParameter');
       {$ENDIF}
 
-      // For TCustomForm get out immediately, otherwise we disturbe the navigation of VoiceOver
-      if lLazControl is TCustomForm then Exit;
       // AXFocused interrests all focusable classes
-      if (lLazControl is TWinControl) then
-      begin
-        lOutputStr := CFSTR('AXFocused');
-        CFArrayAppendValue(lInputMutableArray, lOutputStr);
-      end;
+      lOutputStr := CFSTR('AXFocused');
+      CFArrayAppendValue(lInputMutableArray, lOutputStr);
       // AXChildren
       lCount := lInputAccessibleObject.GetChildAccessibleObjectsCount;
       if lCount > 0 then
@@ -282,16 +281,14 @@ begin
       end;
       // Now elements for each role
       // AXStaticText
-      if (lLazControl is TCustomControl) and
-        (lLazAXRole in larAXStaticTextRoles) then
+      if lLazAXRole in larAXStaticTextRoles then
       begin
         lOutputStr := CFSTR('AXNumberOfCharacters');
         CFArrayAppendValue(lInputMutableArray, lOutputStr);
       end;
       // Now elements for each role
       // AXList
-      if (lLazControl is TCustomControl) and
-        (lLazAXRole in larAXListRoles) then
+      if lLazAXRole in larAXListRoles then
       begin
         lOutputStr := CFSTR('AXOrientation');
         CFArrayAppendValue(lInputMutableArray, lOutputStr);
@@ -302,7 +299,7 @@ begin
       end;
       // Basic elements for non-windowed accessible objects
       // Note that AXRole, AXRoleDescription, AXParent seam to be added by default
-      if (lLazControl is TCustomControl) and (lInputID64 <> 0) then
+      if lInputID64 <> 0 then
       begin
         lOutputStr := CFSTR('AXValue');
         CFArrayAppendValue(lInputMutableArray, lOutputStr);
@@ -321,6 +318,7 @@ begin
     kEventAccessibleGetAllParameterizedAttributeNames:
     begin
       if not (lLazControl is TCustomControl) then Exit;
+      if lLazControl is TCustomForm then Exit;
 
       if OSError(
         GetEventParameter(AEvent, kEventParamAccessibleAttributeNames,
@@ -351,8 +349,6 @@ begin
     end;// kEventAccessibleGetAllParameterizedAttributeNames
     kEventAccessibleGetNamedAttribute:
     begin
-      // For TCustomForm get out immediately, otherwise we disturbe the navigation of VoiceOver
-      if lLazControl is TCustomForm then Exit;
 
       if OSError(
         GetEventParameter(AEvent, kEventParamAccessibleAttributeName,
@@ -423,6 +419,7 @@ begin
       else if lInputPasStr = 'AXValue' then
       begin
         if not (lLazControl is TCustomControl) then Exit;
+        if lLazControl is TCustomForm then Exit;
         if (lInputID64 = 0) then Exit;
         CreateCFString(lInputAccessibleObject.AccessibleValue, lOutputStr);
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFStringRef,
@@ -433,6 +430,7 @@ begin
       else if (lInputPasStr = 'AXNumberOfCharacters') then
       begin
         if not (lLazControl is TCustomControl) then Exit;
+        if lLazControl is TCustomForm then Exit;
         lOutputInt := UTF8Length(lInputAccessibleObject.AccessibleValue);
         lOutputNum := CFNumberCreate(nil, kCFNumberSInt64Type, @lOutputInt);
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFNumberRef,
@@ -446,6 +444,7 @@ begin
       else if (lInputPasStr = 'AXStringForRange') then
       begin
         if not (lLazControl is TCustomControl) then Exit;
+        if lLazControl is TCustomForm then Exit;
         if lInputAccessibleObject.AccessibleValue = '' then Exit;
         CreateCFString(lInputAccessibleObject.AccessibleValue, lOutputStr);
         SetEventParameter(AEvent, kEventParamAccessibleAttributeParameter, typeCFStringRef,
@@ -462,6 +461,7 @@ begin
          (lInputPasStr = 'AXStyleRangeForIndex') then
       begin
         if not (lLazControl is TCustomControl) then Exit;
+        if lLazControl is TCustomForm then Exit;
         SetEventParameter(AEvent, kEventParamAccessibleAttributeParameter, typeCFTypeRef,
           0, nil);
         Result := noErr;
@@ -469,7 +469,8 @@ begin
       //if (CFStringCompare(lInputStr, kAXFocusedAttribute, 0) = kCFCompareEqualTo) then
       else if lInputPasStr = 'AXFocused' then
       begin
-        //if not (lLazControl is TCustomControl) then Exit;
+//        if not (lLazControl is TCustomControl) then Exit;
+        if lLazControl is TCustomForm then Exit;
         if not (lLazControl is TWinControl) then lOutputBool := False
         else if TWinControl(lLazControl).Focused then lOutputBool := True
         else lOutputBool := False;
@@ -488,6 +489,7 @@ begin
         or (lInputPasStr = 'AXSelectedChildren') then
       begin
         if not (lLazControl is TCustomControl) then Exit;
+        if lLazControl is TCustomForm then Exit;
 
         // Create and return an array of AXUIElements describing the children of this view.
         if (lInputPasStr = 'AXSelectedChildren') then
@@ -525,6 +527,7 @@ begin
       else if lInputPasStr = 'AXOrientation' then
       begin
         if not (lLazControl is TCustomControl) then Exit;
+        if lLazControl is TCustomForm then Exit;
         {$ifdef CarbonUseCocoaAll}
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFStringRef,
           SizeOf(CFStringRef), @NSAccessibilityVerticalOrientationValue);
@@ -536,6 +539,7 @@ begin
       else if lInputPasStr = 'AXParent' then
       begin
         if not (lLazControl is TCustomControl) then Exit;
+        if lLazControl is TCustomForm then Exit;
         if lInputID64 = 0 then Exit;
         if lInputAccessibleObject.Parent = nil then Exit;
         lElement := AXUIElementRef(lInputAccessibleObject.Parent.Handle);
@@ -546,6 +550,7 @@ begin
       else if lInputPasStr = 'AXPosition' then
       begin
         if not (lLazControl is TCustomControl) then Exit;
+        if lLazControl is TCustomForm then Exit;
         if lInputID64 = 0 then Exit;
         lOutputPoint.x := lInputAccessibleObject.Position.X;
         lOutputPoint.y := lInputAccessibleObject.Position.Y;
@@ -557,6 +562,7 @@ begin
       else if (lInputPasStr = 'AXWindow') or (lInputPasStr = 'AXTopLevelUIElement') then
       begin
         if not (lLazControl is TCustomControl) then Exit;
+        if lLazControl is TCustomForm then Exit;
         if lInputID64 = 0 then Exit;
         // Just copy from our parent the AXWindow
         if lInputAccessibleObject.Parent = nil then Exit;
@@ -570,6 +576,7 @@ begin
       else if lInputPasStr = 'AXSize' then
       begin
         if not (lLazControl is TCustomControl) then Exit;
+        if lLazControl is TCustomForm then Exit;
         if lInputID64 = 0 then Exit;
         lOutputSize.width := lInputAccessibleObject.Size.cx;
         lOutputSize.height := lInputAccessibleObject.Size.cy;
@@ -581,6 +588,7 @@ begin
       else if lInputPasStr = 'AXEnabled' then
       begin
         if not (lLazControl is TCustomControl) then Exit;
+        if lLazControl is TCustomForm then Exit;
         if lInputID64 = 0 then Exit;
         lOutputBool := True;
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeBoolean,
@@ -591,6 +599,7 @@ begin
     kEventAccessibleIsNamedAttributeSettable:
     begin
       if not (lLazControl is TCustomControl) then Exit;
+      if lLazControl is TCustomForm then Exit;
 
       if OSError(
         GetEventParameter(AEvent, kEventParamAccessibleAttributeName,
