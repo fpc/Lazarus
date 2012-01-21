@@ -38,6 +38,46 @@ begin
   Result := FHandle;
 end;
 
+function TLazAccessibleObject.GetPosition: TPoint;
+begin
+  if (OwnerControl <> nil) and (OwnerControl.GetAccessibleObject() = Self) then
+  begin
+    Result := Point(OwnerControl.Left, OwnerControl.Top);
+    Exit;
+  end;
+  Result := FPosition;
+end;
+
+function TLazAccessibleObject.GetSize: TSize;
+begin
+  if (OwnerControl <> nil) and (OwnerControl.GetAccessibleObject() = Self) then
+  begin
+    Result := Types.Size(OwnerControl.Width, OwnerControl.Height);
+    Exit;
+  end;
+  Result := FSize;
+end;
+
+procedure TLazAccessibleObject.SetPosition(AValue: TPoint);
+var
+  WidgetsetClass: TWSLazAccessibleObjectClass;
+begin
+  if (FPosition.X=AValue.X) and (FPosition.Y=AValue.Y) then Exit;
+  FPosition := AValue;
+  WidgetsetClass := TWSLazAccessibleObjectClass(GetWSLazAccessibleObject());
+  WidgetsetClass.SetPosition(Self, AValue);
+end;
+
+procedure TLazAccessibleObject.SetSize(AValue: TSize);
+var
+  WidgetsetClass: TWSLazAccessibleObjectClass;
+begin
+  if (FSize.CX=AValue.CX) and (FSize.CY=AValue.CY) then Exit;
+  FSize := AValue;
+  WidgetsetClass := TWSLazAccessibleObjectClass(GetWSLazAccessibleObject());
+  WidgetsetClass.SetSize(Self, AValue);
+end;
+
 class procedure TLazAccessibleObject.WSRegisterClass;
 begin
 //  inherited WSRegisterClass;

@@ -328,6 +328,10 @@ function GetCarbonWidget(AWidget: Pointer): TCarbonWidget;
 function GetCarbonWindow(AWidget: WindowRef): TCarbonWindow;
 function GetCarbonControl(AWidget: ControlRef): TCarbonControl;
 
+const
+  larAXStaticTextRoles = [larClock, larLabel, larListItem, larTreeItem];
+  larAXListRoles = [larListBox, larTreeView];
+
 implementation
 
 uses InterfaceBase, CarbonInt, CarbonProc, CarbonDbgConsts, CarbonUtils,

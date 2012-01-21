@@ -199,6 +199,12 @@ begin
 
   lNotification := CFSTR('AXValueChanged');
   AXNotificationHIObjectNotify(lNotification, lHIObject, lID64);
+
+  if AObject.AccessibleRole in larAXListRoles then
+  begin
+    lNotification := CFSTR('AXFocusedUIElementChanged');
+    AXNotificationHIObjectNotify(lNotification, lHIObject, lID64);
+  end;
 end;
 
 class procedure TCarbonWSLazAccessibleObject.SetAccessibleRole(const AObject: TLazAccessibleObject; const ARole: TLazAccessibilityRole);

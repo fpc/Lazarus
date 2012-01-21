@@ -188,6 +188,9 @@ var
   lOutputBool: Boolean;
   lOutputInt: SInt64;
   lOutputNum: CFNumberRef;
+  lOutputValue: AXValueRef;
+  lOutputPoint: CGPoint;
+  lOutputSize: CGSize;
   //
   lLazControl: TControl;
   lLazAXRole: TLazAccessibilityRole;
@@ -195,7 +198,7 @@ var
   EventKind: UInt32;
   // array
   lArray: CFMutableArrayRef;
-  lElement: AXUIElementRef;
+  lElement, lElement2: AXUIElementRef;
   lCount: Integer;
   i: Integer;
   lAccessibleObj: TLazAccessibleObject;
@@ -277,7 +280,7 @@ begin
       // Now elements for each role
       // AXStaticText
       if (lLazControl is TCustomControl) and
-        (lLazAXRole in [larClock, larLabel, larListItem, larTreeItem]) then
+        (lLazAXRole in larAXStaticTextRoles) then
       begin
         lOutputStr := CFSTR('AXNumberOfCharacters');
         CFArrayAppendValue(lInputMutableArray, lOutputStr);
@@ -285,7 +288,7 @@ begin
       // Now elements for each role
       // AXList
       if (lLazControl is TCustomControl) and
-        (lLazAXRole in [larListBox, larTreeView]) then
+        (lLazAXRole in larAXListRoles) then
       begin
         lOutputStr := CFSTR('AXOrientation');
         CFArrayAppendValue(lInputMutableArray, lOutputStr);
@@ -295,9 +298,20 @@ begin
         CFArrayAppendValue(lInputMutableArray, lOutputStr);
       end;
       // Basic elements for non-windowed accessible objects
+      // Note that AXRole, AXRoleDescription, AXParent seam to be added by default
       if (lLazControl is TCustomControl) and (lInputID64 <> 0) then
       begin
         lOutputStr := CFSTR('AXValue');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXPosition');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXTopLevelUIElement');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXSize');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXWindow');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXEnabled');
         CFArrayAppendValue(lInputMutableArray, lOutputStr);
       end;
     end; // kEventAccessibleGetAllAttributeNames
@@ -312,7 +326,7 @@ begin
 
       // Now elements for each role
       // AXStaticText
-      if lLazAXRole in [larClock, larLabel, larListItem, larTreeItem] then
+      if lLazAXRole in larAXStaticTextRoles then
       begin
         lOutputStr := CFSTR('AXStringForRange');
         CFArrayAppendValue(lInputMutableArray, lOutputStr);
@@ -408,6 +422,7 @@ begin
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFStringRef,
           SizeOf(CFStringRef), @lOutputStr);
         FreeCFString(lOutputStr);
+        Result := noErr;
       end
       else if (lInputPasStr = 'AXNumberOfCharacters') then
       begin
@@ -508,14 +523,60 @@ begin
         Result := noErr;
         {$endif}
       end
+      // Basic elements for non-windowed accessible objects
+      // therefore only do something if lInputID <> 0
       else if lInputPasStr = 'AXParent' then
       begin
-        if lInputID64 = 0 then Exit;
         if not (lLazControl is TCustomControl) then Exit;
+        if lInputID64 = 0 then Exit;
         if lInputAccessibleObject.Parent = nil then Exit;
         lElement := AXUIElementRef(lInputAccessibleObject.Parent.Handle);
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFTypeRef,
           SizeOf(AXUIElementRef), @lElement);
+        Result := noErr;
+      end
+      else if lInputPasStr = 'AXPosition' then
+      begin
+        if not (lLazControl is TCustomControl) then Exit;
+        if lInputID64 = 0 then Exit;
+        lOutputPoint.x := lInputAccessibleObject.Position.X;
+        lOutputPoint.y := lInputAccessibleObject.Position.Y;
+        lOutputValue := AXValueCreate(kAXValueCGPointType, @lOutputPoint);
+        SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFTypeRef,
+          SizeOf(lOutputValue), @lOutputValue);
+        Result := noErr;
+      end
+      else if (lInputPasStr = 'AXWindow') or (lInputPasStr = 'AXTopLevelUIElement') then
+      begin
+        if not (lLazControl is TCustomControl) then Exit;
+        if lInputID64 = 0 then Exit;
+        // Just copy from our parent the AXWindow
+        if lInputAccessibleObject.Parent = nil then Exit;
+        lElement := AXUIElementRef(lInputAccessibleObject.Parent.Handle);
+        AXUIElementCopyAttributeValue(lElement, CFSTR('AXWindow'), lElement2);
+        if lElement2 = nil then Exit;
+        SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFTypeRef,
+          SizeOf(AXUIElementRef), @lElement2);
+        Result := noErr;
+      end
+      else if lInputPasStr = 'AXSize' then
+      begin
+        if not (lLazControl is TCustomControl) then Exit;
+        if lInputID64 = 0 then Exit;
+        lOutputSize.width := lInputAccessibleObject.Size.cx;
+        lOutputSize.height := lInputAccessibleObject.Size.cy;
+        lOutputValue := AXValueCreate(kAXValueCGSizeType, @lOutputSize);
+        SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFTypeRef,
+          SizeOf(lOutputValue), @lOutputValue);
+        Result := noErr;
+      end
+      else if lInputPasStr = 'AXEnabled' then
+      begin
+        if not (lLazControl is TCustomControl) then Exit;
+        if lInputID64 = 0 then Exit;
+        lOutputBool := True;
+        SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeBoolean,
+          SizeOf(Boolean), @lOutputBool);
         Result := noErr;
       end;
     end; // kEventAccessibleGetNamedAttribute
@@ -536,10 +597,16 @@ begin
         SetEventParameter(AEvent, kEventParamAccessibleAttributeSettable, typeBoolean,
           SizeOf(Boolean), @lOutputBool);
         Result := noErr;
-      end
-      else if (lInputPasStr = 'AXStringForRange') or
+        Exit;
+      end;
+      // For all other attributes simply default for not settable
+      if (lInputPasStr = 'AXStringForRange') or
          (lInputPasStr = 'AXNumberOfCharacters') or (lInputPasStr = 'AXChildren') or
-         (lInputPasStr = 'AXSelectedChildren') or (lInputPasStr = 'AXVisibleChildren') then
+         (lInputPasStr = 'AXSelectedChildren') or (lInputPasStr = 'AXVisibleChildren') or
+         (lInputPasStr = 'AXPosition') or (lInputPasStr = 'AXSize') or
+         (lInputPasStr = 'AXParent') or (lInputPasStr = 'AXTopLevelUIElement') or
+         (lInputPasStr = 'AXWindow') or (lInputPasStr = 'AXOrientation') or
+         (lInputPasStr = 'AXValue') or (lInputPasStr = 'AXEnabled') then
       begin
         lOutputBool := False;
         SetEventParameter(AEvent, kEventParamAccessibleAttributeSettable, typeBoolean,

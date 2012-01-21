@@ -929,7 +929,13 @@ type
   TLazAccessibleObject = class
   private
     FHandle: PtrInt;
+    FPosition: TPoint;
+    FSize: TSize;
     function GetHandle: PtrInt;
+    function GetPosition: TPoint;
+    function GetSize: TSize;
+    procedure SetPosition(AValue: TPoint);
+    procedure SetSize(AValue: TSize);
   protected
     FChildren: TFPList; // of TLazAccessibleObject
     FAccessibleDescription: TCaption;
@@ -959,6 +965,8 @@ type
     property AccessibleDescription: TCaption read FAccessibleDescription write SetAccessibleDescription;
     property AccessibleValue: TCaption read FAccessibleValue write SetAccessibleValue;
     property AccessibleRole: TLazAccessibilityRole read FAccessibleRole write SetAccessibleRole;
+    property Position: TPoint read GetPosition write SetPosition;
+    property Size: TSize read GetSize write SetSize;
     property Handle: PtrInt read GetHandle write FHandle;
   end;
 

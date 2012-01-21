@@ -45,7 +45,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Controls, Graphics, LCLType,
+  Controls, Graphics, LCLType, Types,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSImgList,
   { TODO: remove when CreateHandle/Component code moved }
@@ -76,6 +76,8 @@ type
     class procedure SetAccessibleDescription(const AObject: TLazAccessibleObject; const ADescription: string); virtual;
     class procedure SetAccessibleValue(const AObject: TLazAccessibleObject; const AValue: string); virtual;
     class procedure SetAccessibleRole(const AObject: TLazAccessibleObject; const ARole: TLazAccessibilityRole); virtual;
+    class procedure SetPosition(const AObject: TLazAccessibleObject; const AValue: TPoint); virtual;
+    class procedure SetSize(const AObject: TLazAccessibleObject; const AValue: TSize); virtual;
   end;
   TWSLazAccessibleObjectClass = class of TWSLazAccessibleObject;
 
@@ -189,6 +191,18 @@ begin
 end;
 
 class procedure TWSLazAccessibleObject.SetAccessibleRole(const AObject: TLazAccessibleObject; const ARole: TLazAccessibilityRole);
+begin
+
+end;
+
+class procedure TWSLazAccessibleObject.SetPosition(
+  const AObject: TLazAccessibleObject; const AValue: TPoint);
+begin
+
+end;
+
+class procedure TWSLazAccessibleObject.SetSize(
+  const AObject: TLazAccessibleObject; const AValue: TSize);
 begin
 
 end;
