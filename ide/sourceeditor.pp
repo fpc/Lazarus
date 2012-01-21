@@ -5344,6 +5344,8 @@ var
   CurWordAtCursor: String;
   AtIdentifier: Boolean;
   MainCodeBuf: TCodeBuffer;
+  AnOwner: TObject;
+  FPDocSrc: String;
 begin
   SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
   SourceEditorMenuRoot.BeginUpdate;
@@ -5450,11 +5452,11 @@ begin
       if (MainCodeBuf<>nil) and (MainCodeBuf<>ASrcEdit.CodeBuffer)
       and (not MainCodeBuf.IsVirtual) then begin
         // this is an include file => add link to open unit
-        AddContextPopupMenuItem(
-          Format(lisOpenLfm,[CreateRelativePath(MainCodeBuf.Filename,ASrcEdit.Filename)]),
-          true,@OnPopupMenuOpenFile);
         CurFilename:=MainCodeBuf.Filename;
         ShortFileName:=ExtractFileName(CurFilename);
+        AddContextPopupMenuItem(
+          Format(lisOpenLfm,[CreateRelativePath(CurFilename,ASrcEdit.Filename)]),
+          true,@OnPopupMenuOpenFile);
       end;
       if FilenameIsPascalUnit(ShortFileName) then begin
         MaybeAddPopup('.lfm');
@@ -5471,6 +5473,10 @@ begin
       if (CompareFileExt(ShortFileName,'.lpi',true)=0)
       or (CompareFileExt(ShortFileName,'.lpk',true)=0) then
         AddContextPopupMenuItem(Format(lisOpenLfm,[ShortFileName]),true,@OnPopupMenuOpenFile);
+      FPDocSrc:=LazarusHelp.GetFPDocFilenameForSource(CurFilename,false,AnOwner);
+      if FPDocSrc<>'' then
+        AddContextPopupMenuItem(Format(lisOpenLfm,[CreateRelativePath(FPDocSrc,CurFilename)]),
+                                true,@OnPopupMenuOpenFile);
     end;
 
     {$IFnDEF SingleSrcWindow}

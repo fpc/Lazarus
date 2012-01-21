@@ -214,6 +214,8 @@ type
                const Filename: string): TPascalHelpContextList; override;
     function ConvertCodePosToPascalHelpContext(
                ACodePos: PCodeXYPosition): TPascalHelpContextList;
+    function GetFPDocFilenameForSource(SrcFilename: string;
+      ResolveIncludeFiles: Boolean; out AnOwner: TObject): string; override;
   public
     property FCLHelpDB: THelpDatabase read FFCLHelpDB;
     property FCLHelpDBPath: THelpBaseURLObject read FFCLHelpDBPath;
@@ -1502,6 +1504,15 @@ begin
     exit;
   end;
   AddContextsBackwards(TCodeTool(Tool),Node);
+end;
+
+function TIDEHelpManager.GetFPDocFilenameForSource(SrcFilename: string;
+  ResolveIncludeFiles: Boolean; out AnOwner: TObject): string;
+var
+  CacheWasUsed: boolean;
+begin
+  Result:=CodeHelpBoss.GetFPDocFilenameForSource(SrcFilename,ResolveIncludeFiles,
+    CacheWasUsed,AnOwner);
 end;
 
 procedure TIDEHelpManager.ShowHelpForMessage(Line: integer);

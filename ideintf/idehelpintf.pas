@@ -78,6 +78,12 @@ type
 
     function ConvertSourcePosToPascalHelpContext(const CaretPos: TPoint;
                             const Filename: string): TPascalHelpContextList; virtual; abstract;
+
+    // fpdoc
+    function GetFPDocFilenameForSource(SrcFilename: string;
+      ResolveIncludeFiles: Boolean;
+      out AnOwner: TObject// a package or a project or LazarusHelp or nil for user defined
+      ): string; virtual; abstract;
   end;
   
 
