@@ -123,7 +123,10 @@ begin
   aFirstCustomColumnIdx := 0;
   if FBookMarkOpt.DrawBookmarksFirst then
     aFirstCustomColumnIdx := 1;
-  MLine := TCustomSynEdit(SynEdit).Marks.Line[FoldView.TextIndex[aScreenLine] + 1];
+  j := FoldView.TextIndex[aScreenLine];
+  if (j < 0) or (j >= TCustomSynEdit(SynEdit).Lines.Count) then
+    exit;
+  MLine := TCustomSynEdit(SynEdit).Marks.Line[j + 1];
   if MLine = nil then
     exit;
 

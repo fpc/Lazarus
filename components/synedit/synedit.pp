@@ -433,6 +433,8 @@ type
     FTopLinesView: TSynEditStrings;   // The linesview that holds the real line-buffer/FLines
     FDisplayView: TLazSynDisplayView;
     FTextArea: TLazSynTextArea;
+    FLeftGutterArea, FRightGutterArea: TLazSynGutterArea;
+    FPaintArea: TLazSynSurfaceManager;
 
     fExtraCharSpacing: integer;
     fMaxLeftChar: Integer; // 1024
@@ -1910,6 +1912,18 @@ begin
   FTextArea.DisplayView := FDisplayView;
   FTextArea.Highlighter := nil;
 
+  FLeftGutterArea := TLazSynGutterArea.Create;
+  FLeftGutterArea.TextArea := FTextArea;
+  FLeftGutterArea.Gutter := FLeftGutter;
+  FRightGutterArea := TLazSynGutterArea.Create;
+  FRightGutterArea.TextArea := FTextArea;
+  FRightGutterArea.Gutter := FRightGutter;
+
+  FPaintArea := TLazSynSurfaceManager.Create;
+  FPaintArea.TextArea := FTextArea;
+  FPaintArea.LeftGutterArea := FLeftGutterArea;
+  FPaintArea.RightGutterArea := FRightGutterArea;
+
   Color := clWhite;
   Font.Assign(fFontDummy);
   Font.OnChange := {$IFDEF FPC}@{$ENDIF}FontChanged;
@@ -2161,6 +2175,9 @@ begin
   FCaret.Lines := nil;
   FInternalCaret.Lines := nil;
   FMarkList.UnRegisterChangeHandler({$IFDEF FPC}@{$ENDIF}MarkListChange);
+  FreeAndNil(FPaintArea);
+  FreeAndNil(FLeftGutterArea);
+  FreeAndNil(FRightGutterArea);
   FreeAndNil(FTextArea);
   FreeAndNil(fTSearch);
   FreeAndNil(fMarkupManager);
@@ -3083,8 +3100,6 @@ begin
 end;
 
 procedure TCustomSynEdit.MouseMove(Shift: TShiftState; X, Y: Integer);
-var
-  Z: integer;
 begin
   Exclude(FStateFlags, sfHideCursor);
   inherited MouseMove(Shift, x, y);
@@ -3173,7 +3188,6 @@ procedure TCustomSynEdit.ScrollTimerHandler(Sender: TObject);
 var
   C: TPoint;
   CurMousePos: TPoint;
-  Z: integer;
   X, Y: Integer;
 begin
   // changes to line / column in one go
@@ -3315,8 +3329,7 @@ end;
 
 procedure TCustomSynEdit.Paint;
 var
-  rcClip, rcDraw: TRect;
-  nL1, nL2: integer;
+  rcClip: TRect;
 begin
   // Get the invalidated rect. Compute the invalid area in lines / columns.
   rcClip := Canvas.ClipRect;
@@ -3349,32 +3362,10 @@ begin
 
   Include(fStateFlags,sfPainting);
   Exclude(fStateFlags, sfHasScrolled);
-  // columns
-  nL1 := Max(rcClip.Top div LineHeight, 0);
-  nL2 := Min((rcClip.Bottom-1) div LineHeight,
-             FFoldedLinesView.Count - FFoldedLinesView.TopLine);
-  {$IFDEF SYNSCROLLDEBUG}
-  debugln(['PAINT ',DbgSName(self),' rect=',dbgs(rcClip), ' L1=',nL1, '  Nl2=',nL2]);
-  {$ENDIF}
-  //DebugLn('TCustomSynEdit.Paint LinesInWindow=',dbgs(LinesInWindow),' nL1=',dbgs(nL1),' nL2=',dbgs(nL2));
   // Now paint everything while the caret is hidden.
   FScreenCaret.Hide;
   try
-    // First paint the gutter area if it was (partly) invalidated.
-    if FLeftGutter.Visible and (rcClip.Left < FLeftGutter.Width) then begin
-      rcDraw := rcClip;
-      rcDraw.Right := FLeftGutter.Width;
-      FLeftGutter.Paint(Canvas, rcDraw, nL1, nL2);
-    end;
-    // Then paint the text area if it was (partly) invalidated.
-    FTextArea.Paint(Canvas, rcClip);
-    // right gutter
-    if FRightGutter.Visible and (rcClip.Right > ClientWidth - FRightGutter.Width - ScrollBarWidth) then begin
-      rcDraw := rcClip;
-      rcDraw.Left := ClientWidth - FRightGutter.Width - ScrollBarWidth;
-      FRightGutter.Paint(Canvas, rcDraw, nL1, nL2);
-    end;
-    // If there is a custom paint handler call it.
+    FPaintArea.Paint(Canvas, rcClip);
     DoOnPaint;
   finally
     {$IFDEF EnableDoubleBuf}
@@ -7027,8 +7018,11 @@ begin
   else r := 0;
 
   OldLinesInWindow := FTextArea.LinesInWindow;
+
   // TODO: lock FTextArea, so size re-calc is done once only
-  FTextArea.SetBounds(0, l, ClientHeight - ScrollBarWidth, ClientWidth - r - ScrollBarWidth);
+  FPaintArea.SetBounds(0, 0, ClientHeight - ScrollBarWidth, ClientWidth - ScrollBarWidth);
+  FPaintArea.LeftGutterWidth := l;
+  FPaintArea.RightGutterWidth := r;
 
   if FLeftGutter.Visible
   then FTextArea.Padding[bsLeft] := GutterTextDist
@@ -7173,10 +7167,8 @@ end;
 procedure TCustomSynEdit.RecalcCharExtent;
 var
   i: Integer;
-  OldLinesInWindow: Integer;
 begin
   (* Highlighter or Font changed *)
-  OldLinesInWindow := FTextArea.LinesInWindow;
 
   FFontDummy.Assign(Font);
   with FFontDummy do begin

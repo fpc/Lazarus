@@ -218,7 +218,7 @@ end;
 
 procedure TSynGutterLineNumber.Paint(Canvas : TCanvas; AClip : TRect; FirstLine, LastLine : integer);
 var
-  i, iLine: integer;
+  i, c, iLine: integer;
   rcLine: TRect;
   s: string;
   dc: HDC;
@@ -229,6 +229,7 @@ begin
   if not Visible then exit;
 
   LineHeight := TCustomSynEdit(SynEdit).LineHeight;
+  c := TCustomSynEdit(SynEdit).Lines.Count;
   // Changed to use fTextDrawer.BeginDrawing and fTextDrawer.EndDrawing only
   // when absolutely necessary.  Note: Never change brush / pen / font of the
   // canvas inside of this block (only through methods of fTextDrawer)!
@@ -256,6 +257,7 @@ begin
     for i := FirstLine to LastLine do
     begin
       iLine := FoldView.DisplayNumber[i];
+      if (iLine < 0) or (iLine >= c) then break;
       // next line rect
       rcLine.Top := rcLine.Bottom;
       // Must show a dot instead of line number if

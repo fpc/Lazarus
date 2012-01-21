@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, Classes, Controls, Graphics, LCLType, LCLIntf, Menus,
-  SynEditMarks, SynEditMiscClasses, SynEditMiscProcs,
+  SynEditMarks, SynEditMiscClasses, SynEditMiscProcs, LazSynTextArea,
   SynTextDrawer, SynGutterBase, SynGutterLineNumber, SynGutterCodeFolding,
   SynGutterMarks, SynGutterChanges, SynEditMouseCmds;
 
@@ -92,10 +92,35 @@ type
     procedure InitForOptions(AnOptions: TSynEditorMouseOptions); override;
   end;
 
+  { TLazSynGutterArea }
+
+  TLazSynGutterArea = class(TLazSynSurface)
+  private
+    FGutter: TSynGutter;
+    FTextArea: TLazSynTextArea;
+  protected
+    procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
+  public
+    property TextArea: TLazSynTextArea read FTextArea write FTextArea;
+    property Gutter: TSynGutter read FGutter write FGutter;
+  end;
 
 implementation
 uses
   SynEdit;
+
+{ TLazSynGutterArea }
+
+procedure TLazSynGutterArea.DoPaint(ACanvas: TCanvas; AClip: TRect);
+var
+  ScreenRow1, ScreenRow2: integer;
+begin
+  // TODO TextArea top/bottom padding;
+  ScreenRow1 := Max((AClip.Top - Bounds.Top) div TextArea.LineHeight, 0);
+  ScreenRow2 := Min((AClip.Bottom-1 - Bounds.Top) div TextArea.LineHeight, TextArea.LinesInWindow + 1);
+
+  FGutter.Paint(ACanvas, AClip, ScreenRow1, ScreenRow2);
+end;
 
 { TSynGutter }
 

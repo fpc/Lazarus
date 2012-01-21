@@ -14,7 +14,7 @@ type
 
   { TLazSynTextArea }
 
-  TLazSynTextArea = class(TPersistent)
+  TLazSynTextArea = class(TLazSynSurface)
   private
     FCharsInWindow: Integer;
     FCharWidth: integer;
@@ -32,7 +32,7 @@ type
     FBackgroundColor: TColor;
     FRightEdgeColor: TColor;
 
-    FBounds, FTextBounds: TRect;
+    FTextBounds: TRect;
     FPadding: array [TLazSynBorderSide] of Integer;
     FExtraCharSpacing: integer;
     FExtraLineSpacing: integer;
@@ -51,6 +51,8 @@ type
     procedure SetTopLine(AValue: TLinePos);
     procedure DoDrawerFontChanged(Sender: TObject);
   protected
+    procedure BoundsChanged; override;
+    procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
     procedure PaintTextLines(AClip: TRect; FirstLine, LastLine,
       FirstCol, LastCol: integer); virtual;
     property Canvas: TCanvas read FCanvas;
@@ -63,11 +65,9 @@ type
     function RowColumnToPixels(const RowCol: TPoint): TPoint;
     function PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinateMappingFlags): TPoint; // ignores scmLimitToLines
 
-    procedure FontChanged; // must be called by owner of shared tetdrawer
-    procedure Paint(ACanvas: TCanvas; AClip: TRect);
+    procedure FontChanged;
 
     // Settings controlled by SynEdit
-    procedure SetBounds(ATop, ALeft, ABottom, ARight: Integer);
     property Padding[Side: TLazSynBorderSide]: integer read GetPadding write SetPadding;
     property ForegroundColor: TColor read FForegroundColor write FForegroundColor;
     property BackgroundColor: TColor read FBackgroundColor write FBackgroundColor;
@@ -86,11 +86,6 @@ type
     property Highlighter:   TSynCustomHighlighter read FHighlighter   write FHighlighter;
     property MarkupManager: TSynEditMarkupManager read FMarkupManager write FMarkupManager;
   public
-    property Left: Integer   read FBounds.Left;
-    property Top: Integer    read FBounds.Top;
-    property Right:Integer   read FBounds.Right;
-    property Bottom: integer read FBounds.Bottom;
-    property Bounds: TRect read FBounds;
     property TextBounds: TRect read FTextBounds;
 
     property LineHeight: integer read FTextHeight;
@@ -99,23 +94,73 @@ type
     property CharsInWindow: Integer read FCharsInWindow;
   end;
 
+  { TLazSynSurfaceManager }
+
+  TLazSynSurfaceManager = class(TLazSynSurface)
+  private
+    FLeftGutterArea: TLazSynSurface;
+    FLeftGutterWidth: integer;
+    FRightGutterArea: TLazSynSurface;
+    FRightGutterWidth: integer;
+    FTextArea: TLazSynTextArea;
+    procedure SetLeftGutterWidth(AValue: integer);
+    procedure SetRightGutterWidth(AValue: integer);
+  protected
+    procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
+    procedure BoundsChanged; override;
+  public
+    constructor Create;
+    property TextArea: TLazSynTextArea read FTextArea write FTextArea;
+    property LeftGutterArea: TLazSynSurface read FLeftGutterArea write FLeftGutterArea;
+    property RightGutterArea: TLazSynSurface read FRightGutterArea write FRightGutterArea;
+    property LeftGutterWidth: integer read FLeftGutterWidth write SetLeftGutterWidth;
+    property RightGutterWidth: integer read FRightGutterWidth write SetRightGutterWidth;
+  end;
+
 
 implementation
 
-{ TLazSynTextArea }
+{ TLazSynSurfaceManager }
 
-procedure TLazSynTextArea.SetBounds(ATop, ALeft, ABottom, ARight: Integer);
+procedure TLazSynSurfaceManager.SetLeftGutterWidth(AValue: integer);
 begin
-  FBounds.Left := ALeft;
-  FBounds.Top := ATop;
-  FBounds.Right := ARight;
-  FBounds.Bottom := ABottom;
-  FTextBounds.Left   := Left + FPadding[bsLeft];
-  FTextBounds.Top    := Top + FPadding[bsTop];
-  FTextBounds.Right  := Right - FPadding[bsRight];
-  FTextBounds.Bottom := Bottom - FPadding[bsBottom];
-  FontChanged;
+  if FLeftGutterWidth = AValue then Exit;
+  FLeftGutterWidth := AValue;
+  BoundsChanged;
 end;
+
+procedure TLazSynSurfaceManager.SetRightGutterWidth(AValue: integer);
+begin
+  if FRightGutterWidth = AValue then Exit;
+  FRightGutterWidth := AValue;
+  BoundsChanged;
+end;
+
+procedure TLazSynSurfaceManager.DoPaint(ACanvas: TCanvas; AClip: TRect);
+begin
+  FLeftGutterArea.Paint(ACanvas, AClip);
+  FTextArea.Paint(ACanvas, AClip);
+  FRightGutterArea.Paint(ACanvas, AClip);
+end;
+
+procedure TLazSynSurfaceManager.BoundsChanged;
+var
+  l, r: Integer;
+begin
+  r := Max(Left, Right - RightGutterWidth);
+  l := Min(r, Left + LeftGutterWidth);
+  FLeftGutterArea.SetBounds(Top, Left, Bottom, l);
+  FTextArea.SetBounds(Top, l, Bottom, r);
+  FRightGutterArea.SetBounds(Top, r, Bottom, Right);
+end;
+
+constructor TLazSynSurfaceManager.Create;
+begin
+  FLeftGutterWidth := 0;
+  FRightGutterWidth := 0;
+end;
+
+{ TLazSynTextArea }
 
 function TLazSynTextArea.GetPadding(Side: TLazSynBorderSide): integer;
 begin
@@ -164,6 +209,15 @@ end;
 
 procedure TLazSynTextArea.DoDrawerFontChanged(Sender: TObject);
 begin
+  FontChanged;
+end;
+
+procedure TLazSynTextArea.BoundsChanged;
+begin
+  FTextBounds.Left   := Left + FPadding[bsLeft];
+  FTextBounds.Top    := Top + FPadding[bsTop];
+  FTextBounds.Right  := Right - FPadding[bsRight];
+  FTextBounds.Bottom := Bottom - FPadding[bsBottom];
   FontChanged;
 end;
 
@@ -239,18 +293,12 @@ begin
     FLinesInWindow := Max(0, (FTextBounds.Bottom - FTextBounds.Top) div FTextHeight);
 end;
 
-procedure TLazSynTextArea.Paint(ACanvas: TCanvas; AClip: TRect);
+procedure TLazSynTextArea.DoPaint(ACanvas: TCanvas; AClip: TRect);
 var
   PadRect, PadRect2: TRect;
   ScreenRow1, ScreenRow2, TextColumn1, TextColumn2: integer;
   dc: HDC;
 begin
-  if (AClip.Left   >= FBounds.Right) or
-     (AClip.Right  <= FBounds.Left) or
-     (AClip.Top    >= FBounds.Bottom) or
-     (AClip.Bottom <= FBounds.Top)
-  then
-    exit;
 
   // paint padding
   FCanvas := ACanvas;
@@ -258,25 +306,25 @@ begin
   SetBkColor(dc, ColorToRGB(BackgroundColor));
 
   if (AClip.Top < FTextBounds.Top) then begin
-    PadRect2 := FBounds;
+    PadRect2 := Bounds;
     PadRect2.Bottom := FTextBounds.Top;
     IntersectRect(PadRect, AClip, PadRect2);
     InternalFillRect(dc, PadRect);
   end;
   if (AClip.Bottom > FTextBounds.Bottom) then begin
-    PadRect2 := FBounds;
+    PadRect2 := Bounds;
     PadRect2.Top := FTextBounds.Bottom;
     IntersectRect(PadRect, AClip, PadRect2);
     InternalFillRect(dc, PadRect);
   end;
   if (AClip.Left < FTextBounds.Left) then begin
-    PadRect2 := FBounds;
+    PadRect2 := Bounds;
     PadRect2.Right := FTextBounds.Left;
     IntersectRect(PadRect, AClip, PadRect2);
     InternalFillRect(dc, PadRect);
   end;
   if (AClip.Right > FTextBounds.Right) then begin
-    PadRect2 := FBounds;
+    PadRect2 := Bounds;
     PadRect2.Left := FTextBounds.Right;
     IntersectRect(PadRect, AClip, PadRect2);
     InternalFillRect(dc, PadRect);

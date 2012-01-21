@@ -74,7 +74,7 @@ end;
 
 procedure TSynGutterChanges.Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
 var
-  i, iLine: integer;
+  i, c, iLine: integer;
   LineHeight: Integer;
   rcLine: TRect;
   AliasMode: TAntialiasingMode;
@@ -82,6 +82,7 @@ begin
   if not Visible then exit;
 
   LineHeight := TCustomSynEdit(SynEdit).LineHeight;
+  c := TCustomSynEdit(SynEdit).Lines.Count;
 
   if MarkupInfo.Background <> clNone then
   begin
@@ -100,6 +101,7 @@ begin
   for i := FirstLine to LastLine do
   begin
     iLine := FoldView.TextIndex[i];
+    if (iLine < 0) or (iLine >= c) then break;
     // next line rect
     rcLine.Top := rcLine.Bottom;
     Inc(rcLine.Bottom, LineHeight);

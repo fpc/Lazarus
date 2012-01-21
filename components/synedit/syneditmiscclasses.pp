@@ -264,6 +264,25 @@ type
     property UnderlinePriority default 0;
   end;
 
+  { TLazSynSurface }
+
+  TLazSynSurface = class
+  private
+    FBounds: TRect;
+  protected
+    procedure BoundsChanged; virtual;
+    procedure DoPaint(ACanvas: TCanvas; AClip: TRect); virtual; abstract;
+  public
+    procedure Paint(ACanvas: TCanvas; AClip: TRect);
+    procedure SetBounds(ATop, ALeft, ABottom, ARight: Integer);
+
+    property Left: Integer   read FBounds.Left;
+    property Top: Integer    read FBounds.Top;
+    property Right:Integer   read FBounds.Right;
+    property Bottom: integer read FBounds.Bottom;
+    property Bounds: TRect read FBounds;
+  end;
+
   { TSynBookMarkOpt }
 
   TSynBookMarkOpt = class(TPersistent)
@@ -802,6 +821,43 @@ function TSynSelectedColor.IsEnabled: boolean;
 begin
   Result := (Background <> clNone) or (Foreground <> clNone) or (FrameColor <> clNone) or
             (Style <> []) or (StyleMask <> []);
+end;
+
+{ TLazSynSurface }
+
+procedure TLazSynSurface.BoundsChanged;
+begin
+  //
+end;
+
+procedure TLazSynSurface.Paint(ACanvas: TCanvas; AClip: TRect);
+begin
+  if (AClip.Left   >= Bounds.Right) or
+     (AClip.Right  <= Bounds.Left) or
+     (AClip.Top    >= Bounds.Bottom) or
+     (AClip.Bottom <= Bounds.Top)
+  then
+    exit;
+
+  if (AClip.Left   < Bounds.Left)   then AClip.Left   := Bounds.Left;
+  if (AClip.Right  > Bounds.Right)  then AClip.Right  := Bounds.Right;
+  if (AClip.Top    < Bounds.Top)    then AClip.Top    := Bounds.Top;
+  if (AClip.Bottom < Bounds.Bottom) then AClip.Bottom := Bounds.Bottom;
+
+  DoPaint(ACanvas, AClip);
+end;
+
+procedure TLazSynSurface.SetBounds(ATop, ALeft, ABottom, ARight: Integer);
+begin
+  if (FBounds.Left = ALeft) and (FBounds.Top = ATop) and
+     (FBounds.Right = ARight) and (FBounds.Bottom = ABottom)
+  then exit;
+
+  FBounds.Left := ALeft;
+  FBounds.Top := ATop;
+  FBounds.Right := ARight;
+  FBounds.Bottom := ABottom;
+  BoundsChanged;
 end;
 
 { TSynBookMarkOpt }
