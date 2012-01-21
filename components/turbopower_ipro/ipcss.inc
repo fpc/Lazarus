@@ -914,8 +914,6 @@ begin
 end;
 
 destructor TCSSGlobalProps.Destroy;
-var
-  i: Integer;
 begin
   FElements.Free;
   inherited Destroy;

@@ -73,7 +73,7 @@ type
 
 function IPCreateLazIDEHTMLControl(Owner: TComponent;
   var Provider: TAbstractIDEHTMLProvider;
-  Flags: TIDEHTMLControlFlags = []): TControl;
+  {%H-}Flags: TIDEHTMLControlFlags = []): TControl;
 
 procedure Register;
 
