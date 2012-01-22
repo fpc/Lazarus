@@ -1298,7 +1298,9 @@ begin
     itmHelpOnlineHelp.OnClick := @mnuHelpOnlineHelpClicked;
     itmHelpReportingBug.OnClick := @mnuHelpReportBugClicked;
 
+    {$IFDEF EnableFPDocSearch}
     itmSearchInFPDocFiles.OnClick:=@mnuSearchInFPDocFilesClick;
+    {$ENDIF}
   end;
 end;
 
