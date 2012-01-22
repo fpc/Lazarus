@@ -160,6 +160,8 @@ type
     property OnClick;
     property OnConstrainedResize;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
