@@ -269,11 +269,17 @@ type
   TLazSynSurface = class
   private
     FBounds: TRect;
+    FOwner: TWinControl;
+    function GetHandle: HWND;
   protected
     procedure BoundsChanged; virtual;
     procedure DoPaint(ACanvas: TCanvas; AClip: TRect); virtual; abstract;
+    property  Handle: HWND read GetHandle;
   public
+    constructor Create(AOwner: TWinControl);
+    procedure Assign(Src: TLazSynSurface); virtual;
     procedure Paint(ACanvas: TCanvas; AClip: TRect);
+    procedure InvalidateLines(FirstLine, LastLine: TLineIdx); virtual;
     procedure SetBounds(ATop, ALeft, ABottom, ARight: Integer);
 
     property Left: Integer   read FBounds.Left;
@@ -825,9 +831,24 @@ end;
 
 { TLazSynSurface }
 
+function TLazSynSurface.GetHandle: HWND;
+begin
+  Result := FOwner.Handle;
+end;
+
 procedure TLazSynSurface.BoundsChanged;
 begin
   //
+end;
+
+constructor TLazSynSurface.Create(AOwner: TWinControl);
+begin
+  FOwner := AOwner;
+end;
+
+procedure TLazSynSurface.Assign(Src: TLazSynSurface);
+begin
+  // do not assign the bounds
 end;
 
 procedure TLazSynSurface.Paint(ACanvas: TCanvas; AClip: TRect);
@@ -842,9 +863,14 @@ begin
   if (AClip.Left   < Bounds.Left)   then AClip.Left   := Bounds.Left;
   if (AClip.Right  > Bounds.Right)  then AClip.Right  := Bounds.Right;
   if (AClip.Top    < Bounds.Top)    then AClip.Top    := Bounds.Top;
-  if (AClip.Bottom < Bounds.Bottom) then AClip.Bottom := Bounds.Bottom;
+  if (AClip.Bottom > Bounds.Bottom) then AClip.Bottom := Bounds.Bottom;
 
   DoPaint(ACanvas, AClip);
+end;
+
+procedure TLazSynSurface.InvalidateLines(FirstLine, LastLine: TLineIdx);
+begin
+  //
 end;
 
 procedure TLazSynSurface.SetBounds(ATop, ALeft, ABottom, ARight: Integer);

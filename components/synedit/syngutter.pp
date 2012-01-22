@@ -6,13 +6,14 @@ interface
 
 uses
   SysUtils, Classes, Controls, Graphics, LCLType, LCLIntf, Menus,
-  SynEditMarks, SynEditMiscClasses, SynEditMiscProcs, LazSynTextArea,
+  SynEditMarks, SynEditTypes, SynEditMiscClasses, SynEditMiscProcs, LazSynTextArea,
   SynTextDrawer, SynGutterBase, SynGutterLineNumber, SynGutterCodeFolding,
   SynGutterMarks, SynGutterChanges, SynEditMouseCmds;
 
 type
 
   TSynGutterSeparator = class;
+  TLazSynGutterArea = class;
 
   { TSynGutter }
 
@@ -32,7 +33,7 @@ type
     constructor Create(AOwner : TSynEditBase; ASide: TSynGutterSide;
                       ATextDrawer: TheTextDrawer);
     destructor Destroy; override;
-    procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
+    procedure Paint(Canvas: TCanvas; Surface:TLazSynGutterArea; AClip: TRect; FirstLine, LastLine: integer);
     function  HasCustomPopupMenu(out PopMenu: TPopupMenu): Boolean;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -98,11 +99,15 @@ type
   private
     FGutter: TSynGutter;
     FTextArea: TLazSynTextArea;
+    function GetTextBounds: TRect;
   protected
     procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
   public
+    procedure InvalidateLines(FirstLine, LastLine: TLineIdx); override;
+    procedure Assign(Src: TLazSynSurface); override;
     property TextArea: TLazSynTextArea read FTextArea write FTextArea;
     property Gutter: TSynGutter read FGutter write FGutter;
+    property TextBounds: TRect read GetTextBounds;
   end;
 
 implementation
@@ -110,6 +115,11 @@ uses
   SynEdit;
 
 { TLazSynGutterArea }
+
+function TLazSynGutterArea.GetTextBounds: TRect;
+begin
+  Result := TextArea.TextBounds;
+end;
 
 procedure TLazSynGutterArea.DoPaint(ACanvas: TCanvas; AClip: TRect);
 var
@@ -119,7 +129,31 @@ begin
   ScreenRow1 := Max((AClip.Top - Bounds.Top) div TextArea.LineHeight, 0);
   ScreenRow2 := Min((AClip.Bottom-1 - Bounds.Top) div TextArea.LineHeight, TextArea.LinesInWindow + 1);
 
-  FGutter.Paint(ACanvas, AClip, ScreenRow1, ScreenRow2);
+  FGutter.Paint(ACanvas, Self, AClip, ScreenRow1, ScreenRow2);
+end;
+
+procedure TLazSynGutterArea.InvalidateLines(FirstLine, LastLine: TLineIdx);
+var
+  rcInval: TRect;
+begin
+  rcInval := Bounds;
+  if (FirstLine >= 0) then
+    rcInval.Top := TextArea.TextBounds.Top + FirstLine * TextArea.LineHeight;
+  if (LastLine >= 0) then
+    rcInval.Bottom := TextArea.TextBounds.Top + LastLine * TextArea.LineHeight;
+
+  {$IFDEF VerboseSynEditInvalidate}
+  DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self), ' FirstLine=',FirstLine, ' LastLine=',LastLine, ' rect=',dbgs(rcInval)]);
+  {$ENDIF}
+  if (rcInval.Top < rcInval.Bottom) and (rcInval.Left < rcInval.Right) then
+    InvalidateRect(Handle, @rcInval, FALSE);
+end;
+
+procedure TLazSynGutterArea.Assign(Src: TLazSynSurface);
+begin
+  inherited Assign(Src);
+  FTextArea := TLazSynGutterArea(Src).FTextArea;
+  FGutter := TLazSynGutterArea(Src).FGutter;
 end;
 
 { TSynGutter }
@@ -203,7 +237,7 @@ begin
   Parts[PixelToPartIndex(X)].DoOnGutterClick(X, Y);
 end;
 
-procedure TSynGutter.Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
+procedure TSynGutter.Paint(Canvas: TCanvas; Surface:TLazSynGutterArea; AClip: TRect; FirstLine, LastLine: integer);
 var
   i: integer;
   rcLine: TRect;
@@ -224,10 +258,8 @@ begin
      TextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, AClip, nil, 0);
   TextDrawer.EndDrawing;
 
-  if Side = gsLeft then
-    AClip.Left := LeftOffset
-  else
-    AClip.Left := SynEdit.ClientWidth - Width - ScrollBarWidth + LeftOffset;
+  AClip.Left := Surface.Left;
+  AClip.Top  := Surface.TextBounds.Top + FirstLine * TCustomSynEdit(SynEdit).LineHeight;
 
   rcLine := AClip;
   rcLine.Right := rcLine.Left;

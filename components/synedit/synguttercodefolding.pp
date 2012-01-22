@@ -679,7 +679,7 @@ begin
     Pen.Color := MarkupInfo.Foreground;
     Pen.Width := 1;
 
-    rcLine.Bottom := FirstLine * LineHeight;
+    rcLine.Bottom := AClip.Top;
     for iLine := FirstLine to LastLine do
     begin
       // next line rect

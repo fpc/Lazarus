@@ -432,9 +432,6 @@ type
     FStrings: TStrings;               // External TStrings based interface to the Textbuffer
     FTopLinesView: TSynEditStrings;   // The linesview that holds the real line-buffer/FLines
     FDisplayView: TLazSynDisplayView;
-    FTextArea: TLazSynTextArea;
-    FLeftGutterArea, FRightGutterArea: TLazSynGutterArea;
-    FPaintArea: TLazSynSurfaceManager;
 
     fExtraCharSpacing: integer;
     fMaxLeftChar: Integer; // 1024
@@ -666,8 +663,11 @@ type
   protected
     {$IFDEF EnableDoubleBuf}
     BufferBitmap: TBitmap; // the double buffer
-    {$ENDIF}
     SavedCanvas: TCanvas; // the normal TCustomControl canvas during paint
+    {$ENDIF}
+    FTextArea: TLazSynTextArea;
+    FLeftGutterArea, FRightGutterArea: TLazSynGutterArea;
+    FPaintArea: TLazSynSurfaceManager;
 
     procedure Paint; override;
     procedure StartPaintBuffer(const ClipRect: TRect);
@@ -1903,7 +1903,7 @@ begin
   FLastMousePoint := Point(-1,-1);
   fBlockIndent := 2;
 
-  FTextArea := TLazSynTextArea.Create(FTextDrawer);
+  FTextArea := TLazSynTextArea.Create(Self, FTextDrawer);
   FTextArea.RightEdgeVisible := not(eoHideRightMargin in SYNEDIT_DEFAULT_OPTIONS);
   FTextArea.ExtraCharSpacing := 0;
   FTextArea.ExtraLineSpacing := 0;
@@ -1912,14 +1912,15 @@ begin
   FTextArea.DisplayView := FDisplayView;
   FTextArea.Highlighter := nil;
 
-  FLeftGutterArea := TLazSynGutterArea.Create;
+  FLeftGutterArea := TLazSynGutterArea.Create(Self);
   FLeftGutterArea.TextArea := FTextArea;
   FLeftGutterArea.Gutter := FLeftGutter;
-  FRightGutterArea := TLazSynGutterArea.Create;
+
+  FRightGutterArea := TLazSynGutterArea.Create(Self);
   FRightGutterArea.TextArea := FTextArea;
   FRightGutterArea.Gutter := FRightGutter;
 
-  FPaintArea := TLazSynSurfaceManager.Create;
+  FPaintArea := TLazSynSurfaceManager.Create(Self);
   FPaintArea.TextArea := FTextArea;
   FPaintArea.LeftGutterArea := FLeftGutterArea;
   FPaintArea.RightGutterArea := FRightGutterArea;
@@ -2146,7 +2147,7 @@ end;
 
 destructor TCustomSynEdit.Destroy;
 var
-  i: integer;
+  q,i: integer;
 begin
   Application.RemoveOnIdleHandler(@IdleScanRanges);
   SurrenderPrimarySelection;
@@ -2466,22 +2467,8 @@ begin
   if sfPainting in fStateFlags then exit;
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
-      if FLeftGutter.Visible then begin;
-        rcInval := Rect(0, 0, FLeftGutter.Width, ClientHeight - ScrollBarWidth);
-        {$IFDEF VerboseSynEditInvalidate}
-        DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self),' ALL ',dbgs(rcInval)]);
-        {$ENDIF}
-        InvalidateRect(Handle, @rcInval, FALSE);
-      end;
-      // right gutter
-      if FRightGutter.Visible then begin
-        rcInval := Rect(ClientWidth - FRightGutter.Width - ScrollBarWidth, 0,
-                        ClientWidth - ScrollBarWidth, ClientHeight - ScrollBarWidth);
-        {$IFDEF VerboseSynEditInvalidate}
-        DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self),' ALL ',dbgs(rcInval)]);
-        {$ENDIF}
-        InvalidateRect(Handle, @rcInval, FALSE);
-      end;
+      FLeftGutterArea.InvalidateLines(-1, -1);
+      FRightGutterArea.InvalidateLines(-1, -1);
     end else begin
       // pretend we haven't scrolled
       TopFoldLine := FFoldedLinesView.TopLine;
@@ -2498,26 +2485,9 @@ begin
         LastLine := LinesInWindow + 1;
       FirstLine := RowToScreenRow(FirstLine);
       FirstLine := Max(0, FirstLine);
-      { any line visible? }
-      if (LastLine >= FirstLine) then begin
-        if FLeftGutter.Visible then begin;
-          rcInval := Rect(0, LineHeight * FirstLine,
-            FLeftGutter.Width, LineHeight * LastLine);
-          {$IFDEF VerboseSynEditInvalidate}
-          DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self),' PART ',dbgs(rcInval)]);
-          {$ENDIF}
-          InvalidateRect(Handle, @rcInval, FALSE);
-        end;
-        // right gutter
-        if FRightGutter.Visible then begin
-          rcInval.Left := ClientWidth - FRightGutter.Width - ScrollBarWidth;
-          rcInval.Right := ClientWidth - ScrollBarWidth;
-          {$IFDEF VerboseSynEditInvalidate}
-          DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self),' PART ',dbgs(rcInval)]);
-          {$ENDIF}
-          InvalidateRect(Handle, @rcInval, FALSE);
-        end;
-      end;
+
+      FLeftGutterArea.InvalidateLines(FirstLine, LastLine);
+      FRightGutterArea.InvalidateLines(FirstLine, LastLine);
 
       FFoldedLinesView.TopLine := TopFoldLine;
     end;
@@ -2532,13 +2502,7 @@ begin
   if sfPainting in fStateFlags then exit;
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
-      rcInval := ClientRect;
-      rcInval.Left := FTextArea.Bounds.Left;
-      rcInval.Right := FTextArea.Bounds.Right;
-      {$IFDEF VerboseSynEditInvalidate}
-      DebugLn(['TCustomSynEdit.InvalidateLines ',DbgSName(self),' ALL ',dbgs(rcInval)]);
-      {$ENDIF}
-      InvalidateRect(Handle, @rcInval, FALSE);
+      FTextArea.InvalidateLines(-1, -1);
     end else begin
       // pretend we haven't scrolled
       TopFoldLine := FFoldedLinesView.TopLine;
@@ -2555,15 +2519,8 @@ begin
         l := LinesInWindow + 1;
       f := RowToScreenRow(FirstLine);
       f := Max(0, f);
-      { any line visible? }
-      if (l >= f) then begin
-        rcInval := Rect(FTextArea.Bounds.Left, LineHeight * f,
-          FTextArea.Bounds.Right, LineHeight * l);
-        {$IFDEF VerboseSynEditInvalidate}
-        DebugLn(['TCustomSynEdit.InvalidateLines ',DbgSName(self),' PART ',dbgs(rcInval)]);
-        {$ENDIF}
-        InvalidateRect(Handle, @rcInval, FALSE);
-      end;
+
+      FTextArea.InvalidateLines(F, L);
 
       FFoldedLinesView.TopLine := TopFoldLine;
     end;
@@ -3431,8 +3388,8 @@ var
   NewBufferHeight: Integer;
 {$ENDIF}
 begin
-  if (SavedCanvas<>nil) then RaiseGDBException('');
   {$IFDEF EnableDoubleBuf}
+  if (SavedCanvas<>nil) then RaiseGDBException('');
   if BufferBitmap=nil then
     BufferBitmap:=TBitmap.Create;
   NewBufferWidth:=BufferBitmap.Width;
@@ -7057,7 +7014,7 @@ end;
 procedure TCustomSynEdit.MoveCaretHorz(DX: integer);
 var
   NewCaret: TPoint;
-  s: String;
+  s,  a: String;
   PhysicalLineLen: Integer;
 begin
   NewCaret:=Point(CaretX+DX,CaretY);

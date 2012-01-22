@@ -253,7 +253,7 @@ begin
     fTextDrawer.Style := MarkupInfo.Style;
     // prepare the rect initially
     rcLine := AClip;
-    rcLine.Bottom := FirstLine * LineHeight;
+    rcLine.Bottom := AClip.Top;
     for i := FirstLine to LastLine do
     begin
       iLine := FoldView.DisplayNumber[i];

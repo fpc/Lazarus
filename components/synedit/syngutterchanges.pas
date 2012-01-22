@@ -96,8 +96,8 @@ begin
   Canvas.AntialiasingMode:=amOff;
 
   rcLine := AClip;
+  rcLine.Bottom := AClip.Top;
   rcLine.Left := rcLine.Left + Width div 2;
-  rcLine.Bottom := FirstLine * LineHeight;
   for i := FirstLine to LastLine do
   begin
     iLine := FoldView.TextIndex[i];

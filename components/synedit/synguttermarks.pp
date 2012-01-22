@@ -138,9 +138,9 @@ begin
   LineHeight := TCustomSynEdit(SynEdit).LineHeight;
   //Gutter.Paint always supplies AClip.Left = GutterPart.Left
   MarkRect := Rect(AClip.Left + FBookMarkOpt.LeftMargin,
-                   aScreenLine * LineHeight,
+                   AClip.Top,
                    AClip.Left + FColumnWidth,
-                   (aScreenLine+1) * LineHeight);
+                   AClip.Top + LineHeight);
 
 
   LastMarkIsBookmark := FBookMarkOpt.DrawBookmarksFirst;
@@ -184,6 +184,8 @@ end;
 procedure TSynGutterMarks.Paint(Canvas : TCanvas; AClip : TRect; FirstLine, LastLine : integer);
 var
   i: integer;
+  LineHeight: Integer;
+  rcLine: TRect;
 begin
   if not Visible then exit;
   if MarkupInfo.Background <> clNone then
@@ -198,10 +200,16 @@ begin
     FColumnWidth := Width;
   FColumnCount := Max((Width+1) div FColumnWidth, 1); // full columns
 
+  rcLine := AClip;
+  rcLine.Bottom := rcLine.Top;
   if FBookMarkOpt.GlyphsVisible and (LastLine >= FirstLine) then
   begin
-    for i := FirstLine to LastLine do
-      PaintLine(i, Canvas, AClip);
+    LineHeight := TCustomSynEdit(SynEdit).LineHeight;
+    for i := FirstLine to LastLine do begin
+      rcLine.Top := rcLine.Bottom;
+      rcLine.Bottom := Min(AClip.Bottom, rcLine.Top + LineHeight);
+      PaintLine(i, Canvas, rcLine);
+    end;
   end;
 end;
 

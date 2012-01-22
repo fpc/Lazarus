@@ -5,7 +5,7 @@ unit LazSynTextArea;
 interface
 
 uses
-  Classes, SysUtils, Graphics, LCLType, LCLIntf, LCLProc,
+  Classes, SysUtils, Graphics, Controls, LCLType, LCLIntf, LCLProc,
   SynEditTypes, SynEditMiscProcs, SynEditMiscClasses, LazSynEditText,
   SynEditMarkup, SynEditHighlighter, SynTextDrawer;
 
@@ -57,9 +57,10 @@ type
       FirstCol, LastCol: integer); virtual;
     property Canvas: TCanvas read FCanvas;
   public
-    constructor Create(ATextDrawer: TheTextDrawer);
-    //constructor Create(AOwner : TSynEditBase; ATextDrawer: TheTextDrawer);
+    constructor Create(AOwner: TWinControl; ATextDrawer: TheTextDrawer);
     destructor Destroy; override;
+    procedure Assign(Src: TLazSynSurface); override;
+    procedure InvalidateLines(FirstLine, LastLine: TLineIdx); override;
 
     function ScreenColumnToXValue(Col: integer): integer;  // map screen column to screen pixel
     function RowColumnToPixels(const RowCol: TPoint): TPoint;
@@ -85,6 +86,7 @@ type
     property DisplayView:   TLazSynDisplayView    read FDisplayView   write FDisplayView;
     property Highlighter:   TSynCustomHighlighter read FHighlighter   write FHighlighter;
     property MarkupManager: TSynEditMarkupManager read FMarkupManager write FMarkupManager;
+    property TextDrawer: TheTextDrawer read FTextDrawer;
   public
     property TextBounds: TRect read FTextBounds;
 
@@ -109,7 +111,8 @@ type
     procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
     procedure BoundsChanged; override;
   public
-    constructor Create;
+    constructor Create(AOwner: TWinControl);
+    procedure InvalidateLines(FirstLine, LastLine: TLineIdx); override;
     property TextArea: TLazSynTextArea read FTextArea write FTextArea;
     property LeftGutterArea: TLazSynSurface read FLeftGutterArea write FLeftGutterArea;
     property RightGutterArea: TLazSynSurface read FRightGutterArea write FRightGutterArea;
@@ -154,10 +157,28 @@ begin
   FRightGutterArea.SetBounds(Top, r, Bottom, Right);
 end;
 
-constructor TLazSynSurfaceManager.Create;
+constructor TLazSynSurfaceManager.Create(AOwner: TWinControl);
 begin
+  inherited Create(AOwner);
   FLeftGutterWidth := 0;
   FRightGutterWidth := 0;
+end;
+
+procedure TLazSynSurfaceManager.InvalidateLines(FirstLine, LastLine: TLineIdx);
+var
+  rcInval: TRect;
+begin
+  rcInval := Bounds;
+  if (FirstLine >= 0) then
+    rcInval.Top := TextArea.TextBounds.Top + FirstLine * TextArea.LineHeight;
+  if (LastLine >= 0) then
+    rcInval.Bottom := TextArea.TextBounds.Top + LastLine * TextArea.LineHeight;
+
+  {$IFDEF VerboseSynEditInvalidate}
+  DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self), ' FirstLine=',FirstLine, ' LastLine=',LastLine, ' rect=',dbgs(rcInval)]);
+  {$ENDIF}
+  if (rcInval.Top < rcInval.Bottom) and (rcInval.Left < rcInval.Right) then
+    InvalidateRect(Handle, @rcInval, FALSE);
 end;
 
 { TLazSynTextArea }
@@ -252,10 +273,11 @@ begin
   if Result.Y < 0 then Result.Y := 0;
 end;
 
-constructor TLazSynTextArea.Create(ATextDrawer: TheTextDrawer);
+constructor TLazSynTextArea.Create(AOwner: TWinControl; ATextDrawer: TheTextDrawer);
 var
   i: TLazSynBorderSide;
 begin
+  inherited Create(AOwner);
   FTextDrawer := ATextDrawer;
   FTextDrawer.RegisterOnFontChangeHandler(@DoDrawerFontChanged);
   FPaintLineColor := TSynSelectedColor.Create;
@@ -276,6 +298,53 @@ begin
   FreeAndNil(FPaintLineColor);
   FreeAndNil(FPaintLineColor2);
   inherited Destroy;
+end;
+
+procedure TLazSynTextArea.Assign(Src: TLazSynSurface);
+var
+  i: TLazSynBorderSide;
+begin
+  inherited Assign(Src);
+
+  FTextDrawer    := TLazSynTextArea(Src).FTextDrawer;
+  FTheLinesView  := TLazSynTextArea(Src).FTheLinesView;
+  FDisplayView   := TLazSynTextArea(Src).FDisplayView;
+  FHighlighter   := TLazSynTextArea(Src).FHighlighter;
+  FMarkupManager := TLazSynTextArea(Src).FMarkupManager;
+  FForegroundColor := TLazSynTextArea(Src).FForegroundColor;
+  FBackgroundColor := TLazSynTextArea(Src).FBackgroundColor;
+  FRightEdgeColor  := TLazSynTextArea(Src).FRightEdgeColor;
+
+  FExtraCharSpacing := TLazSynTextArea(Src).FExtraCharSpacing;
+  FExtraLineSpacing := TLazSynTextArea(Src).FExtraLineSpacing;
+  FVisibleSpecialChars := TLazSynTextArea(Src).FVisibleSpecialChars;
+  FRightEdgeColumn := TLazSynTextArea(Src).FRightEdgeColumn;
+  FRightEdgeVisible := TLazSynTextArea(Src).FRightEdgeVisible;
+
+  for i := low(TLazSynBorderSide) to high(TLazSynBorderSide) do
+    FPadding[i] := TLazSynTextArea(Src).FPadding[i];
+
+  FTopLine := TLazSynTextArea(Src).FTopLine;
+  FLeftChar := TLazSynTextArea(Src).FLeftChar;
+
+  BoundsChanged;
+end;
+
+procedure TLazSynTextArea.InvalidateLines(FirstLine, LastLine: TLineIdx);
+var
+  rcInval: TRect;
+begin
+  rcInval := Bounds;
+  if (FirstLine >= 0) then
+    rcInval.Top := TextBounds.Top + FirstLine * LineHeight;
+  if (LastLine >= 0) then
+    rcInval.Bottom := TextBounds.Top + LastLine * LineHeight;
+
+  {$IFDEF VerboseSynEditInvalidate}
+  DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self), ' FirstLine=',FirstLine, ' LastLine=',LastLine, ' rect=',dbgs(rcInval)]);
+  {$ENDIF}
+  if (rcInval.Top < rcInval.Bottom) and (rcInval.Left < rcInval.Right) then
+    InvalidateRect(Handle, @rcInval, FALSE);
 end;
 
 procedure TLazSynTextArea.FontChanged;
@@ -947,7 +1016,7 @@ var
     // Initialize rcLine for drawing. Note that Top and Bottom are updated
     // inside the loop. Get only the starting point for this.
     rcLine := AClip;
-    rcLine.Bottom := FirstLine * fTextHeight;
+    rcLine.Bottom := TextBounds.Top + FirstLine * fTextHeight;
 
     TV := TopLine - 1;
 
