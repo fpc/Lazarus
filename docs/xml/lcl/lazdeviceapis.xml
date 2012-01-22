@@ -170,7 +170,7 @@ because there is no signal here.</short>
 from this same class and later released with FreeMessage. The same message can be
 sent multiple times, but ideally it should not be edited after sending the first 
 time to avoid confusion when obtaining the message object back in the status
-callback.<p>
+callback.</p>
 </descr>
 <errors>
 </errors>
