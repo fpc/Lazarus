@@ -45,7 +45,7 @@ uses
   // IDE
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   ObjInspExt, EnvironmentOpts, AboutFrm, MsgView, Project, MainBar, OutputFilter,
-  PackageDefs, PackageSystem,
+  IDEFPDocFileSearch, PackageDefs, PackageSystem,
   HelpOptions, MainIntf, LazConf, HelpFPCMessages, CodeHelp,
   IDEContextHelpEdit, IDEWindowHelp;
 
@@ -168,6 +168,7 @@ type
   { TIDEHelpManager }
 
   TIDEHelpManager = class(TBaseHelpManager)
+    procedure mnuSearchInFPDocFilesClick(Sender: TObject);
     // help menu of the IDE menu bar
     procedure mnuHelpAboutLazarusClicked(Sender: TObject);
     procedure mnuHelpOnlineHelpClicked(Sender: TObject);
@@ -1109,6 +1110,11 @@ end;
 
 { TIDEHelpManager }
 
+procedure TIDEHelpManager.mnuSearchInFPDocFilesClick(Sender: TObject);
+begin
+  ShowFPDocFileSearch;
+end;
+
 procedure TIDEHelpManager.mnuHelpAboutLazarusClicked(Sender: TObject);
 begin
   ShowAboutForm;
@@ -1291,6 +1297,8 @@ begin
     itmHelpAboutLazarus.OnClick := @mnuHelpAboutLazarusClicked;
     itmHelpOnlineHelp.OnClick := @mnuHelpOnlineHelpClicked;
     itmHelpReportingBug.OnClick := @mnuHelpReportBugClicked;
+
+    itmSearchInFPDocFiles.OnClick:=@mnuSearchInFPDocFilesClick;
   end;
 end;
 

@@ -63,7 +63,7 @@
         <PackageName Value="SynEdit"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="86">
+    <Units Count="87">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -648,6 +648,13 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="env_file_filters"/>
       </Unit85>
+      <Unit86>
+        <Filename Value="idefpdocfilesearch.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FPDocFileSearchDialog"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="IDEFPDocFileSearch"/>
+      </Unit86>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -657,7 +664,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="include"/>
-      <OtherUnitFiles Value="frames;../converter;../debugger;../debugger/frames;../packager;../designer;../packager/frames;frames;../packager/frames"/>
+      <OtherUnitFiles Value="frames;../converter;../debugger;../debugger/frames;../packager;../designer;../packager/frames"/>
       <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>

@@ -534,6 +534,10 @@ begin
       CreateMenuItem(itmViewIDEInternalsWindows, itmViewPackageLinks, 'itmViewPackageLinks', lisMenuPackageLinks);
       CreateMenuItem(itmViewIDEInternalsWindows, itmViewFPCInfo, 'itmViewFPCInfo', lisMenuAboutFPC);
       CreateMenuItem(itmViewIDEInternalsWindows, itmViewIDEInfo, 'itmViewIDEInfo', lisAboutIDE);
+      {$IFDEF EnableFPDocSearch}
+      CreateMenuItem(itmViewIDEInternalsWindows, itmSearchInFPDocFiles, 'itmSearchInFPDocFiles',
+                     'Search in FPDoc files');
+      {$ENDIF}
     end;
   end;
 end;
