@@ -8011,7 +8011,7 @@ begin
     inc(MaxParamCnt);
   end;
 
-  {$IFDEF ShowExprEval}
+  {$IF defined(ShowExprEval) or defined(ShowProcSearch)}
   DebugLn('[TFindDeclarationTool.IsParamExprListCompatibleToNodeList] ',
   ' ExprParamList.Count=',dbgs(SourceExprParamList.Count),
   ' MinParamCnt=',dbgs(MinParamCnt),' MaxParamCnt=',dbgs(MaxParamCnt)
@@ -8034,8 +8034,8 @@ begin
   while (ParamNode<>nil) and (i<CompatibilityListCount) do begin
     ParamCompatibility:=IsCompatible(ParamNode,SourceExprParamList.Items[i],
                                      Params);
-    {$IFDEF ShowExprEval}
-    DebugLn('[TFindDeclarationTool.IsParamExprListCompatibleToNodeList] B ',ExprTypeToString(SourceExprParamList.Items[i]));
+    {$IF defined(ShowExprEval) or defined(ShowProcSearch)}
+    DebugLn(['[TFindDeclarationTool.IsParamExprListCompatibleToNodeList] SourceParam=',ExprTypeToString(SourceExprParamList.Items[i]),' TargetParam=',ExtractNode(ParamNode,[]),' ',TypeCompatibilityNames[ParamCompatibility]]);
     {$ENDIF}
     if CompatibilityList<>nil then
       CompatibilityList[i]:=ParamCompatibility;
@@ -8048,6 +8048,8 @@ begin
       Result:=tcIncompatible;
       exit;
     end;
+    if ParamCompatibility=tcCompatible then
+      Result:=tcCompatible;
     ParamNode:=ParamNode.NextBrother;
     inc(i);
   end;
@@ -8072,7 +8074,7 @@ begin
       Result:=tcIncompatible;
     end;
   end;
-  {$IFDEF ShowExprEval}
+  {$IF defined(ShowExprEval) or defined(ShowProcSearch)}
     finally
       DebugLn('[TFindDeclarationTool.IsParamExprListCompatibleToNodeList] END ',
       ' Result=',TypeCompatibilityNames[Result],' ! ONLY VALID if no error !'
@@ -8296,7 +8298,7 @@ begin
       DebugLn('[TFindDeclarationTool.CheckSrcIdentifier]',
       ' Ident=',GetIdentifier(Params.Identifier),
       ' ',FoundContext.Tool.CleanPosToStr(FoundContext.Node.StartPos),
-      ' FIRST PROC'
+      ' FIRST PROC searching for overloads ...'
       );
       {$ENDIF}
       Params.SetFoundProc(FoundContext);
@@ -8334,6 +8336,9 @@ begin
             NewExprInputList:=
               Params.IdentifierTool.CreateParamExprListFromStatement(
                                     Params.IdentifierTool.CurPos.EndPos,Params);
+            {$IFDEF ShowProcSearch}
+            debugln(['TFindDeclarationTool.CheckSrcIdentifier Params: ',NewExprInputList.AsString]);
+            {$ENDIF}
             Params.Load(OldInput,true);
             FreeAndNil(Params.FoundProc^.ExprInputList);
             Params.FoundProc^.ExprInputList:=NewExprInputList;
@@ -8349,6 +8354,9 @@ begin
             NewExprInputList:=
               Params.IdentifierTool.CreateParamExprListFromProcNode(
                                                        StartContextNode,Params);
+            {$IFDEF ShowProcSearch}
+            debugln(['TFindDeclarationTool.CheckSrcIdentifier Params: ',NewExprInputList.AsString]);
+            {$ENDIF}
             FreeAndNil(Params.FoundProc^.ExprInputList);
             Params.FoundProc^.ExprInputList:=NewExprInputList;
           end;
