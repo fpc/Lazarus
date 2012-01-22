@@ -282,18 +282,19 @@ procedure TIntervalChartSource.RoundToImage(
   end;
 
 var
-  i, x: Integer;
+  i: Integer;
   v, p, rv: Double;
+  x: Int64;
 begin
   if AParams.FIntervals.Tolerance = 0 then exit;
   for i := 0 to High(AValues) do begin
     v := AValues[i].FValue;
-    if v = 0 then continue;
+    if (v = 0) or IsInfinite(v) or IsNan(v) then continue;
     x := A2I(v);
     p := Power(10, Floor(Log10(Abs(v)) - Log10(High(Int64)) + 1));
-    while true do begin
+    while v <> 0 do begin
       rv := Round(v / p) * p;
-      if Cardinal(Abs(A2I(rv) - x)) >= AParams.FIntervals.Tolerance then break;
+      if Abs(A2I(rv) - x) >= AParams.FIntervals.Tolerance then break;
       v := rv;
       p *= 10;
     end;
