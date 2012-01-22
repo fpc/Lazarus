@@ -9,7 +9,7 @@ object TodoDialog: TTodoDialog
   ClientWidth = 475
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.31'
   object TodoLabel: TLabel
     Left = 8
     Height = 18
@@ -102,6 +102,14 @@ object TodoDialog: TTodoDialog
     Height = 36
     Top = 225
     Width = 463
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 4
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False

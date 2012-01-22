@@ -50,9 +50,9 @@ type
     procedure FormCreate(Sender: TObject);
     procedure PriorityEditKeyPress(Sender: TObject; var Key: char);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end;
   
 var
@@ -133,11 +133,13 @@ var
   Pkg: TIDEPackage;
 begin
   IDEWindowCreators.ShowForm(ToDoWindowName,true);
-  Pkg:=PackageEditingInterface.GetPackageOfEditorItem(Sender);
-  if Pkg<>nil then
-    IDETodoWindow.IDEItem:=Pkg.Name
-  else
-    IDETodoWindow.IDEItem:='';
+  if IDETodoWindow<>nil then begin
+    Pkg:=PackageEditingInterface.GetPackageOfEditorItem(Sender);
+    if Pkg<>nil then
+      IDETodoWindow.IDEItem:=Pkg.Name
+    else
+      IDETodoWindow.IDEItem:='';
+  end;
 end;
 
 procedure CreateIDEToDoWindow(Sender: TObject; aFormName: string;

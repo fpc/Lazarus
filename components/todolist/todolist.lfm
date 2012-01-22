@@ -30,33 +30,35 @@ object IDETodoWindow: TIDETodoWindow
     Columns = <    
       item
         AutoSize = True
-        Caption = 'Caption'
-        Width = 57
+        Caption = 'Done'
+        Width = 100
+      end    
+      item
+        Caption = 'Description'
+        Width = 700
       end    
       item
         AutoSize = True
-        Caption = 'Caption'
-        Width = 57
+        Caption = 'Priority'
+        Width = 100
       end    
       item
         AutoSize = True
-        Caption = 'Caption'
-        Width = 57
+        Caption = 'Module'
+        Width = 100
       end    
       item
         AutoSize = True
-        Caption = 'Caption'
-        Width = 57
+        Caption = 'Line'
       end    
       item
-        Caption = 'Caption'
+        AutoSize = True
+        Caption = 'Owner'
       end    
       item
-        Caption = 'Caption'
-      end    
-      item
-        Caption = 'Caption'
-        Width = 315
+        AutoSize = True
+        Caption = 'Category'
+        Width = 100
       end>
     RowSelect = True
     ScrollBars = ssAutoBoth

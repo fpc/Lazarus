@@ -76,8 +76,8 @@ uses
 Const
   cTodoFlag = '#todo';
   cDoneFlag = '#done';
-  cAltTodoFLag = 'todo';
-  cAltDoneFLag = 'done';
+  cAltTodoFLag = 'todo:';
+  cAltDoneFLag = 'done:';
   ToDoWindowName = 'IDETodoWindow';
 
 type
@@ -546,13 +546,12 @@ function TIDETodoWindow.CreateToDoItem(aTLFile: TTLScannedFile;
   const aFileName: string; const SComment, EComment: string;
   const TokenString: string; LineNumber: Integer): TTodoItem;
 var
-  N,Strlen    : Integer;
-  TempStr       : string;
-  ParsingString : string;
+  N, Strlen: Integer;
+  TempStr, ParsingString, LowerString : string;
   IsAltNotation,
-  IsDone        : boolean;
-  aChar         : char;
-  
+  IsDone: boolean;
+  aChar: char;
+
 const
   cSemiColon  = ':';
   cWhiteSpace = ' ';
@@ -584,38 +583,35 @@ const
 begin
   //DebugLn(['TfrmTodo.CreateToDoItem aFileName=',aFileName,' LineNumber=',LineNumber]);
   Result := nil;
-  
   ParsingString:= TextToSingleLine(TokenString);
-  
   // Remove the beginning comment chars from input string
   Delete(ParsingString, 1, Length(SComment));
-
   // Remove leading and trailing blanks from input
   ParsingString := Trim(ParsingString);
-
   // See if it's a TODO or DONE item
-  if (Pos(cTodoFlag, lowercase(ParsingString)) = 1) then
+  LowerString := lowercase(ParsingString);
+  if (Pos(cTodoFlag, LowerString) = 1) then
   begin
     IsDone := False;
     IsAltNotation := False;
   end
   else
   begin
-    if (Pos(cAltTodoFLag, lowercase(ParsingString)) = 1) then
+    if (Pos(cAltTodoFLag, LowerString) = 1) then
     begin
       IsDone := False;
       IsAltNotation := True;
     end
     else
     begin
-      if (Pos(cDoneFlag, lowercase(ParsingString)) = 1) then
+      if (Pos(cDoneFlag, LowerString) = 1) then
       begin
         IsDone := True;
         IsAltNotation := False;
       end
       else
       begin
-        if (Pos(cAltDoneFLag, lowercase(ParsingString)) = 1) then
+        if (Pos(cAltDoneFLag, LowerString) = 1) then
         begin
           IsDone := True;
           IsAltNotation := True;
@@ -706,19 +702,13 @@ begin
   with lvTodo do
   begin
     Column[0].Caption := lisToDoLDone;
-    Column[0].Width   := 45;
     Column[1].Caption := lisToDoLDescription;
-    Column[1].Width   := 150;
+    Column[1].Width   := 700;
     Column[2].Caption := lisToDoLPriority;
-    Column[2].Width   := 45;
     Column[3].Caption := lisToDoLFile;
-    Column[3].Width   := 80;
     Column[4].Caption := lisToDoLLine;
-    Column[4].Width   := 40;
     Column[5].Caption := lisToDoLOwner;
-    Column[5].Width   := 50;
     Column[6].Caption := listToDoLCategory;
-    Column[6].Width   := 80;
   end;
 end;
 
