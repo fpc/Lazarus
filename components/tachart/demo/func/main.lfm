@@ -1,31 +1,31 @@
 object Form1: TForm1
   Left = 653
-  Height = 362
+  Height = 459
   Top = 209
-  Width = 461
+  Width = 550
   Caption = 'Form1'
-  ClientHeight = 362
-  ClientWidth = 461
+  ClientHeight = 459
+  ClientWidth = 550
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object PageControl1: TPageControl
     Left = 0
-    Height = 362
+    Height = 459
     Top = 0
-    Width = 461
+    Width = 550
     ActivePage = tsDomain
     Align = alClient
     TabIndex = 0
     TabOrder = 0
     object tsDomain: TTabSheet
       Caption = 'Domain'
-      ClientHeight = 336
-      ClientWidth = 453
+      ClientHeight = 433
+      ClientWidth = 542
       object Chart1: TChart
         Left = 0
-        Height = 336
+        Height = 433
         Top = 0
-        Width = 453
+        Width = 542
         AxisList = <        
           item
             Grid.Color = clGray
@@ -40,10 +40,10 @@ object Form1: TForm1
             Minors = <>
           end>
         ExpandPercentage = 5
-        Extent.YMin = -6
-        Extent.YMax = 6
-        Extent.UseYMin = True
         Extent.UseYMax = True
+        Extent.UseYMin = True
+        Extent.YMax = 6
+        Extent.YMin = -6
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
         Frame.Visible = False
@@ -56,13 +56,13 @@ object Form1: TForm1
         Align = alClient
         ParentColor = False
         object Chart1FuncSeries1: TFuncSeries
-          Extent.XMin = -6.28
-          Extent.YMin = -2
-          Extent.XMax = 6.28
-          Extent.YMax = 2
+          Extent.UseXMax = True
           Extent.UseXMin = True
           Extent.UseYMin = True
-          Extent.UseXMax = True
+          Extent.XMax = 6.28
+          Extent.XMin = -6.28
+          Extent.YMax = 2
+          Extent.YMin = -2
           Title = '1 / Sin(x)'
           OnCalculate = Chart1FuncSeries1Calculate
           Pen.Color = clOlive
@@ -90,9 +90,9 @@ object Form1: TForm1
         end
       end
       object cbDomain: TCheckBox
-        Left = 388
+        Left = 477
         Height = 17
-        Top = 298
+        Top = 395
         Width = 55
         Anchors = [akRight, akBottom]
         Caption = 'Domain'
@@ -100,9 +100,9 @@ object Form1: TForm1
         TabOrder = 1
       end
       object cbRotate: TCheckBox
-        Left = 388
+        Left = 477
         Height = 17
-        Top = 274
+        Top = 371
         Width = 53
         Anchors = [akRight, akBottom]
         Caption = 'Rotate'
@@ -112,13 +112,13 @@ object Form1: TForm1
     end
     object tsColorMap: TTabSheet
       Caption = 'Color map'
-      ClientHeight = 336
-      ClientWidth = 453
+      ClientHeight = 433
+      ClientWidth = 542
       object ChartColorMap: TChart
         Left = 0
-        Height = 336
+        Height = 433
         Top = 0
-        Width = 327
+        Width = 416
         AxisList = <        
           item
             Minors = <>
@@ -130,10 +130,10 @@ object Form1: TForm1
             Minors = <>
             ZPosition = 1
           end>
-        Extent.XMin = -1
-        Extent.XMax = 1
-        Extent.UseXMin = True
         Extent.UseXMax = True
+        Extent.UseXMin = True
+        Extent.XMax = 1
+        Extent.XMin = -1
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
         Title.Brush.Color = clBtnFace
@@ -146,23 +146,23 @@ object Form1: TForm1
         DoubleBuffered = True
         ParentColor = False
         object ChartColorMapColorMapSeries1: TColorMapSeries
-          Extent.XMin = -0.5
-          Extent.XMax = 0.5
-          Extent.UseXMin = True
           Extent.UseXMax = True
+          Extent.UseXMin = True
+          Extent.XMax = 0.5
+          Extent.XMin = -0.5
           Title = 'sin(10x + 17y)'
           ColorSource = ListChartSource1
           OnCalculate = ChartColorMapColorMapSeries1Calculate
         end
       end
       object Panel1: TPanel
-        Left = 332
-        Height = 336
+        Left = 421
+        Height = 433
         Top = 0
         Width = 121
         Align = alRight
         BevelOuter = bvNone
-        ClientHeight = 336
+        ClientHeight = 433
         ClientWidth = 121
         TabOrder = 1
         object ChartLegendPanel1: TChartLegendPanel
@@ -176,7 +176,7 @@ object Form1: TForm1
         object cbInterpolate: TCheckBox
           Left = 8
           Height = 17
-          Top = 306
+          Top = 403
           Width = 74
           Anchors = [akLeft, akBottom]
           Caption = 'Interpolate'
@@ -186,7 +186,7 @@ object Form1: TForm1
         object cbMultLegend: TCheckBox
           Left = 8
           Height = 17
-          Top = 278
+          Top = 375
           Width = 91
           Anchors = [akLeft, akBottom]
           Caption = 'Expand legend'
@@ -195,8 +195,8 @@ object Form1: TForm1
         end
       end
       object Splitter1: TSplitter
-        Left = 327
-        Height = 336
+        Left = 416
+        Height = 433
         Top = 0
         Width = 5
         Align = alRight
@@ -205,19 +205,22 @@ object Form1: TForm1
     end
     object tsSpline: TTabSheet
       Caption = 'Spline'
-      ClientHeight = 336
-      ClientWidth = 453
+      ClientHeight = 433
+      ClientWidth = 542
       object ChartSpline: TChart
         Left = 0
-        Height = 306
+        Height = 395
         Top = 0
-        Width = 453
+        Width = 542
         AxisList = <        
           item
             Grid.Color = clGray
             Grid.Cosmetic = False
+            Intervals.Options = [aipGraphCoords, aipUseCount, aipUseMinLength, aipUseNiceSteps]
+            Intervals.Tolerance = 2
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Transformations = catSpline
           end        
           item
             Grid.Color = clGray
@@ -234,12 +237,17 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
+        DoubleBuffered = True
         ParentColor = False
         object ChartSplineLineSeries1: TLineSeries
+          AxisIndexX = 1
+          AxisIndexY = 0
           Source = RandomChartSource1
         end
         object ChartSplineBSplineSeries1: TBSplineSeries
           Active = False
+          AxisIndexX = 1
+          AxisIndexY = 0
           Source = RandomChartSource1
           Pen.Color = clLime
           Pen.Width = 3
@@ -247,6 +255,8 @@ object Form1: TForm1
         end
         object ChartSplineCubicSplineSeries1: TCubicSplineSeries
           ZPosition = 1
+          AxisIndexX = 1
+          AxisIndexY = 0
           Pointer.Brush.Color = clAqua
           Source = RandomChartSource1
           Options = [csoDrawFewPoints, csoDrawUnorderedX]
@@ -256,12 +266,12 @@ object Form1: TForm1
       end
       object pnSpline: TPanel
         Left = 0
-        Height = 30
-        Top = 306
-        Width = 453
+        Height = 38
+        Top = 395
+        Width = 542
         Align = alBottom
-        ClientHeight = 30
-        ClientWidth = 453
+        ClientHeight = 38
+        ClientWidth = 542
         TabOrder = 1
         object iseSplineDegree: TTISpinEdit
           Left = 60
@@ -294,7 +304,7 @@ object Form1: TForm1
           ParentColor = False
         end
         object cbCubic: TTICheckBox
-          Left = 324
+          Left = 312
           Height = 23
           Top = 4
           Width = 90
@@ -306,7 +316,7 @@ object Form1: TForm1
           TabOrder = 2
         end
         object cbBSpline: TTICheckBox
-          Left = 224
+          Left = 220
           Height = 23
           Top = 4
           Width = 90
@@ -315,6 +325,17 @@ object Form1: TForm1
           Link.TIPropertyName = 'Active'
           PropertyNameAsCaption = False
           TabOrder = 3
+        end
+        object cbLogY: TTICheckBox
+          Left = 404
+          Height = 23
+          Top = 4
+          Width = 90
+          Caption = 'Log Y'
+          Link.TIObject = catSplineLogarithmAxisTransform
+          Link.TIPropertyName = 'Enabled'
+          PropertyNameAsCaption = False
+          TabOrder = 4
         end
       end
     end
@@ -334,7 +355,7 @@ object Form1: TForm1
       '1|0|$00FF00|'
     )
     left = 280
-    top = 114
+    top = 112
   end
   object chtsColorMap: TChartToolset
     left = 280
@@ -351,9 +372,17 @@ object Form1: TForm1
     RandSeed = 1859411043
     XMax = 10
     XMin = 0
-    YMax = 10
-    YMin = -10
+    YMax = 1000
+    YMin = 1
     left = 280
     top = 56
+  end
+  object catSpline: TChartAxisTransformations
+    left = 135
+    top = 56
+    object catSplineLogarithmAxisTransform: TLogarithmAxisTransform
+      Enabled = False
+      Base = 10
+    end
   end
 end

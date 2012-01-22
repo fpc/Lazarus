@@ -7,7 +7,7 @@ interface
 uses
   Classes, ComCtrls, ExtCtrls, RTTICtrls, StdCtrls, Forms, Graphics,
   TAFuncSeries, TAGraph, TALegendPanel, TASeries, TACustomSource, TASources,
-  TATools;
+  TATools, TATransformations;
 
 type
 
@@ -15,6 +15,7 @@ type
 
   TForm1 = class(TForm)
     cbBSpline: TTICheckBox;
+    cbLogY: TTICheckBox;
     cbDomain: TCheckBox;
     cbRotate: TCheckBox;
     cbInterpolate: TCheckBox;
@@ -25,6 +26,8 @@ type
     Chart1UserDrawnSeries1: TUserDrawnSeries;
     Chart1XAxis: TConstantLine;
     Chart1YAxis: TConstantLine;
+    catSpline: TChartAxisTransformations;
+    catSplineLogarithmAxisTransform: TLogarithmAxisTransform;
     ChartSpline: TChart;
     ChartColorMap: TChart;
     ChartColorMapColorMapSeries1: TColorMapSeries;
