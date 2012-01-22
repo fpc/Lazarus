@@ -16,7 +16,7 @@ begin
   Application.Title := 'Chart image list demo';
   RequireDerivedFormResource := True;
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TfrmMain, frmMain);
   Application.Run;
 end.
 
