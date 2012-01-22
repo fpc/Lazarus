@@ -1,0 +1,399 @@
+object frmMain: TfrmMain
+  Left = 249
+  Height = 503
+  Top = 242
+  Width = 800
+  Caption = 'frmMain'
+  ClientHeight = 503
+  ClientWidth = 800
+  OnCreate = FormCreate
+  ShowHint = True
+  LCLVersion = '0.9.31'
+  object pnlParams: TPanel
+    Left = 8
+    Height = 487
+    Top = 8
+    Width = 376
+    Align = alLeft
+    BorderSpacing.Around = 8
+    BevelOuter = bvNone
+    ClientHeight = 487
+    ClientWidth = 376
+    TabOrder = 0
+    object gbDataGeneration: TGroupBox
+      Left = 0
+      Height = 105
+      Top = 0
+      Width = 376
+      Align = alTop
+      Caption = ' Data generation '
+      ClientHeight = 87
+      ClientWidth = 372
+      TabOrder = 0
+      object btnSave: TSpeedButton
+        Left = 335
+        Height = 22
+        Hint = 'Export data to verify fit with other software'
+        Top = 44
+        Width = 23
+        Glyph.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF006E01
+          4A0066004445650043C60404048A0404048A0404048A0404048A0404048A0404
+          048A650043C6650043C6650043C6650043C666004494FFFFFF00FFFFFF006F01
+          4B416E014ABA9B4880EFB9ABABFFB16598FFB16598FFB5A7A7FFB5A7A7FFB9AB
+          ABFFB16598FFC377AAFFC074A7FFD68ABDFF6E014ABAFFFFFF00FFFFFF007702
+          50ADD488BBFFAD6194FFBAB1B1FFAD6194FFAD6194FFB1A8A8FFB1A8A8FFBAB1
+          B1FFAD6194FFC377AAFFB86C9FFFD88CBFFF770250ADFFFFFF00FFFFFF007B02
+          53A8D286B9FFA95D90FFC0BBBBFF95497CFF95497CFFB7B2B2FFB7B2B2FFC0BB
+          BBFFA95D90FFC377AAFFB06497FFDA8EC1FF7B0253A8FFFFFF00FFFFFF007E02
+          55A4D589BCFFA5598CFFC8C7C7FFC3C2C2FFC3C2C2FFC3C2C2FFC3C2C2FFC8C7
+          C7FFA5598CFFC377AAFFA85C8FFFDD91C4FF7E0255A4FFFFFF00FFFFFF008002
+          57A0D98DC0FFA25689FFA15588FFA15588FFA15588FFA15588FFA15588FFA155
+          88FFA25689FFA25689FFA25689FFE195C8FF800257A0FFFFFF00FFFFFF008302
+          599DDC90C3FFD387BAFFD387BAFFD387BAFFD387BAFFD387BAFFD387BAFFD387
+          BAFFD387BAFFD387BAFFD387BAFFDC90C3FF8302599DFFFFFF00FFFFFF008502
+          5A9AE094C7FFF0DDDEFFF4F4E4FFF4F4E4FFF4F4E4FFF4F4E4FFF4F4E4FFF4F4
+          E4FFF4F4E4FFF4F4E4FFF0DDDEFFE094C7FF85025A9AFFFFFF00FFFFFF008702
+          5C97E397CAFFF6F6E9FFECECDFFFECECDFFFECECDFFFECECDFFFECECDFFFECEC
+          DFFFECECDFFFECECDFFFF6F6E9FFE397CAFF87025C97FFFFFF00FFFFFF008A03
+          5E94E69ACDFFF8F8EFFFF1F1E7FFF1F1E7FFF1F1E7FFF1F1E7FFF1F1E7FFF1F1
+          E7FFF1F1E7FFF1F1E7FFF8F8EFFFE69ACDFF8A035E94FFFFFF00FFFFFF008C03
+          5F91EA9ED1FFFBFBF5FFF6F6F0FFF6F6F0FFF6F6F0FFF6F6F0FFF6F6F0FFF6F6
+          F0FFF6F6F0FFF6F6F0FFFBFBF5FFEA9ED1FF8C035F91FFFFFF00FFFFFF008D03
+          608FECA0D3FFFEFEFBFFFBFBF8FFFBFBF8FFFBFBF8FFFBFBF8FFFBFBF8FFFBFB
+          F8FFFBFBF8FFFBFBF8FFFEFEFBFFECA0D3FF8D03608FFFFFFF00FFFFFF008F03
+          618DF2A6D9FFFFFFFFFFFFFFFEFFFFFFFEFFFFFFFEFFFFFFFEFFFFFFFEFFFFFF
+          FEFFFFFFFEFFFFFFFEFFFFFFFFFFF2A6D9FF8F03618DFFFFFF00FFFFFF009003
+          62689003628B7F7F55667F7F55667F7F55667F7F55667F7F55667F7F55667F7F
+          55667F7F55667F7F55667F7F55669003628B90036268FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
+        }
+        NumGlyphs = 0
+        OnClick = btnSaveClick
+      end
+      object cbTestFunction: TComboBox
+        Left = 94
+        Height = 21
+        Hint = 'Select a dataset for fitting'
+        Top = 8
+        Width = 264
+        ItemHeight = 13
+        OnSelect = cbTestFunctionSelect
+        Style = csDropDownList
+        TabOrder = 0
+      end
+      object lblTestFunction: TLabel
+        Left = 14
+        Height = 14
+        Top = 12
+        Width = 64
+        Caption = 'Test function'
+        ParentColor = False
+      end
+      object lblOfRange: TLabel
+        Left = 195
+        Height = 14
+        Top = 46
+        Width = 56
+        Caption = '% of range'
+        ParentColor = False
+      end
+      object lblNoiseY: TLabel
+        Left = 14
+        Height = 14
+        Top = 46
+        Width = 79
+        Caption = 'Noise amplitude '
+        ParentColor = False
+      end
+      object edNoiseY: TFloatSpinEdit
+        Left = 118
+        Height = 21
+        Top = 44
+        Width = 66
+        DecimalPlaces = 0
+        Increment = 1
+        MaxValue = 100
+        MinValue = 0
+        OnChange = edNoiseYChange
+        TabOrder = 1
+        Value = 2
+      end
+    end
+    object gbFitting: TGroupBox
+      Left = 0
+      Height = 382
+      Top = 105
+      Width = 376
+      Align = alClient
+      Caption = ' Fitting '
+      ClientHeight = 364
+      ClientWidth = 372
+      TabOrder = 1
+      object gbResults: TGroupBox
+        Left = 14
+        Height = 142
+        Top = 207
+        Width = 344
+        Anchors = [akTop, akLeft, akBottom]
+        Caption = ' Fit results '
+        ClientHeight = 124
+        ClientWidth = 340
+        TabOrder = 0
+        object lbResults: TListBox
+          Left = 12
+          Height = 104
+          Top = 8
+          Width = 316
+          Align = alClient
+          BorderSpacing.Left = 12
+          BorderSpacing.Top = 8
+          BorderSpacing.Right = 12
+          BorderSpacing.Bottom = 12
+          ItemHeight = 0
+          ParentFont = False
+          TabOrder = 0
+        end
+      end
+      object gbFitRange: TGroupBox
+        Left = 14
+        Height = 115
+        Top = 84
+        Width = 344
+        Caption = 'Fit range'
+        ClientHeight = 97
+        ClientWidth = 340
+        TabOrder = 1
+        object cbFitRangeUseMin: TCheckBox
+          Left = 17
+          Height = 17
+          Top = 7
+          Width = 81
+          Caption = 'Use minimum'
+          OnClick = cbFitRangeUseMinClick
+          TabOrder = 0
+        end
+        object cbFitRangeUseMax: TCheckBox
+          Left = 17
+          Height = 17
+          Top = 33
+          Width = 85
+          Caption = 'Use maximum'
+          OnClick = cbFitRangeUseMaxClick
+          TabOrder = 1
+        end
+        object edFitRangeMin: TFloatSpinEdit
+          Left = 150
+          Height = 21
+          Top = 7
+          Width = 90
+          Increment = 1
+          MaxValue = 1E308
+          MinValue = -1E308
+          OnChange = edFitRangeMinChange
+          TabOrder = 2
+          Value = 5
+          Visible = False
+        end
+        object edFitRangeMax: TFloatSpinEdit
+          Left = 150
+          Height = 21
+          Top = 35
+          Width = 90
+          Increment = 1
+          MaxValue = 1E308
+          MinValue = -1E308
+          OnChange = edFitRangeMaxChange
+          TabOrder = 3
+          Value = 20
+          Visible = False
+        end
+        object cbDrawFitRangeOnly: TCheckBox
+          Left = 17
+          Height = 17
+          Top = 64
+          Width = 166
+          Caption = 'Draw fit curve in fit range only'
+          Checked = True
+          Enabled = False
+          OnClick = cbDrawFitRangeOnlyClick
+          State = cbChecked
+          TabOrder = 4
+        end
+      end
+      object edFitOrder: TSpinEdit
+        Left = 169
+        Height = 21
+        Top = 48
+        Width = 53
+        OnChange = edFitOrderChange
+        TabOrder = 2
+        Value = 2
+      end
+      object lblFitOrder: TLabel
+        Left = 14
+        Height = 14
+        Top = 50
+        Width = 102
+        Caption = 'Degree of polynomial'
+        ParentColor = False
+      end
+      object cbFitEquation: TComboBox
+        Left = 86
+        Height = 21
+        Hint = 'Select a function type to be used for fitting to the generated data'
+        Top = 16
+        Width = 272
+        ItemHeight = 13
+        ItemIndex = 0
+        Items.Strings = (
+          'Polynomial (y = b0 + b1*x + ... bn*x^n)'
+          'Linear (y = a + b*x)'
+          'Exponential (y = a * exp (b * x), linear in semilog plot)'
+          'Power (y = a x^b, linear in log-log plot)'
+        )
+        OnSelect = cbFitEquationSelect
+        Style = csDropDownList
+        TabOrder = 3
+        Text = 'Polynomial (y = b0 + b1*x + ... bn*x^n)'
+      end
+      object lblFitEquation: TLabel
+        Left = 14
+        Height = 14
+        Top = 19
+        Width = 58
+        Caption = 'Fit equation'
+        ParentColor = False
+      end
+    end
+  end
+  object pnlChart: TPanel
+    Left = 392
+    Height = 487
+    Top = 8
+    Width = 400
+    Align = alClient
+    BorderSpacing.Around = 8
+    BevelOuter = bvNone
+    ClientHeight = 487
+    ClientWidth = 400
+    TabOrder = 1
+    object Chart: TChart
+      Left = 0
+      Height = 456
+      Top = 0
+      Width = 400
+      AxisList = <      
+        item
+          Grid.Visible = False
+          Intervals.Tolerance = 2
+          Minors = <          
+            item
+              Grid.Visible = False
+              Intervals.MinLength = 5
+              Intervals.Options = [aipUseCount, aipUseMinLength]
+            end>
+          Title.LabelFont.Orientation = 900
+          Title.LabelFont.Style = [fsBold]
+          Title.Visible = True
+          Title.Caption = 'y'
+        end      
+        item
+          Grid.Visible = False
+          Intervals.Tolerance = 2
+          Alignment = calBottom
+          Minors = <          
+            item
+              Grid.Visible = False
+              Intervals.MinLength = 5
+              Intervals.Options = [aipUseCount, aipUseMinLength]
+            end>
+          Title.LabelFont.Style = [fsBold]
+          Title.Visible = True
+          Title.Caption = 'x'
+        end>
+      BackColor = clWhite
+      Foot.Brush.Color = clBtnFace
+      Foot.Font.Color = clBlue
+      Legend.Alignment = laTopCenter
+      Legend.Visible = True
+      Title.Brush.Color = clBtnFace
+      Title.Font.Color = clRed
+      Title.Text.Strings = (
+        'TAChart'
+      )
+      Align = alClient
+      DoubleBuffered = True
+      ParentColor = False
+      object DataSeries: TLineSeries
+        Title = 'Test data'
+        AxisIndexX = 1
+        AxisIndexY = 0
+        LinePen.Style = psClear
+        Pointer.Brush.Color = clBlack
+        Pointer.HorizSize = 1
+        Pointer.Style = psCross
+        Pointer.VertSize = 1
+        ShowPoints = True
+        Source = ListChartSource
+      end
+      object FitSeries: TFitSeries
+        Legend.Format = '%0:s: %2:s'
+        Title = 'fitted data'
+        AxisIndexX = 1
+        AxisIndexY = 0
+        OnFitComplete = FitCompleteHandler
+        Pen.Color = clRed
+        Source = ListChartSource
+      end
+    end
+    object pnlLog: TPanel
+      Left = 0
+      Height = 31
+      Top = 456
+      Width = 400
+      Align = alBottom
+      BevelOuter = bvNone
+      ClientHeight = 31
+      ClientWidth = 400
+      TabOrder = 1
+      object cbLogX: TCheckBox
+        Left = 48
+        Height = 17
+        Top = 3
+        Width = 83
+        Caption = 'Logarithmic x'
+        OnClick = cbLogClick
+        TabOrder = 0
+      end
+      object cbLogY: TCheckBox
+        Left = 176
+        Height = 17
+        Top = 3
+        Width = 83
+        Caption = 'Logarithmic y'
+        OnClick = cbLogClick
+        TabOrder = 1
+      end
+    end
+  end
+  object ListChartSource: TListChartSource
+    left = 584
+    top = 120
+  end
+  object SaveDialog: TSaveDialog
+    left = 480
+    top = 64
+  end
+  object ChartAxisTransformations: TChartAxisTransformations
+    left = 584
+    top = 184
+    object LogarithmAxisTransform: TLogarithmAxisTransform
+      Base = 10
+    end
+  end
+end
