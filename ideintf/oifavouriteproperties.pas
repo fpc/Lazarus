@@ -110,17 +110,14 @@ type
   { TOIRestrictedProperties }
 
   TOIRestrictedProperties = class(TOIFavouriteProperties)
-  protected
-    FWidgetSetRestrictions: TWidgetSetRestrictionsArray;
   public
+    WidgetSetRestrictions: TWidgetSetRestrictionsArray;
     constructor Create;
 
     function IsRestricted(AClass: TPersistentClass;
                           const PropertyName: string): TLCLPlatforms;
     function AreRestricted(Selection: TPersistentSelectionList;
                            const PropertyName: string): TLCLPlatforms;
-    property WidgetSetRestrictions: TWidgetSetRestrictionsArray
-      read FWidgetSetRestrictions;
   end;
 
 implementation
@@ -627,7 +624,7 @@ begin
   inherited Create;
 
   for P := Low(TLCLPlatform) to High(TLCLPlatform) do
-    FWidgetSetRestrictions[P] := 0;
+    WidgetSetRestrictions[P] := 0;
 end;
 
 function TOIRestrictedProperties.IsRestricted(AClass: TPersistentClass;
