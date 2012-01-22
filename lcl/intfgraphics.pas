@@ -115,7 +115,7 @@ type
     FRawImage: TRawImage;
     FLineStarts: PRawImageLineStarts;
     FMaskLineStarts: PRawImageLineStarts;
-    FMaskSet: Boolean; // Set when atleast one maskpixel is set
+    FMaskSet: Boolean; // Set when at least one maskpixel is set
     FUpdateCount: integer;
     fCreateAllDataNeeded: boolean;
     FGetSetColorFunctionsUpdateNeeded: boolean;
@@ -259,6 +259,7 @@ type
     procedure CreateData; virtual;
     function  HasTransparency: boolean; virtual;
     function  HasMask: boolean; virtual;
+    procedure SetDataDescriptionKeepData(const ADescription: TRawImageDescription);
   public
     property PixelData: PByte read FRawImage.Data;
     property MaskData: PByte read FRawImage.Mask;
@@ -3196,6 +3197,12 @@ begin
   Result := FMaskSet;
 end;
 
+procedure TLazIntfImage.SetDataDescriptionKeepData(
+  const ADescription: TRawImageDescription);
+begin
+  FRawImage.Description:=ADescription;
+end;
+
 constructor TLazIntfImage.Create(AWidth, AHeight: integer);
 begin
   Create(AWidth, AHeight, []);
@@ -5318,7 +5325,10 @@ begin
 
   // if there is no alpha in real (all alpha values = 0) then update the description
   if FUpdateDescription and FIgnoreAlpha and (Depth = 32) then
-    FImage.DataDescription.AlphaPrec := 0;
+  begin
+    Desc.AlphaPrec:=0;
+    FImage.SetDataDescriptionKeepData(Desc);
+  end;
 
   Progress(psEnding, 100, false, Rect(0,0,0,0), '', FContinue);
 end;
