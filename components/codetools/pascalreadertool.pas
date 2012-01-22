@@ -417,6 +417,7 @@ var
   IsProcedure: Boolean;
   IsFunction: Boolean;
   IsOperator: Boolean;
+  EndPos: Integer;
 const
   SemiColon : char = ';';
 begin
@@ -545,7 +546,11 @@ begin
     ExtractNextAtom(not (phpWithoutSemicolon in Attr),Attr);
   // read specifiers
   if [phpWithCallingSpecs,phpWithProcModifiers]*Attr<>[] then begin
-    while (CurPos.StartPos<ProcNode.FirstChild.EndPos) do begin
+    if ProcNode.FirstChild<>nil then
+      EndPos:=ProcNode.FirstChild.EndPos
+    else
+      EndPos:=SrcLen+1;
+    while (CurPos.StartPos<EndPos) do begin
       if CurPos.Flag=cafSemicolon then begin
         ExtractNextAtom(phpWithProcModifiers in Attr,Attr);
       end else begin

@@ -37,8 +37,8 @@ interface
 {$I codetools.inc}
 
 { $DEFINE ShowIgnoreError}
-{$DEFINE ShowDirtySrc}
 { $DEFINE VerboseUpdateNeeded}
+{$DEFINE ShowDirtySrc}
 
 uses
   {$IFDEF MEM_CHECK}

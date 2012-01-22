@@ -553,7 +553,7 @@ begin
   // scan code
   BeginParsing(Range);
   {$IFDEF VerboseUpdateNeeded}
-  DebugLn(['TPascalParserTool.BuildTree PARSING ... ScannedRange=',dbgs(Range),' new Range=',dbgs(Range),' ',MainFilename]);
+  DebugLn(['TPascalParserTool.BuildTree PARSING ... ScannedRange=',dbgs(ScannedRange),' new Range=',dbgs(Range),' ',MainFilename]);
   {$ENDIF}
   //debugln(['TPascalParserTool.BuildTree "',Src,'"']);
 
