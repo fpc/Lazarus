@@ -46,7 +46,7 @@ uses
   EditDefineTree, ProjectResources, MiscOptions, LazConf, EnvironmentOpts,
   TransferMacros, CompilerOptions, OutputFilter, Compiler, FPCSrcScan,
   PackageDefs, PackageSystem, Project,
-  BaseBuildManager, ApplicationBundle, BuildProfileManager;
+  BaseBuildManager, ApplicationBundle;
   
 type
   TBMScanFPCSources = (
