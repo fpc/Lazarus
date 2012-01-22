@@ -61,8 +61,8 @@ unit TodoList;
 interface
 
 uses
-  // FCL, LCL
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, 
+  // FCL, RTL, LCL
+  Classes, SysUtils, Math, LCLProc, Forms, Controls, Graphics, Dialogs,
   StrUtils, ExtCtrls, ComCtrls, Menus, Buttons, GraphType, ActnList, AvgLvlTree,
   LCLIntf, LCLType,
   // Codetools
@@ -156,6 +156,9 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift:TShiftState);
     procedure FormShow(Sender: TObject);
     procedure lvTodoClick(Sender: TObject);
+    procedure lvTodoColumnClick(Sender : TObject; Column : TListColumn);
+    procedure lvTodoCompare(Sender : TObject; Item1, Item2 : TListItem;
+      Data : Integer; var Compare : Integer);
     procedure SaveDialog1Show(Sender: TObject);
   private
     FBaseDirectory: string;
@@ -410,6 +413,66 @@ end;
 procedure TIDETodoWindow.lvTodoClick(Sender: TObject);
 begin
   acGoto.Execute;
+end;
+
+procedure TIDETodoWindow.lvTodoColumnClick(Sender : TObject; Column : TListColumn);
+Var
+  aListItem : TListItem;
+begin
+  aListItem := lvTodo.Selected;
+
+  If lvTodo.SortDirection = sdAscending then lvTodo.SortDirection := sdDescending
+  Else lvTodo.SortDirection := sdAscending;
+
+  lvTodo.SortColumn := Column.Index;
+
+  lvTodo.Selected := nil;  // Otherwise wrong selection - bug??
+  lvTodo.Selected := aListItem;
+
+  lvTodo.Update;  // First row not redrawn?
+  //lvTodo.Repaint;
+end;
+
+procedure TIDETodoWindow.lvTodoCompare(Sender : TObject;
+  Item1, Item2 : TListItem; Data : Integer; var Compare : Integer);
+var
+  Str1: String;
+  Str2: String;
+  Int1: Integer;
+  Int2: Integer;
+begin
+  Case lvTodo.SortColumn of
+    0, 1, 3, 5, 6 :
+      begin
+        if lvTodo.SortColumn = 0 then
+        begin
+          Str1 := TListItem(Item1).Caption;
+          Str2 := TListItem(Item2).Caption;
+        end else
+          begin
+            // Checks against Subitems.Count necessary??
+
+            if lvTodo.SortColumn <= Item1.SubItems.Count then
+              Str1 := Item1.SubItems.Strings[lvTodo.SortColumn-1]
+            else Str1 := '';
+
+            if lvTodo.SortColumn <= Item2.SubItems.Count then
+              Str2 := Item2.SubItems.Strings[lvTodo.SortColumn-1]
+            else Str2 := '';
+          end;
+        Compare := AnsiCompareText(Str1, Str2);
+      end;
+    2, 4  :
+      begin
+        if TryStrToInt(Item1.SubItems.Strings[lvTodo.SortColumn-1], Int1)
+           and TryStrToInt(Item2.SubItems.Strings[lvTodo.SortColumn-1], Int2) then
+           Compare := CompareValue(Int1, Int2)
+        else Compare := 0;
+      end;
+    else Compare := 0;
+  end;
+
+  if lvTodo.SortDirection = sdDescending then Compare := -Compare;
 end;
 
 procedure TIDETodoWindow.SaveDialog1Show(Sender: TObject);

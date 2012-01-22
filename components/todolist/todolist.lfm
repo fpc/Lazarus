@@ -12,7 +12,7 @@ object IDETodoWindow: TIDETodoWindow
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object StatusBar: TStatusBar
     Left = 0
     Height = 22
@@ -26,6 +26,7 @@ object IDETodoWindow: TIDETodoWindow
     Top = 48
     Width = 643
     Align = alClient
+    AutoSort = False
     Columns = <    
       item
         AutoSize = True
@@ -57,12 +58,14 @@ object IDETodoWindow: TIDETodoWindow
         Caption = 'Caption'
         Width = 315
       end>
-    ItemIndex = -1
     RowSelect = True
     ScrollBars = ssAutoBoth
+    SortType = stText
     TabOrder = 0
     ViewStyle = vsReport
     OnClick = lvTodoClick
+    OnColumnClick = lvTodoColumnClick
+    OnCompare = lvTodoCompare
   end
   object ToolBar: TToolBar
     Left = 0
