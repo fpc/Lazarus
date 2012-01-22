@@ -7411,7 +7411,7 @@ begin
   Rect1.Y := 0; //Widget^.Allocation.Y;
   Rect1.width := Widget^.Allocation.Width;
   Rect1.height := Widget^.Allocation.Height;
-  DebugLn(['ScrollWindowEx A ', dbgs(Rect1),' dy=',dy, ' scroll=',dbgs(prcScroll^), ' clip=',dbgs(prcClip^)]);
+  //DebugLn(['ScrollWindowEx A ', dbgs(Rect1),' dy=',dy, ' scroll=',dbgs(prcScroll^), ' clip=',dbgs(prcClip^)]);
 
   if PrcScroll <> nil then
   begin
@@ -7430,11 +7430,11 @@ begin
   end
   else
     Rect1a := Rect1;
-  DebugLn(['ScrollWindowEx B ', dbgs(Rect1), ' ', dbgs(Rect1a)]);
+  //DebugLn(['ScrollWindowEx B ', dbgs(Rect1), ' ', dbgs(Rect1a)]);
 
   WidgetInfo := GetWidgetInfo(Widget, False);
   if WidgetInfo <> nil then begin
-    DebugLn(['ScrollWindowEx C ', dbgs(WidgetInfo^.UpdateRect)]);
+    //DebugLn(['ScrollWindowEx C ', dbgs(WidgetInfo^.UpdateRect)]);
     // exclude allready invalidated area
     if (WidgetInfo^.UpdateRect.Right >= Rect1a.x + Rect1a.width) and
        (WidgetInfo^.UpdateRect.Left <= Rect1a.x)
@@ -7461,7 +7461,7 @@ begin
       end;
     end;
   end;
-  DebugLn(['ScrollWindowEx D ', dbgs(Rect1a)]);
+  //DebugLn(['ScrollWindowEx D ', dbgs(Rect1a)]);
 
 
   if (Rect1a.height > 0) and (Rect1a.width > 0) then begin
@@ -7475,7 +7475,7 @@ begin
       Rect2 := Rect(Rect1.x,     Rect1.y,
                     Rect1.width, Rect1a.y + dy);
     // Todo dx
-    DebugLn(['ScrollWindowEx E ', dbgs(Rect2)]);
+    //DebugLn(['ScrollWindowEx E ', dbgs(Rect2)]);
 
     Region := gdk_region_rectangle(@Rect1a);
     gdk_window_move_region(Window, Region, dx, dy);
@@ -7483,7 +7483,7 @@ begin
   else begin
     // invalidate, nothing to scroll
     Rect2 := Rect(Rect1.x, Rect1.y, Rect1.x + Rect1.width, Rect1.y + Rect1.height);
-    DebugLn(['ScrollWindowEx F ', dbgs(Rect2)]);
+    //DebugLn(['ScrollWindowEx F ', dbgs(Rect2)]);
   end;
 
   // Rect2 includes the Area at the scroll-in side of Rect1
