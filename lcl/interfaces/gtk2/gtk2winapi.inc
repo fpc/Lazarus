@@ -33,6 +33,8 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$EndIf}
 
+{off $define VerboseScrollWindowEx}
+
 const
   BOOL_TEXT: array[Boolean] of string = ('False', 'True');
 
@@ -7386,13 +7388,14 @@ var
   Window: PGdkWindow;
   {$ifdef GTK_2_8}
   Region: PGdkRegion;
-  Rect1: TGdkRectangle;   // full source rect
-  Rect1a: TGdkRectangle;  // source rect for clip
+  RClient, RFullSource, RUsableSource, RTarget, RUsableTarget: TRect;
+  Rect1: TGdkRectangle;
   Rect2: TRect; // area to invalidate
   WidgetInfo: PWidgetInfo;
   {$ENDIF}
 begin
   Result := False;
+  if (dy = 0) and (dx = 0) then exit;
   {$IFDEF DisableGtk2ScrollWindow}
   exit;
   {$ENDIF}
@@ -7407,90 +7410,148 @@ begin
   Window:=GetControlWindow(Widget);
   if Window = nil then exit;
   {$ifdef GTK_2_8}
-  Rect1.X := 0;//Widget^.Allocation.X;
-  Rect1.Y := 0; //Widget^.Allocation.Y;
-  Rect1.width := Widget^.Allocation.Width;
-  Rect1.height := Widget^.Allocation.Height;
-  //DebugLn(['ScrollWindowEx A ', dbgs(Rect1),' dy=',dy, ' scroll=',dbgs(prcScroll^), ' clip=',dbgs(prcClip^)]);
+  RClient.Left := 0;//Widget^.Allocation.Left;
+  RClient.Top := 0; //Widget^.Allocation.Top;
+  RClient.Right := Widget^.Allocation.width;
+  RClient.Bottom := Widget^.Allocation.height;
+  RFullSource := RClient;
+  {$ifdef VerboseScrollWindowEx}
+  DebugLn(['ScrollWindowEx A RClient=', dbgs(RClient),' dy=',dy, ' scroll=',dbgs(prcScroll^), ' clip=',dbgs(prcClip^)]);
+  {$ENDIF}
 
+  // Any part of RFullSource, that is not targeted by the move must later be invalidated
   if PrcScroll <> nil then
   begin
-    Rect1.x      := Max(Rect1.x, PrcScroll^.Left);
-    Rect1.y      := Max(Rect1.y, PrcScroll^.Top);
-    Rect1.width  := Min(Rect1.width - Rect1.x, PrcScroll^.Right - PrcScroll^.Left);
-    //Rect1.width  := Min(Rect1.width - (Rect1.x - Widget^.Allocation.X), PrcScroll^.Right - PrcScroll^.Left);
-    Rect1.height := Min(Rect1.height - Rect1.y, PrcScroll^.Bottom - PrcScroll^.Top);
+    RFullSource.Left   := Max(RClient.Left,   PrcScroll^.Left);
+    RFullSource.Top    := Max(RClient.Top,    PrcScroll^.Top);
+    RFullSource.Right  := Min(RClient.Right,  PrcScroll^.Right);
+    RFullSource.Bottom := Min(RClient.Bottom, PrcScroll^.Bottom);
   end;
-  if (PrcClip <> nil) then begin
-    // Limit the source rect, so it will fit into PrcClip
-    Rect1a.x      := Max(PrcClip^.Left - dx, Rect1.x);
-    Rect1a.y      := Max(PrcClip^.Top - dy, Rect1.y);
-    Rect1a.width  := Min(PrcClip^.Right - dx - Rect1.x, Rect1.width);
-    Rect1a.height := Min(PrcClip^.Bottom - dy - Rect1.y, Rect1.height);
-  end
-  else
-    Rect1a := Rect1;
-  //DebugLn(['ScrollWindowEx B ', dbgs(Rect1), ' ', dbgs(Rect1a)]);
 
+  // Target is expected to be completly filled with valid content by move,
+  // any part that can not be filled must be invalidated
+  RTarget.Left   := Max(RClient.Left,   RFullSource.Left + dx);
+  RTarget.Top    := Max(RClient.Top,    RFullSource.Top + dy);
+  RTarget.Right  := Min(RClient.Right,  RFullSource.Right + dx);
+  RTarget.Bottom := Min(RClient.Bottom, RFullSource.Bottom + dy);
+  if (PrcClip <> nil) then begin
+    RTarget.Left   := Max(RTarget.Left,   prcClip^.Left);
+    RTarget.Top    := Max(RTarget.Top,    prcClip^.Top);
+    RTarget.Right  := Min(RTarget.Right,  prcClip^.Right);
+    RTarget.Bottom := Min(RTarget.Bottom, prcClip^.Bottom);
+  end;
+
+  // Only Source that will fit into target
+  RUsableSource.Left   := Max(RTarget.Left - dx,   RFullSource.Left);
+  RUsableSource.Top    := Max(RTarget.Top - dy,    RFullSource.Top);
+  RUsableSource.Right  := Min(RTarget.Right - dx,  RFullSource.Right);
+  RUsableSource.Bottom := Min(RTarget.Bottom - dy, RFullSource.Bottom);
+  {$ifdef VerboseScrollWindowEx}
+  DebugLn(['ScrollWindowEx B RFullSource=', dbgs(RFullSource), ' RUsableSource=', dbgs(RUsableSource)]);
+  {$ENDIF}
+
+  // And also, only Source that is valid
   WidgetInfo := GetWidgetInfo(Widget, False);
   if WidgetInfo <> nil then begin
-    //DebugLn(['ScrollWindowEx C ', dbgs(WidgetInfo^.UpdateRect)]);
+    {$ifdef VerboseScrollWindowEx}
+    DebugLn(['ScrollWindowEx C ', dbgs(WidgetInfo^.UpdateRect)]);
+    {$ENDIF}
     // exclude allready invalidated area
-    if (WidgetInfo^.UpdateRect.Right >= Rect1a.x + Rect1a.width) and
-       (WidgetInfo^.UpdateRect.Left <= Rect1a.x)
-    then begin
-      if (dy < 0) and (WidgetInfo^.UpdateRect.Bottom > 0) then
-        Rect1a.Height := Min(Rect1a.y + Rect1a.height,
-                             WidgetInfo^.UpdateRect.Top) - Rect1a.y;
-      if (dy > 0) and (Rect1a.y < WidgetInfo^.UpdateRect.Bottom) then begin
-        Rect1a.height := Rect1a.height - (WidgetInfo^.UpdateRect.Bottom - Rect1a.y);
-        Rect1a.y := WidgetInfo^.UpdateRect.Bottom;
-      end;
-    end;
-    // TODO: content moved into currently invalidated space, may reduce the inval rect
+    // "UpdateRect.Bottom > 0" => there is an UpdateRect / Top is valid
+    if (dy < 0) and (WidgetInfo^.UpdateRect.Bottom > 0) then
+      RUsableSource.Bottom := Min(RUsableSource.Bottom, WidgetInfo^.UpdateRect.Top);
+    if (dy > 0) and (RUsableSource.Top < WidgetInfo^.UpdateRect.Bottom) then
+      RUsableSource.Top := WidgetInfo^.UpdateRect.Bottom;
 
-    if (WidgetInfo^.UpdateRect.Bottom >= Rect1a.y + Rect1a.height) and
-       (WidgetInfo^.UpdateRect.Top <= Rect1a.y)
-    then begin
-      if (dx < 0) and (WidgetInfo^.UpdateRect.Right > 0) then
-        Rect1a.width := Min(Rect1a.x + Rect1a.width,
-                            WidgetInfo^.UpdateRect.Left) - Rect1a.x;
-      if (dx > 0) and (Rect1a.x < WidgetInfo^.UpdateRect.Right) then begin
-        Rect1a.width := Rect1a.width - (WidgetInfo^.UpdateRect.Right - Rect1a.x);
-        Rect1a.x := WidgetInfo^.UpdateRect.Right;
-      end;
-    end;
+    if (dx < 0) and (WidgetInfo^.UpdateRect.Right > 0) then
+      RUsableSource.Right := Min(RUsableSource.Right, WidgetInfo^.UpdateRect.Left);
+    if (dx > 0) and (RUsableSource.Left < WidgetInfo^.UpdateRect.Right) then
+      RUsableSource.Left := WidgetInfo^.UpdateRect.Right;
   end;
-  //DebugLn(['ScrollWindowEx D ', dbgs(Rect1a)]);
+  {$ifdef VerboseScrollWindowEx}
+  DebugLn(['ScrollWindowEx D RUsableSource=', dbgs(RUsableSource)]);
+  {$ENDIF}
 
+  // TODO: content moved into currently invalidated space, may reduce the inval rect
+  // All of RUsableTarget should be validated;
+  RUsableTarget.Left   := Max(RTarget.Left,   RUsableSource.Left + dx);
+  RUsableTarget.Top    := Max(RTarget.Top,    RUsableSource.Top + dy);
+  RUsableTarget.Right  := Min(RTarget.Right,  RUsableSource.Right + dx);
+  RUsableTarget.Bottom := Min(RTarget.Bottom, RUsableSource.Bottom + dy);
+  {$ifdef VerboseScrollWindowEx}
+  DebugLn(['ScrollWindowEx D RUsableTarget=', dbgs(RUsableTarget)]);
+  {$ENDIF}
 
-  if (Rect1a.height > 0) and (Rect1a.width > 0) then begin
-    // Calculate area to invalidate
-    // Rect1a.y may either be equal or greater than Rect1.y
-    // Rect1a.height may either be equal or less than Rect1.height
-    if (dy < 0) then
-      Rect2 := Rect(Rect1.x,     Rect1a.y + Rect1a.height + dy,
-                    Rect1.width, Rect1.y + Rect1.height);
-    if dy > 0 then
-      Rect2 := Rect(Rect1.x,     Rect1.y,
-                    Rect1.width, Rect1a.y + dy);
-    // Todo dx
-    //DebugLn(['ScrollWindowEx E ', dbgs(Rect2)]);
+  Rect1 := GdkRectFromRect(RUsableSource);
 
-    Region := gdk_region_rectangle(@Rect1a);
+  if (Rect1.height > 0) and (Rect1.width > 0) then begin
+    Region := gdk_region_rectangle(@Rect1);
     gdk_window_move_region(Window, Region, dx, dy);
+
+    //invalidate
+    If RUsableTarget.Left > RFullSource.Left then begin
+      Rect2 := RFullSource;
+      Rect2.Right:= RUsableTarget.Left;
+      {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate Src Left', dbgs(Rect2)]);{$ENDIF}
+      InvalidateRect(hWnd, @Rect2, false);
+    end;
+
+    If RUsableTarget.Right < RFullSource.Right then begin
+      Rect2 := RFullSource;
+      Rect2.Left:= RUsableTarget.Right;
+      {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate Src Right', dbgs(Rect2)]);{$ENDIF}
+      InvalidateRect(hWnd, @Rect2, false);
+    end;
+
+    If RUsableTarget.Top > RFullSource.Top then begin
+      Rect2 := RFullSource;
+      Rect2.Bottom:= RUsableTarget.Top;
+      {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate Src Top', dbgs(Rect2)]);{$ENDIF}
+      InvalidateRect(hWnd, @Rect2, false);
+    end;
+
+    If RUsableTarget.Bottom < RFullSource.Bottom then begin
+      Rect2 := RFullSource;
+      Rect2.Top:= RUsableTarget.Bottom;
+      {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate Src Bottom', dbgs(Rect2)]);{$ENDIF}
+      InvalidateRect(hWnd, @Rect2, false);
+    end;
+
+
+    If RUsableTarget.Left > RTarget.Left then begin
+      Rect2 := RTarget;
+      Rect2.Right:= RUsableTarget.Left;
+      {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate TARGET Left', dbgs(Rect2)]);{$ENDIF}
+      InvalidateRect(hWnd, @Rect2, false);
+    end;
+
+    If RUsableTarget.Right < RTarget.Right then begin
+      Rect2 := RTarget;
+      Rect2.Left:= RUsableTarget.Right;
+      {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate TARGET Right', dbgs(Rect2)]);{$ENDIF}
+      InvalidateRect(hWnd, @Rect2, false);
+    end;
+
+    If RUsableTarget.Top > RTarget.Top then begin
+      Rect2 := RTarget;
+      Rect2.Bottom:= RUsableTarget.Top;
+      {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate TARGET Top', dbgs(Rect2)]);{$ENDIF}
+      InvalidateRect(hWnd, @Rect2, false);
+    end;
+
+    If RUsableTarget.Bottom < RTarget.Bottom then begin
+      Rect2 := RTarget;
+      Rect2.Top:= RUsableTarget.Bottom;
+      {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate TARGET Bottom', dbgs(Rect2)]);{$ENDIF}
+      InvalidateRect(hWnd, @Rect2, false);
+    end;
   end
   else begin
     // invalidate, nothing to scroll
-    Rect2 := Rect(Rect1.x, Rect1.y, Rect1.x + Rect1.width, Rect1.y + Rect1.height);
-    //DebugLn(['ScrollWindowEx F ', dbgs(Rect2)]);
+    {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate all', dbgs(RUsableSource)]);{$ENDIF}
+    InvalidateRect(hWnd, @RFullSource, false);
+    InvalidateRect(hWnd, @RTarget, false);
   end;
-
-  // Rect2 includes the Area at the scroll-in side of Rect1
-  // gdk_window_move_region is supposed to have invalidated it, but some
-  // implementations seem not to do this. (bug 14297)
-  if (dy <> 0) then
-    InvalidateRect(hWnd, @Rect2, false);
   {$ELSE}
   gdk_window_scroll(Window, dx, dy);
   {$ENDIF}
