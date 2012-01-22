@@ -199,12 +199,6 @@ type
 var
   IDETodoWindow: TIDETodoWindow;
 
-function IsToDoComment(const Src: string;
-                       CommentStartPos, CommentEndPos: integer): boolean;
-function GetToDoComment(const Src: string;
-                       CommentStartPos, CommentEndPos: integer;
-                       out MagicStartPos, TextStartPos, TextEndPos: integer): boolean;
-
 implementation
 
 {$R *.lfm}
@@ -219,72 +213,6 @@ function CompareAnsiStringWithTLScannedFile(Filename, ScannedFile: Pointer): int
 begin
   Result:=CompareFilenames(AnsiString(Filename),
                            TTLScannedFile(ScannedFile).Filename);
-end;
-
-function IsToDoComment(const Src: string;
-  CommentStartPos, CommentEndPos: integer): boolean;
-var
-  StartPos: Integer;
-  EndPos: Integer;
-begin
-  if CommentStartPos<1 then exit(false);
-  if CommentEndPos-CommentStartPos<5 then exit(false);
-  if Src[CommentStartPos]='/' then begin
-    StartPos:=CommentStartPos+1;
-    EndPos:=CommentEndPos-1;
-  end else if (Src[CommentStartPos]='{') then begin
-    StartPos:=CommentStartPos+1;
-    EndPos:=CommentEndPos-1;
-  end else if (CommentStartPos<length(Src)) and (Src[CommentStartPos]='(')
-  and (Src[CommentStartPos+1]='*') then begin
-    StartPos:=CommentStartPos+2;
-    EndPos:=CommentEndPos-2;
-  end else
-    exit(false);
-  while (StartPos<EndPos) and (Src[StartPos]=' ') do inc(StartPos);
-  if Src[StartPos]='#' then inc(StartPos);
-  if CompareIdentifiers(cTodoFlag,@Src[StartPos])<>0 then exit(false);
-  Result:=true;
-end;
-
-function GetToDoComment(const Src: string; CommentStartPos,
-  CommentEndPos: integer; out MagicStartPos, TextStartPos, TextEndPos: integer
-  ): boolean;
-var
-  StartPos: Integer;
-  EndPos: Integer;
-  p: Integer;
-begin
-  if CommentStartPos<1 then exit(false);
-  if CommentEndPos-CommentStartPos<5 then exit(false);
-  if Src[CommentStartPos]='/' then begin
-    StartPos:=CommentStartPos+2;
-    EndPos:=CommentEndPos;
-  end else if (Src[CommentStartPos]='{') then begin
-    StartPos:=CommentStartPos+1;
-    EndPos:=CommentEndPos-1;
-  end else if (CommentStartPos<length(Src)) and (Src[CommentStartPos]='(')
-  and (Src[CommentStartPos+1]='*') then begin
-    StartPos:=CommentStartPos+2;
-    EndPos:=CommentEndPos-2;
-  end else
-    exit(false);
-  while (StartPos<EndPos) and (Src[StartPos]=' ') do inc(StartPos);
-  MagicStartPos:=StartPos;
-  if Src[StartPos]='#' then inc(StartPos);
-  if CompareIdentifiers(cAltTodoFLag,@Src[StartPos])<>0 then exit(false);
-  // this is a ToDo
-  p:=StartPos+length(cTodoFlag);
-  TextStartPos:=p;
-  while (TextStartPos<EndPos) and (Src[TextStartPos]<>':') do inc(TextStartPos);
-  if Src[TextStartPos]=':' then
-    inc(TextStartPos) // a todo with colon syntax
-  else
-    TextStartPos:=p; // a todo without syntax
-  while (TextStartPos<EndPos) and (Src[TextStartPos]=' ') do inc(TextStartPos);
-  TextEndPos:=EndPos;
-  while (TextEndPos>TextStartPos) and (Src[TextEndPos-1]=' ') do dec(TextEndPos);
-  Result:=true;
 end;
 
 { TIDETodoWindow }
