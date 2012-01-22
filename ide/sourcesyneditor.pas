@@ -37,17 +37,64 @@ interface
 {$I ide.inc}
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, Graphics, Menus, math, LazarusIDEStrConsts,
+  Classes, SysUtils, Controls, LCLProc, LCLType, Graphics, Menus, math, LazarusIDEStrConsts,
   SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks,
-  SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
+  SynEditTypes,  SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
   SynGutterLineOverview, SynEditMarkup, SynEditMarkupGutterMark,
   SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase, LazSynEditText,
-  SynPluginTemplateEdit, SynPluginSyncroEdit,
+  SynPluginTemplateEdit, SynPluginSyncroEdit, LazSynTextArea,
   SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterPas;
 
 type
 
   TIDESynGutterMarks = class;
+
+  { TSourceLazSynTopInfoView }
+
+  TSourceLazSynTopInfoView = class(TLazSynDisplayViewEx)
+  private
+    FLineMapCount: integer;
+    FLineMap: array of integer;
+    function GetLineMap(Index: Integer): Integer;
+    procedure SetLineMap(Index: Integer; AValue: Integer);
+    procedure SetLineMapCount(AValue: integer);
+  public
+    procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx); override;
+    function GetLinesCount: Integer; override;
+  public
+    constructor Create;
+    property LineMapCount: integer read FLineMapCount write SetLineMapCount;
+    property LineMap[Index: Integer]: Integer read GetLineMap write SetLineMap;
+  end;
+
+  { TSourceLazSynSurfaceGutter }
+
+  TSourceLazSynSurfaceGutter = class(TLazSynGutterArea)
+  protected
+    procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
+  end;
+
+  { TSourceLazSynSurfaceManager }
+
+  TSourceLazSynSurfaceManager = class(TLazSynSurfaceManager)
+  private
+    FExtraManager: TLazSynSurfaceManager;
+    FOriginalManager: TLazSynSurfaceManager;
+    FTopLineCount: Integer;
+    procedure SetTopLineCount(AValue: Integer);
+  protected
+    procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
+    procedure BoundsChanged; override;
+  public
+    constructor Create(AOwner: TWinControl; AnOriginalManager: TLazSynSurfaceManager);
+    destructor Destroy; override;
+    procedure  InvalidateLines(FirstLine, LastLine: TLineIdx); override;
+    property ExtraManager: TLazSynSurfaceManager read FExtraManager write FExtraManager;
+    property OriginalManager: TLazSynSurfaceManager read FOriginalManager write FOriginalManager;
+    property TopLineCount: Integer read FTopLineCount write SetTopLineCount;
+  end;
+
+
 
   { TIDESynEditor }
 
@@ -56,12 +103,23 @@ type
     FSyncroEdit: TSynPluginSyncroEdit;
     FTemplateEdit: TSynPluginTemplateEdit;
     FMarkupForGutterMark: TSynEditMarkupGutterMark;
+    {$IFDEF WithSynInfoView}
+    FTopInfoDisplay: TSourceLazSynTopInfoView;
+    FSrcSynCaretChangedLock: boolean;
+    {$ENDIF}
     function GetIDEGutterMarks: TIDESynGutterMarks;
+    {$IFDEF WithSynInfoView}
+    procedure SrcSynCaretChanged(Sender: TObject);
+    {$ENDIF}
   protected
+    {$IFDEF WithSynInfoView}
+    procedure DoOnStatusChange(Changes: TSynStatusChanges); override;
+    {$ENDIF}
     function CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
                           ATextDrawer: TheTextDrawer): TSynGutter; override;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     function TextIndexToViewPos(aTextIndex : Integer) : Integer;
     property IDEGutterMarks: TIDESynGutterMarks read GetIDEGutterMarks;
     property TopView;
@@ -206,7 +264,204 @@ type
 
 implementation
 
+{ TSourceLazSynTopInfoView }
+
+function TSourceLazSynTopInfoView.GetLineMap(Index: Integer): Integer;
+begin
+  Result := FLineMap[Index];
+end;
+
+procedure TSourceLazSynTopInfoView.SetLineMap(Index: Integer; AValue: Integer);
+begin
+  FLineMap[Index] := AValue;
+end;
+
+procedure TSourceLazSynTopInfoView.SetLineMapCount(AValue: integer);
+begin
+  if FLineMapCount = AValue then Exit;
+  FLineMapCount := AValue;
+  SetLength(FLineMap, AValue);
+end;
+
+procedure TSourceLazSynTopInfoView.SetHighlighterTokensLine(ALine: TLineIdx; out
+  ARealLine: TLineIdx);
+begin
+  CurrentTokenLine := ALine;
+  inherited SetHighlighterTokensLine(FLineMap[ALine], ARealLine);
+end;
+
+function TSourceLazSynTopInfoView.GetLinesCount: Integer;
+begin
+  Result := LineMapCount;
+end;
+
+constructor TSourceLazSynTopInfoView.Create;
+begin
+  LineMapCount := 0;
+end;
+
+{ TSourceLazSynSurfaceGutter }
+
+procedure TSourceLazSynSurfaceGutter.DoPaint(ACanvas: TCanvas; AClip: TRect);
+begin
+  // prevent output
+  Gutter.Paint(ACanvas, Self, AClip, 0, -1);
+end;
+
+{ TSourceLazSynSurfaceManager }
+
+procedure TSourceLazSynSurfaceManager.SetTopLineCount(AValue: Integer);
+begin
+  if FTopLineCount = AValue then Exit;
+  FTopLineCount := AValue;
+  BoundsChanged;
+end;
+
+procedure TSourceLazSynSurfaceManager.DoPaint(ACanvas: TCanvas; AClip: TRect);
+begin
+  FOriginalManager.Paint(ACanvas, AClip);
+  FExtraManager.Paint(ACanvas, AClip);
+end;
+
+procedure TSourceLazSynSurfaceManager.BoundsChanged;
+var
+  t: Integer;
+begin
+  FExtraManager.LeftGutterWidth := LeftGutterWidth;
+  FExtraManager.RightGutterWidth := RightGutterWidth;
+  FOriginalManager.LeftGutterWidth := LeftGutterWidth;
+  FOriginalManager.RightGutterWidth := RightGutterWidth;
+
+  t := Min(Top + FTopLineCount * FExtraManager.TextArea.LineHeight,
+           Max(Top, Bottom - FOriginalManager.TextArea.LineHeight)
+          );
+  FExtraManager.SetBounds(Top, Left, t, Right);
+  FOriginalManager.SetBounds(t, Left, Bottom, Right);
+end;
+
+constructor TSourceLazSynSurfaceManager.Create(AOwner: TWinControl; AnOriginalManager: TLazSynSurfaceManager);
+var
+  txt: TLazSynTextArea;
+  lgutter, rgutter: TLazSynGutterArea;
+begin
+  inherited Create(AOwner);
+  FTopLineCount := 0;
+  FOriginalManager := AnOriginalManager;
+
+  txt := TLazSynTextArea.Create(AOwner, FOriginalManager.TextArea.TextDrawer);
+  txt.Assign(FOriginalManager.TextArea);
+  txt.TopLine := 1;
+  txt.LeftChar := 1;
+
+  lgutter:= TSourceLazSynSurfaceGutter.Create(AOwner);
+  lgutter.Assign(FOriginalManager.LeftGutterArea);
+  lgutter.TextArea := txt;
+
+  rgutter:= TSourceLazSynSurfaceGutter.Create(AOwner);
+  rgutter.Assign(FOriginalManager.RightGutterArea);
+  rgutter.TextArea := txt;
+
+  FExtraManager := TLazSynSurfaceManager.Create(AOwner);
+  FExtraManager.TextArea := txt;
+  FExtraManager.LeftGutterArea := lgutter;
+  FExtraManager.RightGutterArea := rgutter;
+end;
+
+destructor TSourceLazSynSurfaceManager.Destroy;
+begin
+  inherited Destroy;
+  FExtraManager.LeftGutterArea.Free;
+  FExtraManager.RightGutterArea.Free;
+  FExtraManager.TextArea.Free;
+  FExtraManager.Free;
+  FOriginalManager.Free;
+end;
+
+procedure TSourceLazSynSurfaceManager.InvalidateLines(FirstLine, LastLine: TLineIdx);
+begin
+  FOriginalManager.InvalidateLines(FirstLine, LastLine);
+end;
+
 { TIDESynEditor }
+
+{$IFDEF WithSynInfoView}
+procedure TIDESynEditor.SrcSynCaretChanged(Sender: TObject);
+var
+  InfCnt, i, t, ListCnt: Integer;
+  Inf: TFoldViewNodeInfo;
+  InfList: array [0..1] of TFoldViewNodeInfo;
+begin
+  if FSrcSynCaretChangedLock or not(TextView.HighLighter is TSynPasSyn) then exit;
+
+  FSrcSynCaretChangedLock := True;
+  try
+    InfCnt := TextView.OpenFoldCount(CaretY-1);
+    ListCnt := 0;
+    for i := InfCnt-1 downto 0 do begin
+      Inf := TextView.OpenFoldInfo(CaretY-1, i);
+      if sfaInvalid in Inf.HNode.FoldAction then
+        continue;
+
+      if (TPascalCodeFoldBlockType(Inf.HNode.FoldType) in [cfbtClassSection]) and (ListCnt = 0) then begin
+        InfList[ListCnt] := Inf;
+        inc(ListCnt);
+      end;
+
+      if (TPascalCodeFoldBlockType(Inf.HNode.FoldType) in [cfbtClass]) and (ListCnt < 2) then begin
+        InfList[ListCnt] := Inf;
+        inc(ListCnt);
+      end;
+
+      if (TPascalCodeFoldBlockType(Inf.HNode.FoldType) in [cfbtProcedure]) and (ListCnt < 2) then begin
+        InfList[ListCnt] := Inf;
+        if ListCnt = 0 then
+          inc(ListCnt);
+      end;
+    end;
+
+    t := TopLine + ListCnt - TSourceLazSynSurfaceManager(FPaintArea).TopLineCount;
+    if (CaretY >= TopLine) and (CaretY < t) then
+      t := CaretY;
+
+    while ListCnt > 0 do begin
+      if InfList[0].LineNum >= t-1 then begin
+        InfList[0] := InfList[1];
+        dec(ListCnt);
+        t := TopLine + ListCnt - TSourceLazSynSurfaceManager(FPaintArea).TopLineCount;
+        if (CaretY >= TopLine) and (CaretY < t) then
+          t := CaretY;
+      end
+      else
+        break;
+    end;
+
+    FTopInfoDisplay.LineMapCount := ListCnt;
+
+    if ListCnt <> TSourceLazSynSurfaceManager(FPaintArea).TopLineCount then begin
+      TopLine := t;
+      TSourceLazSynSurfaceManager(FPaintArea).TopLineCount := ListCnt;
+      SizeOrFontChanged(FALSE);
+      Invalidate;
+    end;
+
+    for i := 0 to ListCnt - 1 do begin
+      if FTopInfoDisplay.LineMap[ListCnt-1-i] <> InfList[i].LineNum - 1 then
+        TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.InvalidateLines(ListCnt-1-i, ListCnt-1-i);
+      FTopInfoDisplay.LineMap[ListCnt-1-i] := InfList[i].LineNum - 1;
+    end;
+
+  finally
+    FSrcSynCaretChangedLock := False;
+  end;
+end;
+
+procedure TIDESynEditor.DoOnStatusChange(Changes: TSynStatusChanges);
+begin
+  inherited DoOnStatusChange(Changes);
+  if Changes * [scTopLine, scLinesInWindow] <> []then
+      SrcSynCaretChanged(nil);
+end;
+{$ENDIF}
 
 function TIDESynEditor.GetIDEGutterMarks: TIDESynGutterMarks;
 begin
@@ -226,6 +481,23 @@ begin
   FSyncroEdit := TSynPluginSyncroEdit.Create(Self);
   FMarkupForGutterMark := TSynEditMarkupGutterMark.Create(Self, FWordBreaker);
   TSynEditMarkupManager(MarkupMgr).AddMarkUp(FMarkupForGutterMark);
+
+  {$IFDEF WithSynInfoView}
+  FPaintArea := TSourceLazSynSurfaceManager.Create(Self, FPaintArea);
+  GetCaretObj.AddChangeHandler({$IFDEF FPC}@{$ENDIF}SrcSynCaretChanged);
+
+  FTopInfoDisplay := TSourceLazSynTopInfoView.Create;
+  FTopInfoDisplay.NextView := ViewedTextBuffer.DisplayView;
+  TSourceLazSynSurfaceManager(FPaintArea).TopLineCount := 0;
+  TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.TextArea.BackgroundColor := clSilver;
+  TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.TextArea.DisplayView := FTopInfoDisplay;
+  {$ENDIF}
+end;
+
+destructor TIDESynEditor.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FTopInfoDisplay);
 end;
 
 function TIDESynEditor.TextIndexToViewPos(aTextIndex: Integer): Integer;
@@ -624,7 +896,7 @@ var
         iTop := (LineHeight - FBookMarkOpt.BookmarkImages.Height) div 2;
 
       FBookMarkOpt.BookmarkImages.Draw
-        (Canvas, FBookMarkOpt.LeftMargin + aGutterOffs * ColumnWidth,
+        (Canvas, AClip.Left + FBookMarkOpt.LeftMargin + aGutterOffs * ColumnWidth,
          iTop + Line * LineHeight, DebugMarksImageIndex, True);
     end
   end;
