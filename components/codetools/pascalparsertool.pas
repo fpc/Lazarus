@@ -1163,7 +1163,7 @@ begin
   // read name
   ReadNextAtom;
   if IsOperator then begin
-    // if CurPos.Flag<>cafEqual then
+    if CurPos.Flag<>cafEqual then
       AtomIsIdentifier(true);
   end else begin
     AtomIsIdentifier(true);
@@ -2561,8 +2561,8 @@ begin
     if CurSection=ctnInterface then
       ProcNode.SubDesc:=ctnsForwardDeclaration;
   end;
-  IsFunction:=UpAtomIs('FUNCTION');
   IsOperator:=UpAtomIs('OPERATOR');
+  IsFunction:=UpAtomIs('FUNCTION');
   IsMethod:=False;
   ReadNextAtom;// read first atom of head (= name/operator + parameterlist + resulttype;)
   if not IsOperator then AtomIsIdentifier(true);
@@ -2591,7 +2591,7 @@ begin
       // read procedure name of a class method (the name after the . )
       IsMethod:=True;
       ReadNextAtom;
-      AtomIsIdentifier(true);
+      if not IsOperator then AtomIsIdentifier(true);
       ReadNextAtom;
     end;
   end;
@@ -5313,7 +5313,7 @@ begin
       while (CurPos.Flag=cafPoint) do begin
         // read procedure name of a class method (the name after the . )
         ReadNextAtom;
-        AtomIsIdentifier(true);
+        if not IsOperator then AtomIsIdentifier(true);
         ReadNextAtom;
       end;
     end;
