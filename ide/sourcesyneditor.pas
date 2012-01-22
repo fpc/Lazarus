@@ -497,7 +497,9 @@ end;
 destructor TIDESynEditor.Destroy;
 begin
   inherited Destroy;
+  {$IFDEF WithSynInfoView}
   FreeAndNil(FTopInfoDisplay);
+  {$ENDIF}
 end;
 
 function TIDESynEditor.TextIndexToViewPos(aTextIndex: Integer): Integer;
