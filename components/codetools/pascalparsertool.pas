@@ -1131,6 +1131,7 @@ function TPascalParserTool.KeyWordFuncClassMethod: boolean;
    }
 var IsFunction, HasForwardModifier: boolean;
   ParseAttr: TParseProcHeadAttributes;
+  IsOperator: Boolean;
 begin
   if (CurNode.Desc in AllClassSubSections)
   and (CurNode.Parent.Desc in (AllClassBaseSections+AllClassInterfaces)) then begin
@@ -1157,10 +1158,16 @@ begin
     end;
   end;
   // read procedure head
-  IsFunction:=UpAtomIs('FUNCTION') or UpAtomIs('OPERATOR');
+  IsOperator:=UpAtomIs('OPERATOR');
+  IsFunction:=IsOperator or UpAtomIs('FUNCTION');
   // read name
   ReadNextAtom;
-  AtomIsIdentifier(true);
+  if IsOperator then begin
+    // if CurPos.Flag<>cafEqual then
+      AtomIsIdentifier(true);
+  end else begin
+    AtomIsIdentifier(true);
+  end;
   // create node for procedure head
   CreateChildNode;
   CurNode.Desc:=ctnProcedureHead;
