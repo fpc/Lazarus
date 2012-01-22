@@ -1990,7 +1990,7 @@ function TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter(
   end;
 
 var
-  VarNameAtom, ProcNameAtom: TAtomPosition;
+  VarNameRange, ProcNameAtom: TAtomPosition;
   ParameterIndex: integer;
   Params: TFindDeclarationParams;
   ParameterNode: TCodeTreeNode;
@@ -2022,17 +2022,19 @@ begin
   {$ENDIF}
   // check parameter syntax
   if not CheckParameterSyntax(CursorNode,CleanCursorPos,
-                              VarNameAtom,ProcNameAtom,ParameterIndex)
+                              VarNameRange,ProcNameAtom,ParameterIndex)
   then
     exit;
   HasAtOperator:=false;
-  if (VarNameAtom.StartPos<=SrcLen)
-  and (Src[VarNameAtom.StartPos]='@') then begin
+  if (VarNameRange.StartPos<=SrcLen)
+  and (Src[VarNameRange.StartPos]='@') then begin
     HasAtOperator:=true;
-    inc(VarNameAtom.StartPos);
-    //debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter HasAtOperator ',GetAtom(VarNameAtom)]);
+    MoveCursorToCleanPos(VarNameRange.StartPos+1);
+    ReadNextAtom;
+    VarNameRange.StartPos:=CurPos.StartPos;
+    //debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter HasAtOperator ',GetAtom(VarNameRange)]);
   end;
-  Identifier:=GetAtom(VarNameAtom);
+  Identifier:=ExtractCode(VarNameRange.StartPos,VarNameRange.EndPos,[]);
   if not IsValidIdent(Identifier) then exit;
 
   {$IFDEF CTDEBUG}
@@ -2046,9 +2048,9 @@ begin
     DebugLn('  CompleteLocalIdentifierByParameter: check if variable is already defined ...');
     {$ENDIF}
     // check if identifier exists
-    Result:=IdentifierIsDefined(VarNameAtom,CursorNode,Params);
+    Result:=IdentifierIsDefined(VarNameRange,CursorNode,Params);
     if Result then begin
-      MoveCursorToCleanPos(VarNameAtom.StartPos);
+      MoveCursorToCleanPos(VarNameRange.StartPos);
       ReadNextAtom;
       RaiseExceptionFmt(ctsIdentifierAlreadyDefined,[GetAtom]);
     end;
@@ -2092,7 +2094,7 @@ begin
       Params.Flags:=Params.Flags+[fdfSearchInParentNodes,fdfIgnoreCurContextNode]
     else
       Params.Flags:=Params.Flags-[fdfSearchInParentNodes,fdfIgnoreCurContextNode];
-    CleanPosToCodePos(VarNameAtom.StartPos,IgnorePos);
+    CleanPosToCodePos(VarNameRange.StartPos,IgnorePos);
     IgnoreErrorAfter:=IgnorePos;
     try
       {$IFDEF CTDEBUG}
@@ -2191,7 +2193,7 @@ begin
     Params.Free;
   end;
 
-  Result:=AddLocalVariable(CleanCursorPos,OldTopLine,GetAtom(VarNameAtom),
+  Result:=AddLocalVariable(CleanCursorPos,OldTopLine,GetAtom(VarNameRange),
                    NewType,MissingUnitName,NewPos,NewTopLine,SourceChangeCache);
 end;
 
