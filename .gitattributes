@@ -3305,6 +3305,7 @@ docs/xml/lcl/lcltype.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lclunicodedata.xml svneol=native#text/plain
 docs/xml/lcl/lclversion.xml svneol=native#text/plain
 docs/xml/lcl/lconvencoding.xml svneol=LF#text/plain eol=lf
+docs/xml/lcl/ldocktree.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lmessages.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lresources.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/maps.xml svneol=native#text/plain
