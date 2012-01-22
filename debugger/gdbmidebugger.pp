@@ -3717,7 +3717,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       DebugLn('[WARNING] [Debugger.TargetInfo] Unknown FileType: %s, using GDB cpu', [AFileType]);
 
       TargetInfo^.TargetCPU := FTheDebugger.FGDBCPU;
-      // Todo, check PtrSize and downgrade 64 bit cpu to 32 bit cpu, if required
+      // Todo: check PtrSize and downgrade 64 bit cpu to 32 bit cpu, if required
     end;
 
     if not FoundPtrSize
@@ -4151,7 +4151,7 @@ var
       end;
       3: begin // error
         DebugLn('TGDBMIDebugger.ProcessResult Error: ', Line);
-        // todo implement with values
+        // todo: implement with values
         if  (pos('msg=', Line) > 0)
         and (pos('not being run', Line) > 0)
         then AResult.State := dsStop
@@ -5038,7 +5038,7 @@ var
           if i < 0
           then begin
             DebugLn(['CommandExecute: exStepOver, frame not found: ', i]);
-            DoEndStepping; // TODO User-error feedback
+            DoEndStepping; // TODO: User-error feedback
           end;
         end;
       //ectStepOut:
@@ -9743,7 +9743,7 @@ var
       end;
       3: begin // error
         DebugLn('TGDBMIDebugger.ProcessResult Error: ', Line);
-        // todo implement with values
+        // todo: implement with values
         if  (pos('msg=', Line) > 0)
         and (pos('not being run', Line) > 0)
         then AResult.State := dsStop
