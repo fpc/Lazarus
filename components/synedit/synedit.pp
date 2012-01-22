@@ -644,7 +644,6 @@ type
     procedure SetWordBlock(Value: TPoint);
     procedure SetLineBlock(Value: TPoint; WithLeadSpaces: Boolean = True);
     procedure SetParagraphBlock(Value: TPoint);
-    procedure SizeOrFontChanged(bFont: boolean);
     procedure RecalcCharsAndLinesInWin(CheckCaret: Boolean);
     procedure StatusChanged(AChanges: TSynStatusChanges);
     procedure UndoRedoAdded(Sender: TObject);
@@ -733,6 +732,7 @@ type
     procedure InvalidateLines(FirstLine, LastLine: integer);
     Procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     Procedure LineTextChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
+    procedure SizeOrFontChanged(bFont: boolean);
     procedure DoHighlightChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     procedure ListCleared(Sender: TObject);
     procedure FoldChanged(Index: integer);
@@ -3868,6 +3868,7 @@ end;
 procedure TCustomSynEdit.ScrollAfterTopLineChanged;
 var
   Delta: Integer;
+  srect: TRect;
 begin
   if (sfPainting in fStateFlags) or (fPaintLock <> 0) or (not HandleAllocated) then
     exit;
@@ -3883,17 +3884,22 @@ begin
       {$ENDIF}
       Invalidate;
     end else
-    if ScrollWindowEx(Handle, 0, LineHeight * Delta, nil, nil, 0, nil, SW_INVALIDATE)
-    then begin
-      {$IFDEF SYNSCROLLDEBUG}
-      debugln(['ScrollAfterTopLineChanged did scroll Delta=',Delta]);
-      {$ENDIF}
-      include(fStateFlags, sfHasScrolled);
-    end else begin
-      Invalidate;    // scrollwindow failed, invalidate all
-      {$IFDEF SYNSCROLLDEBUG}
-      debugln(['ScrollAfterTopLineChanged does invalidet (scroll failed) Delta=',Delta]);
-      {$ENDIF}
+    begin
+      srect := FPaintArea.Bounds;
+      srect.Top := FTextArea.TextBounds.Top;
+      srect.Bottom := FTextArea.TextBounds.Bottom;
+      if ScrollWindowEx(Handle, 0, LineHeight * Delta, @srect, @srect, 0, nil, SW_INVALIDATE)
+      then begin
+        {$IFDEF SYNSCROLLDEBUG}
+        debugln(['ScrollAfterTopLineChanged did scroll Delta=',Delta]);
+        {$ENDIF}
+        include(fStateFlags, sfHasScrolled);
+      end else begin
+        Invalidate;    // scrollwindow failed, invalidate all
+        {$IFDEF SYNSCROLLDEBUG}
+        debugln(['ScrollAfterTopLineChanged does invalidet (scroll failed) Delta=',Delta]);
+        {$ENDIF}
+      end;
     end;
   end;
   FOldTopView := TopView;
