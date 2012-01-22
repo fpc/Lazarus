@@ -176,6 +176,10 @@ components/tachart/demo/fpvectorial/lib
 components/tachart/demo/func/*.exe
 components/tachart/demo/func/*.lps
 components/tachart/demo/func/lib
+components/tachart/demo/imagelist/*.exe
+components/tachart/demo/imagelist/*.lps
+components/tachart/demo/imagelist/*.res
+components/tachart/demo/imagelist/lib
 components/tachart/demo/labels/*.exe
 components/tachart/demo/labels/*.lps
 components/tachart/demo/labels/lib
