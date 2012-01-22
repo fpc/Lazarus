@@ -634,6 +634,8 @@ begin
   aGutterOffs := 0;
   HasAnyMark := PaintMarks(aScreenLine, Canvas, AClip, aGutterOffs);
   TxtIdx := FoldView.TextIndex[aScreenLine];
+  if (TxtIdx < 0) or (TxtIdx >= TSynEdit(SynEdit).Lines.Count) then
+    exit;
   if (not HasAnyMark) and (HasDebugMarks) and (TxtIdx < FDebugMarkInfo.Count) and
      (FDebugMarkInfo.SrcLineToMarkLine[TxtIdx] > 0)
   then
