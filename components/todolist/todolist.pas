@@ -73,8 +73,8 @@ uses
 Const
   cTodoFlag = '#todo';
   cDoneFlag = '#done';
-  cAltTodoFLag = 'todo:';
-  cAltDoneFLag = 'done:';
+  cAltTodoFLag = 'todo';
+  cAltDoneFLag = 'done';
   ToDoWindowName = 'IDETodoWindow';
 
 type
@@ -173,9 +173,9 @@ type
     procedure ResolveIDEItem(out CurOwner: TObject; out CurProject: TLazProject;
                              out CurPkg: TIDEPackage);
 
-    function  CreateToDoItem(aTLFile: TTLScannedFile;
+    procedure CreateToDoItem(aTLFile: TTLScannedFile;
         const aFileName: string; const SComment, EComment: string;
-        const TokenString: string; LineNumber: Integer): TTodoItem;
+        const TokenString: string; LineNumber: Integer);
     procedure AddListItem(aTodoItem: TTodoItem);
     
     procedure ScanFile(aFileName : string);
@@ -467,15 +467,15 @@ begin
   UpdateStartFilename;
 end;
 
-function TIDETodoWindow.CreateToDoItem(aTLFile: TTLScannedFile;
+procedure TIDETodoWindow.CreateToDoItem(aTLFile: TTLScannedFile;
   const aFileName: string; const SComment, EComment: string;
-  const TokenString: string; LineNumber: Integer): TTodoItem;
+  const TokenString: string; LineNumber: Integer);
 var
   N, Strlen: Integer;
   TempStr, ParsingString, LowerString : string;
-  IsAltNotation,
-  IsDone: boolean;
+  IsAltNotation, IsDone, HasSemiColon: boolean;
   aChar: char;
+  TodoItem: TTodoItem;
 
 const
   cSemiColon  = ':';
@@ -507,7 +507,7 @@ const
 
 begin
   //DebugLn(['TfrmTodo.CreateToDoItem aFileName=',aFileName,' LineNumber=',LineNumber]);
-  Result := nil;
+  TodoItem := nil;
   ParsingString:= TextToSingleLine(TokenString);
   // Remove the beginning comment chars from input string
   Delete(ParsingString, 1, Length(SComment));
@@ -559,50 +559,47 @@ begin
   else
     Delete(ParsingString, 1, 5);
 
-  Result := TTodoItem.Create(aTLFile);
-  Result.Done := IsDone;
-  Result.AltNotation := IsAltNotation;
-  Result.LineNumber  := LineNumber;
-  Result.Filename    := aFileName;
-  if aTLFile<>nil then begin
-    aTLFile.Add(Result);
-  end;
-
-  if Pos(cSemiColon, ParsingString)>0 then
+  HasSemiColon := Pos(cSemiColon, ParsingString)>0;
+  // Alternative keyword requires a semicolon to prevent false positives.
+  if HasSemiColon or not IsAltNotation then
   begin
-    // Parse priority, owner and category
-    n := 1;
-    TempStr := '';
-    Strlen  := Length(ParsingString);
+    TodoItem := TTodoItem.Create(aTLFile);
+    TodoItem.Done := IsDone;
+    TodoItem.AltNotation := IsAltNotation;
+    TodoItem.LineNumber  := LineNumber;
+    TodoItem.Filename    := aFileName;
+    if aTLFile<>nil then
+      aTLFile.Add(TodoItem);
 
-    while (n <= StrLen) and (ParsingString[n]<>cSemiColon) do
+    if HasSemiColon then
     begin
+      // Parse priority, owner and category
+      n := 1;
+      TempStr := '';
+      Strlen  := Length(ParsingString);
 
-      aChar := ParsingString[n];
-
-      // Add char to temporary string
-      if (aChar<>cSemiColon) and (aChar<>cWhiteSpace) then
-        TempStr := TempStr + aChar
-
-      // Process temporary string
-      else
+      while (n <= StrLen) and (ParsingString[n]<>cSemiColon) do
       begin
-        SetItemFields(Result, TempStr);
-        TempStr := '';;
+        aChar := ParsingString[n];
+        // Add char to temporary string
+        if (aChar<>cSemiColon) and (aChar<>cWhiteSpace) then
+          TempStr := TempStr + aChar
+        // Process temporary string
+        else
+        begin
+          SetItemFields(TodoItem, TempStr);
+          TempStr := '';;
+        end;
+        inc(N);
       end;
 
-      inc(N);
+      SetItemFields(TodoItem, TempStr);
+      Delete(ParsingString, 1, n);
+    end;
 
-    end;//while
-
-    SetItemFields(Result, TempStr);
-
-    Delete(ParsingString, 1, n);
+    // Set item text
+    TodoItem.Text := ParsingString;
   end;
-
-  // Set item text
-  Result.Text := ParsingString;
-  
 end;
 
 
