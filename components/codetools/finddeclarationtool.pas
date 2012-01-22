@@ -6275,7 +6275,7 @@ begin
   NewCode:=FindUnitSource(AnUnitName,'',true);
   if NewCode=TCodeBuffer(Scanner.MainCode) then begin
     // Searching again in hidden unit
-    DebugLn('WARNING: Searching again in hidden unit: "',NewCode.Filename,'"');
+    DebugLn('WARNING: Searching again in hidden unit: "',NewCode.Filename,'" identifier=',GetIdentifier(Params.Identifier));
   end else begin
     // source found -> get codetool for it
     {$IF defined(ShowTriedContexts) or defined(ShowTriedUnits)}

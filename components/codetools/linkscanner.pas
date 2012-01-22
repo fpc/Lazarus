@@ -2365,28 +2365,21 @@ begin
       FHiddenUsedUnits:=FHiddenUsedUnits+','+Controller;
 
     // check if this is a hidden used unit
-    AnUnitName:='';
-    if (ord(ScannedRange)<ord(lsrSourceType)) then
-      // not yet parsed, or parse error => maybe a unit => use filename
-      AnUnitName:=ExtractFileNameOnly(MainFilename)
-    else if IsUnit then begin
-      if (SourceName<>'') then
-        AnUnitName:=SourceName
-      else
-        AnUnitName:=ExtractFileNameOnly(MainFilename);
-    end;
+    AnUnitName:=ExtractFileNameOnly(MainFilename);
     if AnUnitName<>'' then begin
       if AnUnitName='system' then
         FHiddenUsedUnits:=''
       else begin
         p:=length(FHiddenUsedUnits);
         while p>=1 do begin
-          while (p>1) and (FHiddenUsedUnits[p]<>',') do dec(p);
-          if CompareDottedIdentifiers(@FHiddenUsedUnits[p],PChar(AnUnitName))=0 then
-          begin
+          while (p>1) and (FHiddenUsedUnits[p-1]<>',') do dec(p);
+          if (CompareDottedIdentifiers(@FHiddenUsedUnits[p],PChar(AnUnitName))=0)
+          or (IsUnit and (SourceName<>'')
+              and (CompareDottedIdentifiers(@FHiddenUsedUnits[p],PChar(SourceName))=0))
+          then begin
             // this unit is a hidden unit => remove this and all behind from list
             if p>1 then
-              System.Delete(FHiddenUsedUnits,p,length(FHiddenUsedUnits))
+              System.Delete(FHiddenUsedUnits,p-1,length(FHiddenUsedUnits))
             else
               FHiddenUsedUnits:='';
             break;
