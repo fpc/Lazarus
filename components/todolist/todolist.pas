@@ -62,11 +62,8 @@ interface
 
 uses
   // FCL, RTL, LCL
-  Classes, SysUtils, Math, LCLProc, Forms, Controls, Graphics, Dialogs,
-  StrUtils, ExtCtrls, ComCtrls, Menus, Buttons, GraphType, ActnList, AvgLvlTree,
-  LCLIntf, LCLType,
-  // Codetools
-  CodeAtom, CodeCache, CodeToolManager, BasicCodeTools, FileProcs,
+  Classes, SysUtils, Math, LCLProc, Forms, Controls, Dialogs, StrUtils, ComCtrls,
+  ActnList, AvgLvlTree, LCLType, CodeCache, CodeToolManager, BasicCodeTools, FileProcs,
   // IDEIntf
   LazIDEIntf, IDEImagesIntf, PackageIntf, ProjectIntf,
   // IDE
