@@ -395,27 +395,34 @@ begin
 
   FSrcSynCaretChangedLock := True;
   try
-    InfCnt := TextView.OpenFoldCount(CaretY-1);
     ListCnt := 0;
-    for i := InfCnt-1 downto 0 do begin
-      Inf := TextView.OpenFoldInfo(CaretY-1, i);
-      if sfaInvalid in Inf.HNode.FoldAction then
-        continue;
 
-      if (TPascalCodeFoldBlockType(Inf.HNode.FoldType) in [cfbtClassSection]) and (ListCnt = 0) then begin
-        InfList[ListCnt] := Inf;
-        inc(ListCnt);
-      end;
+    if CaretY >= TopLine then begin
+      InfCnt := TextView.OpenFoldCount(CaretY-1);
+      for i := InfCnt-1 downto 0 do begin
+        Inf := TextView.OpenFoldInfo(CaretY-1, i);
+        if sfaInvalid in Inf.HNode.FoldAction then
+          continue;
 
-      if (TPascalCodeFoldBlockType(Inf.HNode.FoldType) in [cfbtClass]) and (ListCnt < 2) then begin
-        InfList[ListCnt] := Inf;
-        inc(ListCnt);
-      end;
-
-      if (TPascalCodeFoldBlockType(Inf.HNode.FoldType) in [cfbtProcedure]) and (ListCnt < 2) then begin
-        InfList[ListCnt] := Inf;
-        if ListCnt = 0 then
+        if (TPascalCodeFoldBlockType(Inf.HNode.FoldType) in [cfbtClassSection]) and (ListCnt = 0) then begin
+          InfList[ListCnt] := Inf;
           inc(ListCnt);
+        end;
+
+        if (TPascalCodeFoldBlockType(Inf.HNode.FoldType) in [cfbtClass]) and (ListCnt < 2) then begin
+          InfList[ListCnt] := Inf;
+          inc(ListCnt);
+        end;
+
+        if (TPascalCodeFoldBlockType(Inf.HNode.FoldType) in [cfbtProcedure]) and (ListCnt < 2) then begin
+          InfList[ListCnt] := Inf;
+          inc(ListCnt);
+        end;
+        if (TPascalCodeFoldBlockType(Inf.HNode.FoldType) in [cfbtProcedure]) and (ListCnt = 2) and
+           (TPascalCodeFoldBlockType(InfList[ListCnt-1].HNode.FoldType) = cfbtProcedure)
+        then begin
+          InfList[ListCnt-1] := Inf;
+        end;
       end;
     end;
 
