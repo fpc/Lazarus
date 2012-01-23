@@ -7409,6 +7409,9 @@ begin
   if Widget = nil then exit;
   Window:=GetControlWindow(Widget);
   if Window = nil then exit;
+
+  Result := true;
+
   {$ifdef GTK_2_8}
   RClient.Left := 0;//Widget^.Allocation.Left;
   RClient.Top := 0; //Widget^.Allocation.Top;
@@ -7488,74 +7491,84 @@ begin
     Region := gdk_region_rectangle(@Rect1);
     gdk_window_move_region(Window, Region, dx, dy);
 
-    //invalidate
-    If RUsableTarget.Left > RFullSource.Left then begin
-      Rect2 := RFullSource;
-      Rect2.Right:= RUsableTarget.Left;
-      {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate Src Left', dbgs(Rect2)]);{$ENDIF}
-      InvalidateRect(hWnd, @Rect2, false);
-    end;
+    if (flags and SW_INVALIDATE) <> 0 then begin
+      //invalidate
+      If RUsableTarget.Left > RFullSource.Left then begin
+        Rect2 := RFullSource;
+        Rect2.Right:= RUsableTarget.Left;
+        {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate Src Left', dbgs(Rect2)]);{$ENDIF}
+        InvalidateRect(hWnd, @Rect2, false);
+        if (prcUpdate <> nil) and (dx > 0) then prcUpdate^ := Rect2;
+      end;
 
-    If RUsableTarget.Right < RFullSource.Right then begin
-      Rect2 := RFullSource;
-      Rect2.Left:= RUsableTarget.Right;
-      {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate Src Right', dbgs(Rect2)]);{$ENDIF}
-      InvalidateRect(hWnd, @Rect2, false);
-    end;
+      If RUsableTarget.Right < RFullSource.Right then begin
+        Rect2 := RFullSource;
+        Rect2.Left:= RUsableTarget.Right;
+        {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate Src Right', dbgs(Rect2)]);{$ENDIF}
+        InvalidateRect(hWnd, @Rect2, false);
+        if (prcUpdate <> nil) and (dx < 0) then prcUpdate^ := Rect2;
+      end;
 
-    If RUsableTarget.Top > RFullSource.Top then begin
-      Rect2 := RFullSource;
-      Rect2.Bottom:= RUsableTarget.Top;
-      {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate Src Top', dbgs(Rect2)]);{$ENDIF}
-      InvalidateRect(hWnd, @Rect2, false);
-    end;
+      If RUsableTarget.Top > RFullSource.Top then begin
+        Rect2 := RFullSource;
+        Rect2.Bottom:= RUsableTarget.Top;
+        {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate Src Top', dbgs(Rect2)]);{$ENDIF}
+        InvalidateRect(hWnd, @Rect2, false);
+        if (prcUpdate <> nil) and (dy > 0) then prcUpdate^ := Rect2;
+      end;
 
-    If RUsableTarget.Bottom < RFullSource.Bottom then begin
-      Rect2 := RFullSource;
-      Rect2.Top:= RUsableTarget.Bottom;
-      {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate Src Bottom', dbgs(Rect2)]);{$ENDIF}
-      InvalidateRect(hWnd, @Rect2, false);
-    end;
+      If RUsableTarget.Bottom < RFullSource.Bottom then begin
+        Rect2 := RFullSource;
+        Rect2.Top:= RUsableTarget.Bottom;
+        {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate Src Bottom', dbgs(Rect2)]);{$ENDIF}
+        InvalidateRect(hWnd, @Rect2, false);
+        if (prcUpdate <> nil) and (dy < 0) then prcUpdate^ := Rect2;
+      end;
 
 
-    If RUsableTarget.Left > RTarget.Left then begin
-      Rect2 := RTarget;
-      Rect2.Right:= RUsableTarget.Left;
-      {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate TARGET Left', dbgs(Rect2)]);{$ENDIF}
-      InvalidateRect(hWnd, @Rect2, false);
-    end;
+      If RUsableTarget.Left > RTarget.Left then begin
+        Rect2 := RTarget;
+        Rect2.Right:= RUsableTarget.Left;
+        {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate TARGET Left', dbgs(Rect2)]);{$ENDIF}
+        InvalidateRect(hWnd, @Rect2, false);
+      end;
 
-    If RUsableTarget.Right < RTarget.Right then begin
-      Rect2 := RTarget;
-      Rect2.Left:= RUsableTarget.Right;
-      {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate TARGET Right', dbgs(Rect2)]);{$ENDIF}
-      InvalidateRect(hWnd, @Rect2, false);
-    end;
+      If RUsableTarget.Right < RTarget.Right then begin
+        Rect2 := RTarget;
+        Rect2.Left:= RUsableTarget.Right;
+        {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate TARGET Right', dbgs(Rect2)]);{$ENDIF}
+        InvalidateRect(hWnd, @Rect2, false);
+      end;
 
-    If RUsableTarget.Top > RTarget.Top then begin
-      Rect2 := RTarget;
-      Rect2.Bottom:= RUsableTarget.Top;
-      {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate TARGET Top', dbgs(Rect2)]);{$ENDIF}
-      InvalidateRect(hWnd, @Rect2, false);
-    end;
+      If RUsableTarget.Top > RTarget.Top then begin
+        Rect2 := RTarget;
+        Rect2.Bottom:= RUsableTarget.Top;
+        {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate TARGET Top', dbgs(Rect2)]);{$ENDIF}
+        InvalidateRect(hWnd, @Rect2, false);
+      end;
 
-    If RUsableTarget.Bottom < RTarget.Bottom then begin
-      Rect2 := RTarget;
-      Rect2.Top:= RUsableTarget.Bottom;
-      {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate TARGET Bottom', dbgs(Rect2)]);{$ENDIF}
-      InvalidateRect(hWnd, @Rect2, false);
+      If RUsableTarget.Bottom < RTarget.Bottom then begin
+        Rect2 := RTarget;
+        Rect2.Top:= RUsableTarget.Bottom;
+        {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate TARGET Bottom', dbgs(Rect2)]);{$ENDIF}
+        InvalidateRect(hWnd, @Rect2, false);
+      end;
     end;
   end
   else begin
-    // invalidate, nothing to scroll
-    {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate all', dbgs(RUsableSource)]);{$ENDIF}
-    InvalidateRect(hWnd, @RFullSource, false);
-    InvalidateRect(hWnd, @RTarget, false);
+    if (flags and SW_INVALIDATE) <> 0 then begin
+      // invalidate, nothing to scroll
+      {$ifdef VerboseScrollWindowEx}DebugLn(['ScrollWindowEx Invalidate all', dbgs(RUsableSource)]);{$ENDIF}
+      InvalidateRect(hWnd, @RFullSource, false);
+      InvalidateRect(hWnd, @RTarget, false);
+    end
+    else
+      Result := False;
   end;
   {$ELSE}
   gdk_window_scroll(Window, dx, dy);
-  {$ENDIF}
   Result := true;
+  {$ENDIF}
 end;
 
 
