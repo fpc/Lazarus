@@ -346,7 +346,7 @@ begin
   // find CodeTreeNode at cursor
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   {$IFDEF CTDEBUG}
-  DebugLn('TMethodJumpingCodeTool.FindJumpPoint C ',NodeDescriptionAsString(CursorNode.Desc));
+  DebugLn('TMethodJumpingCodeTool.FindJumpPoint CursorNode=',CursorNode.DescAsString);
   {$ENDIF}
   // first test if in a class
   ClassNode:=CursorNode.GetNodeOfTypes([ctnClass,ctnClassInterface,
@@ -359,7 +359,7 @@ begin
     // and then jumping is a nide feature
     // => search in all implemented class procedures for the body
     {$IFDEF CTDEBUG}
-    DebugLn('TMethodJumpingCodeTool.FindJumpPoint D ',NodeDescriptionAsString(ClassNode.Desc));
+    DebugLn('TMethodJumpingCodeTool.FindJumpPoint ClasNode=',ClassNode.DescAsString);
     {$ENDIF}
     if (ClassNode.SubDesc and ctnsForwardDeclaration)>0 then exit;
     // parse class and build CodeTreeNodes for all properties/methods

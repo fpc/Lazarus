@@ -1158,8 +1158,8 @@ begin
     end;
   end;
   // read procedure head
-  IsOperator:=UpAtomIs('OPERATOR');
   IsFunction:=UpAtomIs('FUNCTION');
+  IsOperator:=(not IsFunction) and UpAtomIs('OPERATOR');
   // read name
   ReadNextAtom;
   if (not IsOperator)
@@ -2560,8 +2560,8 @@ begin
     if CurSection=ctnInterface then
       ProcNode.SubDesc:=ctnsForwardDeclaration;
   end;
-  IsOperator:=UpAtomIs('OPERATOR');
   IsFunction:=UpAtomIs('FUNCTION');
+  IsOperator:=(not IsFunction) and UpAtomIs('OPERATOR');
   IsMethod:=False;
   ReadNextAtom;// read first atom of head (= name/operator + parameterlist + resulttype;)
   if (not IsOperator)
@@ -5300,7 +5300,7 @@ begin
     if UpAtomIs('CLASS') then
       ReadNextAtom;
     IsFunction:=UpAtomIs('FUNCTION');
-    IsOperator:=UpAtomIs('OPERATOR');
+    IsOperator:=(not IsFunction) and UpAtomIs('OPERATOR');
     IsProcType:=ProcNode.Desc=ctnProcedureType;
     // read procedure head (= [name] + parameterlist + resulttype;)
     ReadNextAtom;// read first atom of head

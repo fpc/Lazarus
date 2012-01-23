@@ -458,7 +458,9 @@ begin
   ExtractProcHeadPos:=phepStart;
   if not IsProcType then begin
     // read name
-    if (not IsOperator) and (not AtomIsIdentifier(false)) then exit;
+    if ((not IsOperator)
+    or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)))
+    and (not AtomIsIdentifier(false)) then exit;
 
     if TheClassName<>'' then begin
       s:=TheClassName+'.';
@@ -483,7 +485,9 @@ begin
         end;
         if CurPos.Flag<>cafPoint then break;
         ExtractNextAtom(true,Attr);
-        if not AtomIsIdentifier(false) then exit;
+        if ((not IsOperator)
+        or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)))
+        and (not AtomIsIdentifier(false)) then exit;
       until false;
     end else begin
       // read only part of name
@@ -502,7 +506,9 @@ begin
           ExtractNextAtom(not (phpWithoutClassName in Attr),Attr);
           // read '.'
           ExtractNextAtom(not (phpWithoutClassName in Attr),Attr);
-          if not AtomIsIdentifier(false) then break;
+          if ((not IsOperator)
+          or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)))
+          and (not AtomIsIdentifier(false)) then exit;
         end else begin
           // read name
           ExtractNextAtom(not (phpWithoutName in Attr),Attr);
@@ -686,7 +692,7 @@ begin
             and (FindProcBody(Result)<>nil))) then
       begin
         CurProcHead:=ExtractProcHead(Result,Attr);
-        //DebugLn('TPascalReaderTool.FindProcNode B "',CurProcHead,'" =? "',AProcHead,'"');
+        //DebugLn(['TPascalReaderTool.FindProcNode B "',CurProcHead,'" =? "',AProcHead,'" Result=',CompareTextIgnoringSpace(CurProcHead,AProcHead,false)]);
         if (CurProcHead<>'')
         and (CompareTextIgnoringSpace(CurProcHead,AProcHead,false)=0) then
           exit;
