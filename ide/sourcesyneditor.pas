@@ -390,6 +390,7 @@ var
   InfCnt, i, t, ListCnt: Integer;
   Inf: TFoldViewNodeInfo;
   InfList: array [0..1] of TFoldViewNodeInfo;
+  NodeFoldType: TPascalCodeFoldBlockType;
 begin
   if FSrcSynCaretChangedLock or not(TextView.HighLighter is TSynPasSyn) then exit;
 
@@ -404,22 +405,23 @@ begin
         if sfaInvalid in Inf.HNode.FoldAction then
           continue;
 
-        if (TPascalCodeFoldBlockType(Inf.HNode.FoldType) in [cfbtClassSection]) and (ListCnt = 0) then begin
+        NodeFoldType:=TPascalCodeFoldBlockType(PtrUInt(Inf.HNode.FoldType));
+        if (NodeFoldType in [cfbtClassSection]) and (ListCnt = 0) then begin
           InfList[ListCnt] := Inf;
           inc(ListCnt);
         end;
 
-        if (TPascalCodeFoldBlockType(Inf.HNode.FoldType) in [cfbtClass]) and (ListCnt < 2) then begin
+        if (NodeFoldType in [cfbtClass]) and (ListCnt < 2) then begin
           InfList[ListCnt] := Inf;
           inc(ListCnt);
         end;
 
-        if (TPascalCodeFoldBlockType(Inf.HNode.FoldType) in [cfbtProcedure]) and (ListCnt < 2) then begin
+        if (NodeFoldType in [cfbtProcedure]) and (ListCnt < 2) then begin
           InfList[ListCnt] := Inf;
           inc(ListCnt);
         end;
-        if (TPascalCodeFoldBlockType(Inf.HNode.FoldType) in [cfbtProcedure]) and (ListCnt = 2) and
-           (TPascalCodeFoldBlockType(InfList[ListCnt-1].HNode.FoldType) = cfbtProcedure)
+        if (NodeFoldType in [cfbtProcedure]) and (ListCnt = 2) and
+           (TPascalCodeFoldBlockType(PtrUInt(InfList[ListCnt-1].HNode.FoldType)) = cfbtProcedure)
         then begin
           InfList[ListCnt-1] := Inf;
         end;
