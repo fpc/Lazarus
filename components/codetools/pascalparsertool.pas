@@ -1159,15 +1159,13 @@ begin
   end;
   // read procedure head
   IsOperator:=UpAtomIs('OPERATOR');
-  IsFunction:=IsOperator or UpAtomIs('FUNCTION');
+  IsFunction:=UpAtomIs('FUNCTION');
   // read name
   ReadNextAtom;
-  if IsOperator then begin
-    if CurPos.Flag<>cafEqual then
-      AtomIsIdentifier(true);
-  end else begin
+  if (not IsOperator)
+  or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
+  then
     AtomIsIdentifier(true);
-  end;
   // create node for procedure head
   CreateChildNode;
   CurNode.Desc:=ctnProcedureHead;
@@ -1177,6 +1175,7 @@ begin
     CurNode.SubDesc:=ctnsNeedJITParsing;
     ParseAttr:=[pphIsMethod];
     if IsFunction then Include(ParseAttr,pphIsFunction);
+    if IsOperator then Include(ParseAttr,pphIsOperator);
     ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
   end else begin
     // Method resolution clause (e.g. function Intf.Method = Method_Name)
@@ -1536,7 +1535,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    function CommitUrlCacheEntry; // only Delphi
    procedure MacProcName(c: char; ...); external;
    operator + (dp1: TPoint; dp2: TPoint) dps: TPoint;
-   class operator Inc(Rec: TRec1): TRec1;
+   Add('Inc(Rec: TRec1): TRec1;
 
    Delphi mode:
    Function TPOSControler.Logout; // missing function type
@@ -2565,7 +2564,10 @@ begin
   IsFunction:=UpAtomIs('FUNCTION');
   IsMethod:=False;
   ReadNextAtom;// read first atom of head (= name/operator + parameterlist + resulttype;)
-  if not IsOperator then AtomIsIdentifier(true);
+  if (not IsOperator)
+  or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
+  then
+    AtomIsIdentifier(true);
   if ChildCreated then begin
     // create node for procedure head
     CreateChildNode;
@@ -2591,7 +2593,10 @@ begin
       // read procedure name of a class method (the name after the . )
       IsMethod:=True;
       ReadNextAtom;
-      if not IsOperator then AtomIsIdentifier(true);
+      if (not IsOperator)
+      or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
+      then
+        AtomIsIdentifier(true);
       ReadNextAtom;
     end;
   end;
@@ -5308,12 +5313,18 @@ begin
     ProcHeadNode.SubDesc:=ProcHeadNode.SubDesc and (not ctnsNeedJITParsing);
 
     if not IsProcType then begin
-      if not IsOperator then AtomIsIdentifier(true);
+      if (not IsOperator)
+      or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
+      then
+        AtomIsIdentifier(true);
       ReadNextAtom;
       while (CurPos.Flag=cafPoint) do begin
         // read procedure name of a class method (the name after the . )
         ReadNextAtom;
-        if not IsOperator then AtomIsIdentifier(true);
+        if (not IsOperator)
+        or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
+        then
+          AtomIsIdentifier(true);
         ReadNextAtom;
       end;
     end;

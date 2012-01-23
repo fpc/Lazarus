@@ -152,6 +152,7 @@ var
   WordIsBooleanOperator,
   WordIsOrdNumberOperator,
   WordIsNumberOperator,
+  WordIsCustomOperator,
   WordIsPredefinedFPCIdentifier,
   WordIsPredefinedDelphiIdentifier,
   UnexpectedKeyWordInBeginBlock,
@@ -1609,6 +1610,36 @@ begin
     Add('*' ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
+  WordIsCustomOperator:=TKeyWordFunctionList.Create('WordIsCustomOperator');
+  KeyWordLists.Add(WordIsCustomOperator);
+  with WordIsCustomOperator do begin
+    Add('EXPLICIT' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add(':=' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('=' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('<>' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IN' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('>' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('>=' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('<' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('<=' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('+' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('-' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('*' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('/' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DIV' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MOD' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SHL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SHR' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('OR' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('AND' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('XOR' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NOT' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INC' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DEC' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    // FPC operators
+    Add('**' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+
   WordIsPredefinedFPCIdentifier:=TKeyWordFunctionList.Create('WordIsPredefinedFPCIdentifier');
   KeyWordLists.Add(WordIsPredefinedFPCIdentifier);
   with WordIsPredefinedFPCIdentifier do begin
