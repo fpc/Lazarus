@@ -48,6 +48,9 @@ uses
 type
 
   TIDESynGutterMarks = class;
+  {$IFDEF WithSynDebugGutter}
+  TIDESynGutterDebugHL = class;
+  {$ENDIF}
 
   { TSourceLazSynTopInfoView }
 
@@ -213,6 +216,10 @@ type
   TIDESynGutter = class(TSynGutter)
   protected
     procedure CreateDefaultGutterParts; override;
+  public
+  {$IFDEF WithSynDebugGutter}
+  DebugGutter: TIDESynGutterDebugHL;
+  {$ENDIF}
   end;
 
   { TIDESynDebugMarkInfo }
@@ -262,7 +269,91 @@ type
     procedure CreatePopUpMenuEntries(var APopUp: TPopupMenu; ALine: Integer); override;
   end;
 
+  {$IFDEF WithSynDebugGutter}
+  { TIDESynGutterDebugHL }
+
+  TIDESynGutterDebugHL = class(TSynGutterPartBase)
+  private
+    FTheLinesView: TSynEditStrings;
+  protected
+    function  PreferedWidth: Integer; override;
+  public
+    procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
+      override;
+    property TheLinesView:  TSynEditStrings       read FTheLinesView  write FTheLinesView;
+  end;
+  {$ENDIF}
+
 implementation
+
+{$IFDEF WithSynDebugGutter}
+{ TIDESynGutterDebugHL }
+
+function TIDESynGutterDebugHL.PreferedWidth: Integer;
+begin
+  Result := Gutter.TextDrawer.CharWidth * 15;
+end;
+
+procedure TIDESynGutterDebugHL.Paint(Canvas: TCanvas; AClip: TRect; FirstLine,
+  LastLine: integer);
+var
+  TextDrawer: TheTextDrawer;
+  c, i, iLine, LineHeight: Integer;
+  rcLine: TRect;
+  dc: HDC;
+  s: String;
+  RngLst: TSynHighlighterRangeList;
+  r: TSynPasSynRange;
+begin
+  if TCustomSynEdit(SynEdit).Highlighter = nil then exit;
+  if not(TCustomSynEdit(SynEdit).Highlighter is TSynPasSyn)  then exit;
+  TCustomSynEdit(SynEdit).Highlighter.CurrentLines := TheLinesView;
+  TextDrawer := Gutter.TextDrawer;
+  dc := Canvas.Handle;
+  //TSynHighlighterPasRangeList
+  RngLst := TSynHighlighterRangeList(TheLinesView.Ranges[TCustomSynEdit(SynEdit).Highlighter]);
+
+  // Clear all
+  TextDrawer.BeginDrawing(dc);
+  try
+    TextDrawer.SetBackColor(Gutter.Color);
+    TextDrawer.SetForeColor(TCustomSynEdit(SynEdit).Font.Color);
+    TextDrawer.SetFrameColor(clNone);
+     with AClip do
+       TextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, AClip, nil, 0);
+
+    rcLine := AClip;
+    rcLine.Bottom := AClip.Top;
+    LineHeight := TCustomSynEdit(SynEdit).LineHeight;
+    c := TCustomSynEdit(SynEdit).Lines.Count;
+    for i := FirstLine to LastLine do
+    begin
+      iLine := FoldView.DisplayNumber[i];
+      if (iLine < 0) or (iLine >= c) then break;
+      // next line rect
+      rcLine.Top := rcLine.Bottom;
+      rcLine.Bottom := rcLine.Bottom + LineHeight;
+
+      if i > 0 then begin
+        r := TSynPasSynRange(RngLst.Range[iLine-1]);
+        s:= format('%2d %2d %2d  %2d %2d %2d ',
+                   [r.PasFoldEndLevel, r.PasFoldMinLevel, r.PasFoldFixLevel,
+                    r.CodeFoldStackSize, r.MinimumCodeFoldBlockLevel, r.LastLineCodeFoldLevelFix
+                   ]
+                  );
+      end
+      else
+        s:= '';
+
+      TextDrawer.ExtTextOut(rcLine.Left, rcLine.Top, ETO_OPAQUE or ETO_CLIPPED, rcLine,
+        PChar(Pointer(S)),Length(S));
+    end;
+
+  finally
+    TextDrawer.EndDrawing;
+  end;
+end;
+{$ENDIF}
 
 { TSourceLazSynTopInfoView }
 
@@ -399,9 +490,9 @@ begin
     ListCnt := 0;
 
     if CaretY >= TopLine then begin
-      InfCnt := TextView.OpenFoldCount(CaretY-1);
+      InfCnt := TextView.OpenFoldCount(CaretY-1, 4);
       for i := InfCnt-1 downto 0 do begin
-        Inf := TextView.OpenFoldInfo(CaretY-1, i);
+        Inf := TextView.OpenFoldInfo(CaretY-1, i, 4);
         if sfaInvalid in Inf.HNode.FoldAction then
           continue;
 
@@ -500,6 +591,9 @@ begin
   TSourceLazSynSurfaceManager(FPaintArea).TopLineCount := 0;
   TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.TextArea.BackgroundColor := clSilver;
   TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.TextArea.DisplayView := FTopInfoDisplay;
+  {$ENDIF}
+  {$IFDEF WithSynDebugGutter}
+  TIDESynGutter(RightGutter).DebugGutter.TheLinesView := ViewedTextBuffer;
   {$ENDIF}
 end;
 
@@ -846,11 +940,18 @@ begin
       Name := 'SynGutterSeparator1';
     with TIDESynGutterCodeFolding.Create(Parts) do
       Name := 'SynGutterCodeFolding1';
-  {$IFDEF WithSynOverviewGutter}
   end
   else begin
+    {$IFDEF WithSynDebugGutter}
     with TSynGutterSeparator.Create(Parts) do
-      Name := 'SynGutterSeparatorR';
+      Name := 'SynGutterSeparatorR1';
+    DebugGutter := TIDESynGutterDebugHL.Create(Parts);
+    with DebugGutter do
+      Name := 'TIDESynGutterDebugHL';
+    {$ENDIF}
+    {$IFDEF WithSynOverviewGutter}
+    with TSynGutterSeparator.Create(Parts) do
+      Name := 'SynGutterSeparatorR2';
     with TSynGutterLineOverview.Create(Parts) do begin
       Name := 'SynGutterLineOverview1';
       with TIDESynGutterLOvProviderIDEMarks.Create(Providers) do
@@ -863,12 +964,12 @@ begin
         Priority := 0;
     end;
     with TSynGutterSeparator.Create(Parts) do begin
-      Name := 'SynGutterSeparatorR2';
+      Name := 'SynGutterSeparatorR3';
       AutoSize := False;
       Width := 1;
       LineWidth := 0;
     end;
-  {$ENDIF}
+    {$ENDIF}
   end;
 end;
 
@@ -908,7 +1009,7 @@ var
 
       FBookMarkOpt.BookmarkImages.Draw
         (Canvas, AClip.Left + FBookMarkOpt.LeftMargin + aGutterOffs * ColumnWidth,
-         iTop + Line * LineHeight, DebugMarksImageIndex, True);
+         AClip.Top + iTop, DebugMarksImageIndex, True);
     end
   end;
 

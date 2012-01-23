@@ -487,8 +487,8 @@ type
     procedure FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
     procedure FixFoldingAtTextIndex(AStartIndex: Integer; AMinEndLine: Integer = 0); // Real/All lines
   public
-    function OpenFoldCount(aStartIndex: Integer): Integer;
-    function OpenFoldInfo(aStartIndex, ColIndex: Integer): TFoldViewNodeInfo;
+    function OpenFoldCount(aStartIndex: Integer; AType: Integer = 0): Integer;
+    function OpenFoldInfo(aStartIndex, ColIndex: Integer; AType: Integer = 0): TFoldViewNodeInfo;
 
   public
     // Find the visible first line of the fold at ALine. Returns -1 if Aline is not folded
@@ -4084,7 +4084,7 @@ begin
   FixFolding(AStartIndex + 1, AMinEndLine, fFoldTree);
 end;
 
-function TSynEditFoldedView.OpenFoldCount(aStartIndex: Integer): Integer;
+function TSynEditFoldedView.OpenFoldCount(aStartIndex: Integer; AType: Integer = 0): Integer;
 // Todo: move entirely to FoldProvider
 var
   hl: TSynCustomFoldHighlighter;
@@ -4092,53 +4092,72 @@ begin
   hl := TSynCustomFoldHighlighter(HighLighter);
   if not assigned(hl) then
     exit(-1);
-  Result := hl.FoldNestCount(AStartIndex-1) + FoldProvider.FoldOpenCount(AStartIndex);
+  Result := hl.FoldNestCount(AStartIndex-1, AType) + FoldProvider.FoldOpenCount(AStartIndex);
 end;
 
-function TSynEditFoldedView.OpenFoldInfo(aStartIndex, ColIndex: Integer): TFoldViewNodeInfo;
+function TSynEditFoldedView.OpenFoldInfo(aStartIndex, ColIndex: Integer; AType: Integer = 0): TFoldViewNodeInfo;
 var
   hl: TSynCustomFoldHighlighter;
   TypeCnt, Lvl: Integer;
   EndLvl, CurLvl: Array of integer;
-  i, t, n, o: Integer;
+  i, c, t, n, o: Integer;
   nd: TSynFoldNodeInfo;
   procedure GetEndLvl(l: Integer);
   var i: integer;
   begin
-    for i := 1 to TypeCnt do begin
-      EndLvl[i] := hl.FoldNestCount(l-1, i);
-      EndLvl[i] := EndLvl[i] + FoldProvider.FoldOpenCount(l, i);
-      CurLvl[i] := EndLvl[i];
+    if AType = 0 then begin;
+      for i := 1 to TypeCnt do begin
+        EndLvl[i] := hl.FoldNestCount(l-1, i);
+        EndLvl[i] := EndLvl[i] + FoldProvider.FoldOpenCount(l, i);
+        CurLvl[i] := EndLvl[i];
+      end;
     end
+    else begin
+      EndLvl[0] := hl.FoldNestCount(l-1, AType);
+      EndLvl[0] := EndLvl[0] + FoldProvider.FoldOpenCount(l, AType);
+      CurLvl[0] := EndLvl[0];
+    end;
   end;
 begin
   hl := TSynCustomFoldHighlighter(HighLighter);
   if not assigned(hl) then
     exit;
 
-  TypeCnt := hl.FoldTypeCount;
-  Lvl := hl.FoldNestCount(AStartIndex-1);
-  i := 0;
+  if AType <> 0 then
+    TypeCnt := 1
+  else
+    TypeCnt := hl.FoldTypeCount;
+  Lvl := hl.FoldNestCount(AStartIndex-1, AType);
   if ColIndex >= Lvl then begin
     n := ColIndex - Lvl;
-    o :=  hl.FoldNodeInfoCount[aStartIndex, [sfaOpen, sfaFold]];
-    nd := hl.FoldNodeInfo[aStartIndex, n, [sfaOpen, sfaFold]];
+    if AType = 0 then begin
+      o :=  hl.FoldNodeInfoCount[aStartIndex, [sfaOpen, sfaFold]];
+      nd := hl.FoldNodeInfo[aStartIndex, n, [sfaOpen, sfaFold]];
+    end else begin
+      // no sfaFold
+      o :=  hl.GetFoldNodeInfoCountEx(aStartIndex, [sfaOpen],AType);
+      nd := hl.GetFoldNodeInfoEx(aStartIndex, n, [sfaOpen], AType);
+    end;
   end
   else begin
     SetLength(EndLvl, TypeCnt+1);
     SetLength(CurLvl, TypeCnt+1);
     GetEndLvl(aStartIndex);
-    aStartIndex := aStartIndex + i;
+    aStartIndex := aStartIndex;
     while (ColIndex < Lvl) and (aStartIndex > 0) do begin
       dec(aStartIndex);
-      o := hl.FoldOpenCount(AStartIndex);
-      if (o > 0) or (hl.FoldCloseCount(aStartIndex) > 0) then begin
+      o := hl.FoldOpenCount(AStartIndex, AType);
+      if (o > 0) or (hl.FoldCloseCount(aStartIndex, AType) > 0) then begin
         n := o;
-        for i := hl.FoldNodeInfoCount[aStartIndex, []] - 1 downto 0 do begin
-          nd := hl.FoldNodeInfo[aStartIndex, i, []];
-          if not(sfaFold in nd.FoldAction) then
+        c := hl.GetFoldNodeInfoCountEx(aStartIndex, [], AType) - 1;
+        for i := c downto 0 do begin
+          nd := hl.GetFoldNodeInfoEx(aStartIndex, i, [], AType);
+          if (AType = 0) and not(sfaFold in nd.FoldAction) then
             continue;
-          t := nd.FoldGroup;
+          if AType = 0 then
+            t := nd.FoldGroup
+          else
+            t := 0;
           if sfaOpen in nd.FoldAction then begin
             dec(n);
             dec(CurLvl[t]);
@@ -4156,7 +4175,7 @@ begin
         end;
       end
       else
-      if hl.FoldNestCount(AStartIndex-1) = 0 then break;
+      if hl.FoldNestCount(AStartIndex-1, AType) = 0 then break;
     end;
   end;
   Result.HNode := nd;

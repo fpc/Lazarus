@@ -264,6 +264,11 @@ type
     property PasFoldEndLevel: Smallint read FPasFoldEndLevel write FPasFoldEndLevel;
     property PasFoldFixLevel: Smallint read FPasFoldFixLevel write FPasFoldFixLevel;
     property PasFoldMinLevel: Smallint read FPasFoldMinLevel write FPasFoldMinLevel;
+    // * foldable nodes              <> All nodes (pascas , not ifdef/region) *
+    //   PasFoldEndLevel             <> CodeFoldStackSize
+    //   PasFoldMinLevel             <> MinimumCodeFoldBlockLevel
+    //   LastLineCodeFoldLevelFix    <> PasFoldFixLevel
+    //   DecLastLineCodeFoldLevelFix <> DecLastLinePasFoldFix
   end;
   {$ENDIF}
 
@@ -465,7 +470,8 @@ type
     procedure UnknownProc;
     procedure SetD4syntax(const Value: boolean);
     procedure InitNode(var Node: TSynFoldNodeInfo; EndOffs: Integer;
-                       ABlockType: TPascalCodeFoldBlockType; aActions: TSynFoldActions);
+                       ABlockType: TPascalCodeFoldBlockType; aActions: TSynFoldActions;
+                       AIsFold: Boolean);
     procedure CreateDividerDrawConfig;
     procedure DestroyDividerDrawConfig;
   protected
@@ -489,7 +495,11 @@ type
 
     function GetFoldNodeInfo(Line, Index: Integer; Filter: TSynFoldActions): TSynFoldNodeInfo; override;
     function GetFoldNodeInfoCount(Line: Integer; Filter: TSynFoldActions): Integer; override; // Line: 0-based
-
+  public
+    // TODO: merge with mome "ex"
+    function GetFoldNodeInfoEx(Line, Index: Integer; Filter: TSynFoldActions; AType: Integer = 0): TSynFoldNodeInfo; override;
+    function GetFoldNodeInfoCountEx(Line: Integer; Filter: TSynFoldActions; AType: Integer = 0): Integer;  override;// Line: 0-based
+  protected
     property PasCodeFoldRange: TSynPasSynRange read GetPasCodeFoldRange;
     function TopPascalCodeFoldBlockType
              (DownIndex: Integer = 0): TPascalCodeFoldBlockType;
@@ -498,9 +508,9 @@ type
     function MinimumPasFoldLevel(Index: Integer; AType: Integer = 1): integer;
     function EndPasFoldLevel(Index: Integer; AType: Integer = 1): integer;
   protected
-    function LastLinePasFoldLevelFix(Index: Integer; AType: Integer = 1): integer;
+    function LastLinePasFoldLevelFix(Index: Integer; AType: Integer = 1): integer; // foldable nodes
+    function LastLineFoldLevelFix(Index: Integer): integer;                        // all nodes
 
-    function LastLineFoldLevelFix(Index: Integer): integer;
     function GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting; override;
     function GetDividerDrawConfig(Index: Integer): TSynDividerDrawConfig; override;
     function GetDividerDrawConfigCount: Integer; override;
@@ -549,7 +559,7 @@ type
     function FoldLineLength(ALineIndex, FoldIndex: Integer): integer; override;
     function FoldEndLine(ALineIndex, FoldIndex: Integer): integer; override;
 
-    // Pascal code only // TODO: make private
+    // All fold nodes // TODO: make private
     function MinimumFoldLevel(Index: Integer): integer; override;
     function EndFoldLevel(Index: Integer): integer; override;
   published
@@ -2421,8 +2431,7 @@ begin
   FStartCodeFoldBlockLevel := MinimumCodeFoldBlockLevel;
   PasCodeFoldRange.LastLineCodeFoldLevelFix := 0;
   PasCodeFoldRange.PasFoldFixLevel := 0;
-  PasCodeFoldRange.PasFoldMinLevel :=
-    PasCodeFoldRange.PasFoldEndLevel;
+  PasCodeFoldRange.PasFoldMinLevel := PasCodeFoldRange.PasFoldEndLevel;
   FPasStartLevel := PasCodeFoldRange.PasFoldMinLevel;
   FSynPasRangeInfo.MinLevelIfDef := FSynPasRangeInfo.EndLevelIfDef;
   FSynPasRangeInfo.MinLevelRegion := FSynPasRangeInfo.EndLevelRegion;
@@ -3284,7 +3293,7 @@ var
   inf: TSynPasRangeInfo;
 begin
   Result := 0;
-  if (AType <> 1) then
+  if not(AType in [1, 4]) then
     inf := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[ALineIndex];
   if (AType = 0) or (AType = 1) then
     Result := EndPasFoldLevel(ALineIndex) - MinimumPasFoldLevel(ALineIndex);
@@ -3292,6 +3301,8 @@ begin
     Result := Result + inf.EndLevelRegion - inf.MinLevelRegion;
   if (AType = 0) or (AType = 3) then
     Result := Result + inf.EndLevelIfDef - inf.MinLevelIfDef;
+  if (AType = 4) then
+    Result := EndPasFoldLevel(ALineIndex, 4) - MinimumPasFoldLevel(ALineIndex, 4);
   if Result < 0 then
     Result := 0;
 end;
@@ -3301,7 +3312,7 @@ var
   inf, inf2: TSynPasRangeInfo;
 begin
   Result := 0;
-  if (AType <> 1) then begin
+  if not(AType in [1, 4]) then begin
     inf := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[ALineIndex];
     inf2 := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[ALineIndex - 1];
   end;
@@ -3312,6 +3323,9 @@ begin
     Result := Result + inf2.EndLevelRegion - inf.MinLevelRegion;
   if (AType = 0) or (AType = 3) then
     Result := Result + inf2.EndLevelIfDef - inf.MinLevelIfDef;
+  if (AType = 4) then
+    Result := EndPasFoldLevel(ALineIndex - 1, 4)
+            - min(MinimumPasFoldLevel(ALineIndex, 4), EndPasFoldLevel(ALineIndex, 4));
 end;
 
 function TSynPasSyn.FoldNestCount(ALineIndex: Integer; AType: Integer = 0): integer;
@@ -3319,7 +3333,7 @@ var
   inf: TSynPasRangeInfo;
 begin
   Result := 0;
-  if (AType <> 1) then
+  if not(AType in [1, 4]) then
     inf := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[ALineIndex];
   if (AType = 0) or (AType = 1) then
     Result := EndPasFoldLevel(ALineIndex);
@@ -3327,6 +3341,8 @@ begin
     Result := Result + inf.EndLevelRegion;
   if (AType = 0) or (AType = 3) then
     Result := Result + inf.EndLevelIfDef;
+  if (AType = 4) then
+    Result := EndPasFoldLevel(ALineIndex, 4);
 end;
 
 function TSynPasSyn.FoldTypeCount: integer;
@@ -3416,6 +3432,17 @@ begin
     3:
       Result := TSynHighlighterPasRangeList(CurrentRanges).
                   PasRangeInfo[Index].MinLevelIfDef;
+    4:  // all pascal nodes (incl. not folded)
+      begin
+        if (Index < 0) or (Index >= CurrentLines.Count) then
+          exit(0);
+        r := TSynPasSynRange(CurrentRanges[Index]);
+        if (r <> nil) and (Pointer(r) <> NullRange) then begin
+          Result := Min(r.CodeFoldStackSize + LastLinePasFoldLevelFix(Index + 1, 4),
+                        r.MinimumCodeFoldBlockLevel);
+        end else
+          Result := 0;
+      end;
     else
       begin
         if (Index < 0) or (Index >= CurrentLines.Count) then
@@ -3443,6 +3470,14 @@ begin
     3:
       Result := TSynHighlighterPasRangeList(CurrentRanges).
                   PasRangeInfo[Index].EndLevelIfDef;
+    4:  // all pascal nodes (incl. not folded)
+      begin
+        r := TSynPasSynRange(CurrentRanges[Index]);
+        if (r <> nil) and (Pointer(r) <> NullRange) then
+          Result := r.CodeFoldStackSize
+        else
+          Result := 0;
+      end;
     else
       begin
         r := TSynPasSynRange(CurrentRanges[Index]);
@@ -3461,6 +3496,16 @@ begin
   case AType of
     2: Result := 0;
     3: Result := 0;
+    4:  // all pascal nodes (incl. not folded)
+      begin
+        if (Index < 0) or (Index >= CurrentLines.Count) then
+          exit(0);
+        r := TSynPasSynRange(CurrentRanges[Index]);
+        if (r <> nil) and (Pointer(r) <> NullRange) then
+          Result := r.LastLineCodeFoldLevelFix
+        else
+          Result := 0;
+      end;
     else
       begin
         if (Index < 0) or (Index >= CurrentLines.Count) then
@@ -3517,7 +3562,7 @@ end;
 
 
 procedure TSynPasSyn.InitNode(var Node: TSynFoldNodeInfo; EndOffs: Integer;
-  ABlockType: TPascalCodeFoldBlockType; aActions: TSynFoldActions);
+  ABlockType: TPascalCodeFoldBlockType; aActions: TSynFoldActions; AIsFold: Boolean);
 var
   OneLine: Boolean;
   i: Integer;
@@ -3545,10 +3590,17 @@ begin
       end;
     else
       begin
-        node.FoldGroup := 1;
-        Node.FoldLvlStart := PasCodeFoldRange.PasFoldEndLevel;
-        Node.NestLvlStart := CurrentCodeFoldBlockLevel;
-        OneLine := (EndOffs < 0) and (Node.FoldLvlStart > PasCodeFoldRange.PasFoldMinLevel); // MinimumCodeFoldBlockLevel);
+        if AIsFold then begin
+          node.FoldGroup := 1;
+          Node.FoldLvlStart := PasCodeFoldRange.PasFoldEndLevel;
+          Node.NestLvlStart := CurrentCodeFoldBlockLevel;
+          OneLine := (EndOffs < 0) and (Node.FoldLvlStart > PasCodeFoldRange.PasFoldMinLevel); // MinimumCodeFoldBlockLevel);
+        end else begin
+          node.FoldGroup := 4;
+          Node.FoldLvlStart := PasCodeFoldRange.CodeFoldStackSize;
+          Node.NestLvlStart := CurrentCodeFoldBlockLevel;
+          OneLine := (EndOffs < 0) and (Node.FoldLvlStart > PasCodeFoldRange.MinimumCodeFoldBlockLevel); // MinimumCodeFoldBlockLevel);
+        end;
       end;
   end;
   Node.NestLvlEnd := Node.NestLvlStart + EndOffs;
@@ -3592,7 +3644,7 @@ begin
     act := FFoldConfig[ord(ABlockType)].FoldActions;
     if not FAtLineStart then
       act := act - [sfaFoldHide];
-    InitNode(FNodeInfoList[FNodeInfoCount], +1, ABlockType, [sfaOpen] + act);
+    InitNode(FNodeInfoList[FNodeInfoCount], +1, ABlockType, [sfaOpen] + act, True);
     inc(FNodeInfoCount);
   end;
   case ABlockType of
@@ -3609,7 +3661,7 @@ begin
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     GrowNodeInfoList;
     InitNode(FNodeInfoList[FNodeInfoCount], -1, ABlockType,
-             [sfaClose, sfaFold]); // + FFoldConfig[ord(ABlockType)].FoldActions);
+             [sfaClose, sfaFold], True); // + FFoldConfig[ord(ABlockType)].FoldActions);
     inc(FNodeInfoCount);
   end;
   case ABlockType of
@@ -3630,6 +3682,17 @@ begin
   end;
 end;
 
+function TSynPasSyn.GetFoldNodeInfo(Line, Index: Integer;
+  Filter: TSynFoldActions): TSynFoldNodeInfo;
+begin
+  Result := GetFoldNodeInfoEx(Line, Index, Filter);
+end;
+
+function TSynPasSyn.GetFoldNodeInfoCount(Line: Integer; Filter: TSynFoldActions): Integer;
+begin
+  Result := GetFoldNodeInfoCountEx(Line, Filter);
+end;
+
 
 function TSynPasSyn.StartPascalCodeFoldBlock(
   ABlockType: TPascalCodeFoldBlockType): TSynCustomCodeFoldBlock;
@@ -3647,7 +3710,7 @@ begin
       act := act + FFoldConfig[ord(ABlockType)].FoldActions;
     if not FAtLineStart then
       act := act - [sfaFoldHide];
-    InitNode(FNodeInfoList[FNodeInfoCount], +1, ABlockType, act);
+    InitNode(FNodeInfoList[FNodeInfoCount], +1, ABlockType, act, FoldBlock);
     inc(FNodeInfoCount);
   end;
   if not FoldBlock then
@@ -3668,7 +3731,7 @@ begin
     act := [sfaClose];
     if DecreaseLevel then
       act := act + [sfaFold]; //FFoldConfig[PtrUInt(BlockType)].FoldActions;
-    InitNode(FNodeInfoList[FNodeInfoCount], -1, TopPascalCodeFoldBlockType, act);
+    InitNode(FNodeInfoList[FNodeInfoCount], -1, TopPascalCodeFoldBlockType, act, DecreaseLevel);
     if NoMarkup then
       exclude(FNodeInfoList[FNodeInfoCount].FoldAction, sfaMarkup);
     inc(FNodeInfoCount);
@@ -3733,6 +3796,7 @@ begin
       dec(FStartCodeFoldBlockLevel);
       if FCatchNodeInfo then dec(FNodeInfoCount);
     end;
+    // TODO this only happens if the above was true
     if (PasCodeFoldRange.PasFoldEndLevel < FPasStartLevel) and
       (FPasStartLevel > 0)
     then begin
@@ -3961,8 +4025,8 @@ begin
           - ord(low(TSynPasDividerDrawLocation)) + 1;
 end;
 
-function TSynPasSyn.GetFoldNodeInfo(Line, Index: Integer;
-  Filter: TSynFoldActions): TSynFoldNodeInfo;
+function TSynPasSyn.GetFoldNodeInfoEx(Line, Index: Integer;
+  Filter: TSynFoldActions; AType: Integer = 0): TSynFoldNodeInfo;
 var
   i, j: LongInt;
 begin
@@ -4000,14 +4064,19 @@ begin
   if (index < 0) or (index >= FNodeInfoCount) then
     Result := inherited GetFoldNodeInfo(Line, Index, [])
   else
-  if Filter = [] then
+  if (Filter = []) and (AType = 0) then
     Result := FNodeInfoList[Index]
   else
   begin
     Result.FoldAction := [sfaInvalid];
     j := Index;
     for i := 0 to FNodeInfoCount - 1 do
-      if FNodeInfoList[i].FoldAction * Filter = Filter then begin
+      if (FNodeInfoList[i].FoldAction * Filter = Filter) and
+         ( (AType = 0) or
+           ( (AType in [1..3]) and (FNodeInfoList[i].FoldGroup <> AType) ) or
+           ( (AType = 4) and (FNodeInfoList[i].FoldGroup in [1,4]) )
+         )
+      then begin
         Result := FNodeInfoList[i];
         if j = 0 then break;
         dec(j);
@@ -4016,8 +4085,8 @@ begin
   Result.NodeIndex := Index; // only set copy on result
 end;
 
-function TSynPasSyn.GetFoldNodeInfoCount(Line: Integer;
-  Filter: TSynFoldActions): Integer;
+function TSynPasSyn.GetFoldNodeInfoCountEx(Line: Integer;
+  Filter: TSynFoldActions; AType: Integer = 0): Integer;
 var
   i: Integer;
 begin
@@ -4025,9 +4094,12 @@ begin
   if FNodeInfoLine <> Line then
     GetFoldNodeInfo(Line, 0, []);
   Result := FNodeInfoCount;
-  if Filter <> [] then
+  if (Filter <> []) or (AType <> 0) then
     for i := 0 to FNodeInfoCount - 1 do
-      if FNodeInfoList[i].FoldAction * Filter <> Filter then
+      if (FNodeInfoList[i].FoldAction * Filter <> Filter) or
+         ( (not(AType in [0, 4])) and (FNodeInfoList[i].FoldGroup <> AType) ) or
+         ( (AType = 4) and not(FNodeInfoList[i].FoldGroup in [1,4]) )
+      then
         dec(Result);
 end;
 

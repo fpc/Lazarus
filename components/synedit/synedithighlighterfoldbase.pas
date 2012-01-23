@@ -171,6 +171,11 @@ type
   protected
     function GetFoldNodeInfo(Line, Index: Integer; Filter: TSynFoldActions): TSynFoldNodeInfo; virtual;
     function GetFoldNodeInfoCount(Line: Integer; Filter: TSynFoldActions): Integer; virtual;
+  public
+    // TODO: merge with mome "ex"
+    function GetFoldNodeInfoEx(Line, Index: Integer; Filter: TSynFoldActions; AType: Integer = 0): TSynFoldNodeInfo; virtual;
+    function GetFoldNodeInfoCountEx(Line: Integer; Filter: TSynFoldActions; AType: Integer = 0): Integer;  virtual;// Line: 0-based
+  protected
     property CodeFoldRange: TSynCustomHighlighterRange read FCodeFoldRange;
     function GetRangeClass: TSynCustomHighlighterRangeClass; virtual;
     function TopCodeFoldBlockType(DownIndex: Integer = 0): Pointer;
@@ -409,6 +414,18 @@ function TSynCustomFoldHighlighter.GetFoldNodeInfoCount(Line: Integer;
   Filter: TSynFoldActions): Integer;
 begin
   Result := -1;
+end;
+
+function TSynCustomFoldHighlighter.GetFoldNodeInfoEx(Line, Index: Integer;
+  Filter: TSynFoldActions; AType: Integer): TSynFoldNodeInfo;
+begin
+  Result := GetFoldNodeInfo(Line, Index, Filter);
+end;
+
+function TSynCustomFoldHighlighter.GetFoldNodeInfoCountEx(Line: Integer;
+  Filter: TSynFoldActions; AType: Integer): Integer;
+begin
+  Result := GetFoldNodeInfoCount(Line, Filter);
 end;
 
 function TSynCustomFoldHighlighter.GetFoldConfig(Index: Integer): TSynCustomFoldConfig;
