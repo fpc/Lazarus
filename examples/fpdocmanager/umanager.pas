@@ -45,7 +45,7 @@ interface
 
 uses
   Classes, SysUtils,
-  umakeskel, fpdocproj, dw_HTML;
+  umakeskel, ConfigFile, fpdocproj, dw_HTML;
 
 type
   TFPDocHelper = class;
@@ -124,7 +124,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function  BeginTest(APkg: TDocPackage): boolean;
-    function  BeginTest(const AFile : string): boolean;
+    function  BeginTest(ADir: string): boolean;
     procedure EndTest;
     function  CmdToPrj(const AFileName: string): boolean;
     function  TestRun(APkg: TDocPackage; AUnit: string): boolean;
@@ -162,7 +162,7 @@ type
   protected
     Helper: TFPDocHelper; //temporary
     procedure Changed;
-    function  BeginTest(const AFile: string): boolean;
+    function  BeginTest(const ADir: string): boolean;
     procedure EndTest;
     function  RegisterPackage(APkg: TDocPackage): integer;
     Procedure DoLog(Const Msg : String);
@@ -234,28 +234,11 @@ end;
 procedure TDocPackage.SetDescriptions(AValue: TStrings);
 (* Shall we allow for multiple descriptions? (general + OS specific!?)
 *)
-
-  procedure Import;
-  var
-    i: integer;
-    s: string;
-  begin
-    FDescriptions.Clear; //assume full replace
-    for i := 0 to AValue.Count - 1 do begin
-      s := AValue[i]; //filespec
-      FDescriptions.Add(ExtractUnitName(s) + '=' + s);
-    end;
-  end;
-
 begin
   if FDescriptions=AValue then Exit;
   if AValue = nil then exit; //clear?
   if AValue.Count = 0 then exit;
-//import formatted: <unit>=<descr file> (multiple???)
-  if Pos('=', AValue[0]) > 0 then
-    FDescriptions.Assign(AValue) //clears previous content
-  else //if AValue.Count > 0 then
-    Import;
+  FDescriptions.Assign(AValue);
 end;
 
 (* Requires[] only contain package names.
@@ -365,7 +348,7 @@ begin
 //really do more?
   if FProjectFile = '' then
     exit;
-  FProjectDir:=ExtractFilePath(FProjectFile);
+  ProjectDir:=ExtractFilePath(FProjectFile);
   if ExtractFileExt(FProjectFile) <> '.xml' then
     ; //really change here???
   //import requires fpdocproject - must be created by Manager!
@@ -432,7 +415,10 @@ begin
     APrj.DescrDir := DescrDir; //needed by Update
     for i := 0 to Descriptions.Count - 1 do begin
       s := Descriptions[i];
-      pkg.Descriptions.Add(s);
+      if Pos('=', s) > 0 then
+        pkg.Descriptions.Add(Descriptions.ValueFromIndex[i])
+      else
+        pkg.Descriptions.Add(s);
     end;
   end;
 //add Imports
@@ -516,8 +502,8 @@ begin
   FDescrDir := Config.ReadString(SecDoc, 'descrdir', '');
   Requires.CommaText := Config.ReadString(SecDoc, 'requires', '');
 //units
-  Config.ReadSectionValues('units', Units);
-  Config.ReadSectionValues('descrs', Descriptions);
+  Config.ReadSection('units', Units);
+  Config.ReadSection('descrs', Descriptions);
 //more?
 //all done
   Loaded := True;
@@ -541,6 +527,8 @@ begin
   Config.WriteSectionValues('units', Units);
   Config.WriteSectionValues('descrs', Descriptions);
 //all done
+  Config.Flush;
+  //Config.UpdateFile; //not dirty???
   Loaded := True;
 end;
 
@@ -642,12 +630,12 @@ begin
     FOnChange(self);
 end;
 
-function TFPDocManager.BeginTest(const AFile: string): boolean;
+function TFPDocManager.BeginTest(const ADir: string): boolean;
 begin
   Helper.Free; //should have been done
   Helper := TFPDocHelper.Create(nil);
   Helper.OnLog := OnLog;
-  Result := Helper.BeginTest(AFile);
+  Result := Helper.BeginTest(ADir);
   if Result then
     Helper.CmdOptions := Options; //set reference AND propagate!?
 end;
@@ -697,13 +685,13 @@ begin
     //clear packages???
   end;
   Config := TConfigFile.Create(cf);
-  Config.CacheUpdates := True;
+  //Config.CacheUpdates := True;
   if not Result then
     exit; //nothing to read
 //read directories
   FFPDocDir := Config.ReadString(SecGen, 'fpc', '');
 //read packages
-  Config.ReadSectionValues(SecProjects, FPackages); //<prj>=<file>
+  Config.ReadSection(SecProjects, FPackages); //<prj>=<file>
 //read detailed package information - possibly multiple packages per project!
   BeginUpdate;  //turn of app notification!
   for i := 0 to Packages.Count - 1 do begin
@@ -899,12 +887,13 @@ var
   pkg: TDocPackage;
 begin
   Result := False;
-  BeginTest(AFile);
+  BeginTest(AFile); //directory!!!
   try
     Result := Helper.CmdToPrj(AFile);
     if not Result then
       exit;
     pkg := AddPackage(Helper.SelectedPackage.Name); //create [and register]
+    pkg.Loaded := False; //force reload
     if not pkg.Loaded then begin
       Result := pkg.ImportProject(Helper, Helper.Package, AFile);
     //register now, with project file known
@@ -920,7 +909,7 @@ end;
 function TFPDocManager.MakeDoc(APkg: TDocPackage; const AUnit, AOutput: string): boolean;
 begin
   Result := assigned(APkg)
-  and BeginTest(APkg.ProjectFile)
+  and BeginTest(APkg.ProjectDir)
   and APkg.CreateProject(Helper, ''); //only configure, don't create file
   if not Result then
     exit;
@@ -1003,13 +992,15 @@ begin
 //???
 end;
 
-function TFPDocHelper.BeginTest(const AFile: string): boolean;
+function TFPDocHelper.BeginTest(ADir: string): boolean;
 begin
-  Result := AFile <> '';
+  Result := ADir <> '';
   if not Result then
     exit;
 //remember dir!
-  ProjectDir:=ExtractFileDir(AFile);
+  if ExtractFileExt(ADir) <> '' then //todo: better check for directory!?
+    ADir := ExtractFileDir(ADir);
+  ProjectDir:=ADir;
   SetCurrentDir(ProjectDir);
 end;
 
@@ -1040,16 +1031,6 @@ begin
     w := GetNextWord(l);
     ParseFPDocOption(w);
   end;
-{
-  w := SelectedPackage.Name;
-  if w = '' then
-    exit; //no project name???
-  l := ChangeFileExt(AFileName, '_prj.xml'); //same directory!!!
-  //Result := CreateProject(l, Package);
-//now load the project into the manager
-  if Result then //add package/project to the manager?
-    Manager.AddProject(w, l); //.Packages.Add(w + '=' + l);
-}
   Result := True;
 end;
 

@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, umakeskel, fMain, fConfig, uManager, fLogView,
-  fUpdateView, ulpk;
+  fUpdateView, ulpk, ConfigFile;
 
 {$R *.res}
 

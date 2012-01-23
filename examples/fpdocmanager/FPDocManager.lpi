@@ -43,7 +43,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="8">
+    <Units Count="9">
       <Unit0>
         <Filename Value="FPDocManager.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -92,6 +92,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="uLpk"/>
       </Unit7>
+      <Unit8>
+        <Filename Value="configfile.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ConfigFile"/>
+      </Unit8>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -120,7 +125,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="3">
+    <Exceptions Count="4">
       <Item1>
         <Name Value="EAbort"/>
       </Item1>
@@ -130,6 +135,9 @@
       <Item3>
         <Name Value="EFOpenError"/>
       </Item3>
+      <Item4>
+        <Name Value="EStringListError"/>
+      </Item4>
     </Exceptions>
   </Debugging>
 </CONFIG>

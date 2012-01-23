@@ -49,10 +49,14 @@ interface
 {$mode objfpc}
 {$h+}
 
+{$IF FPC_FULLVERSION<20701}
+  {.$ERROR requires FPC 2.7.1 at least}
+{$ENDIF}
+
 uses
   SysUtils, Classes, Gettext,
   dGlobals, PasTree, PParser,PScanner,
-  IniFiles,
+  ConfigFile,
   mkfpdoc, fpdocproj;
 
 resourcestring
@@ -72,18 +76,6 @@ resourcestring
 
 type
   TCmdLineAction = (actionHelp, actionConvert);
-
-(* Extended INI file
-*)
-
-  { TConfigFile }
-
-  TConfigFile = class(TIniFile)
-  public
-    function IsDirty: boolean;
-    procedure Flush;
-    procedure WriteSectionValues(const Section: string; Strings: TStrings);
-  end;
 
 (* EngineOptions plus MakeSkel options.
   Used in the commandline parsers, passed to the Engine.
@@ -314,32 +306,6 @@ type
     Property Element : TPasElement Read FEl;
     Property DocNode : TDocNode Read FNode;
   end;
-
-{ TConfigFile }
-
-function TConfigFile.IsDirty: boolean;
-begin
-  Result := Dirty;
-end;
-
-procedure TConfigFile.Flush;
-begin
-  if Dirty then
-    UpdateFile; //only if dirty
-end;
-
-procedure TConfigFile.WriteSectionValues(const Section: string; Strings: TStrings);
-var
-  i: integer;
-begin
-//add missing: write Strings as a section
-  if (Strings = nil) or (Strings.Count = 0) then
-    exit; //nothing to write
-  for i := 0 to Strings.Count - 1 do begin
-    WriteString(Section, Strings.Names[i], Strings.ValueFromIndex[i]);
-    //WriteString(Section, Strings[i], ''); //???
-  end;
-end;
 
 { TCmdOptions }
 

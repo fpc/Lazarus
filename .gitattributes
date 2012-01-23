@@ -3712,6 +3712,7 @@ examples/fpdocmanager/FPDocManager.lpi svneol=native#text/plain
 examples/fpdocmanager/FPDocManager.lpr svneol=native#text/plain
 examples/fpdocmanager/FilenameExtension.patch svneol=native#text/pascal
 examples/fpdocmanager/README.txt svneol=native#text/plain
+examples/fpdocmanager/configfile.pas svneol=native#text/pascal
 examples/fpdocmanager/docs/fconfig.xml svneol=native#text/plain
 examples/fpdocmanager/docs/flogview.xml svneol=native#text/plain
 examples/fpdocmanager/docs/fmain.xml svneol=native#text/plain
