@@ -2923,6 +2923,114 @@ begin
   Result:=inherited ScreenToClient(Handle, P);
 end;
 
+{$IFDEF NewScrollWindowEx}
+function TCarbonWidgetSet.ScrollWindowEx(hWnd: HWND; dx, dy: Integer;
+  prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT
+  ): Boolean;
+const
+  SName = 'ScrollWindowEx';
+var
+  ACtl: TCarbonControl;
+  RFullSource: TRect;
+  R, R1: CGRect;
+  RR: TRect;
+begin
+  (* - On Windows prcScroll is used a source-rectangle. The Result can (and will)
+       be placed outside that area. It may be limited by prcClip.
+     - Carbon uses the rect given to HIViewScrollRect as source and Clip.
+       So to get the same effect as on Windows prcScroll may need to be extended
+     - SW_INVALIDATE: Carbon always invalidates. So nothing to do if the flag is set.
+       Todo: If it is not set, and if it was known that the area was not already
+       invalidated before, then maybe it can be re-validadet?
+  *)
+  {$IFDEF VerboseWinAPI}
+  DebugLn('TCarbonWidgetSet.ScrollWindowEx() HWnd=',dbgs(hWnd),' prcScroll ',dbgs(prcScroll <> nil),
+    ' prcClip ',dbgs(prcClip <> nil));
+  {$ENDIF}
+  Result := False;
+  if (dy = 0) and (dx = 0) then exit;
+  if (hWnd = 0) then exit;
+
+  ACtl := TCarbonControl(hWnd);
+  OSError(HIViewGetBounds(ACtl.Content, R1),
+    Self, SName, 'HIViewGetBounds');
+
+  RFullSource := CGRectToRect(R1);
+  {$ifdef VerboseScrollWindowEx}
+  DebugLn(['ScrollWindowEx A RFullSource=', dbgs(RFullSource),' dy=',dy, ' scroll=',dbgs(prcScroll^), ' clip=',dbgs(prcClip^)]);
+  {$ENDIF}
+
+  if PrcScroll <> nil then
+  begin
+    RFullSource.Left   := Max(RFullSource.Left,   PrcScroll^.Left);
+    RFullSource.Top    := Max(RFullSource.Top,    PrcScroll^.Top);
+    RFullSource.Right  := Min(RFullSource.Right,  PrcScroll^.Right);
+    RFullSource.Bottom := Min(RFullSource.Bottom, PrcScroll^.Bottom);
+
+    // extend
+    if dx < 0 then
+      RFullSource.Left := RFullSource.Left + dx;
+    if dx > 0 then
+      RFullSource.Right := RFullSource.Right + dx;
+    if dy < 0 then
+      RFullSource.Top := RFullSource.Top + dy;
+    if dy > 0 then
+      RFullSource.Bottom := RFullSource.Bottom + dy;
+    {$ifdef VerboseScrollWindowEx}
+    DebugLn(['ScrollWindowEx prcScroll RFullSource=', dbgs(RFullSource)]);
+    {$ENDIF}
+  end;
+
+  if prcClip <> nil then
+  begin
+    // only limit the site towards which is scrolled
+    // the other side is required for invalidation
+    if dx < 0 then
+      RFullSource.Left := Max(RFullSource.Left, prcClip^.Left - dx);
+    if dx > 0 then
+      RFullSource.Right := Min(RFullSource.Right, prcClip^.Right - dx);
+    if dy < 0 then
+      RFullSource.Top := Max(RFullSource.Top, prcClip^.Top - dy);
+    if dy > 0 then
+      RFullSource.Bottom := Min(RFullSource.Bottom, prcClip^.Bottom - dy);
+    {$ifdef VerboseScrollWindowEx}
+    DebugLn(['ScrollWindowEx prcClip RFullSource=', dbgs(RFullSource)]);
+    {$ENDIF}
+  end;
+
+  if prcUpdate <> nil then
+  begin
+    prcUpdate^ := RFullSource;
+    if dx < 0 then
+      prcUpdate^.Left := Max(RFullSource.Left, RFullSource.Right + dx);
+    if dx > 0 then
+      prcUpdate^.Right := Min(RFullSource.Right, RFullSource.Left + dx);
+    if dy < 0 then
+      prcUpdate^.Top := Max(RFullSource.Top, RFullSource.Bottom + dy);
+    if dy > 0 then
+      prcUpdate^.Bottom := Min(RFullSource.Bottom, RFullSource.Top + dy);
+    {$ifdef VerboseScrollWindowEx}
+    DebugLn(['ScrollWindowEx prcUpdate RFullSource=', dbgs(prcUpdate^)]);
+    {$ENDIF}
+  end;
+
+  R := RectToCGRect(RFullSource);
+  OSError(HIViewScrollRect(ACtl.Content, HiRectPtr(@R), CGFloat(dx), CGFloat(dy)),
+    ACtl, SName, 'HIViewScrollRect');
+
+  if (flags and SW_SCROLLCHILDREN <> 0) then
+  begin
+    // complete view scrolls
+    with ACtl.ScrollOffset do
+    begin
+      X := X + DX;
+      Y := Y + DY;
+    end;
+  end;
+
+  Result := true;
+end;
+{$ELSE}
 function TCarbonWidgetSet.ScrollWindowEx(hWnd: HWND; dx, dy: Integer;
   prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT
   ): Boolean;
@@ -2943,6 +3051,7 @@ begin
     if (flags and SW_SCROLLCHILDREN <> 0) then
     begin
       // complete view scrolls
+      // MFR: R is not initialized
       OSError(HIViewScrollRect(ACtl.Content, HiRectPtr(@R), CGFloat(dx), CGFloat(dy)),
         ACtl, SName, 'HIViewScrollRect');
       with ACtl.ScrollOffset do
@@ -2983,6 +3092,7 @@ begin
     Result:=inherited ScrollWindowEx(hWnd, dx, dy, prcScroll, prcClip,
       hrgnUpdate, prcUpdate, flags);
 end;
+{$ENDIF}
 
 function TCarbonWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
 const
