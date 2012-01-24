@@ -550,12 +550,12 @@ begin
     pen.Color := PCol;
     Pen.Style := psSolid;
     case Index of
-      0: Rectangle(r);
-      1: begin
+      ord(sfeAround): Rectangle(r);
+      ord(sfeBottom): begin
           MoveTo(r.Left, r.Bottom);
           LineTo(r.Right-1, r.Bottom);
         end;
-      2: begin
+      ord(sfeLeft): begin
           MoveTo(r.Left, r.Top);
           LineTo(r.Left, r.Bottom-1);
         end;
