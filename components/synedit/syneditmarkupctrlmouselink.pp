@@ -59,7 +59,6 @@ type
     constructor Create(ASynEdit: TSynEditBase);
     destructor Destroy; override;
 
-    Procedure EndMarkup; override;
     Procedure PrepareMarkupForRow(aRow: Integer); override;
     Function GetMarkupAttributeAtRowCol(const aRow, aCol: Integer) : TSynSelectedColor; override;
     Function GetNextMarkupColAfterRowCol(const aRow, aCol: Integer) : Integer; override;
@@ -227,30 +226,14 @@ begin
   end;
 end;
 
-procedure TSynEditMarkupCtrlMouseLink.EndMarkup;
-var
-  LineLeft, LineTop, LineRight: integer;
-  temp : TPoint;
-begin
-  if (FCtrlMouseLine < 1) or (not FCtrlLinkable) then exit;
-  LineTop := (RowToScreenRow(FCtrlMouseLine)+1)*TCustomSynEdit(SynEdit).LineHeight-1;
-  Temp := LogicalToPhysicalPos(Point(FCtrlMouseX1, FCtrlMouseLine));
-  LineLeft := TCustomSynEdit(SynEdit).ScreenColumnToXValue(Temp.x);
-  Temp := LogicalToPhysicalPos(Point(FCtrlMouseX2, FCtrlMouseLine));
-  LineRight := TCustomSynEdit(SynEdit).ScreenColumnToXValue(Temp.x);
-  with TCustomSynEdit(SynEdit).Canvas do begin
-    Pen.Color := MarkupInfo.Foreground;
-    MoveTo(LineLeft,LineTop);
-    LineTo(LineRight,LineTop);
-  end;
-end;
-
 procedure TSynEditMarkupCtrlMouseLink.PrepareMarkupForRow(aRow: Integer);
 begin
   inherited PrepareMarkupForRow(aRow);
   if (aRow = FCtrlMouseLine) and FCtrlLinkable then begin
     FCurX1 := LogicalToPhysicalPos(Point(FCtrlMouseX1, FCtrlMouseLine)).x;
     FCurX2 := LogicalToPhysicalPos(Point(FCtrlMouseX2, FCtrlMouseLine)).x;
+    MarkupInfo.StartX := FCurX1;
+    MarkupInfo.EndX := FCurX2;
   end;
 end;
 

@@ -577,7 +577,7 @@ const
     );
 
 const
-  EditorOptsFormatVersion = 8;
+  EditorOptsFormatVersion = 9;
   { * Changes in Version 6:
        - ColorSchemes now have a Global settings part.
          Language specific changes must save UseSchemeGlobals=False (Default is true)
@@ -586,6 +586,10 @@ const
          DisableAntialiasing default true to false
     * Changes in Version 8:
          Replaced EditorFontHeight with EditorFontSize.
+    * Changes in Version 9:
+         Fix ahaMouseLink. It only used Foreground, and would underline with it too.
+         It now uses all fields. Old entries will copy Foreground to Frame and
+         set sfeBottom
   }
 
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of
@@ -1227,7 +1231,6 @@ type
 
     FDefaultValues: TEditorOptions;
 
-    function OldAdditionalAttributeName(NewAha:String): string;
   public
     class function GetGroupCaption:string; override;
     class function GetInstance: TAbstractIDEOptions; override;
@@ -4111,17 +4114,6 @@ begin
   result:=GetEnumName(TypeInfo(TAdditionalHilightAttribute), ord(aha));
 end;
 
-function TEditorOptions.OldAdditionalAttributeName(NewAha: String): string;
-var
-  AttriIdx: Integer;
-begin
-  AttriIdx := GetEnumValue(TypeInfo(TAdditionalHilightAttribute), NewAha);
-  if AttriIdx < 0 then
-    Result := NewAha
-  else
-    Result := ahaXmlNames[TAdditionalHilightAttribute(AttriIdx)];
-end;
-
 class function TEditorOptions.GetGroupCaption: string;
 begin
   Result := dlgGroupEditor;
@@ -5008,6 +5000,8 @@ begin
   FAttributes.Sorted := true;
   FormatVersion := aXMLConfig.GetValue(aPath + 'Version', 0);
   LoadFromXml(aXMLConfig, aPath, nil, FormatVersion);
+
+  AttributeByEnum[ahaMouseLink].FramePriority := 9999;
 end;
 
 destructor TColorSchemeLanguage.Destroy;
@@ -5144,6 +5138,16 @@ begin
     end else begin
       //if aXMLConfig.HasPath(TmpPath, False) or (Defaults <> nil) or (Def <> EmptyDef) then
         AttributeAtPos[i].LoadFromXml(aXMLConfig, TmpPath, Def, FormatVersion);
+    end;
+
+    if (ColorVersion < 9) and (AttributeAtPos[i].StoredName = AhaToStoredName(ahaMouseLink)) then begin
+      // upgrade ahaMouseLink
+      AttributeAtPos[i].FrameColor := AttributeAtPos[i].Foreground;
+      AttributeAtPos[i].Background := clNone;
+      AttributeAtPos[i].Style := [];
+      AttributeAtPos[i].StyleMask := [];
+      AttributeAtPos[i].FrameStyle := slsSolid;
+      AttributeAtPos[i].FrameEdges := sfeBottom;
     end;
   end;
   FreeAndNil(EmptyDef);
