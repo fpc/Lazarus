@@ -305,6 +305,8 @@ begin
 end;
 
 destructor TTreeNode.Destroy;
+var
+  lOwnerAccessibleObject, lAccessibleObject: TLazAccessibleObject;
 begin
   {$IFDEF TREEVIEW_DEBUG}
   DebugLn('[TTreeNode.Destroy] Self=',DbgS(Self),' Self.Text=',Text);
@@ -315,6 +317,15 @@ begin
   // unbinding.See issue #17832.
   if Assigned(Owner) and Assigned(Owner.Owner) then
     Owner.Owner.Delete(Self);
+
+  // Remove the accessibility object too
+  if Assigned(Owner) and Assigned(Owner.Owner) then
+  begin
+    lOwnerAccessibleObject := Owner.Owner.GetAccessibleObject();
+    lAccessibleObject := lOwnerAccessibleObject.GetChildAccessibleObjectWithDataObject(Self);
+    if lAccessibleObject <> nil then
+      lOwnerAccessibleObject.RemoveChildAccessibleObject(lAccessibleObject);
+  end;
 
   // delete children
   HasChildren := false;

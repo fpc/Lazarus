@@ -165,9 +165,16 @@ end;
 
 procedure TLazAccessibleObject.RemoveChildAccessibleObject(
   AObject: TLazAccessibleObject);
+var
+  lIndex: Integer;
 begin
   if FChildren = nil then Exit;
-  FChildren.Remove(@AObject);
+  lIndex := FChildren.IndexOf(AObject);
+  if lIndex >= 0 then
+  begin
+    TLazAccessibleObject(FChildren.Items[lIndex]).Free;
+    FChildren.Delete(lIndex);
+  end;
 end;
 
 function TLazAccessibleObject.GetChildAccessibleObject(AIndex: Integer): TLazAccessibleObject;
