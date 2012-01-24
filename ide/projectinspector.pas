@@ -59,9 +59,9 @@ unit ProjectInspector;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, AvgLvlTree, Forms, Controls, Buttons,
+  Classes, SysUtils, LCLProc, LCLType, AvgLvlTree, Forms, Controls, Buttons,
   ComCtrls, StdCtrls, Menus, Dialogs, Graphics, FileUtil, ExtCtrls,
-  LazIDEIntf, IDECommands,
+  LazIDEIntf, IDEHelpIntf, IDECommands,
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
   Project, AddToProjectDlg, PackageSystem, PackageDefs, TreeFilterEdit;
   
@@ -86,19 +86,23 @@ type
   { TProjectInspectorForm }
 
   TProjectInspectorForm = class(TForm)
-    AddBitBtn: TSpeedButton;
     BtnPanel: TPanel;
-    DirectoryHierarchySpeedButton: TSpeedButton;
+    DirectoryHierarchyButton: TSpeedButton;
     FilterEdit: TTreeFilterEdit;
-    OpenBitBtn: TSpeedButton;
+    OpenButton: TSpeedButton;
     ItemsTreeView: TTreeView;
     ItemsPopupMenu: TPopupMenu;
-    OptionsBitBtn: TSpeedButton;
-    RemoveBitBtn: TSpeedButton;
-    SortAlphabeticallySpeedButton: TSpeedButton;
-    DummySpeedButton: TSpeedButton;
+    SortAlphabeticallyButton: TSpeedButton;
+    DummyButton: TSpeedButton;
+    // toolbar
+    ToolBar: TToolBar;
+    // toolbuttons
+    AddBitBtn: TToolButton;
+    RemoveBitBtn: TToolButton;
+    OptionsBitBtn: TToolButton;
+    HelpBitBtn: TToolButton;
     procedure AddBitBtnClick(Sender: TObject);
-    procedure DirectoryHierarchySpeedButtonClick(Sender: TObject);
+    procedure DirectoryHierarchyButtonClick(Sender: TObject);
     procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewDblClick(Sender: TObject);
     procedure ItemsTreeViewGetImageIndex(Sender: TObject; Node: TTreeNode);
@@ -109,13 +113,14 @@ type
     procedure SetDependencyDefaultFilenameMenuItemClick(Sender: TObject);
     procedure SetDependencyPreferredFilenameMenuItemClick(Sender: TObject);
     procedure ClearDependencyFilenameMenuItemClick(Sender: TObject);
-    procedure OpenBitBtnClick(Sender: TObject);
+    procedure OpenButtonClick(Sender: TObject);
     procedure OptionsBitBtnClick(Sender: TObject);
+    procedure HelpBitBtnClick(Sender: TObject);
     procedure ProjectInspectorFormShow(Sender: TObject);
     procedure ReAddMenuItemClick(Sender: TObject);
     procedure RemoveBitBtnClick(Sender: TObject);
     procedure RemoveNonExistingFilesMenuItemClick(Sender: TObject);
-    procedure SortAlphabeticallySpeedButtonClick(Sender: TObject);
+    procedure SortAlphabeticallyButtonClick(Sender: TObject);
     procedure ToggleI18NForLFMMenuItemClick(Sender: TObject);
   private
     FIdleConnected: boolean;
@@ -206,7 +211,7 @@ uses
 
 procedure TProjectInspectorForm.ItemsTreeViewDblClick(Sender: TObject);
 begin
-  OpenBitBtnClick(Self);
+  OpenButtonClick(Self);
 end;
 
 procedure TProjectInspectorForm.ItemsTreeViewGetImageIndex(Sender: TObject; Node: TTreeNode);
@@ -249,20 +254,17 @@ begin
   LazProject.MoveRequiredDependencyDown(Dependency);
 end;
 
-procedure TProjectInspectorForm.SetDependencyDefaultFilenameMenuItemClick(
-  Sender: TObject);
+procedure TProjectInspectorForm.SetDependencyDefaultFilenameMenuItemClick(Sender: TObject);
 begin
   SetDependencyDefaultFilename(false);
 end;
 
-procedure TProjectInspectorForm.SetDependencyPreferredFilenameMenuItemClick(
-  Sender: TObject);
+procedure TProjectInspectorForm.SetDependencyPreferredFilenameMenuItemClick(Sender: TObject);
 begin
   SetDependencyDefaultFilename(true);
 end;
 
-procedure TProjectInspectorForm.ClearDependencyFilenameMenuItemClick(
-  Sender: TObject);
+procedure TProjectInspectorForm.ClearDependencyFilenameMenuItemClick(Sender: TObject);
 var
   CurDependency: TPkgDependency;
 begin
@@ -325,9 +327,9 @@ begin
   AddResult.Free;
 end;
 
-procedure TProjectInspectorForm.DirectoryHierarchySpeedButtonClick(Sender: TObject);
+procedure TProjectInspectorForm.DirectoryHierarchyButtonClick(Sender: TObject);
 begin
-  ShowDirectoryHierarchy:=DirectoryHierarchySpeedButton.Down;
+  ShowDirectoryHierarchy:=DirectoryHierarchyButton.Down;
 end;
 
 procedure TProjectInspectorForm.ItemsPopupMenuPopup(Sender: TObject);
@@ -361,9 +363,8 @@ begin
   ItemCnt:=0;
   CurFile:=GetSelectedFile;
   if CurFile<>nil then begin
-    AddPopupMenuItem(lisOpenFile, @OpenBitBtnClick, true);
-    AddPopupMenuItem(lisPckEditRemoveFile, @RemoveBitBtnClick,
-      RemoveBitBtn.Enabled);
+    AddPopupMenuItem(lisOpenFile, @OpenButtonClick, true);
+    AddPopupMenuItem(lisPckEditRemoveFile, @RemoveBitBtnClick, RemoveBitBtn.Enabled);
     if FilenameIsPascalSource(CurFile.Filename) then begin
       Item:=AddPopupMenuItem(lisDisableI18NForLFM,
                              @ToggleI18NForLFMMenuItemClick,true);
@@ -373,12 +374,11 @@ begin
   end;
   CurDependency:=GetSelectedDependency;
   if CurDependency<>nil then begin
+    AddPopupMenuItem(lisMenuOpenPackage, @OpenButtonClick, true);
     if CurDependency.Removed then begin
-      AddPopupMenuItem(lisMenuOpenPackage, @OpenBitBtnClick, true);
       AddPopupMenuItem(lisPckEditReAddDependency, @ReAddMenuItemClick,
                        AddBitBtn.Enabled);
     end else begin
-      AddPopupMenuItem(lisMenuOpenPackage, @OpenBitBtnClick, true);
       AddPopupMenuItem(lisPckEditRemoveDependency, @RemoveBitBtnClick,
                        RemoveBitBtn.Enabled);
       AddPopupMenuItem(lisPckEditMoveDependencyUp, @MoveDependencyUpClick,
@@ -404,7 +404,7 @@ begin
     ItemsPopupMenu.Items.Delete(ItemsPopupMenu.Items.Count-1);
 end;
 
-procedure TProjectInspectorForm.OpenBitBtnClick(Sender: TObject);
+procedure TProjectInspectorForm.OpenButtonClick(Sender: TObject);
 begin
   if Assigned(OnOpen) then OnOpen(Self);
 end;
@@ -412,6 +412,11 @@ end;
 procedure TProjectInspectorForm.OptionsBitBtnClick(Sender: TObject);
 begin
   if Assigned(OnShowOptions) then OnShowOptions(Self);
+end;
+
+procedure TProjectInspectorForm.HelpBitBtnClick(Sender: TObject);
+begin
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TProjectInspectorForm.ProjectInspectorFormShow(Sender: TObject);
@@ -482,9 +487,9 @@ begin
   end;
 end;
 
-procedure TProjectInspectorForm.SortAlphabeticallySpeedButtonClick(Sender: TObject);
+procedure TProjectInspectorForm.SortAlphabeticallyButtonClick(Sender: TObject);
 begin
-  SortAlphabetically:=SortAlphabeticallySpeedButton.Down;
+  SortAlphabetically:=SortAlphabeticallyButton.Down;
 end;
 
 procedure TProjectInspectorForm.ToggleI18NForLFMMenuItemClick(Sender: TObject);
@@ -517,7 +522,7 @@ procedure TProjectInspectorForm.SetShowDirectoryHierarchy(const AValue: boolean)
 begin
   if FShowDirectoryHierarchy=AValue then exit;
   FShowDirectoryHierarchy:=AValue;
-  DirectoryHierarchySpeedButton.Down:=FShowDirectoryHierarchy;
+  DirectoryHierarchyButton.Down:=FShowDirectoryHierarchy;
   FilterEdit.ShowDirHierarchy:=FShowDirectoryHierarchy;
   FilterEdit.InvalidateFilter;
 end;
@@ -526,7 +531,7 @@ procedure TProjectInspectorForm.SetSortAlphabetically(const AValue: boolean);
 begin
   if FSortAlphabetically=AValue then exit;
   FSortAlphabetically:=AValue;
-  SortAlphabeticallySpeedButton.Down:=SortAlphabetically;
+  SortAlphabeticallyButton.Down:=SortAlphabetically;
   FilterEdit.SortData:=SortAlphabetically;
   FilterEdit.InvalidateFilter;
 end;
@@ -560,37 +565,58 @@ begin
 end;
 
 procedure TProjectInspectorForm.SetupComponents;
+
+  function CreateToolButton(AName, ACaption, AHint, AImageName: String; AOnClick: TNotifyEvent): TToolButton;
+  begin
+    Result := TToolButton.Create(Self);
+    Result.Name := AName;
+    Result.Caption := ACaption;
+    Result.Hint := AHint;
+    if AImageName <> '' then
+      Result.ImageIndex := IDEImages.LoadImage(16, AImageName);
+    Result.ShowHint := True;
+    Result.OnClick := AOnClick;
+    Result.AutoSize := True;
+    Result.Parent := ToolBar;
+  end;
+
+  function CreateDivider: TToolButton;
+  begin
+    Result := TToolButton.Create(Self);
+    Result.Style := tbsDivider;
+    Result.AutoSize := True;
+    Result.Parent := ToolBar;
+  end;
+
 begin
-  ItemsTreeView.Images := IDEImages.Images_16;
-  ImageIndexFiles := IDEImages.LoadImage(16, 'pkg_files');
-  ImageIndexRequired := IDEImages.LoadImage(16, 'pkg_required');
-  ImageIndexConflict := IDEImages.LoadImage(16, 'pkg_conflict');
+  ImageIndexFiles           := IDEImages.LoadImage(16, 'pkg_files');
+  ImageIndexRequired        := IDEImages.LoadImage(16, 'pkg_required');
+  ImageIndexConflict        := IDEImages.LoadImage(16, 'pkg_conflict');
   ImageIndexRemovedRequired := IDEImages.LoadImage(16, 'pkg_removedrequired');
-  ImageIndexProject := IDEImages.LoadImage(16, 'item_project');
-  ImageIndexUnit := IDEImages.LoadImage(16, 'item_unit');
-  ImageIndexRegisterUnit := IDEImages.LoadImage(16, 'pkg_registerunit');
-  ImageIndexText := IDEImages.LoadImage(16, 'pkg_text');
-  ImageIndexBinary := IDEImages.LoadImage(16, 'pkg_binary');
-  ImageIndexDirectory := IDEImages.LoadImage(16, 'pkg_files');
+  ImageIndexProject         := IDEImages.LoadImage(16, 'item_project');
+  ImageIndexUnit            := IDEImages.LoadImage(16, 'item_unit');
+  ImageIndexRegisterUnit    := IDEImages.LoadImage(16, 'pkg_registerunit');
+  ImageIndexText            := IDEImages.LoadImage(16, 'pkg_text');
+  ImageIndexBinary          := IDEImages.LoadImage(16, 'pkg_binary');
+  ImageIndexDirectory       := IDEImages.LoadImage(16, 'pkg_files');
 
+  ItemsTreeView.Images      := IDEImages.Images_16;
+  ToolBar.Images            := IDEImages.Images_16;
   FilterEdit.OnGetImageIndex:=@ChooseImageIndex;
-  OpenBitBtn.LoadGlyphFromLazarusResource('laz_open');
-  AddBitBtn.LoadGlyphFromLazarusResource('laz_add');
-  RemoveBitBtn.LoadGlyphFromLazarusResource('laz_delete');
-  OptionsBitBtn.LoadGlyphFromLazarusResource('menu_environment_options');
 
-  OpenBitBtn.Caption:='';
-  AddBitBtn.Caption:='';
-  RemoveBitBtn.Caption:='';
-  OptionsBitBtn.Caption:='';
-  OpenBitBtn.Hint:=lisOpenFile2;
-  AddBitBtn.Hint:=lisCodeTemplAdd;
-  RemoveBitBtn.Hint:=lisExtToolRemove;
-  OptionsBitBtn.Hint:=dlgFROpts;
-  SortAlphabeticallySpeedButton.Hint:=lisPESortFilesAlphabetically;
-  SortAlphabeticallySpeedButton.LoadGlyphFromLazarusResource('pkg_sortalphabetically');
-  DirectoryHierarchySpeedButton.Hint:=lisPEShowDirectoryHierarchy;
-  DirectoryHierarchySpeedButton.LoadGlyphFromLazarusResource('pkg_hierarchical');
+  AddBitBtn     := CreateToolButton('AddBitBtn', lisCodeTemplAdd, lisPckEditAddAnItem, 'laz_add', @AddBitBtnClick);
+  RemoveBitBtn  := CreateToolButton('RemoveBitBtn', lisExtToolRemove, lisPckEditRemoveSelectedItem, 'laz_delete', @RemoveBitBtnClick);
+  CreateDivider;
+  OptionsBitBtn := CreateToolButton('OptionsBitBtn', dlgFROpts, lisPckEditEditGeneralOptions, 'menu_environment_options', @OptionsBitBtnClick);
+  HelpBitBtn    := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisPkgEdThereAreMoreFunctionsInThePopupmenu, 'menu_help', @HelpBitBtnClick);
+
+  OpenButton.LoadGlyphFromLazarusResource('laz_open');
+  OpenButton.Caption:='';
+  OpenButton.Hint:=lisOpenFile2;
+  SortAlphabeticallyButton.Hint:=lisPESortFilesAlphabetically;
+  SortAlphabeticallyButton.LoadGlyphFromLazarusResource('pkg_sortalphabetically');
+  DirectoryHierarchyButton.Hint:=lisPEShowDirectoryHierarchy;
+  DirectoryHierarchyButton.LoadGlyphFromLazarusResource('pkg_hierarchical');
 
   with ItemsTreeView do begin
     FFilesNode:=Items.Add(nil, dlgEnvFiles);
@@ -860,13 +886,13 @@ begin
     CurDependency:=GetSelectedDependency;
     RemoveBitBtn.Enabled:=((CurFile<>nil) and (CurFile<>LazProject.MainUnitInfo))
                       or ((CurDependency<>nil) and (not CurDependency.Removed));
-    OpenBitBtn.Enabled:=((CurFile<>nil)
+    OpenButton.Enabled:=((CurFile<>nil)
                      or ((CurDependency<>nil) and (not CurDependency.Removed)));
     OptionsBitBtn.Enabled:=true;
   end else begin
     AddBitBtn.Enabled:=false;
     RemoveBitBtn.Enabled:=false;
-    OpenBitBtn.Enabled:=false;
+    OpenButton.Enabled:=false;
     OptionsBitBtn.Enabled:=false;
   end;
 end;

@@ -1,7 +1,7 @@
 object ProjectInspectorForm: TProjectInspectorForm
-  Left = 389
+  Left = 328
   Height = 474
-  Top = 328
+  Top = 24
   Width = 425
   ActiveControl = ItemsTreeView
   Caption = 'ProjectInspectorForm'
@@ -11,12 +11,12 @@ object ProjectInspectorForm: TProjectInspectorForm
   LCLVersion = '0.9.31'
   object ItemsTreeView: TTreeView
     Left = 0
-    Height = 444
-    Top = 30
+    Height = 396
+    Top = 78
     Width = 425
     Align = alClient
+    Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Top = 2
-    DefaultItemHeight = 17
     PopupMenu = ItemsPopupMenu
     ReadOnly = True
     RightClickSelect = True
@@ -30,111 +30,91 @@ object ProjectInspectorForm: TProjectInspectorForm
   object BtnPanel: TPanel
     Left = 0
     Height = 28
-    Top = 0
+    Top = 48
     Width = 425
     Align = alTop
     ClientHeight = 28
     ClientWidth = 425
     TabOrder = 1
-    object DummySpeedButton: TSpeedButton
-      Left = 161
-      Height = 26
-      Top = 1
+    object DummyButton: TSpeedButton
+      AnchorSideLeft.Control = OpenButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = OpenButton
+      AnchorSideTop.Side = asrCenter
+      Left = 27
+      Height = 12
+      Top = 8
       Width = 15
-      Align = alLeft
+      AllowAllUp = True
+      BorderSpacing.Left = 1
       NumGlyphs = 0
     end
-    object OpenBitBtn: TSpeedButton
+    object OpenButton: TSpeedButton
       Left = 1
       Height = 26
       Top = 1
-      Width = 40
-      Align = alLeft
-      AutoSize = True
-      Constraints.MinWidth = 25
-      NumGlyphs = 0
-      OnClick = OpenBitBtnClick
-      ShowHint = True
-      ParentShowHint = False
-    end
-    object AddBitBtn: TSpeedButton
-      Left = 41
-      Height = 26
-      Top = 1
-      Width = 40
-      Align = alLeft
-      AutoSize = True
-      Constraints.MinWidth = 25
-      NumGlyphs = 0
-      OnClick = AddBitBtnClick
-      ShowHint = True
-      ParentShowHint = False
-    end
-    object RemoveBitBtn: TSpeedButton
-      Left = 81
-      Height = 26
-      Top = 1
-      Width = 40
-      Align = alLeft
-      AutoSize = True
-      Constraints.MinWidth = 25
-      NumGlyphs = 0
-      OnClick = RemoveBitBtnClick
-      ShowHint = True
-      ParentShowHint = False
-    end
-    object OptionsBitBtn: TSpeedButton
-      Left = 121
-      Height = 26
-      Top = 1
-      Width = 40
-      Align = alLeft
-      AutoSize = True
-      Constraints.MinWidth = 25
-      NumGlyphs = 0
-      OnClick = OptionsBitBtnClick
-      ShowHint = True
-      ParentShowHint = False
-    end
-    object DirectoryHierarchySpeedButton: TSpeedButton
-      Left = 176
-      Height = 26
-      Top = 1
-      Width = 30
+      Width = 25
       Align = alLeft
       AllowAllUp = True
       AutoSize = True
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 25
+      NumGlyphs = 0
+      OnClick = OpenButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object DirectoryHierarchyButton: TSpeedButton
+      AnchorSideLeft.Control = DummyButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = OpenButton
+      AnchorSideTop.Side = asrCenter
+      Left = 43
+      Height = 25
+      Top = 2
+      Width = 25
+      AllowAllUp = True
+      AutoSize = True
+      BorderSpacing.Left = 1
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 25
       GroupIndex = 1
       NumGlyphs = 0
-      OnClick = DirectoryHierarchySpeedButtonClick
+      OnClick = DirectoryHierarchyButtonClick
       ShowHint = True
       ParentShowHint = False
     end
-    object SortAlphabeticallySpeedButton: TSpeedButton
-      Left = 206
-      Height = 26
-      Top = 1
-      Width = 30
-      Align = alLeft
+    object SortAlphabeticallyButton: TSpeedButton
+      AnchorSideLeft.Control = DirectoryHierarchyButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = OpenButton
+      AnchorSideTop.Side = asrCenter
+      Left = 69
+      Height = 25
+      Top = 2
+      Width = 25
       AllowAllUp = True
       AutoSize = True
+      BorderSpacing.Left = 1
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 25
       GroupIndex = 2
       NumGlyphs = 0
-      OnClick = SortAlphabeticallySpeedButtonClick
+      OnClick = SortAlphabeticallyButtonClick
       ShowHint = True
       ParentShowHint = False
     end
     object FilterEdit: TTreeFilterEdit
-      AnchorSideLeft.Control = SortAlphabeticallySpeedButton
+      AnchorSideLeft.Control = SortAlphabeticallyButton
       AnchorSideLeft.Side = asrBottom
-      Left = 238
-      Height = 23
-      Top = 4
-      Width = 164
+      Left = 97
+      Height = 28
+      Top = 1
+      Width = 305
       ButtonWidth = 23
       NumGlyphs = 0
       Anchors = [akLeft, akRight]
-      BorderSpacing.Left = 2
+      BorderSpacing.Left = 3
       Font.Color = clBtnShadow
       MaxLength = 0
       ParentFont = False
@@ -142,9 +122,19 @@ object ProjectInspectorForm: TProjectInspectorForm
       FilteredTreeview = ItemsTreeView
     end
   end
+  object ToolBar: TToolBar
+    Left = 0
+    Height = 48
+    Top = 0
+    Width = 425
+    AutoSize = True
+    ButtonHeight = 46
+    ShowCaptions = True
+    TabOrder = 2
+  end
   object ItemsPopupMenu: TPopupMenu
     OnPopup = ItemsPopupMenuPopup
-    left = 65
-    top = 59
+    left = 72
+    top = 112
   end
 end
