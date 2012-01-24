@@ -21,6 +21,8 @@ function FPColorToAndroidColor(AValue: TFPColor): jint;
 implementation
 
 // Android color is in the format: Alpha-Red-Green-Blue
+// It uses 8-bits per channel. $FF means alpha opaque
+// See http://developer.android.com/reference/android/graphics/Color.html
 function FPColorToAndroidColor(AValue: TFPColor): jint;
 begin
   Result:= $FF000000 or ((AValue.Blue shr 8) and $ff)
