@@ -140,20 +140,23 @@ type
   { TPackageEditorForm }
 
   TPackageEditorForm = class(TBasePackageEditor)
-    DirectoryHierarchySpeedButton: TSpeedButton;
+    DirectoryHierarchyButton: TSpeedButton;
+    OpenButton: TSpeedButton;
     DisableI18NForLFMCheckBox: TCheckBox;
     FilterEdit: TTreeFilterEdit;
     ItemsPanel: TPanel;
-    SortAlphabeticallySpeedButton: TSpeedButton;
+    DummyButton: TSpeedButton;
+    MorePopupMenu: TPopupMenu;
+    SortAlphabeticallyButton: TSpeedButton;
     Splitter1: TSplitter;
     // toolbar
     ToolBar: TToolBar;
-    // buttons
+    // toolbuttons
     SaveBitBtn: TToolButton;
     CompileBitBtn: TToolButton;
+    UseBitBtn: TToolButton;
     AddBitBtn: TToolButton;
     RemoveBitBtn: TToolButton;
-    UseBitBtn: TToolButton;
     OptionsBitBtn: TToolButton;
     MoreBitBtn: TToolButton;
     HelpBitBtn: TToolButton;
@@ -189,11 +192,12 @@ type
     procedure CompileBitBtnClick(Sender: TObject);
     procedure CompileCleanClick(Sender: TObject);
     procedure CreateMakefileClick(Sender: TObject);
-    procedure DirectoryHierarchySpeedButtonClick(Sender: TObject);
+    procedure DirectoryHierarchyButtonClick(Sender: TObject);
     procedure DisableI18NForLFMCheckBoxChange(Sender: TObject);
     procedure EditVirtualUnitMenuItemClick(Sender: TObject);
     procedure ExpandDirectoryMenuItemClick(Sender: TObject);
     procedure FilesPopupMenuPopup(Sender: TObject);
+    procedure MorePopupMenuPopup(Sender: TObject);
     procedure FilesTreeViewDblClick(Sender: TObject);
     procedure FilesTreeViewKeyPress(Sender: TObject; var Key: Char);
     procedure FilesTreeViewSelectionChanged(Sender: TObject);
@@ -221,7 +225,7 @@ type
     procedure SetDependencyDefaultFilenameMenuItemClick(Sender: TObject);
     procedure SetDependencyPreferredFilenameMenuItemClick(Sender: TObject);
     procedure ShowMissingFilesMenuItemClick(Sender: TObject);
-    procedure SortAlphabeticallySpeedButtonClick(Sender: TObject);
+    procedure SortAlphabeticallyButtonClick(Sender: TObject);
     procedure SortFilesMenuItemClick(Sender: TObject);
     procedure UninstallClick(Sender: TObject);
     procedure UseAllUnitsInDirectoryMenuItemClick(Sender: TObject);
@@ -664,6 +668,51 @@ begin
     end else
       PkgEditMenuSectionDependency.Visible:=false;
 
+  finally
+    PackageEditorMenuRoot.EndUpdate;
+  end;
+  //debugln(['TPackageEditorForm.FilesPopupMenuPopup END ',FilesPopupMenu.Items.Count]); PackageEditorMenuRoot.WriteDebugReport('  ',true);
+end;
+
+procedure TPackageEditorForm.MorePopupMenuPopup(Sender: TObject);
+var
+  CurDependency: TPkgDependency;
+  Removed: boolean;
+  CurFile: TPkgFile;
+  Writable: Boolean;
+  FileIndex: Integer;
+  CurNode: TTreeNode;
+  IsDir: Boolean;
+
+  procedure SetItem(Item: TIDEMenuCommand; AnOnClick: TNotifyEvent;
+                    aShow: boolean = true; AEnable: boolean = true);
+  begin
+    //debugln(['SetItem ',Item.Caption,' Visible=',aShow,' Enable=',AEnable]);
+    Item.OnClick:=AnOnClick;
+    Item.Visible:=aShow;
+    Item.Enabled:=AEnable;
+  end;
+
+begin
+  PackageEditorMenuRoot.MenuItem:=MorePopupMenu.Items;
+  PackageEditorMenuRoot.BeginUpdate;
+  try
+    CurNode:=FilesTreeView.Selected;
+    CurDependency:=GetCurrentDependency(Removed);
+    Writable:=(not LazPackage.ReadOnly);
+    if (CurDependency=nil) then
+      CurFile:=GetCurrentFile(Removed)
+    else
+      CurFile:=nil;
+    IsDir:=IsDirectoryNode(CurNode) or (CurNode=FFilesNode);
+
+    PkgEditMenuSectionFileType.Clear;
+
+    // items for all files
+    SetItem(PkgEditMenuSortFiles,@SortFilesMenuItemClick,(LazPackage.FileCount>1),Writable);
+    SetItem(PkgEditMenuFixFilesCase,@FixFilesCaseMenuItemClick,(LazPackage.FileCount>1),Writable);
+    SetItem(PkgEditMenuShowMissingFiles,@ShowMissingFilesMenuItemClick,(LazPackage.FileCount>1),Writable);
+
     SetItem(PkgEditMenuAddToProject,@AddToProjectClick,true,CanBeAddedToProject);
     SetItem(PkgEditMenuInstall,@InstallClick,true,(not LazPackage.AutoCreated)
            and (LazPackage.PackageType in [lptDesignTime,lptRunAndDesignTime]));
@@ -682,20 +731,15 @@ begin
     SetItem(PkgEditMenuRecompileAllRequired,@CompileAllCleanClick,true,CompileBitBtn.Enabled);
     SetItem(PkgEditMenuCreateMakefile,@CreateMakefileClick,true,CompileBitBtn.Enabled);
 
-    SetItem(PkgEditMenuAdd,@AddBitBtnClick,true,AddBitBtn.Enabled);
-    SetItem(PkgEditMenuRemove,@RemoveBitBtnClick,true,RemoveBitBtn.Enabled);
-
-    SetItem(PkgEditMenuGeneralOptions,@OptionsBitBtnClick,true,OptionsBitBtn.Enabled);
     SetItem(PkgEditMenuViewPackageSource,@ViewPkgSourceClick);
   finally
     PackageEditorMenuRoot.EndUpdate;
   end;
-  //debugln(['TPackageEditorForm.FilesPopupMenuPopup END ',FilesPopupMenu.Items.Count]); PackageEditorMenuRoot.WriteDebugReport('  ',true);
 end;
 
-procedure TPackageEditorForm.SortAlphabeticallySpeedButtonClick(Sender: TObject);
+procedure TPackageEditorForm.SortAlphabeticallyButtonClick(Sender: TObject);
 begin
-  SortAlphabetically:=SortAlphabeticallySpeedButton.Down;
+  SortAlphabetically:=SortAlphabeticallyButton.Down;
 end;
 
 procedure TPackageEditorForm.UsePopupMenuPopup(Sender: TObject);
@@ -800,19 +844,12 @@ begin
   FilesTreeView.EndUpdate;
 end;
 
-procedure TPackageEditorForm.MoveFileUpMenuItemClick(Sender: TObject);
-begin
-  DoMoveCurrentFile(-1);
-end;
-
-procedure TPackageEditorForm.SetDependencyDefaultFilenameMenuItemClick(
-  Sender: TObject);
+procedure TPackageEditorForm.SetDependencyDefaultFilenameMenuItemClick(Sender: TObject);
 begin
   SetDependencyDefaultFilename(false);
 end;
 
-procedure TPackageEditorForm.SetDependencyPreferredFilenameMenuItemClick(
-  Sender: TObject);
+procedure TPackageEditorForm.SetDependencyPreferredFilenameMenuItemClick(Sender: TObject);
 begin
   SetDependencyDefaultFilename(true);
 end;
@@ -837,6 +874,11 @@ end;
 procedure TPackageEditorForm.CollapseDirectoryMenuItemClick(Sender: TObject);
 begin
   DoCollapseDirectory;
+end;
+
+procedure TPackageEditorForm.MoveFileUpMenuItemClick(Sender: TObject);
+begin
+  DoMoveCurrentFile(-1);
 end;
 
 procedure TPackageEditorForm.MoveFileDownMenuItemClick(Sender: TObject);
@@ -1415,9 +1457,9 @@ begin
   PackageEditors.CreateMakefile(LazPackage);
 end;
 
-procedure TPackageEditorForm.DirectoryHierarchySpeedButtonClick(Sender: TObject);
+procedure TPackageEditorForm.DirectoryHierarchyButtonClick(Sender: TObject);
 begin
-  ShowDirectoryHierarchy:=DirectoryHierarchySpeedButton.Down;
+  ShowDirectoryHierarchy:=DirectoryHierarchyButton.Down;
 end;
 
 procedure TPackageEditorForm.DisableI18NForLFMCheckBoxChange(Sender: TObject);
@@ -1474,41 +1516,45 @@ procedure TPackageEditorForm.SetupComponents;
   end;
 
 begin
-  ImageIndexFiles := IDEImages.LoadImage(16, 'pkg_files');
-  ImageIndexRemovedFiles := IDEImages.LoadImage(16, 'pkg_removedfiles');
-  ImageIndexRequired := IDEImages.LoadImage(16, 'pkg_required');
+  ImageIndexFiles           := IDEImages.LoadImage(16, 'pkg_files');
+  ImageIndexRemovedFiles    := IDEImages.LoadImage(16, 'pkg_removedfiles');
+  ImageIndexRequired        := IDEImages.LoadImage(16, 'pkg_required');
   ImageIndexRemovedRequired := IDEImages.LoadImage(16, 'pkg_removedrequired');
-  ImageIndexUnit := IDEImages.LoadImage(16, 'pkg_unit');
-  ImageIndexRegisterUnit := IDEImages.LoadImage(16, 'pkg_registerunit');
-  ImageIndexLFM := IDEImages.LoadImage(16, 'pkg_lfm');
-  ImageIndexLRS := IDEImages.LoadImage(16, 'pkg_lrs');
-  ImageIndexInclude := IDEImages.LoadImage(16, 'pkg_include');
-  ImageIndexIssues := IDEImages.LoadImage(16, 'pkg_issues');
-  ImageIndexText := IDEImages.LoadImage(16, 'pkg_text');
-  ImageIndexBinary := IDEImages.LoadImage(16, 'pkg_binary');
-  ImageIndexConflict := IDEImages.LoadImage(16, 'pkg_conflict');
-  ImageIndexDirectory := IDEImages.LoadImage(16, 'pkg_files');
+  ImageIndexUnit            := IDEImages.LoadImage(16, 'pkg_unit');
+  ImageIndexRegisterUnit    := IDEImages.LoadImage(16, 'pkg_registerunit');
+  ImageIndexLFM             := IDEImages.LoadImage(16, 'pkg_lfm');
+  ImageIndexLRS             := IDEImages.LoadImage(16, 'pkg_lrs');
+  ImageIndexInclude         := IDEImages.LoadImage(16, 'pkg_include');
+  ImageIndexIssues          := IDEImages.LoadImage(16, 'pkg_issues');
+  ImageIndexText            := IDEImages.LoadImage(16, 'pkg_text');
+  ImageIndexBinary          := IDEImages.LoadImage(16, 'pkg_binary');
+  ImageIndexConflict        := IDEImages.LoadImage(16, 'pkg_conflict');
+  ImageIndexDirectory       := IDEImages.LoadImage(16, 'pkg_files');
 
-  FilterEdit.OnGetImageIndex:=@ChooseImageIndex;
-  SortAlphabeticallySpeedButton.Hint:=lisPESortFilesAlphabetically;
-  SortAlphabeticallySpeedButton.LoadGlyphFromLazarusResource('pkg_sortalphabetically');
-  DirectoryHierarchySpeedButton.Hint:=lisPEShowDirectoryHierarchy;
-  DirectoryHierarchySpeedButton.LoadGlyphFromLazarusResource('pkg_hierarchical');
-
+  FilesTreeView.Images := IDEImages.Images_16;
   ToolBar.Images := IDEImages.Images_16;
+  FilterEdit.OnGetImageIndex:=@ChooseImageIndex;
 
-  SaveBitBtn := CreateToolButton('SaveBitBtn', lisMenuSave, lisPckEditSavePackage, 'laz_save', @SaveBitBtnClick);
-  CompileBitBtn := CreateToolButton('CompileBitBtn', lisPckEditCompile, lisPckEditCompilePackage, 'pkg_compile', @CompileBitBtnClick);
-  UseBitBtn := CreateToolButton('UseBitBtn', lisPckEditInstall, lisPckEditInstallPackageInTheIDE, 'pkg_install', nil);
+  SaveBitBtn    := CreateToolButton('SaveBitBtn', lisMenuSave, lisPckEditSavePackage, 'laz_save', @SaveBitBtnClick);
+  CompileBitBtn := CreateToolButton('CompileBitBtn', lisPckEditCompile, lisPckEditCompilePackage, 'pkg_compile', nil{@CompileBitBtnClick});
+  UseBitBtn     := CreateToolButton('UseBitBtn', lisPckEditInstall, lisPckEditInstallPackageInTheIDE, 'pkg_install', nil);
   CreateDivider;
-  AddBitBtn := CreateToolButton('AddBitBtn', lisCodeTemplAdd, lisPckEditAddAnItem, 'laz_add', @AddBitBtnClick);
-  RemoveBitBtn := CreateToolButton('RemoveBitBtn', lisExtToolRemove, lisPckEditRemoveSelectedItem, 'laz_delete', @RemoveBitBtnClick);
+  AddBitBtn     := CreateToolButton('AddBitBtn', lisCodeTemplAdd, lisPckEditAddAnItem, 'laz_add', @AddBitBtnClick);
+  RemoveBitBtn  := CreateToolButton('RemoveBitBtn', lisExtToolRemove, lisPckEditRemoveSelectedItem, 'laz_delete', @RemoveBitBtnClick);
   CreateDivider;
   OptionsBitBtn := CreateToolButton('OptionsBitBtn', dlgFROpts, lisPckEditEditGeneralOptions, 'pkg_properties', @OptionsBitBtnClick);
-  HelpBitBtn := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisPkgEdThereAreMoreFunctionsInThePopupmenu, 'menu_help', @HelpBitBtnClick);
-  MoreBitBtn := CreateToolButton('MoreBitBtn', lisPckEditMore, lisPkgEdThereAreMoreFunctionsInThePopupmenu, '', nil);
+  HelpBitBtn    := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisPkgEdThereAreMoreFunctionsInThePopupmenu, 'menu_help', @HelpBitBtnClick);
+  MoreBitBtn    := CreateToolButton('MoreBitBtn', lisPckEditMore, lisPkgEdThereAreMoreFunctionsInThePopupmenu, '', nil);
 
-  MoreBitBtn.DropdownMenu := FilesPopupMenu;
+  MoreBitBtn.DropdownMenu := MorePopupMenu;
+
+  OpenButton.LoadGlyphFromLazarusResource('laz_open');
+  OpenButton.Caption:='';
+  OpenButton.Hint:=lisOpenFile2;
+  SortAlphabeticallyButton.Hint:=lisPESortFilesAlphabetically;
+  SortAlphabeticallyButton.LoadGlyphFromLazarusResource('pkg_sortalphabetically');
+  DirectoryHierarchyButton.Hint:=lisPEShowDirectoryHierarchy;
+  DirectoryHierarchyButton.LoadGlyphFromLazarusResource('pkg_hierarchical');
 
   FilesTreeView.BeginUpdate;
   FFilesNode:=FilesTreeView.Items.Add(nil, dlgEnvFiles);
@@ -1518,7 +1564,6 @@ begin
   FRequiredPackagesNode.ImageIndex:=ImageIndexRequired;
   FRequiredPackagesNode.SelectedIndex:=FRequiredPackagesNode.ImageIndex;
   FilesTreeView.EndUpdate;
-  FilesTreeView.Images := IDEImages.Images_16;
 
   FilePropsGroupBox.Caption:=lisPckEditFileProperties;
 
@@ -1571,7 +1616,7 @@ begin
   //debugln(['TPackageEditorForm.SetShowDirectoryHierachy Old=',FShowDirectoryHierarchy,' New=',AValue]);
   if FShowDirectoryHierarchy=AValue then exit;
   FShowDirectoryHierarchy:=AValue;
-  DirectoryHierarchySpeedButton.Down:=FShowDirectoryHierarchy;
+  DirectoryHierarchyButton.Down:=FShowDirectoryHierarchy;
   FilterEdit.ShowDirHierarchy:=FShowDirectoryHierarchy;
   FilterEdit.InvalidateFilter;
 end;
@@ -1580,7 +1625,7 @@ procedure TPackageEditorForm.SetSortAlphabetically(const AValue: boolean);
 begin
   if FSortAlphabetically=AValue then exit;
   FSortAlphabetically:=AValue;
-  SortAlphabeticallySpeedButton.Down:=FSortAlphabetically;
+  SortAlphabeticallyButton.Down:=FSortAlphabetically;
   FilterEdit.SortData:=FSortAlphabetically;
   FilterEdit.InvalidateFilter;
 end;
@@ -1619,6 +1664,8 @@ begin
      and (FilesTreeView.Selected<>nil)
      and ((TObject(FilesTreeView.Selected.Data) is TFileNameItem)
            or (FilesTreeView.Selected.Parent=FRequiredPackagesNode));
+  OpenButton.Enabled:=(FilesTreeView.Selected<>nil)
+     and (TObject(FilesTreeView.Selected.Data) is TFileNameItem);
   UseBitBtn.Caption:=lisUse;
   UseBitBtn.Hint:=lisClickToSeeThePossibleUses;
   UseBitBtn.OnClick:=nil;
