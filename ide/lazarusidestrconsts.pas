@@ -2231,6 +2231,7 @@ resourcestring
   lisShowUnits = 'Show units';
   lisShowIdentifiers = 'Show identifiers';
   lisFilter = 'Filter';
+  lisIssues = 'Issues';
   lisUseMessageFile = 'Use message file:';
   lisRegularExpression = 'Regular expression';
   lisInvalidFilter = 'Invalid filter';

@@ -147,13 +147,15 @@ end;
 
 function GetRestrictedProperties: TOIRestrictedProperties;
 begin
-  if RestrictedManager = nil then RestrictedManager := TRestrictedManager.Create;
+  if RestrictedManager = nil then
+    RestrictedManager := TRestrictedManager.Create;
   Result := RestrictedManager.GetRestrictedProperties;
 end;
 
 function GetRestrictedList: TRestrictedList;
 begin
-  if RestrictedManager = nil then RestrictedManager := TRestrictedManager.Create;
+  if RestrictedManager = nil then
+    RestrictedManager := TRestrictedManager.Create;
   Result := RestrictedManager.GetRestrictedList;
 end;
 

@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, InterfaceBase, LCLProc, Contnrs, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, ComCtrls, Masks, ExtCtrls, Buttons,
+  Dialogs, StdCtrls, ComCtrls, TreeFilterEdit, ExtCtrls, Buttons,
   IDEImagesIntf, ObjectInspector,
   CompatibilityRestrictions, IDEOptionDefs, LazarusIDEStrConsts,
   EnvironmentOpts, ComponentReg, LazConf;
@@ -40,11 +40,13 @@ type
   { TRestrictionBrowserView }
 
   TRestrictionBrowserView = class(TForm)
-    NameFilterEdit: TEdit;
+    FilterEdit: TTreeFilterEdit;
     IssueFilterGroupBox: TGroupBox;
     IssueMemo: TMemo;
-    NameLabel: TLabel;
     IssueTreeView: TTreeView;
+    NameLabel: TLabel;
+    Panel1: TPanel;
+    Splitter1: TSplitter;
     procedure FormCreate(Sender: TObject);
     procedure IssueTreeViewSelectionChanged(Sender: TObject);
     procedure NameFilterEditChange(Sender: TObject);
@@ -53,8 +55,8 @@ type
     FClasses: TClassList;
     FCanUpdate: Boolean;
     procedure GetComponentClass(const AClass: TComponentClass);
-  public
     procedure UpdateIssueList;
+  public
     procedure SetIssueName(const AIssueName: String);
   end;
   
@@ -73,14 +75,11 @@ var
   X: Integer;
 begin
   FIssueList := GetRestrictedList;
-  
   Name := NonModalIDEWindowNames[nmiwIssueBrowser];
   Caption := lisMenuViewRestrictionBrowser;
-
-  IssueFilterGroupBox.Caption := lisFilter;
+  IssueFilterGroupBox.Caption := lisIssues;
   NameLabel.Caption := lisCodeToolsDefsName;
   IssueTreeView.Images := IDEImages.Images_16;
-  
   X := 10;
   // create widget set filter buttons
   for P := Low(TLCLPlatform) to High(TLCLPlatform) do
@@ -95,26 +94,23 @@ begin
       GroupIndex := Integer(P) + 1;
       Down := True;
       AllowAllUp := True;
-      
       try
         IDEImages.Images_16.GetBitmap(
                IDEImages.LoadImage(16, 'issue_'+LCLPlatformDirNames[P]), Glyph);
       except
         DebugLn('Restriction Browser: Unable to load image for ' + LCLPlatformDirNames[P] + '!');
       end;
-      
       ShowHint := True;
       Hint := LCLPlatformDisplayNames[P];
       OnClick := @NameFilterEditChange;
-      
       Parent := IssueFilterGroupBox;
       Inc(X, Width);
     end;
   end;
-  
   FCanUpdate := True;
   UpdateIssueList;
 end;
+
 procedure TRestrictionBrowserView.IssueTreeViewSelectionChanged(Sender: TObject);
 var
   Issue: TRestriction;
@@ -124,7 +120,6 @@ begin
     IssueMemo.Clear;
     Exit;
   end;
-
   Issue := PRestriction(IssueTreeView.Selected.Data)^;
   IssueMemo.Text := Issue.Short + LineEnding + LineEnding + Issue.Description;
 end;
@@ -141,120 +136,40 @@ end;
 
 procedure TRestrictionBrowserView.UpdateIssueList;
 var
-  IssueClass: String;
-  IssueProperty: String;
-  IssueMask: TMaskList;
-  S, M: String;
   I, ID: PtrInt;
   Issues: TStringList;
-  Issue: TRestriction;
-  C: TClass;
-  AddParentClass: Boolean;
   P: TLCLPlatform;
   WidgetSetFilter: TLCLPlatforms;
   Component: TComponent;
 begin
   if not FCanUpdate then Exit;
-  S := Trim(NameFilterEdit.Text);
-  IssueClass := '';
-  IssueProperty := '';
-  
   WidgetSetFilter := [];
   for P := Low(TLCLPlatform) to High(TLCLPlatform) do
   begin
     Component := FindComponent('SpeedButton' + LCLPlatformDirNames[P]);
-    if Component is TSpeedButton then
-      if (Component as TSpeedButton).Down then Include(WidgetSetFilter, P);
+    Assert(Component is TSpeedButton, 'Component '+Component.Name+' is not TSpeedButton');
+    if (Component as TSpeedButton).Down then
+      Include(WidgetSetFilter, P);
   end;
-  
-  I := Pos('.', S);
-  if I = 0 then IssueClass := S
-  else
-  begin
-    IssueClass := Copy(S, 0, I - 1);
-    IssueProperty := Copy(S, I + 1, MaxInt);
-  end;
-  
-  if (IssueProperty = '') and (IssueClass = '') then
-    M := '*'
-  else
-  begin
-    if IssueClass = '' then
-      M := '*.' + IssueProperty + '*'
-    else
-    begin
-      // find parent classes
-      M := '';
-      FClasses := TClassList.Create;
-      try
-        IDEComponentPalette.IterateRegisteredClasses(@GetComponentClass);
-        
-        FClasses.Add(TCustomForm);
-        FClasses.Add(TForm);
-        FClasses.Add(TDataModule);
-        FClasses.Add(TFrame);
-        
-        for I := 0 to FClasses.Count - 1 do
-        begin
-          C := FClasses[I];
-          AddParentClass := False;
-          while C <> nil do
-          begin
-            if AddParentClass or (Copy(C.ClassName, 0, Length(IssueClass)) = IssueClass) then
-            begin
-              if M <> '' then M := M + ';';
-              M := M + C.ClassName + ';' + C.ClassName + '.' + IssueProperty + '*';
-              AddParentClass := True;
-            end;
-            
-            C := C.ClassParent;
-          end;
-        end;
-        
-        if FClasses.Count = 0 then
-          M := IssueClass + '*;' + IssueClass + '*.' + IssueProperty + '*';
-          
-        if (Copy('TWidgetSet', 0, Length(IssueClass)) = IssueClass) then
-          M := M + ';TWidgetSet';
-      finally
-        FClasses.Free;
-      end;
-    end;
-  end;
-  
-  IssueMask := TMaskList.Create(M);
   Issues := TStringList.Create;
   try
     for I := 0 to High(FIssueList) do
-    begin
-      Issue := FIssueList[I];
-      if Issue.WidgetSet in WidgetSetFilter then
-        if IssueMask.Matches(Issue.Name)  then
-          Issues.AddObject(Issue.Name, TObject(I));
-    end;
-    
+      if FIssueList[I].WidgetSet in WidgetSetFilter then
+        Issues.AddObject(FIssueList[I].Name, TObject(I));
     Issues.Sort;
-
     IssueTreeView.BeginUpdate;
     try
       IssueTreeView.Items.Clear;
-      
       for I := 0 to Issues.Count - 1 do
       begin
         with IssueTreeView.Items.AddChild(nil, Issues[I]) do
         begin
           ID := PtrInt(Issues.Objects[I]);
-          
           ImageIndex := IDEImages.LoadImage(16,
               'issue_'+LCLPlatformDirNames[FIssueList[ID].WidgetSet]);
           StateIndex := ImageIndex;
           SelectedIndex := ImageIndex;
-          
           Data := @FIssueList[ID];
-        end;
-        if NameFilterEdit.Text = Issues[I] then
-        begin
-          IssueTreeView.Selected := IssueTreeView.Items[I];
         end;
       end;
     finally
@@ -262,9 +177,7 @@ begin
     end;
   finally
     Issues.Free;
-    IssueMask.Free;
   end;
-  
   if IssueTreeView.Items.Count > 0 then
   begin
     if IssueTreeView.Selected = nil then
@@ -281,15 +194,14 @@ var
 begin
   FCanUpdate := False;
   try
-    NameFilterEdit.Text := AIssueName;
-
+    FilterEdit.Text := AIssueName;
     if AIssueName <> '' then
     begin
       for P := Low(TLCLPlatform) to High(TLCLPlatform) do
       begin
         Component := FindComponent('SpeedButton' + LCLPlatformDirNames[P]);
-        if Component is TSpeedButton then
-          (Component as TSpeedButton).Down := True;
+        Assert(Component is TSpeedButton, 'Component '+Component.Name+' is not TSpeedButton');
+        (Component as TSpeedButton).Down := True;
       end;
     end;
   finally
