@@ -657,8 +657,10 @@ begin
   if (FCount = 0) then Exit;
   CheckIndex(Index);
   FillDescription(Image.Description);
-  Image.DataSize := FWidth * FHeight * SizeOf(FData[0]);
-  Image.Data := @FData[Index * FWidth * FHeight];
+  if Index >= 0 then begin
+    Image.DataSize := FWidth * FHeight * SizeOf(FData[0]);
+    Image.Data := @FData[Index * FWidth * FHeight];
+  end;
 end;
 
 function TCustomImageList.GetReference: TWSCustomImageListReference;
