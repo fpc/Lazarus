@@ -4926,6 +4926,7 @@ function TStandardCodeTool.FindBlockStart(const CursorPos: TCodeXYPosition;
 // e.g. bracket open, 'begin', 'repeat', ...
 var CleanCursorPos: integer;
   CursorOnStart: Boolean;
+  Node: TCodeTreeNode;
 begin
   Result:=false;
   // scan code
@@ -4937,38 +4938,57 @@ begin
   MoveCursorToCleanPos(CurPos.StartPos);
   ReadNextAtom;
   try
-    repeat
-      //debugln(['TStandardCodeTool.FindBlockStart AAA1 ',CleanPosToStr(CurPos.StartPos),' ',GetAtom]);
-      if (CurPos.StartPos<0) then begin
-        // start of source found -> this is always a block start
+    if CurPos.StartPos>=SrcLen then begin
+      ReadPriorAtom;
+      if CurPos.StartPos<1 then begin
         CurPos.StartPos:=1;
         exit(true);
-      end
-      else if Src[CurPos.StartPos] in [')',']','}'] then begin
-        // jump backward to matching bracket
-        CursorOnStart:=(CleanCursorPos=CurPos.StartPos);
-        if not ReadBackwardTilAnyBracketClose then exit;
-        if CursorOnStart then exit(true);
-      end
-      else if WordIsBlockStatementStart.DoItCaseInsensitive(Src,
-        CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
-      begin
-        // block start found
-        exit(true);
-      end else if UpAtomIs('END') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
-      or UpAtomIs('UNTIL') then
-      begin
-        // read backward till BEGIN, CASE, ASM, RECORD, REPEAT
-        CursorOnStart:=(CleanCursorPos>=CurPos.StartPos)
-                   and (CleanCursorPos<CurPos.EndPos);
-        ReadBackTilBlockEnd(true);
-        if CursorOnStart then exit(true);
       end;
-      ReadPriorAtom;
-    until false;
+    end;
+    Node:=FindDeepestNodeAtPos(CleanCursorPos,false);
+    //debugln(['TStandardCodeTool.FindBlockStart ',Node.DescAsString]);
+    if (Node=nil)
+    or (Node.Desc in (AllPascalStatements+AllPascalTypes))
+    or (Src[CurPos.StartPos] in [')',']','}'])
+    then begin
+      repeat
+        //debugln(['TStandardCodeTool.FindBlockStart atom ',CleanPosToStr(CurPos.StartPos),' ',GetAtom]);
+        if (CurPos.StartPos<0) then begin
+          // start of source found -> this is always a block start
+          CurPos.StartPos:=1;
+          exit(true);
+        end
+        else if Src[CurPos.StartPos] in [')',']','}'] then begin
+          // jump backward to matching bracket
+          CursorOnStart:=(CleanCursorPos=CurPos.StartPos);
+          if not ReadBackwardTilAnyBracketClose then exit;
+          if CursorOnStart then exit(true);
+        end
+        else if WordIsBlockStatementStart.DoItCaseInsensitive(Src,
+          CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
+        begin
+          // block start found
+          exit(true);
+        end else if UpAtomIs('END') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
+        or UpAtomIs('UNTIL') then
+        begin
+          // read backward till BEGIN, CASE, ASM, RECORD, REPEAT
+          CursorOnStart:=(CleanCursorPos>=CurPos.StartPos)
+                     and (CleanCursorPos<CurPos.EndPos);
+          ReadBackTilBlockEnd(true);
+          if CursorOnStart then exit(true);
+        end;
+        ReadPriorAtom;
+      until false;
+    end else if Node<>nil then begin
+      if CleanCursorPos>=Node.StartPos then begin
+        CurPos.StartPos:=Node.StartPos;
+        exit(true);
+      end;
+    end;
   finally
     if Result then begin
-      // CursorPos now contains the counter block keyword
+      // CursorPos now contains the block start atom
       Result:=CleanPosToCaretAndTopLine(CurPos.StartPos,NewPos,NewTopLine);
     end;
   end;
