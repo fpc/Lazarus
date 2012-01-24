@@ -228,6 +228,7 @@ type
     property AutoSize;
     property Color;
     property DrawStyle;
+    property Enabled;
     property TabStop default True;
     property Text: string read GetText write SetText;
   end;
@@ -245,6 +246,7 @@ type
     property Checked;
     property DrawStyle;
     property Caption;
+    property Enabled;
     property TabStop default True;
     property State;
   end;
@@ -258,9 +260,10 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
+    property Caption;
     property Checked;
     property DrawStyle;
-    property Caption;
+    property Enabled;
     property TabStop default True;
   end;
 
@@ -336,6 +339,7 @@ type
     destructor Destroy; override;
   published
     property DrawStyle;
+    property Enabled;
     property Kind: TScrollBarKind read FKind write SetKind;
     property PageSize;
     property TabStop default True;
@@ -357,8 +361,9 @@ type
     destructor Destroy; override;
   published
     property AutoSize;
-    property DrawStyle;
     property Caption;
+    property DrawStyle;
+    property Enabled;
     property TabStop default False;
   end;
 
@@ -386,8 +391,9 @@ type
     property BevelInner: TPanelBevel read FBevelInner write SetBevelInner default bvNone;
     property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter default bvRaised;
     property BevelWidth: TBevelWidth read FBevelWidth write SetBevelWidth default 1;
-    property DrawStyle;
     property Caption;
+    property DrawStyle;
+    property Enabled;
     property TabStop default False;
   end;
 
@@ -406,8 +412,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property DrawStyle;
     property Caption;
+    property DrawStyle;
+    property Enabled;
     property TabStop default False;
   end;
 
@@ -437,6 +444,7 @@ type
   published
     property Color;
     property DrawStyle;
+    property Enabled;
     property Orientation: TTrackBarOrientation read FOrientation write SetOrientation default trHorizontal;
     property TabStop default True;
   end;
@@ -474,6 +482,7 @@ type
     property BarShowText: Boolean read FBarShowText write SetBarShowText;
     property Color;
     property DrawStyle;
+    property Enabled;
     property Max: integer read FMax write SetMax default 10;
     property Min: integer read FMin write SetMin default 0;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -525,6 +534,7 @@ type
     property Color;
     property TabStop default True;
     property Columns: TListColumns read FColumns write SetColumns;
+    property Enabled;
     //property GridLines: Boolean index Ord(lvpGridLines) read GetProperty write SetProperty default False;
     property Items: TCDListItems read FListItems;
     property ScrollBars;
@@ -604,6 +614,7 @@ type
   TCDTabControl = class(TCDCustomTabControl)
   published
     property Color;
+    property Enabled;
     property Font;
     property Tabs;
     property TabIndex;
@@ -643,6 +654,7 @@ type
     property DrawStyle;
     property Caption;
     property Color;
+    property Enabled;
     property Font;
     property PageIndex: integer read GetPageIndex write SetPageIndex;
     property Options;
@@ -1147,7 +1159,13 @@ end;
 function TCDButtonControl.GetCheckedState: TCheckBoxState;
 begin
   if csfOn in FState then Result := cbChecked
-  else if csfPartiallyOn in FState then Result := cbGrayed
+  else if csfPartiallyOn in FState then
+  begin
+    if FAllowGrayed then
+      Result := cbGrayed
+    else
+      Result := cbChecked;
+  end
   else Result := cbUnchecked;
 end;
 
@@ -1156,9 +1174,15 @@ var
   NewState: TCDControlState;
 begin
   case AValue of
-  cbChecked:   NewState := FState + [csfOff] - [csfOn, csfPartiallyOn];
-  cbGrayed:    NewState := FState + [csfOn] - [csfOff, csfPartiallyOn];
-  cbUnchecked: NewState := FState + [csfPartiallyOn] - [csfOn, csfOff];
+    cbUnchecked:  NewState := FState + [csfOff] - [csfOn, csfPartiallyOn];
+    cbChecked:    NewState := FState + [csfOn] - [csfOff, csfPartiallyOn];
+    cbGrayed:
+    begin
+      if FAllowGrayed then
+        NewState := FState + [csfPartiallyOn] - [csfOn, csfOff]
+      else
+        NewState := FState + [csfOn] - [csfOff, csfPartiallyOn];
+    end;
   end;
   SetState(NewState);
 end;
