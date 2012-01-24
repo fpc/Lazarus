@@ -60,7 +60,7 @@ uses
   {$ENDIF}
   {$IFDEF BigIDE}
     RunTimeTypeInfoControls, Printer4Lazarus, Printers4LazIDE,
-    MemDSLaz, SDFLaz, InstantFPCLaz,
+    MemDSLaz, SDFLaz, InstantFPCLaz, ExternHelp,
     TurboPowerIPro, {$ifdef UseTurbopowerInHelp}TurboPowerIProDsgn,{$endif}
     {$ifdef UseJCF}jcfidelazarus,{$endif}
     {$ifdef UseCHMHelp}chmhelppkg,{$endif}

@@ -24,7 +24,6 @@ unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
         ../components/lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET) \
 		../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
         ../components/custom \
-        ../components/mpaslex \
         ../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) \
         ../designer \
         ../debugger \
@@ -123,7 +122,8 @@ BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
   -Fu../components/jcf2/IdePlugin/lazarus/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/chmhelp/packages/help/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/chmhelp/packages/idehelp/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/instantfpc/lib/$(CPU_TARGET)-$(OS_TARGET)
+  -Fu../components/instantfpc/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/externhelp/lib/$(CPU_TARGET)-$(OS_TARGET)
 
 LAZBUILD_OPT=$(LAZARUS_LIBPATHS)
 
