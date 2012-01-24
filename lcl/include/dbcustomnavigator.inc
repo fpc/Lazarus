@@ -212,8 +212,7 @@ begin
   ActiveChanged;
 end;
 
-procedure TDBCustomNavigator.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TDBCustomNavigator.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (Operation=opRemove) then begin

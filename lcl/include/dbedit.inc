@@ -158,8 +158,7 @@ begin
   end;
 end;
 
-procedure TDBEdit.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TDBEdit.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   // if the datasource is being removed then we need to make sure

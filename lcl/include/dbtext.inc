@@ -66,8 +66,7 @@ begin
   Message.Result := PtrUInt(FDataLink);
 end;
 
-procedure TDBText.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TDBText.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   // if the datasource is being removed then we need to make sure

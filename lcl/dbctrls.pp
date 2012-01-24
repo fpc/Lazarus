@@ -87,7 +87,6 @@ Type
     // Attached control
     property Control: TComponent read FControl write FControl;
 
-
     // Basic DB interfaces
     property Field: TField read FField;
     property FieldName: string read FFieldName write SetFieldName;
@@ -149,8 +148,7 @@ Type
     procedure SetLookupCache(const Value: boolean);
     function HandleNullKey(var Key: Word; Shift: TShiftState): Boolean;
   protected
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -182,8 +180,6 @@ Type
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
-
-
     procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
@@ -193,8 +189,7 @@ Type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
 
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
     function EditCanModify: Boolean; override;
     function GetEditText: string; override;
@@ -275,8 +270,7 @@ Type
     procedure SetDataSource(Value: TDataSource);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     class procedure WSRegisterClass; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -346,8 +340,7 @@ Type
     procedure DataChange(Sender: TObject); virtual; abstract;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
 
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure UpdateData(Sender: TObject); virtual; abstract;
     // we need to override the Items Write method for db aware.
     procedure SetItems(Values : TStrings); override;
@@ -521,8 +514,7 @@ Type
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     procedure Change; virtual;
-    procedure Notification(AComponent: TComponent;
-                           Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
     property DataLink: TFieldDataLink read FDataLink;
@@ -590,8 +582,7 @@ Type
     procedure DataChange(Sender: TObject);
     procedure DoOnChange; override;
     procedure UpdateData(Sender: TObject);
-    procedure Notification(AComponent: TComponent;
-                           Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -656,8 +647,7 @@ Type
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     procedure DataChange(Sender: TObject); virtual; abstract;
-    procedure Notification(AComponent: TComponent;
-                           Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Change; override;
     procedure UpdateData(Sender: TObject); virtual; abstract;
     procedure WndProc(var Message: TLMessage); override;
@@ -674,7 +664,7 @@ Type
   end;
 
 
-     { TDBComboBox }
+  { TDBComboBox }
 
   TDBComboBox = class(TCustomDBComboBox)
   protected
@@ -853,8 +843,7 @@ Type
     function GetReadOnly: Boolean; override;
     procedure SetReadOnly(AValue: Boolean); override;
     procedure DataChange(Sender: TObject);
-    procedure Notification(AComponent: TComponent;
-                           Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure UpdateData(Sender: TObject);
     procedure Change; override;
     procedure KeyPress(var Key:Char); override;
@@ -925,8 +914,7 @@ Type
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     procedure DataChange(Sender: TObject);
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -994,8 +982,7 @@ Type
     procedure SetReadOnly(const AValue: Boolean);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
     procedure PictureChanged(Sender: TObject); override;
@@ -1057,8 +1044,7 @@ Type
     procedure UpdateDate(const AValue: string);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -1165,8 +1151,7 @@ type
     procedure EditingChanged; virtual;
     procedure ActiveChanged; virtual;
     procedure Loaded; override;
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure UpdateButtons; virtual;
     procedure UpdateHints; virtual;
     procedure HintsChanged(Sender: TObject); virtual;

@@ -92,8 +92,7 @@ begin
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
-procedure TDBRadioGroup.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TDBRadioGroup.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (Operation=opRemove) then begin
