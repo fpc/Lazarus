@@ -45,18 +45,18 @@ type
     FValueEmpty: Boolean;
     FUpdatePending: Boolean;
     FValueChanged: Boolean;
-    procedure SetMaxValue(const AValue: Double);
-    procedure SetMinValue(const AValue: Double);
-    procedure SetValueEmpty(const AValue: Boolean);
+    function GetValue: Double;
     procedure UpdateControl;
   protected
     class procedure WSRegisterClass; override;
     function  RealGetText: TCaption; override;
     procedure TextChanged; override;
-    procedure SetDecimals(ADecimals: Integer);
-    function GetValue: Double;
-    procedure SetValue(const AValue: Double);
-    procedure SetIncrement(const AIncrement: Double);
+    procedure SetDecimals(ADecimals: Integer); virtual;
+    procedure SetValue(const AValue: Double); virtual;
+    procedure SetMaxValue(const AValue: Double); virtual;
+    procedure SetMinValue(const AValue: Double); virtual;
+    procedure SetValueEmpty(const AValue: Boolean); virtual;
+    procedure SetIncrement(const AIncrement: Double); virtual;
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;
     procedure Loaded; override;
@@ -64,9 +64,9 @@ type
     class function GetControlClassDefaultSize: TSize; override;
   public
     constructor Create(TheOwner: TComponent); override;
-    function GetLimitedValue(const AValue: Double): Double;
-    function ValueToStr(const AValue: Double): String;
-    function StrToValue(const S: String): Double;
+    function GetLimitedValue(const AValue: Double): Double; virtual;
+    function ValueToStr(const AValue: Double): String; virtual;
+    function StrToValue(const S: String): Double; virtual;
   public
     property DecimalPlaces: Integer read FDecimals write SetDecimals default 2;
     property Increment: Double read FIncrement write SetIncrement;
@@ -129,10 +129,11 @@ type
     function GetMaxValue: integer;
     function GetMinValue: integer;
     function GetValue: integer;
-    procedure SetIncrement(const AValue: integer);
-    procedure SetMaxValue(const AValue: integer);
-    procedure SetMinValue(const AValue: integer);
-    procedure SetValue(const AValue: integer);
+  protected
+    procedure SetMaxValue(const AValue: integer); overload; virtual;
+    procedure SetMinValue(const AValue: integer); overload; virtual;
+    procedure SetIncrement(const AValue: integer); overload; virtual;
+    procedure SetValue(const AValue: integer); overload; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
   public
