@@ -70,12 +70,7 @@ implementation
 {$R *.lfm}
 
 uses
-  editortoolbar_impl
-  ,LazConfigStorage
-  ,BaseIDEIntf
-  ,LazIDEIntf
-  ,IDEImagesIntf
-  ;
+  editortoolbar_impl, LazConfigStorage, BaseIDEIntf, LazIDEIntf, IDEImagesIntf;
 
 { TEdtTbConfigForm }
 
@@ -99,7 +94,6 @@ begin
   SetupCaptions;
   LoadCategories;
   LoadSettings;
-  TV.FullExpand;
 end;
 
 procedure TEdtTbConfigForm.lbToolbarSelectionChange(Sender: TObject; User: boolean);

@@ -51,7 +51,6 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Height = 26
     Top = 74
     Width = 22
-    Anchors = [akLeft]
     BorderSpacing.Left = 13
     BorderSpacing.Top = 1
     Enabled = False
@@ -193,7 +192,6 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
-    DefaultItemHeight = 16
     ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 1
@@ -214,5 +212,6 @@ object EdtTbConfigForm: TEdtTbConfigForm
     MaxLength = 0
     TabOrder = 0
     FilteredTreeview = TV
+    ExpandAllInitially = True
   end
 end
