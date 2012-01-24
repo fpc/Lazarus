@@ -15695,7 +15695,7 @@ begin
   if CodeToolBoss.FindBlockStart(ActiveUnitInfo.Source,
     ActiveSrcEdit.EditorComponent.CaretX,
     ActiveSrcEdit.EditorComponent.CaretY,
-    NewSource,NewX,NewY,NewTopLine) then
+    NewSource,NewX,NewY,NewTopLine,true) then
   begin
     Flags:=[jfFocusEditor];
     if (ActiveSrcEdit.EditorComponent.CaretY<>NewY)

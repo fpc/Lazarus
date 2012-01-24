@@ -223,7 +223,8 @@ type
     function FindBlockCounterPart(const CursorPos: TCodeXYPosition;
           out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindBlockStart(const CursorPos: TCodeXYPosition;
-          out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+          out NewPos: TCodeXYPosition; out NewTopLine: integer;
+          SkipStart: boolean = true): boolean;
     function GuessUnclosedBlock(const CursorPos: TCodeXYPosition;
           out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindBlockCleanBounds(const CursorPos: TCodeXYPosition;
@@ -4920,13 +4921,15 @@ begin
   Result:=CleanPosToCaretAndTopLine(CurPos.StartPos,NewPos,NewTopLine);
 end;
 
-function TStandardCodeTool.FindBlockStart(const CursorPos: TCodeXYPosition;
-  out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+function TStandardCodeTool.FindBlockStart(const CursorPos: TCodeXYPosition; out
+  NewPos: TCodeXYPosition; out NewTopLine: integer; SkipStart: boolean
+  ): boolean;
 // jump to beginning of current block
 // e.g. bracket open, 'begin', 'repeat', ...
 var CleanCursorPos: integer;
   CursorOnStart: Boolean;
   Node: TCodeTreeNode;
+  MinPos: Integer;
 begin
   Result:=false;
   // scan code
@@ -4946,11 +4949,13 @@ begin
       end;
     end;
     Node:=FindDeepestNodeAtPos(CleanCursorPos,false);
-    //debugln(['TStandardCodeTool.FindBlockStart ',Node.DescAsString]);
+    //if Node<>nil then debugln(['TStandardCodeTool.FindBlockStart ',Node.DescAsString]);
     if (Node=nil)
-    or (Node.Desc in (AllPascalStatements+AllPascalTypes))
+    or (Node.Desc in (AllPascalStatements+AllPascalTypes-AllClasses))
     or (Src[CurPos.StartPos] in [')',']','}'])
     then begin
+      MinPos:=1;
+      if Node<>nil then MinPos:=Node.StartPos;
       repeat
         //debugln(['TStandardCodeTool.FindBlockStart atom ',CleanPosToStr(CurPos.StartPos),' ',GetAtom]);
         if (CurPos.StartPos<0) then begin
@@ -4968,7 +4973,8 @@ begin
           CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
         begin
           // block start found
-          exit(true);
+          if (CurPos.StartPos<CleanCursorPos) or (not SkipStart) then
+            exit(true);
         end else if UpAtomIs('END') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
         or UpAtomIs('UNTIL') then
         begin
@@ -4979,8 +4985,18 @@ begin
           if CursorOnStart then exit(true);
         end;
         ReadPriorAtom;
-      until false;
-    end else if Node<>nil then begin
+      until CurPos.StartPos<MinPos;
+    end;
+    if Node<>nil then begin
+      if SkipStart and (CleanCursorPos=Node.StartPos) then begin
+        while (Node<>nil) and (Node.StartPos=CleanCursorPos) do
+          Node:=Node.Parent;
+        if Node<>nil then
+          CurPos.StartPos:=Node.StartPos
+        else
+          CurPos.StartPos:=1;
+        exit(true);
+      end;
       if CleanCursorPos>=Node.StartPos then begin
         CurPos.StartPos:=Node.StartPos;
         exit(true);

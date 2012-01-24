@@ -386,7 +386,8 @@ type
           out NewX, NewY, NewTopLine: integer): boolean;
     function FindBlockStart(Code: TCodeBuffer; X,Y: integer;
           out NewCode: TCodeBuffer;
-          out NewX, NewY, NewTopLine: integer): boolean;
+          out NewX, NewY, NewTopLine: integer;
+          SkipStart: boolean = false): boolean;
     function GuessUnclosedBlock(Code: TCodeBuffer; X,Y: integer;
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): boolean;
@@ -3377,8 +3378,8 @@ begin
   {$ENDIF}
 end;
 
-function TCodeToolManager.FindBlockStart(Code: TCodeBuffer;
-  X, Y: integer; out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer
+function TCodeToolManager.FindBlockStart(Code: TCodeBuffer; X, Y: integer; out
+  NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer; SkipStart: boolean
   ): boolean;
 var
   CursorPos: TCodeXYPosition;
@@ -3396,7 +3397,7 @@ begin
   DebugLn('TCodeToolManager.FindBlockStart B ',dbgs(FCurCodeTool.Scanner<>nil));
   {$ENDIF}
   try
-    Result:=FCurCodeTool.FindBlockStart(CursorPos,NewPos,NewTopLine);
+    Result:=FCurCodeTool.FindBlockStart(CursorPos,NewPos,NewTopLine,SkipStart);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
