@@ -10,7 +10,7 @@ Index: components/Makefile.fpc
  
  [target]
 -dirs=lazutils codetools synedit lazcontrols
-+dirs=lazutils codetools synedit lazcontrols printers printers/design fpcunit fpcunit/ide memds projecttemplates rtticontrols sdf sqldb tachart tdbf turbopower_ipro jcf2/IdePlugin/lazarus todolist chmhelp/packages/help chmhelp/packages/idehelp instantfpc
++dirs=lazutils codetools synedit lazcontrols printers printers/design fpcunit fpcunit/ide memds projecttemplates rtticontrols sdf sqldb tachart tdbf turbopower_ipro jcf2/IdePlugin/lazarus todolist chmhelp/packages/help chmhelp/packages/idehelp instantfpc externhelp
  
  [clean]
  files=$(wildcard ./units/*$(OEXT)) \
