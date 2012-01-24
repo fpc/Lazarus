@@ -474,7 +474,7 @@ begin
   end;
   Pkg.CustomOptions.SetDeleteValue(Path+'Count',Cnt,0);
   Pkg.Modified:=True;
-  DebugLn(['TExternHelpOptions.SaveOptionsToPackage MODIFIED: ',Pkg.Name]);
+  //DebugLn(['TExternHelpOptions.SaveOptionsToPackage MODIFIED: ',Pkg.Name]);
 end;
 
 procedure TExternHelpOptions.SaveOptionsToPackages;
@@ -553,9 +553,9 @@ begin
   Config:=GetIDEConfigStorage(Filename,false);
   try
     Result:=Save(Config);
-    DebugLn(['TExternHelpOptions.SaveToFile ',Filename,' ',Config.GetFilename]);
+    //DebugLn(['TExternHelpOptions.SaveToFile ',Filename,' ',Config.GetFilename]);
     Config.WriteToDisk;
-    DebugLn(['TExternHelpOptions.SaveToFile exists=',FileExistsUTF8(GetFullFilename)]);
+    //DebugLn(['TExternHelpOptions.SaveToFile exists=',FileExistsUTF8(GetFullFilename)]);
   finally
     Config.Free;
   end;
@@ -811,8 +811,7 @@ var
 begin
   if not (ssLeft in Shift) then begin
     // no left mouse button => stop showing insert mark
-    if tvoAutoInsertMark in ItemsTreeView.Options then
-      DebugLn(['TExternHelpGeneralOptsFrame.ItemsTreeViewMouseMove no left']);
+    //if tvoAutoInsertMark in ItemsTreeView.Options then DebugLn(['TExternHelpGeneralOptsFrame.ItemsTreeViewMouseMove no left']);
     ItemsTreeView.Options:=ItemsTreeView.Options-[tvoAutoInsertMark];
     FDragNode:=nil;
   end else if (not ItemsTreeView.Dragging) then begin
@@ -823,12 +822,12 @@ begin
       FDragNode:=TVNode;
       ItemsTreeView.BeginDrag(true);
       ItemsTreeView.Options:=ItemsTreeView.Options-[tvoAutoInsertMark];
-      DebugLn(['TExternHelpGeneralOptsFrame.ItemsTreeViewMouseMove START']);
+      //DebugLn(['TExternHelpGeneralOptsFrame.ItemsTreeViewMouseMove START']);
     end else begin
       // no node to drag
       ItemsTreeView.Options:=ItemsTreeView.Options-[tvoAutoInsertMark];
       FDragNode:=nil;
-      DebugLn(['TExternHelpGeneralOptsFrame.ItemsTreeViewMouseMove no node']);
+      //DebugLn(['TExternHelpGeneralOptsFrame.ItemsTreeViewMouseMove no node']);
     end;
   end;
 end;
@@ -1406,7 +1405,7 @@ var
   ShowNode: THelpNode;
   Viewer: THelpViewer;
 begin
-  DebugLn(['TExternalHelpDatabase.ShowHelp ',DbgSName(Query)]);
+  //DebugLn(['TExternalHelpDatabase.ShowHelp ',DbgSName(Query)]);
   if (Query is THelpQueryPascalContexts)
   and (QueryItem is TPascalHelpContextList) then begin
     // a pascal context query

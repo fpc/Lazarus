@@ -1,11 +1,10 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="ExternHelp"/>
-    <AddToProjectUsesSection Value="False"/>
     <Author Value="Mattias Gaertner"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
@@ -27,7 +26,7 @@
       </Item1>
       <Item2>
         <Filename Value="README.txt"/>
-        <Type Value="Binary"/>
+        <Type Value="Text"/>
       </Item2>
     </Files>
     <i18n>
@@ -54,36 +53,36 @@
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
-    <CustomOptions Childs="ExternHelp">
-      <_ExternHelp Childs="Count/Item1/Item2/Item3">
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count/Item1/Item2/Item3">
         <_Count Value="3"/>
-        <_Item1 Childs="Filename/Name/URL">
-          <_Filename Childs="Value">
+        <_Item1 Items="Filename/Name/URL">
+          <_Filename Items="Value">
             <_Value Value="$(FPCSrcDir)/rtl/win32/windows.pp"/>
           </_Filename>
           <_Name Value="Windows"/>
-          <_URL Childs="Value">
+          <_URL Items="Value">
             <_Value Value="http://social.msdn.microsoft.com/Search/en-us?query=$(Identifier)"/>
           </_URL>
         </_Item1>
-        <_Item2 Childs="Filename/Name/URL">
-          <_Filename Childs="Value">
+        <_Item2 Items="Filename/Name/URL">
+          <_Filename Items="Value">
             <_Value Value="$(FPCSrcDir)/packages/postgres/src/"/>
           </_Filename>
           <_Name Value="PostgreSQL"/>
-          <_URL Childs="Value">
+          <_URL Items="Value">
             <_Value Value="http://search.postgresql.org/search?q=$(Identifier)"/>
           </_URL>
         </_Item2>
-        <_Item3 Childs="Filename/Name/URL/WithSubDirectories">
-          <_Filename Childs="Value">
+        <_Item3 Items="Filename/Name/URL/WithSubDirectories">
+          <_Filename Items="Value">
             <_Value Value="$(FPCSrcDir)/packages/gtk2/"/>
           </_Filename>
           <_Name Value="Gtk2"/>
-          <_URL Childs="Value">
-            <_Value Value="http://www.google.com/custom?domains=library.gnome.org&amp;sitesearch=library.gnome.org&amp;q=$(Identifier)"/>
+          <_URL Items="Value">
+            <_Value Value="http://developer.gnome.org/gtk/stable/GtkWidget.html#$(Identifier)"/>
           </_URL>
-          <_WithSubDirectories Childs="Value">
+          <_WithSubDirectories Items="Value">
             <_Value Value="True"/>
           </_WithSubDirectories>
         </_Item3>

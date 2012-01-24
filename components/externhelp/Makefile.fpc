@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for ExternHelp 1.3
 #
-#   This file was generated on 01/13/2011
+#   This file was generated on 01/24/2012
 
 [package]
 name=externhelp
@@ -10,8 +10,8 @@ version=1.3
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
-options= -MObjFPC -Scghi -O1 -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
+unitdir=../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+options= -MObjFPC -Scghi -O1 -g -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]
 units=externhelp.pas
