@@ -902,7 +902,7 @@ begin
   Result:=GetPrevVisibleSibling;
   if Result <> nil then begin
     while Result.Visible and Result.Expanded do begin
-      ANode:=Result.GetLastVisibleChild;
+      ANode:=Result.GetLastChild;
       if ANode=nil then break;
       Result:=ANode;
     end;

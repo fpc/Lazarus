@@ -53,6 +53,8 @@ type
     fSelectionList: TStringList;    // Store/restore the old selections here.
     fShowDirHierarchy: Boolean;     // Show direcories / files as a tree structure.
     fBranches: TBranchList;         // Items are under these nodes can be sorted.
+    fExpandAllInitially: Boolean;   // Expand all levels when searched for the first time.
+    fIsFirstTime: Boolean;          // Needed for fExpandAllInitially.
     fOnGetImageIndex: TImageIndexEvent;
     function GetFilteredTreeview: TCustomTreeview;
     procedure SetFilteredTreeview(const AValue: TCustomTreeview);
@@ -76,9 +78,9 @@ type
     property ImageIndexDirectory: integer read fImageIndexDirectory write fImageIndexDirectory;
     property SelectionList: TStringList read fSelectionList;
     property ShowDirHierarchy: Boolean read fShowDirHierarchy write SetShowDirHierarchy;
-    //property Branches: TBranchList read fBranches write fBranches;
   published
     property FilteredTreeview: TCustomTreeview read GetFilteredTreeview write SetFilteredTreeview;
+    property ExpandAllInitially: Boolean read fExpandAllInitially write fExpandAllInitially default False;
     property OnGetImageIndex: TImageIndexEvent read fOnGetImageIndex write fOnGetImageIndex;
   end;
 
@@ -311,6 +313,8 @@ begin
   inherited Create(AOwner);
   fSelectionList:=TStringList.Create;
   fImageIndexDirectory := -1;
+  fExpandAllInitially := False;
+  fIsFirstTime := True;
 end;
 
 destructor TTreeFilterEdit.Destroy;
@@ -381,11 +385,15 @@ var
   i: Integer;
 begin
   fFilteredTreeview.BeginUpdate;
-  if Assigned(fBranches) then begin      // Filter the brances
+  if Assigned(fBranches) then begin      // Apply filter for the brances
     for i:=0 to fBranches.Count-1 do
       fBranches[i].ApplyFilter;
   end
-  else begin                             // Filter the whole tree.
+  else begin                             // Apply filter for the whole tree.
+    if fExpandAllInitially and fIsFirstTime then begin
+      fFilteredTreeview.FullExpand;
+      fIsFirstTime := False;
+    end;
     FilterTree(fFilteredTreeview.Items.GetFirstNode);
   end;
   fFilteredTreeview.ClearInvisibleSelection;
