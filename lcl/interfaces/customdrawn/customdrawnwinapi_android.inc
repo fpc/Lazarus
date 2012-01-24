@@ -2187,6 +2187,8 @@ var
   lWidth, lHeight: jint;
   lDestCanvas: TLazCanvas;
   lFontSize: Integer;
+  // array for the parameters
+  lParams: array[0..0] of JValue;
 begin
   {$ifdef VerboseCDText}
     DebugLn(Format(':>[WinAPI ExtTextOut] DC=%x javaEnvRef=%x Str=%s X=%d Y=%d',
@@ -2217,7 +2219,8 @@ begin
   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoGetTextBounds);
 
   // Call the method to draw the text
-  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoDrawText);
+  lParams[0].i := FPColorToAndroidColor(lDestCanvas.Font.FPColor);
+  javaEnvRef^^.CallVoidMethodA(javaEnvRef, javaActivityObject, javaMethod_LCLDoDrawText, @lParams[0]);
 
   // Get the bitmap with the text
   lJavaBitmap := javaEnvRef^^.GetObjectField(javaEnvRef, javaActivityObject, javaField_lclbitmap);

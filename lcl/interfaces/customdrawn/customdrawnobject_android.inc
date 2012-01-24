@@ -442,7 +442,7 @@ begin
   // Read all method IDs
   javaMethod_LCLDoGetTextBounds := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoGetTextBounds', '()V');
   javaMethod_LCLDoGetTextPartialWidths := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoGetTextPartialWidths', '()V');
-  javaMethod_LCLDoDrawText := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoDrawText', '()V');
+  javaMethod_LCLDoDrawText := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoDrawText', '(I)V');
   javaMethod_LCLDoShowMessageBox := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoShowMessageBox', '()V');
   javaMethod_LCLDoCreateTimer := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoCreateTimer', '()V');
   javaMethod_LCLDoDestroyTimer := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoDestroyTimer', '()V');

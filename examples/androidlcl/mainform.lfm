@@ -83,6 +83,8 @@ object Form1: TForm1
     Top = 223
     Width = 43
     Caption = 'Label1'
+    Font.Color = clBlue
     ParentColor = False
+    ParentFont = False
   end
 end

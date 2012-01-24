@@ -302,12 +302,12 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
 
   // input: String lcltext, int lclwidth, int lclheight
   // output: lclbitmap
-  public void LCLDoDrawText()
+  public void LCLDoDrawText(int ATextColor)
   {
     lclbitmap = Bitmap.createBitmap(lclwidth, lclheight, Bitmap.Config.ARGB_8888);
     Canvas localcanvas = new Canvas(lclbitmap);
     Paint localpaint = new Paint();
-    localpaint.setColor(Color.BLACK);
+    localpaint.setColor(ATextColor);
     localpaint.setTextSize(lcltextsize);
     localpaint.setFlags(Paint.ANTI_ALIAS_FLAG);
     localcanvas.drawColor(Color.TRANSPARENT); // TRANSPARENT
