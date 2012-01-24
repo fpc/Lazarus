@@ -384,7 +384,6 @@ procedure TTreeFilterEdit.ApplyFilterCore;
 var
   i: Integer;
 begin
-  fFilteredTreeview.BeginUpdate;
   if Assigned(fBranches) then begin      // Apply filter for the brances
     for i:=0 to fBranches.Count-1 do
       fBranches[i].ApplyFilter;
@@ -397,7 +396,6 @@ begin
     FilterTree(fFilteredTreeview.Items.GetFirstNode);
   end;
   fFilteredTreeview.ClearInvisibleSelection;
-  fFilteredTreeview.EndUpdate;
 end;
 
 procedure TTreeFilterEdit.StoreSelection;

@@ -3,7 +3,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
   Height = 437
   Top = 200
   Width = 651
-  ActiveControl = btnOK
+  ActiveControl = FilterEdit
   Caption = 'EdtTbConfigForm'
   ClientHeight = 437
   ClientWidth = 651
