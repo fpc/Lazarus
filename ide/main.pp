@@ -15685,6 +15685,7 @@ var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
+  Flags: TJumpToCodePosFlags;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
@@ -15696,8 +15697,13 @@ begin
     ActiveSrcEdit.EditorComponent.CaretY,
     NewSource,NewX,NewY,NewTopLine) then
   begin
+    Flags:=[jfFocusEditor];
+    if (ActiveSrcEdit.EditorComponent.CaretY<>NewY)
+    or (Abs(ActiveSrcEdit.EditorComponent.CaretX-NewX)>10)
+    then
+      Include(Flags,jfAddJumpPoint);
     DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
-      NewSource, NewX, NewY, NewTopLine, [jfFocusEditor]);
+      NewSource, NewX, NewY, NewTopLine, Flags);
   end else
     DoJumpToCodeToolBossError;
 end;
