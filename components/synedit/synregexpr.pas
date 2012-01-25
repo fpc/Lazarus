@@ -306,7 +306,7 @@ type
 
     function GetModifierStr : RegExprString;
     class function ParseModifiersStr (const AModifiers : RegExprString;
-      out AModifiersInt : integer) : boolean; //###0.941 class function now
+      var AModifiersInt : integer) : boolean; //###0.941 class function now
     // Parse AModifiers string and return true and set AModifiersInt
     // if it's in format 'ismxrg-ismxrg'.
     procedure SetModifierStr (const AModifiers : RegExprString);
@@ -343,7 +343,7 @@ type
     function ParseReg (paren : integer; out flagp : integer) : PRegExprChar;
     // regular expression, i.e. main body or parenthesized thing
 
-    function ParseBranch (var flagp : integer) : PRegExprChar;
+    function ParseBranch (out flagp : integer) : PRegExprChar;
     // one alternative of an | operator
 
     function ParsePiece (var flagp : integer) : PRegExprChar;
@@ -1328,7 +1328,7 @@ function TRegExpr.GetModifierStr : RegExprString;
 --------------------------------------------------------------}
 
 class function TRegExpr.ParseModifiersStr (const AModifiers : RegExprString;
-out AModifiersInt : integer) : boolean;
+var AModifiersInt : integer) : boolean;
 // !!! Be carefull - this is class function and must not use object instance fields
  var
   i : integer;
@@ -1831,7 +1831,7 @@ function TRegExpr.ParseReg (paren : integer; out flagp : integer) : PRegExprChar
  end; { of function TRegExpr.ParseReg
 --------------------------------------------------------------}
 
-function TRegExpr.ParseBranch (var flagp : integer) : PRegExprChar;
+function TRegExpr.ParseBranch (out flagp : integer) : PRegExprChar;
 // one alternative of an | operator
 // Implements the concatenation operator.
  var

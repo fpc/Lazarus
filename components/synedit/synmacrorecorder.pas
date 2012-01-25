@@ -53,7 +53,6 @@ uses
   QGraphics,
   QMenus,
 {$ELSE}
-  StdCtrls,
   Controls,
   {$IFDEF SYN_LAZARUS}
   {$IFDEF USE_UTF8BIDI_LCL}

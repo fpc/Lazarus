@@ -26,9 +26,9 @@ unit SynPluginTemplateEdit;
 interface
 
 uses
-  Classes, SysUtils, math, Graphics, LCLType, SynEditMiscClasses,
+  Classes, SysUtils, Graphics, LCLType,
   SynPluginSyncronizedEditBase, SynEditKeyCmds, SynEdit, SynEditMiscProcs,
-  LazSynEditText, LCLProc;
+  LCLProc;
 
 type
 

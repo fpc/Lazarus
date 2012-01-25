@@ -58,8 +58,7 @@ uses
   Windows, Messages,
   {$ENDIF}
   Classes, Registry, Graphics, SynEditHighlighterFoldBase, SynEditMiscProcs,
-  SynEditTypes, SynEditHighlighter, SynEditTextBase, SynEditTextBuffer,
-  SynEditStrConst;
+  SynEditTypes, SynEditHighlighter, SynEditTextBase, SynEditStrConst;
 
 type
   TSynPasStringMode = (spsmDefault, spsmStringOnly, spsmNone);

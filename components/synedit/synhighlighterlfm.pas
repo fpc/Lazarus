@@ -50,7 +50,7 @@ interface
 
 uses
   SysUtils, Classes, FileUtil, Graphics,
-  SynEditTextBuffer, SynEditTypes, SynEditHighlighter, SynEditHighlighterFoldBase;
+  SynEditTypes, SynEditHighlighter, SynEditHighlighterFoldBase;
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber, tkSpace,

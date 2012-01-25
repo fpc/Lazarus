@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, Graphics, math,
-  SynEditTextBuffer, SynEditHighlighter, SynEditHighlighterFoldBase;
+  SynEditHighlighter, SynEditHighlighterFoldBase;
 
 type
   TtkTokenKind = (tkNull, tkUnknown, tkSpace,

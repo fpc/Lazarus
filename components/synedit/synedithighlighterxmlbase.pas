@@ -31,7 +31,7 @@ interface
 
 uses
   SysUtils, Classes, math, LCLType,
-  SynEditTypes, SynEditTextBase, SynEditTextBuffer,
+  SynEditTextBase,
   SynEditHighlighter, SynEditHighlighterFoldBase;
 
 type
