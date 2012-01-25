@@ -676,13 +676,7 @@ end;
 
 procedure TPackageEditorForm.MorePopupMenuPopup(Sender: TObject);
 var
-  CurDependency: TPkgDependency;
-  Removed: boolean;
-  CurFile: TPkgFile;
   Writable: Boolean;
-  FileIndex: Integer;
-  CurNode: TTreeNode;
-  IsDir: Boolean;
 
   procedure SetItem(Item: TIDEMenuCommand; AnOnClick: TNotifyEvent;
                     aShow: boolean = true; AEnable: boolean = true);
@@ -697,14 +691,7 @@ begin
   PackageEditorMenuRoot.MenuItem:=MorePopupMenu.Items;
   PackageEditorMenuRoot.BeginUpdate;
   try
-    CurNode:=FilesTreeView.Selected;
-    CurDependency:=GetCurrentDependency(Removed);
     Writable:=(not LazPackage.ReadOnly);
-    if (CurDependency=nil) then
-      CurFile:=GetCurrentFile(Removed)
-    else
-      CurFile:=nil;
-    IsDir:=IsDirectoryNode(CurNode) or (CurNode=FFilesNode);
 
     PkgEditMenuSectionFileType.Clear;
 
