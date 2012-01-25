@@ -683,7 +683,7 @@ type
       const FoundContext: TFindContext): TIdentifierFoundResult;
     function FindDeclarationOfIdentAtParam(
       Params: TFindDeclarationParams): boolean;
-    function IdentifierIsDefined(IdentAtom: TAtomPosition;
+    function IdentifierIsDefined(const IdentAtom: TAtomPosition;
       ContextNode: TCodeTreeNode; Params: TFindDeclarationParams): boolean;
     function FindContextNodeAtCursor(
       Params: TFindDeclarationParams): TFindContext;
@@ -2465,7 +2465,7 @@ begin
   Result:=Params.NewNode<>nil;
 end;
 
-function TFindDeclarationTool.IdentifierIsDefined(IdentAtom: TAtomPosition;
+function TFindDeclarationTool.IdentifierIsDefined(const IdentAtom: TAtomPosition;
   ContextNode: TCodeTreeNode; Params: TFindDeclarationParams): boolean;
 var
   Identifier: PChar;
@@ -6406,7 +6406,9 @@ end;
 function TFindDeclarationTool.FindEndOfTerm(
   StartPos: integer; ExceptionIfNoVariableStart, WithAsOperator: boolean
   ): integer;
-{ a variable can have the form:
+{ ExceptionIfNoVariableStart: if false allow starting in the middle of a term
+
+  a variable can have the form:
     A
     A.B()^.C()[]^^.D
     (A).B
@@ -7474,11 +7476,21 @@ begin
 end;
 
 function TFindDeclarationTool.FindEndOfExpression(StartPos: integer): integer;
+var
+  First: Integer;
 begin
   MoveCursorToCleanPos(StartPos);
   Result:=CurPos.StartPos;
+  First:=0;
   repeat
     ReadNextAtom;
+    if First=0 then begin
+      First:=CurPos.StartPos;
+      if UpAtomIs('INHERITED') then begin
+        Result:=CurPos.EndPos;
+        ReadNextAtom;
+      end;
+    end;
     // read till statement end
     if (CurPos.StartPos>SrcLen)
     or (CurPos.Flag in [cafSemicolon,cafComma,cafEnd,
@@ -9650,7 +9662,7 @@ var
   SetTool: TFindDeclarationTool;
   AliasType: TFindContext;
 begin
-  debugln(['TFindDeclarationTool.FindTermTypeAsString START']);
+  //debugln(['TFindDeclarationTool.FindTermTypeAsString START']);
   {$IFDEF CheckNodeTool}CheckNodeTool(Params.ContextNode);{$ENDIF}
   Result:='';
   AliasType:=CleanFindContext;

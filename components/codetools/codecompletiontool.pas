@@ -912,7 +912,7 @@ begin
   // find variable name
   GetIdentStartEndAtPosition(Src,CleanCursorPos,
     VarNameAtom.StartPos,VarNameAtom.EndPos);
-  //debugln('TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax A ',GetAtom(VarNameAtom),' "',copy(Src,CleanCursorPos,10),'"');
+  //debugln('TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax VarNameAtom="',dbgstr(Src,VarNameAtom.StartPos,VarNameAtom.EndPos-VarNameAtom.StartPos),'"');
   if VarNameAtom.StartPos=VarNameAtom.EndPos then exit;
   MoveCursorToAtomPos(VarNameAtom);
   if AtomIsKeyWord then exit;
@@ -922,11 +922,13 @@ begin
   if not (AtomIs(':=') or AtomIs('+=') or AtomIs('-=') or AtomIs('*=')
     or AtomIs('/=')) then exit;
   AssignmentOperator:=CurPos;
-  
+  //debugln('TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax AssignmentOperator="',dbgstr(Src,AssignmentOperator.StartPos,AssignmentOperator.EndPos-AssignmentOperator.StartPos),'"');
+
   // find term
   ReadNextAtom;
   TermAtom.StartPos:=CurPos.StartPos;
   TermAtom.EndPos:=FindEndOfExpression(TermAtom.StartPos);
+  //debugln('TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax TermAtom="',dbgstr(Src,TermAtom.StartPos,TermAtom.EndPos-TermAtom.StartPos),'"');
 
   Result:=TermAtom.EndPos>TermAtom.StartPos;
 end;
@@ -1538,8 +1540,15 @@ begin
   // check assignment syntax
   if not CheckLocalVarAssignmentSyntax(CleanCursorPos,
     VarNameAtom,AssignmentOperator,TermAtom)
-  then
+  then begin
+    {$IFDEF CTDEBUG}
+    debugln(['TCodeCompletionCodeTool.CompleteLocalVariableAssignment CheckLocalVarAssignmentSyntax=false']);
+    {$ENDIF}
     exit;
+  end;
+  {$IFDEF CTDEBUG}
+  debugln(['TCodeCompletionCodeTool.CompleteLocalVariableAssignment VarNameAtom=',dbgstr(Src,VarNameAtom.StartPos,VarNameAtom.EndPos-VarNameAtom.StartPos),' AssignmentOperator=',dbgstr(Src,AssignmentOperator.StartPos,AssignmentOperator.EndPos-AssignmentOperator.StartPos),' TermAtom=',dbgstr(Src,TermAtom.StartPos,TermAtom.EndPos-TermAtom.StartPos)]);
+  {$ENDIF}
 
   // search variable
   ActivateGlobalWriteLock;
@@ -1550,6 +1559,7 @@ begin
     {$ENDIF}
     // check if identifier exists
     Result:=IdentifierIsDefined(VarNameAtom,CursorNode,Params);
+    //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableAssignment Identifier=',dbgstr(Src,VarNameAtom.StartPos,VarNameAtom.EndPos-VarNameAtom.StartPos),' exists=',Result]);
     if Result then begin
       MoveCursorToCleanPos(VarNameAtom.StartPos);
       ReadNextAtom;
