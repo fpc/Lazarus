@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="IDEIntf">
+    <module name="ProjectIntf">
+      <element name="TLazProject.MainFileID">
+        <short>The index of the file with the main source, for example the lpr file</short>
+      </element>
+      <element name="TLazProject.Files">
+        <short>All files of project plus files in source editor plus closed files once open in the source editor</short>
+        <descr>The index runs from 0..FileCount</descr>
+      </element>
+      <element name="TLazProject.FileCount">
+        <short>Files has 0..FileCount-1 items</short>
+      </element>
+      <element name="TLazProject.MainFile">
+        <short>The main source file, can be nil, otherwise equivalent to Files[MainFileID]</short>
+      </element>
+      <element name="TLazProject.Title">
+        <short>The project title, used for Application.Title statement</short>
+      </element>
+      <element name="TLazProject.IsVirtual">
+        <short>True if project has not yet a full file name, i.e. it was not yet saved</short>
+      </element>
+      <element name="TLazProject.CreateProjectFile">
+        <short>Create a new file, which is added to the project Files</short>
+      </element>
+      <element name="TLazProject.AddFile">
+        <short>Add a file to the project</short>
+      </element>
+      <element name="TLazProject.RemoveUnit">
+        <short>Removes and frees a file.</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

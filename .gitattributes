@@ -4450,6 +4450,7 @@ ideintf/docs/ideimagesintf.xml svneol=native#text/plain
 ideintf/docs/ideoptionsintf.xml svneol=native#text/plain
 ideintf/docs/lazideintf.xml svneol=native#text/plain
 ideintf/docs/packageintf.xml svneol=native#text/plain
+ideintf/docs/projectintf.xml svneol=native#text/plain
 ideintf/fieldseditor.lfm svneol=native#text/plain
 ideintf/fieldseditor.pas svneol=native#text/pascal
 ideintf/fieldslist.lfm svneol=native#text/plain
