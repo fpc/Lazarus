@@ -1909,7 +1909,6 @@ begin
   FTextArea.ExtraLineSpacing := 0;
   FTextArea.MarkupManager := fMarkupManager;
   FTextArea.TheLinesView := FTheLinesView;
-  FTextArea.DisplayView := FDisplayView;
   FTextArea.Highlighter := nil;
 
   FLeftGutterArea := TLazSynGutterArea.Create(Self);
@@ -1924,6 +1923,7 @@ begin
   FPaintArea.TextArea := FTextArea;
   FPaintArea.LeftGutterArea := FLeftGutterArea;
   FPaintArea.RightGutterArea := FRightGutterArea;
+  FPaintArea.DisplayView := FDisplayView;
 
   Color := clWhite;
   Font.Assign(fFontDummy);
@@ -2461,33 +2461,19 @@ end;
 
 procedure TCustomSynEdit.InvalidateGutterLines(FirstLine, LastLine: integer);   // Todo: move to gutter
 var
-  rcInval: TRect;
   TopFoldLine: LongInt;
 begin
   if sfPainting in fStateFlags then exit;
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
-      FLeftGutterArea.InvalidateLines(-1, -1);
-      FRightGutterArea.InvalidateLines(-1, -1);
+      FPaintArea.InvalidateGutterLines(-1, -1);
     end else begin
       // pretend we haven't scrolled
       TopFoldLine := FFoldedLinesView.TopLine;
       if FOldTopView <> TopView then
         FFoldedLinesView.TopLine := FOldTopView;
 
-      { find the visible lines first }
-      if LastLine >= 0 then begin
-        if (LastLine < FirstLine) then SwapInt(LastLine, FirstLine);
-        LastLine := RowToScreenRow(Min(LastLine, ScreenRowToRow(LinesInWindow)))+1;
-        LastLine := LastLine;
-      end
-      else
-        LastLine := LinesInWindow + 1;
-      FirstLine := RowToScreenRow(FirstLine);
-      FirstLine := Max(0, FirstLine);
-
-      FLeftGutterArea.InvalidateLines(FirstLine, LastLine);
-      FRightGutterArea.InvalidateLines(FirstLine, LastLine);
+      FPaintArea.InvalidateGutterLines(FirstLine-1, LastLine-1);
 
       FFoldedLinesView.TopLine := TopFoldLine;
     end;
@@ -2495,32 +2481,19 @@ end;
 
 procedure TCustomSynEdit.InvalidateLines(FirstLine, LastLine: integer);
 var
-  rcInval: TRect;
-  f, l: Integer;
   TopFoldLine: LongInt;
 begin
   if sfPainting in fStateFlags then exit;
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
-      FTextArea.InvalidateLines(-1, -1);
+      FPaintArea.InvalidateTextLines(-1, -1);
     end else begin
       // pretend we haven't scrolled
       TopFoldLine := FFoldedLinesView.TopLine;
       if FOldTopView <> TopView then
         FFoldedLinesView.TopLine := FOldTopView;
 
-      { find the visible lines first }
-      if LastLine >= 0 then begin
-        if (LastLine < FirstLine) then SwapInt(LastLine, FirstLine);
-        l := RowToScreenRow(Min(LastLine, ScreenRowToRow(LinesInWindow)))+1;
-        l := l;
-      end
-      else
-        l := LinesInWindow + 1;
-      f := RowToScreenRow(FirstLine);
-      f := Max(0, f);
-
-      FTextArea.InvalidateLines(F, L);
+      FPaintArea.InvalidateTextLines(FirstLine-1, LastLine-1);
 
       FFoldedLinesView.TopLine := TopFoldLine;
     end;

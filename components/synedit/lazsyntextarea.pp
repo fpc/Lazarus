@@ -24,7 +24,6 @@ type
     FCanvas: TCanvas;
     FTextDrawer: TheTextDrawer;
     FTheLinesView: TSynEditStrings;
-    FDisplayView: TLazSynDisplayView;
     FHighlighter: TSynCustomHighlighter;
     FMarkupManager: TSynEditMarkupManager;
     FPaintLineColor, FPaintLineColor2: TSynSelectedColor;
@@ -60,7 +59,7 @@ type
     constructor Create(AOwner: TWinControl; ATextDrawer: TheTextDrawer);
     destructor Destroy; override;
     procedure Assign(Src: TLazSynSurface); override;
-    procedure InvalidateLines(FirstLine, LastLine: TLineIdx); override;
+    procedure InvalidateLines(FirstTextLine, LastTextLine: TLineIdx); override;
 
     function ScreenColumnToXValue(Col: integer): integer;  // map screen column to screen pixel
     function RowColumnToPixels(const RowCol: TPoint): TPoint;
@@ -83,7 +82,6 @@ type
     property LeftChar: Integer read FLeftChar write SetLeftChar;
 
     property TheLinesView:  TSynEditStrings       read FTheLinesView  write FTheLinesView;
-    property DisplayView:   TLazSynDisplayView    read FDisplayView   write FDisplayView;
     property Highlighter:   TSynCustomHighlighter read FHighlighter   write FHighlighter;
     property MarkupManager: TSynEditMarkupManager read FMarkupManager write FMarkupManager;
     property TextDrawer: TheTextDrawer read FTextDrawer;
@@ -105,17 +103,23 @@ type
     FRightGutterArea: TLazSynSurface;
     FRightGutterWidth: integer;
     FTextArea: TLazSynTextArea;
+    procedure SetLeftGutterArea(AValue: TLazSynSurface);
     procedure SetLeftGutterWidth(AValue: integer);
+    procedure SetRightGutterArea(AValue: TLazSynSurface);
     procedure SetRightGutterWidth(AValue: integer);
+    procedure SetTextArea(AValue: TLazSynTextArea);
   protected
     procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
+    procedure DoDisplayViewChanged; override;
     procedure BoundsChanged; override;
   public
     constructor Create(AOwner: TWinControl);
-    procedure InvalidateLines(FirstLine, LastLine: TLineIdx); override;
-    property TextArea: TLazSynTextArea read FTextArea write FTextArea;
-    property LeftGutterArea: TLazSynSurface read FLeftGutterArea write FLeftGutterArea;
-    property RightGutterArea: TLazSynSurface read FRightGutterArea write FRightGutterArea;
+    procedure InvalidateLines(FirstTextLine, LastTextLine: TLineIdx); override;
+    procedure InvalidateTextLines(FirstTextLine, LastTextLine: TLineIdx); virtual;
+    procedure InvalidateGutterLines(FirstTextLine, LastTextLine: TLineIdx); virtual;
+    property TextArea: TLazSynTextArea read FTextArea write SetTextArea;
+    property LeftGutterArea: TLazSynSurface read FLeftGutterArea write SetLeftGutterArea;
+    property RightGutterArea: TLazSynSurface read FRightGutterArea write SetRightGutterArea;
     property LeftGutterWidth: integer read FLeftGutterWidth write SetLeftGutterWidth;
     property RightGutterWidth: integer read FRightGutterWidth write SetRightGutterWidth;
   end;
@@ -132,6 +136,20 @@ begin
   BoundsChanged;
 end;
 
+procedure TLazSynSurfaceManager.SetLeftGutterArea(AValue: TLazSynSurface);
+begin
+  if FLeftGutterArea = AValue then Exit;
+  FLeftGutterArea := AValue;
+  FLeftGutterArea.DisplayView := DisplayView;
+end;
+
+procedure TLazSynSurfaceManager.SetRightGutterArea(AValue: TLazSynSurface);
+begin
+  if FRightGutterArea = AValue then Exit;
+  FRightGutterArea := AValue;
+  FRightGutterArea.DisplayView := DisplayView;
+end;
+
 procedure TLazSynSurfaceManager.SetRightGutterWidth(AValue: integer);
 begin
   if FRightGutterWidth = AValue then Exit;
@@ -139,11 +157,25 @@ begin
   BoundsChanged;
 end;
 
+procedure TLazSynSurfaceManager.SetTextArea(AValue: TLazSynTextArea);
+begin
+  if FTextArea = AValue then Exit;
+  FTextArea := AValue;
+  FTextArea.DisplayView := DisplayView;
+end;
+
 procedure TLazSynSurfaceManager.DoPaint(ACanvas: TCanvas; AClip: TRect);
 begin
   FLeftGutterArea.Paint(ACanvas, AClip);
   FTextArea.Paint(ACanvas, AClip);
   FRightGutterArea.Paint(ACanvas, AClip);
+end;
+
+procedure TLazSynSurfaceManager.DoDisplayViewChanged;
+begin
+  FLeftGutterArea.DisplayView  := DisplayView;
+  FRightGutterArea.DisplayView := DisplayView;
+  FTextArea.DisplayView        := DisplayView;
 end;
 
 procedure TLazSynSurfaceManager.BoundsChanged;
@@ -164,21 +196,38 @@ begin
   FRightGutterWidth := 0;
 end;
 
-procedure TLazSynSurfaceManager.InvalidateLines(FirstLine, LastLine: TLineIdx);
+procedure TLazSynSurfaceManager.InvalidateLines(FirstTextLine, LastTextLine: TLineIdx);
 var
   rcInval: TRect;
 begin
   rcInval := Bounds;
-  if (FirstLine >= 0) then
-    rcInval.Top := TextArea.TextBounds.Top + FirstLine * TextArea.LineHeight;
-  if (LastLine >= 0) then
-    rcInval.Bottom := TextArea.TextBounds.Top + LastLine * TextArea.LineHeight;
+  if (FirstTextLine >= 0) then
+    rcInval.Top := Max(TextArea.TextBounds.Top,
+                       TextArea.TextBounds.Top
+                       + (DisplayView.TextToViewIndex(FirstTextLine).Top
+                          - TextArea.TopLine + 1) * TextArea.LineHeight);
+  if (LastTextLine >= 0) then
+    rcInval.Bottom := Min(TextArea.TextBounds.Bottom,
+                          TextArea.TextBounds.Top
+                          + (DisplayView.TextToViewIndex(LastTextLine).Bottom
+                             - TextArea.TopLine + 2)  * TextArea.LineHeight);
 
   {$IFDEF VerboseSynEditInvalidate}
   DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self), ' FirstLine=',FirstLine, ' LastLine=',LastLine, ' rect=',dbgs(rcInval)]);
   {$ENDIF}
   if (rcInval.Top < rcInval.Bottom) and (rcInval.Left < rcInval.Right) then
     InvalidateRect(Handle, @rcInval, FALSE);
+end;
+
+procedure TLazSynSurfaceManager.InvalidateTextLines(FirstTextLine, LastTextLine: TLineIdx);
+begin
+  FTextArea.InvalidateLines(FirstTextLine, LastTextLine);
+end;
+
+procedure TLazSynSurfaceManager.InvalidateGutterLines(FirstTextLine, LastTextLine: TLineIdx);
+begin
+  FLeftGutterArea.InvalidateLines(FirstTextLine, LastTextLine);
+  FRightGutterArea.InvalidateLines(FirstTextLine, LastTextLine);
 end;
 
 { TLazSynTextArea }
@@ -308,7 +357,7 @@ begin
 
   FTextDrawer    := TLazSynTextArea(Src).FTextDrawer;
   FTheLinesView  := TLazSynTextArea(Src).FTheLinesView;
-  FDisplayView   := TLazSynTextArea(Src).FDisplayView;
+  DisplayView   := TLazSynTextArea(Src).DisplayView;
   FHighlighter   := TLazSynTextArea(Src).FHighlighter;
   FMarkupManager := TLazSynTextArea(Src).FMarkupManager;
   FForegroundColor := TLazSynTextArea(Src).FForegroundColor;
@@ -330,15 +379,21 @@ begin
   BoundsChanged;
 end;
 
-procedure TLazSynTextArea.InvalidateLines(FirstLine, LastLine: TLineIdx);
+procedure TLazSynTextArea.InvalidateLines(FirstTextLine, LastTextLine: TLineIdx);
 var
   rcInval: TRect;
 begin
   rcInval := Bounds;
-  if (FirstLine >= 0) then
-    rcInval.Top := TextBounds.Top + FirstLine * LineHeight;
-  if (LastLine >= 0) then
-    rcInval.Bottom := TextBounds.Top + LastLine * LineHeight;
+  if (FirstTextLine >= 0) then
+    rcInval.Top := Max(TextBounds.Top,
+                       TextBounds.Top
+                       + (DisplayView.TextToViewIndex(FirstTextLine).Top
+                          - TopLine + 1) * LineHeight);
+  if (LastTextLine >= 0) then
+    rcInval.Bottom := Min(TextBounds.Bottom,
+                          TextBounds.Top
+                          + (DisplayView.TextToViewIndex(LastTextLine).Bottom
+                             - TopLine + 2)  * LineHeight);
 
   {$IFDEF VerboseSynEditInvalidate}
   DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self), ' FirstLine=',FirstLine, ' LastLine=',LastLine, ' rect=',dbgs(rcInval)]);
@@ -1021,7 +1076,7 @@ var
     TV := TopLine - 1;
 
     // Now loop through all the lines. The indices are valid for Lines.
-    MaxLine := FDisplayView.GetLinesCount-1;
+    MaxLine := DisplayView.GetLinesCount-1;
 
     CurLine := FirstLine-1;
     while CurLine<LastLine do begin
@@ -1044,11 +1099,11 @@ var
       rcLine.Left := DrawLeft;
       ForceEto := False;
 
-      FDisplayView.SetHighlighterTokensLine(TV + CurLine, CurTextIndex);
+      DisplayView.SetHighlighterTokensLine(TV + CurLine, CurTextIndex);
       CharWidths := FTheLinesView.GetPhysicalCharWidths(CurTextIndex);
       fMarkupManager.PrepareMarkupForRow(CurTextIndex+1);
 
-      DividerInfo := FDisplayView.GetDrawDividerInfo;
+      DividerInfo := DisplayView.GetDrawDividerInfo;
       if (DividerInfo.Color <> clNone) and (nRightEdge >= FTextBounds.Left) then
       begin
         ypos := rcToken.Bottom - 1;
@@ -1059,7 +1114,7 @@ var
         dec(rcToken.Bottom);
       end;
 
-      while FDisplayView.GetNextHighlighterToken(TokenInfo) do begin
+      while DisplayView.GetNextHighlighterToken(TokenInfo) do begin
         DrawHiLightMarkupToken(TokenInfo.TokenAttr, TokenInfo.TokenStart, TokenInfo.TokenLength);
       end;
 
@@ -1122,14 +1177,14 @@ begin
       SetTokenAccuLength;
     end;
 
-    FDisplayView.InitHighlighterTokens(FHighlighter);
+    DisplayView.InitHighlighterTokens(FHighlighter);
     fTextDrawer.Style := []; //Font.Style;
     fTextDrawer.BeginDrawing(dc);
     try
       PaintLines;
     finally
       fTextDrawer.EndDrawing;
-      FDisplayView.FinishHighlighterTokens;
+      DisplayView.FinishHighlighterTokens;
       ReAllocMem(TokenAccu.p,0);
     end;
   end;

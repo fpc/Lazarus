@@ -122,6 +122,9 @@ type
     function  GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; override;
     function GetDrawDividerInfo: TSynDividerDrawConfigSetting; override;
     function GetLinesCount: Integer; override;
+
+    function TextToViewIndex(AIndex: TLineIdx): TLineRange; override;
+    function ViewToTextIndex(AIndex: TLineIdx): TLineIdx; override;
   end;
 
   { TSynEditStringList }
@@ -388,6 +391,17 @@ end;
 function TLazSynDisplayBuffer.GetLinesCount: Integer;
 begin
   Result := FBuffer.Count;
+end;
+
+function TLazSynDisplayBuffer.TextToViewIndex(AIndex: TLineIdx): TLineRange;
+begin
+  Result.Top := AIndex;
+  Result.Bottom := AIndex;
+end;
+
+function TLazSynDisplayBuffer.ViewToTextIndex(AIndex: TLineIdx): TLineIdx;
+begin
+  Result := AIndex;
 end;
 
 { TSynEditUndoTxtInsert }

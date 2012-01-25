@@ -332,6 +332,9 @@ type
     procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx); override;
     function GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; override;
     function GetLinesCount: Integer; override;
+
+    function TextToViewIndex(AIndex: TLineIdx): TLineRange; override;
+    function ViewToTextIndex(AIndex: TLineIdx): TLineIdx; override;
   end;
 
   { TSynTextFoldedView
@@ -714,6 +717,24 @@ end;
 function TLazSynDisplayFold.GetLinesCount: Integer;
 begin
   Result := FFoldView.Count;
+end;
+
+function TLazSynDisplayFold.TextToViewIndex(AIndex: TLineIdx): TLineRange;
+begin
+  Result := inherited TextToViewIndex(AIndex);
+  if Result.Top = Result.Bottom then begin
+    Result.Top    := FFoldView.TextIndexToViewPos(Result.Top) - 1;
+    Result.Bottom := Result.Top;
+  end
+  else begin;
+    Result.Top    := FFoldView.TextIndexToViewPos(Result.Top) - 1;
+    Result.Bottom := FFoldView.TextIndexToViewPos(Result.Bottom) - 1;
+  end;
+end;
+
+function TLazSynDisplayFold.ViewToTextIndex(AIndex: TLineIdx): TLineIdx;
+begin
+  Result := FFoldView.ViewPosToTextIndex(inherited ViewToTextIndex(AIndex)+1);
 end;
 
 { TSynEditFoldExportStream }

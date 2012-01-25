@@ -112,6 +112,10 @@ type
     TokenAttr: TSynHighlighterAttributes
   end;
 
+  TLineRange = record
+    Top, Bottom: TLineIdx;
+  end;
+
   { TLazSynDisplayView }
 
   TLazSynDisplayView = class
@@ -127,6 +131,10 @@ type
     function  GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; virtual;
     function GetLinesCount: Integer; virtual;
     function GetDrawDividerInfo: TSynDividerDrawConfigSetting; virtual;
+
+    function TextToViewIndex(AIndex: TLineIdx): TLineRange; virtual;
+    function ViewToTextIndex(AIndex: TLineIdx): TLineIdx; virtual;
+    //function ViewToTextIndexEx(AIndex: TLineIdx; out AScreenRange: TLineRange): TLineIdx;
     // todo: gutter info
   end;
 
@@ -429,6 +437,16 @@ begin
     Result := FNextView.GetDrawDividerInfo
   else
     Result.Color := clNone;
+end;
+
+function TLazSynDisplayView.TextToViewIndex(AIndex: TLineIdx): TLineRange;
+begin
+  Result := NextView.TextToViewIndex(AIndex);
+end;
+
+function TLazSynDisplayView.ViewToTextIndex(AIndex: TLineIdx): TLineIdx;
+begin
+  Result := NextView.ViewToTextIndex(AIndex);
 end;
 
 { TSynLogicalPhysicalConvertor }

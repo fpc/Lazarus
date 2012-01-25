@@ -64,6 +64,8 @@ type
   public
     procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx); override;
     function GetLinesCount: Integer; override;
+    function TextToViewIndex(AIndex: TLineIdx): TLineRange; override;
+    function ViewToTextIndex(AIndex: TLineIdx): TLineIdx; override;
   public
     constructor Create;
     property LineMapCount: integer read FLineMapCount write SetLineMapCount;
@@ -91,7 +93,9 @@ type
   public
     constructor Create(AOwner: TWinControl; AnOriginalManager: TLazSynSurfaceManager);
     destructor Destroy; override;
-    procedure  InvalidateLines(FirstLine, LastLine: TLineIdx); override;
+    procedure  InvalidateLines(FirstTextLine, LastTextLine: TLineIdx); override;
+    procedure InvalidateTextLines(FirstTextLine, LastTextLine: TLineIdx); override;
+    procedure InvalidateGutterLines(FirstTextLine, LastTextLine: TLineIdx); override;
     property ExtraManager: TLazSynSurfaceManager read FExtraManager write FExtraManager;
     property OriginalManager: TLazSynSurfaceManager read FOriginalManager write FOriginalManager;
     property TopLineCount: Integer read FTopLineCount write SetTopLineCount;
@@ -386,6 +390,27 @@ begin
   Result := LineMapCount;
 end;
 
+function TSourceLazSynTopInfoView.TextToViewIndex(AIndex: TLineIdx): TLineRange;
+var
+  i: Integer;
+  r: TLineRange;
+begin
+  Result.Top := -1;
+  Result.Bottom := -1;
+  r := inherited TextToViewIndex(AIndex);
+  for i := 0 to LineMapCount - 1 do begin
+    if LineMap[i] = r.Top then Result.Top  := i;
+    if LineMap[i] = r.Bottom then Result.Bottom  := i;
+  end;
+  if Result.Bottom < Result.Top then
+    Result.Bottom := Result.Top;
+end;
+
+function TSourceLazSynTopInfoView.ViewToTextIndex(AIndex: TLineIdx): TLineIdx;
+begin
+  Result := inherited ViewToTextIndex(AIndex);
+end;
+
 constructor TSourceLazSynTopInfoView.Create;
 begin
   LineMapCount := 0;
@@ -468,9 +493,22 @@ begin
   FOriginalManager.Free;
 end;
 
-procedure TSourceLazSynSurfaceManager.InvalidateLines(FirstLine, LastLine: TLineIdx);
+procedure TSourceLazSynSurfaceManager.InvalidateLines(FirstTextLine, LastTextLine: TLineIdx);
 begin
-  FOriginalManager.InvalidateLines(FirstLine, LastLine);
+  FOriginalManager.InvalidateLines(FirstTextLine, LastTextLine);
+  FExtraManager.InvalidateLines(FirstTextLine, LastTextLine);
+end;
+
+procedure TSourceLazSynSurfaceManager.InvalidateTextLines(FirstTextLine, LastTextLine: TLineIdx);
+begin
+  FOriginalManager.InvalidateTextLines(FirstTextLine, LastTextLine);
+  FExtraManager.InvalidateTextLines(FirstTextLine, LastTextLine);
+end;
+
+procedure TSourceLazSynSurfaceManager.InvalidateGutterLines(FirstTextLine, LastTextLine: TLineIdx);
+begin
+  FOriginalManager.InvalidateGutterLines(FirstTextLine, LastTextLine);
+  FExtraManager.InvalidateGutterLines(FirstTextLine, LastTextLine);
 end;
 
 { TIDESynEditor }
@@ -590,7 +628,7 @@ begin
   FTopInfoDisplay.NextView := ViewedTextBuffer.DisplayView;
   TSourceLazSynSurfaceManager(FPaintArea).TopLineCount := 0;
   TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.TextArea.BackgroundColor := clSilver;
-  TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.TextArea.DisplayView := FTopInfoDisplay;
+  TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.DisplayView := FTopInfoDisplay;
   {$ENDIF}
   {$IFDEF WithSynDebugGutter}
   TIDESynGutter(RightGutter).DebugGutter.TheLinesView := ViewedTextBuffer;

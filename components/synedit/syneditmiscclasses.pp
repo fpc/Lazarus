@@ -269,17 +269,20 @@ type
   TLazSynSurface = class
   private
     FBounds: TRect;
+    FDisplayView: TLazSynDisplayView;
     FOwner: TWinControl;
     function GetHandle: HWND;
+    procedure SetDisplayView(AValue: TLazSynDisplayView);
   protected
     procedure BoundsChanged; virtual;
     procedure DoPaint(ACanvas: TCanvas; AClip: TRect); virtual; abstract;
+    procedure DoDisplayViewChanged; virtual;
     property  Handle: HWND read GetHandle;
   public
     constructor Create(AOwner: TWinControl);
     procedure Assign(Src: TLazSynSurface); virtual;
     procedure Paint(ACanvas: TCanvas; AClip: TRect);
-    procedure InvalidateLines(FirstLine, LastLine: TLineIdx); virtual;
+    procedure InvalidateLines(FirstTextLine, LastTextLine: TLineIdx); virtual;
     procedure SetBounds(ATop, ALeft, ABottom, ARight: Integer);
 
     property Left: Integer   read FBounds.Left;
@@ -287,6 +290,8 @@ type
     property Right:Integer   read FBounds.Right;
     property Bottom: integer read FBounds.Bottom;
     property Bounds: TRect read FBounds;
+
+    property DisplayView:   TLazSynDisplayView    read FDisplayView   write SetDisplayView;
   end;
 
   { TSynBookMarkOpt }
@@ -836,7 +841,19 @@ begin
   Result := FOwner.Handle;
 end;
 
+procedure TLazSynSurface.SetDisplayView(AValue: TLazSynDisplayView);
+begin
+  if FDisplayView = AValue then Exit;
+  FDisplayView := AValue;
+  DoDisplayViewChanged;
+end;
+
 procedure TLazSynSurface.BoundsChanged;
+begin
+  //
+end;
+
+procedure TLazSynSurface.DoDisplayViewChanged;
 begin
   //
 end;
@@ -849,6 +866,7 @@ end;
 procedure TLazSynSurface.Assign(Src: TLazSynSurface);
 begin
   // do not assign the bounds
+  DisplayView := Src.DisplayView;
 end;
 
 procedure TLazSynSurface.Paint(ACanvas: TCanvas; AClip: TRect);
@@ -868,7 +886,7 @@ begin
   DoPaint(ACanvas, AClip);
 end;
 
-procedure TLazSynSurface.InvalidateLines(FirstLine, LastLine: TLineIdx);
+procedure TLazSynSurface.InvalidateLines(FirstTextLine, LastTextLine: TLineIdx);
 begin
   //
 end;
