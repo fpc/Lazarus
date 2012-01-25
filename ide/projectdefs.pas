@@ -1281,9 +1281,6 @@ begin
   MainFile.IsPartOfProject:=true;
   AProject.AddFile(MainFile,false);
   AProject.MainFileID:=0;
-  AProject.UseAppBundle:=true;
-  AProject.UseManifest:=true;
-  AProject.LoadDefaultIcon;
 
   // create program source
   le:=LineEnding;
