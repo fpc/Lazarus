@@ -59,6 +59,49 @@
       <element name="TProjectFlag.pfUseDefaultCompilerOptions">
         <short>After creating the new project the IDE applies the users build modes and compiler options.</short>
       </element>
+      <element name="TLazProject.ExecutableType"/>
+      <element name="TLazProject.LazCompilerOptions">
+        <short>The active compiler options of the project. Each build mode has its own set of compiler options.</short>
+        <descr>Do not store a reference to this.</descr>
+      </element>
+      <element name="TLazProject.ProjectInfoFile">
+        <short>The file path of the lpi</short>
+      </element>
+      <element name="TLazProject.ProjectSessionFile">
+        <short>The file path of the lps</short>
+      </element>
+      <element name="TLazProject.SessionStorage">
+        <short>Where to store the project session</short>
+      </element>
+      <element name="TLazProject.Modified">
+        <short>Set to true by project properties. Set it to false to clear all modified flags, excluding session flags</short>
+        <descr>Units and build modes have their own Modified.</descr>
+      </element>
+      <element name="TLazProject.SessionModified">
+        <short>Set to true if some session data has changed. Set this to false to set all session flags to false.</short>
+      </element>
+      <element name="TLazProject.FPDocPaths">
+        <short>Search path for fpdoc files. Multiple directories are separated by semicolon. Macros are allowed.</short>
+      </element>
+      <element name="TLazProject.FPDocPackageName">
+        <short>The fpdoc "package name". Leave empty to use project name.</short>
+      </element>
+      <element name="TLazProject.CleanOutputFileMask">
+        <short>File mask for the manual clean of the output directory. Default: all files</short>
+      </element>
+      <element name="TLazProject.CleanSourcesFileMask">
+        <short>File mask for the source directories on a manual clean up. Default: ppu and o files</short>
+      </element>
+      <element name="TLazProject.CustomData">
+        <short>Name value pairs for designtime packages.</short>
+        <descr>Every designtime package can store arbitrary data in each project. Use this property alone. All other unknown data will be purged from the lpi. It's recommended to use long and unique names like PackageName_MyPath.</descr>
+      </element>
+      <element name="TLazProject.CustomSessionData">
+        <short>As CustomData but stored in the lps</short>
+      </element>
+      <element name="TLazProject.UseAppBundle">
+        <short>On OS X applications need a .app directory called an "Application Bundle".</short>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>
