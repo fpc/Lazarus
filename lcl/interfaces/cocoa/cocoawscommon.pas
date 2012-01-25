@@ -94,15 +94,6 @@ type
       const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
-  TLastMouseInfo = class
-    Owner: NSObject;
-    MousePos: NSPoint;
-    TimeStamp: NSTimeInterval;
-    ClickCount: Integer;
-  end;
-
-var
-  LastMouse: TLastMouseInfo;
 const
   DblClickThreshold = 3;// max Movement between two clicks of a DblClick
 
@@ -258,15 +249,14 @@ var
   MButton: NSInteger;
 
   function CheckMouseButtonDown(AButton: Integer): Cardinal;
+  var
+    ClickCount: Integer;
   begin
-    LastMouse.ClickCount := Event.clickCount;
-    if LastMouse.clickCount > 4 then
-      LastMouse.clickCount := 1;
-    LastMouse.TimeStamp := Event.timestamp;
-    LastMouse.MousePos := MousePos;
-    LastMouse.Owner := Owner;
+    ClickCount := Event.clickCount;
+    if ClickCount > 4 then
+      ClickCount := 1;
 
-    Result := MSGKIND[AButton][LastMouse.ClickCount];
+    Result := MSGKIND[AButton][ClickCount];
   end;
 begin
   Result := False; // allow cocoa to handle message
@@ -309,8 +299,6 @@ begin
     NSRightMouseUp,
     NSOtherMouseUp:
     begin
-      LastMouse.Owner := Owner;
-      LastMouse.MousePos := MousePos;
       Msg.Msg := MSGKINDUP[MButton];
 
       NotifyApplicationUserInput(Msg.Msg);
@@ -1034,7 +1022,5 @@ begin
   Result := TLCLIntfHandle(ctrl);
 end;
 
-initialization
-  LastMouse := TLastMouseInfo.Create;
 end.
 
