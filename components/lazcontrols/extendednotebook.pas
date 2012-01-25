@@ -172,8 +172,10 @@ Begin
 end;
 
 procedure TExtendedNotebook.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+{$IFnDEF LCLWIN32}
 var
   MouseUpTabIndex: LongInt;
+{$ENDIF}
 begin
   {$IFDEF ExtNBookDebug}debugln(['TExtendedNotebook.MouseUp']);{$ENDIF}
   MouseCapture := False;
