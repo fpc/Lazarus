@@ -413,6 +413,7 @@ components/codetools/directivestree.pas svneol=native#text/plain
 components/codetools/directorycacher.pas svneol=native#text/plain
 components/codetools/docs/codetoolmanager.xml svneol=native#text/plain
 components/codetools/docs/fileprocs.xml svneol=native#text/plain
+components/codetools/docs/methodjumptool.xml svneol=native#text/plain
 components/codetools/eventcodetool.pas svneol=native#text/pascal
 components/codetools/examples/README.txt svneol=native#text/plain
 components/codetools/examples/TestNewXMLCfg.lpi svneol=native#text/plain

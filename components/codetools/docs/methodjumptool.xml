@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="CodeTools">
+    <module name="MethodJumpTool">
+      <element name="TMethodJumpingCodeTool.GatherProcNodes">
+        <short>Creates a tree of TCodeTreeNodeExtension sorted with CompareCodeTreeNodeExt</short>
+        <descr>Node.Desc = ctnProcedure
+Node.Txt = ExtractProcHead(Node,Attr)
+</descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

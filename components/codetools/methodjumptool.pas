@@ -766,7 +766,9 @@ end;
 
 function TMethodJumpingCodeTool.GatherProcNodes(StartNode: TCodeTreeNode;
   Attr: TProcHeadAttributes; const FilterClassName: string): TAVLTree;
-// create a tree of TCodeTreeNodeExtension
+// create a tree of TCodeTreeNodeExtension sorted with CompareCodeTreeNodeExt
+// Node.Desc = ctnProcedure
+// Node.Txt = ExtractProcHead(Node,Attr)
 var CurProcName: string;
   ANode: TCodeTreeNode;
   NewNodeExt: TCodeTreeNodeExtension;
