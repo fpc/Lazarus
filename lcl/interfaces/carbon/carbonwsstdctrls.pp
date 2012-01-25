@@ -197,6 +197,8 @@ type
   { TCarbonWSCustomCheckBox }
 
   TCarbonWSCustomCheckBox = class(TWSCustomCheckBox)
+  public
+    class procedure UpdateValue(Sender: TObject; OldValue: Integer; var ANewValue: Integer);
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
@@ -1062,6 +1064,28 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSCustomCheckBox.CreateHandle
+  Params:  Sender   - CarbonCheckBox
+           OldValue - the previous value of the checkbox
+           NewValue - the value of the check box, about to be set
+
+  Updates the value, to be Mixed state, if AllowGray is on the TCustomCheckBox
+  The method is called, only if the it's being updated by User, rather than
+  explicit SetState method
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomCheckBox.UpdateValue(Sender: TObject; OldValue: Integer; var ANewValue: Integer);
+var
+  cb: TCarbonCheckBox;
+begin
+  cb:=TCarbonCheckBox(Sender);
+  if (TCustomCheckBox(cb.LCLObject).AllowGrayed) and (OldValue=kControlCheckBoxUncheckedValue)
+    and (ANewValue=kControlCheckBoxCheckedValue) then
+  begin
+    ANewValue:=kControlCheckBoxMixedValue;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomCheckBox.CreateHandle
   Params:  AWinControl - LCL control
            AParams     - Creation parameters
   Returns: Handle to the control in Carbon interface
@@ -1070,8 +1094,12 @@ end;
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomCheckBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
+var
+  cb : TCarbonCheckBox;
 begin
-  Result := TLCLIntfHandle(TCarbonCheckBox.Create(AWinControl, AParams));
+  cb:=TCarbonCheckBox.Create(AWinControl, AParams);
+  cb.UpdateValue:=@UpdateValue;
+  Result := TLCLIntfHandle(cb);
 end;
 
 {------------------------------------------------------------------------------

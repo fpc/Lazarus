@@ -37,13 +37,17 @@ uses
   LCLMessageGlue, LCLType, Graphics;
 
 type
+  TUpdateValueEvent = procedure (Sender: TObject; CurrentValue: Integer; var AValue: Integer) of object;
 
   { TCarbonCustomCheckBox }
 
   TCarbonCustomCheckBox = class(TCarbonControl)
   private
     fSupressNotify : Boolean;
+    LastState: Integer;
+    isSetState: Boolean;
   public
+    UpdateValue: TUpdateValueEvent;
     class function GetValidEvents: TCarbonControlEvents; override;
     procedure Hit(AControlPart: ControlPartCode); override;
     procedure ValueChanged; override;
@@ -146,7 +150,17 @@ end;
   Value changed event handler
  ------------------------------------------------------------------------------}
 procedure TCarbonCustomCheckBox.ValueChanged;
+var
+  NewState: Integer;
+  RS: Integer;
 begin
+  if not isSetState and Assigned(UpdateValue) then begin
+    RS:=RetrieveState;
+    NewState:=RS;
+    UpdateValue(Self, LastState, NewState);
+    if NewState<>RS then SetValue(NewState);
+  end;
+  LastState:=RetrieveState;
   if not fSupressNotify then
     LCLSendChangedMsg(LCLObject)
   else
@@ -171,8 +185,11 @@ end;
 procedure TCarbonCustomCheckBox.SetState(AState: Integer; NotifyChangeState: Boolean);
 begin
   if RetrieveState=AState then Exit;
+  isSetState:=True;
   fSupressNotify := not NotifyChangeState;
   SetControl32BitValue(ControlRef(Widget), AState);
+  LastState:=AState;
+  isSetState:=False;
 end;
 
 { TCarbonCheckBox }
