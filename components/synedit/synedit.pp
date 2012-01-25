@@ -2478,6 +2478,9 @@ begin
       if FOldTopView <> TopView then
         FFoldedLinesView.TopLine := FOldTopView;
 
+      if (LastLine <> -1) and (LastLine < FirstLine) then
+        SwapInt(FirstLine, LastLine);
+
       FPaintArea.InvalidateGutterLines(FirstLine-1, LastLine-1);
 
       FFoldedLinesView.TopLine := TopFoldLine;
@@ -2495,7 +2498,7 @@ begin
   if sfPainting in fStateFlags then exit;
   if Visible and HandleAllocated then begin
     {$IFDEF VerboseSynEditInvalidate}
-    DebugLnEnter(['TCustomSynEdit.InvalidateTektLines ',DbgSName(self), ' FirstLine=',FirstLine, ' LastLine=',LastLine]);
+    DebugLnEnter(['TCustomSynEdit.InvalidateTextLines ',DbgSName(self), ' FirstLine=',FirstLine, ' LastLine=',LastLine]);
     {$ENDIF}
     if (FirstLine = -1) and (LastLine = -1) then begin
       FPaintArea.InvalidateTextLines(-1, -1);
@@ -2504,6 +2507,9 @@ begin
       TopFoldLine := FFoldedLinesView.TopLine;
       if FOldTopView <> TopView then
         FFoldedLinesView.TopLine := FOldTopView;
+
+      if (LastLine <> -1) and (LastLine < FirstLine) then
+        SwapInt(FirstLine, LastLine);
 
       FPaintArea.InvalidateTextLines(FirstLine-1, LastLine-1);
 

@@ -396,7 +396,7 @@ begin
                              - TopLine + 2)  * LineHeight);
 
   {$IFDEF VerboseSynEditInvalidate}
-  DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self), ' FirstLine=',FirstTextLine, ' LastLine=',LastTextLine, ' rect=',dbgs(rcInval)]);
+  DebugLn(['TCustomSynEdit.InvalidateTextLines ',DbgSName(self), ' FirstLine=',FirstTextLine, ' LastLine=',LastTextLine, ' rect=',dbgs(rcInval)]);
   {$ENDIF}
   if (rcInval.Top < rcInval.Bottom) and (rcInval.Left < rcInval.Right) then
     InvalidateRect(Handle, @rcInval, FALSE);
