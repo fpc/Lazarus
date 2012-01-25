@@ -502,7 +502,7 @@ begin
       case p^ of
       #0..#8,#11,#12,#14..#31,#127:
         begin
-          if (p^=#0) and (p-PChar(Fragment)=length(Fragment)) then
+          if (p^=#0) and (p-PChar(Fragment)>=length(Fragment)) then
           begin
             // reached end of fragment
             break;
@@ -520,7 +520,9 @@ begin
         ParseAmpersand;
       '"','''':
         if not AllowTags then
-          HandleSpecialChar;
+          HandleSpecialChar
+        else
+          inc(p);
       else
         inc(p);
       end;
