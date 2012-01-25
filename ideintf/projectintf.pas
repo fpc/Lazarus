@@ -238,7 +238,7 @@ type
   { TProjectDescriptor - Template for initializing new projects }
 
   TProjectFlag = (
-    pfSaveClosedUnits,     // save info about closed files (not part of project)
+    pfSaveClosedUnits,     // save info about closed files (i.e. once closed the cursor position is lost)
     pfSaveOnlyProjectUnits, // save no info about foreign files (not part of project)
     pfMainUnitIsPascalSource,// main unit is pascal, even it does not end in .pas/.pp
     pfMainUnitHasUsesSectionForAllUnits,// add/remove pascal units to main uses section

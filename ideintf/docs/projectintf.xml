@@ -30,6 +30,35 @@
       <element name="TLazProject.RemoveUnit">
         <short>Removes and frees a file.</short>
       </element>
+      <element name="TLazProject.GetFileCount"/>
+      <element name="TProjectFlag.pfSaveClosedUnits">
+        <short>save metadata of closed files in the lpi</short>
+      </element>
+      <element name="TProjectFlag.pfSaveOnlyProjectUnits">
+        <short>Do not save metdata of foreign files in the lpi (i.e. files with IsPartOfProject=false)</short>
+      </element>
+      <element name="TProjectFlag.pfMainUnitIsPascalSource">
+        <short>Main unit is pascal, IDE can check it for common mistakes</short>
+      </element>
+      <element name="TProjectFlag.pfMainUnitHasUsesSectionForAllUnits">
+        <short>IDE updates the uses section of the main file if units are added, removed or renamed</short>
+      </element>
+      <element name="TProjectFlag.pfMainUnitHasCreateFormStatements">
+        <short>Automatically add/remove/update Application.CreateForm statements for forms and datamodules</short>
+      </element>
+      <element name="TProjectFlag.pfRunnable">
+        <short>Project can be executed</short>
+      </element>
+      <element name="TProjectFlag.pfUseDesignTimePackages">
+        <short>Compile designtime packages into project</short>
+        <descr>Designtime packages are only needed for designing the project forms, because they contain component and property editors. Only runtime packages contain code. If you want to test a designtime package you can create a project with this flag. Then the IDE will add the unit paths to the designtime packages too.</descr>
+      </element>
+      <element name="TProjectFlag.pfLRSFilesInOutputDirectory">
+        <short>Set this flag to tell the IDE to store .lrs files in the unit output directory instead of the directory where the lfm is.</short>
+      </element>
+      <element name="TProjectFlag.pfUseDefaultCompilerOptions">
+        <short>After creating the new project the IDE applies the users build modes and compiler options.</short>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>
