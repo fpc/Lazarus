@@ -255,6 +255,8 @@ type
     Procedure PaintLine(aScreenLine: Integer; Canvas : TCanvas; AClip : TRect); override;
   public
     destructor Destroy; override;
+    procedure BeginSetDebugMarks;
+    procedure EndSetDebugMarks;
     procedure SetDebugMarks(AFirstLinePos, ALastLinePos: Integer);
     procedure ClearDebugMarks;
     function HasDebugMarks: Boolean;
@@ -1070,9 +1072,7 @@ begin
   inherited;
 end;
 
-procedure TIDESynGutterMarks.SetDebugMarks(AFirstLinePos, ALastLinePos: Integer);
-var
-  i: LongInt;
+procedure TIDESynGutterMarks.BeginSetDebugMarks;
 begin
   CheckTextBuffer;
 
@@ -1087,6 +1087,18 @@ begin
     else
       FDebugMarkInfo.IncRefCount;
   end;
+end;
+
+procedure TIDESynGutterMarks.EndSetDebugMarks;
+begin
+  TSynEdit(SynEdit).InvalidateGutter;
+end;
+
+procedure TIDESynGutterMarks.SetDebugMarks(AFirstLinePos, ALastLinePos: Integer);
+var
+  i: LongInt;
+begin
+  CheckTextBuffer;
 
   if ALastLinePos > FDebugMarkInfo.Count then begin
     //debugln(['Request to set debug-mark out of range: max-count=',FDebugMarkInfo.Count,' Marks=',AFirstLinePos,' to=',ALastLinePos]);
@@ -1098,7 +1110,6 @@ begin
   end;
   for i := AFirstLinePos - 1 to ALastLinePos - 1 do
     FDebugMarkInfo[i] := i + 1;
-  TSynEdit(SynEdit).InvalidateGutter;
 end;
 
 procedure TIDESynGutterMarks.ClearDebugMarks;

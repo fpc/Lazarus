@@ -4824,6 +4824,7 @@ var
   ASource: String;
   i, idx: integer;
   Addr: TDBGPtr;
+  j: Integer;
 begin
   if EditorComponent.IDEGutterMarks.HasDebugMarks then Exit;
 
@@ -4840,12 +4841,25 @@ begin
     Exit;
   end;
 
-  for i := 0 to EditorComponent.Lines.Count - 1 do
-  begin
-    Addr := DebugBoss.LineInfo.GetAddress(idx, i);
-    if (Addr <> 0) then
-      EditorComponent.IDEGutterMarks.SetDebugMarks(i, i);
+  j := -1;
+  EditorComponent.IDEGutterMarks.BeginSetDebugMarks;
+  try
+    for i := 0 to EditorComponent.Lines.Count - 1 do
+    begin
+      Addr := DebugBoss.LineInfo.GetAddress(idx, i);
+      if (Addr <> 0) and (j < 0) then
+        j := i;
+      if (Addr = 0) and (j >= 0) then begin
+        EditorComponent.IDEGutterMarks.SetDebugMarks(j, i-1);
+        j := -1;
+      end;
+    end;
+    if (Addr <> 0) and (j >= 0) then
+      EditorComponent.IDEGutterMarks.SetDebugMarks(j, EditorComponent.Lines.Count - 1);
+  finally
+    EditorComponent.IDEGutterMarks.EndSetDebugMarks;
   end;
+
   // TODO: move to SourceSyneditor
   for i := 0 to SharedEditorCount - 1 do
     SharedEditors[i].EditorComponent.IDEGutterMarks.HasDebugMarks; // update all shared editors
