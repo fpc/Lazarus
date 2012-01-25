@@ -3965,9 +3965,10 @@ begin
       FTheDebugger.FMainAddrBreak.SetAtCustomAddr(Self, StrToQWordDef(EntryPoint, 0));
     end;
 
-    FTheDebugger.FExceptionBreak.SetBoth(Self);
-    FTheDebugger.FBreakErrorBreak.SetBoth(Self);
-    FTheDebugger.FRunErrorBreak.SetBoth(Self);
+    (* there is no handling for errors, before reaching entry point, so we do not need them yet *)
+    //FTheDebugger.FExceptionBreak.SetBoth(Self);
+    //FTheDebugger.FBreakErrorBreak.SetBoth(Self);
+    //FTheDebugger.FRunErrorBreak.SetBoth(Self);
 
     TargetInfo^.TargetPID := 0;
 
@@ -3986,6 +3987,7 @@ begin
 
     FTheDebugger.FMainAddrBreak.Clear(Self);
 
+    // they may still exist from prev run, addr will be checked
     FTheDebugger.FExceptionBreak.SetAddr(Self);
     FTheDebugger.FBreakErrorBreak.SetAddr(Self);
     FTheDebugger.FRunErrorBreak.SetAddr(Self);
