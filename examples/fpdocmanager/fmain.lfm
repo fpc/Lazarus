@@ -27,17 +27,17 @@ object Main: TMain
     Height = 464
     Top = 0
     Width = 475
-    ActivePage = ViewFinal
+    ActivePage = ViewUnits
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 1
     object ViewUnits: TTabSheet
       Caption = 'Units'
-      ClientHeight = 414
+      ClientHeight = 436
       ClientWidth = 467
       object lbUnits: TListBox
         Left = 0
-        Height = 414
+        Height = 436
         Top = 0
         Width = 100
         Align = alLeft
@@ -47,12 +47,12 @@ object Main: TMain
       end
       object GroupBox1: TGroupBox
         Left = 100
-        Height = 414
+        Height = 436
         Top = 0
         Width = 367
         Align = alClient
         Caption = 'Actions'
-        ClientHeight = 396
+        ClientHeight = 418
         ClientWidth = 363
         TabOrder = 1
         object swAll: TRadioButton

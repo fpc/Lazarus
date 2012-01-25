@@ -32,18 +32,15 @@
         <WorkingDirectory Value="D:\AllDocs"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="3">
+    <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="FPDocEngine"/>
+        <PackageName Value="SynEdit"/>
       </Item1>
       <Item2>
-        <PackageName Value="SynEdit"/>
-      </Item2>
-      <Item3>
         <PackageName Value="LCL"/>
-      </Item3>
+      </Item2>
     </RequiredPackages>
-    <Units Count="9">
+    <Units Count="10">
       <Unit0>
         <Filename Value="FPDocManager.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -97,6 +94,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="ConfigFile"/>
       </Unit8>
+      <Unit9>
+        <Filename Value="..\..\..\fpc-trunk\utils\fpdoc\dglobals.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="dGlobals"/>
+      </Unit9>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -107,6 +109,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value="..\..\..\fpc-trunk\utils\fpdoc"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
@@ -120,7 +123,6 @@
       <CompilerMessages>
         <UseMsgFile Value="True"/>
       </CompilerMessages>
-      <CustomOptions Value="-uDoDi"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

@@ -205,7 +205,7 @@ var
 implementation
 
 uses
-  uLpk;
+  uLpk, PParser;
 
 const
   ConfigName = 'docmgr.ini';
@@ -926,7 +926,14 @@ function TFPDocManager.TestRun(APkg: TDocPackage; AUnit: string): boolean;
 begin
   BeginTest(APkg.ProjectFile);
   try
-    Result := Helper.TestRun(APkg, AUnit);
+    try
+      Result := Helper.TestRun(APkg, AUnit);
+    except
+      on E: EParserError do
+        DoLog(Format('%s(%d,%d): %s',[e.Filename, e.Row, e.Column, e.Message]));
+      on E: Exception do
+        DoLog(E.Message);
+    end;
   finally
     EndTest;
   end;
@@ -1059,6 +1066,7 @@ begin
   try
   //override options for test
     ParseFPDocOption('--format=html');
+    ParseFPDocOption('-v');
     ParseFPDocOption('-n');
     //verbose?
     CreateUnitDocumentation(AUnit, True);

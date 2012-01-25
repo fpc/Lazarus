@@ -50,7 +50,7 @@ interface
 {$h+}
 
 {$IF FPC_FULLVERSION<20701}
-  {.$ERROR requires FPC 2.7.1 at least}
+  {$ERROR requires FPC 2.7.1 at least}
 {$ENDIF}
 
 uses

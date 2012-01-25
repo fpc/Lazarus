@@ -452,9 +452,10 @@ end;
 procedure TMain.mnConfigClick(Sender: TObject);
 begin
   Manager.BeginUpdate;
+  if not assigned(CfgWizard) then
+    CfgWizard := TCfgWizard.Create(self);
   if CfgWizard.ShowModal <> mrCancel then begin
-    //UpdateDocs; - by Manager!?
-    //Manager.Config.;
+    //all done
   end;
   Manager.EndUpdate;
 end;

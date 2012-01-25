@@ -3726,7 +3726,6 @@ examples/fpdocmanager/flogview.lfm svneol=native#text/plain
 examples/fpdocmanager/flogview.pas svneol=native#text/pascal
 examples/fpdocmanager/fmain.lfm svneol=native#text/plain
 examples/fpdocmanager/fmain.pas svneol=native#text/pascal
-examples/fpdocmanager/fpdocengine.lpk svneol=native#text/plain
 examples/fpdocmanager/fupdateview.lfm svneol=native#text/plain
 examples/fpdocmanager/fupdateview.pas svneol=native#text/pascal
 examples/fpdocmanager/ulpk.pp svneol=native#text/pascal
