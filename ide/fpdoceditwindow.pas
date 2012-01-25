@@ -328,7 +328,7 @@ end;
 
 procedure TFPDocEditor.FormShow(Sender: TObject);
 begin
-  FPDocEditor.DoEditorUpdate(nil);
+  DoEditorUpdate(nil);
 end;
 
 procedure TFPDocEditor.FormatButtonClick(Sender: TObject);

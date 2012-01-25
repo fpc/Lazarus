@@ -102,6 +102,39 @@
       <element name="TLazProject.UseAppBundle">
         <short>On OS X applications need a .app directory called an "Application Bundle".</short>
       </element>
+      <element name="TProjectDescriptor.GetLocalizedName">
+        <short>Name shown in the "New Project" dialog. Should return a resourcestring.</short>
+      </element>
+      <element name="TProjectDescriptor.GetLocalizedDescription">
+        <short>The description shown in the "New project" dialog. Should return a resourcestring.</short>
+      </element>
+      <element name="TProjectDescriptor.InitDescriptor">
+        <short>Called after user choose this project type to create.</short>
+        <descr>The current project still exists.
+It can start a dialog to ask some settings. Return mrOk to continue.</descr>
+      </element>
+      <element name="TProjectDescriptor.InitProject">
+        <short>Called after the old project was closed and the new was created.</short>
+        <descr>Set global flags. Do not create files at this point.
+Return mrOk to continue.
+After this the IDE loads user settings and sets up according to the current settings.</descr>
+      </element>
+      <element name="TProjectDescriptor.CreateStartFiles">
+        <short>Called after the global flags of the project are completed.</short>
+        <descr>You can now create or open files. For example: 
+Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
+                                      [ofProjectLoading,ofRegularFile]);</descr>
+      </element>
+      <element name="TProjectDescriptor.Name">
+        <short>The internal registration name.</short>
+        <descr>This name must be unique. It can be used by other packages to use your descriptor.</descr>
+      </element>
+      <element name="TProjectDescriptor.VisibleInNewDialog">
+        <short>If you want to create the new project via some other ways than the "New project" dialog set this to false.</short>
+      </element>
+      <element name="TProjectDescriptor.DefaultExt">
+        <short>The default file extension for creating new source files. Default is .pas</short>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>
