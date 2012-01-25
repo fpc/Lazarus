@@ -909,6 +909,7 @@ type
     larMenuBar, // A main menu bar.
     larMenuItem, // A item in a menu.
     larProgressIndicator, // A control which shows a progress indication.
+    larRadioButton, // A radio button, see for example TRadioButton.
     larResizeGrip, // A grip that the user can drag to change the size of widgets.
     larScrollBar, // A control to scroll another one
     larSpinner, // A control which allows to increment / decrement a value.
