@@ -22,7 +22,8 @@
         <short>True if project has not yet a full file name, i.e. it was not yet saved</short>
       </element>
       <element name="TLazProject.CreateProjectFile">
-        <short>Create a new file, which is added to the project Files</short>
+        <short>Create a new file, which is not yet added to the project Files</short>
+        <descr>Use AddFile when the new file is done.</descr>
       </element>
       <element name="TLazProject.AddFile">
         <short>Add a file to the project</short>
