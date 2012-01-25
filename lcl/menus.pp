@@ -417,8 +417,8 @@ type
   end;
 
 function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
-procedure ShortCutToKey(const ShortCut : TShortCut; var Key: Word;
-                        var Shift : TShiftState);
+procedure ShortCutToKey(const ShortCut : TShortCut; out Key: Word;
+                        out Shift : TShiftState);
 
 var
   DesignerMenuItemClick: TNotifyEvent = nil;
@@ -566,8 +566,8 @@ begin
   Result := LCLType.KeyToShortCut(Key,Shift);
 end;
 
-procedure ShortCutToKey(const ShortCut: TShortCut; var Key: Word;
-  var Shift : TShiftState);
+procedure ShortCutToKey(const ShortCut: TShortCut; out Key: Word;
+  out Shift : TShiftState);
 begin
   Key := ShortCut and $FF;
   Shift := [];
