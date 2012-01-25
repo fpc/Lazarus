@@ -47,7 +47,7 @@ unit SynEdit;
 
 {$I synedit.inc}
 
-{$DEFINE SYNSCROLLDEBUG}
+{ $DEFINE SYNSCROLLDEBUG}
 
 {$IFDEF LCLGTK1}
 {$DEFINE EnableDoubleBuf} // gtk1 does not have double buffering

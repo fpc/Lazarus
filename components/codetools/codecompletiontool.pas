@@ -7362,7 +7362,7 @@ begin
     while BodyAVLNode<>nil do begin
       BodyNodeExt:=TCodeTreeNodeExtension(BodyAVLNode.Data);
       if ClassProcs.Find(BodyNodeExt)=nil then begin
-        // this bdy has no def
+        // this body has no def
         AddNodeExtToTree(BodiesWithoutDefs,BodyNodeExt);
       end;
       BodyAVLNode:=ProcBodyNodes.FindSuccessor(BodyAVLNode);
