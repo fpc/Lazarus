@@ -2851,6 +2851,7 @@ type
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
     procedure Resize; override;
+  public
     // Accessibility
     function GetSelectedChildAccessibleObject: TLazAccessibleObject; override;
     function GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject; override;
