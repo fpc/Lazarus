@@ -3987,11 +3987,6 @@ begin
 
     FTheDebugger.FMainAddrBreak.Clear(Self);
 
-    // they may still exist from prev run, addr will be checked
-    FTheDebugger.FExceptionBreak.SetAddr(Self);
-    FTheDebugger.FBreakErrorBreak.SetAddr(Self);
-    FTheDebugger.FRunErrorBreak.SetAddr(Self);
-
     // try to find PID (if not already found)
     if (TargetInfo^.TargetPID = 0)
     and ExecuteCommand('info program', [], R, [cfCheckState])
@@ -4029,6 +4024,11 @@ begin
     end;
 
     DebugLn('[Debugger] Target PID: %u', [TargetInfo^.TargetPID]);
+
+    // they may still exist from prev run, addr will be checked
+    FTheDebugger.FExceptionBreak.SetAddr(Self);
+    FTheDebugger.FBreakErrorBreak.SetAddr(Self);
+    FTheDebugger.FRunErrorBreak.SetAddr(Self);
 
     if R.State = dsNone
     then begin
