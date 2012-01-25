@@ -315,6 +315,8 @@ function FindCodeTreeNodeExtWithIdentifier(Tree: TAVLTree; Identifier: PChar
                              ): TCodeTreeNodeExtension;
 function FindCodeTreeNodeExtAVLNodeWithIdentifier(Tree: TAVLTree;
                                                Identifier: PChar): TAVLTreeNode;
+procedure AddNodeExtToTree(var TreeOfNodeExt: TAVLTree;
+  DefNodeExt: TCodeTreeNodeExtension);
 procedure DisposeAVLTree(var Tree: TAVLTree);
 function CompareTxtWithCodeTreeNodeExt(p: Pointer;
                                        NodeData: pointer): integer;
@@ -499,6 +501,14 @@ function FindCodeTreeNodeExtAVLNodeWithIdentifier(Tree: TAVLTree;
   Identifier: PChar): TAVLTreeNode;
 begin
   Result:=Tree.FindKey(Identifier,@CompareIdentifierWithCodeTreeNodeExt);
+end;
+
+procedure AddNodeExtToTree(var TreeOfNodeExt: TAVLTree;
+  DefNodeExt: TCodeTreeNodeExtension);
+begin
+  if TreeOfNodeExt=nil then
+    TreeOfNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+  TreeOfNodeExt.Add(DefNodeExt);
 end;
 
 procedure DisposeAVLTree(var Tree: TAVLTree);
