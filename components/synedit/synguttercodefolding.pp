@@ -572,8 +572,6 @@ var
     rcNode: TRect;
     ptCenter : TPoint;
     isPrevLine: Boolean;
-    i: Integer;
-    HasExHl: Boolean;
     DrawOpts: TDrawNodeSymbolOptions;
   begin
     isPrevLine := IsFoldHidePreviousLine(iLine);
@@ -624,7 +622,6 @@ var
     then
       Canvas.Pen.Color := MarkupInfo.FrameColor;
 
-    i:= 0;
     if isPrevLine and (NodeType = cfCollapsedHide) then
       include(DrawOpts, nsoSubtype);
     DrawNodeSymbol(Canvas, rcNode, NodeType, DrawOpts);

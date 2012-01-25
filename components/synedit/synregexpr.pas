@@ -306,7 +306,7 @@ type
 
     function GetModifierStr : RegExprString;
     class function ParseModifiersStr (const AModifiers : RegExprString;
-      var AModifiersInt : integer) : boolean; //###0.941 class function now
+      out AModifiersInt : integer) : boolean; //###0.941 class function now
     // Parse AModifiers string and return true and set AModifiersInt
     // if it's in format 'ismxrg-ismxrg'.
     procedure SetModifierStr (const AModifiers : RegExprString);
@@ -340,7 +340,7 @@ type
     // insert an operator in front of already-emitted operand
     // Means relocating the operand.
 
-    function ParseReg (paren : integer; var flagp : integer) : PRegExprChar;
+    function ParseReg (paren : integer; out flagp : integer) : PRegExprChar;
     // regular expression, i.e. main body or parenthesized thing
 
     function ParseBranch (var flagp : integer) : PRegExprChar;
@@ -1328,7 +1328,7 @@ function TRegExpr.GetModifierStr : RegExprString;
 --------------------------------------------------------------}
 
 class function TRegExpr.ParseModifiersStr (const AModifiers : RegExprString;
-var AModifiersInt : integer) : boolean;
+out AModifiersInt : integer) : boolean;
 // !!! Be carefull - this is class function and must not use object instance fields
  var
   i : integer;
@@ -1746,7 +1746,7 @@ function TRegExpr.CompileRegExpr (exp : PRegExprChar) : boolean;
  end; { of function TRegExpr.CompileRegExpr
 --------------------------------------------------------------}
 
-function TRegExpr.ParseReg (paren : integer; var flagp : integer) : PRegExprChar;
+function TRegExpr.ParseReg (paren : integer; out flagp : integer) : PRegExprChar;
 // regular expression, i.e. main body or parenthesized thing
 // Caller must absorb opening parenthesis.
 // Combining parenthesis handling with the base level of regular expression

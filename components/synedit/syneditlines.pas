@@ -54,7 +54,6 @@ type
   private
     FFileLineEndType: TSynLinesFileLineEndType;
     FFileWriteLineEndType: TSynLinesFileLineEndType;
-    FLineEndType: TSynLinesFileLineEndType;
     FTextBuffer: TSynEditStringList;
     FOnSaved: TSavedNotification;
     function GetTextChangeStamp: int64;

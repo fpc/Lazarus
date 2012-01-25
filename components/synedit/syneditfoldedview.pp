@@ -2885,7 +2885,6 @@ end;
 function TSynEditFoldProvider.InfoForFoldAtTextIndex(ALine, AFoldIndex: Integer;
   HideLen: Boolean; NeedLen: Boolean = True): TSynEditFoldProviderNodeInfo;
 var
-  c: LongInt;
   nd: TSynFoldNodeInfo;
 begin
   Result.LineCount := 0;
@@ -3900,11 +3899,10 @@ var
     end;
 
   var
-    FldSrcLine, FldSrcIndex, FLdNodeLine, FldLen, FndLen, FldCol: Integer;
+    FldSrcLine, FldSrcIndex, FLdNodeLine, FldLen, FndLen: Integer;
     i, j, CurLen: Integer;
     PrevFldSrcLine: Integer;
     SubTree: TSynTextFoldAVLTree;
-    IsHide: Boolean;
   begin
     Result := False;
     FldSrcLine := doStart;

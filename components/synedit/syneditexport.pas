@@ -162,7 +162,7 @@ type
 {$ENDIF}
     { Returns a string that has all the invalid chars of the output format
       replaced with the entries in the replacement array. }
-    function ReplaceReservedChars(AToken: string; var IsSpace: boolean): string;
+    function ReplaceReservedChars(AToken: string; out IsSpace: boolean): string;
     { Sets the token attribute of the next token to determine the changes
       of colors and font styles so the properties of the next token can be
       added to the output buffer. }
@@ -447,7 +447,7 @@ end;
 {$ENDIF}
 
 function TSynCustomExporter.ReplaceReservedChars(AToken: string;
-  var IsSpace: boolean): string;
+  out IsSpace: boolean): string;
 var
   I, ISrc, IDest, SrcLen, DestLen: integer;
   Replace: string;

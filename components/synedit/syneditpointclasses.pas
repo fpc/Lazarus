@@ -1453,8 +1453,6 @@ procedure TSynEditSelection.SetEndLineBytePos(Value : TPoint);
 var
   s: string;
 {$ENDIF}
-var
-  WasAvail: Boolean;
 begin
   if FEnabled then begin
     Value.y := MinMax(Value.y, 1, fLines.Count);
@@ -1477,7 +1475,6 @@ begin
       {$ENDIF}
 
       if (Value.X <> FEndBytePos) or (Value.Y <> FEndLinePos) then begin
-        WasAvail := SelAvail;
         if (ActiveSelectionMode = smColumn) and (Value.X <> FEndBytePos) then
           FInvalidateLinesMethod(Min(FStartLinePos, Min(FEndLinePos, Value.Y)),
                                  Max(FStartLinePos, Max(FEndLinePos, Value.Y)))

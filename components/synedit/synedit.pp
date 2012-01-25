@@ -876,12 +876,12 @@ type
     procedure ExecuteCommand(Command: TSynEditorCommand;
       const AChar: TUTF8Char; Data: pointer); virtual;
 
-    function GetHighlighterAttriAtRowCol(XY: TPoint; var Token: string;
-      var Attri: TSynHighlighterAttributes): boolean;
-    function GetHighlighterAttriAtRowColEx(XY: TPoint; var Token: string;
-      var TokenType, Start: Integer;
-      var Attri: TSynHighlighterAttributes): boolean;                           //L505
-    procedure GetWordBoundsAtRowCol(const XY: TPoint; var StartX, EndX: integer);
+    function GetHighlighterAttriAtRowCol(XY: TPoint; out Token: string;
+      out Attri: TSynHighlighterAttributes): boolean;
+    function GetHighlighterAttriAtRowColEx(XY: TPoint; out Token: string;
+      out TokenType, Start: Integer;
+      out Attri: TSynHighlighterAttributes): boolean;                           //L505
+    procedure GetWordBoundsAtRowCol(const XY: TPoint; out StartX, EndX: integer);
     function GetWordAtRowCol(XY: TPoint): string;
     function NextTokenPos: TPoint; virtual; deprecated; // use next word pos instead
     function NextWordPos: TPoint; virtual;
@@ -2149,7 +2149,7 @@ end;
 
 destructor TCustomSynEdit.Destroy;
 var
-  q,i: integer;
+  i: integer;
 begin
   Application.RemoveOnIdleHandler(@IdleScanRanges);
   SurrenderPrimarySelection;
@@ -7015,7 +7015,7 @@ end;
 procedure TCustomSynEdit.MoveCaretHorz(DX: integer);
 var
   NewCaret: TPoint;
-  s,  a: String;
+  s: String;
   PhysicalLineLen: Integer;
 begin
   NewCaret:=Point(CaretX+DX,CaretY);
@@ -7934,7 +7934,7 @@ end;
 
                                                                                  //L505 begin
 function TCustomSynEdit.GetHighlighterAttriAtRowCol(XY: TPoint;
-  var Token: string; var Attri: TSynHighlighterAttributes): boolean;
+  out Token: string; out Attri: TSynHighlighterAttributes): boolean;
 var
   TmpType, TmpStart: Integer;
 begin
@@ -7942,8 +7942,8 @@ begin
 end;
 
 function TCustomSynEdit.GetHighlighterAttriAtRowColEx(XY: TPoint;
-  var Token: string; var TokenType, Start: Integer;
-  var Attri: TSynHighlighterAttributes): boolean;
+  out Token: string; out TokenType, Start: Integer;
+  out Attri: TSynHighlighterAttributes): boolean;
 var
   PosX, PosY: integer;
   Line: string;
@@ -7985,7 +7985,7 @@ begin
   Result:=(length(c)=1) and (c[1] in IdentChars);
 end;
 
-procedure TCustomSynEdit.GetWordBoundsAtRowCol(const XY: TPoint; var StartX,
+procedure TCustomSynEdit.GetWordBoundsAtRowCol(const XY: TPoint; out StartX,
   EndX: integer); // all params are logical (byte) positions
 var
   Line: string;

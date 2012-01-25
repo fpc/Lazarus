@@ -557,7 +557,6 @@ function TSynLogicalPhysicalConvertor.LogicalToPhysical(AIndex, ABytePos: Intege
   var AColOffset: Integer): Integer;
 var
   i: integer;
-  CharWidths: TPhysicalCharWidths;
 begin
   {$IFDEF AssertSynMemIndex}
   if (ABytePos <= 0) then
