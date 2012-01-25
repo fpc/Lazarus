@@ -131,6 +131,7 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     Width = 519
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
+    AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'Debugger general options'
     ChildSizing.LeftRightSpacing = 6

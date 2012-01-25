@@ -155,6 +155,7 @@ procedure TDebuggerGeneralOptionsFrame.FetchDebuggerGeneralOptions;
 begin
   // IMPORTANT if more items are added the indexes must be updated here!
   gcbDebuggerGeneralOptions.Checked[0] := EnvironmentOptions.DebuggerShowStopMessage;
+  gcbDebuggerGeneralOptions.Checked[1] := EnvironmentOptions.DebuggerResetAfterRun;
 end;
 
 procedure TDebuggerGeneralOptionsFrame.FetchDebuggerSpecificOptions;
@@ -310,6 +311,7 @@ begin
   gbAdditionalSearchPath.Caption := lisDebugOptionsFrmAdditionalSearchPath;
   gcbDebuggerGeneralOptions.Caption := lisDebugOptionsFrmDebuggerGeneralOptions;
   gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmShowMessageOnStop);
+  gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmResetDebuggerOnEachRun);
   gbDebuggerSpecific.Caption := lisDebugOptionsFrmDebuggerSpecific;
 end;
 
@@ -337,6 +339,7 @@ begin
     DebuggerSearchPath := TrimSearchPath(txtAdditionalPath.Text,'');
     // IMPORTANT if more items are added the indexes must be updated here!
     DebuggerShowStopMessage := gcbDebuggerGeneralOptions.Checked[0];
+    DebuggerResetAfterRun := gcbDebuggerGeneralOptions.Checked[1];
 
     for i := 0 to FCurrentDebPropertiesList.Count - 1 do
       SaveDebuggerProperties(FCurrentDebPropertiesList[i],

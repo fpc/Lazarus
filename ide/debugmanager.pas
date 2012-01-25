@@ -1156,6 +1156,7 @@ begin
          FDebugger.ErrorStateInfo, ftError, [frStop]);
     end;
     dsStop: begin
+      // TODO: TDebugger.SetFileName sets dsStop during startup (leading to  OldState=dsIdle)
       FPrevShownWindow:=0;
       if (OldState<>dsIdle)
       then begin
@@ -1168,7 +1169,11 @@ begin
           if MsgResult=mrYesToAll then
             EnvironmentOptions.DebuggerShowStopMessage:=false;
         end;
-        FDebugger.FileName := '';
+
+        if EnvironmentOptions.DebuggerResetAfterRun then
+          ResetDebugger
+        else
+          FDebugger.FileName := '';
 
         if FDialogs[ddtAssembler] <> nil
         then TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(nil, 0);

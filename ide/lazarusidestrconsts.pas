@@ -4534,6 +4534,7 @@ resourcestring
   lisDebugOptionsFrmAdditionalSearchPath = 'Additional search path';
   lisDebugOptionsFrmDebuggerGeneralOptions = 'Debugger general options';
   lisDebugOptionsFrmShowMessageOnStop = 'Show message on stop';
+  lisDebugOptionsFrmResetDebuggerOnEachRun = 'Reset Debugger after each run';
   lisDebugOptionsFrmDebuggerSpecific = 'Debugger specific options (depends on '
     +'type of debugger)';
   lisDebugOptionsFrmEventLog = 'Event Log';

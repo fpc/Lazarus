@@ -175,6 +175,7 @@ type
 
   TEnvironmentOptions = class(TAbstractIDEEnvironmentOptions)
   private
+    FDebuggerResetAfterRun: boolean;
     FFilename: string;
     FFileAge: longint;
     FFileHasChangedOnDisk: boolean;
@@ -481,6 +482,8 @@ type
                                       write SetDebuggerSearchPath;
     property DebuggerShowStopMessage: boolean read FDebuggerShowStopMessage
                                               write FDebuggerShowStopMessage;
+    property DebuggerResetAfterRun: boolean read FDebuggerResetAfterRun
+                                              write FDebuggerResetAfterRun;
     property ShowCompileDialog: boolean read  FShowCompileDialog
                                         write FShowCompileDialog;
     property AutoCloseCompileDialog: boolean read  FAutoCloseCompileDialog
@@ -1134,6 +1137,8 @@ begin
         // Debugger General Options
         DebuggerShowStopMessage:=XMLConfig.GetValue(
            Path+'DebuggerOptions/ShowStopMessage/Value', True);
+        DebuggerResetAfterRun :=XMLConfig.GetValue(
+           Path+'DebuggerOptions/DebuggerResetAfterRun/Value', False);
         FDebuggerEventLogClearOnRun := XMLConfig.GetValue(
           Path+'Debugger/EventLogClearOnRun', True);
         FDebuggerEventLogCheckLineLimit := XMLConfig.GetValue(
@@ -1464,6 +1469,8 @@ begin
             FDebuggerFilename,'');
         XMLConfig.SetDeleteValue(Path+'DebuggerOptions/ShowStopMessage/Value',
             FDebuggerShowStopMessage, True);
+        XMLConfig.SetDeleteValue(Path+'DebuggerOptions/DebuggerResetAfterRun/Value',
+            FDebuggerResetAfterRun, False);
         SaveRecentList(XMLConfig,FDebuggerFileHistory,
            Path+'DebuggerFilename/History/');
         XMLConfig.SetDeleteValue(Path+'DebuggerSearchPath/Value',

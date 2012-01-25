@@ -6411,6 +6411,7 @@ begin
     end;
 
     FFileName := AValue;
+    // TODO: Why?
     if  (FFilename <> '') and (FState = dsIdle) and ChangeFileName
     then SetState(dsStop);
   end;
