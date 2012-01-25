@@ -47,6 +47,8 @@ unit SynEdit;
 
 {$I synedit.inc}
 
+{$DEFINE SYNSCROLLDEBUG}
+
 {$IFDEF LCLGTK1}
 {$DEFINE EnableDoubleBuf} // gtk1 does not have double buffering
 {$ENDIF}
@@ -2464,7 +2466,10 @@ var
   TopFoldLine: LongInt;
 begin
   if sfPainting in fStateFlags then exit;
-  if Visible and HandleAllocated then
+  if Visible and HandleAllocated then begin
+    {$IFDEF VerboseSynEditInvalidate}
+    DebugLnEnter(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self), ' FirstLine=',FirstLine, ' LastLine=',LastLine]);
+    {$ENDIF}
     if (FirstLine = -1) and (LastLine = -1) then begin
       FPaintArea.InvalidateGutterLines(-1, -1);
     end else begin
@@ -2477,6 +2482,10 @@ begin
 
       FFoldedLinesView.TopLine := TopFoldLine;
     end;
+    {$IFDEF VerboseSynEditInvalidate}
+    DebugLnExit(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self)]);
+    {$ENDIF}
+    end;
 end;
 
 procedure TCustomSynEdit.InvalidateLines(FirstLine, LastLine: integer);
@@ -2484,7 +2493,10 @@ var
   TopFoldLine: LongInt;
 begin
   if sfPainting in fStateFlags then exit;
-  if Visible and HandleAllocated then
+  if Visible and HandleAllocated then begin
+    {$IFDEF VerboseSynEditInvalidate}
+    DebugLnEnter(['TCustomSynEdit.InvalidateTektLines ',DbgSName(self), ' FirstLine=',FirstLine, ' LastLine=',LastLine]);
+    {$ENDIF}
     if (FirstLine = -1) and (LastLine = -1) then begin
       FPaintArea.InvalidateTextLines(-1, -1);
     end else begin
@@ -2497,6 +2509,10 @@ begin
 
       FFoldedLinesView.TopLine := TopFoldLine;
     end;
+    {$IFDEF VerboseSynEditInvalidate}
+    DebugLnExit(['TCustomSynEdit.InvalidateTextLines ',DbgSName(self)]);
+    {$ENDIF}
+  end;
 end;
 
 procedure TCustomSynEdit.KeyDown(var Key: Word; Shift: TShiftState);

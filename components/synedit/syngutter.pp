@@ -5,7 +5,7 @@ unit SynGutter;
 interface
 
 uses
-  SysUtils, Classes, Controls, Graphics, LCLType, LCLIntf, Menus,
+  SysUtils, Classes, Controls, Graphics, LCLType, LCLIntf, LCLProc, Menus,
   SynEditMarks, SynEditTypes, SynEditMiscClasses, SynEditMiscProcs, LazSynTextArea,
   SynTextDrawer, SynGutterBase, SynGutterLineNumber, SynGutterCodeFolding,
   SynGutterMarks, SynGutterChanges, SynEditMouseCmds;
@@ -149,7 +149,7 @@ begin
                              - TextArea.TopLine + 2)  * TextArea.LineHeight);
 
   {$IFDEF VerboseSynEditInvalidate}
-  DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self), ' FirstLine=',FirstLine, ' LastLine=',LastLine, ' rect=',dbgs(rcInval)]);
+  DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self), ' FirstLine=',FirstTextLine, ' LastLine=',LastTextLine, ' rect=',dbgs(rcInval)]);
   {$ENDIF}
   if (rcInval.Top < rcInval.Bottom) and (rcInval.Left < rcInval.Right) then
     InvalidateRect(Handle, @rcInval, FALSE);

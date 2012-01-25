@@ -213,7 +213,7 @@ begin
                              - TextArea.TopLine + 2)  * TextArea.LineHeight);
 
   {$IFDEF VerboseSynEditInvalidate}
-  DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self), ' FirstLine=',FirstLine, ' LastLine=',LastLine, ' rect=',dbgs(rcInval)]);
+  DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self), ' FirstLine=',FirstTextLine, ' LastLine=',LastTextLine, ' rect=',dbgs(rcInval)]);
   {$ENDIF}
   if (rcInval.Top < rcInval.Bottom) and (rcInval.Left < rcInval.Right) then
     InvalidateRect(Handle, @rcInval, FALSE);
@@ -396,7 +396,7 @@ begin
                              - TopLine + 2)  * LineHeight);
 
   {$IFDEF VerboseSynEditInvalidate}
-  DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self), ' FirstLine=',FirstLine, ' LastLine=',LastLine, ' rect=',dbgs(rcInval)]);
+  DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self), ' FirstLine=',FirstTextLine, ' LastLine=',LastTextLine, ' rect=',dbgs(rcInval)]);
   {$ENDIF}
   if (rcInval.Top < rcInval.Bottom) and (rcInval.Left < rcInval.Right) then
     InvalidateRect(Handle, @rcInval, FALSE);
