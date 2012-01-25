@@ -966,8 +966,10 @@ var
   Range: NSRange;
 begin
   Range := FLayout.glyphRangeForTextContainer(FTextContainer);
-  SetLength(Result, Range.length);
+  // required length + 1 space
+  SetLength(Result, Range.length + 1);
   FLayout.getGlyphs_range(@Result[0], Range);
+  SetLength(Result, Range.length);
 end;
 
 procedure TCocoaTextLayout.Draw(ctx: NSGraphicsContext; X, Y: Integer; FillBackground: Boolean; DX: PInteger);
