@@ -411,6 +411,7 @@ components/codetools/customcodetool.pas svneol=native#text/pascal
 components/codetools/definetemplates.pas svneol=native#text/pascal
 components/codetools/directivestree.pas svneol=native#text/plain
 components/codetools/directorycacher.pas svneol=native#text/plain
+components/codetools/docs/codecompletiontool.xml svneol=native#text/plain
 components/codetools/docs/codetoolmanager.xml svneol=native#text/plain
 components/codetools/docs/fileprocs.xml svneol=native#text/plain
 components/codetools/docs/methodjumptool.xml svneol=native#text/plain

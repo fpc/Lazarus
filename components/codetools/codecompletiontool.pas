@@ -73,7 +73,8 @@ interface
 
 {off $DEFINE CTDEBUG}
 {$DEFINE VerboseCompletionAdds}
-{$DEFINE VerboseUpdateProcBodySignatures}
+{off $DEFINE VerboseUpdateProcBodySignatures}
+{off $DEFINE VerboseCompleteMethod}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -132,12 +133,17 @@ type
     fFullTopLvlName: string;// used by OnTopLvlIdentifierFound
     fNewMainUsesSectionUnits: TAVLTree; // tree of AnsiString
     procedure AddNewPropertyAccessMethodsToClassProcs(ClassProcs: TAVLTree;
-        const TheClassName: string);
+      const TheClassName: string);
     function UpdateProcBodySignatures(ClassProcs, ProcBodyNodes: TAVLTree;
-        ProcAttrCopyDefToBody: TProcHeadAttributes; out ProcsCopied: boolean): boolean;
+      ProcAttrCopyDefToBody: TProcHeadAttributes; out ProcsCopied: boolean): boolean;
+    procedure GuessMethodDefBodyMapping(ClassProcs, ProcBodyNodes: TAVLTree);
+    function GatherClassProcDefinitions(ClassNode: TCodeTreeNode;
+      RemoveAbstracts: boolean): TAVLTree;
+    function GatherClassProcBodies(ClassNode: TCodeTreeNode): TAVLTree;
     procedure CheckForOverrideAndAddInheritedCode(
       ANodeExt: TCodeTreeNodeExtension; Indent: integer);
     function CompleteProperty(PropNode: TCodeTreeNode): boolean;
+    function GetFirstClassIdentifier(ClassNode: TCodeTreeNode): TCodeTreeNode;
     procedure SetCodeCompleteClassNode(const AClassNode: TCodeTreeNode);
     procedure SetCodeCompleteSrcChgCache(const AValue: TSourceChangeCache);
     function OnTopLvlIdentifierFound(Params: TFindDeclarationParams;
@@ -424,8 +430,6 @@ begin
 end;
 
 procedure TCodeCompletionCodeTool.SetCodeCompleteClassNode(const AClassNode: TCodeTreeNode);
-const
-  Identifiers = AllIdentifierDefinitions+[ctnProperty,ctnProcedure,ctnClassGUID];
 begin
   FreeClassInsertionList;
   FJumpToProcName:='';
@@ -436,18 +440,7 @@ begin
   end;
   ClearIgnoreErrorAfter;
   // find first variable/method/GUID
-  FCompletingStartNode:=CodeCompleteClassNode.FirstChild;
-  while FCompletingStartNode<>nil do begin
-    if (FCompletingStartNode.Desc in Identifiers) then begin
-      break;
-    end else if (FCompletingStartNode.Desc in AllClassSections)
-    and (FCompletingStartNode.FirstChild<>nil)
-    and (FCompletingStartNode.FirstChild.Desc in Identifiers) then begin
-      FCompletingStartNode:=FCompletingStartNode.FirstChild;
-      break;
-    end else
-      FCompletingStartNode:=FCompletingStartNode.NextBrother;
-  end;
+  FCompletingStartNode:=GetFirstClassIdentifier(CodeCompleteClassNode);
 end;
 
 procedure TCodeCompletionCodeTool.SetCodeCompleteSrcChgCache(
@@ -2215,72 +2208,221 @@ function TCodeCompletionCodeTool.CompleteMethodByBody(
   CursorNode: TCodeTreeNode;
   var NewPos: TCodeXYPosition; var NewTopLine: integer;
   SourceChangeCache: TSourceChangeCache): boolean;
+const
+  ProcAttrCopyBodyToDef = [phpWithStart,phpWithoutClassName,phpWithVarModifiers,
+    phpWithParameterNames,phpWithDefaultValues,phpWithResultType];
+
+  procedure MergeProcModifiers(DefProcNode, BodyProcNode: TCodeTreeNode;
+    var ProcCode: String);
+  var
+    FirstBodyModAtom: TAtomPosition;
+    BodyHeadEnd: Integer;
+    DefHeadEnd: Integer;
+    Modifier: shortstring;
+    OldCursor: TAtomPosition;
+    AddModifier: boolean;
+  begin
+    MoveCursorToFirstProcSpecifier(DefProcNode);
+    if DefProcNode.FirstChild<>nil then
+      DefHeadEnd:=DefProcNode.FirstChild.EndPos
+    else
+      DefHeadEnd:=DefProcNode.EndPos;
+    FirstBodyModAtom:=CleanAtomPosition;
+    BodyHeadEnd:=0;
+    while CurPos.EndPos<DefHeadEnd do begin
+      if CurPos.Flag<>cafSemicolon then begin
+        // a modifier of the definition
+        Modifier:=copy(GetAtom,1,255);
+        //debugln(['MergeProcModifiers body modifier: ',Modifier]);
+        if not IsKeyWordCallingConvention.DoItCaseInsensitive(Modifier) then
+        begin
+          // test if body already has this modifier
+          OldCursor:=CurPos;
+          if BodyHeadEnd=0 then begin
+            MoveCursorToFirstProcSpecifier(BodyProcNode);
+            FirstBodyModAtom:=CurPos;
+            if BodyProcNode.FirstChild<>nil then
+              BodyHeadEnd:=BodyProcNode.FirstChild.EndPos
+            else
+              BodyHeadEnd:=BodyProcNode.EndPos;
+          end else
+            MoveCursorToAtomPos(FirstBodyModAtom);
+          while CurPos.EndPos<BodyHeadEnd do begin
+            if CurPos.Flag<>cafSemicolon then begin
+              if AtomIs(Modifier) then break;
+              // skip to next modifier of body
+              repeat
+                ReadNextAtom;
+              until (CurPos.Flag=cafSemicolon) or (CurPos.EndPos>=BodyHeadEnd);
+            end else
+              ReadNextAtom;
+          end;
+          AddModifier:=CurPos.EndPos>=BodyHeadEnd;
+          MoveCursorToAtomPos(OldCursor);
+        end else
+          AddModifier:=false;
+        // skip to next modifier of definition
+        repeat
+          if AddModifier then begin
+            if (IsIdentStartChar[Src[CurPos.StartPos]]
+            and IsIdentChar[ProcCode[length(ProcCode)]]) // space needed between words
+            or IsSpaceChar[Src[CurPos.StartPos-1]] // copy space from body
+            then
+              ProcCode:=ProcCode+' ';
+            ProcCode:=ProcCode+GetAtom;
+          end;
+          ReadNextAtom;
+        until (CurPos.Flag=cafSemicolon) or (CurPos.EndPos>=DefHeadEnd);
+        if AddModifier then
+          ProcCode:=ProcCode+';';
+      end else
+        ReadNextAtom;
+    end;
+  end;
+
 var
   CurClassName: String;
-  ProcNode: TCodeTreeNode;
+  BodyProcNode: TCodeTreeNode;
   CleanProcCode: String;
-  ProcCode: String;
   ProcName: String;
   OldCodePos: TCodePosition;
+  ClassProcs: TAVLTree;
+  ProcBodyNodes: TAVLTree;
+  AVLNode: TAVLTreeNode;
+  NodeExt: TCodeTreeNodeExtension;
+  DefProcNode: TCodeTreeNode;
+  NewProcCode: String;
+  OldProcCode: String;
+  FromPos: Integer;
+  EndPos: Integer;
+  Indent: Integer;
 begin
   Result:=false;
 
   // check if cursor in a method
-  ProcNode:=CursorNode.GetNodeOfType(ctnProcedure);
-  if (ProcNode=nil) and (CursorNode.Desc=ctnProcedure) then
-    ProcNode:=CursorNode;
-  if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure)
-  or (not NodeIsMethodBody(ProcNode)) then begin
+  if CursorNode.Desc=ctnProcedure then
+    BodyProcNode:=CursorNode
+  else
+    BodyProcNode:=CursorNode.GetNodeOfType(ctnProcedure);
+  if (BodyProcNode=nil) or (BodyProcNode.Desc<>ctnProcedure)
+  or (not NodeIsMethodBody(BodyProcNode)) then begin
     {$IFDEF VerboseCompleteMethod}
-    DebugLn(['TCodeCompletionCodeTool.CompleteMethod node is not a method body ',ProcNode<>nil]);
+    DebugLn(['TCodeCompletionCodeTool.CompleteMethodByBody node is not a method body ',BodyProcNode<>nil]);
     {$ENDIF}
     exit;
   end;
 
-  CheckWholeUnitParsed(CursorNode,ProcNode);
+  CheckWholeUnitParsed(CursorNode,BodyProcNode);
 
   // find corresponding class declaration
-  CurClassName:=ExtractClassNameOfProcNode(ProcNode);
+  CurClassName:=ExtractClassNameOfProcNode(BodyProcNode);
   if CurClassName='' then begin
-    DebugLn(['CompleteMethod ExtractClassNameOfProcNode failed']);
+    DebugLn(['CompleteMethodByBody ExtractClassNameOfProcNode failed']);
     exit;
   end;
   //DebugLn(['CompleteMethod CurClassName=',CurClassName]);
   CodeCompleteClassNode:=FindClassNodeInUnit(CurClassName,true,false,false,true);
 
-  // check if method declaration already exists
-  ProcName:=ExtractProcName(ProcNode,[phpWithoutClassName]);
-  CleanProcCode:=ExtractProcHead(ProcNode,
-                   [phpWithoutClassKeyword,phpWithoutClassName,phpInUpperCase]);
-  if ProcExistsInCodeCompleteClass(CleanProcCode) then begin
-    // proc exists already
-    MoveCursorToCleanPos(CleanCursorPos);
-    RaiseExceptionFmt(ctsIdentifierAlreadyDefined,[ProcName]);
+  ClassProcs:=nil;
+  ProcBodyNodes:=nil;
+  try
+    // find the corresponding node in the class
+    DefProcNode:=nil;
+
+    // gather existing proc definitions in the class
+    ClassProcs:=GatherClassProcDefinitions(CodeCompleteClassNode,true);
+    CleanProcCode:=ExtractProcHead(BodyProcNode,[phpInUpperCase]);
+    NodeExt:=FindCodeTreeNodeExt(ClassProcs,CleanProcCode);
+    if NodeExt<>nil then begin
+      DefProcNode:=TCodeTreeNodeExtension(NodeExt).Node;
+    end else begin
+      // the proc was not found by name+params
+      // => guess
+      ProcBodyNodes:=GatherClassProcBodies(CodeCompleteClassNode);
+      GuessMethodDefBodyMapping(ClassProcs,ProcBodyNodes);
+      AVLNode:=ProcBodyNodes.FindLowest;
+      NodeExt:=nil;
+      while AVLNode<>nil do begin
+        NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+        if NodeExt.Node=BodyProcNode then begin
+          if NodeExt.Data<>nil then
+            DefProcNode:=TCodeTreeNodeExtension(NodeExt.Data).Node;
+          break;
+        end;
+        AVLNode:=ProcBodyNodes.FindSuccessor(AVLNode);
+      end;
+    end;
+
+    if DefProcNode<>nil then begin
+      // update existing definition
+      {$IFDEF VerboseCompleteMethod}
+      DebugLn(['TCodeCompletionCodeTool.CompleteMethodByBody corresponding definition exists for "',CleanProcCode,'"']);
+      {$ENDIF}
+      OldProcCode:=ExtractProcHead(DefProcNode,ProcAttrCopyBodyToDef+[phpWithProcModifiers]);
+      NewProcCode:=ExtractProcHead(BodyProcNode,ProcAttrCopyBodyToDef+[phpWithCallingSpecs]);
+      // some modifiers are only allowed in the definition
+      // => keep the old definition modifiers
+      MergeProcModifiers(DefProcNode,BodyProcNode,NewProcCode);
+      if CompareTextIgnoringSpace(NewProcCode,OldProcCode,false)=0 then
+        exit(true); // already matching
+      // ToDo: definition needs update
+      {$IFDEF VerboseCompleteMethod}
+      debugln(['TCodeCompletionCodeTool.CompleteMethodByBody OldProcCode="',OldProcCode,'"']);
+      debugln(['TCodeCompletionCodeTool.CompleteMethodByBody NewProcCode="',NewProcCode,'"']);
+      {$ENDIF}
+      // store old cursor position
+      if not CleanPosToCodePos(CleanCursorPos,OldCodePos) then begin
+        RaiseException('TCodeCompletionCodeTool.CompleteMethodByBody Internal Error: '
+          +'CleanPosToCodePos');
+      end;
+
+      Indent:=GetLineIndent(Src,DefProcNode.StartPos);
+      FromPos:=DefProcNode.StartPos;
+      EndPos:=DefProcNode.EndPos;
+      SourceChangeCache.MainScanner:=Scanner;
+      SourceChangeCache.BeautifyCodeOptions.BeautifyProc(NewProcCode,Indent,false);
+      {$IFDEF VerboseCompleteMethod}
+      debugln('TCodeCompletionCodeTool.CompleteMethodByBody final NewProcCode:');
+      debugln(NewProcCode);
+      {$ENDIF}
+      if not SourceChangeCache.Replace(gtNone,gtNone,FromPos,EndPos,NewProcCode)
+      then
+        exit;
+      Result:=SourceChangeCache.Apply;
+    end else begin
+      // insert new definition
+      ProcName:=ExtractProcName(BodyProcNode,[phpWithoutClassName]);
+      {$IFDEF VerboseCompleteMethod}
+      DebugLn(['TCodeCompletionCodeTool.CompleteMethodByBody Adding body to definition "',CleanProcCode,'"']);
+      {$ENDIF}
+
+      // store old cursor position
+      if not CleanPosToCodePos(CleanCursorPos,OldCodePos) then begin
+        RaiseException('TCodeCompletionCodeTool.CompleteMethodByBody Internal Error: '
+          +'CleanPosToCodePos');
+      end;
+
+      CodeCompleteSrcChgCache:=SourceChangeCache;
+
+      // add method declaration
+      NewProcCode:=ExtractProcHead(BodyProcNode,ProcAttrCopyBodyToDef+[phpWithCallingSpecs]);
+      CleanProcCode:=ExtractProcHead(BodyProcNode,
+                       [phpWithoutClassKeyword,phpWithoutClassName,phpInUpperCase]);
+      AddClassInsertion(CleanProcCode,NewProcCode,ProcName,ncpPrivateProcs);
+
+      // apply changes
+      Result:=ApplyClassCompletion(false);
+    end;
+    // adjust cursor position
+    AdjustCursor(OldCodePos,OldTopLine,NewPos,NewTopLine);
+  finally
+    DisposeAVLTree(ClassProcs);
+    DisposeAVLTree(ProcBodyNodes);
   end;
 
-  // store old cursor position
-  if not CleanPosToCodePos(CleanCursorPos,OldCodePos) then begin
-    RaiseException('TCodeCompletionCodeTool.AddLocalVariable Internal Error: '
-      +'CleanPosToCodePos');
-  end;
-
-  CodeCompleteSrcChgCache:=SourceChangeCache;
-
-  // add method declaration
-  ProcCode:=ExtractProcHead(ProcNode,
-    [phpWithStart,phpWithoutClassName,phpWithVarModifiers,phpWithParameterNames,
-     phpWithDefaultValues,phpWithResultType,phpWithCallingSpecs]);
   {$IFDEF VerboseCompleteMethod}
-  DebugLn(['TCodeCompletionCodeTool.CompleteMethod Adding ProcName="',ProcName,'"']);
+  DebugLn(['TCodeCompletionCodeTool.CompleteMethodByBody END OldCodePos.P=',OldCodePos.P,' OldTopLine=',OldTopLine,' NewPos=',Dbgs(NewPos),' NewTopLine=',NewTopLine]);
   {$ENDIF}
-  AddClassInsertion(CleanProcCode,ProcCode,ProcName,ncpPrivateProcs);
-
-  // apply changes
-  Result:=ApplyClassCompletion(false);
-
-  // adjust cursor position
-  AdjustCursor(OldCodePos,OldTopLine,NewPos,NewTopLine);
-  //DebugLn(['TCodeCompletionCodeTool.CompleteMethod END OldCodePos.P=',OldCodePos.P,' OldTopLine=',OldTopLine,' NewPos=',Dbgs(NewPos),' NewTopLine=',NewTopLine]);
 end;
 
 function TCodeCompletionCodeTool.CreateParamListFromStatement(
@@ -6620,6 +6762,26 @@ begin
   Result:=true;
 end;
 
+function TCodeCompletionCodeTool.GetFirstClassIdentifier(
+  ClassNode: TCodeTreeNode): TCodeTreeNode;
+const
+  Identifiers = AllIdentifierDefinitions+[ctnProperty,ctnProcedure,ctnClassGUID];
+begin
+  if ClassNode=nil then exit(nil);
+  Result:=CodeCompleteClassNode.FirstChild;
+  while Result<>nil do begin
+    if (Result.Desc in Identifiers) then begin
+      break;
+    end else if (Result.Desc in AllClassSections)
+    and (Result.FirstChild<>nil)
+    and (Result.FirstChild.Desc in Identifiers) then begin
+      Result:=Result.FirstChild;
+      break;
+    end else
+      Result:=Result.NextBrother;
+  end;
+end;
+
 procedure TCodeCompletionCodeTool.InsertNewClassParts(PartType: TNewClassPart);
 var ANodeExt: TCodeTreeNodeExtension;
   ClassSectionNode, ANode, InsertNode: TCodeTreeNode;
@@ -7341,19 +7503,59 @@ function TCodeCompletionCodeTool.UpdateProcBodySignatures(ClassProcs,
   Node.Txt = ExtractProcHead(Node,SomeAttributes)
 
 }
+var
+  BodyAVLNode: TAVLTreeNode;
+  BodyNodeExt: TCodeTreeNodeExtension;
+  DefNodeExt: TCodeTreeNodeExtension;
+  InsertPos: LongInt;
+  Indent: LongInt;
+  BodyProcHeadNode: TCodeTreeNode;
+  InsertEndPos: LongInt;
+  NewProcCode: String;
+  OldProcCode: String;
+begin
+  Result:=true;
+  ProcsCopied:=false;
+  try
+    GuessMethodDefBodyMapping(ClassProcs,ProcBodyNodes);
 
-  procedure ClearNodeExtData(Nodes: TAVLTree);
-  var
-    AVLNode: TAVLTreeNode;
-    NodeExt: TCodeTreeNodeExtension;
-  begin
-    AVLNode:=Nodes.FindLowest;
-    while AVLNode<>nil do begin
-      NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
-      NodeExt.Data:=nil;
-      AVLNode:=Nodes.FindSuccessor(AVLNode);
+    // replace body proc head(s) with class proc head(s)
+    BodyAVLNode:=ProcBodyNodes.FindLowest;
+    while BodyAVLNode<>nil do begin
+      BodyNodeExt:=TCodeTreeNodeExtension(BodyAVLNode.Data);
+      DefNodeExt:=TCodeTreeNodeExtension(BodyNodeExt.Data);
+      if DefNodeExt<>nil then begin
+        // this body has a definition
+        // compare body and definition
+        NewProcCode:=ExtractProcHead(DefNodeExt.Node,ProcAttrCopyDefToBody);
+        OldProcCode:=ExtractProcHead(BodyNodeExt.Node,ProcAttrCopyDefToBody);
+        if CompareTextIgnoringSpace(NewProcCode,OldProcCode,false)<>0 then begin
+          // update body
+          BodyProcHeadNode:=BodyNodeExt.Node.FirstChild;
+          InsertPos:=BodyNodeExt.Node.StartPos;
+          InsertEndPos:=BodyProcHeadNode.EndPos;
+          Indent:=GetLineIndent(Src,InsertPos);
+          NewProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
+                       NewProcCode,Indent,false);
+          debugln(['UpdateProcBodySignatures OLD=',copy(Src,InsertPos,InsertEndPos-InsertPos),' New=',NewProcCode]);
+          ProcsCopied:=true;
+          if not ASourceChangeCache.Replace(gtNone,gtNone,InsertPos,InsertEndPos,NewProcCode) then
+            exit(false);
+        end;
+        // mark body as exactly the same as definition, so that no new body is
+        // created for this definition
+        BodyNodeExt.Txt:=DefNodeExt.Txt;
+      end;
+      BodyAVLNode:=ProcBodyNodes.FindSuccessor(BodyAVLNode);
     end;
+  finally
+    ClearNodeExtData(ProcBodyNodes);
+    ClearNodeExtData(ClassProcs);
   end;
+end;
+
+procedure TCodeCompletionCodeTool.GuessMethodDefBodyMapping(ClassProcs,
+  ProcBodyNodes: TAVLTree);
 
   procedure MapBodiesAndDefsByNameAndParams;
   var
@@ -7416,13 +7618,13 @@ function TCodeCompletionCodeTool.UpdateProcBodySignatures(ClassProcs,
   var
     BodyNodesByName, DefNodesByName: TAVLTree;
     BodyAVLNode: TAVLTreeNode;
-    NodeExt: TCodeTreeNodeExtension;
     LastBodySameName: TAVLTreeNode;
     FirstDefSameName: TAVLTreeNode;
     LastDefSameName: TAVLTreeNode;
     ProcBodyExt: TCodeTreeNodeExtension;
     DefExt: TCodeTreeNodeExtension;
     DefNameExt: TCodeTreeNodeExtension;
+    ProcBodyByNameExt: TCodeTreeNodeExtension;
   begin
     BodyNodesByName:=nil;
     DefNodesByName:=nil;
@@ -7434,19 +7636,19 @@ function TCodeCompletionCodeTool.UpdateProcBodySignatures(ClassProcs,
       // ... and one for the definitions
       DefNodesByName:=CreateNameTree(ClassProcs,true);
       if DefNodesByName=nil then exit;
-      // check each body if it can mapped bijective by name
+      // check each body if it can be mapped bijective by name
       BodyAVLNode:=BodyNodesByName.FindLowest;
       while BodyAVLNode<>nil do begin
-        NodeExt:=TCodeTreeNodeExtension(BodyAVLNode.Data);
-        ProcBodyExt:=TCodeTreeNodeExtension(NodeExt.Data);
+        ProcBodyByNameExt:=TCodeTreeNodeExtension(BodyAVLNode.Data);
+        ProcBodyExt:=TCodeTreeNodeExtension(ProcBodyByNameExt.Data);
         LastBodySameName:=BodyNodesByName.FindRightMostSameKey(BodyAVLNode);
         if LastBodySameName<>BodyAVLNode then begin
           // multiple bodies with same name => skip
           {$IFDEF VerboseUpdateProcBodySignatures}
           debugln(['  MapBodiesAndDefsByName multiple definitionless bodies with same name:']);
           repeat
-            NodeExt:=TCodeTreeNodeExtension(BodyAVLNode.Data);
-            ProcBodyExt:=TCodeTreeNodeExtension(NodeExt.Data);
+            ProcBodyByNameExt:=TCodeTreeNodeExtension(BodyAVLNode.Data);
+            ProcBodyExt:=TCodeTreeNodeExtension(ProcBodyByNameExt.Data);
             debugln(['    '+ProcBodyExt.Txt]);
             BodyAVLNode:=BodyNodesByName.FindSuccessor(BodyAVLNode);
           until BodyAVLNode<>LastBodySameName;
@@ -7455,12 +7657,12 @@ function TCodeCompletionCodeTool.UpdateProcBodySignatures(ClassProcs,
         end else begin
           // there is only one body with this name that has no exact definition
           // => search in definitions
-          FirstDefSameName:=DefNodesByName.FindLeftMost(NodeExt);
-          DefNameExt:=TCodeTreeNodeExtension(FirstDefSameName.Data);
+          FirstDefSameName:=DefNodesByName.FindLeftMost(ProcBodyByNameExt);
           if FirstDefSameName<>nil then begin
             // there is at least one definition with this name and without a body
-            LastDefSameName:=DefNodesByName.FindRightMostSameKey(FirstDefSameName);
+            DefNameExt:=TCodeTreeNodeExtension(FirstDefSameName.Data);
             DefExt:=TCodeTreeNodeExtension(DefNameExt.Data);
+            LastDefSameName:=DefNodesByName.FindRightMostSameKey(FirstDefSameName);
             if LastDefSameName=FirstDefSameName then begin
               // there is exactly one definition with this name and without a body
               // => connect
@@ -7528,69 +7730,49 @@ function TCodeCompletionCodeTool.UpdateProcBodySignatures(ClassProcs,
     DefNodeExt.Data:=BodyNodeExt;
   end;
 
-var
-  BodyAVLNode: TAVLTreeNode;
-  BodyNodeExt: TCodeTreeNodeExtension;
-  BodiesWithoutDefs: TAVLTree;
-  DefsWithoutBodies: TAVLTree;
-  UpdateDefsToBodies: TAVLTree;
-  DefNodeExt: TCodeTreeNodeExtension;
-  InsertPos: LongInt;
-  Indent: LongInt;
-  BodyProcHeadNode: TCodeTreeNode;
-  InsertEndPos: LongInt;
-  NewProcCode: String;
-  OldProcCode: String;
 begin
-  Result:=true;
-  ProcsCopied:=false;
-
-  BodiesWithoutDefs:=nil;
-  DefsWithoutBodies:=nil;
-  UpdateDefsToBodies:=nil;
   ClearNodeExtData(ProcBodyNodes);
   ClearNodeExtData(ClassProcs);
-  try
-    MapBodiesAndDefsByNameAndParams; // first: map all exact matches between bodies and defs
-    MapBodiesAndDefsByName; // second: map remaining by name without params
-    MapLastBodyAndDef; // last: map if there is exactly one unmatching body and def
+  MapBodiesAndDefsByNameAndParams; // first: map all exact matches between bodies and defs
+  MapBodiesAndDefsByName; // second: map remaining by name without params
+  MapLastBodyAndDef; // last: map if there is exactly one unmatching body and def
+end;
 
-    // replace body proc head(s) with class proc head(s)
-    BodyAVLNode:=ProcBodyNodes.FindLowest;
-    while BodyAVLNode<>nil do begin
-      BodyNodeExt:=TCodeTreeNodeExtension(BodyAVLNode.Data);
-      DefNodeExt:=TCodeTreeNodeExtension(BodyNodeExt.Data);
-      if DefNodeExt<>nil then begin
-        // this body has a definition
-        // compare body and definition
-        NewProcCode:=ExtractProcHead(DefNodeExt.Node,ProcAttrCopyDefToBody);
-        OldProcCode:=ExtractProcHead(BodyNodeExt.Node,ProcAttrCopyDefToBody);
-        if CompareTextIgnoringSpace(NewProcCode,OldProcCode,false)<>0 then begin
-          // update body
-          BodyProcHeadNode:=BodyNodeExt.Node.FirstChild;
-          InsertPos:=BodyNodeExt.Node.StartPos;
-          InsertEndPos:=BodyProcHeadNode.EndPos;
-          Indent:=GetLineIndent(Src,InsertPos);
-          NewProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
-                       NewProcCode,Indent,false);
-          debugln(['UpdateProcBodySignatures OLD=',copy(Src,InsertPos,InsertEndPos-InsertPos),' New=',NewProcCode]);
-          ProcsCopied:=true;
-          if not ASourceChangeCache.Replace(gtNone,gtNone,InsertPos,InsertEndPos,NewProcCode) then
-            exit(false);
-        end;
-        // mark body as exactly the same as definition, so that no new body is
-        // created for this definition
-        BodyNodeExt.Txt:=DefNodeExt.Txt;
+function TCodeCompletionCodeTool.GatherClassProcDefinitions(
+  ClassNode: TCodeTreeNode; RemoveAbstracts: boolean): TAVLTree;
+var
+  AnAVLNode: TAVLTreeNode;
+  NextAVLNode: TAVLTreeNode;
+  ANodeExt: TCodeTreeNodeExtension;
+  ANode: TCodeTreeNode;
+begin
+  Result:=GatherProcNodes(GetFirstClassIdentifier(ClassNode),
+             [phpInUpperCase,phpAddClassName],ExtractClassName(ClassNode,true));
+  if RemoveAbstracts then begin
+    AnAVLNode:=Result.FindLowest;
+    while AnAVLNode<>nil do begin
+      NextAVLNode:=Result.FindSuccessor(AnAVLNode);
+      ANodeExt:=TCodeTreeNodeExtension(AnAVLNode.Data);
+      ANode:=ANodeExt.Node;
+      if (ANode<>nil) and (ANode.Desc=ctnProcedure)
+      and ProcNodeHasSpecifier(ANode,psABSTRACT) then begin
+        Result.Delete(AnAVLNode);
+        ANodeExt.Free;
       end;
-      BodyAVLNode:=ProcBodyNodes.FindSuccessor(BodyAVLNode);
+      AnAVLNode:=NextAVLNode;
     end;
-  finally
-    ClearNodeExtData(ProcBodyNodes);
-    ClearNodeExtData(ClassProcs);
-    UpdateDefsToBodies.Free;
-    BodiesWithoutDefs.Free;
-    DefsWithoutBodies.Free;
   end;
+end;
+
+function TCodeCompletionCodeTool.GatherClassProcBodies(ClassNode: TCodeTreeNode
+  ): TAVLTree;
+var
+  TypeSectionNode: TCodeTreeNode;
+begin
+  TypeSectionNode:=ClassNode.GetTopMostNodeOfType(ctnTypeSection);
+  Result:=GatherProcNodes(TypeSectionNode,
+                      [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
+                       ExtractClassName(ClassNode,true));
 end;
 
 function TCodeCompletionCodeTool.CreateMissingProcBodies: boolean;
@@ -7654,20 +7836,11 @@ var
   NearestAVLNode: TAVLTreeNode;
   cmp, MissingNodePosition: integer;
   FirstExistingProcBody, LastExistingProcBody, ImplementationNode,
-  ANode, ANode2, TypeSectionNode: TCodeTreeNode;
+  ANode, ANode2: TCodeTreeNode;
   ClassStartComment, s: string;
   Caret1, Caret2: TCodeXYPosition;
   MethodInsertPolicy: TMethodInsertPolicy;
   NearestNodeValid: boolean;
-  
-  procedure GatherExistingClassProcBodies;
-  begin
-    TypeSectionNode:=CodeCompleteClassNode.GetTopMostNodeOfType(ctnTypeSection);
-    ClassProcs:=nil;
-    ProcBodyNodes:=GatherProcNodes(TypeSectionNode,
-                        [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
-                         ExtractClassName(CodeCompleteClassNode,true));
-  end;
   
   procedure FindTopMostAndBottomMostProcBodies;
   begin
@@ -7719,22 +7892,6 @@ var
     end;
   end;
 
-  procedure RemoveAbstractMethods;
-  begin
-    AnAVLNode:=ClassProcs.FindLowest;
-    while AnAVLNode<>nil do begin
-      NextAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
-      ANodeExt:=TCodeTreeNodeExtension(AnAVLNode.Data);
-      ANode:=ANodeExt.Node;
-      if (ANode<>nil) and (ANode.Desc=ctnProcedure)
-      and ProcNodeHasSpecifier(ANode,psABSTRACT) then begin
-        ClassProcs.Delete(AnAVLNode);
-        ANodeExt.Free;
-      end;
-      AnAVLNode:=NextAVLNode;
-    end;
-  end;
-  
   procedure FindInsertPointForNewClass(out InsertPos, Indent: LongInt);
 
     procedure SetIndentAndInsertPos(Node: TCodeTreeNode; Behind: boolean);
@@ -7872,8 +8029,12 @@ begin
   Result:=false;
   MethodInsertPolicy:=ASourceChangeCache.BeautifyCodeOptions.MethodInsertPolicy;
   // gather existing class proc bodies
-  GatherExistingClassProcBodies;
+  ClassProcs:=nil;
+  ProcBodyNodes:=nil;
   try
+    ClassProcs:=GatherClassProcDefinitions(CodeCompleteClassNode,true);
+    ProcBodyNodes:=GatherClassProcBodies(CodeCompleteClassNode);
+
     // find topmost and bottommost proc body
     FindTopMostAndBottomMostProcBodies;
 
@@ -7882,11 +8043,6 @@ begin
     {$ENDIF}
     TheClassName:=ExtractClassName(CodeCompleteClassNode,false);
 
-    // gather existing proc definitions in the class
-    ClassProcs:=GatherProcNodes(FCompletingStartNode,
-       [phpInUpperCase,phpAddClassName],
-       ExtractClassName(CodeCompleteClassNode,true));
-
     // check for double defined methods in ClassProcs
     CheckForDoubleDefinedMethods;
 
@@ -7894,9 +8050,6 @@ begin
     if not UpdateProcBodySignatures(ClassProcs,ProcBodyNodes,ProcAttrDefToBody,
       ProcsCopied)
     then exit;
-
-    // remove abstract methods
-    RemoveAbstractMethods;
 
     CurNode:=FirstExistingProcBody;
     

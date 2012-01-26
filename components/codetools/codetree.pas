@@ -318,6 +318,7 @@ function FindCodeTreeNodeExtAVLNodeWithIdentifier(Tree: TAVLTree;
                                                Identifier: PChar): TAVLTreeNode;
 procedure AddNodeExtToTree(var TreeOfNodeExt: TAVLTree;
   DefNodeExt: TCodeTreeNodeExtension);
+procedure ClearNodeExtData(TreeOfNodeExt: TAVLTree);
 procedure DisposeAVLTree(var Tree: TAVLTree);
 function CompareTxtWithCodeTreeNodeExt(p: Pointer;
                                        NodeData: pointer): integer;
@@ -510,6 +511,18 @@ begin
   if TreeOfNodeExt=nil then
     TreeOfNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
   TreeOfNodeExt.Add(DefNodeExt);
+end;
+
+procedure ClearNodeExtData(TreeOfNodeExt: TAVLTree);
+var
+  AVLNode: TAVLTreeNode;
+begin
+  if TreeOfNodeExt=nil then exit;
+  AVLNode:=TreeOfNodeExt.FindLowest;
+  while AVLNode<>nil do begin
+    TCodeTreeNodeExtension(AVLNode.Data).Data:=nil;
+    AVLNode:=TreeOfNodeExt.FindSuccessor(AVLNode);
+  end;
 end;
 
 procedure DisposeAVLTree(var Tree: TAVLTree);
