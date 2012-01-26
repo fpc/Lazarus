@@ -93,6 +93,149 @@ the xaxis, yaxis and zaxis properties will remain stopped at the last value read
 </element>
 
 <!-- enumeration type Visibility: default -->
+<element name="TLazDeviceMessageKind">
+<short>Indicates the type of message (for example: SMS, MMS, EMail)</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazDeviceMessageKind.dmkSMS">
+<short>Indicates that the message is a SMS</short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazDeviceMessageKind.dmkMMS">
+<short>Indicates that the message is a MMS</short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazDeviceMessageKind.dmkEMail">
+<short>Indicates that the message is a E-Mail</short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TLazDeviceMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazDeviceMessage.bccAddress">
+<short>The BCC field of E-Mails</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazDeviceMessage.Body">
+<short>The main text of the message</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazDeviceMessage.callbackNumber">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazDeviceMessage.ccAddress">
+<short>The CC field in E-Mails</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazDeviceMessage.destinationAddress">
+<short>The destination(s) of the message</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazDeviceMessage.isRead">
+<short>Indicates if the user has already read the message</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazDeviceMessage.messageId">
+<short>Reserved field</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazDeviceMessage.messageType">
+<short>The type of the message</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazDeviceMessage.sourceAddress">
+<short>The address from which the message was sent</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazDeviceMessage.Subject">
+<short>The title or subject of the message</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazDeviceMessage.Time">
+<short>The time when the message was sent</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TLazDeviceMessage.validityPeriod">
+<short>The period of time for which the message is valid</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
 <element name="TLazMessagingStatus">
 <short></short>
 <descr>
@@ -222,6 +365,25 @@ callback.</p>
 </descr>
 <seealso>
 </seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TLazPositionMethod">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazPositionMethod.pmGPS">
+<short>The GPS positioning method</short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazPositionMethod.pmNetwork">
+<short>Detects the position via the network connection</short>
 </element>
 
 <!-- class Visibility: default -->
