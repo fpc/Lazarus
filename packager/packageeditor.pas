@@ -1532,7 +1532,7 @@ begin
   FilterEdit.OnGetImageIndex:=@ChooseImageIndex;
 
   SaveBitBtn    := CreateToolButton('SaveBitBtn', lisMenuSave, lisPckEditSavePackage, 'laz_save', @SaveBitBtnClick);
-  CompileBitBtn := CreateToolButton('CompileBitBtn', lisPckEditCompile, lisPckEditCompilePackage, 'pkg_compile', nil{@CompileBitBtnClick});
+  CompileBitBtn := CreateToolButton('CompileBitBtn', lisPckEditCompile, lisPckEditCompilePackage, 'pkg_compile', @CompileBitBtnClick);
   UseBitBtn     := CreateToolButton('UseBitBtn', lisPckEditInstall, lisPckEditInstallPackageInTheIDE, 'pkg_install', nil);
   CreateDivider;
   AddBitBtn     := CreateToolButton('AddBitBtn', lisCodeTemplAdd, lisPckEditAddAnItem, 'laz_add', @AddBitBtnClick);
