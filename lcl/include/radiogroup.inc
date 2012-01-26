@@ -403,8 +403,11 @@ begin
       FItemIndex := Value;
       // trigger event to be delphi compat, even if handle isn't allocated.
       // issue #15989
-      if (Value <> OldItemIndex) and not FCreatingWnd and
-        Assigned(FOnClick) then FOnClick(Self);
+      if (Value <> OldItemIndex) and not FCreatingWnd then
+      begin
+        if Assigned(FOnClick) then FOnClick(Self);
+        if Assigned(FOnSelectionChanged) then FOnSelectionChanged(Self);
+      end;
     end;
   end;
   //DebugLn('TCustomRadioGroup.SetItemIndex ',dbgsName(Self),' END Old=',dbgs(FItemIndex),' New=',dbgs(Value));
@@ -436,6 +439,8 @@ begin
   // for Delphi compatility: OnClick should be invoked, whenever ItemIndex
   // has changed
   if Assigned (FOnClick) then FOnClick(Self);
+  // And a better named LCL equivalent
+  if Assigned (FOnSelectionChanged) then FOnSelectionChanged(Self);
 end;
 
 {------------------------------------------------------------------------------

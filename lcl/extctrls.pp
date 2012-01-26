@@ -607,6 +607,7 @@ type
     FItems: TStrings;
     FLastClickedItemIndex: integer;
     FOnClick: TNotifyEvent;
+    FOnSelectionChanged: TNotifyEvent;
     FReading: boolean;
     FUpdatingItems: Boolean;
     procedure Changed(Sender: TObject);
@@ -647,6 +648,7 @@ type
     property Columns: integer read FColumns write SetColumns default 1;
     property ColumnLayout: TColumnLayout read FColumnLayout write SetColumnLayout default clHorizontalThenVertical;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
+    property OnSelectionChanged: TNotifyEvent read FOnSelectionChanged write FOnSelectionChanged;
   end;
 
 
@@ -691,6 +693,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property OnSelectionChanged;
     property OnStartDrag;
     property OnUTF8KeyPress;
     property ParentBidiMode;
