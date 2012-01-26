@@ -424,15 +424,16 @@ var
 
   // Package editor(s)
   PackageEditorMenuRoot: TIDEMenuSection = nil;
-    PkgEditMenuSectionFile: TIDEMenuSection; // e.g. open file, remove file, move file up/down
-    PkgEditMenuSectionDirectory: TIDEMenuSection; // e.g. change all properties of all files in a directory and ub directories
-    PkgEditMenuSectionDependency: TIDEMenuSection; // e.g. open package, remove dependency
     PkgEditMenuSectionFiles: TIDEMenuSection; // e.g. sort files, clean up files
     PkgEditMenuSectionUse: TIDEMenuSection; // e.g. install, add to project
     PkgEditMenuSectionSave: TIDEMenuSection; // e.g. save as, revert, publish
     PkgEditMenuSectionCompile: TIDEMenuSection; // e.g. build clean, create Makefile
     PkgEditMenuSectionAddRemove: TIDEMenuSection; // e.g. add unit, add dependency
     PkgEditMenuSectionMisc: TIDEMenuSection; // e.g. options
+  PackageEditorMenuFilesRoot: TIDEMenuSection = nil;
+    PkgEditMenuSectionFile: TIDEMenuSection; // e.g. open file, remove file, move file up/down
+    PkgEditMenuSectionDirectory: TIDEMenuSection; // e.g. change all properties of all files in a directory and ub directories moved ..
+    PkgEditMenuSectionDependency: TIDEMenuSection; // e.g. open package, remove dependency
 
 function RegisterIDEMenuRoot(const Name: string; MenuItem: TMenuItem = nil
                              ): TIDEMenuSection;

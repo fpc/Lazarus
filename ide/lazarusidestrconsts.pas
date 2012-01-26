@@ -4024,7 +4024,7 @@ resourcestring
   lisPEMoveFileUp = 'Move file up';
   lisPEMoveFileDown = 'Move file down';
   lisPckEditReAddFile = 'Re-Add file';
-  lisPESortFiles = 'Sort Files';
+  lisPESortFiles = 'Sort Files Permanently';
   lisPEFixFilesCase = 'Fix Files Case';
   lisPEShowMissingFiles = 'Show Missing Files';
   lisPckEditRemoveDependency = 'Remove dependency';

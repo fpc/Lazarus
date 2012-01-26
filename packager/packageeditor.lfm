@@ -201,6 +201,7 @@ inherited PackageEditorForm: TPackageEditorForm
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 3
+      DefaultItemHeight = 16
       PopupMenu = FilesPopupMenu
       ReadOnly = True
       RightClickSelect = True

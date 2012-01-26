@@ -52,6 +52,7 @@ uses
   
 const
   PackageEditorMenuRootName = 'PackageEditor';
+  PackageEditorMenuFilesRootName = 'PackageEditorFiles';
   PackageEditorWindowPrefix = 'PackageEditor_';
 var
   PkgEditMenuOpenFile: TIDEMenuCommand;
@@ -80,9 +81,9 @@ var
   PkgEditMenuFixFilesCase: TIDEMenuCommand;
   PkgEditMenuShowMissingFiles: TIDEMenuCommand;
 
-  PkgEditMenuAddToProject: TIDEMenuCommand;
-  PkgEditMenuInstall: TIDEMenuCommand;
-  PkgEditMenuUninstall: TIDEMenuCommand;
+  //PkgEditMenuAddToProject: TIDEMenuCommand;
+  //PkgEditMenuInstall: TIDEMenuCommand;
+  //PkgEditMenuUninstall: TIDEMenuCommand;
 
   PkgEditMenuSave: TIDEMenuCommand;
   PkgEditMenuSaveAs: TIDEMenuCommand;
@@ -94,10 +95,10 @@ var
   PkgEditMenuRecompileAllRequired: TIDEMenuCommand;
   PkgEditMenuCreateMakefile: TIDEMenuCommand;
 
-  PkgEditMenuAdd: TIDEMenuCommand;
-  PkgEditMenuRemove: TIDEMenuCommand;
+  //PkgEditMenuAdd: TIDEMenuCommand;
+  //PkgEditMenuRemove: TIDEMenuCommand;
 
-  PkgEditMenuGeneralOptions: TIDEMenuCommand;
+  //PkgEditMenuGeneralOptions: TIDEMenuCommand;
   PkgEditMenuViewPackageSource: TIDEMenuCommand;
 
 type
@@ -146,7 +147,6 @@ type
     FilterEdit: TTreeFilterEdit;
     ItemsPanel: TPanel;
     DummyButton: TSpeedButton;
-    MorePopupMenu: TPopupMenu;
     SortAlphabeticallyButton: TSpeedButton;
     Splitter1: TSplitter;
     // toolbar
@@ -180,6 +180,7 @@ type
     // hidden components
     UsePopupMenu: TPopupMenu;
     FilesPopupMenu: TPopupMenu;
+    MorePopupMenu: TPopupMenu;
     procedure AddBitBtnClick(Sender: TObject);
     procedure AddToProjectClick(Sender: TObject);
     procedure AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
@@ -425,10 +426,11 @@ procedure RegisterStandardPackageEditorMenuItems;
 var
   AParent: TIDEMenuSection;
 begin
-  PackageEditorMenuRoot:=RegisterIDEMenuRoot(PackageEditorMenuRootName);
+  PackageEditorMenuRoot     :=RegisterIDEMenuRoot(PackageEditorMenuRootName);
+  PackageEditorMenuFilesRoot:=RegisterIDEMenuRoot(PackageEditorMenuFilesRootName);
 
   // register the section for operations on single files
-  PkgEditMenuSectionFile:=RegisterIDEMenuSection(PackageEditorMenuRoot,'File');
+  PkgEditMenuSectionFile:=RegisterIDEMenuSection(PackageEditorMenuFilesRoot,'File');
   AParent:=PkgEditMenuSectionFile;
   PkgEditMenuOpenFile:=RegisterIDEMenuCommand(AParent,'Open File',lisOpenFile);
   PkgEditMenuRemoveFile:=RegisterIDEMenuCommand(AParent,'Remove File',lisPckEditRemoveFile);
@@ -439,7 +441,7 @@ begin
   PkgEditMenuSectionFileType:=RegisterIDESubMenu(AParent,'File Type',lisAF2PFileType);
 
   // register the section for operations on directories
-  PkgEditMenuSectionDirectory:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Directory');
+  PkgEditMenuSectionDirectory:=RegisterIDEMenuSection(PackageEditorMenuFilesRoot,'Directory');
   AParent:=PkgEditMenuSectionDirectory;
   PkgEditMenuExpandDirectory:=RegisterIDEMenuCommand(AParent,'Expand directory',lisPEExpandDirectory);
   PkgEditMenuCollapseDirectory:=RegisterIDEMenuCommand(AParent, 'Collapse directory', lisPECollapseDirectory);
@@ -447,7 +449,7 @@ begin
   PkgEditMenuUseNoUnitsInDirectory:=RegisterIDEMenuCommand(AParent, 'Use no units in directory', lisPEUseNoUnitsInDirectory);
 
   // register the section for operations on single dependencies
-  PkgEditMenuSectionDependency:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Dependency');
+  PkgEditMenuSectionDependency:=RegisterIDEMenuSection(PackageEditorMenuFilesRoot,'Dependency');
   AParent:=PkgEditMenuSectionDependency;
   PkgEditMenuOpenPackage:=RegisterIDEMenuCommand(AParent,'Open Package',lisMenuOpenPackage);
   PkgEditMenuRemoveDependency:=RegisterIDEMenuCommand(AParent,'Remove Dependency',lisPckEditRemoveDependency);
@@ -461,16 +463,17 @@ begin
   // register the section for operations on all files
   PkgEditMenuSectionFiles:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Files');
   AParent:=PkgEditMenuSectionFiles;
-  PkgEditMenuSortFiles:=RegisterIDEMenuCommand(AParent,'Sort Files',lisPESortFiles);
+  PkgEditMenuSortFiles:=RegisterIDEMenuCommand(AParent,'Sort Files Permanently',lisPESortFiles);
   PkgEditMenuFixFilesCase:=RegisterIDEMenuCommand(AParent,'Fix Files Case',lisPEFixFilesCase);
   PkgEditMenuShowMissingFiles:=RegisterIDEMenuCommand(AParent, 'Show Missing Files', lisPEShowMissingFiles);
 
   // register the section for using the package
   PkgEditMenuSectionUse:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Use');
-  AParent:=PkgEditMenuSectionUse;
-  PkgEditMenuAddToProject:=RegisterIDEMenuCommand(AParent,'Add To Project',lisPckEditAddToProject);
-  PkgEditMenuInstall:=RegisterIDEMenuCommand(AParent,'Install',lisPckEditInstall);
-  PkgEditMenuUninstall:=RegisterIDEMenuCommand(AParent,'Uninstall',lisPckEditUninstall);
+  // already provided by toolbutton
+  //AParent:=PkgEditMenuSectionUse;
+  //PkgEditMenuAddToProject:=RegisterIDEMenuCommand(AParent,'Add To Project',lisPckEditAddToProject);
+  //PkgEditMenuInstall:=RegisterIDEMenuCommand(AParent,'Install',lisPckEditInstall);
+  //PkgEditMenuUninstall:=RegisterIDEMenuCommand(AParent,'Uninstall',lisPckEditUninstall);
 
   // register the section for saving the package
   PkgEditMenuSectionSave:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Save');
@@ -490,14 +493,16 @@ begin
 
   // register the section for adding to or removing from package
   PkgEditMenuSectionAddRemove:=RegisterIDEMenuSection(PackageEditorMenuRoot,'AddRemove');
-  AParent:=PkgEditMenuSectionCompile;
-  PkgEditMenuAdd:=RegisterIDEMenuCommand(AParent,'Add',lisCodeTemplAdd);
-  PkgEditMenuRemove:=RegisterIDEMenuCommand(AParent,'Remove',lisExtToolRemove);
+  // already provided by toolbutton
+  //AParent:=PkgEditMenuSectionCompile;
+  //PkgEditMenuAdd:=RegisterIDEMenuCommand(AParent,'Add',lisCodeTemplAdd);
+  //PkgEditMenuRemove:=RegisterIDEMenuCommand(AParent,'Remove',lisExtToolRemove);
 
   // register the section for other things
   PkgEditMenuSectionMisc:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Misc');
   AParent:=PkgEditMenuSectionMisc;
-  PkgEditMenuGeneralOptions:=RegisterIDEMenuCommand(AParent,'General Options',lisPckEditGeneralOptions);
+  // already provided by toolbutton
+// PkgEditMenuGeneralOptions:=RegisterIDEMenuCommand(AParent,'General Options',lisPckEditGeneralOptions);
   PkgEditMenuViewPackageSource:=RegisterIDEMenuCommand(AParent,'View Package Source',lisPckEditViewPackageSource);
 end;
 
@@ -599,7 +604,7 @@ var
 
 begin
   //debugln(['TPackageEditorForm.FilesPopupMenuPopup START ',FilesPopupMenu.Items.Count]);
-  PackageEditorMenuRoot.MenuItem:=FilesPopupMenu.Items;
+  PackageEditorMenuFilesRoot.MenuItem:=FilesPopupMenu.Items;
   //debugln(['TPackageEditorForm.FilesPopupMenuPopup START after connect ',FilesPopupMenu.Items.Count]);
   PackageEditorMenuRoot.BeginUpdate;
   try
@@ -614,7 +619,7 @@ begin
 
     PkgEditMenuSectionFileType.Clear;
 
-    // items for single files
+    // items for single files, under section PkgEditMenuSectionFile
     PkgEditMenuSectionFile.Visible:=CurFile<>nil;
     if (CurFile<>nil) then begin
       FileIndex:=LazPackage.IndexOfPkgFile(CurFile);
@@ -622,17 +627,17 @@ begin
       SetItem(PkgEditMenuReAddFile,@ReAddMenuItemClick,Removed);
       SetItem(PkgEditMenuRemoveFile,@RemoveBitBtnClick,not Removed,RemoveBitBtn.Enabled);
       SetItem(PkgEditMenuMoveFileUp,@MoveFileUpMenuItemClick,not Removed,
-                   (FileIndex>0) and Writable and (not SortAlphabetically));
+              (FileIndex>0) and Writable and (not SortAlphabetically));
       SetItem(PkgEditMenuMoveFileDown,@MoveFileDownMenuItemClick,
-                   not Removed,
-                   (FileIndex<LazPackage.FileCount-1) and Writable and (not SortAlphabetically));
+              not Removed,
+              (FileIndex<LazPackage.FileCount-1) and Writable and (not SortAlphabetically));
       PkgEditMenuSectionFileType.Visible:=true;
       AddFileTypeMenuItem;
       SetItem(PkgEditMenuEditVirtualUnit,@EditVirtualUnitMenuItemClick,
-        (CurFile.FileType=pftVirtualUnit) and not Removed,Writable);
+              (CurFile.FileType=pftVirtualUnit) and not Removed,Writable);
     end;
 
-    // items for directories
+    // items for directories, under section PkgEditMenuSectionDirectory
     PkgEditMenuSectionDirectory.Visible:=IsDir and ShowDirectoryHierarchy;
     if IsDir and ShowDirectoryHierarchy then begin
       SetItem(PkgEditMenuExpandDirectory,@ExpandDirectoryMenuItemClick);
@@ -641,11 +646,7 @@ begin
       SetItem(PkgEditMenuUseNoUnitsInDirectory,@UseNoUnitsInDirectoryMenuItemClick);
     end;
 
-    // items for all files
-    SetItem(PkgEditMenuSortFiles,@SortFilesMenuItemClick,(LazPackage.FileCount>1),Writable);
-    SetItem(PkgEditMenuFixFilesCase,@FixFilesCaseMenuItemClick,(LazPackage.FileCount>1),Writable);
-    SetItem(PkgEditMenuShowMissingFiles,@ShowMissingFilesMenuItemClick,(LazPackage.FileCount>1),Writable);
-
+    // items for dependencies, under section PkgEditMenuSectionDependency
     if CurDependency<>nil then begin
       PkgEditMenuSectionDependency.Visible:=true;
       SetItem(PkgEditMenuOpenPackage,@OpenFileMenuItemClick,CurDependency.RequiredPackage<>nil);
@@ -695,17 +696,19 @@ begin
 
     PkgEditMenuSectionFileType.Clear;
 
-    // items for all files
+    // under section PkgEditMenuSectionFiles
     SetItem(PkgEditMenuSortFiles,@SortFilesMenuItemClick,(LazPackage.FileCount>1),Writable);
     SetItem(PkgEditMenuFixFilesCase,@FixFilesCaseMenuItemClick,(LazPackage.FileCount>1),Writable);
     SetItem(PkgEditMenuShowMissingFiles,@ShowMissingFilesMenuItemClick,(LazPackage.FileCount>1),Writable);
 
-    SetItem(PkgEditMenuAddToProject,@AddToProjectClick,true,CanBeAddedToProject);
-    SetItem(PkgEditMenuInstall,@InstallClick,true,(not LazPackage.AutoCreated)
-           and (LazPackage.PackageType in [lptDesignTime,lptRunAndDesignTime]));
-    SetItem(PkgEditMenuUninstall,@UninstallClick,true,
-            (LazPackage.Installed<>pitNope) or (LazPackage.AutoInstall<>pitNope));
+    // under section PkgEditMenuSectionUse
+    //SetItem(PkgEditMenuAddToProject,@AddToProjectClick,true,CanBeAddedToProject);
+    //SetItem(PkgEditMenuInstall,@InstallClick,true,(not LazPackage.AutoCreated)
+    //       and (LazPackage.PackageType in [lptDesignTime,lptRunAndDesignTime]));
+    //SetItem(PkgEditMenuUninstall,@UninstallClick,true,
+    //        (LazPackage.Installed<>pitNope) or (LazPackage.AutoInstall<>pitNope));
 
+    // under section PkgEditMenuSectionSave
     SetItem(PkgEditMenuSave,@SaveBitBtnClick,true,SaveBitBtn.Enabled);
     SetItem(PkgEditMenuSaveAs,@SaveAsClick,true,not LazPackage.AutoCreated);
     SetItem(PkgEditMenuRevert,@RevertClick,true,
@@ -713,11 +716,18 @@ begin
     SetItem(PkgEditMenuPublish,@PublishClick,true,
             (not LazPackage.AutoCreated) and LazPackage.HasDirectory);
 
+    // under section PkgEditMenuSectionCompile
     SetItem(PkgEditMenuCompile,@CompileBitBtnClick,true,CompileBitBtn.Enabled);
     SetItem(PkgEditMenuRecompileClean,@CompileCleanClick,true,CompileBitBtn.Enabled);
     SetItem(PkgEditMenuRecompileAllRequired,@CompileAllCleanClick,true,CompileBitBtn.Enabled);
     SetItem(PkgEditMenuCreateMakefile,@CreateMakefileClick,true,CompileBitBtn.Enabled);
 
+    // under section PkgEditMenuSectionAddRemove
+    //SetItem(PkgEditMenuAdd,@AddBitBtnClick,true,AddBitBtn.Enabled);
+    //SetItem(PkgEditMenuRemove,@RemoveBitBtnClick,true,RemoveBitBtn.Enabled);
+
+    // under section PkgEditMenuSectionMisc
+    //SetItem(PkgEditMenuGeneralOptions,@OptionsBitBtnClick,true,OptionsBitBtn.Enabled);
     SetItem(PkgEditMenuViewPackageSource,@ViewPkgSourceClick);
   finally
     PackageEditorMenuRoot.EndUpdate;
