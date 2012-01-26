@@ -4709,7 +4709,7 @@ begin
       fRedoList.Lock;
       Len2 := TSynEditUndoIndent(Item).FCnt;
       LenT := TSynEditUndoIndent(Item).FTabCnt;
-      for y := TSynEditUndoUnIndent(Item).FPosY1 to TSynEditUndoUnIndent(Item).FPosY2 do begin
+      for y := TSynEditUndoIndent(Item).FPosY1 to TSynEditUndoIndent(Item).FPosY2 do begin
         Line := PChar(FTheLinesView[y - 1]);
         Len := GetLeadWSLen;
         FTheLinesView.EditDelete(Len+1-Len2, y, Len2);
