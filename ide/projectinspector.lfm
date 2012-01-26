@@ -1,7 +1,7 @@
 object ProjectInspectorForm: TProjectInspectorForm
-  Left = 328
+  Left = 374
   Height = 474
-  Top = 24
+  Top = 0
   Width = 425
   ActiveControl = ItemsTreeView
   Caption = 'ProjectInspectorForm'
@@ -39,6 +39,8 @@ object ProjectInspectorForm: TProjectInspectorForm
     TabOrder = 1
     object OpenButton: TSpeedButton
       AnchorSideLeft.Control = BtnPanel
+      AnchorSideTop.Control = BtnPanel
+      AnchorSideTop.Side = asrCenter
       Left = 1
       Height = 26
       Top = 1
@@ -58,7 +60,7 @@ object ProjectInspectorForm: TProjectInspectorForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = OpenButton
       AnchorSideTop.Side = asrCenter
-      Left = 43
+      Left = 37
       Height = 25
       Top = 2
       Width = 25
@@ -78,7 +80,7 @@ object ProjectInspectorForm: TProjectInspectorForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = OpenButton
       AnchorSideTop.Side = asrCenter
-      Left = 69
+      Left = 63
       Height = 25
       Top = 2
       Width = 25
@@ -96,13 +98,15 @@ object ProjectInspectorForm: TProjectInspectorForm
     object FilterEdit: TTreeFilterEdit
       AnchorSideLeft.Control = SortAlphabeticallyButton
       AnchorSideLeft.Side = asrBottom
-      Left = 97
-      Height = 28
-      Top = 1
-      Width = 305
+      AnchorSideTop.Control = SortAlphabeticallyButton
+      AnchorSideTop.Side = asrCenter
+      Left = 91
+      Height = 22
+      Top = 3
+      Width = 311
       ButtonWidth = 23
       NumGlyphs = 0
-      Anchors = [akLeft, akRight]
+      Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 3
       Font.Color = clBtnShadow
       MaxLength = 0

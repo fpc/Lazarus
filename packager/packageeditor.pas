@@ -145,8 +145,7 @@ type
     OpenButton: TSpeedButton;
     DisableI18NForLFMCheckBox: TCheckBox;
     FilterEdit: TTreeFilterEdit;
-    ItemsPanel: TPanel;
-    DummyButton: TSpeedButton;
+    BtnPanel: TPanel;
     SortAlphabeticallyButton: TSpeedButton;
     Splitter1: TSplitter;
     // toolbar
