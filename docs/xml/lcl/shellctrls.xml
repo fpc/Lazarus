@@ -13,280 +13,259 @@
     <descr>
     </descr>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Forms">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Forms">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="ComCtrls">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="ComCtrls">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- enumeration type Visibility: default -->
-<element name="TObjectType">
-<short>Indicates which objects should be visible in a shell control</short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TObjectType">
+      <short>Indicates which objects should be visible in a shell control</short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- enumeration value Visibility: default -->
-<element name="TObjectType.otFolders">
-<short>Indicates that folders, also known as directories, should be visible. This include folders which represent virtual objects such as hard drives. Hidden folders are shown only if otHidden is also present.</short>
-</element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TObjectType.otFolders">
+      <short>Indicates that folders, also known as directories, should be visible. This include folders which represent virtual objects such as hard drives. Hidden folders are shown only if otHidden is also present.</short>
+      </element>
 
-<!-- enumeration value Visibility: default -->
-<element name="TObjectType.otNonFolders">
-<short>Indicates that non-folder objects should be shown, which are usually files. Hidden files will be shown if otHidden is also present.</short>
-</element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TObjectType.otNonFolders">
+      <short>Indicates that non-folder objects should be shown, which are usually files. Hidden files will be shown if otHidden is also present.</short>
+      </element>
 
-<!-- enumeration value Visibility: default -->
-<element name="TObjectType.otHidden">
-<short>Indicates that hidden objects should be shown. This value is meaningful together with one of the other values.</short>
-</element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TObjectType.otHidden">
+      <short>Indicates that hidden objects should be shown. This value is meaningful together with one of the other values.</short>
+      </element>
 
-<!-- set type Visibility: default -->
-<element name="TObjectTypes">
-<short>Indicates which objects should be visible in a shell control</short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- set type Visibility: default -->
+      <element name="TObjectTypes">
+      <short>Indicates which objects should be visible in a shell control</short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- object Visibility: default -->
-<element name="TCustomShellTreeView">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- object Visibility: default -->
+      <element name="TCustomShellTreeView">
+      <short></short>
+      <descr>
+      </descr>
+      <errors>
+      </errors>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- variable Visibility: private -->
-<element name="TCustomShellTreeView.FObjectTypes">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomShellTreeView.FObjectTypes">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- procedure Visibility: private -->
-<element name="TCustomShellTreeView.HandleOnExpanding">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomShellTreeView.HandleOnExpanding">
+      <short></short>
+      <descr>
+      </descr>
+      <errors>
+      </errors>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TCustomShellTreeView.HandleOnExpanding.Sender">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomShellTreeView.HandleOnExpanding.Sender">
+      <short></short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TCustomShellTreeView.HandleOnExpanding.Node">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomShellTreeView.HandleOnExpanding.Node">
+      <short></short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TCustomShellTreeView.HandleOnExpanding.AllowExpansion">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomShellTreeView.HandleOnExpanding.AllowExpansion">
+      <short></short>
+      </element>
 
-<!-- constructor Visibility: public -->
-<element name="TCustomShellTreeView.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- constructor Visibility: public -->
+      <element name="TCustomShellTreeView.Create">
+      <short></short>
+      <descr>
+      </descr>
+      <errors>
+      </errors>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TCustomShellTreeView.Create.AOwner">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomShellTreeView.Create.AOwner">
+      <short></short>
+      </element>
 
-<!-- destructor Visibility: public -->
-<element name="TCustomShellTreeView.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- destructor Visibility: public -->
+      <element name="TCustomShellTreeView.Destroy">
+      <short></short>
+      <descr>
+      </descr>
+      <errors>
+      </errors>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- procedure Visibility: public -->
-<element name="TCustomShellTreeView.GetFilesInDir">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomShellTreeView.GetFilesInDir">
+      <short></short>
+      <descr>
+      </descr>
+      <errors>
+      </errors>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TCustomShellTreeView.GetFilesInDir.ABaseDir">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomShellTreeView.GetFilesInDir.ABaseDir">
+      <short></short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TCustomShellTreeView.GetFilesInDir.AObjectTypes">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomShellTreeView.GetFilesInDir.AObjectTypes">
+      <short></short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TCustomShellTreeView.GetFilesInDir.AResult">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomShellTreeView.GetFilesInDir.AResult">
+      <short></short>
+      </element>
 
-<!-- function Visibility: public -->
-<element name="TCustomShellTreeView.PopulateTreeNodeWithFiles">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- function Visibility: public -->
+      <element name="TCustomShellTreeView.PopulateTreeNodeWithFiles">
+      <short></short>
+      <descr>
+      </descr>
+      <errors>
+      </errors>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- function result Visibility: default -->
-<element name="TCustomShellTreeView.PopulateTreeNodeWithFiles.Result">
-<short></short>
-</element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomShellTreeView.PopulateTreeNodeWithFiles.Result">
+      <short></short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TCustomShellTreeView.PopulateTreeNodeWithFiles.ANode">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomShellTreeView.PopulateTreeNodeWithFiles.ANode">
+      <short></short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TCustomShellTreeView.PopulateTreeNodeWithFiles.ANodePath">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomShellTreeView.PopulateTreeNodeWithFiles.ANodePath">
+      <short></short>
+      </element>
 
-<!-- procedure Visibility: public -->
-<element name="TCustomShellTreeView.PopulateTreeViewWithBaseFiles">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomShellTreeView.PopulateTreeViewWithBaseFiles">
+      <short></short>
+      <descr>
+      </descr>
+      <errors>
+      </errors>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- function Visibility: public -->
-<element name="TCustomShellTreeView.GetPathFromNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- function Visibility: public -->
+      <element name="TCustomShellTreeView.GetPathFromNode">
+      <short></short>
+      <descr>
+      </descr>
+      <errors>
+      </errors>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- function result Visibility: default -->
-<element name="TCustomShellTreeView.GetPathFromNode.Result">
-<short></short>
-</element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomShellTreeView.GetPathFromNode.Result">
+      <short></short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TCustomShellTreeView.GetPathFromNode.ANode">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomShellTreeView.GetPathFromNode.ANode">
+      <short></short>
+      </element>
 
-<!-- property Visibility: public -->
-<element name="TCustomShellTreeView.ObjectTypes">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: public -->
+      <element name="TCustomShellTreeView.ObjectTypes">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- object Visibility: default -->
-<element name="TShellTreeView">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- object Visibility: default -->
+      <element name="TShellTreeView">
+      <short>A tree view control to display the files, directories and other objects (such as devices) from the file system structure</short>
+      <descr>
+      </descr>
+      <errors>
+      </errors>
+      <seealso>
+      </seealso>
+      </element>
 
       <!-- property Visibility: published -->
       <element name="TShellTreeView.Align" link="#LCL.Controls.TControl.Align"/>
       <element name="TShellTreeView.Anchors" link="#LCL.Controls.TControl.Anchors"/>
-
-<!-- property Visibility: published -->
-<element name="TShellTreeView.AutoExpand">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-      <!-- property Visibility: published -->
+      <element name="TShellTreeView.AutoExpand" link="#LCL.ComCtrls.TCustomTreeView.AutoExpand"/>
       <element name="TShellTreeView.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
-
-<!-- property Visibility: published -->
-<element name="TShellTreeView.BackgroundColor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-      <!-- property Visibility: published -->
+      <element name="TShellTreeView.BackgroundColor" link="#LCL.ComCtrls.TCustomTreeView.BackgroundColor"/>
       <element name="TShellTreeView.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
-      <!-- property Visibility: published -->
       <element name="TShellTreeView.BorderWidth" link="#LCL.Controls.TWinControl.BorderWidth">
         <short/>
         <descr/>
@@ -297,190 +276,175 @@
       <element name="TShellTreeView.Ctl3D" link="#LCL.Controls.TControl.Ctl3D"/>
       <element name="TShellTreeView.Constraints" link="#LCL.Controls.TControl.Constraints"/>
       <element name="TShellTreeView.Enabled" link="#LCL.Controls.TControl.Enabled"/>
+      <element name="TShellTreeView.ExpandSignType" link="#LCL.ComCtrls.TCustomTreeView.ExpandSignType"/>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.Font">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.ExpandSignType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.ParentColor">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.Font">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.ParentCtl3D">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.ParentColor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.ParentFont">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.ParentCtl3D">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.ParentShowHint">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.ParentFont">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TShellTreeView.ParentShowHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
+      <!-- property Visibility: published -->
       <element name="TShellTreeView.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.ReadOnly">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.ReadOnly">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.RightClickSelect">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.RightClickSelect">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.RowSelect">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.RowSelect">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.ScrollBars">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.ScrollBars">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.SelectionColor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.SelectionColor">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.ShowButtons">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.ShowButtons" link="#LCL.ComCtrls.TCustomTreeView.ShowButtons"/>
 
-<!-- property Visibility: published -->
+      <!-- property Visibility: published -->
       <element name="TShellTreeView.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.ShowLines">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.ShowLines">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.ShowRoot">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.ShowRoot">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- property Visibility: published -->
+      <!-- property Visibility: published -->
       <element name="TShellTreeView.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
       <element name="TShellTreeView.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.Tag">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.Tag">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.ToolTips">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.ToolTips">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
       <!-- property Visibility: published -->
       <element name="TShellTreeView.Visible" link="#LCL.Controls.TControl.Visible"/>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.OnChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.OnChange">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.OnChanging">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.OnChanging">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.OnClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.OnClick">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
       <element name="TShellTreeView.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
       <element name="TShellTreeView.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
@@ -489,74 +453,74 @@
       <element name="TShellTreeView.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
       <element name="TShellTreeView.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.OnSelectionChanged">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.OnSelectionChanged">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
       <element name="TShellTreeView.OnShowHint" link="#LCL.Controls.TControl.OnShowHint"/>
       <element name="TShellTreeView.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-<!-- property Visibility: published -->
-<element name="TShellTreeView.Options">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.Options">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.TreeLineColor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.TreeLineColor">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.TreeLinePenStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.TreeLinePenStyle">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.ExpandSignColor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.ExpandSignColor">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.ObjectTypes">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.ObjectTypes">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
-<!-- procedure Visibility: default -->
-<element name="Register">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- procedure Visibility: default -->
+      <element name="Register">
+      <short></short>
+      <descr>
+      </descr>
+      <errors>
+      </errors>
+      <seealso>
+      </seealso>
+      </element>
 
-</module> <!-- ShellCtrls -->
+    </module> <!-- ShellCtrls -->
 
-</package>
+  </package>
 </fpdoc-descriptions>
