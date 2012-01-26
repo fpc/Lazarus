@@ -76,11 +76,6 @@ type
   TWinControlClass = class of TWinControl;
   TControlClass = class of TControl;
 
-{$if (FPC_VERSION <= 2) and (FPC_RELEASE <= 4) and (FPC_PATCH < 2)}
-  TDate = type TDateTime;
-  TTime = type TDateTime;
-{$endif}
-
   // ToDo: move this to a message definition unit
   TCMMouseWheel = record
     MSg: Cardinal;

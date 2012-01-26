@@ -67,9 +67,6 @@ Type
   protected
     // Testing Events
     procedure ActiveChanged; override;
-    {$IF ((FPC_VERSION = 2) and (FPC_RELEASE = 4) and (FPC_PATCH = 2))}
-    procedure DataSetChanged; override;
-    {$ENDIF}
     procedure EditingChanged; override;
     procedure LayoutChanged; override;
     procedure RecordChanged(aField: TField); override;
@@ -1445,20 +1442,6 @@ begin
   if Assigned(FOnActiveChange) then
     FOnActiveChange(Self);
 end;
-
-{$IF ((FPC_VERSION = 2) and (FPC_RELEASE = 4) and (FPC_PATCH = 2))}
-{
- This is not necessary since TDataLink.DatasetChanged calls RecordChanged
- Keep for now as a workaround to fpc bug 16428 (LayoutChanged not being called)
- The bug is present in fpc 242 (the last LCL supported version) but fixed in fpc 244 and up
-}
-procedure TFieldDataLink.DataSetChanged;
-begin
-  ValidateField;
-  reset;
-end;
-{$ENDIF}
-
 
 { Delphi Help ->
     Changing the field binding can change the validity of the CanModify
