@@ -3913,7 +3913,7 @@ var
   ActionList: TPtrIntArray;
 begin
   QWidget_actions(Widget, @ActionList);
-  if (AIndex > 0) and (AIndex < Length(ActionList)) then
+  if (AIndex >= 0) and (AIndex < Length(ActionList)) then
     Result := QActionH(ActionList[AIndex])
   else
     Result := nil;
