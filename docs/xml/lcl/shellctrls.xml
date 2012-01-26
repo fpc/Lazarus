@@ -9,6 +9,9 @@
 -->
 
 <module name="ShellCtrls">
+<short>Controls which display files and directories</short>
+<descr>
+</descr>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">

@@ -119,7 +119,7 @@ the xaxis, yaxis and zaxis properties will remain stopped at the last value read
 <!-- class Visibility: default -->
 <element name="TLazDeviceMessage">
 <short>Represents a message</short>
-<descr>
+<descr>Don't create instances of this class directly. Instead use Messaging.CreateMessage().
 </descr>
 <errors>
 </errors>
@@ -129,8 +129,8 @@ the xaxis, yaxis and zaxis properties will remain stopped at the last value read
 
 <!-- variable Visibility: public -->
 <element name="TLazDeviceMessage.bccAddress">
-<short>The BCC field of E-Mails</short>
-<descr>
+<short>A copy should be sent to addresses specified here, but these addresses will not appear in the message</short>
+<descr>The BCC field of E-Mails, also known as hidden copy
 </descr>
 <seealso>
 </seealso>
@@ -146,9 +146,9 @@ the xaxis, yaxis and zaxis properties will remain stopped at the last value read
 </element>
 
 <!-- variable Visibility: public -->
-<element name="TLazDeviceMessage.callbackNumber">
-<short></short>
-<descr>
+<element name="TLazDeviceMessage.ReplyToAddress">
+<short>Might indicate an address different from SourceAddress so that replies are sent to a different address then the message sender</short>
+<descr>By default this value is empty, which means that the source and reply-to addresses match.
 </descr>
 <seealso>
 </seealso>
@@ -156,8 +156,8 @@ the xaxis, yaxis and zaxis properties will remain stopped at the last value read
 
 <!-- variable Visibility: public -->
 <element name="TLazDeviceMessage.ccAddress">
-<short>The CC field in E-Mails</short>
-<descr>
+<short>A copy should be sent to addresses specified here</short>
+<descr>The CC field in E-Mails
 </descr>
 <seealso>
 </seealso>

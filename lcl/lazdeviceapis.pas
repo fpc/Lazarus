@@ -61,13 +61,13 @@ type
     // field is available.             SMS   MMS  EMail
     bccAddress: TStringList;         // N     N    Y
     Body: string;                    // Y     Y	   Y
-    callbackNumber: string;          // Y     N    N
     ccAddress: TstringList;          // N     N    Y
     destinationAddress: TStringList; // Y     Y    Y
     isRead: Boolean;                 // Y     Y    Y
     messageId: string;               // Y     Y    Y
     //messagePriority	Y	Y	Y
     messageType: TLazDeviceMessageKind;//Y    Y    Y
+    ReplyToAddress: string;          // Y     Y    Y
     sourceAddress: string;           // Y     Y    Y
     Subject: string;                 // N     Y    Y
     Time: TDateTime;                 // Y     Y    Y

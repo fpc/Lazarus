@@ -851,7 +851,10 @@ More cursors
       <element name="TControlStyleType.csAutoSizeKeepChildTop">
         <short>when AutoSize=true do not move children vertically</short>
       </element>
-      <!-- set type Visibility: default -->
+      <element name="TControlStyleType.csRequiresKeyboardInput">
+        <short>Indicates that a control requires keyboard input. This is required in Android and other platforms so that the virtual keyboard is activated when the control receives focus and the device has no hardware keyboard</short>
+      </element>
+	  <!-- set type Visibility: default -->
       <element link="TControlStyleType" name="TControlStyle">
         <short>Set of control styles.</short>
       </element>
