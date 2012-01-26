@@ -48,7 +48,7 @@ type
 
   TTreeFilterEdit = class(TCustomControlFilterEdit)
   private
-    fFilteredTreeview: TTreeview;   // A control showing the (filtered) data.
+    fFilteredTreeview: TCustomTreeview; // A control showing the (filtered) data.
     fImageIndexDirectory: integer;  // Needed if directory structure is shown.
     fSelectionList: TStringList;    // Store/restore the old selections here.
     fShowDirHierarchy: Boolean;     // Show direcories / files as a tree structure.
@@ -332,7 +332,7 @@ end;
 procedure TTreeFilterEdit.SetFilteredTreeview(const AValue: TCustomTreeview);
 begin
   if fFilteredTreeview = AValue then Exit;
-  fFilteredTreeview := TTreeview(AValue);
+  fFilteredTreeview := AValue;
   if AValue = nil then Exit;
 end;
 

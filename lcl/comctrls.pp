@@ -2863,7 +2863,6 @@ type
     property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
     property Images: TCustomImageList read FImages write SetImages;
     property Indent: Integer read FIndent write SetIndent default 15;
-    property Items: TTreeNodes read FTreeNodes write SetTreeNodes;
     property MultiSelect: Boolean read GetMultiSelect write SetMultiSelect default False;
     property OnAddition: TTVExpandedEvent read FOnAddition write FOnAddition;
     property OnAdvancedCustomDraw: TTVAdvancedCustomDrawEvent
@@ -2941,24 +2940,21 @@ type
     procedure MoveToNextNode;
     procedure MoveToPrevNode;
   public
-    property BackgroundColor: TColor
-      read FBackgroundColor write SetBackgroundColor default clWindow;
+    property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor default clWindow;
     property BorderWidth default 0;
     property BottomItem: TTreeNode read GetBottomItem write SetBottomItem;
-    property DefaultItemHeight: integer
-      read FDefItemHeight write SetDefaultItemHeight default 20;
+    property DefaultItemHeight: integer read FDefItemHeight write SetDefaultItemHeight default 20;
     property DropTarget: TTreeNode read GetDropTarget write SetDropTarget;
     property ExpandSignType: TTreeViewExpandSignType
       read FExpandSignType write SetExpandSignType default tvestTheme;
     property InsertMarkNode: TTreeNode read FInsertMarkNode write SetInsertMarkNode;
     property InsertMarkType: TTreeViewInsertMarkType read FInsertMarkType write SetInsertMarkType;
-    property KeepCollapsedNodes: boolean
-      read GetKeepCollapsedNodes write SetKeepCollapsedNodes;
+    property Items: TTreeNodes read FTreeNodes write SetTreeNodes;
+    property KeepCollapsedNodes: boolean read GetKeepCollapsedNodes write SetKeepCollapsedNodes;
     property MultiSelectStyle: TMultiSelectStyle read FMultiSelectStyle
       write SetMultiSelectStyle default DefaultMultiSelectStyle;
     property Options: TTreeViewOptions read FOptions write SetOptions default DefaultTreeViewOptions;
-    property ScrollBars: TScrollStyle
-      read FScrollBars write SetScrollBars default ssBoth;
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
     property Selected: TTreeNode read GetSelection write SetSelection;
     property SelectionColor: TColor read FSelectedColor write SetSelectedColor default clHighlight;
     property SelectionCount: Cardinal read GetSelectionCount;
