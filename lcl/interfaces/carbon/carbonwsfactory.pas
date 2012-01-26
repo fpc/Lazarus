@@ -102,7 +102,7 @@ function RegisterCustomPairSplitter: Boolean;
 function RegisterCustomFloatSpinEdit: Boolean;
 function RegisterCustomRubberBand: Boolean;
 // LazDeviceAPIs
-function RegisterLazDeviceAPIs;
+function RegisterLazDeviceAPIs: Boolean;
 
 implementation
 
