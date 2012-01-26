@@ -2460,7 +2460,10 @@ begin
     repeat
       ReadNextAtom;
       if (CurPos.StartPos>SrcLen) then break;
-      if (CurSection=ctnInitialization) and UpAtomIs('FINALIZATION') then
+      if CurPos.Flag=cafEND then begin
+        Result:=KeyWordFuncEndPoint;
+        break;
+      end else if (CurSection=ctnInitialization) and UpAtomIs('FINALIZATION') then
       begin
         CurNode.EndPos:=CurPos.EndPos;
         EndChildNode;
@@ -2470,12 +2473,11 @@ begin
         CurSection:=CurNode.Desc;
         ScannedRange:=lsrFinalizationStart;
         if ord(ScanTill)<=ord(ScannedRange) then exit;
-      end else if EndKeyWordFuncList.DoIdentifier(@Src[CurPos.StartPos]) then
-      begin
-        ReadTilBlockEnd(false,false);
-      end else if CurPos.Flag=cafEND then begin
-        Result:=KeyWordFuncEndPoint;
-        break;
+      end else if BlockStatementStartKeyWordFuncList.DoIdentifier(@Src[CurPos.StartPos])
+      then begin
+        if not ReadTilBlockEnd(false,true) then RaiseEndOfSourceExpected;
+      end else if UpAtomIs('WITH') then begin
+        ReadWithStatement(true,true);
       end;
     until false;
     Result:=true;
