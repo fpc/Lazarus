@@ -9,7 +9,7 @@
 -->
 
 <module name="lazdeviceapis">
-<short></short>
+<short>LCL APIs for accessing hardware sensors (such as Accelerometer, GPS, etc) and integrated elements of the system (such as Calendar, Contacts, etc)</short>
 <descr>
 </descr>
 
@@ -118,7 +118,7 @@ the xaxis, yaxis and zaxis properties will remain stopped at the last value read
 
 <!-- class Visibility: default -->
 <element name="TLazDeviceMessage">
-<short></short>
+<short>Represents a message</short>
 <descr>
 </descr>
 <errors>
@@ -237,7 +237,7 @@ the xaxis, yaxis and zaxis properties will remain stopped at the last value read
 
 <!-- enumeration type Visibility: default -->
 <element name="TLazMessagingStatus">
-<short></short>
+<short>Indicates the current stage of a message sending operation</short>
 <descr>
 </descr>
 <seealso>
@@ -278,7 +278,7 @@ because there is no signal here.</short>
 
 <!-- procedure type Visibility: default -->
 <element name="TOnMessagingStatus">
-<short></short>
+<short>A produral type to receive the events of the status of sending a message</short>
 <descr>
 </descr>
 <seealso>
@@ -297,7 +297,7 @@ because there is no signal here.</short>
 
 <!-- class Visibility: default -->
 <element name="TLazMessaging">
-<short></short>
+<short>A class which manages messages</short>
 <descr>
 </descr>
 <errors>
@@ -369,7 +369,7 @@ callback.</p>
 
 <!-- enumeration type Visibility: default -->
 <element name="TLazPositionMethod">
-<short></short>
+<short>A list of possible positioning methods</short>
 <descr>
 </descr>
 <seealso>
@@ -471,8 +471,8 @@ callback.</p>
 
 <!-- procedure Visibility: public -->
 <element name="TLazPositionInfo.RequestPositionInfo">
-<short></short>
-<descr>
+<short>Requests the latest position using the given method</short>
+<descr>This call is assynchronous and the data will only be available when the OnPositionRetrieved callback is called.
 </descr>
 <errors>
 </errors>
@@ -496,7 +496,7 @@ callback.</p>
 
 <!-- variable Visibility: default -->
 <element name="Accelerometer">
-<short></short>
+<short>A global object representing the accelerometer of the device</short>
 <descr>
 </descr>
 <seealso>
@@ -505,7 +505,7 @@ callback.</p>
 
 <!-- variable Visibility: default -->
 <element name="Messaging">
-<short></short>
+<short>A global object to manage message</short>
 <descr>
 </descr>
 <seealso>
@@ -514,7 +514,7 @@ callback.</p>
 
 <!-- variable Visibility: default -->
 <element name="PositionInfo">
-<short></short>
+<short>A global object which represents the positioning sensor of the device</short>
 <descr>
 </descr>
 <seealso>

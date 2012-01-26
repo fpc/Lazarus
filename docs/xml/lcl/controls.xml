@@ -3495,6 +3495,176 @@ dmFindTarget: find child control under the mouse
       <element name="TControlHandlerType.chtOnKeyDown">
         <short>Notification request for OnKeyDown.</short>
       </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TLayoutAdjustmentPolicy">
+      <short>Indicates the policy for the LCL to execute automatic adjustments in the form layout</short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.lapDefault">
+      <short>widgetset dependent</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.lapFixedLayout">
+      <short>A fixed absolute layout in all platforms</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.lapAutoAdjustWithoutHorizontalScrolling">
+      <short>Smartphone platforms use this one, the x axis is stretched to fill the screen and the y is scaled to fit the DPI</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.lapAutoAdjustForDPI">
+      <short>For desktops using High DPI, scale x and y to fit the DPI</short>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TLazAccessibilityRole">
+      <short>Indicates the role which a accessible object takes in the user interface</short>
+      <descr>
+      </descr>
+      <seealso>
+          <link id="TLazAccessibleObject"/>
+      </seealso>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larAnimation">
+      <short>An object that displays an animation</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larButton">
+      <short>A button</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larCell">
+      <short>A cell in a table</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larChart">
+      <short>An object that displays a graphical representation of data</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larCheckBox">
+      <short>An object that can be checked or unchecked, or sometimes in an intermediary state</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larClock">
+      <short>A clock displaying time</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larColorPicker">
+      <short>A control which allows selecting a color</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larComboBox">
+      <short>A list of choices that the user can select from</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larDateField">
+      <short>A controls which displays and possibly allows to choose a date</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larGrid">
+      <short>A grid control which displays cells</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larGroup">
+      <short>A control which groups others, such as a TGroupBox</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larIgnore">
+      <short>Something to be ignored. For example a blank space between other objects</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larImage">
+      <short>A graphic or picture or an icon</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larLabel">
+      <short>A text label as usually placed near other widgets</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larListBox">
+      <short>A list of items, from which the user can select one or more items</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larListItem">
+      <short>An item in a list of items</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larMenuBar">
+      <short>A main menu bar</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larMenuItem">
+      <short>A item in a menu</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larProgressIndicator">
+      <short>A control which shows a progress indication</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larRadioButton">
+      <short>A radio button, see for example TRadioButton</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larResizeGrip">
+      <short>A grip that the user can drag to change the size of widgets</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larScrollBar">
+      <short>A control to scroll another one</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larSpinner">
+      <short>A control which allows to increment / decrement a value</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larTabControl">
+      <short>A control with tabs, like TPageControl</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larTextEditorMultiline">
+      <short>A multi-line text editor (for example: TMemo, SynEdit)</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larTextEditorSingleline">
+      <short>A single-line text editor (for example: TEdit)</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larTrackBar">
+      <short>A control which allows to drag a slider</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larTreeView">
+      <short>A list of items in a tree structure</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larTreeItem">
+      <short>An item in a tree structure</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLazAccessibilityRole.larWindow">
+      <short>A top level window</short>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TLazAccessibleObject">
+        <short>Represents an accessible object with which the user of a accessibility tool can interact.</short>
+        <descr><p>Every TControl has a TLazAccessibleObject instace associated with it, which means that every TControl is potentially accessible, but to actually be usable the accessible object needs to have its properties set, the most important of which are the role, description and value. Native windowed classes should already receive accessibility properties from the underlying widgetset utilized, while TCustomControl descendents will have their accessibility taken care by the LCL itself. User applications should add accessibility for their own TCustomControl descendent classes and also possibly customize the descriptions of some elements. It is also possible to make an accessible object invisible for user, which is done by setting its AccessibleRole property to larIgnored.</p>
+			<p>Accessibility support in Lazarus is also documented in the wiki in http://wiki.lazarus.freepascal.org/LCL_Accessibility</p></descr>
+        <seealso>
+          <link id="TControl"/>
+          <link id="TControl.AccessibleRole"/>
+          <link id="TControl.AccessibleDescription"/>
+          <link id="TControl.AccessibleValue"/>
+          <link id="TLazAccessibilityRole"/>
+        </seealso>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TLazAccessibleObject.OwnerControl">
+        <short>The control that this accessible object is attached to. It might be the main accessible object of this control or only a child one.</short>
+      </element>
       <!-- object Visibility: default -->
       <element name="TControl">
         <short>The base class for visible controls.</short>
@@ -3787,9 +3957,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: private -->
       <element name="TControl.DoMouseDown">
-        <short>Message handler for
-          mouse button going down. Calls MouseDown handler.
-        </short>
+        <short>Message handler for mouse button going down. Calls MouseDown handler.</short>
         <descr/>
         <errors/>
         <seealso>
@@ -3809,9 +3977,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: private -->
       <element name="TControl.DoMouseUp">
-        <short>Message handler for
-          mouse button going up. Calls MouseUp handler.
-        </short>
+        <short>Message handler for mouse button going up. Calls MouseUp handler.</short>
         <descr/>
         <errors/>
         <seealso>
