@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <fpdoc-descriptions>
-<package name="lcl">
+  <package name="lcl">
 
 <!--
   ====================================================================
@@ -8,10 +8,10 @@
   ====================================================================
 -->
 
-<module name="ShellCtrls">
-<short>Controls which display files and directories</short>
-<descr>
-</descr>
+    <module name="ShellCtrls">
+    <short>Controls which display files and directories</short>
+    <descr>
+    </descr>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
@@ -51,7 +51,7 @@
 
 <!-- enumeration type Visibility: default -->
 <element name="TObjectType">
-<short></short>
+<short>Indicates which objects should be visible in a shell control</short>
 <descr>
 </descr>
 <seealso>
@@ -60,22 +60,22 @@
 
 <!-- enumeration value Visibility: default -->
 <element name="TObjectType.otFolders">
-<short></short>
+<short>Indicates that folders, also known as directories, should be visible. This include folders which represent virtual objects such as hard drives. Hidden folders are shown only if otHidden is also present.</short>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TObjectType.otNonFolders">
-<short></short>
+<short>Indicates that non-folder objects should be shown, which are usually files. Hidden files will be shown if otHidden is also present.</short>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TObjectType.otHidden">
-<short></short>
+<short>Indicates that hidden objects should be shown. This value is meaningful together with one of the other values.</short>
 </element>
 
 <!-- set type Visibility: default -->
 <element name="TObjectTypes">
-<short></short>
+<short>Indicates which objects should be visible in a shell control</short>
 <descr>
 </descr>
 <seealso>
@@ -259,23 +259,9 @@
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.Align">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TShellTreeView.Anchors">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.Align" link="#LCL.Controls.TControl.Align"/>
+      <element name="TShellTreeView.Anchors" link="#LCL.Controls.TControl.Anchors"/>
 
 <!-- property Visibility: published -->
 <element name="TShellTreeView.AutoExpand">
@@ -286,14 +272,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.BorderSpacing">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
 
 <!-- property Visibility: published -->
 <element name="TShellTreeView.BackgroundColor">
@@ -304,59 +284,19 @@
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.BorderStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TShellTreeView.BorderWidth">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TShellTreeView.Color">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TShellTreeView.Ctl3D">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TShellTreeView.Constraints">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TShellTreeView.Enabled">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.BorderWidth" link="#LCL.Controls.TWinControl.BorderWidth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.Color" link="#LCL.Controls.TControl.Color"/>
+      <element name="TShellTreeView.Ctl3D" link="#LCL.Controls.TControl.Ctl3D"/>
+      <element name="TShellTreeView.Constraints" link="#LCL.Controls.TControl.Constraints"/>
+      <element name="TShellTreeView.Enabled" link="#LCL.Controls.TControl.Enabled"/>
 
 <!-- property Visibility: published -->
 <element name="TShellTreeView.ExpandSignType">
@@ -413,13 +353,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TShellTreeView.PopupMenu">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TShellTreeView.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
 
 <!-- property Visibility: published -->
 <element name="TShellTreeView.ReadOnly">
@@ -476,13 +410,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TShellTreeView.ShowHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TShellTreeView.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
 
 <!-- property Visibility: published -->
 <element name="TShellTreeView.ShowLines">
@@ -503,22 +431,8 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TShellTreeView.TabOrder">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TShellTreeView.TabStop">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TShellTreeView.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
+      <element name="TShellTreeView.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
 
 <!-- property Visibility: published -->
 <element name="TShellTreeView.Tag">
@@ -538,14 +452,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.Visible">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TShellTreeView.Visible" link="#LCL.Controls.TControl.Visible"/>
 
 <!-- property Visibility: published -->
 <element name="TShellTreeView.OnChange">
@@ -574,59 +482,12 @@
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.OnKeyDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TShellTreeView.OnKeyPress">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TShellTreeView.OnKeyUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TShellTreeView.OnMouseDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TShellTreeView.OnMouseMove">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TShellTreeView.OnMouseUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TShellTreeView.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
+      <element name="TShellTreeView.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
+      <element name="TShellTreeView.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
+      <element name="TShellTreeView.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
+      <element name="TShellTreeView.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
+      <element name="TShellTreeView.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
 
 <!-- property Visibility: published -->
 <element name="TShellTreeView.OnSelectionChanged">
@@ -637,24 +498,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
-<element name="TShellTreeView.OnShowHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TShellTreeView.OnUTF8KeyPress">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
+      <element name="TShellTreeView.OnShowHint" link="#LCL.Controls.TControl.OnShowHint"/>
+      <element name="TShellTreeView.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
 <!-- property Visibility: published -->
 <element name="TShellTreeView.Options">
 <short></short>
