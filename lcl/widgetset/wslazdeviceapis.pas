@@ -74,9 +74,8 @@ const
   Done: Boolean = False;
 begin
   if Done then exit;
-  WSRegisterLazDeviceAPIs;
-//  if not WSRegisterArrow then
-//    RegisterWSComponent(TArrow, TWSArrow);
+  if not WSRegisterLazDeviceAPIs() then
+    RegisterWSLazDeviceAPIs(TWSLazDeviceAPIs);
   Done := True;
 end;
 
