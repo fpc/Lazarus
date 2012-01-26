@@ -17,6 +17,7 @@ object ProjectInspectorForm: TProjectInspectorForm
     Align = alClient
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Top = 2
+    DefaultItemHeight = 16
     PopupMenu = ItemsPopupMenu
     ReadOnly = True
     RightClickSelect = True
@@ -36,20 +37,8 @@ object ProjectInspectorForm: TProjectInspectorForm
     ClientHeight = 28
     ClientWidth = 425
     TabOrder = 1
-    object DummyButton: TSpeedButton
-      AnchorSideLeft.Control = OpenButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = OpenButton
-      AnchorSideTop.Side = asrCenter
-      Left = 27
-      Height = 12
-      Top = 8
-      Width = 15
-      AllowAllUp = True
-      BorderSpacing.Left = 1
-      NumGlyphs = 0
-    end
     object OpenButton: TSpeedButton
+      AnchorSideLeft.Control = BtnPanel
       Left = 1
       Height = 26
       Top = 1
@@ -65,7 +54,7 @@ object ProjectInspectorForm: TProjectInspectorForm
       ParentShowHint = False
     end
     object DirectoryHierarchyButton: TSpeedButton
-      AnchorSideLeft.Control = DummyButton
+      AnchorSideLeft.Control = OpenButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = OpenButton
       AnchorSideTop.Side = asrCenter
@@ -75,7 +64,7 @@ object ProjectInspectorForm: TProjectInspectorForm
       Width = 25
       AllowAllUp = True
       AutoSize = True
-      BorderSpacing.Left = 1
+      BorderSpacing.Left = 11
       Constraints.MinHeight = 25
       Constraints.MinWidth = 25
       GroupIndex = 1

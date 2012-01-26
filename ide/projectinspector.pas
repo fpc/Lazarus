@@ -93,7 +93,6 @@ type
     ItemsTreeView: TTreeView;
     ItemsPopupMenu: TPopupMenu;
     SortAlphabeticallyButton: TSpeedButton;
-    DummyButton: TSpeedButton;
     // toolbar
     ToolBar: TToolBar;
     // toolbuttons
