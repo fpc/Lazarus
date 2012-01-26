@@ -567,8 +567,8 @@ end;
 
 function RegisterLazDeviceAPIs: Boolean; alias : 'WSRegisterLazDeviceAPIs';
 begin
-  RegisterWSLazDeviceAPIs(TCDWSLazDeviceAPIs);
-  Result := True;
+  //RegisterWSLazDeviceAPIs(TCDWSLazDeviceAPIs);
+  Result := False;
 end;
 
 end.
