@@ -138,7 +138,7 @@
     <Node38 Name="CompilerVerbosityOptionsFrame" Path="Compiler_Options#Verbosity" IsRoot="True" HasHelp="True"/>
     <Node39 Name="CompilerMessagesOptionsFrame" Path="Compiler_Options#Messages" IsRoot="True" HasHelp="True"/>
     <Node40 Name="CompilerOtherOptionsFrame" Path="Compiler_Options#Other" IsRoot="True" HasHelp="True"/>
-    <Node41 Name="CompOptBuildMacrosFrame" Path="Compiler_Options#Build_Macros" IsRoot="True" HasHelp="True"/>
+    <Node41 Name="CompOptBuildMacrosFrame" Path="Compiler_Options#IDE_Macros" IsRoot="True" HasHelp="True"/>
     <Node42 Name="CompilerInheritedOptionsFrame" Path="Compiler_Options#Inherited" IsRoot="True" HasHelp="True"/>
     <Node43 Name="CompilerCompilationOptionsFrame" Path="Compiler_Options#Compilation" IsRoot="True" HasHelp="True"/>
     <Node44 Name="EditorMarkupOptionsFrame" Path="Editor_Options_Markup" IsRoot="True" HasHelp="True"/>
