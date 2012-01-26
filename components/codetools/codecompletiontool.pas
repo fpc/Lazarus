@@ -2380,7 +2380,8 @@ begin
       FromPos:=DefProcNode.StartPos;
       EndPos:=DefProcNode.EndPos;
       SourceChangeCache.MainScanner:=Scanner;
-      SourceChangeCache.BeautifyCodeOptions.BeautifyProc(NewProcCode,Indent,false);
+      NewProcCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
+                                  NewProcCode,Indent,[bcfDoNotIndentFirstLine]);
       {$IFDEF VerboseCompleteMethod}
       debugln('TCodeCompletionCodeTool.CompleteMethodByBody final NewProcCode:');
       debugln(NewProcCode);
