@@ -1519,18 +1519,25 @@ var
   SubNode: TCodeTreeNode;
   NodeInFront: TCodeTreeNode;
   p: Integer;
+  NodeBehind: TCodeTreeNode;
 begin
   Node:=Context.Node;
   //debugln(['TIdentCompletionTool.GatherContextKeywords ',Node.DescAsString]);
-  NodeInFront:=Node;
-  repeat
-    NodeInFront:=NodeInFront.FirstChild;
-    while (NodeInFront<>nil) and (NodeInFront.EndPos<=CleanPos)
-    and (NodeInFront.NextBrother<>nil)
-    and (NodeInFront.NextBrother.StartPos<=CleanPos) do
-      NodeInFront:=NodeInFront.NextBrother;
-  until (NodeInFront=nil) or (NodeInFront.FirstChild=nil);
-  //debugln(['TIdentCompletionTool.GatherContextKeywords ',Node.DescAsString,' ',NodeInFront.DescAsString]);
+
+  ReadPriorAtomSafe(CleanPos);
+  //debugln(['TIdentCompletionTool.GatherContextKeywords prioratom=',CleanPosToStr(CurPos.StartPos),'=',GetAtom(CurPos)]);
+  NodeInFront:=nil;
+  if CurPos.StartPos>0 then
+    NodeInFront:=FindDeepestNodeAtPos(CurPos.StartPos,false);
+
+  NodeBehind:=nil;
+  MoveCursorToCleanPos(CleanPos);
+  ReadNextAtom;
+  //debugln(['TIdentCompletionTool.GatherContextKeywords nextatom=',CleanPosToStr(CurPos.StartPos),'=',GetAtom(CurPos)]);
+  if CurPos.StartPos>CleanPos then
+    NodeBehind:=FindDeepestNodeAtPos(CurPos.StartPos,false);
+
+  //debugln(['TIdentCompletionTool.GatherContextKeywords Node=',Node.DescAsString,' NodeInFront=',NodeInFront.DescAsString,' NodeBehind=',NodeBehind.DescAsString]);
 
   case Node.Desc of
   ctnClass,ctnObject,ctnRecordType,ctnObjCCategory,ctnObjCClass,
@@ -1584,9 +1591,24 @@ begin
       Add('procedure');
       Add('function');
       Add('resourcestring');
-      if Node.Desc=ctnInterface then
+      if Node.Desc=ctnInterface then begin
         Add('property');
+      end;
+      if (NodeBehind=nil)
+      or (NodeBehind.Desc in [ctnInitialization,ctnFinalization,ctnEndPoint,ctnBeginBlock])
+      then begin
+        if Node.Desc=ctnInterface then
+          Add('implementation');
+        Add('initialization');
+        Add('finalization');
+      end;
     end;
+
+  ctnInitialization:
+    if (NodeBehind=nil)
+    or (NodeBehind.Desc in [ctnInitialization,ctnFinalization,ctnEndPoint,ctnBeginBlock])
+    then
+      Add('finalization');
 
   ctnProcedure:
     begin

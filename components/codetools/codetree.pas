@@ -242,6 +242,7 @@ type
     function Next: TCodeTreeNode;
     function NextSkipChilds: TCodeTreeNode;
     function Prior: TCodeTreeNode;
+    function GetNodeInFrontOfPos(p: integer): TCodeTreeNode;
     function GetRoot: TCodeTreeNode;
     function ChildCount: integer;
     function HasAsParent(Node: TCodeTreeNode): boolean;
@@ -674,6 +675,35 @@ begin
       Result:=Result.LastChild;
   end else
     Result:=Parent;
+end;
+
+function TCodeTreeNode.GetNodeInFrontOfPos(p: integer): TCodeTreeNode;
+// if p<=StartPos then next node with Node.StartPos<=p
+// else returns the next child node with Node.EndPos<=p
+begin
+  if p<=StartPos then begin
+    if (Parent<>nil) and (p<Parent.StartPos) then begin
+      // p is in front of parent
+      Result:=Parent;
+      while (Result<>nil) and (p<Result.StartPos) do
+        Result:=Result.Parent;
+    end else begin
+      // p is in parent and in front of node => prior brothers
+      Result:=PriorBrother;
+      while (Result<>nil) and (p<Result.StartPos) do
+        Result:=Result.PriorBrother;
+    end;
+    if Result=nil then exit;
+    // p is in Result => search in children
+    Result:=Result.GetNodeInFrontOfPos(p);
+  end else begin
+    Result:=LastChild;
+    while (Result<>nil) and (Result.EndPos>p) do
+      Result:=Result.PriorBrother;
+    if Result=nil then exit;
+    while (Result.LastChild<>nil) and (Result.LastChild.EndPos=Result.EndPos) do
+      Result:=Result.LastChild;
+  end;
 end;
 
 procedure TCodeTreeNode.ConsistencyCheck;

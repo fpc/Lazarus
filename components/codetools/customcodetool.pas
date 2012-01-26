@@ -1717,7 +1717,7 @@ begin
   repeat
     repeat
       if Node=nil then begin
-        MoveCursorToCleanPos(0);
+        CurPos:=CleanAtomPosition;
         exit;
       end;
       if Node.EndPos<CleanPos then begin
@@ -1736,6 +1736,7 @@ begin
     Node:=Node.Prior;
   until false;
   if CurPos.EndPos>=CleanPos then begin
+    CurPos:=CleanAtomPosition;
     exit;
   end;
   repeat
