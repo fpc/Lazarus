@@ -168,53 +168,6 @@ begin
   Result := True;
 end;
 
-procedure TCDWidgetSet.LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
-var
-  lPositionMethod: jint;
-begin
-  // Prepare the input
-  case AMethod of
-    pmGPS: lPositionMethod := 1;
-    pmNetwork: lPositionMethod := 2;
-  else
-    Exit;
-  end;
-  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclkind, lPositionMethod);
-  // Call the method
-  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoRequestPositionInfo);
-end;
-
-procedure TCDWidgetSet.LazDeviceAPIs_SendMessage(AMsg: TLazDeviceMessage);
-var
-  lJavaString: jstring;
-  lStr: String;
-begin
-  // Prepare the input
-  // String fields
-  lStr := AMsg.Body;
-  lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(lStr));
-  javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
-  lStr := AMsg.destinationAddress.Text;
-  lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(lStr));
-  javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcldestination, lJavaString);
-  // Message type
-  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclkind, 1);
-  // Call the method
-  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoSendMessage);
-end;
-
-procedure TCDWidgetSet.LazDeviceAPIs_StartReadingAccelerometerData();
-begin
-  // Call the method
-  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoStartReadingAccelerometer);
-end;
-
-procedure TCDWidgetSet.LazDeviceAPIs_StopReadingAccelerometerData();
-begin
-  // Call the method
-  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoStopReadingAccelerometer);
-end;
-
 function TCDWidgetSet.PromptUser(const DialogCaption : string;
                     const DialogMessage : string;
                           DialogType    : LongInt;

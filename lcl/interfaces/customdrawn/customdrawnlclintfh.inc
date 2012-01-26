@@ -57,11 +57,6 @@ procedure HideVirtualKeyboard();
 function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; override;*)
 function IsMobilePlatform: Boolean; override;
 
-procedure LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod); override;
-procedure LazDeviceAPIs_SendMessage(AMsg: TLazDeviceMessage); override;
-procedure LazDeviceAPIs_StartReadingAccelerometerData(); override;
-procedure LazDeviceAPIs_StopReadingAccelerometerData(); override;
-
 function PromptUser(const DialogCaption : string;
                     const DialogMessage : string;
                           DialogType    : LongInt;

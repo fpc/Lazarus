@@ -53,6 +53,29 @@ type
 
   // TLazMessaging
 
+  TLazDeviceMessageKind = (dmkSMS, dmkMMS, dmkEMail);
+
+  TLazDeviceMessage = class
+  public
+    // The coments indicate in which message kind each
+    // field is available.             SMS   MMS  EMail
+    bccAddress: TStringList;         // N     N    Y
+    Body: string;                    // Y     Y	   Y
+    callbackNumber: string;          // Y     N    N
+    ccAddress: TstringList;          // N     N    Y
+    destinationAddress: TStringList; // Y     Y    Y
+    isRead: Boolean;                 // Y     Y    Y
+    messageId: string;               // Y     Y    Y
+    //messagePriority	Y	Y	Y
+    messageType: TLazDeviceMessageKind;//Y    Y    Y
+    sourceAddress: string;           // Y     Y    Y
+    Subject: string;                 // N     Y    Y
+    Time: TDateTime;                 // Y     Y    Y
+    validityPeriod:TTime;            // Y     N    N
+    constructor Create; virtual;
+    destructor Destroy; override;
+  end;
+
   TLazMessagingStatus = (
     // Message sending status
     mssSentSuccessfully, mssSendingGeneralError, mssRadioOff, mssNoService,
@@ -62,12 +85,6 @@ type
 
   TOnMessagingStatus = procedure (AMessage: TLazDeviceMessage;
     AStatus: TLazMessagingStatus) of object;
-
-  { TLazMessaging }
-
-  TLazDeviceMessageKind = LCLType.TLazDeviceMessageKind;
-
-  TLazDeviceMessage = LCLType.TLazDeviceMessage;
 
   TLazMessaging = class
   private
@@ -87,7 +104,7 @@ type
 
   // TLazPositionInfo
 
-  TLazPositionMethod = LCLType.TLazPositionMethod;
+  TLazPositionMethod = (pmGPS, pmNetwork);
 
   TLazPositionInfo = class
   private
@@ -114,27 +131,56 @@ var
 
 implementation
 
+uses wslazdeviceapis, wslclclasses;
+
 { TLazAccelerometer }
 
 procedure TLazAccelerometer.StartReadingAccelerometerData;
+var
+  WidgetsetClass: TWSLazDeviceAPIsClass;
 begin
   if FReadingStarted then Exit;
-  LCLIntf.LazDeviceAPIs_StartReadingAccelerometerData();
+  WidgetsetClass := TWSLazDeviceAPIsClass(GetWSLazDeviceAPIs());
+  WidgetsetClass.StartReadingAccelerometerData();
   FReadingStarted := True;
 end;
 
 procedure TLazAccelerometer.StopReadingAccelerometerData;
+var
+  WidgetsetClass: TWSLazDeviceAPIsClass;
 begin
   if not FReadingStarted then Exit;
-  LCLIntf.LazDeviceAPIs_StopReadingAccelerometerData();
+  WidgetsetClass := TWSLazDeviceAPIsClass(GetWSLazDeviceAPIs());
+  WidgetsetClass.StopReadingAccelerometerData();
   FReadingStarted := False;
 end;
 
 { TLazPositionInfo }
 
 procedure TLazPositionInfo.RequestPositionInfo(AMethod: TLazPositionMethod);
+var
+  WidgetsetClass: TWSLazDeviceAPIsClass;
 begin
-  LCLIntf.LazDeviceAPIs_RequestPositionInfo(AMethod);
+  WidgetsetClass := TWSLazDeviceAPIsClass(GetWSLazDeviceAPIs());
+  WidgetsetClass.RequestPositionInfo(AMethod);
+end;
+
+{ TLazDeviceMessage }
+
+constructor TLazDeviceMessage.Create;
+begin
+  inherited Create;
+  bccAddress := TStringList.Create;
+  ccAddress := TStringList.Create;
+  destinationAddress := TStringList.Create;
+end;
+
+destructor TLazDeviceMessage.Destroy;
+begin
+  bccAddress.Free;
+  ccAddress.Free;
+  destinationAddress.Free;
+  inherited Destroy;
 end;
 
 { TLazMessaging }
@@ -156,8 +202,11 @@ begin
 end;
 
 procedure TLazMessaging.SendMessage(AMsg: TLazDeviceMessage);
+var
+  WidgetsetClass: TWSLazDeviceAPIsClass;
 begin
-  LCLIntf.LazDeviceAPIs_SendMessage(AMsg);
+  WidgetsetClass := TWSLazDeviceAPIsClass(GetWSLazDeviceAPIs());
+  WidgetsetClass.SendMessage(AMsg);
 end;
 
 function TLazMessaging.CreateMessage: TLazDeviceMessage;
@@ -173,6 +222,7 @@ begin
 end;
 
 initialization
+  RegisterLazDeviceAPIs();
   Accelerometer := TLazAccelerometer.Create;
   Messaging := TLazMessaging.Create;
   PositionInfo := TLazPositionInfo.Create;

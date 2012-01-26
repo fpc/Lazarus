@@ -98,6 +98,8 @@ function WSRegisterCustomPairSplitter: Boolean; external name 'WSRegisterCustomP
 function WSRegisterCustomFloatSpinEdit: Boolean;external name 'WSRegisterCustomFloatSpinEdit';
 // RubberBand
 function WSRegisterCustomRubberBand: Boolean;   external name 'WSRegisterCustomRubberBand';
+// LazDeviceAPIs
+function WSRegisterLazDeviceAPIs: Boolean;   external name 'WSRegisterLazDeviceAPIs';
 
 implementation
 

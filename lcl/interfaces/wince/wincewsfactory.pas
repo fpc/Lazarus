@@ -96,6 +96,8 @@ function RegisterPairSplitterSide: Boolean;
 function RegisterCustomPairSplitter: Boolean;
 function RegisterCustomFloatSpinEdit: Boolean;
 function RegisterCustomRubberBand: Boolean;
+// LazDeviceAPIs
+function RegisterLazDeviceAPIs: Boolean;
 
 implementation
 uses
@@ -549,6 +551,12 @@ end;
 function RegisterCustomRubberBand: Boolean; alias : 'WSRegisterCustomRubberBand';
 begin
   Result := False;
+end;
+
+function RegisterLazDeviceAPIs: Boolean; alias : 'WSRegisterLazDeviceAPIs';
+begin
+  RegisterWSLazDeviceAPIs(TCDWSLazDeviceAPIs);
+  Result := True;
 end;
 
 end.

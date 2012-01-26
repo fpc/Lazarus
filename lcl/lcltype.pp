@@ -96,35 +96,6 @@ type
   TNativeCanvasType = (nctWindowsDC, nctLazCanvas);
   TNativeCanvasTypes = set of TNativeCanvasType;
 
-  // Types for LazDeviceAPIs
-
-  TLazPositionMethod = (pmGPS, pmNetwork);
-
-  { TLazDeviceMessage }
-
-  TLazDeviceMessageKind = (dmkSMS, dmkMMS, dmkEMail);
-
-  TLazDeviceMessage = class
-  public
-    // The coments indicate in which message kind each
-    // field is available.             SMS   MMS  EMail
-    bccAddress: TStringList;         // N     N    Y
-    Body: string;                    // Y     Y	   Y
-    callbackNumber: string;          // Y     N    N
-    ccAddress: TstringList;          // N     N    Y
-    destinationAddress: TStringList; // Y     Y    Y
-    isRead: Boolean;                 // Y     Y    Y
-    messageId: string;               // Y     Y    Y
-    //messagePriority	Y	Y	Y
-    messageType: TLazDeviceMessageKind;//Y    Y    Y
-    sourceAddress: string;           // Y     Y    Y
-    Subject: string;                 // N     Y    Y
-    Time: TDateTime;                 // Y     Y    Y
-    validityPeriod:TTime;            // Y     N    N
-    constructor Create; virtual;
-    destructor Destroy; override;
-  end;
-
   {$ifndef WINDOWS}
   THandle = type PtrUInt; // define our own, because the SysUtils.THandle = System.THandle is a longint
   HANDLE = THandle;
@@ -3263,24 +3234,6 @@ begin
   else
     result := DEFAULT_CHARSET;
 
-end;
-
-{ TLazDeviceMessage }
-
-constructor TLazDeviceMessage.Create;
-begin
-  inherited Create;
-  bccAddress := TStringList.Create;
-  ccAddress := TStringList.Create;
-  destinationAddress := TStringList.Create;
-end;
-
-destructor TLazDeviceMessage.Destroy;
-begin
-  bccAddress.Free;
-  ccAddress.Free;
-  destinationAddress.Free;
-  inherited Destroy;
 end;
 
 { TListWithEvent }

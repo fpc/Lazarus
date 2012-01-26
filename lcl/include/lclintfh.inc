@@ -94,11 +94,6 @@ function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean; Border
 function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function IsMobilePlatform: Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
-procedure LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-procedure LazDeviceAPIs_SendMessage(AMsg: TLazDeviceMessage); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-procedure LazDeviceAPIs_StartReadingAccelerometerData(); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-procedure LazDeviceAPIs_StopReadingAccelerometerData(); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
 function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

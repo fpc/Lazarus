@@ -89,6 +89,8 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
 // Only for non-TComponent based objects
 function GetWSLazAccessibleObject: TWSObjectClass;
 procedure RegisterWSLazAccessibleObject(const AWSObject: TWSObjectClass);
+function GetWSLazDeviceAPIs: TWSObjectClass;
+procedure RegisterWSLazDeviceAPIs(const AWSObject: TWSObjectClass);
 
 implementation
 
@@ -127,6 +129,7 @@ var
   MComponentIndex: TStringList;
   MWSRegisterIndex: TStringList;
   WSLazAccessibleObjectClass: TWSObjectClass;
+  WSLazDeviceAPIsClass: TWSObjectClass;
 
 function FindWSComponentClass(
   const AComponent: TComponentClass): TWSLCLComponentClass;
@@ -443,6 +446,15 @@ begin
   WSLazAccessibleObjectClass := AWSObject;
 end;
 
+function GetWSLazDeviceAPIs: TWSObjectClass;
+begin
+  Result := WSLazDeviceAPIsClass;
+end;
+
+procedure RegisterWSLazDeviceAPIs(const AWSObject: TWSObjectClass);
+begin
+  WSLazDeviceAPIsClass := AWSObject;
+end;
 
 { TWSLCLComponent }
 

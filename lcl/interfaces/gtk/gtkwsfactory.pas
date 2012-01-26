@@ -13,6 +13,7 @@ uses
 function RegisterCustomImageList: Boolean;
 // controls
 function RegisterDragImageList: Boolean;
+function RegisterLazAccessibleObject: Boolean;
 function RegisterControl: Boolean;
 function RegisterWinControl: Boolean;
 function RegisterGraphicControl: Boolean;
@@ -96,6 +97,8 @@ function RegisterPairSplitterSide: Boolean;
 function RegisterCustomPairSplitter: Boolean;
 function RegisterCustomFloatSpinEdit: Boolean;
 function RegisterCustomRubberBand: Boolean;
+// LazDeviceAPIs
+function RegisterLazDeviceAPIs: Boolean;
 
 implementation
 uses
@@ -131,6 +134,11 @@ function RegisterDragImageList: Boolean; alias : 'WSRegisterDragImageList';
 begin
   RegisterWSComponent(TDragImageList, TGtkWSDragImageList);
   Result := True;
+end;
+
+function RegisterLazAccessibleObject: Boolean; alias : 'WSRegisterLazAccessibleObject';
+begin
+  Result := False;
 end;
 
 function RegisterControl: Boolean; alias : 'WSRegisterControl';
@@ -611,6 +619,11 @@ begin
 end;
 
 function RegisterCustomRubberBand: Boolean; alias : 'WSRegisterCustomRubberBand';
+begin
+  Result := False;
+end;
+
+function RegisterLazDeviceAPIs: Boolean; alias : 'WSRegisterLazDeviceAPIs';
 begin
   Result := False;
 end;

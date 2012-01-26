@@ -356,26 +356,6 @@ begin
   Result := WidgetSet.IsMobilePlatform();
 end;
 
-procedure LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
-begin
-  Widgetset.LazDeviceAPIs_RequestPositionInfo(AMethod);
-end;
-
-procedure LazDeviceAPIs_SendMessage(AMsg: TLazDeviceMessage);
-begin
-  Widgetset.LazDeviceAPIs_SendMessage(AMsg);
-end;
-
-procedure LazDeviceAPIs_StartReadingAccelerometerData();
-begin
-  Widgetset.LazDeviceAPIs_StartReadingAccelerometerData();
-end;
-
-procedure LazDeviceAPIs_StopReadingAccelerometerData();
-begin
-  Widgetset.LazDeviceAPIs_StopReadingAccelerometerData();
-end;
-
 function MoveWindowOrgEx(dc: hdc; dX,dY: Integer): boolean;
 begin
   Result := WidgetSet.MoveWindowOrgEx(DC, dX, dY);

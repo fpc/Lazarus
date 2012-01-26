@@ -118,26 +118,6 @@ begin
   Result := Application.ApplicationType in [atPDA, atKeyPadDevice, atTV, atMobileEmulator];
 end;
 
-procedure TCDWidgetSet.LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
-begin
-
-end;
-
-procedure TCDWidgetSet.LazDeviceAPIs_SendMessage(AMsg: TLazDeviceMessage);
-begin
-
-end;
-
-procedure TCDWidgetSet.LazDeviceAPIs_StartReadingAccelerometerData();
-begin
-
-end;
-
-procedure TCDWidgetSet.LazDeviceAPIs_StopReadingAccelerometerData();
-begin
-
-end;
-
 {------------------------------------------------------------------------------
   Function: PromptUser
   Params:

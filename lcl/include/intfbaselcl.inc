@@ -524,26 +524,6 @@ begin
   // But Forms is not in the uses clause
 end;
 
-procedure TWidgetSet.LazDeviceAPIs_RequestPositionInfo(AMethod: TLazPositionMethod);
-begin
-
-end;
-
-procedure TWidgetSet.LazDeviceAPIs_SendMessage(AMsg: TLazDeviceMessage);
-begin
-
-end;
-
-procedure TWidgetSet.LazDeviceAPIs_StartReadingAccelerometerData();
-begin
-
-end;
-
-procedure TWidgetSet.LazDeviceAPIs_StopReadingAccelerometerData();
-begin
-
-end;
-
 function TWidgetSet.MoveWindowOrgEx(dc: hdc; dX,dY: Integer): boolean;
 var
   P: TPoint;
