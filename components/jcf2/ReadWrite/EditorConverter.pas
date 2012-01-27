@@ -163,10 +163,54 @@ begin
 end;
 
 procedure TEditorConverter.WriteToIDE(const pcUnit: TSourceEditorInterface; const psText: string);
+var
+  lsOriginalSource: string;
+  lcSourceLines, lcDestLines: TStrings;
+  lcSameStart, lcSameEnd: TStrings;
+  lsSourceLine, lsDestLine: string;
+  liStart, liIndex, liMaxIndex: integer;
 begin
   if pcUnit = nil then
     exit;
-  pcUnit.ReplaceLines(0, pcUnit.LineCount, psText, True);
+
+  lsOriginalSource := fcConverter.InputCode;
+  lcSourceLines := TStringList.Create;
+  lcSourceLines.Text := lsOriginalSource;
+  lcDestLines := TStringList.Create;
+  lcDestLines.Text := psText;
+  lcSameStart := TStringList.Create;
+  lcSameEnd := TStringList.Create;
+
+  SplitIntoChangeSections(lcSourceLines, lcDestLines, lcSameStart, lcSameEnd);
+  try
+    liStart := lcSameStart.Count;
+    liIndex := 0;
+    liMaxIndex := Max(lcSourceLines.Count, lcDestLines.Count);
+
+    while (liIndex < liMaxIndex) do
+    begin
+      if liIndex < lcSourceLines.Count then
+        lsSourceLine := lcSourceLines[liIndex]
+      else
+        lsSourceLine := '';
+
+      if liIndex < lcDestLines.Count then
+        lsDestLine := lcDestLines[liIndex]
+      else
+        lsDestLine := '';
+
+      if not AnsiSameStr(lsSourceLine, lsDestLine) then
+        // the line is different, replace it
+        pcUnit.ReplaceLines(liStart + liIndex + 1, liStart + liIndex + 1, lsDestLine, True);
+
+       inc(liIndex);
+     end;
+   finally
+    lcSourceLines.Free;
+    lcDestLines.Free;
+    lcSameStart.Free;
+    lcSameEnd.Free;
+   end;
 end;
 
 {$else}
