@@ -136,7 +136,10 @@ implementation
 
 {off $Define SynTrimUndoDebug}
 {off $Define SynTrimDebug}
-{$IFDEF SynUndoDebug}{$Define SynTrimUndoDebug}{$ENDIF}
+{$IFDEF SynUndoDebug}
+  {$Define SynUndoDebugItems}
+  {$Define SynTrimUndoDebug}
+{$ENDIF}
 
 type
 
@@ -255,14 +258,14 @@ constructor TSynEditUndoTrimMoveTo.Create(APosY, ALen: Integer);
 begin
   FPosY := APosY;
   FLen :=  ALen;
-  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Insert ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTrimMoveTo.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringTrimmingList;
   if Result then begin
-  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Perform ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
     with TSynEditStringTrimmingList(Caller) do begin
       EditMoveFromTrim(FPosY, FLen);
       SendNotification(senrLineChange, TSynEditStringTrimmingList(Caller),
@@ -282,14 +285,14 @@ constructor TSynEditUndoTrimMoveFrom.Create(APosY, ALen: Integer);
 begin
   FPosY := APosY;
   FLen :=  ALen;
-  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Insert ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTrimMoveFrom.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringTrimmingList;
   if Result then begin
-  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Perform ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
     with TSynEditStringTrimmingList(Caller) do begin
       EditMoveToTrim(FPosY, FLen);
       SendNotification(senrLineChange, TSynEditStringTrimmingList(Caller),
@@ -310,14 +313,14 @@ begin
   FPosX := APosX;
   FPosY := APosY;
   FLen :=  ALen;
-  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Insert ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTrimInsert.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringTrimmingList;
   if Result then begin
-  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Perform ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
     with TSynEditStringTrimmingList(Caller) do begin
       EditDeleteTrim(FPosX, FPosY, FLen);
       SendNotification(senrLineChange, TSynEditStringTrimmingList(Caller),
@@ -340,14 +343,14 @@ begin
   FPosX := APosX;
   FPosY := APosY;
   FText :=  AText;
-  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Insert ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTrimDelete.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringTrimmingList;
   if Result then begin
-  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Perform ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
     with TSynEditStringTrimmingList(Caller) do begin
       EditInsertTrim(FPosX, FPosY, FText);
       SendNotification(senrLineChange, TSynEditStringTrimmingList(Caller),
@@ -369,14 +372,14 @@ constructor TSynEditUndoTrimForget.Create(APosY: Integer; AText: String);
 begin
   FPosY := APosY;
   FText :=  AText;
-  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Insert ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTrimForget.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringTrimmingList;
   if Result then begin
-  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Perform ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
     with TSynEditStringTrimmingList(Caller) do begin
       CurUndoList.Lock;
       EditInsertTrim(1, FPosY, FText);

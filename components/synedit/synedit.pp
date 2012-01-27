@@ -62,6 +62,10 @@ interface
 { $DEFINE VerboseKeys}
 { $DEFINE VerboseSynEditInvalidate}
 { $DEFINE SYNDEBUGPRINT}
+{$IFDEF SynUndoDebug}
+  {$Define SynUndoDebugItems}
+  {$Define SynUndoDebugCalls}
+{$ENDIF}
 
 uses
   {$IFDEF USE_UTF8BIDI_LCL}
@@ -1312,7 +1316,7 @@ end;
 constructor TSynEditUndoCaret.Create(CaretPos: TPoint);
 begin
   FCaretPos := CaretPos;
-  {$IFDEF SynUndoDebug}debugln(['---  Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynUndoDebugItems}debugln(['---  Undo Insert ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoCaret.IsCaretInfo: Boolean;
@@ -1324,7 +1328,7 @@ function TSynEditUndoCaret.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TCustomSynEdit;
   if Result then
-    {$IFDEF SynUndoDebug}debugln(['---  Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+    {$IFDEF SynUndoDebugItems}debugln(['---  Undo Perform ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
     with TCustomSynEdit(Caller) do begin
       FCaret.LineCharPos := FCaretPos;
       FTheLinesView.CurUndoList.AddChange(TSynEditUndoCaret.Create(FCaretPos));
@@ -1340,7 +1344,7 @@ begin
   FBeginPos := BeginPos;
   FEndPos   := EndPos;
   FBlockMode := BlockMode;
-  {$IFDEF SynUndoDebug}debugln(['---  Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynUndoDebugItems}debugln(['---  Undo Insert ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoSelCaret.IsEqualContent(AnItem: TSynEditUndoItem): Boolean;
@@ -1368,7 +1372,7 @@ function TSynEditUndoSelCaret.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TCustomSynEdit;
   if Result then
-    {$IFDEF SynUndoDebug}debugln(['---  Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+    {$IFDEF SynUndoDebugItems}debugln(['---  Undo Perform ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
     with TCustomSynEdit(Caller) do begin
       SetCaretAndSelection(FCaretPos, FBeginPos, FEndPos, FBlockMode, True);
       FTheLinesView.CurUndoList.AddChange(TSynEditUndoSelCaret.Create(FCaretPos, FBeginPos,
@@ -1833,6 +1837,10 @@ begin
   FUndoList := TSynEditStringList(fLines).UndoList;
   FRedoList := TSynEditStringList(fLines).RedoList;
   FUndoList.OnNeedCaretUndo := {$IFDEF FPC}@{$ENDIF}GetCaretUndo;
+  {$IFDEF SynUndoDebugCalls}
+  fUndoList.DebugName := 'UNDO';
+  fRedoList.DebugName := 'REDO';
+  {$ENDIF}
 
   FBlockSelection := TSynEditSelection.Create(FTheLinesView, True);
   FBlockSelection.Caret := FCaret;
@@ -4545,6 +4553,9 @@ var
 begin
   Group := fRedoList.PopItem;
   if Group <> nil then begin;
+    {$IFDEF SynUndoDebugCalls}
+    DebugLnEnter(['>> TCustomSynEdit.Redo ',DbgSName(self), ' ', dbgs(Self), ' Group', dbgs(Group), ' cnt=', Group.Count]);
+    {$ENDIF}
     IncPaintLock;
     FTheLinesView.IsRedoing := True;
     Item := Group.Pop;
@@ -4566,6 +4577,11 @@ begin
     if fRedoList.IsTopMarkedAsUnmodified then
       fUndoList.MarkTopAsUnmodified;
     DecPaintLock;
+    {$IFDEF SynUndoDebugCalls}
+    DebugLnExit(['<< TCustomSynEdit.Redo ',DbgSName(self), ' ', dbgs(Self)]);
+  end else begin
+    DebugLn(['<< TCustomSynEdit.Redo - NO GROUP ',DbgSName(self), ' ', dbgs(Self)]);
+    {$ENDIF}
   end;
 end;
 
@@ -4656,6 +4672,9 @@ var
 begin
   Group := fUndoList.PopItem;
   if Group <> nil then begin;
+    {$IFDEF SynUndoDebugCalls}
+    DebugLnEnter(['>> TCustomSynEdit.Undo ',DbgSName(self), ' ', dbgs(Self), ' Group', dbgs(Group), ' cnt=', Group.Count]);
+    {$ENDIF}
     IncPaintLock;
     FTheLinesView.IsUndoing := True;
     Item := Group.Pop;
@@ -4680,6 +4699,11 @@ begin
     if fUndoList.IsTopMarkedAsUnmodified then
       fRedoList.MarkTopAsUnmodified;
     DecPaintLock;
+    {$IFDEF SynUndoDebugCalls}
+    DebugLnExit(['<< TCustomSynEdit.Undo ',DbgSName(self), ' ', dbgs(Self)]);
+  end else begin
+    DebugLn(['<< TCustomSynEdit.Undo - NO GROUP ',DbgSName(self), ' ', dbgs(Self)]);
+    {$ENDIF}
   end;
 end;
 

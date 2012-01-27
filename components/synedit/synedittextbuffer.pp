@@ -42,6 +42,7 @@ unit SynEditTextBuffer;
 {$IFOPT C+}
   {$DEFINE SynAssert}
 {$ENDIF}
+{$IFDEF SynUndoDebug} {$Define SynUndoDebugItems} {$ENDIF}
 
 interface
 
@@ -416,13 +417,13 @@ begin
   FPosX := APosX;
   FPosY := APosY;
   FLen  := ALen;
-  {$IFDEF SynUndoDebug}debugln(['---  Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynUndoDebugItems}debugln(['---  Undo Insert ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTxtInsert.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringList;
-  {$IFDEF SynUndoDebug}if Result then debugln(['---  Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynUndoDebugItems}if Result then debugln(['---  Undo Perform ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
   if Result then
     TSynEditStringList(Caller).EditDelete(FPosX, FPosY, FLen);
 end;
@@ -438,13 +439,13 @@ begin
   FPosX := APosX;
   FPosY := APosY;
   FText := AText;
-  {$IFDEF SynUndoDebug}debugln(['---  Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynUndoDebugItems}debugln(['---  Undo Insert ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTxtDelete.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringList;
-  {$IFDEF SynUndoDebug}if Result then debugln(['---  Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynUndoDebugItems}if Result then debugln(['---  Undo Perform ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
   if Result then
     TSynEditStringList(Caller).EditInsert(FPosX, FPosY, FText);
 end;
@@ -458,13 +459,13 @@ end;
 constructor TSynEditUndoTxtLineBreak.Create(APosY: Integer);
 begin
   FPosY := APosY;
-  {$IFDEF SynUndoDebug}debugln(['---  Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynUndoDebugItems}debugln(['---  Undo Insert ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTxtLineBreak.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringList;
-  {$IFDEF SynUndoDebug}if Result then debugln(['---  Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynUndoDebugItems}if Result then debugln(['---  Undo Perform ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
   if Result then
     TSynEditStringList(Caller).EditLineJoin(FPosY)
 end;
@@ -479,13 +480,13 @@ constructor TSynEditUndoTxtLineJoin.Create(APosX, APosY: Integer);
 begin
   FPosX := APosX;
   FPosY := APosY;
-  {$IFDEF SynUndoDebug}debugln(['---  Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynUndoDebugItems}debugln(['---  Undo Insert ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTxtLineJoin.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringList;
-  {$IFDEF SynUndoDebug}if Result then debugln(['---  Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynUndoDebugItems}if Result then debugln(['---  Undo Perform ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
   if Result then
     TSynEditStringList(Caller).EditLineBreak(FPosX, FPosY)
 end;
@@ -500,13 +501,13 @@ constructor TSynEditUndoTxtLinesIns.Create(ALine, ACount: Integer);
 begin
   FPosY  := ALine;
   FCount := ACount;
-  {$IFDEF SynUndoDebug}debugln(['---  Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynUndoDebugItems}debugln(['---  Undo Insert ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTxtLinesIns.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringList;
-  {$IFDEF SynUndoDebug}if Result then debugln(['---  Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynUndoDebugItems}if Result then debugln(['---  Undo Perform ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
   if Result then
     TSynEditStringList(Caller).UndoEditLinesDelete(FPosY, FCount)
 end;
@@ -521,13 +522,13 @@ constructor TSynEditUndoTxtLinesDel.Create(ALine, ACount: Integer);
 begin
   FPosY  := ALine;
   FCount := ACount;
-  {$IFDEF SynUndoDebug}debugln(['---  Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynUndoDebugItems}debugln(['---  Undo Insert ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTxtLinesDel.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringList;
-  {$IFDEF SynUndoDebug}if Result then debugln(['---  Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  {$IFDEF SynUndoDebugItems}if Result then debugln(['---  Undo Perform ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
   if Result then
     TSynEditStringList(Caller).EditLinesInsert(FPosY, FCount)
 end;

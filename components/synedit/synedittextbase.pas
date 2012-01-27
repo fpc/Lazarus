@@ -28,6 +28,10 @@ unit SynEditTextBase;
 {$IFDEF SynAssert}
   {$DEFINE AssertSynMemIndex}
 {$ENDIF}
+{$IFDEF SynUndoDebug}
+  {$Define SynUndoDebugItems}
+  {$Define SynUndoDebugCalls}
+{$ENDIF}
 
 
 interface
@@ -185,6 +189,9 @@ type
     procedure SetCurrentReason(const AValue: TSynEditorCommand);
     procedure SetMaxUndoActions(Value: integer);
   public
+    {$IFDEF SynUndoDebugCalls}
+    DebugName: string;
+    {$ENDIF}
     constructor Create;
     destructor Destroy; override;
     procedure AddChange(AChange: TSynEditUndoItem);
@@ -316,13 +323,19 @@ begin
     FUndoGroup.Clear;
     if assigned(FOnNeedCaretUndo) then
       FUndoGroup.add(FOnNeedCaretUndo());
-  end
+  end;
+  {$IFDEF SynUndoDebugCalls}
+  DebugLnEnter(['>> TSynEditUndoList.BeginBlock ', DebugName, ' ', DbgSName(self), ' ', dbgs(Self), ' fLockCount=', fLockCount, ' Cnt=', fItems.Count, ' FInGroupCount=', FInGroupCount, ' fUnModifiedItem=', fUnModifiedItem]);
+  {$ENDIF}
 end;
 
 procedure TSynEditUndoList.Clear;
 var
   i: integer;
 begin
+  {$IFDEF SynUndoDebugCalls}
+  DebugLn(['>> TSynEditUndoList.Clear ', DebugName, ' ', DbgSName(self), ' ', dbgs(Self), ' fLockCount=', fLockCount, ' Cnt=', fItems.Count, ' FInGroupCount=', FInGroupCount]);
+  {$ENDIF}
   for i := 0 to fItems.Count - 1 do
     TSynEditUndoGroup(fItems[i]).Free;
   fItems.Clear;
@@ -358,6 +371,11 @@ begin
       FIsInsideRedo := False;
       FForceGroupEnd := False;
     end;
+    {$IFDEF SynUndoDebugCalls}
+    DebugLnExit(['>> TSynEditUndoList.EndBlock ', DebugName, ' ', DbgSName(self), ' ', dbgs(Self), ' fLockCount=', fLockCount, ' Cnt=', fItems.Count, ' FInGroupCount=', FInGroupCount, ' fUnModifiedItem=', fUnModifiedItem]);
+  end else begin
+    DebugLn(['** EXTRA TSynEditUndoList.EndBlock ', DebugName, ' ', DbgSName(self), ' ', dbgs(Self), ' fLockCount=', fLockCount, ' Cnt=', fItems.Count, ' FInGroupCount=', FInGroupCount, ' fUnModifiedItem=', fUnModifiedItem]);
+    {$ENDIF}
   end;
 end;
 
@@ -400,6 +418,9 @@ end;
 procedure TSynEditUndoList.Lock;
 begin
   Inc(fLockCount);
+  {$IFDEF SynUndoDebugCalls}
+  DebugLnEnter(['>> TSynEditUndoList.Lock ', DebugName, ' ', DbgSName(self), ' ', dbgs(Self), ' fLockCount=', fLockCount, ' Cnt=', fItems.Count, ' FInGroupCount=', FInGroupCount]);
+  {$ENDIF}
 end;
 
 function TSynEditUndoList.PopItem: TSynEditUndoGroup;
@@ -437,6 +458,9 @@ procedure TSynEditUndoList.Unlock;
 begin
   if fLockCount > 0 then
     Dec(fLockCount);
+  {$IFDEF SynUndoDebugCalls}
+  DebugLnExit(['<< TSynEditUndoList.UnLock ', DebugName, ' ', DbgSName(self), ' ', dbgs(Self), ' fLockCount=', fLockCount, ' Cnt=', fItems.Count, ' FInGroupCount=', FInGroupCount]);
+  {$ENDIF}
 end;
 
 function TSynEditUndoList.IsLocked: Boolean;
