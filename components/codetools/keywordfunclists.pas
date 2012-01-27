@@ -161,19 +161,19 @@ var
     : TKeyWordFunctionList;
   UpChars: array[char] of char;
 
-  IsSpaceChar, // [#0..#32]
-  IsLineEndChar,
-  IsWordChar, // ['a'..'z','A'..'Z']
-  IsNonWordChar,      // [#0..#127]-IsIdentChar
-  IsIdentStartChar,
-  IsIdentChar,
-  IsDottedIdentChar,
-  IsNumberChar,
+  IsSpaceChar,       // [#0..#32]
+  IsLineEndChar,     // [#10,#13]
+  IsWordChar,        // ['a'..'z','A'..'Z']
+  IsNonWordChar,     // [#0..#127]-IsIdentChar
+  IsIdentStartChar,  // ['a'..'z','A'..'Z','_']
+  IsIdentChar,       // ['a'..'z','A'..'Z','_','0'..'9']
+  IsDottedIdentChar, // ['.','a'..'z','A'..'Z','_','0'..'9']
+  IsNumberChar,      // ['0'..'9']
   IsCommentStartChar,
   IsCommentEndChar,
-  IsHexNumberChar,
-  IsEqualOperatorStartChar,
-  IsAfterFloatPointChar:
+  IsHexNumberChar,   // ['0'..'9','a'..'f','A'..'F']
+  IsEqualOperatorStartChar, // [':','+','-','/','*','<','>']
+  IsAfterFloatPointChar: // ['0'..'9','e','E']
     array[char] of boolean;
 
 function UpperCaseStr(const s: string): string;

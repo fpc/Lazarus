@@ -1634,6 +1634,8 @@ var
   OldIndent: Integer;
   OldAtomStart: LongInt;
   AfterProcedure: Boolean;
+  CurDoNotInsertSpaceAfter: TAtomTypes;
+  CurDoNotInsertSpaceInFront: TAtomTypes;
 begin
   //DebugLn('**********************************************************');
   //DebugLn('[TBeautifyCodeOptions.BeautifyStatement] "',AStatement,'"');
@@ -1641,6 +1643,8 @@ begin
   // set flags
   CurFlags:=BeautifyFlags;
   OldIndent:=Indent;
+  CurDoNotInsertSpaceAfter:=DoNotInsertSpaceAfter+[atNewLine,atSpace];
+  CurDoNotInsertSpaceInFront:=DoNotInsertSpaceInFront+[atNewLine,atSpace];
   try
     if bcfNoIndentOnBreakLine in CurFlags then
       Indent:=0;
@@ -1696,10 +1700,10 @@ begin
         and (SameText(CurAtom, 'procedure') or SameText(CurAtom, 'function'))
       then
         AfterProcedure := True;
-      //DebugLn(['TBeautifyCodeOptions.BeautifyStatement ',CurAtom,' LastAtomType=',AtomTypeNames[LastAtomType],',',LastAtomType in DoNotInsertSpaceAfter,',',LastAtomType in DoInsertSpaceAfter,' CurAtomType=',AtomTypeNames[CurAtomType],',',CurAtomType in DoNotInsertSpaceInFront,',',CurAtomType in DoInsertSpaceInFront]);
-      if ((Result='') or (Result[length(Result)]<>' '))
-      and (not (CurAtomType in DoNotInsertSpaceInFront))
-      and (not (LastAtomType in DoNotInsertSpaceAfter))
+      //DebugLn(['TBeautifyCodeOptions.BeautifyStatement ',CurAtom,' LastAtomType=',AtomTypeNames[LastAtomType],',',LastAtomType in CurDoNotInsertSpaceAfter,',',LastAtomType in DoInsertSpaceAfter,' CurAtomType=',AtomTypeNames[CurAtomType],',',CurAtomType in CurDoNotInsertSpaceInFront,',',CurAtomType in DoInsertSpaceInFront]);
+      if ((Result='') or (not IsSpaceChar[Result[length(Result)]]))
+      and (not (CurAtomType in CurDoNotInsertSpaceInFront))
+      and (not (LastAtomType in CurDoNotInsertSpaceAfter))
       and ((CurAtomType in DoInsertSpaceInFront)
            or (LastAtomType in DoInsertSpaceAfter))
       then begin
