@@ -2691,6 +2691,15 @@ being raised.
         <descr/>
         <seealso/>
       </element>
+      <element name="TCustomRadioGroup.OnSelectionChanged">
+        <short>Event called when the selected item changes</short>
+        <descr><p>This event was introduced in Lazarus 0.9.31 and it is called when the selected item is changed.
+        It is triggered when this is done by the user via, for example the mouse or keyboard,
+        and is also triggered when the selected item is changed programatically.</p></descr>
+        <seealso>
+          <link id="TCustomRadioGroup.OnClick" />
+        </seealso>
+      </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomRadioGroup.Create">
         <short>
@@ -2928,6 +2937,8 @@ being raised.
         <descr/>
         <seealso/>
       </element>
+      <!-- property Visibility: published -->
+      <element name="TRadioGroup.OnSelectionChanged" link="#lcl.ExtCtrls.TCustomRadioGroup.OnSelectionChanged" />
       <!-- property Visibility: published -->
       <element name="TRadioGroup.ParentColor">
         <short/>

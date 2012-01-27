@@ -46,6 +46,9 @@ UnitListArr=()
 # create output directory
 mkdir -p $PackageName
 
+# Copy the css file to it
+cp fpdoc.css $PackageName/
+
 # create unit list
 cd $PasSrcDir
 FindUnitList=(*.pp *.pas)
