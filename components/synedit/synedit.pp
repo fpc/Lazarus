@@ -2085,7 +2085,9 @@ begin
   if FIsInDecPaintLock then exit;
   FIsInDecPaintLock := True;
   try
-    if (FUndoBlockAtPaintLock = FPaintLock) then begin
+    if (FUndoBlockAtPaintLock >= FPaintLock) then begin
+      if (FUndoBlockAtPaintLock > FPaintLock) then
+        debugln(['***** SYNEDIT: Fixing auto-undo-block FUndoBlockAtPaintLock=',FUndoBlockAtPaintLock,' FPaintLock=',FPaintLock]);
       FUndoBlockAtPaintLock := 0;
       EndUndoBlock;
     end;
