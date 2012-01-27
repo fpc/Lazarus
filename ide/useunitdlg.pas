@@ -397,7 +397,10 @@ begin
           FImplUsedUnits.Objects[i] := ImplUsesNode;
       // find CodeTreeNode at cursor
       CursorNode := BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos, True);
-      if CursorNode.HasParentOfType(ctnImplementation) then
+      if (CursorNode.Desc in [ctnImplementation,ctnInitialization,ctnFinalization])
+      or CursorNode.HasParentOfType(ctnImplementation)
+      or CursorNode.HasParentOfType(ctnInitialization)
+      or CursorNode.HasParentOfType(ctnFinalization) then
         SectionRadioGroup.ItemIndex := 1;
       SectionRadioGroup.OnClick(SectionRadioGroup);
     finally
