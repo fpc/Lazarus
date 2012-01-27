@@ -1593,46 +1593,49 @@ begin
     with TCustomSynEdit(F.CurrentEditor) do begin
       BeginUndoBlock;
       BeginUpdate;
-      LogCaret := LogicalCaretXY;
-      NewBlockBegin:=LogCaret;
-      CurLine:=Lines[NewBlockBegin.Y - 1];
-      while (NewBlockBegin.X>1) and (NewBlockBegin.X-1<=length(CurLine))
-      and (CurLine[NewBlockBegin.X-1] in ['a'..'z','A'..'Z','0'..'9','_']) do
-        dec(NewBlockBegin.X);
-      //BlockBegin:=NewBlockBegin;
-      if ssShift in Shift then begin
-        // replace only prefix
-        NewBlockEnd := LogCaret;
-      end else begin
-        // replace the whole word
-        NewBlockEnd := LogCaret;
-        CurLine:=Lines[NewBlockEnd.Y - 1];
-        while (NewBlockEnd.X<=length(CurLine))
-        and (CurLine[NewBlockEnd.X] in ['a'..'z','A'..'Z','0'..'9','_']) do
-          inc(NewBlockEnd.X);
-      end;
-      //debugln('TSynCompletion.Validate B Position=',dbgs(Position));
-      if Position>=0 then begin
-        if Assigned(FOnCodeCompletion) then
-        begin
-          Value := ItemList[Position];
-          FOnCodeCompletion(Value, TextBetweenPoints[NewBlockBegin, NewBlockEnd],
-                            NewBlockBegin, NewBlockEnd, KeyChar, Shift);
-          if (CompareCarets(NewBlockBegin, NewBlockEnd) <> 0) or (Value <> '') then
+      try
+        LogCaret := LogicalCaretXY;
+        NewBlockBegin:=LogCaret;
+        CurLine:=Lines[NewBlockBegin.Y - 1];
+        while (NewBlockBegin.X>1) and (NewBlockBegin.X-1<=length(CurLine))
+        and (CurLine[NewBlockBegin.X-1] in ['a'..'z','A'..'Z','0'..'9','_']) do
+          dec(NewBlockBegin.X);
+        //BlockBegin:=NewBlockBegin;
+        if ssShift in Shift then begin
+          // replace only prefix
+          NewBlockEnd := LogCaret;
+        end else begin
+          // replace the whole word
+          NewBlockEnd := LogCaret;
+          CurLine:=Lines[NewBlockEnd.Y - 1];
+          while (NewBlockEnd.X<=length(CurLine))
+          and (CurLine[NewBlockEnd.X] in ['a'..'z','A'..'Z','0'..'9','_']) do
+            inc(NewBlockEnd.X);
+        end;
+        //debugln('TSynCompletion.Validate B Position=',dbgs(Position));
+        if Position>=0 then begin
+          if Assigned(FOnCodeCompletion) then
           begin
-            TextBetweenPointsEx[NewBlockBegin, NewBlockEnd, scamEnd] := Value;
+            Value := ItemList[Position];
+            FOnCodeCompletion(Value, TextBetweenPoints[NewBlockBegin, NewBlockEnd],
+                              NewBlockBegin, NewBlockEnd, KeyChar, Shift);
+            if (CompareCarets(NewBlockBegin, NewBlockEnd) <> 0) or (Value <> '') then
+            begin
+              TextBetweenPointsEx[NewBlockBegin, NewBlockEnd, scamEnd] := Value;
+              TCustomSynEdit(F.CurrentEditor).SetFocus;
+            end;
+          end else begin
+            TextBetweenPointsEx[NewBlockBegin, NewBlockEnd, scamEnd] := ItemList[Position];
             TCustomSynEdit(F.CurrentEditor).SetFocus;
           end;
-        end else begin
-          TextBetweenPointsEx[NewBlockBegin, NewBlockEnd, scamEnd] := ItemList[Position];
-          TCustomSynEdit(F.CurrentEditor).SetFocus;
-        end;
-      end
-      else
-      if (ItemList.Count = 0) then
-        Cancel(Sender);
-      EndUpdate;
-      EndUndoBlock;
+        end
+        else
+        if (ItemList.Count = 0) then
+          Cancel(Sender);
+      finally
+        EndUpdate;
+        EndUndoBlock;
+      end;
     end;
 end;
 

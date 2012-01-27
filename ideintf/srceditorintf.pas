@@ -534,11 +534,14 @@ procedure TSourceEditorInterface.ReplaceText(const StartPos, EndPos: TPoint;
 begin
   BeginUpdate;
   BeginUndoBlock;
-  SelectText(StartPos,EndPos);
-  CursorTextXY:=StartPos;
-  Selection:=NewText;
-  EndUndoBlock;
-  EndUpdate;
+  try
+    SelectText(StartPos,EndPos);
+    CursorTextXY:=StartPos;
+    Selection:=NewText;
+  finally
+    EndUndoBlock;
+    EndUpdate;
+  end;
 end;
 
 { TIDECodeMacro }

@@ -325,10 +325,13 @@ begin
       TxtXY:=CondSynEdit.LogicalCaretXY;
       CondSynEdit.GetWordBoundsAtRowCol(TxtXY,TxtStartX,TxtEndX);
       CondSynEdit.BeginUndoBlock();
-      CondSynEdit.BlockBegin:=Point(TxtStartX,TxtXY.Y);
-      CondSynEdit.BlockEnd:=Point(TxtEndX,TxtXY.Y);
-      CondSynEdit.SelText:=s;
-      CondSynEdit.EndUndoBlock();
+      try
+        CondSynEdit.BlockBegin:=Point(TxtStartX,TxtXY.Y);
+        CondSynEdit.BlockEnd:=Point(TxtEndX,TxtXY.Y);
+        CondSynEdit.SelText:=s;
+      finally
+        CondSynEdit.EndUndoBlock();
+      end;
       FCompletionHistory.Insert(0,s);
       if FCompletionHistory.Count>100 then
         FCompletionHistory.Delete(FCompletionHistory.Count-1);

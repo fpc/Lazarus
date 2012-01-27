@@ -979,12 +979,15 @@ procedure TCodeContextFrm.CompleteParameters(DeclCode: string);
     end;
     // insert
     ASynEdit.BeginUndoBlock;
-    XY:=Point(X,Y);
-    ASynEdit.BlockBegin:=XY;
-    ASynEdit.BlockEnd:=XY;
-    ASynEdit.LogicalCaretXY:=XY;
-    ASynEdit.SelText:=NewCode;
-    ASynEdit.EndUndoBlock;
+    try
+      XY:=Point(X,Y);
+      ASynEdit.BlockBegin:=XY;
+      ASynEdit.BlockEnd:=XY;
+      ASynEdit.LogicalCaretXY:=XY;
+      ASynEdit.SelText:=NewCode;
+    finally
+      ASynEdit.EndUndoBlock;
+    end;
   end;
 
 var

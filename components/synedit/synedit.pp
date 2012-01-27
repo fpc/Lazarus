@@ -6192,9 +6192,12 @@ end;
 procedure TCustomSynEdit.ClearAll;
 begin
   InternalBeginUndoBlock;
-  SelectAll;
-  SelText:='';
-  InternalEndUndoBlock;
+  try
+    SelectAll;
+    SelText:='';
+  finally
+    InternalEndUndoBlock;
+  end;
 end;
 
 procedure TCustomSynEdit.ClearSelection;

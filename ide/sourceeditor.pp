@@ -3404,21 +3404,24 @@ var
 begin
   if ReadOnly then exit;
   FEditor.BeginUndoBlock;
-  if not EditorComponent.SelAvail then begin
-    P.Y := FEditor.CaretY;
-    P.X := 1;
-    FEditor.BlockBegin := P;
-    Inc(P.Y);
-    FEditor.BlockEnd := P;
+  try
+    if not EditorComponent.SelAvail then begin
+      P.Y := FEditor.CaretY;
+      P.X := 1;
+      FEditor.BlockBegin := P;
+      Inc(P.Y);
+      FEditor.BlockEnd := P;
+    end;
+    // ToDo: replace step by step to keep bookmarks and breakpoints
+    IsPascal := True;
+    i:=EditorOpts.HighlighterList.FindByHighlighter(FEditor.Highlighter);
+    if i>=0 then
+      IsPascal := EditorOpts.HighlighterList[i].DefaultCommentType <> comtCPP;
+    // will show modal dialog - must not be in Editor.BeginUpdate block, or painting will not work
+    FEditor.SelText:=AddConditional(EditorComponent.SelText,IsPascal);
+  finally
+    FEditor.EndUndoBlock;
   end;
-  // ToDo: replace step by step to keep bookmarks and breakpoints
-  IsPascal := True;
-  i:=EditorOpts.HighlighterList.FindByHighlighter(FEditor.Highlighter);
-  if i>=0 then
-    IsPascal := EditorOpts.HighlighterList[i].DefaultCommentType <> comtCPP;
-  // will show modal dialog - must not be in Editor.BeginUpdate block, or painting will not work
-  FEditor.SelText:=AddConditional(EditorComponent.SelText,IsPascal);
-  FEditor.EndUndoBlock;
 end;
 
 procedure TSourceEditor.SortSelection;
@@ -3443,10 +3446,13 @@ begin
   FEditor.BeginUpdate;
   FEditor.BeginUndoBlock;
   // ToDo: replace step by step to keep bookmarks and breakpoints
-  OldSelection:=EditorComponent.SelText;
-  FEditor.SelText:=BreakLinesInText(OldSelection,FEditor.RightEdge);
-  FEditor.EndUndoBlock;
-  FEditor.EndUpdate;
+  try
+    OldSelection:=EditorComponent.SelText;
+    FEditor.SelText:=BreakLinesInText(OldSelection,FEditor.RightEdge);
+  finally
+    FEditor.EndUndoBlock;
+    FEditor.EndUpdate;
+  end;
 end;
 
 procedure TSourceEditor.InvertAssignment;
@@ -3455,10 +3461,13 @@ begin
   if not EditorComponent.SelAvail then exit;
   FEditor.BeginUpdate;
   FEditor.BeginUndoBlock;
-  // ToDo: replace step by step to keep bookmarks and breakpoints
-  FEditor.SelText := InvertAssignTool.InvertAssignment(FEditor.SelText);
-  FEditor.EndUndoBlock;
-  FEditor.EndUpdate;
+  try
+    // ToDo: replace step by step to keep bookmarks and breakpoints
+    FEditor.SelText := InvertAssignTool.InvertAssignment(FEditor.SelText);
+  finally
+    FEditor.EndUndoBlock;
+    FEditor.EndUpdate;
+  end;
 end;
 
 procedure TSourceEditor.SelectToBrace;
@@ -3882,9 +3891,12 @@ begin
       if not (Line[x2] in [' ',#9]) then
         s:=s+' ';
       FEditor.BeginUndoBlock;
-      FEditor.InsertTextAtCaret(s);
-      FEditor.LogicalCaretXY:=aTextPos;
-      FEditor.EndUndoBlock;
+      try
+        FEditor.InsertTextAtCaret(s);
+        FEditor.LogicalCaretXY:=aTextPos;
+      finally
+        FEditor.EndUndoBlock;
+      end;
     end;
   end;
 end;
