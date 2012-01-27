@@ -70,6 +70,7 @@ type
 
     { Methods specific to Lazarus - useful for other classes }
     class function  GetBasePath: string;
+    function  GetRootPath: string;
     class procedure GetFilesInDir(const ABaseDir: string;
       AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings; AFileSortType: TFileSortType = fstNone);
     { Other methods specific to Lazarus }
@@ -568,6 +569,12 @@ begin
   {$endif}
 end;
 
+function TCustomShellTreeView.GetRootPath: string;
+begin
+  if FRoot <> '' then Result := FRoot
+  else Result := GetBasePath();
+end;
+
 { Returns true if at least one item was added, false otherwise }
 function TCustomShellTreeView.PopulateTreeNodeWithFiles(
   ANode: TTreeNode; ANodePath: string): Boolean;
@@ -631,11 +638,22 @@ begin
   end;
 end;
 {$else}
+var
+  NewNode: TTreeNode;
 begin
   // avoids crashes in the IDE by not populating during design
   if (csDesigning in ComponentState) then Exit;
 
-  PopulateTreeNodeWithFiles(nil, GetBasePath());
+  // This allows showing "/" in Linux, but in Windows it makes no sense to show the base
+  if GetBasePath() <> '' then
+  begin
+    NewNode := Items.AddChild(nil, GetBasePath());
+    NewNode.HasChildren := True;
+    PopulateTreeNodeWithFiles(NewNode, GetBasePath());
+    NewNode.Expand(False);
+  end
+  else
+    PopulateTreeNodeWithFiles(nil, GetBasePath());
 end;
 {$endif}
 
@@ -651,11 +669,11 @@ var
   rootDir : String;
 begin
   // If nothing is selected, then the base is selected
-  if ANode = nil then Exit(GetBasePath());
+  if ANode = nil then Exit(GetRootPath());
 
   // In the future use ANode.Data instead of ANode.Text
   rootDir := PChar(ANode.Text);
-  while (ANode.Parent <> nil)do
+  while (ANode.Parent <> nil) do
   begin
     ANode := ANode.Parent;
     if (PChar(ANode.Text) <> PathDelim) then
@@ -665,7 +683,12 @@ begin
   end;
   // Check if the base directory should be taken into account
   if FRoot = '' then
-    Result := GetBasePath + rootDir
+  begin
+    if GetBasePath() <> '' then
+      Result := rootDir
+    else
+      Result := GetBasePath + rootDir;
+  end
   else
     Result := IncludeTrailingPathDelimiter(FRoot) + rootDir;
 end;

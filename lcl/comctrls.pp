@@ -2839,7 +2839,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
     procedure SetDragMode(Value: TDragMode); override;
-    procedure SetOptions(NewOptions: TTreeViewOptions);
+    procedure SetOptions(NewOptions: TTreeViewOptions); virtual;
     procedure UpdateDefaultItemHeight; virtual;
     procedure WndProc(var Message: TLMessage); override;
     procedure UpdateInsertMark(X,Y: integer); virtual;
