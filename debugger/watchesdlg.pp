@@ -438,7 +438,7 @@ begin
   if Watch = nil then Exit;
   NewBreakpoint := BreakPoints.Add(Watch.Expression, wpsGlobal, wpkWrite);
   if DebugBoss.ShowBreakPointProperties(NewBreakpoint) <> mrOk then
-    NewBreakpoint.Free;
+    ReleaseRefAndNil(NewBreakpoint);
 end;
 
 procedure TWatchesDlg.popAddClick(Sender: TObject);

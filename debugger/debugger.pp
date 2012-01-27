@@ -242,6 +242,21 @@ type
     procedure Notify(Ptr: Pointer; Action: TListNotification); override;
   end;
 
+  { TRefCountedColectionItem }
+
+  TRefCountedColectionItem = class(TDelayedUdateItem)
+  public
+    constructor Create(ACollection: TCollection); override;
+    destructor  Destroy; override;
+    procedure AddReference;
+    procedure ReleaseReference;
+  private
+    FRefCount: Integer;
+  protected
+    procedure DoFree; virtual;
+    property  RefCount: Integer read FRefCount;
+  end;
+
 procedure ReleaseRefAndNil(var ARefCountedObject);
 
 type
@@ -554,7 +569,7 @@ type
 
   { TBaseBreakPoint }
 
-  TBaseBreakPoint = class(TDelayedUdateItem)
+  TBaseBreakPoint = class(TRefCountedColectionItem)
   private
     FAddress: TDBGPtr;
     FWatchData: String;
@@ -745,6 +760,8 @@ type
   protected
   public
     constructor Create(const ABreakPointClass: TBaseBreakPointClass);
+    destructor Destroy; override;
+    procedure Clear; reintroduce;
     function Add(const ASource: String; const ALine: Integer): TBaseBreakPoint; overload;
     function Add(const AAddress: TDBGPtr): TBaseBreakPoint; overload;
     function Add(const AData: String; const AScope: TDBGWatchPointScope;
@@ -3053,9 +3070,20 @@ end;
 
 procedure ReleaseRefAndNil(var ARefCountedObject);
 begin
-  Assert((Pointer(ARefCountedObject) = nil) or (TObject(ARefCountedObject) is TRefCountedObject), 'ReleaseRefAndNil requires TRefCountedObject');
-  if Pointer(ARefCountedObject) <> nil
-  then TRefCountedObject(ARefCountedObject).ReleaseReference;
+  Assert( (Pointer(ARefCountedObject) = nil) or
+          (TObject(ARefCountedObject) is TRefCountedObject) or
+          (TObject(ARefCountedObject) is TRefCountedColectionItem),
+         'ReleaseRefAndNil requires TRefCountedObject');
+
+  if Pointer(ARefCountedObject) = nil then
+    exit;
+
+  if (TObject(ARefCountedObject) is TRefCountedObject) then
+    TRefCountedObject(ARefCountedObject).ReleaseReference
+  else
+  if (TObject(ARefCountedObject) is TRefCountedColectionItem) then
+    TRefCountedColectionItem(ARefCountedObject).ReleaseReference;
+
   Pointer(ARefCountedObject) := nil;
 end;
 
@@ -3533,17 +3561,6 @@ end;
 procedure TSnapshotList.Put(Index: Integer; const AValue: TSnapshot);
 begin
   inherited Items[Index] := AValue;
-end;
-
-{ TRefCntObjList }
-
-procedure TRefCntObjList.Notify(Ptr: Pointer; Action: TListNotification);
-begin
-  case Action of
-    lnAdded:   TRefCountedObject(Ptr).AddReference;
-    lnExtracted,
-    lnDeleted: TRefCountedObject(Ptr).ReleaseReference;
-  end;
 end;
 
 { TDebuggerDataSnapShot }
@@ -5931,6 +5948,48 @@ begin
   if FRefCount = 0 then DoFree;
 end;
 
+{ TRefCntObjList }
+
+procedure TRefCntObjList.Notify(Ptr: Pointer; Action: TListNotification);
+begin
+  case Action of
+    lnAdded:   TRefCountedObject(Ptr).AddReference;
+    lnExtracted,
+    lnDeleted: TRefCountedObject(Ptr).ReleaseReference;
+  end;
+end;
+
+{ TRefCountedColectionItem }
+
+constructor TRefCountedColectionItem.Create(ACollection: TCollection);
+begin
+  FRefCount := 0;
+  inherited Create(ACollection);
+end;
+
+destructor TRefCountedColectionItem.Destroy;
+begin
+  Assert(FRefcount = 0, 'Destroying referenced object');
+  inherited Destroy;
+end;
+
+procedure TRefCountedColectionItem.AddReference;
+begin
+  Inc(FRefcount);
+end;
+
+procedure TRefCountedColectionItem.ReleaseReference;
+begin
+  Assert(FRefCount > 0, 'TRefCountedObject.ReleaseReference  RefCount > 0');
+  Dec(FRefCount);
+  if FRefCount = 0 then DoFree;
+end;
+
+procedure TRefCountedColectionItem.DoFree;
+begin
+  Self.Free;
+end;
+
 (******************************************************************************)
 (******************************************************************************)
 (**                                                                          **)
@@ -6624,6 +6683,7 @@ begin
   FInitialEnabled := False;
   FKind := bpkSource;
   inherited Create(ACollection);
+  AddReference;
 end;
 
 procedure TBaseBreakPoint.DoBreakHitCountChange;
@@ -6932,7 +6992,7 @@ begin
   if FMaster <> nil
   then begin
     FMaster.Slave := nil;
-    FreeAndNil(FMaster);
+    ReleaseRefAndNil(FMaster);
   end;
 
   if (TIDEBreakPoints(Collection) <> nil)
@@ -7461,7 +7521,7 @@ begin
   then begin
     // create without source. it will be set in assign (but during Begin/EndUpdate)
     BP := FMaster.Add('', 0);
-    BP.Assign(ABreakPoint);
+    BP.Assign(ABreakPoint); // will set ABreakPoint.FMaster := BP;
   end;
 end;
 
@@ -7525,7 +7585,7 @@ begin
     end;
 
     BreakPoint.Assign(LoadBreakPoint);
-    FreeAndNil(LoadBreakPoint)
+    ReleaseRefAndNil(LoadBreakPoint)
   end;
 end;
 
@@ -7670,6 +7730,17 @@ end;
 constructor TBaseBreakPoints.Create(const ABreakPointClass: TBaseBreakPointClass);
 begin
   inherited Create(ABreakPointClass);
+end;
+
+destructor TBaseBreakPoints.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TBaseBreakPoints.Clear;
+begin
+  while Count > 0 do TBaseBreakPoint(GetItem(0)).ReleaseReference;
 end;
 
 function TBaseBreakPoints.Find(const ASource: String; const ALine: Integer): TBaseBreakPoint;

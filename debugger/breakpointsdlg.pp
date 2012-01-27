@@ -501,7 +501,7 @@ begin
   if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then
     UpdateAll
   else
-    NewBreakpoint.Free;
+    ReleaseRefAndNil(NewBreakpoint);
 end;
 
 procedure TBreakPointsDlg.actAddWatchPointExecute(Sender: TObject);
@@ -512,7 +512,7 @@ begin
   if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then
     UpdateAll
   else
-    NewBreakpoint.Free;
+    ReleaseRefAndNil(NewBreakpoint);
 end;
 
 procedure TBreakPointsDlg.actAddAddressBPExecute(Sender: TObject);
@@ -523,7 +523,7 @@ begin
   if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then
     UpdateAll
   else
-    NewBreakpoint.Free;
+    ReleaseRefAndNil(NewBreakpoint);
 end;
 
 procedure TBreakPointsDlg.lvBreakPointsClick(Sender: TObject);
@@ -630,7 +630,7 @@ begin
       Item := lvBreakPoints.Items[n];
       CurBreakPoint:=TIDEBreakPoint(Item.Data);
       if CompareFilenames(CurBreakPoint.Source,Filename)=0
-      then CurBreakPoint.Free;
+      then ReleaseRefAndNil(CurBreakPoint);
     end;
   finally
     lvBreakPointsSelectItem(nil, nil, False);
@@ -700,7 +700,7 @@ begin
     lvBreakPoints.BeginUpdate;
     try
       for n := lvBreakPoints.Items.Count - 1 downto 0 do
-        TIDEBreakPoint(lvBreakPoints.Items[n].Data).Free;
+        TIDEBreakPoint(lvBreakPoints.Items[n].Data).ReleaseReference;
     finally
       lvBreakPoints.EndUpdate;
     end;
@@ -955,7 +955,7 @@ begin
 
   if lvBreakPoints.SelCount = 1
   then begin
-    TObject(Item.Data).Free;
+    TBaseBreakPoint(Item.Data).ReleaseReference;
     Exit;
   end;
 
@@ -970,7 +970,7 @@ begin
   lvBreakPoints.BeginUpdate;
   try
     for n := 0 to List.Count - 1 do
-      TObject(List[n]).Free;
+      TBaseBreakPoint(List[n]).ReleaseReference;
   finally
     lvBreakPoints.EndUpdate;
   end;

@@ -387,7 +387,7 @@ end;
 
 procedure TManagedBreakPoint.OnDeleteMenuItemClick(Sender: TObject);
 begin
-  Free;
+  ReleaseReference;
 end;
 
 procedure TManagedBreakPoint.OnViewPropertiesMenuItemClick(Sender: TObject);
@@ -720,7 +720,7 @@ var
 begin
   NewBreakpoint := BreakPoints.Add(0);
   if ShowBreakPointProperties(NewBreakpoint) <> mrOk then
-    NewBreakpoint.Free;
+    ReleaseRefAndNil(NewBreakpoint);
 end;
 
 procedure TDebugManager.mnuAddBpSource(Sender: TObject);
@@ -734,7 +734,7 @@ begin
   else
     NewBreakpoint := BreakPoints.Add('', 0);
   if DebugBoss.ShowBreakPointProperties(NewBreakpoint) <> mrOk then
-    NewBreakpoint.Free;
+    ReleaseRefAndNil(NewBreakpoint);
 end;
 
 procedure TDebugManager.mnuAddBpData(Sender: TObject);
@@ -745,7 +745,7 @@ begin
   if ShowBreakPointProperties(NewBreakpoint) = mrOk then
     ViewDebugDialog(ddtBreakpoints, False)
   else
-    NewBreakpoint.Free;
+    ReleaseRefAndNil(NewBreakpoint);
 end;
 
 procedure TDebugManager.mnuAddBpDataAtCursor(Sender: TObject);
@@ -770,7 +770,7 @@ begin
       if ShowBreakPointProperties(NewBreakpoint) = mrOk then
         ViewDebugDialog(ddtBreakpoints, False)
       else
-        NewBreakpoint.Free;
+        NewBreakpoint.ReleaseReference;
       exit;
     end;
   end;
@@ -2526,7 +2526,7 @@ var
 begin
   OldBreakPoint:=FBreakPoints.Find(AFilename,ALine);
   if OldBreakPoint=nil then exit(mrOk);
-  OldBreakPoint.Free;
+  ReleaseRefAndNil(OldBreakPoint);
   Project1.Modified:=true;
   Result := mrOK
 end;
@@ -2550,7 +2550,7 @@ begin
   DebugLn('TDebugManager.DoDeleteBreakPointAtMark B ',OldBreakPoint.ClassName,
     ' ',OldBreakPoint.Source,' ',IntToStr(OldBreakPoint.Line));
 {$endif}
-  OldBreakPoint.Free;
+  ReleaseRefAndNil(OldBreakPoint);
   Project1.Modified:=true;
   Result := mrOK
 end;

@@ -4505,6 +4505,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     BreakPoint: TGDBMIBreakPoint;
     CanContinue: Boolean;
     Location: TDBGLocationRec;
+    BrkSlave: TBaseBreakPoint;
   begin
     BreakPoint := nil;
     if ABreakId >= 0 then
@@ -4516,48 +4517,60 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
 
     if BreakPoint <> nil
     then begin
-      CanContinue := False;
-      FTheDebugger.QueueExecuteLock;
       try
-        Location := FrameToLocation(List.Values['frame']);
-        FTheDebugger.FCurrentLocation := Location;
-      finally
-        FTheDebugger.QueueExecuteUnlock;
-      end;
-      FTheDebugger.DoDbgBreakpointEvent(BreakPoint, Location, AReason, AOldVal, ANewVal);
-      // Important: The Queue must be unlocked
-      //   BreakPoint.Hit may evaluate stack and expressions
-      //   SetDebuggerState may evaluate data for Snapshot
-      BreakPoint.Hit(CanContinue);
-      if CanContinue
-      then begin
-        // Important trigger State => as snapshot is taken in TDebugManager.DebuggerChangeState
-        SetDebuggerState(dsInternalPause);
-        Result := True;
-      end
-      else begin
-        SetDebuggerState(dsPause);
-        ProcessFrame(Location);
-        // inform the user, why we stopped
-        // TODO: Add a dedicated callback
-        case AReason of
-          gbrWatchTrigger: FTheDebugger.OnFeedback
-             (self, Format('The Watchpoint for "%1:s" was triggered.%0:s%0:sOld value: %2:s%0:sNew value: %3:s',
-                           [LineEnding, BreakPoint.WatchData, AOldVal, ANewVal]),
-              '', ftInformation, [frOk]);
-          gbrWatchScope: FTheDebugger.OnFeedback
-             (self, Format('The Watchpoint for "%s" went out of scope', [BreakPoint.WatchData]),
-              '', ftInformation, [frOk]);
+        (* - Breakpoint may not be destroyed, while in use
+           - And it may not be destroyed, before state is set (otherwhise an InterupTarget is triggered)
+        *)
+        BreakPoint.AddReference;
+        BrkSlave := BreakPoint.Slave;
+        if BrkSlave <> nil then BrkSlave.AddReference;
+
+        CanContinue := False;
+        FTheDebugger.QueueExecuteLock;
+        try
+          Location := FrameToLocation(List.Values['frame']);
+          FTheDebugger.FCurrentLocation := Location;
+        finally
+          FTheDebugger.QueueExecuteUnlock;
         end;
-      end;
+        FTheDebugger.DoDbgBreakpointEvent(BreakPoint, Location, AReason, AOldVal, ANewVal);
+        // Important: The Queue must be unlocked
+        //   BreakPoint.Hit may evaluate stack and expressions
+        //   SetDebuggerState may evaluate data for Snapshot
+        BreakPoint.Hit(CanContinue);
+        if CanContinue
+        then begin
+          // Important trigger State => as snapshot is taken in TDebugManager.DebuggerChangeState
+          SetDebuggerState(dsInternalPause);
+          Result := True;
+        end
+        else begin
+          SetDebuggerState(dsPause);
+          ProcessFrame(Location);
+          // inform the user, why we stopped
+          // TODO: Add a dedicated callback
+          case AReason of
+            gbrWatchTrigger: FTheDebugger.OnFeedback
+               (self, Format('The Watchpoint for "%1:s" was triggered.%0:s%0:sOld value: %2:s%0:sNew value: %3:s',
+                             [LineEnding, BreakPoint.WatchData, AOldVal, ANewVal]),
+                '', ftInformation, [frOk]);
+            gbrWatchScope: FTheDebugger.OnFeedback
+               (self, Format('The Watchpoint for "%s" went out of scope', [BreakPoint.WatchData]),
+                '', ftInformation, [frOk]);
+          end;
+        end;
 
-      if AReason = gbrWatchScope
-      then begin
-        BreakPoint.ReleaseBreakPoint; // gdb should have released already => ignore error
-        BreakPoint.Enabled := False;
-        BreakPoint.FBreakID := 0; // removed by debugger, ID no longer exists
-      end;
+        if AReason = gbrWatchScope
+        then begin
+          BreakPoint.ReleaseBreakPoint; // gdb should have released already => ignore error
+          BreakPoint.Enabled := False;
+          BreakPoint.FBreakID := 0; // removed by debugger, ID no longer exists
+        end;
 
+      finally
+        if BrkSlave <> nil then BrkSlave.ReleaseReference;
+        BreakPoint.ReleaseReference;
+      end;
       exit;
     end;
 

@@ -530,7 +530,7 @@ begin
   end else begin
     if Ctrl
     then b.Enabled := not b.Enabled
-    else b.Free;
+    else b.ReleaseReference;
   end;
 end;
 

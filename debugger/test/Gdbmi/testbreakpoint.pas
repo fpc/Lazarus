@@ -58,7 +58,7 @@ function   TTestBreakPoint.DoGetFeedBack(Sender: TObject; const AText, AInfo: St
   AType: TDBGFeedbackType; AButtons: TDBGFeedbackResults): TDBGFeedbackResult;
 begin
   Result := frOk;
-  FreeAndNil(FBrkErr);
+  ReleaseRefAndNil(FBrkErr);
 end;
 
 function   TTestBreakPoint.GdbClass: TGDBMIDebuggerClass;
