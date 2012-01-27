@@ -4263,16 +4263,10 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomPanel">
-        <short>
-          <var>TCustomPanel</var>: The base type for 
-          
-          <var>TPanel</var>
-        </short>
+        <short>The base class for a general container which can hold other objects. It has a customizable border and a central text.</short>
         <descr>
           <p>
-            <var>TCustomPanel</var>: The base type for 
-            
-            <var>TPanel</var>
+            <var>TCustomPanel</var>: The base type for <var>TPanel</var>
           </p>
           <p>A Panel is a defined rectangular area of the form into which other components can be placed to group them functionally and geographically.</p>
           <p>
@@ -4551,31 +4545,18 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- object Visibility: default -->
-      <element name="TPanel"/>
-      <!-- property Visibility: published -->
-      <element name="TPanel.Align">
-        <short/>
-        <descr/>
+      <element name="TPanel">
+        <short>The main class for a general container which can hold other objects. It has a customizable border and a central text.</short>
+        <descr>
+          <p>A Panel is a defined rectangular area of the form into which other components can be placed to group them functionally and geographically.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.Alignment" link="#lcl.ExtCtrls.TCustomPanel.Alignment">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPanel.Anchors" link="#lcl.Controls.TControl.Anchors">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPanel.AutoSize" link="#lcl.Controls.TControl.AutoSize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TPanel.Align" link="#lcl.Controls.TControl.Align" />
+      <element name="TPanel.Alignment" link="#lcl.ExtCtrls.TCustomPanel.Alignment" />
+      <element name="TPanel.Anchors" link="#lcl.Controls.TControl.Anchors" />
+      <element name="TPanel.AutoSize" link="#lcl.Controls.TControl.AutoSize" />
       <!-- property Visibility: published -->
       <element name="TPanel.BorderSpacing" link="#lcl.Controls.TControl.BorderSpacing">
         <short/>

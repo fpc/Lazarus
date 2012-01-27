@@ -391,9 +391,9 @@
       <!-- property Visibility: published -->
       <element name="TFloatSpinEdit.Enabled" link="#LCL.Controls.TControl.Enabled"/>
       <!-- property Visibility: published -->
-      <element name="TFloatSpinEdit.Increment" link="TCustomFloatSpinEdit.Increment"/>
-      <element name="TFloatSpinEdit.MaxValue" link="TCustomFloatSpinEdit.MaxValue"/>
-      <element name="TFloatSpinEdit.MinValue" link="TCustomFloatSpinEdit.MinValue"/>
+      <element name="TFloatSpinEdit.Increment" link="#LCL.Spin.TCustomFloatSpinEdit.Increment"/>
+      <element name="TFloatSpinEdit.MaxValue" link="#LCL.Spin.TCustomFloatSpinEdit.MaxValue"/>
+      <element name="TFloatSpinEdit.MinValue" link="#LCL.Spin.TCustomFloatSpinEdit.MinValue"/>
       <!-- property Visibility: published -->
       <element name="TFloatSpinEdit.OnChange">
         <short>The OnChange event is fired when spin edit value has changed.</short>
@@ -427,6 +427,7 @@
       <element name="TFloatSpinEdit.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
       <element name="TFloatSpinEdit.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
       <element name="TFloatSpinEdit.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
+      <element name="TFloatSpinEdit.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TFloatSpinEdit.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
       <element name="TFloatSpinEdit.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
       <element name="TFloatSpinEdit.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
@@ -443,7 +444,7 @@
       <element name="TFloatSpinEdit.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
       <element name="TFloatSpinEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
       <!-- property Visibility: published -->
-      <element name="TFloatSpinEdit.Value" link="TCustomFloatSpinEdit.Value"/>
+      <element name="TFloatSpinEdit.Value" link="#LCL.Spin.TCustomFloatSpinEdit.Value"/>
       <!-- property Visibility: published -->
       <element name="TFloatSpinEdit.Visible" link="#LCL.Controls.TControl.Visible"/>
       <!-- object Visibility: default -->
@@ -596,6 +597,7 @@
           <link id="TCustomSpinEdit.Value"/>
         </seealso>
       </element>
+
       <!-- object Visibility: default -->
       <element name="TSpinEdit">
         <short>The main class for the integer-based spin control</short>
@@ -605,29 +607,22 @@
           <link id="TFloatSpinEdit"/>
         </seealso>
       </element>
+
       <!-- property Visibility: public -->
-      <element name="TSpinEdit.AutoSelected">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TSpinEdit.AutoSelected" link="#LCL.StdCtrls.TCustomEdit.AutoSelected"/>
       <!-- property Visibility: published -->
       <element name="TSpinEdit.Align" link="#LCL.Controls.TControl.Align"/>
       <element name="TSpinEdit.Anchors" link="#LCL.Controls.TControl.Anchors"/>
       <!-- property Visibility: published -->
-      <element name="TSpinEdit.AutoSelect">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TSpinEdit.AutoSelect" link="#LCL.StdCtrls.TCustomEdit.AutoSelect"/>
       <!-- property Visibility: published -->
       <element name="TSpinEdit.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
       <element name="TSpinEdit.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
       <element name="TSpinEdit.Constraints" link="#LCL.Controls.TControl.Constraints"/>
       <element name="TSpinEdit.Enabled" link="#LCL.Controls.TControl.Enabled"/>
-      <element name="TSpinEdit.Increment" link="TCustomSpinEdit.Increment"/>
-      <element name="TSpinEdit.MaxValue" link="TCustomSpinEdit.MaxValue"/>
-      <element name="TSpinEdit.MinValue" link="TCustomSpinEdit.MinValue"/>
+      <element name="TSpinEdit.Increment" link="#LCL.Spin.TCustomSpinEdit.Increment"/>
+      <element name="TSpinEdit.MaxValue" link="#LCL.Spin.TCustomSpinEdit.MaxValue"/>
+      <element name="TSpinEdit.MinValue" link="#LCL.Spin.TCustomSpinEdit.MinValue"/>
       <!-- property Visibility: published -->
       <element name="TSpinEdit.OnChange">
         <short>The OnChange event is fired when the spin edit value has changed.</short>
@@ -638,29 +633,17 @@
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpinEdit.OnChangeBounds">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TSpinEdit.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
+      <element name="TSpinEdit.OnClick" link="#LCL.Controls.TControl.OnClick"/>
       <!-- property Visibility: published -->
-      <element name="TSpinEdit.OnClick">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TSpinEdit.OnEditingDone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TSpinEdit.OnEditingDone" link="#LCL.StdCtrls.TCustomEdit.OnEditingDone"/>
       <!-- property Visibility: published -->
       <element name="TSpinEdit.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
       <element name="TSpinEdit.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
       <element name="TSpinEdit.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
       <element name="TSpinEdit.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
       <element name="TSpinEdit.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
+      <element name="TSpinEdit.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TSpinEdit.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
       <element name="TSpinEdit.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
       <element name="TSpinEdit.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
@@ -668,17 +651,14 @@
       <element name="TSpinEdit.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
       <element name="TSpinEdit.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
       <!-- property Visibility: published -->
-      <element name="TSpinEdit.ReadOnly">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TSpinEdit.ReadOnly" link="#LCL.StdCtrls.TCustomEdit.ReadOnly"/>
       <!-- property Visibility: published -->
       <element name="TSpinEdit.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
       <element name="TSpinEdit.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
       <element name="TSpinEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
-      <element name="TSpinEdit.Value" link="TCustomSpinEdit.Value"/>
+      <element name="TSpinEdit.Value" link="#LCL.Spin.TCustomSpinEdit.Value"/>
       <element name="TSpinEdit.Visible" link="#LCL.Controls.TControl.Visible"/>
+
       <!-- procedure Visibility: default -->
       <element name="Register">
         <short/>

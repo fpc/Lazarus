@@ -287,7 +287,7 @@
         <short>Can be utilized to connect this ShellTreeView to a ShellListView</short>
         <descr>The ShellListView will show the contents of the currently selected directory in the ShellListView.</descr>
         <seealso>
-          <link id="#lcl.ShellCtrls.TCustomShellTreeView.ShellTreeView">TCustomShellTreeView.ShellTreeView</link>
+          <link id="#lcl.ShellCtrls.TCustomShellListView.ShellTreeView">TCustomShellListView.ShellTreeView</link>
         </seealso>
       </element>
 
@@ -634,7 +634,7 @@
       <!-- property Visibility: published -->
       <element name="TShellListView.ToolTips" link="#LCL.ComCtrls.TCustomListView.ToolTips"/>
       <element name="TShellListView.Visible" link="#LCL.Controls.TControl.Visible"/>
-      <element name="TShellListView.ViewStyle" link="#LCL.Controls.TWinControl.ViewStyle"/>
+      <element name="TShellListView.ViewStyle" link="#LCL.Controls.TCustomListView.ViewStyle"/>
       <!-- property Visibility: published -->
       <element name="TShellListView.OnChange" link="#lcl.ComCtrls.TCustomListView.OnChange" />
       <!-- property Visibility: published -->
