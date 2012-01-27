@@ -4210,15 +4210,14 @@ end;
 
 procedure TSourceEditor.ReplaceLines(StartLine, EndLine: integer;
   const NewText: string; aKeepMarks: Boolean = False);
-var
-  mm: TSynMarksAdjustMode;
+const
+  MarksMode: array[Boolean] of TSynMarksAdjustMode = (smaMoveUp, smaKeep);
 begin
-  if ReadOnly then Exit;
-  mm := smaMoveUp;
-  if aKeepMarks then
-    mm := smaKeep;
-  FEditor.SetTextBetweenPoints(Point(1,StartLine), Point(length(FEditor.Lines[Endline-1])+1,EndLine),
-                               NewText, [], scamEnd, mm);
+  if not ReadOnly then
+    FEditor.SetTextBetweenPoints(
+      Point(1, StartLine),
+      Point(Length(FEditor.Lines[Endline - 1]) + 1, EndLine),
+      NewText, [], scamEnd, MarksMode[aKeepMarks]);
 end;
 
 procedure TSourceEditor.EncloseSelection;
