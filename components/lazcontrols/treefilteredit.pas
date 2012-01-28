@@ -18,7 +18,7 @@ type
 
   { TTreeFilterBranch }
 
-  // A branch in the tree which can be sorted
+  // A branch in the tree which can be sorted and filtered
   TTreeFilterBranch = class
   private
     fOwner: TTreeFilterEdit;
@@ -40,6 +40,7 @@ type
     constructor Create(AOwner: TTreeFilterEdit; ARootNode: TTreeNode);
     destructor Destroy; override;
     procedure AddNodeData(ANodeText: string; AData: TObject; AFullFilename: string = '');
+    procedure CleanUp;
   end;
 
   TBranchList = specialize TFPGObjectList<TTreeFilterBranch>;
@@ -56,11 +57,11 @@ type
     fExpandAllInitially: Boolean;   // Expand all levels when searched for the first time.
     fIsFirstTime: Boolean;          // Needed for fExpandAllInitially.
     fOnGetImageIndex: TImageIndexEvent;
-    function GetFilteredTreeview: TCustomTreeview;
     procedure SetFilteredTreeview(const AValue: TCustomTreeview);
     procedure SetShowDirHierarchy(const AValue: Boolean);
     function FilterTree(Node: TTreeNode): Boolean;
   protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MoveNext; override;
     procedure MovePrev; override;
     procedure SortAndFilter; override;
@@ -79,7 +80,7 @@ type
     property SelectionList: TStringList read fSelectionList;
     property ShowDirHierarchy: Boolean read fShowDirHierarchy write SetShowDirHierarchy;
   published
-    property FilteredTreeview: TCustomTreeview read GetFilteredTreeview write SetFilteredTreeview;
+    property FilteredTreeview: TCustomTreeview read fFilteredTreeview write SetFilteredTreeview;
     property ExpandAllInitially: Boolean read fExpandAllInitially write fExpandAllInitially default False;
     property OnGetImageIndex: TImageIndexEvent read fOnGetImageIndex write fOnGetImageIndex;
   end;
@@ -132,6 +133,13 @@ begin
   fOriginalData.AddObject(ANodeText, AData);
   if AFullFilename <> '' then
     fFilenameMap[ANodeText]:=AFullFilename;
+end;
+
+procedure TTreeFilterBranch.CleanUp;
+// Will be called at the end.
+begin
+  FreeTVNodeData(fRootNode);
+  fRootNode := nil;
 end;
 
 function TTreeFilterBranch.CompareFNs(AFilename1,AFilename2: string): integer;
@@ -332,13 +340,11 @@ end;
 procedure TTreeFilterEdit.SetFilteredTreeview(const AValue: TCustomTreeview);
 begin
   if fFilteredTreeview = AValue then Exit;
+  if fFilteredTreeview <> nil then
+    fFilteredTreeview.RemoveFreeNotification(Self);
   fFilteredTreeview := AValue;
-  if AValue = nil then Exit;
-end;
-
-function TTreeFilterEdit.GetFilteredTreeview: TCustomTreeview;
-begin
-  Result:=fFilteredTreeview;
+  if fFilteredTreeview <> nil then
+    fFilteredTreeview.FreeNotification(Self);
 end;
 
 procedure TTreeFilterEdit.SetShowDirHierarchy(const AValue: Boolean);
@@ -364,6 +370,16 @@ begin
       Result:=True;
     Node:=Node.GetNextSibling;
   end;
+end;
+
+procedure TTreeFilterEdit.Notification(AComponent: TComponent; Operation: TOperation);
+var
+  i: Integer;
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and Assigned(fBranches) then
+    for i := 0 to fBranches.Count-1 do
+      fBranches[i].CleanUp;
 end;
 
 procedure TTreeFilterEdit.SortAndFilter;
