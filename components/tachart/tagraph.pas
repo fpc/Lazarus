@@ -1561,6 +1561,8 @@ procedure TChartSeriesList.Clear;
 var
   i: Integer;
 begin
+  if FList.Count > 0 then
+    Items[0].FChart.StyleChanged(Items[0].FChart);
   for i := 0 to FList.Count - 1 do begin
     Items[i].FChart := nil;
     Items[i].Free;
