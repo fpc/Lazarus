@@ -799,7 +799,7 @@ function TCustomCodeTool.AtomIsIdentifier(ExceptionOnNotFound: boolean):boolean;
 
   procedure RaiseIdentExpectedButEOFFound;
   begin
-    SaveRaiseException(ctsIdentExpectedButEOFFound,true);
+    SaveRaiseExceptionFmt(ctsIdentExpectedButEOFFound,[GetAtom],true);
   end;
 
 begin
@@ -824,9 +824,9 @@ function TCustomCodeTool.AtomIsCustomOperator(AllowIdentifier,
   procedure RaiseOperatorExpected;
   begin
     if CurPos.StartPos>SrcLen then
-      SaveRaiseException(ctsOperatorExpectedButEOFFound,true)
+      SaveRaiseExceptionFmt(ctsOperatorExpectedButEOFFound,[GetAtom],true)
     else
-      SaveRaiseException(ctsOperatorExpectedButAtomFound,true);
+      SaveRaiseExceptionFmt(ctsOperatorExpectedButAtomFound,[GetAtom],true)
   end;
 
 begin
