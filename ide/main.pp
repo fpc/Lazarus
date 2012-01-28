@@ -14568,7 +14568,7 @@ begin
   if InteractiveSetup then
   begin
     if (not ShowSetupDialog)
-    and ((CheckLazarusDirectoryQuality(EnvironmentOptions.LazarusDirectory,Note)=sddqInvalid)
+    and ((CheckLazarusDirectoryQuality(EnvironmentOptions.LazarusDirectory,Note)<>sddqCompatible)
       or (CheckCompilerQuality(EnvironmentOptions.GetCompilerFilename,Note,
                          CodeToolBoss.FPCDefinesCache.TestFilename)=sddqInvalid))
     then

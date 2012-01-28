@@ -3851,6 +3851,7 @@ resourcestring
   lisPkgSysUnitName = '%s%sUnit Name: %s%s%s';
   lisPkgSysFileName = '%s%sFile Name: %s%s%s';
   lisPkgSysLPKFilename = '%s%slpk file: %s%s%s';
+  lisPkgSysTheLpkFileWasNotFound = '%s%sThe lpk file was not found.';
   lisPkgSysPackageRegistrationError = 'Package registration error';
   lisPkgSysTheRTLFreePascalComponentLibraryProvidesTheBase = 'The RTL - '
     +'The Run-Time Library is the basis of all Free Pascal programs.';

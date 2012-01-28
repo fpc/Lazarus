@@ -1448,7 +1448,7 @@ begin
   end else begin
     ErrorMsg:='Package: "'+FRegistrationPackage.IDAsString+'"';
     if FRegistrationPackage.AutoCreated then
-      debugln(['TLazPackageGraph.RegistrationError FRegistrationPackage.AutoCreated ',FRegistrationPackage.Filename])
+      ErrorMsg:=Format(lisPkgSysTheLpkFileWasNotFound, [ErrorMsg, #13])
     else
       ErrorMsg:=Format(lisPkgSysLPKFilename, [ErrorMsg, #13, '"',
         FRegistrationPackage.Filename, '"']);
