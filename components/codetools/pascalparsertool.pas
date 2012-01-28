@@ -614,7 +614,8 @@ begin
           // this is allowed for program
           if UpAtomIs('USES') or UpAtomIs('TYPE') or UpAtomIs('VAR')
           or UpAtomIs('CONST') or UpAtomIs('RESOURCESTRING')
-          or UpAtomIs('BEGIN') then begin
+          or UpAtomIs('BEGIN') or UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION')
+          or UpAtomIs('OPERATOR') then begin
             CurSection:=ctnProgram;
             HasSourceType:=false;
             CurPos.EndPos:=CurPos.StartPos;
