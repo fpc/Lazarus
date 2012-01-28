@@ -10907,9 +10907,13 @@ end;
 
 procedure TGDBMIInternalBreakPoint.InternalSetAddr(ACmd: TGDBMIDebuggerCommand; AnAddr: TDBGPtr);
 begin
-  if (AnAddr = 0) or (AnAddr = FInfoAddr) then exit;
+  if (AnAddr <> FInfoAddr) then
+    ClearInfo(ACmd);
 
-  ClearInfo(ACmd);
+  if (AnAddr = 0) or (AnAddr = FInfoAddr) or
+     (AnAddr = FCustomAddr) or (AnAddr = FAddOffsAddr)
+  then exit;
+
   if (FCustomID >= 0) and (AnAddr = FCustomAddr) then begin
     FInfoID := FCustomID;
     FInfoAddr := FCustomAddr;
@@ -10989,6 +10993,7 @@ begin
   ClearCustom(ACmd);
   if (AnAddr <> 0) and
      ((FInfoID < 0) or (AnAddr <> FInfoAddr)) and
+     ((FAddOffsID < 0) or (AnAddr <> FAddOffsAddr)) and
      ((FBreakID < 0) or (AnAddr <> FBreakAddr))
   then
     BreakSet(ACmd, Format('*%u', [AnAddr]), FCustomID, FCustomAddr);
