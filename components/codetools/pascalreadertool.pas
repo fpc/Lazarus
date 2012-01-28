@@ -873,12 +873,13 @@ begin
   end else begin
     MoveCursorToNodeStart(ProcNode);
     ReadNextAtom;
-    if AtomIsIdentifier(false) then begin
+    if AtomIsCustomOperator(true,false) then begin
       // read name
       ReadNextAtom;
       while (CurPos.Flag=cafPoint) do begin
         ReadNextAtom;
-        if CurPos.Flag<>cafWord then break;
+        if CurPos.Flag in [cafPoint,cafRoundBracketOpen,cafEdgedBracketOpen,cafColon,cafEnd,cafSemicolon]
+        then break;
         ReadNextAtom;
       end;
     end;
@@ -900,7 +901,7 @@ begin
       end;
     end;
   end;
-  // CurPos now stands on the first proc specifier or on a semicolon
+  // CurPos now stands on the first proc specifier or on a semicolon or on the syntax error
 end;
 
 function TPascalReaderTool.MoveCursorToProcSpecifier(ProcNode: TCodeTreeNode;

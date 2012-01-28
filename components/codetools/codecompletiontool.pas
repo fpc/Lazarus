@@ -7284,6 +7284,7 @@ begin
       end;
       MoveCursorToFirstProcSpecifier(ANode);
       if (CurPos.Flag<>cafSemicolon) and (CurPos.EndPos<ANode.FirstChild.EndPos)
+      and (LastAtoms.Count>0)
       then begin
         // add missing semicolon in front of proc modifiers
         UndoReadNextAtom;
