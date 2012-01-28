@@ -568,6 +568,7 @@ type
     procedure ShowEmptyMethodsMenuItemClick(Sender: TObject);
     procedure ShowUnusedUnitsMenuItemClick(Sender: TObject);
     procedure FindOverloadsMenuItemClick(Sender: TObject);
+    procedure MakeResourceStringMenuItemClick(Sender: TObject);
     procedure LineEndingClicked(Sender: TObject);
     procedure EncodingClicked(Sender: TObject);
     procedure HighlighterClicked(Sender: TObject);
@@ -1185,6 +1186,7 @@ var
     SrcEditMenuShowEmptyMethods: TIDEMenuCommand;
     SrcEditMenuShowUnusedUnits: TIDEMenuCommand;
     SrcEditMenuFindOverloads: TIDEMenuCommand;
+    SrcEditMenuMakeResourceString: TIDEMenuCommand;
   SrcEditMenuMoveEditorLeft: TIDEMenuCommand;
   SrcEditMenuMoveEditorRight: TIDEMenuCommand;
   SrcEditMenuMoveEditorFirst: TIDEMenuCommand;
@@ -1488,9 +1490,11 @@ begin
         (AParent, 'ShowUnusedUnits', srkmecUnusedUnits, nil, @ExecuteIdeMenuClick);
     SrcEditMenuFindOverloads := RegisterIDEMenuCommand
         (AParent, 'FindOverloads', srkmecFindOverloadsCapt, nil, @ExecuteIdeMenuClick);
-   {$IFnDEF EnableFindOverloads}
-   SrcEditMenuFindOverloads.Visible:=false;
-   {$ENDIF}
+    {$IFnDEF EnableFindOverloads}
+    SrcEditMenuFindOverloads.Visible:=false;
+    {$ENDIF}
+    SrcEditMenuMakeResourceString := RegisterIDEMenuCommand
+        (AParent, 'MakeResourceString', lisMenuMakeResourceString, nil, @ExecuteIdeMenuClick);
   {%endregion}
 
   SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
@@ -5452,6 +5456,7 @@ begin
       SrcEditMenuShowAbstractMethods.Enabled:=not ASrcEdit.ReadOnly;
       SrcEditMenuShowEmptyMethods.Enabled:=not ASrcEdit.ReadOnly;
       SrcEditMenuFindOverloads.Enabled:=AtIdentifier;
+      SrcEditMenuMakeResourceString.Enabled:=not ASrcEdit.ReadOnly;
     end else
     begin
       EditorCaret := EditorComp.PhysicalToLogicalPos(EditorComp.PixelsToRowColumn(EditorPopupPoint));
@@ -6638,6 +6643,11 @@ end;
 procedure TSourceNotebook.FindOverloadsMenuItemClick(Sender: TObject);
 begin
   MainIDEInterface.DoCommand(ecFindOverloads);
+end;
+
+procedure TSourceNotebook.MakeResourceStringMenuItemClick(Sender: TObject);
+begin
+  MainIDEInterface.DoCommand(ecMakeResourceString);
 end;
 
 function TSourceNotebook.NewFile(const NewShortName: String;
@@ -8771,6 +8781,7 @@ begin
     SrcEditMenuShowEmptyMethods.Command:=GetCommand(ecRemoveEmptyMethods);
     SrcEditMenuShowUnusedUnits.Command:=GetCommand(ecRemoveUnusedUnits);
     SrcEditMenuFindOverloads.Command:=GetCommand(ecFindOverloads);
+    SrcEditMenuMakeResourceString.Command:=GetCommand(ecMakeResourceString);
   {%endregion}
 
   SrcEditMenuEditorProperties.OnClick:=@EditorPropertiesClicked;
