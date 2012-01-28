@@ -131,6 +131,16 @@ end;
 
 procedure TTestCodetoolsCompleteBlock.TestCompleteBlockClassStart;
 begin
+  { Not implemented yet:
+  CompleteBlock('procedure a;'+LineEnding
+               +'begin|'+LineEnding
+               +'begin'+LineEnding
+               +'end.',
+                'procedure a;'+LineEnding
+               +'begin|'+LineEnding
+               +'end;'+LineEnding
+               +'begin'+LineEnding
+               +'end.');}
   CompleteBlock('type'+LineEnding
                +'  TTestClass = class(TObject)|',
                 'type'+LineEnding
@@ -173,6 +183,13 @@ begin
                +'  try|'+LineEnding
                +'  finally'+LineEnding
                +'  end;'+LineEnding
+               +'end.');
+  CompleteBlock('begin'+LineEnding
+               +'  case of|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+                +'  case of|'+LineEnding
+                +'  end;'+LineEnding
                +'end.');
   CompleteBlock('begin'+LineEnding
                +'  case of|'+LineEnding

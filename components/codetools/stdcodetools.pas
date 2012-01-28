@@ -5467,6 +5467,9 @@ var
             exit;
           end;
           AtomInFrontOfCursor:=LastAtoms.GetValueAt(0);
+          {$IFDEF VerboseCompleteBlock}
+          DebugLn(['ReadStatements reached cursor: ',CleanPosToStr(CurPos.StartPos),' CursorBlockOuterIndent=',CursorBlockOuterIndent,' CursorBlockInnerIndent=',CursorBlockInnerIndent,' LastAtom=',GetAtom(AtomInFrontOfCursor),' CurAtom=',GetAtom]);
+          {$ENDIF}
           if (CurPos.Flag=cafSemicolon)
           and ((AtomInFrontOfCursor.Flag=cafSemicolon)
             or (CursorBlock.StartPos=AtomInFrontOfCursor.StartPos))
