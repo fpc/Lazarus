@@ -174,6 +174,13 @@ begin
                +'  finally'+LineEnding
                +'  end;'+LineEnding
                +'end.');
+  CompleteBlock('begin'+LineEnding
+               +'  case of|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+                +'  case of|'+LineEnding
+                +'  end;'+LineEnding
+               +'end.');
 end;
 
 initialization
