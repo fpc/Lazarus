@@ -10,6 +10,21 @@
         <short>Install new packages into the IDE</short>
         <descr>PkgIDList is a list of TLazPackageID</descr>
       </element>
+      <element name="TPackageDescriptor.GetLocalizedName">
+        <short>The translates name shown in the IDE dialog to create a new package</short>
+        <descr>It should return a resourcestring.</descr>
+      </element>
+      <element name="TPackageDescriptor.GetLocalizedDescription">
+        <short>The description appears in the IDE dialog when the user selects this new package type.</short>
+      </element>
+      <element name="TPackageDescriptor.Name">
+        <short>A unique name usable by other designtime packages to use your package descriptor.</short>
+      </element>
+      <element name="TPackageDescriptor.VisibleInNewDialog">
+        <short>Set this to false to not show this descriptor to the user.</short>
+        <descr>Default is true.
+Use this if you want to create new packages via your own GUI and not via the defaul IDE dialogs. Or if it is only an abstract base descriptor.</descr>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>
