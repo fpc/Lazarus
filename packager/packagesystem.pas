@@ -1447,7 +1447,9 @@ begin
     ErrorMsg:=lisPkgSysRegisterUnitWasCalledButNoPackageIsRegistering;
   end else begin
     ErrorMsg:='Package: "'+FRegistrationPackage.IDAsString+'"';
-    if not FRegistrationPackage.AutoCreated then
+    if FRegistrationPackage.AutoCreated then
+      debugln(['TLazPackageGraph.RegistrationError FRegistrationPackage.AutoCreated ',FRegistrationPackage.Filename])
+    else
       ErrorMsg:=Format(lisPkgSysLPKFilename, [ErrorMsg, #13, '"',
         FRegistrationPackage.Filename, '"']);
     // current unitname
