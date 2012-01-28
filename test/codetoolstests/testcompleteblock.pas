@@ -166,6 +166,14 @@ begin
                +'  repeat|'+LineEnding
                +'  until ;'+LineEnding
                +'end.');
+  CompleteBlock('begin'+LineEnding
+               +'  try|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  try|'+LineEnding
+               +'  finally'+LineEnding
+               +'  end;'+LineEnding
+               +'end.');
 end;
 
 initialization
