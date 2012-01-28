@@ -65,6 +65,8 @@ ResourceString
   ctsinvalidVariableType = 'invalid variable type %s%s%s';
   ctsClassSNotFound = 'Class %s not found';
   ctsIdentExpectedButEOFFound = 'unexpected end of file (identifier expected)';
+  ctsOperatorExpectedButEOFFound = 'unexpected end of file (operator expected)';
+  ctsOperatorExpectedButAtomFound = 'operator expected, but %s found';
   ctsBracketOpenExpectedButAtomFound = 'bracket open expected, but %s found';
   ctsBracketCloseExpectedButAtomFound = 'bracket close expected, but %s found';
   ctsBracketNotFound = 'bracket %s not found';

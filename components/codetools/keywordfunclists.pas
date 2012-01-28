@@ -1638,6 +1638,7 @@ begin
     Add('DEC' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     // FPC operators
     Add('**' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('><' ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
   WordIsPredefinedFPCIdentifier:=TKeyWordFunctionList.Create('WordIsPredefinedFPCIdentifier');

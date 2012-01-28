@@ -687,11 +687,21 @@ msgstr ""
 msgid "operand expected, but %s found"
 msgstr ""
 
+#: codetoolsstrconsts.ctsoperatorexpectedbutatomfound
+msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutatomfound"
+msgid "operator expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperatorexpectedbuteoffound
+msgid "unexpected end of file (operator expected)"
+msgstr ""
+
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
 msgid "operator expected but %s found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound2
+msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutfound2"
 msgid "operator expected, but %s found"
 msgstr ""
 

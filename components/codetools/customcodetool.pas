@@ -286,6 +286,7 @@ type
     function AtomIsCharConstant: boolean;
     function AtomIsEmptyStringConstant: boolean;
     function AtomIsIdentifier(ExceptionOnNotFound: boolean): boolean;
+    function AtomIsCustomOperator(AllowIdentifier, ExceptionOnNotFound: boolean): boolean;
     function LastAtomIs(BackIndex: integer;
         const AnAtom: shortstring): boolean; // 0=current, 1=prior current, ...
     function LastUpAtomIs(BackIndex: integer;
@@ -815,6 +816,29 @@ begin
     RaiseIdentExpectedButEOFFound
   else
     RaiseIdentExpectedButAtomFound;
+end;
+
+function TCustomCodeTool.AtomIsCustomOperator(AllowIdentifier,
+  ExceptionOnNotFound: boolean): boolean;
+
+  procedure RaiseOperatorExpected;
+  begin
+    if CurPos.StartPos>SrcLen then
+      SaveRaiseException(ctsOperatorExpectedButEOFFound,true)
+    else
+      SaveRaiseException(ctsOperatorExpectedButAtomFound,true);
+  end;
+
+begin
+  if (CurPos.StartPos<=SrcLen) then begin
+    if WordIsCustomOperator.DoItCaseInsensitive(
+      Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+    or AllowIdentifier and AtomIsIdentifier(false) then
+      exit(true);
+  end;
+  if not ExceptionOnNotFound then
+    exit(false);
+  RaiseOperatorExpected;
 end;
 
 function TCustomCodeTool.AtomIsNumber: boolean;

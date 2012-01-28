@@ -689,11 +689,21 @@ msgstr "מחכה לאופרנד אבל נמצא %s"
 msgid "operand expected, but %s found"
 msgstr "מחכה לאופרנד, אבל נמצא %s"
 
+#: codetoolsstrconsts.ctsoperatorexpectedbutatomfound
+msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutatomfound"
+msgid "operator expected, but %s found"
+msgstr "מחכה לאופרטור, אבל נמצא %s"
+
+#: codetoolsstrconsts.ctsoperatorexpectedbuteoffound
+msgid "unexpected end of file (operator expected)"
+msgstr ""
+
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
 msgid "operator expected but %s found"
 msgstr "מחכה לאופרטור, אבל נמצא %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound2
+msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutfound2"
 msgid "operator expected, but %s found"
 msgstr "מחכה לאופרטור, אבל נמצא %s"
 

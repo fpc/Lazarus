@@ -687,11 +687,21 @@ msgstr "очікується операнд але знайдено %s"
 msgid "operand expected, but %s found"
 msgstr "очікується операнд, але знайдено %s"
 
+#: codetoolsstrconsts.ctsoperatorexpectedbutatomfound
+msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutatomfound"
+msgid "operator expected, but %s found"
+msgstr "очікується оператор, але знайдено %s"
+
+#: codetoolsstrconsts.ctsoperatorexpectedbuteoffound
+msgid "unexpected end of file (operator expected)"
+msgstr ""
+
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
 msgid "operator expected but %s found"
 msgstr "очікується оператор але знайдено %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound2
+msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutfound2"
 msgid "operator expected, but %s found"
 msgstr "очікується оператор, але знайдено %s"
 

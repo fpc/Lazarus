@@ -1162,9 +1162,9 @@ begin
   IsOperator:=(not IsFunction) and UpAtomIs('OPERATOR');
   // read name
   ReadNextAtom;
-  if (not IsOperator)
-  or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
-  then
+  if IsOperator then
+    AtomIsCustomOperator(true,true)
+  else
     AtomIsIdentifier(true);
   // create node for procedure head
   CreateChildNode;
@@ -2566,9 +2566,9 @@ begin
   IsOperator:=(not IsFunction) and UpAtomIs('OPERATOR');
   IsMethod:=False;
   ReadNextAtom;// read first atom of head (= name/operator + parameterlist + resulttype;)
-  if (not IsOperator)
-  or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
-  then
+  if IsOperator then
+    AtomIsCustomOperator(true,true)
+  else
     AtomIsIdentifier(true);
   if ChildCreated then begin
     // create node for procedure head
@@ -2595,9 +2595,9 @@ begin
       // read procedure name of a class method (the name after the . )
       IsMethod:=True;
       ReadNextAtom;
-      if (not IsOperator)
-      or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
-      then
+      if IsOperator then
+        AtomIsCustomOperator(true,true)
+      else
         AtomIsIdentifier(true);
       ReadNextAtom;
     end;
@@ -5315,17 +5315,17 @@ begin
     ProcHeadNode.SubDesc:=ProcHeadNode.SubDesc and (not ctnsNeedJITParsing);
 
     if not IsProcType then begin
-      if (not IsOperator)
-      or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
-      then
+      if IsOperator then
+        AtomIsCustomOperator(true,true)
+      else
         AtomIsIdentifier(true);
       ReadNextAtom;
       while (CurPos.Flag=cafPoint) do begin
         // read procedure name of a class method (the name after the . )
         ReadNextAtom;
-        if (not IsOperator)
-        or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
-        then
+        if IsOperator then
+          AtomIsCustomOperator(true,true)
+        else
           AtomIsIdentifier(true);
         ReadNextAtom;
       end;
