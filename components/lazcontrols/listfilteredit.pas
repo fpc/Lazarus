@@ -87,8 +87,8 @@ procedure TListFilterEdit.SetFilteredListbox(const AValue: TCustomListBox);
 begin
   if fFilteredListbox = AValue then Exit;
   fFilteredListbox:=AValue;
-  if AValue = nil then Exit;
-  fOriginalData.Assign(fFilteredListbox.Items);
+  if Assigned(fFilteredListbox) then
+    fOriginalData.Assign(fFilteredListbox.Items);
 end;
 
 function TListFilterEdit.CompareFNs(AFilename1,AFilename2: string): integer;
