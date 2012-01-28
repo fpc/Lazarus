@@ -360,7 +360,6 @@ function TTreeFilterEdit.FilterTree(Node: TTreeNode): Boolean;
 // Returns True if Node or its siblings or child nodes have visible items.
 begin
   Result:=False;
-  if Node=nil then exit;
   while Node<>nil do
   begin
     // Recursive call for child nodes.
