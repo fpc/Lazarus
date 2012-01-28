@@ -7911,16 +7911,29 @@ var
   var
     StartSearchProc: TCodeTreeNode;
     NearestProcNode: TCodeTreeNode;
+    UnitInterfaceNode: TCodeTreeNode;
   begin
     InsertPos:=0;
     Indent:=0;
     ImplementationNode:=FindImplementationNode;
-    if NodeHasParentOfType(CodeCompleteClassNode,ctnInterface) then begin
+    StartSearchProc:=nil;
+    UnitInterfaceNode:=FindInterfaceNode;
+    if (UnitInterfaceNode<>nil)
+    and CodeCompleteClassNode.HasAsParent(UnitInterfaceNode) then begin
       // class is in interface section
       // -> insert at the end of the implementation section
-      if ImplementationNode=nil then
-        RaiseException(ctsImplementationNodeNotFound);
-      if (ImplementationNode.FirstChild=nil)
+      if ImplementationNode=nil then begin
+        // create implementation section
+        InsertPos:=UnitInterfaceNode.EndPos;
+        Indent:=GetLineIndent(Src,UnitInterfaceNode.StartPos);
+        if not CodeCompleteSrcChgCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
+          CodeCompleteSrcChgCache.BeautifyCodeOptions.BeautifyKeyWord('implementation'))
+        then begin
+          MoveCursorToCleanPos(InsertPos);
+          RaiseException('unable to insert implementation section (read only?)');
+        end;
+        exit;
+      end else if (ImplementationNode.FirstChild=nil)
       or (ImplementationNode.FirstChild.Desc=ctnBeginBlock) then begin
         // implementation is empty
         Indent:=GetLineIndent(Src,ImplementationNode.StartPos);
@@ -7929,8 +7942,8 @@ var
         else
           InsertPos:=ImplementationNode.EndPos;
         exit;
+        StartSearchProc:=ImplementationNode.FirstChild;
       end;
-      StartSearchProc:=ImplementationNode.FirstChild;
     end else begin
       // class is not in interface section
       StartSearchProc:=CodeCompleteClassNode.GetTopMostNodeOfType(ctnTypeSection);
