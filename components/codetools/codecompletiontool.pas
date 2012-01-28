@@ -7881,11 +7881,14 @@ var
             ANode:=ANodeExt2.Node;
             ANode2:=ANodeExt.Node;
           end;
+          debugln(['CheckForDoubleDefinedMethods redefined']);
+          debugln('  1. ',ANodeExt.Txt,' ',CleanPosToStr(ANodeExt.Node.StartPos));
+          debugln('  2. ',ANodeExt2.Txt,' ',CleanPosToStr(ANodeExt2.Node.StartPos));
           CleanPosToCaret(ANode.FirstChild.StartPos,Caret1);
           CleanPosToCaret(ANode2.FirstChild.StartPos,Caret2);
           s:=IntToStr(Caret2.Y)+','+IntToStr(Caret2.X);
           if Caret1.Code<>Caret2.Code then
-            s:=s+' in '+Caret2.Code.Filename;
+            s:=s+' in '+CreateRelativePath(Caret2.Code.Filename,ExtractFilePath(Caret1.Code.Filename));
           MoveCursorToNodeStart(ANode.FirstChild);
           RaiseException('procedure redefined (first at '+s+')');
         end;
