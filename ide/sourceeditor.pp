@@ -5480,7 +5480,8 @@ begin
         CurFilename:=MainCodeBuf.Filename;
         ShortFileName:=ExtractFileName(CurFilename);
         AddContextPopupMenuItem(
-          Format(lisOpenLfm,[CreateRelativePath(CurFilename,ASrcEdit.Filename)]),
+          Format(lisOpenLfm,
+                 [CreateRelativePath(CurFilename,ExtractFilePath(ASrcEdit.Filename))]),
           true,@OnPopupMenuOpenFile);
       end;
       if FilenameIsPascalUnit(ShortFileName) then begin
@@ -5496,12 +5497,16 @@ begin
         MaybeAddPopup('.p');
       end;
       if (CompareFileExt(ShortFileName,'.lpi',true)=0)
-      or (CompareFileExt(ShortFileName,'.lpk',true)=0) then
-        AddContextPopupMenuItem(Format(lisOpenLfm,[ShortFileName]),true,@OnPopupMenuOpenFile);
+      or (CompareFileExt(ShortFileName,'.lpk',true)=0) then begin
+        AddContextPopupMenuItem(
+          Format(lisOpenLfm,[ShortFileName]),true,@OnPopupMenuOpenFile);
+      end;
       FPDocSrc:=LazarusHelp.GetFPDocFilenameForSource(CurFilename,false,AnOwner);
       if FPDocSrc<>'' then
-        AddContextPopupMenuItem(Format(lisOpenLfm,[CreateRelativePath(FPDocSrc,CurFilename)]),
-                                true,@OnPopupMenuOpenFile);
+        AddContextPopupMenuItem(
+          Format(lisOpenLfm,
+                 [CreateRelativePath(FPDocSrc,ExtractFilePath(CurFilename))]),
+          true,@OnPopupMenuOpenFile);
     end;
 
     {$IFnDEF SingleSrcWindow}
