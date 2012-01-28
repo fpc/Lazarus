@@ -4084,13 +4084,15 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
             if TrySetMainBrk(mtAddZero,   msNone) then exit;
           end;
         msDefault: begin
+            TrySetMainBrk(mtAddZero,   msNone); // always include +0
             if TrySetMainBrk(mtEntry,     msTryNameZero) then exit;
             if TrySetMainBrk(mtMainAddr,  msTryZero) then exit;
-            if TrySetMainBrk(mtAddZero,   msNone) then exit;
+            //if TrySetMainBrk(mtAddZero,   msNone) then exit;
           end;
         msTryNameZero: begin
+            TrySetMainBrk(mtAddZero,   msNone); // always include +0
             if TrySetMainBrk(mtMain,      msTryZero) then exit;
-            if TrySetMainBrk(mtAddZero,   msNone) then exit;
+            //if TrySetMainBrk(mtAddZero,   msNone) then exit;
           end;
         msTryZero: begin
             if TrySetMainBrk(mtAddZero,   msNone) then exit;
