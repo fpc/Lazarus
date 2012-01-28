@@ -78,6 +78,8 @@ begin
   CheckListBox1.Checked[j] := True;
   j := CheckListBox1.Items.Add('TTestBreakPoint');
   CheckListBox1.Checked[j] := True;
+  j := CheckListBox1.Items.Add('  TTestBreakPoint.StartMethod');
+  CheckListBox1.Checked[j] := True;
   j := CheckListBox1.Items.Add('  TTestBreakPoint.BadAddr');
   CheckListBox1.Checked[j] := True;
   j := CheckListBox1.Items.Add('  TTestBreakPoint.BadInterrupt');

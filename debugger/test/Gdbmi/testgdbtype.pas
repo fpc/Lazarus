@@ -126,7 +126,8 @@ const
     ExpSubKind: TGDBPTypeResultKind = ptprkSimple;
     ExpSubHasFlags: TGDBPTypeResultFlags = [];
     ExpSubIgnoreFlags: TGDBPTypeResultFlags = [];
-    ExpNestCount: Integer = 0
+    ExpNestCount: Integer = 0;
+    ExpPointerCnt: Integer = 0
     ): TGDBPTypeResult;
   var
     TestRes: TGDBPTypeResult;
@@ -135,6 +136,7 @@ const
       ExpSubName, ExpLow, ExpHigh, ExpBaseDecl, ExpSubKind, ExpSubHasFlags,
       ExpSubIgnoreFlags);
     AssertEquals(TestName + ' NestCount',      ExpNestCount, Result.NestArrayCount);
+    AssertEquals(TestName + ' PointerCount',   ExpPointerCnt, Result.PointerCount);
   end;
 
 var
@@ -213,15 +215,18 @@ begin
 
   CheckArrayResult('type = ^(array [0..-1] of LONGINT)'+LN,                       // <whatis VarDynIntArrayA>        type = ^(array [0..-1] of LONGINT)
                    [ptprfPointer, ptprfDynArray], [],
-                   '', 'array [0..-1] of LONGINT', 'LONGINT', '0', '-1');
+                   '', 'array [0..-1] of LONGINT', 'LONGINT', '0', '-1',
+                   '', ptprkSimple, [], [], 0, 1);
 
   CheckArrayResult('type = ^(array [0..1] of LONGINT)'+LN,
                    [ptprfPointer], [], '',
-                   'array [0..1] of LONGINT', 'LONGINT', '0', '1');
+                   'array [0..1] of LONGINT', 'LONGINT', '0', '1',
+                   '', ptprkSimple, [], [], 0, 1);
 
   CheckArrayResult('type = ^(array of LONGINT)'+LN,
                    [ptprfPointer, ptprfDynArray, ptprfNoBounds], [],
-                   '', 'array of LONGINT', 'LONGINT', '', '');
+                   '', 'array of LONGINT', 'LONGINT', '', '',
+                   '', ptprkSimple, [], [], 0, 1);
 
 
   //// Element type => pointer
@@ -255,17 +260,17 @@ begin
   CheckArrayResult('type = ^(array [0..-1] of ^LONGINT)'+LN,
                    [ptprfPointer, ptprfDynArray], [],
                    '', 'array [0..-1] of ^LONGINT', '^LONGINT', '0', '-1',
-                   '', ptprkSimple, [ptprfPointer],[]);
+                   '', ptprkSimple, [ptprfPointer],[], 0, 1);
 
   CheckArrayResult('type = ^(array [0..1] of ^LONGINT)'+LN,
                    [ptprfPointer], [], '',
                    'array [0..1] of ^LONGINT', '^LONGINT', '0', '1',
-                   '', ptprkSimple, [ptprfPointer],[]);
+                   '', ptprkSimple, [ptprfPointer],[], 0, 1);
 
   CheckArrayResult('type = ^(array of ^LONGINT)'+LN,
                    [ptprfPointer, ptprfDynArray, ptprfNoBounds], [],
                    '', 'array of ^LONGINT', '^LONGINT', '', '',
-                   '', ptprkSimple, [ptprfPointer],[]);
+                   '', ptprkSimple, [ptprfPointer],[], 0, 1);
 
 
   //// Element type => RECORD
@@ -300,17 +305,17 @@ begin
   CheckArrayResult('type = ^(array [0..-1] of '+T+')'+LN,
                    [ptprfPointer, ptprfDynArray], [],
                    '', 'array [0..-1] of record', '', '0', '-1',
-                   '', ptprkRecord, [],[]);
+                   '', ptprkRecord, [],[],0 ,1);
 
   CheckArrayResult('type = ^(array [0..1] of '+T+')'+LN,
                    [ptprfPointer], [], '',
                    'array [0..1] of record', '', '0', '1',
-                   '', ptprkRecord, [],[]);
+                   '', ptprkRecord, [],[], 0, 1);
 
   CheckArrayResult('type = ^(array of '+T+')'+LN,
                    [ptprfPointer, ptprfDynArray, ptprfNoBounds], [],
                    '', 'array of record', '', '', '',
-                   '', ptprkRecord, [],[]);
+                   '', ptprkRecord, [],[], 0, 1);
 
   // nested array
   R := CheckArrayResult('type = ^(array [0..-1] of ^(array [0..-1] of ^(array [0..-1] of TRECFORARRAY1)))'+LN,
@@ -320,7 +325,7 @@ begin
                    'array [0..-1] of ^(array [0..-1] of ^(array [0..-1] of TRECFORARRAY1))',
                    //'', 'array of record', '', '', '',
                    ptprkSimple, [],[],
-                   2);
+                   2, 1);
 
   CheckFlags('NestArr1 :[1]' , R.NestArray[1].Flags, [ptprfPointer, ptprfDynArray], []);
   CheckPCharWLen('NestArr1 :[1] low' ,  R.NestArray[1].BoundLow, '0');
@@ -338,7 +343,7 @@ begin
                    'array [0..-1] of array [0..3] of ^(array [0..-1] of TRECFORARRAY1)',
                    //'', 'array of record', '', '', '',
                    ptprkSimple, [],[],
-                   2);
+                   2, 1);
 
   CheckFlags('NestArr2 :[1]' , R.NestArray[1].Flags, [], []);
   CheckPCharWLen('NestArr2 :[1] low' ,  R.NestArray[1].BoundLow, '0');
@@ -349,11 +354,25 @@ begin
   CheckPCharWLen('NestArr2 :[0] high' , R.NestArray[0].BoundHigh, '-1');
 
 
-  //CheckArrayResult(
-  //CheckArrayResult(
-  //CheckArrayResult(
-  //CheckArrayResult(
-  //CheckArrayResult(
+  R := CheckArrayResult('type = array [3..5] of ^(array of TRECFORARRAY1)'+LN,
+                   [], [],
+                   '', 'array [3..5] of ^(array of TRECFORARRAY1)',
+                   'TRECFORARRAY1', '3', '5',
+                   'array [3..5] of ^(array of TRECFORARRAY1)',
+                   ptprkSimple, [],[],
+                   1, 0);
+
+  CheckFlags('NestArr3 :[0]' , R.NestArray[0].Flags, [ptprfPointer, ptprfDynArray, ptprfNoBounds], []);
+  CheckPCharWLen('NestArr3 :[0] low' ,  R.NestArray[0].BoundLow, '');
+  CheckPCharWLen('NestArr3 :[0] high' , R.NestArray[0].BoundHigh, '');
+  AssertEquals('NestArr3 : PointerCount',   1, R.NestArray[0].PointerCount);
+
+
+
+  CheckArrayResult('type = ^^(array [0..-1] of TRECFORARRAY1)'+LN,
+                   [ptprfPointer, ptprfDynArray], [],
+                   '', 'array [0..-1] of TRECFORARRAY1', 'TRECFORARRAY1', '0', '-1',
+                   'array [0..-1] of TRECFORARRAY1', ptprkSimple, [],[], 0, 2);
 
 
   (* enum *)
@@ -715,6 +734,40 @@ begin
 
 
 
+  //TODO
+//CheckArrayResult('type = ^^(array [0..-1] of TRECFORARRAY1)'+LN,
+  n := 'qwe[1][2]';
+  InitExpr(n, b, r, v);
+  r^.Result := ParseTypeFromGdb('type = &^(array [0..-1] of TRECFORARRAY1)');
+  ContinueExpr(b, r, v);
+  AssertTrue(n + 'Need expr, after ^^ dyn array 1', v);
+  r^.Result := ParseTypeFromGdb('type = ^^(array [0..-1] of TRECFORARRAY1)');
+  ContinueExpr(b, r, v);
+  AssertTrue(n + 'No Need expr, after ^^ dyn array 1', not v);
+  AssertEquals(n + ' text after ^^ dyn array', '^^TRECFORARRAY1(qwe)[1][2]', b.Text);
+
+  n := 'qwe[3][2].a';
+  InitExpr(n, b, r, v);
+  AssertTrue(n + 'Need expr, after stat dyn array 1', v);
+  r^.Result := ParseTypeFromGdb('type = array [3..5] of ^(array of TRECFORARRAY1)');
+  ContinueExpr(b, r, v);
+  AssertTrue(n + 'No Need expr, after stat dyn array 1', not v);
+  AssertEquals(n + ' text after stat dyn array', 'TRECFORARRAY1(qwe[3]^[2]).a', b.Text);
+
+
+  n := 'qwe[3]';
+  InitExpr(n, b, r, v);
+  AssertTrue(n + 'Need expr 1', v);
+  r^.Result := ParseTypeFromGdb('type = ^char');
+  ContinueExpr(b, r, v);
+  AssertTrue(n + 'Need expr 2', v);
+  r^.Result := ParseTypeFromGdb('type = char');
+  ContinueExpr(b, r, v);
+  AssertTrue(n + 'No Need expr', not v);
+  AssertEquals(n + ' text after', 'qwe[3]', b.Text);
+  AssertEquals(n + ' maybe string ', True, b.MayNeedStringFix);
+  AssertEquals(n + ' text after as string', 'qwe[3-1]', b.TextStrFixed);
+
 
   n := 'abc()[123]';
   InitExpr(n, b, r, v);
@@ -740,6 +793,7 @@ begin
   r2 := r^.Next;
   AssertTrue(n + ' ptype', (r <> nil) and ((r^.Request = 'ptype abc()') or (r2^.Request = 'ptype abc()')));
   AssertTrue(n + ' ptype2', (r <> nil) and ((r^.Request = 'ptype x') or (r2^.Request = 'ptype x')));
+
 
   n := 'Cast(foo^.bar[1][foo[2]]+Call[x()]((f+1)^))+bar(1).z.x[1](m)(n)';
   InitExpr(n, b, r, v);

@@ -32,6 +32,7 @@ type
     procedure DoCurrent(Sender: TObject; const ALocation: TDBGLocationRec);
   published
     // Due to a linker error breakpoints can point to invalid addresses
+    procedure TestStartMethod;
     procedure TestBadAddrBreakpoint;
     procedure TestInteruptWhilePaused;
   end;
@@ -52,6 +53,45 @@ procedure   TTestBreakPoint.DoCurrent(Sender: TObject; const ALocation: TDBGLoca
 begin
   FCurFile := ALocation.SrcFile;
   FCurLine := ALocation.SrcLine;
+end;
+
+procedure TTestBreakPoint.TestStartMethod;
+var
+  dbg: TGDBMIDebugger;
+  TestExeName, s: string;
+  i: TGDBMIDebuggerStartBreak;
+begin
+  if SkipTest then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint')] then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestBreakPoint.StartMethod')] then exit;
+
+  ClearTestErrors;
+  FBrkErr := nil;
+  TestCompile(AppDir + 'WatchesPrg.pas', TestExeName);
+
+  for i := Low(TGDBMIDebuggerStartBreak) to high(TGDBMIDebuggerStartBreak) do begin
+    WriteStr(s, i);
+
+    try
+      dbg := StartGDB(AppDir, TestExeName);
+      dbg.OnCurrent  := @DoCurrent;
+      TGDBMIDebuggerProperties(dbg.GetProperties).InternalStartBreak := i;
+      with dbg.BreakPoints.Add('WatchesPrg.pas', BREAK_LINE_FOOFUNC) do begin
+        InitialEnabled := True;
+        Enabled := True;
+      end;
+
+      dbg.Run;
+      TestTrue(s+' not in error state 1', dbg.State <> dsError);
+	  TestTrue(s+' at break', FCurLine = BREAK_LINE_FOOFUNC);
+    finally
+      dbg.Done;
+      CleanGdb;
+      dbg.Free;
+    end;
+  end;
+
+  AssertTestErrors;
 end;
 
 function   TTestBreakPoint.DoGetFeedBack(Sender: TObject; const AText, AInfo: String;

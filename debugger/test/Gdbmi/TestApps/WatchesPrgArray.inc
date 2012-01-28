@@ -757,6 +757,10 @@
 
       GlobAStatDualArrayTRec2: array [3..5, 3..5] of TRecForArray2;
 
+      // TODO
+      GlobAStatDynDynArrayTRec2  : array [3..5] of array of array of TRecForArray2;
+      GlobADynDynStatArrayTRec2  : array of array of array [3..5] of TRecForArray2;
+
 
     {$ENDIF}
   {%endregion}
@@ -853,8 +857,8 @@
   // dyn arrays
       //GlobTDynArrayTRec1: TDynArrayTRec1;
       SetLength(GlobTDynArrayTRec1, 3);
-      GlobTDynArrayTRec1[0].a := 90;
-      GlobTDynArrayTRec1[1].a := 91;
+      globtdynarraytrec1[0].a := 90;            globtdynarraytrec1[0].b := 243;
+      globtdynarraytrec1[1].a := 91;            globtdynarraytrec1[1].b := 243;
       //GlobTDynArrayPRec1: TDynArrayPRec1;
       SetLength(GlobTDynArrayPRec1, 3);
       GlobTDynArrayPRec1[0] := @GlobTDynArrayTRec1[0];
@@ -862,11 +866,11 @@
       //GlobTDynDynArrayTRec1: TDynDynArrayTRec1;
       SetLength(GlobTDynDynArrayTRec1, 3);
       SetLength(GlobTDynDynArrayTRec1[0], 3);
-      GlobTDynDynArrayTRec1[0][0].a := 80;
-      GlobTDynDynArrayTRec1[0][1].a := 81;
+      globtdyndynarraytrec1[0][0].a := 80;            globtdyndynarraytrec1[0][0].b := 243;
+      globtdyndynarraytrec1[0][1].a := 81;            globtdyndynarraytrec1[0][1].b := 243;
       SetLength(GlobTDynDynArrayTRec1[1], 3);
-      GlobTDynDynArrayTRec1[1][0].a := 85;
-      GlobTDynDynArrayTRec1[1][1].a := 86;
+      globtdyndynarraytrec1[1][0].a := 85;            globtdyndynarraytrec1[1][0].b := 243;
+      globtdyndynarraytrec1[1][1].a := 86;            globtdyndynarraytrec1[1][1].b := 243;
       //GlobTDynDynArrayPRec1: TDynDynArrayPRec1;
       SetLength(GlobTDynDynArrayPRec1, 3);
       SetLength(GlobTDynDynArrayPRec1[0], 3);
@@ -877,10 +881,10 @@
       GlobTDynDynArrayPRec1[1][1] := @GlobTDynDynArrayTRec1[1][1];
       //GlobTDynStatArrayTRec1: TDynStatArrayTRec1;
       SetLength(GlobTDynStatArrayTRec1, 3);
-      GlobTDynStatArrayTRec1[0][3].a := 70;
-      GlobTDynStatArrayTRec1[0][4].a := 71;
-      GlobTDynStatArrayTRec1[1][3].a := 75;
-      GlobTDynStatArrayTRec1[1][4].a := 76;
+      globtdynstatarraytrec1[0][3].a := 70;            globtdynstatarraytrec1[0][3].b := 243;
+      globtdynstatarraytrec1[0][4].a := 71;            globtdynstatarraytrec1[0][4].b := 243;
+      globtdynstatarraytrec1[1][3].a := 75;            globtdynstatarraytrec1[1][3].b := 243;
+      globtdynstatarraytrec1[1][4].a := 76;            globtdynstatarraytrec1[1][4].b := 243;
       //GlobTDynStatArrayPRec1: TDynStatArrayPRec1;
       SetLength(GlobTDynStatArrayPRec1, 3);
       GlobTDynStatArrayPRec1[0][3] := @GlobTDynStatArrayTRec1[0][3];
@@ -890,8 +894,8 @@
 
       //GlobTDynArrayTRec2: TDynArrayTRec2;
       SetLength(GlobTDynArrayTRec2, 3);
-      GlobTDynArrayTRec2[0].c := 90;
-      GlobTDynArrayTRec2[1].c := 91;
+      globtdynarraytrec2[0].c := 90;            globtdynarraytrec2[0].recs := nil;
+      globtdynarraytrec2[1].c := 91;            globtdynarraytrec2[1].recs := nil;
       //GlobTDynArrayPRec2: TDynArrayPRec2;
       SetLength(GlobTDynArrayPRec2, 3);
       GlobTDynArrayPRec2[0] := @GlobTDynArrayTRec2[0];
@@ -899,11 +903,11 @@
       //GlobTDynDynArrayTRec2: TDynDynArrayTRec2;
       SetLength(GlobTDynDynArrayTRec2, 3);
       SetLength(GlobTDynDynArrayTRec2[0], 3);
-      GlobTDynDynArrayTRec2[0][0].c := 80;
-      GlobTDynDynArrayTRec2[0][1].c := 81;
+      globtdyndynarraytrec2[0][0].c := 80;            globtdyndynarraytrec2[0][0].recs := nil;
+      globtdyndynarraytrec2[0][1].c := 81;            globtdyndynarraytrec2[0][1].recs := nil;
       SetLength(GlobTDynDynArrayTRec2[1], 3);
-      GlobTDynDynArrayTRec2[1][0].c := 85;
-      GlobTDynDynArrayTRec2[1][1].c := 86;
+      globtdyndynarraytrec2[1][0].c := 85;            globtdyndynarraytrec2[1][0].recs := nil;
+      globtdyndynarraytrec2[1][1].c := 86;            globtdyndynarraytrec2[1][1].recs := nil;
       //GlobTDynDynArrayPRec2: TDynDynArrayPRec2;
       SetLength(GlobTDynDynArrayPRec2, 3);
       SetLength(GlobTDynDynArrayPRec2[0], 3);
@@ -914,10 +918,10 @@
       GlobTDynDynArrayPRec2[1][1] := @GlobTDynDynArrayTRec2[1][1];
       //GlobTDynStatArrayTRec2: TDynStatArrayTRec2;
       SetLength(GlobTDynStatArrayTRec2, 3);
-      GlobTDynStatArrayTRec2[0][3].c := 70;
-      GlobTDynStatArrayTRec2[0][4].c := 71;
-      GlobTDynStatArrayTRec2[1][3].c := 75;
-      GlobTDynStatArrayTRec2[1][4].c := 76;
+      globtdynstatarraytrec2[0][3].c := 70;            globtdynstatarraytrec2[0][3].recs := nil;
+      globtdynstatarraytrec2[0][4].c := 71;            globtdynstatarraytrec2[0][4].recs := nil;
+      globtdynstatarraytrec2[1][3].c := 75;            globtdynstatarraytrec2[1][3].recs := nil;
+      globtdynstatarraytrec2[1][4].c := 76;            globtdynstatarraytrec2[1][4].recs := nil;
       //GlobTDynStatArrayPRec2: TDynStatArrayPRec2;
       SetLength(GlobTDynStatArrayPRec2, 3);
       GlobTDynStatArrayPRec2[0][3] := @GlobTDynStatArrayTRec2[0][3];
@@ -928,18 +932,18 @@
 
   // stat arrays
       //GlobTStatArrayTRec1: TStatArrayTRec1;
-      GlobTStatArrayTRec1[3].a := 50;
-      GlobTStatArrayTRec1[4].a := 51;
+      globtstatarraytrec1[3].a := 50;            globtstatarraytrec1[3].b := 243;
+      globtstatarraytrec1[4].a := 51;            globtstatarraytrec1[4].b := 243;
       //GlobTStatArrayPRec1: TStatArrayPRec1;
       GlobTStatArrayPRec1[3] := @GlobTStatArrayTRec1[3];
       GlobTStatArrayPRec1[4] := @GlobTStatArrayTRec1[4];
       //GlobTStatDynArrayTRec1: TStatDynArrayTRec1;
       SetLength(GlobTStatDynArrayTRec1[3], 3);
-      GlobTStatDynArrayTRec1[3][0].a := 40;
-      GlobTStatDynArrayTRec1[3][1].a := 41;
+      globtstatdynarraytrec1[3][0].a := 40;            globtstatdynarraytrec1[3][0].b := 243;
+      globtstatdynarraytrec1[3][1].a := 41;            globtstatdynarraytrec1[3][1].b := 243;
       SetLength(GlobTStatDynArrayTRec1[4], 3);
-      GlobTStatDynArrayTRec1[4][0].a := 45;
-      GlobTStatDynArrayTRec1[4][1].a := 46;
+      globtstatdynarraytrec1[4][0].a := 45;            globtstatdynarraytrec1[4][0].b := 243;
+      globtstatdynarraytrec1[4][1].a := 46;            globtstatdynarraytrec1[4][1].b := 243;
       //GlobTStatDynArrayPRec1: TStatDynArrayPRec1;
       SetLength(GlobTStatDynArrayPRec1[3], 3);
       GlobTStatDynArrayPRec1[3][0] := @GlobTDynDynArrayTRec1[3][0];
@@ -948,10 +952,10 @@
       GlobTStatDynArrayPRec1[4][0] := @GlobTDynDynArrayTRec1[4][0];
       GlobTStatDynArrayPRec1[4][1] := @GlobTDynDynArrayTRec1[4][1];
       //GlobTStatStatArrayTRec1: TStatStatArrayTRec1;
-      GlobTStatStatArrayTRec1[3][3].a := 30;
-      GlobTStatStatArrayTRec1[3][4].a := 31;
-      GlobTStatStatArrayTRec1[4][3].a := 35;
-      GlobTStatStatArrayTRec1[4][4].a := 36;
+      globtstatstatarraytrec1[3][3].a := 30;            globtstatstatarraytrec1[3][3].b := 243;
+      globtstatstatarraytrec1[3][4].a := 31;            globtstatstatarraytrec1[3][4].b := 243;
+      globtstatstatarraytrec1[4][3].a := 35;            globtstatstatarraytrec1[4][3].b := 243;
+      globtstatstatarraytrec1[4][4].a := 36;            globtstatstatarraytrec1[4][4].b := 243;
       //GlobTStatStatArrayPRec1: TStatStatArrayPRec1;
       GlobTStatStatArrayPRec1[3][3] := @GlobTStatStatArrayTRec1[3][3];
       GlobTStatStatArrayPRec1[3][4] := @GlobTStatStatArrayTRec1[3][4];
@@ -959,18 +963,18 @@
       GlobTStatStatArrayPRec1[4][4] := @GlobTStatStatArrayTRec1[4][4];
 
       //GlobTStatArrayTRec2: TStatArrayTRec2;
-      GlobTStatArrayTRec2[3].c := 50;
-      GlobTStatArrayTRec2[4].c := 51;
+      globtstatarraytrec2[3].c := 50;            globtstatarraytrec2[3].recs := nil;
+      globtstatarraytrec2[4].c := 51;            globtstatarraytrec2[4].recs := nil;
       //GlobTStatArrayPRec2: TStatArrayPRec2;
       GlobTStatArrayPRec2[3] := @GlobTStatArrayTRec2[3];
       GlobTStatArrayPRec2[4] := @GlobTStatArrayTRec2[4];
       //GlobTStatDynArrayTRec2: TStatDynArrayTRec2;
       SetLength(GlobTStatDynArrayTRec2[3], 3);
-      GlobTStatDynArrayTRec2[3][0].c := 40;
-      GlobTStatDynArrayTRec2[3][1].c := 41;
+      globtstatdynarraytrec2[3][0].c := 40;            globtstatdynarraytrec2[3][0].recs := nil;
+      globtstatdynarraytrec2[3][1].c := 41;            globtstatdynarraytrec2[3][1].recs := nil;
       SetLength(GlobTStatDynArrayTRec2[4], 3);
-      GlobTStatDynArrayTRec2[4][0].c := 45;
-      GlobTStatDynArrayTRec2[4][1].c := 46;
+      globtstatdynarraytrec2[4][0].c := 45;            globtstatdynarraytrec2[4][0].recs := nil;
+      globtstatdynarraytrec2[4][1].c := 46;            globtstatdynarraytrec2[4][1].recs := nil;
       //GlobTStatDynArrayPRec2: TStatDynArrayPRec2;
       SetLength(GlobTStatDynArrayPRec2[3], 3);
       GlobTStatDynArrayPRec2[3][0] := @GlobTDynDynArrayTRec2[3][0];
@@ -979,10 +983,10 @@
       GlobTStatDynArrayPRec2[4][0] := @GlobTDynDynArrayTRec2[4][0];
       GlobTStatDynArrayPRec2[4][1] := @GlobTDynDynArrayTRec2[4][1];
       //GlobTStatStatArrayTRec2: TStatStatArrayTRec2;
-      GlobTStatStatArrayTRec2[3][3].c := 30;
-      GlobTStatStatArrayTRec2[3][4].c := 31;
-      GlobTStatStatArrayTRec2[4][3].c := 35;
-      GlobTStatStatArrayTRec2[4][4].c := 36;
+      globtstatstatarraytrec2[3][3].c := 30;            globtstatstatarraytrec2[3][3].recs := nil;
+      globtstatstatarraytrec2[3][4].c := 31;            globtstatstatarraytrec2[3][4].recs := nil;
+      globtstatstatarraytrec2[4][3].c := 35;            globtstatstatarraytrec2[4][3].recs := nil;
+      globtstatstatarraytrec2[4][4].c := 36;            globtstatstatarraytrec2[4][4].recs := nil;
       //GlobTStatStatArrayPRec2: TStatStatArrayPRec2;
       GlobTStatStatArrayPRec2[3][3] := @GlobTStatStatArrayTRec2[3][3];
       GlobTStatStatArrayPRec2[3][4] := @GlobTStatStatArrayTRec2[3][4];
@@ -995,11 +999,11 @@
       //GlobTDynDynTRec1Array: TDynDynTRec1Array;
       SetLength(GlobTDynDynTRec1Array, 3);
       SetLength(GlobTDynDynTRec1Array[0], 3);
-      GlobTDynDynTRec1Array[0][0].a := 80;
-      GlobTDynDynTRec1Array[0][1].a := 81;
+      globtdyndyntrec1array[0][0].a := 80;            globtdyndyntrec1array[0][0].b := 243;
+      globtdyndyntrec1array[0][1].a := 81;            globtdyndyntrec1array[0][1].b := 243;
       SetLength(GlobTDynDynTRec1Array[1], 3);
-      GlobTDynDynTRec1Array[1][0].a := 85;
-      GlobTDynDynTRec1Array[1][1].a := 86;
+      globtdyndyntrec1array[1][0].a := 85;            globtdyndyntrec1array[1][0].b := 243;
+      globtdyndyntrec1array[1][1].a := 86;            globtdyndyntrec1array[1][1].b := 243;
       //GlobTDynDynPrec1Array: TDynDynPrec1Array;
       SetLength(GlobTDynDynPrec1Array, 3);
       SetLength(GlobTDynDynPrec1Array[0], 3);
@@ -1010,10 +1014,10 @@
       GlobTDynDynPrec1Array[1][1] := @GlobTDynDynTRec1Array[1][1];
       //GlobTDynStatTRec1Array: TDynStatTRec1Array;
       SetLength(GlobTDynStatTRec1Array, 3);
-      GlobTDynStatTRec1Array[0][3].a := 70;
-      GlobTDynStatTRec1Array[0][4].a := 71;
-      GlobTDynStatTRec1Array[1][3].a := 75;
-      GlobTDynStatTRec1Array[1][4].a := 76;
+      globtdynstattrec1array[0][3].a := 70;            globtdynstattrec1array[0][3].b := 243;
+      globtdynstattrec1array[0][4].a := 71;            globtdynstattrec1array[0][4].b := 243;
+      globtdynstattrec1array[1][3].a := 75;            globtdynstattrec1array[1][3].b := 243;
+      globtdynstattrec1array[1][4].a := 76;            globtdynstattrec1array[1][4].b := 243;
       //GlobTDynStatPRec1Array: TDynStatPRec1Array;
       SetLength(GlobTDynStatPRec1Array, 3);
       GlobTDynStatPRec1Array[0][3] := @GlobTDynStatTRec1Array[0][3];
@@ -1041,11 +1045,11 @@
       //GlobTDynDynTRec2Array: TDynDynTRec2Array;
       SetLength(GlobTDynDynTRec2Array, 3);
       SetLength(GlobTDynDynTRec2Array[0], 3);
-      GlobTDynDynTRec2Array[0][0].c := 80;
-      GlobTDynDynTRec2Array[0][1].c := 81;
+      globtdyndyntrec2array[0][0].c := 80;            globtdyndyntrec2array[0][0].recs := nil;
+      globtdyndyntrec2array[0][1].c := 81;            globtdyndyntrec2array[0][1].recs := nil;
       SetLength(GlobTDynDynTRec2Array[1], 3);
-      GlobTDynDynTRec2Array[1][0].c := 85;
-      GlobTDynDynTRec2Array[1][1].c := 86;
+      globtdyndyntrec2array[1][0].c := 85;            globtdyndyntrec2array[1][0].recs := nil;
+      globtdyndyntrec2array[1][1].c := 86;            globtdyndyntrec2array[1][1].recs := nil;
       //GlobTDynDynPRec2Array: TDynDynPRec2Array;
       SetLength(GlobTDynDynPRec2Array, 3);
       SetLength(GlobTDynDynPRec2Array[0], 3);
@@ -1064,10 +1068,10 @@
       GlobTDynDynPPrec2Array[1][1] := @GlobTDynDynPRec2Array[1][1];
       //GlobTDynStatTRec2Array: TDynStatTRec2Array;
       SetLength(GlobTDynStatTRec2Array, 3);
-      GlobTDynStatTRec2Array[0][3].c := 70;
-      GlobTDynStatTRec2Array[0][4].c := 71;
-      GlobTDynStatTRec2Array[1][3].c := 75;
-      GlobTDynStatTRec2Array[1][4].c := 76;
+      globtdynstattrec2array[0][3].c := 70;            globtdynstattrec2array[0][3].recs := nil;
+      globtdynstattrec2array[0][4].c := 71;            globtdynstattrec2array[0][4].recs := nil;
+      globtdynstattrec2array[1][3].c := 75;            globtdynstattrec2array[1][3].recs := nil;
+      globtdynstattrec2array[1][4].c := 76;            globtdynstattrec2array[1][4].recs := nil;
       //GlobTDynStatPRec2Array: TDynStatPRec2Array;
       SetLength(GlobTDynStatPRec2Array, 3);
       GlobTDynStatPRec2Array[0][3] := @GlobTDynStatTRec2Array[0][3];
@@ -1086,11 +1090,11 @@
   // stat arrays of named arrays
       //GlobTStatDynTRec1Array: TStatDynTRec1Array;
       SetLength(GlobTStatDynTRec1Array[3], 3);
-      GlobTStatDynTRec1Array[3][0].a := 80;
-      GlobTStatDynTRec1Array[3][1].a := 81;
+      globtstatdyntrec1array[3][0].a := 80;            globtstatdyntrec1array[3][0].b := 243;
+      globtstatdyntrec1array[3][1].a := 81;            globtstatdyntrec1array[3][1].b := 243;
       SetLength(GlobTStatDynTRec1Array[4], 3);
-      GlobTStatDynTRec1Array[4][0].a := 85;
-      GlobTStatDynTRec1Array[4][1].a := 86;
+      globtstatdyntrec1array[4][0].a := 85;            globtstatdyntrec1array[4][0].b := 243;
+      globtstatdyntrec1array[4][1].a := 86;            globtstatdyntrec1array[4][1].b := 243;
       //GlobTStatDynPrec1Array: TStatDynPrec1Array;
       SetLength(GlobTStatDynPrec1Array[3], 3);
       GlobTStatDynPrec1Array[3][0] := @GlobTStatDynTRec1Array[3][0];
@@ -1099,10 +1103,10 @@
       GlobTStatDynPrec1Array[4][0] := @GlobTStatDynTRec1Array[4][0];
       GlobTStatDynPrec1Array[4][1] := @GlobTStatDynTRec1Array[4][1];
       //GlobTStatStatTRec1Array: TStatStatTRec1Array;
-      GlobTStatStatTRec1Array[3][3].a := 70;
-      GlobTStatStatTRec1Array[3][4].a := 71;
-      GlobTStatStatTRec1Array[4][3].a := 75;
-      GlobTStatStatTRec1Array[4][4].a := 76;
+      globtstatstattrec1array[3][3].a := 70;            globtstatstattrec1array[3][3].b := 243;
+      globtstatstattrec1array[3][4].a := 71;            globtstatstattrec1array[3][4].b := 243;
+      globtstatstattrec1array[4][3].a := 75;            globtstatstattrec1array[4][3].b := 243;
+      globtstatstattrec1array[4][4].a := 76;            globtstatstattrec1array[4][4].b := 243;
       //GlobTStatStatPRec1Array: TStatStatPRec1Array;
       GlobTStatStatPRec1Array[3][3] := @GlobTStatStatTRec1Array[3][3];
       GlobTStatStatPRec1Array[3][4] := @GlobTStatStatTRec1Array[3][4];
@@ -1118,11 +1122,11 @@
 
       //GlobTStatDynTRec2Array: TStatDynTRec2Array;
       SetLength(GlobTStatDynTRec2Array[3], 3);
-      GlobTStatDynTRec2Array[3][0].c := 80;
-      GlobTStatDynTRec2Array[3][1].c := 81;
+      globtstatdyntrec2array[3][0].c := 80;            globtstatdyntrec2array[3][0].recs := nil;
+      globtstatdyntrec2array[3][1].c := 81;            globtstatdyntrec2array[3][1].recs := nil;
       SetLength(GlobTStatDynTRec2Array[4], 3);
-      GlobTStatDynTRec2Array[4][0].c := 85;
-      GlobTStatDynTRec2Array[4][1].c := 86;
+      globtstatdyntrec2array[4][0].c := 85;            globtstatdyntrec2array[4][0].recs := nil;
+      globtstatdyntrec2array[4][1].c := 86;            globtstatdyntrec2array[4][1].recs := nil;
       //GlobTStatDynPRec2Array: TStatDynPRec2Array;
       SetLength(GlobTStatDynPRec2Array[3], 3);
       GlobTStatDynPRec2Array[3][0] := @GlobTStatDynTRec2Array[3][0];
@@ -1138,10 +1142,10 @@
       GlobTStatDynPPrec2Array[4][0] := @GlobTStatDynPRec2Array[4][0];
       GlobTStatDynPPrec2Array[4][1] := @GlobTStatDynPRec2Array[4][1];
       //GlobTStatStatTRec2Array: TStatStatTRec2Array;
-      GlobTStatStatTRec2Array[3][3].c := 70;
-      GlobTStatStatTRec2Array[3][4].c := 71;
-      GlobTStatStatTRec2Array[4][3].c := 75;
-      GlobTStatStatTRec2Array[4][4].c := 76;
+      globtstatstattrec2array[3][3].c := 70;            globtstatstattrec2array[3][3].recs := nil;
+      globtstatstattrec2array[3][4].c := 71;            globtstatstattrec2array[3][4].recs := nil;
+      globtstatstattrec2array[4][3].c := 75;            globtstatstattrec2array[4][3].recs := nil;
+      globtstatstattrec2array[4][4].c := 76;            globtstatstattrec2array[4][4].recs := nil;
       //GlobTStatStatPRec2Array: TStatStatPRec2Array;
       GlobTStatStatPRec2Array[3][3] := @GlobTStatStatTRec2Array[3][3];
       GlobTStatStatPRec2Array[3][4] := @GlobTStatStatTRec2Array[3][4];
@@ -1154,14 +1158,14 @@
       GlobTStatStatPPRec2Array[4][4] := @GlobTStatStatPRec2Array[4][4];
 
 
-      GlobTEnumArrayTRec1[eaOne].a      := 200;
-      GlobTEnumArrayTRec1[eaTwo].a      := 201;
-      GlobTSubEnumArrayTRec1[eaTwo].a   := 205;
-      GlobTSubEnumArrayTRec1[eaThree].a := 205;
+      globtenumarraytrec1[eaone].a      := 200;            globtenumarraytrec1[eaone].b := 243;
+      globtenumarraytrec1[eatwo].a      := 201;            globtenumarraytrec1[eatwo].b := 243;
+      globtsubenumarraytrec1[eatwo].a   := 205;            globtsubenumarraytrec1[eatwo].b := 243;
+      globtsubenumarraytrec1[eathree].a := 205;            globtsubenumarraytrec1[eathree].b := 243;
 
-      GlobTStatDualArrayTRec2[3,3].c := 300;
-      GlobTStatDualArrayTRec2[3,4].c := 301;
-      GlobTStatDualArrayTRec2[4,5].c := 302;
+      globtstatdualarraytrec2[3,3].c := 300;            globtstatdualarraytrec2[3,3].recs := nil;
+      globtstatdualarraytrec2[3,4].c := 301;            globtstatdualarraytrec2[3,4].recs := nil;
+      globtstatdualarraytrec2[4,5].c := 302;            globtstatdualarraytrec2[4,5].recs := nil;
 
 
 // POINTER
@@ -1239,8 +1243,8 @@
   // dyn arrays
       //GlobADynArrayTRec1: TDynArrayTRec1;
       SetLength(GlobADynArrayTRec1, 3);
-      GlobADynArrayTRec1[0].a := 90;
-      GlobADynArrayTRec1[1].a := 91;
+      globadynarraytrec1[0].a := 90;            globadynarraytrec1[0].b := 243;
+      globadynarraytrec1[1].a := 91;            globadynarraytrec1[1].b := 243;
       //GlobADynArrayPRec1: TDynArrayPRec1;
       SetLength(GlobADynArrayPRec1, 3);
       GlobADynArrayPRec1[0] := @GlobADynArrayTRec1[0];
@@ -1248,11 +1252,11 @@
       //GlobADynDynArrayTRec1: TDynDynArrayTRec1;
       SetLength(GlobADynDynArrayTRec1, 3);
       SetLength(GlobADynDynArrayTRec1[0], 3);
-      GlobADynDynArrayTRec1[0][0].a := 80;
-      GlobADynDynArrayTRec1[0][1].a := 81;
+      globadyndynarraytrec1[0][0].a := 80;            globadyndynarraytrec1[0][0].b := 243;
+      globadyndynarraytrec1[0][1].a := 81;            globadyndynarraytrec1[0][1].b := 243;
       SetLength(GlobADynDynArrayTRec1[1], 3);
-      GlobADynDynArrayTRec1[1][0].a := 85;
-      GlobADynDynArrayTRec1[1][1].a := 86;
+      globadyndynarraytrec1[1][0].a := 85;            globadyndynarraytrec1[1][0].b := 243;
+      globadyndynarraytrec1[1][1].a := 86;            globadyndynarraytrec1[1][1].b := 243;
       //GlobADynDynArrayPRec1: TDynDynArrayPRec1;
       SetLength(GlobADynDynArrayPRec1, 3);
       SetLength(GlobADynDynArrayPRec1[0], 3);
@@ -1263,10 +1267,10 @@
       GlobADynDynArrayPRec1[1][1] := @GlobADynDynArrayTRec1[1][1];
       //GlobADynStatArrayTRec1: TDynStatArrayTRec1;
       SetLength(GlobADynStatArrayTRec1, 3);
-      GlobADynStatArrayTRec1[0][3].a := 70;
-      GlobADynStatArrayTRec1[0][4].a := 71;
-      GlobADynStatArrayTRec1[1][3].a := 75;
-      GlobADynStatArrayTRec1[1][4].a := 76;
+      globadynstatarraytrec1[0][3].a := 70;            globadynstatarraytrec1[0][3].b := 243;
+      globadynstatarraytrec1[0][4].a := 71;            globadynstatarraytrec1[0][4].b := 243;
+      globadynstatarraytrec1[1][3].a := 75;            globadynstatarraytrec1[1][3].b := 243;
+      globadynstatarraytrec1[1][4].a := 76;            globadynstatarraytrec1[1][4].b := 243;
       //GlobADynStatArrayPRec1: TDynStatArrayPRec1;
       SetLength(GlobADynStatArrayPRec1, 3);
       GlobADynStatArrayPRec1[0][3] := @GlobADynStatArrayTRec1[0][3];
@@ -1276,8 +1280,8 @@
 
       //GlobADynArrayTRec2: TDynArrayTRec2;
       SetLength(GlobADynArrayTRec2, 3);
-      GlobADynArrayTRec2[0].c := 90;
-      GlobADynArrayTRec2[1].c := 91;
+      globadynarraytrec2[0].c := 90;            globadynarraytrec2[0].recs := nil;
+      globadynarraytrec2[1].c := 91;            globadynarraytrec2[1].recs := nil;
       //GlobADynArrayPRec2: TDynArrayPRec2;
       SetLength(GlobADynArrayPRec2, 3);
       GlobADynArrayPRec2[0] := @GlobADynArrayTRec2[0];
@@ -1285,11 +1289,11 @@
       //GlobADynDynArrayTRec2: TDynDynArrayTRec2;
       SetLength(GlobADynDynArrayTRec2, 3);
       SetLength(GlobADynDynArrayTRec2[0], 3);
-      GlobADynDynArrayTRec2[0][0].c := 80;
-      GlobADynDynArrayTRec2[0][1].c := 81;
+      globadyndynarraytrec2[0][0].c := 80;            globadyndynarraytrec2[0][0].recs := nil;
+      globadyndynarraytrec2[0][1].c := 81;            globadyndynarraytrec2[0][1].recs := nil;
       SetLength(GlobADynDynArrayTRec2[1], 3);
-      GlobADynDynArrayTRec2[1][0].c := 85;
-      GlobADynDynArrayTRec2[1][1].c := 86;
+      globadyndynarraytrec2[1][0].c := 85;            globadyndynarraytrec2[1][0].recs := nil;
+      globadyndynarraytrec2[1][1].c := 86;            globadyndynarraytrec2[1][1].recs := nil;
       //GlobADynDynArrayPRec2: TDynDynArrayPRec2;
       SetLength(GlobADynDynArrayPRec2, 3);
       SetLength(GlobADynDynArrayPRec2[0], 3);
@@ -1300,10 +1304,10 @@
       GlobADynDynArrayPRec2[1][1] := @GlobADynDynArrayTRec2[1][1];
       //GlobADynStatArrayTRec2: TDynStatArrayTRec2;
       SetLength(GlobADynStatArrayTRec2, 3);
-      GlobADynStatArrayTRec2[0][3].c := 70;
-      GlobADynStatArrayTRec2[0][4].c := 71;
-      GlobADynStatArrayTRec2[1][3].c := 75;
-      GlobADynStatArrayTRec2[1][4].c := 76;
+      globadynstatarraytrec2[0][3].c := 70;            globadynstatarraytrec2[0][3].recs := nil;
+      globadynstatarraytrec2[0][4].c := 71;            globadynstatarraytrec2[0][4].recs := nil;
+      globadynstatarraytrec2[1][3].c := 75;            globadynstatarraytrec2[1][3].recs := nil;
+      globadynstatarraytrec2[1][4].c := 76;            globadynstatarraytrec2[1][4].recs := nil;
       //GlobADynStatArrayPRec2: TDynStatArrayPRec2;
       SetLength(GlobADynStatArrayPRec2, 3);
       GlobADynStatArrayPRec2[0][3] := @GlobADynStatArrayTRec2[0][3];
@@ -1314,18 +1318,18 @@
 
   // stat arrays
       //GlobAStatArrayTRec1: TStatArrayTRec1;
-      GlobAStatArrayTRec1[3].a := 50;
-      GlobAStatArrayTRec1[4].a := 51;
+      globastatarraytrec1[3].a := 50;            globastatarraytrec1[3].b := 243;
+      globastatarraytrec1[4].a := 51;            globastatarraytrec1[4].b := 243;
       //GlobAStatArrayPRec1: TStatArrayPRec1;
       GlobAStatArrayPRec1[3] := @GlobAStatArrayTRec1[3];
       GlobAStatArrayPRec1[4] := @GlobAStatArrayTRec1[4];
       //GlobAStatDynArrayTRec1: TStatDynArrayTRec1;
       SetLength(GlobAStatDynArrayTRec1[3], 3);
-      GlobAStatDynArrayTRec1[3][0].a := 40;
-      GlobAStatDynArrayTRec1[3][1].a := 41;
+      globastatdynarraytrec1[3][0].a := 40;            globastatdynarraytrec1[3][0].b := 243;
+      globastatdynarraytrec1[3][1].a := 41;            globastatdynarraytrec1[3][1].b := 243;
       SetLength(GlobAStatDynArrayTRec1[4], 3);
-      GlobAStatDynArrayTRec1[4][0].a := 45;
-      GlobAStatDynArrayTRec1[4][1].a := 46;
+      globastatdynarraytrec1[4][0].a := 45;            globastatdynarraytrec1[4][0].b := 243;
+      globastatdynarraytrec1[4][1].a := 46;            globastatdynarraytrec1[4][1].b := 243;
       //GlobAStatDynArrayPRec1: TStatDynArrayPRec1;
       SetLength(GlobAStatDynArrayPRec1[3], 3);
       GlobAStatDynArrayPRec1[3][0] := @GlobADynDynArrayTRec1[3][0];
@@ -1334,10 +1338,10 @@
       GlobAStatDynArrayPRec1[4][0] := @GlobADynDynArrayTRec1[4][0];
       GlobAStatDynArrayPRec1[4][1] := @GlobADynDynArrayTRec1[4][1];
       //GlobAStatStatArrayTRec1: TStatStatArrayTRec1;
-      GlobAStatStatArrayTRec1[3][3].a := 30;
-      GlobAStatStatArrayTRec1[3][4].a := 31;
-      GlobAStatStatArrayTRec1[4][3].a := 35;
-      GlobAStatStatArrayTRec1[4][4].a := 36;
+      globastatstatarraytrec1[3][3].a := 30;            globastatstatarraytrec1[3][3].b := 243;
+      globastatstatarraytrec1[3][4].a := 31;            globastatstatarraytrec1[3][4].b := 243;
+      globastatstatarraytrec1[4][3].a := 35;            globastatstatarraytrec1[4][3].b := 243;
+      globastatstatarraytrec1[4][4].a := 36;            globastatstatarraytrec1[4][4].b := 243;
       //GlobAStatStatArrayPRec1: TStatStatArrayPRec1;
       GlobAStatStatArrayPRec1[3][3] := @GlobAStatStatArrayTRec1[3][3];
       GlobAStatStatArrayPRec1[3][4] := @GlobAStatStatArrayTRec1[3][4];
@@ -1345,18 +1349,18 @@
       GlobAStatStatArrayPRec1[4][4] := @GlobAStatStatArrayTRec1[4][4];
 
       //GlobAStatArrayTRec2: TStatArrayTRec2;
-      GlobAStatArrayTRec2[3].c := 50;
-      GlobAStatArrayTRec2[4].c := 51;
+      globastatarraytrec2[3].c := 50;            globastatarraytrec2[3].recs := nil;
+      globastatarraytrec2[4].c := 51;            globastatarraytrec2[4].recs := nil;
       //GlobAStatArrayPRec2: TStatArrayPRec2;
       GlobAStatArrayPRec2[3] := @GlobAStatArrayTRec2[3];
       GlobAStatArrayPRec2[4] := @GlobAStatArrayTRec2[4];
       //GlobAStatDynArrayTRec2: TStatDynArrayTRec2;
       SetLength(GlobAStatDynArrayTRec2[3], 3);
-      GlobAStatDynArrayTRec2[3][0].c := 40;
-      GlobAStatDynArrayTRec2[3][1].c := 41;
+      globastatdynarraytrec2[3][0].c := 40;            globastatdynarraytrec2[3][0].recs := nil;
+      globastatdynarraytrec2[3][1].c := 41;            globastatdynarraytrec2[3][1].recs := nil;
       SetLength(GlobAStatDynArrayTRec2[4], 3);
-      GlobAStatDynArrayTRec2[4][0].c := 45;
-      GlobAStatDynArrayTRec2[4][1].c := 46;
+      globastatdynarraytrec2[4][0].c := 45;            globastatdynarraytrec2[4][0].recs := nil;
+      globastatdynarraytrec2[4][1].c := 46;            globastatdynarraytrec2[4][1].recs := nil;
       //GlobAStatDynArrayPRec2: TStatDynArrayPRec2;
       SetLength(GlobAStatDynArrayPRec2[3], 3);
       GlobAStatDynArrayPRec2[3][0] := @GlobADynDynArrayTRec2[3][0];
@@ -1365,10 +1369,10 @@
       GlobAStatDynArrayPRec2[4][0] := @GlobADynDynArrayTRec2[4][0];
       GlobAStatDynArrayPRec2[4][1] := @GlobADynDynArrayTRec2[4][1];
       //GlobAStatStatArrayTRec2: TStatStatArrayTRec2;
-      GlobAStatStatArrayTRec2[3][3].c := 30;
-      GlobAStatStatArrayTRec2[3][4].c := 31;
-      GlobAStatStatArrayTRec2[4][3].c := 35;
-      GlobAStatStatArrayTRec2[4][4].c := 36;
+      globastatstatarraytrec2[3][3].c := 30;            globastatstatarraytrec2[3][3].recs := nil;
+      globastatstatarraytrec2[3][4].c := 31;            globastatstatarraytrec2[3][4].recs := nil;
+      globastatstatarraytrec2[4][3].c := 35;            globastatstatarraytrec2[4][3].recs := nil;
+      globastatstatarraytrec2[4][4].c := 36;            globastatstatarraytrec2[4][4].recs := nil;
       //GlobAStatStatArrayPRec2: TStatStatArrayPRec2;
       GlobAStatStatArrayPRec2[3][3] := @GlobAStatStatArrayTRec2[3][3];
       GlobAStatStatArrayPRec2[3][4] := @GlobAStatStatArrayTRec2[3][4];
@@ -1381,11 +1385,11 @@
       //GlobADynDynTRec1Array: TDynDynTRec1Array;
       SetLength(GlobADynDynTRec1Array, 3);
       SetLength(GlobADynDynTRec1Array[0], 3);
-      GlobADynDynTRec1Array[0][0].a := 80;
-      GlobADynDynTRec1Array[0][1].a := 81;
+      globadyndyntrec1array[0][0].a := 80;            globadyndyntrec1array[0][0].b := 243;
+      globadyndyntrec1array[0][1].a := 81;            globadyndyntrec1array[0][1].b := 243;
       SetLength(GlobADynDynTRec1Array[1], 3);
-      GlobADynDynTRec1Array[1][0].a := 85;
-      GlobADynDynTRec1Array[1][1].a := 86;
+      globadyndyntrec1array[1][0].a := 85;            globadyndyntrec1array[1][0].b := 243;
+      globadyndyntrec1array[1][1].a := 86;            globadyndyntrec1array[1][1].b := 243;
       //GlobADynDynPrec1Array: TDynDynPrec1Array;
       SetLength(GlobADynDynPrec1Array, 3);
       SetLength(GlobADynDynPrec1Array[0], 3);
@@ -1396,10 +1400,10 @@
       GlobADynDynPrec1Array[1][1] := @GlobADynDynTRec1Array[1][1];
       //GlobADynStatTRec1Array: TDynStatTRec1Array;
       SetLength(GlobADynStatTRec1Array, 3);
-      GlobADynStatTRec1Array[0][3].a := 70;
-      GlobADynStatTRec1Array[0][4].a := 71;
-      GlobADynStatTRec1Array[1][3].a := 75;
-      GlobADynStatTRec1Array[1][4].a := 76;
+      globadynstattrec1array[0][3].a := 70;            globadynstattrec1array[0][3].b := 243;
+      globadynstattrec1array[0][4].a := 71;            globadynstattrec1array[0][4].b := 243;
+      globadynstattrec1array[1][3].a := 75;            globadynstattrec1array[1][3].b := 243;
+      globadynstattrec1array[1][4].a := 76;            globadynstattrec1array[1][4].b := 243;
       //GlobADynStatPRec1Array: TDynStatPRec1Array;
       SetLength(GlobADynStatPRec1Array, 3);
       GlobADynStatPRec1Array[0][3] := @GlobADynStatTRec1Array[0][3];
@@ -1423,11 +1427,11 @@
       //GlobADynDynTRec2Array: TDynDynTRec2Array;
       SetLength(GlobADynDynTRec2Array, 3);
       SetLength(GlobADynDynTRec2Array[0], 3);
-      GlobADynDynTRec2Array[0][0].c := 80;
-      GlobADynDynTRec2Array[0][1].c := 81;
+      globadyndyntrec2array[0][0].c := 80;            globadyndyntrec2array[0][0].recs := nil;
+      globadyndyntrec2array[0][1].c := 81;            globadyndyntrec2array[0][1].recs := nil;
       SetLength(GlobADynDynTRec2Array[1], 3);
-      GlobADynDynTRec2Array[1][0].c := 85;
-      GlobADynDynTRec2Array[1][1].c := 86;
+      globadyndyntrec2array[1][0].c := 85;            globadyndyntrec2array[1][0].recs := nil;
+      globadyndyntrec2array[1][1].c := 86;            globadyndyntrec2array[1][1].recs := nil;
       //GlobADynDynPRec2Array: TDynDynPRec2Array;
       SetLength(GlobADynDynPRec2Array, 3);
       SetLength(GlobADynDynPRec2Array[0], 3);
@@ -1446,10 +1450,10 @@
       GlobADynDynPPrec2Array[1][1] := @GlobADynDynPRec2Array[1][1];
       //GlobADynStatTRec2Array: TDynStatTRec2Array;
       SetLength(GlobADynStatTRec2Array, 3);
-      GlobADynStatTRec2Array[0][3].c := 70;
-      GlobADynStatTRec2Array[0][4].c := 71;
-      GlobADynStatTRec2Array[1][3].c := 75;
-      GlobADynStatTRec2Array[1][4].c := 76;
+      globadynstattrec2array[0][3].c := 70;            globadynstattrec2array[0][3].recs := nil;
+      globadynstattrec2array[0][4].c := 71;            globadynstattrec2array[0][4].recs := nil;
+      globadynstattrec2array[1][3].c := 75;            globadynstattrec2array[1][3].recs := nil;
+      globadynstattrec2array[1][4].c := 76;            globadynstattrec2array[1][4].recs := nil;
       //GlobADynStatPRec2Array: TDynStatPRec2Array;
       SetLength(GlobADynStatPRec2Array, 3);
       GlobADynStatPRec2Array[0][3] := @GlobADynStatTRec2Array[0][3];
@@ -1469,11 +1473,11 @@
       //GlobAStatDynTRec1Array: TStatDynTRec1Array;
       SetLength(GlobAStatDynTRec1Array, 3);
       SetLength(GlobAStatDynTRec1Array[0], 3);
-      GlobAStatDynTRec1Array[0][0].a := 80;
-      GlobAStatDynTRec1Array[0][1].a := 81;
+      globastatdyntrec1array[0][0].a := 80;            globastatdyntrec1array[0][0].b := 243;
+      globastatdyntrec1array[0][1].a := 81;            globastatdyntrec1array[0][1].b := 243;
       SetLength(GlobAStatDynTRec1Array[1], 3);
-      GlobAStatDynTRec1Array[1][0].a := 85;
-      GlobAStatDynTRec1Array[1][1].a := 86;
+      globastatdyntrec1array[1][0].a := 85;            globastatdyntrec1array[1][0].b := 243;
+      globastatdyntrec1array[1][1].a := 86;            globastatdyntrec1array[1][1].b := 243;
       //GlobAStatDynPrec1Array: TStatDynPrec1Array;
       SetLength(GlobAStatDynPrec1Array, 3);
       SetLength(GlobAStatDynPrec1Array[0], 3);
@@ -1484,10 +1488,10 @@
       GlobAStatDynPrec1Array[1][1] := @GlobAStatDynTRec1Array[1][1];
       //GlobAStatStatTRec1Array: TStatStatTRec1Array;
       SetLength(GlobAStatStatTRec1Array, 3);
-      GlobAStatStatTRec1Array[0][3].a := 70;
-      GlobAStatStatTRec1Array[0][4].a := 71;
-      GlobAStatStatTRec1Array[1][3].a := 75;
-      GlobAStatStatTRec1Array[1][4].a := 76;
+      globastatstattrec1array[0][3].a := 70;            globastatstattrec1array[0][3].b := 243;
+      globastatstattrec1array[0][4].a := 71;            globastatstattrec1array[0][4].b := 243;
+      globastatstattrec1array[1][3].a := 75;            globastatstattrec1array[1][3].b := 243;
+      globastatstattrec1array[1][4].a := 76;            globastatstattrec1array[1][4].b := 243;
       //GlobAStatStatPRec1Array: TStatStatPRec1Array;
       SetLength(GlobAStatStatPRec1Array, 3);
       GlobAStatStatPRec1Array[0][3] := @GlobAStatStatTRec1Array[0][3];
@@ -1507,11 +1511,11 @@
       //GlobAStatDynTRec2Array: TStatDynTRec2Array;
       SetLength(GlobAStatDynTRec2Array, 3);
       SetLength(GlobAStatDynTRec2Array[0], 3);
-      GlobAStatDynTRec2Array[0][0].c := 80;
-      GlobAStatDynTRec2Array[0][1].c := 81;
+      globastatdyntrec2array[0][0].c := 80;            globastatdyntrec2array[0][0].recs := nil;
+      globastatdyntrec2array[0][1].c := 81;            globastatdyntrec2array[0][1].recs := nil;
       SetLength(GlobAStatDynTRec2Array[1], 3);
-      GlobAStatDynTRec2Array[1][0].c := 85;
-      GlobAStatDynTRec2Array[1][1].c := 86;
+      globastatdyntrec2array[1][0].c := 85;            globastatdyntrec2array[1][0].recs := nil;
+      globastatdyntrec2array[1][1].c := 86;            globastatdyntrec2array[1][1].recs := nil;
       //GlobAStatDynPRec2Array: TStatDynPRec2Array;
       SetLength(GlobAStatDynPRec2Array, 3);
       SetLength(GlobAStatDynPRec2Array[0], 3);
@@ -1530,10 +1534,10 @@
       GlobAStatDynPPrec2Array[1][1] := @GlobAStatDynPRec2Array[1][1];
       //GlobAStatStatTRec2Array: TStatStatTRec2Array;
       SetLength(GlobAStatStatTRec2Array, 3);
-      GlobAStatStatTRec2Array[0][3].c := 70;
-      GlobAStatStatTRec2Array[0][4].c := 71;
-      GlobAStatStatTRec2Array[1][3].c := 75;
-      GlobAStatStatTRec2Array[1][4].c := 76;
+      globastatstattrec2array[0][3].c := 70;            globastatstattrec2array[0][3].recs := nil;
+      globastatstattrec2array[0][4].c := 71;            globastatstattrec2array[0][4].recs := nil;
+      globastatstattrec2array[1][3].c := 75;            globastatstattrec2array[1][3].recs := nil;
+      globastatstattrec2array[1][4].c := 76;            globastatstattrec2array[1][4].recs := nil;
       //GlobAStatStatPRec2Array: TStatStatPRec2Array;
       SetLength(GlobAStatStatPRec2Array, 3);
       GlobAStatStatPRec2Array[0][3] := @GlobAStatStatTRec2Array[0][3];
@@ -1556,24 +1560,31 @@
       GlobADynDynDynDynArrayTRec1[1] := GlobADynDynDynArrayTRec1;
 
       SetLength(GlobADynArrayTRec5, 3);
-      GlobADynArrayTRec5[0].a := 10;
-      GlobADynArrayTRec5[0].c := 12;
-      GlobADynArrayTRec5[1].a := 11;
-      GlobADynArrayTRec5[1].c := 13;
+      globadynarraytrec5[0].a := 10;
+      globadynarraytrec5[0].c := 12;
+      globadynarraytrec5[1].a := 11;
+      globadynarraytrec5[1].c := 13;
 
-      GlobAStatArrayTRec5[3].a := 15;
-      GlobAStatArrayTRec5[3].c := 17;
-      GlobAStatArrayTRec5[4].a := 16;
-      GlobAStatArrayTRec5[4].c := 18;
+      globastatarraytrec5[3].a := 15;
+      globastatarraytrec5[3].c := 17;
+      globastatarraytrec5[4].a := 16;
+      globastatarraytrec5[4].c := 18;
 
-      GlobAEnumArrayTRec1[eaOne].a      := 200;
-      GlobAEnumArrayTRec1[eaTwo].a      := 201;
-      GlobASubEnumArrayTRec1[eaTwo].a   := 205;
-      GlobASubEnumArrayTRec1[eaThree].a := 205;
+      globaenumarraytrec1[eaone].a      := 200;            globaenumarraytrec1[eaone].b := 243;
+      globaenumarraytrec1[eatwo].a      := 201;            globaenumarraytrec1[eatwo].b := 243;
+      globasubenumarraytrec1[eatwo].a   := 205;            globasubenumarraytrec1[eatwo].b := 243;
+      globasubenumarraytrec1[eathree].a := 205;            globasubenumarraytrec1[eathree].b := 243;
 
-      GlobAStatDualArrayTRec2[3,3].c := 300;
-      GlobAStatDualArrayTRec2[3,4].c := 301;
-      GlobAStatDualArrayTRec2[4,3].c := 302;
+      globastatdualarraytrec2[3,3].c := 300;            globastatdualarraytrec2[3,3].recs := nil;
+      globastatdualarraytrec2[3,4].c := 301;            globastatdualarraytrec2[3,4].recs := nil;
+      globastatdualarraytrec2[4,3].c := 302;            globastatdualarraytrec2[4,3].recs := nil;
+
+
+      SetLength(GlobAStatDynDynArrayTRec2[3], 3);
+      SetLength(GlobAStatDynDynArrayTRec2[4], 3);
+
+      SetLength(GlobADynDynStatArrayTRec2, 3);
+
     {$ENDIF}
 
     {$IFDEF Global_Body_NIL}

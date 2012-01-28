@@ -1192,6 +1192,11 @@ procedure TTestWatches.AddExpectBreakFooArray;
       3: Result := Add(AnExpr, wdfDefault, MatchRecord('TRecForArray3', ' a = '+IntToStr(AValue)), skRecord, 'TRecForArray3', AFlgs );
       4: Result := Add(AnExpr, wdfDefault, MatchRecord('TRecForArray4', ' c = '+IntToStr(AValue)), skRecord, 'TRecForArray4', AFlgs );
     end;
+
+    case ARecSuffix of
+      1,3: Add(AnExpr+'.a', wdfDefault, '^'+IntToStr(AValue)+'$', skSimple, M_Int, AFlgs+[fTpMtch] );
+      2,4: Add(AnExpr+'.c', wdfDefault, '^'+IntToStr(AValue)+'$', skSimple, M_Int, AFlgs+[fTpMtch] );
+    end;
   end;
 
   function AddArrayFmtDef  (AnExpr, AMtch, ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
@@ -1201,6 +1206,8 @@ procedure TTestWatches.AddExpectBreakFooArray;
 
 var
   r: PWatchExpectation;
+  v: string;
+  i: integer;
 begin
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestWatch.All')] then exit;
   FCurrentExpArray := @ExpectBreakFooArray;
@@ -1250,41 +1257,54 @@ begin
                                 [fTpMtch]);
   {%endregion    * Array * }
 
-  {%region DYN ARRAY}
-    {%region DYN ARRAY (norm)}
-    //TDynArrayTRec1      = array of TRecForArray3;
-  r := AddArrayFmtDef('ArgTDynArrayTRec1', '.', 'TDynArrayTRec1', []);
-  r := AddRecForArrFmtDef('ArgTDynArrayTRec1[0]', 3, 90, []);
-  r := AddRecForArrFmtDef('ArgTDynArrayTRec1[1]', 3, 91, []);
-    //TDynArrayPRec1      = array of ^TRecForArray3;
-  r := AddArrayFmtDef('ArgTDynArrayPRec1', '.', 'TDynArrayPRec1', []);
-  r := AddPointerFmtDef  ('ArgTDynArrayPRec1[0]', '\^TRecForArray3', '^TRecForArray3', []);
-  r := AddRecForArrFmtDef('ArgTDynArrayPRec1[0]^', 3, 90, []);
-  r := AddPointerFmtDef  ('ArgTDynArrayPRec1[1]', '\^TRecForArray3', '^TRecForArray3', []);
-  r := AddRecForArrFmtDef('ArgTDynArrayPRec1[1]^', 3, 91, []);
-    //TDynDynArrayTRec1   = array of array of TRecForArray1;
-  r := AddArrayFmtDef('ArgTDynDynArrayTRec1', '.', 'TDynDynArrayTRec1', []);
-  r := AddArrayFmtDef('ArgTDynDynArrayTRec1[0]', '.', '', []); // TODO? typename = array of ...
-  r := AddRecForArrFmtDef('ArgTDynDynArrayTRec1[0][0]', 1, 80, []);
-  r := AddRecForArrFmtDef('ArgTDynDynArrayTRec1[0][1]', 1, 81, []);
-  r := AddArrayFmtDef('ArgTDynDynArrayTRec1[1]', '.', '', []); // TODO? typename = array of ...
-  r := AddRecForArrFmtDef('ArgTDynDynArrayTRec1[1][0]', 1, 85, []);
-  r := AddRecForArrFmtDef('ArgTDynDynArrayTRec1[1][1]', 1, 86, []);
-    //TDynDynArrayPRec1   = array of array of ^TRecForArray1;
-    //TDynStatArrayTRec1  = array of array [3..5] of TRecForArray1;
-    //TDynStatArrayPRec1  = array of array [3..5] of ^TRecForArray1;
-    //
-    //TDynArrayTRec2      = array of TRecForArray4;
-    //TDynArrayPRec2      = array of ^TRecForArray4;
-    //TDynArrayPPRec2     = array of ^PRecForArray4; // double pointer
-    //TDynDynArrayTRec2   = array of array of TRecForArray2;
-    //TDynDynArrayPRec2   = array of array of ^TRecForArray2;
-    //TDynStatArrayTRec2  = array of array [3..5] of TRecForArray2;
-    //TDynStatArrayPRec2  = array of array [3..5] of ^TRecForArray2;
-    {%endregion DYN ARRAY (norm)}
+  for i := 0 to 1 do begin
+    if i = 0
+    then v := ''
+    else v := 'V';
+
+    {%region DYN ARRAY}
+      {%region DYN ARRAY (norm)}
+      //TDynArrayTRec1      = array of TRecForArray3;
+    r := AddArrayFmtDef(v+'ArgTDynArrayTRec1', '.', 'TDynArrayTRec1', []);
+    if v = 'V' then UpdResMinFpc(r, stDwarf2All, 020600);
+    r := AddRecForArrFmtDef(v+'ArgTDynArrayTRec1[0]', 3, 90, []);
+    r := AddRecForArrFmtDef(v+'ArgTDynArrayTRec1[1]', 3, 91, []);
+      //TDynArrayPRec1      = array of ^TRecForArray3;
+    r := AddArrayFmtDef(v+'ArgTDynArrayPRec1', '.', 'TDynArrayPRec1', []);
+    if v = 'V' then UpdResMinFpc(r, stDwarf2All, 020600);
+    r := AddPointerFmtDef  (v+'ArgTDynArrayPRec1[0]', '\^TRecForArray3', '^TRecForArray3', []);
+    r := AddRecForArrFmtDef(v+'ArgTDynArrayPRec1[0]^', 3, 90, []);
+    r := AddPointerFmtDef  (v+'ArgTDynArrayPRec1[1]', '\^TRecForArray3', '^TRecForArray3', []);
+    r := AddRecForArrFmtDef(v+'ArgTDynArrayPRec1[1]^', 3, 91, []);
+      //TDynDynArrayTRec1   = array of array of TRecForArray1;
+    r := AddArrayFmtDef(v+'ArgTDynDynArrayTRec1', '.', 'TDynDynArrayTRec1', []);
+    if v = 'V' then UpdResMinFpc(r, stDwarf2All, 020600);
+    r := AddArrayFmtDef(v+'ArgTDynDynArrayTRec1[0]', '.', '', []); // TODO? typename = array of ...
+    r := AddRecForArrFmtDef(v+'ArgTDynDynArrayTRec1[0][0]', 1, 80, []);
+    //if v = 'V' then UpdResMinFpc(r, stDwarf2All, 020600);
+    r := AddRecForArrFmtDef(v+'ArgTDynDynArrayTRec1[0][1]', 1, 81, []);
+    //if v = 'V' then UpdResMinFpc(r, stDwarf2All, 020600);
+    r := AddArrayFmtDef(v+'ArgTDynDynArrayTRec1[1]', '.', '', []); // TODO? typename = array of ...
+    r := AddRecForArrFmtDef(v+'ArgTDynDynArrayTRec1[1][0]', 1, 85, []);
+    //if v = 'V' then UpdResMinFpc(r, stDwarf2All, 020600);
+    r := AddRecForArrFmtDef(v+'ArgTDynDynArrayTRec1[1][1]', 1, 86, []);
+    //if v = 'V' then UpdResMinFpc(r, stDwarf2All, 020600);
+      //TDynDynArrayPRec1   = array of array of ^TRecForArray1;
+      //TDynStatArrayTRec1  = array of array [3..5] of TRecForArray1;
+      //TDynStatArrayPRec1  = array of array [3..5] of ^TRecForArray1;
+      //
+      //TDynArrayTRec2      = array of TRecForArray4;
+      //TDynArrayPRec2      = array of ^TRecForArray4;
+      //TDynArrayPPRec2     = array of ^PRecForArray4; // double pointer
+      //TDynDynArrayTRec2   = array of array of TRecForArray2;
+      //TDynDynArrayPRec2   = array of array of ^TRecForArray2;
+      //TDynStatArrayTRec2  = array of array [3..5] of TRecForArray2;
+      //TDynStatArrayPRec2  = array of array [3..5] of ^TRecForArray2;
+      {%endregion DYN ARRAY (norm)}
 
     {%region DYN ARRAY (VAR)}
         // dyn arrays VAR
+(*
     //TDynArrayTRec1      = array of TRecForArray3;
   r := AddArrayFmtDef('VArgTDynArrayTRec1', '.', 'TDynArrayTRec1', []);
      UpdResMinFpc(r, stDwarf2All, 020600);
@@ -1321,8 +1341,10 @@ begin
     //TDynDynArrayPRec2   = array of array of ^TRecForArray2;
     //TDynStatArrayTRec2  = array of array [3..5] of TRecForArray2;
     //TDynStatArrayPRec2  = array of array [3..5] of ^TRecForArray2;
+*)
     {%endregion DYN ARRAY (VAR)}
   {%endregion DYN ARRAY}
+  end;
 
 
   {%region STAT ARRAY}
