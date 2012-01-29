@@ -7942,8 +7942,8 @@ var
         else
           InsertPos:=ImplementationNode.EndPos;
         exit;
-        StartSearchProc:=ImplementationNode.FirstChild;
       end;
+      StartSearchProc:=ImplementationNode.FirstChild;
     end else begin
       // class is not in interface section
       StartSearchProc:=CodeCompleteClassNode.GetTopMostNodeOfType(ctnTypeSection);

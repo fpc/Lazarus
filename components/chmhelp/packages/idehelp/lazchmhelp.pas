@@ -16,6 +16,38 @@
   MA 02111-1307, USA.
 }
 
+{
+ToDos:
+
+- predefined procs:
+   Anton: I've prepared some changes to ChmHelpPkg. Now help must be shown for
+   such procs/funcs as Exit, Break, Inc, Dec, Continue etc. (full list can be
+   found in fpc/rtl/inc/system.fpd)
+
+- predefined identifiers:
+  ref.chm contains help for FPC predefined identifiers - base types
+  (e.g. Byte, Boolean etc.) and constants (True, False, ..)
+
+- compiler directives:
+
+- fpc messages:
+
+- wiki:
+  download content, without wiki links like upload, history, ...
+
+- how to build lcl.chm?
+  how to refer to fcl.chm?
+  how to refer to rtl.chm?
+
+- how to build ideintf.chm?
+  how to refer to lcl.chm?
+  how to refer to fcl.chm?
+  how to refer to rtl.chm?
+
+- how to build rtl.chm?
+
+}
+
 unit LazChmHelp;
 
 {$mode objfpc}{$H+}
