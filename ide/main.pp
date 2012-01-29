@@ -5289,7 +5289,7 @@ function TMainIDE.NewUniqueComponentName(Prefix: string): string;
         if SysUtils.CompareText(AnUnitInfo.ComponentName,Identifier)=0 then exit;
       end;
     end;
-    Result:=true;
+    Result:=false;
   end;
 
   function SearchPackage(APackage: TLazPackage; const Identifier: string): boolean;
