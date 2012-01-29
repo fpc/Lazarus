@@ -285,7 +285,7 @@ inherited PackageEditorForm: TPackageEditorForm
     ReadOnly = True
     RightClickSelect = True
     TabOrder = 2
-    OnDblClick = FixFilesCaseMenuItemClick
+    OnDblClick = FilesTreeViewDblClick
     OnKeyPress = FilesTreeViewKeyPress
     OnSelectionChanged = FilesTreeViewSelectionChanged
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
