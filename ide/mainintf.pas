@@ -425,6 +425,7 @@ begin
   Name:=FileDescNameLCLForm;
   ResourceClass:=TForm;
   UseCreateFormStatements:=true;
+  RequiredPackages:='LCL';
 end;
 
 function TFileDescPascalUnitWithForm.GetInterfaceUsesSection: string;
@@ -535,6 +536,7 @@ begin
   ResourceClass := TFrame;
   UseCreateFormStatements := False;
   DeclareClassVariable := False;
+  RequiredPackages:='LCL';
 end;
 
 function TFileDescPascalUnitWithFrame.GetInterfaceUsesSection: string;

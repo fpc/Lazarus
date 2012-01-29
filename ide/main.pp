@@ -8635,6 +8635,9 @@ var
   SrcNoteBook: TSourceNotebook;
   AShareEditor: TSourceEditor;
   DisableAutoSize: Boolean;
+  APackage: TLazPackage;
+  IsPartOfProject: Boolean;
+  RequiredPackages: String;
 begin
   //debugln('TMainIDE.DoNewEditorFile A NewFilename=',NewFilename);
   // empty NewFilename is ok, it will be auto generated
@@ -8660,24 +8663,63 @@ begin
     AProject:=TProject(NewOwner)
   else
     AProject:=Project1;
+  if NewOwner is TLazPackage then
+    APackage:=TLazPackage(NewOwner)
+  else
+    APackage:=nil;
 
-  // check if the new file fits into the project
+  OldUnitIndex:=AProject.IndexOfFilename(NewFilename);
+  if OldUnitIndex>=0 then begin
+    // the file is not really new
+    // => close form
+    Result:=CloseUnitComponent(AProject.Units[OldUnitIndex],
+                               [cfCloseDependencies,cfSaveDependencies]);
+    if Result<>mrOk then exit;
+  end;
+
+  IsPartOfProject:=(nfIsPartOfProject in NewFlags)
+                   or (NewOwner is TProject)
+                   or (AProject.FileIsInProjectDir(NewFilename)
+                       and (not (nfIsNotPartOfProject in NewFlags)));
+
+  // add required packages
+  //debugln(['TMainIDE.DoNewFile NewFileDescriptor.RequiredPackages="',NewFileDescriptor.RequiredPackages,'" ',DbgSName(NewFileDescriptor)]);
+  RequiredPackages:=NewFileDescriptor.RequiredPackages;
+  if (RequiredPackages='') and (NewFileDescriptor.ResourceClass<>nil) then
+  begin
+    if (NewFileDescriptor.ResourceClass.InheritsFrom(TForm))
+    or (NewFileDescriptor.ResourceClass.InheritsFrom(TFrame)) then
+      RequiredPackages:='LCL';
+  end;
+  if RequiredPackages<>'' then
+  begin
+    if IsPartOfProject then begin
+      if PkgBoss.AddProjectDependencies(Project1,RequiredPackages)<>mrOk then exit;
+    end;
+    if APackage<>nil then
+    begin
+      if PkgBoss.AddPackageDependency(APackage,RequiredPackages)<>mrOk then exit;
+    end;
+  end;
+
+  // check if the new file fits
   Result:=NewFileDescriptor.CheckOwner(nfQuiet in NewFlags);
   if Result<>mrOk then exit;
 
   // create new codebuffer and apply naming conventions
+  NewBuffer:=nil;
+  NewUnitName:='';
   Result:=CreateNewCodeBuffer(NewFileDescriptor,NewOwner,NewFilename,NewBuffer,
                               NewUnitName);
   if Result<>mrOk then exit;
-
   NewFilename:=NewBuffer.Filename;
+
   OldUnitIndex:=AProject.IndexOfFilename(NewFilename);
   if OldUnitIndex>=0 then begin
     // the file is not really new
     NewUnitInfo:=AProject.Units[OldUnitIndex];
-    // close form
-    Result:=CloseUnitComponent(NewUnitInfo,
-                               [cfCloseDependencies,cfSaveDependencies]);
+    // => close form
+    Result:=CloseUnitComponent(NewUnitInfo,[cfCloseDependencies,cfSaveDependencies]);
     if Result<>mrOk then exit;
     // assign source
     NewUnitInfo.Source:=NewBuffer;
@@ -8706,30 +8748,18 @@ begin
   end;
 
   // add to project
-  with NewUnitInfo do begin
-    Loaded:=true;
-    IsPartOfProject:=(nfIsPartOfProject in NewFlags)
-                     or (NewOwner is TProject)
-                     or (AProject.FileIsInProjectDir(NewFilename)
-                         and (not (nfIsNotPartOfProject in NewFlags)));
-  end;
+  NewUnitInfo.Loaded:=true;
+  NewUnitInfo.IsPartOfProject:=IsPartOfProject;
   if OldUnitIndex<0 then begin
-    Project1.AddFile(NewUnitInfo,
+    AProject.AddFile(NewUnitInfo,
                      NewFileDescriptor.AddToProject
                      and NewFileDescriptor.IsPascalUnit
                      and NewUnitInfo.IsPartOfProject
-                     and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags));
+                     and (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags));
   end;
 
   // syntax highlighter type
   NewUnitInfo.DefaultSyntaxHighlighter := FilenameToLazSyntaxHighlighter(NewFilename);
-
-  // required packages
-  if NewUnitInfo.IsPartOfProject and (NewFileDescriptor.RequiredPackages<>'')
-  then begin
-    if PkgBoss.AddProjectDependencies(Project1,NewFileDescriptor.RequiredPackages
-      )<>mrOk then exit;
-  end;
 
   if nfOpenInEditor in NewFlags then begin
     // open a new sourceeditor
@@ -8770,10 +8800,10 @@ begin
         if (NewUnitInfo.Component<>nil)
         and NewFileDescriptor.UseCreateFormStatements
         and NewUnitInfo.IsPartOfProject
-        and Project1.AutoCreateForms
-        and (pfMainUnitHasCreateFormStatements in Project1.Flags) then
+        and AProject.AutoCreateForms
+        and (pfMainUnitHasCreateFormStatements in AProject.Flags) then
         begin
-          Project1.AddCreateFormToProjectFile(NewUnitInfo.Component.ClassName,
+          AProject.AddCreateFormToProjectFile(NewUnitInfo.Component.ClassName,
                                               NewUnitInfo.Component.Name);
         end;
       end else begin
