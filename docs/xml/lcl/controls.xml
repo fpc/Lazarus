@@ -161,6 +161,7 @@
       <element name="TWinControlClass">
         <short>
           <var>TWinControlClass</var> - class of 
+          
           <var>TWinControl</var>
         </short>
         <descr/>
@@ -170,6 +171,7 @@
       <element name="TControlClass">
         <short>
           <var>TControlClass</var> - class of 
+          
           <var>TControl</var>
         </short>
         <descr/>
@@ -236,7 +238,7 @@
       <element link="TLMMouse" name="TCMDesignHitTest"/>
       <!-- record type Visibility: default -->
       <element name="TCMControlChange">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
@@ -262,7 +264,7 @@
       </element>
       <!-- record type Visibility: default -->
       <element name="TCMControlListChange">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
@@ -286,23 +288,23 @@
       </element>
       <!-- alias type Visibility: default -->
       <element link="TLMKey" name="TCMDialogChar">
-        <short></short>
+        <short/>
       </element>
       <!-- alias type Visibility: default -->
       <element link="TLMKey" name="TCMDialogKey">
-        <short></short>
+        <short/>
       </element>
       <!-- alias type Visibility: default -->
       <element link="TLMEnter" name="TCMEnter">
-        <short></short>
+        <short/>
       </element>
       <!-- alias type Visibility: default -->
       <element link="TLMExit" name="TCMExit">
-        <short></short>
+        <short/>
       </element>
       <!-- record type Visibility: default -->
       <element name="TCMCancelMode">
-        <short></short>
+        <short/>
       </element>
       <element name="TCMCancelMode.Msg">
         <short/>
@@ -318,7 +320,7 @@
       </element>
       <!-- record type Visibility: default -->
       <element name="TCMChildKey">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
@@ -381,7 +383,7 @@
       </element>
       <element name="TAlign.alCustom">
         <short>Control has special alignment.</short>
-        <descr></descr>
+        <descr/>
       </element>
       <!-- set type Visibility: default -->
       <element link="TAlign" name="TAlignSet">
@@ -409,37 +411,37 @@
       <element link="TAnchorKind" name="TAnchors"/>
       <!-- constant Visibility: default -->
       <element name="AnchorAlign">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element link="TAnchorKind" name="MainAlignAnchor">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element link="TAnchorKind" name="OppositeAnchor">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element link="TAnchorKind" name="ClockwiseAnchor">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="DefaultSideForAnchorKind">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="AnchorReferenceSide">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
@@ -553,13 +555,13 @@
       <!-- range type Visibility: default -->
       <element link="TFormBorderStyle" name="TBorderStyle">
         <short>Possible types of borders (with or without border).</short>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <!-- alias type Visibility: default -->
       <element link="TFormBorderStyle" name="TControlBorderStyle">
         <short>Possible types of control borders (with or without border).</short>
         <descr>A subset of TFormBorderStyle, listing only the styles available to a control that is not a form.</descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TControlRoleForForm">
@@ -761,23 +763,23 @@ More cursors
         <short>Can have child controls in the designer.</short>
       </element>
       <element name="TControlStyleType.csCaptureMouse">
-        <short></short>
+        <short/>
       </element>
       <element name="TControlStyleType.csDesignInteractive">
         <short>wants mouse events in design mode</short>
       </element>
       <element name="TControlStyleType.csClickEvents">
-        <short></short>
+        <short/>
       </element>
       <element name="TControlStyleType.csFramed">
-        <short></short>
+        <short/>
       </element>
       <element name="TControlStyleType.csSetCaption">
         <short>As long as Name=Text, changing the Name will set the Caption.</short>
         <descr>When for example a button's Name and Caption have the value 'Button1' and the Name is changed to 'Button2' then the Caption is changed as well. When Name and Caption differs this flag has no effect. This flag has no effect during loading.</descr>
       </element>
       <element name="TControlStyleType.csOpaque">
-        <short></short>
+        <short/>
       </element>
       <element name="TControlStyleType.csDoubleClicks">
         <short>control understands mouse double clicks</short>
@@ -798,25 +800,25 @@ More cursors
         <short>control is invisible in the designer</short>
       </element>
       <element name="TControlStyleType.csReplicatable">
-        <short></short>
+        <short/>
       </element>
       <element name="TControlStyleType.csNoStdEvents">
-        <short></short>
+        <short/>
       </element>
       <element name="TControlStyleType.csDisplayDragImage">
         <short>display images from dragimagelist during drag operation over control</short>
       </element>
       <element name="TControlStyleType.csReflector">
-        <short></short>
+        <short/>
       </element>
       <element name="TControlStyleType.csActionClient">
-        <short></short>
+        <short/>
       </element>
       <element name="TControlStyleType.csMenuEvents">
-        <short></short>
+        <short/>
       </element>
       <element name="TControlStyleType.csNoFocus">
-        <short></short>
+        <short/>
       </element>
       <element name="TControlStyleType.csNeedsBorderPaint">
         <short>[not implemented]</short>
@@ -854,7 +856,7 @@ More cursors
       <element name="TControlStyleType.csRequiresKeyboardInput">
         <short>Indicates that a control requires keyboard input. This is required in Android and other platforms so that the virtual keyboard is activated when the control receives focus and the device has no hardware keyboard</short>
       </element>
-	  <!-- set type Visibility: default -->
+      <!-- set type Visibility: default -->
       <element link="TControlStyleType" name="TControlStyle">
         <short>Set of control styles.</short>
       </element>
@@ -957,7 +959,7 @@ More cursors
       <element link="#LCL.Graphics.TCanvas.FreeHandle" name="TControlCanvas.FreeHandle"/>
       <!-- function Visibility: public -->
       <element name="TControlCanvas.ControlIsPainting">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -1141,7 +1143,7 @@ EndDrag stops dragging, the image is removed from the screen.
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TKeyEvent">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
@@ -1156,7 +1158,7 @@ EndDrag stops dragging, the image is removed from the screen.
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TKeyPressEvent">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
@@ -1176,7 +1178,7 @@ EndDrag stops dragging, the image is removed from the screen.
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TMouseEvent">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
@@ -1197,7 +1199,7 @@ EndDrag stops dragging, the image is removed from the screen.
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TMouseMoveEvent">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
@@ -1514,10 +1516,10 @@ dmFindTarget: find child control under the mouse
         <short>Which cursor to return (rejected:crNoDrop or accepted:crDrag).</short>
       </element>
       <element name="TDragObject.GetDragCursor.X">
-        <short></short>
+        <short/>
       </element>
       <element name="TDragObject.GetDragCursor.Y">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TDragObject.GetDragImages">
@@ -2406,21 +2408,21 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TSizeConstraintsOption">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
       <element name="TSizeConstraintsOption.scoAdviceWidthAsMin">
-        <short></short>
+        <short/>
       </element>
       <element name="TSizeConstraintsOption.scoAdviceWidthAsMax">
-        <short></short>
+        <short/>
       </element>
       <element name="TSizeConstraintsOption.scoAdviceHeightAsMin">
-        <short></short>
+        <short/>
       </element>
       <element name="TSizeConstraintsOption.scoAdviceHeightAsMax">
-        <short></short>
+        <short/>
       </element>
       <!-- set type Visibility: default -->
       <element link="TSizeConstraintsOption" name="TSizeConstraintsOptions"/>
@@ -2645,7 +2647,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TConstrainedResizeEvent">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
@@ -2666,7 +2668,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- range type Visibility: default -->
       <element name="TSpacingSize">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
@@ -3080,16 +3082,17 @@ dmFindTarget: find child control under the mouse
         <errors/>
           Can raise an exception 'TAnchorSide.CheckSidePosition invalid Side'.
         
+        
         <seealso/>
       </element>
       <element name="TAnchorSide.CheckSidePosition.Result">
         <short>False when errors have been found.</short>
       </element>
       <element name="TAnchorSide.CheckSidePosition.NewControl">
-        <short></short>
+        <short/>
       </element>
       <element name="TAnchorSide.CheckSidePosition.NewSide">
-        <short></short>
+        <short/>
       </element>
       <element name="TAnchorSide.CheckSidePosition.ReferenceControl">
         <short>The control we are anchored to.</short>
@@ -3113,10 +3116,10 @@ dmFindTarget: find child control under the mouse
         <seealso/>
       </element>
       <element name="TAnchorSide.IsAnchoredToParent.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TAnchorSide.IsAnchoredToParent.ParentSide">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TAnchorSide.FixCenterAnchoring">
@@ -3345,17 +3348,17 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TControlAutoSizePhase">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlAutoSizePhase.caspNone">
-        <short></short>
+        <short/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlAutoSizePhase.caspChangingProperties">
-        <short></short>
+        <short/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlAutoSizePhase.caspCreatingHandles">
@@ -3363,11 +3366,11 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlAutoSizePhase.caspComputingBounds">
-        <short></short>
+        <short/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlAutoSizePhase.caspRealizingBounds">
-        <short></short>
+        <short/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlAutoSizePhase.caspShowing">
@@ -3392,10 +3395,10 @@ dmFindTarget: find child control under the mouse
         <seealso/>
       </element>
       <element name="TControlShowHintEvent.Sender">
-        <short></short>
+        <short/>
       </element>
       <element name="TControlShowHintEvent.HintInfo">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TContextPopupEvent">
@@ -3446,28 +3449,28 @@ dmFindTarget: find child control under the mouse
         <short>Set when BoundsRectForNewParent has been initialized.</short>
       </element>
       <element name="TControlFlag.cfBaseBoundsValid">
-        <short></short>
+        <short/>
       </element>
       <element name="TControlFlag.cfPreferredSizeValid">
         <short>Set when PreferredSize has been calculated (CalculatePreferredSize).</short>
       </element>
       <element name="TControlFlag.cfPreferredMinSizeValid">
-        <short></short>
+        <short/>
       </element>
       <element name="TControlFlag.cfOnChangeBoundsNeeded">
-        <short></short>
+        <short/>
       </element>
       <element name="TControlFlag.cfProcessingWMPaint">
         <short>Set (in WndProc) while processing an LM_PAINT message.</short>
       </element>
       <element name="TControlFlag.cfKillChangeBounds">
-        <short></short>
+        <short/>
       </element>
       <element name="TControlFlag.cfKillInvalidatePreferredSize">
-        <short></short>
+        <short/>
       </element>
       <element name="TControlFlag.cfKillAdjustSize">
-        <short></short>
+        <short/>
       </element>
       <!-- set type Visibility: default -->
       <element link="TControlFlag" name="TControlFlags"/>
@@ -3500,162 +3503,161 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TLayoutAdjustmentPolicy">
-      <short>Indicates the policy for the LCL to execute automatic adjustments in the form layout</short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>Indicates the policy for the LCL to execute automatic adjustments in the form layout</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.lapDefault">
-      <short>widgetset dependent</short>
+        <short>widgetset dependent</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.lapFixedLayout">
-      <short>A fixed absolute layout in all platforms</short>
+        <short>A fixed absolute layout in all platforms</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.lapAutoAdjustWithoutHorizontalScrolling">
-      <short>Smartphone platforms use this one, the x axis is stretched to fill the screen and the y is scaled to fit the DPI</short>
+        <short>Smartphone platforms use this one, the x axis is stretched to fill the screen and the y is scaled to fit the DPI</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.lapAutoAdjustForDPI">
-      <short>For desktops using High DPI, scale x and y to fit the DPI</short>
+        <short>For desktops using High DPI, scale x and y to fit the DPI</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TLazAccessibilityRole">
-      <short>Indicates the role which a accessible object takes in the user interface</short>
-      <descr>
-      </descr>
-      <seealso>
+        <short>Indicates the role which a accessible object takes in the user interface</short>
+        <descr/>
+        <seealso>
           <link id="TLazAccessibleObject"/>
-      </seealso>
+        </seealso>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larAnimation">
-      <short>An object that displays an animation</short>
+        <short>An object that displays an animation</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larButton">
-      <short>A button</short>
+        <short>A button</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larCell">
-      <short>A cell in a table</short>
+        <short>A cell in a table</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larChart">
-      <short>An object that displays a graphical representation of data</short>
+        <short>An object that displays a graphical representation of data</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larCheckBox">
-      <short>An object that can be checked or unchecked, or sometimes in an intermediary state</short>
+        <short>An object that can be checked or unchecked, or sometimes in an intermediary state</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larClock">
-      <short>A clock displaying time</short>
+        <short>A clock displaying time</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larColorPicker">
-      <short>A control which allows selecting a color</short>
+        <short>A control which allows selecting a color</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larComboBox">
-      <short>A list of choices that the user can select from</short>
+        <short>A list of choices that the user can select from</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larDateField">
-      <short>A controls which displays and possibly allows to choose a date</short>
+        <short>A controls which displays and possibly allows to choose a date</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larGrid">
-      <short>A grid control which displays cells</short>
+        <short>A grid control which displays cells</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larGroup">
-      <short>A control which groups others, such as a TGroupBox</short>
+        <short>A control which groups others, such as a TGroupBox</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larIgnore">
-      <short>Something to be ignored. For example a blank space between other objects</short>
+        <short>Something to be ignored. For example a blank space between other objects</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larImage">
-      <short>A graphic or picture or an icon</short>
+        <short>A graphic or picture or an icon</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larLabel">
-      <short>A text label as usually placed near other widgets</short>
+        <short>A text label as usually placed near other widgets</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larListBox">
-      <short>A list of items, from which the user can select one or more items</short>
+        <short>A list of items, from which the user can select one or more items</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larListItem">
-      <short>An item in a list of items</short>
+        <short>An item in a list of items</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larMenuBar">
-      <short>A main menu bar</short>
+        <short>A main menu bar</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larMenuItem">
-      <short>A item in a menu</short>
+        <short>A item in a menu</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larProgressIndicator">
-      <short>A control which shows a progress indication</short>
+        <short>A control which shows a progress indication</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larRadioButton">
-      <short>A radio button, see for example TRadioButton</short>
+        <short>A radio button, see for example TRadioButton</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larResizeGrip">
-      <short>A grip that the user can drag to change the size of widgets</short>
+        <short>A grip that the user can drag to change the size of widgets</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larScrollBar">
-      <short>A control to scroll another one</short>
+        <short>A control to scroll another one</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larSpinner">
-      <short>A control which allows to increment / decrement a value</short>
+        <short>A control which allows to increment / decrement a value</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larTabControl">
-      <short>A control with tabs, like TPageControl</short>
+        <short>A control with tabs, like TPageControl</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larTextEditorMultiline">
-      <short>A multi-line text editor (for example: TMemo, SynEdit)</short>
+        <short>A multi-line text editor (for example: TMemo, SynEdit)</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larTextEditorSingleline">
-      <short>A single-line text editor (for example: TEdit)</short>
+        <short>A single-line text editor (for example: TEdit)</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larTrackBar">
-      <short>A control which allows to drag a slider</short>
+        <short>A control which allows to drag a slider</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larTreeView">
-      <short>A list of items in a tree structure</short>
+        <short>A list of items in a tree structure</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larTreeItem">
-      <short>An item in a tree structure</short>
+        <short>An item in a tree structure</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larWindow">
-      <short>A top level window</short>
+        <short>A top level window</short>
       </element>
       <!-- class Visibility: default -->
       <element name="TLazAccessibleObject">
         <short>Represents an accessible object with which the user of a accessibility tool can interact.</short>
-        <descr><p>Every TControl has a TLazAccessibleObject instace associated with it, which means that every TControl is potentially accessible, but to actually be usable the accessible object needs to have its properties set, the most important of which are the role, description and value. Native windowed classes should already receive accessibility properties from the underlying widgetset utilized, while TCustomControl descendents will have their accessibility taken care by the LCL itself. User applications should add accessibility for their own TCustomControl descendent classes and also possibly customize the descriptions of some elements. It is also possible to make an accessible object invisible for user, which is done by setting its AccessibleRole property to larIgnored.</p>
-			<p>Accessibility support in Lazarus is also documented in the wiki in http://wiki.lazarus.freepascal.org/LCL_Accessibility</p></descr>
+        <descr>
+          <p>Every TControl has a TLazAccessibleObject instace associated with it, which means that every TControl is potentially accessible, but to actually be usable the accessible object needs to have its properties set, the most important of which are the role, description and value. Native windowed classes should already receive accessibility properties from the underlying widgetset utilized, while TCustomControl descendents will have their accessibility taken care by the LCL itself. User applications should add accessibility for their own TCustomControl descendent classes and also possibly customize the descriptions of some elements. It is also possible to make an accessible object invisible for user, which is done by setting its AccessibleRole property to larIgnored.</p>
+          <p>Accessibility support in Lazarus is also documented in the wiki in http://wiki.lazarus.freepascal.org/LCL_Accessibility</p>
+        </descr>
         <seealso>
           <link id="TControl"/>
           <link id="TControl.AccessibleRole"/>
@@ -3682,11 +3684,11 @@ dmFindTarget: find child control under the mouse
       <element link="TControl.AutoSizingAll" name="TControl.FAutoSizingAll"/>
       <element link="TControl.AutoSizingLockCount" name="TControl.FAutoSizingLockCount"/>
       <element name="TControl.FAutoSizingSelf">
-        <short></short>
+        <short/>
       </element>
       <element link="TControl.BaseBounds" name="TControl.FBaseBounds"/>
       <element name="TControl.FBaseBoundsLock">
-        <short></short>
+        <short/>
       </element>
       <element link="TControl.BaseParentClientSize" name="TControl.FBaseParentClientSize"/>
       <element link="TControl.BiDiMode" name="TControl.FBiDiMode"/>
@@ -3779,7 +3781,7 @@ dmFindTarget: find child control under the mouse
       <element link="TControl.SessionProperties" name="TControl.FSessionProperties"/>
       <element link="TControl.ShowHint" name="TControl.FShowHint"/>
       <element name="TControl.FSizeLock">
-        <short></short>
+        <short/>
       </element>
       <element link="TControl.TBDockHeight" name="TControl.FTBDockHeight"/>
       <element link="TControl.Top" name="TControl.FTop"/>
@@ -4154,7 +4156,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoOnParentHandleDestruction">
-        <short></short>
+        <short/>
         <descr>implement in descendants [what?]
         </descr>
         <errors/>
@@ -4306,6 +4308,7 @@ dmFindTarget: find child control under the mouse
           <p>
             <var>TWinControl</var> overrides this and asks the interface for theme dependent values.
             See 
+            
             <link id="TWinControl.CalculatePreferredSize"/> for more information.
           </p>
           <p>WithThemeSpace: If true, adds space for stacking.
@@ -4463,8 +4466,7 @@ dmFindTarget: find child control under the mouse
         <descr>Affects the order in which client controls with the same alignment are positioned
         </descr>
         <errors/>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element link="TControl.BiDiMode" name="TControl.SetBiDiMode"/>
@@ -4846,7 +4848,7 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <element name="TControl.WMMouseWheel">
-        <short></short>
+        <short/>
       </element>
       <element name="TControl.WMMouseWheel.Message">
         <short/>
@@ -5453,7 +5455,7 @@ dmFindTarget: find child control under the mouse
         <seealso/>
       </element>
       <element name="TControl.DialogChar.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TControl.DialogChar.Message">
         <short/>
@@ -5466,7 +5468,7 @@ dmFindTarget: find child control under the mouse
         <seealso/>
       </element>
       <element name="TControl.UpdateMouseCursor.X">
-        <short></short>
+        <short/>
       </element>
       <element name="TControl.UpdateMouseCursor.Y">
         <short/>
@@ -5511,7 +5513,7 @@ dmFindTarget: find child control under the mouse
       <element link="#rtl.Classes.TComponent.Loaded" name="TControl.Loaded"/>
       <!-- procedure Visibility: protected -->
       <element name="TControl.LoadedAll">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -6015,7 +6017,7 @@ dmFindTarget: find child control under the mouse
         </short>
       </element>
       <element name="TControl.ManualDock.KeepDockSiteSize">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.ManualFloat">
@@ -6031,7 +6033,7 @@ dmFindTarget: find child control under the mouse
         <short>The screen area where the floating control is moved; the client area of a float host site.</short>
       </element>
       <element name="TControl.ManualFloat.KeepDockSiteSize">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.ReplaceDockedControl">
@@ -6088,7 +6090,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.AutoSizePhases">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -6105,7 +6107,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.AutoSizeCheckParent">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -6180,7 +6182,7 @@ dmFindTarget: find child control under the mouse
         <short>The sibling control to which we should anchor.</short>
       </element>
       <element name="TControl.AnchorToCompanion.FreeCompositeSide">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorSame">
@@ -6310,6 +6312,7 @@ dmFindTarget: find child control under the mouse
           <p>
             <var>TWinControl</var> overrides this and asks the interface for theme dependent values. See
             
+            
             <link id="TWinControl.CalculatePreferredSize"/> for more information.</p>
         </descr>
       </element>
@@ -6414,7 +6417,7 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <element name="TControl.GetAnchorsDependingOnParent.WithNormalAnchors">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.DisableAutoSizing">
@@ -6438,7 +6441,7 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <element name="TControl.UpdateBaseBounds.UseLoadedValues">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.WriteLayoutDebugReport">
@@ -6887,7 +6890,7 @@ dmFindTarget: find child control under the mouse
       <!-- procedure Visibility: public -->
       <element name="TControl.InitiateAction">
         <short>Update the action associated with this control.</short>
-        <descr></descr>
+        <descr/>
         <errors/>
         <seealso/>
       </element>
@@ -7295,7 +7298,7 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.CaptureMouseButtons">
         <short>Which mouse button(s) to be used for capture? Default is the left button.
         </short>
-        <descr></descr>
+        <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -7753,11 +7756,19 @@ dmFindTarget: find child control under the mouse
         <short>The control within which the control is shown.</short>
         <descr>
           <p>When the Parent moves or hides, all its children move or hide together with it.
-          </p>
+</p>
           <p>Every TControl must have a Parent, else it is never shown.
-          </p>
+</p>
           <p>The Parent of a floating form is Nil.
-          </p>
+</p>
+          <p>Set the parent last to reduce updates. For example:
+Button1:=TButton.Create(Self);
+Button1.Name:='Button1';
+Button1.Caption:='Click me'; // parent is not set, so it does not update the whole form
+Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
+</p>
+          <p>Delphi/VCL: Parent must be set first under Delphi, because many properties work differently if they are set before or after Handle creation. The LCL applies the properties when the Handle is created.
+</p>
         </descr>
       </element>
       <!-- property Visibility: public -->
@@ -7819,14 +7830,14 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ReadBounds">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.SessionProperties">
         <short>The stored (saved) properties of the current session, expressed as a string</short>
-        <descr></descr>
+        <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -8230,10 +8241,10 @@ dmFindTarget: find child control under the mouse
         <seealso/>
       </element>
       <element name="TWinControlFlag.wcfClientRectNeedsUpdate">
-        <short></short>
+        <short/>
       </element>
       <element name="TWinControlFlag.wcfColorChanged">
-        <short></short>
+        <short/>
       </element>
       <element name="TWinControlFlag.wcfFontChanged">
         <short>Set if font was changed before handle creation.</short>
@@ -8246,7 +8257,7 @@ dmFindTarget: find child control under the mouse
         </short>
       </element>
       <element name="TWinControlFlag.wcfEraseBackground">
-        <short></short>
+        <short/>
       </element>
       <element name="TWinControlFlag.wcfCreatingHandle">
         <short>Set while constructing the handle of this control.</short>
@@ -8266,10 +8277,10 @@ dmFindTarget: find child control under the mouse
         </short>
       </element>
       <element name="TWinControlFlag.wcfUpdateShowing">
-        <short></short>
+        <short/>
       </element>
       <element name="TWinControlFlag.wcfHandleVisible">
-        <short></short>
+        <short/>
       </element>
       <element name="TWinControlFlag.wcfAdjustedLogicalClientRectValid">
         <short>Set when the adjusted ClientRect is valid.</short>
@@ -8278,7 +8289,7 @@ dmFindTarget: find child control under the mouse
         </seealso>
       </element>
       <element name="TWinControlFlag.wcfKillIntfSetBounds">
-        <short></short>
+        <short/>
       </element>
       <!-- set type Visibility: default -->
       <element link="TWinControlFlag" name="TWinControlFlags">
@@ -8625,6 +8636,7 @@ dmFindTarget: find child control under the mouse
         </short>
         <descr/>It's called often, so don't put expensive code here, or cache the result.
         
+        
         <errors/>
         <seealso>
           <link id="TWinControl.GetAdjustedLogicalClientRect"/>
@@ -8679,7 +8691,7 @@ dmFindTarget: find child control under the mouse
         </seealso>
       </element>
       <element name="TWinControl.AlignControls.AControl">
-        <short></short>
+        <short/>
       </element>
       <element name="TWinControl.AlignControls.RemainingClientRect">
         <short>The available space, becomes remaining space on exit.</short>
@@ -8948,6 +8960,7 @@ dmFindTarget: find child control under the mouse
           <p>
             <var>WithThemeSpace</var>: If true, adds space for stacking. For example:
             
+            
             <var>TRadioButton</var> has a minimum size. But for stacking multiple TRadioButtons there should be some space around.
             This space is theme dependent, so it is passed as a parameter to the widgetset. </p>
         </descr>
@@ -9153,7 +9166,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CMEnter">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -9163,7 +9176,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CMExit">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -9248,8 +9261,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMEnter">
-        <short>
-        </short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -9259,8 +9271,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMExit">
-        <short>
-        </short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -9645,7 +9656,7 @@ dmFindTarget: find child control under the mouse
         <short>The control being undocked.</short>
       </element>
       <element name="TWinControl.DoUnDock.KeepDockSiteSize">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.GetSiteInfo">
@@ -9772,7 +9783,7 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <element name="TWinControl.DoKeyDownBeforeInterface.IsRecurseCall">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoRemainingKeyDown">
@@ -9790,8 +9801,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoRemainingKeyUp">
-        <short>
-        </short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -9843,8 +9853,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.ChildKey">
-        <short>
-        </short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -9857,8 +9866,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.SendDialogChar">
-        <short>
-        </short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -9935,8 +9943,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.KeyDownAfterInterface">
-        <short>
-        </short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -9988,8 +9995,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.KeyUpAfterInterface">
-        <short>
-        </short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -10224,7 +10230,7 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.MainWndProc">
-        <short></short>
+        <short/>
         <descr>[This method does nothing, and cannot be overridden???]
         </descr>
         <errors/>
@@ -11358,9 +11364,12 @@ End;
           <p>
             <var>TGraphicControl</var> provides a
             
+            
             <var>Canvas</var> property for access to the control's drawing surface
             and a virtual 
+            
             <var>Paint</var> method and an 
+            
             <var>OnPaint</var> handler,
             called in response to paint requests received by the parent control.
           </p>
@@ -11539,7 +11548,7 @@ End;
       <element link="#LCL.ImgList.TCustomImageList.Width" name="TImageList.Width"/>
       <!-- object Visibility: default -->
       <element name="TControlPropertyStorage">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -11916,13 +11925,13 @@ End;
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TDockTreeFlag">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TDockTreeFlag.dtfUpdateAllNeeded">
-        <short></short>
+        <short/>
       </element>
       <!-- set type Visibility: default -->
       <element link="TDockTreeFlag" name="TDockTreeFlags"/>
@@ -12043,7 +12052,7 @@ End;
       <element link="TDockTree.DockZoneClass" name="TDockTree.FDockZoneClass"/>
       <!-- variable Visibility: private -->
       <element name="TDockTree.FFlags">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
@@ -12467,7 +12476,7 @@ End;
       </element>
       <!-- procedure Visibility: default -->
       <element name="MoveWindowOrg">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -12505,8 +12514,7 @@ End;
         <short>Set the mouse capture to AWinControl or its child at the given coordinates</short>
         <descr/>
         <errors/>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="SetCaptureControl.Control">
         <short/>
@@ -12525,8 +12533,7 @@ End;
           The LCL extends this to allow TControl capture the mouse.
         </descr>
         <errors/>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="GetCaptureControl.Result">
         <short/>
@@ -12881,7 +12888,7 @@ End;
       <element name="TGetDockCaptionEvent.ACaption">
         <short/>
       </element>
-      <element name="TDragManagerDefault" link="TDragManager">
+      <element link="TDragManager" name="TDragManagerDefault">
         <short>Implementation of TDragManager.</short>
       </element>
       <!-- object Visibility: default -->
@@ -12893,8 +12900,7 @@ End;
           <p>[entire review DoDi 2010-02-16]</p>
         </descr>
         <errors/>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDragManager.FDragImmediate">
@@ -13134,19 +13140,19 @@ End;
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlCellAlign.ccaFill">
-        <short></short>
+        <short/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlCellAlign.ccaLeftTop">
-        <short></short>
+        <short/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlCellAlign.ccaRightBottom">
-        <short></short>
+        <short/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlCellAlign.ccaCenter">
-        <short></short>
+        <short/>
       </element>
       <!-- set type Visibility: default -->
       <element link="TControlCellAlign" name="TControlCellAligns"/>
@@ -13260,16 +13266,16 @@ End;
       </element>
       <!-- function Visibility: default -->
       <element name="operator :=(Variant): TCaption">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="operator :=(Variant): TCaption.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="operator :=(Variant): TCaption.AVariant">
-        <short></short>
+        <short/>
       </element>
       <!-- Variables go here -->
       <!-- variable Visibility: implementation -->
@@ -13288,12 +13294,12 @@ End;
       </element>
       <!-- variable Visibility: default -->
       <element name="DockSplitterClass">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
-      <element name="DragManager" link="TDragManager">
+      <element link="TDragManager" name="DragManager">
         <short>The current DragManager (always TDragManagerDefault).</short>
         <descr>A DragManager can be implemented only in the Controls unit,
           because it must access private elements of the other classes,
@@ -13309,7 +13315,7 @@ End;
       </element>
       <!-- variable Visibility: default -->
       <element name="NewStyleControls">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
@@ -13326,6 +13332,7 @@ End;
           <p>That's why you should always call <link id="#lcl.Controls.TControl.AdjustSize">AdjustSize</link> instead of <var>DoAutoSize</var>.</p>
           <p>
             <var>TControl.AdjustSize</var> calls 
+            
             
             <var>DoAutoSize</var> in a smart fashion.</p>
           <p>During loading and handle creation the calls are delayed.</p>
@@ -13358,8 +13365,7 @@ End;
           <p>If Parent=nil then Left, Top depend on the widgetset and the window manager. Till Lazarus 0.9.25 this is typically the screen coordinate of the left,top of the client area of the form. This is Delphi incompatible. It is planned to change this to the Left, Top of the window.</p>
           <p>Hint:</p>
           <p>Each time you change Left and Top the LCL moves instantly. If you want to change both Left and Top use instead:</p>
-          <code>
-  with Button1 do
+          <code>with Button1 do
     SetBounds(NewLeft,NewTop,Width,Height);
           </code>
           <ul>
