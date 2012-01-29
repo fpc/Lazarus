@@ -133,7 +133,7 @@ begin
   if [csLoading, csDestroying] * ComponentState <> [] then
     Exit;
   Filter := KeyMappingFilterEdit.Text;
-  if (Filter = lisFilter2) or (Filter = KeyMappingFilterEdit.Name) then
+  if (Filter = lisCEFilter) or (Filter = KeyMappingFilterEdit.Name) then
     Filter := '';
   KeyMapNameFilter := Filter;
   FillKeyMappingTreeView;
@@ -212,14 +212,14 @@ end;
 
 procedure TEditorKeymappingOptionsFrame.KeyMappingFilterEditEnter(Sender: TObject);
 begin
-  if KeyMappingFilterEdit.Text = lisFilter2 then
+  if KeyMappingFilterEdit.Text = lisCEFilter then
     KeyMappingFilterEdit.Text := '';
 end;
 
 procedure TEditorKeymappingOptionsFrame.KeyMappingFilterEditExit(Sender: TObject);
 begin
   if KeyMappingFilterEdit.Text = '' then
-    KeyMappingFilterEdit.Text := lisFilter2;
+    KeyMappingFilterEdit.Text := lisCEFilter;
 end;
 
 procedure TEditorKeymappingOptionsFrame.KeyMappingFindKeyButtonClick(Sender: TObject);
@@ -286,7 +286,7 @@ begin
   KeyMappingChooseSchemeButton.Caption := lisEdOptsLoadAScheme;
   KeyMappingConsistencyCheckButton.Caption := dlgCheckConsistency;
   KeyMappingHelpLabel.Caption := lisHintDoubleClickOnTheCommandYouWantToEdit;
-  KeyMappingFilterEdit.Text := lisFilter2;
+  KeyMappingFilterEdit.Text := lisCEFilter;
   KeyMappingFindKeyButton.Caption := lisFindKeyCombination;
   KeyMappingTreeView.Images := IDEImages.Images_16;
   KeyMappingClearButton.Caption := lisClearKeyMapping;

@@ -2206,7 +2206,7 @@ resourcestring
     +'execute the Build File command instead';
   lisBFOnRunProjectExecuteTheRunFileCommandInstead = 'On run project execute '
     +'the Run File command instead';
-  lisCEFilter = '(Filter)';
+  lisCEFilter = '(filter)';
   lisPESortFilesAlphabetically = 'Sort files alphabetically';
   lisPEShowDirectoryHierarchy = 'Show directory hierarchy';
   dlgCaseSensitive = '&Case sensitive';
@@ -4846,7 +4846,6 @@ resourcestring
     +'dependency is not allowed.';
   lisTheComponentCanNotBeDeletedBecauseItIsNotOwnedBy = 'The component %s can '
     +'not be deleted, because it is not owned by %s.';
-  lisFilter2 = '(filter)';
   lisFindKeyCombination = 'Find key combination';
   lisFilter3 = 'Filter: %s';
   lisInvalidPublishingDirectory = 'Invalid publishing Directory';

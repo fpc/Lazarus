@@ -256,7 +256,7 @@ msgid "can not execute %s"
 msgstr "nelze spustit %s"
 
 #: lclstrconsts.liscefilter
-msgid "(Filter)"
+msgid "(filter)"
 msgstr ""
 
 #: lclstrconsts.lislclresourcesnotfound

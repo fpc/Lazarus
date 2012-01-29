@@ -255,7 +255,9 @@ msgid "can not execute %s"
 msgstr "неможливо виконати %s"
 
 #: lclstrconsts.liscefilter
-msgid "(Filter)"
+#, fuzzy
+#| msgid "(Filter)"
+msgid "(filter)"
 msgstr "(Фільтр)"
 
 #: lclstrconsts.lislclresourcesnotfound
