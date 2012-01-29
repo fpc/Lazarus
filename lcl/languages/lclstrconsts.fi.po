@@ -250,8 +250,8 @@ msgid "can not execute %s"
 msgstr "ei voi suorittaa %s"
 
 #: lclstrconsts.liscefilter
-msgid "(Filter)"
-msgstr "(Suodatin)"
+msgid "(filter)"
+msgstr "(suodatin)"
 
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
