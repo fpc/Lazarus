@@ -47,7 +47,7 @@ uses
   {$ENDIF}
   // IDEIntf
   IDEWindowIntf, ProjectIntf, LazIDEIntf, IDEHelpIntf, LazHelpIntf, Menus,
-  SrcEditorIntf,
+  SrcEditorIntf, IDEDialogs,
   // IDE
   IDEOptionDefs, EnvironmentOpts, PackageSystem, IDEProcs, LazarusIDEStrConsts,
   FPDocSelectInherited, FPDocSelectLink, CodeHelp;
@@ -1521,9 +1521,17 @@ end;
 procedure TFPDocEditor.BrowseExampleButtonClick(Sender: TObject);
 begin
   if Doc=nil then exit;
-  if OpenDialog.Execute then
+  InitIDEFileDialog(OpenDialog);
+  OpenDialog.Title:=lisChooseAnExampleFile;
+  OpenDialog.Filter:=lisPascalFile+'|*.pas;*.pp;*.p|'+dlgAllFiles+'|'+FileMask;
+  OpenDialog.InitialDir:=ExtractFilePath(DocFile.Filename);
+  if OpenDialog.Execute then begin
     ExampleEdit.Text := SetDirSeparators(ExtractRelativepath(
       ExtractFilePath(DocFile.Filename), OpenDialog.FileName));
+    if ExampleEdit.Text<>FOldVisualValues[fpdiExample] then
+      Modified:=true;
+  end;
+  StoreIDEFileDialog(OpenDialog);
 end;
 
 procedure TFPDocEditor.CopyFromInheritedButtonClick(Sender: TObject);
