@@ -3804,6 +3804,10 @@ examples/icons/project1.lpr svneol=native#text/plain
 examples/icons/project1.res -text
 examples/icons/unit1.lfm svneol=native#text/plain
 examples/icons/unit1.pas svneol=native#text/pascal
+examples/idehelp/demoidehelp.lpk svneol=native#text/plain
+examples/idehelp/demoidehelp.pas svneol=native#text/plain
+examples/idehelp/myidehelp.lfm svneol=native#text/plain
+examples/idehelp/myidehelp.pas svneol=native#text/plain
 examples/idequickfix/quickfixdemo1.pas svneol=native#text/plain
 examples/idequickfix/quickfixexample.lpk svneol=native#text/plain
 examples/idequickfix/quickfixexample.pas svneol=native#text/plain

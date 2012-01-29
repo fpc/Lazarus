@@ -1,0 +1,8 @@
+object MyHelpSetupDialog: TMyHelpSetupDialog
+  Left = 250
+  Height = 466
+  Top = 250
+  Width = 557
+  Caption = 'MyHelpSetupDialog'
+  LCLVersion = '0.9.31'
+end
