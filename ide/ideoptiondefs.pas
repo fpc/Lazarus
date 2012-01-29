@@ -87,7 +87,8 @@ type
     nmiwTabOrderEditor,
     nmiwCodeBrowser,
     nmiwIssueBrowser,
-    nmiwJumpHistory
+    nmiwJumpHistory,
+    nmiwComponentList
     );
 
 const
@@ -121,7 +122,8 @@ const
     'TabOrderEditor',
     'CodeBrowser',
     'IssueBrowser',
-    'JumpHistory'
+    'JumpHistory',
+    'ComponentList'
    );
 
 function CreateNiceWindowPosition(Width, Height: integer): TRect;

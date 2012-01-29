@@ -2297,7 +2297,7 @@ begin
     nil,@CreateIDEWindow,'250','250','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwJumpHistory],
     nil,@CreateIDEWindow,'250','250','','');
-  IDEWindowCreators.Add(ComponentListFormName,
+  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwComponentList],
     nil,@CreateIDEWindow,'250','250','','');
 end;
 
@@ -9930,8 +9930,7 @@ begin
     IDEWindowCreators.ShowForm(CodeBrowserView,true);
 end;
 
-procedure TMainIDE.DoShowRestrictionBrowser(Show: boolean;
-  const RestrictedName: String);
+procedure TMainIDE.DoShowRestrictionBrowser(Show: boolean; const RestrictedName: String);
 begin
   if RestrictionBrowserView = nil then
     RestrictionBrowserView := TRestrictionBrowserView.Create(OwningComponent);
@@ -9943,13 +9942,14 @@ end;
 
 procedure TMainIDE.DoShowComponentList(Show: boolean);
 begin
-  if not Assigned(ComponentListForm) then
+  if ComponentListForm = nil then
   begin
     ComponentListForm := TComponentListForm.Create(OwningComponent);
-    ComponentListForm.Name:=ComponentListFormName;
+    ComponentListForm.Name:=NonModalIDEWindowNames[nmiwComponentList];
   end;
   if Show then
-    ComponentListForm.Show;
+    IDEWindowCreators.ShowForm(ComponentListForm,true);
+//    ComponentListForm.Show;
 end;
 
 procedure TMainIDE.DoShowInspector(Show: boolean);
@@ -10028,7 +10028,7 @@ begin
     DoViewJumpHistory(false);
     AForm:=JumpHistoryViewWin;
   end
-  else if ItIs(ComponentListFormName) then
+  else if ItIs(NonModalIDEWindowNames[nmiwComponentList]) then
   begin
     DoShowComponentList(false);
     AForm:=ComponentListForm;
