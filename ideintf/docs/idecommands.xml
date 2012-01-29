@@ -9,6 +9,7 @@ A mask with Key2=VK_UNKNOWN fits any one and two key command.
 A mask with both Key1 and Key2 set will find command with only one key.
 Keep in mind that every command has two shortcuts and if any one of them fits it will be in the list.
 </descr>
+        <example file="findcommandsbyshortcut.pas"/>
       </element>
     </module>
   </package>
