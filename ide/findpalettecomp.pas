@@ -39,9 +39,11 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, FormEditingIntf, db,
-  LazarusIDEStrConsts, ComponentReg, PackageDefs, ExtCtrls, ButtonPanel;
+  LazarusIDEStrConsts, ComponentReg, PackageDefs, ExtCtrls, ButtonPanel, fgl;
 
 type
+
+  TRegisteredCompList = specialize TFPGList<TRegisteredComponent>;
 
   { TFindPaletteComponentDlg }
 
@@ -58,7 +60,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure PatternEditChange(Sender: TObject);
   private
-    fSelectedComponents: TFPList;// list of TRegisteredComponent
+    fSelectedComponents: TRegisteredCompList;
     procedure UpdateComponentSelection;
   public
     function GetSelectedComponent: TRegisteredComponent;
@@ -111,7 +113,7 @@ begin
   if fSelectedComponents=nil then exit;
   if (Index<0) or (Index>=fSelectedComponents.Count) then exit;
   // draw registered component
-  CurComponent:=TRegisteredComponent(fSelectedComponents[Index]);
+  CurComponent:=fSelectedComponents[Index];
   with ComponentsListBox.Canvas do begin
     CurStr:=Format(lisPckEditPage, [CurComponent.ComponentClass.ClassName,
       CurComponent.Page.PageName]);
@@ -154,23 +156,23 @@ var
   p: Integer;
   Page: TBaseComponentPage;
   c: Integer;
-  AComponent: TRegisteredComponent;
+  Comp: TRegisteredComponent;
 begin
   if fSelectedComponents=nil then
-    fSelectedComponents:=TFPList.Create;
+    fSelectedComponents:=TRegisteredCompList.Create;
   fSelectedComponents.Clear;
   if IDEComponentPalette=nil then exit;
   for p:=0 to IDEComponentPalette.Count-1 do begin
     Page:=IDEComponentPalette.Pages[p];
     if not Page.Visible then continue;
     for c:=0 to Page.Count-1 do begin
-      AComponent:=Page.Items[c];
-      if not AComponent.Visible then continue;
+      Comp:=Page.Items[c];
+      if not Comp.Visible then continue;
       if (PatternEdit.Text='')
       or (System.Pos(UpperCase(PatternEdit.Text),
-                    UpperCase(AComponent.ComponentClass.ClassName))>0)
+                     UpperCase(Comp.ComponentClass.ClassName))>0)
       then
-        fSelectedComponents.Add(AComponent);
+        fSelectedComponents.Add(Comp);
     end;
   end;
   while ComponentsListBox.Items.Count<fSelectedComponents.Count do
@@ -188,7 +190,7 @@ begin
   i:=ComponentsListBox.ItemIndex;
   if (i>=fSelectedComponents.Count) or (i<0) then
     i:=0;
-  Result:=TRegisteredComponent(fSelectedComponents[i]);
+  Result:=fSelectedComponents[i];
 end;
 
 end.
