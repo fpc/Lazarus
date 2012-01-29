@@ -498,7 +498,7 @@ resourceString
   lisProgramFileNotFound = 'program file not found %s';
   lisCanNotExecute = 'can not execute %s';
 
-  lisCEFilter = '(Filter)';
+  lisCEFilter = '(filter)';
 
 implementation
 
