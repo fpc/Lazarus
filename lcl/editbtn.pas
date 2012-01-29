@@ -845,6 +845,7 @@ end;
 constructor TCustomControlFilterEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  CharCase:=ecLowerCase;
   Button.Enabled:=False;
   fIsFirstUpdate := True;
 end;
@@ -868,7 +869,7 @@ begin
   if AValue=lisCEFilter then
     NewValue:=''
   else
-    NewValue:=LowerCase(AValue);
+    NewValue:=AValue;
   Button.Enabled:=NewValue<>'';
   if (NewValue='') and not Focused then begin
     Text:=lisCEFilter;
