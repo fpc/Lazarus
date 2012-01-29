@@ -151,6 +151,7 @@ begin
   then begin
     Result := cfCollapsedHide;
     FIsFoldHidePreviousLine := True;
+    // exit
   end
   //if tmp * [cfHideStart, cfFoldStart, cfCollapsedFold] = [cfHideStart, cfFoldStart, cfCollapsedFold]
   //                               then Result := cfHideStart
@@ -163,7 +164,16 @@ begin
   else
     Result := cfNone;
 
-  if Result in [cfFoldBody, cfFoldEnd] then begin
+  if (Result in [cfCollapsedFold, cfCollapsedHide, cfFoldStart]) and
+     (cfHideStart in tmp) and
+     (fncBlockSelection in FoldView.FoldClasifications[AScreenLine])
+  then begin
+    Result := cfHideStart;
+  end;
+
+  if (Result in [cfFoldBody, cfFoldEnd]) and
+     not(fncBlockSelection in FoldView.FoldClasifications[AScreenLine])
+  then begin
     tmp := FoldView.FoldType[AScreenLine - 1];
     if tmp * [cfHideStart, cfFoldStart, cfCollapsedFold, cfCollapsedHide]
        = [cfHideStart, cfFoldStart]
