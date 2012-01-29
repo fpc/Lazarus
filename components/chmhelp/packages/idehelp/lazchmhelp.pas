@@ -32,7 +32,9 @@ ToDos:
 
 - fpc messages:
 
-- wiki:
+- fpc compiler options:
+
+- IDE dialogs / wiki:
   download content, without wiki links like upload, history, ...
 
 - how to build lcl.chm?

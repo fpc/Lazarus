@@ -714,6 +714,7 @@ type
     function CreateNewForm(NewUnitInfo: TUnitInfo;
         AncestorType: TPersistentClass; ResourceCode: TCodeBuffer;
         UseCreateFormStatements, DisableAutoSize: Boolean): TModalResult;
+    function NewUniqueComponentName(Prefix: string): string;
 
     // methods for 'save unit'
     function DoShowSaveFileAsDialog(var AFilename: string; AnUnitInfo: TUnitInfo;
@@ -5267,6 +5268,72 @@ begin
   Result:=mrOk;
 end;
 
+function TMainIDE.NewUniqueComponentName(Prefix: string): string;
+
+  function SearchProject(AProject: TProject; const Identifier: string): boolean;
+  var
+    i: Integer;
+    AnUnitInfo: TUnitInfo;
+  begin
+    if AProject=nil then exit(false);
+    Result:=true;
+    for i:=0 to AProject.UnitCount-1 do
+    begin
+      AnUnitInfo:=AProject.Units[i];
+      if (AnUnitInfo.Component<>nil) then begin
+        if CompareText(AnUnitInfo.Component.Name,Identifier)=0 then exit;
+        if CompareText(AnUnitInfo.Component.ClassName,Identifier)=0 then exit;
+      end else if (AnUnitInfo.ComponentName<>'')
+      and ((AnUnitInfo.IsPartOfProject) or AnUnitInfo.Loaded) then begin
+        if SysUtils.CompareText(AnUnitInfo.Unit_Name,Identifier)=0 then exit;
+        if SysUtils.CompareText(AnUnitInfo.ComponentName,Identifier)=0 then exit;
+      end;
+    end;
+    Result:=true;
+  end;
+
+  function SearchPackage(APackage: TLazPackage; const Identifier: string): boolean;
+  var
+    i: Integer;
+    PkgFile: TPkgFile;
+  begin
+    if APackage=nil then exit(false);
+    Result:=true;
+    if SysUtils.CompareText(APackage.Name,Identifier)=0 then exit;
+    for i:=0 to APackage.FileCount-1 do
+    begin
+      PkgFile:=APackage.Files[i];
+      if SysUtils.CompareText(PkgFile.Unit_Name,Identifier)=0 then exit;
+    end;
+    Result:=false;
+  end;
+
+  function IdentifierExists(Identifier: string): boolean;
+  var
+    i: Integer;
+  begin
+    Result:=true;
+    if GetClass(Identifier)<>nil then exit;
+    if SearchProject(Project1,Identifier) then exit;
+    for i:=0 to PackageGraph.Count-1 do
+      if SearchPackage(PackageGraph[i],Identifier) then exit;
+    Result:=false;
+  end;
+
+var
+  i: Integer;
+begin
+  while (Prefix<>'') and (Prefix[length(Prefix)] in ['0'..'9']) do
+    System.Delete(Prefix,length(Prefix),1);
+  if (Prefix='') or (not IsValidIdent(Prefix)) then
+    Prefix:='Resource';
+  i:=0;
+  repeat
+    inc(i);
+    Result:=Prefix+IntToStr(i);
+  until (not IdentifierExists(Result)) and (not IdentifierExists('T'+Result));
+end;
+
 function TMainIDE.DoLoadResourceFile(AnUnitInfo: TUnitInfo;
   var LFMCode, ResourceCode: TCodeBuffer;
   IgnoreSourceErrors, AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
@@ -8625,8 +8692,8 @@ begin
   //debugln('TMainIDE.DoNewEditorFile A nfCreateDefaultSrc=',nfCreateDefaultSrc in NewFlags,' ResourceClass=',dbgs(NewFileDescriptor.ResourceClass));
   if nfCreateDefaultSrc in NewFlags then begin
     if (NewFileDescriptor.ResourceClass<>nil) then begin
-      NewUnitInfo.ComponentName:=
-        AProject.NewUniqueComponentName(NewFileDescriptor.DefaultResourceName);
+      NewUnitInfo.ComponentName:=NewUniqueComponentName(
+                                         NewFileDescriptor.DefaultResourceName);
       NewUnitInfo.ComponentResourceName:='';
     end;
     NewUnitInfo.CreateStartCode(NewFileDescriptor,NewUnitName);

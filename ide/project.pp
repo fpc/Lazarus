@@ -909,7 +909,6 @@ type
     function UnitCount:integer;
     function GetFileCount: integer; override;
     function NewUniqueUnitName(const AnUnitName: string): string;
-    function NewUniqueComponentName(const AComponentPrefix: string): string;
     function NewUniqueFilename(const Filename: string): string;
     procedure AddFile(ProjectFile: TLazProjectFile;
                       AddToProjectUsesClause: boolean); override;
@@ -3970,44 +3969,6 @@ begin
     inc(u);
     Result:=Prefix+IntToStr(u);
   until (not UnitNameExists(Result));
-end;
-
-function TProject.NewUniqueComponentName(const AComponentPrefix: string): string;
-
-  function FormComponentExists(const AComponentName: string): boolean;
-  var i: integer;
-    ComponentClassName: string;
-  begin
-    Result:=true;
-    if GetClass(AComponentName)<>nil then exit;
-    ComponentClassName:=ClassNameToComponentName(AComponentName);
-    for i:=0 to UnitCount-1 do begin
-      if (Units[i].Component<>nil) then begin
-        if CompareText(Units[i].Component.Name,AComponentName)=0 then exit;
-        if CompareText(Units[i].Component.ClassName,ComponentClassName)=0
-        then exit;
-      end else if (Units[i].ComponentName<>'')
-      and ((Units[i].IsPartOfProject) or (Units[i].Loaded)) then begin
-        if SysUtils.CompareText(Units[i].ComponentName,AComponentName)=0 then exit;
-      end;
-    end;
-    Result:=false;
-  end;
-
-var
-  u: integer;
-  Prefix: string;
-begin
-  Prefix:=AComponentPrefix;
-  while (Prefix<>'') and (Prefix[length(Prefix)] in ['0'..'9']) do
-    Prefix:=copy(Prefix,1,length(Prefix)-1);
-  if (Prefix='') or (not IsValidIdent(Prefix)) then
-    Prefix:='Resource';
-  u:=0;
-  repeat
-    inc(u);
-    Result:=Prefix+IntToStr(u);
-  until (not FormComponentExists(Result));
 end;
 
 function TProject.NewUniqueFilename(const Filename: string): string;
