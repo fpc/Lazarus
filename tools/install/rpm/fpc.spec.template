@@ -145,7 +145,8 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_bindir}/*
 %{_libdir}/%{name}
-%dir %{_defaultdocdir}
+# Note: 2.6.1 does not create /usr/share/doc the defaultdocdir
+#%dir %{_defaultdocdir}
 #%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/NEWS
 #%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/README
 #%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/readme.ide
