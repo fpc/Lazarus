@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="IDEIntf">
+    <module name="IDECommands">
+      <element name="TIDECommands.FindCommandsByShortCut">
+        <short>Returns a list of all IDE commands fitting the mask. You must free the returned List, do not free the commands.</short>
+        <descr>A mask with Key1=VK_UNKNOWN fits any shortcut.
+A mask with Key2=VK_UNKNOWN fits any one and two key command.
+A mask with both Key1 and Key2 set will find command with only one key.
+Keep in mind that every command has two shortcuts and if any one of them fits it will be in the list.
+</descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

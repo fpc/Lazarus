@@ -325,8 +325,6 @@ const
   // custom commands
   ecLazarusLast             = ecFirstLazarus + 2000;
 
-
-
 type
   TIDECommand = class;
   TIDECommandCategory = class;
@@ -490,6 +488,8 @@ type
                            ): TIDECommand; virtual; abstract;
     function FindCategoryByName(const CategoryName: string): TIDECommandCategory; virtual; abstract;
     function FindCommandByName(const CommandName: string): TIDECommand; virtual; abstract;
+    function FindCommandsByShortCut(const ShortCutMask: TIDEShortCut;
+            IDEWindowClass: TCustomFormClass = nil): TFPList; virtual; abstract; // list of TIDECommand
     function CategoryCount: integer; virtual; abstract;
   public
     property Categories[Index: integer]: TIDECommandCategory read GetCategory;
@@ -517,6 +517,7 @@ procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState;
   IDEWindowClass: TCustomFormClass);
 procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState);
 function ExecuteIDECommand(Sender: TObject; Command: word): boolean;
+function IsValidIDECommandKey(Key: word): boolean;
 
 var
   // will be set by the IDE
@@ -605,6 +606,19 @@ begin
     Result:=OnExecuteIDECommand(Sender,Command)
   else
     Result:=false;
+end;
+
+function IsValidIDECommandKey(Key: word): boolean;
+begin
+  case Key of
+  VK_UNDEFINED,VK_UNKNOWN,
+  VK_CONTROL,VK_LCONTROL,VK_RCONTROL,
+  VK_SHIFT,VK_LSHIFT,VK_RSHIFT,
+  VK_LBUTTON,VK_MBUTTON,VK_RBUTTON,
+  VK_LWIN,VK_RWIN:
+    exit(false);
+  end;
+  Result:=true;
 end;
 
 procedure CreateStandardIDECommandScopes;

@@ -146,6 +146,8 @@ type
     function FindByCommand(ACommand:word): TKeyCommandRelation;
     function FindCategoryByName(const CategoryName: string): TIDECommandCategory; override;
     function FindCommandByName(const CommandName: string): TIDECommand; override;
+    function FindCommandsByShortCut(const ShortCutMask: TIDEShortCut;
+      IDEWindowClass: TCustomFormClass = nil): TFPList; override;
     function TranslateKey(Key: word; Shift: TShiftState;
       IDEWindowClass: TCustomFormClass; UseLastKey: boolean = true): word;
     function IndexOf(ARelation: TKeyCommandRelation): integer;
@@ -3202,14 +3204,14 @@ end;
 function TKeyCommandRelationList.Find(Key: TIDEShortCut;
   IDEWindowClass: TCustomFormClass): TKeyCommandRelation;
 var
-  a:integer;
+  i:integer;
 begin
   Result:=nil;
   //debugln(['TKeyCommandRelationList.Find START ',DbgSName(IDEWindowClass)]);
   //if IDEWindowClass=nil then RaiseGDBException('');
   if Key.Key1=VK_UNKNOWN then exit;
-  for a:=0 to FRelations.Count-1 do
-    with Relations[a] do begin
+  for i:=0 to FRelations.Count-1 do
+    with Relations[i] do begin
       //if Command=ecDesignerSelectParent then
       //  debugln('TKeyCommandRelationList.Find A ',Category.Scope.Name,' ',dbgsName(IDEWindowClass),' ',dbgs(IDECmdScopeDesignerOnly.IDEWindowClassCount),' ',dbgsName(IDECmdScopeDesignerOnly.IDEWindowClasses[0]));
       //debugln(['TKeyCommandRelationList.Find ',Name,' HasScope=',Category.Scope<>nil,' ',KeyAndShiftStateToEditorKeyString(ShortcutA),' ',KeyAndShiftStateToEditorKeyString(Key),' ',(Category.Scope<>nil)      and (not Category.Scope.HasIDEWindowClass(IDEWindowClass))]);
@@ -3223,7 +3225,7 @@ begin
       or ((ShortcutB.Key1=Key.Key1) and (ShortcutB.Shift1=Key.Shift1) and
           (ShortcutB.Key2=Key.Key2) and (ShortcutB.Shift2=Key.Shift2)) then
       begin
-        Result:=Relations[a];
+        Result:=Relations[i];
         exit;
       end;
     end;
@@ -3235,12 +3237,12 @@ begin
 end;
 
 function TKeyCommandRelationList.FindByCommand(ACommand: word):TKeyCommandRelation;
-var a:integer;
+var i:integer;
 begin
   Result:=nil;
-  for a:=0 to FRelations.Count-1 do with Relations[a] do
+  for i:=0 to FRelations.Count-1 do with Relations[i] do
     if (Command=ACommand) then begin
-      Result:=Relations[a];
+      Result:=Relations[i];
       exit;
     end;
 end;
@@ -3248,14 +3250,14 @@ end;
 procedure TKeyCommandRelationList.AssignTo(
   ASynEditKeyStrokes: TSynEditKeyStrokes; IDEWindowClass: TCustomFormClass);
 var
-  a,b,MaxKeyCnt,KeyCnt:integer;
+  i,j,MaxKeyCnt,KeyCnt:integer;
   Key: TSynEditKeyStroke;
   CurRelation: TKeyCommandRelation;
 begin
   try
     ASynEditKeyStrokes.UsePluginOffset := True;
-    for a:=0 to FRelations.Count-1 do begin
-      CurRelation:=Relations[a];
+    for i:=0 to FRelations.Count-1 do begin
+      CurRelation:=Relations[i];
       if (CurRelation.ShortcutA.Key1=VK_UNKNOWN)
       or ((IDEWindowClass<>nil) and (CurRelation.Category.Scope<>nil)
           and (not CurRelation.Category.Scope.HasIDEWindowClass(IDEWindowClass)))
@@ -3266,10 +3268,10 @@ begin
       else
         MaxKeyCnt:=2;
       KeyCnt:=1;
-      b:=ASynEditKeyStrokes.Count-1;
+      j:=ASynEditKeyStrokes.Count-1;
       // replace keys
-      while b>=0 do begin
-        Key:=ASynEditKeyStrokes[b];
+      while j>=0 do begin
+        Key:=ASynEditKeyStrokes[j];
         if Key.Command=CurRelation.Command then begin
           if KeyCnt>MaxKeyCnt then begin
             // All keys with this command are already defined
@@ -3292,7 +3294,7 @@ begin
         end
         else
         if MaxKeyCnt > 0 then begin
-          // Key with a different ecCommand => Remove if it has a conflicting keystroke(s)
+          // Key with i different ecCommand => Remove if it has i conflicting keystroke(s)
           if ( (CurRelation.ShortcutA.Key1 <> VK_UNKNOWN) and
                (Key.Key = CurRelation.ShortcutA.Key1)     and
                (Key.Shift = CurRelation.ShortcutA.Shift1) and
@@ -3310,7 +3312,7 @@ begin
           then
             Key.Free;
         end;
-        dec(b);
+        dec(j);
       end;
       // add missing keys
       while KeyCnt<=MaxKeyCnt do begin
@@ -3497,6 +3499,37 @@ begin
   Result:=nil;
 end;
 
+function TKeyCommandRelationList.FindCommandsByShortCut(
+  const ShortCutMask: TIDEShortCut; IDEWindowClass: TCustomFormClass): TFPList;
+
+  function KeyFits(const aShortCut: TIDEShortCut): boolean;
+  begin
+    if (ShortCutMask.Key1=VK_UNKNOWN) then
+      exit(true); // fits all
+    Result:=((aShortCut.Key1=ShortCutMask.Key1) and (aShortCut.Shift1=ShortCutMask.Shift1))
+      and ((aShortCut.Key2=VK_UNKNOWN)
+        or (ShortCutMask.Key2=VK_UNKNOWN)
+        or ((aShortCut.Key2=ShortCutMask.Key2) and (aShortCut.Shift2=ShortCutMask.Shift2)));
+  end;
+
+var
+  i: Integer;
+begin
+  Result:=TFPList.Create;
+  if (ShortCutMask.Key1<>VK_UNKNOWN)
+  and (not IsValidIDECommandKey(ShortCutMask.Key1)) then
+    exit;
+  for i:=0 to FRelations.Count-1 do
+    with Relations[i] do begin
+      if (IDEWindowClass<>nil)
+      and (Category.Scope<>nil)
+      and (not Category.Scope.HasIDEWindowClass(IDEWindowClass)) then continue;
+      if KeyFits(ShortcutA) or KeyFits(ShortcutB)
+      then
+        Result.Add(Relations[i]);
+    end;
+end;
+
 function TKeyCommandRelationList.TranslateKey(Key: word; Shift: TShiftState;
   IDEWindowClass: TCustomFormClass; UseLastKey: boolean): word;
 { If UseLastKey = true then only search for commmands with one key.
@@ -3511,16 +3544,10 @@ begin
   //debugln(['TKeyCommandRelationList.TranslateKey ',DbgSName(IDEWindowClass)]);
   //if IDEWindowClass=nil then DumpStack;
   Result:=ecNone;
-  case Key of
-  VK_UNDEFINED,VK_UNKNOWN,
-  VK_CONTROL,VK_LCONTROL,VK_RCONTROL,
-  VK_SHIFT,VK_LSHIFT,VK_RSHIFT,
-  VK_LBUTTON,VK_MBUTTON,VK_RBUTTON,
-  VK_LWIN,VK_RWIN:
-    begin
-      //debugln(['TKeyCommandRelationList.TranslateKey ignoring ',dbgs(Key)]);
-      exit;
-    end;
+  if not IsValidIDECommandKey(Key) then
+  begin
+    //debugln(['TKeyCommandRelationList.TranslateKey ignoring ',dbgs(Key)]);
+    exit;
   end;
   if UseLastKey and (fLastKey.Key1<>VK_UNKNOWN) then begin
     // the last key had no command
