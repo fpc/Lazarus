@@ -7,13 +7,13 @@ unit DemoIDEHelp;
 interface
 
 uses
-  myidehelp, LazarusPackageIntf;
+  MyIDEHelp, LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
-  RegisterUnit('myidehelp', @myidehelp.Register);
+  RegisterUnit('MyIDEHelp', @MyIDEHelp.Register);
 end;
 
 initialization
