@@ -33,8 +33,8 @@ interface
 
 uses
   Classes, SysUtils, LCLType, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
-  ComCtrls, ButtonPanel, LazarusIDEStrConsts, ComponentReg, PackageDefs,
-  FormEditingIntf, PropEdits, ListFilterEdit, TreeFilterEdit, fgl;
+  ComCtrls, ButtonPanel, Dialogs, LazarusIDEStrConsts, ComponentReg,
+  PackageDefs, FormEditingIntf, PropEdits, ListFilterEdit, TreeFilterEdit, fgl;
 
 type
 
@@ -61,6 +61,8 @@ type
     procedure ComponentsListboxDblClick(Sender: TObject);
     procedure ComponentsListboxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
+    procedure PalletteTreeCustomDrawItem(Sender: TCustomTreeView;
+      Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure ComponentsListboxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure InheritanceTreeDblClick ( Sender: TObject ) ;
     procedure InheritanceTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -94,7 +96,8 @@ begin
   inherited Create(AOwner);
   FComponentList := TRegisteredCompList.Create;
   ButtonPanel.CloseButton.Cancel := True;
-  ComponentsListBox.ItemHeight:=ComponentPaletteImageHeight + 2;
+  ComponentsListBox.ItemHeight  :=ComponentPaletteImageHeight + 2;
+  PalletteTree.DefaultItemHeight:=ComponentPaletteImageHeight + 2;
 
   //Translations..
   LabelSearch.Caption := lisMenuFind;
@@ -105,7 +108,7 @@ begin
 
   //PLEASE add a defaultpage property in TPagecontrol
   PageControl.ActivePage := TabSheetListBox;
-  PrevPageIndex := 0;
+  PrevPageIndex := -1;
   TreeFilterEd.Visible := False;
 
   FindAllLazarusComponents;
@@ -294,10 +297,8 @@ procedure TComponentListForm.ComponentsListboxDrawItem(Control: TWinControl;
 var
   Comp: TRegisteredComponent;
   CurStr: string;
-  TxtH: Integer;
   CurIcon: TCustomBitmap;
-  IconWidth: Integer;
-  IconHeight: Integer;
+  TxtH, IconWidth, IconHeight: Integer;
 begin
   if (Index<0) or (Index>=ComponentsListBox.Items.Count) then exit;
   // draw registered component
@@ -310,17 +311,60 @@ begin
     CurIcon:=nil;
     if Comp is TPkgComponent then
       CurIcon:=TPkgComponent(Comp).Icon;
-    if CurIcon<>nil
-    then begin
+    if CurIcon<>nil then
+    begin
       IconWidth:=CurIcon.Width;
       IconHeight:=CurIcon.Height;
       Draw(ARect.Left+(25-IconWidth) div 2,
-           ARect.Top+(ARect.Bottom-ARect.Top-IconHeight) div 2,
-           CurIcon);
+           ARect.Top+(ARect.Bottom-ARect.Top-IconHeight) div 2, CurIcon);
     end;
     TextOut(ARect.Left+25,
-            ARect.Top+(ARect.Bottom-ARect.Top-TxtH) div 2,
-            CurStr);
+            ARect.Top+(ARect.Bottom-ARect.Top-TxtH) div 2, CurStr);
+  end;
+end;
+
+procedure TComponentListForm.PalletteTreeCustomDrawItem(Sender: TCustomTreeView;
+  Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
+var
+  Comp: TRegisteredComponent;
+  ARect: TRect;
+  CurIcon: TCustomBitmap;
+  Indent, IconWidth, IconHeight: Integer;
+begin
+  DefaultDraw := False;
+  Indent := (Sender as TTreeView).Indent;
+  Comp:=TRegisteredComponent(Node.Data);
+  with Sender.Canvas do
+  begin
+    if cdsSelected in State then
+    begin
+      Brush.Color := clHighlight;   //Brush.Style := ...
+      Font.Color := clHighlightedText;
+    end
+    else begin
+      Brush.Color := clDefault;  //Brush.Style := ...
+      Font.Color := clDefault;
+    end;
+    ARect := Node.DisplayRect(False);
+    FillRect(ARect);
+    //Brush.Style := bsClear;     //don't paint over the background bitmap.
+    ARect.Left := ARect.Left + (Node.Level * Indent);
+    // ARect.Left now points to the left of the image, or text if no image
+    CurIcon:=nil;
+    if Comp is TPkgComponent then
+      CurIcon:=TPkgComponent(Comp).Icon;
+    if CurIcon<>nil then
+    begin
+      IconWidth:=CurIcon.Width;
+      IconHeight:=CurIcon.Height;
+      ARect.Left := ARect.Left + Indent;
+      //ARect.Left is now the leftmost portion of the image.
+      Draw(ARect.Left+(25-IconWidth) div 2,
+           ARect.Top+(ARect.Bottom-ARect.Top-IconHeight) div 2, CurIcon);
+      ARect.Left := ARect.Left + IconWidth + 2;
+    end;
+    //Now we are finally in a position to draw the text.
+    TextOut(ARect.Left, ARect.Top, Node.Text);
   end;
 end;
 
@@ -368,7 +412,8 @@ end;
 
 procedure TComponentListForm.PageControlChange(Sender: TObject);
 begin
-  Assert(PageControl.PageIndex <> PrevPageIndex);
+  Assert(PageControl.PageIndex <> PrevPageIndex,
+         Format('PageControl.PageIndex = PrevPageIndex = %d', [PrevPageIndex]));
   case PageControl.PageIndex of
     0: begin
       ListFilterEd.Visible := True;

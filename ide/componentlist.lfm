@@ -83,6 +83,7 @@ object ComponentListForm: TComponentListForm
           ReadOnly = True
           ShowLines = False
           TabOrder = 0
+          OnCustomDrawItem = PalletteTreeCustomDrawItem
           OnDblClick = PalletteTreeDblClick
           OnKeyDown = PalletteTreeKeyDown
           Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
