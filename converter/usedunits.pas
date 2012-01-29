@@ -220,7 +220,7 @@ begin
       OldUnitName:=CodeTool.GetAtom(UnitNameAtom);
       if InAtom.StartPos>0 then
         OldInFilename:=copy(CodeTool.Src,InAtom.StartPos+1,
-                               InAtom.EndPos-InAtom.StartPos-2)
+                            InAtom.EndPos-InAtom.StartPos-2)
       else
         OldInFilename:='';
       // find unit file
@@ -700,14 +700,14 @@ begin
   Result:=mrCancel;
   if not ( fMainUsedUnits.fExistingUnits.Find('cthreads', i) or
            fImplUsedUnits.fExistingUnits.Find('cthreads', i) ) then
-    with fCTLink do
+    with fCTLink, SrcCache.BeautifyCodeOptions do
     try
-      OldPolicy:=SrcCache.BeautifyCodeOptions.UsesInsertPolicy;
-      SrcCache.BeautifyCodeOptions.UsesInsertPolicy:=uipFirst;
+      OldPolicy:=UsesInsertPolicy;
+      UsesInsertPolicy:=uipFirst;
       if not CodeTool.AddUnitToSpecificUsesSection(fMainUsedUnits.fUsesSection,
                            '{$IFDEF UNIX}cthreads{$ENDIF}', '', SrcCache) then exit;
     finally
-      SrcCache.BeautifyCodeOptions.UsesInsertPolicy:=OldPolicy;
+      UsesInsertPolicy:=OldPolicy;
     end;
   Result:=mrOK;
 end;
