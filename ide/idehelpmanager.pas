@@ -1349,7 +1349,6 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
       Dec(IdentStart);
     KeyWord:=copy(CodeBuffer.Source,IdentStart,IdentEnd-IdentStart);
     ErrorMsg:='';
-    debugln(['CollectKeyWords ',KeyWord]);
     if KeyWord[1] = '$' then
       Result:=ShowHelpForDirective('',FPCDirectiveHelpPrefix+Keyword,ErrorMsg)
     else if KeyWord[1] = '%' then

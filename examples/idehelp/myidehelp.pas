@@ -17,6 +17,19 @@
   to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
   MA 02111-1307, USA.
 }
+{
+ToDos:
+- FPC keyword: context
+- FPC Messages, message, id
+- Other messages: Linker errors, fpcres errors
+- predefined identifiers: cardinal, longint
+- predefined procs: exit, break, continue, writeln
+- help for sources
+- IDE dialogs / wiki:
+- custom dialogs / wiki:
+- fpc compiler options:
+
+}
 unit MyIDEHelp;
 
 {$mode objfpc}{$H+}
