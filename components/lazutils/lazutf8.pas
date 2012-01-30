@@ -239,6 +239,11 @@ begin
 end;
 
 function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal;
+{ if p=nil then CharLen=0 otherwise CharLen>0
+  If there is an encoding error the Result is undefined.
+  Use UTF8FixBroken to fix UTF-8 encoding.
+  It does not check if the codepoint is defined in the Unicode tables.
+}
 begin
   if p<>nil then begin
     if ord(p^)<%11000000 then begin
@@ -246,56 +251,61 @@ begin
       Result:=ord(p^);
       CharLen:=1;
     end
-    else begin
-      // multi byte
-      if ((ord(p^) and %11100000) = %11000000) then begin
-        // starts with %110 => could be double byte character
-        if (ord(p[1]) and %11000000) = %10000000 then begin
-          Result:=((ord(p^) and %00011111) shl 6)
-                  or (ord(p[1]) and %00111111);
-          CharLen:=2;
-        end else begin
-          Result:=ord(p^);
-          CharLen:=1;
+    else if ((ord(p^) and %11100000) = %11000000) then begin
+      // starts with %110 => could be double byte character
+      if (ord(p[1]) and %11000000) = %10000000 then begin
+        CharLen:=2;
+        Result:=((ord(p^) and %00011111) shl 6)
+                or (ord(p[1]) and %00111111);
+        if Result<(1 shl 7) then begin
+          // wrong encoded, could be an XSS attack
+          Result:=0;
         end;
-      end
-      else if ((ord(p^) and %11110000) = %11100000) then begin
-        // starts with %1110 => could be triple byte character
-        if ((ord(p[1]) and %11000000) = %10000000)
-        and ((ord(p[2]) and %11000000) = %10000000) then begin
-          Result:=((ord(p^) and %00011111) shl 12)
-                  or ((ord(p[1]) and %00111111) shl 6)
-                  or (ord(p[2]) and %00111111);
-          CharLen:=3;
-        end else begin
-          Result:=ord(p^);
-          CharLen:=1;
-        end;
-      end
-      else if ((ord(p^) and %11111000) = %11110000) then begin
-        // starts with %11110 => could be 4 byte character
-        if ((ord(p[1]) and %11000000) = %10000000)
-        and ((ord(p[2]) and %11000000) = %10000000)
-        and ((ord(p[3]) and %11000000) = %10000000) then begin
-          Result:=((ord(p^) and %00001111) shl 18)
-                  or ((ord(p[1]) and %00111111) shl 12)
-                  or ((ord(p[2]) and %00111111) shl 6)
-                  or (ord(p[3]) and %00111111);
-          CharLen:=4;
-        end else begin
-          Result:=ord(p^);
-          CharLen:=1;
-        end;
-      end
-      else begin
-        // invalid character
+      end else begin
         Result:=ord(p^);
         CharLen:=1;
       end;
-      if (CharLen>1) and (Result<128) then begin
-        // invalid character
+    end
+    else if ((ord(p^) and %11110000) = %11100000) then begin
+      // starts with %1110 => could be triple byte character
+      if ((ord(p[1]) and %11000000) = %10000000)
+      and ((ord(p[2]) and %11000000) = %10000000) then begin
+        CharLen:=3;
+        Result:=((ord(p^) and %00011111) shl 12)
+                or ((ord(p[1]) and %00111111) shl 6)
+                or (ord(p[2]) and %00111111);
+        if Result<(1 shl 11) then begin
+          // wrong encoded, could be an XSS attack
+          Result:=0;
+        end;
+      end else begin
         Result:=ord(p^);
+        CharLen:=1;
       end;
+    end
+    else if ((ord(p^) and %11111000) = %11110000) then begin
+      // starts with %11110 => could be 4 byte character
+      if ((ord(p[1]) and %11000000) = %10000000)
+      and ((ord(p[2]) and %11000000) = %10000000)
+      and ((ord(p[3]) and %11000000) = %10000000) then begin
+        CharLen:=4;
+        Result:=((ord(p^) and %00001111) shl 18)
+                or ((ord(p[1]) and %00111111) shl 12)
+                or ((ord(p[2]) and %00111111) shl 6)
+                or (ord(p[3]) and %00111111);
+        if Result<(1 shl 16) then begin
+          // wrong encoded, could be an XSS attack
+          Result:=0;
+        end;
+      end else begin
+        Result:=ord(p^);
+        CharLen:=1;
+      end;
+    end
+    else begin
+      // invalid character
+      Result:=ord(p^);
+      CharLen:=1;
     end;
   end else begin
     Result:=0;
@@ -484,7 +494,7 @@ begin
       if ((ord(p[1]) and %11000000) = %10000000) then begin
         c:=((ord(p^) and %00011111) shl 6);
            //or (ord(p[1]) and %00111111);
-        if c<128 then
+        if c<(1 shl 7) then
           p^:=' '
         else
           inc(p,2)
@@ -499,7 +509,7 @@ begin
         c:=((ord(p^) and %00011111) shl 12)
            or ((ord(p[1]) and %00111111) shl 6);
            //or (ord(p[2]) and %00111111);
-        if c<128 then
+        if c<(1 shl 11) then
           p^:=' '
         else
           inc(p,3);
@@ -515,7 +525,7 @@ begin
            or ((ord(p[1]) and %00111111) shl 12)
            or ((ord(p[2]) and %00111111) shl 6);
            //or (ord(p[3]) and %00111111);
-        if c<128 then
+        if c<(1 shl 16) then
           p^:=' '
         else
           inc(p,4)
