@@ -243,49 +243,57 @@ begin
       Result:=ord(p^);
       CharLen:=1;
     end
-    else if ((ord(p^) and %11100000) = %11000000) then begin
-      // could be double byte character
-      if (ord(p[1]) and %11000000) = %10000000 then begin
-        Result:=((ord(p^) and %00011111) shl 6)
-                or (ord(p[1]) and %00111111);
-        CharLen:=2;
-      end else begin
-        Result:=ord(p^);
-        CharLen:=1;
-      end;
-    end
-    else if ((ord(p^) and %11110000) = %11100000) then begin
-      // could be triple byte character
-      if ((ord(p[1]) and %11000000) = %10000000)
-      and ((ord(p[2]) and %11000000) = %10000000) then begin
-        Result:=((ord(p^) and %00011111) shl 12)
-                or ((ord(p[1]) and %00111111) shl 6)
-                or (ord(p[2]) and %00111111);
-        CharLen:=3;
-      end else begin
-        Result:=ord(p^);
-        CharLen:=1;
-      end;
-    end
-    else if ((ord(p^) and %11111000) = %11110000) then begin
-      // could be 4 byte character
-      if ((ord(p[1]) and %11000000) = %10000000)
-      and ((ord(p[2]) and %11000000) = %10000000)
-      and ((ord(p[3]) and %11000000) = %10000000) then begin
-        Result:=((ord(p^) and %00001111) shl 18)
-                or ((ord(p[1]) and %00111111) shl 12)
-                or ((ord(p[2]) and %00111111) shl 6)
-                or (ord(p[3]) and %00111111);
-        CharLen:=4;
-      end else begin
-        Result:=ord(p^);
-        CharLen:=1;
-      end;
-    end
     else begin
-      // invalid character
-      Result:=ord(p^);
-      CharLen:=1;
+      // multi byte
+      if ((ord(p^) and %11100000) = %11000000) then begin
+        // starts with %110 => could be double byte character
+        if (ord(p[1]) and %11000000) = %10000000 then begin
+          Result:=((ord(p^) and %00011111) shl 6)
+                  or (ord(p[1]) and %00111111);
+          CharLen:=2;
+        end else begin
+          Result:=ord(p^);
+          CharLen:=1;
+        end;
+      end
+      else if ((ord(p^) and %11110000) = %11100000) then begin
+        // starts with %1110 => could be triple byte character
+        if ((ord(p[1]) and %11000000) = %10000000)
+        and ((ord(p[2]) and %11000000) = %10000000) then begin
+          Result:=((ord(p^) and %00011111) shl 12)
+                  or ((ord(p[1]) and %00111111) shl 6)
+                  or (ord(p[2]) and %00111111);
+          CharLen:=3;
+        end else begin
+          Result:=ord(p^);
+          CharLen:=1;
+        end;
+      end
+      else if ((ord(p^) and %11111000) = %11110000) then begin
+        // starts with %11110 => could be 4 byte character
+        if ((ord(p[1]) and %11000000) = %10000000)
+        and ((ord(p[2]) and %11000000) = %10000000)
+        and ((ord(p[3]) and %11000000) = %10000000) then begin
+          Result:=((ord(p^) and %00001111) shl 18)
+                  or ((ord(p[1]) and %00111111) shl 12)
+                  or ((ord(p[2]) and %00111111) shl 6)
+                  or (ord(p[3]) and %00111111);
+          CharLen:=4;
+        end else begin
+          Result:=ord(p^);
+          CharLen:=1;
+        end;
+      end
+      else begin
+        // invalid character
+        Result:=ord(p^);
+        CharLen:=1;
+      end;
+      if (CharLen>1) and (Result<128) then begin
+        // invalid character
+        Result:=ord(p^);
+        CharLen:=1;
+      end;
     end;
   end else begin
     Result:=0;
@@ -2769,6 +2777,7 @@ procedure LazGetShortLanguageID(var Lang: String);
 var
   FallbackLang: String;
 begin
+  FallbackLang:='';
   LazGetLanguageIDs(Lang, FallbackLang);
 
   // Simply making sure its length is at most 2 should be enough for most languages
