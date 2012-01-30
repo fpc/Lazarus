@@ -340,7 +340,7 @@ begin
     if cdsSelected in State then
     begin
       Brush.Color := clHighlight;   //Brush.Style := ...
-      Font.Color := clHighlightedText;
+      Font.Color := clHighlightText;
     end
     else begin
       Brush.Color := clDefault;
