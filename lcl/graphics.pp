@@ -313,7 +313,7 @@ const
   clMenuBar                 = TColor(SYS_COLOR_BASE or COLOR_MENUBAR);
   clForm                    = TColor(SYS_COLOR_BASE or COLOR_FORM);
 
-  // synonims: do not show them in color lists
+  // synonyms: do not show them in color lists
   clColorDesktop            = TColor(SYS_COLOR_BASE or COLOR_DESKTOP);
   cl3DFace                  = TColor(SYS_COLOR_BASE or COLOR_3DFACE);
   cl3DShadow                = TColor(SYS_COLOR_BASE or COLOR_3DSHADOW);
