@@ -155,6 +155,7 @@ var
 var
   FPCKeyWordHelpPrefix: string = 'FPCKeyword_';
   FPCDirectiveHelpPrefix: string = 'FPCDirective_';
+  IDEDirectiveHelpPrefix: string = 'IDEDirective_';
 
 implementation
 

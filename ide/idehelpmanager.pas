@@ -1345,12 +1345,15 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
     if p<1 then exit;
     GetIdentStartEndAtPosition(CodeBuffer.Source,p,IdentStart,IdentEnd);
     if IdentEnd<=IdentStart then exit;
-    if (IdentStart > 1) and (CodeBuffer.Source[IdentStart - 1] = '$') then
+    if (IdentStart > 1) and (CodeBuffer.Source[IdentStart - 1] in ['$','%']) then
       Dec(IdentStart);
     KeyWord:=copy(CodeBuffer.Source,IdentStart,IdentEnd-IdentStart);
     ErrorMsg:='';
+    debugln(['CollectKeyWords ',KeyWord]);
     if KeyWord[1] = '$' then
       Result:=ShowHelpForDirective('',FPCDirectiveHelpPrefix+Keyword,ErrorMsg)
+    else if KeyWord[1] = '%' then
+      Result:=ShowHelpForDirective('',IDEDirectiveHelpPrefix+Keyword,ErrorMsg)
     else
       Result:=ShowHelpForKeyword('',FPCKeyWordHelpPrefix+Keyword,ErrorMsg);
     if Result=shrHelpNotFound then exit;

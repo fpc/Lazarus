@@ -24,8 +24,8 @@ unit MyIDEHelp;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, LazHelpHTML,
-  LazHelpIntf, HelpIntfs, IDEHelpIntf, IDEDialogs;
+  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
+  LazHelpHTML, LazHelpIntf, HelpIntfs, IDEHelpIntf, IDEDialogs;
 
 type
 
@@ -49,18 +49,19 @@ type
                       var {%H-}ErrMsg: string): TShowHelpResult; override;
   end;
 
-  { TMyFPCDirectiveHelpDatabase
-    Help for FPC directives like 'mode'
+  { TMyDirectiveHelpDatabase
+    Help for FPC and Lazarus IDE directives like '$mode' and '%H'
     Notes: Do not forget to register }
 
-  TMyFPCDirectiveHelpDatabase = class(THTMLHelpDatabase)
+  TMyDirectiveHelpDatabase = class(THTMLHelpDatabase)
   private
     FAllDirectiveNode: THelpNode;
   public
-    DirectiveToText: TStrings; // every line has the format: Keyword=Text
+    FPCDirectiveToText: TStrings; // every line has the format: Keyword=Text
+    IDEDirectiveToText: TStrings; // every line has the format: Keyword=Text
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    function GetNodesForDirective(const HelpKeyword: string;
+    function GetNodesForDirective(const HelpDirective: string;
                         var ListOfNodes: THelpNodeQueryList; var {%H-}ErrMsg: string
                         ): TShowHelpResult; override;
     function ShowHelp(Query: THelpQuery; {%H-}BaseNode, {%H-}NewNode: THelpNode;
@@ -83,52 +84,67 @@ implementation
 procedure Register;
 begin
   HelpDatabases.CreateHelpDatabase('MyFPCKeyWordHelpDB',TMyFPCKeywordHelpDatabase,true);
-  HelpDatabases.CreateHelpDatabase('MyFPCDirectiveHelpDB',TMyFPCDirectiveHelpDatabase,true);
+  HelpDatabases.CreateHelpDatabase('MyFPCDirectiveHelpDB',TMyDirectiveHelpDatabase,true);
 end;
 
-{ TMyFPCDirectiveHelpDatabase }
+{ TMyDirectiveHelpDatabase }
 
-constructor TMyFPCDirectiveHelpDatabase.Create(TheOwner: TComponent);
+constructor TMyDirectiveHelpDatabase.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  DirectiveToText:=TStringList.Create;
-  DirectiveToText.Add('mode=Set the syntax, e.g. fpc, objfpc, delphi, macpas, tp');
+  FPCDirectiveToText:=TStringList.Create;
+  FPCDirectiveToText.Add('mode=Set the syntax, e.g. fpc, objfpc, delphi, macpas, tp');
+  IDEDirectiveToText:=TStringList.Create;
+  IDEDirectiveToText.Add('H=Use {%H-} to hide any compiler message at that source position in IDE messages window.');
 end;
 
-destructor TMyFPCDirectiveHelpDatabase.Destroy;
+destructor TMyDirectiveHelpDatabase.Destroy;
 begin
-  FreeAndNil(DirectiveToText);
+  FreeAndNil(FPCDirectiveToText);
+  FreeAndNil(IDEDirectiveToText);
   inherited Destroy;
 end;
 
-function TMyFPCDirectiveHelpDatabase.GetNodesForDirective(
-  const HelpKeyword: string; var ListOfNodes: THelpNodeQueryList;
+function TMyDirectiveHelpDatabase.GetNodesForDirective(
+  const HelpDirective: string; var ListOfNodes: THelpNodeQueryList;
   var ErrMsg: string): TShowHelpResult;
 var
   Directive: String;
   i: Integer;
+  Title: String;
 begin
   Result:=shrHelpNotFound;
   if (csDesigning in ComponentState) then exit;
-  if (FPCDirectiveHelpPrefix='')
-  or (LeftStr(HelpKeyword,length(FPCDirectiveHelpPrefix))<>FPCDirectiveHelpPrefix)
-  then exit;
-  // HelpKeyword is for example 'FPCDirective_$mode'
-  Directive:=copy(HelpKeyword,length(FPCDirectiveHelpPrefix)+2,length(HelpKeyword));
-  // directive is now 'mode'
-  i:=DirectiveToText.IndexOfName(lowercase(Directive));
-  if i<0 then exit;
+  debugln(['TMyDirectiveHelpDatabase.GetNodesForDirective HelpDirective="',HelpDirective,'"']);
+  if (FPCDirectiveHelpPrefix<>'')
+  and (LeftStr(HelpDirective,length(FPCDirectiveHelpPrefix))=FPCDirectiveHelpPrefix)
+  then begin
+    // HelpDirective is for example 'FPCDirective_$mode'
+    Directive:=copy(HelpDirective,length(FPCDirectiveHelpPrefix)+2,length(HelpDirective));
+    // directive is now 'mode'
+    i:=FPCDirectiveToText.IndexOfName(lowercase(Directive));
+    if i<0 then exit;
+    Title:='Free Pascal Compiler directive $'+Directive;
+  end else if (IDEDirectiveHelpPrefix<>'')
+  and (LeftStr(HelpDirective,length(IDEDirectiveHelpPrefix))=IDEDirectiveHelpPrefix)
+  then begin
+    // IDE directive
+    Directive:=copy(HelpDirective,length(IDEDirectiveHelpPrefix)+2,length(HelpDirective));
+    // directive is now 'H'
+    i:=IDEDirectiveToText.IndexOfName(lowercase(Directive));
+    Title:='IDE directive %'+Directive;
+  end;
   // this help database knows this Directive
   // => add a node, so that if there are several possibilities the IDE can
   //    show the user a dialog to choose
   if FAllDirectiveNode=nil then
     FAllDirectiveNode:=THelpNode.CreateURL(Self,'','');
-  FAllDirectiveNode.Title:='Free Pascal Compiler directive '+Directive;
+  FAllDirectiveNode.Title:=Title;
   CreateNodeQueryListAndAdd(FAllDirectiveNode,nil,ListOfNodes,true);
   Result:=shrSuccess;
 end;
 
-function TMyFPCDirectiveHelpDatabase.ShowHelp(Query: THelpQuery; BaseNode,
+function TMyDirectiveHelpDatabase.ShowHelp(Query: THelpQuery; BaseNode,
   NewNode: THelpNode; QueryItem: THelpQueryItem; var ErrMsg: string
   ): TShowHelpResult;
 var
@@ -139,11 +155,27 @@ begin
   Result:=shrHelpNotFound;
   if not (Query is THelpQueryDirective) then exit;
   DirectiveQuery:=THelpQueryDirective(Query);
-  Directive:=copy(DirectiveQuery.Directive,length(FPCDirectiveHelpPrefix)+2,length(DirectiveQuery.Directive));
-  Txt:=DirectiveToText.Values[lowercase(Directive)];
-  IDEMessageDialog('My fpc directive help',
-    'The compiler directive "'+Directive+'":'#13#13
-    +Txt,mtInformation,[mbOk]);
+  Directive:=DirectiveQuery.Directive;
+  if (FPCDirectiveHelpPrefix<>'')
+  and (LeftStr(Directive,length(FPCDirectiveHelpPrefix))=FPCDirectiveHelpPrefix)
+  then begin
+    // Directive is for example 'FPCDirective_$mode'
+    Directive:=copy(Directive,length(FPCDirectiveHelpPrefix)+2,length(Directive));
+    // directive is now 'mode'
+    Txt:=FPCDirectiveToText.Values[lowercase(Directive)];
+    IDEMessageDialog('My fpc directive help',
+      'Free Pascal compiler directive "$'+Directive+'":'#13#13
+      +Txt,mtInformation,[mbOk]);
+  end else if (IDEDirectiveHelpPrefix<>'')
+  and (LeftStr(Directive,length(IDEDirectiveHelpPrefix))=IDEDirectiveHelpPrefix)
+  then begin
+    // IDE directive
+    Directive:=copy(Directive,length(IDEDirectiveHelpPrefix)+2,length(Directive));
+    Txt:=IDEDirectiveToText.Values[lowercase(Directive)];
+    IDEMessageDialog('My Lazarus IDE directive help',
+      'Lazarus IDE directive "%'+Directive+'":'#13#13
+      +Txt,mtInformation,[mbOk]);
+  end;
   Result:=shrSuccess;
 end;
 
