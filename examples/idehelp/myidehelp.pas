@@ -31,7 +31,8 @@ type
 
   { TMyFPCKeywordHelpDatabase
     Help for FPC keywords like 'procedure'
-    Note: Do not forget to register }
+    Notes: Do not forget to register!
+           You can combine all databases into one. }
 
   TMyFPCKeywordHelpDatabase = class(THTMLHelpDatabase)
   private
@@ -50,7 +51,7 @@ type
 
   { TMyFPCDirectiveHelpDatabase
     Help for FPC directives like 'mode'
-    Note: Do not forget to register }
+    Notes: Do not forget to register }
 
   TMyFPCDirectiveHelpDatabase = class(THTMLHelpDatabase)
   private
