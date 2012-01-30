@@ -10,10 +10,10 @@ object Form1: TForm1
   LCLVersion = '0.9.31'
   object comboControls: TComboBox
     Left = 80
-    Height = 27
+    Height = 21
     Top = 12
     Width = 136
-    ItemHeight = 0
+    ItemHeight = 13
     ItemIndex = 0
     Items.Strings = (
       'TCDMenu'
@@ -39,6 +39,7 @@ object Form1: TForm1
       'TCDUpDown'
       'TCDPageControl'
       'TCDTabControl'
+      'TCDSpinEdit'
     )
     OnChange = comboControlsChange
     TabOrder = 0
@@ -60,7 +61,7 @@ object Form1: TForm1
     Height = 240
     Top = 40
     Width = 463
-    PageIndex = 2
+    PageIndex = 23
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 2
     TabStop = True
@@ -132,6 +133,26 @@ object Form1: TForm1
         TabOrder = 5
         TabStop = True
       end
+      object Button3: TButton
+        Left = 7
+        Height = 25
+        Top = 48
+        Width = 75
+        Caption = 'Disabled'
+        Enabled = False
+        TabOrder = 6
+      end
+      object CDButton7: TCDButton
+        Left = 232
+        Height = 25
+        Top = 88
+        Width = 75
+        Caption = 'Disabled'
+        DrawStyle = dsWin2000
+        Enabled = False
+        TabOrder = 7
+        TabStop = True
+      end
     end
     object pageEdits: TPage
       object CDEdit1: TCDEdit
@@ -165,6 +186,24 @@ object Form1: TForm1
         Width = 88
         DrawStyle = dsWinXP
         Text = 'editWinXP'
+      end
+      object Edit2: TEdit
+        Left = 8
+        Height = 21
+        Top = 56
+        Width = 80
+        Enabled = False
+        TabOrder = 4
+        Text = 'disabled'
+      end
+      object CDEdit3: TCDEdit
+        Left = 224
+        Height = 25
+        Top = 26
+        Width = 80
+        DrawStyle = dsDefault
+        Enabled = False
+        Text = 'disabled'
       end
     end
     object pageEditMultiline: TPage
@@ -331,16 +370,16 @@ object Form1: TForm1
           Height = 19
           Top = 47
           Width = 93
-          DrawStyle = dsDefault
           Caption = 'dsCommon'
+          DrawStyle = dsDefault
         end
         object CDRadioButton1: TCDRadioButton
           Left = 14
           Height = 19
           Top = 7
           Width = 93
-          DrawStyle = dsCommon
           Caption = 'dsCommon'
+          DrawStyle = dsCommon
           TabStop = False
         end
         object CDRadioButton3: TCDRadioButton
@@ -348,9 +387,9 @@ object Form1: TForm1
           Height = 19
           Top = 27
           Width = 93
+          Caption = 'dsCommon'
           Checked = True
           DrawStyle = dsDefault
-          Caption = 'dsCommon'
         end
       end
     end
@@ -471,8 +510,8 @@ object Form1: TForm1
         Top = 13
         Width = 100
         AutoSize = True
-        DrawStyle = dsCommon
         Caption = 'dsCommon'
+        DrawStyle = dsCommon
       end
       object CDGroupBox2: TCDGroupBox
         Left = 279
@@ -480,8 +519,8 @@ object Form1: TForm1
         Top = 13
         Width = 100
         AutoSize = True
-        DrawStyle = dsWinCE
         Caption = 'dsWinCE'
+        DrawStyle = dsWinCE
       end
     end
     object pagePanels: TPage
@@ -793,8 +832,8 @@ object Form1: TForm1
         Height = 20
         Top = 31
         Width = 70
-        DrawStyle = dsCommon
         Caption = 'dsCommon'
+        DrawStyle = dsCommon
       end
     end
     object pageTrackBars: TPage
@@ -1227,6 +1266,27 @@ object Form1: TForm1
         Top = 40
         Width = 192
         TabIndex = 0
+      end
+    end
+    object pageSpins: TPage
+      object SpinEdit1: TSpinEdit
+        Left = 13
+        Height = 21
+        Top = 24
+        Width = 85
+        TabOrder = 0
+        Value = 1
+      end
+      object FloatSpinEdit1: TFloatSpinEdit
+        Left = 13
+        Height = 21
+        Top = 104
+        Width = 85
+        Increment = 0.1
+        MaxValue = 100
+        MinValue = 0
+        TabOrder = 1
+        Value = 1.1
       end
     end
   end

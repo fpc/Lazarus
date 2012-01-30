@@ -215,6 +215,14 @@ type
     CurStartLeftPos: Integer;
   end;
 
+  TCDSpinStateEx = class(TCDPositionedCStateEx)
+  public
+    Min: integer;
+    Increment: integer;
+    FloatMin: Double;
+    FloatIncrement: Double;
+  end;
+
   TCDControlID = (
     cidControl,
     // Standard
@@ -363,6 +371,11 @@ type
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); virtual; abstract;
     procedure DrawTab(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); virtual; abstract;
+    // ===================================
+    // Misc Tab
+    // ===================================
+    procedure DrawSpinEdit(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDSpinStateEx); virtual; abstract;
   end;
 
 procedure RegisterDrawer(ADrawer: TCDDrawer; AStyle: TCDDrawStyle);

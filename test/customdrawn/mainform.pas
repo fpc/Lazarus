@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, customdrawncontrols, customdrawndrawers, Forms,
-  Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls, Buttons;
+  Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls, Buttons, Spin;
 
 type
 
@@ -16,12 +16,14 @@ type
     BitBtn1: TBitBtn;
     Button1: TButton;
     Button2: TButton;
+    Button3: TButton;
     CDButton1: TCDButton;
     CDButton2: TCDButton;
     CDButton3: TCDButton;
     CDButton4: TCDButton;
     CDButton5: TCDButton;
     CDButton6: TCDButton;
+    CDButton7: TCDButton;
     CDCheckBox1: TCDCheckBox;
     CDCheckBox2: TCDCheckBox;
     CDCheckBox3: TCDCheckBox;
@@ -32,9 +34,14 @@ type
     CDCheckBox8: TCDCheckBox;
     CDEdit1: TCDEdit;
     CDEdit2: TCDEdit;
+    CDEdit3: TCDEdit;
     CDTabControl1: TCDTabControl;
+    Edit2: TEdit;
+    FloatSpinEdit1: TFloatSpinEdit;
+    pageSpins: TPage;
     sbCommon1: TCDScrollBar;
     sbCommon2: TCDScrollBar;
+    SpinEdit1: TSpinEdit;
     TabControl1: TTabControl;
     trackScrollBarPageSize: TCDTrackBar;
     CheckBox2: TCheckBox;

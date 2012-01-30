@@ -116,6 +116,11 @@ type
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
     procedure DrawTab(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
+    // ===================================
+    // Misc Tab
+    // ===================================
+    procedure DrawSpinEdit(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDSpinStateEx); override;
   end;
 
 implementation
@@ -125,6 +130,10 @@ const
   WIN2000_FRAME_LIGHT_GRAY = $00E2EFF1;
   WIN2000_FRAME_GRAY = $0099A8AC;
   WIN2000_FRAME_DARK_GRAY = $00646F71;
+
+  WIN2000_DISABLED_TEXT = WIN2000_FRAME_GRAY;
+
+  WIN2000_SELECTION_BACKGROUND = $00C56A31;
 
   WIN2000_SCROLLBAR_BACKGROUND = $00ECF4F6;
 
@@ -680,12 +689,28 @@ begin
   lTextOutPos.Y := (ASize.cy - ADest.TextHeight(Str)) div 2;
   ADest.Brush.Style := bsClear;
   ADest.Pen.Style := psSolid;
-  if csfSunken in AState then
+  if csfEnabled in AState then
   begin
+    if csfSunken in AState then
+    begin
+      Inc(lTextOutPos.X);
+      Inc(lTextOutPos.Y);
+    end;
+    ADest.TextOut(lTextOutPos.X, lTextOutPos.Y, Str)
+  end
+  else
+  begin
+    // The disabled text is composed by a white shadow under it and a grey text
+    ADest.Font.Color := clWhite;
     Inc(lTextOutPos.X);
     Inc(lTextOutPos.Y);
+    ADest.TextOut(lTextOutPos.X, lTextOutPos.Y, Str);
+    //
+    ADest.Font.Color := WIN2000_DISABLED_TEXT;
+    Dec(lTextOutPos.X);
+    Dec(lTextOutPos.Y);
+    ADest.TextOut(lTextOutPos.X, lTextOutPos.Y, Str);
   end;
-  ADest.TextOut(lTextOutPos.X, lTextOutPos.Y, Str)
 end;
 
 procedure TCDDrawerCommon.DrawEditBackground(ADest: TCanvas;
@@ -751,7 +776,14 @@ var
   lTextWidth: Integer;
   lControlTextLen: PtrInt;
   lTextLeftSpacing, lTextRightSpacing, lTextTopSpacing, lTextBottomSpacing: Integer;
+  lTextColor: TColor;
 begin
+  // Configure the text color
+  if csfEnabled in AState then
+    lTextColor := AStateEx.Font.Color
+  else
+    lTextColor := WIN2000_DISABLED_TEXT;
+
   // Background
   DrawEditBackground(ADest, Point(0, 0), ASize, AState, AStateEx);
 
@@ -759,6 +791,7 @@ begin
   lControlTextLen := UTF8Length(AStateEx.Caption);
   ADest.Brush.Style := bsClear;
   ADest.Font.Assign(AStateEx.Font);
+  ADest.Font.Color := lTextColor;
   lTextLeftSpacing := GetMeasures(TCDEDIT_LEFT_TEXT_SPACING);
   lTextRightSpacing := GetMeasures(TCDEDIT_RIGHT_TEXT_SPACING);
   lTextTopSpacing := GetMeasures(TCDEDIT_TOP_TEXT_SPACING);
@@ -794,7 +827,7 @@ begin
     // The selection background
     lVisibleText := UTF8Copy(lControlText, lSelLeftPos+1, lSelLength);
     lTextWidth := ADest.TextWidth(lVisibleText);
-    ADest.Brush.Color := clBlue;
+    ADest.Brush.Color := WIN2000_SELECTION_BACKGROUND;
     ADest.Brush.Style := bsSolid;
     ADest.Rectangle(lSelLeftPixelPos, lTextTopSpacing, lSelLeftPixelPos+lTextWidth, ASize.cy-lTextBottomSpacing);
     ADest.Brush.Style := bsClear;
@@ -806,7 +839,7 @@ begin
 
     // Text right of the selection
     ADest.Brush.Color := clWhite;
-    ADest.Font.Color := AStateEx.Font.Color;
+    ADest.Font.Color := lTextColor;
     lVisibleText := UTF8Copy(lControlText, lSelLeftPos+lSelLength+1, lControlTextLen);
     ADest.TextOut(lSelLeftPixelPos, lTextTopSpacing, lVisibleText);
   end;
@@ -1603,6 +1636,12 @@ begin
     lCloseButtonPos.Y := GetMeasuresEx(ADest, TCDCTABCONTROL_CLOSE_BUTTON_POS_Y, AState, AStateEx);
     DrawSmallCloseButton(ADest, lCloseButtonPos);
   end;
+end;
+
+procedure TCDDrawerCommon.DrawSpinEdit(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDSpinStateEx);
+begin
+
 end;
 
 { TCDListViewDrawerCommon }
