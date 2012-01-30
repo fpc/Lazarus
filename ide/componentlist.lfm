@@ -83,10 +83,10 @@ object ComponentListForm: TComponentListForm
           ReadOnly = True
           ShowLines = False
           TabOrder = 0
-          OnCustomDrawItem = PalletteTreeCustomDrawItem
+          OnCustomDrawItem = TreeCustomDrawItem
           OnDblClick = PalletteTreeDblClick
           OnKeyDown = PalletteTreeKeyDown
-          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
+          Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
         end
       end
     end
@@ -113,9 +113,10 @@ object ComponentListForm: TComponentListForm
           Align = alClient
           ReadOnly = True
           TabOrder = 0
+          OnCustomDrawItem = TreeCustomDrawItem
           OnDblClick = InheritanceTreeDblClick
           OnKeyDown = InheritanceTreeKeyDown
-          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
+          Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
         end
       end
     end

@@ -61,7 +61,7 @@ type
     procedure ComponentsListboxDblClick(Sender: TObject);
     procedure ComponentsListboxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
-    procedure PalletteTreeCustomDrawItem(Sender: TCustomTreeView;
+    procedure TreeCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure ComponentsListboxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure InheritanceTreeDblClick ( Sender: TObject ) ;
@@ -95,9 +95,10 @@ constructor TComponentListForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FComponentList := TRegisteredCompList.Create;
-  ButtonPanel.CloseButton.Cancel := True;
-  ComponentsListBox.ItemHeight  :=ComponentPaletteImageHeight + 2;
-  PalletteTree.DefaultItemHeight:=ComponentPaletteImageHeight + 2;
+  ButtonPanel.CloseButton.Cancel   := True;
+  ComponentsListBox.ItemHeight     :=ComponentPaletteImageHeight + 1;
+  InheritanceTree.DefaultItemHeight:=ComponentPaletteImageHeight + 1;
+  PalletteTree.DefaultItemHeight   :=ComponentPaletteImageHeight + 1;
 
   //Translations..
   LabelSearch.Caption := lisMenuFind;
@@ -323,7 +324,7 @@ begin
   end;
 end;
 
-procedure TComponentListForm.PalletteTreeCustomDrawItem(Sender: TCustomTreeView;
+procedure TComponentListForm.TreeCustomDrawItem(Sender: TCustomTreeView;
   Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
 var
   Comp: TRegisteredComponent;
@@ -342,7 +343,7 @@ begin
       Font.Color := clHighlightedText;
     end
     else begin
-      Brush.Color := clDefault;  //Brush.Style := ...
+      Brush.Color := clDefault;
       Font.Color := clDefault;
     end;
     ARect := Node.DisplayRect(False);
