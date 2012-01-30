@@ -964,6 +964,12 @@ components/fpvectorial/examples/fpce_mainform.pas svneol=native#text/plain
 components/fpvectorial/examples/fpcorelexplorer.ico -text
 components/fpvectorial/examples/fpcorelexplorer.lpi svneol=native#text/plain
 components/fpvectorial/examples/fpcorelexplorer.lpr svneol=native#text/plain
+components/fpvectorial/examples/fpv3d_mainform.lfm svneol=native#text/plain
+components/fpvectorial/examples/fpv3d_mainform.pas svneol=native#text/plain
+components/fpvectorial/examples/fpv3dviewer.ico -text
+components/fpvectorial/examples/fpv3dviewer.lpi svneol=native#text/plain
+components/fpvectorial/examples/fpv3dviewer.lpr svneol=native#text/plain
+components/fpvectorial/examples/fpv3dviewer.res -text
 components/fpvectorial/examples/fpvc_mainform.lfm svneol=native#text/plain
 components/fpvectorial/examples/fpvc_mainform.pas svneol=native#text/plain
 components/fpvectorial/examples/fpvectorialconverter.ico -text
