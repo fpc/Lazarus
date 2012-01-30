@@ -4670,8 +4670,6 @@ end;
   function GetFontLanguageInfo(DC: HDC): DWord; override;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.GetFontLanguageInfo(DC: HDC): DWord;
-var
-  DevCtx: TGtkDeviceContext absolute DC;
 begin
   Result := 0;
   If IsValidDC(DC) then
