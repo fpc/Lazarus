@@ -1479,8 +1479,10 @@ begin
       if GetThreadManager(TM) and Assigned(TM.InitManager) and g_thread_supported then
       begin
         g_thread_init(nil);
+        {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
         gdk_threads_init;
         gdk_threads_enter;
+        {$ENDIF}
         fMultiThreadingEnabled := True;
       end;
     {$ELSE}
@@ -1847,7 +1849,9 @@ begin
     if MultiThreadingEnabled then
     begin
       {$IFNDEF Win32}
+        {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
         gdk_threads_leave;
+        {$ENDIF}
       {$ENDIF}
       fMultiThreadingEnabled := False;
     end;
