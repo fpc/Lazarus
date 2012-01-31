@@ -30,10 +30,6 @@ uses
   SynEditMiscClasses, Controls, SynEditHighlighter, LCLProc;
 
 type
-
-  TInvalidateLines = procedure(FirstLine, LastLine: integer) of Object;
-
-type
   TSynEditMarkupClass = class of TSynEditMarkup;
 
   { TSynEditMarkup }
