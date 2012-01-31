@@ -10978,7 +10978,7 @@ begin
 
   // create a new project
   {$IFDEF IDE_VERBOSE}
-  writeln('TMainIDE.DoOpenProjectFile B');
+  debugln('TMainIDE.DoOpenProjectFile B');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B');{$ENDIF}
   Project1:=CreateProjectObject(ProjectDescriptorProgram,
@@ -11013,7 +11013,7 @@ begin
       end;
     end;
     {$IFDEF IDE_DEBUG}
-    writeln('TMainIDE.DoOpenProjectFile C');
+    debugln('TMainIDE.DoOpenProjectFile C');
     {$ENDIF}
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile C');{$ENDIF}
     IncreaseCompilerParseStamp;
@@ -11053,7 +11053,7 @@ begin
     end; // while EditorInfoIndex < Project1.AllEditorsInfoCount
     Result:=mrCancel;
     {$IFDEF IDE_DEBUG}
-    writeln('TMainIDE.DoOpenProjectFile D');
+    debugln('TMainIDE.DoOpenProjectFile D');
     {$ENDIF}
 
     // set active editor source editor
@@ -11104,7 +11104,7 @@ begin
     // select a form (object inspector, formeditor, control selection)
     if FLastFormActivated<>nil then begin
       LastDesigner:=TDesigner(FLastFormActivated.Designer);
-      debugln(['TMainIDE.DoOpenProjectFile ',DbgSName(FLastFormActivated),' ',DbgSName(FLastFormActivated.Designer)]);
+      debugln(['TMainIDE.DoOpenProjectFile select form in designer: ',DbgSName(FLastFormActivated),' ',DbgSName(FLastFormActivated.Designer)]);
       LastDesigner.SelectOnlyThisComponent(LastDesigner.LookupRoot);
     end;
 
