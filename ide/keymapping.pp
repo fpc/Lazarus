@@ -581,6 +581,7 @@ begin
     ecOpenPackageFile         : Result:= lisMenuOpenPackageFile;
     ecOpenPackageOfCurUnit    : Result:= lisMenuOpenPackageOfCurUnit;
     ecAddCurFileToPkg         : Result:= lisMenuAddCurFileToPkg;
+    ecNewPkgComponent         : Result:= lisMenuPkgNewPackageComponent;
     ecPackageGraph            : Result:= lisMenuPackageGraph;
     ecEditInstallPkgs         : Result:= lisMenuEditInstallPkgs;
     ecConfigCustomComps       : Result:= lisMenuConfigCustomComps;
@@ -1164,6 +1165,7 @@ begin
   ecOpenPackageFile:     SetSingle(VK_UNKNOWN,[]);
   ecOpenPackageOfCurUnit:SetSingle(VK_UNKNOWN,[]);
   ecAddCurFileToPkg:     SetSingle(VK_UNKNOWN,[]);
+  ecNewPkgComponent:     SetSingle(VK_UNKNOWN,[]);
   ecPackageGraph:        SetSingle(VK_UNKNOWN,[]);
   ecEditInstallPkgs:     SetSingle(VK_UNKNOWN,[]);
   ecConfigCustomComps:   SetSingle(VK_UNKNOWN,[]);
@@ -1592,6 +1594,7 @@ begin
   ecOpenPackageFile:     SetSingle(VK_UNKNOWN,[]);
   ecOpenPackageOfCurUnit:SetSingle(VK_UNKNOWN,[]);
   ecAddCurFileToPkg:     SetSingle(VK_UNKNOWN,[]);
+  ecNewPkgComponent:     SetSingle(VK_UNKNOWN,[]);
   ecPackageGraph:        SetSingle(VK_UNKNOWN,[]);
   ecEditInstallPkgs:     SetSingle(VK_UNKNOWN,[]);
   ecConfigCustomComps:   SetSingle(VK_UNKNOWN,[]);
@@ -2201,6 +2204,7 @@ begin
   ecOpenPackageFile:     SetSingle(VK_UNKNOWN,[]);
   ecOpenPackageOfCurUnit:SetSingle(VK_UNKNOWN,[]);
   ecAddCurFileToPkg:     SetSingle(VK_UNKNOWN,[]);
+  ecNewPkgComponent:     SetSingle(VK_UNKNOWN,[]);
   ecPackageGraph:        SetSingle(VK_UNKNOWN,[]);
   ecEditInstallPkgs:     SetSingle(VK_UNKNOWN,[]);
   ecConfigCustomComps:   SetSingle(VK_UNKNOWN,[]);
@@ -2792,6 +2796,7 @@ begin
   AddDefault(C, 'Open package file', lisKMOpenPackageFile, ecOpenPackageFile);
   AddDefault(C, 'Open package of current unit', lisMenuOpenPackageOfCurUnit, ecOpenPackageOfCurUnit);
   AddDefault(C, 'Add active unit to a package', lisMenuAddCurFileToPkg, ecAddCurFileToPkg);
+  AddDefault(C, 'Add new component to a package', lisMenuPkgNewPackageComponent, ecNewPkgComponent);
   AddDefault(C, 'Package graph', lisMenuPackageGraph, ecPackageGraph);
   AddDefault(C, 'Configure installed packages', lisInstallUninstallPackages, ecEditInstallPkgs);
   AddDefault(C, 'Configure custom components', lisKMConfigureCustomComponents, ecConfigCustomComps);

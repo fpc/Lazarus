@@ -283,11 +283,12 @@ const
   ecOpenPackageFile         = ecFirstLazarus + 601;
   ecOpenPackageOfCurUnit    = ecFirstLazarus + 602;
   ecAddCurFileToPkg         = ecFirstLazarus + 603;
+  ecNewPkgComponent         = ecFirstLazarus + 604;
 //  ecAddCurUnitToPkg         = ecAddCurFileToPkg deprecated;
-  ecPackageGraph            = ecFirstLazarus + 604;
-  ecEditInstallPkgs         = ecFirstLazarus + 605;
-  ecConfigCustomComps       = ecFirstLazarus + 606;
-  ecNewPackage              = ecFirstLazarus + 607;
+  ecPackageGraph            = ecFirstLazarus + 605;
+  ecEditInstallPkgs         = ecFirstLazarus + 606;
+  ecConfigCustomComps       = ecFirstLazarus + 607;
+  ecNewPackage              = ecFirstLazarus + 608;
 
   // custom tools menu
   ecExtToolFirst            = ecFirstLazarus + 700;

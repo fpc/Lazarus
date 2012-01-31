@@ -720,6 +720,7 @@ begin
     CreateMenuSeparatorSection(mnuComponent,itmPkgUnits,'itmPkgUnits');
     ParentMI:=itmPkgUnits;
     CreateMenuItem(ParentMI,itmPkgAddCurFileToPkg,'itmPkgAddCurFileToPkg',lisMenuAddCurFileToPkg,'pkg_add');
+    CreateMenuItem(ParentMI, itmPkgAddNewComponentToPkg, 'itmPkgAddNewComponentToPkg', lisMenuNewComponent, 'pkg_add');
 
     CreateMenuSeparatorSection(mnuComponent,itmPkgGraphSection,'itmPkgGraphSection');
     ParentMI:=itmPkgGraphSection;
@@ -991,6 +992,7 @@ begin
     itmPkgOpenPackageFile.Command:=GetCommand(ecOpenPackageFile);
     itmPkgOpenPackageOfCurUnit.Command:=GetCommand(ecOpenPackageOfCurUnit);
     itmPkgAddCurFileToPkg.Command:=GetCommand(ecAddCurFileToPkg);
+    itmPkgAddNewComponentToPkg.Command:=GetCommand(ecNewPkgComponent);
     itmPkgPkgGraph.Command:=GetCommand(ecPackageGraph);
     itmPkgEditInstallPkgs.Command:=GetCommand(ecEditInstallPkgs);
     {$IFDEF CustomIDEComps}

@@ -271,6 +271,7 @@ type
       var IgnoreIncPaths: TFilenameToStringTree);
     function CanBeAddedToProject: boolean;
   protected
+    fLastDlgPage: TAddToPkgType;
     procedure SetLazPackage(const AValue: TLazPackage); override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -289,6 +290,7 @@ type
     procedure DoSortFiles;
     procedure DoOpenPkgFile(PkgFile: TPkgFile);
     procedure UpdateAll(Immediately: boolean); override;
+    function ShowAddDialog(var DlgPage: TAddToPkgType): TModalResult;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
     property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
@@ -1125,189 +1127,8 @@ begin
 end;
 
 procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
-var
-  IgnoreUnitPaths, IgnoreIncPaths: TFilenameToStringTree;
-
-  procedure AddUnit(AddParams: TAddToPkgResult);
-  var
-    NewLFMFilename: String;
-    NewLRSFilename: String;
-  begin
-    NewLFMFilename:='';
-    NewLRSFilename:='';
-    // add lfm file
-    if AddParams.AutoAddLFMFile then begin
-      NewLFMFilename:=ChangeFileExt(AddParams.UnitFilename,'.lfm');
-      if FileExistsUTF8(NewLFMFilename)
-      and (LazPackage.FindPkgFile(NewLFMFilename,true,false)=nil) then
-        LazPackage.AddFile(NewLFMFilename,'',pftLFM,[],cpNormal)
-      else
-        NewLFMFilename:='';
-    end;
-    // add lrs file
-    if AddParams.AutoAddLRSFile then begin
-      NewLRSFilename:=ChangeFileExt(AddParams.UnitFilename,'.lrs');
-      if FileExistsUTF8(NewLRSFilename)
-      and (LazPackage.FindPkgFile(NewLRSFilename,true,false)=nil) then
-        LazPackage.AddFile(NewLRSFilename,'',pftLRS,[],cpNormal)
-      else
-        NewLRSFilename:='';
-    end;
-    ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,NewLRSFilename,
-                                IgnoreUnitPaths);
-    // add unit file
-    with AddParams do
-      FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,
-                                          FileType,PkgFileFlags,cpNormal);
-    PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
-    UpdateAll(false);
-  end;
-  
-  procedure AddVirtualUnit(AddParams: TAddToPkgResult);
-  begin
-    with AddParams do
-      FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
-                                          PkgFileFlags,cpNormal);
-    PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
-    UpdateAll(false);
-  end;
-  
-  procedure AddNewComponent(AddParams: TAddToPkgResult);
-  begin
-    ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,'',IgnoreUnitPaths);
-    // add file
-    with AddParams do
-      FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
-                                              PkgFileFlags,cpNormal);
-    // add dependency
-    if (AddParams.Dependency<>nil)
-    and (LazPackage.FindDependencyByName(AddParams.Dependency.PackageName)=nil)
-    then
-      PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
-    if (AddParams.IconFile<>'')
-    and (LazPackage.FindDependencyByName('LCL')=nil) then
-      PackageGraph.AddDependencyToPackage(LazPackage,PackageGraph.LCLPackage);
-    PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
-    // open file in editor
-    PackageEditors.CreateNewFile(Self,AddParams);
-    UpdateAll(false);
-  end;
-  
-  procedure AddRequiredPkg(AddParams: TAddToPkgResult);
-  begin
-    // add dependency
-    PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
-    FNextSelectedPart := AddParams.Dependency;
-    UpdateAll(false);
-  end;
-  
-  procedure AddFile(AddParams: TAddToPkgResult);
-  begin
-    // add file
-    with AddParams do begin
-      if (CompareFileExt(UnitFilename,'.inc',false)=0)
-      or (CompareFileExt(UnitFilename,'.lrs',false)=0) then
-        ExtendIncPathForNewIncludeFile(UnitFilename,IgnoreIncPaths);
-      FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
-                                          PkgFileFlags,cpNormal);
-    end;
-    UpdateAll(false);
-  end;
-  
-  procedure AddNewFile(AddParams: TAddToPkgResult);
-  var
-    NewFilename: String;
-    DummyResult: TModalResult;
-    NewFileType: TPkgFileType;
-    NewPkgFileFlags: TPkgFileFlags;
-    Desc: TProjectFileDescriptor;
-    NewUnitName: String;
-    HasRegisterProc: Boolean;
-  begin
-    // create new file
-    if AddParams.NewItem is TNewItemProjectFile then begin
-      // create new file
-      Desc:=TNewItemProjectFile(AddParams.NewItem).Descriptor;
-      NewFilename:='';
-      DummyResult:=LazarusIDE.DoNewFile(Desc,NewFilename,'',
-        [nfOpenInEditor,nfCreateDefaultSrc,nfIsNotPartOfProject],LazPackage);
-      if DummyResult=mrOk then begin
-        // success
-        // -> now add it to package
-        NewUnitName:='';
-        NewFileType:=FileNameToPkgFileType(NewFilename);
-        NewPkgFileFlags:=[];
-        if (NewFileType in PkgFileUnitTypes) then begin
-          Include(NewPkgFileFlags,pffAddToPkgUsesSection);
-          NewUnitName:=ExtractFilenameOnly(NewFilename);
-          if Assigned(PackageEditors.OnGetUnitRegisterInfo) then begin
-            HasRegisterProc:=false;
-            PackageEditors.OnGetUnitRegisterInfo(Self,NewFilename,
-              NewUnitName,HasRegisterProc);
-            if HasRegisterProc then
-              Include(NewPkgFileFlags,pffHasRegisterProc);
-          end;
-        end;
-        FNextSelectedPart := LazPackage.AddFile(NewFilename,NewUnitName,NewFileType,
-                                            NewPkgFileFlags, cpNormal);
-        UpdateAll(true);
-      end;
-    end;
-  end;
-
-var
-  AddParams: TAddToPkgResult;
-  OldParams: TAddToPkgResult;
 begin
-  if LazPackage.ReadOnly then begin
-    UpdateButtons;
-    exit;
-  end;
-  
-  if ShowAddToPackageDlg(LazPackage,AddParams,PackageEditors.OnGetIDEFileInfo,
-    PackageEditors.OnGetUnitRegisterInfo)
-    <>mrOk
-  then
-    exit;
-
-  PackageGraph.BeginUpdate(false);
-  IgnoreUnitPaths:=nil;
-  IgnoreIncPaths:=nil;
-  try
-    while AddParams<>nil do begin
-      case AddParams.AddType of
-
-      d2ptUnit:
-        AddUnit(AddParams);
-
-      d2ptVirtualUnit:
-        AddVirtualUnit(AddParams);
-
-      d2ptNewComponent:
-        AddNewComponent(AddParams);
-
-      d2ptRequiredPkg:
-        AddRequiredPkg(AddParams);
-
-      d2ptFile:
-        AddFile(AddParams);
-
-      d2ptNewFile:
-        AddNewFile(AddParams);
-
-      end;
-      OldParams:=AddParams;
-      AddParams:=AddParams.Next;
-      OldParams.Next:=nil;
-      OldParams.Free;
-    end;
-    AddParams.Free;
-    LazPackage.Modified:=true;
-  finally
-    IgnoreUnitPaths.Free;
-    IgnoreIncPaths.Free;
-    PackageGraph.EndUpdate;
-  end;
+  ShowAddDialog(fLastDlgPage);
 end;
 
 procedure TPackageEditorForm.AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
@@ -1636,6 +1457,192 @@ begin
   UpdateRequiredPkgs;
   UpdateSelectedFile;
   UpdateStatusBar;
+end;
+
+function TPackageEditorForm.ShowAddDialog(var DlgPage: TAddToPkgType
+  ): TModalResult;
+var
+  IgnoreUnitPaths, IgnoreIncPaths: TFilenameToStringTree;
+
+  procedure AddUnit(AddParams: TAddToPkgResult);
+  var
+    NewLFMFilename: String;
+    NewLRSFilename: String;
+  begin
+    NewLFMFilename:='';
+    NewLRSFilename:='';
+    // add lfm file
+    if AddParams.AutoAddLFMFile then begin
+      NewLFMFilename:=ChangeFileExt(AddParams.UnitFilename,'.lfm');
+      if FileExistsUTF8(NewLFMFilename)
+      and (LazPackage.FindPkgFile(NewLFMFilename,true,false)=nil) then
+        LazPackage.AddFile(NewLFMFilename,'',pftLFM,[],cpNormal)
+      else
+        NewLFMFilename:='';
+    end;
+    // add lrs file
+    if AddParams.AutoAddLRSFile then begin
+      NewLRSFilename:=ChangeFileExt(AddParams.UnitFilename,'.lrs');
+      if FileExistsUTF8(NewLRSFilename)
+      and (LazPackage.FindPkgFile(NewLRSFilename,true,false)=nil) then
+        LazPackage.AddFile(NewLRSFilename,'',pftLRS,[],cpNormal)
+      else
+        NewLRSFilename:='';
+    end;
+    ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,NewLRSFilename,
+                                IgnoreUnitPaths);
+    // add unit file
+    with AddParams do
+      FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,
+                                          FileType,PkgFileFlags,cpNormal);
+    PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
+    UpdateAll(false);
+  end;
+
+  procedure AddVirtualUnit(AddParams: TAddToPkgResult);
+  begin
+    with AddParams do
+      FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
+                                          PkgFileFlags,cpNormal);
+    PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
+    UpdateAll(false);
+  end;
+
+  procedure AddNewComponent(AddParams: TAddToPkgResult);
+  begin
+    ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,'',IgnoreUnitPaths);
+    // add file
+    with AddParams do
+      FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
+                                              PkgFileFlags,cpNormal);
+    // add dependency
+    if (AddParams.Dependency<>nil)
+    and (LazPackage.FindDependencyByName(AddParams.Dependency.PackageName)=nil)
+    then
+      PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
+    if (AddParams.IconFile<>'')
+    and (LazPackage.FindDependencyByName('LCL')=nil) then
+      PackageGraph.AddDependencyToPackage(LazPackage,PackageGraph.LCLPackage);
+    PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
+    // open file in editor
+    PackageEditors.CreateNewFile(Self,AddParams);
+    UpdateAll(false);
+  end;
+
+  procedure AddRequiredPkg(AddParams: TAddToPkgResult);
+  begin
+    // add dependency
+    PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
+    FNextSelectedPart := AddParams.Dependency;
+    UpdateAll(false);
+  end;
+
+  procedure AddFile(AddParams: TAddToPkgResult);
+  begin
+    // add file
+    with AddParams do begin
+      if (CompareFileExt(UnitFilename,'.inc',false)=0)
+      or (CompareFileExt(UnitFilename,'.lrs',false)=0) then
+        ExtendIncPathForNewIncludeFile(UnitFilename,IgnoreIncPaths);
+      FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
+                                          PkgFileFlags,cpNormal);
+    end;
+    UpdateAll(false);
+  end;
+
+  procedure AddNewFile(AddParams: TAddToPkgResult);
+  var
+    NewFilename: String;
+    DummyResult: TModalResult;
+    NewFileType: TPkgFileType;
+    NewPkgFileFlags: TPkgFileFlags;
+    Desc: TProjectFileDescriptor;
+    NewUnitName: String;
+    HasRegisterProc: Boolean;
+  begin
+    // create new file
+    if AddParams.NewItem is TNewItemProjectFile then begin
+      // create new file
+      Desc:=TNewItemProjectFile(AddParams.NewItem).Descriptor;
+      NewFilename:='';
+      DummyResult:=LazarusIDE.DoNewFile(Desc,NewFilename,'',
+        [nfOpenInEditor,nfCreateDefaultSrc,nfIsNotPartOfProject],LazPackage);
+      if DummyResult=mrOk then begin
+        // success
+        // -> now add it to package
+        NewUnitName:='';
+        NewFileType:=FileNameToPkgFileType(NewFilename);
+        NewPkgFileFlags:=[];
+        if (NewFileType in PkgFileUnitTypes) then begin
+          Include(NewPkgFileFlags,pffAddToPkgUsesSection);
+          NewUnitName:=ExtractFilenameOnly(NewFilename);
+          if Assigned(PackageEditors.OnGetUnitRegisterInfo) then begin
+            HasRegisterProc:=false;
+            PackageEditors.OnGetUnitRegisterInfo(Self,NewFilename,
+              NewUnitName,HasRegisterProc);
+            if HasRegisterProc then
+              Include(NewPkgFileFlags,pffHasRegisterProc);
+          end;
+        end;
+        FNextSelectedPart := LazPackage.AddFile(NewFilename,NewUnitName,NewFileType,
+                                            NewPkgFileFlags, cpNormal);
+        UpdateAll(true);
+      end;
+    end;
+  end;
+
+var
+  AddParams: TAddToPkgResult;
+  OldParams: TAddToPkgResult;
+begin
+  if LazPackage.ReadOnly then begin
+    UpdateButtons;
+    exit(mrCancel);
+  end;
+
+  Result:=ShowAddToPackageDlg(LazPackage,AddParams,PackageEditors.OnGetIDEFileInfo,
+    PackageEditors.OnGetUnitRegisterInfo,DlgPage);
+  fLastDlgPage:=DlgPage;
+  if Result<>mrOk then exit;
+
+  PackageGraph.BeginUpdate(false);
+  IgnoreUnitPaths:=nil;
+  IgnoreIncPaths:=nil;
+  try
+    while AddParams<>nil do begin
+      case AddParams.AddType of
+
+      d2ptUnit:
+        AddUnit(AddParams);
+
+      d2ptVirtualUnit:
+        AddVirtualUnit(AddParams);
+
+      d2ptNewComponent:
+        AddNewComponent(AddParams);
+
+      d2ptRequiredPkg:
+        AddRequiredPkg(AddParams);
+
+      d2ptFile:
+        AddFile(AddParams);
+
+      d2ptNewFile:
+        AddNewFile(AddParams);
+
+      end;
+      OldParams:=AddParams;
+      AddParams:=AddParams.Next;
+      OldParams.Next:=nil;
+      OldParams.Free;
+    end;
+    AddParams.Free;
+    LazPackage.Modified:=true;
+  finally
+    IgnoreUnitPaths.Free;
+    IgnoreIncPaths.Free;
+    PackageGraph.EndUpdate;
+  end;
 end;
 
 procedure TPackageEditorForm.UpdateTitle;

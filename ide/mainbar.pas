@@ -314,6 +314,7 @@ type
         //itmPkgOpenRecent: TIDEMenuSection;
       //itmPkgUnits: TIDEMenuSection;
         itmPkgAddCurFileToPkg: TIDEMenuCommand;
+        itmPkgAddNewComponentToPkg: TIDEMenuCommand;
       //itmPkgGraphSection: TIDEMenuSection;
         itmPkgPkgGraph: TIDEMenuCommand;
         itmPkgEditInstallPkgs: TIDEMenuCommand;

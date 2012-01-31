@@ -177,6 +177,8 @@ type
     fPkgComponents: TAVLTree;// tree of TPkgComponent
     fPackages: TAVLTree;// tree of  TLazPackage or TPackageLink
     FComponentIconFilename: string;
+    function GetActivatePage: TAddToPkgType;
+    procedure SetActivatePage(AValue: TAddToPkgType);
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetupComponents;
     procedure SetupNewFilePage;
@@ -202,11 +204,13 @@ type
                                                      write FOnGetIDEFileInfo;
     property OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo
                        read FOnGetUnitRegisterInfo write FOnGetUnitRegisterInfo;
+    property ActivatePage: TAddToPkgType read GetActivatePage write SetActivatePage;
   end;
   
 function ShowAddToPackageDlg(Pkg: TLazPackage; var Params: TAddToPkgResult;
   OnGetIDEFileInfo: TGetIDEFileStateEvent;
-  OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo): TModalResult;
+  OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo;
+  var Page: TAddToPkgType): TModalResult;
 function CheckAddingUnitFilename(LazPackage: TLazPackage;
   AddFileType: TAddToPkgType; OnGetIDEFileInfo: TGetIDEFileStateEvent;
   var AFilename: string): boolean;
@@ -223,7 +227,8 @@ implementation
 
 function ShowAddToPackageDlg(Pkg: TLazPackage; var Params: TAddToPkgResult;
   OnGetIDEFileInfo: TGetIDEFileStateEvent;
-  OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo): TModalResult;
+  OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo;
+  var Page: TAddToPkgType): TModalResult;
 var
   AddDlg: TAddToPackageDlg;
 begin
@@ -231,7 +236,9 @@ begin
   AddDlg.OnGetIDEFileInfo:=OnGetIDEFileInfo;
   AddDlg.OnGetUnitRegisterInfo:=OnGetUnitRegisterInfo;
   AddDlg.LazPackage:=Pkg;
+  AddDlg.ActivatePage:=Page;
   Result:=AddDlg.ShowModal;
+  Page:=AddDlg.ActivatePage;
   if Result=mrOk then begin
     Params:=AddDlg.Params;
     AddDlg.Params:=nil;
@@ -1050,6 +1057,28 @@ begin
   UpdateAvailableAncestorTypes;
   UpdateAvailablePageNames;
   UpdateAvailableDependencyNames;
+end;
+
+function TAddToPackageDlg.GetActivatePage: TAddToPkgType;
+begin
+  if NoteBook.ActivePage=NewComponentPage then
+    Result:=d2ptNewComponent
+  else if NoteBook.ActivePage=NewRequirementPage then
+    Result:=d2ptRequiredPkg
+  else if NoteBook.ActivePage=AddFilesPage then
+    Result:=d2ptFiles
+  else
+    Result:=d2ptNewFile;
+end;
+
+procedure TAddToPackageDlg.SetActivatePage(AValue: TAddToPkgType);
+begin
+  case AValue of
+  d2ptNewComponent: NoteBook.ActivePage:=NewComponentPage;
+  d2ptRequiredPkg: NoteBook.ActivePage:=NewRequirementPage;
+  d2ptFile,d2ptFiles: NoteBook.ActivePage:=AddFilesPage;
+  else NoteBook.ActivePage:=NewFilePage;
+  end;
 end;
 
 procedure TAddToPackageDlg.SetupComponents;

@@ -61,7 +61,7 @@ uses
   IDETranslations, TransferMacros, BuildLazDialog, NewDialog,
   IDEDialogs, ProjectInspector, ComponentPalette, SourceEditor,
   AddFileToAPackageDlg, LazarusPackageIntf, PublishProjectDlg, PkgLinksDlg,
-  InstallPkgSetDlg, ConfirmPkgListDlg,
+  InstallPkgSetDlg, ConfirmPkgListDlg, NewPkgComponentDlg,
   // bosses
   BaseBuildManager, BasePkgManager,
   MainBar, MainIntf, MainBase;
@@ -128,6 +128,7 @@ type
     procedure MainIDEitmPkgPkgGraphClick(Sender: TObject);
     procedure MainIDEitmPkgEditInstallPkgsClick(Sender: TObject);
     procedure MainIDEitmPkgAddCurFileToPkgClick(Sender: TObject);
+    procedure MainIDEitmPkgNewComponentClick(Sender: TObject);
     procedure MainIDEitmPkgOpenPackageOfCurUnitClicked(Sender: TObject);
     procedure MainIDEitmConfigCustomCompsClicked(Sender: TObject);
     procedure MainIDEitmOpenRecentPackageClicked(Sender: TObject);
@@ -285,6 +286,7 @@ type
     function DoClosePackageEditor(APackage: TLazPackage): TModalResult; override;
     function DoCloseAllPackageEditors: TModalResult; override;
     function DoAddActiveUnitToAPackage: TModalResult;
+    function DoNewPackageComponent: TModalResult;
     function WarnAboutMissingPackageFiles(APackage: TLazPackage): TModalResult;
     function AddPackageDependency(APackage: TLazPackage; const ReqPackage: string;
                                   OnlyTestIfPossible: boolean = false): TModalResult; override;
@@ -557,6 +559,11 @@ end;
 procedure TPkgManager.MainIDEitmPkgAddCurFileToPkgClick(Sender: TObject);
 begin
   DoAddActiveUnitToAPackage;
+end;
+
+procedure TPkgManager.MainIDEitmPkgNewComponentClick(Sender: TObject);
+begin
+  DoNewPackageComponent;
 end;
 
 procedure TPkgManager.MainIDEitmPkgOpenPackageOfCurUnitClicked(Sender: TObject);
@@ -1579,6 +1586,7 @@ begin
     itmPkgOpenPackageFile.OnClick:=@MainIDEitmPkgOpenPackageFileClick;
     itmPkgOpenPackageOfCurUnit.OnClick :=@MainIDEitmPkgOpenPackageOfCurUnitClicked;
     itmPkgAddCurFileToPkg.OnClick:=@MainIDEitmPkgAddCurFileToPkgClick;
+    itmPkgAddNewComponentToPkg.OnClick:=@MainIDEitmPkgNewComponentClick;
     itmPkgPkgGraph.OnClick:=@MainIDEitmPkgPkgGraphClick;
     itmPkgEditInstallPkgs.OnClick:=@MainIDEitmPkgEditInstallPkgsClick;
     {$IFDEF CustomIDEComps}
@@ -3446,6 +3454,36 @@ begin
   
   Result:=ShowAddFileToAPackageDlg(Filename,TheUnitName,HasRegisterProc,
                                    @MainIDE.GetIDEFileState);
+end;
+
+function TPkgManager.DoNewPackageComponent: TModalResult;
+var
+  APackage: TLazPackage;
+  CurEditor: TPackageEditorForm;
+  SaveFlags: TPkgSaveFlags;
+  Page: TAddToPkgType;
+begin
+  Result:=ShowNewPkgComponentDialog(APackage);
+  if Result<>mrOk then exit;
+  SaveFlags:=[];
+  if APackage=nil then begin
+    // create new package
+    // create a new package with standard dependencies
+    APackage:=PackageGraph.CreateNewPackage(NameToValidIdentifier(lisPkgMangNewPackage));
+    PackageGraph.AddDependencyToPackage(APackage,
+                  PackageGraph.IDEIntfPackage.CreateDependencyWithOwner(APackage));
+    APackage.Modified:=false;
+    Include(SaveFlags,psfSaveAs);
+  end;
+  // open a package editor
+  CurEditor:=PackageEditors.OpenEditor(APackage);
+  IDEWindowCreators.ShowForm(CurEditor,true);
+  // save
+  Result:=DoSavePackage(APackage,SaveFlags);
+  if Result<>mrOk then exit;
+  // show new component dialog
+  Page:=d2ptNewComponent;
+  Result:=CurEditor.ShowAddDialog(Page);
 end;
 
 function TPkgManager.WarnAboutMissingPackageFiles(APackage: TLazPackage): TModalResult;

@@ -3254,6 +3254,10 @@ resourcestring
   lisPkgFileTypeIssues = 'Issues xml file';
   lisPkgFileTypeText = 'Text';
   lisPkgFileTypeBinary = 'Binary';
+  lisCreateNewPackage = '(Create new package)';
+  lisCreateNewPackageComponent = 'Create new package component';
+  lisMenuNewComponent = 'New component';
+  lisPkgSelectAPackage = 'Select a package';
 
   // view project units dialog
   lisViewProjectUnits = 'View Project Units';
@@ -5495,6 +5499,7 @@ resourcestring
   lisFileFiltersDeleteRow = 'Delete Row';
   lisFileFiltersInsertRow = 'Insert Row';
   lisFileFiltersSetDefaults = 'Set defaults';
+  lisMenuPkgNewPackageComponent = 'New package component';
 
 implementation
 

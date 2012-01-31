@@ -63,7 +63,7 @@
         <PackageName Value="SynEdit"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="87">
+    <Units Count="88">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -655,6 +655,13 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="IDEFPDocFileSearch"/>
       </Unit86>
+      <Unit87>
+        <Filename Value="../packager/newpkgcomponentdlg.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="NewPkgComponentDialog"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="NewPkgComponentDlg"/>
+      </Unit87>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
