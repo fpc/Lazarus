@@ -325,6 +325,7 @@ var CursorNode, ClassNode, ProcNode, StartNode, TypeSectionNode,
   SearchedClassname, SearchedProcName, SearchedParamList: string;
   SearchForNodes, SearchInNodes: TAVLTree;
   BodyAVLNode, DefAVLNode: TAVLTreeNode;
+  ProcName: String;
 begin
   Result:=false;
   RevertableJump:=false;
@@ -549,7 +550,11 @@ begin
         {$IFDEF CTDEBUG}
         DebugLn('TMethodJumpingCodeTool.FindJumpPoint 4D ',dbgs(StartNode<>nil));
         {$ENDIF}
-        if StartNode=nil then exit;
+        if StartNode=nil then begin
+          ProcName:=ExtractProcName(ProcNode,[]);
+          MoveCursorToNodeStart(ClassNode);
+          RaiseException('method "'+ProcName+'" has no declaration');
+        end;
         StartNode:=StartNode.FirstChild;
         // search method with same name and param list
         Result:=FindBestProcNode(ProcNode,[phpWithoutClassName,phpInUpperCase],
@@ -576,7 +581,11 @@ begin
           {$IFDEF CTDEBUG}
           DebugLn('TMethodJumpingCodeTool.FindJumpPoint 4G DiffNodes=',dbgs(SearchInNodes.Count));
           {$ENDIF}
-          if SearchInNodes.Count=0 then exit;
+          if SearchInNodes.Count=0 then begin
+            ProcName:=ExtractProcName(ProcNode,[]);
+            MoveCursorToNodeStart(ClassNode);
+            RaiseException('method "'+ProcName+'" has no declaration');
+          end;
           // search for a method with same name but different param list
           ProcNode:=FindProcNodeInTreeWithName(SearchInNodes,
                 ExtractProcName(ProcNode,[phpWithoutClassName,phpInUpperCase]));
