@@ -520,11 +520,7 @@ begin
   FItems.FreeAndClear;
 
   // caption
-  s:='';
-  if AProject.Title<>'' then
-    s:=AProject.Title
-  else
-    s:=ExtractFileNameOnly(AProject.ProjectInfoFile);
+  s:=AProject.GetDefaultTitle;
   Caption:=Format(crsPPUFilesOfProject, [s]);
 
   // ScopeLabel

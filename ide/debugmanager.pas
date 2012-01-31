@@ -878,7 +878,7 @@ procedure TDebugManager.DebuggerException(Sender: TObject;
 
   function GetTitle: String;
   begin
-    Result := Project1.Title;
+    Result := Project1.GetTitle;
     if Result = '' then
       Result := ExtractFileName(FDebugger.FileName);
   end;

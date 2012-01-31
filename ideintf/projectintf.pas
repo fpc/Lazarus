@@ -424,7 +424,6 @@ type
     procedure RemoveUnit(Index: integer; RemoveFromUsesSection: boolean = true); virtual; abstract;
     procedure AddSrcPath(const SrcPathAddition: string); virtual; abstract;
     procedure AddPackageDependency(const PackageName: string); virtual; abstract;
-    function ShortDescription: string;
     procedure ClearModifieds(ClearUnits: boolean);
     function FindFile(const AFilename: string;
                       SearchFlags: TProjectFileSearchFlags): TLazProjectFile; virtual; abstract;
@@ -434,12 +433,16 @@ type
     procedure ConvertFromLPIFilename(var AFilename: string); virtual; abstract;
     procedure LoadDefaultIcon; virtual;
     function GetFPDocPackageName: string;
+    function GetTitle: string; virtual; abstract; // Title with macros resolved
+    function GetDefaultTitle: string; // extract name from lpi file name
+    function GetTitleOrName: string; // GetTitle, if this is '' then GetDefaultTitle
+    function ShortDescription: string; deprecated; // since 0.9.31, use GetTitleOrName instead
   public
     property MainFileID: Integer read GetMainFileID write SetMainFileID;
     property Files[Index: integer]: TLazProjectFile read GetFiles;
     property FileCount: integer read GetFileCount;
     property MainFile: TLazProjectFile read GetMainFile;
-    property Title: String read FTitle write SetTitle;
+    property Title2: String read FTitle write SetTitle;
     property Flags: TProjectFlags read FFlags write SetFlags;
     property ExecutableType: TProjectExecutableType read FExecutableType
                  write SetExecutableType;// read from MainFile, not saved to lpi
@@ -1006,7 +1009,7 @@ end;
 
 function TProjectDescriptor.InitProject(AProject: TLazProject): TModalResult;
 begin
-  AProject.Title:='project1';
+  AProject.Title2:='project1';
   AProject.Flags:=Flags;
   Result:=mrOk;
 end;
@@ -1130,10 +1133,7 @@ end;
 
 function TLazProject.ShortDescription: string;
 begin
-  if Title<>'' then
-    Result:=Title
-  else
-    Result:=ExtractFileNameOnly(ProjectInfoFile);
+  Result:=GetTitleOrName;
 end;
 
 procedure TLazProject.ClearModifieds(ClearUnits: boolean);
@@ -1158,6 +1158,17 @@ begin
     Result:=FPDocPackageName
   else
     Result:=ExtractFileNameOnly(ProjectInfoFile);
+end;
+
+function TLazProject.GetDefaultTitle: string;
+begin
+  Result:=ExtractFileNameOnly(ProjectInfoFile);
+end;
+
+function TLazProject.GetTitleOrName: string;
+begin
+  Result:=GetTitle;
+  if Result='' then Result:=GetDefaultTitle;
 end;
 
 { TLazProjectFile }

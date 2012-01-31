@@ -473,9 +473,7 @@ function TBuildModesEditorFrame.GetDialogCaption: string;
 begin
   if AProject<>nil then
   begin
-    Result := aProject.Title;
-    if Result = '' then
-      Result := ExtractFilenameOnly(aProject.ProjectInfoFile);
+    Result := aProject.GetTitleOrName;
     Result:=Format(dlgProjectOptionsFor, [Result]);
     if AProject.BuildModes.Count>1 then
       Result:=Result+', '+copy(AProject.ActiveBuildMode.GetCaption,1,12);

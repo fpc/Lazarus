@@ -2821,7 +2821,7 @@ var
         if UnitOwner is TProject then begin
           PackageAdditions:=Format(
             lisPkgMangAddingNewDependencyForProjectPackage, [PackageAdditions,
-            TProject(UnitOwner).Title, RequiredPackage.Name, #13#13]);
+            TProject(UnitOwner).GetTitle, RequiredPackage.Name, #13#13]);
         end else if UnitOwner is TLazPackage then begin
           PackageAdditions:=Format(
             lisPkgMangAddingNewDependencyForPackagePackage, [PackageAdditions,
@@ -2858,7 +2858,7 @@ var
         RequiredPackage:=TLazPackage(MissingDependencies.Objects[i]);
         RequiredPackage:=TLazPackage(RedirectPackageDependency(RequiredPackage));
         if UnitOwner is TProject then begin
-          DebugLn('TPkgManager.AddUnitDependenciesForComponentClasses Adding Project Dependency ',TProject(UnitOwner).Title,' -> ',RequiredPackage.Name);
+          DebugLn('TPkgManager.AddUnitDependenciesForComponentClasses Adding Project Dependency ',TProject(UnitOwner).GetTitle,' -> ',RequiredPackage.Name);
           AddProjectDependency(TProject(UnitOwner),RequiredPackage);
         end else if UnitOwner is TLazPackage then begin
           DebugLn('TPkgManager.AddUnitDependenciesForComponentClasses Adding Package Dependency ',TLazPackage(UnitOwner).Name,' -> ',RequiredPackage.Name);

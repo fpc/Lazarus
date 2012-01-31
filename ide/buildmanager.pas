@@ -1123,7 +1123,7 @@ begin
     TargetExeName := Project1.CompilerOptions.CreateTargetFilename(
       Project1.MainFilename);
 
-  if not (CreateApplicationBundle(TargetExeName, Project1.Title, True) in
+  if not (CreateApplicationBundle(TargetExeName, Project1.GetTitle, True) in
     [mrOk, mrIgnore]) then
     Exit;
   if not (CreateAppBundleSymbolicLink(TargetExeName, True) in [mrOk, mrIgnore]) then

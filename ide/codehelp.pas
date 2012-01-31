@@ -1203,7 +1203,7 @@ begin
         AProject:=TLazProject(NewOwner);
         BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
         if AProject.FPDocPaths='' then
-          AProject.FPDocPaths:=SelectNewFPDocPaths(AProject.ShortDescription,BaseDir);
+          AProject.FPDocPaths:=SelectNewFPDocPaths(AProject.GetTitleOrName,BaseDir);
         FPDocPaths:=AProject.FPDocPaths;
         FPDocPackageName:=GetFPDocPackageNameByOwner(AProject);
       end else if NewOwner is TLazPackage then begin

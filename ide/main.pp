@@ -4994,6 +4994,7 @@ var
   function SetTitle: Boolean;
   var
     OldTitle: String;
+    NewTitle: String;
   begin
     Result := True;
     if (AProject.MainUnitID < 0) or
@@ -5003,8 +5004,9 @@ var
     if (OldTitle = '') and AProject.TitleIsDefault then
       Exit;
 
-    if (OldTitle <> AProject.Title) and (not AProject.TitleIsDefault) then
-      if not CodeToolBoss.SetApplicationTitleStatement(AProject.MainUnitInfo.Source, AProject.Title) then
+    NewTitle:=AProject.GetTitle;
+    if (OldTitle <> NewTitle) and (not AProject.TitleIsDefault) then
+      if not CodeToolBoss.SetApplicationTitleStatement(AProject.MainUnitInfo.Source, NewTitle) then
       begin
         MessageDlg(lisProjOptsError,
           Format(lisUnableToChangeProjectTitleInSource, [#13, CodeToolBoss.
@@ -8189,7 +8191,7 @@ begin
       if AFilename='' then
         AFilename:=ExtractFileName(Project1.MainFilename);
       if AFilename='' then
-        AFilename:=Trim(Project1.Title);
+        AFilename:=Trim(Project1.GetTitle);
       if AFilename='' then
         AFilename:='project1';
       Ext := LowerCase(ExtractFileExt(AFilename));
@@ -8396,7 +8398,7 @@ begin
 
     // change title
     if TitleWasDefault then begin
-      Project1.Title:=Project1.GetDefaultTitle;
+      Project1.Title2:=Project1.GetDefaultTitle;
       // title does not need to be removed from source, because it was default
     end;
 
@@ -11980,7 +11982,7 @@ begin
     Project1.ProjResources.DoAfterBuild(AReason, Project1.IsVirtual);
     // add success message
     MessagesView.AddMsg(Format(lisProjectSuccessfullyBuilt, ['"',
-                                        Project1.ShortDescription, '"']),'',-1);
+                                        Project1.GetTitleOrName, '"']),'',-1);
     CompileProgress.Ready(lisInfoBuildSuccess);
   finally
     // check sources

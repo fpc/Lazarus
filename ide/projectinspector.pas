@@ -861,7 +861,7 @@ begin
   if LazProject=nil then
     Caption:=lisMenuProjectInspector
   else begin
-    NewCaption:=LazProject.Title;
+    NewCaption:=LazProject.GetTitle;
     if NewCaption='' then
       NewCaption:=ExtractFilenameOnly(LazProject.ProjectInfoFile);
     Caption:=Format(lisProjInspProjectInspector, [NewCaption]);

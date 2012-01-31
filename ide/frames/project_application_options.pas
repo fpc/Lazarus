@@ -74,7 +74,7 @@ begin
     TargetExeName := AProject.CompilerOptions.CreateTargetFilename(
       AProject.MainFilename);
 
-  if not (CreateApplicationBundle(TargetExeName, AProject.Title, True) in
+  if not (CreateApplicationBundle(TargetExeName, AProject.GetTitle, True) in
     [mrOk, mrIgnore]) then
   begin
     MessageDlg(lisCCOErrorCaption, Format(
@@ -215,7 +215,7 @@ begin
   FProject := AOptions as TProject;
   with FProject do
   begin
-    TitleEdit.Text := Title;
+    TitleEdit.Text := Title2;
     UseAppBundleCheckBox.Checked := UseAppBundle;
     UseXPManifestCheckBox.Checked := TProjectXPManifest(ProjResources[TProjectXPManifest]).UseManifest;
     DpiAwareCheckBox.Checked := TProjectXPManifest(ProjResources[TProjectXPManifest]).DpiAware;
@@ -235,7 +235,7 @@ var
 begin
   with AOptions as TProject do
   begin
-    Title := TitleEdit.Text;
+    Title2 := TitleEdit.Text;
     AStream := GetIconAsStream;
     try
       TProjectIcon(ProjResources[TProjectIcon]).SetStream(AStream);

@@ -899,8 +899,7 @@ type
     procedure RestoreBuildModes;
 
     // title
-    function GetDefaultTitle: string;
-    function GetTitleOrName: string;
+    function GetTitle: string; override;
     function TitleIsDefault(Fuzzy: boolean = false): boolean;
     function IDAsString: string;
     function IDAsWord: string;
@@ -2572,7 +2571,7 @@ begin
   UpdateProjectDirectory;
   FPublishOptions:=TPublishProjectOptions.Create(Self);
   FRunParameters:=TRunParamsOptions.Create;
-  Title := '';
+  Title2 := '';
   FUnitList := TFPList.Create;  // list of TUnitInfo
 
   FResources := TProjectResources.Create(Self);
@@ -2849,7 +2848,7 @@ begin
         xmlconfig.SetValue(Path+'General/MainUnit/Value', MainUnitID); // always write a value to support opening by older IDEs (<=0.9.28). This can be changed in a few released.
         xmlconfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
                                  AutoCreateForms,true);
-        xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
+        xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title2,'');
         xmlconfig.SetDeleteValue(Path+'General/UseAppBundle/Value', UseAppBundle, True);
 
         // fpdoc
@@ -3057,21 +3056,16 @@ begin
     ActiveBuildMode:=BuildModes[0];
 end;
 
-function TProject.GetDefaultTitle: string;
+function TProject.GetTitle: string;
 begin
-  Result:=ExtractFilenameOnly(ProjectInfoFile);
-end;
-
-function TProject.GetTitleOrName: string;
-begin
-  Result:=Title;
-  if Result='' then Result:=GetDefaultTitle;
+  Result:=Title2;
+  MacroEngine.SubstituteStr(Result);
 end;
 
 function TProject.TitleIsDefault(Fuzzy: boolean): boolean;
 begin
-  Result:=(Title='') or (Title=GetDefaultTitle)
-    or (Fuzzy and (SysUtils.CompareText(Title,GetDefaultTitle)=0));
+  Result:=(Title2='') or (Title2=GetDefaultTitle)
+    or (Fuzzy and (SysUtils.CompareText(Title2,GetDefaultTitle)=0));
 end;
 
 function TProject.IDAsString: string;
@@ -3421,7 +3415,7 @@ begin
       //   automatically fixes broken lpi files.
       if not LoadParts then begin
         NewMainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', 0);
-        Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
+        Title2 := xmlconfig.GetValue(Path+'General/Title/Value', '');
         UseAppBundle := xmlconfig.GetValue(Path+'General/UseAppBundle/Value', True);
         AutoCreateForms := xmlconfig.GetValue(
            Path+'General/AutoCreateForms/Value', true);
@@ -3758,7 +3752,7 @@ begin
   ClearSourceDirectories;
   UpdateProjectDirectory;
   FPublishOptions.Clear;
-  Title := '';
+  Title2 := '';
 
   Modified := false;
   SessionModified := false;
@@ -4329,10 +4323,8 @@ begin
   OldProjectInfoFile:=fProjectInfoFile;
   fProjectInfoFile:=NewProjectInfoFile;
   DefaultTitle:=ExtractFileNameOnly(OldProjectInfoFile);
-  if (CompareText(Title,DefaultTitle)=0)
-  or (OldProjectInfoFile='') or (Title='') then begin
-    Title:=DefaultTitle;
-  end;
+  if TitleIsDefault(true) then
+    Title2:=DefaultTitle;
   UpdateProjectDirectory;
   UpdateSessionFilename;
   if Assigned(OnChangeProjectInfoFile) then
@@ -6107,7 +6099,7 @@ end;
 
 function TProjectCompilerOptions.GetOwnerName: string;
 begin
-  Result:=LazProject.Title;
+  Result:=LazProject.GetTitleOrName;
   if Result='' then Result:=ExtractFilename(LazProject.ProjectInfoFile);
 end;
 
