@@ -55,6 +55,10 @@ const
   STR_LAS_EXTENSION = '.las';
 
 type
+  TvCustomVectorialWriter = class;
+  TvCustomVectorialReader = class;
+  TvVectorialPage = class;
+
   { Pen, Brush and Font }
 
   TvPen = record
@@ -164,12 +168,6 @@ type
   TvEntity = class
   public
     X, Y, Z: Double;
-    {@@ The global Pen for the entire entity. In the case of paths, individual
-        elements might be able to override this setting. }
-    Pen: TvPen;
-    {@@ The global Brush for the entire entity. In the case of paths, individual
-        elements might be able to override this setting. }
-    Brush: TvBrush;
     constructor Create; virtual;
     procedure CalculateBoundingBox(var ALeft, ATop, ARight, ABottom: Double); virtual;
     procedure ExpandBoundingBox(var ALeft, ATop, ARight, ABottom: Double);
@@ -181,9 +179,30 @@ type
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
   end;
 
+  { TvEntityWithPen }
+
+  TvEntityWithPen = class(TvEntity)
+  public
+    X, Y, Z: Double;
+    {@@ The global Pen for the entire entity. In the case of paths, individual
+        elements might be able to override this setting. }
+    Pen: TvPen;
+    constructor Create; override;
+  end;
+
+  { TvEntityWithPenAndBrush }
+
+  TvEntityWithPenAndBrush = class(TvEntityWithPen)
+  public
+    {@@ The global Brush for the entire entity. In the case of paths, individual
+        elements might be able to override this setting. }
+    Brush: TvBrush;
+    constructor Create; override;
+  end;
+
   TvClipMode = (vcmNonzeroWindingRule, vcmEvenOddRule);
 
-  TPath = class(TvEntity)
+  TPath = class(TvEntityWithPenAndBrush)
   public
     Len: Integer;
     Points: TPathSegment;   // Beginning of the double-linked list
@@ -204,7 +223,7 @@ type
 
   { TvText }
 
-  TvText = class(TvEntity)
+  TvText = class(TvEntityWithPenAndBrush)
   public
     Value: TStringList;
     Font: TvFont;
@@ -215,14 +234,14 @@ type
 
   {@@
   }
-  TvCircle = class(TvEntity)
+  TvCircle = class(TvEntityWithPenAndBrush)
   public
     Radius: Double;
   end;
 
   {@@
   }
-  TvCircularArc = class(TvEntity)
+  TvCircularArc = class(TvEntityWithPenAndBrush)
   public
     Radius: Double;
     {@@ The Angle is measured in degrees in relation to the positive X axis }
@@ -234,7 +253,7 @@ type
 
   { TvEllipse }
 
-  TvEllipse = class(TvEntity)
+  TvEllipse = class(TvEntityWithPenAndBrush)
   public
     // Mandatory fields
     HorzHalfAxis: Double; // This half-axis is the horizontal one when Angle=0
@@ -258,7 +277,7 @@ type
 
   { TvAlignedDimension }
 
-  TvAlignedDimension = class(TvEntity)
+  TvAlignedDimension = class(TvEntityWithPenAndBrush)
   public
     // Mandatory fields
     BaseLeft, BaseRight, DimensionLeft, DimensionRight: T3DPoint;
@@ -275,17 +294,18 @@ type
    RasterImage should be filled with either a FPImage.TFPMemoryImage or with
    a TLazIntfImage. The property RasterImage might be nil.
   }
-  TvRasterImage = class(TvEntity)
+  TvRasterImage = class(TvEntityWithPenAndBrush)
   public
     RasterImage: TFPCustomImage;
     Top, Left, Width, Height: Double;
   end;
 
-type
+  { TvPoint }
 
-  TvCustomVectorialWriter = class;
-  TvCustomVectorialReader = class;
-  TvVectorialPage = class;
+  TvPoint = class(TvEntityWithPen)
+  public
+    function GetNormalizedPos(APage: TvVectorialPage): T3DPoint;
+  end;
 
   { TvVectorialDocument }
 
@@ -340,7 +360,10 @@ type
     procedure ClearTmpPath();
     procedure AppendSegmentToTmpPath(ASegment: TPathSegment);
   public
+    // Document size for page-based documents
     Width, Height: Double; // in millimeters
+    // Document size for other documents
+    MinX, MinY, MinZ, MaxX, MaxY, MaxZ: Double;
     Owner: TvVectorialDocument;
     { Base methods }
     constructor Create(AOwner: TvVectorialDocument); virtual;
@@ -379,6 +402,8 @@ type
     procedure AddEllipse(CenterX, CenterY, HorzHalfAxis, VertHalfAxis, Angle: Double);
     // Dimensions
     procedure AddAlignedDimension(BaseLeft, BaseRight, DimLeft, DimRight: T3DPoint);
+    //
+    procedure AddPoint(AX, AY, AZ: Double);
   end;
 
   {@@ TvVectorialReader class reference type }
@@ -530,6 +555,31 @@ begin
   Result.X := AX;
   Result.Y := AY;
   Result.Z := 0;
+end;
+
+{ TvPoint }
+
+function TvPoint.GetNormalizedPos(APage: TvVectorialPage): T3DPoint;
+begin
+  Result.X := (X - APage.MinX) / (APage.MaxX - APage.MinX);
+  Result.Y := (Y - APage.MinY) / (APage.MaxX - APage.MinY);
+  Result.Z := (Z - APage.MinZ) / (APage.MaxX - APage.MinZ);
+end;
+
+constructor TvEntityWithPen.Create;
+begin
+  inherited Create;
+  Pen.Style := psSolid;
+  Pen.Color := colBlack;
+end;
+
+{ TvEntityWithPenAndBrush }
+
+constructor TvEntityWithPenAndBrush.Create;
+begin
+  inherited Create;
+  Brush.Style := bsClear;
+  Brush.Color := colBlue;
 end;
 
 { TvVectorialPage }
@@ -909,6 +959,17 @@ begin
   AddEntity(lDim);
 end;
 
+procedure TvVectorialPage.AddPoint(AX, AY, AZ: Double);
+var
+  lPoint: TvPoint;
+begin
+  lPoint := TvPoint.Create;
+  lPoint.X := AX;
+  lPoint.Y := AY;
+  lPoint.Z := AZ;
+  AddEntity(lPoint);
+end;
+
 { TvText }
 
 constructor TvText.Create;
@@ -938,10 +999,6 @@ end;
 
 constructor TvEntity.Create;
 begin
-  Pen.Style := psSolid;
-  Pen.Color := colBlack;
-  Brush.Style := bsClear;
-  Brush.Color := colBlue;
 end;
 
 procedure TvEntity.CalculateBoundingBox(var ALeft, ATop, ARight, ABottom: Double);
@@ -1094,6 +1151,7 @@ begin
   inherited Create;
 
   FPages := TFPList.Create;
+  FCurrentPageIndex := -1;
 end;
 
 {@@

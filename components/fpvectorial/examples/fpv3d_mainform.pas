@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, OpenGLContext, Forms, Controls, Graphics,
-  Dialogs, EditBtn, StdCtrls, fpvectorial, gl, glu;
+  Dialogs, EditBtn, StdCtrls, fpvectorial, gl, glu, lasvectorialreader;
 
 type
 
@@ -14,8 +14,11 @@ type
 
   TformFPV3D = class(TForm)
     Button1: TButton;
-    FileNameEdit1: TFileNameEdit;
+    buttonLoad: TButton;
+    editFileName: TFileNameEdit;
     glControl: TOpenGLControl;
+    procedure Button1Click(Sender: TObject);
+    procedure buttonLoadClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure glControlPaint(Sender: TObject);
@@ -36,6 +39,11 @@ implementation
 { TformFPV3D }
 
 procedure TformFPV3D.glControlPaint(Sender: TObject);
+var
+  VecPage: TvVectorialPage;
+  i: Integer;
+  lPoint1, lPoint2, lPoint3: TvPoint;
+  lEntity: TvEntity;
 begin
   glClearColor(1.0, 1.0, 1.0, 1.0);
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
@@ -50,7 +58,7 @@ begin
   glTranslatef(0.0, 0.0,-6.0);
   glRotatef(100, 220, 330, 0.0);
 
-  glBegin(GL_QUADS);
+{  glBegin(GL_QUADS);
           glColor3f(0.0,1.0,0.0);                              // Set The Color To Green
           glVertex3f( 1.0, 1.0,-1.0);                  // Top Right Of The Quad (Top)
           glVertex3f(-1.0, 1.0,-1.0);                  // Top Left Of The Quad (Top)
@@ -91,7 +99,32 @@ begin
           glVertex3f( 1.0, 1.0, 1.0);                  // Top Left Of The Quad (Right)
           glVertex3f( 1.0,-1.0, 1.0);                  // Bottom Left Of The Quad (Right)
           glVertex3f( 1.0,-1.0,-1.0);                  // Bottom Right Of The Quad (Right)
-  glEnd();
+  glEnd();}
+
+  //s==============================
+
+  VecPage := VecDoc.GetCurrentPage();
+  if VecPage = nil then Exit;
+  for i := 0 to VecPage.GetEntitiesCount() - 3 do
+  begin
+    lEntity := VecPage.GetEntity(i);
+    if not (lEntity is TvPoint) then Continue;
+    lPoint1 := lEntity as TvPoint;
+
+    lEntity := VecPage.GetEntity(i+1);
+    if not (lEntity is TvPoint) then Continue;
+    lPoint2 := lEntity as TvPoint;
+
+    lEntity := VecPage.GetEntity(i+2);
+    if not (lEntity is TvPoint) then Continue;
+    lPoint3 := lEntity as TvPoint;
+
+    glBegin(GL_TRIANGLES);		// Drawing Using Triangles
+      glVertex3f(lPoint1.X, lPoint1.Y, lPoint1.Z); // Top
+      glVertex3f(lPoint2.X, lPoint2.Y, lPoint2.Z); // Bottom Left
+      glVertex3f(lPoint3.X, lPoint3.Y, lPoint3.Z); // Top
+    glEnd();					// Finished Drawing
+  end;
 
 //  Speed := double(OpenGLControl1.FrameDiffTimeInMSecs)/10;
 
@@ -105,6 +138,17 @@ end;
 procedure TformFPV3D.FormCreate(Sender: TObject);
 begin
   VecDoc := TvVectorialDocument.Create;
+end;
+
+procedure TformFPV3D.buttonLoadClick(Sender: TObject);
+begin
+  VecDoc.ReadFromFile(editFileName.FileName);
+  glControl.Invalidate;
+end;
+
+procedure TformFPV3D.Button1Click(Sender: TObject);
+begin
+  glControl.Invalidate;
 end;
 
 procedure TformFPV3D.FormDestroy(Sender: TObject);

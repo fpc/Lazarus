@@ -1,7 +1,7 @@
 object formFPV3D: TformFPV3D
-  Left = 257
+  Left = 336
   Height = 240
-  Top = 177
+  Top = 171
   Width = 320
   Caption = 'formFPV3D'
   ClientHeight = 240
@@ -9,9 +9,9 @@ object formFPV3D: TformFPV3D
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   LCLVersion = '0.9.31'
-  object FileNameEdit1: TFileNameEdit
+  object editFileName: TFileNameEdit
     Left = 12
-    Height = 21
+    Height = 25
     Top = 8
     Width = 280
     DialogOptions = []
@@ -22,19 +22,38 @@ object formFPV3D: TformFPV3D
     MaxLength = 0
     TabOrder = 0
   end
-  object Button1: TButton
+  object buttonLoad: TButton
     Left = 12
     Height = 25
     Top = 40
     Width = 75
-    Caption = 'Button1'
+    Caption = 'Load file'
+    OnClick = buttonLoadClick
     TabOrder = 1
   end
   object glControl: TOpenGLControl
-    Left = 12
-    Height = 162
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 5
+    Height = 163
     Top = 72
-    Width = 296
+    Width = 310
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 5
+    BorderSpacing.Right = 5
+    BorderSpacing.Bottom = 5
     OnPaint = glControlPaint
+  end
+  object Button1: TButton
+    Left = 96
+    Height = 25
+    Top = 40
+    Width = 75
+    Caption = 'Refresh'
+    OnClick = Button1Click
+    TabOrder = 3
   end
 end

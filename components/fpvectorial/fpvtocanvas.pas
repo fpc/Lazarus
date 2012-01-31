@@ -323,10 +323,16 @@ begin
   ALCLDest := TCanvas(ADest);
   {$endif}
 
-  ADest.Brush.Style := CurEntity.Brush.Style;
-  ADest.Pen.Style := CurEntity.Pen.Style;
-  ADest.Pen.FPColor := CurEntity.Pen.Color;
-  ADest.Brush.FPColor := CurEntity.Brush.Color;
+  if CurEntity is TvEntityWithPenAndBrush then
+  begin
+    ADest.Brush.Style := (CurEntity as TvEntityWithPenAndBrush).Brush.Style;
+    ADest.Brush.FPColor := (CurEntity as TvEntityWithPenAndBrush).Brush.Color;
+  end;
+  if CurEntity is TvEntityWithPen then
+  begin
+    ADest.Pen.Style := (CurEntity as TvEntityWithPen).Pen.Style;
+    ADest.Pen.FPColor := (CurEntity as TvEntityWithPen).Pen.Color;
+  end;
 
   if CurEntity is TvCircle then
   begin

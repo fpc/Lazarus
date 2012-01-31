@@ -225,7 +225,15 @@ end;
 
 procedure TvLASVectorialReader.ReadFromStream(AStream: TStream;
   AData: TvVectorialDocument);
+var
+  lPage: TvVectorialPage;
+  lRecord0: TLASPointDataRecordFormat0;
+  lRecord1: TLASPointDataRecordFormat1;
 begin
+  // Clear and add the first page
+  AData.Clear;
+  lPage := AData.AddPage();
+
   // First read the header like if it was for LAS 1.0,
   // this will tell us the real version so then we read it again
   InitialPos := AStream.Position;
@@ -237,6 +245,13 @@ begin
   // First check the signature
   if PublicHeaderBlock_1_0.FileSignatureLASF <> 'LASF' then
     raise Exception.Create('[TvLASVectorialReader.ReadFromStream] Invalid file signoture while reading LAS file');
+
+  lPage.MinX := PublicHeaderBlock_1_0.MinX;
+  lPage.MinY := PublicHeaderBlock_1_0.MinY;
+  lPage.MinZ := PublicHeaderBlock_1_0.MinZ;
+  lPage.MaxX := PublicHeaderBlock_1_0.MaxX;
+  lPage.MaxY := PublicHeaderBlock_1_0.MaxY;
+  lPage.MaxZ := PublicHeaderBlock_1_0.MaxZ;
 
   // In LAS 1.3+ read the header extension
   // ToDo
@@ -251,10 +266,19 @@ begin
   case PublicHeaderBlock_1_0.PointDataFormatID of
     0:
     begin
-
+      while AStream.Position < AStream.Size do
+      begin
+        AStream.ReadBuffer(lRecord0, SizeOf(TLASPointDataRecordFormat0));
+        lPage.AddPoint(lRecord0.X, lRecord0.Y, lRecord0.Z);
+      end;
     end;
     1:
     begin
+      while AStream.Position < AStream.Size do
+      begin
+        AStream.ReadBuffer(lRecord1, SizeOf(TLASPointDataRecordFormat1));
+        lPage.AddPoint(lRecord1.X, lRecord1.Y, lRecord1.Z);
+      end;
     end;
   end;
 end;
