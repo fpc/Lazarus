@@ -188,8 +188,10 @@ var
   sec: TStringList;
 begin
   sec := AddSection(Section);
-  sec.Assign(Strings);
-  FDirty:=True; //optimize?
+  if not sec.Equals(Strings) then begin
+    sec.Assign(Strings);
+    FDirty:=True;
+  end;
 end;
 
 procedure TConfigFile.WriteSectionValues(const Section: string;

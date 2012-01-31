@@ -15,33 +15,20 @@
 }
 
 (* --- Version 1.0 ---
-The TFPDocMaker class shall support the following functionality:
-- Project generation from a commandline.
+uMakeSkel merges the FPDoc and MakeSkel functionality, for use in applications.
+
+The TFPDocMaker class supports the following functionality:
+- Project generation from a commandline, lpk or lpi file.
 - FPDoc documentation generation, optionally syntax check only.
 - MakeSkel skeleton generation or update.
+- Processing of single units or entire packages.
+- Added and extended commandline options.
 
 Everything else is done in a separate documentation manager.
 The documentation manager maintains its own projects
 and creates temporary TFPDocProjects and TFPDocPackages on demand.
 *)
 
-(* Version 0.0 - requires patched FPDoc units!
-The TFPDocMaker class supports the following functionality:
-- documentation generation (FPDoc),
-  - for all units in a package
-  - for a selected unit (optionally syntax check only)
-- project generation
-  - from input and description directories
-  - from a commandline
-- skeleton generation
-  - for all units in a package
-  - for selected unit (MakeSkel)
-- documentation sync with source (MakeSkel UpdateMode)
-  - for all units in a package
-    - output into one or more files
-  - for selected unit
-- skeleton and sync at once
-*)
 unit umakeskel;
 
 interface
@@ -168,13 +155,12 @@ type
     procedure SetDryRun(AValue: boolean);
     procedure SetPackage(AValue: TFPDocPackage);
     procedure SetWriteProjectFile(AValue: string);
-    function ParseCommon(var Cmd, Arg: string): TCreatorAction;
+    function  ParseCommon(var Cmd, Arg: string): TCreatorAction;
   public
     Function  DocumentPackage(Const APackageName,AOutputName: string; InputFiles, DescrFiles : TStrings) : String;
     procedure CreateUnitDocumentation(const AUnit: string; ParseOnly: Boolean);
   public
     ImportDir: string;
-    SelectedUnit: string;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure AddDirToFileList(List: TStrings; const ADirName, AMask: String);
@@ -884,22 +870,30 @@ procedure TFPDocMaker.AddDirToFileList(List: TStrings; const ADirName, AMask: St
 
 Var
   Info : TSearchRec;
-  D : String;
-
+  D, opts : String;
+  i: integer;
 begin
-  if (ADirName<>'') and not DirectoryExists(ADirName) then
-     DoLog('Directory '+ADirName+' does not exist')
+  i := Pos(',', ADirName);
+  if i > 0 then begin
+    opts := ' ' + Copy(ADirName, i+1, Length(ADirName));
+    D := Copy(ADirName, 1, i-1);
+  end else begin
+    D := ADirName;
+    opts := '';
+  end;
+  if (D<>'') and not DirectoryExists(D) then
+     DoLog('Directory '+D+' does not exist')
   else
     begin
-    if (ADirName='.') or (ADirName='') then
+    if (D='.') then
       D:=''
     else
-      D:=IncludeTrailingPathDelimiter(ADirName);
+      D:=IncludeTrailingPathDelimiter(D);
     If (FindFirst(D+AMask,0,Info)=0) then
       try
         Repeat
           If (Info.Attr and faDirectory)=0 then
-            List.Add(D+Info.name);
+            List.Add(D+Info.name + opts);
         Until FindNext(Info)<>0;
       finally
         FindClose(Info);
@@ -910,20 +904,29 @@ end;
 procedure TFPDocMaker.AddToFileList(List: TStrings; const FileName: String);
 var
   f: Text;
-  s: String;
+  s, opts: String;
+  i: integer;
 begin
-  if Copy(FileName, 1, 1) = '@' then
+  i := Pos(',', FileName);
+  if i > 0 then begin
+    opts := ' ' + Copy(FileName, i+1, Length(FileName));
+    s := Copy(FileName, 1, i-1);
+  end else begin
+    s := FileName;
+    opts := '';
+  end;
+  if s[1] = '@' then
   begin
-    AssignFile(f, Copy(FileName, 2, Length(FileName)));
+    AssignFile(f, Copy(s, 2, Length(s)));
     Reset(f);
     while not EOF(f) do
     begin
       ReadLn(f, s);
-      List.Add(s);
+      List.Add(s + opts);
     end;
     Close(f);
   end else
-    List.Add(FileName);
+    List.Add(s + opts);
 end;
 
 function TFPDocMaker.ParseCommon(var Cmd, Arg: string):  TCreatorAction;
@@ -935,12 +938,6 @@ begin
     CmdAction := caUsage;
     exit(caUsage);
   end;
-{$IFDEF v0}
-  if Cmd = '--makeskel' then
-    Options.CreateSkeleton := True
-  else
-{$ELSE}
-{$ENDIF}
   if Cmd = '--update' then
     CmdOptions.UpdateMode := True
   else if (Cmd = '-n') or (Cmd = '--dry-run') then
@@ -1004,17 +1001,10 @@ begin
       Options.CPUTarget := Arg
     else if (Cmd = '-l') or (Cmd = '--lang') then
       Options.Language := Arg
-  {$IFDEF new}
-    else if (Cmd = '--common-options') then
-      SelectedPackage.CommonOptions:=Arg
-  {$ELSE}
-  {$ENDIF}
     else if Cmd = '--mo-dir' then
       Options.modir := Arg
     else if (Cmd = '-o') or (Cmd = '--output') then
       SelectedPackage.Output := Arg
-    else if (Cmd = '--unit') then //-u= UpdateMode
-      SelectedUnit:= Arg
     else if (Cmd = '-v') or (Cmd = '--verbose') then
       Verbose:=true
     else if Cmd = '--write-project' then begin

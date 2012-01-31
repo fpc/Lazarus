@@ -41,6 +41,8 @@ TFPDocWriter based writers create an file for every module:
 *)
 {$mode objfpc}{$H+}
 
+{$DEFINE EasyImports} //EasyImports.patch applied?
+
 interface
 
 uses
@@ -424,7 +426,11 @@ begin
 //add Imports
   for i := 0 to Requires.Count - 1 do begin
     s := Requires[i];
-    imp := Manager.RootDir + s + '.xct,../' + s + '/';
+  {$IFDEF EasyImports}
+    imp := Manager.RootDir + s;
+  {$ELSE}
+    imp := Manager.RootDir + s + '.xct,../' + s + '/'; //valid for HTML, not for CHM!
+  {$ENDIF}
     APrj.ParseFPDocOption('--import=' + imp);
   end;
 //add options
@@ -914,7 +920,12 @@ begin
   if not Result then
     exit;
   try
-    Helper.ParseFPDocOption('--output=' + AOutput);
+    Helper.ParseFPDocOption(Format('--output="%s"', [AOutput]));
+    if Options.Backend = 'chm' then begin
+      Helper.ParseFPDocOption('--auto-toc');
+      Helper.ParseFPDocOption('--auto-index');
+    end;
+      Helper.ParseFPDocOption('--make-searchable'); //always?
     //Result :=
     Helper.CreateUnitDocumentation(AUnit, False);
   finally

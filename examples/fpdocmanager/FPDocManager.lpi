@@ -4,7 +4,7 @@
     <Version Value="9"/>
     <PathDelim Value="\"/>
     <General>
-      <SessionStorage Value="InProjectDir"/>
+      <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
       <Title Value="FPDocManager"/>
       <ResourceType Value="res"/>
@@ -109,7 +109,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="..\..\..\fpc-trunk\utils\fpdoc"/>
+      <OtherUnitFiles Value="$(FPCSrcDir)\utils\fpdoc"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>

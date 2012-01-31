@@ -845,7 +845,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TFPDocMaker.CleanXML">
-        <short/>
+        <short>Return True and (try) kill file if no element tag found.</short>
         <descr/>
         <errors/>
         <seealso/>
