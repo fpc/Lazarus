@@ -165,13 +165,13 @@ type
   // An abstract base class for edit controls which filter data in
   // visual controls like TListView and TTreeView.
   TCustomControlFilterEdit = class(TCustomEditButton)
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
   private
     fFilter: string;
     fIdleConnected: Boolean;
     fSortData: Boolean;             // Data needs to be sorted.
     procedure SetFilter(const AValue: string);
     procedure SetIdleConnected(const AValue: Boolean);
+    procedure OnIdle(Sender: TObject; var Done: Boolean);
   protected
     fNeedUpdate: Boolean;
     fIsFirstUpdate: Boolean;
@@ -946,7 +946,7 @@ begin
     RestoreSelection;
   end
   else begin
-    if csDestroying in ComponentState then exit;
+    if [csDestroying,csDesigning]*ComponentState<>[] then exit;
     InvalidateFilter;
   end;
 end;
