@@ -14,11 +14,17 @@ type
 
   TformFPV3D = class(TForm)
     Button1: TButton;
-    buttonLoad: TButton;
+    buttonRotZ: TButton;
+    buttonZoomIn: TButton;
+
+    buttonZoomOut: TButton;  buttonLoad: TButton;
     editFileName: TFileNameEdit;
     glControl: TOpenGLControl;
     procedure Button1Click(Sender: TObject);
     procedure buttonLoadClick(Sender: TObject);
+    procedure buttonRotZClick(Sender: TObject);
+    procedure buttonZoomInClick(Sender: TObject);
+    procedure buttonZoomOutClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure glControlPaint(Sender: TObject);
@@ -27,6 +33,8 @@ type
   public
     { public declarations }
     VecDoc: TvVectorialDocument;
+    glAltitude: Integer;
+    glRotateAngle, glRotateX, glRotateY, glRotateZ: Double;
   end; 
 
 var
@@ -56,8 +64,10 @@ begin
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-  glTranslatef(0.0, 0.0,-6.0);
-  //glRotatef(100, 220, 330, 0.0);
+  glTranslatef(0.0, 0.0,-glAltitude);
+
+  if glRotateAngle <> 0 then
+    glRotatef(glRotateAngle, glRotateX, glRotateY, glRotateZ);
 
 {  glBegin(GL_QUADS);
           glColor3f(0.0,1.0,0.0);                              // Set The Color To Green
@@ -143,11 +153,34 @@ end;
 procedure TformFPV3D.FormCreate(Sender: TObject);
 begin
   VecDoc := TvVectorialDocument.Create;
+  glAltitude := 3;
 end;
 
 procedure TformFPV3D.buttonLoadClick(Sender: TObject);
 begin
   VecDoc.ReadFromFile(editFileName.FileName);
+  glControl.Invalidate;
+end;
+
+procedure TformFPV3D.buttonRotZClick(Sender: TObject);
+begin
+  glRotateAngle := glRotateAngle + 10;
+  glRotateX := 0.0;
+  glRotateY := 0.0;
+  glRotateZ := 1.0;
+  glControl.Invalidate;
+end;
+
+procedure TformFPV3D.buttonZoomInClick(Sender: TObject);
+begin
+  Dec(glAltitude);
+  if glAltitude < 1 then glAltitude := 1;
+  glControl.Invalidate;
+end;
+
+procedure TformFPV3D.buttonZoomOutClick(Sender: TObject);
+begin
+  Inc(glAltitude);
   glControl.Invalidate;
 end;
 

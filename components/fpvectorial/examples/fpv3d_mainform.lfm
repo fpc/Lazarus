@@ -1,11 +1,11 @@
 object formFPV3D: TformFPV3D
   Left = 336
-  Height = 240
+  Height = 376
   Top = 171
-  Width = 320
+  Width = 495
   Caption = 'formFPV3D'
-  ClientHeight = 240
-  ClientWidth = 320
+  ClientHeight = 376
+  ClientWidth = 495
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   LCLVersion = '0.9.31'
@@ -38,9 +38,9 @@ object formFPV3D: TformFPV3D
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 5
-    Height = 163
+    Height = 299
     Top = 72
-    Width = 310
+    Width = 485
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 5
     BorderSpacing.Right = 5
@@ -55,5 +55,32 @@ object formFPV3D: TformFPV3D
     Caption = 'Refresh'
     OnClick = Button1Click
     TabOrder = 3
+  end
+  object buttonZoomIn: TButton
+    Left = 178
+    Height = 25
+    Top = 38
+    Width = 75
+    Caption = 'Zoom In'
+    OnClick = buttonZoomInClick
+    TabOrder = 4
+  end
+  object buttonZoomOut: TButton
+    Left = 261
+    Height = 25
+    Top = 38
+    Width = 75
+    Caption = 'Zoom Out'
+    OnClick = buttonZoomOutClick
+    TabOrder = 5
+  end
+  object buttonRotZ: TButton
+    Left = 345
+    Height = 25
+    Top = 38
+    Width = 111
+    Caption = 'Rot Around Z'
+    OnClick = buttonRotZClick
+    TabOrder = 6
   end
 end
