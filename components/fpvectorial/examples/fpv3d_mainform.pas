@@ -70,51 +70,6 @@ begin
   if glRotateAngle <> 0 then
     glRotatef(glRotateAngle, glRotateX, glRotateY, glRotateZ);
 
-{  glBegin(GL_QUADS);
-          glColor3f(0.0,1.0,0.0);                              // Set The Color To Green
-          glVertex3f( 1.0, 1.0,-1.0);                  // Top Right Of The Quad (Top)
-          glVertex3f(-1.0, 1.0,-1.0);                  // Top Left Of The Quad (Top)
-          glVertex3f(-1.0, 1.0, 1.0);                  // Bottom Left Of The Quad (Top)
-          glVertex3f( 1.0, 1.0, 1.0);                  // Bottom Right Of The Quad (Top)
-  glEnd();
-  glBegin(GL_QUADS);
-          glColor3f(1.0,0.5,0.0);                              // Set The Color To Orange
-          glVertex3f( 1.0,-1.0, 1.0);                  // Top Right Of The Quad (Bottom)
-          glVertex3f(-1.0,-1.0, 1.0);                  // Top Left Of The Quad (Bottom)
-          glVertex3f(-1.0,-1.0,-1.0);                  // Bottom Left Of The Quad (Bottom)
-          glVertex3f( 1.0,-1.0,-1.0);                  // Bottom Right Of The Quad (Bottom)
-  glEnd();
-  glBegin(GL_QUADS);
-          glColor3f(1.0,0.0,0.0);                              // Set The Color To Red
-          glVertex3f( 1.0, 1.0, 1.0);                  // Top Right Of The Quad (Front)
-          glVertex3f(-1.0, 1.0, 1.0);                  // Top Left Of The Quad (Front)
-          glVertex3f(-1.0,-1.0, 1.0);                  // Bottom Left Of The Quad (Front)
-          glVertex3f( 1.0,-1.0, 1.0);                  // Bottom Right Of The Quad (Front)
-  glEnd();
-  glBegin(GL_QUADS);
-          glColor3f(1.0,1.0,0.0);                              // Set The Color To Yellow
-          glVertex3f( 1.0,-1.0,-1.0);                  // Bottom Left Of The Quad (Back)
-          glVertex3f(-1.0,-1.0,-1.0);                  // Bottom Right Of The Quad (Back)
-          glVertex3f(-1.0, 1.0,-1.0);                  // Top Right Of The Quad (Back)
-          glVertex3f( 1.0, 1.0,-1.0);                  // Top Left Of The Quad (Back)
-  glEnd();
-  glBegin(GL_QUADS);
-          glColor3f(0.0,0.0,1.0);                              // Set The Color To Blue
-          glVertex3f(-1.0, 1.0, 1.0);                  // Top Right Of The Quad (Left)
-          glVertex3f(-1.0, 1.0,-1.0);                  // Top Left Of The Quad (Left)
-          glVertex3f(-1.0,-1.0,-1.0);                  // Bottom Left Of The Quad (Left)
-          glVertex3f(-1.0,-1.0, 1.0);                  // Bottom Right Of The Quad (Left)
-  glEnd();
-  glBegin(GL_QUADS);
-          glColor3f(1.0,0.0,1.0);                              // Set The Color To Violet
-          glVertex3f( 1.0, 1.0,-1.0);                  // Top Right Of The Quad (Right)
-          glVertex3f( 1.0, 1.0, 1.0);                  // Top Left Of The Quad (Right)
-          glVertex3f( 1.0,-1.0, 1.0);                  // Bottom Left Of The Quad (Right)
-          glVertex3f( 1.0,-1.0,-1.0);                  // Bottom Right Of The Quad (Right)
-  glEnd();}
-
-  //s==============================
-
   VecPage := VecDoc.GetCurrentPage();
   if VecPage = nil then Exit;
   for i := 0 to VecPage.GetEntitiesCount() - 3 do
@@ -142,12 +97,6 @@ begin
       glVertex3f(lPos3.X, lPos3.Y, lPos3.Z);
     glEnd();					// Finished Drawing
   end;
-
-//  Speed := double(OpenGLControl1.FrameDiffTimeInMSecs)/10;
-
-//  cube_rotationx += 5.15 * Speed;
-//  cube_rotationy += 5.15 * Speed;
-//  cube_rotationz += 20.0 * Speed;
 
   glControl.SwapBuffers;
 end;
