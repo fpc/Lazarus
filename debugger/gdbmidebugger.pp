@@ -10902,7 +10902,7 @@ function TGDBMIInternalBreakPoint.BreakSet(ACmd: TGDBMIDebuggerCommand;
 var
   FuncName: string;
 begin
-  BreakSet(ACmd, ALoc, AId, AnAddr, FuncName);
+  Result := BreakSet(ACmd, ALoc, AId, AnAddr, FuncName);
 end;
 
 function TGDBMIInternalBreakPoint.BreakSet(ACmd: TGDBMIDebuggerCommand; ALoc: String; out
