@@ -8398,7 +8398,7 @@ begin
 
     // change title
     if TitleWasDefault then begin
-      Project1.Title2:=Project1.GetDefaultTitle;
+      Project1.Title:=Project1.GetDefaultTitle;
       // title does not need to be removed from source, because it was default
     end;
 

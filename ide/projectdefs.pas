@@ -1672,7 +1672,7 @@ begin
   If (T<>'') then
     begin
     AProject.Flags:=AProject.Flags+[pfMainUnitHasTitleStatement];
-    AProject.Title2:=T;
+    AProject.Title:=T;
     NewSource.Add('  Application.Title:='''+T+''';');
     end;
   NewSource.Add('  Application.Run;');

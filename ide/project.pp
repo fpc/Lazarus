@@ -2571,7 +2571,7 @@ begin
   UpdateProjectDirectory;
   FPublishOptions:=TPublishProjectOptions.Create(Self);
   FRunParameters:=TRunParamsOptions.Create;
-  Title2 := '';
+  Title := '';
   FUnitList := TFPList.Create;  // list of TUnitInfo
 
   FResources := TProjectResources.Create(Self);
@@ -2848,7 +2848,7 @@ begin
         xmlconfig.SetValue(Path+'General/MainUnit/Value', MainUnitID); // always write a value to support opening by older IDEs (<=0.9.28). This can be changed in a few released.
         xmlconfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
                                  AutoCreateForms,true);
-        xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title2,'');
+        xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
         xmlconfig.SetDeleteValue(Path+'General/UseAppBundle/Value', UseAppBundle, True);
 
         // fpdoc
@@ -3058,14 +3058,14 @@ end;
 
 function TProject.GetTitle: string;
 begin
-  Result:=Title2;
+  Result:=Title;
   MacroEngine.SubstituteStr(Result);
 end;
 
 function TProject.TitleIsDefault(Fuzzy: boolean): boolean;
 begin
-  Result:=(Title2='') or (Title2=GetDefaultTitle)
-    or (Fuzzy and (SysUtils.CompareText(Title2,GetDefaultTitle)=0));
+  Result:=(Title='') or (Title=GetDefaultTitle)
+    or (Fuzzy and (SysUtils.CompareText(Title,GetDefaultTitle)=0));
 end;
 
 function TProject.IDAsString: string;
@@ -3415,7 +3415,7 @@ begin
       //   automatically fixes broken lpi files.
       if not LoadParts then begin
         NewMainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', 0);
-        Title2 := xmlconfig.GetValue(Path+'General/Title/Value', '');
+        Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
         UseAppBundle := xmlconfig.GetValue(Path+'General/UseAppBundle/Value', True);
         AutoCreateForms := xmlconfig.GetValue(
            Path+'General/AutoCreateForms/Value', true);
@@ -3752,7 +3752,7 @@ begin
   ClearSourceDirectories;
   UpdateProjectDirectory;
   FPublishOptions.Clear;
-  Title2 := '';
+  Title := '';
 
   Modified := false;
   SessionModified := false;
@@ -4312,19 +4312,17 @@ end;
 procedure TProject.SetProjectInfoFile(const NewFilename:string);
 var
   NewProjectInfoFile: String;
-  OldProjectInfoFile: String;
-  DefaultTitle: String;
+  TitleWasDefault: Boolean;
 begin
   NewProjectInfoFile:=TrimFilename(NewFilename);
   if NewProjectInfoFile='' then exit;
   DoDirSeparators(NewProjectInfoFile);
   if fProjectInfoFile=NewProjectInfoFile then exit;
   BeginUpdate(true);
-  OldProjectInfoFile:=fProjectInfoFile;
+  TitleWasDefault:=(Title<>'') and TitleIsDefault(true);
   fProjectInfoFile:=NewProjectInfoFile;
-  DefaultTitle:=ExtractFileNameOnly(OldProjectInfoFile);
-  if TitleIsDefault(true) then
-    Title2:=DefaultTitle;
+  if TitleWasDefault then
+    Title:=GetDefaultTitle;
   UpdateProjectDirectory;
   UpdateSessionFilename;
   if Assigned(OnChangeProjectInfoFile) then

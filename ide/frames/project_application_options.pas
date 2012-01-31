@@ -215,7 +215,7 @@ begin
   FProject := AOptions as TProject;
   with FProject do
   begin
-    TitleEdit.Text := Title2;
+    TitleEdit.Text := Title;
     UseAppBundleCheckBox.Checked := UseAppBundle;
     UseXPManifestCheckBox.Checked := TProjectXPManifest(ProjResources[TProjectXPManifest]).UseManifest;
     DpiAwareCheckBox.Checked := TProjectXPManifest(ProjResources[TProjectXPManifest]).DpiAware;
@@ -235,7 +235,7 @@ var
 begin
   with AOptions as TProject do
   begin
-    Title2 := TitleEdit.Text;
+    Title := TitleEdit.Text;
     AStream := GetIconAsStream;
     try
       TProjectIcon(ProjResources[TProjectIcon]).SetStream(AStream);

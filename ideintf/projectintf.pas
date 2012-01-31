@@ -442,7 +442,7 @@ type
     property Files[Index: integer]: TLazProjectFile read GetFiles;
     property FileCount: integer read GetFileCount;
     property MainFile: TLazProjectFile read GetMainFile;
-    property Title2: String read FTitle write SetTitle;
+    property Title: String read FTitle write SetTitle;
     property Flags: TProjectFlags read FFlags write SetFlags;
     property ExecutableType: TProjectExecutableType read FExecutableType
                  write SetExecutableType;// read from MainFile, not saved to lpi
@@ -1009,7 +1009,7 @@ end;
 
 function TProjectDescriptor.InitProject(AProject: TLazProject): TModalResult;
 begin
-  AProject.Title2:='project1';
+  AProject.Title:='project1';
   AProject.Flags:=Flags;
   Result:=mrOk;
 end;
