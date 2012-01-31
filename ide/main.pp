@@ -872,7 +872,7 @@ type
     procedure DoShowCodeExplorer(Show: boolean);
     procedure DoShowCodeBrowser(Show: boolean);
     procedure DoShowRestrictionBrowser(Show: boolean; const RestrictedName: String = '');
-    procedure DoShowComponentList(Show: boolean);
+    procedure DoShowComponentList(Show: boolean); override;
     procedure DoShowInspector(Show: boolean);
     procedure CreateIDEWindow(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean);

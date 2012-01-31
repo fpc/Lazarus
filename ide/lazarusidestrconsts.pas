@@ -3472,7 +3472,8 @@ resourcestring
   lisCPOpenPackage = 'Open Package %s';
   lisCPOpenUnit = 'Open Unit %s';
   lisCompPalOpenUnit = 'Open unit';
-  lisCompPalFindComponent = 'Find component';
+  lisCompPalComponentList = 'View Component List';
+  lisCompPalFindComponent = 'Find component (to be removed)';
 
   // macro promp dialog
   lisMacroPromptEnterData = 'Enter data';

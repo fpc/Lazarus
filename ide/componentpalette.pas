@@ -37,14 +37,12 @@ unit ComponentPalette;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Controls, Forms, Dialogs, Graphics, ExtCtrls,
-  ComCtrls, Buttons, FileUtil, Menus, LResources, AVL_Tree,
-  PropEdits, FormEditingIntf, LazIDEIntf, MacroIntf,
+  Classes, SysUtils, Controls, Forms, Graphics, ComCtrls, Buttons, FileUtil, Menus,
+  LResources, AVL_Tree, PropEdits, FormEditingIntf, LazIDEIntf, IDEProcs,
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
   {$ENDIF}
-  LazarusIDEStrConsts, ComponentReg, DesignerProcs, IDEProcs, PackageDefs,
-  FindPaletteComp;
+  LazarusIDEStrConsts, ComponentReg, DesignerProcs, PackageDefs, FindPaletteComp;
 
 type
   TComponentSelectionMode = (
@@ -55,15 +53,17 @@ type
   { TComponentPalette }
 
   TComponentPalette = class(TBaseComponentPalette)
+    PalettePopupMenu: TPopupMenu;
     PopupMenu: TPopupMenu;
     OpenPackageMenuItem: TMenuItem;
     OpenUnitMenuItem: TMenuItem;
-    FindComponentMenuItem: TMenuItem;
     procedure ActivePageChanged(Sender: TObject);
     procedure OnPageResize(Sender: TObject);
     procedure OpenPackageClicked(Sender: TObject);
     procedure OpenUnitClicked(Sender: TObject);
+    procedure ComponentListClicked(Sender: TObject);
     procedure FindComponentClicked(Sender: TObject);
+    procedure PalettePopupMenuPopup(Sender: TObject);
     procedure PopupMenuPopup(Sender: TObject);
   private
     fComponents: TAVLTree; // tree of TRegisteredComponent sorted for componentclass
@@ -125,6 +125,8 @@ type
 function CompareControlsWithTag(Control1, Control2: Pointer): integer;
 
 implementation
+
+uses MainBase;
 
 function CompareRegisteredComponents(Data1, Data2: Pointer): integer;
 var
@@ -199,12 +201,22 @@ begin
     OnOpenUnit(PkgComponent);
 end;
 
+procedure TComponentPalette.ComponentListClicked(Sender: TObject);
+begin
+  MainIDE.DoShowComponentList(true);
+end;
+
 procedure TComponentPalette.FindComponentClicked(Sender: TObject);
 var
   AComponent: TRegisteredComponent;
 begin
   if ShowFindPaletteComponentDlg(AComponent)<>mrOk then exit;
   Selected:=AComponent;
+end;
+
+procedure TComponentPalette.PalettePopupMenuPopup(Sender: TObject);
+begin
+  ;
 end;
 
 procedure TComponentPalette.PopupMenuPopup(Sender: TObject);
@@ -239,12 +251,36 @@ begin
 end;
 
 procedure TComponentPalette.SetPageControl(const AValue: TPageControl);
+var
+  MenuItem: TMenuItem;
 begin
   if FPageControl=AValue then exit;
   ClearButtons;
   FPageControl:=AValue;
   if FPageControl<>nil then begin
     FPageControl.OnChange:=@ActivePageChanged;
+    if PalettePopupMenu=nil then begin
+      PalettePopupMenu:=TPopupMenu.Create(nil);
+      PalettePopupMenu.OnPopup:=@PalettePopupMenuPopup;
+      PalettePopupMenu.Name:='PalettePopupMenu';
+      // Component List
+      MenuItem:=TMenuItem.Create(PalettePopupMenu);
+      with MenuItem do begin
+        Name:='ComponentListMenuItem';
+        Caption:=lisCompPalComponentList;
+        OnClick:=@ComponentListClicked;
+      end;
+      PalettePopupMenu.Items.Add(MenuItem);
+      // Find Component
+      MenuItem:=TMenuItem.Create(PalettePopupMenu);
+      with MenuItem do begin
+        Name:='FindComponentMenuItem';
+        Caption:=lisCompPalFindComponent;
+        OnClick:=@FindComponentClicked;
+      end;
+      PalettePopupMenu.Items.Add(MenuItem);
+    end;
+    FPageControl.PopupMenu:=PalettePopupMenu;
   end;
   UpdateNoteBookButtons;
 end;
@@ -354,11 +390,13 @@ begin
 end;
 
 procedure TComponentPalette.CreatePopupMenu;
+var
+  MenuItem: TMenuItem;
 begin
   if PopupMenu<>nil then exit;
   PopupMenu:=TPopupMenu.Create(nil);
   PopupMenu.OnPopup:=@PopupMenuPopup;
-  PopupMenu.Name:='ComponentPalettePopupMenu';
+  PopupMenu.Name:='ComponentPopupMenu';
   
   OpenPackageMenuItem:=TMenuItem.Create(PopupMenu);
   with OpenPackageMenuItem do begin
@@ -378,13 +416,13 @@ begin
 
   PopupMenu.Items.AddSeparator;
 
-  FindComponentMenuItem:=TMenuItem.Create(PopupMenu);
-  with FindComponentMenuItem do begin
-    Name:='FindComponentMenuItem';
-    Caption:=lisCompPalFindComponent;
-    OnClick:=@FindComponentClicked;
+  MenuItem:=TMenuItem.Create(PopupMenu);
+  with MenuItem do begin
+    Name:='ComponentListMenuItem';
+    Caption:=lisCompPalComponentList;
+    OnClick:=@ComponentListClicked;
   end;
-  PopupMenu.Items.Add(FindComponentMenuItem);
+  PopupMenu.Items.Add(MenuItem);
 end;
 
 procedure TComponentPalette.DoBeginUpdate;
@@ -449,6 +487,7 @@ begin
   FreeAndNil(fUnregisteredIcon);
   FreeAndNil(fSelectButtonIcon);
   FreeAndNil(PopupMenu);
+  FreeAndNil(PalettePopupMenu);
   inherited Destroy;
 end;
 

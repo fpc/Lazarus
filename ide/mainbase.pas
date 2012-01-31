@@ -154,6 +154,7 @@ type
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); virtual; abstract;
     procedure GetUnitWithPersistent(APersistent: TPersistent;
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); virtual; abstract;
+    procedure DoShowComponentList(Show: boolean); virtual; abstract;
 
     function DoOpenMacroFile(Sender: TObject; const AFilename: string
                              ): TModalResult; override;
