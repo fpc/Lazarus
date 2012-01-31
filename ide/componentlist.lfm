@@ -19,8 +19,8 @@ object ComponentListForm: TComponentListForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 6
-    Height = 453
-    Top = 53
+    Height = 452
+    Top = 52
     Width = 326
     ActivePage = TabSheetListBox
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -30,39 +30,41 @@ object ComponentListForm: TComponentListForm
     OnChange = PageControlChange
     object TabSheetListBox: TTabSheet
       Caption = 'List'
-      ClientHeight = 419
-      ClientWidth = 322
+      ClientHeight = 425
+      ClientWidth = 324
       object Panel7: TPanel
         Left = 0
-        Height = 419
+        Height = 425
         Top = 0
-        Width = 322
+        Width = 324
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 5
-        ClientHeight = 419
-        ClientWidth = 322
+        ClientHeight = 425
+        ClientWidth = 324
         TabOrder = 0
         object ComponentsListbox: TListBox
           Left = 5
-          Height = 409
+          Height = 415
           Top = 5
-          Width = 312
+          Width = 314
           Align = alClient
           ItemHeight = 0
           OnDblClick = ComponentsListboxDblClick
           OnDrawItem = ComponentsListboxDrawItem
           OnKeyDown = ComponentsListboxKeyDown
+          ScrollWidth = 312
           Sorted = True
           Style = lbOwnerDrawFixed
           TabOrder = 0
+          TopIndex = -1
         end
       end
     end
     object TabSheetPaletteTree: TTabSheet
       Caption = 'Palette'
-      ClientHeight = 419
-      ClientWidth = 322
+      ClientHeight = 425
+      ClientWidth = 324
       object Panel5: TPanel
         Left = 0
         Height = 419
@@ -92,8 +94,8 @@ object ComponentListForm: TComponentListForm
     end
     object TabSheetInheritance: TTabSheet
       Caption = 'Inheritance'
-      ClientHeight = 410
-      ClientWidth = 208
+      ClientHeight = 425
+      ClientWidth = 324
       object Panel6: TPanel
         Left = 0
         Height = 410
@@ -124,23 +126,23 @@ object ComponentListForm: TComponentListForm
   object Panel3: TPanel
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 47
+    Height = 46
     Top = 0
     Width = 338
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BevelOuter = bvNone
     BorderWidth = 8
-    ClientHeight = 47
+    ClientHeight = 46
     ClientWidth = 338
     TabOrder = 0
     object LabelSearch: TLabel
       AnchorSideLeft.Control = Panel3
       AnchorSideTop.Control = Panel3
       Left = 14
-      Height = 19
+      Height = 18
       Top = 14
-      Width = 91
+      Width = 80
       BorderSpacing.Around = 6
       Caption = 'LabelSearch'
       ParentColor = False
@@ -150,14 +152,16 @@ object ComponentListForm: TComponentListForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = LabelSearch
       AnchorSideTop.Side = asrCenter
-      Left = 111
-      Height = 28
-      Top = 9
+      Left = 100
+      Height = 27
+      Top = 10
       Width = 169
       ButtonWidth = 23
       NumGlyphs = 0
       BorderSpacing.Left = 5
+      Font.Color = clBtnShadow
       MaxLength = 0
+      ParentFont = False
       TabOrder = 0
       FilteredListbox = ComponentsListbox
     end
@@ -166,9 +170,9 @@ object ComponentListForm: TComponentListForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = LabelSearch
       AnchorSideTop.Side = asrCenter
-      Left = 111
-      Height = 28
-      Top = 9
+      Left = 100
+      Height = 27
+      Top = 10
       Width = 169
       ButtonWidth = 23
       NumGlyphs = 0
@@ -179,8 +183,8 @@ object ComponentListForm: TComponentListForm
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 38
-    Top = 512
+    Height = 40
+    Top = 510
     Width = 326
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -191,6 +195,6 @@ object ComponentListForm: TComponentListForm
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
     TabOrder = 2
-    ShowButtons = [pbClose]
+    ShowButtons = [pbOK, pbClose]
   end
 end

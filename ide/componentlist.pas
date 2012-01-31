@@ -58,6 +58,7 @@ type
     InheritanceTree: TTreeView;
     PalletteTree: TTreeView;
     TreeFilterEd: TTreeFilterEdit;
+    procedure ButtonPanelOKButtonClick(Sender: TObject);
     procedure ComponentsListboxDblClick(Sender: TObject);
     procedure ComponentsListboxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
@@ -80,6 +81,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function GetSelectedComponent: TRegisteredComponent;
   end;
   
 var
@@ -96,6 +98,8 @@ begin
   inherited Create(AOwner);
   FComponentList := TRegisteredCompList.Create;
   ButtonPanel.CloseButton.Cancel   := True;
+  ButtonPanel.OKButton.OnClick:=@ButtonPanelOKButtonClick;
+  ButtonPanel.OKButton.Caption:=lisMenuSelect;
   ComponentsListBox.ItemHeight     :=ComponentPaletteImageHeight + 1;
   InheritanceTree.DefaultItemHeight:=ComponentPaletteImageHeight + 1;
   PalletteTree.DefaultItemHeight   :=ComponentPaletteImageHeight + 1;
@@ -120,8 +124,29 @@ end;
 destructor TComponentListForm.Destroy;
 begin
   ComponentListForm := nil;
-  FComponentList.Free;
+  FreeAndNil(FComponentList);
   inherited Destroy;
+end;
+
+function TComponentListForm.GetSelectedComponent: TRegisteredComponent;
+var
+  i: Integer;
+begin
+  Result:=nil;
+  if ComponentsListbox.IsVisible then
+  begin
+    i:=ComponentsListbox.ItemIndex;
+    if i<0 then exit;
+    Result:=TRegisteredComponent(ComponentsListbox.Items.Objects[i]);
+  end else if PalletteTree.IsVisible then
+  begin
+    if not Assigned(PalletteTree.Selected) then exit;
+    Result := TRegisteredComponent(PalletteTree.Selected.Data);
+  end else if InheritanceTree.IsVisible then
+  begin
+    if not Assigned(InheritanceTree.Selected) then exit;
+    Result := TRegisteredComponent(InheritanceTree.Selected.Data);
+  end;
 end;
 
 procedure TComponentListForm.FindAllLazarusComponents;
@@ -157,7 +182,7 @@ var
   ANode: TTreeNode;
   AClass: TClass;
 begin
-  if Processing then exit;
+  if Processing or ([csDestroying,csLoading]*ComponentState<>[]) then exit;
   Processing := true;
   Screen.Cursor := crHourGlass;
   try
@@ -290,7 +315,18 @@ end;
 
 procedure TComponentListForm.ComponentsListboxDblClick(Sender: TObject);
 begin
-  AddSelectedComponent(TRegisteredComponent(ComponentsListbox.Items.Objects[ComponentsListbox.ItemIndex]));
+  AddSelectedComponent(GetSelectedComponent);
+end;
+
+procedure TComponentListForm.ButtonPanelOKButtonClick(Sender: TObject);
+var
+  AComponent: TRegisteredComponent;
+begin
+  AComponent:=GetSelectedComponent;
+  if AComponent<>nil then begin
+    IDEComponentPalette.Selected:=AComponent;
+    Close;
+  end;
 end;
 
 procedure TComponentListForm.ComponentsListboxDrawItem(Control: TWinControl;
@@ -378,13 +414,8 @@ begin
 end;
 
 procedure TComponentListForm.PalletteTreeDblClick(Sender: TObject);
-var
-  AComponent: TRegisteredComponent;
 begin
-  if not Assigned(PalletteTree.Selected) then exit;
-  AComponent := TRegisteredComponent(PalletteTree.Selected.Data);
-  if not Assigned(AComponent) then exit;
-  AddSelectedComponent(AComponent);
+  AddSelectedComponent(GetSelectedComponent);
 end;
 
 procedure TComponentListForm.PalletteTreeKeyDown(Sender: TObject;
@@ -395,13 +426,8 @@ begin
 end;
 
 procedure TComponentListForm.InheritanceTreeDblClick(Sender:TObject);
-var
-  AComponent: TRegisteredComponent;
 begin
-  if not Assigned(InheritanceTree.Selected) then exit;
-  AComponent := TRegisteredComponent(InheritanceTree.Selected.Data);
-  if not Assigned(AComponent) then exit;
-  AddSelectedComponent(AComponent);
+  AddSelectedComponent(GetSelectedComponent);
 end;
 
 procedure TComponentListForm.InheritanceTreeKeyDown(Sender: TObject;
