@@ -8,6 +8,7 @@ object ComponentListForm: TComponentListForm
   ClientHeight = 556
   ClientWidth = 338
   KeyPreview = True
+  OnClose = FormClose
   OnKeyDown = FormKeyDown
   Position = poScreenCenter
   LCLVersion = '0.9.31'
