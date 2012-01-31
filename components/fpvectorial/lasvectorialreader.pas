@@ -278,6 +278,14 @@ begin
       begin
         AStream.ReadBuffer(lRecord1, SizeOf(TLASPointDataRecordFormat1));
         lPage.AddPoint(lRecord1.X, lRecord1.Y, lRecord1.Z);
+
+        // Correct the min and max
+        if lPage.MinX > lRecord1.X then lPage.MinX := lRecord1.X;
+        if lPage.MinY > lRecord1.Y then lPage.MinY := lRecord1.Y;
+        if lPage.MinZ > lRecord1.Z then lPage.MinZ := lRecord1.Z;
+        if lPage.MaxX < lRecord1.X then lPage.MaxX := lRecord1.X;
+        if lPage.MaxY < lRecord1.Y then lPage.MaxY := lRecord1.Y;
+        if lPage.MaxZ < lRecord1.Z then lPage.MaxZ := lRecord1.Z;
       end;
     end;
   end;

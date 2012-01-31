@@ -562,8 +562,8 @@ end;
 function TvPoint.GetNormalizedPos(APage: TvVectorialPage): T3DPoint;
 begin
   Result.X := (X - APage.MinX) / (APage.MaxX - APage.MinX);
-  Result.Y := (Y - APage.MinY) / (APage.MaxX - APage.MinY);
-  Result.Z := (Z - APage.MinZ) / (APage.MaxX - APage.MinZ);
+  Result.Y := (Y - APage.MinY) / (APage.MaxY - APage.MinY);
+  Result.Z := (Z - APage.MinZ) / (APage.MaxZ - APage.MinZ);
 end;
 
 constructor TvEntityWithPen.Create;

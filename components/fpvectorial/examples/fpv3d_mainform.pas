@@ -44,6 +44,7 @@ var
   i: Integer;
   lPoint1, lPoint2, lPoint3: TvPoint;
   lEntity: TvEntity;
+  lPos: T3DPoint;
 begin
   glClearColor(1.0, 1.0, 1.0, 1.0);
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
@@ -120,9 +121,12 @@ begin
     lPoint3 := lEntity as TvPoint;
 
     glBegin(GL_TRIANGLES);		// Drawing Using Triangles
-      glVertex3f(lPoint1.X, lPoint1.Y, lPoint1.Z); // Top
-      glVertex3f(lPoint2.X, lPoint2.Y, lPoint2.Z); // Bottom Left
-      glVertex3f(lPoint3.X, lPoint3.Y, lPoint3.Z); // Top
+      lPos := lPoint1.GetNormalizedPos(VecPage);
+      glVertex3f(lPos.X, lPos.Y, lPos.Z);
+      lPos := lPoint2.GetNormalizedPos(VecPage);
+      glVertex3f(lPos.X, lPos.Y, lPos.Z);
+      lPos := lPoint3.GetNormalizedPos(VecPage);
+      glVertex3f(lPos.X, lPos.Y, lPos.Z);
     glEnd();					// Finished Drawing
   end;
 
