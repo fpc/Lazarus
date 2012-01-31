@@ -27,6 +27,7 @@ interface
 
 uses
   Classes, SysUtils,
+  fpcanvas, fpimage,
   //avisozlib,
   fpvectorial;
 
@@ -230,6 +231,9 @@ var
   lRecord0: TLASPointDataRecordFormat0;
   lRecord1: TLASPointDataRecordFormat1;
   lFirstPoint: Boolean = True;
+  lPoint: TvPoint;
+  lClassification: Integer = -1;
+  lColor: TFPColor;
 begin
   // Clear and add the first page
   AData.Clear;
@@ -264,44 +268,70 @@ begin
 
   // Read the point data
   AStream.Position := InitialPos + PublicHeaderBlock_1_0.OffsetToPointData;
-  case PublicHeaderBlock_1_0.PointDataFormatID of
+  while AStream.Position < AStream.Size do
+  begin
+    case PublicHeaderBlock_1_0.PointDataFormatID of
     0:
     begin
-      while AStream.Position < AStream.Size do
-      begin
-        AStream.ReadBuffer(lRecord0, SizeOf(TLASPointDataRecordFormat0));
-        lPage.AddPoint(lRecord0.X, lRecord0.Y, lRecord0.Z);
-      end;
+      AStream.ReadBuffer(lRecord0, SizeOf(TLASPointDataRecordFormat0));
+      lClassification := lRecord0.Classification;
+      lPoint := lPage.AddPoint(lRecord0.X, lRecord0.Y, lRecord0.Z);
     end;
     1:
     begin
-      while AStream.Position < AStream.Size do
-      begin
-        AStream.ReadBuffer(lRecord1, SizeOf(TLASPointDataRecordFormat1));
-        lPage.AddPoint(lRecord1.X, lRecord1.Y, lRecord1.Z);
-
-        if lFirstPoint then
-        begin
-          // Correct the min and max
-          lPage.MinX := lRecord1.X;
-          lPage.MinY := lRecord1.Y;
-          lPage.MinZ := lRecord1.Z;
-          lPage.MaxX := lRecord1.X;
-          lPage.MaxY := lRecord1.Y;
-          lPage.MaxZ := lRecord1.Z;
-
-          lFirstPoint := False;
-        end;
-
-        // Correct the min and max
-        if lPage.MinX > lRecord1.X then lPage.MinX := lRecord1.X;
-        if lPage.MinY > lRecord1.Y then lPage.MinY := lRecord1.Y;
-        if lPage.MinZ > lRecord1.Z then lPage.MinZ := lRecord1.Z;
-        if lPage.MaxX < lRecord1.X then lPage.MaxX := lRecord1.X;
-        if lPage.MaxY < lRecord1.Y then lPage.MaxY := lRecord1.Y;
-        if lPage.MaxZ < lRecord1.Z then lPage.MaxZ := lRecord1.Z;
-      end;
+      AStream.ReadBuffer(lRecord1, SizeOf(TLASPointDataRecordFormat1));
+      lClassification := lRecord1.Classification;
+      lPoint := lPage.AddPoint(lRecord1.X, lRecord1.Y, lRecord1.Z);
     end;
+    end;
+
+    // Correct the min and max
+    if lFirstPoint then
+    begin
+      lPage.MinX := lPoint.X;
+      lPage.MinY := lPoint.Y;
+      lPage.MinZ := lPoint.Z;
+      lPage.MaxX := lPoint.X;
+      lPage.MaxY := lPoint.Y;
+      lPage.MaxZ := lPoint.Z;
+
+      lFirstPoint := False;
+    end
+    else
+    begin
+      if lPage.MinX > lPoint.X then lPage.MinX := lPoint.X;
+      if lPage.MinY > lPoint.Y then lPage.MinY := lPoint.Y;
+      if lPage.MinZ > lPoint.Z then lPage.MinZ := lPoint.Z;
+      if lPage.MaxX < lPoint.X then lPage.MaxX := lPoint.X;
+      if lPage.MaxY < lPoint.Y then lPage.MaxY := lPoint.Y;
+      if lPage.MaxZ < lPoint.Z then lPage.MaxZ := lPoint.Z;
+    end;
+
+    // Set a color if desired
+    case lClassification of
+    // Table 4.9 - ASPRS Standard LIDAR Point Classes
+    // Classification Value
+    // 0 Created, never classified
+    // 1 Unclassified1
+    // 2 Ground
+    2: lColor := colMaroon;
+    // 3 Low Vegetation
+    3: lColor := colGreen;
+    // 4 Medium Vegetation
+    4: lColor := colGreen;
+    // 5 High Vegetation
+    5: lColor := colDkGreen;
+    // 6 Building
+    6: lColor := colGray;
+    // 7 Low Point (noise)
+    // 8 Model Key-point (mass point)
+    // 9 Water
+    9: lColor := colBlue;
+    else
+      lColor := colBlack;
+    end;
+
+    lPoint.Pen.Color := lColor;
   end;
 end;
 

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, OpenGLContext, Forms, Controls, Graphics,
-  Dialogs, EditBtn, StdCtrls, fpvectorial, gl, glu, lasvectorialreader;
+  Dialogs, EditBtn, StdCtrls, fpvectorial, gl, glu, FPimage, lasvectorialreader;
 
 type
 
@@ -53,6 +53,7 @@ var
   lPoint1, lPoint2, lPoint3: TvPoint;
   lEntity: TvEntity;
   lPos1, lPos2, lPos3: T3DPoint;
+  lColor: TFPColor;
 begin
   glClearColor(1.0, 1.0, 1.0, 1.0);
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
@@ -131,10 +132,11 @@ begin
     lPoint3 := lEntity as TvPoint;
 
     glBegin(GL_TRIANGLES);		// Drawing Using Triangles
-      lPos1 := lPoint1.GetNormalizedPos(VecPage);
-      lPos2 := lPoint2.GetNormalizedPos(VecPage);
-      lPos3 := lPoint3.GetNormalizedPos(VecPage);
-      glColor3f(0.0,0.0,1.0);                           // Set The Color To Blue
+      lPos1 := lPoint1.GetNormalizedPos(VecPage, -1, 1);
+      lPos2 := lPoint2.GetNormalizedPos(VecPage, -1, 1);
+      lPos3 := lPoint3.GetNormalizedPos(VecPage, -1, 1);
+      lColor := lPoint1.Pen.Color;
+      glColor3f(lColor.Red / $FFFF, lColor.Green / $FFFF, lColor.Blue / $FFFF);
       glVertex3f(lPos1.X, lPos1.Y, lPos1.Z);
       glVertex3f(lPos2.X, lPos2.Y, lPos2.Z);
       glVertex3f(lPos3.X, lPos3.Y, lPos3.Z);

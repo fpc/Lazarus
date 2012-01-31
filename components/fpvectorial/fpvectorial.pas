@@ -304,7 +304,7 @@ type
 
   TvPoint = class(TvEntityWithPen)
   public
-    function GetNormalizedPos(APage: TvVectorialPage): T3DPoint;
+    function GetNormalizedPos(APage: TvVectorialPage; ANewMin, ANewMax: Double): T3DPoint;
   end;
 
   { TvVectorialDocument }
@@ -403,7 +403,7 @@ type
     // Dimensions
     procedure AddAlignedDimension(BaseLeft, BaseRight, DimLeft, DimRight: T3DPoint);
     //
-    procedure AddPoint(AX, AY, AZ: Double);
+    function AddPoint(AX, AY, AZ: Double): TvPoint;
   end;
 
   {@@ TvVectorialReader class reference type }
@@ -559,11 +559,11 @@ end;
 
 { TvPoint }
 
-function TvPoint.GetNormalizedPos(APage: TvVectorialPage): T3DPoint;
+function TvPoint.GetNormalizedPos(APage: TvVectorialPage; ANewMin, ANewMax: Double): T3DPoint;
 begin
-  Result.X := (X - APage.MinX) / (APage.MaxX - APage.MinX);
-  Result.Y := (Y - APage.MinY) / (APage.MaxY - APage.MinY);
-  Result.Z := (Z - APage.MinZ) / (APage.MaxZ - APage.MinZ);
+  Result.X := (X - APage.MinX) * (ANewMax - ANewMin) / (APage.MaxX - APage.MinX) + ANewMin;
+  Result.Y := (Y - APage.MinY) * (ANewMax - ANewMin) / (APage.MaxY - APage.MinY) + ANewMin;
+  Result.Z := (Z - APage.MinZ) * (ANewMax - ANewMin) / (APage.MaxZ - APage.MinZ) + ANewMin;
 end;
 
 constructor TvEntityWithPen.Create;
@@ -959,7 +959,7 @@ begin
   AddEntity(lDim);
 end;
 
-procedure TvVectorialPage.AddPoint(AX, AY, AZ: Double);
+function TvVectorialPage.AddPoint(AX, AY, AZ: Double): TvPoint;
 var
   lPoint: TvPoint;
 begin
@@ -968,6 +968,7 @@ begin
   lPoint.Y := AY;
   lPoint.Z := AZ;
   AddEntity(lPoint);
+  Result := lPoint;
 end;
 
 { TvText }
