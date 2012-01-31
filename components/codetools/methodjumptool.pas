@@ -538,7 +538,10 @@ begin
         {$IFDEF CTDEBUG}
         DebugLn('TMethodJumpingCodeTool.FindJumpPoint class found: ',dbgs(ClassNode<>nil));
         {$ENDIF}
-        if ClassNode=nil then exit;
+        if ClassNode=nil then begin
+          MoveCursorToProcName(ProcNode,false);
+          RaiseException('class not found "'+SearchedClassname+'"');
+        end;
         // search first class grand child node
         StartNode:=ClassNode.FirstChild;
         while (StartNode<>nil) and (StartNode.FirstChild=nil) do
