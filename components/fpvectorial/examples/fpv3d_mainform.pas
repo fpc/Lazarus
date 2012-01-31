@@ -44,7 +44,7 @@ var
   i: Integer;
   lPoint1, lPoint2, lPoint3: TvPoint;
   lEntity: TvEntity;
-  lPos: T3DPoint;
+  lPos1, lPos2, lPos3: T3DPoint;
 begin
   glClearColor(1.0, 1.0, 1.0, 1.0);
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
@@ -57,7 +57,7 @@ begin
   glLoadIdentity();
 
   glTranslatef(0.0, 0.0,-6.0);
-  glRotatef(100, 220, 330, 0.0);
+  //glRotatef(100, 220, 330, 0.0);
 
 {  glBegin(GL_QUADS);
           glColor3f(0.0,1.0,0.0);                              // Set The Color To Green
@@ -121,12 +121,13 @@ begin
     lPoint3 := lEntity as TvPoint;
 
     glBegin(GL_TRIANGLES);		// Drawing Using Triangles
-      lPos := lPoint1.GetNormalizedPos(VecPage);
-      glVertex3f(lPos.X, lPos.Y, lPos.Z);
-      lPos := lPoint2.GetNormalizedPos(VecPage);
-      glVertex3f(lPos.X, lPos.Y, lPos.Z);
-      lPos := lPoint3.GetNormalizedPos(VecPage);
-      glVertex3f(lPos.X, lPos.Y, lPos.Z);
+      lPos1 := lPoint1.GetNormalizedPos(VecPage);
+      lPos2 := lPoint2.GetNormalizedPos(VecPage);
+      lPos3 := lPoint3.GetNormalizedPos(VecPage);
+      glColor3f(0.0,0.0,1.0);                           // Set The Color To Blue
+      glVertex3f(lPos1.X, lPos1.Y, lPos1.Z);
+      glVertex3f(lPos2.X, lPos2.Y, lPos2.Z);
+      glVertex3f(lPos3.X, lPos3.Y, lPos3.Z);
     glEnd();					// Finished Drawing
   end;
 

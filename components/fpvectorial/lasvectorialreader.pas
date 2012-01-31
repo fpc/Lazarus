@@ -229,6 +229,7 @@ var
   lPage: TvVectorialPage;
   lRecord0: TLASPointDataRecordFormat0;
   lRecord1: TLASPointDataRecordFormat1;
+  lFirstPoint: Boolean = True;
 begin
   // Clear and add the first page
   AData.Clear;
@@ -278,6 +279,19 @@ begin
       begin
         AStream.ReadBuffer(lRecord1, SizeOf(TLASPointDataRecordFormat1));
         lPage.AddPoint(lRecord1.X, lRecord1.Y, lRecord1.Z);
+
+        if lFirstPoint then
+        begin
+          // Correct the min and max
+          lPage.MinX := lRecord1.X;
+          lPage.MinY := lRecord1.Y;
+          lPage.MinZ := lRecord1.Z;
+          lPage.MaxX := lRecord1.X;
+          lPage.MaxY := lRecord1.Y;
+          lPage.MaxZ := lRecord1.Z;
+
+          lFirstPoint := False;
+        end;
 
         // Correct the min and max
         if lPage.MinX > lRecord1.X then lPage.MinX := lRecord1.X;
