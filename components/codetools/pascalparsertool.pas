@@ -3851,6 +3851,7 @@ var
   IsForward: Boolean;
   ClassDesc: TCodeTreeNodeDesc;
   ClassNode: TCodeTreeNode;
+  IsHelper: Boolean;
 begin
   //debugln(['TPascalParserTool.KeyWordFuncTypeClass ',GetAtom,' ',CleanPosToStr(CurPos.StartPos)]);
   // class or 'class of' start found
@@ -3887,8 +3888,10 @@ begin
   CurNode.Desc:=ClassDesc;
   CurNode.StartPos:=ClassAtomPos.StartPos;
   IsForward:=true;
+  IsHelper:=false;
   ReadNextAtom;
   if (ClassDesc=ctnClass) and UpAtomIs('OF') then begin
+    // class of
     IsForward:=false;
     CurNode.Desc:=ctnClassOfType;
     ReadNextAtom;
@@ -3936,6 +3939,13 @@ begin
           CurNode.EndPos:=CurPos.StartPos;
           EndChildNode;
         end;
+      end else if UpAtomIs('HELPER') then begin
+        IsHelper:=true;
+        CreateChildNode;
+        CurNode.Desc:=ctnClassHelper;
+        CurNode.EndPos:=CurPos.EndPos;
+        EndChildNode;
+        ReadNextAtom;
       end;
     end;
     if (CurPos.Flag=cafRoundBracketOpen) then begin
@@ -3943,6 +3953,19 @@ begin
       IsForward:=false;
       ReadClassInheritance(true);
       ReadNextAtom;
+    end;
+    if IsHelper then begin
+      if not UpAtomIs('FOR') then
+        RaiseStringExpectedButAtomFound('for');
+      CreateChildNode;
+      CurNode.Desc:=ctnClassHelperFor;
+      repeat
+        ReadNextAtom;
+        AtomIsIdentifier(true);
+        CurNode.EndPos:=CurPos.EndPos;
+        ReadNextAtom;
+      until CurPos.Flag<>cafPoint;
+      EndChildNode;
     end;
   end;
   if CurPos.Flag=cafSemicolon then begin
@@ -4647,8 +4670,12 @@ begin
 end;
 
 procedure TPascalParserTool.RaiseCharExpectedButAtomFound(c: char);
+var
+  a: String;
 begin
-  SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[c,GetAtom]);
+  a:=GetAtom;
+  if a='' then a:=ctsEndOfFile;
+  SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[c,a]);
 end;
 
 procedure TPascalParserTool.RaiseStringExpectedButAtomFound(const s: string);

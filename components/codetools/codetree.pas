@@ -95,17 +95,19 @@ const
   ctnClassAbstract      = 40;
   ctnClassSealed        = 41;
   ctnClassExternal      = 42;
-  ctnClassInheritance   = 43;
-  ctnClassGUID          = 44;
-  ctnClassClassVar      = 45; // child of visibility section
-  ctnClassPrivate       = 46; // child of AllClassObjects
-  ctnClassProtected     = 47;
-  ctnClassPublic        = 48;
-  ctnClassPublished     = 49;
-  ctnClassRequired      = 50;
-  ctnClassOptional      = 51;
-  ctnProperty           = 52; // child of visibility section or AllClassInterfaces
-  ctnMethodMap          = 53; // child of visibility section or AllClassInterfaces
+  ctnClassHelper        = 43;
+  ctnClassInheritance   = 44;
+  ctnClassHelperFor     = 45;
+  ctnClassGUID          = 46;
+  ctnClassClassVar      = 47; // child of visibility section
+  ctnClassPrivate       = 48; // child of AllClassObjects
+  ctnClassProtected     = 49;
+  ctnClassPublic        = 50;
+  ctnClassPublished     = 51;
+  ctnClassRequired      = 52;
+  ctnClassOptional      = 53;
+  ctnProperty           = 54; // child of visibility section or AllClassInterfaces
+  ctnMethodMap          = 55; // child of visibility section or AllClassInterfaces
   
   ctnProcedure          = 60;  // children: ctnProcedureHead, sections, ctnBeginBlock/ctnAsmBlock
   ctnProcedureHead      = 61;  // children: ctnParameterList, operator: ctnVarDefinition, operator/function: ctnIdentifier
@@ -371,6 +373,8 @@ begin
   ctnClassAbstract: Result:='abstract';
   ctnClassSealed: Result:='sealed';
   ctnClassExternal: Result:='external';
+  ctnClassHelper: Result:='helper';
+  ctnClassHelperFor: Result:='(helper) for';
 
   ctnProcedure: Result:='Procedure';
   ctnProcedureHead: Result:='ProcedureHead';
