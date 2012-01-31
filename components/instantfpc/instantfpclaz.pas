@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit instantfpclaz; 
+unit InstantFPCLaz;
 
 interface
 
@@ -11,11 +11,11 @@ uses
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('InstantFPCRegisterLaz', @InstantFPCRegisterLaz.Register); 
-end; 
+  RegisterUnit('InstantFPCRegisterLaz', @InstantFPCRegisterLaz.Register);
+end;
 
 initialization
-  RegisterPackage('instantfpclaz', @Register); 
+  RegisterPackage('InstantFPCLaz', @Register);
 end.

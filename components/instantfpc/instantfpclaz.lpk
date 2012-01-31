@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="4">
-    <Name Value="instantfpclaz"/>
+    <Name Value="InstantFPCLaz"/>
     <Author Value="Mattias Gaertner"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Linking>
         <Debugging>
-          <DebugInfoType Value="dsAuto"/>
+          <GenerateDebugInfo Value="False"/>
         </Debugging>
       </Linking>
       <Other>
