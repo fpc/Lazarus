@@ -6281,7 +6281,7 @@ end;
 procedure TCustomSynEdit.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF};
 begin
   {$IFDEF SynUndoDebugBeginEnd}
-  DebugLnEnter(['>> TCustomSynEdit.BeginUndoBlock ', DbgSName(self), ' ', dbgs(Self), ' Caller=', ACaller, ' FPaintLock=', FPaintLock, ' InGroupCount=',fUndoList.InGroupCount]);
+  DebugLnEnter(['>> TCustomSynEdit.BeginUndoBlock ', DbgSName(self), ' ', dbgs(Self), ' Caller=', ACaller, ' FPaintLock=', FPaintLock, ' InGroupCount=',fUndoList.InGroupCount, '  FIsInDecPaintLock=',dbgs(FIsInDecPaintLock)]);
   if ACaller = '' then DumpStack;
   {$ENDIF}
   fUndoList.OnNeedCaretUndo := {$IFDEF FPC}@{$ENDIF}GetCaretUndo;
@@ -6293,7 +6293,11 @@ end;
 procedure TCustomSynEdit.BeginUpdate(WithUndoBlock: Boolean = True);
 begin
   IncPaintLock;
-  if WithUndoBlock and (FUndoBlockAtPaintLock = 0) then begin
+  {$IFDEF SynUndoDebugBeginEnd}
+  if WithUndoBlock and (FPaintLock = 0) and (FUndoBlockAtPaintLock = 0) then
+    DebugLn(['************** TCustomSynEdit.BeginUpdate  PAINTLOCK NOT INCREASED  ', DbgSName(self), ' ', dbgs(Self),  ' FPaintLock=', FPaintLock, ' InGroupCount=',fUndoList.InGroupCount, '  FIsInDecPaintLock=',dbgs(FIsInDecPaintLock)]);
+  {$ENDIF}
+  if WithUndoBlock and (FPaintLock > 0) and (FUndoBlockAtPaintLock = 0) then begin
     FUndoBlockAtPaintLock := FPaintLock;
     BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('SynEdit.BeginUpdate'){$ENDIF};
   end;
@@ -6307,7 +6311,7 @@ begin
   ////FFoldedLinesView.UnLock;
   fUndoList.EndBlock;
   {$IFDEF SynUndoDebugBeginEnd}
-  DebugLnEnter(['<< TCustomSynEdit.EndUndoBlock', DbgSName(self), ' ', dbgs(Self), ' Caller=', ACaller, ' FPaintLock=', FPaintLock, ' InGroupCount=',fUndoList.InGroupCount]);
+  DebugLnEnter(['<< TCustomSynEdit.EndUndoBlock', DbgSName(self), ' ', dbgs(Self), ' Caller=', ACaller, ' FPaintLock=', FPaintLock, ' InGroupCount=',fUndoList.InGroupCount, '  FIsInDecPaintLock=',dbgs(FIsInDecPaintLock)]);
   //if ACaller = '' then DumpStack;
   {$ENDIF}
 end;
