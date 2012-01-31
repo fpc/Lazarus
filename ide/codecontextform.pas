@@ -978,7 +978,7 @@ procedure TCodeContextFrm.CompleteParameters(DeclCode: string);
       exit;
     end;
     // insert
-    ASynEdit.BeginUndoBlock;
+    ASynEdit.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TCodeContextFrm.CompleteParameters'){$ENDIF};
     try
       XY:=Point(X,Y);
       ASynEdit.BlockBegin:=XY;
@@ -986,7 +986,7 @@ procedure TCodeContextFrm.CompleteParameters(DeclCode: string);
       ASynEdit.LogicalCaretXY:=XY;
       ASynEdit.SelText:=NewCode;
     finally
-      ASynEdit.EndUndoBlock;
+      ASynEdit.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TCodeContextFrm.CompleteParameters'){$ENDIF};
     end;
   end;
 

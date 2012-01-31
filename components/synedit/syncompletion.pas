@@ -1591,7 +1591,7 @@ begin
   // Note: Form.Visible can be false, for example when completion only contains one item
   if F.CurrentEditor is TCustomSynEdit then
     with TCustomSynEdit(F.CurrentEditor) do begin
-      BeginUndoBlock;
+      BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSynCompletion.Validate'){$ENDIF};
       BeginUpdate;
       try
         LogCaret := LogicalCaretXY;
@@ -1634,7 +1634,7 @@ begin
           Cancel(Sender);
       finally
         EndUpdate;
-        EndUndoBlock;
+        EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSynCompletion.Validate'){$ENDIF};
       end;
     end;
 end;

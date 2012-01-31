@@ -208,6 +208,9 @@ type
     function RealCount: Integer;
     function IsTopMarkedAsUnmodified: boolean;
     function UnModifiedMarkerExists: boolean;
+    {$IFDEF SynUndoDebugBeginEnd}
+    property InGroupCount: integer read FInGroupCount;
+    {$ENDIF}
   public
     property CanUndo: boolean read GetCanUndo;
     property FullUndoImpossible: boolean read fFullUndoImposible;
@@ -372,7 +375,7 @@ begin
       FForceGroupEnd := False;
     end;
     {$IFDEF SynUndoDebugCalls}
-    DebugLnExit(['>> TSynEditUndoList.EndBlock ', DebugName, ' ', DbgSName(self), ' ', dbgs(Self), ' fLockCount=', fLockCount, ' Cnt=', fItems.Count, ' FInGroupCount=', FInGroupCount, ' fUnModifiedItem=', fUnModifiedItem]);
+    DebugLnExit(['<< TSynEditUndoList.EndBlock ', DebugName, ' ', DbgSName(self), ' ', dbgs(Self), ' fLockCount=', fLockCount, ' Cnt=', fItems.Count, ' FInGroupCount=', FInGroupCount, ' fUnModifiedItem=', fUnModifiedItem]);
   end else begin
     DebugLn(['** EXTRA TSynEditUndoList.EndBlock ', DebugName, ' ', DbgSName(self), ' ', dbgs(Self), ' fLockCount=', fLockCount, ' Cnt=', fItems.Count, ' FInGroupCount=', FInGroupCount, ' fUnModifiedItem=', fUnModifiedItem]);
     {$ENDIF}

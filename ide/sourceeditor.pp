@@ -346,8 +346,8 @@ type
     function Close: Boolean;
 
     // codebuffer
-    procedure BeginUndoBlock; override;
-    procedure EndUndoBlock; override;
+    procedure BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF}; override;
+    procedure EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF}; override;
     procedure BeginUpdate; override;
     procedure EndUpdate; override;
     procedure BeginGlobalUpdate;
@@ -2211,7 +2211,7 @@ begin
   try
     CodeToolsInSync:=not NeedsUpdateCodeBuffer;
     if SrcLogEntry<>nil then begin
-      SynEditor.BeginUndoBlock;
+      SynEditor.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditorSharedValues.OnCodeBufferChanged'){$ENDIF};
       SynEditor.BeginUpdate;
       SynEditor.TemplateEdit.IncExternalEditLock;
       SynEditor.SyncroEdit.IncExternalEditLock;
@@ -2246,7 +2246,7 @@ begin
         SynEditor.SyncroEdit.DecExternalEditLock;
         SynEditor.TemplateEdit.DecExternalEditLock;
         SynEditor.EndUpdate;
-        SynEditor.EndUndoBlock;
+        SynEditor.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditorSharedValues.OnCodeBufferChanged'){$ENDIF};
       end;
     end else begin
       {$IFDEF VerboseSrcEditBufClean}
@@ -2282,14 +2282,14 @@ begin
   inc(FInGlobalUpdate);
   if FInGlobalUpdate > 1 then exit;
   SynEditor.BeginUpdate;  // locks all shared SynEdits too
-  SynEditor.BeginUndoBlock;
+  SynEditor.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditorSharedValues.BeginGlobalUpdate'){$ENDIF};
 end;
 
 procedure TSourceEditorSharedValues.EndGlobalUpdate;
 begin
   dec(FInGlobalUpdate);
   if FInGlobalUpdate > 0 then exit;
-  SynEditor.EndUndoBlock;
+  SynEditor.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditorSharedValues.EndGlobalUpdate'){$ENDIF};
   SynEditor.EndUpdate;
 end;
 
@@ -3363,7 +3363,7 @@ begin
   end;
 
   BeginUpdate;
-  BeginUndoBlock;
+  BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.UpdateCommentSelection'){$ENDIF};
   FEditor.SelectionMode := smNormal;
 
   if CommentOn then begin
@@ -3391,7 +3391,7 @@ begin
     end;
   end;
 
-  EndUndoBlock;
+  EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.UpdateCommentSelection'){$ENDIF};
   EndUpdate;
 
   FEditor.CaretXY := OldCaretPos;
@@ -3407,7 +3407,7 @@ var
   P: TPoint;
 begin
   if ReadOnly then exit;
-  FEditor.BeginUndoBlock;
+  FEditor.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.ConditionalSelection'){$ENDIF};
   try
     if not EditorComponent.SelAvail then begin
       P.Y := FEditor.CaretY;
@@ -3424,7 +3424,7 @@ begin
     // will show modal dialog - must not be in Editor.BeginUpdate block, or painting will not work
     FEditor.SelText:=AddConditional(EditorComponent.SelText,IsPascal);
   finally
-    FEditor.EndUndoBlock;
+    FEditor.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.ConditionalSelection'){$ENDIF};
   end;
 end;
 
@@ -3448,13 +3448,13 @@ begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
   FEditor.BeginUpdate;
-  FEditor.BeginUndoBlock;
+  FEditor.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.BreakLinesInSelection'){$ENDIF};
   // ToDo: replace step by step to keep bookmarks and breakpoints
   try
     OldSelection:=EditorComponent.SelText;
     FEditor.SelText:=BreakLinesInText(OldSelection,FEditor.RightEdge);
   finally
-    FEditor.EndUndoBlock;
+    FEditor.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.BreakLinesInSelection'){$ENDIF};
     FEditor.EndUpdate;
   end;
 end;
@@ -3464,12 +3464,12 @@ begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
   FEditor.BeginUpdate;
-  FEditor.BeginUndoBlock;
+  FEditor.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.InvertAssignment'){$ENDIF};
   try
     // ToDo: replace step by step to keep bookmarks and breakpoints
     FEditor.SelText := InvertAssignTool.InvertAssignment(FEditor.SelText);
   finally
-    FEditor.EndUndoBlock;
+    FEditor.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.InvertAssignment'){$ENDIF};
     FEditor.EndUpdate;
   end;
 end;
@@ -3894,12 +3894,12 @@ begin
       s:=' '+CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord(s);
       if not (Line[x2] in [' ',#9]) then
         s:=s+' ';
-      FEditor.BeginUndoBlock;
+      FEditor.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.AutoBlockCompleteChar'){$ENDIF};
       try
         FEditor.InsertTextAtCaret(s);
         FEditor.LogicalCaretXY:=aTextPos;
       finally
-        FEditor.EndUndoBlock;
+        FEditor.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.AutoBlockCompleteChar'){$ENDIF};
       end;
     end;
   end;
@@ -3926,13 +3926,13 @@ begin
     debugln(['TSourceEditor.AutoBlockCompleteChar ']);
     // user typed 'begin'
     if not LazarusIDE.SaveSourceEditorChangesToCodeCache(self) then exit;
-    FEditor.BeginUndoBlock;
+    FEditor.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.AutoBlockCompleteChar (2)'){$ENDIF};
     FEditor.BeginUpdate;
     try
       if not CodeToolBoss.CompleteBlock(CodeBuffer,p.X,p.Y,true) then exit;
     finally
       FEditor.EndUpdate;
-      FEditor.EndUndoBlock;
+      FEditor.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.AutoBlockCompleteChar (2)'){$ENDIF};
     end;
   end;
 end;
@@ -3945,7 +3945,7 @@ var
 begin
   if not LazarusIDE.SaveSourceEditorChangesToCodeCache(self) then exit;
   XY:=FEditor.LogicalCaretXY;
-  FEditor.BeginUndoBlock;
+  FEditor.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.AutoCompleteBlock'){$ENDIF};
   FEditor.BeginUpdate;
   try
     if not CodeToolBoss.CompleteBlock(CodeBuffer,XY.X,XY.Y,false,
@@ -3960,7 +3960,7 @@ begin
     end;
   finally
     FEditor.EndUpdate;
-    FEditor.EndUndoBlock;
+    FEditor.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.AutoCompleteBlock'){$ENDIF};
   end;
 end;
 
@@ -4283,14 +4283,14 @@ Begin
     CodeBuffer := nil;
 end;
 
-procedure TSourceEditor.BeginUndoBlock;
+procedure TSourceEditor.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF};
 begin
-  FEditor.BeginUndoBlock;
+  FEditor.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.BeginUndoBlock ' + ACaller){$ENDIF};
 end;
 
-procedure TSourceEditor.EndUndoBlock;
+procedure TSourceEditor.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF};
 begin
-  FEditor.EndUndoBlock;
+  FEditor.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.EndUndoBlock ' + ACaller){$ENDIF};
 end;
 
 procedure TSourceEditor.BeginUpdate;

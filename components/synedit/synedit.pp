@@ -792,9 +792,9 @@ type
     destructor Destroy; override;
     procedure AfterLoadFromFile;
 
-    procedure BeginUndoBlock;
+    procedure BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF};
     procedure BeginUpdate(WithUndoBlock: Boolean = True);
-    procedure EndUndoBlock;
+    procedure EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF};
     procedure EndUpdate;
 
   public
@@ -2097,7 +2097,7 @@ begin
       if (FUndoBlockAtPaintLock > FPaintLock) then
         debugln(['***** SYNEDIT: Fixing auto-undo-block FUndoBlockAtPaintLock=',FUndoBlockAtPaintLock,' FPaintLock=',FPaintLock]);
       FUndoBlockAtPaintLock := 0;
-      EndUndoBlock;
+      EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TCustomSynEdit.DoDecPaintLock'){$ENDIF};
     end;
     if (FPaintLock=1) and HandleAllocated then begin
       ScanRanges(FLastTextChangeStamp <> TSynEditStringList(FLines).TextChangeStamp);
@@ -3298,6 +3298,9 @@ begin
 
   If FPaintLock > 0 then begin
     debugln(['Warning: SynEdit.Paint called during PaintLock']);
+    {$IFDEF SynCheckPaintLock}
+    DumpStack;
+    {$ENDIF}
     // Ensure this will be repainted after PaintLock
     if FInvalidateRect.Top < 0 then
       FInvalidateRect := rcClip
@@ -5621,6 +5624,12 @@ begin
       end;
     finally
       InternalEndUndoBlock;
+      {$IFDEF SynCheckPaintLock}
+      if (FPaintLock > 0) and (FInvalidateRect.Bottom > FInvalidateRect.Top) then begin
+        debugln(['TCustomSynEdit.CommandProcessor: Paint called while locked  InitialCmd=', InitialCmd, ' Command=', Command]);
+        DumpStack;
+      end;
+      {$ENDIF}
     end;
   end;
 end;
@@ -6245,6 +6254,9 @@ end;
 procedure TCustomSynEdit.InternalBeginUndoBlock(aList: TSynEditUndoList);
 begin
   if aList = nil then aList := fUndoList;
+  {$IFDEF SynUndoDebugBeginEnd}
+  DebugLnEnter(['>> TCustomSynEdit.InternalBeginUndoBlock', DbgSName(self), ' ', dbgs(Self), ' aList=', aList, ' FPaintLock=', FPaintLock, ' InGroupCount=',aList.InGroupCount]);
+  {$ENDIF}
   aList.OnNeedCaretUndo := {$IFDEF FPC}@{$ENDIF}GetCaretUndo;
   aList.BeginBlock;
   IncPaintLock;
@@ -6261,10 +6273,17 @@ begin
    // after unfold
   DecPaintLock;
   aList.EndBlock; // Todo: Doing this after DecPaintLock, can cause duplicate calls to StatusChanged(scModified)
+  {$IFDEF SynUndoDebugBeginEnd}
+  DebugLnEnter(['<< TCustomSynEdit.InternalEndUndoBlock', DbgSName(self), ' ', dbgs(Self), ' aList=', aList, ' FPaintLock=', FPaintLock, ' InGroupCount=',aList.InGroupCount]);
+  {$ENDIF}
 end;
 
-procedure TCustomSynEdit.BeginUndoBlock;
+procedure TCustomSynEdit.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF};
 begin
+  {$IFDEF SynUndoDebugBeginEnd}
+  DebugLnEnter(['>> TCustomSynEdit.BeginUndoBlock ', DbgSName(self), ' ', dbgs(Self), ' Caller=', ACaller, ' FPaintLock=', FPaintLock, ' InGroupCount=',fUndoList.InGroupCount]);
+  if ACaller = '' then DumpStack;
+  {$ENDIF}
   fUndoList.OnNeedCaretUndo := {$IFDEF FPC}@{$ENDIF}GetCaretUndo;
   fUndoList.BeginBlock;
   ////FFoldedLinesView.Lock;
@@ -6276,17 +6295,21 @@ begin
   IncPaintLock;
   if WithUndoBlock and (FUndoBlockAtPaintLock = 0) then begin
     FUndoBlockAtPaintLock := FPaintLock;
-    BeginUndoBlock;
+    BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('SynEdit.BeginUpdate'){$ENDIF};
   end;
 end;
 
-procedure TCustomSynEdit.EndUndoBlock;
+procedure TCustomSynEdit.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF};
 begin
   // Write all trimming info to the end of the undo block,
   // so it will be undone first, and other UndoItems do see the expected spaces
   //FTrimmedLinesView.UnLock;
   ////FFoldedLinesView.UnLock;
   fUndoList.EndBlock;
+  {$IFDEF SynUndoDebugBeginEnd}
+  DebugLnEnter(['<< TCustomSynEdit.EndUndoBlock', DbgSName(self), ' ', dbgs(Self), ' Caller=', ACaller, ' FPaintLock=', FPaintLock, ' InGroupCount=',fUndoList.InGroupCount]);
+  //if ACaller = '' then DumpStack;
+  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.EndUpdate;

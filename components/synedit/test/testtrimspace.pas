@@ -534,14 +534,14 @@ var UpdateMode: TUpdateMode;
   procedure BeginUndoBlock;
   begin
     if UpdateMode = umOuter then SynEdit.BeginUpdate;
-    SynEdit.BeginUndoBlock;
+    SynEdit.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('test'){$ENDIF};
     if UpdateMode = umInner then SynEdit.BeginUpdate;
   end;
 
   procedure EndUndoBlock;
   begin
     if UpdateMode = umInner then SynEdit.EndUpdate;
-    SynEdit.EndUndoBlock;
+    SynEdit.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('test'){$ENDIF};
     if UpdateMode = umOuter then SynEdit.EndUpdate;
   end;
 
@@ -554,10 +554,10 @@ var UpdateMode: TUpdateMode;
     SetCaret(1,1);
     // need to add space later, so it is regocnized as trailing
 
-    BeginUndoBlock;
+    BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('test'){$ENDIF};
       SynEdit.TextBetweenPointsEx[point(5,1), point(6,1), scamEnd] := ''; // delete d
       SynEdit.TextBetweenPointsEx[point(4,2), point(4,2), scamEnd] := ' '; // add space
-    EndUndoBlock;
+    EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('test'){$ENDIF};
     TestIsFullText ('modified after block', ['abc', 'mno ', 'xyz', '']);
     TestIsCaret('modified after block', 5,2);
 

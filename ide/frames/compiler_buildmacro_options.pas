@@ -324,13 +324,13 @@ begin
       if p>0 then s:=copy(s,1,p-1);
       TxtXY:=CondSynEdit.LogicalCaretXY;
       CondSynEdit.GetWordBoundsAtRowCol(TxtXY,TxtStartX,TxtEndX);
-      CondSynEdit.BeginUndoBlock();
+      CondSynEdit.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TCompOptBuildMacrosFrame.fSynCompletionValidate'){$ENDIF};
       try
         CondSynEdit.BlockBegin:=Point(TxtStartX,TxtXY.Y);
         CondSynEdit.BlockEnd:=Point(TxtEndX,TxtXY.Y);
         CondSynEdit.SelText:=s;
       finally
-        CondSynEdit.EndUndoBlock();
+        CondSynEdit.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TCompOptBuildMacrosFrame.fSynCompletionValidate'){$ENDIF};
       end;
       FCompletionHistory.Insert(0,s);
       if FCompletionHistory.Count>100 then

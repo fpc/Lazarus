@@ -1353,7 +1353,7 @@ begin
     exit;
   end;
 
-  CurSrcEdit.BeginUndoBlock;
+  CurSrcEdit.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TCodyIdentifiersDlg.UseIdentifier'){$ENDIF};
   try
     // insert or replace identifier
     if (not CurSrcEdit.SelectionAvailable)
@@ -1380,7 +1380,7 @@ begin
     if not SameUnitName then
       AddToUsesSection;
   finally
-    CurSrcEdit.EndUndoBlock;
+    CurSrcEdit.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TCodyIdentifiersDlg.UseIdentifier'){$ENDIF};
   end;
 end;
 

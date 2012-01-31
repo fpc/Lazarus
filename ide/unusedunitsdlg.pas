@@ -114,7 +114,7 @@ begin
     else
       RemoveUnits:=nil;
     if (RemoveUnits<>nil) and (RemoveUnits.Count>0) then begin
-      SrcEdit.BeginUndoBlock;
+      SrcEdit.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('ShowUnusedUnitsDialog'){$ENDIF};
       try
         for i:=0 to RemoveUnits.Count-1 do begin
           if not CodeToolBoss.RemoveUnitFromAllUsesSections(Code,RemoveUnits[i])
@@ -124,7 +124,7 @@ begin
           end;
         end;
       finally
-        SrcEdit.EndUndoBlock;
+        SrcEdit.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('ShowUnusedUnitsDialog'){$ENDIF};
       end;
     end;
   finally

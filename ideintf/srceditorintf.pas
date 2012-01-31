@@ -140,8 +140,8 @@ type
       //     DesktopXY:=EditorControl.ClientToScreen(ScreenToPixelPosition(ScreenXY));
 
     // update
-    procedure BeginUndoBlock; virtual; abstract;
-    procedure EndUndoBlock; virtual; abstract;
+    procedure BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF}; virtual; abstract;
+    procedure EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF}; virtual; abstract;
     procedure BeginUpdate; virtual; abstract; // block painting
     procedure EndUpdate; virtual; abstract;
     procedure IncreaseIgnoreCodeBufferLock; virtual; abstract;
@@ -533,13 +533,13 @@ procedure TSourceEditorInterface.ReplaceText(const StartPos, EndPos: TPoint;
   const NewText: string);
 begin
   BeginUpdate;
-  BeginUndoBlock;
+  BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditorInterface.ReplaceText'){$ENDIF};
   try
     SelectText(StartPos,EndPos);
     CursorTextXY:=StartPos;
     Selection:=NewText;
   finally
-    EndUndoBlock;
+    EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditorInterface.ReplaceText'){$ENDIF};
     EndUpdate;
   end;
 end;

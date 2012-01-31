@@ -169,7 +169,7 @@ procedure TTestSynEdit.TestSetSelText(Value: String; PasteMode: TSynSelectionMod
   AFlags: TTestSetSelFlags);
 begin
   if not(tssSkipUndoBlock in AFlags) then
-    BeginUndoBlock;
+    BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('test'){$ENDIF};
   if (tssUpdateBlock in AFlags) then
     BeginUpdate(False);
 
@@ -180,7 +180,7 @@ begin
   if (tssUpdateBlock in AFlags) then
     EndUpdate;
   if not(tssSkipUndoBlock in AFlags) then
-    EndUndoBlock;
+    EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('test'){$ENDIF};
 end;
 
 procedure TTestSynEdit.SimulatePaintText;

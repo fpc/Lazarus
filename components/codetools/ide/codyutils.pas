@@ -292,7 +292,7 @@ begin
         debugln(['InsertCallInherited CodeToolBoss.SourceChangeCache.Replace failed']);
         exit;
       end;
-      SrcEdit.BeginUndoBlock;
+      SrcEdit.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('InsertCallInherited'){$ENDIF};
       try
         SrcEdit.CursorTextXY:=NewXY;
         if not CodeToolBoss.SourceChangeCache.Apply then begin
@@ -300,7 +300,7 @@ begin
           exit;
         end;
       finally
-        SrcEdit.EndUndoBlock;
+        SrcEdit.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('InsertCallInherited'){$ENDIF};
       end;
     except
       on e: Exception do CodeToolBoss.HandleException(e);
