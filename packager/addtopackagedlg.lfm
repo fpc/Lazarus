@@ -3,7 +3,7 @@ object AddToPackageDlg: TAddToPackageDlg
   Height = 322
   Top = 386
   Width = 658
-  ActiveControl = NoteBook
+  ActiveControl = PageControl1
   Caption = 'Add to package'
   ClientHeight = 322
   ClientWidth = 658
@@ -14,7 +14,7 @@ object AddToPackageDlg: TAddToPackageDlg
   OnKeyDown = AddToPackageDlgKeyDown
   Position = poScreenCenter
   LCLVersion = '0.9.31'
-  object NoteBook: TPageControl
+  object PageControl1: TPageControl
     Left = 0
     Height = 322
     Top = 0
@@ -25,8 +25,8 @@ object AddToPackageDlg: TAddToPackageDlg
     TabOrder = 0
     object NewFilePage: TTabSheet
       Caption = 'New File'
-      ClientWidth = 656
       ClientHeight = 295
+      ClientWidth = 656
       OnResize = NewFilePageResize
       object NewFileTreeView: TTreeView
         Left = 0
@@ -53,8 +53,8 @@ object AddToPackageDlg: TAddToPackageDlg
         Align = alClient
         BorderSpacing.Bottom = 5
         Caption = 'NewFileDescriptionGroupBox'
-        ClientHeight = 249
-        ClientWidth = 407
+        ClientHeight = 230
+        ClientWidth = 403
         TabOrder = 1
         object NewFileHelpLabel: TLabel
           Left = 0
@@ -184,8 +184,8 @@ object AddToPackageDlg: TAddToPackageDlg
     end
     object NewComponentPage: TTabSheet
       Caption = 'New Component'
-      ClientWidth = 654
-      ClientHeight = 289
+      ClientHeight = 295
+      ClientWidth = 656
       OnResize = NewComponentPageResize
       object AncestorTypeLabel: TLabel
         AnchorSideTop.Control = AncestorComboBox
@@ -503,8 +503,8 @@ object AddToPackageDlg: TAddToPackageDlg
     end
     object NewRequirementPage: TTabSheet
       Caption = 'New Requirement'
-      ClientWidth = 656
       ClientHeight = 295
+      ClientWidth = 656
       object NewDepBtnPanel: TPanel
         Left = 0
         Height = 41
@@ -700,14 +700,14 @@ object AddToPackageDlg: TAddToPackageDlg
     end
     object AddFilesPage: TTabSheet
       Caption = 'Add Files'
-      ClientWidth = 654
-      ClientHeight = 289
+      ClientHeight = 295
+      ClientWidth = 656
       object FilesListView: TListView
         AnchorSideBottom.Control = FilesBrowseButton
         Left = 0
-        Height = 245
+        Height = 249
         Top = 0
-        Width = 654
+        Width = 656
         Align = alClient
         BorderSpacing.Bottom = 5
         Columns = <        
@@ -725,20 +725,20 @@ object AddToPackageDlg: TAddToPackageDlg
       end
       object AddFilesBtnPanel: TPanel
         Left = 0
-        Height = 39
-        Top = 250
-        Width = 654
+        Height = 41
+        Top = 254
+        Width = 656
         Align = alBottom
         AutoSize = True
         BevelOuter = bvNone
-        ClientHeight = 39
-        ClientWidth = 654
+        ClientHeight = 41
+        ClientWidth = 656
         TabOrder = 1
         object FilesBrowseButton: TButton
-          Height = 27
-          Left = 48
+          Left = 16
+          Height = 29
           Top = 6
-          Width = 139
+          Width = 133
           Align = alRight
           AutoSize = True
           BorderSpacing.Around = 6
@@ -748,10 +748,10 @@ object AddToPackageDlg: TAddToPackageDlg
         end
         object FilesAddButton: TButton
           AnchorSideLeft.Side = asrBottom
-          Left = 532
-          Height = 27
+          Left = 540
+          Height = 29
           Top = 6
-          Width = 116
+          Width = 110
           Align = alRight
           AutoSize = True
           BorderSpacing.Around = 6
@@ -762,10 +762,10 @@ object AddToPackageDlg: TAddToPackageDlg
         end
         object FilesShortenButton: TBitBtn
           AnchorSideLeft.Side = asrBottom
-          Left = 245
-          Height = 27
+          Left = 265
+          Height = 29
           Top = 6
-          Width = 141
+          Width = 135
           Align = alRight
           AutoSize = True
           BorderSpacing.Around = 6
@@ -776,10 +776,10 @@ object AddToPackageDlg: TAddToPackageDlg
         end
         object FilesDeleteButton: TBitBtn
           AnchorSideLeft.Side = asrBottom
-          Left = 392
-          Height = 27
+          Left = 406
+          Height = 29
           Top = 6
-          Width = 134
+          Width = 128
           Align = alRight
           AutoSize = True
           BorderSpacing.Around = 6
@@ -789,10 +789,10 @@ object AddToPackageDlg: TAddToPackageDlg
           TabOrder = 3
         end
         object FilesDirButton: TButton
-          Left = 129
-          Height = 27
+          Left = 155
+          Height = 29
           Top = 6
-          Width = 110
+          Width = 104
           Align = alRight
           AutoSize = True
           BorderSpacing.Around = 6

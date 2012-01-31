@@ -91,8 +91,8 @@ type
   TAddToPackageDlg = class(TForm)
     CancelDependButton: TBitBtn;
     CancelNewComponentButton: TBitBtn;
-    // notebook
-    NoteBook: TPageControl;
+    // PageControl1
+    PageControl1: TPageControl;
     NewFilePage: TTabSheet;
     NewComponentPage: TTabSheet;
     NewRequirementPage: TTabSheet;
@@ -1061,11 +1061,11 @@ end;
 
 function TAddToPackageDlg.GetActivatePage: TAddToPkgType;
 begin
-  if NoteBook.ActivePage=NewComponentPage then
+  if PageControl1.ActivePage=NewComponentPage then
     Result:=d2ptNewComponent
-  else if NoteBook.ActivePage=NewRequirementPage then
+  else if PageControl1.ActivePage=NewRequirementPage then
     Result:=d2ptRequiredPkg
-  else if NoteBook.ActivePage=AddFilesPage then
+  else if PageControl1.ActivePage=AddFilesPage then
     Result:=d2ptFiles
   else
     Result:=d2ptNewFile;
@@ -1074,10 +1074,10 @@ end;
 procedure TAddToPackageDlg.SetActivatePage(AValue: TAddToPkgType);
 begin
   case AValue of
-  d2ptNewComponent: NoteBook.ActivePage:=NewComponentPage;
-  d2ptRequiredPkg: NoteBook.ActivePage:=NewRequirementPage;
-  d2ptFile,d2ptFiles: NoteBook.ActivePage:=AddFilesPage;
-  else NoteBook.ActivePage:=NewFilePage;
+  d2ptNewComponent: PageControl1.ActivePage:=NewComponentPage;
+  d2ptRequiredPkg: PageControl1.ActivePage:=NewRequirementPage;
+  d2ptFile,d2ptFiles: PageControl1.ActivePage:=AddFilesPage;
+  else PageControl1.ActivePage:=NewFilePage;
   end;
 end;
 
@@ -1087,7 +1087,7 @@ begin
   NewComponentPage.Caption:=lisA2PNewComponent;
   NewRequirementPage.Caption:=lisProjAddNewRequirement;
   AddFilesPage.Caption:=lisA2PAddFiles;
-  NoteBook.PageIndex:=0;
+  PageControl1.PageIndex:=0;
 
   SetupNewFilePage;
   SetupNewComponentPage;
