@@ -1515,6 +1515,7 @@ function THelpDatabases.ShowHelpForNodes(Query: THelpQuery;
   Nodes: THelpNodeQueryList; var ErrMsg: string): TShowHelpResult;
 var
   NodeQuery: THelpNodeQuery;
+  Node: THelpNode;
 begin
   // check if several nodes found
   //debugln('THelpDatabases.ShowHelpForNodes A Nodes.Count=',dbgs(Nodes.Count));
@@ -1528,13 +1529,16 @@ begin
   end;
 
   // show node
-  if NodeQuery.Node.Owner=nil then begin
+  Node:=NodeQuery.Node;
+  if Node.Owner=nil then begin
     Result:=shrDatabaseNotFound;
-    ErrMsg:=Format(rsHelpHelpNodeHasNoHelpDatabase, ['"', NodeQuery.Node.Title, '"']);
+    ErrMsg:=Format(rsHelpHelpNodeHasNoHelpDatabase, ['"', Node.Title, '"']);
     exit;
   end;
-  Result:=NodeQuery.Node.Owner.ShowHelp(Query,nil,
-                                     NodeQuery.Node,NodeQuery.QueryItem,ErrMsg);
+  {$IFDEF VerboseLCLHelp}
+  debugln(['THelpDatabases.ShowHelpForNodes Node.Owner=',DbgSName(Node.Owner),' UnitName=',Node.Owner.UnitName]);
+  {$ENDIF}
+  Result:=Node.Owner.ShowHelp(Query,nil,Node,NodeQuery.QueryItem,ErrMsg);
 end;
 
 function THelpDatabases.ShowHelpForQuery(Query: THelpQuery;
@@ -1691,7 +1695,7 @@ begin
   ErrMsg:='';
   Result:=shrSuccess;
 
-  {$IFNDEF DisableChecks}
+  {$IFDEF VerboseLCLHelp}
   debugln('THelpDatabases.ShowHelpForPascalContexts A Count=',dbgs(Query.ListOfPascalHelpContextList.Count));
   {$ENDIF}
   // search node
@@ -1708,7 +1712,7 @@ begin
         [Query.SourcePosition.y, Query.SourcePosition.x, Query.Filename]);
       exit;
     end;
-    {$IFNDEF DisableChecks}
+    {$IFDEF VerboseLCLHelp}
     debugln('THelpDatabases.ShowHelpForPascalContexts B Nodes.Count=',dbgs(Nodes.Count));
     {$ENDIF}
 
@@ -1733,7 +1737,9 @@ begin
   ErrMsg:='';
   Result:=shrSuccess;
 
+  {$IFDEF VerboseLCLHelp}
   debugln('THelpDatabases.ShowHelpForMessageLine A Msg="',Query.WholeMessage,'"');
+  {$ENDIF}
   // search node
   Nodes:=nil;
   try
@@ -1762,7 +1768,7 @@ begin
   ErrMsg:='';
   Result:=shrSuccess;
 
-  {$IFNDEF DisableChecks}
+  {$IFDEF VerboseLCLHelp}
   debugln('THelpDatabases.ShowHelpForClass A ',Query.TheClass.ClassName);
   {$ENDIF}
   // search node
@@ -1823,7 +1829,7 @@ begin
   ErrMsg:='';
   for i:=Count-1 downto 0 do begin
     Result:=Items[i].GetNodesForKeyword(HelpKeyword,ListOfNodes,ErrMsg);
-    if Result<>shrSuccess then exit;
+    if Result=shrCancel then exit;
   end;
 end;
 
@@ -1838,7 +1844,7 @@ begin
   ErrMsg:='';
   for i:=Count-1 downto 0 do begin
     Result:=Items[i].GetNodesForDirective(HelpDirective,ListOfNodes,ErrMsg);
-    if Result<>shrSuccess then exit;
+    if Result=shrCancel then exit;
   end;
 end;
 
@@ -1853,7 +1859,7 @@ begin
   ErrMsg:='';
   for i:=Count-1 downto 0 do begin
     Result:=Items[i].GetNodesForContext(HelpContext,ListOfNodes,ErrMsg);
-    if Result<>shrSuccess then exit;
+    if Result=shrCancel then exit;
   end;
 end;
 
@@ -1870,7 +1876,7 @@ begin
   for i:=Count-1 downto 0 do begin
     Result:=Items[i].GetNodesForPascalContexts(ListOfPascalHelpContextList,
                                                ListOfNodes,ErrMsg);
-    if Result<>shrSuccess then exit;
+    if Result=shrCancel then exit;
   end;
 end;
 
@@ -1885,7 +1891,7 @@ begin
   ErrMsg:='';
   for i:=Count-1 downto 0 do begin
     Result:=Items[i].GetNodesForClass(AClass,ListOfNodes,ErrMsg);
-    if Result<>shrSuccess then exit;
+    if Result=shrCancel then exit;
   end;
 end;
 
@@ -1902,7 +1908,7 @@ begin
   for i:=Count-1 downto 0 do begin
     Result:=Items[i].GetNodesForMessage(AMessage,MessageParts,ListOfNodes,
                                         ErrMsg);
-    if Result<>shrSuccess then exit;
+    if Result=shrCancel then exit;
   end;
 end;
 
