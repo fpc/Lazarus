@@ -84,6 +84,8 @@ begin
   LCLSendMouseUpMsg(lTarget, lEventPos.x, lEventPos.y, Button, ShiftState);
 
   // Send a click only if the event ends inside the control
+//  DebugLn(Format('CallbackMouseUp lEventPos X=%d y=%d lTarget CX=%d CY=%d',
+//    [lEventPos.X, lEventPos.y, lTarget.Width, lTarget.Height]));
   lEventEndsInsideTheControl := (lEventPos.X >= 0) and (lEventPos.Y >= 0)
     and (lEventPos.X <= lTarget.Width) and (lEventPos.Y <= lTarget.Height);
   if lEventEndsInsideTheControl then LCLSendClickedMsg(lTarget);

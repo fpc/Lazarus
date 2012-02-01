@@ -21,6 +21,8 @@ type
     clfRGB24, clfRGB24UpsideDown, clfBGR24,
     clfBGRA32, clfRGBA32, clfARGB32);
 
+  { TCDBaseControl }
+
   TCDBaseControl = class
   private
     FProps: TStringList;
@@ -28,8 +30,15 @@ type
     procedure SetProps(AnIndex: String; AValue: pointer);
   public
     Children: TFPList; // of TCDWinControl;
+    // For scrolling a control
+    // The initial values are x=0, y=0 After scrolling downwards (by dragging upwards)
+    // it will be for example x=0, y=+27
+    ScrollX, ScrollY: Integer;
+    LastMousePos: TPoint;
+    IsScrolling: Boolean;
     constructor Create; virtual;
     destructor Destroy; override;
+    function AdjustCoordinatesForScrolling(AX, AY: Integer): TPoint;
     property Props[AnIndex:String]:pointer read GetProps write SetProps;
   end;
 
@@ -61,10 +70,6 @@ type
     // painting objects
     Image: TLazIntfImage;
     Canvas: TLazCanvas;
-    // For scrolling the form
-    ScrollX, ScrollY: Integer;
-    LastMousePos: TPoint;
-    IsScrolling: Boolean;
     constructor Create; virtual;
     procedure IncInvalidateCount;
     function GetFocusedControl: TWinControl;
@@ -128,7 +133,7 @@ procedure RenderForm(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; AForm: TCustomForm);
 function FindControlWhichReceivedEvent(AForm: TCustomForm;
   AControlsList: TFPList; AX, AY: Integer): TWinControl;
-function FindControlPositionRelativeToTheForm(ALCLControl: TWinControl): TPoint;
+function FindControlPositionRelativeToTheForm(ALCLControl: TWinControl; AConsiderScrolling: Boolean = False): TPoint;
 function FormPosToControlPos(ALCLControl: TWinControl; AX, AY: Integer): TPoint;
 
 // Other routines
@@ -536,13 +541,16 @@ var
   i: Integer;
   lRegionOfEvent: TLazRegionWithChilds;
   lCurCDControl: TCDWinControl;
+  lEventPos: TPoint; // local, already adjusted for the scrolling
 begin
   Result := AForm;
+  lEventPos := Point(AX, AY); // Don't adjust for the scrolling because the regions are scrolled too
+
   for i := 0 to AControlsList.Count-1 do
   begin
     lCurCDControl := TCDWinControl(AControlsList.Items[i]);
     if lCurCDControl.Region = nil then Continue;
-    lRegionOfEvent := lCurCDControl.Region.IsPointInRegion(AX, AY);
+    lRegionOfEvent := lCurCDControl.Region.IsPointInRegion(lEventPos.X, lEventPos.Y);
     if lRegionOfEvent <> nil then
     begin
       if lRegionOfEvent.UserData = nil then
@@ -558,17 +566,29 @@ begin
   end;
 end;
 
-function FindControlPositionRelativeToTheForm(ALCLControl: TWinControl): TPoint;
+function FindControlPositionRelativeToTheForm(ALCLControl: TWinControl; AConsiderScrolling: Boolean = False): TPoint;
 var
   lParentControl: TWinControl;
+  lParentHandle: TCDBaseControl;
+  lScroll, lParentPos: TPoint;
 begin
   // Iterate to find the appropriate BaseWindowOrg relative to the parent control
   Result := Point(ALCLControl.Left, ALCLControl.Top);
   lParentControl := ALCLControl.Parent;
-  while (lParentControl <> nil) and not (lParentControl is TCustomForm) do
+  while (lParentControl <> nil) do
   begin
-    Result.X := Result.X + lParentControl.Left;
-    Result.Y := Result.Y + lParentControl.Top;
+    if AConsiderScrolling and lParentControl.HandleAllocated then
+    begin
+      lParentHandle := TCDBaseControl(lParentControl.Handle);
+      lScroll := Point(lParentHandle.ScrollX, lParentHandle.ScrollY);
+    end
+    else lScroll := Point(0, 0);
+
+    if (lParentControl is TCustomForm) then lParentPos := Point(0, 0)
+    else lParentPos := Point(lParentControl.Left, lParentControl.Top);
+
+    Result.X := Result.X + lParentPos.X - lScroll.X;
+    Result.Y := Result.Y + lParentPos.Y - lScroll.Y;
     lParentControl := lParentControl.Parent;
   end;
 end;
@@ -577,7 +597,7 @@ function FormPosToControlPos(ALCLControl: TWinControl; AX, AY: Integer): TPoint;
 var
   lControlPos: TPoint;
 begin
-  lControlPos := FindControlPositionRelativeToTheForm(ALCLControl);
+  lControlPos := FindControlPositionRelativeToTheForm(ALCLControl, True);
   Result.X := AX - lControlPos.X;
   Result.Y := AY - lControlPos.Y;
 end;
@@ -716,6 +736,12 @@ destructor TCDBaseControl.Destroy;
 begin
   FProps.Free;
   inherited Destroy;
+end;
+
+function TCDBaseControl.AdjustCoordinatesForScrolling(AX, AY: Integer): TPoint;
+begin
+  DebugLn(Format('AX=%d AY=%d ScrollX=%d ScrollY=%d', [AX, AY, ScrollX, ScrollY]));
+  Result := Point(AX + ScrollX, AY + ScrollY);
 end;
 
 { TCDForm }
