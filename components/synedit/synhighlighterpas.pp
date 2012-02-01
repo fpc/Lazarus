@@ -51,12 +51,7 @@ unit SynHighlighterPas;
 interface
 
 uses
-  SysUtils,
-  {$IFDEF SYN_LAZARUS}
-  LCLProc,
-  {$ELSE}
-  Windows, Messages,
-  {$ENDIF}
+  SysUtils, LCLProc,
   Classes, Registry, Graphics, SynEditHighlighterFoldBase, SynEditMiscProcs,
   SynEditTypes, SynEditHighlighter, SynEditTextBase, SynEditStrConst;
 
@@ -295,22 +290,14 @@ type
     FStringKeywordMode: TSynPasStringMode;
     FSynPasRangeInfo: TSynPasRangeInfo;
     FAtLineStart: Boolean; // Line had only spaces or comments sofar
-    {$IFDEF SYN_LAZARUS}
     fLineStr: string;
     fLine: PChar;
     fLineLen: integer;
-    {$ELSE}
-    fLine: PChar;
-    {$ENDIF}
     fLineNumber: Integer;
     fProcTable: array[#0..#255] of TProcTableProc;
     Run: LongInt;// current parser postion in fLine
     fStringLen: Integer;// current length of hash
-    {$IFDEF SYN_LAZARUS}
     fToIdent: integer;// start of current identifier in fLine
-    {$ELSE}
-    fToIdent: PChar;
-    {$ENDIF}
     fIdentFuncTable: array[0..191] of TIdentFuncTableFunc;
     fTokenPos: Integer;// start of current token in fLine
     FTokenID: TtkTokenKind;
@@ -330,7 +317,6 @@ type
     fDirectiveAttri: TSynHighlighterAttributes;
     FCompilerMode: TPascalCompilerMode;
     fD4syntax: boolean;
-    {$IFDEF SYN_LAZARUS}
     FCatchNodeInfo: Boolean;
     FCatchNodeInfoList: TLazSynPasFoldNodeInfoList;
     FDividerDrawConfig: Array [TSynPasDividerDrawLocation] of TSynDividerDrawConfig;
@@ -340,9 +326,6 @@ type
     procedure SetStringKeywordMode(const AValue: TSynPasStringMode);
     function TextComp(aText: PChar): Boolean;
     function KeyHash: Integer;
-    {$ELSE}
-    function KeyHash(ToHash: PChar): Integer;
-    {$ENDIF}
     function Func15: TtkTokenKind;
     function Func19: TtkTokenKind;
     function Func20: TtkTokenKind;
@@ -433,11 +416,7 @@ type
     function Func191: TtkTokenKind;
     function AltFunc: TtkTokenKind;
     procedure InitIdent;
-    {$IFDEF SYN_LAZARUS}
     function IdentKind(p: integer): TtkTokenKind;
-    {$ELSE}
-    function IdentKind(MayBe: PChar): TtkTokenKind;
-    {$ENDIF}
     procedure MakeMethodTables;
     procedure AddressOpProc;
     procedure AsciiCharProc;
@@ -447,9 +426,7 @@ type
     procedure ColonProc;
     procedure GreaterProc;
     procedure CRProc;
-    {$IFDEF SYN_LAZARUS}
     procedure DirectiveProc;
-    {$ENDIF}
     procedure IdentProc;
     procedure HexProc;
     procedure BinaryProc;
@@ -529,9 +506,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetToken: string; override;
-    {$IFDEF SYN_LAZARUS}
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    {$ENDIF}
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenKind: integer; override;
@@ -580,12 +555,10 @@ type
       write fSymbolAttri;
     property CaseLabelAttri: TSynHighlighterAttributes read FCaseLabelAttri
       write FCaseLabelAttri;
-    {$IFDEF SYN_LAZARUS}
     property DirectiveAttri: TSynHighlighterAttributes read fDirectiveAttri
       write fDirectiveAttri;
     property CompilerMode: TPascalCompilerMode read FCompilerMode write SetCompilerMode;
     property NestedComments: boolean read FNestedComments write FNestedComments;
-    {$ENDIF}
     property D4syntax: boolean read FD4syntax write SetD4syntax default true;
     property ExtendedKeywordsMode: Boolean
              read FExtendedKeywordsMode write SetExtendedKeywordsMode default False;
@@ -873,7 +846,6 @@ begin
   {$ENDIF}
 end;
 
-{$IFDEF SYN_LAZARUS}
 function TSynPasSyn.KeyHash: Integer;
 var
   Start, ToHash: PChar;
@@ -900,19 +872,6 @@ begin
     fStringLen := 0;
   end;
 end; { KeyHash }
-{$ELSE}
-function TSynPasSyn.KeyHash(ToHash: PChar): Integer;
-begin
-  Result := 0;
-  while ToHash^ in ['a'..'z', 'A'..'Z'] do
-  begin
-    inc(Result, mHashTable[ToHash^]);
-    inc(ToHash);
-  end;
-  if ToHash^ in ['_', '0'..'9'] then inc(ToHash);
-  fStringLen := ToHash - fToIdent;
-end; { KeyHash }
-{$ENDIF}
 
 function TSynPasSyn.KeyComp(const aKey: string): Boolean;
 var
@@ -921,11 +880,7 @@ var
 begin
   if Length(aKey) = fStringLen then
   begin
-    {$IFDEF SYN_LAZARUS}
     Temp := fLine + fToIdent;
-    {$ELSE}
-    Temp := fToIdent;
-    {$ENDIF}
     Result := True;
     for i := 1 to fStringLen do
     begin
@@ -939,7 +894,6 @@ begin
   end else Result := False;
 end; { KeyComp }
 
-{$IFDEF SYN_LAZARUS}
 function TSynPasSyn.TextComp(aText: PChar): Boolean;
 var
   CurPos: PChar;
@@ -982,8 +936,6 @@ function TSynPasSyn.GetPasCodeFoldRange: TSynPasSynRange;
 begin
   Result := TSynPasSynRange(CodeFoldRange);
 end;
-
-{$ENDIF}
 
 function TSynPasSyn.Func15: TtkTokenKind;
 begin
@@ -1028,7 +980,6 @@ begin
       Result := tkKey;
       fRange := fRange - [rsAsm, rsAfterClassMembers];
       PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
-      {$IFDEF SYN_LAZARUS}
       // there may be more than on block ending here
       tfb := TopPascalCodeFoldBlockType;
       if tfb = cfbtRecord then begin
@@ -1073,7 +1024,6 @@ begin
       if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
         fRange := fRange + [rsVarTypeInSpecification];
       end;
-      {$ENDIF}
     end else begin
       Result := tkKey; // @@end or @end label
     end;
@@ -1117,12 +1067,10 @@ begin
     Result := tkIdentifier;
 end;
 
-{$IFDEF SYN_LAZARUS}
 function TSynPasSyn.Func29: TtkTokenKind;
 begin
   if KeyComp('On') then Result := tkKey else Result := tkIdentifier;
 end;
-{$ENDIF}
 
 function TSynPasSyn.Func32: TtkTokenKind;
 begin
@@ -1351,7 +1299,7 @@ end;
 
 function TSynPasSyn.Func61: TtkTokenKind;
 begin
-  if KeyComp('Dispid') {$IFDEF SYN_LAZARUS}or KeyComp('Generic'){$ENDIF}then
+  if KeyComp('Dispid') or KeyComp('Generic') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1466,10 +1414,8 @@ begin
     end;
     Result := tkKey;
   end
-  {$IFDEF SYN_LAZARUS}
   else if KeyComp('Bitpacked') then
     Result := tkKey
-  {$ENDIF}
   else
     Result := tkIdentifier;
 end;
@@ -1907,10 +1853,8 @@ begin
     fRange := fRange + [rsInProcHeader];
     Result := tkKey;
   end
-  {$IFDEF SYN_LAZARUS}
   else if KeyComp('specialize') then
     Result := tkKey
-  {$ENDIF}
   else
     Result := tkIdentifier;
 end;
@@ -2261,7 +2205,6 @@ begin
   Result := tkIdentifier
 end;
 
-{$IFDEF SYN_LAZARUS}
 function TSynPasSyn.IdentKind(p: integer): TtkTokenKind;
 var
   HashKey: Integer;
@@ -2273,19 +2216,6 @@ begin
   else
     Result := tkIdentifier;
 end;
-{$ELSE}
-function TSynPasSyn.IdentKind(MayBe: PChar): TtkTokenKind;
-var
-  HashKey: Integer;
-begin
-  fToIdent := MayBe;
-  HashKey := KeyHash(MayBe);
-  if HashKey < 192 then
-    Result := fIdentFuncTable[HashKey]{$IFDEF FPC}(){$ENDIF}
-  else
-    Result := tkIdentifier;
-end;
-{$ENDIF}
 
 procedure TSynPasSyn.MakeMethodTables;
 var
@@ -2523,7 +2453,6 @@ begin
   Run:=p;
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TSynPasSyn.DirectiveProc;
 begin
   fTokenID := tkDirective;
@@ -2566,7 +2495,6 @@ begin
   until (Run>=fLineLen);
   //DebugLn(['TSynPasSyn.DirectiveProc Run=',Run,' fTokenPos=',fTokenPos,' fLineStr=',fLineStr,' Token=',GetToken]);
 end;
-{$ENDIF}
 
 procedure TSynPasSyn.BraceOpenProc;
   function ScanRegion: Boolean;
@@ -2769,16 +2697,13 @@ begin
       EndPascalCodeFoldBlockLastLine;
   end;
   fTokenID := tkNull;
-  {$IFDEF SYN_LAZARUS}
   if Run<fLineLen then inc(Run);
-  {$ENDIF}
 end;
 
 procedure TSynPasSyn.NumberProc;
 begin
   inc(Run);
   fTokenID := tkNumber;
-  {$IFDEF SYN_LAZARUS}
   if Run<fLineLen then begin
     while (IsNumberChar[FLine[Run]]) do begin
       if (FLine[Run]='.') and (fLine[Run+1]='.')  then
@@ -2786,16 +2711,6 @@ begin
       inc(Run);
     end;
   end;
-  {$ELSE}
-  while FLine[Run] in ['0'..'9', '.', 'e', 'E'] do
-  begin
-    case FLine[Run] of
-      '.':
-        if FLine[Run + 1] = '.' then break;
-    end;
-    inc(Run);
-  end;
-  {$ENDIF}
 end;
 
 procedure TSynPasSyn.PointProc;
@@ -2807,7 +2722,6 @@ end;
 
 procedure TSynPasSyn.AnsiProc;
 begin
-  {$IFDEF SYN_LAZARUS}
   fTokenID := tkComment;
   repeat
     if fLine[Run]=#0 then
@@ -2833,35 +2747,16 @@ begin
     end else
       Inc(Run);
   until (Run>=fLineLen) or (fLine[Run] in [#0, #10, #13]);
-  {$ELSE}
-  case fLine[Run] of
-     #0: NullProc;
-    #10: LFProc;
-    #13: CRProc;
-  else
-    fTokenID := tkComment;
-    repeat
-      if (fLine[Run] = '*') and (fLine[Run + 1] = ')') then begin
-        Inc(Run, 2);
-        fRange := fRange - [rsAnsi];
-        break;
-      end;
-      Inc(Run);
-    until (Run>fLineLen) or (fLine[Run] in [#0, #10, #13]);
-  end;
-  {$ENDIF}
 end;
 
 procedure TSynPasSyn.RoundOpenProc;
 begin
   Inc(Run);
-  {$IFDEF SYN_LAZARUS}
   if Run>=fLineLen then begin
     fTokenID:=tkSymbol;
     PasCodeFoldRange.IncBracketNestLevel;
     exit;
   end;
-  {$ENDIF}
   case fLine[Run] of
     '*':
       begin
@@ -3004,18 +2899,13 @@ procedure TSynPasSyn.SpaceProc;
 begin
   inc(Run);
   fTokenID := tkSpace;
-  {$IFDEF SYN_LAZARUS}
   while IsSpaceChar[FLine[Run]] do inc(Run);
-  {$ELSE}
-  while FLine[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
-  {$ENDIF}
 end;
 
 procedure TSynPasSyn.StringProc;
 begin
   fTokenID := tkString;
   Inc(Run);
-  {$IFDEF SYN_LAZARUS}
   while (not (fLine[Run] in [#0, #10, #13])) do begin
     if fLine[Run] = '''' then begin
       Inc(Run);
@@ -3024,16 +2914,6 @@ begin
     end;
     Inc(Run);
   end;
-  {$ELSE}
-  while not (fLine[Run] in [#0, #10, #13]) do begin
-    if fLine[Run] = #39 then begin
-      Inc(Run);
-      if fLine[Run] <> #39 then
-        break;
-    end;
-    Inc(Run);
-  end;
-  {$ENDIF}
 end;
 
 procedure TSynPasSyn.SymbolProc;
@@ -3045,10 +2925,8 @@ end;
 procedure TSynPasSyn.UnknownProc;
 begin
   inc(Run);
-  {$IFDEF SYN_LAZARUS}
   while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
    ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
-  {$ENDIF}
   fTokenID := tkUnknown;
 end;
 
@@ -3131,8 +3009,7 @@ end;
 
 function TSynPasSyn.GetEol: Boolean;
 begin
-  Result := (fTokenID = tkNull)
-            {$IFDEF SYN_LAZARUS}and (Run >= fLineLen){$ENDIF};
+  Result := (fTokenID = tkNull) and (Run >= fLineLen);
 end;
 
 function TSynPasSyn.GetToken: string;
@@ -3140,16 +3017,11 @@ var
   Len: LongInt;
 begin
   Len := Run - fTokenPos;
-  {$IFDEF SYN_LAZARUS}
   SetLength(Result,Len);
   if Len>0 then
     System.Move(fLine[fTokenPos],Result[1],Len);
-  {$ELSE}
-  SetString(Result, (FLine + fTokenPos), Len);
-  {$ENDIF}
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TSynPasSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
@@ -3159,7 +3031,6 @@ begin
     TokenStart:=nil;
   end;
 end;
-{$ENDIF}
 
 function TSynPasSyn.GetTokenID: TtkTokenKind;
 begin
@@ -4123,9 +3994,7 @@ function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
     tmpSymbolAttri    : TSynHighlighterAttributes;
     tmpAsmAttri       : TSynHighlighterAttributes;
     tmpCommentAttri   : TSynHighlighterAttributes;
-    {$IFDEF SYN_LAZARUS}
     tmpDirectiveAttri : TSynHighlighterAttributes;
-    {$ENDIF}
     tmpIdentifierAttri: TSynHighlighterAttributes;
     tmpSpaceAttri     : TSynHighlighterAttributes;
     s                 : TStringList;
@@ -4142,9 +4011,7 @@ function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
         tmpSymbolAttri    := TSynHighlighterAttributes.Create('');
         tmpAsmAttri       := TSynHighlighterAttributes.Create('');
         tmpCommentAttri   := TSynHighlighterAttributes.Create('');
-        {$IFDEF SYN_LAZARUS}
         tmpDirectiveAttri := TSynHighlighterAttributes.Create('');
-        {$ENDIF}
         tmpIdentifierAttri:= TSynHighlighterAttributes.Create('');
         tmpSpaceAttri     := TSynHighlighterAttributes.Create('');
         tmpStringAttri    .Assign(fStringAttri);
@@ -4153,16 +4020,12 @@ function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
         tmpSymbolAttri    .Assign(fSymbolAttri);
         tmpAsmAttri       .Assign(fAsmAttri);
         tmpCommentAttri   .Assign(fCommentAttri);
-        {$IFDEF SYN_LAZARUS}
         tmpDirectiveAttri .Assign(fDirectiveAttri);
-        {$ENDIF}
         tmpIdentifierAttri.Assign(fIdentifierAttri);
         tmpSpaceAttri     .Assign(fSpaceAttri);
         Result := ReadDelphiSetting(s[settingIndex],fAsmAttri,'Assembler')
               and ReadDelphiSetting(s[settingIndex],fCommentAttri,'Comment')
-              {$IFDEF SYN_LAZARUS}
               and ReadDelphiSetting(s[settingIndex],fDirectiveAttri,'Directive')
-              {$ENDIF}
               and ReadDelphiSetting(s[settingIndex],fIdentifierAttri,'Identifier')
               and ReadDelphiSetting(s[settingIndex],fKeyAttri,'Reserved word')
               and ReadDelphiSetting(s[settingIndex],fNumberAttri,'Number')
@@ -4177,9 +4040,7 @@ function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
           fAsmAttri       .Assign(tmpAsmAttri);
           fCommentAttri   .Assign(tmpCommentAttri);
           FIDEDirectiveAttri.Assign(tmpCommentAttri);
-          {$IFDEF SYN_LAZARUS}
           fDirectiveAttri .Assign(tmpDirectiveAttri);
-          {$ENDIF}
           fIdentifierAttri.Assign(tmpIdentifierAttri);
           fSpaceAttri     .Assign(tmpSpaceAttri);
         end;
@@ -4189,9 +4050,7 @@ function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
         tmpSymbolAttri    .Free;
         tmpAsmAttri       .Free;
         tmpCommentAttri   .Free;
-        {$IFDEF SYN_LAZARUS}
         tmpDirectiveAttri .Free;
-        {$ENDIF}
         tmpIdentifierAttri.Free;
         tmpSpaceAttri     .Free;
       end;
