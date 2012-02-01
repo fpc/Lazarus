@@ -1760,10 +1760,193 @@ begin
   end;
 end;
 
+function CarbonMemoBorder_Accessibility(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  // Inputs
+  lAXRole, lInputStr: CFStringRef;
+  lIsMemoControl: Boolean;
+  lInputAXObject, lInputMemoAXObject: AXUIElementRef;
+  lInputID64: UInt64;
+  lInputAccessibleObject: TLazAccessibleObject;
+  lInputPasStr: string;
+  lInputMutableArray: CFMutableArrayRef;
+  lInputHIPoint: HIPoint;
+  lInputPoint: TPoint;
+  // Outputs
+  lOutputStr: CFStringRef;
+  lOutputBool: Boolean;
+  lOutputInt: SInt64;
+  lOutputNum: CFNumberRef;
+  lOutputValue: AXValueRef;
+  lOutputPoint: CGPoint;
+  lOutputSize: CGSize;
+  //
+  lLazControl: TControl;
+  lLazAXRole: TLazAccessibilityRole;
+  lCurAccessibleObject: TLazAccessibleObject;
+  Command: HICommandExtended;
+  EventKind: UInt32;
+  // array
+  lArray: CFMutableArrayRef;
+  lElement, lElement2: AXUIElementRef;
+  lCount: Integer;
+  i: Integer;
+  lAccessibleObj: TLazAccessibleObject;
+  lHandle: PtrInt;
+  lSelection: TLazAccessibleObject;
+const SName = 'CarbonMemoBorder_Accessibility';
+begin
+  {.$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
+    DebugLn('CarbonMemoBorder_Accessibility LCLObject=', DbgSName(AWidget.LCLObject));
+  {.$ENDIF}
+
+  Result := CallNextEventHandler(ANextHandler, AEvent); // Must be called at the event handling start
+
+  lLazControl := TControl((AWidget as TCarbonControl).LCLObject);
+  if lLazControl = nil then Exit;
+
+  GetEventParameter(AEvent, kEventParamAccessibleObject,
+    typeCFTypeRef, nil, SizeOf(AXUIElementRef), nil, @lInputAXObject);
+
+  // Check if this is an event to a child accessible object
+  AXUIElementGetIdentifier(lInputAXObject, lInputID64);
+  lInputAccessibleObject := lLazControl.GetAccessibleObject();
+  lInputMemoAXObject := AXUIElementRef(lInputAccessibleObject.Handle);
+  lIsMemoControl := lInputMemoAXObject = lInputAXObject;
+  lLazAXRole := lInputAccessibleObject.AccessibleRole;
+
+  EventKind := GetEventKind(AEvent);
+  case EventKind of
+    kEventAccessibleGetFocusedChild:
+    begin
+      {.$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
+        DebugLn('CarbonMemoBorder_Accessibility kEventAccessibleGetFocusedChild '
+          + 'lInputAXObject=%x lChildAX=%x', [PtrInt(lInputAXObject), PtrInt(lInputMemoAXObject)]);
+      {.$ENDIF}
+
+      {if lIsMemoControl then
+        SetEventParameter(AEvent, kEventParamAccessibleChild, typeCFTypeRef,
+          SizeOf(AXUIElementRef), nil)
+      else}
+        SetEventParameter(AEvent, kEventParamAccessibleChild, typeCFTypeRef,
+          SizeOf(AXUIElementRef), @lInputMemoAXObject);
+      Result := noErr;
+    end;
+    kEventAccessibleGetAllAttributeNames:
+    begin
+      {.$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
+        DebugLn('CarbonMemoBorder_Accessibility kEventAccessibleGetAllAttributeNames');
+      {.$ENDIF}
+
+      GetEventParameter(AEvent, kEventParamAccessibleAttributeNames,
+        typeCFMutableArrayRef, nil, SizeOf(CFMutableArrayRef), nil, @lInputMutableArray);
+
+      {for i := 0 to CFArrayGetCount(lInputMutableArray) - 1 do
+      begin
+        lOutputStr := CFArrayGetValueAtIndex(lInputMutableArray, i);
+        WriteLn(' '+CFStringToStr(lOutputStr));
+      end;}
+
+//      lOutputStr := CFSTR('AXRole');
+//      CFArrayAppendValue(lInputMutableArray, lOutputStr);
+    end; // kEventAccessibleGetAllAttributeNames
+    kEventAccessibleGetNamedAttribute:
+    begin
+      GetEventParameter(AEvent, kEventParamAccessibleAttributeName,
+        typeCFStringRef, nil, SizeOf(CFStringRef), nil, @lInputStr);
+
+      lInputPasStr := CFStringToStr(lInputStr);
+
+      {.$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
+        DebugLn('CarbonMemoBorder_Accessibility kEventAccessibleGetNamedAttribute kEventParamAccessibleAttributeName=' + lInputPasStr);
+      {.$ENDIF}
+
+      // AXRole overrides TCustomControl and TCustomWindow values
+(*      if lInputPasStr = 'AXRole' then
+      begin
+        lAXRole := CFSTR('AXGroup');
+        //if OSError(
+        SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFStringRef,
+          SizeOf(CFStringRef), @lAXRole);
+
+        Result := noErr;
+        Exit;
+      end;*)
+      // Specially only AXRoleDescription is allowed to override non-TCustomControl values
+      if lInputPasStr = 'AXRoleDescription' then
+      begin
+        //if lInputAccessibleObject.AccessibleDescription = '' then Exit;
+        CreateCFString('memoborder', lOutputStr);
+        SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFStringRef,
+          SizeOf(CFStringRef), @lOutputStr);
+        FreeCFString(lOutputStr);
+        Result := noErr;
+        Exit;
+      end;
+(*      else if lInputPasStr = 'AXValue' then
+      begin
+        if not (lLazControl is TCustomControl) then Exit;
+        if lLazControl is TCustomForm then Exit;
+        if (lInputID64 = 0) then Exit;
+        CreateCFString(lInputAccessibleObject.AccessibleValue, lOutputStr);
+        SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFStringRef,
+          SizeOf(CFStringRef), @lOutputStr);
+        FreeCFString(lOutputStr);
+        Result := noErr;
+      end
+      else if (lInputPasStr = 'AXNumberOfCharacters') then
+      begin
+        if not (lLazControl is TCustomControl) then Exit;
+        if lLazControl is TCustomForm then Exit;
+        lOutputInt := UTF8Length(lInputAccessibleObject.AccessibleValue);
+        lOutputNum := CFNumberCreate(nil, kCFNumberSInt64Type, @lOutputInt);
+        SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFNumberRef,
+          SizeOf(lOutputNum), @lOutputNum);
+        CFRelease(lOutputNum);
+        Result := noErr;
+      end;*)
+    end; // kEventAccessibleGetNamedAttribute
+(*    kEventAccessibleIsNamedAttributeSettable:
+    begin
+      if OSError(
+        GetEventParameter(AEvent, kEventParamAccessibleAttributeName,
+          typeCFStringRef, nil, SizeOf(CFStringRef), nil, @lInputStr),
+        SName, 'GetEventParameter') then Exit;
+
+      lInputPasStr := CFStringToStr(lInputStr);
+
+      if (lInputPasStr = 'AXFocused') then
+      begin
+        lOutputBool := TCustomControl(lLazControl).TabStop;
+        SetEventParameter(AEvent, kEventParamAccessibleAttributeSettable, typeBoolean,
+          SizeOf(Boolean), @lOutputBool);
+        Result := noErr;
+        Exit;
+      end;
+      // For all other attributes simply default for not settable
+      if (lInputPasStr = 'AXStringForRange') or
+         (lInputPasStr = 'AXNumberOfCharacters') or (lInputPasStr = 'AXChildren') or
+         (lInputPasStr = 'AXSelectedChildren') or (lInputPasStr = 'AXVisibleChildren') or
+         (lInputPasStr = 'AXPosition') or (lInputPasStr = 'AXSize') or
+         (lInputPasStr = 'AXParent') or (lInputPasStr = 'AXTopLevelUIElement') or
+         (lInputPasStr = 'AXWindow') or (lInputPasStr = 'AXOrientation') or
+         (lInputPasStr = 'AXValue') or (lInputPasStr = 'AXEnabled') then
+      begin
+        lOutputBool := False;
+        SetEventParameter(AEvent, kEventParamAccessibleAttributeSettable, typeBoolean,
+          SizeOf(Boolean), @lOutputBool);
+        Result := noErr;
+      end;
+    end; // kEventAccessibleIsNamedAttributeSettable*)
+  end; // case EventKind of
+end;
 
 procedure TCarbonMemo.RegisterEvents;
 var
   TmpSpec: EventTypeSpec;
+  AccessibilitySpec: array [0..3] of EventTypeSpec;
 begin
   inherited RegisterEvents;
 
@@ -1778,6 +1961,28 @@ begin
     InstallControlEventHandler(FBorder,
       RegisterEventHandler(@CarbonMemoBorder_Draw),
       1, @TmpSpec, Pointer(Self), nil);
+
+    // Accessibility
+    //AccessibilitySpec[0].eventClass := kEventClassAccessibility;
+    //AccessibilitySpec[0].eventKind := kEventAccessibleGetChildAtPoint;
+    AccessibilitySpec[0].eventClass := kEventClassAccessibility;
+    AccessibilitySpec[0].eventKind := kEventAccessibleGetFocusedChild;
+    AccessibilitySpec[1].eventClass := kEventClassAccessibility;
+    AccessibilitySpec[1].eventKind := kEventAccessibleGetAllAttributeNames;
+    {AccessibilitySpec[3].eventClass := kEventClassAccessibility;
+    AccessibilitySpec[3].eventKind := kEventAccessibleGetAllParameterizedAttributeNames;}
+    AccessibilitySpec[2].eventClass := kEventClassAccessibility;
+    AccessibilitySpec[2].eventKind := kEventAccessibleGetNamedAttribute;
+    // kEventAccessibleSetNamedAttribute
+    AccessibilitySpec[3].eventClass := kEventClassAccessibility;
+    AccessibilitySpec[3].eventKind := kEventAccessibleIsNamedAttributeSettable;
+    // kEventAccessibleGetAllActionNames
+    // kEventAccessiblePerformNamedAction
+    // kEventAccessibleGetNamedActionDescription
+
+    InstallControlEventHandler(FBorder,
+      RegisterEventHandler(@CarbonMemoBorder_Accessibility),
+      4, @AccessibilitySpec[0], Pointer(Self), nil);
   end;
 end;
 

@@ -930,6 +930,7 @@ type
     function GetHandle: PtrInt;
     function GetPosition: TPoint;
     function GetSize: TSize;
+    procedure SetHandle(AValue: PtrInt);
     procedure SetPosition(AValue: TPoint);
     procedure SetSize(AValue: TSize);
   protected
@@ -945,6 +946,8 @@ type
     SecondaryHandle: PtrInt; // Available for Widgetsets to use
     constructor Create(AOwner: TControl); virtual;
     destructor Destroy; override;
+    function HandleAllocated: Boolean;
+    procedure InitializeHandle; virtual;
     procedure SetAccessibleDescription(const ADescription: TCaption);
     procedure SetAccessibleValue(const AValue: TCaption);
     procedure SetAccessibleRole(const ARole: TLazAccessibilityRole);
@@ -963,7 +966,7 @@ type
     property AccessibleRole: TLazAccessibilityRole read FAccessibleRole write SetAccessibleRole;
     property Position: TPoint read GetPosition write SetPosition;
     property Size: TSize read GetSize write SetSize;
-    property Handle: PtrInt read GetHandle write FHandle;
+    property Handle: PtrInt read GetHandle write SetHandle;
   end;
 
 {* Note on TControl.Caption

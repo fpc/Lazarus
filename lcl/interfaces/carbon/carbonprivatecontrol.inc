@@ -223,7 +223,14 @@ begin
   AXUIElementGetIdentifier(lInputAXObject, lInputID64);
   if (lLazControl is TCustomControl) and (lInputID64 <> 0) then
     lInputAccessibleObject := TLazAccessibleObject(PtrInt(lInputID64))
-  else lInputAccessibleObject := lLazControl.GetAccessibleObject();
+  else
+  begin
+    lInputAccessibleObject := lLazControl.GetAccessibleObject();
+
+    {// Store the AX Handle
+    if not lInputAccessibleObject.HandleAllocated then
+      lInputAccessibleObject.Handle := PtrInt(lInputAXObject);}
+  end;
   lLazAXRole := lInputAccessibleObject.AccessibleRole;
 
   EventKind := GetEventKind(AEvent);

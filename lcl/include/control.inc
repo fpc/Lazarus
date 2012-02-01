@@ -34,7 +34,10 @@ var
 begin
   WidgetsetClass := TWSLazAccessibleObjectClass(GetWSLazAccessibleObject());
   if (WidgetsetClass <> nil) and (FHandle = 0) then
+  begin
     FHandle := WidgetsetClass.CreateHandle(Self);
+    InitializeHandle();
+  end;
   Result := FHandle;
 end;
 
@@ -56,6 +59,13 @@ begin
     Exit;
   end;
   Result := FSize;
+end;
+
+procedure TLazAccessibleObject.SetHandle(AValue: PtrInt);
+begin
+  if AValue = FHandle then Exit;
+  FHandle := AValue;
+  InitializeHandle();
 end;
 
 procedure TLazAccessibleObject.SetPosition(AValue: TPoint);
@@ -102,6 +112,21 @@ begin
     WidgetsetClass.DestroyHandle(Self);
   FreeAndNil(FChildren);
   inherited Destroy;
+end;
+
+function TLazAccessibleObject.HandleAllocated: Boolean;
+begin
+  Result := FHandle <> 0;
+end;
+
+procedure TLazAccessibleObject.InitializeHandle;
+var
+  WidgetsetClass: TWSLazAccessibleObjectClass;
+begin
+  WidgetsetClass := TWSLazAccessibleObjectClass(GetWSLazAccessibleObject());
+  WidgetsetClass.SetAccessibleDescription(Self, FAccessibleDescription);
+  WidgetsetClass.SetAccessibleValue(Self, FAccessibleValue);
+  WidgetsetClass.SetAccessibleRole(Self, FAccessibleRole);
 end;
 
 procedure TLazAccessibleObject.SetAccessibleDescription(const ADescription: TCaption);
