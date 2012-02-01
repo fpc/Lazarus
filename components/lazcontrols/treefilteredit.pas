@@ -379,9 +379,16 @@ var
   i: Integer;
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and Assigned(fBranches) then
-    for i := 0 to fBranches.Count-1 do
-      fBranches[i].CleanUp;
+  if (Operation = opRemove) then
+  begin
+    if FilteredTreeview=AComponent then
+    begin
+      fFilteredTreeview:=nil;
+      if Assigned(fBranches) then
+        for i := 0 to fBranches.Count-1 do
+          fBranches[i].CleanUp;
+    end;
+  end;
 end;
 
 procedure TTreeFilterEdit.SortAndFilter;
