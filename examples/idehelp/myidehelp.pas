@@ -19,15 +19,17 @@
 }
 {
 ToDos:
-- FPC keyword: context, for example 'var' can be a section or a parameter modifier
-- FPC Messages, message, id
-- Other messages: Linker errors, fpcres errors
+Examples:
 - predefined identifiers: cardinal, longint
 - predefined procs: exit, break, continue, writeln
 - help for sources
 - IDE dialogs / wiki:
 - custom dialogs / wiki:
 - fpc compiler options:
+
+Help for:
+- Other messages: Linker errors, fpcres errors
+- FPC keyword: context, for example 'var' can be a section or a parameter modifier
 
 }
 unit MyIDEHelp;
