@@ -1825,12 +1825,12 @@ function THelpDatabases.GetNodesForKeyword(const HelpKeyword: string;
 var
   i: Integer;
 begin
-  Result:=shrSuccess;
   ErrMsg:='';
   for i:=Count-1 downto 0 do begin
     Result:=Items[i].GetNodesForKeyword(HelpKeyword,ListOfNodes,ErrMsg);
     if Result=shrCancel then exit;
   end;
+  Result:=shrSuccess;
 end;
 
 function THelpDatabases.GetNodesForDirective(const HelpDirective: string;
@@ -1840,12 +1840,12 @@ function THelpDatabases.GetNodesForDirective(const HelpDirective: string;
 var
   i: Integer;
 begin
-  Result:=shrSuccess;
   ErrMsg:='';
   for i:=Count-1 downto 0 do begin
     Result:=Items[i].GetNodesForDirective(HelpDirective,ListOfNodes,ErrMsg);
     if Result=shrCancel then exit;
   end;
+  Result:=shrSuccess;
 end;
 
 function THelpDatabases.GetNodesForContext(HelpContext: THelpContext;
@@ -1855,12 +1855,12 @@ function THelpDatabases.GetNodesForContext(HelpContext: THelpContext;
 var
   i: Integer;
 begin
-  Result:=shrSuccess;
   ErrMsg:='';
   for i:=Count-1 downto 0 do begin
     Result:=Items[i].GetNodesForContext(HelpContext,ListOfNodes,ErrMsg);
     if Result=shrCancel then exit;
   end;
+  Result:=shrSuccess;
 end;
 
 function THelpDatabases.GetNodesForPascalContexts(
@@ -1871,13 +1871,13 @@ function THelpDatabases.GetNodesForPascalContexts(
 var
   i: Integer;
 begin
-  Result:=shrSuccess;
   ErrMsg:='';
   for i:=Count-1 downto 0 do begin
     Result:=Items[i].GetNodesForPascalContexts(ListOfPascalHelpContextList,
                                                ListOfNodes,ErrMsg);
     if Result=shrCancel then exit;
   end;
+  Result:=shrSuccess;
 end;
 
 function THelpDatabases.GetNodesForClass(AClass: TClass;
@@ -1887,12 +1887,12 @@ function THelpDatabases.GetNodesForClass(AClass: TClass;
 var
   i: Integer;
 begin
-  Result:=shrSuccess;
   ErrMsg:='';
   for i:=Count-1 downto 0 do begin
     Result:=Items[i].GetNodesForClass(AClass,ListOfNodes,ErrMsg);
     if Result=shrCancel then exit;
   end;
+  Result:=shrSuccess;
 end;
 
 function THelpDatabases.GetNodesForMessage(const AMessage: string;
@@ -1903,13 +1903,13 @@ function THelpDatabases.GetNodesForMessage(const AMessage: string;
 var
   i: Integer;
 begin
-  Result:=shrSuccess;
   ErrMsg:='';
   for i:=Count-1 downto 0 do begin
     Result:=Items[i].GetNodesForMessage(AMessage,MessageParts,ListOfNodes,
                                         ErrMsg);
     if Result=shrCancel then exit;
   end;
+  Result:=shrSuccess;
 end;
 
 function THelpDatabases.ShowHelpSelector(Query: THelpQuery;
