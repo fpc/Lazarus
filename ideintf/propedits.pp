@@ -4443,11 +4443,8 @@ end;
 
 { TShortCutPropertyEditor }
 
-// MG: this is the Delphi way. Not very useful. This needs a Edit override
-// and a nice dialog with grab, checkboxes...
-// XXX
 const
-  ShortCuts: array[0..134] of TShortCut = (
+  ShortCuts: array[0..135] of TShortCut = (
     scNone,
     Byte('A') or scCtrl,
     Byte('B') or scCtrl,
@@ -4582,7 +4579,8 @@ const
     VK_DELETE or scShift,
     VK_DELETE or scCtrl,
     VK_BACK or scAlt,
-    VK_BACK or scShift or scAlt);
+    VK_BACK or scShift or scAlt,
+    VK_ESCAPE);
 
 procedure TShortCutPropertyEditor.Edit;
 var
