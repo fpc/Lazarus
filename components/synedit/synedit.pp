@@ -4432,7 +4432,7 @@ begin
   // don't use MinMax here, it will fail in design mode (Lines.Count is zero,
   // but the painting code relies on TopLine >= 1)
   {$IFDEF SYNSCROLLDEBUG}
-  if fPaintLock = 0 then debugln(['SetTopView outside Paintlock']);
+  if (fPaintLock = 0) and (not FIsInDecPaintLock) then debugln(['SetTopView outside Paintlock New=',AValue, ' Old=', FFoldedLinesView.TopLine]);
   if (sfHasScrolled in fStateFlags) then debugln(['SetTopView with sfHasScrolled Value=',AValue, '  FOldTopView=',FOldTopView ]);
   {$ENDIF}
   AValue := Min(AValue, CurrentMaxTopView);
@@ -4457,7 +4457,7 @@ begin
     fMarkupManager.TopLine := TopLine;
 
   {$IFDEF SYNSCROLLDEBUG}
-  if fPaintLock = 0 then debugln('SetTopline outside Paintlock EXIT');
+  if (fPaintLock = 0) and (not FIsInDecPaintLock) then debugln('SetTopline outside Paintlock EXIT');
   {$ENDIF}
 end;
 

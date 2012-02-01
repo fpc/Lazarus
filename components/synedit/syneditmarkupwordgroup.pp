@@ -123,10 +123,14 @@ var
   function FindEndNode(StartNode: TSynFoldNodeInfo;
                        var YIndex, NIndex: Integer): TSynFoldNodeInfo;
     function SearchLine(ALineIdx: Integer; var ANodeIdx: Integer): TSynFoldNodeInfo;
+    var
+      NodeList: TLazSynFoldNodeInfoList;
     begin
+      NodeList := HL.FoldNodeInfo[ALineIdx];
+      NodeList.ActionFilter := [sfaMarkup];
       repeat
         inc(ANodeIdx);
-        Result := HL.FoldNodeInfo[ALineIdx, ANodeIdx, [sfaMarkup]];
+        Result := NodeList[ANodeIdx];
       until (sfaInvalid in Result.FoldAction)
          or (Result.NestLvlEnd <= StartNode.NestLvlStart);
     end;
@@ -151,10 +155,14 @@ var
   function FindStartNode(EndNode: TSynFoldNodeInfo;
                        var YIndex, NIndex: Integer): TSynFoldNodeInfo;
     function SearchLine(ALineIdx: Integer; var ANodeIdx: Integer): TSynFoldNodeInfo;
+    var
+      NodeList: TLazSynFoldNodeInfoList;
     begin
+      NodeList := HL.FoldNodeInfo[ALineIdx];
+      NodeList.ActionFilter := [sfaMarkup];
       repeat
         dec(ANodeIdx);
-        Result := HL.FoldNodeInfo[ALineIdx, ANodeIdx, [sfaMarkup]];
+        Result := NodeList[ANodeIdx];
       until (sfaInvalid in Result.FoldAction)
          or (Result.NestLvlStart <= EndNode.NestLvlEnd);
     end;
@@ -169,7 +177,7 @@ var
     if YIndex < 0 then
       exit;
 
-    NIndex := HL.FoldNodeInfoCount[YIndex, [sfaMarkup]];
+    NIndex := HL.FoldNodeInfo[YIndex].CountEx([sfaMarkup]);
     Result := SearchLine(YIndex, NIndex);
 
     if (Result.LogXEnd = 0) or (sfaLastLineClose in Result.FoldAction) then
@@ -180,6 +188,7 @@ var
   LogCaretXY: TPoint;
   i, i2, y, y2: integer;
   Node1, Node2, Node3, TmpNode: TSynFoldNodeInfo;
+  NodeList: TLazSynFoldNodeInfoList;
 begin
   Word1.Y := -1;
   Word2.Y := -1;
@@ -196,13 +205,16 @@ begin
   y := LogCaretXY.Y - 1;
   LCnt := Lines.Count;
   HL.CurrentLines := Lines;
+  HL.FoldNodeInfo[y].ClearFilter; // only needed once, in case the line was already used
 
   i := 0;
-  Node1 := HL.FoldNodeInfo[y, i, [sfaMarkup]];
+  NodeList := HL.FoldNodeInfo[y];
+  NodeList.ActionFilter := [sfaMarkup];
+  Node1 := NodeList[i];
   while not(sfaInvalid in Node1.FoldAction) and (Node1.LogXEnd < LogCaretXY.X-1) do
   begin
     inc(i);
-    Node1 := HL.FoldNodeInfo[y, i, [sfaMarkup]];
+    Node1 := NodeList[i];
   end;
   if (Node1.LogXStart > LogCaretXY.X - 1) or (sfaInvalid in Node1.FoldAction) then
     exit;
@@ -226,7 +238,7 @@ begin
   Node3.FoldAction := [sfaInvalid];
   i := i2;
   y := y2;
-  TmpNode := HL.FoldNodeInfo[y2, i2 - 1, [sfaMarkup]];
+  TmpNode := HL.FoldNodeInfo[y2].NodeInfoEx(i2 - 1, [sfaMarkup]);
   if (not (sfaInvalid in TmpNode.FoldAction)) and
      (TmpNode.LogXStart = Node2.LogXStart) and (TmpNode.LogXEnd = Node2.LogXEnd)
   then begin
@@ -240,7 +252,7 @@ begin
   else begin
     y2 := y;
     i2 := i;
-    TmpNode := HL.FoldNodeInfo[y2, i2 + 1, [sfaMarkup]];
+    TmpNode := HL.FoldNodeInfo[y2].NodeInfoEx(i2 + 1, [sfaMarkup]);
     if (not (sfaInvalid in TmpNode.FoldAction)) and
        (TmpNode.LogXStart = Node2.LogXStart) and (TmpNode.LogXEnd = Node2.LogXEnd)
     then begin
