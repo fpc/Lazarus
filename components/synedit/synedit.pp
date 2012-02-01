@@ -529,9 +529,15 @@ type
     function GetTextBetweenPoints(aStartPoint, aEndPoint: TPoint): String;
     function GetTopLine: Integer;
     procedure SetBlockTabIndent(AValue: integer);
+    procedure SetBracketMatchColor(AValue: TSynSelectedColor);
     procedure SetDefSelectionMode(const AValue: TSynSelectionMode);
+    procedure SetFoldedCodeColor(AValue: TSynSelectedColor);
     procedure SetFoldState(const AValue: String);
+    procedure SetHighlightAllColor(AValue: TSynSelectedColor);
+    procedure SetIncrementColor(AValue: TSynSelectedColor);
+    procedure SetLineHighlightColor(AValue: TSynSelectedColor);
     procedure SetMouseActions(const AValue: TSynEditMouseActions);
+    procedure SetMouseLinkColor(AValue: TSynSelectedColor);
     procedure SetMouseSelActions(const AValue: TSynEditMouseActions);
     procedure SetMouseTextActions(AValue: TSynEditMouseActions);
     procedure SetPaintLockOwner(const AValue: TSynEditBase);
@@ -1001,16 +1007,16 @@ type
     property HideSelection: boolean read fHideSelection write SetHideSelection default false;
     property DefaultSelectionMode: TSynSelectionMode read GetDefSelectionMode write SetDefSelectionMode default smNormal;
     property SelectionMode: TSynSelectionMode read GetSelectionMode write SetSelectionMode default smNormal;
-    property SelectedColor: TSynSelectedColor read GetSelectedColor write SetSelectedColor;  // Setter for compatibility
+    property SelectedColor: TSynSelectedColor read GetSelectedColor write SetSelectedColor;
 
     // Colors
     property Color default clWhite;
-    property IncrementColor: TSynSelectedColor read GetIncrementColor;
-    property HighlightAllColor: TSynSelectedColor read GetHighlightAllColor;
-    property BracketMatchColor: TSynSelectedColor read GetBracketMatchColor;
-    property MouseLinkColor: TSynSelectedColor read GetMouseLinkColor;
-    property LineHighlightColor: TSynSelectedColor read GetLineHighlightColor;
-    property FoldedCodeColor: TSynSelectedColor read GetFoldedCodeColor;
+    property IncrementColor: TSynSelectedColor read GetIncrementColor write SetIncrementColor;
+    property HighlightAllColor: TSynSelectedColor read GetHighlightAllColor write SetHighlightAllColor;
+    property BracketMatchColor: TSynSelectedColor read GetBracketMatchColor write SetBracketMatchColor;
+    property MouseLinkColor: TSynSelectedColor read GetMouseLinkColor write SetMouseLinkColor;
+    property LineHighlightColor: TSynSelectedColor read GetLineHighlightColor write SetLineHighlightColor;
+    property FoldedCodeColor: TSynSelectedColor read GetFoldedCodeColor write SetFoldedCodeColor;
 
     property Beautifier: TSynCustomBeautifier read fBeautifier write SetBeautifier;
     property BookMarkOptions: TSynBookMarkOpt read fBookMarkOpt write fBookMarkOpt;
@@ -1641,9 +1647,19 @@ begin
   FBlockTabIndent := AValue;
 end;
 
+procedure TCustomSynEdit.SetBracketMatchColor(AValue: TSynSelectedColor);
+begin
+  fMarkupBracket.MarkupInfo.Assign(AValue);
+end;
+
 procedure TCustomSynEdit.SetDefSelectionMode(const AValue: TSynSelectionMode);
 begin
   FBlockSelection.SelectionMode := AValue; // Includes active
+end;
+
+procedure TCustomSynEdit.SetFoldedCodeColor(AValue: TSynSelectedColor);
+begin
+  FFoldedLinesView.MarkupInfoFoldedCode.Assign(AValue);
 end;
 
 procedure TCustomSynEdit.SurrenderPrimarySelection;
@@ -4796,9 +4812,29 @@ begin
   FPendingFoldState := '';
 end;
 
+procedure TCustomSynEdit.SetHighlightAllColor(AValue: TSynSelectedColor);
+begin
+  fMarkupHighAll.MarkupInfo.Assign(AValue);
+end;
+
+procedure TCustomSynEdit.SetIncrementColor(AValue: TSynSelectedColor);
+begin
+  fMarkupSelection.MarkupInfoIncr.Assign(AValue);
+end;
+
+procedure TCustomSynEdit.SetLineHighlightColor(AValue: TSynSelectedColor);
+begin
+  fMarkupSpecialLine.MarkupLineHighlightInfo.Assign(AValue);
+end;
+
 procedure TCustomSynEdit.SetMouseActions(const AValue: TSynEditMouseActions);
 begin
   FMouseActions.UserActions := AValue;
+end;
+
+procedure TCustomSynEdit.SetMouseLinkColor(AValue: TSynSelectedColor);
+begin
+  fMarkupCtrlMouse.MarkupInfo.Assign(AValue);
 end;
 
 procedure TCustomSynEdit.SetMouseSelActions(const AValue: TSynEditMouseActions);

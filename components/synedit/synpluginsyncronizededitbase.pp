@@ -187,6 +187,10 @@ type
     procedure SetAreaMarkupEnabled(const AValue: Boolean);
     procedure SetEnabled(const AValue: Boolean);
     procedure SetMarkupEnabled(const AValue: Boolean);
+    procedure SetMarkupInfo(AValue: TSynSelectedColor);
+    procedure SetMarkupInfoArea(AValue: TSynSelectedColor);
+    procedure SetMarkupInfoCurrent(AValue: TSynSelectedColor);
+    procedure SetMarkupInfoSync(AValue: TSynSelectedColor);
   protected
     FMarkup: TSynPluginSyncronizedEditMarkup;
     FMarkupArea: TSynPluginSyncronizedEditMarkupArea;
@@ -220,10 +224,10 @@ type
     property Active: Boolean read GetActive write SetActive;
     property PreActive: Boolean read FPreActive write FPreActive;           // e.g. collecting words => Reacts to LinesEdited
 
-    property MarkupInfo: TSynSelectedColor read FMarkupInfo;
-    property MarkupInfoCurrent: TSynSelectedColor read FMarkupInfoCurrent;
-    property MarkupInfoSync: TSynSelectedColor read FMarkupInfoSync;
-    property MarkupInfoArea: TSynSelectedColor read FMarkupInfoArea;
+    property MarkupInfo: TSynSelectedColor read FMarkupInfo write SetMarkupInfo;
+    property MarkupInfoCurrent: TSynSelectedColor read FMarkupInfoCurrent write SetMarkupInfoCurrent;
+    property MarkupInfoSync: TSynSelectedColor read FMarkupInfoSync write SetMarkupInfoSync;
+    property MarkupInfoArea: TSynSelectedColor read FMarkupInfoArea write SetMarkupInfoArea;
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
     property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
   end;
@@ -808,6 +812,34 @@ begin
   FMarkupEnabled := AValue;
   if FMarkup <> nil then
     FMarkup.Enabled := (Active or PreActive) and FMarkupEnabled;
+end;
+
+procedure TSynPluginSyncronizedEditBase.SetMarkupInfo(AValue: TSynSelectedColor
+  );
+begin
+  if FMarkupInfo=AValue then Exit;
+  FMarkupInfo.Assign(AValue);
+end;
+
+procedure TSynPluginSyncronizedEditBase.SetMarkupInfoArea(
+  AValue: TSynSelectedColor);
+begin
+  if FMarkupInfoArea=AValue then Exit;
+  FMarkupInfoArea.Assign(AValue);
+end;
+
+procedure TSynPluginSyncronizedEditBase.SetMarkupInfoCurrent(
+  AValue: TSynSelectedColor);
+begin
+  if FMarkupInfoCurrent=AValue then Exit;
+  FMarkupInfoCurrent.Assign(AValue);
+end;
+
+procedure TSynPluginSyncronizedEditBase.SetMarkupInfoSync(
+  AValue: TSynSelectedColor);
+begin
+  if FMarkupInfoSync=AValue then Exit;
+  FMarkupInfoSync.Assign(AValue);
 end;
 
 procedure TSynPluginSyncronizedEditBase.MarkupChanged(AMarkup: TObject);
