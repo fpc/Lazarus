@@ -287,10 +287,13 @@ begin
       end;
     end else begin
       // new sub node
+      Assert(p=fTVNodeStack.Count, Format('TVClearUnneededAndCreateHierachy: p (%d) > fTVNodeStack.Count (%d).',
+                                          [p, fTVNodeStack.Count]));
       if p>0 then
         Node:=fTVNodeStack[p-1]
       else
         Node:=fRootNode;
+      Assert(Assigned(Node), Format('TVClearUnneededAndCreateHierachy: Node=nil, p=%d', [p]));
       if Node.GetFirstChild<>nil then begin
         Node:=Node.GetFirstChild;
         Node.Text:=FilePart;
