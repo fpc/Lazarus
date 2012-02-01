@@ -19,7 +19,7 @@
 }
 {
 ToDos:
-- FPC keyword: context
+- FPC keyword: context, for example 'var' can be a section or a parameter modifier
 - FPC Messages, message, id
 - Other messages: Linker errors, fpcres errors
 - predefined identifiers: cardinal, longint
@@ -82,6 +82,25 @@ type
                       var {%H-}ErrMsg: string): TShowHelpResult; override;
   end;
 
+  { TMyMessagesHelpDatabase }
+
+  TMyMessagesHelpDatabase = class(THTMLHelpDatabase)
+  private
+    FAllMessageNode: THelpNode;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    function GetNodesForMessage(const AMessage: string; MessageParts: TStrings;
+                        var ListOfNodes: THelpNodeQueryList; var ErrMsg: string
+                        ): TShowHelpResult; override;
+    function ShowHelp(Query: THelpQuery; {%H-}BaseNode, {%H-}NewNode: THelpNode;
+                      {%H-}QueryItem: THelpQueryItem;
+                      var {%H-}ErrMsg: string): TShowHelpResult; override;
+  end;
+
+
+  { TMyHelpSetupDialog }
+
   TMyHelpSetupDialog = class(TForm)
   private
   public
@@ -98,6 +117,64 @@ procedure Register;
 begin
   HelpDatabases.CreateHelpDatabase('MyFPCKeyWordHelpDB',TMyFPCKeywordHelpDatabase,true);
   HelpDatabases.CreateHelpDatabase('MyFPCDirectiveHelpDB',TMyDirectiveHelpDatabase,true);
+  HelpDatabases.CreateHelpDatabase('MyFPCMessagesHelpDB',TMyMessagesHelpDatabase,true);
+end;
+
+{ TMyMessagesHelpDatabase }
+
+constructor TMyMessagesHelpDatabase.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+end;
+
+destructor TMyMessagesHelpDatabase.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TMyMessagesHelpDatabase.GetNodesForMessage(const AMessage: string;
+  MessageParts: TStrings; var ListOfNodes: THelpNodeQueryList;
+  var ErrMsg: string): TShowHelpResult;
+var
+  Title: String;
+begin
+  ErrMsg:='';
+  Result:=shrHelpNotFound;
+  if (csDesigning in ComponentState) then exit;
+  debugln(['TMyMessagesHelpDatabase.GetNodesForDirective AMessage="',AMessage,'" Parts="',MessageParts.Text,'"']);
+
+  // check if the message fits
+  if AMessage<>'MyTest' then exit;
+
+  Title:='Help for message';
+  // this help database knows this Directive
+  // => add a node, so that if there are several possibilities the IDE can
+  //    show the user a dialog to choose
+  if FAllMessageNode=nil then
+    FAllMessageNode:=THelpNode.CreateURL(Self,'','');
+  FAllMessageNode.Title:=Title;
+  CreateNodeQueryListAndAdd(FAllMessageNode,nil,ListOfNodes,true);
+  Result:=shrSuccess;
+end;
+
+function TMyMessagesHelpDatabase.ShowHelp(Query: THelpQuery; BaseNode,
+  NewNode: THelpNode; QueryItem: THelpQueryItem; var ErrMsg: string
+  ): TShowHelpResult;
+var
+  Msg: THelpQueryMessage;
+begin
+  ErrMsg:='';
+  Result:=shrHelpNotFound;
+  if not (Query is THelpQueryMessage) then exit;
+  Msg:=THelpQueryMessage(Query);
+  debugln(['TMyMessagesHelpDatabase.ShowHelp Msg="',Msg.WholeMessage,'" Parts="',Msg.MessageParts.Text,'"']);
+  // check if the message fits
+  if Msg.WholeMessage<>'MyTest' then exit;
+
+  IDEMessageDialog('My message help',
+    'The message "$'+Msg.WholeMessage+'":'#13#13
+    +'is an example to show how help for messages work',mtInformation,[mbOk]);
+  Result:=shrSuccess;
 end;
 
 { TMyDirectiveHelpDatabase }
