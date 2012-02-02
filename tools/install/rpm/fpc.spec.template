@@ -13,9 +13,7 @@ URL:            http://www.freepascal.org/
 Source0:        ftp://ftp.freepascal.org/pub/fpc/dist/source-%{version}/%{name}-%{version}-%{release}.source.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-#Requires:      gpm, gpm-devel, glibc, ncurses, binutils
 Requires:       glibc, binutils
-#BuildRequires:  tetex, tetex-latex, tetex-fonts, binutils, gpm-devel, glibc-devel
 BuildRequires:  binutils, glibc-devel
 
 %description
