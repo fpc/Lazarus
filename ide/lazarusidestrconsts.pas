@@ -3184,6 +3184,8 @@ resourcestring
   lisCodeTemplComment = 'Comment:';
   lisCodeTemplATokenAlreadyExists = ' A token %s%s%s already exists! ';
   lisCodeTemplError = 'Error';
+  lisUnableToFindTheLfmFileOfComponentClassNeededByUnit = 'Unable to find the '
+    +'lfm file of component class "%s".%sNeeded by unit:%s%s';
   lisUnableToOpenDesignerTheClassDoesNotDescendFromADes = 'Unable to open '
     +'designer.%sThe class %s does not descend from a designable class like '
     +'TForm or TDataModule.';
@@ -3191,8 +3193,6 @@ resourcestring
     +'with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the '
     +'class %s,%sbut the .lfm file contains already another class.%sThere can '
     +'only be one design class per unit.%sPlease move %s to another unit.';
-  lisUnableToFindTheLFMOfComponentClass = 'Unable to find the lfm file of '
-    +'component class %s%s%s.';
   lisUnableToLoadTheComponentClassBecauseItDependsOnIts = 'Unable to load the '
     +'component class %s%s%s, because it depends on itself.';
   lisCancelLoadingThisComponent = 'Cancel loading this component';
