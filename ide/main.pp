@@ -7536,7 +7536,7 @@ begin
 
     // not found => tell the user
     Result:=QuestionDlg(lisCodeTemplError, Format(
-      lisUnableToFindTheUnitOfComponentClass, ['"', AComponentClassName, '"']),
+      lisUnableToFindTheLFMOfComponentClass, ['"', AComponentClassName, '"']),
       mtError, [mrCancel, lisCancelLoadingThisComponent,
                mrAbort, lisAbortWholeLoading,
                mrIgnore, lisIgnoreUseTFormAsAncestor], 0);

@@ -3191,7 +3191,7 @@ resourcestring
     +'with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the '
     +'class %s,%sbut the .lfm file contains already another class.%sThere can '
     +'only be one design class per unit.%sPlease move %s to another unit.';
-  lisUnableToFindTheUnitOfComponentClass = 'Unable to find the unit of '
+  lisUnableToFindTheLFMOfComponentClass = 'Unable to find the lfm file of '
     +'component class %s%s%s.';
   lisUnableToLoadTheComponentClassBecauseItDependsOnIts = 'Unable to load the '
     +'component class %s%s%s, because it depends on itself.';
