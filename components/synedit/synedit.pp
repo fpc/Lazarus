@@ -1999,6 +1999,11 @@ begin
   fScrollTimer.Enabled := False;
   fScrollTimer.Interval := 100;
   fScrollTimer.OnTimer := {$IFDEF FPC}@{$ENDIF}ScrollTimerHandler;
+
+  // Accessibility
+  AccessibleRole := larTextEditorMultiline;
+  AccessibleValue := Self.Text;
+  AccessibleDescription := 'source code editor';
 end;
 
 function TCustomSynEdit.GetChildOwner: TComponent;
