@@ -1760,13 +1760,15 @@ begin
   end;
 end;
 
+// The memo border normally just redirects towards the real control
+// but if it is readonly it is more convenient to say we are a text label
 function CarbonMemoBorder_Accessibility(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   // Inputs
   lAXRole, lInputStr: CFStringRef;
-  lIsMemoControl: Boolean;
+  lIsReadOnlyMemo: Boolean;
   lInputAXObject, lInputMemoAXObject: AXUIElementRef;
   lInputID64: UInt64;
   lInputAccessibleObject: TLazAccessibleObject;
@@ -1784,6 +1786,7 @@ var
   lOutputSize: CGSize;
   //
   lLazControl: TControl;
+  lLazMemo: TCustomMemo = nil;
   lLazAXRole: TLazAccessibilityRole;
   lCurAccessibleObject: TLazAccessibleObject;
   Command: HICommandExtended;
@@ -1798,14 +1801,16 @@ var
   lSelection: TLazAccessibleObject;
 const SName = 'CarbonMemoBorder_Accessibility';
 begin
-  {.$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
+  {$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
     DebugLn('CarbonMemoBorder_Accessibility LCLObject=', DbgSName(AWidget.LCLObject));
-  {.$ENDIF}
+  {$ENDIF}
 
   Result := CallNextEventHandler(ANextHandler, AEvent); // Must be called at the event handling start
 
   lLazControl := TControl((AWidget as TCarbonControl).LCLObject);
   if lLazControl = nil then Exit;
+  if lLazControl is TCustomMemo then lLazMemo := lLazControl as TCustomMemo;
+  lIsReadOnlyMemo := (lLazMemo <> nil) and lLazMemo.ReadOnly;
 
   GetEventParameter(AEvent, kEventParamAccessibleObject,
     typeCFTypeRef, nil, SizeOf(AXUIElementRef), nil, @lInputAXObject);
@@ -1814,43 +1819,57 @@ begin
   AXUIElementGetIdentifier(lInputAXObject, lInputID64);
   lInputAccessibleObject := lLazControl.GetAccessibleObject();
   lInputMemoAXObject := AXUIElementRef(lInputAccessibleObject.Handle);
-  lIsMemoControl := lInputMemoAXObject = lInputAXObject;
   lLazAXRole := lInputAccessibleObject.AccessibleRole;
 
   EventKind := GetEventKind(AEvent);
   case EventKind of
     kEventAccessibleGetFocusedChild:
     begin
-      {.$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
+      {$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
         DebugLn('CarbonMemoBorder_Accessibility kEventAccessibleGetFocusedChild '
           + 'lInputAXObject=%x lChildAX=%x', [PtrInt(lInputAXObject), PtrInt(lInputMemoAXObject)]);
-      {.$ENDIF}
+      {$ENDIF}
 
-      {if lIsMemoControl then
+      if lIsReadOnlyMemo then
         SetEventParameter(AEvent, kEventParamAccessibleChild, typeCFTypeRef,
           SizeOf(AXUIElementRef), nil)
-      else}
+      else
         SetEventParameter(AEvent, kEventParamAccessibleChild, typeCFTypeRef,
           SizeOf(AXUIElementRef), @lInputMemoAXObject);
       Result := noErr;
     end;
     kEventAccessibleGetAllAttributeNames:
     begin
-      {.$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
+      {$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
         DebugLn('CarbonMemoBorder_Accessibility kEventAccessibleGetAllAttributeNames');
-      {.$ENDIF}
+      {$ENDIF}
 
       GetEventParameter(AEvent, kEventParamAccessibleAttributeNames,
         typeCFMutableArrayRef, nil, SizeOf(CFMutableArrayRef), nil, @lInputMutableArray);
 
-      {for i := 0 to CFArrayGetCount(lInputMutableArray) - 1 do
+      if lIsReadOnlyMemo then
       begin
-        lOutputStr := CFArrayGetValueAtIndex(lInputMutableArray, i);
-        WriteLn(' '+CFStringToStr(lOutputStr));
-      end;}
-
-//      lOutputStr := CFSTR('AXRole');
-//      CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXFocused');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXValue');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXStringForRange');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXAttributedStringForRange');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXBoundsForRange');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXRangeForIndex');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXRangeForLine');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXRangeForPosition');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXRTFForRange');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXStyleRangeForIndex');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+      end;
     end; // kEventAccessibleGetAllAttributeNames
     kEventAccessibleGetNamedAttribute:
     begin
@@ -1859,87 +1878,74 @@ begin
 
       lInputPasStr := CFStringToStr(lInputStr);
 
-      {.$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
+      {$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
         DebugLn('CarbonMemoBorder_Accessibility kEventAccessibleGetNamedAttribute kEventParamAccessibleAttributeName=' + lInputPasStr);
-      {.$ENDIF}
+      {$ENDIF}
 
-      // AXRole overrides TCustomControl and TCustomWindow values
-(*      if lInputPasStr = 'AXRole' then
+      if lIsReadOnlyMemo and (lInputPasStr = 'AXRole') then
       begin
-        lAXRole := CFSTR('AXGroup');
-        //if OSError(
+        lAXRole := CFSTR('AXStaticText');
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFStringRef,
           SizeOf(CFStringRef), @lAXRole);
 
         Result := noErr;
         Exit;
-      end;*)
+      end
       // Specially only AXRoleDescription is allowed to override non-TCustomControl values
-      if lInputPasStr = 'AXRoleDescription' then
+      else if lInputPasStr = 'AXRoleDescription' then
       begin
         //if lInputAccessibleObject.AccessibleDescription = '' then Exit;
-        CreateCFString('memoborder', lOutputStr);
+        if lIsReadOnlyMemo then
+          CreateCFString('read only text area', lOutputStr)
+        else
+          CreateCFString('memoborder', lOutputStr);
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFStringRef,
           SizeOf(CFStringRef), @lOutputStr);
         FreeCFString(lOutputStr);
         Result := noErr;
         Exit;
-      end;
-(*      else if lInputPasStr = 'AXValue' then
+      end
+      else if lIsReadOnlyMemo and (lInputPasStr = 'AXValue') then
       begin
-        if not (lLazControl is TCustomControl) then Exit;
-        if lLazControl is TCustomForm then Exit;
-        if (lInputID64 = 0) then Exit;
-        CreateCFString(lInputAccessibleObject.AccessibleValue, lOutputStr);
+        CreateCFString(lLazMemo.Lines.Text, lOutputStr);
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFStringRef,
           SizeOf(CFStringRef), @lOutputStr);
         FreeCFString(lOutputStr);
         Result := noErr;
       end
-      else if (lInputPasStr = 'AXNumberOfCharacters') then
+      else if lIsReadOnlyMemo and (lInputPasStr = 'AXNumberOfCharacters') then
       begin
-        if not (lLazControl is TCustomControl) then Exit;
-        if lLazControl is TCustomForm then Exit;
-        lOutputInt := UTF8Length(lInputAccessibleObject.AccessibleValue);
+        lOutputInt := UTF8Length(lLazMemo.Lines.Text);
         lOutputNum := CFNumberCreate(nil, kCFNumberSInt64Type, @lOutputInt);
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFNumberRef,
           SizeOf(lOutputNum), @lOutputNum);
         CFRelease(lOutputNum);
         Result := noErr;
-      end;*)
+      end
+      //
+      // Parameterized attributes
+      //
+      else if lIsReadOnlyMemo and (lInputPasStr = 'AXStringForRange') then
+      begin
+        CreateCFString(lLazMemo.Lines.Text, lOutputStr);
+        SetEventParameter(AEvent, kEventParamAccessibleAttributeParameter, typeCFStringRef,
+          SizeOf(CFStringRef), @lOutputStr);
+        FreeCFString(lOutputStr);
+        Result := noErr;
+      end
+      else if lIsReadOnlyMemo and ((lInputPasStr = 'AXAttributedStringForRange') or
+         (lInputPasStr = 'AXBoundsForRange') or
+         (lInputPasStr = 'AXRangeForIndex') or
+         (lInputPasStr = 'AXRangeForLine') or
+         (lInputPasStr = 'AXRangeForPosition') or
+         (lInputPasStr = 'AXRTFForRange') or
+         (lInputPasStr = 'AXStyleRangeForIndex')) then
+      begin
+        SetEventParameter(AEvent, kEventParamAccessibleAttributeParameter, typeCFTypeRef,
+          0, nil);
+        Result := noErr;
+      end
     end; // kEventAccessibleGetNamedAttribute
-(*    kEventAccessibleIsNamedAttributeSettable:
-    begin
-      if OSError(
-        GetEventParameter(AEvent, kEventParamAccessibleAttributeName,
-          typeCFStringRef, nil, SizeOf(CFStringRef), nil, @lInputStr),
-        SName, 'GetEventParameter') then Exit;
-
-      lInputPasStr := CFStringToStr(lInputStr);
-
-      if (lInputPasStr = 'AXFocused') then
-      begin
-        lOutputBool := TCustomControl(lLazControl).TabStop;
-        SetEventParameter(AEvent, kEventParamAccessibleAttributeSettable, typeBoolean,
-          SizeOf(Boolean), @lOutputBool);
-        Result := noErr;
-        Exit;
-      end;
-      // For all other attributes simply default for not settable
-      if (lInputPasStr = 'AXStringForRange') or
-         (lInputPasStr = 'AXNumberOfCharacters') or (lInputPasStr = 'AXChildren') or
-         (lInputPasStr = 'AXSelectedChildren') or (lInputPasStr = 'AXVisibleChildren') or
-         (lInputPasStr = 'AXPosition') or (lInputPasStr = 'AXSize') or
-         (lInputPasStr = 'AXParent') or (lInputPasStr = 'AXTopLevelUIElement') or
-         (lInputPasStr = 'AXWindow') or (lInputPasStr = 'AXOrientation') or
-         (lInputPasStr = 'AXValue') or (lInputPasStr = 'AXEnabled') then
-      begin
-        lOutputBool := False;
-        SetEventParameter(AEvent, kEventParamAccessibleAttributeSettable, typeBoolean,
-          SizeOf(Boolean), @lOutputBool);
-        Result := noErr;
-      end;
-    end; // kEventAccessibleIsNamedAttributeSettable*)
   end; // case EventKind of
 end;
 
