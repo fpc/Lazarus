@@ -2586,25 +2586,34 @@ function GetDefaultCompilerFilename(const TargetCPU: string;
   Cross: boolean): string;
 begin
   if Cross then
+    {$ifdef darwin}
+    Result:='ppc' // the mach-o format supports "fat" binaries whereby
+                  // a single executable contains machine code for several architectures
+    {$else}
     Result:='ppccross'
+    {$endif}
   else
     Result:='ppc';
   if TargetCPU='' then
     Result:='fpc'
   else if SysUtils.CompareText(TargetCPU,'i386')=0 then
     Result:=Result+'386'
-  else if SysUtils.CompareText(TargetCPU,'powerpc')=0 then
-    Result:=Result+'ppc'
-  else if SysUtils.CompareText(TargetCPU,'sparc')=0 then
-    Result:=Result+'sparc'
   else if SysUtils.CompareText(TargetCPU,'m68k')=0 then
     Result:=Result+'86k'
   else if SysUtils.CompareText(TargetCPU,'alpha')=0 then
-    Result:=Result+'alpha'
-  else if SysUtils.CompareText(TargetCPU,'x86_64')=0 then
-    Result:=Result+'x64'
+    Result:=Result+'apx'
+  else if SysUtils.CompareText(TargetCPU,'powerpc')=0 then
+    Result:=Result+'ppc'
+  else if SysUtils.CompareText(TargetCPU,'powerpc64')=0 then
+    Result:=Result+'ppc64'
   else if SysUtils.CompareText(TargetCPU,'arm')=0 then
     Result:=Result+'arm'
+  else if SysUtils.CompareText(TargetCPU,'sparc')=0 then
+    Result:=Result+'sparc'
+  else if SysUtils.CompareText(TargetCPU,'x86_64')=0 then
+    Result:=Result+'x64'
+  else if SysUtils.CompareText(TargetCPU,'ia64')=0 then
+    Result:=Result+'ia64'
   else
     Result:='fpc';
   Result:=Result+ExeExt;
@@ -7212,25 +7221,34 @@ end;
 
 function TFPCTargetConfigCache.FindRealCompilerInPath(aTargetCPU: string;
   ResolveLinks: boolean): string;
-var
-  ShortFileName: String;
-begin
-  Result:='';
-  if aTargetCPU='' then
-    aTargetCPU:=GetCompiledTargetCPU;
-  ShortFileName:=GetDefaultCompilerFilename(aTargetCPU);
-  if ShortFileName='' then exit;
-  // try in PATH
-  Result:=SearchFileInPath(ShortFileName,GetCurrentDirUTF8,
-    GetEnvironmentVariableUTF8('PATH'),PathSeparator,ctsfcDefault);
-  if (Result='') and (Compiler<>'') then
+
+  function Search(const ShortFileName: string): string;
   begin
+    if ShortFileName='' then Result:='';
+    // try in PATH
+    Result:=SearchFileInPath(ShortFileName,GetCurrentDirUTF8,
+      GetEnvironmentVariableUTF8('PATH'),PathSeparator,ctsfcDefault);
+    if (Result<>'') or (Compiler='') then exit;
     // try in directory of compiler
     Result:=ExtractFilePath(Compiler)+ShortFileName;
     if not FileExistsCached(Result) then
       Result:='';
   end;
-  if Result='' then exit;
+
+var
+  CompiledTargetCPU: String;
+  Cross: Boolean;
+begin
+  Result:='';
+  CompiledTargetCPU:=GetCompiledTargetCPU;
+  if aTargetCPU='' then
+    aTargetCPU:=CompiledTargetCPU;
+  Cross:=aTargetCPU<>CompiledTargetCPU;
+  Result:=Search(GetDefaultCompilerFilename(aTargetCPU,Cross));
+  if (Result='') and Cross then begin
+    Result:=Search(GetDefaultCompilerFilename(aTargetCPU,false));
+    if Result='' then exit;
+  end;
   if ResolveLinks then
     Result:=TryReadAllLinks(Result);
 end;
