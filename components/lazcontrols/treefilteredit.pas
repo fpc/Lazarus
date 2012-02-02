@@ -40,7 +40,6 @@ type
     constructor Create(AOwner: TTreeFilterEdit; ARootNode: TTreeNode);
     destructor Destroy; override;
     procedure AddNodeData(ANodeText: string; AData: TObject; AFullFilename: string = '');
-    procedure CleanUp;
   end;
 
   TBranchList = specialize TFPGObjectList<TTreeFilterBranch>;
@@ -134,13 +133,6 @@ begin
   fOriginalData.AddObject(ANodeText, AData);
   if AFullFilename <> '' then
     fFilenameMap[ANodeText]:=AFullFilename;
-end;
-
-procedure TTreeFilterBranch.CleanUp;
-// Will be called at the end.
-begin
-  FreeTVNodeData(fRootNode);
-  fRootNode := nil;
 end;
 
 function TTreeFilterBranch.CompareFNs(AFilename1,AFilename2: string): integer;
@@ -388,14 +380,11 @@ end;
 procedure TTreeFilterEdit.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) then
+  if (Operation=opRemove) and (FilteredTreeview=AComponent) then
   begin
-    if FilteredTreeview=AComponent then
-    begin
-      fFilteredTreeview.RemoveHandlerOnBeforeDestruction(@OnBeforeTreeDestroy);
-      fFilteredTreeview:=nil;
-      FreeAndNil(fBranches);
-    end;
+    fFilteredTreeview.RemoveHandlerOnBeforeDestruction(@OnBeforeTreeDestroy);
+    fFilteredTreeview:=nil;
+    FreeAndNil(fBranches);
   end;
 end;
 
