@@ -76,6 +76,8 @@ type
     ctsfcLoUpCase, // also search for lower and upper case
     ctsfcAllCase   // search case insensitive
     );
+  TCTFileAgeTime = longint;
+  PCTFileAgeTime = ^TCTFileAgeTime;
 
 function CompareFilenames(const Filename1, Filename2: string): integer; inline;
 function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer; inline;
@@ -130,6 +132,7 @@ function SetCurrentDirUTF8(const NewDir: String): Boolean; inline;
 function CreateDirUTF8(const NewDir: String): Boolean; inline;
 function RemoveDirUTF8(const Dir: String): Boolean; inline;
 function ForceDirectoriesUTF8(const Dir: string): Boolean; inline;
+function FileDateToDateTimeDef(aFileDate: TCTFileAgeTime; const Default: TDateTime): TDateTime;
 
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 function GetTempFilename(const Path, Prefix: string): string;
@@ -644,6 +647,16 @@ end;
 function ForceDirectoriesUTF8(const Dir: string): Boolean;
 begin
   Result:=LazFileUtils.ForceDirectoriesUTF8(Dir);
+end;
+
+function FileDateToDateTimeDef(aFileDate: TCTFileAgeTime; const Default: TDateTime
+  ): TDateTime;
+begin
+  try
+    Result:=FileDateToDateTime(aFileDate);
+  except
+    Result:=Default;
+  end;
 end;
 
 {-------------------------------------------------------------------------------

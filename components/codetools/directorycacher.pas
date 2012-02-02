@@ -103,15 +103,13 @@ type
     FileTimeStamp: integer;
   end;
 
-  TCTDirectoryListingTime = longint;
-  PCTDirectoryListingTime = ^TCTDirectoryListingTime;
   TCTDirectoryListingAttr = longint;
   PCTDirectoryListingAttr = ^TCTDirectoryListingAttr;
   TCTDirectoryListingSize = int64;
   PCTDirectoryListingSize = ^TCTDirectoryListingSize;
 
   TCTDirectoryListingHeader = packed record
-    Time: TCTDirectoryListingTime;
+    Time: TCTFileAgeTime;
     Attr: TCTDirectoryListingAttr;
     Size: TCTDirectoryListingSize;
   end;
@@ -131,7 +129,7 @@ type
     procedure Clear;
     function CalcMemSize: PtrUInt;
     function GetFilename(Index: integer): PChar;
-    function GetTime(Index: integer): TCTDirectoryListingTime;
+    function GetTime(Index: integer): TCTFileAgeTime;
     function GetAttr(Index: integer): TCTDirectoryListingAttr;
     function GetSize(Index: integer): TCTDirectoryListingSize;
   end;
@@ -174,7 +172,7 @@ type
     function FindCompiledUnitInUnitSet(const AUnitName: string): string;
     function FindFile(const ShortFilename: string;
                       const FileCase: TCTSearchFileCase): string;
-    function FileAge(const ShortFilename: string): TCTDirectoryListingTime;
+    function FileAge(const ShortFilename: string): TCTFileAgeTime;
     function FileAttr(const ShortFilename: string): TCTDirectoryListingAttr;
     function FileSize(const ShortFilename: string): TCTDirectoryListingSize;
     function FindUnitSource(const AUnitName: string; AnyCase: boolean): string;
@@ -235,7 +233,7 @@ type
     procedure IncreaseFileTimeStamp; inline;
     procedure IncreaseConfigTimeStamp; inline;
     function FileExists(Filename: string): boolean;
-    function FileAge(Filename: string): TCTDirectoryListingTime;
+    function FileAge(Filename: string): TCTFileAgeTime;
     function FileAttr(Filename: string): TCTDirectoryListingAttr;
     function FileSize(Filename: string): TCTDirectoryListingSize;
     function FindUnitInUnitLinks(const Directory, AUnitName: string): string;
@@ -930,7 +928,7 @@ begin
 end;
 
 function TCTDirectoryCache.FileAge(const ShortFilename: string
-  ): TCTDirectoryListingTime;
+  ): TCTFileAgeTime;
 var
   i: Integer;
 begin
@@ -1472,7 +1470,7 @@ begin
 end;
 
 function TCTDirectoryCachePool.FileAge(Filename: string
-  ): TCTDirectoryListingTime;
+  ): TCTFileAgeTime;
 var
   Directory: String;
   Cache: TCTDirectoryCache;
@@ -1779,7 +1777,7 @@ begin
   Result:=@Files[Starts[Index]+NameOffset];
 end;
 
-function TCTDirectoryListing.GetTime(Index: integer): TCTDirectoryListingTime;
+function TCTDirectoryListing.GetTime(Index: integer): TCTFileAgeTime;
 
   procedure RaiseIndexOutOfBounds;
   begin
