@@ -927,6 +927,7 @@ end;
 procedure TPackageEditorForm.PackageEditorFormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
+  //debugln(['TPackageEditorForm.PackageEditorFormClose ',Caption]);
   if LazPackage=nil then exit;
 end;
 
@@ -935,19 +936,24 @@ procedure TPackageEditorForm.PackageEditorFormCloseQuery(Sender: TObject;
 var
   MsgResult: Integer;
 begin
-  if (LazPackage=nil) or (lpfDestroying in LazPackage.Flags)
-  or (LazPackage.ReadOnly) or (not LazPackage.Modified) then exit;
+  //debugln(['TPackageEditorForm.PackageEditorFormCloseQuery ',Caption]);
+  if (LazPackage<>nil) and (not (lpfDestroying in LazPackage.Flags))
+  and (not LazPackage.ReadOnly) and LazPackage.Modified then begin
 
-  MsgResult:=MessageDlg(lisPkgMangSavePackage,
-    Format(lisPckEditPackageHasChangedSavePackage,['"',LazPackage.IDAsString,'"',#13]),
-    mtConfirmation,[mbYes,mbNo,mbAbort],0);
-  case MsgResult of
-    mrYes:
-      MsgResult:=PackageEditors.SavePackage(LazPackage,false);
-    mrNo:
-      LazPackage.UserIgnoreChangeStamp:=LazPackage.ChangeStamp;
+    MsgResult:=MessageDlg(lisPkgMangSavePackage,
+      Format(lisPckEditPackageHasChangedSavePackage,['"',LazPackage.IDAsString,'"',#13]),
+      mtConfirmation,[mbYes,mbNo,mbAbort],0);
+    case MsgResult of
+      mrYes:
+        MsgResult:=PackageEditors.SavePackage(LazPackage,false);
+      mrNo:
+        LazPackage.UserIgnoreChangeStamp:=LazPackage.ChangeStamp;
+    end;
+    if MsgResult=mrAbort then CanClose:=false;
   end;
-  if MsgResult=mrAbort then CanClose:=false;
+  //debugln(['TPackageEditorForm.PackageEditorFormCloseQuery CanClose=',CanClose,' ',Caption]);
+  if CanClose then
+    Application.ReleaseComponent(Self);
 end;
 
 procedure TPackageEditorForm.RegisteredListBoxDrawItem(Control: TWinControl;

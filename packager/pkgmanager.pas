@@ -4598,9 +4598,8 @@ end;
 
 function TPkgManager.DoClosePackageEditor(APackage: TLazPackage): TModalResult;
 begin
-  if APackage.Editor<>nil then begin
+  if APackage.Editor<>nil then
     APackage.Editor.Free;
-  end;
   Result:=mrOk;
 end;
 

@@ -703,6 +703,7 @@ type
     function GetUnitPath(RelativeToBaseDir: boolean): string;
     function GetIncludePath(RelativeToBaseDir: boolean): string;
     function GetSrcPath(RelativeToBaseDir: boolean): string;
+    function GetFPDocPackageName: string;
     function GetLastCompilerParams(o: TPkgOutputDir): string;
     function NeedsDefineTemplates: boolean;
     function SubstitutePkgMacros(const s: string;
@@ -772,8 +773,6 @@ type
     function ProvidesPackage(const AName: string): boolean;
     // ID
     procedure ChangeID(const NewName: string; NewVersion: TPkgVersion);
-
-    function GetFPDocPackageName: string;
   public
     LastCompile: array[TPkgOutputDir] of TPkgLastCompileStats;
     function GetOutputDirType: TPkgOutputDir;

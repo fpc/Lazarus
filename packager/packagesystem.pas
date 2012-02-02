@@ -705,8 +705,10 @@ procedure TLazPackageGraph.Delete(Index: integer);
 var
   CurPkg: TLazPackage;
 begin
-  BeginUpdate(true);
   CurPkg:=Packages[Index];
+  if lpfDestroying in CurPkg.Flags then exit;
+
+  BeginUpdate(true);
   CurPkg.Flags:=CurPkg.Flags+[lpfDestroying];
   CurPkg.DefineTemplates.Active:=false;
 
@@ -3128,9 +3130,11 @@ var
 begin
   BeginUpdate(false);
   MarkNeededPackages;
-  for i:=FItems.Count-1 downto 0 do begin
-    if not (lpfNeeded in Packages[i].Flags) then Delete(i);
-  end;
+  for i:=FItems.Count-1 downto 0 do
+    if not (lpfNeeded in Packages[i].Flags) then begin
+      debugln(['TLazPackageGraph.CloseUnneededPackages Pkg=',Packages[i].Name]);
+      Delete(i);
+    end;
   EndUpdate;
 end;
 
@@ -4865,16 +4869,26 @@ end;
 
 function TLazPackageGraph.PackageIsNeeded(APackage: TLazPackage): boolean;
 // check if package is currently in use (installed, autoinstall, editor open,
-// or used by a needed dependency)
+// or used by a project)
 // !!! it does not check if any needed package needs this package
+var
+  ADependency: TPkgDependency;
 begin
   Result:=true;
   // check if package is open, installed or will be installed
   if (APackage.Installed<>pitNope) or (APackage.AutoInstall<>pitNope)
-  or ((APackage.Editor<>nil) and (APackage.Editor.Visible))
+  or APackage.Modified
+  or (APackage.Editor<>nil)
   or (APackage.HoldPackageCount>0) then
   begin
     exit;
+  end;
+  // check if used by project
+  ADependency:=APackage.FirstUsedByDependency;
+  while ADependency<>nil do begin
+    if ADependency.Owner is TLazProject then
+      exit;
+    ADependency:=ADependency.NextUsedByDependency;
   end;
   Result:=false;
 end;
