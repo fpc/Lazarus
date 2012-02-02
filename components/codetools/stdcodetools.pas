@@ -1314,7 +1314,7 @@ var
 begin
   MainUsesSection:=nil;
   // find the uses sections
-  BuildTree(lsrImplementationUsesSectionEnd);
+  BuildTree(lsrMainUsesSectionEnd);
   MainUsesNode:=FindMainUsesSection;
   // create lists
   try
