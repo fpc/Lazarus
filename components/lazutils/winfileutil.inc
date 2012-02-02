@@ -91,7 +91,7 @@ begin
   Result:=rsModified;
   try
     Result:=Result+FormatDateTime('DD/MM/YYYY hh:mm',
-                           FileDateToDateTimeDef(FileAgeUTF8(AFilename)));
+                           FileDateToDateTime(FileAgeUTF8(AFilename)));
   except
     Result:=Result+'?';
   end;
