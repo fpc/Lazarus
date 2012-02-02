@@ -2090,8 +2090,8 @@ begin
     vtAnsiString: Result:=Result+AnsiString(Args[i].VAnsiString);
     vtChar: Result:=Result+Args[i].VChar;
     vtPChar: Result:=Result+Args[i].VPChar;
-    vtPWideChar: Result:=Result+UTF8Encode(Args[i].VPWideChar^);
-    vtWideChar: Result:=Result+UTF8Encode(Args[i].VWideChar);
+    vtPWideChar: Result:=Result+UnicodeToUTF8(ord(Args[i].VPWideChar^));
+    vtWideChar: Result:=Result+UnicodeToUTF8(ord(Args[i].VWideChar));
     vtWidestring: Result:=Result+UTF8Encode(WideString(Args[i].VWideString));
     vtObject: Result:=Result+DbgSName(Args[i].VObject);
     vtClass: Result:=Result+DbgSName(Args[i].VClass);
