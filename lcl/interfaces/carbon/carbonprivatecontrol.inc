@@ -356,6 +356,43 @@ begin
         CFArrayAppendValue(lInputMutableArray, lOutputStr);
         lOutputStr := CFSTR('AXStyleRangeForIndex');
         CFArrayAppendValue(lInputMutableArray, lOutputStr);
+      end
+      else if lLazAXRole = larTextEditorMultiline then
+      begin
+        lOutputStr := CFSTR('AXAttributedStringForRange');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXBoundsForRange');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXInsertionPointLineNumber');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXLineForIndex');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXNumberOfCharacters');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXRangeForIndex');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXRangeForLine');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXRangeForPosition');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXRTFForRange');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXSelectedText');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXSelectedTextRange');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXSelectedTextRanges');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXSharedCharacterRange');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXSharedTextUIElements');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXStringForRange');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXStyleRangeForIndex');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        lOutputStr := CFSTR('AXVisibleCharacterRange');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
       end;
     end;// kEventAccessibleGetAllParameterizedAttributeNames
     kEventAccessibleGetNamedAttribute:
