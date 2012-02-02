@@ -20,9 +20,11 @@
 {
 ToDos:
 Examples:
+- helpcontext
 - predefined identifiers: cardinal, longint
 - predefined procs: exit, break, continue, writeln
 - help for sources
+- HTML help - showing an URL
 - IDE dialogs / wiki:
 - custom dialogs / wiki:
 - fpc compiler options:
@@ -43,16 +45,20 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
-  LazHelpHTML, LazHelpIntf, HelpIntfs, IDEHelpIntf, IDEDialogs;
+  LazHelpIntf, HelpIntfs, IDEHelpIntf, IDEDialogs, IDEOptionsIntf;
 
+const
+  MyHelpOptionID: integer = 10000; // an arbitrary number, choose a big number
+                     // to append your options frame as last / below the others
 type
-
   { TMyFPCKeywordHelpDatabase
-    Help for FPC keywords like 'procedure'
-    Notes: Do not forget to register!
-           You can combine all databases into one. }
+    Help for FPC keywords like 'procedure'.
+    Actually FPC keywords are a special case. Any LCL TControl can set its
+    HelpKeyword property and invoke keyword help.
+    Notes: Do not forget to register this using HelpDatabases.CreateHelpDatabase!
+           You can combine all your databases into one. }
 
-  TMyFPCKeywordHelpDatabase = class(THTMLHelpDatabase)
+  TMyFPCKeywordHelpDatabase = class(THelpDatabase)
   private
     FAllKeywordNode: THelpNode;
   public
@@ -66,12 +72,16 @@ type
                       {%H-}QueryItem: THelpQueryItem;
                       var {%H-}ErrMsg: string): TShowHelpResult; override;
   end;
+var
+  MyFPCKeywordHelpDatabase: TMyFPCKeywordHelpDatabase;
 
+type
   { TMyDirectiveHelpDatabase
     Help for FPC and Lazarus IDE directives like '$mode' and '%H'
-    Notes: Do not forget to register }
+    Notes: Do not forget to register this using HelpDatabases.CreateHelpDatabase!
+           You can combine all your databases into one. }
 
-  TMyDirectiveHelpDatabase = class(THTMLHelpDatabase)
+  TMyDirectiveHelpDatabase = class(THelpDatabase)
   private
     FAllDirectiveNode: THelpNode;
   public
@@ -86,15 +96,19 @@ type
                       {%H-}QueryItem: THelpQueryItem;
                       var {%H-}ErrMsg: string): TShowHelpResult; override;
   end;
+var
+  MyDirectiveHelpDatabase: TMyDirectiveHelpDatabase;
 
-  { TMyMessagesHelpDatabase }
+type
+  { TMyMessagesHelpDatabase
+    Help for messages, for example compiler messages like 'identifier not found'.
+    Notes: Do not forget to register this using HelpDatabases.CreateHelpDatabase!
+           You can combine all your databases into one. }
 
-  TMyMessagesHelpDatabase = class(THTMLHelpDatabase)
+  TMyMessagesHelpDatabase = class(THelpDatabase)
   private
     FAllMessageNode: THelpNode;
   public
-    constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; override;
     function GetNodesForMessage(const AMessage: string; MessageParts: TStrings;
                         var ListOfNodes: THelpNodeQueryList; var ErrMsg: string
                         ): TShowHelpResult; override;
@@ -102,17 +116,48 @@ type
                       {%H-}QueryItem: THelpQueryItem;
                       var {%H-}ErrMsg: string): TShowHelpResult; override;
   end;
+var
+  MyMessagesHelpDatabase: TMyMessagesHelpDatabase;
 
+type
+  { TMyContextHelpDatabase
+    Help HelpContext numbers. The IDE does not use this kind itself, because
+    there is a risk that two packages have overlapping numbers.
+    This help type is useful for your own applications, because a simple number
+    is used to identify help and any LCL TControl can set its HelpContext
+    property.
+    Notes: Do not forget to register this using HelpDatabases.CreateHelpDatabase!
+           You can combine all your databases into one. }
 
+  TMyContextHelpDatabase = class(THelpDatabase)
+  private
+    FAllContextNode: THelpNode;
+  public
+    ContextToMessage: TStrings;  // every line has the format: DecimalNumber=Text
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    function GetNodesForContext(HelpContext: THelpContext;
+                         var ListOfNodes: THelpNodeQueryList; var ErrMsg: string
+                         ): TShowHelpResult; override;
+    function ShowHelp(Query: THelpQuery; {%H-}BaseNode, {%H-}NewNode: THelpNode;
+                      {%H-}QueryItem: THelpQueryItem;
+                      var {%H-}ErrMsg: string): TShowHelpResult; override;
+  end;
+var
+  MyContextHelpDatabase: TMyContextHelpDatabase;
+
+type
   { TMyHelpSetupDialog }
 
-  TMyHelpSetupDialog = class(TForm)
+  TMyHelpSetupDialog = class(TAbstractIDEOptionsEditor)
   private
   public
+    function GetTitle: String; override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
   end;
-
-var
-  MyHelpSetupDialog: TMyHelpSetupDialog;
 
 procedure Register;
 
@@ -120,22 +165,112 @@ implementation
 
 procedure Register;
 begin
-  HelpDatabases.CreateHelpDatabase('MyFPCKeyWordHelpDB',TMyFPCKeywordHelpDatabase,true);
-  HelpDatabases.CreateHelpDatabase('MyFPCDirectiveHelpDB',TMyDirectiveHelpDatabase,true);
-  HelpDatabases.CreateHelpDatabase('MyFPCMessagesHelpDB',TMyMessagesHelpDatabase,true);
+  // register help databases
+  // For demonstration purpose one help database per help type
+  // Normally you would combine them into one or a few.
+  MyFPCKeywordHelpDatabase:=TMyFPCKeywordHelpDatabase(
+    HelpDatabases.CreateHelpDatabase('MyFPCKeyWordHelpDB',TMyFPCKeywordHelpDatabase,true));
+  MyDirectiveHelpDatabase:=TMyDirectiveHelpDatabase(
+    HelpDatabases.CreateHelpDatabase('MyDirectiveHelpDB',TMyDirectiveHelpDatabase,true));
+  MyMessagesHelpDatabase:=TMyMessagesHelpDatabase(
+    HelpDatabases.CreateHelpDatabase('MyMessagesHelpDB',TMyMessagesHelpDatabase,true));
+  MyContextHelpDatabase:=TMyContextHelpDatabase(
+    HelpDatabases.CreateHelpDatabase('MyContextHelpDB',TMyContextHelpDatabase,true));
+
+  // register frame in the IDE options to setup "My IDE help"
+  MyHelpOptionID:=RegisterIDEOptionsEditor(GroupHelp,TMyHelpSetupDialog,MyHelpOptionID)^.Index;
+end;
+
+{ TMyHelpSetupDialog }
+
+function TMyHelpSetupDialog.GetTitle: String;
+begin
+  Result:='My IDE Help';
+end;
+
+procedure TMyHelpSetupDialog.ReadSettings(AOptions: TAbstractIDEOptions);
+begin
+
+end;
+
+procedure TMyHelpSetupDialog.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+
+end;
+
+class function TMyHelpSetupDialog.
+  SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  // show whenever help options are shown
+  Result:=TAbstractIDEHelpOptions;
+end;
+
+procedure TMyHelpSetupDialog.WriteSettings(AOptions: TAbstractIDEOptions);
+begin
+
+end;
+
+{ TMyContextHelpDatabase }
+
+constructor TMyContextHelpDatabase.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  ContextToMessage:=TStringList.Create;
+  ContextToMessage.Add('3456=A help text for helpcontext 3456');
+end;
+
+destructor TMyContextHelpDatabase.Destroy;
+begin
+  FreeAndNil(ContextToMessage);
+  inherited Destroy;
+end;
+
+function TMyContextHelpDatabase.GetNodesForContext(HelpContext: THelpContext;
+  var ListOfNodes: THelpNodeQueryList; var ErrMsg: string): TShowHelpResult;
+var
+  Msg: String;
+  Title: String;
+begin
+  ErrMsg:='';
+  Result:=shrHelpNotFound;
+  if (csDesigning in ComponentState) then exit;
+
+  Msg:=ContextToMessage.Values[IntToStr(HelpContext)];
+  if Msg='' then exit;
+
+  // this help database knows this context
+  Title:='Help for context';
+  // => add a node, so that if there are several possibilities the IDE can
+  //    show the user a dialog to choose
+  if FAllContextNode=nil then
+    FAllContextNode:=THelpNode.CreateURL(Self,'','');
+  FAllContextNode.Title:=Title;
+  CreateNodeQueryListAndAdd(FAllContextNode,nil,ListOfNodes,true);
+  Result:=shrSuccess;
+end;
+
+function TMyContextHelpDatabase.ShowHelp(Query: THelpQuery; BaseNode,
+  NewNode: THelpNode; QueryItem: THelpQueryItem; var ErrMsg: string
+  ): TShowHelpResult;
+var
+  Context: THelpQueryContext;
+  Msg: String;
+begin
+  ErrMsg:='';
+  Result:=shrHelpNotFound;
+  if not (Query is THelpQueryContext) then exit;
+  Context:=THelpQueryContext(Query);
+  debugln(['TMyContextHelpDatabase.ShowHelp Context="',Context.Context]);
+
+  Msg:=ContextToMessage.Values[IntToStr(Context.Context)];
+
+  IDEMessageDialog('My context help',
+    'The context "'+IntToStr(Context.Context)+'":'#13#13
+    +Msg,mtInformation,[mbOk]);
+  Result:=shrSuccess;
 end;
 
 { TMyMessagesHelpDatabase }
-
-constructor TMyMessagesHelpDatabase.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-end;
-
-destructor TMyMessagesHelpDatabase.Destroy;
-begin
-  inherited Destroy;
-end;
 
 function TMyMessagesHelpDatabase.GetNodesForMessage(const AMessage: string;
   MessageParts: TStrings; var ListOfNodes: THelpNodeQueryList;
@@ -151,8 +286,8 @@ begin
   // check if the message fits
   if MessageParts=nil then exit;
   if MessageParts.Values['Message']<>'User defined: Test' then exit;
-  // this help database knows this message
 
+  // this help database knows this message
   Title:='Help for message';
   // => add a node, so that if there are several possibilities the IDE can
   //    show the user a dialog to choose
@@ -340,4 +475,5 @@ end;
 {$R *.lfm}
 
 end.
+
 

@@ -46,8 +46,8 @@ uses
   PropEdits, PropEditUtils, ObjectInspector, IDECommands, FormEditingIntf,
   // IDE
   LazarusIDEStrConsts, ControlSelection, Project, JITForms, MainIntf,
-  CustomNonFormDesigner, NonControlDesigner, FrameDesigner,
-  ComponentReg, IDEProcs, ComponentEditors, KeyMapping, EditorOptions,
+  CustomNonFormDesigner, NonControlDesigner, FrameDesigner, ComponentReg,
+  IDEProcs, ComponentEditors, IDEOptionsIntf, KeyMapping, EditorOptions,
   EnvironmentOpts, DesignerProcs;
 
 const
@@ -407,6 +407,8 @@ begin
   DesignerMenuItemClick:=@OnDesignerMenuItemClick;
   OnGetDesignerForm:=@GetDesignerForm;
   FormEditingHook:=Self;
+
+  RegisterDesignerBaseClass(TAbstractIDEOptionsEditor);
 end;
 
 destructor TCustomFormEditor.Destroy;

@@ -1,8 +1,9 @@
 object MyHelpSetupDialog: TMyHelpSetupDialog
-  Left = 250
-  Height = 466
-  Top = 250
-  Width = 557
-  Caption = 'MyHelpSetupDialog'
-  LCLVersion = '0.9.31'
+  Height = 384
+  Width = 581
+  ClientHeight = 384
+  ClientWidth = 581
+  TabOrder = 0
+  DesignLeft = 358
+  DesignTop = 166
 end
