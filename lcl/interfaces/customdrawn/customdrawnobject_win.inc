@@ -47,8 +47,10 @@ begin
   if Result then
   begin
     WindowClass.style := WindowClass.style or CS_SAVEBITS;
+    {$ifndef WinCE}
     if WindowsVersion >= wvXP then
       WindowClass.style := WindowClass.style or CS_DROPSHADOW;
+    {$endif}
     WindowClass.hIcon := 0;
     WindowClass.hbrBackground := 0;
     WindowClass.LPSzClassName := @ClsHintName;
@@ -72,12 +74,15 @@ begin
   {$ifdef VerboseCDForms}
   DebugLn(Format('[TCDWidgetSet.CreateAppHandle] FAppHandle=%x', [PtrInt(FAppHandle)]));
   {$endif}
+
+  {$ifndef WinCE}
 //  AllocWindowInfo(FAppHandle);
   // remove useless menuitems from sysmenu
   SysMenu := Windows.GetSystemMenu(FAppHandle, False);
   Windows.DeleteMenu(SysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
   Windows.DeleteMenu(SysMenu, SC_SIZE, MF_BYCOMMAND);
   Windows.DeleteMenu(SysMenu, SC_MOVE, MF_BYCOMMAND);
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------

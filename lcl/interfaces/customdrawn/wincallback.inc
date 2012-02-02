@@ -830,6 +830,7 @@ begin
     end;
     WM_CONTEXTMENU:
     begin
+      {$ifndef WinCE}
       WinProcess := false;
       NotifyUserInput := True;
       PLMsg := @LMContextMenu;
@@ -841,6 +842,7 @@ begin
         hWnd := Window;
         Result := 0;
       end;
+      {$endif}
     end;
     WM_SETCURSOR:
     begin
@@ -954,11 +956,11 @@ begin
     begin
       // Implements back-key sending to edits, instead of hiding the form
       // See http://bugs.freepascal.org/view.php?id=16699
-      if HIWORD(lParam) = VK_ESCAPE then
+      {if HIWORD(lParam) = VK_ESCAPE then
       begin
         SHSendBackToFocusWindow(Msg, wParam, lParam);
         Exit;
-      end;
+      end;}
     end;
     {$endif}
   else
@@ -991,6 +993,7 @@ begin
   case Msg of
     WM_MOVE:
     begin
+      {$ifndef WinCE}
       PLMsg:=@LMMove;
       with LMMove Do
       begin
@@ -1036,6 +1039,7 @@ begin
             Exit;
         end;
       end;
+      {$endif}
     end;
     WM_SIZE:
     begin

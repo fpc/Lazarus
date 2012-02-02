@@ -2153,7 +2153,11 @@ begin
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
   // TODO: use the real number of chars (and not the length)
   w := UTF8ToUTF16(S);
+  {$ifdef WinCE}
+  Result := Windows.GetTextExtentPoint32W(WinDC, PWideChar(W), Length(W), Size);
+  {$else}
   Result := Windows.GetTextExtentPoint32W(WinDC, PWideChar(W), Length(W), @Size);
+  {$endif}
 
   Windows.ReleaseDC(0, WinDC);
   Result := True;
@@ -2260,10 +2264,11 @@ begin
   lHandle := lWindowInfo.NativeHandle;
 
   WindowPlacement.length := SizeOf(WindowPlacement);
+  {$ifndef WinCE}
   if Windows.IsIconic(lHandle) and Windows.GetWindowPlacement(lHandle, @WindowPlacement) then
     R := WindowPlacement.rcNormalPosition
-  else
-  if not Windows.GetWindowRect(lHandle, @R) then Exit;
+  else{$endif}
+    if not Windows.GetWindowRect(lHandle, @R) then Exit;
 
   LeftTop.X := R.Left;
   LeftTop.Y := R.Top;
@@ -2290,7 +2295,11 @@ end;
   Returns: true on success
 
   Returns the current widget Width and Height
- ------------------------------------------------------------------------------}
+
+  Note: Windows.GetWindowInfo doesnt exist in wince, but
+  we can use GetWindowLong and other APIs for most information
+  Also GetWindowPlacement doesnt exist
+  ------------------------------------------------------------------------------}
 function TCDWidgetSet.BackendGetWindowSize(Handle : hwnd;
   var Width, Height: integer): boolean;
 var
@@ -2319,8 +2328,13 @@ begin
     DebugLn(Format(':[TCDWidgetSet.GetWindowSize] lWindowInfo.LCLForm.Name=%s', [lWindowInfo.LCLForm.Name]));
   {$endif}
 
+  {$ifdef WinCE}
+  Result := Boolean(Windows.GetWindowRect(Handle, R));
+  WP.showCmd := 0;
+  {$else}
   WP.length := SizeOf(WP);
   Result := Boolean(Windows.GetWindowPlacement(lHandle, WP));
+  {$endif}
 
   if not Result then
   begin
@@ -2340,6 +2354,7 @@ begin
     Exit;
   end;
 
+  {$ifndef WinCE}
   // if it is a top level window then you can't use the normal size:
   // maximized or aero snap windows will have problems
   if (GetWindowLong(lHandle, GWL_STYLE) and WS_CHILD = 0) then
@@ -2392,6 +2407,7 @@ begin
   end;
 
   ExcludeCaption;
+  {$endif}
 
   {$ifdef VerboseCDWinAPI}
   DebugLn(Format(':<[TCDWidgetSet.GetWindowSize] Width=%d Height=%d', [Width, Height]));

@@ -131,12 +131,20 @@ type
     StayOnTopList: TList;
   end;
 
-  TWinCEVersion = (wince_1, wince_2, wince_3, wince_4,
-   wince_5, wince_6, wince_6_1, wince_6_5, wince_7,
-   wince_other);
-
   TWindowsVersion = (
     wvUnknown,
+    //
+    wince_1,
+    wince_2,
+    wince_3,
+    wince_4,
+    wince_5,
+    wince_6,
+    wince_6_1,
+    wince_6_5,
+    wince_7,
+    wince_other,
+    //
     wv95,
     wvNT4,
     wv98,
@@ -148,6 +156,7 @@ type
     wvVista,
     //wvServer2008,    // has the same major/minor as wvVista
     wv7,
+    wv8,
     wvLater
   );
 
@@ -162,7 +171,9 @@ procedure FillRawImageDescription(const ABitmapInfo: Windows.TBitmap; out ADesc:
 function WinProc_RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; ARect: PRect = nil): Boolean;
 function WinProc_RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
 
+{$ifndef WinCE}
 function GetBitmapOrder(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP):TRawImageLineOrder;
+{$endif}
 function GetBitmapBytes(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; ALineOrder: TRawImageLineOrder; out AData: Pointer; out ADataSize: PtrUInt): Boolean;
 function IsAlphaBitmap(ABitmap: HBITMAP): Boolean;
 function IsAlphaDC(ADC: HDC): Boolean;
@@ -202,7 +213,6 @@ function WideStrCmp(W1, W2: PWideChar): Integer;
 
 { Automatic detection of platform }
 function GetWinCEPlatform: TApplicationType;
-function GetWinCEVersion: TWinCEVersion;
 function IsHiResMode: Boolean;
 procedure UpdateWindowsVersion;
 
@@ -219,6 +229,8 @@ const
   ClsHintName: array[0..10] of WideChar = ('H', 'i', 'n', 't', 'W', 'i', 'n', 'd', 'o', 'w', #0);
 
 implementation
+
+uses customdrawnint;
 
 var
   InRemoveStayOnTopFlags: Integer = 0;
@@ -700,6 +712,45 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
+{$ifdef WinCE}
+function WinProc_RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
+var
+  ADesc: TRawImageDescription absolute ARawImage.Description;
+  DC: HDC;
+  BitsPtr: Pointer;
+  DataSize: PtrUInt;
+begin
+  Result := False;
+  AMask := 0;
+
+  if not ((ADesc.BitsPerPixel = 1) and (ADesc.LineEnd = rileWordBoundary)) then
+  begin
+    DC := Windows.GetDC(0);
+    AMask := 0;
+    ABitmap := CreateDIBSectionFromDescription(DC, ADesc, BitsPtr);
+    //DbgDumpBitmap(ABitmap, 'CreateBitmaps - Image');
+    Windows.ReleaseDC(0, DC);
+
+    Result := ABitmap <> 0;
+    if not Result then Exit;
+    if BitsPtr = nil then Exit;
+
+    // copy the image data
+    DataSize := BytesPerLine(ADesc.Width, ADesc.BitsPerPixel) * ADesc.Height;
+    if DataSize > ARawImage.DataSize
+    then DataSize := ARawImage.DataSize;
+    Move(ARawImage.Data^, BitsPtr^, DataSize);
+  end
+  else
+    ABitmap := Windows.CreateBitmap(ADesc.Width, ADesc.Height, 1, 1, ARawImage.Data);
+
+  if ASkipMask then Exit(True);
+
+  AMask := Windows.CreateBitmap(ADesc.Width, ADesc.Height, 1, 1, ARawImage.Mask);
+  //DbgDumpBitmap(ABitmap, 'CreateBitmaps - Mask');
+  Result := AMask <> 0;
+end;
+{$else}
 function WinProc_RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
 var
   ADesc: TRawImageDescription absolute ARawImage.Description;
@@ -839,6 +890,7 @@ begin
   Result := AMask <> 0;
   //DbgDumpBitmap(AMask, 'CreateBitmaps - Mask');
 end;
+{$endif}
 
 function CreateDIBSectionFromDescription(ADC: HDC; const ADesc: TRawImageDescription; out ABitsPtr: Pointer): HBITMAP;
   function GetMask(APrec, AShift: Byte): Cardinal;
@@ -919,6 +971,7 @@ begin
   DeleteDC(DstDC);
 end;
 
+{$ifndef Wince}
 function GetBitmapOrder(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP): TRawImageLineOrder;
   procedure DbgLog(const AFunc: String);
   begin
@@ -1007,7 +1060,43 @@ begin
   if FullScanLine
   then FreeMem(Scanline);
 end;
+{$endif}
 
+{$ifdef WinCE}
+//function GetBitmapBytes(ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; var AData: Pointer; var ADataSize: PtrUInt): Boolean;
+function GetBitmapBytes(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; ALineOrder: TRawImageLineOrder; out AData: Pointer; out ADataSize: PtrUInt): Boolean;
+var
+  Section: Windows.TDIBSection;
+  DIBCopy: HBitmap;
+  DIBData: Pointer;
+begin
+  Result := False;
+  // first try if the bitmap is created as section
+  if (Windows.GetObject(ABitmap, SizeOf(Section), @Section) > 0) and (Section.dsBm.bmBits <> nil)
+  then begin
+    with Section.dsBm do
+      Result := CopyImageData(bmWidth, bmHeight, bmWidthBytes, bmBitsPixel, bmBits, ARect, riloTopToBottom, riloTopToBottom, ALineEnd, AData, ADataSize);
+    Exit;
+  end;
+
+  // bitmap is not a section, retrieve only bitmap
+  if Windows.GetObject(ABitmap, SizeOf(Section.dsBm), @Section) = 0
+  then Exit;
+
+  DIBCopy := CreateDIBSectionFromDDB(ABitmap, DIBData);
+  if DIBCopy = 0 then
+    Exit;
+  if (Windows.GetObject(DIBCopy, SizeOf(Section), @Section) > 0) and (Section.dsBm.bmBits <> nil)
+  then begin
+    with Section.dsBm do
+      Result := CopyImageData(bmWidth, bmHeight, bmWidthBytes, bmBitsPixel, bmBits, ARect, riloTopToBottom, riloTopToBottom, ALineEnd, AData, ADataSize);
+  end;
+
+  DeleteObject(DIBCopy);
+
+  Result := True;
+end;
+{$else}
 function GetBitmapBytes(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; ALineOrder: TRawImageLineOrder; out AData: Pointer; out ADataSize: PtrUInt): Boolean;
 var
   DC: HDC;
@@ -1084,6 +1173,7 @@ begin
 
   FreeMem(SrcData);
 end;
+{$endif}
 
 function IsAlphaBitmap(ABitmap: HBITMAP): Boolean;
 var
@@ -1342,7 +1432,7 @@ begin
       {$ifdef WinCE}
       // Adds an "OK" close button to the title bar instead of the standard
       // "X" minimize button, unless the developer overrides that decision
-      case WinCEWidgetset.WinCETitlePolicy of
+      case CDWidgetSet.WinCETitlePolicy of
 
         tpAlwaysUseOKButton: Result := WS_EX_CAPTIONOKBTN;
 
@@ -1607,38 +1697,6 @@ begin
 end;
 {$endif}
 
-function GetWinCEVersion: TWinCEVersion;
-{$ifdef MSWindows}
-begin
-  Result := wince_other;
-end;
-{$else}
-var
-  versionInfo: OSVERSIONINFO;
-begin
-  Result := wince_other;
-
-  System.FillChar(versionInfo, sizeof(OSVERSIONINFO), #0);
-  versionInfo.dwOSVersionInfoSize := sizeof(OSVERSIONINFO);
-
-  if GetVersionEx(@versionInfo) then
-  begin
-    case versionInfo.dwMajorVersion of
-    1: Result := wince_1;
-    2: Result := Wince_2;
-    3: Result := Wince_3;
-    4: Result := Wince_4;
-    5:
-    begin
-      if versionInfo.dwMinorVersion = 2 then Result := Wince_6
-      else Result := Wince_5;
-    end;
-    6: Result := Wince_6;
-    end;
-  end;
-end;
-{$endif}
-
 function IsHiResMode: Boolean;
 begin
   {$ifdef MSWindows}
@@ -1677,6 +1735,32 @@ begin
 end;
 
 procedure UpdateWindowsVersion;
+{$ifdef WinCE}
+var
+  versionInfo: OSVERSIONINFO;
+begin
+  WindowsVersion := wince_other;
+
+  System.FillChar(versionInfo, sizeof(OSVERSIONINFO), #0);
+  versionInfo.dwOSVersionInfoSize := sizeof(OSVERSIONINFO);
+
+  if GetVersionEx(@versionInfo) then
+  begin
+    case versionInfo.dwMajorVersion of
+    1: WindowsVersion := wince_1;
+    2: WindowsVersion := Wince_2;
+    3: WindowsVersion := Wince_3;
+    4: WindowsVersion := Wince_4;
+    5:
+    begin
+      if versionInfo.dwMinorVersion = 2 then WindowsVersion := Wince_6
+      else WindowsVersion := Wince_5;
+    end;
+    6: WindowsVersion := Wince_6;
+    end;
+  end;
+end;
+{$else}
 begin
   case Win32MajorVersion of
     0..3:;
@@ -1713,6 +1797,7 @@ begin
     WindowsVersion := wvLater;
   end;
 end;
+{$endif}
 
 initialization
   DefaultWindowInfo := TWindowInfo.Create;

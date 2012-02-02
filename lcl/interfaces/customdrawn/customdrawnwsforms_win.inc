@@ -131,6 +131,7 @@ end;
 
 class procedure TCDWSCustomForm.WSWinControl_SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
+{$ifndef WinCE}
 var
   IntfLeft, IntfTop, IntfWidth, IntfHeight: integer;
   suppressMove: boolean;
@@ -168,6 +169,29 @@ begin
   end;
   LCLControlSizeNeedsUpdate(AWinControl, True);
 end;
+{$else}
+var
+  IntfLeft, IntfTop, IntfWidth, IntfHeight: integer;
+  suppressMove: boolean;
+begin
+  IntfLeft := ALeft; IntfTop := ATop;
+  IntfWidth := AWidth; IntfHeight := AHeight;
+  LCLBoundsToWin32Bounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight);
+  {$IFDEF VerboseSizeMsg}
+  Debugln('TWinCEWSWinControl.ResizeWindow A ',AWinControl.Name,':',AWinControl.ClassName,
+    ' LCL=',dbgs(ALeft),',',dbgs(ATop),',',dbgs(AWidth)+','+dbgs(AHeight),
+    ' Win32=',dbgs(IntfLeft)+','+dbgs(IntfTop)+','+dbgs(IntfWidth),',',dbgs(IntfHeight),
+    '');
+  {$ENDIF}
+  suppressMove := false;
+  AdaptBounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight, suppressMove);
+  // Some controls, like spins, may set suppressMove in AdaptBounds
+  if not suppressMove then
+    MoveWindow(AWinControl.Handle, IntfLeft, IntfTop, IntfWidth, IntfHeight, true);
+
+  LCLControlSizeNeedsUpdate(AWinControl, false);
+end;
+{$endif}
 
 class function TCDWSCustomForm.DoCreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
@@ -189,7 +213,6 @@ class function TCDWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   lForm: TCustomForm absolute AWinControl;
-  Bounds: TRect;
   SystemMenu: HMenu;
   // Create Params
   Parent, Window: HWND;
@@ -203,6 +226,138 @@ var
   //
   NCCreateParams: TNCCreateParams;
   AErrorCode: DWORD;
+  //
+  BorderStyle: TFormBorderStyle;
+  WR: Windows.RECT;
+  lWinBounds, lOldLCLBounds, lNewLCLBounds: TRect;
+{$ifdef WinCE}
+begin
+  {$ifdef VerboseWinCE}
+  DebugLn('TWinCEWSCustomForm.CreateHandle');
+  {$endif}
+  NCCreateParams.DefWndProc := nil;
+  NCCreateParams.WinControl := AWinControl;
+  NCCreateParams.Handled := False;
+
+  // general initialization of Params
+
+  //Fillchar(Params,Sizeof(Params),0);
+  Window := HWND(nil);
+  WindowTitle := UTF8ToUTF16(AParams.Caption);
+  //SubClassWndProc := @WindowProc;
+
+  Flags := AParams.Style;
+  FlagsEx := AParams.ExStyle;
+
+  // Never set the parent of a window to AppHandle,
+  // otherwise wince will really try to make it a child
+  Parent := AParams.WndParent;
+
+  Left := AParams.X;
+  Top := AParams.Y;
+  Width := AParams.Width;
+  Height := AParams.Height;
+
+  LCLBoundsToWin32Bounds(AWinControl, Left, Top, Width, Height);
+  //    if AWinControl is TCustomControl then
+  //      if TCustomControl(AWinControl).BorderStyle = bsSingle then
+  //        FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+  //    SetStdBiDiModeParams(AWinControl, Params);
+
+  // customization of Params
+  // Different from win32
+  SubClassWndProc := nil; // Otherwise crash in wince, works in win32
+  BorderStyle := TCustomForm(AWinControl).BorderStyle;
+
+  // Same as in win32
+  CalcFormWindowFlags(lForm, Flags, FlagsEx);
+  pClassName := @ClsName;
+  WindowTitle := UTF8ToUTF16(AParams.Caption);
+
+  // Get the difference between the client and window sizes
+  lWinBounds := lForm.BoundsRect;
+  Windows.AdjustWindowRectEx(@lWinBounds, Flags, false, FlagsEx);
+
+  if Application.ApplicationType in [atPDA, atKeyPadDevice, atDefault] then
+  begin
+    // Gets the work area
+    Windows.SystemParametersInfo(SPI_GETWORKAREA, 0, @WR, 0);
+
+    { The position and size of common windows is ignored on PDA mode,
+      and a position and size that covers the whole workarea excluding
+      the menu is used. The Workarea size automatically excludes the
+      Taskbar.
+
+      Simply using CM_USEDEFAULT produces a too large Height, which
+      covers the menus. So the workarea size is detected (which ignores
+      the Taskbar).
+
+      In some devices subtracting the menu size seams to work better, but
+      others, if no menu is present, it's a big problem.
+    }
+    if (BorderStyle <> bsDialog) and (BorderStyle <> bsNone) then
+    begin
+      Left := WR.Left;
+      Top := WR.Top;
+      Height := WR.Bottom - WR.Top;
+      Width := WR.Right - WR.Left;
+
+      // Update the position of the window for the LCL
+      AWinControl.BoundsRect := Bounds(
+        Left, Top, Width, Height);
+    end
+    else if (BorderStyle = bsDialog) then
+    {
+      For dialogs, the window is put in the middle of the screen.
+
+      On normal dialogs we need to take into consideration the size of
+      the window decoration.
+
+      For the Top and Left coordinates, using CM_USEDEFAULT produces
+      a wrong and bad result. Using the Workarea rectagle works fine
+      for most devices, but not all, so we put the dialog in the center.
+    }
+    begin
+      Top := WR.Top + (WR.Bottom - WR.Top) div 2
+        - (lWinBounds.Bottom - lWinBounds.Top) div 2;
+      Left := WR.Left + (WR.Right - WR.Left) div 2
+        - (lWinBounds.Right - lWinBounds.Left) div 2;
+      Height := lWinBounds.Bottom - lWinBounds.Top;
+      Width := lWinBounds.Right - lWinBounds.Left;
+
+      // Update the position of the window for the LCL
+      lOldLCLBounds := lForm.BoundsRect;
+      lNewLCLBounds.Left := Left - (lWinBounds.Left - lOldLCLBounds.Left);
+      lNewLCLBounds.Top := Top - (lWinBounds.Top - lOldLCLBounds.Top);
+      lNewLCLBounds.Right := Left + Width
+        - (lWinBounds.Right - lOldLCLBounds.Right);
+      lNewLCLBounds.Bottom := Top + Height
+        - (lWinBounds.Bottom - lOldLCLBounds.Bottom);
+      AWinControl.BoundsRect := lNewLCLBounds;
+    end
+    else { BorderStyle = bsNone }
+    { On borderless Windows we allow the user full control of the
+      window position
+    }
+    begin
+      //CalculateDialogPosition(Params, lWinBounds, lForm);
+    end;
+  end
+  else
+  begin
+    { On Desktop mode we need to take into consideration the size of
+      the window decoration }
+    //CalculateDialogPosition(Params, lWinBounds, lForm);
+  end;
+
+  // create window
+  Window := CreateWindowExW(FlagsEx, pClassName,
+    PWideChar(WindowTitle), Flags,
+    Left, Top, Width, Height, Parent, 0, HInstance, @NCCreateParams);
+
+  Result := Window;
+end;
+{$else}
 begin
   {$ifdef VerboseCDForms}
   DebugLn(Format(':>[TCDWSCustomForm.CreateHandle] AWincontrol=%x left=%d Top=%d'
@@ -255,7 +410,7 @@ begin
   end;
   CalcFormWindowFlags(lForm, Flags, FlagsEx);
   pClassName := @ClsName[0];
-  AdjustFormBounds(lForm, Bounds);
+  AdjustFormBounds(lForm, lWinBounds);
   if (lForm.Position in [poDefault, poDefaultPosOnly]) and not (csDesigning in lForm.ComponentState) then
   begin
     Left := CW_USEDEFAULT;
@@ -263,8 +418,8 @@ begin
   end
   else
   begin
-    Left := Bounds.Left;
-    Top := Bounds.Top;
+    Left := lWinBounds.Left;
+    Top := lWinBounds.Top;
   end;
   if (lForm.Position in [poDefault, poDefaultSizeOnly]) and not (csDesigning in lForm.ComponentState) then
   begin
@@ -273,8 +428,8 @@ begin
   end
   else
   begin
-    Width := Bounds.Right - Bounds.Left;
-    Height := Bounds.Bottom - Bounds.Top;
+    Width := lWinBounds.Right - lWinBounds.Left;
+    Height := lWinBounds.Bottom - lWinBounds.Top;
   end;
   //SubClassWndProc := @CustomFormWndProc;
   if not (csDesigning in lForm.ComponentState) and lForm.AlphaBlend then
@@ -324,117 +479,7 @@ begin
     [PtrInt(Result)]));
   {$endif}
 end;
-(*var
-  Params: TCreateWindowExParams;
-  LForm : TCustomForm;
-  BorderStyle: TFormBorderStyle;
-  WR: Windows.RECT;
-  lWinBounds, lOldLCLBounds, lNewLCLBounds: TRect;
-begin
-  {$ifdef VerboseWinCE}
-  DebugLn('TWinCEWSCustomForm.CreateHandle');
-  {$endif}
-  // general initialization of Params
-  PrepareCreateWindow(AWinControl, AParams, Params);
-
-  // customization of Params
-  with Params do
-  begin
-    // Different from win32
-    SubClassWndProc := nil; // Otherwise crash in wince, works in win32
-    BorderStyle := TCustomForm(AWinControl).BorderStyle;
-
-    // Same as in win32
-    lForm := TCustomForm(AWinControl);
-    CalcFormWindowFlags(lForm, Flags, FlagsEx);
-    pClassName := @ClsName;
-    WindowTitle := StrCaption;
-
-    // Get the difference between the client and window sizes
-    lWinBounds := lForm.BoundsRect;
-    Windows.AdjustWindowRectEx(@lWinBounds, Flags, false, FlagsEx);
-
-    if Application.ApplicationType in [atPDA, atKeyPadDevice, atDefault] then
-    begin
-      // Gets the work area
-      Windows.SystemParametersInfo(SPI_GETWORKAREA, 0, @WR, 0);
-
-      { The position and size of common windows is ignored on PDA mode,
-        and a position and size that covers the whole workarea excluding
-        the menu is used. The Workarea size automatically excludes the
-        Taskbar.
-
-        Simply using CM_USEDEFAULT produces a too large Height, which
-        covers the menus. So the workarea size is detected (which ignores
-        the Taskbar).
-
-        In some devices subtracting the menu size seams to work better, but
-        others, if no menu is present, it's a big problem.
-      }
-      if (BorderStyle <> bsDialog) and (BorderStyle <> bsNone) then
-      begin
-        Left := WR.Left;
-        Top := WR.Top;
-        Height := WR.Bottom - WR.Top;
-        Width := WR.Right - WR.Left;
-
-        // Update the position of the window for the LCL
-        AWinControl.BoundsRect := Bounds(
-          Params.Left, Params.Top, Params.Width, Params.Height);
-      end
-      else if (BorderStyle = bsDialog) then
-      {
-        For dialogs, the window is put in the middle of the screen.
-
-        On normal dialogs we need to take into consideration the size of
-        the window decoration.
-
-        For the Top and Left coordinates, using CM_USEDEFAULT produces
-        a wrong and bad result. Using the Workarea rectagle works fine
-        for most devices, but not all, so we put the dialog in the center.
-      }
-      begin
-        Top := WR.Top + (WR.Bottom - WR.Top) div 2
-          - (lWinBounds.Bottom - lWinBounds.Top) div 2;
-        Left := WR.Left + (WR.Right - WR.Left) div 2
-          - (lWinBounds.Right - lWinBounds.Left) div 2;
-        Height := lWinBounds.Bottom - lWinBounds.Top;
-        Width := lWinBounds.Right - lWinBounds.Left;
-
-        // Update the position of the window for the LCL
-        lOldLCLBounds := lForm.BoundsRect;
-        lNewLCLBounds.Left := Params.Left - (lWinBounds.Left - lOldLCLBounds.Left);
-        lNewLCLBounds.Top := Params.Top - (lWinBounds.Top - lOldLCLBounds.Top);
-        lNewLCLBounds.Right := Params.Left + Params.Width
-          - (lWinBounds.Right - lOldLCLBounds.Right);
-        lNewLCLBounds.Bottom := Params.Top + Params.Height
-          - (lWinBounds.Bottom - lOldLCLBounds.Bottom);
-        AWinControl.BoundsRect := lNewLCLBounds;
-      end
-      else { BorderStyle = bsNone }
-      { On borderless Windows we allow the user full control of the
-        window position
-      }
-      begin
-        CalculateDialogPosition(Params, lWinBounds, lForm);
-      end;
-    end
-    else
-    begin
-      { On Desktop mode we need to take into consideration the size of
-        the window decoration }
-      CalculateDialogPosition(Params, lWinBounds, lForm);
-    end;
-  end;
-
-  // create window
-  FinishCreateWindow(AWinControl, Params, false);
-  Result := Params.Window;
-
-  {$if defined(VerboseWinCE) or defined(VerboseSizeMsg)}
-  DebugLn('Window Handle = ' + IntToStr(Result));
-  {$endif}
-end;   *)
+{$endif}
 
 class procedure TCDWSCustomForm.DestroyHandle(const AWinControl: TWinControl);
 begin

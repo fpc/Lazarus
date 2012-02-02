@@ -37,6 +37,7 @@ uses
   {$ifdef CD_Android}
   customdrawn_androidproc, jni, bitmap, log, keycodes,
   {$endif}
+  {$ifdef WinCE}aygshell,{$endif}
   // Widgetset
   customdrawnproc,
   // LCL
@@ -48,6 +49,8 @@ uses
 
 type
   {$ifdef CD_Windows}
+  TWinCETitlePolicy = (tpAlwaysUseOKButton, tpOKButtonOnlyOnDialogs, tpControlWithBorderIcons);
+
   PPPipeEventInfo = ^PPipeEventInfo;
   PPipeEventInfo = ^TPipeEventInfo;
   TPipeEventInfo = record
@@ -225,6 +228,11 @@ type
 
     {$I customdrawnwinapih.inc}
     {$I customdrawnlclintfh.inc}
+  public
+    { Variables to be set by the user }
+    {$ifdef WinCE}
+    WinCETitlePolicy: TWinCETitlePolicy;
+    {$endif}
   end;
 
 var
@@ -234,7 +242,7 @@ function CDMessageBoxFunction(Text, Caption : PChar; Flags : Longint) : Integer;
 
 {$ifdef CD_WINDOWS}
 function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-  LParam: Windows.LParam): LResult; stdcall;
+  LParam: Windows.LParam): LResult; {$ifdef WinCE}cdecl;{$else}stdcall;{$endif}
 {$endif}
 {$ifdef CD_X11}
 procedure MyXConnectionWatchProc(display: PDisplay; client_data: TXPointer;
