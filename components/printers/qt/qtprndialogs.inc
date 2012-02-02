@@ -44,6 +44,7 @@ var
   QtPrnDlg: QPrintDialogH;
   PrnOptions: QAbstractPrintDialogPrintDialogOptions;
   Str: WideString;
+  S: String;
 begin
   Result := False;
 
@@ -102,6 +103,9 @@ begin
 
     if Result then
     begin
+      S := QtDefaultPrinter.PrinterName;
+      if Printer.Printers.IndexOf(S) <> -1 then
+        Printer.SetPrinter(S);
       Collate := QtDefaultPrinter.Collate;
       MinPage := QAbstractPrintDialog_minPage(QtPrnDlg);
       MaxPage := QAbstractPrintDialog_maxPage(QtPrnDlg);
