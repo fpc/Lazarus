@@ -131,8 +131,8 @@ For speed reasons this function only checks for 1,2,3,4 byte encoding errors. Es
       </element>
       <!-- function Visibility: default -->
       <element name="UnicodeToUTF8">
-        <short/>
-        <descr/>
+        <short>Encodes the given codepoint as an UTF-8 sequence of 1 to 4 bytes.</short>
+        <descr>It does not add a #0.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -150,8 +150,10 @@ For speed reasons this function only checks for 1,2,3,4 byte encoding errors. Es
       </element>
       <!-- function Visibility: default -->
       <element name="UnicodeToUTF8SkipErrors">
-        <short/>
-        <descr/>
+        <short>Simple and fast function to write a single unicode codepoint as UTF-8 to Buf and returns the number of bytes written</short>
+        <descr>It does not append a #0.
+It does not check if it is the codepoint actually exists in unicode tables.
+It returns 0 if the codepoint can not be represented as a 1 to 4 byte UTF-8 sequence.</descr>
         <errors/>
         <seealso/>
       </element>

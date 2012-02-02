@@ -42,9 +42,10 @@ function UTF8CharacterLength(p: PChar): integer;
 function UTF8Length(const s: string): PtrInt;
 function UTF8Length(p: PChar; ByteCount: PtrInt): PtrInt;
 function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal;
-function UnicodeToUTF8(u: cardinal; Buf: PChar): integer; inline;
-function UnicodeToUTF8SkipErrors(u: cardinal; Buf: PChar): integer;
-function UnicodeToUTF8(u: cardinal): string;
+function UnicodeToUTF8(CodePoint: cardinal): string;
+function UnicodeToUTF8(CodePoint: cardinal; Buf: PChar): integer;
+function UnicodeToUTF8SkipErrors(CodePoint: cardinal; Buf: PChar): integer;
+function UnicodeToUTF8Inline(CodePoint: cardinal; Buf: PChar): integer; inline;
 function UTF8ToDoubleByteString(const s: string): string;
 function UTF8ToDoubleByte(UTF8Str: PChar; Len: PtrInt; DBStr: PByte): PtrInt;
 function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
@@ -313,59 +314,66 @@ begin
   end;
 end;
 
-function UnicodeToUTF8(u: cardinal; Buf: PChar): integer;
+function UnicodeToUTF8(CodePoint: cardinal; Buf: PChar): integer;
 
   procedure RaiseInvalidUnicode;
   begin
-    raise Exception.Create('UnicodeToUTF8: invalid unicode: '+IntToStr(u));
+    raise Exception.Create('UnicodeToUTF8: invalid unicode: '+IntToStr(CodePoint));
   end;
 
 begin
-  Result:=UnicodeToUTF8SkipErrors(u,Buf);
+  Result:=UnicodeToUTF8Inline(CodePoint,Buf);
   if Result=0 then
     RaiseInvalidUnicode;
 end;
 
-function UnicodeToUTF8SkipErrors(u: cardinal; Buf: PChar): integer;
+function UnicodeToUTF8SkipErrors(CodePoint: cardinal; Buf: PChar): integer;
 begin
-  case u of
+  Result:=UnicodeToUTF8Inline(CodePoint,Buf);
+end;
+
+function UnicodeToUTF8(CodePoint: cardinal): string;
+var
+  Buf: array[0..6] of Char;
+  Len: Integer;
+begin
+  Len:=UnicodeToUTF8Inline(CodePoint, @Buf[0]);
+  Buf[Len]:=#0;
+  Result := StrPas(@Buf[0]);
+end;
+
+function UnicodeToUTF8Inline(CodePoint: cardinal; Buf: PChar): integer;
+begin
+  case CodePoint of
     0..$7f:
       begin
         Result:=1;
-        Buf[0]:=char(byte(u));
+        Buf[0]:=char(byte(CodePoint));
       end;
     $80..$7ff:
       begin
         Result:=2;
-        Buf[0]:=char(byte($c0 or (u shr 6)));
-        Buf[1]:=char(byte($80 or (u and $3f)));
+        Buf[0]:=char(byte($c0 or (CodePoint shr 6)));
+        Buf[1]:=char(byte($80 or (CodePoint and $3f)));
       end;
     $800..$ffff:
       begin
         Result:=3;
-        Buf[0]:=char(byte($e0 or (u shr 12)));
-        Buf[1]:=char(byte((u shr 6) and $3f) or $80);
-        Buf[2]:=char(byte(u and $3f) or $80);
+        Buf[0]:=char(byte($e0 or (CodePoint shr 12)));
+        Buf[1]:=char(byte((CodePoint shr 6) and $3f) or $80);
+        Buf[2]:=char(byte(CodePoint and $3f) or $80);
       end;
     $10000..$10ffff:
       begin
         Result:=4;
-        Buf[0]:=char(byte($f0 or (u shr 18)));
-        Buf[1]:=char(byte((u shr 12) and $3f) or $80);
-        Buf[2]:=char(byte((u shr 6) and $3f) or $80);
-        Buf[3]:=char(byte(u and $3f) or $80);
+        Buf[0]:=char(byte($f0 or (CodePoint shr 18)));
+        Buf[1]:=char(byte((CodePoint shr 12) and $3f) or $80);
+        Buf[2]:=char(byte((CodePoint shr 6) and $3f) or $80);
+        Buf[3]:=char(byte(CodePoint and $3f) or $80);
       end;
   else
     Result:=0;
   end;
-end;
-
-function UnicodeToUTF8(u: cardinal): string;
-var
-  Buf: array[0..6] of Char;
-begin
-  UnicodeToUTF8SkipErrors(u, @Buf[0]);
-  Result := StrPas(@Buf[0]);
 end;
 
 function UTF8ToDoubleByteString(const s: string): string;
