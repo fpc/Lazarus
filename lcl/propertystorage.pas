@@ -584,9 +584,8 @@ begin
           try
             StoreObjectsProps(Owner,AStoredList);
           except
-            { ignore any exceptions }
-            // even unable to write file?
-            // not even giving the user a small hint?
+            // ignore any exceptions
+            // ToDo: warn if unable to write file
           end;
         finally
           Free;
