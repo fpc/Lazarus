@@ -27,6 +27,9 @@ Examples:
 - custom dialogs / wiki:
 - fpc compiler options:
 
+Wiki:
+- explain all on the wiki
+
 Help for:
 - Other messages: Linker errors, fpcres errors
 - FPC keyword: context, for example 'var' can be a section or a parameter modifier
@@ -146,10 +149,11 @@ begin
   debugln(['TMyMessagesHelpDatabase.GetNodesForDirective AMessage="',AMessage,'" Parts="',MessageParts.Text,'"']);
 
   // check if the message fits
-  if AMessage<>'MyTest' then exit;
+  if MessageParts=nil then exit;
+  if MessageParts.Values['Message']<>'User defined: Test' then exit;
+  // this help database knows this message
 
   Title:='Help for message';
-  // this help database knows this Directive
   // => add a node, so that if there are several possibilities the IDE can
   //    show the user a dialog to choose
   if FAllMessageNode=nil then
@@ -171,11 +175,12 @@ begin
   Msg:=THelpQueryMessage(Query);
   debugln(['TMyMessagesHelpDatabase.ShowHelp Msg="',Msg.WholeMessage,'" Parts="',Msg.MessageParts.Text,'"']);
   // check if the message fits
-  if Msg.WholeMessage<>'MyTest' then exit;
+  if Msg.MessageParts=nil then exit;
+  if Msg.MessageParts.Values['Message']<>'User defined: Test' then exit;
 
   IDEMessageDialog('My message help',
     'The message "$'+Msg.WholeMessage+'":'#13#13
-    +'is an example to show how help for messages work',mtInformation,[mbOk]);
+    +'Success. Message recognized by TMyMessagesHelpDatabase',mtInformation,[mbOk]);
   Result:=shrSuccess;
 end;
 
