@@ -16898,7 +16898,7 @@ var
 begin
   ADesigner:=TDesigner(Sender);
   GetDesignerUnit(ADesigner,ASrcEdit,AnUnitInfo);
-  debugln('TMainIDE.OnDesignerViewLFM ',AnUnitInfo.Filename);
+  //debugln('TMainIDE.OnDesignerViewLFM ',AnUnitInfo.Filename);
   OnDesignerCloseQuery(Sender);
   if AnUnitInfo.OpenEditorInfoCount > 0 then
     EditorInfo := AnUnitInfo.OpenEditorInfo[0]

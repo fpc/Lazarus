@@ -282,8 +282,8 @@ begin
     end else begin
       TypeRadiogroup.Columns:=1;
     end;
-    Add(lisProcedure);
     Add(lisProcedureWithInterface);
+    Add(lisProcedure);
     if SubProcPossible then begin
       Add(lisSubProcedure);
       if SubProcSameLvlPossible then
