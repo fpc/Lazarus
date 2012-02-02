@@ -75,7 +75,6 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     PrevPageIndex: Integer;
-    Processing: boolean;
     FComponentList: TRegisteredCompList;
     procedure FindAllLazarusComponents;
     procedure AddSelectedComponent(AComponent: TRegisteredComponent);
@@ -183,11 +182,9 @@ var
   ANode: TTreeNode;
   AClass: TClass;
 begin
-  if Processing or ([csDestroying,csLoading]*ComponentState<>[]) then exit;
-  Processing := true;
+  if [csDestroying,csLoading]*ComponentState<>[] then exit;
   Screen.Cursor := crHourGlass;
   try
-
     //First tabsheet (ComponentsListbox)
     ComponentsListbox.Items.BeginUpdate;
     try
@@ -231,7 +228,6 @@ begin
       AClassList.Sorted := true;
       AClassList.CaseSensitive := false;
       AClassList.Duplicates := dupIgnore;
-
       for i := 0 to FComponentList.Count-1 do
       begin
         AComponent := FComponentList[i];
@@ -245,20 +241,17 @@ begin
           List.AddObject(AClass.ClassName, TObject(AClass));
           AClass := AClass.ClassParent;
         end;
-
         //build the tree
         for j := List.Count - 1 downto 0 do
         begin
           AClass := TClass(List.Objects[j]);
           AClassName := List[j];
-
           if not AClassList.Find(AClassName, AIndex)
           then begin
             //find out parent position
             if Assigned(AClass.ClassParent) and AClassList.Find(AClass.ClassParent.ClassName, AIndex)
             then ANode := TTreeNode(AClassList.Objects[AIndex])
             else ANode := nil;
-
             //add the item
             if AClassName <> AComponent.ComponentClass.ClassName
             then ANode := InheritanceTree.Items.AddChild(ANode, AClassName)
@@ -267,7 +260,6 @@ begin
           end;
         end;
       end;
-
       InheritanceTree.AlphaSort;
       InheritanceTree.FullExpand;
     finally
@@ -278,7 +270,6 @@ begin
     
   finally
     Screen.Cursor := crDefault;
-    Processing := false;
   end;
 end;
 
