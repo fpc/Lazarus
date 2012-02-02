@@ -60,6 +60,7 @@ type
     procedure SetFilteredTreeview(const AValue: TCustomTreeview);
     procedure SetShowDirHierarchy(const AValue: Boolean);
     function FilterTree(Node: TTreeNode): Boolean;
+    procedure OnBeforeTreeDestroy(Sender: TObject);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MoveNext; override;
@@ -121,9 +122,9 @@ end;
 
 destructor TTreeFilterBranch.Destroy;
 begin
-  fFilenameMap.Free;
-  fSortedData.Free;
-  fOriginalData.Free;
+  FreeAndNil(fFilenameMap);
+  FreeAndNil(fSortedData);
+  FreeAndNil(fOriginalData);
   FreeTVNodeData(fRootNode);
   inherited Destroy;
 end;
@@ -330,8 +331,8 @@ end;
 
 destructor TTreeFilterEdit.Destroy;
 begin
-  fBranches.Free;
-  fSelectionList.Free;
+  FreeAndNil(fBranches);
+  FreeAndNil(fSelectionList);
   inherited Destroy;
 end;
 
@@ -340,14 +341,23 @@ begin
   Result := TreeFilterGlyph;
 end;
 
+procedure TTreeFilterEdit.OnBeforeTreeDestroy(Sender: TObject);
+begin
+  FreeAndNil(fBranches);
+end;
+
 procedure TTreeFilterEdit.SetFilteredTreeview(const AValue: TCustomTreeview);
 begin
   if fFilteredTreeview = AValue then Exit;
-  if fFilteredTreeview <> nil then
+  if fFilteredTreeview <> nil then begin
     fFilteredTreeview.RemoveFreeNotification(Self);
+    fFilteredTreeview.RemoveHandlerOnBeforeDestruction(@OnBeforeTreeDestroy);
+  end;
   fFilteredTreeview := AValue;
-  if fFilteredTreeview <> nil then
+  if fFilteredTreeview <> nil then begin
     fFilteredTreeview.FreeNotification(Self);
+    fFilteredTreeview.AddHandlerOnBeforeDestruction(@OnBeforeTreeDestroy);
+  end;
 end;
 
 procedure TTreeFilterEdit.SetShowDirHierarchy(const AValue: Boolean);
@@ -375,8 +385,6 @@ begin
 end;
 
 procedure TTreeFilterEdit.Notification(AComponent: TComponent; Operation: TOperation);
-var
-  i: Integer;
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) then
@@ -384,9 +392,7 @@ begin
     if FilteredTreeview=AComponent then
     begin
       fFilteredTreeview:=nil;
-      if Assigned(fBranches) then
-        for i := 0 to fBranches.Count-1 do
-          fBranches[i].CleanUp;
+      FreeAndNil(fBranches);
     end;
   end;
 end;
