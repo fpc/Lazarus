@@ -95,9 +95,8 @@
         <UnitName Value="ConfigFile"/>
       </Unit8>
       <Unit9>
-        <Filename Value="..\..\..\fpc-trunk\utils\fpdoc\dglobals.pp"/>
+        <Filename Value="text.txt"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="dGlobals"/>
       </Unit9>
     </Units>
   </ProjectOptions>
@@ -109,7 +108,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="$(FPCSrcDir)\utils\fpdoc"/>
+      <OtherUnitFiles Value="$(FPCSrcDir)\utils\fpdoc;$(FPCSrcDir)\packages\fcl-passrc\src"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
@@ -127,7 +126,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="4">
+    <Exceptions Count="5">
       <Item1>
         <Name Value="EAbort"/>
       </Item1>
@@ -140,6 +139,9 @@
       <Item4>
         <Name Value="EStringListError"/>
       </Item4>
+      <Item5>
+        <Name Value="EParserError"/>
+      </Item5>
     </Exceptions>
   </Debugging>
 </CONFIG>

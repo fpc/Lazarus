@@ -109,7 +109,6 @@ type
     property Requires: TStrings read FRequires write SetRequires; //only string?
     property IncludePath: string read FIncludePath write SetIncludePath; //-Fi
     property UnitPath: string read FUnitPath write SetUnitPath; //-Fu
-    //property DefOS: string; - variations!
   end;
 
   { TFPDocHelper }
@@ -156,7 +155,6 @@ type
     FRootDir: string;
     UpdateCount: integer;
     procedure SetFPDocDir(AValue: string);
-    procedure SetLazarusDir(AValue: string);
     procedure SetOnChange(AValue: TNotifyEvent);
     procedure SetPackage(AValue: TDocPackage);
     procedure SetProfile(AValue: string);
@@ -177,7 +175,7 @@ type
     function  LoadConfig(const ADir: string; Force: boolean = False): boolean;
     function  SaveConfig: boolean;
     procedure AddProfile(const AName: string);
-    function  AddProject(const APkg, AFile: string; UpdateCfg: boolean): boolean; //from config
+    function  AddProject(const APkg, AFile: string): boolean; //from config
     function  CreateProject(const AFileName: string; APkg: TDocPackage): boolean;
     function  AddPackage(AName: string): TDocPackage;
     function  ImportLpk(const AFile: string): TDocPackage;
@@ -189,7 +187,6 @@ type
     function  Update(APkg: TDocPackage; const AUnit: string): boolean;
   public //published?
     property FpcDocDir: string read FFPDocDir write SetFPDocDir;
-    //property LazarusDir: string read FLazarusDir write SetLazarusDir;
     property RootDir: string read FRootDir write SetRootDir;
     property Options: TCmdOptions read FOptions;
     property Profile: string read FProfile write SetProfile;
@@ -264,11 +261,6 @@ begin
   if FRequires=AValue then Exit;
   if AValue = nil then exit;
   if AValue.Count = 0 then exit;
-{
-  if Pos('=', AValue[0]) > 0 then
-    FRequires.Assign(AValue) //clears previous content
-  else
-}
   Import;
 end;
 
@@ -534,7 +526,6 @@ begin
   Config.WriteSectionValues('descrs', Descriptions);
 //all done
   Config.Flush;
-  //Config.UpdateFile; //not dirty???
   Loaded := True;
 end;
 
@@ -570,7 +561,7 @@ end;
 destructor TFPDocManager.Destroy;
 begin
   SaveConfig;
-  FreeAndNil(Config); //save?
+  FreeAndNil(Config);
   FreeAndNil(FPackages);
   FreeAndNil(FOptions);
   inherited Destroy;
@@ -580,12 +571,6 @@ procedure TFPDocManager.SetFPDocDir(AValue: string);
 begin
   if FFPDocDir=AValue then Exit;
   FFPDocDir:=AValue;
-end;
-
-procedure TFPDocManager.SetLazarusDir(AValue: string);
-begin
-  if FLazarusDir=AValue then Exit;
-  FLazarusDir:=AValue;
 end;
 
 procedure TFPDocManager.SetOnChange(AValue: TNotifyEvent);
@@ -705,7 +690,7 @@ begin
     s := Packages.Names[i];
     pf := Packages.ValueFromIndex[i];
     if pf <> '' then begin
-      AddProject(s, pf, False); //add and load project file, don't update config!
+      AddProject(s, pf); //add and load project file, don't update config!
       FModified := True; //force app notification
     end;
   end;
@@ -761,7 +746,6 @@ begin
     //create project file
       APkg.ProjectFile := ChangeFileExt(APkg.ProjectFile, '_prj.xml');
       CreateProject(APkg.ProjectFile, APkg);
-      //APkg.UpdateConfig; - required?
     //update Packages[] string
       Packages[Result] := APkg.Name + '=' + APkg.ProjectFile;
     end;
@@ -774,7 +758,7 @@ end;
 Called by
 - init - not Dirty!
 *)
-function TFPDocManager.AddProject(const APkg, AFile: string; UpdateCfg: boolean): boolean;
+function TFPDocManager.AddProject(const APkg, AFile: string): boolean;
 var
   pkg: TDocPackage;
   i: integer;
@@ -902,8 +886,6 @@ begin
     pkg.Loaded := False; //force reload
     if not pkg.Loaded then begin
       Result := pkg.ImportProject(Helper, Helper.Package, AFile);
-    //register now, with project file known
-      //RegisterPackage(pkg);
     end;
   finally
     EndTest;
@@ -998,7 +980,6 @@ begin
   if not Result then
     exit;
   APkg.CreateProject(self, ''); //create project file?
-  //ParseFPDocOption('--project='+APkg.ProjectFile);
   Package := Packages.FindPackage(APkg.Name);
   //Options?
 //okay, so far
@@ -1089,7 +1070,6 @@ end;
 (* MakeSkel functionality - create skeleton or update file
   using temporary Project
 *)
-//function TFPDocManager.Update(APkg: TDocPackage; const AUnit: string): boolean;
 function TFPDocHelper.Update(APkg: TDocPackage; const AUnit: string): boolean;
 
   function DocumentUnit(const AUnit: string): boolean;

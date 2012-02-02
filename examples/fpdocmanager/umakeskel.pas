@@ -431,6 +431,7 @@ begin
       begin
       FModules:=TStringList.Create;
       FModules.Sorted:=True;
+      FModules.OwnsObjects := True; //auto destroy
       end;
     I:=FModules.IndexOf(AName);
     IF (I=-1) then
@@ -444,17 +445,19 @@ begin
 end;
 
 Destructor TSkelEngine.Destroy; 
-
 Var
   I : Integer;
-
 begin
-  If Assigned(FModules) then 
+{$IFDEF old}
+  If Assigned(FModules) then
     begin
     For I:=0 to FModules.Count-1 do
       FModules.Objects[i].Free;
     FreeAndNil(FModules);    
     end;
+{$ELSE}
+  FreeAndNil(FModules);
+{$ENDIF}
 end;
 
 Function TSkelEngine.MustWriteElement(El : TPasElement; Full : Boolean) : Boolean;
