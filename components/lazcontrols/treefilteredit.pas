@@ -331,6 +331,7 @@ end;
 
 destructor TTreeFilterEdit.Destroy;
 begin
+  FilteredTreeview:=nil;
   FreeAndNil(fBranches);
   FreeAndNil(fSelectionList);
   inherited Destroy;
@@ -391,6 +392,7 @@ begin
   begin
     if FilteredTreeview=AComponent then
     begin
+      fFilteredTreeview.RemoveHandlerOnBeforeDestruction(@OnBeforeTreeDestroy);
       fFilteredTreeview:=nil;
       FreeAndNil(fBranches);
     end;
