@@ -899,7 +899,7 @@ procedure SplitLazarusCPUOSWidgetCombo(const Combination: string;
   var CPU, OS, WidgetSet: string);
 function GetCompiledTargetOS: string;
 function GetCompiledTargetCPU: string;
-function GetDefaultCompilerFilename(const TargetCPU: string = ''): string;
+function GetDefaultCompilerFilename(const TargetCPU: string = ''; Cross: boolean = false): string;
 function GetFPCTargetOS(TargetOS: string): string;
 function GetFPCTargetCPU(TargetCPU: string): string;
 
@@ -2582,24 +2582,29 @@ begin
   Result:=lowerCase({$I %FPCTARGETCPU%});
 end;
 
-function GetDefaultCompilerFilename(const TargetCPU: string = ''): string;
+function GetDefaultCompilerFilename(const TargetCPU: string;
+  Cross: boolean): string;
 begin
+  if Cross then
+    Result:='ppccross'
+  else
+    Result:='ppc';
   if TargetCPU='' then
     Result:='fpc'
   else if SysUtils.CompareText(TargetCPU,'i386')=0 then
-    Result:='ppc386'
+    Result:=Result+'386'
   else if SysUtils.CompareText(TargetCPU,'powerpc')=0 then
-    Result:='ppcppc'
+    Result:=Result+'ppc'
   else if SysUtils.CompareText(TargetCPU,'sparc')=0 then
-    Result:='ppcsparc'
+    Result:=Result+'sparc'
   else if SysUtils.CompareText(TargetCPU,'m68k')=0 then
-    Result:='ppc86k'
+    Result:=Result+'86k'
   else if SysUtils.CompareText(TargetCPU,'alpha')=0 then
-    Result:='ppcalpha'
+    Result:=Result+'alpha'
   else if SysUtils.CompareText(TargetCPU,'x86_64')=0 then
-    Result:='ppcx64'
+    Result:=Result+'x64'
   else if SysUtils.CompareText(TargetCPU,'arm')=0 then
-    Result:='ppcarm'
+    Result:=Result+'arm'
   else
     Result:='fpc';
   Result:=Result+ExeExt;

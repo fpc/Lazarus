@@ -62,12 +62,15 @@ const
   FilenamesLiteral = {$IFDEF NotLiteralFilenames}false{$ELSE}true{$ENDIF};// file names can be compared using = string operator
 
   SpecialChar = '#'; // used to use PathDelim, e.g. #\
+  FileMask = AllFilesMask;
   {$IFDEF Windows}
-  FileMask = '*.*';
   ExeExt = '.exe';
   {$ELSE}
-  FileMask = '*';
-  ExeExt = '';
+    {$IFDEF NetWare}
+    ExeExt = '.nlm';
+    {$ELSE}
+    ExeExt = '';
+    {$ENDIF}
   {$ENDIF}
 
 type
@@ -2087,9 +2090,9 @@ begin
     vtAnsiString: Result:=Result+AnsiString(Args[i].VAnsiString);
     vtChar: Result:=Result+Args[i].VChar;
     vtPChar: Result:=Result+Args[i].VPChar;
-    vtPWideChar: Result:=Result+Args[i].VPWideChar;
-    vtWideChar: Result:=Result+Args[i].VWideChar;
-    vtWidestring: Result:=Result+WideString(Args[i].VWideString);
+    vtPWideChar: Result:=Result+UTF8Encode(Args[i].VPWideChar^);
+    vtWideChar: Result:=Result+UTF8Encode(Args[i].VWideChar);
+    vtWidestring: Result:=Result+UTF8Encode(WideString(Args[i].VWideString));
     vtObject: Result:=Result+DbgSName(Args[i].VObject);
     vtClass: Result:=Result+DbgSName(Args[i].VClass);
     vtPointer: Result:=Result+Dbgs(Args[i].VPointer);
