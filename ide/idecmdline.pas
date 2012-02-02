@@ -38,7 +38,7 @@ unit IDECmdLine;
 interface
 
 uses 
-  Classes, SysUtils, FileUtil, LazConf, LCLProc, LazarusIDEStrConsts;
+  Classes, SysUtils, FileUtil, LazConf, LCLProc;
 
 const
   ShowSetupDialogOptLong='--setup';

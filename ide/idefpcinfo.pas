@@ -275,9 +275,9 @@ begin
     if CfgCache<>nil then begin
       sl.Add('Compiler='+CfgCache.Compiler);
       sl.Add('Options='+CfgCache.CompilerOptions);
-      sl.Add('CompilerDate='+DateTimeToStr(FileDateToDateTime(CfgCache.CompilerDate)));
+      sl.Add('CompilerDate='+DateTimeToStr(FileDateToDateTimeDef(CfgCache.CompilerDate)));
       sl.Add('RealCompiler='+CfgCache.RealCompiler);
-      sl.Add('RealCompilerDate='+DateTimeToStr(FileDateToDateTime(CfgCache.RealCompilerDate)));
+      sl.Add('RealCompilerDate='+DateTimeToStr(FileDateToDateTimeDef(CfgCache.RealCompilerDate)));
       sl.Add('RealTargetOS='+CfgCache.RealTargetOS);
       sl.Add('RealTargetCPU='+CfgCache.RealTargetCPU);
       sl.Add('RealCompilerInPath='+CfgCache.RealCompilerInPath);

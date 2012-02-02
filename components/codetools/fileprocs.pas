@@ -132,7 +132,7 @@ function SetCurrentDirUTF8(const NewDir: String): Boolean; inline;
 function CreateDirUTF8(const NewDir: String): Boolean; inline;
 function RemoveDirUTF8(const Dir: String): Boolean; inline;
 function ForceDirectoriesUTF8(const Dir: string): Boolean; inline;
-function FileDateToDateTimeDef(aFileDate: TCTFileAgeTime; const Default: TDateTime): TDateTime;
+function FileDateToDateTimeDef(aFileDate: TCTFileAgeTime; const Default: TDateTime = 0): TDateTime;
 
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 function GetTempFilename(const Path, Prefix: string): string;
@@ -2395,7 +2395,7 @@ end;
 
 function FileAgeToStr(aFileAge: longint): string;
 begin
-  Result:=DateTimeToStr(FileDateToDateTime(aFileAge));
+  Result:=DateTimeToStr(FileDateToDateTimeDef(aFileAge));
 end;
 
 //------------------------------------------------------------------------------

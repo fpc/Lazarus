@@ -29,7 +29,7 @@
 {For Linux specific implementations.
  General unix implementations are in ../unix/lazbaseconf.inc}
 uses
-  Unix, BaseUnix;
+  Unix;
 
 procedure IfDirectoryExistsAdd(const Directory: string; List: TStrings);
 begin

@@ -47,7 +47,7 @@ type
 
   TSplashForm = class(TForm)
     Image: TImage;
-    procedure ApplicationOnIdle(Sender: TObject; var Done: boolean);
+    procedure ApplicationOnIdle(Sender: TObject; var {%H-}Done: boolean);
     procedure ImagePaint(Sender: TObject);
   private
   protected

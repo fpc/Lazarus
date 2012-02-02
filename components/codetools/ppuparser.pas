@@ -882,7 +882,7 @@ begin
     Result := '<invalid time>';
     exit;
   end;
-  DT := FileDateToDateTime(t);
+  DT := FileDateToDateTimeDef(t);
   DecodeTime(DT,hour,min,sec,hsec);
   DecodeDate(DT,year,month,day);
   Result := L0(Year)+'/'+L0(Month)+'/'+L0(Day)+' '+L0(Hour)+':'+L0(min)+':'+L0(sec);

@@ -573,7 +573,7 @@ begin
       exit(mrCancel);
     end;
     try
-      PkgLink.FileDate:=FileDateToDateTime(FileAgeUTF8(AFilename));
+      PkgLink.FileDate:=FileDateToDateTimeDef(FileAgeUTF8(AFilename));
       PkgLink.FileDateValid:=true;
       XMLConfig:=TXMLConfig.Create(nil);
       NewPackage:=TLazPackage.Create;

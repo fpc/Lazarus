@@ -294,11 +294,11 @@ begin
               +#13
               +'The system default executable'#13
               +DefaultExe+#13
-              +'(date: '+DateTimeToStr(FileDateToDateTime(FileAgeUTF8(DefaultExe)))+')'#13
+              +'(date: '+DateTimeToStr(FileDateToDateTimeDef(FileAgeUTF8(DefaultExe)))+')'#13
               +#13
               +'Or your custom executable'#13
               +CustomExe+#13
-              +'(date: '+DateTimeToStr(FileDateToDateTime(FileAgeUTF8(CustomExe)))+')'#13
+              +'(date: '+DateTimeToStr(FileDateToDateTimeDef(FileAgeUTF8(CustomExe)))+')'#13
               ,mtConfirmation,
               [mrYes,'Start system default',mrNo,'Start my custom',mrAbort],0
               );
