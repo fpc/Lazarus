@@ -26,6 +26,60 @@
 { TCarbonWidgetSet }
 
 {
+  This event handler will fix the focus indication in AXApplication for
+  standard controls where it gets it wrong. Necessary to support accessibility
+  for TMemo / TEdit for example
+}
+function AppAccessibilityEventHandler(inHandlerCallRef: EventHandlerCallRef;
+                          inEvent: EventRef;
+                          inUserData: Pointer): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  lAXRole, lInputStr: CFStringRef;
+  lInputAXObject: AXUIElementRef;
+  EventKind: UInt32;
+  lInputPasStr: string;
+  lElement, lElement2: AXUIElementRef;
+  lAXArray: CFMutableArrayRef;
+begin
+  Result := CallNextEventHandler(inHandlerCallRef, inEvent);
+
+  GetEventParameter(inEvent, kEventParamAccessibleObject,
+    typeCFTypeRef, nil, SizeOf(AXUIElementRef), nil, @lInputAXObject);
+
+  EventKind := GetEventKind(inEvent);
+  case EventKind of
+    kEventAccessibleGetNamedAttribute:
+    begin
+      GetEventParameter(inEvent, kEventParamAccessibleAttributeName,
+        typeCFStringRef, nil, SizeOf(CFStringRef), nil, @lInputStr);
+
+      lInputPasStr := CFStringToStr(lInputStr);
+
+      if lInputPasStr = 'AXFocusedUIElement' then
+      begin
+        // First interfere only if the element returned is in our black list
+        // for example: memo border
+        GetEventParameter(inEvent, kEventParamAccessibleAttributeValue,
+          typeCFTypeRef, nil, SizeOf(AXUIElementRef), nil, @lElement);
+
+        AXUIElementCopyAttributeValue(lElement, CFSTR('AXRoleDescription'), lAXRole);
+        lInputPasStr := CFStringToStr(lAXRole);
+        if lInputPasStr = 'memoborder' then
+        begin
+          AXUIElementCopyAttributeValue(lElement, CFSTR('AXChildren'), lAXArray);
+          lElement2 := CFArrayGetValueAtIndex(lAXArray, 0);
+          SetEventParameter(inEvent, kEventParamAccessibleAttributeValue, typeCFTypeRef,
+            SizeOf(AXUIElementRef), @lElement2);
+
+          Result := noErr;
+          Exit;
+        end;
+      end;
+    end; // kEventAccessibleGetNamedAttribute
+  end; // case EventKind of
+end;
+
+{
 The only drawback to making your own event loop dispatching calls in the main
 application thread is that you won't get the standard application event handler
 installed. Specifically, the RunApplicationEventLoop function installs handlers
@@ -442,14 +496,19 @@ procedure TCarbonWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 var
   DummyEvent: EventRef;
   EventSpec: EventTypeSpec;
-  EventLoopUPP: EventHandlerUPP;
-  EventLoopHandler: EventHandlerRef;
+  EventLoopUPP, AccessibilityUPP: EventHandlerUPP;
+  EventLoopHandler, AccessibilityHandle: EventHandlerRef;
 begin
   {$IFDEF VerboseObject}
     DebugLn('TCarbonWidgetSet.AppRun');
   {$ENDIF}
   FAppLoop:=ALoop;
   DummyEvent := nil;
+
+  // Accessibility for AXApplication
+  AccessibilityUPP := NewEventHandlerUPP(EventHandlerProcPtr(Pointer(@AppAccessibilityEventHandler)));
+  EventSpec := MakeEventSpec(kEventClassAccessibility, kEventAccessibleGetNamedAttribute);
+  InstallApplicationEventHandler(AccessibilityUPP, 1, @EventSpec, Self, @AccessibilityHandle);
 
   // Create a UPP for EventLoopEventHandler and QuitEventHandler
 

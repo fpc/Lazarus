@@ -169,6 +169,10 @@ end;
 
   http://developer.apple.com/library/mac/#documentation/UserExperience/Reference/Accessibility_RoleAttribute_Ref/Attributes.html
 
+  List of routines to handle a AXUIElementRef:
+
+  http://developer.apple.com/library/mac/#documentation/Accessibility/Reference/AccessibilityLowlevel/AXUIElement_h/CompositePage.html
+
  ------------------------------------------------------------------------------}
 function CarbonControl_Accessibility(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
