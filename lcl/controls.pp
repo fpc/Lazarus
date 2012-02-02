@@ -872,7 +872,8 @@ type
     chtOnVisibleChanged,
     chtOnEnabledChanging,
     chtOnEnabledChanged,
-    chtOnKeyDown
+    chtOnKeyDown,
+    chtOnBeforeDestruction
     );
 
   TLayoutAdjustmentPolicy = (
@@ -1118,6 +1119,7 @@ type
     procedure SetAccessibleValue(AValue: TCaption);
     procedure SetAccessibleRole(AValue: TLazAccessibilityRole);
     procedure SetAnchorSide(Kind: TAnchorKind; AValue: TAnchorSide);
+    procedure SetAnchorSide(AIndex: Integer; AValue: TAnchorSide);
     procedure SetBorderSpacing(const AValue: TControlBorderSpacing);
     procedure SetBoundsRect(const ARect: TRect);
     procedure SetBoundsRectForNewParent(const AValue: TRect);
@@ -1455,6 +1457,7 @@ type
   public
     constructor Create(TheOwner: TComponent);override;
     destructor Destroy; override;
+    procedure BeforeDestruction; override;
     procedure EditingDone; virtual;
     procedure ExecuteDefaultAction; virtual;
     procedure ExecuteCancelAction; virtual;
@@ -1521,6 +1524,9 @@ type
     procedure AddHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent;
                                   AsFirst: boolean = false);
     procedure RemoveHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent);
+    procedure AddHandlerOnBeforeDestruction(const OnBeforeDestructionEvent: TNotifyEvent;
+                                  AsFirst: boolean = false);
+    procedure RemoveHandlerOnBeforeDestruction(const OnBeforeDestructionEvent: TNotifyEvent);
   public
     // standard properties, which should be supported by all descendants
     property AccessibleDescription: TCaption read GetAccessibleDescription write SetAccessibleDescription;

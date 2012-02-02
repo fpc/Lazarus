@@ -2139,6 +2139,11 @@ begin
   GetAnchorSide(Kind).Assign(AValue);
 end;
 
+procedure TControl.SetAnchorSide(AIndex: Integer; AValue: TAnchorSide);
+begin
+
+end;
+
 procedure TControl.SetBorderSpacing(const AValue: TControlBorderSpacing);
 begin
   if FBorderSpacing=AValue then exit;
@@ -4554,6 +4559,18 @@ begin
   RemoveHandler(chtOnKeyDown,TMethod(OnKeyDownEvent));
 end;
 
+procedure TControl.AddHandlerOnBeforeDestruction(
+  const OnBeforeDestructionEvent: TNotifyEvent; AsFirst: boolean);
+begin
+  AddHandler(chtOnBeforeDestruction,TMethod(OnBeforeDestructionEvent));
+end;
+
+procedure TControl.RemoveHandlerOnBeforeDestruction(
+  const OnBeforeDestructionEvent: TNotifyEvent);
+begin
+  RemoveHandler(chtOnBeforeDestruction,TMethod(OnBeforeDestructionEvent));
+end;
+
 procedure TControl.RemoveAllHandlersOfObject(AnObject: TObject);
 var
   HandlerType: TControlHandlerType;
@@ -4709,6 +4726,12 @@ begin
   {$IFDEF DebugDisableAutoSizing}
   FreeAndNil(FAutoSizingLockReasons);
   {$ENDIF}
+end;
+
+procedure TControl.BeforeDestruction;
+begin
+  inherited BeforeDestruction;
+  DoCallNotifyHandler(chtOnBeforeDestruction);
 end;
 
 {------------------------------------------------------------------------------
