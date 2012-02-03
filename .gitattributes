@@ -3356,6 +3356,13 @@ examples/SynEdit/Completion/SynCompletionSample.lpr svneol=native#text/pascal
 examples/SynEdit/Completion/SynCompletionSample.res -text
 examples/SynEdit/Completion/unit1.lfm svneol=native#text/plain
 examples/SynEdit/Completion/unit1.pas svneol=native#text/pascal
+examples/SynEdit/NewHighlighterTutorial/HighlighterTutorial.lpi svneol=native#text/xml
+examples/SynEdit/NewHighlighterTutorial/HighlighterTutorial.lpr svneol=native#text/pascal
+examples/SynEdit/NewHighlighterTutorial/contexthl.pas svneol=native#text/pascal
+examples/SynEdit/NewHighlighterTutorial/foldhl.pas svneol=native#text/pascal
+examples/SynEdit/NewHighlighterTutorial/simplehl.pas svneol=native#text/pascal
+examples/SynEdit/NewHighlighterTutorial/unit1.lfm svneol=native#text/pascal
+examples/SynEdit/NewHighlighterTutorial/unit1.pas svneol=native#text/pascal
 examples/SynEdit/SynAnyHighlighter/README.txt svneol=native#text/plain
 examples/SynEdit/SynAnyHighlighter/synanysynhighlighter.lpi svneol=native#text/plain
 examples/SynEdit/SynAnyHighlighter/synanysynhighlighter.lpr svneol=native#text/plain
