@@ -71,6 +71,7 @@ type
 
   TLazSynFoldNodeInfoList = class
   private
+    FValid: Boolean;
     FActionFilter: TSynFoldActions;
     FGroupFilter: Integer;
     FLine: TLineIdx;
@@ -84,6 +85,7 @@ type
     function  GetItemPointer(AnIndex: Integer): PSynFoldNodeInfo;
     function  GetLastItemPointer: PSynFoldNodeInfo;
   protected
+    procedure Invalidate;
     procedure Clear;
     procedure ClearFilteredList;
     procedure DoFilter(MinIndex: Integer = -1);
@@ -343,7 +345,7 @@ end;
 function TLazSynFoldNodeInfoList.GetItem(Index: Integer): TSynFoldNodeInfo;
 begin
   DoFilter(Index);
-  if (Index >= FFilteredCount) or (Index < 0) then
+  if (Index >= FFilteredCount) or (Index < 0) or (not FValid) then
     InvalidateNode(Result)
   else begin
     Result := FFilteredList[Index];
@@ -369,6 +371,7 @@ procedure TLazSynFoldNodeInfoList.Clear;
 var
   c: Integer;
 begin
+  FValid := True;
   ClearFilter;
   FLine := -1;
   c := MinCapacity;
@@ -394,7 +397,7 @@ end;
 procedure TLazSynFoldNodeInfoList.DoFilter(MinIndex: Integer = -1);
 begin
   if FFilteredProgress = FNodeCount then exit;
-  if (MinIndex >= 0) and (FFilteredCount > MinIndex) then exit;
+  if (MinIndex >= 0) and (FFilteredCount > MinIndex) or (not FValid) then exit;
 
   if (FActionFilter = []) and (FGroupFilter = DefaultGroup) then begin
     FFilteredList := FNodeInfoList;
@@ -463,7 +466,10 @@ end;
 
 function TLazSynFoldNodeInfoList.CountAll: Integer;
 begin
-  Result := FNodeCount;
+  if FValid then
+    Result := FNodeCount
+  else
+    Result := -1;
 end;
 
 function TLazSynFoldNodeInfoList.GetItemPointer(AnIndex: Integer
@@ -483,6 +489,12 @@ begin
     Result := @FNodeInfoList[FNodeCount-1];
 end;
 
+procedure TLazSynFoldNodeInfoList.Invalidate;
+begin
+  Clear;
+  FValid := False;
+end;
+
 function TLazSynFoldNodeInfoList.Match(const AnInfo: TSynFoldNodeInfo;
   AnActionFilter: TSynFoldActions; AGroupFilter: Integer): Boolean;
 begin
@@ -496,6 +508,8 @@ end;
 
 function TLazSynFoldNodeInfoList.Count: Integer;
 begin
+  if not FValid then exit(-1);
+
   DoFilter(-1);
   Result := FFilteredCount;
 end;
@@ -505,6 +519,7 @@ function TLazSynFoldNodeInfoList.CountEx(AnActionFilter: TSynFoldActions;
 var
   i: Integer;
 begin
+  if not FValid then exit(-1);
   if (AnActionFilter = []) and (AGroupFilter = DefaultGroup) then begin
     Result := FNodeCount;
     exit;
@@ -520,7 +535,7 @@ function TLazSynFoldNodeInfoList.NodeInfoEx(Index: Integer;
 var
   i, j: Integer;
 begin
-  if (Index < 0) then begin
+  if (Index < 0) or (not FValid) then begin
     InvalidateNode(Result);
     exit;
   end;
@@ -733,7 +748,7 @@ end;
 
 procedure TSynCustomFoldHighlighter.InitFoldNodeInfo(AList: TLazSynFoldNodeInfoList; Line: TLineIdx);
 begin
-  //
+  AList.Invalidate;
 end;
 
 function TSynCustomFoldHighlighter.CreateFoldNodeInfoList: TLazSynFoldNodeInfoList;
