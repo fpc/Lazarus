@@ -157,14 +157,6 @@ type
     function GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig; override;
     function GetFoldConfigCount: Integer; override;
     function GetFoldConfigInternalCount: Integer; override;
-  public
-    // folding
-    function FoldOpenCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
-    function FoldCloseCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
-    function FoldNestCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
-    // TODO: make private
-    function MinimumFoldLevel(ALineIndex: Integer): integer; override;
-    function EndFoldLevel(ALineIndex: Integer): integer; override;
   published
     property UnknownAttri: TSynHighlighterAttributes read FUnknownAttri write FUnknownAttri;
     property SpaceAttri: TSynHighlighterAttributes read FSpaceAttri write FSpaceAttri;
@@ -745,56 +737,6 @@ function TSynDiffSyn.GetFoldConfigInternalCount: Integer;
 begin
   // include cfbtDiffnone;
   Result := ord(high(TDiffCodeFoldBlockType)) - ord(low(TDiffCodeFoldBlockType)) + 1;
-end;
-
-// EndLvl = MinLvl(+1)
-// MinLvl = Min(Min, Min(+1))
-
-function TSynDiffSyn.FoldOpenCount(ALineIndex: Integer; AType: Integer): integer;
-begin
-  If AType <> 0 then exit(0);
-  Result := Max(0, MinimumFoldLevel(ALineIndex+1) - MinimumFoldLevel(ALineIndex));
-  //Result := EndFoldLevel(ALineIndex) - MinimumFoldLevel(ALineIndex);
-end;
-
-function TSynDiffSyn.FoldCloseCount(ALineIndex: Integer; AType: Integer): integer;
-begin
-  If AType <> 0 then exit(0);
-  Result := Max(0, MinimumFoldLevel(ALineIndex) - MinimumFoldLevel(ALineIndex+1));
-  //Result := EndFoldLevel(ALineIndex - 1) - MinimumFoldLevel(ALineIndex);
-end;
-
-function TSynDiffSyn.FoldNestCount(ALineIndex: Integer; AType: Integer): integer;
-begin
-  If AType <> 0 then exit(0);
-  Result := MinimumFoldLevel(ALineIndex+1);
-  //Result := EndFoldLevel(ALineIndex);
-end;
-
-function TSynDiffSyn.MinimumFoldLevel(ALineIndex: Integer): integer;
-var
-  r: TSynCustomHighlighterRange;
-begin
-  if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count) then
-    exit(0);
-  r := TSynCustomHighlighterRange(CurrentRanges[ALineIndex]);
-  if (r <> nil) and (Pointer(r) <> NullRange) then
-    Result := r.MinimumCodeFoldBlockLevel
-  else
-    Result := 0;
-end;
-
-function TSynDiffSyn.EndFoldLevel(ALineIndex: Integer): integer;
-var
-  r: TSynCustomHighlighterRange;
-begin
-  if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count) then
-    exit(0);
-  r := TSynCustomHighlighterRange(CurrentRanges[ALineIndex]);
-  if (r <> nil) and (Pointer(r) <> NullRange) then
-    Result := r.CodeFoldStackSize
-  else
-    Result := 0;
 end;
 
 initialization

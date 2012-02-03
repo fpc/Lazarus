@@ -284,6 +284,50 @@ type
   end;
 
   TSynEditFoldProviderNodeInfoList = array of TSynEditFoldProviderNodeInfo;
+  TSynEditFoldProvider = class;
+
+  (* TLazSynEditNestedFoldsList
+     Provides Info on all foldable-blocks containing a given line (0 based index).
+     That are:
+     - All foldable blocks opening on a previous line, that are still open
+       at the start of the line. (May end on this line or later)
+     - Foldable blocks opening on that line. (OpeningOnLineCount)
+
+     The data is NOT automatically invalidated.
+  *)
+
+  TLazSynEditNestedFoldsListEntry = record
+    HNode: TSynFoldNodeInfo;    // Highlighter Node
+    //FNode: TSynTextFoldAVLNode; // AvlFoldNode
+    //Text, Keyword: String;
+    LineIdx: TLineIdx;
+     //ColIndex: Integer;
+    //OpenCount: Integer;
+  end;
+
+  TLazSynEditNestedFoldsList = class
+  private
+    FFoldProvider: TSynEditFoldProvider;
+    FFoldGroup: Integer;
+    FLine: TLineIdx;
+    procedure SetFoldGroup(AValue: Integer);
+    procedure SetLines(AValue: TLineIdx);
+  private
+    FGroupCount: Integer;
+    FGroupEndLevels, FGroupEndLevelsAtEval: Array of integer;
+    FCount, FOpeningOnLineCount: Integer;
+    FNestInfo: Array of TLazSynEditNestedFoldsListEntry;
+    FEvaluationIndex: Integer;
+    procedure InitSubGroupEndLevels;
+    procedure InitNestInfoForIndex(AnIndex: Integer);
+  public
+    constructor Create(aFoldProvider: TSynEditFoldProvider);
+    procedure Clear;
+    function Count: Integer;
+    function OpeningOnLineCount: Integer;
+    property Line: TLineIdx read FLine write SetLines;
+    property FoldGroup: Integer read FFoldGroup write SetFoldGroup;
+  end;
 
   TSynEditFoldProvider = class
   private
@@ -292,17 +336,21 @@ type
     FSelection: TSynEditSelection;
     FFoldTree : TSynTextFoldAVLTree;
     function GetFoldsAvailable: Boolean;
+    function GetHighLighterWithLines: TSynCustomFoldHighlighter;
     function GetLineCapabilities(ALineIdx: Integer): TSynEditFoldLineCapabilities;
     function GetLineClassification(ALineIdx: Integer): TFoldNodeClassifications;
     procedure SetHighLighter(const AValue: TSynCustomFoldHighlighter);
+  protected
+    property HighLighterWithLines: TSynCustomFoldHighlighter read GetHighLighterWithLines;
   public
     constructor Create(aTextView : TSynEditStrings; AFoldTree : TSynTextFoldAVLTree);
-    function FoldOpenCount(ALineIdx: Integer; AType: Integer = 0): Integer;
-    function FoldOpenInfo(ALineIdx, AFoldIdx: Integer; AType: Integer = 0): TSynFoldNodeInfo;
+
+    // Info about Folds opening on ALineIdx
+    function  FoldOpenCount(ALineIdx: Integer; AType: Integer = 0): Integer;
+    function  FoldOpenInfo(ALineIdx, AFoldIdx: Integer; AType: Integer = 0): TSynFoldNodeInfo;
     //property FoldOpenInfo[ALineIdx, AColumnIdx: Integer]: Integer read GetFoldOpenInfo;
-    //property FoldInfoCount[ALineIdx: Integer]: Integer read GetFoldInfoCount;
-    //property FoldInfo[ALineIdx, AColumnIdx: Integer]: Integer read GetFoldInfo;
-    function FoldLineLength(ALine, AFoldIndex: Integer): integer;
+
+    function  FoldLineLength(ALine, AFoldIndex: Integer): integer;
     function  InfoForFoldAtTextIndex(ALine, AFoldIndex : Integer;
                                      HideLen: Boolean = False;
                                      NeedLen: Boolean = True): TSynEditFoldProviderNodeInfo;
@@ -2724,6 +2772,131 @@ begin
   fNestedNodesTree := nil;
 end;
 
+{ TLazSynEditNestedFoldsList }
+
+procedure TLazSynEditNestedFoldsList.SetLines(AValue: TLineIdx);
+begin
+  if FLine = AValue then Exit;
+  FLine := AValue;
+  // Todo: might be able to re-use old data
+  Clear;
+end;
+
+procedure TLazSynEditNestedFoldsList.Clear;
+begin
+  FGroupCount := -1;
+  FCount := -1;
+  FOpeningOnLineCount := -1;
+  FEvaluationIndex := -1;
+  SetLength(FNestInfo, 0);
+end;
+
+procedure TLazSynEditNestedFoldsList.InitSubGroupEndLevels;
+var
+  hl: TSynCustomFoldHighlighter;
+  i: integer;
+begin
+  if FGroupCount > 0 then
+    exit;
+
+  hl := FFoldProvider.HighLighterWithLines;
+  if hl = nil then exit;
+
+  if FFoldGroup = 0 then begin
+    // special, join other groups (or some other...)
+    FGroupCount := hl.FoldTypeCount;
+    // start at 1, so FoldGroup can be used as index
+    SetLength(FGroupEndLevels, FGroupCount + 1);
+    SetLength(FGroupEndLevelsAtEval, FGroupCount + 1);
+    for i := 1 to FGroupCount do
+      FGroupEndLevels[i] := hl.FoldBlockEndLevel(FLine - 1, i) + OpeningOnLineCount;
+      FGroupEndLevelsAtEval[i] := FGroupEndLevels[i];
+  end
+  else begin
+    FGroupCount := 1;
+    SetLength(FGroupEndLevels, 1);
+    SetLength(FGroupEndLevelsAtEval, 1);
+    FGroupEndLevels[0] := Count;
+    FGroupEndLevelsAtEval[0] := FGroupEndLevels[0];
+  end;
+end;
+
+procedure TLazSynEditNestedFoldsList.InitNestInfoForIndex(AnIndex: Integer);
+var
+  CurLine: TLineIdx;
+  hl: TSynCustomFoldHighlighter;
+  i: Integer;
+begin
+  if (AnIndex >= Count) or (AnIndex >= FEvaluationIndex) then exit;
+  hl := FFoldProvider.HighLighterWithLines;
+  if hl = nil then exit;
+
+  InitSubGroupEndLevels;
+
+  if FEvaluationIndex = Count then
+    CurLine := Line
+  else
+    CurLine := FNestInfo[FEvaluationIndex].LineIdx;
+    // need index/column...
+
+  inc(CurLine);
+  while CurLine > 0 do begin
+    dec(CurLine);
+
+    if FFoldGroup = 0 then begin
+      i := FGroupCount;
+
+      while (i > 0) do begin
+  //      hl.MinimumFoldLevel(CurLine, i)  // minimumPas
+        dec(i);
+      end;
+      if i < 0 then continue;
+    end
+    else begin
+      //if ... continue
+    end;
+
+  end;
+
+
+end;
+
+procedure TLazSynEditNestedFoldsList.SetFoldGroup(AValue: Integer);
+begin
+  if FFoldGroup = AValue then Exit;
+  FFoldGroup := AValue;
+  Clear;
+end;
+
+constructor TLazSynEditNestedFoldsList.Create(aFoldProvider: TSynEditFoldProvider);
+begin
+  FFoldProvider := aFoldProvider;
+end;
+
+function TLazSynEditNestedFoldsList.Count: Integer;
+var
+  hl: TSynCustomFoldHighlighter;
+begin
+  Result := FCount;
+  if Result >= 0 then exit;
+  hl := FFoldProvider.HighLighterWithLines;
+  if hl = nil then exit(-1);
+
+  FCount := hl.FoldBlockEndLevel(FLine - 1, FFoldGroup) + OpeningOnLineCount;
+  FEvaluationIndex := FCount;
+  SetLength(FNestInfo, FCount);
+  Result := FCount;
+end;
+
+function TLazSynEditNestedFoldsList.OpeningOnLineCount: Integer;
+begin
+  Result := FOpeningOnLineCount;
+  if Result >= 0 then exit;
+
+  FOpeningOnLineCount := FFoldProvider.FoldOpenCount(FLine);
+  Result := FOpeningOnLineCount;
+end;
+
 { TSynEditFoldProvider }
 
 function TSynEditFoldProvider.GetLineCapabilities(ALineIdx: Integer): TSynEditFoldLineCapabilities;
@@ -2744,8 +2917,8 @@ begin
     exit;
 
   FHighlighter.CurrentLines := FLines;
-  if FHighlighter.FoldNestCount(ALineIdx - 1) > 0 then Result := Result + [cfFoldBody];
-  if FHighlighter.FoldCloseCount(ALineIdx) > 0    then Result := Result + [cfFoldEnd, cfFoldBody];
+  if FHighlighter.FoldBlockEndLevel(ALineIdx - 1) > 0 then Result := Result + [cfFoldBody];
+  if FHighlighter.FoldBlockClosingCount(ALineIdx) > 0    then Result := Result + [cfFoldEnd, cfFoldBody];
 
   c := FHighlighter.FoldNodeInfo[ALineIdx].CountEx([]);
   if c > 0 then begin
@@ -2761,7 +2934,7 @@ begin
       Result := Result + [cfHideStart, cfSingleLineHide];
   end
   else
-    if FHighlighter.FoldOpenCount(ALineIdx) > 0 then include(Result, cfFoldStart);
+    if FHighlighter.FoldBlockOpeningCount(ALineIdx) > 0 then include(Result, cfFoldStart);
 end;
 
 function TSynEditFoldProvider.GetLineClassification(ALineIdx: Integer): TFoldNodeClassifications;
@@ -2777,6 +2950,14 @@ begin
             ((FSelection <> nil) and FSelection.SelAvail);
 end;
 
+function TSynEditFoldProvider.GetHighLighterWithLines: TSynCustomFoldHighlighter;
+begin
+  Result := FHighlighter;
+  if (Result = nil) then
+    exit;
+  Result.CurrentLines := FLines;
+end;
+
 procedure TSynEditFoldProvider.SetHighLighter(const AValue: TSynCustomFoldHighlighter);
 begin
   if FHighlighter = AValue then exit;
@@ -2790,30 +2971,18 @@ begin
 end;
 
 function TSynEditFoldProvider.FoldOpenCount(ALineIdx: Integer; AType: Integer = 0): Integer;
-var
-  i: Integer;
 begin
   if (FHighlighter = nil) or (ALineIdx < 0) then begin
     if (AType=0) and (FSelection <> nil) and FSelection.SelAvail and (FSelection.FirstLineBytePos.Y=ALineIdx+1) then exit(1);
     exit(0);
   end;
-
+  // Need to check alll nodes with FoldNodeInfoCount
+  // Hide-able nodes can open and close on the same line "(* cmment *)"
   FHighlighter.CurrentLines := FLines;
-  Result := FHighlighter.FoldNodeInfo[ALineIdx].CountEx([sfaOpen, sfaFold]);
-  if (result > 0) and (AType > 0) then begin
-    i := Result ;
-    Result := 0;
-    while i > 0 do begin
-      dec(i);
-      if FHighlighter.FoldNodeInfo[ALineIdx].NodeInfoEx(i, [sfaOpen, sfaFold]).FoldGroup = AType then
-        inc(Result);
-    end;
-  end
-  //Result := Result + FHighlighter.FoldNodeInfoCount[ALineIdx, [sfaOpen, sfaFoldHide]];
-  //Result := Result + FHighlighter.FoldNodeInfoCount[ALineIdx, [sfaOneLineOpen, sfaFoldHide]];
-  else
+  Result := FHighlighter.FoldNodeInfo[ALineIdx].CountEx([sfaOpen, sfaFold], AType);
+  // fallback for HL without GetFoldNodeInfoCountEx
   if Result < 0 then
-    Result := FHighlighter.FoldOpenCount(ALineIdx, AType);
+    Result := FHighlighter.FoldBlockOpeningCount(ALineIdx, AType);
   if (AType=0) and (FSelection <> nil) and FSelection.SelAvail and (FSelection.FirstLineBytePos.Y=ALineIdx+1) then
     inc(Result);
 end;
@@ -2837,8 +3006,6 @@ function TSynEditFoldProvider.FoldOpenInfo(ALineIdx, AFoldIdx: Integer;
     Result.FoldGroup := -1;
   end;
 
-var
-  i, x: Integer;
 begin
   Result.FoldAction := [sfaInvalid];
   if (FHighlighter = nil) or (ALineIdx < 0) then begin
@@ -2848,27 +3015,13 @@ begin
   end;
 
   FHighlighter.CurrentLines := FLines;
-  if AType = 0 then
-    if (FSelection <> nil) and FSelection.SelAvail and (FSelection.FirstLineBytePos.Y=ALineIdx+1) and
-      (AFoldIdx = FoldOpenCount(ALineIdx, 0)-1)
-    then
-      Result := BlockSelInfo(AFoldIdx-1)
-    else
-      Result := FHighlighter.FoldNodeInfo[ALineIdx].NodeInfoEx(AFoldIdx, [sfaOpen, sfaFold])
-  else begin
-    x := FHighlighter.FoldNodeInfo[ALineIdx].CountEx([sfaOpen, sfaFold]);
-    i := 0;
-    while i < x do begin
-      Result := FHighlighter.FoldNodeInfo[ALineIdx].NodeInfoEx(i, [sfaOpen, sfaFold]);
-      if (Result.FoldGroup = AType) then begin
-        if AFoldIdx = 0 then
-          exit;
-        dec(AFoldIdx);
-      end;
-      inc(i);
-    end;
-    Result.FoldAction := [sfaInvalid];
-  end;
+  if (AType = 0) and (FSelection <> nil) and FSelection.SelAvail and
+     (FSelection.FirstLineBytePos.Y=ALineIdx+1) and
+     (AFoldIdx = FoldOpenCount(ALineIdx, AType)-1)
+  then
+    Result := BlockSelInfo(AFoldIdx)
+  else
+    Result := FHighlighter.FoldNodeInfo[ALineIdx].NodeInfoEx(AFoldIdx, [sfaOpen, sfaFold], AType);
 end;
 
 function TSynEditFoldProvider.FoldLineLength(ALine, AFoldIndex: Integer): integer;
@@ -3369,7 +3522,7 @@ begin
   while i < fLines.Count do begin
      // Todo: Highlighter should return a list of types that can return default folded
      // Currently PascalHl Type 2 = Region
-    c := hl.FoldOpenCount(i, 2);
+    c := hl.FoldBlockOpeningCount(i, 2);
     if c > 0 then begin
       c := hl.FoldNodeInfo[i].CountEx([sfaOpen, sfaFold]);
       j := 0;
@@ -3855,9 +4008,9 @@ begin
   fFoldTree.Clear;
   i := 0;
   while i < fLines.Count do begin
-    if (hl.FoldOpenCount(i, t) > 0)
-    and (hl.FoldNestCount(i, t) > StartLevel) then begin
-      c := hl.FoldOpenCount(i) -1;
+    if (hl.FoldBlockOpeningCount(i, t) > 0)
+    and (hl.FoldBlockEndLevel(i, t) > StartLevel) then begin
+      c := hl.FoldBlockOpeningCount(i) -1;
       fldinf := FoldProvider.InfoForFoldAtTextIndex(i, c);
       // i is 0-based
       // FoldTree is 1-based AND first line remains visble
@@ -4111,7 +4264,7 @@ begin
   hl := TSynCustomFoldHighlighter(HighLighter);
   if not assigned(hl) then
     exit(-1);
-  Result := hl.FoldNestCount(AStartIndex-1, AType) + FoldProvider.FoldOpenCount(AStartIndex);
+  Result := hl.FoldBlockEndLevel(AStartIndex-1, AType) + FoldProvider.FoldOpenCount(AStartIndex);
 end;
 
 function TSynEditFoldedView.OpenFoldInfo(aStartIndex, ColIndex: Integer; AType: Integer = 0): TFoldViewNodeInfo;
@@ -4126,13 +4279,13 @@ var
   begin
     if AType = 0 then begin;
       for i := 1 to TypeCnt do begin
-        EndLvl[i] := hl.FoldNestCount(l-1, i);
+        EndLvl[i] := hl.FoldBlockEndLevel(l-1, i);
         EndLvl[i] := EndLvl[i] + FoldProvider.FoldOpenCount(l, i);
         CurLvl[i] := EndLvl[i];
       end;
     end
     else begin
-      EndLvl[0] := hl.FoldNestCount(l-1, AType);
+      EndLvl[0] := hl.FoldBlockEndLevel(l-1, AType);
       EndLvl[0] := EndLvl[0] + FoldProvider.FoldOpenCount(l, AType);
       CurLvl[0] := EndLvl[0];
     end;
@@ -4146,7 +4299,7 @@ begin
     TypeCnt := 1
   else
     TypeCnt := hl.FoldTypeCount;
-  Lvl := hl.FoldNestCount(AStartIndex-1, AType);
+  Lvl := hl.FoldBlockEndLevel(AStartIndex-1, AType);
   if ColIndex >= Lvl then begin
     n := ColIndex - Lvl;
     if AType = 0 then begin
@@ -4165,8 +4318,8 @@ begin
     aStartIndex := aStartIndex;
     while (ColIndex < Lvl) and (aStartIndex > 0) do begin
       dec(aStartIndex);
-      o := hl.FoldOpenCount(AStartIndex, AType);
-      if (o > 0) or (hl.FoldCloseCount(aStartIndex, AType) > 0) then begin
+      o := hl.FoldBlockOpeningCount(AStartIndex, AType);
+      if (o > 0) or (hl.FoldBlockClosingCount(aStartIndex, AType) > 0) then begin
         n := o;
         c := hl.FoldNodeInfo[aStartIndex].CountEx([], AType) - 1;
         for i := c downto 0 do begin
@@ -4194,7 +4347,7 @@ begin
         end;
       end
       else
-      if hl.FoldNestCount(AStartIndex-1, AType) = 0 then break;
+      if hl.FoldBlockEndLevel(AStartIndex-1, AType) = 0 then break;
     end;
   end;
   Result.HNode := nd;
@@ -4220,7 +4373,7 @@ begin
     exit;
 
   i := ALine;
-  l := hl.FoldOpenCount(i - 1);
+  l := hl.FoldBlockOpeningCount(i - 1);
   if l > 0 then begin
     node := fFoldTree.FindFoldForLine(ALine, true);
     if node.IsInFold and (node.StartLine = ALine +1) then begin
@@ -4234,19 +4387,19 @@ begin
     else
       exit(ALine);
   end
-  else if hl.FoldCloseCount(i - 1) > 0 then
+  else if hl.FoldBlockClosingCount(i - 1) > 0 then
     dec(i);
-  if (i < 0) or (hl.FoldNestCount(i-1) = 0) then
+  if (i < 0) or (hl.FoldBlockEndLevel(i-1) = 0) then
     exit;
 
   l := 0;
   while (i > 0) and (l >= 0) do begin // (FoldMinLevel[i] >= l) do
     dec(i);
-    l := l - hl.FoldOpenCount(i);
+    l := l - hl.FoldBlockOpeningCount(i);
     if l >= 0 then
-      l := l + hl.FoldCloseCount(i);
+      l := l + hl.FoldBlockClosingCount(i);
   end;
-  if (hl.FoldNestCount(i) > 0) then // TODO, check for collapsed at index = 0
+  if (hl.FoldBlockEndLevel(i) > 0) then // TODO, check for collapsed at index = 0
     Result := i + 1;
 end;
 

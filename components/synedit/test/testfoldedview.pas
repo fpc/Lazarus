@@ -39,13 +39,14 @@ type
     function TestText5: TStringArray;
     function TestText6: TStringArray;
     function TestText7: TStringArray;
+    function TestText8: TStringArray;
     function TestTextHide(ALen: Integer): TStringArray;
     function TestTextHide2(ALen: Integer): TStringArray;
     function TestTextHide3: TStringArray;
     function TestTextHide4: TStringArray;
     function TestTextPlain: TStringArray;
   protected
-    procedure TstSetText(AName: String; AText: TStringArray);
+    procedure TstSetText(AName: String; AText: Array of String);
     procedure TstFold(AName: String; AFoldAtIndex: integer; AExpectedLines: Array of Integer);
     procedure TstFold(AName: String; AFoldAtIndex, AFoldAtColum: integer; AExpectedLines: Array of Integer);
     procedure TstFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
@@ -66,6 +67,7 @@ type
     procedure TestFoldEdit;
     procedure TestFoldStateFromText;
     procedure TestFoldStateDesc;
+    procedure TestFoldProvider;
   end;
 
 implementation
@@ -73,7 +75,7 @@ implementation
 type
   TSynEditFoldedViewHack = class(TSynEditFoldedView) end;
 
-procedure TTestFoldedView.TstSetText(AName: String; AText: TStringArray);
+procedure TTestFoldedView.TstSetText(AName: String; AText: array of String);
 begin
   PopBaseName;
   ReCreateEdit;
@@ -404,6 +406,32 @@ begin
   Result[24] := '{$ENDIF X1}';
   Result[25] := '//bar';
   Result[26] := '';
+end;
+
+function TTestFoldedView.TestText8: TStringArray;
+begin
+  // end begin lines, with mixed type
+  SetLength(Result, 20);
+  Result[0]  := 'program Foo;';
+  Result[1]  := 'procedure a;';
+  Result[2]  := 'begin';
+  Result[3]  := '{%region}';
+  Result[4]  := '{%endregion} {$ifdef x}';
+  Result[5]  := '             {$endif} if a then begin';
+  Result[6]  := '                      end;             {%region}';
+  Result[7]  := '{%endregion} {$ifdef x}';
+  Result[8]  := '             {$endif} if a then begin';
+  Result[9]  := '                        writeln(1);';
+  Result[10] := '{%region}             end;';
+  Result[11] := '  writeln(1);';
+  Result[12] := '{%endregion}  if a then begin';
+  Result[13] := '                        writeln(1);';
+  Result[14] := '{$ifdef x}    end;';
+  Result[15] := '  writeln(1);';
+  Result[16] := '{$endif}';
+  Result[17] := '  writeln(1);';
+  Result[18] := 'end';
+  Result[19] := '';
 end;
 
 function TTestFoldedView.TestTextHide(ALen: Integer): TStringArray;
@@ -1454,6 +1482,161 @@ begin
   TestCompareString('2', a2, FoldedView.GetFoldDescription(0, 0, -1, -1, False, False));
 //  a3 := FoldedView.GetFoldDescription(0, 0, -1, -1, True,  True);
 //  a4 := FoldedView.GetFoldDescription(0, 0, -1, -1, False, True);
+
+end;
+
+procedure TTestFoldedView.TestFoldProvider;
+  procedure DoTestOpenCounts(AName: string; AType: Integer; AExp: Array of Integer);
+  var
+    i: Integer;
+  begin
+    AName := AName + ' (type=' + IntToStr(AType)+') ';
+    for i := low(AExp) to high(AExp) do
+      DebugLn([BaseTestName+AName+ ' line=' + IntToStr(i)+ ' exp=', AExp[i],'   Got=', FoldedView.FoldProvider.FoldOpenCount(i, AType)]);
+    for i := low(AExp) to high(AExp) do
+      AssertEquals(BaseTestName+AName+ ' line=' + IntToStr(i),
+                   AExp[i], FoldedView.FoldProvider.FoldOpenCount(i, AType));
+  end;
+
+var
+  i: Integer;
+begin
+  // TSynEditFoldProvider.FoldOpenCount(ALineIdx: Integer; AType: Integer = 0): Integer;
+  PushBaseName('');
+
+  TstSetText('TestText1', TestText);
+  EnableFolds([cfbtBeginEnd..cfbtNone]);
+  //                       p  P  B  ~  -
+  DoTestOpenCounts('', 0, [1, 1, 1, 0, 0]); // all (fold conf)
+  DoTestOpenCounts('', 1, [1, 1, 1, 0, 0]); // pas
+  //DoTestOpenCounts('', 4, [1, 1, 1, 0, 0]); // pas (incl unfolded)
+  DoTestOpenCounts('', 2, [0, 0, 0, 0, 0]); // %region
+  DoTestOpenCounts('', 3, [0, 0, 0, 0, 0]); // $if
+
+  TstSetText('TestText1 (2)', TestText);
+  EnableFolds([cfbtTopBeginEnd]);
+  //                       p  P  B  ~  -
+  DoTestOpenCounts('', 0, [0, 0, 1, 0, 0]); // all (fold conf)
+  DoTestOpenCounts('', 1, [0, 0, 1, 0, 0]); // pas
+  //DoTestOpenCounts('', 4, [1, 1, 1, 0, 0]); // pas (incl unfolded)
+  DoTestOpenCounts('', 2, [0, 0, 0, 0, 0]); // %region
+  DoTestOpenCounts('', 3, [0, 0, 0, 0, 0]); // $if
+
+  TstSetText('TestText1 (3)', TestText);
+  EnableFolds([cfbtProcedure, cfbtBeginEnd]);
+  //                       p  P  B  ~  -
+  DoTestOpenCounts('', 0, [0, 1, 0, 0, 0]); // all (fold conf)
+  DoTestOpenCounts('', 1, [0, 1, 0, 0, 0]); // pas
+  //DoTestOpenCounts('', 4, [1, 1, 1, 0, 0]); // pas (incl unfolded)
+  DoTestOpenCounts('', 2, [0, 0, 0, 0, 0]); // %region
+  DoTestOpenCounts('', 3, [0, 0, 0, 0, 0]); // $if
+
+
+
+  TstSetText('TestText2', TestText2);
+  EnableFolds([cfbtBeginEnd..cfbtNone]);
+  //                                      if    else
+  //                       p  PP B  -  B  B  ~  -B ~  -  -  ~
+  DoTestOpenCounts('', 0, [1, 2, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0]);
+  DoTestOpenCounts('', 1, [1, 2, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0]);
+  //DoTestOpenCounts('', 4, [1, 2, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0]);
+  DoTestOpenCounts('', 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  DoTestOpenCounts('', 3, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+
+  TstSetText('TestText2 (2)', TestText2);
+  EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtProgram, cfbtRegion]);
+  //                       p  PP B  -  B  B  ~  -B ~  -  -  ~
+  DoTestOpenCounts('', 0, [0, 2, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0]);
+  DoTestOpenCounts('', 1, [0, 2, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0]);
+  //DoTestOpenCounts('', 4, [1, 2, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0]);
+  DoTestOpenCounts('', 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  DoTestOpenCounts('', 3, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+
+
+
+  TstSetText('TestText3', TestText3);
+  EnableFolds([cfbtBeginEnd..cfbtNone],  [cfbtSlashComment]);
+  //                                      if    else        // one-line-comment
+  //                       p  $  P  -  B  %B ~  --B~  -  -  /
+  DoTestOpenCounts('', 0, [1, 1, 1, 0, 1, 2, 0, 1, 0, 0, 0, 1]);
+  DoTestOpenCounts('', 1, [1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1]);
+  //DoTestOpenCounts('', 4, [1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1]);
+  DoTestOpenCounts('', 2, [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]); // %region
+  DoTestOpenCounts('', 3, [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]); // %if
+
+  TstSetText('TestText3 (2)', TestText3);
+  EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtProgram, cfbtRegion],  [cfbtSlashComment]);
+  //                       p  $  P  -  B  %B ~  --B~  -  -  /
+  DoTestOpenCounts('', 0, [0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1]);
+  DoTestOpenCounts('', 1, [0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1]);
+  //DoTestOpenCounts('', 4, [1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1]);
+  DoTestOpenCounts('', 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]); // %region
+  DoTestOpenCounts('', 3, [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]); // %if
+
+  TstSetText('TestText3 (3)', TestText3);
+  EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtProgram, cfbtIfDef], []);
+  //                       p  $  P  -  B  %B ~  --B~  -  -  /
+  DoTestOpenCounts('', 0, [0, 0, 1, 0, 1, 2, 0, 1, 0, 0, 0, 0]);
+  DoTestOpenCounts('', 1, [0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0]);
+  //DoTestOpenCounts('', 4, [1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1]);
+  DoTestOpenCounts('', 2, [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]); // %region
+  DoTestOpenCounts('', 3, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]); // %if
+
+
+
+  for i := 0 to 2 do begin // pos of $IFDEF does not matter
+    TstSetText('TestTextPasHl-'+IntToStr(i)+'', TestTextPasHl(i));
+    EnableFolds([cfbtBeginEnd..cfbtNone],  [cfbtSlashComment]);
+    //                             if       $E // one-line-comment
+    //                       p  P  $bb-  -  -  /
+    DoTestOpenCounts('', 0, [1, 1, 3, 0, 0, 0, 1]);
+    DoTestOpenCounts('', 1, [1, 1, 2, 0, 0, 0, 1]);
+    //DoTestOpenCounts('', 4, [1, 1, 2, 0, 0, 0, 1]);
+    DoTestOpenCounts('', 2, [0, 0, 0, 0, 0, 0, 0]); // %region
+    DoTestOpenCounts('', 3, [0, 0, 1, 0, 0, 0, 0]); // %if
+
+    TstSetText('TestTextPasHl-'+IntToStr(i)+'', TestTextPasHl(i));
+    EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtBeginEnd],  [cfbtSlashComment]);
+    //                             if       $E // one-line-comment
+    //                       p  P  $bb-  -  -  /
+    DoTestOpenCounts('', 0, [1, 1, 2, 0, 0, 0, 1]);
+    DoTestOpenCounts('', 1, [1, 1, 1, 0, 0, 0, 1]);
+    //DoTestOpenCounts('', 4, [1, 1, 1, 0, 0, 0, 1]);
+    DoTestOpenCounts('', 2, [0, 0, 0, 0, 0, 0, 0]); // %region
+    DoTestOpenCounts('', 3, [0, 0, 1, 0, 0, 0, 0]); // %if
+
+    TstSetText('TestTextPasHl-'+IntToStr(i)+'', TestTextPasHl(i));
+    EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtIfDef],  [cfbtSlashComment]);
+    //                             if       $E // one-line-comment
+    //                       p  P  $bb-  -  -  /
+    DoTestOpenCounts('', 0, [1, 1, 2, 0, 0, 0, 1]);
+    DoTestOpenCounts('', 1, [1, 1, 2, 0, 0, 0, 1]);
+    //DoTestOpenCounts('', 4, [1, 1, 2, 0, 0, 0, 1]);
+    DoTestOpenCounts('', 2, [0, 0, 0, 0, 0, 0, 0]); // %region
+    DoTestOpenCounts('', 3, [0, 0, 0, 0, 0, 0, 0]); // %if
+  end;
+
+
+
+  TstSetText('TestText4', TestText4);
+  EnableFolds([cfbtBeginEnd..cfbtNone],  [cfbtSlashComment]);
+  //                       pPBB  -  B  -  B  -
+  DoTestOpenCounts('', 0, [3, 1, 0, 1, 0, 1]);
+  DoTestOpenCounts('', 1, [3, 1, 0, 1, 0, 1]);
+  //DoTestOpenCounts('', 4, [3, 1, 0, 1, 0, 1]);
+  DoTestOpenCounts('', 2, [0, 0, 0, 0, 0, 0]);
+  DoTestOpenCounts('', 3, [0, 0, 0, 0, 0, 0]);
+
+
+
+  TstSetText('TestText8', TestText8);
+  EnableFolds([cfbtBeginEnd..cfbtNone],  [cfbtSlashComment]);
+  //                       p  P  B  %  $  B  %  $  B  ~  %  ~  B  ~  $  ~  -  ~  -
+  DoTestOpenCounts('', 0, [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0]);
+  DoTestOpenCounts('', 1, [1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]);
+//DoTestOpenCounts('', 4, [1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]);
+  DoTestOpenCounts('', 2, [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]);
+  DoTestOpenCounts('', 3, [0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]);
 
 end;
 

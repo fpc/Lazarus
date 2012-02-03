@@ -75,13 +75,6 @@ type
     procedure EndXmlNodeCodeFoldBlock(ClosePos: Integer = -1; AName: String = '');
   public
     procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string; LineNumber:Integer); override;
-  public
-    function FoldOpenCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
-    function FoldCloseCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
-    function FoldNestCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
-    // TODO: make private
-    function MinimumFoldLevel(ALineIndex: Integer): integer; override;
-    function EndFoldLevel(ALineIndex: Integer): integer; override;
   end;
 
 implementation
@@ -120,50 +113,6 @@ begin
   FXmlRangeInfoChanged := False;
   FXmlRangeInfoOpenPos := 0;
   FXmlRangeInfoClosePos := 0;
-end;
-
-function TSynCustomXmlHighlighter.FoldOpenCount(ALineIndex: Integer; AType: Integer): integer;
-begin
-  If AType <> 0 then exit(0);
-  Result := EndFoldLevel(ALineIndex) - MinimumFoldLevel(ALineIndex);
-end;
-
-function TSynCustomXmlHighlighter.FoldCloseCount(ALineIndex: Integer; AType: Integer): integer;
-begin
-  If AType <> 0 then exit(0);
-  Result := EndFoldLevel(ALineIndex - 1) - MinimumFoldLevel(ALineIndex);
-end;
-
-function TSynCustomXmlHighlighter.FoldNestCount(ALineIndex: Integer; AType: Integer): integer;
-begin
-  If AType <> 0 then exit(0);
-  Result := EndFoldLevel(ALineIndex);
-end;
-
-function TSynCustomXmlHighlighter.MinimumFoldLevel(ALineIndex: Integer): integer;
-var
-  r: TSynCustomHighlighterRange;
-begin
-  if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count) then
-    exit(0);
-  r := TSynCustomHighlighterRange(CurrentRanges[ALineIndex]);
-  if (r <> nil) and (Pointer(r) <> NullRange) then
-    Result := r.MinimumCodeFoldBlockLevel
-  else
-    Result := 0;
-end;
-
-function TSynCustomXmlHighlighter.EndFoldLevel(ALineIndex: Integer): integer;
-var
-  r: TSynCustomHighlighterRange;
-begin
-  if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count) then
-    exit(0);
-  r := TSynCustomHighlighterRange(CurrentRanges[ALineIndex]);
-  if (r <> nil) and (Pointer(r) <> NullRange) then
-    Result := r.CodeFoldStackSize
-  else
-    Result := 0;
 end;
 
 function TSynCustomXmlHighlighter.StartXmlCodeFoldBlock(ABlockType: Integer): TSynCustomCodeFoldBlock;
@@ -232,11 +181,11 @@ begin
 
       if i = 0 then begin
         i := LineIndex - 1;
-        lvl := EndFoldLevel(i);
+        lvl := FoldBlockEndLevel(i);
         while i >= 0 do begin
-          if MinimumFoldLevel(i) < lvl then begin
+          if FoldBlockMinLevel(i) < lvl then begin
             LInfo := TSynHighlighterXmlRangeList(CurrentRanges).XmlRangeInfo[i].ElementOpenList;
-            k := length(LInfo) - Max(EndFoldLevel(i) - lvl, 0) - 1;
+            k := length(LInfo) - Max(FoldBlockEndLevel(i) - lvl, 0) - 1;
             while (k >= 0) do begin
               if (LInfo[k] = AName) then
                 break;

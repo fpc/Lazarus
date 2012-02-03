@@ -5,7 +5,7 @@ unit TestHighlightPas;
 interface
 
 uses
-  Classes, SysUtils, testregistry, TestBase, Forms, LCLProc,
+  Classes, SysUtils, testregistry, TestBase, Forms, LCLProc, TestHighlightFoldBase,
   SynEdit, SynEditTypes, SynHighlighterPas, SynEditHighlighterFoldBase;
 
 type
@@ -14,12 +14,10 @@ type
 
   { TTestBaseHighlighterPas }
 
-  TTestBaseHighlighterPas = class(TTestBase)
+  TTestBaseHighlighterPas = class(TTestBaseHighlighterFoldBase)
   protected
-    PasHighLighter: TSynPasSyn;
-    procedure SetUp; override;
-    procedure TearDown; override;
-    procedure ReCreateEdit; reintroduce;
+    function PasHighLighter: TSynPasSyn;
+    function CreateTheHighLighter: TSynCustomFoldHighlighter; override;
     procedure EnableFolds(AEnbledTypes: TPascalCodeFoldBlockTypes;
                           AHideTypes: TPascalCodeFoldBlockTypes = [];
                           ANoFoldTypes: TPascalCodeFoldBlockTypes = []
@@ -38,12 +36,8 @@ type
     function TestTextFoldInfo3: TStringArray;
     function TestTextFoldInfo4(AIfCol: Integer): TStringArray;
 
-    procedure CheckFoldOpenCounts(Name: String; Expected: Array of Integer);
-    procedure CheckFoldInfoCounts(Name: String; Filter: TSynFoldActions; Expected: Array of Integer);
-    procedure CheckFoldInfoCounts(Name: String; Filter: TSynFoldActions; Group: Integer; Expected: Array of Integer);
     procedure CheckTokensForLine(Name: String; LineIdx: Integer; ExpTokens: Array of TtkTokenKind);
 
-    function FoldActionsToString(AFoldActions: TSynFoldActions): String;
   published
     procedure TestFoldInfo;
     procedure TestExtendedKeywordsAndStrings;
@@ -60,28 +54,14 @@ implementation
 
 { TTestBaseHighlighterPas }
 
-procedure TTestBaseHighlighterPas.SetUp;
+function TTestBaseHighlighterPas.PasHighLighter: TSynPasSyn;
 begin
-  PasHighLighter := nil;
-  inherited SetUp;
+  Result := TSynPasSyn(FTheHighLighter);
 end;
 
-procedure TTestBaseHighlighterPas.TearDown;
+function TTestBaseHighlighterPas.CreateTheHighLighter: TSynCustomFoldHighlighter;
 begin
-  if Assigned(SynEdit) then
-    SynEdit.Highlighter := nil;
-  FreeAndNil(PasHighLighter);
-  inherited TearDown;
-end;
-
-procedure TTestBaseHighlighterPas.ReCreateEdit;
-begin
-  if Assigned(SynEdit) then
-    SynEdit.Highlighter := nil;
-  FreeAndNil(PasHighLighter);
-  inherited ReCreateEdit;
-  PasHighLighter := TSynPasSyn.Create(nil);
-  SynEdit.Highlighter := PasHighLighter;
+  Result := TSynPasSyn.Create(nil);
 end;
 
 procedure TTestBaseHighlighterPas.EnableFolds(AEnbledTypes: TPascalCodeFoldBlockTypes;
@@ -114,8 +94,8 @@ begin
   l.GroupFilter := Group;
   debugln(['### Foldinfo Line: ', ALineIdx,
            ' Cnt=', l.Count, ' CntEx=', c,
-           '   PasMinLvl=',PasHighLighter.MinimumPasFoldLevel(ALineIdx,1),
-           ' EndLvl=',PasHighLighter.EndPasFoldLevel(ALineIdx,1),
+           '   PasMinLvl=', PasHighLighter.FoldBlockMinLevel(ALineIdx,1),
+           ' EndLvl=',PasHighLighter.FoldBlockEndLevel(ALineIdx,1),
            //' Nestcnt=',PasHighLighter.FoldNestCount(ALineIdx,1),
             ' : ', copy(SynEdit.Lines[ALineIdx],1,40)]);
   debugln('Idx: LogXStart End  FldLvlStart End  NestLvlStart End  FldType FldTypeCompat FldGroup FldAction');
@@ -231,40 +211,6 @@ begin
 
 end;
 
-procedure TTestHighlighterPas.CheckFoldOpenCounts(Name: String; Expected: array of Integer);
-var
-  i: Integer;
-begin
-  for i := 0 to high(Expected) do
-    AssertEquals(Name + 'OpenCount Line='+IntToStr(i),  Expected[i], PasHighLighter.FoldOpenCount(i));
-end;
-
-procedure TTestHighlighterPas.CheckFoldInfoCounts(Name: String; Filter: TSynFoldActions;
-  Expected: array of Integer);
-begin
-  CheckFoldInfoCounts(Name, Filter, 0, Expected);
-end;
-
-procedure TTestHighlighterPas.CheckFoldInfoCounts(Name: String;
-  Filter: TSynFoldActions; Group: Integer; Expected: array of Integer);
-var
-  i: Integer;
-  l: TLazSynFoldNodeInfoList;
-begin
-  for i := 0 to high(Expected) do begin
-    l := PasHighLighter.FoldNodeInfo[i];
-    AssertEquals(Name + 'InfoCount(Ex) Line='+IntToStr(i),
-                 Expected[i],
-                 l.CountEx(Filter, Group));
-    l.ClearFilter;
-    l.ActionFilter := Filter;
-    l.GroupFilter := Group;
-    AssertEquals(Name + 'InfoCount Line='+IntToStr(i),
-                 Expected[i],
-                 PasHighLighter.FoldNodeInfo[i].Count);
-  end;
-end;
-
 procedure TTestHighlighterPas.CheckTokensForLine(Name: String; LineIdx: Integer;
   ExpTokens: array of TtkTokenKind);
 var
@@ -281,21 +227,6 @@ begin
       break;
   end;
   AssertEquals(Name+ 'TokenId Line='+IntToStr(LineIdx)+'  amount of tokens', length(ExpTokens), c );
-end;
-
-function TTestHighlighterPas.FoldActionsToString(AFoldActions: TSynFoldActions
-  ): String;
-var
-  s: string;
-  i: TSynFoldAction;
-begin
-  Result:='';
-  for i := low(TSynFoldAction) to high(TSynFoldAction) do
-    if i in AFoldActions then begin
-      WriteStr(s, i);
-      Result := Result + s + ',';
-    end;
-  if Result <> '' then SetLength(Result, Length(Result)-1);
 end;
 
 procedure TTestHighlighterPas.TestFoldInfo;
@@ -1013,12 +944,12 @@ begin
       CheckFoldInfoCounts('', [], 4, [1, 1, 0, 1, 0, 1, 0, 1, 2, 1, 2, 2]);
 
       //### Foldinfo Line: 0   PasMinLvl=0 EndLvl=0 : program Foo;
-      CheckNode( 0, [], 4,   0,   0, 7,   0, 0,   0, 1,   10, 10,  4, [sfaOpen,sfaMarkup]);   // program
+      CheckNode( 0, [], 4,   0,   0, 7,   0, 0,   0, 1,   10, 10,  1, [sfaOpen,sfaMarkup]);   // program
       //### Foldinfo Line: 1   PasMinLvl=0 EndLvl=0 : procedure a;
-      CheckNode( 1, [], 4,   0,   0, 9,   1, 1,   1, 2,   3, 3,  4, [sfaOpen,sfaMarkup]);   // procedure
+      CheckNode( 1, [], 4,   0,   0, 9,   1, 1,   1, 2,   3, 3,  1, [sfaOpen,sfaMarkup]);   // procedure
       //### Foldinfo Line: 2   PasMinLvl=0 EndLvl=0 : {$IFDEF A}
       //### Foldinfo Line: 3   PasMinLvl=0 EndLvl=0 : begin
-      CheckNode( 3, [], 4,   0,   0, 5,   2, 2,   2, 3,   1, 0,  4, [sfaOpen,sfaMarkup]);   // begin
+      CheckNode( 3, [], 4,   0,   0, 5,   2, 2,   2, 3,   1, 0,  1, [sfaOpen,sfaMarkup]);   // begin
       //### Foldinfo Line: 4   PasMinLvl=0 EndLvl=0 : {$ENDIF}
       //### Foldinfo Line: 5   PasMinLvl=0 EndLvl=1 :   {$IFDEF B} if a then begin {$ENDIF}
       CheckNode( 5, [], 4,   0,   23, 28,   0, 1,   3, 4,   0, 0,  1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);   //  begin
@@ -1026,16 +957,16 @@ begin
       //### Foldinfo Line: 7   PasMinLvl=0 EndLvl=0 :   end;
       CheckNode( 7, [], 4,   0,   2, 5,   1, 0,   4, 3,   0, 0,  1, [sfaClose,sfaMarkup,sfaFold]);   //  end
       //### Foldinfo Line: 8   PasMinLvl=0 EndLvl=0 : end;
-      CheckNode( 8, [], 4,   0,   0, 3,   3, 3,   3, 2,   1, 0,  4, [sfaClose,sfaMarkup]);   // end;
-      CheckNode( 8, [], 4,   1,   0, 3,   2, 2,   2, 1,   3, 3,  4, [sfaClose,sfaMarkup]);   // end;
+      CheckNode( 8, [], 4,   0,   0, 3,   3, 3,   3, 2,   1, 0,  1, [sfaClose,sfaMarkup]);   // end;
+      CheckNode( 8, [], 4,   1,   0, 3,   2, 2,   2, 1,   3, 3,  1, [sfaClose,sfaMarkup]);   // end;
       //### Foldinfo Line: 9   PasMinLvl=0 EndLvl=1 : begin
       CheckNode( 9, [], 4,   0,   0, 5,   0, 1,   1, 2,   0, 0,  1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);   // begin
       //### Foldinfo Line: 10   PasMinLvl=0 EndLvl=0 : end.
       CheckNode(10, [], 4,   0,   0, 3,   1, 0,   2, 1,   0, 0,  1, [sfaClose,sfaMarkup,sfaFold]);   // end.
-      CheckNode(10, [], 4,   1,   0, 3,   1, 1,   1, 0,   10, 10,  4, [sfaClose,sfaMarkup]);   // end.
+      CheckNode(10, [], 4,   1,   0, 3,   1, 1,   1, 0,   10, 10,  1, [sfaClose,sfaMarkup]);   // end.
       //### Foldinfo Line: 11   PasMinLvl=0 EndLvl=0 : //
-      CheckNode(11, [], 4,   0,   0, 2,   0, 0,   0, 1,   22, 22,  4, [sfaOpen]);   // //
-      CheckNode(11, [], 4,   1,   2, 2,   1, 1,   1, 0,   22, 22,  4, [sfaClose,sfaLastLineClose]);   // /
+      CheckNode(11, [], 4,   0,   0, 2,   0, 0,   0, 1,   22, 22,  1, [sfaOpen]);   // //
+      CheckNode(11, [], 4,   1,   2, 2,   1, 1,   1, 0,   22, 22,  1, [sfaClose,sfaLastLineClose]);   // /
     {%endregion TEXT 1 -- [cfbtBeginEnd..cfbtNone], [] grp=4}
 
     {%region TEXT 1 -- [cfbtBeginEnd..cfbtNone], [sfaFold]}
@@ -1116,7 +1047,7 @@ begin
       //### Foldinfo Line: 0   PasMinLvl=0 EndLvl=1 : program Foo;
       CheckNode( 0, [], 0,   0,   0, 7,   0, 1,   0, 1,   10, 10,  1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
       //### Foldinfo Line: 1   PasMinLvl=1 EndLvl=1 : procedure a;
-      CheckNode( 1, [], 0,   0,   0, 9,   1, 1,   1, 2,   3, 3,  4, [sfaOpen,sfaMarkup]);
+      CheckNode( 1, [], 0,   0,   0, 9,   1, 1,   1, 2,   3, 3,  1, [sfaOpen,sfaMarkup]);
       //### Foldinfo Line: 2   PasMinLvl=1 EndLvl=1 : {$IFDEF A}
       CheckNode( 2, [], 0,   0,   2, 7,   0, 1,   0, 1,   18, 18,  3, [sfaOpen,sfaFold,sfaFoldFold]);
       //### Foldinfo Line: 3   PasMinLvl=1 EndLvl=2 : begin
@@ -1132,7 +1063,7 @@ begin
       CheckNode( 7, [], 0,   0,   2, 5,   3, 2,   4, 3,   0, 0,  1, [sfaClose,sfaMarkup,sfaFold]);
       //### Foldinfo Line: 8   PasMinLvl=1 EndLvl=1 : end;
       CheckNode( 8, [], 0,   0,   0, 3,   2, 1,   3, 2,   1, 0,  1, [sfaClose,sfaMarkup,sfaFold]);
-      CheckNode( 8, [], 0,   1,   0, 3,   2, 2,   2, 1,   3, 3,  4, [sfaClose,sfaMarkup]);
+      CheckNode( 8, [], 0,   1,   0, 3,   2, 2,   2, 1,   3, 3,  1, [sfaClose,sfaMarkup]);
       //### Foldinfo Line: 9   PasMinLvl=1 EndLvl=2 : begin
       CheckNode( 9, [], 0,   0,   0, 5,   1, 2,   1, 2,   0, 0,  1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
       //### Foldinfo Line: 10   PasMinLvl=0 EndLvl=0 : end.

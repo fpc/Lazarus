@@ -140,7 +140,10 @@ var
       exit;
 
     inc(YIndex);
-    while (YIndex < LCnt) and (HL.MinimumFoldLevel(YIndex) > StartNode.NestLvlStart) do
+    while (YIndex < LCnt) and
+          (HL.FoldBlockMinLevel(YIndex, StartNode.FoldGroup, [sfbIncludeDisabled])
+           > StartNode.NestLvlStart)
+    do
       inc(YIndex);
     if YIndex = LCnt then
       exit;
@@ -172,7 +175,9 @@ var
       exit;
 
     dec(YIndex);
-    while (YIndex >= 0) and (HL.MinimumFoldLevel(YIndex) > EndNode.NestLvlEnd) do
+    while (YIndex >= 0) and
+          (HL.FoldBlockMinLevel(YIndex, EndNode.FoldGroup, [sfbIncludeDisabled]) > EndNode.NestLvlEnd)
+    do
       dec(YIndex);
     if YIndex < 0 then
       exit;

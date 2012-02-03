@@ -65,6 +65,7 @@ type
     // internal type / no config
     cfbtLfmNone
     );
+  TLfmCodeFoldBlockTypes = set of TLfmCodeFoldBlockType;
 
   TProcTableProc = procedure of object;
 
@@ -148,14 +149,6 @@ type
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
     property IdentChars;
-  public
-    // folding
-    function FoldOpenCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
-    function FoldCloseCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
-    function FoldNestCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
-    // TODO: make private
-    function MinimumFoldLevel(ALineIndex: Integer): integer; override;
-    function EndFoldLevel(ALineIndex: Integer): integer; override;
   published
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
       write fCommentAttri;
@@ -610,50 +603,6 @@ procedure TSynLFMSyn.ResetRange;
 begin
   inherited;
   fRange := rsUnknown;
-end;
-
-function TSynLFMSyn.FoldOpenCount(ALineIndex: Integer; AType: Integer): integer;
-begin
-  If AType <> 0 then exit(0);
-  Result := EndFoldLevel(ALineIndex) - MinimumFoldLevel(ALineIndex);
-end;
-
-function TSynLFMSyn.FoldCloseCount(ALineIndex: Integer; AType: Integer): integer;
-begin
-  If AType <> 0 then exit(0);
-  Result := EndFoldLevel(ALineIndex - 1) - MinimumFoldLevel(ALineIndex);
-end;
-
-function TSynLFMSyn.FoldNestCount(ALineIndex: Integer; AType: Integer): integer;
-begin
-  If AType <> 0 then exit(0);
-  Result := EndFoldLevel(ALineIndex);
-end;
-
-function TSynLFMSyn.MinimumFoldLevel(ALineIndex: Integer): integer;
-var
-  r: TSynCustomHighlighterRange;
-begin
-  if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count) then
-    exit(0);
-  r := TSynCustomHighlighterRange(CurrentRanges[ALineIndex]);
-  if (r <> nil) and (Pointer(r) <> NullRange) then
-    Result := r.MinimumCodeFoldBlockLevel
-  else
-    Result := 0;
-end;
-
-function TSynLFMSyn.EndFoldLevel(ALineIndex: Integer): integer;
-var
-  r: TSynCustomHighlighterRange;
-begin
-  if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count) then
-    exit(0);
-  r := TSynCustomHighlighterRange(CurrentRanges[ALineIndex]);
-  if (r <> nil) and (Pointer(r) <> NullRange) then
-    Result := r.CodeFoldStackSize
-  else
-    Result := 0;
 end;
 
 procedure TSynLFMSyn.SetRange(Value: Pointer);

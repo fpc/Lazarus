@@ -56,7 +56,7 @@ interface
 {$I SynEdit.inc}
 
 uses
-  Classes, math, Graphics, SynEditTypes, SynEditHighlighter,
+  Classes, Graphics, SynEditTypes, SynEditHighlighter,
   SynEditHighlighterFoldBase, SynEditHighlighterXMLBase;
 
 type
@@ -97,22 +97,6 @@ type
   );
 
 type
-
-  { TSynHighlighterXmlRangeList }
-
-  TSynHighlighterXmlRangeList = class(TSynHighlighterRangeList)
-  private
-    FItemOffset: Integer;
-    function GetXmlRangeInfo(Index: Integer): TSynXmlRangeInfo;
-    procedure SetXmlRangeInfo(Index: Integer; const AValue: TSynXmlRangeInfo);
-  protected
-    procedure SetCapacity(const AValue: Integer); override;
-  public
-    constructor Create;
-    procedure Move(AFrom, ATo, ALen: Integer); override;
-    property XmlRangeInfo[Index: Integer]: TSynXmlRangeInfo
-      read GetXmlRangeInfo write SetXmlRangeInfo;
-  end;
 
   TProcTableProc = procedure of object;
 
@@ -1010,65 +994,8 @@ begin
   Result := ord(high(TXmlCodeFoldBlockType)) - ord(low(TXmlCodeFoldBlockType)) + 1;
 end;
 
-{ TSynHighlighterXmlRangeList }
-
-function TSynHighlighterXmlRangeList.GetXmlRangeInfo(Index: Integer): TSynXmlRangeInfo;
-begin
-  if (Index < 0) or (Index >= Count) then begin
-    Result.ElementOpenList := nil;
-    exit;
-  end;
-  Result := TSynXmlRangeInfo((ItemPointer[Index] + FItemOffset)^);
-end;
-
-procedure TSynHighlighterXmlRangeList.SetXmlRangeInfo(Index: Integer;
-  const AValue: TSynXmlRangeInfo);
-begin
-  TSynXmlRangeInfo((ItemPointer[Index] + FItemOffset)^) := AValue;
-end;
-
-procedure TSynHighlighterXmlRangeList.SetCapacity(const AValue: Integer);
-var
-  i: LongInt;
-begin
-  for i := AValue to Capacity-1 do
-    with TSynXmlRangeInfo((ItemPointer[i] + FItemOffset)^) do begin
-      ElementOpenList := nil;
-      ElementCloseList := nil;
-    end;
-  inherited SetCapacity(AValue);
-end;
-
-constructor TSynHighlighterXmlRangeList.Create;
-begin
-  inherited;
-  FItemOffset := ItemSize;
-  ItemSize := FItemOffset + SizeOf(TSynXmlRangeInfo);
-end;
-
-procedure TSynHighlighterXmlRangeList.Move(AFrom, ATo, ALen: Integer);
-var
-  i: LongInt;
-begin
-  if ATo > AFrom then
-    for i:= Max(AFrom + ALen, ATo) to ATo + ALen - 1 do // move forward
-      with TSynXmlRangeInfo((ItemPointer[i] + FItemOffset)^) do begin
-        ElementOpenList := nil;
-        ElementCloseList := nil;
-      end
-  else
-    for i:= ATo to Min(ATo + ALen , AFrom) - 1 do // move backward
-      with TSynXmlRangeInfo((ItemPointer[i] + FItemOffset)^) do begin
-        ElementOpenList := nil;
-        ElementCloseList := nil;
-      end;
-  inherited Move(AFrom, ATo, ALen);
-end;
-
 initialization
   RegisterPlaceableHighlighter(TSynXMLSyn);
 
 end.
-
-
 
