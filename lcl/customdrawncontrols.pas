@@ -1778,11 +1778,18 @@ end;
 procedure TCDPositionedControl.DoClickButton(AButton: TCDControlState; ALargeChange: Boolean);
 var
   lChange: Integer;
+  NewPosition: Integer = -1;
 begin
   if ALargeChange then lChange := FLargeChange
   else lChange := FSmallChange;
-  if csfLeftArrow in AButton then Position := Position - lChange
-  else if csfRightArrow in AButton then Position := Position + lChange;
+  if csfLeftArrow in AButton then NewPosition := Position - lChange
+  else if csfRightArrow in AButton then NewPosition := Position + lChange;
+
+  if (NewPosition >= 0) and (NewPosition <> Position) then
+  begin
+    Position := NewPosition;
+    if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
+  end;
 end;
 
 procedure TCDPositionedControl.HandleBtnClickTimer(ASender: TObject);
@@ -1900,7 +1907,11 @@ begin
     if NewPosition > FMax then NewPosition := FMax;
     if NewPosition < FMin then NewPosition := FMin;
 
-    Position := NewPosition;
+    if (NewPosition <> Position) then
+    begin
+      Position := NewPosition;
+      if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
+    end;
   end;
 end;
 
@@ -1920,7 +1931,11 @@ begin
   begin
     NewPosition := GetPositionFromMousePos(X, Y);
     DragDropStarted := True;
-    if NewPosition >= 0 then Position := NewPosition;
+    if (NewPosition >= 0) and (NewPosition <> Position) then
+    begin
+      Position := NewPosition;
+      if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
+    end;
   end;
 
   // Check if any buttons were clicked
