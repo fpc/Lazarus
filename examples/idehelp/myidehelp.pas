@@ -45,7 +45,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
-  LazHelpIntf, HelpIntfs, IDEHelpIntf, IDEDialogs, IDEOptionsIntf;
+  LazHelpIntf, HelpIntfs, ComCtrls, StdCtrls, IDEHelpIntf, IDEDialogs,
+  IDEOptionsIntf;
 
 const
   MyHelpOptionID: integer = 10000; // an arbitrary number, choose a big number
@@ -63,6 +64,7 @@ type
     FAllKeywordNode: THelpNode;
   public
     KeywordToText: TStrings; // every line has the format: Keyword=Text
+    Enabled: boolean;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function GetNodesForKeyword(const HelpKeyword: string;
@@ -85,6 +87,7 @@ type
   private
     FAllDirectiveNode: THelpNode;
   public
+    Enabled: boolean;
     FPCDirectiveToText: TStrings; // every line has the format: Keyword=Text
     IDEDirectiveToText: TStrings; // every line has the format: Keyword=Text
     constructor Create(TheOwner: TComponent); override;
@@ -109,6 +112,8 @@ type
   private
     FAllMessageNode: THelpNode;
   public
+    Enabled: boolean;
+    constructor Create(TheOwner: TComponent); override;
     function GetNodesForMessage(const AMessage: string; MessageParts: TStrings;
                         var ListOfNodes: THelpNodeQueryList; var ErrMsg: string
                         ): TShowHelpResult; override;
@@ -133,6 +138,7 @@ type
   private
     FAllContextNode: THelpNode;
   public
+    Enabled: boolean;
     ContextToMessage: TStrings;  // every line has the format: DecimalNumber=Text
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -150,8 +156,28 @@ type
   { TMyHelpSetupDialog }
 
   TMyHelpSetupDialog = class(TAbstractIDEOptionsEditor)
+    ContextEnableCheckBox: TCheckBox;
+    ContextMemo: TMemo;
+    ContextNoteLabel: TLabel;
+    DirectivesEnableCheckBox: TCheckBox;
+    DirectivesMemo: TMemo;
+    DirectivesNoteLabel: TLabel;
+    FPCKeywordsEnableCheckBox: TCheckBox;
+    FPCKeywordsMemo: TMemo;
+    FPCKeywordsNoteLabel: TLabel;
+    MessagesEnableCheckBox: TCheckBox;
+    MessagesNoteLabel: TLabel;
+    PageControl1: TPageControl;
+    FPCKeywordsTabSheet: TTabSheet;
+    DirectivesTabSheet: TTabSheet;
+    MessagesTabSheet: TTabSheet;
+    ContextTabSheet: TTabSheet;
+    SourcesTabSheet: TTabSheet;
+    ClassesTabSheet: TTabSheet;
   private
   public
+    HelpShortCutAsText: string;
+    PkgName: string;
     function GetTitle: String; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -166,8 +192,8 @@ implementation
 procedure Register;
 begin
   // register help databases
-  // For demonstration purpose one help database per help type
-  // Normally you would combine them into one or a few.
+  // For demonstration purpose there is one help database per help type.
+  // Normally you would combine them into one database.
   MyFPCKeywordHelpDatabase:=TMyFPCKeywordHelpDatabase(
     HelpDatabases.CreateHelpDatabase('MyFPCKeyWordHelpDB',TMyFPCKeywordHelpDatabase,true));
   MyDirectiveHelpDatabase:=TMyDirectiveHelpDatabase(
@@ -190,11 +216,41 @@ end;
 
 procedure TMyHelpSetupDialog.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
+  // fpc keywords
+  FPCKeywordsEnableCheckBox.Checked:=MyFPCKeywordHelpDatabase.Enabled;
+  FPCKeywordsMemo.Text:=Trim(MyFPCKeywordHelpDatabase.KeywordToText.Text);
 
+  // directives
+
+  // messages
+
+  // context
+
+  // classes
+
+  // sources
 end;
 
 procedure TMyHelpSetupDialog.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
+  HelpShortCutAsText:='F1';
+  PkgName:='DemoIDEHelp';
+
+  // fpc keywords
+  FPCKeywordsNoteLabel.Caption:='Simple help for FPC keywords installed by package '+PkgName+'.'
+  +' You get this help when you press the help key ('+HelpShortCutAsText+') in the source editor and caret is not on an identifier.'
+  +' Each line has the format "keyword=text" without the quotes. For example "repeat=This keyword starts a repeat-until loop."';
+  FPCKeywordsEnableCheckBox.Caption:='Enable';
+
+  // directives
+
+  // messages
+
+  // context
+
+  // classes
+
+  // sources
 
 end;
 
@@ -207,6 +263,19 @@ end;
 
 procedure TMyHelpSetupDialog.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
+  // fpc keywords
+  MyFPCKeywordHelpDatabase.Enabled:=FPCKeywordsEnableCheckBox.Checked;
+  MyFPCKeywordHelpDatabase.KeywordToText.Text:=Trim(FPCKeywordsMemo.Text);
+
+  // directives
+
+  // messages
+
+  // context
+
+  // classes
+
+  // sources
 
 end;
 
@@ -215,6 +284,7 @@ end;
 constructor TMyContextHelpDatabase.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  Enabled:=true;
   ContextToMessage:=TStringList.Create;
   ContextToMessage.Add('3456=A help text for helpcontext 3456');
 end;
@@ -233,7 +303,7 @@ var
 begin
   ErrMsg:='';
   Result:=shrHelpNotFound;
-  if (csDesigning in ComponentState) then exit;
+  if (csDesigning in ComponentState) or (not Enabled) then exit;
 
   Msg:=ContextToMessage.Values[IntToStr(HelpContext)];
   if Msg='' then exit;
@@ -272,6 +342,12 @@ end;
 
 { TMyMessagesHelpDatabase }
 
+constructor TMyMessagesHelpDatabase.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  Enabled:=true;
+end;
+
 function TMyMessagesHelpDatabase.GetNodesForMessage(const AMessage: string;
   MessageParts: TStrings; var ListOfNodes: THelpNodeQueryList;
   var ErrMsg: string): TShowHelpResult;
@@ -280,7 +356,7 @@ var
 begin
   ErrMsg:='';
   Result:=shrHelpNotFound;
-  if (csDesigning in ComponentState) then exit;
+  if (csDesigning in ComponentState) or (not Enabled) then exit;
   debugln(['TMyMessagesHelpDatabase.GetNodesForDirective AMessage="',AMessage,'" Parts="',MessageParts.Text,'"']);
 
   // check if the message fits
@@ -324,6 +400,7 @@ end;
 constructor TMyDirectiveHelpDatabase.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  Enabled:=true;
   FPCDirectiveToText:=TStringList.Create;
   FPCDirectiveToText.Add('mode=Set the syntax, e.g. fpc, objfpc, delphi, macpas, tp');
   IDEDirectiveToText:=TStringList.Create;
@@ -346,7 +423,7 @@ var
   Title: String;
 begin
   Result:=shrHelpNotFound;
-  if (csDesigning in ComponentState) then exit;
+  if (csDesigning in ComponentState) or (not Enabled) then exit;
   debugln(['TMyDirectiveHelpDatabase.GetNodesForDirective HelpDirective="',HelpDirective,'"']);
   if (FPCDirectiveHelpPrefix<>'')
   and (LeftStr(HelpDirective,length(FPCDirectiveHelpPrefix))=FPCDirectiveHelpPrefix)
@@ -416,6 +493,7 @@ end;
 constructor TMyFPCKeywordHelpDatabase.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  Enabled:=true;
   KeywordToText:=TStringList.Create;
   KeywordToText.Add('procedure=Named code block');
 end;
@@ -434,7 +512,7 @@ var
   i: Integer;
 begin
   Result:=shrHelpNotFound;
-  if (csDesigning in ComponentState) then exit;
+  if (csDesigning in ComponentState) or (not Enabled) then exit;
   if (FPCKeyWordHelpPrefix='')
   or (LeftStr(HelpKeyword,length(FPCKeyWordHelpPrefix))<>FPCKeyWordHelpPrefix)
   then exit;
