@@ -279,7 +279,7 @@ type
     // fields
     FMax: Integer;
     FMin: Integer;
-    FOnChange: TNotifyEvent;
+    FOnChange, FOnChangeByUser: TNotifyEvent;
     FPageSize: Integer;
     FPosition: Integer;
     procedure SetMax(AValue: Integer);
@@ -319,6 +319,7 @@ type
     property Max: Integer read FMax write SetMax;
     property Min: Integer read FMin write SetMin;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnChangeByUser: TNotifyEvent read FOnChangeByUser write FOnChangeByUser;
     property Position: Integer read FPosition write SetPosition;
   end;
 
@@ -442,6 +443,7 @@ type
     destructor Destroy; override;
     //procedure Paint; override;
   published
+    property Align;
     property Color;
     property DrawStyle;
     property Enabled;
@@ -1942,12 +1944,20 @@ begin
     if FMoveByDragging then
     begin
       NewPosition := FPositionAtMouseDown + GetPositionDisplacement(FLastMouseDownPos, Point(X, Y));
-      Position := NewPosition;
+      if NewPosition <> Position then
+      begin
+        Position := NewPosition;
+        if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
+      end;
     end
     else
     begin
       NewPosition := GetPositionFromMousePos(X, Y);
-      if NewPosition >= 0 then Position := NewPosition;
+      if (NewPosition >= 0) and (NewPosition <> Position) then
+      begin
+        Position := NewPosition;
+        if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
+      end;
     end;
   end;
   inherited MouseMove(Shift, X, Y);
