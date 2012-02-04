@@ -695,6 +695,63 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:   TCanvas.BrushCopy
+  Params:   ADestRect, ABitmap, ASourceRect, ATransparentColor
+  Returns:  Nothing
+
+  Makes a stretch draw operation while substituting a color of the source bitmap
+  with the color of the brush of the canvas
+ ------------------------------------------------------------------------------}
+procedure TCanvas.BrushCopy(ADestRect: TRect; ABitmap: TBitmap; ASourceRect: TRect;
+  ATransparentColor: TColor);
+var
+  lIntfImage: TLazIntfImage;
+  lTransparentColor, lBrushColor, lPixelColor: TFPColor;
+  lPaintedBitmap: TBitmap;
+  x, y: Integer;
+  lDestWidth, lDestHeight, lSrcWidth, lSrcHeight: Integer;
+begin
+  // Preparation of data
+  lDestWidth := ADestRect.Right - ADestRect.Left;
+  lDestHeight := ADestRect.Bottom - ADestRect.Top;
+  lSrcWidth := ASourceRect.Right - ASourceRect.Left;
+  lSrcHeight := ASourceRect.Bottom - ASourceRect.Top;
+  lTransparentColor := TColorToFPColor(ColorToRGB(ATransparentColor));
+  lBrushColor := TColorToFPColor(ColorToRGB(Brush.Color));
+
+  lPaintedBitmap := TBitmap.Create;
+  lIntfImage := TLazIntfImage.Create(0, 0);
+  try
+    // First copy the source rectangle to another bitmap
+    // So that we don't have to iterate in pixels which wont be used changing the color
+    lPaintedBitmap.Width := lSrcWidth;
+    lPaintedBitmap.Height := lSrcHeight;
+    lPaintedBitmap.Canvas.Draw(-ASourceRect.Left, -ASourceRect.Top, ABitmap);
+
+    // Next copy the bitmap to a intfimage to be able to make the color change
+    lIntfImage.LoadFromBitmap(lPaintedBitmap.Handle, 0);
+    for x := 0 to lSrcWidth-1 do
+      for y := 0 to lSrcHeight-1 do
+      begin
+        lPixelColor := lIntfImage.Colors[x, y];
+        if (lPixelColor.red = lTransparentColor.red) and
+           (lPixelColor.green = lTransparentColor.green) and
+           (lPixelColor.blue = lTransparentColor.blue) then
+           lIntfImage.Colors[x, y] := lBrushColor;
+      end;
+
+    // Now obtain a bitmap with the new image
+    lPaintedBitmap.LoadFromIntfImage(lIntfImage);
+
+    // And stretch draw it
+    Self.StretchDraw(ADestRect, lPaintedBitmap);
+  finally
+    lIntfImage.Free;
+    lPaintedBitmap.Free;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method:   TCanvas.RadialPie
   Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg: Integer
   Returns:  Nothing

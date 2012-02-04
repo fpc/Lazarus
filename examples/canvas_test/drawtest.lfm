@@ -1,10 +1,10 @@
 object frmDraw: TfrmDraw
   Left = 290
-  Height = 274
+  Height = 429
   Top = 197
-  Width = 460
+  Width = 566
   Caption = 'frmDraw'
   OnCreate = FormCreate
   OnPaint = FormPaint
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
 end

@@ -1110,8 +1110,8 @@ type
     // extra drawing methods (there are more in the ancestor TFPCustomCanvas)
     procedure Arc(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
-    //procedure BrushCopy(Dest: TRect; InternalImages: TBitmap; Src: TRect;
-    //                    TransparentColor: TColor); virtual;
+    procedure BrushCopy(ADestRect: TRect; ABitmap: TBitmap; ASourceRect: TRect;
+                        ATransparentColor: TColor); virtual;
     procedure Chord(x1, y1, x2, y2,
                     Angle16Deg, Angle16DegLength: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure Chord(x1, y1, x2, y2, SX, SY, EX, EY: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
