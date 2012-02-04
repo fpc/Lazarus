@@ -94,6 +94,10 @@ type
     constructor Create(aName: PChar); overload;
   end;
 
+  ECTUnitDictionaryLoadError = class(Exception)
+  public
+  end;
+
   { TUnitDictionary }
 
   TUnitDictionary = class
@@ -692,7 +696,7 @@ var
     if Col>0 then
       s:=s+', column '+IntToStr(Col);
     s:=s+': '+Msg;
-    raise Exception.Create(s);
+    raise ECTUnitDictionaryLoadError.Create(s);
   end;
 
   function ReadDecimal: integer;

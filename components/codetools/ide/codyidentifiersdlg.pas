@@ -329,6 +329,7 @@ procedure TCodyUDLoadSaveThread.Execute;
 var
   UncompressedMS: TMemoryStream;
   TempFilename: String;
+  BugFilename: String;
 begin
   Dictionary.LoadSaveError:='';
   FreeOnTerminate:=true;
@@ -387,6 +388,14 @@ begin
       debugln(['WARNING: TCodyUDLoadSaveThread.Execute Load=',Load,' ',E.Message]);
       Dictionary.LoadSaveError:=E.Message;
       DumpExceptionBackTrace;
+      if E is ECTUnitDictionaryLoadError then begin
+        BugFilename:=Filename+'.bug';
+        debugln(['TCodyUDLoadSaveThread.Execute saving buggy file for inspection to "',BugFilename,'"']);
+        try
+          RenameFileUTF8(Filename,BugFilename);
+        except
+        end;
+      end;
     end;
   end;
   Done:=true;
