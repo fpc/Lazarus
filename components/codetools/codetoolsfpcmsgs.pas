@@ -50,11 +50,11 @@ type
 
   TFPCMsgItem = class
   public
-    Part: string; // e.g. general, unit, link
-    Typ: string; // e.g. f, e, w, n, h
+    Part: string; // e.g. 'general', 'unit', 'link'
+    Typ: string; // e.g. 'f','e','w','n','h','i','l','u','t','c','d','x','o'
     TxtIdentifier: string; // identifier
     ID: integer; // positive number
-    IDTyp: string; // e.g. shown Typ
+    ShownTyp: string; // e.g. shown Typ, can be different from Typ
     Msg: string;
     Comment: string; // multi line
 
@@ -81,6 +81,7 @@ type
     function Count: integer;
     property Items[Index: integer]: TFPCMsgItem read GetItems; default;
     function FindWithID(ID: integer): TFPCMsgItem;
+    function FindWithMessage(const Msg: string): TFPCMsgItem;
   end;
 
 function CompareFPCMsgId(item1, item2: Pointer): integer;
@@ -312,11 +313,11 @@ procedure TFPCMsgFile.LoadFromList(List: TStrings);
   end;
 
   function ReadItem(var Line: integer; const s: string): TFPCMsgItem;
-  // <part>_<typ>_<txtidentifier>=<id>_<idtype>_<message with plcaeholders>
-  // options are different:
-  //   <part>_<txtidentifier>=<id>_<idtype>_<message with plcaeholders>
+  // <part>_<typ>_<txtidentifier>=<id>_<idtype>_<message with placeholders>
+  // option and wpo are different:
+  //   <part>_<txtidentifier>=<id>_<idtype>_<message with placeholders>
   // and
-  //   <part>_<txtidentifier>=<id>_[<multi line message with plcaeholders>
+  //   <part>_<txtidentifier>=<id>_[<multi line message with placeholders>
   //      ...]
   //
   var
@@ -324,7 +325,7 @@ procedure TFPCMsgFile.LoadFromList(List: TStrings);
     Part: string;
     Typ: string;
     TxtID: string;
-    IdTyp: string;
+    ShownTyp: string;
     IDStr: string;
     ID: LongInt;
     Msg: string;
@@ -372,9 +373,9 @@ procedure TFPCMsgFile.LoadFromList(List: TStrings);
       {$ENDIF}
       exit;
     end;
-    IdTyp:='';
+    ShownTyp:='';
     if p<>'[' then begin
-      if not ReadTilChar(p,'_',IdTyp) then begin
+      if not ReadTilChar(p,'_',ShownTyp) then begin
         {$IFDEF VerboseFPCMsgFile}
         debugln(['TFPCMsgFile.LoadFromList invalid urgency, line ',Line,': "',s,'"']);
         {$ENDIF}
@@ -389,7 +390,7 @@ procedure TFPCMsgFile.LoadFromList(List: TStrings);
         if Line>=List.Count then exit;
         h:=List[Line];
         //debugln(['ReadItem ID=',ID,' h=',h]);
-        if (h<>'') and (h=']') then break;
+        if (h<>'') and (h[1]=']') then break;
         Msg:=Msg+h+LineEnding;
       until false;
     end;
@@ -399,9 +400,9 @@ procedure TFPCMsgFile.LoadFromList(List: TStrings);
     Result.Typ:=Typ;
     Result.TxtIdentifier:=TxtID;
     Result.ID:=ID;
-    Result.IDTyp:=IdTyp;
+    Result.ShownTyp:=ShownTyp;
     Result.Msg:=Msg;
-    //debugln(['ReadItem Part=',Part,' Typ=',Typ,' TxtID=',TxtID,' ID=',ID,' IdTyp=',IdTyp,' Msg="',copy(Result.Msg,1,20),'"']);
+    //debugln(['ReadItem Part=',Part,' Typ=',Typ,' TxtID=',TxtID,' ID=',ID,' IdTyp=',ShownTyp,' Msg="',copy(Result.Msg,1,20),'"']);
   end;
 
 var
@@ -485,6 +486,98 @@ begin
     Result:=TFPCMsgItem(Node.Data)
   else
     Result:=nil;
+end;
+
+function TFPCMsgFile.FindWithMessage(const Msg: string): TFPCMsgItem;
+var
+  MsgID: Integer;
+  Item: TFPCMsgItem;
+  i: Integer;
+  p: PChar;
+  PatStartPos: PChar;
+  PatEndPos: PChar;
+  MsgFitPos: PChar;
+  PatPos: PChar;
+  MsgPos: PChar;
+  BestMatchLen: Integer;
+  MatchLen: Integer;
+begin
+  Result:=nil;
+  if Msg='' then exit;
+  p:=PChar(Msg);
+
+  // skip time [0.000]
+  if (p^='[') and (p[1] in ['0'..'9']) then begin
+    inc(p,2);
+    while p^ in ['0'..'9','.'] do inc(p);
+    if p^<>']' then exit; // not a fpc message
+    inc(p);
+    while p^ in [' '] do inc(p);
+  end;
+
+  // read message ID (000)
+  MsgID:=0;
+  if (p^='(') and (p[1] in ['0'..'9']) then begin
+    inc(p);
+    while p^ in ['0'..'9','.'] do begin
+      if MsgID>1000000 then exit; // not a fpc message
+      MsgID:=MsgID*10+ord(p^)-ord('0');
+      inc(p);
+    end;
+    if p^<>')' then exit; // not a fpc message
+    inc(p);
+    while p^ in [' '] do inc(p);
+    Result:=FindWithID(MsgID);
+    exit;
+  end;
+
+  // search a message pattern that fits the Msg
+  BestMatchLen:=0;
+  for i:=0 to Count-1 do begin
+    Item:=Items[i];
+    if Item.Msg='' then continue;
+    // Item.Msg is for example "$1 lines compiled, $2 sec$3"
+    PatEndPos:=PChar(Item.Msg);
+    MsgFitPos:=PChar(Msg);
+    MatchLen:=0;
+    repeat
+      PatStartPos:=PatEndPos;
+      // get next pattern between placeholders
+      repeat
+        if PatEndPos^=#0 then break;
+        if (PatEndPos^='$') and (PatEndPos[1] in ['0'..'9']) then break;
+        inc(PatEndPos);
+      until false;
+      if PatEndPos<>PatStartPos then begin
+        // search pattern in Msg
+        repeat
+          MsgPos:=MsgFitPos;
+          PatPos:=PatStartPos;
+          while (MsgPos^=PatPos^) and (PatPos<PatEndPos) do begin
+            inc(MsgPos);
+            inc(PatPos);
+          end;
+          if PatPos=PatEndPos then
+            break;
+          // does not fit => check next
+          inc(MsgFitPos);
+        until MsgFitPos^=#0;
+        if PatPos<PatEndPos then
+          break; // pattern not found => Msg does not fit Item.Msg
+        inc(MatchLen,PatEndPos-PatStartPos);
+        // pattern fits, search the rest of the patterns behind this position
+        MsgFitPos:=MsgPos;
+      end;
+      if PatEndPos^=#0 then begin
+        // whole pattern fits
+        if MatchLen>BestMatchLen then
+          Result:=Item;
+        break;
+      end;
+      // skip placeholder $d
+      inc(PatEndPos,2);
+    until false;
+  end;
 end;
 
 { TFPCMsgRanges }

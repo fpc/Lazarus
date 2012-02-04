@@ -20,7 +20,7 @@
 {
 ToDos:
 Examples:
-- helpcontext
+- help for messages: use codetools TFPCMsgFile
 - predefined identifiers: cardinal, longint
 - predefined procs: exit, break, continue, writeln
 - help for sources

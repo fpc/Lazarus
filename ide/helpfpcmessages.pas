@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Dialogs, FileUtil, TextTools, MacroIntf,
   LazarusIDEStrConsts, LazConfigStorage, HelpIntfs, IDEHelpIntf, LazHelpIntf,
-  LazHelpHTML;
+  LazHelpHTML, CodeToolsFPCMsgs, FileProcs;
   
 const
   lihcFPCMessages = 'FreePascal Compiler messages';
@@ -55,9 +55,13 @@ type
     FDefaultNode: THelpNode;
     FFoundComment: string;
     FLastMessage: string;
+    FMsgFile: TFPCMsgFile;
+    FMsgFileAge: TCTFileAgeTime;
+    FMsgFilename: string;
     procedure SetFPCTranslationFile(const AValue: string);
     procedure SetFoundComment(const AValue: string);
     procedure SetLastMessage(const AValue: string);
+    procedure SetMsgFilename(AValue: string);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -72,6 +76,9 @@ type
     property DefaultNode: THelpNode read FDefaultNode;
     property LastMessage: string read FLastMessage write SetLastMessage;
     property FoundComment: string read FFoundComment write SetFoundComment;
+    property MsgFile: TFPCMsgFile read FMsgFile;
+    property MsgFilename: string read FMsgFilename write SetMsgFilename;
+    property MsgFileAge: TCTFileAgeTime read FMsgFileAge;
   published
     property FPCTranslationFile: string read FFPCTranslationFile
                                         write SetFPCTranslationFile;
@@ -336,6 +343,14 @@ begin
   FLastMessage:=AValue;
 end;
 
+procedure TFPCMessagesHelpDatabase.SetMsgFilename(AValue: string);
+begin
+  if FMsgFilename=AValue then Exit;
+  FMsgFilename:=AValue;
+  FMsgFileAge:=-1;
+  FreeAndNil(FMsgFile);
+end;
+
 constructor TFPCMessagesHelpDatabase.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -346,6 +361,7 @@ end;
 destructor TFPCMessagesHelpDatabase.Destroy;
 begin
   FreeAndNil(FDefaultNode);
+  FreeAndNil(FMsgFile);
   inherited Destroy;
 end;
 
@@ -364,22 +380,38 @@ begin
   Filename:='$(FPCSrcDir)';
   IDEMacros.SubstituteMacros(Filename);
   //DebugLn('TFPCMessagesHelpDatabase.GetNodesForMessage Filename="',Filename,'"');
-  if (Filename<>'') then begin
-    Filename:=AppendPathDelim(Filename)
-              +SetDirSeparators('compiler/msg/');
-    // TODO: use the same language as the compiler
-    if FPCTranslationFile<>'' then
-      Filename:=Filename+FPCTranslationFile
-    else
-      Filename:=Filename+'errore.msg';
-    if FileExistsUTF8(Filename) then begin
-      FoundComment:=FindFPCMessageComment(Filename,AMessage,true);
-      if FoundComment<>'' then begin
-        Result:=shrSuccess;
-        CreateNodeQueryListAndAdd(DefaultNode,nil,ListOfNodes,true);
-        //DebugLn('TFPCMessagesHelpDatabase.GetNodesForMessage ',FoundComment);
+  if (Filename='') then exit;
+  Filename:=AppendPathDelim(Filename)
+            +SetDirSeparators('compiler/msg/');
+  // TODO: use the same language as the compiler
+  if FPCTranslationFile<>'' then
+    Filename:=Filename+FPCTranslationFile
+  else
+    Filename:=Filename+'errore.msg';
+  if not FileExistsUTF8(Filename) then exit;
+
+  // load MsgFile
+  if (Filename<>MsgFilename) or (FileAgeCached(Filename)<>MsgFileAge) then begin
+    MsgFilename:=Filename;
+    if FMsgFile=nil then
+      FMsgFile:=TFPCMsgFile.Create;
+    FMsgFileAge:=FileAgeCached(MsgFilename);
+    try
+      MsgFile.LoadFromFile(MsgFilename);
+    except
+      on E: Exception do begin
+        debugln(['TFPCMessagesHelpDatabase failed to load "'+MsgFilename+'": '+E.Message]);
       end;
     end;
+  end;
+
+
+
+  FoundComment:=FindFPCMessageComment(Filename,AMessage,true);
+  if FoundComment<>'' then begin
+    Result:=shrSuccess;
+    CreateNodeQueryListAndAdd(DefaultNode,nil,ListOfNodes,true);
+    //DebugLn('TFPCMessagesHelpDatabase.GetNodesForMessage ',FoundComment);
   end;
 end;
 
