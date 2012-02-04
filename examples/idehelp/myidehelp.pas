@@ -544,21 +544,47 @@ begin
   IDEHelpPkgName:='DemoIDEHelp';
 
   // fpc keywords
-  FPCKeywordsNoteLabel.Caption:='Simple help for FPC keywords installed by package '+IDEHelpPkgName+'.'
+  FPCKeywordsTabSheet.Caption:='FPC keywords';
+  FPCKeywordsNoteLabel.Caption:='Simple help for FPC keywords. Installed by package '+IDEHelpPkgName+'.'
   +' You get this help when you press the help key ('+HelpShortCutAsText+') in the source editor and caret is not on an identifier.'
   +' Each line has the format "keyword=text" without the quotes. For example "repeat=This keyword starts a repeat-until loop."';
   FPCKeywordsEnableCheckBox.Caption:='Enable';
 
   // directives
+  DirectivesTabSheet.Caption:='Directives';
+  DirectivesNoteLabel.Caption:='Simple help for FPC and IDE directives. Installed by package '+IDEHelpPkgName+'.'
+  +' You get this help when you press the help key ('+HelpShortCutAsText+') in the source editor and caret is on a directive (e.g. {$mode objfpc} or {%H-}).'
+  +' Each line has the format "directive=text" without the quotes. Here is an example for the fpc directives: "H=$H+ turns ansistring on, $H- turns shortstrings on.". Here is an example for an IDE directive: "H=%H- hides the compiler generated message at this source position."';
+  DirectivesEnableCheckBox.Caption:='Enable';
+  FPCDirectivesGroupBox.Caption:='FPC directives (e.g. mode=...)';
+  IDEDirectivesGroupBox.Caption:='IDE directives (e.g. H=...)';
 
   // messages
+  MessagesTabSheet.Caption:='Messages';
+  MessagesNoteLabel.Caption:='Simple help for messages. Installed by package '+IDEHelpPkgName+'.'
+  +' You get this help when you click on Help in the context menu of the messages window.'
+  +' There is only an example for the message "unitname.pas(line,col) Error: User defined: test", which is created by a {$error test} in the source.';
+  MessagesEnableCheckBox.Caption:='Enable';
 
   // context
+  ContextTabSheet.Caption:='HelpContext';
+  ContextNoteLabel.Caption:='Simple help for HelpContext numbers. Installed by package '+IDEHelpPkgName+'.'
+  +' You get this help when you press the help key ('+HelpShortCutAsText+') on a control which has a value in its property "HelpContext".'
+  +' Each line has the format "decimal_number=text" without the quotes. Here is an example for HelpContext=1: "1=Help for button foobar."';
+  ContextEnableCheckBox.Caption:='Enable';
 
   // classes
+  ClassesTabSheet.Caption:='Classes';
+  ClassesNoteLabel.Caption:='Simple help for messages. Installed by package '+IDEHelpPkgName+'.'
+  +' This help type is currently not used in the IDE.';
+  ClassesCheckBox.Caption:='Enable';
 
-  // sources
-
+  // pascal sources
+  PascalSourcesTabSheet.Caption:='Pascal Sources';
+  PascalSourcesNoteLabel.Caption:='Simple help for pascal sources. Installed by package '+IDEHelpPkgName+'.'
+  +' You get this help when you press the help key ('+HelpShortCutAsText+') in the source editor and caret is on an identifier.'
+  +' There is currently no example for this in this package.';
+  PascalSourcesEnabledCheckBox.Caption:='Enable';
 end;
 
 class function TMyHelpSetupDialog.
