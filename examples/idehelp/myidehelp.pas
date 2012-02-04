@@ -45,12 +45,16 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
-  LazHelpIntf, HelpIntfs, ComCtrls, StdCtrls, LazConfigStorage, IDEHelpIntf,
-  IDEDialogs, IDEOptionsIntf, BaseIDEIntf;
+  LazHelpIntf, HelpIntfs, ComCtrls, StdCtrls, LazConfigStorage, ExtCtrls,
+  IDEHelpIntf, IDEDialogs, IDEOptionsIntf, BaseIDEIntf;
 
 const
+  MyHelpConfigFilename = 'demo_myidehelp.xml';
   MyHelpOptionID: integer = 10000; // an arbitrary number, choose a big number
                      // to append your options frame as last / below the others
+var
+  IDEHelpPkgName: string = 'DemoIDEHelp';
+
 type
 
   { TMyHelpDatabase
@@ -81,8 +85,9 @@ type
   TMyFPCKeywordHelpDatabase = class(TMyHelpDatabase)
   private
     FAllKeywordNode: THelpNode;
+    FKeywordToText: TStrings;
+    procedure SetKeywordToText(AValue: TStrings);
   public
-    KeywordToText: TStrings; // every line has the format: Keyword=Text
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function GetNodesForKeyword(const HelpKeyword: string;
@@ -93,6 +98,7 @@ type
                       var {%H-}ErrMsg: string): TShowHelpResult; override;
     procedure LoadFromConfig(Config: TConfigStorage); override;
     procedure SaveToConfig(Config: TConfigStorage); override;
+    property KeywordToText: TStrings read FKeywordToText write SetKeywordToText; // every line has the format: Keyword=Text
   end;
 var
   MyFPCKeywordHelpDatabase: TMyFPCKeywordHelpDatabase;
@@ -103,13 +109,14 @@ type
     Notes: Do not forget to register this using HelpDatabases.CreateHelpDatabase!
            You can combine all your databases into one. }
 
-  TMyDirectiveHelpDatabase = class(THelpDatabase)
+  TMyDirectiveHelpDatabase = class(TMyHelpDatabase)
   private
     FAllDirectiveNode: THelpNode;
+    FFPCDirectiveToText: TStrings;
+    FIDEDirectiveToText: TStrings;
+    procedure SetFPCDirectiveToText(AValue: TStrings);
+    procedure SetIDEDirectiveToText(AValue: TStrings);
   public
-    Enabled: boolean;
-    FPCDirectiveToText: TStrings; // every line has the format: Keyword=Text
-    IDEDirectiveToText: TStrings; // every line has the format: Keyword=Text
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function GetNodesForDirective(const HelpDirective: string;
@@ -118,6 +125,10 @@ type
     function ShowHelp(Query: THelpQuery; {%H-}BaseNode, {%H-}NewNode: THelpNode;
                       {%H-}QueryItem: THelpQueryItem;
                       var {%H-}ErrMsg: string): TShowHelpResult; override;
+    procedure LoadFromConfig(Config: TConfigStorage); override;
+    procedure SaveToConfig(Config: TConfigStorage); override;
+    property FPCDirectiveToText: TStrings read FFPCDirectiveToText write SetFPCDirectiveToText; // every line has the format: Keyword=Text
+    property IDEDirectiveToText: TStrings read FIDEDirectiveToText write SetIDEDirectiveToText; // every line has the format: Keyword=Text
   end;
 var
   MyDirectiveHelpDatabase: TMyDirectiveHelpDatabase;
@@ -128,11 +139,10 @@ type
     Notes: Do not forget to register this using HelpDatabases.CreateHelpDatabase!
            You can combine all your databases into one. }
 
-  TMyMessagesHelpDatabase = class(THelpDatabase)
+  TMyMessagesHelpDatabase = class(TMyHelpDatabase)
   private
     FAllMessageNode: THelpNode;
   public
-    Enabled: boolean;
     constructor Create(TheOwner: TComponent); override;
     function GetNodesForMessage(const AMessage: string; MessageParts: TStrings;
                         var ListOfNodes: THelpNodeQueryList; var ErrMsg: string
@@ -146,20 +156,20 @@ var
 
 type
   { TMyContextHelpDatabase
-    Help HelpContext numbers. The IDE does not use this kind itself, because
+    Help for HelpContext numbers. The IDE does not use this kind itself, because
     there is a risk that two packages have overlapping numbers.
     This help type is useful for your own applications, because a simple number
     is used to identify help and any LCL TControl can set its HelpContext
-    property.
+    property, so you can set this via the object inspector.
     Notes: Do not forget to register this using HelpDatabases.CreateHelpDatabase!
            You can combine all your databases into one. }
 
-  TMyContextHelpDatabase = class(THelpDatabase)
+  TMyContextHelpDatabase = class(TMyHelpDatabase)
   private
     FAllContextNode: THelpNode;
+    FContextToMessage: TStrings;
+    procedure SetContextToMessage(AValue: TStrings);
   public
-    Enabled: boolean;
-    ContextToMessage: TStrings;  // every line has the format: DecimalNumber=Text
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function GetNodesForContext(HelpContext: THelpContext;
@@ -168,23 +178,71 @@ type
     function ShowHelp(Query: THelpQuery; {%H-}BaseNode, {%H-}NewNode: THelpNode;
                       {%H-}QueryItem: THelpQueryItem;
                       var {%H-}ErrMsg: string): TShowHelpResult; override;
+    procedure LoadFromConfig(Config: TConfigStorage); override;
+    procedure SaveToConfig(Config: TConfigStorage); override;
+    property ContextToMessage: TStrings read FContextToMessage write SetContextToMessage;  // every line has the format: DecimalNumber=Text
   end;
 var
   MyContextHelpDatabase: TMyContextHelpDatabase;
 
 type
+  { TMyClassesHelpDatabase
+    Help for classes.
+    At the moment (0.9.31) the IDE does not use this kind itself.
+    Notes: Do not forget to register this using HelpDatabases.CreateHelpDatabase!
+           You can combine all your databases into one. }
+
+  TMyClassesHelpDatabase = class(TMyHelpDatabase)
+  private
+    FAllClassNode: THelpNode;
+  public
+    function GetNodesForClass(AClass: TClass; var ListOfNodes: THelpNodeQueryList;
+                              var ErrMsg: string): TShowHelpResult; override;
+    function ShowHelp(Query: THelpQuery; {%H-}BaseNode, {%H-}NewNode: THelpNode;
+                      {%H-}QueryItem: THelpQueryItem;
+                      var {%H-}ErrMsg: string): TShowHelpResult; override;
+  end;
+var
+  MyClassesHelpDatabase: TMyClassesHelpDatabase;
+
+type
+  { TMyPascalSourcesHelpDatabase
+    Help for pascal sources.
+    Notes: Do not forget to register this using HelpDatabases.CreateHelpDatabase!
+           You can combine all your databases into one. }
+
+  TMyPascalSourcesHelpDatabase = class(TMyHelpDatabase)
+  private
+    FAllSourceNode: THelpNode;
+  public
+    function GetNodesForClass(AClass: TClass; var ListOfNodes: THelpNodeQueryList;
+                              var ErrMsg: string): TShowHelpResult; override;
+    function ShowHelp(Query: THelpQuery; {%H-}BaseNode, {%H-}NewNode: THelpNode;
+                      {%H-}QueryItem: THelpQueryItem;
+                      var {%H-}ErrMsg: string): TShowHelpResult; override;
+  end;
+var
+  MyPascalSourcesHelpDatabase: TMyPascalSourcesHelpDatabase;
+
+type
   { TMyHelpSetupDialog }
 
   TMyHelpSetupDialog = class(TAbstractIDEOptionsEditor)
+    ClassesCheckBox: TCheckBox;
+    ClassesNoteLabel: TLabel;
     ContextEnableCheckBox: TCheckBox;
     ContextMemo: TMemo;
     ContextNoteLabel: TLabel;
     DirectivesEnableCheckBox: TCheckBox;
-    DirectivesMemo: TMemo;
+    DirectivesSplitter: TSplitter;
+    FPCDirectivesMemo: TMemo;
     DirectivesNoteLabel: TLabel;
+    FPCDirectivesGroupBox: TGroupBox;
     FPCKeywordsEnableCheckBox: TCheckBox;
     FPCKeywordsMemo: TMemo;
     FPCKeywordsNoteLabel: TLabel;
+    IDEDirectivesGroupBox: TGroupBox;
+    IDEDirectivesMemo: TMemo;
     MessagesEnableCheckBox: TCheckBox;
     MessagesNoteLabel: TLabel;
     PageControl1: TPageControl;
@@ -192,12 +250,13 @@ type
     DirectivesTabSheet: TTabSheet;
     MessagesTabSheet: TTabSheet;
     ContextTabSheet: TTabSheet;
-    SourcesTabSheet: TTabSheet;
+    PascalSourcesEnabledCheckBox: TCheckBox;
+    PascalSourcesNoteLabel: TLabel;
+    PascalSourcesTabSheet: TTabSheet;
     ClassesTabSheet: TTabSheet;
   private
   public
     HelpShortCutAsText: string;
-    PkgName: string;
     function GetTitle: String; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -205,38 +264,106 @@ type
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
   end;
 
-procedure LoadMyIDEOptions(Filename: string);
-procedure SaveMyIDEOptions(Filename: string);
+procedure LoadSaveMyIDEOptions(Filename: string; Load: boolean);
+procedure TrimStrings(List: TStrings);
+function AssignTrimmedStrings(Src, Dest: TStrings): boolean; // true if changed
 
 procedure Register;
 
 implementation
 
-procedure LoadMyIDEOptions(Filename: string);
+procedure LoadSaveMyIDEOptions(Filename: string; Load: boolean);
 var
   Config: TConfigStorage;
 begin
-  Config:=GetIDEConfigStorage(Filename,true);
+  Config:=GetIDEConfigStorage(Filename,Load);
   try
     Config.AppendBasePath('FPCKeywords');
-    MyFPCKeywordHelpDatabase.LoadFromConfig(Config);
+    if Load then
+      MyFPCKeywordHelpDatabase.LoadFromConfig(Config)
+    else
+      MyFPCKeywordHelpDatabase.SaveToConfig(Config);
+    Config.UndoAppendBasePath;
+
+    Config.AppendBasePath('Directives');
+    if Load then
+      MyDirectiveHelpDatabase.LoadFromConfig(Config)
+    else
+      MyDirectiveHelpDatabase.SaveToConfig(Config);
+    Config.UndoAppendBasePath;
+
+    Config.AppendBasePath('Messages');
+    if Load then
+      MyMessagesHelpDatabase.LoadFromConfig(Config)
+    else
+      MyMessagesHelpDatabase.SaveToConfig(Config);
+    Config.UndoAppendBasePath;
+
+    Config.AppendBasePath('Contexts');
+    if Load then
+      MyContextHelpDatabase.LoadFromConfig(Config)
+    else
+      MyContextHelpDatabase.SaveToConfig(Config);
+    Config.UndoAppendBasePath;
+
+    Config.AppendBasePath('Classes');
+    if Load then
+      MyClassesHelpDatabase.LoadFromConfig(Config)
+    else
+      MyClassesHelpDatabase.SaveToConfig(Config);
+    Config.UndoAppendBasePath;
+
+    Config.AppendBasePath('PascalSources');
+    if Load then
+      MyPascalSourcesHelpDatabase.LoadFromConfig(Config)
+    else
+      MyPascalSourcesHelpDatabase.SaveToConfig(Config);
     Config.UndoAppendBasePath;
   finally
     Config.Free;
   end;
 end;
 
-procedure SaveMyIDEOptions(Filename: string);
+procedure TrimStrings(List: TStrings);
 var
-  Config: TConfigStorage;
+  i: Integer;
+  Line: String;
 begin
-  Config:=GetIDEConfigStorage(Filename,false);
-  try
-    Config.AppendBasePath('FPCKeywords');
-    MyFPCKeywordHelpDatabase.SaveToConfig(Config);
-    Config.UndoAppendBasePath;
-  finally
-    Config.Free;
+  if List=nil then exit;
+  for i:=List.Count-1 downto 0 do begin
+    Line:=Trim(List[i]);
+    if Line='' then
+      List.Delete(i)
+    else if Line<>List[i] then
+      List[i]:=Line;
+  end;
+end;
+
+function AssignTrimmedStrings(Src, Dest: TStrings): boolean;
+var
+  SrcIndex: Integer;
+  DstIndex: Integer;
+  Line: String;
+begin
+  Result:=false;
+  SrcIndex:=0;
+  DstIndex:=0;
+  while SrcIndex<Src.Count-1 do begin
+    Line:=Trim(Src[SrcIndex]);
+    inc(SrcIndex);
+    if Line<>'' then continue;
+    if DstIndex=Dest.Count then begin
+      Dest.Add(Line);
+      Result:=true;
+    end else if Dest[DstIndex]<>Line then begin
+      Dest[DstIndex]:=Line;
+      Result:=true;
+    end;
+    inc(DstIndex);
+  end;
+  while DstIndex<=Dest.Count do begin
+    Result:=true;
+    Dest.Delete(Dest.Count);
   end;
 end;
 
@@ -253,11 +380,105 @@ begin
     HelpDatabases.CreateHelpDatabase('MyMessagesHelpDB',TMyMessagesHelpDatabase,true));
   MyContextHelpDatabase:=TMyContextHelpDatabase(
     HelpDatabases.CreateHelpDatabase('MyContextHelpDB',TMyContextHelpDatabase,true));
+  MyClassesHelpDatabase:=TMyClassesHelpDatabase(
+    HelpDatabases.CreateHelpDatabase('MyClassHelpDB',TMyClassesHelpDatabase,true));
+  MyPascalSourcesHelpDatabase:=TMyPascalSourcesHelpDatabase(
+    HelpDatabases.CreateHelpDatabase('MyPascalSourcesHelpDB',TMyPascalSourcesHelpDatabase,true));
 
   // register frame in the IDE options to setup "My IDE help"
   MyHelpOptionID:=RegisterIDEOptionsEditor(GroupHelp,TMyHelpSetupDialog,MyHelpOptionID)^.Index;
 
-  LoadMyIDEOptions('demo_myidehelp.xml');
+  LoadSaveMyIDEOptions(MyHelpConfigFilename,true);
+end;
+
+{ TMyPascalSourcesHelpDatabase }
+
+function TMyPascalSourcesHelpDatabase.GetNodesForClass(AClass: TClass;
+  var ListOfNodes: THelpNodeQueryList; var ErrMsg: string): TShowHelpResult;
+var
+  Title: String;
+begin
+  ErrMsg:='';
+  Result:=shrHelpNotFound;
+  if (csDesigning in ComponentState) or (not Enabled) then exit;
+
+  if ListOfNodes.Count>0 then exit;
+
+  // this help database knows this context
+  Title:='Help for source';
+  // => add a node, so that if there are several possibilities the IDE can
+  //    show the user a dialog to choose
+  if FAllSourceNode=nil then
+    FAllSourceNode:=THelpNode.CreateURL(Self,'','');
+  FAllSourceNode.Title:=Title;
+  CreateNodeQueryListAndAdd(FAllSourceNode,nil,ListOfNodes,true);
+  Result:=shrSuccess;
+end;
+
+function TMyPascalSourcesHelpDatabase.ShowHelp(Query: THelpQuery; BaseNode,
+  NewNode: THelpNode; QueryItem: THelpQueryItem; var ErrMsg: string
+  ): TShowHelpResult;
+var
+  Msg: String;
+  PascalQuery: THelpQueryPascalContexts;
+begin
+  ErrMsg:='';
+  Result:=shrHelpNotFound;
+  if not (Query is THelpQueryClass) then exit;
+  PascalQuery:=THelpQueryPascalContexts(Query);
+  debugln(['TMyPascalSourcesHelpDatabase.ShowHelp PascalSource="',PascalQuery.ListOfPascalHelpContextList.Count,'"']);
+
+  Msg:='This is a demonstration how to get help for a pascal identifier. See package '+IDEHelpPkgName;
+
+  IDEMessageDialog('My pascal source help',
+    'ToDo: implement me:'#13#13
+    +Msg,mtInformation,[mbOk]);
+  Result:=shrSuccess;
+end;
+
+{ TMyClassesHelpDatabase }
+
+function TMyClassesHelpDatabase.GetNodesForClass(AClass: TClass;
+  var ListOfNodes: THelpNodeQueryList; var ErrMsg: string): TShowHelpResult;
+var
+  Title: String;
+begin
+  ErrMsg:='';
+  Result:=shrHelpNotFound;
+  if (csDesigning in ComponentState) or (not Enabled) then exit;
+
+  if not AClass.InheritsFrom(TMyHelpDatabase) then exit;
+
+  // this help database knows this context
+  Title:='Help for class';
+  // => add a node, so that if there are several possibilities the IDE can
+  //    show the user a dialog to choose
+  if FAllClassNode=nil then
+    FAllClassNode:=THelpNode.CreateURL(Self,'','');
+  FAllClassNode.Title:=Title;
+  CreateNodeQueryListAndAdd(FAllClassNode,nil,ListOfNodes,true);
+  Result:=shrSuccess;
+end;
+
+function TMyClassesHelpDatabase.ShowHelp(Query: THelpQuery; BaseNode,
+  NewNode: THelpNode; QueryItem: THelpQueryItem; var ErrMsg: string
+  ): TShowHelpResult;
+var
+  ClassQuery: THelpQueryClass;
+  Msg: String;
+begin
+  ErrMsg:='';
+  Result:=shrHelpNotFound;
+  if not (Query is THelpQueryClass) then exit;
+  ClassQuery:=THelpQueryClass(Query);
+  debugln(['TMyClassHelpDatabase.ShowHelp Class="',dbgsname(ClassQuery.TheClass)]);
+
+  Msg:='This is a demonstration how to get help for a class. See package '+IDEHelpPkgName;
+
+  IDEMessageDialog('My class help',
+    'The class "'+ClassQuery.TheClass.ClassName+'":'#13#13
+    +Msg,mtInformation,[mbOk]);
+  Result:=shrSuccess;
 end;
 
 { TMyHelpDatabase }
@@ -296,26 +517,34 @@ procedure TMyHelpSetupDialog.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   // fpc keywords
   FPCKeywordsEnableCheckBox.Checked:=MyFPCKeywordHelpDatabase.Enabled;
-  FPCKeywordsMemo.Text:=Trim(MyFPCKeywordHelpDatabase.KeywordToText.Text);
+  FPCKeywordsMemo.Text:=MyFPCKeywordHelpDatabase.KeywordToText.Text;
 
   // directives
+  DirectivesEnableCheckBox.Checked:=MyDirectiveHelpDatabase.Enabled;
+  FPCDirectivesMemo.Text:=MyDirectiveHelpDatabase.FPCDirectiveToText.Text;
+  IDEDirectivesMemo.Text:=MyDirectiveHelpDatabase.IDEDirectiveToText.Text;
 
   // messages
+  MessagesEnableCheckBox.Checked:=MyMessagesHelpDatabase.Enabled;
 
   // context
+  ContextEnableCheckBox.Checked:=MyContextHelpDatabase.Enabled;
+  ContextMemo.Text:=MyContextHelpDatabase.ContextToMessage.Text;
 
   // classes
+  ClassesCheckBox.Checked:=MyClassesHelpDatabase.Enabled;
 
-  // sources
+  // pascal sources
+  PascalSourcesEnabledCheckBox.Checked:=MyPascalSourcesHelpDatabase.Enabled;
 end;
 
 procedure TMyHelpSetupDialog.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   HelpShortCutAsText:='F1';
-  PkgName:='DemoIDEHelp';
+  IDEHelpPkgName:='DemoIDEHelp';
 
   // fpc keywords
-  FPCKeywordsNoteLabel.Caption:='Simple help for FPC keywords installed by package '+PkgName+'.'
+  FPCKeywordsNoteLabel.Caption:='Simple help for FPC keywords installed by package '+IDEHelpPkgName+'.'
   +' You get this help when you press the help key ('+HelpShortCutAsText+') in the source editor and caret is not on an identifier.'
   +' Each line has the format "keyword=text" without the quotes. For example "repeat=This keyword starts a repeat-until loop."';
   FPCKeywordsEnableCheckBox.Caption:='Enable';
@@ -343,33 +572,54 @@ procedure TMyHelpSetupDialog.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   // fpc keywords
   MyFPCKeywordHelpDatabase.Enabled:=FPCKeywordsEnableCheckBox.Checked;
-  MyFPCKeywordHelpDatabase.KeywordToText.Text:=Trim(FPCKeywordsMemo.Text);
+  MyFPCKeywordHelpDatabase.KeywordToText:=FPCKeywordsMemo.Lines;
 
   // directives
+  MyDirectiveHelpDatabase.Enabled:=DirectivesEnableCheckBox.Checked;
+  MyDirectiveHelpDatabase.FPCDirectiveToText:=FPCDirectivesMemo.Lines;
 
   // messages
+  MyMessagesHelpDatabase.Enabled:=MessagesEnableCheckBox.Checked;
 
   // context
+  MyContextHelpDatabase.Enabled:=ContextEnableCheckBox.Checked;
+  MyContextHelpDatabase.ContextToMessage:=ContextMemo.Lines;
 
   // classes
+  MyClassesHelpDatabase.Enabled:=ClassesCheckBox.Checked;
 
   // sources
+  MyPascalSourcesHelpDatabase.Enabled:=PascalSourcesEnabledCheckBox.Checked;
 
+  // save if modified
+  if MyFPCKeywordHelpDatabase.Modified
+  or MyDirectiveHelpDatabase.Modified
+  or MyMessagesHelpDatabase.Modified
+  or MyContextHelpDatabase.Modified
+  or MyClassesHelpDatabase.Modified
+  or MyPascalSourcesHelpDatabase.Modified
+  then
+    LoadSaveMyIDEOptions(MyHelpConfigFilename,false);
 end;
 
 { TMyContextHelpDatabase }
 
+procedure TMyContextHelpDatabase.SetContextToMessage(AValue: TStrings);
+begin
+  if AssignTrimmedStrings(AValue,FContextToMessage) then
+    Modified:=true;
+end;
+
 constructor TMyContextHelpDatabase.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Enabled:=true;
-  ContextToMessage:=TStringList.Create;
+  FContextToMessage:=TStringList.Create;
   ContextToMessage.Add('3456=A help text for helpcontext 3456');
 end;
 
 destructor TMyContextHelpDatabase.Destroy;
 begin
-  FreeAndNil(ContextToMessage);
+  FreeAndNil(FContextToMessage);
   inherited Destroy;
 end;
 
@@ -418,12 +668,23 @@ begin
   Result:=shrSuccess;
 end;
 
+procedure TMyContextHelpDatabase.LoadFromConfig(Config: TConfigStorage);
+begin
+  inherited LoadFromConfig(Config);
+  Config.GetValue('Contexts',ContextToMessage);
+end;
+
+procedure TMyContextHelpDatabase.SaveToConfig(Config: TConfigStorage);
+begin
+  inherited SaveToConfig(Config);
+  Config.SetValue('Contexts',ContextToMessage);
+end;
+
 { TMyMessagesHelpDatabase }
 
 constructor TMyMessagesHelpDatabase.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Enabled:=true;
 end;
 
 function TMyMessagesHelpDatabase.GetNodesForMessage(const AMessage: string;
@@ -475,20 +736,32 @@ end;
 
 { TMyDirectiveHelpDatabase }
 
+procedure TMyDirectiveHelpDatabase.SetFPCDirectiveToText(AValue: TStrings);
+begin
+  if AssignTrimmedStrings(AValue,FFPCDirectiveToText) then
+    Modified:=true;
+end;
+
+procedure TMyDirectiveHelpDatabase.SetIDEDirectiveToText(AValue: TStrings);
+begin
+  if AssignTrimmedStrings(AValue,FIDEDirectiveToText) then
+    Modified:=true;
+end;
+
 constructor TMyDirectiveHelpDatabase.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Enabled:=true;
-  FPCDirectiveToText:=TStringList.Create;
+  FFPCDirectiveToText:=TStringList.Create;
   FPCDirectiveToText.Add('mode=Set the syntax, e.g. fpc, objfpc, delphi, macpas, tp');
-  IDEDirectiveToText:=TStringList.Create;
+  FIDEDirectiveToText:=TStringList.Create;
   IDEDirectiveToText.Add('H=Use {%H-} to hide any compiler message at that source position in IDE messages window.');
 end;
 
 destructor TMyDirectiveHelpDatabase.Destroy;
 begin
-  FreeAndNil(FPCDirectiveToText);
-  FreeAndNil(IDEDirectiveToText);
+  FreeAndNil(FFPCDirectiveToText);
+  FreeAndNil(FIDEDirectiveToText);
   inherited Destroy;
 end;
 
@@ -566,18 +839,38 @@ begin
   Result:=shrSuccess;
 end;
 
+procedure TMyDirectiveHelpDatabase.LoadFromConfig(Config: TConfigStorage);
+begin
+  inherited LoadFromConfig(Config);
+  Config.GetValue('FPCDirectives',FPCDirectiveToText);
+  Config.GetValue('IDEDirectives',IDEDirectiveToText);
+end;
+
+procedure TMyDirectiveHelpDatabase.SaveToConfig(Config: TConfigStorage);
+begin
+  inherited SaveToConfig(Config);
+  Config.SetValue('FPCDirectives',FPCDirectiveToText);
+  Config.SetValue('IDEDirectives',IDEDirectiveToText);
+end;
+
 { TMyFPCKeywordHelpDatabase }
+
+procedure TMyFPCKeywordHelpDatabase.SetKeywordToText(AValue: TStrings);
+begin
+  if AssignTrimmedStrings(AValue,FKeywordToText) then
+    Modified:=true;
+end;
 
 constructor TMyFPCKeywordHelpDatabase.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  KeywordToText:=TStringList.Create;
+  FKeywordToText:=TStringList.Create;
   KeywordToText.Add('procedure=Named code block');
 end;
 
 destructor TMyFPCKeywordHelpDatabase.Destroy;
 begin
-  FreeAndNil(KeywordToText);
+  FreeAndNil(FKeywordToText);
   inherited Destroy;
 end;
 
