@@ -565,6 +565,10 @@ end;
 
 procedure TSynBaseCompletionForm.Deactivate;
 begin
+  {$IFDEF VerboseFocus}
+  DebugLnEnter(['>> TSynBaseCompletionForm.Deactivate ']);
+  try
+  {$ENDIF}
   // completion box lost focus
   // this can happen when a hint window is clicked => ToDo
   Visible := False;
@@ -574,6 +578,11 @@ begin
   if (FCurrentEditor<>nil) and (TCustomSynEdit(fCurrentEditor).HandleAllocated)
   then
     SetCaretRespondToFocus(TCustomSynEdit(FCurrentEditor).Handle,true);
+  {$IFDEF VerboseFocus}
+  finally
+    DebugLnExit(['<< TSynBaseCompletionForm.Deactivate ']);
+  end
+  {$ENDIF}
 end;
 
 destructor TSynBaseCompletionForm.Destroy;
@@ -651,6 +660,10 @@ var
   i: integer;
   Handled: Boolean;
 begin
+  {$IFDEF VerboseKeys}
+  DebugLnEnter(['TSynBaseCompletionForm.KeyDown ',Key,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift]);
+  try
+  {$ENDIF}
   //debugln('TSynBaseCompletionForm.KeyDown A Key=',dbgs(Key));
   inherited KeyDown(Key,Shift);
   if Key=VK_UNKNOWN then exit;
@@ -707,6 +720,11 @@ begin
   end;
   if Handled then Key:=VK_UNKNOWN;
   Invalidate;
+  {$IFDEF VerboseKeys}
+  finally
+    DebugLnExit(['TSynBaseCompletionForm.KeyDown ',Key,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift]);
+  end;
+  {$ENDIF}
 end;
 
 procedure TSynBaseCompletionForm.KeyPress(var Key: char);
@@ -844,6 +862,9 @@ end;
 
 procedure TSynBaseCompletionForm.AppDeactivated(Sender: TObject);
 begin
+  {$IFDEF VerboseFocus}
+  DebugLn(['>> TSynBaseCompletionForm.AppDeactivated ']);
+  {$ENDIF}
   Deactivate;
 end;
 
@@ -902,7 +923,9 @@ end;
 
 procedure TSynBaseCompletionForm.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
-  //debugln('TSynBaseCompletionForm.UTF8KeyPress A UTF8Key="',DbgStr(UTF8Key),'" ',dbgsName(TObject(TMethod(OnUTF8KeyPress).Data)));
+  {$IFDEF VerboseKeys}
+  debugln('TSynBaseCompletionForm.UTF8KeyPress A UTF8Key="',DbgStr(UTF8Key),'" ',dbgsName(TObject(TMethod(OnUTF8KeyPress).Data)));
+  {$ENDIF}
   if UTF8Key=#8 then
   begin
     // backspace
@@ -932,7 +955,9 @@ begin
       UTF8Key := '';
     end;
   end;
+  {$IFDEF VerboseKeys}
   debugln('TSynBaseCompletionForm.UTF8KeyPress END UTF8Key="',DbgStr(UTF8Key),'"');
+  {$ENDIF}
 end;
 
 procedure TSynBaseCompletionForm.SetCurrentString(const Value: string);

@@ -1607,10 +1607,17 @@ procedure TSourceEditCompletion.ccCancel(Sender: TObject);
 // user cancels completion form
 begin
   {$IFDEF VerboseIDECompletionBox}
-  debugln(['TSourceNotebook.ccCancel START']);
+  DebugLnEnter(['TSourceNotebook.ccCancel START']);
+  try
   //debugln(GetStackTrace(true));
   {$ENDIF}
   Manager.DeactivateCompletionForm;
+  {$IFDEF VerboseIDECompletionBox}
+  finally
+    DebugLnExit(['TSourceNotebook.ccCancel END']);
+  end;
+  //debugln(GetStackTrace(true));
+  {$ENDIF}
 end;
 
 procedure TSourceEditCompletion.ccComplete(var Value: string;
@@ -1654,7 +1661,8 @@ var
   OldCompletionType: TCompletionType;
 Begin
   {$IFDEF VerboseIDECompletionBox}
-  debugln(['TSourceNotebook.ccComplete START']);
+  DebugLnEnter(['TSourceNotebook.ccComplete START']);
+  try
   {$ENDIF}
   OldCompletionType:=CurrentCompletionType;
   case CurrentCompletionType of
@@ -1731,6 +1739,11 @@ Begin
     SourceCompletionCaretXY:=Editor.CaretXY;
     SourceCompletionTimer.AutoEnabled:=true;
   end;
+  {$IFDEF VerboseIDECompletionBox}
+  finally
+    DebugLnExit(['TSourceNotebook.ccComplete END']);
+  end;
+  {$ENDIF}
 end;
 
 function TSourceEditCompletion.OnSynCompletionPaintItem(const AKey: string;
@@ -8039,6 +8052,10 @@ procedure TSourceEditorManagerBase.DeactivateCompletionForm;
 var
   PluginFocused: Boolean;
 begin
+  {$IFDEF VerboseIDECompletionBox}
+  DebugLnEnter(['>> TSourceEditorManagerBase.DeactivateCompletionForm']);
+  try
+  {$ENDIF}
   if ActiveCompletionPlugin<>nil then begin
     ActiveCompletionPlugin.Cancel;
     FActiveCompletionPlugin:=nil;
@@ -8051,6 +8068,9 @@ begin
 
   // Do not move focus, if it was moved by user
   PluginFocused := FDefaultCompletionForm.TheForm.Focused;
+  {$IFDEF VerboseIDECompletionBox}
+  DebugLn(['DeactivateCompletionForm  PluginFocused=', dbgs(PluginFocused), '  ActiveEditor=', DbgSName(ActiveEditor)]);
+  {$ENDIF}
 
   // clear the IdentifierList (otherwise it would try to update everytime
   // the codetools are used)
@@ -8075,6 +8095,11 @@ begin
   *)
   if PluginFocused and (ActiveEditor<>nil) then
     TSourceEditor(ActiveEditor).FocusEditor;
+  {$IFDEF VerboseIDECompletionBox}
+  finally
+    DebugLnExit(['<< TSourceEditorManagerBase.DeactivateCompletionForm']);
+  end;
+  {$ENDIF}
 end;
 
 procedure TSourceEditorManagerBase.RegisterCompletionPlugin(
