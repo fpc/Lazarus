@@ -6,10 +6,11 @@ object Form1: TForm1
   HorzScrollBar.Page = 684
   VertScrollBar.Page = 150
   ActiveControl = DBGrid1
-  Caption = 'Form1'
+  Caption = 'LazReport BarCode Demo'
   ClientHeight = 151
   ClientWidth = 685
   OnCreate = FormCreate
+  Position = poDesktopCenter
   LCLVersion = '0.9.31'
   object DBGrid1: TDBGrid
     Left = 8
