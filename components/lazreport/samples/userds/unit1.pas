@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, LR_DSet,
-  LR_Class, LR_Pars, Buttons;
+  LR_Class, Buttons, StdCtrls;
 
 {.$DEFINE DEBUG}
 

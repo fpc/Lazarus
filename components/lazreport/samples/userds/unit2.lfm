@@ -9,13 +9,17 @@ object Form2: TForm2
   ClientHeight = 300
   ClientWidth = 400
   OnShow = FormShow
+  LCLVersion = '0.9.31'
   object Memo1: TMemo
+    Left = 0
     Height = 300
+    Top = 0
     Width = 400
     Align = alClient
     Lines.Strings = (
       'Memo1'
     )
+    ScrollBars = ssAutoBoth
     TabOrder = 0
   end
 end

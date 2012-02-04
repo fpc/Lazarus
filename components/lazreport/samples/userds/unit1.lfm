@@ -6,10 +6,12 @@ object Form1: TForm1
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 87
   ActiveControl = btnShowReport
-  Caption = 'Form1'
+  Caption = 'LazReport UserDataser Demo'
   ClientHeight = 88
   ClientWidth = 400
   OnCreate = FormCreate
+  Position = poDesktopCenter
+  LCLVersion = '0.9.31'
   object btnShowReport: TButton
     Left = 64
     Height = 25
@@ -48,7 +50,10 @@ object Form1: TForm1
     top = 56
   end
   object frReport1: TfrReport
+    InitialZoom = pzDefault
+    Options = []
     PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
+    DataType = dtDataSet
     OnBeginDoc = frReport1BeginDoc
     OnEndDoc = frReport1EndDoc
     OnBeginPage = frReport1BeginPage
@@ -64,7 +69,7 @@ object Form1: TForm1
     left = 80
     top = 56
     ReportForm = {
-      18000000
+      19000000
     }
   end
   object ColumnsDS: TfrUserDataset
