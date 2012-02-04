@@ -46,7 +46,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
   LazHelpIntf, HelpIntfs, ComCtrls, StdCtrls, IDEHelpIntf, IDEDialogs,
-  IDEOptionsIntf;
+  IDEOptionsIntf, BaseIDEIntf;
 
 const
   MyHelpOptionID: integer = 10000; // an arbitrary number, choose a big number
@@ -185,9 +185,22 @@ type
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
   end;
 
+procedure LoadMyIDEOptions(Filename: string);
+procedure SaveMyIDEOptions(Filename: string);
+
 procedure Register;
 
 implementation
+
+procedure LoadMyIDEOptions(Filename: string);
+begin
+
+end;
+
+procedure SaveMyIDEOptions(Filename: string);
+begin
+
+end;
 
 procedure Register;
 begin

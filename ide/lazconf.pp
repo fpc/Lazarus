@@ -80,7 +80,7 @@ function GetSecondaryConfigPath: String;
 procedure CreatePrimaryConfigPath;
 procedure SetPrimaryConfigPath(const NewValue: String);
 procedure SetSecondaryConfigPath(const NewValue: String);
-procedure CopySecondaryConfigFile(const AFilename: String);
+procedure CopySecondaryConfigFile(const ShortFilename: String);
 function GetProjectSessionsConfigPath: String;
 
 function GetDefaultTestBuildDirectory: string;
@@ -279,29 +279,17 @@ end;
 {---------------------------------------------------------------------------
   CopySecondaryConfigFile procedure
  ---------------------------------------------------------------------------}
-procedure CopySecondaryConfigFile(const AFilename: String);
+procedure CopySecondaryConfigFile(const ShortFilename: String);
 var
   PrimaryFilename, SecondaryFilename: string;
-  SrcFS, DestFS: TFileStream;
 begin
-  PrimaryFilename:=GetPrimaryConfigPath+PathDelim+AFilename;
-  SecondaryFilename:=GetSecondaryConfigPath+PathDelim+AFilename;
+  if ShortFilename='' then exit;
+  PrimaryFilename:=AppendPathDelim(GetPrimaryConfigPath)+ShortFilename;
+  SecondaryFilename:=AppendPathDelim(GetSecondaryConfigPath)+ShortFilename;
   if (not FileExistsUTF8(PrimaryFilename))
   and (FileExistsUTF8(SecondaryFilename)) then begin
-    try
-      SrcFS:=TFileStream.Create(UTF8ToSys(SecondaryFilename),fmOpenRead);
-      try
-        DestFS:=TFileStream.Create(UTF8ToSys(PrimaryFilename),fmCreate);
-        try
-          DestFS.CopyFrom(SrcFS,SrcFS.Size);
-        finally
-          DestFS.Free;
-        end;
-      finally
-        SrcFS.Free;
-      end;
-    except
-    end;
+    if not CopyFile(SecondaryFilename,PrimaryFilename) then
+      debugln(['WARNING: unable to copy config "',SecondaryFilename,'" to "',SecondaryFilename,'"']);
   end;
 end;
 

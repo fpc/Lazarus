@@ -208,12 +208,19 @@ function GetLazIDEConfigStorage(const Filename: string; LoadFromDisk: Boolean
 var
   ConfigFilename: String;
 begin
-  if LoadFromDisk then begin
+  if CompareFilenames(ExtractFilePath(Filename),GetPrimaryConfigPath)=0 then
+    ConfigFilename:=ExtractFileName(Filename)
+  else
+    ConfigFilename:=Filename;
+
+  if LoadFromDisk and (ExtractFilePath(ConfigFilename)='')
+  then begin
     // copy template config file to users config directory
-    CopySecondaryConfigFile(Filename);
+    CopySecondaryConfigFile(ConfigFilename);
   end;
   // create storage
-  ConfigFilename:=AppendPathDelim(GetPrimaryConfigPath)+Filename;
+  if not FilenameIsAbsolute(ConfigFilename) then
+    ConfigFilename:=AppendPathDelim(GetPrimaryConfigPath)+ConfigFilename;
   Result:=TXMLOptionsStorage.Create(ConfigFilename,LoadFromDisk);
 end;
 
