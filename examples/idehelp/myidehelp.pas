@@ -45,13 +45,32 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
-  LazHelpIntf, HelpIntfs, ComCtrls, StdCtrls, IDEHelpIntf, IDEDialogs,
-  IDEOptionsIntf, BaseIDEIntf;
+  LazHelpIntf, HelpIntfs, ComCtrls, StdCtrls, LazConfigStorage, IDEHelpIntf,
+  IDEDialogs, IDEOptionsIntf, BaseIDEIntf;
 
 const
   MyHelpOptionID: integer = 10000; // an arbitrary number, choose a big number
                      // to append your options frame as last / below the others
 type
+
+  { TMyHelpDatabase
+    This is base class for all the demonstrated IDE help databases.
+    In your help database you would probably combine all the features you
+    want into a single class. }
+
+  TMyHelpDatabase = class(THelpDatabase)
+  private
+    FEnabled: boolean;
+    FModified: boolean;
+    procedure SetEnabled(AValue: boolean);
+  public
+    constructor Create(TheOwner: TComponent); override;
+    procedure LoadFromConfig(Config: TConfigStorage); virtual; // called in Register
+    procedure SaveToConfig(Config: TConfigStorage); virtual; // called by TMyHelpSetupDialog.WriteSettings
+    property Enabled: boolean read FEnabled write SetEnabled; // switch to disable single example databases
+    property Modified: boolean read FModified write FModified;
+  end;
+
   { TMyFPCKeywordHelpDatabase
     Help for FPC keywords like 'procedure'.
     Actually FPC keywords are a special case. Any LCL TControl can set its
@@ -59,12 +78,11 @@ type
     Notes: Do not forget to register this using HelpDatabases.CreateHelpDatabase!
            You can combine all your databases into one. }
 
-  TMyFPCKeywordHelpDatabase = class(THelpDatabase)
+  TMyFPCKeywordHelpDatabase = class(TMyHelpDatabase)
   private
     FAllKeywordNode: THelpNode;
   public
     KeywordToText: TStrings; // every line has the format: Keyword=Text
-    Enabled: boolean;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function GetNodesForKeyword(const HelpKeyword: string;
@@ -73,6 +91,8 @@ type
     function ShowHelp(Query: THelpQuery; {%H-}BaseNode, {%H-}NewNode: THelpNode;
                       {%H-}QueryItem: THelpQueryItem;
                       var {%H-}ErrMsg: string): TShowHelpResult; override;
+    procedure LoadFromConfig(Config: TConfigStorage); override;
+    procedure SaveToConfig(Config: TConfigStorage); override;
   end;
 var
   MyFPCKeywordHelpDatabase: TMyFPCKeywordHelpDatabase;
@@ -193,13 +213,31 @@ procedure Register;
 implementation
 
 procedure LoadMyIDEOptions(Filename: string);
+var
+  Config: TConfigStorage;
 begin
-
+  Config:=GetIDEConfigStorage(Filename,true);
+  try
+    Config.AppendBasePath('FPCKeywords');
+    MyFPCKeywordHelpDatabase.LoadFromConfig(Config);
+    Config.UndoAppendBasePath;
+  finally
+    Config.Free;
+  end;
 end;
 
 procedure SaveMyIDEOptions(Filename: string);
+var
+  Config: TConfigStorage;
 begin
-
+  Config:=GetIDEConfigStorage(Filename,false);
+  try
+    Config.AppendBasePath('FPCKeywords');
+    MyFPCKeywordHelpDatabase.SaveToConfig(Config);
+    Config.UndoAppendBasePath;
+  finally
+    Config.Free;
+  end;
 end;
 
 procedure Register;
@@ -218,6 +256,33 @@ begin
 
   // register frame in the IDE options to setup "My IDE help"
   MyHelpOptionID:=RegisterIDEOptionsEditor(GroupHelp,TMyHelpSetupDialog,MyHelpOptionID)^.Index;
+
+  LoadMyIDEOptions('demo_myidehelp.xml');
+end;
+
+{ TMyHelpDatabase }
+
+procedure TMyHelpDatabase.SetEnabled(AValue: boolean);
+begin
+  if FEnabled=AValue then Exit;
+  FEnabled:=AValue;
+  Modified:=true;
+end;
+
+constructor TMyHelpDatabase.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  Enabled:=true;
+end;
+
+procedure TMyHelpDatabase.LoadFromConfig(Config: TConfigStorage);
+begin
+  Enabled:=Config.GetValue('Enabled',true);
+end;
+
+procedure TMyHelpDatabase.SaveToConfig(Config: TConfigStorage);
+begin
+  Config.SetDeleteValue('Enabled',Enabled,true);
 end;
 
 { TMyHelpSetupDialog }
@@ -506,7 +571,6 @@ end;
 constructor TMyFPCKeywordHelpDatabase.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Enabled:=true;
   KeywordToText:=TStringList.Create;
   KeywordToText.Add('procedure=Named code block');
 end;
@@ -561,6 +625,18 @@ begin
     'The keyword "'+KeyWord+'":'#13#13
     +Txt,mtInformation,[mbOk]);
   Result:=shrSuccess;
+end;
+
+procedure TMyFPCKeywordHelpDatabase.LoadFromConfig(Config: TConfigStorage);
+begin
+  inherited LoadFromConfig(Config);
+  Config.GetValue('KeywordToText',KeywordToText);
+end;
+
+procedure TMyFPCKeywordHelpDatabase.SaveToConfig(Config: TConfigStorage);
+begin
+  inherited SaveToConfig(Config);
+  Config.SetValue('KeywordToText',KeywordToText);
 end;
 
 {$R *.lfm}
