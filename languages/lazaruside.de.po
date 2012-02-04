@@ -4802,7 +4802,9 @@ msgid "Empty procedures"
 msgstr "Leere Prozeduren"
 
 #: lazarusidestrconsts.liscefilter
-msgid "(Filter)"
+#, fuzzy
+#| msgid "(Filter)"
+msgid "(filter)"
 msgstr "(Filter)"
 
 #: lazarusidestrconsts.liscefollowcursor
@@ -5167,6 +5169,10 @@ msgstr "Taste auswählen..."
 msgid "Choose a name for the new component"
 msgstr "Geben Sie den Namen der neuen Komponente an"
 
+#: lazarusidestrconsts.lischooseanexamplefile
+msgid "Choose an example file"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseanfpcmessagefile
 msgid "Choose an FPC message file"
 msgstr ""
@@ -5482,6 +5488,10 @@ msgstr "Fehler"
 msgid "Example"
 msgstr "Beispiel"
 
+#: lazarusidestrconsts.liscodehelpgroupbox
+msgid "FPDoc settings"
+msgstr ""
+
 #: lazarusidestrconsts.liscodehelphintboldformat
 msgid "Insert bold formatting tag"
 msgstr "Formatzeichen für Fettschrift einfügen"
@@ -5537,11 +5547,6 @@ msgstr "(keine abgeleitete Beschreibung gefunden)"
 #: lazarusidestrconsts.liscodehelpnotagcaption
 msgid "<NONE>"
 msgstr "<KEINE>"
-
-#: lazarusidestrconsts.liscodehelppathsgroupbox
-msgctxt "lazarusidestrconsts.liscodehelppathsgroupbox"
-msgid "FPDoc files path"
-msgstr "FPDoc-Dateipfad"
 
 #: lazarusidestrconsts.liscodehelpreplacebutton
 msgctxt "lazarusidestrconsts.liscodehelpreplacebutton"
@@ -6189,8 +6194,14 @@ msgstr "Der Komponentenname %s%s%s ist ein Schlüsselwort"
 msgid "Component name %s%s%s is not a valid identifier"
 msgstr "Der Komponentenname %s%s%s ist als Bezeichner ungültig"
 
+#: lazarusidestrconsts.liscomppalcomponentlist
+msgid "View All"
+msgstr ""
+
 #: lazarusidestrconsts.liscomppalfindcomponent
-msgid "Find component"
+#, fuzzy
+#| msgid "Find component"
+msgid "Find component (to be removed)"
 msgstr "Komponente finden"
 
 #: lazarusidestrconsts.liscomppalopenpackage
@@ -6721,6 +6732,14 @@ msgstr "Hilfe-Knoten anlegen"
 msgid "Create it"
 msgstr "Anlegen"
 
+#: lazarusidestrconsts.liscreatenewpackage
+msgid "(Create new package)"
+msgstr ""
+
+#: lazarusidestrconsts.liscreatenewpackagecomponent
+msgid "Create new package component"
+msgstr ""
+
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
 msgstr "Projekt anlegen"
@@ -7130,6 +7149,10 @@ msgstr "Ausgabe"
 msgid "Process"
 msgstr "Prozeß"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmresetdebuggeroneachrun
+msgid "Reset Debugger after each run"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmresume
 msgid "Resume"
 msgstr "Fortsetzen"
@@ -7174,6 +7197,10 @@ msgstr "Datei %s%s%s kann nicht geladen werden."
 msgctxt "lazarusidestrconsts.lisdecimal"
 msgid "Decimal"
 msgstr "Dezimal"
+
+#: lazarusidestrconsts.lisdefaultplaceholder
+msgid "(default)"
+msgstr ""
 
 #: lazarusidestrconsts.lisdefaultvalue
 msgid "Default value"
@@ -8415,10 +8442,6 @@ msgstr "Datei, in die Debug-Ausgaben geschrieben werden. Falls nichts angegeben 
 msgid "Filter"
 msgstr "Filter"
 
-#: lazarusidestrconsts.lisfilter2
-msgid "(filter)"
-msgstr "(Filter)"
-
 #: lazarusidestrconsts.lisfilter3
 msgid "Filter: %s"
 msgstr "Filter: %s"
@@ -8566,6 +8589,14 @@ msgstr "Fehler beim Schreiben von \"%s\"%s%s"
 #: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
 msgid "FPDoc syntax error"
 msgstr "FPDoc Syntaxfehler"
+
+#: lazarusidestrconsts.lisfpdocpackagename
+msgid "FPDoc package name:"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpdocpackagenamedefaultisprojectfilename
+msgid "FPDoc package name. Default is project file name."
+msgstr ""
 
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
@@ -9379,6 +9410,10 @@ msgstr ""
 #: lazarusidestrconsts.lisisddirectorynotfound
 msgid "directory not found"
 msgstr "Verzeichnis nicht gefunden"
+
+#: lazarusidestrconsts.lisissues
+msgid "Issues"
+msgstr ""
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
 msgid "I wonder how you did that. Error in the %s:"
@@ -10327,17 +10362,17 @@ msgstr "Link zum Vorgänger hinzufügen"
 msgid "Copy from inherited"
 msgstr "Vom Vorläufer kopieren"
 
-#: lazarusidestrconsts.lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
-msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
-msgstr "%s hat keinen gültigen LazDoc-Pfad.%sKann die FPDoc-Datei für %s nicht schreiben"
+#: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
+msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisldmoveentriestoinherited
 msgid "Move entries to inherited"
 msgstr "Einträge zu den vererbten verschieben"
 
-#: lazarusidestrconsts.lisldnovalidlazdocpath
-msgid "No valid LazDoc path"
-msgstr "Kein gültiger LazDoc-Pfad"
+#: lazarusidestrconsts.lisldnovalidfpdocpath
+msgid "No valid FPDoc path"
+msgstr ""
 
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
@@ -11139,6 +11174,10 @@ msgstr "Auswahl kleinschreiben"
 msgid "Make Resource String ..."
 msgstr "Ressourcenstring erzeugen ..."
 
+#: lazarusidestrconsts.lismenunewcomponent
+msgid "New component"
+msgstr ""
+
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
 msgstr "Neues Formular"
@@ -11244,6 +11283,10 @@ msgstr "Einfügen"
 msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
 msgstr "Pause"
+
+#: lazarusidestrconsts.lismenupkgnewpackagecomponent
+msgid "New package component"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuprocedurelist
 msgctxt "lazarusidestrconsts.lismenuprocedurelist"
@@ -12487,6 +12530,10 @@ msgstr "Package-Unit"
 msgid ", parsed "
 msgstr ", analysiert"
 
+#: lazarusidestrconsts.lispascalfile
+msgid "Pascal file"
+msgstr ""
+
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
 msgstr "Pascal-Quelldatei"
@@ -12547,6 +12594,10 @@ msgstr "Pfad zum Make-Programm"
 #: lazarusidestrconsts.lispathtoinstance
 msgid "Path to failed Instance:"
 msgstr "Pfad zur fehlgeschlagenen Instanz:"
+
+#: lazarusidestrconsts.lispckcleartousethepackagename
+msgid "Clear to use the package name"
+msgstr ""
 
 #: lazarusidestrconsts.lispckdisablei18noflfm
 msgid "Disable I18N of lfm"
@@ -12952,6 +13003,14 @@ msgstr "Aktualisieren/Neukompilieren"
 msgid "Usage"
 msgstr "Bedienung"
 
+#: lazarusidestrconsts.lispckpackage
+msgid "Package:"
+msgstr ""
+
+#: lazarusidestrconsts.lispcksearchpathsforfpdocxmlfilesmultiplepathsmustbesepa
+msgid "Search paths for fpdoc xml files. Multiple paths must be separated by semicolon."
+msgstr ""
+
 #: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
 msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
 msgstr ""
@@ -13054,8 +13113,9 @@ msgid "Show Missing Files"
 msgstr "Fehlende Dateien zeigen"
 
 #: lazarusidestrconsts.lispesortfiles
-#| msgid "Sort files"
-msgid "Sort Files"
+#, fuzzy
+#| msgid "Sort Files"
+msgid "Sort Files Permanently"
 msgstr "Dateien sortieren"
 
 #: lazarusidestrconsts.lispesortfilesalphabetically
@@ -13635,6 +13695,10 @@ msgstr "Verwende Unit"
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgstr "Warnung: Die Datei %s%s%s%sgehört zum aktuellen Projekt."
 
+#: lazarusidestrconsts.lispkgselectapackage
+msgid "Select a package"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
 msgstr "Kann Komponenten nicht ohne Unit registrieren"
@@ -13658,6 +13722,10 @@ msgstr "Ungültige Komponentenklasse"
 #: lazarusidestrconsts.lispkgsysinvalidunitname
 msgid "Invalid Unitname: %s"
 msgstr "Ungültiger Unit-Name: %s"
+
+#: lazarusidestrconsts.lispkgsyslpkfilename
+msgid "%s%slpk file: %s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgsyspackagefilenotfound
 msgid "Package file not found"
@@ -13687,6 +13755,10 @@ msgstr "Die FCL (Free Pascal Component Library) enthält die Basisklassen für O
 #: lazarusidestrconsts.lispkgsysthelcllazaruscomponentlibrarycontainsallbase
 msgid "The LCL - Lazarus Component Library contains all base components for form editing."
 msgstr "Die LCL (»Lazarus Component Library«) enthält alle Basiskomponten um Formulare zu bearbeiten."
+
+#: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
+msgid "%s%sThe lpk file was not found."
+msgstr ""
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
 msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
@@ -14669,6 +14741,10 @@ msgstr "Skalierungsfaktor:"
 msgid "Search For "
 msgstr "Suche nach"
 
+#: lazarusidestrconsts.lissearchpaths2
+msgid "Search paths"
+msgstr ""
+
 #: lazarusidestrconsts.lissearchprojectsfrom
 msgid "Search projects from"
 msgstr "Suche Projekte in"
@@ -15172,7 +15248,7 @@ msgstr "Bearbeitbare Zelle"
 #: lazarusidestrconsts.listemplateeditparamcellhelp
 #, fuzzy
 #| msgid ""
-#| "serts an editable Cell, with a default value\n"
+#| "s an editable Cell, with a default value\n"
 #| "\"\",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell\n"
 #| "\"default\",Sync, to Sync with a previous cell of equal default\n"
 msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
@@ -15633,6 +15709,10 @@ msgstr "Die Unit heißt"
 #| msgid "The unit filename %s%s%s is not lowercase.%sThe FreePascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
 msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
 msgstr "Der Unitdateiname %s%s%s ist nicht in Kleinbuchstaben.%sDer Free-Pascal-Compiler sucht nicht nach allen Schreibweisen. Es wird empfohlen, Dateinamen in Kleinbuchstaben zu verwenden.%s%sDatei in Kleinbuchstaben umbenennen?"
+
+#: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
+msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgstr ""
 
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
@@ -16096,9 +16176,9 @@ msgstr "Kann Methode nicht finden"
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
 msgstr "Kann keine Pascal-Unit (.pas,.pp) finden für .lfm Datei%s%s%s%s"
 
-#: lazarusidestrconsts.lisunabletofindtheunitofcomponentclass
-msgid "Unable to find the unit of component class %s%s%s."
-msgstr "Kann die Unit der Komponentenklasse %s%s%s nicht finden."
+#: lazarusidestrconsts.lisunabletofindthelfmfileofcomponentclassneededbyunit
+msgid "Unable to find the lfm file of component class \"%s\".%sNeeded by unit:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."

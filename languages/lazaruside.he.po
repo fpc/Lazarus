@@ -4849,7 +4849,9 @@ msgid "Empty procedures"
 msgstr "פרוצדורות ריקות"
 
 #: lazarusidestrconsts.liscefilter
-msgid "(Filter)"
+#, fuzzy
+#| msgid "(Filter)"
+msgid "(filter)"
 msgstr "(סנן)"
 
 #: lazarusidestrconsts.liscefollowcursor
@@ -5216,6 +5218,10 @@ msgstr "בחר מקשר ..."
 msgid "Choose a name for the new component"
 msgstr "בחר שם לרכיב החדש"
 
+#: lazarusidestrconsts.lischooseanexamplefile
+msgid "Choose an example file"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseanfpcmessagefile
 msgid "Choose an FPC message file"
 msgstr ""
@@ -5532,6 +5538,10 @@ msgstr "שגיאות"
 msgid "Example"
 msgstr "דוגמה"
 
+#: lazarusidestrconsts.liscodehelpgroupbox
+msgid "FPDoc settings"
+msgstr ""
+
 #: lazarusidestrconsts.liscodehelphintboldformat
 msgid "Insert bold formatting tag"
 msgstr "הכנס תגית של טקסט מודגש"
@@ -5588,11 +5598,6 @@ msgstr "(לא נמצא תאור מורש)"
 #: lazarusidestrconsts.liscodehelpnotagcaption
 msgid "<NONE>"
 msgstr "<ללא>"
-
-#: lazarusidestrconsts.liscodehelppathsgroupbox
-msgctxt "lazarusidestrconsts.liscodehelppathsgroupbox"
-msgid "FPDoc files path"
-msgstr "נתיב של קבצי FPDoc"
 
 #: lazarusidestrconsts.liscodehelpreplacebutton
 msgctxt "lazarusidestrconsts.liscodehelpreplacebutton"
@@ -6243,8 +6248,14 @@ msgstr "שם הרכיב s%s%s% הוא מלת מפתח"
 msgid "Component name %s%s%s is not a valid identifier"
 msgstr "שם הרכיב s%s%s% אינו מזהה חוקי"
 
+#: lazarusidestrconsts.liscomppalcomponentlist
+msgid "View All"
+msgstr ""
+
 #: lazarusidestrconsts.liscomppalfindcomponent
-msgid "Find component"
+#, fuzzy
+#| msgid "Find component"
+msgid "Find component (to be removed)"
 msgstr "מצא רכיב"
 
 #: lazarusidestrconsts.liscomppalopenpackage
@@ -6789,6 +6800,14 @@ msgstr "צור צומת עזרה"
 msgid "Create it"
 msgstr "צור זאת"
 
+#: lazarusidestrconsts.liscreatenewpackage
+msgid "(Create new package)"
+msgstr ""
+
+#: lazarusidestrconsts.liscreatenewpackagecomponent
+msgid "Create new package component"
+msgstr ""
+
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
 msgstr "צור פרוייקט"
@@ -7200,6 +7219,10 @@ msgstr "פלט"
 msgid "Process"
 msgstr "תהליך"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmresetdebuggeroneachrun
+msgid "Reset Debugger after each run"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmresume
 msgid "Resume"
 msgstr "המשך"
@@ -7244,6 +7267,10 @@ msgstr "לא ניתן לטעון את הקובץ %s%s%s."
 msgctxt "lazarusidestrconsts.lisdecimal"
 msgid "Decimal"
 msgstr "עשרוני"
+
+#: lazarusidestrconsts.lisdefaultplaceholder
+msgid "(default)"
+msgstr ""
 
 #: lazarusidestrconsts.lisdefaultvalue
 msgid "Default value"
@@ -8494,10 +8521,6 @@ msgstr "הקובץ בו נשמר המידע לניפוי שגיאות. אם אי
 msgid "Filter"
 msgstr "מסנן"
 
-#: lazarusidestrconsts.lisfilter2
-msgid "(filter)"
-msgstr "(מסנן)"
-
 #: lazarusidestrconsts.lisfilter3
 msgid "Filter: %s"
 msgstr "מסנן: s%"
@@ -8645,6 +8668,14 @@ msgstr "שגיאה בכתיבת \"%s\"%s%s"
 #: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
 msgid "FPDoc syntax error"
 msgstr "שגיאת תחביר ב FPDoc"
+
+#: lazarusidestrconsts.lisfpdocpackagename
+msgid "FPDoc package name:"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpdocpackagenamedefaultisprojectfilename
+msgid "FPDoc package name. Default is project file name."
+msgstr ""
 
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
@@ -9463,6 +9494,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisisddirectorynotfound
 msgid "directory not found"
+msgstr ""
+
+#: lazarusidestrconsts.lisissues
+msgid "Issues"
 msgstr ""
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
@@ -10431,17 +10466,17 @@ msgstr "הוסף קישור לירושה"
 msgid "Copy from inherited"
 msgstr "העתק מהירושה"
 
-#: lazarusidestrconsts.lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
-msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
-msgstr "אין נתיב חוקי של LazDoc. לא יכול ליצור קובץ fpdoc עבור s%"
+#: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
+msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisldmoveentriestoinherited
 msgid "Move entries to inherited"
 msgstr "הזז ערך ליורש"
 
-#: lazarusidestrconsts.lisldnovalidlazdocpath
-msgid "No valid LazDoc path"
-msgstr "הנתיב של LazDoc אינו תקין"
+#: lazarusidestrconsts.lisldnovalidfpdocpath
+msgid "No valid FPDoc path"
+msgstr ""
 
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
@@ -11296,6 +11331,10 @@ msgstr "בחירת אותיות קטנות"
 msgid "Make Resource String ..."
 msgstr "צור מחרוזת משאבים ..."
 
+#: lazarusidestrconsts.lismenunewcomponent
+msgid "New component"
+msgstr ""
+
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
 msgstr "טופס חדש"
@@ -11408,6 +11447,10 @@ msgstr "הדבק"
 msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
 msgstr "השהה"
+
+#: lazarusidestrconsts.lismenupkgnewpackagecomponent
+msgid "New package component"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuprocedurelist
 msgctxt "lazarusidestrconsts.lismenuprocedurelist"
@@ -12686,6 +12729,10 @@ msgstr "יחידה של החבילה"
 msgid ", parsed "
 msgstr "פרוש"
 
+#: lazarusidestrconsts.lispascalfile
+msgid "Pascal file"
+msgstr ""
+
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
 msgstr "קובץ קוד של פסקל"
@@ -12746,6 +12793,10 @@ msgstr "נתיב של שרותי make"
 #: lazarusidestrconsts.lispathtoinstance
 msgid "Path to failed Instance:"
 msgstr "נתיב אל מופע שנכשל:"
+
+#: lazarusidestrconsts.lispckcleartousethepackagename
+msgid "Clear to use the package name"
+msgstr ""
 
 #: lazarusidestrconsts.lispckdisablei18noflfm
 msgid "Disable I18N of lfm"
@@ -13156,6 +13207,14 @@ msgstr "עדכן/בנה מחדש"
 msgid "Usage"
 msgstr "שימוש"
 
+#: lazarusidestrconsts.lispckpackage
+msgid "Package:"
+msgstr ""
+
+#: lazarusidestrconsts.lispcksearchpathsforfpdocxmlfilesmultiplepathsmustbesepa
+msgid "Search paths for fpdoc xml files. Multiple paths must be separated by semicolon."
+msgstr ""
+
 #: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
 msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
 msgstr ""
@@ -13263,8 +13322,8 @@ msgstr "הראה קבצים חסרים"
 
 #: lazarusidestrconsts.lispesortfiles
 #, fuzzy
-#| msgid "Sort files"
-msgid "Sort Files"
+#| msgid "Sort Files"
+msgid "Sort Files Permanently"
 msgstr "סדר קבצים"
 
 #: lazarusidestrconsts.lispesortfilesalphabetically
@@ -13844,6 +13903,10 @@ msgstr "משתמש ביחידה"
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgstr "אזהרה: הקובץ %s%s%s%s שייך לפרויקט הנוכחי."
 
+#: lazarusidestrconsts.lispkgselectapackage
+msgid "Select a package"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
 msgstr "לא יכול לרשום את הרכיבים ללא יחידה"
@@ -13867,6 +13930,10 @@ msgstr "מחלקת רכיבים לא חוקית"
 #: lazarusidestrconsts.lispkgsysinvalidunitname
 msgid "Invalid Unitname: %s"
 msgstr "שם יחידה לא חוקי: s%"
+
+#: lazarusidestrconsts.lispkgsyslpkfilename
+msgid "%s%slpk file: %s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgsyspackagefilenotfound
 msgid "Package file not found"
@@ -13897,6 +13964,10 @@ msgstr "ספריית הרכיבים  FCL של FreePascal מספקת מחלקות
 #: lazarusidestrconsts.lispkgsysthelcllazaruscomponentlibrarycontainsallbase
 msgid "The LCL - Lazarus Component Library contains all base components for form editing."
 msgstr "ספריית הרכיבים  LCL של FreePascal מכילה את כל הרכיבים הבסיסיים לעריכת טפסים."
+
+#: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
+msgid "%s%sThe lpk file was not found."
+msgstr ""
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
 msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
@@ -14886,6 +14957,10 @@ msgstr "קנה מידה:"
 msgid "Search For "
 msgstr "חפש את"
 
+#: lazarusidestrconsts.lissearchpaths2
+msgid "Search paths"
+msgstr ""
+
 #: lazarusidestrconsts.lissearchprojectsfrom
 msgid "Search projects from"
 msgstr ""
@@ -15395,7 +15470,7 @@ msgstr "תא בר עריכה"
 #: lazarusidestrconsts.listemplateeditparamcellhelp
 #, fuzzy
 #| msgid ""
-#| "serts an editable Cell, with a default value\n"
+#| "s an editable Cell, with a default value\n"
 #| "\"\",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell\n"
 #| "\"default\",Sync, to Sync with a previous cell of equal default\n"
 msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
@@ -15864,6 +15939,10 @@ msgstr "ליחידה יש את השם הבא"
 msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
 msgstr "שם קובץ היחידה %s%s%s אינו באותיות קטנות. המהדר של FreePascal לא מחפש את כל אפשרויות הראשיות. מומלץ להשתמש באותיות קטנות בשם הקובץ.לשנות את השם לאותיות קטנות."
 
+#: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
+msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgstr ""
+
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
 msgstr "קובץ אחר משתמש ביחידה s%. לעדכן את המקורות אוטומטית?"
@@ -16326,9 +16405,9 @@ msgstr "לא יכול למצוא מתודה."
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
 msgstr "לא יכול למצוא יחידת פסקל (pas,.pp.) עבור קובץ lfm%s%s%s%s"
 
-#: lazarusidestrconsts.lisunabletofindtheunitofcomponentclass
-msgid "Unable to find the unit of component class %s%s%s."
-msgstr "לא ניתן למצוא את היחידה שבה מוגדרת המחלקה של הרכיב %s%s%s."
+#: lazarusidestrconsts.lisunabletofindthelfmfileofcomponentclassneededbyunit
+msgid "Unable to find the lfm file of component class \"%s\".%sNeeded by unit:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."

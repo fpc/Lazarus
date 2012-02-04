@@ -4847,7 +4847,9 @@ msgid "Empty procedures"
 msgstr "空的过程"
 
 #: lazarusidestrconsts.liscefilter
-msgid "(Filter)"
+#, fuzzy
+#| msgid "(Filter)"
+msgid "(filter)"
 msgstr "(过滤)"
 
 #: lazarusidestrconsts.liscefollowcursor
@@ -5209,6 +5211,10 @@ msgstr "选择一个按钮..."
 msgid "Choose a name for the new component"
 msgstr ""
 
+#: lazarusidestrconsts.lischooseanexamplefile
+msgid "Choose an example file"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseanfpcmessagefile
 msgid "Choose an FPC message file"
 msgstr ""
@@ -5525,6 +5531,10 @@ msgstr "错误"
 msgid "Example"
 msgstr "样例"
 
+#: lazarusidestrconsts.liscodehelpgroupbox
+msgid "FPDoc settings"
+msgstr ""
+
 #: lazarusidestrconsts.liscodehelphintboldformat
 msgid "Insert bold formatting tag"
 msgstr "插入粗体格式标记"
@@ -5581,11 +5591,6 @@ msgstr ""
 #: lazarusidestrconsts.liscodehelpnotagcaption
 msgid "<NONE>"
 msgstr "<无>"
-
-#: lazarusidestrconsts.liscodehelppathsgroupbox
-msgctxt "lazarusidestrconsts.liscodehelppathsgroupbox"
-msgid "FPDoc files path"
-msgstr "FPDoc文件路径"
 
 #: lazarusidestrconsts.liscodehelpreplacebutton
 msgctxt "lazarusidestrconsts.liscodehelpreplacebutton"
@@ -6236,8 +6241,14 @@ msgstr "组件名 %s%s%s 是关键字"
 msgid "Component name %s%s%s is not a valid identifier"
 msgstr "组件名 %s%s%s 无效"
 
+#: lazarusidestrconsts.liscomppalcomponentlist
+msgid "View All"
+msgstr ""
+
 #: lazarusidestrconsts.liscomppalfindcomponent
-msgid "Find component"
+#, fuzzy
+#| msgid "Find component"
+msgid "Find component (to be removed)"
 msgstr "查找组件"
 
 #: lazarusidestrconsts.liscomppalopenpackage
@@ -6764,6 +6775,14 @@ msgstr "创建帮助节点"
 msgid "Create it"
 msgstr ""
 
+#: lazarusidestrconsts.liscreatenewpackage
+msgid "(Create new package)"
+msgstr ""
+
+#: lazarusidestrconsts.liscreatenewpackagecomponent
+msgid "Create new package component"
+msgstr ""
+
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
 msgstr ""
@@ -7175,6 +7194,10 @@ msgstr "输出"
 msgid "Process"
 msgstr "步骤"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmresetdebuggeroneachrun
+msgid "Reset Debugger after each run"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmresume
 msgid "Resume"
 msgstr "恢复"
@@ -7219,6 +7242,10 @@ msgstr "无法载入文件 %s%s%s."
 msgctxt "lazarusidestrconsts.lisdecimal"
 msgid "Decimal"
 msgstr "小数"
+
+#: lazarusidestrconsts.lisdefaultplaceholder
+msgid "(default)"
+msgstr ""
 
 #: lazarusidestrconsts.lisdefaultvalue
 msgid "Default value"
@@ -8459,10 +8486,6 @@ msgstr "调试信息输出的文件. 如果没有指定, 调试信息将输出�
 msgid "Filter"
 msgstr "过滤"
 
-#: lazarusidestrconsts.lisfilter2
-msgid "(filter)"
-msgstr "(过滤)"
-
 #: lazarusidestrconsts.lisfilter3
 msgid "Filter: %s"
 msgstr ""
@@ -8609,6 +8632,14 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
 msgid "FPDoc syntax error"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpdocpackagename
+msgid "FPDoc package name:"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpdocpackagenamedefaultisprojectfilename
+msgid "FPDoc package name. Default is project file name."
 msgstr ""
 
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
@@ -9424,6 +9455,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisisddirectorynotfound
 msgid "directory not found"
+msgstr ""
+
+#: lazarusidestrconsts.lisissues
+msgid "Issues"
 msgstr ""
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
@@ -10388,17 +10423,17 @@ msgstr ""
 msgid "Copy from inherited"
 msgstr "从继承复制"
 
-#: lazarusidestrconsts.lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
-msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
-msgstr "%s 没有任何有效的LazDoc路径. %s 不能为 %s 建立fpdoc文件"
+#: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
+msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisldmoveentriestoinherited
 msgid "Move entries to inherited"
 msgstr "移动条目到继承"
 
-#: lazarusidestrconsts.lisldnovalidlazdocpath
-msgid "No valid LazDoc path"
-msgstr "没有有效的 LazDoc 路径"
+#: lazarusidestrconsts.lisldnovalidfpdocpath
+msgid "No valid FPDoc path"
+msgstr ""
 
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
@@ -11245,6 +11280,10 @@ msgstr "转换选区为小写"
 msgid "Make Resource String ..."
 msgstr "制作资源字符串 ..."
 
+#: lazarusidestrconsts.lismenunewcomponent
+msgid "New component"
+msgstr ""
+
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
 msgstr "新建窗体"
@@ -11358,6 +11397,10 @@ msgstr "粘贴"
 msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
 msgstr "暂停"
+
+#: lazarusidestrconsts.lismenupkgnewpackagecomponent
+msgid "New package component"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuprocedurelist
 msgctxt "lazarusidestrconsts.lismenuprocedurelist"
@@ -12623,6 +12666,10 @@ msgstr ""
 msgid ", parsed "
 msgstr ""
 
+#: lazarusidestrconsts.lispascalfile
+msgid "Pascal file"
+msgstr ""
+
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
 msgstr "Pascal 源代码文件"
@@ -12682,6 +12729,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lispathtoinstance
 msgid "Path to failed Instance:"
+msgstr ""
+
+#: lazarusidestrconsts.lispckcleartousethepackagename
+msgid "Clear to use the package name"
 msgstr ""
 
 #: lazarusidestrconsts.lispckdisablei18noflfm
@@ -13093,6 +13144,14 @@ msgstr "更新/重新编译"
 msgid "Usage"
 msgstr "用法"
 
+#: lazarusidestrconsts.lispckpackage
+msgid "Package:"
+msgstr ""
+
+#: lazarusidestrconsts.lispcksearchpathsforfpdocxmlfilesmultiplepathsmustbesepa
+msgid "Search paths for fpdoc xml files. Multiple paths must be separated by semicolon."
+msgstr ""
+
 #: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
 msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
 msgstr ""
@@ -13194,8 +13253,8 @@ msgstr ""
 
 #: lazarusidestrconsts.lispesortfiles
 #, fuzzy
-#| msgid "Sort files"
-msgid "Sort Files"
+#| msgid "Sort Files"
+msgid "Sort Files Permanently"
 msgstr "排序文件"
 
 #: lazarusidestrconsts.lispesortfilesalphabetically
@@ -13775,6 +13834,10 @@ msgstr "使用单元"
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgstr "警告: 文件 %s%s%s%s属于当前工程."
 
+#: lazarusidestrconsts.lispkgselectapackage
+msgid "Select a package"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
 msgstr "没有单元无法注册组件"
@@ -13798,6 +13861,10 @@ msgstr "无效组件类"
 #: lazarusidestrconsts.lispkgsysinvalidunitname
 msgid "Invalid Unitname: %s"
 msgstr "无效的单元名: %s"
+
+#: lazarusidestrconsts.lispkgsyslpkfilename
+msgid "%s%slpk file: %s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgsyspackagefilenotfound
 msgid "Package file not found"
@@ -13828,6 +13895,10 @@ msgstr "FCL - (FreePascal Component Library) FreePascal 组件库提供了 objec
 #: lazarusidestrconsts.lispkgsysthelcllazaruscomponentlibrarycontainsallbase
 msgid "The LCL - Lazarus Component Library contains all base components for form editing."
 msgstr "LCL - (Lazarus Component Library) Lazarus 组件库包含所有基本的窗口编辑组件"
+
+#: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
+msgid "%s%sThe lpk file was not found."
+msgstr ""
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
 msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
@@ -14815,6 +14886,10 @@ msgstr "缩放比例:"
 msgid "Search For "
 msgstr "查找"
 
+#: lazarusidestrconsts.lissearchpaths2
+msgid "Search paths"
+msgstr ""
+
 #: lazarusidestrconsts.lissearchprojectsfrom
 msgid "Search projects from"
 msgstr ""
@@ -15783,6 +15858,10 @@ msgstr ""
 msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
 msgstr ""
 
+#: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
+msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgstr ""
+
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
 msgstr "单元%s被别的文件使用，%s自动引用更新？"
@@ -16245,9 +16324,9 @@ msgstr ""
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.lisunabletofindtheunitofcomponentclass
-msgid "Unable to find the unit of component class %s%s%s."
-msgstr "不能找到组件类的单元文件 %s%s%s."
+#: lazarusidestrconsts.lisunabletofindthelfmfileofcomponentclassneededbyunit
+msgid "Unable to find the lfm file of component class \"%s\".%sNeeded by unit:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."

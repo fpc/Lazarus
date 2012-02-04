@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-01-05 00:27+0400\n"
+"PO-Revision-Date: 2012-02-04 23:54+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -203,7 +203,7 @@ msgstr "свойство по умолчанию не найдено"
 
 #: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
-msgstr "переопределён модификатор default (по умолчанию)"
+msgstr "спецификатор default переопределён"
 
 #: codetoolsstrconsts.ctsdefine
 msgid "Define "
@@ -271,7 +271,7 @@ msgstr "ожидается параметр dispid, но найдено %s"
 
 #: codetoolsstrconsts.ctsdispidspecifierredefined
 msgid "dispid specifier redefined"
-msgstr "описатель dispid переопределён"
+msgstr "спецификатор dispid переопределён"
 
 #: codetoolsstrconsts.ctsdoceditordirectory
 msgid "Doc Editor Directory"
@@ -438,7 +438,7 @@ msgstr "ожидается идентификатор, но найдено %s"
 
 #: codetoolsstrconsts.ctsidentexpectedbuteoffound
 msgid "unexpected end of file (identifier expected)"
-msgstr "неожиданный конец файла (идентификатор ожидается)"
+msgstr "неожиданный конец файла (ожидается идентификатор)"
 
 #: codetoolsstrconsts.ctsidentexpectedbutkeywordfound
 msgid "identifier expected, but keyword %s found"
@@ -490,7 +490,7 @@ msgstr "неверное циклическое использование мо�
 
 #: codetoolsstrconsts.ctsillegalqualifier
 msgid "illegal qualifier %s found"
-msgstr "обнаружен некорректный указатель %s"
+msgstr "обнаружен некорректный квалификатор %s"
 
 #: codetoolsstrconsts.ctsimplementationnodenotfound
 msgid "implementation node not found"
@@ -502,15 +502,15 @@ msgstr "Обнаружено циклическое включение"
 
 #: codetoolsstrconsts.ctsincludedirectoriesplusdirs
 msgid "include directories: %s"
-msgstr "каталоги включений: %s"
+msgstr "каталоги включаемых файлов: %s"
 
 #: codetoolsstrconsts.ctsincludefilenotfound
 msgid "include file not found \"%s\""
-msgstr "файл включения не найден \"%s\""
+msgstr "включаемый файл не найден \"%s\""
 
 #: codetoolsstrconsts.ctsincompatibletypesgotexpected
 msgid "incompatibles types: expected \"%s\" but got \"%s\""
-msgstr "несовместимые типы: ожидался \"%s\", получили \"%s\""
+msgstr "несовместимые типы: ожидается \"%s\", но получен \"%s\""
 
 #: codetoolsstrconsts.ctsindexparameterexpectedbutatomfound
 msgid "index parameter expected, but %s found"
@@ -518,7 +518,7 @@ msgstr "ожидается параметр индекса, но найдено 
 
 #: codetoolsstrconsts.ctsindexspecifierredefined
 msgid "index specifier redefined"
-msgstr "модификатор индекса переопределён"
+msgstr "спецификатор index переопределён"
 
 #: codetoolsstrconsts.ctsinheritedkeywordonlyallowedinmethods
 msgid "inherited keyword only allowed in methods"
@@ -658,7 +658,7 @@ msgstr "не найдено контекстного узла у курсора"
 
 #: codetoolsstrconsts.ctsnodefaultspecifierdefinedtwice
 msgid "nodefault specifier defined twice"
-msgstr "модификатор nodefault определён дважды"
+msgstr "спецификатор nodefault определён дважды"
 
 #: codetoolsstrconsts.ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
@@ -695,7 +695,7 @@ msgstr "ожидается оператор, но найдено %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbuteoffound
 msgid "unexpected end of file (operator expected)"
-msgstr ""
+msgstr "неожиданный конец файла (ожидается оператор)"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
 msgid "operator expected but %s found"
@@ -748,7 +748,7 @@ msgstr "специфичный для процессора"
 
 #: codetoolsstrconsts.ctsproperttypeexpectedbutatomfound
 msgid "property type expected, but %s found"
-msgstr "ожидается тип свойства, найдено %s"
+msgstr "ожидается тип свойства, но найдено %s"
 
 #: codetoolsstrconsts.ctspropertycurrentnotfound
 msgid "property Current not found"
@@ -760,7 +760,7 @@ msgstr "спецификатор свойства уже задан: %s"
 
 #: codetoolsstrconsts.ctsqualifierexpectedbutatomfound
 msgid "qualifier expected but %s found"
-msgstr "ожидалась ссылка, но найдено %s"
+msgstr "ожидается квалификатор, но найдено %s"
 
 #: codetoolsstrconsts.ctsresetalldefines
 msgid "Reset all defines"
@@ -780,7 +780,7 @@ msgstr "Просмотренных файлов: %s"
 
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
-msgstr "; ожидается после модификатора свойства \"%s\", но найдено %s"
+msgstr "после спецификатора свойства \"%s\" ожидается точка с запятой, но найдено %s"
 
 #: codetoolsstrconsts.ctssemicolonnotfound
 msgid "semicolon not found"
@@ -884,7 +884,7 @@ msgstr "неожиданное ключевое слово \"%s\""
 
 #: codetoolsstrconsts.ctsunexpectedkeyword2
 msgid "unexpected keyword %s"
-msgstr "неожиданное ключевое слово \"%s\""
+msgstr "неожиданное ключевое слово %s"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"

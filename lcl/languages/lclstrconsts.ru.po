@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-11-21 01:36+0400\n"
+"PO-Revision-Date: 2012-02-04 19:32+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -255,10 +255,9 @@ msgid "can not execute %s"
 msgstr "Запустить %s невозможно"
 
 #: lclstrconsts.liscefilter
-#, fuzzy
 #| msgid "(Filter)"
 msgid "(filter)"
-msgstr "(Фильтр)"
+msgstr "(фильтр)"
 
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"

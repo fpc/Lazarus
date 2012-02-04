@@ -4818,7 +4818,9 @@ msgid "Empty procedures"
 msgstr "Порожні процедури"
 
 #: lazarusidestrconsts.liscefilter
-msgid "(Filter)"
+#, fuzzy
+#| msgid "(Filter)"
+msgid "(filter)"
 msgstr "(Фільтр)"
 
 #: lazarusidestrconsts.liscefollowcursor
@@ -5184,6 +5186,10 @@ msgstr "Виберіть клавішу ..."
 msgid "Choose a name for the new component"
 msgstr "Виберіть ім'я для нового компоненту"
 
+#: lazarusidestrconsts.lischooseanexamplefile
+msgid "Choose an example file"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseanfpcmessagefile
 msgid "Choose an FPC message file"
 msgstr ""
@@ -5500,6 +5506,10 @@ msgstr "Помилки"
 msgid "Example"
 msgstr "Приклад"
 
+#: lazarusidestrconsts.liscodehelpgroupbox
+msgid "FPDoc settings"
+msgstr ""
+
 #: lazarusidestrconsts.liscodehelphintboldformat
 msgid "Insert bold formatting tag"
 msgstr ""
@@ -5556,11 +5566,6 @@ msgstr ""
 #: lazarusidestrconsts.liscodehelpnotagcaption
 msgid "<NONE>"
 msgstr "<НІЧОГО>"
-
-#: lazarusidestrconsts.liscodehelppathsgroupbox
-msgctxt "lazarusidestrconsts.liscodehelppathsgroupbox"
-msgid "FPDoc files path"
-msgstr "Шлях до файлів FPDoc"
 
 #: lazarusidestrconsts.liscodehelpreplacebutton
 msgctxt "lazarusidestrconsts.liscodehelpreplacebutton"
@@ -6201,8 +6206,14 @@ msgstr "Назву компонента %s%s%s зарезервовано"
 msgid "Component name %s%s%s is not a valid identifier"
 msgstr "Назва компонента %s%s%s є некоректним ідентифікатором"
 
+#: lazarusidestrconsts.liscomppalcomponentlist
+msgid "View All"
+msgstr ""
+
 #: lazarusidestrconsts.liscomppalfindcomponent
-msgid "Find component"
+#, fuzzy
+#| msgid "Find component"
+msgid "Find component (to be removed)"
 msgstr "Знайти компонент"
 
 #: lazarusidestrconsts.liscomppalopenpackage
@@ -6734,6 +6745,14 @@ msgstr "Створити вузол Довідки"
 msgid "Create it"
 msgstr "Створити його"
 
+#: lazarusidestrconsts.liscreatenewpackage
+msgid "(Create new package)"
+msgstr ""
+
+#: lazarusidestrconsts.liscreatenewpackagecomponent
+msgid "Create new package component"
+msgstr ""
+
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
 msgstr "Створити проект"
@@ -7141,6 +7160,10 @@ msgstr "Виведення"
 msgid "Process"
 msgstr "Процес"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmresetdebuggeroneachrun
+msgid "Reset Debugger after each run"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmresume
 msgid "Resume"
 msgstr "Відновити"
@@ -7185,6 +7208,10 @@ msgstr "Не можу завантажити файл %s%s%s."
 msgctxt "lazarusidestrconsts.lisdecimal"
 msgid "Decimal"
 msgstr "Десяткове"
+
+#: lazarusidestrconsts.lisdefaultplaceholder
+msgid "(default)"
+msgstr ""
 
 #: lazarusidestrconsts.lisdefaultvalue
 msgid "Default value"
@@ -8431,10 +8458,6 @@ msgstr "файл, куди буде записуватись налагоджу�
 msgid "Filter"
 msgstr "Фільтр"
 
-#: lazarusidestrconsts.lisfilter2
-msgid "(filter)"
-msgstr "(фільтр)"
-
 #: lazarusidestrconsts.lisfilter3
 msgid "Filter: %s"
 msgstr "Фільтр: %s"
@@ -8581,6 +8604,14 @@ msgstr "Помилка запису \"%s\"%s%s"
 #: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
 msgid "FPDoc syntax error"
 msgstr "Синтаксична помилка FPDoc"
+
+#: lazarusidestrconsts.lisfpdocpackagename
+msgid "FPDoc package name:"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpdocpackagenamedefaultisprojectfilename
+msgid "FPDoc package name. Default is project file name."
+msgstr ""
 
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
@@ -9386,6 +9417,10 @@ msgstr ""
 #: lazarusidestrconsts.lisisddirectorynotfound
 msgid "directory not found"
 msgstr "директорія не знайдена"
+
+#: lazarusidestrconsts.lisissues
+msgid "Issues"
+msgstr ""
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
 msgid "I wonder how you did that. Error in the %s:"
@@ -10343,16 +10378,16 @@ msgstr ""
 msgid "Copy from inherited"
 msgstr "Копіювати з усадкованого"
 
-#: lazarusidestrconsts.lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
-msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
+#: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
+msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisldmoveentriestoinherited
 msgid "Move entries to inherited"
 msgstr "Пересунути включення до успадкованого"
 
-#: lazarusidestrconsts.lisldnovalidlazdocpath
-msgid "No valid LazDoc path"
+#: lazarusidestrconsts.lisldnovalidfpdocpath
+msgid "No valid FPDoc path"
 msgstr ""
 
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
@@ -11179,6 +11214,10 @@ msgstr "Вибір в нижньому регістрі"
 msgid "Make Resource String ..."
 msgstr "Створити рядок ресурсу ..."
 
+#: lazarusidestrconsts.lismenunewcomponent
+msgid "New component"
+msgstr ""
+
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
 msgstr "Нова форма"
@@ -11282,6 +11321,10 @@ msgstr "Вставити"
 msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
 msgstr "Пауза"
+
+#: lazarusidestrconsts.lismenupkgnewpackagecomponent
+msgid "New package component"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuprocedurelist
 msgctxt "lazarusidestrconsts.lismenuprocedurelist"
@@ -12533,6 +12576,10 @@ msgstr "модуль пакунку"
 msgid ", parsed "
 msgstr ", проаналізовано "
 
+#: lazarusidestrconsts.lispascalfile
+msgid "Pascal file"
+msgstr ""
+
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
 msgstr "Файл з паскаль-текстом"
@@ -12592,6 +12639,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lispathtoinstance
 msgid "Path to failed Instance:"
+msgstr ""
+
+#: lazarusidestrconsts.lispckcleartousethepackagename
+msgid "Clear to use the package name"
 msgstr ""
 
 #: lazarusidestrconsts.lispckdisablei18noflfm
@@ -13001,6 +13052,14 @@ msgstr "Поновити/перебудувати"
 msgid "Usage"
 msgstr "Використання"
 
+#: lazarusidestrconsts.lispckpackage
+msgid "Package:"
+msgstr ""
+
+#: lazarusidestrconsts.lispcksearchpathsforfpdocxmlfilesmultiplepathsmustbesepa
+msgid "Search paths for fpdoc xml files. Multiple paths must be separated by semicolon."
+msgstr ""
+
 #: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
 msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
 msgstr ""
@@ -13106,8 +13165,8 @@ msgstr "Показати загублені файли"
 
 #: lazarusidestrconsts.lispesortfiles
 #, fuzzy
-#| msgid "Sort files"
-msgid "Sort Files"
+#| msgid "Sort Files"
+msgid "Sort Files Permanently"
 msgstr "Сортувати файли"
 
 #: lazarusidestrconsts.lispesortfilesalphabetically
@@ -13685,6 +13744,10 @@ msgstr "Викор. модуль"
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgstr "Увага: Файл %s%s%s%sналежить поточному проекту."
 
+#: lazarusidestrconsts.lispkgselectapackage
+msgid "Select a package"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
 msgstr "Не можу зареєструвати компоненти без модуля"
@@ -13708,6 +13771,10 @@ msgstr "Неправильний клас компонента"
 #: lazarusidestrconsts.lispkgsysinvalidunitname
 msgid "Invalid Unitname: %s"
 msgstr "Неправильна назва модуля: %s"
+
+#: lazarusidestrconsts.lispkgsyslpkfilename
+msgid "%s%slpk file: %s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgsyspackagefilenotfound
 msgid "Package file not found"
@@ -13736,6 +13803,10 @@ msgstr "FCL - бібліотека компонентів Free Pascal забез
 #: lazarusidestrconsts.lispkgsysthelcllazaruscomponentlibrarycontainsallbase
 msgid "The LCL - Lazarus Component Library contains all base components for form editing."
 msgstr "LCL - Бібліотека компонентів Lazarus вміщує всі основні компоненти для редагування форм."
+
+#: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
+msgid "%s%sThe lpk file was not found."
+msgstr ""
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
 msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
@@ -14711,6 +14782,10 @@ msgstr "Масштабний фактор:"
 msgid "Search For "
 msgstr "Шукати "
 
+#: lazarusidestrconsts.lissearchpaths2
+msgid "Search paths"
+msgstr ""
+
 #: lazarusidestrconsts.lissearchprojectsfrom
 msgid "Search projects from"
 msgstr ""
@@ -15657,6 +15732,10 @@ msgstr "Модуль має це ім'я"
 msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
 msgstr ""
 
+#: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
+msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgstr ""
+
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
 msgstr ""
@@ -16117,9 +16196,9 @@ msgstr "Не можу знайти метод."
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
 msgstr "Не можу знайти модуль Паскаля (.pas,.pp) для .lfm файл%s%s%s%s"
 
-#: lazarusidestrconsts.lisunabletofindtheunitofcomponentclass
-msgid "Unable to find the unit of component class %s%s%s."
-msgstr "Не можу знайти модуль компонета класу %s%s%s."
+#: lazarusidestrconsts.lisunabletofindthelfmfileofcomponentclassneededbyunit
+msgid "Unable to find the lfm file of component class \"%s\".%sNeeded by unit:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."

@@ -4873,7 +4873,9 @@ msgid "Empty procedures"
 msgstr "空白の手続き"
 
 #: lazarusidestrconsts.liscefilter
-msgid "(Filter)"
+#, fuzzy
+#| msgid "(Filter)"
+msgid "(filter)"
 msgstr "(フィルター)"
 
 #: lazarusidestrconsts.liscefollowcursor
@@ -5241,6 +5243,10 @@ msgstr "キーを選択してください..."
 msgid "Choose a name for the new component"
 msgstr "新しいコンポーネント名を選択してください"
 
+#: lazarusidestrconsts.lischooseanexamplefile
+msgid "Choose an example file"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseanfpcmessagefile
 msgid "Choose an FPC message file"
 msgstr ""
@@ -5557,6 +5563,10 @@ msgstr "エラー"
 msgid "Example"
 msgstr "実例"
 
+#: lazarusidestrconsts.liscodehelpgroupbox
+msgid "FPDoc settings"
+msgstr ""
+
 #: lazarusidestrconsts.liscodehelphintboldformat
 msgid "Insert bold formatting tag"
 msgstr "太字設定タグを挿入"
@@ -5613,11 +5623,6 @@ msgstr "（継承された記述が見つかりません）"
 #: lazarusidestrconsts.liscodehelpnotagcaption
 msgid "<NONE>"
 msgstr "<無し>"
-
-#: lazarusidestrconsts.liscodehelppathsgroupbox
-msgctxt "lazarusidestrconsts.liscodehelppathsgroupbox"
-msgid "FPDoc files path"
-msgstr "FPDocファイルパス"
 
 #: lazarusidestrconsts.liscodehelpreplacebutton
 msgctxt "lazarusidestrconsts.liscodehelpreplacebutton"
@@ -6268,8 +6273,14 @@ msgstr "コンポーネント名 %s%s%s はキーワードです"
 msgid "Component name %s%s%s is not a valid identifier"
 msgstr "コンポーネント名 %s%s%s は無効な識別子です"
 
+#: lazarusidestrconsts.liscomppalcomponentlist
+msgid "View All"
+msgstr ""
+
 #: lazarusidestrconsts.liscomppalfindcomponent
-msgid "Find component"
+#, fuzzy
+#| msgid "Find component"
+msgid "Find component (to be removed)"
 msgstr "コンポーネントを検索"
 
 #: lazarusidestrconsts.liscomppalopenpackage
@@ -6815,6 +6826,14 @@ msgstr "ヘルプノードを作成"
 msgid "Create it"
 msgstr "それを作成"
 
+#: lazarusidestrconsts.liscreatenewpackage
+msgid "(Create new package)"
+msgstr ""
+
+#: lazarusidestrconsts.liscreatenewpackagecomponent
+msgid "Create new package component"
+msgstr ""
+
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
 msgstr "プロジェクトを作成"
@@ -7228,6 +7247,10 @@ msgstr "出力"
 msgid "Process"
 msgstr "プロセス"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmresetdebuggeroneachrun
+msgid "Reset Debugger after each run"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmresume
 msgid "Resume"
 msgstr "再開"
@@ -7272,6 +7295,10 @@ msgstr "ファイル%s%s%sを読み込めません。"
 msgctxt "lazarusidestrconsts.lisdecimal"
 msgid "Decimal"
 msgstr "小数"
+
+#: lazarusidestrconsts.lisdefaultplaceholder
+msgid "(default)"
+msgstr ""
 
 #: lazarusidestrconsts.lisdefaultvalue
 msgid "Default value"
@@ -8522,10 +8549,6 @@ msgstr "デバッグ出力が書き込まれるファイル。それが指定さ
 msgid "Filter"
 msgstr "フィルタ"
 
-#: lazarusidestrconsts.lisfilter2
-msgid "(filter)"
-msgstr "(フィルター)"
-
 #: lazarusidestrconsts.lisfilter3
 msgid "Filter: %s"
 msgstr "フィルタ: %s"
@@ -8673,6 +8696,14 @@ msgstr "\"%s\"%s%sの書き出しに失敗"
 #: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
 msgid "FPDoc syntax error"
 msgstr "FPDocの表記法エラー"
+
+#: lazarusidestrconsts.lisfpdocpackagename
+msgid "FPDoc package name:"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpdocpackagenamedefaultisprojectfilename
+msgid "FPDoc package name. Default is project file name."
+msgstr ""
 
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
@@ -9493,6 +9524,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisisddirectorynotfound
 msgid "directory not found"
+msgstr ""
+
+#: lazarusidestrconsts.lisissues
+msgid "Issues"
 msgstr ""
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
@@ -10459,17 +10494,17 @@ msgstr "継承へのリンクを挿入"
 msgid "Copy from inherited"
 msgstr "継承からコピー"
 
-#: lazarusidestrconsts.lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
-msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
-msgstr "%s は有効なLazDocパスをもっていません。%s%sに関するfpdocファイルを作成できませんでした。"
+#: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
+msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisldmoveentriestoinherited
 msgid "Move entries to inherited"
 msgstr "見出しを継承に移動"
 
-#: lazarusidestrconsts.lisldnovalidlazdocpath
-msgid "No valid LazDoc path"
-msgstr "有効なLazDocパスが見つかりません"
+#: lazarusidestrconsts.lisldnovalidfpdocpath
+msgid "No valid FPDoc path"
+msgstr ""
 
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
@@ -11322,6 +11357,10 @@ msgstr "選択部を小文字化"
 msgid "Make Resource String ..."
 msgstr "リソース文字列作成 ..."
 
+#: lazarusidestrconsts.lismenunewcomponent
+msgid "New component"
+msgstr ""
+
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
 msgstr "新規フォーム"
@@ -11435,6 +11474,10 @@ msgstr "貼り付け"
 msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
 msgstr "一時停止"
+
+#: lazarusidestrconsts.lismenupkgnewpackagecomponent
+msgid "New package component"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuprocedurelist
 msgctxt "lazarusidestrconsts.lismenuprocedurelist"
@@ -12718,6 +12761,10 @@ msgstr "パッケージユニット"
 msgid ", parsed "
 msgstr ", 構文解析済み"
 
+#: lazarusidestrconsts.lispascalfile
+msgid "Pascal file"
+msgstr ""
+
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
 msgstr "Pascalソースファイル"
@@ -12778,6 +12825,10 @@ msgstr "makeユーティリティのパス"
 #: lazarusidestrconsts.lispathtoinstance
 msgid "Path to failed Instance:"
 msgstr "失敗したインスタンスへのパス："
+
+#: lazarusidestrconsts.lispckcleartousethepackagename
+msgid "Clear to use the package name"
+msgstr ""
 
 #: lazarusidestrconsts.lispckdisablei18noflfm
 msgid "Disable I18N of lfm"
@@ -13188,6 +13239,14 @@ msgstr "アップデート/再構築"
 msgid "Usage"
 msgstr "使用"
 
+#: lazarusidestrconsts.lispckpackage
+msgid "Package:"
+msgstr ""
+
+#: lazarusidestrconsts.lispcksearchpathsforfpdocxmlfilesmultiplepathsmustbesepa
+msgid "Search paths for fpdoc xml files. Multiple paths must be separated by semicolon."
+msgstr ""
+
 #: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
 msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
 msgstr ""
@@ -13289,8 +13348,8 @@ msgstr ""
 
 #: lazarusidestrconsts.lispesortfiles
 #, fuzzy
-#| msgid "Sort files"
-msgid "Sort Files"
+#| msgid "Sort Files"
+msgid "Sort Files Permanently"
 msgstr "ファイルをソートする"
 
 #: lazarusidestrconsts.lispesortfilesalphabetically
@@ -13870,6 +13929,10 @@ msgstr "ユニットを使用"
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgstr "警告：ファイル%s%s%s%sは現在のプロジェクトに属しています。"
 
+#: lazarusidestrconsts.lispkgselectapackage
+msgid "Select a package"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
 msgstr "ユニット無しではコンポーネントを登録できません"
@@ -13893,6 +13956,10 @@ msgstr "無効なコンポーネントクラス"
 #: lazarusidestrconsts.lispkgsysinvalidunitname
 msgid "Invalid Unitname: %s"
 msgstr "無効なユニット名"
+
+#: lazarusidestrconsts.lispkgsyslpkfilename
+msgid "%s%slpk file: %s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgsyspackagefilenotfound
 msgid "Package file not found"
@@ -13923,6 +13990,10 @@ msgstr "FCL - FreePascal Component Libraryはobject pascalの基本クラスを�
 #: lazarusidestrconsts.lispkgsysthelcllazaruscomponentlibrarycontainsallbase
 msgid "The LCL - Lazarus Component Library contains all base components for form editing."
 msgstr "LCL - Lazarus Component Libraryはフォーム編集のための全ての基本クラスがあります。"
+
+#: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
+msgid "%s%sThe lpk file was not found."
+msgstr ""
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
 msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
@@ -14912,6 +14983,10 @@ msgstr "スケーリング係数："
 msgid "Search For "
 msgstr "次を検索"
 
+#: lazarusidestrconsts.lissearchpaths2
+msgid "Search paths"
+msgstr ""
+
 #: lazarusidestrconsts.lissearchprojectsfrom
 msgid "Search projects from"
 msgstr ""
@@ -15882,6 +15957,10 @@ msgstr "ユニットは、この名前を持っています。"
 msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
 msgstr "このユニットファイル名%s%s%sは小文字ではありません。%sFreePascalコンパイラは大文字小文字を区別して検索しません。小文字のファイル名を用いることが推奨されます。%s%s小文字に名称変更しますか？"
 
+#: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
+msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgstr ""
+
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
 msgstr "そのユニット%sは他のファイルに用いられています。%s参照を自動的にアップデートしますか？"
@@ -16346,9 +16425,9 @@ msgstr ""
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
 msgstr ".lfmファイル%s%s%s%sに対応するpascalユニットファイル(.pas,.pp)が見つかりません"
 
-#: lazarusidestrconsts.lisunabletofindtheunitofcomponentclass
-msgid "Unable to find the unit of component class %s%s%s."
-msgstr "コンポーネントクラス %s%s%s のユニットが見つかりません。"
+#: lazarusidestrconsts.lisunabletofindthelfmfileofcomponentclassneededbyunit
+msgid "Unable to find the lfm file of component class \"%s\".%sNeeded by unit:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."

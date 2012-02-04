@@ -4608,7 +4608,9 @@ msgid "Empty procedures"
 msgstr "Prázdné procedury"
 
 #: lazarusidestrconsts.liscefilter
-msgid "(Filter)"
+#, fuzzy
+#| msgid "(Filter)"
+msgid "(filter)"
 msgstr "(Filtr)"
 
 #: lazarusidestrconsts.liscefollowcursor
@@ -4968,6 +4970,10 @@ msgstr "Vyberte klávesu..."
 msgid "Choose a name for the new component"
 msgstr "Vyberte jméno pro novou komponentu"
 
+#: lazarusidestrconsts.lischooseanexamplefile
+msgid "Choose an example file"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseanfpcmessagefile
 msgid "Choose an FPC message file"
 msgstr "Vyberte soubor FPC zpráv"
@@ -5282,6 +5288,10 @@ msgstr "Chyby"
 msgid "Example"
 msgstr "Příklad"
 
+#: lazarusidestrconsts.liscodehelpgroupbox
+msgid "FPDoc settings"
+msgstr ""
+
 #: lazarusidestrconsts.liscodehelphintboldformat
 msgid "Insert bold formatting tag"
 msgstr "Vložit tučnou formátovanou značku"
@@ -5336,11 +5346,6 @@ msgstr "(nenalezen zděděný popis)"
 #: lazarusidestrconsts.liscodehelpnotagcaption
 msgid "<NONE>"
 msgstr "<ŽÁDNÝ>"
-
-#: lazarusidestrconsts.liscodehelppathsgroupbox
-msgctxt "lazarusidestrconsts.liscodehelppathsgroupbox"
-msgid "FPDoc files path"
-msgstr "Cesta souborů FPDoc"
 
 #: lazarusidestrconsts.liscodehelpreplacebutton
 msgctxt "lazarusidestrconsts.liscodehelpreplacebutton"
@@ -5979,8 +5984,14 @@ msgstr "Jméno komponenty je klíčové slovo"
 msgid "Component name %s%s%s is not a valid identifier"
 msgstr "Jméno komponenty není platný identifikátor"
 
+#: lazarusidestrconsts.liscomppalcomponentlist
+msgid "View All"
+msgstr ""
+
 #: lazarusidestrconsts.liscomppalfindcomponent
-msgid "Find component"
+#, fuzzy
+#| msgid "Find component"
+msgid "Find component (to be removed)"
 msgstr "Najít komponentu"
 
 #: lazarusidestrconsts.liscomppalopenpackage
@@ -6495,6 +6506,14 @@ msgstr "Vytvořit uzel nápovědy"
 msgid "Create it"
 msgstr "Vytvořit to"
 
+#: lazarusidestrconsts.liscreatenewpackage
+msgid "(Create new package)"
+msgstr ""
+
+#: lazarusidestrconsts.liscreatenewpackagecomponent
+msgid "Create new package component"
+msgstr ""
+
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
 msgstr "Vytvořit projekt"
@@ -6900,6 +6919,10 @@ msgstr "Výstup"
 msgid "Process"
 msgstr "Proces"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmresetdebuggeroneachrun
+msgid "Reset Debugger after each run"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmresume
 msgid "Resume"
 msgstr "Obnovit"
@@ -6944,6 +6967,10 @@ msgstr "Nelze načíst soubor %s%s%s."
 msgctxt "lazarusidestrconsts.lisdecimal"
 msgid "Decimal"
 msgstr "Číselný"
+
+#: lazarusidestrconsts.lisdefaultplaceholder
+msgid "(default)"
+msgstr ""
 
 #: lazarusidestrconsts.lisdefaultvalue
 msgid "Default value"
@@ -8178,10 +8205,6 @@ msgstr "soubor, kam je zapisován ladící výstup. Pokud není uveden, ladící
 msgid "Filter"
 msgstr "Filtr"
 
-#: lazarusidestrconsts.lisfilter2
-msgid "(filter)"
-msgstr "(filtr)"
-
 #: lazarusidestrconsts.lisfilter3
 msgid "Filter: %s"
 msgstr "Filtr: %s"
@@ -8327,6 +8350,14 @@ msgstr "Chyba zápisu \"%s\"%s%s"
 #: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
 msgid "FPDoc syntax error"
 msgstr "Syntaktická chyba FPDoc"
+
+#: lazarusidestrconsts.lisfpdocpackagename
+msgid "FPDoc package name:"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpdocpackagenamedefaultisprojectfilename
+msgid "FPDoc package name. Default is project file name."
+msgstr ""
 
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
@@ -9126,6 +9157,10 @@ msgstr ""
 #: lazarusidestrconsts.lisisddirectorynotfound
 msgid "directory not found"
 msgstr "adresář nenalezen"
+
+#: lazarusidestrconsts.lisissues
+msgid "Issues"
+msgstr ""
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
 msgid "I wonder how you did that. Error in the %s:"
@@ -10043,17 +10078,17 @@ msgstr "Přidat odkaz ke zděděnému"
 msgid "Copy from inherited"
 msgstr "Kopírovat ze zděděného"
 
-#: lazarusidestrconsts.lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
-msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
-msgstr "%s nemá žádnou platnou LazDoc cestu.%sNelze vytvořit soubor fpdoc pro %s"
+#: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
+msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisldmoveentriestoinherited
 msgid "Move entries to inherited"
 msgstr "Přesunout položky do zděděného"
 
-#: lazarusidestrconsts.lisldnovalidlazdocpath
-msgid "No valid LazDoc path"
-msgstr "Žádná platná cesta LazDoc"
+#: lazarusidestrconsts.lisldnovalidfpdocpath
+msgid "No valid FPDoc path"
+msgstr ""
 
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
@@ -10782,6 +10817,10 @@ msgstr "Změnit výběr na malá písmena"
 msgid "Make Resource String ..."
 msgstr "Vytvořit zdrojový řetězec..."
 
+#: lazarusidestrconsts.lismenunewcomponent
+msgid "New component"
+msgstr ""
+
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
 msgstr "Nový formulář"
@@ -10869,6 +10908,10 @@ msgstr "Vložit"
 msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
 msgstr "Pozastavit"
+
+#: lazarusidestrconsts.lismenupkgnewpackagecomponent
+msgid "New package component"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuprocedurelist
 msgctxt "lazarusidestrconsts.lismenuprocedurelist"
@@ -12042,6 +12085,10 @@ msgstr "jednotka balíčku"
 msgid ", parsed "
 msgstr ", zanalyzovný "
 
+#: lazarusidestrconsts.lispascalfile
+msgid "Pascal file"
+msgstr ""
+
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
 msgstr "Zdrojový soubor Pascalu"
@@ -12102,6 +12149,10 @@ msgstr "Cesta nástroje make"
 #: lazarusidestrconsts.lispathtoinstance
 msgid "Path to failed Instance:"
 msgstr "Cesta ke špatné instanci:"
+
+#: lazarusidestrconsts.lispckcleartousethepackagename
+msgid "Clear to use the package name"
+msgstr ""
 
 #: lazarusidestrconsts.lispckdisablei18noflfm
 msgid "Disable I18N of lfm"
@@ -12490,6 +12541,14 @@ msgstr "Aktualizovat / Znovu sestavit"
 msgid "Usage"
 msgstr "Použití"
 
+#: lazarusidestrconsts.lispckpackage
+msgid "Package:"
+msgstr ""
+
+#: lazarusidestrconsts.lispcksearchpathsforfpdocxmlfilesmultiplepathsmustbesepa
+msgid "Search paths for fpdoc xml files. Multiple paths must be separated by semicolon."
+msgstr ""
+
 #: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
 msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
 msgstr ""
@@ -12590,7 +12649,9 @@ msgid "Show Missing Files"
 msgstr "Zobrazit chybějící soubory"
 
 #: lazarusidestrconsts.lispesortfiles
-msgid "Sort Files"
+#, fuzzy
+#| msgid "Sort Files"
+msgid "Sort Files Permanently"
 msgstr "Řadit soubory"
 
 #: lazarusidestrconsts.lispesortfilesalphabetically
@@ -13168,6 +13229,10 @@ msgstr "Požít jednotku"
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgstr "Varování: Soubor %s%s%s%spatří k aktuálnímu projektu."
 
+#: lazarusidestrconsts.lispkgselectapackage
+msgid "Select a package"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
 msgstr "Nelze registrovat komponenty bez jednotky"
@@ -13191,6 +13256,10 @@ msgstr "Neplatná třída komponenty"
 #: lazarusidestrconsts.lispkgsysinvalidunitname
 msgid "Invalid Unitname: %s"
 msgstr "Neplatné jméno jednotky: %s"
+
+#: lazarusidestrconsts.lispkgsyslpkfilename
+msgid "%s%slpk file: %s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgsyspackagefilenotfound
 msgid "Package file not found"
@@ -13219,6 +13288,10 @@ msgstr "FCL - Free Pascal Component Library poskytuje základní třídy pro obj
 #: lazarusidestrconsts.lispkgsysthelcllazaruscomponentlibrarycontainsallbase
 msgid "The LCL - Lazarus Component Library contains all base components for form editing."
 msgstr "LCL - Lazarus Component Library obsahuje všechny základní komponenty pro úpravu formulářů."
+
+#: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
+msgid "%s%sThe lpk file was not found."
+msgstr ""
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
 msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
@@ -14178,6 +14251,10 @@ msgstr "Činitel zvětšení:"
 msgid "Search For "
 msgstr "Hledat pro "
 
+#: lazarusidestrconsts.lissearchpaths2
+msgid "Search paths"
+msgstr ""
+
 #: lazarusidestrconsts.lissearchprojectsfrom
 msgid "Search projects from"
 msgstr "Hledat projekty z"
@@ -14678,7 +14755,7 @@ msgstr "Upravitelná buňka"
 #: lazarusidestrconsts.listemplateeditparamcellhelp
 #, fuzzy
 #| msgid ""
-#| "serts an editable Cell, with a default value\n"
+#| "s an editable Cell, with a default value\n"
 #| "\"\",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell\n"
 #| "\"default\",Sync, to Sync with a previous cell of equal default\n"
 msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
@@ -15127,6 +15204,10 @@ msgstr "Jednotka má toto jméno"
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
 msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
 msgstr "Jméno souboru jednotky %s%s%s není malými písmeny.%sPřekladač Free Pascal nehledá všechny velikosti. Je lepší použít jména souborů s malými písmeny.%s%sPřejmenovat soubor malými písmeny?"
+
+#: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
+msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgstr ""
 
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
@@ -15588,9 +15669,9 @@ msgstr "Nelze najít metodu."
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
 msgstr "Nelze najít pascalovskou jednotku (.pas,.pp) pro soubor .lfm%s%%s%s"
 
-#: lazarusidestrconsts.lisunabletofindtheunitofcomponentclass
-msgid "Unable to find the unit of component class %s%s%s."
-msgstr "Nelze najít jednotku třídy komponenty %s%s%s."
+#: lazarusidestrconsts.lisunabletofindthelfmfileofcomponentclassneededbyunit
+msgid "Unable to find the lfm file of component class \"%s\".%sNeeded by unit:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
