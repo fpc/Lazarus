@@ -19,5 +19,14 @@
 		<issue name="TTabControl.MultiLine">
 			<short>MultiLine property is not supported</short>
 		</issue>
+		<issue name="TListBox.Columns">
+			<short>Multiple columns is not supported</short>
+		</issue>
+		<issue name="TCheckListBox.Columns">
+			<short>Multiple columns is not supported</short>
+		</issue>
+		<issue name="TForm.AutoScroll">
+			<short>Not supported yet.Support is planned for lazarus 1.2</short>
+		</issue>
 	</widgetset>
 </package>
