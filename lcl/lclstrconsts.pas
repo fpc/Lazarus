@@ -500,6 +500,11 @@ resourceString
 
   lisCEFilter = '(filter)';
 
+  // Accessibility
+  rsTTreeViewAccessibilityDescription = 'A tree of items';
+  rsTPanelAccessibilityDescription = 'Panel';
+  rsTSplitterAccessibilityDescription = 'A grip to control how much size to give the left and right parts of an area';
+
 implementation
 
 end.

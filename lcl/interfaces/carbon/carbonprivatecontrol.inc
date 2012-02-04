@@ -185,6 +185,7 @@ var
   lInputAccessibleObject: TLazAccessibleObject;
   lInputPasStr: string;
   lInputMutableArray: CFMutableArrayRef;
+  lInputArray: CFArrayRef;
   lInputHIPoint: HIPoint;
   lInputPoint: TPoint;
   // Outputs
@@ -209,6 +210,7 @@ var
   lAccessibleObj: TLazAccessibleObject;
   lHandle: PtrInt;
   lSelection: TLazAccessibleObject;
+  lChildControl: TControl;
 const SName = 'CarbonControl_Accessibility';
 begin
   {$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
@@ -537,7 +539,7 @@ begin
         or (lInputPasStr = 'AXSelectedChildren') then
       begin
         if not (lLazControl is TCustomControl) then Exit;
-        if lLazControl is TCustomForm then Exit;
+        if (lLazControl is TCustomForm) then Exit;
 
         // Create and return an array of AXUIElements describing the children of this view.
         if (lInputPasStr = 'AXSelectedChildren') then
@@ -555,13 +557,32 @@ begin
         end
         else
         begin
+          // Using GetEventParemeter seams to bring crashes, no idea why
+          //GetEventParameter(AEvent, kEventParamAccessibleAttributeValue,
+          //  typeCFArrayRef, nil, SizeOf(CFArrayRef), nil, @lInputArray);
+          // lArray := CFArrayCreateMutableCopy(kCFAllocatorDefault, 0, lInputArray);
+          // DebugLn('AXChildren 1 lArray='+IntToStr(PtrInt(lArray)));
+
           lCount := lInputAccessibleObject.GetChildAccessibleObjectsCount;
           lArray := CFArrayCreateMutable(kCFAllocatorDefault, lCount, @kCFTypeArrayCallBacks);
+
+          // Add non-control children
           for i := 0 to lCount - 1 do
           begin
             lCurAccessibleObject := lInputAccessibleObject.GetChildAccessibleObject(i);
             if lCurAccessibleObject = nil then Continue;
             lElement := AXUIElementRef(lCurAccessibleObject.Handle);
+            if lElement <> nil then
+              CFArrayAppendValue(lArray, lElement);
+          end;
+
+          // Add control children
+          //DebugLn('1');
+          for i := 0 to TWinControl(lLazControl).ControlCount-1 do
+          begin
+            //DebugLn('2');
+            lChildControl := TWinControl(lLazControl).Controls[i];
+            lElement := AXUIElementRef(lChildControl.GetAccessibleObject().Handle);
             if lElement <> nil then
               CFArrayAppendValue(lArray, lElement);
           end;

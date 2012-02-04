@@ -45,6 +45,9 @@ begin
     SetInitialBounds(0, 0, CX, CY);
   ParentColor := True;
   UseDockManager := True;
+  // Accessibility
+  AccessibleRole := larGroup;
+  AccessibleDescription := rsTPanelAccessibilityDescription;
 end;
 
 procedure TCustomPanel.SetAlignment(const Value: TAlignment);

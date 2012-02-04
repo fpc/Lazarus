@@ -3059,7 +3059,7 @@ begin
   FTreeLinePenStyle := psPattern;
   FExpandSignColor := clWindowFrame;
   // Accessibility
-  AccessibleDescription := 'A tree of items';
+  AccessibleDescription := rsTTreeViewAccessibilityDescription;
   AccessibleRole := larTreeView;
 end;
 

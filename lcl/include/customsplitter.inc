@@ -930,6 +930,9 @@ begin
 
   Align := alLeft;
   Width := 5;
+  // Accessibility
+  AccessibleRole := larResizeGrip;
+  AccessibleDescription := rsTSplitterAccessibilityDescription;
 end;
 
 procedure TCustomSplitter.AnchorSplitter(Kind: TAnchorKind; AControl: TControl);
