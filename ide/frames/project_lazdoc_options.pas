@@ -55,6 +55,7 @@ procedure TProjectFPDocOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog)
 begin
   FPDocPackageNameEdit.Hint:=lisFPDocPackageNameDefaultIsProjectFileName;
   FPDocPackageNameLabel.Caption:=lisFPDocPackageName;
+  SearchPathsGroupBox.Caption:=lisSearchPaths2;
   AddPathButton.Caption := lisCodeHelpAddPathButton;
   DeletePathButton.Caption := lisCodeHelpDeletePathButton;
   DeletePathButton.LoadGlyphFromLazarusResource('laz_delete');

@@ -4474,6 +4474,7 @@ resourcestring
   lisCodeHelpErrorsTag = 'Errors';
   lisCodeHelpSeeAlsoTag = 'See also';
   lisCodeHelpAddPathButton = 'Add path';
+  lisSearchPaths2 = 'Search paths';
   lisFPDocPackageName = 'FPDoc package name:';
   lisFPDocPackageNameDefaultIsProjectFileName = 'FPDoc package name. Default '
     +'is project file name.';

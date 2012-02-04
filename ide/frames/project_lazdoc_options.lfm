@@ -1,29 +1,31 @@
-inherited ProjectFPDocOptionsFrame: TProjectFPDocOptionsFrame
+object ProjectFPDocOptionsFrame: TProjectFPDocOptionsFrame
+  Left = 0
   Height = 269
+  Top = 0
   Width = 478
   ClientHeight = 269
   ClientWidth = 478
   TabOrder = 0
   DesignLeft = 422
   DesignTop = 407
-  object FPDocPackageNameLabel: TLabel[0]
+  object FPDocPackageNameLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = FPDocPackageNameEdit
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 15
-    Top = 11
-    Width = 145
+    Height = 14
+    Top = 9
+    Width = 123
     BorderSpacing.Around = 6
     Caption = 'FPDocPackageNameLabel'
     ParentColor = False
   end
-  object FPDocPackageNameEdit: TEdit[1]
+  object FPDocPackageNameEdit: TEdit
     AnchorSideLeft.Control = FPDocPackageNameLabel
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
-    Left = 157
-    Height = 24
+    Left = 135
+    Height = 21
     Top = 6
     Width = 120
     BorderSpacing.Around = 6
@@ -34,7 +36,7 @@ inherited ProjectFPDocOptionsFrame: TProjectFPDocOptionsFrame
     TabOrder = 0
     Text = 'FPDocPackageNameEdit'
   end
-  object SearchPathsGroupBox: TGroupBox[2]
+  object SearchPathsGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = FPDocPackageNameEdit
     AnchorSideTop.Side = asrBottom
@@ -43,36 +45,37 @@ inherited ProjectFPDocOptionsFrame: TProjectFPDocOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 233
-    Top = 36
+    Height = 236
+    Top = 33
     Width = 478
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'SearchPathsGroupBox'
-    ClientHeight = 217
+    ClientHeight = 218
     ClientWidth = 474
     TabOrder = 1
     object PathsListBox: TListBox
-      Left = 0
+      Left = 6
       Height = 108
-      Top = 0
-      Width = 474
+      Top = 6
+      Width = 462
       Align = alTop
+      BorderSpacing.Around = 6
       ItemHeight = 0
       OnSelectionChange = PathsListBoxSelectionChange
       ScrollWidth = 472
       TabOrder = 0
-      TopIndex = -1
     end
     object PathEdit: TEdit
       AnchorSideLeft.Control = SearchPathsGroupBox
       AnchorSideTop.Control = PathsListBox
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BrowseButton
-      Left = 0
-      Height = 24
-      Top = 114
-      Width = 450
+      Left = 6
+      Height = 21
+      Top = 120
+      Width = 438
       Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
       OnChange = PathEditChange
@@ -83,11 +86,12 @@ inherited ProjectFPDocOptionsFrame: TProjectFPDocOptionsFrame
       AnchorSideLeft.Control = SearchPathsGroupBox
       AnchorSideTop.Control = PathEdit
       AnchorSideTop.Side = asrBottom
-      Left = 0
-      Height = 26
-      Top = 144
-      Width = 94
+      Left = 6
+      Height = 23
+      Top = 147
+      Width = 99
       AutoSize = True
+      BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'AddPathButton'
       Enabled = False
@@ -100,10 +104,10 @@ inherited ProjectFPDocOptionsFrame: TProjectFPDocOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = PathEdit
       AnchorSideTop.Side = asrBottom
-      Left = 100
-      Height = 26
-      Top = 144
-      Width = 109
+      Left = 111
+      Height = 23
+      Top = 147
+      Width = 111
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'DeletePathButton'
@@ -120,17 +124,18 @@ inherited ProjectFPDocOptionsFrame: TProjectFPDocOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = PathEdit
       AnchorSideBottom.Side = asrBottom
-      Left = 450
-      Height = 24
-      Top = 114
+      Left = 444
+      Height = 21
+      Top = 120
       Width = 24
       Anchors = [akTop, akRight, akBottom]
+      BorderSpacing.Right = 6
       Caption = '...'
       OnClick = BrowseButtonClick
       TabOrder = 4
     end
   end
-  object SelectDirectoryDialog: TSelectDirectoryDialog[3]
+  object SelectDirectoryDialog: TSelectDirectoryDialog
     FilterIndex = 0
     left = 370
   end
