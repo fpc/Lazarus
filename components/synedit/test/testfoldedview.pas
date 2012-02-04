@@ -13,7 +13,7 @@ interface
 uses
   Classes, SysUtils, testregistry, TestBase, TestHighlightPas, Forms, LCLProc,
   SynEdit, SynHighlighterPas, SynEditFoldedView, SynEditHighlighterFoldBase,
-  SynGutterCodeFolding, SynEditKeyCmds;
+  SynGutterCodeFolding, SynEditKeyCmds, SynEditTypes;
 
 type
 
@@ -40,6 +40,7 @@ type
     function TestText6: TStringArray;
     function TestText7: TStringArray;
     function TestText8: TStringArray;
+    function TestText9: TStringArray;
     function TestTextHide(ALen: Integer): TStringArray;
     function TestTextHide2(ALen: Integer): TStringArray;
     function TestTextHide3: TStringArray;
@@ -68,6 +69,7 @@ type
     procedure TestFoldStateFromText;
     procedure TestFoldStateDesc;
     procedure TestFoldProvider;
+    procedure TestNestedFoldsList;
   end;
 
 implementation
@@ -432,6 +434,22 @@ begin
   Result[17] := '  writeln(1);';
   Result[18] := 'end';
   Result[19] := '';
+end;
+
+function TTestFoldedView.TestText9: TStringArray;
+begin
+  // end begin lines, with mixed type
+  SetLength(Result, 9);
+  Result[0]  := 'program Foo;';
+  Result[1]  := 'procedure a;';
+  Result[2]  := 'begin  {%region}';
+  Result[3]  := '';
+  Result[4]  := '{%endregion} ';
+  Result[5]  := '';
+  Result[6]  := 'end;';
+  Result[7] := 'end';
+  Result[8] := '';
+
 end;
 
 function TTestFoldedView.TestTextHide(ALen: Integer): TStringArray;
@@ -1637,6 +1655,354 @@ begin
 //DoTestOpenCounts('', 4, [1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]);
   DoTestOpenCounts('', 2, [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]);
   DoTestOpenCounts('', 3, [0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]);
+
+end;
+
+procedure TTestFoldedView.TestNestedFoldsList;
+  Procedure CheckNode(nd: TSynFoldNodeInfo; ALine: TLineIdx; AColumn: integer;
+    LogXStart, LogXEnd,  FoldLvlStart, FoldLvlEnd,  NestLvlStart, NestLvlEnd: Integer;
+    FoldType: integer;  FoldTypeCompatible: integer; FoldGroup: Integer;
+    FoldAction: TSynFoldActions);
+  begin
+    AssertEquals(Format('%s (%d/%d) LineIndex',    [BaseTestName, ALine, AColumn]), ALine, nd.LineIndex);
+    AssertEquals(Format('%s (%d/%d) NodeIndex',    [BaseTestName, ALine, AColumn]), AColumn, nd.NodeIndex);
+    if not(sfaInvalid in nd.FoldAction) then begin
+      AssertEquals(Format('%s (%d/%d) LogXStart',    [BaseTestName, ALine, AColumn]), LogXStart, nd.LogXStart);
+      AssertEquals(Format('%s (%d/%d) LogXEnd',      [BaseTestName, ALine, AColumn]), LogXEnd, nd.LogXEnd);
+      if FoldLvlStart >= 0 then
+      AssertEquals(Format('%s (%d/%d) FoldLvlStart', [BaseTestName, ALine, AColumn]), FoldLvlStart, nd.FoldLvlStart);
+      if FoldLvlEnd >= 0 then
+      AssertEquals(Format('%s (%d/%d) FoldLvlEnd',   [BaseTestName, ALine, AColumn]), FoldLvlEnd, nd.FoldLvlEnd);
+      AssertEquals(Format('%s (%d/%d) NestLvlStart', [BaseTestName, ALine, AColumn]), NestLvlStart, nd.NestLvlStart);
+      AssertEquals(Format('%s (%d/%d) NestLvlEnd',   [BaseTestName, ALine, AColumn]), NestLvlEnd, nd.NestLvlEnd);
+      AssertEquals(Format('%s (%d/%d) FoldType',     [BaseTestName, ALine, AColumn]), PtrUInt(FoldType), PtrUInt(nd.FoldType));
+      AssertEquals(Format('%s (%d/%d) FoldTypeCompatible', [BaseTestName, ALine, AColumn]), PtrUInt(FoldTypeCompatible), PtrUInt(nd.FoldTypeCompatible));
+      AssertEquals(Format('%s (%d/%d) FoldGroup:',   [BaseTestName, ALine, AColumn]), FoldGroup, nd.FoldGroup);
+    end;
+    AssertEquals(Format('%s (%d/%d) FoldAction',   [BaseTestName, ALine, AColumn]), FoldActionsToString(FoldAction), FoldActionsToString(nd.FoldAction));
+  end;
+var
+  TheList: TLazSynEditNestedFoldsList;
+begin
+// L= *(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?A=(.*)
+// CheckNode(TheList.HLNode[2],  $1, $2,  $3, $4,  $5, $6,  $7, $8,  $9, $10, $11, $12);
+
+  PushBaseName('');
+
+  {%region TestText1}
+    TstSetText('TestText1', TestText);
+    TheList := FoldedView.FoldProvider.NestedFoldsList;
+    EnableFolds([cfbtBeginEnd..cfbtNone]);
+
+    PushBaseName('All Enabled - group 0');
+    TheList.ResetFilter;
+    TheList.Line := 2;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [];
+    AssertEquals(BaseTestName + 'Cnt', 3, TheList.Count);
+    CheckNode(TheList.HLNode[2],  2, 0,  0, 5,  2, 3,  2, 3,  1, 0, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[1],  1, 0,  0, 9,  1, 2,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+
+    PopPushBaseName('All Enabled - group 1');
+    TheList.ResetFilter;
+    TheList.Line := 2;
+    TheList.FoldGroup := 1;
+    TheList.FoldFlags := [];
+    AssertEquals(BaseTestName + 'Cnt', 3, TheList.Count);
+    CheckNode(TheList.HLNode[2],  2, 0,  0, 5,  2, 3,  2, 3,  1, 0, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[1],  1, 0,  0, 9,  1, 2,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+
+    PopPushBaseName('All Enabled - group 2');
+    TheList.ResetFilter;
+    TheList.Line := 2;
+    TheList.FoldGroup := 2;
+    TheList.FoldFlags := [];
+    AssertEquals(BaseTestName + 'Cnt', 0, TheList.Count);
+
+
+    PopPushBaseName('All Enabled - group 0 - NoCurrentLine');
+    TheList.ResetFilter;
+    TheList.Line := 2;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [];
+    TheList.IncludeOpeningOnLine := False;
+    AssertEquals(BaseTestName + 'Cnt', 2, TheList.Count);
+    CheckNode(TheList.HLNode[1],  1, 0,  0, 9,  1, 2,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+
+    PopPushBaseName('All Enabled - group 0 - NoCurrentLine - line 3');
+    TheList.ResetFilter;
+    TheList.Line := 3;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [];
+    TheList.IncludeOpeningOnLine := False;
+    AssertEquals(BaseTestName + 'Cnt', 3, TheList.Count);
+    CheckNode(TheList.HLNode[2],  2, 0,  0, 5,  2, 3,  2, 3,  1, 0, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[1],  1, 0,  0, 9,  1, 2,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+
+    EnableFolds([cfbtTopBeginEnd]);
+    PopPushBaseName('cfbtTopBeginEnd Enabled - group 0');
+    TheList.ResetFilter;
+    TheList.Line := 2;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [];
+    AssertEquals(BaseTestName + 'Cnt', 1, TheList.Count);
+    CheckNode(TheList.HLNode[0],  2, 0,  0, 5,  0, 1,  2, 3,  1, 0, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+
+    EnableFolds([cfbtTopBeginEnd]);
+    PopPushBaseName('cfbtTopBeginEnd Enabled - group 1');
+    TheList.ResetFilter;
+    TheList.Line := 2;
+    TheList.FoldGroup := 1;
+    TheList.FoldFlags := [];
+    AssertEquals(BaseTestName + 'Cnt', 1, TheList.Count);
+    CheckNode(TheList.HLNode[0],  2, 0,  0, 5,  0, 1,  2, 3,  1, 0, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+
+    EnableFolds([cfbtTopBeginEnd]);
+    PopPushBaseName('cfbtTopBeginEnd Enabled - group 0 - NoCurrentLine');
+    TheList.ResetFilter;
+    TheList.Line := 2;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [];
+    TheList.IncludeOpeningOnLine := False;
+    AssertEquals(BaseTestName + 'Cnt', 0, TheList.Count);
+
+
+    EnableFolds([cfbtTopBeginEnd]);
+    PopPushBaseName('cfbtTopBeginEnd Enabled - group 0 - NoCurrentLine line 3');
+    TheList.ResetFilter;
+    TheList.Line := 3;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [];
+    TheList.IncludeOpeningOnLine := False;
+    AssertEquals(BaseTestName + 'Cnt', 1, TheList.Count);
+    CheckNode(TheList.HLNode[0],  2, 0,  0, 5,  0, 1,  2, 3,  1, 0, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+
+
+    PopPushBaseName('cfbtTopBeginEnd Enabled - group 0 - sfbIncludeDisabled');
+    TheList.ResetFilter;
+    TheList.Line := 2;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [sfbIncludeDisabled];
+    AssertEquals(BaseTestName + 'Cnt', 3, TheList.Count);
+    CheckNode(TheList.HLNode[2],  2, 0,  0, 5,  0, 1,  2, 3,  1, 0, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[1],  1, 0,  0, 9, -1,-1,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup]);
+    CheckNode(TheList.HLNode[0],  0, 0,  0, 7, -1,-1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup]);
+
+
+    EnableFolds([cfbtTopBeginEnd]);
+    PopPushBaseName('cfbtTopBeginEnd Enabled - group 1 - sfbIncludeDisabled');
+    TheList.ResetFilter;
+    TheList.Line := 2;
+    TheList.FoldGroup := 1;
+    TheList.FoldFlags := [sfbIncludeDisabled];
+    AssertEquals(BaseTestName + 'Cnt', 3, TheList.Count);
+    CheckNode(TheList.HLNode[2],  2, 0,  0, 5,  0, 1,  2, 3,  1, 0, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[1],  1, 0,  0, 9, -1,-1,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup]);
+    CheckNode(TheList.HLNode[0],  0, 0,  0, 7, -1,-1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup]);
+
+
+    EnableFolds([cfbtTopBeginEnd]);
+    PopPushBaseName('cfbtTopBeginEnd Enabled - group 2 - sfbIncludeDisabled');
+    TheList.ResetFilter;
+    TheList.Line := 2;
+    TheList.FoldGroup := 2;
+    TheList.FoldFlags := [sfbIncludeDisabled];
+    AssertEquals(BaseTestName + 'Cnt', 0, TheList.Count);
+
+
+    EnableFolds([cfbtTopBeginEnd]);
+    PopPushBaseName('cfbtTopBeginEnd Enabled - group 0 - NoCurrentLine - sfbIncludeDisabled');
+    TheList.ResetFilter;
+    TheList.Line := 2;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [sfbIncludeDisabled];
+    TheList.IncludeOpeningOnLine := False;
+    AssertEquals(BaseTestName + 'Cnt', 2, TheList.Count);
+    CheckNode(TheList.HLNode[1],  1, 0,  0, 9, -1,-1,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup]);
+    CheckNode(TheList.HLNode[0],  0, 0,  0, 7, -1,-1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup]);
+
+
+    EnableFolds([cfbtTopBeginEnd]);
+    PopPushBaseName('cfbtTopBeginEnd Enabled - group 0 - NoCurrentLine line 3 - sfbIncludeDisabled');
+    TheList.ResetFilter;
+    TheList.Line := 3;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [sfbIncludeDisabled];
+    TheList.IncludeOpeningOnLine := False;
+    AssertEquals(BaseTestName + 'Cnt', 3, TheList.Count);
+    CheckNode(TheList.HLNode[2],  2, 0,  0, 5,  0, 1,  2, 3,  1, 0, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[1],  1, 0,  0, 9, -1,-1,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup]);
+    CheckNode(TheList.HLNode[0],  0, 0,  0, 7, -1,-1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup]);
+
+
+    // TODO line, currently ignores the opening "begin" on current line
+    EnableFolds([]);
+    PopPushBaseName('None Enabled - group 0 - sfbIncludeDisabled - line 3');
+    TheList.ResetFilter;
+    TheList.Line := 3;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [sfbIncludeDisabled];
+    AssertEquals(BaseTestName + 'Cnt', 3, TheList.Count);
+    CheckNode(TheList.HLNode[2],  2, 0,  0, 5, -1,-1,  2, 3,  1, 0, 1, [sfaOpen,sfaMarkup]);
+    CheckNode(TheList.HLNode[1],  1, 0,  0, 9, -1,-1,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup]);
+    CheckNode(TheList.HLNode[0],  0, 0,  0, 7, -1,-1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup]);
+
+
+    PopBaseName;
+  {%endregion TestText1}
+
+
+  {%region TestText2}
+    TstSetText('TestText2', TestText2);
+    TheList := FoldedView.FoldProvider.NestedFoldsList;
+    EnableFolds([cfbtBeginEnd..cfbtNone]);
+
+    PushBaseName('All Enabled - group 0 - line 1');
+    TheList.ResetFilter;
+    TheList.Line := 1;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [];
+    AssertEquals(BaseTestName + 'Cnt', 3, TheList.Count);
+    CheckNode(TheList.HLNode[2],  1, 1,  13, 22,  2, 3,  2, 3,  3, 3, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[1],  1, 0,  0, 9,  1, 2,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+
+    PopPushBaseName('All Enabled - group 0 - line 1 - no current');
+    TheList.ResetFilter;
+    TheList.Line := 1;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [];
+    TheList.IncludeOpeningOnLine := False;
+    AssertEquals(BaseTestName + 'Cnt', 1, TheList.Count);
+    CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+
+    PopPushBaseName('All Enabled - group 0 - line 3');
+    TheList.ResetFilter;
+    TheList.Line := 3;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [];
+    AssertEquals(BaseTestName + 'Cnt', 4, TheList.Count);
+    CheckNode(TheList.HLNode[3],  2, 0,  2, 7,  3, 4,  3, 4,  1, 0, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[2],  1, 1,  13, 22,  2, 3,  2, 3,  3, 3, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[1],  1, 0,  0, 9,  1, 2,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+
+    PopPushBaseName('All Enabled - group 0 - line 4');
+    TheList.ResetFilter;
+    TheList.Line := 4;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [];
+    AssertEquals(BaseTestName + 'Cnt', 3, TheList.Count);
+    CheckNode(TheList.HLNode[2],  4, 0,  23, 28,  2, 3,  2, 3,  1, 0, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[1],  1, 0,  0, 9,  1, 2,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+
+    PopPushBaseName('All Enabled - group 0 - line 4 - NO IncludeOpeningOnLine');
+    TheList.ResetFilter;
+    TheList.Line := 4;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [];
+    TheList.IncludeOpeningOnLine := False;
+    AssertEquals(BaseTestName + 'Cnt', 2, TheList.Count);
+    CheckNode(TheList.HLNode[1],  1, 0,  0, 9,  1, 2,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+
+    PopPushBaseName('All Enabled - group 0 - line 5');
+    TheList.ResetFilter;
+    TheList.Line := 5;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [];
+    AssertEquals(BaseTestName + 'Cnt', 4, TheList.Count);
+    CheckNode(TheList.HLNode[3],  5, 0,  12, 17,  3, 4,  3, 4,  0, 0, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[2],  4, 0,  23, 28,  2, 3,  2, 3,  1, 0, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[1],  1, 0,  0, 9,  1, 2,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+    PopBaseName;
+  {%endregion TestText2}
+
+
+  {%region TestText3}
+
+    TstSetText('TestText3', TestText3);
+    TheList := FoldedView.FoldProvider.NestedFoldsList;
+    EnableFolds([cfbtBeginEnd..cfbtNone]);
+
+    PushBaseName('All Enabled - group 0 - line 3');
+    TheList.ResetFilter;
+    TheList.Line := 3;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [];
+    AssertEquals(BaseTestName + 'Cnt', 3, TheList.Count);
+    CheckNode(TheList.HLNode[2],  2, 0,  0, 9,  1, 2,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[1],  1, 0,  2, 7,  0, 1,  0, 1,  18, 18, 3, [sfaOpen,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+
+    PushBaseName('All Enabled - group 1 - line 3');
+    TheList.ResetFilter;
+    TheList.Line := 3;
+    TheList.FoldGroup := 1;
+    TheList.FoldFlags := [];
+    AssertEquals(BaseTestName + 'Cnt', 2, TheList.Count);
+    CheckNode(TheList.HLNode[1],  2, 0,  0, 9,  1, 2,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+
+    PushBaseName('All Enabled - group 3 - line 3');
+    TheList.ResetFilter;
+    TheList.Line := 3;
+    TheList.FoldGroup := 3;
+    TheList.FoldFlags := [];
+    AssertEquals(BaseTestName + 'Cnt', 1, TheList.Count);
+    CheckNode(TheList.HLNode[0],  1, 0,  2, 7,  0, 1,  0, 1,  18, 18, 3, [sfaOpen,sfaFold,sfaFoldFold]);
+
+
+    PopPushBaseName('All Enabled - group 0 - line 3');
+    TheList.ResetFilter;
+    TheList.Line := 4;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [];
+    AssertEquals(BaseTestName + 'Cnt', 3, TheList.Count);
+    CheckNode(TheList.HLNode[2],  4, 0,  0, 5,  2, 3,  2, 3,  1, 0, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[1],  2, 0,  0, 9,  1, 2,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+    PopBaseName;
+  {%endregion TestText2}
+
+
+  TstSetText('TestText9', TestText9);
+  TheList := FoldedView.FoldProvider.NestedFoldsList;
+  EnableFolds([cfbtBeginEnd..cfbtNone]);
+
+  PushBaseName('All Enabled - group 0 - line 3');
+  TheList.ResetFilter;
+  TheList.Line := 5;
+  TheList.FoldGroup := 0;
+  TheList.FoldFlags := [];
+  AssertEquals(BaseTestName + 'Cnt', 3, TheList.Count);
+  CheckNode(TheList.HLNode[2],  2, 0,  0, 5,  2, 3,  2, 3,  1, 0, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+  CheckNode(TheList.HLNode[1],  1, 0,  0, 9,  1, 2,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+  CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+  PopBaseName;
+
 
 end;
 

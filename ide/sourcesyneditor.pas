@@ -519,9 +519,10 @@ end;
 procedure TIDESynEditor.SrcSynCaretChanged(Sender: TObject);
 var
   InfCnt, i, t, ListCnt: Integer;
-  Inf: TFoldViewNodeInfo;
-  InfList: array [0..1] of TFoldViewNodeInfo;
+  InfList: array [0..1] of TSynFoldNodeInfo;
   NodeFoldType: TPascalCodeFoldBlockType;
+  List: TLazSynEditNestedFoldsList;
+  Inf: TSynFoldNodeInfo;
 begin
   if FSrcSynCaretChangedLock or not(TextView.HighLighter is TSynPasSyn) then exit;
 
@@ -530,13 +531,19 @@ begin
     ListCnt := 0;
 
     if CaretY >= TopLine then begin
-      InfCnt := TextView.OpenFoldCount(CaretY-1, 4);
+      List := TextView.FoldProvider.NestedFoldsList;
+      List.ResetFilter;
+      List.Line := CaretY-1;
+      List.FoldGroup := FOLDGROUP_PASCAL;
+      List.FoldFlags := [sfbIncludeDisabled];
+
+      InfCnt := List.Count;
       for i := InfCnt-1 downto 0 do begin
-        Inf := TextView.OpenFoldInfo(CaretY-1, i, 4);
-        if sfaInvalid in Inf.HNode.FoldAction then
+        Inf := List.HLNode[i];
+        if sfaInvalid in Inf.FoldAction then
           continue;
 
-        NodeFoldType:=TPascalCodeFoldBlockType(PtrUInt(Inf.HNode.FoldType));
+        NodeFoldType:=TPascalCodeFoldBlockType(PtrUInt(Inf.FoldType));
         if (NodeFoldType in [cfbtClassSection]) and (ListCnt = 0) then begin
           InfList[ListCnt] := Inf;
           inc(ListCnt);
@@ -552,7 +559,7 @@ begin
           inc(ListCnt);
         end;
         if (NodeFoldType in [cfbtProcedure]) and (ListCnt = 2) and
-           (TPascalCodeFoldBlockType(PtrUInt(InfList[ListCnt-1].HNode.FoldType)) = cfbtProcedure)
+           (TPascalCodeFoldBlockType(PtrUInt(InfList[ListCnt-1].FoldType)) = cfbtProcedure)
         then begin
           InfList[ListCnt-1] := Inf;
         end;
@@ -564,7 +571,7 @@ begin
       t := CaretY;
 
     while ListCnt > 0 do begin
-      if InfList[0].LineNum >= t-1 then begin
+      if InfList[0].LineIndex + 1 >= t-1 then begin
         InfList[0] := InfList[1];
         dec(ListCnt);
         t := TopLine + ListCnt - TSourceLazSynSurfaceManager(FPaintArea).TopLineCount;
@@ -585,9 +592,9 @@ begin
     end;
 
     for i := 0 to ListCnt - 1 do begin
-      if FTopInfoDisplay.LineMap[ListCnt-1-i] <> InfList[i].LineNum - 1 then
+      if FTopInfoDisplay.LineMap[ListCnt-1-i] <> InfList[i].LineIndex then
         TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.InvalidateLines(ListCnt-1-i, ListCnt-1-i);
-      FTopInfoDisplay.LineMap[ListCnt-1-i] := InfList[i].LineNum - 1;
+      FTopInfoDisplay.LineMap[ListCnt-1-i] := InfList[i].LineIndex;
     end;
 
   finally

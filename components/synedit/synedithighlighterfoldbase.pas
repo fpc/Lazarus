@@ -364,6 +364,8 @@ function CompareSynHighlighterRanges(Data1, Data2: Pointer): integer;
 function AllocateHighlighterRanges(
      HighlighterClass: TSynCustomHighlighterClass): TSynCustomHighlighterRanges;
 
+function dbgs(AFoldActions: TSynFoldActions): String; overload;
+function dbgs(ANode: TSynFoldNodeInfo):string; overload;
 
 implementation
 
@@ -416,6 +418,34 @@ begin
     Result:=TSynCustomHighlighterRanges.Create(HighlighterClass);
     HighlighterRanges.Add(Result);
   end;
+end;
+
+function dbgs(AFoldActions: TSynFoldActions): String;
+var
+  i: TSynFoldAction;
+  s: string;
+begin
+  Result:='';
+  for i := low(TSynFoldAction) to high(TSynFoldAction) do
+    if i in AFoldActions then begin
+      WriteStr(s, i);
+      Result := Result + s + ',';
+    end;
+  if Result <> '' then Result := '[' + copy(Result, 1, Length(Result)-1) + ']';
+end;
+
+function dbgs(ANode: TSynFoldNodeInfo): string;
+begin
+  with ANode do
+    if sfaInvalid in FoldAction then
+      Result := Format('L=%3d I=%d  X=%2d-%2d  Fld=%d-%d Nst=%d-%d  FT=%d FTC=%d  Grp=%d  A=%s',
+                       [LineIndex, NodeIndex, 0, 0, 0, 0, 0, 0, 0, 0, 0, dbgs(FoldAction)])
+    else
+      Result := Format('L=%3d I=%d  X=%2d-%2d  Fld=%d-%d Nst=%d-%d  FT=%d FTC=%d  Grp=%d  A=%s',
+                       [LineIndex, NodeIndex, LogXStart, LogXEnd,
+                        FoldLvlStart, FoldLvlEnd, NestLvlStart, NestLvlEnd,
+                        PtrUInt(FoldType), PtrUInt(FoldTypeCompatible), FoldGroup,
+                        dbgs(FoldAction)]);
 end;
 
 { TLazSynFoldNodeInfoList }

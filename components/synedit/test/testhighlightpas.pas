@@ -37,7 +37,6 @@ type
     function TestTextFoldInfo4(AIfCol: Integer): TStringArray;
 
     procedure CheckTokensForLine(Name: String; LineIdx: Integer; ExpTokens: Array of TtkTokenKind);
-
   published
     procedure TestFoldInfo;
     procedure TestExtendedKeywordsAndStrings;
