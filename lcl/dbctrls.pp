@@ -843,6 +843,7 @@ Type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure UpdateData(Sender: TObject);
     procedure Change; override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key:Char); override;
     procedure WndProc(var AMessage : TLMessage); override;
     class procedure WSRegisterClass; override;

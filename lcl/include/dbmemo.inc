@@ -138,6 +138,21 @@ begin
   inherited Change;
 end;
 
+procedure TDBMemo.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+  if Key=VK_ESCAPE then begin
+    //cancel out of editing by reset on esc
+    FDataLink.Reset;
+    SelectAll;
+    Key := VK_UNKNOWN;
+  end else
+  if Key in [VK_DELETE, VK_BACK] then begin
+    if not FDataLink.Edit then
+      Key := VK_UNKNOWN;
+  end;
+end;
+
 procedure TDBMemo.KeyPress(var Key: Char);
   function CheckValidChar: boolean;
   begin
