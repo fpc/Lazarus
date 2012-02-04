@@ -1657,7 +1657,7 @@ begin
       begin//Cut
         CutToClipBoard;
       end
-      else if (Shift = [ssCtrl]) then
+      else if (Shift = [ssModifier]) then
       begin//Clear
         DeleteSelected;
       end
@@ -1701,20 +1701,20 @@ begin
         PasteFromClipBoard;
       end;
     end
-    else if (Shift = [ssCtrl]) then
+    else if (Shift = [ssModifier]) then
     begin//Copy
       CopyToClipBoard;
     end;
     Key := 0;
     Exit;
   end;
-  if (Key = VK_C) and (Shift = [ssCtrl]) then
+  if (Key = VK_C) and (Shift = [ssModifier]) then
   begin//Copy
     CopyToClipBoard;
     Key := 0;
     Exit;
   end;
-  if (Key = VK_X) and (Shift = [ssCtrl]) then
+  if (Key = VK_X) and (Shift = [ssModifier]) then
   begin//Cut
     if not ReadOnly then
     begin
@@ -1723,7 +1723,7 @@ begin
       Exit;
     end;
   end;
-  if (Key = VK_V) and (Shift = [ssCtrl]) then
+  if (Key = VK_V) and (Shift = [ssModifier]) then
   begin//Paste
     if not ReadOnly then
     begin

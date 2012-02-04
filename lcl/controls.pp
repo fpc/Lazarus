@@ -70,6 +70,10 @@ const
   bvRaised = GraphType.bvRaised;
   bvSpace = GraphType.bvSpace;
 
+  // Constant to define which key should be utilized for keyboard shortcuts like Ctrl+C (Copy),Z,X,V
+  // Mac and iOS use Meta instead of Ctrl for those shortcuts
+  ssModifier = {$if defined(darwin) or defined(macos) or defined(iphonesim)} ssMeta {$else} ssCtrl {$endif};
+
 type
   TWinControl = class;
   TControl = class;
