@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <LazReport>
-    <Version Value="24"/>
+    <Version Value="25"/>
     <Title Value=""/>
     <Subject Value=""/>
     <KeyWords Value=""/>
@@ -14,7 +14,7 @@
     <Pages>
       <PrintToDefault Value="False"/>
       <DoublePass Value="False"/>
-      <SelectedPrinter Value="HP-LaserJet-1200"/>
+      <SelectedPrinter Value="HP Deskjet D2400 series"/>
       <PageCount Value="1"/>
       <Page1>
         <Name Value="Page1"/>
@@ -177,7 +177,7 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Cliente : [cliente]&#xA;"/>
+            <Memo Value="Cliente : [cliente]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -220,7 +220,7 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Presupuesto&#xA;"/>
+            <Memo Value="Presupuesto&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -263,7 +263,7 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Dirección: [direccion]&#xA;"/>
+            <Memo Value="Dirección: [direccion]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -306,7 +306,7 @@
           <Data>
             <Format Value="33751084"/>
             <FormatStr Value=""/>
-            <Memo Value="Fecha: [DATE]&#xA;"/>
+            <Memo Value="Fecha: [DATE]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -349,7 +349,7 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="[nombre]&#xA;"/>
+            <Memo Value="[nombre]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -390,9 +390,9 @@
             <FrameBorders Value=""/>
           </Frames>
           <Data>
-            <Format Value="17039916"/>
-            <FormatStr Value="$ ###0.00"/>
-            <Memo Value="[precio]&#xA;"/>
+            <Format Value="44"/>
+            <FormatStr Value=""/>
+            <Memo Value="[precio]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -473,7 +473,7 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Nombre&#xA;"/>
+            <Memo Value="Nombre&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -516,7 +516,7 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Precio&#xA;"/>
+            <Memo Value="Precio&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -595,9 +595,9 @@
             <FrameBorders Value=""/>
           </Frames>
           <Data>
-            <Format Value="17039406"/>
-            <FormatStr Value="$ ###0.00"/>
-            <Memo Value="TOTAL : [total]&#xA;"/>
+            <Format Value="44"/>
+            <FormatStr Value=""/>
+            <Memo Value="TOTAL : [total]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -656,7 +656,7 @@
           <Item Value="total"/>
         </Objects5>
       </FVal>
-      <ParentVars Value="DEFAULT&#xA; cliente&#xA; direccion&#xA;PRODUCTOS&#xA; nombre&#xA; precio&#xA; total&#xA;"/>
+      <ParentVars Value="DEFAULT&#xD;&#xA; cliente&#xD;&#xA; direccion&#xD;&#xA;PRODUCTOS&#xD;&#xA; nombre&#xD;&#xA; precio&#xD;&#xA; total&#xD;&#xA;"/>
     </Pages>
   </LazReport>
 </CONFIG>

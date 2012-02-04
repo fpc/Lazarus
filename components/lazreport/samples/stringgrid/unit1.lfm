@@ -8,42 +8,43 @@ object Form1: TForm1
   ClientHeight = 612
   ClientWidth = 320
   OnShow = FormShow
-  LCLVersion = '0.9.27'
+  Position = poDesktopCenter
+  LCLVersion = '0.9.31'
   object GroupBox1: TGroupBox
     Left = 8
     Height = 128
     Top = 8
     Width = 305
     Caption = 'Customer Data'
-    ClientHeight = 124
+    ClientHeight = 110
     ClientWidth = 301
     TabOrder = 0
     object Label1: TLabel
       Left = 8
-      Height = 16
+      Height = 14
       Top = 8
-      Width = 91
+      Width = 81
       Caption = 'Customer Name:'
       ParentColor = False
     end
     object Label2: TLabel
       Left = 8
-      Height = 16
+      Height = 14
       Top = 64
-      Width = 46
+      Width = 44
       Caption = 'Address:'
       ParentColor = False
     end
     object Edit1: TEdit
       Left = 8
-      Height = 23
+      Height = 21
       Top = 24
       Width = 280
       TabOrder = 0
     end
     object Edit2: TEdit
       Left = 8
-      Height = 23
+      Height = 21
       Top = 80
       Width = 280
       TabOrder = 1
@@ -55,35 +56,35 @@ object Form1: TForm1
     Top = 152
     Width = 305
     Caption = 'Add Products'
-    ClientHeight = 68
+    ClientHeight = 54
     ClientWidth = 301
     TabOrder = 1
     object Label3: TLabel
       Left = 14
-      Height = 16
+      Height = 14
       Top = 8
-      Width = 54
+      Width = 42
       Caption = 'Product:'
       ParentColor = False
     end
     object Label4: TLabel
       Left = 166
-      Height = 16
+      Height = 14
       Top = 8
-      Width = 58
+      Width = 45
       Caption = 'Price ($):'
       ParentColor = False
     end
     object Edit3: TEdit
       Left = 14
-      Height = 23
+      Height = 21
       Top = 24
       Width = 144
       TabOrder = 0
     end
     object Edit4: TEdit
       Left = 166
-      Height = 23
+      Height = 21
       Top = 24
       Width = 64
       TabOrder = 1
@@ -104,14 +105,14 @@ object Form1: TForm1
     Top = 232
     Width = 304
     Caption = 'Budgeted Products:'
-    ClientHeight = 263
+    ClientHeight = 262
     ClientWidth = 300
     TabOrder = 2
     object Label5: TLabel
       Left = 149
-      Height = 16
+      Height = 14
       Top = 231
-      Width = 56
+      Width = 46
       Caption = 'Total ($):'
       ParentColor = False
     end
@@ -140,7 +141,7 @@ object Form1: TForm1
     end
     object Edit5: TEdit
       Left = 208
-      Height = 23
+      Height = 21
       Top = 224
       Width = 80
       TabOrder = 1
@@ -173,13 +174,14 @@ object Form1: TForm1
   end
   object frReport1: TfrReport
     InitialZoom = pzDefault
+    Options = []
     PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
     DataType = dtDataSet
     OnGetValue = frReport1GetValue
     left = 153
     top = 576
     ReportForm = {
-      18000000
+      19000000
     }
   end
 end

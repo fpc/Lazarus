@@ -83,7 +83,7 @@ begin
     ParValue := StringGrid1.Cells[1, fila];
     
   if ParName = 'total' then
-    ParValue := Edit5.Text;
+    ParValue := '$ ' + Edit5.Text;
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);

@@ -1,20 +1,22 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="7"/>
+    <Version Value="9"/>
     <General>
       <Flags>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
-      <ProjectVersion Value=""/>
       <Language Value=""/>
       <CharSet Value=""/>
+      <StringTable ProductVersion=""/>
     </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -30,104 +32,34 @@
     <RequiredPackages Count="2">
       <Item1>
         <PackageName Value="lazreport"/>
-        <MinVersion Minor="9" Release="5" Valid="True"/>
+        <MinVersion Minor="9" Valid="True" Release="5"/>
       </Item1>
       <Item2>
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="8">
+    <Units Count="2">
       <Unit0>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="project1"/>
-        <CursorPos X="1" Y="14"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="67"/>
       </Unit0>
       <Unit1>
         <Filename Value="unit1.pas"/>
-        <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
-        <CursorPos X="31" Y="73"/>
-        <TopLine Value="59"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="67"/>
-        <Loaded Value="True"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="../../source/lr_class.pas"/>
-        <UnitName Value="LR_Class"/>
-        <CursorPos X="56" Y="20"/>
-        <TopLine Value="11"/>
-        <UsageCount Value="31"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="../../../../ide/lazconf.pp"/>
-        <UnitName Value="LazConf"/>
-        <CursorPos X="17" Y="207"/>
-        <TopLine Value="197"/>
-        <UsageCount Value="31"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="unit1.lfm"/>
-        <CursorPos X="41" Y="151"/>
-        <TopLine Value="138"/>
-        <UsageCount Value="10"/>
-        <SyntaxHighlighter Value="LFM"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="../../source/sysutilsadds.pas"/>
-        <UnitName Value="SysUtilsAdds"/>
-        <CursorPos X="19" Y="191"/>
-        <TopLine Value="181"/>
-        <UsageCount Value="11"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="../../source/lazreport.pas"/>
-        <UnitName Value="lazreport"/>
-        <CursorPos X="60" Y="13"/>
-        <TopLine Value="6"/>
-        <UsageCount Value="11"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="../../../../../fpc/rtl/objpas/sysutils/osutilsh.inc"/>
-        <CursorPos X="10" Y="59"/>
-        <TopLine Value="38"/>
-        <UsageCount Value="11"/>
-      </Unit7>
     </Units>
-    <JumpHistory Count="6" HistoryIndex="5">
-      <Position1>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="43" Column="47" TopLine="42"/>
-      </Position1>
-      <Position2>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="39" Column="57" TopLine="17"/>
-      </Position2>
-      <Position3>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="70" Column="22" TopLine="58"/>
-      </Position3>
-      <Position4>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="73" Column="10" TopLine="58"/>
-      </Position4>
-      <Position5>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="99" Column="28" TopLine="86"/>
-      </Position5>
-      <Position6>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="106" Column="63" TopLine="90"/>
-      </Position6>
-    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="8"/>
+    <Version Value="11"/>
+    <Parsing>
+      <SyntaxOptions>
+        <UseAnsiStrings Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
     <Linking>
       <Options>
         <Win32>
@@ -136,6 +68,9 @@
       </Options>
     </Linking>
     <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
