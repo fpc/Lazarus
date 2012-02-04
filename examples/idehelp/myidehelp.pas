@@ -258,10 +258,10 @@ type
   public
     HelpShortCutAsText: string;
     function GetTitle: String; override;
-    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings({%H-}AOptions: TAbstractIDEOptions); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
-    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings({%H-}AOptions: TAbstractIDEOptions); override;
   end;
 
 procedure LoadSaveMyIDEOptions(Filename: string; Load: boolean);
@@ -402,7 +402,7 @@ begin
   Result:=shrHelpNotFound;
   if (csDesigning in ComponentState) or (not Enabled) then exit;
 
-  if ListOfNodes.Count>0 then exit;
+  if not AClass.InheritsFrom(TMyHelpDatabase) then exit;
 
   // this help database knows this context
   Title:='Help for source';
