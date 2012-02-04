@@ -98,16 +98,13 @@ end;
 procedure TDBMemo.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation=opRemove) then begin
-    if (FDataLink<>nil) and (AComponent=DataSource) then
+  if (Operation=opRemove) and (AComponent=DataSource) then
       DataSource:=nil;
-  end;
 end;
 
 procedure TDBMemo.UpdateData(Sender: TObject);
 begin
   if not FDBMemoLoaded then exit;
-  if FDataLink=nil then exit;
   if not FDataLink.CanModify then exit;
   FDataLink.Field.AsString:=Text;
 end;
