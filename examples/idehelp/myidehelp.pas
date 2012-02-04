@@ -88,6 +88,8 @@ type
     FKeywordToText: TStrings;
     procedure SetKeywordToText(AValue: TStrings);
   public
+    const
+      DefaultKeyWordToText = 'procedure=Named code block';
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function GetNodesForKeyword(const HelpKeyword: string;
@@ -117,6 +119,9 @@ type
     procedure SetFPCDirectiveToText(AValue: TStrings);
     procedure SetIDEDirectiveToText(AValue: TStrings);
   public
+    const
+      DefaultFPCDirectiveToText = 'mode=Set the syntax, e.g. fpc, objfpc, delphi, macpas, tp';
+      DefaultIDEDirectiveToText = 'H=Use {%H-} to hide any compiler message at that source position in IDE messages window.';
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function GetNodesForDirective(const HelpDirective: string;
@@ -170,6 +175,8 @@ type
     FContextToMessage: TStrings;
     procedure SetContextToMessage(AValue: TStrings);
   public
+    const
+      DefaultContextToMessage = '3456=A help text for helpcontext 3456';
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function GetNodesForContext(HelpContext: THelpContext;
@@ -640,7 +647,7 @@ constructor TMyContextHelpDatabase.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FContextToMessage:=TStringList.Create;
-  ContextToMessage.Add('3456=A help text for helpcontext 3456');
+  ContextToMessage.Text:=DefaultContextToMessage;
 end;
 
 destructor TMyContextHelpDatabase.Destroy;
@@ -698,6 +705,8 @@ procedure TMyContextHelpDatabase.LoadFromConfig(Config: TConfigStorage);
 begin
   inherited LoadFromConfig(Config);
   Config.GetValue('Contexts',ContextToMessage);
+  if ContextToMessage.Count=0 then
+    ContextToMessage.Text:=DefaultContextToMessage;
 end;
 
 procedure TMyContextHelpDatabase.SaveToConfig(Config: TConfigStorage);
@@ -779,9 +788,9 @@ begin
   inherited Create(TheOwner);
   Enabled:=true;
   FFPCDirectiveToText:=TStringList.Create;
-  FPCDirectiveToText.Add('mode=Set the syntax, e.g. fpc, objfpc, delphi, macpas, tp');
+  FPCDirectiveToText.Text:=DefaultFPCDirectiveToText;
   FIDEDirectiveToText:=TStringList.Create;
-  IDEDirectiveToText.Add('H=Use {%H-} to hide any compiler message at that source position in IDE messages window.');
+  IDEDirectiveToText.Text:=DefaultIDEDirectiveToText;
 end;
 
 destructor TMyDirectiveHelpDatabase.Destroy;
@@ -869,7 +878,11 @@ procedure TMyDirectiveHelpDatabase.LoadFromConfig(Config: TConfigStorage);
 begin
   inherited LoadFromConfig(Config);
   Config.GetValue('FPCDirectives',FPCDirectiveToText);
+  if FPCDirectiveToText.Count=0 then
+    FPCDirectiveToText.Text:=DefaultFPCDirectiveToText;
   Config.GetValue('IDEDirectives',IDEDirectiveToText);
+  if IDEDirectiveToText.Count=0 then
+    IDEDirectiveToText.Text:=DefaultIDEDirectiveToText;
 end;
 
 procedure TMyDirectiveHelpDatabase.SaveToConfig(Config: TConfigStorage);
@@ -883,6 +896,7 @@ end;
 
 procedure TMyFPCKeywordHelpDatabase.SetKeywordToText(AValue: TStrings);
 begin
+  debugln(['TMyFPCKeywordHelpDatabase.SetKeywordToText ']);
   if AssignTrimmedStrings(AValue,FKeywordToText) then
     Modified:=true;
 end;
@@ -891,7 +905,7 @@ constructor TMyFPCKeywordHelpDatabase.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FKeywordToText:=TStringList.Create;
-  KeywordToText.Add('procedure=Named code block');
+  KeywordToText.Text:=DefaultKeyWordToText;
 end;
 
 destructor TMyFPCKeywordHelpDatabase.Destroy;
@@ -950,6 +964,8 @@ procedure TMyFPCKeywordHelpDatabase.LoadFromConfig(Config: TConfigStorage);
 begin
   inherited LoadFromConfig(Config);
   Config.GetValue('KeywordToText',KeywordToText);
+  if KeywordToText.Count=0 then
+    KeywordToText.Text:=DefaultKeyWordToText;
 end;
 
 procedure TMyFPCKeywordHelpDatabase.SaveToConfig(Config: TConfigStorage);

@@ -62,11 +62,11 @@ object MyHelpSetupDialog: TMyHelpSetupDialog
     end
     object DirectivesTabSheet: TTabSheet
       Caption = 'DirectivesTabSheet'
-      ClientHeight = 435
+      ClientHeight = 442
       ClientWidth = 761
       object DirectivesNoteLabel: TLabel
         Left = 6
-        Height = 17
+        Height = 15
         Top = 6
         Width = 749
         Align = alTop
@@ -80,9 +80,9 @@ object MyHelpSetupDialog: TMyHelpSetupDialog
         AnchorSideTop.Control = DirectivesNoteLabel
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 18
-        Top = 29
-        Width = 186
+        Height = 22
+        Top = 27
+        Width = 170
         BorderSpacing.Around = 6
         Caption = 'DirectivesEnableCheckBox'
         TabOrder = 0
@@ -91,22 +91,22 @@ object MyHelpSetupDialog: TMyHelpSetupDialog
         AnchorSideTop.Control = DirectivesEnableCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 125
-        Top = 53
+        Height = 130
+        Top = 55
         Width = 749
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'FPCDirectivesGroupBox'
-        ClientHeight = 103
-        ClientWidth = 741
+        ClientHeight = 114
+        ClientWidth = 745
         Constraints.MinHeight = 70
         TabOrder = 1
         object FPCDirectivesMemo: TMemo
           Left = 0
-          Height = 103
+          Height = 114
           Top = 0
-          Width = 741
+          Width = 745
           Align = alClient
           Lines.Strings = (
             'FPCDirectivesMemo'
@@ -117,20 +117,20 @@ object MyHelpSetupDialog: TMyHelpSetupDialog
       object IDEDirectivesGroupBox: TGroupBox
         Left = 6
         Height = 234
-        Top = 195
+        Top = 202
         Width = 749
         Align = alBottom
         BorderSpacing.Around = 6
         Caption = 'IDEDirectivesGroupBox'
-        ClientHeight = 212
-        ClientWidth = 741
+        ClientHeight = 218
+        ClientWidth = 745
         Constraints.MinHeight = 70
         TabOrder = 2
         object IDEDirectivesMemo: TMemo
           Left = 0
-          Height = 212
+          Height = 218
           Top = 0
-          Width = 741
+          Width = 745
           Align = alClient
           Lines.Strings = (
             'IDEDirectivesMemo'
@@ -142,7 +142,7 @@ object MyHelpSetupDialog: TMyHelpSetupDialog
         Cursor = crVSplit
         Left = 0
         Height = 5
-        Top = 184
+        Top = 191
         Width = 761
         Align = alBottom
         ResizeAnchor = akBottom
@@ -150,26 +150,27 @@ object MyHelpSetupDialog: TMyHelpSetupDialog
     end
     object MessagesTabSheet: TTabSheet
       Caption = 'MessagesTabSheet'
-      ClientHeight = 435
+      ClientHeight = 442
       ClientWidth = 761
       object MessagesNoteLabel: TLabel
         Left = 6
-        Height = 17
+        Height = 15
         Top = 6
         Width = 749
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'MessagesNoteLabel'
         ParentColor = False
+        WordWrap = True
       end
       object MessagesEnableCheckBox: TCheckBox
         AnchorSideLeft.Control = MessagesTabSheet
         AnchorSideTop.Control = MessagesNoteLabel
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 18
-        Top = 29
-        Width = 185
+        Height = 22
+        Top = 27
+        Width = 171
         BorderSpacing.Around = 6
         Caption = 'MessagesEnableCheckBox'
         TabOrder = 0
@@ -177,26 +178,27 @@ object MyHelpSetupDialog: TMyHelpSetupDialog
     end
     object ContextTabSheet: TTabSheet
       Caption = 'ContextTabSheet'
-      ClientHeight = 435
+      ClientHeight = 442
       ClientWidth = 761
       object ContextNoteLabel: TLabel
         Left = 6
-        Height = 17
+        Height = 15
         Top = 6
         Width = 749
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'ContextNoteLabel'
         ParentColor = False
+        WordWrap = True
       end
       object ContextEnableCheckBox: TCheckBox
         AnchorSideLeft.Control = ContextTabSheet
         AnchorSideTop.Control = ContextNoteLabel
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 18
-        Top = 29
-        Width = 174
+        Height = 22
+        Top = 27
+        Width = 159
         BorderSpacing.Around = 6
         Caption = 'ContextEnableCheckBox'
         TabOrder = 0
@@ -205,8 +207,8 @@ object MyHelpSetupDialog: TMyHelpSetupDialog
         AnchorSideTop.Control = ContextEnableCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 376
-        Top = 53
+        Height = 381
+        Top = 55
         Width = 749
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -219,11 +221,11 @@ object MyHelpSetupDialog: TMyHelpSetupDialog
     end
     object ClassesTabSheet: TTabSheet
       Caption = 'ClassesTabSheet'
-      ClientHeight = 435
+      ClientHeight = 442
       ClientWidth = 761
       object ClassesNoteLabel: TLabel
         Left = 6
-        Height = 17
+        Height = 15
         Top = 6
         Width = 749
         Align = alTop
@@ -237,9 +239,9 @@ object MyHelpSetupDialog: TMyHelpSetupDialog
         AnchorSideTop.Control = ClassesNoteLabel
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 18
-        Top = 29
-        Width = 130
+        Height = 22
+        Top = 27
+        Width = 121
         BorderSpacing.Around = 6
         Caption = 'ClassesCheckBox'
         TabOrder = 0
@@ -247,11 +249,11 @@ object MyHelpSetupDialog: TMyHelpSetupDialog
     end
     object PascalSourcesTabSheet: TTabSheet
       Caption = 'PascalSourcesTabSheet'
-      ClientHeight = 435
+      ClientHeight = 442
       ClientWidth = 761
       object PascalSourcesNoteLabel: TLabel
         Left = 6
-        Height = 17
+        Height = 15
         Top = 6
         Width = 749
         Align = alTop
@@ -265,9 +267,9 @@ object MyHelpSetupDialog: TMyHelpSetupDialog
         AnchorSideTop.Control = PascalSourcesNoteLabel
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 18
-        Top = 29
-        Width = 220
+        Height = 22
+        Top = 27
+        Width = 203
         BorderSpacing.Around = 6
         Caption = 'PascalSourcesEnabledCheckBox'
         TabOrder = 0
