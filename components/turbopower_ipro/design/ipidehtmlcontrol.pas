@@ -42,15 +42,15 @@ type
   { TLazIPHtmlControl }
 
   TLazIPHtmlControl = class(TCustomPanel,TIDEHTMLControlIntf)
-    function DataProviderCanHandle(Sender: TObject; const URL: string): Boolean;
-    procedure DataProviderCheckURL(Sender: TObject; const URL: string;
+    function DataProviderCanHandle(Sender: TObject; const {%H-}URL: string): Boolean;
+    procedure DataProviderCheckURL(Sender: TObject; const {%H-}URL: string;
       var Available: Boolean; var ContentType: string);
-    procedure DataProviderGetHtml(Sender: TObject; const URL: string;
+    procedure DataProviderGetHtml(Sender: TObject; const {%H-}URL: string;
       const {%H-}aPostData: TIpFormDataEntity; var Stream: TStream);
     procedure DataProviderGetImage(Sender: TIpHtmlNode; const URL: string;
       var Picture: TPicture);
     procedure DataProviderLeave(Sender: TIpHtml);
-    procedure DataProviderReportReference(Sender: TObject; const URL: string);
+    procedure DataProviderReportReference(Sender: TObject; const {%H-}URL: string);
     procedure IPHTMLPanelHotClick(Sender: TObject);
   private
     FIDEProvider: TAbstractIDEHTMLProvider;
