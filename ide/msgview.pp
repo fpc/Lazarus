@@ -47,7 +47,7 @@ uses
   SrcEditorIntf, LazIDEIntf,
   DialogProcs, EnvironmentOpts, SourceMarks,
   LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, InputHistory, infobuild,
-  KeyMapping;
+  KeyMapping, HelpFPCMessages;
 
 type
 
@@ -174,10 +174,11 @@ type
     procedure SaveMessagesToFile(const Filename: string);
     procedure SrcEditLinesInsertedDeleted(const Filename: string;
                                           FirstLine, LineCount: Integer);
-    procedure UpdateMsgLineInListBox(Line: TLazMessageLine);
+    procedure UpdateMsgLineInView(Line: TLazMessageLine);
     function ExecuteMsgLinePlugin(Step: TIMQuickFixStep): boolean;
     procedure HideLine(Line: TLazMessageLine);
     procedure ConsistencyCheck;
+    function GetSelectedLine: TIDEMessageLine; override;
   public
     property LastLineIsProgress: boolean read FLastLineIsProgress
                                          write SetLastLineIsProgress;
@@ -541,7 +542,7 @@ procedure TMessagesView.CollectLineParts(Sender: TObject;
               HideLine(ALine);
           end;
           if (OldMsg<>ALine.Msg) then begin
-            UpdateMsgLineInListBox(ALine);
+            UpdateMsgLineInView(ALine);
           end;
         end;
       end;
@@ -746,14 +747,14 @@ begin
         Line.Parts.Values['Line']:=IntToStr(Line.LineNumber);
       Line.SetSourcePosition('',Line.LineNumber,0);
       //DebugLn('TMessagesView.SrcEditLinesInsertedDeleted ',Line.Msg,' ',dbgs(Line.VisiblePosition));
-      UpdateMsgLineInListBox(Line);
+      UpdateMsgLineInView(Line);
     end;
     
     ANode:=FSrcPositions.FindSuccessor(ANode);
   end;
 end;
 
-procedure TMessagesView.UpdateMsgLineInListBox(Line: TLazMessageLine);
+procedure TMessagesView.UpdateMsgLineInView(Line: TLazMessageLine);
 begin
   if (Line.VisiblePosition>=0)
   and (Line.VisiblePosition<MessageTreeView.Items.Count) then begin
@@ -782,7 +783,7 @@ begin
         DeleteLine(Msg.Position);
       end else begin
         UpdateMsgSrcPos(Msg);
-        UpdateMsgLineInListBox(Msg);
+        UpdateMsgLineInView(Msg);
       end;
       exit;
     end;
@@ -944,7 +945,7 @@ end;
 
 procedure TMessagesView.EditHelpMenuItemClick(Sender: TObject);
 begin
-  // ShowMessageHelpEditor;
+  ShowMessageHelpEditor;
 end;
 
 procedure TMessagesView.FormDeactivate(Sender: TObject);
@@ -1114,7 +1115,7 @@ begin
         DeleteLine(Msg.Position);
       end else begin
         UpdateMsgSrcPos(Msg);
-        UpdateMsgLineInListBox(Msg);
+        UpdateMsgLineInView(Msg);
       end;
       exit;
       //ConsistencyCheck;
@@ -1295,6 +1296,11 @@ begin
   end;
   if FLastLineIsProgress and (FVisibleItems.Count=0) then
     RaiseGDBException('TMessagesView.ConsistencyCheck FLastLineIsProgress and FVisibleItems.Count=0');
+end;
+
+function TMessagesView.GetSelectedLine: TIDEMessageLine;
+begin
+  Result:=GetMessageLine;
 end;
 
 function TMessagesView.FindNextItem(const Filename: string; FirstLine,

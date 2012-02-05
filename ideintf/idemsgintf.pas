@@ -244,6 +244,7 @@ type
     function LinesCount: integer; virtual; abstract;
     procedure BeginBlock(ClearOldBlocks: Boolean = true); virtual; abstract;
     procedure EndBlock; virtual; abstract;
+    function GetSelectedLine: TIDEMessageLine; virtual; abstract;
   end;
   
 var

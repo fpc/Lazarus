@@ -63,7 +63,7 @@
         <PackageName Value="SynEdit"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="88">
+    <Units Count="89">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -662,6 +662,12 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="NewPkgComponentDlg"/>
       </Unit87>
+      <Unit88>
+        <Filename Value="msgview.pp"/>
+        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
+        <UnitName Value="MsgView"/>
+      </Unit88>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

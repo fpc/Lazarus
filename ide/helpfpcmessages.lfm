@@ -7,6 +7,7 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
   ClientHeight = 522
   ClientWidth = 649
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object CurMsgGroupBox: TGroupBox
@@ -48,6 +49,7 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
     TabOrder = 1
+    OnClick = ButtonPanel1Click
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
   object AllGroupBox: TGroupBox
@@ -61,13 +63,14 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
     ClientHeight = 247
     ClientWidth = 273
     TabOrder = 2
-    object URLsListBox: TListBox
+    object AllListBox: TListBox
       Left = 0
       Height = 221
       Top = 0
       Width = 273
       Align = alClient
       ItemHeight = 0
+      OnSelectionChange = AllListBoxSelectionChange
       ScrollWidth = 271
       TabOrder = 0
       TopIndex = -1
@@ -80,6 +83,7 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
       Align = alBottom
       AutoSize = True
       Caption = 'AddButton'
+      OnClick = AddButtonClick
       TabOrder = 1
     end
   end
@@ -95,16 +99,18 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
     ClientWidth = 339
     TabOrder = 3
     object DeleteButton: TButton
-      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideLeft.Control = TestURLButton
+      AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = URLEdit
       AnchorSideTop.Side = asrBottom
-      Left = 6
+      Left = 104
       Height = 26
-      Top = 171
+      Top = 192
       Width = 84
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'DeleteButton'
+      OnClick = DeleteButtonClick
       TabOrder = 0
     end
     object NameLabel: TLabel
@@ -131,18 +137,19 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
       Width = 257
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
+      OnChange = NameEditChange
       TabOrder = 1
       Text = 'NameEdit'
     end
     object URLLabel: TLabel
       AnchorSideLeft.Control = CurGroupBox
-      AnchorSideTop.Control = OnlyRegExEdit
+      AnchorSideTop.Control = AdditionFitsMsgLabel
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = CurGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 15
-      Top = 126
+      Top = 147
       Width = 327
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
@@ -160,12 +167,13 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
       AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 24
-      Top = 141
+      Top = 162
       Width = 327
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
+      OnChange = URLEditChange
       TabOrder = 2
       Text = 'URLEdit'
     end
@@ -201,6 +209,7 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
+      OnChange = OnlyFPCMsgIDsEditChange
       TabOrder = 3
       Text = 'OnlyFPCMsgIDsEdit'
     end
@@ -236,8 +245,36 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
+      OnChange = OnlyRegExEditChange
       TabOrder = 4
       Text = 'OnlyRegExEdit'
+    end
+    object AdditionFitsMsgLabel: TLabel
+      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideTop.Control = OnlyRegExEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 15
+      Top = 126
+      Width = 116
+      BorderSpacing.Around = 6
+      Caption = 'AdditionFitsMsgLabel'
+      ParentColor = False
+      WordWrap = True
+    end
+    object TestURLButton: TButton
+      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideTop.Control = URLEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 26
+      Top = 192
+      Width = 92
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'TestURLButton'
+      OnClick = TestURLButtonClick
+      TabOrder = 5
     end
   end
   object Splitter1: TSplitter
@@ -274,11 +311,15 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
       AnchorSideLeft.Control = FPCMsgFileLabel
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = GlobalOptionsGroupBox
+      AnchorSideRight.Control = GlobalOptionsGroupBox
+      AnchorSideRight.Side = asrBottom
       Left = 104
       Height = 24
       Top = 6
-      Width = 283
+      Width = 523
+      Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
+      OnEditingDone = FPCMsgFileEditEditingDone
       TabOrder = 0
       Text = 'FPCMsgFileEdit'
     end
@@ -299,10 +340,13 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = FPCMsgFileEdit
       AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GlobalOptionsGroupBox
+      AnchorSideRight.Side = asrBottom
       Left = 112
       Height = 24
       Top = 36
-      Width = 280
+      Width = 515
+      Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       TabOrder = 1
       Text = 'AdditionsFileEdit'
