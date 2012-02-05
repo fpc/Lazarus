@@ -39,7 +39,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, Dialogs, FileUtil, TextTools, MacroIntf,
   LazarusIDEStrConsts, LazConfigStorage, HelpIntfs, IDEHelpIntf, LazHelpIntf,
-  LazHelpHTML, CodeToolsFPCMsgs, FileProcs, CodeToolManager, CodeCache;
+  LazHelpHTML, StdCtrls, ButtonPanel, ExtCtrls, Forms, CodeToolsFPCMsgs,
+  FileProcs, CodeToolManager, CodeCache;
   
 const
   lihcFPCMessages = 'FreePascal Compiler messages';
@@ -84,6 +85,30 @@ type
                                         write SetFPCTranslationFile;
   end;
 
+  { TEditIDEMsgHelpDialog }
+
+  TEditIDEMsgHelpDialog = class(TForm)
+    AddButton: TButton;
+    ButtonPanel1: TButtonPanel;
+    CurGroupBox: TGroupBox;
+    CurMsgGroupBox: TGroupBox;
+    CurMsgMemo: TMemo;
+    DeleteButton: TButton;
+    NameEdit: TEdit;
+    NameLabel: TLabel;
+    OnlyFPCMsgIDsLabel: TLabel;
+    OnlyFPCMsgIDsEdit: TEdit;
+    OnlyRegExEdit: TEdit;
+    OnlyRegExLabel: TLabel;
+    Splitter1: TSplitter;
+    AllGroupBox: TGroupBox;
+    URLEdit: TEdit;
+    URLLabel: TLabel;
+    URLsListBox: TListBox;
+    procedure FormCreate(Sender: TObject);
+  public
+  end;
+
 procedure CreateFPCMessagesHelpDB;
 function AddFPCMessageHelpItem(const Title, URL, RegularExpression: string
                                ): THelpDBIRegExprMessage;
@@ -123,6 +148,26 @@ begin
     THelpNode.CreateURL(FPCMessagesHelpDB,Title,'file://'+URL),
     RegularExpression,'I');
   FPCMessagesHelpDB.RegisterItem(Result);
+end;
+
+{ TEditIDEMsgHelpDialog }
+
+procedure TEditIDEMsgHelpDialog.FormCreate(Sender: TObject);
+begin
+  Caption:='Edit additional help for FPC messages';
+
+  CurMsgGroupBox.Caption:='Selected message in messages window:';
+
+  AllGroupBox.Caption:='All additional';
+  AddButton.Caption:='Create new item';
+
+  NameLabel.Caption:='Name:';
+  OnlyFPCMsgIDsLabel.Caption:='Only messages with these FPC IDs (comma separated):';
+  OnlyRegExLabel.Caption:='Only messages fitting this regular expression:';
+  URLLabel.Caption:='URL on wiki, the base url is '
+    +(FPCMessagesHelpDB as THTMLHelpDatabase).GetEffectiveBaseURL;
+
+  DeleteButton.Caption:='Delete this item';
 end;
 
 { TFPCMessagesHelpDatabase }

@@ -4297,6 +4297,7 @@ ide/genericlisteditor.lfm svneol=native#text/plain
 ide/genericlisteditor.pas svneol=native#text/plain
 ide/gotofrm.lfm svneol=native#text/plain
 ide/gotofrm.pas svneol=native#text/plain
+ide/helpfpcmessages.lfm svneol=native#text/plain
 ide/helpfpcmessages.pas svneol=native#text/plain
 ide/helpoptions.pas svneol=native#text/pascal
 ide/ide.lpk svneol=native#text/xml

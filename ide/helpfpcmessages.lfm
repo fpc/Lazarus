@@ -1,0 +1,249 @@
+object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
+  Left = 330
+  Height = 460
+  Top = 280
+  Width = 622
+  Caption = 'EditIDEMsgHelpDialog'
+  ClientHeight = 460
+  ClientWidth = 622
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object CurMsgGroupBox: TGroupBox
+    Left = 6
+    Height = 105
+    Top = 6
+    Width = 610
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'CurMsgGroupBox'
+    ClientHeight = 89
+    ClientWidth = 606
+    TabOrder = 0
+    object CurMsgMemo: TMemo
+      Left = 0
+      Height = 89
+      Top = 0
+      Width = 606
+      Align = alClient
+      Lines.Strings = (
+        'CurMsgMemo'
+      )
+      ReadOnly = True
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 412
+    Width = 610
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object AllGroupBox: TGroupBox
+    Left = 6
+    Height = 289
+    Top = 117
+    Width = 277
+    Align = alLeft
+    BorderSpacing.Around = 6
+    Caption = 'AllGroupBox'
+    ClientHeight = 273
+    ClientWidth = 273
+    TabOrder = 2
+    object URLsListBox: TListBox
+      Left = 0
+      Height = 247
+      Top = 0
+      Width = 273
+      Align = alClient
+      ItemHeight = 0
+      ScrollWidth = 271
+      TabOrder = 0
+      TopIndex = -1
+    end
+    object AddButton: TButton
+      Left = 0
+      Height = 26
+      Top = 247
+      Width = 273
+      Align = alBottom
+      AutoSize = True
+      Caption = 'AddButton'
+      TabOrder = 1
+    end
+  end
+  object CurGroupBox: TGroupBox
+    Left = 300
+    Height = 289
+    Top = 117
+    Width = 316
+    Align = alClient
+    BorderSpacing.Around = 6
+    Caption = 'CurGroupBox'
+    ClientHeight = 273
+    ClientWidth = 312
+    TabOrder = 3
+    object DeleteButton: TButton
+      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideTop.Control = URLEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 26
+      Top = 171
+      Width = 84
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'DeleteButton'
+      TabOrder = 0
+    end
+    object NameLabel: TLabel
+      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideTop.Control = NameEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 15
+      Top = 11
+      Width = 64
+      BorderSpacing.Around = 6
+      Caption = 'NameLabel'
+      ParentColor = False
+    end
+    object NameEdit: TEdit
+      AnchorSideLeft.Control = NameLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = CurGroupBox
+      AnchorSideRight.Control = CurGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 76
+      Height = 24
+      Top = 6
+      Width = 230
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      TabOrder = 1
+      Text = 'NameEdit'
+    end
+    object URLLabel: TLabel
+      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideTop.Control = OnlyRegExEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = CurGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 15
+      Top = 126
+      Width = 300
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Caption = 'URLLabel'
+      ParentColor = False
+      WordWrap = True
+    end
+    object URLEdit: TEdit
+      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideTop.Control = URLLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = CurGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 24
+      Top = 141
+      Width = 300
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      TabOrder = 2
+      Text = 'URLEdit'
+    end
+    object OnlyFPCMsgIDsLabel: TLabel
+      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideTop.Control = NameEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = CurGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 15
+      Top = 36
+      Width = 300
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Caption = 'OnlyFPCMsgIDsLabel'
+      ParentColor = False
+      WordWrap = True
+    end
+    object OnlyFPCMsgIDsEdit: TEdit
+      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideTop.Control = OnlyFPCMsgIDsLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = CurGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 24
+      Top = 51
+      Width = 300
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      TabOrder = 3
+      Text = 'OnlyFPCMsgIDsEdit'
+    end
+    object OnlyRegExLabel: TLabel
+      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideTop.Control = OnlyFPCMsgIDsEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = CurGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 15
+      Top = 81
+      Width = 300
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Caption = 'OnlyRegExLabel'
+      ParentColor = False
+      WordWrap = True
+    end
+    object OnlyRegExEdit: TEdit
+      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideTop.Control = OnlyRegExLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = CurGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 24
+      Top = 96
+      Width = 300
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      TabOrder = 4
+      Text = 'OnlyRegExEdit'
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 289
+    Height = 289
+    Top = 117
+    Width = 5
+  end
+end
