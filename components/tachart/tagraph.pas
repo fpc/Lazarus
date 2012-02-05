@@ -167,6 +167,7 @@ type
     FDepth: TChartDistance;
     FExpandPercentage: Integer;
     FExtent: TChartExtent;
+    FExtentSizeLimit: TChartExtent;
     FFoot: TChartTitle;
     FFrame: TChartPen;
     FGraphBrush: TBrush;
@@ -224,6 +225,7 @@ type
     procedure SetDepth(AValue: TChartDistance);
     procedure SetExpandPercentage(AValue: Integer);
     procedure SetExtent(AValue: TChartExtent);
+    procedure SetExtentSizeLimit(AValue: TChartExtent);
     procedure SetFoot(Value: TChartTitle);
     procedure SetFrame(Value: TChartPen);
     procedure SetGraphBrush(Value: TBrush);
@@ -344,6 +346,7 @@ type
     property ExpandPercentage: Integer
       read FExpandPercentage write SetExpandPercentage default 0;
     property Extent: TChartExtent read FExtent write SetExtent;
+    property ExtentSizeLimit: TChartExtent read FExtentSizeLimit write SetExtentSizeLimit;
     property Foot: TChartTitle read FFoot write SetFoot;
     property Frame: TChartPen read FFrame write SetFrame;
     property GraphBrush: TBrush read FGraphBrush write SetGraphBrush;
@@ -600,6 +603,7 @@ begin
   FFrame.OnChange := @StyleChanged;
 
   FExtent := TChartExtent.Create(Self);
+  FExtentSizeLimit := TChartExtent.Create(Self);
   FMargins := TChartMargins.Create(Self);
   FMarginsExternal := TChartMargins.Create(Self);
 
@@ -632,6 +636,7 @@ begin
   FreeAndNil(FAxisList);
   FreeAndNil(FFrame);
   FreeAndNil(FExtent);
+  FreeAndNil(FExtentSizeLimit);
   FreeAndNil(FMargins);
   FreeAndNil(FMarginsExternal);
   FreeAndNil(FBuiltinToolset);
@@ -1293,6 +1298,13 @@ begin
   StyleChanged(Self);
 end;
 
+procedure TChart.SetExtentSizeLimit(AValue: TChartExtent);
+begin
+  if FExtentSizeLimit = AValue then exit;
+  FExtentSizeLimit.Assign(AValue);
+  StyleChanged(Self);
+end;
+
 procedure TChart.SetFoot(Value: TChartTitle);
 begin
   FFoot.Assign(Value);
@@ -1317,8 +1329,18 @@ begin
 end;
 
 procedure TChart.SetLogicalExtent(const AValue: TDoubleRect);
+var
+  w, h: Double;
 begin
   if FLogicalExtent = AValue then exit;
+  w := Abs(AValue.a.X - AValue.b.X);
+  h := Abs(AValue.a.Y - AValue.b.Y);
+  with ExtentSizeLimit do
+    if
+      UseXMin and (w < XMin) or UseXMax and (w > XMax) or
+      UseYMin and (h < YMin) or UseYMax and (h > YMax)
+    then
+      exit;
   HideReticule;
   FLogicalExtent := AValue;
   FIsZoomed := true;
