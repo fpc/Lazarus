@@ -371,6 +371,8 @@ begin
           // special character
           System.Delete(Result,StartPos,1);
         end;
+      end else if Result[i] in ['{','}'] then begin
+        System.Delete(Result,i,1);
       end else begin
         inc(i);
       end;
