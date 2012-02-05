@@ -250,59 +250,58 @@ end;
 procedure TOIOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   ASettings: TSpeedOISettings;
+  o: TOIOptions;
 begin
-  with AOptions as TEnvironmentOptions do
-  begin
-    ASettings.Colors[ocBackground] := ObjectInspectorOptions.GridBackgroundColor;
-    ASettings.Colors[ocGutter] := ObjectInspectorOptions.GutterColor;
-    ASettings.Colors[ocGutterEdge] := ObjectInspectorOptions.GutterEdgeColor;
-    ASettings.Colors[ocHighlight] := ObjectInspectorOptions.HighlightColor;
-    ASettings.Colors[ocHighlightFont] := ObjectInspectorOptions.HighlightFontColor;
-    ASettings.Colors[ocPropName] := ObjectInspectorOptions.PropertyNameColor;
-    ASettings.Colors[ocValue] := ObjectInspectorOptions.ValueColor;
-    ASettings.Colors[ocDefValue] := ObjectInspectorOptions.DefaultValueColor;
-    ASettings.Colors[ocSubProp] := ObjectInspectorOptions.SubPropertiesColor;
-    ASettings.Colors[ocReference] := ObjectInspectorOptions.ReferencesColor;
-    ASettings.Colors[ocReadOnly] := ObjectInspectorOptions.ReadOnlyColor;
+  o:=(AOptions as TEnvironmentOptions).ObjectInspectorOptions;
+  ASettings.Colors[ocBackground] := o.GridBackgroundColor;
+  ASettings.Colors[ocGutter] := o.GutterColor;
+  ASettings.Colors[ocGutterEdge] := o.GutterEdgeColor;
+  ASettings.Colors[ocHighlight] := o.HighlightColor;
+  ASettings.Colors[ocHighlightFont] := o.HighlightFontColor;
+  ASettings.Colors[ocPropName] := o.PropertyNameColor;
+  ASettings.Colors[ocValue] := o.ValueColor;
+  ASettings.Colors[ocDefValue] := o.DefaultValueColor;
+  ASettings.Colors[ocSubProp] := o.SubPropertiesColor;
+  ASettings.Colors[ocReference] := o.ReferencesColor;
+  ASettings.Colors[ocReadOnly] := o.ReadOnlyColor;
 
-    ASettings.Options[ooShowHints] := ObjectInspectorOptions.ShowHints;
-    ASettings.Options[ooAutoShow] := ObjectInspectorOptions.AutoShow;
-    ASettings.Options[ooBoldNonDefault] := ObjectInspectorOptions.BoldNonDefaultValues;
-    ASettings.Options[ooDrawGridLines] := ObjectInspectorOptions.DrawGridLines;
-    ASettings.Options[ooShowGutter] := ObjectInspectorOptions.ShowGutter;
-    ASettings.Options[ooShowStatusBar] := ObjectInspectorOptions.ShowStatusBar;
-    ASettings.Options[ooShowInfoBox] := ObjectInspectorOptions.ShowInfoBox;
-    ApplyOISettings(ASettings);
-    OIDefaultItemHeightSpinEdit.Value := ObjectInspectorOptions.DefaultItemHeight;
-  end;
+  ASettings.Options[ooShowHints] := o.ShowHints;
+  ASettings.Options[ooAutoShow] := o.AutoShow;
+  ASettings.Options[ooBoldNonDefault] := o.BoldNonDefaultValues;
+  ASettings.Options[ooDrawGridLines] := o.DrawGridLines;
+  ASettings.Options[ooShowGutter] := o.ShowGutter;
+  ASettings.Options[ooShowStatusBar] := o.ShowStatusBar;
+  ASettings.Options[ooShowInfoBox] := o.ShowInfoBox;
+  ApplyOISettings(ASettings);
+  OIDefaultItemHeightSpinEdit.Value := o.DefaultItemHeight;
   FLoaded := True;
 end;
 
 procedure TOIOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+var
+  o: TOIOptions;
 begin
-  with AOptions as TEnvironmentOptions do
-  begin
-    ObjectInspectorOptions.GridBackgroundColor := ColorsListBox.Colors[Ord(ocBackground)];
-    ObjectInspectorOptions.GutterColor := ColorsListBox.Colors[Ord(ocGutter)];
-    ObjectInspectorOptions.GutterEdgeColor := ColorsListBox.Colors[Ord(ocGutterEdge)];
-    ObjectInspectorOptions.HighlightColor := ColorsListBox.Colors[Ord(ocHighlight)];
-    ObjectInspectorOptions.HighlightFontColor := ColorsListBox.Colors[Ord(ocHighlightFont)];
-    ObjectInspectorOptions.PropertyNameColor := ColorsListBox.Colors[Ord(ocPropName)];
-    ObjectInspectorOptions.ValueColor := ColorsListBox.Colors[Ord(ocValue)];
-    ObjectInspectorOptions.DefaultValueColor := ColorsListBox.Colors[Ord(ocDefValue)];
-    ObjectInspectorOptions.SubPropertiesColor := ColorsListBox.Colors[Ord(ocSubProp)];
-    ObjectInspectorOptions.ReferencesColor := ColorsListBox.Colors[Ord(ocReference)];
-    ObjectInspectorOptions.ReadOnlyColor := ColorsListBox.Colors[Ord(ocReadOnly)];
+  o:=(AOptions as TEnvironmentOptions).ObjectInspectorOptions;
+  o.GridBackgroundColor := ColorsListBox.Colors[Ord(ocBackground)];
+  o.GutterColor := ColorsListBox.Colors[Ord(ocGutter)];
+  o.GutterEdgeColor := ColorsListBox.Colors[Ord(ocGutterEdge)];
+  o.HighlightColor := ColorsListBox.Colors[Ord(ocHighlight)];
+  o.HighlightFontColor := ColorsListBox.Colors[Ord(ocHighlightFont)];
+  o.PropertyNameColor := ColorsListBox.Colors[Ord(ocPropName)];
+  o.ValueColor := ColorsListBox.Colors[Ord(ocValue)];
+  o.DefaultValueColor := ColorsListBox.Colors[Ord(ocDefValue)];
+  o.SubPropertiesColor := ColorsListBox.Colors[Ord(ocSubProp)];
+  o.ReferencesColor := ColorsListBox.Colors[Ord(ocReference)];
+  o.ReadOnlyColor := ColorsListBox.Colors[Ord(ocReadOnly)];
 
-    ObjectInspectorOptions.ShowHints := OIShowHintCheckBox.Checked;
-    ObjectInspectorOptions.AutoShow := OIAutoShowCheckBox.Checked;
-    ObjectInspectorOptions.BoldNonDefaultValues := OIBoldNonDefaultCheckBox.Checked;
-    ObjectInspectorOptions.DrawGridLines := OIDrawGridLinesCheckBox.Checked;
-    ObjectInspectorOptions.ShowGutter := OIShowGutterCheckBox.Checked;
-    ObjectInspectorOptions.ShowStatusBar := OIShowStatusBarCheckBox.Checked;
-    ObjectInspectorOptions.ShowInfoBox := OIShowInfoBoxCheckBox.Checked;
-    ObjectInspectorOptions.DefaultItemHeight := RoundToInt(OIDefaultItemHeightSpinEdit.Value);
-  end;
+  o.ShowHints := OIShowHintCheckBox.Checked;
+  o.AutoShow := OIAutoShowCheckBox.Checked;
+  o.BoldNonDefaultValues := OIBoldNonDefaultCheckBox.Checked;
+  o.DrawGridLines := OIDrawGridLinesCheckBox.Checked;
+  o.ShowGutter := OIShowGutterCheckBox.Checked;
+  o.ShowStatusBar := OIShowStatusBarCheckBox.Checked;
+  o.ShowInfoBox := OIShowInfoBoxCheckBox.Checked;
+  o.DefaultItemHeight := RoundToInt(OIDefaultItemHeightSpinEdit.Value);
 end;
 
 class function TOIOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
