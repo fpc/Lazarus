@@ -198,8 +198,6 @@ var
 function ShowMessageHelpEditor: TModalResult;
 
 procedure CreateFPCMessagesHelpDB;
-function AddFPCMessageHelpItem(const Title, URL, RegularExpression: string
-                               ): THelpDBIRegExprMessage;
 
 implementation
 
@@ -231,24 +229,6 @@ begin
           'file://Build_messages#FreePascal_Compiler_messages',lihcFPCMessages);
   FPCMsgHelpDB.TOCNode:=THelpNode.Create(FPCMsgHelpDB,StartNode);// once as TOC
   FPCMsgHelpDB.RegisterItemWithNode(StartNode);// and once as normal page
-
-  // register messages
-  AddFPCMessageHelpItem('Can''t find unit',
-                        'FPC_message:_Can_not_find_unit',': Can''t find unit ');
-  AddFPCMessageHelpItem('Wrong number of parameters specified',
-                        'FPC_message:_Wrong_number_of_parameters_specified',
-                        ': Wrong number of parameters specified');
-  AddFPCMessageHelpItem('cannot find -l',
-                        'Linker_message:_cannot_find_-l',': cannot find -l');
-end;
-
-function AddFPCMessageHelpItem(const Title, URL, RegularExpression: string
-  ): THelpDBIRegExprMessage;
-begin
-  Result:=THelpDBIRegExprMessage.Create(
-    THelpNode.CreateURL(FPCMessagesHelpDB,Title,'file://'+URL),
-    RegularExpression,'I');
-  FPCMessagesHelpDB.RegisterItem(Result);
 end;
 
 { TMessageHelpAdditions }
@@ -444,7 +424,7 @@ end;
 procedure TEditIDEMsgHelpDialog.FormCreate(Sender: TObject);
 begin
   fDefaultValue:='(default)';
-  Caption:='Edit additional help for FPC messages';
+  Caption:='Edit additional help for messages';
 
   GlobalOptionsGroupBox.Caption:='Global settings';
   FPCMsgFileLabel.Caption:='FPC message file:';
@@ -897,6 +877,7 @@ var
 begin
   FFoundAddition:=nil;
   FFoundComment:='';
+  FPCID:=-1;
   Result:=inherited GetNodesForMessage(AMessage, MessageParts, ListOfNodes,
                                        ErrMsg);
   if (ListOfNodes<>nil) and (ListOfNodes.Count>0) then exit;
@@ -905,11 +886,10 @@ begin
   // search message in FPC message file
   GetMsgFile;
   MsgItem:=MsgFile.FindWithMessage(AMessage);
-  if MsgItem=nil then exit;
-  FoundComment:=MsgItem.GetTrimmedComment(true,true);
-  FPCID:=-1;
-  if MsgItem<>nil then
+  if MsgItem<>nil then begin
+    FoundComment:=MsgItem.GetTrimmedComment(true,true);
     FPCID:=MsgItem.ID;
+  end;
 
   // search message in additions
   LoadAdditions;
@@ -949,7 +929,7 @@ begin
         if IDEQuestionDialog(lisHFMHelpForFreePascalCompilerMessage, FoundComment
                    +#13#13'There are additional notes for this message on'#13
                    +URL,
-                   mtInformation,[mrYes,'Open URL',mrClose])
+                   mtInformation,[mrYes,'Open URL',mrClose,'Close'])
         =mrYes then begin
           if not OpenURL(URL) then
             exit(shrViewerError);
