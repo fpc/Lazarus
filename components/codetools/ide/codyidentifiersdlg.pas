@@ -922,6 +922,7 @@ var
           // it's a unit without package
           if FLastHideOtherProjects then begin
             // check if unit is in unit path of current owner
+            debugln(['AddItems AAA1 CurUnitPath="',CurUnitPath,'" Dir=',ExtractFilePath(Item.DUnit.Filename)]);
             if CurUnitPath='' then continue;
             Dir:=ExtractFilePath(Item.DUnit.Filename);
             if (Dir<>'')
@@ -1479,16 +1480,20 @@ var
   CompOpts: TLazCompilerOptions;
 begin
   CurOwner:=nil;
+  CurUnitPath:='';
   if CurMainFilename='' then exit;
-  //debugln(['TCodyIdentifiersDlg.UpdateCurOwnerOfUnit CurMainFilename=',CurMainFilename]);
+  debugln(['TCodyIdentifiersDlg.UpdateCurOwnerOfUnit CurMainFilename=',CurMainFilename]);
   GetBest(PackageEditingInterface.GetOwnersOfUnit(CurMainFilename));
   if CurOwner=nil then
     GetBest(PackageEditingInterface.GetPossibleOwnersOfUnit(CurMainFilename,
-             [piosfIncludeSourceDirectories]));
+             [piosfExcludeOwned,piosfIncludeSourceDirectories]));
+  debugln(['TCodyIdentifiersDlg.UpdateCurOwnerOfUnit CurOwner=',DbgSName(CurOwner)]);
   if CurOwner<>nil then begin
     CompOpts:=GetCurOwnerCompilerOptions;
+    debugln(['TCodyIdentifiersDlg.UpdateCurOwnerOfUnit CompOpts=',DbgSName(CompOpts)]);
     if CompOpts<>nil then
       CurUnitPath:=CompOpts.GetUnitPath(false);
+    debugln(['TCodyIdentifiersDlg.UpdateCurOwnerOfUnit CurUnitPath="',CurUnitPath,'"']);
   end;
 end;
 

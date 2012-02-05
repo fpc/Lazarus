@@ -190,11 +190,11 @@ function SearchPascalFileInPath(const ShortFilename, BasePath, SearchPath,
                       Delimiter: string; SearchCase: TCTSearchFileCase): string;
 
 // search paths
-function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
-function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
-function MinimizeSearchPath(const SearchPath: string): string;
+function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string; inline;
+function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string; inline;
+function MinimizeSearchPath(const SearchPath: string): string; inline;
 function FindPathInSearchPath(APath: PChar; APathLen: integer;
-                              SearchPath: PChar; SearchPathLen: integer): PChar;
+                              SearchPath: PChar; SearchPathLen: integer): PChar; inline;
 
 // FPC
 function ReadNextFPCParameter(const CmdLine: string; var Position: integer;
@@ -1232,193 +1232,25 @@ end;
 
 function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string
   ): string;
-var
-  PathLen: Integer;
-  EndPos: Integer;
-  StartPos: Integer;
-  CurDir: String;
-  NewCurDir: String;
-  DiffLen: Integer;
-  BaseDir: String;
 begin
-  Result:=SearchPath;
-  if (SearchPath='') or (BaseDirectory='') then exit;
-  BaseDir:=AppendPathDelim(BaseDirectory);
-
-  PathLen:=length(Result);
-  EndPos:=1;
-  while EndPos<=PathLen do begin
-    StartPos:=EndPos;
-    while (Result[StartPos]=';') do begin
-      inc(StartPos);
-      if StartPos>PathLen then exit;
-    end;
-    EndPos:=StartPos;
-    while (EndPos<=PathLen) and (Result[EndPos]<>';') do inc(EndPos);
-    CurDir:=copy(Result,StartPos,EndPos-StartPos);
-    if not FilenameIsAbsolute(CurDir) then begin
-      NewCurDir:=BaseDir+CurDir;
-      if NewCurDir<>CurDir then begin
-        DiffLen:=length(NewCurDir)-length(CurDir);
-        Result:=copy(Result,1,StartPos-1)+NewCurDir
-                +copy(Result,EndPos,PathLen-EndPos+1);
-        inc(EndPos,DiffLen);
-        inc(PathLen,DiffLen);
-      end;
-    end;
-    StartPos:=EndPos;
-  end;
+  Result:=LazFileUtils.CreateAbsoluteSearchPath(SearchPath,BaseDirectory);
 end;
 
 function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string
   ): string;
-var
-  PathLen: Integer;
-  EndPos: Integer;
-  StartPos: Integer;
-  CurDir: String;
-  NewCurDir: String;
-  DiffLen: Integer;
 begin
-  Result:=SearchPath;
-  if (SearchPath='') or (BaseDirectory='') then exit;
-
-  PathLen:=length(Result);
-  EndPos:=1;
-  while EndPos<=PathLen do begin
-    StartPos:=EndPos;
-    while (Result[StartPos]=';') do begin
-      inc(StartPos);
-      if StartPos>PathLen then exit;
-    end;
-    EndPos:=StartPos;
-    while (EndPos<=PathLen) and (Result[EndPos]<>';') do inc(EndPos);
-    CurDir:=copy(Result,StartPos,EndPos-StartPos);
-    if FilenameIsAbsolute(CurDir) then begin
-      NewCurDir:=CreateRelativePath(CurDir,BaseDirectory);
-      if (NewCurDir<>CurDir) and (NewCurDir='') then
-        NewCurDir:='.';
-      if NewCurDir<>CurDir then begin
-        DiffLen:=length(NewCurDir)-length(CurDir);
-        Result:=copy(Result,1,StartPos-1)+NewCurDir
-                +copy(Result,EndPos,PathLen-EndPos+1);
-        inc(EndPos,DiffLen);
-        inc(PathLen,DiffLen);
-      end;
-    end;
-    StartPos:=EndPos;
-  end;
+  Result:=LazFileUtils.CreateRelativeSearchPath(SearchPath,BaseDirectory);
 end;
 
 function MinimizeSearchPath(const SearchPath: string): string;
-// trim the paths, remove doubles and empty paths
-var
-  StartPos: Integer;
-  EndPos: LongInt;
-  NewPath: String;
 begin
-  Result:=SearchPath;
-  StartPos:=1;
-  while StartPos<=length(Result) do begin
-    EndPos:=StartPos;
-    while (EndPos<=length(Result)) and (Result[EndPos]<>';') do
-      inc(EndPos);
-    if StartPos<EndPos then begin
-      // trim path and chomp PathDelim
-      if (Result[EndPos-1]=PathDelim)
-      or (not FilenameIsTrimmed(@Result[StartPos],EndPos-StartPos)) then begin
-        NewPath:=ChompPathDelim(
-                           TrimFilename(copy(Result,StartPos,EndPos-StartPos)));
-        Result:=copy(Result,1,StartPos-1)+NewPath+copy(Result,EndPos,length(Result));
-        EndPos:=StartPos+length(NewPath);
-      end;
-      // check if path already exists      
-      if (Length(Result) > 0) and 
-         (FindPathInSearchPath(@Result[StartPos],EndPos-StartPos, @Result[1],StartPos-1) <> nil)
-      then begin
-        // remove path
-        System.Delete(Result,StartPos,EndPos-StartPos+1);
-      end else begin
-        StartPos:=EndPos+1;
-      end;
-    end else begin
-      // remove empty path
-      System.Delete(Result,StartPos,1);
-    end;
-  end;
-  if (Result<>'') and (Result[length(Result)]=';') then
-    SetLength(Result,length(Result)-1);
+  Result:=LazFileUtils.MinimizeSearchPath(SearchPath);
 end;
 
 function FindPathInSearchPath(APath: PChar; APathLen: integer;
   SearchPath: PChar; SearchPathLen: integer): PChar;
-var
-  StartPos: Integer;
-  EndPos: LongInt;
-  NextStartPos: LongInt;
-  CmpPos: LongInt;
-  UseQuickCompare: Boolean;
-  PathStr: String;
-  CurFilename: String;
 begin
-  Result:=nil;
-  if SearchPath=nil then exit;
-  if (APath=nil) or (APathLen=0) then exit;
-  // ignore trailing PathDelim at end
-  while (APathLen>1) and (APath[APathLen-1]=PathDelim) do dec(APathLen);
-
-  {$IFDEF CaseInsensitiveFilenames}
-  UseQuickCompare:=false;
-  {$ELSE}
-    {$IFDEF NotLiteralFilenames}
-    CmpPos:=0;
-    while (CmpPos<APathLen) and (ord(APath[CmpPos]<128)) do inc(CmpPos);
-    UseQuickCompare:=CmpPos=APathLen;
-    {$ELSE}
-    UseQuickCompare:=true;
-    {$ENDIF}
-  {$ENDIF}
-  if not UseQuickCompare then begin
-    SetLength(PathStr,APathLen);
-    System.Move(APath^,PathStr[1],APathLen);
-  end;
-
-  StartPos:=0;
-  while StartPos<SearchPathLen do begin
-    // find current path bounds
-    NextStartPos:=StartPos;
-    while (SearchPath[NextStartPos]<>';') and (NextStartPos<SearchPathLen) do
-      inc(NextStartPos);
-    EndPos:=NextStartPos;
-    // ignore trailing PathDelim at end
-    while (EndPos>StartPos+1) and (SearchPath[EndPos-1]=PathDelim) do
-      dec(EndPos);
-    // compare current path
-    if UseQuickCompare then begin
-      if EndPos-StartPos=APathLen then begin
-        CmpPos:=0;
-        while CmpPos<APathLen do begin
-          if APath[CmpPos]<>SearchPath[StartPos+CmpPos] then
-            break;
-          inc(CmpPos);
-        end;
-        if CmpPos=APathLen then begin
-          Result:=@SearchPath[StartPos];
-          exit;
-        end;
-      end;
-    end else if EndPos>StartPos then begin
-      // use CompareFilenames
-      CurFilename:='';
-      SetLength(CurFilename,EndPos-StartPos);
-      System.Move(SearchPath[StartPos],CurFilename[1],EndPos-StartPos);
-      if CompareFilenames(PathStr,CurFilename)=0 then begin
-        Result:=@SearchPath[StartPos];
-        exit;
-      end;
-    end;
-    StartPos:=NextStartPos+1;
-  end;
+  Result:=LazFileUtils.FindPathInSearchPath(APath,APathLen,SearchPath,SearchPathLen);
 end;
 
 function ReadNextFPCParameter(const CmdLine: string; var Position: integer; out
