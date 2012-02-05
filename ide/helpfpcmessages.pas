@@ -37,7 +37,7 @@ unit HelpFPCMessages;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Dialogs, FileUtil, TextTools, MacroIntf,
+  Classes, SysUtils, fgl, LCLProc, Dialogs, FileUtil, TextTools, MacroIntf,
   LazarusIDEStrConsts, LazConfigStorage, HelpIntfs, IDEHelpIntf, LazHelpIntf,
   LazHelpHTML, StdCtrls, ButtonPanel, ExtCtrls, Forms, CodeToolsFPCMsgs,
   FileProcs, CodeToolManager, CodeCache;
@@ -47,11 +47,22 @@ const
   lihFPCMessagesURL = 'http://wiki.lazarus.freepascal.org/';
 
 type
+  TMessageHelpAddition = class
+  public
+    Name: string;
+    URL: string;
+    RegEx: string;
+    IDs: string; // comma separated
+  end;
+  TMessageHelpAdditions = specialize TFPGObjectList<TMessageHelpAddition>;
 
   { TFPCMessagesHelpDatabase }
 
   TFPCMessagesHelpDatabase = class(THTMLHelpDatabase)
   private
+    fAdditions: TMessageHelpAdditions;
+    FAdditionsChangeStep: integer;
+    FAdditionsFilename: string;
     FFPCTranslationFile: string;
     FDefaultNode: THelpNode;
     FFoundComment: string;
@@ -59,10 +70,11 @@ type
     FMsgFile: TFPCMsgFile;
     FMsgFileChangeStep: integer;
     FMsgFilename: string;
+    function GetAdditions(Index: integer): TMessageHelpAddition;
+    procedure SetAdditionsFilename(AValue: string);
     procedure SetFPCTranslationFile(const AValue: string);
     procedure SetFoundComment(const AValue: string);
     procedure SetLastMessage(const AValue: string);
-    procedure SetMsgFilename(AValue: string);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -77,9 +89,14 @@ type
     property DefaultNode: THelpNode read FDefaultNode;
     property LastMessage: string read FLastMessage write SetLastMessage;
     property FoundComment: string read FFoundComment write SetFoundComment;
+    function GetMsgFile: TFPCMsgFile;
     property MsgFile: TFPCMsgFile read FMsgFile;
-    property MsgFilename: string read FMsgFilename write SetMsgFilename;
+    property MsgFilename: string read FMsgFilename;
     property MsgFileChangeStep: integer read FMsgFileChangeStep;
+    function AdditionsCount: integer;
+    property Additions[Index: integer]: TMessageHelpAddition read GetAdditions;
+    property AdditionsFilename: string read FAdditionsFilename write SetAdditionsFilename;
+    property AdditionsChangeStep: integer read FAdditionsChangeStep;
   published
     property FPCTranslationFile: string read FFPCTranslationFile
                                         write SetFPCTranslationFile;
@@ -184,29 +201,38 @@ begin
   FFPCTranslationFile:=AValue;
 end;
 
+function TFPCMessagesHelpDatabase.GetAdditions(Index: integer
+  ): TMessageHelpAddition;
+begin
+  Result:=fAdditions[Index];
+end;
+
+procedure TFPCMessagesHelpDatabase.SetAdditionsFilename(AValue: string);
+begin
+  if FAdditionsFilename=AValue then Exit;
+  FAdditionsFilename:=AValue;
+  FAdditionsChangeStep:=CTInvalidChangeStamp;
+end;
+
 procedure TFPCMessagesHelpDatabase.SetLastMessage(const AValue: string);
 begin
   if FLastMessage=AValue then exit;
   FLastMessage:=AValue;
 end;
 
-procedure TFPCMessagesHelpDatabase.SetMsgFilename(AValue: string);
-begin
-  if FMsgFilename=AValue then Exit;
-  FMsgFilename:=AValue;
-  FMsgFileChangeStep:=-1;
-  FreeAndNil(FMsgFile);
-end;
-
 constructor TFPCMessagesHelpDatabase.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  fAdditions:=TMessageHelpAdditions.Create;
+  FAdditionsChangeStep:=CTInvalidChangeStamp;
+  FMsgFileChangeStep:=CTInvalidChangeStamp;
   FDefaultNode:=THelpNode.CreateURL(Self,'FPC messages: Appendix',
      'http://lazarus-ccr.sourceforge.net/fpcdoc/user/userap3.html#x81-168000C');
 end;
 
 destructor TFPCMessagesHelpDatabase.Destroy;
 begin
+  FreeAndNil(fAdditions);
   FreeAndNil(FDefaultNode);
   FreeAndNil(FMsgFile);
   inherited Destroy;
@@ -216,47 +242,14 @@ function TFPCMessagesHelpDatabase.GetNodesForMessage(const AMessage: string;
   MessageParts: TStrings; var ListOfNodes: THelpNodeQueryList;
   var ErrMsg: string): TShowHelpResult;
 var
-  Filename: String;
-  Code: TCodeBuffer;
   MsgItem: TFPCMsgItem;
 begin
   Result:=inherited GetNodesForMessage(AMessage, MessageParts, ListOfNodes,
                                        ErrMsg);
   if (ListOfNodes<>nil) and (ListOfNodes.Count>0) then exit;
-
-  // no node found -> add default node
   LastMessage:=AMessage;
-  Filename:='$(FPCSrcDir)';
-  IDEMacros.SubstituteMacros(Filename);
-  //DebugLn('TFPCMessagesHelpDatabase.GetNodesForMessage Filename="',Filename,'"');
-  if (Filename='') then exit;
-  Filename:=AppendPathDelim(Filename)
-            +SetDirSeparators('compiler/msg/');
-  // TODO: use the same language as the compiler
-  if FPCTranslationFile<>'' then
-    Filename:=Filename+FPCTranslationFile
-  else
-    Filename:=Filename+'errore.msg';
-  Code:=CodeToolBoss.LoadFile(Filename,true,false);
-  if Code=nil then exit;
 
-  // load MsgFile
-  if (Filename<>MsgFilename) or (Code.ChangeStep<>MsgFileChangeStep) then begin
-    MsgFilename:=Filename;
-    if FMsgFile=nil then
-      FMsgFile:=TFPCMsgFile.Create;
-    FMsgFileChangeStep:=Code.ChangeStep;
-    try
-      MsgFile.LoadFromText(Code.Source);
-    except
-      on E: Exception do begin
-        debugln(['TFPCMessagesHelpDatabase failed to parse "'+MsgFilename+'": '+E.Message]);
-        exit;
-      end;
-    end;
-  end;
-  if MsgFile=nil then exit;
-
+  GetMsgFile;
   MsgItem:=MsgFile.FindWithMessage(AMessage);
   if MsgItem=nil then exit;
   FoundComment:=MsgItem.GetTrimmedComment(true,true);
@@ -294,6 +287,52 @@ procedure TFPCMessagesHelpDatabase.Save(Storage: TConfigStorage);
 begin
   inherited Save(Storage);
   Storage.SetDeleteValue('FPCTranslationFile/Value',FPCTranslationFile,'');
+end;
+
+function TFPCMessagesHelpDatabase.GetMsgFile: TFPCMsgFile;
+var
+  Filename: String;
+  FPCSrcDir: String;
+  Code: TCodeBuffer;
+begin
+  Result:=nil;
+  Filename:=FPCTranslationFile;
+  if Filename<>'' then
+    IDEMacros.SubstituteMacros(Filename);
+  Filename:=TrimFilename(Filename);
+  if Filename='' then
+    FileName:='errore.msg';
+  if not FilenameIsAbsolute(Filename) then begin
+    FPCSrcDir:='$(FPCSrcDir)';
+    IDEMacros.SubstituteMacros(FPCSrcDir);
+    if (FPCSrcDir='') then exit;
+    Filename:=TrimFilename(AppendPathDelim(FPCSrcDir)
+              +SetDirSeparators('compiler/msg/')+Filename);
+  end;
+  Code:=CodeToolBoss.LoadFile(Filename,true,false);
+  if Code=nil then exit;
+
+  // load MsgFile
+  if (Filename<>MsgFilename) or (Code.ChangeStep<>MsgFileChangeStep) then begin
+    fMsgFilename:=Filename;
+    if FMsgFile=nil then
+      FMsgFile:=TFPCMsgFile.Create;
+    FMsgFileChangeStep:=Code.ChangeStep;
+    try
+      MsgFile.LoadFromText(Code.Source);
+    except
+      on E: Exception do begin
+        debugln(['TFPCMessagesHelpDatabase failed to parse "'+MsgFilename+'": '+E.Message]);
+        exit;
+      end;
+    end;
+  end;
+  Result:=MsgFile;
+end;
+
+function TFPCMessagesHelpDatabase.AdditionsCount: integer;
+begin
+  Result:=fAdditions.Count;
 end;
 
 end.
