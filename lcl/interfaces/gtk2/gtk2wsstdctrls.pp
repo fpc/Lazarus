@@ -329,6 +329,7 @@ type
       const NewState: TCheckBoxState); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TGtk2WSCheckBox }
@@ -985,9 +986,9 @@ begin
 
   if LblWidget <> nil then
   begin
+    Gtk2WidgetSet.SetWidgetFont(LblWidget, AFont);
     Gtk2WidgetSet.SetWidgetColor(LblWidget, AFont.Color, clNone,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
-    Gtk2WidgetSet.SetWidgetFont(LblWidget, AFont);
   end;
 end;
 
@@ -1008,6 +1009,16 @@ begin
     gtk_button_set_label(PGtkButton(BoxWidget), PChar(Ampersands2Underscore(AText)));
     gtk_button_set_use_underline(PGtkButton(BoxWidget), True);
   end;
+end;
+
+class procedure TGtk2WSCustomCheckBox.ShowHide(const AWinControl: TWinControl);
+begin
+  // gtk2 doesn't set font properly
+  // so we are doing it one more time before showing.issue
+  if AWinControl.HandleObjectShouldBeVisible then
+      SetFont(AWinControl, AWinControl.Font);
+  Gtk2WidgetSet.SetVisible(AWinControl, AWinControl.HandleObjectShouldBeVisible);
+  InvalidateLastWFPResult(AWinControl, AWinControl.BoundsRect);
 end;
 
 {$I gtk2wscustommemo.inc}
