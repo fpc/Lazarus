@@ -1109,6 +1109,7 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure Assign(ASource: TPersistent); override;
+    property WidthType: TWidth read FWidth;
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
