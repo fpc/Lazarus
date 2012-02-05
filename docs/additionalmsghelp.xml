@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Additions Count="1">
+  <Additions Count="3">
     <Item1 IDs="10022" URL="Unit_not_found_-_How_to_find_units" Name="Can not find unit"/>
+    <Item2 IDs="3026" URL="FPC_message:_Wrong_number_of_parameters_specified" Name="Wrong number of parameters"/>
+    <Item3 URL="Linker_message:_cannot_find_-l" Name="cannot find -l" RegEx="cannot find -l"/>
   </Additions>
 </CONFIG>
