@@ -174,7 +174,7 @@
       <!-- class Visibility: default -->
       <element name="TSkelEngine">
         <short>The MakeSkel engine, used to create documentation skeleton or update files.</short>
-        <descr/>
+        <descr>It is based on TFPDocEngine, used by FPDoc.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -279,7 +279,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TSkelEngine.FindModule">
-        <short/>
+        <short>Provides dummy modules for all external units.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -415,28 +415,28 @@
       <!-- enumeration type Visibility: default -->
       <element name="TCreatorAction">
         <short>The action to perform after all FPDoc commandline options have been parsed.</short>
-        <descr/>
+        <descr>Values returned by the option parsers for every single option. In this case caInvalid indicates an unhandled option.</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCreatorAction.caDefault">
-        <short/>
+        <short>Default processing, option parsed successfully.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCreatorAction.caDryRun">
-        <short/>
+        <short>DryRun option (-n) found.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCreatorAction.caUsage">
-        <short/>
+        <short>Show usage, after option errors.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCreatorAction.caInvalid">
-        <short/>
+        <short>Unhandled option found.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCreatorAction.caWriteProject">
-        <short/>
+        <short>Write project file instead of documents.</short>
       </element>
       <!-- class Visibility: default -->
       <element name="TFPDocMaker">
@@ -617,8 +617,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TFPDocMaker.ParseCommon">
-        <short/>
-        <descr/>
+        <short>Parses options common to FPDoc and MakeSkel. Returns caInvalid for unknown options.</short>
+        <descr>Raw options, where Cmd contains name=value, are splitted into Cmd and Arg. Quotes around/in Arg are removed, needed to process scripts.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -636,7 +636,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TFPDocMaker.DocumentPackage">
-        <short>Creates or updates XML documentation sources.</short>
+        <short>Creates or updates XML documentation sources (MakeSkel emulation)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -663,8 +663,9 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TFPDocMaker.CreateUnitDocumentation">
-        <short>Creates final documentation, for a package or a single unit.</short>
-        <descr/>
+        <short>Creates final documentation, for a package or a single unit (FPDoc emulation).</short>
+        <descr>When an description file exists already for a unit, an <rootdir/>/upd.<unit/>.xml file is created, containing all updates. Empty files are destroyed afterwards.
+Otherwise a skeleton file is created in the descriptions directory.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -674,7 +675,7 @@
       </element>
       <!-- argument Visibility: default -->
       <element name="TFPDocMaker.CreateUnitDocumentation.AUnit">
-        <short/>
+        <short>Update only AUnit if not empty, else the entire package.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TFPDocMaker.CreateUnitDocumentation.ParseOnly">
@@ -845,8 +846,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TFPDocMaker.CleanXML">
-        <short>Return True and (try) kill file if no element tag found.</short>
-        <descr/>
+        <short>Return True and (try) kill file if no element tag found in it.</short>
+        <descr>Used to remove empty update files after DocumentPackage.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -862,7 +863,7 @@
       <element name="TFPDocMaker.SelectedPackage">
         <short>Returns the currently selected package.</short>
         <descr/>
-        <errors/>
+        <errors>When no package was specified, a message is logged.</errors>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
@@ -908,13 +909,13 @@
       <!-- property Visibility: public -->
       <element name="TFPDocMaker.InputDir">
         <short>The directory containing Inputs files. Writing adds all source files in the directory to Inputs[].</short>
-        <descr/>
+        <descr>Can be written more than once, to specify multiple input directories (cumulative).</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TFPDocMaker.DescrDir">
         <short>The directory containing Description files. Writing adds all XML files in the directory to Descriptions[].</short>
-        <descr/>
+        <descr>Can be written more than once, to specify multiple Description directories (cumulative). The first[?] directory is assumed the default directory, for creating and searching description files. [intended to merge files from multiple packages]</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -994,6 +995,9 @@
       <!-- argument Visibility: default -->
       <element name="ExtractUnitName.s">
         <short/>
+      </element>
+      <element name="TFPDocMaker.CmdOptions">
+        <short>Combined FPDoc and MakeSkel options. Writing copies the given object into both option sets.</short>
       </element>
     </module>
     <!-- umakeskel -->

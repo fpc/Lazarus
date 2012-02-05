@@ -58,6 +58,7 @@ type
 *)
   TDocPackage = class
   private
+    FAltDir: string;
     FCompOpts: string;
     FDescrDir: string;
     FDescriptions: TStrings;
@@ -71,6 +72,7 @@ type
     FRequires: TStrings;
     FUnitPath: string;
     FUnits: TStrings;
+    procedure SetAltDir(AValue: string);
     procedure SetCompOpts(AValue: string);
     procedure SetDescrDir(AValue: string);
     procedure SetDescriptions(AValue: TStrings);
@@ -91,7 +93,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function  IniFileName: string;
-    function  CreateProject(APrj: TFPDocHelper; const AFile: string): boolean; //new package project
+    function  CreateProject(APrj: TFPDocHelper; const AFile: string): boolean; virtual; //new package project
     function  ImportProject(APrj: TFPDocHelper; APkg: TFPDocPackage; const AFile: string): boolean;
     procedure UpdateConfig;
     property Name: string read FName write SetName;
@@ -104,11 +106,19 @@ type
     property ProjectDir: string read FProjectDir write SetProjectDir;
     property DescrDir: string read FDescrDir write SetDescrDir;
     property Descriptions: TStrings read FDescriptions write SetDescriptions;
+    property AltDir: string read FAltDir write SetAltDir;
     property InputDir: string read FInputDir write SetInputDir;
     property Units: TStrings read FUnits write SetUnits;
     property Requires: TStrings read FRequires write SetRequires; //only string?
     property IncludePath: string read FIncludePath write SetIncludePath; //-Fi
     property UnitPath: string read FUnitPath write SetUnitPath; //-Fu
+  end;
+
+  { TFCLDocPackage }
+
+  TFCLDocPackage = class(TDocPackage)
+  public
+    function  CreateProject(APrj: TFPDocHelper; const AFile: string): boolean; override;
   end;
 
   { TFPDocHelper }
@@ -142,6 +152,7 @@ type
 *)
   TFPDocManager = class(TComponent)
   private
+    FFpcDir: string;
     FFPDocDir: string;
     FLazarusDir: string;
     FModified: boolean;
@@ -154,7 +165,9 @@ type
     FProfiles: string; //CSV list of profile names
     FRootDir: string;
     UpdateCount: integer;
+    procedure SetFpcDir(AValue: string);
     procedure SetFPDocDir(AValue: string);
+    procedure SetLazarusDir(AValue: string);
     procedure SetOnChange(AValue: TNotifyEvent);
     procedure SetPackage(AValue: TDocPackage);
     procedure SetProfile(AValue: string);
@@ -178,15 +191,20 @@ type
     function  AddProject(const APkg, AFile: string): boolean; //from config
     function  CreateProject(const AFileName: string; APkg: TDocPackage): boolean;
     function  AddPackage(AName: string): TDocPackage;
+    function  IsExtended(const APkg: string): string;
     function  ImportLpk(const AFile: string): TDocPackage;
     procedure ImportProject(APkg: TFPDocPackage; const AFile: string);
     function  ImportCmd(const AFile: string): boolean;
+    procedure UpdatePackage(const AName: string);
+    function  UpdateFCL(enabled: boolean): boolean;
   //actions
     function  MakeDoc(APkg: TDocPackage; const AUnit, AOutput: string): boolean;
     function  TestRun(APkg: TDocPackage; AUnit: string): boolean;
     function  Update(APkg: TDocPackage; const AUnit: string): boolean;
   public //published?
+    property FpcDir: string read FFpcDir write SetFpcDir;
     property FpcDocDir: string read FFPDocDir write SetFPDocDir;
+    property LazarusDir: string read FLazarusDir write SetLazarusDir;
     property RootDir: string read FRootDir write SetRootDir;
     property Options: TCmdOptions read FOptions;
     property Profile: string read FProfile write SetProfile;
@@ -209,6 +227,121 @@ uses
 const
   ConfigName = 'docmgr.ini';
   SecProjects = 'projects';
+  SecGen = 'dirs';
+  SecDoc = 'project';
+
+function FixPath(const s: string): string;
+var
+  c: string;
+begin
+  if DirectorySeparator = '/' then
+    c := '\'
+  else
+    c := '/';
+  Result := StringReplace(s, c, DirectorySeparator, [rfReplaceAll]);
+end;
+
+procedure ListDirs(const ARoot: string; AList: TStrings);
+var
+  Info : TSearchRec;
+  s: string;
+begin
+  if FindFirst (ARoot+'/*',faDirectory,Info)=0 then begin
+    repeat
+      if not ((Info.Attr and faDirectory) = faDirectory) then
+        continue;
+      s := Info.Name;
+      if s[1] <> '.' then
+        AList.Add(s); //name only, allow to create relative refs
+    until FindNext(info)<>0;
+  end;
+  FindClose(Info);
+end;
+
+procedure ListUnits(const AMask: string; AList: TStrings);
+var
+  Info : TSearchRec;
+  s: string;
+begin
+  if FindFirst (AMask,faArchive,Info)=0 then begin
+    repeat
+      s := Info.Name;
+      if s[1] <> '.' then
+        AList.Add(ChangeFileExt(s, '')); //unit name only
+    until FindNext(info)<>0;
+  end;
+  FindClose(Info);
+end;
+
+function MatchUnits(const ADir: string; AList: TStrings): integer;
+var
+  Info : TSearchRec;
+  s, ext: string;
+begin
+  Result := -1;
+  if FindFirst(ADir+DirectorySeparator+'*',faArchive,Info)=0 then begin
+    repeat
+      //If (Attr and faDirectory) = faDirectory then
+      s := Info.Name;
+      ext := ExtractFileExt(s);
+      if (ext = '.pas') or (ext = '.pp') then begin
+        ext := ChangeFileExt(s, '');
+        if ext='bmpcomn' then
+          s := AList[0];  //full name!!!
+        Result := AList.IndexOf(ext); //ChangeFileExt(s, '.xml'));
+        if Result >= 0 then begin
+          AList.Delete(Result); //don't search any more
+          break;
+        end;
+      end;
+    Until FindNext(info)<>0;
+  end;
+  FindClose(Info);
+end;
+
+{ TFCLDocPackage }
+
+function TFCLDocPackage.CreateProject(APrj: TFPDocHelper; const AFile: string
+  ): boolean;
+var
+  i: integer;
+  s, d, f: string;
+  dirs, descs: TStringList;
+begin
+  Result:=inherited CreateProject(APrj, AFile);
+//add lazdir
+  if AltDir = '' then exit;
+  dirs := TStringList.Create;
+  descs := TStringList.Create;
+  s := Manager.LazarusDir + 'docs' + DirectorySeparator + 'xml' + DirectorySeparator + 'fcl';
+  //APrj.ParseFPDocOption(Format('--descr-dir="%s"', [s])); //todo: add includes
+  //APrj.AddDirToFileList(descs, s, '*.xml');
+  ListUnits(s+ DirectorySeparator+ '*.xml', descs);
+  descs.Sorted := True;
+//scan fcl dirs
+  s := Manager.FFpcDir + 'packages' + DirectorySeparator;
+  ListDirs(s, dirs);
+//now match all files in the source dirs
+  for i := dirs.Count - 1 downto 0 do begin
+    d := s + dirs[i] + DirectorySeparator + 'src';
+    if pos('fcl-image', d) > 0 then
+      f := 'debug!';
+    if not DirectoryExists(d) then continue;
+    if MatchUnits(d, descs) >= 0 then begin
+    //add dir
+      APrj.ParseFPDocOption(Format('--input-dir="%s"', [d])); //todo: add includes?
+    end;
+  end;
+//re-create project?
+  if AFile <> '' then begin
+    f := ChangeFileExt(AFile, '_ext.xml');
+    APrj.CreateProjectFile(f); //preserve unmodified project?
+  end else
+    APrj.CreateProjectFile(Manager.RootDir + 'fcl_ext.xml'); //preserve unmodified project?
+//finally
+  dirs.Free;
+  descs.Free;
+end;
 
 { TDocPackage }
 
@@ -228,6 +361,14 @@ begin
     FCompOpts:=AValue
   else
     FCompOpts:= FCompOpts + ' ' + AValue;
+end;
+
+procedure TDocPackage.SetAltDir(AValue: string);
+begin
+  if FAltDir=AValue then Exit;
+  FAltDir:=AValue;
+//we must signal config updated
+  Config.WriteString(SecDoc, 'AltDir', AltDir);
 end;
 
 procedure TDocPackage.SetDescriptions(AValue: TStrings);
@@ -415,6 +556,13 @@ begin
         pkg.Descriptions.Add(s);
     end;
   end;
+  if AltDir <> '' then begin
+  //add descr files
+    s := Manager.LazarusDir + AltDir;
+    s := FixPath(s);
+    APrj.ParseFPDocOption(Format('--descr-dir="%s"', [s]));
+  //add source files!?
+  end;
 //add Imports
   for i := 0 to Requires.Count - 1 do begin
     s := Requires[i];
@@ -476,10 +624,6 @@ begin
   Result := Loaded;
 end;
 
-const
-  SecGen = 'dirs';
-  SecDoc = 'project';
-
 procedure TDocPackage.ReadConfig;
 var
   s: string;
@@ -498,6 +642,7 @@ begin
   FInputDir := Config.ReadString(SecDoc, 'inputdir', '');
   FCompOpts := Config.ReadString(SecDoc, 'options', '');
   FDescrDir := Config.ReadString(SecDoc, 'descrdir', '');
+  FAltDir := Config.ReadString(SecDoc, 'AltDir', '');
   Requires.CommaText := Config.ReadString(SecDoc, 'requires', '');
 //units
   Config.ReadSection('units', Units);
@@ -520,6 +665,7 @@ begin
   Config.WriteString(SecDoc, 'inputdir', InputDir);
   Config.WriteString(SecDoc, 'options', CompOpts);
   Config.WriteString(SecDoc, 'descrdir', DescrDir);
+  Config.WriteString(SecDoc, 'AltDir', AltDir);
   Config.WriteString(SecDoc, 'requires', Requires.CommaText);
 //units
   Config.WriteSectionValues('units', Units);
@@ -562,6 +708,7 @@ destructor TFPDocManager.Destroy;
 begin
   SaveConfig;
   FreeAndNil(Config);
+  FPackages.Clear;
   FreeAndNil(FPackages);
   FreeAndNil(FOptions);
   inherited Destroy;
@@ -571,6 +718,62 @@ procedure TFPDocManager.SetFPDocDir(AValue: string);
 begin
   if FFPDocDir=AValue then Exit;
   FFPDocDir:=AValue;
+  Config.WriteString(SecGen, 'FpcDocDir', FpcDocDir);
+end;
+
+procedure TFPDocManager.SetFpcDir(AValue: string);
+begin
+  if FFpcDir=AValue then Exit;
+  FFpcDir:=AValue;
+  Config.WriteString(SecGen, 'FpcDir', FpcDir);
+end;
+
+procedure TFPDocManager.UpdatePackage(const AName: string);
+var
+  pkg: TDocPackage;
+  i: integer;
+  s: string;
+begin
+  if LazarusDir = '' then exit;
+  s := {LazarusDir +} 'docs/xml/'+AName;
+  if not DirectoryExists(LazarusDir + s) then
+    exit;
+  i := Packages.IndexOfName('rtl'); //???
+  //i := Packages.IndexOf(AName);
+  if i < 0 then
+    exit;
+  pkg := Packages.Objects[i] as TDocPackage;
+  pkg.AltDir := s; //add descriptors when configuring the project/helper
+end;
+
+function TFPDocManager.UpdateFCL(enabled: boolean): boolean;
+var
+  pkg: TFCLDocPackage;
+begin
+(* Adding to the FCL requires valid FPC and Lazarus directories (caller checks).
+  Then laz/docs/xml/fcl/ is added to fpc descr-dirs.
+  The related units have to be added as input-dirs.
+  Scan fpc/packages/ for candidates.
+*)
+//todo: implement
+  pkg := AddPackage('fcl') as TFCLDocPackage;
+  if pkg = nil then
+    exit(False);
+  if enabled then
+    pkg.AltDir := {LazarusDir +} FixPath('docs/xml/fcl')
+  else
+    pkg.AltDir := '';
+  Result := True;
+end;
+
+procedure TFPDocManager.SetLazarusDir(AValue: string);
+begin
+  if FLazarusDir=AValue then Exit;
+  FLazarusDir:=AValue;
+  Config.WriteString(SecGen, 'LazarusDir', FLazarusDir);
+//update RTL and FCL - if exist and Dir exists
+  UpdatePackage('rtl');
+  UpdatePackage('fcl');
 end;
 
 procedure TFPDocManager.SetOnChange(AValue: TNotifyEvent);
@@ -680,7 +883,9 @@ begin
   if not Result then
     exit; //nothing to read
 //read directories
-  FFPDocDir := Config.ReadString(SecGen, 'fpc', '');
+  FFpcDir := Config.ReadString(SecGen, 'FpcDir', '');
+  FFPDocDir := Config.ReadString(SecGen, 'FpcDocDir', '');
+  FLazarusDir:=Config.ReadString(SecGen, 'LazarusDir', '');
 //read packages
   Config.ReadSection(SecProjects, FPackages); //<prj>=<file>
 //read detailed package information - possibly multiple packages per project!
@@ -834,7 +1039,10 @@ begin
   else
     Result := FPackages.Objects[i] as TDocPackage;
   if Result = nil then begin
-    Result := TDocPackage.Create;
+    if AName = 'fcl' then
+      Result := TFCLDocPackage.Create
+    else
+      Result := TDocPackage.Create;
     Result.Name := AName; //triggers load config --> register
     i := FPackages.IndexOfName(AName); //already registered?
   end;
@@ -842,6 +1050,17 @@ begin
   //we MUST create an entry
     Packages.AddObject(AName + '=' + Result.ProjectFile, Result);
   end;
+end;
+
+function TFPDocManager.IsExtended(const APkg: string): string;
+var
+  pkg: TDocPackage;
+begin
+  pkg := AddPackage(APkg);
+  if pkg = nil then
+    Result := ''
+  else
+    Result := pkg.AltDir;
 end;
 
 function TFPDocManager.ImportLpk(const AFile: string): TDocPackage;

@@ -969,7 +969,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TFPDocManager.LazarusDir">
-        <short/>
+        <short>Lazarus root dir, used to create LCL and add FCL docs.</short>
         <descr/>
         <seealso/>
       </element>
@@ -1017,6 +1017,24 @@
       </element>
       <element name="TFPDocManager.OptsFile">
         <short>File to use for output options (FPDoc).</short>
+      </element>
+      <element name="TFPDocManager.FpcDir">
+        <short>FPC root directory, used to find source files.</short>
+      </element>
+      <element name="TFPDocManager.Options">
+        <short>All documentation options.</short>
+      </element>
+      <element name="TFPDocManager.Profile">
+        <short>The current FPDoc profile (settings).</short>
+      </element>
+      <element name="TFPDocManager.Profiles">
+        <short>All defined FPDoc profiles.</short>
+      </element>
+      <element name="TFPDocManager.MakeDoc">
+        <short>Create documentation for AUnit or the entire package.</short>
+      </element>
+      <element name="TFPDocManager.UpdatePackage">
+        <short>Add Lazarus description directory to RTL/FCL.</short>
       </element>
     </module>
     <!-- uManager -->

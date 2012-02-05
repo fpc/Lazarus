@@ -20,19 +20,25 @@ type
   { TMain }
 
   TMain = class(TForm)
+    buMakeDoc: TButton;
+    buNewProfile: TButton;
     buRefresh: TButton;
     buShowLog: TButton;
     buTest: TButton;
-    buMakeDoc: TButton;
-    buNewProfile: TButton;
     cbFormat: TComboBox;
     cbProfile: TComboBox;
+    edDescrDir: TEdit;
+    edDescrLaz: TEdit;
+    edLog: TEdit;
     edOutput: TEdit;
     edOS: TEdit;
     edCPU: TEdit;
     edLang: TEdit;
     edMoDir: TEdit;
     edDefOut: TEdit;
+    edUnit: TEdit;
+    GroupBox1: TGroupBox;
+    GroupBox2: TGroupBox;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -40,20 +46,19 @@ type
     Label6: TLabel;
     Label7: TLabel;
     edBackend: TMemo;
+    Label8: TLabel;
+    Label9: TLabel;
+    optUpd: TCheckGroup;
+    Panel1: TPanel;
     StatusBar1: TStatusBar;
+    swAll: TRadioButton;
     swOutput: TRadioButton;
     swDefOut: TRadioButton;
     swDocOpts: TCheckGroup;
     Label1: TLabel;
-    swSortNodes: TCheckBox;
-    optUpd: TCheckGroup;
     dlgSelLpk: TOpenDialog;
     edINI: TMemo;
-    swShowUpdate: TCheckBox;
-    edLog: TEdit;
     lbPackages: TComboBox;
-    edUnit: TEdit;
-    GroupBox1: TGroupBox;
     lbUnits: TListBox;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
@@ -63,11 +68,12 @@ type
     MenuItem3: TMenuItem;
     mnExit: TMenuItem;
     dlgSelRoot: TSelectDirectoryDialog;
+    swShowUpdate: TCheckBox;
+    swSingle: TRadioButton;
+    swSortNodes: TCheckBox;
     ViewFinal: TTabSheet;
     ViewINI: TTabSheet;
     Units: TPageControl;
-    swAll: TRadioButton;
-    swSingle: TRadioButton;
     edXML: TSynEdit;
     SynXMLSyn1: TSynXMLSyn;
     ViewXML: TTabSheet;
@@ -126,7 +132,7 @@ implementation
 
 uses
   fConfig, fLogView, fUpdateView,
-  dwlinear,
+  //dwlinear,
   dWriter;
 
 {$R *.lfm}
@@ -475,6 +481,8 @@ begin
   Manager.Package := pkg;
   edDefOut.Text := Manager.RootDir + pkg.Name;
   fn := pkg.ProjectFile; //initialized where?
+  edDescrDir.Text := pkg.DescrDir; //value?
+  edDescrLaz.Text := pkg.AltDir;
   if fn <> '' then begin
     if FileExists(fn) then
       edXML.Lines.LoadFromFile(fn)

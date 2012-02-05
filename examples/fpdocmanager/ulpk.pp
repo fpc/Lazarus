@@ -21,7 +21,6 @@ uses
   uManager;
 
 function ImportLpk(const AFile: string): TDocPackage;
-//function ImportCompiled(const LpkFile: string): boolean;
 
 implementation
 

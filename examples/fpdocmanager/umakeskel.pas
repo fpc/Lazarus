@@ -160,7 +160,6 @@ type
     Function  DocumentPackage(Const APackageName,AOutputName: string; InputFiles, DescrFiles : TStrings) : String;
     procedure CreateUnitDocumentation(const AUnit: string; ParseOnly: Boolean);
   public
-    ImportDir: string;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure AddDirToFileList(List: TStrings; const ADirName, AMask: String);
