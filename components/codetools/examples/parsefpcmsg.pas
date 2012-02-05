@@ -57,10 +57,11 @@ begin
     Item:=MsgFile[i];
     Found:=MsgFile.FindWithMessage(Item.Msg);
     if Found=nil then begin
-      writeln('TForm1.FormCreate message does not fit itself: i=',i,
+      // this should never happen
+      writeln('message does not fit itself: i=',i,
         ' MsgFile[i]=',Item.GetName,'="',Item.Msg,'"');
     end else if Found<>Item then begin
-      writeln('TForm1.FormCreate message pattern is ambiguous: i=',i,
+      writeln('message pattern is ambiguous: i=',i,
         ' MsgFile[i]=',Item.GetName,'="',Item.Msg,'"',
         ' Other=',Found.GetName,'="',Found.Msg,'"');
     end;

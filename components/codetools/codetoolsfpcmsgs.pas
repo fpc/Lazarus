@@ -55,11 +55,12 @@ type
     TxtIdentifier: string; // identifier
     ID: integer; // positive number
     ShownTyp: string; // e.g. shown Typ, can be different from Typ
-    Msg: string;
+    Msg: string; // Msg with placeholders $1 .. $9
     Comment: string; // multi line
 
     Index: integer; // index in list
     function GetName(WithID: boolean = true): string;
+    function MsgFits(const aMsg: string): integer; // >=0 fits
   end;
 
   { TFPCMsgFile }
@@ -225,6 +226,92 @@ begin
   Result:=Result+TxtIdentifier;
   if WithID then
     Result:=Result+'='+IntToStr(ID);
+end;
+
+function TFPCMsgItem.MsgFits(const aMsg: string): integer;
+var
+  PatStartPos: PChar;
+  PatEndPos: PChar;
+  MsgFitPos: PChar;
+  MatchLen: Integer;
+  MsgPos: PChar;
+  PatPos: PChar;
+  MsgStartPos: PChar;
+begin
+  Result:=-1;
+  // Msg is for example "$1 lines compiled, $2 sec$3"
+  if (aMsg='') or (Msg='') then exit;
+
+  // aMsg can start with a filename => hard to tell where the message starts
+  // the Msg is always at the end of aMsg => quick check the end
+  if (length(aMsg)>=2)
+  and ((aMsg[Length(aMsg)-1]<>'$') or (not (aMsg[Length(aMsg)] in ['0'..'9'])))
+  then begin
+    // the pattern does not have a placeholder at the end
+    // => the tail must be the pattern => check tail
+    PatStartPos:=PChar(Msg);
+    PatEndPos:=@aMsg[length(aMsg)];
+    MsgPos:=@Msg[length(Msg)];
+    MsgStartPos:=PChar(Msg);
+    while (PatEndPos^=MsgPos^) do begin
+      if PatEndPos=PatStartPos then begin
+        // pattern has no placeholders and whole pattern fits
+        Result:=length(Msg);
+        exit;
+      end;
+      dec(PatEndPos);
+      if (PatEndPos^ in ['0'..'9']) and (PatEndPos[-1]='$') then begin
+        // pattern behind last placeholder fits
+        // => a full check is needed
+        break;
+      end;
+      if MsgPos=MsgStartPos then begin
+        // pattern does not fit
+        exit(-1);
+      end;
+      dec(MsgPos);
+    end;
+  end;
+
+  PatEndPos:=PChar(aMsg);
+  MsgFitPos:=PChar(Msg);
+  MatchLen:=0;
+  repeat
+    PatStartPos:=PatEndPos;
+    // get next pattern between placeholders
+    repeat
+      if PatEndPos^=#0 then break;
+      if (PatEndPos^='$') and (PatEndPos[1] in ['0'..'9']) then break;
+      inc(PatEndPos);
+    until false;
+    if PatEndPos<>PatStartPos then begin
+      // search pattern in Msg
+      repeat
+        MsgPos:=MsgFitPos;
+        PatPos:=PatStartPos;
+        while (MsgPos^=PatPos^) and (PatPos<PatEndPos) do begin
+          inc(MsgPos);
+          inc(PatPos);
+        end;
+        if PatPos=PatEndPos then
+          break;
+        // does not fit => check next
+        inc(MsgFitPos);
+      until MsgFitPos^=#0;
+      if PatPos<PatEndPos then
+        exit(-1); // pattern not found => does not fit
+      inc(MatchLen,PatEndPos-PatStartPos);
+      // pattern fits, search the rest of the patterns behind this position
+      MsgFitPos:=MsgPos;
+    end;
+    if PatEndPos^=#0 then begin
+      // whole pattern fits
+      Result:=MatchLen;
+      exit;
+    end;
+    // skip placeholder $d
+    inc(PatEndPos,2);
+  until false;
 end;
 
 { TFPCMsgFile }
@@ -506,11 +593,6 @@ var
   Item: TFPCMsgItem;
   i: Integer;
   p: PChar;
-  PatStartPos: PChar;
-  PatEndPos: PChar;
-  MsgFitPos: PChar;
-  PatPos: PChar;
-  MsgPos: PChar;
   BestMatchLen: Integer;
   MatchLen: Integer;
 begin
@@ -544,51 +626,15 @@ begin
   end;
 
   // search a message pattern that fits the Msg
-  BestMatchLen:=0;
+  BestMatchLen:=-1;
   for i:=0 to Count-1 do begin
     Item:=Items[i];
     if Item.Msg='' then continue;
-    // Item.Msg is for example "$1 lines compiled, $2 sec$3"
-    PatEndPos:=PChar(Item.Msg);
-    MsgFitPos:=PChar(Msg);
-    MatchLen:=0;
-    repeat
-      PatStartPos:=PatEndPos;
-      // get next pattern between placeholders
-      repeat
-        if PatEndPos^=#0 then break;
-        if (PatEndPos^='$') and (PatEndPos[1] in ['0'..'9']) then break;
-        inc(PatEndPos);
-      until false;
-      if PatEndPos<>PatStartPos then begin
-        // search pattern in Msg
-        repeat
-          MsgPos:=MsgFitPos;
-          PatPos:=PatStartPos;
-          while (MsgPos^=PatPos^) and (PatPos<PatEndPos) do begin
-            inc(MsgPos);
-            inc(PatPos);
-          end;
-          if PatPos=PatEndPos then
-            break;
-          // does not fit => check next
-          inc(MsgFitPos);
-        until MsgFitPos^=#0;
-        if PatPos<PatEndPos then
-          break; // pattern not found => Msg does not fit Item.Msg
-        inc(MatchLen,PatEndPos-PatStartPos);
-        // pattern fits, search the rest of the patterns behind this position
-        MsgFitPos:=MsgPos;
-      end;
-      if PatEndPos^=#0 then begin
-        // whole pattern fits
-        if MatchLen>BestMatchLen then
-          Result:=Item;
-        break;
-      end;
-      // skip placeholder $d
-      inc(PatEndPos,2);
-    until false;
+    MatchLen:=Item.MsgFits(Msg);
+    if MatchLen>BestMatchLen then begin
+      BestMatchLen:=MatchLen;
+      Result:=Item;
+    end;
   end;
 end;
 
