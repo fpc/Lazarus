@@ -42,9 +42,12 @@ type
   { TQtWSCustomPage }
 
   TQtWSCustomPage = class(TWSCustomPage)
+  protected
+    class procedure UpdateTabFontColor(APage: TCustomPage; AFont: TFont);
   published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
   end;
 

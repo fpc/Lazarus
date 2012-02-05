@@ -21,6 +21,7 @@ const
 { tpRight  } QTabWidgetEast
   );
 
+
 { TQtWSCustomPage }
 
 {------------------------------------------------------------------------------
@@ -50,6 +51,40 @@ begin
   {$endif}
 end;
 
+class procedure TQtWSCustomPage.UpdateTabFontColor(APage: TCustomPage; AFont: TFont);
+var
+  AParent: TQtWidget;
+  ATabWidget: TQtTabWidget;
+  AColor: TQColor;
+begin
+  if not Assigned(APage.Parent) or not APage.Parent.HandleAllocated then
+    exit;
+  AParent := TQtWidget(APage.Parent.Handle);
+  if AParent.ChildOfComplexWidget = ccwTTabControl then
+    exit;
+  ATabWidget := TQtTabWidget(AParent);
+
+  AColor.Alpha := 0;
+  FillChar(AColor, SizeOf(AColor), #0);
+  ColorRefToTQColor(ColorToRGB(AFont.Color), AColor);
+  with ATabWidget.TabBar do
+    SetTabFontColor(APage.PageIndex, AColor);
+end;
+
+class procedure TQtWSCustomPage.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+var
+  AParent: TQtWidget;
+  ATabWidget: TQtTabWidget;
+  TabBar: QTabBarH;
+  AColor: TQColor;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetFont') then
+    Exit;
+  inherited SetFont(AWinControl, AFont);
+  UpdateTabFontColor(TCustomPage(AWinControl), AFont);
+end;
+
 class procedure TQtWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
 var
   ImageList: TCustomImageList;
@@ -72,6 +107,8 @@ begin
       end;
     end;
   end;
+
+  UpdateTabFontColor(ACustomPage, ACustomPage.Font);
 end;
 
 { TQtWSCustomNotebook }

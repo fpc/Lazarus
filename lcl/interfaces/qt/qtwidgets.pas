@@ -848,6 +848,7 @@ type
     procedure SignalTabBarCurrentChanged(Index: Integer); cdecl;
     function SlotTabBarMouse(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    procedure SetTabFontColor(AIndex: Integer; AColor: TQColor);
   end;
 
   { TQtTabWidget }
@@ -8415,6 +8416,11 @@ begin
     QEvent_ignore(Event);
   end;
   EndEventProcessing;
+end;
+
+procedure TQtTabBar.SetTabFontColor(AIndex: Integer; AColor: TQColor);
+begin
+  QTabBar_setTabTextColor(QTabBarH(Widget), AIndex, @AColor);
 end;
 
 { TQtTabWidget }
