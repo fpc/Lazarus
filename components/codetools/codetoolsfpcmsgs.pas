@@ -97,7 +97,9 @@ type
     function FindWithID(ID: integer): TFPCMsgItem;
     function FindWithMessage(Msg: string): TFPCMsgItem;
     function GetMsgText(Item: TFPCMsgItem): string; // prepends msg type (e.g. Error:)
+    function PatternFits(Item: TFPCMsgItem; aMsg: string): integer; // >=0 fits
     property SpecialItems[Index: TfmiSpecialItem]: TFPCMsgItem read GetSpecialItems;
+    function MsgTypToSpecialItem(const Typ: string): TFPCMsgItem;
   end;
 
 function CompareFPCMsgId(item1, item2: Pointer): integer;
@@ -688,7 +690,7 @@ begin
   for i:=0 to Count-1 do begin
     Item:=Items[i];
     if Item.Pattern='' then continue;
-    MatchLen:=Item.PatternFits(Msg);
+    MatchLen:=PatternFits(Item,Msg);
     if MatchLen>BestMatchLen then begin
       BestMatchLen:=MatchLen;
       Result:=Item;
@@ -698,21 +700,40 @@ end;
 
 function TFPCMsgFile.GetMsgText(Item: TFPCMsgItem): string;
 var
-  si: TfmiSpecialItem;
+  si: TFPCMsgItem;
 begin
   if Item=nil then exit('');
   Result:=Item.Pattern;
-  if length(Item.Typ)=1 then begin
-    case Item.Typ[1] of
-    'f': si:=fmisiFatal;
-    'e': si:=fmisiError;
-    'w': si:=fmisiWarning;
-    'n': si:=fmisiNote;
-    'h': si:=fmisiHint;
-    else si:=fmisiNone;
-    end;
-    if (si<>fmisiNone) and (fSpecialItems[si]<>nil) then
-      Result:=fSpecialItems[si].Pattern+' '+Result;
+  si:=MsgTypToSpecialItem(Item.Typ);
+  if si<>nil then
+    Result:=si.Pattern+' '+Result;
+end;
+
+function TFPCMsgFile.PatternFits(Item: TFPCMsgItem; aMsg: string): integer;
+var
+  si: TFPCMsgItem;
+begin
+  Result:=Item.PatternFits(aMsg);
+  if Result<0 then exit;
+  // some messages have two types
+  // => check typ
+  si:=MsgTypToSpecialItem(Item.Typ);
+  if si<>nil then begin
+    if System.Pos(si.Pattern,aMsg)>0 then
+      inc(Result,length(si.Pattern));
+  end;
+end;
+
+function TFPCMsgFile.MsgTypToSpecialItem(const Typ: string): TFPCMsgItem;
+begin
+  Result:=nil;
+  if length(Typ)<>1 then exit;
+  case Typ[1] of
+  'f': Result:=fSpecialItems[fmisiFatal];
+  'e': Result:=fSpecialItems[fmisiError];
+  'w': Result:=fSpecialItems[fmisiWarning];
+  'n': Result:=fSpecialItems[fmisiNote];
+  'h': Result:=fSpecialItems[fmisiHint];
   end;
 end;
 

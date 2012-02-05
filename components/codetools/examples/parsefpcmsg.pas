@@ -62,10 +62,10 @@ begin
   // check a specific message
   Item:=MsgFile.FindWithID(1009);
   Msg:=MsgFile.GetMsgText(Item);
-  if Item.PatternFits(Msg)<0 then begin
+  if MsgFile.PatternFits(Item,Msg)<0 then begin
     writeln('message does not fit itself: ',Item.GetName,'="',Item.Pattern,'"');
     writeln('Msg: ',Msg);
-    writeln('Fits=',Item.PatternFits(Msg));
+    writeln('Fits=',MsgFile.PatternFits(Item,Msg));
     raise Exception.Create('bug?');
   end;
 
