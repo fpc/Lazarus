@@ -38,6 +38,8 @@ var
   i: Integer;
   Found: TFPCMsgItem;
   Item: TFPCMsgItem;
+  Msg: String;
+  s: TfmiSpecialItem;
 begin
   if Paramcount<>1 then begin
     writeln('Usage: '+ParamStr(0)+' fpc_file_errore.msg');
@@ -53,17 +55,35 @@ begin
 
   MsgFile:=TFPCMsgFile.Create;
   MsgFile.LoadFromText(Code.Source);
+  for s:=succ(fmisiNone) to high(TfmiSpecialItem) do
+    if MsgFile.SpecialItems[s]=nil then
+      raise Exception.Create('special message '+dbgs(s)+' is missing');
+
+  // check a specific message
+  Item:=MsgFile.FindWithID(1009);
+  Msg:=MsgFile.GetMsgText(Item);
+  if Item.PatternFits(Msg)<0 then begin
+    writeln('message does not fit itself: ',Item.GetName,'="',Item.Pattern,'"');
+    writeln('Msg: ',Msg);
+    writeln('Fits=',Item.PatternFits(Msg));
+    raise Exception.Create('bug?');
+  end;
+
   for i:=0 to MsgFile.Count-1 do begin
     Item:=MsgFile[i];
-    Found:=MsgFile.FindWithMessage(Item.Msg);
+    Msg:=MsgFile.GetMsgText(Item);
+    Found:=MsgFile.FindWithMessage(Msg);
     if Found=nil then begin
       // this should never happen
       writeln('message does not fit itself: i=',i,
-        ' MsgFile[i]=',Item.GetName,'="',Item.Msg,'"');
+        ' MsgFile[i]=',Item.GetName,'="',Item.Pattern,'"');
+      writeln('Msg: ',Msg);
+      writeln('Fits=',Item.PatternFits(Msg));
+      raise Exception.Create('bug?');
     end else if Found<>Item then begin
       writeln('message pattern is ambiguous: i=',i,
-        ' MsgFile[i]=',Item.GetName,'="',Item.Msg,'"',
-        ' Other=',Found.GetName,'="',Found.Msg,'"');
+        ' MsgFile[i]=',Item.GetName,'="',Item.Pattern,'"',
+        ' Other=',Found.GetName,'="',Found.Pattern,'"');
     end;
   end;
   MsgFile.Free;

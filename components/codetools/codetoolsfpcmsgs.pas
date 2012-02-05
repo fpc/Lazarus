@@ -45,6 +45,15 @@ uses
   Classes, SysUtils, FileProcs, AVL_Tree;
 
 type
+  TfmiSpecialItem = (
+    fmisiNone,
+    fmisiFatal,
+    fmisiError,
+    fmisiWarning,
+    fmisiNote,
+    fmisiHint
+    );
+  TfmiSpecialItems = set of TfmiSpecialItem;
 
   { TFPCMsgItem }
 
@@ -55,24 +64,27 @@ type
     TxtIdentifier: string; // identifier
     ID: integer; // positive number
     ShownTyp: string; // e.g. shown Typ, can be different from Typ
-    Msg: string; // Msg with placeholders $1 .. $9
+    Pattern: string; // Text with placeholders $1 .. $9
+    PatternEndSpace: string;
     Comment: string; // multi line
 
     Index: integer; // index in list
     function GetName(WithID: boolean = true): string;
-    function MsgFits(const aMsg: string): integer; // >=0 fits
+    function PatternFits(aMsg: string): integer; // >=0 fits
   end;
 
   { TFPCMsgFile }
 
   TFPCMsgFile = class
   private
+    fSpecialItems: array[TfmiSpecialItem] of TFPCMsgItem;
     FItems: TFPList; // list of TFPCMsgItem
     fSortedForID: TAVLTree; // tree of TFPCMsgItem sorted for ID
     fItemById: array of TFPCMsgItem;
     fNodeMgr: TAVLTreeNodeMemManager;
     function GetItems(Index: integer): TFPCMsgItem;
     procedure CreateArray;
+    function GetSpecialItems(Index: TfmiSpecialItem): TFPCMsgItem;
   public
     constructor Create;
     destructor Destroy; override;
@@ -83,7 +95,9 @@ type
     function Count: integer;
     property Items[Index: integer]: TFPCMsgItem read GetItems; default;
     function FindWithID(ID: integer): TFPCMsgItem;
-    function FindWithMessage(const Msg: string): TFPCMsgItem;
+    function FindWithMessage(Msg: string): TFPCMsgItem;
+    function GetMsgText(Item: TFPCMsgItem): string; // prepends msg type (e.g. Error:)
+    property SpecialItems[Index: TfmiSpecialItem]: TFPCMsgItem read GetSpecialItems;
   end;
 
 function CompareFPCMsgId(item1, item2: Pointer): integer;
@@ -112,6 +126,8 @@ type
   end;
 
 procedure ExtractFPCMsgParameters(const Mask, Txt: string; var Ranges: TFPCMsgRanges);
+
+function dbgs(i: TfmiSpecialItem): string; overload;
 
 implementation
 
@@ -217,6 +233,18 @@ begin
   end;
 end;
 
+function dbgs(i: TfmiSpecialItem): string;
+begin
+  case i of
+  fmisiFatal: Result:='fatal';
+  fmisiError: Result:='error';
+  fmisiWarning: Result:='warning';
+  fmisiNote: Result:='note';
+  fmisiHint: Result:='hint';
+  else Result:='?';
+  end;
+end;
+
 { TFPCMsgItem }
 
 function TFPCMsgItem.GetName(WithID: boolean): string;
@@ -228,7 +256,7 @@ begin
     Result:=Result+'='+IntToStr(ID);
 end;
 
-function TFPCMsgItem.MsgFits(const aMsg: string): integer;
+function TFPCMsgItem.PatternFits(aMsg: string): integer;
 var
   PatStartPos: PChar;
   PatEndPos: PChar;
@@ -237,26 +265,28 @@ var
   MsgPos: PChar;
   PatPos: PChar;
   MsgStartPos: PChar;
+  PatLen: Integer;
 begin
   Result:=-1;
-  // Msg is for example "$1 lines compiled, $2 sec$3"
-  if (aMsg='') or (Msg='') then exit;
+  // Pattern is for example "$1 lines compiled, $2 sec$3"
+  if (aMsg='') or (Pattern='') then exit;
 
   // aMsg can start with a filename => hard to tell where the message starts
-  // the Msg is always at the end of aMsg => quick check the end
-  if (length(aMsg)>=2)
-  and ((aMsg[Length(aMsg)-1]<>'$') or (not (aMsg[Length(aMsg)] in ['0'..'9'])))
+  // the Pattern is always at the end of aMsg => quick check the end
+  PatLen:=length(Pattern);
+  if (PatLen>=2)
+  and ((Pattern[PatLen-1]<>'$') or (not (Pattern[PatLen] in ['0'..'9'])))
   then begin
     // the pattern does not have a placeholder at the end
     // => the tail must be the pattern => check tail
-    PatStartPos:=PChar(Msg);
-    PatEndPos:=@aMsg[length(aMsg)];
-    MsgPos:=@Msg[length(Msg)];
-    MsgStartPos:=PChar(Msg);
+    PatStartPos:=PChar(Pattern);
+    PatEndPos:=@Pattern[PatLen];
+    MsgPos:=@aMsg[length(aMsg)];
+    MsgStartPos:=PChar(aMsg);
     while (PatEndPos^=MsgPos^) do begin
       if PatEndPos=PatStartPos then begin
         // pattern has no placeholders and whole pattern fits
-        Result:=length(Msg);
+        Result:=PatLen;
         exit;
       end;
       dec(PatEndPos);
@@ -273,8 +303,8 @@ begin
     end;
   end;
 
-  PatEndPos:=PChar(aMsg);
-  MsgFitPos:=PChar(Msg);
+  PatEndPos:=PChar(Pattern);
+  MsgFitPos:=PChar(aMsg);
   MatchLen:=0;
   repeat
     PatStartPos:=PatEndPos;
@@ -285,7 +315,7 @@ begin
       inc(PatEndPos);
     until false;
     if PatEndPos<>PatStartPos then begin
-      // search pattern in Msg
+      // search pattern in Pattern
       repeat
         MsgPos:=MsgFitPos;
         PatPos:=PatStartPos;
@@ -335,13 +365,13 @@ begin
   Item:=TFPCMsgItem(fSortedForID.FindLowest.Data);
   MinID:=Item.ID;
   if MinID<0 then begin
-    debugln(['TFPCMsgFile.CreateArray WARNING: MinID ',MinID,' too low: ',Item.Msg]);
+    debugln(['TFPCMsgFile.CreateArray WARNING: MinID ',MinID,' too low: ',Item.Pattern]);
     exit;
   end;
   Item:=TFPCMsgItem(fSortedForID.FindHighest.Data);
   MaxID:=Item.ID;
   if MaxID>100000 then begin
-    debugln(['TFPCMsgFile.CreateArray WARNING: MaxID ',MaxID,' too high: ',Item.Msg]);
+    debugln(['TFPCMsgFile.CreateArray WARNING: MaxID ',MaxID,' too high: ',Item.Pattern]);
     exit;
   end;
   //debugln(['TFPCMsgFile.CreateArray Max=',MaxID]);
@@ -349,9 +379,14 @@ begin
   for i:=0 to length(fItemById)-1 do fItemById[i]:=nil;
   for i:=0 to FItems.Count-1 do begin
     Item:=TFPCMsgItem(FItems[i]);
-    //debugln(['TFPCMsgFile.CreateArray ',Item.ID,' ',copy(Item.Msg,1,20),'..',copy(Item.Msg,length(Item.Msg)-19,20)]);
+    //debugln(['TFPCMsgFile.CreateArray ',Item.ID,' ',copy(Item.Pattern,1,20),'..',copy(Item.Pattern,length(Item.Pattern)-19,20)]);
     fItemById[Item.ID]:=Item;
   end;
+end;
+
+function TFPCMsgFile.GetSpecialItems(Index: TfmiSpecialItem): TFPCMsgItem;
+begin
+  Result:=fSpecialItems[Index];
 end;
 
 constructor TFPCMsgFile.Create;
@@ -429,6 +464,8 @@ procedure TFPCMsgFile.LoadFromList(List: TStrings);
     ID: LongInt;
     Msg: string;
     h: string;
+    i: Integer;
+    MsgEndSpace: String;
   begin
     Result:=nil;
     p:=PChar(s);
@@ -494,14 +531,23 @@ procedure TFPCMsgFile.LoadFromList(List: TStrings);
       until false;
     end;
 
+    i:=length(Msg);
+    while (i>=1) and (Msg[i] in [' ',#9,#10,#13]) do dec(i);
+    if i<length(Msg) then begin
+      MsgEndSpace:=copy(Msg,i+1,length(Msg));
+      System.Delete(Msg,i+1,length(Msg));
+    end else
+      MsgEndSpace:='';
+
     Result:=TFPCMsgItem.Create;
     Result.Part:=Part;
     Result.Typ:=Typ;
     Result.TxtIdentifier:=TxtID;
     Result.ID:=ID;
     Result.ShownTyp:=ShownTyp;
-    Result.Msg:=Msg;
-    //debugln(['ReadItem Part=',Part,' Typ=',Typ,' TxtID=',TxtID,' ID=',ID,' IdTyp=',ShownTyp,' Msg="',copy(Result.Msg,1,20),'"']);
+    Result.Pattern:=Msg;
+    Result.PatternEndSpace:=MsgEndSpace;
+    //debugln(['ReadItem Part=',Part,' Typ=',Typ,' TxtID=',TxtID,' ID=',ID,' IdTyp=',ShownTyp,' Msg="',copy(Result.Pattern,1,20),'"']);
   end;
 
 var
@@ -530,10 +576,17 @@ begin
     end else begin
       Item:=ReadItem(Line,s);
       if Item<>nil then begin
-        //debugln(['TFPCMsgFile.LoadFromList ',Item.ID,' ',Item.Msg]);
+        //debugln(['TFPCMsgFile.LoadFromList ',Item.ID,' ',Item.Pattern]);
         Item.Index:=FItems.Count;
         FItems.Add(Item);
         fSortedForID.Add(Item);
+        case Item.ID of
+        1012: fSpecialItems[fmisiFatal]:=Item;
+        1013: fSpecialItems[fmisiError]:=Item;
+        1014: fSpecialItems[fmisiWarning]:=Item;
+        1015: fSpecialItems[fmisiNote]:=Item;
+        1016: fSpecialItems[fmisiHint]:=Item;
+        end;
       end;
     end;
     inc(Line);
@@ -558,7 +611,10 @@ end;
 procedure TFPCMsgFile.Clear;
 var
   i: Integer;
+  s: TfmiSpecialItem;
 begin
+  for s:=Low(fSpecialItems) to high(fSpecialItems) do
+    fSpecialItems[s]:=nil;
   SetLength(fItemById,0);
   fSortedForID.Clear;
   for i:=0 to FItems.Count-1 do
@@ -587,7 +643,7 @@ begin
     Result:=nil;
 end;
 
-function TFPCMsgFile.FindWithMessage(const Msg: string): TFPCMsgItem;
+function TFPCMsgFile.FindWithMessage(Msg: string): TFPCMsgItem;
 var
   MsgID: Integer;
   Item: TFPCMsgItem;
@@ -597,6 +653,8 @@ var
   MatchLen: Integer;
 begin
   Result:=nil;
+  if Msg='' then exit;
+  Msg:=Trim(Msg);
   if Msg='' then exit;
   p:=PChar(Msg);
 
@@ -629,12 +687,32 @@ begin
   BestMatchLen:=-1;
   for i:=0 to Count-1 do begin
     Item:=Items[i];
-    if Item.Msg='' then continue;
-    MatchLen:=Item.MsgFits(Msg);
+    if Item.Pattern='' then continue;
+    MatchLen:=Item.PatternFits(Msg);
     if MatchLen>BestMatchLen then begin
       BestMatchLen:=MatchLen;
       Result:=Item;
     end;
+  end;
+end;
+
+function TFPCMsgFile.GetMsgText(Item: TFPCMsgItem): string;
+var
+  si: TfmiSpecialItem;
+begin
+  if Item=nil then exit('');
+  Result:=Item.Pattern;
+  if length(Item.Typ)=1 then begin
+    case Item.Typ[1] of
+    'f': si:=fmisiFatal;
+    'e': si:=fmisiError;
+    'w': si:=fmisiWarning;
+    'n': si:=fmisiNote;
+    'h': si:=fmisiHint;
+    else si:=fmisiNone;
+    end;
+    if (si<>fmisiNone) and (fSpecialItems[si]<>nil) then
+      Result:=fSpecialItems[si].Pattern+' '+Result;
   end;
 end;
 
