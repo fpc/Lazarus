@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Dialogs, FileUtil, TextTools, MacroIntf,
   LazarusIDEStrConsts, LazConfigStorage, HelpIntfs, IDEHelpIntf, LazHelpIntf,
-  LazHelpHTML, CodeToolsFPCMsgs, FileProcs;
+  LazHelpHTML, CodeToolsFPCMsgs, FileProcs, CodeToolManager, CodeCache;
   
 const
   lihcFPCMessages = 'FreePascal Compiler messages';
@@ -56,7 +56,7 @@ type
     FFoundComment: string;
     FLastMessage: string;
     FMsgFile: TFPCMsgFile;
-    FMsgFileAge: TCTFileAgeTime;
+    FMsgFileChangeStep: integer;
     FMsgFilename: string;
     procedure SetFPCTranslationFile(const AValue: string);
     procedure SetFoundComment(const AValue: string);
@@ -78,7 +78,7 @@ type
     property FoundComment: string read FFoundComment write SetFoundComment;
     property MsgFile: TFPCMsgFile read FMsgFile;
     property MsgFilename: string read FMsgFilename write SetMsgFilename;
-    property MsgFileAge: TCTFileAgeTime read FMsgFileAge;
+    property MsgFileChangeStep: integer read FMsgFileChangeStep;
   published
     property FPCTranslationFile: string read FFPCTranslationFile
                                         write SetFPCTranslationFile;
@@ -87,11 +87,6 @@ type
 procedure CreateFPCMessagesHelpDB;
 function AddFPCMessageHelpItem(const Title, URL, RegularExpression: string
                                ): THelpDBIRegExprMessage;
-
-function FindFPCMessageComment(const CommentFile, Msg: string;
-  ExtractText: boolean): string;
-procedure ParseFPCMessagesFile(Lines: TStrings;
-  const SearchMessage: string; var FoundComment: string);
 
 implementation
 
@@ -130,199 +125,6 @@ begin
   FPCMessagesHelpDB.RegisterItem(Result);
 end;
 
-function FindFPCMessageComment(const CommentFile, Msg: string;
-  ExtractText: boolean): string;
-var
-  sl: TStringList;
-  p: Integer;
-  TagStart: LongInt;
-begin
-  Result:='';
-  sl:=TStringList.Create;
-  try
-    sl.LoadFromFile(UTF8ToSys(CommentFile));
-    ParseFPCMessagesFile(sl,Msg,Result);
-    if ExtractText and (Result<>'') then begin
-      p:=1;
-      while (p<length(Result)) do begin
-        case Result[p] of
-        '\':
-          begin
-            TagStart:=p;
-            inc(p);
-            if (p<=length(Result)) and (Result[p]='\') then begin
-              inc(p);
-            end else begin
-              // remove tag
-              while (p<=length(Result)) and (Result[p] in ['a'..'z','A'..'Z'])
-              do
-                inc(p);
-              Result:=copy(Result,1,TagStart-1)+copy(Result,p,length(Result));
-              p:=TagStart;
-            end;
-          end;
-        '{','}':
-          begin
-            // remove brackets
-            Result:=copy(Result,1,p-1)+copy(Result,p+1,length(Result));
-          end;
-        else
-          inc(p);
-        end;
-      end;
-    end;
-  finally
-    sl.Free;
-  end;
-end;
-
-procedure ParseFPCMessagesFile(Lines: TStrings;
-  const SearchMessage: string; var FoundComment: string);
-var
-  i: integer;
-  Line: string;
-
-  procedure Error(const ErrMsg: string);
-  begin
-    raise Exception.Create('Line='+IntToStr(i+1)+': '+ErrMsg+' in "'+Line+'"');
-  end;
-
-  function CompareTextWithSearchMessage(const Command: string;
-    TypeStart, TxtStart: integer): boolean;
-  var
-    RegularExpression: String;
-    p: Integer;
-  begin
-    Result:=false;
-    if TxtStart>length(Command) then exit;
-    if TypeStart>length(Command) then exit;
-    
-    RegularExpression:=copy(Command,TxtStart,length(Command));
-    // replace all $d variables with (.*)
-    p:=length(RegularExpression);
-    while (p>0) do begin
-      if (RegularExpression[p]='$') then begin
-        if (p<length(RegularExpression))
-        and (RegularExpression[p+1] in ['1'..'9']) then begin
-          RegularExpression:=copy(RegularExpression,1,p-1)+'(.*)'
-                           +copy(RegularExpression,p+2,length(RegularExpression));
-        end else begin
-          RegularExpression:=copy(RegularExpression,1,p-1)+'\'
-                           +copy(RegularExpression,p,length(RegularExpression));
-        end;
-      end;
-      dec(p);
-    end;
-    case Command[TypeStart] of
-    'F': RegularExpression:='Fatal: '+RegularExpression;
-    'E': RegularExpression:='Error: '+RegularExpression;
-    'N': RegularExpression:='Note: '+RegularExpression;
-    'I': RegularExpression:='Info: '+RegularExpression;
-    'H': RegularExpression:='Hint: '+RegularExpression;
-    end;
-
-    try
-      Result:=REMatches(SearchMessage,RegularExpression);
-    except
-      on E: Exception do begin
-        WriteLn('CompareTextWithSearchMessage RegExpr Error ',E.Message,' RegularExpression="'+RegularExpression+'"');
-        exit;
-      end;
-    end;
-    // debugging:
-    //if System.Pos('is assigned but never used',Command)>0 then WriteLn('CompareTextWithSearchMessage "',RegularExpression,'" Result=',Result);
-  end;
-
-var
-  Command: String;
-  CommandLine: Integer;
-
-  procedure ErrorInCommand(const ErrMsg: string);
-  begin
-    raise Exception.Create('Line='+IntToStr(CommandLine+1)+': '+ErrMsg+' in "'+Command+'"');
-  end;
-
-var
-  EqualPos: LongInt;
-  Comment: String;
-  BracketLevel: Integer;
-  x: Integer;
-  PartStart: Integer;
-  TypeStart: LongInt;
-  TxtStart: LongInt;
-begin
-  FoundComment:='';
-  Comment:='';
-  Command:='';
-  CommandLine:=0;
-  BracketLevel:=0;
-  for i:=0 to Lines.Count-1 do begin
-    Line:=Lines[i];
-    if (Trim(Line)='') or (Line[1]='#') then continue;
-
-    // example:
-    //   general_t_compilername=01000_T_Compiler: $1
-    //   % When the \var{-vt} switch is used, this line tells you what compiler
-    //   % is used.
-    if Line[1]='%' then begin
-      if BracketLevel>0 then
-        Error('unclosed bracket in lines before');
-      Comment:=Comment+copy(Line,2,length(Line));
-    end else begin
-      if BracketLevel=0 then begin
-        // end old message
-        if Command<>'' then begin
-          if CompareByte(Command[1],'option_',7)=0 then begin
-            // option
-          end else begin
-            // read '='
-            EqualPos:=System.Pos('=',Command);
-            if EqualPos<1 then ErrorInCommand('missing =');
-            // read number
-            PartStart:=EqualPos+1;
-            TypeStart:=PartStart;
-            while (TypeStart<=length(Command)) and (Command[TypeStart]<>'_') do
-              inc(TypeStart);
-            // read type
-            inc(TypeStart);
-            TxtStart:=TypeStart;
-            while (TxtStart<=length(Command)) and (Command[TxtStart]<>'_') do
-              inc(TxtStart);
-            // read text
-            inc(TxtStart);
-            if SearchMessage<>'' then begin
-              if CompareTextWithSearchMessage(Command,TypeStart,TxtStart) then
-              begin
-                FoundComment:=Trim(Comment);
-                exit;
-              end;
-            end;
-          end;
-        end;
-
-        // start a new message
-        Comment:='';
-        Command:=Line;
-        CommandLine:=i;
-      end else begin
-        // continue command
-        Command:=Command+Line;
-      end;
-      // update BracketLevel
-      for x:=1 to length(Line) do begin
-        case Line[x] of
-        '[': inc(BracketLevel);
-        ']':
-          if BracketLevel>0 then
-            dec(BracketLevel)
-          else
-            Error('closing a bracket, which was not opened.');
-        end;
-      end;
-    end;
-  end;
-end;
-
 { TFPCMessagesHelpDatabase }
 
 procedure TFPCMessagesHelpDatabase.SetFoundComment(const AValue: string);
@@ -347,7 +149,7 @@ procedure TFPCMessagesHelpDatabase.SetMsgFilename(AValue: string);
 begin
   if FMsgFilename=AValue then Exit;
   FMsgFilename:=AValue;
-  FMsgFileAge:=-1;
+  FMsgFileChangeStep:=-1;
   FreeAndNil(FMsgFile);
 end;
 
@@ -370,6 +172,8 @@ function TFPCMessagesHelpDatabase.GetNodesForMessage(const AMessage: string;
   var ErrMsg: string): TShowHelpResult;
 var
   Filename: String;
+  Code: TCodeBuffer;
+  MsgItem: TFPCMsgItem;
 begin
   Result:=inherited GetNodesForMessage(AMessage, MessageParts, ListOfNodes,
                                        ErrMsg);
@@ -388,26 +192,29 @@ begin
     Filename:=Filename+FPCTranslationFile
   else
     Filename:=Filename+'errore.msg';
-  if not FileExistsUTF8(Filename) then exit;
+  Code:=CodeToolBoss.LoadFile(Filename,true,false);
+  if Code=nil then exit;
 
   // load MsgFile
-  if (Filename<>MsgFilename) or (FileAgeCached(Filename)<>MsgFileAge) then begin
+  if (Filename<>MsgFilename) or (Code.ChangeStep<>MsgFileChangeStep) then begin
     MsgFilename:=Filename;
     if FMsgFile=nil then
       FMsgFile:=TFPCMsgFile.Create;
-    FMsgFileAge:=FileAgeCached(MsgFilename);
+    FMsgFileChangeStep:=Code.ChangeStep;
     try
-      MsgFile.LoadFromFile(MsgFilename);
+      MsgFile.LoadFromText(Code.Source);
     except
       on E: Exception do begin
-        debugln(['TFPCMessagesHelpDatabase failed to load "'+MsgFilename+'": '+E.Message]);
+        debugln(['TFPCMessagesHelpDatabase failed to parse "'+MsgFilename+'": '+E.Message]);
+        exit;
       end;
     end;
   end;
+  if MsgFile=nil then exit;
 
-
-
-  FoundComment:=FindFPCMessageComment(Filename,AMessage,true);
+  MsgItem:=MsgFile.FindWithMessage(AMessage);
+  if MsgItem=nil then exit;
+  FoundComment:=MsgItem.GetTrimmedComment(true,true);
   if FoundComment<>'' then begin
     Result:=shrSuccess;
     CreateNodeQueryListAndAdd(DefaultNode,nil,ListOfNodes,true);

@@ -71,6 +71,7 @@ type
     Index: integer; // index in list
     function GetName(WithID: boolean = true): string;
     function PatternFits(aMsg: string): integer; // >=0 fits
+    function GetTrimmedComment(NoLineBreaks, NoLatex: boolean): string;
   end;
 
   { TFPCMsgFile }
@@ -344,6 +345,47 @@ begin
     // skip placeholder $d
     inc(PatEndPos,2);
   until false;
+end;
+
+function TFPCMsgItem.GetTrimmedComment(NoLineBreaks, NoLatex: boolean): string;
+var
+  i: Integer;
+  StartPos: Integer;
+begin
+  Result:=Comment;
+  for i:=length(Result) downto 1 do begin
+    if NoLineBreaks and (Result[i] in [#10,#13]) then
+      Result[i]:=' '
+    else if Result[i]=#9 then
+      Result[i]:=' '
+    else if NoLatex and (Result[i] in ['{','}']) then
+      Result[i]:=' ';
+    if Result[i]=' ' then begin
+      if (i=1) or (i=length(Result)) or (Result[i+1] in [' ',#10,#13]) then
+        system.Delete(Result,i,1);
+    end;
+  end;
+  if NoLatex then begin
+    // remove tags
+    i:=1;
+    while i<length(Result) do begin
+      if Result[i]='/' then begin
+        StartPos:=i;
+        inc(i);
+        if Result[i]='/' then begin
+          // double slash
+          inc(i);
+        end else if Result[i] in ['a'..'z','A'..'Z'] then begin
+          while (i<=length(Result))
+          and (Result[i] in ['a'..'z','A'..'Z','0'..'9','_']) do
+           inc(i);
+          System.Delete(Result,StartPos,i-StartPos);
+        end;
+      end else begin
+        inc(i);
+      end;
+    end;
+  end;
 end;
 
 { TFPCMsgFile }
