@@ -59,6 +59,7 @@ type
     Comment: string; // multi line
 
     Index: integer; // index in list
+    function GetName(WithID: boolean = true): string;
   end;
 
   { TFPCMsgFile }
@@ -213,6 +214,17 @@ begin
     Ranges.Add(TxtPos-BaseTxtPos,TxtEndPos-BaseTxtPos);
     TxtPos:=TxtEndPos;
   end;
+end;
+
+{ TFPCMsgItem }
+
+function TFPCMsgItem.GetName(WithID: boolean): string;
+begin
+  Result:=Part+'_';
+  if Typ<>'' then Result:=Result+Typ+'_';
+  Result:=Result+TxtIdentifier;
+  if WithID then
+    Result:=Result+'='+IntToStr(ID);
 end;
 
 { TFPCMsgFile }
