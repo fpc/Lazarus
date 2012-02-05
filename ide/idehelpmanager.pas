@@ -168,11 +168,14 @@ type
   { TIDEHelpManager }
 
   TIDEHelpManager = class(TBaseHelpManager)
-    procedure mnuSearchInFPDocFilesClick(Sender: TObject);
     // help menu of the IDE menu bar
     procedure mnuHelpAboutLazarusClicked(Sender: TObject);
     procedure mnuHelpOnlineHelpClicked(Sender: TObject);
     procedure mnuHelpReportBugClicked(Sender: TObject);
+    // fpdoc
+    procedure mnuSearchInFPDocFilesClick(Sender: TObject);
+    // messages
+    procedure mnuEditMessageHelpClick(Sender: TObject);
   private
     FFCLHelpDBPath: THelpBaseURLObject;
     FMainHelpDB: THelpDatabase;
@@ -1115,6 +1118,11 @@ begin
   ShowFPDocFileSearch;
 end;
 
+procedure TIDEHelpManager.mnuEditMessageHelpClick(Sender: TObject);
+begin
+
+end;
+
 procedure TIDEHelpManager.mnuHelpAboutLazarusClicked(Sender: TObject);
 begin
   ShowAboutForm;
@@ -1301,6 +1309,8 @@ begin
     {$IFDEF EnableFPDocSearch}
     itmSearchInFPDocFiles.OnClick:=@mnuSearchInFPDocFilesClick;
     {$ENDIF}
+
+
   end;
 end;
 

@@ -284,6 +284,7 @@ resourcestring
   lisExpandAll = 'Expand All (*)';
   lisCollapseAll = 'Collapse All (/)';
   lisSaveAllMessagesToFile = 'Save All Messages to File';
+  lisEditHelp = 'Edit help';
   lisMenuViewSearchResults = 'Search Results';
   lisMenuViewAnchorEditor = 'Anchor Editor';
   lisMenuViewTabOrder = 'Tab Order';

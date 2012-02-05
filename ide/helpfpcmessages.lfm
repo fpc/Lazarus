@@ -1,30 +1,30 @@
 object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
   Left = 330
-  Height = 460
+  Height = 522
   Top = 280
-  Width = 622
+  Width = 649
   Caption = 'EditIDEMsgHelpDialog'
-  ClientHeight = 460
-  ClientWidth = 622
+  ClientHeight = 522
+  ClientWidth = 649
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object CurMsgGroupBox: TGroupBox
     Left = 6
     Height = 105
-    Top = 6
-    Width = 610
+    Top = 94
+    Width = 637
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'CurMsgGroupBox'
     ClientHeight = 89
-    ClientWidth = 606
+    ClientWidth = 633
     TabOrder = 0
     object CurMsgMemo: TMemo
       Left = 0
       Height = 89
       Top = 0
-      Width = 606
+      Width = 633
       Align = alClient
       Lines.Strings = (
         'CurMsgMemo'
@@ -37,8 +37,8 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 42
-    Top = 412
-    Width = 610
+    Top = 474
+    Width = 637
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -52,18 +52,18 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
   end
   object AllGroupBox: TGroupBox
     Left = 6
-    Height = 289
-    Top = 117
+    Height = 263
+    Top = 205
     Width = 277
     Align = alLeft
     BorderSpacing.Around = 6
     Caption = 'AllGroupBox'
-    ClientHeight = 273
+    ClientHeight = 247
     ClientWidth = 273
     TabOrder = 2
     object URLsListBox: TListBox
       Left = 0
-      Height = 247
+      Height = 221
       Top = 0
       Width = 273
       Align = alClient
@@ -75,7 +75,7 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
     object AddButton: TButton
       Left = 0
       Height = 26
-      Top = 247
+      Top = 221
       Width = 273
       Align = alBottom
       AutoSize = True
@@ -85,14 +85,14 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
   end
   object CurGroupBox: TGroupBox
     Left = 300
-    Height = 289
-    Top = 117
-    Width = 316
+    Height = 263
+    Top = 205
+    Width = 343
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'CurGroupBox'
-    ClientHeight = 273
-    ClientWidth = 312
+    ClientHeight = 247
+    ClientWidth = 339
     TabOrder = 3
     object DeleteButton: TButton
       AnchorSideLeft.Control = CurGroupBox
@@ -128,7 +128,7 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
       Left = 76
       Height = 24
       Top = 6
-      Width = 230
+      Width = 257
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       TabOrder = 1
@@ -143,7 +143,7 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
       Left = 6
       Height = 15
       Top = 126
-      Width = 300
+      Width = 327
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -161,7 +161,7 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
       Left = 6
       Height = 24
       Top = 141
-      Width = 300
+      Width = 327
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
@@ -178,7 +178,7 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
       Left = 6
       Height = 15
       Top = 36
-      Width = 300
+      Width = 327
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -196,7 +196,7 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
       Left = 6
       Height = 24
       Top = 51
-      Width = 300
+      Width = 327
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
@@ -213,7 +213,7 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
       Left = 6
       Height = 15
       Top = 81
-      Width = 300
+      Width = 327
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -231,7 +231,7 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
       Left = 6
       Height = 24
       Top = 96
-      Width = 300
+      Width = 327
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
@@ -242,8 +242,70 @@ object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
   end
   object Splitter1: TSplitter
     Left = 289
-    Height = 289
-    Top = 117
+    Height = 263
+    Top = 205
     Width = 5
+  end
+  object GlobalOptionsGroupBox: TGroupBox
+    Left = 6
+    Height = 82
+    Top = 6
+    Width = 637
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'GlobalOptionsGroupBox'
+    ClientHeight = 66
+    ClientWidth = 633
+    TabOrder = 5
+    object FPCMsgFileLabel: TLabel
+      AnchorSideLeft.Control = GlobalOptionsGroupBox
+      AnchorSideTop.Control = FPCMsgFileEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 15
+      Top = 11
+      Width = 92
+      BorderSpacing.Left = 6
+      Caption = 'FPCMsgFileLabel'
+      ParentColor = False
+    end
+    object FPCMsgFileEdit: TEdit
+      AnchorSideLeft.Control = FPCMsgFileLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = GlobalOptionsGroupBox
+      Left = 104
+      Height = 24
+      Top = 6
+      Width = 283
+      BorderSpacing.Around = 6
+      TabOrder = 0
+      Text = 'FPCMsgFileEdit'
+    end
+    object AdditionsFileLabel: TLabel
+      AnchorSideLeft.Control = GlobalOptionsGroupBox
+      AnchorSideTop.Control = AdditionsFileEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 15
+      Top = 41
+      Width = 100
+      BorderSpacing.Around = 6
+      Caption = 'AdditionsFileLabel'
+      ParentColor = False
+    end
+    object AdditionsFileEdit: TEdit
+      AnchorSideLeft.Control = AdditionsFileLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = FPCMsgFileEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 112
+      Height = 24
+      Top = 36
+      Width = 280
+      BorderSpacing.Around = 6
+      TabOrder = 1
+      Text = 'AdditionsFileEdit'
+    end
   end
 end

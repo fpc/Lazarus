@@ -3131,11 +3131,12 @@ var
     and (BaseDir<>'') then begin
       // search in project source directories
       ProjectDirs:=AProject.LazCompilerOptions.OtherUnitFiles+';.';
-      if not IDEMacros.CreateAbsoluteSearchPath(ProjectDirs,BaseDir) then exit;
-      if FindPathInSearchPath(PChar(SrcDir),length(SrcDir),
-        PChar(ProjectDirs),length(ProjectDirs))<>nil
-      then
-        Add:=true;
+      if IDEMacros.CreateAbsoluteSearchPath(ProjectDirs,BaseDir) then begin
+        if FindPathInSearchPath(PChar(SrcDir),length(SrcDir),
+          PChar(ProjectDirs),length(ProjectDirs))<>nil
+        then
+          Add:=true;
+      end;
     end;
 
     if Add then

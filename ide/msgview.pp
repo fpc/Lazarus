@@ -93,6 +93,7 @@ type
     procedure CopyAllMenuItemClick(Sender: TObject);
     procedure CopyAllAndHiddenMenuItemClick(Sender: TObject);
     procedure CopyMenuItemClick(Sender: TObject);
+    procedure EditHelpMenuItemClick(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
     procedure HelpMenuItemClick(Sender: TObject);
     procedure ClearMenuItemClick(Sender: TObject);
@@ -193,13 +194,14 @@ type
 
 var
   MessagesView: TMessagesView = nil;
-  MsgQuickFixIDEMenuSection: TIDEMenuSection;
-  MsgClearIDEMenuCommand: TIDEMenuCommand;
-  MsgCopyIDEMenuCommand: TIDEMenuCommand;
-  MsgCopyAllIDEMenuCommand: TIDEMenuCommand;
-  MsgCopyAllAndHiddenIDEMenuCommand: TIDEMenuCommand;
-  MsgHelpIDEMenuCommand: TIDEMenuCommand;
-  MsgSaveAllToFileIDEMenuCommand: TIDEMenuCommand;
+  MsgQuickFixMenuSection: TIDEMenuSection;
+  MsgClearMenuItem: TIDEMenuCommand;
+  MsgCopyMenuItem: TIDEMenuCommand;
+  MsgCopyAllMenuItem: TIDEMenuCommand;
+  MsgCopyAllAndHiddenMenuItem: TIDEMenuCommand;
+  MsgHelpMenuItem: TIDEMenuCommand;
+  MsgEditHelpMenuItem: TIDEMenuCommand;
+  MsgSaveAllToFileMenuItem: TIDEMenuCommand;
 
 const
   MessagesMenuRootName = 'Messages';
@@ -262,21 +264,16 @@ var
 begin
   MessagesMenuRoot := RegisterIDEMenuRoot(MessagesMenuRootName);
   Path := MessagesMenuRoot.Name;
-  MsgQuickFixIDEMenuSection := RegisterIDEMenuSection(Path, 'Quick Fix');
-  MsgClearIDEMenuCommand :=
-    RegisterIDEMenuCommand(Path, 'Clear', lisUIDClear);
-  MsgCopyIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Copy selected',
-    lisCopySelectedMessagesToClipboard);
-  MsgCopyAllIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Copy all',
-    lisCopyAllShownMessagesToClipboard);
-  MsgCopyAllAndHiddenIDEMenuCommand := RegisterIDEMenuCommand(Path,
-    'Copy all, including hidden messages',
-    lisCopyAllShownAndHiddenMessagesToClipboard);
-  MsgHelpIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Help',
-    lisPckEditHelp);
-  MsgSaveAllToFileIDEMenuCommand :=
-    RegisterIDEMenuCommand(Path, 'Copy selected',
-    lisSaveAllMessagesToFile);
+  MsgQuickFixMenuSection := RegisterIDEMenuSection(Path, 'Quick Fix');
+  MsgClearMenuItem := RegisterIDEMenuCommand(Path, 'Clear', lisUIDClear);
+  MsgCopyMenuItem := RegisterIDEMenuCommand(Path, 'Copy selected',lisCopySelectedMessagesToClipboard);
+  MsgCopyAllMenuItem := RegisterIDEMenuCommand(Path, 'Copy all',lisCopyAllShownMessagesToClipboard);
+  MsgCopyAllAndHiddenMenuItem := RegisterIDEMenuCommand(Path,
+    'Copy all, including hidden messages',lisCopyAllShownAndHiddenMessagesToClipboard);
+  MsgHelpMenuItem := RegisterIDEMenuCommand(Path, 'Help for message',lisPckEditHelp);
+  MsgEditHelpMenuItem := RegisterIDEMenuCommand(Path, 'Edit help for messages',lisEditHelp);
+  MsgSaveAllToFileMenuItem :=
+    RegisterIDEMenuCommand(Path, 'Copy selected',lisSaveAllMessagesToFile);
 end;
 
 function MessageLinesAsText(ListOfTLazMessageLine: TFPList): string;
@@ -343,12 +340,13 @@ begin
   MessagesMenuRoot.MenuItem := MainPopupMenu.Items;
   //MainPopupMenu.Items.WriteDebugReport('TMessagesView.Create ');
 
-  MsgHelpIDEMenuCommand.OnClick    := @HelpMenuItemClick;
-  MsgClearIDEMenuCommand.OnClick   := @ClearMenuItemClick;
-  MsgCopyIDEMenuCommand.OnClick    := @CopyMenuItemClick;
-  MsgCopyAllIDEMenuCommand.OnClick := @CopyAllMenuItemClick;
-  MsgCopyAllAndHiddenIDEMenuCommand.OnClick := @CopyAllAndHiddenMenuItemClick;
-  MsgSaveAllToFileIDEMenuCommand.OnClick := @SaveAllToFileMenuItemClick;
+  MsgHelpMenuItem.OnClick    := @HelpMenuItemClick;
+  MsgEditHelpMenuItem.OnClick:=@EditHelpMenuItemClick;
+  MsgClearMenuItem.OnClick   := @ClearMenuItemClick;
+  MsgCopyMenuItem.OnClick    := @CopyMenuItemClick;
+  MsgCopyAllMenuItem.OnClick := @CopyAllMenuItemClick;
+  MsgCopyAllAndHiddenMenuItem.OnClick := @CopyAllAndHiddenMenuItemClick;
+  MsgSaveAllToFileMenuItem.OnClick := @SaveAllToFileMenuItemClick;
 
   FMarklings:=TMessageViewMarklings.Create(Self);
   SourceEditorManagerIntf.RegisterMarklingProducer(FMarklings);
@@ -944,6 +942,11 @@ begin
   Clipboard.AsText := GetSelectedMessagesAsText;
 end;
 
+procedure TMessagesView.EditHelpMenuItemClick(Sender: TObject);
+begin
+  // ShowMessageHelpEditor;
+end;
+
 procedure TMessagesView.FormDeactivate(Sender: TObject);
 begin
   FLastSelectedIndex:=-1;
@@ -979,7 +982,7 @@ var
   QuickFixItem: TIDEMsgQuickFixItem;
   Msg: TLazMessageLine;
 begin
-  MsgQuickFixIDEMenuSection.Clear;
+  MsgQuickFixMenuSection.Clear;
   Msg:=GetMessageLine;
   FQuickFixItems.Clear;
   if Msg<>nil then begin
@@ -993,7 +996,7 @@ begin
     end;
     for i:=0 to FQuickFixItems.Count-1 do begin
       QuickFixItem:=TIDEMsgQuickFixItem(FQuickFixItems[i]);
-      RegisterIDEMenuCommand(MsgQuickFixIDEMenuSection,
+      RegisterIDEMenuCommand(MsgQuickFixMenuSection,
                              QuickFixItem.Name,
                              QuickFixItem.Caption,
                              @OnQuickFixClick);

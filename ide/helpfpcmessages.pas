@@ -62,7 +62,8 @@ type
   private
     fAdditions: TMessageHelpAdditions;
     FAdditionsChangeStep: integer;
-    FAdditionsFilename: string;
+    FAdditionsFile: string;
+    FDefaultAdditionsFile: string;
     FFPCTranslationFile: string;
     FDefaultNode: THelpNode;
     FFoundComment: string;
@@ -71,7 +72,7 @@ type
     FMsgFileChangeStep: integer;
     FMsgFilename: string;
     function GetAdditions(Index: integer): TMessageHelpAddition;
-    procedure SetAdditionsFilename(AValue: string);
+    procedure SetAdditionsFile(AValue: string);
     procedure SetFPCTranslationFile(const AValue: string);
     procedure SetFoundComment(const AValue: string);
     procedure SetLastMessage(const AValue: string);
@@ -89,15 +90,20 @@ type
     property DefaultNode: THelpNode read FDefaultNode;
     property LastMessage: string read FLastMessage write SetLastMessage;
     property FoundComment: string read FFoundComment write SetFoundComment;
+
+    // the FPC message file
     function GetMsgFile: TFPCMsgFile;
     property MsgFile: TFPCMsgFile read FMsgFile;
     property MsgFilename: string read FMsgFilename;
     property MsgFileChangeStep: integer read FMsgFileChangeStep;
+
+    // additional help for messages (they add an URL to the FPC comments)
     function AdditionsCount: integer;
     property Additions[Index: integer]: TMessageHelpAddition read GetAdditions;
-    property AdditionsFilename: string read FAdditionsFilename write SetAdditionsFilename;
     property AdditionsChangeStep: integer read FAdditionsChangeStep;
+    property DefaultAdditionsFile: string read FDefaultAdditionsFile;
   published
+    property AdditionsFile: string read FAdditionsFile write SetAdditionsFile;
     property FPCTranslationFile: string read FFPCTranslationFile
                                         write SetFPCTranslationFile;
   end;
@@ -106,11 +112,16 @@ type
 
   TEditIDEMsgHelpDialog = class(TForm)
     AddButton: TButton;
+    AdditionsFileEdit: TEdit;
+    AdditionsFileLabel: TLabel;
     ButtonPanel1: TButtonPanel;
     CurGroupBox: TGroupBox;
     CurMsgGroupBox: TGroupBox;
     CurMsgMemo: TMemo;
     DeleteButton: TButton;
+    FPCMsgFileEdit: TEdit;
+    FPCMsgFileLabel: TLabel;
+    GlobalOptionsGroupBox: TGroupBox;
     NameEdit: TEdit;
     NameLabel: TLabel;
     OnlyFPCMsgIDsLabel: TLabel;
@@ -126,11 +137,25 @@ type
   public
   end;
 
+function ShowMessageHelpEditor: TModalResult;
+
 procedure CreateFPCMessagesHelpDB;
 function AddFPCMessageHelpItem(const Title, URL, RegularExpression: string
                                ): THelpDBIRegExprMessage;
 
 implementation
+
+function ShowMessageHelpEditor: TModalResult;
+var
+  Editor: TEditIDEMsgHelpDialog;
+begin
+  Editor:=TEditIDEMsgHelpDialog.Create(nil);
+  try
+    Result:=Editor.ShowModal;
+  finally
+    Editor.Free;
+  end;
+end;
 
 procedure CreateFPCMessagesHelpDB;
 var
@@ -207,10 +232,10 @@ begin
   Result:=fAdditions[Index];
 end;
 
-procedure TFPCMessagesHelpDatabase.SetAdditionsFilename(AValue: string);
+procedure TFPCMessagesHelpDatabase.SetAdditionsFile(AValue: string);
 begin
-  if FAdditionsFilename=AValue then Exit;
-  FAdditionsFilename:=AValue;
+  if FAdditionsFile=AValue then Exit;
+  FAdditionsFile:=AValue;
   FAdditionsChangeStep:=CTInvalidChangeStamp;
 end;
 
@@ -223,8 +248,10 @@ end;
 constructor TFPCMessagesHelpDatabase.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  FDefaultAdditionsFile:='$(LazarusDir)/docs/additionalmsghelp.xml';
   fAdditions:=TMessageHelpAdditions.Create;
   FAdditionsChangeStep:=CTInvalidChangeStamp;
+  FAdditionsFile:=DefaultAdditionsFile;
   FMsgFileChangeStep:=CTInvalidChangeStamp;
   FDefaultNode:=THelpNode.CreateURL(Self,'FPC messages: Appendix',
      'http://lazarus-ccr.sourceforge.net/fpcdoc/user/userap3.html#x81-168000C');
@@ -281,12 +308,14 @@ procedure TFPCMessagesHelpDatabase.Load(Storage: TConfigStorage);
 begin
   inherited Load(Storage);
   FPCTranslationFile:=Storage.GetValue('FPCTranslationFile/Value','');
+  AdditionsFile:=Storage.GetValue('Additions/Filename',DefaultAdditionsFile);
 end;
 
 procedure TFPCMessagesHelpDatabase.Save(Storage: TConfigStorage);
 begin
   inherited Save(Storage);
   Storage.SetDeleteValue('FPCTranslationFile/Value',FPCTranslationFile,'');
+  Storage.SetDeleteValue('Additions/Filename',AdditionsFile,DefaultAdditionsFile);
 end;
 
 function TFPCMessagesHelpDatabase.GetMsgFile: TFPCMsgFile;
