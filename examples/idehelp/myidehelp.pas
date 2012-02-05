@@ -368,9 +368,9 @@ begin
     end;
     inc(DstIndex);
   end;
-  while DstIndex<=Dest.Count do begin
+  while Dest.Count>DstIndex do begin
     Result:=true;
-    Dest.Delete(Dest.Count);
+    Dest.Delete(Dest.Count-1);
   end;
 end;
 
@@ -896,7 +896,6 @@ end;
 
 procedure TMyFPCKeywordHelpDatabase.SetKeywordToText(AValue: TStrings);
 begin
-  debugln(['TMyFPCKeywordHelpDatabase.SetKeywordToText ']);
   if AssignTrimmedStrings(AValue,FKeywordToText) then
     Modified:=true;
 end;
