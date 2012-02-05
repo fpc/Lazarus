@@ -458,6 +458,7 @@ procedure UpdateNoteBookClientWidget(ANoteBook: TObject);
 function GetGtkNoteBookPageCount(ANoteBookWidget: PGtkNoteBook): integer;
 procedure RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);
 procedure UpdateNotebookPageTab(ANoteBook, APage: TObject);
+procedure UpdateNotebookTabFont(APage: TWinControl; AFont: TFont);
 
 // coordinate transformation
 function GetWidgetOrigin(TheWidget: PGtkWidget): TPoint;

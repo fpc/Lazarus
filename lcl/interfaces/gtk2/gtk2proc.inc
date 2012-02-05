@@ -4310,7 +4310,7 @@ begin
                                           PageWidget);
   if MenuWidget<>nil then begin
     MenuImageWidget:=gtk_object_get_data(PGtkObject(MenuWidget), 'TabImage');
-    MenuLabelWidget:=gtk_object_get_data(PGtkObject(MenuWidget), 'TabLabel');
+    MenuLabelWidget:=gtk_object_get_data(PGtkObject(MenuWidget), 'TabMenuLabel');
   end else begin
     MenuImageWidget:=nil;
     MenuLabelWidget:=nil;
@@ -4319,6 +4319,41 @@ begin
   UpdateTabImage;
   UpdateTabLabel;
   UpdateTabCloseBtn;
+end;
+
+procedure UpdateNotebookTabFont(APage: TWinControl; AFont: TFont);
+var
+  NoteBookWidget: PGtkWidget;
+  PageWidget: PGtkWidget;
+  TabWidget: PGtkWidget;
+  TabLabelWidget: PGtkWidget;
+begin
+
+  NoteBookWidget:=PGtkWidget((APage.Parent).Handle);
+  PageWidget:=PGtkWidget(APage.Handle);
+  TabWidget:=gtk_notebook_get_tab_label(PGtkNoteBook(NotebookWidget),
+                                        PageWidget);
+  if TabWidget<>nil then
+    TabLabelWidget:=gtk_object_get_data(PGtkObject(TabWidget), 'TabLabel')
+  else
+    TabLabelWidget:=nil;
+
+  // set new font to page
+  Gtk2WidgetSet.SetWidgetFont(PageWidget, AFont);
+  Gtk2WidgetSet.SetWidgetColor(PageWidget, AFont.Color, clNone,
+                            [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
+                             GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,
+                             GTK_STYLE_TEXT]);
+
+  // set new font to tab
+
+  if TabLabelWidget = nil then
+    exit;
+
+  Gtk2WidgetSet.SetWidgetFont(TabLabelWidget, AFont);
+  Gtk2WidgetSet.SetWidgetColor(TabLabelWidget, AFont.Color, clNone,
+    [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
+    GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
 end;
 
 

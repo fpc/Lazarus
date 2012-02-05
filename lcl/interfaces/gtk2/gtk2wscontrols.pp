@@ -715,7 +715,7 @@ class procedure TGtk2WSWinControl.SetText(const AWinControl: TWinControl;
     MenuWidget:=gtk_notebook_get_menu_label(PGtkNoteBook(NotebookWidget),
                                             PageWidget);
     if MenuWidget<>nil then
-      MenuLabelWidget:=gtk_object_get_data(PGtkObject(MenuWidget), 'TabLabel')
+      MenuLabelWidget:=gtk_object_get_data(PGtkObject(MenuWidget), 'TabMenuLabel')
     else
       MenuLabelWidget:=nil;
     // set new text

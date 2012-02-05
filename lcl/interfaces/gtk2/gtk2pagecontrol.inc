@@ -51,7 +51,6 @@ end;
 
 { TGtk2WSCustomTabControl }
 
-
 function NotebookPageRealToLCLIndex(const ATabControl: TCustomTabControl; AIndex: integer): integer;
 var
   I: Integer;
@@ -387,7 +386,7 @@ begin
   gtk_object_set_data(PGtkObject(MenuWidget), 'TabImage', nil);
   // put a label into the menu
   MenuLabelWidget := gtk_label_new('');
-  gtk_object_set_data(PGtkObject(MenuWidget), 'TabLabel', MenuLabelWidget);
+  gtk_object_set_data(PGtkObject(MenuWidget), 'TabMenuLabel', MenuLabelWidget);
   gtk_widget_show(MenuLabelWidget);
   gtk_box_pack_start_defaults(PGtkBox(MenuWidget), MenuLabelWidget);
 
@@ -402,6 +401,7 @@ begin
 
   UpdateNotebookPageTab(ATabControl, AChild);
   UpdateNoteBookClientWidget(ATabControl);
+  UpdateNotebookTabFont(AChild, AChild.Font);
 
   // init the size of the page widget
   //DebugLn(['TGtkWSCustomTabControl.AddPage ',DbgSName(ATabControl),' ',dbgs(ATabControl.BoundsRect)]);
@@ -657,6 +657,14 @@ class procedure TGtk2WSCustomPage.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 begin
   // ignore resizes from the LCL
+end;
+
+class procedure TGtk2WSCustomPage.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetFont') then
+    exit;
+  UpdateNotebookTabFont(AWinControl, AFont);
 end;
 
 class procedure TGtk2WSCustomPage.ShowHide(const AWinControl: TWinControl);

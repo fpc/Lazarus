@@ -68,6 +68,7 @@ type
       const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
     class function GetDefaultClientRect(const AWinControl: TWinControl;
              const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
