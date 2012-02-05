@@ -141,6 +141,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
     procedure Paint; override;
+    function Focused: Boolean; override;
     procedure AppDeactivated(Sender: TObject); // Because Form.Deactivate isn't called
     procedure Deactivate; override;
     procedure SelectPrec;
@@ -858,6 +859,11 @@ begin
     Canvas.LineTo(0, Height - 1);
     Canvas.LineTo(0, 0);
   end;
+end;
+
+function TSynBaseCompletionForm.Focused: Boolean;
+begin
+  Result:=(inherited Focused) or SizeDrag.Focused;
 end;
 
 procedure TSynBaseCompletionForm.AppDeactivated(Sender: TObject);
