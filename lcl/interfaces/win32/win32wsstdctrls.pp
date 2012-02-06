@@ -952,16 +952,9 @@ class procedure TWin32WSCustomComboBox.SetDropDownCount(
 var
   StringList: TWin32ComboBoxStringList;
 begin
-  if ThemeServices.ThemesEnabled then
-  // CB_SETMINVISIBLE is available,
-  // if the application specifies comctl32.dll version 6 in the manifest
-    SendMessage(ACustomComboBox.Handle, CB_SETMINVISIBLE, NewCount, 0)
-  else
-  begin
-    StringList := GetStringList(ACustomComboBox);
-    if StringList <> nil then
-      StringList.DropDownCount := NewCount;
-  end;
+  StringList := GetStringList(ACustomComboBox);
+  if StringList <> nil then
+    StringList.DropDownCount := NewCount;
 end;
 
 class procedure TWin32WSCustomComboBox.SetDroppedDown(
