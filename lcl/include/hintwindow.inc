@@ -41,6 +41,7 @@ begin
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
   FHideInterval := 3000;
+  FAutoHide := False;
   FAutoHideTimer := TCustomTimer.Create(self);
   FAutoHideTimer.Interval := HideInterval;
   FAutoHideTimer.Enabled := False;
@@ -56,7 +57,7 @@ end;
 procedure THintWindow.SetHideInterval(Value : Integer);
 Begin
   FHideInterval := Value;
-  if FAutoHideTimer<>nil then
+  if Assigned(FAutoHideTimer) then
     FAutoHideTimer.Interval := FHideInterval;
 end;
 
@@ -126,13 +127,13 @@ end;
 procedure THintWindow.SetAutoHide(Value : Boolean);
 Begin
   FAutoHide := Value;
-  if not (value) and (FAutoHideTimer<>nil) then
+  if not Value and Assigned(FAutoHideTimer) then
     FAutoHideTimer.Enabled := False;
 end;
 
 procedure THintWindow.AutoHideHint(Sender : TObject);
 begin
-  if FAutoHideTimer <> nil then
+  if Assigned(FAutoHideTimer) then
     FAutoHideTimer.Enabled := False;
   if Visible then
     Visible := False;
