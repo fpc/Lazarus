@@ -497,7 +497,10 @@ var
   settings: PGtkSettings;
 begin
   settings := gtk_widget_get_settings(PGtkWidget(Client));
-  g_object_get(settings, 'gtk-cursor-blink-time', @Result, nil);
+  Result := 1200; // default value of gtk-cursor-blink-timeout
+  // property valid since 2.12
+  if (gtk_major_version = 2) and (gtk_minor_version > 10) then
+    g_object_get(settings, 'gtk-cursor-blink-time', @Result, nil);
 end;
 
 function GTKAPIWidgetClient_GetCursorBlinkTimeout(Client: PGTKAPIWidgetClient): gint;
@@ -505,7 +508,10 @@ var
   settings: PGtkSettings;
 begin
   settings := gtk_widget_get_settings(PGtkWidget(Client));
-  g_object_get(settings, 'gtk-cursor-blink-timeout', @Result, nil);
+  Result := MaxInt; // default value of gtk-cursor-blink-timeout
+  // property valid since 2.12
+  if (gtk_major_version = 2) and (gtk_minor_version > 10) then
+    g_object_get(settings, 'gtk-cursor-blink-timeout', @Result, nil);
 end;
 
 procedure GTKAPIWidgetClient_DrawCaret(Client: PGTKAPIWidgetClient; CalledByTimer: boolean);
