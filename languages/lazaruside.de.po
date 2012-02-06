@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-01-08 17:50+0100\n"
+"PO-Revision-Date: 2012-02-05 18:28+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -60,7 +60,7 @@ msgstr "Kontextmenü"
 
 #: lazarusidestrconsts.dlfmousesimplebuttoncontextmenudbg
 msgid "Context Menu (debug)"
-msgstr ""
+msgstr "Kontextmenü (Debuggen)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
@@ -1916,7 +1916,7 @@ msgstr "Halbseitiges Scrollen"
 
 #: lazarusidestrconsts.dlgheapandstacksize
 msgid "Heap and stack sizes"
-msgstr ""
+msgstr "Heap- und Stackgrößen"
 
 #: lazarusidestrconsts.dlgheapsize
 #| msgid "Heap Size"
@@ -3375,7 +3375,6 @@ msgid "Open"
 msgstr "Öffnen"
 
 #: lazarusidestrconsts.dlgunitdepcaption
-#, fuzzy
 #| msgid "Unit dependencies"
 msgid "Unit Dependencies"
 msgstr "Unit-Abhängigkeiten"
@@ -3404,7 +3403,6 @@ msgid "Code Folding"
 msgstr "Codefaltung"
 
 #: lazarusidestrconsts.dlgusecustomconfig
-#, fuzzy
 #| msgid "Use additional Compiler Config File"
 msgid "Use additional compiler config file"
 msgstr "Zusätzliche Compiler-Konfigurationsdatei einbinden"
@@ -3415,7 +3413,6 @@ msgid "Divider Drawing"
 msgstr "Trennlinien"
 
 #: lazarusidestrconsts.dlgusefpccfg
-#, fuzzy
 #| msgid "Use standard Compiler Config File (fpc.cfg)"
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "Standard-Compilerkonfigurationsdatei (fpc.cfg) einbinden"
@@ -4302,7 +4299,7 @@ msgstr "Vor dem  Ersetzen immer nachfragen"
 
 #: lazarusidestrconsts.lisaskbeforesavingprojectssession
 msgid "Ask before saving project's session"
-msgstr ""
+msgstr "Vor dem Speichern der Projekt-Sitzungsinformationen nachfragen"
 
 #: lazarusidestrconsts.lisaskforcomponentnameafterputtingitonform
 msgid "Ask for component name after putting it on a designer form"
@@ -4802,7 +4799,6 @@ msgid "Empty procedures"
 msgstr "Leere Prozeduren"
 
 #: lazarusidestrconsts.liscefilter
-#, fuzzy
 #| msgid "(Filter)"
 msgid "(filter)"
 msgstr "(Filter)"
@@ -5139,7 +5135,7 @@ msgstr "Zeichentabelle"
 
 #: lazarusidestrconsts.lischeckfordiskfilechangesviacontentratherthantimesta
 msgid "Check for disk file changes via content rather than timestamp"
-msgstr ""
+msgstr "Dateiänderungen eher über den Inhalt als über den Zeitstempel ermitteln"
 
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
 msgid "check if the next token in source is an end and if not returns lineend + end; + lineend"
@@ -5171,7 +5167,7 @@ msgstr "Geben Sie den Namen der neuen Komponente an"
 
 #: lazarusidestrconsts.lischooseanexamplefile
 msgid "Choose an example file"
-msgstr ""
+msgstr "Wählen Sie eine Beispieldatei"
 
 #: lazarusidestrconsts.lischooseanfpcmessagefile
 msgid "Choose an FPC message file"
@@ -5490,7 +5486,7 @@ msgstr "Beispiel"
 
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
-msgstr ""
+msgstr "FPDoc-Einstellungen"
 
 #: lazarusidestrconsts.liscodehelphintboldformat
 msgid "Insert bold formatting tag"
@@ -5705,7 +5701,7 @@ msgstr "Knoten löschen"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectorydesc
 msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: C:/Programme/Borland/Delphi%s"
-msgstr "Das %s Hauptverzeichnis,%sin dem Borland alle %s Quellen installiert hat,%s.Beispielsweise C:/Programme/Borland/Delphi%s"
+msgstr "Das %s Hauptverzeichnis,%sin dem Borland alle %s Quellen installiert hat, %sBeispielsweise C:/Programme/Borland/Delphi%s"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectoryforproject
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: C:/Programme/Borland/Delphi%s"
@@ -6284,7 +6280,7 @@ msgstr "Altes Package-Set"
 
 #: lazarusidestrconsts.lisconflict
 msgid "Conflict"
-msgstr ""
+msgstr "Konflikt"
 
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
@@ -6699,7 +6695,6 @@ msgid "%s (various)"
 msgstr "%s (verschiedene)"
 
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
-#, fuzzy
 #| msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the Free Pascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
 msgstr "Warnung: Die zusätzliche Compilerkonfigurationsdatei besitzt den gleichen Namen wie eine der Standard-Konfigurationsdateien nach denen FPC sucht. Das kann dazu führen, daß NUR diese und nicht die Standard-Datei verwendet wird."
@@ -6734,11 +6729,11 @@ msgstr "Anlegen"
 
 #: lazarusidestrconsts.liscreatenewpackage
 msgid "(Create new package)"
-msgstr ""
+msgstr "(Neues Package erstellen)"
 
 #: lazarusidestrconsts.liscreatenewpackagecomponent
 msgid "Create new package component"
-msgstr ""
+msgstr "Neue Komponente erstellen in..."
 
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
@@ -7151,7 +7146,7 @@ msgstr "Prozeß"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmresetdebuggeroneachrun
 msgid "Reset Debugger after each run"
-msgstr ""
+msgstr "Debugger nach jedem Lauf zurücksetzen"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmresume
 msgid "Resume"
@@ -7179,7 +7174,7 @@ msgstr "Thread"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmuseeventlogcolors
 msgid "Use event log colors"
-msgstr ""
+msgstr "Ereignisprotokollfarben verwenden"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmwindows
 msgid "Windows"
@@ -7200,7 +7195,7 @@ msgstr "Dezimal"
 
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
-msgstr ""
+msgstr "(Vorgabe)"
 
 #: lazarusidestrconsts.lisdefaultvalue
 msgid "Default value"
@@ -7898,7 +7893,7 @@ msgstr "Umgebungsvariable, Name als Parameter"
 
 #: lazarusidestrconsts.lisenvjumpfrommessagetosrcondblclickotherwisesingleclick
 msgid "Jump from message to source line on double click (otherwise: single click)"
-msgstr "Von der Meldung zur Codezeile springen bei Doppelklick (ansonst: Klick)"
+msgstr "Von der Meldung zur Codezeile springen bei Doppelklick (sonst: Einfachklick)"
 
 #: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
@@ -8592,11 +8587,11 @@ msgstr "FPDoc Syntaxfehler"
 
 #: lazarusidestrconsts.lisfpdocpackagename
 msgid "FPDoc package name:"
-msgstr ""
+msgstr "FPDoc-Packagename:"
 
 #: lazarusidestrconsts.lisfpdocpackagenamedefaultisprojectfilename
 msgid "FPDoc package name. Default is project file name."
-msgstr ""
+msgstr "FPDoc-Packagename. Vorgabe ist der Projekt-Dateiname."
 
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
@@ -10271,7 +10266,6 @@ msgid "Options passed to compiler"
 msgstr "An den Compiler weitergereichte Einstellungen"
 
 #: lazarusidestrconsts.lislazbuildprofile
-#, fuzzy
 #| msgid "Profile to Build"
 msgid "Profile to build"
 msgstr "Profil zum Kompilieren"
@@ -10509,7 +10503,6 @@ msgid "Eval expression"
 msgstr "Ausdruck berechnen"
 
 #: lazarusidestrconsts.lislogmessage
-#, fuzzy
 #| msgid "Log message"
 msgid "Log Message"
 msgstr "Protokoll"
@@ -10747,10 +10740,9 @@ msgid "Close"
 msgstr "Schließen"
 
 #: lazarusidestrconsts.lismenucloseall
-#, fuzzy
 #| msgid "Close a&ll editor files"
 msgid "Close A&ll Editor Files"
-msgstr "Alle Editorfenster schließen"
+msgstr "A&lle Editorfenster schließen"
 
 #: lazarusidestrconsts.lismenucloseproject
 msgid "Close Project"
@@ -11089,7 +11081,6 @@ msgid "Current Date and Time"
 msgstr "Aktuelles Datum und Uhrzeit"
 
 #: lazarusidestrconsts.lismenuinsertfilename
-#, fuzzy
 #| msgid "Insert full Filename ..."
 msgid "Insert Full Filename ..."
 msgstr "Vollen Dateinamen einfügen ..."
@@ -11176,7 +11167,7 @@ msgstr "Ressourcenstring erzeugen ..."
 
 #: lazarusidestrconsts.lismenunewcomponent
 msgid "New component"
-msgstr ""
+msgstr "Neue Komponente"
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
@@ -11215,7 +11206,6 @@ msgid "&Open ..."
 msgstr "Öffnen ..."
 
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
-#, fuzzy
 #| msgid "Open filename at cursor"
 msgid "Open Filename at Cursor"
 msgstr "Datei unter Cursor öffnen"
@@ -11231,7 +11221,6 @@ msgid "Open Package File (.lpk) ..."
 msgstr "Package-Datei (.lpk) öffnen ..."
 
 #: lazarusidestrconsts.lismenuopenpackageofcurunit
-#, fuzzy
 #| msgid "Open package of current unit"
 msgid "Open Package of Current Unit"
 msgstr "Package der aktuellen Unit öffnen"
@@ -11286,7 +11275,7 @@ msgstr "Pause"
 
 #: lazarusidestrconsts.lismenupkgnewpackagecomponent
 msgid "New package component"
-msgstr ""
+msgstr "Neue Package-Komponente"
 
 #: lazarusidestrconsts.lismenuprocedurelist
 msgctxt "lazarusidestrconsts.lismenuprocedurelist"
@@ -12164,7 +12153,7 @@ msgstr "Keine Stringkonstante gefunden"
 
 #: lazarusidestrconsts.lisnotadesigntimepackage
 msgid "Not a designtime package"
-msgstr ""
+msgstr "Kein Entwicklungszeit-Package"
 
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
@@ -12532,7 +12521,7 @@ msgstr ", analysiert"
 
 #: lazarusidestrconsts.lispascalfile
 msgid "Pascal file"
-msgstr ""
+msgstr "Pascal-Datei"
 
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
@@ -12751,7 +12740,6 @@ msgid "Read Only: %s"
 msgstr "Schreibgeschützt: %s"
 
 #: lazarusidestrconsts.lispckeditrecompileallrequired
-#, fuzzy
 #| msgid "Recompile all required"
 msgid "Recompile All Required"
 msgstr "Alles Benötigte neu kompilieren"
@@ -12915,7 +12903,7 @@ msgstr "Beschreibung/Zusammenfassung"
 
 #: lazarusidestrconsts.lispckoptsdesigntime
 msgid "Designtime"
-msgstr ""
+msgstr "Entwicklungszeit"
 
 #: lazarusidestrconsts.lispckoptsdesigntimeandruntime
 #| msgid "Designtime and Runtime"
@@ -12983,7 +12971,7 @@ msgstr "Release"
 
 #: lazarusidestrconsts.lispckoptsruntime
 msgid "Runtime"
-msgstr ""
+msgstr "Laufzeit"
 
 #: lazarusidestrconsts.lispckoptsthepackagehastheautoinstallflagthismeans
 msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
@@ -13005,11 +12993,11 @@ msgstr "Bedienung"
 
 #: lazarusidestrconsts.lispckpackage
 msgid "Package:"
-msgstr ""
+msgstr "Package:"
 
 #: lazarusidestrconsts.lispcksearchpathsforfpdocxmlfilesmultiplepathsmustbesepa
 msgid "Search paths for fpdoc xml files. Multiple paths must be separated by semicolon."
-msgstr ""
+msgstr "Suchpfade für FPDoc-XML-Dateien. Mehrere Pfade müssen mit einem Semikolon getrennt werden."
 
 #: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
 msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
@@ -13697,7 +13685,7 @@ msgstr "Warnung: Die Datei %s%s%s%sgehört zum aktuellen Projekt."
 
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
-msgstr ""
+msgstr "Wählen Sie ein Package"
 
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
@@ -13725,7 +13713,7 @@ msgstr "Ungültiger Unit-Name: %s"
 
 #: lazarusidestrconsts.lispkgsyslpkfilename
 msgid "%s%slpk file: %s%s%s"
-msgstr ""
+msgstr "%s%slpk-Datei: %s%s%s"
 
 #: lazarusidestrconsts.lispkgsyspackagefilenotfound
 msgid "Package file not found"
@@ -13758,7 +13746,7 @@ msgstr "Die LCL (»Lazarus Component Library«) enthält alle Basiskomponten um 
 
 #: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
 msgid "%s%sThe lpk file was not found."
-msgstr ""
+msgstr "%s%sDie lpk-Datei wurde nicht gefunden."
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
 msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
@@ -14518,7 +14506,6 @@ msgid "Requires FPC 2.4 or above. Like Delphi resources"
 msgstr "Benötigt FPC 2.4 oder höher. Wie Delphi-Ressourcen"
 
 #: lazarusidestrconsts.lisrescan
-#, fuzzy
 msgid "Rescan"
 msgstr "Neuscan"
 
@@ -14602,7 +14589,7 @@ msgstr "Die Hostapplikation %s%s%s ist nicht ausführbar"
 
 #: lazarusidestrconsts.lisruntimeonlycannotbeinstalledinide
 msgid "Runtime only, can not be installed in IDE"
-msgstr ""
+msgstr "Nur für Laufzeit, kann nicht in der IDE installiert werden"
 
 #: lazarusidestrconsts.lisruntofailed
 msgid "Run-to failed"
@@ -14743,7 +14730,7 @@ msgstr "Suche nach"
 
 #: lazarusidestrconsts.lissearchpaths2
 msgid "Search paths"
-msgstr ""
+msgstr "Suchpfade"
 
 #: lazarusidestrconsts.lissearchprojectsfrom
 msgid "Search projects from"
@@ -14856,7 +14843,7 @@ msgstr "Kurz:"
 
 #: lazarusidestrconsts.lisshow
 msgid "Show"
-msgstr ""
+msgstr "Anzeigen"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
@@ -15553,7 +15540,7 @@ msgstr "Das Package enthält bereits eine Unit mit diesem Namen."
 
 #: lazarusidestrconsts.listhepackagecannotbeinstalledbecauseitrequireswhichi
 msgid "The package %s can not be installed, because it requires the package \"%s\", which is a runtime only package."
-msgstr ""
+msgstr "Das Package %s kann nicht installiert werden, weil es vom Package \"%s\" abhängt, welches ein Nur-Laufzeit-Package ist."
 
 #: lazarusidestrconsts.listhepackagecannotbeuninstalledbecauseitisneededbyth
 msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
@@ -15569,7 +15556,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listhepackageisnotadesigntimepackageitcannotbeinstall
 msgid "The package %s is not a design time package. It can not be installed in the IDE"
-msgstr ""
+msgstr "Das Package %s ist kein Entwicklungszeit-Package. Es kann nicht in der IDE installiert werden."
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
@@ -16915,11 +16902,11 @@ msgstr "Vorgabe-Größe"
 
 #: lazarusidestrconsts.rsiwpsplitterfollowwindow
 msgid "Restore with window"
-msgstr ""
+msgstr "Mit Fenster wiederherstellen"
 
 #: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
 msgid "Restore Size"
-msgstr ""
+msgstr "Größe wiederherstellen"
 
 #: lazarusidestrconsts.rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
