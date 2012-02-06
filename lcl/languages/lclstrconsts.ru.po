@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-02-04 19:32+0400\n"
+"PO-Revision-Date: 2012-02-07 00:12+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1237,17 +1237,17 @@ msgstr "Формат Tagged Image File"
 #: lclstrconsts.rstpanelaccessibilitydescription
 msgctxt "lclstrconsts.rstpanelaccessibilitydescription"
 msgid "Panel"
-msgstr ""
+msgstr "Панель"
 
 #: lclstrconsts.rstsplitteraccessibilitydescription
 msgctxt "lclstrconsts.rstsplitteraccessibilitydescription"
 msgid "A grip to control how much size to give the left and right parts of an area"
-msgstr ""
+msgstr "Захват для управления соотношением размеров областей слева и справа"
 
 #: lclstrconsts.rsttreeviewaccessibilitydescription
 msgctxt "lclstrconsts.rsttreeviewaccessibilitydescription"
 msgid "A tree of items"
-msgstr ""
+msgstr "Дерево элементов"
 
 #: lclstrconsts.rsunabletoloaddefaultfont
 msgid "Unable to load default font"

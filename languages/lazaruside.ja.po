@@ -7743,6 +7743,10 @@ msgstr ""
 msgid "Edit context help"
 msgstr "状況依存ヘルプを編集"
 
+#: lazarusidestrconsts.lisedithelp
+msgid "Edit help"
+msgstr ""
+
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
 msgstr ""

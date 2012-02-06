@@ -7399,6 +7399,10 @@ msgstr ""
 msgid "Edit context help"
 msgstr ""
 
+#: lazarusidestrconsts.lisedithelp
+msgid "Edit help"
+msgstr ""
+
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
 msgstr ""

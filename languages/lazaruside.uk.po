@@ -7656,6 +7656,10 @@ msgstr ""
 msgid "Edit context help"
 msgstr "Редагувати контекстну допомогу"
 
+#: lazarusidestrconsts.lisedithelp
+msgid "Edit help"
+msgstr ""
+
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
 msgstr "Файлові типи Редактора"
