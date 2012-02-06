@@ -117,6 +117,7 @@ begin
   FIcon.OnChange := @IconChanged;
   FNavigation := [anoTabToSelectNext,anoReturnForDefaultControl,
                   anoEscapeForCancelControl,anoF1ForHelp,anoArrowToSelectNextInParent];
+  FUpdateFormatSettings := True;
   ApplicationActionComponent:=Self;
   OnMenuPopupHandler:=@MenuPopupHandler;
   System.InitCriticalSection(FAsyncCall.CritSec);
@@ -1985,6 +1986,12 @@ begin
   i:=FApplicationHandlers[ahtDropFiles].Count;
   while FApplicationHandlers[ahtDropFiles].NextDownIndex(i) do
     TDropFilesEvent(FApplicationHandlers[ahtDropFiles][i])(Self,Filenames);
+end;
+
+procedure TApplication.IntfSettingsChange;
+begin
+  if FUpdateFormatSettings then
+    GetFormatSettings;
 end;
 
 procedure TApplication.IntfThemeOptionChange(AThemeServices: TThemeServices;

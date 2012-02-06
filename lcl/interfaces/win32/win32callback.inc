@@ -2165,6 +2165,8 @@ begin
         end;
       end;
     end;
+    WM_SETTINGCHANGE:
+      Application.IntfSettingsChange;
     WM_THEMECHANGED:
     begin
       // winxp theme changed, recheck whether themes are enabled

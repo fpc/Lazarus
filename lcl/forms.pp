@@ -1301,6 +1301,7 @@ type
     FBidiMode: TBiDiMode;
     FRestoreStayOnTop: TList;
     FTaskBarBehavior: TTaskBarBehavior;
+    FUpdateFormatSettings: Boolean;
     procedure DoOnIdleEnd;
     function GetActive: boolean;
     function GetCurrentHelpFile: string;
@@ -1455,6 +1456,7 @@ type
     procedure IntfAppMinimize;
     procedure IntfAppRestore;
     procedure IntfDropFiles(const FileNames: Array of String);
+    procedure IntfSettingsChange;
     procedure IntfThemeOptionChange(AThemeServices: TThemeServices; AOption: TThemeOption);
 
     function IsRTLLang(ALang: String): Boolean;
@@ -1492,6 +1494,7 @@ type
     property MoveFormFocusToChildren: Boolean read FMoveFormFocusToChildren write FMoveFormFocusToChildren default True;
     property MouseControl: TControl read FMouseControl;
     property TaskBarBehavior: TTaskBarBehavior read FTaskBarBehavior write SetTaskBarBehavior;
+    property UpdateFormatSettings: Boolean read FUpdateFormatSettings write FUpdateFormatSettings; platform;
     property OnActionExecute: TActionEvent read FOnActionExecute write FOnActionExecute;
     property OnActionUpdate: TActionEvent read FOnActionUpdate write FOnActionUpdate;
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
