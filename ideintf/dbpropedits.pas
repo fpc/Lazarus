@@ -23,7 +23,7 @@ unit DBPropEdits;
 interface
 
 uses
-  Classes, ObjInspStrConsts, PropEdits, Componenteditors, TypInfo, DB, SysUtils,
+  Classes, ObjInspStrConsts, PropEdits, ComponentEditors, TypInfo, DB, SysUtils,
   DbCtrls, DBGrids;
 
 type
@@ -57,6 +57,27 @@ type
 
 implementation
 
+procedure LoadDataSourceFields(DataSource: TDataSource; List: TStrings);
+var
+  DataSet: TDataSet;
+  i: Integer;
+begin
+  if Assigned(DataSource) then
+  begin
+    DataSet := DataSource.DataSet;
+    if Assigned(DataSet) then
+    begin
+      if DataSet.Fields.Count > 0 then
+        DataSet.GetFieldNames(List)
+      else
+      begin
+        for i := 0 to DataSet.FieldDefs.Count - 1 do
+          List.Add(DataSet.FieldDefs[i].Name);
+      end;
+    end;
+  end;
+end;
+
 { TFieldProperty }
 
 function TFieldProperty.GetAttributes: TPropertyAttributes;
@@ -83,8 +104,7 @@ var
   DataSource: TDataSource;
 begin
   DataSource := GetObjectProp(GetComponent(0), 'DataSource') as TDataSource;
-  if (DataSource is TDataSource) and Assigned(DataSource.DataSet) then
-    DataSource.DataSet.GetFieldNames(Values);
+  LoadDataSourceFields(DataSource, Values);
 end;
 
 { TDBGridFieldProperty }
@@ -93,15 +113,12 @@ procedure TDBGridFieldProperty.FillValues(const Values: TStringList);
 var
   Column: TColumn;
   Grid: TdbGrid;
-  DataSource: TDataSource;
 begin
   Column:=TColumn(GetComponent(0));
   if not (Column is TColumn) then exit;
   Grid:=TdbGrid(Column.Grid);
   if not (Grid is TdbGrid) then exit;
-  DataSource := Grid.DataSource;
-  if Assigned(DataSource) and Assigned(DataSource.DataSet) then
-    DataSource.DataSet.GetFieldNames(Values);
+  LoadDataSourceFields(Grid.DataSource, Values);
 end;
 
 { TDBGridComponentEditor }
@@ -134,8 +151,7 @@ var
   DataSource: TDataSource;
 begin
   DataSource := GetObjectProp(GetComponent(0), 'ListSource') as TDataSource;
-  if (DataSource is TDataSource) and Assigned(DataSource.DataSet) then
-    DataSource.DataSet.GetFieldNames(Values);
+  LoadDataSourceFields(DataSource, Values);
 end;
 
 initialization
