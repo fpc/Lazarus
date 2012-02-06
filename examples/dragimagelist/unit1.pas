@@ -95,7 +95,7 @@ begin
   FDragImages.Width := Bitmap.Width;
   FDragImages.Height := Bitmap.Height;
   FDragImages.Add(Bitmap, nil);
-  FDragImages.DragHotspot := Point(Bitmap.Width div 2, Bitmap.Height div 2);
+  FDragImages.DragHotspot := Point(Bitmap.Width, Bitmap.Height);
   Bitmap.Free;
 end;
 
