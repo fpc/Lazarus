@@ -15,10 +15,18 @@
 }
 //---------------------------------------------------------------
 
+{$IFDEF WithLazLogger}
+procedure TCDWidgetSet.AccumulatingDebugOut(ASender: TObject; AStr: string; var AHandled: Boolean);
+begin
+  AccumulatedStr := AccumulatedStr + AStr;
+  AHandled := True;
+end;
+{$ELSE}
 procedure TCDWidgetSet.AccumulatingDebugOut(AStr: string);
 begin
   AccumulatedStr := AccumulatedStr + AStr;
 end;
+{$ENDIF}
 
 procedure TCDWidgetSet.CDSetFocusToControl(ALCLControl, AIntfControl: TWinControl);
 var

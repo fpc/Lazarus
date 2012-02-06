@@ -465,11 +465,20 @@ procedure JNI_OnUnload(vm:PJavaVM;reserved:pointer); cdecl;
 begin
 end;
 
+{$IFDEF WithLazLogger}
+procedure TCDWidgetSet.AndroidDebugLn(ASender: TObject; AStr: string; var AHandled: Boolean);
+begin
+  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(AccumulatedStr+AStr));
+  AccumulatedStr := '';
+  AHandled := True;
+end;
+{$ELSE}
 procedure TCDWidgetSet.AndroidDebugLn(AStr: string);
 begin
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(AccumulatedStr+AStr));
   AccumulatedStr := '';
 end;
+{$ENDIF}
 
 function TCDWidgetSet.AndroidKeyCodeToLCLKeyCode(AAndroidKeyCode: Integer): Word;
 var
@@ -711,8 +720,13 @@ end;
 procedure TCDWidgetSet.BackendCreate;
 begin
   // Setup DebugLn
+  {$IFDEF WithLazLogger}
+  DebugLogger.DebugLnProc := @AndroidDebugLn;
+  DebugLogger.DbgOutProc := @AccumulatingDebugOut;
+  {$ELSE}
   DebugLnProc := @AndroidDebugLn;
   DebugOutProc := @AccumulatingDebugOut;
+  {$ENDIF}
 
   {$ifdef CD_UseNativeText}
   // Create the dummy screen DC

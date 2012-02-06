@@ -45,7 +45,7 @@ uses
   lazcanvas, lazregions, lazdeviceapis,
   InterfaceBase,
   Controls,  Forms, lclproc, IntfGraphics, GraphType,
-  LCLType, LMessages, Graphics, LCLStrConsts;
+  LCLType, LMessages, Graphics, LCLStrConsts, LazLogger;
 
 type
   {$ifdef CD_Windows}
@@ -147,7 +147,11 @@ type
     {$endif}
     {$ifdef CD_Android}
     CombiningAccent: Cardinal;
+    {$IFDEF WithLazLogger}
+    procedure AndroidDebugLn(ASender: TObject; AStr: string; var AHandled: Boolean);
+    {$ELSE}
     procedure AndroidDebugLn(AStr: string);
+    {$ENDIF}
     function AndroidKeyCodeToLCLKeyCode(AAndroidKeyCode: Integer): Word;
     {$endif}
     {$ifdef CD_Cocoa}
@@ -169,7 +173,11 @@ type
     // Mobile emulator and mobile mode
     MobileMainForm: TLCLIntfHandle;
     // For unusual implementations of DebugLn/DebugOut
+    {$IFDEF WithLazLogger}
+    procedure AccumulatingDebugOut(ASender: TObject; AStr: string; var AHandled: Boolean);
+    {$ELSE}
     procedure AccumulatingDebugOut(AStr: string);
+    {$ENDIF}
     //
     procedure CDSetFocusToControl(ALCLControl, AIntfControl: TWinControl);
   //

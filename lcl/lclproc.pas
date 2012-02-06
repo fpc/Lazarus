@@ -37,6 +37,7 @@ uses
   Win9xWsManager, // Support for Lower/UpperWideStringProc on Win9x, also used by some Utf8 string handling functions
   {$ENDIF}
   {$ENDIF}
+  {$IFDEF WithLazLogger} LazLogger, {$ENDIF}
   Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, FileUtil,
   LCLStrConsts, LCLType, WSReferences, LazMethodList, LazUTF8;
 
@@ -172,6 +173,49 @@ function StackTraceAsString(const AStack: TStackTracePointers;
                             UseCache: boolean): string;
 function GetLineInfo(Addr: Pointer; UseCache: boolean): string;
 
+{$IFDEF WithLazLogger}
+procedure DbgOut(const s: string = ''); inline; overload;
+procedure DbgOut(Args: array of const); inline; overload;
+procedure DbgOut(const S: String; Args: array of const); inline; overload;// similar to Format(s,Args)
+procedure DbgOut(const s1, s2: string; const s3: string = '';
+                 const s4: string = ''; const s5: string = ''; const s6: string = '';
+                 const s7: string = ''; const s8: string = ''; const s9: string = '';
+                 const s10: string = ''; const s11: string = ''; const s12: string = '';
+                 const s13: string = ''; const s14: string = ''; const s15: string = '';
+                 const s16: string = ''; const s17: string = ''; const s18: string = ''); inline; overload;
+
+procedure DebugLn(const s: string = ''); inline; overload;
+procedure DebugLn(Args: array of const); inline; overload;
+procedure DebugLn(const S: String; Args: array of const); inline; overload;// similar to Format(s,Args)
+procedure DebugLn(const s1, s2: string; const s3: string = '';
+                  const s4: string = ''; const s5: string = ''; const s6: string = '';
+                  const s7: string = ''; const s8: string = ''; const s9: string = '';
+                  const s10: string = ''; const s11: string = ''; const s12: string = '';
+                  const s13: string = ''; const s14: string = ''; const s15: string = '';
+                  const s16: string = ''; const s17: string = ''; const s18: string = ''); inline; overload;
+
+procedure DebugLnEnter(const s: string = ''); inline; overload;
+procedure DebugLnEnter(Args: array of const); inline; overload;
+procedure DebugLnEnter(s: string; Args: array of const); inline; overload;
+procedure DebugLnEnter(const s1, s2: string; const s3: string = '';
+                       const s4: string = ''; const s5: string = ''; const s6: string = '';
+                       const s7: string = ''; const s8: string = ''; const s9: string = '';
+                       const s10: string = ''; const s11: string = ''; const s12: string = '';
+                       const s13: string = ''; const s14: string = ''; const s15: string = '';
+                       const s16: string = ''; const s17: string = ''; const s18: string = ''); inline; overload;
+
+procedure DebugLnExit(const s: string = ''); inline; overload;
+procedure DebugLnExit(Args: array of const); inline; overload;
+procedure DebugLnExit(s: string; Args: array of const); inline; overload;
+procedure DebugLnExit (const s1, s2: string; const s3: string = '';
+                       const s4: string = ''; const s5: string = ''; const s6: string = '';
+                       const s7: string = ''; const s8: string = ''; const s9: string = '';
+                       const s10: string = ''; const s11: string = ''; const s12: string = '';
+                       const s13: string = ''; const s14: string = ''; const s15: string = '';
+                       const s16: string = ''; const s17: string = ''; const s18: string = ''); inline; overload;
+
+procedure CloseDebugOutput;
+{$ELSE}
 procedure DebugLn(Args: array of const); overload;
 procedure DebugLn(const S: String; Args: array of const); overload;// similar to Format(s,Args)
 procedure DebugLn; overload;
@@ -192,26 +236,24 @@ procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14: string);
 procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15: string); overload;
 procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16: string); overload;
 
-procedure DebugLnEnter(const s: string = nil); overload;
+procedure DebugLnEnter(const s: string = ''); overload;
 procedure DebugLnEnter(Args: array of const); overload;
 procedure DebugLnEnter(s: string; Args: array of const); overload;
-procedure DebugLnEnter(const s1, s2: string; const s3: string = nil;
-                     const s4: string = nil; const s5: string = nil; const s6: string = nil;
-                     const s7: string = nil; const s8: string = nil; const s9: string = nil;
-                     const s10: string = nil; const s11: string = nil; const s12: string = nil;
-                     const s13: string = nil; const s14: string = nil; const s15: string = nil;
-                     const s16: string = nil; const s17: string = nil; const s18: string = nil); overload;
-procedure DebugLnExit(const s: string = nil); overload;
+procedure DebugLnEnter(const s1, s2: string; const s3: string = '';
+                     const s4: string = ''; const s5: string = ''; const s6: string = '';
+                     const s7: string = ''; const s8: string = ''; const s9: string = '';
+                     const s10: string = ''; const s11: string = ''; const s12: string = '';
+                     const s13: string = ''; const s14: string = ''; const s15: string = '';
+                     const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
+procedure DebugLnExit(const s: string = ''); overload;
 procedure DebugLnExit(Args: array of const); overload;
 procedure DebugLnExit(s: string; Args: array of const); overload;
-procedure DebugLnExit (const s1, s2: string; const s3: string = nil;
-                     const s4: string = nil; const s5: string = nil; const s6: string = nil;
-                     const s7: string = nil; const s8: string = nil; const s9: string = nil;
-                     const s10: string = nil; const s11: string = nil; const s12: string = nil;
-                     const s13: string = nil; const s14: string = nil; const s15: string = nil;
-                     const s16: string = nil; const s17: string = nil; const s18: string = nil); overload;
-
-function ConvertLineEndings(const s: string): string;
+procedure DebugLnExit (const s1, s2: string; const s3: string = '';
+                     const s4: string = ''; const s5: string = ''; const s6: string = '';
+                     const s7: string = ''; const s8: string = ''; const s9: string = '';
+                     const s10: string = ''; const s11: string = ''; const s12: string = '';
+                     const s13: string = ''; const s14: string = ''; const s15: string = '';
+                     const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
 
 procedure DbgOut(const S: String; Args: array of const); overload;
 procedure DbgOut(const s: string); overload;
@@ -227,6 +269,10 @@ procedure DbgOut(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10: string); overload;
 procedure DbgOut(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11: string); overload;
 procedure DbgOut(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12: string); overload;
 
+procedure CloseDebugOutput;
+{$ENDIF}
+
+function ConvertLineEndings(const s: string): string;
 function DbgS(const c: cardinal): string; overload;
 function DbgS(const i: longint): string; overload;
 function DbgS(const i: int64): string; overload;
@@ -263,8 +309,6 @@ procedure DebuglnThreadLog; overload;
 procedure DbgSaveData(FileName: String; AData: PChar; ADataSize: PtrUInt);
 procedure DbgAppendToFile(FileName, S: String);
 procedure DbgAppendToFileWithoutLn(FileName, S: String);
-
-procedure CloseDebugOutput;
 
 // some string manipulation functions
 function StripLN(const ALine: String): String;
@@ -359,6 +403,7 @@ procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
 function CreateFirstIdentifier(const Identifier: string): string;
 function CreateNextIdentifier(const Identifier: string): string;
 
+{$IFnDEF WithLazLogger}
 type
   TDebugLnProc = procedure (s: string) of object;
 
@@ -369,6 +414,7 @@ var
 
   DebugLnProc: TDebugLnProc = nil;
   DebugOutProc: TDebugLnProc = nil;
+{$ENDIF}
 
 implementation
 
@@ -382,10 +428,12 @@ const
 var
   InterfaceInitializationHandlers: TFPList = nil;
   InterfaceFinalizationHandlers: TFPList = nil;
+  {$IFnDEF WithLazLogger}
   DebugTextAllocated: boolean;
   DebugNestLvl: Integer = 0;
   DebugNestPrefix: PChar = nil;
   DebugNestAtBOL: Boolean;
+  {$ENDIF}
   LineInfoCache: TAvgLvlTree = nil;
 
 function DeleteAmpersands(var Str : String) : Longint;
@@ -845,12 +893,6 @@ begin
   Frames:=ExceptFrames;
   for FrameNumber := 0 to FrameCount-1 do
     DumpAddr(Frames[FrameNumber]);
-end;
-
-procedure DumpStack;
-begin
-  if Assigned(DebugText) then
-    Dump_Stack(DebugText^, get_frame);
 end;
 
 function GetStackTrace(UseCache: boolean): string;
@@ -1356,6 +1398,114 @@ end;
 
 // Debug funcs :
 
+{$IFDEF WithLazLogger}
+procedure DumpStack;
+begin
+  DebugLogger.DebuglnStack;
+end;
+
+procedure CloseDebugOutput;
+begin
+  DebugLogger.Finish;
+end;
+
+procedure DbgOut(const s: string);
+begin
+  DebugLogger.DbgOut(s);
+end;
+
+procedure DbgOut(Args: array of const);
+begin
+  DebugLogger.DbgOut(Args);
+end;
+
+procedure DbgOut(const S: String; Args: array of const);
+begin
+  DebugLogger.DbgOut(S, Args);
+end;
+
+procedure DbgOut(const s1, s2: string; const s3: string; const s4: string; const s5: string;
+  const s6: string; const s7: string; const s8: string; const s9: string; const s10: string;
+  const s11: string; const s12: string; const s13: string; const s14: string;
+  const s15: string; const s16: string; const s17: string; const s18: string);
+begin
+  DebugLogger.DbgOut(s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18);
+end;
+
+procedure DebugLn(const s: string);
+begin
+  DebugLogger.DebugLn(s);
+end;
+
+procedure DebugLn(Args: array of const);
+begin
+  DebugLogger.DebugLn(Args);
+end;
+
+procedure DebugLn(const S: String; Args: array of const);
+begin
+  DebugLogger.DebugLn(S, Args);
+end;
+
+procedure DebugLn(const s1, s2: string; const s3: string; const s4: string; const s5: string;
+  const s6: string; const s7: string; const s8: string; const s9: string; const s10: string;
+  const s11: string; const s12: string; const s13: string; const s14: string;
+  const s15: string; const s16: string; const s17: string; const s18: string);
+begin
+  DebugLogger.DebugLn(s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18);
+end;
+
+procedure DebugLnEnter(const s: string);
+begin
+  DebugLogger.DebugLnEnter(s);
+end;
+
+procedure DebugLnEnter(Args: array of const);
+begin
+  DebugLogger.DebugLnEnter(Args);
+end;
+
+procedure DebugLnEnter(s: string; Args: array of const);
+begin
+  DebugLogger.DebugLnEnter(s, Args);
+end;
+
+procedure DebugLnEnter(const s1, s2: string; const s3: string; const s4: string;
+  const s5: string; const s6: string; const s7: string; const s8: string; const s9: string;
+  const s10: string; const s11: string; const s12: string; const s13: string;
+  const s14: string; const s15: string; const s16: string; const s17: string;
+  const s18: string);
+begin
+  DebugLogger.DebugLnEnter(s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18);
+end;
+
+procedure DebugLnExit(const s: string);
+begin
+  DebugLogger.DebugLnExit(s);
+end;
+
+procedure DebugLnExit(Args: array of const);
+begin
+  DebugLogger.DebugLnExit(Args);
+end;
+
+procedure DebugLnExit(s: string; Args: array of const);
+begin
+  DebugLogger.DebugLnExit(s, Args);
+end;
+
+procedure DebugLnExit(const s1, s2: string; const s3: string; const s4: string;
+  const s5: string; const s6: string; const s7: string; const s8: string; const s9: string;
+  const s10: string; const s11: string; const s12: string; const s13: string;
+  const s14: string; const s15: string; const s16: string; const s17: string;
+  const s18: string);
+begin
+  DebugLogger.DebugLnExit(s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18);
+end;
+
+
+{$ELSE}
+
 procedure InitializeDebugOutput;
 var
   DebugFileName: string;
@@ -1434,6 +1584,49 @@ end;
 procedure FinalizeDebugOutput;
 begin
   CloseDebugOutput;
+end;
+
+procedure DebugLnNestCreatePrefix;
+const
+  CurrentLen: Integer = 0;
+var
+  s: String;
+  NewLen: Integer;
+begin
+  NewLen := DebugNestLvl * DebugLnNestLvlIndent;
+  if NewLen < 0 then NewLen := 0;
+  if (NewLen >= DebugLnMaxNestPrefixLen) then begin
+    NewLen := DebugLnMaxNestPrefixLen;
+    s := IntToStr(DebugNestLvl);
+    if length(s)+1 > NewLen then
+      NewLen := length(s)+1;
+  end else
+    s := '';
+
+  if NewLen > CurrentLen then
+    ReAllocMem(DebugNestPrefix, NewLen+21);
+  CurrentLen := NewLen+20;
+
+  FillChar(DebugNestPrefix^, NewLen, ' ');
+  if s <> '' then
+    System.Move(s[1], DebugNestPrefix[0], length(s));
+
+  if (NewLen >= DebugLnMaxNestPrefixLen) then
+    DebugNestPrefix[DebugLnMaxNestPrefixLen] := #0
+  else
+    DebugNestPrefix[NewLen] := #0;
+end;
+
+procedure DebugLnNestFreePrefix;
+begin
+  if DebugNestPrefix <> nil then
+    ReAllocMem(DebugNestPrefix, 0);
+end;
+
+procedure DumpStack;
+begin
+  if Assigned(DebugText) then
+    Dump_Stack(DebugText^, get_frame);
 end;
 
 procedure DebugLn(Args: array of const);
@@ -1586,43 +1779,6 @@ begin
   DebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12+s13+s14+s15+s16);
 end;
 
-procedure DebugLnNestCreatePrefix;
-const
-  CurrentLen: Integer = 0;
-var
-  s: String;
-  NewLen: Integer;
-begin
-  NewLen := DebugNestLvl * DebugLnNestLvlIndent;
-  if NewLen < 0 then NewLen := 0;
-  if (NewLen >= DebugLnMaxNestPrefixLen) then begin
-    NewLen := DebugLnMaxNestPrefixLen;
-    s := IntToStr(DebugNestLvl);
-    if length(s)+1 > NewLen then
-      NewLen := length(s)+1;
-  end else
-    s := '';
-
-  if NewLen > CurrentLen then
-    ReAllocMem(DebugNestPrefix, NewLen+21);
-  CurrentLen := NewLen+20;
-
-  FillChar(DebugNestPrefix^, NewLen, ' ');
-  if s <> '' then
-    System.Move(s[1], DebugNestPrefix[0], length(s));
-
-  if (NewLen >= DebugLnMaxNestPrefixLen) then
-    DebugNestPrefix[DebugLnMaxNestPrefixLen] := #0
-  else
-    DebugNestPrefix[NewLen] := #0;
-end;
-
-procedure DebugLnNestFreePrefix;
-begin
-  if DebugNestPrefix <> nil then
-    ReAllocMem(DebugNestPrefix, 0);
-end;
-
 procedure DebugLnEnter(const s: string);
 begin
   if not DebugNestAtBOL then
@@ -1689,33 +1845,6 @@ procedure DebugLnExit(const s1: string; const s2: string; const s3: string;
   const s16: string; const s17: string; const s18: string);
 begin
   DebugLnExit(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12+s13+s14+s15+s16+s17+s18);
-end;
-
-function ConvertLineEndings(const s: string): string;
-var
-  i: Integer;
-  EndingStart: LongInt;
-begin
-  Result:=s;
-  i:=1;
-  while (i<=length(Result)) do begin
-    if Result[i] in [#10,#13] then begin
-      EndingStart:=i;
-      inc(i);
-      if (i<=length(Result)) and (Result[i] in [#10,#13])
-      and (Result[i]<>Result[i-1]) then begin
-        inc(i);
-      end;
-      if (length(LineEnding)<>i-EndingStart)
-      or (LineEnding<>copy(Result,EndingStart,length(LineEnding))) then begin
-        // line end differs => replace with current LineEnding
-        Result:=
-          copy(Result,1,EndingStart-1)+LineEnding+copy(Result,i,length(Result));
-        i:=EndingStart+length(LineEnding);
-      end;
-    end else
-      inc(i);
-  end;
 end;
 
 procedure DbgOut(const S: String; Args: array of const);
@@ -1798,6 +1927,34 @@ end;
 procedure DbgOut(const s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12: string);
 begin
   DbgOut(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12);
+end;
+{$ENDIF}
+
+function ConvertLineEndings(const s: string): string;
+var
+  i: Integer;
+  EndingStart: LongInt;
+begin
+  Result:=s;
+  i:=1;
+  while (i<=length(Result)) do begin
+    if Result[i] in [#10,#13] then begin
+      EndingStart:=i;
+      inc(i);
+      if (i<=length(Result)) and (Result[i] in [#10,#13])
+      and (Result[i]<>Result[i-1]) then begin
+        inc(i);
+      end;
+      if (length(LineEnding)<>i-EndingStart)
+      or (LineEnding<>copy(Result,EndingStart,length(LineEnding))) then begin
+        // line end differs => replace with current LineEnding
+        Result:=
+          copy(Result,1,EndingStart-1)+LineEnding+copy(Result,i,length(Result));
+        i:=EndingStart+length(LineEnding);
+      end;
+    end else
+      inc(i);
+  end;
 end;
 
 function DbgS(const c: cardinal): string;
@@ -3149,7 +3306,7 @@ begin
 end;
 
 initialization
-  InitializeDebugOutput;
+  {$IFnDEF WithLazLogger} InitializeDebugOutput; {$ENDIF}
   {$ifdef WinCE}
   // The stabs based back trace function crashes on wince,
   // see http://bugs.freepascal.org/view.php?id=14330
@@ -3172,7 +3329,9 @@ finalization
   DebugLCLComponents:=nil;
   {$ENDIF}
   FreeLineInfoCache;
+  {$IFnDEF WithLazLogger}
   FinalizeDebugOutput;
   DebugLnNestFreePrefix;
+  {$ENDIF}
 
 end.
