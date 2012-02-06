@@ -402,11 +402,6 @@ begin
       end;
     WM_PRINTCLIENT:
       Exit(CallDefaultWindowProc(Window, Msg, WParam, LParam));
-    WM_SIZE:
-      begin
-        WindowInfo := GetWin32WindowInfo(Window);
-        WindowInfo^.WinControl.Constraints.UpdateInterfaceConstraints;
-      end;
     WM_MEASUREITEM:
       begin
         WindowInfo := GetWin32WindowInfo(Window);
