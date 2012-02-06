@@ -419,15 +419,11 @@ end;
 
 procedure TWin32ComboBoxStringList.UpdateComboHeight;
 var
-  Left, Top, Width, Height: integer;
+  Width, Height: integer;
 begin
-  Left := FSender.Left;
-  Top := FSender.Top;
   Width := FSender.Width;
   Height := ComboHeight;
-  LCLBoundsToWin32Bounds(FSender, Left, Top, Width, Height);
-  MoveWindow(FSender.Handle, Left, Top, Width, Height, true);
-  LCLControlSizeNeedsUpdate(FSender, true);
+  SetWindowPos(FSender.Handle, 0, 0, 0, Width, Height, SWP_NOZORDER or SWP_NOACTIVATE or SWP_NOMOVE);
 end;
 
 procedure TWin32ComboBoxStringList.Clear;
