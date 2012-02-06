@@ -402,7 +402,7 @@ function TWin32ComboBoxStringList.GetComboHeight: integer;
 var
   R: TRect;
 begin
-  if (FSender is TCustomComboBox) and (TCustomComboBox(FSender).Style = csSimple) then
+  if TCustomComboBox(FSender).Style = csSimple then
   begin
     // combobox workaround:
     // if style = csSimple follow the LCL height.
