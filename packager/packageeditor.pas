@@ -1463,6 +1463,26 @@ function TPackageEditorForm.ShowAddDialog(var DlgPage: TAddToPkgType
 var
   IgnoreUnitPaths, IgnoreIncPaths: TFilenameToStringTree;
 
+  function PkgDependsOn(PkgName: string): boolean;
+  var
+    List: TFPList;
+    i: Integer;
+  begin
+    if PkgName='' then exit;
+    List:=nil;
+    try
+      LazPackage.GetAllRequiredPackages(List,true);
+      if (List<>nil) then begin
+        for i:=0 to List.Count-1 do
+          if SysUtils.CompareText(TLazPackage(List[i]).Name,PkgName)=0 then
+            exit(true);
+      end;
+    finally
+      List.Free;
+    end;
+    Result:=false;
+  end;
+
   procedure AddUnit(AddParams: TAddToPkgResult);
   var
     NewLFMFilename: String;
@@ -1516,11 +1536,10 @@ var
                                               PkgFileFlags,cpNormal);
     // add dependency
     if (AddParams.Dependency<>nil)
-    and (LazPackage.FindDependencyByName(AddParams.Dependency.PackageName)=nil)
-    then
+    and (not PkgDependsOn(AddParams.Dependency.PackageName)) then
       PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
     if (AddParams.IconFile<>'')
-    and (LazPackage.FindDependencyByName('LCL')=nil) then
+    and (not PkgDependsOn('LCL')) then
       PackageGraph.AddDependencyToPackage(LazPackage,PackageGraph.LCLPackage);
     PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
     // open file in editor
