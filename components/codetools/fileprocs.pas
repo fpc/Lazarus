@@ -1800,8 +1800,7 @@ end;
 
 procedure DebugLn(const s: string);
 begin
-  if TextRec(Output).Mode<>fmClosed then
-    writeln(s);
+  DbgOut(s+LineEnding);
 end;
 
 procedure DebugLn(const s1, s2: string);
