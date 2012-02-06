@@ -15394,7 +15394,7 @@ begin
 
   // jump to error in source editor
   if CodeToolBoss.ErrorCode<>nil then begin
-    ErrorCaret:=Point(CodeToolBoss.ErrorColumn,CodeToolBoss.ErrorLine);
+    ErrorCaret:=Point(Max(1,CodeToolBoss.ErrorColumn),Max(1,CodeToolBoss.ErrorLine));
     ErrorFilename:=CodeToolBoss.ErrorCode.Filename;
     ErrorTopLine:=CodeToolBoss.ErrorTopLine;
     SourceEditorManager.AddJumpPointClicked(Self);
