@@ -82,6 +82,7 @@ begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle - [csCaptureMouse];
   FAutoSort := True;
+  FAutoWidthLastColumn := False;
   FSortDirection := sdAscending;
   FIconOptions := TIconOptions.Create(Self);
   FColumns := TListColumns.Create(Self);
@@ -450,6 +451,13 @@ begin
   if Assigned(FOnSelectItem) and
     ([lffItemsMoving, lffItemsSorting] * FFlags = []) then
       FOnSelectItem(Self, AItem, ASelected);
+end;
+
+procedure TCustomListView.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
+begin
+  inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
+  if AutoWidthLastColumn then
+    ResizeLastColumn;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1041,6 +1049,61 @@ begin
   FAllocBy := AValue;
   if not HandleAllocated then Exit;
   TWSCustomListViewClass(WidgetSetClass).SetAllocBy(Self, AValue);
+end;
+
+procedure TCustomListView.ResizeLastColumn;
+var
+  i: Integer;
+  LastVisibleColumn: Integer;
+  Accu: Integer;
+  W: Integer;
+  NewWidth: Integer;
+begin
+  if not (ViewStyle in [vsList, vsReport]) or (ColumnCount = 0) then
+    exit;
+  LastVisibleColumn := -1;
+
+  // find last visible column
+  for i := ColumnCount - 1 downto 0 do
+  begin
+    if Column[i].Visible then
+    begin
+      LastVisibleColumn := i;
+      break;
+    end;
+  end;
+
+  // calculate size and apply it only if it's > 0
+  if LastVisibleColumn >= 0 then
+  begin
+    //TODO: gtk2 doesnt return correct ClientWidth. win32 and qt works ok.
+    W := ClientWidth - (BorderWidth * 2);
+    Accu := 0;
+    for i := 0 to LastVisibleColumn - 1 do
+    begin
+      if Column[i].Visible then
+        Accu := Accu + Column[i].Width;
+    end;
+    NewWidth := W - Accu;
+    if NewWidth > 0 then
+    begin
+      // now set AutoSize and MinWidth/MaxWidth to 0
+      Column[LastVisibleColumn].AutoSize := False;
+      Column[LastVisibleColumn].MinWidth := 0;
+      Column[LastVisibleColumn].MaxWidth := 0;
+      Column[LastVisibleColumn].Width := NewWidth;
+    end;
+  end;
+end;
+
+procedure TCustomListView.SetAutoWidthLastColumn(AValue: Boolean);
+var
+  i: Integer;
+begin
+  if FAutoWidthLastColumn=AValue then Exit;
+  FAutoWidthLastColumn:=AValue;
+  if FAutoWidthLastColumn then
+    ResizeLastColumn;
 end;
 
 procedure TCustomListView.SetDefaultItemHeight(AValue: Integer);

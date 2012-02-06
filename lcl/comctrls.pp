@@ -1232,6 +1232,7 @@ type
   private
     FAllocBy: Integer;
     FAutoSort: Boolean;
+    FAutoWidthLastColumn: Boolean;
     FCanvas: TCanvas;
     FDefaultItemHeight: integer;
     FHotTrackStyles: TListHotTrackStyles;
@@ -1289,7 +1290,9 @@ type
     function GetViewOrigin: TPoint;
     function GetVisibleRowCount: Integer;
 
+    procedure ResizeLastColumn;
     procedure SetAllocBy(const AValue: Integer);
+    procedure SetAutoWidthLastColumn(AValue: Boolean);
     procedure SetColumns(const AValue: TListColumns);
     procedure SetDefaultItemHeight(AValue: Integer);
     procedure SetDropTarget(const AValue: TListItem);
@@ -1335,6 +1338,7 @@ type
     procedure DoInsert(AItem: TListItem); virtual;
     procedure DoItemChecked(AItem: TListItem);
     procedure DoSelectItem(AItem: TListItem; ASelected: Boolean); virtual;
+    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure InsertItem(Item : TListItem);
     procedure ImageChanged(Sender : TObject);
     procedure Loaded; override;
@@ -1351,6 +1355,7 @@ type
   protected
     property AllocBy: Integer read FAllocBy write SetAllocBy default 0;
     property AutoSort: Boolean read FAutoSort write FAutoSort default True; // when we click header column sort automatically
+    property AutoWidthLastColumn: Boolean read FAutoWidthLastColumn write SetAutoWidthLastColumn default False; // resize last column to fit width of TListView
     property ColumnClick: Boolean index Ord(lvpColumnClick) read GetProperty write SetProperty default True;
     property Columns: TListColumns read FColumns write SetColumns;
     property DefaultItemHeight: integer read FDefaultItemHeight write SetDefaultItemHeight;
@@ -1435,6 +1440,7 @@ type
     property AllocBy;
     property Anchors;
     property AutoSort;
+    property AutoWidthLastColumn: Boolean read FAutoWidthLastColumn write SetAutoWidthLastColumn default False; // resize last column to fit width of TListView
     property BorderSpacing;
     property BorderStyle;
     property BorderWidth;
