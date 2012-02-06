@@ -5010,7 +5010,7 @@ var
   IgnorePos: TCodePosition;
   Node: TCodeTreeNode;
 begin
-  //DebugLn(['TPascalParserTool.BuildTreeAndGetCleanPos ',MainFilename,' btSetIgnoreErrorPos=',btSetIgnoreErrorPos in BuildTreeFlags,' btKeepIgnoreErrorPos=',btKeepIgnoreErrorPos in BuildTreeFlags,' CursorPos=x=',CursorPos.X,',y=',CursorPos.Y]);
+  //DebugLn(['TPascalParserTool.BuildTreeAndGetCleanPos ',MainFilename,' btSetIgnoreErrorPos=',btSetIgnoreErrorPos in BuildTreeFlags,' btKeepIgnoreErrorPos=',btKeepIgnoreErrorPos in BuildTreeFlags,' CursorPos=',dbgs(CursorPos)]);
   if (btSetIgnoreErrorPos in BuildTreeFlags) then begin
     // ignore errors after cursor position
     if (CursorPos.Code<>nil) then begin

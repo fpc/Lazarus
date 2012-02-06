@@ -328,6 +328,8 @@ type
       ClearNicePos: boolean = true); virtual;
     procedure RaiseExceptionFmt(const AMessage: string;
       const args: array of const; ClearNicePos: boolean = true);
+    procedure RaiseExceptionAtErrorPos(const AMessage: string;
+      ClearNicePos: boolean = true); virtual;
     // permanent errors, that the parser will raise again
     procedure SaveRaiseException(const AMessage: string;
       ClearNicePos: boolean = true); virtual;
@@ -350,6 +352,7 @@ type
       ): TCodeTreeNodeParseError;
     procedure RaiseNodeParserError(Node: TCodeTreeNode;
       CheckIgnoreErrorPos: boolean = true);
+    procedure RaiseCursorOutsideCode(CursorPos: TCodeXYPosition);
     property OnParserProgress: TOnParserProgress
       read FOnParserProgress write FOnParserProgress;
 
@@ -433,6 +436,18 @@ procedure TCustomCodeTool.RaiseExceptionFmt(const AMessage: string;
   const args: array of const; ClearNicePos: boolean);
 begin
   RaiseException(Format(AMessage,args),ClearNicePos);
+end;
+
+procedure TCustomCodeTool.RaiseExceptionAtErrorPos(const AMessage: string;
+  ClearNicePos: boolean);
+begin
+  if ClearNicePos then
+    ErrorNicePosition:=CleanCodeXYPosition;
+  // raise the exception
+  if not RaiseUnhandableExceptions then
+    raise ECodeToolError.Create(Self,AMessage)
+  else
+    RaiseCatchableException(AMessage);
 end;
 
 procedure TCustomCodeTool.SaveRaiseException(const AMessage: string;
@@ -2177,6 +2192,86 @@ begin
   RaiseException(NodeError.Msg,false);
 end;
 
+procedure TCustomCodeTool.RaiseCursorOutsideCode(CursorPos: TCodeXYPosition);
+var
+  Msg: String;
+  p: integer;
+  CleanPos: integer;
+  r: Integer;
+  i: Integer;
+  Link: TSourceLink;
+  NearestScanPos: Integer;
+  Node: TCodeTreeNode;
+  LastPos: Integer;
+begin
+  ErrorPosition:=CursorPos;
+  // check position in code buffer
+  if CursorPos.Code=nil then
+    Msg:='cursor position without code buffer'
+  else if (CursorPos.Y<1) or (CursorPos.Y>CursorPos.Code.LineCount+1) then
+    Msg:='invalid line number '+IntToStr(CursorPos.Y)
+  else if (CursorPos.X<1) then
+    Msg:='invalid column number '+IntToStr(CursorPos.Y)
+  else begin
+    CursorPos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,p);
+    if p<1 then
+      Msg:='cursor position is outside of code'
+    else begin
+      // check position in scanner
+      if Scanner=nil then
+        Msg:='missing scanner (called wrong or no pascal)'
+      else begin
+        r:=Scanner.CursorToCleanPos(p,CursorPos.Code,CleanPos);
+        if r<>0 then begin
+          NearestScanPos:=0;
+          for i:=0 to Scanner.LinkCount-1 do begin
+            Link:=Scanner.Links[i];
+            if Link.Code<>Pointer(CursorPos.Code) then continue;
+            if Link.SrcPos>p then continue;
+            NearestScanPos:=Link.SrcPos+Scanner.LinkSize(i);
+          end;
+          if NearestScanPos=0 then
+            Msg:='file was not reached by scanned'
+          else begin
+            if r=-1 then
+              Msg:='cursor position was skipped by scanner'
+            else
+              Msg:='cursor position is beyond scan range';
+            Msg:=Msg+' (last at '+CursorPos.Code.AbsoluteToLineColStr(NearestScanPos)+')'
+          end;
+        end else begin
+          // check position in tree
+          if (Tree=nil) or (Tree.Root=nil) then
+            Msg:='No pascal found (maybe function was called before BuildTree)'
+          else if CleanPos<Tree.Root.StartPos then begin
+            // in front of parsed code
+            Msg:='In front of code.';
+            if Tree.Root.StartPos<=SrcLen then begin
+              MoveCursorToCleanPos(Tree.Root.StartPos);
+              ReadNextAtom;
+              Msg:=Msg+' (pascal code starts with "'+GetAtom+'" at '
+                      +CleanPosToStr(Tree.Root.StartPos)+')';
+            end else begin
+              Node:=Tree.Root;
+              while Node.NextBrother<>nil do Node:=Node.NextBrother;
+              if (Node.EndPos>0) and (p>Node.EndPos) then
+                LastPos:=Node.EndPos
+              else
+                LastPos:=Node.StartPos;
+              if p>LastPos then begin
+                Msg:='behind code (parser stopped at '+CleanPosToStr(LastPos)+')';
+              end else begin
+                Msg:='inconsistency: the position is in code, but caller thinks it is not.'
+              end;
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
+  RaiseExceptionAtErrorPos(Msg);
+end;
+
 function TCustomCodeTool.StringIsKeyWord(const Word: string): boolean;
 begin
   Result:=(Word<>'') and IsIdentStartChar[Word[1]]
@@ -2380,8 +2475,10 @@ begin
   // raise the exception
   if not RaiseUnhandableExceptions then
     raise TheException
-  else
+  else begin
+    TheException.Free;
     RaiseCatchableException(TheException.Message);
+  end;
 end;
 
 procedure TCustomCodeTool.RaiseExceptionClass(const AMessage: string;
@@ -2502,20 +2599,23 @@ function TCustomCodeTool.FindDeepestNodeAtPos(StartNode: TCodeTreeNode;
     MoveCursorToCleanPos(P);
     // check if p is in parsed code
     if (Tree=nil) or (Tree.Root=nil) then begin
+      debugln(['TCustomCodeTool.FindDeepestNodeAtPos there are no nodes, maybe you forgot to parse?']);
       CTDumpStack;
       RaiseException('no pascal code or not yet parsed');
     end;
     if p<Tree.Root.StartPos then begin
+      // in front of parsed code
       Msg:='In front of code.';
       if Tree.Root.StartPos<=SrcLen then begin
         MoveCursorToCleanPos(Tree.Root.StartPos);
         ReadNextAtom;
-        Msg:=Msg+' The pascal code starts with "'+GetAtom+'" at '
-                +CleanPosToStr(Tree.Root.StartPos)+'. No code';
+        Msg:=Msg+' (The pascal code starts with "'+GetAtom+'" at '
+                +CleanPosToStr(Tree.Root.StartPos)+')';
       end;
       MoveCursorToCleanPos(P);
       RaiseException(Msg);
     end;
+    // behind parsed code
     Node:=Tree.Root;
     while Node.NextBrother<>nil do Node:=Node.NextBrother;
     if (Node.EndPos>0) and (p>Node.EndPos) then
@@ -2523,7 +2623,7 @@ function TCustomCodeTool.FindDeepestNodeAtPos(StartNode: TCodeTreeNode;
     else
       LastPos:=Node.StartPos;
     if p>LastPos then begin
-      Msg:='Behind code. The last valid pascal code is at '+CleanPosToStr(LastPos)+'. No code';
+      Msg:='Behind code (The parser stopped at '+CleanPosToStr(LastPos)+')';
       RaiseException(Msg);
     end;
 
@@ -2666,9 +2766,9 @@ begin
     Result:='';
     if WithFilename then
       Result:=ExtractRelativepath(ExtractFilePath(MainFilename),CodePos.Code.Filename)+',';
-    Result:=Result+'y='+IntToStr(CodePos.Y)+',x='+IntToStr(CodePos.X);
+    Result:=Result+'line '+IntToStr(CodePos.Y)+', column '+IntToStr(CodePos.X);
   end else
-    Result:='y=?,x=?,c='+IntToStr(CleanPos)+'('+dbgstr(copy(Src,CleanPos-5,5)+'|'+copy(Src,CleanPos,5))+')';
+    Result:='outside scan range, pos='+IntToStr(CleanPos)+'('+dbgstr(copy(Src,CleanPos-5,5)+'|'+copy(Src,CleanPos,5))+')';
 end;
 
 function TCustomCodeTool.CleanPosToRelativeStr(CleanPos: integer;

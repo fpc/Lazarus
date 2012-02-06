@@ -1422,7 +1422,8 @@ begin
   if (CursorPos.Y<1) or (CursorPos.Y>CursorPos.Code.LineCount)
   or (CursorPos.X<1) then exit;
   CursorPos.Code.GetLineRange(CursorPos.Y-1,LineRange);
-  if LineRange.EndPos-LineRange.StartPos+1<CursorPos.X then exit;
+  if LineRange.EndPos-LineRange.StartPos+1<CursorPos.X then
+    exit; // beyond end of line
 
   ActivateGlobalWriteLock;
   try
@@ -1479,7 +1480,7 @@ begin
     end;
     if CursorNode=nil then begin
       // raise exception
-      CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+      RaiseCursorOutsideCode(CursorPos);
     end;
     {$IFDEF CTDEBUG}
     DebugLn('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc),' HasChilds=',dbgs(CursorNode.FirstChild<>nil));

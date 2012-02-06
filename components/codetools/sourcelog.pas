@@ -807,7 +807,7 @@ var
   Column: integer;
 begin
   AbsoluteToLineCol(Position,Line,Column);
-  Result:='p='+IntToStr(Position)+',y='+IntToStr(Line)+',x='+IntToStr(Column);
+  Result:='p='+IntToStr(Position)+',line='+IntToStr(Line)+',col='+IntToStr(Column);
 end;
 
 function TSourceLog.LoadFromFile(const Filename: string): boolean;
