@@ -131,16 +131,7 @@ type
     FLazControlsPackage: TLazPackage;
     FTree: TAVLTree; // sorted tree of TLazPackage
     FUpdateLock: integer;
-    function CreateFCLPackage: TLazPackage;
-    function CreateLCLBasePackage: TLazPackage;
-    function CreateLCLPackage: TLazPackage;
-    function CreateSynEditPackage: TLazPackage;
-    function CreateLazControlsPackage: TLazPackage;
-    function CreateLazUtilsPackage: TLazPackage;
-    function CreateCodeToolsPackage: TLazPackage;
-    function CreateIDEIntfPackage: TLazPackage;
     function CreateDefaultPackage: TLazPackage;
-    function CreateLazarusBasePackage(PkgName: string): TLazPackage;
     function GetCount: Integer;
     function GetPackages(Index: integer): TLazPackage;
     procedure DoDependencyChanged(Dependency: TPkgDependency);
@@ -1480,574 +1471,6 @@ begin
     AbortRegistration:=true;
 end;
 
-function TLazPackageGraph.CreateFCLPackage: TLazPackage;
-begin
-  Result:=TLazPackage.Create;
-  with Result do begin
-    AutoCreated:=true;
-    Name:='FCL';
-    Filename:=SetDirSeparators('$(FPCSrcDir)/');
-    Version.SetValues(1,0,0,0);
-    Author:='FPC team';
-    License:='LGPL-2';
-    AutoInstall:=pitStatic;
-    AutoUpdate:=pupManually;
-    Description:=lisPkgSysTheFCLFreePascalComponentLibraryProvidesTheBase;
-    PackageType:=lptRunAndDesignTime;
-    Installed:=pitStatic;
-    CompilerOptions.UnitOutputDirectory:='';
-    Translated:=SystemLanguageID1;
-    AddToProjectUsesSection:=false;
-
-    // add lazarus registration unit path
-    UsageOptions.UnitPath:=SetDirSeparators(
-      '$(LazarusDir)/packager/units/$(TargetCPU)-$(TargetOS)');
-
-    CompilerOptions.CustomOptions:='$(IDEBuildOptions)';
-
-    // add registering units
-    AddFile(SetDirSeparators('packages/fcl-db/src/base/db.pas'),'DB',pftUnit,[],cpBase);
-    AddFile(SetDirSeparators('packages/fcl-process/src/process.pp'),'Process',pftUnit,[],cpBase);
-    AddFile(SetDirSeparators('packages/fcl-process/src/simpleipc.pp'),'SimpleIPC',pftUnit,[],cpBase);
-    AddFile(SetDirSeparators('packages/fcl-xml/src/xmlconf.pp'),'XMLConf',pftUnit,[],cpBase);
-    AddFile(SetDirSeparators('packages/fcl-base/src/eventlog.pp'),'EventLog',pftUnit,[],cpBase);
-
-    SetAllComponentPriorities(FCLCompPriority);
-
-    // use the packager/units/lazaruspackageintf.o file as indicator,
-    // if FCL has been recompiled
-    OutputStateFile:=SetDirSeparators(
-      '$(LazarusDir)/packager/units/$(TargetCPU)-$(TargetOS)/lazaruspackageintf.o');
-
-    Modified:=false;
-  end;
-end;
-
-function TLazPackageGraph.CreateLCLBasePackage: TLazPackage;
-begin
-  Result:=TLazPackage.Create;
-  with Result do begin
-    AutoCreated:=true;
-    Name:='LCLBase';
-    Filename:=SetDirSeparators('$(LazarusDir)/lcl');
-    Version.SetValues(1,0,0,0);
-    Author:='Lazarus';
-    License:='modified LGPL-2';
-    AutoInstall:=pitStatic;
-    AutoUpdate:=pupManually;
-    Description:=lisPkgSysTheLCLLazarusComponentLibraryContainsAllBase;
-    PackageType:=lptRunAndDesignTime;
-    Installed:=pitStatic;
-    CompilerOptions.OtherUnitFiles:='$(LazarusDir)/lcl;$(LazarusDir)/lcl/widgetset/';
-    CompilerOptions.UnitOutputDirectory:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/';
-    POOutputDirectory:='languages';
-    Translated:=SystemLanguageID1;
-    FPDocPaths:=SetDirSeparators('$(LazarusDir)/docs/xml/lcl');
-    AddToProjectUsesSection:=false;
-
-    // add requirements
-    AddRequiredDependency(FCLPackage.CreateDependencyWithOwner(Result,true));
-
-    // register files
-    {$I pkgfileslcl.inc}
-
-    SetAllComponentPriorities(LCLCompPriority);
-
-    // add unit paths
-    UsageOptions.UnitPath:=SetDirSeparators(
-       '$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)');
-    // add include path
-    CompilerOptions.IncludePath:=SetDirSeparators(
-      '$(LazarusDir)/lcl/include');
-    CompilerOptions.CustomOptions:='$(IDEBuildOptions)';
-
-    // use the lcl/units/$(TargetCPU)-$(TargetOS)/alllclunits.o
-    // file as indicator, if LCL has been recompiled
-    OutputStateFile:=SetDirSeparators(
-      '$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/alllclunits.o');
-
-    Modified:=false;
-  end;
-end;
-
-function TLazPackageGraph.CreateLCLPackage: TLazPackage;
-var
-  Macro: TLazBuildMacro;
-  lp: TLCLPlatform;
-begin
-  Result:=TLazPackage.Create;
-  with Result do begin
-    AutoCreated:=true;
-    Name:='LCL';
-    Filename:=SetDirSeparators('$(LazarusDir)/lcl/interfaces');
-    Version.SetValues(1,0,0,0);
-    Author:='Lazarus';
-    License:='modified LGPL-2';
-    AutoInstall:=pitStatic;
-    AutoUpdate:=pupManually;
-    Description:=lisPkgSysTheLCLLazarusComponentLibraryContainsAllBase;
-    PackageType:=lptRunAndDesignTime;
-    Installed:=pitStatic;
-    CompilerOptions.OtherUnitFiles:='$(LazarusDir)/lcl/interfaces'
-                             +';$(LazarusDir)/lcl/interfaces/($LCLWidgetType);';
-    CompilerOptions.UnitOutputDirectory:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgeType)';
-    POOutputDirectory:='languages';
-    Translated:=SystemLanguageID1;
-    FPDocPaths:=SetDirSeparators('$(LazarusDir)/docs/xml/lcl');
-    AddToProjectUsesSection:=false;
-
-    // add requirements
-    AddRequiredDependency(LCLBasePackage.CreateDependencyWithOwner(Result,true));
-
-    // add issues files
-    AddFile('interfaces/carbon/issues.xml','carbon-issues.xml',pftIssues,[],cpBase);
-    AddFile('interfaces/win32/issues.xml','win32-issues.xml',pftIssues,[],cpBase);
-    AddFile('interfaces/gtk/issues.xml','gtk-issues.xml',pftIssues,[],cpBase);
-    AddFile('interfaces/gtk2/issues.xml','gtk2-issues.xml',pftIssues,[],cpBase);
-    AddFile('interfaces/qt/issues.xml','qt-issues.xml',pftIssues,[],cpBase);
-
-    SetAllComponentPriorities(LCLCompPriority);
-
-    // add unit paths
-    UsageOptions.UnitPath:=SetDirSeparators(
-       '$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)');
-    UsageOptions.CustomOptions:='-dLCL -dLCL$(LCLWidgetType)';
-    // add include path
-    CompilerOptions.IncludePath:=SetDirSeparators(
-      '$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)');
-    CompilerOptions.CustomOptions:='$(IDEBuildOptions)';
-    // build macro: LCLWidgetType
-    Macro:=CompilerOptions.BuildMacros.Add('LCLWidgetType');
-    for lp:=low(TLCLPlatform) to high(TLCLPlatform) do
-      Macro.Values.Add(LCLPlatformDirNames[lp]);
-    // build macro: fpGUIPlatform
-    Macro:=CompilerOptions.BuildMacros.Add('fpGUIPlatform');
-    Macro.Values.Add('gdi');
-    Macro.Values.Add('x11');
-    // conditionals
-    CompilerOptions.Conditionals:=
-       '// LCLWidgetType'+LineEnding
-      +'if undefined(LCLWidgetType) then begin'+LineEnding
-      +'  if (TargetOS=''win32'') or (TargetOS=''win64'') then'+LineEnding
-      +'    LCLWidgetType := ''win32'''+LineEnding
-      +'  else if TargetOS=''wince'' then'+LineEnding
-      +'    LCLWidgetType := ''wince'''+LineEnding
-      +'  else if TargetOS=''darwin'' then'+LineEnding
-      +'    LCLWidgetType := ''carbon'''+LineEnding
-      +'  else'+LineEnding
-      +'    LCLWidgetType := ''gtk2'';'+LineEnding
-      +'end;'+LineEnding
-      +''+LineEnding
-      +'// widget set specific options'+LineEnding
-      +'base := LCLWidgetType+''/'';'+LineEnding
-      +'if LCLWidgetType=''gtk'' then'+LineEnding
-      +'  CustomOptions := ''-dgtk1'''+LineEnding
-      +'else if LCLWidgetType=''carbon'' then begin'+LineEnding
-      +'  CustomOptions := ''-dcarbon'';'+LineEnding
-      +'  UnitPath := base+''objc;'''+LineEnding
-      +'             +base+''pascocoa/appkit;'''+LineEnding
-      +'             +base+''pascocoa/foundation'';'+LineEnding
-      +'  IncPath := UnitPath;'+LineEnding
-      +'end else if LCLWidgetType=''wince'' then begin'+LineEnding
-      +'  CustomOptions := ''-dDisableChecks'';'+LineEnding
-      +'end else if LCLWidgetType=''fpgui'' then begin'+LineEnding
-      +'  if undefined(fpGUIPlatform) then begin'+LineEnding
-      +'    if SrcOS=''win32'' then'+LineEnding
-      +'      fpGUIPlatform := ''gdi'''+LineEnding
-      +'    else'+LineEnding
-      +'      fpGUIPlatform := ''x11'';'+LineEnding
-      +'  end;'+LineEnding
-      +'  CustomOptions := '' -dfpgui''+fpGUIPlatform;'+LineEnding
-      +'  UnitPath := base+''gui;'''+LineEnding
-      +'             +base+''corelib;'''+LineEnding
-      +'             +base+''corelib/''+fpGUIPlatform;'+LineEnding
-      +'  IncPath := UnitPath;'+LineEnding
-      +'end;'+LineEnding
-      +''+LineEnding
-      +'// linker options'+LineEnding
-      +'if TargetOS=''darwin'' then begin'+LineEnding
-      +'  if LCLWidgetType=''gtk'' then'+LineEnding
-      +'    UsageLibraryPath := ''/usr/X11R6/lib;/sw/lib'''+LineEnding
-      +'  else if LCLWidgetType=''gtk2'' then'+LineEnding
-      +'    UsageLibraryPath := ''/usr/X11R6/lib;/sw/lib;/sw/lib/pango-ft219/lib'''+LineEnding
-      +'  else if LCLWidgetType=''carbon'' then begin'+LineEnding
-      +'    UsageLinkerOptions := ''-framework Carbon'''+LineEnding
-      +'      +'' -framework OpenGL'''+LineEnding
-      +'      +'' -dylib_file /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib'';'+LineEnding
-      +'  end else if LCLWidgetType=''cocoa'' then'+LineEnding
-      +'    UsageLinkerOptions := ''-framework Cocoa'';'+LineEnding
-      +'end else if TargetOS=''solaris'' then begin'+LineEnding
-      +'  UsageLibraryPath:=''/usr/X11R6/lib'';'+LineEnding
-      +'end;'+LineEnding
-      +'';
-
-    // use the lcl/units/$(TargetCPU)-$(TargetOS)/alllclunits.o
-    // file as indicator, if LCL has been recompiled
-    OutputStateFile:=SetDirSeparators(
-      '$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/alllclunits.o');
-
-    Modified:=false;
-  end;
-end;
-
-function TLazPackageGraph.CreateSynEditPackage: TLazPackage;
-begin
-  Result:=TLazPackage.Create;
-  with Result do begin
-    AutoCreated:=true;
-    Name:='SynEdit';
-    Filename:=SetDirSeparators('$(LazarusDir)/components/synedit/');
-    Version.SetValues(1,0,0,0);
-    Author:='SynEdit - http://sourceforge.net/projects/synedit/';
-    License:='LGPL-2';
-    AutoInstall:=pitStatic;
-    AutoUpdate:=pupManually;
-    Description:=lisPkgSysSynEditTheEditorComponentUsedByLazarus;
-    PackageType:=lptRunAndDesignTime;
-    Installed:=pitStatic;
-    CompilerOptions.UnitOutputDirectory:='';
-    POOutputDirectory:='languages';
-    Translated:=SystemLanguageID1;
-    FPDocPaths:=SetDirSeparators('$(LazarusDir)/components/synedit/docs/xml');
-    AddToProjectUsesSection:=false;
-
-    // add requirements
-    AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result,true));
-    AddRequiredDependency(IDEIntfPackage.CreateDependencyWithOwner(Result,true));
-
-    // add units
-    AddFile('synedit.pp','SynEdit',pftUnit,[],cpBase);
-    AddFile('synedit.inc','',pftInclude,[],cpBase);
-    AddFile('syneditkeycmds.pp','SynEditKeyCmds',pftUnit,[],cpBase);
-    AddFile('syneditmousecmds.pp','SynEditMouseCmds',pftUnit,[],cpBase);
-    AddFile('syncompletion.pas','SynCompletion',pftUnit,[],cpBase);
-    AddFile('syneditautocomplete.pp','SynEditAutoComplete',pftUnit,[],cpBase);
-    AddFile('synmacrorecorder.pas','SynMacroRecorder',pftUnit,[],cpBase);
-    AddFile('synmemo.pas','SynMemo',pftUnit,[],cpBase);
-    AddFile('syneditsearch.pp','SynEditSearch',pftUnit,[],cpBase);
-    AddFile('syneditplugins.pas','SynEditPlugins',pftUnit,[],cpBase);
-    AddFile('syneditregexsearch.pas','SynEditRegExSearch',pftUnit,[],cpBase);
-    AddFile('synedittypes.pp','SynEditTypes',pftUnit,[],cpBase);
-    AddFile('syneditstrconst.pp','SynEditStrConst',pftUnit,[],cpBase);
-    AddFile('syneditexport.pas','SynEditExport',pftUnit,[],cpBase);
-    AddFile('synexporthtml.pas','SynExportHTML',pftUnit,[],cpBase);
-    AddFile('syneditmiscclasses.pp','SynEditMiscClasses',pftUnit,[],cpBase);
-    AddFile('syneditmiscprocs.pp','SynEditMiscProcs',pftUnit,[],cpBase);
-    AddFile('synbeautifier.pas','SynBeautifier',pftUnit,[],cpBase);
-    AddFile('synbeautifierpas.pas','SynBeautifierPas',pftUnit,[],cpBase);
-    AddFile('syneditmarks.pp','SynEditMarks',pftUnit,[],cpBase);
-    AddFile('synregexpr.pas','SynRegExpr',pftUnit,[],cpBase);
-    AddFile('syntextdrawer.pp','SynTextDrawer',pftUnit,[],cpBase);
-    AddFile('syneditpointclasses.pas','SynEditPointClasses',pftUnit,[],cpBase);
-
-    AddFile('syneditlines.pp','SynEditLines',pftUnit,[],cpBase);
-    AddFile('synedittextbase.pas','SynEditTextBase',pftUnit,[],cpBase);
-    AddFile('synedittextbuffer.pp','SynEditTextBuffer',pftUnit,[],cpBase);
-    AddFile('synedittextdoublewidthchars.pas','SynEditTextDoubleWidthChars',pftUnit,[],cpBase);
-    AddFile('synedittexttabexpander.pas','SynEditTextTabExpander',pftUnit,[],cpBase);
-    AddFile('synedittexttrimmer.pas','SynEditTextTrimmer',pftUnit,[],cpBase);
-    AddFile('syneditfoldedview.pp','SynEditTextTrimmer',pftUnit,[],cpBase);
-
-    AddFile('syneditmarkup.pp','SynEditMarkup',pftUnit,[],cpBase);
-    AddFile('syneditmarkupctrlmouselink.pp','SynEditMarkupCtrlMouseLink',pftUnit,[],cpBase);
-    AddFile('syneditmarkupselection.pp','SynEditMarkupSelection',pftUnit,[],cpBase);
-    AddFile('syneditmarkupspecialline.pp','SynEditMarkupSpecialLine',pftUnit,[],cpBase);
-    AddFile('syneditmarkupwordgroup.pp','SynEditMarkupWordGroup',pftUnit,[],cpBase);
-    AddFile('syneditmarkupbracket.pp','SynEditMarkupBracket',pftUnit,[],cpBase);
-    AddFile('syneditmarkuphighall.pp','SynEditMarkupHighAll',pftUnit,[],cpBase);
-
-    AddFile('synedithighlighter.pp','SynEditHighlighter',pftUnit,[],cpBase);
-    AddFile('synedithighlighterfoldbase.pp','SynEditHighlighterFoldBase',pftUnit,[],cpBase);
-    AddFile('synedithighlighterxmlbase.pas','SynEditHighlighterXMLBase',pftUnit,[],cpBase);
-    AddFile('synhighlighterpas.pp','SynHighlighterPas',pftUnit,[],cpBase);
-    AddFile('synhighlightercpp.pp','SynHighlighterCPP',pftUnit,[],cpBase);
-    AddFile('synhighlighterjava.pas','SynHighlighterJava',pftUnit,[],cpBase);
-    AddFile('synhighlighterperl.pas','SynHighlighterPerl',pftUnit,[],cpBase);
-    AddFile('synhighlighterhtml.pp','SynHighlighterHTML',pftUnit,[],cpBase);
-    AddFile('synhighlighterxml.pas','SynHighlighterXML',pftUnit,[],cpBase);
-    AddFile('synhighlighterlfm.pas','SynHighlighterLFM',pftUnit,[],cpBase);
-    AddFile('synhighlighterdiff.pas','SynHighlighterDiff',pftUnit,[],cpBase);
-    AddFile('synhighlighterunixshellscript.pas','SynHighlighterUNIXShellScript',
-                                                             pftUnit,[],cpBase);
-    AddFile('synhighlightermulti.pas','SynHighlighterMulti',pftUnit,[],cpBase);
-    AddFile('synhighlightercss.pas','SynHighlighterCss',pftUnit,[],cpBase);
-    AddFile('synhighlighterphp.pas','SynHighlighterPHP',pftUnit,[],cpBase);
-    AddFile('synhighlightertex.pas','SynHighlighterTeX',pftUnit,[],cpBase);
-    AddFile('synhighlightersql.pas','SynHighlighterSQL',pftUnit,[],cpBase);
-    AddFile('synhighlighterpython.pas','SynHighlighterPython',pftUnit,[],cpBase);
-    AddFile('synhighlightervb.pas','SynHighlighterVB',pftUnit,[],cpBase);
-    AddFile('synhighlighterany.pas','SynHighlighterAny',pftUnit,[],cpBase);
-    AddFile('synhighlighterhashentries.pas', 'SynHighlighterHashEntries', pftUnit,[], cpBase);
-    AddFile('synhighlighterjscript.pas', 'SynHighlighterJScript', pftUnit,[], cpBase);
-    AddFile('synhighlighterposition.pas', 'TSynPositionHighlighter', pftUnit,[], cpBase);
-    AddFile('synhighlighterini.pas', 'SynHighlighterBat', pftUnit,[], cpBase);
-    AddFile('synhighlighterbat.pas', 'SynHighlighterIni', pftUnit,[], cpBase);
-
-    AddFile('syngutter.pas','SynGutter',pftUnit,[],cpBase);
-    AddFile('syngutterbase.pp','SynGutterBase',pftUnit,[],cpBase);
-    AddFile('syngutterchanges.pas','SynGutterChanges',pftUnit,[],cpBase);
-    AddFile('synguttercodefolding.pas','SynGutterCodeFolding',pftUnit,[],cpBase);
-    AddFile('syngutterlinenumber.pas','SynGutterLineNumber',pftUnit,[],cpBase);
-    AddFile('synguttermarks.pas','SynGutterMarks',pftUnit,[],cpBase);
-
-    AddFile('synpluginsyncronizededitbase.pp','SynPluginSyncronizedEditBase',pftUnit,[],cpBase);
-    AddFile('synpluginsyncroedit.pp','SynPluginSyncroEdit',pftUnit,[],cpBase);
-    AddFile('synplugintemplateedit.pp','SynPluginTemplateEdit',pftUnit,[],cpBase);
-
-    AddFile('syneditlazdsgn.pas','SynEditLazDsgn',pftUnit,[],cpBase);
-    AddFile('syndesignstringconstants.pas','SynDesignStringConstants',pftUnit,[],cpBase);
-    AddFile('synpropertyeditobjectlist.pas','SynPropertyEditObjectList',pftUnit,[],cpBase);
-
-    // add unit paths
-    UsageOptions.UnitPath:=SetDirSeparators(
-                     '$(LazarusDir)/components/synedit/units/$(TargetCPU)-$(TargetOS)');
-    CompilerOptions.CustomOptions:='$(IDEBuildOptions)';
-
-    // use the components/units/..../allsyneditunits.o file as indicator,
-    // if synedit has been recompiled
-    OutputStateFile:=SetDirSeparators(
-      '$(LazarusDir)/components/synedit/units/$(TargetCPU)-$(TargetOS)/allsyneditunits.o');
-
-    Modified:=false;
-  end;
-end;
-
-function TLazPackageGraph.CreateLazControlsPackage: TLazPackage;
-begin
-  Result:=TLazPackage.Create;
-  with Result do begin
-    AutoCreated:=true;
-    Name:='LazControls';
-    Filename:=SetDirSeparators('$(LazarusDir)/components/lazcontrols/lazcontrols.lpk');
-    Version.SetValues(0,0,0,0);
-    Author:='Martin Friebe';
-    License:='modified LGPL-2';
-    AutoInstall:=pitStatic;
-    AutoUpdate:=pupManually;
-    Description:='LCL controls for the Lazarus IDE';
-    PackageType:=lptRunAndDesignTime;
-    Installed:=pitStatic;
-    CompilerOptions.UnitOutputDirectory:='';
-    POOutputDirectory:='languages';
-    FPDocPaths:='docs';
-    Translated:=SystemLanguageID1;
-    AddToProjectUsesSection:=false;
-
-    // add requirements
-    AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result,true));
-
-    // add units
-    AddFile('dividerbevel.pas','DividerBevel',pftUnit,[],cpBase);
-
-    CompilerOptions.CustomOptions:='$(IDEBuildOptions)';
-
-    // add unit paths
-    UsageOptions.UnitPath:=SetDirSeparators(
-           '$(LazarusDir)/components/lazcontrols/lib/$(TargetCPU)-$(TargetOS)');
-
-    // use the components/lazcontrols/lib/..../lazcontrols.o file as indicator,
-    // if lazcontrols have been recompiled
-    OutputStateFile:=SetDirSeparators(
-      '$(LazarusDir)/components/lazcontrols/lib/$(TargetCPU)-$(TargetOS)/lazcontrols.o');
-
-    Modified:=false;
-  end;
-end;
-
-function TLazPackageGraph.CreateLazUtilsPackage: TLazPackage;
-begin
-  Result:=TLazPackage.Create;
-  with Result do begin
-    AutoCreated:=true;
-    Name:='LazUtils';
-    Filename:=SetDirSeparators('$(LazarusDir)/components/lazutils/lazutils.lpk');
-    Version.SetValues(1,0,1,0);
-    Author:='Lazarus Team';
-    License:='Modified LGPL-2';
-    AutoInstall:=pitStatic;
-    AutoUpdate:=pupManually;
-    Description:='Useful units for Lazarus packages';
-    PackageType:=lptRunAndDesignTime;
-    Installed:=pitStatic;
-    CompilerOptions.UnitOutputDirectory:='';
-    POOutputDirectory:='languages';
-    FPDocPaths:='docs';
-    Translated:=SystemLanguageID1;
-    AddToProjectUsesSection:=false;
-
-    // add requirements
-    AddRequiredDependency(FCLPackage.CreateDependencyWithOwner(Result,true));
-
-    AddFile('lazutf8.pas','LazUTF8',pftUnit,[],cpBase);
-
-    CompilerOptions.CustomOptions:='$(IDEBuildOptions)';
-
-    // add unit paths
-    UsageOptions.UnitPath:=SetDirSeparators('$(PkgOutDir)');
-
-    // use the components/units/..../allcodetoolsunits.o file as indicator,
-    // if lazutils have been recompiled
-    OutputStateFile:=SetDirSeparators(
-      '$(LazarusDir)/components/lazutils/lib/$(TargetCPU)-$(TargetOS)/lazutils.o');
-
-    Modified:=false;
-  end;
-end;
-
-function TLazPackageGraph.CreateCodeToolsPackage: TLazPackage;
-begin
-  Result:=TLazPackage.Create;
-  with Result do begin
-    AutoCreated:=true;
-    Name:='CodeTools';
-    Filename:=SetDirSeparators('$(LazarusDir)/components/codetools/codetools.lpk');
-    Version.SetValues(1,0,1,0);
-    Author:='Mattias Gaertner';
-    License:='GPL-2';
-    AutoInstall:=pitStatic;
-    AutoUpdate:=pupManually;
-    Description:=lisPkgSysCodeToolsToolsAndFunctionsToParseBrowseAndEditPasc;
-    PackageType:=lptRunAndDesignTime;
-    Installed:=pitStatic;
-    CompilerOptions.UnitOutputDirectory:='';
-    POOutputDirectory:='languages';
-    FPDocPaths:='docs';
-    Translated:=SystemLanguageID1;
-    AddToProjectUsesSection:=false;
-
-    // add requirements
-    AddRequiredDependency(FCLPackage.CreateDependencyWithOwner(Result,true));
-
-    // add units
-    AddFile('basiccodetools.pas','BasicCodeTools',pftUnit,[],cpBase);
-    AddFile('ccodeparsertool.pas','CCodeParserTool',pftUnit,[],cpBase);
-    AddFile('codeatom.pas','CodeAtom',pftUnit,[],cpBase);
-    AddFile('codebeautifier.pas','CodeBeautifier',pftUnit,[],cpBase);
-    AddFile('codecache.pas','CodeCache',pftUnit,[],cpBase);
-    AddFile('codecompletiontool.pas','CodeCompletionTool',pftUnit,[],cpBase);
-    AddFile('codetemplatestool.pas','CodeTemplatesTool',pftUnit,[],cpBase);
-    AddFile('codetoolmanager.pas','CodeToolManager',pftUnit,[],cpBase);
-    AddFile('codetoolmemmanager.pas','CodeToolMemManager',pftUnit,[],cpBase);
-    AddFile('codetoolsconfig.pas','CodeToolsConfig',pftUnit,[],cpBase);
-    AddFile('codetoolsstrconsts.pas','CodeToolsStrConsts',pftUnit,[],cpBase);
-    AddFile('codetoolsstructs.pas','CodeToolsStructs',pftUnit,[],cpBase);
-    AddFile('codetree.pas','CodeTree',pftUnit,[],cpBase);
-    AddFile('customcodetool.pas','CustomCodeTool',pftUnit,[],cpBase);
-    AddFile('definetemplates.pas','DefineTemplates',pftUnit,[],cpBase);
-    AddFile('directorycacher.pas','DirectoryCacher',pftUnit,[],cpBase);
-    AddFile('eventcodetool.pas','EventCodeTool',pftUnit,[],cpBase);
-    AddFile('expreval.pas','ExprEval',pftUnit,[],cpBase);
-    AddFile('extractproctool.pas','ExtractProctool',pftUnit,[],cpBase);
-    AddFile('fileprocs.pas','FileProcs',pftUnit,[],cpBase);
-    AddFile('finddeclarationcache.pas','FindDeclarationCache',pftUnit,[],cpBase);
-    AddFile('finddeclarationtool.pas','FindDeclarationTool',pftUnit,[],cpBase);
-    AddFile('identcompletiontool.pas','IdentCompletionTool',pftUnit,[],cpBase);
-    AddFile('keywordfunclists.pas','KeywordFuncLists',pftUnit,[],cpBase);
-    AddFile('laz_dom.pas','Laz_DOM',pftUnit,[],cpBase);
-    AddFile('laz_xmlcfg.pas','Laz_XMLCfg',pftUnit,[],cpBase);
-    AddFile('laz_xmlread.pas','Laz_XMLRead',pftUnit,[],cpBase);
-    AddFile('laz_xmlstreaming.pas','Laz_XMLStreaming',pftUnit,[],cpBase);
-    AddFile('laz_xmlwrite.pas','Laz_XMLWrite',pftUnit,[],cpBase);
-    AddFile('lfmtrees.pas','LFMTrees',pftUnit,[],cpBase);
-    AddFile('linkscanner.pas','LinkScanner',pftUnit,[],cpBase);
-    AddFile('memcheck.pas','MemCheck',pftUnit,[],cpBase);
-    AddFile('methodjumptool.pas','MethodJumpTool',pftUnit,[],cpBase);
-    AddFile('multikeywordlisttool.pas','MultiKeywordListTool',pftUnit,[],cpBase);
-    AddFile('pascalparsertool.pas','PascalParserTool',pftUnit,[],cpBase);
-    AddFile('pascalreadertool.pas','PascalReaderTool',pftUnit,[],cpBase);
-    AddFile('resourcecodetool.pas','ResourceCodeTool',pftUnit,[],cpBase);
-    AddFile('sourcechanger.pas','SourceChanger',pftUnit,[],cpBase);
-    AddFile('sourcelog.pas','SourceLog',pftUnit,[],cpBase);
-    AddFile('stdcodetools.pas','StdCodeTools',pftUnit,[],cpBase);
-
-    CompilerOptions.CustomOptions:='$(IDEBuildOptions)';
-
-    // add unit paths
-    UsageOptions.UnitPath:=SetDirSeparators(
-           '$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)');
-
-    // use the components/units/..../allcodetoolsunits.o file as indicator,
-    // if codetools have been recompiled
-    OutputStateFile:=SetDirSeparators(
-      '$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)/allcodetoolsunits.o');
-
-    Modified:=false;
-  end;
-end;
-
-function TLazPackageGraph.CreateIDEIntfPackage: TLazPackage;
-begin
-  Result:=TLazPackage.Create;
-  with Result do begin
-    AutoCreated:=true;
-    Name:='IDEIntf';
-    Filename:=SetDirSeparators('$(LazarusDir)/ideintf/');
-    Version.SetValues(1,0,0,0);
-    Author:='Lazarus';
-    License:='LGPL-2';
-    AutoInstall:=pitStatic;
-    AutoUpdate:=pupManually;
-    Description:='IDEIntf - the interface units for the IDE';
-    PackageType:=lptDesignTime;
-    Installed:=pitStatic;
-    CompilerOptions.UnitOutputDirectory:='';
-    POOutputDirectory:='languages';
-    Translated:=SystemLanguageID1;
-    FPDocPaths:='docs';
-    EnableI18N:=true;
-    AddToProjectUsesSection:=false;
-
-    // add requirements
-    AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result,true));
-
-    // add units
-    AddFile('actionseditor.pas','ActionsEditor',pftUnit,[],cpBase);
-    AddFile('columndlg.pp','ColumnDlg',pftUnit,[],cpBase);
-    AddFile('componenteditors.pas','ComponentEditors',pftUnit,[],cpBase);
-    AddFile('componentreg.pas','ComponentReg',pftUnit,[],cpBase);
-    AddFile('componenttreeview.pas','ComponentTreeview',pftUnit,[],cpBase);
-    AddFile('baseideintf.pas','BaseIDEIntf',pftUnit,[],cpBase);
-    AddFile('dbpropedits.pas','DBPropEdits',pftUnit,[],cpBase);
-    AddFile('fieldseditor.pas','FieldsEditor',pftUnit,[],cpBase);
-    AddFile('formeditingintf.pas','FormEditingIntf',pftUnit,[],cpBase);
-    AddFile('frmselectprops.pas','FrmSelectProps',pftUnit,[],cpBase);
-    AddFile('graphpropedits.pas','GraphPropEdits',pftUnit,[],cpBase);
-    AddFile('helpfpdoc.pas','HelpFPDoc',pftUnit,[],cpBase);
-    AddFile('idecommands.pas','IDECommands',pftUnit,[],cpBase);
-    AddFile('ideimagesintf.pas','IDECommands',pftUnit,[],cpBase);
-    AddFile('ideoptionsintf.pas','IDECommands',pftUnit,[],cpBase);
-    AddFile('idewindowintf.pas','IDEWindowIntf',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('imagelisteditor.pp','ImageListEditor',pftUnit,[],cpBase);
-    AddFile('lazideintf.pas','LazIDEIntf',pftUnit,[],cpBase);
-    AddFile('listviewpropedit.pp','ListViewPropEdit',pftUnit,[],cpBase);
-    AddFile('newitemintf.pas','NewItemIntf',pftUnit,[],cpBase);
-    AddFile('macrointf.pas','MacroIntf',pftUnit,[],cpBase);
-    AddFile('menuintf.pas','MenuIntf',pftUnit,[],cpBase);
-    AddFile('objectinspector.pp','ObjectInspector',pftUnit,[],cpBase);
-    AddFile('objinspstrconsts.pas','ObjInspStrConsts',pftUnit,[],cpBase);
-    AddFile('packageintf.pas','PackageIntf',pftUnit,[],cpBase);
-    AddFile('projectintf.pas','ProjectIntf',pftUnit,[],cpBase);
-    AddFile('propedits.pp','PropEdits',pftUnit,[],cpBase);
-    AddFile('srceditorintf.pas','SrcEditorIntf',pftUnit,[],cpBase);
-    AddFile('texttools.pas','TextTools',pftUnit,[],cpBase);
-
-    SetAllComponentPriorities(IDEIntfCompPriority);
-
-    // add unit paths
-    UsageOptions.UnitPath:=SetDirSeparators(
-      '$(LazarusDir)/ideintf/units/$(TargetCPU)-$(TargetOS)');
-
-    CompilerOptions.CustomOptions:='$(IDEBuildOptions)';
-
-    // use the ideintf/units/$(TargetCPU)/$(TargetOS)/allideintf.o file
-    // as indicator, if ideintf has been recompiled
-    OutputStateFile:=SetDirSeparators(
-      '$(LazarusDir)/ideintf/units/$(TargetCPU)-$(TargetOS)/allideintf.o');
-
-    Modified:=false;
-  end;
-end;
-
 function TLazPackageGraph.CreateDefaultPackage: TLazPackage;
 begin
   Result:=TLazPackage.Create;
@@ -2074,21 +1497,6 @@ begin
 
     Modified:=false;
   end;
-end;
-
-function TLazPackageGraph.CreateLazarusBasePackage(PkgName: string
-  ): TLazPackage;
-begin
-  PkgName:=lowercase(PkgName);
-  if PkgName='fcl' then Result:=CreateFCLPackage
-  else if PkgName='lazutils' then Result:=CreateLazUtilsPackage
-  else if PkgName='lclbase' then Result:=CreateLCLBasePackage
-  else if PkgName='lcl' then Result:=CreateLCLPackage
-  else if PkgName='ideintf' then Result:=CreateIDEIntfPackage
-  else if PkgName='synedit' then Result:=CreateSynEditPackage
-  else if PkgName='codetools' then Result:=CreateCodeToolsPackage
-  else if PkgName='lazcontrols' then Result:=CreateLazControlsPackage
-  else RaiseGDBException('');
 end;
 
 function TLazPackageGraph.GetCount: Integer;
@@ -5129,59 +4537,51 @@ procedure TLazPackageGraph.OpenInstalledDependency(Dependency: TPkgDependency;
 var
   BrokenPackage: TLazPackage;
   CurResult: TModalResult;
-  BasePackage: TLazPackage;
+  IsBasePkg: Boolean;
 begin
   OpenDependency(Dependency,false);
   if Dependency.LoadPackageResult<>lprSuccess then begin
     // a valid lpk file of the installed package can not be found
-    if IsStaticBasePackage(Dependency.PackageName) then begin
-      // this is one of the Lazarus base packages
-      // auto create the built in version
-      BasePackage:=CreateLazarusBasePackage(Dependency.PackageName);
-      if BasePackage<>nil then begin
-        AddPackage(BasePackage);
-        //DebugLn('TLazPackageGraph.OpenInstalledDependency lpk not found using built-in ',BasePackage.IDAsString,' ',dbgs(ord(BasePackage.AutoInstall)));
-        if not Quiet then begin
-          // don't bother the user
-        end;
-      end;
-    end else begin
-      // -> create a broken package
-      BrokenPackage:=TLazPackage.Create;
-      with BrokenPackage do begin
-        BeginUpdate;
-        Missing:=true;
-        AutoCreated:=true;
-        Name:=Dependency.PackageName;
-        Filename:='';
-        Version.SetValues(0,0,0,0);
-        Author:='?';
-        License:='?';
-        AutoUpdate:=pupManually;
-        Description:=lisPkgSysThisPackageIsInstalledButTheLpkFileWasNotFound;
-        PackageType:=lptDesignTime;
-        Installed:=pitStatic;
+    IsBasePkg:=IsStaticBasePackage(Dependency.PackageName);
+    // -> create a broken package
+    BrokenPackage:=TLazPackage.Create;
+    with BrokenPackage do begin
+      BeginUpdate;
+      Missing:=true;
+      AutoCreated:=true;
+      Name:=Dependency.PackageName;
+      Filename:='';
+      Version.SetValues(0,0,0,0);
+      Author:='?';
+      License:='?';
+      AutoUpdate:=pupManually;
+      Description:=lisPkgSysThisPackageIsInstalledButTheLpkFileWasNotFound;
+      PackageType:=lptDesignTime;
+      Installed:=pitStatic;
+      AutoInstall:=pitNope;
+      if IsBasePkg then
+        AutoInstall:=pitStatic
+      else
         AutoInstall:=pitNope;
-        CompilerOptions.UnitOutputDirectory:='';
+      CompilerOptions.UnitOutputDirectory:='';
 
-        // add lazarus registration unit path
-        UsageOptions.UnitPath:='';
+      // add lazarus registration unit path
+      UsageOptions.UnitPath:='';
 
-        Modified:=false;
-        EndUpdate;
-      end;
-      AddPackage(BrokenPackage);
-      DebugLn('TLazPackageGraph.OpenInstalledDependency ',BrokenPackage.IDAsString,' ',dbgs(ord(BrokenPackage.AutoInstall)));
-      if (not Quiet) and DirPathExistsCached(PkgLinks.GetGlobalLinkDirectory)
-      then begin
-        // tell the user
-        CurResult:=QuestionDlg(lisPkgSysPackageFileNotFound,
-          Format(lisPkgSysThePackageIsInstalledButNoValidPackageFileWasFound, ['"',
-            BrokenPackage.Name, '"', #13]),
-          mtError,[mrOk,mrYesToAll,'Skip these warnings'],0);
-        if CurResult=mrYesToAll then
-          Quiet:=true;
-      end;
+      Modified:=false;
+      EndUpdate;
+    end;
+    AddPackage(BrokenPackage);
+    DebugLn('TLazPackageGraph.OpenInstalledDependency ',BrokenPackage.IDAsString,' ',dbgs(ord(BrokenPackage.AutoInstall)));
+    if (not Quiet) and DirPathExistsCached(PkgLinks.GetGlobalLinkDirectory)
+    then begin
+      // tell the user
+      CurResult:=QuestionDlg(lisPkgSysPackageFileNotFound,
+        Format(lisPkgSysThePackageIsInstalledButNoValidPackageFileWasFound, ['"',
+          BrokenPackage.Name, '"', #13]),
+        mtError,[mrOk,mrYesToAll,'Skip these warnings'],0);
+      if CurResult=mrYesToAll then
+        Quiet:=true;
     end;
 
     // open it
