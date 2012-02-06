@@ -19,7 +19,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="31">
+    <Files Count="32">
       <Item1>
         <Filename Value="laz2_dom.pas"/>
         <UnitName Value="laz2_DOM"/>
@@ -138,12 +138,16 @@
       </Item29>
       <Item30>
         <Filename Value="lazmethodlist.pas"/>
-        <UnitName Value="lazmethodlist"/>
+        <UnitName Value="LazMethodList"/>
       </Item30>
       <Item31>
         <Filename Value="avglvltree.pas"/>
         <UnitName Value="AvgLvlTree"/>
       </Item31>
+      <Item32>
+        <Filename Value="lazlogger.pas"/>
+        <UnitName Value="LazLogger"/>
+      </Item32>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>
@@ -162,5 +166,8 @@
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
   </Package>
 </CONFIG>
