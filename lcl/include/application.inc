@@ -1991,7 +1991,9 @@ end;
 procedure TApplication.IntfSettingsChange;
 begin
   if FUpdateFormatSettings then
-    GetFormatSettings;
+  {$ifdef win32}
+    GetFormatSettings
+  {$endif};
 end;
 
 procedure TApplication.IntfThemeOptionChange(AThemeServices: TThemeServices;
