@@ -619,7 +619,7 @@ end;
 function TDragManagerDefault.IsDragging: boolean;
 //Is something being dragged
 begin
-  Result := FPerformer <> nil
+  Result := (FPerformer <> nil) and not FInDragStop;
 end;
 
 function TDragManagerDefault.Dragging(AControl: TControl): boolean;
