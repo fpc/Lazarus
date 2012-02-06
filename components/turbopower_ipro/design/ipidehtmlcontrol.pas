@@ -1,7 +1,7 @@
 {
  *****************************************************************************
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -244,6 +244,7 @@ begin
     MarginHeight:=2;
     MarginWidth:=2;
     Parent:=Self;
+    WantTabs := False;
     OnHotClick:=@IPHTMLPanelHotClick;
   end;
   FIPHTMLPanel.DataProvider:=TLazIpHtmlDataProvider.Create(FIPHTMLPanel);

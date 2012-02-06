@@ -3368,6 +3368,7 @@ type
     FCurElement : PIpHtmlElement;
     FPrintSettings: TIpHtmlPrintSettings;                              {!!.10}
     FFactBAParag: Real; //JMN
+    FWantTabs: Boolean;
     procedure SetDataProvider(const AValue: TIpAbstractHtmlDataProvider);
     procedure SetFactBAParag(const Value: Real); //JMN
     function FactBAParagNotIs1: Boolean;
@@ -3526,6 +3527,7 @@ type
     property OnHotClick : TNotifyEvent
                 read FHotClick write FHotClick;
     property CurURL: string read GetCurUrl;
+    property WantTabs: Boolean read FWantTabs write FWantTabs default True;
   published
     property Version : string
       read GetVersion write SetVersion stored False;
@@ -3562,6 +3564,7 @@ type
     property TextColor;
     property Visible;                                                  {!!.10}
     property VLinkColor;
+    property WantTabs;
     {$IFDEF VERSION4}
     property OnCanResize;                                              {!!.10}
     {$ENDIF}
@@ -18424,7 +18427,7 @@ begin
     HyperPanel.OnCurElementChange := FViewer.CurElementChange;
     HyperPanel.OnHotClick := FViewer.HotClick;
     HyperPanel.OnClick := FViewer.ClientClick;
-    HyperPanel.TabStop := True;
+    HyperPanel.TabStop := FViewer.WantTabs;
     FHtml.OnScroll := HyperPanel.ScrollRequest;
     FHtml.OnControlClick := ControlClick;
     FHtml.OnControlClick2 := ControlClick2;
@@ -19134,6 +19137,7 @@ begin
   DefaultFontSize := 12;
   FPrintSettings := TIpHtmlPrintSettings.Create;                       {!!.10}
   FFactBAParag := 1;
+  FWantTabs := True;
 end;
 
 destructor TIpHtmlCustomPanel.Destroy;
