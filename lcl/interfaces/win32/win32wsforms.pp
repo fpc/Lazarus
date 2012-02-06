@@ -674,17 +674,19 @@ begin
 end;
 
 class procedure TWin32WSCustomForm.ShowHide(const AWinControl: TWinControl);
+const
+  WindowStateToFlags: array[TWindowState] of DWord = (
+ { wsNormal     } SW_SHOWNORMAL, // to restore from minimzed/maximized we need to use SW_SHOWNORMAL instead of SW_SHOW
+ { wsMinimized  } SW_SHOWMINIMIZED,
+ { wsMaximized  } SW_SHOWMAXIMIZED,
+ { wsFullScreen } SW_SHOWNORMAL  // win32 has no fullscreen window state
+  );
 var
-  Flags: dword;
+  Flags: DWord;
 begin
   if AWinControl.HandleObjectShouldBeVisible then
   begin
-    case TCustomForm(AWinControl).WindowState of
-      wsMaximized: Flags := SW_SHOWMAXIMIZED;
-      wsMinimized: Flags := SW_SHOWMINIMIZED;
-    else
-      Flags := SW_SHOW;
-    end;
+    Flags := WindowStateToFlags[TCustomForm(AWinControl).WindowState];
     Windows.ShowWindow(AWinControl.Handle, Flags);
     { ShowWindow does not send WM_SHOWWINDOW when creating overlapped maximized window }
     { TODO: multiple WM_SHOWWINDOW when maximizing after initial show? }
