@@ -15,9 +15,6 @@
     <VersionInfo>
       <StringTable ProductVersion=""/>
     </VersionInfo>
-    <MacroValues Count="1">
-      <Macro1 Name="LCLWidgetType" Value="customdrawn"/>
-    </MacroValues>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
     </BuildModes>
