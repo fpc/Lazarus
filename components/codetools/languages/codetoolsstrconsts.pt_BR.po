@@ -695,7 +695,7 @@ msgstr "operador esperado, mas %s encontrado"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbuteoffound
 msgid "unexpected end of file (operator expected)"
-msgstr ""
+msgstr "fim de arquivo inesperado (esperado operador)"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
 msgid "operator expected but %s found"

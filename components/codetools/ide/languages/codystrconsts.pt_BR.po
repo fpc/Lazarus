@@ -161,10 +161,9 @@ msgid "Code Node Information"
 msgstr "Informação Nó de Código"
 
 #: codystrconsts.crscodyidentifierdictionary
-#, fuzzy
 #| msgid "Cody Identifier Dictionary"
 msgid "Identifier Dictionary"
-msgstr "Dicionário de identificadores do \"Cody\""
+msgstr "Dicionário de identificadores"
 
 #: codystrconsts.crscopydeclarationtoclipboard
 #| msgid "Copy declaration to clipboard"
@@ -318,10 +317,9 @@ msgid "Insert Call Inherited"
 msgstr "Inserir chamada à \"Inherited\""
 
 #: codystrconsts.crsinsertfileatcursor
-#, fuzzy
 #| msgid "Insert File at Cursor ..."
 msgid "Insert File Contents at Cursor ..."
-msgstr "Inserir arquivo na posição do cursor ..."
+msgstr "Inserir conteúdo do arquivo na posição do cursor ..."
 
 #: codystrconsts.crsjumpto
 msgid "Jump to"
@@ -545,7 +543,7 @@ msgstr "Tipo"
 
 #: codystrconsts.crsunabletodelete
 msgid "Unable to delete \"%s\""
-msgstr ""
+msgstr "Incapaz de excluir \"%s\""
 
 #: codystrconsts.crsunabletoreadfile
 msgid "Unable to read file \"%s\"."
