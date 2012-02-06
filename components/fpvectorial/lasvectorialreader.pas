@@ -26,7 +26,7 @@ unit lasvectorialreader;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, dateutils,
   fpcanvas, fpimage,
   //avisozlib,
   fpvectorial;
@@ -142,7 +142,126 @@ type
     procedure ReadFromStream(AStream: TStream; AData: TvVectorialDocument); override;
   end;
 
+  { TvLASVectorialWriter }
+
+  TvLASVectorialWriter = class(TvCustomVectorialWriter)
+  private
+    // Stream position information
+    InitialPos, PositionAfterPublicHeader: Int64;
+  public
+    // Public Header
+    PublicHeaderBlock_1_0: TLASPublicHeaderBlock_1_0;
+    PublicHeaderBlock_1_3_Extension: TLASPublicHeaderBlock_1_3_Extension;
+    // Variable Length Records
+    VariableLengthRecords: array of TLASVariableLengthRecord;
+    // Point Data
+    PointsFormat0: array of TLASPointDataRecordFormat0;
+    PointsFormat1: array of TLASPointDataRecordFormat1;
+    { General reading methods }
+    procedure WriteToStream(AStream: TStream; AData: TvVectorialDocument); override;
+  end;
+
 implementation
+
+{ TvLASVectorialWriter }
+
+procedure TvLASVectorialWriter.WriteToStream(AStream: TStream;
+  AData: TvVectorialDocument);
+var
+  lPage: TvVectorialPage;
+  lRecord0: TLASPointDataRecordFormat0;
+  lRecord1: TLASPointDataRecordFormat1;
+  lPoint: TvPoint;
+  lColor: TFPColor;
+  lCreationDate: TDateTime;
+  lEntity: TvEntity;
+  i: Integer;
+begin
+  // Get the first page
+  lPage := AData.GetPage(0);
+  lCreationDate := Now;
+
+  // Write our LAS 1.0 header
+  FillChar(PublicHeaderBlock_1_0, SizeOf(PublicHeaderBlock_1_0), #0);
+  PublicHeaderBlock_1_0.FileSignatureLASF := 'LASF';
+  PublicHeaderBlock_1_0.FileSourceID := 0;
+  PublicHeaderBlock_1_0.GlobalEncoding := 0;
+  PublicHeaderBlock_1_0.ProjectIDGUIDdata1 := 0;
+  PublicHeaderBlock_1_0.ProjectIDGUIDdata2 := 0;
+  PublicHeaderBlock_1_0.ProjectIDGUIDdata3 := 0;
+  // PublicHeaderBlock_1_0.ProjectIDGUIDdata4 all zero
+  PublicHeaderBlock_1_0.VersionMajor := 1;
+  PublicHeaderBlock_1_0.VersionMinor := 0;
+  PublicHeaderBlock_1_0.SystemIdentifier := '';
+  PublicHeaderBlock_1_0.GeneratingSoftware := 'FPSpreadsheet';
+  PublicHeaderBlock_1_0.FileCreationDayofYear := DayOfTheYear(lCreationDate);
+  PublicHeaderBlock_1_0.FileCreationYear := YearOf(lCreationDate);
+  PublicHeaderBlock_1_0.HeaderSize := SizeOf(PublicHeaderBlock_1_0);
+  PublicHeaderBlock_1_0.OffsetToPointData := SizeOf(PublicHeaderBlock_1_0);
+  PublicHeaderBlock_1_0.NumberofVariableLengthRecords := 0;
+  PublicHeaderBlock_1_0.PointDataFormatID := 1;
+  PublicHeaderBlock_1_0.PointDataRecordLength := $1C;
+  PublicHeaderBlock_1_0.Numberofpointrecords := lPage.GetEntitiesCount;
+  PublicHeaderBlock_1_0.Numberofpointsbyreturn[0] := 0;
+  PublicHeaderBlock_1_0.Numberofpointsbyreturn[1] := 0;
+  PublicHeaderBlock_1_0.Numberofpointsbyreturn[2] := 0;
+  PublicHeaderBlock_1_0.Numberofpointsbyreturn[3] := 0;
+  PublicHeaderBlock_1_0.Numberofpointsbyreturn[4] := 0;
+  PublicHeaderBlock_1_0.Xscalefactor := 1;
+  PublicHeaderBlock_1_0.Yscalefactor := 1;
+  PublicHeaderBlock_1_0.Zscalefactor := 1;
+
+  PublicHeaderBlock_1_0.Xoffset := 0;
+  PublicHeaderBlock_1_0.Yoffset := 0;
+  PublicHeaderBlock_1_0.Zoffset := 0;
+  PublicHeaderBlock_1_0.MaxX := lPage.MaxX;
+  PublicHeaderBlock_1_0.MinX := lPage.MinX;
+  PublicHeaderBlock_1_0.MaxY := lPage.MaxY;
+  PublicHeaderBlock_1_0.MinY := lPage.MinY;
+  PublicHeaderBlock_1_0.MaxZ := lPage.MaxZ;
+  PublicHeaderBlock_1_0.MinZ := lPage.MinZ;
+  AStream.Write(PublicHeaderBlock_1_0, SizeOf(TLASPublicHeaderBlock_1_0));
+
+  // Write the variable length records
+  // none currently
+
+  // Write the point data
+  for i := 0 to lPage.GetEntitiesCount()-1 do
+  begin
+    lEntity := lPage.GetEntity(i);
+    if not (lEntity is TvPoint) then Continue;
+    lPoint := lEntity as TvPoint;
+
+    FillChar(lRecord1, SizeOf(TLASPointDataRecordFormat1), #0);
+    lRecord1.X := Round(lEntity.X);
+    lRecord1.Y := Round(lEntity.Y);
+    lRecord1.Z := Round(lEntity.Z);
+
+    // Convert the colors into LIDAR Point Classes
+    lColor := lPoint.Pen.Color;
+    // 2 Ground
+    if lColor = colMaroon then
+      lRecord1.Classification := 2
+    // 3 Low Vegetation
+    else if lColor = colGreen then
+      lRecord1.Classification := 3
+    // 4 Medium Vegetation
+    //4: lColor := colGreen;
+    // 5 High Vegetation
+    else if lColor = colDkGreen then
+      lRecord1.Classification := 5
+    // 6 Building
+    else if lColor = colGray then
+      lRecord1.Classification := 6
+    // 7 Low Point (noise)
+    // 8 Model Key-point (mass point)
+    // 9 Water
+    else if lColor = colBlue then
+      lRecord1.Classification := 9;
+
+    AStream.Write(lRecord1, SizeOf(TLASPointDataRecordFormat1));
+  end;
+end;
 
 {$ifdef FPVECTORIALDEBUG_LAS}
 procedure TvLASVectorialReader.DebugOutPublicHeaderBlock;
@@ -338,6 +457,7 @@ end;
 initialization
 
   RegisterVectorialReader(TvLASVectorialReader, vfLAS);
+  RegisterVectorialWriter(TvLASVectorialWriter, vfLAS);
 
 end.
 

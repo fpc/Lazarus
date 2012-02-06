@@ -14,6 +14,7 @@ type
 
   TformFPV3D = class(TForm)
     Button1: TButton;
+    buttonCutFile: TButton;
     buttonRotZ: TButton;
     buttonZoomIn: TButton;
 
@@ -21,6 +22,7 @@ type
     editFileName: TFileNameEdit;
     glControl: TOpenGLControl;
     procedure Button1Click(Sender: TObject);
+    procedure buttonCutFileClick(Sender: TObject);
     procedure buttonLoadClick(Sender: TObject);
     procedure buttonRotZClick(Sender: TObject);
     procedure buttonZoomInClick(Sender: TObject);
@@ -138,6 +140,16 @@ end;
 procedure TformFPV3D.Button1Click(Sender: TObject);
 begin
   glControl.Invalidate;
+end;
+
+procedure TformFPV3D.buttonCutFileClick(Sender: TObject);
+var
+  lPage: TvVectorialPage;
+begin
+  VecDoc.ReadFromFile(editFileName.FileName);
+  lPage := VecDoc.GetPage(0);
+  while lPage.DeleteEntity(20000) do ;
+  VecDoc.WriteToFile(editFileName.FileName + 'smaller.las');
 end;
 
 procedure TformFPV3D.FormDestroy(Sender: TObject);

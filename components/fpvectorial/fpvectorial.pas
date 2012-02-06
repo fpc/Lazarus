@@ -353,12 +353,13 @@ type
 
   TvVectorialPage = class
   private
-    FEntities: TFPList;
+    FEntities: TFPList; // of TvEntity
     FTmpPath: TPath;
     FTmpText: TvText;
     //procedure RemoveCallback(data, arg: pointer);
     procedure ClearTmpPath();
     procedure AppendSegmentToTmpPath(ASegment: TPathSegment);
+    procedure CallbackDeleteEntity(data,arg:pointer);
   public
     // Document size for page-based documents
     Width, Height: Double; // in millimeters
@@ -375,6 +376,8 @@ type
     function  FindAndSelectEntity(Pos: TPoint): TvFindEntityResult;
     { Data removing methods }
     procedure Clear; virtual;
+    function  DeleteEntity(AIndex: Cardinal): Boolean;
+    function  RemoveEntity(AEntity: TvEntity; AFreeAfterRemove: Boolean = True): Boolean;
     { Data writing methods }
     function AddEntity(AEntity: TvEntity): Integer;
     procedure AddPathCopyMem(APath: TPath);
@@ -603,6 +606,12 @@ begin
   FTmpPath.AppendSegment(ASegment);
 end;
 
+procedure TvVectorialPage.CallbackDeleteEntity(data, arg: pointer);
+begin
+  if (data <> nil) then
+    TvEntity(data).Free;
+end;
+
 constructor TvVectorialPage.Create(AOwner: TvVectorialDocument);
 begin
   inherited Create;
@@ -669,7 +678,33 @@ end;
 
 procedure TvVectorialPage.Clear;
 begin
+  FEntities.ForEachCall(CallbackDeleteEntity, nil);
   FEntities.Clear();
+end;
+
+{@@
+  Returns if the entity was really deleted or false if there is no entity with this index
+}
+function TvVectorialPage.DeleteEntity(AIndex: Cardinal): Boolean;
+var
+  lEntity: TvEntity;
+begin
+  Result := False;
+  if AIndex >= GetEntitiesCount() then Exit;;
+  lEntity := GetEntity(AIndex);
+  if lEntity = nil then Exit;
+  FEntities.Delete(AIndex);
+  lEntity.Free;
+  Result := True;
+end;
+
+function TvVectorialPage.RemoveEntity(AEntity: TvEntity; AFreeAfterRemove: Boolean = True): Boolean;
+begin
+  Result := False;
+  if AEntity = nil then Exit;
+  FEntities.Remove(AEntity);
+  if AFreeAfterRemove then AEntity.Free;
+  Result := True;
 end;
 
 {@@

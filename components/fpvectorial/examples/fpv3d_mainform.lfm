@@ -1,17 +1,17 @@
 object formFPV3D: TformFPV3D
   Left = 336
-  Height = 376
+  Height = 409
   Top = 171
-  Width = 495
+  Width = 514
   Caption = 'formFPV3D'
-  ClientHeight = 376
-  ClientWidth = 495
+  ClientHeight = 409
+  ClientWidth = 514
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   LCLVersion = '0.9.31'
   object editFileName: TFileNameEdit
     Left = 12
-    Height = 25
+    Height = 21
     Top = 8
     Width = 280
     DialogOptions = []
@@ -38,9 +38,9 @@ object formFPV3D: TformFPV3D
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 5
-    Height = 299
-    Top = 72
-    Width = 485
+    Height = 300
+    Top = 104
+    Width = 504
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 5
     BorderSpacing.Right = 5
@@ -82,5 +82,14 @@ object formFPV3D: TformFPV3D
     Caption = 'Rot Around Z'
     OnClick = buttonRotZClick
     TabOrder = 6
+  end
+  object buttonCutFile: TButton
+    Left = 12
+    Height = 25
+    Top = 72
+    Width = 159
+    Caption = 'Cut File to make it smaller'
+    OnClick = buttonCutFileClick
+    TabOrder = 7
   end
 end
