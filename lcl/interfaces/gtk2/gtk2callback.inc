@@ -1821,6 +1821,15 @@ begin
     // send the message directly to the LCL
     NotifyApplicationUserInput(MessI.Msg);
     Result := DeliverMessage(AWinControl, MessI);
+
+    // issue #19914
+    if (Result = 0) and (Event^.button = 1) and
+      GTK_IS_NOTEBOOK(PGtkWidget(AWinControl.Handle)) and
+      DragManager.IsDragging then
+    begin
+      g_object_set_data(PGObject(AWinControl.Handle),
+        'lclnotebookdragging', gpointer(PtrInt(1)));
+    end;
   end;
 end;
 
@@ -1934,6 +1943,15 @@ begin
     DeliverMessage(AWinControl, MessI);
     if MessI.Result <> 0 then
     begin
+      // issue #19914
+      if GTK_IS_NOTEBOOK(Widget) then
+      begin
+        if g_object_get_data(PGObject(AWinControl.Handle),'lclnotebookdragging') <> nil then
+        begin
+          g_object_steal_data(PGObject(AWinControl.Handle),'lclnotebookdragging');
+          exit;
+        end;
+      end;
       // handled by the LCL
       //DebugLn(['DeliverMouseUpMessage msg was handled by the LCL, Stopping signal ...']);
       g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-release-event');
