@@ -250,10 +250,12 @@ var
   Data: Pointer;
   Src, Dst, SrcRowPtr, DstRowPtr: PByte;
   x, y: Cardinal;
+  CreateWithAlpha: boolean;
 begin
   Result := False;
   ABitmap := 0;
   AMask := 0;
+  CreateWithAlpha := True;
 
   if ImgWidth = 0 then Exit;
   if ImgHeight = 0 then Exit;
@@ -343,10 +345,21 @@ begin
         end
         else begin
           // components are in place
+
+          // gtkPixbuf doesn't like invalid dataSize/MaskSize < 32. issue #8553.
+          if (ARawImage.MaskSize > 0) and (ImgDepth = 32) then
+          begin
+            CreateWithAlpha := Trunc(ARawImage.DataSize / ARawImage.MaskSize) = 32;
+            {$IFDEF VerboseRawImage}
+            if not CreateWithAlpha then
+              DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage B WARNING: This image have invalid DataSize / MaskSize.');
+            {$ENDIF}
+          end;
           Data := ImgData;
         end;
 
-        TmpPixBuf := gdk_pixbuf_new_from_data(Data, GDK_COLORSPACE_RGB, True, 8, ImgWidth, ImgHeight, RowStride, nil, nil);
+        TmpPixBuf := gdk_pixbuf_new_from_data(Data, GDK_COLORSPACE_RGB, CreateWithAlpha,
+          8, ImgWidth, ImgHeight, RowStride, nil, nil);
         // we need to copy our pixbuf into a new one to allow data deallocation
         Pixbuf := gdk_pixbuf_copy(TmpPixBuf);
         gdk_pixbuf_unref(TmpPixBuf);
