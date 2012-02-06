@@ -389,6 +389,7 @@ begin
   AStream.Position := InitialPos + PublicHeaderBlock_1_0.OffsetToPointData;
   while AStream.Position < AStream.Size do
   begin
+    // hack to cut las files: if lPage.GetEntitiesCount = 100000 then Exit;
     case PublicHeaderBlock_1_0.PointDataFormatID of
     0:
     begin

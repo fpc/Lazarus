@@ -147,8 +147,8 @@ var
   lPage: TvVectorialPage;
 begin
   VecDoc.ReadFromFile(editFileName.FileName);
-  lPage := VecDoc.GetPage(0);
-  while lPage.DeleteEntity(20000) do ;
+  //lPage := VecDoc.GetPage(0);
+  //while lPage.DeleteEntity(20000) do ;
   VecDoc.WriteToFile(editFileName.FileName + 'smaller.las');
 end;
 

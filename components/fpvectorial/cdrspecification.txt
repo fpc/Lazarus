@@ -1,0 +1,67 @@
+  The Corel Draw file format, follows the following general structure:
+
+  1> Data in Little Endian order
+
+  "01 00 00 00" = decimal 1
+  "10 00 00 00" = decimal 16
+  "00 01 00 00" = decimal 256
+
+  2> The file is a tree of chunks
+
+  2.1> CHUNK STRUCTURE
+
+  --------------------------------
+  4 | Chunk identifier
+  4 | Chunk size (little endian cardinal)
+  --------------------------------
+  Chunk header and body
+  --------------------------------
+
+  3.1> LIST CHUNK STRUCTURE
+
+  --------------------------------
+  4 | Chunk identifier. Always "LIST"
+  4 | Chunk size.
+  4 | List identifier.
+  --------------------------------
+  Chunk body
+  --------------------------------
+
+  3.2> <DISP> CHUNK STURCTURE
+
+  --------------------------------
+  4 | Chunk identifier
+  4 | Chunk size (little endian)
+  4 | ??
+  --------------------------------
+  4 | Header size. Usual value is 40
+  4 | Image width in pixels.
+  4 | Image height in pixels.
+  2 | Color plane value. Usual value is 1.
+  2 | Color depth.
+  4 | Compression. Usually 0, preview is not compressed.
+  4 | Bitmap size.
+  4 | Image width in pixels/metre.
+  4 | Image height in pixels/metre.
+  4 | Number of colors.
+  4 | Number of used colors.
+  --------------------------------
+  Chunk body (RGB byte array)
+  --------------------------------
+
+  3.3>
+
+  Folii color representation
+  <fild> CHUNK STRUCTURE
+  --------------------------------
+  4 | Chunk identifier
+  4 | Chunk size (little endian)
+  --------------------------------
+  4 | Unique fill identifier
+  4 | ???
+  1 | Color type (0x02-CMYK; 0x05-RGB
+  7 | ???
+  4 | Color fied (CMYK, BGR)
+  --------------------------------
+  Chunk body (unknown)
+  --------------------------------

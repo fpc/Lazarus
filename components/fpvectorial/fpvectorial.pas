@@ -177,6 +177,7 @@ type
     procedure MoveSubpart(ADeltaX, ADeltaY: Integer; ASubpart: Cardinal); virtual;
     procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
+    function GetNormalizedPos(APage: TvVectorialPage; ANewMin, ANewMax: Double): T3DPoint;
   end;
 
   { TvEntityWithPen }
@@ -304,7 +305,6 @@ type
 
   TvPoint = class(TvEntityWithPen)
   public
-    function GetNormalizedPos(APage: TvVectorialPage; ANewMin, ANewMax: Double): T3DPoint;
   end;
 
   { TvVectorialDocument }
@@ -560,15 +560,6 @@ begin
   Result.Z := 0;
 end;
 
-{ TvPoint }
-
-function TvPoint.GetNormalizedPos(APage: TvVectorialPage; ANewMin, ANewMax: Double): T3DPoint;
-begin
-  Result.X := (X - APage.MinX) * (ANewMax - ANewMin) / (APage.MaxX - APage.MinX) + ANewMin;
-  Result.Y := (Y - APage.MinY) * (ANewMax - ANewMin) / (APage.MaxY - APage.MinY) + ANewMin;
-  Result.Z := (Z - APage.MinZ) * (ANewMax - ANewMin) / (APage.MaxZ - APage.MinZ) + ANewMin;
-end;
-
 constructor TvEntityWithPen.Create;
 begin
   inherited Create;
@@ -644,9 +635,9 @@ function TvVectorialPage.GetEntity(ANum: Cardinal): TvEntity;
 begin
   if ANum >= FEntities.Count then raise Exception.Create('TvVectorialDocument.GetEntity: Entity number out of bounds');
 
-  if FEntities.Items[ANum] = nil then raise Exception.Create('TvVectorialDocument.GetEntity: Invalid Entity number');
-
   Result := TvEntity(FEntities.Items[ANum]);
+
+  if Result = nil then raise Exception.Create('TvVectorialDocument.GetEntity: Invalid Entity number');
 end;
 
 function TvVectorialPage.GetEntitiesCount: Integer;
@@ -1077,6 +1068,14 @@ procedure TvEntity.Render(ADest: TFPCustomCanvas; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 begin
 
+end;
+
+function TvEntity.GetNormalizedPos(APage: TvVectorialPage; ANewMin,
+  ANewMax: Double): T3DPoint;
+begin
+  Result.X := (X - APage.MinX) * (ANewMax - ANewMin) / (APage.MaxX - APage.MinX) + ANewMin;
+  Result.Y := (Y - APage.MinY) * (ANewMax - ANewMin) / (APage.MaxY - APage.MinY) + ANewMin;
+  Result.Z := (Z - APage.MinZ) * (ANewMax - ANewMin) / (APage.MaxZ - APage.MinZ) + ANewMin;
 end;
 
 { TvEllipse }
