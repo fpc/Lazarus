@@ -1097,8 +1097,6 @@ begin
 end;
 
 procedure TCustomListView.SetAutoWidthLastColumn(AValue: Boolean);
-var
-  i: Integer;
 begin
   if FAutoWidthLastColumn=AValue then Exit;
   FAutoWidthLastColumn:=AValue;
