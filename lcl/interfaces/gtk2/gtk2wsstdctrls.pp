@@ -1432,15 +1432,21 @@ begin
   LCLSendSetFocusMsg(TControl(WidgetInfo^.LCLObject));
 end;
 
+{used only for gtk2 < 2.10 }
 procedure GtkPopupShowCB(AMenu: PGtkMenuShell; WidgetInfo: PWidgetInfo); cdecl;
 begin
+  g_object_set_data(PGObject(WidgetInfo^.CoreWidget),
+    'popup-shown-compat',GPointer(PtrUInt(1)));
   LCLSendSetFocusMsg(TControl(WidgetInfo^.LCLObject));
   // let the LCL change the items on the fly:
   LCLSendDropDownMsg(TControl(WidgetInfo^.LCLObject));
 end;
 
+{used only for gtk2 < 2.10 }
 procedure GtkPopupHideCB(AMenu: PGtkMenuShell; WidgetInfo: PWidgetInfo); cdecl;
 begin
+  g_object_set_data(PGObject(WidgetInfo^.CoreWidget),
+    'popup-shown-compat',GPointer(PtrUInt(0)));
   LCLSendCloseUpMsg(TControl(WidgetInfo^.LCLObject));
 end;
 
@@ -1588,7 +1594,8 @@ begin
   and (GTK_IS_MENU(APrivate^.popup_window)) then
     AMenu := GTK_OBJECT(APrivate^.popup_window);
 
-  if Assigned(AMenu) and (gtk_major_version = 2) and (gtk_minor_version < 10) then
+  if Assigned(AMenu) and
+    (gtk_major_version = 2) and (gtk_minor_version < 10) then
   begin
     g_signal_connect(AMenu, 'show', G_CALLBACK(@GtkPopupShowCB), AWidgetInfo);
     g_signal_connect_after(AMenu, 'selection-done', G_CALLBACK(@GtkPopupHideCB), AWidgetInfo);
@@ -1637,7 +1644,14 @@ begin
 
   FillChar(AValue, SizeOf(AValue), 0);
   g_value_init(@AValue, G_TYPE_BOOLEAN);
-  g_object_get_property(PGObject(Combo), 'popup-shown', @AValue);
+  if (gtk_major_version = 2) and (gtk_minor_version < 10) then
+  begin
+    if g_object_get_data(PGObject(Combo),'popup-shown-compat') <> nil then
+      AValue.data[0].v_int := 1
+    else
+      AValue.data[0].v_int := 0;
+  end else
+    g_object_get_property(PGObject(Combo), 'popup-shown', @AValue);
   Result := AValue.data[0].v_int <> 0;
 end;
 
