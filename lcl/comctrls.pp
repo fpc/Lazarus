@@ -724,7 +724,6 @@ type
     function CanChange: Boolean; override;
     function CanShowTab(ATabIndex: Integer): Boolean; virtual;
     procedure Change; override;
-    function GetImageIndex(ATabIndex: Integer): Integer; override;
     procedure Loaded; override;
     procedure CreateWnd; override;
     procedure DestroyHandle; override;
@@ -743,6 +742,7 @@ type
     destructor Destroy; override;
     function IndexOfTabAt(X, Y: Integer): Integer;
     function GetHitTestInfoAt(X, Y: Integer): THitTests;
+    function GetImageIndex(ATabIndex: Integer): Integer; override;
     function IndexOfTabWithCaption(const TabCaption: string): Integer;
     function TabRect(Index: Integer): TRect;
     function RowCount: Integer;
