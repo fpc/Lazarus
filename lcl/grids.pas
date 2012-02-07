@@ -7055,8 +7055,6 @@ begin
 end;
 
 procedure TCustomGrid.CMMouseEnter(var Message: TLMessage);
-var
-  pt: TPoint;
 begin
   inherited;
   FSavedHint := Hint;
@@ -7481,9 +7479,6 @@ begin
 end;
 
 function TCustomGrid.GetCellHintText(ACol, ARow: Integer): string;
-var
-  txt1: String;
-  txt2: String;
 begin
   Result := '';
   if Assigned(FOnGetCellHint) then
