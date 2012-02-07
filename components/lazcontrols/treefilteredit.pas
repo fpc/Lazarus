@@ -382,6 +382,8 @@ begin
   inherited Notification(AComponent, Operation);
   if (Operation=opRemove) and (FilteredTreeview=AComponent) then
   begin
+    IdleConnected:=False;
+    fNeedUpdate:=False;
     fFilteredTreeview.RemoveHandlerOnBeforeDestruction(@OnBeforeTreeDestroy);
     fFilteredTreeview:=nil;
     FreeAndNil(fBranches);
