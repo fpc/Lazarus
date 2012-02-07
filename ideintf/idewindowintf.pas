@@ -1514,7 +1514,6 @@ var
   DockSibling: TCustomForm;
   DockSiblingBounds: TRect;
   Offset: TPoint;
-  i: Integer;
 begin
   {$IFDEF VerboseIDEDocking}
   debugln(['TSimpleWindowLayoutList.ApplyAndShow Form=',DbgSName(AForm),' ',BringToFront,
@@ -1794,8 +1793,6 @@ begin
 end;
 
 constructor TIDEWindowCreator.Create(aFormName: string);
-var
-  sl: TSimpleWindowLayout;
 begin
   FFormName:=aFormName;
   FDividerTemplate := nil;
