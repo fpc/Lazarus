@@ -19,14 +19,14 @@
     <Description Value="Check the validity of translated PO files.
 "/>
     <Version Major="1"/>
-    <Files Count="7">
+    <Files Count="6">
       <Item1>
-        <Filename Value="resultdlg.lfm"/>
-        <Type Value="LFM"/>
-      </Item1>
-      <Item2>
         <Filename Value="resultdlg.pp"/>
         <UnitName Value="ResultDlg"/>
+      </Item1>
+      <Item2>
+        <Filename Value="resultdlg.lfm"/>
+        <Type Value="LFM"/>
       </Item2>
       <Item3>
         <Filename Value="pofamilies.pp"/>
@@ -42,13 +42,9 @@
         <UnitName Value="SimplePoFiles"/>
       </Item5>
       <Item6>
-        <Filename Value="resultdlg.lfm"/>
-        <Type Value="LFM"/>
-      </Item6>
-      <Item7>
         <Filename Value="pocheckermain.lfm"/>
         <Type Value="LFM"/>
-      </Item7>
+      </Item6>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
