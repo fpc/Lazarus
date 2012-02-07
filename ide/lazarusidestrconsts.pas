@@ -3998,7 +3998,9 @@ resourcestring
   lisA2PShortenOrExpandFilename = 'Shorten or expand filename';
   lisA2PSaveFileDialog = 'Save file dialog';
   lisA2PFileName = 'File name:';
-  
+  lisMoveSelectedUp = 'Move selected item up (Ctrl+Up)';
+  lisMoveSelectedDown = 'Move selected item down (Ctrl+Down)';
+
   // broken dependencies dialog
   lisBDDChangingThePackageNameOrVersionBreaksDependencies = 'Changing the '
     +'package name or version breaks dependencies. Should these dependencies '

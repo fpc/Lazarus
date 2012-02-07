@@ -4603,8 +4603,7 @@ begin
   end;
 end;
 
-procedure TLazPackageGraph.MoveRequiredDependencyUp(
-  ADependency: TPkgDependency);
+procedure TLazPackageGraph.MoveRequiredDependencyUp(ADependency: TPkgDependency);
 begin
   if (ADependency=nil) or (ADependency.Removed) or (ADependency.Owner=nil)
   or (ADependency.PrevRequiresDependency=nil)
@@ -4615,8 +4614,7 @@ begin
   EndUpdate;
 end;
 
-procedure TLazPackageGraph.MoveRequiredDependencyDown(
-  ADependency: TPkgDependency);
+procedure TLazPackageGraph.MoveRequiredDependencyDown(ADependency: TPkgDependency);
 begin
   if (ADependency=nil) or (ADependency.Removed) or (ADependency.Owner=nil)
   or (ADependency.NextRequiresDependency=nil)
