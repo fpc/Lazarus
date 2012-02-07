@@ -297,7 +297,6 @@ type
     procedure LMDrawListItem(var TheMessage: TLMDrawListItem); message LM_DrawListItem;
     procedure LMMeasureItem(var TheMessage: TLMMeasureItem); message LM_MeasureItem;
     procedure LMSelChange(var TheMessage); message LM_SelChange;
-    procedure KeyUpAfterInterface(var Key: Word; Shift: TShiftState); override;
     procedure CNCommand(var TheMessage: TLMCommand); message CN_Command;
     procedure SetReadOnly(const AValue: Boolean);
     procedure UpdateSorted;
@@ -313,6 +312,7 @@ type
     procedure DoExit; override;
     procedure DrawItem(Index: Integer; ARect: TRect;
                        State: TOwnerDrawState); virtual;
+    procedure KeyUpAfterInterface(var Key: Word; Shift: TShiftState); override;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
     class function GetControlClassDefaultSize: TSize; override;
     procedure LMChanged(var Msg); message LM_CHANGED;
