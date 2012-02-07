@@ -1244,6 +1244,7 @@ var
   AForm: TCustomForm;
   W: PGtkWidget;
   Flags: TGdkWindowState;
+  B: Boolean;
 begin
   Result := True;
   if StayOnTopList = nil then
@@ -1254,8 +1255,11 @@ begin
     if AForm.HandleAllocated then
     begin
       W := PGtkWidget(AForm.Handle);
-      Flags := gdk_window_get_state(W^.Window);
-      if (AForm.Parent = nil) and
+      // do not raise assertion in case of invalid PGdkWindow
+      B := GTK_IS_WINDOW(W^.Window);
+      if B then
+        Flags := gdk_window_get_state(W^.Window);
+      if B and (AForm.Parent = nil) and
         not (csDesigning in AForm.ComponentState) and
         (AForm.FormStyle in TGtk2TopForms[ASystemTopAlso]) and
          GTK_WIDGET_VISIBLE(W) and
@@ -1277,6 +1281,7 @@ var
   AForm: TCustomForm;
   W: PGtkWidget;
   Flags: TGdkWindowState;
+  B: Boolean;
 begin
   Result := True;
   if StayOnTopList = nil then
@@ -1287,8 +1292,11 @@ begin
     if AForm.HandleAllocated then
     begin
       W := PGtkWidget(AForm.Handle);
-      Flags := gdk_window_get_state(W^.Window);
-      if (AForm.Parent = nil) and
+      // do not raise assertion in case of invalid PGdkWindow
+      B := GTK_IS_WINDOW(W^.Window);
+      if B then
+        Flags := gdk_window_get_state(W^.Window);
+      if B and (AForm.Parent = nil) and
         not (csDesigning in AForm.ComponentState) and
         (AForm.FormStyle in TGtk2TopForms[ASystemTopAlso]) and
          GTK_WIDGET_VISIBLE(W) and
