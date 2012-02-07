@@ -399,7 +399,9 @@ begin
 
   // check if package is already required
   if (CompareText(NewPkgName,LazPackage.Name)=0)
-  or (LazPackage.FindDependencyByName(NewPkgName)<>nil) then begin
+  or (PackageGraph.FindDependencyRecursively(
+        LazPackage.FirstRequiredDependency,NewPkgName)<>nil)
+  then begin
     if WarnIfAlreadyThere then
       IDEMessageDialog(lisProjAddDependencyAlreadyExists,
         Format(lisA2PThePackageHasAlreadyADependencyForThe, ['"', NewPkgName, '"']),

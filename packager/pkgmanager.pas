@@ -3536,12 +3536,12 @@ var
   NewDependency: TPkgDependency;
   ADependency: TPkgDependency;
 begin
-  Result:=mrCancel;
   NewDependency:=TPkgDependency.Create;
   try
     NewDependency.PackageName:=ReqPackage;
-    if CheckAddingDependency(APackage,NewDependency,false,false)<>mrOk then
-      exit;
+    Result:=CheckAddingDependency(APackage,NewDependency,false,false);
+    if Result=mrIgnore then exit(mrOk);
+    if Result<>mrOk then exit;
     if not OnlyTestIfPossible then begin
       ADependency:=NewDependency;
       NewDependency:=nil;
