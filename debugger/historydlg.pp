@@ -280,7 +280,7 @@ begin
   if not tbHistorySelected.Enabled
   then tbHistorySelected.Down := False
   else tbHistorySelected.Down := Sel;
-  tbHistorySelected.Click;
+  tbHistorySelectedClick(tbHistorySelected);
 
   tbClear.Enabled := (SnapshotManager.History.Count > 0) or (SnapshotManager.Snapshots.Count > 0);
 

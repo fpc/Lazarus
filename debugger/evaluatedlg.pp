@@ -164,7 +164,7 @@ begin
     cmbExpression.Text := NewFindText;
     cmbExpressionChange(nil);
     cmbExpression.SelectAll;
-    tbEvaluate.Click;
+    tbEvaluateClick(tbEvaluate);
   end;
   ActiveControl := cmbExpression;
 end;
