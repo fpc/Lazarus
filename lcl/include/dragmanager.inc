@@ -174,8 +174,8 @@ begin
   if FDragObject = nil then
     Exit;
   //Inform user of entering and leaving the area
-  ATarget := FindControlAtPosition(APosition,false);
-  ATarget := TControl(SendDragMessage(ATarget,dmFindTarget,FDragObject,nil,APosition));
+  ATarget := FindControlAtPosition(APosition, False);
+  ATarget := TControl(SendDragMessage(ATarget, dmFindTarget, FDragObject, nil, APosition));
 
   if ATarget <> FDragObject.DragTarget then
   begin

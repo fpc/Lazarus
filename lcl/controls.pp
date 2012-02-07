@@ -2499,7 +2499,7 @@ const
 
 function FindDragTarget(const Position: TPoint; AllowDisabled: Boolean): TControl;
 function FindControlAtPosition(const Position: TPoint; AllowDisabled: Boolean): TControl;
-function FindLCLWindow(const ScreenPos: TPoint): TWinControl;
+function FindLCLWindow(const ScreenPos: TPoint; AllowDisabled: Boolean = True): TWinControl;
 function FindControl(Handle: HWND): TWinControl;
 function FindOwnerControl(Handle: HWND): TWinControl;
 function FindLCLControl(const ScreenPos: TPoint): TControl;
@@ -2870,15 +2870,16 @@ var
   AWinControl: TWinControl;
   ClientPos: TPoint;
 begin
-  Result:=nil;
+  Result := nil;
   // find wincontrol at mouse cursor
-  AWinControl:=FindLCLWindow(ScreenPos);
-  if AWinControl=nil then exit;
+  AWinControl := FindLCLWindow(ScreenPos);
+  if AWinControl = nil then Exit;
   // find control at mouse cursor
-  ClientPos:=AWinControl.ScreenToClient(ScreenPos);
-  Result:=AWinControl.ControlAtPos(ClientPos,
-                        [capfAllowDisabled,capfAllowWinControls,capfRecursive]);
-  if Result=nil then Result:=AWinControl;
+  ClientPos := AWinControl.ScreenToClient(ScreenPos);
+  Result := AWinControl.ControlAtPos(ClientPos,
+                        [capfAllowDisabled, capfAllowWinControls, capfRecursive]);
+  if Result = nil then
+    Result := AWinControl;
 end;
 
 {-------------------------------------------------------------------------------
@@ -2908,18 +2909,25 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function FindLCLWindow(const ScreenPos: TPoint): TWinControl;
+function FindLCLWindow(const ScreenPos: TPoint; AllowDisabled: Boolean = True): TWinControl;
 var
   Handle: HWND;
 begin
   Handle := WindowFromPoint(ScreenPos);
-  Result := FindOwnerControl(Handle);
+  if not AllowDisabled then
+    // if disabled windows are not allowed then go up and search first enabled window
+    while IsWindow(Handle) and not IsWindowEnabled(Handle) do
+      Handle := GetParent(Handle);
+
+  if IsWindow(Handle) then
+    Result := FindOwnerControl(Handle)
+  else
+    Result := nil;
 end;
 
-function FindDragTarget(const Position: TPoint;
-  AllowDisabled: Boolean): TControl;
+function FindDragTarget(const Position: TPoint; AllowDisabled: Boolean): TControl;
 begin
-  Result:=FindControlAtPosition(Position,AllowDisabled);
+  Result := FindControlAtPosition(Position, AllowDisabled);
 end;
 
 {------------------------------------------------------------------------------
@@ -2928,22 +2936,23 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function FindControlAtPosition(const Position: TPoint;
-  AllowDisabled: Boolean): TControl;
+function FindControlAtPosition(const Position: TPoint; AllowDisabled: Boolean): TControl;
+const
+  DisabledFlag: array[Boolean] of TControlAtPosFlags = ([], [capfAllowDisabled]);
 var
   WinControl: TWinControl;
   Control: TControl;
 begin
   Result := nil;
-  WinControl := FindLCLWindow(Position);
-  if WinControl <> nil then
+  WinControl := FindLCLWindow(Position, AllowDisabled);
+  if Assigned(WinControl) then
   begin
     Result := WinControl;
     Control := WinControl.ControlAtPos(WinControl.ScreenToClient(Position),
-                        [capfAllowDisabled, capfAllowWinControls, capfRecursive,
-                        capfHasScrollOffset]);
+                        [capfAllowWinControls, capfRecursive,
+                         capfHasScrollOffset] + DisabledFlag[AllowDisabled]);
     //debugln(['FindControlAtPosition ',dbgs(Position),' ',DbgSName(WinControl),' ',dbgs(WinControl.ScreenToClient(Position)),' ',DbgSName(Control)]);
-    if Control <> nil then
+    if Assigned(Control) then
       Result := Control;
   end;
 end;

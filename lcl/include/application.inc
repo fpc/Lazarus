@@ -532,11 +532,11 @@ begin
   if FLastMouseControlValid and (P.X = FLastMousePos.x) and (P.Y = FLastMousePos.Y) then
     Result := FLastMouseControl
   else
-    Result := FindControlAtPosition(P, True);
+    Result := FindControlAtPosition(P, False);
   
-  if (Result <> nil) and (csDesigning in Result.ComponentState) then
+  if Assigned(Result) and (csDesigning in Result.ComponentState) then
     Result := nil;
-  if Result <> nil then
+  if Assigned(Result) then
   begin
     FLastMouseControlValid := True;
     FLastMousePos := p;
