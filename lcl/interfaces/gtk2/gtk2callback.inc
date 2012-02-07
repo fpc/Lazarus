@@ -1251,6 +1251,14 @@ begin
   NotifyApplicationUserInput(Msg.Msg);
   //DebugLn(['DeliverMouseMoveMessage ',dbgsName(AWinControl)]);
   DeliverMessage(AWinControl, Msg);
+
+  // if dragmanager is started later then inform g_object issue #19914
+  if GTK_IS_NOTEBOOK(PGtkWidget(AWinControl.Handle)) and
+    DragManager.IsDragging and
+    (g_object_get_data(PGObject(AWinControl.Handle),'lclnotebookdragging') = nil)
+    then
+      g_object_set_data(PGObject(AWinControl.Handle),
+        'lclnotebookdragging', gpointer(PtrInt(1)));
 end;
 
 {-------------------------------------------------------------------------------
