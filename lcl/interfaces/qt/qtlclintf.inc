@@ -664,11 +664,11 @@ begin
   end
   else begin
     WorkImage := TQtImage.Create;
-    WorkImage.CopyFrom(Image.FHandle, R.Left, R.Top, Width, Height);
+    WorkImage.CopyFrom(Image.Handle, R.Left, R.Top, Width, Height);
     if Mask <> nil then
     begin
       WorkMask := TQtImage.Create;
-      WorkMask.CopyFrom(Mask.FHandle, R.Left, R.Top, Width, Height);
+      WorkMask.CopyFrom(Mask.Handle, R.Left, R.Top, Width, Height);
     end
     else
       WorkMask := nil;
@@ -695,13 +695,13 @@ begin
       InvertPixels := False;
       if WorkImage <> nil then
       begin
-        Px := QImage_pixel(WorkImage.FHandle, 0, 0);
+        Px := QImage_pixel(WorkImage.Handle, 0, 0);
         InvertPixels :=
-          not QImage_hasAlphaChannel(WorkMask.FHandle) and
-          not QImage_hasAlphaChannel(WorkImage.FHandle) and
+          not QImage_hasAlphaChannel(WorkMask.Handle) and
+          not QImage_hasAlphaChannel(WorkImage.Handle) and
           // invert only if WorkImage is RGB32 fmt and allGray
           (WorkImage.getFormat = QImageFormat_RGB32) and
-          QImage_allGray(WorkImage.FHandle) and
+          QImage_allGray(WorkImage.Handle) and
           ((Px = 0) or (Px = $FF))
       end;
       if InvertPixels then
@@ -796,7 +796,7 @@ begin
   end else
   begin
     if Context.vImage <> nil then
-      RawImage_FromImage(Context.vImage.FHandle)
+      RawImage_FromImage(Context.vImage.Handle)
     else
     if Context.ParentPixmap <> nil then
     begin

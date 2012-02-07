@@ -140,7 +140,6 @@ type
   private
     FData: PByte;
     FDataOwner: Boolean;
-  public
     FHandle: QImageH;
   public
     constructor Create;
@@ -163,6 +162,7 @@ type
     function bytesPerLine: Integer;
     procedure invertPixels(InvertMode: QImageInvertMode = QImageInvertRgb);
     function getFormat: QImageFormat;
+    property Handle: QImageH read FHandle;
   end;
 
   { TQtFont }

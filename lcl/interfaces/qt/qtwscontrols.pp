@@ -668,7 +668,7 @@ begin
   end;
 
   Result := TQtWidgetset(Widgetset).DragImageList_BeginDrag(
-    TQtImage(ABitmap.Handle).FHandle, ADragImageList.DragHotSpot);
+    TQtImage(ABitmap.Handle).Handle, ADragImageList.DragHotSpot);
   if Result then
     TQtWidgetset(Widgetset).DragImageList_DragMove(X, Y);
   ABitmap.Free;

@@ -431,7 +431,7 @@ begin
       BS_PATTERN,        // Pattern brush defined by a memory bitmap.
       BS_PATTERN8X8:     // Same as BS_PATTERN.
       begin
-        QtBrush.setTextureImage(TQtImage(LogBrush.lbHatch).FHandle);
+        QtBrush.setTextureImage(TQtImage(LogBrush.lbHatch).Handle);
         QtBrush.Style := QtTexturePattern;
       end;
     else
@@ -605,7 +605,7 @@ begin
   if IsValidGDIObject(IconInfo^.hbmColor) then
   begin
     APixmap := QPixmap_create();
-    QPixmap_fromImage(APixmap, TQtImage(IconInfo^.hbmColor).FHandle);
+    QPixmap_fromImage(APixmap, TQtImage(IconInfo^.hbmColor).Handle);
     {$IFDEF DARWIN}
     AImgFmt := TQtImage(IconInfo^.hbmColor).getFormat;
     if (AImgFmt in [QImageFormat_Mono, QImageFormat_MonoLSB,
@@ -614,7 +614,7 @@ begin
     if IconInfo^.hbmMask <> 0 then
     begin
       ATemp := QPixmap_create();
-      QPixmap_fromImage(ATemp, TQtImage(IconInfo^.hbmMask).FHandle);
+      QPixmap_fromImage(ATemp, TQtImage(IconInfo^.hbmMask).Handle);
       AMask := QBitmap_create(ATemp);
       QPixmap_setMask(APixmap, AMask);
       QPixmap_destroy(ATemp);
@@ -649,7 +649,7 @@ begin
   if ABitmap = 0 then
     exit;
   QtBrush := TQtBrush.Create(True);
-  Image := QImage_create(TQtImage(ABitmap).FHandle);
+  Image := QImage_create(TQtImage(ABitmap).Handle);
   try
     QtBrush.setTextureImage(Image);
   finally
@@ -848,7 +848,7 @@ begin
 
     // we must stop paintdevice before destroying
 
-    APaintEngine := QImage_paintEngine(TQtImage(AObject).FHandle);
+    APaintEngine := QImage_paintEngine(TQtImage(AObject).Handle);
 
     if (APaintEngine <> nil) and QPaintEngine_isActive(APaintEngine) then
     begin
@@ -2396,7 +2396,7 @@ begin
   if (Bitmap = 0) or (Count <= 0) then
     Exit;
 
-  Image := QImage_create(TQtImage(Bitmap).FHandle);
+  Image := QImage_create(TQtImage(Bitmap).Handle);
   try
     Result := (QImage_width(Image) * QImage_height(Image) * QImage_depth(Image) + 7) div 8;
     if Count < Result then
@@ -6273,7 +6273,7 @@ begin
       Exit;
   end
   else
-    Image := SrcQDC.vImage.FHandle;
+    Image := SrcQDC.vImage.Handle;
 
   QTransform_map(SrcMatrix, XSrc, YSrc, @XSrc, @YSrc);
   // our map can have some transformations
@@ -6315,7 +6315,7 @@ begin
   //DstQDC.CorrectCoordinates(SrcRect);
   //DstQDC.CorrectCoordinates(MaskRect);
   if Mask <> 0 then
-    QMask := TQtImage(Mask).FHandle
+    QMask := TQtImage(Mask).Handle
   else
     QMask := nil;
 

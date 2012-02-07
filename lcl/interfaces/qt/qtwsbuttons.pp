@@ -111,7 +111,7 @@ begin
     begin
       AValue.GetImageIndexAndEffect(IconModeToButtonState[Mode], AIndex, AEffect);
       AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
-      QPixmap_fromImage(APixmap, TQtImage(AGlyph.Handle).FHandle);
+      QPixmap_fromImage(APixmap, TQtImage(AGlyph.Handle).Handle);
       QIcon_addPixmap(AIcon, APixmap, Mode, QIconOn);
     end;
     QPixmap_destroy(APixmap);
