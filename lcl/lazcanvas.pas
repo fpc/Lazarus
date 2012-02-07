@@ -437,7 +437,7 @@ begin
   lState.WindowOrg := WindowOrg;
   lState.Clipping := Clipping;
 
-  GraphicStateList.Add(lState);
+  Result := GraphicStateList.Add(lState);
 end;
 
 // if AIndex is positive, it represents the wished saved dc instance
