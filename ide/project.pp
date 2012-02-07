@@ -3207,15 +3207,11 @@ var
     end;
     if FileVersion<=3 then begin
       // set new flags
-      SetFlag(pfMainUnitIsPascalSource,
-                                   OldProjectType in [ptProgram,ptApplication]);
-      SetFlag(pfMainUnitHasUsesSectionForAllUnits,
-                                   OldProjectType in [ptProgram,ptApplication]);
-      SetFlag(pfMainUnitHasCreateFormStatements,
-                                             OldProjectType in [ptApplication]);
+      SetFlag(pfMainUnitIsPascalSource, OldProjectType in [ptProgram,ptApplication]);
+      SetFlag(pfMainUnitHasUsesSectionForAllUnits, OldProjectType in [ptProgram,ptApplication]);
+      SetFlag(pfMainUnitHasCreateFormStatements, OldProjectType in [ptApplication]);
       SetFlag(pfMainUnitHasTitleStatement,OldProjectType in [ptApplication]);
-      SetFlag(pfRunnable,
-                   OldProjectType in [ptProgram,ptApplication,ptCustomProgram]);
+      SetFlag(pfRunnable, OldProjectType in [ptProgram,ptApplication,ptCustomProgram]);
     end;
     FFlags:=FFlags-[pfUseDefaultCompilerOptions];
   end;
