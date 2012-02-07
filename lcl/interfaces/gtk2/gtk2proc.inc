@@ -4390,6 +4390,12 @@ begin
     Result.X:=0;
     Result.Y:=0;
   end;
+
+  {gtk2 < 2.10 sometimes raises assertion here. That's because of gtk2 bug and
+   cannot be fixed by us.
+   http://gitorious.org/gsettings-gtk/gtk/blobs/gsettings-gtk/ChangeLog.pre-2-10
+   look for gtk_widget_get_parent_window() in changes.}
+
   // check if the gdkwindow is the clientwindow of the parent
   if gtk_widget_get_parent_window(TheWidget)=TheWindow then begin
     // the widget is using its parent window
