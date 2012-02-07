@@ -2943,6 +2943,8 @@ type
     function SelectionVisible: boolean;
     procedure MakeSelectionVisible;
     procedure ClearInvisibleSelection;
+    function StoreCurrentSelection: TStringList;
+    procedure ApplyStoredSelection(ASelection: TStringList; FreeList: boolean = True);
     procedure MoveToNextNode;
     procedure MoveToPrevNode;
   public

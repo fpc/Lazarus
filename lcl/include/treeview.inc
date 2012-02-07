@@ -1871,12 +1871,11 @@ begin
 end;
 
 procedure TTreeNode.ConsistencyCheck;
-var RealSubTreeCount: integer;
+var
+  RealSubTreeCount: integer;
   i: integer;
   Node1: TTreeNode;
 begin
-  if FOwner<>nil then begin
-  end;
   if FCapacity<0 then
     RaiseGDBException('');
   if FCapacity<FCount then
@@ -5575,8 +5574,7 @@ begin
   dec(FSelectionChangeEventLock);
   if FSelectionChangeEventLock<0 then
     RaiseGDBException('TCustomTreeView.UnlockSelectionChangeEvent');
-  if (FSelectionChangeEventLock=0)
-  and (tvsSelectionChanged in FStates) then
+  if (FSelectionChangeEventLock=0) and (tvsSelectionChanged in FStates) then
     InternalSelectionChanged;
 end;
 
@@ -5676,6 +5674,41 @@ begin
       FTreeNodes.SelectOnlyThis(ANode)
     else
       Selected := ANode;
+end;
+
+function TCustomTreeView.StoreCurrentSelection: TStringList;
+var
+  ANode: TTreeNode;
+begin
+  Result:=TStringList.Create;
+  ANode:=Selected;
+  while ANode<>nil do begin
+    Result.Insert(0,ANode.Text);
+    ANode:=ANode.Parent;
+  end;
+end;
+
+procedure TCustomTreeView.ApplyStoredSelection(ASelection: TStringList; FreeList: boolean);
+var
+  ANode: TTreeNode;
+  CurText: string;
+begin
+  ANode:=nil;
+  while ASelection.Count>0 do begin
+    CurText:=ASelection[0];
+    if ANode=nil then
+      ANode:=Items.GetFirstNode
+    else
+      ANode:=ANode.GetFirstChild;
+    while (ANode<>nil) and (ANode.Text<>CurText) do
+      ANode:=ANode.GetNextSibling;
+    if ANode=nil then break;
+    ASelection.Delete(0);
+  end;
+  if ANode<>nil then
+    Selected:=ANode;
+  if FreeList then
+    ASelection.Free;
 end;
 
 // back to comctrls.pp
