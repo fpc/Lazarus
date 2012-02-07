@@ -73,7 +73,8 @@ uses
 type
   TResetToolFlag = (
     rfInteractive,
-    rfCloseOnDone
+    rfCloseOnDone,
+    rfSuccessOnTrigger
   );
   TResetToolFlags = set of TResetToolFlag;
 

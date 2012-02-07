@@ -3782,6 +3782,8 @@ begin
         then exit;
         if (DebugBoss.DoStopProject = mrOK) and (ToolStatus = itDebugger) and (rfCloseOnDone in AFlags) then
           FWaitForClose := True;
+        if rfSuccessOnTrigger in AFlags then
+          exit(true);
       end;
   end;
   Result := ToolStatus = itNone;
@@ -4143,7 +4145,7 @@ var
   ARecentProject: String;
 begin
   // stop debugging/compiling/...
-  if not DoResetToolStatus([rfInteractive]) then exit;
+  if not DoResetToolStatus([rfInteractive, rfSuccessOnTrigger]) then exit;
 
   // check foreign windows
   if not CloseQueryIDEWindows then exit;
@@ -10706,6 +10708,8 @@ begin
 
   // close current project first
   if Project1<>nil then begin
+    if not DoResetToolStatus([rfInteractive, rfSuccessOnTrigger]) then exit;
+
     if AskSaveProject(lisDoYouStillWantToCreateTheNewProject,
       lisDiscardChangesCreateNewProject)<>mrOK then exit;
 
@@ -11000,6 +11004,8 @@ begin
   if ofAddToRecent in Flags then
     AddRecentProjectFileToEnvironment(AFileName);
 
+  if not DoResetToolStatus([rfInteractive, rfSuccessOnTrigger]) then exit;
+
   // save old project
   if AskSaveProject(lisDoYouStillWantToOpenAnotherProject,
     lisDiscardChangesAndOpenProject)<>mrOk then exit;
@@ -11241,6 +11247,9 @@ begin
   {$IFDEF IDE_VERBOSE}
   writeln('[TMainIDE.DoCreateProjectForProgram] A ',ProgramBuf.Filename);
   {$ENDIF}
+
+  if (Project1 <> nil) and (not DoResetToolStatus([rfInteractive, rfSuccessOnTrigger])) then exit;
+
   Result:=DoSaveProjectIfChanged;
   if Result=mrAbort then exit;
 

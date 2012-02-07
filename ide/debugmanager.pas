@@ -66,6 +66,7 @@ type
 
   TDebugManager = class(TBaseDebugManager)
     procedure DebuggerIdle(Sender: TObject);
+    function DoProjectClose(Sender: TObject; AProject: TLazProject): TModalResult;
     procedure DoProjectModified(Sender: TObject);
   private
     procedure BreakAutoContinueTimer(Sender: TObject);
@@ -706,6 +707,12 @@ end;
 procedure TDebugManager.DebuggerIdle(Sender: TObject);
 begin
   FSnapshots.DoDebuggerIdle;
+end;
+
+function TDebugManager.DoProjectClose(Sender: TObject; AProject: TLazProject): TModalResult;
+begin
+  ResetDebugger;
+  Result := mrOK;
 end;
 
 procedure TDebugManager.DoProjectModified(Sender: TObject);
@@ -1597,6 +1604,8 @@ begin
   FIsInitializingDebugger:= False;
 
   inherited Create(TheOwner);
+
+  LazarusIDE.AddHandlerOnProjectClose(@DoProjectClose);
 end;
 
 destructor TDebugManager.Destroy;
@@ -1605,6 +1614,7 @@ var
 begin
   FDestroying := true;
 
+  LazarusIDE.RemoveHandlerOnProjectClose(@DoProjectClose);
   FreeAndNil(FAutoContinueTimer);
 
   for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do
