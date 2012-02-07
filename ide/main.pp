@@ -8677,7 +8677,11 @@ begin
     // => close form
     Result:=CloseUnitComponent(AProject.Units[OldUnitIndex],
                                [cfCloseDependencies,cfSaveDependencies]);
-    if Result<>mrOk then exit;
+    if Result<>mrOk then
+    begin
+      debugln(['TMainIDE.DoNewFile CloseUnitComponent failed']);
+      exit;
+    end;
   end;
 
   IsPartOfProject:=(nfIsPartOfProject in NewFlags)
@@ -8697,33 +8701,47 @@ begin
   if RequiredPackages<>'' then
   begin
     if IsPartOfProject then begin
-      if PkgBoss.AddProjectDependencies(Project1,RequiredPackages)<>mrOk then exit;
+      Result:=PkgBoss.AddProjectDependencies(Project1,RequiredPackages);
+      if Result<>mrOk then
+      begin
+        debugln(['TMainIDE.DoNewFile PkgBoss.AddProjectDependencies failed RequiredPackages="',RequiredPackages,'"']);
+        exit;
+      end;
     end;
     if APackage<>nil then
     begin
-      if PkgBoss.AddPackageDependency(APackage,RequiredPackages)<>mrOk then exit;
+      Result:=PkgBoss.AddPackageDependency(APackage,RequiredPackages);
+      if Result<>mrOk then
+      begin
+        debugln(['TMainIDE.DoNewFile PkgBoss.AddPackageDependency failed RequiredPackages="',RequiredPackages,'"']);
+        exit;
+      end;
     end;
   end;
 
   // check if the new file fits
   Result:=NewFileDescriptor.CheckOwner(nfQuiet in NewFlags);
-  if Result<>mrOk then exit;
+  if Result<>mrOk then
+  begin
+    debugln(['TMainIDE.DoNewFile NewFileDescriptor.CheckOwner failed NewFilename="',NewFilename,'"']);
+    exit;
+  end;
 
   // create new codebuffer and apply naming conventions
   NewBuffer:=nil;
   NewUnitName:='';
   Result:=CreateNewCodeBuffer(NewFileDescriptor,NewOwner,NewFilename,NewBuffer,
                               NewUnitName);
-  if Result<>mrOk then exit;
+  if Result<>mrOk then
+  begin
+    debugln(['TMainIDE.DoNewFile CreateNewCodeBuffer failed NewFilename="',NewFilename,'"']);
+    exit;
+  end;
   NewFilename:=NewBuffer.Filename;
 
-  OldUnitIndex:=AProject.IndexOfFilename(NewFilename);
   if OldUnitIndex>=0 then begin
     // the file is not really new
     NewUnitInfo:=AProject.Units[OldUnitIndex];
-    // => close form
-    Result:=CloseUnitComponent(NewUnitInfo,[cfCloseDependencies,cfSaveDependencies]);
-    if Result<>mrOk then exit;
     // assign source
     NewUnitInfo.Source:=NewBuffer;
   end else
@@ -8820,7 +8838,11 @@ begin
         and (NewUnitInfo.Component is TControl) then
           TControl(NewUnitInfo.Component).EnableAutoSizing;
       end;
-      if Result<>mrOk then exit;
+      if Result<>mrOk then
+      begin
+        debugln(['TMainIDE.DoNewFile create designer form failed ',NewUnitInfo.Filename]);
+        exit;
+      end;
     end;
 
     // show form and select form
@@ -8855,15 +8877,23 @@ begin
     // save and ask for filename
     NewUnitInfo.Modified:=true;
     Result:=DoSaveEditorFile(NewSrcEdit,[sfCheckAmbiguousFiles,sfSaveAs]);
-    if Result<>mrOk then exit;
+    if Result<>mrOk then
+    begin
+      debugln(['TMainIDE.DoNewFile DoSaveEditorFile failed ',NewFilename]);
+      exit;
+    end;
   end else if nfSave in NewFlags then begin
     if (nfOpenInEditor in NewFlags) or NewBuffer.IsVirtual then begin
       // save and ask for filename if needed
       NewUnitInfo.Modified:=true;
       Result:=DoSaveEditorFile(NewSrcEdit,[sfCheckAmbiguousFiles]);
-      if Result<>mrOk then exit;
+      if Result<>mrOk then
+      begin
+        debugln(['TMainIDE.DoNewFile DoSaveEditorFile SaveAs failed ',NewFilename]);
+        exit;
+      end;
     end else begin
-      // save quiet
+      // save quietly
       NewBuffer.Save;
     end;
   end;
