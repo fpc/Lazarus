@@ -36,7 +36,6 @@ object AddToProjectDialog: TAddToProjectDialog
         ParentColor = False
       end
       object AddFileListBox: TListBox
-        AnchorSideBottom.Control = ButtonPanel
         Left = 6
         Height = 230
         Top = 27
