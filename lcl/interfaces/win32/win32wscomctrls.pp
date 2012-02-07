@@ -54,14 +54,14 @@ type
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
   end;
 
-  { TWin32WSCustomNotebook }
+  { TWin32WSCustomTabControl }
 
-  TWin32WSCustomNotebook = class(TWSCustomTabControl)
+  TWin32WSCustomTabControl = class(TWSCustomTabControl)
   published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure AddAllNBPages(const ATabControl: TCustomTabControl);
-    class procedure AdjustSizeNotebookPages(const ATabControl: TCustomTabControl);
+    class procedure AdjustSizeTabControlPages(const ATabControl: TCustomTabControl);
     class procedure AddPage(const ATabControl: TCustomTabControl;
       const AChild: TCustomPage; const AIndex: integer); override;
     class procedure MovePage(const ATabControl: TCustomTabControl;
@@ -268,9 +268,8 @@ type
   published
   end;
 
-procedure NotebookFocusNewControl(const ATabControl: TCustomTabControl; NewIndex: integer);
-function NotebookPageRealToLCLIndex(const ATabControl: TCustomTabControl; AIndex: integer): integer;
-function ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean): integer;
+procedure TabControlFocusNewControl(const ATabControl: TCustomTabControl; NewIndex: integer);
+function ShowHideTabPage(TabControlHandle: HWnd; Showing: boolean): integer;
 
 implementation
 

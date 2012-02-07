@@ -358,7 +358,7 @@ end;
 
 function RegisterCustomNotebook: Boolean; alias : 'WSRegisterCustomNotebook';
 begin
-  RegisterWSComponent(TCustomTabControl, TWin32WSCustomNotebook);
+  RegisterWSComponent(TCustomTabControl, TWin32WSCustomTabControl);
   Result := True;
 end;
 

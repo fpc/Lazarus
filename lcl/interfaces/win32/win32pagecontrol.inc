@@ -16,31 +16,31 @@ type
   TCustomPageAccess = class(TCustomPage)
   end;
 
-function IsNotebookGroupFocused(const ATabControl: TCustomTabControl): boolean;
+function IsTabControlGroupFocused(const ATabControl: TCustomTabControl): boolean;
 var
-  lNotebookHandle, lWindow: HWND;
+  Handle, FocusHandle: HWND;
 begin
-  result := false;
+  Result := False;
   if not ATabControl.HandleAllocated then exit;
-  lNotebookHandle := ATabControl.Handle;
-  lWindow := Windows.GetFocus;
-  while (lWindow <> 0) and (lWindow <> lNotebookHandle) do
-    lWindow := Windows.GetParent(lWindow);
-  if lWindow = 0 then exit;
-  result := true;
+  Handle := ATabControl.Handle;
+  FocusHandle := Windows.GetFocus;
+  while (FocusHandle <> 0) and (FocusHandle <> Handle) do
+    FocusHandle := Windows.GetParent(FocusHandle);
+  if FocusHandle = 0 then exit;
+  Result := True;
 end;
 
 { sets focus to a control on the newly focused tab page }
-procedure NotebookFocusNewControl(const ATabControl: TCustomTabControl; NewIndex: integer);
+procedure TabControlFocusNewControl(const ATabControl: TCustomTabControl; NewIndex: integer);
 var
   Page: TCustomPage;
   AWinControl: TWinControl;
   ParentForm: TCustomForm;
 begin
-  { see if currently focused control is within notebook }
-  if not IsNotebookGroupFocused(ATabControl) then exit;
+  { see if currently focused control is within tab control }
+  if not IsTabControlGroupFocused(ATabControl) then exit;
 
-  { focus was/is within notebook, pick a new control to focus }
+  { focus was/is within tab control, pick a new control to focus }
   Page := ATabControl.CustomPage(NewIndex);
   ParentForm := GetParentForm(ATabControl);
   if ParentForm <> nil then
@@ -50,7 +50,7 @@ begin
       AWinControl := nil;
       if Page.CanFocus then
         AWinControl := TCustomPageAccess(Page).FindNextControl(nil, True, True, False);
-      // if nothing to focus then focus notebook then we can traverse pages by keys
+      // if nothing to focus then focus tab control then we can traverse pages by keys
       if AWinControl = nil then
         AWinControl := ATabControl;
       AWinControl.SetFocus;
@@ -58,30 +58,25 @@ begin
   end;
 end;
 
-function NotebookPageRealToLCLIndex(const ATabControl: TCustomTabControl; AIndex: integer): integer;
-begin
-  Result := ATabControl.TabToPageIndex(AIndex);
-end;
-
-function ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean): integer;
+function ShowHideTabPage(TabControlHandle: HWnd; Showing: boolean): integer;
 const
   ShowFlags: array[Boolean] of DWord = (SWP_HIDEWINDOW or SWP_NOZORDER, SWP_SHOWWINDOW);
 var
-  NoteBook: TCustomTabControl;
+  TabControl: TCustomTabControl;
   PageIndex: Integer;
   PageHandle: HWND;
 begin
-  Notebook := GetWin32WindowInfo(NotebookHandle)^.WinControl as TCustomTabControl;
-  PageIndex := Windows.SendMessage(NotebookHandle, TCM_GETCURSEL, 0, 0);
-  PageIndex := NotebookPageRealToLCLIndex(Notebook, PageIndex);
+  TabControl := GetWin32WindowInfo(TabControlHandle)^.WinControl as TCustomTabControl;
+  PageIndex := Windows.SendMessage(TabControlHandle, TCM_GETCURSEL, 0, 0);
+  PageIndex := TabControl.TabToPageIndex(PageIndex);
 
-  if NoteBook.IsUnpaged then
+  if TabControl.IsUnpaged then
     exit(PageIndex);
 
   if PageIndex = -1 then
     exit(PageIndex); //DONE: must return something!
 
-  PageHandle := Notebook.CustomPage(PageIndex).Handle;
+  PageHandle := TabControl.CustomPage(PageIndex).Handle;
   Windows.SetWindowPos(PageHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or ShowFlags[Showing]);
   Windows.RedrawWindow(PageHandle, nil, 0, RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_ERASE);
   Result := PageIndex;
@@ -175,18 +170,18 @@ class procedure TWin32WSCustomPage.SetText(const AWinControl: TWinControl; const
 var
   TCI: TC_ITEM;
   PageIndex, RealIndex: integer;
-  NotebookHandle: HWND;
+  TabControlHandle: HWND;
 begin
   PageIndex := TCustomPage(AWinControl).PageIndex;
   RealIndex := TCustomTabControl(AWinControl.Parent).PageToTabIndex(PageIndex);
-  NotebookHandle := AWinControl.Parent.Handle;
+  TabControlHandle := AWinControl.Parent.Handle;
   // We can't set label of a page not yet added,
   // Check for valid page index
-  if (RealIndex >= 0) and (RealIndex < Windows.SendMessage(NotebookHandle, TCM_GETITEMCOUNT, 0, 0)) then
+  if (RealIndex >= 0) and (RealIndex < Windows.SendMessage(TabControlHandle, TCM_GETITEMCOUNT, 0, 0)) then
   begin
     // retrieve page handle from tab as extra check (in case page isn't added yet).
     TCI.mask := TCIF_PARAM;
-    Windows.SendMessage(NotebookHandle, TCM_GETITEM, RealIndex, LPARAM(@TCI));
+    Windows.SendMessage(TabControlHandle, TCM_GETITEM, RealIndex, LPARAM(@TCI));
     if PtrUInt(TCI.lParam) = PtrUInt(AWinControl) then
     begin
       TCI.mask := TCIF_TEXT;
@@ -194,16 +189,16 @@ begin
       if UnicodeEnabledOS then
       begin
         TCI.pszText := PChar(PWideChar(UTF8ToUTF16(AText)));
-        Windows.SendMessage(NotebookHandle, TCM_SETITEMW, RealIndex, LPARAM(@TCI));
+        Windows.SendMessage(TabControlHandle, TCM_SETITEMW, RealIndex, LPARAM(@TCI));
       end
       else
       begin
         TCI.pszText := PChar(UTF8ToAnsi(AText));
-        Windows.SendMessage(NotebookHandle, TCM_SETITEM, RealIndex, LPARAM(@TCI));
+        Windows.SendMessage(TabControlHandle, TCM_SETITEM, RealIndex, LPARAM(@TCI));
       end;
 {$else}
       TCI.pszText := PChar(AText);
-      Windows.SendMessage(NotebookHandle, TCM_SETITEM, RealIndex, LPARAM(@TCI));
+      Windows.SendMessage(TabControlHandle, TCM_SETITEM, RealIndex, LPARAM(@TCI));
 {$endif}
     end;
   end;
@@ -213,30 +208,30 @@ class procedure TWin32WSCustomPage.UpdateProperties(const ACustomPage: TCustomPa
 var
   TCI: TC_ITEM;
   PageIndex, RealIndex: integer;
-  NotebookHandle: HWND;
+  TabControlHandle: HWND;
 begin
   PageIndex := ACustomPage.PageIndex;
   RealIndex := TCustomTabControl(ACustomPage.Parent).PageToTabIndex(PageIndex);
-  NotebookHandle := ACustomPage.Parent.Handle;
+  TabControlHandle := ACustomPage.Parent.Handle;
   // Check for valid page index
-  if (RealIndex >= 0) and (RealIndex < Windows.SendMessage(NotebookHandle, TCM_GETITEMCOUNT,0,0)) then
+  if (RealIndex >= 0) and (RealIndex < Windows.SendMessage(TabControlHandle, TCM_GETITEMCOUNT,0,0)) then
   begin
     // retrieve page handle from tab as extra check (in case page isn't added yet).
     TCI.mask := TCIF_PARAM;
-    Windows.SendMessage(NotebookHandle, TCM_GETITEM, RealIndex, LPARAM(@TCI));
+    Windows.SendMessage(TabControlHandle, TCM_GETITEM, RealIndex, LPARAM(@TCI));
     if PtrUInt(TCI.lParam) = PtrUInt(ACustomPage) then
     begin
       TCI.mask := TCIF_IMAGE;
       TCI.iImage := TCustomTabControl(ACustomPage.Parent).GetImageIndex(PageIndex);
 
-      Windows.SendMessage(NotebookHandle, TCM_SETITEM, RealIndex, LPARAM(@TCI));
+      Windows.SendMessage(TabControlHandle, TCM_SETITEM, RealIndex, LPARAM(@TCI));
     end;
   end;
 end;
 
-{ TWin32WSCustomNotebook }
+{ TWin32WSCustomTabControl }
 
-function NotebookParentMsgHandler(const AWinControl: TWinControl; Window: HWnd;
+function TabControlParentMsgHandler(const AWinControl: TWinControl; Window: HWnd;
       Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam;
       var MsgResult: Windows.LResult; var WinProcess: Boolean): Boolean;
 var
@@ -261,7 +256,7 @@ begin
               Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
             end;
             DeliverMessage(AWinControl, LMNotify);
-            NotebookFocusNewControl(AWinControl as TCustomTabControl, idFrom);
+            TabControlFocusNewControl(AWinControl as TCustomTabControl, idFrom);
             MsgResult := LMNotify.Result;
           end;
         TCN_SELCHANGING:
@@ -283,7 +278,7 @@ begin
   end;
 end;
 
-class function TWin32WSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
+class function TWin32WSCustomTabControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 const
   TabPositionFlags: array[TTabPosition] of DWord = (
@@ -314,11 +309,11 @@ begin
 
   // although we may be child of tabpage, cut the paint chain
   // to improve speed and possible paint anomalities
-  Params.WindowInfo^.ParentMsgHandler := @NotebookParentMsgHandler;
+  Params.WindowInfo^.ParentMsgHandler := @TabControlParentMsgHandler;
   Params.WindowInfo^.needParentPaint := false;
 end;
 
-class procedure TWin32WSCustomNotebook.AddPage(const ATabControl: TCustomTabControl;
+class procedure TWin32WSCustomTabControl.AddPage(const ATabControl: TCustomTabControl;
   const AChild: TCustomPage; const AIndex: integer);
 var
   TCI: TC_ITEM;
@@ -336,7 +331,7 @@ begin
       TCI.Mask := TCIF_TEXT or TCIF_PARAM or TCIF_IMAGE;
       // store object as extra, so we can verify we got the right page later
       TCI.lParam := PtrUInt(AChild);
-      TCI.iImage := ATabControl.GetImageIndex(NotebookPageRealToLCLIndex(ATabControl, AIndex));
+      TCI.iImage := ATabControl.GetImageIndex(ATabControl.TabToPageIndex(AIndex));
   {$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then
       begin
@@ -357,33 +352,30 @@ begin
     // windows should send a WM_SIZE message because of this, but it doesn't
     // send it ourselves
     if LCLControlSizeNeedsUpdate(ATabControl, True) then
-      AdjustSizeNotebookPages(ATabControl);
+      AdjustSizeTabControlPages(ATabControl);
   end;
 end;
 
-class procedure TWin32WSCustomNotebook.MovePage(const ATabControl: TCustomTabControl;
+class procedure TWin32WSCustomTabControl.MovePage(const ATabControl: TCustomTabControl;
   const AChild: TCustomPage; const NewIndex: integer);
 begin
   RemovePage(ATabControl, AChild.PageIndex);
   AddPage(ATabControl,AChild,NewIndex);
 end;
 
-class procedure TWin32WSCustomNotebook.RemovePage(const ATabControl: TCustomTabControl;
+class procedure TWin32WSCustomTabControl.RemovePage(const ATabControl: TCustomTabControl;
   const AIndex: integer);
 begin
   Windows.SendMessage(ATabControl.Handle, TCM_DELETEITEM, Windows.WPARAM(AIndex), 0);
   if LCLControlSizeNeedsUpdate(ATabControl, True) then
-    AdjustSizeNotebookPages(ATabControl);
+    AdjustSizeTabControlPages(ATabControl);
 end;
 
 { -----------------------------------------------------------------------------
   Method: AddAllNBPages
-  Params: Notebook - A notebook control
-  Returns: Nothing
-
-  Adds all pages to notebook (showtabs becomes true)
+  Adds all pages to tab control (showtabs becomes true)
  ------------------------------------------------------------------------------}
-class procedure TWin32WSCustomNotebook.AddAllNBPages(const ATabControl: TCustomTabControl);
+class procedure TWin32WSCustomTabControl.AddAllNBPages(const ATabControl: TCustomTabControl);
 var
   TCI: TC_ITEM;
   I, Res, RealIndex: Integer;
@@ -423,10 +415,10 @@ begin
     end;
     Inc(RealIndex);
   end;
-  AdjustSizeNotebookPages(ATabControl);
+  AdjustSizeTabControlPages(ATabControl);
 end;
 
-class procedure TWin32WSCustomNotebook.AdjustSizeNotebookPages(const ATabControl: TCustomTabControl);
+class procedure TWin32WSCustomTabControl.AdjustSizeTabControlPages(const ATabControl: TCustomTabControl);
 var
   I: Integer;
   R: TRect;
@@ -434,7 +426,7 @@ var
   lPage: TCustomPage;
 begin
   WinHandle := ATabControl.Handle;
-  // Adjust page size to fit in tabcontrol, need bounds of notebook in client of parent
+  // Adjust page size to fit in tabcontrol, need bounds of tab control in client of parent
   TWin32WidgetSet(WidgetSet).GetClientRect(WinHandle, R);
   for I := 0 to ATabControl.PageCount - 1 do
   begin
@@ -447,12 +439,10 @@ end;
 
 {------------------------------------------------------------------------------
   Method: RemoveAllNBPages
-  Params: Notebook - The notebook control
-  Returns: Nothing
 
-  Removes all pages from a notebook control (showtabs becomes false)
+  Removes all pages from a tab control (showtabs becomes false)
  ------------------------------------------------------------------------------}
-class procedure TWin32WSCustomNotebook.RemoveAllNBPages(const ATabControl: TCustomTabControl);
+class procedure TWin32WSCustomTabControl.RemoveAllNBPages(const ATabControl: TCustomTabControl);
 var
   I: Integer;
   WinHandle: HWND;
@@ -460,7 +450,7 @@ begin
   WinHandle := ATabControl.Handle;
   for I := ATabControl.PageCount - 1 downto 0 do
     Windows.SendMessage(WinHandle, TCM_DELETEITEM, Windows.WPARAM(I), 0);
-  AdjustSizeNotebookPages(ATabControl);
+  AdjustSizeTabControlPages(ATabControl);
 end;
 
 procedure SendSelChangeMessage(const ATabControl: TCustomTabControl; const AHandle: HWND;
@@ -479,7 +469,7 @@ begin
   DeliverMessage(ATabControl, TLMessage(Mess));
 end;
 
-class function TWin32WSCustomNotebook.GetTabIndexAtPos(const ATabControl: TCustomTabControl;
+class function TWin32WSCustomTabControl.GetTabIndexAtPos(const ATabControl: TCustomTabControl;
   const AClientPos: TPoint): integer;
 var
   hittestInfo: TC_HITTESTINFO;
@@ -491,7 +481,7 @@ begin
   Result := Windows.SendMessage(ATabControl.Handle, TCM_HITTEST, 0, LPARAM(@hittestInfo));
 end;
 
-class function TWin32WSCustomNotebook.GetTabRect(const ATabControl: TCustomTabControl;
+class function TWin32WSCustomTabControl.GetTabRect(const ATabControl: TCustomTabControl;
   const AIndex: Integer): TRect;
 var
   Orect: TRect;
@@ -508,12 +498,12 @@ begin
     Result := inherited GetTabRect(ATabControl, AIndex);
 end;
 
-class function TWin32WSCustomNotebook.GetCapabilities: TCTabControlCapabilities;
+class function TWin32WSCustomTabControl.GetCapabilities: TCTabControlCapabilities;
 begin
   Result:=[nbcMultiLine];
 end;
 
-class function TWin32WSCustomNotebook.GetDesignInteractive(
+class function TWin32WSCustomTabControl.GetDesignInteractive(
   const AWinControl: TWinControl; AClientPos: TPoint): Boolean;
 var
   hittestInfo: TC_HITTESTINFO;
@@ -526,7 +516,7 @@ begin
   Result := (AIndex <> -1) and (AIndex <> ACurIndex);
 end;
 
-class procedure TWin32WSCustomNotebook.SetImageList(
+class procedure TWin32WSCustomTabControl.SetImageList(
   const ATabControl: TCustomTabControl; const AImageList: TCustomImageList);
 begin
   if not WSCheckHandleAllocated(ATabControl, 'SetImageList') then
@@ -538,21 +528,21 @@ begin
     SendMessage(ATabControl.Handle, TCM_SETIMAGELIST, 0, 0);
   // if you set big images like 32x32 then tabs will be big too => you need to
   // readjust the size of pages
-  AdjustSizeNotebookPages(ATabControl);
+  AdjustSizeTabControlPages(ATabControl);
 end;
 
-class procedure TWin32WSCustomNotebook.SetPageIndex(const ATabControl: TCustomTabControl; const AIndex: integer);
+class procedure TWin32WSCustomTabControl.SetPageIndex(const ATabControl: TCustomTabControl; const AIndex: integer);
 var
-  NotebookHandle, OldPageHandle, NewPageHandle: HWND;
+  TabControlHandle, OldPageHandle, NewPageHandle: HWND;
   NewRealIndex: Integer;
 begin
-  NotebookHandle := ATabControl.Handle;
+  TabControlHandle := ATabControl.Handle;
   // get the current top window
-  OldPageHandle := GetTopWindow(NotebookHandle);
+  OldPageHandle := GetTopWindow(TabControlHandle);
   NewPageHandle := 0;
   NewRealIndex := ATabControl.PageToTabIndex(AIndex);
 
-  SendMessage(NotebookHandle, TCM_SETCURSEL, Windows.WParam(NewRealIndex), 0);
+  SendMessage(TabControlHandle, TCM_SETCURSEL, Windows.WParam(NewRealIndex), 0);
 
   if ATabControl.IsUnpaged then
     exit; //all done
@@ -564,8 +554,8 @@ begin
     begin
       NewPageHandle := ATabControl.Page[AIndex].Handle;
       Windows.SetWindowPos(NewPageHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW or SWP_NOACTIVATE);
-      SendSelChangeMessage(ATabControl, NotebookHandle, AIndex);
-      NotebookFocusNewControl(ATabControl, AIndex);
+      SendSelChangeMessage(ATabControl, TabControlHandle, AIndex);
+      TabControlFocusNewControl(ATabControl, AIndex);
     end;
     // traverse children and hide them if needed
     while OldPageHandle <> 0 do
@@ -578,13 +568,13 @@ begin
   end;
 end;
 
-class procedure TWin32WSCustomNotebook.SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition);
+class procedure TWin32WSCustomTabControl.SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition);
 begin
   if ATabControl.HandleAllocated then
     RecreateWnd(ATabControl);
 end;
 
-class procedure TWin32WSCustomNotebook.ShowTabs(const ATabControl: TCustomTabControl; AShowTabs: boolean);
+class procedure TWin32WSCustomTabControl.ShowTabs(const ATabControl: TCustomTabControl; AShowTabs: boolean);
 begin
   if AShowTabs then
     AddAllNBPages(ATabControl)
@@ -592,7 +582,7 @@ begin
     RemoveAllNBPages(ATabControl);
 end;
 
-class procedure TWin32WSCustomNotebook.UpdateProperties(const ATabControl: TCustomTabControl);
+class procedure TWin32WSCustomTabControl.UpdateProperties(const ATabControl: TCustomTabControl);
 var
   CurrentStyle, NewStyle: cardinal;
 begin
@@ -606,7 +596,7 @@ begin
     SetWindowLong(ATabControl.Handle, GWL_STYLE, NewStyle);
     SetWindowPos(ATabControl.Handle, 0, 0, 0, 0, 0, SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_DRAWFRAME);
     if LCLControlSizeNeedsUpdate(ATabControl, True) then
-      AdjustSizeNotebookPages(ATabControl);
+      AdjustSizeTabControlPages(ATabControl);
   end;
 end;
 
