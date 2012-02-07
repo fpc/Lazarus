@@ -172,25 +172,11 @@ Begin
 end;
 
 procedure TExtendedNotebook.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-{$IFnDEF LCLWIN32}
-var
-  MouseUpTabIndex: LongInt;
-{$ENDIF}
 begin
   {$IFDEF ExtNBookDebug}debugln(['TExtendedNotebook.MouseUp']);{$ENDIF}
   MouseCapture := False;
   InitDrag;
   inherited MouseUp(Button, Shift, X, Y);
-  {$IFnDEF LCLWIN32}
-  if not FTabDragged then begin
-    // no drag => check for normal click and activate page
-    MouseUpTabIndex := TabIndexAtClientPos(Point(X,Y));
-    if (Button = mbLeft) and (FMouseDownIndex = MouseUpTabIndex) and
-       (FDraggingTabIndex >= 0)
-    then
-      PageIndex:=MouseUpTabIndex;
-  end;
-  {$ENDIF}
   FMouseDownIndex := -1;
 end;
 
