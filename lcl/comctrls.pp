@@ -1830,7 +1830,6 @@ type
     procedure BeginUpdate; virtual;
     procedure EndUpdate; virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseEnter; override;
     procedure MouseLeave; override;
@@ -1855,7 +1854,6 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     function CheckMenuDropdown: Boolean; virtual;
-    procedure Click; override;
     procedure GetCurrentIcon(var ImageList: TCustomImageList;
                              var TheIndex: integer); virtual;
     procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;

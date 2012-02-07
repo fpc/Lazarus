@@ -27,14 +27,14 @@ end;
 
 function TToolButtonActionLink.IsCheckedLinked: Boolean;
 begin
-  Result := inherited IsCheckedLinked
-    and (TToolButton(FClient).Down = (Action as TCustomAction).Checked);
+  Result := inherited IsCheckedLinked and
+    (TToolButton(FClient).Down = (Action as TCustomAction).Checked);
 end;
 
 function TToolButtonActionLink.IsImageIndexLinked: Boolean;
 begin
-  Result := inherited IsImageIndexLinked
-   and (TToolButton(FClient).ImageIndex = (Action as TCustomAction).ImageIndex);
+  Result := inherited IsImageIndexLinked and
+    (TToolButton(FClient).ImageIndex = (Action as TCustomAction).ImageIndex);
 end;
 
 procedure TToolButtonActionLink.SetChecked(Value: Boolean);
@@ -45,11 +45,8 @@ end;
 
 procedure TToolButtonActionLink.SetImageIndex(Value: Integer);
 begin
-  {DebugLn(['TToolButtonActionLink.SetImageIndex A ',ClassName,' Client=',
-    TToolButton(FClient).Name,' IsImageIndexLinked=',
-    IsImageIndexLinked,' Old=',
-    TToolButton(FClient).ImageIndex,' New=',Value]);}
-  if IsImageIndexLinked then TToolButton(FClient).ImageIndex := Value;
+  if IsImageIndexLinked then
+    TToolButton(FClient).ImageIndex := Value;
 end;
 
 { TToolButton }
@@ -96,12 +93,6 @@ begin
   end;
 end;
 
-procedure TToolButton.MouseMove(Shift: TShiftState; X, Y: Integer);
-begin
-  //DebugLn('TToolButton.MouseMove ',Name,':',ClassName,' ',X,',',Y);
-  inherited MouseMove(Shift, X, Y);
-end;
-
 procedure TToolButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
@@ -143,10 +134,12 @@ procedure TToolButton.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if Operation = opRemove then begin
+  if Operation = opRemove then
+  begin
     if AComponent = DropdownMenu then
       DropdownMenu := nil
-    else if AComponent = MenuItem then
+    else
+    if AComponent = MenuItem then
       MenuItem := nil;
   end;
 end;
@@ -260,11 +253,9 @@ begin
     // calculate text size
     TextSize.cx:=0;
     TextSize.cy:=0;
-    if (Style in [tbsButton, tbsDropDown, tbsCheck]) and (FToolBar.ShowCaptions)
-    and ((FToolbar.List and ShowCaption) //Allow hide caption only in list mode
-         or not FToolBar.List)
-       and (Caption <> '')
-    then
+    if (Style in [tbsButton, tbsDropDown, tbsCheck]) and (FToolBar.ShowCaptions) and
+      ((FToolbar.List and ShowCaption) or not FToolBar.List) and //Allow hide caption only in list mode
+      (Caption <> '') then
       TextSize := GetTextSize;
 
     // calculate icon size
@@ -407,7 +398,8 @@ begin
     inherited RealSetText(AValue);
     AdjustSize;
   end
-  else inherited RealSetText(AValue);
+  else
+    inherited RealSetText(AValue);
 end;
 
 procedure TToolButton.SetToolBar(NewToolBar: TToolBar);
@@ -421,8 +413,9 @@ var
   NewAction: TCustomAction;
 begin
   inherited ActionChange(Sender, CheckDefaults);
-  if Sender is TCustomAction then begin
-    NewAction:=TCustomAction(Sender);
+  if Sender is TCustomAction then
+  begin
+    NewAction := TCustomAction(Sender);
     if (not CheckDefaults) or (not Down) then
       Down := NewAction.Checked;
     if (not CheckDefaults) or (ImageIndex<0) then
@@ -432,7 +425,7 @@ end;
 
 function TToolButton.GetActionLinkClass: TControlActionLinkClass;
 begin
-  Result:=TToolButtonActionLink;
+  Result := TToolButtonActionLink;
 end;
 
 procedure TToolButton.CopyPropertiesFromMenuItem(const Value: TMenuItem);
@@ -490,26 +483,30 @@ var
   CurButton: TToolButton;
 begin
   if Value = FDown then exit;
-  if (csLoading in ComponentState) then begin
-    FDown:=Value;
-    exit;
+  if (csLoading in ComponentState) then
+  begin
+    FDown := Value;
+    Exit;
   end;
   
   //DebugLn('TToolButton.SetDown ',Style=tbsCheck,',',FDown,',',GroupAllUpAllowed);
-  if (Style=tbsCheck) and FDown and (not GroupAllUpAllowed) then
-    exit;
+  if (Style = tbsCheck) and FDown and (not GroupAllUpAllowed) then
+    Exit;
 
   FDown := Value;
   
-  if (Style=tbsCheck) and FDown and Grouped then begin
-    //DebugLn('TToolButton.SetDown B ');
+  if (Style = tbsCheck) and FDown and Grouped then
+  begin
     // uncheck all other in the group
-    GetGroupBounds(StartIndex,EndIndex);
-    if StartIndex>=0 then begin
-      for i:=StartIndex to EndIndex do begin
-        CurButton:=FToolBar.Buttons[i];
-        if (CurButton<>Self) and (CurButton.FDown) then begin
-          CurButton.FDown:=false;
+    GetGroupBounds(StartIndex, EndIndex);
+    if StartIndex >= 0 then
+    begin
+      for i := StartIndex to EndIndex do
+      begin
+        CurButton := FToolBar.Buttons[i];
+        if (CurButton <> Self) and (CurButton.FDown) then
+        begin
+          CurButton.FDown := False;
           CurButton.Invalidate;
         end;
       end;
@@ -517,15 +514,16 @@ begin
   end;
 
   Invalidate;
-  if FToolBar <> nil then
-    FToolBar.ToolButtonDown(Self,FDown);
+  if Assigned(FToolBar) then
+    FToolBar.ToolButtonDown(Self, FDown);
 end;
 
 procedure TToolButton.SetDropdownMenu(Value: TPopupMenu);
 begin
   if Value = FDropdownMenu then exit;
   FDropdownMenu := Value;
-  if Value <> nil then Value.FreeNotification(Self);
+  if Assigned(Value) then
+    Value.FreeNotification(Self);
 end;
 
 procedure TToolButton.SetGrouped(Value: Boolean);
@@ -540,25 +538,30 @@ begin
   if csLoading in ComponentState then exit;
   
   // make sure, that only one button in a group is checked
-  while FGrouped and (Style=tbsCheck) and (FToolBar<>nil) do begin
-    GetGroupBounds(StartIndex,EndIndex);
-    if StartIndex>=0 then begin
-      CheckedIndex:=-1;
-      i:=StartIndex;
-      while i<=EndIndex do begin
-        CurButton:=FToolBar.Buttons[i];
-        if CurButton.Down then begin
-          if CheckedIndex<0 then
-            CheckedIndex:=i
-          else begin
-            CurButton.Down:=false;
+  while FGrouped and (Style = tbsCheck) and Assigned(FToolBar) do
+  begin
+    GetGroupBounds(StartIndex, EndIndex);
+    if StartIndex >= 0 then
+    begin
+      CheckedIndex := -1;
+      i := StartIndex;
+      while i <= EndIndex do
+      begin
+        CurButton := FToolBar.Buttons[i];
+        if CurButton.Down then
+        begin
+          if CheckedIndex < 0 then
+            CheckedIndex := i
+          else
+          begin
+            CurButton.Down := False;
             // the last operation can change everything -> restart
             break;
           end;
         end;
         inc(i);
       end;
-      if i>EndIndex then break;
+      if i > EndIndex then break;
     end;
   end;
 end;
@@ -566,9 +569,8 @@ end;
 procedure TToolButton.SetImageIndex(Value: TImageIndex);
 begin
   if FImageIndex = Value then exit;
-  //debugln('TToolButton.SetImageIndex ',Name,':',ClassName,' Old=',FImageIndex,' New=',Value);
   FImageIndex := Value;
-  if IsControlVisible and (FToolBar <> nil) then
+  if IsControlVisible and Assigned(FToolBar) then
   begin
     RefreshControl;
     Invalidate;
@@ -628,7 +630,7 @@ procedure TToolButton.SetWrap(Value: Boolean);
 begin
   if FWrap = Value then exit;
   FWrap := Value;
-  if FToolBar <> nil then
+  if Assigned(FToolBar) then
     RefreshControl;
 end;
 
@@ -636,15 +638,15 @@ procedure TToolButton.TextChanged;
 begin
   inherited TextChanged;
   if FToolbar = nil then Exit;
-  if FToolbar.ShowCaptions
-  then Invalidate;
+  if FToolbar.ShowCaptions then
+    Invalidate;
 end;
 
 procedure TToolButton.SetMouseInControl(NewMouseInControl: Boolean);
 begin
   //DebugLn('TToolButton.SetMouseInControl A ',Name,' Old=',FMouseInControl,' New=',NewMouseInControl);
-  if FMouseInControl=NewMouseInControl then exit;
-  FMouseInControl:=NewMouseInControl;
+  if FMouseInControl = NewMouseInControl then exit;
+  FMouseInControl := NewMouseInControl;
   //DebugLn('TToolButton.SetMouseInControl B ',Name,' Now=',FMouseInControl,' Down=',Down);
   Invalidate;
 end;
@@ -682,21 +684,21 @@ procedure TToolButton.GetGroupBounds(var StartIndex, EndIndex: integer);
 var
   CurButton: TToolButton;
 begin
-  StartIndex:=Index;
-  EndIndex:=StartIndex;
-  if (Style<>tbsCheck) or (not Grouped) then exit;
-  while (StartIndex>0) do begin
+  StartIndex := Index;
+  EndIndex := StartIndex;
+  if (Style <> tbsCheck) or (not Grouped) then exit;
+  while (StartIndex>0) do
+  begin
     CurButton:=FToolBar.Buttons[StartIndex-1];
-    if (CurButton<>nil) and CurButton.Grouped and (CurButton.Style in [tbsCheck, tbsSeparator, tbsDivider])
-    then
+    if (CurButton<>nil) and CurButton.Grouped and (CurButton.Style in [tbsCheck, tbsSeparator, tbsDivider]) then
       dec(StartIndex)
     else
       break;
   end;
-  while (EndIndex<FToolBar.FButtons.Count-1) do begin
-    CurButton:=FToolBar.Buttons[EndIndex+1];
-    if (CurButton<>nil) and CurButton.Grouped and (CurButton.Style in [tbsCheck, tbsSeparator, tbsDivider])
-    then
+  while (EndIndex < FToolBar.FButtons.Count-1) do
+  begin
+    CurButton := FToolBar.Buttons[EndIndex+1];
+    if Assigned(CurButton) and CurButton.Grouped and (CurButton.Style in [tbsCheck, tbsSeparator, tbsDivider]) then
       inc(EndIndex)
     else
       break;
@@ -705,7 +707,7 @@ end;
 
 function TToolButton.GetIndex: Integer;
 begin
-  if FToolBar <> nil then
+  if Assigned(FToolBar) then
     Result := FToolBar.FButtons.IndexOf(Self)
   else
     Result := -1;
@@ -729,8 +731,8 @@ begin
   if FToolbar = nil then Exit;
   if FToolbar.ButtonHeight <= 0 then Exit;
   // buttonheight overrules in hor toolbar
-  if FToolbar.Align in [alTop, alBottom]
-  then PreferredHeight := FToolbar.ButtonHeight;
+  if FToolbar.Align in [alTop, alBottom] then
+    PreferredHeight := FToolbar.ButtonHeight;
 end;
 
 function TToolButton.IsWidthStored: Boolean;
@@ -750,40 +752,38 @@ end;
 
 function TToolButton.CheckMenuDropdown: Boolean;
 begin
-  Result := (not (csDesigning in ComponentState))
-            and ((Assigned(DropdownMenu) and (DropdownMenu.AutoPopup)) or Assigned(MenuItem))
-            and Assigned(FToolBar);
+  Result := (not (csDesigning in ComponentState)) and
+    ((Assigned(DropdownMenu) and (DropdownMenu.AutoPopup)) or Assigned(MenuItem)) and Assigned(FToolBar);
   if Result then
     Result := FToolBar.CheckMenuDropdown(Self);
-end;
-
-procedure TToolButton.Click;
-begin
-  inherited Click;
 end;
 
 procedure TToolButton.GetCurrentIcon(var ImageList: TCustomImageList;
   var TheIndex: integer);
 begin
-  ImageList:=nil;
-  TheIndex:=-1;
-  if (ImageIndex<0) or (FToolBar=nil) then exit;
+  ImageList := nil;
+  TheIndex := -1;
+  if (ImageIndex < 0) or (FToolBar = nil) then Exit;
   
-  if Style in [tbsButton,tbsDropDown,tbsCheck] then begin
-    TheIndex:=ImageIndex;
+  if Style in [tbsButton, tbsDropDown, tbsCheck] then
+  begin
+    TheIndex := ImageIndex;
     if Enabled and FMouseInControl then
       // if mouse over button then use HotImages
-      ImageList:=FToolBar.HotImages
-    else if not Enabled then
+      ImageList := FToolBar.HotImages
+    else
+    if not Enabled then
       // if button disabled then use HotImages
-      ImageList:=FToolBar.DisabledImages;
-    if (ImageList=nil) or (ImageList.Count<=ImageIndex) then begin
+      ImageList := FToolBar.DisabledImages;
+    if (ImageList = nil) or (ImageList.Count <= ImageIndex) then
+    begin
       // if no special icon available, then try the default Images
-      ImageList:=FToolBar.Images;
-      if (ImageList=nil) or (ImageList.Count<=ImageIndex) then begin
+      ImageList := FToolBar.Images;
+      if (ImageList = nil) or (ImageList.Count <= ImageIndex) then
+      begin
         // no icon available
-        ImageList:=nil;
-        TheIndex:=-1;
+        ImageList := nil;
+        TheIndex := -1;
       end;
     end;
   end;
@@ -791,20 +791,19 @@ end;
 
 function TToolButton.IsCheckedStored: Boolean;
 begin
-  Result := (ActionLink = nil)
-            or (not TToolButtonActionLink(ActionLink).IsCheckedLinked);
+  Result := (ActionLink = nil) or not TToolButtonActionLink(ActionLink).IsCheckedLinked;
 end;
 
 function TToolButton.IsImageIndexStored: Boolean;
 begin
-  Result := (ActionLink = nil)
-            or (not TToolButtonActionLink(ActionLink).IsImageIndexLinked);
+  Result := (ActionLink = nil) or not TToolButtonActionLink(ActionLink).IsImageIndexLinked;
 end;
 
 procedure TToolButton.AssignTo(Dest: TPersistent);
 begin
   inherited AssignTo(Dest);
-  if Dest is TCustomAction then begin
+  if Dest is TCustomAction then
+  begin
     TCustomAction(Dest).Checked := Down;
     TCustomAction(Dest).ImageIndex := ImageIndex;
   end;
@@ -857,9 +856,9 @@ begin
   if AParent=Parent then exit;
   
   // remove from old button list
-  if FToolBar<>nil then
+  if Assigned(FToolBar) then
     FToolBar.RemoveButton(Self);
-  FToolBar:=nil;
+  FToolBar := nil;
   if AParent is TToolBar then
   begin
     if Style in [tbsButton,tbsDropDown,tbsCheck] then
@@ -898,16 +897,20 @@ var
   i: Integer;
   CurButton: TToolButton;
 begin
-  Result:=true;
-  if (Style=tbsCheck) and Grouped then begin
-    GetGroupBounds(StartIndex,EndIndex);
-    if (StartIndex>=0) then begin
+  Result := True;
+  if (Style = tbsCheck) and Grouped then
+  begin
+    GetGroupBounds(StartIndex, EndIndex);
+    if (StartIndex >= 0) then
+    begin
       // allow all up, if one button has AllowAllUp
-      Result:=false;
-      for i:=StartIndex to EndIndex do begin
-        CurButton:=FToolBar.Buttons[i];
-        if CurButton.AllowAllUp then begin
-          Result:=true;
+      Result := False;
+      for i := StartIndex to EndIndex do
+      begin
+        CurButton := FToolBar.Buttons[i];
+        if CurButton.AllowAllUp then
+        begin
+          Result := True;
           break;
         end;
       end;
@@ -943,7 +946,7 @@ begin
     // calculate text size
     TextSize.cx := 0;
     TextSize.cy := 0;
-    if (Style in [tbsButton,tbsDropDown,tbsCheck]) and (FToolBar.ShowCaptions) and
+    if (Style in [tbsButton, tbsDropDown, tbsCheck]) and (FToolBar.ShowCaptions) and
        //Allow hide caption only in list mode
        ((FToolBar.List and ShowCaption) or not FToolBar.List) then
     begin
@@ -953,12 +956,12 @@ begin
           TextSize := GetTextSize;
       end;
       // add space around text
-      inc(TextSize.cx,4);
-      inc(TextSize.cy,4);
+      inc(TextSize.cx, 4);
+      inc(TextSize.cy, 4);
     end;
 
     // calculate icon size
-    IconSize := Point(0,0);
+    IconSize := Point(0, 0);
     if (Style in [tbsButton, tbsDropDown, tbsCheck]) then
     begin
       GetCurrentIcon(ImgList, ImgIndex);
