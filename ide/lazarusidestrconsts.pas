@@ -1059,7 +1059,6 @@ resourcestring
   lisCMParameter = 'Parameter';
   lisInsertMacro = 'Insert Macro';
   lisCTPleaseSelectAMacro = 'please select a macro';
-  lisA2PCreateNewFile = 'Create new file';
   dlgEnvLanguage = 'Language';
   dlgAutoSave = 'Auto Save';
   lisAskBeforeSavingProjectSSession = 'Ask before saving project''s session';
@@ -4357,8 +4356,11 @@ resourcestring
   lisCompTest = '&Test';
 
   lisA2PSwitchPaths = 'Switch Paths';
-  lisA2PAddFilesToPackage = 'Add files to package';
+  lisA2PAddFilesToPackage = 'Add Files to Package';
   lisA2PAddToPackage = 'Add to package';
+  lisA2PCreateNewFile = 'Create New File';
+  lisA2PCreateNewComp = 'Create New Component';
+  lisA2PCreateNewReq = 'Create New Requirement';
   lisA2PFilename2 = 'Filename';
   lisFRIFindOrRenameIdentifier = 'Find or Rename Identifier';
   lisHelpSelectorDialog = 'Help selector';
