@@ -758,6 +758,11 @@ begin
     Result := FToolBar.CheckMenuDropdown(Self);
 end;
 
+procedure TToolButton.Click;
+begin
+  inherited Click;
+end;
+
 procedure TToolButton.GetCurrentIcon(var ImageList: TCustomImageList;
   var TheIndex: integer);
 begin

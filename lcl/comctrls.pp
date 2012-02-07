@@ -1854,6 +1854,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     function CheckMenuDropdown: Boolean; virtual;
+    procedure Click; override;
     procedure GetCurrentIcon(var ImageList: TCustomImageList;
                              var TheIndex: integer); virtual;
     procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
