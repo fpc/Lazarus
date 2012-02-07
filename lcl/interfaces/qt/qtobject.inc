@@ -631,7 +631,7 @@ var
   function MDIFocusFixNeeded: Boolean;
   var
     OldWin, NewWin: TCustomForm;
-    H: HWND;
+    // H: HWND;
   begin
     Result := False;
 

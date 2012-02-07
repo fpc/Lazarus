@@ -73,11 +73,6 @@ end;
 
 class procedure TQtWSCustomPage.SetFont(const AWinControl: TWinControl;
   const AFont: TFont);
-var
-  AParent: TQtWidget;
-  ATabWidget: TQtTabWidget;
-  TabBar: QTabBarH;
-  AColor: TQColor;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetFont') then
     Exit;

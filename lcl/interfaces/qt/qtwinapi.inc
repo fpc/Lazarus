@@ -152,9 +152,6 @@ end;
   Returns:
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint) : Boolean;
-var
-  APoint: TQtPoint;
-  Pt: TPoint;
 begin
   Result := IsValidHandle(Handle);
   if Result then
@@ -5131,8 +5128,6 @@ end;
   Returns:
 -------------------------------------------------------------------------------}
 function TQtWidgetSet.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
-var
-  APoint: TQtPoint;
 begin
   Result := 0;
   if IsValidHandle(Handle) then

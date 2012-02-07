@@ -588,7 +588,6 @@ var
   AStdPixmap: QStyleStandardPixmap;
   opt: QStyleOptionH;
   IconSize: Integer;
-  R: TRect;
 begin
   case StockID of
     idButtonOk: AStdPixmap := QStyleSP_DialogOkButton;
