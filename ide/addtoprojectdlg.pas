@@ -58,8 +58,11 @@ type
   { TAddToProjectDialog }
 
   TAddToProjectDialog = class(TForm)
-    FileButtonPanel: TButtonPanel;
-    DependButtonPanel: TButtonPanel;
+    ButtonPanel: TButtonPanel;
+    FilesBrowseButton: TBitBtn;
+    FilesDeleteButton: TBitBtn;
+    FilesDirButton: TBitBtn;
+    FilesShortenButton: TBitBtn;
     // notebook
     NoteBook: TPageControl;
     AddEditorFilePage: TTabSheet;
@@ -77,13 +80,11 @@ type
     DependMaxVersionEdit: TEdit;
     // add files page
     FilesListView: TListView;
-    FilesBrowseButton: TButton;
-    FilesShortenButton: TButton;
-    FilesDeleteButton: TButton;
-    FilesAddButton: TButton;
     procedure AddFileButtonClick(Sender: TObject);
     procedure AddToProjectDialogClose(Sender: TObject;
                                       var CloseAction: TCloseAction);
+    procedure DependPkgNameComboBoxChange(Sender: TObject);
+    procedure FilesDirButtonClick(Sender: TObject);
     procedure FilesListViewSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
     procedure NewDependButtonClick(Sender: TObject);
@@ -91,14 +92,16 @@ type
     procedure FilesBrowseButtonClick(Sender: TObject);
     procedure FilesDeleteButtonClick(Sender: TObject);
     procedure FilesShortenButtonClick(Sender: TObject);
+    procedure NotebookChange(Sender: TObject);
   private
     fPackages: TAVLTree;// tree of  TLazPackage or TPackageLink
     function CheckAddingFile(NewFiles: TStringList; var NewFilename: string
       ): TModalResult;
     procedure SetupComponents;
-    procedure SetupAddEditorFilePage(index: integer);
-    procedure SetupAddRequirementPage(index: integer);
-    procedure SetupAddFilesPage(index: integer);
+    procedure SetupAddEditorFilePage;
+    procedure SetupAddRequirementPage;
+    procedure SetupAddFilesPage;
+    function CheckNewReqOk: Boolean;
     procedure OnIteratePackages(APackageID: TLazPackageID);
   public
     AddResult: TAddToProjectResult;
@@ -194,6 +197,46 @@ procedure TAddToProjectDialog.AddToProjectDialogClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TAddToProjectDialog.DependPkgNameComboBoxChange(Sender: TObject);
+begin
+  CheckNewReqOk;
+end;
+
+procedure TAddToProjectDialog.FilesDirButtonClick(Sender: TObject);
+var
+  DirDlg: TSelectDirectoryDialog;
+  sl: TStringList;
+  NewListItem: TListItem;
+  NewPgkFileType: TPkgFileType;
+  AFileName: String;
+  i: Integer;
+begin
+  sl:=Nil;
+  DirDlg:=TSelectDirectoryDialog.Create(nil);
+  try
+    DirDlg.InitialDir:=TheProject.ProjectDirectory;
+    DirDlg.Options:=DirDlg.Options+[ofPathMustExist];
+    InputHistories.ApplyFileDialogSettings(DirDlg);
+    if DirDlg.Execute then begin
+      sl:=FindAllFiles(DirDlg.FileName, '*.pas;*.pp;*.p;*.inc', False);
+      for i := 0 to sl.Count-1 do begin
+        AFilename:=CleanAndExpandFilename(sl[i]);
+        NewPgkFileType:=FileNameToPkgFileType(AFilename);
+        if TheProject.ProjectDirectory<>'' then
+          AFilename:=CreateRelativePath(AFilename,TheProject.ProjectDirectory);
+        NewListItem:=FilesListView.Items.Add;
+        NewListItem.Caption:=AFilename;
+        NewListItem.SubItems.Add(GetPkgFileTypeLocalizedName(NewPgkFileType));
+      end;
+      UpdateFilesButtons;
+    end;
+    InputHistories.StoreFileDialogSettings(DirDlg);
+  finally
+    sl.Free;
+    DirDlg.Free;
+  end;
 end;
 
 procedure TAddToProjectDialog.FilesListViewSelectItem(Sender: TObject;
@@ -382,24 +425,48 @@ begin
   end;
 end;
 
-procedure TAddToProjectDialog.SetupComponents;
+procedure TAddToProjectDialog.NotebookChange(Sender: TObject);
 begin
-  NoteBook.PageIndex:=0;
-
-  FileButtonPanel.OKButton.ModalResult := mrNone;
-  FileButtonPanel.OKButton.OnClick := @AddFileButtonClick;
-
-  DependButtonPanel.OKButton.ModalResult := mrNone;
-  DependButtonPanel.OKButton.OnClick := @NewDependButtonClick;
-
-  SetupAddEditorFilePage(0);
-  SetupAddRequirementPage(1);
-  SetupAddFilesPage(2);
+  case NoteBook.PageIndex of
+    0: begin              // Add Editor Files
+      ButtonPanel.OKButton.Caption:=lisProjAddFiles;
+      ButtonPanel.OkButton.OnClick:=@AddFileButtonClick;
+      ButtonPanel.OkButton.Enabled:=AddFileListBox.Items.Count>0;
+    end;
+    1: begin              // New Requirement
+      ButtonPanel.OkButton.Caption:=lisA2PCreateNewReq;
+      ButtonPanel.OkButton.OnClick:=@NewDependButtonClick;
+      CheckNewReqOk;
+    end;
+    2: begin              // Add Files
+      ButtonPanel.OkButton.Caption:=lisProjAddAddFilesToProject;
+      ButtonPanel.OkButton.OnClick:=@FilesAddButtonClick;
+      UpdateFilesButtons;
+    end;
+  end;
 end;
 
-procedure TAddToProjectDialog.SetupAddRequirementPage(index: integer);
+procedure TAddToProjectDialog.SetupComponents;
 begin
-  Notebook.Page[index].Caption := lisProjAddNewRequirement;
+  ButtonPanel.OKButton.ModalResult := mrNone;
+  ButtonPanel.OKButton.OnClick := @AddFileButtonClick;
+  NoteBook.PageIndex:=0;
+  NotebookChange(NoteBook);
+
+  SetupAddEditorFilePage;
+  SetupAddRequirementPage;
+  SetupAddFilesPage;
+end;
+
+procedure TAddToProjectDialog.SetupAddEditorFilePage;
+begin
+  AddEditorFilePage.Caption := lisProjAddEditorFile;
+  AddFileLabel.Caption:=lisProjAddAddFileToProject;
+end;
+
+procedure TAddToProjectDialog.SetupAddRequirementPage;
+begin
+  NewDependPage.Caption := lisProjAddNewRequirement;
 
   DependPkgNameLabel.Caption:=lisProjAddPackageName;
   DependPkgNameComboBox.Text:='';
@@ -411,11 +478,11 @@ begin
   DependMaxVersionEdit.Text:='';
 end;
 
-procedure TAddToProjectDialog.SetupAddFilesPage(index: integer);
+procedure TAddToProjectDialog.SetupAddFilesPage;
 var
   CurColumn: TListColumn;
 begin
-  Notebook.Page[index].Caption := lisProjAddFiles;
+  AddFilesPage.Caption := lisProjAddFiles;
 
   with FilesListView do begin
     CurColumn:=Columns.Add;
@@ -425,24 +492,42 @@ begin
     CurColumn.Caption:=dlgEnvType;
   end;
 
-  FilesBrowseButton.Caption:=lisPathEditBrowse;
-  FilesShortenButton.Caption:=lisA2PSwitchPaths;
-  FilesDeleteButton.Caption:=dlgEdDelete;
-  FilesAddButton.Caption:=lisProjAddAddFilesToProject;
+  with FilesBrowseButton do begin
+    Caption:=lisProjAddFiles;
+    LoadGlyphFromLazarusResource('laz_add');
+  end;
+
+  with FilesDirButton do begin
+    Caption:=lisAddDirectory;
+    LoadGlyphFromLazarusResource('pkg_files');
+  end;
+
+  with FilesShortenButton do begin
+    Caption:=lisA2PSwitchPaths;
+    ShowHint:=true;
+    Hint:=lisToggleShowingFilenamesWithFullPathOrWithRelativePa;
+  end;
+
+  with FilesDeleteButton do begin
+    Caption:=dlgEdDelete;
+    ShowHint:=true;
+    Hint:=lisDeleteSelectedFiles;
+    LoadGlyphFromLazarusResource('laz_delete');
+  end;
+
   UpdateFilesButtons;
+end;
+
+function TAddToProjectDialog.CheckNewReqOk: Boolean;
+begin
+  Result:=(DependPkgNameComboBox.Text<>'');
+  ButtonPanel.OkButton.Enabled:=Result;
 end;
 
 procedure TAddToProjectDialog.OnIteratePackages(APackageID: TLazPackageID);
 begin
   if (fPackages.Find(APackageID)=nil) then
     fPackages.Add(APackageID);
-end;
-
-procedure TAddToProjectDialog.SetupAddEditorFilePage(index: integer);
-begin
-  Notebook.Page[index].Caption := lisProjAddEditorFile;
-
-  AddFileLabel.Caption:=lisProjAddAddFileToProject;
 end;
 
 function TAddToProjectDialog.CheckAddingFile(NewFiles: TStringList;
@@ -458,8 +543,7 @@ begin
   Result:=mrCancel;
   // expand filename
   if not FilenameIsAbsolute(NewFilename) then
-    NewFilename:=
-                TrimFilename(TheProject.ProjectDirectory+PathDelim+NewFilename);
+    NewFilename:=TrimFilename(TheProject.ProjectDirectory+PathDelim+NewFilename);
   // check if file is already part of project
   NewFile:=TheProject.UnitInfoWithFilename(NewFilename);
   if (NewFile<>nil) and NewFile.IsPartOfProject then begin
@@ -564,14 +648,14 @@ begin
     AddFileListBox.Items.Clear;
   end;
   AddFileListBox.Items.EndUpdate;
-  UpdateFilesButtons;
+  ButtonPanel.OkButton.Enabled:=AddFileListBox.Items.Count>0;
 end;
 
 procedure TAddToProjectDialog.UpdateFilesButtons;
 begin
   FilesShortenButton.Enabled:=FilesListView.Items.Count>0;
   FilesDeleteButton.Enabled:=FilesListView.SelCount>0;
-  FilesAddButton.Enabled:=FilesListView.Items.Count>0;
+  ButtonPanel.OKButton.Enabled:=FilesListView.Items.Count>0;
 end;
 
 { TAddToProjectResult }
