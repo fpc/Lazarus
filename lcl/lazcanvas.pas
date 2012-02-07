@@ -592,8 +592,6 @@ procedure TLazCanvas.CanvasCopyRect(ASource: TLazCanvas; const ADestX, ADestY,
   ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
 var
   x, y, CurDestX, CurDestY, CurSrcX, CurSrcY: Integer;
-  MaskValue, InvMaskValue: Word;
-  CurColor: TFPColor;
   lDrawWidth, lDrawHeight: Integer;
   lColor: TFPColor;
 begin
