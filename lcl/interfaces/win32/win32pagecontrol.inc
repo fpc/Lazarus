@@ -169,12 +169,14 @@ end;
 class procedure TWin32WSCustomPage.SetText(const AWinControl: TWinControl; const AText: string);
 var
   TCI: TC_ITEM;
+  TabControl: TCustomTabControl;
   PageIndex, RealIndex: integer;
   TabControlHandle: HWND;
 begin
+  TabControl := TCustomTabControl(AWinControl.Parent);
   PageIndex := TCustomPage(AWinControl).PageIndex;
-  RealIndex := TCustomTabControl(AWinControl.Parent).PageToTabIndex(PageIndex);
-  TabControlHandle := AWinControl.Parent.Handle;
+  RealIndex := TabControl.PageToTabIndex(PageIndex);
+  TabControlHandle := TabControl.Handle;
   // We can't set label of a page not yet added,
   // Check for valid page index
   if (RealIndex >= 0) and (RealIndex < Windows.SendMessage(TabControlHandle, TCM_GETITEMCOUNT, 0, 0)) then
@@ -200,6 +202,7 @@ begin
       TCI.pszText := PChar(AText);
       Windows.SendMessage(TabControlHandle, TCM_SETITEM, RealIndex, LPARAM(@TCI));
 {$endif}
+      LCLControlSizeNeedsUpdate(TabControl, True);
     end;
   end;
 end;
