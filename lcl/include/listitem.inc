@@ -487,7 +487,10 @@ end;
 {------------------------------------------------------------------------------}
 function TListItem.WSUpdateAllowed: Boolean;
 begin
-  Result := (FFlags * [lifDestroying, lifCreated] = [lifCreated])
+  Result :=
+    ( (FFlags * [lifDestroying, lifCreated] = [lifCreated]) or
+     ((FFlags = []) and (FOwner <> nil) and (FOwner.FOwner <> nil) and
+       (FOwner.FOwner.OwnerData)) )
     and (FOwner <> nil)
     and FOwner.WSUpdateAllowed;
 end;
