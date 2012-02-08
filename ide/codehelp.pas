@@ -1304,7 +1304,7 @@ begin
     PackageNode.AppendChild(ModuleNode);
     // write the XML to a string
     ms:=TMemoryStream.Create;
-    WriteXMLFile(Doc,ms);
+    WriteXMLFile(Doc,ms,[xwfPreserveWhiteSpace]);
     ms.Position:=0;
     SetLength(s,ms.Size);
     if s<>'' then
@@ -1416,7 +1416,7 @@ begin
     MemStream.Position:=0;
     Result:=chprFailed;
     try
-      ReadXMLFile(ADocFile.Doc,MemStream,CurFilename);
+      ReadXMLFile(ADocFile.Doc,MemStream,CurFilename,[xrfPreserveWhiteSpace]);
       ADocFile.DocErrorMsg:='';
       Result:=chprSuccess;
     except
@@ -1469,7 +1469,7 @@ begin
   // write Doc to xml stream
   try
     ms:=TMemoryStream.Create;
-    WriteXMLFile(ADocFile.Doc, ms);
+    WriteXMLFile(ADocFile.Doc,ms,[xwfPreserveWhiteSpace]);
     ms.Position:=0;
     SetLength(s,ms.Size);
     if s<>'' then
