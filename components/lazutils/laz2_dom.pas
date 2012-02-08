@@ -93,6 +93,7 @@ type
   TDOMDocument = class;
   TDOMNodeList = class;
   TDOMNamedNodeMap = class;
+  TDOMNode = class;
   TDOMAttr = class;
   TDOMElement = class;
   TDOMText = class;
@@ -198,6 +199,32 @@ type
   );
   TNodeFlags = set of TNodeFlagEnum;
 
+  { TDOMNodeEnumerator }
+
+  TDOMNodeEnumerator = class
+  private
+    FCurrent: TDOMNode;
+  public
+    constructor Create(Node: TDOMNode);
+    function MoveNext: boolean;
+    property Current: TDOMNode read FCurrent;
+  end;
+
+  { TDOMNodeAllChildEnumerator }
+
+  TDOMNodeAllChildEnumerator = class
+  private
+    FCurrent: TDOMNode;
+    FEnd: TDOMNode;
+  public
+    constructor Create(Node: TDOMNode);
+    function MoveNext: boolean;
+    property Current: TDOMNode read FCurrent;
+    function GetEnumerator: TDOMNodeAllChildEnumerator; // including grand children
+  end;
+
+  { TDOMNode }
+
   TDOMNode = class
   protected
     FPool: TObject;
@@ -242,6 +269,12 @@ type
     property NextSibling: TDOMNode read FNextSibling;
     property Attributes: TDOMNamedNodeMap read GetAttributes;
     property OwnerDocument: TDOMDocument read GetOwnerDocument;
+    function GetEnumerator: TDOMNodeEnumerator; // all children including grand children
+    function GetEnumeratorAllChildren: TDOMNodeAllChildEnumerator; // all children including grand children
+    function GetNextNode: TDOMNode; // first child, then next sibling, then next sibling of parent, ...
+    function GetNextNodeSkipChildren: TDOMNode; // first next sibling, then next sibling of parent, ...
+    function GetPrevNode: TDOMNode; // the reverse of GetNext
+    function GetLastLeaf: TDOMNode; // get last child of last child of ...
 
     function InsertBefore(NewChild, RefChild: TDOMNode): TDOMNode; virtual;
     function ReplaceChild(NewChild, OldChild: TDOMNode): TDOMNode; virtual;
@@ -829,6 +862,39 @@ type
     function removeNamedItemNS(const namespaceURI,localName: DOMString): TDOMNode; override;
   end;
 
+{ TDOMNodeAllChildEnumerator }
+
+constructor TDOMNodeAllChildEnumerator.Create(Node: TDOMNode);
+begin
+  FCurrent:=Node.GetNextNode;
+  FEnd:=Node.GetNextNodeSkipChildren;
+end;
+
+function TDOMNodeAllChildEnumerator.MoveNext: boolean;
+begin
+  if FCurrent=FEnd then exit(false);
+  FCurrent:=FCurrent.GetNextNode;
+  Result:=true;
+end;
+
+function TDOMNodeAllChildEnumerator.GetEnumerator: TDOMNodeAllChildEnumerator;
+begin
+  Result:=Self;
+end;
+
+{ TDOMNodeEnumerator }
+
+constructor TDOMNodeEnumerator.Create(Node: TDOMNode);
+begin
+  FCurrent:=Node.FirstChild;
+end;
+
+function TDOMNodeEnumerator.MoveNext: boolean;
+begin
+  FCurrent:=FCurrent.NextSibling;
+  Result:=FCurrent<>nil;
+end;
+
 // -------------------------------------------------------
 //   DOM Exception
 // -------------------------------------------------------
@@ -936,6 +1002,60 @@ end;
 function TDOMNode.GetChildNodes: TDOMNodeList;
 begin
   Result := FOwnerDocument.GetChildNodeList(Self);
+end;
+
+function TDOMNode.GetEnumerator: TDOMNodeEnumerator;
+begin
+  Result:=TDOMNodeEnumerator.Create(Self);
+end;
+
+function TDOMNode.GetEnumeratorAllChildren: TDOMNodeAllChildEnumerator;
+begin
+  Result:=TDOMNodeAllChildEnumerator.Create(Self);
+end;
+
+function TDOMNode.GetNextNode: TDOMNode;
+begin
+  Result:=FirstChild;
+  if Result=nil then
+    Result:=GetNextNodeSkipChildren;
+end;
+
+function TDOMNode.GetNextNodeSkipChildren: TDOMNode;
+var
+  Node: TDOMNode;
+begin
+  Result:=Self;
+  repeat
+    Node:=Result.NextSibling;
+    if Node<>nil then exit(Node);
+    Result:=Result.ParentNode;
+  until Result=nil;
+  Result:=nil;
+end;
+
+function TDOMNode.GetPrevNode: TDOMNode;
+var
+  Node: TDOMNode;
+begin
+  Result:=PreviousSibling;
+  if Result=nil then
+    exit(ParentNode);
+  Node:=Result.GetLastLeaf;
+  if Node<>nil then
+    Result:=Node;
+end;
+
+function TDOMNode.GetLastLeaf: TDOMNode;
+var
+  Node: TDOMNode;
+begin
+  Result:=LastChild;
+  while Result<>nil do begin
+    Node:=Result.LastChild;
+    if Node=nil then exit;
+    Result:=Node;
+  end;
 end;
 
 function TDOMNode.GetFirstChild: TDOMNode;
