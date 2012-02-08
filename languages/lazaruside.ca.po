@@ -3656,7 +3656,9 @@ msgid "Add Files"
 msgstr "Afegeix els fitxers"
 
 #: lazarusidestrconsts.lisa2paddfilestopackage
-msgid "Add files to package"
+#, fuzzy
+#| msgid "Add files to package"
+msgid "Add Files to Package"
 msgstr "Afegeix els fitxers al paquet"
 
 #: lazarusidestrconsts.lisa2paddlfmlrsfilesiftheyexist
@@ -3704,9 +3706,19 @@ msgstr ""
 msgid "Class Name already exists"
 msgstr "Ja existeix el nom de la classe"
 
+#: lazarusidestrconsts.lisa2pcreatenewcomp
+msgid "Create New Component"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pcreatenewfile
-msgid "Create new file"
+#, fuzzy
+#| msgid "Create new file"
+msgid "Create New File"
 msgstr "Crea nou arxiu"
+
+#: lazarusidestrconsts.lisa2pcreatenewreq
+msgid "Create New Requirement"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pdependency
 msgid "Dependency"
@@ -9123,14 +9135,6 @@ msgstr ""
 msgid "Inherited project component"
 msgstr ""
 
-#: lazarusidestrconsts.lisinitialsetupdialogpagecontrolaccessibledescription
-msgid "Tab control to select the visible properties page"
-msgstr ""
-
-#: lazarusidestrconsts.lisinitialsetupdialogtreeviewaccessibledescription
-msgid "List to select the visible properties page"
-msgstr ""
-
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
 msgstr ""
@@ -11909,6 +11913,14 @@ msgstr ""
 
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page"
+msgstr ""
+
+#: lazarusidestrconsts.lismoveselecteddown
+msgid "Move selected item down (Ctrl+Down)"
+msgstr ""
+
+#: lazarusidestrconsts.lismoveselectedup
+msgid "Move selected item up (Ctrl+Up)"
 msgstr ""
 
 #: lazarusidestrconsts.lisms
@@ -17547,6 +17559,14 @@ msgstr "Vés a XY"
 msgid "Guess Misplaced $IFDEF"
 msgstr "Suposa $IFDEF inexistent"
 
+#: lazarusidestrconsts.srkmechalfwordleft
+msgid "Move cursor half-word left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmechalfwordright
+msgid "Move cursor half-word right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecimestr
 msgid "Ime Str"
 msgstr "Ime Str"
@@ -17877,6 +17897,14 @@ msgstr "Selecciona fins al començament"
 msgid "Select Goto XY"
 msgstr "Selecciona anar a XY"
 
+#: lazarusidestrconsts.srkmecselhalfwordleft
+msgid "Select half-word left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselhalfwordright
+msgid "Select half-word right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecselleft
 msgid "SelLeft"
 msgstr "Alinea a l'esquerra"
@@ -17928,6 +17956,14 @@ msgstr "Alinea a la dreta"
 #: lazarusidestrconsts.srkmecselup
 msgid "Select Up"
 msgstr "Selecciona amunt"
+
+#: lazarusidestrconsts.srkmecselwordendleft
+msgid "Select word-end left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselwordendright
+msgid "Select word-end right"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecselwordleft
 msgctxt "lazarusidestrconsts.srkmecselwordleft"
@@ -18222,6 +18258,14 @@ msgstr "Mostra les unitats"
 #| msgid "Word completion"
 msgid "Word Completion"
 msgstr "Completa la paraula"
+
+#: lazarusidestrconsts.srkmecwordendleft
+msgid "Move cursor word-end left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecwordendright
+msgid "Move cursor word-end right"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecwordleft
 msgid "Move cursor word left"

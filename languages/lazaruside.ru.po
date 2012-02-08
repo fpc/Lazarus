@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-02-07 00:30+0400\n"
+"PO-Revision-Date: 2012-02-09 02:02+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3648,7 +3648,8 @@ msgid "Add Files"
 msgstr "Добавить файлы"
 
 #: lazarusidestrconsts.lisa2paddfilestopackage
-msgid "Add files to package"
+#| msgid "Add files to package"
+msgid "Add Files to Package"
 msgstr "Добавить файлы к пакету"
 
 #: lazarusidestrconsts.lisa2paddlfmlrsfilesiftheyexist
@@ -3696,9 +3697,18 @@ msgstr "<выберите существующий файл>"
 msgid "Class Name already exists"
 msgstr "Имя класса уже существует"
 
+#: lazarusidestrconsts.lisa2pcreatenewcomp
+msgid "Create New Component"
+msgstr "Создать новый компонент"
+
 #: lazarusidestrconsts.lisa2pcreatenewfile
-msgid "Create new file"
+#| msgid "Create new file"
+msgid "Create New File"
 msgstr "Создать новый файл"
+
+#: lazarusidestrconsts.lisa2pcreatenewreq
+msgid "Create New Requirement"
+msgstr "Создать новую зависимость"
 
 #: lazarusidestrconsts.lisa2pdependency
 msgid "Dependency"
@@ -9146,14 +9156,6 @@ msgstr "Унаследованный объект"
 msgid "Inherited project component"
 msgstr "Унаследованный от компонента проекта"
 
-#: lazarusidestrconsts.lisinitialsetupdialogpagecontrolaccessibledescription
-msgid "Tab control to select the visible properties page"
-msgstr "Элемент управления выбором видимой страницы свойств"
-
-#: lazarusidestrconsts.lisinitialsetupdialogtreeviewaccessibledescription
-msgid "List to select the visible properties page"
-msgstr "Список выбора видимой страницы свойств"
-
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
 msgstr "Для создания очищенной копии проекта/пакета все файлы в следующем каталоге будут удалены, и всё их содержимое будет утеряно.%s%sУдалить все файлы в %s%s%s?"
@@ -11896,6 +11898,14 @@ msgstr "Переместить \"%s\" на позицию вверх"
 #| msgid "Move Page ..."
 msgid "Move Page"
 msgstr "Переместить страницу"
+
+#: lazarusidestrconsts.lismoveselecteddown
+msgid "Move selected item down (Ctrl+Down)"
+msgstr "Переместить выделенный элемент вниз (Ctrl+Down)"
+
+#: lazarusidestrconsts.lismoveselectedup
+msgid "Move selected item up (Ctrl+Up)"
+msgstr "Переместить выделенный элемент вверх (Ctrl+Up)"
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -15186,7 +15196,7 @@ msgstr "Редактируемое поле"
 
 #: lazarusidestrconsts.listemplateeditparamcellhelp
 #| msgid ""
-#| " an editable Cell, with a default value\n"
+#| "an editable Cell, with a default value\n"
 #| "\"\",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell\n"
 #| "\"default\",Sync, to Sync with a previous cell of equal default\n"
 msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
@@ -17520,6 +17530,14 @@ msgstr "Перейти по координате"
 msgid "Guess Misplaced $IFDEF"
 msgstr "Исправить отсутствие $IFDEF"
 
+#: lazarusidestrconsts.srkmechalfwordleft
+msgid "Move cursor half-word left"
+msgstr "Переместить курсор влево на полслова"
+
+#: lazarusidestrconsts.srkmechalfwordright
+msgid "Move cursor half-word right"
+msgstr "Переместить курсор вправо на полслова"
+
 #: lazarusidestrconsts.srkmecimestr
 msgid "Ime Str"
 msgstr "Ime Str"
@@ -17848,6 +17866,14 @@ msgstr "Выделить до самого начала"
 msgid "Select Goto XY"
 msgstr "Выделить до координаты XY"
 
+#: lazarusidestrconsts.srkmecselhalfwordleft
+msgid "Select half-word left"
+msgstr "Выделить полслова слева"
+
+#: lazarusidestrconsts.srkmecselhalfwordright
+msgid "Select half-word right"
+msgstr "Выделить полслова справа"
+
 #: lazarusidestrconsts.srkmecselleft
 msgid "SelLeft"
 msgstr "SelLeft"
@@ -17899,6 +17925,14 @@ msgstr "SelRight"
 #: lazarusidestrconsts.srkmecselup
 msgid "Select Up"
 msgstr "Выделить вверх"
+
+#: lazarusidestrconsts.srkmecselwordendleft
+msgid "Select word-end left"
+msgstr "Выделить до конца слова слева"
+
+#: lazarusidestrconsts.srkmecselwordendright
+msgid "Select word-end right"
+msgstr "Выделить до конца слова справа"
 
 #: lazarusidestrconsts.srkmecselwordleft
 msgctxt "lazarusidestrconsts.srkmecselwordleft"
@@ -18194,6 +18228,14 @@ msgstr "Показать модули"
 #| msgid "Word completion"
 msgid "Word Completion"
 msgstr "Завершить слово"
+
+#: lazarusidestrconsts.srkmecwordendleft
+msgid "Move cursor word-end left"
+msgstr "Переместить курсор на конец слова слева"
+
+#: lazarusidestrconsts.srkmecwordendright
+msgid "Move cursor word-end right"
+msgstr "Переместить курсор на конец слова справа"
 
 #: lazarusidestrconsts.srkmecwordleft
 msgid "Move cursor word left"

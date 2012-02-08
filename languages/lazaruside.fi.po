@@ -3485,7 +3485,9 @@ msgid "Add Files"
 msgstr "Lisää tiedostot"
 
 #: lazarusidestrconsts.lisa2paddfilestopackage
-msgid "Add files to package"
+#, fuzzy
+#| msgid "Add files to package"
+msgid "Add Files to Package"
 msgstr "Lisää nämä tiedostot pakettiin"
 
 #: lazarusidestrconsts.lisa2paddlfmlrsfilesiftheyexist
@@ -3533,8 +3535,16 @@ msgstr ""
 msgid "Class Name already exists"
 msgstr ""
 
+#: lazarusidestrconsts.lisa2pcreatenewcomp
+msgid "Create New Component"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pcreatenewfile
-msgid "Create new file"
+msgid "Create New File"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2pcreatenewreq
+msgid "Create New Requirement"
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pdependency
@@ -8900,14 +8910,6 @@ msgstr "Periytyvä kohta"
 msgid "Inherited project component"
 msgstr "Periytyvä projektin komponentti"
 
-#: lazarusidestrconsts.lisinitialsetupdialogpagecontrolaccessibledescription
-msgid "Tab control to select the visible properties page"
-msgstr ""
-
-#: lazarusidestrconsts.lisinitialsetupdialogtreeviewaccessibledescription
-msgid "List to select the visible properties page"
-msgstr ""
-
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
 msgstr ""
@@ -11474,6 +11476,14 @@ msgstr "Siirrä \"%s\" yksi pykälä ylöspäin"
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page"
 msgstr "Siirrä välilehdelle"
+
+#: lazarusidestrconsts.lismoveselecteddown
+msgid "Move selected item down (Ctrl+Down)"
+msgstr ""
+
+#: lazarusidestrconsts.lismoveselectedup
+msgid "Move selected item up (Ctrl+Up)"
+msgstr ""
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -16981,6 +16991,14 @@ msgstr "Siirry XY"
 msgid "Guess Misplaced $IFDEF"
 msgstr "Arvaa väärin sijoitettu $IFDEF"
 
+#: lazarusidestrconsts.srkmechalfwordleft
+msgid "Move cursor half-word left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmechalfwordright
+msgid "Move cursor half-word right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecimestr
 msgid "Ime Str"
 msgstr ""
@@ -17300,6 +17318,14 @@ msgstr "Valitse aivan alkuun asti"
 msgid "Select Goto XY"
 msgstr ""
 
+#: lazarusidestrconsts.srkmecselhalfwordleft
+msgid "Select half-word left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselhalfwordright
+msgid "Select half-word right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecselleft
 msgid "SelLeft"
 msgstr ""
@@ -17351,6 +17377,14 @@ msgstr ""
 #: lazarusidestrconsts.srkmecselup
 msgid "Select Up"
 msgstr "Valitse ylös"
+
+#: lazarusidestrconsts.srkmecselwordendleft
+msgid "Select word-end left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselwordendright
+msgid "Select word-end right"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecselwordleft
 msgctxt "lazarusidestrconsts.srkmecselwordleft"
@@ -17639,6 +17673,14 @@ msgstr "Näytä käännösyksiköt"
 #: lazarusidestrconsts.srkmecwordcompletion
 msgid "Word Completion"
 msgstr "Sanan täydennys"
+
+#: lazarusidestrconsts.srkmecwordendleft
+msgid "Move cursor word-end left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecwordendright
+msgid "Move cursor word-end right"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecwordleft
 msgid "Move cursor word left"

@@ -3728,7 +3728,9 @@ msgid "Add Files"
 msgstr "Dodaj pliki"
 
 #: lazarusidestrconsts.lisa2paddfilestopackage
-msgid "Add files to package"
+#, fuzzy
+#| msgid "Add files to package"
+msgid "Add Files to Package"
 msgstr "Dodaj pliki do pakietu"
 
 #: lazarusidestrconsts.lisa2paddlfmlrsfilesiftheyexist
@@ -3776,9 +3778,19 @@ msgstr ""
 msgid "Class Name already exists"
 msgstr "Jest już klasa o tej nazwie."
 
+#: lazarusidestrconsts.lisa2pcreatenewcomp
+msgid "Create New Component"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pcreatenewfile
-msgid "Create new file"
+#, fuzzy
+#| msgid "Create new file"
+msgid "Create New File"
 msgstr "Utwórz nowy plik"
+
+#: lazarusidestrconsts.lisa2pcreatenewreq
+msgid "Create New Requirement"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pdependency
 msgid "Dependency"
@@ -9203,14 +9215,6 @@ msgstr ""
 msgid "Inherited project component"
 msgstr ""
 
-#: lazarusidestrconsts.lisinitialsetupdialogpagecontrolaccessibledescription
-msgid "Tab control to select the visible properties page"
-msgstr ""
-
-#: lazarusidestrconsts.lisinitialsetupdialogtreeviewaccessibledescription
-msgid "List to select the visible properties page"
-msgstr ""
-
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
 msgstr ""
@@ -12019,6 +12023,14 @@ msgstr "Przesuń \"%s\" w górę"
 #| msgid "Move Page ..."
 msgid "Move Page"
 msgstr "Przenieś stronę ..."
+
+#: lazarusidestrconsts.lismoveselecteddown
+msgid "Move selected item down (Ctrl+Down)"
+msgstr ""
+
+#: lazarusidestrconsts.lismoveselectedup
+msgid "Move selected item up (Ctrl+Up)"
+msgstr ""
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -17646,6 +17658,14 @@ msgstr "Idź do XY"
 msgid "Guess Misplaced $IFDEF"
 msgstr "Znajdź błędnie umieszczone $IFDEF"
 
+#: lazarusidestrconsts.srkmechalfwordleft
+msgid "Move cursor half-word left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmechalfwordright
+msgid "Move cursor half-word right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecimestr
 msgid "Ime Str"
 msgstr "Ime Str"
@@ -17978,6 +17998,14 @@ msgstr "Wybierz do początku"
 msgid "Select Goto XY"
 msgstr "Wybierz do XY"
 
+#: lazarusidestrconsts.srkmecselhalfwordleft
+msgid "Select half-word left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselhalfwordright
+msgid "Select half-word right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecselleft
 msgid "SelLeft"
 msgstr "WybWLewo"
@@ -18029,6 +18057,14 @@ msgstr "WybWPrawo"
 #: lazarusidestrconsts.srkmecselup
 msgid "Select Up"
 msgstr "Wybierz w górę"
+
+#: lazarusidestrconsts.srkmecselwordendleft
+msgid "Select word-end left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselwordendright
+msgid "Select word-end right"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecselwordleft
 msgctxt "lazarusidestrconsts.srkmecselwordleft"
@@ -18325,6 +18361,14 @@ msgstr "Pokaż moduły"
 #| msgid "Word completion"
 msgid "Word Completion"
 msgstr "Uzupełnienie słowa"
+
+#: lazarusidestrconsts.srkmecwordendleft
+msgid "Move cursor word-end left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecwordendright
+msgid "Move cursor word-end right"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecwordleft
 msgid "Move cursor word left"

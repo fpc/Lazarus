@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-02-07 00:12+0400\n"
+"PO-Revision-Date: 2012-02-09 01:28+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1009,7 +1009,7 @@ msgstr "Неверный файл сетки"
 
 #: lclstrconsts.rsnowidgetset
 msgid "No widgetset object. Please check if the unit \"interfaces\" was added to the programs uses clause."
-msgstr "Отсутствует объект библиотеки виджетов. Проверьте, что модуль \"interfaces\" был добавлен в выражение uses программы."
+msgstr "Отсутствует объект библиотеки виджетов. Проверьте, что модуль \"interfaces\" был добавлен в выражение Uses программы."
 
 #: lclstrconsts.rsolivecolorcaption
 msgid "Olive"
@@ -1224,7 +1224,7 @@ msgstr "Голубой"
 
 #: lclstrconsts.rstcustomtabcontrolaccessibilitydescription
 msgid "A control with tabs"
-msgstr ""
+msgstr "Элемент управления со вкладками"
 
 #: lclstrconsts.rstealcolorcaption
 msgid "Teal"
@@ -1244,11 +1244,10 @@ msgid "Panel"
 msgstr "Панель"
 
 #: lclstrconsts.rstsplitteraccessibilitydescription
-#, fuzzy
 #| msgid "A grip to control how much size to give the left and right parts of an area"
 msgctxt "lclstrconsts.rstsplitteraccessibilitydescription"
 msgid "A grip to control how much size to give two parts of an area"
-msgstr "Захват для управления соотношением размеров областей слева и справа"
+msgstr "Захват для управления соотношением размеров двух областей"
 
 #: lclstrconsts.rsttreeviewaccessibilitydescription
 msgctxt "lclstrconsts.rsttreeviewaccessibilitydescription"

@@ -3718,7 +3718,9 @@ msgid "Add Files"
 msgstr "Pridėti failus"
 
 #: lazarusidestrconsts.lisa2paddfilestopackage
-msgid "Add files to package"
+#, fuzzy
+#| msgid "Add files to package"
+msgid "Add Files to Package"
 msgstr "Įdėti failus į paketą"
 
 #: lazarusidestrconsts.lisa2paddlfmlrsfilesiftheyexist
@@ -3766,9 +3768,19 @@ msgstr "<nurodykite egzistuojantį failą>"
 msgid "Class Name already exists"
 msgstr "Dubliuojasi klasės pavadinimas "
 
+#: lazarusidestrconsts.lisa2pcreatenewcomp
+msgid "Create New Component"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pcreatenewfile
-msgid "Create new file"
+#, fuzzy
+#| msgid "Create new file"
+msgid "Create New File"
 msgstr "Kurti naują failą"
+
+#: lazarusidestrconsts.lisa2pcreatenewreq
+msgid "Create New Requirement"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pdependency
 msgid "Dependency"
@@ -9256,14 +9268,6 @@ msgstr "Paveldėtas elementas"
 msgid "Inherited project component"
 msgstr ""
 
-#: lazarusidestrconsts.lisinitialsetupdialogpagecontrolaccessibledescription
-msgid "Tab control to select the visible properties page"
-msgstr ""
-
-#: lazarusidestrconsts.lisinitialsetupdialogtreeviewaccessibledescription
-msgid "List to select the visible properties page"
-msgstr ""
-
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
 msgstr "Kuriant švarią projekto ar paketo kopiją, visi šiame aplanke esantys failai bus ištrinti.%s%sIštrinti visus %s%s%s aplanke esančius failus?"
@@ -12112,6 +12116,14 @@ msgstr ""
 #| msgid "Move Page ..."
 msgid "Move Page"
 msgstr "Perkelti lapą…"
+
+#: lazarusidestrconsts.lismoveselecteddown
+msgid "Move selected item down (Ctrl+Down)"
+msgstr ""
+
+#: lazarusidestrconsts.lismoveselectedup
+msgid "Move selected item up (Ctrl+Up)"
+msgstr ""
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -15435,7 +15447,7 @@ msgstr "Langelis, kurį galima keisti"
 #: lazarusidestrconsts.listemplateeditparamcellhelp
 #, fuzzy
 #| msgid ""
-#| " an editable Cell, with a default value\n"
+#| "an editable Cell, with a default value\n"
 #| "\"\",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell\n"
 #| "\"default\",Sync, to Sync with a previous cell of equal default\n"
 msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
@@ -17803,6 +17815,14 @@ msgstr "Eiti į poziciją"
 msgid "Guess Misplaced $IFDEF"
 msgstr "Nuspėti nevietoj esančius $IFDEF"
 
+#: lazarusidestrconsts.srkmechalfwordleft
+msgid "Move cursor half-word left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmechalfwordright
+msgid "Move cursor half-word right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecimestr
 msgid "Ime Str"
 msgstr "IME eilutė"
@@ -18137,6 +18157,14 @@ msgstr "Žymėti iki absoliučios pradžios"
 msgid "Select Goto XY"
 msgstr "Žymėti ir eiti į XY"
 
+#: lazarusidestrconsts.srkmecselhalfwordleft
+msgid "Select half-word left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselhalfwordright
+msgid "Select half-word right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecselleft
 msgid "SelLeft"
 msgstr "Žymėti simboliu kairiau"
@@ -18188,6 +18216,14 @@ msgstr "Žymėti simboliu dešiniau"
 #: lazarusidestrconsts.srkmecselup
 msgid "Select Up"
 msgstr "Žymėti eilute aukščiau"
+
+#: lazarusidestrconsts.srkmecselwordendleft
+msgid "Select word-end left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselwordendright
+msgid "Select word-end right"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecselwordleft
 msgctxt "lazarusidestrconsts.srkmecselwordleft"
@@ -18486,6 +18522,14 @@ msgstr "Rodyti modulius"
 #| msgid "Word completion"
 msgid "Word Completion"
 msgstr "Užbaigti žodį"
+
+#: lazarusidestrconsts.srkmecwordendleft
+msgid "Move cursor word-end left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecwordendright
+msgid "Move cursor word-end right"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecwordleft
 msgid "Move cursor word left"

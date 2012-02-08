@@ -3709,7 +3709,9 @@ msgid "Add Files"
 msgstr "添加多个文件"
 
 #: lazarusidestrconsts.lisa2paddfilestopackage
-msgid "Add files to package"
+#, fuzzy
+#| msgid "Add files to package"
+msgid "Add Files to Package"
 msgstr "添加文件到包"
 
 #: lazarusidestrconsts.lisa2paddlfmlrsfilesiftheyexist
@@ -3757,9 +3759,19 @@ msgstr "<选择一个存在的文件>"
 msgid "Class Name already exists"
 msgstr "类名已经存在"
 
+#: lazarusidestrconsts.lisa2pcreatenewcomp
+msgid "Create New Component"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pcreatenewfile
-msgid "Create new file"
+#, fuzzy
+#| msgid "Create new file"
+msgid "Create New File"
 msgstr "创建新的文件"
+
+#: lazarusidestrconsts.lisa2pcreatenewreq
+msgid "Create New Requirement"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pdependency
 msgid "Dependency"
@@ -9230,14 +9242,6 @@ msgstr "继承自对象"
 msgid "Inherited project component"
 msgstr ""
 
-#: lazarusidestrconsts.lisinitialsetupdialogpagecontrolaccessibledescription
-msgid "Tab control to select the visible properties page"
-msgstr ""
-
-#: lazarusidestrconsts.lisinitialsetupdialogtreeviewaccessibledescription
-msgid "List to select the visible properties page"
-msgstr ""
-
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
 msgstr ""
@@ -12079,6 +12083,14 @@ msgstr ""
 #| msgid "Move Page ..."
 msgid "Move Page"
 msgstr "移动页 ..."
+
+#: lazarusidestrconsts.lismoveselecteddown
+msgid "Move selected item down (Ctrl+Down)"
+msgstr ""
+
+#: lazarusidestrconsts.lismoveselectedup
+msgid "Move selected item up (Ctrl+Up)"
+msgstr ""
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -17752,6 +17764,14 @@ msgstr "转到 XY"
 msgid "Guess Misplaced $IFDEF"
 msgstr "猜测放置错误的 $IFDEF"
 
+#: lazarusidestrconsts.srkmechalfwordleft
+msgid "Move cursor half-word left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmechalfwordright
+msgid "Move cursor half-word right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecimestr
 msgid "Ime Str"
 msgstr "Ime Str"
@@ -18086,6 +18106,14 @@ msgstr "选择到绝对开始"
 msgid "Select Goto XY"
 msgstr "选择到 XY"
 
+#: lazarusidestrconsts.srkmecselhalfwordleft
+msgid "Select half-word left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselhalfwordright
+msgid "Select half-word right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecselleft
 msgid "SelLeft"
 msgstr "SelLeft"
@@ -18137,6 +18165,14 @@ msgstr "SelRight"
 #: lazarusidestrconsts.srkmecselup
 msgid "Select Up"
 msgstr "Select Up"
+
+#: lazarusidestrconsts.srkmecselwordendleft
+msgid "Select word-end left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselwordendright
+msgid "Select word-end right"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecselwordleft
 msgctxt "lazarusidestrconsts.srkmecselwordleft"
@@ -18435,6 +18471,14 @@ msgstr "查看单元"
 #| msgid "Word completion"
 msgid "Word Completion"
 msgstr "单词自动完成"
+
+#: lazarusidestrconsts.srkmecwordendleft
+msgid "Move cursor word-end left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecwordendright
+msgid "Move cursor word-end right"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecwordleft
 msgid "Move cursor word left"

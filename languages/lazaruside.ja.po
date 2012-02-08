@@ -3735,7 +3735,9 @@ msgid "Add Files"
 msgstr "複数ファイルを追加"
 
 #: lazarusidestrconsts.lisa2paddfilestopackage
-msgid "Add files to package"
+#, fuzzy
+#| msgid "Add files to package"
+msgid "Add Files to Package"
 msgstr "プロジェクトに複数ファイルを追加"
 
 #: lazarusidestrconsts.lisa2paddlfmlrsfilesiftheyexist
@@ -3783,9 +3785,19 @@ msgstr "<既存のファイルを選択してください>"
 msgid "Class Name already exists"
 msgstr "クラス名はすでにあります"
 
+#: lazarusidestrconsts.lisa2pcreatenewcomp
+msgid "Create New Component"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pcreatenewfile
-msgid "Create new file"
+#, fuzzy
+#| msgid "Create new file"
+msgid "Create New File"
 msgstr "新しいファイルを作成"
+
+#: lazarusidestrconsts.lisa2pcreatenewreq
+msgid "Create New Requirement"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pdependency
 msgid "Dependency"
@@ -9297,14 +9309,6 @@ msgstr "継承された項目"
 msgid "Inherited project component"
 msgstr ""
 
-#: lazarusidestrconsts.lisinitialsetupdialogpagecontrolaccessibledescription
-msgid "Tab control to select the visible properties page"
-msgstr ""
-
-#: lazarusidestrconsts.lisinitialsetupdialogtreeviewaccessibledescription
-msgid "List to select the visible properties page"
-msgstr ""
-
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
 msgstr "プロジェクトもしくはパッケージのクリーンコピーを作成するためには、次のディレクトリ内の全てのファイルが削除され、その中身が失われます。%s%s %s%s%s内のすべてのファイルを削除しますか？"
@@ -12174,6 +12178,14 @@ msgstr "\"%s\" を一つ上に移動"
 #| msgid "Move Page ..."
 msgid "Move Page"
 msgstr "ページ移動 ..."
+
+#: lazarusidestrconsts.lismoveselecteddown
+msgid "Move selected item down (Ctrl+Down)"
+msgstr ""
+
+#: lazarusidestrconsts.lismoveselectedup
+msgid "Move selected item up (Ctrl+Up)"
+msgstr ""
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -17857,6 +17869,14 @@ msgstr "XYに移動"
 msgid "Guess Misplaced $IFDEF"
 msgstr "不適切に置かれた$IFDEFを推察"
 
+#: lazarusidestrconsts.srkmechalfwordleft
+msgid "Move cursor half-word left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmechalfwordright
+msgid "Move cursor half-word right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecimestr
 msgid "Ime Str"
 msgstr "Ime Str"
@@ -18191,6 +18211,14 @@ msgstr "開始位置を選択"
 msgid "Select Goto XY"
 msgstr " Goto XYを選択"
 
+#: lazarusidestrconsts.srkmecselhalfwordleft
+msgid "Select half-word left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselhalfwordright
+msgid "Select half-word right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecselleft
 msgid "SelLeft"
 msgstr "左側選択"
@@ -18242,6 +18270,14 @@ msgstr "右側選択"
 #: lazarusidestrconsts.srkmecselup
 msgid "Select Up"
 msgstr "上を選択"
+
+#: lazarusidestrconsts.srkmecselwordendleft
+msgid "Select word-end left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselwordendright
+msgid "Select word-end right"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecselwordleft
 msgctxt "lazarusidestrconsts.srkmecselwordleft"
@@ -18540,6 +18576,14 @@ msgstr "ユニットを表示"
 #| msgid "Word completion"
 msgid "Word Completion"
 msgstr "単語補完"
+
+#: lazarusidestrconsts.srkmecwordendleft
+msgid "Move cursor word-end left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecwordendright
+msgid "Move cursor word-end right"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecwordleft
 msgid "Move cursor word left"
