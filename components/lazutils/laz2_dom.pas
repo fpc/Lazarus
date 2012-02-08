@@ -379,15 +379,18 @@ type
 //   NamedNodeMap
 // -------------------------------------------------------
 
+  { TDOMNamedNodeMap }
+
   TDOMNamedNodeMap = class(TObject)
   protected
     FOwner: TDOMNode;
     FNodeType: Integer;
-    FList: TFPList;
-    function GetItem(index: LongWord): TDOMNode;
+    FSortedList: TFPList; // list of TDOMNode sorted via CompareName
+    FPosList: TFPList; // list of TDOMNode not sorted
+    function GetPosItem(index: LongWord): TDOMNode;
     function GetLength: LongWord;
-    function Find(const name: DOMString; out Index: LongWord): Boolean;
-    function Delete(index: LongWord): TDOMNode;
+    function FindSorted(const name: DOMString; out Index: LongWord): Boolean;
+    function DeleteSorted(index: LongWord): TDOMNode;
     procedure RestoreDefault(const name: DOMString);
     function InternalRemove(const name: DOMString): TDOMNode;
     function ValidateInsert(arg: TDOMNode): Integer;
@@ -403,7 +406,7 @@ type
     function setNamedItemNS(arg: TDOMNode): TDOMNode; virtual;
     function removeNamedItemNS(const namespaceURI,localName: DOMString): TDOMNode; virtual;
 
-    property Item[index: LongWord]: TDOMNode read GetItem; default;
+    property Item[index: LongWord]: TDOMNode read GetPosItem; default;
     property Length: LongWord read GetLength;
   end;
 
@@ -856,7 +859,7 @@ type
   TAttributeMap = class(TDOMNamedNodeMap)
   private
     function FindNS(nsIndex: Integer; const aLocalName: DOMString;
-      out Index: LongWord): Boolean;
+      out SortedIndex: LongWord): Boolean;
     function InternalRemoveNS(const nsURI, aLocalName: DOMString): TDOMNode;
   public
     function getNamedItemNS(const namespaceURI, localName: DOMString): TDOMNode; override;
@@ -1775,43 +1778,45 @@ begin
   inherited Create;
   FOwner := AOwner;
   FNodeType := ANodeType;
-  FList := TFPList.Create;
+  FSortedList := TFPList.Create;
+  FPosList := TFPList.Create;
 end;
 
 destructor TDOMNamedNodeMap.Destroy;
 var
   I: Integer;
 begin
-  for I := FList.Count-1 downto 0 do
-    TDOMNode(FList[I]).Free;
-  FList.Free;
+  for I := FPosList.Count-1 downto 0 do
+    TDOMNode(FPosList[I]).Free;
+  FSortedList.Free;
+  FPosList.Free;
   inherited Destroy;
 end;
 
-function TDOMNamedNodeMap.GetItem(index: LongWord): TDOMNode;
+function TDOMNamedNodeMap.GetPosItem(index: LongWord): TDOMNode;
 begin
-  if index < LongWord(FList.Count) then
-    Result := TDOMNode(FList.List^[index])
+  if index < LongWord(FPosList.Count) then
+    Result := TDOMNode(FPosList.List^[index])
   else
     Result := nil;
 end;
 
 function TDOMNamedNodeMap.GetLength: LongWord;
 begin
-  Result := FList.Count;
+  Result := FPosList.Count;
 end;
 
-function TDOMNamedNodeMap.Find(const name: DOMString; out Index: LongWord): Boolean;
+function TDOMNamedNodeMap.FindSorted(const name: DOMString; out Index: LongWord): Boolean;
 var
   L, H, I, C: Integer;
 begin
   Result := False;
   L := 0;
-  H := FList.Count - 1;
+  H := FSortedList.Count - 1;
   while L <= H do
   begin
     I := (L + H) shr 1;
-    C := TDOMNode(FList.List^[I]).CompareName(name);
+    C := TDOMNode(FSortedList.List^[I]).CompareName(name);
     if C > 0 then L := I + 1 else
     begin
       H := I - 1;
@@ -1829,8 +1834,8 @@ function TDOMNamedNodeMap.GetNamedItem(const name: DOMString): TDOMNode;
 var
   i: Cardinal;
 begin
-  if Find(name, i) then
-    Result := TDOMNode(FList.List^[i])
+  if FindSorted(name, i) then
+    Result := TDOMNode(FSortedList.List^[i])
   else
     Result := nil;
 end;
@@ -1874,20 +1879,26 @@ begin
   if FNodeType = ATTRIBUTE_NODE then
   begin
     TDOMAttr(arg).FOwnerElement := TDOMElement(FOwner);
-    Exists := Find(TDOMAttr(arg).Name, i); // optimization
+    Exists := FindSorted(TDOMAttr(arg).Name, i); // optimization
   end
   else
-    Exists := Find(arg.NodeName, i);
+    Exists := FindSorted(arg.NodeName, i);
 
   if Exists then
   begin
-    Result := TDOMNode(FList.List^[i]);
-    if (Result <> arg) and (FNodeType = ATTRIBUTE_NODE) then
-      TDOMAttr(Result).FOwnerElement := nil;
-    FList.List^[i] := arg;
+    Result := TDOMNode(FSortedList.List^[i]);
+    if (Result <> arg) then
+    begin
+      if (FNodeType = ATTRIBUTE_NODE) then
+        TDOMAttr(Result).FOwnerElement := nil;
+      FSortedList.List^[i] := arg;
+      i:=FPosList.IndexOf(Result);
+      FPosList.List^[i] := arg;
+    end;
     exit;
   end;
-  FList.Insert(i, arg);
+  FSortedList.Insert(i, arg);
+  FPosList.Add(arg);
   Result := nil;
 end;
 
@@ -1901,10 +1912,11 @@ begin
   Result := SetNamedItem(arg);
 end;
 
-function TDOMNamedNodeMap.Delete(index: LongWord): TDOMNode;
+function TDOMNamedNodeMap.DeleteSorted(index: LongWord): TDOMNode;
 begin
-  Result := TDOMNode(FList.List^[index]);
-  FList.Delete(index);
+  Result := TDOMNode(FSortedList.List^[index]);
+  FSortedList.Delete(index);
+  FPosList.Remove(Result);
   if FNodeType = ATTRIBUTE_NODE then
     TDOMAttr(Result).FOwnerElement := nil;
 end;
@@ -1934,9 +1946,9 @@ var
   i: Cardinal;
 begin
   Result := nil;
-  if Find(name, i) then
+  if FindSorted(name, i) then
   begin
-    Result := Delete(I);
+    Result := DeleteSorted(I);
     RestoreDefault(name);
   end;
 end;
@@ -1963,14 +1975,14 @@ end;
 // Since list is kept sorted by nodeName, we must use linear search here.
 // This routine is not called while parsing, so parsing speed is not lowered.
 function TAttributeMap.FindNS(nsIndex: Integer; const aLocalName: DOMString;
-  out Index: LongWord): Boolean;
+  out SortedIndex: LongWord): Boolean;
 var
   I: Integer;
   P: DOMPChar;
 begin
-  for I := 0 to FList.Count-1 do
+  for I := 0 to FSortedList.Count-1 do
   begin
-    with TDOMAttr(FList.List^[I]) do
+    with TDOMAttr(FSortedList.List^[I]) do
     begin
       if nsIndex = FNSI.NSIndex then
       begin
@@ -1979,13 +1991,14 @@ begin
           Inc(P, FNSI.PrefixLen);
         if CompareDOMStrings(DOMPChar(aLocalName), P, System.Length(aLocalName), System.Length(FNSI.QName^.Key) - FNSI.PrefixLen) = 0 then
         begin
-          Index := I;
+          SortedIndex := I;
           Result := True;
           Exit;
         end;
       end;
     end;
   end;
+  SortedIndex := -1;
   Result := False;
 end;
 
@@ -1998,7 +2011,7 @@ begin
   nsIndex := FOwner.FOwnerDocument.IndexOfNS(nsURI);
   if (nsIndex >= 0) and FindNS(nsIndex, aLocalName, i) then
   begin
-    Result := Delete(I);
+    Result := DeleteSorted(I);
     RestoreDefault(TDOMAttr(Result).FNSI.QName^.Key);
   end;
 end;
@@ -2010,7 +2023,7 @@ var
 begin
   nsIndex := FOwner.FOwnerDocument.IndexOfNS(namespaceURI);
   if (nsIndex >= 0) and FindNS(nsIndex, localName, i) then
-    Result := TDOMNode(FList.List^[i])
+    Result := TDOMNode(FSortedList.List^[i])
   else
     Result := nil;
 end;
@@ -2031,18 +2044,23 @@ begin
     // calling LocalName is no good... but it is done once
     if FindNS(FNSI.NSIndex, localName, i) then
     begin
-      Result := TDOMNode(FList.List^[i]);
-      FList.Delete(i);
+      Result := TDOMNode(FSortedList.List^[i]);
+      FSortedList.Delete(i);
+      FPosList.Remove(Result);
     end;
     // Do a non-namespace search in order to keep the list sorted on nodeName
-    Exists := Find(FNSI.QName^.Key, i);
+    Exists := FindSorted(FNSI.QName^.Key, i);
     if Exists and (Result = nil) then  // case when arg has no namespace
     begin
-      Result := TDOMNode(FList.List^[i]);
-      FList.List^[i] := arg;
+      Result := TDOMNode(FSortedList.List^[i]);
+      FSortedList.List^[i] := arg;
+      i:=FPosList.IndexOf(Result);
+      FPosList.List^[i] := arg;
     end
-    else
-      FList.Insert(i, arg);
+    else begin
+      FSortedList.Insert(i, arg);
+      FPosList.Add(arg);
+    end;
   end;
   if Assigned(Result) then
     TDOMAttr(Result).FOwnerElement := nil;
@@ -2992,13 +3010,14 @@ var
   attr: TDOMAttr;
 begin
   Changing;
-  if Attributes.Find(name, I) then
+  if Attributes.FindSorted(name, I) then
     Attr := FAttributes[I] as TDOMAttr
   else
   begin
     Attr := FOwnerDocument.CreateAttribute(name);
     Attr.FOwnerElement := Self;
-    FAttributes.FList.Insert(I, Attr);
+    FAttributes.FSortedList.Insert(I, Attr);
+    FAttributes.FPosList.Add(Attr);
   end;
   attr.NodeValue := value;
 end;
@@ -3036,7 +3055,8 @@ begin
   begin
     Attr := TDOMAttr(FAttributes[I]);
     // need to reinsert because the nodeName may change
-    FAttributes.FList.Delete(I);
+    FAttributes.FPosList.Remove(FAttributes.FSortedList.List^[i]);
+    FAttributes.FSortedList.Delete(I);
   end
   else
   begin
@@ -3047,8 +3067,9 @@ begin
     Include(Attr.FFlags, nfLevel2);
   end;
   // keep list sorted by DOM Level 1 name
-  FAttributes.Find(qualifiedName, I);
-  FAttributes.FList.Insert(I, Attr);
+  FAttributes.FindSorted(qualifiedName, I);
+  FAttributes.FSortedList.Insert(I, Attr);
+  FAttributes.FPosList.Add(Attr);
   // TODO: rehash properly, same issue as with Node.SetPrefix()
   Attr.FNSI.QName := FOwnerDocument.FNames.FindOrAdd(DOMPChar(qualifiedName), Length(qualifiedName));
   Attr.FNSI.PrefixLen := Word(prefIdx);
@@ -3086,8 +3107,9 @@ function TDOMElement.RemoveAttributeNode(OldAttr: TDOMAttr): TDOMAttr;
 begin
   Changing;
   Result:=OldAttr;
-  if Assigned(FAttributes) and (FAttributes.FList.Remove(OldAttr) > -1) then
+  if Assigned(FAttributes) and (FAttributes.FSortedList.Remove(OldAttr) > -1) then
   begin
+    FAttributes.FPosList.Remove(OldAttr);
     if Assigned(OldAttr.FNSI.QName) then  // safeguard
       FAttributes.RestoreDefault(OldAttr.FNSI.QName^.Key);
     Result.FOwnerElement := nil;
