@@ -203,6 +203,7 @@ type
 
   TDOMNodeEnumerator = class
   private
+    FNode: TDOMNode;
     FCurrent: TDOMNode;
   public
     constructor Create(Node: TDOMNode);
@@ -214,6 +215,7 @@ type
 
   TDOMNodeAllChildEnumerator = class
   private
+    FNode: TDOMNode;
     FCurrent: TDOMNode;
     FEnd: TDOMNode;
   public
@@ -866,15 +868,17 @@ type
 
 constructor TDOMNodeAllChildEnumerator.Create(Node: TDOMNode);
 begin
-  FCurrent:=Node.GetNextNode;
+  FNode:=Node;
   FEnd:=Node.GetNextNodeSkipChildren;
 end;
 
 function TDOMNodeAllChildEnumerator.MoveNext: boolean;
 begin
-  if FCurrent=FEnd then exit(false);
-  FCurrent:=FCurrent.GetNextNode;
-  Result:=true;
+  if FCurrent=nil then
+    FCurrent:=FNode.GetNextNode
+  else
+    FCurrent:=FCurrent.GetNextNode;
+  Result:=FCurrent<>FEnd;
 end;
 
 function TDOMNodeAllChildEnumerator.GetEnumerator: TDOMNodeAllChildEnumerator;
@@ -886,12 +890,15 @@ end;
 
 constructor TDOMNodeEnumerator.Create(Node: TDOMNode);
 begin
-  FCurrent:=Node.FirstChild;
+  FNode:=Node;
 end;
 
 function TDOMNodeEnumerator.MoveNext: boolean;
 begin
-  FCurrent:=FCurrent.NextSibling;
+  if FCurrent=nil then
+    FCurrent:=FNode.FirstChild
+  else
+    FCurrent:=FCurrent.NextSibling;
   Result:=FCurrent<>nil;
 end;
 
