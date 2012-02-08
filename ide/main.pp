@@ -1401,7 +1401,7 @@ begin
   MainIDEBar.OnDestroy:=@OnMainBarDestroy;
   MainIDEBar.OnActive:=@OnMainBarActive;
 
-  MainIDEBar.Constraints.MaxHeight:=110;
+  MainIDEBar.Constraints.MaxHeight:=85;
   MainIDEBar.Name := NonModalIDEWindowNames[nmiwMainIDEName];
   FormCreator:=IDEWindowCreators.Add(MainIDEBar.Name);
   FormCreator.Right:='100%';
