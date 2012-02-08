@@ -10,7 +10,7 @@ object MainMenuEditorForm: TMainMenuEditorForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object MenuScrollBox: TScrollBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -21,9 +21,13 @@ object MainMenuEditorForm: TMainMenuEditorForm
     Height = 220
     Top = 0
     Width = 382
+    HorzScrollBar.Page = 378
+    HorzScrollBar.Tracking = True
+    VertScrollBar.Page = 216
+    VertScrollBar.Tracking = True
     Align = alClient
-    ClientHeight = 220
-    ClientWidth = 382
+    ClientHeight = 216
+    ClientWidth = 378
     TabOrder = 0
     object Panel: TPanel
       AnchorSideLeft.Control = MenuScrollBox
@@ -51,9 +55,9 @@ object MainMenuEditorForm: TMainMenuEditorForm
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = List_menus
       Left = 8
-      Height = 18
-      Top = 8
-      Width = 84
+      Height = 16
+      Top = 10
+      Width = 70
       Anchors = [akLeft, akBottom]
       Caption = 'Label_menus'
       ParentColor = False
@@ -63,7 +67,7 @@ object MainMenuEditorForm: TMainMenuEditorForm
       AnchorSideBottom.Control = Panel_MenuList
       AnchorSideBottom.Side = asrBottom
       Left = 8
-      Height = 182
+      Height = 181
       Top = 32
       Width = 194
       Anchors = [akTop, akLeft, akRight, akBottom]

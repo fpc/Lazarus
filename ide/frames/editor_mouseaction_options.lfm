@@ -1,17 +1,19 @@
-inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
+object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
+  Left = 0
   Height = 588
+  Top = 0
   Width = 636
   HorzScrollBar.Page = 636
   VertScrollBar.Page = 523
   Align = alClient
   Anchors = [akTop]
-  AutoSize = False
   ClientHeight = 588
   ClientWidth = 636
+  TabOrder = 0
   Visible = False
   DesignLeft = 366
   DesignTop = 237
-  object pnlUserSchemes: TPanel[0]
+  object pnlUserSchemes: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
@@ -61,7 +63,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       TabOrder = 1
     end
   end
-  object HideMouseCheckBox: TCheckBox[1]
+  object HideMouseCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = GenericDividerLabel
     AnchorSideTop.Side = asrBottom
@@ -73,7 +75,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     Caption = 'HideMouseCheckBox'
     TabOrder = 1
   end
-  object pnlAllGutter: TPanel[2]
+  object pnlAllGutter: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = GutterDividerLabel
     AnchorSideTop.Side = asrBottom
@@ -154,7 +156,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       TabOrder = 1
     end
   end
-  object pnlAllText: TPanel[3]
+  object pnlAllText: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = TextDividerLabel
     AnchorSideTop.Side = asrBottom
@@ -333,7 +335,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
           Top = 0
           Width = 636
           HorzScrollBar.Page = 636
+          HorzScrollBar.Tracking = True
           VertScrollBar.Page = 249
+          VertScrollBar.Tracking = True
           Align = alClient
           BorderStyle = bsNone
           ClientHeight = 249
@@ -565,7 +569,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
           Top = 0
           Width = 636
           HorzScrollBar.Page = 636
+          HorzScrollBar.Tracking = True
           VertScrollBar.Page = 207
+          VertScrollBar.Tracking = True
           Align = alClient
           BorderStyle = bsNone
           ClientHeight = 207
@@ -766,7 +772,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
           Top = 0
           Width = 636
           HorzScrollBar.Page = 636
+          HorzScrollBar.Tracking = True
           VertScrollBar.Page = 243
+          VertScrollBar.Tracking = True
           Align = alClient
           BorderStyle = bsNone
           ClientHeight = 243
@@ -1045,7 +1053,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
           Top = 0
           Width = 636
           HorzScrollBar.Page = 636
+          HorzScrollBar.Tracking = True
           VertScrollBar.Page = 249
+          VertScrollBar.Tracking = True
           Align = alClient
           BorderStyle = bsNone
           ClientHeight = 249
@@ -1324,7 +1334,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
           Top = 0
           Width = 636
           HorzScrollBar.Page = 636
+          HorzScrollBar.Tracking = True
           VertScrollBar.Page = 249
+          VertScrollBar.Tracking = True
           Align = alClient
           BorderStyle = bsNone
           ClientHeight = 249
@@ -1603,7 +1615,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
           Top = 0
           Width = 636
           HorzScrollBar.Page = 636
+          HorzScrollBar.Tracking = True
           VertScrollBar.Page = 249
+          VertScrollBar.Tracking = True
           Align = alClient
           BorderStyle = bsNone
           ClientHeight = 249
@@ -1882,7 +1896,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
           Top = 0
           Width = 636
           HorzScrollBar.Page = 636
+          HorzScrollBar.Tracking = True
           VertScrollBar.Page = 249
+          VertScrollBar.Tracking = True
           Align = alClient
           BorderStyle = bsNone
           ClientHeight = 249
@@ -2156,7 +2172,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       end
     end
   end
-  object pnlBottom: TPanel[4]
+  object pnlBottom: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
@@ -2242,7 +2258,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       TabOrder = 0
     end
   end
-  object GenericDividerLabel: TDividerBevel[5]
+  object GenericDividerLabel: TDividerBevel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = pnlUserSchemes
     AnchorSideTop.Side = asrBottom
@@ -2258,7 +2274,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object GutterDividerLabel: TDividerBevel[6]
+  object GutterDividerLabel: TDividerBevel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = HideMouseCheckBox
     AnchorSideTop.Side = asrBottom
@@ -2274,7 +2290,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object TextDividerLabel: TDividerBevel[7]
+  object TextDividerLabel: TDividerBevel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = pnlAllGutter
     AnchorSideTop.Side = asrBottom

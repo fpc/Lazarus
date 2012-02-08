@@ -31,7 +31,9 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
       Top = 6
       Width = 322
       HorzScrollBar.Page = 318
+      HorzScrollBar.Tracking = True
       VertScrollBar.Page = 303
+      VertScrollBar.Tracking = True
       Align = alClient
       BorderSpacing.Around = 6
       ClientHeight = 303
@@ -114,9 +116,13 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     Top = 349
     Width = 424
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False
