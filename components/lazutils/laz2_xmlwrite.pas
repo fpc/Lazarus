@@ -622,6 +622,7 @@ var
   child: TDOMNode;
   SavedInsideTextNode: Boolean;
 begin
+  //writeln(Space(FIndentCount*2),'TXMLWriter.VisitElement ',TDOMElement(node).TagName,' FInsideTextNode=',FInsideTextNode);
   if not FInsideTextNode then
     wrtIndent;
   FNSHelper.StartElement;
@@ -645,15 +646,19 @@ begin
     SavedInsideTextNode := FInsideTextNode;
     wrtChr('>');
     FInsideTextNode := FCanonical or (Child.NodeType in [TEXT_NODE, CDATA_SECTION_NODE]);
+    //writeln(Space(FIndentCount*2),'TXMLWriter.VisitElement START FirstChild=',Child.ClassName,':',Child.LocalName,' FInsideTextNode=',FInsideTextNode);
     IncIndent;
     repeat
+      //writeln(Space(FIndentCount*2),'TXMLWriter.VisitElement CHILD=',Child.ClassName,':',Child.LocalName,' FInsideTextNode=',FInsideTextNode);
       WriteNode(Child);
+      FInsideTextNode := FCanonical or (Child.NodeType in [TEXT_NODE, CDATA_SECTION_NODE]);
       Child := Child.NextSibling;
     until Child = nil;
     DecIndent;
     if not (node.LastChild.NodeType in [TEXT_NODE, CDATA_SECTION_NODE]) then
       wrtIndent;
     FInsideTextNode := SavedInsideTextNode;
+    //writeln(Space(FIndentCount*2),'TXMLWriter.VisitElement END Node=',Node.ClassName,':',Node.LocalName,' FInsideTextNode=',FInsideTextNode);
     wrtChars('</', 2);
     wrtStr(TDOMElement(Node).TagName);
     wrtChr('>');

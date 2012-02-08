@@ -37,7 +37,8 @@ type
 
   TXMLReaderFlag = (
     xrfAllowLowerThanInAttributeValue,
-    xrfAllowSpecialCharsInAttributeValue
+    xrfAllowSpecialCharsInAttributeValue,
+    xrfPreserveWhiteSpace
     );
   TXMLReaderFlags = set of TXMLReaderFlag;
 
@@ -228,9 +229,9 @@ type
     procedure NextChar;
     procedure NewLine; virtual;
     function SkipUntil(var ToFill: TDOMCharBuf; const Delim: TSetOfChar;
-      wsflag: PBoolean = nil; AllowSpecialChars: boolean = false): DOMChar; virtual;
+      wsflag: PBoolean = nil; {%H-}AllowSpecialChars: boolean = false): DOMChar; virtual;
     procedure Initialize; virtual;
-    function SetEncoding(const AEncoding: string): Boolean; virtual;
+    function SetEncoding(const {%H-}AEncoding: string): Boolean; virtual;
     function Matches(const arg: DOMString): Boolean;
     property SystemID: DOMString read GetSystemID write FSystemID;
   end;
@@ -341,6 +342,8 @@ type
 
   TLiteralType = (ltPlain, ltAttr, ltTokAttr, ltPubid, ltEntity);
 
+  { TXMLReader }
+
   TXMLReader = class
   private
     FFlags: TXMLReaderFlags;
@@ -388,6 +391,7 @@ type
     FCanonical: Boolean;
     FMaxChars: Cardinal;
 
+    procedure SetFlags(AValue: TXMLReaderFlags);
     procedure SkipQuote(out Delim: DOMChar; required: Boolean = True);
     procedure Initialize(ASource: TXMLCharSource);
     function ContextPush(AEntity: TDOMEntityEx): Boolean;
@@ -484,7 +488,7 @@ type
     procedure ProcessFragment(ASource: TXMLCharSource; AOwner: TDOMNode);
     procedure ProcessDTD(ASource: TXMLCharSource);               // ([29])
 
-    property Flags: TXMLReaderFlags read FFlags write FFlags;
+    property Flags: TXMLReaderFlags read FFlags write SetFlags;
   end;
 
   // Attribute/Element declarations
@@ -1611,6 +1615,13 @@ begin
   end
   else if required then
     FatalError('Expected single or double quote');
+end;
+
+procedure TXMLReader.SetFlags(AValue: TXMLReaderFlags);
+begin
+  if FFlags=AValue then Exit;
+  FFlags:=AValue;
+  FPreserveWhitespace:=xrfPreserveWhiteSpace in Flags;
 end;
 
 const
