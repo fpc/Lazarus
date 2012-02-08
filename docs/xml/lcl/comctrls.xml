@@ -13528,7 +13528,7 @@ the comparision is case sensitive.
           <p>
             <var>MoveTo</var> - method for relocating a node to the specified <var>Destination</var> using the specified mode of attachment</p>
           <p>Definition of the modes of attachment:</p>
-          <pre>naAdd,           // add as last sibling of Destination
+          <pre>    naAdd,           // add as last sibling of Destination
     naAddFirst,      // add as first sibling of Destination
     naAddChild,      // add as last child of Destination
     naAddChildFirst, // add as first child of Destination
