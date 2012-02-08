@@ -635,6 +635,15 @@ bkYesToAll
         <descr/>
         <seealso/>
       </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomBitBtn.GlyphShowMode">
+        <short>Indicates the policy for showing or hiding the glyph image of this button</short>
+        <descr/>
+        <seealso>
+          <link id="#LCL.Forms.Menus.TGlyphShowMode"/>
+          <link id="#LCL.Forms.TApplication.ShowMenuGlyphs"/>
+        </seealso>
+      </element>
       <!-- object Visibility: default -->
       <element name="TBitBtn">
         <short>A Button with a small image attached</short>
@@ -730,10 +739,8 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.Glyph" link="#LCL.Buttons.TCustomBitBtn.Glyph">
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TBitBtn.Glyph" link="#LCL.Buttons.TCustomBitBtn.Glyph" />
+      <element name="TBitBtn.GlyphShowMode" link="#LCL.Buttons.TCustomBitBtn.GlyphShowMode" />
       <!-- property Visibility: published -->
       <element name="TBitBtn.Kind" link="#LCL.Buttons.TCustomBitBtn.Kind">
         <descr/>

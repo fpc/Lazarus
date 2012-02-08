@@ -8193,10 +8193,11 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.ShowMenuGlyphs">
-        <short>Allows to show glyphs in menus</short>
+        <short>Sets the default policy for showing or hiding glyph images in menus</short>
         <descr>
         </descr>
         <seealso>
+          <link id="#LCL.Forms.Menus.TGlyphShowMode"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->

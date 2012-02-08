@@ -95,6 +95,8 @@
         <seealso/>
       </element>
       <!-- object Visibility: default -->
+      <element name="TMenuItem"/>
+      <!-- object Visibility: default -->
       <element name="EMenuError">
         <short>
           <var>EMenuError </var>
@@ -103,8 +105,32 @@
 
 - Exception handler for error in Menu access</short>
       </element>
-      <!-- object Visibility: default -->
-      <element name="TMenuItem"/>
+      <!-- enumeration type Visibility: default -->
+      <element name="TGlyphShowMode">
+        <short>
+          <var>TGlyphShowMode</var> indicates if the glyph image of a menu or button should shown or not and in which circunstances</short>
+        <descr/>
+        <seealso>
+          <link id="#LCL.Forms.TApplication.ShowMenuGlyphs"/>
+          <link id="#LCL.Buttons.TCustomBitBtn.GlyphShowMode"/>
+        </seealso>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TGlyphShowMode.gsmAlways">
+        <short>Always show the glyph image</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TGlyphShowMode.gsmNever">
+        <short>Never show the glyph image</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TGlyphShowMode.gsmApplication">
+        <short>This setting will be read from the global Application variable, from the field Application.ShowMenuGlyphs</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TGlyphShowMode.gsmSystem">
+        <short>Will show or not depending on the the system</short>
+      </element>
       <!-- procedure type Visibility: default -->
       <element name="TMenuChangeEvent">
         <short>
