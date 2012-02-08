@@ -3668,7 +3668,128 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- variable Visibility: public -->
       <element name="TLazAccessibleObject.OwnerControl">
-        <short>The control that this accessible object is attached to. It might be the main accessible object of this control or only a child one.</short>
+        <short>The control that this accessible object is attached to. It might be the main accessible object of this control or it might represent a sub-part of a control.</short>
+        <descr><p>The control that this accessible object is attached to. It might be the main accessible object of this control or it might represent a sub-part of a control which does not have a corresponding TControl, like an item of TTreeView. One can verify if this is the main accessible object of the control by checking if (lAccessibleObject.OwnerControl = lAccessibleObject.OwnerControl.GetAccessibleObject())</p></descr>
+        <seealso>
+          <link id="TControl.GetAccessibleObject"/>
+        </seealso>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TLazAccessibleObject.Parent">
+        <short>The parent TLazAccessibleObject of this accessible object</short>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TLazAccessibleObject.DataObject">
+        <short>Available to be used to connect to an object</short>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TLazAccessibleObject.SecondaryHandle">
+        <short>Available for Widgetsets to use</short>
+      </element>
+      <element link="#rtl.System.TObject.Create" name="TLazAccessibleObject.Create"/>
+      <element link="#rtl.System.TObject.Destroy" name="TLazAccessibleObject.Destroy"/>
+      <!-- function Visibility: public -->
+      <element name="TLazAccessibleObject.HandleAllocated">
+        <short>Returns if the handle of this object was already allocated or not</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TLazAccessibleObject.InitializeHandle">
+        <short>Utilized to set all properties of this property via widgetset routines when creating the handle</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TLazAccessibleObject.SetAccessibleDescription">
+        <short>Setter for the property AccessibleDescription</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TLazAccessibleObject.SetAccessibleValue">
+        <short>Setter for the property AccessibleValue</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TLazAccessibleObject.SetAccessibleRole">
+        <short>Setter for the property AccessibleRole</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TLazAccessibleObject.FindOwnerWinControl">
+        <short>Inspect the tree of accessible objects upwards until it finds a parent which is attached directly to a windowed control, a TWinControl</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TLazAccessibleObject.AddChildAccessibleObject">
+        <short>Creates a new child accessible object and returns it</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TLazAccessibleObject.InsertChildAccessibleObject">
+        <short>Inserts an already created child accessible object as a child of this one</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TLazAccessibleObject.ClearChildAccessibleObjects">
+        <short>Removes all children of this control. It will free them if they are not attached to a TControl</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TLazAccessibleObject.RemoveChildAccessibleObject">
+        <short>Removes a child accessible object</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TLazAccessibleObject.GetChildAccessibleObject">
+        <short>Obtains a child accessible object by its index</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TLazAccessibleObject.GetChildAccessibleObject">
+        <short>Obtains a child accessible object by its index</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TLazAccessibleObject.GetChildAccessibleObjectWithDataObject">
+        <short>Obtains a child accessible object by its DataObject property</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TLazAccessibleObject.GetChildAccessibleObjectsCount">
+        <short>Returns the number of direct children that this accessible object has</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TLazAccessibleObject.GetSelectedChildAccessibleObject">
+        <short>Returns the currently selected child accessible object or nil if none are selected. Override this method in your sub class.</short>
+        <seealso>
+          <link id="TControl.GetSelectedChildAccessibleObject"/>
+        </seealso>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TLazAccessibleObject.GetChildAccessibleObjectAtPos">
+        <short>Returns the child of this control located at a particular position given as a client position of the control</short>
+        <seealso>
+          <link id="TControl.GetChildAccessibleObjectAtPos"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TLazAccessibleObject.AccessibleDescription">
+        <short>The description of this accessible object</short>
+        <seealso>
+          <link id="TControl.AccessibleDescription"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TLazAccessibleObject.AccessibleValue">
+        <short>The value of this accessible object</short>
+        <seealso>
+          <link id="TControl.AccessibleValue"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TLazAccessibleObject.AccessibleRole">
+        <short>The role of this accessible object</short>
+        <seealso>
+          <link id="TControl.AccessibleRole"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TLazAccessibleObject.Position">
+        <short>The position of this accessible object</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TLazAccessibleObject.Size">
+        <short>The size of this accessible object</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TLazAccessibleObject.Handle">
+        <short>The widgetset handle of this accessible object</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TControl">
@@ -6073,6 +6194,38 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.Dragging.Result">
         <short>Returns True if the control is being dragged</short>
       </element>
+      <!-- function Visibility: public -->
+      <element name="TControl.GetAccessibleObject">
+        <short>Returns True if the control is being dragged</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TControl.CreateAccessibleObject">
+        <short>Creates the TLazAccessibleObject for this control. This method should just create the object and return it. It is useful for classes which desire to have a descendent of TLazAccessibleObject instead of the base class.</short>
+        <seealso>
+          <link id="TLazAccessibleObject"/>
+          <link id="TControl.GetAccessibleObject"/>
+        </seealso>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TControl.GetSelectedChildAccessibleObject">
+        <short>Returns the currently selected child accessible object. This method is provided for controls which wish to override this behavior without sub-classing TLazAccessibleObject.</short>
+        <seealso>
+          <link id="TLazAccessibleObject"/>
+          <link id="TLazAccessibleObject.GetSelectedChildAccessibleObject"/>
+          <link id="TControl.CreateAccessibleObject"/>
+          <link id="TControl.GetAccessibleObject"/>
+        </seealso>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TControl.GetChildAccessibleObjectAtPos">
+        <short>Returns the child object in a given position of the control given in client coordinates. This method is provided for controls which wish to override this behavior without sub-classing TLazAccessibleObject.</short>
+        <seealso>
+          <link id="TLazAccessibleObject"/>
+          <link id="TLazAccessibleObject.GetChildAccessibleObjectAtPos"/>
+          <link id="TControl.CreateAccessibleObject"/>
+          <link id="TControl.GetAccessibleObject"/>
+        </seealso>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AdjustSize">
         <short>Smart way to <var>DoAutoSize</var>.
@@ -7106,6 +7259,30 @@ dmFindTarget: find child control under the mouse
         <seealso>
           <link id="TControl.ActionLink"/>
           <link id="#rtl.Classes.TBasicAction"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TControl.AccessibleDescription">
+        <short>The accessible description of the control.This should describe the role of the control, for example for TLabel it could be "a text caption".</short>
+        <descr>The accessible description of the control. This should describe the role of the control, for example for TLabel it could be "a text caption". This property is connected and synchronized with TControl.GetAccessibleObject().AccessibleDescription.</descr>
+        <seealso>
+          <link id="TLazAccessibleObject.AccessibleDescription"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TControl.AccessibleValue">
+        <short>The accessible value of the control. For example, for a TLabel it would be the same as the Caption property of the label.</short>
+        <descr>The accessible value of the control. For example, for a TLabel it would be the same as the Caption property of the label. This property is connected and synchronized with TControl.GetAccessibleObject().AccessibleValue.</descr>
+        <seealso>
+          <link id="TLazAccessibleObject.AccessibleValue"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TControl.AccessibleRole">
+        <short>The accessible role of the control which classifies what kind of object this is. See TLazAccessibleRole for a list of possible values</short>
+        <seealso>
+          <link id="TLazAccessibleRole"/>
+          <link id="TLazAccessibleObject.AccessibleRole"/>
         </seealso>
       </element>
       <!-- property Visibility: protected -->
