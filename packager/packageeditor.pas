@@ -524,7 +524,6 @@ var
   Removed: boolean;
   CurFile: TPkgFile;
   Writable: Boolean;
-  FileIndex: Integer;
   CurNode: TTreeNode;
   IsDir: Boolean;
 
@@ -590,7 +589,6 @@ begin
     // items for single files, under section PkgEditMenuSectionFile
     PkgEditMenuSectionFile.Visible:=CurFile<>nil;
     if (CurFile<>nil) then begin
-      FileIndex:=LazPackage.IndexOfPkgFile(CurFile);
       SetItem(PkgEditMenuOpenFile,@OpenFileMenuItemClick);
       SetItem(PkgEditMenuReAddFile,@ReAddMenuItemClick,Removed);
       SetItem(PkgEditMenuRemoveFile,@RemoveBitBtnClick,not Removed,RemoveBitBtn.Enabled);
