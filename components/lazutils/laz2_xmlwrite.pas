@@ -31,7 +31,8 @@ uses Classes, laz2_DOM, SysUtils, laz2_xmlutils;
 
 type
   TXMLWriterFlag = (
-    xwfSpecialCharsInAttributeValue // write #13 as #13 instead of as &xD;
+    xwfSpecialCharsInAttributeValue, // write #13 as #13 instead of as &xD;
+    xwfPreserveWhiteSpace
     );
   TXMLWriterFlags = set of TXMLWriterFlag;
 
@@ -645,13 +646,15 @@ begin
   begin
     SavedInsideTextNode := FInsideTextNode;
     wrtChr('>');
-    FInsideTextNode := FCanonical or (Child.NodeType in [TEXT_NODE, CDATA_SECTION_NODE]);
+    FInsideTextNode := FCanonical or (Child.NodeType in [TEXT_NODE, CDATA_SECTION_NODE])
+      or (xwfPreserveWhiteSpace in WriteFlags);
     //writeln(Space(FIndentCount*2),'TXMLWriter.VisitElement START FirstChild=',Child.ClassName,':',Child.LocalName,' FInsideTextNode=',FInsideTextNode);
     IncIndent;
     repeat
       //writeln(Space(FIndentCount*2),'TXMLWriter.VisitElement CHILD=',Child.ClassName,':',Child.LocalName,' FInsideTextNode=',FInsideTextNode);
       WriteNode(Child);
-      FInsideTextNode := FCanonical or (Child.NodeType in [TEXT_NODE, CDATA_SECTION_NODE]);
+      FInsideTextNode := FCanonical or (Child.NodeType in [TEXT_NODE, CDATA_SECTION_NODE])
+        or (xwfPreserveWhiteSpace in WriteFlags);
       Child := Child.NextSibling;
     until Child = nil;
     DecIndent;
