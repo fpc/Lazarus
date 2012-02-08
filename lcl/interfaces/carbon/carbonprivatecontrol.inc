@@ -342,6 +342,8 @@ begin
       // AXStaticText
       if lLazAXRole in larAXStaticTextRoles then
       begin
+        lOutputStr := CFSTR('AXValue');
+        CFArrayAppendValue(lInputMutableArray, lOutputStr);
         lOutputStr := CFSTR('AXStringForRange');
         CFArrayAppendValue(lInputMutableArray, lOutputStr);
         lOutputStr := CFSTR('AXAttributedStringForRange');
@@ -434,7 +436,7 @@ begin
           larMenuBar: lAXRole := CFSTR('AXMenuBar');
           larMenuItem: lAXRole := CFSTR('AXMenuItem');
           larProgressIndicator: lAXRole := CFSTR('AXProgressIndicator');
-          larResizeGrip: lAXRole := CFSTR('AXHandle');
+          larResizeGrip: lAXRole := CFSTR('AXStaticText'); // VoiceOver cannot handle AXHandle in Mac 10.6, so we fallback to AXStaticText
           larScrollBar: lAXRole := CFSTR('AXScrollBar');
           larSpinner: lAXRole := CFSTR('AXIncrementor');
           larTabControl: lAXRole := CFSTR('AXTabGroup');

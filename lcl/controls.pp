@@ -958,8 +958,9 @@ type
     procedure SetAccessibleRole(const ARole: TLazAccessibilityRole);
     function FindOwnerWinControl: TWinControl;
     function AddChildAccessibleObject: TLazAccessibleObject; virtual;
+    procedure InsertChildAccessibleObject(AObject: TLazAccessibleObject);
     procedure ClearChildAccessibleObjects;
-    procedure RemoveChildAccessibleObject(AObject: TLazAccessibleObject);
+    procedure RemoveChildAccessibleObject(AObject: TLazAccessibleObject; AFreeObject: Boolean = True);
     function GetChildAccessibleObject(AIndex: Integer): TLazAccessibleObject;
     function GetChildAccessibleObjectWithDataObject(ADataObject: TObject): TLazAccessibleObject;
     function GetChildAccessibleObjectsCount: Integer;

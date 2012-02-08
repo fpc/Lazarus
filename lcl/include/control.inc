@@ -177,19 +177,32 @@ begin
   //DebugLn('[TControl.AddChildAccessibleObject] Name=%s', [Name]);
 end;
 
+procedure TLazAccessibleObject.InsertChildAccessibleObject(
+  AObject: TLazAccessibleObject);
+begin
+  if FChildren = nil then Exit;
+  FChildren.Add(AObject);
+end;
+
 procedure TLazAccessibleObject.ClearChildAccessibleObjects;
 var
   i: Integer;
+  lXObject: TLazAccessibleObject;
 begin
   if FChildren = nil then Exit;
   //DebugLn(Format('[TControl.ClearChildAccessibleObjects] Name=%s Count=%d', [Name, FAccessibleChildren.Count]));
+  // Free only the non-control children
   for i := 0 to FChildren.Count - 1 do
-    TLazAccessibleObject(FChildren.Items[i]).Free;
+  begin
+    lXObject := TLazAccessibleObject(FChildren.Items[i]);
+    if lXObject.OwnerControl = OwnerControl then
+      lXObject.Free;
+  end;
   FChildren.Clear;
 end;
 
 procedure TLazAccessibleObject.RemoveChildAccessibleObject(
-  AObject: TLazAccessibleObject);
+  AObject: TLazAccessibleObject; AFreeObject: Boolean = True);
 var
   lIndex: Integer;
 begin
@@ -197,7 +210,7 @@ begin
   lIndex := FChildren.IndexOf(AObject);
   if lIndex >= 0 then
   begin
-    TLazAccessibleObject(FChildren.Items[lIndex]).Free;
+    if AFreeObject then TLazAccessibleObject(FChildren.Items[lIndex]).Free;
     FChildren.Delete(lIndex);
   end;
 end;

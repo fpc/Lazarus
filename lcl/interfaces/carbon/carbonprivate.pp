@@ -329,7 +329,7 @@ function GetCarbonWindow(AWidget: WindowRef): TCarbonWindow;
 function GetCarbonControl(AWidget: ControlRef): TCarbonControl;
 
 const
-  larAXStaticTextRoles = [larClock, larLabel, larListItem, larTreeItem];
+  larAXStaticTextRoles = [larClock, larLabel, larListItem, larTreeItem, larResizeGrip];
   larAXListRoles = [larListBox, larTreeView];
 
 implementation
