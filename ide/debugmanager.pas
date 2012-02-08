@@ -1088,10 +1088,14 @@ begin
   // -------------------
 
   UpdateButtonsAndMenuItems;
+  // Next may call ResetDebugger, then FDebugger is gone
   if MainIDE.ToolStatus in [itNone,itDebugger]
   then MainIDE.ToolStatus := TOOLSTATEMAP[FDebugger.State];
 
   FAutoContinueTimer.Enabled := false;
+
+  if FDebugger = nil then exit;
+
   if (FDebugger.State in [dsRun])
   then begin
     // hide IDE during run
