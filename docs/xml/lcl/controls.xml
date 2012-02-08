@@ -587,19 +587,19 @@
         </descr>
       </element>
       <element name="TMouseButton.mbLeft">
-        <short>Left button (can be physical right button for left handed).</short>
+        <short>Represents the left mouse button. It might be physically the right button if the system is configured to act like that, for example for a left handled person.</short>
       </element>
       <element name="TMouseButton.mbRight">
-        <short>Right button (can be physical left button for left handed).</short>
+        <short>Represents the right mouse button. It might be physically the left button if the system is configured to act like that, for example for a left handled person.</short>
       </element>
       <element name="TMouseButton.mbMiddle">
-        <short>Middle button.</short>
+        <short>Represents the middle mouse button.</short>
       </element>
       <element name="TMouseButton.mbExtra1">
-        <short>First extra button.</short>
+        <short>Represents the first extra mouse button.</short>
       </element>
       <element name="TMouseButton.mbExtra2">
-        <short>Second extra button.</short>
+        <short>Represents the second extra mouse button.</short>
       </element>
       <!-- range type Visibility: default -->
       <element name="TCursor">
@@ -650,70 +650,70 @@ More cursors
         <short>Highest defined cursor constant (0).</short>
       </element>
       <element name="crDefault">
-        <short>Default (parent) cursor constant (0)</short>
+        <short>Indicates that the default cursor from the system should be utilized</short>
       </element>
       <element name="crNone">
-        <short>Invisible cursor constant: no cursor (-1)</short>
+        <short>Indicates that the cursor should be invisible</short>
       </element>
       <element name="crArrow">
-        <short>Arrow cursor constant (-2)</short>
+        <short>The Arrow cursor, which is the most common and the default one in most cases</short>
       </element>
       <element name="crCross">
-        <short>Cross cursor constant (-3)</short>
+        <short>A cursor utilized for graphics, for pixel or rectangle selection, often in the shape of a cross</short>
       </element>
       <element name="crIBeam">
-        <short>I-Beam cursor constant, often used in text editors (-4)</short>
+        <short>A text cursor, for setting insertion point. Often used in text editors</short>
       </element>
       <element name="crSize">
-        <short>Sizing cursor constant (-22), alias for crSizeAll.</short>
+        <short>A generic sizing cursor, to indicate that here one may drag to resize something. Is the same as crSizeAll.</short>
       </element>
       <element name="crSizeNESW">
-        <short>crSizeNESW - cursor constant: runs diagonally from NorthEast to SouthWest (-6)</short>
+        <short>A cursor for resizing which runs diagonally from NorthEast to SouthWest (-6)</short>
       </element>
       <element name="crSizeNS">
-        <short>crSizeNS - cursor constant: cursor runs from North to South (-7)</short>
+        <short>A cursor for resizing which cursor runs from North to South (-7)</short>
       </element>
       <element name="crSizeNWSE">
-        <short>crNWSE - cursor constant: cursor runs from NorthWest to SouthEast</short>
+        <short>A cursor for resizing which cursor runs from NorthWest to SouthEast</short>
       </element>
       <element name="crSizeWE">
-        <short>Horizontal Size cursor constant (-9)</short>
+        <short>A cursor for resizing which has an arrow with two points, one to the left and another to the right, to indicate resizing possibility in both directions.</short>
       </element>
       <element name="crSizeNW">
-        <short>NorthWest sizing cursor.</short>
+        <short>A cursor for resizing which has an arrow pointing to the left-top corner, to indicate resizing possibility in this direction</short>
       </element>
       <element name="crSizeN">
-        <short>crSizeN - cursor constant: cursor North (-24)</short>
+        <short>A cursor for resizing which has an arrow pointing upwards, to indicate resizing possibility in this direction</short>
       </element>
       <element name="crSizeNE">
-        <short>crSizeNW - cursor constant: NorthWest (-23)</short>
+        <short>A cursor for resizing which has an arrow pointing to the right-top corner, to indicate resizing possibility in this direction</short>
       </element>
       <element name="crSizeW">
-        <short>West (left) sizing cursor.</short>
+        <short>A cursor for resizing which has an arrow pointing to the left, to indicate resizing possibility in this direction</short>
       </element>
       <element name="crSizeE">
-        <short>East (right) sizing cursor.</short>
+        <short>A cursor for resizing which has an arrow pointing to the right, to indicate resizing possibility in this direction</short>
       </element>
       <element name="crSizeSW">
-        <short>SouthWest sizing cursor.</short>
+        <short>A cursor for resizing which has an arrow pointing to the left-bottom corner, to indicate resizing possibility in this direction</short>
       </element>
       <element name="crSizeS">
-        <short>South (bottom) sizing cursor.</short>
+        <short>A cursor for resizing which has an arrow pointing downwards, to indicate resizing possibility in this direction</short>
       </element>
       <element name="crSizeSE">
-        <short>SouthEast sizing cursor.</short>
+        <short>A cursor for resizing which has an arrow pointing to the right-bottom corner, to indicate resizing possibility in this direction</short>
       </element>
       <element name="crUpArrow">
         <short>Up Arrow cursor constant (-10)</short>
       </element>
       <element name="crHourGlass">
-        <short>Busy cursor constant (wait while action proceeds) (-11)</short>
+        <short>Busy cursor constant, utilized to indicate that one should wait while an action is done</short>
       </element>
       <element name="crDrag">
-        <short>Dragging cursor constant (-12)</short>
+        <short>A cursor to indicate that one can drop a dragged item in this area</short>
       </element>
       <element name="crNoDrop">
-        <short>No Drop Allowed dragging cursor constant (-13)</short>
+        <short>A cursor to indicate that one cannot drop a dragged item in this area</short>
       </element>
       <element name="crHSplit">
         <short>Horizontal Splitter cursor constant (-14)</short>
@@ -728,7 +728,7 @@ More cursors
         <short>Waiting for SQL cursor constant (-17)</short>
       </element>
       <element name="crNo">
-        <short>"No" cursor constant (-18), see also <link id="crNoDrop"/>.
+        <short>Shows a negative sign. See also <link id="crNoDrop"/>.
         </short>
       </element>
       <element name="crAppStart">
@@ -760,7 +760,7 @@ More cursors
         <short>TControlStyleType - enumerated type describing features of the Control</short>
       </element>
       <element name="TControlStyleType.csAcceptsControls">
-        <short>Can have child controls in the designer.</short>
+        <short>Indicates that one can add child controls to this control in the form designer.</short>
       </element>
       <element name="TControlStyleType.csCaptureMouse">
         <short/>
@@ -782,22 +782,22 @@ More cursors
         <short/>
       </element>
       <element name="TControlStyleType.csDoubleClicks">
-        <short>control understands mouse double clicks</short>
+        <short>Indicates that the control understands mouse double clicks</short>
       </element>
       <element name="TControlStyleType.csTripleClicks">
-        <short>control understands mouse triple clicks</short>
+        <short>Indicates that the control understands mouse triple clicks</short>
       </element>
       <element name="TControlStyleType.csQuadClicks">
-        <short>control understands mouse quad clicks</short>
+        <short>Indicates that the control understands mouse quadruple clicks</short>
       </element>
       <element name="TControlStyleType.csFixedWidth">
-        <short>control cannot change in width</short>
+        <short>Indicates that the control cannot change its width</short>
       </element>
       <element name="TControlStyleType.csFixedHeight">
-        <short>control cannot change in height (e.g. combobox)</short>
+        <short>Indicates that the control cannot change its height (e.g. combobox)</short>
       </element>
       <element name="TControlStyleType.csNoDesignVisible">
-        <short>control is invisible in the designer</short>
+        <short>Indicates that the control is invisible in the form designer</short>
       </element>
       <element name="TControlStyleType.csReplicatable">
         <short/>
@@ -818,7 +818,7 @@ More cursors
         <short/>
       </element>
       <element name="TControlStyleType.csNoFocus">
-        <short/>
+        <short>Indicates that the control cannot receive focus</short>
       </element>
       <element name="TControlStyleType.csNeedsBorderPaint">
         <short>[not implemented]</short>
@@ -854,7 +854,7 @@ More cursors
         <short>when AutoSize=true do not move children vertically</short>
       </element>
       <element name="TControlStyleType.csRequiresKeyboardInput">
-        <short>Indicates that a control requires keyboard input. This is required in Android and other platforms so that the virtual keyboard is activated when the control receives focus and the device has no hardware keyboard</short>
+        <short>Indicates that a control requires keyboard input to be utilized by the user. This information is utilized in Android and other platforms so that the virtual keyboard is activated when the control receives focus and the device has no hardware keyboard</short>
       </element>
       <!-- set type Visibility: default -->
       <element link="TControlStyleType" name="TControlStyle">
