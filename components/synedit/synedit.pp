@@ -3525,7 +3525,7 @@ begin
         i := Length(ULine);
         // skip upper
         While (CX < NX) and (CX <= i) do begin          // check entire next utf-8 char to be equal
-          r := (CX = OX) or (Line[CX] <> '_') or ((CX > 1) and (Line[CX - 1] = '_'));
+          r := (CX = OX) or (CX <= 1) or (Line[CX-1] <> '_') or ((CX <= i) and (Line[CX] = '_'));
           j := CX;
           repeat
             r := r and (Line[j] = ULine[j]);
@@ -3537,7 +3537,7 @@ begin
         // skip lowercase
         ULine := LazUTF8.UTF8LowerCase(Line);
         While (CX < NX) and (CX <= i) do begin          // check entire next utf-8 char to be equal
-          r := (CX = OX) or (Line[CX] <> '_') or ((CX > 1) and (Line[CX - 1] = '_'));
+          r := (CX = OX) or (CX <= 1) or (Line[CX-1] <> '_') or ((CX <= i) and (Line[CX] = '_'));
           j := CX;
           repeat
             r := r and (Line[j] = ULine[j]);
