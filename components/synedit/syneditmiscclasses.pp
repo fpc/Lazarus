@@ -1428,9 +1428,9 @@ var
   len: Integer;
 begin
   len := Length(aLine);
-  if (aX < 1) or (aX > len + 1) then exit(False);
+  if (aX < 1) or (aX > len + 1) or (len = 0) then exit(False);
   Result := ((ax = len + 1) or not(aLine[aX] in FWordChars)) and
-            (aLine[aX - 1] in FWordChars);
+            ((ax = 1) or (aLine[aX - 1] in FWordChars));
 end;
 
 function TSynWordBreaker.NextWordStart(aLine: String; aX: Integer;
@@ -1472,13 +1472,12 @@ var
 begin
   len := Length(aLine);
   if (aX < 1) or (aX > len + 1) then exit(-1);
-  if ax > len then aX := len;
   if not aIncludeCurrent then
     dec(aX);
-  while (aX >= 1) and not(aLine[aX] in FWordChars) do Dec(ax);
+  while (aX >= 1) and ( (ax > len) or not(aLine[aX] in FWordChars) ) do Dec(ax);
   if aX = 0 then
     exit(-1);
-  while (aX >= 1) and (aLine[aX] in FWordChars) do Dec(ax);
+  while (aX >= 1) and ( (ax > len) or (aLine[aX] in FWordChars) ) do Dec(ax);
   Result := aX  + 1;
 end;
 
@@ -1489,11 +1488,10 @@ var
 begin
   len := Length(aLine);
   if (aX < 1) or (aX > len + 1) then exit(-1);
-  if ax > len then aX := len;
   if not aIncludeCurrent then
     dec(aX);
-  while (aX >= 1) and (aLine[aX] in FWordChars) do Dec(ax);
-  while (aX >= 1) and not(aLine[aX] in FWordChars) do Dec(ax);
+  while (aX >= 1) and ( (ax > len) or (aLine[aX] in FWordChars) ) do Dec(ax);
+  while (aX >= 1) and ( (ax > len) or not(aLine[aX] in FWordChars) ) do Dec(ax);
   if aX = 0 then
     exit(-1);
   Result := aX + 1;

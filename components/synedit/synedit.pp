@@ -71,7 +71,7 @@ uses
   {$IFDEF USE_UTF8BIDI_LCL}
   FreeBIDI, utf8bidi,
   {$ENDIF}
-  Types, LCLIntf, LCLType, LMessages, LCLProc,
+  Types, LCLIntf, LCLType, LMessages, LazUTF8, LCLProc,
   SysUtils, Classes, Messages, Controls, Graphics, Forms, StdCtrls, ExtCtrls, Menus,
   {$IFDEF SYN_MBCSSUPPORT}
   Imm,
@@ -375,6 +375,14 @@ type
 
   TSynCoordinateMappingFlag = SynEditTypes.TSynCoordinateMappingFlag;
   TSynCoordinateMappingFlags = SynEditTypes.TSynCoordinateMappingFlags;
+
+  TLazSynWordBoundary = (
+    swbWordBegin,
+    swbWordEnd,
+    swbTokenBegin,
+    swbTokenEnd,
+    swbCaseChange
+  );
 
   { TCustomSynEdit }
 
@@ -759,8 +767,8 @@ type
       var Command: TSynEditorCommand;
       var AChar: TUTF8Char;
       Data: pointer); virtual;
-    function NextWordLogicalPos(WordEndForDelete : Boolean = false): TPoint;
-    function PrevWordLogicalPos: TPoint;
+    function NextWordLogicalPos(ABoundary: TLazSynWordBoundary = swbWordBegin; WordEndForDelete : Boolean = false): TPoint;
+    function PrevWordLogicalPos(ABoundary: TLazSynWordBoundary = swbWordBegin): TPoint;
     procedure RecalcCharExtent;
     procedure RedoItem(Item: TSynEditUndoItem);
     procedure SetCaretXY(Value: TPoint); virtual;
@@ -3445,64 +3453,115 @@ begin
   {$ENDIF}
 end;
 
-function TCustomSynEdit.NextWordLogicalPos(WordEndForDelete: Boolean): TPoint;
+function TCustomSynEdit.NextWordLogicalPos(ABoundary: TLazSynWordBoundary;
+  WordEndForDelete: Boolean): TPoint;
 var
-  CX, CY, LineLen: integer;
-  Line: string;
-  LogCaret: TPoint;
-  DelSpaces : Boolean;
+  i, j, CX, CY, NX, OX, LineLen: integer;
+  Line, ULine: string;
+  CWidth: TPhysicalCharWidths;
+  r, InclCurrent: Boolean;
 begin
-  LogCaret:=LogicalCaretXY;
-  CX := LogCaret.X;
-  CY := LogCaret.Y;
-  // valid line?
-  if (CY >= 1) and (CY <= FTheLinesView.Count) then begin
-    Line := FTheLinesView[CY - 1];
-    LineLen := Length(Line);
+  Result := LogicalCaretXY;
+  CX := Result.X;
+  CY := Result.Y;
 
-    if CX >= LineLen then begin
-      // find first IdentChar in the next line
-      if CY < FTheLinesView.Count then begin
-        Line := FTheLinesView[CY];
-        Inc(CY);
-        if WordEndForDelete then
-          CX := Max(1, StrScanForCharInSet(Line, 1, [#1..#255] - TSynWhiteChars))
-        else
-          CX := Max(1, WordBreaker.NextWordStart(Line, 1, True));
-      end;
-    end else begin
-      if WordEndForDelete then begin
-        DelSpaces := WordBreaker.IsAtWordStart(Line, CX) or not WordBreaker.IsInWord(Line, CX);
-        CX := WordBreaker.NextBoundary(Line, CX);
-        if DelSpaces and(cx > 0) then
-          CX := StrScanForCharInSet(Line, CX, [#1..#255] - TSynWhiteChars);
-      end
-      else
-        CX := WordBreaker.NextWordStart(Line, CX);
-      // if one of those failed just position at the end of the line
-      if CX <= 0 then
-        CX := LineLen + 1;
-    end;
+  if (CY < 1) then begin
+    Result.X := 1;
+    Result.Y := 1;
+    exit;
   end;
+  i := FTheLinesView.Count;
+  if (CY > i) or ((CY = i) and (CX > length(FTheLinesView[i-1]))) then begin
+    Result.Y := i;
+    Result.X := length(FTheLinesView[Result.Y-1]) + 1;
+    exit;
+  end;
+
+  Line := FTheLinesView[CY - 1];
+  InclCurrent := False;
+  LineLen := Length(Line);
+  if CX > LineLen then begin
+    Line := FTheLinesView[CY];
+    LineLen := Length(Line);
+    Inc(CY);
+    CX := 1;
+    InclCurrent := True;
+  end;
+
+  case ABoundary of
+    swbWordBegin: begin
+        CX := WordBreaker.NextWordStart(Line,  CX, InclCurrent);
+        if (CX <= 0) and not InclCurrent then CX := LineLen + 1;
+        if (CX <= 0) and InclCurrent then CX := 1;
+      end;
+    swbWordEnd: begin
+        CX := WordBreaker.NextWordEnd(Line,  CX);
+        if (CX <= 0) then CX := LineLen + 1;
+      end;
+    swbTokenBegin: begin
+        if not (   InclCurrent and
+                   ((CX <= 1) or (Line[CX-1] in FWordBreaker.WhiteChars)) and
+                   ((CX > LineLen) or not(Line[CX] in FWordBreaker.WhiteChars))   )
+        then
+          CX := WordBreaker.NextBoundary(Line,  CX);
+        if (CX > 0) and (CX <= LineLen) and (Line[CX] in FWordBreaker.WhiteChars) then
+          CX := WordBreaker.NextBoundary(Line,  CX);
+        if (CX <= 0) then CX := LineLen + 1;
+      end;
+    swbTokenEnd: begin
+        CX := WordBreaker.NextBoundary(Line,  CX);
+        if (CX > 1) and (Line[CX-1] in FWordBreaker.WhiteChars) then
+          CX := WordBreaker.NextBoundary(Line,  CX);
+        if (CX <= 0) then CX := LineLen + 1;
+      end;
+    swbCaseChange: begin
+        NX := WordBreaker.NextWordStart(Line,  CX, InclCurrent);
+        if (NX <= 0) and not InclCurrent then NX := LineLen + 1;
+        if (NX <= 0) and InclCurrent then NX := 1;
+
+        ULine := LazUTF8.UTF8UpperCase(Line);
+        CWidth := FTheLinesView.GetPhysicalCharWidths(CY - 1); // for utf 8
+        OX := CX;
+        i := Length(ULine);
+        // skip upper
+        While (CX < NX) and (CX <= i) do begin          // check entire next utf-8 char to be equal
+          r := (CX = OX) or (Line[CX] <> '_') or ((CX > 1) and (Line[CX - 1] = '_'));
+          j := CX;
+          repeat
+            r := r and (Line[j] = ULine[j]);
+            inc(j);
+          until (j > i) or (CWidth[j-1] <> 0);
+          if not r then break;
+          CX := j;
+        end;
+        // skip lowercase
+        ULine := LazUTF8.UTF8LowerCase(Line);
+        While (CX < NX) and (CX <= i) do begin          // check entire next utf-8 char to be equal
+          r := (CX = OX) or (Line[CX] <> '_') or ((CX > 1) and (Line[CX - 1] = '_'));
+          j := CX;
+          repeat
+            r := r and (Line[j] = ULine[j]);
+            inc(j);
+          until (j > i) or (CWidth[j-1] <> 0);
+          if not r then break;
+          CX := j;
+        end;
+      end;
+  end;
+
   Result := Point(CX, CY);
 end;
 
-function TCustomSynEdit.PrevWordLogicalPos: TPoint;
-var
-  CX, CY: integer;
-  Line: string;
-  LogCaret: TPoint;
-begin
-  LogCaret:=LogicalCaretXY;
-  CX := LogCaret.X;
-  CY := LogCaret.Y;
-  // valid line?
-  if (CY >= 1) and (CY <= FTheLinesView.Count) then begin
-    Line := FTheLinesView[CY - 1];
-    CX := WordBreaker.PrevWordStart(Line,  Min(CX, Length(Line) + 1));
+function TCustomSynEdit.PrevWordLogicalPos(ABoundary: TLazSynWordBoundary): TPoint;
+
+  procedure CheckLineStart(var CX, CY: integer);
+  var
+    Line: String;
+  begin
     if CX <= 0 then
       if CY > 1 then begin
         // just position at the end of the previous line
+        // Todo skip spaces
         Dec(CY);
         Line := FTheLinesView[CY - 1];
         CX := Length(Line) + 1;
@@ -3510,6 +3569,90 @@ begin
       else
         CX := 1;
   end;
+
+var
+  i, j, CX, CY, NX, OX: integer;
+  Line, ULine: string;
+  CWidth: TPhysicalCharWidths;
+  r: Boolean;
+begin
+  Result := LogicalCaretXY;
+  CX := Result.X;
+  CY := Result.Y;
+
+  if (CY < 1) then begin
+    Result.X := 1;
+    Result.Y := 1;
+    exit;
+  end;
+  if (CY > FTheLinesView.Count) then begin
+    Result.Y := FTheLinesView.Count;
+    Result.X := length(FTheLinesView[Result.Y-1]) + 1;
+    exit;
+  end;
+
+  Line := FTheLinesView[CY - 1];
+
+  case ABoundary of
+    swbWordBegin: begin
+        CX := WordBreaker.PrevWordStart(Line,  Min(CX, Length(Line) + 1));
+        CheckLineStart(CX, CY);
+      end;
+    swbWordEnd: begin
+        CX := WordBreaker.PrevWordEnd(Line,  Min(CX, Length(Line) + 1));
+        CheckLineStart(CX, CY);
+      end;
+    swbTokenBegin: begin
+        CX := WordBreaker.PrevBoundary(Line,  Min(CX, Length(Line) + 1));
+        if (CX > 0) and (Line[CX] in FWordBreaker.WhiteChars) then
+          CX := WordBreaker.PrevBoundary(Line,  Min(CX, Length(Line) + 1));
+        if CX = 1 then CX := -1;
+        CheckLineStart(CX, CY);
+      end;
+    swbTokenEnd: begin
+        CX := WordBreaker.PrevBoundary(Line,  Min(CX, Length(Line) + 1));
+        if (CX > 1) and (Line[CX-1] in FWordBreaker.WhiteChars) then
+          CX := WordBreaker.PrevBoundary(Line,  Min(CX, Length(Line) + 1));
+        if CX = 1 then CX := -1;
+        CheckLineStart(CX, CY);
+      end;
+    swbCaseChange: begin
+        NX := WordBreaker.PrevWordStart(Line,  Min(CX, Length(Line) + 1));
+
+        ULine := LazUTF8.UTF8LowerCase(Line);
+        CWidth := FTheLinesView.GetPhysicalCharWidths(CY - 1); // for utf 8
+        OX := CX;
+        i := Length(ULine);
+        if CX > i + 1 then CX := i + 1;
+        // skip lowercase
+        While (CX > NX) and (CX - 1 > 0) do begin          // check entire previous utf-8 char to be equal
+          r := (CX = OX) or (Line[CX - 1] <> '_') or ((CX <= i) and (Line[CX] = '_'));
+          j := CX;
+          repeat
+            dec(j);
+            r := r and (Line[j] = ULine[j]);
+          until (j < 1) or (CWidth[j-1] <> 0);
+          if not r then break;
+          CX := j;
+        end;
+        // skip upper
+        While (CX > NX) and (CX - 1 > 0) do begin          // check entire previous utf-8 char to be not equal
+          j := CX;
+          r := true;
+          repeat
+            dec(j);
+            r := r and (Line[j] = ULine[j]);
+          until (j < 1) or (CWidth[j-1] <> 0);
+          r := r or not( (CX = OX) or (Line[CX - 1] <> '_') or ((CX <= i) and (Line[CX] = '_')) );
+          if r then break;
+          CX := j;
+        end;
+        if (CX - 1 < 1) then
+          CX := NX;
+        CheckLineStart(CX, CY);
+      end;
+  end;
+
   Result := Point(CX, CY);
 end;
 
@@ -5809,18 +5952,28 @@ begin
           FCaret.LineCharPos := PPoint(Data)^;
         end;
 // word selection
-      ecWordLeft, ecSelWordLeft, ecColSelWordLeft:
+      ecWordLeft, ecSelWordLeft, ecColSelWordLeft,
+      ecWordEndLeft, ecSelWordEndLeft, ecHalfWordLeft, ecSelHalfWordLeft:
         begin
-          CaretNew := PrevWordLogicalPos;
+          case Command of
+            ecWordEndLeft, ecSelWordEndLeft:   CaretNew := PrevWordLogicalPos(swbWordEnd);
+            ecHalfWordLeft, ecSelHalfWordLeft: CaretNew := PrevWordLogicalPos(swbCaseChange);
+            else                               CaretNew := PrevWordLogicalPos;
+          end;
           if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then begin
             CY := FindNextUnfoldedLine(CaretNew.Y, False);
             CaretNew := Point(1 + Length(FTheLinesView[CY-1]), CY);
           end;
           FCaret.LineBytePos := CaretNew;
         end;
-      ecWordRight, ecSelWordRight, ecColSelWordRight:
+      ecWordRight, ecSelWordRight, ecColSelWordRight,
+      ecWordEndRight, ecSelWordEndRight, ecHalfWordRight, ecSelHalfWordRight:
         begin
-          CaretNew := NextWordLogicalPos;
+          case Command of
+            ecWordEndRight, ecSelWordEndRight:   CaretNew := NextWordLogicalPos(swbWordEnd);
+            ecHalfWordRight, ecSelHalfWordRight: CaretNew := NextWordLogicalPos(swbCaseChange);
+            else                                 CaretNew := NextWordLogicalPos;
+          end;
           if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then
             CaretNew := Point(1, FindNextUnfoldedLine(CaretNew.Y, True));
           FCaret.LineBytePos := CaretNew;
@@ -5903,7 +6056,16 @@ begin
               Helper := StringOfChar(' ', CaretX - 1 - Len);
               CaretX := 1 + Len;
             end;
-            WP := NextWordLogicalPos(True);
+            // if we are not in a word, delete word + spaces (up to next token)
+            if WordBreaker.IsAtWordStart(LineText, LogicalCaretXY.X) or
+               WordBreaker.IsAtWordEnd(LineText, LogicalCaretXY.X) or
+               (not WordBreaker.IsInWord(LineText, LogicalCaretXY.X)) or
+               (LogicalCaretXY.X > Length(LineText))
+            then
+              WP := NextWordLogicalPos(swbTokenBegin, True)
+            else
+              // if we are inside a word, delete to word-end
+              WP := NextWordLogicalPos(swbWordEnd, True);
           end else
             WP := Point(Len + 1, CaretY);
           if (WP.X <> FCaret.BytePos) or (WP.Y <> FCaret.LinePos) then begin

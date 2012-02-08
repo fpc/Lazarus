@@ -633,6 +633,9 @@ procedure TTestBasicSynEdit.TestCaretMoveLeftRightWord;
               'normal line',
               '     ', // space only empty line      // 14
               'normal line',
+              '',
+              'A B',                 // 17
+              'normal line',         // 18
               ''
              ]);
   end;
@@ -697,13 +700,15 @@ begin
 
   TestWordLeft('After empty > prev',                1,13,    1,12);
   TestWordLeft('After space empty > prev',          1,15,    6,14);
+
+  TestWordLeft('single char at eol "A B|"',         4,17,    3,17,   1,17);
   {%endregion}
 
   {%region word right}
   TestWordRight('simple "te|xt"',                    8, 1,   11, 1,  14, 1);
   TestWordRight('simple EOW "text|"',               10, 1,   11, 1,  14, 1);
   TestWordRight('simple BOW "|text"',                6, 1,   11, 1,  14, 1);
-  TestWordRight('simple EOT "li|ne"',               10,15,   12,15,  12,15);
+  TestWordRight('simple EOT "li|ne"',               10,18,   12,18,  12,18);
   TestWordRight('simple > EOL, next line "te|st"',  16, 1,   18, 1,   1, 2);
 
   TestWordRight('tab "li|ne"',                      16, 3,   19, 3,  24, 3);

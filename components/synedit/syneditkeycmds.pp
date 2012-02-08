@@ -88,6 +88,10 @@ const
   ecEditorBottom    = 16;   // Move cursor to absolute end
   ecGotoXY          = 17;   // Move cursor to specific coordinates, Data = PPoint
   ecLineTextStart   = 18;   // Move cursor to the first none whitespace in the line
+  ecWordEndLeft     = 19;   // Move cursor left one word (to end of word)
+  ecWordEndRight    = 20;   // Move cursor right one word (to end of word)
+  ecHalfWordLeft    = 21;    // Move cursor left to word-begin/end or case change lower to uppper
+  ecHalfWordRight   = 22;    // Move cursor right to word-begin/end or case change lower to uppper
 
 //******************************************************************************
 // Maybe the command processor should just take a boolean that signifies if
@@ -120,6 +124,10 @@ const
   ecSelEditorBottom = ecEditorBottom + ecSelection;
   ecSelGotoXY       = ecGotoXY + ecSelection;  // Data = PPoint
   ecSelLineTextStart= ecLineTextStart + ecSelection;   // Move cursor to the first none whitespace in the line
+  ecSelWordEndLeft  = ecWordEndLeft + ecSelection;
+  ecSelWordEndRight = ecWordEndRight + ecSelection;
+  ecSelHalfWordLeft = ecHalfWordLeft + ecSelection;
+  ecSelHalfWordRight= ecHalfWordRight + ecSelection;
 
   ecSelCmdRangeStart = ecLeft + ecSelection;
   ecSelCmdRangeEnd   = ecLeft + ecSelection + 49;
@@ -481,7 +489,7 @@ type
 {$ENDIF}
 
 const
-  EditorCommandStrs: array[0..141] of TIdentMapEntry = (
+  EditorCommandStrs: array[0..149] of TIdentMapEntry = (
     (Value: ecNone; Name: 'ecNone'),
     (Value: ecLeft; Name: 'ecLeft'),
     (Value: ecRight; Name: 'ecRight'),
@@ -489,6 +497,10 @@ const
     (Value: ecDown; Name: 'ecDown'),
     (Value: ecWordLeft; Name: 'ecWordLeft'),
     (Value: ecWordRight; Name: 'ecWordRight'),
+    (Value: ecWordEndLeft; Name: 'ecWordEndLeft'),
+    (Value: ecWordEndRight; Name: 'ecWordEndRight'),
+    (Value: ecHalfWordLeft; Name: 'ecHalfWordLeft'),
+    (Value: ecHalfWordRight; Name: 'ecHalfWordRight'),
     (Value: ecLineStart; Name: 'ecLineStart'),
     (Value: ecLineEnd; Name: 'ecLineEnd'),
     (Value: ecPageUp; Name: 'ecPageUp'),
@@ -507,6 +519,10 @@ const
     (Value: ecSelDown; Name: 'ecSelDown'),
     (Value: ecSelWordLeft; Name: 'ecSelWordLeft'),
     (Value: ecSelWordRight; Name: 'ecSelWordRight'),
+    (Value: ecSelWordEndLeft; Name: 'ecSelWordEndLeft'),
+    (Value: ecSelWordEndRight; Name: 'ecSelWordEndRight'),
+    (Value: ecSelHalfWordLeft; Name: 'ecSelHalfWordLeft'),
+    (Value: ecSelHalfWordRight; Name: 'ecSelHalfWordRight'),
     (Value: ecSelLineStart; Name: 'ecSelLineStart'),
     (Value: ecSelLineEnd; Name: 'ecSelLineEnd'),
     (Value: ecSelPageUp; Name: 'ecSelPageUp'),

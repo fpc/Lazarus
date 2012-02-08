@@ -2451,6 +2451,10 @@ resourcestring
   //Commands
   srkmecWordLeft              = 'Move cursor word left';
   srkmecWordRight             = 'Move cursor word right';
+  srkmecWordEndLeft           = 'Move cursor word-end left';
+  srkmecWordEndRight          = 'Move cursor word-end right';
+  srkmecHalfWordLeft          = 'Move cursor half-word left';
+  srkmecHalfWordRight         = 'Move cursor half-word right';
   srkmecLineStart             = 'Move cursor to line start';
   srkmecLineEnd               = 'Move cursor to line end';
   srkmecPageUp                = 'Move cursor up one page';
@@ -2469,6 +2473,10 @@ resourcestring
   srkmecSelDown               = 'Select Down';
   srkmecSelWordLeft           = 'Select Word Left';
   srkmecSelWordRight          = 'Select Word Right';
+  srkmecSelWordEndLeft           = 'Select word-end left';
+  srkmecSelWordEndRight          = 'Select word-end right';
+  srkmecSelHalfWordLeft          = 'Select half-word left';
+  srkmecSelHalfWordRight         = 'Select half-word right';
   srkmecSelLineStart          = 'Select Line Start';
   srkmecSelLineEnd            = 'Select Line End';
   srkmecSelPageUp             = 'Select Page Up';

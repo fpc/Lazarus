@@ -269,6 +269,10 @@ begin
     ecDown                    : Result:= dlgDownWord;
     ecWordLeft                : Result:= srkmecWordLeft;
     ecWordRight               : Result:= srkmecWordRight;
+    ecWordEndLeft             : Result:= srkmecWordEndLeft;
+    ecWordEndRight            : Result:= srkmecWordEndRight;
+    ecHalfWordLeft            : Result:= srkmecHalfWordLeft;
+    ecHalfWordRight           : Result:= srkmecHalfWordRight;
     ecLineStart               : Result:= srkmecLineStart;
     ecLineEnd                 : Result:= srkmecLineEnd;
     ecPageUp                  : Result:= srkmecPageUp;
@@ -287,6 +291,10 @@ begin
     ecSelDown                 : Result:= srkmecSelDown;
     ecSelWordLeft             : Result:= srkmecSelWordLeft;
     ecSelWordRight            : Result:= srkmecSelWordRight;
+    ecSelWordEndLeft          : Result:= srkmecWordEndLeft;
+    ecSelWordEndRight         : Result:= srkmecWordEndRight;
+    ecSelHalfWordLeft         : Result:= srkmecHalfWordLeft;
+    ecSelHalfWordRight        : Result:= srkmecHalfWordRight;
     ecSelLineStart            : Result:= srkmecSelLineStart;
     ecSelLineEnd              : Result:= srkmecSelLineEnd;
     ecSelPageUp               : Result:= srkmecSelPageUp;
@@ -2383,6 +2391,10 @@ begin
   C:=Categories[AddCategory('CursorMoving',srkmCatCursorMoving,IDECmdScopeSrcEditOnly)];
   AddDefault(C, 'Move cursor word left', srkmecWordLeft, ecWordLeft);
   AddDefault(C, 'Move cursor word right', srkmecWordRight, ecWordRight);
+  AddDefault(C, 'Move cursor word end left', srkmecWordEndLeft, ecWordEndLeft);
+  AddDefault(C, 'Move cursor word end right', srkmecWordEndRight, ecWordEndRight);
+  AddDefault(C, 'Move cursor half word left', srkmecHalfWordLeft, ecHalfWordLeft);
+  AddDefault(C, 'Move cursor half word right', srkmecHalfWordRight, ecHalfWordRight);
   AddDefault(C, 'Move cursor to line start', srkmecLineStart, ecLineStart);
   AddDefault(C, 'Move cursor to text start in line', srkmecLineTextStart, ecLineTextStart);
   AddDefault(C, 'Move cursor to line end', srkmecLineEnd, ecLineEnd);
@@ -2422,6 +2434,10 @@ begin
   AddDefault(C, 'Break Lines in selection', lisMenuBeakLinesInSelection, ecSelectionBreakLines);
   AddDefault(C, 'Select word left', lisKMSelectWordLeft, ecSelWordLeft);
   AddDefault(C, 'Select word right', lisKMSelectWordRight, ecSelWordRight);
+  AddDefault(C, 'Select word end left', srkmecSelWordEndLeft, ecSelWordEndLeft);
+  AddDefault(C, 'Select word end right', srkmecSelWordEndRight, ecSelWordEndRight);
+  AddDefault(C, 'Select half word left', srkmecSelHalfWordLeft, ecSelHalfWordLeft);
+  AddDefault(C, 'Select half word right', srkmecSelHalfWordRight, ecSelHalfWordRight);
   AddDefault(C, 'Select line start', lisKMSelectLineStart, ecSelLineStart);
   AddDefault(C, 'Select to text start in line', srkmecSelLineTextStart, ecSelLineTextStart);
   AddDefault(C, 'Select line end', lisKMSelectLineEnd, ecSelLineEnd);
