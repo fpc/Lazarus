@@ -180,6 +180,25 @@
       </element>
 
       <!-- procedure Visibility: public -->
+      <element name="TCustomShellTreeView.GetBasePath">
+        <short>Returns the lowest possible path in the file system hierarchy. For example "/" in UNIXes or "\" in Windows CE</short>
+        <descr></descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomShellTreeView.GetRootPath">
+        <short>Returns the effective root value, returning the value of GetBasePath() of Root is empty or the Root property value otherwise</short>
+        <descr></descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+
+      <!-- procedure Visibility: public -->
       <element name="TCustomShellTreeView.GetFilesInDir">
         <short>Finds all files/directories directly inside a directory</short>
         <descr><p>Helper routine. Finds all files/directories directly inside a directory.
@@ -293,7 +312,7 @@
 
       <!-- property Visibility: public -->
       <element name="TCustomShellTreeView.FileSortType">
-        <short></short>
+        <short>Indicates how the items should be sorted in the tree</short>
         <descr>
         </descr>
         <seealso>
