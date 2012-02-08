@@ -5455,8 +5455,6 @@ resourcestring
   lisDebuggerFeedbackLess = 'Less';
   lisDebuggerFeedbackMore = 'More';
   lisDebuggerFeedbackOk = 'OK';
-  lisInitialSetupDialogTreeViewAccessibleDescription = 'List to select the visible properties page';
-  lisInitialSetupDialogPageControlAccessibleDescription = 'Tab control to select the visible properties page';
 
   // breakpointgroups
   dbgBreakGroupDlgCaptionEnable = 'Select Groups';

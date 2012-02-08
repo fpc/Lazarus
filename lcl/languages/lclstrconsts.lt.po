@@ -1221,6 +1221,10 @@ msgstr "  dydis "
 msgid "Sky Blue"
 msgstr "Dangaus žydrumo"
 
+#: lclstrconsts.rstcustomtabcontrolaccessibilitydescription
+msgid "A control with tabs"
+msgstr ""
+
 #: lclstrconsts.rstealcolorcaption
 msgid "Teal"
 msgstr "Tamsiai žydra"
@@ -1240,7 +1244,7 @@ msgstr ""
 
 #: lclstrconsts.rstsplitteraccessibilitydescription
 msgctxt "lclstrconsts.rstsplitteraccessibilitydescription"
-msgid "A grip to control how much size to give the left and right parts of an area"
+msgid "A grip to control how much size to give two parts of an area"
 msgstr ""
 
 #: lclstrconsts.rsttreeviewaccessibilitydescription

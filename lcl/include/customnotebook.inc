@@ -224,6 +224,9 @@ begin
   ShowTabs := True;
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
+  // Accessibility
+  AccessibleDescription := rsTCustomTabControlAccessibilityDescription;
+  AccessibleRole := larTabControl;
 end;
 
 {------------------------------------------------------------------------------

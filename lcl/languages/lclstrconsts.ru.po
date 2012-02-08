@@ -1222,6 +1222,10 @@ msgstr "  размер "
 msgid "Sky Blue"
 msgstr "Голубой"
 
+#: lclstrconsts.rstcustomtabcontrolaccessibilitydescription
+msgid "A control with tabs"
+msgstr ""
+
 #: lclstrconsts.rstealcolorcaption
 msgid "Teal"
 msgstr "Бирюзовый"
@@ -1240,8 +1244,10 @@ msgid "Panel"
 msgstr "Панель"
 
 #: lclstrconsts.rstsplitteraccessibilitydescription
+#, fuzzy
+#| msgid "A grip to control how much size to give the left and right parts of an area"
 msgctxt "lclstrconsts.rstsplitteraccessibilitydescription"
-msgid "A grip to control how much size to give the left and right parts of an area"
+msgid "A grip to control how much size to give two parts of an area"
 msgstr "Захват для управления соотношением размеров областей слева и справа"
 
 #: lclstrconsts.rsttreeviewaccessibilitydescription

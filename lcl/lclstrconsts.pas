@@ -503,7 +503,8 @@ resourceString
   // Accessibility
   rsTTreeViewAccessibilityDescription = 'A tree of items';
   rsTPanelAccessibilityDescription = 'Panel';
-  rsTSplitterAccessibilityDescription = 'A grip to control how much size to give the left and right parts of an area';
+  rsTSplitterAccessibilityDescription = 'A grip to control how much size to give two parts of an area';
+  rsTCustomTabControlAccessibilityDescription = 'A control with tabs';
 
 implementation
 

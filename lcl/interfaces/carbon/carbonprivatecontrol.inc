@@ -342,8 +342,11 @@ begin
       // AXStaticText
       if lLazAXRole in larAXStaticTextRoles then
       begin
-        lOutputStr := CFSTR('AXValue');
-        CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        if lLazAXRole = larResizeGrip then
+        begin
+          lOutputStr := CFSTR('AXValue');
+          CFArrayAppendValue(lInputMutableArray, lOutputStr);
+        end;
         lOutputStr := CFSTR('AXStringForRange');
         CFArrayAppendValue(lInputMutableArray, lOutputStr);
         lOutputStr := CFSTR('AXAttributedStringForRange');
@@ -439,7 +442,7 @@ begin
           larResizeGrip: lAXRole := CFSTR('AXStaticText'); // VoiceOver cannot handle AXHandle in Mac 10.6, so we fallback to AXStaticText
           larScrollBar: lAXRole := CFSTR('AXScrollBar');
           larSpinner: lAXRole := CFSTR('AXIncrementor');
-          larTabControl: lAXRole := CFSTR('AXTabGroup');
+          larTabControl: lAXRole := CFSTR('AXTabGroup'); // Note that here we represent the tabsheet actually
           larTextEditorMultiline: lAXRole := CFSTR('AXTextArea');
           larTextEditorSingleline: lAXRole := CFSTR('AXTextField');
           larTrackBar: lAXRole := CFSTR('AXSlider');
@@ -472,8 +475,12 @@ begin
       begin
         if not (lLazControl is TCustomControl) then Exit;
         if lLazControl is TCustomForm then Exit;
-        if (lInputID64 = 0) then Exit;
-        CreateCFString(lInputAccessibleObject.AccessibleValue, lOutputStr);
+        if (lInputID64 = 0) and (not (lLazAXRole = larResizeGrip)) then Exit;
+        // Hack around the lack of support for AXHandle in VoiceOver
+        if lLazAXRole = larResizeGrip then
+          CreateCFString(lInputAccessibleObject.AccessibleDescription, lOutputStr)
+        else
+          CreateCFString(lInputAccessibleObject.AccessibleValue, lOutputStr);
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFStringRef,
           SizeOf(CFStringRef), @lOutputStr);
         FreeCFString(lOutputStr);
