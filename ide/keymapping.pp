@@ -836,6 +836,10 @@ procedure TKeyCommandRelation.GetDefaultKeyForWindowsScheme;
 begin
   case Command of
   // moving
+  ecLeft:                SetSingle(VK_LEFT,[]);
+  ecRight:               SetSingle(VK_RIGHT,[]);
+  ecUp:                  SetSingle(VK_UP,[]);
+  ecDown:                SetSingle(VK_DOWN,[]);
   ecWordLeft:            SetSingle(VK_LEFT,[ssCtrl]);
   ecWordRight:           SetSingle(VK_RIGHT,[ssCtrl]); // WS c
   ecLineStart:           SetSingle(VK_HOME,[]);
@@ -1887,6 +1891,10 @@ procedure TKeyCommandRelation.GetDefaultKeyForMacOSXScheme;
 begin
   case Command of
   // moving
+  ecLeft:                SetSingle(VK_LEFT,[]);
+  ecRight:               SetSingle(VK_RIGHT,[]);
+  ecUp:                  SetSingle(VK_UP,[]);
+  ecDown:                SetSingle(VK_DOWN,[]);
   ecWordLeft:            SetSingle(VK_LEFT,[ssAlt]);
   ecWordRight:           SetSingle(VK_RIGHT,[ssAlt]);
   ecLineStart:           SetSingle(VK_LEFT,[ssMeta]);
@@ -2318,6 +2326,10 @@ begin
   { Now override some entries }
   case Command of
   // moving
+  ecLeft:                SetSingle(VK_LEFT,[]);
+  ecRight:               SetSingle(VK_RIGHT,[]);
+  ecUp:                  SetSingle(VK_UP,[]);
+  ecDown:                SetSingle(VK_DOWN,[]);
   ecLineStart:           SetSingle(VK_HOME,[],        VK_LEFT,[ssMeta]);
   ecLineEnd:             SetSingle(VK_END,[],         VK_RIGHT,[ssMeta]);
   ecEditorTop:           SetSingle(VK_UP,[ssMeta]);
@@ -2389,6 +2401,10 @@ begin
   Clear;
   // moving
   C:=Categories[AddCategory('CursorMoving',srkmCatCursorMoving,IDECmdScopeSrcEditOnly)];
+  AddDefault(C, 'Move cursor left', srkmecLeft, ecLeft);
+  AddDefault(C, 'Move cursor right', srkmecRight, ecRight);
+  AddDefault(C, 'Move cursor up', srkmecUp, ecUp);
+  AddDefault(C, 'Move cursor down', srkmecDown, ecDown);
   AddDefault(C, 'Move cursor word left', srkmecWordLeft, ecWordLeft);
   AddDefault(C, 'Move cursor word right', srkmecWordRight, ecWordRight);
   AddDefault(C, 'Move cursor word end left', srkmecWordEndLeft, ecWordEndLeft);
