@@ -2685,10 +2685,20 @@ being raised.
           <var>HorizontalThenVertical </var> or vice versa</short>
       </element>
       <!-- property Visibility: protected -->
-      <element name="TCustomRadioGroup.OnClick" link="#LCL.Controls.TControl.OnClick">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomRadioGroup.OnClick">
+        <short>Event called when the selected item changes</short>
+        <descr><p>TCustomRadioGroup.OnClick is different from the usual event TControl.OnClick.
+          Instead of occuring on a mouse click on the control, this event is occurs when
+          the currently selected item changes. It will not occur if a click does not make the
+          selection change, will not occur upon clicking a already selected item and will occur
+          if one changes the selection via the keyboard. It also occurs when the item
+          is changed programmatically. This is done for Delphi compatibility.</p>
+          <p>Note that Lazarus also offers another event for the same task with a better name:
+          see TCustomRadioGroup.OnSelectionChanged for more details.</descr>
+        <seealso>
+          <link id="#LCL.Controls.TControl.OnClick" />
+          <link id="TCustomRadioGroup.OnSelectionChanged" />
+        </seealso>
       </element>
       <element name="TCustomRadioGroup.OnSelectionChanged">
         <short>Event called when the selected item changes</short>
@@ -2871,7 +2881,7 @@ being raised.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioGroup.OnClick" link="#LCL.Controls.TControl.OnClick">
+      <element name="TRadioGroup.OnClick" link="#LCL.ExtCtrls.TCustomRadioGroup.OnClick">
         <short/>
         <descr/>
         <seealso/>
