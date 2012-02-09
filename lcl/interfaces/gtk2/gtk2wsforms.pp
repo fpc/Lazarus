@@ -112,6 +112,7 @@ type
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TGtk2WSScreen }
@@ -897,4 +898,13 @@ begin
   Set_RC_Name(AWinControl, P);
   SetCallbacks(P, WidgetInfo);
 end;
+
+class procedure TGtk2WSHintWindow.ShowHide(const AWinControl: TWinControl);
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor') then
+    exit;
+  Gtk2WidgetSet.SetVisible(AWinControl, AWinControl.HandleObjectShouldBeVisible);
+  InvalidateLastWFPResult(AWinControl, AWinControl.BoundsRect);
+end;
+
 end.
