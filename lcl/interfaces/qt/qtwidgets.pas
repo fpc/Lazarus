@@ -10190,6 +10190,7 @@ var
   v: QVariantH;
   WStr: WideString;
   DataStr: WideString;
+  ASelected: Boolean;
 begin
 
   {do not set items during design time}
@@ -10241,6 +10242,8 @@ begin
           DataStr := '';
         QVariant_destroy(v);
 
+        ASelected := TListView(LCLObject).Items[TopItem].Selected;
+
         if (DataStr <> WStr) then
         begin
           v := QVariant_create(PWideString(@WStr));
@@ -10250,6 +10253,9 @@ begin
             QVariant_destroy(v);
           end;
         end;
+        if QListWidgetItem_isSelected(Item) <> ASelected then
+          QListWidgetItem_setSelected(Item, ASelected);
+
       end else
         break;
 
@@ -11532,6 +11538,7 @@ var
   itemChild: QTreeWidgetItemH;
   v: QVariantH;
   WStr: WideString;
+  ASelected: Boolean;
 begin
   {do not set items during design time}
   if csDesigning in LCLObject.ComponentState then
@@ -11569,6 +11576,7 @@ begin
           continue;
 
         WStr := GetUTF8String(TListView(LCLObject).Items[TopItem].Caption);
+        ASelected := TListView(LCLObject).Items[TopItem].Selected;
 
         v := QVariant_create(PWideString(@WStr));
         try
@@ -11601,6 +11609,8 @@ begin
             QVariant_destroy(v);
           end;
         end;
+        if QTreeWidgetItem_isSelected(Item) <> ASelected then
+          QTreeWidgetItem_setSelected(Item, ASelected);
       end;
 
       inc(i, RowHeight);
