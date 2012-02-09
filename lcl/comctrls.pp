@@ -1177,6 +1177,12 @@ type
   TLVCompareEvent = procedure(Sender: TObject; Item1, Item2: TListItem;
                                Data: Integer; var Compare: Integer) of object;
   TLVDeletedEvent = procedure(Sender: TObject; Item: TListItem) of object;
+
+  TLVEditingEvent = procedure(Sender: TObject; Item: TListItem;
+    var AllowEdit: Boolean) of object;
+  TLVEditedEvent = procedure(Sender: TObject; Item: TListItem;
+    var AValue: string) of object;
+
   TLVInsertEvent = TLVDeletedEvent;
   TLVDataEvent = TLVDeletedEvent;
   TLVCheckedItemEvent = procedure (Sender: TObject; Item: TListItem) of object;
@@ -1244,6 +1250,8 @@ type
     FDefaultItemHeight: integer;
     FHotTrackStyles: TListHotTrackStyles;
     FIconOptions: TIconOptions;
+    FOnEdited: TLVEditedEvent;
+    FOnEditing: TLVEditingEvent;
 
     FOwnerData: Boolean;
     FOwnerDataItem: TOwnerDataListItem;
@@ -1396,6 +1404,8 @@ type
     property OnDataStateChange: TLVDataStateChangeEvent read FOnDataStateChange write FOnDataStateChange;
 
     property OnDeletion: TLVDeletedEvent read FOnDeletion write FOnDeletion;
+    property OnEdited: TLVEditedEvent read FOnEdited write FOnEdited;
+    property OnEditing: TLVEditingEvent read FOnEditing write FOnEditing;
     property OnInsert: TLVInsertEvent read FOnInsert write FOnInsert;
     property OnItemChecked: TLVCheckedItemEvent read FOnItemChecked write FOnItemChecked;
     property OnSelectItem: TLVSelectItemEvent read FOnSelectItem write FOnSelectItem;
@@ -1526,6 +1536,8 @@ type
     property OnDeletion;
     property OnDragDrop;
     property OnDragOver;
+    property OnEdited;
+    property OnEditing;
     property OnEndDock;
     property OnEndDrag;
     property OnEnter;
