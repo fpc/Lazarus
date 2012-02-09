@@ -1193,10 +1193,20 @@ procedure TCustomListView.SetItemIndex(const AValue: Integer);
 begin
   if (AValue < -1) or (AValue >= Items.Count) then
     raise Exception.CreateFmt(rsListIndexExceedsBounds,[AValue]);
+
+  if OwnerData then
+    FSelectedIdx := AValue;
   if AValue = -1 then
-    Selected := nil
-  else
-    Selected := Items.Item[AValue];
+  begin
+    Selected := nil;
+  end else
+  begin
+    // trigger ws selection update, it'll update Selected too
+    if OwnerData then
+      Items.Item[AValue].Selected := True
+    else
+      Selected := Items.Item[AValue];
+  end;
 end;
 
 {------------------------------------------------------------------------------
