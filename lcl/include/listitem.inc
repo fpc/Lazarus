@@ -487,12 +487,8 @@ end;
 {------------------------------------------------------------------------------}
 function TListItem.WSUpdateAllowed: Boolean;
 begin
-  Result :=
-    ( (FFlags * [lifDestroying, lifCreated] = [lifCreated]) or
-     ((FFlags = []) and (FOwner <> nil) and (FOwner.FOwner <> nil) and
-       (FOwner.FOwner.OwnerData)) )
-    and (FOwner <> nil)
-    and FOwner.WSUpdateAllowed;
+  Result := (FFlags * [lifDestroying, lifCreated] = [lifCreated]) and
+      (FOwner <> nil) and FOwner.WSUpdateAllowed;
 end;
 
 {------------------------------------------------------------------------------}
@@ -503,6 +499,11 @@ begin
   Result := (Caption = AItem.Caption) 
         and (Data = AItem.Data) 
         and (FStates = AItem.FStates);
+end;
+
+function TListItem.IsOwnerData: Boolean;
+begin
+  Result := False;
 end;
 
 {------------------------------------------------------------------------------}
@@ -730,7 +731,7 @@ begin
   then Include(FStates, AState)
   else Exclude(FStates, AState);
 
-  if not WSUpdateAllowed then Exit;
+  if not WSUpdateAllowed and not IsOwnerData then Exit;
   LV := FOwner.FOwner;
   TWSCustomListViewClass(LV.WidgetSetClass).ItemSetState(LV, GetIndex, Self, AState, AIsSet);
 end;
@@ -832,5 +833,10 @@ procedure TOwnerDataListItem.DoCacheItem;
 begin
   FCached := True;
   FOwner.FOwner.DoGetOwnerData(Self);
+end;
+
+function TOwnerDataListItem.IsOwnerData: Boolean;
+begin
+  Result := (FOwner <> nil) and FOwner.WSUpdateAllowed;
 end;
 

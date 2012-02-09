@@ -933,6 +933,7 @@ type
     procedure SetTop(Value: Integer);
   protected
     function IsEqual(const AItem: TListItem): Boolean;
+    function IsOwnerData: Boolean; virtual;
     function GetCheckedInternal: Boolean;
     function GetOwner: TPersistent; override;
   public
@@ -979,6 +980,8 @@ type
     procedure SetImageIndex(const AValue: TImageIndex); override;
     function GetSubItems: TStrings; override;
     procedure DoCacheItem;
+  protected
+    function IsOwnerData: Boolean; override;
   public
     procedure SetDataIndex(ADataIndex: Integer);
     procedure SetOwner(AOwner: TListItems);
