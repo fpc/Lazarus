@@ -112,6 +112,7 @@
         <descr/>
         <seealso>
           <link id="#LCL.Forms.TApplication.ShowMenuGlyphs"/>
+          <link id="#LCL.Forms.TApplicationShowGlyphs"/>
           <link id="#LCL.Buttons.TCustomBitBtn.GlyphShowMode"/>
         </seealso>
       </element>

@@ -25,7 +25,6 @@
           For example:<br/>
           Instead of using the common windows functions SaveDC and RestoreDC use
           the Canvas.SaveHandleState and Canvas.RestoreHandleState.
-          [really? where's an according map?]
         </p>
       </descr>
       <!-- unresolved type reference Visibility: default -->
@@ -81,7 +80,7 @@
         <short>Draws an elliptical curve.</short>
         <descr>
           <p>Use Arc to draw an elliptically curved line with the current Pen.</p>
-          <p>[this looks outdated?]
+          <p>
             The angles angle1 and angle2 are 1/16th of a degree. For example, a full
             circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
             counter-clockwise while negative values mean clockwise direction.
@@ -113,7 +112,7 @@
         <short>The starting angle in 1/16 degrees, starting right and continuing counter-clockwise.</short>
       </element>
       <element name="Arc.Angle16DegLength">
-        <short>[?]</short>
+        <short>The length of the arc. A positive value indicates that it goes counter-clockwise from the start angle and a negative value that it goes clockwise</short>
       </element>
 <!-- function Visibility: default -->
       <element name="AngleChord">
@@ -278,9 +277,7 @@
       <element name="CallNextHookEx">
         <short>Calls the next procedure in the hook chain.
         </short>
-        <descr>Useless without SetWindowsHookEx().
-          [How to install an system Hook?]
-        </descr>
+        <descr></descr>
         <errors/>
         <seealso/>
       </element>
@@ -494,16 +491,16 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <short>The bitmap info header.</short>
       </element>
       <element name="CreateDIBitmap.dwUsage">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="CreateDIBitmap.InitBits">
         <short>An array containing the bitmap pixels.</short>
       </element>
       <element name="CreateDIBitmap.InitInfo">
-        <short>CBM_INIT when InitBits contains valid data, else zero.[?]</short>
+        <short>CBM_INIT when InitBits contains valid data, else zero.</short>
       </element>
       <element name="CreateDIBitmap.wUsage">
-        <short>[?]</short>
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreateDIBSection">
@@ -2043,10 +2040,13 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetWindowSize">
-        <short>Returns the [client?] Width and Height of the window.</short>
-        <descr/>
+        <short>Returns the Width and Height of the window, including the window decoration.</short>
+        <descr>To get the size without the window decoration just use TCustomForm.Width and TCustomForm.Height</descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.Forms.TCustomForm.Width"/>
+          <link id="#lcl.Forms.TCustomForm.Height"/>
+        </seealso>
       </element>
       <element name="GetWindowSize.Result">
         <short/>
@@ -2637,13 +2637,11 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
   Winding determines how the polygon is filled. When Winding is True, Polygon
   fills the shape using the Winding fill algorithm. When Winding is False,
   Polygon uses the even-odd (alternative) fill algorithm.
-<!-- does not apply[?]
   StartIndex gives the index of the first point in the array to use. All points
   before this are ignored.
   NumPts indicates the number of points to use, starting at StartIndex.
   If NumPts is -1 (the default), Polygon uses all points from StartIndex to the
   end of the array.
--->
   The first point is always connected to the last point.
   To draw a polygon on the canvas, without filling it, use the Polyline method,
   specifying the first point a second time at the end.</descr>
@@ -2671,11 +2669,9 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <descr>Use Polyline to connect a set of points on the canvas. If you specify only two
   points, Polyline draws a single line.
   The Points parameter is an array of points to be connected.
-<!-- does not apply[?]
   StartIndex identifies the first point in the array to use.
   NumPts indicates the number of points to use. If NumPts is -1 (the default),
   PolyLine uses all the points from StartIndex to the end of the array.
--->
   Calling the MoveTo function with the value of the first point, and then
   repeatedly calling LineTo with all subsequent points will draw the same image
   on the canvas. However, unlike LineTo, Polyline does not change the value of
@@ -4336,9 +4332,7 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       <!-- function Visibility: default -->
       <element name="MakeWParam">
         <short>Copies two words into a double word, usable as a message wParam.</short>
-        <descr>The result has the size of an pointer.
-          Excess bits are sign extended[?].
-        </descr>
+        <descr>The result has the size of an pointer.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -4442,32 +4436,29 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       </element>
       <!-- function Visibility: default -->
       <element name="RGB">
-        <short>Combines Red, Green and Blue values into an Color value.
+        <short>Combines Red, Green and Blue values into an TColorRef value.
         </short>
         <descr>
           <p>
-            The bytes are shifted into place, for a standard COLORREF.
-            Their physical order depends on the endianness of the machine.
-          </p><p>
-            Depending on the application and hardware,
-            the color components may not be in the desired order.
-            [see also?]
+            The bytes are shifted into place, following the format $00bbggrr,
+            which is the format of the Windows API type COLORREF.
+            Their actual physical order depends on the endianness of the machine.
           </p>
         </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="RGB.Result">
-        <short>The combined doubleword.</short>
+        <short>The combined COLORREF created with the given color channels.</short>
       </element>
       <element name="RGB.R">
-        <short>The low byte.</short>
+        <short>The value of the red channel. zero indicates no contribution, 255 indicates a full red channel.</short>
       </element>
       <element name="RGB.G">
-        <short>The mid byte (*16).</short>
+        <short>The value of the green channel</short>
       </element>
       <element name="RGB.B">
-        <short>The high byte (*256).</short>
+        <short>The value of the blue channel</short>
       </element>
       <!-- function Visibility: default -->
       <element name="ScrollWindow">

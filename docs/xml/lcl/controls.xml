@@ -523,7 +523,7 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="fsAllNonSystemStayOnTop">
-        <short>Set of form styles, which make a form stay on top [not system-wide?].</short>
+        <short>Set of form styles, except those which make a form stay on top of all other forms of the system</short>
         <seealso>
           <link id="TFormStyle"/>
         </seealso>
@@ -1429,7 +1429,7 @@ dmFindTarget: find child control under the mouse
         </seealso>
       </element>
       <element name="TEndDragEvent.Sender">
-        <short>The dragged control [or DragObject?].</short>
+        <short>The dragged control</short>
       </element>
       <element name="TEndDragEvent.Target">
         <short>The drop target (control), or Nil if cancel'd.</short>
@@ -1653,8 +1653,7 @@ dmFindTarget: find child control under the mouse
       <!-- property Visibility: public -->
       <element name="TDragObject.AlwaysShowDragImages">
         <short>Should the image of dragged objects always be shown?</short>
-        <descr>This is another chance for enforcing the display of a drag image, even if a drop is acceptable.
-[where to describe the various conditions?]</descr>
+        <descr>This is another chance for enforcing the display of a drag image, even if a drop is acceptable.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -1944,7 +1943,7 @@ dmFindTarget: find child control under the mouse
         <short>The screen rectangle within which a drop or mouse move will be directed to this docksite.</short>
       </element>
       <element name="TGetSiteInfoEvent.MousePos">
-        <short>The current [screen?] position of the mouse.</short>
+        <short>The current position of the mouse.</short>
       </element>
       <element name="TGetSiteInfoEvent.CanDock">
         <short>Set CanDock to False to reject docking.</short>
@@ -2611,7 +2610,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- property Visibility: public -->
       <element name="TSizeConstraints.Options">
-        <short>Options for the determination [application?] of the constraints.</short>
+        <short>Options for the determination of the constraints.</short>
         <descr/>
         <seealso/>
       </element>
@@ -2976,7 +2975,6 @@ dmFindTarget: find child control under the mouse
       <element name="TAnchorSide">
         <short>Specifies how the side of a control is anchored to other controls.</short>
         <descr>
-          <p>[Make this an topic, describing *everything* related to anchoring?]</p>
           <pre>TAnchorSide
 
     Class holding the reference sides of the anchors of a TControl.
@@ -4278,7 +4276,7 @@ dmFindTarget: find child control under the mouse
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoOnParentHandleDestruction">
         <short/>
-        <descr>implement in descendants [what?]
+        <descr>implement in descendants
         </descr>
         <errors/>
         <seealso/>
@@ -4478,7 +4476,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.UpdateAnchorRules">
-        <short>Update the rules for anchoring the control [or of anchored controls?]</short>
+        <short>Update the rules for anchoring the control</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.ChangeBounds">
@@ -4518,8 +4516,6 @@ dmFindTarget: find child control under the mouse
         <descr>
           <p>DoSetBounds is a low level function to set the private variables FLeft, FTop, FWidth, FHeight.
             Do not call this function, only the LCL calls it.
-          </p>
-          <p>[The following doesn't look correct?]
           </p>
           <p>It also updates FClientWidth and FClientHeight accordingly.
           </p>
@@ -4653,7 +4649,7 @@ dmFindTarget: find child control under the mouse
       <!-- function Visibility: protected -->
       <element name="TControl.GetClientScrollOffset">
         <short>Returns the offset of the scrolled client area (in a scrolling TWinControl).</short>
-        <descr>The overridden method may fail when the TScrollingWinControl has only one scrollbar[!?]
+        <descr>The overridden method may fail when the TScrollingWinControl has only one scrollbar
         </descr>
         <seealso>
           <link id="TControl.GetScrolledClientRect"/>
@@ -5199,7 +5195,7 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.CreateFloatingDockSite">
         <short>Create a floating dock site with a client area equal to the given screen coordinates.
         </short>
-        <descr>The new dock site is owned by the control [Delphi: by Application!?].
+        <descr>The new dock site is owned by the control
         </descr>
       </element>
       <element name="TControl.CreateFloatingDockSite.Result">
@@ -5930,7 +5926,7 @@ dmFindTarget: find child control under the mouse
         <short>How many notches the wheel has been turned.</short>
       </element>
       <element name="TControl.DoMouseWheel.MousePos">
-        <short>The mouse coordinates [client/screen?]</short>
+        <short>The mouse coordinates</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoMouseWheelDown">
@@ -5988,7 +5984,7 @@ dmFindTarget: find child control under the mouse
         <short>The handler to be added.</short>
       </element>
       <element name="TControl.AddHandler.AsFirst">
-        <short>Unused. [If true, the handler is added before all installed handlers?]</short>
+        <short>Unused.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.RemoveHandler">
@@ -6458,7 +6454,7 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.GetPreferredSize">
         <short>Returns default/preferred height and width, for use in autosizing.</short>
         <descr>
-          <p>Called during AutoSize [link?] calculations. Only positive values are valid. Negative or 0 are treated as undefined and the LCL uses other sizes instead.</p>
+          <p>Called during AutoSize calculations. Only positive values are valid. Negative or 0 are treated as undefined and the LCL uses other sizes instead.</p>
           <p>WithThemeSpace: If true, adds space for stacking.</p>
           <p>For example: <var>TRadioButton</var> has a minimum size. But for stacking multiple TRadioButtons there should be
             some space around. This space is theme dependent, so the parameter is passed to the widgetset</p>
@@ -7180,8 +7176,7 @@ dmFindTarget: find child control under the mouse
       <!-- procedure Visibility: public -->
       <element name="TControl.RemoveHandlerOnEnableChanging">
         <short>Removes an <var>OnEnabledChanged</var> handler.</short>
-        <descr>[The name doesn't look correct, should read RemoveHandlerOnEnabledChanged?]
-        </descr>
+        <descr></descr>
         <errors/>
         <seealso/>
       </element>
@@ -7322,7 +7317,6 @@ dmFindTarget: find child control under the mouse
         <short>Array of anchor definitions, indexed by the control sides.</short>
         <descr>
           <p>Valid anchor definitions are flagged in <link id="TControl.Anchors">Anchors</link>.
-            [Anchors may be invalidated by cycle and other checks?]
           </p>
           <p>AnchorSide specifies how a side is anchored to other controls (siblings or Parent).
           </p>
@@ -7336,7 +7330,7 @@ dmFindTarget: find child control under the mouse
         </seealso>
       </element>
       <element name="TControl.AnchorSide.Kind">
-        <short>The [possibly?] anchored side of the control.</short>
+        <short>The anchored side of the control.</short>
       </element>
       <!-- property Visibility: public -->
       <element link="TControl.AnchorSide" name="TControl.AnchorSideBottom"/>
@@ -7433,7 +7427,7 @@ dmFindTarget: find child control under the mouse
             the inner border is the area between the control's BoundsRect and ClientRect.
           </p>
           <p>When a control sits in a cell of a table (Grid) control,
-            its horizontal and vertical alignment inside the cell can be specified, too [instead?].
+            its horizontal and vertical alignment inside the cell can be specified, too.
           </p>
         </descr>
       </element>
@@ -7675,7 +7669,6 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.IsControl">
         <short>Determines whether this object shall be streamed as a control.</short>
         <descr>Delphi compatible property, affecting only the streaming of <var>Form</var> properties.
-          [Has no effect in the LCL?]
         </descr>
       </element>
       <!-- property Visibility: published -->
@@ -7884,7 +7877,7 @@ dmFindTarget: find child control under the mouse
             For example when the theme changes, the Width and Height remain the same, but the changed frame reduces the ClientWidth and ClientHeight.
             This does not happen that often under Windows, but it happens quite often on other platforms.
           </p>
-          <p>Especially it is not sufficient to write only a TForm.OnResize handler to resize all controls on the form. This is a common bug in Delphi applications.[???]
+          <p>Especially it is not sufficient to write only a TForm.OnResize handler to resize all controls on the form. This is a common bug in Delphi applications.
           </p>
         </descr>
         <seealso>
@@ -7895,7 +7888,7 @@ dmFindTarget: find child control under the mouse
       <!-- property Visibility: public -->
       <element name="TControl.OnShowHint">
         <short>Event Handler when a hint shall be shown.</short>
-        <descr>[Tasks, Usage?]</descr>
+        <descr></descr>
         <seealso>
           <link id="TControl.Hint"/>
           <link id="#lcl.Controls.THintInfo"/>
@@ -8140,7 +8133,7 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
         <descr>
           <code>{ LeftRightSpacing, TopBottomSpacing: integer;
         minimum space between client border and nearest child control.
-        For example: ClientLeftRight[???]=5 means leftmost child's Left position is at least 5.
+        For example: ClientLeftRight=5 means leftmost child's Left position is at least 5.
 
     HorizontalSpacing, VerticalSpacing: integer;
         minimum space between each child control.
@@ -8489,7 +8482,7 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
         <seealso/>
       </element>
       <element name="TAlignInfo.ControlIndex">
-        <short>Index of current control [in AlignList?].</short>
+        <short>Index of current control.</short>
         <descr/>
         <seealso/>
       </element>
@@ -8566,7 +8559,7 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
       </element>
       <!-- variable Visibility: private -->
       <element name="TWinControl.FAdjustClientRect">
-        <short>[what?] - valid if wcfAdjustClientRectValid</short>
+        <short>valid if wcfAdjustClientRectValid</short>
         <descr/>
         <seealso/>
       </element>
@@ -8991,9 +8984,8 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ControlsAligned">
-        <short>Override this [to do what?]
-        </short>
-        <descr>Called by AlignControls after aligning controls.
+        <short>Called by AlignControls after aligning controls.</short>
+        <descr>
         </descr>
         <errors/>
         <seealso/>
@@ -9399,11 +9391,7 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMSetFocus">
-        <short>Handler for
-          receiving Focus
-          event.
-          Override it to [do what?]
-        </short>
+        <short>Handler for receiving Focus event.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9458,8 +9446,7 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMKeyDown">
-        <short>Event handler for
-          key pressed, not handled by the widget.
+        <short>Event handler for key pressed, not handled by the widget.
           Tries <link id="TWinControl.DoRemainingKeyDown"/>.
         </short>
         <descr/>
@@ -9471,8 +9458,7 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMSysKeyDown">
-        <short>Event handler for
-          sys key [what's this?] pressed, not handled by the widget.
+        <short>Event handler for sys key pressed, not handled by the widget.
           Tries <link id="TWinControl.DoRemainingKeyDown"/>.
         </short>
         <descr/>
@@ -9893,8 +9879,6 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
       <element link="TControl.DoFloatMsg" name="TWinControl.DoFloatMsg">
         <short>Handler called when the control starts floating.</short>
         <descr>TWinControls can float for themselves, unless they request a special FloatingDockSiteClass.
-          [Bug: when no FloatingDockSiteClass was assigned,
-          a default floating site is created?]
         </descr>
         <errors/>
         <seealso/>
@@ -10407,8 +10391,8 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.MainWndProc">
-        <short/>
-        <descr>[This method does nothing, and cannot be overridden???]
+        <short>This method allows handling messages in Windows</short>
+        <descr>
         </descr>
         <errors/>
         <seealso/>
@@ -11120,8 +11104,7 @@ End;
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.PaintTo">
-        <short>Paints [what?] only when a widget exists.
-        </short>
+        <short>Paints only when a widget exists.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12091,7 +12074,7 @@ End;
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TForEachZoneProc">
-        <short>The type of an ForEachZone callback procedure. [unused?]
+        <short>The type of an ForEachZone callback procedure, currently unused.
         </short>
         <descr/>
         <seealso/>
@@ -12407,7 +12390,7 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDockTree.UpdateAll">
-        <short>Override this method [to do what?]
+        <short>
         </short>
         <descr/>
         <errors/>
@@ -13694,7 +13677,7 @@ End;
           <p>The BoundsRectForNewParent holds the new coordinates, to be used when the Parent of the control is changed later.</p>
           <p>The ClientRect describes the internal (client) area of a container control (TWinControl), excluding borders. Its Top and Left are always zero.
             In a TScrollingWinControl...</p>
-          <p>BaseBounds holds the designed Bounds, to be used e.g. when a scale factor is set later. [right?]</p>
+          <p>BaseBounds holds the designed Bounds, to be used e.g. when a scale factor is set later.</p>
           <p>GetControlOrigin returns the origin in screen coordinates. These values are not always in sync with the true screen position, managed by the widgetset.</p>
           <p>ScreenToClient returns the client coordinates of an point given in the screen coordinates, i.e. the coordinates relative to the control's client origin.</p>
           <p>ClientToScreen returns the screen coordinats for an point in client coordinates.</p>
@@ -13773,7 +13756,6 @@ End;
         A.AnchorSide[akBottom].Control:=B;
           </code>
           <p>TControlChildSizing and TControlChildrenLayout offers additional means for aligning and separating controls.
-            [todo!?]
           </p>
           <p/>
         </descr>

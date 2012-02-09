@@ -1575,7 +1575,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DPtoLP">
         <short>Converts an array of Device Points (coordinates) into Logical Points.</short>
-        <descr>[how is such mapping established?]</descr>
+        <descr></descr>
         <seealso/>
       </element>
       <element name="TWidgetSet.DPtoLP.Result">
@@ -6037,7 +6037,7 @@
         </descr>
         <errors>
           The Windows implementation doesn't cooperate with the DragManager.
-          [See Mantis 0018525?]
+          See Mantis 0018525
         </errors>
         <seealso>
         </seealso>
@@ -6550,13 +6550,13 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IntfSendsUTF8KeyPress">
-        <short>Returns the interface capability to send UTF-8 characters[?]</short>
+        <short>Returns the interface capability to send UTF-8 characters</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.IntfSendsUTF8KeyPress.Result">
-        <short>True when UTF-8 KeyPress messages are sent[?]</short>
+        <short>True when UTF-8 KeyPress messages are sent</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.InvalidateFrame">

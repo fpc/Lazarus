@@ -2747,7 +2747,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.Modified">
-        <short>True when the text has changed [how?].</short>
+        <short>True when the text has changed.</short>
         <descr>Reset whenever the changed text was stored (saved) by code.</descr>
         <seealso/>
       </element>
@@ -2861,7 +2861,6 @@
           <p>
             The logical lines (paragraphs) in <var>Lines</var> do not always match the displayed lines.
             When WordWrap is True, every paragraph can wrap into multiple display lines.
-            [really?]
           </p>
         </descr>
         <seealso>
@@ -2896,7 +2895,7 @@
       <element name="TCustomMemo.FinalizeWnd"/>
       <!-- function Visibility: protected -->
       <element name="TCustomMemo.RealGetText">
-        <short>Returns the contents of <var>Lines.Text</var>, separated by [NewLine?].</short>
+        <short>Returns the contents of <var>Lines.Text</var></short>
         <descr/>
         <errors/>
         <seealso>
@@ -3453,7 +3452,7 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TButtonControl.OnChange">
-        <short>Handler for any [which?] change in properties of the control.</short>
+        <short>Handler for any change in properties of the control.</short>
       </element>
 <!-- object Visibility: default -->
       <element name="TButtonActionLink">
@@ -3883,7 +3882,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TCustomCheckBox.Toggle">
         <short>Alternate between checked and unchecked state.</short>
-        <descr>[What about disabled state?]</descr>
+        <descr></descr>
         <errors/>
         <seealso/>
       </element>
@@ -4041,7 +4040,7 @@
       <element name="TCheckBox.Visible" link="#LCL.Controls.TControl.Visible"/>
 <!-- object Visibility: default -->
       <element name="TToggleBox">
-        <short>A labelled box capable of being checked or unchecked[???]</short>
+        <short>A labelled box capable of being checked or unchecked</short>
         <descr>
           <p>The Application Programmer is responsible for ensuring that the <var>OnClick</var> event handler recognises the <var>State</var> of the box,
             takes the appropriate <var>Action</var> and places the <var>State</var> into the next appropriate value</p>
@@ -4527,7 +4526,7 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomLabel.Transparent">
-        <short>Whether the viewer can see through the control. Default True [Delphi: False?]</short>
+        <short>Whether the viewer can see through the control. Default True</short>
         <descr>
           <p>
             Opaque Labels have their enclosing rectangle filled with the background color of the label.
@@ -4697,12 +4696,12 @@
             <tr>
               <td>AutoSelected</td>
               <td>True indicate that the edit or combobox control has performed an AutoSelect operation,
-                so that subsequent mouse-clicks and keystrokes proceed normally without selecting the text.[~remove this?]
+                so that subsequent mouse-clicks and keystrokes proceed normally without selecting the text.
             </td>
             </tr>
             <tr>
               <td>BorderSpacing</td>
-              <td>The space around the edge between an [<var>Anchored</var>???] control and its siblings [parent?].</td>
+              <td>The space around the edge between an control and its siblings.</td>
             </tr>
             <tr>
               <td>Caption</td>
@@ -4724,7 +4723,7 @@
             </tr>
             <tr>
               <td>Color</td>
-              <td>The Color to be used to draw the control's background [or to write the text it contains -> Font.Color!???].
+              <td>The Color to be used to draw the control's background.
               </td>
             </tr>
             <tr>
@@ -4835,7 +4834,7 @@
             from which the most appropriate can be selected to use in any particular instance [of?].
           </p>
           <table>
-            <caption>Some commonly listed Actions[???]</caption>
+            <caption>Some commonly listed Actions</caption>
             <th>
               <td>Event</td>
               <td>Meaning</td>
@@ -4851,13 +4850,12 @@
                 It may alternatively initate a process of selection, for instance in a TextBox or Memo.</td>
             </tr>
             <tr>
-              <td>Click[here???]</td>
+              <td>Click</td>
               <td>A method to emulate in code the effect of clicking on a control. This method is most often found in Button-type controls (TButton, TBitBtn, TSpeedButton etc). A procedure can be written that calls the same code as the OnClick action. This facility can be particularly useful if the activation of one control by clicking causes a cascade of other controls to be activated, and the Click method can be used to initiate the action rather than having the user explicitly click on a lot of controls.</td>
             </tr>
             <tr>
               <td>OnDragDrop</td>
               <td>Action to be taken when a dragged control has been dropped onto this control.
-                [OnDragOver?]
               </td>
             </tr>
             <tr>

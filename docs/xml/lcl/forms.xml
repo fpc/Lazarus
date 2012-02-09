@@ -5776,13 +5776,15 @@
       </element>
 <!-- enumeration type Visibility: default -->
       <element name="TApplicationShowGlyphs">
-        <short>How glyphs are shown [on Button or Tab controls, and menus?]
-        </short>
+        <short>Describes the policy for the application of how to show menu and button glyphs</short>
         <descr>
           <p>sbgAlways - show glyphs always (inspite of system preferences)</p>
           <p>sbgNever - show glyphs never (inspite of system preferences)</p>
           <p>sbgSystem - use system preferences for glyphs showing</p>
         </descr>
+        <seealso>
+          <link id="#LCL.Menus.TGlyphShowMode"/>
+        </seealso>
       </element>
       <element name="TApplicationShowGlyphs.sbgAlways">
         <short>Show glyphs always.</short>
@@ -5822,7 +5824,7 @@
             a simple dialog intended for displaying error messages,
             but also usable as an alternative to the various Message Dialogs.
           </p><p>
-            Other project types have a different [or no?] Application class
+            Other project types have a different Application class
           </p>
         </descr>
         <errors/>
@@ -6562,9 +6564,9 @@
             It can actually create any kind of component.
           </p><p>
             Creates a Component instance of the given class,
-            sets the pointer to the component variable [and loads the component?].
+            sets the pointer to the component variable.
           </p><p>
-            [If it is a form it will be added to the application's forms list.?]
+            If it is a form it will be added to the application's forms list.
           </p><p>
             A splash form is shown immediately.
           </p>
@@ -6688,7 +6690,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TApplication.HelpCommand">
-        <short>Shhow help on [what?]</short>
+        <short>Show help</short>
         <descr>Currently relies on OnHelp handlers, CallHelp is not implemented.
         </descr>
         <errors>
@@ -6793,9 +6795,8 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.HintMouseMessage">
-        <short>Called when the the mouse is over a control with a Hint
-        </short>
-        <descr/>Does nothing [exists for Delphi compatibility only?]
+        <short>Called when the the mouse is over a control with a Hint</short>
+        <descr>Does nothing</descr>
         <errors/>
         <seealso/>
       </element>
@@ -6998,7 +6999,7 @@
       <element name="TApplication.DisableIdleHandler">
         <short>Blocks Idle handling. Can be called moreoften, every call must be followed by EnableIdleHandler.
         </short>
-        <descr>[what does this mean to application behaviour?]</descr>
+        <descr></descr>
         <seealso>
           <link id="TApplication.EnableIdleHandler"/>
         </seealso>
@@ -7016,7 +7017,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.NotifyUserInputHandler">
-        <short>Notifies all user input handlers [of what?]
+        <short>Notifies all user input handlers
         </short>
         <descr/>
         <seealso>
@@ -7928,7 +7929,6 @@
       <!-- property Visibility: public -->
       <element name="TApplication.HintShortCuts">
         <short>Enables the display of keyboard shortcuts (e.g. on menu entries).
-          [not implemented?]
         </short>
         <descr/>
         <seealso>
@@ -8058,7 +8058,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnEndSession">
-        <short>Event handler for ending a session of the application [or logoff?]
+        <short>Event handler for ending a session of the application
         </short>
         <seealso>
           <link id="TApplicationHandlerType.ahtEndSession"/>
@@ -8255,7 +8255,7 @@
       <element name="TApplicationProperties">
         <short>A component that simplifies access to the properties of the current application.</short>
         <descr>
-          <p>TApplication Properties can be set as a local default set of properties to be used for any new instance of TApplication[???]</p>
+          <p>TApplication Properties can be set as a local default set of properties to be used for any new instance of TApplication</p>
         </descr>
         <errors/>
         <seealso/>
@@ -8510,7 +8510,7 @@
       <!-- procedure Visibility: public -->
       <element name="TIDesigner.Notification">
         <short>
-          <var>Notification</var> that the supplied Operation has been applied to the specified Component[???]</short>
+          <var>Notification</var> that the supplied Operation has been applied to the specified Component</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8626,7 +8626,7 @@
       <element name="TFormPropertyStorage.Destroy" link="#rtl.Classes.TComponent.Destroy"/>
 <!-- function Visibility: default -->
       <element name="KeysToShiftState">
-        <short>Collects all active modifier keys.
+        <short>Converts modifier keys from the LParam of a mouse message to a TShiftState.
         </short>
         <descr/>
         <errors/>
@@ -8640,7 +8640,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="KeyDataToShiftState">
-        <short>Collects modifier keys from a key message
+        <short>Converts modifier keys from the LParam of a keyboard message (WM_KEYUP for example) to a TShiftState
         </short>
         <descr/>
         <errors/>
@@ -8654,12 +8654,19 @@
       </element>
       <!-- function Visibility: default -->
       <element name="ShiftStateToKeys">
-        <short>Converts an shift state [into what?]</short>
-        <descr>
-        </descr>
+        <short>Converts a shift state into a key state value compatible with the key state of a Windows API LParam</short>
+        <descr>The Keys value is of the type PtrUInt and is a or'ed combination of the following constants:
+        MK_Shift, MK_Control, MK_LButton, MK_RButton, MK_MButton, MK_XBUTTON1 and MK_XBUTTON2</descr>
         <errors>
         </errors>
         <seealso>
+          <link id="#LCL.LCLType.MK_Shift"/>
+          <link id="#LCL.LCLType.MK_Control"/>
+          <link id="#LCL.LCLType.MK_LButton"/>
+          <link id="#LCL.LCLType.MK_RButton"/>
+          <link id="#LCL.LCLType.MK_MButton"/>
+          <link id="#LCL.LCLType.MK_XBUTTON1"/>
+          <link id="#LCL.LCLType.MK_XBUTTON2"/>
         </seealso>
       </element>
       <element name="ShiftStateToKeys.Result">
@@ -8929,7 +8936,7 @@
       </element>
       <!-- variable Visibility: default -->
       <element name="MessageBoxFunction">
-        <short>[used where?]</short>
+        <short></short>
         <descr/>
         <seealso/>
       </element>

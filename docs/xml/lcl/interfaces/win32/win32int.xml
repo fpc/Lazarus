@@ -276,7 +276,7 @@
         <short/>
       </element>
       <element name="TWin32WidgetSet.SetCallback">
-        <short>Installs an callback for a Lazarus message Msg for Sender[???]</short>
+        <short>Installs an callback for a Lazarus message Msg for Sender</short>
         <descr>Here: does nothing.</descr>
         <errors/>
         <seealso>
@@ -335,8 +335,8 @@
         <short>Waits for arrival of a message.</short>
       </element>
       <element name="TWin32WidgetSet.AppTerminate" link="#lcl.InterfaceBase.TWidgetSet.AppTerminate">
-        <short>Release system resources[?]</short>
-        <descr>Not implemented as: Tells Windows to halt and destroy[?]</descr>
+        <short>Terminates the application main loop and sets the application on course to quit</short>
+        <descr>Note that this is not an immediate termination of the application.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -450,9 +450,9 @@
         <short/>
       </element>
       <element name="TWin32WidgetSet.DCRedraw" link="#lcl.InterfaceBase.TWidgetSet.DCRedraw">
-        <short>Redraws (the window of) a canvas [how?]</short>
+        <short>Redraws (the window of) a canvas</short>
         <descr/>
-        <errors>TODO: implement me!
+        <errors>
         </errors>
         <seealso/>
       </element>
@@ -460,7 +460,7 @@
         <short/>
       </element>
       <element name="TWin32WidgetSet.SetDesigning" link="#lcl.InterfaceBase.TWidgetSet.SetDesigning">
-        <short>[NOP?]</short>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4065,23 +4065,14 @@
       <element name="TWin32WidgetSet.GetDesignerDC.WindowHandle">
         <short/>
       </element>
-      <element name="TWin32WidgetSet.IntfSendsUTF8KeyPress">
-        <short>Returns the interface capability to send UTF-8 characters[?]</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="TWin32WidgetSet.IntfSendsUTF8KeyPress" link="#LCL.InterfaceBase.TWidgetSet.IntfSendsUTF8KeyPress" />
+        <short>Returns the interface capability to send UTF-8 characters</short>
       </element>
-      <element name="TWin32WidgetSet.IntfSendsUTF8KeyPress.Result">
-        <short/>
-      </element>
-      <element name="TWin32WidgetSet.IsDesignerDC">
+      <element name="TWin32WidgetSet.IsDesignerDC" link="#LCL.InterfaceBase.TWidgetSet.IsDesignerDC" />
         <short/>
         <descr/>
         <errors/>
         <seealso/>
-      </element>
-      <element name="TWin32WidgetSet.IsDesignerDC.Result">
-        <short/>
       </element>
       <element name="TWin32WidgetSet.IsDesignerDC.WindowHandle">
         <short/>
@@ -4279,7 +4270,7 @@
         <short/>
       </element>
       <element name="TWin32WidgetSet.CommonControlsVersion">
-        <short>Version number of the CommCtrl.dll[?]</short>
+        <short>Version number of the CommCtrl.dll</short>
         <descr/>
         <seealso/>
       </element>
@@ -4289,7 +4280,7 @@
         <seealso/>
       </element>
       <element name="TWin32WidgetSet.DotsPatternBitmap">
-        <short>A dotted bitmap [for Brushes?].</short>
+        <short>A dotted bitmap</short>
         <descr/>
         <seealso/>
       </element>

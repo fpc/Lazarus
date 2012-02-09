@@ -2853,9 +2853,7 @@ Default is psSolid
 
       <!-- record type Visibility: default -->
       <element name="TRegionData">
-        <short>The <var>Data</var> about the current <var>Region</var> on the <var>Screen</var> or <var>Canvas</var>
-          [found where???]
-        </short>
+        <short>The <var>Data</var> about the current <var>Region</var> on the <var>Screen</var> or <var>Canvas</var></short>
         <descr>At present the Region can only be rectangular; the ability to define it as a Polygon is not yet implemented</descr>
       </element>
       <!-- variable Visibility: default -->

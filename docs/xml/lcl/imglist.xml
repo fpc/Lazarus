@@ -170,7 +170,7 @@
         <short>The mask (BitMap) handle.</short>
       </element>
       <element name="TCustomImageList.InternalInsert.AWidth">
-        <short>Width [of?] in pixels</short>
+        <short>Width in pixels</short>
       </element>
       <element name="TCustomImageList.InternalInsert.AHeight">
         <short>Height of all images in pixels.</short>
