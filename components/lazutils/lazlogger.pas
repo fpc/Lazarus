@@ -687,7 +687,7 @@ begin
       {$ifdef WinCE}
         Assign(FLogText, FLogName);
         {$I-}
-        Append(FLogText)
+        Append(FLogText);
         if IOResult <> 0 then
           Rewrite(FLogText);
         {$I+}
