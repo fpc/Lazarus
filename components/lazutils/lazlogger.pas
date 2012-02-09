@@ -199,6 +199,11 @@ property DebugLogger: TLazLogger read GetDebugLogger write SetDebugLogger;
 
 implementation
 
+{$ifdef wince}
+const
+  Str_LCL_Debug_File = 'lcldebug.log';
+{$endif}
+
 var
   TheLazLogger: TLazLogger = nil;
 

@@ -421,7 +421,9 @@ implementation
 uses gettext;
 
 const
+  {$IFDEF WithOldDebugln}
   Str_LCL_Debug_File = 'lcldebug.log';
+  {$ENDIF}
   UNKNOWN_VK_PREFIX = 'Word(''';
   UNKNOWN_VK_POSTFIX = ''')';
 
