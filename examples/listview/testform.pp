@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  Buttons, StdCtrls, ExtCtrls;
+  Buttons, StdCtrls, ExtCtrls, Spin;
 
 type
 
@@ -24,6 +24,9 @@ type
     CheckBox3: TCheckBox;
     CheckBox4: TCheckBox;
     CheckBox5: TCheckBox;
+    ChBoxOwnerData: TCheckBox;
+    CheckBox6: TCheckBox;
+    CheckBox7: TCheckBox;
     HideSelection: TCheckBox;
     ComboBox1: TComboBox;
     ComboBox2: TComboBox;
@@ -47,6 +50,7 @@ type
     Label12: TLabel;
     Label13: TLabel;
     Label14: TLabel;
+    lblSetCount: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -60,17 +64,21 @@ type
     Page1: TTabSheet;
     Page2: TTabSheet;
     Page3: TTabSheet;
+    OwnerDataCount: TSpinEdit;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
+    procedure ChBoxOwnerDataChange(Sender: TObject);
     procedure CheckBox1Click (Sender: TObject );
     procedure CheckBox2Click (Sender: TObject );
     procedure CheckBox3Click(Sender: TObject);
     procedure CheckBox4Click(Sender: TObject);
     procedure CheckBox5Click(Sender: TObject);
+    procedure CheckBox6Change(Sender: TObject);
+    procedure CheckBox7Change(Sender: TObject);
     procedure ComboBox1Change (Sender: TObject );
     procedure ComboBox2Change(Sender: TObject);
     procedure ComboBox3Change(Sender: TObject);
@@ -87,7 +95,9 @@ type
     procedure Edit8Change(Sender: TObject);
     procedure HideSelectionChange(Sender: TObject);
     procedure ListView1ColumnClick(Sender: TObject; Column: TListColumn);
+    procedure ListView1Data(Sender: TObject; Item: TListItem);
     procedure ListView1SelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
+    procedure OwnerDataCountChange(Sender: TObject);
   private
     procedure ShowItemData;
     procedure ShowColumnData;
@@ -109,16 +119,31 @@ procedure TForm1.Button1Click(Sender: TObject);
 var
   Item: TListItem;
 begin
-  Item := ListView1.Items.Insert(StrToIntDef(Edit1.Text, 0));
-  Item.Caption := Format('Item %d', [ListView1.Items.Count]);
+  if ListView1.OwnerData then
+    // OwnerDataCount.OnChange() triggers new items count.
+    OwnerDataCount.Value := ListView1.Items.Count + 1
+  else
+  begin
+    Item := ListView1.Items.Insert(StrToIntDef(Edit1.Text, 0));
+    Item.Caption := Format('Item %d', [ListView1.Items.Count]);
+  end;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 var
   Item: TListItem;
+  Idx: Integer;
 begin
-  Item := ListView1.Items[StrToIntDef(Edit1.Text, 0)];
-  Item.Free;
+  if ListView1.OwnerData then
+    OwnerDataCount.Value := ListView1.Items.Count - 1
+  else
+  begin
+    Idx := StrToIntDef(Edit1.Text, 0);
+    if (Idx < 0) or (Idx > ListView1.Items.Count - 1) then
+      exit;
+    Item := ListView1.Items[Idx];
+    Item.Free;
+  end;
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
@@ -141,17 +166,63 @@ end;
 procedure TForm1.Button5Click(Sender: TObject);
 var
   Item: TListItem;
+  Idx: Integer;
 begin
-  Item := ListView1.Items[StrToIntDef(Edit1.Text, 0)];
+  Idx := StrToIntDef(Edit1.Text, 0);
+  if (Idx < 0) or (Idx > ListView1.Items.Count - 1) then
+    exit;
+  Item := ListView1.Items[Idx];
   Item.Selected := True;
 end;
 
 procedure TForm1.Button6Click(Sender: TObject);
 var
   Item: TListItem;
+  Idx: Integer;
 begin
-  Item := ListView1.Items[StrToIntDef(Edit1.Text, 0)];
+  Idx := StrToIntDef(Edit1.Text, 0);
+  if (Idx < 0) or (Idx > ListView1.Items.Count - 1) then
+    exit;
+  Item := ListView1.Items[Idx];
   Item.Focused := True;
+end;
+
+procedure TForm1.ChBoxOwnerDataChange(Sender: TObject);
+var
+  B: Boolean;
+  AItem: TListItem;
+begin
+  B := TCheckBox(Sender).Checked;
+  lblSetCount.Enabled := B;
+  OwnerDataCount.Enabled := B;
+  ListView1.BeginUpdate;
+  try
+    ListView1.Clear; // first clear all items because virtual and normal items are different classes
+  finally
+    ListView1.EndUpdate;
+  end;
+  ListView1.OwnerData := B;
+  ListView1.BeginUpdate;
+  try
+    if B then
+      ListView1.Items.Count := OwnerDataCount.Value
+    else
+    begin
+      with ListView1 do
+      begin
+        AItem := Items.Add;
+        AItem.Caption := 'New 1';
+        AItem.ImageIndex := 0;
+        AItem.StateIndex := 0;
+        AItem.SubItems.Add('Sub 1');
+
+        AItem := Items.Add;
+        AItem.Caption := 'New 2';
+      end;
+    end;
+  finally
+    ListView1.EndUpdate;
+  end;
 end;
 
 procedure TForm1.CheckBox1Click(Sender: TObject);
@@ -185,6 +256,16 @@ begin
   ListView1.ShowColumnHeaders := CheckBox5.Checked;
 end;
 
+procedure TForm1.CheckBox6Change(Sender: TObject);
+begin
+  ListView1.AutoWidthLastColumn := TCheckBox(Sender).Checked;
+end;
+
+procedure TForm1.CheckBox7Change(Sender: TObject);
+begin
+  ListView1.ReadOnly := TCheckBox(Sender).Checked;
+end;
+
 procedure TForm1.ComboBox1Change (Sender: TObject );
 var
   Column: TListColumn;
@@ -214,7 +295,10 @@ var
   n, idx: Integer;
   
 begin
-  Item := ListView1.Items[StrToIntDef(Edit1.Text, 0)];
+  idx := StrToIntDef(Edit1.Text, 0);
+  if (idx < 0) or (idx > ListView1.Items.Count - 1) then
+    exit;
+  Item := ListView1.Items[idx];
 
   for n := Item.SubItems.Count to ListView1.Columns.Count - 2 do
     Item.Subitems.Add('');
@@ -222,10 +306,10 @@ begin
   n := StrToIntDef(Edit5.Text, 0);
   if n >= ListView1.Columns.Count then Exit;
   idx := StrToIntDef(Edit10.Text, -1);
-  if n = 0
-  then Item.ImageIndex := idx
-  else Item.SubitemImages[n - 1] := idx;
-
+  if n = 0 then
+    Item.ImageIndex := idx
+  else
+    Item.SubitemImages[n - 1] := idx;
 end;
 
 procedure TForm1.Edit11Change(Sender: TObject);
@@ -256,7 +340,10 @@ var
   Item: TListItem;
   n: Integer;
 begin
-  Item := ListView1.Items[StrToIntDef(Edit1.Text, 0)];
+  n := StrToIntDef(Edit1.Text, 0);
+  if (n < 0) or (n > ListView1.Items.Count - 1) then
+    exit;
+  Item := ListView1.Items[n];
   for n := Item.SubItems.Count to ListView1.Columns.Count - 2 do
     Item.Subitems.Add('');
   n := StrToIntDef(Edit5.Text, 0);
@@ -306,6 +393,21 @@ begin
   Edit5.Text := IntToStr(Column.Index);
 end;
 
+procedure TForm1.ListView1Data(Sender: TObject; Item: TListItem);
+var
+  i: Integer;
+begin
+  if (ListView1.ColumnCount > 0) then
+  begin
+    Item.Caption := 'OwnerData item '+IntToStr(Item.Index);
+    Item.ImageIndex := -1;
+    Item.StateIndex := -1;
+    for i := 1 to ListView1.ColumnCount - 1 do
+      Item.SubItems.Add('OwnerData subitem ['+IntToStr(Item.Index)+','+IntToStr(i)+']');
+
+  end;
+end;
+
 procedure TForm1.ListView1SelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
 var
   subIdx: Integer;
@@ -314,12 +416,24 @@ begin
   Edit1.Text := IntToStr(Item.Index);
 end;
 
+procedure TForm1.OwnerDataCountChange(Sender: TObject);
+begin
+  if not ListView1.OwnerData then
+    exit;
+  ListView1.BeginUpdate;
+  ListView1.Items.Count := TSpinEdit(Sender).Value;
+  ListView1.EndUpdate;
+end;
+
 procedure TForm1.ShowItemData;
 var
   Item: TListItem;
   idx: Integer;
 begin
-  Item := ListView1.Items[StrToIntDef(Edit1.Text, 0)];
+  idx := StrToIntDef(Edit1.Text, 0);
+  if (idx < 0) or (idx > ListView1.Items.Count - 1) then
+    exit;
+  Item := ListView1.Items[idx];
 
   idx := StrToIntDef(Edit5.Text, 0);
   if idx = 0

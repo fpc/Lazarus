@@ -1,75 +1,75 @@
 object Form1: TForm1
   Left = 356
-  Height = 299
+  Height = 360
   Top = 150
-  Width = 627
+  Width = 620
   HorzScrollBar.Page = 626
   VertScrollBar.Page = 298
   ActiveControl = CheckBox3
   Caption = 'Listview test'
-  ClientHeight = 299
-  ClientWidth = 627
+  ClientHeight = 360
+  ClientWidth = 620
   LCLVersion = '0.9.31'
   object PageControl1: TPageControl
-    Left = 433
-    Height = 280
+    Left = 399
+    Height = 341
     Top = 8
-    Width = 184
+    Width = 211
     ActivePage = Page3
     Anchors = [akTop, akRight]
     TabIndex = 0
     TabOrder = 0
     object Page3: TTabSheet
       Caption = 'LV'
-      ClientHeight = 254
-      ClientWidth = 176
+      ClientHeight = 307
+      ClientWidth = 205
       object Label11: TLabel
         Left = 6
-        Height = 14
+        Height = 17
         Top = 60
-        Width = 47
+        Width = 59
         Caption = 'Scrollbars'
         ParentColor = False
       end
       object Label12: TLabel
         Left = 6
-        Height = 14
+        Height = 17
         Top = 122
-        Width = 56
+        Width = 69
         Caption = 'SortColumn'
         ParentColor = False
       end
       object Label13: TLabel
         Left = 6
-        Height = 14
+        Height = 17
         Top = 154
-        Width = 45
+        Width = 52
         Caption = 'SortType'
         ParentColor = False
       end
       object Label14: TLabel
         Left = 6
-        Height = 14
+        Height = 17
         Top = 186
-        Width = 47
+        Width = 59
         Caption = 'ViewStyle'
         ParentColor = False
       end
       object CheckBox3: TCheckBox
         Left = 6
-        Height = 17
+        Height = 22
         Top = 4
-        Width = 68
+        Width = 87
         Caption = 'Multiselect'
         OnClick = CheckBox3Click
         TabOrder = 0
       end
       object ComboBox2: TComboBox
         Left = 77
-        Height = 21
+        Height = 26
         Top = 52
         Width = 95
-        ItemHeight = 13
+        ItemHeight = 0
         ItemIndex = 6
         Items.Strings = (
           'ssNone'
@@ -87,7 +87,7 @@ object Form1: TForm1
       end
       object Edit11: TEdit
         Left = 78
-        Height = 21
+        Height = 22
         Top = 116
         Width = 80
         OnChange = Edit11Change
@@ -96,10 +96,10 @@ object Form1: TForm1
       end
       object ComboBox3: TComboBox
         Left = 77
-        Height = 21
+        Height = 26
         Top = 146
         Width = 95
-        ItemHeight = 13
+        ItemHeight = 0
         ItemIndex = 0
         Items.Strings = (
           'stNone'
@@ -114,10 +114,10 @@ object Form1: TForm1
       end
       object ComboBox4: TComboBox
         Left = 78
-        Height = 21
+        Height = 26
         Top = 178
         Width = 95
-        ItemHeight = 13
+        ItemHeight = 0
         ItemIndex = 3
         Items.Strings = (
           'vsIcon'
@@ -132,18 +132,18 @@ object Form1: TForm1
       end
       object CheckBox4: TCheckBox
         Left = 6
-        Height = 17
+        Height = 22
         Top = 28
-        Width = 68
+        Width = 86
         Caption = 'RowSelect'
         OnClick = CheckBox4Click
         TabOrder = 5
       end
       object CheckBox5: TCheckBox
         Left = 6
-        Height = 17
+        Height = 22
         Top = 84
-        Width = 119
+        Width = 148
         Caption = 'ShowColumnHeaders'
         Checked = True
         OnClick = CheckBox5Click
@@ -151,26 +151,75 @@ object Form1: TForm1
         TabOrder = 6
       end
       object HideSelection: TCheckBox
-        Left = 91
-        Height = 17
+        Left = 97
+        Height = 22
         Top = 4
-        Width = 82
+        Width = 104
         Caption = 'HideSelection'
         Checked = True
         OnChange = HideSelectionChange
         State = cbChecked
         TabOrder = 7
       end
+      object ChBoxOwnerData: TCheckBox
+        Left = 6
+        Height = 22
+        Top = 249
+        Width = 88
+        Caption = 'OwnerData'
+        OnChange = ChBoxOwnerDataChange
+        TabOrder = 8
+      end
+      object lblSetCount: TLabel
+        Left = 10
+        Height = 17
+        Top = 281
+        Width = 55
+        Caption = 'SetCount'
+        Enabled = False
+        ParentColor = False
+      end
+      object OwnerDataCount: TSpinEdit
+        Left = 88
+        Height = 22
+        Top = 276
+        Width = 84
+        Enabled = False
+        MaxValue = 10000000
+        OnChange = OwnerDataCountChange
+        TabOrder = 9
+        Value = 2
+      end
+      object CheckBox6: TCheckBox
+        Left = 6
+        Height = 22
+        Top = 217
+        Width = 154
+        Caption = 'AutoWidthLastColumn'
+        OnChange = CheckBox6Change
+        TabOrder = 10
+      end
+      object CheckBox7: TCheckBox
+        Left = 97
+        Height = 22
+        Top = 28
+        Width = 81
+        Caption = 'ReadOnly'
+        Checked = True
+        OnChange = CheckBox7Change
+        State = cbChecked
+        TabOrder = 11
+      end
     end
     object Page1: TTabSheet
       Caption = 'Items'
-      ClientHeight = 0
-      ClientWidth = 0
+      ClientHeight = 307
+      ClientWidth = 205
       object Label6: TLabel
         Left = 6
         Height = 17
         Top = 4
-        Width = 65
+        Width = 32
         Caption = 'Index'
         ParentColor = False
       end
@@ -178,7 +227,7 @@ object Form1: TForm1
         Left = 94
         Height = 17
         Top = 4
-        Width = 65
+        Width = 55
         Caption = 'SubIndex'
         ParentColor = False
       end
@@ -186,7 +235,7 @@ object Form1: TForm1
         Left = 6
         Height = 17
         Top = 116
-        Width = 65
+        Width = 25
         Caption = 'Text'
         ParentColor = False
       end
@@ -194,7 +243,7 @@ object Form1: TForm1
         Left = 94
         Height = 17
         Top = 116
-        Width = 65
+        Width = 67
         Caption = 'ImageIndex'
         ParentColor = False
       end
@@ -240,7 +289,7 @@ object Form1: TForm1
       end
       object Edit1: TEdit
         Left = 6
-        Height = 23
+        Height = 22
         Top = 20
         Width = 80
         OnChange = Edit1Change
@@ -249,7 +298,7 @@ object Form1: TForm1
       end
       object Edit4: TEdit
         Left = 6
-        Height = 23
+        Height = 22
         Top = 132
         Width = 80
         OnChange = Edit4Change
@@ -258,7 +307,7 @@ object Form1: TForm1
       end
       object Edit5: TEdit
         Left = 94
-        Height = 23
+        Height = 22
         Top = 20
         Width = 80
         OnChange = Edit5Change
@@ -267,7 +316,7 @@ object Form1: TForm1
       end
       object Edit10: TEdit
         Left = 94
-        Height = 23
+        Height = 22
         Top = 132
         Width = 80
         OnChange = Edit10Change
@@ -277,8 +326,8 @@ object Form1: TForm1
     end
     object Page2: TTabSheet
       Caption = 'Columns'
-      ClientHeight = 0
-      ClientWidth = 0
+      ClientHeight = 307
+      ClientWidth = 205
       object Label1: TLabel
         Left = 6
         Height = 17
@@ -414,7 +463,7 @@ object Form1: TForm1
         Height = 21
         Top = 191
         Width = 80
-        ItemHeight = 13
+        ItemHeight = 0
         Items.Strings = (
           'taLeftJustify'
           'taRightJustify'
@@ -436,28 +485,32 @@ object Form1: TForm1
   end
   object ListView1: TListView
     Left = 8
-    Height = 280
+    Height = 341
     Top = 8
-    Width = 417
+    Width = 383
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderWidth = 2
     Columns = <    
       item
         Caption = 'One'
+        Width = 80
       end    
       item
         Caption = 'Two'
+        Width = 301
       end>
     Items.LazData = {
       540000000200000000000000FFFFFFFFFFFFFFFF02000000050000004E657720
       31050000005375622031050000005375622032FFFFFFFFFFFFFFFFFFFFFFFF00
       000000050000004E65772032FFFFFFFFFFFFFFFF
     }
+    ReadOnly = True
     ScrollBars = ssAutoBoth
     SmallImages = ImageList1
     TabOrder = 1
     ViewStyle = vsReport
     OnColumnClick = ListView1ColumnClick
+    OnData = ListView1Data
     OnSelectItem = ListView1SelectItem
   end
   object ImageList1: TImageList
