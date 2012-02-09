@@ -8630,7 +8630,18 @@
         </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#RTL.Classes.TShiftState"/>
+          <link id="ShiftStateToKeys"/>
+          <link id="KeyDataToShiftState"/>
+          <link id="#LCL.LCLType.MK_Shift"/>
+          <link id="#LCL.LCLType.MK_Control"/>
+          <link id="#LCL.LCLType.MK_LButton"/>
+          <link id="#LCL.LCLType.MK_RButton"/>
+          <link id="#LCL.LCLType.MK_MButton"/>
+          <link id="#LCL.LCLType.MK_XBUTTON1"/>
+          <link id="#LCL.LCLType.MK_XBUTTON2"/>
+        </seealso>
       </element>
       <element name="KeysToShiftState.Result">
         <short/>
@@ -8644,7 +8655,18 @@
         </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#RTL.Classes.TShiftState"/>
+          <link id="KeysToShiftState"/>
+          <link id="ShiftStateToKeys"/>
+          <link id="#LCL.LCLType.MK_Shift"/>
+          <link id="#LCL.LCLType.MK_Control"/>
+          <link id="#LCL.LCLType.MK_LButton"/>
+          <link id="#LCL.LCLType.MK_RButton"/>
+          <link id="#LCL.LCLType.MK_MButton"/>
+          <link id="#LCL.LCLType.MK_XBUTTON1"/>
+          <link id="#LCL.LCLType.MK_XBUTTON2"/>
+        </seealso>
       </element>
       <element name="KeyDataToShiftState.Result">
         <short/>
@@ -8660,6 +8682,9 @@
         <errors>
         </errors>
         <seealso>
+          <link id="#RTL.Classes.TShiftState"/>
+          <link id="KeysToShiftState"/>
+          <link id="KeyDataToShiftState"/>
           <link id="#LCL.LCLType.MK_Shift"/>
           <link id="#LCL.LCLType.MK_Control"/>
           <link id="#LCL.LCLType.MK_LButton"/>

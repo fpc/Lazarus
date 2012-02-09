@@ -11936,45 +11936,122 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="MK_LBUTTON">
-        <short/>
+        <short>A key state constant to represent the left mouse button, equivalent to ssLeft from TShiftState</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#RTL.Classes.TShiftState"/>
+          <link id="#LCL.Forms.ShiftStateToKeys"/>
+          <link id="#LCL.Forms.KeyDataToShiftState"/>
+          <link id="#LCL.Forms.ShiftStateToKeys"/>
+          <link id="MK_Shift"/>
+          <link id="MK_Control"/>
+          <link id="MK_RButton"/>
+          <link id="MK_MButton"/>
+          <link id="MK_XBUTTON1"/>
+          <link id="MK_XBUTTON2"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="MK_RBUTTON">
-        <short/>
+        <short>A key state constant to represent the right mouse button, equivalent to ssRight from TShiftState</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#RTL.Classes.TShiftState"/>
+          <link id="#LCL.Forms.ShiftStateToKeys"/>
+          <link id="#LCL.Forms.KeyDataToShiftState"/>
+          <link id="#LCL.Forms.ShiftStateToKeys"/>
+          <link id="MK_Shift"/>
+          <link id="MK_Control"/>
+          <link id="MK_LButton"/>
+          <link id="MK_MButton"/>
+          <link id="MK_XBUTTON1"/>
+          <link id="MK_XBUTTON2"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="MK_SHIFT">
-        <short/>
+        <short>A key state constant to represent the shift key, equivalent to ssShift from TShiftState</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#RTL.Classes.TShiftState"/>
+          <link id="#LCL.Forms.ShiftStateToKeys"/>
+          <link id="#LCL.Forms.KeyDataToShiftState"/>
+          <link id="#LCL.Forms.ShiftStateToKeys"/>
+          <link id="MK_Control"/>
+          <link id="MK_LButton"/>
+          <link id="MK_RButton"/>
+          <link id="MK_MButton"/>
+          <link id="MK_XBUTTON1"/>
+          <link id="MK_XBUTTON2"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="MK_CONTROL">
-        <short/>
+        <short>A key state constant to represent the control key, equivalent to ssCtrl from TShiftState</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#RTL.Classes.TShiftState"/>
+          <link id="#LCL.Forms.ShiftStateToKeys"/>
+          <link id="#LCL.Forms.KeyDataToShiftState"/>
+          <link id="#LCL.Forms.ShiftStateToKeys"/>
+          <link id="MK_Shift"/>
+          <link id="MK_LButton"/>
+          <link id="MK_RButton"/>
+          <link id="MK_MButton"/>
+          <link id="MK_XBUTTON1"/>
+          <link id="MK_XBUTTON2"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="MK_MBUTTON">
-        <short/>
+        <short>A key state constant to represent the middle mouse button, equivalent to ssMiddle from TShiftState</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#RTL.Classes.TShiftState"/>
+          <link id="#LCL.Forms.ShiftStateToKeys"/>
+          <link id="#LCL.Forms.KeyDataToShiftState"/>
+          <link id="#LCL.Forms.ShiftStateToKeys"/>
+          <link id="MK_Shift"/>
+          <link id="MK_Control"/>
+          <link id="MK_LButton"/>
+          <link id="MK_RButton"/>
+          <link id="MK_XBUTTON1"/>
+          <link id="MK_XBUTTON2"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="MK_XBUTTON1">
-        <short/>
+        <short>A key state constant to represent the first extra mouse button, equivalent to ssExtra1 from TShiftState</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#RTL.Classes.TShiftState"/>
+          <link id="#LCL.Forms.ShiftStateToKeys"/>
+          <link id="#LCL.Forms.KeyDataToShiftState"/>
+          <link id="#LCL.Forms.ShiftStateToKeys"/>
+          <link id="MK_Shift"/>
+          <link id="MK_Control"/>
+          <link id="MK_LButton"/>
+          <link id="MK_RButton"/>
+          <link id="MK_MButton"/>
+          <link id="MK_XBUTTON2"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="MK_XBUTTON2">
-        <short/>
+        <short>A key state constant to represent the second extra mouse button, equivalent to ssExtra2 from TShiftState</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#RTL.Classes.TShiftState"/>
+          <link id="#LCL.Forms.ShiftStateToKeys"/>
+          <link id="#LCL.Forms.KeyDataToShiftState"/>
+          <link id="#LCL.Forms.ShiftStateToKeys"/>
+          <link id="MK_Shift"/>
+          <link id="MK_Control"/>
+          <link id="MK_LButton"/>
+          <link id="MK_RButton"/>
+          <link id="MK_MButton"/>
+          <link id="MK_XBUTTON1"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="NM_FIRST">
