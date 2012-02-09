@@ -10,8 +10,8 @@ uses
 procedure DebuglnStack(const s: string = '');
 
 procedure DbgOut(const s: string = ''); inline; overload;
-procedure DbgOut(Args: array of const); inline; overload;
-procedure DbgOut(const S: String; Args: array of const); inline; overload;// similar to Format(s,Args)
+procedure DbgOut(Args: array of const); {inline;} overload;
+procedure DbgOut(const S: String; Args: array of const); {inline;} overload;// similar to Format(s,Args)
 procedure DbgOut(const s1, s2: string; const s3: string = '';
                  const s4: string = ''; const s5: string = ''; const s6: string = '';
                  const s7: string = ''; const s8: string = ''; const s9: string = '';
@@ -20,8 +20,8 @@ procedure DbgOut(const s1, s2: string; const s3: string = '';
                  const s16: string = ''; const s17: string = ''; const s18: string = ''); inline; overload;
 
 procedure DebugLn(const s: string = ''); inline; overload;
-procedure DebugLn(Args: array of const); inline; overload;
-procedure DebugLn(const S: String; Args: array of const); inline; overload;// similar to Format(s,Args)
+procedure DebugLn(Args: array of const); {inline;} overload;
+procedure DebugLn(const S: String; Args: array of const); {inline;} overload;// similar to Format(s,Args)
 procedure DebugLn(const s1, s2: string; const s3: string = '';
                   const s4: string = ''; const s5: string = ''; const s6: string = '';
                   const s7: string = ''; const s8: string = ''; const s9: string = '';
@@ -30,8 +30,8 @@ procedure DebugLn(const s1, s2: string; const s3: string = '';
                   const s16: string = ''; const s17: string = ''; const s18: string = ''); inline; overload;
 
 procedure DebugLnEnter(const s: string = ''); inline; overload;
-procedure DebugLnEnter(Args: array of const); inline; overload;
-procedure DebugLnEnter(s: string; Args: array of const); inline; overload;
+procedure DebugLnEnter(Args: array of const); {inline;} overload;
+procedure DebugLnEnter(s: string; Args: array of const); {inline;} overload;
 procedure DebugLnEnter(const s1, s2: string; const s3: string = '';
                        const s4: string = ''; const s5: string = ''; const s6: string = '';
                        const s7: string = ''; const s8: string = ''; const s9: string = '';
@@ -40,8 +40,8 @@ procedure DebugLnEnter(const s1, s2: string; const s3: string = '';
                        const s16: string = ''; const s17: string = ''; const s18: string = ''); inline; overload;
 
 procedure DebugLnExit(const s: string = ''); inline; overload;
-procedure DebugLnExit(Args: array of const); inline; overload;
-procedure DebugLnExit(s: string; Args: array of const); inline; overload;
+procedure DebugLnExit(Args: array of const); {inline;} overload;
+procedure DebugLnExit(s: string; Args: array of const); {inline;} overload;
 procedure DebugLnExit (const s1, s2: string; const s3: string = '';
                        const s4: string = ''; const s5: string = ''; const s6: string = '';
                        const s7: string = ''; const s8: string = ''; const s9: string = '';
