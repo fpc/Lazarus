@@ -4066,14 +4066,7 @@
         <short/>
       </element>
       <element name="TWin32WidgetSet.IntfSendsUTF8KeyPress" link="#LCL.InterfaceBase.TWidgetSet.IntfSendsUTF8KeyPress" />
-        <short>Returns the interface capability to send UTF-8 characters</short>
-      </element>
       <element name="TWin32WidgetSet.IsDesignerDC" link="#LCL.InterfaceBase.TWidgetSet.IsDesignerDC" />
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
       <element name="TWin32WidgetSet.IsDesignerDC.WindowHandle">
         <short/>
       </element>

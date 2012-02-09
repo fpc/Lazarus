@@ -2694,7 +2694,8 @@ being raised.
           if one changes the selection via the keyboard. It also occurs when the item
           is changed programmatically. This is done for Delphi compatibility.</p>
           <p>Note that Lazarus also offers another event for the same task with a better name:
-          see TCustomRadioGroup.OnSelectionChanged for more details.</descr>
+          see TCustomRadioGroup.OnSelectionChanged for more details.</p>
+        </descr>
         <seealso>
           <link id="#LCL.Controls.TControl.OnClick" />
           <link id="TCustomRadioGroup.OnSelectionChanged" />
