@@ -4831,7 +4831,7 @@
           </p>
           <p>A common strategy in Object-Oriented programming is to provide an <link id="#lcl.ActnList.TActionList">ActionList</link>
             with the facility for entering, removing or editing a number of pre-defined actions,
-            from which the most appropriate can be selected to use in any particular instance [of?].
+            from which the most appropriate can be selected to use in any particular instance.
           </p>
           <table>
             <caption>Some commonly listed Actions</caption>
