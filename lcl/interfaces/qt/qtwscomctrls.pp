@@ -1528,6 +1528,8 @@ var
   LWI: QListWidgetItemH;
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
+  Size: TSize;
+  AIcon: QIconH;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemDisplayRect') then
     Exit;
@@ -1539,12 +1541,30 @@ begin
     Result := QtListWidget.getVisualItemRect(LWI);
   end else
   begin
+    //  TDisplayCode = (drBounds, drIcon, drLabel, drSelectBounds);
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
     TWI := QtTreeWidget.topLevelItem(AIndex);
     if (QTreeWidgetItem_childCount(TWI) > 0) and (ASubItem > 0) then
       Result := QtTreeWidget.visualItemRect(QTreeWidgetItem_child(TWI, ASubItem))
     else
       Result := QtTreeWidget.visualItemRect(TWI);
+    if ACode in [drLabel, drSelectBounds] then
+      Result.Right := Result.Left + QtTreeWidget.ColWidth[0]
+    else
+    if ACode in [drIcon] then
+    begin
+      AIcon := QIcon_create();
+      QTreeWidgetItem_icon(TWI, AIcon, 0);
+      if not QIcon_isNull(AIcon) then
+      begin
+        Size.cx := 0;
+        Size.cy := 0;
+        QIcon_actualSize(AIcon, @Size, @Size);
+        Result.Right := Result.Left + Size.cx;
+        Result.Bottom := Result.Top + Size.cy;
+      end;
+      QIcon_destroy(AIcon);
+    end;
   end;
 end;
 
@@ -1957,7 +1977,7 @@ const
   );
   BoolToEditTriggers: array[Boolean] of QAbstractItemViewEditTriggers =
   (
-    QAbstractItemViewSelectedClicked,
+    QAbstractItemViewNoEditTriggers, // QAbstractItemViewSelectedClicked,
     QAbstractItemViewNoEditTriggers
   );
 var
