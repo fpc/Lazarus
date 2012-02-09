@@ -984,15 +984,17 @@ class procedure TQtWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit;
 var
   Widget: TQtWidget;
   QtEdit: IQtEdit;
-  ALength: Integer;
+  // ALength: Integer;
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetSelStart') then
     Exit;
 
   Widget := TQtWidget(ACustomEdit.Handle);
-  ALength := GetSelLength(ACustomEdit);
+  // issue #11802, make qt consistent with gtk2 and win32.
+  // Delphi docs says that setting selection start should reset sellength !
+  // ALength := GetSelLength(ACustomEdit);
   if Supports(Widget, IQtEdit, QtEdit) then
-    QtEdit.setSelection(NewStart, ALength);
+    QtEdit.setSelection(NewStart, 0);
 end;
 
 class procedure TQtWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit;
@@ -1472,15 +1474,17 @@ class procedure TQtWSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomCo
 var
   Widget: TQtWidget;
   QtEdit: IQtEdit;
-  ALength: Integer;
+  // ALength: Integer;
 begin
   if not WSCheckHandleAllocated(ACustomComboBox, 'SetSelStart') then
     Exit;
 
   Widget := TQtWidget(ACustomComboBox.Handle);
-  ALength := GetSelLength(ACustomComboBox);
+  // issue #11802, make qt consistent with gtk2 and win32.
+  // Delphi docs says that setting selection start should reset sellength !
+  // ALength := GetSelLength(ACustomComboBox);
   if Supports(Widget, IQtEdit, QtEdit) then
-    QtEdit.setSelection(NewStart, ALength);
+    QtEdit.setSelection(NewStart, 0);
 end;
 
 class procedure TQtWSCustomComboBox.SetSelLength(
