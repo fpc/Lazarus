@@ -951,8 +951,10 @@ begin
 
   if (AExceptionType in [deInternal, deRunError]) then begin
     AContinue := ExecuteExceptionDialog(msg, Ignore, AExceptionType = deInternal) = mrCancel;
-    if Ignore then
+    if Ignore then begin
       Exceptions.AddIfNeeded(AExceptionClass);
+      Exceptions.Find(AExceptionClass).Enabled := True;
+    end;
   end
   else begin
     MessageDlg(lisCCOErrorCaption, msg, mtError, [mbOk], 0)
