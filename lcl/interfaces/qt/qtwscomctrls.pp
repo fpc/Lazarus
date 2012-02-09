@@ -1541,7 +1541,7 @@ begin
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
     TWI := QtTreeWidget.topLevelItem(AIndex);
-    if QTreeWidgetItem_childCount(TWI) > 0 then
+    if (QTreeWidgetItem_childCount(TWI) > 0) and (ASubItem > 0) then
       Result := QtTreeWidget.visualItemRect(QTreeWidgetItem_child(TWI, ASubItem))
     else
       Result := QtTreeWidget.visualItemRect(TWI);
