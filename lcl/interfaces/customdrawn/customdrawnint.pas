@@ -147,7 +147,7 @@ type
     {$endif}
     {$ifdef CD_Android}
     CombiningAccent: Cardinal;
-    {$IFDEF WithLazLogger}
+    {$IFnDEF WithOldDebugln}
     procedure AndroidDebugLn(ASender: TObject; AStr: string; var AHandled: Boolean);
     {$ELSE}
     procedure AndroidDebugLn(AStr: string);
@@ -173,7 +173,7 @@ type
     // Mobile emulator and mobile mode
     MobileMainForm: TLCLIntfHandle;
     // For unusual implementations of DebugLn/DebugOut
-    {$IFDEF WithLazLogger}
+    {$IFnDEF WithOldDebugln}
     procedure AccumulatingDebugOut(ASender: TObject; AStr: string; var AHandled: Boolean);
     {$ELSE}
     procedure AccumulatingDebugOut(AStr: string);

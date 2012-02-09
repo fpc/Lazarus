@@ -15,7 +15,7 @@
 }
 //---------------------------------------------------------------
 
-{$IFDEF WithLazLogger}
+{$IFnDEF WithOldDebugln}
 procedure TCDWidgetSet.AccumulatingDebugOut(ASender: TObject; AStr: string; var AHandled: Boolean);
 begin
   AccumulatedStr := AccumulatedStr + AStr;

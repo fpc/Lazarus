@@ -465,7 +465,7 @@ procedure JNI_OnUnload(vm:PJavaVM;reserved:pointer); cdecl;
 begin
 end;
 
-{$IFDEF WithLazLogger}
+{$IFnDEF WithOldDebugln}
 procedure TCDWidgetSet.AndroidDebugLn(ASender: TObject; AStr: string; var AHandled: Boolean);
 begin
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(AccumulatedStr+AStr));
@@ -720,7 +720,7 @@ end;
 procedure TCDWidgetSet.BackendCreate;
 begin
   // Setup DebugLn
-  {$IFDEF WithLazLogger}
+  {$IFnDEF WithOldDebugln}
   DebugLogger.DebugLnProc := @AndroidDebugLn;
   DebugLogger.DbgOutProc := @AccumulatingDebugOut;
   {$ELSE}

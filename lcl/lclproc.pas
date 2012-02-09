@@ -37,7 +37,7 @@ uses
   Win9xWsManager, // Support for Lower/UpperWideStringProc on Win9x, also used by some Utf8 string handling functions
   {$ENDIF}
   {$ENDIF}
-  {$IFDEF WithLazLogger} LazLogger, {$ENDIF}
+  {$IFnDEF WithOldDebugln} LazLogger, {$ENDIF}
   Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, FileUtil,
   LCLStrConsts, LCLType, WSReferences, LazMethodList, LazUTF8;
 
@@ -173,7 +173,7 @@ function StackTraceAsString(const AStack: TStackTracePointers;
                             UseCache: boolean): string;
 function GetLineInfo(Addr: Pointer; UseCache: boolean): string;
 
-{$IFDEF WithLazLogger}
+{$IFnDEF WithOldDebugln}
 procedure DbgOut(const s: string = ''); inline; overload;
 procedure DbgOut(Args: array of const); inline; overload;
 procedure DbgOut(const S: String; Args: array of const); inline; overload;// similar to Format(s,Args)
@@ -403,7 +403,7 @@ procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
 function CreateFirstIdentifier(const Identifier: string): string;
 function CreateNextIdentifier(const Identifier: string): string;
 
-{$IFnDEF WithLazLogger}
+{$IFDEF WithOldDebugln}
 type
   TDebugLnProc = procedure (s: string) of object;
 
@@ -428,7 +428,7 @@ const
 var
   InterfaceInitializationHandlers: TFPList = nil;
   InterfaceFinalizationHandlers: TFPList = nil;
-  {$IFnDEF WithLazLogger}
+  {$IFDEF WithOldDebugln}
   DebugTextAllocated: boolean;
   DebugNestLvl: Integer = 0;
   DebugNestPrefix: PChar = nil;
@@ -1398,7 +1398,7 @@ end;
 
 // Debug funcs :
 
-{$IFDEF WithLazLogger}
+{$IFnDEF WithOldDebugln}
 procedure DumpStack;
 begin
   DebugLogger.DebuglnStack;
@@ -3306,7 +3306,7 @@ begin
 end;
 
 initialization
-  {$IFnDEF WithLazLogger} InitializeDebugOutput; {$ENDIF}
+  {$IFDEF WithOldDebugln} InitializeDebugOutput; {$ENDIF}
   {$ifdef WinCE}
   // The stabs based back trace function crashes on wince,
   // see http://bugs.freepascal.org/view.php?id=14330
@@ -3329,7 +3329,7 @@ finalization
   DebugLCLComponents:=nil;
   {$ENDIF}
   FreeLineInfoCache;
-  {$IFnDEF WithLazLogger}
+  {$IFDEF WithOldDebugln}
   FinalizeDebugOutput;
   DebugLnNestFreePrefix;
   {$ENDIF}
