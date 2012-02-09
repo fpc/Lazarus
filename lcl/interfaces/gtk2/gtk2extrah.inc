@@ -225,10 +225,23 @@ function gtk_icon_view_get_visible_range(tree_view: PGtkTreeView; out start_path
 function gdk_screen_is_composited(screen: PGdkScreen): gboolean; cdecl; external gdklib;
 {$endif}
 
+type
+  TGtkTreeViewGridLines = cardinal;
+
+const
+  GTK_TREE_VIEW_GRID_LINES_NONE = 0;
+  GTK_TREE_VIEW_GRID_LINES_HORIZONTAL = 1;
+  GTK_TREE_VIEW_GRID_LINES_VERTICAL = 2;
+  GTK_TREE_VIEW_GRID_LINES_BOTH = 3;
+
 var
   gtk_window_set_opacity: procedure(window: PGtkWindow; opacity: gdouble); cdecl;
   g_object_ref_sink: function(anObject: PGObject): gpointer; cdecl;
   gdk_window_get_cursor: function(window: PGdkWindow): PGdkCursor; cdecl;
+
+  // since 2.10
+  gtk_tree_view_set_grid_lines: procedure(tree_view: PGtkTreeView; grid_lines: TGtkTreeViewGridLines); cdecl;
+  gtk_tree_view_get_grid_lines: function(tree_view: PGtkTreeView): TGtkTreeViewGridLines; cdecl;
 
 {$ifdef ver2_2}
 {$ifdef darwin}

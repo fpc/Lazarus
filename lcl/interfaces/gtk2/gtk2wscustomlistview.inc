@@ -475,7 +475,17 @@ begin
         // maybe possible with some cellwidget hacking
         // this create rows with alternating colors
         if GTK_IS_TREE_VIEW(MainView) then
-          gtk_tree_view_set_rules_hint(PGtkTreeView(MainView), AIsSet);
+        begin
+          if gtk_tree_view_set_grid_lines <> nil then
+          begin
+            if AIsSet then
+              gtk_tree_view_set_grid_lines(PGtkTreeView(MainView), GTK_TREE_VIEW_GRID_LINES_BOTH)
+            else
+              gtk_tree_view_set_grid_lines(PGtkTreeView(MainView), GTK_TREE_VIEW_GRID_LINES_NONE);
+
+          end else
+            gtk_tree_view_set_rules_hint(PGtkTreeView(MainView), AIsSet);
+        end;
       end;
       lvpHideSelection: begin
         // TODO: implement

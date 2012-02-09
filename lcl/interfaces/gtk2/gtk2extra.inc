@@ -66,6 +66,8 @@ initialization
     if gtkhandle <> 0 then
     begin
       pointer(gtk_window_set_opacity):=GetProcAddress(gtkhandle,'gtk_window_set_opacity');
+      pointer(gtk_tree_view_get_grid_lines):=GetProcAddress(gtkhandle,'gtk_tree_view_get_grid_lines');
+      pointer(gtk_tree_view_set_grid_lines):=GetProcAddress(gtkhandle,'gtk_tree_view_set_grid_lines');
       break;
     end;
   end;
