@@ -1166,6 +1166,10 @@ type
     AStartIndex: Integer; ADirection: TSearchDirection; AWrap: Boolean;
     var AIndex: Integer) of object;
 
+  TLVDataHintEvent = procedure(Sender: TObject; StartIndex, EndIndex: Integer) of object;
+  TLVDataStateChangeEvent = procedure(Sender: TObject; StartIndex,
+    EndIndex: Integer; OldState, NewState: TListItemStates) of object;
+
   TLVColumnClickEvent = procedure(Sender: TObject;
                                   Column: TListColumn) of object;
   TLVColumnRClickEvent = procedure(Sender: TObject; Column: TListColumn;
@@ -1240,7 +1244,7 @@ type
     FDefaultItemHeight: integer;
     FHotTrackStyles: TListHotTrackStyles;
     FIconOptions: TIconOptions;
-    FOnDataFind: TLVDataFindEvent;
+
     FOwnerData: Boolean;
     FOwnerDataItem: TOwnerDataListItem;
     FListItems: TListItems;
@@ -1267,6 +1271,9 @@ type
     FOnColumnClick: TLVColumnClickEvent;
     FOnCompare: TLVCompareEvent;
     FOnData: TLVDataEvent;
+    FOnDataFind: TLVDataFindEvent;
+    FOnDataHint: TLVDataHintEvent;
+    FOnDataStateChange: TLVDataStateChangeEvent;
     FOnDeletion: TLVDeletedEvent;
     FOnInsert: TLVInsertEvent;
     FOnItemChecked: TLVCheckedItemEvent;
@@ -1355,6 +1362,10 @@ type
     function GetUpdateCount: Integer;
 
     procedure DoGetOwnerData(Item: TListItem); virtual;
+    function DoOwnerDataHint(AStartIndex, AEndIndex: Integer): Boolean; virtual;
+    function DoOwnerDataStateChange(AStartIndex, AEndIndex: Integer; AOldState,
+      ANewState: TListItemStates): Boolean; virtual;
+
   protected
     property AllocBy: Integer read FAllocBy write SetAllocBy default 0;
     property AutoSort: Boolean read FAutoSort write FAutoSort default True; // when we click header column sort automatically
@@ -1381,6 +1392,9 @@ type
     property OnCompare: TLVCompareEvent read FOnCompare write FOnCompare;
     property OnData: TLVDataEvent read FOnData write FOnData;
     property OnDataFind: TLVDataFindEvent read FOnDataFind write FOnDataFind;
+    property OnDataHint: TLVDataHintEvent read FOnDataHint write FOnDataHint;
+    property OnDataStateChange: TLVDataStateChangeEvent read FOnDataStateChange write FOnDataStateChange;
+
     property OnDeletion: TLVDeletedEvent read FOnDeletion write FOnDeletion;
     property OnInsert: TLVInsertEvent read FOnInsert write FOnInsert;
     property OnItemChecked: TLVCheckedItemEvent read FOnItemChecked write FOnItemChecked;
@@ -1506,6 +1520,8 @@ type
     property OnCustomDrawSubItem;
     property OnData;
     property OnDataFind;
+    property OnDataHint;
+    property OnDataStateChange;
     property OnDblClick;
     property OnDeletion;
     property OnDragDrop;

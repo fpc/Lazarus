@@ -593,6 +593,22 @@ begin
   if Assigned(OnData) then OnData(Self, Item);
 end;
 
+function TCustomListView.DoOwnerDataHint(AStartIndex, AEndIndex: Integer
+  ): Boolean;
+begin
+  Result := Assigned(FOnDataHint);
+  if Result then
+    FOnDataHint(Self, AStartIndex, AEndIndex);
+end;
+
+function TCustomListView.DoOwnerDataStateChange(AStartIndex,
+  AEndIndex: Integer; AOldState, ANewState: TListItemStates): Boolean;
+begin
+  Result := Assigned(FOnDataStateChange);
+  if Result then
+    FOnDataStateChange(Self, AStartIndex, AEndIndex, AOldState, ANewState);
+end;
+
 {------------------------------------------------------------------------------}
 {   TCustomListView SetColumns                                                 }
 {------------------------------------------------------------------------------}
