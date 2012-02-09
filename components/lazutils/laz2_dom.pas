@@ -1998,7 +1998,7 @@ begin
       end;
     end;
   end;
-  SortedIndex := -1;
+  SortedIndex := High(SortedIndex)-1;
   Result := False;
 end;
 
