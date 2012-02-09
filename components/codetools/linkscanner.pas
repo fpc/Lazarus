@@ -141,6 +141,7 @@ type
   TCompilerMode = (
     cmFPC,
     cmDELPHI,
+    cmDELPHIUNICODE,
     cmGPC,
     cmTP,
     cmOBJFPC,
@@ -186,6 +187,9 @@ const
     // cmDELPHI
     [cmsDefault_ansistring,cmsResult,cmsAdvancedRecords,cmsProperty,
      cmsCvar_support,cmsOut,cmsObjpas],
+    // cmDELPHIUNICODE
+    [cmsDefault_ansistring,cmsResult,cmsAdvancedRecords,cmsProperty,
+     cmsCvar_support,cmsOut,cmsObjpas,cmsSystemCodepage],
     // cmGPC
     [],
     // cmTP
@@ -577,7 +581,7 @@ type
 const
   // upper case
   CompilerModeNames: array[TCompilerMode] of shortstring=(
-        'FPC', 'DELPHI', 'GPC', 'TP', 'OBJFPC', 'MACPAS', 'ISO'
+        'FPC', 'DELPHI', 'DELPHIUNICODE', 'GPC', 'TP', 'OBJFPC', 'MACPAS', 'ISO'
      );
 
   // upper case
