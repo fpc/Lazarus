@@ -424,7 +424,7 @@ begin
       g_object_set_data(PGObject(AWindow), 'havesavedcursor', gpointer(1));
       g_object_set_data(PGObject(AWindow), 'savedcursor', gpointer(OldCursor));
     end;
-    gdk_pointer_grab(AWindow, True, 0, AWindow, Cursor, 1);
+    gdk_pointer_grab(AWindow, False, 0, AWindow, Cursor, 1);
     try
       gdk_window_set_cursor(AWindow, Cursor);
     finally
