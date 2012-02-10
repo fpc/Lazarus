@@ -389,6 +389,8 @@ begin
   javaAndroidAppActivityClass := javaEnvRef^^.FindClass(javaEnvRef,'android/app/Activity');
   javaJavaLandSystemClass := javaEnvRef^^.FindClass(javaEnvRef,'java/lang/System');
   javaAndroidOSBuildClass := javaEnvRef^^.FindClass(javaEnvRef,'android/os/Build');
+  javaAndroidOSVibratorClass := javaEnvRef^^.FindClass(javaEnvRef,'android/os/Vibrator');
+  javaAndroidContentContextClass := javaEnvRef^^.FindClass(javaEnvRef,'android/content/Context');
 
   // Register Pascal exported calls
   if javaEnvRef^^.RegisterNatives(javaEnvRef, javaActivityClass, @NativeMethods[0],length(NativeMethods))<0 then
@@ -457,6 +459,8 @@ begin
   javaMethod_Activity_finish := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidAppActivityClass, 'finish', '()V');
   // Methods from java.lang.System
   javaMethod_System_exit := javaEnvRef^^.GetStaticMethodID(javaEnvRef, javaJavaLandSystemClass, 'exit', '(I)V');
+  // Generic methods from Context
+  javaMethod_getSystemService := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidContentContextClass, 'getSystemService', '(Ljava/lang/String;)Ljava/lang/Object;');
 
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', 'JNI_OnLoad finished');
   result:=JNI_VERSION_1_4;// 1_6 is another option

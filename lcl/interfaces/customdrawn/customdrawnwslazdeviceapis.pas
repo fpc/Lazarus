@@ -34,7 +34,7 @@ uses
   jni,
   {$endif}
   // LCL
-  LazDeviceAPIs,
+  LazDeviceAPIs, LCLProc,
   // Widgetset
   customdrawnint, WSLCLClasses, WSLazDeviceAPIs;
 
@@ -177,8 +177,31 @@ begin
 end;
 
 class procedure TCDWSLazDeviceAPIs.Vibrate(ADurationMS: Cardinal);
+var
+  lVibratorObject: JObject;
+  javaMethod_vibrate: JMethodID;
+  javaString_VIBRATOR_SERVICE: JString;
+  // array for the parameters
+  lParams: array[0..0] of JValue;
+const
+  javaConstant_VIBRATOR_SERVICE = 'vibrator';
 begin
+  // First IDs
+  javaMethod_vibrate := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidOSVibratorClass, 'vibrate', '(J)V');
 
+  // get the string Context.VIBRATOR_SERVICE
+  javaString_VIBRATOR_SERVICE := javaEnvRef^^.NewStringUTF(javaEnvRef, pchar(javaConstant_VIBRATOR_SERVICE));
+
+  // Get the vibrator object
+  // Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+  DebugLn('3');
+  lParams[0].l := javaString_VIBRATOR_SERVICE;
+  lVibratorObject := javaEnvRef^^.CallObjectMethodA(javaEnvRef, javaActivityObject, javaMethod_getSystemService, @lParams[0]);
+
+  // Now call the method from the vibrator object
+  DebugLn('4');
+  lParams[0].j := ADurationMS;
+  javaEnvRef^^.CallVoidMethodA(javaEnvRef, lVibratorObject, javaMethod_Vibrate, @lParams[0]);
 end;
 {$endif}
 

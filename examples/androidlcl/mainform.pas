@@ -149,6 +149,7 @@ begin
   //  DebugLn(Screen.Fonts.Strings[i]);
   DebugLn('Device.Manufacturer='+Device.Manufacturer);
   DebugLn('Device.Model='+Device.Model);
+  Device.Vibrate(2000);
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);

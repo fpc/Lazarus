@@ -286,6 +286,8 @@ var
   javaAndroidAppActivityClass: JClass = nil;
   javaJavaLandSystemClass: JClass = nil;
   javaAndroidOSBuildClass: JClass = nil;
+  javaAndroidOSVibratorClass: JClass = nil;
+  javaAndroidContentContextClass: JClass = nil;
 
   // Fields of our Activity
   // Strings
@@ -342,6 +344,8 @@ var
   javaMethod_Activity_finish: jmethodid = nil;
   // Methods from java.lang.System
   javaMethod_System_exit: jmethodid = nil;
+  // Generic methods from Context
+  javaMethod_getSystemService: jmethodid = nil;
 
   // This is utilized to store the information such as invalidate requests in events
   eventResult: jint;

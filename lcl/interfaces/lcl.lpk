@@ -114,7 +114,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="394">
+    <Files Count="395">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1948,6 +1948,11 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaCaret"/>
       </Item394>
+      <Item395>
+        <Filename Value="customdrawn/customdrawnwslazdeviceapis.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CustomDrawnWSLazDeviceAPIS"/>
+      </Item395>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
@@ -1970,5 +1975,8 @@ end;"/>
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
   </Package>
 </CONFIG>

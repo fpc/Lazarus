@@ -70,7 +70,7 @@ object Form1: TForm1
   object Label1: TLabel
     Left = 24
     Height = 18
-    Top = 199
+    Top = 226
     Width = 43
     Caption = 'Label1'
     Font.Color = clBlue

@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit LCL; 
+unit LCL;
 
 interface
 
@@ -11,10 +11,10 @@ uses
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-end; 
+end;
 
 initialization
-  RegisterPackage('LCL', @Register); 
+  RegisterPackage('LCL', @Register);
 end.
