@@ -2840,7 +2840,6 @@ type
     function GetMaxLvl: integer;
     function GetMaxScrollLeft: integer;
     function GetMaxScrollTop: integer;
-    function GetNodeAtInternalY(Y: Integer): TTreeNode;
     function GetNodeAtY(Y: Integer): TTreeNode;
     function GetNodeDrawAreaHeight: integer;
     function GetNodeDrawAreaWidth: integer;

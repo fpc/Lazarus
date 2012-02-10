@@ -3621,36 +3621,28 @@ begin
   end;
 end;
 
-function TCustomTreeView.GetNodeAtInternalY(Y: Integer): TTreeNode;
-// search in all expanded nodes for the node at the absolute coordinate Y
-var
-  i: integer;
-begin
-  i := IndexOfNodeAtTop(Items.FTopLvlItems, Items.FTopLvlCount, Y);
-  if i >= 0 then
-  begin
-    Result := Items.FTopLvlItems[i];
-    while Result.Visible and Result.Expanded do
-    begin
-      i := IndexOfNodeAtTop(Result.FItems, Result.FCount, Y);
-      if i >= 0 then
-        Result := Result.Items[i]
-      else
-        break;
-    end;
-  end
-  else
-    Result := nil;
-end;
-
 function TCustomTreeView.GetNodeAtY(Y: Integer): TTreeNode;
 // search in all expanded nodes for the node at the screen coordinate Y
+var
+  i: integer;
 begin
   Result := nil;
   if (Y >= BorderWidth) and (Y < (ClientHeight - ScrollBarWidth) - BorderWidth) then
   begin
     inc(Y, FScrolledTop - BorderWidth);
-    Result := GetNodeAtInternalY(Y);
+    i := IndexOfNodeAtTop(Items.FTopLvlItems, Items.FTopLvlCount, Y);
+    if i >= 0 then
+    begin
+      Result := Items.FTopLvlItems[i];
+      while Result.Visible and Result.Expanded do
+      begin
+        i := IndexOfNodeAtTop(Result.FItems, Result.FCount, Y);
+        if i >= 0 then
+          Result := Result.Items[i]
+        else
+          break;
+      end;
+    end;
   end;
 end;
 
