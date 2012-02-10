@@ -4526,16 +4526,15 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomLabel.Transparent">
-        <short>Whether the viewer can see through the control. Default True</short>
+        <short>Whether the viewer can see through the control. The default value is true</short>
         <descr>
           <p>
             Opaque Labels have their enclosing rectangle filled with the background color of the label.
-            This can be the color of the Parent control, when ParentColor is True.
+            This can be the color of the Parent control, when ParentColor is True. Setting Transparent 
+            to True makes the label transparent, not hiding any background details.
           </p><p>
-            Setting Transparent to True makes the label transparent, not hiding any background details.
-          </p><p>
-            When a label is put onto a graphics control, setting Transparent to False makes the label stand out,
-            while Transparent=True doesn't obscure so much of the graphic.
+            Note that the default value of this property in the LCL is true, which is different from the
+            default value in Delphi.
           </p>
         </descr>
         <seealso><link id="#LCL.Controls.TControl.ParentColor"/></seealso>
