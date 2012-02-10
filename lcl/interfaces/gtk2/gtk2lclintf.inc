@@ -562,14 +562,14 @@ function TGtk2WidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; v
 var
   Desc: TRawImageDescription;
 begin
-  if riqfGrey in AFlags
-  then begin
+  if riqfGrey in AFlags then
+  begin
     DebugLn('TGtk2WidgetSet.RawImage_QueryDescription: riqfGrey not (yet) supported');
     Exit(False);
   end;
   
-  if riqfPalette in AFlags
-  then begin
+  if riqfPalette in AFlags then
+  begin
     DebugLn('TGtk2WidgetSet.RawImage_QueryDescription: riqfPalette not (yet) supported');
     Exit(False);
   end;
@@ -578,11 +578,16 @@ begin
   Result := RawImage_DescriptionFromDrawable(Desc, nil, riqfAlpha in AFlags);
   if not Result then Exit;
 
-  if not (riqfUpdate in AFlags)
-  then ADesc.Init;
+  if not (riqfUpdate in AFlags) then
+    ADesc.Init;
 
-  if riqfMono in AFlags
-  then begin
+  // if there's mask gtk2 assumes it's rgba. issue #12362
+  if (riqfMono in AFlags) and (riqfMask in AFlags) and
+    (Desc.BitsPerPixel = 32) then
+      AFlags := AFlags - [riqfMono] + [riqfRgb];
+
+  if riqfMono in AFlags then
+  begin
     ADesc.Format := ricfGray;
     ADesc.Depth := 1;
     ADesc.BitOrder := Desc.MaskBitOrder;
@@ -598,7 +603,7 @@ begin
     ADesc.BluePrec := 1;
     ADesc.BlueShift := Desc.MaskShift;
   end
-(*
+  (*
   //TODO
   else if riqfGrey in AFlags
   then begin
@@ -612,9 +617,10 @@ begin
     ADesc.RedPrec := 8;
     ADesc.RedShift := 0;
   end
-*)
-  else if riqfRGB in AFlags
-  then begin
+  *)
+  else
+  if riqfRGB in AFlags then
+  begin
     ADesc.Format := ricfRGBA;
     ADesc.Depth := Desc.Depth;
     ADesc.BitOrder := Desc.BitOrder;
@@ -630,14 +636,14 @@ begin
     ADesc.BlueShift := Desc.BlueShift;
   end;
 
-  if riqfAlpha in AFlags
-  then begin
+  if riqfAlpha in AFlags then
+  begin
     ADesc.AlphaPrec := Desc.AlphaPrec;
     ADesc.AlphaShift := Desc.AlphaShift;
   end;
 
-  if riqfMask in AFlags
-  then begin
+  if riqfMask in AFlags then
+  begin
     ADesc.MaskBitsPerPixel := Desc.MaskBitsPerPixel;
     ADesc.MaskShift := Desc.MaskShift;
     ADesc.MaskLineEnd := Desc.MaskLineEnd;
