@@ -456,7 +456,8 @@ begin
     0: begin
       ListFilterEd.Visible := True;
       ListFilterEd.SetFocus;
-      ListFilterEd.Text := TreeFilterEd.Text;
+      if PrevPageIndex > 0 then
+        ListFilterEd.Text := TreeFilterEd.Text;
       ListFilterEd.InvalidateFilter;
       TreeFilterEd.Visible := False;
     end;
