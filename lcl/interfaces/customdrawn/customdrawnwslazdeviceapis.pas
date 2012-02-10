@@ -194,12 +194,10 @@ begin
 
   // Get the vibrator object
   // Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-  DebugLn('3');
   lParams[0].l := javaString_VIBRATOR_SERVICE;
   lVibratorObject := javaEnvRef^^.CallObjectMethodA(javaEnvRef, javaActivityObject, javaMethod_getSystemService, @lParams[0]);
 
   // Now call the method from the vibrator object
-  DebugLn('4');
   lParams[0].j := ADurationMS;
   javaEnvRef^^.CallVoidMethodA(javaEnvRef, lVibratorObject, javaMethod_Vibrate, @lParams[0]);
 end;
