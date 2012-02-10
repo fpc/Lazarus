@@ -2149,7 +2149,11 @@ var
     // the gtk2 gtkentry handles the return key and emits an activate signal
     // The LCL does not use that and needs the return key event
     // => emulate it
-    if GtkWidgetIsA(TargetWidget, gtk_type_entry) and
+    if (
+        GtkWidgetIsA(TargetWidget, gtk_type_entry) or
+        GtkWidgetIsA(TargetWidget, gtk_type_text_view)
+       )
+       and
       (gdk_event_get_type(AEvent) = GDK_KEY_PRESS) and
       ((VKey = VK_RETURN) or (VKey = VK_TAB)) then
     begin
