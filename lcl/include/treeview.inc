@@ -4015,15 +4015,6 @@ begin
 end;
 
 procedure TCustomTreeView.UpdateScrollbars;
-
-  function Max(i1, i2: integer): integer;
-  begin
-    if i1>i2 then
-      Result:=i1
-    else
-      Result:=i2;
-  end;
-
 var
   ScrollInfo: TScrollInfo;
 begin
