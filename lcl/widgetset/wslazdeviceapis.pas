@@ -54,9 +54,15 @@ type
   TWSLazDeviceAPIs = class(TWSObject)
   public
     class procedure RequestPositionInfo(AMethod: TLazPositionMethod); virtual;
+    //
     class procedure SendMessage(AMsg: TLazDeviceMessage); virtual;
+    //
     class procedure StartReadingAccelerometerData(); virtual;
     class procedure StopReadingAccelerometerData(); virtual;
+    // TLazDevice
+    class function GetDeviceManufacturer: string; virtual;
+    class function GetDeviceModel: string; virtual;
+    class procedure Vibrate(ADurationMS: Cardinal); virtual;
   end;
 
 { WidgetSetRegistration }
@@ -97,6 +103,21 @@ begin
 end;
 
 class procedure TWSLazDeviceAPIs.StopReadingAccelerometerData;
+begin
+
+end;
+
+class function TWSLazDeviceAPIs.GetDeviceManufacturer: string;
+begin
+  Result := '';
+end;
+
+class function TWSLazDeviceAPIs.GetDeviceModel: string;
+begin
+  Result := '';
+end;
+
+class procedure TWSLazDeviceAPIs.Vibrate(ADurationMS: Cardinal);
 begin
 
 end;

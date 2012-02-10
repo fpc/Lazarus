@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  LCLProc, Arrow, StdCtrls, ComCtrls, LCLType, LCLIntf, InterfaceBase;
+  LCLProc, Arrow, StdCtrls, ComCtrls, LCLType, LCLIntf, InterfaceBase,
+  lazdeviceapis;
 
 type
   TSubControl = class;
@@ -14,10 +15,10 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
-    Arrow1: TArrow;
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
+    btnShowInfo: TButton;
     CheckBox1: TCheckBox;
     Label1: TLabel;
     ProgressBar1: TProgressBar;
@@ -29,6 +30,7 @@ type
       );
     procedure Arrow1MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure btnShowInfoClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button1KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
       );
@@ -137,6 +139,16 @@ procedure TForm1.Arrow1MouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   DebugLn(Format('Arrow Mouse Up X=%d Y=%d', [X, Y]));
+end;
+
+procedure TForm1.btnShowInfoClick(Sender: TObject);
+//var
+//  i: Integer;
+begin
+  //for i := 0 to Screen.Fonts.Count - 1 do
+  //  DebugLn(Screen.Fonts.Strings[i]);
+  DebugLn('Device.Manufacturer='+Device.Manufacturer);
+  DebugLn('Device.Model='+Device.Model);
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);

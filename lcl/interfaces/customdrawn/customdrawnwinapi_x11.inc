@@ -1680,7 +1680,7 @@ begin
       AList.Add(TObject(PtrUInt(EASTEUROPE_CHARSET)));
     end;
   end;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: EnumFontFamiliesEx
@@ -1720,179 +1720,20 @@ end;
   specified device.
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint;
-var
+function TCDWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint;
+{var
   EnumLogFont: TEnumLogFontEx;
   Metric: TNewTextMetricEx;
   FontList: TStringList;
   FontType: Integer;
-  FontDB: QFontDatabaseH;
   i: Integer;
   y: Integer;
   AStyle: String;
   StylesCount: Integer;
-  StylesList: QStringListH;
-  ScriptList: QStringListH;
-  CharsetList: TFPList;
-
-  function QtGetFontFamiliesDefault(var List:TStringList;
-    const AWritingSystem: QFontDatabaseWritingSystem = QFontDatabaseAny):integer;
-  var
-    StrLst: QStringlistH;
-    WStr: WideString;
-    j: integer;
-  begin
-    Result := -1;
-    StrLst := QStringList_create;
-    try
-      QFontDatabase_families(FontDB, StrLst, AWritingSystem);
-      Result := QStringList_size(StrLst);
-      for j := 0 to Result - 1 do
-      begin
-        QStringList_at(StrLst, @WStr, j);
-        List.Add(UTF16ToUTF8(WStr));
-      end;
-    finally
-      QStringList_destroy(StrLst);
-    end;
-  end;
-
-  function QtGetFontFamilies(var List: TStringList;
-    const APitch: Byte;
-    const AFamilyName: String;
-    const AWritingSystem: QFontDatabaseWritingSystem = QFontDatabaseAny): Integer;
-  var
-    StrLst: QStringlistH;
-    NewList: QStringListH;
-    WStr: WideString;
-    j: integer;
-  begin
-    Result := -1;
-    StrLst := QStringList_create();
-    NewList := QStringList_create();
-
-    try
-      QFontDatabase_families(FontDB, StrLst, AWritingSystem);
-      for j := 0 to QStringList_size(StrLst) - 1 do
-      begin
-        QStringList_at(StrLst, @WStr, j);
-        if APitch <> DEFAULT_PITCH then
-        begin
-          case APitch of
-            FIXED_PITCH, MONO_FONT:
-            begin
-              if QFontDatabase_isFixedPitch(FontDB, @WStr) then
-                QStringList_append(NewList, @WStr);
-            end;
-            VARIABLE_PITCH:
-            begin
-              if QFontDatabase_isScalable(FontDB, @WStr) then
-                QStringList_append(NewList, @WStr);
-            end;
-          end;
-        end else
-          QStringList_append(NewList, @WStr);
-      end;
-
-      if AFamilyName <> '' then
-      begin
-        for j := QStringList_size(NewList) - 1 downto 0 do
-        begin
-          QStringList_at(NewList, @WStr, j);
-          if UTF16ToUTF8(WStr) <> AFamilyName then
-            QStringList_removeAt(NewList, j);
-        end;
-      end;
-      for j := 0 to QStringList_size(NewList) - 1 do
-      begin
-        QStringList_at(NewList, @WStr, j);
-        List.Add(UTF16ToUTF8(WStr));
-      end;
-      Result := List.Count;
-    finally
-      QStringList_destroy(StrLst);
-      QStringList_destroy(NewList);
-    end;
-  end;
-
-  function GetStyleAt(AIndex: Integer): String;
-  var
-    WStr: WideString;
-  begin
-    Result := '';
-    if (AIndex >= 0) and (AIndex < QStringList_size(StylesList)) then
-    begin
-      QStringList_at(StylesList, @WStr, AIndex);
-      Result := UTF16ToUTF8(WStr);
-    end;
-  end;
-
-  function GetWritingSystems(AFontName: String; AList: QStringListH;
-    ACharsetList: TFPList): Boolean;
-  var
-    WStr: WideString;
-    Arr: TPtrIntArray;
-    j: Integer;
-  begin
-    Result := False;
-    QStringList_clear(AList);
-    if Assigned(CharSetList) then
-      CharSetList.Clear;
-    WStr := UTF8ToUTF16(AFontName);
-    QFontDatabase_writingSystems(FontDB, @Arr, @WStr);
-    Result := length(Arr) > 0;
-    for j := 0 to High(Arr) do
-    begin
-      if Assigned(ACharsetList) then
-        QtCharsetToCharset(QFontDatabaseWritingSystem(Arr[j]), ACharsetList);
-      QFontDatabase_writingSystemName(@WStr, QFontDatabaseWritingSystem(Arr[j]));
-      QStringList_append(AList, @WStr);
-    end;
-  end;
-
-  function FillLogFontA(AFontName: String; var ALogFontA: TLogFontA;
-    var AMetric: TNewTextMetricEx; var AFontType: Integer;
-    out AStyle: String): Integer;
-  var
-    Font: QFontH;
-    WStr: WideString;
-  begin
-    WStr := UTF8ToUTF16(AFontName);
-    Font := QFont_create(@WStr);
-    ALogFontA.lfItalic := Byte(QFont_italic(Font));
-    ALogFontA.lfWeight := QFont_weight(Font);
-    ALogFontA.lfHeight := QFont_pointSize(Font);
-    ALogFontA.lfUnderline := Byte(QFont_underline(Font));
-    ALogFontA.lfStrikeOut := Byte(QFont_strikeOut(Font));
-
-    if QFont_styleStrategy(Font) = QFontPreferBitmap then
-      AFontType := AFontType  or RASTER_FONTTYPE;
-    if QFont_styleStrategy(Font) = QFontPreferDevice then
-      AFontType := AFontType  or DEVICE_FONTTYPE;
-
-    if not (QFont_styleStrategy(Font) = QFontPreferDefault) then
-      AFontType := AFontType and not TRUETYPE_FONTTYPE;
-
-    QStringList_clear(StylesList);
-    QFontDatabase_styles(FontDB, StylesList, @WStr);
-    AStyle := '';
-    Result := QStringList_size(StylesList);
-
-    if Result > 0 then
-      AStyle := GetStyleAt(0);
-    // fill script and charset list
-    GetWritingSystems(AFontName, ScriptList, CharsetList);
-
-    QFont_destroy(Font);
-  end;
-
+  CharsetList: TFPList; }
 begin
-  {$ifdef VerboseQtWinAPI}
-  WriteLn('[WinAPI EnumFontFamiliesEx] Charset=',lpLogFont^.lfCharSet,
-  ' face ',lpLogFont^.lfFaceName,' pitchAndFamily=',lpLogFont^.lfPitchAndFamily);
-  {$endif}
   Result := 0;
-  Metric.ntmentm.ntmAvgWidth := 0; // just to shutup compiler
+{  Metric.ntmentm.ntmAvgWidth := 0; // just to shutup compiler
   FontDB := QFontDatabase_create();
   try
     if (lpLogFont^.lfCharSet = DEFAULT_CHARSET) and
@@ -1959,11 +1800,10 @@ begin
     end;
   finally
     QFontDatabase_destroy(FontDB);
-  end;
+  end; }
 end;
 
-
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: ExcludeClipRect
   Params:  none
   Returns: Nothing

@@ -1,10 +1,10 @@
 object Form1: TForm1
   Left = 161
-  Height = 251
+  Height = 257
   Top = 137
   Width = 220
   Caption = 'Form1'
-  ClientHeight = 251
+  ClientHeight = 257
   ClientWidth = 220
   OnClick = FormClick
   OnCreate = FormCreate
@@ -12,16 +12,6 @@ object Form1: TForm1
   OnMouseMove = FormMouseMove
   OnPaint = FormPaint
   LCLVersion = '0.9.31'
-  object Arrow1: TArrow
-    Left = 0
-    Height = 58
-    Top = 64
-    Width = 79
-    OnClick = Arrow1Click
-    OnMouseMove = Arrow1MouseMove
-    OnMouseDown = Arrow1MouseDown
-    OnMouseUp = Arrow1MouseUp
-  end
   object Button1: TButton
     Left = 96
     Height = 25
@@ -33,7 +23,7 @@ object Form1: TForm1
     OnKeyPress = Button1KeyPress
     OnKeyUp = Button1KeyUp
     OnUTF8KeyPress = Button1UTF8KeyPress
-    TabOrder = 1
+    TabOrder = 0
   end
   object ProgressBar1: TProgressBar
     Left = 72
@@ -41,7 +31,7 @@ object Form1: TForm1
     Top = 80
     Width = 140
     Position = 60
-    TabOrder = 2
+    TabOrder = 1
   end
   object TrackBar1: TTrackBar
     Left = 72
@@ -49,7 +39,7 @@ object Form1: TForm1
     Top = 112
     Width = 140
     Position = 0
-    TabOrder = 3
+    TabOrder = 2
   end
   object CheckBox1: TCheckBox
     Left = 72
@@ -57,7 +47,7 @@ object Form1: TForm1
     Top = 48
     Width = 94
     Caption = 'CheckBox1'
-    TabOrder = 4
+    TabOrder = 3
   end
   object Button2: TButton
     Left = 96
@@ -66,7 +56,7 @@ object Form1: TForm1
     Width = 116
     Caption = 'MessageBox'
     OnClick = Button2Click
-    TabOrder = 5
+    TabOrder = 4
   end
   object Button3: TButton
     Left = 95
@@ -75,16 +65,25 @@ object Form1: TForm1
     Width = 117
     Caption = 'Open Form2'
     OnClick = Button3Click
-    TabOrder = 6
+    TabOrder = 5
   end
   object Label1: TLabel
-    Left = 94
+    Left = 24
     Height = 18
-    Top = 223
+    Top = 199
     Width = 43
     Caption = 'Label1'
     Font.Color = clBlue
     ParentColor = False
     ParentFont = False
+  end
+  object btnShowInfo: TButton
+    Left = 96
+    Height = 25
+    Top = 226
+    Width = 116
+    Caption = 'Show Info in ADB'
+    OnClick = btnShowInfoClick
+    TabOrder = 6
   end
 end

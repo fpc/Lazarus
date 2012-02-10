@@ -124,14 +124,53 @@ type
     property OnPositionRetrieved: TNotifyEvent read FOnPositionRetrieved write FOnPositionRetrieved;
   end;
 
+  // TLazDevice
+
+  TLazDevice = class
+  private
+    function GetDeviceManufacturer: string;
+    function GetDeviceModel: string;
+  public
+    procedure Vibrate(ADurationMS: Cardinal);
+    property Manufacturer: string read GetDeviceManufacturer;
+    property Model: string read GetDeviceModel;
+  end;
+
 var
   Accelerometer: TLazAccelerometer;
   Messaging: TLazMessaging;
   PositionInfo: TLazPositionInfo;
+  Device: TLazDevice;
 
 implementation
 
 uses wslazdeviceapis, wslclclasses;
+
+{ TLazDevice }
+
+function TLazDevice.GetDeviceManufacturer: string;
+var
+  WidgetsetClass: TWSLazDeviceAPIsClass;
+begin
+  WidgetsetClass := TWSLazDeviceAPIsClass(GetWSLazDeviceAPIs());
+  Result := WidgetsetClass.GetDeviceManufacturer();
+end;
+
+function TLazDevice.GetDeviceModel: string;
+var
+  WidgetsetClass: TWSLazDeviceAPIsClass;
+begin
+  WidgetsetClass := TWSLazDeviceAPIsClass(GetWSLazDeviceAPIs());
+  Result := WidgetsetClass.GetDeviceModel();
+end;
+
+procedure TLazDevice.Vibrate(ADurationMS: Cardinal);
+var
+  WidgetsetClass: TWSLazDeviceAPIsClass;
+begin
+  WidgetsetClass := TWSLazDeviceAPIsClass(GetWSLazDeviceAPIs());
+  WidgetsetClass.Vibrate(ADurationMS);
+end;
 
 { TLazAccelerometer }
 
@@ -226,9 +265,11 @@ initialization
   Accelerometer := TLazAccelerometer.Create;
   Messaging := TLazMessaging.Create;
   PositionInfo := TLazPositionInfo.Create;
+  Device := TLazDevice.Create;
 finalization
   Accelerometer.Free;
   Messaging.Free;
   PositionInfo.Free;
+  Device.Free;
 end.
 

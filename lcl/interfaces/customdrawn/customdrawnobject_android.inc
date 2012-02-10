@@ -388,6 +388,7 @@ begin
   // Now other classes
   javaAndroidAppActivityClass := javaEnvRef^^.FindClass(javaEnvRef,'android/app/Activity');
   javaJavaLandSystemClass := javaEnvRef^^.FindClass(javaEnvRef,'java/lang/System');
+  javaAndroidOSBuildClass := javaEnvRef^^.FindClass(javaEnvRef,'android/os/Build');
 
   // Register Pascal exported calls
   if javaEnvRef^^.RegisterNatives(javaEnvRef, javaActivityClass, @NativeMethods[0],length(NativeMethods))<0 then

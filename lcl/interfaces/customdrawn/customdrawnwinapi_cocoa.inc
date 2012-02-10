@@ -313,9 +313,22 @@ begin
     else Result:=False;
 end;
 
-function TCocoaWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
-  Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint;
+function TCocoaWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;
+  lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
 var
+  i: integer;
+begin
+  Result := True;
+  for i := 0 to NSScreen.screens.count - 1 do
+  begin
+    Result := Result and lpfnEnum(HMONITOR(NSScreen.screens.objectAtIndex(i)), 0, nil, dwData);
+    if not Result then break;
+  end;
+end;*)
+
+function TCDWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
+  Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint;
+{var
   fontManager : NSFontManager;
   arr         : NSArray;
   fname       : NSString;
@@ -323,10 +336,10 @@ var
 
   ELogFont    : TEnumLogFontEx;
   Metric      : TNewTextMetricEx;
-  FontName    : AnsiString;
+  FontName    : AnsiString;    }
 begin
   Result:=0;
-  if not Assigned(Callback) then Exit;
+{  if not Assigned(Callback) then Exit;
   fontManager:=NSFontManager.sharedFontManager;
   arr:=fontManager.availableFontFamilies;
   for i:=0 to arr.count-1 do begin
@@ -344,21 +357,8 @@ begin
       Break;
     end;
   end;
-  arr.release;
+  arr.release; }
 end;
-
-function TCocoaWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;
-  lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
-var
-  i: integer;
-begin
-  Result := True;
-  for i := 0 to NSScreen.screens.count - 1 do
-  begin
-    Result := Result and lpfnEnum(HMONITOR(NSScreen.screens.objectAtIndex(i)), 0, nil, dwData);
-    if not Result then break;
-  end;
-end;*)
 
 {$ifdef CD_UseNativeText}
 function TCDWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;

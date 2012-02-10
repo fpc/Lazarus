@@ -285,6 +285,7 @@ var
   // Other classes and objects
   javaAndroidAppActivityClass: JClass = nil;
   javaJavaLandSystemClass: JClass = nil;
+  javaAndroidOSBuildClass: JClass = nil;
 
   // Fields of our Activity
   // Strings

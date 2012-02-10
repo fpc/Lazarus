@@ -1229,9 +1229,9 @@ end;
 function TWin32WidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
 begin
   Result := MultiMon.EnumDisplayMonitors(hdc, lprcClip, lpfnEnum, dwData);
-end;
+end;*)
 
-function TWin32WidgetSet.EnumFontFamilies(DC: HDC; Family: Pchar;
+function TCDWidgetSet.EnumFontFamilies(DC: HDC; Family: Pchar;
   EnumFontFamProc: FontEnumProc; LParam: Lparam): longint;
 begin
   // TODO: do as EnumFontFamiliesEx
@@ -1239,6 +1239,7 @@ begin
     Windows.FontEnumProc(EnumFontFamProc), LParam);
 end;
 
+(*
 {$ifdef WindowsUnicodeSupport}
 type
   TProcRedirRec = record
