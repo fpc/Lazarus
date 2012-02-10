@@ -617,7 +617,6 @@ begin
   
   // Set self as last selected node
   TheTreeNodes.FLastMultiSelected := Self;
-
 end;
 
 function TTreeNode.CompareCount(CompareMe: Integer): Boolean;
@@ -881,7 +880,8 @@ begin
     Result:=Self;
     while (Result<>nil) and (Result.GetNextVisibleSibling=nil) do
       Result:=Result.Parent;
-    if Result<>nil then Result:=Result.GetNextVisibleSibling;
+    if Result<>nil then
+      Result:=Result.GetNextVisibleSibling;
   end;
   if (Result<>nil) and ((not Result.IsVisible) or (not Result.FVisible)) then
     Result:=nil;
@@ -3266,8 +3266,7 @@ begin
   if AValue=FScrolledTop then exit;
   EndEditing(true);
   FScrolledTop:=AValue;
-  FStates:=FStates+[tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate,
-                    tvsScrollbarChanged];
+  FStates:=FStates+[tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate,tvsScrollbarChanged];
   Invalidate;
 end;
 
@@ -3358,8 +3357,7 @@ begin
     if Odd(NewDefItemHeight) then Inc(NewDefItemHeight);
     if NewDefItemHeight<>FDefItemHeight then begin
       FDefItemHeight:=NewDefItemHeight;
-      FStates:=FStates+[tvsTopsNeedsUpdate,tvsTopItemNeedsUpdate,
-                        tvsBottomItemNeedsUpdate];
+      FStates:=FStates+[tvsTopsNeedsUpdate,tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate];
       Invalidate;
     end;
   end;
@@ -3464,8 +3462,7 @@ end;
 
 procedure TCustomTreeView.UpdateBottomItem;
 begin
-  if (FStates*[tvsTopItemNeedsUpdate,tvsTopsNeedsUpdate,
-    tvsBottomItemNeedsUpdate]=[])
+  if (FStates*[tvsTopItemNeedsUpdate,tvsTopsNeedsUpdate,tvsBottomItemNeedsUpdate]=[])
   then exit;
   if not (tvsBottomItemNeedsUpdate in FStates) then exit;
   FBottomItem:=TopItem;
@@ -3608,7 +3605,8 @@ begin
 end;
 
 function TCustomTreeView.GetMaxScrollTop: integer;
-var LastVisibleNode: TTreeNode;
+var
+  LastVisibleNode: TTreeNode;
 begin
   LastVisibleNode:=Items.GetLastExpandedSubNode;
   if LastVisibleNode=nil then
@@ -5347,8 +5345,7 @@ end;
 
 procedure TCustomTreeView.Resize;
 begin
-  FStates:=FStates+[tvsScrollbarChanged,
-                    tvsBottomItemNeedsUpdate];
+  FStates:=FStates+[tvsScrollbarChanged,tvsBottomItemNeedsUpdate];
   inherited Resize;
 end;
 
