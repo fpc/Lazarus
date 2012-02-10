@@ -249,8 +249,7 @@ begin
   end;
 end;
 
-procedure TTreeNodeExpandedState.Apply(FirstTreeNode: TTreeNode;
-  CollapseToo: boolean);
+procedure TTreeNodeExpandedState.Apply(FirstTreeNode: TTreeNode; CollapseToo: boolean);
 var
   ChildNode: TTreeNode;
   ANode: TAvgLvlTreeNode;
@@ -271,8 +270,7 @@ begin
   end;
 end;
 
-procedure TTreeNodeExpandedState.Apply(TreeView: TCustomTreeView;
-  CollapseToo: boolean);
+procedure TTreeNodeExpandedState.Apply(TreeView: TCustomTreeView; CollapseToo: boolean);
 begin
   Apply(TreeView.Items.GetFirstNode,CollapseToo);
 end;
@@ -894,8 +892,8 @@ begin
   repeat
     Result := Result.GetNextSibling;
   until ((Result=nil) or (Result.FVisible));
-  if (Result<>nil) and (not Result.FVisible) then
-    Result := nil
+  if (Result<>nil) and (not Result.FVisible) then // Result := nil ... will be removed
+    Assert(False,'TTreeNode.GetNextVisibleSibling: (Result<>nil) and (not Result.FVisible)');
 end;
 
 function TTreeNode.GetPrevVisible: TTreeNode;
@@ -914,8 +912,7 @@ begin
     Assert(Parent.Visible, 'TTreeNode.GetPrevVisible: Parent is not Visible');
     Result := Parent;
   end;
-  if (Result<>nil) and (TreeView<>nil) and (not TreeView.IsNodeVisible(Result))
-  then
+  if (Result<>nil) and (TreeView<>nil) and (not TreeView.IsNodeVisible(Result)) then
     Result:=nil;
 end;
 
@@ -925,8 +922,8 @@ begin
   repeat
     Result := Result.GetPrevSibling;
   until ((Result=nil) or (Result.FVisible));
-  if (Result<>nil) and (not Result.FVisible) then
-    Result := nil
+  if (Result<>nil) and (not Result.FVisible) then  // Result := nil ... will be removed
+    Assert(False,'TTreeNode.GetPrevVisibleSibling: (Result<>nil) and (not Result.FVisible)');
 end;
 
 function TTreeNode.GetPrevExpanded: TTreeNode;
@@ -1027,8 +1024,10 @@ begin
   if Assigned(Result) and not Result.Visible then begin
     Result := Result.GetPrevVisible;
     // ToDo: implement this better. Now it works only when Self is visible.
-    if Result = Self then                      // No visible nodes found.
+    if Result = Self then begin                     // No visible nodes found.
+      Assert(Visible, 'TTreeNode.GetLastVisibleChild: Node is not Visible');
       Result := Nil;
+    end;
   end;
 end;
 
@@ -3465,7 +3464,7 @@ procedure TCustomTreeView.UpdateBottomItem;
 begin
   if (FStates*[tvsTopItemNeedsUpdate,tvsTopsNeedsUpdate,tvsBottomItemNeedsUpdate]=[])
   then exit;
-  if not (tvsBottomItemNeedsUpdate in FStates) then exit;
+//  if not (tvsBottomItemNeedsUpdate in FStates) then exit;  already above
   FBottomItem:=TopItem;
   while (FBottomItem<>nil) and (FBottomItem.GetNextVisible<>nil) do
     FBottomItem:=FBottomItem.GetNextVisible;
