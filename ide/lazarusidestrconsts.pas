@@ -2449,10 +2449,10 @@ resourcestring
   lisChooseAKey = 'Choose a key ...';
 
   //Commands
-  srkmecLeft                  = 'Move cursor word left';
-  srkmecRight                 = 'Move cursor word right';
-  srkmecUp                    = 'Move cursor word up';
-  srkmecDown                  = 'Move cursor word down';
+  srkmecLeft                  = 'Move cursor left';
+  srkmecRight                 = 'Move cursor right';
+  srkmecUp                    = 'Move cursor up';
+  srkmecDown                  = 'Move cursor down';
   srkmecWordLeft              = 'Move cursor word left';
   srkmecWordRight             = 'Move cursor word right';
   srkmecWordEndLeft           = 'Move cursor word-end left';
