@@ -2361,7 +2361,7 @@ type
     FText: string;
     FTop: integer;        // top coordinate
     FVisible: Boolean;
-    function AreParentsExpanded: Boolean;
+    function AreParentsExpandedAndVisible: Boolean;
     procedure BindToMultiSelected;
     function CompareCount(CompareMe: Integer): Boolean;
     function DoCanExpand(ExpandIt: Boolean): Boolean;

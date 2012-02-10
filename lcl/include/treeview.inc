@@ -516,7 +516,8 @@ begin
   FVisible := AValue;
   Selected := False;
   if TreeView<>nil then
-    TreeView.FStates:=TreeView.FStates+[tvsScrollbarChanged,tvsTopsNeedsUpdate,tvsBottomItemNeedsUpdate, tvsTopItemNeedsUpdate];
+    TreeView.FStates:=TreeView.FStates+[tvsScrollbarChanged,tvsTopsNeedsUpdate,
+        tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate,tvsMaxLvlNeedsUpdate,tvsMaxRightNeedsUpdate];
   Update;
 end;
 
@@ -534,13 +535,14 @@ begin
   Update;
 end;
 
-function TTreeNode.AreParentsExpanded: Boolean;
-var ANode: TTreeNode;
+function TTreeNode.AreParentsExpandedAndVisible: Boolean;
+var
+  ANode: TTreeNode;
 begin
   Result:=false;
   ANode:=Parent;
   while ANode<>nil do begin
-    if not ANode.Expanded then exit;
+    if not (ANode.Expanded and ANode.Visible) then exit;
     ANode:=ANode.Parent;
   end;
   Result:=true;
@@ -906,8 +908,11 @@ begin
       if ANode=nil then break;
       Result:=ANode;
     end;
-  end else
+  end
+  else begin
+    Assert(Parent.Visible, 'TTreeNode.GetPrevVisible: Parent is not Visible');
     Result := Parent;
+  end;
   if (Result<>nil) and (TreeView<>nil) and (not TreeView.IsNodeVisible(Result))
   then
     Result:=nil;
@@ -1574,7 +1579,7 @@ begin
   if Assigned(TreeView) then
     Result := TreeView.IsNodeVisible(Self)
   else
-    Result := AreParentsExpanded;
+    Result := AreParentsExpandedAndVisible;
 end;
 
 function TTreeNode.IsNodeHeightFullVisible: Boolean;
@@ -1582,7 +1587,7 @@ begin
   if Assigned(TreeView) then
     Result := TreeView.IsNodeHeightFullVisible(Self)
   else
-    Result := AreParentsExpanded;
+    Result := AreParentsExpandedAndVisible;
 end;
 
 procedure TTreeNode.Update;
@@ -2331,10 +2336,10 @@ function TTreeNodes.GetLastExpandedSubNode: TTreeNode;
 var
   Node: TTreeNode;
 begin
-  Result := GetLastNode;
+  Result := GetLastVisibleNode;
   while Assigned(Result) and (Result.Expanded) do
   begin
-    Node := Result.GetLastChild;
+    Node := Result.GetLastVisibleChild;
     if Assigned(Node) then
       Result := Node
     else
@@ -3419,7 +3424,7 @@ begin
   Cnt := 0;
   while Node <> nil do
   begin
-    if not Node.AreParentsExpanded then
+    if not Node.AreParentsExpandedAndVisible then
     begin
       Node := Node.GetNext;
       Continue;
@@ -3828,9 +3833,7 @@ end;
 
 function TCustomTreeView.IsNodeVisible(ANode: TTreeNode): Boolean;
 begin
-  Result:=(ANode<>nil) and (ANode.Visible) and (ANode.AreParentsExpanded);
-  //DebugLn('[TCustomTreeView.IsNodeVisible] A Node=',DbgS(ANode),
-  //' ANode.AreParentsExpanded=',ANode.AreParentsExpanded);
+  Result:=(ANode<>nil) and (ANode.Visible) and (ANode.AreParentsExpandedAndVisible);
   if Result then begin
     //DebugLn('[TCustomTreeView.IsNodeVisible] B Node=',DbgS(ANode),
     //  ' ',dbgs(FScrolledTop)+'>=',dbgs(ANode.Top+ANode.Height)+' or =',dbgs(FScrolledTop),'+'+dbgs(ClientHeight)+'<',dbgs(ANode.Top));
@@ -3845,9 +3848,7 @@ end;
 
 function TCustomTreeView.IsNodeHeightFullVisible(ANode: TTreeNode): Boolean;
 begin
-  Result:=(ANode<>nil) and (ANode.AreParentsExpanded);
-  //DebugLn('[TCustomTreeView.IsNodeVisible] A Node=',DbgS(ANode),
-  //' ANode.AreParentsExpanded=',ANode.AreParentsExpanded);
+  Result:=(ANode<>nil) and (ANode.AreParentsExpandedAndVisible);
   if Result then begin
     //DebugLn('[TCustomTreeView.IsNodeVisible] B Node=',DbgS(ANode),
     //' ',FScrolledTop,'>=',ANode.Top,'+',ANode.Height,' or ',FScrolledTop,'+',ClientHeight,'<',ANode.Top);
