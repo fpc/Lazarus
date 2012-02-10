@@ -464,7 +464,7 @@ begin
       TreeFilterEd.Visible := True;
       TreeFilterEd.FilteredTreeview := PalletteTree;
       TreeFilterEd.SetFocus;
-      if PrevPageIndex = 0 then
+      if PrevPageIndex <= 0 then
         TreeFilterEd.Text := ListFilterEd.Text;
       TreeFilterEd.InvalidateFilter;
       ListFilterEd.Visible := False;
@@ -473,7 +473,7 @@ begin
       TreeFilterEd.Visible := True;
       TreeFilterEd.FilteredTreeview := InheritanceTree;
       TreeFilterEd.SetFocus;
-      if PrevPageIndex = 0 then
+      if PrevPageIndex <= 0 then
         TreeFilterEd.Text := ListFilterEd.Text;
       TreeFilterEd.InvalidateFilter;
       ListFilterEd.Visible := False;
