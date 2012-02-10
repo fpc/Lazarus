@@ -580,7 +580,7 @@ begin
 
   if not (riqfUpdate in AFlags)
   then ADesc.Init;
-
+(*
   if riqfMono in AFlags
   then begin
     ADesc.Format := ricfGray;
@@ -598,7 +598,7 @@ begin
     ADesc.BluePrec := 1;
     ADesc.BlueShift := Desc.MaskShift;
   end
-(*
+
   //TODO
   else if riqfGrey in AFlags
   then begin
@@ -613,7 +613,7 @@ begin
     ADesc.RedShift := 0;
   end
 *)
-  else if riqfRGB in AFlags
+  if (riqfMono in AFlags) or (riqfRGB in AFlags)
   then begin
     ADesc.Format := ricfRGBA;
     ADesc.Depth := Desc.Depth;
