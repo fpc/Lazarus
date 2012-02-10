@@ -517,7 +517,8 @@ begin
   Selected := False;
   if TreeView<>nil then
     TreeView.FStates:=TreeView.FStates+[tvsScrollbarChanged,tvsTopsNeedsUpdate,
-        tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate,tvsMaxLvlNeedsUpdate,tvsMaxRightNeedsUpdate];
+                                        tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate,
+                                        tvsMaxLvlNeedsUpdate,tvsMaxRightNeedsUpdate];
   Update;
 end;
 
