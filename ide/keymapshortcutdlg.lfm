@@ -10,7 +10,7 @@ object ShortCutDialog: TShortCutDialog
   ClientHeight = 260
   ClientWidth = 545
   OnCreate = FormCreate
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object PrimaryGroupBox: TGroupBox
     Left = 6
     Height = 93
@@ -34,10 +34,18 @@ object ShortCutDialog: TShortCutDialog
   object BtnPanel: TButtonPanel
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 36
+    Height = 26
     Top = 216
     Width = 533
     Align = alTop
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 2
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False

@@ -62,7 +62,7 @@ type
     procedure SetSecondaryShortCut(const AValue: TIDEShortCut);
     procedure SetShowSecondary(const AValue: boolean);
     procedure SetShowSequence(const AValue: boolean);
-    function ResolveConflicts(Key: TIDEShortCut; Scope: TIDECommandScope): boolean;
+    function ResolveConflicts(Key: TIDEShortCut; Scope: TIDECommandScope): TModalResult;
     procedure UpdateCaptions;
   public
     procedure ClearKeys;
@@ -204,10 +204,15 @@ begin
   // get old relation
   CurRelation:=KeyCommandRelationList.Relations[RelationIndex];
 
-  if not ResolveConflicts(NewKeyA,CurRelation.Category.Scope) then
-  begin
-    debugln('TShortCutDialog.OkButtonClick ResolveConflicts failed for key1');
-    exit;
+  case ResolveConflicts(NewKeyA,CurRelation.Category.Scope) of
+    mrCancel:   begin
+        debugln('TShortCutDialog.OkButtonClick ResolveConflicts failed for key1');
+        exit;
+      end;
+    mrRetry: begin
+        ModalResult:=mrNone;
+        exit;
+      end;
   end;
 
   //debugln('TShortCutDialog.OkButtonClick B ShortcutA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' ShortcutB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
@@ -220,10 +225,16 @@ begin
     NewKeyB.Key2:=VK_UNKNOWN;
     NewKeyB.Shift2:=[];
   end
-  else if not ResolveConflicts(NewKeyB,CurRelation.Category.Scope)
-  then begin
-    debugln('TShortCutDialog.OkButtonClick ResolveConflicts failed for key1');
-    exit;
+  else
+  case ResolveConflicts(NewKeyB,CurRelation.Category.Scope) of
+    mrCancel:   begin
+        debugln('TShortCutDialog.OkButtonClick ResolveConflicts failed for key1');
+        exit;
+      end;
+    mrRetry: begin
+        ModalResult:=mrNone;
+        exit;
+      end;
   end;
 
   //debugln('TShortCutDialog.OkButtonClick C ShortcutA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' ShortcutB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
@@ -303,7 +314,7 @@ begin
 end;
 
 function TShortCutDialog.ResolveConflicts(Key: TIDEShortCut;
-  Scope: TIDECommandScope): boolean;
+  Scope: TIDECommandScope): TModalResult;
 type
   TConflictType = (ctNone,ctConflictKeyA,ctConflictKeyB);
 var
@@ -314,13 +325,11 @@ var
   j: integer;
   conflictType: TConflictType;
 begin
+  Result:=mrOK;
   // search for conflict
   CurRelation:=KeyCommandRelationList.Relations[RelationIndex];
   if Key.Key1=VK_UNKNOWN then
-  begin
-    Result:=true;
     exit;
-  end;
   //Try to find an IDE command that conflicts
   for j:=0 to KeyCommandRelationList.RelationCount-1 do begin
     conflictType:=ctNone;
@@ -353,21 +362,24 @@ begin
       else
         ConflictName:=ConflictName
                  +' ('+KeyAndShiftStateToEditorKeyString(ConflictRelation.ShortcutB);
-      if MessageDlg(lisPEConflictFound,
+      case MessageDlg(lisPEConflictFound,
          Format(lisTheKeyIsAlreadyAssignedToRemoveTheOldAssignmentAnd, [
            KeyAndShiftStateToEditorKeyString(Key), #13, ConflictName, #13, #13,
-           #13, CurName]), mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
-      begin
-        Result:=false;
-        exit;
+           #13, CurName]), mtConfirmation, [mbYes, mbNo, mbCancel], 0)
+      of
+        mrYes:    Result:=mrOK;
+        mrCancel: Result:=mrCancel;
+        else      Result:=mrRetry;
       end;
-      if (conflictType=ctConflictKeyA) then
-        ConflictRelation.ShortcutA:=ConflictRelation.ShortcutB;
-      ConflictRelation.ClearShortcutB;
+      if Result=mrOK then begin
+        if (conflictType=ctConflictKeyA) then
+          ConflictRelation.ShortcutA:=ConflictRelation.ShortcutB;
+        ConflictRelation.ClearShortcutB;
+      end
+      else
+        break;
     end;
   end;
-
-  Result:=true;
 end;
 
 procedure TShortCutDialog.UpdateCaptions;
