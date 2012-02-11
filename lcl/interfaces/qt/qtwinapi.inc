@@ -3770,9 +3770,10 @@ begin
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYFULLSCREEN     ');
       end;
-    SM_CXHTHUMB:
+    SM_CXHTHUMB,
+    SM_CYVTHUMB:
       begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXHTHUMB         ');
+        Result := GetPixelMetric(QStylePM_ScrollBarSliderMin, nil, nil);
       end;
     SM_CXICON,
     SM_CYICON:
@@ -3909,10 +3910,6 @@ begin
     SM_CYSMCAPTION:
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYSMCAPTION      ');
-      end;
-    SM_CYVTHUMB:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYVTHUMB         ');
       end;
     SM_DBCSENABLED:
       begin
