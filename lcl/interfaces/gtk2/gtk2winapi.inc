@@ -5465,17 +5465,22 @@ begin
       end;
     SM_CXMENUCHECK:
       begin
-        //DebugLn('Trace:TODO: [TGtk2WidgetSet.GetSystemMetrics] --> SM_CXMENUCHECK      ');
+        Result := 19;
+        P := GetStyleWidget(lgsCheckbox);
+        if P <> nil then
+          Result := GTK_Widget(P)^.requisition.Width;
       end;
     SM_CYMENUCHECK:
       begin
-        //DebugLn('Trace:TODO: [TGtk2WidgetSet.GetSystemMetrics] --> SM_CYMENUCHECK      ');
+        Result := 19;
+        P := GetStyleWidget(lgsCheckbox);
+        if P <> nil then
+          Result := GTK_Widget(P)^.requisition.Height;
       end;
     SM_CXMENUSIZE,
     SM_CYMENUSIZE:
       begin
         Result := GetTitleBarHeight - (FCachedBorderSize * 2);
-        //DebugLn('Trace:TODO: [TGtk2WidgetSet.GetSystemMetrics] --> SM_CYMENUSIZE       ');
       end;
     SM_CXMIN:
       begin
