@@ -1305,12 +1305,17 @@ begin
 end;
 
 function TQtWidgetSet.GetMenuHeight: Integer;
+{$IFNDEF DARWIN}
 var
   AMenuBar: QMenuBarH;
   DummyWindow: QMainWindowH;
   DummyStr: WideString;
   Size: TSize;
+{$ENDIF}
 begin
+  {$IFDEF DARWIN}
+  FCachedMenuBarHeight := 0;
+  {$ELSE}
   if FCachedMenuBarHeight = -1 then
   begin
     DummyWindow := QMainWindow_create(QApplication_desktop());
@@ -1325,7 +1330,7 @@ begin
   end;
   if (FCachedMenuBarHeight <= 0) then
     FCachedMenuBarHeight := 22;  // default
-
+  {$ENDIF}
   Result := FCachedMenuBarHeight;
 end;
 
