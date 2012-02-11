@@ -7696,9 +7696,14 @@ begin
         StyleObject^.Widget := GTK_RADIO_BUTTON_NEW(nil);
       end
     else
-      If CompareText(WName,LazGtkStyleNames[lgsMenu])=0 then begin
+      if CompareText(WName,LazGtkStyleNames[lgsMenu])=0 then
+      begin
         lgs:=lgsMenu;
         StyleObject^.Widget := gtk_menu_new;
+        // we need REAL menu size for SM_CYMENU
+        // menuitem will be destroyed with menu by gtk.
+        VBox := gtk_menu_item_new_with_label('DUMMYITEM');
+        gtk_menu_shell_append(PGtkMenuShell(StyleObject^.Widget), VBox);
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsMenuBar])=0 then begin
