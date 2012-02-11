@@ -1353,6 +1353,7 @@ constructor TMainIDE.Create(TheOwner: TComponent);
 var
   Layout: TSimpleWindowLayout;
   FormCreator: TIDEWindowCreator;
+  AMenuHeight: Integer;
 begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create START');{$ENDIF}
   inherited Create(TheOwner);
@@ -1401,7 +1402,20 @@ begin
   MainIDEBar.OnDestroy:=@OnMainBarDestroy;
   MainIDEBar.OnActive:=@OnMainBarActive;
 
-  MainIDEBar.Constraints.MaxHeight:=85;
+  AMenuHeight := LCLIntf.GetSystemMetrics(SM_CYMENU);
+  if AMenuHeight > 0 then
+  begin
+    // what we know:
+    // 1. cmd speedbuttons height = 22
+    // 2. components palette buttons = 32
+    // 3. menu height provided by widgetset (varies , depends on theme)
+    // so we set 22 + 32 + (borders * 2).
+    MainIDEBar.Constraints.MaxHeight := AMenuHeight +
+      22 {cmd speedbtns} + 32 {component buttons} +
+      (LCLIntf.GetSystemMetrics(SM_CYBORDER) * 2) {borders};
+  end else
+    MainIDEBar.Constraints.MaxHeight:=85;
+
   MainIDEBar.Name := NonModalIDEWindowNames[nmiwMainIDEName];
   FormCreator:=IDEWindowCreators.Add(MainIDEBar.Name);
   FormCreator.Right:='100%';
