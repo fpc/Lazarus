@@ -862,6 +862,7 @@ Type
     property BorderStyle;
     property CharCase;
     property Color;
+    property Constraints;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property DragCursor;
