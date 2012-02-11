@@ -5347,10 +5347,12 @@ begin
     SM_CXBORDER:
       begin
         //DebugLn('Trace:TODO: [TGtk2WidgetSet.GetSystemMetrics] --> SM_CXBORDER         ');
+        Result := Max(FCachedBorderSize, 0);
       end;
     SM_CYBORDER:
       begin
         //DebugLn('Trace:TODO: [TGtk2WidgetSet.GetSystemMetrics] --> SM_CYBORDER         ');
+        Result := Max(FCachedBorderSize, 0);
       end;
     SM_CXCURSOR,
     SM_CYCURSOR:
