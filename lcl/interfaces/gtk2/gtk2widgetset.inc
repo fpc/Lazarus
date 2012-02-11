@@ -1088,6 +1088,8 @@ end;
 constructor TGtk2WidgetSet.Create;
 begin
   inherited Create;
+  FCachedTitleBarHeight := -1;
+  FCachedBorderSize := 4;
   Gtk2Create;
   {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
   FMainPoll := nil;
@@ -2620,6 +2622,42 @@ end;
 function TGtk2WidgetSet.GetAppActive: Boolean;
 begin
   Result := FAppActive;
+end;
+
+function TGtk2WidgetSet.GetTitleBarHeight: Integer;
+var
+  I: Integer;
+  AForm: TCustomForm;
+  AWindow: PGdkWindow;
+  ARect: TGdkRectangle;
+  AW, AH: GInt;
+begin
+  Result := 30;
+  if FCachedTitleBarHeight > 0 then
+    Result := FCachedTitleBarHeight
+  else
+  if Assigned(Application) and not Application.Terminated and
+    Assigned(Application.MainForm) then
+  begin
+    for i := 0 to Screen.CustomFormZOrderCount - 1 do
+    begin
+      AForm := Screen.CustomFormsZOrdered[i];
+      if (AForm.HandleAllocated) and (AForm.Visible) and (AForm.Parent = nil) and
+        (AForm.BorderStyle <> bsNone) then
+      begin
+        AWindow := PGtkWidget(AForm.Handle)^.window;
+        if GDK_IS_WINDOW(AWindow) then
+        begin
+          gdk_window_get_frame_extents(AWindow, @ARect);
+          gdk_window_get_size(AWindow, @AW, @AH);
+          FCachedTitleBarHeight := ARect.Height - AH - 1;
+          FCachedBorderSize := (ARect.Width - AW) div 2;
+          Result := ARect.Height - AH - 1;
+          break;
+        end;
+      end;
+    end;
+  end;
 end;
 
 procedure TGtk2WidgetSet.SetAppActive(const AValue: Boolean);

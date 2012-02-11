@@ -79,9 +79,11 @@ type
     FLastFocusOut: PGtkWidget;
     StayOnTopList: TMap;
     FAppActive: Boolean;
+    FCachedTitleBarHeight: Integer;
+    FCachedBorderSize: Integer;
     function GetAppActive: Boolean;
+    function GetTitleBarHeight: Integer;
     procedure SetAppActive(const AValue: Boolean);
-
   protected
     procedure AppendText(Sender: TObject; Str: PChar);
     function GetText(Sender: TComponent; var Text: String): Boolean;

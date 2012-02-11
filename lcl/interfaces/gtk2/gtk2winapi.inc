@@ -5542,7 +5542,7 @@ begin
     SM_CXSIZEFRAME,
     SM_CYSIZEFRAME:
       begin
-        Result := 4;
+        Result := FCachedBorderSize;
       end;
     SM_CXSMICON,
     SM_CYSMICON:
@@ -5570,6 +5570,7 @@ begin
     SM_CYCAPTION:
       begin
         //DebugLn('Trace:TODO: [TGtk2WidgetSet.GetSystemMetrics] --> SM_CYCAPTION        ');
+        Result := GetTitleBarHeight;
       end;
     SM_CYKANJIWINDOW:
       begin
