@@ -8,31 +8,36 @@ object GenericListEditForm: TGenericListEditForm
   ClientWidth = 343
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 261
+    Height = 26
+    Top = 269
     Width = 331
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     HelpButton.Enabled = False
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False
   end
   object Memo1: TMemo
     Left = 0
-    Height = 255
+    Height = 263
     Top = 0
     Width = 343
     Align = alClient
     Lines.Strings = (
       ''
     )
+    ScrollBars = ssAutoVertical
     TabOrder = 1
   end
 end
