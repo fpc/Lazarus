@@ -294,7 +294,10 @@ var
 begin
   ATitle := GetUtf8String(AFileDialog.Title);
   QtFileDialog.setWindowTitle(@ATitle);
-  QtFileDialog.setDirectory(GetUtf8String(AFileDialog.InitialDir));
+  if (AFileDialog.InitialDir = '') then
+    QtFileDialog.setDirectory(GetUtf8String(SysUtils.GetCurrentDir))
+  else
+    QtFileDialog.setDirectory(GetUtf8String(AFileDialog.InitialDir));
   QtFileDialog.setHistory(AFileDialog.HistoryList);
   QtFileDialog.setFilter(GetQtFilterString(AFileDialog, ATitle));
   QtFileDialog.setSelectedFilter(ATitle);
