@@ -932,6 +932,7 @@ end;
 function TCodeCompletionCodeTool.CheckLocalVarForInSyntax(
   CleanCursorPos: integer; out VarNameAtom, TermAtom: TAtomPosition): boolean;
 // check for: for VarName in Term do
+{off $DEFINE VerboseForInCompletion}
 var
   InAtomEndPos: LongInt;
 begin
@@ -941,20 +942,35 @@ begin
   // find variable name
   GetIdentStartEndAtPosition(Src,CleanCursorPos,
     VarNameAtom.StartPos,VarNameAtom.EndPos);
-  //debugln('TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax A ',GetAtom(VarNameAtom),' "',copy(Src,CleanCursorPos,10),'"');
-  if VarNameAtom.StartPos=VarNameAtom.EndPos then exit;
+  debugln('TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax A ',GetAtom(VarNameAtom),' "',copy(Src,CleanCursorPos,10),'"');
+  if VarNameAtom.StartPos=VarNameAtom.EndPos then begin
+    {$IFDEF VerboseForInCompletion}
+    debugln('TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax no identifier at cursor ',GetAtom(VarNameAtom),' "',copy(Src,CleanCursorPos,10),'"');
+    {$ENDIF}
+    exit;
+  end;
   MoveCursorToAtomPos(VarNameAtom);
   if AtomIsKeyWord then exit;
 
   // find 'in' operator
   ReadNextAtom;
-  if not UpAtomIs('IN') then exit;
+  if not UpAtomIs('IN') then begin
+    {$IFDEF VerboseForInCompletion}
+    debugln('TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax no in keyword ',GetAtom(VarNameAtom));
+    {$ENDIF}
+    exit;
+  end;
   InAtomEndPos:=CurPos.EndPos;
 
   // find 'for' keyword
   MoveCursorToCleanPos(VarNameAtom.StartPos);
   ReadPriorAtom;
-  if not UpAtomIs('FOR') then exit;
+  if not UpAtomIs('FOR') then begin
+    {$IFDEF VerboseForInCompletion}
+    debugln('TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax no for keyword ',GetAtom);
+    {$ENDIF}
+    exit;
+  end;
 
   // find term
   MoveCursorToCleanPos(InAtomEndPos);
@@ -962,6 +978,9 @@ begin
   TermAtom.StartPos:=CurPos.StartPos;
   TermAtom.EndPos:=FindEndOfExpression(TermAtom.StartPos);
 
+  {$IFDEF VerboseForInCompletion}
+  debugln('TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax term="',GetAtom(TermAtom),'"');
+  {$ENDIF}
   Result:=TermAtom.EndPos>TermAtom.StartPos;
 end;
 
@@ -1889,11 +1908,12 @@ begin
   DebugLn('  CompleteLocalVariableForIn: B CheckLocalVarForInSyntax ...');
   {$ENDIF}
   // check assignment syntax
+  debugln(['TCodeCompletionCodeTool.CompleteLocalVariableForIn AAA1']);
   if not CheckLocalVarForInSyntax(CleanCursorPos,
     VarNameAtom,TermAtom)
   then
     exit;
-  //DebugLn(['TCodeCompletionCodeTool.CompleteLocalVariableForIn Var=',GetAtom(VarNameAtom),' Term=',GetAtom(TermAtom)]);
+  DebugLn(['TCodeCompletionCodeTool.CompleteLocalVariableForIn Var=',GetAtom(VarNameAtom),' Term=',GetAtom(TermAtom)]);
 
   // search variable
   ActivateGlobalWriteLock;

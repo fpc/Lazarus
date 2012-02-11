@@ -1223,15 +1223,17 @@ var
   // returns false to abort
   var
     OwnerList: TFPList;
+    AddResult: TModalResult;
   begin
-    if PkgDependencyAdded then exit;
+    if PkgDependencyAdded then exit(true);
     PkgDependencyAdded:=true;
     // add dependency
     OwnerList:=TFPList.Create;
     try
       OwnerList.Add(CurOwner);
-      if PackageEditingInterface.AddDependencyToOwners(OwnerList,Pkg,true)<>mrOK
-      then begin
+      AddResult:=PackageEditingInterface.AddDependencyToOwners(OwnerList,Pkg,true);
+      if AddResult=mrIgnore then exit(true);
+      if AddResult<>mrOk then begin
         debugln(['TCodyIdentifiersDlg.UseIdentifier checking via AddDependencyToOwners failed for new package "'+NewGroupName+'"']);
         exit(false);
       end;
@@ -1372,7 +1374,7 @@ begin
 
     debugln(['TCodyIdentifiersDlg.UseIdentifier CurOwner=',DbgSName(CurOwner),' ',NewUnitInPath]);
     if (CurOwner<>nil) and (not NewUnitInPath) then begin
-      debugln(['TCodyIdentifiersDlg.UseIdentifier not in unit path, connecting ...']);
+      debugln(['TCodyIdentifiersDlg.UseIdentifier not in unit path, connecting pkg="',NewGroupName,'" ...']);
       if (NewGroupName<>'') and (NewGroupName<>PackageNameFPCSrcDir) then begin
         // add dependency
         if not AddDependency then exit;
@@ -1499,31 +1501,51 @@ var
   CurUnitName: String;
   UsesNode: TCodeTreeNode;
 begin
-  if (CurTool=nil) or (NewUnitFilename='') then exit;
+  if (CurTool=nil) or (NewUnitFilename='') then begin
+    debugln(['TCodyIdentifiersDlg.AddToUsesSection failed: no tool']);
+    exit;
+  end;
   UpdateTool;
-  if (CurNode=nil) then exit;
+  if (CurNode=nil) then begin
+    debugln(['TCodyIdentifiersDlg.AddToUsesSection failed: no node']);
+    exit;
+  end;
 
   // check if already in uses section
   NewUnitName:=ExtractFileNameOnly(NewUnitFilename);
-  if CurTool.IsHiddenUsedUnit(PChar(NewUnitName)) then exit;
+  if CurTool.IsHiddenUsedUnit(PChar(NewUnitName)) then begin
+    debugln(['TCodyIdentifiersDlg.AddToUsesSection "',NewUnitName,'" is hidden used unit']);
+    exit;
+  end;
   UsesNode:=CurTool.FindMainUsesSection;
   if (UsesNode<>nil) and (CurTool.FindNameInUsesSection(UsesNode,NewUnitName)<>nil)
-  then exit;
+  then begin
+    debugln(['TCodyIdentifiersDlg.AddToUsesSection "',NewUnitName,'" is already used in main uses section']);
+    exit;
+  end;
   if CurInImplementation then begin
     UsesNode:=CurTool.FindImplementationUsesSection;
     if (UsesNode<>nil) and (CurTool.FindNameInUsesSection(UsesNode,NewUnitName)<>nil)
-    then exit;
+    then begin
+      debugln(['TCodyIdentifiersDlg.AddToUsesSection "',NewUnitName,'" is already used in implementation uses section']);
+      exit;
+    end;
   end;
 
   // get unit name
   NewUnitCode:=CodeToolBoss.LoadFile(NewUnitFilename,true,false);
-  if NewUnitCode=nil then exit;
+  if NewUnitCode=nil then begin
+    debugln(['TCodyIdentifiersDlg.AddToUsesSection failed: unable to load file "',NewUnitFilename,'"']);
+    exit;
+  end;
   NewUnitName:=CodeToolBoss.GetSourceName(NewUnitCode,false);
   if NewUnitName='' then
     NewUnitName:=ExtractFileNameOnly(NewUnitFilename);
   CurUnitName:=ExtractFileNameOnly(CurMainFilename);
-  if CompareDottedIdentifiers(PChar(CurUnitName),PChar(NewUnitName))=0 then
+  if CompareDottedIdentifiers(PChar(CurUnitName),PChar(NewUnitName))=0 then begin
+    debugln(['TCodyIdentifiersDlg.AddToUsesSection same unit']);
     exit; // is the same unit
+  end;
 
   if (CurNode.Desc in [ctnUnit,ctnUsesSection]) then begin
     debugln(['TCodyIdentifiersDlg.AddToUsesSection identifier in uses section, not adding unit to uses section']);
