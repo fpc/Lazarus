@@ -137,11 +137,14 @@ end;
 
 procedure TDBCheckBox.DoOnChange;
 begin
+  //avoid reseting value when state changes
+  FDataLink.OnDataChange := nil;
   if FDatalink.Edit then begin
     FDatalink.Modified;
     FDataLink.UpdateRecord;
   end else
     State:=GetFieldCheckState;
+  FDataLink.OnDataChange := @DataChange;
   inherited DoOnChange;
 end;
 
