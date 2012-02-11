@@ -5471,12 +5471,10 @@ begin
       begin
         //DebugLn('Trace:TODO: [TGtk2WidgetSet.GetSystemMetrics] --> SM_CYMENUCHECK      ');
       end;
-    SM_CXMENUSIZE:
-      begin
-        //DebugLn('Trace:TODO: [TGtk2WidgetSet.GetSystemMetrics] --> SM_CXMENUSIZE       ');
-      end;
+    SM_CXMENUSIZE,
     SM_CYMENUSIZE:
       begin
+        Result := GetTitleBarHeight - (FCachedBorderSize * 2);
         //DebugLn('Trace:TODO: [TGtk2WidgetSet.GetSystemMetrics] --> SM_CYMENUSIZE       ');
       end;
     SM_CXMIN:
