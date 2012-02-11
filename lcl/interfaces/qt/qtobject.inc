@@ -112,7 +112,7 @@ begin
   {$ENDIF}
   {$IFDEF DARWIN}
   // do not swap meta and ctrl keys, issue #20897
-  if not FIsLibraryInstance then (QtVersionMajor = 4) and (QtVersionMinor > 5) then
+  if not FIsLibraryInstance and (QtVersionMajor = 4) and (QtVersionMinor > 5) then
     QCoreApplication_setAttribute(QtAA_MacDontSwapCtrlAndMeta, True);
   {$ENDIF}
   FGlobalActions := TFPList.Create;
