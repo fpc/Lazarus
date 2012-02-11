@@ -3811,26 +3811,14 @@ begin
       begin
         Result := GetPixelMetric(QStylePM_IndicatorHeight, nil, nil);
       end;
-    SM_CXMENUSIZE:
-      begin
-        //TODO: should be calculated - this is mdi titlebar button width
-        // QStylePM_MdiSubWindowMinimizedWidth - margins
-        Result := GetPixelMetric(QStylePM_IndicatorWidth, nil, nil);
-      end;
+    SM_CXMENUSIZE,
     SM_CYMENUSIZE:
       begin
-        //TODO: should be calculated - this is mdi titlebar button height
-        // QStylePM_MdiSubWindowMinimizedWidth - margins
-        Result := GetPixelMetric(QStylePM_IndicatorHeight, nil, nil);
+        Result := GetPixelMetric(QStylePM_TitleBarHeight, nil, nil) -
+          (GetPixelMetric(QStylePM_DefaultFrameWidth, nil, nil) * 2);
       end;
-    SM_CXMIN:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMIN            ');
-      end;
-    SM_CYMIN:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMIN            ');
-      end;
+    SM_CXMIN,
+    SM_CYMIN: Result := 0;
     SM_CXMINIMIZED:
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMINIMIZED      ');
