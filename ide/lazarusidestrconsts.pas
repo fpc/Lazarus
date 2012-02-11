@@ -40,6 +40,10 @@ uses
   Classes, SysUtils;
 
 resourcestring
+  // Common strings that can be used around Lazarus:
+  lisAdd  = 'Add';
+
+  // errors
   lisErrInvalidOption = 'Invalid option at position %d: "%s"';
   lisErrNoOptionAllowed = 'Option at position %d does not allow an argument: %s';
   lisErrOptionNeeded = 'Option at position %d needs an argument : %s';
@@ -52,13 +56,11 @@ resourcestring
 
   // command line help
   listhisHelpMessage = 'this help message';
-  lisprimaryConfigDirectoryWhereLazarusStoresItsConfig =
-    'primary config '+
+  lisprimaryConfigDirectoryWhereLazarusStoresItsConfig = 'primary config '+
     'directory, where Lazarus stores its config files. Default is ';
   lislazarusOptionsProjectFilename = 'lazarus [options] <project-filename>';
   lisIDEOptions = 'IDE Options:';
-  lisCmdLineLCLInterfaceSpecificOptions =
-    'LCL Interface specific options:';
+  lisCmdLineLCLInterfaceSpecificOptions = 'LCL Interface specific options:';
   lisDoNotShowSplashScreen = 'Do not show splash screen';
   lisSkipLoadingLastProject = 'Skip loading last project';
   lisOverrideLanguage = 'Override language. For example --language=de.'+
@@ -3352,10 +3354,11 @@ resourcestring
   lisPathEditSearchPaths = 'Search paths:';
   lisPckSearchPathsForFpdocXmlFilesMultiplePathsMustBeSepa = 'Search paths for'
     +' fpdoc xml files. Multiple paths must be separated by semicolon.';
-  lisPathEditMovePathDown = 'Move path down';
-  lisPathEditMovePathUp = 'Move path up';
+  lisPathEditMovePathDown = 'Move path down (Ctrl+Down)';
+  lisPathEditMovePathUp = 'Move path up (Ctrl+Up)';
   lisPathEditBrowse = 'Browse';
   lisPathEditPathTemplates = 'Path templates';
+  lisPathEditDeleteInvalidPaths = 'Delete Invalid Paths';
   
   // new dialog
   lisNewDlgNoItemSelected = 'No item selected';
@@ -4438,12 +4441,10 @@ resourcestring
   lisReplacingSelectionFailed = 'Replacing selection failed.';
   lisUnableToFindInLFMStream = 'Unable to find %s in LFM Stream.';
   lisErrorParsingLfmComponentStream = 'Error parsing lfm component stream.';
-  lisUnableToCreateTemporaryLfmBuffer =
-    'Unable to create temporary lfm buffer.';
+  lisUnableToCreateTemporaryLfmBuffer = 'Unable to create temporary lfm buffer.';
   lisUnableToGetSourceForDesigner = 'Unable to get source for designer.';
   lisUnableToGatherEditorChanges = 'Unable to gather editor changes.';
-  lisUnableToStreamSelectedComponents2 =
-    'Unable to stream selected components.';
+  lisUnableToStreamSelectedComponents2 = 'Unable to stream selected components.';
   lisUnableToChangeClassOfTo = '%s%sUnable to change class of %s to %s';
   lisCanOnlyChangeTheClassOfTComponents = 'Can only change the class of TComponents.';
   lisOldClass = 'Old Class';
@@ -4471,10 +4472,6 @@ resourcestring
   lisCEProcedures = 'Procedures';
   lisCEProperties = 'Properties';
   lisCodeObserver = 'Code Observer';
-  dlgCOMoveLevelDown = 'Move level down';
-  dlgCOMoveLevelUp = 'Move level up';
-  dlgCOMoveDown = 'Move down';
-  dlgCOMoveUp = 'Move up';
   lisCEOMode = 'Preferred exhibition mode';
   lisCEOModeCategory = 'Category';
   lisCEOModeSource = 'Source';
