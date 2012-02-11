@@ -78,7 +78,6 @@ constructor TQtWidgetSet.Create;
 begin
   FLastWFPMousePos := Point(MaxInt, MaxInt);
   FLastWFPResult := 0;
-
   inherited Create;
   FIsLibraryInstance := QCoreApplication_instance() <> nil;
   if FIsLibraryInstance then
@@ -88,7 +87,7 @@ begin
   {$J+}
   QtVersionInt(QtVersionMajor, QtVersionMinor, QtVersionMicro);
   {$J-}
-
+  FCachedMenuBarHeight := -1;
   FAppEvenFilterHook := nil;
   FAppFocusChangedHook := nil;
 
@@ -499,6 +498,7 @@ procedure TQtWidgetSet.SetDefaultAppFontName;
 var
   AppFont: QFontH;
 begin
+  FCachedMenuBarHeight := -1;
   AppFont := QFont_create();
   QApplication_font(AppFont);
   QFont_family(AppFont, @FDefaultAppFontName);
@@ -518,6 +518,11 @@ begin
   Result := False;
   case QEvent_type(Event) of
     QEventApplicationFontChange: SetDefaultAppFontName;
+    QEventStyleChange:
+      begin
+        if (Sender = QCoreApplication_instance()) then
+          FCachedMenuBarHeight := -1;
+      end;
     QEventApplicationActivate:
       if Assigned(Application) and not FEatNextDeactivate then
       begin
@@ -1297,6 +1302,31 @@ begin
   FStockSystemFont := 0; // styles aren't initialized yet
   
   FStockDefaultDC := 0; // app must be initialized
+end;
+
+function TQtWidgetSet.GetMenuHeight: Integer;
+var
+  AMenuBar: QMenuBarH;
+  DummyWindow: QMainWindowH;
+  DummyStr: WideString;
+  Size: TSize;
+begin
+  if FCachedMenuBarHeight = -1 then
+  begin
+    DummyWindow := QMainWindow_create(QApplication_desktop());
+    QWidget_setVisible(DummyWindow, False);
+    AMenuBar := QMenuBar_create();
+    DummyStr := 'DUMMY BAR';
+    QMenuBar_addMenu(AMenuBar, @DummyStr);
+    QMainWindow_setMenuBar(DummyWindow, AMenuBar);
+    QMenuBar_sizeHint(AMenuBar, @Size);
+    QMainWindow_destroy(DummyWindow);
+    FCachedMenuBarHeight := Size.cy;
+  end;
+  if (FCachedMenuBarHeight <= 0) then
+    FCachedMenuBarHeight := 22;  // default
+
+  Result := FCachedMenuBarHeight;
 end;
 
 procedure TQtWidgetSet.ClearCachedColors;

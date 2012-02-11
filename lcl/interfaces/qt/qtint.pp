@@ -90,6 +90,12 @@ type
     FWindowManagerName: String; // Track various incompatibilities between WM. Initialized at WS start.
     {$ENDIF}
 
+
+    // qt style does not have pixel metric for themed menubar (menu) height
+    // so we must calculate it somehow.
+    FCachedMenuBarHeight: Integer;
+    function GetMenuHeight: Integer;
+
     procedure ClearCachedColors;
     procedure SetOverrideCursor(const AValue: TObject);
     procedure QtRemoveStayOnTop(const ASystemTopAlso: Boolean = False);

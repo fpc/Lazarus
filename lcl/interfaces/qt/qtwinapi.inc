@@ -3805,18 +3805,22 @@ begin
       end;
     SM_CXMENUCHECK:
       begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMENUCHECK      ');
+        Result := GetPixelMetric(QStylePM_IndicatorWidth, nil, nil);
       end;
     SM_CYMENUCHECK:
       begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMENUCHECK      ');
+        Result := GetPixelMetric(QStylePM_IndicatorHeight, nil, nil);
       end;
     SM_CXMENUSIZE:
       begin
+        //TODO: should be calculated - this is mdi titlebar button width
+        // QStylePM_MdiSubWindowMinimizedWidth - margins
         Result := GetPixelMetric(QStylePM_IndicatorWidth, nil, nil);
       end;
     SM_CYMENUSIZE:
       begin
+        //TODO: should be calculated - this is mdi titlebar button height
+        // QStylePM_MdiSubWindowMinimizedWidth - margins
         Result := GetPixelMetric(QStylePM_IndicatorHeight, nil, nil);
       end;
     SM_CXMIN:
@@ -3912,7 +3916,7 @@ begin
       end;
     SM_CYMENU:
       begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMENU           ');
+        Result := GetMenuHeight;
       end;
     SM_CYSMCAPTION:
       begin
