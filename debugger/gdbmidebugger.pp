@@ -34,14 +34,13 @@ unit GDBMIDebugger;
 {$mode objfpc}
 {$H+}
 
-{$IFDEF GDMI_QUEUE_DEBUG}{$DEFINE DBGMI_QUEUE_DEBUG}{$ENDIF} // temporary, since renamed/spelling
 {$IFDEF linux} {$DEFINE DBG_ENABLE_TERMINAL} {$ENDIF}
 
 interface
 
 uses
-  Classes, SysUtils, Controls, Math, Variants, LCLProc, Dialogs, DebugUtils,
-  Debugger, FileUtil, CmdLineDebugger, GDBTypeInfo, Maps, LCLIntf,
+  Classes, SysUtils, Controls, Math, Variants, LCLProc, LazLogger, Dialogs,
+  DebugUtils, Debugger, FileUtil, CmdLineDebugger, GDBTypeInfo, Maps, LCLIntf,
 {$IFdef MSWindows}
   Windows,
 {$ENDIF}
@@ -548,6 +547,10 @@ resourcestring
 
 
 implementation
+
+var
+  DBGMI_QUEUE_DEBUG: PLazLoggerLogGroup;
+
 
 const
   GDBMIBreakPointReasonNames: Array[TGDBMIBreakpointReason] of string =
@@ -1930,9 +1933,7 @@ end;
 
 procedure TGDBMIDebuggerCommandStack.DoCallstackFreed(Sender: TObject);
 begin
-  {$IFDEF DBGMI_QUEUE_DEBUG}
-  debugln(['DoCallstackFreed: ', DebugText]);
-  {$ENDIF}
+  debugln(DBGMI_QUEUE_DEBUG, ['DoCallstackFreed: ', DebugText]);
   FCallstack := nil;
   Cancel;
 end;
@@ -5381,9 +5382,7 @@ begin
           // - Queue is unlocked, so nothing should be empty
           //   But make info available, if anything wants to queue
           FNextExecQueued := True;
-          {$IFDEF DBGMI_QUEUE_DEBUG}
-          DebugLn(['CommandExecute: Internal queuing -exec-continue (ContinueExecution = True)']);
-          {$ENDIF}
+          debugln(DBGMI_QUEUE_DEBUG, ['CommandExecute: Internal queuing -exec-continue (ContinueExecution = True)']);
           FTheDebugger.FPauseWaitState := pwsNone;
           NextExecCmdObj := TGDBMIDebuggerCommandExecute.Create(FTheDebugger, ectContinue);
           FTheDebugger.QueueExecuteLock; // force queue
@@ -6238,10 +6237,8 @@ begin
 end;
 
 procedure TGDBMIDebugger.UnLockCommandProcessing;
-{$IFDEF DBGMI_QUEUE_DEBUG}
 var
   c: Boolean;
-{$ENDIF}
 begin
   dec(FCommandProcessingLock);
   if (FCommandProcessingLock = 0)
@@ -6251,14 +6248,10 @@ begin
     // if FCommandQueueExecLock, then queu will be run, by however has that lock
     if (FCommandQueueExecLock = 0)
     then begin
-      {$IFDEF DBGMI_QUEUE_DEBUG}
       c := FCommandQueue.Count > 0;
-      if c then DebugLnEnter(['TGDBMIDebugger.UnLockCommandProcessing: Execute RunQueue ']);
-      {$ENDIF}
+      if c then DebugLnEnter(DBGMI_QUEUE_DEBUG, ['TGDBMIDebugger.UnLockCommandProcessing: Execute RunQueue ']);
       RunQueue;
-      {$IFDEF DBGMI_QUEUE_DEBUG}
-      if c then DebugLnExit(['TGDBMIDebugger.UnLockCommandProcessing: Finished RunQueue']);
-      {$ENDIF}
+      if c then DebugLnExit(DBGMI_QUEUE_DEBUG, ['TGDBMIDebugger.UnLockCommandProcessing: Finished RunQueue']);
     end
   end;
 end;
@@ -6520,9 +6513,7 @@ begin
       Inc(FInExecuteCount);
 
       FCommandQueue.Delete(0);
-      {$IFDEF DBGMI_QUEUE_DEBUG}
-      DebugLnEnter(['Executing (Recurse-Count=', FInExecuteCount-1, ') queued= ', FCommandQueue.Count, ' CmdPrior=', Cmd.Priority,' CmdMinRunLvl=', Cmd.QueueRunLevel, ' : "', Cmd.DebugText,'" State=',DBGStateNames[State],' PauseWaitState=',ord(FPauseWaitState) ]);
-      {$ENDIF}
+      DebugLnEnter(DBGMI_QUEUE_DEBUG, ['Executing (Recurse-Count=', FInExecuteCount-1, ') queued= ', FCommandQueue.Count, ' CmdPrior=', Cmd.Priority,' CmdMinRunLvl=', Cmd.QueueRunLevel, ' : "', Cmd.DebugText,'" State=',DBGStateNames[State],' PauseWaitState=',ord(FPauseWaitState) ]);
       // cmd may be canceled while executed => don't loose it while working with it
       Cmd.AddReference;
       NestedCurrentCmdTmp := FCurrentCommand;
@@ -6532,9 +6523,7 @@ begin
       Cmd.DoFinished;
       FCurrentCommand := NestedCurrentCmdTmp;
       Cmd.ReleaseReference;
-      {$IFDEF DBGMI_QUEUE_DEBUG}
-      DebugLnExit('Exec done');
-      {$ENDIF}
+      DebugLnExit(DBGMI_QUEUE_DEBUG, 'Exec done');
 
       Dec(FInExecuteCount);
       // Do not add code with callbacks outside "FInExecuteCount"
@@ -6564,16 +6553,12 @@ begin
           // insert continue command
           Cmd := TGDBMIDebuggerCommandExecute.Create(Self, ectContinue);
           FCommandQueue.Add(Cmd);
-          {$IFDEF DBGMI_QUEUE_DEBUG}
-          debugln(['Internal Queueing: exec-continue']);
-          {$ENDIF}
+          debugln(DBGMI_QUEUE_DEBUG, ['Internal Queueing: exec-continue']);
         end
         else Break; // Queue empty
       end;
     until not R;
-    {$IFDEF DBGMI_QUEUE_DEBUG}
-    debugln(['Leaving Queue with count: ', FCommandQueue.Count, ' Recurse-Count=', FInExecuteCount,' State=',DBGStateNames[State]]);
-    {$ENDIF}
+    debugln(DBGMI_QUEUE_DEBUG, ['Leaving Queue with count: ', FCommandQueue.Count, ' Recurse-Count=', FInExecuteCount,' State=',DBGStateNames[State]]);
   finally
     UnlockRelease;
     FInExecuteCount := SavedInExecuteCount;
@@ -6647,9 +6632,7 @@ begin
   if (not CanRunQueue) or (FCommandQueueExecLock > 0)
   or (FCommandProcessingLock > 0) or ForceQueue
   then begin
-    {$IFDEF DBGMI_QUEUE_DEBUG}
-    debugln(['Queueing (Recurse-Count=', FInExecuteCount, ') at pos=', i, ' cnt=',FCommandQueue.Count-1, ' State=',DBGStateNames[State], ' Lock=',FCommandQueueExecLock, ' Forced=', dbgs(ForceQueue), ' Prior=',p, ': "', ACommand.DebugText,'"']);
-    {$ENDIF}
+    debugln(DBGMI_QUEUE_DEBUG, ['Queueing (Recurse-Count=', FInExecuteCount, ') at pos=', i, ' cnt=',FCommandQueue.Count-1, ' State=',DBGStateNames[State], ' Lock=',FCommandQueueExecLock, ' Forced=', dbgs(ForceQueue), ' Prior=',p, ': "', ACommand.DebugText,'"']);
     ACommand.DoQueued;
 
     // FCommandProcessingLock still must call RunQueue
@@ -7266,9 +7249,7 @@ procedure TGDBMIDebugger.InterruptTarget;
   end;
 {$ENDIF}
 begin
-  {$IFDEF DBGMI_QUEUE_DEBUG}
-  DebugLn(['TGDBMIDebugger.InterruptTarget: TargetPID=', TargetPID]);
-  {$ENDIF}
+  debugln(DBGMI_QUEUE_DEBUG, ['TGDBMIDebugger.InterruptTarget: TargetPID=', TargetPID]);
   if TargetPID = 0 then Exit;
 {$IFDEF UNIX}
   FpKill(TargetPID, SIGINT);
@@ -7286,9 +7267,7 @@ begin
   or not TryNT
   then begin
     // We have no other choice than trying this
-    {$IFDEF DBGMI_QUEUE_DEBUG}
-    DebugLn(['TGDBMIDebugger.InterruptTarget: Send CTRL_BREAK_EVENT']);
-    {$ENDIF}
+    debugln(DBGMI_QUEUE_DEBUG, ['TGDBMIDebugger.InterruptTarget: Send CTRL_BREAK_EVENT']);
     GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, TargetPID);
     Exit;
   end;
@@ -7385,9 +7364,7 @@ end;
 procedure TGDBMIDebugger.ResetStateToIdle;
 begin
   if FInExecuteCount > 0 then begin
-    {$IFDEF DBGMI_QUEUE_DEBUG}
-    debugln(['Defer dsIdle:  Recurse-Count=', FInExecuteCount]);
-    {$ENDIF}
+    debugln(DBGMI_QUEUE_DEBUG, ['Defer dsIdle:  Recurse-Count=', FInExecuteCount]);
     FNeedStateToIdle := True;
     exit;
   end;
@@ -10501,10 +10478,8 @@ begin
       i := FTheDebugger.FTypeRequestCache.IndexOf
         (FTheDebugger.FInternalThreadId, FTheDebugger.FInternalStackFrame, AReq^);
       if i >= 0 then begin
-        {$IFDEF DBGMI_QUEUE_DEBUG}
-        DebugLn(['DBG TypeRequest-Cache: Found entry for T=',  FTheDebugger.FInternalThreadId,
+        debugln(DBGMI_QUEUE_DEBUG, ['DBG TypeRequest-Cache: Found entry for T=',  FTheDebugger.FInternalThreadId,
           ' F=', FTheDebugger.FInternalStackFrame, ' R="', AReq^.Request,'"']);
-        {$ENDIF}
         CReq := FTheDebugger.FTypeRequestCache.Request[i];
         AReq^.Result := CReq.Result;
         AReq^.Error := CReq.Error;
@@ -10835,9 +10810,7 @@ end;
 
 procedure TGDBMIDebuggerCommand.Cancel;
 begin
-  {$IFDEF DBGMI_QUEUE_DEBUG}
-  DebugLn(['Canceling: "', DebugText,'"']);
-  {$ENDIF}
+  debugln(DBGMI_QUEUE_DEBUG, ['Canceling: "', DebugText,'"']);
   FTheDebugger.UnQueueCommand(Self);
   DoCancel;
   DoOnCanceled;
@@ -11141,9 +11114,7 @@ end;
 
 procedure TGDBMIDebuggerCommandEvaluate.DoWatchFreed(Sender: TObject);
 begin
-  {$IFDEF DBGMI_QUEUE_DEBUG}
-  debugln(['DoWatchFreed: ', DebugText]);
-  {$ENDIF}
+  debugln(DBGMI_QUEUE_DEBUG, ['DoWatchFreed: ', DebugText]);
   FWatchValue := nil;
   Cancel;
 end;
@@ -12453,5 +12424,6 @@ end;
 
 initialization
   RegisterDebugger(TGDBMIDebugger);
+  DBGMI_QUEUE_DEBUG := DebugLogger.RegisterLogGroup('DBGMI_QUEUE_DEBUG' {$IFDEF DBGMI_QUEUE_DEBUG} , True {$ENDIF} );
 
 end.
