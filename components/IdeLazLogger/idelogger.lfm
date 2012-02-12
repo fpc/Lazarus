@@ -25,13 +25,28 @@ object IdeLoggerForm: TIdeLoggerForm
       ClientWidth = 312
       object CheckLogGroups: TCheckListBox
         Left = 0
-        Height = 186
-        Top = 0
+        Height = 163
+        Top = 23
         Width = 312
         Align = alClient
         ItemHeight = 0
         OnClickCheck = CheckLogGroupsClickCheck
         TabOrder = 0
+      end
+      object LogNameEdit: TFileNameEdit
+        Left = 0
+        Height = 23
+        Top = 0
+        Width = 312
+        DialogOptions = []
+        FilterIndex = 0
+        HideDirectories = False
+        ButtonWidth = 23
+        NumGlyphs = 0
+        Align = alTop
+        MaxLength = 0
+        TabOrder = 1
+        OnChange = LogNameEditChange
       end
     end
   end

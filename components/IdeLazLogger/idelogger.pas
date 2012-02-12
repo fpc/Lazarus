@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls, ButtonPanel,
-  Buttons, CheckLst, IDEIntf, MenuIntf, LazLogger;
+  Buttons, CheckLst, EditBtn, IDEIntf, MenuIntf, LazLogger;
 
 type
 
@@ -15,6 +15,7 @@ type
   TIdeLoggerForm = class(TForm)
     ButtonPanel1: TButtonPanel;
     CheckLogGroups: TCheckListBox;
+    LogNameEdit: TFileNameEdit;
     PageControl1: TPageControl;
     TabSheet1: TTabSheet;
     procedure CancelButtonClick(Sender: TObject);
@@ -22,6 +23,7 @@ type
     procedure CloseButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure LogNameEditChange(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
   private
     { private declarations }
@@ -81,7 +83,13 @@ begin
     j := CheckLogGroups.Items.Add(DebugLogger.LogGroupList[i]^.ConfigName);
     CheckLogGroups.Checked[j] := e^.Enabled;
   end;
+  LogNameEdit.FileName := DebugLogger.LogName;
   ButtonPanel1.CloseButton.Enabled := False;
+end;
+
+procedure TIdeLoggerForm.LogNameEditChange(Sender: TObject);
+begin
+  ButtonPanel1.CloseButton.Enabled := True;
 end;
 
 procedure TIdeLoggerForm.OKButtonClick(Sender: TObject);
@@ -102,6 +110,7 @@ begin
     if (j >= 0) then
       e^.Enabled := CheckLogGroups.Checked[j];
   end;
+  DebugLogger.LogName := LogNameEdit.FileName;
 end;
 
 procedure IDELoggerMenuClicked(Sender: TObject);
