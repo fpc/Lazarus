@@ -63,6 +63,8 @@ type
     property Width;
     property Parts;
     property MouseActions;
+    property OnResize;
+    property OnChange;
   end;
 
   { TSynGutterSeparator }

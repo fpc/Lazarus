@@ -1892,11 +1892,11 @@ begin
   fBookMarkOpt.OnChange := {$IFDEF FPC}@{$ENDIF}BookMarkOptionsChanged;
 
   FLeftGutter := CreateGutter(self, gsLeft, FTextDrawer);
-  FLeftGutter.OnChange := {$IFDEF FPC}@{$ENDIF}GutterChanged;
-  FLeftGutter.OnResize := {$IFDEF FPC}@{$ENDIF}GutterResized;
+  FLeftGutter.RegisterChangeHandler({$IFDEF FPC}@{$ENDIF}GutterChanged);
+  FLeftGutter.RegisterResizeHandler({$IFDEF FPC}@{$ENDIF}GutterResized);
   FRightGutter := CreateGutter(self, gsRight, FTextDrawer);
-  FRightGutter.OnChange := {$IFDEF FPC}@{$ENDIF}GutterChanged;
-  FRightGutter.OnResize := {$IFDEF FPC}@{$ENDIF}GutterResized;
+  FRightGutter.RegisterChangeHandler({$IFDEF FPC}@{$ENDIF}GutterChanged);
+  FRightGutter.RegisterResizeHandler({$IFDEF FPC}@{$ENDIF}GutterResized);
 
   ControlStyle := ControlStyle + [csOpaque, csSetCaption, csTripleClicks, csQuadClicks];
   Height := 150;
@@ -2210,6 +2210,10 @@ begin
     FreeAndNil(fPlugins);
   end;
   RemoveHandlers;
+  FLeftGutter.UnRegisterChangeHandler({$IFDEF FPC}@{$ENDIF}GutterChanged);
+  FLeftGutter.UnRegisterResizeHandler({$IFDEF FPC}@{$ENDIF}GutterResized);
+  FRightGutter.UnRegisterChangeHandler({$IFDEF FPC}@{$ENDIF}GutterChanged);
+  FRightGutter.UnRegisterResizeHandler({$IFDEF FPC}@{$ENDIF}GutterResized);
 
   FreeAndNil(FHookedKeyTranslationList);
   fHookedCommandHandlers:=nil;

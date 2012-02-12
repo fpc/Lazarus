@@ -5,7 +5,7 @@ unit SynGutterBase;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls, Menus, math, SynEditMarks,
+  Classes, SysUtils, Graphics, Controls, Menus, math, LCLProc, SynEditMarks,
   SynEditMiscClasses, SynTextDrawer, SynEditMouseCmds, SynEditFoldedView;
 
 type
@@ -38,6 +38,8 @@ type
     FOnResize: TNotifyEvent;
     FOnChange: TNotifyEvent;
     FMouseActions: TSynEditMouseInternalActions;
+    FOnResizeHandler: TMethodList;
+    FOnChangeHandler: TMethodList;
 
     function GetMouseActions: TSynEditMouseActions;
     procedure SetAutoSize(const AValue: boolean);
@@ -70,6 +72,10 @@ type
     function MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
                  HandleActionProc: TSynEditMouseActionHandler): Boolean; virtual;
     procedure ResetMouseActions; virtual; // set mouse-actions according to current Options / may clear them
+    procedure RegisterResizeHandler(AHandler: TNotifyEvent);
+    procedure UnregisterResizeHandler(AHandler: TNotifyEvent);
+    procedure RegisterChangeHandler(AHandler: TNotifyEvent);
+    procedure UnregisterChangeHandler(AHandler: TNotifyEvent);
     property Left: Integer read FLeft;
     property Top: Integer read FTop;
     property Height:Integer read FHeight;
@@ -214,11 +220,15 @@ uses SynEdit;
 constructor TSynGutterBase.Create(AOwner: TSynEditBase; ASide: TSynGutterSide;
   ATextDrawer: TheTextDrawer);
 begin
+  FOnResizeHandler := TMethodList.Create;
+  FOnChangeHandler := TMethodList.Create;
+
   inherited Create;
   FSide := ASide;
   FSynEdit := AOwner;
   CreatePartList;
   FMouseActions := CreateMouseActions;
+
 
   FInDoChange := False;
   FChangeLock := 0;
@@ -237,6 +247,8 @@ begin
   FOnResize := nil;
   FreeAndNil(FGutterPartList);
   FreeAndNil(FMouseActions);
+  FreeAndNil(FOnChangeHandler);
+  FreeAndNil(FOnResizeHandler);
   inherited Destroy;
 end;
 
@@ -304,6 +316,26 @@ procedure TSynGutterBase.ResetMouseActions;
 begin
   FMouseActions.Options := TCustomSynEdit(SynEdit).MouseOptions;
   FMouseActions.ResetUserActions;
+end;
+
+procedure TSynGutterBase.RegisterResizeHandler(AHandler: TNotifyEvent);
+begin
+  FOnResizeHandler.Add(TMethod(AHandler));
+end;
+
+procedure TSynGutterBase.UnregisterResizeHandler(AHandler: TNotifyEvent);
+begin
+  FOnResizeHandler.Remove(TMethod(AHandler));
+end;
+
+procedure TSynGutterBase.RegisterChangeHandler(AHandler: TNotifyEvent);
+begin
+  FOnChangeHandler.Add(TMethod(AHandler));
+end;
+
+procedure TSynGutterBase.UnregisterChangeHandler(AHandler: TNotifyEvent);
+begin
+  FOnChangeHandler.Remove(TMethod(AHandler));
 end;
 
 procedure TSynGutterBase.SetColor(const Value: TColor);
@@ -430,6 +462,7 @@ begin
       FInDoChange := False;
     end;
   end;
+  FOnChangeHandler.CallNotifyEvents(Self);
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;
@@ -441,6 +474,7 @@ begin
     exit;
   end;
   FNeedOnResize := False;
+  FOnResizeHandler.CallNotifyEvents(Self);
   if Assigned(FOnResize) then
     FOnResize(Self)
   else
