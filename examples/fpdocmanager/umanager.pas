@@ -219,6 +219,11 @@ type
 var
   Manager: TFPDocManager = nil; //init by application
 
+function  FixPath(const s: string): string;
+procedure ListDirs(const ARoot: string; AList: TStrings);
+procedure ListUnits(const AMask: string; AList: TStrings);
+function  MatchUnits(const ADir: string; AList: TStrings): integer;
+
 implementation
 
 uses
@@ -281,13 +286,10 @@ begin
   Result := -1;
   if FindFirst(ADir+DirectorySeparator+'*',faArchive,Info)=0 then begin
     repeat
-      //If (Attr and faDirectory) = faDirectory then
       s := Info.Name;
       ext := ExtractFileExt(s);
       if (ext = '.pas') or (ext = '.pp') then begin
         ext := ChangeFileExt(s, '');
-        if ext='bmpcomn' then
-          s := AList[0];  //full name!!!
         Result := AList.IndexOf(ext); //ChangeFileExt(s, '.xml'));
         if Result >= 0 then begin
           AList.Delete(Result); //don't search any more
@@ -324,8 +326,6 @@ begin
 //now match all files in the source dirs
   for i := dirs.Count - 1 downto 0 do begin
     d := s + dirs[i] + DirectorySeparator + 'src';
-    if pos('fcl-image', d) > 0 then
-      f := 'debug!';
     if not DirectoryExists(d) then continue;
     if MatchUnits(d, descs) >= 0 then begin
     //add dir
@@ -334,10 +334,9 @@ begin
   end;
 //re-create project?
   if AFile <> '' then begin
-    f := ChangeFileExt(AFile, '_ext.xml');
-    APrj.CreateProjectFile(f); //preserve unmodified project?
-  end else
-    APrj.CreateProjectFile(Manager.RootDir + 'fcl_ext.xml'); //preserve unmodified project?
+    f := ChangeFileExt(AFile, '_ext.xml'); //preserve unmodified project?
+    APrj.CreateProjectFile(f);
+  end; // else APrj.CreateProjectFile(Manager.RootDir + 'fcl_ext.xml'); //preserve unmodified project?
 //finally
   dirs.Free;
   descs.Free;
@@ -365,6 +364,7 @@ end;
 
 procedure TDocPackage.SetAltDir(AValue: string);
 begin
+  AValue:=FixPath(AValue);
   if FAltDir=AValue then Exit;
   FAltDir:=AValue;
 //we must signal config updated
@@ -708,7 +708,7 @@ destructor TFPDocManager.Destroy;
 begin
   SaveConfig;
   FreeAndNil(Config);
-  FPackages.Clear;
+  //FPackages.Clear; //destructor seems NOT to clear/destroy owned object!?
   FreeAndNil(FPackages);
   FreeAndNil(FOptions);
   inherited Destroy;
@@ -736,10 +736,9 @@ var
 begin
   if LazarusDir = '' then exit;
   s := {LazarusDir +} 'docs/xml/'+AName;
-  if not DirectoryExists(LazarusDir + s) then
+  if not DirectoryExists(FixPath(LazarusDir + s)) then
     exit;
-  i := Packages.IndexOfName('rtl'); //???
-  //i := Packages.IndexOf(AName);
+  i := Packages.IndexOfName(AName);
   if i < 0 then
     exit;
   pkg := Packages.Objects[i] as TDocPackage;
@@ -760,7 +759,7 @@ begin
   if pkg = nil then
     exit(False);
   if enabled then
-    pkg.AltDir := {LazarusDir +} FixPath('docs/xml/fcl')
+    pkg.AltDir := 'docs/xml/fcl'
   else
     pkg.AltDir := '';
   Result := True;
@@ -909,9 +908,6 @@ end;
 
 function TFPDocManager.SaveConfig: boolean;
 begin
-(* Protection against excessive saves requires a subclass of TIniFile,
-  which flushes the file only if Dirty.
-*)
 //Options? assume saved by application?
   if Options.Modified then begin
     Options.SaveConfig(Config, Profile);

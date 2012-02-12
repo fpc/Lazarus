@@ -273,7 +273,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TDocPackage.CreateProject">
-        <short>Configures an engine for this project, optionally creates an project file.</short>
+        <short>Configures the engine (Helper) for this project, optionally creates an project file.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -499,7 +499,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TFPDocHelper.EndTest">
-        <short/>
+        <short>Counterpart for BeginTest. It does not reset the directory!</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -695,13 +695,13 @@
       </element>
       <!-- variable Visibility: protected -->
       <element name="TFPDocManager.Helper">
-        <short/>
+        <short>FPDoc project object, performs the currently requested task.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFPDocManager.Changed">
-        <short/>
+        <short>Checks Modified and eventually notifies the OnChange handler.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -711,6 +711,7 @@
         <descr/>
         <errors/>
         <seealso/>
+        <short>Creates an Helper, configures its Options.</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TFPDocManager.BeginTest.Result">
@@ -722,7 +723,7 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFPDocManager.EndTest">
-        <short/>
+        <short>Frees the helper, resets the current directory to the documentation RootDir.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -736,7 +737,7 @@
       </element>
       <!-- function result Visibility: default -->
       <element name="TFPDocManager.RegisterPackage.Result">
-        <short/>
+        <short>Adds a package object to Packages, updates the Config.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TFPDocManager.RegisterPackage.APkg">
@@ -744,7 +745,7 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFPDocManager.DoLog">
-        <short/>
+        <short>Output a message using the OnLog handler.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -812,7 +813,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TFPDocManager.SaveConfig">
-        <short>Dummy procedure for now, should flush an Dirty INI file.</short>
+        <short>Flush pending Config changes.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1019,7 +1020,7 @@
         <short>File to use for output options (FPDoc).</short>
       </element>
       <element name="TFPDocManager.FpcDir">
-        <short>FPC root directory, used to find source files.</short>
+        <short>FPC source directory, used to find source files.</short>
       </element>
       <element name="TFPDocManager.Options">
         <short>All documentation options.</short>
@@ -1034,7 +1035,49 @@
         <short>Create documentation for AUnit or the entire package.</short>
       </element>
       <element name="TFPDocManager.UpdatePackage">
-        <short>Add Lazarus description directory to RTL/FCL.</short>
+        <short>Add Lazarus description directory to the given package (RTL/FCL).</short>
+        <descr>The directory is assumed to be $Lazarus/docs/xml/AName.
+The related source files must be part of the package, or must be added explicitly (see UpdateFCL).</descr>
+      </element>
+      <element name="TDocPackage.AltDir">
+        <short>Additional descriptor directory, relative Lazarus directory.</short>
+        <descr>The XML files in this directory are added to the package in CreateProject. Override this method to also add the related input files to the project (see TFCLDocPackage.CreateProject).</descr>
+      </element>
+      <element name="TFPDocHelper.MakeDocs">
+        <short>Creates the documentation, for AUnit or the entire package.</short>
+      </element>
+      <element name="TFPDocManager.AddProfile">
+        <short>Selects the FPDoc backend profile.</short>
+      </element>
+      <element name="TFPDocManager.IsExtended">
+        <short>Checks for an additional description directory, returns package.AltDir</short>
+      </element>
+      <element name="TFPDocManager.UpdateFCL">
+        <short>Adds (or removes) the Lazarus FCL descriptions to the FCL package.</short>
+        <descr>The remaining work is done in the dedicated FCL package class.</descr>
+      </element>
+      <element name="TFCLDocPackage">
+        <short>Specialized package class for the FCL documentation.</short>
+      </element>
+      <element name="TFCLDocPackage.CreateProject">
+        <short>Configures the Helper object, including the added Lazarus FCL descriptions and related FCL input files.</short>
+        <descr>The FCL source files reside in a number of directories ($fpc/packages/<b>pkg</b>/src), not all of them are part of the official FCL documentation package.
+
+This method searches the units for the given description files and adds them to the fpdoc input files. When compiler options must be added, this has to be done explicitly (here).
+</descr>
+      </element>
+      <element name="FixPath">
+        <short>Adjusts directory separators to the current DirectorySeparator.</short>
+      </element>
+      <element name="ListDirs">
+        <short>Adds the names of all subdirectories of ARoot to AList.</short>
+      </element>
+      <element name="ListUnits">
+        <short>Adds the filenames (without extension) specified by AMask (dir+mask) to AList. Used to collect XML description files.</short>
+      </element>
+      <element name="MatchUnits">
+        <short>Searches for source files in ADir, which match an unit name in AList, and returns -1 if none matches.</short>
+        <descr>Used to find input files for description files. The Result is not very useful, because the matched entry is removed from AList.</descr>
       </element>
     </module>
     <!-- uManager -->

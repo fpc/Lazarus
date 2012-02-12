@@ -40,7 +40,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="10">
       <Unit0>
         <Filename Value="FPDocManager.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -98,11 +98,6 @@
         <Filename Value="text.txt"/>
         <IsPartOfProject Value="True"/>
       </Unit9>
-      <Unit10>
-        <Filename Value="..\..\..\fpc-trunk\packages\fcl-passrc\src\pparser.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="PParser"/>
-      </Unit10>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
