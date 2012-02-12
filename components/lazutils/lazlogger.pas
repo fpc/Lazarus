@@ -177,6 +177,7 @@ type
     FLogText: Text;
     FLogTextInUse, FLogTextFailed: Boolean;
     FLogName: String;
+    FGetLogFileNameDone: Boolean;
 
     FDebugNestLvl: Integer;
     FDebugIndent: String;
@@ -958,6 +959,7 @@ procedure TLazLogger.SetEnvironmentForLogFileName(AValue: String);
 begin
   if FEnvironmentForLogFileName = AValue then Exit;
   Finish;
+  FGetLogFileNameDone := False;
   FEnvironmentForLogFileName := AValue;
 end;
 
@@ -988,6 +990,7 @@ procedure TLazLogger.SetParamForLogFileName(AValue: String);
 begin
   if FParamForLogFileName = AValue then Exit;
   Finish;
+  FGetLogFileNameDone := False;
   FParamForLogFileName := AValue;
 end;
 
@@ -1118,7 +1121,7 @@ begin
   FDebugNestLvl := 0;
   FLogTextFailed := False;
   FDebugNestAtBOL := True;
-  if FLogName = '' then
+  if (FLogName = '') and not FGetLogFileNameDone then
     FLogName := GetLogFileName;
 
   if not FCloseLogFileBetweenWrites then
@@ -1195,6 +1198,7 @@ var
   EnvVarName: string;
 begin
   Result := '';
+  FGetLogFileNameDone := True;
   if FParamForLogFileName <> '' then begin
     // first try to find the log file name in the command line parameters
     Result := GetParamByName(FParamForLogFileName);
