@@ -188,7 +188,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomFileListBox.Sorted" link="#LCL.StdCtrls.TCustomListBox.Sorted" />
+      <element name="TCustomFileListBox.Sorted" link="#LCL.StdCtrls.TCustomListBox.Sorted"/>
       <!-- object Visibility: default -->
       <element name="TFileListBox">
         <short>
@@ -197,20 +197,20 @@
         <errors/>
         <seealso/>
       </element>
-      <element name="TFileListBox.Align" link="#LCL.Controls.TControl.Align" />
-      <element name="TFileListBox.Anchors" link="#LCL.Controls.TControl.Anchors" />
-      <element name="TFileListBox.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle" />
-      <element name="TFileListBox.Constraints" link="#LCL.Controls.TControl.Constraints" />
-      <element name="TFileListBox.ExtendedSelect" link="#LCL.StdCtrls.TCustomListBox.ExtendedSelect" />
-      <element name="TFileListBox.FileType" link="#LCL.FileCtrl.TCustomFileListBox.FileType" />
-      <element name="TFileListBox.Font" link="#LCL.Controls.TControl.Font" />
+      <element name="TFileListBox.Align" link="#LCL.Controls.TControl.Align"/>
+      <element name="TFileListBox.Anchors" link="#LCL.Controls.TControl.Anchors"/>
+      <element name="TFileListBox.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
+      <element name="TFileListBox.Constraints" link="#LCL.Controls.TControl.Constraints"/>
+      <element name="TFileListBox.ExtendedSelect" link="#LCL.StdCtrls.TCustomListBox.ExtendedSelect"/>
+      <element name="TFileListBox.FileType" link="#LCL.FileCtrl.TCustomFileListBox.FileType"/>
+      <element name="TFileListBox.Font" link="#LCL.Controls.TControl.Font"/>
       <element name="TFileListBox.IntegralHeight" link="#LCL.StdCtrls.TCustomListBox.IntegralHeight"/>
-      <element name="TFileListBox.ItemHeight" link="#LCL.StdCtrls.TCustomListBox.ItemHeight" />
+      <element name="TFileListBox.ItemHeight" link="#LCL.StdCtrls.TCustomListBox.ItemHeight"/>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.Mask" link="#LCL.FileCtrl.TCustomFileListBox.Mask" />
-      <element name="TFileListBox.MultiSelect" link="#LCL.StdCtrls.TCustomListBox.MultiSelect" />
-      <element name="TFileListBox.OnChange" link="#LCL.FileCtrl.TCustomFileListBox.OnChange" />
-      <element name="TFileListBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds" />
+      <element name="TFileListBox.Mask" link="#LCL.FileCtrl.TCustomFileListBox.Mask"/>
+      <element name="TFileListBox.MultiSelect" link="#LCL.StdCtrls.TCustomListBox.MultiSelect"/>
+      <element name="TFileListBox.OnChange" link="#LCL.FileCtrl.TCustomFileListBox.OnChange"/>
+      <element name="TFileListBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
       <element name="TFileListBox.Directory" link="#LCL.FileCtrl.TCustomFileListBox.Directory"/>
       <element name="TFileListBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
       <element name="TFileListBox.DragMode" link="#LCL.Controls.TControl.DragMode"/>
@@ -238,16 +238,16 @@
       <element name="TFileListBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
       <element name="TFileListBox.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
       <element name="TFileListBox.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
-      <element name="TFileListBox.Sorted" link="#LCL.StdCtrls.TCustomListBox.Sorted" />
-      <element name="TFileListBox.Style" link="#LCL.StdCtrls.TCustomListBox.Style" />
-      <element name="TFileListBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder" />
-      <element name="TFileListBox.TabStop" link="#LCL.Controls.TWinControl.TabStop" />
-      <element name="TFileListBox.TopIndex" link="#LCL.StdCtrls.TCustomListBox.TopIndex" />
-      <element name="TFileListBox.Visible" link="#LCL.Controls.TControl.Visible" />
-      <element name="TFileListBox.BiDiMode" link="#LCL.Controls.TControl.BiDiMode" />
-      <element name="TFileListBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing" />
-      <element name="TFileListBox.OnSelectionChange" link="#LCL.StdCtrls.TCustomListBox.OnSelectionChange" />
-      <element name="TFileListBox.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode" />
+      <element name="TFileListBox.Sorted" link="#LCL.StdCtrls.TCustomListBox.Sorted"/>
+      <element name="TFileListBox.Style" link="#LCL.StdCtrls.TCustomListBox.Style"/>
+      <element name="TFileListBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
+      <element name="TFileListBox.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
+      <element name="TFileListBox.TopIndex" link="#LCL.StdCtrls.TCustomListBox.TopIndex"/>
+      <element name="TFileListBox.Visible" link="#LCL.Controls.TControl.Visible"/>
+      <element name="TFileListBox.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
+      <element name="TFileListBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
+      <element name="TFileListBox.OnSelectionChange" link="#LCL.StdCtrls.TCustomListBox.OnSelectionChange"/>
+      <element name="TFileListBox.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
 
       <!-- class Visibility: default -->
       <element name="TCustomFilterComboBox">
@@ -262,7 +262,7 @@
 
       <!-- procedure Visibility: protected -->
       <element name="TCustomFilterComboBox.Select">
-      <short></short>
+      <short/>
       <descr>
       </descr>
       <errors>
@@ -273,7 +273,7 @@
 
       <!-- constructor Visibility: public -->
       <element name="TCustomFilterComboBox.Create">
-      <short></short>
+      <short/>
       <descr>
       </descr>
       <errors>
@@ -284,12 +284,12 @@
 
       <!-- argument Visibility: default -->
       <element name="TCustomFilterComboBox.Create.TheOwner">
-      <short></short>
+      <short/>
       </element>
 
       <!-- destructor Visibility: public -->
       <element name="TCustomFilterComboBox.Destroy">
-      <short></short>
+      <short/>
       <descr>
       </descr>
       <errors>
@@ -300,7 +300,7 @@
 
       <!-- class procedure Visibility: default -->
       <element name="TCustomFilterComboBox.ConvertFilterToStrings">
-      <short></short>
+      <short/>
       <descr>
       </descr>
       <errors>
@@ -311,32 +311,32 @@
 
       <!-- argument Visibility: default -->
       <element name="TCustomFilterComboBox.ConvertFilterToStrings.AFilter">
-      <short></short>
+      <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TCustomFilterComboBox.ConvertFilterToStrings.AStrings">
-      <short></short>
+      <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TCustomFilterComboBox.ConvertFilterToStrings.AClearStrings">
-      <short></short>
+      <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TCustomFilterComboBox.ConvertFilterToStrings.AAddDescription">
-      <short></short>
+      <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TCustomFilterComboBox.ConvertFilterToStrings.AAddFilter">
-      <short></short>
+      <short/>
       </element>
 
       <!-- property Visibility: public -->
       <element name="TCustomFilterComboBox.Mask">
-      <short></short>
+      <short/>
       <descr>
       </descr>
       <seealso>
@@ -363,61 +363,61 @@
         </seealso>
       </element>
 
-      <element name="TFilterComboBox.Align" link="#LCL.Controls.TControl.Align" />
-      <element name="TFilterComboBox.Anchors" link="#LCL.Controls.TControl.Anchors" />
-      <element name="TFilterComboBox.AutoComplete" link="#LCL.StdCtrls.TCustomComboBox.AutoComplete" />
-      <element name="TFilterComboBox.AutoDropDown" link="#LCL.StdCtrls.TCustomComboBox.AutoDropDown" />
-      <element name="TFilterComboBox.AutoSize" link="#LCL.Controls.TControl.AutoSize" />
-      <element name="TFilterComboBox.BidiMode" link="#LCL.Controls.TControl.BidiMode" />
-      <element name="TFilterComboBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing" />
-      <element name="TFilterComboBox.Color" link="#LCL.Controls.TControl.Color" />
-      <element name="TFilterComboBox.Constraints" link="#LCL.Controls.TControl.Constraints" />
-      <element name="TFilterComboBox.DragCursor" link="#LCL.Controls.TControl.DragCursor" />
-      <element name="TFilterComboBox.DragKind" link="#LCL.Controls.TControl.DragKind" />
-      <element name="TFilterComboBox.DragMode" link="#LCL.Controls.TControl.DragMode" />
-      <element name="TFilterComboBox.Enabled" link="#LCL.Controls.TControl.Enabled" />
-      <element name="TFilterComboBox.Filter" link="#LCL.StdCtrls.TCustomComboBox.Filter" />
-      <element name="TFilterComboBox.Font" link="#LCL.Controls.TControl.Font" />
-      <element name="TFilterComboBox.ItemIndex" link="#LCL.StdCtrls.TCustomComboBox.ItemIndex" />
-      <element name="TFilterComboBox.ParentBidiMode" link="#LCL.Controls.TControl.ParentBidiMode" />
-      <element name="TFilterComboBox.ParentColor" link="#LCL.Controls.TControl.ParentColor" />
-      <element name="TFilterComboBox.ParentFont" link="#LCL.Controls.TControl.ParentFont" />
-      <element name="TFilterComboBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint" />
-      <element name="TFilterComboBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu" />
-      <element name="TFilterComboBox.ShellListView" link="#LCL.FileCtrl.TCustomFilterComboBox.ShellListView" />
-      <element name="TFilterComboBox.ShowHint" link="#LCL.Controls.TControl.ShowHint" />
-      <element name="TFilterComboBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder" />
-      <element name="TFilterComboBox.TabStop" link="#LCL.Controls.TWinControl.TabStop" />
-      <element name="TFilterComboBox.Visible" link="#LCL.Controls.TControl.Visible" />
-      <element name="TFilterComboBox.OnChange" link="#LCL.StdCtrls.TCustomComboBox.OnChange" />
-      <element name="TFilterComboBox.OnClick" link="#LCL.Controls.TControl.OnClick" />
-      <element name="TFilterComboBox.OnCloseUp" link="#LCL.StdCtrls.TCustomComboBox.OnCloseUp" />
-      <element name="TFilterComboBox.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup" />
-      <element name="TFilterComboBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick" />
-      <element name="TFilterComboBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop" />
-      <element name="TFilterComboBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver" />
-      <element name="TFilterComboBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag" />
-      <element name="TFilterComboBox.OnDropDown" link="#LCL.StdCtrls.TCustomComboBox.OnDropDown" />
-      <element name="TFilterComboBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter" />
-      <element name="TFilterComboBox.OnExit" link="#LCL.Controls.TWinControl.OnExit" />
-      <element name="TFilterComboBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown" />
-      <element name="TFilterComboBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress" />
-      <element name="TFilterComboBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp" />
-      <element name="TFilterComboBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown" />
-      <element name="TFilterComboBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove" />
-      <element name="TFilterComboBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp" />
-      <element name="TFilterComboBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag" />
+      <element name="TFilterComboBox.Align" link="#LCL.Controls.TControl.Align"/>
+      <element name="TFilterComboBox.Anchors" link="#LCL.Controls.TControl.Anchors"/>
+      <element name="TFilterComboBox.AutoComplete" link="#LCL.StdCtrls.TCustomComboBox.AutoComplete"/>
+      <element name="TFilterComboBox.AutoDropDown" link="#LCL.StdCtrls.TCustomComboBox.AutoDropDown"/>
+      <element name="TFilterComboBox.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
+      <element name="TFilterComboBox.BidiMode" link="#LCL.Controls.TControl.BidiMode"/>
+      <element name="TFilterComboBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
+      <element name="TFilterComboBox.Color" link="#LCL.Controls.TControl.Color"/>
+      <element name="TFilterComboBox.Constraints" link="#LCL.Controls.TControl.Constraints"/>
+      <element name="TFilterComboBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
+      <element name="TFilterComboBox.DragKind" link="#LCL.Controls.TControl.DragKind"/>
+      <element name="TFilterComboBox.DragMode" link="#LCL.Controls.TControl.DragMode"/>
+      <element name="TFilterComboBox.Enabled" link="#LCL.Controls.TControl.Enabled"/>
+      <element name="TFilterComboBox.Filter" link="#LCL.StdCtrls.TCustomComboBox.Filter"/>
+      <element name="TFilterComboBox.Font" link="#LCL.Controls.TControl.Font"/>
+      <element name="TFilterComboBox.ItemIndex" link="#LCL.StdCtrls.TCustomComboBox.ItemIndex"/>
+      <element name="TFilterComboBox.ParentBidiMode" link="#LCL.Controls.TControl.ParentBidiMode"/>
+      <element name="TFilterComboBox.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
+      <element name="TFilterComboBox.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
+      <element name="TFilterComboBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
+      <element name="TFilterComboBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
+      <element name="TFilterComboBox.ShellListView" link="#LCL.FileCtrl.TCustomFilterComboBox.ShellListView"/>
+      <element name="TFilterComboBox.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
+      <element name="TFilterComboBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
+      <element name="TFilterComboBox.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
+      <element name="TFilterComboBox.Visible" link="#LCL.Controls.TControl.Visible"/>
+      <element name="TFilterComboBox.OnChange" link="#LCL.StdCtrls.TCustomComboBox.OnChange"/>
+      <element name="TFilterComboBox.OnClick" link="#LCL.Controls.TControl.OnClick"/>
+      <element name="TFilterComboBox.OnCloseUp" link="#LCL.StdCtrls.TCustomComboBox.OnCloseUp"/>
+      <element name="TFilterComboBox.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TFilterComboBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
+      <element name="TFilterComboBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
+      <element name="TFilterComboBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
+      <element name="TFilterComboBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
+      <element name="TFilterComboBox.OnDropDown" link="#LCL.StdCtrls.TCustomComboBox.OnDropDown"/>
+      <element name="TFilterComboBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
+      <element name="TFilterComboBox.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
+      <element name="TFilterComboBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
+      <element name="TFilterComboBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
+      <element name="TFilterComboBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
+      <element name="TFilterComboBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
+      <element name="TFilterComboBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
+      <element name="TFilterComboBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
+      <element name="TFilterComboBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
 
       <!-- property Visibility: published -->
       <element name="TFilterComboBox.OnSelect">
-      <short></short>
+      <short/>
       <descr>
       </descr>
       <seealso>
       </seealso>
       </element>
 
-      <element name="TFilterComboBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress" />
+      <element name="TFilterComboBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
 
       <element name="MiniMizeName">
         <short>Returns a shortened version of a file name, so that it fits on the given MaxWidth</short>
@@ -429,22 +429,22 @@
       </element>
       <!-- function result Visibility: default -->
       <element name="MiniMizeName.Result">
-      <short></short>
+      <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="MiniMizeName.FileName">
-      <short></short>
+      <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="MiniMizeName.Canvas">
-      <short></short>
+      <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="MiniMizeName.MaxWidth">
-      <short></short>
+      <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="Register">

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="BarChart">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- enumeration type Visibility: default -->
 <element name="TPosLabel">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,22 +24,22 @@
 
 <!-- enumeration value Visibility: default -->
 <element name="TPosLabel.plLeft">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TPosLabel.plCenter">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TPosLabel.plRight">
-<short></short>
+<short/>
 </element>
 
 <!-- class Visibility: default -->
 <element name="TCustomBarChart">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -50,7 +50,7 @@
 
 <!-- class Visibility: default -->
 <element name="TBar">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -61,7 +61,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TBar.FColor">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -70,7 +70,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TBar.FSName">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -79,7 +79,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TBar.FValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -88,7 +88,7 @@
 
 <!-- procedure Visibility: private -->
 <element name="TBar.SetColor">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -99,12 +99,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TBar.SetColor.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TBar.SetSName">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -115,12 +115,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TBar.SetSName.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TBar.SetValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -131,12 +131,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TBar.SetValue.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TBar.UpdateBarChart">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -147,7 +147,7 @@
 
 <!-- function Visibility: protected -->
 <element name="TBar.GetDisplayName">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -158,12 +158,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TBar.GetDisplayName.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: published -->
 <element name="TBar.SName">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -172,7 +172,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBar.Value">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -181,7 +181,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBar.Color">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -190,7 +190,7 @@
 
 <!-- class Visibility: default -->
 <element name="TBarChartItems">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -201,7 +201,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TBarChartItems.FBarChart">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -210,7 +210,7 @@
 
 <!-- function Visibility: protected -->
 <element name="TBarChartItems.GetOwner">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -221,12 +221,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TBarChartItems.GetOwner.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- constructor Visibility: public -->
 <element name="TBarChartItems.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -237,12 +237,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TBarChartItems.Create.BarChart">
-<short></short>
+<short/>
 </element>
 
 <!-- variable Visibility: private -->
 <element name="TCustomBarChart.FUpdateCount">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -251,7 +251,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TCustomBarChart.FBars">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -260,7 +260,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TCustomBarChart.FDepth">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -269,7 +269,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TCustomBarChart.FLabelPosition">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -278,7 +278,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TCustomBarChart.FIsPainting">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -287,7 +287,7 @@
 
 <!-- function Visibility: private -->
 <element name="TCustomBarChart.GetBars">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -298,12 +298,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TCustomBarChart.GetBars.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TCustomBarChart.NormalizeScaleUnits">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -314,17 +314,17 @@
 
 <!-- function result Visibility: default -->
 <element name="TCustomBarChart.NormalizeScaleUnits.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomBarChart.NormalizeScaleUnits.OldScale">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TCustomBarChart.SetBars">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -335,12 +335,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomBarChart.SetBars.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TCustomBarChart.SetDepth">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -351,12 +351,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomBarChart.SetDepth.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TCustomBarChart.SetLabelPosition">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -367,12 +367,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomBarChart.SetLabelPosition.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TCustomBarChart.Paint">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -383,7 +383,7 @@
 
 <!-- class function Visibility: default -->
 <element name="TCustomBarChart.GetControlClassDefaultSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -394,12 +394,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TCustomBarChart.GetControlClassDefaultSize.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: protected -->
 <element name="TCustomBarChart.RealGetText">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -410,12 +410,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TCustomBarChart.RealGetText.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- constructor Visibility: public -->
 <element name="TCustomBarChart.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -426,12 +426,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomBarChart.Create.AOwner">
-<short></short>
+<short/>
 </element>
 
 <!-- destructor Visibility: public -->
 <element name="TCustomBarChart.Destroy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -442,7 +442,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TCustomBarChart.Clear">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -453,7 +453,7 @@
 
 <!-- function Visibility: public -->
 <element name="TCustomBarChart.AddBar">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -464,27 +464,27 @@
 
 <!-- function result Visibility: default -->
 <element name="TCustomBarChart.AddBar.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomBarChart.AddBar.SName">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomBarChart.AddBar.Value">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomBarChart.AddBar.AColor">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TCustomBarChart.GetBar">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -495,17 +495,17 @@
 
 <!-- function result Visibility: default -->
 <element name="TCustomBarChart.GetBar.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomBarChart.GetBar.SId">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TCustomBarChart.BarCount">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -516,12 +516,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TCustomBarChart.BarCount.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TCustomBarChart.BeginUpdate">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -532,7 +532,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TCustomBarChart.EndUpdate">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -543,7 +543,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TCustomBarChart.UpdateBarChart">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -554,7 +554,7 @@
 
 <!-- property Visibility: published -->
 <element name="TCustomBarChart.Bars">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -563,7 +563,7 @@
 
 <!-- property Visibility: published -->
 <element name="TCustomBarChart.Depth">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -572,7 +572,7 @@
 
 <!-- property Visibility: published -->
 <element name="TCustomBarChart.LabelPosition">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -581,7 +581,7 @@
 
 <!-- class Visibility: default -->
 <element name="TBarChart">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -592,7 +592,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.Align">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -601,7 +601,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.Alignment">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -610,7 +610,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.Anchors">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -619,7 +619,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.AutoSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -628,7 +628,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.BorderSpacing">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -637,7 +637,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.BevelInner">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -646,7 +646,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.BevelOuter">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -655,7 +655,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.BevelWidth">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -664,7 +664,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.BorderWidth">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -673,7 +673,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.BorderStyle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -682,7 +682,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.Caption">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -691,7 +691,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.ClientHeight">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -700,7 +700,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.ClientWidth">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -709,7 +709,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.Color">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -718,7 +718,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.Constraints">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -727,7 +727,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.DragMode">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -736,7 +736,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.Enabled">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -745,7 +745,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.Font">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -754,7 +754,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.FullRepaint">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -763,7 +763,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.ParentColor">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -772,7 +772,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.ParentFont">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -781,7 +781,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.ParentShowHint">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -790,7 +790,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.PopupMenu">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -799,7 +799,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.ShowHint">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -808,7 +808,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.TabOrder">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -817,7 +817,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.TabStop">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -826,7 +826,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.Visible">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -835,7 +835,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.OnClick">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -844,7 +844,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.OnDblClick">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -853,7 +853,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.OnDragDrop">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -862,7 +862,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.OnDragOver">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -871,7 +871,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.OnEndDrag">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -880,7 +880,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.OnEnter">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -889,7 +889,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.OnExit">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -898,7 +898,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.OnMouseDown">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -907,7 +907,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.OnMouseMove">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -916,7 +916,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.OnMouseUp">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -925,7 +925,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.OnResize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -934,7 +934,7 @@
 
 <!-- property Visibility: published -->
 <element name="TBarChart.OnStartDrag">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -943,7 +943,7 @@
 
 <!-- procedure Visibility: default -->
 <element name="Register">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -954,7 +954,7 @@
 
 <!-- procedure Visibility: default -->
 <element name="FillBarChart">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -965,27 +965,27 @@
 
 <!-- argument Visibility: default -->
 <element name="FillBarChart.BC">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="FillBarChart.DS">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="FillBarChart.LabelField">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="FillBarChart.ValueField">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="FillBarChart.AColor">
-<short></short>
+<short/>
 </element>
 
 </module> <!-- BarChart -->

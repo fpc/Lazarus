@@ -416,7 +416,8 @@ if A.Contains(s) then
   writeln('2:it contains s.');
   writeln('2:count:',A.Count);
 ReadLn;
-StrDispose(s);   </code></descr>
+StrDispose(s);   </code>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -508,7 +509,8 @@ if A.Contains(s2) then
 ReadLn;
 StrDispose(s);StrDispose(s2);
 end.
-</code></descr>
+</code>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -541,7 +543,8 @@ if A.Contains(s) then
   writeln('2:it contains s.');
   writeln('2:count:',A.Count);
 ReadLn;
-StrDispose(s);   </code></descr>
+StrDispose(s);   </code>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -588,7 +591,8 @@ if A.Contains(s) then
   writeln('2:it contains s.');
   writeln('2:count:',A.Count);
 ReadLn;
-StrDispose(s);   </code></descr>
+StrDispose(s);   </code>
+        </descr>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
@@ -726,8 +730,8 @@ StrDispose(s);   </code></descr>
         <descr>Returns a number indicating the nature of inconsistency. 0
          means OK.
 </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <errors/>
+        <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="TDynHashArray.ConsistencyCheck.Result">
@@ -951,4 +955,3 @@ StrDispose(s);   </code></descr>
     <!-- DynHashArray -->
   </package>
 </fpdoc-descriptions>
-

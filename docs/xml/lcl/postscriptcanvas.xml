@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="PostscriptCanvas">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,7 +24,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="SysUtils">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -33,7 +33,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Math">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -42,7 +42,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Graphics">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -51,7 +51,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Forms">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -60,7 +60,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="GraphMath">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -69,7 +69,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="GraphType">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -78,7 +78,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="FPImage">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -87,7 +87,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="IntfGraphics">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -96,7 +96,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Printers">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -105,7 +105,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLType">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -114,7 +114,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLIntf">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -123,7 +123,7 @@
 
 <!-- object Visibility: default -->
 <element name="TPostscriptPrinterCanvas">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -134,7 +134,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPostscriptPrinterCanvas.fHeader">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -143,7 +143,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPostscriptPrinterCanvas.fDocument">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -152,7 +152,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPostscriptPrinterCanvas.fFileName">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -161,7 +161,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPostscriptPrinterCanvas.fBuffer">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -170,7 +170,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPostscriptPrinterCanvas.fcBrushStyle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -179,7 +179,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPostscriptPrinterCanvas.fcPenColor">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -188,7 +188,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPostscriptPrinterCanvas.fcPenWidth">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -197,7 +197,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPostscriptPrinterCanvas.fcPenStyle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -206,7 +206,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPostscriptPrinterCanvas.fcLastFont">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -215,7 +215,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPostscriptPrinterCanvas.fPenPos">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -224,7 +224,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPostscriptPrinterCanvas.FirstUpdatefont">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -233,7 +233,7 @@
 
 <!-- procedure Visibility: private -->
 <element name="TPostscriptPrinterCanvas.WriteHeader">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -244,12 +244,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.WriteHeader.St">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPostscriptPrinterCanvas.Write">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -260,17 +260,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Write.St">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Write.Lst">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPostscriptPrinterCanvas.WriteB">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -281,12 +281,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.WriteB.St">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPostscriptPrinterCanvas.ClearBuffer">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -297,7 +297,7 @@
 
 <!-- procedure Visibility: private -->
 <element name="TPostscriptPrinterCanvas.Write">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -308,12 +308,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Write.Lst">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPostscriptPrinterCanvas.WriteComment">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -324,12 +324,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.WriteComment.St">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPostscriptPrinterCanvas.TranslateCoord">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -340,17 +340,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.TranslateCoord.X">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.TranslateCoord.Y">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPostscriptPrinterCanvas.SetPosition">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -361,17 +361,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.SetPosition.X">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.SetPosition.Y">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPostscriptPrinterCanvas.UpdateLineWidth">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -382,7 +382,7 @@
 
 <!-- procedure Visibility: private -->
 <element name="TPostscriptPrinterCanvas.UpdateLineColor">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -393,12 +393,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.UpdateLineColor.aColor">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPostscriptPrinterCanvas.UpdateLineStyle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -409,7 +409,7 @@
 
 <!-- procedure Visibility: private -->
 <element name="TPostscriptPrinterCanvas.UpdateFillColor">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -420,7 +420,7 @@
 
 <!-- procedure Visibility: private -->
 <element name="TPostscriptPrinterCanvas.UpdateFont">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -431,7 +431,7 @@
 
 <!-- function Visibility: private -->
 <element name="TPostscriptPrinterCanvas.MappedFontName">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -442,12 +442,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TPostscriptPrinterCanvas.MappedFontName.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TPostscriptPrinterCanvas.MapedString">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -458,17 +458,17 @@
 
 <!-- function result Visibility: default -->
 <element name="TPostscriptPrinterCanvas.MapedString.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.MapedString.St">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPostscriptPrinterCanvas.MoveToLastPos">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -479,7 +479,7 @@
 
 <!-- procedure Visibility: private -->
 <element name="TPostscriptPrinterCanvas.SetBrushFillPattern">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -490,22 +490,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.SetBrushFillPattern.Lst">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.SetBrushFillPattern.SetBorder">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.SetBrushFillPattern.SetFill">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPostscriptPrinterCanvas.SetBrushFillPattern">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -516,17 +516,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.SetBrushFillPattern.SetBorder">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.SetBrushFillPattern.SetFill">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPostscriptPrinterCanvas.GetRGBImage">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -537,17 +537,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.GetRGBImage.SrcGraph">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.GetRGBImage.Lst">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TPostscriptPrinterCanvas.CreateHandle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -558,7 +558,7 @@
 
 <!-- procedure Visibility: protected -->
 <element name="TPostscriptPrinterCanvas.BeginDoc">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -569,7 +569,7 @@
 
 <!-- procedure Visibility: protected -->
 <element name="TPostscriptPrinterCanvas.EndDoc">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -580,7 +580,7 @@
 
 <!-- procedure Visibility: protected -->
 <element name="TPostscriptPrinterCanvas.NewPage">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -591,7 +591,7 @@
 
 <!-- constructor Visibility: public -->
 <element name="TPostscriptPrinterCanvas.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -602,12 +602,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Create.APrinter">
-<short></short>
+<short/>
 </element>
 
 <!-- destructor Visibility: public -->
 <element name="TPostscriptPrinterCanvas.Destroy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -618,7 +618,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.SaveToFile">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -629,12 +629,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.SaveToFile.aFileName">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.MoveTo">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -645,17 +645,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.MoveTo.X1">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.MoveTo.Y1">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.LineTo">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -666,17 +666,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.LineTo.X1">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.LineTo.Y1">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.Polyline">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -687,17 +687,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Polyline.Points">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Polyline.NumPts">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.PolyBezier">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -708,27 +708,27 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.PolyBezier.Points">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.PolyBezier.NumPts">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.PolyBezier.Filled">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.PolyBezier.Continuous">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.Rectangle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -739,27 +739,27 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Rectangle.X1">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Rectangle.Y1">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Rectangle.X2">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Rectangle.Y2">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.Frame">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -770,12 +770,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Frame.ARect">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.FrameRect">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -786,12 +786,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.FrameRect.ARect">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.FillRect">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -802,12 +802,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.FillRect.ARect">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.RoundRect">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -818,37 +818,37 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RoundRect.X1">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RoundRect.Y1">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RoundRect.X2">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RoundRect.Y2">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RoundRect.RX">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RoundRect.RY">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.Polygon">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -859,22 +859,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Polygon.Points">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Polygon.NumPts">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Polygon.Winding">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.Ellipse">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -885,27 +885,27 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Ellipse.x1">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Ellipse.y1">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Ellipse.x2">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Ellipse.y2">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.Arc">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -916,37 +916,37 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Arc.x">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Arc.y">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Arc.width">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Arc.height">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Arc.angle1">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Arc.angle2">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.RadialPie">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -957,37 +957,37 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RadialPie.x">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RadialPie.y">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RadialPie.width">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RadialPie.height">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RadialPie.angle1">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RadialPie.angle2">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.Chord">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -998,37 +998,37 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Chord.x">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Chord.y">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Chord.width">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Chord.height">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Chord.angle1">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Chord.angle2">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.TextOut">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1039,22 +1039,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.TextOut.X">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.TextOut.Y">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.TextOut.Text">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TPostscriptPrinterCanvas.TextExtent">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1065,17 +1065,17 @@
 
 <!-- function result Visibility: default -->
 <element name="TPostscriptPrinterCanvas.TextExtent.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.TextExtent.Text">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.Draw">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1086,22 +1086,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Draw.X">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Draw.Y">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Draw.SrcGraphic">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.StretchDraw">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1112,17 +1112,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.StretchDraw.DestRect">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.StretchDraw.SrcGraphic">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.FloodFill">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1133,27 +1133,27 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.FloodFill.X">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.FloodFill.Y">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.FloodFill.FillColor">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.FloodFill.FillStyle">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.CopyRect">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1164,22 +1164,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.CopyRect.Dest">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.CopyRect.SrcCanvas">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.CopyRect.Source">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.BrushCopy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1190,27 +1190,27 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.BrushCopy.Dest">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.BrushCopy.InternalImages">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.BrushCopy.Src">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.BrushCopy.TransparentColor">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.Arc">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1221,47 +1221,47 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Arc.x">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Arc.y">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Arc.width">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Arc.height">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Arc.SX">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Arc.SY">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Arc.EX">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Arc.EY">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.Chord">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1272,47 +1272,47 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Chord.x">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Chord.y">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Chord.width">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Chord.height">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Chord.SX">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Chord.SY">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Chord.EX">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Chord.EY">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.Frame3d">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1323,22 +1323,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Frame3d.ARect">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Frame3d.FrameWidth">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Frame3d.Style">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.RadialPie">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1349,47 +1349,47 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RadialPie.x">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RadialPie.y">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RadialPie.width">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RadialPie.height">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RadialPie.sx">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RadialPie.sy">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RadialPie.ex">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.RadialPie.ey">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.Pie">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1400,47 +1400,47 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Pie.EllipseX1">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Pie.EllipseY1">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Pie.EllipseX2">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Pie.EllipseY2">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Pie.StartX">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Pie.StartY">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Pie.EndX">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.Pie.EndY">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptPrinterCanvas.TextRect">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1451,32 +1451,32 @@
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.TextRect.ARect">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.TextRect.X">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.TextRect.Y">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.TextRect.Text">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPostscriptPrinterCanvas.TextRect.Style">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TPostscriptPrinterCanvas.OutPutFileName">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1485,7 +1485,7 @@
 
 <!-- object Visibility: default -->
 <element name="TPostscriptCanvas">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1496,7 +1496,7 @@
 
 <!-- constructor Visibility: public -->
 <element name="TPostscriptCanvas.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1507,7 +1507,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptCanvas.BeginDoc">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1518,7 +1518,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptCanvas.EndDoc">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1529,7 +1529,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TPostscriptCanvas.NewPage">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>

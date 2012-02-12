@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="UTF8Process">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- object Visibility: default -->
 <element name="TProcessUTF8">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -26,7 +26,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TProcessUTF8.FApplicationNameUTF8">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -35,7 +35,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TProcessUTF8.FCommandLineUTF8">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -44,7 +44,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TProcessUTF8.FConsoleTitleUTF8">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -53,7 +53,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TProcessUTF8.FCurrentDirectoryUTF8">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -62,7 +62,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TProcessUTF8.FDesktopUTF8">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -71,7 +71,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TProcessUTF8.FEnvironmentUTF8">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -80,7 +80,7 @@
 
 <!-- procedure Visibility: private -->
 <element name="TProcessUTF8.SetApplicationNameUTF8">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -91,12 +91,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TProcessUTF8.SetApplicationNameUTF8.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TProcessUTF8.SetCommandLineUTF8">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -107,12 +107,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TProcessUTF8.SetCommandLineUTF8.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TProcessUTF8.SetConsoleTitleUTF8">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -123,12 +123,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TProcessUTF8.SetConsoleTitleUTF8.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TProcessUTF8.SetCurrentDirectoryUTF8">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -139,12 +139,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TProcessUTF8.SetCurrentDirectoryUTF8.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TProcessUTF8.SetDesktopUTF8">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -155,12 +155,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TProcessUTF8.SetDesktopUTF8.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TProcessUTF8.SetEnvironmentUTF8">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -171,12 +171,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TProcessUTF8.SetEnvironmentUTF8.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TProcessUTF8.UpdateEnvironment">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -187,7 +187,7 @@
 
 <!-- constructor Visibility: public -->
 <element name="TProcessUTF8.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -198,12 +198,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TProcessUTF8.Create.AOwner">
-<short></short>
+<short/>
 </element>
 
 <!-- destructor Visibility: public -->
 <element name="TProcessUTF8.Destroy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -214,7 +214,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TProcessUTF8.Execute">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -225,7 +225,7 @@
 
 <!-- property Visibility: public -->
 <element name="TProcessUTF8.ApplicationName">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -234,7 +234,7 @@
 
 <!-- property Visibility: public -->
 <element name="TProcessUTF8.CommandLine">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -243,7 +243,7 @@
 
 <!-- property Visibility: public -->
 <element name="TProcessUTF8.ConsoleTitle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -252,7 +252,7 @@
 
 <!-- property Visibility: public -->
 <element name="TProcessUTF8.CurrentDirectory">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -261,7 +261,7 @@
 
 <!-- property Visibility: public -->
 <element name="TProcessUTF8.Desktop">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -270,7 +270,7 @@
 
 <!-- property Visibility: public -->
 <element name="TProcessUTF8.Environment">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -279,7 +279,7 @@
 
 <!-- procedure Visibility: default -->
 <element name="Register">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>

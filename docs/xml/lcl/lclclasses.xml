@@ -55,14 +55,14 @@
         </seealso>
       </element>
       <element name="TLCLComponent.GetWSComponentClass.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TLCLComponent.GetWSComponentClass.ASelf">
-        <short></short>
+        <short/>
       </element>
       <element name="TLCLComponent.Create"/>
       <element name="TLCLComponent.Create.TheOwner">
-        <short></short>
+        <short/>
       </element>
       <element name="TLCLComponent.Destroy"/>
       <!-- function Visibility: public -->
@@ -99,6 +99,8 @@
         <short>The number of references to this component.</short>
         <descr>
         </descr>
+      <notes><note>Which are the possible owners of such references?</note>
+        </notes>
       </element>
 <!-- object Visibility: default -->
       <element name="TLCLReferenceComponent">
@@ -116,6 +118,8 @@
         <seealso>
           <link id="TLCLReferenceComponent.ReferenceNeeded"/>
         </seealso>
+      <notes><note>can be?</note>
+        </notes>
       </element>
       <!-- variable Visibility: private -->
       <element name="TLCLReferenceComponent.FReferencePtr">
@@ -136,7 +140,7 @@
       <!-- function Visibility: private -->
       <element name="TLCLReferenceComponent.GetHandle" link="TLCLReferenceComponent.Handle"/>
       <element name="TLCLReferenceComponent.GetHandle.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: private -->
       <element name="TLCLReferenceComponent.GetReferenceAllocated">
@@ -150,7 +154,7 @@
         </seealso>
       </element>
       <element name="TLCLReferenceComponent.GetReferenceAllocated.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TLCLReferenceComponent.CreateParams">
@@ -169,9 +173,11 @@
       <element name="TLCLReferenceComponent.GetReferenceHandle">
         <short>Override this method to return the Handle from the reference
         </short>
+      <notes><note>what is Handle?</note>
+        </notes>
       </element>
       <element name="TLCLReferenceComponent.GetReferenceHandle.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TLCLReferenceComponent.ReferenceCreated">
@@ -194,10 +200,10 @@
         </descr>
       </element>
       <element name="TLCLReferenceComponent.WSCreateReference.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TLCLReferenceComponent.WSCreateReference.AParams">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TLCLReferenceComponent.WSDestroyReference">
@@ -209,6 +215,8 @@
         <short>Get the Handle of this component.</short>
         <descr>The Handle is  sort of pointer or reference, allocated by the operating system or widgetset to this component.
           A window handle can be used for sending messages to the component.</descr>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TLCLReferenceComponent.HandleAllocated" link="TLCLReferenceComponent.ReferenceAllocated"/>
       <element name="TLCLReferenceComponent.ReferenceAllocated">

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="XMLPropStorage">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,7 +24,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="SysUtils">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -33,7 +33,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLProc">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -42,7 +42,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Forms">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -51,7 +51,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="PropertyStorage">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -60,7 +60,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="XMLCfg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -69,7 +69,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="DOM">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -78,7 +78,7 @@
 
 <!-- object Visibility: default -->
 <element name="TPropStorageXMLConfig">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -89,7 +89,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TPropStorageXMLConfig.DeleteSubNodes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -100,12 +100,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPropStorageXMLConfig.DeleteSubNodes.ARootNode">
-<short></short>
+<short/>
 </element>
 
 <!-- object Visibility: default -->
 <element name="TCustomXMLPropStorage">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -116,7 +116,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TCustomXMLPropStorage.FCount">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -125,7 +125,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TCustomXMLPropStorage.FFileName">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -134,7 +134,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TCustomXMLPropStorage.FXML">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -143,7 +143,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TCustomXMLPropStorage.FRootNode">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -152,7 +152,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TCustomXMLPropStorage.FRootNodePath">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -161,7 +161,7 @@
 
 <!-- procedure Visibility: protected -->
 <element name="TCustomXMLPropStorage.StorageNeeded">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -172,12 +172,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomXMLPropStorage.StorageNeeded.ReadOnly">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TCustomXMLPropStorage.FreeStorage">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -188,7 +188,7 @@
 
 <!-- function Visibility: protected -->
 <element name="TCustomXMLPropStorage.GetXMLFileName">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -199,12 +199,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TCustomXMLPropStorage.GetXMLFileName.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: protected -->
 <element name="TCustomXMLPropStorage.RootSection">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -215,12 +215,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TCustomXMLPropStorage.RootSection.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: protected -->
 <element name="TCustomXMLPropStorage.FixPath">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -231,17 +231,17 @@
 
 <!-- function result Visibility: default -->
 <element name="TCustomXMLPropStorage.FixPath.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomXMLPropStorage.FixPath.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: protected -->
 <element name="TCustomXMLPropStorage.XMLConfig">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -250,7 +250,7 @@
 
 <!-- function Visibility: public -->
 <element name="TCustomXMLPropStorage.DoReadString">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -261,27 +261,27 @@
 
 <!-- function result Visibility: default -->
 <element name="TCustomXMLPropStorage.DoReadString.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomXMLPropStorage.DoReadString.Section">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomXMLPropStorage.DoReadString.Ident">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomXMLPropStorage.DoReadString.TheDefault">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TCustomXMLPropStorage.DoWriteString">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -292,22 +292,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomXMLPropStorage.DoWriteString.Section">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomXMLPropStorage.DoWriteString.Ident">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomXMLPropStorage.DoWriteString.Value">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TCustomXMLPropStorage.DoEraseSections">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -318,12 +318,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomXMLPropStorage.DoEraseSections.ARootSection">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TCustomXMLPropStorage.FileName">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -332,7 +332,7 @@
 
 <!-- property Visibility: public -->
 <element name="TCustomXMLPropStorage.RootNodePath">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -341,17 +341,17 @@
 
 <!-- object Visibility: default -->
 <element name="TXMLPropStorage">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
 </errors>
-<seealso></seealso>
+<seealso/>
 </element>
 
 <!-- property Visibility: published -->
 <element name="TXMLPropStorage.StoredValues">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -360,7 +360,7 @@
 
 <!-- property Visibility: published -->
 <element name="TXMLPropStorage.FileName">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -369,7 +369,7 @@
 
 <!-- property Visibility: published -->
 <element name="TXMLPropStorage.RootNodePath">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -378,7 +378,7 @@
 
 <!-- property Visibility: published -->
 <element name="TXMLPropStorage.Active">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -387,7 +387,7 @@
 
 <!-- property Visibility: published -->
 <element name="TXMLPropStorage.OnSaveProperties">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -396,7 +396,7 @@
 
 <!-- property Visibility: published -->
 <element name="TXMLPropStorage.OnRestoreProperties">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -405,7 +405,7 @@
 
 <!-- procedure Visibility: default -->
 <element name="Register">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>

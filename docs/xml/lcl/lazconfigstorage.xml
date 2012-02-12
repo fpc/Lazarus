@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="LazConfigStorage">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,7 +24,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="SysUtils">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -33,7 +33,7 @@
 
 <!-- object Visibility: default -->
 <element name="TConfigStorage">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -44,7 +44,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TConfigStorage.FPathStack">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -53,7 +53,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TConfigStorage.FCurrentBasePath">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -62,7 +62,7 @@
 
 <!-- function Visibility: protected -->
 <element name="TConfigStorage.GetFullPathValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -73,22 +73,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TConfigStorage.GetFullPathValue.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.GetFullPathValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.GetFullPathValue.ADefault">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: protected -->
 <element name="TConfigStorage.GetFullPathValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -99,22 +99,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TConfigStorage.GetFullPathValue.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.GetFullPathValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.GetFullPathValue.ADefault">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: protected -->
 <element name="TConfigStorage.GetFullPathValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -125,22 +125,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TConfigStorage.GetFullPathValue.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.GetFullPathValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.GetFullPathValue.ADefault">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TConfigStorage.SetFullPathValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -151,17 +151,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetFullPathValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetFullPathValue.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TConfigStorage.SetDeleteFullPathValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -172,22 +172,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteFullPathValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteFullPathValue.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteFullPathValue.DefValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TConfigStorage.SetFullPathValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -198,17 +198,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetFullPathValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetFullPathValue.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TConfigStorage.SetDeleteFullPathValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -219,22 +219,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteFullPathValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteFullPathValue.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteFullPathValue.DefValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TConfigStorage.SetFullPathValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -245,17 +245,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetFullPathValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetFullPathValue.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TConfigStorage.SetDeleteFullPathValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -266,22 +266,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteFullPathValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteFullPathValue.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteFullPathValue.DefValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TConfigStorage.DeleteFullPath">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -292,12 +292,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.DeleteFullPath.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TConfigStorage.DeleteFullPathValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -308,12 +308,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.DeleteFullPathValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- constructor Visibility: public -->
 <element name="TConfigStorage.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -324,17 +324,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.Create.Filename">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.Create.LoadFromDisk">
-<short></short>
+<short/>
 </element>
 
 <!-- destructor Visibility: public -->
 <element name="TConfigStorage.Destroy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -345,7 +345,7 @@
 
 <!-- function Visibility: public -->
 <element name="TConfigStorage.GetValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -356,22 +356,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TConfigStorage.GetValue.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.GetValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.GetValue.ADefault">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TConfigStorage.GetValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -382,22 +382,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TConfigStorage.GetValue.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.GetValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.GetValue.ADefault">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TConfigStorage.GetValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -408,22 +408,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TConfigStorage.GetValue.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.GetValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.GetValue.ADefault">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TConfigStorage.SetValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -434,17 +434,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetValue.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TConfigStorage.SetDeleteValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -455,22 +455,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteValue.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteValue.DefValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TConfigStorage.SetValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -481,17 +481,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetValue.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TConfigStorage.SetDeleteValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -502,22 +502,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteValue.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteValue.DefValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TConfigStorage.SetValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -528,17 +528,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetValue.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TConfigStorage.SetDeleteValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -549,22 +549,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteValue.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteValue.DefValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TConfigStorage.DeletePath">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -575,12 +575,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.DeletePath.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TConfigStorage.DeleteValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -591,12 +591,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.DeleteValue.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TConfigStorage.CurrentBasePath">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -605,7 +605,7 @@
 
 <!-- function Visibility: public -->
 <element name="TConfigStorage.ExtendPath">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -616,17 +616,17 @@
 
 <!-- function result Visibility: default -->
 <element name="TConfigStorage.ExtendPath.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.ExtendPath.APath">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TConfigStorage.AppendBasePath">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -637,12 +637,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TConfigStorage.AppendBasePath.Path">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TConfigStorage.UndoAppendBasePath">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -653,7 +653,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TConfigStorage.WriteToDisk">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -664,7 +664,7 @@
 
 <!-- function Visibility: public -->
 <element name="TConfigStorage.GetFilename">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -675,12 +675,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TConfigStorage.GetFilename.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- "class of" type Visibility: default -->
 <element name="TConfigStorageClass">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>

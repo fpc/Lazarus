@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="LazHelpHTML">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,7 +24,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="SysUtils">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -33,7 +33,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLProc">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -42,7 +42,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Forms">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -51,7 +51,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Process">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -60,7 +60,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="FileUtil">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -69,7 +69,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LazConfigStorage">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -78,7 +78,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLStrConsts">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -87,7 +87,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="HelpIntfs">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -96,7 +96,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LazHelpIntf">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -105,7 +105,7 @@
 
 <!-- object Visibility: default -->
 <element name="THTMLHelpDatabase">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -116,7 +116,7 @@
 
 <!-- variable Visibility: private -->
 <element name="THTMLHelpDatabase.FBaseURL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -125,7 +125,7 @@
 
 <!-- variable Visibility: private -->
 <element name="THTMLHelpDatabase.FDefaultBaseURL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -134,7 +134,7 @@
 
 <!-- variable Visibility: private -->
 <element name="THTMLHelpDatabase.FKeywordPrefix">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -143,7 +143,7 @@
 
 <!-- variable Visibility: private -->
 <element name="THTMLHelpDatabase.FKeywordPrefixNode">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -152,7 +152,7 @@
 
 <!-- function Visibility: private -->
 <element name="THTMLHelpDatabase.IsBaseURLStored">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -163,12 +163,12 @@
 
 <!-- function result Visibility: default -->
 <element name="THTMLHelpDatabase.IsBaseURLStored.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="THTMLHelpDatabase.SetBaseURL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -179,12 +179,12 @@
 
 <!-- argument Visibility: default -->
 <element name="THTMLHelpDatabase.SetBaseURL.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="THTMLHelpDatabase.SetDefaultBaseURL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -195,12 +195,12 @@
 
 <!-- argument Visibility: default -->
 <element name="THTMLHelpDatabase.SetDefaultBaseURL.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- constructor Visibility: public -->
 <element name="THTMLHelpDatabase.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -211,12 +211,12 @@
 
 <!-- argument Visibility: default -->
 <element name="THTMLHelpDatabase.Create.TheOwner">
-<short></short>
+<short/>
 </element>
 
 <!-- destructor Visibility: public -->
 <element name="THTMLHelpDatabase.Destroy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -227,7 +227,7 @@
 
 <!-- function Visibility: public -->
 <element name="THTMLHelpDatabase.ShowURL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -238,27 +238,27 @@
 
 <!-- function result Visibility: default -->
 <element name="THTMLHelpDatabase.ShowURL.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THTMLHelpDatabase.ShowURL.URL">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THTMLHelpDatabase.ShowURL.Title">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THTMLHelpDatabase.ShowURL.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="THTMLHelpDatabase.ShowHelp">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -269,37 +269,37 @@
 
 <!-- function result Visibility: default -->
 <element name="THTMLHelpDatabase.ShowHelp.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THTMLHelpDatabase.ShowHelp.Query">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THTMLHelpDatabase.ShowHelp.BaseNode">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THTMLHelpDatabase.ShowHelp.NewNode">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THTMLHelpDatabase.ShowHelp.QueryItem">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THTMLHelpDatabase.ShowHelp.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="THTMLHelpDatabase.GetNodesForKeyword">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -310,27 +310,27 @@
 
 <!-- function result Visibility: default -->
 <element name="THTMLHelpDatabase.GetNodesForKeyword.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THTMLHelpDatabase.GetNodesForKeyword.HelpKeyword">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THTMLHelpDatabase.GetNodesForKeyword.ListOfNodes">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THTMLHelpDatabase.GetNodesForKeyword.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="THTMLHelpDatabase.GetEffectiveBaseURL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -341,12 +341,12 @@
 
 <!-- function result Visibility: default -->
 <element name="THTMLHelpDatabase.GetEffectiveBaseURL.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="THTMLHelpDatabase.Load">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -357,12 +357,12 @@
 
 <!-- argument Visibility: default -->
 <element name="THTMLHelpDatabase.Load.Storage">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="THTMLHelpDatabase.Save">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -373,12 +373,12 @@
 
 <!-- argument Visibility: default -->
 <element name="THTMLHelpDatabase.Save.Storage">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="THTMLHelpDatabase.DefaultBaseURL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -387,7 +387,7 @@
 
 <!-- property Visibility: published -->
 <element name="THTMLHelpDatabase.BaseURL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -396,7 +396,7 @@
 
 <!-- property Visibility: published -->
 <element name="THTMLHelpDatabase.AutoRegister">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -405,7 +405,7 @@
 
 <!-- property Visibility: published -->
 <element name="THTMLHelpDatabase.KeywordPrefix">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -414,7 +414,7 @@
 
 <!-- procedure type Visibility: default -->
 <element name="TOnFindDefaultBrowser">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -423,17 +423,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TOnFindDefaultBrowser.DefaultBrowser">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnFindDefaultBrowser.Params">
-<short></short>
+<short/>
 </element>
 
 <!-- object Visibility: default -->
 <element name="THTMLBrowserHelpViewer">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -444,7 +444,7 @@
 
 <!-- variable Visibility: private -->
 <element name="THTMLBrowserHelpViewer.FBrowserParams">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -453,7 +453,7 @@
 
 <!-- variable Visibility: private -->
 <element name="THTMLBrowserHelpViewer.FBrowserPath">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -462,7 +462,7 @@
 
 <!-- variable Visibility: private -->
 <element name="THTMLBrowserHelpViewer.FDefaultBrowser">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -471,7 +471,7 @@
 
 <!-- variable Visibility: private -->
 <element name="THTMLBrowserHelpViewer.FDefaultBrowserParams">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -480,7 +480,7 @@
 
 <!-- variable Visibility: private -->
 <element name="THTMLBrowserHelpViewer.FOnFindDefaultBrowser">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -489,7 +489,7 @@
 
 <!-- procedure Visibility: private -->
 <element name="THTMLBrowserHelpViewer.SetBrowserParams">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -500,12 +500,12 @@
 
 <!-- argument Visibility: default -->
 <element name="THTMLBrowserHelpViewer.SetBrowserParams.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="THTMLBrowserHelpViewer.SetBrowserPath">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -516,12 +516,12 @@
 
 <!-- argument Visibility: default -->
 <element name="THTMLBrowserHelpViewer.SetBrowserPath.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- constructor Visibility: public -->
 <element name="THTMLBrowserHelpViewer.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -532,12 +532,12 @@
 
 <!-- argument Visibility: default -->
 <element name="THTMLBrowserHelpViewer.Create.TheOwner">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="THTMLBrowserHelpViewer.ShowNode">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -548,22 +548,22 @@
 
 <!-- function result Visibility: default -->
 <element name="THTMLBrowserHelpViewer.ShowNode.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THTMLBrowserHelpViewer.ShowNode.Node">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THTMLBrowserHelpViewer.ShowNode.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="THTMLBrowserHelpViewer.FindDefaultBrowser">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -574,17 +574,17 @@
 
 <!-- argument Visibility: default -->
 <element name="THTMLBrowserHelpViewer.FindDefaultBrowser.Browser">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THTMLBrowserHelpViewer.FindDefaultBrowser.Params">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="THTMLBrowserHelpViewer.Assign">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -595,12 +595,12 @@
 
 <!-- argument Visibility: default -->
 <element name="THTMLBrowserHelpViewer.Assign.Source">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="THTMLBrowserHelpViewer.Load">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -611,12 +611,12 @@
 
 <!-- argument Visibility: default -->
 <element name="THTMLBrowserHelpViewer.Load.Storage">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="THTMLBrowserHelpViewer.Save">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -627,12 +627,12 @@
 
 <!-- argument Visibility: default -->
 <element name="THTMLBrowserHelpViewer.Save.Storage">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="THTMLBrowserHelpViewer.GetLocalizedName">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -643,12 +643,12 @@
 
 <!-- function result Visibility: default -->
 <element name="THTMLBrowserHelpViewer.GetLocalizedName.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="THTMLBrowserHelpViewer.OnFindDefaultBrowser">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -657,7 +657,7 @@
 
 <!-- property Visibility: published -->
 <element name="THTMLBrowserHelpViewer.BrowserPath">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -666,7 +666,7 @@
 
 <!-- property Visibility: published -->
 <element name="THTMLBrowserHelpViewer.BrowserParams">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -675,7 +675,7 @@
 
 <!-- property Visibility: published -->
 <element name="THTMLBrowserHelpViewer.AutoRegister">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -684,7 +684,7 @@
 
 <!-- procedure Visibility: default -->
 <element name="Register">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="ImageListCache">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,7 +24,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="SysUtils">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -33,7 +33,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Graphics">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -42,7 +42,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="ImgList">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -51,7 +51,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLProc">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -60,7 +60,7 @@
 
 <!-- object Visibility: default -->
 <element name="IImageCacheListener">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -71,7 +71,7 @@
 
 <!-- procedure Visibility: default -->
 <element name="IImageCacheListener.CacheSetImageList">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -82,12 +82,12 @@
 
 <!-- argument Visibility: default -->
 <element name="IImageCacheListener.CacheSetImageList.AImageList">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: default -->
 <element name="IImageCacheListener.CacheSetImageIndex">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -98,17 +98,17 @@
 
 <!-- argument Visibility: default -->
 <element name="IImageCacheListener.CacheSetImageIndex.AIndex">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="IImageCacheListener.CacheSetImageIndex.AImageIndex">
-<short></short>
+<short/>
 </element>
 
 <!-- record type Visibility: default -->
 <element name="TImageCacheItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -117,7 +117,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TImageCacheItem.FImageList">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -126,7 +126,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TImageCacheItem.FListener">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -135,7 +135,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TImageCacheItem.FImageIndexes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -144,7 +144,7 @@
 
 <!-- pointer type Visibility: default -->
 <element name="PImageCacheItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -153,7 +153,7 @@
 
 <!-- object Visibility: default -->
 <element name="TImageCacheItems">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -164,7 +164,7 @@
 
 <!-- function Visibility: private -->
 <element name="TImageCacheItems.GetItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -175,17 +175,17 @@
 
 <!-- function result Visibility: default -->
 <element name="TImageCacheItems.GetItem.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TImageCacheItems.GetItem.AIndex">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TImageCacheItems.GetItemForListener">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -196,17 +196,17 @@
 
 <!-- function result Visibility: default -->
 <element name="TImageCacheItems.GetItemForListener.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TImageCacheItems.GetItemForListener.AListener">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TImageCacheItems.SetItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -217,17 +217,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TImageCacheItems.SetItem.AIndex">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TImageCacheItems.SetItem.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TImageCacheItems.Notify">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -238,17 +238,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TImageCacheItems.Notify.Ptr">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TImageCacheItems.Notify.Action">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TImageCacheItems.GetNew">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -259,12 +259,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TImageCacheItems.GetNew.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TImageCacheItems.Items">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -273,12 +273,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TImageCacheItems.Items.AIndex">
-<short></short>
+<short/>
 </element>
 
 <!-- object Visibility: default -->
 <element name="TImageListCache">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -289,7 +289,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TImageListCache.FItems">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -298,7 +298,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TImageListCache.FImages">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -307,7 +307,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TImageListCache.FListeners">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -316,7 +316,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TImageListCache.FObsoletedCount">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -325,7 +325,7 @@
 
 <!-- procedure Visibility: private -->
 <element name="TImageListCache.CheckRebuildNeed">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -336,7 +336,7 @@
 
 <!-- function Visibility: private -->
 <element name="TImageListCache.GetImageListFor">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -347,22 +347,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TImageListCache.GetImageListFor.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TImageListCache.GetImageListFor.AWidth">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TImageListCache.GetImageListFor.AHeight">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TImageListCache.UnregisterBitmaps">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -373,12 +373,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TImageListCache.UnregisterBitmaps.AListener">
-<short></short>
+<short/>
 </element>
 
 <!-- constructor Visibility: public -->
 <element name="TImageListCache.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -389,7 +389,7 @@
 
 <!-- destructor Visibility: public -->
 <element name="TImageListCache.Destroy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -400,7 +400,7 @@
 
 <!-- function Visibility: public -->
 <element name="TImageListCache.RegisterListener">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -411,17 +411,17 @@
 
 <!-- function result Visibility: default -->
 <element name="TImageListCache.RegisterListener.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TImageListCache.RegisterListener.AListener">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TImageListCache.UnregisterListener">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -432,12 +432,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TImageListCache.UnregisterListener.AListener">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TImageListCache.RegisterBitmap">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -448,22 +448,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TImageListCache.RegisterBitmap.AListener">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TImageListCache.RegisterBitmap.ABitmap">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TImageListCache.RegisterBitmap.ABitmapCount">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TImageListCache.Rebuild">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -474,7 +474,7 @@
 
 <!-- function Visibility: default -->
 <element name="GetImageListCache">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -485,7 +485,7 @@
 
 <!-- function result Visibility: default -->
 <element name="GetImageListCache.Result">
-<short></short>
+<short/>
 </element>
 
 </module> <!-- ImageListCache -->

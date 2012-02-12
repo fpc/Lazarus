@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="HelpIntfs">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,7 +24,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="SysUtils">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -33,7 +33,7 @@
 
 <!-- object Visibility: default -->
 <element name="EHelpSystemException">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -44,7 +44,7 @@
 
 <!-- enumeration type Visibility: default -->
 <element name="TShowHelpResult">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -53,52 +53,52 @@
 
 <!-- enumeration value Visibility: default -->
 <element name="TShowHelpResult.shrNone">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TShowHelpResult.shrSuccess">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TShowHelpResult.shrCancel">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TShowHelpResult.shrDatabaseNotFound">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TShowHelpResult.shrContextNotFound">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TShowHelpResult.shrViewerNotFound">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TShowHelpResult.shrHelpNotFound">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TShowHelpResult.shrViewerError">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TShowHelpResult.shrSelectorError">
-<short></short>
+<short/>
 </element>
 
 <!-- set type Visibility: default -->
 <element name="TShowHelpResults">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -107,7 +107,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="THelpDatabaseID">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -116,7 +116,7 @@
 
 <!-- object Visibility: default -->
 <element name="THelpQuery">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -127,7 +127,7 @@
 
 <!-- variable Visibility: private -->
 <element name="THelpQuery.FHelpDatabaseID">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -136,7 +136,7 @@
 
 <!-- constructor Visibility: public -->
 <element name="THelpQuery.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -147,12 +147,12 @@
 
 <!-- argument Visibility: default -->
 <element name="THelpQuery.Create.TheHelpDatabaseID">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="THelpQuery.HelpDatabaseID">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -161,7 +161,7 @@
 
 <!-- object Visibility: default -->
 <element name="THelpQueryTOC">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -172,7 +172,7 @@
 
 <!-- object Visibility: default -->
 <element name="THelpQueryContext">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -183,7 +183,7 @@
 
 <!-- variable Visibility: private -->
 <element name="THelpQueryContext.FContext">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -192,7 +192,7 @@
 
 <!-- constructor Visibility: public -->
 <element name="THelpQueryContext.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -203,17 +203,17 @@
 
 <!-- argument Visibility: default -->
 <element name="THelpQueryContext.Create.TheHelpDatabaseID">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpQueryContext.Create.TheContext">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="THelpQueryContext.Context">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -222,7 +222,7 @@
 
 <!-- object Visibility: default -->
 <element name="THelpQueryKeyword">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -233,7 +233,7 @@
 
 <!-- variable Visibility: private -->
 <element name="THelpQueryKeyword.FKeyword">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -242,7 +242,7 @@
 
 <!-- constructor Visibility: public -->
 <element name="THelpQueryKeyword.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -253,17 +253,17 @@
 
 <!-- argument Visibility: default -->
 <element name="THelpQueryKeyword.Create.TheHelpDatabaseID">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpQueryKeyword.Create.TheKeyWord">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="THelpQueryKeyword.Keyword">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -272,7 +272,7 @@
 
 <!-- object Visibility: default -->
 <element name="THelpQuerySourcePosition">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -283,7 +283,7 @@
 
 <!-- variable Visibility: private -->
 <element name="THelpQuerySourcePosition.FFilename">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -292,7 +292,7 @@
 
 <!-- variable Visibility: private -->
 <element name="THelpQuerySourcePosition.FSourcePosition">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -301,7 +301,7 @@
 
 <!-- constructor Visibility: public -->
 <element name="THelpQuerySourcePosition.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -312,22 +312,22 @@
 
 <!-- argument Visibility: default -->
 <element name="THelpQuerySourcePosition.Create.TheHelpDatabaseID">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpQuerySourcePosition.Create.TheFilename">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpQuerySourcePosition.Create.SrcPos">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="THelpQuerySourcePosition.Filename">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -336,7 +336,7 @@
 
 <!-- property Visibility: public -->
 <element name="THelpQuerySourcePosition.SourcePosition">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -345,7 +345,7 @@
 
 <!-- object Visibility: default -->
 <element name="THelpQueryPascalContexts">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -356,7 +356,7 @@
 
 <!-- variable Visibility: private -->
 <element name="THelpQueryPascalContexts.FContextLists">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -365,7 +365,7 @@
 
 <!-- constructor Visibility: public -->
 <element name="THelpQueryPascalContexts.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -376,27 +376,27 @@
 
 <!-- argument Visibility: default -->
 <element name="THelpQueryPascalContexts.Create.TheHelpDatabaseID">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpQueryPascalContexts.Create.TheFilename">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpQueryPascalContexts.Create.SrcPos">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpQueryPascalContexts.Create.ContextLists">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="THelpQueryPascalContexts.ListOfPascalHelpContextList">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -405,7 +405,7 @@
 
 <!-- object Visibility: default -->
 <element name="THelpQueryMessage">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -416,7 +416,7 @@
 
 <!-- variable Visibility: private -->
 <element name="THelpQueryMessage.FMessageParts">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -425,7 +425,7 @@
 
 <!-- variable Visibility: private -->
 <element name="THelpQueryMessage.FWholeMessage">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -434,7 +434,7 @@
 
 <!-- constructor Visibility: public -->
 <element name="THelpQueryMessage.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -445,22 +445,22 @@
 
 <!-- argument Visibility: default -->
 <element name="THelpQueryMessage.Create.TheHelpDatabaseID">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpQueryMessage.Create.TheMessage">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpQueryMessage.Create.TheMessageParts">
-<short></short>
+<short/>
 </element>
 
 <!-- destructor Visibility: public -->
 <element name="THelpQueryMessage.Destroy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -471,7 +471,7 @@
 
 <!-- property Visibility: public -->
 <element name="THelpQueryMessage.WholeMessage">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -480,7 +480,7 @@
 
 <!-- property Visibility: public -->
 <element name="THelpQueryMessage.MessageParts">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -489,7 +489,7 @@
 
 <!-- object Visibility: default -->
 <element name="THelpQueryClass">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -500,7 +500,7 @@
 
 <!-- variable Visibility: private -->
 <element name="THelpQueryClass.FTheClass">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -509,7 +509,7 @@
 
 <!-- constructor Visibility: public -->
 <element name="THelpQueryClass.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -520,17 +520,17 @@
 
 <!-- argument Visibility: default -->
 <element name="THelpQueryClass.Create.TheHelpDatabaseID">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpQueryClass.Create.AClass">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="THelpQueryClass.TheClass">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -539,7 +539,7 @@
 
 <!-- object Visibility: default -->
 <element name="THelpManager">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -550,7 +550,7 @@
 
 <!-- function Visibility: public -->
 <element name="THelpManager.DoHelpNotFound">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -561,17 +561,17 @@
 
 <!-- function result Visibility: default -->
 <element name="THelpManager.DoHelpNotFound.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.DoHelpNotFound.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="THelpManager.ShowTableOfContents">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -582,17 +582,17 @@
 
 <!-- function result Visibility: default -->
 <element name="THelpManager.ShowTableOfContents.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowTableOfContents.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="THelpManager.ShowError">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -603,17 +603,17 @@
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowError.ShowResult">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowError.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="THelpManager.ShowHelpForQuery">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -624,27 +624,27 @@
 
 <!-- function result Visibility: default -->
 <element name="THelpManager.ShowHelpForQuery.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelpForQuery.Query">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelpForQuery.AutoFreeQuery">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelpForQuery.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="THelpManager.ShowHelpForContext">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -655,22 +655,22 @@
 
 <!-- function result Visibility: default -->
 <element name="THelpManager.ShowHelpForContext.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelpForContext.Query">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelpForContext.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="THelpManager.ShowHelpForKeyword">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -681,22 +681,22 @@
 
 <!-- function result Visibility: default -->
 <element name="THelpManager.ShowHelpForKeyword.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelpForKeyword.Query">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelpForKeyword.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="THelpManager.ShowHelpForPascalContexts">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -707,22 +707,22 @@
 
 <!-- function result Visibility: default -->
 <element name="THelpManager.ShowHelpForPascalContexts.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelpForPascalContexts.Query">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelpForPascalContexts.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="THelpManager.ShowHelpForSourcePosition">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -733,22 +733,22 @@
 
 <!-- function result Visibility: default -->
 <element name="THelpManager.ShowHelpForSourcePosition.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelpForSourcePosition.Query">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelpForSourcePosition.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="THelpManager.ShowHelpForMessageLine">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -759,22 +759,22 @@
 
 <!-- function result Visibility: default -->
 <element name="THelpManager.ShowHelpForMessageLine.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelpForMessageLine.Query">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelpForMessageLine.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="THelpManager.ShowHelpForClass">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -785,22 +785,22 @@
 
 <!-- function result Visibility: default -->
 <element name="THelpManager.ShowHelpForClass.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelpForClass.Query">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelpForClass.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="THelpManager.ShowHelpFile">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -811,32 +811,32 @@
 
 <!-- function result Visibility: default -->
 <element name="THelpManager.ShowHelpFile.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelpFile.Filename">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelpFile.Title">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelpFile.MimeType">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelpFile.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="THelpManager.ShowHelp">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -847,32 +847,32 @@
 
 <!-- function result Visibility: default -->
 <element name="THelpManager.ShowHelp.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelp.URL">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelp.Title">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelp.MimeType">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THelpManager.ShowHelp.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- variable Visibility: default -->
 <element name="HelpManager">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -881,7 +881,7 @@
 
 <!-- function Visibility: default -->
 <element name="ShowTableOfContents">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -892,12 +892,12 @@
 
 <!-- function result Visibility: default -->
 <element name="ShowTableOfContents.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="ShowTableOfContents">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -908,17 +908,17 @@
 
 <!-- function result Visibility: default -->
 <element name="ShowTableOfContents.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowTableOfContents.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="ShowHelpOrErrorForContext">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -929,22 +929,22 @@
 
 <!-- function result Visibility: default -->
 <element name="ShowHelpOrErrorForContext.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpOrErrorForContext.HelpDatabaseID">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpOrErrorForContext.HelpContext">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="ShowHelpForContext">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -955,27 +955,27 @@
 
 <!-- function result Visibility: default -->
 <element name="ShowHelpForContext.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpForContext.HelpDatabaseID">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpForContext.HelpContext">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpForContext.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="ShowHelpForContext">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -986,22 +986,22 @@
 
 <!-- function result Visibility: default -->
 <element name="ShowHelpForContext.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpForContext.HelpContext">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpForContext.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="ShowHelpOrErrorForKeyword">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1012,22 +1012,22 @@
 
 <!-- function result Visibility: default -->
 <element name="ShowHelpOrErrorForKeyword.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpOrErrorForKeyword.HelpDatabaseID">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpOrErrorForKeyword.HelpKeyword">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="ShowHelpForKeyword">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1038,27 +1038,27 @@
 
 <!-- function result Visibility: default -->
 <element name="ShowHelpForKeyword.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpForKeyword.HelpDatabaseID">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpForKeyword.HelpKeyword">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpForKeyword.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="ShowHelpForKeyword">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1069,22 +1069,22 @@
 
 <!-- function result Visibility: default -->
 <element name="ShowHelpForKeyword.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpForKeyword.HelpKeyword">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpForKeyword.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="ShowHelpForPascalContexts">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1095,32 +1095,32 @@
 
 <!-- function result Visibility: default -->
 <element name="ShowHelpForPascalContexts.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpForPascalContexts.Filename">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpForPascalContexts.SourcePosition">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpForPascalContexts.ListOfPascalHelpContextList">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpForPascalContexts.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="ShowHelpOrErrorForSourcePosition">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1131,22 +1131,22 @@
 
 <!-- function result Visibility: default -->
 <element name="ShowHelpOrErrorForSourcePosition.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpOrErrorForSourcePosition.Filename">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpOrErrorForSourcePosition.SourcePosition">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="ShowHelpForMessageLine">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1157,27 +1157,27 @@
 
 <!-- function result Visibility: default -->
 <element name="ShowHelpForMessageLine.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpForMessageLine.MessageLine">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpForMessageLine.MessageParts">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpForMessageLine.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="ShowHelpOrErrorForMessageLine">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1188,22 +1188,22 @@
 
 <!-- function result Visibility: default -->
 <element name="ShowHelpOrErrorForMessageLine.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpOrErrorForMessageLine.MessageLine">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpOrErrorForMessageLine.MessageParts">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="ShowHelpFile">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1214,32 +1214,32 @@
 
 <!-- function result Visibility: default -->
 <element name="ShowHelpFile.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpFile.Filename">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpFile.Title">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpFile.MimeType">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpFile.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="ShowHelpFileOrError">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1250,27 +1250,27 @@
 
 <!-- function result Visibility: default -->
 <element name="ShowHelpFileOrError.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpFileOrError.Filename">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpFileOrError.Title">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpFileOrError.MimeType">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="ShowHelp">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1281,32 +1281,32 @@
 
 <!-- function result Visibility: default -->
 <element name="ShowHelp.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelp.URL">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelp.Title">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelp.MimeType">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelp.ErrMsg">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="ShowHelpOrError">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -1317,22 +1317,22 @@
 
 <!-- function result Visibility: default -->
 <element name="ShowHelpOrError.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpOrError.URL">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpOrError.Title">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ShowHelpOrError.MimeType">
-<short></short>
+<short/>
 </element>
 </module> <!-- HelpIntfs -->
 </package>

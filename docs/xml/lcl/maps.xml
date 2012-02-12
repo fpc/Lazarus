@@ -34,29 +34,41 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMapIdType.itu1"><short/></element>
+      <element name="TMapIdType.itu1"><short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMapIdType.its1"><short/></element>
+      <element name="TMapIdType.its1"><short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMapIdType.itu2"><short/></element>
+      <element name="TMapIdType.itu2"><short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMapIdType.its2"><short/></element>
+      <element name="TMapIdType.its2"><short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMapIdType.itu4"><short/></element>
+      <element name="TMapIdType.itu4"><short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMapIdType.its4"><short/></element>
+      <element name="TMapIdType.its4"><short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMapIdType.itu8"><short/></element>
+      <element name="TMapIdType.itu8"><short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMapIdType.its8"><short/></element>
+      <element name="TMapIdType.its8"><short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMapIdType.itu16"><short/></element>
+      <element name="TMapIdType.itu16"><short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMapIdType.its16"><short/></element>
+      <element name="TMapIdType.its16"><short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMapIdType.itu32"><short/></element>
+      <element name="TMapIdType.itu32"><short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMapIdType.its32"><short/></element>
+      <element name="TMapIdType.its32"><short/>
+      </element>
       <!-- pointer type Visibility: default -->
       <element name="PMapItem">
         <short/>
@@ -295,9 +307,11 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TBaseMap.FindNode.Result"><short/></element>
+      <element name="TBaseMap.FindNode.Result"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMap.FindNode.AId"><short/></element>
+      <element name="TBaseMap.FindNode.AId"><short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TBaseMap.FindItem">
         <short/>
@@ -306,9 +320,11 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TBaseMap.FindItem.Result"><short/></element>
+      <element name="TBaseMap.FindItem.Result"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMap.FindItem.AId"><short/></element>
+      <element name="TBaseMap.FindItem.AId"><short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TBaseMap.TreeCompareID">
         <short/>
@@ -317,13 +333,17 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TBaseMap.TreeCompareID.Result"><short/></element>
+      <element name="TBaseMap.TreeCompareID.Result"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMap.TreeCompareID.Sender"><short/></element>
+      <element name="TBaseMap.TreeCompareID.Sender"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMap.TreeCompareID.AItem1"><short/></element>
+      <element name="TBaseMap.TreeCompareID.AItem1"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMap.TreeCompareID.AItem2"><short/></element>
+      <element name="TBaseMap.TreeCompareID.AItem2"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TBaseMap.IteratorAdd">
         <short/>
@@ -332,7 +352,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMap.IteratorAdd.AIterator"><short/></element>
+      <element name="TBaseMap.IteratorAdd.AIterator"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TBaseMap.IteratorRemove">
         <short/>
@@ -341,7 +362,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMap.IteratorRemove.AIterator"><short/></element>
+      <element name="TBaseMap.IteratorRemove.AIterator"><short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TBaseMap.InternalGetData">
         <short/>
@@ -350,11 +372,14 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TBaseMap.InternalGetData.Result"><short/></element>
+      <element name="TBaseMap.InternalGetData.Result"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMap.InternalGetData.AItem"><short/></element>
+      <element name="TBaseMap.InternalGetData.AItem"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMap.InternalGetData.AData"><short/></element>
+      <element name="TBaseMap.InternalGetData.AData"><short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TBaseMap.InternalGetId">
         <short/>
@@ -363,11 +388,14 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TBaseMap.InternalGetId.Result"><short/></element>
+      <element name="TBaseMap.InternalGetId.Result"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMap.InternalGetId.AItem"><short/></element>
+      <element name="TBaseMap.InternalGetId.AItem"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMap.InternalGetId.AID"><short/></element>
+      <element name="TBaseMap.InternalGetId.AID"><short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TBaseMap.InternalSetData">
         <short/>
@@ -376,11 +404,14 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TBaseMap.InternalSetData.Result"><short/></element>
+      <element name="TBaseMap.InternalSetData.Result"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMap.InternalSetData.AItem"><short/></element>
+      <element name="TBaseMap.InternalSetData.AItem"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMap.InternalSetData.AData"><short/></element>
+      <element name="TBaseMap.InternalSetData.AData"><short/>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TBaseMap.Add">
         <short/>
@@ -389,9 +420,11 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMap.Add.AId"><short/></element>
+      <element name="TBaseMap.Add.AId"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMap.Add.AData"><short/></element>
+      <element name="TBaseMap.Add.AData"><short/>
+      </element>
       <!-- constructor Visibility: public -->
       <element name="TBaseMap.Create">
         <short/>
@@ -400,9 +433,11 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMap.Create.AIdType"><short/></element>
+      <element name="TBaseMap.Create.AIdType"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMap.Create.ADataSize"><short/></element>
+      <element name="TBaseMap.Create.ADataSize"><short/>
+      </element>
       <!-- function Visibility: public -->
       <element name="TBaseMap.Count">
         <short/>
@@ -411,7 +446,8 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TBaseMap.Count.Result"><short/></element>
+      <element name="TBaseMap.Count.Result"><short/>
+      </element>
       <!-- function Visibility: public -->
       <element name="TBaseMap.Delete">
         <short/>
@@ -420,9 +456,11 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TBaseMap.Delete.Result"><short/></element>
+      <element name="TBaseMap.Delete.Result"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMap.Delete.AId"><short/></element>
+      <element name="TBaseMap.Delete.AId"><short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TBaseMap.Destroy">
         <short/>
@@ -482,7 +520,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMapIterator.ItemRemove.AData"><short/></element>
+      <element name="TBaseMapIterator.ItemRemove.AData"><short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TBaseMapIterator.InternalLocate">
         <short/>
@@ -491,9 +530,11 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TBaseMapIterator.InternalLocate.Result"><short/></element>
+      <element name="TBaseMapIterator.InternalLocate.Result"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMapIterator.InternalLocate.AId"><short/></element>
+      <element name="TBaseMapIterator.InternalLocate.AId"><short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TBaseMapIterator.Validate">
         <short/>
@@ -522,7 +563,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TBaseMapIterator.Create.AMap"><short/></element>
+      <element name="TBaseMapIterator.Create.AMap"><short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TBaseMapIterator.Destroy">
         <short/>
@@ -566,7 +608,8 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TBaseMapIterator.Valid.Result"><short/></element>
+      <element name="TBaseMapIterator.Valid.Result"><short/>
+      </element>
       <!-- property Visibility: public -->
       <element name="TBaseMapIterator.BOM">
         <short/>
@@ -594,9 +637,11 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMap.HasId.Result"><short/></element>
+      <element name="TMap.HasId.Result"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TMap.HasId.AID"><short/></element>
+      <element name="TMap.HasId.AID"><short/>
+      </element>
       <!-- function Visibility: public -->
       <element name="TMap.GetData">
         <short/>
@@ -605,11 +650,14 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMap.GetData.Result"><short/></element>
+      <element name="TMap.GetData.Result"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TMap.GetData.AId"><short/></element>
+      <element name="TMap.GetData.AId"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TMap.GetData.AData"><short/></element>
+      <element name="TMap.GetData.AData"><short/>
+      </element>
       <!-- function Visibility: public -->
       <element name="TMap.SetData">
         <short/>
@@ -618,11 +666,14 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMap.SetData.Result"><short/></element>
+      <element name="TMap.SetData.Result"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TMap.SetData.AId"><short/></element>
+      <element name="TMap.SetData.AId"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TMap.SetData.AData"><short/></element>
+      <element name="TMap.SetData.AData"><short/>
+      </element>
       <!-- object Visibility: default -->
       <element name="TMapIterator">
         <short/>
@@ -638,7 +689,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMapIterator.GetData.AData"><short/></element>
+      <element name="TMapIterator.GetData.AData"><short/>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TMapIterator.GetID">
         <short/>
@@ -647,7 +699,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMapIterator.GetID.AID"><short/></element>
+      <element name="TMapIterator.GetID.AID"><short/>
+      </element>
       <!-- function Visibility: public -->
       <element name="TMapIterator.Locate">
         <short/>
@@ -656,9 +709,11 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMapIterator.Locate.Result"><short/></element>
+      <element name="TMapIterator.Locate.Result"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TMapIterator.Locate.AId"><short/></element>
+      <element name="TMapIterator.Locate.AId"><short/>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TMapIterator.SetData">
         <short/>
@@ -667,7 +722,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMapIterator.SetData.AData"><short/></element>
+      <element name="TMapIterator.SetData.AData"><short/>
+      </element>
       <!-- function Visibility: default -->
       <element name="MapReport">
         <short/>
@@ -676,9 +732,11 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="MapReport.Result"><short/></element>
+      <element name="MapReport.Result"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="MapReport.AMap"><short/></element>
+      <element name="MapReport.AMap"><short/>
+      </element>
     </module>
     <!-- maps -->
   </package>

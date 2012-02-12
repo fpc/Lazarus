@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="DefaultTranslator">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,7 +24,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="SysUtils">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -33,7 +33,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LResources">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -42,7 +42,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="GetText">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -51,7 +51,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Controls">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -60,7 +60,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="typinfo">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>

@@ -60,7 +60,8 @@
       <!-- object Visibility: default -->
       <element name="TCustomFloatSpinEdit">
         <short>The base class for the float-based spin control</short>
-        <descr><p>The base class for the float-based spin edit control.</p></descr>
+        <descr><p>The base class for the float-based spin edit control.</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -357,7 +358,8 @@
       <!-- object Visibility: default -->
       <element name="TFloatSpinEdit">
         <short>The main class for the float-based spin control</short>
-        <descr><p>The main class for the float-based spin edit control. Use TFloatSpinEdit to allow user to pick float value.</p></descr>
+        <descr><p>The main class for the float-based spin edit control. Use TFloatSpinEdit to allow user to pick float value.</p>
+        </descr>
         <errors/>
         <seealso>
           <link id="TSpinEdit"/>
@@ -601,7 +603,8 @@
       <!-- object Visibility: default -->
       <element name="TSpinEdit">
         <short>The main class for the integer-based spin control</short>
-        <descr><p>The main class for the integer-based spin edit control. Use TSpinEdit to allow user to pick integer value.</p></descr>
+        <descr><p>The main class for the integer-based spin edit control. Use TSpinEdit to allow user to pick integer value.</p>
+        </descr>
         <errors/>
         <seealso>
           <link id="TFloatSpinEdit"/>

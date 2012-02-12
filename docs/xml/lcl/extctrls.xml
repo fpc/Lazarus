@@ -2441,7 +2441,7 @@ being raised.
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.OnResize" link="#LCL.Controls.TControl.OnResize">
-        <descr></descr>
+        <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
@@ -2697,17 +2697,18 @@ being raised.
           see TCustomRadioGroup.OnSelectionChanged for more details.</p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TControl.OnClick" />
-          <link id="TCustomRadioGroup.OnSelectionChanged" />
+          <link id="#LCL.Controls.TControl.OnClick"/>
+          <link id="TCustomRadioGroup.OnSelectionChanged"/>
         </seealso>
       </element>
       <element name="TCustomRadioGroup.OnSelectionChanged">
         <short>Event called when the selected item changes</short>
         <descr><p>This event was introduced in Lazarus 0.9.31 and it is called when the selected item is changed.
         It is triggered when this is done by the user via, for example the mouse or keyboard,
-        and is also triggered when the selected item is changed programatically.</p></descr>
+        and is also triggered when the selected item is changed programatically.</p>
+        </descr>
         <seealso>
-          <link id="TCustomRadioGroup.OnClick" />
+          <link id="TCustomRadioGroup.OnClick"/>
         </seealso>
       </element>
       <!-- constructor Visibility: public -->
@@ -2948,7 +2949,7 @@ being raised.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioGroup.OnSelectionChanged" link="#lcl.ExtCtrls.TCustomRadioGroup.OnSelectionChanged" />
+      <element name="TRadioGroup.OnSelectionChanged" link="#lcl.ExtCtrls.TCustomRadioGroup.OnSelectionChanged"/>
       <!-- property Visibility: published -->
       <element name="TRadioGroup.ParentColor">
         <short/>
@@ -4563,10 +4564,10 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.Align" link="#lcl.Controls.TControl.Align" />
-      <element name="TPanel.Alignment" link="#lcl.ExtCtrls.TCustomPanel.Alignment" />
-      <element name="TPanel.Anchors" link="#lcl.Controls.TControl.Anchors" />
-      <element name="TPanel.AutoSize" link="#lcl.Controls.TControl.AutoSize" />
+      <element name="TPanel.Align" link="#lcl.Controls.TControl.Align"/>
+      <element name="TPanel.Alignment" link="#lcl.ExtCtrls.TCustomPanel.Alignment"/>
+      <element name="TPanel.Anchors" link="#lcl.Controls.TControl.Anchors"/>
+      <element name="TPanel.AutoSize" link="#lcl.Controls.TControl.AutoSize"/>
       <!-- property Visibility: published -->
       <element name="TPanel.BorderSpacing" link="#lcl.Controls.TControl.BorderSpacing">
         <short/>

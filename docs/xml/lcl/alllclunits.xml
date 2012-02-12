@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -15,7 +15,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLStrConsts">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,7 +24,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="FPCAdds">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -33,7 +33,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LazLinkedList">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -42,7 +42,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="DynHashArray">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -51,7 +51,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLMemManager">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -60,7 +60,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="AvgLvlTree">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -69,7 +69,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="StringHashList">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -78,7 +78,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="ExtendedStrings">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -87,7 +87,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="DynamicArray">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -96,7 +96,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="UTrace">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -105,7 +105,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="TextStrings">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -114,7 +114,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLProc">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -123,7 +123,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLType">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -132,7 +132,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLResCache">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -141,7 +141,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="GraphMath">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -150,7 +150,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="FileCtrl">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -159,7 +159,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LMessages">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -168,7 +168,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LResources">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -177,7 +177,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="FileUtil">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -186,7 +186,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="InterfaceBase">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -195,7 +195,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="IntfGraphics">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -204,7 +204,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="StdActns">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -213,7 +213,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Buttons">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -222,7 +222,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Extctrls">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -231,7 +231,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Calendar">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -240,7 +240,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Clipbrd">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -249,7 +249,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Forms">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -258,7 +258,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLIntf">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -267,7 +267,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Spin">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -276,7 +276,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Comctrls">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -285,7 +285,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Graphics">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -294,7 +294,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="StdCtrls">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -303,7 +303,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Arrow">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -312,7 +312,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Controls">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -321,7 +321,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="ImgList">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -330,7 +330,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Menus">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -339,7 +339,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Toolwin">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -348,7 +348,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Dialogs">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -357,7 +357,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Messages">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -366,7 +366,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Clistbox">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -375,7 +375,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="ActnList">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -384,7 +384,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Grids">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -393,7 +393,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="MaskEdit">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -402,7 +402,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Printers">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -411,7 +411,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="PostScriptPrinter">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -420,7 +420,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="PostScriptCanvas">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -429,7 +429,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="CheckLst">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -438,7 +438,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="PairSplitter">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -447,7 +447,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="ExtDlgs">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -456,7 +456,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="DBCtrls">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -465,7 +465,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="DBGrids">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -474,7 +474,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="DBActns">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -483,7 +483,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="EditBtn">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -492,7 +492,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="ExtGraphics">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -501,7 +501,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="PropertyStorage">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -510,7 +510,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="IniPropStorage">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -519,7 +519,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="XMLPropStorage">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -528,7 +528,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Chart">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -537,7 +537,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSActnList">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -546,7 +546,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSArrow">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -555,7 +555,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSButtons">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -564,7 +564,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSCalendar">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -573,7 +573,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSCheckLst">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -582,7 +582,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSCListBox">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -591,7 +591,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSComCtrls">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -600,7 +600,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSControls">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -609,7 +609,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSDbCtrls">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -618,7 +618,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSDBGrids">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -627,7 +627,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSDialogs">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -636,7 +636,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSDirSel">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -645,7 +645,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSEditBtn">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -654,7 +654,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSExtCtrls">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -663,7 +663,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSExtDlgs">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -672,7 +672,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSFileCtrl">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -681,7 +681,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSForms">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -690,7 +690,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSGrids">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -699,7 +699,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSImgList">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -708,7 +708,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSMaskEdit">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -717,7 +717,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSMenus">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -726,7 +726,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSPairSplitter">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -735,7 +735,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSSpin">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -744,7 +744,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSStdCtrls">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -753,7 +753,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSToolwin">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -762,7 +762,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="WSProc">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>

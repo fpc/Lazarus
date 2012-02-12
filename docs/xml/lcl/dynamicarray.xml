@@ -8,7 +8,7 @@
 -->  
     <module name="DynamicArray">
       <short>It implements a resizable 2d array containing pointers.</short>
-      <descr></descr>
+      <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
         <short/>
@@ -52,7 +52,7 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TOnExchangeItem">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
       </element>
@@ -186,19 +186,19 @@
       </element>
       <!-- constructor Visibility: public -->
       <element name="TArray.Create">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
-        <example file="dynamicarray/tarrayexample.pas" />
+        <example file="dynamicarray/tarrayexample.pas"/>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TArray.Destroy">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
-        <example file="dynamicarray/tarrayexample.pas" />
+        <example file="dynamicarray/tarrayexample.pas"/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TArray.SetLength">
@@ -206,7 +206,7 @@
         <descr/>
         <errors/>
         <seealso/>
-        <example file="dynamicarray/tarrayexample.pas" />
+        <example file="dynamicarray/tarrayexample.pas"/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TArray.SetLength.Cols">
@@ -222,7 +222,7 @@
         <descr/>
         <errors/>
         <seealso/>
-        <example file="dynamicarray/tarrayexample.pas" />
+        <example file="dynamicarray/tarrayexample.pas"/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TArray.DeleteColRow.IsColumn">
@@ -238,7 +238,7 @@
         <descr/>
         <errors/>
         <seealso/>
-        <example file="dynamicarray/tarrayexample.pas" />
+        <example file="dynamicarray/tarrayexample.pas"/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TArray.MoveColRow.IsColumn">
@@ -258,7 +258,7 @@
         <descr/>
         <errors/>
         <seealso/>
-        <example file="dynamicarray/tarrayexample.pas" />
+        <example file="dynamicarray/tarrayexample.pas"/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TArray.ExchangeColRow.IsColumn">
@@ -277,7 +277,7 @@
         <short>Removes all elements from the array.</short>
         <descr/>
         <errors/>
-        <example file="dynamicarray/tarrayexample.pas" />
+        <example file="dynamicarray/tarrayexample.pas"/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -285,7 +285,7 @@
         <short>Reads/Writes an element from the array.</short>
         <descr/>
         <seealso/>
-        <example file="dynamicarray/tarrayexample.pas" />
+        <example file="dynamicarray/tarrayexample.pas"/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TArray.Arr.Col">
@@ -312,4 +312,3 @@
     <!-- DynamicArray -->
   </package>
 </fpdoc-descriptions>
-

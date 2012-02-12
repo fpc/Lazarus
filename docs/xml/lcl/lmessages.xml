@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="LMessages">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,7 +24,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="SysUtils">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -33,7 +33,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLType">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -42,7 +42,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="GraphType">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -51,7 +51,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_USER">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -60,7 +60,7 @@
 
 <!-- constant Visibility: default -->
 <element name="WM_USER">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -69,7 +69,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_DESTROY">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -78,7 +78,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_ACTIVATEITEM">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -87,7 +87,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_CHANGED">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -96,7 +96,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_FOCUS">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -105,7 +105,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_CLICKED">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -114,7 +114,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_PRESSED">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -123,7 +123,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_RELEASED">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -132,7 +132,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MOVECURSOR">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -141,7 +141,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_ENTER">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -150,7 +150,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_LEAVE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -159,7 +159,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_CHECKRESIZE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -168,7 +168,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_INSERTTEXT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -177,7 +177,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_DELETETEXT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -186,7 +186,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_SETEDITABLE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -195,7 +195,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MOVEWORD">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -204,7 +204,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MOVEPAGE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -213,7 +213,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MOVETOROW">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -222,7 +222,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MOVETOCOLUMN">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -231,7 +231,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_KILLCHAR">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -240,7 +240,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_KILLWORD">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -249,7 +249,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_KILLLINE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -258,7 +258,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_CUTTOCLIP">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -267,7 +267,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_COPYTOCLIP">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -276,7 +276,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_PASTEFROMCLIP">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -285,7 +285,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_EXPOSEEVENT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -294,7 +294,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_CONFIGUREEVENT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -303,7 +303,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_PAINT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -312,7 +312,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_OK_CLICKED">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -321,7 +321,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_CANCEL_CLICKED">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -330,7 +330,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_TIMER">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -339,7 +339,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_EXIT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -348,7 +348,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_CLOSEQUERY">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -357,7 +357,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_DRAGSTART">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -366,7 +366,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_DEACTIVATE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -375,7 +375,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_QUIT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -384,7 +384,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MONTHCHANGED">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -393,7 +393,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_YEARCHANGED">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -402,7 +402,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_DAYCHANGED">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -411,7 +411,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MOUSEFIRST2">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -420,7 +420,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_LBUTTONTRIPLECLK">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -429,7 +429,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_LBUTTONQUADCLK">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -438,7 +438,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MBUTTONTRIPLECLK">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -447,7 +447,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MBUTTONQUADCLK">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -456,7 +456,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_RBUTTONTRIPLECLK">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -465,7 +465,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_RBUTTONQUADCLK">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -474,7 +474,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MOUSEENTER">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -483,7 +483,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MOUSELEAVE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -492,7 +492,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MOUSELAST2">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -501,7 +501,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_GRABFOCUS">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -510,7 +510,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_DRAWLISTITEM">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -519,7 +519,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_SETCURSOR">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -528,7 +528,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_INTERNALPAINT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -537,7 +537,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_INTERFACEFIRST">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -546,7 +546,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_INTERFACELAST">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -555,7 +555,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_UNKNOWN">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -564,7 +564,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_SIZE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -573,7 +573,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_MOVE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -582,7 +582,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_MINIMIZE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -591,7 +591,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_MAXIMIZE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -600,7 +600,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_NEXTWINDOW">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -609,7 +609,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_PREVWINDOW">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -618,7 +618,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_CLOSE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -627,7 +627,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_VSCROLL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -636,7 +636,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_HSCROLL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -645,7 +645,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_MOUSEMENU">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -654,7 +654,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_KEYMENU">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -663,7 +663,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_ARRANGE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -672,7 +672,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_RESTORE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -681,7 +681,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_TASKLIST">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -690,7 +690,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_SCREENSAVE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -699,7 +699,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_HOTKEY">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -708,7 +708,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_DEFAULT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -717,7 +717,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_MONITORPOWER">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -726,7 +726,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_CONTEXTHELP">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -735,7 +735,7 @@
 
 <!-- constant Visibility: default -->
 <element name="SC_SEPARATOR">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -744,7 +744,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_NULL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -753,7 +753,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MOVE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -762,7 +762,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_SIZE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -771,7 +771,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_ACTIVATE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -780,7 +780,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_SETFOCUS">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -789,7 +789,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_KILLFOCUS">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -798,7 +798,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_ENABLE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -807,7 +807,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_GETTEXTLENGTH">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -816,7 +816,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_ERASEBKGND">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -825,7 +825,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_SHOWWINDOW">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -834,7 +834,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_CANCELMODE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -843,7 +843,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_DRAWITEM">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -852,7 +852,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MEASUREITEM">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -861,7 +861,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_DELETEITEM">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -870,7 +870,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_VKEYTOITEM">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -879,7 +879,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_CHARTOITEM">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -888,7 +888,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_SETFONT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -897,7 +897,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_COMPAREITEM">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -906,7 +906,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_WINDOWPOSCHANGING">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -915,7 +915,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_WINDOWPOSCHANGED">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -924,7 +924,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_NOTIFY">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -933,7 +933,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_NOTIFYFORMAT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -942,7 +942,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_NCCALCSIZE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -951,7 +951,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_NCHITTEST">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -960,7 +960,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_NCPAINT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -969,7 +969,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_NCACTIVATE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -978,7 +978,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_GETDLGCODE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -987,7 +987,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_NCMOUSEMOVE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -996,7 +996,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_NCLBUTTONDOWN">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1005,7 +1005,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_NCLBUTTONUP">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1014,7 +1014,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_NCLBUTTONDBLCLK">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1023,7 +1023,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_KEYFIRST">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1032,7 +1032,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_KEYDOWN">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1041,7 +1041,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_KEYUP">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1050,7 +1050,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_CHAR">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1059,7 +1059,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_SYSKEYDOWN">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1068,7 +1068,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_SYSKEYUP">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1077,7 +1077,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_SYSCHAR">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1086,7 +1086,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_KEYLAST">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1095,7 +1095,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_COMMAND">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1104,7 +1104,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_SYSCOMMAND">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1113,7 +1113,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_HSCROLL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1122,7 +1122,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_VSCROLL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1131,7 +1131,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_CTLCOLORMSGBOX">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1140,7 +1140,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_CTLCOLOREDIT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1149,7 +1149,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_CTLCOLORLISTBOX">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1158,7 +1158,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_CTLCOLORBTN">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1167,7 +1167,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_CTLCOLORDLG">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1176,7 +1176,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_CTLCOLORSCROLLBAR">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1185,7 +1185,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_CTLCOLORSTATIC">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1194,7 +1194,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MOUSEFIRST">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1203,7 +1203,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MOUSEMOVE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1212,7 +1212,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_LBUTTONDOWN">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1221,7 +1221,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_LBUTTONUP">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1230,7 +1230,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_LBUTTONDBLCLK">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1239,7 +1239,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_RBUTTONDOWN">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1248,7 +1248,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_RBUTTONUP">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1257,7 +1257,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_RBUTTONDBLCLK">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1266,7 +1266,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MButtonDown">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1275,7 +1275,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MBUTTONUP">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1284,7 +1284,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MBUTTONDBLCLK">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1293,7 +1293,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MOUSEWHEEL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1302,7 +1302,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_MOUSELAST">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1311,7 +1311,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_PARENTNOTIFY">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1320,7 +1320,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_CAPTURECHANGED">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1329,7 +1329,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_DROPFILES">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1338,7 +1338,7 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_SELCHANGE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1347,7 +1347,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="UINT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1356,7 +1356,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="BOOL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1365,7 +1365,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMDrawItems">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1374,7 +1374,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMDrawItems.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1383,7 +1383,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMDrawItems.Ctl">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1392,7 +1392,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMDrawItems.DrawItemStruct">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1401,7 +1401,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMDrawItems.Result">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1410,7 +1410,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMDrawListItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1419,7 +1419,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMDrawListItem.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1428,7 +1428,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMDrawListItem.Unused">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1437,7 +1437,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMDrawListItem.DrawListItemStruct">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1446,7 +1446,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMDrawListItem.Result">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1455,7 +1455,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMMeasureItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1464,7 +1464,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMMeasureItem.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1473,7 +1473,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMMeasureItem.idCtl">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1482,7 +1482,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMMeasureItem.MeasureItemStruct">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1491,7 +1491,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMMeasureItem.Result">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1500,7 +1500,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMNoParams">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1509,7 +1509,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMCanvasCreate">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1518,7 +1518,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCanvasCreate.pparent">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1527,7 +1527,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCanvasCreate.pCanvas">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1536,7 +1536,7 @@
 
 <!-- pointer type Visibility: default -->
 <element name="pTLMCanvasCreate">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1545,7 +1545,7 @@
 
 <!-- pointer type Visibility: default -->
 <element name="PLMCanvasDrawRect">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1554,7 +1554,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMCanvasDrawRect">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1563,7 +1563,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCanvasDrawRect.R">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1572,7 +1572,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCanvasDrawRect.ReDraw">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1581,7 +1581,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCanvasDrawRect.PenColor">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1590,7 +1590,7 @@
 
 <!-- pointer type Visibility: default -->
 <element name="PLMCanvasDrawLine">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1599,7 +1599,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMCanvasDrawLine">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1608,7 +1608,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCanvasDrawLine.x1">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1617,7 +1617,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCanvasDrawLine.y1">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1626,7 +1626,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCanvasDrawLine.x2">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1635,7 +1635,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCanvasDrawLine.y2">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1644,7 +1644,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCanvasDrawLine.PenColor">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1653,7 +1653,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCanvasDrawLine.ReDraw">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1662,7 +1662,7 @@
 
 <!-- pointer type Visibility: default -->
 <element name="PLMCanvasDrawText">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1671,7 +1671,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMCanvasDrawText">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1680,7 +1680,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCanvasDrawText.x1">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1689,7 +1689,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCanvasDrawText.y1">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1698,7 +1698,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCanvasDrawText.Str">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1707,7 +1707,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCanvasDrawText.Font">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1716,7 +1716,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCanvasDrawText.PenColor">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1725,7 +1725,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCanvasDrawText.ReDraw">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1734,7 +1734,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMEraseBkgnd">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1743,7 +1743,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMEraseBkgnd.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1752,7 +1752,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMEraseBkgnd.DC">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1761,7 +1761,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMEraseBkgnd.Unused">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1770,7 +1770,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMEraseBkgnd.Result">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1779,7 +1779,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMGetText">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1788,7 +1788,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMGetText.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1797,7 +1797,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMGetText.TextMax">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1806,7 +1806,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMGetText.Text">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1815,7 +1815,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMGetText.Result">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1824,7 +1824,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMGetTextLength">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1833,7 +1833,7 @@
 
 <!-- pointer type Visibility: default -->
 <element name="PLMInsertText">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1842,7 +1842,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMInsertText">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1851,7 +1851,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMInsertText.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1860,7 +1860,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMInsertText.NewText">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1869,7 +1869,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMInsertText.Length">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1878,7 +1878,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMInsertText.Position">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1887,7 +1887,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMInsertText.UserData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1896,7 +1896,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMKey">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1905,7 +1905,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMKey.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1914,7 +1914,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMKey.CharCode">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1923,7 +1923,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMKey.Unused">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1932,7 +1932,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMKey.KeyData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1941,7 +1941,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMKey.Result">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1950,7 +1950,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMChar">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1959,7 +1959,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMKeyDown">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1968,7 +1968,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMKeyUp">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1977,7 +1977,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMSysChar">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1986,7 +1986,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMSysKeyDown">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1995,7 +1995,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMSysKeyUp">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2004,7 +2004,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMMouse">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2013,7 +2013,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMMouse.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2022,7 +2022,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMMouse.Keys">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2031,7 +2031,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMMouseMove">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2040,7 +2040,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMMove">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2049,7 +2049,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMMove.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2058,7 +2058,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMMove.MoveType">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2067,7 +2067,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMActivate">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2076,7 +2076,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMActivate.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2085,7 +2085,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMActivate.Active">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2094,7 +2094,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMActivate.Minimized">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2103,7 +2103,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMActivate.ActiveWindow">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2112,7 +2112,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMActivate.Result">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2121,7 +2121,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMNCActivate">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2130,7 +2130,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMNCActivate.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2139,7 +2139,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMNCActivate.Active">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2148,7 +2148,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMNCActivate.Unused">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2157,7 +2157,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMNCActivate.Result">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2166,7 +2166,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMNotify">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2175,7 +2175,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMNotify.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2184,7 +2184,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMNotify.IDCtrl">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2193,7 +2193,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMNotify.NMHdr">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2202,7 +2202,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMNotify.Result">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2211,7 +2211,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMNotifyFormat">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2220,7 +2220,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMNotifyFormat.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2229,7 +2229,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMNotifyFormat.From">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2238,7 +2238,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMNotifyFormat.Command">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2247,7 +2247,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMNotifyFormat.Result">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2256,7 +2256,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMPaint">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2265,7 +2265,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMPaint.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2274,7 +2274,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMPaint.DC">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2283,7 +2283,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMPaint.PaintStruct">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2292,7 +2292,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMPaint.Result">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2301,7 +2301,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMResize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2310,7 +2310,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMResize.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2319,7 +2319,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMResize.Left">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2328,7 +2328,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMResize.Top">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2337,7 +2337,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMResize.Width">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2346,7 +2346,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMResize.Height">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2355,7 +2355,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMResize.UserData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2364,7 +2364,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMMoveResize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2373,7 +2373,7 @@
 
 <!-- pointer type Visibility: default -->
 <element name="PWindowPos">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2382,7 +2382,7 @@
 
 <!-- record type Visibility: default -->
 <element name="tagWINDOWPOS">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2391,7 +2391,7 @@
 
 <!-- variable Visibility: default -->
 <element name="tagWINDOWPOS.hwnd">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2400,7 +2400,7 @@
 
 <!-- variable Visibility: default -->
 <element name="tagWINDOWPOS.hwndInsertAfter">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2409,7 +2409,7 @@
 
 <!-- variable Visibility: default -->
 <element name="tagWINDOWPOS.x">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2418,7 +2418,7 @@
 
 <!-- variable Visibility: default -->
 <element name="tagWINDOWPOS.y">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2427,7 +2427,7 @@
 
 <!-- variable Visibility: default -->
 <element name="tagWINDOWPOS.cx">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2436,7 +2436,7 @@
 
 <!-- variable Visibility: default -->
 <element name="tagWINDOWPOS.cy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2445,7 +2445,7 @@
 
 <!-- variable Visibility: default -->
 <element name="tagWINDOWPOS.flags">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2454,7 +2454,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TWindowPos">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2463,7 +2463,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="WINDOWPOS">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2472,7 +2472,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMWindowPosMsg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2481,7 +2481,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMWindowPosMsg.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2490,7 +2490,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMWindowPosMsg.Unused">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2499,7 +2499,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMWindowPosMsg.WindowPos">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2508,7 +2508,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMWindowPosMsg.Result">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2517,7 +2517,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMWindowPosChanged">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2526,7 +2526,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMWindowPosChanging">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2535,7 +2535,7 @@
 
 <!-- pointer type Visibility: default -->
 <element name="PNCCalcSizeParams">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2544,7 +2544,7 @@
 
 <!-- record type Visibility: default -->
 <element name="tagNCCalcSize_Params">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2553,7 +2553,7 @@
 
 <!-- variable Visibility: default -->
 <element name="tagNCCalcSize_Params.rgrc">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2562,7 +2562,7 @@
 
 <!-- variable Visibility: default -->
 <element name="tagNCCalcSize_Params.lpPos">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2571,7 +2571,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TNCCalcSizeParams">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2580,7 +2580,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="ncCalcSizeParams">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2589,7 +2589,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMNCCalcSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2598,7 +2598,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMNCCalcSize.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2607,7 +2607,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMNCCalcSize.CalcValidRects">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2616,7 +2616,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMNCCalcSize.CalcSize_Params">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2625,7 +2625,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMNCCalcSize.Result">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2634,7 +2634,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMSysColorChange">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2643,7 +2643,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMSysCommand">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2652,7 +2652,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSysCommand.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2661,7 +2661,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMSysDeadChar">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2670,7 +2670,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSysDeadChar.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2679,7 +2679,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSysDeadChar.CharCode">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2688,7 +2688,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSysDeadChar.Unused">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2697,7 +2697,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSysDeadChar.KeyData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2706,7 +2706,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSysDeadChar.Result">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2715,7 +2715,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMSystemError">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2724,7 +2724,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSystemError.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2733,7 +2733,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSystemError.ErrSpec">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2742,7 +2742,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSystemError.Unused">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2751,7 +2751,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSystemError.Result">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2760,7 +2760,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMTimeChange">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2769,7 +2769,7 @@
 
 <!-- pointer type Visibility: default -->
 <element name="PLMSetControlText">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2778,7 +2778,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMSetControlText">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2787,7 +2787,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSetControlText.fCompStyle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2796,7 +2796,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSetControlText.Panel">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2805,7 +2805,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSetControlText.Userdata">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2814,7 +2814,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMSetText">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2823,7 +2823,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSetText.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2832,7 +2832,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSetText.Unused">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2841,7 +2841,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSetText.Text">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2850,7 +2850,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSetText.Result">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2859,7 +2859,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMKeyEvent">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2868,7 +2868,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMKeyEvent.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2877,7 +2877,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMKeyEvent.KeyChar">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2886,7 +2886,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMKeyEvent.Key">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2895,7 +2895,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMKeyEvent.State">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2904,7 +2904,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMKeyEvent.Length">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2913,7 +2913,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMKeyEvent.Str">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2922,7 +2922,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMKeyEvent.UserData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2931,7 +2931,7 @@
 
 <!-- pointer type Visibility: default -->
 <element name="PLMMouseEvent">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2940,7 +2940,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMMouseEvent">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2949,7 +2949,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMMouseEvent.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2958,7 +2958,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMMouseEvent.Button">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2967,7 +2967,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMMouseEvent.WheelDelta">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2976,7 +2976,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMMouseEvent.State">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2985,7 +2985,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMMouseEvent.X">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -2994,7 +2994,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMMouseEvent.Y">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3003,7 +3003,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMMouseEvent.UserData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3012,7 +3012,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMLButtonDown">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3021,7 +3021,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMRButtonDown">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3030,7 +3030,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMMButtonDown">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3039,7 +3039,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMLButtonDblClk">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3048,7 +3048,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMRButtonDblClk">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3057,7 +3057,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMMButtonDblClk">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3066,7 +3066,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMLButtonTripleClk">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3075,7 +3075,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMRButtonTripleClk">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3084,7 +3084,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMMButtonTripleClk">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3093,7 +3093,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMLButtonQuadClk">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3102,7 +3102,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMRButtonQuadClk">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3111,7 +3111,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMMButtonQuadClk">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3120,7 +3120,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMLButtonUp">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3129,7 +3129,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMRButtonUp">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3138,7 +3138,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMMButtonUp">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3147,7 +3147,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMSetFocus">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3156,7 +3156,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSetFocus.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3165,7 +3165,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSetFocus.FocusedWnd">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3174,7 +3174,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSetFocus.Unused">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3183,7 +3183,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSetFocus.Result">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3192,7 +3192,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3201,7 +3201,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMNoPara">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3210,7 +3210,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMNoPara.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3219,7 +3219,7 @@
 
 <!-- pointer type Visibility: default -->
 <element name="PLMessage">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3228,7 +3228,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMessage">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3237,7 +3237,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMEnter">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3246,7 +3246,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMExit">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3255,7 +3255,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMScroll">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3264,7 +3264,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMHScroll">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3273,7 +3273,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMVScroll">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3282,7 +3282,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMShowWindow">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3291,7 +3291,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMKillFocus">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3300,7 +3300,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMNCHITTEST">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3309,7 +3309,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMNCHITTEST.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3318,7 +3318,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMNCHITTEST.Unused">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3327,7 +3327,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TLMDestroy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3336,7 +3336,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLMCommand">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3345,7 +3345,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCommand.Msg">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3354,7 +3354,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCommand.ItemID">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3363,7 +3363,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCommand.NotifyCode">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3372,7 +3372,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCommand.Ctl">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3381,7 +3381,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMCommand.Result">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3390,7 +3390,7 @@
 
 <!-- constant Visibility: default -->
 <element name="CBN_ERRSPACE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3399,7 +3399,7 @@
 
 <!-- constant Visibility: default -->
 <element name="CBN_SELCHANGE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3408,7 +3408,7 @@
 
 <!-- constant Visibility: default -->
 <element name="CBN_DBLCLK">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3417,7 +3417,7 @@
 
 <!-- constant Visibility: default -->
 <element name="CBN_SETFOCUS">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3426,7 +3426,7 @@
 
 <!-- constant Visibility: default -->
 <element name="CBN_KILLFOCUS">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3435,7 +3435,7 @@
 
 <!-- constant Visibility: default -->
 <element name="CBN_EDITCHANGE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3444,7 +3444,7 @@
 
 <!-- constant Visibility: default -->
 <element name="CBN_EDITUPDATE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3453,7 +3453,7 @@
 
 <!-- constant Visibility: default -->
 <element name="CBN_DROPDOWN">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3462,7 +3462,7 @@
 
 <!-- constant Visibility: default -->
 <element name="CBN_CLOSEUP">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3471,7 +3471,7 @@
 
 <!-- constant Visibility: default -->
 <element name="CBN_SELENDOK">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3480,7 +3480,7 @@
 
 <!-- constant Visibility: default -->
 <element name="CBN_SELENDCANCEL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -3489,7 +3489,7 @@
 
 <!-- function Visibility: default -->
 <element name="GetMessageName">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -3500,12 +3500,12 @@
 
 <!-- function result Visibility: default -->
 <element name="GetMessageName.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="GetMessageName.AMessage">
-<short></short>
+<short/>
 </element>
 </module> <!-- LMessages -->
 </package>

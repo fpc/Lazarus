@@ -112,10 +112,14 @@
       <!-- enumeration value Visibility: default -->
       <element name="TRawImageBitOrder.riboBitsInOrder">
         <short>Bit 0 represents first pixel</short>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TRawImageBitOrder.riboReversedBits">
         <short>Bit 0 represents highest pixel</short>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TRawImageLineEnd">
@@ -170,6 +174,8 @@ xxxBitsPerPixel and xxxPrecisionMask applies to color data. For masked images, t
         <seealso>
           <link id="TRawImage"/>
         </seealso>
+      <notes><note>where?</note>
+        </notes>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.Format">
@@ -189,6 +195,8 @@ xxxBitsPerPixel and xxxPrecisionMask applies to color data. For masked images, t
         <short>Number of used bits per pixel</short>
         <descr>The color and pixel storage can be subject to alignment, so that the logical color Depth can be less than the physical BitsPerPixel.</descr>
         <seealso/>
+      <notes><note>What if a palette is used?</note>
+        </notes>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.Width">
@@ -769,9 +777,13 @@ This object currently is subject to refactoring, don't use it in application cod
         <descr>A pixel Mask (currently) has a logical depth of 1 bit per pixel, but a pixel can occupy an entire byte.
 As opposed to the Alpha (transparency) channel, a Mask is stored in its own array.
 A Mask value of 1 means that the pixel is masked (transparent); a value of 0 means the pixel value is shown (opaque).</descr>
+      <notes><note>?</note><note>of bits or bytes?</note>
+        </notes>
       </element>
       <element name="TRawImageDescription.MaskShift">
         <short>The bit offset of the mask bit</short>
+      <notes><note>if stored in a byte?</note>
+        </notes>
       </element>
       <element name="TRawImageDescription.MaskLineEnd">
         <short>Alignment of Mask lines.</short>
@@ -786,19 +798,27 @@ A Mask value of 1 means that the pixel is masked (transparent); a value of 0 mea
         applies to the size of the palette colors, and the pixel data is described
         by PaletteBitsPerIndex and PaletteShift</descr>
         <errors>[palettes are not yet implemented]</errors>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TRawImageDescription.PaletteShift">
-        <short></short>
+        <short/>
       </element>
       <element name="TRawImageDescription.PaletteLineEnd">
-        <short></short>
-        <descr></descr>
+        <short/>
+        <descr/>
+      <notes><note>what?</note>
+        </notes>
       </element>
       <element name="TRawImageDescription.PaletteBitOrder">
         <short>Bit order of the palette indices</short>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TRawImageDescription.PaletteByteOrder">
         <short>Byte order of the palette indices</short>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TRawImageDescription.Init">
         <short>Initialize the image descriptor to all zeroes.</short>
@@ -1015,6 +1035,8 @@ A Mask value of 1 means that the pixel is masked (transparent); a value of 0 mea
       </element>
       <element name="TRawImageQueryFlag">
         <short>Image formats supported by a device, or present in image data</short>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="RawImage_ReadBits">
         <short>Read color bits.</short>

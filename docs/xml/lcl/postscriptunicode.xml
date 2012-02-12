@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -12,7 +12,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -21,7 +21,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="SysUtils">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -30,7 +30,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Math">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -39,7 +39,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Maps">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -48,7 +48,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TUnicodeBlock">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -57,7 +57,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TUnicodeBlock.Ini">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -66,7 +66,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TUnicodeBlock.Fin">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -75,7 +75,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TUnicodeBlock.PSCount">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -84,7 +84,7 @@
 
 <!-- pointer type Visibility: default -->
 <element name="PGlyph">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -93,7 +93,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TGlyph">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -102,7 +102,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TGlyph.Code">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -111,7 +111,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TGlyph.Name">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -120,7 +120,7 @@
 
 <!-- constant Visibility: default -->
 <element name="GLYPHCOUNT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -129,7 +129,7 @@
 
 <!-- constant Visibility: default -->
 <element name="GlyphsArr">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -138,7 +138,7 @@
 
 <!-- object Visibility: default -->
 <element name="TPsUnicode">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -149,7 +149,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPsUnicode.FFontSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -158,7 +158,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPsUnicode.FFontStyle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -167,7 +167,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPsUnicode.FGlyphs">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -176,7 +176,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPsUnicode.FBlocks">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -185,7 +185,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPsUnicode.FEncodings">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -194,7 +194,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPsUnicode.FOutLst">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -203,7 +203,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPsUnicode.FBaseFonts">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -212,7 +212,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPsUnicode.FEncodedFonts">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -221,7 +221,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPsUnicode.FUsedFonts">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -230,7 +230,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPsUnicode.FLastFontIndex">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -239,7 +239,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TPsUnicode.FFont">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -248,7 +248,7 @@
 
 <!-- procedure Visibility: private -->
 <element name="TPsUnicode.CreateGlyphMap">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -259,7 +259,7 @@
 
 <!-- procedure Visibility: private -->
 <element name="TPsUnicode.CreateUniCodeBlocks">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -270,7 +270,7 @@
 
 <!-- procedure Visibility: private -->
 <element name="TPsUnicode.CountPSChars">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -281,7 +281,7 @@
 
 <!-- function Visibility: private -->
 <element name="TPsUnicode.FindEncodingIndex">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -292,17 +292,17 @@
 
 <!-- function result Visibility: default -->
 <element name="TPsUnicode.FindEncodingIndex.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPsUnicode.FindEncodingIndex.ABlock">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TPsUnicode.IndexOfFont">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -313,32 +313,32 @@
 
 <!-- function result Visibility: default -->
 <element name="TPsUnicode.IndexOfFont.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPsUnicode.IndexOfFont.AFontName">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPsUnicode.IndexOfFont.AFontSize">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPsUnicode.IndexOfFont.AFontStyle">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPsUnicode.IndexOfFont.ABlock">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TPsUnicode.SelectFont">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -349,32 +349,32 @@
 
 <!-- function result Visibility: default -->
 <element name="TPsUnicode.SelectFont.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPsUnicode.SelectFont.AFontName">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPsUnicode.SelectFont.AFontSize">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPsUnicode.SelectFont.AFontStyle">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPsUnicode.SelectFont.ABlock">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPsUnicode.ReportBlockEncoding">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -385,12 +385,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPsUnicode.ReportBlockEncoding.i">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPsUnicode.SetFont">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -401,12 +401,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPsUnicode.SetFont.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPsUnicode.SetFontSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -417,12 +417,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPsUnicode.SetFontSize.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPsUnicode.SetFontStyle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -433,12 +433,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPsUnicode.SetFontStyle.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- constructor Visibility: public -->
 <element name="TPsUnicode.create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -449,7 +449,7 @@
 
 <!-- destructor Visibility: public -->
 <element name="TPsUnicode.destroy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -460,7 +460,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TPsUnicode.OutputString">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -471,12 +471,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPsUnicode.OutputString.S">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TPsUnicode.BlockFor">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -487,17 +487,17 @@
 
 <!-- function result Visibility: default -->
 <element name="TPsUnicode.BlockFor.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPsUnicode.BlockFor.w">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TPsUnicode.Font">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -506,7 +506,7 @@
 
 <!-- property Visibility: public -->
 <element name="TPsUnicode.FontSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -515,7 +515,7 @@
 
 <!-- property Visibility: public -->
 <element name="TPsUnicode.FOntStyle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -524,7 +524,7 @@
 
 <!-- property Visibility: public -->
 <element name="TPsUnicode.OutLst">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>

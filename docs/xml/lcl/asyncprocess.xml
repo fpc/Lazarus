@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="AsyncProcess">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,7 +24,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Process">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -33,7 +33,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="InterfaceBase">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -42,7 +42,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLIntf">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -51,7 +51,7 @@
 
 <!-- object Visibility: default -->
 <element name="TAsyncProcess">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -62,7 +62,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TAsyncProcess.FOnReadData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -71,7 +71,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TAsyncProcess.FOnTerminate">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -80,7 +80,7 @@
 
 <!-- function Visibility: protected -->
 <element name="TAsyncProcess.GetNumBytesAvailable">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -91,12 +91,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TAsyncProcess.GetNumBytesAvailable.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TAsyncProcess.HandlePipeInput">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -107,17 +107,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TAsyncProcess.HandlePipeInput.AData">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TAsyncProcess.HandlePipeInput.AReasons">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TAsyncProcess.HandleProcessTermination">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -128,22 +128,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TAsyncProcess.HandleProcessTermination.AData">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TAsyncProcess.HandleProcessTermination.AReason">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TAsyncProcess.HandleProcessTermination.AInfo">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TAsyncProcess.Execute">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -154,7 +154,7 @@
 
 <!-- property Visibility: published -->
 <element name="TAsyncProcess.NumBytesAvailable">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -163,7 +163,7 @@
 
 <!-- property Visibility: published -->
 <element name="TAsyncProcess.OnReadData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -172,7 +172,7 @@
 
 <!-- property Visibility: published -->
 <element name="TAsyncProcess.OnTerminate">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>

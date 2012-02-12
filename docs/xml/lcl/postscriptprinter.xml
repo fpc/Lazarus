@@ -71,9 +71,11 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPSPaintType.ptColored"><short/></element>
+      <element name="TPSPaintType.ptColored"><short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPSPaintType.ptUncolored"><short/></element>
+      <element name="TPSPaintType.ptUncolored"><short/>
+      </element>
       <!-- enumeration type Visibility: default -->
       <element name="TPSTileType">
         <short/>
@@ -81,11 +83,14 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPSTileType.ttConstant"><short/></element>
+      <element name="TPSTileType.ttConstant"><short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPSTileType.ttNoDistortion"><short/></element>
+      <element name="TPSTileType.ttNoDistortion"><short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPSTileType.ttFast"><short/></element>
+      <element name="TPSTileType.ttFast"><short/>
+      </element>
       <!-- object Visibility: default -->
       <element name="TPostScriptCanvas">
         <short/>
@@ -168,7 +173,8 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TPSPattern.GetpostScript.Result"><short/></element>
+      <element name="TPSPattern.GetpostScript.Result"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TPSPattern.SetBBox">
         <short/>
@@ -177,7 +183,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPSPattern.SetBBox.AValue"><short/></element>
+      <element name="TPSPattern.SetBBox.AValue"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TPSPattern.SetName">
         <short/>
@@ -186,7 +193,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPSPattern.SetName.AValue"><short/></element>
+      <element name="TPSPattern.SetName.AValue"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TPSPattern.SetPaintType">
         <short/>
@@ -195,7 +203,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPSPattern.SetPaintType.AValue"><short/></element>
+      <element name="TPSPattern.SetPaintType.AValue"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TPSPattern.SetTilingType">
         <short/>
@@ -204,7 +213,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPSPattern.SetTilingType.AValue"><short/></element>
+      <element name="TPSPattern.SetTilingType.AValue"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TPSPattern.SetXStep">
         <short/>
@@ -213,7 +223,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPSPattern.SetXStep.AValue"><short/></element>
+      <element name="TPSPattern.SetXStep.AValue"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TPSPattern.SetYStep">
         <short/>
@@ -222,7 +233,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPSPattern.SetYStep.AValue"><short/></element>
+      <element name="TPSPattern.SetYStep.AValue"><short/>
+      </element>
       <!-- constructor Visibility: public -->
       <element name="TPSPattern.Create">
         <short/>
@@ -383,7 +395,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPSPen.SetPattern.AValue"><short/></element>
+      <element name="TPSPen.SetPattern.AValue"><short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TPSPen.SetColor">
         <short/>
@@ -392,7 +405,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPSPen.SetColor.Value"><short/></element>
+      <element name="TPSPen.SetColor.Value"><short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TPSPen.Setwidth">
         <short/>
@@ -401,7 +415,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPSPen.Setwidth.value"><short/></element>
+      <element name="TPSPen.Setwidth.value"><short/>
+      </element>
       <!-- constructor Visibility: public -->
       <element name="TPSPen.Create">
         <short/>
@@ -424,7 +439,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPSPen.Assign.Source"><short/></element>
+      <element name="TPSPen.Assign.Source"><short/>
+      </element>
       <!-- property Visibility: public -->
       <element name="TPSPen.Color">
         <short/>
@@ -451,7 +467,8 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TPSPen.AsString.Result"><short/></element>
+      <element name="TPSPen.AsString.Result"><short/>
+      </element>
       <!-- object Visibility: default -->
       <element name="TPostScriptCanvas">
         <short/>
@@ -527,7 +544,8 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TPostScriptCanvas.GetColor.Result"><short/></element>
+      <element name="TPostScriptCanvas.GetColor.Result"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TPostScriptCanvas.SetBrush">
         <short/>
@@ -536,7 +554,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.SetBrush.AValue"><short/></element>
+      <element name="TPostScriptCanvas.SetBrush.AValue"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TPostScriptCanvas.SetColor">
         <short/>
@@ -545,7 +564,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.SetColor.AValue"><short/></element>
+      <element name="TPostScriptCanvas.SetColor.AValue"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TPostScriptCanvas.SetFontFace">
         <short/>
@@ -554,7 +574,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.SetFontFace.AValue"><short/></element>
+      <element name="TPostScriptCanvas.SetFontFace.AValue"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TPostScriptCanvas.SetFontSize">
         <short/>
@@ -563,7 +584,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.SetFontSize.AValue"><short/></element>
+      <element name="TPostScriptCanvas.SetFontSize.AValue"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TPostScriptCanvas.SetPen">
         <short/>
@@ -572,7 +594,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.SetPen.AValue"><short/></element>
+      <element name="TPostScriptCanvas.SetPen.AValue"><short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TPostScriptCanvas.TranslateY">
         <short/>
@@ -581,9 +604,11 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TPostScriptCanvas.TranslateY.Result"><short/></element>
+      <element name="TPostScriptCanvas.TranslateY.Result"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.TranslateY.Ycoord"><short/></element>
+      <element name="TPostScriptCanvas.TranslateY.Ycoord"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TPostScriptCanvas.AddFill">
         <short/>
@@ -606,7 +631,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.PenChanged.Sender"><short/></element>
+      <element name="TPostScriptCanvas.PenChanged.Sender"><short/>
+      </element>
       <!-- variable Visibility: public -->
       <element name="TPostScriptCanvas.MPostScript">
         <short/>
@@ -621,7 +647,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Create.APostScript"><short/></element>
+      <element name="TPostScriptCanvas.Create.APostScript"><short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TPostScriptCanvas.Destroy">
         <short/>
@@ -668,9 +695,11 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.MoveTo.X1"><short/></element>
+      <element name="TPostScriptCanvas.MoveTo.X1"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.MoveTo.Y1"><short/></element>
+      <element name="TPostScriptCanvas.MoveTo.Y1"><short/>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TPostScriptCanvas.LineTo">
         <short/>
@@ -679,9 +708,11 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.LineTo.X1"><short/></element>
+      <element name="TPostScriptCanvas.LineTo.X1"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.LineTo.Y1"><short/></element>
+      <element name="TPostScriptCanvas.LineTo.Y1"><short/>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TPostScriptCanvas.Line">
         <short/>
@@ -690,13 +721,17 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Line.X1"><short/></element>
+      <element name="TPostScriptCanvas.Line.X1"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Line.Y1"><short/></element>
+      <element name="TPostScriptCanvas.Line.Y1"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Line.X2"><short/></element>
+      <element name="TPostScriptCanvas.Line.X2"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Line.Y2"><short/></element>
+      <element name="TPostScriptCanvas.Line.Y2"><short/>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TPostScriptCanvas.Rectangle">
         <short/>
@@ -705,13 +740,17 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Rectangle.X1"><short/></element>
+      <element name="TPostScriptCanvas.Rectangle.X1"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Rectangle.Y1"><short/></element>
+      <element name="TPostScriptCanvas.Rectangle.Y1"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Rectangle.X2"><short/></element>
+      <element name="TPostScriptCanvas.Rectangle.X2"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Rectangle.Y2"><short/></element>
+      <element name="TPostScriptCanvas.Rectangle.Y2"><short/>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TPostScriptCanvas.Rectangle">
         <short/>
@@ -720,7 +759,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Rectangle.Rect"><short/></element>
+      <element name="TPostScriptCanvas.Rectangle.Rect"><short/>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TPostScriptCanvas.Polyline">
         <short/>
@@ -729,9 +769,11 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Polyline.Points"><short/></element>
+      <element name="TPostScriptCanvas.Polyline.Points"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Polyline.NumPts"><short/></element>
+      <element name="TPostScriptCanvas.Polyline.NumPts"><short/>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TPostScriptCanvas.Ellipse">
         <short/>
@@ -740,13 +782,17 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Ellipse.x1"><short/></element>
+      <element name="TPostScriptCanvas.Ellipse.x1"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Ellipse.y1"><short/></element>
+      <element name="TPostScriptCanvas.Ellipse.y1"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Ellipse.x2"><short/></element>
+      <element name="TPostScriptCanvas.Ellipse.x2"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Ellipse.y2"><short/></element>
+      <element name="TPostScriptCanvas.Ellipse.y2"><short/>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TPostScriptCanvas.Ellipse">
         <short/>
@@ -755,7 +801,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Ellipse.Rect"><short/></element>
+      <element name="TPostScriptCanvas.Ellipse.Rect"><short/>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TPostScriptCanvas.Pie">
         <short/>
@@ -764,17 +811,23 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Pie.x"><short/></element>
+      <element name="TPostScriptCanvas.Pie.x"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Pie.y"><short/></element>
+      <element name="TPostScriptCanvas.Pie.y"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Pie.width"><short/></element>
+      <element name="TPostScriptCanvas.Pie.width"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Pie.mheight"><short/></element>
+      <element name="TPostScriptCanvas.Pie.mheight"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Pie.angle1"><short/></element>
+      <element name="TPostScriptCanvas.Pie.angle1"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Pie.angle2"><short/></element>
+      <element name="TPostScriptCanvas.Pie.angle2"><short/>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TPostScriptCanvas.Writeln">
         <short/>
@@ -783,7 +836,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.Writeln.AString"><short/></element>
+      <element name="TPostScriptCanvas.Writeln.AString"><short/>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TPostScriptCanvas.TextOut">
         <short/>
@@ -792,11 +846,14 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.TextOut.X"><short/></element>
+      <element name="TPostScriptCanvas.TextOut.X"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.TextOut.Y"><short/></element>
+      <element name="TPostScriptCanvas.TextOut.Y"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScriptCanvas.TextOut.Text"><short/></element>
+      <element name="TPostScriptCanvas.TextOut.Text"><short/>
+      </element>
       <!-- property Visibility: public -->
       <element name="TPostScriptCanvas.Height">
         <short/>
@@ -890,7 +947,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScript.SetHeight.AValue"><short/></element>
+      <element name="TPostScript.SetHeight.AValue"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TPostScript.SetLineSpacing">
         <short/>
@@ -899,7 +957,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScript.SetLineSpacing.AValue"><short/></element>
+      <element name="TPostScript.SetLineSpacing.AValue"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TPostScript.SetTitle">
         <short/>
@@ -908,7 +967,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScript.SetTitle.AValue"><short/></element>
+      <element name="TPostScript.SetTitle.AValue"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TPostScript.SetWidth">
         <short/>
@@ -917,7 +977,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScript.SetWidth.AValue"><short/></element>
+      <element name="TPostScript.SetWidth.AValue"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TPostScript.GrabCanvas">
         <short/>
@@ -940,7 +1001,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScript.PatternChanged.Sender"><short/></element>
+      <element name="TPostScript.PatternChanged.Sender"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TPostScript.InsertPattern">
         <short/>
@@ -949,7 +1011,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScript.InsertPattern.APattern"><short/></element>
+      <element name="TPostScript.InsertPattern.APattern"><short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TPostScript.RemovePattern">
         <short/>
@@ -958,7 +1021,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScript.RemovePattern.APattern"><short/></element>
+      <element name="TPostScript.RemovePattern.APattern"><short/>
+      </element>
       <!-- constructor Visibility: public -->
       <element name="TPostScript.Create">
         <short/>
@@ -981,7 +1045,8 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScript.AddPattern.APSPattern"><short/></element>
+      <element name="TPostScript.AddPattern.APSPattern"><short/>
+      </element>
       <!-- function Visibility: public -->
       <element name="TPostScript.FindPattern">
         <short/>
@@ -990,9 +1055,11 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TPostScript.FindPattern.Result"><short/></element>
+      <element name="TPostScript.FindPattern.Result"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScript.FindPattern.AName"><short/></element>
+      <element name="TPostScript.FindPattern.AName"><short/>
+      </element>
       <!-- function Visibility: public -->
       <element name="TPostScript.DelPattern">
         <short/>
@@ -1001,9 +1068,11 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TPostScript.DelPattern.Result"><short/></element>
+      <element name="TPostScript.DelPattern.Result"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScript.DelPattern.AName"><short/></element>
+      <element name="TPostScript.DelPattern.AName"><short/>
+      </element>
       <!-- function Visibility: public -->
       <element name="TPostScript.NewPattern">
         <short/>
@@ -1012,9 +1081,11 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TPostScript.NewPattern.Result"><short/></element>
+      <element name="TPostScript.NewPattern.Result"><short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TPostScript.NewPattern.AName"><short/></element>
+      <element name="TPostScript.NewPattern.AName"><short/>
+      </element>
       <!-- property Visibility: public -->
       <element name="TPostScript.Canvas">
         <short/>

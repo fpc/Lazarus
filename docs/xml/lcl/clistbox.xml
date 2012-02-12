@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="CListBox">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,7 +24,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Controls">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -33,7 +33,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLType">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -42,7 +42,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="StdCtrls">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -51,7 +51,7 @@
 
 <!-- object Visibility: default -->
 <element name="TCListBox">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -62,7 +62,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TCListBox.FListColumns">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -71,7 +71,7 @@
 
 <!-- constructor Visibility: public -->
 <element name="TCListBox.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -82,12 +82,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TCListBox.Create.AOwner">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TCListBox.ItemIndex">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -96,7 +96,7 @@
 
 <!-- property Visibility: public -->
 <element name="TCListBox.ListColumns">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -105,7 +105,7 @@
 
 <!-- property Visibility: published -->
 <element name="TCListBox.BorderStyle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -114,7 +114,7 @@
 
 <!-- property Visibility: published -->
 <element name="TCListBox.ExtendedSelect">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -123,7 +123,7 @@
 
 <!-- property Visibility: published -->
 <element name="TCListBox.Items">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -132,7 +132,7 @@
 
 <!-- property Visibility: published -->
 <element name="TCListBox.MultiSelect">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -141,7 +141,7 @@
 
 <!-- property Visibility: published -->
 <element name="TCListBox.Sorted">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -150,7 +150,7 @@
 
 <!-- property Visibility: published -->
 <element name="TCListBox.Style">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -159,7 +159,7 @@
 
 <!-- property Visibility: published -->
 <element name="TCListBox.Visible">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>

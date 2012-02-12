@@ -21,7 +21,8 @@
           Use a TChangelink to get notified of imagelist changes.</short>
         <descr/>
         <errors/>
-        <seealso><link id="TCustomImageList.RegisterChanges"/></seealso>
+        <seealso><link id="TCustomImageList.RegisterChanges"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TChangeLink.FSender" link="TChangeLink.Sender"/>
@@ -57,6 +58,8 @@
          the destination area by a degree defined by an alpha value.
         </descr>
         <seealso/>
+      <notes><note>What's "blending"?</note><note>right?</note>
+        </notes>
       </element>
       <element name="TDrawingStyle.dsFocus">
         <short>Applies 25% of BlendColor.</short>
@@ -75,6 +78,8 @@
         <short>Indicates whether a mask shall be used in rendering an image.</short>
         <descr>The mask specifies the transparent part of the image</descr>
         <seealso/>
+      <notes><note>What's the effect of applying a mask?</note><note>right?</note>
+        </notes>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TImageType.itImage">
@@ -114,6 +119,8 @@
           <p>Image overlays also are unsupported.</p>
         </errors>
         <seealso/>
+      <notes><note>What exactly does this mean to the user?</note><note>What about Mask, HotSpot and ShareImages?</note><note>Does the LCL support this feature, or is only the TransparentColor used to make images transparent?</note>
+        </notes>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomImageList.FAllocBy" link="TCustomImageList.AllocBy"/>
@@ -134,7 +141,7 @@
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomImageList.FChanged">
-        <short>Change flag, remembers changes while update notifications are locked (FUpdateCount > 0).</short>
+        <short>Change flag, remembers changes while update notifications are locked (FUpdateCount &gt; 0).</short>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomImageList.FChangeLinkList">
@@ -171,12 +178,16 @@
       </element>
       <element name="TCustomImageList.InternalInsert.AWidth">
         <short>Width in pixels</short>
+      <notes><note>of?</note>
+        </notes>
       </element>
       <element name="TCustomImageList.InternalInsert.AHeight">
         <short>Height of all images in pixels.</short>
       </element>
       <element name="TCustomImageList.InternalInsert.ARawImage">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomImageList.InternalMove">
@@ -195,26 +206,30 @@
         <short>the new index of the image</short>
       </element>
       <element name="TCustomImageList.InternalMove.AIgnoreCurrent">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomImageList.InternalReplace">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TCustomImageList.InternalReplace.AIndex">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomImageList.InternalReplace.AImage">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomImageList.InternalReplace.AMask">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: private -->
       <element name="TCustomImageList.InternalSetImage">
@@ -275,7 +290,7 @@
       <!-- function Visibility: private -->
       <element name="TCustomImageList.GetReference" link="TCustomImageList.Reference"/>
       <element name="TCustomImageList.GetReference.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomImageList.Initialize">
@@ -394,7 +409,8 @@
         <descr>Adding graphics other than bitmaps can be implemented by converting the graphics item into a bitmap, which then can be added to the image list.
           Most graphics classes support such a conversion, so that specialized methods are redundant.</descr>
         <errors/>
-        <seealso><link id="TCustomImageList.InsertIcon"/></seealso>
+        <seealso><link id="TCustomImageList.InsertIcon"/>
+        </seealso>
       </element>
       <element name="TCustomImageList.AddIcon.Result">
         <short>The index of the added icon, -1 if unsuccesful.</short>
@@ -509,13 +525,13 @@
         <seealso/>
       </element>
       <element name="TCustomImageList.Draw.ACanvas">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomImageList.Draw.AX">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomImageList.Draw.AY">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomImageList.Draw.AIndex">
         <short>The image index.</short>
@@ -524,13 +540,19 @@
          <short>If False, draw the image disabled (dithered).</short>
      </element>
       <element name="TCustomImageList.Draw.ADrawEffect">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TCustomImageList.Draw.ADrawingStyle">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TCustomImageList.Draw.AImageType">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.GetBitmap">
@@ -711,7 +733,8 @@
         <short>
           The color for used in blending (dithering) an image.</short>
         <descr/>
-        <seealso><link id="TDrawingStyle"/></seealso>
+        <seealso><link id="TDrawingStyle"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomImageList.BkColor">
@@ -724,6 +747,8 @@
           </p>
         </descr>
         <seealso/>
+      <notes><note>does this really apply? depending on the widgetset?</note>
+        </notes>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomImageList.Count">
@@ -766,6 +791,8 @@
           True when mask images are stored with every image (unused!).</short>
         <descr>This property exists only for Delphi compatibility</descr>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomImageList.ShareImages">
@@ -775,6 +802,8 @@
           True means that the imagelist <b>widget</b> is freed together with the ImageList
         </descr>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomImageList.ImageType">
@@ -782,6 +811,8 @@
           Unused!</short>
         <descr>This property exists only for Delphi compatibility</descr>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TCustomImageList.FillDescription">
         <short>
@@ -792,13 +823,15 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.GetFullBitmap">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TCustomImageList.GetFullBitmap.Image">
         <short>the target bitmap</short>
@@ -811,7 +844,7 @@
         <short>Exports the entire internal image (color array) and description.</short>
       </element>
       <element name="TCustomImageList.GetFullRawImage.Image">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.GetRawImage">
@@ -867,16 +900,24 @@
           Draws an image stretched to ARect.</short>
       </element>
       <element name="TCustomImageList.StretchDraw.Canvas">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TCustomImageList.StretchDraw.Index">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TCustomImageList.StretchDraw.ARect">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TCustomImageList.StretchDraw.Enabled">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TCustomImageList.Equals">
         <short>Check for equivalence with another ImageList</short>

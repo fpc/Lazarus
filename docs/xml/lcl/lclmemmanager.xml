@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="LCLMemManager">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,7 +24,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="SysUtils">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -33,7 +33,7 @@
 
 <!-- pointer type Visibility: default -->
 <element name="PLCLMemManagerItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -42,7 +42,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TLCLMemManagerItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -51,7 +51,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TLCLMemManagerItem.Next">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -60,7 +60,7 @@
 
 <!-- object Visibility: default -->
 <element name="TLCLMemManager">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -71,7 +71,7 @@
 
 <!-- procedure Visibility: private -->
 <element name="TLCLMemManager.SetMaxFreeRatio">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -82,12 +82,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TLCLMemManager.SetMaxFreeRatio.NewValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TLCLMemManager.SetMinFree">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -98,12 +98,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TLCLMemManager.SetMinFree.NewValue">
-<short></short>
+<short/>
 </element>
 
 <!-- variable Visibility: protected -->
 <element name="TLCLMemManager.FFirstFree">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -112,7 +112,7 @@
 
 <!-- variable Visibility: protected -->
 <element name="TLCLMemManager.FFreeCount">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -121,7 +121,7 @@
 
 <!-- variable Visibility: protected -->
 <element name="TLCLMemManager.FCount">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -130,7 +130,7 @@
 
 <!-- variable Visibility: protected -->
 <element name="TLCLMemManager.FMinFree">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -139,7 +139,7 @@
 
 <!-- variable Visibility: protected -->
 <element name="TLCLMemManager.FMaxFreeRatio">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -148,7 +148,7 @@
 
 <!-- variable Visibility: protected -->
 <element name="TLCLMemManager.FAllocatedCount">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -157,7 +157,7 @@
 
 <!-- variable Visibility: protected -->
 <element name="TLCLMemManager.FFreedCount">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -166,7 +166,7 @@
 
 <!-- procedure Visibility: protected -->
 <element name="TLCLMemManager.DisposeItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -177,12 +177,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TLCLMemManager.DisposeItem.AnItem">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: protected -->
 <element name="TLCLMemManager.NewItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -193,12 +193,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TLCLMemManager.NewItem.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TLCLMemManager.FreeFirstItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -209,7 +209,7 @@
 
 <!-- property Visibility: public -->
 <element name="TLCLMemManager.MinimumFreeCount">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -218,7 +218,7 @@
 
 <!-- property Visibility: public -->
 <element name="TLCLMemManager.MaximumFreeCountRatio">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -227,7 +227,7 @@
 
 <!-- property Visibility: public -->
 <element name="TLCLMemManager.Count">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -236,7 +236,7 @@
 
 <!-- property Visibility: public -->
 <element name="TLCLMemManager.FreeCount">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -245,7 +245,7 @@
 
 <!-- property Visibility: public -->
 <element name="TLCLMemManager.AllocatedCount">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -254,7 +254,7 @@
 
 <!-- property Visibility: public -->
 <element name="TLCLMemManager.FreedCount">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -263,7 +263,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TLCLMemManager.Clear">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -274,7 +274,7 @@
 
 <!-- constructor Visibility: public -->
 <element name="TLCLMemManager.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -285,7 +285,7 @@
 
 <!-- destructor Visibility: public -->
 <element name="TLCLMemManager.Destroy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -296,7 +296,7 @@
 
 <!-- procedure type Visibility: default -->
 <element name="TLCLEnumItemsMethod">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -305,12 +305,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TLCLEnumItemsMethod.Item">
-<short></short>
+<short/>
 </element>
 
 <!-- object Visibility: default -->
 <element name="TLCLNonFreeMemManager">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -321,7 +321,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TLCLNonFreeMemManager.FItemSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -330,7 +330,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TLCLNonFreeMemManager.FItems">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -339,7 +339,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TLCLNonFreeMemManager.FCurItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -348,7 +348,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TLCLNonFreeMemManager.FEndItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -357,7 +357,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TLCLNonFreeMemManager.FCurSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -366,7 +366,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TLCLNonFreeMemManager.FFirstSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -375,7 +375,7 @@
 
 <!-- variable Visibility: public -->
 <element name="TLCLNonFreeMemManager.ClearOnCreate">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -384,7 +384,7 @@
 
 <!-- property Visibility: public -->
 <element name="TLCLNonFreeMemManager.ItemSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -393,7 +393,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TLCLNonFreeMemManager.Clear">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -404,7 +404,7 @@
 
 <!-- constructor Visibility: public -->
 <element name="TLCLNonFreeMemManager.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -415,12 +415,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TLCLNonFreeMemManager.Create.TheItemSize">
-<short></short>
+<short/>
 </element>
 
 <!-- destructor Visibility: public -->
 <element name="TLCLNonFreeMemManager.Destroy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -431,7 +431,7 @@
 
 <!-- function Visibility: public -->
 <element name="TLCLNonFreeMemManager.NewItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -442,12 +442,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TLCLNonFreeMemManager.NewItem.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TLCLNonFreeMemManager.EnumerateItems">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -458,12 +458,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TLCLNonFreeMemManager.EnumerateItems.Method">
-<short></short>
+<short/>
 </element>
 
 <!-- object Visibility: default -->
 <element name="TExtMemoryStream">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -474,7 +474,7 @@
 
 <!-- property Visibility: public -->
 <element name="TExtMemoryStream.Capacity">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>

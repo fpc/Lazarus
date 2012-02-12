@@ -2853,7 +2853,8 @@ Default is psSolid
 
       <!-- record type Visibility: default -->
       <element name="TRegionData">
-        <short>The <var>Data</var> about the current <var>Region</var> on the <var>Screen</var> or <var>Canvas</var></short>
+        <short>The <var>Data</var> about the current <var>Region</var> on the <var>Screen</var> or <var>Canvas</var>
+        </short>
         <descr>At present the Region can only be rectangular; the ability to define it as a Polygon is not yet implemented</descr>
       </element>
       <!-- variable Visibility: default -->
@@ -5175,7 +5176,7 @@ Zero degrees is at the 3 o'clock position.</descr>
           <var>Ellipse</var>  draws a filled circle or ellipse on the canvas</short>
         <descr>Method:   TCanvas.Ellipse<br/>
 
-		      Params:   X1, Y1, X2, Y2<br/>
+&#x9;&#x9;      Params:   X1, Y1, X2, Y2<br/>
 
 Returns:  Nothing<br/><br/>
 Use <var>Ellipse</var>

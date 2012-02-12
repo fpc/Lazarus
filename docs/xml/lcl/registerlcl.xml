@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="RegisterLCL">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- procedure Visibility: default -->
 <element name="Register">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>

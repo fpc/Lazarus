@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="DynQueue">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,7 +24,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="SysUtils">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -33,7 +33,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLProc">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -42,7 +42,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TDynamicQueueItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -51,7 +51,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TDynamicQueueItem.Size">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -60,7 +60,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TDynamicQueueItem.Data">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -69,7 +69,7 @@
 
 <!-- pointer type Visibility: default -->
 <element name="PDynamicQueueItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -78,7 +78,7 @@
 
 <!-- pointer type Visibility: default -->
 <element name="ListOfPDynamicQueueItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -87,7 +87,7 @@
 
 <!-- object Visibility: default -->
 <element name="TDynamicDataQueue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -98,7 +98,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TDynamicDataQueue.FItems">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -107,7 +107,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TDynamicDataQueue.FItemCapacity">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -116,7 +116,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TDynamicDataQueue.FTopIndex">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -125,7 +125,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TDynamicDataQueue.FLastIndex">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -134,7 +134,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TDynamicDataQueue.FMaximumBlockSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -143,7 +143,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TDynamicDataQueue.FMinimumBlockSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -152,7 +152,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TDynamicDataQueue.FSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -161,7 +161,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TDynamicDataQueue.FTopItemSpace">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -170,7 +170,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TDynamicDataQueue.FLastItemSpace">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -179,7 +179,7 @@
 
 <!-- procedure Visibility: private -->
 <element name="TDynamicDataQueue.SetMaximumBlockSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -190,12 +190,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.SetMaximumBlockSize.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TDynamicDataQueue.SetMinimumBlockSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -206,12 +206,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.SetMinimumBlockSize.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TDynamicDataQueue.GrowItems">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -222,7 +222,7 @@
 
 <!-- procedure Visibility: private -->
 <element name="TDynamicDataQueue.AddItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -233,12 +233,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.AddItem.ItemSize">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TDynamicDataQueue.CalculateItemSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -249,17 +249,17 @@
 
 <!-- function result Visibility: default -->
 <element name="TDynamicDataQueue.CalculateItemSize.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.CalculateItemSize.ItemSize">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TDynamicDataQueue.PushInternal">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -270,27 +270,27 @@
 
 <!-- function result Visibility: default -->
 <element name="TDynamicDataQueue.PushInternal.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.PushInternal.Source">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.PushInternal.AStream">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.PushInternal.Count">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TDynamicDataQueue.PopTopInternal">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -301,32 +301,32 @@
 
 <!-- function result Visibility: default -->
 <element name="TDynamicDataQueue.PopTopInternal.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.PopTopInternal.Dest">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.PopTopInternal.AStream">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.PopTopInternal.Count">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.PopTopInternal.KeepData">
-<short></short>
+<short/>
 </element>
 
 <!-- constructor Visibility: public -->
 <element name="TDynamicDataQueue.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -337,7 +337,7 @@
 
 <!-- destructor Visibility: public -->
 <element name="TDynamicDataQueue.Destroy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -348,7 +348,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TDynamicDataQueue.Clear">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -359,7 +359,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TDynamicDataQueue.ConsistencyCheck">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -370,7 +370,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TDynamicDataQueue.WriteDebugReport">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -381,12 +381,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.WriteDebugReport.WriteData">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TDynamicDataQueue.Push">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -397,22 +397,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TDynamicDataQueue.Push.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.Push.Buffer">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.Push.Count">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TDynamicDataQueue.Push">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -423,22 +423,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TDynamicDataQueue.Push.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.Push.AStream">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.Push.Count">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TDynamicDataQueue.Pop">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -449,22 +449,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TDynamicDataQueue.Pop.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.Pop.Buffer">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.Pop.Count">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TDynamicDataQueue.Pop">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -475,22 +475,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TDynamicDataQueue.Pop.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.Pop.AStream">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.Pop.Count">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TDynamicDataQueue.Top">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -501,22 +501,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TDynamicDataQueue.Top.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.Top.Buffer">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.Top.Count">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TDynamicDataQueue.Top">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -527,22 +527,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TDynamicDataQueue.Top.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.Top.AStream">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynamicDataQueue.Top.Count">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TDynamicDataQueue.Size">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -551,7 +551,7 @@
 
 <!-- property Visibility: public -->
 <element name="TDynamicDataQueue.MinimumBlockSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -560,7 +560,7 @@
 
 <!-- property Visibility: public -->
 <element name="TDynamicDataQueue.MaximumBlockSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>

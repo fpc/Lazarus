@@ -217,6 +217,8 @@
         <seealso>
           <link id="TDebugLCLItems"/>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- variable Visibility: public -->
       <element name="TDebugLCLItemInfo.Item">
@@ -242,6 +244,8 @@
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- variable Visibility: public -->
       <element name="TDebugLCLItemInfo.CreationStack">
@@ -251,6 +255,8 @@
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- variable Visibility: public -->
       <element name="TDebugLCLItemInfo.DestructionStack">
@@ -260,6 +266,8 @@
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- function Visibility: public -->
       <element name="TDebugLCLItemInfo.AsString">
@@ -273,7 +281,7 @@
         </seealso>
       </element>
       <element name="TDebugLCLItemInfo.AsString.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TDebugLCLItemInfo.AsString.WithStackTraces">
         <short>True means include stack traces.</short>
@@ -473,15 +481,17 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="CompareDebugLCLItemInfos.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="CompareDebugLCLItemInfos.Data1">
-        <short></short>
+        <short/>
       </element>
       <element name="CompareDebugLCLItemInfos.Data2">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="CompareItemWithDebugLCLItemInfo">
@@ -495,13 +505,13 @@
         </seealso>
       </element>
       <element name="CompareItemWithDebugLCLItemInfo.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="CompareItemWithDebugLCLItemInfo.Item">
-        <short></short>
+        <short/>
       </element>
       <element name="CompareItemWithDebugLCLItemInfo.DebugItemInfo">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="CompareLineInfoCacheItems">
@@ -515,13 +525,13 @@
         </seealso>
       </element>
       <element name="CompareLineInfoCacheItems.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="CompareLineInfoCacheItems.Data1">
-        <short></short>
+        <short/>
       </element>
       <element name="CompareLineInfoCacheItems.Data2">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="CompareAddrWithLineInfoCacheItem">
@@ -535,13 +545,13 @@
         </seealso>
       </element>
       <element name="CompareAddrWithLineInfoCacheItem.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="CompareAddrWithLineInfoCacheItem.Addr">
-        <short></short>
+        <short/>
       </element>
       <element name="CompareAddrWithLineInfoCacheItem.Item">
-        <short></short>
+        <short/>
       </element>
       <!-- function type Visibility: default -->
       <element name="TStringsSortCompare">
@@ -552,13 +562,13 @@
         </seealso>
       </element>
       <element name="TStringsSortCompare.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TStringsSortCompare.Item1">
-        <short></short>
+        <short/>
       </element>
       <element name="TStringsSortCompare.Item2">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="MergeSort">
@@ -586,9 +596,13 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="GetEnumValueDef.Result">
         <short>The member ordinal</short>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="GetEnumValueDef.TypeInfo">
         <short>The enum TypeInfo.</short>
@@ -606,6 +620,8 @@
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="ShortCutToText.Result">
         <short/>
@@ -620,6 +636,8 @@
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TextToShortCut.Result">
         <short/>
@@ -650,10 +668,14 @@
       <element name="GetCompleteText.bCaseSensitive">
         <short>True means case-sensitive comparison
         </short>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="GetCompleteText.bSearchAscending">
         <short>True means search ascending from iSelStart
         </short>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="GetCompleteText.slTextList">
         <short>The list to search.
@@ -661,25 +683,29 @@
       </element>
       <!-- function Visibility: default -->
       <element name="IsEditableTextKey">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="IsEditableTextKey.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="IsEditableTextKey.Key">
         <short>The virtual key code.</short>
       </element>
       <!-- function type Visibility: default -->
       <element name="TSendApplicationMessageFunction">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TSendApplicationMessageFunction.Result">
         <short/>
@@ -695,31 +721,39 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TOwnerFormDesignerModifiedProc">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TOwnerFormDesignerModifiedProc.AComponent">
         <short/>
       </element>
       <!-- variable Visibility: default -->
       <element name="SendApplicationMessageFunction">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- variable Visibility: default -->
       <element name="OwnerFormDesignerModifiedProc">
-        <short></short>
+        <short/>
         <descr/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- function Visibility: default -->
       <element name="SendApplicationMessage">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="SendApplicationMessage.Result">
         <short/>
@@ -735,10 +769,12 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="OwnerFormDesignerModified">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="OwnerFormDesignerModified.AComponent">
         <short/>
@@ -755,16 +791,18 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="RegisterInterfaceInitializationHandler">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="RegisterInterfaceInitializationHandler.p">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="CallInterfaceInitializationHandlers">
@@ -778,10 +816,12 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="RegisterInterfaceFinalizationHandler">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="RegisterInterfaceFinalizationHandler.p">
         <short/>
@@ -907,10 +947,12 @@
       </element>
       <!-- function Visibility: default -->
       <element name="BreakString">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="BreakString.Result">
         <short/>
@@ -968,13 +1010,13 @@
         </seealso>
       </element>
       <element name="CompareLCLHandles.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="CompareLCLHandles.h1">
-        <short></short>
+        <short/>
       </element>
       <element name="CompareLCLHandles.h2">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="CompareRect">
@@ -1004,13 +1046,13 @@
         </seealso>
       </element>
       <element name="ComparePoints.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ComparePoints.p1">
-        <short></short>
+        <short/>
       </element>
       <element name="ComparePoints.p2">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="CompareMethods">
@@ -1024,14 +1066,14 @@
         </seealso>
       </element>
       <element name="CompareMethods.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="CompareMethods.m1">
-        <short></short>
+        <short/>
       </element>
       <!-- argument Visibility: default -->
       <element name="CompareMethods.m2">
-      <short></short>
+      <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="RoundToInt">
@@ -1040,6 +1082,8 @@
         <errors>
         </errors>
         <seealso/>
+      <notes><note>What if the result exceeds the Integer range?</note>
+        </notes>
       </element>
       <element name="RoundToInt.Result">
         <short/>
@@ -1054,6 +1098,8 @@
         <errors>
         </errors>
         <seealso/>
+      <notes><note>What if the result exceeds the Cardinal range?</note>
+        </notes>
       </element>
       <element name="RoundToCardinal.Result">
         <short/>
@@ -1068,6 +1114,8 @@
         <errors>
         </errors>
         <seealso/>
+      <notes><note>What if the result exceeds the Integer range?</note>
+        </notes>
       </element>
       <element name="TruncToInt.Result">
         <short/>
@@ -1082,6 +1130,8 @@
         <errors>
         </errors>
         <seealso/>
+      <notes><note>What if the result exceeds the Cardinal range?</note>
+        </notes>
       </element>
       <element name="TruncToCardinal.Result">
         <short/>
@@ -1117,106 +1167,122 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="RaiseAndCatchException">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- procedure Visibility: default -->
       <element name="DumpExceptionBackTrace">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- procedure Visibility: default -->
       <element name="DumpStack">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- function Visibility: default -->
       <element name="GetStackTrace">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="GetStackTrace.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetStackTrace.UseCache">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="GetStackTracePointers">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="GetStackTracePointers.AStack">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="StackTraceAsString">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="StackTraceAsString.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="StackTraceAsString.AStack">
-        <short></short>
+        <short/>
       </element>
       <element name="StackTraceAsString.UseCache">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetLineInfo">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="GetLineInfo.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetLineInfo.Addr">
-        <short></short>
+        <short/>
       </element>
       <element name="GetLineInfo.UseCache">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="DebugLn">
         <short>Writes a number of strings (heavily overloaded) to the debug output</short>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DebugLn.S">
         <short>A single string, or a Format string when followed by an argument list.
@@ -1275,19 +1341,21 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="DebugLnEnter">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DebugLnEnter.s">
-        <short></short>
+        <short/>
       </element>
       <element name="DebugLnEnter.Args">
-        <short></short>
+        <short/>
       </element>
       <element name="DebugLnEnter.s1"/>
       <element name="DebugLnEnter.s2"/>
@@ -1309,19 +1377,21 @@
       <element name="DebugLnEnter.s18"/>
       <!-- procedure Visibility: default -->
       <element name="DebugLnExit">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DebugLnExit.s">
-        <short></short>
+        <short/>
       </element>
       <element name="DebugLnExit.Args">
-        <short></short>
+        <short/>
       </element>
       <element name="DebugLnExit.s1"/>
       <element name="DebugLnExit.s2"/>
@@ -1353,23 +1423,29 @@
         </seealso>
       </element>
       <element name="ConvertLineEndings.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ConvertLineEndings.s">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="DbgOut">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgOut.s">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgOut.Args">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgOut.s1"/>
       <element name="DbgOut.s2"/>
@@ -1401,63 +1477,101 @@
         <errors>""
         </errors>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgS.Result">
         <short/>
       </element>
       <element name="DbgS.s">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgS.q">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgS.MaxDecimals">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgS.m">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgS.c">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgS.i">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgS.r">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgS.p">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgS.e">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgS.b">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgS.Shift">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgS.i1">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgS.i2">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgS.i3">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgS.i4">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgS.ASize">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgS.ATM">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgS.AScrollInfo">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- function Visibility: default -->
       <element name="DbgSName">
@@ -1498,10 +1612,10 @@
         </seealso>
       </element>
       <element name="DbgWideStr.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="DbgWideStr.StringWithSpecialChars">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="dbgMemRange">
@@ -1542,10 +1656,10 @@
         </seealso>
       </element>
       <element name="dbgMemStream.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="dbgMemStream.MemStream">
-        <short></short>
+        <short/>
       </element>
       <element name="dbgMemStream.Count">
         <short>The maximum number of bytes to dump.</short>
@@ -1563,10 +1677,10 @@
         </seealso>
       </element>
       <element name="dbgObjMem.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="dbgObjMem.AnObject">
-        <short></short>
+        <short/>
       </element>
 
       <!-- function Visibility: default -->
@@ -1581,10 +1695,10 @@
         </seealso>
       </element>
       <element name="dbghex.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="dbghex.i">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="DbgSWindowPosFlags">
@@ -1598,10 +1712,10 @@
         </seealso>
       </element>
       <element name="DbgSWindowPosFlags.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="DbgSWindowPosFlags.Flags">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="DbgsVKCode">
@@ -1615,39 +1729,45 @@
         </seealso>
       </element>
       <element name="DbgsVKCode.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="DbgsVKCode.c">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="DbgOutThreadLog">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgOutThreadLog.Msg">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="DebuglnThreadLog">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DebuglnThreadLog.Msg">
-        <short></short>
+        <short/>
       </element>
       <element name="DebuglnThreadLog.Args">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- procedure Visibility: default -->
       <element name="DbgSaveData">
@@ -1658,15 +1778,17 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgSaveData.FileName">
-        <short></short>
+        <short/>
       </element>
       <element name="DbgSaveData.AData">
-        <short></short>
+        <short/>
       </element>
       <element name="DbgSaveData.ADataSize">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="DbgAppendToFile">
@@ -1677,12 +1799,14 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgAppendToFile.FileName">
-        <short></short>
+        <short/>
       </element>
       <element name="DbgAppendToFile.S">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="DbgAppendToFileWithoutLn">
@@ -1693,22 +1817,26 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="DbgAppendToFileWithoutLn.FileName">
-        <short></short>
+        <short/>
       </element>
       <element name="DbgAppendToFileWithoutLn.S">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="CloseDebugOutput">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- function Visibility: default -->
       <element name="StripLN">
@@ -1720,40 +1848,44 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>???</note>
+        </notes>
       </element>
       <element name="StripLN.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="StripLN.ALine">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetPart">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="GetPart.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetPart.ASkipTo">
-        <short></short>
+        <short/>
       </element>
       <element name="GetPart.AnEnd">
-        <short></short>
+        <short/>
       </element>
       <element name="GetPart.ASource">
-        <short></short>
+        <short/>
       </element>
       <element name="GetPart.AnIgnoreCase">
-        <short></short>
+        <short/>
       </element>
       <element name="GetPart.AnUpdateSource">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="TextToSingleLine">
@@ -1773,10 +1905,10 @@
         </seealso>
       </element>
       <element name="TextToSingleLine.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TextToSingleLine.AText">
-        <short></short>
+        <short/>
       </element>
       <element name="SwapCase">
         <short>Toggles the case of all ASCII characters in an string.
@@ -1789,57 +1921,61 @@
         </seealso>
       </element>
       <element name="SwapCase.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SwapCase.S">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="StringCase">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="StringCase.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="StringCase.AString">
-        <short></short>
+        <short/>
       </element>
       <element name="StringCase.ACase">
-        <short></short>
+        <short/>
       </element>
       <element name="StringCase.AIgnoreCase">
-        <short></short>
+        <short/>
       </element>
       <element name="StringCase.APartial">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="ClassCase">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="ClassCase.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ClassCase.AClass">
-        <short></short>
+        <short/>
       </element>
       <element name="ClassCase.ACase">
-        <short></short>
+        <short/>
       </element>
       <element name="ClassCase.ADecendant">
-        <short></short>
+        <short/>
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="UTF16String">
@@ -1849,6 +1985,8 @@
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- pointer type Visibility: default -->
       <element name="PUTF16String" link="UTF16String">
@@ -1858,6 +1996,8 @@
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CharacterLength">
@@ -1866,6 +2006,8 @@
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8CharacterLength.Result">
         <short/>
@@ -1880,18 +2022,26 @@
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8Length.Result">
         <short/>
       </element>
       <element name="UTF8Length.s">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8Length.p">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8Length.ByteCount">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CharacterToUnicode">
@@ -1900,9 +2050,13 @@
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8CharacterToUnicode.Result">
-        <short></short>
+        <short/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8CharacterToUnicode.p">
         <short/>
@@ -1917,12 +2071,14 @@
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UnicodeToUTF8.Result">
         <short/>
       </element>
       <element name="UnicodeToUTF8.u">
-        <short></short>
+        <short/>
       </element>
       <element name="UnicodeToUTF8.Buf">
         <short/>
@@ -1937,15 +2093,17 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UnicodeToUTF8SkipErrors.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UnicodeToUTF8SkipErrors.u">
-        <short></short>
+        <short/>
       </element>
       <element name="UnicodeToUTF8SkipErrors.Buf">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8ToDoubleByteString">
@@ -1954,6 +2112,8 @@
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8ToDoubleByteString.Result">
         <short/>
@@ -1968,6 +2128,8 @@
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8ToDoubleByte.Result">
         <short/>
@@ -1988,6 +2150,8 @@
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8FindNearestCharStart.Result">
         <short/>
@@ -2008,6 +2172,8 @@
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8CharStart.Result">
         <short/>
@@ -2031,18 +2197,20 @@
       </errors>
       <seealso>
       </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8CharToByteIndex.Result">
-       <short></short>
+       <short/>
       </element>
       <element name="UTF8CharToByteIndex.UTF8Str">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CharToByteIndex.Len">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CharToByteIndex.CharIndex">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="UTF8FixBroken">
@@ -2054,9 +2222,11 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8FixBroken.P">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CharacterStrictLength">
@@ -2068,12 +2238,14 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8CharacterStrictLength.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CharacterStrictLength.P">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CStringToUTF8String">
@@ -2085,15 +2257,17 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8CStringToUTF8String.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CStringToUTF8String.SourceStart">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CStringToUTF8String.SourceLen">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8Pos">
@@ -2105,15 +2279,17 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8Pos.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8Pos.SearchForText">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8Pos.SearchInText">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8Copy">
@@ -2125,18 +2301,20 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8Copy.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8Copy.s">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8Copy.StartCharIndex">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8Copy.CharCount">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="UTF8Delete">
@@ -2148,15 +2326,17 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8Delete.s">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8Delete.StartCharIndex">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8Delete.CharCount">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="UTF8Insert">
@@ -2168,15 +2348,17 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8Insert.source">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8Insert.s">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8Insert.StartCharIndex">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8LowerCase">
@@ -2188,12 +2370,14 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8LowerCase.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8LowerCase.s">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8UpperCase">
@@ -2205,12 +2389,14 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8UpperCase.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8UpperCase.s">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="FindInvalidUTF8Character">
@@ -2222,18 +2408,20 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="FindInvalidUTF8Character.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="FindInvalidUTF8Character.p">
-        <short></short>
+        <short/>
       </element>
       <element name="FindInvalidUTF8Character.Count">
-        <short></short>
+        <short/>
       </element>
       <element name="FindInvalidUTF8Character.StopOnNonASCII">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="ValidUTF8String">
@@ -2245,12 +2433,14 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="ValidUTF8String.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ValidUTF8String.s">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="AssignUTF8ListToAnsi">
@@ -2262,12 +2452,14 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="AssignUTF8ListToAnsi.UTF8List">
-        <short></short>
+        <short/>
       </element>
       <element name="AssignUTF8ListToAnsi.AnsiList">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF16CharacterLength">
@@ -2279,12 +2471,14 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF16CharacterLength.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF16CharacterLength.p">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF16Length">
@@ -2296,18 +2490,20 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF16Length.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF16Length.s">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF16Length.p">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF16Length.WordCount">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF16CharacterToUnicode">
@@ -2319,15 +2515,17 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF16CharacterToUnicode.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF16CharacterToUnicode.p">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF16CharacterToUnicode.CharLen">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UnicodeToUTF16">
@@ -2339,12 +2537,14 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UnicodeToUTF16.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UnicodeToUTF16.u">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CompareStr">
@@ -2356,15 +2556,17 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8CompareStr.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CompareStr.S1">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CompareStr.S2">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CompareText">
@@ -2376,15 +2578,17 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8CompareText.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CompareText.S1">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CompareText.S2">
-        <short></short>
+        <short/>
       </element>
       <!-- alias type Visibility: default -->
       <element name="TConvertResult">
@@ -2394,6 +2598,8 @@
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- alias type Visibility: default -->
       <element name="TConvertOption">
@@ -2403,6 +2609,8 @@
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- alias type Visibility: default -->
       <element name="TConvertOptions">
@@ -2412,6 +2620,8 @@
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- function Visibility: default -->
       <element name="ConvertUTF8ToUTF16">
@@ -2423,27 +2633,29 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="ConvertUTF8ToUTF16.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ConvertUTF8ToUTF16.Dest">
-        <short></short>
+        <short/>
       </element>
       <element name="ConvertUTF8ToUTF16.DestWideCharCount">
-        <short></short>
+        <short/>
       </element>
       <element name="ConvertUTF8ToUTF16.Src">
-        <short></short>
+        <short/>
       </element>
       <element name="ConvertUTF8ToUTF16.SrcCharCount">
-        <short></short>
+        <short/>
       </element>
       <element name="ConvertUTF8ToUTF16.Options">
-        <short></short>
+        <short/>
       </element>
       <element name="ConvertUTF8ToUTF16.ActualWideCharCount">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="ConvertUTF16ToUTF8">
@@ -2455,27 +2667,29 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="ConvertUTF16ToUTF8.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ConvertUTF16ToUTF8.Dest">
-        <short></short>
+        <short/>
       </element>
       <element name="ConvertUTF16ToUTF8.DestCharCount">
-        <short></short>
+        <short/>
       </element>
       <element name="ConvertUTF16ToUTF8.Src">
-        <short></short>
+        <short/>
       </element>
       <element name="ConvertUTF16ToUTF8.SrcWideCharCount">
-        <short></short>
+        <short/>
       </element>
       <element name="ConvertUTF16ToUTF8.Options">
-        <short></short>
+        <short/>
       </element>
       <element name="ConvertUTF16ToUTF8.ActualCharCount">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8ToUTF16">
@@ -2487,12 +2701,14 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF8ToUTF16.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8ToUTF16.S">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF16ToUTF8">
@@ -2504,12 +2720,14 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="UTF16ToUTF8.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF16ToUTF8.S">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="LCLGetLanguageIDs">
@@ -2521,12 +2739,14 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="LCLGetLanguageIDs.Lang">
-        <short></short>
+        <short/>
       </element>
       <element name="LCLGetLanguageIDs.FallbackLang">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="CreateFirstIdentifier">
@@ -2538,12 +2758,14 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="CreateFirstIdentifier.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateFirstIdentifier.Identifier">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="CreateNextIdentifier">
@@ -2555,36 +2777,44 @@
         </errors>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="CreateNextIdentifier.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateNextIdentifier.Identifier">
-        <short></short>
+        <short/>
       </element>
       <!-- variable Visibility: default -->
       <element name="DebugLnMaxNestPrefixLen">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- variable Visibility: default -->
       <element name="DebugLnNestLvlIndent">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- variable Visibility: default -->
       <element name="DebugText">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
     </module>
     <!-- LCLProc -->

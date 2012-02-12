@@ -40,35 +40,43 @@
       </element>
 <!-- "type" alias type Visibility: default -->
       <element name="PEventHandler">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="PProcessEventHandler">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="PPipeEventHandler">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="PSocketEventHandler">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TChildExitReason">
@@ -80,95 +88,111 @@
       </element>
       <element name="TChildExitReason.cerExit">
         <short>Normal exit</short>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TChildExitReason.cerSignal">
         <short>Killed</short>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TPipeReason">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TPipeReason.prDataAvailable">
-        <short></short>
+        <short/>
       </element>
       <element name="TPipeReason.prBroken">
-        <short></short>
+        <short/>
       </element>
       <element name="TPipeReason.prCanWrite">
-        <short></short>
+        <short/>
       </element>
       <!-- set type Visibility: default -->
       <element name="TPipeReasons" link="TPipeReason"/>
       <!-- procedure type Visibility: default -->
       <element name="TApplicationMainLoop">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TWaitHandleEvent">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TWaitHandleEvent.AData">
-        <short></short>
+        <short/>
       </element>
       <element name="TWaitHandleEvent.AFlags">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TChildExitEvent">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TChildExitEvent.AData">
-        <short></short>
+        <short/>
       </element>
       <element name="TChildExitEvent.AReason">
-        <short></short>
+        <short/>
       </element>
       <element name="TChildExitEvent.AInfo">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TPipeEvent">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TPipeEvent.AData">
-        <short></short>
+        <short/>
       </element>
       <element name="TPipeEvent.AReasons">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TSocketEvent">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TSocketEvent.AData">
-        <short></short>
+        <short/>
       </element>
       <element name="TSocketEvent.AFlags">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TLCLWndMethod">
@@ -180,7 +204,7 @@
         </seealso>
       </element>
       <element name="TLCLWndMethod.TheMessage">
-        <short></short>
+        <short/>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TLCLPlatform">
@@ -191,34 +215,34 @@
         </seealso>
       </element>
       <element name="TLCLPlatform.lpGtk">
-        <short></short>
+        <short/>
       </element>
       <element name="TLCLPlatform.lpGtk2">
-        <short></short>
+        <short/>
       </element>
       <element name="TLCLPlatform.lpWin32">
-        <short></short>
+        <short/>
       </element>
       <element name="TLCLPlatform.lpWinCE">
-        <short></short>
+        <short/>
       </element>
       <element name="TLCLPlatform.lpCarbon">
-        <short></short>
+        <short/>
       </element>
       <element name="TLCLPlatform.lpQT">
-        <short></short>
+        <short/>
       </element>
       <element name="TLCLPlatform.lpfpGUI">
-        <short></short>
+        <short/>
       </element>
       <element name="TLCLPlatform.lpNoGUI">
-        <short></short>
+        <short/>
       </element>
       <element name="TLCLPlatform.lpCocoa">
-        <short></short>
+        <short/>
       </element>
       <element name="TLCLPlatform.lpCustomDrawn">
-        <short></short>
+        <short/>
       </element>
       <!-- set type Visibility: default -->
       <element name="TLCLPlatforms" link="TLCLPlatform"/>
@@ -239,6 +263,8 @@
       <element name="TLCLCapability.lcNeedMininimizeAppWithMainForm">
         <short>When main form is minimized, then minimize also app.
         </short>
+      <notes><note>all forms?</note>
+        </notes>
       </element>
       <element name="TLCLCapability.lcApplicationTitle">
         <short>Can change application title at runtime.</short>
@@ -258,6 +284,8 @@
       <element name="TLCLCapability.lcAntialiasingEnabledByDefault">
         <short>Is amDontCare = amOn for the widgetset.
         </short>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TLCLCapability.lcLMHelpSupport">
         <short>Support for LM_HELP command.</short>
@@ -284,22 +312,22 @@
       <!-- function Visibility: private -->
       <element name="TDialogButton.GetCancel" link="TDialogButton.Cancel"/>
       <element name="TDialogButton.GetCancel.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: private -->
       <element name="TDialogButton.GetDefault" link="TDialogButton.Default"/>
       <element name="TDialogButton.GetDefault.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TDialogButton.SetCancel" link="TDialogButton.Cancel"/>
       <element name="TDialogButton.SetCancel.AValue">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TDialogButton.SetDefault" link="TDialogButton.Default"/>
       <element name="TDialogButton.SetDefault.AValue">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TDialogButton.GetDisplayName">
@@ -307,17 +335,17 @@
         </short>
       </element>
       <element name="TDialogButton.GetDisplayName.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDialogButton.SetCaption" link="TDialogButton.Caption"/>
       <element name="TDialogButton.SetCaption.AValue">
-        <short></short>
+        <short/>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TDialogButton.Create"/>
       <element name="TDialogButton.Create.ACollection">
-        <short></short>
+        <short/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDialogButton.Caption">
@@ -372,28 +400,28 @@
       <!-- function Visibility: protected -->
       <element name="TDialogButtons.GetItem" link="TDialogButtons.Items"/>
       <element name="TDialogButtons.GetItem.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TDialogButtons.GetItem.Index">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDialogButtons.SetCancelButton" link="TDialogButtons.CancelButton"/>
       <element name="TDialogButtons.SetCancelButton.AValue">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDialogButtons.SetDefaultButton" link="TDialogButtons.DefaultButton"/>
       <element name="TDialogButtons.SetDefaultButton.Value">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDialogButtons.SetItem" link="TDialogButtons.Items"/>
       <element name="TDialogButtons.SetItem.Index">
-        <short></short>
+        <short/>
       </element>
       <element name="TDialogButtons.SetItem.Value">
-        <short></short>
+        <short/>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TDialogButtons.Destroy"/>
@@ -409,7 +437,7 @@
         </seealso>
       </element>
       <element name="TDialogButtons.Add.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TDialogButtons.FindButton">
@@ -423,7 +451,7 @@
         </seealso>
       </element>
       <element name="TDialogButtons.FindButton.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TDialogButtons.FindButton.AModalResult">
         <short>The modal result to find.</short>
@@ -456,7 +484,7 @@
         </seealso>
       </element>
       <element name="TDialogButtons.Items.Index">
-        <short></short>
+        <short/>
       </element>
 <!-- procedure type Visibility: default -->
       <element name="TWSTimerProc">
@@ -466,6 +494,8 @@
         </descr>
         <seealso>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
 
 <!-- object Visibility: default -->
@@ -483,25 +513,27 @@
       <element name="TWidgetSet.FThemeServices" link="TWidgetSet.ThemeServices"/>
       <!-- procedure Visibility: protected -->
       <element name="TWidgetSet.PassCmdLineOptions">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWidgetSet.CreateThemeServices" link="TWidgetSet.ThemeServices"/>
       <element name="TWidgetSet.CreateThemeServices.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWidgetSet.GetAppHandle" link="TWidgetSet.AppHandle"/>
       <element name="TWidgetSet.GetAppHandle.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWidgetSet.SetAppHandle" link="TWidgetSet.AppHandle"/>
       <element name="TWidgetSet.SetAppHandle.AValue">
-        <short></short>
+        <short/>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TWidgetSet.Create"/>
@@ -513,6 +545,8 @@
         <descr>Called by Application.Initialize. Don't use this directly, the LCL will use it when adequate.</descr>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TWidgetSet.AppInit.ScreenInfo">
         <short/>
@@ -527,7 +561,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.AppRun.ALoop">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppWaitMessage">
@@ -553,6 +587,8 @@
         <descr>Called by Application.Terminate. Don't use this directly, the LCL will use it when adequate.</descr>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppMinimize">
@@ -561,6 +597,8 @@
         <seealso>
           <link id="TWidgetSet.AppRestore"/>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppRestore">
@@ -575,6 +613,8 @@
         <short>Brings the entire application on top of all other non-topmost programs.</short>
         <descr>Called by Application.BringToFront. Don't use this directly, the LCL will use it when adequate.</descr>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppSetIcon">
@@ -584,14 +624,14 @@
         </seealso>
       </element>
       <element name="TWidgetSet.AppSetIcon.Small">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AppSetIcon.Big">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppSetTitle">
-        <short></short>
+        <short/>
         <descr>Don't use this directly, the LCL will use it when adequate.</descr>
         <errors>
         </errors>
@@ -599,7 +639,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.AppSetTitle.ATitle">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppSetVisible">
@@ -609,7 +649,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.AppSetVisible.AVisible">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.AppRemoveStayOnTopFlags">
@@ -622,7 +662,7 @@
         <short>False on failure</short>
       </element>
       <element name="TWidgetSet.AppRemoveStayOnTopFlags.ASystemTopAlso">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.AppRestoreStayOnTopFlags">
@@ -633,10 +673,10 @@
         </seealso>
       </element>
       <element name="TWidgetSet.AppRestoreStayOnTopFlags.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AppRestoreStayOnTopFlags.ASystemTopAlso">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppSetMainFormOnTaskBar">
@@ -660,7 +700,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.LCLPlatform.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetLCLCapability">
@@ -674,14 +714,16 @@
         <short>Can be either LCL_CAPABILITY_NO or LCL_CAPABILITY_YES</short>
       </element>
       <element name="TWidgetSet.GetLCLCapability.ACapability">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DCGetPixel">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TWidgetSet.DCGetPixel.Result">
         <short/>
@@ -697,10 +739,12 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DCSetPixel">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TWidgetSet.DCSetPixel.CanvasHandle">
         <short/>
@@ -716,17 +760,19 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DCRedraw">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TWidgetSet.DCRedraw.CanvasHandle">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DCSetAntialiasing">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -735,17 +781,19 @@
         </seealso>
       </element>
       <element name="TWidgetSet.DCSetAntialiasing.CanvasHandle">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.DCSetAntialiasing.AEnabled">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.SetDesigning">
-        <short></short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TWidgetSet.SetDesigning.AComponent">
         <short/>
@@ -792,6 +840,8 @@
         <descr/>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TWidgetSet.CreateTimer.Result">
         <short>The timer ID, zero on failure.</short>
@@ -813,6 +863,8 @@
         <seealso>
           <link id="TWidgetSet.CreateTimer"/>
         </seealso>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TWidgetSet.DestroyTimer.Result">
         <short>False on failure.</short>
@@ -843,24 +895,26 @@
         </descr>
         <errors/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <element name="TWidgetSet.Arc.Result">
         <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.Arc.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.Arc.Left">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.Arc.Top">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.Arc.Right">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.Arc.Bottom">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.Arc.Angle16Deg">
         <short>base angle</short>
@@ -892,16 +946,16 @@
         <short/>
       </element>
       <element name="TWidgetSet.AngleChord.x1">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AngleChord.y1">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AngleChord.x2">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AngleChord.y2">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AngleChord.angle1">
         <short>Base angle.</short>
@@ -1047,22 +1101,22 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.CallWindowProc.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.CallWindowProc.lpPrevWndFunc">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.CallWindowProc.Handle">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.CallWindowProc.Msg">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.CallWindowProc.WParam">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.CallWindowProc.LParam">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ClientToScreen">
@@ -1137,10 +1191,10 @@
         <short>The bitmap Handle, zero on failure.</short>
       </element>
       <element name="TWidgetSet.CreateBitmap.Width">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.CreateBitmap.Height">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.CreateBitmap.Planes">
         <short>The number of color planes.</short>
@@ -1184,10 +1238,10 @@
         </short>
       </element>
       <element name="TWidgetSet.CreateCaret.Width">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.CreateCaret.Height">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateCompatibleBitmap">
@@ -1230,7 +1284,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateDIBitmap">
         <short>Creates a Device Dependent Bitmap (DDB) from a Device Independent Bitmap (DIB).</short>
-        <descr></descr>
+        <descr/>
         <errors/>
         <seealso/>
       </element>
@@ -1244,7 +1298,7 @@
         <short/>
       </element>
       <element name="TWidgetSet.CreateDIBitmap.dwUsage">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.CreateDIBitmap.InitBits">
         <short>An array containing the bitmap pixels.</short>
@@ -1253,7 +1307,7 @@
         <short>CBM_INIT when InitBits contains valid data, else zero.</short>
       </element>
       <element name="TWidgetSet.CreateDIBitmap.wUsage">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateDIBSection">
@@ -1296,16 +1350,16 @@
         <short>The region Handle, zero on failure.</short>
       </element>
       <element name="TWidgetSet.CreateEllipticRgn.X1">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.CreateEllipticRgn.Y1">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.CreateEllipticRgn.X2">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.CreateEllipticRgn.Y2">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateFontIndirect">
@@ -1353,7 +1407,7 @@
         <short>The Handle, zero on failure.</short>
       </element>
       <element name="TWidgetSet.CreateIconIndirect.IconInfo">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreatePalette">
@@ -1467,16 +1521,16 @@
         <short>The region Handle, zero on failure.</short>
       </element>
       <element name="TWidgetSet.CreateRoundRectRgn.X1">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.CreateRoundRectRgn.Y1">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.CreateRoundRectRgn.X2">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.CreateRoundRectRgn.Y2">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.CreateRoundRectRgn.nWidthEllipse">
         <short>The extent of the ellipse, used for the rounded corners.</short>
@@ -1570,12 +1624,12 @@
         <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.DestroyIcon.Handle">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DPtoLP">
         <short>Converts an array of Device Points (coordinates) into Logical Points.</short>
-        <descr></descr>
+        <descr/>
         <seealso/>
       </element>
       <element name="TWidgetSet.DPtoLP.Result">
@@ -1627,7 +1681,7 @@
         <short>The window frame device context.</short>
       </element>
       <element name="TWidgetSet.DrawFrameControl.Rect">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.DrawFrameControl.uType">
         <short>The control type, e.g. DFC_CAPTION.</short>
@@ -1669,7 +1723,7 @@
         <short>Almost a screen DC.</short>
       </element>
       <element name="TWidgetSet.DrawFocusRect.Rect">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DrawEdge">
@@ -1685,7 +1739,7 @@
         <short/>
       </element>
       <element name="TWidgetSet.DrawEdge.Rect">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.DrawEdge.edge">
         <short>A combination of edge styles (inner/outer, raised/sunken)</short>
@@ -1763,10 +1817,10 @@
         <short>True when the window was disabled before.</short>
       </element>
       <element name="TWidgetSet.EnableWindow.hWnd">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.EnableWindow.bEnable">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.EndPaint">
@@ -1813,10 +1867,10 @@
         <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.EnumDisplayMonitors.hdc">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.EnumDisplayMonitors.lprcClip">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.EnumDisplayMonitors.lpfnEnum">
         <short>The callback function.</short>
@@ -1875,7 +1929,7 @@
         <short>Data passed to the callback function.</short>
       </element>
       <element name="TWidgetSet.EnumFontFamiliesEx.Flags">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.Ellipse">
@@ -1891,10 +1945,10 @@
         <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.Ellipse.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.Ellipse.x1">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.Ellipse.y1">
         <short/>
@@ -2032,7 +2086,7 @@
         <short>The type of the resulting clipping region.</short>
       </element>
       <element name="TWidgetSet.ExtSelectClipRGN.dc">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.ExtSelectClipRGN.rgn">
         <short>The region to combine with.</short>
@@ -2051,13 +2105,13 @@
         <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.FillRect.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.FillRect.Rect">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.FillRect.Brush">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.FillRgn">
@@ -2067,10 +2121,10 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.FillRgn.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.FillRgn.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.FillRgn.RegionHnd">
         <short/>
@@ -2185,7 +2239,7 @@
         <short>The background color, CLR_INVALID on failure.</short>
       </element>
       <element name="TWidgetSet.GetBkColor.DC">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetCapture">
@@ -2434,7 +2488,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.GetDoubleClickTime.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetFocus">
@@ -2488,7 +2542,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.GetIconInfo.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.GetIconInfo.AIcon">
         <short>The item handle.</short>
@@ -3078,19 +3132,19 @@
         </seealso>
       </element>
       <element name="TWidgetSet.GetTextExtentPoint32.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.GetTextExtentPoint32.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.GetTextExtentPoint32.Str">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.GetTextExtentPoint32.Count">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.GetTextExtentPoint32.Size">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetTextMetrics">
@@ -3121,7 +3175,7 @@
         <short>False (zero) on failure.</short>
       </element>
       <element name="TWidgetSet.GetViewPortExtEx.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.GetViewPortExtEx.Size">
         <short>Receives the viewport size.</short>
@@ -3140,7 +3194,7 @@
         <short>False (zero) on failure.</short>
       </element>
       <element name="TWidgetSet.GetViewPortOrgEx.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.GetViewPortOrgEx.P">
         <short>Receives the viewport origin.</short>
@@ -3157,7 +3211,7 @@
         <short>False (zero) on failure.</short>
       </element>
       <element name="TWidgetSet.GetWindowExtEx.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.GetWindowExtEx.Size">
         <short>Receives the window extent.</short>
@@ -3281,13 +3335,13 @@
         <short>The device context.</short>
       </element>
       <element name="TWidgetSet.GradientFill.Vertices">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.GradientFill.NumVertices">
         <short/>
       </element>
       <element name="TWidgetSet.GradientFill.Meshes">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.GradientFill.NumMeshes">
         <short/>
@@ -3419,7 +3473,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IsDBCSLeadByte">
-        <short></short>
+        <short/>
         <descr/>
         <seealso>
         </seealso>
@@ -3832,7 +3886,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.PeekMessage.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.PeekMessage.lpMsg">
         <short>Receives the message.</short>
@@ -3882,25 +3936,25 @@
         <short>The bounding rectangle.</short>
       </element>
       <element name="TWidgetSet.Pie.y1">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.Pie.x2">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.Pie.y2">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.Pie.sx">
         <short>The starting radial.</short>
       </element>
       <element name="TWidgetSet.Pie.sy">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.Pie.ex">
         <short>The ending radial.</short>
       </element>
       <element name="TWidgetSet.Pie.ey">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.PolyBezier">
@@ -4007,16 +4061,16 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.Polyline.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.Polyline.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.Polyline.Points">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.Polyline.NumPts">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.PostMessage">
@@ -4066,7 +4120,7 @@
         <short>The message ID.</short>
       </element>
       <element name="TWidgetSet.PostMessage.WParam">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.PostMessage.LParam">
         <short/>
@@ -4121,13 +4175,13 @@
         <short>The device context.</short>
       </element>
       <element name="TWidgetSet.Rectangle.X1">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.Rectangle.Y1">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.Rectangle.X2">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.Rectangle.Y2">
         <short/>
@@ -5259,7 +5313,7 @@
         <short>The window handle.</short>
       </element>
       <element name="TWidgetSet.ShowWindow.nCmdShow">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.Sleep">
@@ -5331,7 +5385,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.StretchDIBits.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.StretchDIBits.DC">
         <short>The destination Device Context.</short>
@@ -5637,7 +5691,7 @@
 
       <!-- function Visibility: public -->
       <element name="TWidgetSet.AddEventHandler">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -5646,23 +5700,23 @@
         </seealso>
       </element>
       <element name="TWidgetSet.AddEventHandler.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AddEventHandler.AHandle">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AddEventHandler.AFlags">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AddEventHandler.AEventHandler">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AddEventHandler.AData">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.AddProcessEventHandler">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -5671,20 +5725,20 @@
         </seealso>
       </element>
       <element name="TWidgetSet.AddProcessEventHandler.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AddProcessEventHandler.AHandle">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AddProcessEventHandler.AEventHandler">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AddProcessEventHandler.AData">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.AddPipeEventHandler">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -5693,16 +5747,16 @@
         </seealso>
       </element>
       <element name="TWidgetSet.AddPipeEventHandler.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AddPipeEventHandler.AHandle">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AddPipeEventHandler.AEventHandler">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AddPipeEventHandler.AData">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AllocateHWnd">
         <short>Allocates an invisible window that can be used to receive messages.</short>
@@ -5720,7 +5774,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.AskUser">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -5729,22 +5783,22 @@
         </seealso>
       </element>
       <element name="TWidgetSet.AskUser.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AskUser.DialogCaption">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AskUser.DialogMessage">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AskUser.DialogType">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AskUser.Buttons">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.AskUser.HelpCtx">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.CallDefaultWndHandler">
@@ -5957,7 +6011,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateRubberBand">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -5966,13 +6020,13 @@
         </seealso>
       </element>
       <element name="TWidgetSet.CreateRubberBand.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.CreateRubberBand.ARect">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.CreateRubberBand.ABrush">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateStandardCursor">
@@ -6019,7 +6073,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DestroyRubberBand">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -6028,7 +6082,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.DestroyRubberBand.ARubberBand">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DrawDefaultDockImage">
@@ -6049,11 +6103,11 @@
         <short>The new DockRect.</short>
       </element>
       <element name="TWidgetSet.DrawDefaultDockImage.AOperation">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DrawGrid">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -6062,16 +6116,16 @@
         </seealso>
       </element>
       <element name="TWidgetSet.DrawGrid.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.DrawGrid.R">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.DrawGrid.DX">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.DrawGrid.DY">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ExtUTF8Out" link="TWidgetSet.ExtTextOut">
@@ -6114,7 +6168,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.FontCanUTF8">
         <short>Obsolete option, don't use it. It will be removed.</short>
-        <descr></descr>
+        <descr/>
         <seealso/>
       </element>
       <element name="TWidgetSet.FontCanUTF8.Result">
@@ -6125,7 +6179,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.FontIsMonoSpace">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -6134,10 +6188,10 @@
         </seealso>
       </element>
       <element name="TWidgetSet.FontIsMonoSpace.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.FontIsMonoSpace.Font">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.Frame">
@@ -6587,7 +6641,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IsDesignerDC">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -6596,13 +6650,13 @@
         </seealso>
       </element>
       <element name="TWidgetSet.IsDesignerDC.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.IsDesignerDC.WindowHandle">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.IsDesignerDC.DC">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.MoveWindowOrgEx">
@@ -6729,16 +6783,16 @@
         <short/>
       </element>
       <element name="TWidgetSet.RadialArc.left">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RadialArc.top">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RadialArc.right">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RadialArc.bottom">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RadialArc.sx">
         <short/>
@@ -6769,16 +6823,16 @@
       </element>
       <!-- argument Visibility: default -->
       <element name="TWidgetSet.RadialChord.x1">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RadialChord.y1">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RadialChord.x2">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RadialChord.y2">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RadialChord.sx">
         <short/>
@@ -6808,26 +6862,26 @@
         <short/>
       </element>
       <element name="TWidgetSet.RadialPie.x1">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RadialPie.y1">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RadialPie.x2">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RadialPie.y2">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RadialPie.Angle1">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RadialPie.Angle2">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RawImage_CreateBitmaps">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -6836,23 +6890,23 @@
         </seealso>
       </element>
       <element name="TWidgetSet.RawImage_CreateBitmaps.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RawImage_CreateBitmaps.ARawImage">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RawImage_CreateBitmaps.ABitmap">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RawImage_CreateBitmaps.AMask">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RawImage_CreateBitmaps.ASkipMask">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RawImage_DescriptionFromBitmap">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -6861,17 +6915,17 @@
         </seealso>
       </element>
       <element name="TWidgetSet.RawImage_DescriptionFromBitmap.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RawImage_DescriptionFromBitmap.ABitmap">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RawImage_DescriptionFromBitmap.ADesc">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RawImage_DescriptionFromDevice">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -6880,17 +6934,17 @@
         </seealso>
       </element>
       <element name="TWidgetSet.RawImage_DescriptionFromDevice.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RawImage_DescriptionFromDevice.ADC">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RawImage_DescriptionFromDevice.ADesc">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RawImage_FromBitmap">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -6899,23 +6953,23 @@
         </seealso>
       </element>
       <element name="TWidgetSet.RawImage_FromBitmap.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RawImage_FromBitmap.ARawImage">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RawImage_FromBitmap.ABitmap">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RawImage_FromBitmap.AMask">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RawImage_FromBitmap.ARect">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RawImage_FromDevice">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -6924,19 +6978,19 @@
         </seealso>
       </element>
       <element name="TWidgetSet.RawImage_FromDevice.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RawImage_FromDevice.ARawImage">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RawImage_FromDevice.ADC">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RawImage_FromDevice.ARect">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RawImage_QueryDescription">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -6945,13 +6999,13 @@
         </seealso>
       </element>
       <element name="TWidgetSet.RawImage_QueryDescription.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RawImage_QueryDescription.AFlags">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RawImage_QueryDescription.ADesc">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RegroupMenuItem">
@@ -6993,7 +7047,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.RemoveEventHandler">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -7002,10 +7056,10 @@
         </seealso>
       </element>
       <element name="TWidgetSet.RemoveEventHandler.AHandler">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.RemoveProcessEventHandler">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -7014,11 +7068,11 @@
         </seealso>
       </element>
       <element name="TWidgetSet.RemoveProcessEventHandler.AHandler">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.RemovePipeEventHandler">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -7027,7 +7081,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.RemovePipeEventHandler.AHandler">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RequestInput">
@@ -7131,7 +7185,7 @@
 
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.SetEventHandlerFlags">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -7140,14 +7194,14 @@
         </seealso>
       </element>
       <element name="TWidgetSet.SetEventHandlerFlags.AHandler">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.SetEventHandlerFlags.NewFlags">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.SetRubberBandRect">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -7156,10 +7210,10 @@
         </seealso>
       </element>
       <element name="TWidgetSet.SetRubberBandRect.ARubberBand">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.SetRubberBandRect.ARect">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.StretchMaskBlt">
@@ -7230,7 +7284,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.TextUTF8Out">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <errors>
@@ -7239,26 +7293,26 @@
         </seealso>
       </element>
       <element name="TWidgetSet.TextUTF8Out.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.TextUTF8Out.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.TextUTF8Out.X">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.TextUTF8Out.Y">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.TextUTF8Out.Str">
-        <short></short>
+        <short/>
       </element>
       <element name="TWidgetSet.TextUTF8Out.Count">
-        <short></short>
+        <short/>
       </element>
       <!-- property Visibility: public -->
       <element name="TWidgetSet.ThemeServices">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>
@@ -7268,7 +7322,7 @@
       <element name="TWidgetSetClass" link="TWidgetSet"/>
       <!-- constant Visibility: default -->
       <element name="LCLPlatformDirNames">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>
@@ -7276,7 +7330,7 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="LCL_CAPABILITY_NO">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>
@@ -7284,7 +7338,7 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="LCL_CAPABILITY_YES">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>
@@ -7409,33 +7463,33 @@
       </element>
       <!-- function type Visibility: default -->
       <element name="TQuestionDialogFunction">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>
         </seealso>
       </element>
       <element name="TQuestionDialogFunction.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TQuestionDialogFunction.aCaption">
-        <short></short>
+        <short/>
       </element>
       <element name="TQuestionDialogFunction.aMsg">
-        <short></short>
+        <short/>
       </element>
       <element name="TQuestionDialogFunction.DlgType">
-        <short></short>
+        <short/>
       </element>
       <element name="TQuestionDialogFunction.Buttons">
-        <short></short>
+        <short/>
       </element>
       <element name="TQuestionDialogFunction.HelpCtx">
-        <short></short>
+        <short/>
       </element>
 <!-- variable Visibility: default -->
       <element name="QuestionDialogFunction">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>
@@ -7443,7 +7497,7 @@
       </element>
       <!-- variable Visibility: default -->
       <element name="WidgetSet">
-        <short></short>
+        <short/>
         <descr>
         </descr>
         <seealso>

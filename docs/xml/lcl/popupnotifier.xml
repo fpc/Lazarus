@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="popupnotifier">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- enumeration type Visibility: default -->
 <element name="TNotifierXButtonButtonState">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,22 +24,22 @@
 
 <!-- enumeration value Visibility: default -->
 <element name="TNotifierXButtonButtonState.nbsUp">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TNotifierXButtonButtonState.nbsDown">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TNotifierXButtonButtonState.nbsHot">
-<short></short>
+<short/>
 </element>
 
 <!-- object Visibility: default -->
 <element name="TNotifierXButton">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -50,7 +50,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TNotifierXButton.FState">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -59,7 +59,7 @@
 
 <!-- procedure Visibility: private -->
 <element name="TNotifierXButton.HandleMouseDown">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -70,32 +70,32 @@
 
 <!-- argument Visibility: default -->
 <element name="TNotifierXButton.HandleMouseDown.Sender">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TNotifierXButton.HandleMouseDown.Button">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TNotifierXButton.HandleMouseDown.Shift">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TNotifierXButton.HandleMouseDown.X">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TNotifierXButton.HandleMouseDown.Y">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TNotifierXButton.HandleMouseUp">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -106,32 +106,32 @@
 
 <!-- argument Visibility: default -->
 <element name="TNotifierXButton.HandleMouseUp.Sender">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TNotifierXButton.HandleMouseUp.Button">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TNotifierXButton.HandleMouseUp.Shift">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TNotifierXButton.HandleMouseUp.X">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TNotifierXButton.HandleMouseUp.Y">
-<short></short>
+<short/>
 </element>
 
 <!-- constructor Visibility: public -->
 <element name="TNotifierXButton.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -142,12 +142,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TNotifierXButton.Create.AOwner">
-<short></short>
+<short/>
 </element>
 
 <!-- destructor Visibility: public -->
 <element name="TNotifierXButton.Destroy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -158,7 +158,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TNotifierXButton.paint">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -169,7 +169,7 @@
 
 <!-- object Visibility: default -->
 <element name="TNotifierForm">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -180,7 +180,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TNotifierForm.lblTitle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -189,7 +189,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TNotifierForm.lblText">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -198,7 +198,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TNotifierForm.imgIcon">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -207,7 +207,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TNotifierForm.btnX">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -216,7 +216,7 @@
 
 <!-- procedure Visibility: private -->
 <element name="TNotifierForm.HideForm">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -227,12 +227,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TNotifierForm.HideForm.Sender">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TNotifierForm.HandleResize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -243,12 +243,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TNotifierForm.HandleResize.Sender">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TNotifierForm.HandlePaint">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -259,12 +259,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TNotifierForm.HandlePaint.Sender">
-<short></short>
+<short/>
 </element>
 
 <!-- constructor Visibility: public -->
 <element name="TNotifierForm.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -275,12 +275,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TNotifierForm.Create.AOwner">
-<short></short>
+<short/>
 </element>
 
 <!-- destructor Visibility: public -->
 <element name="TNotifierForm.Destroy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -291,7 +291,7 @@
 
 <!-- object Visibility: default -->
 <element name="TPopupNotifier">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -302,7 +302,7 @@
 
 <!-- function Visibility: private -->
 <element name="TPopupNotifier.GetColor">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -313,12 +313,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TPopupNotifier.GetColor.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPopupNotifier.SetColor">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -329,12 +329,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPopupNotifier.SetColor.Value">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TPopupNotifier.GetIcon">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -345,12 +345,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TPopupNotifier.GetIcon.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPopupNotifier.SetIcon">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -361,12 +361,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPopupNotifier.SetIcon.Value">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TPopupNotifier.GetText">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -377,12 +377,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TPopupNotifier.GetText.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPopupNotifier.SetText">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -393,12 +393,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPopupNotifier.SetText.Value">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TPopupNotifier.GetTitle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -409,12 +409,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TPopupNotifier.GetTitle.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPopupNotifier.SetTitle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -425,12 +425,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPopupNotifier.SetTitle.Value">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TPopupNotifier.GetVisible">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -441,12 +441,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TPopupNotifier.GetVisible.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPopupNotifier.SetVisible">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -457,12 +457,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPopupNotifier.SetVisible.Value">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TPopupNotifier.SetOnClose">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -473,12 +473,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPopupNotifier.SetOnClose.Value">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TPopupNotifier.GetOnClose">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -489,12 +489,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TPopupNotifier.GetOnClose.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- variable Visibility: public -->
 <element name="TPopupNotifier.vNotifierForm">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -503,7 +503,7 @@
 
 <!-- constructor Visibility: public -->
 <element name="TPopupNotifier.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -514,12 +514,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TPopupNotifier.Create.AOwner">
-<short></short>
+<short/>
 </element>
 
 <!-- destructor Visibility: public -->
 <element name="TPopupNotifier.Destroy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -530,7 +530,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TPopupNotifier.Hide">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -541,7 +541,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TPopupNotifier.Show">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -552,7 +552,7 @@
 
 <!-- procedure Visibility: public -->
 <element name="TPopupNotifier.ShowAtPos">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -563,17 +563,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TPopupNotifier.ShowAtPos.x">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TPopupNotifier.ShowAtPos.y">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: published -->
 <element name="TPopupNotifier.Color">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -582,7 +582,7 @@
 
 <!-- property Visibility: published -->
 <element name="TPopupNotifier.Icon">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -591,7 +591,7 @@
 
 <!-- property Visibility: published -->
 <element name="TPopupNotifier.Text">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -600,7 +600,7 @@
 
 <!-- property Visibility: published -->
 <element name="TPopupNotifier.Title">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -609,7 +609,7 @@
 
 <!-- property Visibility: published -->
 <element name="TPopupNotifier.Visible">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -618,7 +618,7 @@
 
 <!-- property Visibility: published -->
 <element name="TPopupNotifier.OnClose">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -627,7 +627,7 @@
 
 <!-- constant Visibility: default -->
 <element name="BGDrawn">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -636,7 +636,7 @@
 
 <!-- procedure Visibility: default -->
 <element name="Register">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>

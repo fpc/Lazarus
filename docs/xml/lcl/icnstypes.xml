@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="IcnsTypes">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- array type Visibility: default -->
 <element name="FourCharCode">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,7 +24,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TIconFamilyElement">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -33,7 +33,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TIconFamilyElement.elementType">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -42,7 +42,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TIconFamilyElement.elementSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -51,7 +51,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TIconFamilyResource">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -60,7 +60,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TIconFamilyResource.resourceType">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -69,7 +69,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TIconFamilyResource.resourceSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -78,7 +78,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kIconFamilyType">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -87,7 +87,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kIconServices512PixelDataARGB">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -96,7 +96,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kIconServices256PixelDataARGB">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -105,7 +105,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kThumbnail32BitData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -114,7 +114,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kThumbnail8BitMask">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -123,7 +123,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kHuge1BitMask">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -132,7 +132,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kHuge4BitData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -141,7 +141,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kHuge8BitData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -150,7 +150,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kHuge32BitData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -159,7 +159,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kHuge8BitMask">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -168,7 +168,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kLarge1BitMask">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -177,7 +177,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kLarge4BitData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -186,7 +186,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kLarge8BitData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -195,7 +195,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kLarge32BitData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -204,7 +204,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kLarge8BitMask">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -213,7 +213,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kSmall1BitMask">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -222,7 +222,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kSmall4BitData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -231,7 +231,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kSmall8BitData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -240,7 +240,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kSmall32BitData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -249,7 +249,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kSmall8BitMask">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -258,7 +258,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kMini1BitMask">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -267,7 +267,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kMini4BitData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -276,7 +276,7 @@
 
 <!-- constant Visibility: default -->
 <element name="kMini8BitData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -285,7 +285,7 @@
 
 <!-- enumeration type Visibility: default -->
 <element name="TicnsIconType">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -294,122 +294,122 @@
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitNone">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitMini4BitData">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitMini8BitData">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitSmall4BitData">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitSmall8BitData">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitSmall32BitData">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitLarge4BitData">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitLarge8BitData">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitLarge32BitData">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitHuge4BitData">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitHuge8BitData">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitHuge32BitData">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitThumbnail32BitData">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitMini1BitMask">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitSmall1BitMask">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitSmall8BitMask">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitLarge1BitMask">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitLarge8BitMask">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitHuge1BitMask">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitHuge8BitMask">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iitThumbnail8BitMask">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iit256PixelDataARGB">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TicnsIconType.iit512PixelDataARGB">
-<short></short>
+<short/>
 </element>
 
 <!-- set type Visibility: default -->
 <element name="TicnsIconTypes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -418,7 +418,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TicnsIconInfo">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -427,7 +427,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TicnsIconInfo.Width">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -436,7 +436,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TicnsIconInfo.Height">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -445,7 +445,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TicnsIconInfo.Depth">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -454,7 +454,7 @@
 
 <!-- constant Visibility: default -->
 <element name="icnsDataTypes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -463,7 +463,7 @@
 
 <!-- constant Visibility: default -->
 <element name="icnsMaskTypes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -472,7 +472,7 @@
 
 <!-- constant Visibility: default -->
 <element name="icnsRGB">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -481,7 +481,7 @@
 
 <!-- constant Visibility: default -->
 <element name="icnsWithAlpha">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -490,7 +490,7 @@
 
 <!-- constant Visibility: default -->
 <element name="icnsIconTypeInfo">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -499,7 +499,7 @@
 
 <!-- constant Visibility: default -->
 <element name="icnsMaskToImageMap">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -508,7 +508,7 @@
 
 <!-- function Visibility: default -->
 <element name="GetIcnsIconType">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -519,12 +519,12 @@
 
 <!-- function result Visibility: default -->
 <element name="GetIcnsIconType.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="GetIcnsIconType.StrIconType">
-<short></short>
+<short/>
 </element>
 
 </module> <!-- IcnsTypes -->

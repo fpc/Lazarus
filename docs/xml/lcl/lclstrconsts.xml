@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="LCLStrConsts">
-	<short>This unit contains all resource strings of the LCL</short>
+&#x9;<short>This unit contains all resource strings of the LCL</short>
 <descr>
 </descr>
 
 <!-- resource string Visibility: default -->
 <element name="SNoMDIForm">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,7 +24,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsMbYes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -33,7 +33,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsMbNo">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -42,7 +42,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsMbOK">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -51,7 +51,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsMbCancel">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -60,7 +60,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsMbAbort">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -69,7 +69,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsMbRetry">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -78,7 +78,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsMbIgnore">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -87,7 +87,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsMbAll">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -96,7 +96,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsMbNoToAll">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -105,7 +105,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsMbYesToAll">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -114,7 +114,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsMbHelp">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -123,7 +123,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsMbClose">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -132,7 +132,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsMtWarning">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -141,7 +141,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsMtError">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -150,7 +150,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsMtInformation">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -159,7 +159,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsMtConfirmation">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -168,7 +168,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsMtCustom">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -177,7 +177,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsfdOpenFile">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -186,7 +186,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsfdOverwriteFile">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -195,7 +195,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsfdFileAlreadyExists">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -204,7 +204,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsfdPathMustExist">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -213,7 +213,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsfdPathNoExist">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -222,7 +222,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsfdFileMustExist">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -231,7 +231,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsfdDirectoryMustExist">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -240,7 +240,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsfdFileNotExist">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -249,7 +249,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsfdDirectoryNotExist">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -258,7 +258,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsfdFileReadOnlyTitle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -267,7 +267,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsfdFileReadOnly">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -276,7 +276,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsfdFileSaveAs">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -285,7 +285,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsAllFiles">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -294,7 +294,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsfdSelectDirectory">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -303,7 +303,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsSelectcolorTitle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -312,7 +312,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsSelectFontTitle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -321,7 +321,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsWarningUnremovedPaintMessages">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -330,7 +330,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsWarningUnreleasedDCsDump">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -339,7 +339,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsWarningUnreleasedGDIObjectsDump">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -348,7 +348,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsWarningUnreleasedMessagesInQueue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -357,7 +357,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsWarningUnreleasedTimerInfos">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -366,7 +366,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsFileInformation">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -375,7 +375,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsgtkFilter">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -384,7 +384,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsgtkHistory">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -393,7 +393,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsDefaultFileInfoValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -402,7 +402,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsBlank">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -411,7 +411,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsUnableToLoadDefaultFont">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -420,7 +420,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsFileInfoFileNotFound">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -429,7 +429,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsgtkOptionNoTransient">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -438,7 +438,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsgtkOptionModule">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -447,7 +447,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsgOptionFatalWarnings">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -456,7 +456,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsgtkOptionDebug">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -465,7 +465,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsgtkOptionNoDebug">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -474,7 +474,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsgdkOptionDebug">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -483,7 +483,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsgdkOptionNoDebug">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -492,7 +492,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsgtkOptionDisplay">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -501,7 +501,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsgtkOptionSync">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -510,7 +510,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsgtkOptionNoXshm">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -519,7 +519,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsgtkOptionName">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -528,7 +528,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsgtkOptionClass">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -537,7 +537,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsWin32Warning">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -546,7 +546,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsWin32Error">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -555,7 +555,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="sInvalidActionRegistration">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -564,7 +564,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="sInvalidActionUnregistration">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -573,7 +573,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="sInvalidActionEnumeration">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -582,7 +582,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="sInvalidActionCreation">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -591,7 +591,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="sMenuNotFound">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -600,7 +600,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="sMenuIndexError">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -609,7 +609,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="sMenuItemIsNil">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -618,7 +618,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="sNoTimers">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -627,7 +627,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="sInvalidIndex">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -636,7 +636,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="sInvalidImageSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -645,7 +645,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="sDuplicateMenus">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -654,7 +654,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="sCannotFocus">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -663,7 +663,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsListMustBeEmpty">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -672,7 +672,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsInvalidPropertyValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -681,7 +681,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsPropertyDoesNotExist">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -690,7 +690,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsInvalidStreamFormat">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -699,7 +699,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsErrorReadingProperty">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -708,7 +708,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsInvalidFormObjectStream">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -717,7 +717,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsScrollBarOutOfRange">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -726,7 +726,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsInvalidDate">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -735,7 +735,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsErrorOccurredInAtAddressFrame">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -744,7 +744,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsException">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -753,7 +753,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsFormStreamingError">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -762,7 +762,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsFixedColsTooBig">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -771,7 +771,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsFixedRowsTooBig">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -780,7 +780,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsGridFileDoesNotExists">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -789,7 +789,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsNotAValidGridFile">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -798,7 +798,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsIndexOutOfRange">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -807,7 +807,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsERRORInLCL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -816,7 +816,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsCreatingGdbCatchableError">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -825,7 +825,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsAControlCanNotHaveItselfAsParent">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -834,7 +834,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="lisLCLResourceSNotFound">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -843,7 +843,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsErrorCreatingDeviceContext">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -852,7 +852,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsIndexOutOfBounds">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -861,7 +861,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsUnknownPictureExtension">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -870,7 +870,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsUnsupportedClipboardFormat">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -879,7 +879,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsGroupIndexCannotBeLessThanPrevious">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -888,7 +888,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsIsAlreadyAssociatedWith">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -897,7 +897,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsCanvasDoesNotAllowDrawing">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -906,7 +906,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsUnsupportedBitmapFormat">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -915,7 +915,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsNoInterfaceObject">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -924,7 +924,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsCanNotFocus">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -933,7 +933,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsListIndexExceedsBounds">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -942,7 +942,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsResourceNotFound">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -951,7 +951,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsCalculator">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -960,7 +960,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsError">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -969,7 +969,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsPickDate">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -978,7 +978,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -987,7 +987,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsModified">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -996,7 +996,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_UNKNOWN">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1005,7 +1005,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_LBUTTON">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1014,7 +1014,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_RBUTTON">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1023,7 +1023,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_CANCEL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1032,7 +1032,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_MBUTTON">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1041,7 +1041,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_BACK">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1050,7 +1050,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_TAB">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1059,7 +1059,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_CLEAR">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1068,7 +1068,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_RETURN">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1077,7 +1077,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_SHIFT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1086,7 +1086,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_CONTROL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1095,7 +1095,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_MENU">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1104,7 +1104,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_PAUSE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1113,7 +1113,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_CAPITAL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1122,7 +1122,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_KANA">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1131,7 +1131,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_JUNJA">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1140,7 +1140,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_FINAL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1149,7 +1149,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_HANJA">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1158,7 +1158,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_ESCAPE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1167,7 +1167,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_CONVERT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1176,7 +1176,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_NONCONVERT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1185,7 +1185,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_ACCEPT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1194,7 +1194,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_MODECHANGE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1203,7 +1203,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_SPACE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1212,7 +1212,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_PRIOR">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1221,7 +1221,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_NEXT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1230,7 +1230,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_END">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1239,7 +1239,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_HOME">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1248,7 +1248,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_LEFT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1257,7 +1257,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_UP">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1266,7 +1266,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_RIGHT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1275,7 +1275,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_DOWN">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1284,7 +1284,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_SELECT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1293,7 +1293,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_PRINT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1302,7 +1302,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_EXECUTE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1311,7 +1311,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_SNAPSHOT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1320,7 +1320,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_INSERT">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1329,7 +1329,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_DELETE">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1338,7 +1338,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_HELP">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1347,7 +1347,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_LWIN">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1356,7 +1356,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_RWIN">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1365,7 +1365,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_APPS">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1374,7 +1374,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_NUMPAD">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1383,7 +1383,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_NUMLOCK">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1392,7 +1392,7 @@
 
 <!-- resource string Visibility: default -->
 <element name="ifsVK_SCROLL">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="StringHashList">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,7 +24,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="SysUtils">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -33,7 +33,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLStrConsts">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -42,7 +42,7 @@
 
 <!-- pointer type Visibility: default -->
 <element name="PStringHashItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -51,7 +51,7 @@
 
 <!-- record type Visibility: default -->
 <element name="TStringHashItem">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -60,7 +60,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TStringHashItem.HashValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -69,7 +69,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TStringHashItem.Key">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -78,7 +78,7 @@
 
 <!-- variable Visibility: default -->
 <element name="TStringHashItem.Data">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -87,7 +87,7 @@
 
 <!-- pointer type Visibility: default -->
 <element name="PStringHashItemList">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -96,7 +96,7 @@
 
 <!-- object Visibility: default -->
 <element name="TStringHashList">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -107,7 +107,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TStringHashList.FList">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -116,7 +116,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TStringHashList.FCount">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -125,7 +125,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TStringHashList.fCaseSensitive">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -134,7 +134,7 @@
 
 <!-- function Visibility: private -->
 <element name="TStringHashList.CompareString">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -145,22 +145,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TStringHashList.CompareString.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TStringHashList.CompareString.Value1">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TStringHashList.CompareString.Value2">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TStringHashList.CompareValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -171,22 +171,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TStringHashList.CompareValue.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TStringHashList.CompareValue.Value1">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TStringHashList.CompareValue.Value2">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TStringHashList.GetData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -197,17 +197,17 @@
 
 <!-- function result Visibility: default -->
 <element name="TStringHashList.GetData.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TStringHashList.GetData.S">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TStringHashList.SetCaseSensitive">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -218,12 +218,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TStringHashList.SetCaseSensitive.Value">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TStringHashList.Delete">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -234,12 +234,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TStringHashList.Delete.Index">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TStringHashList.SetData">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -250,17 +250,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TStringHashList.SetData.S">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TStringHashList.SetData.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: protected -->
 <element name="TStringHashList.HashOf">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -271,17 +271,17 @@
 
 <!-- function result Visibility: default -->
 <element name="TStringHashList.HashOf.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TStringHashList.HashOf.Key">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TStringHashList.Insert">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -292,17 +292,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TStringHashList.Insert.Index">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TStringHashList.Insert.Item">
-<short></short>
+<short/>
 </element>
 
 <!-- constructor Visibility: public -->
 <element name="TStringHashList.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -313,12 +313,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TStringHashList.Create.CaseSensitivity">
-<short></short>
+<short/>
 </element>
 
 <!-- destructor Visibility: public -->
 <element name="TStringHashList.Destroy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -329,7 +329,7 @@
 
 <!-- function Visibility: public -->
 <element name="TStringHashList.Add">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -340,17 +340,17 @@
 
 <!-- function result Visibility: default -->
 <element name="TStringHashList.Add.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TStringHashList.Add.S">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TStringHashList.Add">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -361,22 +361,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TStringHashList.Add.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TStringHashList.Add.S">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TStringHashList.Add.ItemData">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TStringHashList.Clear">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -387,7 +387,7 @@
 
 <!-- function Visibility: public -->
 <element name="TStringHashList.Find">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -398,17 +398,17 @@
 
 <!-- function result Visibility: default -->
 <element name="TStringHashList.Find.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TStringHashList.Find.S">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TStringHashList.Remove">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -419,17 +419,17 @@
 
 <!-- function result Visibility: default -->
 <element name="TStringHashList.Remove.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TStringHashList.Remove.S">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TStringHashList.CaseSensitive">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -438,7 +438,7 @@
 
 <!-- property Visibility: public -->
 <element name="TStringHashList.Count">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -447,7 +447,7 @@
 
 <!-- property Visibility: public -->
 <element name="TStringHashList.Data">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -456,12 +456,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TStringHashList.Data.S">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TStringHashList.List">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>

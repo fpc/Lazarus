@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="lazutf8classes">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- class Visibility: default -->
 <element name="TFileStreamUTF8">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -26,7 +26,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TFileStreamUTF8.FFileName">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -35,7 +35,7 @@
 
 <!-- constructor Visibility: public -->
 <element name="TFileStreamUTF8.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -46,22 +46,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TFileStreamUTF8.Create.AFileName">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStreamUTF8.Create.Mode">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStreamUTF8.Create.Rights">
-<short></short>
+<short/>
 </element>
 
 <!-- destructor Visibility: public -->
 <element name="TFileStreamUTF8.Destroy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -72,7 +72,7 @@
 
 <!-- property Visibility: public -->
 <element name="TFileStreamUTF8.FileName">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -81,7 +81,7 @@
 
 <!-- class Visibility: default -->
 <element name="TStringListUTF8">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -92,7 +92,7 @@
 
 <!-- function Visibility: protected -->
 <element name="TStringListUTF8.DoCompareText">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -103,22 +103,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TStringListUTF8.DoCompareText.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TStringListUTF8.DoCompareText.s1">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TStringListUTF8.DoCompareText.s2">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TStringListUTF8.LoadFromFile">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -129,12 +129,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TStringListUTF8.LoadFromFile.FileName">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TStringListUTF8.SaveToFile">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -145,7 +145,7 @@
 
 <!-- argument Visibility: default -->
 <element name="TStringListUTF8.SaveToFile.FileName">
-<short></short>
+<short/>
 </element>
 
 </module> <!-- lazutf8classes -->

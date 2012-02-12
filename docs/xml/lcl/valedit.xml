@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="ValEdit">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- enumeration type Visibility: default -->
 <element name="TDisplayOption">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,22 +24,22 @@
 
 <!-- enumeration value Visibility: default -->
 <element name="TDisplayOption.doColumnTitles">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TDisplayOption.doAutoColResize">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TDisplayOption.doKeyColFixed">
-<short></short>
+<short/>
 </element>
 
 <!-- set type Visibility: default -->
 <element name="TDisplayOptions">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -48,7 +48,7 @@
 
 <!-- enumeration type Visibility: default -->
 <element name="TKeyOption">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -57,27 +57,27 @@
 
 <!-- enumeration value Visibility: default -->
 <element name="TKeyOption.keyEdit">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TKeyOption.keyAdd">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TKeyOption.keyDelete">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TKeyOption.keyUnique">
-<short></short>
+<short/>
 </element>
 
 <!-- set type Visibility: default -->
 <element name="TKeyOptions">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -86,7 +86,7 @@
 
 <!-- procedure type Visibility: default -->
 <element name="TGetPickListEvent">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -95,22 +95,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TGetPickListEvent.Sender">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TGetPickListEvent.KeyName">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TGetPickListEvent.Values">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure type Visibility: default -->
 <element name="TOnValidateEvent">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -119,32 +119,32 @@
 
 <!-- argument Visibility: default -->
 <element name="TOnValidateEvent.Sender">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnValidateEvent.ACol">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnValidateEvent.ARow">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnValidateEvent.KeyName">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnValidateEvent.KeyValue">
-<short></short>
+<short/>
 </element>
 
 <!-- class Visibility: default -->
 <element name="TValueListEditor">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -155,7 +155,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TValueListEditor.FTitleCaptions">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -164,7 +164,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TValueListEditor.FStrings">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -173,7 +173,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TValueListEditor.FKeyOptions">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -182,7 +182,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TValueListEditor.FDisplayOptions">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -191,7 +191,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TValueListEditor.FDropDownRows">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -200,7 +200,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TValueListEditor.FOnGetPickList">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -209,7 +209,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TValueListEditor.FOnEditButtonClick">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -218,7 +218,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TValueListEditor.FOnValidate">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -227,7 +227,7 @@
 
 <!-- function Visibility: private -->
 <element name="TValueListEditor.GetOnStringsChange">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -238,12 +238,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TValueListEditor.GetOnStringsChange.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TValueListEditor.GetOnStringsChanging">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -254,12 +254,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TValueListEditor.GetOnStringsChanging.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TValueListEditor.GetOptions">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -270,12 +270,12 @@
 
 <!-- function result Visibility: default -->
 <element name="TValueListEditor.GetOptions.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TValueListEditor.GetKey">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -286,17 +286,17 @@
 
 <!-- function result Visibility: default -->
 <element name="TValueListEditor.GetKey.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.GetKey.Index">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: private -->
 <element name="TValueListEditor.GetValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -307,17 +307,17 @@
 
 <!-- function result Visibility: default -->
 <element name="TValueListEditor.GetValue.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.GetValue.Key">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TValueListEditor.SetDisplayOptions">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -328,12 +328,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.SetDisplayOptions.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TValueListEditor.SetDropDownRows">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -344,12 +344,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.SetDropDownRows.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TValueListEditor.SetKeyOptions">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -360,12 +360,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.SetKeyOptions.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TValueListEditor.SetKey">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -376,17 +376,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.SetKey.Index">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.SetKey.Value">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TValueListEditor.SetValue">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -397,17 +397,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.SetValue.Key">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.SetValue.Value">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TValueListEditor.SetOnEditButtonClick">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -418,12 +418,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.SetOnEditButtonClick.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TValueListEditor.SetOnStringsChange">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -434,12 +434,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.SetOnStringsChange.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TValueListEditor.SetOnStringsChanging">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -450,12 +450,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.SetOnStringsChanging.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TValueListEditor.SetOptions">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -466,12 +466,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.SetOptions.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TValueListEditor.SetStrings">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -482,12 +482,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.SetStrings.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TValueListEditor.SetTitleCaptions">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -498,12 +498,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.SetTitleCaptions.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TValueListEditor.WSRegisterClass">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -514,7 +514,7 @@
 
 <!-- procedure Visibility: protected -->
 <element name="TValueListEditor.ShowColumnTitles">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -525,7 +525,7 @@
 
 <!-- procedure Visibility: protected -->
 <element name="TValueListEditor.AdjustColumnWidths">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -536,7 +536,7 @@
 
 <!-- procedure Visibility: protected -->
 <element name="TValueListEditor.AdjustRowCount">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -547,7 +547,7 @@
 
 <!-- procedure Visibility: protected -->
 <element name="TValueListEditor.ColWidthsChanged">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -558,7 +558,7 @@
 
 <!-- function Visibility: protected -->
 <element name="TValueListEditor.GetEditText">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -569,22 +569,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TValueListEditor.GetEditText.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.GetEditText.ACol">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.GetEditText.ARow">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: protected -->
 <element name="TValueListEditor.GetCells">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -595,22 +595,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TValueListEditor.GetCells.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.GetCells.ACol">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.GetCells.ARow">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TValueListEditor.SetCells">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -621,22 +621,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.SetCells.ACol">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.SetCells.ARow">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.SetCells.AValue">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TValueListEditor.SetEditText">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -647,22 +647,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.SetEditText.ACol">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.SetEditText.ARow">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.SetEditText.Value">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TValueListEditor.TitlesChanged">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -673,12 +673,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.TitlesChanged.Sender">
-<short></short>
+<short/>
 </element>
 
 <!-- constructor Visibility: public -->
 <element name="TValueListEditor.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -689,12 +689,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.Create.AOwner">
-<short></short>
+<short/>
 </element>
 
 <!-- destructor Visibility: public -->
 <element name="TValueListEditor.Destroy">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -705,7 +705,7 @@
 
 <!-- property Visibility: public -->
 <element name="TValueListEditor.Modified">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -714,7 +714,7 @@
 
 <!-- property Visibility: public -->
 <element name="TValueListEditor.Keys">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -723,12 +723,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.Keys.Index">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TValueListEditor.Values">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -737,12 +737,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TValueListEditor.Values.Key">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.Align">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -751,7 +751,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.AlternateColor">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -760,7 +760,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.Anchors">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -769,7 +769,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.AutoAdvance">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -778,7 +778,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.AutoEdit">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -787,7 +787,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.AutoFillColumns">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -796,7 +796,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.BiDiMode">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -805,7 +805,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.BorderSpacing">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -814,7 +814,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.BorderStyle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -823,7 +823,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.Color">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -832,7 +832,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.Constraints">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -841,7 +841,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.DefaultColWidth">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -850,7 +850,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.DefaultDrawing">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -859,7 +859,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.DefaultRowHeight">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -868,7 +868,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.DragCursor">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -877,7 +877,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.DragKind">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -886,7 +886,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.DragMode">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -895,7 +895,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.Enabled">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -904,7 +904,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.ExtendedSelect">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -913,7 +913,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.FixedColor">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -922,7 +922,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.FixedCols">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -931,7 +931,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.FixedRows">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -940,7 +940,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.Flat">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -949,7 +949,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.Font">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -958,7 +958,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.GridLineWidth">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -967,7 +967,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.HeaderHotZones">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -976,7 +976,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.HeaderPushZones">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -985,7 +985,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.MouseWheelOption">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -994,7 +994,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.ParentBiDiMode">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1003,7 +1003,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.ParentColor">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1012,7 +1012,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.ParentFont">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1021,7 +1021,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.ParentShowHint">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1030,7 +1030,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.PopupMenu">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1039,7 +1039,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.RowCount">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1048,7 +1048,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.ScrollBars">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1057,7 +1057,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.ShowHint">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1066,7 +1066,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.TabOrder">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1075,7 +1075,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.TabStop">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1084,7 +1084,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.TitleFont">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1093,7 +1093,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.TitleImageList">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1102,7 +1102,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.TitleStyle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1111,7 +1111,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.UseXORFeatures">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1120,7 +1120,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.Visible">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1129,7 +1129,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.VisibleColCount">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1138,7 +1138,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.VisibleRowCount">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1147,7 +1147,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnBeforeSelection">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1156,7 +1156,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnChangeBounds">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1165,7 +1165,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnCheckboxToggled">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1174,7 +1174,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnClick">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1183,7 +1183,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnColRowDeleted">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1192,7 +1192,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnColRowExchanged">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1201,7 +1201,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnColRowInserted">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1210,7 +1210,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnColRowMoved">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1219,7 +1219,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnCompareCells">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1228,7 +1228,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnContextPopup">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1237,7 +1237,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnDragDrop">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1246,7 +1246,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnDragOver">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1255,7 +1255,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnDblClick">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1264,7 +1264,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnDrawCell">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1273,7 +1273,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnEditingDone">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1282,7 +1282,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnEndDock">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1291,7 +1291,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnEndDrag">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1300,7 +1300,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnEnter">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1309,7 +1309,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnExit">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1318,7 +1318,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnGetEditMask">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1327,7 +1327,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnGetEditText">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1336,7 +1336,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnHeaderClick">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1345,7 +1345,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnHeaderSized">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1354,7 +1354,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnHeaderSizing">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1363,7 +1363,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnKeyDown">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1372,7 +1372,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnKeyPress">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1381,7 +1381,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnKeyUp">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1390,7 +1390,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnMouseDown">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1399,7 +1399,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnMouseMove">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1408,7 +1408,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnMouseUp">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1417,7 +1417,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnMouseWheel">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1426,7 +1426,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnMouseWheelDown">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1435,7 +1435,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnMouseWheelUp">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1444,7 +1444,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnPickListSelect">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1453,7 +1453,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnPrepareCanvas">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1462,7 +1462,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnResize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1471,7 +1471,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnSelectEditor">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1480,7 +1480,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnSelection">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1489,7 +1489,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnSelectCell">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1498,7 +1498,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnSetEditText">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1507,7 +1507,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnShowHint">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1516,7 +1516,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnStartDock">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1525,7 +1525,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnStartDrag">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1534,7 +1534,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnTopLeftChanged">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1543,7 +1543,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnUserCheckboxBitmap">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1552,7 +1552,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnUTF8KeyPress">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1561,7 +1561,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnValidateEntry">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1570,7 +1570,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.DisplayOptions">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1579,7 +1579,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.DoubleBuffered">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1588,7 +1588,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.DropDownRows">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1597,7 +1597,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.KeyOptions">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1606,7 +1606,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.Options">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1615,7 +1615,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.Strings">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1624,7 +1624,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.TitleCaptions">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1633,7 +1633,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnEditButtonClick">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1642,7 +1642,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnGetPickList">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1651,7 +1651,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnMouseEnter">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1660,7 +1660,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnMouseLeave">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1669,7 +1669,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnStringsChange">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1678,7 +1678,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnStringsChanging">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1687,7 +1687,7 @@
 
 <!-- property Visibility: published -->
 <element name="TValueListEditor.OnValidate">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -1696,7 +1696,7 @@
 
 <!-- procedure Visibility: default -->
 <element name="Register">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>

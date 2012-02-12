@@ -12523,7 +12523,8 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
         <short>How to use  <var>Grids</var> including  <var>StringGrids</var>,  <var>DrawGrids</var> and  <var>DbGrids</var>
         </short>
         <descr>
-          <p><b>Customizing grids</b></p>
+          <p><b>Customizing grids</b>
+          </p>
           <p>Grid are components derived from the <var>TCustomControl</var> class and don't have a native widget associated with them, so they are not restricted by the look of the current interface theme. This can be both an advantage and a disadvantage: usually programmers want to create a uniform-look application. Lazarus grids are flexible enough to allow programmers to make them look similar to other native controls; alternatively they can customize the grid to obtain almost the same look in any platform or widget interface (with the exception of scrollbars, whose look is still determined by the current theme).</p>
           <p>Some properties can affect the way the grid looks by acting when the cell is about to be painted in <var>PrepareCanvas/OnPrepareCanvas</var> by changing default canvas properties like brush color or font. Following is a list of such properties:</p>
           <table>
@@ -12556,7 +12557,7 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
               <td>TitleStyle</td>
               <td>
                 <p>Changes the 3D look of fixed cells. There are 3 settings:</p>
-      		      <ul>
+      &#x9;&#x9;      <ul>
                   <li><var>tsLazarus</var> The default look</li>
                   <li><var>tsNative</var> Tries to set a look that is in concordance with current widgetset theme.</li>
                   <li><var>tsStandard</var> A more contrasted look, like Delphi grids.</li>
@@ -12647,7 +12648,7 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
             <li>
               <p>As the drawing process is running, the visual state of each cell is adjusted according to grid options and position within grid. The visual state is retained in a variable of type <var>TGridDrawState</var> which is a set with following elements:
               </p>
-    			     <table>
+    &#x9;&#x9;&#x9;     <table>
                 <tr>
                   <td>gdSelected</td>
                   <td>The cell will have a selected look.</td>
@@ -12686,9 +12687,9 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
                 <li>
                   <b>OnDrawCell.</b> Next, if no handler for the <var>OnDrawCell</var> event was specified, the grid calls the
                   <var>DefaultDrawCell</var> method which simply paints the cell background using the current canvas brush color and style.
-					        If the <var>OnDrawCell</var> handler exists, the grid first paints the cell background, but only if the
+&#x9;&#x9;&#x9;&#x9;&#x9;        If the <var>OnDrawCell</var> handler exists, the grid first paints the cell background, but only if the
                   <var>DefaultDrawing</var> property was set; then it calls the <var>OnDrawCell</var> event to do custom cell painting.
-					        Usually programmers want to do custom drawing only for particular cells, but standard drawing for others: in this case, they can restrict custom operation to certain cell or cells by looking into
+&#x9;&#x9;&#x9;&#x9;&#x9;        Usually programmers want to do custom drawing only for particular cells, but standard drawing for others: in this case, they can restrict custom operation to certain cell or cells by looking into
                   <var>ACol, ARow</var> and <var>AState</var> arguments, and for other cells simply call the <var>DefaultDrawCell</var> method and let the grid to take care of it.</li>
                 <li>
                   <b>Text.</b> At this point, if the <var>DefaultDrawing</var> property is true, the cell's text content is painted (only for <var>TStringGrid</var>) .</li>
@@ -12723,7 +12724,7 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
               The public <var>EditorByStyle()</var> function takes as parameter one of the following values:
               <var>cbsAuto, cbsEllipsis, cbsNone, cbsPickList, cbsCheckboxColumn</var>.
               <br/>
-			        This method takes precedence over the first one using custom columns. A Custom cell editor can be specified here, with values specific to the cell, row or column.</li>
+&#x9;&#x9;&#x9;        This method takes precedence over the first one using custom columns. A Custom cell editor can be specified here, with values specific to the cell, row or column.</li>
           </ol>
           <p>
             <b>Description of editor styles</b>
@@ -12747,7 +12748,7 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
             <li>
               <b>cbsPickList</b> Used to present the user with a list of values that can be entered. This editor style is implemented using TPickListCellEditor, a component derived from TCustomComboBox. The list of values that are shown is filled in one of two ways depending on the method used to select the editor style.
               <br/>
-				      When using custom columns, programmers can enter a list of values using the column's PickList property. [FOR BEGINNERS: TODO: exact procedure to edit the list]</li>
+&#x9;&#x9;&#x9;&#x9;      When using custom columns, programmers can enter a list of values using the column's PickList property. [FOR BEGINNERS: TODO: exact procedure to edit the list]</li>
             <li>
               <p>
               <b>cbsCheckboxColumn</b> This editor style is at the moment only available in TDBGrid. If a field's contents associated with the column are restricted to a pair of values, for example, yes-no, true-false, on-off, 1-0, etc then cbsCheckboxColumn is used to modify the apearance of a column by using a checkbox representation that the user can toggle by using a mouse click or pressing the SPACE key.
@@ -12760,6 +12761,8 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
             </li>
           </ul>
         </descr>
+      <notes><note>Todo: samples of what can be made and what to leave for OnDrawCell?</note>
+        </notes>
       </topic>
       <element name="TStringCellEditor.msg_SetPos">
         <short>

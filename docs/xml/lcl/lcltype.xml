@@ -37,12 +37,16 @@
         <short/>
         <descr/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- alias type Visibility: default -->
       <element name="TCriticalSection">
         <short/>
         <descr/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- pointer type Visibility: default -->
       <element link="TCriticalSection" name="PCriticalSection"/>
@@ -74,6 +78,8 @@
         <short/>
         <descr/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="HDC">
@@ -89,6 +95,8 @@
         <short/>
         <descr/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="HFONT">
@@ -171,6 +179,8 @@
         </short>
         <descr/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- alias type Visibility: default -->
       <element name="HGLOBAL">
@@ -255,6 +265,8 @@
         <short/>
         <descr/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- pointer type Visibility: default -->
       <element name="PRect">
@@ -285,12 +297,16 @@
         <short/>
         <descr/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="TLCLIntfHandle">
         <short/>
         <descr/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- pointer type Visibility: default -->
       <element link="HKEY" name="PHKEY"/>
@@ -597,12 +613,16 @@
         <short/>
         <descr/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- constant Visibility: default -->
       <element name="CS_HREDRAW">
         <short/>
         <descr/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- constant Visibility: default -->
       <element name="RGN_AND">
@@ -1104,12 +1124,16 @@
         <short/>
         <descr/>
         <seealso/>
+      <notes><note>what?</note>
+        </notes>
       </element>
       <!-- constant Visibility: default -->
       <element name="HTTRANSPARENT">
         <short>Hit test: transparent area</short>
         <descr/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- constant Visibility: default -->
       <element name="HTNOWHERE">
@@ -1206,6 +1230,8 @@
         <short/>
         <descr/>
         <seealso/>
+      <notes><note>?</note>
+        </notes>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_SEPARATOR">
@@ -2886,6 +2912,8 @@
         <short/>
         <descr/>
         <seealso/>
+      <notes><note>MB_ICONASTERIsK!!!?</note>
+        </notes>
       </element>
       <!-- constant Visibility: default -->
       <element name="MB_ICONWARNING">
@@ -3303,7 +3331,7 @@
         </seealso>
       </element>
       <element name="SIF_UPDATEPOLICY">
-        <short></short>
+        <short/>
         <seealso>
           <link id="tagScrollInfo"/>
         </seealso>

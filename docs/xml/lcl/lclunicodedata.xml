@@ -1,39 +1,39 @@
-<?xml version = '1.0' encoding = 'ISO-8859-1'?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
-  <package name="lcl" >
+  <package name="lcl">
 <!--
   ====================================================================
     LCLUnicodeData
   ====================================================================
--->    <module name="LCLUnicodeData" >
+-->    <module name="LCLUnicodeData">
       <short>Container for Unicode, Inc copyrighted data.</short>
       <descr>See http://unicode.org/copyright.html for details.</descr>
-<!-- record type Visibility: default -->      <element name="TUnicodeBlock" >
+<!-- record type Visibility: default -->      <element name="TUnicodeBlock">
         <short/>
         <descr/>
         <seealso/>
       </element>
-<!-- variable Visibility: default -->      <element name="TUnicodeBlock.S" >
+<!-- variable Visibility: default -->      <element name="TUnicodeBlock.S">
         <short/>
         <descr/>
         <seealso/>
       </element>
-<!-- variable Visibility: default -->      <element name="TUnicodeBlock.E" >
+<!-- variable Visibility: default -->      <element name="TUnicodeBlock.E">
         <short/>
         <descr/>
         <seealso/>
       </element>
-<!-- variable Visibility: default -->      <element name="TUnicodeBlock.PG" >
+<!-- variable Visibility: default -->      <element name="TUnicodeBlock.PG">
         <short/>
         <descr/>
         <seealso/>
       </element>
-<!-- constant Visibility: default -->      <element name="MaxUnicodeBlocks" >
+<!-- constant Visibility: default -->      <element name="MaxUnicodeBlocks">
         <short/>
         <descr/>
         <seealso/>
       </element>
-<!-- constant Visibility: default -->      <element name="UnicodeBlocks" >
+<!-- constant Visibility: default -->      <element name="UnicodeBlocks">
         <short>This is an adapted version for ide/charactermapdlg.pas.
 See the comments in the source.
 Original data:

@@ -739,8 +739,8 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.Glyph" link="#LCL.Buttons.TCustomBitBtn.Glyph" />
-      <element name="TBitBtn.GlyphShowMode" link="#LCL.Buttons.TCustomBitBtn.GlyphShowMode" />
+      <element name="TBitBtn.Glyph" link="#LCL.Buttons.TCustomBitBtn.Glyph"/>
+      <element name="TBitBtn.GlyphShowMode" link="#LCL.Buttons.TCustomBitBtn.GlyphShowMode"/>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Kind" link="#LCL.Buttons.TCustomBitBtn.Kind">
         <descr/>

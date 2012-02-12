@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="TextStrings">
-	    <short>
+&#x9;    <short>
           <var>TTextStrings</var> describes a TStrings descendant that is optimized for handling the complete text as whole (instead of line by line)</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->

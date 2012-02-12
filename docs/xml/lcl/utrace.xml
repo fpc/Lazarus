@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="UTrace">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="sysutils">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,7 +24,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TAssertErrorAddrType">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -33,7 +33,7 @@
 
 <!-- procedure type Visibility: default -->
 <element name="TAssertErrorProc">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -42,27 +42,27 @@
 
 <!-- argument Visibility: default -->
 <element name="TAssertErrorProc.Msg">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TAssertErrorProc.FN">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TAssertErrorProc.LineNo">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TAssertErrorProc.TheAddr">
-<short></short>
+<short/>
 </element>
 
 <!-- variable Visibility: default -->
 <element name="TraceFileName">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -71,7 +71,7 @@
 
 <!-- variable Visibility: default -->
 <element name="OldProcPointer">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>

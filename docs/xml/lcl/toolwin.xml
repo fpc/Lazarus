@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="Toolwin">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,7 +24,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Controls">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -33,7 +33,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="SysUtils">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -42,7 +42,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="GraphType">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -51,7 +51,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Graphics">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -60,7 +60,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLType">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -69,7 +69,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLIntf">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -78,7 +78,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="StdCtrls">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -87,7 +87,7 @@
 
 <!-- enumeration type Visibility: default -->
 <element name="TEdgeBorder">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -96,27 +96,27 @@
 
 <!-- enumeration value Visibility: default -->
 <element name="TEdgeBorder.ebLeft">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TEdgeBorder.ebTop">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TEdgeBorder.ebRight">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TEdgeBorder.ebBottom">
-<short></short>
+<short/>
 </element>
 
 <!-- set type Visibility: default -->
 <element name="TEdgeBorders">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -125,7 +125,7 @@
 
 <!-- enumeration type Visibility: default -->
 <element name="TEdgeStyle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -134,22 +134,22 @@
 
 <!-- enumeration value Visibility: default -->
 <element name="TEdgeStyle.esNone">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TEdgeStyle.esRaised">
-<short></short>
+<short/>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TEdgeStyle.esLowered">
-<short></short>
+<short/>
 </element>
 
 <!-- object Visibility: default -->
 <element name="TToolWindow">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -160,7 +160,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TToolWindow.FEdgeBorders">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -169,7 +169,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TToolWindow.FEdgeInner">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -178,7 +178,7 @@
 
 <!-- variable Visibility: private -->
 <element name="TToolWindow.FEdgeOuter">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -187,7 +187,7 @@
 
 <!-- procedure Visibility: private -->
 <element name="TToolWindow.SetEdgeBorders">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -198,12 +198,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TToolWindow.SetEdgeBorders.Value">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TToolWindow.SetEdgeInner">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -214,12 +214,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TToolWindow.SetEdgeInner.Value">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: private -->
 <element name="TToolWindow.SetEdgeOuter">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -230,12 +230,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TToolWindow.SetEdgeOuter.Value">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TToolWindow.Paint">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -246,7 +246,7 @@
 
 <!-- constructor Visibility: public -->
 <element name="TToolWindow.Create">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -257,12 +257,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TToolWindow.Create.TheOwner">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TToolWindow.AdjustClientRect">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -273,12 +273,12 @@
 
 <!-- argument Visibility: default -->
 <element name="TToolWindow.AdjustClientRect.ARect">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TToolWindow.EdgeBorders">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -287,7 +287,7 @@
 
 <!-- property Visibility: public -->
 <element name="TToolWindow.EdgeInner">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -296,7 +296,7 @@
 
 <!-- property Visibility: public -->
 <element name="TToolWindow.EdgeOuter">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>

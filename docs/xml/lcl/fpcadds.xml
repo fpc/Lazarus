@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -9,13 +9,13 @@
 -->
 
 <module name="FPCAdds">
-<short></short>
+<short/>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -24,7 +24,7 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="SysUtils">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -33,7 +33,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TStreamSeekType">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -42,7 +42,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TMemStreamSeekType">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -51,7 +51,7 @@
 
 <!-- alias type Visibility: default -->
 <element name="TCompareMemSize">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -60,7 +60,7 @@
 
 <!-- pointer type Visibility: default -->
 <element name="PHandle">
-<short></short>
+<short/>
 <descr>
 </descr>
 <seealso>
@@ -69,7 +69,7 @@
 
 <!-- function Visibility: default -->
 <element name="StrToWord">
-<short></short>
+<short/>
 <descr>
 </descr>
 <errors>
@@ -80,12 +80,12 @@
 
 <!-- function result Visibility: default -->
 <element name="StrToWord.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="StrToWord.s">
-<short></short>
+<short/>
 </element>
 </module> <!-- FPCAdds -->
 </package>
