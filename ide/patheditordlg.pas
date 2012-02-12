@@ -27,9 +27,9 @@ unit PathEditorDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, SynEdit, Buttons, StdCtrls, Dialogs,
-  FileUtil, ButtonPanel, ExtCtrls, EditBtn, MacroIntf, LCLType,
-  LazarusIDEStrConsts, EditorOptions;
+  Classes, SysUtils, Forms, Controls, Buttons, StdCtrls, Dialogs,
+  FileUtil, ButtonPanel, ExtCtrls, EditBtn, MacroIntf, LCLType, Graphics,
+  types, TransferMacros, LazarusIDEStrConsts;
 
 type
 
@@ -60,6 +60,8 @@ type
     procedure FormResize(Sender: TObject);
     procedure MoveDownButtonClick(Sender: TObject);
     procedure MoveUpButtonClick(Sender: TObject);
+    procedure PathListBoxDrawItem(Control: TWinControl; Index: Integer;
+      ARect: TRect; State: TOwnerDrawState);
     procedure PathListBoxKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure PathListBoxSelectionChange(Sender: TObject; User: boolean);
@@ -72,8 +74,9 @@ type
     function GetPath: string;
     function GetTemplates: string;
     function PathToText(const APath: string): string;
-    function RelativePathHelper: String;
-    function AbsolutePathHelper: String;
+    function BaseRelative(const APath: string): String;
+    function PathAsAbsolute(const APath: string): String;
+    function PathMayExist(APath: string): TObject;
     procedure SetBaseDirectory(const AValue: string);
     procedure SetPath(const AValue: string);
     procedure SetTemplates(const AValue: string);
@@ -108,9 +111,6 @@ implementation
 
 {$R *.lfm}
 
-uses 
-  Math;
-
 var PathEditor: TPathEditorDialog;
 
 function PathEditorDialog: TPathEditorDialog;
@@ -122,54 +122,76 @@ end;
 
 { TPathEditorDialog }
 
-function TPathEditorDialog.RelativePathHelper: String;
+function TPathEditorDialog.BaseRelative(const APath: string): String;
 begin
-  Result:=DirectoryEdit.Text;
+  Result:=Trim(APath);
   if (FEffectiveBaseDirectory<>'') and FilenameIsAbsolute(FEffectiveBaseDirectory) then
     Result:=CreateRelativePath(Result, FEffectiveBaseDirectory);
 end;
 
-function TPathEditorDialog.AbsolutePathHelper: String;
+function TPathEditorDialog.PathAsAbsolute(const APath: string): String;
 begin
-  Result:=PathListBox.Items[PathListBox.ItemIndex];
-  if (FEffectiveBaseDirectory<>'') and FilenameIsAbsolute(FEffectiveBaseDirectory) then
+  Result:=APath;
+  if not TTransferMacroList.StrHasMacros(Result)  // not a template
+  and (FEffectiveBaseDirectory<>'') and FilenameIsAbsolute(FEffectiveBaseDirectory) then
     Result:=CreateAbsolutePath(Result, FEffectiveBaseDirectory);
+end;
+
+function TPathEditorDialog.PathMayExist(APath: string): TObject;
+// Returns 1 if path exists or contains a macro, 0 otherwise.
+// Result is casted to TObject to be used for Strings.Objects.
+begin
+  if TTransferMacroList.StrHasMacros(APath) then
+    Exit(TObject(1));
+  Result:=TObject(0);
+  if (FEffectiveBaseDirectory<>'') and FilenameIsAbsolute(FEffectiveBaseDirectory) then
+    APath:=CreateAbsolutePath(APath, FEffectiveBaseDirectory);
+  if DirectoryExists(APath) then
+    Result:=TObject(1);
 end;
 
 procedure TPathEditorDialog.AddButtonClick(Sender: TObject);
 var
   y: integer;
+  RelPath: String;
 begin
-  y:=PathListBox.ItemIndex+1;
-  if y=0 then
-    y:=PathListBox.Count;
-  PathListBox.Items.Insert(y,Trim(RelativePathHelper));
-  PathListBox.ItemIndex:=y;
-  UpdateButtons;
+  with PathListBox do begin
+    y:=ItemIndex+1;
+    if y=0 then
+      y:=Count;
+    RelPath:=BaseRelative(DirectoryEdit.Text);
+    Items.InsertObject(y, RelPath, PathMayExist(DirectoryEdit.Text));
+    ItemIndex:=y;
+    UpdateButtons;
+  end;
 end;
 
 procedure TPathEditorDialog.ReplaceButtonClick(Sender: TObject);
+var
+  RelPath: String;
 begin
-  if PathListBox.ItemIndex>-1 then begin
-    PathListBox.Items[PathListBox.ItemIndex]:=Trim(RelativePathHelper);
+  with PathListBox do begin
+    RelPath:=BaseRelative(DirectoryEdit.Text);
+    Items[ItemIndex]:=RelPath;
+    Items.Objects[ItemIndex]:=PathMayExist(DirectoryEdit.Text);
     UpdateButtons;
   end;
 end;
 
 procedure TPathEditorDialog.DeleteButtonClick(Sender: TObject);
-var
-  y: integer;
 begin
-  y:=PathListBox.ItemIndex;
-  if (y>=0) and (y<PathListBox.Count) then begin
-    PathListBox.Items.Delete(y);
-    UpdateButtons;
-  end;
+  PathListBox.Items.Delete(PathListBox.ItemIndex);
+  UpdateButtons;
 end;
 
 procedure TPathEditorDialog.DeleteInvalidPathsButtonClick(Sender: TObject);
+var
+  i: Integer;
 begin
-  ;
+  with PathListBox do
+    for i:=Items.Count-1 downto 0 do
+      if PtrInt(Items.Objects[i])=0 then
+        Items.Delete(i);
 end;
 
 procedure TPathEditorDialog.AddTemplateButtonClick(Sender: TObject);
@@ -180,18 +202,38 @@ begin
   for i:=0 to TemplatesListBox.Items.Count-1 do begin
     if TemplatesListBox.Selected[i]
     and (PathListBox.Items.IndexOf(TemplatesListBox.Items[i])=-1) then begin
-      PathListBox.Items.Add(TemplatesListBox.Items[i]);
+      PathListBox.Items.AddObject(TemplatesListBox.Items[i], TObject(1));
       y:=PathListBox.Count-1;
     end;
   end;
-  if y>=1 then
+  if y>=1 then begin
     PathListBox.ItemIndex:=y;
-  UpdateButtons;
+    UpdateButtons;
+  end;
 end;
 
 procedure TPathEditorDialog.DirectoryEditChange(Sender: TObject);
 begin
   UpdateButtons;
+end;
+
+procedure TPathEditorDialog.PathListBoxSelectionChange(Sender: TObject; User: boolean);
+begin
+  with PathListBox do
+    if ItemIndex>-1 then begin
+      DirectoryEdit.Text:=PathAsAbsolute(Items[ItemIndex]);
+      UpdateButtons;
+    end;
+end;
+
+procedure TPathEditorDialog.TemplatesListBoxSelectionChange(Sender: TObject; User: boolean);
+begin
+  UpdateButtons;
+end;
+
+procedure TPathEditorDialog.TemplatesListBoxDblClick(Sender: TObject);
+begin
+  AddTemplateButtonClick(Nil);
 end;
 
 procedure TPathEditorDialog.FormCreate(Sender: TObject);
@@ -257,6 +299,18 @@ begin
   end;
 end;
 
+procedure TPathEditorDialog.PathListBoxDrawItem(Control: TWinControl;
+  Index: Integer; ARect: TRect; State: TOwnerDrawState);
+begin
+  if Index < 0 then Exit;
+  with PathListBox do begin
+    Canvas.FillRect(ARect);
+    if PtrInt(Items.Objects[Index]) = 0 then
+      Canvas.Font.Color := clGray;
+    Canvas.TextRect(ARect, ARect.Left, ARect.Top, Items[Index]);
+  end;
+end;
+
 procedure TPathEditorDialog.PathListBoxKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -266,31 +320,6 @@ begin
     else
       MoveDownButtonClick(Nil);
     Key:=VK_UNKNOWN;
-  end;
-end;
-
-procedure TPathEditorDialog.PathListBoxSelectionChange(Sender: TObject; User: boolean);
-begin
-  if PathListBox.ItemIndex>-1 then begin
-    DirectoryEdit.Text:=AbsolutePathHelper;
-    UpdateButtons;
-  end;
-end;
-
-procedure TPathEditorDialog.TemplatesListBoxSelectionChange(Sender: TObject; User: boolean);
-begin
-  UpdateButtons;
-end;
-
-procedure TPathEditorDialog.TemplatesListBoxDblClick(Sender: TObject);
-var
-  i: integer;
-begin
-  i := TemplatesListBox.ItemIndex;
-  if i>=0 then begin
-    PathListBox.Items.Add(TemplatesListBox.Items[i]);
-    PathListBox.ItemIndex:=PathListBox.Count-1;
-    UpdateButtons;
   end;
 end;
 
@@ -305,8 +334,21 @@ begin
 end;
 
 procedure TPathEditorDialog.SetPath(const AValue: string);
+var
+  sl: TStringList;
+  i: Integer;
 begin
-  PathListBox.Items.Text:=PathToText(AValue);
+  DirectoryEdit.Text:='';
+  PathListBox.Items.Clear;
+  sl:=TstringList.Create();
+  try
+    sl.Text:=PathToText(AValue);
+    for i:=0 to sl.Count-1 do
+      PathListBox.Items.AddObject(sl[i], PathMayExist(sl[i]));
+    PathListBox.ItemIndex:=-1;
+  finally
+    sl.Free;
+  end;
 end;
 
 procedure TPathEditorDialog.SetTemplates(const AValue: string);
@@ -376,15 +418,23 @@ end;
 procedure TPathEditorDialog.UpdateButtons;
 var
   i: integer;
+  InValidPathsExist: Boolean;
 begin
   // Replace / add / delete / Delete Invalid Paths
   ReplaceButton.Enabled:=(DirectoryEdit.Text<>'') and (DirectoryEdit.Text<>FEffectiveBaseDirectory)
-      and (PathListBox.Items.IndexOf(RelativePathHelper)=-1);
+      and (PathListBox.Items.IndexOf(BaseRelative(DirectoryEdit.Text))=-1);
   AddButton.Enabled:=ReplaceButton.Enabled;
   DeleteButton.Enabled:=PathListBox.ItemIndex>-1;
-  DeleteInvalidPathsButton.Enabled:=False;
   AddTemplateButton.Enabled:=(TemplatesListBox.SelCount>1) or ((TemplatesListBox.ItemIndex>-1)
       and (PathListBox.Items.IndexOf(TemplatesListBox.Items[TemplatesListBox.ItemIndex])=-1));
+  // Delete non-existent paths button. Check if there are any.
+  InValidPathsExist:=False;
+  for i:=0 to PathListBox.Items.Count-1 do
+    if PtrInt(PathListBox.Items.Objects[i])=0 then begin
+      InValidPathsExist:=True;
+      Break;
+    end;
+  DeleteInvalidPathsButton.Enabled:=InValidPathsExist;
   // Move up / down buttons
   i := PathListBox.ItemIndex;
   MoveUpButton.Enabled := i > 0;

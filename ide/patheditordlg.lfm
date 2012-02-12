@@ -96,8 +96,10 @@ object PathEditorDialog: TPathEditorDialog
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ItemHeight = 0
+      OnDrawItem = PathListBoxDrawItem
       OnKeyDown = PathListBoxKeyDown
       OnSelectionChange = PathListBoxSelectionChange
+      Style = lbOwnerDrawFixed
       TabOrder = 0
     end
     object DirectoryEdit: TDirectoryEdit
@@ -198,6 +200,7 @@ object PathEditorDialog: TPathEditorDialog
       BorderSpacing.Around = 6
       ItemHeight = 0
       MultiSelect = True
+      OnDblClick = TemplatesListBoxDblClick
       OnSelectionChange = TemplatesListBoxSelectionChange
       TabOrder = 0
     end
