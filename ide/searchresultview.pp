@@ -474,7 +474,7 @@ var
   CurrentTV: TLazSearchResultTV;
 begin
   CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
-  if Assigned(CurrentTV) then begin
+  if Assigned(CurrentTV) and not (csDestroying in CurrentTV.ComponentState) then begin
     SearchInListEdit.FilteredTreeview := CurrentTV;
     SearchInListEdit.Filter := CurrentTV.SearchInListPhrases;
   end;
