@@ -4273,9 +4273,8 @@ resourcestring
     +'the pascal code manually.';
   lisFixLFMFile = 'Fix LFM file';
   lisMissingEvents = 'Missing Events';
-  lisTheFollowingMethodsUsedByAreNotInTheSourceRemoveTh = 'The following '
-    +'methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling '
-    +'references?';
+  lisTheFollowingMethodsUsedByAreNotInTheSourceRemoveTh = 'The following methods '
+    +'used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?';
 
   // extract proc dialog
   lisNoCodeSelected = 'No code selected';
@@ -4297,9 +4296,8 @@ resourcestring
   lisSubProcedure = 'Sub Procedure';
   lisSubProcedureOnSameLevel = 'Sub Procedure on same level';
   lisFreePascalCompilerNotFound = 'Free Pascal Compiler not found';
-  lisTheFreePascalCompilerFilenameWasNotFoundItIsRecomm = 'The Free Pascal '
-    +'compiler (filename: %s) was not found.%sIt is recommended that you '
-    +'install fpc.';
+  lisTheFreePascalCompilerFilenameWasNotFoundItIsRecomm = 'The Free Pascal compiler '
+    +'(filename: %s) was not found.%sIt is recommended that you install fpc.';
   lisInvalidCompilerFilename = 'Invalid Compiler Filename';
   lisTheCurrentCompilerFilenameIsNotAValidExecutablePlease = 'The current '
     +'compiler filename %s%s%s%sis not a valid executable.%sPlease check '
@@ -4307,8 +4305,7 @@ resourcestring
   lisFreePascalSourcesNotFound = 'Free Pascal Sources not found';
   lisTheFreePascalSourceDirectoryWasNotFoundSomeCodeFun = 'The Free Pascal '
     +'source directory was not found.%sSome code functions will not work.%sIt '
-    +'is recommended that you install it and set the path%sTools -> '
-    +'Options -> Files';
+    +'is recommended that you install it and set the path%sTools -> Options -> Files';
   lisInvalidFreePascalSourceDirectory = 'Invalid Free Pascal source directory';
   lisTheCurrentFreePascalSourceDirectoryDoesNotLookCorr2 = 'The current Free '
     +'Pascal source directory %s%s%s%sdoes not look correct.%sCheck '
@@ -4316,13 +4313,11 @@ resourcestring
   lisLazarusDirectoryNotFound = 'Lazarus directory not found';
   lisTheCurrentLazarusDirectoryDoesNotLookCorrectWithou2 = 'The current '
     +'Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will '
-    +'not be able to create LCL applications.%sCheck Tools -> '
-    +'Options -> Files';
+    +'not be able to create LCL applications.%sCheck Tools -> Options -> Files';
   lisTheCurrentLazarusDirectoryDoesNotLookCorrectWithou = 'The current '
     +'Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will '
     +'not be able to create LCL applications.%sChoose Ok to choose the '
-    +'default %s%s%s.%sOtherwise check Tools -> Options -> '
-    +'Files';
+    +'default %s%s%s.%sOtherwise check Tools -> Options -> Files';
   lisTheLazarusDirectoryWasNotFoundYouWillNotBeAbleToCr = 'The Lazarus '
     +'directory was not found.%sYou will not be able to create LCL '
     +'applications.%sPlease check Tools -> Options -> Files';
