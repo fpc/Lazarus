@@ -1075,8 +1075,8 @@ begin
   ValueNotebook.Page[1].Caption := lisCodeToolsDefsValueAsFilePaths;
   ValueNotebook.PageIndex := 0;
 
-  MoveFilePathUpBitBtn.Caption:=dlgUpWord;
-  MoveFilePathDownBitBtn.Caption:=dlgDownWord;
+  MoveFilePathUpBitBtn.Caption:=lisUp;
+  MoveFilePathDownBitBtn.Caption:=lisDown;
   DeleteFilePathBitBtn.Caption:=dlgEdDelete;
   InsertFilePathBitBtn.Caption:=lisEdtExtToolInsert;
 

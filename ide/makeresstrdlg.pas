@@ -293,7 +293,7 @@ begin
 
   // OK, Cancel, Help buttons
   OkButton.Caption:=lisOk;
-  CancelButton.Caption:=dlgCancel;
+  CancelButton.Caption:=lisCancel;
   HelpButton.Caption:=lisMenuHelp;
 end;
 

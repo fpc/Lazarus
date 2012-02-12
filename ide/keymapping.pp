@@ -265,8 +265,8 @@ begin
     ecNone                    : Result:= dlgEnvNone;
     ecLeft                    : Result:= lisLeft;
     ecRight                   : Result:= lisRight;
-    ecUp                      : Result:= dlgUpWord;
-    ecDown                    : Result:= dlgDownWord;
+    ecUp                      : Result:= lisUp;
+    ecDown                    : Result:= lisDown;
     ecWordLeft                : Result:= srkmecWordLeft;
     ecWordRight               : Result:= srkmecWordRight;
     ecWordEndLeft             : Result:= srkmecWordEndLeft;

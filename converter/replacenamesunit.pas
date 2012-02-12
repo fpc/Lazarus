@@ -287,7 +287,7 @@ begin
   Caption:=lisReplacements;
   ButtonPanel.OKButton.Caption := lisOk;
   ButtonPanel.HelpButton.Caption := lisMenuHelp;
-  ButtonPanel.CancelButton.Caption := dlgCancel;
+  ButtonPanel.CancelButton.Caption := lisCancel;
 end;
 
 procedure TReplaceForm.PopupMenu1Popup(Sender: TObject);

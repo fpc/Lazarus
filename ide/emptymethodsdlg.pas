@@ -293,7 +293,7 @@ begin
   Sections:=AllPascalClassSections;
   
   ButtonPanel1.OKButton.Caption:=lisEMDRemoveMethods;
-  ButtonPanel1.CancelButton.Caption:=dlgCancel;
+  ButtonPanel1.CancelButton.Caption:=lisCancel;
 
   EditorOpts.GetSynEditSettings(MethodsSynEdit);
 end;

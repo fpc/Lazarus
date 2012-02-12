@@ -73,8 +73,8 @@ constructor TIDEExceptionDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Caption := lisExceptionDialog;
-  btnBreak.Caption := lisBtnBreak;
-  btnContinue.Caption := lisBtnContinue;
+  btnBreak.Caption := lisBreak;
+  btnContinue.Caption := lisContinue;
   cbIgnoreExceptionType.Caption := lisIgnoreExceptionType;
 
   btnBreak.LoadGlyphFromLazarusResource('menu_pause');

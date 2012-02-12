@@ -124,8 +124,8 @@ begin
   SnapshotNotification.OnCurrent  := @LocalsChanged;
 
   Caption:= lisLocals;
-  lvLocals.Columns[0].Caption:= lisLocalsDlgName;
-  lvLocals.Columns[1].Caption:= lisLocalsDlgValue;
+  lvLocals.Columns[0].Caption:= lisName;
+  lvLocals.Columns[1].Caption:= lisValue;
   actInspect.Caption := lisInspect;
   actWath.Caption := lisWatch;
   actEvaluate.Caption := lisEvaluateModify;

@@ -112,7 +112,7 @@ begin
       Name:='OkButton';
       Parent:=Self;
       SetBounds(Self.ClientWidth-200,Self.ClientHeight-40,80,25);
-      Caption:=lisLazBuildOk;
+      Caption:=lisOk;
       OnClick:=@OkButtonClick;
       Visible:=true;
     end;
@@ -122,7 +122,7 @@ begin
       Name:='CancelButton';
       Parent:=Self;
       SetBounds(Self.ClientWidth-100,Self.ClientHeight-40,80,25);
-      Caption:=dlgCancel;
+      Caption:=lisCancel;
       OnClick:=@CancelButtonClick;
       Visible:=true;
     end;

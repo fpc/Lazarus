@@ -83,8 +83,8 @@ end;
 procedure TDebuggerSignalsOptions.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   gbSignals.Caption := lisDebugOptionsFrmSignals;
-  lvSignals.Column[0].Caption := lisDebugOptionsFrmName;
-  lvSignals.Column[1].Caption := lisDebugOptionsFrmID;
+  lvSignals.Column[0].Caption := lisName;
+  lvSignals.Column[1].Caption := lisId;
   lvSignals.Column[2].Caption := lisDebugOptionsFrmHandledBy;
   lvSignals.Column[3].Caption := lisDebugOptionsFrmResume;
   cmdSignalAdd.Caption := lisAdd;

@@ -240,8 +240,8 @@ constructor TThreadsDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Caption:= lisThreads;
-  lvThreads.Column[1].Caption := lisThreadsID;
-  lvThreads.Column[2].Caption := lisThreadsName;
+  lvThreads.Column[1].Caption := lisId;
+  lvThreads.Column[2].Caption := lisName;
   lvThreads.Column[3].Caption := lisThreadsState;
   lvThreads.Column[4].Caption := lisThreadsSrc;
   lvThreads.Column[5].Caption := lisThreadsLine;

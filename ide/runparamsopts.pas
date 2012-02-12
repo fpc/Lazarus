@@ -370,7 +370,7 @@ begin
   Caption := dlgRunParameters;
   ButtonPanel.OKButton.Caption:=lisOk;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
-  ButtonPanel.CancelButton.Caption:=dlgCancel;
+  ButtonPanel.CancelButton.Caption:=lisCancel;
   SetupNotebook;
 end;
 
@@ -412,8 +412,8 @@ begin
   with SystemVariablesListView do
   begin
     Columns.BeginUpdate;
-    Columns[0].Caption := dlgRunOVariable;
-    Columns[1].Caption := dlgRunOValue;
+    Columns[0].Caption := lisVariable;
+    Columns[1].Caption := lisValue;
     Columns.EndUpdate;
   end;
 
@@ -422,8 +422,8 @@ begin
   with UserOverridesListView do
   begin
     Columns.BeginUpdate;
-    Columns[0].Caption := dlgRunOVariable;
-    Columns[1].Caption := dlgRunOValue;
+    Columns[0].Caption := lisVariable;
+    Columns[1].Caption := lisValue;
     Columns.EndUpdate;
   end;
 

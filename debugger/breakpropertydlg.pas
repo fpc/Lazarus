@@ -428,7 +428,7 @@ begin
 
   ButtonPanel.OKButton.Caption:=lisOk;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
-  ButtonPanel.CancelButton.Caption:=dlgCancel;
+  ButtonPanel.CancelButton.Caption:=lisCancel;
 end;
 
 destructor TBreakPropertyDlg.Destroy;

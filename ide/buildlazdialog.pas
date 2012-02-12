@@ -671,7 +671,7 @@ begin
   CompileButton.Caption := lisLazBuildBuild;
   CompileAdvancedButton.Caption := lisLazBuildBuildMany;
   SaveSettingsButton.Caption := lisSaveSettings;
-  CancelButton.Caption := lisLazBuildCancel;
+  CancelButton.Caption := lisCancel;
   HelpButton.Caption := lisMenuHelp;
 
   DefinesLabel.Caption := lisLazBuildDefines;

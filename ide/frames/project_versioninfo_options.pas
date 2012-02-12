@@ -106,8 +106,8 @@ begin
   LanguageSelectionLabel.Caption := rsLanguageSelection;
   CharacterSetLabel.Caption := rsCharacterSet;
   OtherInfoGroupBox.Caption := rsOtherInfo;
-  StringInfo.Cells[0, 0] := rsKey;
-  StringInfo.Cells[0, 1] := rsValue;
+  StringInfo.Cells[0, 0] := lisKey;
+  StringInfo.Cells[0, 1] := lisValue;
   // fill comboboxes
   Items := TStringList.Create;
   try

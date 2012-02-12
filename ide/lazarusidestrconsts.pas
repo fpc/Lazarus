@@ -43,6 +43,24 @@ resourcestring
   // Common strings that can be used around Lazarus:
   lisAdd  = 'Add';
   lisChange  = 'Change';
+  lisDelete  = 'Delete';
+  lisOk = '&OK';
+  rsOk = 'OK';
+  lisCancel = 'Cancel';
+  lisContinue = 'Continue';
+  lisBreak = 'Break';
+  lisDown = 'Down';
+  lisUp   = 'Up';
+  lisRight = 'Right';
+  lisLeft = 'Left';
+  lisTop = 'Top';
+  lisBottom = 'Bottom';
+  lisName = 'Name';
+  lisKey = 'Key';
+  lisValue = 'Value';
+  lisVariable = 'Variable';
+  lisPath = 'Path';
+  lisId = 'ID';
 
   // errors
   lisErrInvalidOption = 'Invalid option at position %d: "%s"';
@@ -363,7 +381,6 @@ resourcestring
   lisMenuRunToCursor = 'Run to &Cursor';
   lisKMStopProgram = 'Stop Program';
   lisMenuStop = 'Stop';
-  lisContinue = 'Continue';
   lisContinueAndDoNotAskAgain = 'Continue and do not ask again';
   lisSuspiciousUnitPath = 'Suspicious unit path';
   lisThePackageAddsThePathToTheUnitPathOfTheIDEThisIsPr = 'The package %s '
@@ -1026,7 +1043,6 @@ resourcestring
   lisIncludeFilter = 'Include filter';
   dlgEnvBckup = 'Backup';
   dlgNaming = 'Naming';
-  dlgCancel = 'Cancel';
   lisInformation = 'Information';
   lisQuickFixes = 'Quick fixes';
   lisAutoCompletionOn = 'Auto completion: on';
@@ -1059,8 +1075,6 @@ resourcestring
     +'this name.%sFile: %s';
   lisPEUnitnameAndFilenameDoNotMatchExampleUnit1PasAndUni = 'Unitname and '
     +'Filename do not match.%sExample: unit1.pas and Unit1';
-  lisOk = '&OK';
-  lisCancel = 'Cancel';
   lisCMParameter = 'Parameter';
   lisInsertMacro = 'Insert Macro';
   lisCTPleaseSelectAMacro = 'please select a macro';
@@ -1111,7 +1125,6 @@ resourcestring
   dlgProjFiles = 'Project Files';
   dlgEnvType = 'Type';
   dlgEnvNone = 'None';
-  lisLeft = 'Left';
   dlgSmbFront = 'Symbol in front (.~pp)';
   lisNoBackupFiles = 'No backup files';
   dlgSmbBehind = 'Symbol behind (.pp~)';
@@ -1251,10 +1264,9 @@ resourcestring
   dlgAllFiles = 'All files';
   lisExecutable = 'Executable';
   lisEditorFileTypes = 'Editor file types';
-  lisOld = 'old';
-  lisNew = 'new';
-  lisRemove = 'remove';
-  lisKeep = 'keep';
+  lisPkgMgrNew = 'new';
+  lisPkgMgrRemove = 'remove';
+  lisPkgMgrKeep = 'keep';
   lisConfirmNewPackageSetForTheIDE = 'Confirm new package set for the IDE';
   lisConfirmPackageNewPackageSet = 'New package set';
   lisConfirmPackageOldPackageSet = 'Old package set';
@@ -1298,10 +1310,6 @@ resourcestring
   dlgTabNumbersNotebook = 'Show tab numbers in notebook';
   dlgNotebookTabPos = 'Source notebook tabs position';
   dlgUseTabsHistory = 'Use tab history when closing tabs';
-  dlgNotebookTabPosTop = 'Top';
-  dlgNotebookTabPosBottom = 'Bottom';
-  dlgNotebookTabPosLeft = 'Left';
-  dlgNotebookTabPosRight = 'Right';
   dlgShowScrollHint = 'Show scroll hint';
   dlgShowGutterHints = 'Show gutter hints';
   dlgSmartTabs = 'Smart tabs';
@@ -1431,8 +1439,6 @@ resourcestring
   dlgMouseOptBtnExtra2 = 'Extra 2';
   dlgMouseOptBtnWheelUp = 'Wheel up';
   dlgMouseOptBtnWheelDown = 'Wheel down';
-  dlgMouseOptBtnDown = 'Down';
-  dlgMouseOptBtnUp   = 'Up';
   dlgMouseOptBtn1   = 'Single';
   dlgMouseOptBtn2   = 'Double';
   dlgMouseOptBtn3   = 'Triple';
@@ -1447,15 +1453,12 @@ resourcestring
   dlgMouseOptModShift = 'Shift';
   dlgMouseOptModAlt   = 'Alt';
   dlgMouseOptModCtrl  = 'Ctrl';
-  dlgMouseOptBtnDel  = 'Delete';
   dlgMouseOptOtherAct  = 'Other actions using the same button';
   dlgMouseOptOtherActHint  = 'They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down ...';
   dlgMouseOptOtherActToggle = 'Filter Mod-Keys';
   dlgMouseOptBtnImport = 'Import';
   dlgMouseOptBtnExport = 'Export';
-  dlgMouseOptBtnOk  = 'OK';
   lisDoNotShowThisMessageAgain = 'Do not show this message again';
-  dlgMouseOptBtnCancel  = 'Cancel';
   dlgMouseOptBtnModDef = 'Make Fallback';
   dlgMouseOptPriorLabel = 'Priority';
   dlgMouseOptOpt2Label = 'Opt';
@@ -1818,18 +1821,13 @@ resourcestring
     +'that: Error in the base directory:';
   lisErrorInTheSearchPathForOtherUnitFiles = 'Error in the search path for "'
     +'Other unit files":';
-  lisErrorInTheSearchPathForIncludeFiles = 'Error in the search path for "'
-    +'Include files":';
-  lisErrorInTheSearchPathForObjectFiles = 'Error in the search path for "'
-    +'Object files":';
-  lisErrorInTheSearchPathForLibraries = 'Error in the search path for "'
-    +'Libraries":';
-  lisErrorInTheSearchPathForOtherSources = 'Error in the search path for "'
-    +'Other sources":';
+  lisErrorInTheSearchPathForIncludeFiles = 'Error in the search path for "Include files":';
+  lisErrorInTheSearchPathForObjectFiles = 'Error in the search path for "Object files":';
+  lisErrorInTheSearchPathForLibraries = 'Error in the search path for "Libraries":';
+  lisErrorInTheSearchPathForOtherSources = 'Error in the search path for "Other sources":';
   lisErrorInTheCustomLinkerOptionsLinkingPassOptionsToL = 'Error in the '
     +'custom linker options (Linking / Pass options to linker):';
-  lisErrorInTheCustomCompilerOptionsOther = 'Error in the custom compiler '
-    +'options (Other):';
+  lisErrorInTheCustomCompilerOptionsOther = 'Error in the custom compiler options (Other):';
   lisErrorInTheUnitOutputDirectory = 'Error in the "unit output directory":';
   lisErrorInTheCompilerFileName = 'Error in the compiler file name:';
   lisErrorInTheDebuggerPathAddition = 'Error in the "Debugger path addition":';
@@ -2140,8 +2138,6 @@ resourcestring
   rsLanguageSelection = 'Language selection:';
   rsCharacterSet = 'Character set:';
   rsOtherInfo = 'Other info';
-  rsKey = 'Key';
-  rsValue = 'Value';
   dlgPOSaveSession = 'Session';
   dlgApplicationSettings = 'Application settings';
   dlgPOTitle = 'Title:';
@@ -2193,8 +2189,6 @@ resourcestring
   dlgRunODisplay = 'Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)';
   dlgRunOUsedisplay = 'Use display';
   dlgRunOSystemVariables = 'System variables';
-  dlgRunOVariable = 'Variable';
-  dlgRunOValue = 'Value';
   dlgRunOUserOverrides = 'User overrides';
   dlgIncludeSystemVariables = 'Include system variables';
   dlgDirectoryDoesNotExist = 'Directory does not exist';
@@ -2282,9 +2276,6 @@ resourcestring
   dlgDirection = 'Direction';
   lisFRForwardSearch = 'Forwar&d search';
   lisFRBackwardSearch = '&Backward search';
-  dlgUpWord = 'Up';
-  lisRight = 'Right';
-  dlgDownWord = 'Down';
   dlgReplaceAll = 'Replace &All';
   
   // IDEOptionDefs
@@ -2927,7 +2918,6 @@ resourcestring
   lisLazBuildUpdateRevInc = 'Update revision.inc';
   lisLazBuildCommonSettings = 'Common Settings';
   lisLazBuildConfirmBuild = 'Confirm before build';
-  lisLazBuildOk = 'OK';
   lisPERemoveFiles = 'Remove files';
   lisLazBuildNewProf = 'Add New Profile';
   lisLazBuildNewProfInfo = 'Current build options will be associated with:';
@@ -2942,7 +2932,6 @@ resourcestring
   lisLazBuildRenameProfInfo = 'New name for profile:';
   lisCTDTemplates = 'Templates';
   lisSaveSettings = 'Save Settings';
-  lisLazBuildCancel = 'Cancel';
   lisLazBuildBuild = 'Build';
   lisLazBuildBuildMany = 'Build Many';
   lisLazBuildBuildingIDE = 'Building IDE';
@@ -3000,7 +2989,6 @@ resourcestring
     +'config file not found - using defaults';
      
   // codetools options dialog
-  lisCodeToolsOptsOk          = 'Ok';
   lisCodeToolsOptsNone        = 'None';
   lisCodeToolsOptsKeyword     = 'Keyword';
   lisCodeToolsOptsIdentifier  = 'Identifier';
@@ -3038,26 +3026,21 @@ resourcestring
   lisUnableToWriteTheProjectSessionFileError = 'Unable to write the project '
     +'session file%s"%s".%sError: %s';
   lisStopDebugging2 = 'Stop debugging?';
-  lisStopCurrentDebuggingAndRebuildProject = 'Stop current debugging and '
-    +'rebuild project?';
-  lisErrorWritingPackageListToFile = 'Error writing package list to file%s%s%'
-    +'s%s';
+  lisStopCurrentDebuggingAndRebuildProject = 'Stop current debugging and rebuild project?';
+  lisErrorWritingPackageListToFile = 'Error writing package list to file%s%s%s%s';
   lisCodeToolsDefsErrorWhileWriting = 'Error while writing %s%s%s%s%s';
   lisCodeToolsDefsErrorWhileWritingProjectInfoFile = 'Error while writing '
     +'project info file %s%s%s%s%s';
   lisCodeToolsDefsReadError = 'Read error';
   lisUnableToRead = 'Unable to read %s';
-  lisErrorReadingPackageListFromFile = 'Error reading package list from file%'
-    +'s%s%s%s';
+  lisErrorReadingPackageListFromFile = 'Error reading package list from file%s%s%s%s';
   lisDuplicate = 'Duplicate';
   lisThePackageIsAlreadyInTheList = 'The package %s is already in the list';
   lisConflict = 'Conflict';
-  lisThereIsAlreadyAPackageInTheList = 'There is already a package %s in the '
-    +'list';
+  lisThereIsAlreadyAPackageInTheList = 'There is already a package %s in the list';
   lisNotADesigntimePackage = 'Not a designtime package';
-  lisThePackageCanNotBeInstalledBecauseItRequiresWhichI = 'The package %s can '
-    +'not be installed, because it requires the package "%s", which is a runtime only '
-    +'package.';
+  lisThePackageCanNotBeInstalledBecauseItRequiresWhichI = 'The package %s can not be '
+    +'installed, because it requires the package "%s", which is a runtime only package.';
   lisUninstall = 'Uninstall %s';
   lisThePackageIsNotADesignTimePackageItCanNotBeInstall = 'The package %s is '
     +'not a design time package. It can not be installed in the IDE';
@@ -3288,8 +3271,6 @@ resourcestring
   lisUIDClear = 'Clear';
   lisUIDPathsReadOnly = 'Paths (Read Only)';
   lisUIDUnit = 'Unit';
-  lisUIDSrc = 'Src';
-  lisUIDOk = 'Ok';
   lisUIDSize = 'Size:';
   lisUIDLines = 'Lines:';
   lisUIShowCodeToolsValues = 'Show CodeTools Values';
@@ -3334,7 +3315,6 @@ resourcestring
   lisSortSelCaseSensitive = '&Case Sensitive';
   lisSortSelIgnoreSpace = 'Ignore Space';
   lisSortSelSort = 'Accept';
-  lisSortSelCancel = 'Cancel';
 
   // publish project dialog
   lisPublProjInvalidIncludeFilter = 'Invalid include filter';
@@ -3601,8 +3581,6 @@ resourcestring
     +'the project.';
   lisKeepThemAndContinue = 'Keep them and continue';
   lisRemoveThem = 'Remove them';
-  lisExtToolMoveUp = 'Up';
-  lisExtToolMoveDown = 'Down';
   lisExtToolMaximumToolsReached = 'Maximum Tools reached';
   lisExtToolThereIsAMaximumOfTools = 'There is a maximum of %s tools.';
   lisExtToolTitleCompleted = '"%s" completed';
@@ -4223,7 +4201,6 @@ resourcestring
   lisMenuEditorSelectTemplate = 'Select Template:';
   lisMenuEditorTemplatePreview = 'Template Preview';
   lisMenuEditorNewTemplateDescription = 'New Template Description ...';
-  lisMenuEditorCancel = 'Cancel';
   lisMenuEditorInsertNewItemAfter = 'Insert New Item (after)';
   lisMenuEditorInsertNewItemBefore = 'Insert New Item (before)';
   lisMenuEditorDeleteItem = 'Delete Item';
@@ -4577,12 +4554,10 @@ resourcestring
   lisDebugOptionsFrmNotifyOnLazarusExceptions = 'Notify on Lazarus Exceptions';
   lisDebugOptionsFrmOSExceptions = 'OS Exceptions';
   lisDebugOptionsFrmSignals = 'Signals';
-  lisDebugOptionsFrmName = 'Name';
   lisMacroName = 'Macro name';
   lisIDEMacroValuesForFPCMacrosUseCustomOptions = 'IDE macro values (for FPC '
     +'macros use custom options)';
   lisMacroValue = 'Macro value';
-  lisDebugOptionsFrmID = 'ID';
   lisDebugOptionsFrmHandledBy = 'Handled by';
   lisDebugOptionsFrmResume = 'Resume';
   lisDebugOptionsFrmHandledByProgram = 'Handled by Program';
@@ -4602,7 +4577,6 @@ resourcestring
   lisKMNoteAllKeysWillBeSetToTheValuesOfTheChosenScheme = 'Note: All keys '
     +'will be set to the values of the chosen scheme.';
   lisKMKeymappingScheme = 'Keymapping Scheme';
-  lisIFDOK = 'OK';
   lisPVUEditVirtualUnit = 'Edit virtual unit';
 
   // version info tab
@@ -4699,8 +4673,6 @@ resourcestring
   lisViewSourceDisass = 'View Assembler';
   lisMaxS = 'Max %d';
   lisMore = 'More';
-  lisTop = 'Top';
-  lisBottom = 'Bottom';
   lisGotoSelectedSourceLine = 'Goto selected source line';
   lisCopyAll = 'Copy All';
   lisIndex = 'Index';
@@ -4736,7 +4708,6 @@ resourcestring
   lisGroupSetNone = 'Clear group(s)';
   lisGroupEmptyDelete = 'No more breakpoints are assigned to group "%s", delete it?';
   lisGroupEmptyDeleteMore = '%sThere are %d more empty groups, delete all?';
-  lisBreak = 'Break';
   lisEnableGroups = 'Enable Groups';
   lisDisableGroups = 'Disable Groups';
   lisLogMessage = 'Log Message';
@@ -4809,8 +4780,6 @@ resourcestring
 
   // Locals Dialog
   lisLocals = 'Locals';
-  lisLocalsDlgName = 'Name';
-  lisLocalsDlgValue = 'Value';
   lisLocalsNotEvaluated = 'Locals not evaluated';
   lisEvaluateModify = '&Evaluate/Modify';
   lisLocalsDlgCopyName = '&Copy Name';
@@ -4818,13 +4787,9 @@ resourcestring
 
   // Registers Dialog
   lisRegisters = 'Registers';
-  lisRegistersDlgName = 'Name';
-  lisRegistersDlgValue = 'Value';
 
   // ThreadDlg
   lisThreads = 'Threads';
-  lisThreadsId   = 'Id';
-  lisThreadsName = 'Name';
   lisThreadsState = 'State';
   lisThreadsSrc  = 'Source';
   lisThreadsLine = 'Line';
@@ -4850,8 +4815,6 @@ resourcestring
 
   // Exception Dialog
   lisExceptionDialog = 'Debugger Exception Notification';
-  lisBtnBreak = 'Break';
-  lisBtnContinue = 'Continue';
   lisIgnoreExceptionType = 'Ignore this exception type';
 
   lisetEditCustomScanners = 'Edit custom scanners (%s)';
@@ -4935,7 +4898,6 @@ resourcestring
   lisTheProjectInformationFileHasChangedOnDisk = 'The project information '
     +'file %s%s%s%shas changed on disk.';
   lisReopenProject = 'Reopen project';
-  rsOk = 'OK';
   rsScanners = 'Scanners';
   rsAvailableScanners = 'Available scanners';
   rsSelectAnInheritedEntry = 'Select an inherited entry';
@@ -4953,7 +4915,6 @@ resourcestring
 
   // Edit context help dialog (IDEContextHelpEdit.pas)
   lisHelpEntries = 'Help entries';
-  lisPath = 'Path';
   lisCEIsARootControl = 'Is a root control';
   lisHasHelp = 'Has Help';
   lisCreateHelpNode = 'Create Help node';
@@ -4993,7 +4954,6 @@ resourcestring
   lisResult = 'Result :=';
   lisPropertiesOfConditionalCompilerOption = 'Properties of conditional compiler option';
   lisAction = 'Action:';
-  lisValue = 'Value:';
   lisValues = 'Values';
   lisDefaultValue = 'Default value';
   lisIDEMacros = 'IDE Macros';
@@ -5455,7 +5415,6 @@ resourcestring
   lisDebuggerFeedbackStop = 'Stop';
   lisDebuggerFeedbackLess = 'Less';
   lisDebuggerFeedbackMore = 'More';
-  lisDebuggerFeedbackOk = 'OK';
 
   // breakpointgroups
   dbgBreakGroupDlgCaptionEnable = 'Select Groups';
@@ -5506,7 +5465,6 @@ resourcestring
   lisFileFilters = 'File Filters';
   lisConfirm = 'Confirm';
   lisResetAllFileFiltersToDefaults = 'Reset all file filters to defaults?';
-  lisFileFiltersName = 'Name';
   lisFileFiltersMask = 'File mask';
   lisFileFiltersAddRow = 'Add Row';
   lisFileFiltersDeleteRow = 'Delete Row';

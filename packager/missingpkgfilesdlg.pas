@@ -69,7 +69,7 @@ end;
 
 procedure TMissingPkgFilesDialog.FormCreate(Sender: TObject);
 begin
-  ButtonPanel1.CancelButton.Caption:=dlgCancel;
+  ButtonPanel1.CancelButton.Caption:=lisCancel;
 end;
 
 procedure TMissingPkgFilesDialog.ButtonPanel1Click(Sender: TObject);
@@ -123,7 +123,7 @@ begin
   if i>0 then begin
     ButtonPanel1.OKButton.Caption:=lisPERemoveFiles;
   end else begin
-    ButtonPanel1.OKButton.Caption:=lisLazBuildOk;
+    ButtonPanel1.OKButton.Caption:=lisOk;
   end;
 end;
 

@@ -114,7 +114,7 @@ begin
   CGOptions.Items.Add(lisCheckOptions);
 
   ButtonPanel.OKButton.Caption:=lisOk;
-  ButtonPanel.CancelButton.Caption:=dlgCancel;
+  ButtonPanel.CancelButton.Caption:=lisCancel;
 
   // set all defaults to true
   for i:=0 to CGOptions.Items.Count-1 do

@@ -555,7 +555,7 @@ begin
     Parent:=Self;
     Left:=Self.ClientWidth-100;
     Top:=OkButton.Top;
-    Caption:=lisSortSelCancel;
+    Caption:=lisCancel;
     ModalResult:=mrCancel;
     Cancel:=true;
   end;

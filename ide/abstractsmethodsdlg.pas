@@ -160,7 +160,7 @@ begin
 
   AddFirstBitBtn.Caption:=lisSAMOverrideFirstSelected;
   AddAllBitBtn.Caption:=lisSAMOverrideAllSelected;
-  CancelBitBtn.Caption:=dlgCancel;
+  CancelBitBtn.Caption:=lisCancel;
 
   SelectNoneButton.Caption:=lisSAMSelectNone;
   SelectAllButton.Caption:=lisMenuSelectAll;

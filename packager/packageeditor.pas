@@ -2438,7 +2438,7 @@ begin
       Format(lisThePackageDoesNotHaveAnyRegisterProcedureWhichTypi, [APackage.
         Name, #13, #13]),
       mtWarning,
-      [mrIgnore, lisInstallItILikeTheFat, mrCancel, dlgCancel], '')<>mrIgnore
+      [mrIgnore, lisInstallItILikeTheFat, mrCancel, lisCancel], '')<>mrIgnore
     then exit(mrCancel);
   end;
   if Assigned(OnInstallPackage) then

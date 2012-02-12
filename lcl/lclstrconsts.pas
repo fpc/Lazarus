@@ -311,7 +311,7 @@ resourceString
   ifsVK_UNKNOWN    = 'Unknown';
   ifsVK_LBUTTON    = 'Mouse Button Left';
   ifsVK_RBUTTON    = 'Mouse Button Right';
-  ifsVK_CANCEL     = 'Cancel'; //= dlgCancel
+  ifsVK_CANCEL     = 'Cancel'; //= lisCancel
   ifsVK_MBUTTON    = 'Mouse Button Middle';
   ifsVK_BACK       = 'Backspace';
   ifsVK_TAB        = 'Tab';
@@ -342,7 +342,7 @@ resourceString
   ifsVK_LEFT       = 'Left';
   ifsVK_UP         = 'Up';
   ifsVK_RIGHT      = 'Right';
-  ifsVK_DOWN       = 'Down'; //= dlgdownword
+  ifsVK_DOWN       = 'Down'; //= lisdown
   ifsVK_SELECT     = 'Select'; //= lismenuselect
   ifsVK_PRINT      = 'Print';
   ifsVK_EXECUTE    = 'Execute';

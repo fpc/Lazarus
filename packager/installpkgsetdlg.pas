@@ -187,7 +187,7 @@ begin
   SaveAndRebuildButton.Caption:=lisSaveAndRebuildIDE;
   SaveAndExitButton.Caption:=lisSaveAndExitDialog;
   HelpButton.Caption:=lisMenuHelp;
-  CancelButton.Caption:=dlgCancel;
+  CancelButton.Caption:=lisCancel;
 
   fAvailablePackages:=TAVLTree.Create(@CompareLazPackageIDNames);
   FNewInstalledPackages:=TObjectList.Create(true);

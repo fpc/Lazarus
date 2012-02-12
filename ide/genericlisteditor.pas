@@ -34,7 +34,7 @@ implementation
 procedure TGenericListEditForm.FormCreate(Sender:TObject);
 begin
   ButtonPanel1.OKButton.Caption:=lisOk;
-  ButtonPanel1.CancelButton.Caption:=dlgCancel;
+  ButtonPanel1.CancelButton.Caption:=lisCancel;
 end;
 
 end.

@@ -851,7 +851,7 @@ begin
     with OkButton do begin
       Name:='OkButton';
       Parent:=Self;
-      Caption:=lisLazBuildOk;
+      Caption:=lisOk;
       OnClick:=@OkButtonClick;
       Left:=50;
       Top:=Self.ClientHeight-Height-12;
@@ -863,7 +863,7 @@ begin
     with CancelButton do begin
       Name:='CancelButton';
       Parent:=Self;
-      Caption:=dlgCancel;
+      Caption:=lisCancel;
       ModalResult:=mrCancel;
       Width:=80;
       Left:=Self.ClientWidth-50-Width;
@@ -948,7 +948,7 @@ begin
 
   ButtonPanel.OKButton.Caption:=lisOk;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
-  ButtonPanel.CancelButton.Caption:=dlgCancel;
+  ButtonPanel.CancelButton.Caption:=lisCancel;
 
   FilenameGroupBox.Caption:=lisDebugOptionsFrmModule;
   UseMacrosCheckBox.Caption:=lisEnableMacros;

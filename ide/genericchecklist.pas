@@ -37,7 +37,7 @@ var
   BitButtonYes: TBitBtn;
 begin
   ButtonPanel1.OKButton.Caption:=lisOk;
-  ButtonPanel1.CancelButton.Caption:=dlgCancel;
+  ButtonPanel1.CancelButton.Caption:=lisCancel;
 
   // save and compile
   BitButtonYes:=TBitBtn.Create(ButtonPanel1);

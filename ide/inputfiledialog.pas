@@ -565,7 +565,7 @@ begin
   with OkButton do begin
     Name:='OkButton';
     Parent:=Self;
-    Caption:=lisIFDOK;
+    Caption:=lisOk;
     OnClick:=@OkButtonClick;
     Visible:=true;
   end;
@@ -574,7 +574,7 @@ begin
   with CancelButton do begin
     Name:='CancelButton';
     Parent:=Self;
-    Caption:=dlgCancel;
+    Caption:=lisCancel;
     OnClick:=@CancelButtonClick;
     Visible:=true;
   end;

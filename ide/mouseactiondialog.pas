@@ -101,8 +101,8 @@ begin
   ClickName[ccQuad]:=dlgMouseOptBtn4;
   ClickName[ccAny]:=dlgMouseOptBtnAny;
 
-  ButtonDirName[cdUp]:=dlgMouseOptBtnUp;
-  ButtonDirName[cdDown]:=dlgMouseOptBtnDown;
+  ButtonDirName[cdUp]:=lisUp;
+  ButtonDirName[cdDown]:=lisDown;
 
   Caption := dlgMouseOptDlgTitle;
   CapturePanel.Caption := dlgMouseOptCapture;

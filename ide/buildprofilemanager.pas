@@ -519,12 +519,12 @@ begin
   AddButton.Caption:=lisAdd;
   RemoveButton.Caption:=lisLazBuildRemove;
   EditButton.Caption:=lisLazBuildRename;
-  MoveUpButton.Caption:=lisExtToolMoveUp;
-  MoveDownButton.Caption:=lisExtToolMoveDown;
+  MoveUpButton.Caption:=lisUp;
+  MoveDownButton.Caption:=lisDown;
 
   ButtonPanel.OKButton.Caption:=lisOk;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
-  ButtonPanel.CancelButton.Caption:=dlgCancel;
+  ButtonPanel.CancelButton.Caption:=lisCancel;
 
   fProfsToManage:=TBuildLazarusProfiles.Create;
 end;

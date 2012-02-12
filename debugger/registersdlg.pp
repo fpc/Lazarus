@@ -120,8 +120,8 @@ begin
   FRegistersNotification.AddReference;
   FRegistersNotification.OnChange := @RegistersChanged;
   Caption:= lisRegisters;
-  lvRegisters.Columns[0].Caption:= lisRegistersDlgName;
-  lvRegisters.Columns[1].Caption:= lisRegistersDlgValue;
+  lvRegisters.Columns[0].Caption:= lisName;
+  lvRegisters.Columns[1].Caption:= lisValue;
 
   ActionList1.Images := IDEImages.Images_16;
   ToolBar1.Images := IDEImages.Images_16;

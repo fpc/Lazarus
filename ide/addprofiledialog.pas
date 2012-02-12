@@ -36,7 +36,7 @@ implementation
 procedure TAddProfileForm.FormCreate(Sender:TObject);
 begin
   ButtonPanel.OKButton.Caption:=lisOk;
-  ButtonPanel.CancelButton.Caption:=dlgCancel;
+  ButtonPanel.CancelButton.Caption:=lisCancel;
 end;
 
 end.

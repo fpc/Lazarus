@@ -86,11 +86,10 @@ begin
     ButtonPanel1.HelpButton.Visible := False;
   end;
 
-
   ButtonPanel1.OKButton.Visible := frOk in AButtons;
   ButtonPanel1.CancelButton.Visible := frStop in AButtons;
 
-  ButtonPanel1.OKButton.Caption := lisDebuggerFeedbackOk;
+  ButtonPanel1.OKButton.Caption := lisOk;
   ButtonPanel1.CancelButton.Caption := lisDebuggerFeedbackStop;
 
   case ShowModal of

@@ -523,7 +523,7 @@ begin
   CurrentGroupBox.Caption:=lisCodeToolsOptsIdentifier;
   ExtraFilesGroupBox.Caption:=lisFRIAdditionalFilesToSearchEGPathPasPath2Pp;
   ButtonPanel1.OKButton.Caption:=lisFRIFindReferences;
-  ButtonPanel1.CancelButton.Caption:=dlgCancel;
+  ButtonPanel1.CancelButton.Caption:=lisCancel;
   NewGroupBox.Caption:=lisFRIRenameTo;
   RenameCheckBox.Caption:=lisFRIRename;
   ScopeCommentsCheckBox.Caption:=lisFRISearchInCommentsToo;

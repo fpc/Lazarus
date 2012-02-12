@@ -104,7 +104,7 @@ begin
 
   Caption:=lisSVUOOverrideSystemVariable;
 
-  VariableLabel.Caption:=lisCodeToolsDefsVariable;
+  VariableLabel.Caption:=lisVariable;
   ValueLabel.Caption:=lisValue;
 end;
 

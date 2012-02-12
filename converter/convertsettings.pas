@@ -732,7 +732,7 @@ begin
 
   ButtonPanel1.OKButton.Caption:=lisStartConversion;
   ButtonPanel1.HelpButton.Caption:=lisMenuHelp;
-  ButtonPanel1.CancelButton.Caption:=dlgCancel;
+  ButtonPanel1.CancelButton.Caption:=lisCancel;
 end;
 
 procedure TConvertSettingsForm.FormDestroy(Sender: TObject);

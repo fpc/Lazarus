@@ -623,7 +623,7 @@ begin
   SearchingLabel.Caption:=lissSearching;
   SearchTextLabel.Caption:=lissSearchText;
   Caption:=dlgSearchCaption;
-  btnCancel.Caption:=dlgCancel;
+  btnCancel.Caption:=lisCancel;
 
   fProgress:=TIDESearchInTextProgress.Create;
   FProgress.OnAddMatch:=@OnAddMatch;

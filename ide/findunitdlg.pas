@@ -218,8 +218,8 @@ begin
   fQuickFixes:=TFPList.Create;
 
   Caption:=lisFindMissingUnit;
-  CancelButton.Caption:=dlgCancel;
-  OkButton.Caption:=dlgMouseOptBtnOk;
+  CancelButton.Caption:=lisCancel;
+  OkButton.Caption:=lisOk;
   OkButton.Enabled:=false;
   InfoGroupBox.Caption:=lisInformation;
   QuickFixRadioGroup.Caption:=lisQuickFixes;

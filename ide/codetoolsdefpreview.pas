@@ -447,7 +447,7 @@ begin
   ListColumn.Caption:=lisCTDefVariableName;
   ListColumn.Width:=150;
   ListColumn:=ValuesListview.Columns.Add;
-  ListColumn.Caption:=dlgRunOValue;
+  ListColumn.Caption:=lisValue;
   
   DirectoryGroupbox.Caption:=lisCodeToolsDefsInsertBehindDirectory;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;

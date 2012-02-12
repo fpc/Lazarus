@@ -696,7 +696,7 @@ begin
   BtnExport.Caption := dlgMouseOptBtnExport;
   UpdateButton.Caption := lisChange;
   AddNewButton.Caption := lisAdd;
-  DelButton.Caption := dlgMouseOptBtnDel;
+  DelButton.Caption := lisDelete;
   OtherActionLabel.Caption := dlgMouseOptOtherAct;
   OtherActionLabel.Hint := dlgMouseOptOtherActHint;
   OtherActToggleBox.Caption := dlgMouseOptOtherActToggle;

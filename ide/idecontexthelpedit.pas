@@ -244,7 +244,7 @@ begin
   NodeHasHelpCheckBox.Caption:=lisHasHelp;
   NodeIsRootCheckBox.Caption:=lisCEIsARootControl;
   NodePathLabel.Caption:=lisPath;
-  NodeNameLabel.Caption:=lisDebugOptionsFrmName;
+  NodeNameLabel.Caption:=lisName;
   NodesGroupBox.Caption:=lisHelpEntries;
 
   ButtonPanel.OKButton.OnClick:=@OkBitBtnClick;

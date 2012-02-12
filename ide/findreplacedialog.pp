@@ -184,7 +184,7 @@ begin
   HelpButton.Caption:=lisMenuHelp;
   ReplaceAllButton.Caption:=dlgReplaceAll;
   OKButton.Caption:=lisOk;
-  CancelButton.Caption:=dlgCancel;
+  CancelButton.Caption:=lisCancel;
 
   fReplaceAllClickedLast:=false;
   UpdateHints;

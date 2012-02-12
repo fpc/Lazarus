@@ -157,7 +157,7 @@ begin
   end;
 
   OpenButton.Caption:=lisMenuOpen;
-  CancelButton.Caption:=dlgCancel;
+  CancelButton.Caption:=lisCancel;
   HelpButton.Caption:=dlgGroupHelp;
 end;
 

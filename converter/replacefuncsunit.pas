@@ -388,7 +388,7 @@ begin
   Caption:=lisReplacementFuncs;
   ButtonPanel.OKButton.Caption := lisOk;
   ButtonPanel.HelpButton.Caption := lisMenuHelp;
-  ButtonPanel.CancelButton.Caption := dlgCancel;
+  ButtonPanel.CancelButton.Caption := lisCancel;
 end;
 
 procedure TReplaceFuncsForm.CategoryListBoxClickCheck(Sender: TObject);

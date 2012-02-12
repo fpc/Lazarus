@@ -3972,7 +3972,7 @@ function TPkgManager.InstallPackages(PkgIdList: TObjectList;
                                                 CurDependency.PackageName);
       if OldDependency=nil then begin
         // newly installed
-        s:=s+'|'+lisNew;
+        s:=s+'|'+lisPkgMgrNew;
         Report.Add(s);
       end;
       CurDependency:=CurDependency.NextRequiresDependency;
@@ -3985,7 +3985,7 @@ function TPkgManager.InstallPackages(PkgIdList: TObjectList;
                                                 CurDependency.PackageName);
       if NewDependency=nil then
         // this package will be removed
-        Report.Add('|'+lisRemove+'|'+CurDependency.AsString);
+        Report.Add('|'+lisPkgMgrRemove+'|'+CurDependency.AsString);
       CurDependency:=CurDependency.NextRequiresDependency;
     end;
 
@@ -3998,7 +3998,7 @@ function TPkgManager.InstallPackages(PkgIdList: TObjectList;
       if OldDependency<>nil then begin
         // stay installed
         if CurDependency.AsString<>OldDependency.AsString then
-          s:=s+'|'+lisKeep+'|'+OldDependency.AsString;
+          s:=s+'|'+lisPkgMgrKeep+'|'+OldDependency.AsString;
         Report.Add(s);
       end;
       CurDependency:=CurDependency.NextRequiresDependency;

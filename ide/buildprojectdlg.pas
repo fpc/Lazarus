@@ -130,9 +130,9 @@ begin
 
   ButtonPanel1.OKButton.Caption:=lisCleanUpAndBuild;
   ButtonPanel1.HelpButton.Caption:=lisMenuHelp;
-  ButtonPanel1.CancelButton.Caption:=dlgCancel;
+  ButtonPanel1.CancelButton.Caption:=lisCancel;
 
-  DeleteButton.Caption:=dlgMouseOptBtnDel;
+  DeleteButton.Caption:=lisDelete;
 
   FilesTreeView.Images:=IDEImages.Images_16;
   ImageIndexDirectory := IDEImages.LoadImage(16, 'pkg_files');

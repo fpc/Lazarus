@@ -150,7 +150,7 @@ begin
 
   PkgStringGrid.ColCount:=5;
   PkgStringGrid.RowCount:=FLinks.Count+1;
-  PkgStringGrid.Cells[0, 0]:=lisDebugOptionsFrmName;
+  PkgStringGrid.Cells[0, 0]:=lisName;
   PkgStringGrid.Cells[1, 0]:=lisVersion;
   PkgStringGrid.Cells[2, 0]:=dlgPLDPackageGroup;
   PkgStringGrid.Cells[3, 0]:=lisPLDExists;

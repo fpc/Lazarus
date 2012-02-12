@@ -219,7 +219,7 @@ begin
   HasRegisterProcCheckBox.Caption:=lisAF2PHasRegisterProcedure;
   PackagesGroupBox.Caption:=lisAF2PDestinationPackage;
   ShowAllCheckBox.Caption:=lisAF2PShowAll;
-  BtnPanel.OkButton.Caption:=lisLazBuildOk;
+  BtnPanel.OkButton.Caption:=lisOk;
   BtnPanel.OkButton.OnClick:=@OkButtonClick;
   BtnPanel.OkButton.ModalResult:=mrNone;
   BtnPanel.HelpButton.OnClick:=@HelpButtonClick;

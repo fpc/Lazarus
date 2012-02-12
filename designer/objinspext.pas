@@ -440,7 +440,7 @@ begin
   with CancelButton do begin
     Name:='CancelButton';
     SetBounds(120,100,80,25);
-    Caption:=dlgCancel;
+    Caption:=lisCancel;
     Parent:=Self;
     ModalResult:=mrCancel;
   end;

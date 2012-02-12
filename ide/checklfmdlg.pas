@@ -788,7 +788,7 @@ begin
   LFMGroupBox.Caption:=lisLFMFile;
   RemoveAllButton.Caption:=lisRemoveAllInvalidProperties;
   RemoveAllButton.LoadGlyphFromLazarusResource('laz_delete');
-  CancelButton.Caption:=dlgCancel;
+  CancelButton.Caption:=lisCancel;
   EditorOpts.GetHighlighterSettings(SynLFMSyn1);
   EditorOpts.GetSynEditSettings(LFMSynEdit);
 end;

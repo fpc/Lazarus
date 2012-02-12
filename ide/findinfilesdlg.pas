@@ -168,7 +168,7 @@ begin
   IncludeSubDirsCheckBox.Caption := lisFindFileIncludeSubDirectories;
 
   ButtonPanel1.HelpButton.Caption := lisMenuHelp;
-  ButtonPanel1.CancelButton.Caption := dlgCancel;
+  ButtonPanel1.CancelButton.Caption := lisCancel;
 
   ReplaceCheckBox.Enabled:=true;
 

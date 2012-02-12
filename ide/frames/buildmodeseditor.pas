@@ -454,7 +454,7 @@ begin
     BuildModesStringGrid.Columns[fModeInSessionCol].SizePriority:=1;
     BuildModesStringGrid.Columns[fModeInSessionCol].ButtonStyle:=cbsCheckboxColumn;
   end;
-  BuildModesStringGrid.Columns[fModeNameCol].Title.Caption:=lisDebugOptionsFrmName;
+  BuildModesStringGrid.Columns[fModeNameCol].Title.Caption:=lisName;
   BuildModesStringGrid.Columns[fModeNameCol].SizePriority:=10;
   BuildModesStringGrid.Columns[fModeNameCol].ButtonStyle:=cbsAuto;
   Grid.EndUpdate(true);

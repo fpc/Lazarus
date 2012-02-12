@@ -293,7 +293,7 @@ begin
   grdFileFilters.DefaultColWidth := 40;
   grdFileFilters.RowCount := 1;
 
-  grdFileFilters.Columns[0].Title.Caption := lisFileFiltersName;
+  grdFileFilters.Columns[0].Title.Caption := lisName;
   grdFileFilters.Columns[1].Title.Caption := lisFileFiltersMask;
 
   pmiAddRow.Caption := lisFileFiltersAddRow;

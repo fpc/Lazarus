@@ -525,8 +525,8 @@ begin
   AddButton.Caption:=lisAdd;
   RemoveButton.Caption:=lisExtToolRemove;
   EditButton.Caption:=lisCodeToolsDefsEdit;
-  MoveUpButton.Caption:=lisExtToolMoveUp;
-  MoveDownButton.Caption:=lisExtToolMoveDown;
+  MoveUpButton.Caption:=lisUp;
+  MoveDownButton.Caption:=lisDown;
 
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 

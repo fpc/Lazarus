@@ -130,7 +130,7 @@ begin
 
   ButtonPanel.OKButton.Caption:=lisClDirClean;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
-  ButtonPanel.CancelButton.Caption:=dlgCancel;
+  ButtonPanel.CancelButton.Caption:=lisCancel;
 
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;

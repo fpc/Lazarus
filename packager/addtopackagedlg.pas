@@ -1123,7 +1123,7 @@ begin
   NewComponentPage.Caption:=lisA2PNewComponent;
   NewRequirementPage.Caption:=lisProjAddNewRequirement;
   AddFilesPage.Caption:=lisA2PAddFiles;
-  CancelButton.Caption:=dlgCancel;
+  CancelButton.Caption:=lisCancel;
   PageControl1.PageIndex:=0;
   PageControl1Change(PageControl1);
 
