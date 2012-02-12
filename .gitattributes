@@ -6220,6 +6220,8 @@ test/customdrawn/lazdialogs_test.res -text
 test/customdrawn/mainform.lfm svneol=native#text/plain
 test/customdrawn/mainform.pas svneol=native#text/plain
 test/hello.ahk svneol=native#text/plain
+test/lazutils/TestLazLogger.lpr svneol=native#text/pascal
+test/lazutils/testlazloggercase.pas svneol=native#text/pascal
 test/lazutils/testpaswstring.lpi svneol=native#text/plain
 test/lazutils/testpaswstring.pas svneol=native#text/plain
 test/lazutils/testunicode.lpi svneol=native#text/plain
