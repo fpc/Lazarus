@@ -34,7 +34,7 @@ unit GDBTypeInfo;
 interface
 
 uses
-  Classes, SysUtils, Debugger, LclProc, DebugUtils, GDBMIMiscClasses;
+  Classes, SysUtils, Debugger, LclProc, LazLogger, DebugUtils, GDBMIMiscClasses;
 
 (*
   ptype = {
@@ -376,6 +376,9 @@ function dbgs(AReq: TGDBPTypeRequest): string; overload;
 
 implementation
 
+var
+  DBGMI_TYPE_INFO: PLazLoggerLogGroup;
+
 function CreatePTypeValueList(AResultValues: String): TStringList;
 var
   S, Line: String;
@@ -589,9 +592,7 @@ var
   end;
 
 begin
-  {$IFDEF DBGMI_TYPE_INFO}
   try
-  {$ENDIF}
   Result.Flags := [];
   Result.Kind := ptprkError;
   Result.Name.Ptr := nil;
@@ -844,11 +845,9 @@ begin
         SetPCharLen(Result.Declaration, DeclPtr, LineEndPtr);
       end;
   end;
-  {$IFDEF DBGMI_TYPE_INFO}
   finally
-    DebugLn(['ParseTypeFromGdb: Flags=', dbgs(Result.Flags), ' Kind=', dbgs(Result.Kind), ' Name="', PCLenToString(Result.Name),'"' ]);
+    DebugLn(DBGMI_TYPE_INFO, ['ParseTypeFromGdb: Flags=', dbgs(Result.Flags), ' Kind=', dbgs(Result.Kind), ' Name="', PCLenToString(Result.Name),'"' ]);
   end;
-  {$ENDIF}
 end;
 
 function ParseTypeFromGdb(const ATypeText: string): TGDBPTypeResult;
@@ -2640,19 +2639,15 @@ var
 var
   OldProcessState: TGDBTypeProcessState;
   OldReqMade: TGDBTypeProcessRequests;
-  {$IFDEF DBGMI_TYPE_INFO}
   s: string;
-  {$ENDIF}
 begin
   Result := False;
   FEvalRequest := nil;
   FLastEvalRequest := nil;
   Lines := nil;
-  {$IFDEF DBGMI_TYPE_INFO}
-  WriteStr(s, FProcessState);
-  DebugLnEnter(['>>Enter: TGDBType.ProcessExpression: state = ', s, '   Expression="', FExpression, '"']);
+  WriteStr(s, FProcessState); // TODO dbgs
+  DebugLnEnter(DBGMI_TYPE_INFO, ['>>Enter: TGDBType.ProcessExpression: state = ', s, '   Expression="', FExpression, '"']);
   try
-  {$ENDIF}
 
 
   if FFirstProcessingSubType <> nil then begin
@@ -2697,13 +2692,11 @@ begin
     debugln('ERROR: detected state loop in ProcessExpression');
     Result := True;
   end;
-  {$IFDEF DBGMI_TYPE_INFO}
   finally
     WriteStr(s, FProcessState);
-    DebugLnExit(['<<Exit:  TGDBType.ProcessExpression: state = ', s, '  Result=', dbgs(Result),
+    DebugLnExit(DBGMI_TYPE_INFO, ['<<Exit:  TGDBType.ProcessExpression: state = ', s, '  Result=', dbgs(Result),
                  ' Kind=', dbgs(Kind), ' Attr=', dbgs(Attributes), ' Typename="', TypeName, '" InternTpName="', FInternalTypeName,'"']);
   end;
-  {$ENDIF}
 end;
 
 { TGDBPTypes }
@@ -2720,5 +2713,8 @@ begin
     {if Length(AValues) >= 2 then} Delete(AValues, 1, 2);
   end;
 end;
+
+initialization
+  DBGMI_TYPE_INFO := DebugLogger.RegisterLogGroup('DBGMI_TYPE_INFO' {$IFDEF DBGMI_TYPE_INFO} , True {$ENDIF} );
 
 end.
