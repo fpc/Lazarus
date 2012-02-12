@@ -168,8 +168,8 @@ type
     FParamForEnabledLogGroups: String;
     FUseStdOut: Boolean;
     FCloseLogFileBetweenWrites: Boolean;
-    FDbgOutProc: TLazLoggerWriteEvent;
-    FDebugLnProc: TLazLoggerWriteEvent;
+    FOnDbgOut: TLazLoggerWriteEvent;
+    FOnDebugLn: TLazLoggerWriteEvent;
     FMaxNestPrefixLen: Integer;
     FNestLvlIndent: Integer;
 
@@ -238,8 +238,8 @@ type
     property  EnvironmentForLogFileName: String read FEnvironmentForLogFileName write SetEnvironmentForLogFileName; // "*" will be replaced by appname
     property  UseStdOut: Boolean read FUseStdOut write FUseStdOut;
     property  CloseLogFileBetweenWrites: Boolean read FCloseLogFileBetweenWrites write SetCloseLogFileBetweenWrites;
-    property  DebugLnProc: TLazLoggerWriteEvent read FDebugLnProc write FDebugLnProc;
-    property  DbgOutProc:  TLazLoggerWriteEvent read FDbgOutProc write FDbgOutProc;
+    property  OnDebugLn: TLazLoggerWriteEvent read FOnDebugLn write FOnDebugLn;
+    property  OnDbgOut:  TLazLoggerWriteEvent read FOnDbgOut write FOnDbgOut;
 
     property  NestLvlIndent: Integer read FNestLvlIndent write SetNestLvlIndent;
     property  MaxNestPrefixLen: Integer read FMaxNestPrefixLen write SetMaxNestPrefixLen;
@@ -1294,10 +1294,10 @@ var
 begin
   if not IsInitialized then Init;
 
-  if FDbgOutProc <> nil then
+  if FOnDbgOut <> nil then
   begin
     Handled := False;
-    FDbgOutProc(Self, s, Handled);
+    FOnDbgOut(Self, s, Handled);
     if Handled then
       Exit;
   end;
@@ -1315,10 +1315,10 @@ var
 begin
   if not IsInitialized then Init;
 
-  if FDebugLnProc <> nil then
+  if FOnDebugLn <> nil then
   begin
     Handled := False;
-    FDebugLnProc(Self, s, Handled);
+    FOnDebugLn(Self, s, Handled);
     if Handled then
       Exit;
   end;
