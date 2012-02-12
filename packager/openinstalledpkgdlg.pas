@@ -156,7 +156,7 @@ begin
     NewColumn.Width:=300;
   end;
 
-  OpenButton.Caption:=lisMenuOpen;
+  OpenButton.Caption:=lisMenuTemplateOpen;
   CancelButton.Caption:=lisCancel;
   HelpButton.Caption:=dlgGroupHelp;
 end;

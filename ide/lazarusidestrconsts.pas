@@ -47,6 +47,8 @@ resourcestring
   lisOk = '&OK';
   rsOk = 'OK';
   lisCancel = 'Cancel';
+//  lisYes = 'Yes';
+  lisNo = 'No';
   lisContinue = 'Continue';
   lisBreak = 'Break';
   lisDown = 'Down';
@@ -4144,8 +4146,7 @@ resourcestring
   lisPckOptsDesigntime = 'Designtime';
   lisPckOptsRuntime = 'Runtime';
   lisPckOptsDesigntimeAndRuntime = 'Designtime and runtime';
-  lisRuntimeOnlyCanNotBeInstalledInIDE = 'Runtime only, can not be installed '
-    +'in IDE';
+  lisRuntimeOnlyCanNotBeInstalledInIDE = 'Runtime only, can not be installed in IDE';
   lisPckOptsUpdateRebuild = 'Update / Rebuild';
   lisPckOptsAutomaticallyRebuildAsNeeded = 'Automatically rebuild as needed';
   lisPckOptsAutoRebuildWhenRebuildingAll = 'Auto rebuild when rebuilding all';
@@ -4893,7 +4894,6 @@ resourcestring
     +'default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in '
     +'environmentoptions.xml';
   lisOverrideTheProjectBuildMode = '%soverride the project build mode.';
-  lisNo = 'No';
   lisProjectChangedOnDisk = 'Project changed on disk';
   lisTheProjectInformationFileHasChangedOnDisk = 'The project information '
     +'file %s%s%s%shas changed on disk.';
@@ -4918,7 +4918,7 @@ resourcestring
   lisCEIsARootControl = 'Is a root control';
   lisHasHelp = 'Has Help';
   lisCreateHelpNode = 'Create Help node';
-  lisOpen = 'Open ...';
+  lisDlgOpen = 'Open ...';
   lisEditContextHelp = 'Edit context help';
   lisNoNodeSelected = 'no node selected';
   lisNoIDEWindowSelected = 'No IDE window selected';

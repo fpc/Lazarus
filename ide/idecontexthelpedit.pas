@@ -239,7 +239,7 @@ begin
   
   TestButton.Caption:=dlgCCOTest;
   CreateHelpNodeForControlButton.Caption:=lisCreateHelpNode;
-  OpenDeclarationBitBtn.Caption:=lisOpen;
+  OpenDeclarationBitBtn.Caption:=lisDlgOpen;
   OpenDeclarationBitBtn.OnShowHint:=@OpenDeclarationBitBtnShowHint;
   NodeHasHelpCheckBox.Caption:=lisHasHelp;
   NodeIsRootCheckBox.Caption:=lisCEIsARootControl;
