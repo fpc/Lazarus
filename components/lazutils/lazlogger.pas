@@ -184,7 +184,7 @@ type
 
     FLogGroupList: TObject; // Using TObject, so if none of the functions is used in the app, then even the rlass should be smart linked
     FParamForLogFileName: String;
-    FLogDefaultEnabled, FLogParamParsed: Boolean;
+    FLogDefaultEnabled, FLogAllDefaultDisabled, FLogParamParsed: Boolean;
 
     procedure SetAutoDestroy(AValue: Boolean);
     procedure SetCloseLogFileBetweenWrites(AValue: Boolean);
@@ -1007,7 +1007,8 @@ var
   e: Boolean;
 begin
   c := GetParamByNameCount(FParamForEnabledLogGroups);
-  FLogDefaultEnabled := True;
+  FLogDefaultEnabled := False;
+  FLogAllDefaultDisabled := FAlse;
 
   list := TStringList.Create;
   for i := 0 to c - 1 do begin
@@ -1018,6 +1019,7 @@ begin
       FLogDefaultEnabled := False;
       for j := 0 to LogGroupList.Count - 1 do
         LogGroupList[j]^.Enabled := False;
+      FLogAllDefaultDisabled := True;
     end
     else
     begin
@@ -1395,6 +1397,7 @@ begin
   {$endif}
   FLogGroupList := nil;
   FLogDefaultEnabled := False;
+  FLogAllDefaultDisabled := FAlse;
 end;
 
 destructor TLazLogger.Destroy;
@@ -1422,13 +1425,15 @@ end;
 function TLazLogger.RegisterLogGroup(const AConfigName: String;
   ADefaulEnabled: Boolean): PLazLoggerLogGroup;
 begin
+  if FLogAllDefaultDisabled then
+    ADefaulEnabled := False;
   Result := LogGroupList.Find(AConfigName);
   if Result <> nil then begin
     if not(lgfAddedByParamParser in Result^.Flags) then
       raise Exception.Create('Duplicate LogGroup ' + AConfigName);
-    Result^.Flags := Result^.Flags - [lgfAddedByParamParser];
-    if ADefaulEnabled then
+    if ADefaulEnabled and not(lgfAddedByParamParser in Result^.Flags) then
       Result^.Enabled := True;
+    Result^.Flags := Result^.Flags - [lgfAddedByParamParser];
   end
   else
     Result := LogGroupList.Add(AConfigName, ADefaulEnabled);

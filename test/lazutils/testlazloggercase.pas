@@ -8,6 +8,7 @@ uses
   Classes, SysUtils, fpcunit, testutils, testregistry, LazLogger;
 
 type
+  TStringArray = array of string;
 
   { TTestLazLogger }
 
@@ -16,13 +17,22 @@ type
     FTheLogger: TLazLogger;
     FOnDbgOutCount, FOnDebugLnCount: Integer;
     FOnDbgOutText, FOnDebugLnText: string;
+    FArgcMem, FArgVSaved: PPChar;
+    FArgCSaved: Integer;
+    FArgs: TStringArray;
+
     procedure TestOnDbgOut(Sender: TObject; S: string; var Handled: Boolean);
     procedure TestOnDebugln(Sender: TObject; S: string; var Handled: Boolean);
     procedure InitLogger;
     procedure AssertDbgOut(Name: string; ExpCount: integer; ExpText: String);
     procedure AssertDebugLn(Name: string; ExpCount: integer; ExpText: String);
+    procedure SaveArgs;
+    procedure RestoreArgs;
+    procedure SetArgv(List: TStringArray);
+    procedure SetArgs(List: array of string);
   published
     procedure TestEvent;
+    procedure TestFilter;
   end;
 
 implementation
@@ -47,6 +57,8 @@ begin
   FTheLogger := TLazLogger.Create;
   FTheLogger.OnDebugLn  := @TestOnDebugln;
   FTheLogger.OnDbgOut  := @TestOnDbgOut;
+  FOnDebugLnCount := 0;
+  FOnDebugLnText := '';
 end;
 
 procedure TTestLazLogger.AssertDbgOut(Name: string; ExpCount: integer; ExpText: String);
@@ -63,6 +75,49 @@ begin
   AssertEquals(Name + ' DebugLn text', ExpText, FOnDebugLnText);
   FOnDebugLnCount := 0;
   FOnDebugLnText := '';
+end;
+
+procedure TTestLazLogger.SaveArgs;
+begin
+  FArgVSaved := argv;
+  FArgCSaved := argc;
+end;
+
+procedure TTestLazLogger.RestoreArgs;
+begin
+  argv := FArgVSaved;
+  argc := FArgCSaved;
+end;
+
+procedure TTestLazLogger.SetArgv(List: TStringArray);
+var
+  i: Integer;
+begin
+  if List = nil then begin
+    argc := 0;
+    argv := nil;
+    ReAllocMem(FArgcMem, 0);
+    exit;
+  end;
+  argc := Length(List);
+  ReAllocMem(FArgcMem, argc * SizeOf(PChar));
+  argv := FArgcMem;
+  for i := 0 to argc - 1 do
+    FArgcMem[i] := PChar(List[i]);
+end;
+
+procedure TTestLazLogger.SetArgs(List: array of string);
+var
+  i: Integer;
+begin
+  if Length(List) = 0 then begin
+    SetArgv(nil);
+    Exit;
+  end;
+  SetLength(FArgs, Length(List));
+  for i := 0 to Length(List) - 1 do
+    FArgs[i] := List[i];
+  SetArgv(FArgs);
 end;
 
 procedure TTestLazLogger.TestEvent;
@@ -120,6 +175,255 @@ begin
 
 
   FreeAndNil(FTheLogger);
+end;
+
+procedure TTestLazLogger.TestFilter;
+  procedure FilterInit(List: array of string);
+  begin
+    SetArgs(List);
+    InitLogger;
+    FTheLogger.ParamForEnabledLogGroups := '--dbe=';
+  end;
+
+  procedure FilterInitNoParam(List: array of string);
+  begin
+    SetArgs(List);
+    InitLogger;
+  end;
+
+  Procedure TestNoGroup(Name: String);
+  begin
+    FTheLogger.DebugLn('NoGroup'+Name);
+    AssertDebugLn(Name + 'debugln NoGroup'+Name, 1, 'NoGroup'+Name+LineEnding);
+
+    FTheLogger.DebugLn('NoGroupNil'+Name);
+    AssertDebugLn(Name + 'debugln [nil] NoGroupNil'+Name, 1, 'NoGroupNil'+Name+LineEnding);
+  end;
+
+  Procedure TestGroup(Name: String; g: PLazLoggerLogGroup; ExpLog: Boolean);
+  begin
+    FTheLogger.DebugLn(g, 'Group'+Name);
+    if ExpLog then
+      AssertDebugLn(Name + 'debugln ['+g^.ConfigName+'] Group'+Name, 1, 'Group'+Name+LineEnding)
+    else
+      AssertDebugLn(Name + 'debugln ['+g^.ConfigName+'] Group'+Name, 0, '');
+
+    FTheLogger.DebugLn(g, ['Group2',Name]);
+    if ExpLog then
+      AssertDebugLn(Name + 'debugln ['+g^.ConfigName+'] [Group2,'+Name+']', 1, 'Group2'+Name+LineEnding)
+    else
+      AssertDebugLn(Name + 'debugln ['+g^.ConfigName+'] [Group2,'+Name+']', 0, '');
+  end;
+
+var
+  g1: PLazLoggerLogGroup;
+  s, a: String;
+begin
+  SaveArgs;
+  try
+    {%region g1 not default enabled}
+      s := 'g1(false)';
+      a := '';
+      FilterInit(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      TestNoGroup(Format('%s -- %s', [s, a]));
+      TestGroup  (Format('%s -- %s', [s, a]), g1, False);
+      g1^.Enabled := True;
+      TestGroup  (Format('%s -- %s', [s+'->enabled', a]), g1, True);
+
+      a := '--dbe=';
+      FilterInit(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      TestNoGroup(Format('%s -- %s', [s, a]));
+      TestGroup  (Format('%s -- %s', [s, a]), g1, False);
+
+      a := '--dbe=g1';
+      FilterInit(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      TestNoGroup(Format('%s -- %s', [s, a]));
+      TestGroup  (Format('%s -- %s', [s, a]), g1, True);
+      g1^.Enabled := False;
+      TestGroup  (Format('%s -- %s', [s+'->disabled', a]), g1, False);
+
+      a := '--dbe=+g1';
+      FilterInit(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      TestNoGroup(Format('%s -- %s', [s, a]));
+      TestGroup  (Format('%s -- %s', [s, a]), g1, True);
+
+      a := '--dbe=-g1';
+      FilterInit(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      TestNoGroup(Format('%s -- %s', [s, a]));
+      TestGroup  (Format('%s -- %s', [s, a]), g1, False);
+
+      a := '--dbe=g2';
+      FilterInit(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      TestNoGroup(Format('%s -- %s', [s, a]));
+      TestGroup  (Format('%s -- %s', [s, a]), g1, False);
+
+      a := '--dbe=g2,g1';
+      FilterInit(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      TestNoGroup(Format('%s -- %s', [s, a]));
+      TestGroup  (Format('%s -- %s', [s, a]), g1, True);
+
+      a := '--dbe=g1,g2';
+      FilterInit(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      TestNoGroup(Format('%s -- %s', [s, a]));
+      TestGroup  (Format('%s -- %s', [s, a]), g1, True);
+
+      a := '--dbe=-g2,g1';
+      FilterInit(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      TestNoGroup(Format('%s -- %s', [s, a]));
+      TestGroup  (Format('%s -- %s', [s, a]), g1, True);
+
+      a := '--dbe=-';
+      FilterInit(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      TestNoGroup(Format('%s -- %s', [s, a]));
+      TestGroup  (Format('%s -- %s', [s, a]), g1, False);
+
+      a := '--dbe=- --dbe=+g1';
+      FilterInit(['exe', '--debug-log=a', '--dbe=-', '--dbe=+g1']);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      TestNoGroup(Format('%s -- %s', [s, a]));
+      TestGroup  (Format('%s -- %s', [s, a]), g1, True);
+    {%endregion g1 not default enabled}
+
+    {%region g1 default enabled}
+      s := 'g1(true)';
+      a := '';
+      FilterInit(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1', True);
+      TestNoGroup(Format('%s -- %s', [s, a]));
+      TestGroup  (Format('%s -- %s', [s, a]), g1, True);
+
+      a := '--dbe=g1';
+      FilterInit(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1', True);
+      TestNoGroup(Format('%s -- %s', [s, a]));
+      TestGroup  (Format('%s -- %s', [s, a]), g1, True);
+
+      a := '--dbe=+g1';
+      FilterInit(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1', True);
+      TestNoGroup(Format('%s -- %s', [s, a]));
+      TestGroup  (Format('%s -- %s', [s, a]), g1, True);
+
+      a := '--dbe=-g1';
+      FilterInit(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1', True);
+      TestNoGroup(Format('%s -- %s', [s, a]));
+      TestGroup  (Format('%s -- %s', [s, a]), g1, False);
+
+      a := '--dbe=-g2';
+      FilterInit(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1', True);
+      TestNoGroup(Format('%s -- %s', [s, a]));
+      TestGroup  (Format('%s -- %s', [s, a]), g1, True);
+
+      a := '--dbe=g2,-g1';
+      FilterInit(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1', True);
+      TestNoGroup(Format('%s -- %s', [s, a]));
+      TestGroup  (Format('%s -- %s', [s, a]), g1, False);
+
+      a := '--dbe=-';
+      FilterInit(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1', True);
+      TestNoGroup(Format('%s -- %s', [s, a]));
+      TestGroup  (Format('%s -- %s', [s, a]), g1, False);
+    {%endregion g1 default enabled}
+
+
+    {%region g1 not default enabled / param after}
+      s := 'g1(false)';
+      a := '';
+      FilterInitNoParam(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      FTheLogger.ParamForEnabledLogGroups := '--dbe=';
+      TestNoGroup(Format('Param late: %s -- %s', [s, a]));
+      TestGroup  (Format('Param late: %s -- %s', [s, a]), g1, False);
+
+      a := '--dbe=';
+      FilterInitNoParam(['exe', '--debug-log=a', a]);
+      FTheLogger.ParamForEnabledLogGroups := '--dbe=';
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      TestNoGroup(Format('Param late: %s -- %s', [s, a]));
+      TestGroup  (Format('Param late: %s -- %s', [s, a]), g1, False);
+
+      a := '--dbe=g1';
+      FilterInitNoParam(['exe', '--debug-log=a', a]);
+      FTheLogger.ParamForEnabledLogGroups := '--dbe=';
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      TestNoGroup(Format('Param late: %s -- %s', [s, a]));
+      TestGroup  (Format('Param late: %s -- %s', [s, a]), g1, True);
+
+      a := '--dbe=+g1';
+      FilterInitNoParam(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      FTheLogger.ParamForEnabledLogGroups := '--dbe=';
+      TestNoGroup(Format('Param late: %s -- %s', [s, a]));
+      TestGroup  (Format('Param late: %s -- %s', [s, a]), g1, True);
+
+      a := '--dbe=-g1';
+      FilterInitNoParam(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      FTheLogger.ParamForEnabledLogGroups := '--dbe=';
+      TestNoGroup(Format('Param late: %s -- %s', [s, a]));
+      TestGroup  (Format('Param late: %s -- %s', [s, a]), g1, False);
+
+      a := '--dbe=g2';
+      FilterInitNoParam(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      FTheLogger.ParamForEnabledLogGroups := '--dbe=';
+      TestNoGroup(Format('Param late: %s -- %s', [s, a]));
+      TestGroup  (Format('Param late: %s -- %s', [s, a]), g1, False);
+
+      a := '--dbe=g2,g1';
+      FilterInitNoParam(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      FTheLogger.ParamForEnabledLogGroups := '--dbe=';
+      TestNoGroup(Format('Param late: %s -- %s', [s, a]));
+      TestGroup  (Format('Param late: %s -- %s', [s, a]), g1, True);
+
+      a := '--dbe=g1,g2';
+      FilterInitNoParam(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      FTheLogger.ParamForEnabledLogGroups := '--dbe=';
+      TestNoGroup(Format('Param late: %s -- %s', [s, a]));
+      TestGroup  (Format('Param late: %s -- %s', [s, a]), g1, True);
+
+      a := '--dbe=-g2,g1';
+      FilterInitNoParam(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      FTheLogger.ParamForEnabledLogGroups := '--dbe=';
+      TestNoGroup(Format('Param late: %s -- %s', [s, a]));
+      TestGroup  (Format('Param late: %s -- %s', [s, a]), g1, True);
+
+      a := '--dbe=-';
+      FilterInitNoParam(['exe', '--debug-log=a', a]);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      FTheLogger.ParamForEnabledLogGroups := '--dbe=';
+      TestNoGroup(Format('Param late: %s -- %s', [s, a]));
+      TestGroup  (Format('Param late: %s -- %s', [s, a]), g1, False);
+
+      a := '--dbe=- --dbe=+g1';
+      FilterInitNoParam(['exe', '--debug-log=a', '--dbe=-', '--dbe=+g1']);
+      g1 := FTheLogger.RegisterLogGroup('g1');
+      FTheLogger.ParamForEnabledLogGroups := '--dbe=';
+      TestNoGroup(Format('Param late: %s -- %s', [s, a]));
+      TestGroup  (Format('Param late: %s -- %s', [s, a]), g1, True);
+    {%endregion g1 not default enabled}
+  finally
+    SetArgv(nil);
+    RestoreArgs;
+    FreeAndNil(FTheLogger);
+  end;
 end;
 
 
