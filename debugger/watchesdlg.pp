@@ -38,7 +38,7 @@ unit WatchesDlg;
 interface
 
 uses
-  Classes, Forms, Controls, math, LCLProc,
+  Classes, Forms, Controls, math, LCLProc, LazLogger,
   IDEWindowIntf, Menus, ComCtrls, ActnList, IDEImagesIntf, LazarusIDEStrConsts, DebuggerStrConst,
   Debugger, DebuggerDlg, BaseDebugManager;
 
@@ -148,6 +148,7 @@ implementation
 {$R *.lfm}
 
 var
+  DBG_DATA_MONITORS: PLazLoggerLogGroup;
   WatchWindowCreator: TIDEWindowCreator;
 const
   COL_WATCH_EXPR  = 1;
@@ -389,7 +390,7 @@ end;
 
 procedure TWatchesDlg.ContextChanged(Sender: TObject);
 begin
-  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataWindow: TWatchesDlg.ContextChanged ',  DbgSName(Sender), '  Upd:', IsUpdating]); {$ENDIF}
+  DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.ContextChanged ',  DbgSName(Sender), '  Upd:', IsUpdating]);
   UpdateAll;
 end;
 
@@ -471,7 +472,7 @@ procedure TWatchesDlg.SnapshotChanged(Sender: TObject);
 var
   NewWatches: TWatches;
 begin
-  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataWindow: TWatchesDlg.SnapshotChanged ',  DbgSName(Sender), '  Upd:', IsUpdating]); {$ENDIF}
+  DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.SnapshotChanged ',  DbgSName(Sender), '  Upd:', IsUpdating]);
   lvWatches.BeginUpdate;
   try
     NewWatches := Watches;
@@ -672,11 +673,11 @@ var
 begin
   if Watches = nil then exit;
   if IsUpdating then begin
-    {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataWindow: TWatchesDlg.UpdateAll: TWatchesDlg.UpdateAll  in IsUpdating:']); {$ENDIF}
+    DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.UpdateAll: TWatchesDlg.UpdateAll  in IsUpdating:']);
     FUpdateAllNeeded := True;
     exit;
   end;
-  {$IFDEF DBG_DATA_MONITORS} try DebugLnEnter(['DebugDataWindow: TWatchesDlg.UpdateAll: >>ENTER: TWatchesDlg.UpdateAll ']); {$ENDIF}
+  try DebugLnEnter(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.UpdateAll: >>ENTER: TWatchesDlg.UpdateAll ']);
 
   Snap := GetSelectedSnapshot;
   if Snap <> nil
@@ -701,7 +702,7 @@ begin
     lvWatches.EndUpdate;
     lvWatchesSelectItem(nil, nil, False);
   end;
-  {$IFDEF DBG_DATA_MONITORS} finally DebugLnExit(['DebugDataWindow: TWatchesDlg.UpdateAll: <<EXIT: TWatchesDlg.UpdateAll ']); end; {$ENDIF}
+  finally DebugLnExit(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.UpdateAll: <<EXIT: TWatchesDlg.UpdateAll ']); end;
 end;
 
 procedure TWatchesDlg.DisableAllActions;
@@ -742,7 +743,7 @@ var
 begin
   if AWatch = nil then Exit; // TODO: update all
   if AWatch.Collection <> FWatchesInView then exit;
-  {$IFDEF DBG_DATA_MONITORS} try DebugLnEnter(['DebugDataWindow: TWatchesDlg.WatchUpdate  Upd:', IsUpdating, '  Watch=',AWatch.Expression]); {$ENDIF}
+  try DebugLnEnter(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.WatchUpdate  Upd:', IsUpdating, '  Watch=',AWatch.Expression]);
 
   Item := lvWatches.Items.FindData(AWatch);
   if Item = nil
@@ -751,7 +752,7 @@ begin
 
   if not FUpdatingAll
   then lvWatchesSelectItem(nil, nil, False);
-  {$IFDEF DBG_DATA_MONITORS} finally DebugLnExit(['DebugDataWindow: TWatchesDlg.WatchUpdate']); end; {$ENDIF}
+  finally DebugLnExit(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.WatchUpdate']); end;
 end;
 
 procedure TWatchesDlg.WatchRemove(const ASender: TWatches; const AWatch: TWatch);
@@ -769,6 +770,8 @@ initialization
   WatchWindowCreator.DividerTemplate.Add('ColumnWatchExpr',  COL_WATCH_EXPR,  drsColWidthExpression);
   WatchWindowCreator.DividerTemplate.Add('ColumnWatchValue', COL_WATCH_VALUE, drsColWidthValue);
   WatchWindowCreator.CreateSimpleLayout;
+
+  DBG_DATA_MONITORS := DebugLogger.FindOrRegisterLogGroup('DBG_DATA_MONITORS' {$IFDEF DBG_DATA_MONITORS} , True {$ENDIF} );
 
 end.
 

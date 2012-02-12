@@ -247,6 +247,8 @@ type
 
     function  RegisterLogGroup(const AConfigName: String; ADefaulEnabled: Boolean) : PLazLoggerLogGroup;
     function  RegisterLogGroup(const AConfigName: String) : PLazLoggerLogGroup;
+    function  FindOrRegisterLogGroup(const AConfigName: String; ADefaulEnabled: Boolean) : PLazLoggerLogGroup;
+    function  FindOrRegisterLogGroup(const AConfigName: String) : PLazLoggerLogGroup;
     // comma separated list / not present = defaults (none unless emabled in code) / - means none
     property  ParamForEnabledLogGroups: String read FParamForEnabledLogGroups write SetParamForEnabledLogGroups;
     property  LogGroupList: TLazLoggerLogGroupList read GetLogGroupList;
@@ -1462,6 +1464,31 @@ begin
 
   if not DefaultFound then
     Result^.Flags := Result^.Flags + [lgfNoDefaultEnabledSpecified];
+end;
+
+function TLazLogger.FindOrRegisterLogGroup(const AConfigName: String;
+  ADefaulEnabled: Boolean): PLazLoggerLogGroup;
+begin
+  Result := LogGroupList.Find(AConfigName);
+  if Result = nil then
+    Result := RegisterLogGroup(AConfigName, ADefaulEnabled)
+  else
+  begin
+    if (lgfNoDefaultEnabledSpecified in Result^.Flags) and
+       not(lgfAddedByParamParser in Result^.Flags)
+    then
+      Result^.Enabled := ADefaulEnabled;
+    Result^.Flags := Result^.Flags - [lgfNoDefaultEnabledSpecified, lgfAddedByParamParser];
+  end;
+end;
+
+function TLazLogger.FindOrRegisterLogGroup(const AConfigName: String): PLazLoggerLogGroup;
+begin
+  Result := LogGroupList.Find(AConfigName);
+  if Result = nil then
+    Result := RegisterLogGroup(AConfigName)
+  else
+    Result^.Flags := Result^.Flags - [lgfAddedByParamParser];
 end;
 
 procedure TLazLogger.DebuglnStack(const s: string);

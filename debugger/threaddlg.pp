@@ -5,7 +5,7 @@ unit ThreadDlg;
 interface
 
 uses
-  Classes, SysUtils, ComCtrls, LCLProc,
+  Classes, SysUtils, ComCtrls, LCLProc, LazLogger,
   Debugger, DebuggerDlg, Forms, LazarusIDEStrConsts, IDEWindowIntf, DebuggerStrConst,
   BaseDebugManager, IDEImagesIntf;
 
@@ -43,6 +43,7 @@ implementation
 {$R *.lfm}
 
 var
+  DBG_DATA_MONITORS: PLazLoggerLogGroup;
   ThreadDlgWindowCreator: TIDEWindowCreator;
 
 const
@@ -78,12 +79,12 @@ var
   Snap: TSnapshot;
 begin
   if IsUpdating then begin
-    {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataWindow: TThreadsDlg.ThreadsChanged from ',  DbgSName(Sender), ' in IsUpdating']); {$ENDIF}
+    DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TThreadsDlg.ThreadsChanged from ',  DbgSName(Sender), ' in IsUpdating']);
 
     Include(FUpdateFlags, ufThreadChanged);
     exit;
   end;
-  {$IFDEF DBG_DATA_MONITORS} try DebugLnEnter(['DebugDataMonitor: >>ENTER: TThreadsDlg.ThreadsChanged from ',  DbgSName(Sender)]); {$ENDIF}
+  try DebugLnEnter(DBG_DATA_MONITORS, ['DebugDataMonitor: >>ENTER: TThreadsDlg.ThreadsChanged from ',  DbgSName(Sender)]);
   Exclude(FUpdateFlags, ufThreadChanged);
 
   BeginUpdate;
@@ -147,7 +148,7 @@ begin
     lvThreads.EndUpdate;
     EndUpdate;
   end;
-  {$IFDEF DBG_DATA_MONITORS} finally DebugLnExit(['DebugDataMonitor: <<EXIT: TThreadsDlg.ThreadsChanged']); end; {$ENDIF}
+  finally DebugLnExit(DBG_DATA_MONITORS, ['DebugDataMonitor: <<EXIT: TThreadsDlg.ThreadsChanged']); end;
 end;
 
 function TThreadsDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
@@ -270,6 +271,8 @@ initialization
   ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadLine',     COL_THREAD_LINE,      drsColWidthLine);
   ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadFunc',     COL_THREAD_FUNC,      drsColWidthFunc);
   ThreadDlgWindowCreator.CreateSimpleLayout;
+
+  DBG_DATA_MONITORS := DebugLogger.FindOrRegisterLogGroup('DBG_DATA_MONITORS' {$IFDEF DBG_DATA_MONITORS} , True {$ENDIF} );
 
 end.
 

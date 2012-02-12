@@ -36,7 +36,7 @@ unit CallStackDlg;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, LCLProc,
+  SysUtils, Classes, Controls, Forms, LCLProc, LazLogger,
   IDEWindowIntf, DebuggerStrConst,
   ComCtrls, Debugger, DebuggerDlg, Menus, ClipBrd, ExtCtrls, StdCtrls,
   ActnList, IDEImagesIntf, IDECommands;
@@ -151,6 +151,7 @@ uses
   BaseDebugManager, LazarusIDEStrConsts;
 
 var
+  DBG_DATA_MONITORS: PLazLoggerLogGroup;
   imgSourceLine: Integer;
   imgNoSourceLine: Integer;
 
@@ -199,7 +200,7 @@ end;
 
 procedure TCallStackDlg.CallStackChanged(Sender: TObject);
 begin
-  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataWindow: TCallStackDlg.CallStackChanged from ',  DbgSName(Sender), ' Upd:', IsUpdating]); {$ENDIF}
+  DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TCallStackDlg.CallStackChanged from ',  DbgSName(Sender), ' Upd:', IsUpdating]);
   if not ToolButtonPower.Down then exit;
   if FViewStart = 0
   then UpdateView
@@ -209,7 +210,7 @@ end;
 
 procedure TCallStackDlg.CallStackCurrent(Sender: TObject);
 begin
-  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataWindow: TCallStackDlg.CallStackCurrent from ',  DbgSName(Sender), '  Upd:', IsUpdating]); {$ENDIF}
+  DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TCallStackDlg.CallStackCurrent from ',  DbgSName(Sender), '  Upd:', IsUpdating]);
   if not ToolButtonPower.Down then exit;
   UpdateView;
 end;
@@ -273,11 +274,11 @@ var
 begin
   if (not ToolButtonPower.Down) or FInUpdateView then exit;
   if IsUpdating then begin
-    {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataWindow: TCallStackDlg.UpdateView in IsUpdating']); {$ENDIF}
+    DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TCallStackDlg.UpdateView in IsUpdating']);
     Include(FUpdateFlags, ufNeedUpdating);
     exit;
   end;
-  {$IFDEF DBG_DATA_MONITORS} try DebugLnEnter(['DebugDataWindow: >>ENTER: TCallStackDlg.UpdateView']); {$ENDIF}
+  try DebugLnEnter(DBG_DATA_MONITORS, ['DebugDataWindow: >>ENTER: TCallStackDlg.UpdateView']);
   Exclude(FUpdateFlags, ufNeedUpdating);
 
 
@@ -370,7 +371,7 @@ begin
     lvCallStack.EndUpdate;
     EndUpdate;
   end;
-  {$IFDEF DBG_DATA_MONITORS} finally DebugLnExit(['DebugDataWindow: <<EXIT: TCallStackDlg.UpdateView']); end; {$ENDIF}
+  finally DebugLnExit(DBG_DATA_MONITORS, ['DebugDataWindow: <<EXIT: TCallStackDlg.UpdateView']); end;
 end;
 
 procedure TCallStackDlg.DoBeginUpdate;
@@ -671,7 +672,7 @@ var
   Entry: TCallStackEntry;
   Stack: TCallStack;
 begin
-  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataWindow: TCallStackDlg.BreakPointChanged ',  DbgSName(ASender), '  Upd:', IsUpdating]); {$ENDIF}
+  DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TCallStackDlg.BreakPointChanged ',  DbgSName(ASender), '  Upd:', IsUpdating]);
   Stack := GetSelectedCallstack;
   if (BreakPoints = nil) or (Stack = nil) then
     Exit;
@@ -819,6 +820,8 @@ initialization
   CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackLine',     COL_STACK_LINE,     drsColWidthLine);
   CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackFunc',     COL_STACK_FUNC,     drsColWidthFunc);
   CallStackDlgWindowCreator.CreateSimpleLayout;
+
+  DBG_DATA_MONITORS := DebugLogger.FindOrRegisterLogGroup('DBG_DATA_MONITORS' {$IFDEF DBG_DATA_MONITORS} , True {$ENDIF} );
 
 end.
 

@@ -36,7 +36,7 @@ unit LocalsDlg;
 interface
 
 uses
-  SysUtils, Classes, Forms, ClipBrd, LCLProc,
+  SysUtils, Classes, Forms, ClipBrd, LCLProc, LazLogger,
   IDEWindowIntf, DebuggerStrConst,
   ComCtrls, ActnList, Menus, BaseDebugManager, Debugger, DebuggerDlg;
 
@@ -94,6 +94,7 @@ uses
   LazarusIDEStrConsts;
 
 var
+  DBG_DATA_MONITORS: PLazLoggerLogGroup;
   LocalsDlgWindowCreator: TIDEWindowCreator;
 
 const
@@ -191,12 +192,12 @@ begin
   end;
 
   if IsUpdating then begin
-    {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataWindow: TLocalsDlg.LocalsChanged  in IsUpdating']); {$ENDIF}
+    DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TLocalsDlg.LocalsChanged  in IsUpdating']);
     Include(FUpdateFlags, ufNeedUpdating);
     exit;
   end;
   Exclude(FUpdateFlags, ufNeedUpdating);
-  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TLocalsDlg.LocalsChanged']); {$ENDIF}
+  DebugLn(DBG_DATA_MONITORS, ['DebugDataMonitor: TLocalsDlg.LocalsChanged']);
 
   if GetStackframe < 0 then begin // TODO need dedicated validity property
     lvLocals.Items.Clear;
@@ -361,6 +362,8 @@ initialization
   LocalsDlgWindowCreator.DividerTemplate.Add('LocalsName',  COL_LOCALS_NAME,  drsColWidthName);
   LocalsDlgWindowCreator.DividerTemplate.Add('LocalsValue', COL_LOCALS_VALUE, drsColWidthValue);
   LocalsDlgWindowCreator.CreateSimpleLayout;
+
+  DBG_DATA_MONITORS := DebugLogger.FindOrRegisterLogGroup('DBG_DATA_MONITORS' {$IFDEF DBG_DATA_MONITORS} , True {$ENDIF} );
 
 end.
 
