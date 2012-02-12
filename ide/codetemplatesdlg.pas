@@ -941,7 +941,7 @@ begin
 
   // init captions
   Caption:=dlgEdCodeTempl;
-  AddButton.Caption:=lisCodeTemplAdd;
+  AddButton.Caption:=lisAdd;
   RenameButton.Caption:=lisLazBuildRename;
   DeleteButton.Caption:=dlgEdDelete;
   TemplatesGroupBox.Caption:=lisCTDTemplates;

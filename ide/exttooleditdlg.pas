@@ -267,7 +267,7 @@ begin
     Caption:=lisEdtExtToolMacros;
 
   with MacrosInsertButton do
-    Caption:=lisCodeTemplAdd;
+    Caption:=lisAdd;
     
   ButtonPanel.OKButton.Caption:=lisOk;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;

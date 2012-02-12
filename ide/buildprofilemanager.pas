@@ -516,7 +516,7 @@ begin
   MoveUpButton.ImageIndex  :=IDEImages.LoadImage(16, 'arrow_up');
   MoveDownButton.ImageIndex:=IDEImages.LoadImage(16, 'arrow_down');
 
-  AddButton.Caption:=lisLazBuildAdd;
+  AddButton.Caption:=lisAdd;
   RemoveButton.Caption:=lisLazBuildRemove;
   EditButton.Caption:=lisLazBuildRename;
   MoveUpButton.Caption:=lisExtToolMoveUp;

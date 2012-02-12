@@ -782,7 +782,7 @@ begin
   AddButton:=TButton.Create(Self);
   with AddButton do begin
     Name:='AddButton';
-    Caption:=lisCodeTemplAdd;
+    Caption:=lisAdd;
     OnClick:=@AddButtonClick;
     Enabled:=false;
     AutoSize:=true;

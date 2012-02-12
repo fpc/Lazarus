@@ -87,7 +87,7 @@ begin
   lvSignals.Column[1].Caption := lisDebugOptionsFrmID;
   lvSignals.Column[2].Caption := lisDebugOptionsFrmHandledBy;
   lvSignals.Column[3].Caption := lisDebugOptionsFrmResume;
-  cmdSignalAdd.Caption := lisCodeTemplAdd;
+  cmdSignalAdd.Caption := lisAdd;
   cmdSignalRemove.Caption := lisExtToolRemove;
   cmdSignalAdd.LoadGlyphFromLazarusResource('laz_add');
   cmdSignalRemove.LoadGlyphFromLazarusResource('laz_delete');

@@ -1294,7 +1294,7 @@ begin
   CompileBitBtn := CreateToolButton('CompileBitBtn', lisPckEditCompile, lisPckEditCompilePackage, 'pkg_compile', @CompileBitBtnClick);
   UseBitBtn     := CreateToolButton('UseBitBtn', lisPckEditInstall, lisPckEditInstallPackageInTheIDE, 'pkg_install', nil);
   CreateDivider;
-  AddBitBtn     := CreateToolButton('AddBitBtn', lisCodeTemplAdd, lisPckEditAddAnItem, 'laz_add', @AddBitBtnClick);
+  AddBitBtn     := CreateToolButton('AddBitBtn', lisAdd, lisPckEditAddAnItem, 'laz_add', @AddBitBtnClick);
   RemoveBitBtn  := CreateToolButton('RemoveBitBtn', lisExtToolRemove, lisPckEditRemoveSelectedItem, 'laz_delete', @RemoveBitBtnClick);
   CreateDivider;
   OptionsBitBtn := CreateToolButton('OptionsBitBtn', dlgFROpts, lisPckEditEditGeneralOptions, 'pkg_properties', @OptionsBitBtnClick);

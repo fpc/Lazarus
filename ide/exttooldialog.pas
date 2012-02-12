@@ -522,7 +522,7 @@ begin
   
   ToolBar.Images := IDEImages.Images_16;
 
-  AddButton.Caption:=lisCodeTemplAdd;
+  AddButton.Caption:=lisAdd;
   RemoveButton.Caption:=lisExtToolRemove;
   EditButton.Caption:=lisCodeToolsDefsEdit;
   MoveUpButton.Caption:=lisExtToolMoveUp;

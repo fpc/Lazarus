@@ -147,7 +147,7 @@ begin
   bgIgnoreExceptions.Caption := lisDebugOptionsFrmIgnoreTheseExceptions;
   DbgLangExceptHint.Caption := lisTheseSettingsAreStoredWithTheProject;
   cmdExceptionRemove.Caption := lisExtToolRemove;
-  cmdExceptionAdd.Caption := lisCodeTemplAdd;
+  cmdExceptionAdd.Caption := lisAdd;
   cmdExceptionRemove.LoadGlyphFromLazarusResource('laz_delete');
   cmdExceptionAdd.LoadGlyphFromLazarusResource('laz_add');
   chkNotifyOnException.Caption := lisDebugOptionsFrmNotifyOnLazarusExceptions;

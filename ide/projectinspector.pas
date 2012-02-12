@@ -603,7 +603,7 @@ begin
   ToolBar.Images            := IDEImages.Images_16;
   FilterEdit.OnGetImageIndex:=@ChooseImageIndex;
 
-  AddBitBtn     := CreateToolButton('AddBitBtn', lisCodeTemplAdd, lisPckEditAddAnItem, 'laz_add', @AddBitBtnClick);
+  AddBitBtn     := CreateToolButton('AddBitBtn', lisAdd, lisPckEditAddAnItem, 'laz_add', @AddBitBtnClick);
   RemoveBitBtn  := CreateToolButton('RemoveBitBtn', lisExtToolRemove, lisPckEditRemoveSelectedItem, 'laz_delete', @RemoveBitBtnClick);
   CreateDivider;
   OptionsBitBtn := CreateToolButton('OptionsBitBtn', dlgFROpts, lisPckEditEditGeneralOptions, 'menu_environment_options', @OptionsBitBtnClick);

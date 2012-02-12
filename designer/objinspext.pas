@@ -395,7 +395,7 @@ procedure TOIAddRemoveFavouriteDlg.UpdateMode;
 begin
   if AddMode then begin
     Caption:=lisOIFAddToFavouriteProperties;
-    OkButton.Caption:=lisCodeTemplAdd;
+    OkButton.Caption:=lisAdd;
   end else begin
     Caption:=lisOIFRemoveFromFavouriteProperties;
     OkButton.Caption:=lisExtToolRemove;
@@ -430,7 +430,7 @@ begin
   with OkButton do begin
     Name:='AddButton';
     SetBounds(5,100,80,25);
-    Caption:=lisCodeTemplAdd;
+    Caption:=lisAdd;
     Parent:=Self;
     OnClick:=@OkButtonClick;
   end;

@@ -42,6 +42,7 @@ uses
 resourcestring
   // Common strings that can be used around Lazarus:
   lisAdd  = 'Add';
+  lisChange  = 'Change';
 
   // errors
   lisErrInvalidOption = 'Invalid option at position %d: "%s"';
@@ -1450,8 +1451,6 @@ resourcestring
   dlgMouseOptOtherAct  = 'Other actions using the same button';
   dlgMouseOptOtherActHint  = 'They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down ...';
   dlgMouseOptOtherActToggle = 'Filter Mod-Keys';
-  dlgMouseOptBtnUdp  = 'Change';
-  dlgMouseOptBtnAdd  = 'Add';
   dlgMouseOptBtnImport = 'Import';
   dlgMouseOptBtnExport = 'Export';
   dlgMouseOptBtnOk  = 'OK';
@@ -2930,7 +2929,6 @@ resourcestring
   lisLazBuildConfirmBuild = 'Confirm before build';
   lisLazBuildOk = 'OK';
   lisPERemoveFiles = 'Remove files';
-  lisLazBuildAdd = 'Add';
   lisLazBuildNewProf = 'Add New Profile';
   lisLazBuildNewProfInfo = 'Current build options will be associated with:';
   lisLazBuildRemove = 'Remove';
@@ -3192,7 +3190,7 @@ resourcestring
   
   // code template dialog
   lisCodeTemplAddCodeTemplate = 'Add code template';
-  lisCodeTemplAdd = 'Add';
+  lisCodeTemplAdd = 'Add template';
   lisCodeTemplEditCodeTemplate = 'Edit code template';
   lisCodeTemplAutoCompleteOn = 'Auto complete on';
   lisCodeTemplChange = 'Change';

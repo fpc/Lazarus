@@ -694,8 +694,8 @@ begin
 
   BtnImport.Caption := dlgMouseOptBtnImport;
   BtnExport.Caption := dlgMouseOptBtnExport;
-  UpdateButton.Caption := dlgMouseOptBtnUdp;
-  AddNewButton.Caption := dlgMouseOptBtnAdd;
+  UpdateButton.Caption := lisChange;
+  AddNewButton.Caption := lisAdd;
   DelButton.Caption := dlgMouseOptBtnDel;
   OtherActionLabel.Caption := dlgMouseOptOtherAct;
   OtherActionLabel.Hint := dlgMouseOptOtherActHint;
