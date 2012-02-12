@@ -51,6 +51,7 @@ const
   StartedByStartLazarusOpt='--started-by-startlazarus';
   SkipLastProjectOpt='--skip-last-project';
   DebugLogOpt='--debug-log=';
+  DebugLogOptEnable='--debug-enable=';
   LanguageOpt='--language=';
   LazarusDirOpt ='--lazarusdir=';
 

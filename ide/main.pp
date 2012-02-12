@@ -63,7 +63,7 @@ uses
   // lcl
   LCLProc, LCLMemManager, LCLType, LCLIntf, LConvEncoding, LMessages, ComCtrls,
   FileUtil, LResources, StdCtrls, Forms, Buttons, Menus, Controls, GraphType,
-  HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, UTF8Process,
+  HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, UTF8Process, LazLogger,
   //
   LazUTF8,
   // codetools
@@ -1200,6 +1200,8 @@ var
     Application.Terminate;
   end;
 
+var
+  i: integer;
 begin
   StartedByStartLazarus:=false;
   SkipAutoLoadingLastProject:=false;
@@ -1242,6 +1244,11 @@ begin
     AddHelp(['']);
     AddHelp([DebugLogOpt,' <file>']);
     AddHelp([BreakString(space+lisFileWhereDebugOutputIsWritten, 75, 22)]);
+    AddHelp(['']);
+    AddHelp([DebugLogOptEnable,' [[-]OptName][,[-]OptName][...]']);
+    AddHelp([BreakString(space+lisGroupsForDebugOutput, 75, 22)]);
+    for i := 0 to DebugLogger.LogGroupList.Count - 1 do
+      AddHelp([space + DebugLogger.LogGroupList[i]^.ConfigName]);
     AddHelp(['']);
     AddHelp([NoSplashScreenOptLong]);
     AddHelp(['or ',NoSplashScreenOptShort]);
@@ -18867,6 +18874,7 @@ initialization
   {$I ../images/laz_images.lrs}
   // we have a bundle icon, don't use low quality standard icon
   ShowSplashScreen:=true;
+  DebugLogger.ParamForEnabledLogGroups := '--debug-enable=';
 end.
 
 
