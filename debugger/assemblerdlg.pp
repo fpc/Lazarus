@@ -280,8 +280,8 @@ begin
   actGotoAddr.Hint := lisDisAssGotoAddressHint;
   actGotoAddr.ImageIndex := IDEImages.LoadImage(16, 'callstack_show');
 
-  actCopy.Caption := lisMenuCopy;
-  actCopy.Hint := lisMenuCopy;
+  actCopy.Caption := lisCopy;
+  actCopy.Hint := lisCopy;
   actCopy.ImageIndex := IDEImages.LoadImage(16, 'laz_copy');
 
 

@@ -1102,14 +1102,14 @@ begin
            SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
            AddSubMenuClick(self);
            temp_designermenuitem:=temp_designermenuitem^.SubMenu;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateUndo);
+           ChangeCaption (temp_designermenuitem, lisUndo);
            UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
 
            // Add new item and set it's caption to "Redo"
            SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
            AddNewItemAfterClick(self);
            temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateRedo);
+           ChangeCaption (temp_designermenuitem, lisRedo);
            UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
 
            // Add new separator
@@ -1123,21 +1123,21 @@ begin
            SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
            AddNewItemAfterClick(self);
            temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateCut);
+           ChangeCaption (temp_designermenuitem, lisCut);
            UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
 
            // Add new item and set it's caption to "Copy"
            SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
            AddNewItemAfterClick(self);
            temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateCopy);
+           ChangeCaption (temp_designermenuitem, lisCopy);
            UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
 
            // Add new item and set it's caption to "Paste"
            SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
            AddNewItemAfterClick(self);
            temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplatePaste);
+           ChangeCaption (temp_designermenuitem, lisPaste);
            UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
 
            // Add new separator
@@ -2177,12 +2177,12 @@ begin
        end;
     2: begin
          ListBoxView.Items.Add(lisMenuTemplateEdit);
-         ListBoxView.Items.Add(' ' + lisMenuTemplateUndo);
-         ListBoxView.Items.Add(' ' + lisMenuTemplateRedo);
+         ListBoxView.Items.Add(' ' + lisUndo);
+         ListBoxView.Items.Add(' ' + lisRedo);
          ListBoxView.Items.Add(' -');
-         ListBoxView.Items.Add(' ' + lisMenuTemplateCut);
-         ListBoxView.Items.Add(' ' + lisMenuTemplateCopy);
-         ListBoxView.Items.Add(' ' + lisMenuTemplatePaste);
+         ListBoxView.Items.Add(' ' + lisCut);
+         ListBoxView.Items.Add(' ' + lisCopy);
+         ListBoxView.Items.Add(' ' + lisPaste);
          ListBoxView.Items.Add(' -');
          ListBoxView.Items.Add(' ' + lisMenuTemplateFind);
          ListBoxView.Items.Add(' ' + lisMenuTemplateFindNext);

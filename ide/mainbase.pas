@@ -402,14 +402,14 @@ begin
   with MainIDEBar do begin
     CreateMenuSeparatorSection(mnuEdit,itmEditReUndo,'itmEditReUndo');
     ParentMI:=itmEditReUndo;
-    CreateMenuItem(ParentMI,itmEditUndo,'itmEditUndo',lisMenuUndo,'menu_undo');
-    CreateMenuItem(ParentMI,itmEditRedo,'itmEditRedo',lisMenuRedo,'menu_redo');
+    CreateMenuItem(ParentMI,itmEditUndo,'itmEditUndo',lisUndo,'menu_undo');
+    CreateMenuItem(ParentMI,itmEditRedo,'itmEditRedo',lisRedo,'menu_redo');
 
     CreateMenuSeparatorSection(mnuEdit,itmEditClipboard,'itmEditClipboard');
     ParentMI:=itmEditClipboard;
-    CreateMenuItem(ParentMI,itmEditCut,'itmEditCut',lisMenuCut,'laz_cut');
-    CreateMenuItem(ParentMI,itmEditCopy,'itmEditCopy',lisMenuCopy,'laz_copy');
-    CreateMenuItem(ParentMI,itmEditPaste,'itmEditPaste',lisMenuPaste,'laz_paste');
+    CreateMenuItem(ParentMI,itmEditCut,'itmEditCut',lisCut,'laz_cut');
+    CreateMenuItem(ParentMI,itmEditCopy,'itmEditCopy',lisCopy,'laz_copy');
+    CreateMenuItem(ParentMI,itmEditPaste,'itmEditPaste',lisPaste,'laz_paste');
 
     // "Select" menu items
     CreateMenuSeparatorSection(mnuEdit,itmEditSelect,'itmEditSelect');

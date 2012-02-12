@@ -51,6 +51,13 @@ resourcestring
   lisNo = 'No';
   lisContinue = 'Continue';
   lisBreak = 'Break';
+
+  lisUndo = 'Undo';
+  lisRedo = 'Redo';
+  lisCut = 'Cut';
+  lisCopy = 'Copy';
+  lisPaste = 'Paste';
+
   lisDown = 'Down';
   lisUp   = 'Up';
   lisRight = 'Right';
@@ -205,11 +212,6 @@ resourcestring
   lisMenuQuit = '&Quit';
   lisMenuRestart = 'Restart';
 
-  lisMenuUndo = 'Undo';
-  lisMenuRedo = 'Redo';
-  lisMenuCut = 'Cut';
-  lisMenuCopy = 'Copy';
-  lisMenuPaste = 'Paste';
   lisMenuIndentSelection = 'Indent Selection';
   lisMenuUnindentSelection = 'Unindent Selection';
   lisMenuUpperCaseSelection = 'Uppercase Selection';
@@ -2316,9 +2318,6 @@ resourcestring
   uemMoveToOtherWindow = 'Move to Other Window';
   uemMoveToOtherWindowNew = 'New Window';
   uemFindInOtherWindow = 'Find in other Window';
-  uemCut = 'Cut';
-  uemCopy = 'Copy';
-  uemPaste = 'Paste';
   uemCopyFilename = 'Copy Filename';
   uemGotoBookmark = '&Goto Bookmark';
   uemSetFreeBookmark = 'Set a Free Bookmark';
@@ -4228,11 +4227,11 @@ resourcestring
   // Standard Edit menu
   lisMenuTemplateDescriptionStandardEditMenu = 'Standard Edit Menu';
   lisMenuTemplateEdit = 'Edit';
-  lisMenuTemplateUndo = 'Undo';
-  lisMenuTemplateRedo = 'Redo';
-  lisMenuTemplateCut = 'Cut';
-  lisMenuTemplateCopy = 'Copy';
-  lisMenuTemplatePaste = 'Paste';
+  //lisMenuTemplateUndo = 'Undo';
+  //lisMenuTemplateRedo = 'Redo';
+  //lisMenuTemplateCut = 'Cut';
+  //lisMenuTemplateCopy = 'Copy';
+  //lisMenuTemplatePaste = 'Paste';
   lisMenuTemplateFind = 'Find';
   lisMenuTemplateFindNext = 'Find Next';
 

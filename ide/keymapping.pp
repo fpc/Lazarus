@@ -335,8 +335,8 @@ begin
     ecInsertLine              : Result:= srkmecInsertLine;
     ecChar                    : Result:= srkmecChar;
     ecImeStr                  : Result:= srkmecImeStr;
-    ecUndo                    : Result:= lisMenuUndo;
-    ecRedo                    : Result:= lisMenuRedo;
+    ecUndo                    : Result:= lisUndo;
+    ecRedo                    : Result:= lisRedo;
     ecCut                     : Result:= srkmecCut;
     ecCopy                    : Result:= srkmecCopy;
     ecPaste                   : Result:= srkmecPaste;
@@ -2532,8 +2532,8 @@ begin
 
   // command commands
   C:=Categories[AddCategory('CommandCommands',srkmCatCmdCmd,nil)];
-  AddDefault(C, 'Undo', lisMenuUndo, ecUndo);
-  AddDefault(C, 'Redo', lisMenuRedo, ecRedo);
+  AddDefault(C, 'Undo', lisUndo, ecUndo);
+  AddDefault(C, 'Redo', lisRedo, ecRedo);
 
   // search & replace
   C:=Categories[AddCategory('SearchReplace',srkmCatSearchReplace,IDECmdScopeSrcEditOnly)];

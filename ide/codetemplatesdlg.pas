@@ -705,12 +705,9 @@ var
 begin
   CodeTemplatesMenuRoot := RegisterIDEMenuRoot(CodeTemplatesMenuRootName);
   Path := CodeTemplatesMenuRoot.Name;
-  CodeTemplateCutIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Cut',
-    lisMenuCut);
-  CodeTemplateCopyIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Copy',
-    lisMenuCopy);
-  CodeTemplatePasteIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Paste',
-    lisMenuPaste);
+  CodeTemplateCutIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Cut', lisCut);
+  CodeTemplateCopyIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Copy', lisCopy);
+  CodeTemplatePasteIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Paste', lisPaste);
   CodeTemplateInsertMacroIDEMenuCommand := RegisterIDEMenuCommand(Path,
                                                 'InsertMacro', lisInsertMacro);
 end;
