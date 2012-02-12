@@ -1297,7 +1297,10 @@ begin
   if FOnDbgOut <> nil then
   begin
     Handled := False;
-    FOnDbgOut(Self, s, Handled);
+    if FDebugNestAtBOL and (s <> '') then
+      FOnDbgOut(Self, FDebugIndent + s, Handled)
+    else
+      FOnDbgOut(Self, s, Handled);
     if Handled then
       Exit;
   end;
@@ -1318,7 +1321,10 @@ begin
   if FOnDebugLn <> nil then
   begin
     Handled := False;
-    FOnDebugLn(Self, s, Handled);
+    if FDebugNestAtBOL and (s <> '') then
+      FOnDebugLn(Self, FDebugIndent + s, Handled)
+    else
+      FOnDebugLn(Self, s, Handled);
     if Handled then
       Exit;
   end;
