@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls, ButtonPanel,
-  Buttons, CheckLst, EditBtn, IDEIntf, MenuIntf, LazLogger;
+  Buttons, CheckLst, EditBtn, ExtCtrls, IDEIntf, MenuIntf, LazLogger;
 
 type
 
@@ -17,6 +17,7 @@ type
     CheckLogGroups: TCheckListBox;
     LogNameEdit: TFileNameEdit;
     PageControl1: TPageControl;
+    Panel1: TPanel;
     TabSheet1: TTabSheet;
     procedure CancelButtonClick(Sender: TObject);
     procedure CheckLogGroupsClickCheck(Sender: TObject);
