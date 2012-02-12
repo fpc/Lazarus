@@ -35,13 +35,10 @@ unit Debugger;
 
 {$IFDEF linux} {$DEFINE DBG_ENABLE_TERMINAL} {$ENDIF}
 
-{$IFDEF DBG_STATE}  {$DEFINE DBG_STATE_EVENT} {$ENDIF}
-{$IFDEF DBG_EVENTS} {$DEFINE DBG_STATE_EVENT} {$ENDIF}
-
 interface
 
 uses
-  TypInfo, Classes, SysUtils, Laz_XMLCfg, math, FileUtil,
+  TypInfo, Classes, SysUtils, Laz_XMLCfg, math, FileUtil, LazLogger,
   LCLProc, LazConfigStorage, IDEProcs, DebugUtils, maps;
 
 type
@@ -2962,6 +2959,7 @@ function dbgs(AnAttribute: TDBGSymbolAttribute): String; overload;
 function dbgs(AnAttributes: TDBGSymbolAttributes): String; overload;
 function dbgs(AFlag: TDebuggerLocationFlag): String; overload;
 function dbgs(AFlags: TDebuggerLocationFlags): String; overload;
+function dbgs(ACategory: TDBGEventCategory): String; overload;
 
 function HasConsoleSupport: Boolean;
 (******************************************************************************)
@@ -2970,6 +2968,9 @@ function HasConsoleSupport: Boolean;
 (******************************************************************************)
 
 implementation
+
+var
+  DBG_STATE, DBG_EVENTS, DBG_STATE_EVENT: PLazLoggerLogGroup;
 
 const
   COMMANDMAP: array[TDBGState] of TDBGCommands = (
@@ -3039,6 +3040,11 @@ begin
       Result := Result + dbgs(i);
     end;
   if Result <> '' then Result := '[' + Result + ']';
+end;
+
+function dbgs(ACategory: TDBGEventCategory): String;
+begin
+  writestr(Result, ACategory);
 end;
 
 function dbgs(ADisassRange: TDBGDisassemblerEntryRange): String; overload;
@@ -6204,9 +6210,9 @@ end;
 
 procedure TDebugger.DoCurrent(const ALocation: TDBGLocationRec);
 begin
-  {$IFDEF DBG_EVENTS} DebugLnEnter(['DebugEvent: Enter >> DoCurrent (Location)  >>  State=', DBGStateNames[FState]]); {$ENDIF}
+  DebugLnEnter(DBG_EVENTS, ['DebugEvent: Enter >> DoCurrent (Location)  >>  State=', DBGStateNames[FState]]);
   if Assigned(FOnCurrent) then FOnCurrent(Self, ALocation);
-  {$IFDEF DBG_EVENTS} DebugLnExit(['DebugEvent: Exit  << DoCurrent (Location)  <<']); {$ENDIF}
+  DebugLnExit(DBG_EVENTS, ['DebugEvent: Exit  << DoCurrent (Location)  <<']);
 end;
 
 procedure TDebugger.DoDbgOutput(const AText: String);
@@ -6216,17 +6222,16 @@ begin
 end;
 
 procedure TDebugger.DoDbgEvent(const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
-{$IFDEF DBG_EVENTS} var s: String; {$ENDIF}
 begin
-  {$IFDEF DBG_EVENTS} writestr(s, ACategory); DebugLnEnter(['DebugEvent: Enter >> DoDbgEvent >>  State=', DBGStateNames[FState], ' Category=', s]); {$ENDIF}
+  DebugLnEnter(DBG_EVENTS, ['DebugEvent: Enter >> DoDbgEvent >>  State=', DBGStateNames[FState], ' Category=', dbgs(ACategory)]);
   if Assigned(FOnDbgEvent) then FOnDbgEvent(Self, ACategory, AEventType, AText);
-  {$IFDEF DBG_EVENTS} DebugLnExit(['DebugEvent: Exit  << DoDbgEvent <<']);  {$ENDIF}
+  DebugLnExit(DBG_EVENTS, ['DebugEvent: Exit  << DoDbgEvent <<']);
 end;
 
 procedure TDebugger.DoException(const AExceptionType: TDBGExceptionType;
   const AExceptionClass: String; const AExceptionLocation: TDBGLocationRec; const AExceptionText: String; out AContinue: Boolean);
 begin
-  {$IFDEF DBG_EVENTS} DebugLnEnter(['DebugEvent: Enter >> DoException >>  State=', DBGStateNames[FState]]); {$ENDIF}
+  DebugLnEnter(DBG_EVENTS, ['DebugEvent: Enter >> DoException >>  State=', DBGStateNames[FState]]);
   if AExceptionType = deInternal then
     DoDbgEvent(ecDebugger, etExceptionRaised,
                Format('Exception class "%s" at $%.' + IntToStr(TargetWidth div 4) + 'x with message "%s"',
@@ -6235,7 +6240,7 @@ begin
     FOnException(Self, AExceptionType, AExceptionClass, AExceptionLocation, AExceptionText, AContinue)
   else
     AContinue := True;
-  {$IFDEF DBG_EVENTS} DebugLnExit(['DebugEvent: Exit  << DoException <<']);  {$ENDIF}
+  DebugLnExit(DBG_EVENTS, ['DebugEvent: Exit  << DoException <<']);
 end;
 
 procedure TDebugger.DoOutput(const AText: String);
@@ -6245,24 +6250,24 @@ end;
 
 procedure TDebugger.DoBreakpointHit(const ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
 begin
-  {$IFDEF DBG_EVENTS} DebugLnEnter(['DebugEvent: Enter >> DoBreakpointHit <<  State=', DBGStateNames[FState]]); {$ENDIF}
+  DebugLnEnter(DBG_EVENTS, ['DebugEvent: Enter >> DoBreakpointHit <<  State=', DBGStateNames[FState]]);
   if Assigned(FOnBreakpointHit)
   then FOnBreakpointHit(Self, ABreakPoint, ACanContinue);
-  {$IFDEF DBG_EVENTS} DebugLnExit(['DebugEvent: Exit  >> DoBreakpointHit <<']);  {$ENDIF}
+  DebugLnExit(DBG_EVENTS, ['DebugEvent: Exit  >> DoBreakpointHit <<']);
 end;
 
 procedure TDebugger.DoBeforeState(const OldState: TDBGState);
 begin
-  {$IFDEF DBG_STATE_EVENT} DebugLnEnter(['DebugEvent: Enter >> DoBeforeState <<  State=', DBGStateNames[FState]]); {$ENDIF}
+  DebugLnEnter(DBG_STATE_EVENT, ['DebugEvent: Enter >> DoBeforeState <<  State=', DBGStateNames[FState]]);
   if Assigned(FOnBeforeState) then FOnBeforeState(Self, OldState);
-  {$IFDEF DBG_STATE_EVENT} DebugLnExit(['DebugEvent: Exit  >> DoBeforeState <<']);  {$ENDIF}
+  DebugLnExit(DBG_STATE_EVENT, ['DebugEvent: Exit  >> DoBeforeState <<']);
 end;
 
 procedure TDebugger.DoState(const OldState: TDBGState);
 begin
-  {$IFDEF DBG_STATE_EVENT} DebugLnEnter(['DebugEvent: Enter >> DoState <<  State=', DBGStateNames[FState]]); {$ENDIF}
+  DebugLnEnter(DBG_STATE_EVENT, ['DebugEvent: Enter >> DoState <<  State=', DBGStateNames[FState]]);
   if Assigned(FOnState) then FOnState(Self, OldState);
-  {$IFDEF DBG_STATE_EVENT} DebugLnExit(['DebugEvent: Exit  >> DoState <<']);  {$ENDIF}
+  DebugLnExit(DBG_STATE_EVENT, ['DebugEvent: Exit  >> DoState <<']);
 end;
 
 procedure TDebugger.EnvironmentChanged(Sender: TObject);
@@ -6510,9 +6515,7 @@ begin
 
   if AValue <> FState
   then begin
-    {$IFDEF DBG_STATE}
-    DebugLnEnter(['DebuggerState: Setting to ', DBGStateNames[AValue],', from ', DBGStateNames[FState]]);
-    {$ENDIF}
+    DebugLnEnter(DBG_STATE, ['DebuggerState: Setting to ', DBGStateNames[AValue],', from ', DBGStateNames[FState]]);
     OldState := FState;
     FState := AValue;
     LockCommandProcessing;
@@ -6532,9 +6535,7 @@ begin
       end;
     finally
       UnLockCommandProcessing;
-      {$IFDEF DBG_STATE}
-      DebugLnExit(['DebuggerState: Finished ', DBGStateNames[AValue]]);
-      {$ENDIF}
+      DebugLnExit(DBG_STATE, ['DebuggerState: Finished ', DBGStateNames[AValue]]);
     end;
   end;
 end;
@@ -11040,6 +11041,12 @@ end;
 
 initialization
   MDebuggerPropertiesList := nil;
+  {$IFDEF DBG_STATE}  {$DEFINE DBG_STATE_EVENT} {$ENDIF}
+  {$IFDEF DBG_EVENTS} {$DEFINE DBG_STATE_EVENT} {$ENDIF}
+  DBG_STATE       := DebugLogger.RegisterLogGroup('DBG_STATE' {$IFDEF DBG_STATE} , True {$ENDIF} );
+  DBG_EVENTS      := DebugLogger.RegisterLogGroup('DBG_EVENTS' {$IFDEF DBG_EVENTS} , True {$ENDIF} );
+  DBG_STATE_EVENT := DebugLogger.RegisterLogGroup('DBG_STATE_EVENT' {$IFDEF DBG_STATE_EVENT} , True {$ENDIF} );
+
 
 finalization
   DoFinalization;
