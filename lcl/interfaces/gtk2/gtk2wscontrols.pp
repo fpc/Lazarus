@@ -444,7 +444,7 @@ begin
   {$ENDIF}
 
   AParent := TWinControl(AControl).Parent;
-  //debugln('LM_AddChild: ',TWinControl(Sender).Name,' ',dbgs(AParent<>nil));
+  // DebugLn('LM_AddChild: ',dbgsName(AControl),' ',dbgs(AParent<>nil));
   if not Assigned(AParent) then
     Assert(true, Format('Trace: [TGtkWSWinControl.AddControl] %s --> Parent is not assigned', [AControl.ClassName]))
   else
