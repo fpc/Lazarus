@@ -212,7 +212,7 @@ begin
     Canvas.FillRect(ARect);
     ena := not Assigned(Items.Objects[Index]) or (Items.Objects[Index] is TCodeTreeNode);
     if not (ena or (odSelected in State)) then
-      UnitsListBox.Canvas.Font.Color := clGreen;
+      Canvas.Font.Color := clGreen;
     IDEImages.Images_16.Draw(Canvas, 1, ARect.Top, UnitImgInd, ena);
     if Items.Objects[Index] is TCodeTreeNode then
     begin
