@@ -1407,6 +1407,16 @@ end;
 procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
    out LineStart,LineEnd:integer);
 begin
+  if Position<1 then begin
+    LineStart:=0;
+    LineEnd:=0;
+    exit;
+  end;
+  if Position>length(Source)+1 then begin
+    LineStart:=length(Source)+1;
+    LineEnd:=LineStart;
+    exit;
+  end;
   LineStart:=Position;
   while (LineStart>1) and (not (Source[LineStart-1] in [#10,#13])) do
     dec(LineStart);
@@ -4204,7 +4214,8 @@ var
   LineStart, LineEnd: integer;
 begin
   GetLineStartEndAtPosition(Source,Position,LineStart,LineEnd);
-  Result:=copy(Source,LineStart,LineEnd);
+  //debugln(['GetLineInSrc ',Position,' ',LineStart,' ',LineEnd]);
+  Result:=copy(Source,LineStart,LineEnd-LineStart);
 end;
 
 function LineEndCount(const Txt: string): integer;
