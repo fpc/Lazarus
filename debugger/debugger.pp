@@ -2970,7 +2970,8 @@ function HasConsoleSupport: Boolean;
 implementation
 
 var
-  DBG_STATE, DBG_EVENTS, DBG_STATE_EVENT, DBG_DATA_MONITORS: PLazLoggerLogGroup;
+  DBG_STATE, DBG_EVENTS, DBG_STATE_EVENT,
+  DBG_DATA_MONITORS, DBG_LOCATION_INFO: PLazLoggerLogGroup;
 
 const
   COMMANDMAP: array[TDBGState] of TDBGCommands = (
@@ -3370,18 +3371,14 @@ begin
   i := FList.Count - 1;
   while i >= 0 do begin
     if FList[i].IsEqual(AFileName, AFullFileName) then begin
-      {$IFDEF DBG_LOCATION_INFO}
-      debugln(['TDebuggerLocationProvider.GetLocationInfoFor  Found entry for: ', AFileName, ' / ', AFullFileName]);
-      {$ENDIF}
+      debugln(DBG_LOCATION_INFO, ['TDebuggerLocationProvider.GetLocationInfoFor  Found entry for: ', AFileName, ' / ', AFullFileName]);
       exit(FList[i])
     end;
     dec(i);
   end;
   Result := TDebuggerUnitInfo.Create(AFileName, AFullFileName);
   FList.Add(Result);
-  {$IFDEF DBG_LOCATION_INFO}
-  debugln(['TDebuggerLocationProvider.GetLocationInfoFor  Created new entry (Cnt=',FList.Count,') for: ', AFileName, ' / ', AFullFileName]);
-  {$ENDIF}
+  debugln(DBG_LOCATION_INFO, ['TDebuggerLocationProvider.GetLocationInfoFor  Created new entry (Cnt=',FList.Count,') for: ', AFileName, ' / ', AFullFileName]);
 end;
 
 function TDebuggerUnitInfoProvider.IndexOf(AnInfo: TDebuggerUnitInfo;
@@ -11047,6 +11044,7 @@ initialization
   DBG_EVENTS      := DebugLogger.RegisterLogGroup('DBG_EVENTS' {$IFDEF DBG_EVENTS} , True {$ENDIF} );
   DBG_STATE_EVENT := DebugLogger.RegisterLogGroup('DBG_STATE_EVENT' {$IFDEF DBG_STATE_EVENT} , True {$ENDIF} );
   DBG_DATA_MONITORS := DebugLogger.FindOrRegisterLogGroup('DBG_DATA_MONITORS' {$IFDEF DBG_DATA_MONITORS} , True {$ENDIF} );
+  DBG_LOCATION_INFO := DebugLogger.FindOrRegisterLogGroup('DBG_LOCATION_INFO' {$IFDEF DBG_LOCATION_INFO} , True {$ENDIF} );
 
 finalization
   DoFinalization;

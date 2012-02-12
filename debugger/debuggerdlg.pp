@@ -37,7 +37,7 @@ unit DebuggerDlg;
 interface
 
 uses
-  Classes, Forms, Controls, IDEProcs, FileUtil, LCLProc, Debugger,
+  Classes, Forms, Controls, IDEProcs, FileUtil, LCLProc, LazLogger, Debugger,
   IDEImagesIntf, MainIntf, EditorOptions, IDECommands, BaseDebugManager;
 
 type
@@ -115,6 +115,7 @@ procedure CreateDebugDialog(Sender: TObject; aFormName: string;
 implementation
 
 var
+  DBG_LOCATION_INFO: PLazLoggerLogGroup;
   BrkImgIdxInitialized: Boolean;
   ImgBreakPoints: Array [0..8] of Integer;
 
@@ -319,9 +320,7 @@ var
   Filename: String;
   ok: Boolean;
 begin
-  {$IFDEF DBG_LOCATION_INFO}
-  debugln(['JumpToUnitSource AnUnitInfo=', AnUnitInfo.DebugText ]);
-  {$ENDIF}
+  debugln(DBG_LOCATION_INFO, ['JumpToUnitSource AnUnitInfo=', AnUnitInfo.DebugText ]);
   // avoid any process-messages, so this proc can not be re-entered (avoid opening one files many times)
   DebugBoss.LockCommandProcessing;
   try
@@ -330,9 +329,7 @@ begin
   *)
   // TODO: better detcion of unsaved project files
     if DebugBoss.GetFullFilename(AnUnitInfo, Filename, False) then begin
-      {$IFDEF DBG_LOCATION_INFO}
-      debugln(['JumpToUnitSource Filename=', Filename]);
-      {$ENDIF}
+      debugln(DBG_LOCATION_INFO, ['JumpToUnitSource Filename=', Filename]);
       ok := false;
       if FilenameIsAbsolute(Filename) then
         ok := MainIDEInterface.DoJumpToSourcePosition(Filename, 0, ALine, 0,
@@ -484,5 +481,8 @@ end;
 procedure TDebuggerDlg.DoEndUpdate;
 begin
 end;
+
+initialization
+  DBG_LOCATION_INFO := DebugLogger.FindOrRegisterLogGroup('DBG_LOCATION_INFO' {$IFDEF DBG_LOCATION_INFO} , True {$ENDIF} );
 
 end.

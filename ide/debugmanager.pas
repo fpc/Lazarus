@@ -42,7 +42,7 @@ uses
   {$ENDIF}
   // LCL
   Classes, SysUtils, Forms, Controls, Dialogs, Menus, ExtCtrls, FileUtil, LCLProc,
-  LCLType, LCLIntf,
+  LCLType, LCLIntf, LazLogger,
   // SynEdit, codetools
   Laz_XMLCfg, SynEdit, CodeCache, CodeToolManager,
   // IDEIntf
@@ -237,6 +237,9 @@ type
   end;
 
 implementation
+
+var
+  DBG_LOCATION_INFO: PLazLoggerLogGroup;
 
 type
 
@@ -535,21 +538,15 @@ function TDebugManager.GetFullFilename(const AUnitinfo: TDebuggerUnitInfo;
   begin
     Filename := AUnitinfo.DbgFullName;
     Result := Filename <> '';
-    {$IFDEF DBG_LOCATION_INFO}
-    debugln(['ResolveFromDbg Init Filename=', Filename]);
-    {$ENDIF}
+    debugln(DBG_LOCATION_INFO, ['ResolveFromDbg Init Filename=', Filename]);
     if Result then
       Result := GetFullFilename(Filename, False);
     if not Result then begin
       Filename := AUnitinfo.FileName;
-      {$IFDEF DBG_LOCATION_INFO}
-      debugln(['ResolveFromDbg 2nd Filename=', Filename]);
-      {$ENDIF}
+      debugln(DBG_LOCATION_INFO, ['ResolveFromDbg 2nd Filename=', Filename]);
       Result := GetFullFilename(Filename, AskUserIfNotFound);
     end;
-    {$IFDEF DBG_LOCATION_INFO}
-    debugln(['ResolveFromDbg Final Filename=', Filename]);
-    {$ENDIF}
+    debugln(DBG_LOCATION_INFO, ['ResolveFromDbg Final Filename=', Filename]);
   end;
 
 begin
@@ -571,9 +568,7 @@ begin
         Filename:= MainIDE.FindSourceFile(Filename, Project1.ProjectDirectory,
                       [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath,
                        fsfMapTempToVirtualFiles, fsfSkipPackages]);
-        {$IFDEF DBG_LOCATION_INFO}
-        debugln(['GetFullFilename From-MainIDE Filename=', Filename]);
-        {$ENDIF}
+        debugln(DBG_LOCATION_INFO, ['GetFullFilename From-MainIDE Filename=', Filename]);
         Result := Filename <> '';
         if not Result then
           ResolveFromDbg;
@@ -2705,6 +2700,9 @@ begin
     FSnapshots.Debugger := FDebugger;
   end;
 end;
+
+initialization
+  DBG_LOCATION_INFO := DebugLogger.FindOrRegisterLogGroup('DBG_LOCATION_INFO' {$IFDEF DBG_LOCATION_INFO} , True {$ENDIF} );
 
 end.
 
