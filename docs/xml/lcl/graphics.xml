@@ -2276,7 +2276,7 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       <!-- property Visibility: public -->
       <element name="TFont.CanUTF8">
         <short>
-          <var>CanUTF8</var> - returns True if Font can be used for UTF8</short>
+          <var>CanUTF8</var> - returns True if Font can be used for UTF8. This property is deprecated and will be removed, don't use it.</short>
         <descr/>
         <seealso/>
       </element>

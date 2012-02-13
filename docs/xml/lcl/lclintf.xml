@@ -2028,9 +2028,15 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetWindowRect">
-        <short>Retrieves the bounding rectangle of a window, in screen coordinates.
-        </short>
-        <seealso/>
+        <short>Retrieves the bounding rectangle of a window, including the window decoration in screen coordinates.</short>
+        <descr>Retrieves the bounding rectangle of a window, including the window decoration.
+               The coordinates are given relative to the upper-left corner of the screen in screen.</descr>
+        <seealso>
+          <link id="GetWindowSize"/>
+          <link id="SetWindowPos"/>
+          <link id="#lcl.Forms.TCustomForm.Width"/>
+          <link id="#lcl.Forms.TCustomForm.Height"/>
+        </seealso>
       </element>
       <element name="GetWindowRect.Result">
         <short/>
@@ -2043,12 +2049,18 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetWindowSize">
-        <short>Returns the Width and Height of the window, including the window decoration.</short>
-        <descr>To get the size without the window decoration just use TCustomForm.Width and TCustomForm.Height</descr>
+        <short>Returns the Width and Height of a window, including the window decoration.</short>
+        <descr><p>This function is a Lazarus addition and does not exist in the Windows API.
+               It returns the Width and Height of a window, including the window decoration.
+               To get the size of a form without the window decoration just use TCustomForm.Width and TCustomForm.Height
+               or TCustomForm.ClientWidth and TCustomForm.ClientHeight.</p></descr>
         <errors/>
         <seealso>
+          <link id="GetWindowRect"/>
           <link id="#lcl.Forms.TCustomForm.Width"/>
           <link id="#lcl.Forms.TCustomForm.Height"/>
+          <link id="#lcl.Forms.TCustomForm.ClientWidth"/>
+          <link id="#lcl.Forms.TCustomForm.ClientHeight"/>
         </seealso>
       </element>
       <element name="GetWindowSize.Result">
