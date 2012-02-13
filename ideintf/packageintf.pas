@@ -223,7 +223,7 @@ type
     function IsOwnerDependingOnPkg(AnOwner: TObject; const PkgName: string;
                                    out DependencyOwner: TObject): boolean; virtual; abstract;
     function AddDependencyToOwners(OwnerList: TFPList; APackage: TIDEPackage;
-                   OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract;
+                   OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract; // mrOk or mrIgnore for already connected
     function AddUnitDependenciesForComponentClasses(const UnitFilename: string;
                          ComponentClassnames: TStrings;
                          Quiet: boolean = false): TModalResult; virtual; abstract;

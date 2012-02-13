@@ -7535,16 +7535,24 @@ var
   InsertEndPos: LongInt;
   NewProcCode: String;
   OldProcCode: String;
+  Bodies: TFPList;
+  i: Integer;
 begin
   Result:=true;
   ProcsCopied:=false;
+  Bodies:=nil;
   try
     GuessMethodDefBodyMapping(ClassProcs,ProcBodyNodes);
 
     // replace body proc head(s) with class proc head(s)
+    Bodies:=TFPList.Create;
     BodyAVLNode:=ProcBodyNodes.FindLowest;
     while BodyAVLNode<>nil do begin
-      BodyNodeExt:=TCodeTreeNodeExtension(BodyAVLNode.Data);
+      Bodies.Add(BodyAVLNode.Data);
+      BodyAVLNode:=ProcBodyNodes.FindSuccessor(BodyAVLNode);
+    end;
+    for i:=0 to Bodies.Count-1 do begin
+      BodyNodeExt:=TCodeTreeNodeExtension(Bodies[i]);
       DefNodeExt:=TCodeTreeNodeExtension(BodyNodeExt.Data);
       if DefNodeExt<>nil then begin
         // this body has a definition
@@ -7559,18 +7567,20 @@ begin
           Indent:=GetLineIndent(Src,InsertPos);
           NewProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
                        NewProcCode,Indent,false);
-          debugln(['UpdateProcBodySignatures OLD=',copy(Src,InsertPos,InsertEndPos-InsertPos),' New=',NewProcCode]);
+          //debugln(['UpdateProcBodySignatures OLD=',copy(Src,InsertPos,InsertEndPos-InsertPos),' New=',NewProcCode]);
           ProcsCopied:=true;
           if not ASourceChangeCache.Replace(gtNone,gtNone,InsertPos,InsertEndPos,NewProcCode) then
             exit(false);
         end;
-        // mark body as exactly the same as definition, so that no new body is
-        // created for this definition
+        // change body signature as exactly the same as definition,
+        // so that no new body is created for this definition
+        ProcBodyNodes.RemovePointer(BodyNodeExt);
         BodyNodeExt.Txt:=DefNodeExt.Txt;
+        ProcBodyNodes.Add(BodyNodeExt);
       end;
-      BodyAVLNode:=ProcBodyNodes.FindSuccessor(BodyAVLNode);
     end;
   finally
+    FreeAndNil(Bodies);
     ClearNodeExtData(ProcBodyNodes);
     ClearNodeExtData(ClassProcs);
   end;
@@ -8073,6 +8083,17 @@ begin
     ClassProcs:=GatherClassProcDefinitions(CodeCompleteClassNode,true);
     ProcBodyNodes:=GatherClassProcBodies(CodeCompleteClassNode);
 
+    {AnAVLNode:=ClassProcs.FindLowest;
+    while AnAVLNode<>nil do begin
+      DebugLn(' Gathered ProcDef ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
+      AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
+    end;
+    AnAVLNode:=ProcBodyNodes.FindLowest;
+    while AnAVLNode<>nil do begin
+      DebugLn(' Gathered ProcBody ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
+      AnAVLNode:=ProcBodyNodes.FindSuccessor(AnAVLNode);
+    end; }
+
     // find topmost and bottommost proc body
     FindTopMostAndBottomMostProcBodies;
 
@@ -8093,7 +8114,7 @@ begin
     
     {AnAVLNode:=ClassProcs.FindLowest;
     while AnAVLNode<>nil do begin
-      DebugLn(' Existing proc headers: ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
+      DebugLn(' SignaturesUpdated ProcDef ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
       AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
     end;}
     
@@ -8101,7 +8122,7 @@ begin
 
     {AnAVLNode:=ClassProcs.FindLowest;
     while AnAVLNode<>nil do begin
-      DebugLn(' BBB ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
+      DebugLn(' AfterPropsCompleted ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
       AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
     end;}
 
@@ -8128,9 +8149,14 @@ begin
 
     {AnAVLNode:=ClassProcs.FindLowest;
     while AnAVLNode<>nil do begin
-      DebugLn(' CCC ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
+      DebugLn(' BeforeAddMissing ProcDef "',TCodeTreeNodeExtension(AnAVLNode.Data).Txt,'"');
       AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
-    end;}
+    end;
+    AnAVLNode:=ProcBodyNodes.FindLowest;
+    while AnAVLNode<>nil do begin
+      DebugLn(' BeforeAddMissing ProcBody "',TCodeTreeNodeExtension(AnAVLNode.Data).Txt,'"');
+      AnAVLNode:=ProcBodyNodes.FindSuccessor(AnAVLNode);
+    end; }
 
     // search for missing proc bodies
     if (ProcBodyNodes.Count=0) then begin
