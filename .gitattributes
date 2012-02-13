@@ -3154,6 +3154,7 @@ docs/xml/lazutils/laz_xmlwrite.xml svneol=native#text/plain
 docs/xml/lazutils/lazdbglog.xml svneol=native#text/plain
 docs/xml/lazutils/lazfilecache.xml svneol=native#text/plain
 docs/xml/lazutils/lazfileutils.xml svneol=native#text/plain
+docs/xml/lazutils/lazlogger.xml svneol=native#text/xml
 docs/xml/lazutils/lazmethodlist.xml svneol=native#text/plain
 docs/xml/lazutils/lazutf16.xml svneol=native#text/plain
 docs/xml/lazutils/lazutf8.xml svneol=native#text/plain
