@@ -50,8 +50,10 @@ type
     ReportTabSheet: TTabSheet;
     procedure FormCreate(Sender: TObject);
   private
-    procedure AddReportAboutBaseTypeCache(Report: TStringList;
+    procedure ReportBaseTypeCache(Report: TStringList;
       Tool: TFindDeclarationTool; Node: TCodeTreeNode);
+    procedure ReportAllNodes(Report: TStringList;
+      Tool: TFindDeclarationTool);
   public
     procedure UpdateReport;
   end;
@@ -83,7 +85,7 @@ begin
   UpdateReport;
 end;
 
-procedure TCodyNodeInfoDialog.AddReportAboutBaseTypeCache(Report: TStringList;
+procedure TCodyNodeInfoDialog.ReportBaseTypeCache(Report: TStringList;
   Tool: TFindDeclarationTool; Node: TCodeTreeNode);
 
   procedure ReportNode(Prefix: string; ATool: TFindDeclarationTool;
@@ -152,6 +154,27 @@ begin
   end;
 end;
 
+procedure TCodyNodeInfoDialog.ReportAllNodes(Report: TStringList;
+  Tool: TFindDeclarationTool);
+var
+  Node: TCodeTreeNode;
+  s: String;
+begin
+  Report.Add('');
+  Report.Add('Nodes:');
+  if Tool=nil then exit;
+  if Tool.Tree=nil then exit;
+  Node:=Tool.Tree.Root;
+  while Node<>nil do begin
+    s:=GetIndentStr(Node.GetLevel*2);
+    s:=s+Node.DescAsString;
+    s:=s+',Start='+IntToStr(Node.StartPos)+'='+Tool.CleanPosToStr(Node.StartPos);
+    s:=s+',End='+IntToStr(Node.EndPos)+'='+Tool.CleanPosToStr(Node.EndPos);
+    Report.Add(s);
+    Node:=Node.Next;
+  end;
+end;
+
 procedure TCodyNodeInfoDialog.UpdateReport;
 var
   SrcEdit: TSourceEditorInterface;
@@ -185,21 +208,30 @@ begin
         sl.Add('Unit='+Tool.MainFilename);
       Tool.BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanPos,
                                    [btSetIgnoreErrorPos]);
+      sl.Add('Scanner.ScannedRange='+dbgs(Tool.Scanner.ScannedRange));
+      sl.Add('Tool.ScannedRange='+dbgs(Tool.ScannedRange));
       Node:=Tool.FindDeepestNodeAtPos(CleanPos,false);
       if Node=nil then begin
-        sl.Add('Error: no node at cursor');
-        exit;
-      end;
-      sl.Add('Node.Desc='+Node.DescAsString);
-      sl.Add('Node.SubDesc=%'+binStr(Node.SubDesc,16));
-      sl.Add('Node.StartPos='+dbgs(Node.StartPos)+'='+Tool.CleanPosToStr(Node.StartPos));
-      sl.Add('Node.EndPos='+dbgs(Node.EndPos)+'='+Tool.CleanPosToStr(Node.EndPos));
-      s:=dbgstr(Tool.Src,Node.StartPos,Node.EndPos-Node.StartPos);
-      if length(s)>100 then
-        s:=copy(s,1,48)+'...'+copy(s,length(s)-47,48);
-      sl.Add('Node Src="'+s+'"');
+        try
+          Tool.RaiseCursorOutsideCode(CursorPos);
+        except
+          on E: Exception do begin
+            sl.Add('Error: '+E.Message);
+          end;
+        end;
+      end else begin
+        sl.Add('Node.Desc='+Node.DescAsString);
+        sl.Add('Node.SubDesc=%'+binStr(Node.SubDesc,16));
+        sl.Add('Node.StartPos='+dbgs(Node.StartPos)+'='+Tool.CleanPosToStr(Node.StartPos));
+        sl.Add('Node.EndPos='+dbgs(Node.EndPos)+'='+Tool.CleanPosToStr(Node.EndPos));
+        s:=dbgstr(Tool.Src,Node.StartPos,Node.EndPos-Node.StartPos);
+        if length(s)>100 then
+          s:=copy(s,1,48)+'...'+copy(s,length(s)-47,48);
+        sl.Add('Node Src="'+s+'"');
 
-      AddReportAboutBaseTypeCache(sl,Tool,Node);
+        ReportBaseTypeCache(sl,Tool,Node);
+        ReportAllNodes(sl,Tool);
+      end;
     except
       on e: Exception do CodeToolBoss.HandleException(e);
     end;
