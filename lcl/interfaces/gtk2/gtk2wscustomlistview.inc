@@ -1019,6 +1019,8 @@ var
   ItemRect: TGdkRectangle;
   Column: PGtkTreeViewColumn;
   Path: PGtkTreePath;
+  L, T, W, H: GInt;
+  ARect: TGdkRectangle;
 begin
   Result := Rect(0, 0, 0, 0);
   if not WSCheckHandleAllocated(ALV, 'ItemDisplayRect') then
@@ -1033,8 +1035,14 @@ begin
     try
       if GTK_IS_TREE_VIEW(MainView) then
       begin
-       Column := gtk_tree_view_get_column(PGtkTreeView(MainView), ASubItem);
-        gtk_tree_view_get_cell_area(PGtkTreeView(MainView), Path, Column, @ItemRect);
+        Column := gtk_tree_view_get_column(PGtkTreeView(MainView), ASubItem);
+         gtk_tree_view_get_cell_area(PGtkTreeView(MainView), Path, Column, @ItemRect);
+        if gtk_tree_view_get_headers_visible(PGtkTreeView(MainView)) then
+        begin
+          gtk_tree_view_column_cell_get_size(gtk_tree_view_get_column(PGtkTreeView(MainView), 0),
+            @ARect, @L, @T, @W, @H);
+          inc(ItemRect.y, H);
+        end;
       end
       else
       if GTK_IS_ICON_VIEW(MainView) then
