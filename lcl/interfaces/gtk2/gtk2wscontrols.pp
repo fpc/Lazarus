@@ -431,6 +431,35 @@ type
   TWinControlHack = class(TWinControl)
   end;
 
+function Gtk2TreeViewEditorEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
+var
+  R: TRect;
+  Alloc: TGtkAllocation;
+begin
+  Result := CallBackDefaultReturn;
+  case event^._type of
+    GDK_FOCUS_CHANGE:
+    begin
+      // cheat GtkTreeView container , so we are visible and ready for input.
+      if event^.focus_change._in = 1 then
+      begin
+        R := TWinControl(Data).BoundsRect;
+        with R do
+        begin
+          with R do
+          begin
+            Alloc.x := Left;
+            Alloc.y := Top;
+            Alloc.width := Right - Left;
+            Alloc.height := Bottom - Top;
+          end;
+          gtk_widget_size_allocate(Widget, @Alloc);
+        end;
+      end;
+    end;
+  end;
+end;
+
 class procedure TGtk2WSWinControl.AddControl(const AControl: TControl);
 var
   AParent: TWinControl;
@@ -449,15 +478,33 @@ begin
     Assert(true, Format('Trace: [TGtkWSWinControl.AddControl] %s --> Parent is not assigned', [AControl.ClassName]))
   else
   begin
-    //DebugLn(Format('Trace:  [TGtkWSWinControl.AddControl] %s --> Calling Add Child: %s', [AParent.ClassName, AControl.ClassName]));
-    ParentWidget := Pgtkwidget(AParent.Handle);
+    // DebugLn(Format('Trace:  [TGtkWSWinControl.AddControl] %s --> Calling Add Child: %s', [AParent.ClassName, AControl.ClassName]));
+
+    ParentWidget := PGtkwidget(AParent.Handle);
     pFixed := GetFixedWidget(ParentWidget);
-    if pFixed <> ParentWidget then
+
+    // gtk2 is pretty tricky about adding editor into control
+    if (AParent.FCompStyle = csListView) and
+      (TWinControl(AControl).FCompStyle = csEdit) and
+      GTK_IS_TREE_VIEW(gtk_bin_get_child(PGtkBin(PFixed))) then
     begin
-      // parent changed for child
       ChildWidget := PGtkWidget(TWinControl(AControl).Handle);
-      FixedPutControl(pFixed, ChildWidget, AControl.Left, AControl.Top);
-      RegroupAccelerator(ChildWidget);
+      ParentWidget := gtk_bin_get_child(PGtkBin(PFixed)); // treeview
+      // MUST allocate some size before adding it to container !
+      gtk_widget_set_size_request(ChildWidget, 80, 25);
+      gtk_widget_set_parent(ChildWidget, ParentWidget);
+      // now we connect our GtkEntry directly to event filter
+      g_signal_connect(PGtkObject(ChildWidget), 'event',
+        gtk_signal_func(@Gtk2TreeViewEditorEvent), AControl);
+    end else
+    begin
+      if pFixed <> ParentWidget then
+      begin
+        // parent changed for child
+        ChildWidget := PGtkWidget(TWinControl(AControl).Handle);
+        FixedPutControl(pFixed, ChildWidget, AControl.Left, AControl.Top);
+        RegroupAccelerator(ChildWidget);
+      end;
     end;
   end;
 end;
