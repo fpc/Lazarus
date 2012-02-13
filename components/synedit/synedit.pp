@@ -43,7 +43,7 @@ Known Issues:
 -------------------------------------------------------------------------------}
 
 unit SynEdit;
-
+{$IFDEF Windows}  {off $DEFINE WinIME} {$ENDIF}
 
 {$I synedit.inc}
 
@@ -68,6 +68,9 @@ interface
 {$ENDIF}
 
 uses
+  {$IFDEF WinIME}
+  windows, imm,
+  {$ENDIF}
   {$IFDEF USE_UTF8BIDI_LCL}
   FreeBIDI, utf8bidi,
   {$ENDIF}
@@ -4128,9 +4131,10 @@ begin
 end;
 
 procedure TCustomSynEdit.UpdateCaret(IgnorePaintLock: Boolean = False);
-{$IFDEF SYN_MBCSSUPPORT}
+{$IFDEF WinIME}
 var
-  cf: TCompositionForm;
+  cf: CompositionForm;
+  imc: HIMC;
 {$ENDIF}
 begin
   if ( (PaintLock <> 0) and not IgnorePaintLock ) or (not HandleAllocated)
@@ -4143,11 +4147,13 @@ begin
 
     FScreenCaret.DisplayPos := Point(CaretXPix, CaretYPix);
 
-{$IFDEF SYN_MBCSSUPPORT}
+{$IFDEF WinIME}
     if HandleAllocated then begin
       cf.dwStyle := CFS_POINT;
-      cf.ptCurrentPos := Point(CX, CY);
-      ImmSetCompositionWindow(ImmGetContext(Handle), @cf);
+      cf.ptCurrentPos := Point(CaretXPix, CaretYPix);
+      imc := ImmGetContext(TWinControl(Owner).Handle);
+      ImmSetCompositionWindow(imc, @cf);
+      ImmReleaseContext(TWinControl(Owner).Handle, imc);
     end;
 {$ENDIF}
   end;
