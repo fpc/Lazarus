@@ -216,17 +216,17 @@
           <ul>
             <li>BLACKNESS - Fills the destination rectangle with black</li>
             <li>DSTINVERT - Inverts the colors of the destination area</li>
-            <li>MERGECOPY -</li>
-            <li>MERGEPAINT -</li>
-            <li>NOTSRCCOPY -</li>
-            <li>NOTSRCERASE -</li>
-            <li>PATCOPY -</li>
-            <li>PATINVERT -</li>
-            <li>PATPAINT -</li>
-            <li>SRCAND -</li>
-            <li>SRCCOPY -</li>
-            <li>SRCERASE -</li>
-            <li>SRCINVERT -</li>
+            <li>MERGECOPY - Fills the destination area with (Src and Pattern)</li>
+            <li>MERGEPAINT - Fills the destination area with (Dst or not Src)</li>
+            <li>NOTSRCCOPY - Fills the destination area with (not Src)</li>
+            <li>NOTSRCERASE - Fills the destination area with (not (Dst or Src))</li>
+            <li>PATCOPY - Fills the destination area with (Pattern)</li>
+            <li>PATINVERT - Fills the destination area with (Dst xor Pattern)</li>
+            <li>PATPAINT - Fills the destination area with (Dst or (not Src) or Pattern)</li>
+            <li>SRCAND - Fills the destination area with (Dst and Src)</li>
+            <li>SRCCOPY - Fills the destination area with Src</li>
+            <li>SRCERASE - Fills the destination area with ((not Dst) and Src)</li>
+            <li>SRCINVERT - Fills the destination area with (Dst xor Src)</li>
             <li>SRCPAINT - Combines the colors of the source and the destination using the operator OR on each pixel</li>
             <li>WHITENESS - Fills the destination rectangle with white</li>
           </ul>
@@ -243,7 +243,21 @@
         </descr>
         <errors/>
         <seealso>
+          <link id="#lcl.LCLType.BLACKNESS"/>
+          <link id="#lcl.LCLType.DSTINVERT"/>
+          <link id="#lcl.LCLType.MERGECOPY"/>
+          <link id="#lcl.LCLType.MERGEPAINT"/>
+          <link id="#lcl.LCLType.NOTSRCCOPY"/>
+          <link id="#lcl.LCLType.NOTSRCERASE"/>
           <link id="#lcl.LCLType.SRCCOPY"/>
+          <link id="#lcl.LCLType.PATINVERT"/>
+          <link id="#lcl.LCLType.PATPAINT"/>
+          <link id="#lcl.LCLType.SRCAND"/>
+          <link id="#lcl.LCLType.SRCCOPY"/>
+          <link id="#lcl.LCLType.SRCERASE"/>
+          <link id="#lcl.LCLType.SRCINVERT"/>
+          <link id="#lcl.LCLType.SRCPAINT"/>
+          <link id="#lcl.LCLType.WHITENESS"/>
         </seealso>
       </element>
       <element name="BitBlt.Result">

@@ -465,92 +465,138 @@
       <!-- constant Visibility: default -->
       <element name="SRCCOPY">
         <short>Ternary raster operation (Dst op Src op Pattern):
-          Src.
+          Fills the destination area with Src.
         </short>
+        <seealso>
+          <link id="#lcl.LCLIntf.BitBlt"/>
+          <link id="#lcl.Graphics.cmSrcCopy"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="SRCPAINT">
         <short>Ternary raster operation (Dst op Src op Pattern):
-          Dst or Src.
+          Fills the destination area with (Dst or Src)
         </short>
+        <seealso>
+          <link id="#lcl.LCLIntf.BitBlt"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="SRCAND">
         <short>Ternary raster operation (Dst op Src op Pattern):
-          Dst and Src.
+          Fills the destination area with (Dst and Src)
         </short>
+        <seealso>
+          <link id="#lcl.LCLIntf.BitBlt"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="SRCINVERT">
         <short>Ternary raster operation (Dst op Src op Pattern):
-          Dst xor Src.
+          Fills the destination area with (Dst xor Src)
         </short>
+        <seealso>
+          <link id="#lcl.LCLIntf.BitBlt"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="SRCERASE">
         <short>Ternary raster operation (Dst op Src op Pattern):
-          (not Dst) and Src.
+          Fills the destination area with ((not Dst) and Src)
         </short>
+        <seealso>
+          <link id="#lcl.LCLIntf.BitBlt"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="NOTSRCCOPY">
         <short>Ternary raster operation (Dst op Src op Pattern):
-          not Src.
+          Fills the destination area with (not Src)
         </short>
+        <seealso>
+          <link id="#lcl.LCLIntf.BitBlt"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="NOTSRCERASE">
         <short>Ternary raster operation (Dst op Src op Pattern):
-          not (Dst or Src).
+          Fills the destination area with (not (Dst or Src))
         </short>
+        <seealso>
+          <link id="#lcl.LCLIntf.BitBlt"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="MERGECOPY">
         <short>Ternary raster operation (Dst op Src op Pattern):
-          Src and Pattern.
+          Fills the destination area with (Src and Pattern)
         </short>
+        <seealso>
+          <link id="#lcl.LCLIntf.BitBlt"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="MERGEPAINT">
         <short>Ternary raster operation (Dst op Src op Pattern):
-          Dst or not Src.
+          Fills the destination area with (Dst or not Src)
         </short>
+        <seealso>
+          <link id="#lcl.LCLIntf.BitBlt"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="PATCOPY">
         <short>Ternary raster operation (Dst op Src op Pattern):
-          Pattern.
+          Fills the destination area with (Pattern)
         </short>
+        <seealso>
+          <link id="#lcl.LCLIntf.BitBlt"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="PATPAINT">
         <short>Ternary raster operation (Dst op Src op Pattern):
-          Dst or (not Src) or Pattern.
+          Fills the destination area with (Dst or (not Src) or Pattern)
         </short>
+        <seealso>
+          <link id="#lcl.LCLIntf.BitBlt"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="PATINVERT">
         <short>Ternary raster operation (Dst op Src op Pattern):
-          Dst xor Pattern.
+          Fills the destination area with (Dst xor Pattern)
         </short>
+        <seealso>
+          <link id="#lcl.LCLIntf.BitBlt"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="DSTINVERT">
         <short>Ternary raster operation (Dst op Src op Pattern):
-          not Dst.
+          Fills the destination area with (not Dst)
         </short>
+        <seealso>
+          <link id="#lcl.LCLIntf.BitBlt"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="BLACKNESS">
         <short>Ternary raster operation (Dst op Src op Pattern):
-          all black.
+          Fills the destination area with all black.
         </short>
+        <seealso>
+          <link id="#lcl.LCLIntf.BitBlt"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="WHITENESS">
         <short>Ternary raster operation (Dst op Src op Pattern):
-          all white.
+          Fills the destination area with all white.
         </short>
+        <seealso>
+          <link id="#lcl.LCLIntf.BitBlt"/>
+        </seealso>
       </element>
       <!-- array type Visibility: default -->
       <element name="TKeyBoardState">

@@ -833,9 +833,13 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="clDefault">
-        <short/>
+        <short>The main color of a given control. This color does not mean anything alone and needs to be resolved using a control instance and for example TColor.GetDefaultColor, TColor.GetColorResolvingParent or TColor.GetRGBColorResolvingParent</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetDefaultColor"/>
+          <link id="#LCL.Controls.TControl.GetColorResolvingParent"/>
+          <link id="#LCL.Controls.TControl.GetRGBColorResolvingParent"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="clScrollBar">
@@ -869,8 +873,11 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="clWindow">
-        <short/>
-        <descr/>
+        <short>The color of the background of a widget, for example a TEdit. This is usually white. Don't confuse this with the background of a window, or form, which is given by clForm</short>
+        <seealso>
+          <link id="clForm"/>
+          <link id="clWindowText"/>
+        </seealso>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
@@ -881,15 +888,18 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="clMenuText">
-        <short/>
+        <short>The color of the text in menus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clWindowText">
-        <short/>
+        <short>The color of the text in a widget, such as for example TEdit. This is usually black. Don't confuse with the color of the window decoration caption or of a raised control such as buttons or anything else.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="clWindow"/>
+          <link id="clBtnText"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="clCaptionText">
@@ -929,7 +939,7 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="clBtnFace">
-        <short/>
+        <short>The color of the face of a button. This color is also utilized in many other places for raised areas such as a panel.</short>
         <descr/>
         <seealso/>
       </element>
@@ -947,7 +957,7 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="clBtnText">
-        <short/>
+        <short>The color that the text in a button or other raised area should have.</short>
         <descr/>
         <seealso/>
       </element>
@@ -1007,7 +1017,7 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="clForm">
-        <short/>
+        <short>Represents the color of the background of a form</short>
         <descr/>
         <seealso/>
       </element>
@@ -1067,355 +1077,355 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="clForeground">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clButton">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clLight">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clMidlight">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clDark">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clMid">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clText">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clBrightText">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clButtonText">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clBase">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clxBackground">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clShadow">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clxHighlight">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clHighlightedText">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="cloNormal">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="cloDisabled">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="cloActive">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clNormalForeground">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clNormalButton">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clNormalLight">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clNormalMidlight">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clNormalDark">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clNormalMid">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clNormalText">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clNormalBrightText">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clNormalButtonText">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clNormalBase">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clNormalBackground">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clNormalShadow">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clNormalHighlight">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clNormalHighlightedText">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clDisabledForeground">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clDisabledButton">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clDisabledLight">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clDisabledMidlight">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clDisabledDark">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clDisabledMid">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clDisabledText">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clDisabledBrightText">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clDisabledButtonText">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clDisabledBase">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clDisabledBackground">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clDisabledShadow">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clDisabledHighlight">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clDisabledHighlightedText">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clActiveForeground">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clActiveButton">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clActiveLight">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clActiveMidlight">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clActiveDark">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clActiveMid">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clActiveText">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clActiveBrightText">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clActiveButtonText">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clActiveBase">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clActiveBackground">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clActiveShadow">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clActiveHighlight">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="clActiveHighlightedText">
-        <short/>
+        <short>Deprecated CLX color. Don't use.</short>
         <descr/>
         <seealso/>
       </element>
@@ -1510,95 +1520,21 @@
         <short/>
       </element>
       <!-- constant Visibility: default -->
-      <element name="cmBlackness">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="cmDstInvert">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="cmMergeCopy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="cmMergePaint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="cmNotSrcCopy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="cmNotSrcErase">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="cmPatCopy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="cmPatInvert">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="cmPatPaint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="cmSrcAnd">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="cmSrcCopy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="cmSrcErase">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="cmSrcInvert">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="cmSrcPaint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="cmWhiteness">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="cmBlackness" link="#LCL.LCLType.BLACKNESS" />
+      <element name="cmDstInvert" link="#LCL.LCLType.DSTINVERT" />
+      <element name="cmMergeCopy" link="#LCL.LCLType.MERGECOPY" />
+      <element name="cmMergePaint" link="#LCL.LCLType.MERGEPAINT" />
+      <element name="cmNotSrcCopy" link="#LCL.LCLType.NOTSRCCOPY" />
+      <element name="cmNotSrcErase" link="#LCL.LCLType.NOTSRCERASE" />
+      <element name="cmPatCopy" link="#LCL.LCLType.PATCOPY" />
+      <element name="cmPatInvert" link="#LCL.LCLType.PATINVERT" />
+      <element name="cmPatPaint" link="#LCL.LCLType.PATPAINT" />
+      <element name="cmSrcAnd" link="#LCL.LCLType.SRCAND" />
+      <element name="cmSrcCopy" link="#LCL.LCLType.SRCCOPY" />
+      <element name="cmSrcErase" link="#LCL.LCLType.SRCERASE" />
+      <element name="cmSrcInvert" link="#LCL.LCLType.SRCINVERT" />
+      <element name="cmSrcPaint" link="#LCL.LCLType.SRCPAINT" />
+      <element name="cmWhiteness" link="#LCL.LCLType.WHITENESS" />
       <!-- object Visibility: default -->
       <element name="TPortableNetworkGraphic">
         <short>
@@ -4361,10 +4297,10 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- object Visibility: default -->
       <element name="TCanvas">
         <short>
-          <var>TCanvas</var> - where most of the drawing is performed</short>
+          <var>TCanvas</var> represents a drawing surface which might be attached to a visual control which might be displayed on the screen or to an offscreen bitmap. It contains a number of drawing functions.</short>
         <descr>
-          <var>TCanvas</var> is a class that defines a very large number of drawing methods including methods for pen and colour selection, producing shapes and filling them, setting or clearing individual pixels, and producing graphic text.
-</descr>
+          <var>TCanvas</var> represents a drawing surface which might be attached to a visual control which might be displayed on the screen or to an offscreen bitmap. It contains drawing tools (brush, pen and font) to draw on this surface. This class defines a very large number of drawing methods including methods for pen and colour selection, producing shapes and filling them, setting or clearing individual pixels, and producing graphic text.
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCanvas.FAutoRedraw">
