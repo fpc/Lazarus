@@ -75,22 +75,21 @@
         <descr/>
         <seealso/>
       </element>
-<!-- function Visibility: default -->
+      <!-- function Visibility: default -->
       <element name="Arc">
         <short>Draws an elliptical curve.</short>
         <descr>
           <p>Use Arc to draw an elliptically curved line with the current Pen.</p>
           <p>
-            The angles angle1 and angle2 are 1/16th of a degree. For example, a full
-            circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
-            counter-clockwise while negative values mean clockwise direction.
+            The angles Angle16Deg and Angle16DegLength are measure in 1/16th of a degree. For example, a full
+            circle equals 5760 (16*360). Positive values of Angle16Deg and Angle16DegLength mean
+            counter-clockwise rotation while negative values mean a clockwise direction, from the point of view
+            of who looks at the screen.
           </p>
           <p>Zero degrees is at the 3'o clock position (right).</p>
         </descr>
         <errors/>
         <seealso/>
-      <notes><note>This description deserves an update!?</note>
-        </notes>
       </element>
       <element name="Arc.Result">
         <short/>
@@ -141,8 +140,6 @@
           <link id="#lcl.Graphics.TCanvas.Chord">Graphics.TCanvas.Chord</link>
           <link id="#lcl.Graphics.TCanvas.Pie">Graphics.TCanvas.Pie</link>
         </seealso>
-      <notes><note>?</note>
-        </notes>
       </element>
       <element name="AngleChord.Result">
         <short>False on failure.</short>
@@ -248,8 +245,6 @@
         <seealso>
           <link id="#lcl.LCLType.SRCCOPY"/>
         </seealso>
-      <notes><note>?</note>
-        </notes>
       </element>
       <element name="BitBlt.Result">
         <short>False on failure.</short>
