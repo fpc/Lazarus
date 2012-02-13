@@ -93,7 +93,8 @@ uses strutils;
 { helper routines }
 
 const
-  SpaceBetweenIcons = 5;
+  SpaceNextToCheckMark = 2; // Used by Windows for check bitmap
+  SpaceNextToIcon      = 5; // Our custom spacing for bitmaps bigger than check mark
 
   // define the size of the MENUITEMINFO structure used by older Windows
   // versions (95, NT4) to keep the compatibility with them
@@ -230,10 +231,8 @@ begin
 end;
 
 (* Get the maximum length of the given string in pixels *)
-function StringSize(const aCaption: String; const aHDC: HDC; const aDecoration:TCaptionFlagsSet): TSize;
+function StringSize(const aCaption: String; const aHDC: HDC): TSize;
 var
-  oldFont: HFONT;
-  newFont: HFONT;
   tmpRect: Windows.RECT;
 {$ifdef WindowsUnicodeSupport}
   AnsiBuffer: ansistring;
@@ -241,8 +240,6 @@ var
 {$endif WindowsUnicodeSupport}
 begin
   FillChar(tmpRect, SizeOf(tmpRect), 0);
-  newFont := GetMenuItemFont(aDecoration);
-  oldFont := SelectObject(aHDC, newFont);
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
   begin
@@ -257,33 +254,26 @@ begin
 {$else}
   DrawText(aHDC, pChar(aCaption), length(aCaption), @TmpRect, DT_CALCRECT);
 {$endif}
-  SelectObject(aHDC, oldFont);
-  DeleteObject(newFont);
   Result.cx := TmpRect.right - TmpRect.left;
   Result.cy := TmpRect.Bottom - TmpRect.Top;
 end;
-  
-function CheckSpace(AMenuItem: TMenuItem): integer;
+
+function GetAverageCharSize(AHDC: HDC): TSize;
+const
+  alph: AnsiString = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 var
-  i: integer;
+  sz: SIZE;
+  tm: TEXTMETRIC;
 begin
-  Result := 0;
-  if AMenuItem.IsInMenuBar then
-  begin
-    if AMenuItem.Checked then
-      Result := GetSystemMetrics(SM_CXMENUCHECK);
-  end
+  if GetTextMetrics(AHDC, @tm) = False then
+    Result.cy := 0
   else
-  begin
-    for i := 0 to AMenuItem.Parent.Count - 1 do
-    begin
-      if AMenuItem.Parent.Items[i].Checked then
-      begin
-        Result := GetSystemMetrics(SM_CXMENUCHECK);
-        break;
-      end;
-    end;
-  end;
+    Result.cy := WORD(tm.tmHeight);
+
+  if GetTextExtentPoint(AHDC, @alph[1], 52, @sz) = False then
+    Result.cx := 0
+  else
+    Result.cx := (sz.cx div 26 + 1) div 2;
 end;
 
 function MenuIconWidth(const AMenuItem: TMenuItem): integer;
@@ -312,22 +302,65 @@ begin
   end;
 end;
 
-function LeftCaptionPosition(const AMenuItem: TMenuItem): integer;
+procedure GetNonTextSpace(const AMenuItem: TMenuItem;
+                          AvgCharWidth: Integer;
+                          out LeftSpace, RightSpace: Integer);
 var
-  ImageWidth: Integer;
+  Space: Integer = SpaceNextToCheckMark;
+  CheckMarkWidth: Integer;
 begin
-  // If we have Check and Icon then we use only width of Icon
-  // we draw our MenuItem so: space Image space Caption
-  ImageWidth := MenuIconWidth(AMenuItem);
-  if ImageWidth = 0 then
-    ImageWidth := CheckSpace(aMenuItem);
+  // If we have Check and Icon then we use only width of Icon.
+  // We draw our MenuItem so: space Image space Caption.
+  // Items not in menu bar always have enough space for a check mark.
 
-  Result := SpaceBetweenIcons;
+  CheckMarkWidth := GetSystemMetrics(SM_CXMENUCHECK);
+  LeftSpace := MenuIconWidth(AMenuItem);
 
-  inc(Result, ImageWidth);
+  if LeftSpace > 0 then
+  begin
+    if not AMenuItem.IsInMenuBar then
+    begin
+      if LeftSpace < CheckMarkWidth then
+        LeftSpace := CheckMarkWidth
+      else
+      if LeftSpace > CheckMarkWidth then
+        Space := SpaceNextToIcon;
+    end;
+  end
+  else
+  begin
+    if not AMenuItem.IsInMenuBar or AMenuItem.Checked then
+      LeftSpace := CheckMarkWidth;
+  end;
 
-  if not aMenuItem.IsInMenuBar or (ImageWidth <> 0) then
-    inc(Result, SpaceBetweenIcons);
+  if LeftSpace > 0 then
+  begin
+    // Space to the left of the icon or check.
+    if not AMenuItem.IsInMenuBar then
+      Inc(LeftSpace, Space);
+    // Space between icon or check and caption.
+    if AMenuItem.Caption <> '' then
+      Inc(LeftSpace, Space);
+  end;
+
+  if AMenuItem.IsInMenuBar then
+    RightSpace := 0
+  else
+    RightSpace := CheckMarkWidth + AvgCharWidth;
+
+  if AMenuItem.Caption <> '' then
+  begin
+    if AMenuItem.IsInMenuBar then
+    begin
+      Inc(LeftSpace, AvgCharWidth);
+      Inc(RightSpace, AvgCharWidth);
+    end
+    else
+    begin
+      // Space on the right side of the text.
+      Inc(RightSpace, SpaceNextToCheckMark);
+    end;
+  end;
 end;
 
 function TopPosition(const aMenuItemHeight: integer; const anElementHeight: integer): integer;
@@ -756,8 +789,10 @@ end;
 
 function MenuItemSize(AMenuItem: TMenuItem; AHDC: HDC): TSize;
 var
-  decoration: TCaptionFlagsSet;
-  minimumHeight: Integer;
+  LeftSpace, RightSpace: Integer;
+  oldFont: HFONT;
+  newFont: HFONT;
+  AvgCharSize: TSize;
 begin
   if IsVistaMenu then
   begin
@@ -769,34 +804,48 @@ begin
   end;
 
   if AMenuItem.Default then
-    decoration := [cfBold]
+    newFont := GetMenuItemFont([cfBold])
   else
-    decoration := [];
-    
-  Result := StringSize(CompleteMenuItemCaption(AMenuItem, '  '), AHDC, decoration);
-  inc(Result.cx, LeftCaptionPosition(AMenuItem));
+    newFont := GetMenuItemFont([]);
+  oldFont := SelectObject(aHDC, newFont);
+  AvgCharSize := GetAverageCharSize(AHDC);
 
-  if not AMenuItem.IsInMenuBar then
-    inc(Result.cx, SpaceBetweenIcons)
-  else
-    dec(Result.cx, SpaceBetweenIcons);
+  Result := StringSize(CompleteMenuItemCaption(AMenuItem, EmptyStr), AHDC);
 
-  if (AMenuItem.ShortCut <> scNone) then
-    Inc(Result.cx, SpaceBetweenIcons);
+  // Space between text and shortcut.
+  if AMenuItem.ShortCut <> scNone then
+    inc(Result.cx, AvgCharSize.cx);
 
-  minimumHeight := GetSystemMetrics(SM_CYMENU);
-  if not AMenuItem.IsInMenuBar then
-    Dec(minimumHeight, 2);
+  GetNonTextSpace(AMenuItem, AvgCharSize.cx, LeftSpace, RightSpace);
+  inc(Result.cx, LeftSpace + RightSpace);
+
+  // Windows adds additional space to value returned from WM_MEASUREITEM
+  // for owner drawn menus. This is to negate that.
+  Dec(Result.cx, AvgCharSize.cx * 2);
+
+  // As for height of items in menu bar, regardless of what is set here,
+  // Windows seems to always use SM_CYMENUSIZE (space for a border is included).
+
   if AMenuItem.IsLine then
-    Result.cy := 10 // it is a separator
+    Result.cy := GetSystemMetrics(SM_CYMENUSIZE) div 2 // it is a separator
   else
   begin
-    if AMenuItem.hasIcon then
-      Result.cy := Max(Result.cy, aMenuItem.GetIconSize.y);
-    Inc(Result.cy, 2);
-    if Result.cy < minimumHeight then
-      Result.cy := minimumHeight;
+    if AMenuItem.IsInMenuBar then
+    begin
+      Result.cy := Max(Result.cy, GetSystemMetrics(SM_CYMENUSIZE));
+      if AMenuItem.hasIcon then
+        Result.cy := Max(Result.cy, aMenuItem.GetIconSize.y);
+    end
+    else
+    begin
+      Result.cy := Max(Result.cy + 2, AvgCharSize.cy + 4);
+      if AMenuItem.hasIcon then
+        Result.cy := Max(Result.cy, aMenuItem.GetIconSize.y + 2);
+    end;
   end;
+
+  SelectObject(aHDC, oldFont);
+  DeleteObject(newFont);
 end;
 
 function IsFlatMenus: Boolean; inline;
@@ -857,15 +906,21 @@ end;
 procedure DrawSeparator(const AHDC: HDC; const ARect: Windows.RECT);
 var
   separatorRect: Windows.RECT;
+  space: Integer;
 begin
-  separatorRect.left := ARect.left;
-  separatorRect.right := ARect.right;
-  separatorRect.top := (ARect.top + ARect.bottom ) div 2 - 1;
-  separatorRect.bottom := separatorRect.top + 2;
-  DrawEdge(aHDC, separatorRect, BDR_SUNKENOUTER, BF_RECT);
+  if IsFlatMenus then
+    space := 3
+  else
+    space := 1;
+
+  separatorRect.Left  := ARect.Left  + space;
+  separatorRect.Right := ARect.Right - space;
+  separatorRect.Top   := ARect.Top + GetSystemMetrics(SM_CYMENUSIZE) div 4 - 1;
+  DrawEdge(AHDC, separatorRect, EDGE_ETCHED, BF_TOP);
 end;
 
-procedure DrawMenuItemCheckMark(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
+procedure DrawMenuItemCheckMark(const aMenuItem: TMenuItem; const aHDC: HDC;
+  const aRect: Windows.RECT; const aSelected: boolean; AvgCharWidth: Integer);
 var
   checkMarkWidth: integer;
   checkMarkHeight: integer;
@@ -875,6 +930,7 @@ var
   checkMarkShape: integer;
   checkMarkRect: Windows.RECT;
   x:Integer;
+  space: Integer;
 begin
   hdcMem := CreateCompatibleDC(aHDC);
   checkMarkWidth := GetSystemMetrics(SM_CXMENUCHECK);
@@ -890,10 +946,14 @@ begin
   else
     checkMarkShape := DFCS_MENUCHECK;
   DrawFrameControl(hdcMem, @checkMarkRect, DFC_MENU, checkMarkShape);
-  if aMenuItem.GetIsRightToLeft then
-    x := aRect.Right - checkMarkWidth - spaceBetweenIcons
+  if aMenuItem.IsInMenuBar then
+    space := AvgCharWidth
   else
-    x := aRect.left + spaceBetweenIcons;
+    space := SpaceNextToCheckMark;
+  if aMenuItem.GetIsRightToLeft then
+    x := aRect.Right - checkMarkWidth - space
+  else
+    x := aRect.left + space;
   BitBlt(aHDC, x, aRect.top + topPosition(aRect.bottom - aRect.top, checkMarkRect.bottom - checkMarkRect.top), checkMarkWidth, checkMarkHeight, hdcMem, 0, 0, SRCCOPY);
   SelectObject(hdcMem, oldBitmap);
   DeleteObject(monoBitmap);
@@ -901,16 +961,12 @@ begin
 end;
 
 procedure DrawMenuItemText(const AMenuItem: TMenuItem; const AHDC: HDC;
-  ARect: TRect; const ASelected, ANoAccel: boolean; ItemState: UINT);
+  ARect: TRect; const ASelected, ANoAccel: boolean; ItemState: UINT;
+  AvgCharWidth: Integer);
 var
   crText: COLORREF;
   crBkgnd: COLORREF;
-  TmpHeight: integer;
-  oldFont: HFONT;
-  newFont: HFONT;
-  decoration: TCaptionFlagsSet;
   shortCutText: string;
-  WorkRect: Windows.RECT;
   IsRightToLeft: Boolean;
   etoFlags: Cardinal;
   dtFlags: DWord;
@@ -918,23 +974,17 @@ var
   AnsiBuffer: ansistring;
   WideBuffer: widestring;
 {$endif WindowsUnicodeSupport}
+  LeftSpace, RightSpace: Integer;
 begin
   crText := TextColorMenu(ItemState, AMenuItem.IsInMenuBar, AMenuItem.Enabled);
   crBkgnd := BackgroundColorMenu(ItemState, AMenuItem.IsInMenuBar);
   SetTextColor(AHDC, crText);
   SetBkColor(AHDC, crBkgnd);
 
-  if AMenuItem.Default then
-    decoration := [cfBold]
-  else
-    decoration := [];
-    
-  newFont := GetMenuItemFont(decoration);
-  oldFont := SelectObject(AHDC, newFont);
   IsRightToLeft := AMenuItem.GetIsRightToLeft;
-
   etoFlags := ETO_OPAQUE;
-  dtFlags := DT_EXPANDTABS;
+  // DT_LEFT is default because its value is 0
+  dtFlags := DT_EXPANDTABS or DT_VCENTER or DT_SINGLELINE;
   if ANoAccel then
     dtFlags := dtFlags or DT_HIDEPREFIX;
   if IsRightToLeft then
@@ -949,56 +999,62 @@ begin
   if AMenuItem.IsInMenuBar and not IsFlatMenus then
   begin
     if (ItemState and ODS_SELECTED) <> 0 then
-      DrawEdge(AHDC, ARect, BDR_SUNKENOUTER, BF_RECT or BF_ADJUST)
+    begin
+      DrawEdge(AHDC, ARect, BDR_SUNKENOUTER, BF_RECT);
+
+      // Adjust caption position when menu is open.
+      OffsetRect(ARect, 1, 1);
+    end
     else
     if (ItemState and ODS_HOTLIGHT) <> 0 then
       DrawEdge(AHDC, ARect, BDR_RAISEDINNER, BF_RECT);
   end;
 
-  TmpHeight := ARect.Bottom - ARect.Top;
+  GetNonTextSpace(AMenuItem, AvgCharWidth, LeftSpace, RightSpace);
+
+  if IsRightToLeft then
+  begin
+    Dec(ARect.Right, LeftSpace);
+    Inc(ARect.Left, RightSpace);
+  end
+  else
+  begin
+    Inc(ARect.Left, LeftSpace);
+    Dec(ARect.Right, RightSpace);
+  end;
+
+  // Move text up by 1 pixel otherwise it is too low.
+  Dec(ARect.Top, 1);
+  Dec(ARect.Bottom, 1);
 
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
   begin
     WideBuffer := UTF8ToUTF16(AMenuItem.Caption);
-    DrawTextW(AHDC, PWideChar(WideBuffer), length(WideBuffer), @WorkRect, DT_CALCRECT);
+    DrawTextW(AHDC, PWideChar(WideBuffer), Length(WideBuffer), @ARect, dtFlags);
   end
   else
   begin
     AnsiBuffer := Utf8ToAnsi(AMenuItem.Caption);
-    DrawText(AHDC, PChar(AnsiBuffer), length(AnsiBuffer), @WorkRect, DT_CALCRECT);
-  end;
-{$else}
-  DrawText(AHDC, PChar(AMenuItem.Caption), length(AMenuItem.Caption), @WorkRect, DT_CALCRECT);
-{$endif}
-
-  if IsRightToLeft then
-    Dec(ARect.Right, LeftCaptionPosition(AMenuItem))
-  else
-    Inc(ARect.Left, LeftCaptionPosition(AMenuItem));
-  Inc(ARect.Top, TopPosition(TmpHeight, WorkRect.Bottom - WorkRect.Top));
-
-{$ifdef WindowsUnicodeSupport}
-  if UnicodeEnabledOS then
-    DrawTextW(AHDC, PWideChar(WideBuffer), Length(WideBuffer), @ARect, dtFlags)
-  else
     DrawText(AHDC, PChar(AnsiBuffer), Length(AnsiBuffer), @ARect, dtFlags);
+  end;
 {$else}
   DrawText(AHDC, PChar(AMenuItem.Caption), Length(AMenuItem.Caption), @ARect, dtFlags);
 {$endif}
 
   if AMenuItem.ShortCut <> scNone then
   begin
+    dtFlags := DT_VCENTER or DT_SINGLELINE;
     shortCutText := MenuItemShortCut(AMenuItem);
     if IsRightToLeft then
     begin
       Inc(ARect.Left, GetSystemMetrics(SM_CXMENUCHECK));
-      dtFlags := DT_LEFT;
+      dtFlags := dtFlags or DT_LEFT;
     end
     else
     begin
       Dec(ARect.Right, GetSystemMetrics(SM_CXMENUCHECK));
-      dtFlags := DT_RIGHT;
+      dtFlags := dtFlags or DT_RIGHT;
     end;
 
     {$ifdef WindowsUnicodeSupport}
@@ -1016,8 +1072,6 @@ begin
       DrawText(AHDC, PChar(shortCutText), Length(shortCutText), @ARect, dtFlags);
     {$endif}
   end;
-  SelectObject(AHDC, oldFont);
-  DeleteObject(newFont);
 end;
 
 procedure DrawMenuItemIcon(const AMenuItem: TMenuItem; const AHDC: HDC;
@@ -1063,14 +1117,31 @@ procedure DrawClassicMenuItemIcon(const AMenuItem: TMenuItem; const AHDC: HDC;
   const ARect: TRect; const ASelected, AChecked: boolean);
 var
   x: Integer;
+  Space: Integer = SpaceNextToCheckMark;
   ImageRect: TRect;
   IconSize: TPoint;
+  checkMarkWidth: integer;
 begin
   IconSize := AMenuItem.GetIconSize;
+  checkMarkWidth := GetSystemMetrics(SM_CXMENUCHECK);
+  if not AMenuItem.IsInMenuBar then
+  begin
+    if IconSize.x < checkMarkWidth then
+    begin
+      // Center the icon horizontally inside check mark space.
+      Inc(Space, TopPosition(checkMarkWidth, IconSize.x));
+    end
+    else
+    if IconSize.x > checkMarkWidth then
+    begin
+      Space := SpaceNextToIcon;
+    end;
+  end;
+
   if AMenuItem.GetIsRightToLeft then
-    x := ARect.Right - IconSize.x - spaceBetweenIcons
+    x := ARect.Right - IconSize.x - Space
   else
-    x := ARect.Left + spaceBetweenIcons;
+    x := ARect.Left + Space;
 
   ImageRect := Rect(x, ARect.top + TopPosition(ARect.Bottom - ARect.Top, IconSize.y),
                     IconSize.x, IconSize.y);
@@ -1083,6 +1154,36 @@ begin
   end;
 
   DrawMenuItemIcon(AMenuItem, AHDC, ImageRect, ASelected);
+end;
+
+procedure DrawClassicMenuItem(const AMenuItem: TMenuItem; const AHDC: HDC;
+  const ARect: Windows.RECT; const ASelected, ANoAccel: boolean; ItemState: UINT);
+var
+  oldFont: HFONT;
+  newFont: HFONT;
+  AvgCharWidth: Integer;
+begin
+  if AMenuItem.IsLine then
+    DrawSeparator(AHDC, ARect)
+  else
+  begin
+    if AMenuItem.Default then
+      newFont := GetMenuItemFont([cfBold])
+    else
+      newFont := GetMenuItemFont([]);
+    oldFont := SelectObject(AHDC, newFont);
+    AvgCharWidth := GetAverageCharSize(AHDC).cx;
+
+    DrawMenuItemText(AMenuItem, AHDC, ARect, ASelected, ANoAccel, ItemState, AvgCharWidth);
+    if aMenuItem.HasIcon then
+      DrawClassicMenuItemIcon(AMenuItem, AHDC, ARect, ASelected, AMenuItem.Checked)
+    else
+    if AMenuItem.Checked then
+      DrawMenuItemCheckMark(AMenuItem, AHDC, ARect, ASelected, AvgCharWidth);
+
+    SelectObject(AHDC, oldFont);
+    DeleteObject(newFont);
+  end;
 end;
 
 procedure DrawMenuItem(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect: Windows.RECT; const ItemAction, ItemState: UINT);
@@ -1104,20 +1205,9 @@ begin
       DrawVistaMenuBar(AMenuItem, AHDC, ARect, ASelected, ANoAccel, ItemAction, ItemState)
     else
       DrawVistaPopupMenu(AMenuItem, AHDC, ARect, ASelected, ANoAccel);
-    Exit;
-  end;
-
-  if aMenuItem.IsLine then
-    DrawSeparator(AHDC, ARect)
+  end
   else
-  begin
-    DrawMenuItemText(AMenuItem, AHDC, ARect, ASelected, ANoAccel, ItemState);
-    if aMenuItem.HasIcon then
-      DrawClassicMenuItemIcon(AMenuItem, AHDC, ARect, ASelected, AMenuItem.Checked)
-    else
-    if AMenuItem.Checked then
-      DrawMenuItemCheckMark(AMenuItem, AHDC, ARect, ASelected);
-  end;
+    DrawClassicMenuItem(AMenuItem, AHDC, ARect, ASelected, ANoAccel, ItemState);
 end;
 
 procedure TriggerFormUpdate(const AMenuItem: TMenuItem);
