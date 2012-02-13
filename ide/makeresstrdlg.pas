@@ -292,7 +292,7 @@ begin
   StringConstGroupBox.Caption:=lisMakeResStrStringConstantInSource;
 
   // OK, Cancel, Help buttons
-  OkButton.Caption:=lisOk;
+  OkButton.Caption:=lisMenuOk;
   CancelButton.Caption:=lisCancel;
   HelpButton.Caption:=lisMenuHelp;
 end;

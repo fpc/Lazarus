@@ -336,7 +336,7 @@ begin
   DescriptionGroupBox.Caption := lisCodeHelpDescrTag;
   DescriptionLabel.Caption := '';
 
-  ButtonPanel.OKButton.Caption := lisOk;
+  ButtonPanel.OKButton.Caption := lisMenuOk;
   ButtonPanel.HelpButton.Caption := lisMenuHelp;
   ButtonPanel.CancelButton.Caption := lisCancel;
 end;

@@ -493,7 +493,7 @@ begin
           if QuestionDlg(lisCodeHelpConfirmreplace,
             GetContextTitle(Element)+' already contains the help:'+#13
             +ShortDescr,
-            mtConfirmation,[mrYes,lisCodeHelpReplaceButton,mrCancel],0)<>mrYes then exit;
+            mtConfirmation,[mrYes,lisReplace,mrCancel],0)<>mrYes then exit;
         end;
       end;
     end else begin

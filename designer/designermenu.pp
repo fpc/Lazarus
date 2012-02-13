@@ -1066,7 +1066,7 @@ begin
          end;
       2: begin
            // Change a caption of selected designermenuitem fo "Edit"
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateEdit);
+           ChangeCaption (temp_designermenuitem, lisEdit);
            UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
 
            // Add an submenu with first item and set it's caption to "Undo"
@@ -2129,7 +2129,7 @@ begin
          ListBoxView.Items.Add(' ' + lisMenuTemplateExit);
        end;
     2: begin
-         ListBoxView.Items.Add(lisMenuTemplateEdit);
+         ListBoxView.Items.Add(lisEdit);
          ListBoxView.Items.Add(' ' + lisUndo);
          ListBoxView.Items.Add(' ' + lisRedo);
          ListBoxView.Items.Add(' -');

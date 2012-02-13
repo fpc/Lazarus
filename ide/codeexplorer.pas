@@ -372,15 +372,13 @@ var
 begin
   CodeExplorerMenuRoot:=RegisterIDEMenuRoot(CodeExplorerMenuRootName);
   Path:=CodeExplorerMenuRoot.Name;
-  CEJumpToIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Jump to', lisMenuJumpTo
-    );
+  CEJumpToIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Jump to', lisMenuJumpTo);
   CEJumpToImplementationIDEMenuCommand:=RegisterIDEMenuCommand(Path,
     'Jump to implementation', lisMenuJumpToImplementation);
   CEShowSrcEditPosIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Show position of source editor',
     lisShowPositionOfSourceEditor);
-  CERefreshIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Refresh',
-    dlgUnitDepRefresh);
-  CERenameIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Rename', lisFRIRename);
+  CERefreshIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Refresh', dlgUnitDepRefresh);
+  CERenameIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Rename', lisRename);
 end;
 
 function GetToDoComment(const Src: string; CommentStartPos,

@@ -85,7 +85,7 @@ begin
   Caption:=lisChooseName;
   Label1.Caption:=lisChooseANameForTheNewComponent;
   NameEdit.Hint:=lisTheComponentNameMustBeUniqueInAllComponentsOnTheFo;
-  OkButton.Caption:=lisOk;
+  OkButton.Caption:=lisMenuOk;
   OkButton.Enabled:=false;
 end;
 

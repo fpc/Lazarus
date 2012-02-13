@@ -517,12 +517,12 @@ begin
   MoveDownButton.ImageIndex:=IDEImages.LoadImage(16, 'arrow_down');
 
   AddButton.Caption:=lisAdd;
-  RemoveButton.Caption:=lisLazBuildRemove;
-  EditButton.Caption:=lisLazBuildRename;
+  RemoveButton.Caption:=lisRemove;
+  EditButton.Caption:=lisRename;
   MoveUpButton.Caption:=lisUp;
   MoveDownButton.Caption:=lisDown;
 
-  ButtonPanel.OKButton.Caption:=lisOk;
+  ButtonPanel.OKButton.Caption:=lisMenuOk;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CancelButton.Caption:=lisCancel;
 

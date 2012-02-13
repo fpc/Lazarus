@@ -509,7 +509,7 @@ begin
   end;
 
   with FilesDeleteButton do begin
-    Caption:=dlgEdDelete;
+    Caption:=lisDelete;
     ShowHint:=true;
     Hint:=lisDeleteSelectedFiles;
     LoadGlyphFromLazarusResource('laz_delete');

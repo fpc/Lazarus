@@ -91,8 +91,8 @@ begin
   Caption:= lisMessagesEditor;
   AddNewSetButton.Caption:=lisAddNewSet;
   ActiveFilterSetGroupBox.Caption:=lisActiveFilter;
-  RenameSetButton.Caption:=lisFRIRename;
-  DeleteSetButton.Caption:=dlgEdDelete;
+  RenameSetButton.Caption:=lisRename;
+  DeleteSetButton.Caption:=lisDelete;
   FilterSetGroupBox.Caption:=lisFilterSets;
 
   AddNewSetButton.LoadGlyphFromLazarusResource('laz_add');

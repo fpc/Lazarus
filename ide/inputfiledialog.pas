@@ -565,7 +565,7 @@ begin
   with OkButton do begin
     Name:='OkButton';
     Parent:=Self;
-    Caption:=lisOk;
+    Caption:=lisMenuOk;
     OnClick:=@OkButtonClick;
     Visible:=true;
   end;

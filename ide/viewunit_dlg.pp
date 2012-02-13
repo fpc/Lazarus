@@ -152,7 +152,7 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self,450,300);
   //ActiveControl:=FilterEdit;
   mniMultiSelect.Caption := dlgMultiSelect;
-  ButtonPanel.OKButton.Caption:=lisOk;
+  ButtonPanel.OKButton.Caption:=lisMenuOk;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CancelButton.Caption:=lisCancel;
   SortAlphabeticallySpeedButton.Hint:=lisPESortFilesAlphabetically;

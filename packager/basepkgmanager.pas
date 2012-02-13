@@ -209,7 +209,7 @@ begin
       Description:=Format(lisPkgMangProject, [ExtractFileNameOnly(TProject(
         DepOwner).ProjectInfoFile)]);
     end else if (DepOwner=PkgBoss) or (DepOwner=PackageGraph) then begin
-      Description:=lisPkgMangLazarus;
+      Description:=lisLazarus;
     end else begin
       Description:=dbgsName(DepOwner)
     end;

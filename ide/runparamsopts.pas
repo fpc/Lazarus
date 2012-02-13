@@ -366,9 +366,8 @@ end;
 constructor TRunParamsOptsDlg.Create(AnOwner: TComponent);
 begin
   inherited Create(AnOwner);
-
   Caption := dlgRunParameters;
-  ButtonPanel.OKButton.Caption:=lisOk;
+  ButtonPanel.OKButton.Caption:=lisMenuOk;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CancelButton.Caption:=lisCancel;
   SetupNotebook;
@@ -429,7 +428,7 @@ begin
 
   UserOverridesAddButton.Caption    := dlgEdAdd;
   UserOverridesEditButton.Caption   := dlgEdEdit;
-  UserOverridesDeleteButton.Caption := dlgEdDelete;
+  UserOverridesDeleteButton.Caption := lisDelete;
   IncludeSystemVariablesCheckBox.Caption := dlgIncludeSystemVariables;
 end;
 

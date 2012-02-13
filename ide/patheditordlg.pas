@@ -244,13 +244,18 @@ begin
   MoveUpButton.Hint:=lisPathEditMovePathUp;
   MoveDownButton.Hint:=lisPathEditMovePathDown;
 
-  ReplaceButton.Caption:=lisMenuReplace;
+  ReplaceButton.Caption:=lisReplace;
+  ReplaceButton.Hint:=lisPathEditorReplaceHint;
   AddButton.Caption:=lisAdd;
-  DeleteButton.Caption:=dlgEdDelete;
+  AddButton.Hint:=lisPathEditorAddHint;
+  DeleteButton.Caption:=lisDelete;
+  DeleteButton.Hint:=lisPathEditorDeleteHint;
   DeleteInvalidPathsButton.Caption:=lisPathEditDeleteInvalidPaths;
+  DeleteInvalidPathsButton.Hint:=lisPathEditorDeleteInvalidHint;
 
   TemplateGroupBox.Caption:=lisPathEditPathTemplates;
   AddTemplateButton.Caption:=lisCodeTemplAdd;
+  AddTemplateButton.Hint:=lisPathEditorTemplAddHint;
 
   MoveUpButton.LoadGlyphFromLazarusResource('arrow_up');
   MoveDownButton.LoadGlyphFromLazarusResource('arrow_down');

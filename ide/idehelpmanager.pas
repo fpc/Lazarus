@@ -1048,7 +1048,7 @@ begin
 
   Caption := lisHelpSelectorDialog;
   NodesGroupBox.Caption:=lisSelectAHelpItem;
-  BtnPanel.OKButton.Caption:=lisOk;
+  BtnPanel.OKButton.Caption:=lisMenuOk;
 end;
 
 { TIDEHelpDatabases }

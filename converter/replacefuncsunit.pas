@@ -386,7 +386,7 @@ end;
 procedure TReplaceFuncsForm.FormCreate(Sender: TObject);
 begin
   Caption:=lisReplacementFuncs;
-  ButtonPanel.OKButton.Caption := lisOk;
+  ButtonPanel.OKButton.Caption := lisMenuOk;
   ButtonPanel.HelpButton.Caption := lisMenuHelp;
   ButtonPanel.CancelButton.Caption := lisCancel;
 end;

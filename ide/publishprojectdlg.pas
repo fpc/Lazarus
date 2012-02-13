@@ -167,7 +167,7 @@ begin
                                         lisSaveEditorInfoOfNonProjectFiles;
   SaveClosedEditorFilesInfoCheckbox.Caption:=lisSaveInfoOfClosedEditorFiles;
 
-  ButtonPanel1.OkButton.Caption := lisOk;
+  ButtonPanel1.OkButton.Caption := lisMenuOk;
   ButtonPanel1.OKButton.OnClick := @OkButtonCLICK;
 
   ButtonPanel1.CloseButton.Caption := lisSaveSettings;

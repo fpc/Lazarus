@@ -1172,7 +1172,7 @@ begin
         then begin
           MsgResult:=IDEQuestionDialog(lisExecutionStopped,
             lisExecutionStopped, mtInformation,
-            [mrOK, lisOk, mrYesToAll, lisDoNotShowThisMessageAgain], '');
+            [mrOK, lisMenuOk, mrYesToAll, lisDoNotShowThisMessageAgain], '');
           if MsgResult=mrYesToAll then
             EnvironmentOptions.DebuggerShowStopMessage:=false;
         end;

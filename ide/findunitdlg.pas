@@ -219,7 +219,7 @@ begin
 
   Caption:=lisFindMissingUnit;
   CancelButton.Caption:=lisCancel;
-  OkButton.Caption:=lisOk;
+  OkButton.Caption:=lisMenuOk;
   OkButton.Enabled:=false;
   InfoGroupBox.Caption:=lisInformation;
   QuickFixRadioGroup.Caption:=lisQuickFixes;

@@ -146,7 +146,7 @@ procedure TDebuggerLanguageExceptionsOptions.Setup(
 begin
   bgIgnoreExceptions.Caption := lisDebugOptionsFrmIgnoreTheseExceptions;
   DbgLangExceptHint.Caption := lisTheseSettingsAreStoredWithTheProject;
-  cmdExceptionRemove.Caption := lisExtToolRemove;
+  cmdExceptionRemove.Caption := lisRemove;
   cmdExceptionAdd.Caption := lisAdd;
   cmdExceptionRemove.LoadGlyphFromLazarusResource('laz_delete');
   cmdExceptionAdd.LoadGlyphFromLazarusResource('laz_add');

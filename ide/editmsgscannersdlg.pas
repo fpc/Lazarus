@@ -94,7 +94,7 @@ begin
   AvailableGroupBox.Caption:=rsAvailableScanners;
   ScannersGroupBox.Caption:=rsScanners;
   AddSpeedButton.Hint:=lisAdd;
-  RemoveSpeedButton.Hint:=lisExtToolRemove;
+  RemoveSpeedButton.Hint:=lisRemove;
 
   AddSpeedButton.LoadGlyphFromLazarusResource('arrow_left');
   RemoveSpeedButton.LoadGlyphFromLazarusResource('arrow_right');

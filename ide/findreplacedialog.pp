@@ -183,7 +183,7 @@ begin
 
   HelpButton.Caption:=lisMenuHelp;
   ReplaceAllButton.Caption:=dlgReplaceAll;
-  OKButton.Caption:=lisOk;
+  OKButton.Caption:=lisMenuOk;
   CancelButton.Caption:=lisCancel;
 
   fReplaceAllClickedLast:=false;
@@ -317,7 +317,7 @@ begin
   PromptOnReplaceCheckBox.Enabled:=ReplaceAllButton.Visible;
   if ReplaceAllButton.Visible then
   begin
-    Caption := lisMenuReplace;
+    Caption := lisReplace;
     OkButton.Caption := lisBtnReplace;
   end else
   begin
@@ -460,7 +460,7 @@ begin
 
   if ssoReplace in NewOptions then
   begin
-    Caption := lisMenuReplace;
+    Caption := lisReplace;
     OkButton.Caption := lisBtnReplace;
   end else
   begin

@@ -348,7 +348,7 @@ resourceString
   ifsVK_EXECUTE    = 'Execute';
   ifsVK_SNAPSHOT   = 'Snapshot';
   ifsVK_INSERT     = 'Insert';
-  ifsVK_DELETE     = 'Delete'; //= dlgeddelete
+  ifsVK_DELETE     = 'Delete'; //= lisdelete
   ifsVK_HELP       = 'Help';
   ifsCtrl          = 'Ctrl';
   ifsAlt           = 'Alt';

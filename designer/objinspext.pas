@@ -398,7 +398,7 @@ begin
     OkButton.Caption:=lisAdd;
   end else begin
     Caption:=lisOIFRemoveFromFavouriteProperties;
-    OkButton.Caption:=lisExtToolRemove;
+    OkButton.Caption:=lisRemove;
   end;
 end;
 

@@ -82,6 +82,8 @@ object PathEditorDialog: TPathEditorDialog
       Enabled = False
       NumGlyphs = 0
       OnClick = DeleteButtonClick
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 6
     end
     object PathListBox: TListBox
@@ -134,6 +136,8 @@ object PathEditorDialog: TPathEditorDialog
       Enabled = False
       NumGlyphs = 0
       OnClick = ReplaceButtonClick
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 4
     end
     object AddButton: TBitBtn
@@ -152,6 +156,8 @@ object PathEditorDialog: TPathEditorDialog
       Enabled = False
       NumGlyphs = 0
       OnClick = AddButtonClick
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 5
     end
     object DeleteInvalidPathsButton: TBitBtn
@@ -170,6 +176,8 @@ object PathEditorDialog: TPathEditorDialog
       Enabled = False
       NumGlyphs = 0
       OnClick = DeleteInvalidPathsButtonClick
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 7
     end
   end
@@ -218,6 +226,8 @@ object PathEditorDialog: TPathEditorDialog
       Caption = 'AddTemplateButton'
       NumGlyphs = 0
       OnClick = AddTemplateButtonClick
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 1
     end
   end

@@ -972,12 +972,12 @@ var
   DefAction: TDefineAction;
 begin
   // exit menu
-  ExitMenuItem.Caption := lisCodeToolsDefsExit;
+  ExitMenuItem.Caption := lisExit;
   SaveAndExitMenuItem.Caption:=lisCodeToolsDefsSaveAndExit;
   DontSaveAndExitMenuItem.Caption:=lisCodeToolsDefsExitWithoutSave;
 
   // edit nodes
-  EditMenuItem.Caption := lisCodeToolsDefsEdit;
+  EditMenuItem.Caption := lisEdit;
   MoveNodeUpMenuItem.Caption:=lisCodeToolsDefsMoveNodeUp;
   MoveNodeDownMenuItem.Caption := lisCodeToolsDefsMoveNodeDown;
   MoveNodeLvlUpMenuItem.Caption := lisCodeToolsDefsMoveNodeOneLevelUp;
@@ -1077,8 +1077,8 @@ begin
 
   MoveFilePathUpBitBtn.Caption:=lisUp;
   MoveFilePathDownBitBtn.Caption:=lisDown;
-  DeleteFilePathBitBtn.Caption:=dlgEdDelete;
-  InsertFilePathBitBtn.Caption:=lisEdtExtToolInsert;
+  DeleteFilePathBitBtn.Caption:=lisDelete;
+  InsertFilePathBitBtn.Caption:=lisInsert;
 
   DefineTreeView.Images := IDEImages.Images_24;
   DefineTreeView.StateImages := IDEImages.Images_16;

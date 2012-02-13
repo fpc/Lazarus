@@ -697,7 +697,7 @@ begin
   TargetGroupBox.Hint:=lisConvertTargetHint;
   // Unit Replacements
   UnitReplaceDivider.Caption:=lisConvUnitReplacements;
-  UnitReplaceButton.Caption:=lisCodeToolsDefsEdit;    // Recycled string.
+  UnitReplaceButton.Caption:=lisEdit;    // Recycled string.
   UnitReplaceDivider.Hint:=lisConvUnitReplHint;
   UnitReplaceButton.Hint:=lisConvUnitReplHint;
   UnitReplaceComboBox.Items.Add(lisDisabled);    // 'Disabled'
@@ -710,21 +710,21 @@ begin
   UnknownPropsComboBox.Items.Add(lisAutomatic);
   // Type Replacements
   TypeReplaceDivider.Caption:=lisConvTypeReplacements;
-  TypeReplaceButton.Caption:=lisCodeToolsDefsEdit;
+  TypeReplaceButton.Caption:=lisEdit;
   TypeReplaceDivider.Hint:=lisConvTypeReplHint;
   TypeReplaceButton.Hint:=lisConvTypeReplHint;
   TypeReplaceComboBox.Items.Add(lisInteractive);
   TypeReplaceComboBox.Items.Add(lisAutomatic);
   // Func Replacements
   FuncReplaceDivider.Caption:=lisConvFuncReplacements;
-  FuncReplaceButton.Caption:=lisCodeToolsDefsEdit;
+  FuncReplaceButton.Caption:=lisEdit;
   FuncReplaceDivider.Hint:=lisConvFuncReplHint;
   FuncReplaceButton.Hint:=lisConvFuncReplHint;
   FuncReplaceComboBox.Items.Add(lisDisabled);    // 'Disabled'
   FuncReplaceComboBox.Items.Add(lisEnabled);     // 'Enabled'
   // Coordinate Offsets
   CoordOffsDivider.Caption:=lisConvCoordOffs;
-  CoordOffsButton.Caption:=lisCodeToolsDefsEdit;
+  CoordOffsButton.Caption:=lisEdit;
   CoordOffsDivider.Hint:=lisConvCoordHint;
   CoordOffsButton.Hint:=lisConvCoordHint;
   CoordOffsComboBox.Items.Add(lisDisabled);

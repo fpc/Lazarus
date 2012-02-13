@@ -525,7 +525,7 @@ begin
   ButtonPanel1.OKButton.Caption:=lisFRIFindReferences;
   ButtonPanel1.CancelButton.Caption:=lisCancel;
   NewGroupBox.Caption:=lisFRIRenameTo;
-  RenameCheckBox.Caption:=lisFRIRename;
+  RenameCheckBox.Caption:=lisRename;
   ScopeCommentsCheckBox.Caption:=lisFRISearchInCommentsToo;
   ScopeGroupBox.Caption:=lisFRISearchWhere;
   ScopeRadioGroup.Caption:=dlgScope;

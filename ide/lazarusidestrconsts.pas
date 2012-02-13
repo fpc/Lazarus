@@ -41,16 +41,23 @@ uses
 
 resourcestring
   // Common strings that can be used around Lazarus:
+  lisLazarus = 'Lazarus';
   lisAdd  = 'Add';
+  lisInsert = 'Insert';
   lisChange  = 'Change';
   lisDelete  = 'Delete';
-  lisOk = '&OK';
+  lisRemove = 'Remove';
+  lisRename = 'Rename';
+  lisReplace = 'Replace';
+  lisEdit = 'Edit';
+  lisMenuOk = '&OK';
   rsOk = 'OK';
   lisCancel = 'Cancel';
 //  lisYes = 'Yes';
   lisNo = 'No';
   lisContinue = 'Continue';
   lisBreak = 'Break';
+  lisExit = 'Exit';
 
   lisUndo = 'Undo';
   lisRedo = 'Redo';
@@ -266,7 +273,6 @@ resourcestring
   lisMenuFindPrevious = 'Find &Previous';
   lisMenuFindInFiles = 'Find &in Files ...';
   lisBtnReplace = '&Replace';
-  lisMenuReplace = 'Replace';
   lisMenuIncrementalFind = 'Incremental Find';
   lisMenuReplace2 = '&Replace ...';
   lisMenuGotoLine = 'Goto Line ...';
@@ -1578,7 +1584,6 @@ resourcestring
   dlgTimeSecondUnit = 'sec';
   dlgEdAdd = 'Add ...';
   dlgEdEdit = 'Edit ...';
-  dlgEdDelete = 'Delete';
   dlgIndentCodeTo = 'Indent code to';
   //dlgCodeToolsTab = 'Code Tools';
   lisAutomaticFeatures = 'Completion and Hints';
@@ -2270,8 +2275,7 @@ resourcestring
   lisPackageNameContains = 'Package name contains ...';
   lisFRIinCurrentUnit = 'in current unit';
   lisFRIinMainProject = 'in main project';
-  lisFRIinProjectPackageOwningCurrentUnit = 'in project/package owning '
-    +'current unit';
+  lisFRIinProjectPackageOwningCurrentUnit = 'in project/package owning current unit';
   lisFRIinAllOpenPackagesAndProjects = 'in all open packages and projects';
   lisFRIRenameAllReferences = 'Rename all References';
   dlgGlobal = '&Global';
@@ -2922,13 +2926,11 @@ resourcestring
   lisPERemoveFiles = 'Remove files';
   lisLazBuildNewProf = 'Add New Profile';
   lisLazBuildNewProfInfo = 'Current build options will be associated with:';
-  lisLazBuildRemove = 'Remove';
   lisKeep2 = 'Keep';
   lisRemoveIncludePath = 'Remove include path?';
   lisTheDirectoryContainsNoProjectIncludeFilesAnyMoreRe = 'The directory "%s" '
     +'contains no project include files any more. Remove this directory from '
     +'the project''s include search path?';
-  lisLazBuildRename = 'Rename';
   lisLazBuildRenameProf = 'Rename Profile';
   lisLazBuildRenameProfInfo = 'New name for profile:';
   lisCTDTemplates = 'Templates';
@@ -2998,7 +3000,6 @@ resourcestring
   lisFRIFindReferences = 'Find References';
   lisFRIInvalidIdentifier = 'Invalid Identifier';
   lisFRIRenameTo = 'Rename to';
-  lisFRIRename = 'Rename';
   lisFRISearchInCommentsToo = 'Search in comments too';
   lisFRISearchWhere = 'Search where';
   lisCodeToolsOptsColon       = 'Colon';
@@ -3102,10 +3103,8 @@ resourcestring
   lisCodeToolsDefsKylixMainDirectoryForProject = 'The %s main directory,%'
     +'swhere Borland has installed all %s sources,%swhich are used by this %s '
     +'project.%sFor example: /home/user/kylix%s';
-  lisCodeToolsDefsExit = 'Exit';
   lisCodeToolsDefsSaveAndExit = 'Save and Exit';
   lisCodeToolsDefsExitWithoutSave = 'Exit without Save';
-  lisCodeToolsDefsEdit = 'Edit';
   lisCodeToolsDefsMoveNodeUp = 'Move node up';
   lisCodeToolsDefsMoveNodeDown = 'Move node down';
   lisCodeToolsDefsMoveNodeOneLevelUp = 'Move node one level up';
@@ -3577,7 +3576,6 @@ resourcestring
   lisProgramNotFound = 'Program %s not found';
   lisWorkingDirectoryNotFound = 'Working directory %s not found';
   lisExtToolExternalTools = 'External Tools';
-  lisExtToolRemove = 'Remove';
   lisTheseSettingsAreStoredWithTheProject = 'These settings are stored with '
     +'the project.';
   lisKeepThemAndContinue = 'Keep them and continue';
@@ -3604,7 +3602,6 @@ resourcestring
   lisWorkingDirectoryForBuilding = 'Working directory for building';
   lisWorkingDirectoryForRun = 'Working directory for run';
   lisConfigureBuild = 'Configure Build %s';
-  lisEdtExtToolInsert = 'Insert';
   lisEdtExtToolTitleAndFilenameRequired = 'Title and Filename required';
   lisEdtExtToolAValidToolNeedsAtLeastATitleAndAFilename = 'A valid tool needs '
     +'at least a title and a filename.';
@@ -3624,7 +3621,6 @@ resourcestring
   // package manager
   lisPkgMangPackage = 'Package: %s';
   lisPkgMangProject = 'Project: %s';
-  lisPkgMangLazarus = 'Lazarus';
   lisPkgMangDependencyWithoutOwner = 'Dependency without Owner: %s';
   lisPkgMangSavePackageLpk = 'Save Package %s (*.lpk)';
   lisPkgMangInvalidPackageFileExtension = 'Invalid package file extension';
@@ -4226,7 +4222,7 @@ resourcestring
 
   // Standard Edit menu
   lisMenuTemplateDescriptionStandardEditMenu = 'Standard Edit Menu';
-  lisMenuTemplateEdit = 'Edit';
+  //lisMenuTemplateEdit = 'Edit';
   //lisMenuTemplateUndo = 'Undo';
   //lisMenuTemplateRedo = 'Redo';
   //lisMenuTemplateCut = 'Cut';
@@ -4468,7 +4464,6 @@ resourcestring
   lisDefaultPlaceholder = '(default)';
   lisEONOTEOnlyAbsolutePathsAreSupportedNow = 'NOTE: only absolute paths are supported now';
   lisCodeHelpConfirmreplace = 'Confirm replace';
-  lisCodeHelpReplaceButton = 'Replace';
   lisCodeHelpGroupBox = 'FPDoc settings';
   lisCodeHelpHintBoldFormat = 'Insert bold formatting tag';
   lisCodeHelpHintItalicFormat = 'Insert italic formatting tag';
@@ -4573,6 +4568,11 @@ resourcestring
     +'will be set to the values of the chosen scheme.';
   lisKMKeymappingScheme = 'Keymapping Scheme';
   lisPVUEditVirtualUnit = 'Edit virtual unit';
+  lisPathEditorReplaceHint = 'Replace the selected path with a new path';
+  lisPathEditorAddHint = 'Add new path to the list';
+  lisPathEditorDeleteHint = 'Delete the selected path';
+  lisPathEditorDeleteInvalidHint = 'Remove non-existent (gray) paths from the list';
+  lisPathEditorTemplAddHint = 'Add template to the list';
 
   // version info tab
   VersionInfoTitle = 'Version Info';

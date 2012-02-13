@@ -153,7 +153,7 @@ begin
   rgStyle.Items[8]:= lisMemoryDump;
   //rgStyle.Items[9]:= lisFloatingPoin;
 
-  ButtonPanel.OKButton.Caption:=lisOk;
+  ButtonPanel.OKButton.Caption:=lisMenuOk;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CancelButton.Caption:=lisCancel;
 end;

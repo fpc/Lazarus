@@ -36,7 +36,7 @@ procedure TGenericCheckListForm.FormCreate(Sender: TObject);
 var
   BitButtonYes: TBitBtn;
 begin
-  ButtonPanel1.OKButton.Caption:=lisOk;
+  ButtonPanel1.OKButton.Caption:=lisMenuOk;
   ButtonPanel1.CancelButton.Caption:=lisCancel;
 
   // save and compile

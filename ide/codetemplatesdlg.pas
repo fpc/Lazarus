@@ -848,7 +848,7 @@ begin
     with OkButton do begin
       Name:='OkButton';
       Parent:=Self;
-      Caption:=lisOk;
+      Caption:=lisMenuOk;
       OnClick:=@OkButtonClick;
       Left:=50;
       Top:=Self.ClientHeight-Height-12;
@@ -939,11 +939,11 @@ begin
   // init captions
   Caption:=dlgEdCodeTempl;
   AddButton.Caption:=lisAdd;
-  RenameButton.Caption:=lisLazBuildRename;
-  DeleteButton.Caption:=dlgEdDelete;
+  RenameButton.Caption:=lisRename;
+  DeleteButton.Caption:=lisDelete;
   TemplatesGroupBox.Caption:=lisCTDTemplates;
 
-  ButtonPanel.OKButton.Caption:=lisOk;
+  ButtonPanel.OKButton.Caption:=lisMenuOk;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CancelButton.Caption:=lisCancel;
 

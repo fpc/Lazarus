@@ -7889,10 +7889,8 @@ begin
         if (ResolvedDir<>'')
         and (SearchDirectoryInSearchPath(ObsoleteUnitPaths,ResolvedDir)>0) then begin
           if IDEQuestionDialog(lisRemoveUnitPath,
-            Format(lisTheDirectoryContainsNoProjectUnitsAnyMoreRemoveThi, [
-              CurDir]),
-            mtConfirmation, [mrYes, lisLazBuildRemove, mrNo, lisKeep2], '')=
-              mrYes
+            Format(lisTheDirectoryContainsNoProjectUnitsAnyMoreRemoveThi, [CurDir]),
+            mtConfirmation, [mrYes, lisRemove, mrNo, lisKeep2], '')=mrYes
           then begin
             // remove
             ProjUnitPaths:=RemoveSearchPaths(ProjUnitPaths,CurDir);
@@ -7916,10 +7914,8 @@ begin
         if (ResolvedDir<>'')
         and (SearchDirectoryInSearchPath(ObsoleteIncPaths,ResolvedDir)>0) then begin
           if IDEQuestionDialog(lisRemoveIncludePath,
-            Format(lisTheDirectoryContainsNoProjectIncludeFilesAnyMoreRe, [
-              CurDir]),
-            mtConfirmation, [mrYes, lisLazBuildRemove, mrNo, lisKeep2], '')=
-              mrYes
+            Format(lisTheDirectoryContainsNoProjectIncludeFilesAnyMoreRe, [CurDir]),
+            mtConfirmation, [mrYes, lisRemove, mrNo, lisKeep2], '')=mrYes
           then begin
             // remove
             ProjIncPaths:=RemoveSearchPaths(ProjIncPaths,CurDir);
