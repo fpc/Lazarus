@@ -43,14 +43,13 @@ Style
 Write sentences, terminated with a full stop (dot).
 Unterminated descriptions should be revised by (native) English speakers.
 
-Everybody can add revision marks.
-I use brackets for now, to indicate passages with questionable content:
-[?] unclear wording, possibly wrong. Long: [what's this?]
-[???] unreadable or definitely wrong description.
-[~] somebody else should make this proper and nice English.
-[!] Incompatible or wrong implementation, e.g. [Delphi incompatible!]
+Commonly used developer notes (fpdoc <notes><note> elements)
+Simple question: unclear wording, possibly wrong. Long: "what's this?" or just "?"
+Big question: unreadable or definitely wrong description. "Unreadable???"
+Tilde: somebody else should make this proper and nice English. "~"
+Exclamation mark: Incompatible or wrong implementation, e.g. "Delphi incompatible!"
 
-For lenghty descriptions I use paragraphs like this:
+For lenghty descriptions you can use paragraphs (<p>) like this:
 <descr>
   <p>
     ...
