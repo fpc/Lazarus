@@ -1,3443 +1,994 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
-<package name="lazutils">
-
-<!--
+  <package name="lcl">
+    <!--
   ====================================================================
     AvgLvlTree
   ====================================================================
 -->
-
-<module name="AvgLvlTree">
-<short></short>
-<descr>
-</descr>
-
-<!-- class Visibility: default -->
-<element name="TAvgLvlTree">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function type Visibility: default -->
-<element name="TObjectSortCompare">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TObjectSortCompare.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TObjectSortCompare.Tree">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TObjectSortCompare.Data1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TObjectSortCompare.Data2">
-<short></short>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TAvgLvlTreeNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: public -->
-<element name="TAvgLvlTreeNode.Parent">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: public -->
-<element name="TAvgLvlTreeNode.Left">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: public -->
-<element name="TAvgLvlTreeNode.Right">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: public -->
-<element name="TAvgLvlTreeNode.Balance">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: public -->
-<element name="TAvgLvlTreeNode.Data">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTreeNode.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTreeNode.TreeDepth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTreeNode.TreeDepth.Result">
-<short></short>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PAvgLvlTreeNode">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TAvgLvlTreeNodeMemManager">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TAvgLvlTree.FCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TAvgLvlTree.FNodeMemManager">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TAvgLvlTree.FOnCompare">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TAvgLvlTree.FOnObjectCompare">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TAvgLvlTree.BalanceAfterInsert">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.BalanceAfterInsert.ANode">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TAvgLvlTree.BalanceAfterDelete">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.BalanceAfterDelete.ANode">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TAvgLvlTree.FindInsertPos">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindInsertPos.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindInsertPos.Data">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TAvgLvlTree.SetOnCompare">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.SetOnCompare.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TAvgLvlTree.SetOnObjectCompare">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.SetOnObjectCompare.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TAvgLvlTree.SetCompares">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.SetCompares.NewCompare">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.SetCompares.NewObjectCompare">
-<short></short>
-</element>
-
-<!-- variable Visibility: public -->
-<element name="TAvgLvlTree.Root">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.Compare">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.Compare.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.Compare.Data1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.Compare.Data2">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.Find">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.Find.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.Find.Data">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindKey">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindKey.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindKey.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindKey.OnCompareKeyWithData">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindNearestKey">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindNearestKey.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindNearestKey.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindNearestKey.OnCompareKeyWithData">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindSuccessor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindSuccessor.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindSuccessor.ANode">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindPrecessor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindPrecessor.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindPrecessor.ANode">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindLowest">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindLowest.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindHighest">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindHighest.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindNearest">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindNearest.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindNearest.Data">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindPointer">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindPointer.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindPointer.Data">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindLeftMost">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindLeftMost.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindLeftMost.Data">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindRightMost">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindRightMost.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindRightMost.Data">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindLeftMostKey">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindLeftMostKey.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindLeftMostKey.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindLeftMostKey.OnCompareKeyWithData">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindRightMostKey">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindRightMostKey.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindRightMostKey.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindRightMostKey.OnCompareKeyWithData">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindLeftMostSameKey">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindLeftMostSameKey.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindLeftMostSameKey.ANode">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.FindRightMostSameKey">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.FindRightMostSameKey.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FindRightMostSameKey.ANode">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.Add">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.Add.ANode">
-<short></short>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.Add.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.Add.Data">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.Delete">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.Delete.ANode">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.Remove">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.Remove.Data">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.RemovePointer">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.RemovePointer.Data">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.MoveDataLeftMost">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.MoveDataLeftMost.ANode">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.MoveDataRightMost">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.MoveDataRightMost.ANode">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TAvgLvlTree.OnCompare">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TAvgLvlTree.OnObjectCompare">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.FreeAndClear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.FreeAndDelete">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.FreeAndDelete.ANode">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TAvgLvlTree.Count">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.ConsistencyCheck">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.ConsistencyCheck.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTree.WriteReportToStream">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.WriteReportToStream.s">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTree.ReportAsString">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTree.ReportAsString.Result">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TAvgLvlTree.NodeMemManager">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TAvgLvlTree.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.Create.OnCompareMethod">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TAvgLvlTree.CreateObjectCompare">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTree.CreateObjectCompare.OnCompareMethod">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TAvgLvlTree.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PAvgLvlTree">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TAvgLvlTreeNodeMemManager.FFirstFree">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TAvgLvlTreeNodeMemManager.FFreeCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TAvgLvlTreeNodeMemManager.FCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TAvgLvlTreeNodeMemManager.FMinFree">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TAvgLvlTreeNodeMemManager.FMaxFreeRatio">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TAvgLvlTreeNodeMemManager.SetMaxFreeRatio">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTreeNodeMemManager.SetMaxFreeRatio.NewValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TAvgLvlTreeNodeMemManager.SetMinFree">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTreeNodeMemManager.SetMinFree.NewValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TAvgLvlTreeNodeMemManager.DisposeFirstFreeNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTreeNodeMemManager.DisposeNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAvgLvlTreeNodeMemManager.DisposeNode.ANode">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TAvgLvlTreeNodeMemManager.NewNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TAvgLvlTreeNodeMemManager.NewNode.Result">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TAvgLvlTreeNodeMemManager.MinimumFreeNode">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TAvgLvlTreeNodeMemManager.MaximumFreeNodeRatio">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TAvgLvlTreeNodeMemManager.Count">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TAvgLvlTreeNodeMemManager.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TAvgLvlTreeNodeMemManager.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TAvgLvlTreeNodeMemManager.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TPointerToPointerItem">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TPointerToPointerItem.Key">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TPointerToPointerItem.Value">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PPointerToPointerItem">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TPointerToPointerTree">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPointerToPointerTree.FItems">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPointerToPointerTree.GetCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPointerToPointerTree.GetCount.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPointerToPointerTree.GetValues">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPointerToPointerTree.GetValues.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.GetValues.Key">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPointerToPointerTree.SetValues">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.SetValues.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.SetValues.AValue">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPointerToPointerTree.FindNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPointerToPointerTree.FindNode.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.FindNode.Key">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPointerToPointerTree.GetNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPointerToPointerTree.GetNode.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.GetNode.Node">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.GetNode.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.GetNode.Value">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TPointerToPointerTree.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TPointerToPointerTree.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPointerToPointerTree.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPointerToPointerTree.Remove">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.Remove.Key">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TPointerToPointerTree.Contains">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPointerToPointerTree.Contains.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.Contains.Key">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TPointerToPointerTree.GetFirst">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPointerToPointerTree.GetFirst.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.GetFirst.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.GetFirst.Value">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TPointerToPointerTree.GetLast">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPointerToPointerTree.GetLast.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.GetLast.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.GetLast.Value">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TPointerToPointerTree.GetNext">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPointerToPointerTree.GetNext.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.GetNext.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.GetNext.NextKey">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.GetNext.NextValue">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TPointerToPointerTree.GetPrev">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPointerToPointerTree.GetPrev.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.GetPrev.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.GetPrev.PrevKey">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.GetPrev.PrevValue">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPointerToPointerTree.Count">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPointerToPointerTree.Values">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPointerToPointerTree.Values.Key">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPointerToPointerTree.Tree">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ComparePointerToPointerItems">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ComparePointerToPointerItems.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ComparePointerToPointerItems.Data1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ComparePointerToPointerItems.Data2">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ComparePointerWithPtrToPtrItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ComparePointerWithPtrToPtrItem.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ComparePointerWithPtrToPtrItem.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ComparePointerWithPtrToPtrItem.Data">
-<short></short>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TStringToStringTreeEnumerator">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TStringMapItem">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TStringMapItem.Name">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PStringMapItem">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TCustomStringMapEnumerator">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TCustomStringMapEnumerator.FTree">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TCustomStringMapEnumerator.FCurrent">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TCustomStringMapEnumerator.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomStringMapEnumerator.Create.Tree">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TCustomStringMapEnumerator.MoveNext">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomStringMapEnumerator.MoveNext.Result">
-<short></short>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TCustomStringMap">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomStringMap.FCompareKeyItemFunc">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomStringMap.FTree">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomStringMap.FCaseSensitive">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomStringMap.GetCompareItemsFunc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomStringMap.GetCompareItemsFunc.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomStringMap.DisposeItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomStringMap.DisposeItem.p">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TCustomStringMap.ItemsAreEqual">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomStringMap.ItemsAreEqual.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomStringMap.ItemsAreEqual.p1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomStringMap.ItemsAreEqual.p2">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TCustomStringMap.CreateCopy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomStringMap.CreateCopy.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomStringMap.CreateCopy.Src">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TCustomStringMap.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomStringMap.Create.TheCaseSensitive">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomStringMap.Create.ACompareItems">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomStringMap.Create.ACompareNameWithItem">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TCustomStringMap.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomStringMap.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TCustomStringMap.Contains">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomStringMap.Contains.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomStringMap.Contains.s">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomStringMap.GetNames">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomStringMap.GetNames.List">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomStringMap.Remove">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomStringMap.Remove.Name">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomStringMap.CaseSensitive">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomStringMap.Tree">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TCustomStringMap.FindNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomStringMap.FindNode.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomStringMap.FindNode.s">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TCustomStringMap.Count">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomStringMap.Count.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TCustomStringMap.Equals">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomStringMap.Equals.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomStringMap.Equals.OtherTree">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomStringMap.Assign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomStringMap.Assign.Source">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomStringMap.CompareItemsFunc">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomStringMap.CompareKeyItemFunc">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomStringMap.SetCompareFuncs">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomStringMap.SetCompareFuncs.NewCompareItemsFunc">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomStringMap.SetCompareFuncs.NewCompareKeyItemFunc">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomStringMap.SetCompareFuncs.NewCaseSensitive">
-<short></short>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TStringMapEnumerator">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TStringMapEnumerator.GetCurrent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TStringMapEnumerator.GetCurrent.Result">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TStringMapEnumerator.Current">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TStringMap">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TStringMap.Add">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringMap.Add.Name">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TStringMap.GetEnumerator">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TStringMap.GetEnumerator.Result">
-<short></short>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TStringToStringItem">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TStringToStringItem.Name">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TStringToStringItem.Value">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PStringToStringItem">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TStringToStringTreeEnumerator.GetCurrent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TStringToStringTreeEnumerator.GetCurrent.Result">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TStringToStringTreeEnumerator.Current">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TNewStringToStringTree">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TNewStringToStringTree.GetValues">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TNewStringToStringTree.GetValues.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.GetValues.s">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TNewStringToStringTree.SetValues">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.SetValues.s">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.SetValues.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TNewStringToStringTree.DisposeItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.DisposeItem.p">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TNewStringToStringTree.ItemsAreEqual">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TNewStringToStringTree.ItemsAreEqual.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.ItemsAreEqual.p1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.ItemsAreEqual.p2">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TNewStringToStringTree.CreateCopy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TNewStringToStringTree.CreateCopy.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.CreateCopy.Src">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TNewStringToStringTree.GetNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TNewStringToStringTree.GetNode.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.GetNode.Node">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.GetNode.Name">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.GetNode.Value">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TNewStringToStringTree.GetString">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TNewStringToStringTree.GetString.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.GetString.Name">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.GetString.Value">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TNewStringToStringTree.Add">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.Add.Name">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.Add.Value">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.Add.Delimiter">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TNewStringToStringTree.AddNameValues">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.AddNameValues.List">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TNewStringToStringTree.AddValues">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.AddValues.List">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TNewStringToStringTree.AddNames">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.AddNames.List">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TNewStringToStringTree.Delete">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.Delete.Name">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TNewStringToStringTree.Values">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.Values.s">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TNewStringToStringTree.AsText">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TNewStringToStringTree.AsText.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TNewStringToStringTree.Assign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.Assign.Source">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TNewStringToStringTree.GetEnumerator">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TNewStringToStringTree.GetEnumerator.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TNewStringToStringTree.GetFirst">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TNewStringToStringTree.GetFirst.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.GetFirst.Name">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.GetFirst.Value">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TNewStringToStringTree.GetLast">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TNewStringToStringTree.GetLast.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.GetLast.Name">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.GetLast.Value">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TNewStringToStringTree.GetNext">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TNewStringToStringTree.GetNext.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.GetNext.Name">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.GetNext.NextName">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.GetNext.NextValue">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TNewStringToStringTree.GetPrev">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TNewStringToStringTree.GetPrev.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.GetPrev.Name">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.GetPrev.PrevName">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TNewStringToStringTree.GetPrev.PrevValue">
-<short></short>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TStringToStringTree">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TStringToStringTree.FCompareItems">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TStringToStringTree.FCompareNameWithItem">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TStringToStringTree.FItems">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TStringToStringTree.GetCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TStringToStringTree.GetCount.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TStringToStringTree.GetValues">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TStringToStringTree.GetValues.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.GetValues.Name">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TStringToStringTree.SetValues">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.SetValues.Name">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.SetValues.AValue">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TStringToStringTree.FindNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TStringToStringTree.FindNode.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.FindNode.Name">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TStringToStringTree.GetNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TStringToStringTree.GetNode.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.GetNode.Node">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.GetNode.Name">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.GetNode.Value">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TStringToStringTree.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.Create.CaseSensitive">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.Create.ACompareItems">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.Create.ACompareNameWithItem">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TStringToStringTree.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TStringToStringTree.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TStringToStringTree.Assign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.Assign.Src">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TStringToStringTree.Contains">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TStringToStringTree.Contains.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.Contains.Name">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TStringToStringTree.Delete">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.Delete.Name">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TStringToStringTree.Add">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.Add.Name">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.Add.Value">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.Add.Delimiter">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TStringToStringTree.AddNameValues">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.AddNameValues.List">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TStringToStringTree.AddValues">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.AddValues.List">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TStringToStringTree.AddNames">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.AddNames.List">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TStringToStringTree.GetFirst">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TStringToStringTree.GetFirst.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.GetFirst.Name">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.GetFirst.Value">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TStringToStringTree.GetLast">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TStringToStringTree.GetLast.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.GetLast.Name">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.GetLast.Value">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TStringToStringTree.GetNext">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TStringToStringTree.GetNext.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.GetNext.Name">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.GetNext.NextName">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.GetNext.NextValue">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TStringToStringTree.GetPrev">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TStringToStringTree.GetPrev.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.GetPrev.Name">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.GetPrev.PrevName">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.GetPrev.PrevValue">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TStringToStringTree.Count">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TStringToStringTree.Values">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToStringTree.Values.Name">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TStringToStringTree.Tree">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TStringToStringTree.CompareItems">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TStringToStringTree.CompareNameWithItem">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TStringToPointerItem">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TStringToPointerItem.Name">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TStringToPointerItem.Value">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PStringToPointerItem">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TStringToPointerTreeEnumerator">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TStringToPointerTreeEnumerator.GetCurrent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TStringToPointerTreeEnumerator.GetCurrent.Result">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TStringToPointerTreeEnumerator.Current">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TStringToPointerTree">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TStringToPointerTree.FFreeValues">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TStringToPointerTree.GetValues">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TStringToPointerTree.GetValues.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToPointerTree.GetValues.s">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TStringToPointerTree.SetValues">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToPointerTree.SetValues.s">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToPointerTree.SetValues.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TStringToPointerTree.DisposeItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToPointerTree.DisposeItem.p">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TStringToPointerTree.ItemsAreEqual">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TStringToPointerTree.ItemsAreEqual.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToPointerTree.ItemsAreEqual.p1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToPointerTree.ItemsAreEqual.p2">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TStringToPointerTree.CreateCopy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TStringToPointerTree.CreateCopy.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToPointerTree.CreateCopy.Src">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TStringToPointerTree.GetData">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TStringToPointerTree.GetData.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToPointerTree.GetData.Name">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToPointerTree.GetData.Value">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TStringToPointerTree.Values">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStringToPointerTree.Values.s">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TStringToPointerTree.GetEnumerator">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TStringToPointerTree.GetEnumerator.Result">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TStringToPointerTree.FreeValues">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CompareStringToStringItems">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CompareStringToStringItems.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareStringToStringItems.Data1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareStringToStringItems.Data2">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CompareAnsiStringWithStrToStrItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CompareAnsiStringWithStrToStrItem.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareAnsiStringWithStrToStrItem.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareAnsiStringWithStrToStrItem.Data">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CompareStringToStringItemsI">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CompareStringToStringItemsI.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareStringToStringItemsI.Data1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareStringToStringItemsI.Data2">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CompareAnsiStringWithStrToStrItemI">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CompareAnsiStringWithStrToStrItemI.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareAnsiStringWithStrToStrItemI.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareAnsiStringWithStrToStrItemI.Data">
-<short></short>
-</element>
-
-</module> <!-- AvgLvlTree -->
-
-</package>
+    <module name="AvgLvlTree">
+      <short>An Average Level Tree structure, which is kept balanced so that finding a node is very rapid</short>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="FPCAdds">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function type Visibility: default -->
+      <element name="TObjectSortCompare">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TObjectSortCompare.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TObjectSortCompare.Tree">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TObjectSortCompare.Data1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TObjectSortCompare.Data2">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TAvgLvlTreeNode">
+        <short>
+          <var>TAvgLvlTreeNode</var> - a node, the basic structural element of a <var>TAvgLvlTree</var>
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TAvgLvlTreeNode.Parent">
+        <short>
+          <var>Parent</var> - the previous level in the tree</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TAvgLvlTreeNode.Left">
+        <short>The <var>Left</var> descendant branch node in the tree</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TAvgLvlTreeNode.Right">
+        <short>The <var>Right</var> descendant branch node in the tree</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TAvgLvlTreeNode.Balance">
+        <short>
+          <var>Balance</var> - should be 0 for perfect balance, -1 or +1 for one extra node on either side, more than (+ or -) 1 means tree is unbalanced and needs to be fixed</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TAvgLvlTreeNode.Data">
+        <short>A pointer to the actual <var>Data</var> associated with the node</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTreeNode.Clear">
+        <short>
+          <var>Clear</var> - remove all the branches leaving an empty tree</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTreeNode.TreeDepth">
+        <short>
+          <var>TreeDepth</var> - the number of levels in the tree structure, by the longest way down</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTreeNode.TreeDepth.Result">
+        <short/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PAvgLvlTreeNode">
+        <short>
+          <var>PAvgLvlTreeNode</var> - pointer to a <var>TAvgLvlTreeNode</var>
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TAvgLvlTree">
+        <short>
+          <var>TAvgLvlTree</var> - an Average Level binary Tree</short>
+        <descr>
+          <var>TAvgLvlTree</var> is an Average Level binary Tree. This binary tree is always balanced, so that inserting, deleting and finding a node is performed in O(log(#Nodes))</descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TAvgLvlTree.FCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TAvgLvlTree.FOnCompare">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TAvgLvlTree.FOnObjectCompare">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TAvgLvlTree.BalanceAfterInsert">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.BalanceAfterInsert.ANode">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TAvgLvlTree.BalanceAfterDelete">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.BalanceAfterDelete.ANode">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TAvgLvlTree.FindInsertPos">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindInsertPos.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindInsertPos.Data">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TAvgLvlTree.SetOnCompare">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.SetOnCompare.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TAvgLvlTree.SetOnObjectCompare">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.SetOnObjectCompare.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TAvgLvlTree.SetCompares">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.SetCompares.NewCompare">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.SetCompares.NewObjectCompare">
+        <short/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TAvgLvlTree.Root">
+        <short>
+          <var>Root</var> - the starting node of the tree structure</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.Compare">
+        <short>Compare two data. For every two nodes of the tree holds: Compare(Left,Right)</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.Compare.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.Compare.Data1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.Compare.Data2">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.Find">
+        <short>Find node with a Data of the same key. The found Node.Data need not be the same as the Data parameter.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.Find.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.Find.Data">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindKey">
+        <short>Search a node with the same key. OnCompareKeyWithData first parameter is the key, second the Node.Data.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindKey.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindKey.Key">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindKey.OnCompareKeyWithData">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindSuccessor">
+        <short>Find the next node to the right with the next higher value.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindSuccessor.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindSuccessor.ANode">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindPrecessor">
+        <short>Find the next node to the left with the next lower value.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindPrecessor.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindPrecessor.ANode">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindLowest">
+        <short>Find the left most node.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindLowest.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindHighest">
+        <short>Find the right most node.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindHighest.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindNearest">
+        <short>Find a node with the same key. If no node with exact the same key exists a node left or right is returned.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindNearest.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindNearest.Data">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindPointer">
+        <short>As Find, but Key and Data must be the same.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindPointer.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindPointer.Data">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindLeftMost">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindLeftMost.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindLeftMost.Data">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindRightMost">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindRightMost.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindRightMost.Data">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindLeftMostKey">
+        <short>As FindKey, but if there are several nodes with the same key, the left most is returned</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindLeftMostKey.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindLeftMostKey.Key">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindLeftMostKey.OnCompareKeyWithData">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindRightMostKey">
+        <short>As FindKey, but if there are several nodes with the same key, the right most is returned</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindRightMostKey.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindRightMostKey.Key">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindRightMostKey.OnCompareKeyWithData">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindLeftMostSameKey">
+        <short>Starts at ANode and returns the left most node with the same key as ANode.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindLeftMostSameKey.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindLeftMostSameKey.ANode">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.FindRightMostSameKey">
+        <short>Starts at ANode and returns the left most node with the same key as ANode.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.FindRightMostSameKey.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FindRightMostSameKey.ANode">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.Add">
+        <short>Adds a node to the tree</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.Add.ANode">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.Add">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.Add.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.Add.Data">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.Delete">
+        <short>Removes and frees a node. The data is not freed (See FreeAndDelete).</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.Delete.ANode">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.Remove">
+        <short>if the Data with the same key exists one node is removed.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.Remove.Data">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.RemovePointer">
+        <short>RemovePointer - if the Data with the same pointer exists one pointer is removed.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.RemovePointer.Data">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.MoveDataLeftMost">
+        <short>If there are several nodes with the same Key as ANode, the node is moved left most of this group.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.MoveDataLeftMost.ANode">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.MoveDataRightMost">
+        <short>If there are several nodes with the same Key as ANode, the node is moved right most of this group.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.MoveDataRightMost.ANode">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TAvgLvlTree.OnCompare">
+        <short>
+          <var>OnCompare</var> - user-supplied event handler to define your own sorting. The tree will be rebuilt without losing data.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TAvgLvlTree.OnObjectCompare">
+        <short>Same as OnCompare, but with a method instead of a procedure.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.Clear">
+        <short>Delete all nodes without freeing the data. Calls <var>Clear</var> then performs inherited <var>Destroy</var>
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.FreeAndClear">
+        <short>Delete all nodes and call TObject(Node.Data).Free on every data.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.FreeAndDelete">
+        <short>Call TObject(ANode.Data).Free then delete the node.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.FreeAndDelete.ANode">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TAvgLvlTree.Count">
+        <short>
+          <var>Count</var> - number of nodes</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.ConsistencyCheck">
+        <short>
+          <var>ConsistencyCheck</var> - checks that the root node exists and that the tree is correctly balanced with valid nodes on each level</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.ConsistencyCheck.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTree.WriteReportToStream">
+        <short>
+          <var>WriteReportToStream</var> - sends a status report to the current data stream</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.WriteReportToStream.s">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.WriteReportToStream.StreamSize">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTree.ReportAsString">
+        <short>
+          <var>ReportAsString</var> returns the status report sent to the stream, as a string</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTree.ReportAsString.Result">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TAvgLvlTree.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TAvgLvlTree</var>, allowing the comparison method to be passed as an argument. Performs Inherited Create and copies the specified comparison method to a local variable
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.Create.OnCompareMethod">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TAvgLvlTree.CreateObjectCompare">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTree.CreateObjectCompare.OnCompareMethod">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TAvgLvlTree.Create">
+        <short>Version of the <var>Create</var> constructor without specified arguments</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TAvgLvlTree.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TAvgLvlTree</var>: </short>
+        <descr/>
+        <errors/>
+        <seealso>
+          <link id="#rtl.System.TObject.Destroy"/>
+        </seealso>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PAvgLvlTree">
+        <short>
+          <var>PAvgLvlTree</var> - a pointer to a <var>TAvgLvlTree</var>
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TAvgLvlTreeNodeMemManager">
+        <short>
+          <var>TAvgLvlTreeNodeMemManager</var> - memory manager for TAvgLvlTree nodes</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TAvgLvlTreeNodeMemManager.FFirstFree">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TAvgLvlTreeNodeMemManager.FFreeCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TAvgLvlTreeNodeMemManager.FCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TAvgLvlTreeNodeMemManager.FMinFree">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TAvgLvlTreeNodeMemManager.FMaxFreeRatio">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TAvgLvlTreeNodeMemManager.SetMaxFreeRatio">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTreeNodeMemManager.SetMaxFreeRatio.NewValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TAvgLvlTreeNodeMemManager.SetMinFree">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTreeNodeMemManager.SetMinFree.NewValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TAvgLvlTreeNodeMemManager.DisposeFirstFreeNode">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTreeNodeMemManager.DisposeNode">
+        <short>
+          <var>DisposeNode</var> - method for disposal of a node when it is no longer needed</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TAvgLvlTreeNodeMemManager.DisposeNode.ANode">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TAvgLvlTreeNodeMemManager.NewNode">
+        <short>
+          <var>NewNode</var> - returns a new node fo the structure</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TAvgLvlTreeNodeMemManager.NewNode.Result">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TAvgLvlTreeNodeMemManager.MinimumFreeNode">
+        <short>
+          <var>MinimumFreeNode</var> the value of the smallest (or next) free node</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TAvgLvlTreeNodeMemManager.MaximumFreeNodeRatio">
+        <short>
+          <var>MaximumFreeNodeRatio</var> - the maximum allowable ratio of free nodes</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TAvgLvlTreeNodeMemManager.Count">
+        <short>
+          <var>Count</var> - the running total of nodes</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TAvgLvlTreeNodeMemManager.Clear">
+        <short>
+          <var>Clear</var> - remove all the nodes and leave an empty structure</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TAvgLvlTreeNodeMemManager.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TAvgLvlTreeNodeMemManager</var>: calls inherited <var>Create</var> then initialises the counters</short>
+        <descr/>
+        <errors/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+        </seealso>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TAvgLvlTreeNodeMemManager.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for memory manager: calls <var>Clear</var> then performs inherited <var>Destroy</var>
+        </short>
+        <descr/>
+        <errors/>
+        <seealso>
+          <link id="#rtl.System.TObject.Destroy">TObject.Destroy</link>
+        </seealso>
+      </element>
+      <element name="TAvgLvlTree.FindNearestKey">
+        <short>Same as FindKey, but if the exact Key can not be found a Node left or right of it is returned.</short>
+      </element>
+      <element name="TPointerToPointerItem">
+        <short>
+          <var>TPointerToPointerItem</var> - an item in a PointerToPointer Tree (associative array)</short>
+      </element>
+      <element name="TPointerToPointerItem.Key">
+        <short>The <var>Key</var> defining the pointer item</short>
+      </element>
+      <element name="TPointerToPointerItem.Value">
+        <short>The <var>Value</var> of the pointer item</short>
+      </element>
+      <element name="PPointerToPointerItem">
+        <short>
+          <var>PPointerToPointerItem</var> - a pointer to a <var>TPointerToPointerItem</var>
+        </short>
+      </element>
+      <element name="TPointerToPointerTree">
+        <short>
+          <var>TPointerToPointerTree</var> - an associative array of PointerToPointer Items, or a tree of trees</short>
+        <descr>
+          <var>TPointerToPointerTree</var> - an associative array of PointerToPointer Items, or a tree of trees. This class uses pointers to identify pointers within the array, unlike the <var>TStringToStringTree</var>, which uses strings to identify strings.</descr>
+      </element>
+      <element name="TPointerToPointerTree.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TPointerToPointerTree</var>. Calls the <var>TAvgLvlTree.Create</var> method</short>
+        <seealso>
+          <link id="#lcl.AvgLvlTree.TAvgLvlTree.Create">TAvgLvlTree.Create</link>
+        </seealso>
+      </element>
+      <element name="TPointerToPointerTree.Destroy">
+        <seealso>
+          <link id="#rtl.System.TObject.Destroy">TObject.Destroy</link>
+        </seealso>
+        <short>
+          <var>Destroy</var> - destructor for <var>TPointerToPointerTree</var>: <var>Clear</var> the tree, <var>Free</var> the items then call inherited <var>Destroy</var>
+        </short>
+      </element>
+      <element name="TPointerToPointerTree.Clear">
+        <short>
+          <var>Clear</var> - removes each node from the tree, leaving an empty tree</short>
+      </element>
+      <element name="TPointerToPointerTree.Remove">
+        <short>
+          <var>Remove</var> the node specified by <var>Key</var> from the tree</short>
+      </element>
+      <element name="TPointerToPointerTree.Contains">
+        <short>Returns True if the tree <var>Contains</var> the node specified by <var>Key</var>
+        </short>
+      </element>
+      <element name="TPointerToPointerTree.GetFirst">
+        <short>
+          <var>GetFirst</var> - finds the first node matching the supplied arguments; returns True if successful</short>
+      </element>
+      <element name="TPointerToPointerTree.GetLast">
+        <short>
+          <var>GetLast</var> - finds the last node matching the supplied arguments; returns True if successful</short>
+      </element>
+      <element name="TPointerToPointerTree.GetNext">
+        <short>
+          <var>GetNext</var> - finds the next node matching the supplied arguments; returns True if successful</short>
+      </element>
+      <element name="TPointerToPointerTree.GetPrev">
+        <short>
+          <var>GetPrev</var> - finds the previous node matching the supplied arguments; returns True if successful</short>
+      </element>
+      <element name="TPointerToPointerTree.Count">
+        <short>
+          <var>Count</var> - the number of items</short>
+      </element>
+      <element name="TPointerToPointerTree.Values">
+        <short>
+          <var>Values</var> - a pointer into the array of values associated with the nodes</short>
+      </element>
+      <element name="TPointerToPointerTree.Tree">
+        <short>The <var>Tree</var> that forms the basis of the associative array</short>
+      </element>
+      <element name="TStringToStringTree">
+        <descr>
+          <var>TStringToStringTree</var> - an associative array of StringToString Items, or a tree of trees. This class uses strings to identify strings within the array, unlike the <var>TPointerToPointerTree</var>, which uses pointers to identify pointers.</descr>
+        <short>
+          <var>TStringToStringTree</var> - an associative array of StringToString Items, or a tree of trees</short>
+      </element>
+      <element name="TStringToStringItem">
+        <short>
+          <var>TStringToStringItem</var> - an item in a StringToString Tree (associative array)</short>
+      </element>
+      <element name="TStringToStringItem.Name">
+        <short>The <var>Name</var> that identifies the string within the associative array</short>
+      </element>
+      <element name="TStringToStringItem.Value">
+        <short>The <var>Value</var> of the string held within the associative array</short>
+      </element>
+      <element name="PStringToStringItem">
+        <short>
+          <var>PStringToStringItem</var> -  pointer to a TStringToStringItem</short>
+      </element>
+      <element name="TStringToStringTree.Create">
+        <short>The instance of the <var>Create</var> constructor that allows the programmer to specify whether or not the string operations are to be Case Sensitive</short>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+        </seealso>
+      </element>
+      <element name="TStringToStringTree.Create.CaseSensitive">
+        <short>
+          <var>CaseSensitive</var> - if True, string operations (comparisons etc) must be case sensitive</short>
+      </element>
+      <element name="TStringToStringTree.Create">
+        <short>The instance of the <var>Create</var> constructor that allows the programmer to specify how items in the list are to be compared</short>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+        </seealso>
+      </element>
+      <element name="TStringToStringTree.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TStringToStringTree</var>: calls <var>Clear</var>, frees items then calls inherited <var>Destroy</var>
+        </short>
+      </element>
+      <element name="TStringToStringTree.Clear">
+        <short>
+          <var>Clear</var> - removes all items leaving an empty tree</short>
+      </element>
+      <element name="TStringToStringTree.Contains">
+        <short>Returns True if the tree <var>Contains</var> the specified string</short>
+      </element>
+      <element name="TStringToStringTree.Add">
+        <short>
+          <var>Add</var> an item to the tree (specified by its name, value or delimiter)</short>
+      </element>
+      <element name="TStringToStringTree.AddNameValues">
+        <short>
+          <var>AddNameValues</var> add the specified named values to the tree</short>
+      </element>
+      <element name="TStringToStringTree.AddValues">
+        <short>
+          <var>AddValues</var> - adds the specified values to the tree</short>
+      </element>
+      <element name="TStringToStringTree.GetFirst">
+        <short>
+          <var>GetFirst</var> - finds the matching first item; returns True if successful</short>
+      </element>
+      <element name="TStringToStringTree.GetLast">
+        <short>
+          <var>GetLast</var> - finds the last matching item; returns True if successful</short>
+      </element>
+      <element name="TStringToStringTree.GetNext">
+        <short>
+          <var>GetNext</var> - finds the next matching item; returns True if successful</short>
+      </element>
+      <element name="TStringToStringTree.GetPrev">
+        <short>
+          <var>GetPrev</var> - finds the previous matching item; returns True if successful</short>
+      </element>
+      <element name="TStringToStringTree.Count">
+        <short>
+          <var>Count</var> - the number of items</short>
+      </element>
+      <element name="TStringToStringTree.Values">
+        <short>The <var>Values</var> of the strings corresponding to the supplied name</short>
+      </element>
+      <element name="TStringToStringTree.Tree">
+        <short>The <var>Tree</var> that forms the basis of the associative array</short>
+      </element>
+      <element name="TStringToStringTree.CompareItems">
+        <short>
+          <var>CompareItems</var> - the items for comparison</short>
+      </element>
+      <element name="TStringToStringTree.CompareNameWithItem">
+        <short>
+          <var>CompareNameWithItem</var> - the name for comparison with the item</short>
+      </element>
+    </module>
+    <!-- AvgLvlTree -->
+  </package>
 </fpdoc-descriptions>
