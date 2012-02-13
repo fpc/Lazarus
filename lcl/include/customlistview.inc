@@ -72,6 +72,41 @@ begin
   FArrangement := iaTop;
 end;
 
+{ TCustomListViewEditor }
+
+procedure TCustomListViewEditor.ListViewEditorKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Shift = []) and Visible then
+  begin
+    if Key = VK_ESCAPE then
+    begin
+      Key := 0;
+      FItem := nil;
+      Visible := False;
+      Parent.SetFocus;
+    end else
+    if Key = VK_RETURN then
+    begin
+      Key := 0;
+      Parent.SetFocus;
+    end;
+  end;
+end;
+
+procedure TCustomListViewEditor.DoExit;
+begin
+  TCustomListView(Parent).HideEditor;
+  inherited DoExit;
+end;
+
+constructor TCustomListViewEditor.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FItem := nil;
+  OnKeyDown := @ListViewEditorKeyDown;
+end;
+
 {------------------------------------------------------------------------------
    TCustomListView Constructor
 ------------------------------------------------------------------------------}
@@ -109,6 +144,11 @@ begin
   FProperties := [lvpColumnClick, lvpHideSelection, lvpShowColumnHeaders, lvpToolTips, lvpWrapText];
   
   FOwnerDataItem := TOwnerDataListItem.Create(FListItems);
+  FEditor := TCustomListViewEditor.Create(Self);
+  FEditor.ControlStyle := FEditor.ControlStyle + [csNoDesignVisible, csNoDesignSelectable];
+  FEditor.AutoSize := False;
+  FEditor.Visible := False;
+  FEditor.Parent := Self;
 end;
 
 {------------------------------------------------------------------------------
@@ -174,6 +214,14 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomListView.ColClick(AColumn: TListColumn);
 begin
+  if IsEditing then
+  begin
+    if FEditor.Focused then
+    begin
+      SetFocus;
+      HideEditor;
+    end;
+  end;
   if Assigned(FOnColumnClick) and ColumnClick then FOnColumnClick(Self, AColumn);
   // we set autosort after FOnColumnClick, maybe programmer want to
   // stop autosorting after some special column is clicked.
@@ -238,8 +286,8 @@ begin
 //    LVN_ODCACHEHINT:
 //    LVN_ODFINDITEM:
 //    LVN_ODSTATECHANGED:
-//    LVN_BEGINLABELEDIT:
-//    LVN_ENDLABELEDIT:
+//    LVN_BEGINLABELEDIT: implemented via TCustomListViewEditor
+//    LVN_ENDLABELEDIT:   implemented via TCustomListViewEditor
     LVN_COLUMNCLICK:
     begin
       ColClick(Columns[nm^.iSubItem]);
@@ -325,6 +373,75 @@ begin
   FSelected:=nil;
   FSelectedIdx := -1;
   Exclude(FFlags,lffSelectedValid);
+end;
+
+procedure TCustomListView.HideEditor;
+var
+  S: String;
+begin
+  S := FEditor.Text;
+  if FEditor.Item <> nil then
+    DoEndEdit(FEditor.Item, S);
+  FEditor.Item := nil;
+  FEditor.Visible := False;
+end;
+
+procedure TCustomListView.ShowEditor;
+var
+  Item: TListItem;
+  R: TRect;
+  TempHeight: Integer;
+  S: String;
+begin
+  if (ItemIndex >= 0) and (ItemIndex < Items.Count) then
+    Item := Items[ItemIndex]
+  else
+    Item := nil;
+  HideEditor;
+  if Item = nil then
+    exit;
+  if not CanEdit(Item) then
+    exit;
+
+  R := Item.DisplayRect(drLabel);
+  if LCLIntf.IsRectEmpty(R) then
+    exit;
+  S := Item.Caption;
+  if S = '' then
+    S := 'H';
+  TempHeight := Canvas.TextHeight(S);
+  if TempHeight >= R.Bottom - R.Top then
+    TempHeight := TempHeight - (R.Bottom - R.Top) + 4 {border above and below text}
+  else
+    TempHeight := 0;
+  with R do
+    FEditor.SetBounds(Left, Top, Right - Left, (Bottom - Top) + TempHeight);
+  FEditor.Item := Item;
+  FEditor.Text := Item.Caption;
+  FEditor.Visible := True;
+  FEditor.SetFocus;
+end;
+
+procedure TCustomListView.WMHScroll(var message: TLMHScroll);
+begin
+  if IsEditing then
+  begin
+    if FEditor.Focused then
+      SetFocus
+    else
+      HideEditor;
+  end;
+end;
+
+procedure TCustomListView.WMVScroll(var message: TLMVScroll);
+begin
+  if IsEditing then
+  begin
+    if FEditor.Focused then
+      SetFocus
+    else
+      HideEditor;
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -458,6 +575,17 @@ begin
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
   if AutoWidthLastColumn then
     ResizeLastColumn;
+end;
+
+procedure TCustomListView.DoEndEdit(AItem: TListItem; const AValue: String);
+var
+  S: string;
+begin
+  S := AValue;
+  if Assigned(FOnEdited) then
+    FOnEdited(Self, AItem, S);
+  if AItem <> nil then
+    AItem.Caption := S;
 end;
 
 {------------------------------------------------------------------------------}
@@ -607,6 +735,23 @@ begin
   Result := Assigned(FOnDataStateChange);
   if Result then
     FOnDataStateChange(Self, AStartIndex, AEndIndex, AOldState, ANewState);
+end;
+
+procedure TCustomListView.DblClick;
+begin
+  inherited DblClick;
+  if not ReadOnly and Assigned(FEditor) then
+    ShowEditor;
+end;
+
+procedure TCustomListView.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  if not ReadOnly and (Key = VK_F2) and (Shift = []) then
+  begin
+    ShowEditor;
+    Key := 0;
+  end else
+    inherited KeyDown(Key, Shift);
 end;
 
 {------------------------------------------------------------------------------}
@@ -847,6 +992,13 @@ begin
   then TWSCustomListViewClass(WidgetSetClass).BeginUpdate(Self);
 end;
 
+function TCustomListView.CanEdit(Item: TListItem): Boolean;
+begin
+  Result := True;
+  if Assigned(FOnEditing) then
+    FOnEditing(Self, Item, Result);
+end;
+
 procedure TCustomListView.Clear;
 begin
   FListItems.Clear;
@@ -968,6 +1120,11 @@ begin
     if Item <> -1 
     then Result := Items[Item];
   end;
+end;
+
+function TCustomListView.IsEditing: Boolean;
+begin
+  Result := Assigned(Self.FEditor) and FEditor.Visible;
 end;
 
 function TCustomListView.GetProperty(const ALvpOrd: Integer): Boolean;

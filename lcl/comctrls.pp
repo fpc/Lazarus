@@ -1239,10 +1239,25 @@ type
 
   TSortDirection = (sdAscending, sdDescending);
 
+  { TCustomListViewEditor }
+  {used to provide multiplatform TCustomListView editing ability}
+  TCustomListViewEditor = class(TCustomEdit)
+  private
+    FItem: TListItem;
+    procedure ListViewEditorKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+  protected
+    procedure DoExit; override;
+  public
+    constructor Create(AOwner: TComponent);
+    property Item: TListItem read FItem write FItem;
+  end;
+
   { TCustomListView }
 
   TCustomListView = class(TWinControl)
   private
+    FEditor: TCustomListViewEditor;
     FAllocBy: Integer;
     FAutoSort: Boolean;
     FAutoWidthLastColumn: Boolean;
@@ -1335,6 +1350,11 @@ type
     procedure UpdateScrollbars;
     procedure CNNotify(var AMessage: TLMNotify); message CN_NOTIFY;
     procedure InvalidateSelected;
+  private
+    procedure HideEditor;
+    procedure ShowEditor;
+    procedure WMHScroll(var message : TLMHScroll); message LM_HSCROLL;
+    procedure WMVScroll(var message : TLMVScroll); message LM_VSCROLL;
   protected
     //called by TListItems
     procedure ItemDeleted(const AItem: TListItem);
@@ -1348,6 +1368,7 @@ type
 
     procedure DestroyWnd; override;
     procedure BeginAutoDrag; override;
+    function CanEdit(Item: TListItem): Boolean; virtual;
     procedure Change(AItem: TListItem; AChange: Integer); virtual;
     procedure ColClick(AColumn: TListColumn); virtual;
 
@@ -1357,6 +1378,9 @@ type
     procedure DoItemChecked(AItem: TListItem);
     procedure DoSelectItem(AItem: TListItem; ASelected: Boolean); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
+
+    procedure DoEndEdit(AItem: TListItem; const AValue: String); virtual;
+
     procedure InsertItem(Item : TListItem);
     procedure ImageChanged(Sender : TObject);
     procedure Loaded; override;
@@ -1373,7 +1397,9 @@ type
     function DoOwnerDataHint(AStartIndex, AEndIndex: Integer): Boolean; virtual;
     function DoOwnerDataStateChange(AStartIndex, AEndIndex: Integer; AOldState,
       ANewState: TListItemStates): Boolean; virtual;
-
+  protected
+    procedure DblClick; override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   protected
     property AllocBy: Integer read FAllocBy write SetAllocBy default 0;
     property AutoSort: Boolean read FAutoSort write FAutoSort default True; // when we click header column sort automatically
@@ -1427,6 +1453,7 @@ type
     function FindData(StartIndex: Integer; Value: Pointer;  Inclusive, Wrap: Boolean): TListItem;
     function GetHitTestInfoAt(X, Y: Integer): THitTests;
     function GetItemAt(x,y: integer): TListItem;
+    function IsEditing: Boolean; // Delphi compatibile function which returns if our listview editor is active
     property BoundingRect: TRect read GetBoundingRect;
     property BorderStyle default bsSingle;
     property Canvas: TCanvas read FCanvas;

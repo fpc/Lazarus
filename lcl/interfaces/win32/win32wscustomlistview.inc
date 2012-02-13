@@ -1167,10 +1167,19 @@ begin
       then UpdateStyle(ALV.Handle, LV_STYLES[AProp].Style, LV_STYLES[AProp].Style)
       else UpdateStyle(ALV.Handle, LV_STYLES[AProp].Style, 0);
     end;
-    lsInvert: begin
-      if AIsSet
-      then UpdateStyle(ALV.Handle, LV_STYLES[AProp].Style, 0)
-      else UpdateStyle(ALV.Handle, LV_STYLES[AProp].Style, LV_STYLES[AProp].Style);
+    lsInvert:
+    begin
+      // we are always using readonly on ws since ListView_GetEditControl
+      // requires minimum windows 2000. Editing is implemented in LCL atm,
+      // can be changed later to use ws for item editing.
+      // http://msdn.microsoft.com/en-us/library/windows/desktop/bb761260%28v=vs.85%29.aspx
+      if (AProp = lvpReadOnly) then
+        UpdateStyle(ALV.Handle, LV_STYLES[AProp].Style, 0)
+      else
+      if AIsSet then
+        UpdateStyle(ALV.Handle, LV_STYLES[AProp].Style, 0)
+      else
+        UpdateStyle(ALV.Handle, LV_STYLES[AProp].Style, LV_STYLES[AProp].Style);
     end;
     lsExStyle: begin
       if AIsSet
@@ -1197,12 +1206,21 @@ begin
   begin
     case LV_STYLES[Prop].StyleType of
       lsStyle,
-      lsInvert: begin
-        Mask := Mask or LV_STYLES[Prop].Style;
-
-        if (LV_STYLES[Prop].StyleType = lsStyle) = (Prop in AProps)
-        then Style := Style or LV_STYLES[Prop].Style
-        else Style := Style and not LV_STYLES[Prop].Style;
+      lsInvert:
+      begin
+        // we are always using readonly on ws since ListView_GetEditControl
+        // requires minimum windows 2000. Editing is implemented in LCL atm,
+        // can be changed later to use ws for item editing.
+        // http://msdn.microsoft.com/en-us/library/windows/desktop/bb761260%28v=vs.85%29.aspx
+        if Prop = lvpReadOnly then
+          UpdateStyle(ALV.Handle, LVS_EDITLABELS, 0)
+        else
+        begin
+          Mask := Mask or LV_STYLES[Prop].Style;
+          if (LV_STYLES[Prop].StyleType = lsStyle) = (Prop in AProps)
+          then Style := Style or LV_STYLES[Prop].Style
+          else Style := Style and not LV_STYLES[Prop].Style;
+        end;
       end;
       lsExStyle: begin
         ExMask := ExMask or LV_STYLES[Prop].Style;
