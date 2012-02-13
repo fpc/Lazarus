@@ -823,6 +823,7 @@ end;
 function TQtWidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
 begin
   case ACapability of
+    lcEmulatedMDI,
     lcCanDrawOutsideOnPaint: Result := LCL_CAPABILITY_NO;
     lcDragDockStartOnTitleClick: Result :=
      {$ifdef MSWINDOWS} LCL_CAPABILITY_YES {$else} LCL_CAPABILITY_NO {$endif};

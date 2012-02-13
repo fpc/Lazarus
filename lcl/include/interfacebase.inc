@@ -94,7 +94,8 @@ begin
     lcApplicationTitle,
     lcFormIcon,
     lcModalWindow,
-    lcReceivesLMClearCutCopyPasteReliably:
+    lcReceivesLMClearCutCopyPasteReliably,
+    lcEmulatedMDI:
       Result := LCL_CAPABILITY_YES;
     lcSendsUTF8KeyPress:
       if IntfSendsUTF8KeyPress() then Result := LCL_CAPABILITY_YES

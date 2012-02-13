@@ -84,7 +84,8 @@ type
     lcLMHelpSupport,            // support for LM_HELP command
     lcReceivesLMClearCutCopyPasteReliably, // In Carbon we do not receive LM_CLEAR, CUT, COPY, PASTE, etc reliably, and this affects DB controls. See bug http://bugs.freepascal.org/view.php?id=20394
     lcSendsUTF8KeyPress,        // If the interface does not yet send UTF8KeyPress directly, then it will be emulated in TWinControl.CNChar
-    lcAllowChildControlsInNativeControls // Utilized by LCL-CustomDrawn so that it can inject child controls in native ones
+    lcAllowChildControlsInNativeControls, // Utilized by LCL-CustomDrawn so that it can inject child controls in native ones
+    lcEmulatedMDI // used for emulating MDI on widgetsets which does not provide native MDI handling
   );
 
   { TDialogButton }
