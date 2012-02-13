@@ -3177,7 +3177,6 @@ docs/xml/lcl/calendar.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/chart.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/checklst.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/clipbrd.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/clistbox.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/colorbox.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/comctrls.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/comctrls/TrackBarEx.pas -text
