@@ -313,8 +313,12 @@ begin
 end;
 
 procedure TForm1.Edit11Change(Sender: TObject);
+var
+  i: Integer;
 begin
-  ListView1.SortColumn := StrToIntDef(Edit11.Text, 0);
+  i := 0;
+  if TryStrToInt(Edit11.Text, i) then
+    ListView1.SortColumn := i;
 end;
 
 procedure TForm1.Edit1Change(Sender: TObject);
