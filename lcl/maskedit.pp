@@ -172,7 +172,7 @@ type
     FMaskSave     : Boolean;           // Save mask as part of the data
     FTrimType     : TMaskEditTrimType; // Trim leading or trailing spaces in GetText
     FSpaceChar    : Char;              // Char for space (default '_')
-    FCurrentText  : String;            // FCurrentText is our backup. See notes above!
+    FCurrentText  : TCaption;            // FCurrentText is our backup. See notes above!
     FTextOnEnter  : String;            // Text when user enters the control, used for Reset()
     FCursorPos    : Integer;           // Current caret position
     FChangeAllowed: Boolean;           // We do not allow text changes by the OS (cut/clear via context menu)
@@ -205,7 +205,7 @@ type
     function  CharMatchesMask(const Ch: Char; const Position: Integer): Boolean;
     function  ClearChar(Position : Integer) : Char;
 
-    procedure SetInheritedText(const Value: String); //See notes above!
+    procedure SetInheritedText(const Value: TCaption); //See notes above!
     procedure InsertChar(Ch : Char);
     Function  CanInsertChar(Position : Integer; Var Ch : Char) : Boolean;
     procedure DeleteSelected;
@@ -215,7 +215,7 @@ type
     function RestoreMask(const NewText: String): Boolean;
 
     Function  GetText : TCaption;
-    Procedure SetText(Value : TCaption);
+    Procedure SetText(Value: TCaption);
     function  GetEditText: string; virtual;
     procedure SetEditText(const AValue: string);
     procedure TextChanged; override;
@@ -912,7 +912,7 @@ end;
 
 
 //Set text in the control with FChangeAllowed flag set appropriately
-procedure TCustomMaskEdit.SetInheritedText(const Value: String);
+procedure TCustomMaskEdit.SetInheritedText(const Value: TCaption);
 begin
   if (Value <> Inherited Text) then
   begin
@@ -1189,7 +1189,7 @@ End;
 
 
 // Set the actual Text
-Procedure TCustomMaskEdit.SetText(Value : TCaption);
+Procedure TCustomMaskEdit.SetText(Value: TCaption);
 { This tries to mimic Delphi behaviour (D3):
   - if mask contains no literals text is set, if necessary padded with blanks,
     LTR or RTL depending on FTrimType
