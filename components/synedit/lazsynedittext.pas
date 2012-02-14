@@ -66,8 +66,8 @@ type
                            senrTextBufferChanged
                           );
 
-  TPhysicalCharWidths = Array of Shortint;
   TPhysicalCharWidth = ShortInt;
+  TPhysicalCharWidths = Array of TPhysicalCharWidth;
   PPhysicalCharWidth = ^TPhysicalCharWidth;
 
   { TSynLogicalPhysicalConvertor }

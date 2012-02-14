@@ -160,7 +160,7 @@ type
 
   { TSynPluginSyncronizedEditBase }
 
-  TSynPluginSyncronizedEditBase = class(TSynEditPlugin)
+  TSynPluginSyncronizedEditBase = class(TLazSynEditPlugin)
   private
     FActive: Boolean;
     FCells: TSynPluginSyncronizedEditList;

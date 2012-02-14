@@ -348,13 +348,19 @@ type
   TSynLineState = (slsNone, slsSaved, slsUnsaved);
 
 
-  { TSynEditPlugin }
+  { TLazSynEditPlugin }
 
-  TSynEditPlugin = class(TSynEditFriend)
+  TLazSynEditPlugin = class(TSynEditFriend)
   protected
+    procedure RegisterToEditor(AValue: TCustomSynEdit);
+    procedure UnRegisterFromEditor(AValue: TCustomSynEdit);
     procedure SetEditor(const AValue: TCustomSynEdit); virtual;
-    function GetEditor: TCustomSynEdit;
-    function OwnedByEditor: Boolean; virtual; // if true, this will be destroyed by synedit
+    function  GetEditor: TCustomSynEdit;
+    function  OwnedByEditor: Boolean; virtual; // if true, this will be destroyed by synedit
+    procedure DoEditorDestroyed(const AValue: TCustomSynEdit); virtual;
+
+    procedure DoAddEditor(AValue: TCustomSynEdit); virtual;
+    procedure DoRemoveEditor(AValue: TCustomSynEdit); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -534,7 +540,7 @@ type
     function GetMouseSelActions: TSynEditMouseActions;
     function GetMouseTextActions: TSynEditMouseActions;
     function GetPaintLockOwner: TSynEditBase;
-    function GetPlugin(Index: Integer): TSynEditPlugin;
+    function GetPlugin(Index: Integer): TLazSynEditPlugin;
     function GetRightEdge: Integer;
     function GetRightEdgeColor: TColor;
     function GetTextBetweenPoints(aStartPoint, aEndPoint: TPoint): String;
@@ -1002,7 +1008,7 @@ type
     procedure UnShareTextBuffer;
 
     function PluginCount: Integer;
-    property Plugin[Index: Integer]: TSynEditPlugin read GetPlugin;
+    property Plugin[Index: Integer]: TLazSynEditPlugin read GetPlugin;
     function MarkupCount: Integer;
     property Markup[Index: integer]: TSynEditMarkup read GetMarkup;
     property MarkupByClass[Index: TSynEditMarkupClass]: TSynEditMarkup
@@ -1624,9 +1630,9 @@ begin
   Result := TSynEditStringList(FLines).PaintLockOwner;
 end;
 
-function TCustomSynEdit.GetPlugin(Index: Integer): TSynEditPlugin;
+function TCustomSynEdit.GetPlugin(Index: Integer): TLazSynEditPlugin;
 begin
-  Result := TSynEditPlugin(fPlugins[Index]);
+  Result := TLazSynEditPlugin(fPlugins[Index]);
 end;
 
 function TCustomSynEdit.GetRightEdge: Integer;
@@ -2192,26 +2198,29 @@ end;
 destructor TCustomSynEdit.Destroy;
 var
   i: integer;
+  p: TList;
 begin
   Application.RemoveOnIdleHandler(@IdleScanRanges);
   SurrenderPrimarySelection;
   Highlighter := nil;
   Beautifier:=nil;
   FFoldedLinesView.BlockSelection := nil;
+
+  if fPlugins <> nil then begin
+    p := FPlugins;
+    FPlugins := nil;
+    for i := p.Count - 1 downto 0 do
+      TLazSynEditPlugin(p[i]).DoEditorDestroyed(Self);
+    p.Free;
+  end;
+
   // free listeners while other fields are still valid
   if Assigned(fHookedCommandHandlers) then begin
     for i := 0 to fHookedCommandHandlers.Count - 1 do
       THookedCommandHandlerEntry(fHookedCommandHandlers[i]).Free;
     FreeAndNil(fHookedCommandHandlers);
   end;
-  if fPlugins <> nil then begin
-    for i := fPlugins.Count - 1 downto 0 do
-      if TSynEditPlugin(fPlugins[i]).OwnedByEditor then
-        TSynEditPlugin(fPlugins[i]).Free
-      else
-        TSynEditPlugin(fPlugins[i]).Editor := nil;
-    FreeAndNil(fPlugins);
-  end;
+
   RemoveHandlers;
   FLeftGutter.UnRegisterChangeHandler({$IFDEF FPC}@{$ENDIF}GutterChanged);
   FLeftGutter.UnRegisterResizeHandler({$IFDEF FPC}@{$ENDIF}GutterResized);
@@ -5058,7 +5067,7 @@ begin
   TempPlugins := TList.Create;
   for i := FPlugins.Count - 1 downto 0 do begin
     TempPlugins.Add(FPlugins[i]);
-    TSynEditPlugin(FPlugins[i]).Editor := nil;
+    TLazSynEditPlugin(FPlugins[i]).Editor := nil;
   end;
   // Detach Highlighter
   if FHighlighter <> nil then
@@ -5105,7 +5114,7 @@ begin
 
   // Restore Plugins; Attach to Lines
   for i := 0 to TempPlugins.Count - 1 do
-    TSynEditPlugin(TempPlugins[i]).Editor := Self;
+    TLazSynEditPlugin(TempPlugins[i]).Editor := Self;
   TempPlugins.Free;
 
   RemoveHandlers(OldBuffer);
@@ -8591,9 +8600,9 @@ begin
   end;
 end;
 
-{ TSynEditPlugin }
+{ TLazSynEditPlugin }
 
-constructor TSynEditPlugin.Create(AOwner: TComponent);
+constructor TLazSynEditPlugin.Create(AOwner: TComponent);
 begin
   if AOwner is TCustomSynEdit then begin
     inherited Create(nil);
@@ -8603,30 +8612,68 @@ begin
     inherited Create(AOwner);
 end;
 
-destructor TSynEditPlugin.Destroy;
+destructor TLazSynEditPlugin.Destroy;
 begin
   Editor := nil;
   inherited Destroy;
 end;
 
-procedure TSynEditPlugin.SetEditor(const AValue: TCustomSynEdit);
+procedure TLazSynEditPlugin.RegisterToEditor(AValue: TCustomSynEdit);
 begin
-  if AValue = FriendEdit then exit;
-  if (FriendEdit <> nil) and (Editor.fPlugins <> nil) then
-    Editor.fPlugins.Remove(Self);
-  FriendEdit := AValue;
-  if FriendEdit <> nil then
-    Editor.fPlugins.Add(Self);
+  if AValue.fPlugins <> nil then
+    AValue.fPlugins.Add(Self);
 end;
 
-function TSynEditPlugin.GetEditor: TCustomSynEdit;
+procedure TLazSynEditPlugin.UnRegisterFromEditor(AValue: TCustomSynEdit);
+begin
+  if AValue.fPlugins <> nil then
+    AValue.fPlugins.Remove(Self);
+end;
+
+procedure TLazSynEditPlugin.SetEditor(const AValue: TCustomSynEdit);
+begin
+  if AValue = FriendEdit then exit;
+
+  if (FriendEdit <> nil) then begin
+    DoRemoveEditor(Editor);
+    UnRegisterFromEditor(Editor);
+  end;
+
+  FriendEdit := AValue;
+
+  if FriendEdit <> nil then begin
+    RegisterToEditor(Editor);
+    DoAddEditor(Editor);
+  end;
+end;
+
+function TLazSynEditPlugin.GetEditor: TCustomSynEdit;
 begin
   Result := FriendEdit as TCustomSynEdit;
 end;
 
-function TSynEditPlugin.OwnedByEditor: Boolean;
+function TLazSynEditPlugin.OwnedByEditor: Boolean;
 begin
   Result := Owner = nil;
+end;
+
+procedure TLazSynEditPlugin.DoEditorDestroyed(const AValue: TCustomSynEdit);
+begin
+  if Editor <> AValue then exit;
+  if OwnedByEditor then
+    Free
+  else
+    Editor := nil;
+end;
+
+procedure TLazSynEditPlugin.DoAddEditor(AValue: TCustomSynEdit);
+begin
+  //
+end;
+
+procedure TLazSynEditPlugin.DoRemoveEditor(AValue: TCustomSynEdit);
+begin
+  //
 end;
 
 procedure Register;

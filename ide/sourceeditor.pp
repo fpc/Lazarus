@@ -96,7 +96,7 @@ type
 
   { TSynEditPlugin1 }
 
-  TSynEditPlugin1 = class(TSynEditPlugin)
+  TSynEditPlugin1 = class(TLazSynEditPlugin)
   private
     FEnabled: Boolean;
     FOnLinesInserted : TOnLinesInsertedDeleted;

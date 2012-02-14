@@ -112,6 +112,7 @@ type
   end;
 
   { TSynEditFriend }
+  // TODO: Redesign
 
   TSynEditFriend = class(TComponent)
   private

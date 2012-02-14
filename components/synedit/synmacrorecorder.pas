@@ -228,8 +228,6 @@ type
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
     procedure Error(const aMsg: String);
-    procedure AddEditor(aEditor: TCustomSynEdit);
-    procedure RemoveEditor(aEditor: TCustomSynEdit);
     procedure RecordMacro(aEditor: TCustomSynEdit);
     procedure PlaybackMacro(aEditor: TCustomSynEdit);
     procedure Stop;
@@ -271,6 +269,7 @@ type
     property PlaybackShortCut;
     property OnStateChange;
     property OnUserCommand;
+    property Editor;
   end;
 
 implementation
@@ -322,11 +321,6 @@ end;
 procedure TCustomSynMacroRecorder.AddCustomEvent(aEvent: TSynMacroEvent);
 begin
   InsertCustomEvent( EventCount, aEvent );
-end;
-
-procedure TCustomSynMacroRecorder.AddEditor(aEditor: TCustomSynEdit);
-begin
-  inherited AddEditor(aEditor);
 end;
 
 procedure TCustomSynMacroRecorder.AddEvent(aCmd: TSynEditorCommand;
@@ -608,11 +602,6 @@ begin
   fState := msRecording;
   fCurrentEditor := aEditor;
   StateChanged;
-end;
-
-procedure TCustomSynMacroRecorder.RemoveEditor(aEditor: TCustomSynEdit);
-begin
-  inherited RemoveEditor( aEditor );
 end;
 
 procedure TCustomSynMacroRecorder.Resume;

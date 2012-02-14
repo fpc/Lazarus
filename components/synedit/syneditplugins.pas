@@ -63,27 +63,28 @@ uses
   LCLType;
 
 type
-  TAbstractSynPlugin = class(TComponent)
+
+  { TLazSynMultiEditPlugin }
+
+  TLazSynMultiEditPlugin = class(TLazSynEditPlugin)
   private
-    procedure SetEditor(const Value: TCustomSynEdit);
-    function GetEditors(aIndex: integer): TCustomSynEdit;
-    function GetEditor: TCustomSynEdit;
+    FEditorWasAdded: Boolean;
     function GetEditorCount: integer;
+    function GetEditors(aIndex: integer): TCustomSynEdit;
   protected
-    fEditors: TList;
-    procedure Notification(aComponent: TComponent;
-      aOperation: TOperation); override;
-    procedure DoAddEditor(aEditor: TCustomSynEdit); virtual;
-    procedure DoRemoveEditor(aEditor: TCustomSynEdit); virtual;
-    function AddEditor(aEditor: TCustomSynEdit): integer;
-    function RemoveEditor(aEditor: TCustomSynEdit): integer;
+    FEditors: TList;
+    procedure SetEditor(const AValue: TCustomSynEdit); override;
+    procedure DoEditorDestroyed(const AValue: TCustomSynEdit); override;
+    function  IndexOfEditor(const AValue: TCustomSynEdit): integer;
+    function  AddEditor(AValue: TCustomSynEdit): integer;
+    function  RemoveEditor(AValue: TCustomSynEdit): integer;
   public
     destructor Destroy; override;
     property Editors[aIndex: integer]: TCustomSynEdit read GetEditors;
     property EditorCount: integer read GetEditorCount;
-  published
-    property Editor: TCustomSynEdit read GetEditor write SetEditor;
   end;
+
+  TAbstractSynPlugin = TLazSynMultiEditPlugin;
 
   TAbstractSynHookerPlugin = class(TAbstractSynPlugin)
   protected
@@ -186,111 +187,110 @@ begin
     gCurrentCommand := aCmd;
 end;
 
-{ TAbstractSynPlugin }
+{ TLazSynMultiEditPlugin }
 
-function TAbstractSynPlugin.AddEditor(aEditor: TCustomSynEdit): integer;
+function TLazSynMultiEditPlugin.GetEditorCount: integer;
 begin
-  if fEditors = nil then
-  begin
-    fEditors := TList.Create;
-  end
+  if FEditors = nil then
+    Result := 0
   else
-    if fEditors.IndexOf( aEditor ) >= 0 then
-    begin
-      Result := -1;
-      Exit;
-    end;
-  aEditor.FreeNotification( Self );
-  Result := fEditors.Add( aEditor );
-  DoAddEditor( aEditor );
+    Result := FEditors.Count;
 end;
 
-destructor TAbstractSynPlugin.Destroy;
+function TLazSynMultiEditPlugin.GetEditors(aIndex: integer): TCustomSynEdit;
 begin
-  { RemoveEditor will free fEditors when it reaches count = 0}
-  while Assigned( fEditors ) do
-    RemoveEditor( Editors[0] );
-  inherited;
+  if FEditors = nil then
+    Result := nil
+  else
+    Result := TCustomSynEdit(FEditors[aIndex]);
 end;
 
-procedure TAbstractSynPlugin.Notification(aComponent: TComponent;
-  aOperation: TOperation);
+procedure TLazSynMultiEditPlugin.SetEditor(const AValue: TCustomSynEdit);
+var
+  i: Integer;
 begin
-  inherited;
-  if aOperation = opRemove then
-  begin
-    if (aComponent = Editor) or (aComponent is TCustomSynEdit) then
-      RemoveEditor( TCustomSynEdit(aComponent) );
-  end;
+  if AValue = FriendEdit then exit;
+
+  if (not FEditorWasAdded) and (Editor <> nil) then
+    RemoveEditor(Editor);
+
+  FEditorWasAdded := False;
+  i := IndexOfEditor(AValue);
+
+  if (i < 0) then
+    inherited SetEditor(nil)
+  else
+    FriendEdit := nil; // keep registered / do not call EditorRemoved
+
+  if AValue = nil then
+    exit;
+
+  FEditorWasAdded := i >= 0;
+
+  if not FEditorWasAdded then
+    inherited SetEditor(AValue)
+  else
+    FriendEdit := AValue; // alreade registered / do not call EditorAdded
 end;
 
-procedure TAbstractSynPlugin.DoAddEditor(aEditor: TCustomSynEdit);
+procedure TLazSynMultiEditPlugin.DoEditorDestroyed(const AValue: TCustomSynEdit);
 begin
-
+  RemoveEditor(AValue);
+  inherited DoEditorDestroyed(AValue);
 end;
 
-procedure TAbstractSynPlugin.DoRemoveEditor(aEditor: TCustomSynEdit);
+function TLazSynMultiEditPlugin.IndexOfEditor(const AValue: TCustomSynEdit): integer;
 begin
-
+  if FEditors = nil then
+    Result := -1
+  else
+    Result := FEditors.IndexOf(AValue);
 end;
 
-function TAbstractSynPlugin.RemoveEditor(aEditor: TCustomSynEdit): integer;
+function TLazSynMultiEditPlugin.AddEditor(AValue: TCustomSynEdit): integer;
 begin
-  if fEditors = nil then
-  begin
+  if AValue = Editor then
+    FEditorWasAdded := True;
+
+  if IndexOfEditor(AValue) >= 0 then begin
     Result := -1;
     Exit;
   end;
-  Result := fEditors.Remove( aEditor );
-  //aEditor.RemoveFreeNotification( Self );
-  if fEditors.Count = 0 then
-  begin
-    fEditors.Free;
-    fEditors := nil;
+
+  if FEditors = nil then
+    FEditors := TList.Create;
+
+  Result := FEditors.Add(AValue);
+  RegisterToEditor(AValue);
+  DoAddEditor( AValue );
+end;
+
+function TLazSynMultiEditPlugin.RemoveEditor(AValue: TCustomSynEdit): integer;
+begin
+  if AValue = Editor then
+    FEditorWasAdded := False;
+
+  if IndexOfEditor(AValue) < 0 then begin
+    Result := -1;
+    Exit;
   end;
-  if Result >= 0 then
-    DoRemoveEditor( aEditor );
+
+  DoRemoveEditor(AValue);
+  UnRegisterFromEditor(AValue);
+  Result := FEditors.Remove( AValue );
+
+  if AValue = Editor then
+    FriendEdit := nil;
 end;
 
-procedure TAbstractSynPlugin.SetEditor(const Value: TCustomSynEdit);
-var
-  iEditor: TCustomSynEdit;
+destructor TLazSynMultiEditPlugin.Destroy;
 begin
-  iEditor := Editor;
-  if iEditor <> Value then
-  try
-    if (iEditor <> nil) and (fEditors.Count = 1) then
-      RemoveEditor( iEditor );
-    if Value <> nil then
-      AddEditor( Value );
-  except
-    if [csDesigning] * ComponentState = [csDesigning] then
-      Application.HandleException(Self)
-    else
-      raise;
-  end;
+  while EditorCount > 0 do
+    RemoveEditor(Editors[0]);
+  FreeAndNil(FEditors);
+  inherited Destroy;
 end;
 
-function TAbstractSynPlugin.GetEditors(aIndex: integer): TCustomSynEdit;
-begin
-  Result := TCustomSynEdit(fEditors[aIndex]);
-end;
-
-function TAbstractSynPlugin.GetEditor: TCustomSynEdit;
-begin
-  if fEditors <> nil then
-    Result := TCustomSynEdit(fEditors[0])
-  else
-    Result := nil;
-end;
-
-function TAbstractSynPlugin.GetEditorCount: integer;
-begin
-  if fEditors <> nil then
-    Result := fEditors.Count
-  else
-    Result := 0;
-end;
 
 { TAbstractSynHookerPlugin }
 
