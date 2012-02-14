@@ -189,7 +189,7 @@ begin
   // First IDs
   javaMethod_vibrate := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidOSVibratorClass, 'vibrate', '(J)V');
 
-  // get the string Context.VIBRATOR_SERVICE
+  // get the string Context.VIBRATOR_SERVICE remember that NewStringUTF does not require ReleaseStringUTFChars
   javaString_VIBRATOR_SERVICE := javaEnvRef^^.NewStringUTF(javaEnvRef, pchar(javaConstant_VIBRATOR_SERVICE));
 
   // Get the vibrator object

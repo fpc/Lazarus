@@ -2013,7 +2013,7 @@ begin
   lDestCanvas := TLazCanvas(DC);
 
   if (lDestCanvas.Font = nil) or (lDestCanvas.Font.Size = 0) then lFontSize := DefaultFontAndroidSize
-  else lFontSize := lDestCanvas.Font.Size;
+  else lFontSize := Abs(lDestCanvas.Font.Size);
 
   if (javaEnvRef = nil) then Exit;
 
@@ -2035,8 +2035,8 @@ begin
   lHeight := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclheight);
 
   {$ifdef VerboseCDText}
-    DebugLn(Format(':[WinAPI ExtTextOut] lWidth=%d lHeight=%d DestCanvasSize=%d, %d',
-      [lWidth, lHeight, lDestCanvas.Width, lDestCanvas.Height]));
+    DebugLn(Format(':[WinAPI ExtTextOut] lWidth=%d lHeight=%d DestCanvasSize=%d, %d lFontSize=%d',
+      [lWidth, lHeight, lDestCanvas.Width, lDestCanvas.Height, lFontSize]));
   {$endif}
 
   // ---------------------------

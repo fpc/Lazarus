@@ -542,12 +542,13 @@ var
 //  FamilyName: string;
 begin
   {$ifdef VerboseCDDrawing}
-    DebugLn(Format('[TCDWidgetSet.CreateFontIndirectEx]  LongFontName: %s',
-      [LongFontName]));
+    DebugLn(Format('[TCDWidgetSet.CreateFontIndirectEx]  LongFontName=%s lfHeight=%d',
+      [LongFontName, LogFont.lfHeight]));
   {$endif}
 
   lFont := TFPCustomFont.Create;
   Result := HFONT(lFont);
+
 (*const
   QStyleStategy: array [DEFAULT_QUALITY..CLEARTYPE_NATURAL_QUALITY] of QFontStyleStrategy = (
  { DEFAULT_QUALITY           } QFontPreferDefault,
@@ -559,11 +560,9 @@ begin
  { CLEARTYPE_NATURAL_QUALITY } QFontPreferAntialias
   );*)
 
-(*  // -1 has different meaning - it means that font height was set using setPointSize
-  if LogFont.lfHeight <> -1 then
-    QtFont.setPixelSize(Abs(LogFont.lfHeight));
+  lFont.Size := Abs(LogFont.lfHeight);
 
-  // Some values at available on Qt documentation at a table
+(*  // Some values at available on Qt documentation at a table
   // Others are guesses. The best would be to test different values for those
   // See: http://doc.trolltech.com/4.1/qfont.html#Weight-enum
   case LogFont.lfWeight of
@@ -5235,6 +5234,7 @@ end;*)
 function TCDWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 var
   aObject: TObject;
+  lFont: TFPCustomFont absolute AObject;
   lPen: TFPCustomPen absolute AObject;
   lBrush: TFPCustomBrush absolute AObject;
   lOrigBrush: TFPCustomBrush;
@@ -5269,17 +5269,15 @@ begin
 
   aObject := TObject(GDIObj);
 
-(*  if aObject is TQtFont then
+  if aObject is TFPCustomFont then
   begin
-    {$ifdef VerboseQtWinAPI}
-      ObjType := 'Font';
-    {$endif}
+    {$ifdef VerboseCDDrawing}ObjType := 'Font';{$endif}
 
-    Result := HGDIOBJ(TQtDeviceContext(DC).font);
-
-    TQtDeviceContext(DC).setFont(TQtFont(aObject));
+    Result := HGDIOBJ(TLazCanvas(DC).AssignedFont);
+    TLazCanvas(DC).AssignFontData(lFont); // := doesn't work and Assign() raises exceptions
+    TLazCanvas(DC).AssignedFont := lFont;
   end
-  else*) if aObject is TFPCustomPen then
+  else if aObject is TFPCustomPen then
   begin
     {$ifdef VerboseCDDrawing}ObjType := 'Pen';{$endif}
 
