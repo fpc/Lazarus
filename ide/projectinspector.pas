@@ -238,7 +238,7 @@ var
   Dependency: TPkgDependency;
 begin
   Dependency:=GetSelectedDependency;
-  if (Dependency=nil) or (Dependency.Removed)
+  if SortAlphabetically or (Dependency=nil) or Dependency.Removed
   or (Dependency.PrevRequiresDependency=nil) then exit;
   LazProject.MoveRequiredDependencyUp(Dependency);
 end;
@@ -248,7 +248,7 @@ var
   Dependency: TPkgDependency;
 begin
   Dependency:=GetSelectedDependency;
-  if (Dependency=nil) or (Dependency.Removed)
+  if SortAlphabetically or (Dependency=nil) or Dependency.Removed
   or (Dependency.NextRequiresDependency=nil) then exit;
   LazProject.MoveRequiredDependencyDown(Dependency);
 end;
@@ -782,20 +782,17 @@ end;
 function TProjectInspectorForm.GetSelectedDependency: TPkgDependency;
 var
   CurNode: TTreeNode;
-  NodeIndex: Integer;
+  Branch: TTreeFilterBranch;
 begin
   Result:=nil;
   if LazProject=nil then exit;
   CurNode:=ItemsTreeView.Selected;
-  if (CurNode=nil) then exit;
-  NodeIndex:=CurNode.Index;
-  if (CurNode.Parent=DependenciesNode) then begin
-    Result:=GetDependencyWithIndex(LazProject.FirstRequiredDependency,
-                                   pdlRequires,NodeIndex);
-  end;
-  if (CurNode.Parent=RemovedDependenciesNode) then begin
-    Result:=GetDependencyWithIndex(LazProject.FirstRemovedDependency,
-                                   pdlRequires,NodeIndex);
+  if Assigned(CurNode) and Assigned(CurNode.Parent)
+  and ((CurNode.Parent=DependenciesNode) or (CurNode.Parent=RemovedDependenciesNode))
+  then begin
+    Branch:=FilterEdit.GetExistingBranch(CurNode.Parent);
+    Assert(Assigned(Branch));
+    Result:=Branch.GetData(CurNode.Index) as TPkgDependency;
   end;
 end;
 
@@ -805,7 +802,6 @@ begin
   Name:=NonModalIDEWindowNames[nmiwProjectInspector];
   Caption:=lisMenuProjectInspector;
   KeyPreview:=true;
-
   SetupComponents;
   KeyPreview:=true;
 end;

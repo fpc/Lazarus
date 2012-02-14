@@ -17768,11 +17768,10 @@ var
   CurUnitInfo: TUnitInfo;
 begin
   CurUnitInfo:=ProjInspector.GetSelectedFile;
-  if CurUnitInfo<>nil then begin
-    DoOpenEditorFile(CurUnitInfo.Filename,-1,-1,[ofRegularFile]);
-    exit;
-  end;
-  if PkgBoss.OnProjectInspectorOpen(Sender) then exit;
+  if CurUnitInfo<>nil then
+    DoOpenEditorFile(CurUnitInfo.Filename,-1,-1,[ofRegularFile])
+  else
+    PkgBoss.OnProjectInspectorOpen(Sender);
 end;
 
 procedure TMainIDE.OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;

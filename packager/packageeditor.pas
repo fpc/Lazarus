@@ -802,6 +802,7 @@ end;
 
 procedure TPackageEditorForm.MoveUpBtnClick(Sender: TObject);
 begin
+  if SortAlphabetically then exit;
   if Assigned(FSelectedFile) then
     DoMoveCurrentFile(-1)
   else if Assigned(FSelectedDependency) then
@@ -810,6 +811,7 @@ end;
 
 procedure TPackageEditorForm.MoveDownBtnClick(Sender: TObject);
 begin
+  if SortAlphabetically then exit;
   if Assigned(FSelectedFile) then
     DoMoveCurrentFile(1)
   else if Assigned(FSelectedDependency) then
@@ -819,29 +821,18 @@ end;
 procedure TPackageEditorForm.OpenFileMenuItemClick(Sender: TObject);
 var
   CurNode: TTreeNode;
-  NodeIndex: Integer;
   CurFile: TPkgFile;
   CurDependency: TPkgDependency;
   Removed: boolean;
 begin
-  CurNode:=FilesTreeView.Selected;
-  if CurNode=nil then exit;
-  NodeIndex:=CurNode.Index;
-  if CurNode.Parent<>nil then begin
-    if TObject(CurNode.Data) is TFileNameItem then begin
-      CurFile:=GetCurrentFile(Removed);
-      if CurFile=nil then exit;
-      DoOpenPkgFile(CurFile);
-    end else if CurNode.Parent=FRequiredPackagesNode then begin
-      CurDependency:=LazPackage.RequiredDepByIndex(NodeIndex);
+  CurDependency:=nil;
+  CurFile:=GetCurrentFile(Removed);
+  if Assigned(CurFile) then
+    DoOpenPkgFile(CurFile)
+  else begin
+    CurDependency:=GetCurrentDependency(Removed);
+    if Assigned(CurDependency) then
       PackageEditors.OpenDependency(Self,CurDependency);
-    end else if CurNode.Parent=FRemovedFilesNode then begin
-      CurFile:=LazPackage.RemovedFiles[NodeIndex];
-      DoOpenPkgFile(CurFile);
-    end else if CurNode.Parent=FRemovedRequiredNode then begin
-      CurDependency:=LazPackage.RemovedDepByIndex(NodeIndex);
-      PackageEditors.OpenDependency(Self,CurDependency);
-    end;
   end;
 end;
 
@@ -1802,7 +1793,7 @@ begin
                                      and LazPackage.EnableI18NForLFM;
   FDirSummaryLabel.Visible:=IsDir;
 
-  b:=Assigned(FSelectedFile) or Assigned(FSelectedDependency);
+  b:=(Assigned(FSelectedFile) or Assigned(FSelectedDependency)) and not SortAlphabetically;
   MoveUpBtn.Enabled  :=b and Assigned(CurNode.GetPrevVisibleSibling);
   MoveDownBtn.Enabled:=b and Assigned(CurNode.GetNextVisibleSibling);
 
@@ -1906,58 +1897,36 @@ end;
 function TPackageEditorForm.GetCurrentDependency(out Removed: boolean): TPkgDependency;
 var
   CurNode: TTreeNode;
-  NodeIndex: Integer;
+  Branch: TTreeFilterBranch;
 begin
   Result:=nil;
   Removed:=false;
   CurNode:=FilesTreeView.Selected;
-  if (CurNode<>nil) and (CurNode.Parent<>nil) then begin
-    NodeIndex:=CurNode.Index;
-    if CurNode.Parent=FRequiredPackagesNode then begin
-      Result:=LazPackage.RequiredDepByIndex(NodeIndex);
-      Removed:=false;
-    end else if CurNode.Parent=FRemovedRequiredNode then begin
-      Result:=LazPackage.RemovedDepByIndex(NodeIndex);
-      Removed:=true;
-    end;
+  if Assigned(CurNode) and Assigned(CurNode.Parent)
+  and ((CurNode.Parent=FRequiredPackagesNode) or (CurNode.Parent=FRemovedRequiredNode))
+  then begin
+    Removed:=CurNode.Parent=FRemovedRequiredNode;
+    Branch:=FilterEdit.GetExistingBranch(CurNode.Parent);
+    Assert(Assigned(Branch));
+    Result:=Branch.GetData(CurNode.Index) as TPkgDependency;
   end;
 end;
 
 function TPackageEditorForm.GetCurrentFile(out Removed: boolean): TPkgFile;
 var
   CurNode: TTreeNode;
-  NodeIndex: Integer;
-  Item: TFileNameItem;
-  i: Integer;
 begin
   Result:=nil;
   Removed:=false;
   CurNode:=FilesTreeView.Selected;
   if (CurNode=nil) or (CurNode.Parent=nil) then exit;
-  NodeIndex:=CurNode.Index;
   if CurNode.Parent=FRemovedFilesNode then
   begin
-    Result:=LazPackage.RemovedFiles[NodeIndex];
+    Result:=LazPackage.RemovedFiles[CurNode.Index];
     Removed:=true;
-    exit;
-  end;
-  //debugln(['TPackageEditorForm.GetCurrentFile ',DbgSName(TObject(CurNode.Data)),' ',CurNode.Text]);
-  if TObject(CurNode.Data) is TFileNameItem then
-  begin
-    Item:=TFileNameItem(CurNode.Data);
-    //debugln(['TPackageEditorForm.GetCurrentFile Item=',Item.Filename,' ',Item.IsDirectory]);
-    for i:=0 to LazPackage.FileCount-1 do
-    begin
-      //if ExtractFIlename(LazPackage.Files[i].Filename)=ExtractFIlename(Item.Filename) then
-      //  debugln(['TPackageEditorForm.GetCurrentFile FOUND ',LazPackage.Files[i].Filename,' ',Item.Filename=LazPackage.Files[i].Filename]);
-      if Item.Filename=LazPackage.Files[i].Filename then
-      begin
-        Result:=LazPackage.Files[i];
-        Removed:=false;
-        exit;
-      end;
-    end;
-  end;
+  end
+  else if TObject(CurNode.Data) is TFileNameItem then
+    Result:=LazPackage.FindPkgFile(TFileNameItem(CurNode.Data).Filename, False, True);
 end;
 
 function TPackageEditorForm.IsDirectoryNode(Node: TTreeNode): boolean;

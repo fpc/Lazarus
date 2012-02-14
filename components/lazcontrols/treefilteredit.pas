@@ -40,6 +40,7 @@ type
     constructor Create(AOwner: TTreeFilterEdit; ARootNode: TTreeNode);
     destructor Destroy; override;
     procedure AddNodeData(ANodeText: string; AData: TObject; AFullFilename: string = '');
+    function GetData(AIndex: integer): TObject;
   end;
 
   TBranchList = specialize TFPGObjectList<TTreeFilterBranch>;
@@ -133,6 +134,14 @@ begin
   fOriginalData.AddObject(ANodeText, AData);
   if AFullFilename <> '' then
     fFilenameMap[ANodeText]:=AFullFilename;
+end;
+
+function TTreeFilterBranch.GetData(AIndex: integer): TObject;
+begin
+  if AIndex<fSortedData.Count then
+    Result:=fSortedData.Objects[AIndex]
+  else
+    Result:=Nil;
 end;
 
 function TTreeFilterBranch.CompareFNs(AFilename1,AFilename2: string): integer;
@@ -467,7 +476,6 @@ begin
   for i := 0 to fBranches.Count-1 do
     if fBranches[i].fRootNode = ARootNode then begin
       Result := fBranches[i];
-      Result.fOriginalData.Clear;
       Break;
     end;
 end;
@@ -478,7 +486,9 @@ begin
   if not Assigned(fBranches) then
     fBranches := TBranchList.Create;
   Result := GetExistingBranch(ARootNode);
-  if Result = Nil then begin
+  if Assigned(Result) then
+    Result.fOriginalData.Clear
+  else begin
     Result := TTreeFilterBranch.Create(Self, ARootNode);
     fBranches.Add(Result);
   end;
