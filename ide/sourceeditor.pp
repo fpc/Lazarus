@@ -4610,7 +4610,7 @@ begin
       end;
     hcmCenterKeepEOL:
       with EditorComponent do begin
-        i := LogicalToPhysicalPos(Point(Length(Lines[CaretY]) + 1, CaretY)).X;
+        i := LogicalToPhysicalPos(Point(Length(Lines[CaretY-1]) + 1, CaretY)).X;
         LeftChar:=Max(Min(LogicalCaretXY.X - (CharsInWindow div 2),
                           i - CharsInWindow
                          ), 1);
@@ -4623,7 +4623,7 @@ begin
     hcmSoftKeepEOL:
       // TODO: offset on left side
       with EditorComponent do begin
-        i := LogicalToPhysicalPos(Point(Length(Lines[CaretY]) + 1, CaretY)).X;
+        i := LogicalToPhysicalPos(Point(Length(Lines[CaretY-1]) + 1, CaretY)).X;
         LeftChar:=Max(Min(LogicalCaretXY.X - (CharsInWindow * 4 div 5),
                           i - CharsInWindow
                          ), 1);
