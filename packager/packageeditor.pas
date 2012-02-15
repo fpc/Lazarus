@@ -820,7 +820,6 @@ end;
 
 procedure TPackageEditorForm.OpenFileMenuItemClick(Sender: TObject);
 var
-  CurNode: TTreeNode;
   CurFile: TPkgFile;
   CurDependency: TPkgDependency;
   Removed: boolean;
