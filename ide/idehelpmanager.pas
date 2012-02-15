@@ -768,7 +768,7 @@ begin
   end;
   if (PkgFile<>nil) and (PkgFile.FileType in PkgFileRealUnitTypes) then begin
     // normal unit in lpk
-    if PkgFile.IsVirtual then begin
+    if not FilenameIsAbsolute(PkgFile.Filename) then begin
       InvalidPathError('Unit "'+PkgFile.Filename+'" has no help.');
       exit;
     end;

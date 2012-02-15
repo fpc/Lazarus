@@ -181,7 +181,6 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
       UsePathDelim: TPathDelimSwitch);
     procedure ConsistencyCheck;
-    function IsVirtual: boolean;
     function GetShortFilename(UseUp: boolean): string; override;
     function ComponentCount: integer;
     procedure AddPkgComponent(APkgComponent: TPkgComponent);
@@ -1743,11 +1742,6 @@ begin
     RaiseGDBException('TPkgFile.ConsistencyCheck FFilename=""');
 end;
 
-function TPkgFile.IsVirtual: boolean;
-begin
-  Result:=not FilenameIsAbsolute(Filename);
-end;
-
 function TPkgFile.GetShortFilename(UseUp: boolean): string;
 begin
   Result:=GetFullFilename;
@@ -2975,7 +2969,7 @@ end;
 
 function TLazPackage.IsVirtual: boolean;
 begin
-  Result:=(not FilenameIsAbsolute(Filename));
+  Result:=not FilenameIsAbsolute(Filename);
 end;
 
 function TLazPackage.HasDirectory: boolean;
@@ -3007,8 +3001,7 @@ begin
   Result:=true;
 end;
 
-procedure TLazPackage.ShortenFilename(var ExpandedFilename: string;
-  UseUp: boolean);
+procedure TLazPackage.ShortenFilename(var ExpandedFilename: string; UseUp: boolean);
 var
   PkgDir: String;
   CurPath: String;
@@ -3042,8 +3035,7 @@ begin
   if s<>'' then Result:=s;
 end;
 
-function TLazPackage.GetSourceDirs(WithPkgDir, WithoutOutputDir: boolean
-  ): string;
+function TLazPackage.GetSourceDirs(WithPkgDir, WithoutOutputDir: boolean): string;
 begin
   Result:=SourceDirectories.CreateSearchPathFromAllFiles;
   if WithPkgDir then
