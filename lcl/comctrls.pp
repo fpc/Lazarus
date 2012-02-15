@@ -1249,7 +1249,7 @@ type
   protected
     procedure DoExit; override;
   public
-    constructor Create(AOwner: TComponent);
+    constructor Create(AOwner: TComponent); override;
     property Item: TListItem read FItem write FItem;
   end;
 

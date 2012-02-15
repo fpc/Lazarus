@@ -212,8 +212,9 @@ var
 begin
   if FChildrenSortedForDataObject = nil then Exit;
   Node:=FChildrenSortedForDataObject.Find(AObject);
+  if Node=nil then exit;
   FChildrenSortedForDataObject.Delete(Node);
-  if (Node<>nil) and AFreeObject then
+  if AFreeObject then
     AObject.Free;
 end;
 

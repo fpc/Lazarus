@@ -320,9 +320,12 @@ begin
   if Assigned(Owner) and Assigned(Owner.Owner) then
   begin
     lOwnerAccessibleObject := Owner.Owner.GetAccessibleObject();
-    lAccessibleObject := lOwnerAccessibleObject.GetChildAccessibleObjectWithDataObject(Self);
-    if lAccessibleObject <> nil then
-      lOwnerAccessibleObject.RemoveChildAccessibleObject(lAccessibleObject);
+    if lOwnerAccessibleObject<>nil then
+    begin
+      lAccessibleObject := lOwnerAccessibleObject.GetChildAccessibleObjectWithDataObject(Self);
+      if lAccessibleObject <> nil then
+        lOwnerAccessibleObject.RemoveChildAccessibleObject(lAccessibleObject);
+    end;
   end;
 
   // delete children
