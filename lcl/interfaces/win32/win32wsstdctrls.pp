@@ -1237,7 +1237,7 @@ class procedure TWin32WSCustomEdit.SetText(const AWinControl: TWinControl;
 var
   ACustomEdit: TCustomEdit absolute AWinControl;
 begin
-  if (ACustomEdit.MaxLength > 0) and (Length(AText) > ACustomEdit.MaxLength) then
+  if (ACustomEdit.MaxLength > 0) and (UTF8Length(AText) > ACustomEdit.MaxLength) then
     TWin32WSWinControl.SetText(ACustomEdit, UTF8Copy(AText, 1, ACustomEdit.MaxLength))
   else
     TWin32WSWinControl.SetText(ACustomEdit, AText);
