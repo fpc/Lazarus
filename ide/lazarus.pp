@@ -38,7 +38,7 @@ program Lazarus;
 {off $DEFINE IDE_MEM_CHECK}
 
 uses
-  {$IFDEF UNIX}
+  {$IF defined(UNIX) and not defined(DisableMultiThreading)}
   cthreads,
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}

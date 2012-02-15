@@ -74,6 +74,25 @@ type
 
 implementation
 
+procedure ApplyFPCSrcFiles(FPCSrcDir: string; var Files: TStringList);
+var
+  SrcCache: TFPCSourceCache;
+begin
+  debugln(['ApplyFPCSrcFiles ',FPCSrcDir,' FileCount=',Files.Count]);
+  // copy Files to codetools cache
+  if CodeToolBoss<>nil then
+  begin
+    SrcCache:=CodeToolBoss.FPCDefinesCache.SourceCaches.Find(FPCSrcDir,true);
+    debugln(['ApplyFPCSrcFiles SrcCache.Update ...']);
+    SrcCache.Update(Files);
+
+    debugln(['ApplyFPCSrcFiles BuildBoss.RescanCompilerDefines ...']);
+    if BuildBoss<>nil then
+      BuildBoss.RescanCompilerDefines(false,false,false,true);
+  end;
+  FreeAndNil(Files);
+end;
+
 { TFPCSrcScan }
 
 procedure TFPCSrcScan.Execute;
@@ -95,23 +114,9 @@ begin
 end;
 
 procedure TFPCSrcScan.OnFilesGathered;
-var
-  SrcCache: TFPCSourceCache;
 begin
   try
-    debugln(['TFPCSrcScan.OnFilesGathered ',Directory,' FileCount=',Files.Count]);
-    // copy Files to codetools cache
-    if CodeToolBoss<>nil then
-    begin
-      SrcCache:=CodeToolBoss.FPCDefinesCache.SourceCaches.Find(Directory,true);
-      debugln(['TFPCSrcScan.OnFilesGathered SrcCache.Update ...']);
-      SrcCache.Update(Files);
-
-      debugln(['TFPCSrcScan.OnFilesGathered BuildBoss.RescanCompilerDefines ...']);
-      if BuildBoss<>nil then
-        BuildBoss.RescanCompilerDefines(false,false,false,true);
-    end;
-    FreeAndNil(Files);
+    ApplyFPCSrcFiles(Directory,Files);
     // delete item in progress window
     debugln(['TFPCSrcScan.OnFilesGathered closing progress item ...']);
     FreeAndNil(ProgressItem);
@@ -206,30 +211,42 @@ end;
 
 procedure TFPCSrcScans.Scan(Directory: string);
 var
+{$IFDEF DisableMultiThreading}
+  Files: TStringList;
+{$ELSE}
   i: Integer;
   Item: TFPCSrcScan;
+{$ENDIF}
 begin
-  EnterCriticalsection;
-  try
-    // check if already scanning that directory
-    for i:=0 to Count-1 do
-      if CompareFilenames(Directory,Items[i].Directory)=0 then exit;
-    // create thread and create progress window
-    Item:=TFPCSrcScan.Create(true);
-    Item.FreeOnTerminate:=true;
-    Item.Scans:=Self;
-    Item.Directory:=Directory;
-    fItems.Add(Item);
-  finally
-    LeaveCriticalsection;
-  end;
-  Item.ProgressItem:=CreateProgressItem('FPCSrcScan',
-    Format(lisCreatingFileIndexOfFPCSources, [Directory]),
-    lisTheFileIndexIsNeededForFunctionsLikeFindDeclaratio);
-  {$IF defined(VER2_4_2) or defined(VER2_4_3)}
-  Item.Resume;
+  {$IFDEF DisableMultiThreading}
+  // scan fpc source directory, check for terminated
+  Files:=GatherFilesInFPCSources(Directory,nil);
+  if Files=nil then
+    Files:=TStringList.Create;
+  ApplyFPCSrcFiles(Directory,Files);
   {$ELSE}
-  Item.Start;
+    EnterCriticalsection;
+    try
+      // check if already scanning that directory
+      for i:=0 to Count-1 do
+        if CompareFilenames(Directory,Items[i].Directory)=0 then exit;
+      // create thread and create progress window
+      Item:=TFPCSrcScan.Create(true);
+      Item.FreeOnTerminate:=true;
+      Item.Scans:=Self;
+      Item.Directory:=Directory;
+      fItems.Add(Item);
+    finally
+      LeaveCriticalsection;
+    end;
+    Item.ProgressItem:=CreateProgressItem('FPCSrcScan',
+      Format(lisCreatingFileIndexOfFPCSources, [Directory]),
+      lisTheFileIndexIsNeededForFunctionsLikeFindDeclaratio);
+    {$IF defined(VER2_4_2) or defined(VER2_4_3)}
+    Item.Resume;
+    {$ELSE}
+    Item.Start;
+    {$ENDIF}
   {$ENDIF}
 end;
 
