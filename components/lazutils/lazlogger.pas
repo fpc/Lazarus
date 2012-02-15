@@ -1389,8 +1389,8 @@ begin
   FMaxNestPrefixLen := 15;
   FNestLvlIndent := 2;
   {$ifdef WinCE}
-  FLogFileFromParam := '';
-  FLogFileFromEnv   := '';
+  FParamForLogFileName := '';
+  FEnvironmentForLogFileName := '';
   FLogName := ExtractFilePath(ParamStr(0)) + Str_LCL_Debug_File;
   FUseStdOut := False;
   FCloseLogFileBetweenWrites := True;
