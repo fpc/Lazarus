@@ -369,10 +369,10 @@ procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);
 // Felipe: Don't substitute with calls to lazutf16 because lazutf16 includes
 // some initialization code and tables, which are not necessary for the LCL
 function UTF16CharacterLength(p: PWideChar): integer;
-function UTF16Length(const s: widestring): PtrInt;
+function UTF16Length(const s: UTF16String): PtrInt;
 function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
 function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
-function UnicodeToUTF16(u: cardinal): widestring;
+function UnicodeToUTF16(u: cardinal): UTF16String;
 
 //compare functions
 
@@ -1657,6 +1657,7 @@ begin
     vtPWideChar: DbgOut(Args[i].VPWideChar);
     vtWideChar: DbgOut(AnsiString(Args[i].VWideChar));
     vtWidestring: DbgOut(AnsiString(WideString(Args[i].VWideString)));
+    vtUnicodeString: DbgOut(AnsiString(UnicodeString(Args[i].VUnicodeString)));
     vtObject: DbgOut(DbgSName(Args[i].VObject));
     vtClass: DbgOut(DbgSName(Args[i].VClass));
     vtPointer: DbgOut(Dbgs(Args[i].VPointer));
@@ -2533,6 +2534,7 @@ begin
     vtPWideChar: s:=AnsiString(WideString(s)+Args[i].VPWideChar);
     vtWideChar: s:=AnsiString(WideString(s)+Args[i].VWideChar);
     vtWidestring: s:=AnsiString(WideString(s)+WideString(Args[i].VWideString));
+    vtUnicodeString: s:=AnsiString(UnicodeString(s)+UnicodeString(Args[i].VUnicodeString));
     vtObject: s:=s+DbgSName(Args[i].VObject);
     vtClass: s:=s+DbgSName(Args[i].VClass);
     vtPointer: s:=s+Dbgs(Args[i].VPointer);
@@ -2934,7 +2936,7 @@ begin
   end;
 end;
 
-function UTF16Length(const s: widestring): PtrInt;
+function UTF16Length(const s: UTF16String): PtrInt;
 begin
   Result:=UTF16Length(PWideChar(s),length(s));
 end;
@@ -2982,7 +2984,7 @@ begin
   end;
 end;
 
-function UnicodeToUTF16(u: cardinal): widestring;
+function UnicodeToUTF16(u: cardinal): UTF16String;
 begin
   // u should be <= $10FFFF to fit into UTF-16
 
