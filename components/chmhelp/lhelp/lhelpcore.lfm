@@ -5,7 +5,7 @@ object HelpForm: THelpForm
   Width = 758
   ActiveControl = Panel1
   Caption = 'LHelp'
-  ClientHeight = 512
+  ClientHeight = 515
   ClientWidth = 758
   Icon.Data = {
     7E04000000000100010010100000010020006804000016000000280000001000
@@ -52,8 +52,7 @@ object HelpForm: THelpForm
   OnKeyUp = FormKeyUp
   OnShow = FormShow
   Position = poScreenCenter
-  ShowInTaskBar = stAlways
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   Visible = True
   object Panel1: TPanel
     Left = 0
@@ -70,7 +69,6 @@ object HelpForm: THelpForm
       Top = 1
       Width = 32
       Align = alLeft
-      Color = clBtnFace
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
         2000000000000004000064000000640000000000000000000000000000000002
@@ -116,7 +114,6 @@ object HelpForm: THelpForm
       Top = 1
       Width = 32
       Align = alLeft
-      Color = clBtnFace
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
         2000000000000004000064000000640000000000000000000000000000000000
@@ -162,7 +159,6 @@ object HelpForm: THelpForm
       Top = 1
       Width = 32
       Align = alLeft
-      Color = clBtnFace
       Glyph.Data = {
         36090000424D3609000000000000360000002800000018000000180000000100
         2000000000000009000064000000640000000000000000000000E4E7EA00E4E7
@@ -245,7 +241,7 @@ object HelpForm: THelpForm
   end
   object PageControl: TPageControl
     Left = 0
-    Height = 503
+    Height = 483
     Top = 32
     Width = 758
     Align = alClient

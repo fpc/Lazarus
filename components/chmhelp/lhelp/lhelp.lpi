@@ -93,13 +93,13 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
       <Filename Value="lhelp"/>
     </Target>
     <SearchPaths>
-      <Libraries Value="\emul\linux\x86\lib\;\emul\linux\x86\usr\lib32\"/>
+      <Libraries Value="\emul\linux\x86\lib;\emul\linux\x86\usr\lib32"/>
       <OtherUnitFiles Value="..\..\..\..\fpc\packages\chm\src"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       <SrcPath Value="$(LazarusDir)\lcl;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)"/>
@@ -117,7 +117,7 @@
     </CodeGeneration>
     <Linking>
       <Debugging>
-        <GenerateDebugInfo Value="True"/>
+        <DebugInfoType Value="dsStabs"/>
       </Debugging>
       <Options>
         <Win32>
