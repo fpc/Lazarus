@@ -98,7 +98,7 @@ constructor TLazAccessibleObject.Create(AOwner: TControl);
 begin
   inherited Create;//(AOwner);
   OwnerControl := AOwner;
-  FChildren := TFPList.Create;
+  FChildrenSortedForDataObject := TAvgLvlTree.Create(@CompareDataObjectWithLazAccessibleObject);
   WSRegisterClass();
 end;
 
@@ -110,7 +110,8 @@ begin
   ClearChildAccessibleObjects();
   if (WidgetsetClass <> nil) and (FHandle <> 0) then
     WidgetsetClass.DestroyHandle(Self);
-  FreeAndNil(FChildren);
+  FreeAndNil(FChildrenSortedForDataObject);
+  FreeAndNil(FChildrenSortedForDataObject);
   inherited Destroy;
 end;
 
@@ -170,56 +171,50 @@ end;
 function TLazAccessibleObject.AddChildAccessibleObject: TLazAccessibleObject;
 begin
   Result := nil;
-  if FChildren = nil then Exit;
+  if FChildrenSortedForDataObject = nil then Exit;
   Result := TLazAccessibleObject.Create(OwnerControl);
   Result.Parent := Self;
-  FChildren.Add(Result);
+  FChildrenSortedForDataObject.Add(Result);
   //DebugLn('[TControl.AddChildAccessibleObject] Name=%s', [Name]);
 end;
 
 procedure TLazAccessibleObject.InsertChildAccessibleObject(
   AObject: TLazAccessibleObject);
 begin
-  if FChildren = nil then Exit;
-  FChildren.Add(AObject);
+  if FChildrenSortedForDataObject = nil then Exit;
+  FChildrenSortedForDataObject.Add(AObject);
 end;
 
 procedure TLazAccessibleObject.ClearChildAccessibleObjects;
 var
   i: Integer;
   lXObject: TLazAccessibleObject;
+  AVLNode: TAvgLvlTreeNode;
 begin
-  if FChildren = nil then Exit;
+  if FChildrenSortedForDataObject = nil then Exit;
   //DebugLn(Format('[TControl.ClearChildAccessibleObjects] Name=%s Count=%d', [Name, FAccessibleChildren.Count]));
   // Free only the non-control children
-  for i := 0 to FChildren.Count - 1 do
-  begin
-    lXObject := TLazAccessibleObject(FChildren.Items[i]);
+  AVLNode:=FChildrenSortedForDataObject.FindLowest;
+  while AVLNode<>nil do begin
+    lXObject := TLazAccessibleObject(AVLNode.Data);
     if lXObject.OwnerControl = OwnerControl then
       lXObject.Free;
+    AVLNode:=FChildrenSortedForDataObject.FindSuccessor(AVLNode);
   end;
-  FChildren.Clear;
+  FChildrenSortedForDataObject.Clear;
 end;
 
 procedure TLazAccessibleObject.RemoveChildAccessibleObject(
   AObject: TLazAccessibleObject; AFreeObject: Boolean = True);
 var
   lIndex: Integer;
+  Node: TAvgLvlTreeNode;
 begin
-  if FChildren = nil then Exit;
-  lIndex := FChildren.IndexOf(AObject);
-  if lIndex >= 0 then
-  begin
-    if AFreeObject then TLazAccessibleObject(FChildren.Items[lIndex]).Free;
-    FChildren.Delete(lIndex);
-  end;
-end;
-
-function TLazAccessibleObject.GetChildAccessibleObject(AIndex: Integer): TLazAccessibleObject;
-begin
-  Result := nil;
-  if FChildren = nil then Exit;
-  Result := TLazAccessibleObject(FChildren.Items[AIndex]);
+  if FChildrenSortedForDataObject = nil then Exit;
+  Node:=FChildrenSortedForDataObject.Find(AObject);
+  FChildrenSortedForDataObject.Delete(Node);
+  if (Node<>nil) and AFreeObject then
+    AObject.Free;
 end;
 
 function TLazAccessibleObject.GetChildAccessibleObjectWithDataObject(
@@ -227,21 +222,20 @@ function TLazAccessibleObject.GetChildAccessibleObjectWithDataObject(
 var
   i: Integer;
   lCurObject: TLazAccessibleObject;
+  Node: TAvgLvlTreeNode;
 begin
   Result := nil;
-  if FChildren = nil then Exit;
-  for i := 0 to FChildren.Count - 1 do
-  begin
-    lCurObject := TLazAccessibleObject(FChildren.Items[i]);
-    if lCurObject.DataObject = ADataObject then Exit(lCurObject);
-  end;
+  if FChildrenSortedForDataObject = nil then Exit;
+  Node:=FChildrenSortedForDataObject.FindKey(ADataObject,@CompareDataObjectWithLazAccessibleObject);
+  if Node<>nil then
+    Result:=TLazAccessibleObject(Node.Data);
 end;
 
 function TLazAccessibleObject.GetChildAccessibleObjectsCount: Integer;
 begin
   Result := 0;
-  if FChildren = nil then Exit;
-  Result := FChildren.Count;
+  if FChildrenSortedForDataObject <> nil then
+    Result := FChildrenSortedForDataObject.Count;
 end;
 
 function TLazAccessibleObject.GetSelectedChildAccessibleObject: TLazAccessibleObject;

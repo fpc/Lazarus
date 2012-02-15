@@ -939,7 +939,7 @@ type
     procedure SetPosition(AValue: TPoint);
     procedure SetSize(AValue: TSize);
   protected
-    FChildren: TFPList; // of TLazAccessibleObject
+    FChildrenSortedForDataObject: TAvgLvlTree; // of TLazAccessibleObject
     FAccessibleDescription: TCaption;
     FAccessibleValue: TCaption;
     FAccessibleRole: TLazAccessibilityRole;
@@ -961,7 +961,6 @@ type
     procedure InsertChildAccessibleObject(AObject: TLazAccessibleObject);
     procedure ClearChildAccessibleObjects;
     procedure RemoveChildAccessibleObject(AObject: TLazAccessibleObject; AFreeObject: Boolean = True);
-    function GetChildAccessibleObject(AIndex: Integer): TLazAccessibleObject;
     function GetChildAccessibleObjectWithDataObject(ADataObject: TObject): TLazAccessibleObject;
     function GetChildAccessibleObjectsCount: Integer;
     function GetSelectedChildAccessibleObject: TLazAccessibleObject; virtual;
@@ -2556,6 +2555,9 @@ function DbgS(Phases: TControlAutoSizePhases): string; overload;
 
 operator := (AVariant: Variant): TCaption;
 
+function CompareLazAccessibleObjectsByDataObject(o1, o2: Pointer): integer;
+function CompareDataObjectWithLazAccessibleObject(o, ao: Pointer): integer;
+
 // register (called by the package initialization in design mode)
 procedure Register;
 
@@ -2792,6 +2794,21 @@ begin
   AWinControl.UpdateControlState;
   if IsFocused and AWinControl.HandleAllocated
   then SetFocus(AWinControl.FHandle);
+end;
+
+function CompareLazAccessibleObjectsByDataObject(o1, o2: Pointer): integer;
+var
+  AccObj1: TLazAccessibleObject absolute o1;
+  AccObj2: TLazAccessibleObject absolute o2;
+begin
+  Result:=ComparePointers(AccObj1.DataObject,AccObj2.DataObject);
+end;
+
+function CompareDataObjectWithLazAccessibleObject(o, ao: Pointer): integer;
+var
+  AccObj: TLazAccessibleObject absolute ao;
+begin
+  Result:=ComparePointers(o,AccObj.DataObject);
 end;
 
 procedure Register;
