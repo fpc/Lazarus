@@ -98,7 +98,8 @@ cp %CROSSBINDIR%\* %INSTALL_BINDIR%
 %MAKEEXE% rtl_install packages_install FPCMAKE=%FPCSVNDIR%\fpcsrc\utils\fpcm\fpcmake.exe INSTALL_PREFIX=%INSTALL_BASE% FPC=%COMPILER%
 
 copy %COMPILER% %INSTALL_BINDIR%
-%MAKEEXE% -C packages fcl-base_all fcl-process_all FPC=%FPCFPMAKE% OS_TARGET=%FPCSourceOS% CPU_TARGET=%FPCSourceCPU%
+%MAKEEXE% -C packages\fcl-base all FPC=%FPCFPMAKE% OS_TARGET=%FPCSourceOS% CPU_TARGET=%FPCSourceCPU%
+%MAKEEXE% -C packages\fcl-process all FPC=%FPCFPMAKE% OS_TARGET=%FPCSourceOS% CPU_TARGET=%FPCSourceCPU%
 %MAKEEXE% -C utils fpcmkcfg_all FPC=%FPCFPMAKE% OS_TARGET=%FPCSourceOS% CPU_TARGET=%FPCSourceCPU%
 %FPCSVNDIR%\fpcsrc\utils\fpcmkcfg\fpcmkcfg.exe -d "basepath=%INSTALL_BASE%" -o %INSTALL_BINDIR%\fpc.cfg
 SET COMPILER=%INSTALL_BINDIR%\%PPCNAME%
