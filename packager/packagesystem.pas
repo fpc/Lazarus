@@ -2259,8 +2259,6 @@ function TLazPackageGraph.FindAmbiguousUnits(APackage: TLazPackage;
 // returns true, if ambiguous units found
 // There can either be a conflict between two files (File1,File2)
 // or between a file and a package (File1,ConflictPkg)
-const
-  FileTypes = PkgFileUnitTypes-[pftVirtualUnit];
 var
   PackageTreeOfUnitTrees: TAVLTree; // tree of TPkgUnitsTree
   
@@ -2284,7 +2282,7 @@ var
     PackageTreeOfUnitTrees.Add(Result);
     for i:=0 to Pkg.FileCount-1 do begin
       PkgFile:=Pkg.Files[i];
-      if (PkgFile.FileType in FileTypes) and (PkgFile.Unit_Name<>'') then
+      if (PkgFile.FileType in PkgFileRealUnitTypes) and (PkgFile.Unit_Name<>'') then
         Result.Add(PkgFile);
     end;
   end;
@@ -2310,7 +2308,7 @@ var
     end;
     for i:=0 to Pkg1.FileCount-1 do begin
       PkgFile1:=Pkg1.Files[i];
-      if (PkgFile1.FileType in FileTypes)
+      if (PkgFile1.FileType in PkgFileRealUnitTypes)
       and (PkgFile1.Unit_Name<>'') then begin
         // check if a unit of Pkg1 exists in Pkg2
         PkgFile2:=UnitsTreeOfPkg2.FindPkgFileWithUnitName(PkgFile1.Unit_Name);
