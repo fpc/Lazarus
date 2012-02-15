@@ -414,17 +414,15 @@ var
 begin
   for i:=0 to APackage.FileCount-1 do begin
     PkgFile:=APackage.Files[i];
-    if FilenameIsPascalUnit(PkgFile.Filename) then begin
-      Filename:=PkgFile.Filename;
-      if FilenameIsPascalUnit(Filename) then begin
-        Filename:=ExtractFileNameOnly(Filename);
-        if (CompareFilenames(Prefix,copy(Filename,1,length(Prefix)))=0) then
-        begin
-          Identifier:=ExtractFileNameOnly(Filename);
-          if APackage<>StartModuleOwner then
-            Identifier:='#'+APackage.Name+'.'+Identifier;
-          fItems.Add(Identifier, lisPackageUnit);
-        end;
+    Filename:=PkgFile.GetFullFilename;
+    if FilenameIsPascalUnit(Filename) then begin
+      Filename:=ExtractFileNameOnly(Filename);
+      if (CompareFilenames(Prefix,copy(Filename,1,length(Prefix)))=0) then
+      begin
+        Identifier:=ExtractFileNameOnly(Filename);
+        if APackage<>StartModuleOwner then
+          Identifier:='#'+APackage.Name+'.'+Identifier;
+        fItems.Add(Identifier, lisPackageUnit);
       end;
     end;
   end;

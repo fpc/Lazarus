@@ -2947,6 +2947,7 @@ var
   o: TPkgOutputDir;
   Stats: PPkgLastCompileStats;
   SrcPPUFile: String;
+  AFilename: String;
 begin
   Result:=mrYes;
   {$IFDEF VerbosePkgCompile}
@@ -3103,8 +3104,9 @@ begin
   for i:=0 to APackage.FileCount-1 do begin
     CurFile:=APackage.Files[i];
     //debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation  CurFile.Filename="',CurFile.Filename,'" Exists=',FileExistsUTF8(CurFile.Filename),' NewerThanStateFile=',StateFileAge<FileAgeCached(CurFile.Filename)]);
-    if FileExistsCached(CurFile.Filename)
-    and (StateFileAge<FileAgeCached(CurFile.Filename)) then begin
+    AFilename:=CurFile.GetFullFilename;
+    if FileExistsCached(AFilename)
+    and (StateFileAge<FileAgeCached(AFilename)) then begin
       DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Src has changed ',APackage.IDAsString,' ',CurFile.Filename);
       exit(mrYes);
     end;
@@ -3934,6 +3936,7 @@ var
   NewShortenSrc: String;
   BeautifyCodeOptions: TBeautifyCodeOptions;
   AddedUnitNames: TStringToStringTree;
+  AFilename: String;
 
   procedure UseUnit(AnUnitName: string);
   begin
@@ -3967,12 +3970,13 @@ begin
       CurFile:=APackage.Files[i];
       if CurFile.FileType=pftMainUnit then continue;
       // update unitname
-      if FilenameIsPascalUnit(CurFile.Filename)
+      AFilename:=CurFile.GetFullFilename;
+      if FilenameIsPascalUnit(AFilename)
       and (CurFile.FileType in PkgFileUnitTypes) then begin
         NeedsRegisterProcCall:=CurFile.HasRegisterProc
           and (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime]);
 
-        CurUnitName:=ExtractFileNameOnly(CurFile.Filename);
+        CurUnitName:=ExtractFileNameOnly(AFilename);
 
         if not (NeedsRegisterProcCall or CurFile.AddToUsesPkgSection) then
           continue;
@@ -3981,7 +3985,7 @@ begin
           // the filename is all lowercase, so we can use the nicer unitname from
           // the source.
 
-          CodeBuffer:=CodeToolBoss.LoadFile(CurFile.Filename,false,false);
+          CodeBuffer:=CodeToolBoss.LoadFile(AFilename,false,false);
           if CodeBuffer<>nil then begin
             // if the unit is edited, the unitname is probably already cached
             CurSrcUnitName:=CodeToolBoss.GetCachedSourceName(CodeBuffer);

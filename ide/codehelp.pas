@@ -1711,7 +1711,7 @@ begin
   BaseDir:=APackage.DirectoryExpanded;
   if BaseDir='' then exit;
 
-  SrcFilename:=PkgFile.Filename;
+  SrcFilename:=PkgFile.GetFullFilename;
   if ResolveIncludeFiles then begin
     CodeBuf:=CodeToolBoss.FindFile(SrcFilename);
     if CodeBuf<>nil then begin

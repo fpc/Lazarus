@@ -768,11 +768,7 @@ begin
   end;
   if (PkgFile<>nil) and (PkgFile.FileType in PkgFileRealUnitTypes) then begin
     // normal unit in lpk
-    if not FilenameIsAbsolute(PkgFile.Filename) then begin
-      InvalidPathError('Unit "'+PkgFile.Filename+'" has no help.');
-      exit;
-    end;
-    Filename:=PkgFile.Filename;
+    Filename:=PkgFile.GetFullFilename;
   end else if SysUtils.CompareText(PkgName,'fcl')=0 then begin
     // search in FPC sources
     Filename:=CodeToolBoss.DirectoryCachePool.FindUnitInUnitSet('',AnUnitName);

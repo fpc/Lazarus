@@ -9034,13 +9034,6 @@ begin
   WasVirtual:=AnUnitInfo.IsVirtual;
   WasPascalSource:=FilenameIsPascalSource(AnUnitInfo.Filename);
 
-  // check if file is writable on disk
-  if (not AnUnitInfo.IsVirtual)
-  and FileExistsUTF8(AnUnitInfo.Filename) then
-    AnUnitInfo.FileReadOnly:=not FileIsWritable(AnUnitInfo.Filename)
-  else
-    AnUnitInfo.FileReadOnly:=false;
-
   // if this file is part of the project and the project is virtual then save
   // project first
   if (not (sfProjectSaving in Flags)) and Project1.IsVirtual
@@ -9075,13 +9068,6 @@ begin
     exit;
   end;
 
-  // if file is readonly then a simple Save is skipped
-  if (AnUnitInfo.ReadOnly) and ([sfSaveToTestDir,sfSaveAs]*Flags=[]) then
-  begin
-    Result:=mrOk;
-    exit;
-  end;
-
   // if nothing modified then a simple Save can be skipped
   //writeln('TMainIDE.DoSaveEditorFile A ',AnUnitInfo.Filename,' ',AnUnitInfo.NeedsSaveToDisk);
   if ([sfSaveToTestDir,sfSaveAs]*Flags=[])
@@ -9092,6 +9078,20 @@ begin
       AnUnitInfo.SessionModified:=true;
       AEditor.Modified:=false;
     end;
+    Result:=mrOk;
+    exit;
+  end;
+
+  // check if file is writable on disk
+  if (not AnUnitInfo.IsVirtual)
+  and FileExistsUTF8(AnUnitInfo.Filename) then
+    AnUnitInfo.FileReadOnly:=not FileIsWritable(AnUnitInfo.Filename)
+  else
+    AnUnitInfo.FileReadOnly:=false;
+
+  // if file is readonly then a simple Save is skipped
+  if (AnUnitInfo.ReadOnly) and ([sfSaveToTestDir,sfSaveAs]*Flags=[]) then
+  begin
     Result:=mrOk;
     exit;
   end;

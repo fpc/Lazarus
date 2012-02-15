@@ -3868,6 +3868,8 @@ resourcestring
     +'installed, but the lpk file was not found. All its components are '
     +'deactivated. Please fix this.';
   lisPkgSysPackageFileNotFound = 'Package file not found';
+  lisPkgMangTheFileOfPackageWasNotFound = 'The file "%s" of package %s was not'
+    +' found.';
   lisPkgSysThePackageIsInstalledButNoValidPackageFileWasFound = 'The package %'
     +'s%s%s is installed, but no valid package file (.lpk) was found.%sA broken '
     +'dummy package was created.';

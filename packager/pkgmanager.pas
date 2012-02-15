@@ -287,6 +287,7 @@ type
     function DoCloseAllPackageEditors: TModalResult; override;
     function DoAddActiveUnitToAPackage: TModalResult;
     function DoNewPackageComponent: TModalResult;
+    function SavePackageFiles(APackage: TLazPackage): TModalResult;
     function WarnAboutMissingPackageFiles(APackage: TLazPackage): TModalResult;
     function AddPackageDependency(APackage: TLazPackage; const ReqPackage: string;
                                   OnlyTestIfPossible: boolean = false): TModalResult; override;
@@ -459,7 +460,7 @@ begin
     if PkgFile.FileType=pftVirtualUnit then
       Filename:=FindVirtualUnitSource(PkgFile);
     if Filename='' then
-      Filename:=PkgFile.Filename;
+      Filename:=PkgFile.GetFullFilename;
     MainIDE.DoOpenFileAndJumpToIdentifier(
       Filename,PkgComponent.ComponentClass.ClassName,
       -1, -1, // open page somewhere
@@ -2318,6 +2319,10 @@ begin
     exit;
   end;
 
+  // save new or changed files
+  Result:=SavePackageFiles(APackage);
+  if Result<>mrOk then exit;
+
   // warn about missing files
   Result:=WarnAboutMissingPackageFiles(APackage);
   if Result<>mrOk then exit;
@@ -2635,9 +2640,6 @@ begin
     if Result<>mrOk then exit;
   end;
   
-  Result:=WarnAboutMissingPackageFiles(APackage);
-  if Result<>mrOk then exit;
-
   Result:=PackageGraph.CompilePackage(APackage,Flags,false);
 end;
 
@@ -3080,7 +3082,7 @@ begin
       for j:=0 to CurPackage.FileCount-1 do begin
         CurPkgFile:=CurPackage.Files[j];
         if CurPkgFile.FileType in PkgFileUnitTypes then
-          AddFile(CurOwner,CurPkgFile.Filename);
+          AddFile(CurOwner,CurPkgFile.GetFullFilename);
       end;
     end else if CurOwner is TProject then begin
       CurProject:=TProject(CurOwner);
@@ -3286,7 +3288,8 @@ begin
       exit;
     end;
   end;
-  Result:=MainIDE.DoOpenMacroFile(Self,PkgFile.Filename);
+  Result:=MainIDE.DoOpenEditorFile(PkgFile.GetFullFilename,-1,-1,
+                                  [ofOnlyIfExists,ofAddToRecent,ofRegularFile]);
 end;
 
 function TPkgManager.FindVirtualUnitSource(PkgFile: TPkgFile): string;
@@ -3296,7 +3299,7 @@ begin
   and (PkgFile.LazPackage<>nil)
   and (not FileExistsUTF8(PkgFile.Filename)) then begin
     Result:=MainIDE.FindSourceFile(PkgFile.GetShortFilename(false),
-                                     PkgFile.LazPackage.Directory,[]);
+                                   PkgFile.LazPackage.Directory,[]);
   end;
 end;
 
@@ -3488,12 +3491,48 @@ begin
   Result:=CurEditor.ShowAddDialog(Page);
 end;
 
-function TPkgManager.WarnAboutMissingPackageFiles(APackage: TLazPackage): TModalResult;
+function TPkgManager.SavePackageFiles(APackage: TLazPackage): TModalResult;
 var
-  i, j: Integer;
+  i: Integer;
   AFile: TPkgFile;
   AFilename: String;
-  UEInfo: TUnitEditorInfo;
+  SaveFlags: TSaveFlags;
+  SrcEdit: TSourceEditor;
+begin
+  Result:=mrOk;
+  for i:=0 to APackage.FileCount-1 do begin
+    AFile:=APackage.Files[i];
+    if AFile.FileType=pftVirtualUnit then continue;
+    AFilename:=AFile.Filename;
+    if System.Pos('$(',AFilename)>0 then begin
+      // filename contains macros -> skip
+      //debugln(['TPkgManager.SavePackageFiles macros ',AFilename]);
+      continue;
+    end;
+    // check if open in editor
+    SrcEdit:=SourceEditorManager.SourceEditorIntfWithFilename(AFilename);
+    if SrcEdit=nil then
+    begin
+      // not open in source editor => skip
+      //debugln(['TPkgManager.SavePackageFiles no src edit ',AFilename]);
+      continue;
+    end;
+    SaveFlags:=[sfCanAbort];
+    if not FilenameIsAbsolute(AFilename) then
+      SaveFlags:=[sfSaveAs];
+    debugln(['TPkgManager.SavePackageFiles saving ',AFilename]);
+    Result:=LazarusIDE.DoSaveEditorFile(SrcEdit,SaveFlags);
+    if Result=mrIgnore then Result:=mrOk;
+    if Result<>mrOk then exit;
+  end;
+end;
+
+function TPkgManager.WarnAboutMissingPackageFiles(APackage: TLazPackage
+  ): TModalResult;
+var
+  i: Integer;
+  AFile: TPkgFile;
+  AFilename: String;
 begin
   Result:=mrOk;
   for i:=0 to APackage.FileCount-1 do begin
@@ -3502,47 +3541,18 @@ begin
     AFilename:=AFile.GetFullFilename;
     if System.Pos('$(',AFilename)>0 then begin
       // filename contains macros -> skip
+      continue;
     end;
-    if FilenameIsAbsolute(APackage.Filename) and FilenameIsAbsolute(AFilename) then begin
-      APackage.LongenFilename(AFilename);
-    end;
-    if FilenameIsAbsolute(AFilename) then begin
-      // "Normal" file
-      if not FileExistsCached(AFilename) then begin
-        if not APackage.IsVirtual then
-          AFilename:=CreateRelativePath(AFilename,APackage.Directory);
-        for j := 0 to Project1.AllEditorsInfoCount-1 do begin
-          UEInfo:=Project1.AllEditorsInfo[j];
-          if Assigned(UEInfo.EditorComponent) then      // Editor is open
-            if UEInfo.UnitInfo.Filename=AFilename then begin //,sfSaveNonProjectFiles
-              Result:=LazarusIDE.DoSaveEditorFile(UEInfo.EditorComponent,[sfSaveAs]);
-              Break;
-            end;
-        end;
-{        Result:=IDEQuestionDialog(lisPkgMangPackageFileMissing,
-          Format(lisPkgMangTheFileOfPackageIsMissing,
-                 ['"', AFilename, '"', #13, APackage.IDAsString]),
-          mtWarning,[mrIgnore,mrAbort]);
-        if Result<>mrAbort then
-          Result:=mrOk;
-        // one warning is enough
-        exit;
-        }
-      end;
-    end
-    else begin
-      Assert(False, 'Package Filename can be Virtual after all');
-{      if not APackage.IsVirtual then begin
-        // an unsaved file
-        Result:=IDEQuestionDialog(lisPkgMangPackageFileNotSaved,
-          Format(lisPkgMangTheFileOfPackageNeedsToBeSavedFirst,
-                 ['"', AFilename, '"', #13, APackage.IDAsString]),
-          mtWarning, [mrIgnore, lisPkgMangIgnoreAndSavePackageNow, mrAbort]);
-        if Result<>mrAbort then
-          Result:=mrOk;
-      end;
-}
-    end;
+    if FilenameIsAbsolute(AFilename) and FileExistsCached(AFilename) then
+      continue;
+    Result:=IDEQuestionDialog(lisPkgSysPackageFileNotFound,
+      Format(lisPkgMangTheFileOfPackageWasNotFound, [AFilename, APackage.
+        IDAsString]),
+      mtWarning,[mrIgnore,mrAbort]);
+    if Result<>mrAbort then
+      Result:=mrOk;
+    // one warning is enough
+    exit;
   end;
 end;
 

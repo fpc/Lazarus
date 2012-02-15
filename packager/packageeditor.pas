@@ -492,7 +492,7 @@ begin
   if (PkgFile<>nil) then begin
     if Removed then begin
       // re-add file
-      AFilename:=PkgFile.Filename;
+      AFilename:=PkgFile.GetFullFilename;
       if PkgFile.FileType in PkgFileRealUnitTypes then begin
         if not CheckAddingUnitFilename(LazPackage,d2ptUnit,
           PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
@@ -544,7 +544,7 @@ var
   begin
     PkgEditMenuSectionFileType.Clear;
     VirtualFileExists:=(CurFile.FileType=pftVirtualUnit)
-                       and FileExistsUTF8(CurFile.Filename);
+                       and FileExistsCached(CurFile.GetFullFilename);
     for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
       NewMenuItem:=RegisterIDEMenuCommand(PkgEditMenuSectionFileType,
                       'SetFileType'+IntToStr(ord(CurPFT)),
@@ -1536,8 +1536,10 @@ var
               Include(NewPkgFileFlags,pffHasRegisterProc);
           end;
         end;
+        debugln(['AddNewFile AAA1 NewFilename=',NewFilename]);
         FNextSelectedPart := LazPackage.AddFile(NewFilename,NewUnitName,NewFileType,
                                             NewPkgFileFlags, cpNormal);
+        debugln(['AddNewFile AAA2 ',TPkgFile(FNextSelectedPart).Filename]);
         UpdateAll(true);
       end;
     end;

@@ -79,7 +79,7 @@ type
     function GetFullFilename: string; virtual; abstract;
     function GetShortFilename(UseUp: boolean): string; virtual; abstract;
   public
-    property Filename: string read FFilename write SetFilename; // can contain macros if package was auto created
+    property Filename: string read FFilename write SetFilename; // can contain macros
     property LazPackage: TIDEPackage read GetIDEPackage;
     property Removed: boolean read FRemoved write SetRemoved;
     property DisableI18NForLFM: boolean read FDisableI18NForLFM write SetDisableI18NForLFM;

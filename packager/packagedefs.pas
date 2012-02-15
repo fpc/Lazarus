@@ -181,7 +181,6 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
       UsePathDelim: TPathDelimSwitch);
     procedure ConsistencyCheck;
-    function GetShortFilename(UseUp: boolean): string; override;
     function ComponentCount: integer;
     procedure AddPkgComponent(APkgComponent: TPkgComponent);
     procedure RemovePkgComponent(APkgComponent: TPkgComponent);
@@ -189,6 +188,7 @@ type
     function MakeSense: boolean;
     procedure UpdateSourceDirectoryReference;
     function GetFullFilename: string; override;
+    function GetShortFilename(UseUp: boolean): string; override;
     function GetResolvedFilename: string; // GetFullFilename + ReadAllLinks
   public
     property AddToUsesPkgSection: boolean
@@ -1495,14 +1495,9 @@ var
 begin
   NewFilename:=AValue;
   DoDirSeparators(NewFilename);
-  LazPackage.LongenFilename(NewFilename);
   if Filename=NewFilename then exit;
   inherited SetFilename(NewFilename);
-  fFullFilenameStamp:=CompilerParseStamp;
-  if fFullFilenameStamp=Low(fFullFilenameStamp) then
-    fFullFilenameStamp:=High(fFullFilenameStamp)
-  else
-    dec(fFullFilenameStamp);
+  fFullFilenameStamp:=InvalidParseStamp;
   OldDirectory:=FDirectory;
   FDirectory:=ExtractFilePath(Filename);
   if OldDirectory<>FDirectory then begin
@@ -1646,11 +1641,15 @@ begin
   if fFullFilenameStamp<>CompilerParseStamp then begin
     fFullFilename:=Filename;
     fFullFilenameStamp:=CompilerParseStamp;
-    if LazPackage<>nil then
-      LazPackage.SubstitutePkgMacros(fFullFilename,false)
-    else
+    if LazPackage<>nil then begin
+      LazPackage.SubstitutePkgMacros(fFullFilename,false);
+      fFullFilename:=TrimFilename(fFullFilename);
+      LazPackage.LongenFilename(fFullFilename);
+    end
+    else begin
       IDEMacros.SubstituteMacros(fFullFilename);
-    fFullFilename:=TrimAndExpandFilename(fFullFilename);
+      fFullFilename:=TrimAndExpandFilename(fFullFilename);
+    end;
   end;
   Result:=fFullFilename;
 end;
@@ -1775,7 +1774,7 @@ end;
 function TPkgFile.GetResolvedFilename: string;
 begin
   Result:=ReadAllLinks(GetFullFilename,false);
-  if Result='' then Result:=Filename;
+  if Result='' then Result:=GetFullFilename;
 end;
 
 { TPkgDependency }
@@ -3112,14 +3111,16 @@ begin
   Cnt:=FileCount;
   for i:=0 to Cnt-1 do begin
     Result:=Files[i];
-    if CompareFilenames(Result.Filename,TheFilename)=0 then
+    if (CompareFilenames(Result.Filename,TheFilename)=0)
+    or (CompareFilenames(Result.GetFullFilename,TheFilename)=0) then
       exit;
   end;
   if not IgnoreRemoved then begin
     Cnt:=RemovedFilesCount;
     for i:=0 to Cnt-1 do begin
       Result:=RemovedFiles[i];
-      if CompareFilenames(Result.Filename,TheFilename)=0 then
+      if (CompareFilenames(Result.Filename,TheFilename)=0)
+      or (CompareFilenames(Result.GetFullFilename,TheFilename)=0) then
         exit;
     end;
   end;
@@ -3252,6 +3253,7 @@ begin
   end;
   with Result do begin
     Filename:=NewFilename;
+    debugln(['TLazPackage.AddFile Is=',Filename,' Should=',NewFilename]);
     Unit_Name:=NewUnitName;
     FileType:=NewFileType;
     Flags:=NewFlags;
@@ -3262,6 +3264,7 @@ begin
     AutoReferenceSourceDir:=true;
   end;
   FFiles.Add(Result);
+  debugln(['TLazPackage.AddFile Is=',Result.Filename,' Should=',NewFilename]);
   Modified:=true;
 end;
 
@@ -3315,7 +3318,7 @@ begin
   while i>=0 do begin
     if i>=FileCount then continue;
     AFilename:=Files[i].GetResolvedFilename;
-    if (AFilename='') or (not FileExistsCached(Files[i].Filename)) then
+    if (AFilename='') or (not FileExistsCached(AFilename)) then
     begin
       RemoveFile(Files[i]);
       Result:=true;
@@ -3423,6 +3426,7 @@ var
   NewShortFilename: string;
   NewFilename: String;
   CurDir: String;
+  AFilename: String;
 begin
   Result:=false;
   Cnt:=FileCount;
@@ -3430,10 +3434,11 @@ begin
   try
     for i:=0 to Cnt-1 do begin
       CurFile:=Files[i];
-      CurDir:=CurFile.Directory;
       //debugln('TLazPackage.FixFilesCaseSensitivity A ',dbgs(i),' CurFile.Filename=',CurFile.Filename);
+      AFilename:=CurFile.GetFullFilename;
+      CurShortFilename:=ExtractFilename(AFilename);
+      CurDir:=ExtractFilePath(AFilename);
       DirListing:=AddDirectoryListing(CurDir);
-      CurShortFilename:=ExtractFilename(CurFile.Filename);
       DirListID:=IndexOfFileInStringList(DirListing,CurShortFilename,false);
       //debugln('TLazPackage.FixFilesCaseSensitivity B ',dbgs(i),' CurShortFilename=',CurShortFilename,' DirListID=',dbgs(DirListID));
       if DirListID<0 then continue;
