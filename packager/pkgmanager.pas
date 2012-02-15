@@ -2377,7 +2377,8 @@ begin
     AddFileToRecentPackages(APackage.Filename);
   end;
 
-  if APackage.Editor<>nil then APackage.Editor.UpdateAll(true);
+  if APackage.Editor<>nil then
+    APackage.Editor.UpdateAll(true);
   Result:=mrOk;
 end;
 
@@ -3489,9 +3490,10 @@ end;
 
 function TPkgManager.WarnAboutMissingPackageFiles(APackage: TLazPackage): TModalResult;
 var
-  i: Integer;
+  i, j: Integer;
   AFile: TPkgFile;
   AFilename: String;
+  UEInfo: TUnitEditorInfo;
 begin
   Result:=mrOk;
   for i:=0 to APackage.FileCount-1 do begin
@@ -3501,13 +3503,23 @@ begin
     if System.Pos('$(',AFilename)>0 then begin
       // filename contains macros -> skip
     end;
-    if (not APackage.IsVirtual) and FilenameIsAbsolute(AFilename) then
+    if FilenameIsAbsolute(APackage.Filename) and FilenameIsAbsolute(AFilename) then begin
       APackage.LongenFilename(AFilename);
-    if not AFile.IsVirtual then begin
+    end;
+    if FilenameIsAbsolute(AFilename) then begin
+      // "Normal" file
       if not FileExistsCached(AFilename) then begin
         if not APackage.IsVirtual then
           AFilename:=CreateRelativePath(AFilename,APackage.Directory);
-        Result:=IDEQuestionDialog(lisPkgMangPackageFileMissing,
+        for j := 0 to Project1.AllEditorsInfoCount-1 do begin
+          UEInfo:=Project1.AllEditorsInfo[j];
+          if Assigned(UEInfo.EditorComponent) then      // Editor is open
+            if UEInfo.UnitInfo.Filename=AFilename then begin //,sfSaveNonProjectFiles
+              Result:=LazarusIDE.DoSaveEditorFile(UEInfo.EditorComponent,[sfSaveAs]);
+              Break;
+            end;
+        end;
+{        Result:=IDEQuestionDialog(lisPkgMangPackageFileMissing,
           Format(lisPkgMangTheFileOfPackageIsMissing,
                  ['"', AFilename, '"', #13, APackage.IDAsString]),
           mtWarning,[mrIgnore,mrAbort]);
@@ -3515,9 +3527,12 @@ begin
           Result:=mrOk;
         // one warning is enough
         exit;
+        }
       end;
-    end else begin
-      if not APackage.IsVirtual then begin
+    end
+    else begin
+      Assert(False, 'Package Filename can be Virtual after all');
+{      if not APackage.IsVirtual then begin
         // an unsaved file
         Result:=IDEQuestionDialog(lisPkgMangPackageFileNotSaved,
           Format(lisPkgMangTheFileOfPackageNeedsToBeSavedFirst,
@@ -3526,6 +3541,7 @@ begin
         if Result<>mrAbort then
           Result:=mrOk;
       end;
+}
     end;
   end;
 end;
