@@ -473,8 +473,7 @@ begin
   AnUnitInfo:=LazProject.FirstPartOfProject;
   while AnUnitInfo<>nil do begin
     NextUnitInfo:=AnUnitInfo.NextPartOfProject;
-    if (not AnUnitInfo.IsVirtual)
-    and (not FileExistsUTF8(AnUnitInfo.Filename)) then begin
+    if not (AnUnitInfo.IsVirtual or FileExistsUTF8(AnUnitInfo.Filename)) then begin
       AnUnitInfo.IsPartOfProject:=false;
       HasChanged:=true;
     end;

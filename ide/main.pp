@@ -8431,8 +8431,7 @@ begin
   //DebugLn(['TMainIDE.DoShowSaveProjectAsDialog END OK']);
 end;
 
-function TMainIDE.AskSaveProject(const ContinueText, ContinueBtn: string
-  ): TModalResult;
+function TMainIDE.AskSaveProject(const ContinueText, ContinueBtn: string): TModalResult;
 begin
   if not SomethingOfProjectIsModified then exit(mrOk);
 
@@ -10841,8 +10840,7 @@ begin
 
   // if this is a virtual project then save first the project info file
   // to get a project directory
-  if Project1.IsVirtual
-  and ([sfSaveToTestDir,sfDoNotSaveVirtualFiles]*Flags=[])
+  if Project1.IsVirtual and ([sfSaveToTestDir,sfDoNotSaveVirtualFiles]*Flags=[])
   then begin
     Result:=SaveProjectInfo(Flags);
     if Result in [mrCancel,mrAbort] then exit;
