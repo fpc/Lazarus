@@ -40,9 +40,9 @@ procedure WriteXMLFile(doc: TXMLDocument; const AFileName: String; Flags: TXMLWr
 procedure WriteXMLFile(doc: TXMLDocument; var AFile: Text; Flags: TXMLWriterFlags = []); overload;
 procedure WriteXMLFile(doc: TXMLDocument; AStream: TStream; Flags: TXMLWriterFlags = []); overload;
 
-procedure WriteXML(Element: TDOMNode; const AFileName: String); overload;
-procedure WriteXML(Element: TDOMNode; var AFile: Text); overload;
-procedure WriteXML(Element: TDOMNode; AStream: TStream); overload;
+procedure WriteXML(Element: TDOMNode; const AFileName: String; Flags: TXMLWriterFlags = []); overload;
+procedure WriteXML(Element: TDOMNode; var AFile: Text; Flags: TXMLWriterFlags = []); overload;
+procedure WriteXML(Element: TDOMNode; AStream: TStream; Flags: TXMLWriterFlags = []); overload;
 
 
 // ===================================================================
@@ -902,19 +902,19 @@ begin
   end;
 end;
 
-procedure WriteXML(Element: TDOMNode; const AFileName: String);
+procedure WriteXML(Element: TDOMNode; const AFileName: String; Flags: TXMLWriterFlags = []);
 begin
-  WriteXMLFile(TXMLDocument(Element), AFileName);
+  WriteXMLFile(TXMLDocument(Element), AFileName, Flags);
 end;
 
-procedure WriteXML(Element: TDOMNode; var AFile: Text);
+procedure WriteXML(Element: TDOMNode; var AFile: Text; Flags: TXMLWriterFlags = []);
 begin
-  WriteXMLFile(TXMLDocument(Element), AFile);
+  WriteXMLFile(TXMLDocument(Element), AFile, Flags);
 end;
 
-procedure WriteXML(Element: TDOMNode; AStream: TStream);
+procedure WriteXML(Element: TDOMNode; AStream: TStream; Flags: TXMLWriterFlags = []);
 begin
-  WriteXMLFile(TXMLDocument(Element), AStream);
+  WriteXMLFile(TXMLDocument(Element), AStream, Flags);
 end;
 
 
