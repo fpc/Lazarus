@@ -481,18 +481,22 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomEdit.TextChanged;
 var
-  Temp : String;
+  Cur, Temp: String;
   CPos: TPoint;
   SStart, SLen: Integer;
 begin
   //debugln('TCustomEdit.TextChanged ',DbgSName(Self));
-  if FCharCase in [ecUppercase, ecLowercase] then begin
+  if FCharCase in [ecUppercase, ecLowercase] then
+  begin
+    // use a local variable to reduce amounts of widgetset calls
+    Cur := Text;
     //check to see if the charcase should affect the text.
     if FCharCase = ecUppercase then
-      Temp := UTF8UpperCase(Text)
+      Temp := UTF8UpperCase(Cur)
     else
-      Temp := UTF8LowerCase(Text);
-    if (Temp <> Text) then begin
+      Temp := UTF8LowerCase(Cur);
+    if (Temp <> Cur) then
+    begin
       CPos := CaretPos;
       SStart := SelStart;
       SLen := SelLength;
