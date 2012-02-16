@@ -34,7 +34,7 @@
 
 
 { $define DebugSimplePoFiles}
-{ $define ReadPoTextPChar}  //define this to use the old ReadPoText method which uses PChars
+{$define ReadPoTextPChar}  //define this to use the old ReadPoText method which uses PChars
 
 
 unit SimplePoFiles;
@@ -490,6 +490,12 @@ msgid "Do not show splash screen"
 msgstr ""
 
 }
+type
+  TMsg = (
+    mid,
+    mstr,
+    mctx
+    );
 var
   l: Integer;
   LineLen: Integer;
@@ -497,52 +503,54 @@ var
   LineStart: PChar;
   LineEnd: PChar;
   Identifier: String;
-  MsgID,MsgStr,PrevMsgID: String;
-  Line: String;
+  PrevMsgID: String;
   Comments: String;
-  Context: string;
   Flags: string;
   TextEnd: PChar;
   i: Integer;
+  //OldLineStartPos: PtrUInt;
+  //NewSrc: String;
   s: String;
   Handled: Boolean;
+  CurMsg: TMsg;
+  Msg: array[TMsg] of string;
 
   procedure ResetVars;
   begin
-    MsgId := '';
-    MsgStr := '';
-    Line := '';
+    CurMsg:=mid;
+    Msg[mid]:='';
+    Msg[mstr]:='';
+    Msg[mctx]:='';
     Identifier := '';
     Comments := '';
-    Context := '';
     Flags := '';
     PrevMsgID := '';
   end;
 
   procedure AddEntry;
-  var
-    Item: TPOFileItem;
+  //var
+  //  Item: TPOFileItem;
   begin
     if Identifier<>'' then begin
       // check for unresolved duplicates in po file
-      {Item := TPOFileItem(FOriginalToItem.Data[MsgID]);
+      {Item := TPOFileItem(FOriginalToItem.Data[Msg[mid]]);
       if (Item<>nil) then begin
         // fix old duplicate context
         if Item.Context='' then
-          Item.Context:=Item.Identifier;
+          Item.Context:=Item.IdentifierLow;
         // set context of new duplicate
-        if Context='' then
-          Context := Identifier;
+        if Msg[mctx]='' then
+          Msg[mctx] := Identifier;
         // if old duplicate was translated and
         // new one is not, provide a initial translation
-        if MsgStr='' then
-          MsgStr := Item.Translation;
+        if Msg[mstr]='' then
+          Msg[mstr] := Item.Translation;
       end;}
-      Add(Identifier,MsgID,MsgStr,Comments,Context,Flags,PrevMsgID,0);
+      Add(Identifier,Msg[mid],Msg[mstr],Comments,Msg[mctx],Flags,PrevMsgID,0);
       ResetVars;
     end else
-    if (Line<>'') and (FHeader=nil) then begin
-      FHeader := TPOFileItem.Create('',MsgID,Line);
+    if (Msg[CurMsg]<>'') and (FHeader=nil) then begin
+      FHeader := TPOFileItem.Create('',Msg[mid],Msg[CurMsg]);
       FHeader.Comments:=Comments;
       ResetVars;
     end
@@ -558,10 +566,7 @@ begin
   LineStart:=p;
   TextEnd:=p+l;
 
-  Identifier:='';
-  Comments:='';
-  Line:='';
-  Flags:='';
+  ResetVars;
 
   while LineStart<TextEnd do begin
     LineEnd:=LineStart;
@@ -590,7 +595,7 @@ begin
               PrevMsgID:=PrevMsgID+GetUTF8String(LineStart+length('#| msgid "'),LineEnd-1);
               Handled:=true;
             end else if IsKey(LineStart, '#| "') then begin
-              Line := Line + GetUTF8String(LineStart+length('#| "'),LineEnd-1);
+              Msg[CurMsg] := Msg[CurMsg] + GetUTF8String(LineStart+length('#| "'),LineEnd-1);
               Handled:=true;
             end;
           ',':
@@ -613,24 +618,27 @@ begin
           case LineStart[3] of
           'i':
             if IsKey(LineStart,'msgid "') then begin
-              MsgID:=MsgID+GetUTF8String(LineStart+length('msgid "'),LineEnd-1);
+              CurMsg:=mid;
+              Msg[CurMsg]:=Msg[CurMsg]+GetUTF8String(LineStart+length('msgid "'),LineEnd-1);
               Handled:=true;
             end;
           's':
             if IsKey(LineStart,'msgstr "') then begin
-              MsgStr:=MsgStr+GetUTF8String(LineStart+length('msgstr "'),LineEnd-1);
+              CurMsg:=mstr;
+              Msg[CurMsg]:=Msg[CurMsg]+GetUTF8String(LineStart+length('msgstr "'),LineEnd-1);
               Handled:=true;
             end;
           'c':
             if IsKey(LineStart, 'msgctxt "') then begin
-              Context:=GetUTF8String(LineStart+length('msgctxt "'), LineEnd-1);
+              CurMsg:=mctx;
+              Msg[CurMsg]:=Msg[CurMsg]+GetUTF8String(LineStart+length('msgctxt "'), LineEnd-1);
               Handled:=true;
             end;
           end;
         end;
       '"':
         begin
-          if (MsgID='')
+          if (Msg[mid]='')
           and IsKey(LineStart,'"Content-Type: text/plain; charset=') then
           begin
             FCharSet:=GetUTF8String(LineStart+length('"Content-Type: text/plain; charset='),LineEnd);
@@ -650,7 +658,8 @@ begin
               LineLen:=LineEnd-LineStart;}
             end;
           end;
-          Line := Line + GetUTF8String(LineStart+1,LineEnd-1);
+          // continuation
+          Msg[CurMsg]:=Msg[CurMsg]+GetUTF8String(LineStart+1,LineEnd-1);
           Handled:=true;
         end;
       end;
@@ -658,7 +667,7 @@ begin
         AddEntry;
     end;
     LineStart:=LineEnd+1;
-    while (LineStart<TextEnd) and (LineStart^ in [#10,#13]) do inc(LineStart);
+    while (LineStart^ in [#10,#13]) do inc(LineStart);
   end;
   AddEntry;
 
