@@ -988,6 +988,8 @@
         <short>
           <var>CompareNameWithItem</var> - the name for comparison with the item</short>
       </element>
+    <element name="TAvgLvlTree.GetEnumerator"><short>The default enumerator over the nodes from left to right, low to high</short>
+      </element>
     </module>
     <!-- AvgLvlTree -->
   </package>

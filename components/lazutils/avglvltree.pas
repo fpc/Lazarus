@@ -51,6 +51,18 @@ type
 
   TAvgLvlTreeNodeMemManager = class;
 
+  { TAvgLvlTreeNodeEnumerator - left to right, low to high }
+
+  TAvgLvlTreeNodeEnumerator = class
+  private
+    FTree: TAvgLvlTree;
+    FCurrent: TAvgLvlTreeNode;
+  public
+    constructor Create(Tree: TAvgLvlTree);
+    function MoveNext: Boolean;
+    property Current: TAvgLvlTreeNode read FCurrent;
+  end;
+
   { TAvgLvlTree }
 
   TAvgLvlTree = class
@@ -109,6 +121,7 @@ type
     constructor CreateObjectCompare(OnCompareMethod: TObjectSortCompare);
     constructor Create;
     destructor Destroy; override;
+    function GetEnumerator: TAvgLvlTreeNodeEnumerator;
   end;
   PAvgLvlTree = ^TAvgLvlTree;
 
@@ -404,6 +417,22 @@ end;
 function CompareAnsiStringWithStrToStrItemI(Key, Data: Pointer): Integer;
 begin
   Result:=CompareText(AnsiString(Key),PStringMapItem(Data)^.Name);
+end;
+
+{ TAvgLvlTreeNodeEnumerator }
+
+constructor TAvgLvlTreeNodeEnumerator.Create(Tree: TAvgLvlTree);
+begin
+  FTree:=Tree;
+end;
+
+function TAvgLvlTreeNodeEnumerator.MoveNext: Boolean;
+begin
+  if FCurrent=nil then
+    FCurrent:=FTree.FindLowest
+  else
+    FCurrent:=FTree.FindSuccessor(FCurrent);
+  Result:=FCurrent<>nil;
 end;
 
 function TStringToPointerTree.GetValues(const s: string): Pointer;
@@ -1251,6 +1280,11 @@ destructor TAvgLvlTree.Destroy;
 begin
   Clear;
   inherited Destroy;
+end;
+
+function TAvgLvlTree.GetEnumerator: TAvgLvlTreeNodeEnumerator;
+begin
+  Result:=TAvgLvlTreeNodeEnumerator.Create(Self);
 end;
 
 function TAvgLvlTree.Find(Data: Pointer): TAvgLvlTreeNode;
