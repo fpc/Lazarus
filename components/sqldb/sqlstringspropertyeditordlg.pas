@@ -164,7 +164,8 @@ begin
   SQLHighlighter.SQLDIalect:=D;
   SQLHighlighter.Enabled:=True;
 {$ifdef unix}
-  {$ifndef darwin}
+  // keep this only because of gtk1
+  {$ifdef LCLGtk}
   SQLEditor.Font.Name:='-adobe-courier-medium-r-normal-*-8-*-*-*-m-*-iso10646-1';
   {$endif}
 {$endif}
