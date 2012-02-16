@@ -597,7 +597,6 @@ type
     FIncrementalSearchStr, FIncrementalFoundStr: string;
     FIncrementalSearchBackwards : Boolean;
     FIncrementalSearchEditor: TSourceEditor; // editor with active search (MWE:shouldnt all FIncrementalSearch vars go to that editor ?)
-    FKeyStrokes: TSynEditKeyStrokes;
     FLastCodeBuffer: TCodeBuffer;
     FProcessingCommand: boolean;
     FSourceEditorList: TList; // list of TSourceEditor
@@ -723,8 +722,6 @@ type
     function GetEditors(Index:integer): TSourceEditor;
 
     property Manager: TSourceEditorManager read FManager;
-
-    procedure KeyDownBeforeInterface(var Key: Word; Shift: TShiftState); override;
 
     procedure BeginAutoFocusLock;
     procedure EndAutoFocusLock;
@@ -5063,10 +5060,6 @@ begin
   FSourceEditorList := TList.Create;
   FHistoryList := TList.create;
 
-  // key mapping
-  FKeyStrokes:=TSynEditKeyStrokes.Create(Self);
-  EditorOpts.KeyMap.AssignTo(FKeyStrokes,TSourceEditorWindowInterface);
-
   // popup menu
   BuildPopupMenu;
 
@@ -5113,7 +5106,6 @@ begin
 
   for i:=FSourceEditorList.Count-1 downto 0 do
     Editors[i].Free;
-  FKeyStrokes.Free;
   FSourceEditorList.Free;
   FHistoryList.Free;
 
@@ -7277,7 +7269,6 @@ Begin
   for i := 0 to EditorCount-1 do
     Editors[i].RefreshEditorSettings;
 
-  EditorOpts.KeyMap.AssignTo(FKeyStrokes,TSourceEditorWindowInterface);
   if EditorOpts.ShowTabCloseButtons then
     FNoteBook.Options:=FNoteBook.Options+[nboShowCloseButtons]
   else
@@ -7318,47 +7309,6 @@ begin
       if EditorOpts.DoNotWarnForFont<>CurFont.Name then begin
         EditorOpts.DoNotWarnForFont:=CurFont.Name;
         EditorOpts.Save;
-      end;
-    end;
-  end;
-end;
-
-procedure TSourceNotebook.KeyDownBeforeInterface(var Key: Word;
-  Shift: TShiftState);
-var i, Command: integer;
-Begin
-  inherited KeyDown(Key,Shift);
-  if not assigned(Manager) then exit;
-  i := FKeyStrokes.FindKeycode(Key, Shift);
-  if i>=0 then begin
-    Command:=FKeyStrokes[i].Command;
-    case Command of
-
-    ecGotoMarker0..ecGotoMarker9:
-      begin
-        if Assigned(Manager.OnGotoBookmark) then
-          Manager.OnGotoBookmark(ActiveEditor, Command - ecGotoMarker0, False);
-        Key:=0;
-      end;
-
-    ecSetMarker0..ecSetMarker9:
-      begin
-        if Assigned(Manager.OnSetBookmark) then
-          Manager.OnSetBookmark(GetActiveSE, Command - ecSetMarker0, False);
-        Key:=0;
-      end;
-
-    ecToggleMarker0..ecToggleMarker9:
-      begin
-        if Assigned(Manager.OnSetBookmark) then
-          Manager.OnSetBookmark(GetActiveSE, Command - ecToggleMarker0, True);
-        Key:=0;
-      end;
-
-    ecClose:
-      begin
-        CloseClicked(Self);
-        Key:=0;
       end;
     end;
   end;
