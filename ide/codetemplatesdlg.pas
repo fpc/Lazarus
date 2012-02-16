@@ -969,8 +969,7 @@ begin
     TemplateSynEdit.Highlighter:=nil;
   EditorOpts.SetMarkupColors(TemplateSynEdit);
   EditorOpts.GetSynEditSettings(TemplateSynEdit);
-  EditorOpts.KeyMap.AssignTo(TemplateSynEdit.KeyStrokes,
-                             TSourceEditorWindowInterface);
+  EditorOpts.AssignKeyMapTo(TemplateSynEdit);
   TemplateSynEdit.Gutter.Visible:=false;
 
   // init SynAutoComplete
