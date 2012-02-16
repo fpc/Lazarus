@@ -2722,9 +2722,6 @@ var
       {Draw prefix line}
       Polyline(DC, PPoint(@Points[0]), 2);
     end;
-    {$IFDEF VerboseFonts}
-    DebugLn(['TGtk2WidgetSet.CreateFontIndirectEx END Result=',dbgs(Pointer(PtrInt(Result)))]);
-    {$ENDIF}
   end;
 
 begin
