@@ -148,6 +148,13 @@ type
     var Handled: boolean; var Command: TSynEditorCommand;
     var AChar: TUTF8Char;
     Data: pointer; HandlerData: pointer) of object;
+  THookedCommandFlag = (
+    hcfInit,     // run before On[User]CommandProcess (outside UndoBlock / should not do execution)
+    hcfPreExec,  // Run before CommandProcessor (unless handled by On[User]CommandProcess)
+    hcfPostExec, // Run after CommandProcessor (unless handled by On[User]CommandProcess)
+    hcfFinish    // Run at the very end
+  );
+  THookedCommandFlags = set of THookedCommandFlag;
 
   THookedKeyTranslationEvent = procedure(Sender: TObject;
     Code: word; SState: TShiftState; var Data: pointer; var IsStartOfCombo: boolean;
@@ -772,10 +779,8 @@ type
     procedure MBCSGetSelRangeInLineWhenColumnSelectionMode(const s: string;
       var ColFrom, ColTo: Integer);
 {$ENDIF}
-    procedure NotifyHookedCommandHandlers(AfterProcessing: boolean;
-      var Command: TSynEditorCommand;
-      var AChar: TUTF8Char;
-      Data: pointer); virtual;
+    procedure NotifyHookedCommandHandlers(var Command: TSynEditorCommand;
+      var AChar: TUTF8Char; Data: pointer; ATime: THookedCommandFlag); virtual;
     function NextWordLogicalPos(ABoundary: TLazSynWordBoundary = swbWordBegin; WordEndForDelete : Boolean = false): TPoint;
     function PrevWordLogicalPos(ABoundary: TLazSynWordBoundary = swbWordBegin): TPoint;
     procedure RecalcCharExtent;
@@ -943,7 +948,7 @@ type
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     procedure RegisterCommandHandler(AHandlerProc: THookedCommandEvent;
-      AHandlerData: pointer);
+      AHandlerData: pointer; AFlags: THookedCommandFlags = [hcfPreExec, hcfPostExec]);
     procedure UnregisterCommandHandler(AHandlerProc: THookedCommandEvent);
 
     procedure RegisterMouseActionSearchHandler(AHandlerProc: TSynEditMouseActionSearchProc);
@@ -1315,11 +1320,12 @@ type
 
   THookedCommandHandlerEntry = class(TObject)
   private
-    fEvent: THookedCommandEvent;
-    fData: pointer;
+    FEvent: THookedCommandEvent;
+    FData: pointer;
+    FFlags: THookedCommandFlags;
     function Equals(AEvent: THookedCommandEvent): boolean; reintroduce;
   public
-    constructor Create(AEvent: THookedCommandEvent; AData: pointer);
+    constructor Create(AEvent: THookedCommandEvent; AData: pointer; AFlags: THookedCommandFlags);
   end;
 
 
@@ -1506,12 +1512,13 @@ end;
 
 { THookedCommandHandlerEntry }
 
-constructor THookedCommandHandlerEntry.Create(AEvent: THookedCommandEvent;
-  AData: pointer);
+constructor THookedCommandHandlerEntry.Create(AEvent: THookedCommandEvent; AData: pointer;
+  AFlags: THookedCommandFlags);
 begin
   inherited Create;
   fEvent := AEvent;
   fData := AData;
+  FFlags := AFlags;
 end;
 
 function THookedCommandHandlerEntry.Equals(AEvent: THookedCommandEvent): boolean;
@@ -5795,6 +5802,7 @@ begin
   {$ENDIF}
   // first the program event handler gets a chance to process the command
   InitialCmd := Command;
+  NotifyHookedCommandHandlers(Command, AChar, Data, hcfInit);
   DoOnProcessCommand(Command, AChar, Data);
   if Command <> ecNone then begin
     try
@@ -5808,14 +5816,14 @@ begin
       // notify hooked command handlers before the command is executed inside of
       // the class
       if Command <> ecNone then
-        NotifyHookedCommandHandlers(FALSE, Command, AChar, Data);
+        NotifyHookedCommandHandlers(Command, AChar, Data, hcfPreExec);
       // internal command handler
       if (Command <> ecNone) and (Command < ecUserFirst) then
         ExecuteCommand(Command, AChar, Data);
       // notify hooked command handlers after the command was executed inside of
       // the class
       if Command <> ecNone then
-        NotifyHookedCommandHandlers(TRUE, Command, AChar, Data);
+        NotifyHookedCommandHandlers(Command, AChar, Data, hcfPostExec);
       if Command <> ecNone then
         DoOnCommandProcessed(Command, AChar, Data);
 
@@ -5835,6 +5843,7 @@ begin
       {$ENDIF}
     end;
   end;
+  NotifyHookedCommandHandlers(Command, AChar, Data, hcfFinish);
 end;
 
 procedure TCustomSynEdit.ExecuteCommand(Command: TSynEditorCommand;
@@ -8387,8 +8396,8 @@ begin
     Result := 0;
 end;
 
-procedure TCustomSynEdit.RegisterCommandHandler(AHandlerProc:
-  THookedCommandEvent; AHandlerData: pointer);
+procedure TCustomSynEdit.RegisterCommandHandler(AHandlerProc: THookedCommandEvent;
+  AHandlerData: pointer; AFlags: THookedCommandFlags);
 begin
   if not Assigned(AHandlerProc) then begin
 {$IFDEF SYN_DEVELOPMENT_CHECKS}
@@ -8400,7 +8409,7 @@ begin
     fHookedCommandHandlers := TList.Create;
   if FindHookedCmdEvent(AHandlerProc) = -1 then
     fHookedCommandHandlers.Add(THookedCommandHandlerEntry.Create(
-      AHandlerProc, AHandlerData))
+      AHandlerProc, AHandlerData, AFlags))
   else
 {$IFDEF SYN_DEVELOPMENT_CHECKS}
     raise Exception.CreateFmt('Event handler (%p, %p) already registered',
@@ -8471,9 +8480,8 @@ begin
   TSynStatusChangedHandlerList(FStatusChangedList).Remove(AStatusChangeProc);
 end;
 
-procedure TCustomSynEdit.NotifyHookedCommandHandlers(AfterProcessing: boolean;
-  var Command: TSynEditorCommand;
-  var AChar: TUTF8Char; Data: pointer);
+procedure TCustomSynEdit.NotifyHookedCommandHandlers(var Command: TSynEditorCommand;
+  var AChar: TUTF8Char; Data: pointer; ATime: THookedCommandFlag);
 var
   Handled: boolean;
   i: integer;
@@ -8482,10 +8490,11 @@ begin
   Handled := FALSE;
   for i := 0 to GetHookedCommandHandlersCount - 1 do begin
     Entry := THookedCommandHandlerEntry(fHookedCommandHandlers[i]);
+    if not(ATime in Entry.FFlags) then continue;
     // NOTE: Command should NOT be set to ecNone, because this might interfere
     // with other handlers.  Set Handled to False instead (and check its value
     // to not process the command twice).
-    Entry.fEvent(Self, AfterProcessing, Handled, Command, AChar, Data,
+    Entry.fEvent(Self, ATime in [hcfPostExec, hcfFinish], Handled, Command, AChar, Data,
       Entry.fData);
   end;
   if Handled then

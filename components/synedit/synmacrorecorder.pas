@@ -518,7 +518,7 @@ var
 begin
   if AfterProcessing then
   begin
-    if (Sender = fCurrentEditor) and (State = msRecording) and (not Handled) then
+    if (Sender = fCurrentEditor) and (State = msRecording) and (Command <> ecNone) then
     begin
       iEvent := CreateMacroEvent( Command );
       iEvent.Initialize( Command, aChar, Data );

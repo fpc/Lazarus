@@ -129,7 +129,7 @@ type
   published
     property ShortCut: TShortCut read fShortCut write SetShortCut
       stored IsShortCutStored;
-  end;
+  end deprecated;
 
   { use TAbstractSynCompletion for non-visual completion }
 
@@ -149,10 +149,10 @@ type
   public
     procedure AddEditor(aEditor: TCustomSynEdit);
     property CurrentString: String read fCurrentString write SetCurrentString;
-  end;
+  end deprecated;
 
-function NewPluginCommand: TSynEditorCommand;
-procedure ReleasePluginCommand(aCmd: TSynEditorCommand);
+function NewPluginCommand: TSynEditorCommand; deprecated;
+procedure ReleasePluginCommand(aCmd: TSynEditorCommand); deprecated;
 
 implementation
 
@@ -169,22 +169,13 @@ uses
   {$ENDIF}
   SynEditStrConst;
 
-const
-  ecPluginBase = 64000;
-
-var
-  gCurrentCommand: integer;
-
 function NewPluginCommand: TSynEditorCommand;
 begin
-  Result := TSynEditorCommand(gCurrentCommand);
-  Inc( gCurrentCommand );
+  Result := ecPluginFirst + AllocatePluginKeyRange(1);
 end;
 
 procedure ReleasePluginCommand(aCmd: TSynEditorCommand);
 begin
-  if aCmd = Pred( gCurrentCommand ) then
-    gCurrentCommand := aCmd;
 end;
 
 { TLazSynMultiEditPlugin }
@@ -374,7 +365,8 @@ end;
 constructor TAbstractSynSingleHookPlugin.Create(aOwner: TComponent);
 begin
   inherited;
-  fCommandID := NewPluginCommand;
+  // TODO: subclasses should implement per class, not per instance
+  fCommandID := ecPluginFirst + AllocatePluginKeyRange(1);
   fShortCut := DefaultShortCut;
 end;
 
@@ -387,7 +379,7 @@ destructor TAbstractSynSingleHookPlugin.Destroy;
 begin
   if Executing then
     Cancel;
-  ReleasePluginCommand( CommandID );
+  //ReleasePluginCommand( CommandID );
   inherited;
 end;
 
@@ -581,8 +573,5 @@ procedure TAbstractSynCompletion.AddEditor(aEditor: TCustomSynEdit);
 begin
   inherited AddEditor(aEditor);
 end;
-
-initialization
-  gCurrentCommand := ecPluginBase;
 
 end.
