@@ -26,6 +26,13 @@
 
 { $DEFINE CHECK_POSITION}
 
+{ TLazAccessibleObjectEnumerator }
+
+function TLazAccessibleObjectEnumerator.GetCurrent: TLazAccessibleObject;
+begin
+  Result:=TLazAccessibleObject(FCurrent.Data);
+end;
+
 { TLazAccessibleObject }
 
 function TLazAccessibleObject.GetHandle: PtrInt;
@@ -251,6 +258,11 @@ begin
   Result := nil;
   if OwnerControl = nil then Exit;
   Result := OwnerControl.GetChildAccessibleObjectAtPos(APos);
+end;
+
+function TLazAccessibleObject.GetEnumerator: TLazAccessibleObjectEnumerator;
+begin
+  Result:=TLazAccessibleObjectEnumerator.Create(FChildrenSortedForDataObject);
 end;
 
 {------------------------------------------------------------------------------

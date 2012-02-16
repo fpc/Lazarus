@@ -14213,6 +14213,8 @@ End;
       <element name="TWinControl.AutoSizeDelayedHandle">
         <short>Returns true if AutoSize should be skipped / delayed because of its handle.</short>
       </element>
+    <element name="TLazAccessibleObject.GetEnumerator"><short>Default enumerator for the children</short>
+      </element>
     </module>
     <!-- Controls -->
   </package>

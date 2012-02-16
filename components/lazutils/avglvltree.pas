@@ -54,7 +54,7 @@ type
   { TAvgLvlTreeNodeEnumerator - left to right, low to high }
 
   TAvgLvlTreeNodeEnumerator = class
-  private
+  protected
     FTree: TAvgLvlTree;
     FCurrent: TAvgLvlTreeNode;
   public

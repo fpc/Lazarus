@@ -925,6 +925,17 @@ type
   // The Child Accessible Objects are designed for non-TControl children
   // of a TCustomControl descendent, for example the items of a TTreeView
 
+  TLazAccessibleObject = class;
+
+  { TLazAccessibleObjectEnumerator }
+
+  TLazAccessibleObjectEnumerator = class(TAvgLvlTreeNodeEnumerator)
+  private
+    function GetCurrent: TLazAccessibleObject;
+  public
+    property Current: TLazAccessibleObject read GetCurrent;
+  end;
+
   { TLazAccessibleObject }
 
   TLazAccessibleObject = class
@@ -972,6 +983,7 @@ type
     property Position: TPoint read GetPosition write SetPosition;
     property Size: TSize read GetSize write SetSize;
     property Handle: PtrInt read GetHandle write SetHandle;
+    function GetEnumerator: TLazAccessibleObjectEnumerator;
   end;
 
 {* Note on TControl.Caption
