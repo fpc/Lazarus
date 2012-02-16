@@ -110,7 +110,6 @@ type
     FModuleList: TStringList;
     procedure RemoveTaggedItems(aTag: Integer);
     procedure RemoveUntaggedModules;
-    function IsKey(Txt, Key: PChar): boolean;
   public
     constructor Create;
     constructor Create(const AFilename: String; Full:boolean=false);
@@ -166,6 +165,23 @@ function UTF8ToSystemCharSet(const s: string): string; inline;
 function UpdatePoFile(Files: TStrings; const POFilename: string): boolean;
 
 implementation
+
+function IsKey(Txt, Key: PChar): boolean;
+begin
+  if Txt=nil then exit(false);
+  if Key=nil then exit(true);
+  repeat
+    if Key^=#0 then exit(true);
+    if Txt^<>Key^ then exit(false);
+    inc(Key);
+    inc(Txt);
+  until false;
+end;
+
+function GetUTF8String(TxtStart, TxtEnd: PChar): string; inline;
+begin
+  Result:=UTF8CStringToUTF8String(TxtStart,TxtEnd-TxtStart);
+end;
 
 function ComparePOItems(Item1, Item2: Pointer): Integer;
 begin
@@ -496,18 +512,6 @@ begin
   end;
 end;
 
-function TPOFile.IsKey(Txt, Key: PChar): boolean;
-begin
-  if Txt=nil then exit(false);
-  if Key=nil then exit(true);
-  repeat
-    if Key^=#0 then exit(true);
-    if Txt^<>Key^ then exit(false);
-    inc(Key);
-    inc(Txt);
-  until false;
-end;
-
 constructor TPOFile.Create;
 begin
   inherited Create;
@@ -576,12 +580,6 @@ msgid "                      Do not show splash screen"
 msgstr ""
 
 }
-const
-  ciNone      = 0;
-  ciMsgID     = 1;
-  ciMsgStr    = 2;
-  ciPrevMsgID = 3;
-  
 var
   l: Integer;
   LineLen: Integer;
@@ -595,12 +593,12 @@ var
   Context: string;
   Flags: string;
   TextEnd: PChar;
-  i, CollectedIndex: Integer;
+  i: Integer;
   OldLineStartPos: PtrUInt;
   NewSrc: String;
   s: String;
   Handled: Boolean;
-  
+
   procedure ResetVars;
   begin
     MsgId := '';
@@ -611,24 +609,12 @@ var
     Context := '';
     Flags := '';
     PrevMsgID := '';
-    CollectedIndex := ciNone;
   end;
   
-  procedure StoreCollectedLine;
-  begin
-    case CollectedIndex of
-      ciMsgID: MsgID := Line;
-      ciMsgStr: MsgStr := Line;
-      ciPrevMsgID: PrevMsgID := Line;
-    end;
-    CollectedIndex := ciNone;
-  end;
-
   procedure AddEntry;
   var
     Item: TPOFileItem;
   begin
-    StoreCollectedLine;
     if Identifier<>'' then begin
       // check for unresolved duplicates in po file
       Item := TPOFileItem(FOriginalToItem.Data[MsgID]);
@@ -654,13 +640,6 @@ var
     end
   end;
 
-  procedure StartNextLine(AIndex: Integer; TxtStart: PChar);
-  begin
-    StoreCollectedLine;
-    CollectedIndex := AIndex;
-    Line:=UTF8CStringToUTF8String(TxtStart,LineEnd-TxtStart-1); // -1 for the ending "
-  end;
-
 begin
   if Txt='' then exit;
   s:=Txt;
@@ -673,7 +652,6 @@ begin
   Comments:='';
   Line:='';
   Flags:='';
-  CollectedIndex := ciNone;
 
   while LineStart<TextEnd do begin
     LineEnd:=LineStart;
@@ -699,16 +677,16 @@ begin
             end;
           '|':
             if IsKey(LineStart,'#| msgid "') then begin
-              StartNextLine(ciPrevMsgId,LineStart+length('#| msgid "'));
+              PrevMsgID:=PrevMsgID+GetUTF8String(LineStart+length('#| msgid "'),LineEnd-1);
               Handled:=true;
             end else if IsKey(LineStart, '#| "') then begin
-              Line := Line + UTF8CStringToUTF8String(LineStart+5,LineLen-6);
+              Line := Line + GetUTF8String(LineStart+length('#| "'),LineEnd-1);
               Handled:=true;
             end;
           ',':
             if LineStart[2]=' ' then begin
               // '#, '
-              Flags := copy(LineStart, 4, LineLen-3);
+              Flags := GetUTF8String(LineStart+3,LineEnd);
               Handled:=true;
             end;
           end;
@@ -716,7 +694,7 @@ begin
             // '#'
             if Comments<>'' then
               Comments := Comments + LineEnding;
-            Comments := Comments + Copy(LineStart, 1, LineLen);
+            Comments := Comments + GetUTF8String(LineStart+1,LineEnd);
             Handled:=true;
           end;
         end;
@@ -725,17 +703,17 @@ begin
           case LineStart[3] of
           'i':
             if IsKey(LineStart,'msgid "') then begin
-              StartNextLine(ciMsgId,LineStart+length('msgid "'));
+              MsgID:=MsgID+GetUTF8String(LineStart+length('msgid "'),LineEnd-1);
               Handled:=true;
             end;
           's':
             if IsKey(LineStart,'msgstr "') then begin
-              StartNextLine(ciMsgStr,LineStart+length('msgstr "'));
+              MsgStr:=MsgStr+GetUTF8String(LineStart+length('msgstr "'),LineEnd-1);
               Handled:=true;
             end;
           'c':
             if IsKey(LineStart, 'msgctxt "') then begin
-              Context:= Copy(LineStart, 10, LineLen-10);
+              Context:=GetUTF8String(LineStart+length('msgctxt "'), LineEnd-1);
               Handled:=true;
             end;
           end;
@@ -745,7 +723,7 @@ begin
           if (MsgID='')
           and IsKey(LineStart,'"Content-Type: text/plain; charset=') then
           begin
-            FCharSet:=copy(LineStart,36,LineLen-38);
+            FCharSet:=GetUTF8String(LineStart+length('"Content-Type: text/plain; charset='),LineEnd);
             if SysUtils.CompareText(FCharSet,'UTF-8')<>0 then begin
               // convert encoding to UTF-8
               OldLineStartPos:=PtrUInt(LineStart-PChar(s))+1;
@@ -762,7 +740,7 @@ begin
               LineLen:=LineEnd-LineStart;
             end;
           end;
-          Line := Line + UTF8CStringToUTF8String(LineStart+1,LineLen-2);
+          Line := Line + GetUTF8String(LineStart+1,LineEnd-1);
           Handled:=true;
         end;
       end;
