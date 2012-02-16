@@ -206,7 +206,8 @@ var
     if DrawResult <> [] then
       MsgResult := 0;
 
-    if not (cdrSkipDefault in DrawResult) then
+    if not (cdrSkipDefault in DrawResult) and
+       (DrawInfo^.nmcd.dwDrawStage and CDDS_ITEMPREPAINT = CDDS_ITEMPREPAINT) then
     begin
       DrawInfo^.clrText := ColorToRGB(ALV.Canvas.Font.Color);
       DrawInfo^.clrTextBk := ColorToRGB(ALV.Canvas.Brush.Color);
