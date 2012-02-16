@@ -155,6 +155,28 @@ const
 
 implementation
 
+{$IFDEF ReadPoTextPChar}
+function IsKey(Txt, Key: PChar): boolean;
+begin
+  if Txt=nil then exit(false);
+  if Key=nil then exit(true);
+  repeat
+    if Key^=#0 then exit(true);
+    if Txt^<>Key^ then exit(false);
+    inc(Key);
+    inc(Txt);
+  until false;
+end;
+
+function GetUTF8String(TxtStart, TxtEnd: PChar): string; inline;
+begin
+  SetLength(Result,TxtEnd-TxtStart);
+  if Result<>'' then
+    Move(TxtStart^,Result[1],length(Result));
+  //Result:=UTF8CStringToUTF8String(TxtStart,TxtEnd-TxtStart);
+end;
+{$ENDIF}
+
 {$ifdef DebugSimplePoFiles}
 var
   T0, T1: DWord; function GetTickCount: DWord;
@@ -468,25 +490,8 @@ msgid "Do not show splash screen"
 msgstr ""
 
 }
-const
-  sCommentIdentifier: PChar = '#: ';
-  sCharSetIdentifier: PChar = '"Content-Type: text/plain; charset=';
-  sMsgID: PChar = 'msgid "';
-  sMsgStr: PChar = 'msgstr "';
-  sMsgCtxt: Pchar = 'msgctxt "';
-  sFlags: Pchar = '#, ';
-  sPrevMsgID: PChar = '#| msgid "';
-  sPrevStr: PChar = '#| "';
-
-const
-  ciNone      = 0;
-  ciMsgID     = 1;
-  ciMsgStr    = 2;
-  ciPrevMsgID = 3;
-
 var
   l: Integer;
-  LineNr: Integer;
   LineLen: Integer;
   p: PChar;
   LineStart: PChar;
@@ -498,10 +503,9 @@ var
   Context: string;
   Flags: string;
   TextEnd: PChar;
-  i, CollectedIndex: Integer;
-  OldLineStartPos: PtrUInt;
-  NewSrc: String;
+  i: Integer;
   s: String;
+  Handled: Boolean;
 
   procedure ResetVars;
   begin
@@ -513,30 +517,15 @@ var
     Context := '';
     Flags := '';
     PrevMsgID := '';
-    CollectedIndex := ciNone;
-  end;
-
-  procedure StoreCollectedLine;
-  begin
-    case CollectedIndex of
-      ciMsgID: MsgID := Line;
-      ciMsgStr: MsgStr := Line;
-      ciPrevMsgID: PrevMsgID := Line;
-    end;
-    CollectedIndex := ciNone;
   end;
 
   procedure AddEntry;
   var
     Item: TPOFileItem;
   begin
-
-
-    StoreCollectedLine;
     if Identifier<>'' then begin
       // check for unresolved duplicates in po file
-      {
-      Item := TPOFileItem(FOriginalToItem.Data[MsgID]);
+      {Item := TPOFileItem(FOriginalToItem.Data[MsgID]);
       if (Item<>nil) then begin
         // fix old duplicate context
         if Item.Context='' then
@@ -548,9 +537,8 @@ var
         // new one is not, provide a initial translation
         if MsgStr='' then
           MsgStr := Item.Translation;
-      end;
-      }
-      Add(Identifier,MsgID,MsgStr,Comments,Context,Flags,PrevMsgID, LineNr);
+      end;}
+      Add(Identifier,MsgID,MsgStr,Comments,Context,Flags,PrevMsgID,0);
       ResetVars;
     end else
     if (Line<>'') and (FHeader=nil) then begin
@@ -560,30 +548,10 @@ var
     end
   end;
 
-  function TestPrefixStr(AIndex: Integer): boolean;
-  var
-    s: string;
-    l: Integer;
-  begin
-    case aIndex of
-      ciMsgID: s:=sMsgId;
-      ciMsgStr: s:=sMsgStr;
-      ciPrevMsgId: s:=sPrevMsgId;
-    end;
-    L := Length(s);
-    result := CompareMem(LineStart, pchar(s), L);
-    if Result then begin
-      StoreCollectedLine;
-      CollectedIndex := AIndex;
-      Line:=SliceToStr(LineStart+L,LineLen-L-1);
-    end;
-  end;
-
 begin
   {$ifdef DebugSimplePoFiles}
   T0 := GetTickCount;
   {$endif}
-  if Txt='' then exit;
   s:=Txt;
   l:=length(s);
   p:=PChar(s);
@@ -594,65 +562,101 @@ begin
   Comments:='';
   Line:='';
   Flags:='';
-  CollectedIndex := ciNone;
-  LineNr := 0;
+
   while LineStart<TextEnd do begin
-    Inc(LineNr);
-
-
     LineEnd:=LineStart;
     while (not (LineEnd^ in [#0,#10,#13])) do inc(LineEnd);
     LineLen:=LineEnd-LineStart;
     if LineLen>0 then begin
-
-      if CompareMem(LineStart,sCommentIdentifier,3) then begin
-        AddEntry;
-        Identifier:=copy(s,LineStart-p+4,LineLen-3);
-        // the RTL creates identifier paths with point instead of colons
-        // fix it:
-        for i:=1 to length(Identifier) do
-          if Identifier[i]=':' then
-            Identifier[i]:='.';
-      end else if TestPrefixStr(ciMsgId) then begin
-      end else if TestPrefixStr(ciMsgStr) then begin
-      end else if TestPrefixStr(ciPrevMsgId) then begin
-      end else if CompareMem(LineStart, sMsgCtxt,9) then begin
-        Context:= Copy(LineStart, 10, LineLen-10);
-      end else if CompareMem(LineStart, sFlags, 3) then begin
-        Flags := copy(LineStart, 4, LineLen-3);
-      end else if (LineStart^='"') then begin
-        if (MsgID='') and CompareMem(LineStart,sCharSetIdentifier,35) then
+      Handled:=false;
+      case LineStart^ of
+      '#':
         begin
-
-          SetCharSet(copy(LineStart,36,LineLen-38));
-          {if SysUtils.CompareText(FCharSet,'UTF-8')<>0 then begin
-            // convert encoding to UTF-8
-            OldLineStartPos:=PtrUInt(LineStart-PChar(s))+1;
-            NewSrc:=ConvertEncoding(copy(s,OldLineStartPos,length(s)),
-                                    FCharSet,EncodingUTF8);
-            // replace text and update all pointers
-            s:=copy(s,1,OldLineStartPos-1)+NewSrc;
-            l:=length(s);
-            p:=PChar(s);
-            TextEnd:=p+l;
-            LineStart:=p+(OldLineStartPos-1);
-            LineEnd:=LineStart;
-            while (not (LineEnd^ in [#0,#10,#13])) do inc(LineEnd);
-            LineLen:=LineEnd-LineStart;
+          case LineStart[1] of
+          ':':
+            if LineStart[2]=' ' then begin
+              // '#: '
+              AddEntry;
+              Identifier:=copy(s,LineStart-p+4,LineLen-3);
+              // the RTL creates identifier paths with point instead of colons
+              // fix it:
+              for i:=1 to length(Identifier) do
+                if Identifier[i]=':' then
+                  Identifier[i]:='.';
+              Handled:=true;
+            end;
+          '|':
+            if IsKey(LineStart,'#| msgid "') then begin
+              PrevMsgID:=PrevMsgID+GetUTF8String(LineStart+length('#| msgid "'),LineEnd-1);
+              Handled:=true;
+            end else if IsKey(LineStart, '#| "') then begin
+              Line := Line + GetUTF8String(LineStart+length('#| "'),LineEnd-1);
+              Handled:=true;
+            end;
+          ',':
+            if LineStart[2]=' ' then begin
+              // '#, '
+              Flags := GetUTF8String(LineStart+3,LineEnd);
+              Handled:=true;
+            end;
           end;
-          }
+          if not Handled then begin
+            // '#'
+            if Comments<>'' then
+              Comments := Comments + LineEnding;
+            Comments := Comments + GetUTF8String(LineStart+1,LineEnd);
+            Handled:=true;
+          end;
         end;
-        Line := Line + SliceToStr(LineStart+1,LineLen-2);
-      end else if CompareMem(LineStart, sPrevStr, 4) then begin
-        Line := Line + SliceToStr(LineStart+5,LineLen-6);
-      end else if LineStart^='#' then begin
-        if Comments<>'' then
-          Comments := Comments + LineEnding;
-        Comments := Comments + Copy(LineStart, 1, LineLen);
-      end else
+      'm':
+        if (LineStart[1]='s') and (LineStart[2]='g') then begin
+          case LineStart[3] of
+          'i':
+            if IsKey(LineStart,'msgid "') then begin
+              MsgID:=MsgID+GetUTF8String(LineStart+length('msgid "'),LineEnd-1);
+              Handled:=true;
+            end;
+          's':
+            if IsKey(LineStart,'msgstr "') then begin
+              MsgStr:=MsgStr+GetUTF8String(LineStart+length('msgstr "'),LineEnd-1);
+              Handled:=true;
+            end;
+          'c':
+            if IsKey(LineStart, 'msgctxt "') then begin
+              Context:=GetUTF8String(LineStart+length('msgctxt "'), LineEnd-1);
+              Handled:=true;
+            end;
+          end;
+        end;
+      '"':
+        begin
+          if (MsgID='')
+          and IsKey(LineStart,'"Content-Type: text/plain; charset=') then
+          begin
+            FCharSet:=GetUTF8String(LineStart+length('"Content-Type: text/plain; charset='),LineEnd);
+            if SysUtils.CompareText(FCharSet,'UTF-8')<>0 then begin
+              // convert encoding to UTF-8
+              {OldLineStartPos:=PtrUInt(LineStart-PChar(s))+1;
+              NewSrc:=ConvertEncoding(copy(s,OldLineStartPos,length(s)),
+                                      FCharSet,EncodingUTF8);
+              // replace text and update all pointers
+              s:=copy(s,1,OldLineStartPos-1)+NewSrc;
+              l:=length(s);
+              p:=PChar(s);
+              TextEnd:=p+l;
+              LineStart:=p+(OldLineStartPos-1);
+              LineEnd:=LineStart;
+              while (not (LineEnd^ in [#0,#10,#13])) do inc(LineEnd);
+              LineLen:=LineEnd-LineStart;}
+            end;
+          end;
+          Line := Line + GetUTF8String(LineStart+1,LineEnd-1);
+          Handled:=true;
+        end;
+      end;
+      if not Handled then
         AddEntry;
-    end
-    else Inc(LineNr);
+    end;
     LineStart:=LineEnd+1;
     while (LineStart<TextEnd) and (LineStart^ in [#10,#13]) do inc(LineStart);
   end;
@@ -709,7 +713,6 @@ var
   Cnt: Integer;
   LineLen: Integer;
   LineNr: Integer;
-  p: Integer;
   //LineStart: PChar;
   //LineEnd: PChar;
   Identifier: String;
@@ -724,6 +727,17 @@ var
   //NewSrc: String;
   //s: String;
   CurLine: String;
+
+  function HasPrefix(const Prefix, aStr: string): boolean;
+  var
+    k: Integer;
+  begin
+    Result:=false;
+    if length(aStr)<length(Prefix) then exit;
+    for k:=1 to length(Prefix) do
+      if Prefix[k]<>aStr[k] then exit;
+    Result:=true;
+  end;
 
   procedure ResetVars;
   begin
@@ -796,7 +810,7 @@ var
       ciPrevMsgId: s:=sPrevMsgId;
     end;
     L := Length(s);
-    result := Pos(S, CurLine) = 1;
+    result := HasPrefix(S, CurLine);
     if Result then
     begin
       StoreCollectedLine;
@@ -812,7 +826,7 @@ begin
   SL := TStringList.Create;
   SL.LoadFromStream(AStream);
   try
-    if SL.Count > 0 then AdjustLinebreaks(SL.Text);
+    //if SL.Count > 0 then AdjustLinebreaks(SL.Text);
     Identifier:='';
     Comments:='';
     Line:='';
@@ -828,8 +842,7 @@ begin
       LineLen := Length(CurLine);
       if (LineLen > 0) then
       begin
-        p := Pos(sCommentIdentifier,CurLine);
-        if  (p = 1) then
+        if HasPrefix (sCommentIdentifier,CurLine) then
         begin
           //Add the Entry collected before this line (not the current line)
           AddEntry(LineNr);
@@ -849,17 +862,17 @@ begin
         end
         else if TestPrefixStr(ciPrevMsgId) then
         begin
-        end else if (Pos(sMsgCtxt, CurLine) = 1) then
+        end else if HasPrefix(sMsgCtxt, CurLine) then
         begin
           Context:= Copy(CurLine,lMsgCtxt+1,LineLen - lMsgCtxt - 1);
         end
-        else if Pos(SFlags, CurLine) = 1 then
+        else if HasPrefix(SFlags, CurLine) then
         begin
           Flags := Copy(CurLine, lFlags + 1, LineLen - lFlags);
         end
         else if (CurLine[1] = '"') then
         begin
-          if (MsgID='') and (Pos(sCharSetIdentifier,CurLine) = 1) then
+          if (MsgID='') and HasPrefix(sCharSetIdentifier,CurLine) then
           begin
 
             SetCharSet(copy(CurLine,lCharSetIdentifier+1,LineLen-lCharSetIdentifier-3));
@@ -882,7 +895,7 @@ begin
           end;
           Line := Line + Copy(CurLine,2,LineLen-2);
         end
-        else if Pos(sPrevStr,CurLine) = 1 then
+        else if HasPrefix(sPrevStr,CurLine) then
         begin
           Line := Line + Copy(CurLine,lPrevStr + 1,LineLen - lPrevStr - 1);
         end
@@ -923,6 +936,7 @@ var
   OIndex: Integer;
   //p: Integer;
 begin
+  exit;
   if (not FAllEntries) and (TranslatedValue='') then exit;
 
   Item:=TPOFileItem.Create(Identifier,OriginalValue,TranslatedValue);
