@@ -2899,12 +2899,12 @@ end;
 
 function UTF8LowerCase(const s: String): String;
 begin
-  Result := LazUTF8.UTF16ToUTF8(UnicodeLowerCase(LazUTF8.UTF8ToUTF16(s)));
+  Result := LazUTF8.UTF8LowerCase(S);
 end;
 
 function UTF8UpperCase(const s: String): String;
 begin
-  Result := LazUTF8.UTF16ToUTF8(UnicodeUpperCase(LazUTF8.UTF8ToUTF16(s)));
+  Result := LazUTF8.UTF8UpperCase(s);
 end;
 
 function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
