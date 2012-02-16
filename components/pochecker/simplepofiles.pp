@@ -936,7 +936,6 @@ var
   OIndex: Integer;
   //p: Integer;
 begin
-  exit;
   if (not FAllEntries) and (TranslatedValue='') then exit;
 
   Item:=TPOFileItem.Create(Identifier,OriginalValue,TranslatedValue);
