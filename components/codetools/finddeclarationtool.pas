@@ -2783,14 +2783,13 @@ var
     end;
   end;
 
-  function SearchInTypeVarConstPropDefinition: boolean;
+  function SearchInTypeVarConstGlobPropDefinition: boolean;
   // returns: true if ok to exit
   //          false if search should continue
   var
     NameNode: TCodeTreeNode;
   begin
     Result:=false;
-    //DebugLn('  SearchInTypeVarConstPropDefinition Identifier "',GetIdentifier(Params.Identifier),'" ',ExtractDefinitionName(ContextNode));
     NameNode:=ContextNode;
     if ContextNode.Desc=ctnGenericType then begin
       NameNode:=ContextNode.FirstChild;
@@ -3203,8 +3202,8 @@ begin
           MoveContextNodeToChilds;
 
         ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition,
-        ctnGlobalProperty, ctnGenericType:
-          if SearchInTypeVarConstPropDefinition then exit;
+        ctnGenericType, ctnGlobalProperty:
+          if SearchInTypeVarConstGlobPropDefinition then exit;
 
         ctnIdentifier:
           if (ContextNode.Parent.Desc in [ctnConstDefinition,ctnVarDefinition])
@@ -6131,9 +6130,9 @@ function TFindDeclarationTool.BuildInterfaceIdentifierCache(
   procedure ScanNode(Node: TCodeTreeNode);
   begin
     case Node.Desc of
-    ctnTypeSection,ctnConstSection,ctnVarSection,ctnResStrSection:
+    ctnTypeSection,ctnConstSection,ctnVarSection,ctnResStrSection,ctnPropertySection:
       ScanChilds(Node);
-    ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition:
+    ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnGlobalProperty:
       begin
         FInterfaceIdentifierCache.Add(@Src[Node.StartPos],Node,Node.StartPos);
         ScanForEnums(Node);
