@@ -734,7 +734,9 @@ procedure GetTextExtentIgnoringAmpersands(TheFont: TGtkIntfFont;
   Str: PChar; StrLength: integer;
   lbearing, rbearing, width, ascent, descent: Pgint);
 function GetDefaultFontName: string;
+{$IFDEF GTK2OLDENUMFONTFAMILIES}
 procedure FillScreenFonts(ScreenFonts: TStrings);
+{$ENDIF}
 function GetTextHeight(DCTextMetric: TDevContextTextMetric): integer;
 {$IFDEF HasX}
 function  XGetWorkarea(var ax,ay,awidth,aheight:gint): gint;

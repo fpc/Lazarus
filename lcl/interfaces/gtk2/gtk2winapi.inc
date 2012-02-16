@@ -2915,8 +2915,8 @@ begin
   end;
 end;
 
-{.$define VerboseEnumFonts}  
-{$IFDEF VerboseGtkToDos}{$note: compare TGtk2WidgetSet.EnumFontFamilies with gtkproc.FillScreenFonts}{$ENDIF}
+{.$define VerboseEnumFonts}
+{$IFDEF GTK2OLDENUMFONTFAMILIES}
 function TGtk2WidgetSet.EnumFontFamilies(DC: HDC; Family: Pchar;
   EnumFontFamProc: FontEnumProc; LParam:Lparam):longint;
 var
@@ -3356,6 +3356,260 @@ begin
     CharSetFilter.Free;
   end;
 end;
+
+{$ELSE} //  pure pango font families
+
+function TGtk2WidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
+  Callback: FontEnumExProc; Lparam:LParam; Flags: dword): longint;
+
+type
+  TPangoFontFaces = packed record
+    FamilyName: String;
+    Faces: Array of String;
+  end;
+  PPangoFontFaces = Array of TPangoFontFaces;
+
+var
+  i: Integer;
+  FontType: Integer;
+  EnumLogFont: TEnumLogFontEx;
+  Metric: TNewTextMetricEx;
+  FontList: TStringList;
+  Faces: PPangoFontFaces;
+
+  AStyle: String;
+  StylesCount: Integer;
+  StylesList: TStringList;
+  y: Integer;
+  CharsetList: TFPList;
+
+  function Gtk2GetFontFamiliesDefault(var AList: TStringList): Integer;
+  var
+    i, j: Integer;
+    AFamilies: PPPangoFontFamily;
+    AFaces: PPPangoFontFace;
+    ANumFaces: Integer;
+  begin
+    AList.Clear;
+    SetLength(Faces, 0);
+    Result := -1;
+    AFamilies := nil;
+
+    pango_context_list_families(gdk_pango_context_get, @AFamilies, @Result);
+    SetLength(Faces, Result);
+    for i := 0 to Result - 1 do
+    begin
+      j := AList.Add(StrPas(pango_font_family_get_name(AFamilies[i])));
+      AList.Objects[j] := TObject(PtrUInt(pango_font_family_is_monospace(AFamilies[i])));
+      Faces[i].FamilyName := AList[j];
+      AFaces := nil;
+      pango_font_family_list_faces(AFamilies[i], @AFaces, @ANumFaces);
+      SetLength(Faces[i].Faces, ANumFaces);
+      for j := 0 to ANumFaces - 1 do
+        Faces[i].Faces[j] := StrPas(pango_font_face_get_face_name(AFaces[j]));
+      g_free(AFaces);
+    end;
+    g_free(AFamilies);
+  end;
+
+  function Gtk2GetFontFamilies(var List: TStringList;
+    const APitch: Byte;
+    const AFamilyName: String;
+    const AWritingSystem: Byte): Integer;
+  var
+    StrLst: TStringList;
+    NewList: TStringList;
+    S: String;
+    j: integer;
+  begin
+    Result := -1;
+    StrLst := TStringList.Create;
+    NewList := TStringList.Create;
+
+    try
+      Gtk2GetFontFamiliesDefault(StrLst);
+      for j := 0 to StrLst.Count - 1 do
+      begin
+        S := StrLst[j];
+        if APitch <> DEFAULT_PITCH then
+        begin
+          case APitch of
+            FIXED_PITCH, MONO_FONT:
+            begin
+              if StrLst.Objects[j] <> nil then
+                NewList.Add(S);
+            end;
+            VARIABLE_PITCH:
+            begin
+              if StrLst.Objects[j] = nil then
+                NewList.Add(S);
+            end;
+          end;
+        end else
+          NewList.Add(S);
+      end;
+
+      if AFamilyName <> '' then
+      begin
+        for j := NewList.Count - 1 downto 0 do
+        begin
+          S := NewList[j];;
+          if S <> AFamilyName then
+            NewList.Delete(J);
+        end;
+      end;
+      for j := 0 to NewList.Count - 1 do
+      begin
+        S := NewList[j];
+        List.Add(S);
+      end;
+      Result := List.Count;
+    finally
+      StrLst.Free;
+      NewList.Free;
+    end;
+  end;
+
+  function GetStyleAt(AIndex: Integer): String;
+  var
+    S: String;
+  begin
+    Result := '';
+    if (AIndex >= 0) and (AIndex < StylesList.Count) then
+    begin
+      S := StylesList[AIndex];
+      Result := S;
+    end;
+  end;
+
+  function FillLogFontA(const AIndex: Integer; var ALogFontA: TLogFontA;
+    var AMetric: TNewTextMetricEx; var AFontType: Integer;
+    out AStyle: String): Integer;
+  var
+    Font: PPangoFontDescription;
+    FontStyle: TPangoStyle;
+    FontWeight: TPangoWeight;
+    S: String;
+    i: Integer;
+  begin
+    S := FontList[AIndex];
+    Font := pango_font_description_from_string(PChar(S));
+
+    FontStyle := pango_font_description_get_style(Font);
+    FontWeight := pango_font_description_get_weight(Font);
+
+    ALogFontA.lfItalic := Byte(FontStyle = PANGO_STYLE_ITALIC);
+
+    // keep newer pango compat to LCL
+    if FontWeight = 380 {PANGO_WEIGHT_BOOK as of pango 1.24} then
+      FontWeight := PANGO_WEIGHT_NORMAL
+    else
+    if FontWeight = 1000 {PANGO_WEIGHT_ULTRAHEAVY as of pango 1.24} then
+      FontWeight := PANGO_WEIGHT_HEAVY;
+
+    ALogFontA.lfWeight := FontWeight;
+
+    ALogFontA.lfHeight := pango_font_description_get_size(Font);
+    if not pango_font_description_get_size_is_absolute(Font) then
+      ALogFontA.lfHeight := ALogFontA.lfHeight div PANGO_SCALE;
+
+    // pango does not have underline and strikeout params for font
+    // ALogFontA.lfUnderline := ;
+    // ALogFontA.lfStrikeOut := ;
+
+    StylesList.Clear;
+    for i := High(Faces[AIndex].Faces) downto 0 do
+      StylesList.Add(Faces[AIndex].Faces[i]);
+
+    AStyle := '';
+    Result := StylesList.Count;
+
+    if StylesList.Count > 0  then
+      AStyle := GetStyleAt(0);
+
+    // current pango support in fpc is really poor, we cannot
+    // get PangoScript since it's in pango >= 1.4
+    // FillCharsetListForFont()
+  end;
+
+begin
+  Result := 0;
+  {$ifdef VerboseEnumFonts}
+  WriteLn('[TGtk2WidgetSet.EnumFontFamiliesEx] Charset=',lpLogFont^.lfCharSet,
+  ' face ',lpLogFont^.lfFaceName,' pitchAndFamily=',lpLogFont^.lfPitchAndFamily);
+  {$endif}
+  Result := 0;
+  Metric.ntmentm.ntmAvgWidth := 0; // just to shutup compiler
+  if (lpLogFont^.lfCharSet = DEFAULT_CHARSET) and
+     (lpLogFont^.lfFaceName= '') and
+     (lpLogFont^.lfPitchAndFamily = 0) then
+  begin
+    FontType := 0;
+    FontList := TStringList.create;
+    try
+      if Gtk2GetFontFamiliesDefault(FontList) > 0 then
+      begin
+        for i := 0 to FontList.Count - 1 do
+        begin
+          EnumLogFont.elfLogFont.lfFaceName := FontList[i];
+          Result := Callback(EnumLogFont, Metric, FontType, LParam);
+        end;
+      end;
+    finally
+      FontList.free;
+    end;
+  end else
+  begin
+    Result := 0;
+    FontType := TRUETYPE_FONTTYPE;
+    FontList := TStringList.Create;
+    StylesList := TStringList.Create;
+    CharsetList := TFPList.Create;
+    for i := 0 to CharsetEncodingList.Count - 1 do
+    begin
+      if CharsetList.IndexOf(Pointer(PtrUInt(TCharSetEncodingRec(CharsetEncodingList.Items[i]^).CharSet))) = -1 then
+        CharsetList.Add(Pointer(PtrUInt(TCharSetEncodingRec(CharsetEncodingList.Items[i]^).CharSet)));
+    end;
+    try
+      if Gtk2GetFontFamilies(FontList, lpLogFont^.lfPitchAndFamily,
+        lpLogFont^.lfFaceName, lpLogFont^.lfCharSet) > 0 then
+      begin
+        for i := 0 to FontList.Count - 1 do
+        begin
+          EnumLogFont.elfLogFont.lfFaceName := FontList[i];
+          EnumLogFont.elfLogFont.lfPitchAndFamily := lpLogFont^.lfPitchAndFamily;
+          EnumLogFont.elfFullName := FontList[i];
+
+          StylesCount := FillLogFontA(i, EnumLogFont.elfLogFont, Metric, FontType,
+            AStyle);
+          EnumLogFont.elfStyle := AStyle;
+
+          if CharSetList.Count > 0 then
+            EnumLogFont.elfLogFont.lfCharSet := PtrUInt(CharsetList.Items[0]);
+
+          Result := Callback(EnumLogFont, Metric, FontType, LParam);
+          for y := 1 to StylesCount - 1 do
+          begin
+            AStyle := GetStyleAt(y);
+            EnumLogFont.elfStyle := AStyle;
+            Result := Callback(EnumLogFont, Metric, FontType, LParam);
+          end;
+          for y := 1 to CharSetList.Count - 1 do
+          begin
+            EnumLogFont.elfLogFont.lfCharSet := PtrUInt(CharsetList.Items[y]);
+            Result := Callback(EnumLogFont, Metric, FontType, LParam);
+          end;
+        end;
+      end;
+    finally
+      CharSetList.Free;
+      StylesList.Free;
+      FontList.Free;
+    end;
+  end;
+end;
+{$ENDIF}
+
 
 {------------------------------------------------------------------------------
   Method:   Ellipse

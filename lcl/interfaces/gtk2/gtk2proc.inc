@@ -9238,6 +9238,7 @@ begin
   //DebugLn('GetWindowFunction ',DbgSName(AForm),' ',dbgs(ord(ABorderStyle)),' ',binStr(Result,8));
 end;
 
+{$IFDEF GTK2OLDENUMFONTFAMILIES}
 procedure FillScreenFonts(ScreenFonts : TStrings);
 var
   Widget : PGTKWidget;
@@ -9268,6 +9269,7 @@ begin
   if (families <> nil) then
     g_free(families);
 end;
+{$ENDIF}
 
 function GetTextHeight(DCTextMetric: TDevContextTextMetric): integer;
 // IMPORTANT: Before this call:  UpdateDCTextMetric(TGtkDeviceContext(DC));
