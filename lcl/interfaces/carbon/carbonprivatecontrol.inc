@@ -572,14 +572,11 @@ begin
           // lArray := CFArrayCreateMutableCopy(kCFAllocatorDefault, 0, lInputArray);
           // DebugLn('AXChildren 1 lArray='+IntToStr(PtrInt(lArray)));
 
-          lCount := lInputAccessibleObject.GetChildAccessibleObjectsCount;
           lArray := CFArrayCreateMutable(kCFAllocatorDefault, lCount, @kCFTypeArrayCallBacks);
 
           // Add non-control children
-          for i := 0 to lCount - 1 do
+          for lCurAccessibleObject in lInputAccessibleObject do
           begin
-            lCurAccessibleObject := lInputAccessibleObject.GetChildAccessibleObject(i);
-            if lCurAccessibleObject = nil then Continue;
             lElement := AXUIElementRef(lCurAccessibleObject.Handle);
             if lElement <> nil then
               CFArrayAppendValue(lArray, lElement);
