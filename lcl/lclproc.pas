@@ -333,7 +333,7 @@ function ClassCase(const AClass: TClass; const ACase: array of TClass; const ADe
 //      strictly spoken, a widestring <> utf16string
 // todo: use it in existing functions
 type
-  UTF16String = type WideString;
+  UTF16String = type UnicodeString;
   PUTF16String = ^UTF16String;
 
 function UTF8CharacterLength(p: PChar): integer; inline;
