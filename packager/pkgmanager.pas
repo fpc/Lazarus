@@ -45,15 +45,15 @@ uses
   {$ENDIF}
   // FCL, LCL
   TypInfo, Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, Menus,
-  contnrs, InterfaceBase, StringHashList, Translations, LResources,
+  contnrs, StringHashList, Translations, LResources,
   // codetools
-  CodeToolsCfgScript, CodeToolsConfig, CodeToolManager, CodeCache,
-  CodeToolsStructs, BasicCodeTools, FileProcs, Laz_XMLCfg,
+  CodeToolsConfig, CodeToolManager, CodeCache, CodeToolsStructs, BasicCodeTools,
+  FileProcs, Laz_XMLCfg,
   // IDE Interface
   SrcEditorIntf, NewItemIntf, ProjectIntf, PackageIntf, CompOptsIntf,
   MenuIntf, IDEWindowIntf, PropEdits, MacroIntf, LazIDEIntf,
   // IDE
-  LazConf, LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs, IDECommands,
+  LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs, IDECommands,
   IDEOptionDefs, EnvironmentOpts, MiscOptions, InputHistory,
   Project, ComponentReg, UComponentManMain, PackageEditor, AddToPackageDlg,
   PackageDefs, PackageLinks, PackageSystem, OpenInstalledPkgDlg,
@@ -63,8 +63,7 @@ uses
   AddFileToAPackageDlg, LazarusPackageIntf, PublishProjectDlg, PkgLinksDlg,
   InstallPkgSetDlg, ConfirmPkgListDlg, NewPkgComponentDlg,
   // bosses
-  BaseBuildManager, BasePkgManager,
-  MainBar, MainIntf, MainBase;
+  BaseBuildManager, BasePkgManager, MainBar, MainIntf, MainBase;
 
 type
   { TPkgManager }
