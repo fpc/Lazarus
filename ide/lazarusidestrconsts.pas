@@ -3751,12 +3751,6 @@ resourcestring
   lisPkgMangTheFilenameDoesNotCorrespondToThePackage = 'The filename %s%s%s '
     +'does not correspond to the package name %s%s%s in the file.%sChange '
     +'package name to %s%s%s?';
-//  lisPkgMangPackageFileMissing = 'Package file missing';
-//  lisPkgMangTheFileOfPackageIsMissing = 'The file %s%s%s%sof package %s is missing.';
-//  lisPkgMangPackageFileNotSaved = 'Package file not saved';
-//  lisPkgMangTheFileOfPackageNeedsToBeSavedFirst = 'The file %s%s%s%sof '
-//    +'package %s needs to be saved first.';
-//  lisPkgMangIgnoreAndSavePackageNow = 'Ignore and save package now';
   lisSuspiciousIncludePath = 'Suspicious include path';
   lisThePackageAddsThePathToTheIncludePathOfTheIDEThisI = 'The package %s '
     +'adds the path "%s" to the include path of the IDE.%sThis is probably a '
