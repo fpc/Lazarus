@@ -796,11 +796,6 @@ function gtkMouseWheelCB(widget: PGtkWidget; event: PGdkEventScroll;
 procedure GTKStyleChangedAfter(Widget: PGtkWidget; previous_style : PGTKStyle;
   Data: Pointer); cdecl;
 
-{ Miscelaneus Widget functions }
-
-function  WidgetGetSelStart(const Widget: PGtkWidget): integer;
-procedure WidgetSetSelLength(const Widget: PGtkWidget; NewLength: integer);
-
 implementation
 
 uses
@@ -982,32 +977,6 @@ end;
 
 {$I gtk2proc.inc}
 {$I gtk2callback.inc}
-
-{ Miscelaneus Widget functions }
-
-function WidgetGetSelStart(const Widget: PGtkWidget): integer;
-begin
-  if Widget <> nil then
-  begin
-    if PGtkOldEditable(Widget)^.selection_start_pos
-       < PGtkOldEditable(Widget)^.selection_end_pos
-    then
-      Result:= PGtkOldEditable(Widget)^.selection_start_pos
-    else
-      Result:= PGtkOldEditable(Widget)^.current_pos;// selection_end_pos
-  end else
-    Result:= 0;
-end;
-
-procedure WidgetSetSelLength(const Widget: PGtkWidget; NewLength: integer);
-begin
-  if Widget<>nil then
-  begin
-    gtk_editable_select_region(PGtkOldEditable(Widget),
-      gtk_editable_get_position(PGtkOldEditable(Widget)),
-      gtk_editable_get_position(PGtkOldEditable(Widget)) + NewLength);
-  end;
-end;
 
 initialization
   InitGTKProc;
