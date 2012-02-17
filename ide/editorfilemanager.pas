@@ -76,7 +76,7 @@ begin
   // Captions
   ActivateMenuItem.Caption:=lisActivateSelected;
   CloseMenuItem.Caption:=lisMenuClose;
-  SelectAllCheckBox.Caption:=lisMenuSelectAll;
+  SelectAllCheckBox.Caption:=lisCheckAll;
   ActivateButton.Caption:=lisActivateSelected;
   SaveCheckedButton.Caption:=lisSaveAllChecked;
   CloseCheckedButton.Caption:=lisCloseAllChecked;
@@ -130,9 +130,9 @@ begin
   cb:=Sender as TCheckBox;
   // Caption text : select all / unselect all
   if cb.Checked then
-    cb.Caption:=lisMenuUnselectAll
+    cb.Caption:=lisUncheckAll
   else
-    cb.Caption:=lisMenuSelectAll;
+    cb.Caption:=lisCheckAll;
   // Set / reset all CheckListBox1 items.
   for i:=0 to CheckListBox1.Count-1 do begin
     if CheckListBox1.Checked[i]<>cb.Checked then begin

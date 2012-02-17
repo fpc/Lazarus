@@ -242,7 +242,8 @@ resourcestring
   lisKMSelectPageBottom = 'Select Page Bottom';
   lisMenuSelect = 'Select';
   lisMenuSelectAll = 'Select All';
-  lisMenuUnselectAll = 'Unelect All';
+  lisCheckAll = 'Check All';
+  lisUncheckAll = 'Uncheck All';
   lisSAMAbstractMethodsNotYetOverridden = 'Abstract Methods - not yet overridden';
   lisMenuSelectToBrace = 'Select to Brace';
   lisMenuSelectCodeBlock = 'Select Code Block';
