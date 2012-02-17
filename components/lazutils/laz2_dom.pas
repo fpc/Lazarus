@@ -388,6 +388,7 @@ type
     FSortedList: TFPList; // list of TDOMNode sorted via CompareName
     FPosList: TFPList; // list of TDOMNode not sorted
     function GetPosItem(index: LongWord): TDOMNode;
+    function GetSortedItem(index: LongWord): TDOMNode;
     function GetLength: LongWord;
     function FindSorted(const name: DOMString; out Index: LongWord): Boolean;
     function DeleteSorted(index: LongWord): TDOMNode;
@@ -407,6 +408,7 @@ type
     function removeNamedItemNS(const namespaceURI,localName: DOMString): TDOMNode; virtual;
 
     property Item[index: LongWord]: TDOMNode read GetPosItem; default;
+    property SortedItem[index: LongWord]: TDOMNode read GetSortedItem;
     property Length: LongWord read GetLength;
   end;
 
@@ -1793,6 +1795,14 @@ begin
   inherited Destroy;
 end;
 
+function TDOMNamedNodeMap.GetSortedItem(index: LongWord): TDOMNode;
+begin
+  if index < LongWord(FSortedList.Count) then
+    Result := TDOMNode(FSortedList.List^[index])
+  else
+    Result := nil;
+end;
+
 function TDOMNamedNodeMap.GetPosItem(index: LongWord): TDOMNode;
 begin
   if index < LongWord(FPosList.Count) then
@@ -3007,11 +3017,11 @@ end;
 procedure TDOMElement.SetAttribute(const name, value: DOMString);
 var
   I: Cardinal;
-  attr: TDOMAttr;
+  Attr: TDOMAttr;
 begin
   Changing;
   if Attributes.FindSorted(name, I) then
-    Attr := FAttributes[I] as TDOMAttr
+    Attr := Attributes.SortedItem[I] as TDOMAttr
   else
   begin
     Attr := FOwnerDocument.CreateAttribute(name);
@@ -3019,7 +3029,7 @@ begin
     FAttributes.FSortedList.Insert(I, Attr);
     FAttributes.FPosList.Add(Attr);
   end;
-  attr.NodeValue := value;
+  Attr.NodeValue := value;
 end;
 
 procedure TDOMElement.RemoveAttribute(const name: DOMString);
