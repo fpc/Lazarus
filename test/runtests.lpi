@@ -86,9 +86,9 @@
         <UnitName Value="TestBasicCodetools"/>
       </Unit8>
       <Unit9>
-        <Filename Value="codetoolstests\testcompleteblock.pas"/>
+        <Filename Value="lazutils\testlazutf8.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestCompleteBlock"/>
+        <UnitName Value="TestLazUTF8"/>
       </Unit9>
       <Unit10>
         <Filename Value="codetoolstests\testctxmlfixfragments.pas"/>
