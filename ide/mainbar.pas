@@ -347,6 +347,8 @@ type
 
     // windows menu
     //mnuWindow: TIDEMenuSection;
+      //itmWindowManagers: TIDEMenuSection;
+        itmWindowManager: TIDEMenuCommand;
 
     // help menu
     //mnuHelp: TIDEMenuSection;

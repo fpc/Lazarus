@@ -149,7 +149,7 @@ uses
   NewDialog, MakeResStrDlg, DialogProcs, FindReplaceDialog, FindInFilesDlg,
   CodeExplorer, BuildFileDlg, ProcedureList, ExtractProcDlg,
   FindRenameIdentifier, AbstractsMethodsDlg, EmptyMethodsDlg, UnusedUnitsDlg,
-  UseUnitDlg, FindOverloadsDlg,
+  UseUnitDlg, FindOverloadsDlg, EditorFileManager,
   CleanDirDlg, CodeContextForm, AboutFrm, CompatibilityRestrictions,
   RestrictionBrowser, ProjectWizardDlg, IDECmdLine, IDEGuiCmdLine, CodeExplOpts,
   // main ide
@@ -372,6 +372,7 @@ type
     procedure mnuEnvRescanFPCSrcDirClicked(Sender: TObject);
 
     // windows menu
+    procedure mnuWindowManagerClicked(Sender: TObject);
 
     // help menu
     // see helpmanager.pas
@@ -2662,6 +2663,9 @@ end;
 procedure TMainIDE.SetupWindowsMenu;
 begin
   inherited SetupWindowsMenu;
+  with MainIDEBar do begin
+    itmWindowManager.OnClick := @mnuWindowManagerClicked;
+  end;
 end;
 
 procedure TMainIDE.SetupHelpMenu;
@@ -5151,6 +5155,11 @@ procedure TMainIDE.mnuEnvRescanFPCSrcDirClicked(Sender: TObject);
 begin
   IncreaseBuildMacroChangeStamp;
   MainBuildBoss.RescanCompilerDefines(false,true,false,false);
+end;
+
+procedure TMainIDE.mnuWindowManagerClicked(Sender: TObject);
+begin
+  ShowEditorFileManagerForm;
 end;
 
 procedure TMainIDE.SaveEnvironment;

@@ -776,8 +776,16 @@ begin
 end;
 
 procedure TMainIDEBase.SetupWindowsMenu;
+var
+  ParentMI: TIDEMenuSection;
 begin
-
+  with MainIDEBar do begin
+    CreateMenuSeparatorSection(mnuWindow,itmWindowManagers,'itmWindowManagers');
+    ParentMI:=itmWindowManagers;
+    CreateMenuItem(ParentMI,itmWindowManager,'itmWindowManager', lisEditorFileManager, 'pkg_files');
+    // Populated later with a list of editor names
+    CreateMenuSeparatorSection(mnuWindow,itmWindowLists,'itmWindowLists');
+  end;
 end;
 
 procedure TMainIDEBase.SetupHelpMenu;
@@ -1044,11 +1052,10 @@ const
 
   function GetMenuItem(Index: Integer): TIDEMenuItem; inline;
   begin
-    if mnuWindow.Count > Index then
-      Result := mnuWindow.Items[Index]
+    if itmWindowLists.Count > Index then
+      Result := itmWindowLists.Items[Index]
     else
-      Result := RegisterIDEMenuCommand(mnuWindow.GetPath,
-                                          'Window'+IntToStr(Index),'');
+      Result := RegisterIDEMenuCommand(itmWindowLists.GetPath,'Window'+IntToStr(Index),'');
   end;
 
 var
@@ -1124,8 +1131,9 @@ begin
     end;
   end;
   // remove unused menuitems
-  while mnuWindow.Count > ItemCount do
-    mnuWindow.Items[mnuWindow.Count-1].Free;
+  with itmWindowLists do
+    while Count > ItemCount do
+      Items[Count-1].Free;
 
     // clean up
   WindowsList.Free;

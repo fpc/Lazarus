@@ -242,6 +242,7 @@ resourcestring
   lisKMSelectPageBottom = 'Select Page Bottom';
   lisMenuSelect = 'Select';
   lisMenuSelectAll = 'Select All';
+  lisMenuUnselectAll = 'Unelect All';
   lisSAMAbstractMethodsNotYetOverridden = 'Abstract Methods - not yet overridden';
   lisMenuSelectToBrace = 'Select to Brace';
   lisMenuSelectCodeBlock = 'Select Code Block';
@@ -449,6 +450,7 @@ resourcestring
   lisMenuBuildLazarus = 'Build Lazarus with Current Profile';
   lisMenuBuildLazarusProf = 'Build Lazarus with Profile: %s';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus" ...';
+  lisEditorFileManager = 'Editor File Manager ...';
 
   lisSearchProjectsFrom = 'Search projects from';
   lisMEOther = 'Other';
@@ -461,7 +463,7 @@ resourcestring
   dlgEdCodeTempl = 'Code Templates';
   dlgTplFName = 'Template file name';
   lisMenuCodeToolsDefinesEditor = 'CodeTools Defines Editor ...';
-  
+
   lisMenuOnlineHelp = 'Online Help';
   lisMenuReportingBug = 'Reporting a Bug';
   lisReportingBugURL = 'http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report';
@@ -921,6 +923,9 @@ resourcestring
   lisCloseAllTabsTitle = 'Close Source Editor Window';
   lisCloseAllTabsQuestion = 'Closing a Source Editor Window. Do you want close all files or hide the window?';
   lisCloseAllTabsClose = 'Close files';
+  lisCloseAllChecked = 'Close All Checked';
+  lisSaveAllChecked = 'Save All Checked';
+  lisActivateSelected = 'Activate Selected';
   lisCloseAllTabsHide = 'Hide window';
 
   // hints
