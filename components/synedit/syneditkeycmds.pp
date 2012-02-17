@@ -357,7 +357,8 @@ type
     function FindKeycode(Code: word; SS: TShiftState): integer;
     function FindKeycodeEx(Code: word; SS: TShiftState; var Data: pointer;
                            out IsStartOfCombo: boolean;
-                           FinishComboOnly: Boolean = False): TSynEditorCommand;
+                           FinishComboOnly: Boolean = False;
+                           ComboStart: TSynEditKeyStrokes = nil): TSynEditorCommand;
     procedure ResetKeyCombo;
     function FindShortcut(SC: TShortcut): integer;
     function FindShortcut2(SC, SC2: TShortcut): integer;
@@ -921,34 +922,70 @@ begin
     end;
 end;
 
-function TSynEditKeyStrokes.FindKeycodeEx(Code: word; SS: TShiftState; var Data: pointer; out
-  IsStartOfCombo: boolean; FinishComboOnly: Boolean = False): TSynEditorCommand;
+function TSynEditKeyStrokes.FindKeycodeEx(Code: word; SS: TShiftState; var Data: pointer;
+  out IsStartOfCombo: boolean;
+  FinishComboOnly: Boolean; ComboStart: TSynEditKeyStrokes): TSynEditorCommand;
 var
   i: integer;
+  LK: Word;
+  LS: TShiftState;
+  CurComboStart: TSynEditKeyStrokes;
 {$IFNDEF SYN_COMPILER_3_UP}
 const
   VK_ACCEPT = $30;
 {$ENDIF}
 begin
-  i := FindKeycode2(fLastKey, fLastShiftState, Code, SS);
-  if (i < 0) and not FinishComboOnly then
-    i := FindKeycode(Code, SS);
-  if i >= 0 then
-    Result := Items[i].Command
-  else
-    Result := ecNone;
+  (* if FinishComboOnly=True then ComboStart are the KeyStrokes, which have the
+     already received keys.
+     If several TSynEditKeyStrokes have combos, starting with the same key(s)
+     only one needs to keep the info. The others chek, if they have a matching combo
+  *)
 
-  if (Result = ecNone) and (Code >= VK_ACCEPT) and (Code <= VK_SCROLL) and
-     (FindKeycode2Start(Code, SS) >= 0) and not FinishComboOnly then
+  Result := ecNone;
+  IsStartOfCombo := False;
+
+  if ComboStart = nil then
+    CurComboStart := self
+  else
+    CurComboStart := ComboStart;
+
+  if CurComboStart.fLastKey <> 0 then begin
+    // Try to finish the combo
+    i := FindKeycode2(CurComboStart.fLastKey, CurComboStart.fLastShiftState, Code, SS);
+    if (i >= 0) then begin
+      Result := Items[i].Command;
+      CurComboStart.ResetKeyCombo;
+      exit;
+    end;
+  end;
+  if FinishComboOnly then
+    exit;
+
+  // Check for single stroke
+  i := FindKeycode(Code, SS);
+  if i >= 0 then begin
+    Result := Items[i].Command;
+    ResetKeyCombo;
+    if (ComboStart <> nil) and (ComboStart <> self) then
+      ComboStart.ResetKeyCombo;
+    exit;
+  end;
+
+  if (FindKeycode2Start(Code, SS) >= 0) and not FinishComboOnly then
   begin
     fLastKey := Code;
     fLastShiftState := SS;
     IsStartOfCombo := True;
-  end else begin
-    fLastKey := 0;
-    fLastShiftState := [];
-    IsStartOfCombo := False;
-  end;
+    // Now this is the start of combo
+    if (ComboStart <> nil) and (ComboStart <> self) then
+      ComboStart.ResetKeyCombo;
+  end
+  else begin
+    // Nothing was found.
+    // Keep CurComboStart.fLastKey. It may be ued by another TSynEditKeyStrokes
+    if (ComboStart <> self) then
+      ResetKeyCombo; // reset self, if not CurComboStart
+  end
 end;
 
 procedure TSynEditKeyStrokes.ResetKeyCombo;

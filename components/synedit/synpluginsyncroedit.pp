@@ -1326,38 +1326,30 @@ begin
     exit;
 
   keys := nil;
+
   if Mode = spseSelecting then
     keys := FKeystrokesSelecting;
 
   if Mode = spseEditing then begin
-    if CurrentCell < 0 then begin
-      keys := FKeyStrokesOffCell;
-      FKeyStrokes.ResetKeyCombo;
-    end
-    else begin
+    if CurrentCell < 0 then
+      keys := FKeyStrokesOffCell
+    else
       keys := FKeyStrokes;
-      FKeyStrokesOffCell.ResetKeyCombo;
-    end;
   end;
   if keys = nil then exit;
 
-  if (FinishComboOnly and (ComboKeyStrokes <> keys)) then begin
-    keys.ResetKeyCombo;
-    exit;
-  end;
-
-  IsStartOfCombo := False;
   try
     keys.UsePluginOffset := True;
-    Command := keys.FindKeycodeEx(Code, SState, Data, IsStartOfCombo,
-                                        FinishComboOnly);
+    if not FinishComboOnly then
+      keys.ResetKeyCombo;
+    Command := keys.FindKeycodeEx(Code, SState, Data, IsStartOfCombo, FinishComboOnly, ComboKeyStrokes);
   finally
     keys.UsePluginOffset := False;
   end;
+
   Handled := (Command <> ecNone) or IsStartOfCombo;
-  if Handled then begin
+  if IsStartOfCombo then
     ComboKeyStrokes := keys;
-  end;
 end;
 
 procedure TSynPluginSyncroEdit.ProcessSynCommand(Sender: TObject; AfterProcessing: boolean;

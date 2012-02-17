@@ -381,7 +381,10 @@ type
     procedure CallHookedKeyTranslationHandlers(Sender: TObject;
       Code: word; SState: TShiftState; var Data: pointer;
       var IsStartOfCombo: boolean; var Handled: boolean;
-      var Command: TSynEditorCommand; var ComboKeyStrokes: TSynEditKeyStrokes);
+      var Command: TSynEditorCommand;
+      // ComboKeyStrokes decides, either FinishComboOnly, or new stroke
+      var ComboKeyStrokes: TSynEditKeyStrokes
+    );
   end;
 
   TSynMouseLinkEvent = procedure (
@@ -488,7 +491,8 @@ type
     fHideSelection: boolean;
     fOverwriteCaret: TSynEditCaretType;
     fInsertCaret: TSynEditCaretType;
-    FKeyStrokes, FLastKeyStrokes: TSynEditKeyStrokes;
+    FKeyStrokes: TSynEditKeyStrokes;
+    FCurrentComboKeyStrokes: TSynEditKeyStrokes; // Holding info about the keystroke(s) already received for a mult-stroke-combo
     FMouseActions, FMouseSelActions, FMouseTextActions: TSynEditMouseInternalActions;
     FMouseActionSearchHandlerList: TSynEditMouseActionSearchList;
     FMouseActionExecHandlerList: TSynEditMouseActionExecList;
@@ -1989,7 +1993,7 @@ begin
   fInsertCaret := ctVerticalLine;
   fOverwriteCaret := ctBlock;
   FKeystrokes := TSynEditKeyStrokes.Create(Self);
-  FLastKeyStrokes := nil;
+  FCurrentComboKeyStrokes := nil;
   if assigned(Owner) and not (csLoading in Owner.ComponentState) then begin
     SetDefaultKeystrokes;
   end;
@@ -2597,28 +2601,65 @@ begin
   inherited;
   if assigned(fMarkupCtrlMouse) then
     fMarkupCtrlMouse.UpdateCtrlState(Shift);
+
+  if Key in [VK_SHIFT, VK_CONTROL, VK_MENU,
+             VK_LSHIFT, VK_LCONTROL, VK_LMENU,
+             VK_RSHIFT, VK_RCONTROL, VK_RMENU,
+             VK_LWIN, VK_RWIN]
+  then
+    exit;
+
   Data := nil;
   C := #0;
   try
-    IsStartOfCombo := False;
-    Handled := False;
     // If the translations requires Data, memory will be allocated for it via a
     // GetMem call.  The client must call FreeMem on Data if it is not NIL.
-    if FLastKeyStrokes = FKeyStrokes then begin
-      Cmd := KeyStrokes.FindKeycodeEx(Key, Shift, Data, IsStartOfCombo, True);
-      Handled := Cmd <> ecNone;
-    end;
-    // Hooked
-    if not Handled then
+    IsStartOfCombo := False;
+    Handled := False;
+
+    // Check 2nd stroke in SynEdit.KeyStrokes
+    if FCurrentComboKeyStrokes <> nil then begin
+      // Run hooked first, it might want to "steal" the key(s)
       FHookedKeyTranslationList.CallHookedKeyTranslationHandlers(self,
-        Key, Shift, Data, IsStartOfCombo, Handled, Cmd, FLastKeyStrokes);
+        Key, Shift, Data, IsStartOfCombo, Handled, Cmd, FCurrentComboKeyStrokes);
+
+      if not Handled then begin
+        Cmd := KeyStrokes.FindKeycodeEx(Key, Shift, Data, IsStartOfCombo, True, FCurrentComboKeyStrokes);
+        if IsStartOfCombo then
+          FCurrentComboKeyStrokes := FKeyStrokes;
+        Handled := (Cmd <> ecNone) or IsStartOfCombo;
+      end;
+
+      if not IsStartOfCombo then begin
+        FCurrentComboKeyStrokes.ResetKeyCombo;
+        FCurrentComboKeyStrokes := nil;
+      end;
+    end;
+    assert(Handled or (FCurrentComboKeyStrokes=nil), 'FCurrentComboKeyStrokes<>nil, should be handled');
+
+    // Check 1st/single stroke in Hooked KeyStrokes
     if not Handled then begin
+      FCurrentComboKeyStrokes := nil;
+      FHookedKeyTranslationList.CallHookedKeyTranslationHandlers(self,
+        Key, Shift, Data, IsStartOfCombo, Handled, Cmd, FCurrentComboKeyStrokes);
+      if (not IsStartOfCombo) and (FCurrentComboKeyStrokes <> nil) then
+        FCurrentComboKeyStrokes.ResetKeyCombo; // should not happen
+    end;
+    // Check 1st/single stroke in SynEdit.KeyStrokes
+    if not Handled then begin
+      FKeyStrokes.ResetKeyCombo;
       Cmd := KeyStrokes.FindKeycodeEx(Key, Shift, Data, IsStartOfCombo);
       if IsStartOfCombo then
-        FLastKeyStrokes := FKeyStrokes;
+        FCurrentComboKeyStrokes := FKeyStrokes;
     end;
 
     if Cmd <> ecNone then begin
+      // Reset FCurrentComboKeyStrokes => no open combo
+      assert(FCurrentComboKeyStrokes=nil, 'FCurrentComboKeyStrokes<>nil, should be ecNone');
+      if FCurrentComboKeyStrokes <> nil then
+        FCurrentComboKeyStrokes.ResetKeyCombo;
+      FCurrentComboKeyStrokes := nil;
+
       Include(FStateFlags, sfHideCursor);
       LastMouseCaret := Point(-1,-1);                                           // includes update cursor
       //DebugLn(['[TCustomSynEdit.KeyDown] key translated ',cmd]);
@@ -8722,16 +8763,18 @@ procedure TSynHookedKeyTranslationList.CallHookedKeyTranslationHandlers(Sender: 
 var
   i: Integer;
 begin
-  // Finish Combo ?
-  for i := 0 to Count - 1 do
-    THookedKeyTranslationEvent(Items[i])(Sender, Code, SState, Data,
-      IsStartOfCombo, Handled, Command, True, ComboKeyStrokes);
-  if Handled then
-    exit;
-  // New Stroke ?
-  for i := 0 to Count - 1 do
-    THookedKeyTranslationEvent(Items[i])(Sender, Code, SState, Data,
-      IsStartOfCombo, Handled, Command, False, ComboKeyStrokes);
+  if ComboKeyStrokes <> nil then begin
+    // Finish Combo
+    for i := 0 to Count - 1 do
+      THookedKeyTranslationEvent(Items[i])(Sender, Code, SState, Data,
+        IsStartOfCombo, Handled, Command, True, ComboKeyStrokes);
+  end
+  else begin
+    // New Stroke
+    for i := 0 to Count - 1 do
+      THookedKeyTranslationEvent(Items[i])(Sender, Code, SState, Data,
+        IsStartOfCombo, Handled, Command, False, ComboKeyStrokes);
+  end;
 end;
 
 { TSynStatusChangedHandlerList }
