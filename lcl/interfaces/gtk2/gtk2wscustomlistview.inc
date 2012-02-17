@@ -35,12 +35,28 @@ var
   LV: TLVHack;
   Index: Integer;
   ListItem: TLVItemHack;
+  ARect: TGdkRectangle;
+  R: TRect;
+  x, y, cellw, cellh: gint;
 begin
   LV := TLVHack(WidgetInfo^.LCLObject);
   Index := StrToInt(PathStr);
   ListItem := TLVItemHack(LV.Items.Item[Index]);
   if ListItem <> nil then
+  begin
     ListItem.Checked := not ListItem.GetCheckedInternal;
+    if Assigned(LV.OnItemChecked) then
+      LV.OnItemChecked(TListView(LV), LV.Items.Item[Index]);
+
+    // we must update renderer row, otherwise visually it looks different
+    // if we change toggle state by keyboard (eg. pressing Space key)
+    R := ListItem.DisplayRect(drBounds);
+    ARect := GdkRectFromRect(R);
+    gtk_cell_renderer_get_size(PGtkCellRenderer(renderer),
+      WidgetInfo^.CoreWidget, @ARect, @x,@y, @cellw, @cellh);
+    with R do
+      gtk_widget_queue_draw_area(WidgetInfo^.CoreWidget, Left, Top, cellW, cellH);
+  end;
 end;
 
 procedure Gtk2_ItemFocusChanged(Widget: PGtkWidget; WidgetInfo: PWidgetInfo);cdecl;
