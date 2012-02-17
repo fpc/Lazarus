@@ -720,6 +720,10 @@ It returns 0 if the codepoint can not be represented as a 1 to 4 byte UTF-8 sequ
         <descr/>
         <seealso/>
       </element>
+    <element name="UTF8Trim"><short>Removes space at start and end</short><descr>It removes spaces, tabs, line breaks and control characters at start and end.
+Use Flags to only delete at start or only at end or to to not delete line breaks.
+Control characters are the unicode sets C0 and C1 and the left-to-right and right-to-left marks.</descr>
+      </element>
     </module>
     <!-- LazUTF8 -->
   </package>
