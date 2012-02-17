@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  FileUtil, StdCtrls, Laz_XMLStreaming, Laz_DOM, Laz_XMLCfg, Buttons, TypInfo;
+  FileUtil, StdCtrls, Laz_XMLStreaming, Laz2_DOM, Laz2_XMLCfg, Buttons, TypInfo;
 
 type
   TMyEnum = (myEnum1, myEnum2, myEnum3);
@@ -78,7 +78,7 @@ type
 
     procedure WriteComponents;
     procedure ReadComponents;
-    procedure OnFindComponentClass(Reader: TReader; const AClassName: string;
+    procedure OnFindComponentClass({%H-}Reader: TReader; const AClassName: string;
                                    var ComponentClass: TComponentClass);
     property Filename: string read FFilename write SetFilename;
   end; 
