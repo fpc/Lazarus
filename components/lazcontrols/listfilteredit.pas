@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, LResources, Graphics, Controls, StdCtrls,
-  LCLProc, EditBtn, FileUtil;
+  LCLProc, EditBtn, FileUtil, AvgLvlTree;
 
 type
 
@@ -23,6 +23,7 @@ type
     fOriginalData: TStringList;
     // Data sorted for viewing.
     fSortedData: TStringList;
+    fCheckedItems: TStringMap;         // Only needed for TCheckListBox
     function CompareFNs(AFilename1,AFilename2: string): integer;
     function GetFirstSelected: Integer;
     procedure SetFilteredListbox(const AValue: TCustomListBox);
@@ -36,6 +37,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure RemoveItem(AItem: string);
+    procedure ItemWasClicked(AItem: string; IsChecked: Boolean);
     procedure StoreSelection; override;
     procedure RestoreSelection; override;
   public
@@ -68,14 +71,37 @@ begin
   fOriginalData:=TStringList.Create;
   fSelectionList:=TStringList.Create;
   fSortedData:=TStringList.Create;
+  if Assigned(fFilteredListbox) and (fFilteredListbox is TCheckListBox) then
+    Assert(Assigned(fCheckedItems), 'TListFilterEdit.Create: fCheckedItems=nil');
 end;
 
 destructor TListFilterEdit.Destroy;
 begin
+  fCheckedItems.Free;
   fSortedData.Free;
   fSelectionList.Free;
   fOriginalData.Free;
   inherited Destroy;
+end;
+
+procedure TListFilterEdit.RemoveItem(AItem: string);
+var
+  i: Integer;
+begin
+  i:=fOriginalData.IndexOf(AItem);
+  if i>-1 then begin
+    fOriginalData.Delete(i);
+    if Assigned(fCheckedItems) then
+      fCheckedItems.Remove(AItem);
+  end;
+end;
+
+procedure TListFilterEdit.ItemWasClicked(AItem: string; IsChecked: Boolean);
+begin
+  if IsChecked then
+    fCheckedItems.Add(AItem)
+  else
+    fCheckedItems.Remove(AItem);
 end;
 
 function TListFilterEdit.GetDefaultGlyph: TBitmap;
@@ -87,8 +113,11 @@ procedure TListFilterEdit.SetFilteredListbox(const AValue: TCustomListBox);
 begin
   if fFilteredListbox = AValue then Exit;
   fFilteredListbox:=AValue;
-  if Assigned(fFilteredListbox) then
+  if Assigned(fFilteredListbox) then begin
     fOriginalData.Assign(fFilteredListbox.Items);
+    if (fFilteredListbox is TCheckListBox) and not Assigned(fCheckedItems) then
+      fCheckedItems:=TStringMap.Create(False);
+  end;
 end;
 
 function TListFilterEdit.CompareFNs(AFilename1,AFilename2: string): integer;
@@ -130,7 +159,7 @@ end;
 
 procedure TListFilterEdit.ApplyFilterCore;
 var
-  i, j: Integer;
+  i, ListInd: Integer;
   s: string;
   clb: TCustomCheckListBox;
 begin
@@ -141,12 +170,19 @@ begin
   fFilteredListbox.Items.BeginUpdate;
   for i:=0 to fSortedData.Count-1 do begin
     s:=fSortedData[i];
-    j:=fFilteredListbox.Items.AddObject(s, fSortedData.Objects[i]);
+    ListInd:=fFilteredListbox.Items.AddObject(s, fSortedData.Objects[i]);
     if Assigned(fSelectedPart) then
       fFilteredListbox.Selected[i]:=fSelectedPart=fSortedData.Objects[i];
-    if Assigned(clb) and Assigned(OnCheckItem) then
-      clb.Checked[j]:=OnCheckItem(fSortedData.Objects[i]);
+    if Assigned(clb) then begin
+      if Assigned(OnCheckItem) then
+        clb.Checked[ListInd]:=OnCheckItem(fSortedData.Objects[i])
+      else
+        clb.Checked[ListInd]:=fCheckedItems.Contains(s);
+    end;
   end;
+  // Notify the CheckListBox that checked state may have changed.
+  if Assigned(clb) and Assigned(clb.OnItemClick) then
+    clb.OnItemClick(clb, -1);  // The handler must not use the index -1 directly
   fFilteredListbox.Items.EndUpdate;
 end;
 
