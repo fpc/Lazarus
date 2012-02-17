@@ -117,17 +117,8 @@ end;
 
 
 function NeedRTLAnsi: boolean;
-{$IFDEF WinCE}
-// CP_UTF8 is missing in the windows unit of the Windows CE RTL
-const
-  CP_UTF8 = 65001;
-{$ENDIF}
 begin
-  if FNeedRTLAnsiValid then
-    exit(FNeedRTLAnsi);
-  FNeedRTLAnsi:=GetACP<>CP_UTF8;
-  FNeedRTLAnsiValid:=true;
-  Result:=FNeedRTLAnsi;
+  Result:=LazUTF8.NeedRTLAnsi;
 end;
 
 function ConsoleToUTF8(const s: string): string;// converts UTF8 string to console encoding (used by Write, WriteLn)

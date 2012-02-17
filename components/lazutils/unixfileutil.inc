@@ -269,31 +269,8 @@ begin
 end;
 
 function NeedRTLAnsi: boolean;
-var
-  Lang: String;
-  i: LongInt;
-  Encoding: String;
 begin
-  if FNeedRTLAnsiValid then
-    exit(FNeedRTLAnsi);
-  FNeedRTLAnsi:=false;
-  Lang := SysUtils.GetEnvironmentVariable('LC_ALL');
-  if Length(lang) = 0 then
-  begin
-    Lang := SysUtils.GetEnvironmentVariable('LC_MESSAGES');
-    if Length(Lang) = 0 then
-    begin
-      Lang := SysUtils.GetEnvironmentVariable('LANG');
-    end;
-  end;
-  i:=System.Pos('.',Lang);
-  if (i>0) then begin
-    Encoding:=copy(Lang,i+1,length(Lang)-i);
-    FNeedRTLAnsi:=(SysUtils.CompareText(Encoding,'UTF-8')<>0)
-              and (SysUtils.CompareText(Encoding,'UTF8')<>0);
-  end;
-  FNeedRTLAnsiValid:=true;
-  Result:=FNeedRTLAnsi;
+  Result:=lazutf8.NeedRTLAnsi;
 end;
 
 function ConsoleToUTF8(const s: string): string;// converts UTF8 string to console encoding (used by Write, WriteLn)
@@ -305,7 +282,6 @@ function UTF8ToConsole(const s: string): string;
 begin
   Result := UTF8ToSys(s);
 end;
-
 
 function FileExistsUTF8(const Filename: string): boolean;
 begin
