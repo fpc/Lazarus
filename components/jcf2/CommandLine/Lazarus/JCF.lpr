@@ -1,6 +1,5 @@
 program JCF;
 
-{$APPTYPE CONSOLE}
 {(*}
 (*------------------------------------------------------------------------------
  Delphi Code formatter source code 
@@ -36,7 +35,7 @@ uses
   SysUtils,
   FileCtrl,
   JcfStringUtils in '..\..\Utils\JcfStringUtils.pas',
-  //JcfFileUtils in '..\..\Utils\JcfFileUtils.pas',
+  JcfFileUtils in '..\..\Utils\JcfFileUtils.pas',
   JcfSystemUtils in '..\..\Utils\JcfSystemUtils.pas',
   Converter in '..\..\ReadWrite\Converter.pas',
   FileConverter in '..\..\ReadWrite\FileConverter.pas',
@@ -51,7 +50,7 @@ uses
   VisitSetXY in '..\..\Process\VisitSetXY.pas',
   BaseVisitor in '..\..\Process\BaseVisitor.pas',
   JcfMiscFunctions in '..\..\Utils\JcfMiscFunctions.pas',
-  FileUtils in '..\..\Utils\FileUtils.pas',
+  //FileUtils in '..\..\Utils\FileUtils.pas',
   JcfLog in '..\..\Utils\JcfLog.pas',
   fShowParseTree in '..\..\Parse\UI\fShowParseTree.pas' {frmShowParseTree},
   SetUses in '..\..\Settings\SetUses.pas',
@@ -81,7 +80,7 @@ uses
   WarnDestroy in '..\..\Process\Warnings\WarnDestroy.pas',
   WarnEmptyBlock in '..\..\Process\Warnings\WarnEmptyBlock.pas',
   Warning in '..\..\Process\Warnings\Warning.pas',
-  JcfVersionConsts in '..\..\JcfVersionConsts.pas',
+  JcfVersionConsts in '..\..\JcfVersionConsts.pas', jcfidelazarus,
   JcfRegistrySettings in '..\..\Settings\JcfRegistrySettings.pas',
   TokenUtils in '..\..\Parse\TokenUtils.pas',
   NoSpaceBefore in '..\..\Process\Spacing\NoSpaceBefore.pas',
