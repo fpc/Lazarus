@@ -1079,6 +1079,11 @@ This method searches the units for the given description files and adds them to 
         <short>Searches for source files in ADir, which match an unit name in AList, and returns -1 if none matches.</short>
         <descr>Used to find input files for description files. The Result is not very useful, because the matched entry is removed from AList.</descr>
       </element>
+      <element name="TFCLDocPackage.SrcDirs">
+        <short>List of all FCL source directories, with include indicators.</short>
+        <descr>The list constains name/value pairs. The name is the directory part of $FPC/packages/NAME/src/, or ../packages/NAME/src/.
+A nonzero value indicates that the directory is included into the docs.</descr>
+      </element>
     </module>
     <!-- uManager -->
   </package>

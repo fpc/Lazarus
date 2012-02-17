@@ -187,6 +187,8 @@ procedure TConfigFile.WriteSection(const Section: string; Strings: TStrings);
 var
   sec: TStringList;
 begin
+  if Strings.Count = 0 then
+    exit; //delete section???
   sec := AddSection(Section);
   if not sec.Equals(Strings) then begin
     sec.Assign(Strings);

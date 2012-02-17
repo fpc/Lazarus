@@ -1,7 +1,7 @@
 object CfgWizard: TCfgWizard
-  Left = 362
+  Left = 368
   Height = 300
-  Top = 165
+  Top = 116
   Width = 317
   Caption = 'Configuration Assistant'
   ClientHeight = 300
@@ -214,11 +214,45 @@ object CfgWizard: TCfgWizard
       object swFCLads: TCheckBox
         Left = 12
         Height = 19
+        Hint = 'Add lazarus/docs/xml/fcl to the FCL descriptions'
         Top = 56
         Width = 169
         Caption = 'Add Lazarus docs to the FCL'
         OnChange = swFCLadsChange
         TabOrder = 0
+      end
+      object swDirs: TCheckListBox
+        Left = 12
+        Height = 128
+        Hint = 'Check the directories to include into the FCL docs'
+        Top = 80
+        Width = 280
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Columns = 2
+        Items.Strings = (
+          'fcl-base'
+          'fcl-db'
+          'fcl-extra'
+          'fcl-process'
+          'fcl-web'
+          'paszlib'
+        )
+        ItemHeight = 17
+        OnExit = swDirsExit
+        TabOrder = 1
+        Data = {
+          06000000010101010101
+        }
+      end
+      object buScanFcl: TButton
+        Left = 217
+        Height = 25
+        Hint = 'Scan the FCL source directory'
+        Top = 50
+        Width = 75
+        Caption = 'Scan FCL'
+        OnClick = buScanFclClick
+        TabOrder = 2
       end
     end
   end

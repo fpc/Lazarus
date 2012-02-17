@@ -587,7 +587,12 @@ begin
     u := CurUnit
   else
     u := '';
-  Manager.Update(CurPkg, u);
+  try
+    Manager.Update(CurPkg, u);
+  except
+    on e: Exception do
+    LogToFile(self, e.Message);
+  end;
   LogDone;
 end;
 

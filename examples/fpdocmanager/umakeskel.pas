@@ -174,7 +174,8 @@ type
     function  CheckSkelOptions: string;
     function  CleanXML(const FileName: string): boolean;
     function  SelectedPackage: TFPDocPackage;
-    property Package: TFPDocPackage read SelectedPackage write SetPackage;
+    //property Package: TFPDocPackage read SelectedPackage write SetPackage;
+    property Package: TFPDocPackage read FPackage write SetPackage; //without message
     property CmdAction: TCreatorAction read FCmdAction write SetCmdAction;
     property DryRun: boolean read FDryRun write SetDryRun;
     property ReadProject: boolean read FProjectFile;
@@ -1020,7 +1021,6 @@ begin
 end;
 
 function TFPDocMaker.ParseFPDocOption(const S: string):  TCreatorAction;
-//procedure TFPDocAplication.Parseoption(Const S : String);
 var
   Cmd, Arg: String;
 begin
@@ -1030,7 +1030,9 @@ begin
   if Result <> caInvalid then
     exit;
   Result := caDefault; //assume succ
-  if Cmd = '--content' then
+  if (Cmd = '-t') or (Cmd = '--emit-notes') then
+    Options.EmitNotes := True
+  else if Cmd = '--content' then
     SelectedPackage.ContentFile := Arg
   else if Cmd = '--import' then
     SelectedPackage.Imports.Add(Arg)

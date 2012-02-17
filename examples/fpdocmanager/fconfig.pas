@@ -24,6 +24,8 @@ type
     buCancel: TButton;
     buRtlBat: TButton;
     buLazDir: TButton;
+    buScanFcl: TButton;
+    swDirs: TCheckListBox;
     swFCLads: TCheckBox;
     edFpcDir: TEdit;
     edFpcDocs: TEdit;
@@ -52,6 +54,7 @@ type
     procedure buLazDirClick(Sender: TObject);
     procedure buNextClick(Sender: TObject);
     procedure buRtlBatClick(Sender: TObject);
+    procedure buScanFclClick(Sender: TObject);
     procedure buSelFpcClick(Sender: TObject);
     procedure buSelFpcDocsClick(Sender: TObject);
     procedure buSelRootClick(Sender: TObject);
@@ -66,9 +69,12 @@ type
     procedure MkRTLShow(Sender: TObject);
     procedure SelFPDirShow(Sender: TObject);
     procedure SelRootShow(Sender: TObject);
+    procedure swDirsExit(Sender: TObject);
     procedure swFCLadsChange(Sender: TObject);
   private
     NoRun: boolean;
+    procedure GetFclDirs;
+    procedure PutFclDirs;
   public
     { public declarations }
   end; 
@@ -80,6 +86,8 @@ implementation
 
 uses
   uManager;
+var
+  FclPkg: TDocPackage;
 
 {$R *.lfm}
 
@@ -158,6 +166,7 @@ begin
     swFCLads.Checked := False;
     ShowMessage('Please select FPC and Lazarus directories first!');
   end;
+  GetFclDirs;
 end;
 
 procedure TCfgWizard.MkLCLShow(Sender: TObject);
@@ -246,9 +255,74 @@ begin
   buNext.Enabled := Manager.RootDir <> '';
 end;
 
+procedure TCfgWizard.swDirsExit(Sender: TObject);
+begin
+  if swDirs.Count > 0 then
+    PutFclDirs;
+end;
+
 procedure TCfgWizard.swFCLadsChange(Sender: TObject);
 begin
   Manager.UpdateFCL(swFCLads.Checked);
+end;
+
+procedure TCfgWizard.buScanFclClick(Sender: TObject);
+var
+  s: string;
+begin
+  s := Manager.FpcDir + 'packages' + DirectorySeparator;
+  ListDirs(s, swDirs.Items); //dupes suppressed
+  swDirs.Sorted := True; //sort?
+  PutFclDirs;
+end;
+
+procedure TCfgWizard.GetFclDirs;
+var
+  i, il: integer;
+  s: string;
+  b: boolean;
+  lst: TStrings;
+begin
+//read fcl.SrcDirs
+  FclPkg := Manager.AddPackage('fcl');
+  if FclPkg = nil then
+    exit;
+  lst := FclPkg.SrcDirs;
+  if (lst = nil) or (lst.Count = 0) then begin
+  //scan FCL
+    buScanFclClick(nil);
+    exit;
+  end;
+//read from config
+  swDirs.Clear;
+  for i := 0 to lst.Count - 1 do begin
+    s := lst.Names[i];
+    b := lst.ValueFromIndex[i] > '0';
+    il := swDirs.Items.Add(s); //dupes?
+    swDirs.Checked[il] := b;
+  end;
+end;
+
+procedure TCfgWizard.PutFclDirs;
+var
+  i, il: integer;
+  s: string;
+  b: boolean;
+  lst: TStrings;
+const
+  tf: array[boolean] of string = ('0','1');
+begin
+  if FclPkg = nil then
+    exit;
+  lst := FclPkg.SrcDirs;
+  if (lst = nil) then
+    exit;
+  for i := 0 to swDirs.Count - 1 do begin
+    s := swDirs.Items[i];
+    b := swDirs.Checked[i];
+    lst.Values[s] := tf[b];
+  end;
+  FclPkg.UpdateConfig;
 end;
 
 end.

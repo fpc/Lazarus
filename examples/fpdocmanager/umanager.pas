@@ -69,6 +69,7 @@ type
     FName: string;
     FProjectDir: string;
     FProjectFile: string;
+    FSrcDirs: TStrings;
     FRequires: TStrings;
     FUnitPath: string;
     FUnits: TStrings;
@@ -88,9 +89,9 @@ type
     procedure SetUnits(AValue: TStrings);
   protected
     Config: TConfigFile;
-    procedure ReadConfig;
+    procedure ReadConfig; virtual;
   public
-    constructor Create;
+    constructor Create; virtual;
     destructor Destroy; override;
     function  IniFileName: string;
     function  CreateProject(APrj: TFPDocHelper; const AFile: string): boolean; virtual; //new package project
@@ -108,6 +109,7 @@ type
     property Descriptions: TStrings read FDescriptions write SetDescriptions;
     property AltDir: string read FAltDir write SetAltDir;
     property InputDir: string read FInputDir write SetInputDir;
+    property SrcDirs: TStrings read FSrcDirs;
     property Units: TStrings read FUnits write SetUnits;
     property Requires: TStrings read FRequires write SetRequires; //only string?
     property IncludePath: string read FIncludePath write SetIncludePath; //-Fi
@@ -117,6 +119,8 @@ type
   { TFCLDocPackage }
 
   TFCLDocPackage = class(TDocPackage)
+  protected
+    procedure ReadConfig; override;
   public
     function  CreateProject(APrj: TFPDocHelper; const AFile: string): boolean; override;
   end;
@@ -256,7 +260,8 @@ begin
       if not ((Info.Attr and faDirectory) = faDirectory) then
         continue;
       s := Info.Name;
-      if s[1] <> '.' then
+      if (s[1] <> '.')
+      and (AList.IndexOf(s) < 0) then //exclude dupes
         AList.Add(s); //name only, allow to create relative refs
     until FindNext(info)<>0;
   end;
@@ -303,17 +308,34 @@ end;
 
 { TFCLDocPackage }
 
+procedure TFCLDocPackage.ReadConfig;
+begin
+  inherited ReadConfig;
+  if FSrcDirs = nil then
+    FSrcDirs := TStringList.Create;
+  Config.ReadSection('SrcDirs', FSrcDirs);
+end;
+
 function TFCLDocPackage.CreateProject(APrj: TFPDocHelper; const AFile: string
   ): boolean;
 var
   i: integer;
   s, d, f: string;
   dirs, descs: TStringList;
+  incl, excl: boolean;
 begin
+(* This seems to be called twice for Refresh???
+*)
+  if APrj.Package <> nil then
+    exit(True); //already configured
   Result:=inherited CreateProject(APrj, AFile);
 //add lazdir
   if AltDir = '' then exit;
-  dirs := TStringList.Create;
+(* Add inputs for all descrs found in AltDir.
+  For *MakeSkel* add all units in the selected(!) fcl packages to inputs.
+  How to distinguish both modes?
+*)
+  dirs := TStringList.Create; //use prepared list?
   descs := TStringList.Create;
   s := Manager.LazarusDir + 'docs' + DirectorySeparator + 'xml' + DirectorySeparator + 'fcl';
   //APrj.ParseFPDocOption(Format('--descr-dir="%s"', [s])); //todo: add includes
@@ -327,12 +349,31 @@ begin
   for i := dirs.Count - 1 downto 0 do begin
     d := s + dirs[i] + DirectorySeparator + 'src';
     if not DirectoryExists(d) then continue;
-    if MatchUnits(d, descs) >= 0 then begin
-    //add dir
-      APrj.ParseFPDocOption(Format('--input-dir="%s"', [d])); //todo: add includes?
+(* Problem: some files may not parse without specific compiler options.
+  Creating skeletons will fail for these files, but how can we in/exclude
+  specific source files from skeleton creation?
+
+  For now: skip explicitly excluded packages!
+*)
+    excl := (assigned(FSrcDirs)
+      and (SrcDirs.IndexOfName(dirs[i]) >= 0)
+      and (SrcDirs.Values[dirs[i]] <= '0'));
+    if excl then begin
+      //todo: add only selected units
+      Manager.DoLog('Skipping directory ' + dirs[i]);
+    end else begin
+      incl := (assigned(FSrcDirs)
+        and (SrcDirs.IndexOfName(dirs[i]) >= 0)
+        and (SrcDirs.Values[dirs[i]] > '0'))
+      or (MatchUnits(d, descs) >= 0);
+      if incl then begin
+      //add dir
+        Manager.DoLog('Adding directory ' + dirs[i]);
+        APrj.ParseFPDocOption(Format('--input-dir="%s"', [d])); //todo: add includes?
+      end;
     end;
   end;
-//re-create project?
+//re-create project? The normal project was already created by inherited!
   if AFile <> '' then begin
     f := ChangeFileExt(AFile, '_ext.xml'); //preserve unmodified project?
     APrj.CreateProjectFile(f);
@@ -506,10 +547,11 @@ end;
 
 destructor TDocPackage.Destroy;
 begin
+  FreeAndNil(Config);
   FreeAndNil(FUnits);
   FreeAndNil(FDescriptions);
   FreeAndNil(FRequires);
-  FreeAndNil(Config);
+  FreeAndNil(FSrcDirs);
   inherited Destroy;
 end;
 
@@ -523,8 +565,11 @@ var
   pkg: TFPDocPackage;
   i: integer;
 begin
-  Result := False;
-  if ProjectDir = '' then
+  Result := APrj.Package <> nil; //already configured?
+  if Result then
+    exit;
+  Result := ProjectDir <> '';
+  if not Result then
     exit; //dir must be known
 //create pkg
   APrj.ParseFPDocOption('--package=' + Name); //selects or creates the pkg
@@ -670,6 +715,7 @@ begin
 //units
   Config.WriteSectionValues('units', Units);
   Config.WriteSectionValues('descrs', Descriptions);
+  Config.WriteSectionValues('SrcDirs', SrcDirs);
 //all done
   Config.Flush;
   Loaded := True;
