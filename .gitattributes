@@ -4117,6 +4117,8 @@ ide/diskdiffsdialog.pas svneol=native#text/pascal
 ide/editdefinetree.pas svneol=native#text/pascal
 ide/editmsgscannersdlg.lfm svneol=native#text/plain
 ide/editmsgscannersdlg.pas svneol=native#text/plain
+ide/editorfilemanager.lfm svneol=native#text/plain
+ide/editorfilemanager.pas svneol=native#text/plain
 ide/editoroptions.pp svneol=native#text/pascal
 ide/editoroptions.rc svneol=native#text/plain
 ide/editoroptions.res -text

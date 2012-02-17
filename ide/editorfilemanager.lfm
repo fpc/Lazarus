@@ -1,0 +1,135 @@
+object EditorFileManagerForm: TEditorFileManagerForm
+  Left = 350
+  Height = 336
+  Top = 652
+  Width = 589
+  Caption = 'EditorFileManagerForm'
+  ClientHeight = 336
+  ClientWidth = 589
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object CheckListBox1: TCheckListBox
+    AnchorSideLeft.Control = FilterEdit
+    AnchorSideTop.Control = FilterEdit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Panel1
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 260
+    Top = 30
+    Width = 452
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
+    OnClick = CheckListBox1Click
+    OnItemClick = CheckListBox1ItemClick
+    PopupMenu = PopupMenu1
+    TabOrder = 0
+  end
+  object FilterEdit: TListFilterEdit
+    Left = 6
+    Height = 22
+    Top = 8
+    Width = 224
+    ButtonWidth = 23
+    NumGlyphs = 0
+    MaxLength = 0
+    TabOrder = 1
+    FilteredListbox = CheckListBox1
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 296
+    Width = 577
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 2
+    ShowButtons = [pbClose, pbHelp]
+  end
+  object Panel1: TPanel
+    Left = 458
+    Height = 290
+    Top = 0
+    Width = 131
+    Align = alRight
+    AutoSize = True
+    ClientHeight = 290
+    ClientWidth = 131
+    TabOrder = 3
+    object ActivateButton: TBitBtn
+      Left = 23
+      Height = 24
+      Top = 43
+      Width = 81
+      Anchors = []
+      AutoSize = True
+      BorderSpacing.Around = 12
+      Caption = 'Make Active'
+      Enabled = False
+      OnClick = ActivateButtonClick
+      TabOrder = 0
+    end
+    object SelectAllCheckBox: TCheckBox
+      AnchorSideLeft.Control = ActivateButton
+      AnchorSideLeft.Side = asrCenter
+      Left = -1
+      Height = 21
+      Top = 112
+      Width = 129
+      Anchors = [akLeft]
+      BorderSpacing.Around = 12
+      Caption = 'SelectAllCheckBox'
+      OnClick = SelectAllCheckBoxClick
+      TabOrder = 1
+    end
+    object SaveCheckedButton: TBitBtn
+      AnchorSideLeft.Control = ActivateButton
+      AnchorSideLeft.Side = asrCenter
+      Left = 17
+      Height = 24
+      Top = 152
+      Width = 93
+      Anchors = [akLeft]
+      AutoSize = True
+      BorderSpacing.Around = 12
+      Caption = 'Save Checked'
+      Enabled = False
+      OnClick = SaveCheckedButtonClick
+      TabOrder = 2
+    end
+    object CloseCheckedButton: TBitBtn
+      AnchorSideLeft.Control = ActivateButton
+      AnchorSideLeft.Side = asrCenter
+      Left = 15
+      Height = 24
+      Top = 200
+      Width = 96
+      Anchors = [akLeft]
+      AutoSize = True
+      BorderSpacing.Around = 12
+      Caption = 'Close Checked'
+      Enabled = False
+      OnClick = CloseCheckedButtonClick
+      TabOrder = 3
+    end
+  end
+  object PopupMenu1: TPopupMenu
+    left = 304
+    top = 8
+    object ActivateMenuItem: TMenuItem
+      Caption = 'Activate'
+      OnClick = ActivateMenuItemClick
+    end
+    object CloseMenuItem: TMenuItem
+      Caption = 'Close'
+      OnClick = CloseMenuItemClick
+    end
+  end
+end
