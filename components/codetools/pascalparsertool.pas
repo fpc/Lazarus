@@ -1446,11 +1446,12 @@ begin
         CurNode.Desc:=ctnOpenArrayType;
       end;
       if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
-      if not UpAtomIs('OF') then
+      if not UpAtomIs('OF') then begin
         if ExceptionOnError then
           RaiseStringExpectedButAtomFound('"of"')
         else
           exit;
+      end;
       if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
       if UpAtomIs('CONST') then begin
         if (phpCreateNodes in Attr) then begin
@@ -4151,6 +4152,7 @@ function TPascalParserTool.KeyWordFuncTypeArray: boolean;
     array of ...
     array[SubRange] of ...
     array[SubRange,SubRange,...] of ...
+    array[Subrange];  // without "of" means array of byte
 }
 begin
   CreateChildNode;
@@ -4172,6 +4174,13 @@ begin
         RaiseCharExpectedButAtomFound(']');
     until false;
     ReadNextAtom;
+    if CurPos.Flag in [cafSemicolon,cafRoundBracketClose,cafEdgedBracketClose]
+    then begin
+      // array[] without "of" means array[] of byte
+      CurNode.EndPos:=CurPos.StartPos;
+      EndChildNode; // close array
+      exit(true);
+    end;
   end;
   if not UpAtomIs('OF') then
     RaiseStringExpectedButAtomFound('"of"');
