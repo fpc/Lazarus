@@ -451,7 +451,8 @@ resourcestring
   lisMenuBuildLazarus = 'Build Lazarus with Current Profile';
   lisMenuBuildLazarusProf = 'Build Lazarus with Profile: %s';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus" ...';
-  lisEditorFileManager = 'Editor File Manager ...';
+  lisDlgEditorFileManager = 'Editor File Manager ...';
+  lisEditorFileManager = 'Editor File Manager';
 
   lisSearchProjectsFrom = 'Search projects from';
   lisMEOther = 'Other';
@@ -925,9 +926,10 @@ resourcestring
   lisCloseAllTabsQuestion = 'Closing a Source Editor Window. Do you want close all files or hide the window?';
   lisCloseAllTabsClose = 'Close files';
   lisCloseAllChecked = 'Close All Checked';
-  lisSaveAllChecked = 'Save All Checked';
-  lisActivateSelected = 'Activate Selected';
   lisCloseAllTabsHide = 'Hide window';
+  lisSaveAllChecked = 'Save All Checked';
+  lisActivate = 'Activate';
+  lisActivateSelected = 'Activate Selected';
 
   // hints
   lisHintOpen = 'Open';

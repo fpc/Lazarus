@@ -121,6 +121,7 @@ object EditorFileManagerForm: TEditorFileManagerForm
     end
   end
   object PopupMenu1: TPopupMenu
+    OnPopup = PopupMenu1Popup
     left = 304
     top = 8
     object ActivateMenuItem: TMenuItem

@@ -29,6 +29,7 @@ type
     procedure CheckListBox1Click(Sender: TObject);
     procedure CheckListBox1ItemClick(Sender: TObject; Index: integer);
     procedure CloseCheckedButtonClick(Sender: TObject);
+    procedure PopupMenu1Popup(Sender: TObject);
     procedure SaveCheckedButtonClick(Sender: TObject);
     procedure CloseMenuItemClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -74,29 +75,26 @@ begin
     end;
   FilterEdit.InvalidateFilter;
   // Captions
-  ActivateMenuItem.Caption:=lisActivateSelected;
+  Caption:=lisEditorFileManager;
+  ActivateMenuItem.Caption:=lisActivate;
   CloseMenuItem.Caption:=lisMenuClose;
   SelectAllCheckBox.Caption:=lisCheckAll;
   ActivateButton.Caption:=lisActivateSelected;
   SaveCheckedButton.Caption:=lisSaveAllChecked;
   CloseCheckedButton.Caption:=lisCloseAllChecked;
   // Icons
+  PopupMenu1.Images:=IDEImages.Images_16;
   ActivateMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'laz_open');
-  CloseMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'laz_close');
+  CloseMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'menu_close');
   ActivateButton.LoadGlyphFromLazarusResource('laz_open');
   CloseCheckedButton.LoadGlyphFromLazarusResource('menu_close_all');
   SaveCheckedButton.LoadGlyphFromLazarusResource('menu_save_all');
 end;
 
 procedure TEditorFileManagerForm.CheckListBox1Click(Sender: TObject);
-var
-  clb: TCheckListBox;
-  HasSelected: Boolean;
 begin
-  HasSelected:=(Sender as TCheckListBox).SelCount>0;
   // Enable ActivateButton when there is a selected item.
-  ActivateButton.Enabled:=HasSelected;
-  ActivateMenuItem.Enabled:=HasSelected;
+  ActivateButton.Enabled:=(Sender as TCheckListBox).SelCount>0;
 end;
 
 procedure TEditorFileManagerForm.CheckListBox1ItemClick(Sender: TObject; Index: integer);
@@ -128,7 +126,7 @@ var
   i: Integer;
 begin
   cb:=Sender as TCheckBox;
-  // Caption text : select all / unselect all
+  // Caption text : check all / uncheck all
   if cb.Checked then
     cb.Caption:=lisUncheckAll
   else
@@ -165,6 +163,15 @@ begin
     if CheckListBox1.Checked[i] then
       CloseListItem(i);
   UpdateButtons;
+end;
+
+procedure TEditorFileManagerForm.PopupMenu1Popup(Sender: TObject);
+var
+  HasSelected: Boolean;
+begin
+  HasSelected:=CheckListBox1.SelCount>0;
+  ActivateMenuItem.Enabled:=HasSelected;
+  CloseMenuItem.Enabled:=HasSelected;
 end;
 
 procedure TEditorFileManagerForm.CloseMenuItemClick(Sender: TObject);
