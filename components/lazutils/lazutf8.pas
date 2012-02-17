@@ -68,6 +68,17 @@ function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
                                   StopOnNonASCII: Boolean = false): PtrInt;
 function ValidUTF8String(const s: String): String;
 
+type
+  TUTF8TrimFlag = (
+    u8tKeepStart,
+    u8tKeepEnd,
+    u8tKeepTabs,
+    u8tKeepLineBreaks,
+    u8tKeepControlCodes // excluding tabs and line breaks
+    );
+  TUTF8TrimFlags = set of TUTF8TrimFlag;
+function UTF8Trim(const s: string; Flags: TUTF8TrimFlags = []): string;
+
 procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);
 
 //compare functions
@@ -2307,6 +2318,104 @@ begin
 
   if NeedFree then
     FreeMem(p);
+end;
+
+function UTF8Trim(const s: string; Flags: TUTF8TrimFlags): string;
+var
+  p: PChar;
+  u: Cardinal;
+  StartP: PtrUInt;
+  l: Integer;
+begin
+  Result:=s;
+  if Result='' then exit;
+  if not (u8tKeepStart in Flags) then begin
+    // trim start
+    p:=PChar(Result);
+    repeat
+      l:=1;
+      case p^ of
+      #0:
+        if p-PChar(Result)=length(Result) then
+        begin
+          // everything was trimmed
+          exit('')
+        end else if u8tKeepControlCodes in Flags then
+          break;
+      ' ': ;
+      #10,#13:
+        if u8tKeepLineBreaks in Flags then
+          break;
+      #9:
+        if u8tKeepTabs in Flags then
+          break;
+      #1..#8,#11,#12,#14..#31,#127:
+        if u8tKeepControlCodes in Flags then
+          break;
+      #128..#255:
+        begin
+          if u8tKeepControlCodes in Flags then break;
+          u:=UTF8CharacterToUnicode(p,l);
+          if (l<=1) then break; // invalid character
+          case u of
+          128..159, // C1 set of control codes
+          8206, 8207: // left-to-right, right-to-left mark
+            ;
+          else
+            break;
+          end;
+        end;
+      else
+        break;
+      end;
+      inc(p,l);
+    until false;
+    if p>PChar(Result) then begin
+      Result:=copy(Result,p-PChar(Result)+1,length(Result));
+      if Result='' then exit;
+    end;
+  end;
+
+  if not (u8tKeepEnd in Flags) then begin
+    // trim end
+    p:=@Result[length(Result)];
+    repeat
+      case p^ of
+      #0:
+        if u8tKeepControlCodes in Flags then
+          break;
+      ' ': ;
+      #10,#13:
+        if u8tKeepLineBreaks in Flags then
+          break;
+      #9:
+        if u8tKeepTabs in Flags then
+          break;
+      #1..#8,#11,#12,#14..#31,#127:
+        if u8tKeepControlCodes in Flags then
+          break;
+      #128..#255:
+        begin
+          if u8tKeepControlCodes in Flags then break;
+          StartP:=UTF8FindNearestCharStart(PChar(Result),length(Result),p-PChar(Result));
+          u:=UTF8CharacterToUnicode(PChar(Result)+StartP,l);
+          if (l<=1) then break; // invalid character
+          case u of
+          128..159, // C1 set of control codes
+          8206, 8207: // left-to-right, right-to-left mark
+            p:=PChar(Result)+StartP;
+          else
+            break;
+          end;
+        end;
+      else
+        break;
+      end;
+      dec(p);
+    until p<PChar(Result);
+    // p is on last good byte
+    SetLength(Result,p+1-PChar(Result));
+  end;
 end;
 
 procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);
