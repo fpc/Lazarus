@@ -143,10 +143,10 @@ begin
   {$ELSE}
   FNeedRTLAnsi:=false;
   Lang := SysUtils.GetEnvironmentVariable('LC_ALL');
-  if Length(lang) = 0 then
+  if lang = '' then
   begin
     Lang := SysUtils.GetEnvironmentVariable('LC_MESSAGES');
-    if Length(Lang) = 0 then
+    if Lang = '' then
     begin
       Lang := SysUtils.GetEnvironmentVariable('LANG');
     end;
@@ -154,8 +154,8 @@ begin
   i:=System.Pos('.',Lang);
   if (i>0) then begin
     Encoding:=copy(Lang,i+1,length(Lang)-i);
-    FNeedRTLAnsi:=(SysUtils.CompareText(Encoding,'UTF-8')=0)
-              or (SysUtils.CompareText(Encoding,'UTF8')=0);
+    FNeedRTLAnsi:=(SysUtils.CompareText(Encoding,'UTF-8')<>0)
+              and (SysUtils.CompareText(Encoding,'UTF8')<>0);
   end;
   {$ENDIF}
   FNeedRTLAnsiValid:=true;
