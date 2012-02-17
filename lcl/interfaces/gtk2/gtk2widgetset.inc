@@ -1002,55 +1002,10 @@ begin
     exit;
   end;
 
-
   UseFont := PGdiObject(AFont.Reference.Handle)^.GDIFontObject;
   FontDesc := pango_layout_get_font_description(UseFont);
   gtk_widget_modify_font(AWidget, FontDesc);
 end;
-
-(*
-{------------------------------------------------------------------------------
-  function TGtk2WidgetSet.SetTopIndex(Sender: TObject; NewTopIndex: integer
-    ): integer;
-------------------------------------------------------------------------------}
-function TGtk2WidgetSet.SetTopIndex(Sender: TObject; NewTopIndex: integer
-  ): integer;
-var
-  aTreeView: PGtkTreeView;
-  aTreeModel  : PGtkTreeModel;
-  aTreeColumn  : PGtkTreeViewColumn;
-  aTreeIter   : TGtkTreeIter;
-  aTreePath   : PGtkTreePath;
-  Count : Integer;
-begin
-  Result:=0;
-  if not (Sender is TWinControl) then exit;
-  case TWinControl(Sender).fCompStyle of
-
-  csListBox, csCheckListBox:
-    begin
-      aTreeView := GTK_TREE_VIEW(GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.CoreWidget);
-      aTreeModel := gtk_tree_view_get_model(aTreeView);
-
-      If NewTopIndex < 0 then
-        NewTopIndex := 0
-      else begin
-        Count := gtk_tree_model_iter_n_children(aTreeModel,nil);
-
-        If NewTopIndex >= Count then
-          NewTopIndex := Count - 1;
-      end;
-      
-      if gtk_tree_model_iter_nth_child(aTreeModel,@aTreeIter, nil, NewTopIndex) then begin
-        aTreePath := gtk_tree_model_get_path(aTreeModel, @aTreeIter);
-        aTreeColumn := gtk_tree_view_get_column(aTreeView, 0);
-        gtk_tree_view_scroll_to_cell(aTreeView, aTreePath, aTreeColumn, False, 0.0, 0.0);
-        gtk_tree_path_free(aTreePath);
-      end;
-    end;
-  end;
-end;
-*)
 
 function TGtk2WidgetSet.CreateThemeServices: TThemeServices;
 begin
@@ -1828,15 +1783,15 @@ begin
   WakeMainThread := nil;
 
   {$IFDEF EnabledGtkThreading}
-    if MultiThreadingEnabled then
-    begin
-      {$IFNDEF Win32}
-        {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
-        gdk_threads_leave;
-        {$ENDIF}
+  if MultiThreadingEnabled then
+  begin
+    {$IFNDEF Win32}
+      {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
+      gdk_threads_leave;
       {$ENDIF}
-      fMultiThreadingEnabled := False;
-    end;
+    {$ENDIF}
+    fMultiThreadingEnabled := False;
+  end;
   {$ENDIF}
 
 end;
