@@ -154,7 +154,7 @@ type
     constructor Create(AnIdString: String; AnId: Integer; ADisplayName: String);
     procedure Assign(ADividerPos: TSimpleWindowLayoutDividerPos); reintroduce;
     procedure LoadFromConfig(Config: TConfigStorage; const Path: string);
-    procedure SaveToConfig(Config: TConfigStorage; const Path: string);
+    function  SaveToConfig(Config: TConfigStorage; const Path: string) : Boolean;
     procedure Clear;
     property IdString: String read FIdString;
     property Id: Integer read FId;
@@ -611,11 +611,13 @@ end;
 procedure TSimpleWindowLayoutDividerPosList.SaveToConfig(Config: TConfigStorage;
   const Path: string);
 var
-  i: Integer;
+  i, c: Integer;
 begin
-  Config.SetDeleteValue(Path+'Count', Count, 0);
+  c := 0;
   for i := 0 to Count - 1 do
-    Items[i].SaveToConfig(Config, Path + 'Item' + IntToStr(i) + '/');
+    if Items[i].SaveToConfig(Config, Path + 'Item' + IntToStr(i) + '/') then
+      inc(c);
+  Config.SetDeleteValue(Path+'Count', c, 0);
 end;
 
 procedure TSimpleWindowLayoutDividerPosList.Clear;
@@ -772,11 +774,14 @@ begin
   end;
 end;
 
-procedure TSimpleWindowLayoutDividerPos.SaveToConfig(Config: TConfigStorage;
-  const Path: string);
+function TSimpleWindowLayoutDividerPos.SaveToConfig(Config: TConfigStorage;
+  const Path: string): Boolean;
 var
   s: String;
 begin
+  Result := (FSize <> -1) or (FPlacement <> iwpdUseWindowSetting);
+  if not Result then
+    exit;
   WriteStr(s, FPlacement);
   Config.SetDeleteValue(Path+'ID', FIdString, '');
   Config.SetDeleteValue(Path+'Size', FSize, -1);
@@ -1304,7 +1309,9 @@ begin
     end;
     if f then
       if Creator.OnGetDividerSize(fForm, FDividers[i].Id, j) then
-        FDividers[i].Size := j;
+        FDividers[i].Size := j
+      else
+        FDividers[i].Size := -1;
   end;
 end;
 
