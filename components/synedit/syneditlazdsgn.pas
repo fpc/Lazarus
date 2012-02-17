@@ -42,6 +42,7 @@ uses
   SynHighlighterCss, SynHighlighterPHP, SynHighlighterTeX, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterVB, SynHighlighterAny, SynHighlighterDiff,
   SynHighlighterBat, SynHighlighterIni, SynHighlighterPo,
+  SynPluginSyncroEdit,
   SynPropertyEditObjectList, SynDesignStringConstants,
   LazarusPackageIntf, LResources, PropEdits, ComponentEditors;
 
@@ -57,6 +58,11 @@ end;
 procedure RegisterSynEdit;
 begin
   RegisterComponents('SynEdit',[TSynEdit]);
+end;
+
+procedure RegisterSynSyncroEdit;
+begin
+  RegisterComponents('SynEdit',[TSynPluginSyncroEdit]);
 end;
 
 procedure RegisterSynExportHTML;
@@ -213,6 +219,7 @@ begin
   RegisterUnit('SynCompletion',@RegisterSynCompletion);
   RegisterUnit('SynMacroRecorder',@RegisterSynMacroRecorder);
   RegisterUnit('SynExportHTML',@RegisterSynExportHTML);
+  RegisterUnit('SynPluginSyncroEdit',@RegisterSynSyncroEdit);
 
   RegisterUnit('SynHighlighterPas',@RegisterSynHighlighterPas);
   RegisterUnit('SynHighlighterCPP',@RegisterSynHighlighterCPP);

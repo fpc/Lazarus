@@ -72,8 +72,6 @@ type
     destructor Destroy; override;
     class function ConvertCommandToBase(Command: TSynEditorCommand): TSynEditorCommand;
     class function ConvertBaseToCommand(Command: TSynEditorCommand): TSynEditorCommand;
-    class function ConvertCommandToBaseOff(Command: TSynEditorCommand): TSynEditorCommand;
-    class function ConvertBaseToCommandOff(Command: TSynEditorCommand): TSynEditorCommand;
 
     procedure SetTemplate(aTmpl: String; aCaretPos: TPoint); // Replaces current selection
     // Coords relativ to the template. base (1, 1)
@@ -104,7 +102,7 @@ const
 implementation
 
 var
-  KeyOffset, KeyOffsetOff: integer;
+  KeyOffset: integer;
 
 { TSynPluginTemplateEdit }
 
@@ -115,7 +113,7 @@ begin
   FKeystrokes.PluginOffset := KeyOffset;
   FKeyStrokesOffCell := TSynEditTemplateEditKeyStrokesOffCell.Create(self);
   FKeyStrokesOffCell.ResetDefaults;
-  FKeyStrokesOffCell.PluginOffset := KeyOffsetOff;
+  FKeyStrokesOffCell.PluginOffset := KeyOffset;
   inherited Create(AOwner);
   CellParserEnabled := True;
 end;
@@ -140,22 +138,6 @@ class function TSynPluginTemplateEdit.ConvertBaseToCommand(Command: TSynEditorCo
 begin
   if (Command >= ecPluginFirst) and (Command <= ecPluginFirst + ecSynPTmplEdCount)
   then Result := Command + KeyOffset
-  else Result := ecNone;
-end;
-
-class function TSynPluginTemplateEdit.ConvertCommandToBaseOff
-  (Command: TSynEditorCommand): TSynEditorCommand;
-begin
-  if (Command >= ecPluginFirst + KeyOffsetOff) and
-     (Command <= ecPluginFirst + KeyOffsetOff + ecSynPTmplEdCount)
-  then Result := Command - KeyOffsetOff
-  else Result := ecNone;
-end;
-
-class function TSynPluginTemplateEdit.ConvertBaseToCommandOff(Command: TSynEditorCommand): TSynEditorCommand;
-begin
-  if (Command >= ecPluginFirst) and (Command <= ecPluginFirst + ecSynPTmplEdCount)
-  then Result := Command + KeyOffsetOff
   else Result := ecNone;
 end;
 
@@ -226,8 +208,6 @@ var
 begin
   if Handled or AfterProcessing or not Active then exit;
   Cmd := ConvertCommandToBase(Command);
-  if Cmd = ecNone then
-    Cmd := ConvertCommandToBaseOff(Command);
 
   Handled := True;
   case Cmd of
@@ -499,7 +479,6 @@ end;
 
 initialization
   KeyOffset := AllocatePluginKeyRange(ecSynPTmplEdCount + 1);
-  KeyOffsetOff := AllocatePluginKeyRange(ecSynPTmplEdCount + 1);
 
 end.
 

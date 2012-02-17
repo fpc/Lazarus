@@ -245,14 +245,11 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    property GutterGlyph: TBitmap read FGutterGlyph write SetGutterGlyph;
     class function ConvertCommandToBase(Command: TSynEditorCommand): TSynEditorCommand;
     class function ConvertBaseToCommand(Command: TSynEditorCommand): TSynEditorCommand;
-    class function ConvertCommandToBaseOff(Command: TSynEditorCommand): TSynEditorCommand;
-    class function ConvertBaseToCommandOff(Command: TSynEditorCommand): TSynEditorCommand;
-    class function ConvertCommandToBaseSel(Command: TSynEditorCommand): TSynEditorCommand;
-    class function ConvertBaseToCommandSel(Command: TSynEditorCommand): TSynEditorCommand;
 
+  published
+    property GutterGlyph: TBitmap read FGutterGlyph write SetGutterGlyph;
     property KeystrokesSelecting: TSynEditKeyStrokes
       read FKeystrokesSelecting write SetKeystrokesSelecting;
     property Keystrokes: TSynEditKeyStrokes
@@ -262,6 +259,16 @@ type
     property OnModeChange: TNotifyEvent read FOnModeChange write FOnModeChange;
     property OnBeginEdit: TNotifyEvent read FOnBeginEdit write FOnBeginEdit;
     property OnEndEdit: TNotifyEvent read FOnEndEdit write FOnEndEdit;
+
+  published
+    property Enabled;
+    property MarkupInfo;
+    property MarkupInfoCurrent;
+    property MarkupInfoSync;
+    property MarkupInfoArea;
+    property OnActivate;
+    property OnDeactivate;
+    property Editor;
   end;
 
 const
@@ -269,25 +276,23 @@ const
 
   emcSynPSyncroEdCount               = 1;
 
-  ecSynPSyncroEdNextCell           = ecPluginFirst +  0;
-  ecSynPSyncroEdNextCellSel        = ecPluginFirst +  1;
-  ecSynPSyncroEdPrevCell           = ecPluginFirst +  2;
-  ecSynPSyncroEdPrevCellSel        = ecPluginFirst +  3;
-  ecSynPSyncroEdCellHome           = ecPluginFirst +  4;
-  ecSynPSyncroEdCellEnd            = ecPluginFirst +  5;
-  ecSynPSyncroEdCellSelect         = ecPluginFirst +  6;
-  ecSynPSyncroEdEscape             = ecPluginFirst +  7;
-
-  ecSynPSyncroEdCount              = 8;
-
   ecSynPSyncroEdStart              = ecPluginFirst +  0;
-  ecSynPSyncroEdSelModeCount       = 1;
 
+  ecSynPSyncroEdNextCell           = ecPluginFirst +  1;
+  ecSynPSyncroEdNextCellSel        = ecPluginFirst +  2;
+  ecSynPSyncroEdPrevCell           = ecPluginFirst +  3;
+  ecSynPSyncroEdPrevCellSel        = ecPluginFirst +  4;
+  ecSynPSyncroEdCellHome           = ecPluginFirst +  5;
+  ecSynPSyncroEdCellEnd            = ecPluginFirst +  6;
+  ecSynPSyncroEdCellSelect         = ecPluginFirst +  7;
+  ecSynPSyncroEdEscape             = ecPluginFirst +  8;
+
+  ecSynPSyncroEdCount              = 9;
 
 implementation
 
 var
-  MouseOffset, KeyOffsetSel, KeyOffset, KeyOffsetOff: integer;
+  MouseOffset, KeyOffset: integer;
 
 const
   MAX_CACHE = 50; // Amount of lower-cased lines cached
@@ -1086,7 +1091,8 @@ end;
 
 procedure TSynPluginSyncroEdit.DoImageChanged(Sender: TObject);
 begin
-  Markup.GutterGlyph := FGutterGlyph;
+  if Markup <> nil then
+    Markup.GutterGlyph := FGutterGlyph;
 end;
 
 function TSynPluginSyncroEdit.CreateMarkup: TSynPluginSyncronizedEditMarkup;
@@ -1362,7 +1368,7 @@ begin
 
   if Mode = spseSelecting then begin
     // todo: finish word-hash calculations / check if any cells exist
-    Cmd := ConvertCommandToBaseSel(Command);
+    Cmd := ConvertCommandToBase(Command);
     Handled := True;
     case Cmd of
       ecSynPSyncroEdStart: StartSyncroMode;
@@ -1373,8 +1379,6 @@ begin
 
   if Mode = spseEditing then begin
     Cmd := ConvertCommandToBase(Command);
-    if Cmd = ecNone then
-      Cmd := ConvertCommandToBaseOff(Command);
 
     Handled := True;
     case Cmd of
@@ -1410,11 +1414,11 @@ begin
 
   FKeyStrokesOffCell := TSynEditSyncroEditKeyStrokesOffCell.Create(self);
   FKeyStrokesOffCell.ResetDefaults;
-  FKeyStrokesOffCell.PluginOffset := KeyOffsetOff;
+  FKeyStrokesOffCell.PluginOffset := KeyOffset;
 
   FKeystrokesSelecting := TSynEditSyncroEditKeyStrokesSelecting.Create(Self);
   FKeystrokesSelecting.ResetDefaults;
-  FKeystrokesSelecting.PluginOffset := KeyOffsetSel;
+  FKeystrokesSelecting.PluginOffset := KeyOffset;
 
   FGutterGlyph := TBitMap.Create;
   FGutterGlyph.OnChange := @DoImageChanged;
@@ -1452,36 +1456,6 @@ class function TSynPluginSyncroEdit.ConvertBaseToCommand(Command: TSynEditorComm
 begin
   if (Command >= ecPluginFirst) and (Command <= ecPluginFirst + ecSynPSyncroEdCount)
   then Result := Command + KeyOffset
-  else Result := ecNone;
-end;
-
-class function TSynPluginSyncroEdit.ConvertCommandToBaseOff(Command: TSynEditorCommand): TSynEditorCommand;
-begin
-  if (Command >= ecPluginFirst + KeyOffsetOff) and
-     (Command <= ecPluginFirst + KeyOffsetOff + ecSynPSyncroEdCount)
-  then Result := Command - KeyOffsetOff
-  else Result := ecNone;
-end;
-
-class function TSynPluginSyncroEdit.ConvertBaseToCommandOff(Command: TSynEditorCommand): TSynEditorCommand;
-begin
-  if (Command >= ecPluginFirst) and (Command <= ecPluginFirst + ecSynPSyncroEdCount)
-  then Result := Command + KeyOffsetOff
-  else Result := ecNone;
-end;
-
-class function TSynPluginSyncroEdit.ConvertCommandToBaseSel(Command: TSynEditorCommand): TSynEditorCommand;
-begin
-  if (Command >= ecPluginFirst + KeyOffsetSel) and
-     (Command <= ecPluginFirst + KeyOffsetSel + ecSynPSyncroEdSelModeCount)
-  then Result := Command - KeyOffsetSel
-  else Result := ecNone;
-end;
-
-class function TSynPluginSyncroEdit.ConvertBaseToCommandSel(Command: TSynEditorCommand): TSynEditorCommand;
-begin
-  if (Command >= ecPluginFirst) and (Command <= ecPluginFirst + ecSynPSyncroEdSelModeCount)
-  then Result := Command + KeyOffsetSel
   else Result := ecNone;
 end;
 
@@ -1560,11 +1534,39 @@ begin
   AddKey(ecSynPSyncroEdEscape,            VK_ESCAPE, []);
 end;
 
+const
+  EditorSyncroCommandStrs: array[0..8] of TIdentMapEntry = (
+    (Value: ecSynPSyncroEdStart;       Name: 'ecSynPSyncroEdStart'),
+    (Value: ecSynPSyncroEdNextCell;    Name: 'ecSynPSyncroEdNextCell'),
+    (Value: ecSynPSyncroEdNextCellSel; Name: 'ecSynPSyncroEdNextCellSel'),
+    (Value: ecSynPSyncroEdPrevCell;    Name: 'ecSynPSyncroEdPrevCell'),
+    (Value: ecSynPSyncroEdPrevCellSel; Name: 'ecSynPSyncroEdPrevCellSel'),
+    (Value: ecSynPSyncroEdCellHome;    Name: 'ecSynPSyncroEdCellHome'),
+    (Value: ecSynPSyncroEdCellEnd;     Name: 'ecSynPSyncroEdCellEnd'),
+    (Value: ecSynPSyncroEdCellSelect;  Name: 'ecSynPSyncroEdCellSelect'),
+    (Value: ecSynPSyncroEdEscape;      Name: 'ecSynPSyncroEdEscape')
+  );
+
+function IdentToSyncroCommand(const Ident: string; var Cmd: longint): boolean;
+begin
+  Result := IdentToInt(Ident, Cmd, EditorSyncroCommandStrs);
+  if Result then inc(Cmd, KeyOffset);
+end;
+
+function SyncroCommandToIdent(Cmd: longint; var Ident: string): boolean;
+begin
+  Result := (Cmd - ecPluginFirst >= KeyOffset) and (Cmd - ecPluginFirst < KeyOffset + ecSynPSyncroEdCount);
+  if not Result then exit;
+  Result := IntToIdent(Cmd - KeyOffset, Ident, EditorSyncroCommandStrs);
+end;
+
+
 initialization
   MouseOffset  := AllocatePluginMouseRange(emcSynPSyncroEdCount);
-  KeyOffsetSel := AllocatePluginKeyRange(ecSynPSyncroEdSelModeCount);
   KeyOffset    := AllocatePluginKeyRange(ecSynPSyncroEdCount);
-  KeyOffsetOff := AllocatePluginKeyRange(ecSynPSyncroEdCount);
+
+  RegisterKeyCmdIdentProcs({$IFDEF FPC}@{$ENDIF}IdentToSyncroCommand,
+                           {$IFDEF FPC}@{$ENDIF}SyncroCommandToIdent);
 
 end.
 

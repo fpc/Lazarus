@@ -323,8 +323,67 @@ const
   ecDesignerForwardOne      = ecFirstLazarus + 1006;
   ecDesignerBackOne         = ecFirstLazarus + 1007;
 
+
+  (* SynEdit Plugins
+     Define fixed values for the IDE. Must be mapped to plugincommands,
+     when assigned to KeyMap.
+     Offsets are defined in KeyMapping
+     See: TKeyCommandRelationList.AssignTo
+  *)
+  ecFirstPlugin = ecFirstLazarus +  5000; // 6001
+  ecLastPlugin = ecFirstLazarus +  6000; // 6001
   // custom commands
-  ecLazarusLast             = ecFirstLazarus + 2000;
+  ecLazarusLast             = ecLastPlugin;
+
+  // TSynPluginTemplateEdit - In cell
+  ecIdePTmplEdNextCell           = ecFirstPlugin +  0;
+  ecIdePTmplEdNextCellSel        = ecFirstPlugin +  1;
+  ecIdePTmplEdNextCellRotate     = ecFirstPlugin +  2;
+  ecIdePTmplEdNextCellSelRotate  = ecFirstPlugin +  3;
+  ecIdePTmplEdPrevCell           = ecFirstPlugin +  4;
+  ecIdePTmplEdPrevCellSel        = ecFirstPlugin +  5;
+  ecIdePTmplEdCellHome           = ecFirstPlugin +  6;
+  ecIdePTmplEdCellEnd            = ecFirstPlugin +  7;
+  ecIdePTmplEdCellSelect         = ecFirstPlugin +  8;
+  ecIdePTmplEdFinish             = ecFirstPlugin +  9;
+  ecIdePTmplEdEscape             = ecFirstPlugin + 10;
+
+  // TSynPluginTemplateEdit - Out off Cell
+  ecIdePTmplEdOutNextCell           = ecFirstPlugin +  20;
+  ecIdePTmplEdOutNextCellSel        = ecFirstPlugin +  21;
+  ecIdePTmplEdOutNextCellRotate     = ecFirstPlugin +  22;
+  ecIdePTmplEdOutNextCellSelRotate  = ecFirstPlugin +  23;
+  ecIdePTmplEdOutPrevCell           = ecFirstPlugin +  24;
+  ecIdePTmplEdOutPrevCellSel        = ecFirstPlugin +  25;
+  ecIdePTmplEdOutCellHome           = ecFirstPlugin +  26;
+  ecIdePTmplEdOutCellEnd            = ecFirstPlugin +  27;
+  ecIdePTmplEdOutCellSelect         = ecFirstPlugin +  28;
+  ecIdePTmplEdOutFinish             = ecFirstPlugin +  29;
+  ecIdePTmplEdOutEscape             = ecFirstPlugin +  30;
+
+  // TSynPluginSyncroEdit - in celll
+  ecIdePSyncroEdNextCell           = ecFirstPlugin +  50;
+  ecIdePSyncroEdNextCellSel        = ecFirstPlugin +  51;
+  ecIdePSyncroEdPrevCell           = ecFirstPlugin +  52;
+  ecIdePSyncroEdPrevCellSel        = ecFirstPlugin +  53;
+  ecIdePSyncroEdCellHome           = ecFirstPlugin +  54;
+  ecIdePSyncroEdCellEnd            = ecFirstPlugin +  55;
+  ecIdePSyncroEdCellSelect         = ecFirstPlugin +  56;
+  ecIdePSyncroEdEscape             = ecFirstPlugin +  57;
+
+  // TSynPluginSyncroEdit - Out off cell
+  ecIdePSyncroEdOutNextCell           = ecFirstPlugin +  70;
+  ecIdePSyncroEdOutNextCellSel        = ecFirstPlugin +  71;
+  ecIdePSyncroEdOutPrevCell           = ecFirstPlugin +  72;
+  ecIdePSyncroEdOutPrevCellSel        = ecFirstPlugin +  73;
+  ecIdePSyncroEdOutCellHome           = ecFirstPlugin +  74;
+  ecIdePSyncroEdOutCellEnd            = ecFirstPlugin +  75;
+  ecIdePSyncroEdOutCellSelect         = ecFirstPlugin +  76;
+  ecIdePSyncroEdOutEscape             = ecFirstPlugin +  77;
+
+  // TSynPluginSyncroEdit - selecting
+  ecIdePSyncroEdSelStart              = ecFirstPlugin +  90;
+
 
 type
   TIDECommand = class;

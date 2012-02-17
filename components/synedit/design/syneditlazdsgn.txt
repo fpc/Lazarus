@@ -24,3 +24,4 @@ tsynvbsyn.png
 tsynbatsyn.png
 tsyninisyn.png
 tsynposyn.png
+tsynpluginsyncroedit.png

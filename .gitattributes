@@ -2294,6 +2294,7 @@ components/synedit/design/tsynmultisyn.png -text svneol=unset#image/png
 components/synedit/design/tsynpassyn.png -text svneol=unset#image/png
 components/synedit/design/tsynperlsyn.png -text svneol=unset#image/png
 components/synedit/design/tsynphpsyn.png -text svneol=unset#image/png
+components/synedit/design/tsynpluginsyncroedit.png -text
 components/synedit/design/tsynposyn.png -text svneol=unset#image/png
 components/synedit/design/tsynpythonsyn.png -text svneol=unset#image/png
 components/synedit/design/tsynsqlsyn.png -text svneol=unset#image/png

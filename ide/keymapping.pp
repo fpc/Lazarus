@@ -56,6 +56,16 @@ const
     'Custom'
     );
 
+  (* SynEdit Plugins
+     Offsets for the fixed ec... commands, defined in IDECommands
+     Used in EditorOptions
+  *)
+  ecIdePTmplOffset      = ecSynPTmplEdNextCell - ecIdePTmplEdNextCell;
+  ecIdePTmplOutOffset   = ecSynPTmplEdNextCell - ecIdePTmplEdOutNextCell;
+  ecIdePSyncroOffset    = ecSynPSyncroEdNextCell - ecIdePSyncroEdNextCell;
+  ecIdePSyncroOutOffset = ecSynPSyncroEdNextCell - ecIdePSyncroEdOutNextCell;
+  ecIdePSyncroSelOffset = ecSynPSyncroEdStart    - ecIdePSyncroEdSelStart;
+
 type
   //---------------------------------------------------------------------------
   // TKeyCommandCategory is used to divide the key commands in handy packets
@@ -155,7 +165,8 @@ type
     function LoadFromXMLConfig(XMLConfig:TXMLConfig; const Path: String):boolean;
     function SaveToXMLConfig(XMLConfig:TXMLConfig; const Path: String):boolean;
     procedure AssignTo(ASynEditKeyStrokes:TSynEditKeyStrokes;
-                       IDEWindowClass: TCustomFormClass);
+                       IDEWindowClass: TCustomFormClass;
+                       ACommandOffsetOffset: Integer = 0);
     procedure Assign(List: TKeyCommandRelationList);
     procedure LoadScheme(const SchemeName: string);
     function CreateUniqueCategoryName(const AName: string): string;
@@ -628,64 +639,54 @@ begin
     ecDesignerForwardOne      : Result:= lisDsgOrderForwardOne;
     ecDesignerBackOne         : Result:= lisDsgOrderBackOne;
 
+    // Edit template
+    ecIdePTmplEdNextCell:           Result := srkmecSynPTmplEdNextCell;
+    ecIdePTmplEdNextCellSel:        Result := srkmecSynPTmplEdNextCellSel;
+    ecIdePTmplEdNextCellRotate:     Result := srkmecSynPTmplEdNextCellRotate;
+    ecIdePTmplEdNextCellSelRotate:  Result := srkmecSynPTmplEdNextCellSelRotate;
+    ecIdePTmplEdPrevCell:           Result := srkmecSynPTmplEdPrevCell;
+    ecIdePTmplEdPrevCellSel:        Result := srkmecSynPTmplEdPrevCellSel;
+    ecIdePTmplEdCellHome:           Result := srkmecSynPTmplEdCellHome;
+    ecIdePTmplEdCellEnd:            Result := srkmecSynPTmplEdCellEnd;
+    ecIdePTmplEdCellSelect:         Result := srkmecSynPTmplEdCellSelect;
+    ecIdePTmplEdFinish:             Result := srkmecSynPTmplEdFinish;
+    ecIdePTmplEdEscape:             Result := srkmecSynPTmplEdEscape;
+    // Edit template
+    ecIdePTmplEdOutNextCell:           Result := srkmecSynPTmplEdNextCell;
+    ecIdePTmplEdOutNextCellSel:        Result := srkmecSynPTmplEdNextCellSel;
+    ecIdePTmplEdOutNextCellRotate:     Result := srkmecSynPTmplEdNextCellRotate;
+    ecIdePTmplEdOutNextCellSelRotate:  Result := srkmecSynPTmplEdNextCellSelRotate;
+    ecIdePTmplEdOutPrevCell:           Result := srkmecSynPTmplEdPrevCell;
+    ecIdePTmplEdOutPrevCellSel:        Result := srkmecSynPTmplEdPrevCellSel;
+    ecIdePTmplEdOutCellHome:           Result := srkmecSynPTmplEdCellHome;
+    ecIdePTmplEdOutCellEnd:            Result := srkmecSynPTmplEdCellEnd;
+    ecIdePTmplEdOutCellSelect:         Result := srkmecSynPTmplEdCellSelect;
+    ecIdePTmplEdOutFinish:             Result := srkmecSynPTmplEdFinish;
+    ecIdePTmplEdOutEscape:             Result := srkmecSynPTmplEdEscape;
+    // SyncroEdit
+    ecIdePSyncroEdNextCell:         Result := srkmecSynPSyncroEdNextCell;
+    ecIdePSyncroEdNextCellSel:      Result := srkmecSynPSyncroEdNextCellSel;
+    ecIdePSyncroEdPrevCell:         Result := srkmecSynPSyncroEdPrevCell;
+    ecIdePSyncroEdPrevCellSel:      Result := srkmecSynPSyncroEdPrevCellSel;
+    ecIdePSyncroEdCellHome:         Result := srkmecSynPSyncroEdCellHome;
+    ecIdePSyncroEdCellEnd:          Result := srkmecSynPSyncroEdCellEnd;
+    ecIdePSyncroEdCellSelect:       Result := srkmecSynPSyncroEdCellSelect;
+    ecIdePSyncroEdEscape:           Result := srkmecSynPSyncroEdEscape;
+    // SyncroEdit
+    ecIdePSyncroEdOutNextCell:         Result := srkmecSynPSyncroEdNextCell;
+    ecIdePSyncroEdOutNextCellSel:      Result := srkmecSynPSyncroEdNextCellSel;
+    ecIdePSyncroEdOutPrevCell:         Result := srkmecSynPSyncroEdPrevCell;
+    ecIdePSyncroEdOutPrevCellSel:      Result := srkmecSynPSyncroEdPrevCellSel;
+    ecIdePSyncroEdOutCellHome:         Result := srkmecSynPSyncroEdCellHome;
+    ecIdePSyncroEdOutCellEnd:          Result := srkmecSynPSyncroEdCellEnd;
+    ecIdePSyncroEdOutCellSelect:       Result := srkmecSynPSyncroEdCellSelect;
+    ecIdePSyncroEdOutEscape:           Result := srkmecSynPSyncroEdEscape;
+    // SyncroEdit, during selection
+    ecIdePSyncroEdSelStart:            Result := srkmecSynPSyncroEdStart;
+
     else
       begin
         Result:= srkmecunknown;
-        case TSynPluginTemplateEdit.ConvertCommandToBase(cmd) of
-          // Edit template
-          ecSynPTmplEdNextCell:           Result := srkmecSynPTmplEdNextCell;
-          ecSynPTmplEdNextCellSel:        Result := srkmecSynPTmplEdNextCellSel;
-          ecSynPTmplEdNextCellRotate:     Result := srkmecSynPTmplEdNextCellRotate;
-          ecSynPTmplEdNextCellSelRotate:  Result := srkmecSynPTmplEdNextCellSelRotate;
-          ecSynPTmplEdPrevCell:           Result := srkmecSynPTmplEdPrevCell;
-          ecSynPTmplEdPrevCellSel:        Result := srkmecSynPTmplEdPrevCellSel;
-          ecSynPTmplEdCellHome:           Result := srkmecSynPTmplEdCellHome;
-          ecSynPTmplEdCellEnd:            Result := srkmecSynPTmplEdCellEnd;
-          ecSynPTmplEdCellSelect:         Result := srkmecSynPTmplEdCellSelect;
-          ecSynPTmplEdFinish:             Result := srkmecSynPTmplEdFinish;
-          ecSynPTmplEdEscape:             Result := srkmecSynPTmplEdEscape;
-        end;
-        case TSynPluginTemplateEdit.ConvertCommandToBaseOff(cmd) of
-          // Edit template
-          ecSynPTmplEdNextCell:           Result := srkmecSynPTmplEdNextCell;
-          ecSynPTmplEdNextCellSel:        Result := srkmecSynPTmplEdNextCellSel;
-          ecSynPTmplEdNextCellRotate:     Result := srkmecSynPTmplEdNextCellRotate;
-          ecSynPTmplEdNextCellSelRotate:  Result := srkmecSynPTmplEdNextCellSelRotate;
-          ecSynPTmplEdPrevCell:           Result := srkmecSynPTmplEdPrevCell;
-          ecSynPTmplEdPrevCellSel:        Result := srkmecSynPTmplEdPrevCellSel;
-          ecSynPTmplEdCellHome:           Result := srkmecSynPTmplEdCellHome;
-          ecSynPTmplEdCellEnd:            Result := srkmecSynPTmplEdCellEnd;
-          ecSynPTmplEdCellSelect:         Result := srkmecSynPTmplEdCellSelect;
-          ecSynPTmplEdFinish:             Result := srkmecSynPTmplEdFinish;
-          ecSynPTmplEdEscape:             Result := srkmecSynPTmplEdEscape;
-        end;
-
-        case TSynPluginSyncroEdit.ConvertCommandToBase(cmd) of
-          // SyncroEdit
-          ecSynPSyncroEdNextCell:         Result := srkmecSynPSyncroEdNextCell;
-          ecSynPSyncroEdNextCellSel:      Result := srkmecSynPSyncroEdNextCellSel;
-          ecSynPSyncroEdPrevCell:         Result := srkmecSynPSyncroEdPrevCell;
-          ecSynPSyncroEdPrevCellSel:      Result := srkmecSynPSyncroEdPrevCellSel;
-          ecSynPSyncroEdCellHome:         Result := srkmecSynPSyncroEdCellHome;
-          ecSynPSyncroEdCellEnd:          Result := srkmecSynPSyncroEdCellEnd;
-          ecSynPSyncroEdCellSelect:       Result := srkmecSynPSyncroEdCellSelect;
-          ecSynPSyncroEdEscape:           Result := srkmecSynPSyncroEdEscape;
-        end;
-        case TSynPluginSyncroEdit.ConvertCommandToBaseOff(cmd) of
-          // SyncroEdit
-          ecSynPSyncroEdNextCell:         Result := srkmecSynPSyncroEdNextCell;
-          ecSynPSyncroEdNextCellSel:      Result := srkmecSynPSyncroEdNextCellSel;
-          ecSynPSyncroEdPrevCell:         Result := srkmecSynPSyncroEdPrevCell;
-          ecSynPSyncroEdPrevCellSel:      Result := srkmecSynPSyncroEdPrevCellSel;
-          ecSynPSyncroEdCellHome:         Result := srkmecSynPSyncroEdCellHome;
-          ecSynPSyncroEdCellEnd:          Result := srkmecSynPSyncroEdCellEnd;
-          ecSynPSyncroEdCellSelect:       Result := srkmecSynPSyncroEdCellSelect;
-          ecSynPSyncroEdEscape:           Result := srkmecSynPSyncroEdEscape;
-        end;
-        case TSynPluginSyncroEdit.ConvertCommandToBaseSel(cmd) of
-          // SyncroEdit, during selection
-          ecSynPSyncroEdStart:            Result := srkmecSynPSyncroEdStart;
-        end;
 
       end;
   end;
@@ -1214,63 +1215,54 @@ begin
   ecDesignerForwardOne:  SetSingle(VK_PRIOR,[ssCtrl]);
   ecDesignerBackOne:     SetSingle(VK_NEXT,[ssCtrl]);
 
+  ecIdePTmplEdNextCell:         SetSingle(VK_RIGHT,[ssCtrl]);
+  ecIdePTmplEdNextCellSel:      SetSingle(VK_TAB,[]);
+  ecIdePTmplEdNextCellRotate:   SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdNextCellSelRotate:SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdPrevCell:         SetSingle(VK_LEFT,[ssCtrl]);
+  ecIdePTmplEdPrevCellSel:      SetSingle(VK_TAB,[ssShift]);
+  ecIdePTmplEdCellHome:         SetSingle(VK_HOME,[]);
+  ecIdePTmplEdCellEnd:          SetSingle(VK_END,[]);
+  ecIdePTmplEdCellSelect:       SetSingle(VK_A,[ssCtrl]);
+  ecIdePTmplEdFinish:           SetSingle(VK_RETURN,[]);
+  ecIdePTmplEdEscape:           SetSingle(VK_ESCAPE,[]);
+  // Edit template
+  ecIdePTmplEdOutNextCell:         SetSingle(VK_RIGHT,[ssCtrl]);
+  ecIdePTmplEdOutNextCellSel:      SetSingle(VK_TAB,[]);
+  ecIdePTmplEdOutNextCellRotate:   SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdOutNextCellSelRotate:SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdOutPrevCell:         SetSingle(VK_LEFT,[ssCtrl]);
+  ecIdePTmplEdOutPrevCellSel:      SetSingle(VK_TAB,[ssShift]);
+  ecIdePTmplEdOutCellHome:         SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdOutCellEnd:          SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdOutCellSelect:       SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdOutFinish:           SetSingle(VK_RETURN,[]);
+  ecIdePTmplEdOutEscape:           SetSingle(VK_ESCAPE,[]);
+  // SyncroEdit
+  ecIdePSyncroEdNextCell:       SetSingle(VK_RIGHT,[ssCtrl]);
+  ecIdePSyncroEdNextCellSel:    SetSingle(VK_TAB,[]);
+  ecIdePSyncroEdPrevCell:       SetSingle(VK_LEFT,[ssCtrl]);
+  ecIdePSyncroEdPrevCellSel:    SetSingle(VK_TAB,[ssShift]);
+  ecIdePSyncroEdCellHome:       SetSingle(VK_HOME,[]);
+  ecIdePSyncroEdCellEnd:        SetSingle(VK_END,[]);
+  ecIdePSyncroEdCellSelect:     SetSingle(VK_A,[ssCtrl]);
+  ecIdePSyncroEdEscape:         SetSingle(VK_ESCAPE,[]);
+  // SyncroEdit
+  ecIdePSyncroEdOutNextCell:       SetSingle(VK_RIGHT,[ssCtrl]);
+  ecIdePSyncroEdOutNextCellSel:    SetSingle(VK_TAB,[]);
+  ecIdePSyncroEdOutPrevCell:       SetSingle(VK_LEFT,[ssCtrl]);
+  ecIdePSyncroEdOutPrevCellSel:    SetSingle(VK_TAB,[ssShift]);
+  ecIdePSyncroEdOutCellHome:       SetSingle(VK_UNKNOWN,[]);
+  ecIdePSyncroEdOutCellEnd:        SetSingle(VK_UNKNOWN,[]);
+  ecIdePSyncroEdOutCellSelect:     SetSingle(VK_UNKNOWN,[]);
+  ecIdePSyncroEdOutEscape:         SetSingle(VK_ESCAPE,[]);
+  // SyncroEdit, during selection
+  ecIdePSyncroEdSelStart:          SetSingle(VK_J,[ssCtrl]);
+
   else
     begin
       SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-      case TSynPluginTemplateEdit.ConvertCommandToBase(Command) of
         // Edit template
-        ecSynPTmplEdNextCell:         SetSingle(VK_RIGHT,[ssCtrl]);
-        ecSynPTmplEdNextCellSel:      SetSingle(VK_TAB,[]);
-        ecSynPTmplEdNextCellRotate:   SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdNextCellSelRotate:SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdPrevCell:         SetSingle(VK_LEFT,[ssCtrl]);
-        ecSynPTmplEdPrevCellSel:      SetSingle(VK_TAB,[ssShift]);
-        ecSynPTmplEdCellHome:         SetSingle(VK_HOME,[]);
-        ecSynPTmplEdCellEnd:          SetSingle(VK_END,[]);
-        ecSynPTmplEdCellSelect:       SetSingle(VK_A,[ssCtrl]);
-        ecSynPTmplEdFinish:           SetSingle(VK_RETURN,[]);
-        ecSynPTmplEdEscape:           SetSingle(VK_ESCAPE,[]);
-      end;
-      case TSynPluginTemplateEdit.ConvertCommandToBaseOff(Command) of
-        // Edit template
-        ecSynPTmplEdNextCell:         SetSingle(VK_RIGHT,[ssCtrl]);
-        ecSynPTmplEdNextCellSel:      SetSingle(VK_TAB,[]);
-        ecSynPTmplEdNextCellRotate:   SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdNextCellSelRotate:SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdPrevCell:         SetSingle(VK_LEFT,[ssCtrl]);
-        ecSynPTmplEdPrevCellSel:      SetSingle(VK_TAB,[ssShift]);
-        ecSynPTmplEdCellHome:         SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdCellEnd:          SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdCellSelect:       SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdFinish:           SetSingle(VK_RETURN,[]);
-        ecSynPTmplEdEscape:           SetSingle(VK_ESCAPE,[]);
-      end;
-      case TSynPluginSyncroEdit.ConvertCommandToBase(Command) of
-        // SyncroEdit
-        ecSynPSyncroEdNextCell:       SetSingle(VK_RIGHT,[ssCtrl]);
-        ecSynPSyncroEdNextCellSel:    SetSingle(VK_TAB,[]);
-        ecSynPSyncroEdPrevCell:       SetSingle(VK_LEFT,[ssCtrl]);
-        ecSynPSyncroEdPrevCellSel:    SetSingle(VK_TAB,[ssShift]);
-        ecSynPSyncroEdCellHome:       SetSingle(VK_HOME,[]);
-        ecSynPSyncroEdCellEnd:        SetSingle(VK_END,[]);
-        ecSynPSyncroEdCellSelect:     SetSingle(VK_A,[ssCtrl]);
-        ecSynPSyncroEdEscape:         SetSingle(VK_ESCAPE,[]);
-      end;
-      case TSynPluginSyncroEdit.ConvertCommandToBaseOff(Command) of
-        // SyncroEdit
-        ecSynPSyncroEdNextCell:       SetSingle(VK_RIGHT,[ssCtrl]);
-        ecSynPSyncroEdNextCellSel:    SetSingle(VK_TAB,[]);
-        ecSynPSyncroEdPrevCell:       SetSingle(VK_LEFT,[ssCtrl]);
-        ecSynPSyncroEdPrevCellSel:    SetSingle(VK_TAB,[ssShift]);
-        ecSynPSyncroEdCellHome:       SetSingle(VK_UNKNOWN,[]);
-        ecSynPSyncroEdCellEnd:        SetSingle(VK_UNKNOWN,[]);
-        ecSynPSyncroEdCellSelect:     SetSingle(VK_UNKNOWN,[]);
-        ecSynPSyncroEdEscape:         SetSingle(VK_ESCAPE,[]);
-      end;
-      case TSynPluginSyncroEdit.ConvertCommandToBaseSel(Command) of
-        // SyncroEdit, during selection
-        ecSynPSyncroEdStart:          SetSingle(VK_J,[ssCtrl]);
-      end;
     end;
   end;
 end;
@@ -1643,63 +1635,54 @@ begin
   ecDesignerForwardOne:  SetSingle(VK_PRIOR,[ssCtrl]);
   ecDesignerBackOne:     SetSingle(VK_NEXT,[ssCtrl]);
 
+  // Edit template
+  ecIdePTmplEdNextCell:         SetSingle(VK_RIGHT,[ssCtrl]);
+  ecIdePTmplEdNextCellSel:      SetSingle(VK_TAB,[]);
+  ecIdePTmplEdNextCellRotate:   SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdNextCellSelRotate:SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdPrevCell:         SetSingle(VK_LEFT,[ssCtrl]);
+  ecIdePTmplEdPrevCellSel:      SetSingle(VK_TAB,[ssShift]);
+  ecIdePTmplEdCellHome:         SetSingle(VK_HOME,[]);
+  ecIdePTmplEdCellEnd:          SetSingle(VK_END,[]);
+  ecIdePTmplEdCellSelect:       SetSingle(VK_A,[ssCtrl]);
+  ecIdePTmplEdFinish:           SetSingle(VK_RETURN,[]);
+  ecIdePTmplEdEscape:           SetSingle(VK_ESCAPE,[]);
+  // Edit template
+  ecIdePTmplEdOutNextCell:         SetSingle(VK_RIGHT,[ssCtrl]);
+  ecIdePTmplEdOutNextCellSel:      SetSingle(VK_TAB,[]);
+  ecIdePTmplEdOutNextCellRotate:   SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdOutNextCellSelRotate:SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdOutPrevCell:         SetSingle(VK_LEFT,[ssCtrl]);
+  ecIdePTmplEdOutPrevCellSel:      SetSingle(VK_TAB,[ssShift]);
+  ecIdePTmplEdOutCellHome:         SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdOutCellEnd:          SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdOutCellSelect:       SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdOutFinish:           SetSingle(VK_RETURN,[]);
+  ecIdePTmplEdOutEscape:           SetSingle(VK_ESCAPE,[]);
+  // SyncroEdit
+  ecIdePSyncroEdNextCell:       SetSingle(VK_RIGHT,[ssCtrl]);
+  ecIdePSyncroEdNextCellSel:    SetSingle(VK_TAB,[]);
+  ecIdePSyncroEdPrevCell:       SetSingle(VK_LEFT,[ssCtrl]);
+  ecIdePSyncroEdPrevCellSel:    SetSingle(VK_TAB,[ssShift]);
+  ecIdePSyncroEdCellHome:       SetSingle(VK_HOME,[]);
+  ecIdePSyncroEdCellEnd:        SetSingle(VK_END,[]);
+  ecIdePSyncroEdCellSelect:     SetSingle(VK_A,[ssCtrl]);
+  ecIdePSyncroEdEscape:         SetSingle(VK_ESCAPE,[]);
+  // SyncroEdit
+  ecIdePSyncroEdOutNextCell:       SetSingle(VK_RIGHT,[ssCtrl]);
+  ecIdePSyncroEdOutNextCellSel:    SetSingle(VK_TAB,[]);
+  ecIdePSyncroEdOutPrevCell:       SetSingle(VK_LEFT,[ssCtrl]);
+  ecIdePSyncroEdOutPrevCellSel:    SetSingle(VK_TAB,[ssShift]);
+  ecIdePSyncroEdOutCellHome:       SetSingle(VK_UNKNOWN,[]);
+  ecIdePSyncroEdOutCellEnd:        SetSingle(VK_UNKNOWN,[]);
+  ecIdePSyncroEdOutCellSelect:     SetSingle(VK_UNKNOWN,[]);
+  ecIdePSyncroEdOutEscape:         SetSingle(VK_ESCAPE,[]);
+  // SyncroEdit, during selection
+  ecIdePSyncroEdSelStart:          SetSingle(VK_J,[ssCtrl]);
+
   else
     begin
       SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-      case TSynPluginTemplateEdit.ConvertCommandToBase(Command) of
-        // Edit template
-        ecSynPTmplEdNextCell:         SetSingle(VK_RIGHT,[ssCtrl]);
-        ecSynPTmplEdNextCellSel:      SetSingle(VK_TAB,[]);
-        ecSynPTmplEdNextCellRotate:   SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdNextCellSelRotate:SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdPrevCell:         SetSingle(VK_LEFT,[ssCtrl]);
-        ecSynPTmplEdPrevCellSel:      SetSingle(VK_TAB,[ssShift]);
-        ecSynPTmplEdCellHome:         SetSingle(VK_HOME,[]);
-        ecSynPTmplEdCellEnd:          SetSingle(VK_END,[]);
-        ecSynPTmplEdCellSelect:       SetSingle(VK_A,[ssCtrl]);
-        ecSynPTmplEdFinish:           SetSingle(VK_RETURN,[]);
-        ecSynPTmplEdEscape:           SetSingle(VK_ESCAPE,[]);
-      end;
-      case TSynPluginTemplateEdit.ConvertCommandToBaseOff(Command) of
-        // Edit template
-        ecSynPTmplEdNextCell:         SetSingle(VK_RIGHT,[ssCtrl]);
-        ecSynPTmplEdNextCellSel:      SetSingle(VK_TAB,[]);
-        ecSynPTmplEdNextCellRotate:   SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdNextCellSelRotate:SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdPrevCell:         SetSingle(VK_LEFT,[ssCtrl]);
-        ecSynPTmplEdPrevCellSel:      SetSingle(VK_TAB,[ssShift]);
-        ecSynPTmplEdCellHome:         SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdCellEnd:          SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdCellSelect:       SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdFinish:           SetSingle(VK_RETURN,[]);
-        ecSynPTmplEdEscape:           SetSingle(VK_ESCAPE,[]);
-      end;
-      case TSynPluginSyncroEdit.ConvertCommandToBase(Command) of
-        // SyncroEdit
-        ecSynPSyncroEdNextCell:       SetSingle(VK_RIGHT,[ssCtrl]);
-        ecSynPSyncroEdNextCellSel:    SetSingle(VK_TAB,[]);
-        ecSynPSyncroEdPrevCell:       SetSingle(VK_LEFT,[ssCtrl]);
-        ecSynPSyncroEdPrevCellSel:    SetSingle(VK_TAB,[ssShift]);
-        ecSynPSyncroEdCellHome:       SetSingle(VK_HOME,[]);
-        ecSynPSyncroEdCellEnd:        SetSingle(VK_END,[]);
-        ecSynPSyncroEdCellSelect:     SetSingle(VK_A,[ssCtrl]);
-        ecSynPSyncroEdEscape:         SetSingle(VK_ESCAPE,[]);
-      end;
-      case TSynPluginSyncroEdit.ConvertCommandToBaseOff(Command) of
-        // SyncroEdit
-        ecSynPSyncroEdNextCell:       SetSingle(VK_RIGHT,[ssCtrl]);
-        ecSynPSyncroEdNextCellSel:    SetSingle(VK_TAB,[]);
-        ecSynPSyncroEdPrevCell:       SetSingle(VK_LEFT,[ssCtrl]);
-        ecSynPSyncroEdPrevCellSel:    SetSingle(VK_TAB,[ssShift]);
-        ecSynPSyncroEdCellHome:       SetSingle(VK_UNKNOWN,[]);
-        ecSynPSyncroEdCellEnd:        SetSingle(VK_UNKNOWN,[]);
-        ecSynPSyncroEdCellSelect:     SetSingle(VK_UNKNOWN,[]);
-        ecSynPSyncroEdEscape:         SetSingle(VK_ESCAPE,[]);
-      end;
-      case TSynPluginSyncroEdit.ConvertCommandToBaseSel(Command) of
-        // SyncroEdit, during selection
-        ecSynPSyncroEdStart:          SetSingle(VK_J,[ssCtrl]);
-      end;
     end;
   end;
 (*//F1                      Topic Search
@@ -2257,63 +2240,54 @@ begin
   ecDesignerForwardOne:  SetSingle(VK_PRIOR,[ssMeta]);
   ecDesignerBackOne:     SetSingle(VK_NEXT,[ssMeta]);
 
+  // Edit template
+  ecIdePTmplEdNextCell:         SetSingle(VK_RIGHT,[ssCtrl]);
+  ecIdePTmplEdNextCellSel:      SetSingle(VK_TAB,[]);
+  ecIdePTmplEdNextCellRotate:   SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdNextCellSelRotate:SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdPrevCell:         SetSingle(VK_LEFT,[ssCtrl]);
+  ecIdePTmplEdPrevCellSel:      SetSingle(VK_TAB,[ssShift]);
+  ecIdePTmplEdCellHome:         SetSingle(VK_HOME,[]);
+  ecIdePTmplEdCellEnd:          SetSingle(VK_END,[]);
+  ecIdePTmplEdCellSelect:       SetSingle(VK_A,[ssCtrl]);
+  ecIdePTmplEdFinish:           SetSingle(VK_RETURN,[]);
+  ecIdePTmplEdEscape:           SetSingle(VK_ESCAPE,[]);
+  // Edit template
+  ecIdePTmplEdOutNextCell:         SetSingle(VK_RIGHT,[ssCtrl]);
+  ecIdePTmplEdOutNextCellSel:      SetSingle(VK_TAB,[]);
+  ecIdePTmplEdOutNextCellRotate:   SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdOutNextCellSelRotate:SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdOutPrevCell:         SetSingle(VK_LEFT,[ssCtrl]);
+  ecIdePTmplEdOutPrevCellSel:      SetSingle(VK_TAB,[ssShift]);
+  ecIdePTmplEdOutCellHome:         SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdOutCellEnd:          SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdOutCellSelect:       SetSingle(VK_UNKNOWN,[]);
+  ecIdePTmplEdOutFinish:           SetSingle(VK_RETURN,[]);
+  ecIdePTmplEdOutEscape:           SetSingle(VK_ESCAPE,[]);
+  // SyncroEdit
+  ecIdePSyncroEdNextCell:       SetSingle(VK_RIGHT,[ssCtrl]);
+  ecIdePSyncroEdNextCellSel:    SetSingle(VK_TAB,[]);
+  ecIdePSyncroEdPrevCell:       SetSingle(VK_LEFT,[ssCtrl]);
+  ecIdePSyncroEdPrevCellSel:    SetSingle(VK_TAB,[ssShift]);
+  ecIdePSyncroEdCellHome:       SetSingle(VK_HOME,[]);
+  ecIdePSyncroEdCellEnd:        SetSingle(VK_END,[]);
+  ecIdePSyncroEdCellSelect:     SetSingle(VK_A,[ssCtrl]);
+  ecIdePSyncroEdEscape:         SetSingle(VK_ESCAPE,[]);
+  // SyncroEdit
+  ecIdePSyncroEdOutNextCell:       SetSingle(VK_RIGHT,[ssCtrl]);
+  ecIdePSyncroEdOutNextCellSel:    SetSingle(VK_TAB,[]);
+  ecIdePSyncroEdOutPrevCell:       SetSingle(VK_LEFT,[ssCtrl]);
+  ecIdePSyncroEdOutPrevCellSel:    SetSingle(VK_TAB,[ssShift]);
+  ecIdePSyncroEdOutCellHome:       SetSingle(VK_UNKNOWN,[]);
+  ecIdePSyncroEdOutCellEnd:        SetSingle(VK_UNKNOWN,[]);
+  ecIdePSyncroEdOutCellSelect:     SetSingle(VK_UNKNOWN,[]);
+  ecIdePSyncroEdOutEscape:         SetSingle(VK_ESCAPE,[]);
+  // SyncroEdit, during selection
+  ecIdePSyncroEdSelStart:          SetSingle(VK_J,[ssCtrl]);
+
   else
     begin
       SetSingle(VK_UNKNOWN,[]);
-      case TSynPluginTemplateEdit.ConvertCommandToBase(Command) of
-        // Edit template
-        ecSynPTmplEdNextCell:         SetSingle(VK_RIGHT,[ssCtrl]);
-        ecSynPTmplEdNextCellSel:      SetSingle(VK_TAB,[]);
-        ecSynPTmplEdNextCellRotate:   SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdNextCellSelRotate:SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdPrevCell:         SetSingle(VK_LEFT,[ssCtrl]);
-        ecSynPTmplEdPrevCellSel:      SetSingle(VK_TAB,[ssShift]);
-        ecSynPTmplEdCellHome:         SetSingle(VK_HOME,[]);
-        ecSynPTmplEdCellEnd:          SetSingle(VK_END,[]);
-        ecSynPTmplEdCellSelect:       SetSingle(VK_A,[ssCtrl]);
-        ecSynPTmplEdFinish:           SetSingle(VK_RETURN,[]);
-        ecSynPTmplEdEscape:           SetSingle(VK_ESCAPE,[]);
-      end;
-      case TSynPluginTemplateEdit.ConvertCommandToBaseOff(Command) of
-        // Edit template
-        ecSynPTmplEdNextCell:         SetSingle(VK_RIGHT,[ssCtrl]);
-        ecSynPTmplEdNextCellSel:      SetSingle(VK_TAB,[]);
-        ecSynPTmplEdNextCellRotate:   SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdNextCellSelRotate:SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdPrevCell:         SetSingle(VK_LEFT,[ssCtrl]);
-        ecSynPTmplEdPrevCellSel:      SetSingle(VK_TAB,[ssShift]);
-        ecSynPTmplEdCellHome:         SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdCellEnd:          SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdCellSelect:       SetSingle(VK_UNKNOWN,[]);
-        ecSynPTmplEdFinish:           SetSingle(VK_RETURN,[]);
-        ecSynPTmplEdEscape:           SetSingle(VK_ESCAPE,[]);
-      end;
-      case TSynPluginSyncroEdit.ConvertCommandToBase(Command) of
-        // SyncroEdit
-        ecSynPSyncroEdNextCell:       SetSingle(VK_RIGHT,[ssCtrl]);
-        ecSynPSyncroEdNextCellSel:    SetSingle(VK_TAB,[]);
-        ecSynPSyncroEdPrevCell:       SetSingle(VK_LEFT,[ssCtrl]);
-        ecSynPSyncroEdPrevCellSel:    SetSingle(VK_TAB,[ssShift]);
-        ecSynPSyncroEdCellHome:       SetSingle(VK_HOME,[]);
-        ecSynPSyncroEdCellEnd:        SetSingle(VK_END,[]);
-        ecSynPSyncroEdCellSelect:     SetSingle(VK_A,[ssCtrl]);
-        ecSynPSyncroEdEscape:         SetSingle(VK_ESCAPE,[]);
-      end;
-      case TSynPluginSyncroEdit.ConvertCommandToBaseOff(Command) of
-        // SyncroEdit
-        ecSynPSyncroEdNextCell:       SetSingle(VK_RIGHT,[ssCtrl]);
-        ecSynPSyncroEdNextCellSel:    SetSingle(VK_TAB,[]);
-        ecSynPSyncroEdPrevCell:       SetSingle(VK_LEFT,[ssCtrl]);
-        ecSynPSyncroEdPrevCellSel:    SetSingle(VK_TAB,[ssShift]);
-        ecSynPSyncroEdCellHome:       SetSingle(VK_UNKNOWN,[]);
-        ecSynPSyncroEdCellEnd:        SetSingle(VK_UNKNOWN,[]);
-        ecSynPSyncroEdCellSelect:     SetSingle(VK_UNKNOWN,[]);
-        ecSynPSyncroEdEscape:         SetSingle(VK_ESCAPE,[]);
-      end;
-      case TSynPluginSyncroEdit.ConvertCommandToBaseSel(Command) of
-        // SyncroEdit, during selection
-        ecSynPSyncroEdStart:          SetSingle(VK_J,[ssCtrl]);
-      end;
     end;
   end;
 end;
@@ -2396,7 +2370,6 @@ procedure TKeyCommandRelationList.CreateDefaultMapping;
 // create default keymapping
 var
   C: TIDECommandCategory;
-  o: LongInt;
 begin
   Clear;
   // moving
@@ -2637,62 +2610,57 @@ begin
 
   // Template editing
   C:=Categories[AddCategory('Edit Template', srkmCatTemplateEdit, IDECmdScopeSrcEditOnlyTmplEdit)];
-  o := TSynPluginTemplateEdit.ConvertBaseToCommand(ecPluginFirst) - ecPluginFirst;
-  AddDefault(C, 'Edit Template Next Cell', srkmecSynPTmplEdNextCell, ecSynPTmplEdNextCell + o);
-  AddDefault(C, 'Edit Template Next Cell (all selected)', srkmecSynPTmplEdNextCellSel, ecSynPTmplEdNextCellSel + o);
-  AddDefault(C, 'Edit Template Next Cell (rotate)', srkmecSynPTmplEdNextCellRotate, ecSynPTmplEdNextCellRotate + o);
-  AddDefault(C, 'Edit Template Next Cell (rotate / all selected)', srkmecSynPTmplEdNextCellSelRotate, ecSynPTmplEdNextCellSelRotate + o);
-  AddDefault(C, 'Edit Template Previous Cell', srkmecSynPTmplEdPrevCell, ecSynPTmplEdPrevCell + o);
-  AddDefault(C, 'Edit Template Previous Cell (all selected)', srkmecSynPTmplEdPrevCellSel, ecSynPTmplEdPrevCellSel + o);
-  AddDefault(C, 'Edit Template Goto first pos in cell', srkmecSynPTmplEdCellHome, ecSynPTmplEdCellHome + o);
-  AddDefault(C, 'Edit Template Goto last pos in cell', srkmecSynPTmplEdCellEnd, ecSynPTmplEdCellEnd + o);
-  AddDefault(C, 'Edit Template Select cell', srkmecSynPTmplEdCellSelect, ecSynPTmplEdCellSelect + o);
-  AddDefault(C, 'Edit Template Finish', srkmecSynPTmplEdFinish, ecSynPTmplEdFinish + o);
-  AddDefault(C, 'Edit Template Escape', srkmecSynPTmplEdEscape, ecSynPTmplEdEscape + o);
+  AddDefault(C, 'Edit Template Next Cell', srkmecSynPTmplEdNextCell, ecIdePTmplEdNextCell);
+  AddDefault(C, 'Edit Template Next Cell (all selected)', srkmecSynPTmplEdNextCellSel, ecIdePTmplEdNextCellSel);
+  AddDefault(C, 'Edit Template Next Cell (rotate)', srkmecSynPTmplEdNextCellRotate, ecIdePTmplEdNextCellRotate);
+  AddDefault(C, 'Edit Template Next Cell (rotate / all selected)', srkmecSynPTmplEdNextCellSelRotate, ecIdePTmplEdNextCellSelRotate);
+  AddDefault(C, 'Edit Template Previous Cell', srkmecSynPTmplEdPrevCell, ecIdePTmplEdPrevCell);
+  AddDefault(C, 'Edit Template Previous Cell (all selected)', srkmecSynPTmplEdPrevCellSel, ecIdePTmplEdPrevCellSel);
+  AddDefault(C, 'Edit Template Goto first pos in cell', srkmecSynPTmplEdCellHome, ecIdePTmplEdCellHome);
+  AddDefault(C, 'Edit Template Goto last pos in cell', srkmecSynPTmplEdCellEnd, ecIdePTmplEdCellEnd);
+  AddDefault(C, 'Edit Template Select cell', srkmecSynPTmplEdCellSelect, ecIdePTmplEdCellSelect);
+  AddDefault(C, 'Edit Template Finish', srkmecSynPTmplEdFinish, ecIdePTmplEdFinish);
+  AddDefault(C, 'Edit Template Escape', srkmecSynPTmplEdEscape, ecIdePTmplEdEscape);
 
   // Template editing not in cell
   C:=Categories[AddCategory('Edit Template Off', srkmCatTemplateEditOff, IDECmdScopeSrcEditOnlyTmplEditOff)];
-  o := TSynPluginTemplateEdit.ConvertBaseToCommandOff(ecPluginFirst) - ecPluginFirst;
-  AddDefault(C, 'Edit Template (off) Next Cell', srkmecSynPTmplEdNextCell, ecSynPTmplEdNextCell + o);
-  AddDefault(C, 'Edit Template (off) Next Cell (all selected)', srkmecSynPTmplEdNextCellSel, ecSynPTmplEdNextCellSel + o);
-  AddDefault(C, 'Edit Template (off) Next Cell (rotate)', srkmecSynPTmplEdNextCellRotate, ecSynPTmplEdNextCellRotate + o);
-  AddDefault(C, 'Edit Template (off) Next Cell (rotate / all selected)', srkmecSynPTmplEdNextCellSelRotate, ecSynPTmplEdNextCellSelRotate + o);
-  AddDefault(C, 'Edit Template (off) Previous Cell', srkmecSynPTmplEdPrevCell, ecSynPTmplEdPrevCell + o);
-  AddDefault(C, 'Edit Template (off) Previous Cell (all selected)', srkmecSynPTmplEdPrevCellSel, ecSynPTmplEdPrevCellSel + o);
-  AddDefault(C, 'Edit Template (off) Goto first pos in cell', srkmecSynPTmplEdCellHome, ecSynPTmplEdCellHome + o);
-  AddDefault(C, 'Edit Template (off) Goto last pos in cell', srkmecSynPTmplEdCellEnd, ecSynPTmplEdCellEnd + o);
-  AddDefault(C, 'Edit Template (off) Select cell', srkmecSynPTmplEdCellSelect, ecSynPTmplEdCellSelect + o);
-  AddDefault(C, 'Edit Template (off) Finish', srkmecSynPTmplEdFinish, ecSynPTmplEdFinish + o);
-  AddDefault(C, 'Edit Template (off) Escape', srkmecSynPTmplEdEscape, ecSynPTmplEdEscape + o);
+  AddDefault(C, 'Edit Template (off) Next Cell', srkmecSynPTmplEdNextCell, ecIdePTmplEdOutNextCell);
+  AddDefault(C, 'Edit Template (off) Next Cell (all selected)', srkmecSynPTmplEdNextCellSel, ecIdePTmplEdOutNextCellSel);
+  AddDefault(C, 'Edit Template (off) Next Cell (rotate)', srkmecSynPTmplEdNextCellRotate, ecIdePTmplEdOutNextCellRotate);
+  AddDefault(C, 'Edit Template (off) Next Cell (rotate / all selected)', srkmecSynPTmplEdNextCellSelRotate, ecIdePTmplEdOutNextCellSelRotate);
+  AddDefault(C, 'Edit Template (off) Previous Cell', srkmecSynPTmplEdPrevCell, ecIdePTmplEdOutPrevCell);
+  AddDefault(C, 'Edit Template (off) Previous Cell (all selected)', srkmecSynPTmplEdPrevCellSel, ecIdePTmplEdOutPrevCellSel);
+  AddDefault(C, 'Edit Template (off) Goto first pos in cell', srkmecSynPTmplEdCellHome, ecIdePTmplEdOutCellHome);
+  AddDefault(C, 'Edit Template (off) Goto last pos in cell', srkmecSynPTmplEdCellEnd, ecIdePTmplEdOutCellEnd);
+  AddDefault(C, 'Edit Template (off) Select cell', srkmecSynPTmplEdCellSelect, ecIdePTmplEdOutCellSelect);
+  AddDefault(C, 'Edit Template (off) Finish', srkmecSynPTmplEdFinish, ecIdePTmplEdOutFinish);
+  AddDefault(C, 'Edit Template (off) Escape', srkmecSynPTmplEdEscape, ecIdePTmplEdOutEscape);
 
   // Syncro editing
   C:=Categories[AddCategory('Syncro Edit', srkmCatSyncroEdit, IDECmdScopeSrcEditOnlySyncroEdit)];
-  o := TSynPluginSyncroEdit.ConvertBaseToCommand(ecPluginFirst) - ecPluginFirst;
-  AddDefault(C, 'Edit Syncro Next Cell', srkmecSynPSyncroEdNextCell, ecSynPSyncroEdNextCell + o);
-  AddDefault(C, 'Edit Syncro Next Cell (all selected)', srkmecSynPSyncroEdNextCellSel, ecSynPSyncroEdNextCellSel + o);
-  AddDefault(C, 'Edit Syncro Previous Cell', srkmecSynPSyncroEdPrevCell, ecSynPSyncroEdPrevCell + o);
-  AddDefault(C, 'Edit Syncro Previous Cell (all selected)', srkmecSynPSyncroEdPrevCellSel, ecSynPSyncroEdPrevCellSel + o);
-  AddDefault(C, 'Edit Syncro Goto first pos in cell', srkmecSynPSyncroEdCellHome, ecSynPSyncroEdCellHome + o);
-  AddDefault(C, 'Edit Syncro Goto last pos in cell', srkmecSynPSyncroEdCellEnd, ecSynPSyncroEdCellEnd + o);
-  AddDefault(C, 'Edit Syncro Select cell', srkmecSynPSyncroEdCellSelect, ecSynPSyncroEdCellSelect + o);
-  AddDefault(C, 'Edit Syncro Escape', srkmecSynPSyncroEdEscape, ecSynPSyncroEdEscape + o);
+  AddDefault(C, 'Edit Syncro Next Cell', srkmecSynPSyncroEdNextCell, ecIdePSyncroEdNextCell);
+  AddDefault(C, 'Edit Syncro Next Cell (all selected)', srkmecSynPSyncroEdNextCellSel, ecIdePSyncroEdNextCellSel);
+  AddDefault(C, 'Edit Syncro Previous Cell', srkmecSynPSyncroEdPrevCell, ecIdePSyncroEdPrevCell);
+  AddDefault(C, 'Edit Syncro Previous Cell (all selected)', srkmecSynPSyncroEdPrevCellSel, ecIdePSyncroEdPrevCellSel);
+  AddDefault(C, 'Edit Syncro Goto first pos in cell', srkmecSynPSyncroEdCellHome, ecIdePSyncroEdCellHome);
+  AddDefault(C, 'Edit Syncro Goto last pos in cell', srkmecSynPSyncroEdCellEnd, ecIdePSyncroEdCellEnd);
+  AddDefault(C, 'Edit Syncro Select cell', srkmecSynPSyncroEdCellSelect, ecIdePSyncroEdCellSelect);
+  AddDefault(C, 'Edit Syncro Escape', srkmecSynPSyncroEdEscape, ecIdePSyncroEdEscape);
 
   // Syncro editing not in cell
   C:=Categories[AddCategory('Syncro Edit Off', srkmCatSyncroEditOff, IDECmdScopeSrcEditOnlySyncroEditOff)];
-  o := TSynPluginSyncroEdit.ConvertBaseToCommandOff(ecPluginFirst) - ecPluginFirst;
-  AddDefault(C, 'Edit Syncro (off) Next Cell', srkmecSynPSyncroEdNextCell, ecSynPSyncroEdNextCell + o);
-  AddDefault(C, 'Edit Syncro (off) Next Cell (all selected)', srkmecSynPSyncroEdNextCellSel, ecSynPSyncroEdNextCellSel + o);
-  AddDefault(C, 'Edit Syncro (off) Previous Cell', srkmecSynPSyncroEdPrevCell, ecSynPSyncroEdPrevCell + o);
-  AddDefault(C, 'Edit Syncro (off) Previous Cell (all selected)', srkmecSynPSyncroEdPrevCellSel, ecSynPSyncroEdPrevCellSel + o);
-  AddDefault(C, 'Edit Syncro (off) Goto first pos in cell', srkmecSynPSyncroEdCellHome, ecSynPSyncroEdCellHome + o);
-  AddDefault(C, 'Edit Syncro (off) Goto last pos in cell', srkmecSynPSyncroEdCellEnd, ecSynPSyncroEdCellEnd + o);
-  AddDefault(C, 'Edit Syncro (off) Select cell', srkmecSynPSyncroEdCellSelect, ecSynPSyncroEdCellSelect + o);
-  AddDefault(C, 'Edit Syncro (off) Escape', srkmecSynPSyncroEdEscape, ecSynPSyncroEdEscape + o);
+  AddDefault(C, 'Edit Syncro (off) Next Cell', srkmecSynPSyncroEdNextCell, ecIdePSyncroEdOutNextCell);
+  AddDefault(C, 'Edit Syncro (off) Next Cell (all selected)', srkmecSynPSyncroEdNextCellSel, ecIdePSyncroEdOutNextCellSel);
+  AddDefault(C, 'Edit Syncro (off) Previous Cell', srkmecSynPSyncroEdPrevCell, ecIdePSyncroEdOutPrevCell);
+  AddDefault(C, 'Edit Syncro (off) Previous Cell (all selected)', srkmecSynPSyncroEdPrevCellSel, ecIdePSyncroEdOutPrevCellSel);
+  AddDefault(C, 'Edit Syncro (off) Goto first pos in cell', srkmecSynPSyncroEdCellHome, ecIdePSyncroEdOutCellHome);
+  AddDefault(C, 'Edit Syncro (off) Goto last pos in cell', srkmecSynPSyncroEdCellEnd, ecIdePSyncroEdOutCellEnd);
+  AddDefault(C, 'Edit Syncro (off) Select cell', srkmecSynPSyncroEdCellSelect, ecIdePSyncroEdOutCellSelect);
+  AddDefault(C, 'Edit Syncro (off) Escape', srkmecSynPSyncroEdEscape, ecIdePSyncroEdOutEscape);
 
   // Syncro editing still selecting
   C:=Categories[AddCategory('Syncro Edit Sel', srkmCatSyncroEditSel, IDECmdScopeSrcEditOnlySyncroEditSel)];
-  o := TSynPluginSyncroEdit.ConvertBaseToCommandSel(ecPluginFirst) - ecPluginFirst;
-  AddDefault(C, 'Edit Syncro (sel) Start', srkmecSynPSyncroEdStart, ecSynPSyncroEdStart + o);
+  AddDefault(C, 'Edit Syncro (sel) Start', srkmecSynPSyncroEdStart, ecIdePSyncroEdSelStart);
 
   // source notebook - without menu items in the IDE bar
   C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,IDECmdScopeSrcEdit)];
@@ -3284,15 +3252,26 @@ begin
     end;
 end;
 
-procedure TKeyCommandRelationList.AssignTo(
-  ASynEditKeyStrokes: TSynEditKeyStrokes; IDEWindowClass: TCustomFormClass);
+procedure TKeyCommandRelationList.AssignTo(ASynEditKeyStrokes: TSynEditKeyStrokes;
+  IDEWindowClass: TCustomFormClass; ACommandOffsetOffset: Integer = 0);
 var
   i,j,MaxKeyCnt,KeyCnt:integer;
   Key: TSynEditKeyStroke;
   CurRelation: TKeyCommandRelation;
+  ccid: Word;
+  POUsed: Boolean;
 begin
+  (* ACommandOffsetOffset
+     The IDE defines int's own fixed value command-id for plugins.
+     Map them to the plugin ID
+     - ecIdePTmplEdOutNextCell and ecIdePTmplEdNextCell both map to ecSynPTmplEdNextCell
+     - which maps to "ecPluginFirst + n", as many others.
+     But the IDE requires unique values.
+     The unique values in the plugin (+ KeyOffset) can not be used, a they are not at fixed numbers
+  *)
+  POUsed := ASynEditKeyStrokes.UsePluginOffset;
   try
-    ASynEditKeyStrokes.UsePluginOffset := True;
+    ASynEditKeyStrokes.UsePluginOffset := False;
     for i:=0 to FRelations.Count-1 do begin
       CurRelation:=Relations[i];
       if (CurRelation.ShortcutA.Key1=VK_UNKNOWN)
@@ -3309,7 +3288,10 @@ begin
       // replace keys
       while j>=0 do begin
         Key:=ASynEditKeyStrokes[j];
-        if Key.Command=CurRelation.Command then begin
+        ccid := CurRelation.Command;
+        if (ccid >= ecFirstPlugin) and (ccid < ecLastPlugin) then
+          ccid := ccid + ACommandOffsetOffset;
+        if Key.Command=ccid then begin
           if KeyCnt>MaxKeyCnt then begin
             // All keys with this command are already defined
             // -> delete this one
@@ -3354,7 +3336,10 @@ begin
       // add missing keys
       while KeyCnt<=MaxKeyCnt do begin
         Key:=ASynEditKeyStrokes.Add;
-        Key.Command:=CurRelation.Command;
+        ccid := CurRelation.Command;
+        if (ccid >= ecFirstPlugin) and (ccid < ecLastPlugin) then
+          ccid := ccid + ACommandOffsetOffset;
+        Key.Command:=ccid;
         if KeyCnt=1 then begin
           Key.Key:=CurRelation.ShortcutA.Key1;
           Key.Shift:=CurRelation.ShortcutA.Shift1;
@@ -3370,7 +3355,7 @@ begin
       end;
     end;
   finally
-    ASynEditKeyStrokes.UsePluginOffset := False;
+    ASynEditKeyStrokes.UsePluginOffset := POUsed;
   end;
 end;
 

@@ -927,8 +927,6 @@ function TSynEditKeyStrokes.FindKeycodeEx(Code: word; SS: TShiftState; var Data:
   FinishComboOnly: Boolean; ComboStart: TSynEditKeyStrokes): TSynEditorCommand;
 var
   i: integer;
-  LK: Word;
-  LS: TShiftState;
   CurComboStart: TSynEditKeyStrokes;
 {$IFNDEF SYN_COMPILER_3_UP}
 const
