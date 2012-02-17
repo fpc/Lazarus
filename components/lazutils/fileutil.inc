@@ -17,9 +17,15 @@
  *****************************************************************************
 }
  
+var
+  FNeedRTLAnsi: boolean = false;
+  FNeedRTLAnsiValid: boolean = false;
+
+
 procedure SetNeedRTLAnsi(NewValue: boolean);
 begin
-  lazutf8.SetNeedRTLAnsi(NewValue);
+  FNeedRTLAnsi:=NewValue;
+  FNeedRTLAnsiValid:=true;
 end;
 
 function IsASCII(const s: string): boolean; inline;
@@ -32,12 +38,18 @@ end;
 
 function UTF8ToSys(const s: string): string;
 begin
-  Result:=lazutf8.UTF8ToSys(s);
+  if NeedRTLAnsi and (not IsASCII(s)) then
+    Result := UTF8ToAnsi(s)
+  else
+    Result := s;
 end;
 
 function SysToUTF8(const s: string): string;
 begin
-  Result:=SysToUTF8(s);
+  if NeedRTLAnsi and (not IsASCII(s)) then
+    Result:=AnsiToUTF8(s)
+  else
+    Result:=s;
 end;
 
 {$IFDEF darwin}
