@@ -77,34 +77,6 @@ begin
     Result := False;
 end;
 
-function GTK2KeyDown(Widget: PGtkWidget; Event : pgdkeventkey;
-  Data: gPointer) : GBoolean; cdecl;
-begin
-  //debugln('GTK2KeyDown ',DbgSName(TObject(Data)));
-  Result := HandleGtkKeyUpDown(Widget, Event, Data, True, True, 'key-press-event');
-end;
-
-function GTK2KeyDownAfter(Widget: PGtkWidget; Event : pgdkeventkey;
-  Data: gPointer) : GBoolean; cdecl;
-begin
-  //debugln('GTK2KeyDownAfter ',DbgSName(TObject(Data)));
-  Result := HandleGtkKeyUpDown(Widget, Event, Data, False, True, 'key-press-event');
-end;
-
-function GTK2KeyUp(Widget: PGtkWidget; Event : pgdkeventkey;
-  Data: gPointer) : GBoolean; cdecl;
-begin
-  //debugln('GTK2KeyUp ',DbgSName(TObject(Data)));
-  Result := HandleGtkKeyUpDown(Widget, Event, Data, True, False, 'key-release-event');
-end;
-
-function GTK2KeyUpAfter(Widget: PGtkWidget; Event : pgdkeventkey;
-  Data: gPointer) : GBoolean; cdecl;
-begin
-  //debugln('GTK2KeyUpAfter ',DbgSName(TObject(Data)));
-  Result := HandleGtkKeyUpDown(Widget, Event, Data, False, False, 'key-release-event');
-end;
-
 function GTK2KillFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
@@ -848,13 +820,13 @@ procedure TGTK2WidgetSet.SetCallbackEx(const AMsg: LongInt;
   begin
     //debugln('gtk2object ConnectKeyPressReleaseEvents A ALCLObject=',DbgSName(ALCLObject));
     ConnectSenderSignal(AnObject,
-      'key-press-event', @GTK2KeyDown, GDK_KEY_PRESS_MASK);
+      'key-press-event', @GTKKeyPress, GDK_KEY_PRESS_MASK);
     ConnectSenderSignalAfter(AnObject,
-      'key-press-event', @GTK2KeyDownAfter, GDK_KEY_PRESS_MASK);
+      'key-press-event', @GTKKeyPressAfter, GDK_KEY_PRESS_MASK);
     ConnectSenderSignal(AnObject,
-      'key-release-event', @GTK2KeyUp, GDK_KEY_RELEASE_MASK);
+      'key-release-event', @GTKKeyRelease, GDK_KEY_RELEASE_MASK);
     ConnectSenderSignalAfter(AnObject,
-      'key-release-event', @GTK2KeyUpAfter, GDK_KEY_RELEASE_MASK);
+      'key-release-event', @GTKKeyReleaseAfter, GDK_KEY_RELEASE_MASK);
   end;
 
 var
