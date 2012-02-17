@@ -201,15 +201,15 @@ type
     FApplied: boolean;
     FFormCaption: string;
     FVisible: boolean;
-    fWindowPlacement: TIDEWindowPlacement;
-    fLeft: integer;
-    fTop: integer;
-    fWidth: integer;
-    fHeight: integer;
-    fWindowState: TIDEWindowState;
-    fForm: TCustomForm;
-    fFormID: string;
-    fDefaultWindowPlacement: TIDEWindowPlacement;
+    FWindowPlacement: TIDEWindowPlacement;
+    FLeft: integer;
+    FTop: integer;
+    FWidth: integer;
+    FHeight: integer;
+    FWindowState: TIDEWindowState;
+    FForm: TCustomForm;
+    FFormID: string;
+    FDefaultWindowPlacement: TIDEWindowPlacement;
     FDividers: TSimpleWindowLayoutDividerPosList;
     function GetFormCaption: string;
     function GetFormID: string;
@@ -240,13 +240,13 @@ type
     property FormCaption: string read GetFormCaption;
     property WindowPlacement: TIDEWindowPlacement read fWindowPlacement write FWindowPlacement;
     property DefaultWindowPlacement: TIDEWindowPlacement
-      read fDefaultWindowPlacement write fDefaultWindowPlacement;
-    property Left: integer read fLeft write FLeft;
-    property Top: integer read fTop write FTop;
-    property Width: integer read fWidth write FWidth;
-    property Height: integer read fHeight write FHeight;
-    property WindowState: TIDEWindowState read fWindowState write FWindowState;
-    property Form: TCustomForm read fForm write SetForm;
+      read FDefaultWindowPlacement write FDefaultWindowPlacement;
+    property Left: integer read FLeft write FLeft;
+    property Top: integer read FTop write FTop;
+    property Width: integer read FWidth write FWidth;
+    property Height: integer read FHeight write FHeight;
+    property WindowState: TIDEWindowState read FWindowState write FWindowState;
+    property Form: TCustomForm read FForm write SetForm;
     property Visible: boolean read FVisible write FVisible;
     property Applied: boolean read FApplied write FApplied;
     property Dividers: TSimpleWindowLayoutDividerPosList read FDividers;
@@ -993,14 +993,12 @@ end;
 
 procedure TIDEDialogLayoutStorage.OnCreateForm(Sender: TObject);
 begin
-  if Sender=nil then ;
   IDEDialogLayoutList.ApplyLayout(Sender as TControl);
 end;
 
 procedure TIDEDialogLayoutStorage.OnCloseForm(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
-  if Sender=nil then ;
   IDEDialogLayoutList.SaveLayout(Sender as TControl);
 end;
 
@@ -1009,7 +1007,8 @@ var
   Form: TCustomForm;
 begin
   inherited Create(TheOwner);
-  if Owner is TCustomForm then begin
+  if Owner is TCustomForm then
+  begin
     Form:=TCustomForm(Owner);
     Form.AddHandlerCreate(@OnCreateForm);
     Form.AddHandlerClose(@OnCloseForm);
@@ -1020,7 +1019,8 @@ destructor TIDEDialogLayoutStorage.Destroy;
 var
   Form: TCustomForm;
 begin
-  if Owner is TCustomForm then begin
+  if Owner is TCustomForm then
+  begin
     Form:=TCustomForm(Owner);
     Form.RemoveAllHandlersOfObject(Self);
   end;
@@ -1072,10 +1072,10 @@ begin
   fWindowPlacement:=StrToIDEWindowPlacement(Config.GetValue(
     P+'WindowPlacement/Value',IDEWindowPlacementNames[fWindowPlacement]));
   // custom position
-  fLeft:=Config.GetValue(P+'CustomPosition/Left',fLeft);
-  fTop:=Config.GetValue(P+'CustomPosition/Top',fTop);
-  fWidth:=Config.GetValue(P+'CustomPosition/Width',fWidth);
-  fHeight:=Config.GetValue(P+'CustomPosition/Height',fHeight);
+  Left := Config.GetValue(P+'CustomPosition/Left', Left);
+  Top := Config.GetValue(P+'CustomPosition/Top', Top);
+  Width := Config.GetValue(P+'CustomPosition/Width', Width);
+  Height := Config.GetValue(P+'CustomPosition/Height', Height);
   // state
   fWindowState:=StrToIDEWindowState(Config.GetValue(
     P+'WindowState/Value',IDEWindowStateNames[fWindowState]));
@@ -1099,10 +1099,10 @@ begin
     IDEWindowPlacementNames[fWindowPlacement],
     IDEWindowPlacementNames[iwpRestoreWindowSize]);
   // custom position
-  Config.SetDeleteValue(P+'CustomPosition/Left',fLeft,0);
-  Config.SetDeleteValue(P+'CustomPosition/Top',fTop,0);
-  Config.SetDeleteValue(P+'CustomPosition/Width',fWidth,0);
-  Config.SetDeleteValue(P+'CustomPosition/Height',fHeight,0);
+  Config.SetDeleteValue(P+'CustomPosition/Left', Left, 0);
+  Config.SetDeleteValue(P+'CustomPosition/Top', Top, 0);
+  Config.SetDeleteValue(P+'CustomPosition/Width', Width, 0);
+  Config.SetDeleteValue(P+'CustomPosition/Height', Height, 0);
   // state
   Config.SetValue(P+'WindowState/Value',IDEWindowStateNames[fWindowState]);
   Config.SetDeleteValue(P+'Visible/Value',FVisible,false);
@@ -1202,15 +1202,18 @@ end;
 procedure TSimpleWindowLayout.SetForm(const AValue: TCustomForm);
 begin
   if fForm=AValue then exit;
-  if (Form<>nil) then begin
+  if Assigned(Form) then
+  begin
     RemoveFreeNotification(Form);
     Form.RemoveHandlerClose(@OnFormClose);
   end;
   fForm:=AValue;
-  if (Form<>nil) then begin
+  if Assigned(Form) then
+  begin
     fFormID := Form.Name;
     FFormCaption := Form.Caption;
     FreeNotification(Form);
+    Form.AddHandlerClose(@OnFormClose);
     Applied:=false;
   end;
 end;
@@ -1278,14 +1281,14 @@ begin
   Clear;
   FApplied:=Layout.Applied;
   FForm:=Layout.FForm;
-  fWindowPlacement:=Layout.fWindowPlacement;
-  fLeft:=Layout.fLeft;
-  fTop:=Layout.fTop;
-  fWidth:=Layout.fWidth;
-  fHeight:=Layout.fHeight;
-  fWindowState:=Layout.fWindowState;
-  fFormID:=Layout.fFormID;
-  fDefaultWindowPlacement:=Layout.fDefaultWindowPlacement;
+  FWindowPlacement:=Layout.FWindowPlacement;
+  FLeft:=Layout.FLeft;
+  FTop:=Layout.FTop;
+  FWidth:=Layout.FWidth;
+  FHeight:=Layout.FHeight;
+  FWindowState:=Layout.FWindowState;
+  FFormID:=Layout.FFormID;
+  FDefaultWindowPlacement:=Layout.FDefaultWindowPlacement;
   FDividers.Assign(Layout.FDividers);
 end;
 
