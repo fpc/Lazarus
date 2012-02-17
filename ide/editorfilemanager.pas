@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, ListFilterEdit, Forms, Controls, Graphics,
-  Dialogs, CheckLst, ButtonPanel, StdCtrls, Buttons, ExtCtrls, Menus,
-  IDEImagesIntf, SourceEditor, LazarusIDEStrConsts;
+  Dialogs, CheckLst, ButtonPanel, StdCtrls, Buttons, ExtCtrls, Menus, LCLProc,
+  IDEImagesIntf, LazIDEIntf, SourceEditor, LazarusIDEStrConsts, IDECommands;
 
 type
 
@@ -146,18 +146,17 @@ var
   i: Integer;
   SrcEdit: TSourceEditor;
 begin
-  ShowMessage('Under construction ...'); Exit;
   for i:=CheckListBox1.Count-1 downto 0 do
     if CheckListBox1.Checked[i] then begin
       SrcEdit:=SourceEditorManager.SourceEditorIntfWithFilename(CheckListBox1.Items[i]);
-      // ToDo: save it somehow
+      if (not SrcEdit.CodeBuffer.IsVirtual) and (LazarusIDE.DoSaveEditorFile(SrcEdit, []) <> mrOk) then
+        DebugLn(['TSourceNotebook.EncodingClicked LazarusIDE.DoSaveEditorFile failed']);
     end;
 end;
 
 procedure TEditorFileManagerForm.CloseCheckedButtonClick(Sender: TObject);
 var
   i: Integer;
-  SrcEdit: TSourceEditor;
 begin
   for i:=CheckListBox1.Count-1 downto 0 do
     if CheckListBox1.Checked[i] then
