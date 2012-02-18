@@ -789,7 +789,7 @@ type
     function PrevWordLogicalPos(ABoundary: TLazSynWordBoundary = swbWordBegin): TPoint;
     procedure RecalcCharExtent;
     procedure RedoItem(Item: TSynEditUndoItem);
-    procedure SetCaretXY(Value: TPoint); virtual;
+    procedure SetCaretXY(Value: TPoint);
     procedure CaretChanged(Sender: TObject);
     procedure SetName(const Value: TComponentName); override;
     procedure SetReadOnly(Value: boolean); virtual;
@@ -3906,11 +3906,13 @@ end;
 
 procedure TCustomSynEdit.SetCaretX(const Value: Integer);
 begin
+  FCaret.ChangeOnTouch; // setting the caret always clears selection (even setting to current pos / no change)
   FCaret.CharPos := Value;
 end;
 
 procedure TCustomSynEdit.SetCaretY(const Value: Integer);
 begin
+  FCaret.ChangeOnTouch; // setting the caret always clears selection (even setting to current pos / no change)
   FCaret.LinePos := Value;
 end;
 
@@ -3932,7 +3934,7 @@ end;
 procedure TCustomSynEdit.SetCaretXY(Value: TPoint);
 // physical position (screen)
 begin
-  FCaret.ChangeOnTouch;
+  FCaret.ChangeOnTouch; // setting the caret always clears selection (even setting to current pos / no change)
   FCaret.LineCharPos:= Value;
 end;
 
