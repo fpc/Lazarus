@@ -23,10 +23,10 @@ type
     ChmFileNameEdit: TFileNameEdit;
     FollowLinksCheck: TCheckBox;
     CreateSearchableCHMCheck: TCheckBox;
-    Label3: TLabel;
-    Label4: TLabel;
-    Label5: TLabel;
-    Label6: TLabel;
+    CompileTimeOptionsLabel: TLabel;
+    FilesNoteLabel: TLabel;
+    DefaultPageLabel: TLabel;
+    CHMFilenameLabel: TLabel;
     OpenDialog2: TOpenDialog;
     RemoveFilesBtn: TButton;
     TOCEditBtn: TButton;
@@ -34,8 +34,8 @@ type
     IndexEdit: TFileNameEdit;
     GroupBox1: TGroupBox;
     FileListBox: TListBox;
-    Label1: TLabel;
-    Label2: TLabel;
+    TableOfContentsLabel: TLabel;
+    IndexLabel: TLabel;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
     ProjSaveItem: TMenuItem;
@@ -292,6 +292,9 @@ end;
 procedure TCHMForm.FormCreate(Sender: TObject);
 begin
   CloseProject;
+  OpenDialog1.InitialDir:=GetCurrentDirUTF8;
+  OpenDialog2.InitialDir:=OpenDialog1.InitialDir;
+  SaveDialog1.InitialDir:=OpenDialog1.InitialDir;
 end;
 
 procedure TCHMForm.IndexEditAcceptFileName(Sender: TObject; var Value: String);
@@ -330,14 +333,18 @@ begin
 end;
 
 procedure TCHMForm.ProjNewItemClick(Sender: TObject);
+var
+  Dir: String;
 begin
+  Dir:=ExtractFilePath(Project.FileName);
+  if DirectoryExistsUTF8(Dir) then
+    SaveDialog1.InitialDir:=Dir;
   If SaveDialog1.Execute then begin
     if FileExists(SaveDialog1.FileName)
     and (MessageDlg('File Already Exists! Ovewrite?', mtWarning, [mbYes, mbNo],0) = mrNo) then Exit;
     OpenProject(SaveDialog1.FileName);
     Project.SaveToFile(SaveDialog1.FileName);
   end;
-
 end;
 
 procedure TCHMForm.ProjOpenItemClick(Sender: TObject);
@@ -412,10 +419,17 @@ begin
 end;
 
 procedure TCHMForm.Save(aAs: Boolean);
+var
+  Dir: String;
 begin
   if aAs or (Project.FileName = '') then
-    if  SaveDialog1.Execute then
+  begin
+    Dir:=ExtractFilePath(Project.FileName);
+    if DirectoryExistsUTF8(Dir) then
+      SaveDialog1.InitialDir:=Dir;
+    if SaveDialog1.Execute then
       Project.FileName := ChangeFileExt(SaveDialog1.FileName,'.hfp');
+  end;
   Project.Files.Assign(FileListBox.Items);
   Project.TableOfContentsFileName := TOCEdit.FileName;
   Project.IndexFileName           := IndexEdit.FileName;
