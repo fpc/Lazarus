@@ -272,33 +272,33 @@ procedure DbgOut(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12: string); overload
 procedure CloseDebugOutput;
 {$ENDIF}
 
-function ConvertLineEndings(const s: string): string;
-function DbgS(const c: cardinal): string; overload;
-function DbgS(const i: longint): string; overload;
-function DbgS(const i: int64): string; overload;
-function DbgS(const q: qword): string; overload;
-function DbgS(const r: TRect): string; overload;
-function DbgS(const p: TPoint): string; overload;
-function DbgS(const p: pointer): string; overload;
-function DbgS(const e: extended; MaxDecimals: integer = 999): string; overload;
-function DbgS(const b: boolean): string; overload;
-function DbgS(const s: TComponentState): string; overload;
-function DbgS(const m: TMethod): string; overload;
-function DbgSName(const p: TObject): string; overload;
-function DbgSName(const p: TClass): string; overload;
-function DbgStr(const StringWithSpecialChars: string): string; overload;
-function DbgWideStr(const StringWithSpecialChars: widestring): string; overload;
-function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string; overload;
-function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string; overload;
-function dbgObjMem(AnObject: TObject): string; overload;
-function dbghex(i: Int64): string; overload;
+function ConvertLineEndings(const s: string): string; inline;
+function DbgS(const c: cardinal): string; overload; inline;
+function DbgS(const i: longint): string; overload; inline;
+function DbgS(const i: int64): string; overload; inline;
+function DbgS(const q: qword): string; overload; inline;
+function DbgS(const r: TRect): string; overload; inline;
+function DbgS(const p: TPoint): string; overload; inline;
+function DbgS(const p: pointer): string; overload; inline;
+function DbgS(const e: extended; MaxDecimals: integer = 999): string; overload; inline;
+function DbgS(const b: boolean): string; overload; inline;
+function DbgS(const s: TComponentState): string; overload; inline;
+function DbgS(const m: TMethod): string; overload; inline;
+function DbgSName(const p: TObject): string; overload; inline;
+function DbgSName(const p: TClass): string; overload; inline;
+function DbgStr(const StringWithSpecialChars: string): string; overload; inline;
+function DbgWideStr(const StringWithSpecialChars: widestring): string; overload; inline;
+function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string; overload; inline;
+function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string; overload; inline;
+function dbgObjMem(AnObject: TObject): string; overload; inline;
+function dbgHex(i: Int64): string; overload; inline;
 function DbgSWindowPosFlags(Flags: UInt): String;
 
-function DbgS(const i1,i2,i3,i4: integer): string; overload;
-function DbgS(const Shift: TShiftState): string; overload;
+function DbgS(const i1,i2,i3,i4: integer): string; overload; inline;
+function DbgS(const Shift: TShiftState): string; overload; inline;
 function DbgsVKCode(c: word): string;
 
-function DbgS(const ASize: TSize): string; overload;
+function DbgS(const ASize: TSize): string; overload; inline;
 function DbgS(const ATM: TTextMetric): string; overload;
 function DbgS(const AScrollInfo: TScrollInfo): string; overload;
 
@@ -1934,255 +1934,103 @@ end;
 {$ENDIF}
 
 function ConvertLineEndings(const s: string): string;
-var
-  i: Integer;
-  EndingStart: LongInt;
 begin
-  Result:=s;
-  i:=1;
-  while (i<=length(Result)) do begin
-    if Result[i] in [#10,#13] then begin
-      EndingStart:=i;
-      inc(i);
-      if (i<=length(Result)) and (Result[i] in [#10,#13])
-      and (Result[i]<>Result[i-1]) then begin
-        inc(i);
-      end;
-      if (length(LineEnding)<>i-EndingStart)
-      or (LineEnding<>copy(Result,EndingStart,length(LineEnding))) then begin
-        // line end differs => replace with current LineEnding
-        Result:=
-          copy(Result,1,EndingStart-1)+LineEnding+copy(Result,i,length(Result));
-        i:=EndingStart+length(LineEnding);
-      end;
-    end else
-      inc(i);
-  end;
+  Result:=LazLogger.ConvertLineEndings(s);
 end;
 
 function DbgS(const c: cardinal): string;
 begin
-  Result:=IntToStr(c);
+  Result:=LazLogger.DbgS(c);
 end;
 
 function DbgS(const i: longint): string;
 begin
-  Result:=IntToStr(i);
+  Result:=LazLogger.DbgS(i);
 end;
 
 function DbgS(const i: int64): string;
 begin
-  Result:=IntToStr(i);
+  Result:=LazLogger.DbgS(i);
 end;
 
 function DbgS(const q: qword): string;
 begin
-  Result:=IntToStr(q);
+  Result:=LazLogger.DbgS(q);
 end;
 
 function DbgS(const r: TRect): string;
 begin
-  Result:='l='+IntToStr(r.Left)+',t='+IntToStr(r.Top)
-         +',r='+IntToStr(r.Right)+',b='+IntToStr(r.Bottom);
+  Result:=LazLogger.DbgS(r);
 end;
 
 function DbgS(const p: TPoint): string;
 begin
-  Result:='(x='+IntToStr(p.x)+',y='+IntToStr(p.y)+')';
+  Result:=LazLogger.DbgS(p);
 end;
 
 function DbgS(const p: pointer): string;
 begin
-  Result:=HexStr(PtrUInt(p),2*sizeof(PtrInt));
+  Result:=LazLogger.DbgS(p);
 end;
 
 function DbgS(const e: extended; MaxDecimals: integer): string;
 begin
-  Result:=copy(FloatToStr(e),1,MaxDecimals);
+  Result:=LazLogger.DbgS(e,MaxDecimals);
 end;
 
 function DbgS(const b: boolean): string;
 begin
-  if b then Result:='True' else Result:='False';
+  Result:=LazLogger.DbgS(b);
 end;
 
 function DbgS(const s: TComponentState): string;
-
-  procedure Add(const a: string);
-  begin
-    if Result<>'' then
-      Result:=Result+',';
-    Result:=Result+a;
-  end;
-
 begin
-  Result:='';
-  if csLoading in s then Add('csLoading');
-  if csReading in s then Add('csReading');
-  if csWriting in s then Add('csWriting');
-  if csDestroying in s then Add('csDestroying');
-  if csDesigning in s then Add('csDesigning');
-  if csAncestor in s then Add('csAncestor');
-  if csUpdating in s then Add('csUpdating');
-  if csFixups in s then Add('csFixups');
-  if csFreeNotification in s then Add('csFreeNotification');
-  if csInline in s then Add('csInline');
-  if csDesignInstance in s then Add('csDesignInstance');
-  Result:='['+Result+']';
+  Result:=LazLogger.DbgS(s);
 end;
 
 function DbgS(const m: TMethod): string;
-var
-  o: TObject;
-  aMethodName: ShortString;
 begin
-  o:=TObject(m.Data);
-  Result:=dbgsname(o)+'.'+dbgs(m.Code);
-  if (o<>nil) and (m.Code<>nil) then begin
-    aMethodName:=o.MethodName(m.Code);
-    Result:=Result+'='''+aMethodName+'''';
-  end;
+  Result:=LazLogger.DbgS(m);
 end;
 
 function DbgSName(const p: TObject): string;
 begin
-  if p=nil then
-    Result:='nil'
-  else if p is TComponent then
-    Result:=TComponent(p).Name+':'+p.ClassName
-  else
-    Result:=p.ClassName;
+  Result:=LazLogger.DbgSName(p);
 end;
 
 function DbgSName(const p: TClass): string;
 begin
-  if p=nil then
-    Result:='nil'
-  else
-    Result:=p.ClassName;
+  Result:=LazLogger.DbgSName(p);
 end;
 
 function DbgStr(const StringWithSpecialChars: string): string;
-var
-  i: Integer;
-  s: String;
 begin
-  Result:=StringWithSpecialChars;
-  i:=1;
-  while (i<=length(Result)) do begin
-    case Result[i] of
-    ' '..#126: inc(i);
-    else
-      s:='#'+HexStr(ord(Result[i]),2);
-      Result:=copy(Result,1,i-1)+s+copy(Result,i+1,length(Result)-i);
-      inc(i,length(s));
-    end;
-  end;
+  Result:=LazLogger.DbgStr(StringWithSpecialChars);
 end;
 
 function DbgWideStr(const StringWithSpecialChars: widestring): string;
-var
-  s: String;
-  SrcPos: Integer;
-  DestPos: Integer;
-  i: Integer;
 begin
-  SetLength(Result,length(StringWithSpecialChars));
-  SrcPos:=1;
-  DestPos:=1;
-  while SrcPos<=length(StringWithSpecialChars) do begin
-    i:=ord(StringWithSpecialChars[SrcPos]);
-    case i of
-    32..126:
-      begin
-        Result[DestPos]:=chr(i);
-        inc(SrcPos);
-        inc(DestPos);
-      end;
-    else
-      s:='#'+HexStr(i,4);
-      inc(SrcPos);
-      Result:=copy(Result,1,DestPos-1)+s+copy(Result,DestPos+1,length(Result));
-      inc(DestPos,length(s));
-    end;
-  end;
+  Result:=LazLogger.DbgWideStr(StringWithSpecialChars);
 end;
 
 function dbgMemRange(P: PByte; Count: integer; Width: integer): string;
-const
-  HexChars: array[0..15] of char = '0123456789ABCDEF';
-  LineEnd: shortstring = LineEnding;
-var
-  i: Integer;
-  NewLen: Integer;
-  Dest: PChar;
-  Col: Integer;
-  j: Integer;
 begin
-  Result:='';
-  if (p=nil) or (Count<=0) then exit;
-  NewLen:=Count*2;
-  if Width>0 then begin
-    inc(NewLen,(Count div Width)*length(LineEnd));
-  end;
-  SetLength(Result,NewLen);
-  Dest:=PChar(Result);
-  Col:=1;
-  for i:=0 to Count-1 do begin
-    Dest^:=HexChars[PByte(P)[i] shr 4];
-    inc(Dest);
-    Dest^:=HexChars[PByte(P)[i] and $f];
-    inc(Dest);
-    inc(Col);
-    if (Width>0) and (Col>Width) then begin
-      Col:=1;
-      for j:=1 to length(LineEnd) do begin
-        Dest^:=LineEnd[j];
-        inc(Dest);
-      end;
-    end;
-  end;
+  Result:=LazLogger.dbgMemRange(P,Count,Width);
 end;
 
 function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string;
-var
-  s: string;
 begin
-  Result:='';
-  if (MemStream=nil) or (not (MemStream is TCustomMemoryStream)) or (Count<=0)
-  then exit;
-  Count:=Min(Count,MemStream.Size);
-  if Count<=0 then exit;
-  SetLength(s,Count);
-  Count:=MemStream.Read(s[1],Count);
-  Result:=dbgMemRange(PByte(s),Count);
+  Result:=LazLogger.dbgMemStream(MemStream,Count);
 end;
 
 function dbgObjMem(AnObject: TObject): string;
 begin
-  Result:='';
-  if AnObject=nil then exit;
-  Result:=dbgMemRange(PByte(AnObject),AnObject.InstanceSize);
+  Result:=LazLogger.dbgObjMem(AnObject);
 end;
 
 function dbghex(i: Int64): string;
-const
-  Hex = '0123456789ABCDEF';
-var
-  Negated: Boolean;
 begin
-  Result:='';
-  if i<0 then begin
-    Negated:=true;
-    i:=-i;
-  end else
-    Negated:=false;
-  repeat
-    Result:=Hex[(i mod 16)+1]+Result;
-    i:=i div 16;
-  until i=0;
-  if Negated then
-    Result:='-'+Result;
+  Result:=LazLogger.dbghex(i);
 end;
 
 function DbgSWindowPosFlags(Flags: UInt): String;
@@ -2224,36 +2072,12 @@ end;
 
 function DbgS(const i1, i2, i3, i4: integer): string;
 begin
-  Result:=dbgs(i1)+','+dbgs(i2)+','+dbgs(i3)+','+dbgs(i4);
+  Result:=LazLogger.DbgS(i1,i2,i3,i4);
 end;
 
 function DbgS(const Shift: TShiftState): string;
-
-  procedure Add(const s: string);
-  begin
-    if Result<>'' then Result:=Result+',';
-    Result:=Result+s;
-  end;
-
 begin
-  Result:='';
-  if ssShift in Shift then Add('ssShift');
-  if ssAlt in Shift then Add('ssAlt');
-  if ssCtrl in Shift then Add('ssCtrl');
-  if ssLeft in Shift then Add('ssLeft');
-  if ssRight in Shift then Add('ssRight');
-  if ssMiddle in Shift then Add('ssMiddle');
-  if ssDouble in Shift then Add('ssDouble');
-  if ssMeta in Shift then Add('ssMeta');
-  if ssSuper in Shift then Add('ssSuper');
-  if ssHyper in Shift then Add('ssHyper');
-  if ssAltGr in Shift then Add('ssAltGr');
-  if ssCaps in Shift then Add('ssCaps');
-  if ssNum in Shift then Add('ssNum');
-  if ssScroll in Shift then Add('ssScroll');
-  if ssTriple in Shift then Add('ssTriple');
-  if ssQuad in Shift then Add('ssQuad');
-  Result:='['+Result+']';
+  Result:=LazLogger.DbgS(Shift);
 end;
 
 function DbgsVKCode(c: word): string;
@@ -2435,7 +2259,7 @@ end;
 
 function DbgS(const ASize: TSize): string;
 begin
-   Result := 'cx: ' + DbgS(ASize.cx) + ' cy: ' + DbgS(ASize.cy);
+  Result:=LazLogger.DbgS(ASize);
 end;
 
 function DbgS(const ATM: TTextMetric): string;
