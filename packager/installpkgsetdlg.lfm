@@ -122,6 +122,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       ShowRoot = False
       TabOrder = 1
       OnDblClick = AvailableTreeViewDblClick
+      OnKeyPress = AvailableTreeViewKeyPress
       OnSelectionChanged = AvailableTreeViewSelectionChanged
       Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoThemedDraw]
     end
@@ -141,7 +142,6 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       Height = 20
       Top = 7
       Width = 247
-      FilteredTreeview = AvailableTreeView
       ButtonWidth = 23
       NumGlyphs = 0
       Anchors = [akTop, akLeft, akRight]
@@ -149,6 +149,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       MaxLength = 0
       ParentFont = False
       TabOrder = 0
+      FilteredTreeview = AvailableTreeView
     end
   end
   object PkgInfoGroupBox: TGroupBox

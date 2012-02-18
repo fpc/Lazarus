@@ -40,9 +40,10 @@ interface
 uses
   Classes, SysUtils, contnrs, LCLProc, Forms, Controls, Graphics, Dialogs,
   KeywordFuncLists, StdCtrls, Buttons, FileUtil, ExtCtrls, ComCtrls, EditBtn,
-  AVL_Tree, Laz_XMLCfg, TreeFilterEdit, PackageIntf, IDEImagesIntf, IDEHelpIntf,
-  IDEDialogs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf,
-  IDEProcs, PackageDefs, PackageSystem, PackageLinks, IDEContextHelpEdit;
+  LCLType, AVL_Tree, Laz_XMLCfg, TreeFilterEdit, PackageIntf, IDEImagesIntf,
+  IDEHelpIntf, IDEDialogs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
+  LazConf, IDEProcs, PackageDefs, PackageSystem, PackageLinks,
+  IDEContextHelpEdit;
 
 type
   TOnCheckInstallPackageList =
@@ -71,6 +72,7 @@ type
     UninstallButton: TBitBtn;
     procedure AddToInstallButtonClick(Sender: TObject);
     procedure AvailableTreeViewDblClick(Sender: TObject);
+    procedure AvailableTreeViewKeyPress(Sender: TObject; var Key: char);
     procedure AvailableTreeViewSelectionChanged(Sender: TObject);
     procedure ExportButtonClick(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
@@ -270,6 +272,12 @@ end;
 procedure TInstallPkgSetDialog.AvailableTreeViewDblClick(Sender: TObject);
 begin
   AddToInstall;
+end;
+
+procedure TInstallPkgSetDialog.AvailableTreeViewKeyPress(Sender: TObject; var Key: char);
+begin
+  if Key = char(VK_RETURN) then
+    AddToInstall;
 end;
 
 procedure TInstallPkgSetDialog.InstallPkgSetDialogDestroy(Sender: TObject);
