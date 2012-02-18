@@ -200,9 +200,9 @@ begin
   BottomAnchoredCheckBox.Hint:=Format(AnchorEnabledHint,['akBottom']);
   BottomBorderSpaceSpinEdit.Hint:=lisBottomBorderSpaceSpinEditHint;
   BottomGroupBox.Caption:=lisBottomGroupBoxCaption;
-  BottomRefBottomSpeedButton.Hint:=lisAnchorToBottomSideKeepBorderSpace;
+  BottomRefBottomSpeedButton.Hint:=lisAnchorBottomToBottomSide;
   BottomRefCenterSpeedButton.Hint:=lisCenterControlVerticallyRelativeToSibling;
-  BottomRefTopSpeedButton.Hint:=lisAnchorToTopSideKeepBorderSpace;
+  BottomRefTopSpeedButton.Hint:=lisAnchorBottomToTopSide;
   BottomSiblingComboBox.Hint:=lisBottomSiblingComboBoxHint;
   BottomSiblingLabel.Caption:=lisSibling;
 
@@ -211,8 +211,8 @@ begin
   LeftBorderSpaceSpinEdit.Hint:=lisLeftBorderSpaceSpinEditHint;
   LeftGroupBox.Caption:=lisLeftGroupBoxCaption;
   LeftRefCenterSpeedButton.Hint:=lisCenterControlHorizontallyRelativeToSibling;
-  LeftRefLeftSpeedButton.Hint:=lisAnchorToLeftSideKeepBorderSpace;
-  LeftRefRightSpeedButton.Hint:=lisAnchorToRightSideKeepBorderSpace;
+  LeftRefLeftSpeedButton.Hint:=lisAnchorLeftToLeftSide;
+  LeftRefRightSpeedButton.Hint:=lisAnchorLeftToRightSide;
   LeftSiblingComboBox.Hint:=lisLeftSiblingComboBoxHint;
   LeftSiblingLabel.Caption:=lisSibling;
 
@@ -221,8 +221,8 @@ begin
   RightBorderSpaceSpinEdit.Hint:=lisRightBorderSpaceSpinEditHint;
   RightGroupBox.Caption:=lisRightAnchoring;
   RightRefCenterSpeedButton.Hint:=lisCenterControlHorizontallyRelativeToSibling;
-  RightRefLeftSpeedButton.Hint:=lisAnchorToLeftSideKeepBorderSpace;
-  RightRefRightSpeedButton.Hint:=lisAnchorToRightSideKeepBorderSpace;
+  RightRefLeftSpeedButton.Hint:=lisAnchorRightToLeftSide;
+  RightRefRightSpeedButton.Hint:=lisAnchorRightToRightSide;
   RightSiblingComboBox.Hint:=lisRightSiblingComboBoxHint;
   RightSiblingLabel.Caption:=lisSibling;
 
@@ -230,9 +230,9 @@ begin
   TopAnchoredCheckBox.Hint:=Format(AnchorEnabledHint,['akTop']);
   TopBorderSpaceSpinEdit.Hint:=lisTopBorderSpaceSpinEditHint;
   TopGroupBox.Caption:=lisTopAnchoring;
-  TopRefBottomSpeedButton.Hint:=lisAnchorToBottomSideKeepBorderSpace;
+  TopRefBottomSpeedButton.Hint:=lisAnchorTopToBottomSide;
   TopRefCenterSpeedButton.Hint:=lisCenterControlVerticallyRelativeToSibling;
-  TopRefTopSpeedButton.Hint:= lisAnchorToTopSideKeepBorderSpace;
+  TopRefTopSpeedButton.Hint:= lisAnchorTopToTopSide;
   TopSiblingComboBox.Hint:=lisTopSiblingComboBoxHint;
   TopSiblingLabel.Caption:=lisSibling;
 
