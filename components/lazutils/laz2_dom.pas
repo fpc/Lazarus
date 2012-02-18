@@ -277,6 +277,7 @@ type
     function GetNextNodeSkipChildren: TDOMNode; // first next sibling, then next sibling of parent, ...
     function GetPrevNode: TDOMNode; // the reverse of GetNext
     function GetLastLeaf: TDOMNode; // get last child of last child of ...
+    function GetLevel: integer; // root node has 0
 
     function InsertBefore(NewChild, RefChild: TDOMNode): TDOMNode; virtual;
     function ReplaceChild(NewChild, OldChild: TDOMNode): TDOMNode; virtual;
@@ -1067,6 +1068,18 @@ begin
     Node:=Result.LastChild;
     if Node=nil then exit;
     Result:=Node;
+  end;
+end;
+
+function TDOMNode.GetLevel: integer;
+var
+  Node: TDOMNode;
+begin
+  Result:=0;
+  Node:=ParentNode;
+  while Node<>nil do begin
+    inc(Result);
+    Node:=Node.ParentNode;
   end;
 end;
 
