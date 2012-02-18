@@ -1015,6 +1015,7 @@ begin
     begin
       S:=TSaveDialog.Create(Self);
       S.DefaultExt := FDefaultExt;
+      S.InitialDir := InitialDir;
       S.Filter := Filter;
       S.FilterIndex := FilterIndex;
       Result := S;
