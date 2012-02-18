@@ -295,7 +295,7 @@ type
     property OnFolderChange: TNotifyEvent read FOnFolderChange write FOnFolderChange;
     property DialogKind: TDialogKind read FDialogKind write FDialogKind default dkOpen;
     property DialogTitle: String read FDialogTitle write FDialogTitle;
-    property DialogOptions: TOpenOptions read FDialogOptions write FDialogOptions;
+    property DialogOptions: TOpenOptions read FDialogOptions write FDialogOptions default DefaultOpenDialogOptions;
     property Filter: String read FFilter write FFilter;
     property FilterIndex: Integer read FFilterIndex write FFIlterIndex;
     property DefaultExt: String read FDefaultExt write FDefaultExt;
@@ -1000,28 +1000,36 @@ function TFileNameEdit.CreateDialog(AKind: TDialogKind): TCommonDialog;
 var
   O: TOpenDialog;
   S: TSaveDialog;
+  Dir: String;
 begin
   case AKind of
-    dkopen, dkPictureOpen:
+    dkOpen, dkPictureOpen:
     begin
       O := TOpenDialog.Create(Self);
-      O.FileName := FileName;
-      O.Options := DialogOptions;
-      O.InitialDir := InitialDir;
-      O.Filter := Filter;
-      O.FilterIndex := FilterIndex;
       Result := O;
     end;
     dkSave, dkPictureSave:
     begin
       S:=TSaveDialog.Create(Self);
       S.DefaultExt := FDefaultExt;
-      S.Options := DialogOptions;
-      S.InitialDir := InitialDir;
-      S.Filter := Filter;
-      S.FilterIndex := FilterIndex;
       Result := S;
     end;
+  end;
+  if Result is TOpenDialog then
+  begin
+    O:=TOpenDialog(Result);
+    Dir:=ExtractFilePath(Filename);
+    if (Dir<>'') and DirPathExists(Dir) then
+      // setting a FileName with path disables InitialDir
+      O.FileName := FileName
+    else begin
+      // do not use path, so that InitialDir works
+      O.FileName := ExtractFileName(Filename);
+    end;
+    O.Options := DialogOptions;
+    O.Filter := Filter;
+    O.FilterIndex := FilterIndex;
+    O.InitialDir := CleanAndExpandDirectory(InitialDir);
   end;
   // Set some common things.
   Result.Title := DialogTitle;

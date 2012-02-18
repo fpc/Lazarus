@@ -27,9 +27,9 @@ unit Dialogs;
 interface
 
 uses
-  Types, Classes, LResources, SysUtils, LCLIntf, InterfaceBase, FileUtil,
-  LCLStrConsts, LCLType, LCLProc, Forms, Controls, Themes,
-  GraphType, Graphics, Buttons, ButtonPanel, StdCtrls, ExtCtrls, LCLClasses;
+  Types, typinfo, Classes, LResources, SysUtils, LCLIntf, InterfaceBase,
+  FileUtil, LCLStrConsts, LCLType, LCLProc, Forms, Controls, Themes, GraphType,
+  Graphics, Buttons, ButtonPanel, StdCtrls, ExtCtrls, LCLClasses;
 
 
 type
@@ -539,6 +539,9 @@ function ExtractColorIndexAndColor(const AColorList: TStrings; const AIndex: Int
 function GetDialogCaption(idDiag: Integer): String;
 function GetDialogIcon(idDiag: Integer): TCustomBitmap;
 
+function dbgs(Option: TOpenOption): string; overload;
+function dbgs(Options: TOpenOptions): string; overload;
+
 procedure Register;
 
 implementation
@@ -580,6 +583,20 @@ const
 
 type
   TBitBtnAccess = class(TBitBtn);
+
+function dbgs(Option: TOpenOption): string;
+begin
+  Result:=GetEnumName(typeinfo(TOpenOption),ord(Option));
+end;
+
+function dbgs(Options: TOpenOptions): string;
+var
+  o: TOpenOption;
+begin
+  for o in Options do
+    Result:=Result+dbgs(o)+',';
+  Result:='['+LeftStr(Result,length(Result)-1)+']';
+end;
 
 procedure Register;
 begin
