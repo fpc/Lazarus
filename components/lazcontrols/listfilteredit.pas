@@ -180,9 +180,6 @@ begin
         clb.Checked[ListInd]:=fCheckedItems.Contains(s);
     end;
   end;
-  // Notify the CheckListBox that checked state may have changed.
-  if Assigned(clb) and Assigned(clb.OnItemClick) then
-    clb.OnItemClick(clb, -1);  // The handler must not use the index -1 directly
   fFilteredListbox.Items.EndUpdate;
 end;
 
@@ -191,18 +188,27 @@ var
   i: Integer;
 begin
   fSelectionList.Clear;
-  for i := 0 to fFilteredListbox.Count-1 do
-    if fFilteredListbox.Selected[i] then
-      fSelectionList.Add(fFilteredListbox.Items[i]);
+  if fFilteredListbox.SelCount > 0 then
+    for i := 0 to fFilteredListbox.Count-1 do
+      if fFilteredListbox.Selected[i] then
+        fSelectionList.Add(fFilteredListbox.Items[i]);
 end;
 
 procedure TListFilterEdit.RestoreSelection;
 var
   i: Integer;
+  clb: TCustomCheckListBox;
 begin
-  for i := 0 to fFilteredListbox.Count-1 do
-    if fSelectionList.IndexOf(fFilteredListbox.Items[i])>0 then
-      fFilteredListbox.Selected[i]:=True;
+  if fSelectionList.Count > 0 then
+    for i := 0 to fFilteredListbox.Count-1 do
+      if fSelectionList.IndexOf(fFilteredListbox.Items[i]) > -1 then
+        fFilteredListbox.Selected[i]:=True;
+  // Notify the CheckListBox that checked state may have changed.
+  if fFilteredListbox is TCustomCheckListBox then begin
+    clb:=TCustomCheckListBox(fFilteredListbox);
+    if Assigned(clb.OnItemClick) then
+      clb.OnItemClick(clb, -1);  // The handler must not use the index -1 directly
+  end;
 end;
 
 function TListFilterEdit.GetFirstSelected: Integer;

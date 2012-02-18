@@ -5,9 +5,9 @@ unit EditorFileManager;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, ListFilterEdit, Forms, Controls, Graphics,
-  Dialogs, CheckLst, ButtonPanel, StdCtrls, Buttons, ExtCtrls, Menus, LCLProc,
-  IDEImagesIntf, LazIDEIntf, SourceEditor, LazarusIDEStrConsts, IDECommands;
+  Classes, ListFilterEdit, Forms, Controls, CheckLst, ButtonPanel, StdCtrls,
+  Buttons, ExtCtrls, Menus, LCLProc, LCLType, IDEImagesIntf, LazIDEIntf,
+  SourceEditor, LazarusIDEStrConsts;
 
 type
 
@@ -16,6 +16,8 @@ type
   TEditorFileManagerForm = class(TForm)
     ActivateMenuItem: TMenuItem;
     ActivateButton: TBitBtn;
+    MoveDownBtn: TSpeedButton;
+    MoveUpBtn: TSpeedButton;
     SaveCheckedButton: TBitBtn;
     ButtonPanel1: TButtonPanel;
     CloseCheckedButton: TBitBtn;
@@ -26,6 +28,12 @@ type
     CheckListBox1: TCheckListBox;
     FilterEdit: TListFilterEdit;
     procedure ActivateMenuItemClick(Sender: TObject);
+    procedure CheckListBox1DblClick(Sender: TObject);
+    procedure CheckListBox1KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure CheckListBox1KeyPress(Sender: TObject; var Key: char);
+    procedure MoveDownBtnClick(Sender: TObject);
+    procedure MoveUpBtnClick(Sender: TObject);
     procedure CheckListBox1Click(Sender: TObject);
     procedure CheckListBox1ItemClick(Sender: TObject; Index: integer);
     procedure CloseCheckedButtonClick(Sender: TObject);
@@ -38,6 +46,7 @@ type
   private
     procedure CloseListItem(ListIndex: integer);
     procedure UpdateButtons;
+    procedure UpdateMoveButtons(ListIndex: integer);
   public
 
   end;
@@ -82,6 +91,8 @@ begin
   ActivateButton.Caption:=lisActivateSelected;
   SaveCheckedButton.Caption:=lisSaveAllChecked;
   CloseCheckedButton.Caption:=lisCloseAllChecked;
+  MoveUpBtn.Hint:=lisMoveSelectedUp;
+  MoveDownBtn.Hint:=lisMoveSelectedDown;
   // Icons
   PopupMenu1.Images:=IDEImages.Images_16;
   ActivateMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'laz_open');
@@ -89,12 +100,18 @@ begin
   ActivateButton.LoadGlyphFromLazarusResource('laz_open');
   CloseCheckedButton.LoadGlyphFromLazarusResource('menu_close_all');
   SaveCheckedButton.LoadGlyphFromLazarusResource('menu_save_all');
+  MoveUpBtn.LoadGlyphFromLazarusResource('arrow_up');
+  MoveDownBtn.LoadGlyphFromLazarusResource('arrow_down');
 end;
 
 procedure TEditorFileManagerForm.CheckListBox1Click(Sender: TObject);
+var
+  clb: TCheckListBox;
 begin
+  clb:=Sender as TCheckListBox;
   // Enable ActivateButton when there is a selected item.
-  ActivateButton.Enabled:=(Sender as TCheckListBox).SelCount>0;
+  ActivateButton.Enabled:=clb.SelCount>0;
+  UpdateMoveButtons(clb.ItemIndex);
 end;
 
 procedure TEditorFileManagerForm.CheckListBox1ItemClick(Sender: TObject; Index: integer);
@@ -184,6 +201,67 @@ begin
   ActivateButtonClick(nil);
 end;
 
+procedure TEditorFileManagerForm.CheckListBox1DblClick(Sender: TObject);
+begin
+  ActivateButtonClick(nil);
+end;
+
+procedure TEditorFileManagerForm.CheckListBox1KeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (ssCtrl in shift ) and ((Key = VK_UP) or (Key = VK_DOWN)) then begin
+    if Key = VK_UP then
+      MoveUpBtnClick(nil)
+    else
+      MoveDownBtnClick(nil);
+    Key:=VK_UNKNOWN;
+  end;
+end;
+
+procedure TEditorFileManagerForm.CheckListBox1KeyPress(Sender: TObject; var Key: char);
+begin
+  if Key = #13 then
+    ActivateButtonClick(nil);
+end;
+
+procedure TEditorFileManagerForm.MoveDownBtnClick(Sender: TObject);
+var
+  SrcEdit: TSourceEditor;
+  ANoteBook: TSourceNotebook;
+  i: Integer;
+begin
+  i := CheckListBox1.ItemIndex;
+  if (i > -1) and (i < CheckListBox1.Items.Count-1) and (FilterEdit.Filter='') then begin
+    // First move the source editor tab
+    SrcEdit:=SourceEditorManager.SourceEditorIntfWithFilename(CheckListBox1.Items[i]);
+    ANoteBook:=SrcEdit.SourceNotebook;
+    ANoteBook.NotebookPages.Move(SrcEdit.PageIndex, SrcEdit.PageIndex+1);
+    // Then switch the list items
+    FilterEdit.Data.Exchange(i, i+1); //  CheckListBox1.Items.Exchange(i, i+1);
+    FilterEdit.InvalidateFilter;
+    UpdateMoveButtons(i+1);
+  end;
+end;
+
+procedure TEditorFileManagerForm.MoveUpBtnClick(Sender: TObject);
+var
+  SrcEdit: TSourceEditor;
+  ANoteBook: TSourceNotebook;
+  i: Integer;
+begin
+  i := CheckListBox1.ItemIndex;
+  if (i > 0) and (FilterEdit.Filter='') then begin
+    // First move the source editor tab
+    SrcEdit:=SourceEditorManager.SourceEditorIntfWithFilename(CheckListBox1.Items[i]);
+    ANoteBook:=SrcEdit.SourceNotebook;
+    ANoteBook.NotebookPages.Move(SrcEdit.PageIndex, SrcEdit.PageIndex-1);
+    // Then switch the list items
+    FilterEdit.Data.Exchange(i, i-1);
+    FilterEdit.InvalidateFilter;
+    UpdateMoveButtons(i-1);
+  end;
+end;
+
 procedure TEditorFileManagerForm.ActivateButtonClick(Sender: TObject);
 var
   i: Integer;
@@ -219,6 +297,13 @@ procedure TEditorFileManagerForm.UpdateButtons;
 begin
   FilterEdit.InvalidateFilter;
   CheckListBox1ItemClick(CheckListBox1, 0);
+end;
+
+procedure TEditorFileManagerForm.UpdateMoveButtons(ListIndex: integer);
+begin
+  MoveUpBtn.Enabled := (ListIndex > 0) and (FilterEdit.Filter='');
+  MoveDownBtn.Enabled := (ListIndex > -1) and (ListIndex < CheckListBox1.Items.Count-1)
+                                       and (FilterEdit.Filter='');
 end;
 
 end.
