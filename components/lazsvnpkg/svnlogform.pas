@@ -25,7 +25,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Dialogs, Controls, FileUtil,
   ComCtrls, StdCtrls, ButtonPanel, ExtCtrls, Process, Spin, XMLRead, DOM,
-  Menus, LCLProc, LazIDEIntf;
+  Menus, LCLProc, LazIDEIntf, fgl;
 
 type
   TActionItem = record
@@ -58,6 +58,8 @@ type
     property Date: TDateTime read FDate write FDate;
     property Msg: string read FMsg write FMsg;
   end;
+
+  TSVNLogList = specialize TFPGObjectList<TSVNLogItem>;
 
   { TSVNLogFrm }
 
@@ -93,7 +95,7 @@ type
   private
     FRepositoryPath: string;
     { private declarations }
-    LogList: TFPList;
+    LogList: TSVNLogList;
     procedure UpdateLogListView;
     procedure ChangeCursor(ACursor: TCursor);
   public
@@ -160,16 +162,16 @@ begin
   FAction[Count - 1] := AActionItem;
 end;
 
-function FindSVNLogItemByRevision(List: TFPList; RevNo: integer): TSVNLogItem;
-  function SearchLinear(List: TFPList; RevNo: integer): TSVNLogItem;
+function FindSVNLogItemByRevision(List: TSVNLogList; RevNo: integer): TSVNLogItem;
+  function SearchLinear(List: TSVNLogList; RevNo: integer): TSVNLogItem;
   var
     i: integer;
   begin
     Result := nil;
     for i := 0 to List.Count - 1 do
-      if TSVNLogItem(List.Items[i]).Revision = RevNo then
+      if List.Items[i].Revision = RevNo then
       begin
-        Result := TSVNLogItem(List.Items[i]);
+        Result := List.Items[i];
         exit;
       end;
   end;
@@ -189,9 +191,9 @@ begin
     Result := SearchLinear(List, RevNo)
   else
   begin
-    if TSVNLogItem(List.Items[index]).Revision = RevNo then
+    if List.Items[index].Revision = RevNo then
       //found!
-      Result := TSVNLogItem(List.Items[index])
+      Result := List.Items[index]
     else
       //revision not found on expected location, search linear
       Result := SearchLinear(List, RevNo);
@@ -261,21 +263,16 @@ var
   LogItem : TSVNLogItem;
 begin
   LogListView.Clear;
-
   for i := 0 to LogList.Count - 1 do
     with LogListView.Items.Add do
     begin
-      LogItem := TSVNLogItem(LogList.Items[i]);
-
+      LogItem := LogList.Items[i];
       //revision
       Caption := IntToStr(LogItem.Revision);
-
       //author
       SubItems.Add(LogItem.Author);
-
       //date
       SubItems.Add(DateTimeToStr(LogItem.Date));
-
       //message
       SubItems.Add(LogItem.Msg);
     end;
@@ -349,7 +346,7 @@ end;
 
 procedure TSVNLogFrm.FormCreate(Sender: TObject);
 begin
-  LogList := TFPList.Create;
+  LogList := TSVNLogList.Create;
 
   SetColumn(LogListView, 0, 75, rsRevision);
   SetColumn(LogListView, 1, 75, rsAuthor);
@@ -372,11 +369,7 @@ begin
 end;
 
 procedure TSVNLogFrm.FormDestroy(Sender: TObject);
-var
-  i: Integer;
 begin
-  for i := 0 to LogList.Count - 1 do
-    TSVNLogItem(LogList[i]).Free;
   LogList.Free;
   SVNLogFrm := nil;
 end;

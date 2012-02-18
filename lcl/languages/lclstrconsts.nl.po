@@ -1,4 +1,4 @@
-# BigChimp <nowhere@example.com>, 2011.
+ BigChimp <nowhere@example.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"

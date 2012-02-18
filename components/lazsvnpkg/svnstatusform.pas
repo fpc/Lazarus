@@ -32,7 +32,9 @@ type
 
   TSVNStatusFrm = class(TForm)
     ButtonPanel: TButtonPanel;
-    SVNCommitMsgHistoryComboBox: TComboBox;
+    CommitMsgHistoryLabel: TLabel;
+    CommitMsgLabel: TLabel;
+    Panel1: TPanel;
     ImageList: TImageList;
     mnuOpen: TMenuItem;
     mnuRemove: TMenuItem;
@@ -41,6 +43,7 @@ type
     mnuShowDiff: TMenuItem;
     PopupMenu1: TPopupMenu;
     Splitter: TSplitter;
+    SVNCommitMsgHistoryComboBox: TComboBox;
     SVNCommitMsgMemo: TMemo;
     SVNFileListView: TListView;
     procedure CancelButtonClick(Sender: TObject);
@@ -99,6 +102,8 @@ procedure TSVNStatusFrm.FormShow(Sender: TObject);
 begin
   Caption := Format('%s - %s...', [RepositoryPath, rsLazarusSVNCommit]);
   Application.QueueAsyncCall(@Initialize, 0);
+  CommitMsgHistoryLabel.Caption:=rsCommitMsgHistory;
+  CommitMsgLabel.Caption:=rsCommitMsg;
 end;
 
 procedure TSVNStatusFrm.Initialize(Data: PtrInt);

@@ -49,6 +49,8 @@ resourcestring
   rsLazarusSVNDiff = '%s - LazarusSVN Diff...';
   rsLazarusSVNLog = '%s - LazarusSVN Log...';
   rsLazarusSVNUpdate = '%s - LazarusSVN Update...';
+  rsCommitMsgHistory = 'Commit Message History';
+  rsCommitMsg = 'Commit Message';
   rsMerged = 'Merged';
   rsMessage = 'Message';
   rsNoAuthor = '(no author)';
