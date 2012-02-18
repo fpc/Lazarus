@@ -15,9 +15,10 @@ type
 
   TEditorFileManagerForm = class(TForm)
     ActivateMenuItem: TMenuItem;
-    ActivateButton: TBitBtn;
     MoveDownBtn: TSpeedButton;
     MoveUpBtn: TSpeedButton;
+    FilterPanel: TPanel;
+    OpenButton: TSpeedButton;
     SaveCheckedButton: TBitBtn;
     ButtonPanel1: TButtonPanel;
     CloseCheckedButton: TBitBtn;
@@ -27,6 +28,7 @@ type
     SelectAllCheckBox: TCheckBox;
     CheckListBox1: TCheckListBox;
     FilterEdit: TListFilterEdit;
+    SortAlphabeticallyButton: TSpeedButton;
     procedure ActivateMenuItemClick(Sender: TObject);
     procedure CheckListBox1DblClick(Sender: TObject);
     procedure CheckListBox1KeyDown(Sender: TObject; var Key: Word;
@@ -43,12 +45,15 @@ type
     procedure FormCreate(Sender: TObject);
     procedure ActivateButtonClick(Sender: TObject);
     procedure SelectAllCheckBoxClick(Sender: TObject);
+    procedure SortAlphabeticallyButtonClick(Sender: TObject);
   private
+    FSortAlphabetically: boolean;
     procedure CloseListItem(ListIndex: integer);
+    procedure SetSortAlphabetically(AValue: boolean);
     procedure UpdateButtons;
     procedure UpdateMoveButtons(ListIndex: integer);
   public
-
+    property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
   end;
 
   function ShowEditorFileManagerForm: TModalResult;
@@ -88,7 +93,6 @@ begin
   ActivateMenuItem.Caption:=lisActivate;
   CloseMenuItem.Caption:=lisMenuClose;
   SelectAllCheckBox.Caption:=lisCheckAll;
-  ActivateButton.Caption:=lisActivateSelected;
   SaveCheckedButton.Caption:=lisSaveAllChecked;
   CloseCheckedButton.Caption:=lisCloseAllChecked;
   MoveUpBtn.Hint:=lisMoveSelectedUp;
@@ -97,11 +101,15 @@ begin
   PopupMenu1.Images:=IDEImages.Images_16;
   ActivateMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'laz_open');
   CloseMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'menu_close');
-  ActivateButton.LoadGlyphFromLazarusResource('laz_open');
   CloseCheckedButton.LoadGlyphFromLazarusResource('menu_close_all');
   SaveCheckedButton.LoadGlyphFromLazarusResource('menu_save_all');
   MoveUpBtn.LoadGlyphFromLazarusResource('arrow_up');
   MoveDownBtn.LoadGlyphFromLazarusResource('arrow_down');
+  // Buttons on FilterPanel
+  OpenButton.LoadGlyphFromLazarusResource('laz_open');
+  OpenButton.Hint:=lisActivateSelected;
+  SortAlphabeticallyButton.Hint:=lisPESortFilesAlphabetically;
+  SortAlphabeticallyButton.LoadGlyphFromLazarusResource('pkg_sortalphabetically');
 end;
 
 procedure TEditorFileManagerForm.CheckListBox1Click(Sender: TObject);
@@ -109,8 +117,8 @@ var
   clb: TCheckListBox;
 begin
   clb:=Sender as TCheckListBox;
-  // Enable ActivateButton when there is a selected item.
-  ActivateButton.Enabled:=clb.SelCount>0;
+  // Enable Activate when there is a selected item.
+  OpenButton.Enabled:=clb.SelCount>0;
   UpdateMoveButtons(clb.ItemIndex);
 end;
 
@@ -156,6 +164,11 @@ begin
     end;
   end;
   CheckListBox1ItemClick(CheckListBox1, 0);
+end;
+
+procedure TEditorFileManagerForm.SortAlphabeticallyButtonClick(Sender: TObject);
+begin
+  SortAlphabetically:=SortAlphabeticallyButton.Down;
 end;
 
 procedure TEditorFileManagerForm.SaveCheckedButtonClick(Sender: TObject);
@@ -220,7 +233,7 @@ end;
 
 procedure TEditorFileManagerForm.CheckListBox1KeyPress(Sender: TObject; var Key: char);
 begin
-  if Key = #13 then
+  if Key = char(VK_RETURN) then
     ActivateButtonClick(nil);
 end;
 
@@ -230,8 +243,9 @@ var
   ANoteBook: TSourceNotebook;
   i: Integer;
 begin
-  i := CheckListBox1.ItemIndex;
-  if (i > -1) and (i < CheckListBox1.Items.Count-1) and (FilterEdit.Filter='') then begin
+  i:=CheckListBox1.ItemIndex;
+  if (i>-1) and (i<CheckListBox1.Items.Count-1)
+  and (FilterEdit.Filter='') and not SortAlphabetically then begin
     // First move the source editor tab
     SrcEdit:=SourceEditorManager.SourceEditorIntfWithFilename(CheckListBox1.Items[i]);
     ANoteBook:=SrcEdit.SourceNotebook;
@@ -250,7 +264,7 @@ var
   i: Integer;
 begin
   i := CheckListBox1.ItemIndex;
-  if (i > 0) and (FilterEdit.Filter='') then begin
+  if (i > 0) and (FilterEdit.Filter='') and not SortAlphabetically then begin
     // First move the source editor tab
     SrcEdit:=SourceEditorManager.SourceEditorIntfWithFilename(CheckListBox1.Items[i]);
     ANoteBook:=SrcEdit.SourceNotebook;
@@ -292,6 +306,15 @@ begin
   end;
 end;
 
+procedure TEditorFileManagerForm.SetSortAlphabetically(AValue: boolean);
+begin
+  if FSortAlphabetically=AValue then exit;
+  FSortAlphabetically:=AValue;
+  SortAlphabeticallyButton.Down:=FSortAlphabetically;
+  FilterEdit.SortData:=FSortAlphabetically;
+  FilterEdit.InvalidateFilter;
+end;
+
 procedure TEditorFileManagerForm.UpdateButtons;
 // Update the filter and buttons. Reuse event handlers for it.
 begin
@@ -300,10 +323,12 @@ begin
 end;
 
 procedure TEditorFileManagerForm.UpdateMoveButtons(ListIndex: integer);
+var
+  b: Boolean;
 begin
-  MoveUpBtn.Enabled := (ListIndex > 0) and (FilterEdit.Filter='');
-  MoveDownBtn.Enabled := (ListIndex > -1) and (ListIndex < CheckListBox1.Items.Count-1)
-                                       and (FilterEdit.Filter='');
+  b:=(FilterEdit.Filter='') and not SortAlphabetically;
+  MoveUpBtn.Enabled:=(ListIndex>0) and b;
+  MoveDownBtn.Enabled:=(ListIndex>-1) and (ListIndex<CheckListBox1.Items.Count-1) and b;
 end;
 
 end.

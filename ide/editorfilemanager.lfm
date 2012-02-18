@@ -1,7 +1,7 @@
 object EditorFileManagerForm: TEditorFileManagerForm
-  Left = 364
+  Left = 338
   Height = 380
-  Top = 266
+  Top = 126
   Width = 722
   Caption = 'EditorFileManagerForm'
   ClientHeight = 380
@@ -10,16 +10,16 @@ object EditorFileManagerForm: TEditorFileManagerForm
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object CheckListBox1: TCheckListBox
-    AnchorSideLeft.Control = FilterEdit
-    AnchorSideTop.Control = FilterEdit
+    AnchorSideTop.Control = FilterPanel
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Panel1
     AnchorSideBottom.Control = ButtonPanel1
-    Left = 6
-    Height = 304
-    Top = 30
-    Width = 530
+    Left = 3
+    Height = 298
+    Top = 29
+    Width = 533
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 1
     ItemHeight = 0
     OnClick = CheckListBox1Click
     OnDblClick = CheckListBox1DblClick
@@ -29,21 +29,10 @@ object EditorFileManagerForm: TEditorFileManagerForm
     PopupMenu = PopupMenu1
     TabOrder = 0
   end
-  object FilterEdit: TListFilterEdit
-    Left = 6
-    Height = 22
-    Top = 8
-    Width = 224
-    ButtonWidth = 23
-    NumGlyphs = 0
-    MaxLength = 0
-    TabOrder = 1
-    FilteredListbox = CheckListBox1
-  end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 340
+    Height = 41
+    Top = 333
     Width = 710
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -53,7 +42,7 @@ object EditorFileManagerForm: TEditorFileManagerForm
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 2
+    TabOrder = 1
     ShowButtons = [pbClose, pbHelp]
   end
   object Panel1: TPanel
@@ -61,59 +50,42 @@ object EditorFileManagerForm: TEditorFileManagerForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 536
-    Height = 334
+    Height = 327
     Top = 0
     Width = 186
     Anchors = [akTop, akRight, akBottom]
-    ClientHeight = 334
+    ClientHeight = 327
     ClientWidth = 186
-    TabOrder = 3
-    object ActivateButton: TBitBtn
-      AnchorSideLeft.Control = Panel1
-      AnchorSideLeft.Side = asrCenter
-      AnchorSideTop.Control = Panel1
-      Left = 53
-      Height = 24
-      Top = 33
-      Width = 81
-      AutoSize = True
-      BorderSpacing.Top = 21
-      BorderSpacing.Around = 11
-      Caption = 'Make Active'
-      Enabled = False
-      OnClick = ActivateButtonClick
-      TabOrder = 0
-    end
+    TabOrder = 2
     object SelectAllCheckBox: TCheckBox
       AnchorSideLeft.Control = Panel1
       AnchorSideLeft.Side = asrCenter
-      AnchorSideTop.Control = ActivateButton
       AnchorSideTop.Side = asrBottom
       Left = 29
-      Height = 21
-      Top = 89
-      Width = 129
+      Height = 20
+      Top = 40
+      Width = 128
       BorderSpacing.Top = 21
       BorderSpacing.Around = 11
       Caption = 'SelectAllCheckBox'
       OnClick = SelectAllCheckBoxClick
-      TabOrder = 1
+      TabOrder = 0
     end
     object SaveCheckedButton: TBitBtn
       AnchorSideLeft.Control = Panel1
       AnchorSideLeft.Side = asrCenter
       AnchorSideTop.Control = SelectAllCheckBox
       AnchorSideTop.Side = asrBottom
-      Left = 47
-      Height = 24
-      Top = 121
-      Width = 93
+      Left = 46
+      Height = 25
+      Top = 71
+      Width = 94
       AutoSize = True
       BorderSpacing.Around = 11
       Caption = 'Save Checked'
       Enabled = False
       OnClick = SaveCheckedButtonClick
-      TabOrder = 2
+      TabOrder = 1
     end
     object CloseCheckedButton: TBitBtn
       AnchorSideLeft.Control = Panel1
@@ -121,15 +93,15 @@ object EditorFileManagerForm: TEditorFileManagerForm
       AnchorSideTop.Control = SaveCheckedButton
       AnchorSideTop.Side = asrBottom
       Left = 45
-      Height = 24
-      Top = 156
-      Width = 96
+      Height = 25
+      Top = 107
+      Width = 97
       AutoSize = True
       BorderSpacing.Around = 11
       Caption = 'Close Checked'
       Enabled = False
       OnClick = CloseCheckedButtonClick
-      TabOrder = 3
+      TabOrder = 2
     end
     object MoveUpBtn: TSpeedButton
       AnchorSideLeft.Control = Panel1
@@ -138,7 +110,7 @@ object EditorFileManagerForm: TEditorFileManagerForm
       AnchorSideTop.Side = asrBottom
       Left = 82
       Height = 26
-      Top = 204
+      Top = 156
       Width = 22
       BorderSpacing.Top = 24
       Enabled = False
@@ -153,7 +125,7 @@ object EditorFileManagerForm: TEditorFileManagerForm
       AnchorSideTop.Side = asrBottom
       Left = 82
       Height = 26
-      Top = 237
+      Top = 189
       Width = 22
       BorderSpacing.Top = 7
       Enabled = False
@@ -163,10 +135,78 @@ object EditorFileManagerForm: TEditorFileManagerForm
       ParentShowHint = False
     end
   end
+  object FilterPanel: TPanel
+    AnchorSideRight.Control = Panel1
+    Left = 0
+    Height = 28
+    Top = 0
+    Width = 536
+    Anchors = [akTop, akLeft, akRight]
+    ClientHeight = 28
+    ClientWidth = 536
+    TabOrder = 3
+    object FilterEdit: TListFilterEdit
+      AnchorSideLeft.Control = SortAlphabeticallyButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = SortAlphabeticallyButton
+      AnchorSideTop.Side = asrCenter
+      Left = 76
+      Height = 24
+      Top = 2
+      Width = 224
+      ButtonWidth = 23
+      NumGlyphs = 0
+      BorderSpacing.Left = 11
+      MaxLength = 0
+      TabOrder = 0
+      FilteredListbox = CheckListBox1
+    end
+    object OpenButton: TSpeedButton
+      AnchorSideLeft.Control = FilterPanel
+      AnchorSideTop.Control = FilterPanel
+      AnchorSideTop.Side = asrCenter
+      AnchorSideBottom.Side = asrBottom
+      Left = 4
+      Height = 25
+      Top = 2
+      Width = 25
+      AllowAllUp = True
+      Anchors = [akTop, akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Left = 3
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 25
+      NumGlyphs = 0
+      OnClick = ActivateButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object SortAlphabeticallyButton: TSpeedButton
+      AnchorSideLeft.Control = OpenButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = OpenButton
+      AnchorSideTop.Side = asrCenter
+      AnchorSideBottom.Side = asrBottom
+      Left = 40
+      Height = 25
+      Top = 2
+      Width = 25
+      AllowAllUp = True
+      AutoSize = True
+      BorderSpacing.Left = 11
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 25
+      GroupIndex = 2
+      NumGlyphs = 0
+      OnClick = SortAlphabeticallyButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+  end
   object PopupMenu1: TPopupMenu
     OnPopup = PopupMenu1Popup
-    left = 304
-    top = 8
+    left = 312
+    top = 336
     object ActivateMenuItem: TMenuItem
       Caption = 'Activate'
       OnClick = ActivateMenuItemClick
