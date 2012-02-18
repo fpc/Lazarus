@@ -996,7 +996,6 @@ begin
     with DebugGutter do
       Name := 'TIDESynGutterDebugHL';
     {$ENDIF}
-    {$IFDEF WithSynOverviewGutter}
     with TSynGutterSeparator.Create(Parts) do
       Name := 'SynGutterSeparatorR2';
     with TSynGutterLineOverview.Create(Parts) do begin
@@ -1016,7 +1015,6 @@ begin
       Width := 1;
       LineWidth := 0;
     end;
-    {$ENDIF}
   end;
 end;
 

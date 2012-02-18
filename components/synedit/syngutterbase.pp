@@ -169,6 +169,7 @@ type
     procedure DoAutoSize;
     procedure SetAutoSize(const AValue : boolean); virtual;
     procedure SetVisible(const AValue : boolean); virtual;
+    procedure GutterVisibilityChanged; virtual;
     procedure SetWidth(const AValue : integer); virtual;
     procedure Init; override;
     procedure DoResize(Sender: TObject); virtual;
@@ -389,12 +390,16 @@ begin
 end;
 
 procedure TSynGutterBase.SetVisible(const AValue: boolean);
+var
+  i: Integer;
 begin
   if FVisible <> AValue then
   begin
     FVisible := AValue;
     DoResize(Self);
     DoChange(Self);
+    for i := 0 to PartCount - 1 do
+      Parts[i].GutterVisibilityChanged;
   end;
 end;
 
@@ -588,6 +593,11 @@ begin
   FVisible:=AValue;
   Gutter.SetChildBounds;
   DoChange(self);
+end;
+
+procedure TSynGutterPartBase.GutterVisibilityChanged;
+begin
+  //
 end;
 
 procedure TSynGutterPartBase.SetWidth(const AValue : integer);

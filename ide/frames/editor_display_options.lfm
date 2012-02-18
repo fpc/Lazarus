@@ -1,5 +1,7 @@
-inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
+object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
+  Left = 0
   Height = 455
+  Top = 0
   Width = 501
   ClientHeight = 455
   ClientWidth = 501
@@ -7,16 +9,16 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
   Visible = False
   DesignLeft = 176
   DesignTop = 232
-  object MarginAndGutterGroupBox: TGroupBox[0]
+  object MarginAndGutterGroupBox: TGroupBox
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 122
+    Height = 124
     Top = 0
     Width = 501
     Align = alTop
     AutoSize = True
     Caption = 'MarginAndGutterGroupBox'
-    ClientHeight = 104
+    ClientHeight = 106
     ClientWidth = 497
     TabOrder = 0
     object RightMarginLabel: TLabel
@@ -24,22 +26,23 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = RightMarginComboBox
       AnchorSideTop.Side = asrCenter
-      Left = 288
-      Height = 14
+      Left = 296
+      Height = 16
       Top = 9
-      Width = 83
+      Width = 95
       BorderSpacing.Left = 6
       Caption = 'RightMarginLabel'
       ParentColor = False
     end
     object ShowOnlyLineNumbersMultiplesOfLabel: TLabel
-      AnchorSideLeft.Control = MarginAndGutterGroupBox
+      AnchorSideLeft.Control = ShowOnlyLineNumbersMultiplesOfSpinEdit
+      AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ShowOnlyLineNumbersMultiplesOfSpinEdit
       AnchorSideTop.Side = asrCenter
-      Left = 6
-      Height = 14
-      Top = 79
-      Width = 110
+      Left = 294
+      Height = 16
+      Top = 67
+      Width = 122
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'Every n-th line number'
@@ -49,10 +52,10 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideLeft.Control = RightMarginLabel
       AnchorSideTop.Control = GutterSeparatorIndexSpinBox
       AnchorSideTop.Side = asrCenter
-      Left = 288
-      Height = 14
-      Top = 37
-      Width = 133
+      Left = 296
+      Height = 16
+      Top = 38
+      Width = 140
       Caption = 'GutterSeparatorIndexLabel'
       ParentColor = False
     end
@@ -62,10 +65,10 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideTop.Control = RightMarginLabel
       AnchorSideTop.Side = asrCenter
       Cursor = crHandPoint
-      Left = 377
-      Height = 14
+      Left = 397
+      Height = 16
       Top = 9
-      Width = 101
+      Width = 118
       BorderSpacing.Left = 6
       Caption = 'RightMarginColorLink'
       Font.Color = clBlue
@@ -79,9 +82,9 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideLeft.Control = MarginAndGutterGroupBox
       AnchorSideTop.Control = MarginAndGutterGroupBox
       Left = 6
-      Height = 17
+      Height = 19
       Top = 6
-      Width = 151
+      Width = 172
       BorderSpacing.Around = 6
       Caption = 'VisibleRightMarginCheckBox'
       OnChange = GeneralCheckBoxOnChange
@@ -92,9 +95,9 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideTop.Control = VisibleRightMarginCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 17
-      Top = 29
-      Width = 125
+      Height = 19
+      Top = 31
+      Width = 139
       BorderSpacing.Around = 6
       Caption = 'VisibleGutterCheckBox'
       OnChange = GeneralCheckBoxOnChange
@@ -105,9 +108,9 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideTop.Control = VisibleGutterCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 17
-      Top = 52
-      Width = 152
+      Height = 19
+      Top = 56
+      Width = 172
       BorderSpacing.Around = 6
       Caption = 'ShowLineNumbersCheckBox'
       OnChange = GeneralCheckBoxOnChange
@@ -115,16 +118,16 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       TabOrder = 2
     end
     object RightMarginComboBox: TComboBox
-      AnchorSideLeft.Control = ShowOnlyLineNumbersMultiplesOfSpinEdit
+      AnchorSideLeft.Control = VisibleRightMarginCheckBox
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = MarginAndGutterGroupBox
-      Left = 226
-      Height = 21
+      Left = 234
+      Height = 23
       Top = 6
       Width = 56
-      BorderSpacing.Left = 44
+      BorderSpacing.Left = 50
       BorderSpacing.Around = 6
-      ItemHeight = 13
+      ItemHeight = 15
       Items.Strings = (
         '80'
         '78'
@@ -136,15 +139,14 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       TabOrder = 3
     end
     object ShowOnlyLineNumbersMultiplesOfSpinEdit: TSpinEdit
-      AnchorSideLeft.Control = ShowOnlyLineNumbersMultiplesOfLabel
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = ShowLineNumbersCheckBox
+      AnchorSideLeft.Control = GutterSeparatorIndexSpinBox
+      AnchorSideTop.Control = GutterSeparatorIndexSpinBox
       AnchorSideTop.Side = asrBottom
-      Left = 122
+      Left = 234
       Height = 23
-      Top = 75
+      Top = 64
       Width = 54
-      BorderSpacing.Around = 6
+      BorderSpacing.Top = 6
       MinValue = 1
       OnChange = GeneralCheckBoxOnChange
       TabOrder = 4
@@ -154,27 +156,40 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideLeft.Control = RightMarginComboBox
       AnchorSideTop.Control = RightMarginComboBox
       AnchorSideTop.Side = asrBottom
-      Left = 226
+      Left = 234
       Height = 23
-      Top = 33
+      Top = 35
       Width = 56
       MaxValue = 4
       MinValue = -1
       OnChange = GeneralCheckBoxOnChange
       TabOrder = 5
     end
+    object chkShowOverview: TCheckBox
+      AnchorSideLeft.Control = MarginAndGutterGroupBox
+      AnchorSideTop.Control = ShowLineNumbersCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 81
+      Width = 117
+      BorderSpacing.Around = 6
+      Caption = 'chkShowOverview'
+      OnChange = GeneralCheckBoxOnChange
+      TabOrder = 6
+    end
   end
-  object EditorFontGroupBox: TGroupBox[1]
+  object EditorFontGroupBox: TGroupBox
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 105
-    Top = 128
+    Height = 111
+    Top = 130
     Width = 501
     Align = alTop
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'EditorFontGroupBox'
-    ClientHeight = 87
+    ClientHeight = 93
     ClientWidth = 497
     TabOrder = 1
     object EditorFontSizeLabel: TLabel
@@ -182,10 +197,10 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = EditorFontSizeSpinEdit
       AnchorSideTop.Side = asrCenter
-      Left = 112
-      Height = 14
-      Top = 36
-      Width = 107
+      Left = 62
+      Height = 16
+      Top = 38
+      Width = 104
       BorderSpacing.Around = 6
       Caption = 'EditorFontSizeLabel'
       ParentColor = False
@@ -195,10 +210,10 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ExtraLineSpacingComboBox
       AnchorSideTop.Side = asrCenter
-      Left = 351
-      Height = 14
-      Top = 36
-      Width = 108
+      Left = 298
+      Height = 16
+      Top = 38
+      Width = 118
       BorderSpacing.Around = 6
       Caption = 'ExtraLineSpacingLabel'
       ParentColor = False
@@ -208,10 +223,10 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ExtraCharSpacingComboBox
       AnchorSideTop.Side = asrCenter
-      Left = 351
-      Height = 14
-      Top = 63
-      Width = 112
+      Left = 298
+      Height = 16
+      Top = 67
+      Width = 121
       BorderSpacing.Around = 6
       Caption = 'ExtraCharSpacingLabel'
       ParentColor = False
@@ -221,13 +236,13 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideTop.Control = EditorFontGroupBox
       AnchorSideRight.Control = EditorFontButton
       Left = 6
-      Height = 21
+      Height = 23
       Top = 6
       Width = 460
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
-      ItemHeight = 13
+      ItemHeight = 15
       OnEditingDone = EditorFontComboBoxEditingDone
       TabOrder = 0
       Text = 'EditorFontComboBox'
@@ -239,7 +254,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideBottom.Control = EditorFontComboBox
       AnchorSideBottom.Side = asrBottom
       Left = 466
-      Height = 21
+      Height = 23
       Top = 6
       Width = 25
       Anchors = [akTop, akRight, akBottom]
@@ -253,8 +268,8 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideTop.Control = EditorFontComboBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 29
-      Top = 41
+      Height = 23
+      Top = 35
       Width = 50
       BorderSpacing.Around = 6
       OnChange = EditorFontSizeSpinEditChange
@@ -265,13 +280,13 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = EditorFontComboBox
       AnchorSideTop.Side = asrBottom
-      Left = 245
-      Height = 21
-      Top = 33
+      Left = 192
+      Height = 23
+      Top = 35
       Width = 100
       BorderSpacing.Left = 20
       BorderSpacing.Around = 6
-      ItemHeight = 13
+      ItemHeight = 15
       Items.Strings = (
         '0'
         '1'
@@ -286,12 +301,12 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideLeft.Control = ExtraLineSpacingComboBox
       AnchorSideTop.Control = ExtraLineSpacingComboBox
       AnchorSideTop.Side = asrBottom
-      Left = 245
-      Height = 21
-      Top = 60
+      Left = 192
+      Height = 23
+      Top = 64
       Width = 100
       BorderSpacing.Bottom = 6
-      ItemHeight = 13
+      ItemHeight = 15
       Items.Strings = (
         '0'
         '1'
@@ -307,9 +322,9 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideTop.Control = EditorFontSizeSpinEdit
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 21
-      Top = 60
-      Width = 153
+      Height = 23
+      Top = 64
+      Width = 172
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Around = 6
       Caption = 'DisableAntialiasingCheckBox'
@@ -317,12 +332,12 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       TabOrder = 5
     end
   end
-  object DisplayPreview: TSynEdit[2]
+  inline DisplayPreview: TSynEdit
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 216
-    Top = 239
+    Height = 208
+    Top = 247
     Width = 501
     Align = alClient
     BorderSpacing.Top = 6
@@ -334,31 +349,19 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     ParentFont = False
     TabOrder = 2
     BookMarkOptions.Xoffset = 30
-    BookMarkOptions.OnChange = nil
     Gutter.Width = 59
     Gutter.MouseActions = <    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
         ClickCount = ccAny
         ClickDir = cdDown
-        Command = 13
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcOnMainGutterClick
       end    
       item
-        Shift = []
-        ShiftMask = []
         Button = mbRight
-        ClickCount = ccSingle
-        ClickDir = cdUp
-        Command = 12
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcContextMenu
       end>
+    RightGutter.Width = 0
+    RightGutter.MouseActions = <>
     Keystrokes = <    
       item
         Command = ecUp
@@ -682,135 +685,92 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       end>
     MouseActions = <    
       item
-        Shift = []
         ShiftMask = [ssShift, ssAlt]
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 1
+        Command = emcStartSelections
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
         Shift = [ssShift]
         ShiftMask = [ssShift, ssAlt]
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 1
+        Command = emcStartSelections
         MoveCaret = True
         Option = 1
-        Priority = 0
       end    
       item
         Shift = [ssAlt]
         ShiftMask = [ssShift, ssAlt]
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 3
+        Command = emcStartColumnSelections
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
         Shift = [ssShift, ssAlt]
         ShiftMask = [ssShift, ssAlt]
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 3
+        Command = emcStartColumnSelections
         MoveCaret = True
         Option = 1
-        Priority = 0
       end    
       item
-        Shift = []
-        ShiftMask = []
         Button = mbRight
-        ClickCount = ccSingle
-        ClickDir = cdUp
-        Command = 12
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcContextMenu
       end    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
         ClickCount = ccDouble
         ClickDir = cdDown
-        Command = 6
+        Command = emcSelectWord
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
         ClickCount = ccTriple
         ClickDir = cdDown
-        Command = 7
+        Command = emcSelectLine
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
         ClickCount = ccQuad
         ClickDir = cdDown
-        Command = 8
+        Command = emcSelectPara
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
-        Shift = []
-        ShiftMask = []
         Button = mbMiddle
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 10
+        Command = emcPasteSelection
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
         Shift = [ssCtrl]
         ShiftMask = [ssShift, ssAlt, ssCtrl]
-        Button = mbLeft
-        ClickCount = ccSingle
-        ClickDir = cdUp
-        Command = 11
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcMouseLink
       end>
     MouseSelActions = <    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 9
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcStartDragMove
       end>
     Lines.Strings = (
       'DisplayPreview'
     )
+    VisibleSpecialChars = [vscSpace, vscTabAtLast]
     ReadOnly = True
     BracketHighlightStyle = sbhsBoth
-    object TSynGutterPartList
+    BracketMatchColor.Background = clNone
+    BracketMatchColor.Foreground = clNone
+    BracketMatchColor.Style = [fsBold]
+    FoldedCodeColor.Background = clNone
+    FoldedCodeColor.Foreground = clGray
+    FoldedCodeColor.FrameColor = clGray
+    MouseLinkColor.Background = clNone
+    MouseLinkColor.Foreground = clBlue
+    LineHighlightColor.Background = clNone
+    LineHighlightColor.Foreground = clNone
+    inline TSynGutterPartList
       object TSynGutterMarks
-        Width = 23
+        Width = 24
+        MouseActions = <>
       end
       object TSynGutterLineNumber
         Width = 19
@@ -824,35 +784,26 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       end
       object TSynGutterChanges
         Width = 4
+        MouseActions = <>
         ModifiedColor = 59900
         SavedColor = clGreen
       end
       object TSynGutterSeparator
         Width = 2
+        MouseActions = <>
       end
       object TSynGutterCodeFolding
         MouseActions = <        
           item
-            Shift = []
-            ShiftMask = []
             Button = mbRight
-            ClickCount = ccSingle
-            ClickDir = cdUp
-            Command = 16
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcCodeFoldContextMenu
           end        
           item
-            Shift = []
             ShiftMask = [ssShift]
             Button = mbMiddle
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 14
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcCodeFoldCollaps
           end        
           item
             Shift = [ssShift]
@@ -860,58 +811,36 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
             Button = mbMiddle
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 14
-            MoveCaret = False
+            Command = emcCodeFoldCollaps
             Option = 1
-            Priority = 0
           end        
           item
-            Shift = []
-            ShiftMask = []
-            Button = mbLeft
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 0
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcNone
           end>
         MarkupInfo.Background = clNone
         MarkupInfo.Foreground = clGray
         MouseActionsExpanded = <        
           item
-            Shift = []
-            ShiftMask = []
-            Button = mbLeft
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 14
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcCodeFoldCollaps
           end>
         MouseActionsCollapsed = <        
           item
             Shift = [ssCtrl]
             ShiftMask = [ssCtrl]
-            Button = mbLeft
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 15
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcCodeFoldExpand
           end        
           item
-            Shift = []
             ShiftMask = [ssCtrl]
-            Button = mbLeft
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 15
-            MoveCaret = False
+            Command = emcCodeFoldExpand
             Option = 1
-            Priority = 0
           end>
       end
     end

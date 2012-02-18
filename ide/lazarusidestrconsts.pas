@@ -4852,7 +4852,8 @@ resourcestring
     +'directory will be deleted and all its content will be lost.%s%sDelete '
     +'all files in %s%s%s?';
   lisFileExtensionOfPrograms = 'File extension of programs';
-  lisEveryNThLineNumber = 'Every n-th line number:';
+  lisEveryNThLineNumber = 'Every n-th line number';
+  lisShowOverviewGutter = 'Shov overview Gutter';
   lisLink = 'Link:';
   lisShort = 'Short:';
   lisInsertUrlTag = 'Insert url tag';

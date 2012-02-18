@@ -1163,6 +1163,8 @@ begin
         PreviewEdits[a].AfterLoadFromFile;
         PreviewEdits[a].Keystrokes.Clear;
         PreviewEdits[a].MouseActions.Clear;
+        PreviewEdits[a].SetBookMark(1, 1, 2);
+        PreviewEdits[a].SetBookMark(2, 1, 5);
       end;
       UpdateCurrentScheme;
     finally

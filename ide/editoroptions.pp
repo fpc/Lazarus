@@ -1181,6 +1181,7 @@ type
     fVisibleGutter: Boolean;
     fShowLineNumbers: Boolean;
     fShowOnlyLineNumbersMultiplesOf: integer;
+    FShowOverviewGutter: boolean;
     fGutterWidth: Integer;
     FGutterSeparatorIndex: Integer;
     fRightMargin: Integer;
@@ -1401,6 +1402,9 @@ type
   published { use RTTIConf}
     property TabPosition: TTabPosition
       read fTabPosition write fTabPosition default tpTop;
+    // Display
+    property ShowOverviewGutter: boolean
+      read FShowOverviewGutter write FShowOverviewGutter default True;
     // Code Folding
     property ReverseFoldPopUpOrder: Boolean
         read FReverseFoldPopUpOrder write FReverseFoldPopUpOrder default True;
@@ -3673,6 +3677,7 @@ begin
   fEditorFont := SynDefaultFontName;
   fEditorFontSize := SynDefaultFontSize;
   fDisableAntialiasing := DefaultEditorDisableAntiAliasing;
+  FShowOverviewGutter := True;
 
   // Key Mappings
   fKeyMappingScheme := KeyMapSchemeNames[kmsLazarus];
@@ -4642,6 +4647,7 @@ begin
   ASynEdit.Gutter.LineNumberPart.Visible := fShowLineNumbers;
   ASynEdit.Gutter.LineNumberPart(0).ShowOnlyLineNumbersMultiplesOf :=
     fShowOnlyLineNumbersMultiplesOf;
+  ASynEdit.RightGutter.Visible := ShowOverviewGutter;
 
   ASynEdit.Gutter.CodeFoldPart.Visible := FUseCodeFolding;
   if not FUseCodeFolding then

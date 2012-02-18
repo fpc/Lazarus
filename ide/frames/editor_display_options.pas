@@ -28,12 +28,13 @@ uses
   Classes, SysUtils, Graphics, Dialogs, StdCtrls,
   Spin, LCLType, SynEdit, SynEditMouseCmds, EditorOptions, LazarusIDEStrConsts,
   IDEOptionsIntf, editor_general_options, editor_color_options, IDEProcs,
-  SynGutterLineNumber, SynGutter;
+  SynGutterLineNumber, SynGutterLineOverview, SynGutter, SourceSynEditor;
 
 type
   { TEditorDisplayOptionsFrame }
 
   TEditorDisplayOptionsFrame = class(TAbstractIDEOptionsEditor)
+    chkShowOverview: TCheckBox;
     DisableAntialiasingCheckBox: TCheckBox;
     DisplayPreview: TSynEdit;
     EditorFontButton: TButton;
@@ -253,6 +254,7 @@ begin
       if PreviewEdits[a] <> nil then
       begin
         PreviewEdits[a].Gutter.Visible := VisibleGutterCheckBox.Checked;
+        PreviewEdits[a].RightGutter.Visible := chkShowOverview.Checked;
         PreviewEdits[a].Gutter.LineNumberPart.Visible
           := ShowLineNumbersCheckBox.Checked;
         if Assigned(PreviewEdits[a].Gutter.Parts.ByClass[TSynGutterLineNumber, 0]) then
@@ -346,9 +348,31 @@ begin
   ExtraLineSpacingLabel.Caption := dlgExtraLineSpacing;
   DisableAntialiasingCheckBox.Caption := dlgDisableAntialiasing;
   RightMarginColorLink.Caption := dlgColorLink;
+  chkShowOverview.Caption := lisShowOverviewGutter;
 
   with GeneralPage do
     AddPreviewEdit(DisplayPreview);
+
+  with TSynGutterSeparator.Create(DisplayPreview.RightGutter.Parts) do
+    Name := 'DPSynGutterSeparatorR2';
+  with TSynGutterLineOverview.Create(DisplayPreview.RightGutter.Parts) do begin
+    Name := 'DPSynGutterLineOverview1';
+    with TIDESynGutterLOvProviderIDEMarks.Create(Providers) do
+      Priority := 20;
+    with TSynGutterLOvProviderModifiedLines.Create(Providers) do
+      Priority := 9;
+    with TSynGutterLOvProviderCurrentPage.Create(Providers) do
+      Priority := 1;
+    with TIDESynGutterLOvProviderPascal.Create(Providers) do
+      Priority := 0;
+  end;
+  with TSynGutterSeparator.Create(DisplayPreview.RightGutter.Parts) do begin
+    Name := 'DPSynGutterSeparatorR3';
+    AutoSize := False;
+    Width := 1;
+    LineWidth := 0;
+  end;
+
 end;
 
 procedure TEditorDisplayOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -369,6 +393,7 @@ begin
     SetComboBoxText(ExtraCharSpacingComboBox, IntToStr(ExtraCharSpacing),cstCaseInsensitive);
     SetComboBoxText(ExtraLineSpacingComboBox, IntToStr(ExtraLineSpacing),cstCaseInsensitive);
     DisableAntialiasingCheckBox.Checked := DisableAntialiasing;
+    chkShowOverview.Checked := ShowOverviewGutter;
   end;
 
   ShowOnlyLineNumbersMultiplesOfLabel.Enabled := ShowLineNumbersCheckBox.Checked;
@@ -391,6 +416,7 @@ begin
     ExtraCharSpacing := StrToIntDef(ExtraCharSpacingComboBox.Text, ExtraCharSpacing);
     ExtraLineSpacing := StrToIntDef(ExtraLineSpacingComboBox.Text, ExtraLineSpacing);
     DisableAntialiasing := DisableAntialiasingCheckBox.Checked;
+    ShowOverviewGutter := chkShowOverview.Checked;
   end;
 end;
 

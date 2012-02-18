@@ -286,6 +286,7 @@ type
     procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
     procedure BufferChanged(Sender: TObject);
     procedure SetVisible(const AValue : boolean); override;
+    procedure GutterVisibilityChanged; override;
     procedure DoChange(Sender: TObject); override;
   protected
     procedure InvalidateTextLines(AFromLine, AToLine: Integer);
@@ -1258,7 +1259,13 @@ end;
 procedure TSynGutterLineOverview.SetVisible(const AValue: boolean);
 begin
   inherited SetVisible(AValue);
-  FWinControl.Visible := Visible;
+  FWinControl.Visible := Visible and Gutter.Visible;
+end;
+
+procedure TSynGutterLineOverview.GutterVisibilityChanged;
+begin
+  inherited GutterVisibilityChanged;
+  FWinControl.Visible := Visible and Gutter.Visible;
 end;
 
 procedure TSynGutterLineOverview.DoChange(Sender: TObject);
