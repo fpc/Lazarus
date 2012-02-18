@@ -2094,7 +2094,7 @@ begin
       debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter Call="',ExtractCode(ProcStartPos,ProcNameAtom.EndPos,[]),'"']);
       {$ENDIF}
       Params.ContextNode:=Context.Node;
-      Params.Flags:=fdfDefaultForExpressions+[fdfFunctionResult,fdfFindChilds];
+      Params.Flags:=fdfDefaultForExpressions+[fdfFunctionResult,fdfFindChildren];
       ExprType:=FindExpressionResultType(Params,ProcStartPos,ProcNameAtom.StartPos);
       if ExprType.Desc<>xtContext then begin
         debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter Call="',ExtractCode(ProcStartPos,ProcNameAtom.StartPos,[]),'" gives ',ExprTypeToString(ExprType)]);

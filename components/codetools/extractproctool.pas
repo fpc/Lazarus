@@ -1136,7 +1136,7 @@ var
       Params:=TFindDeclarationParams.Create;
       try
         Params.ContextNode:=WithVarNode;
-        Params.Flags:=[fdfExceptionOnNotFound,fdfFunctionResult,fdfFindChilds];
+        Params.Flags:=[fdfExceptionOnNotFound,fdfFunctionResult,fdfFindChildren];
         Cache^.WithVarExpr:=FindExpressionTypeOfTerm(WithVarNode.StartPos,-1,Params,true);
         if (Cache^.WithVarExpr.Desc<>xtContext)
         or (Cache^.WithVarExpr.Context.Node=nil)

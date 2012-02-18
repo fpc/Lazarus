@@ -161,7 +161,7 @@ type
                             //   instead return the variable declaration
     fdfFunctionResult,      // if function is found, return result type
     fdfEnumIdentifier,      // do not resolve enum to its enum type
-    fdfFindChilds,          // search the class of a 'class of', the interface of a unit
+    fdfFindChildren,        // search the class of a 'class of', the interface of a unit
     fdfSkipClassForward,    // when a class forward was found search the class
     
     fdfCollect,             // return every reachable identifier
@@ -1683,7 +1683,7 @@ begin
         if (Node=nil) or (Node.Desc<>ctnIdentifier) then exit;
 
         // search enum type
-        Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInParentNodes,fdfFindChilds];
+        Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInParentNodes,fdfFindChildren];
         Params.SetIdentifier(Self,@Context.Tool.Src[Node.StartPos],nil);
         Params.ContextNode:=Node;
         if not Context.Tool.FindIdentifierInContext(Params) then exit;
@@ -1722,7 +1722,7 @@ begin
       if IsLastProperty then
         Params.Flags:=Params.Flags+[fdfFindVariable]
       else
-        Params.Flags:=Params.Flags-[fdfFindVariable]+[fdfFunctionResult,fdfFindChilds];
+        Params.Flags:=Params.Flags-[fdfFindVariable]+[fdfFunctionResult,fdfFindChildren];
       if not Context.Tool.FindIdentifierInContext(Params) then exit;
       Context.Tool:=Params.NewCodeTool;
       Context.Node:=Params.NewNode;
@@ -2367,7 +2367,7 @@ begin
   ActivateGlobalWriteLock;
   Params:=TFindDeclarationParams.Create;
   try
-    Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChilds];
+    Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChildren];
     FindContext:=FindBaseTypeOfNode(Params,ANode);
     if (FindContext.Node<>nil)
     and ((FindContext.Node.Desc in ([ctnEnumerationType]+AllClasses)))
@@ -3707,7 +3707,7 @@ begin
         Result.Node:=Params.NewNode;
         Params.Load(OldInput,true);
       end else
-      if (Result.Node.Desc=ctnClassOfType) and (fdfFindChilds in Params.Flags)
+      if (Result.Node.Desc=ctnClassOfType) and (fdfFindChildren in Params.Flags)
       then begin
         // this is a 'class of' type
         // -> search the real class
@@ -4043,7 +4043,7 @@ begin
               Params.ContextNode:=WithNode;
               Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInAncestors,
                 fdfSearchInParentNodes,fdfFunctionResult,fdfIgnoreCurContextNode,
-                fdfFindChilds];
+                fdfFindChildren];
               ExprType:=FindExpressionResultType(Params,WithNode.StartPos,-1);
               if ExprType.Desc=xtContext then
                 AddFindContext(ListOfPFindContext,ExprType.Context);
@@ -4263,7 +4263,7 @@ begin
   // search ancestor class context
   if FindClassContext then begin
     AncestorNode:=Params.NewNode;
-    Params.Flags:=Params.Flags+[fdfFindChilds];
+    Params.Flags:=Params.Flags+[fdfFindChildren];
     AncestorContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
                                                            AncestorNode);
     Params.SetResult(AncestorContext);
@@ -5170,7 +5170,7 @@ begin
       Params.Save(OldInput);
       Params.Flags:=[fdfIgnoreCurContextNode,fdfSearchInParentNodes]
                     +(fdfGlobals*Params.Flags)
-                    +[fdfExceptionOnNotFound,fdfIgnoreUsedUnits,fdfFindChilds]
+                    +[fdfExceptionOnNotFound,fdfIgnoreUsedUnits,fdfFindChildren]
                     -[fdfTopLvlResolving];
       Params.ContextNode:=ProcContextNode;
       Params.SetIdentifier(Self,@Src[ClassNameAtom.StartPos],nil);
@@ -5268,7 +5268,7 @@ begin
     FindIdentifierInContext(Params);
     if FindClassContext then begin
       // parse class and return class node
-      Params.Flags:=Params.Flags+[fdfFindChilds];
+      Params.Flags:=Params.Flags+[fdfFindChildren];
       ClassContext:=FindBaseTypeOfNode(Params,Params.NewNode);
       if (ClassContext.Node=nil)
       or (not (ClassContext.Node.Desc in AllClasses)) then begin
@@ -5388,7 +5388,7 @@ begin
   // search ancestor class context
   if FindClassContext then begin
     AncestorNode:=Params.NewNode;
-    Params.Flags:=Params.Flags+[fdfFindChilds];
+    Params.Flags:=Params.Flags+[fdfFindChildren];
     AncestorContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
                                                            AncestorNode);
     Params.SetResult(AncestorContext);
@@ -5532,7 +5532,7 @@ begin
   Params.Save(OldInput);
   Params.ContextNode:=WithVarNode;
   Params.Flags:=Params.Flags*fdfGlobals
-                +[fdfExceptionOnNotFound,fdfFunctionResult,fdfFindChilds];
+                +[fdfExceptionOnNotFound,fdfFunctionResult,fdfFindChildren];
   OldExtractedOperand:=Params.ExtractedOperand;
   WithVarExpr:=FindExpressionTypeOfTerm(WithVarNode.StartPos,-1,Params,true);
   if fdfExtractOperand in Params.Flags then
@@ -6791,7 +6791,7 @@ var
     if AtEnd then CurAliasType:=AliasType;
 
     // find base type
-    Params.Flags:=Params.Flags+[fdfEnumIdentifier]-[fdfFunctionResult,fdfFindChilds];
+    Params.Flags:=Params.Flags+[fdfEnumIdentifier]-[fdfFunctionResult,fdfFindChildren];
     {$IFDEF ShowExprEval}
     DebugLn(['  FindExpressionTypeOfTerm ResolveBaseTypeOfIdentifier BEFORE ExprType=',ExprTypeToString(ExprType),' Alias=',CurAliasType<>nil]);
     {$ENDIF}
@@ -6888,7 +6888,7 @@ var
               end;
             end else begin
               OldFlags:=Params.Flags;
-              Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChilds];
+              Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChildren];
               ExprType.Desc:=xtContext;
               ExprType.Context:=FindBaseTypeOfNode(Params,ProcNode);
               Params.Flags:=OldFlags;
@@ -7033,7 +7033,7 @@ var
     else if (ExprType.Context.Node.Desc=ctnClassOfType) then begin
       // 'class of' => jump to the class
       ExprType.Desc:=xtContext;
-      Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChilds];
+      Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChildren];
       ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
                                               ExprType.Context.Node.FirstChild);
     end
@@ -7045,7 +7045,7 @@ var
       // left side of expression has defined a special context
       // => this '.' is a dereference
       ExprType.Desc:=xtContext;
-      Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChilds];
+      Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChildren];
       ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
                                               ExprType.Context.Node.FirstChild);
     end;
@@ -7208,7 +7208,7 @@ var
           // => search 'TVarRec'
           Params.Save(OldInput);
           Params.Flags:=[fdfSearchInParentNodes,fdfIgnoreCurContextNode,
-                         fdfExceptionOnNotFound,fdfFindChilds];
+                         fdfExceptionOnNotFound,fdfFindChildren];
           // special identifier for TVarRec
           Params.SetIdentifier(Self,'tvarrec',nil);
           Params.ContextNode:=ExprType.Context.Node;
@@ -7403,7 +7403,7 @@ var
     ExprType.Context:=CreateFindContext(Params);
     if (not HasIdentifier) then begin
       // the keyword 'inherited' is the last atom
-      if StartFlags*[fdfFindChilds,fdfFindVariable]=[fdfFindVariable] then begin
+      if StartFlags*[fdfFindChildren,fdfFindVariable]=[fdfFindVariable] then begin
         // for example: inherited; search the method, not the context
         DefProcNode:=FindCorrespondingProcNode(ProcNode);
         if DefProcNode=nil then begin
