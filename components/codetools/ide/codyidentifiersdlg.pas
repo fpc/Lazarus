@@ -773,6 +773,7 @@ end;
 procedure TCodyIdentifiersDlg.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
+  IdleConnected:=false;
   CodyOptions.PreferImplementationUsesSection:=
                                         AddToImplementationUsesCheckBox.Checked;
   FreeAndNil(FItems);
