@@ -10360,10 +10360,12 @@ begin
     end;
   end else
   begin
-    if (ViewStyle >= 0) and ((QEvent_type(Event) = QEventMouseButtonPress) or
+    if ((ViewStyle >= 0) or ((QtVersionMajor = 4) and (QtVersionMinor >= 7))) and
+    ((QEvent_type(Event) = QEventMouseButtonPress) or
     (QEvent_type(Event) = QEventMouseButtonRelease)) then
       {eat mouse button events when we are TListView class.
-       Such events are handled by itemViewportEventFilter.}
+       Such events are handled by itemViewportEventFilter.
+       With Qt-4.7 TListBox and TCheckListBox are also affected. issue #21318}
     else
       Result:=inherited EventFilter(Sender, Event);
   end;
@@ -10380,13 +10382,20 @@ var
   var
     AEvent: QEventH;
   begin
-    AEvent := QMouseEvent_create(QEvent_type(Event),
-      QMouseEvent_pos(QMouseEventH(Event)),
-      QMouseEvent_globalPos(QMouseEventH(Event)),
-      QMouseEvent_button(QMouseEventH(Event)),
-      QMouseEvent_buttons(QMouseEventH(Event)),
-      QInputEvent_modifiers(QInputEventH(Event)));
-    QCoreApplication_postEvent(Widget, AEvent, 1);
+    //issue #21318
+    if (QtVersionMajor = 4) and (QtVersionMinor >=7) then
+    begin
+      SlotMouse(Widget, Event);
+    end else
+    begin
+      AEvent := QMouseEvent_create(QEvent_type(Event),
+        QMouseEvent_pos(QMouseEventH(Event)),
+        QMouseEvent_globalPos(QMouseEventH(Event)),
+        QMouseEvent_button(QMouseEventH(Event)),
+        QMouseEvent_buttons(QMouseEventH(Event)),
+        QInputEvent_modifiers(QInputEventH(Event)));
+        QCoreApplication_postEvent(Widget, AEvent, 1);
+    end;
   end;
 
 begin
@@ -11076,6 +11085,9 @@ end;
 
 function TQtCheckListBox.itemViewViewportEventFilter(Sender: QObjectH;
   Event: QEventH): Boolean; cdecl;
+var
+  MousePos: TQtPoint;
+  Item: QListWidgetItemH;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -11086,7 +11098,27 @@ begin
       QEventMouseButtonPress,
       QEventMouseButtonDblClick:
         begin
-          Result := inherited itemViewViewportEventFilter(Sender, Event);
+          // issue #21318
+          if (QtVersionMajor = 4) and (QtVersionMinor >=7) then
+          begin
+            MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+            Item := itemAt(MousePos.x, MousePos.y);
+            if QEvent_Type(Event) = QEventMouseButtonDblClick then
+            begin
+              SlotMouse(Widget, Event);
+              QEvent_ignore(Event);
+              // qt capture locks for some reason under qt-4.7.4 ?!?
+              // when we dbl click on viewport without checkable items
+              if (Item = nil) and (Sender = QWidget_mouseGrabber) then
+                QWidget_releaseMouse(QWidgetH(Sender));
+            end else
+            begin
+              MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+              if Item = nil then
+                Result := inherited itemViewViewportEventFilter(Sender, Event);
+            end;
+          end else
+            Result := inherited itemViewViewportEventFilter(Sender, Event);
         end;
       else
       begin
@@ -11112,8 +11144,10 @@ var
   APos: TQtPoint;
   AMouseEvent: QMouseEventH;
 begin
+
   if InUpdate or not GetVisible then
     exit;
+
   // fires only when checkBox clicked.
   QCursor_pos(@AGlobalPos);
   QWidget_mapFromGlobal(Widget, @APos, @AGlobalPos);
@@ -11164,7 +11198,8 @@ begin
   if (AIndex >= 0) and (AIndex < rowCount) then
   begin
     AItem := QListWidget_item(QListWidgetH(Widget), AIndex);
-    Result := QListWidgetItem_checkState(AItem);
+    if AItem <> nil then
+      Result := QListWidgetItem_checkState(AItem);
   end;
 end;
 
@@ -11176,8 +11211,11 @@ begin
   if (AIndex >= 0) and (AIndex < rowCount) then
   begin
     AItem := QListWidget_item(QListWidgetH(Widget), AIndex);
-    QListWidgetItem_setCheckState(AItem, AValue);
-    SetItemLastCheckState(AItem);
+    if AItem <> nil then
+    begin
+      QListWidgetItem_setCheckState(AItem, AValue);
+      SetItemLastCheckState(AItem);
+    end;
   end;
 end;
 
