@@ -738,7 +738,7 @@ end;
 
 procedure TPackageEditorForm.FilesTreeViewKeyPress(Sender: TObject; var Key: Char);
 begin
-  if Key = #13 then
+  if Key = char(VK_RETURN) then
     OpenFileMenuItemClick(Self);
 end;
 
@@ -1295,7 +1295,6 @@ begin
 
   // Buttons on FilterPanel
   OpenButton.LoadGlyphFromLazarusResource('laz_open');
-  OpenButton.Caption:='';
   OpenButton.Hint:=lisOpenFile2;
   SortAlphabeticallyButton.Hint:=lisPESortFilesAlphabetically;
   SortAlphabeticallyButton.LoadGlyphFromLazarusResource('pkg_sortalphabetically');
