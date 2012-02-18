@@ -230,6 +230,10 @@ const
   ecPrevBookmark            = ecFirstLazarus + 382;
   ecNextBookmark            = ecFirstLazarus + 383;
 
+  // Macro
+  ecSynMacroRecord          = ecFirstLazarus + 390;
+  ecSynMacroPlay            = ecFirstLazarus + 391;
+
   // run menu
   ecCompile                 = ecFirstLazarus + 400;
   ecBuild                   = ecFirstLazarus + 401;

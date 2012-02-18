@@ -297,7 +297,7 @@ const
 // If ask by SynEdit they add an offset
 
 // Return the next offset
-function AllocatePluginMouseRange(Count: Integer): integer;
+function AllocatePluginMouseRange(Count: Integer; OffsetOnly: Boolean = False): integer;
 
 function MouseCommandName(emc: TSynEditorMouseCommand): String;
 function MouseCommandConfigName(emc: TSynEditorMouseCommand): String;
@@ -348,12 +348,14 @@ const
 
   );
 
-function AllocatePluginMouseRange(Count: Integer): integer;
+function AllocatePluginMouseRange(Count: Integer; OffsetOnly: Boolean = False): integer;
 const
   CurOffset : integer = 0;
 begin
   Result := CurOffset;
   inc(CurOffset, Count);
+  if not OffsetOnly then
+    inc(Result, emcPluginFirst);
 end;
 
 function MouseCommandName(emc: TSynEditorMouseCommand): String;

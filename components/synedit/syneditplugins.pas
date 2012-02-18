@@ -41,26 +41,8 @@ unit SynEditPlugins;
 interface
 
 uses
-  Classes,
-{$IFDEF SYN_CLX}
-  Qt,
-  Types,
-  QMenus,
-{$ELSE}
-  {$IFDEF SYN_LAZARUS}
-  {$IFDEF USE_UTF8BIDI_LCL}
-  utf8bidi,
-  {$ENDIF}
-  LCLIntf,
-  {$ELSE}
-  Windows,
-  {$ENDIF}
-  Menus,
-{$ENDIF}
-  SynEdit,
-  SynEditKeyCmds,
-  Controls,
-  LCLType;
+  Classes, Menus, LCLType, SysUtils,
+  SynEdit, SynEditKeyCmds, SynEditTypes, SynEditStrConst;
 
 type
 
@@ -76,10 +58,10 @@ type
     procedure SetEditor(const AValue: TCustomSynEdit); override;
     procedure DoEditorDestroyed(const AValue: TCustomSynEdit); override;
     function  IndexOfEditor(const AValue: TCustomSynEdit): integer;
-    function  AddEditor(AValue: TCustomSynEdit): integer;
-    function  RemoveEditor(AValue: TCustomSynEdit): integer;
   public
     destructor Destroy; override;
+    function  AddEditor(AValue: TCustomSynEdit): integer;
+    function  RemoveEditor(AValue: TCustomSynEdit): integer;
     property Editors[aIndex: integer]: TCustomSynEdit read GetEditors;
     property EditorCount: integer read GetEditorCount;
   end;
@@ -89,7 +71,7 @@ type
   TAbstractSynHookerPlugin = class(TAbstractSynPlugin)
   protected
     procedure HookEditor(aEditor: TCustomSynEdit; aCommandID: TSynEditorCommand;
-      aOldShortCut, aNewShortCut: TShortCut);
+      aOldShortCut, aNewShortCut: TShortCut; AFlags: THookedCommandFlags = [hcfPreExec, hcfPostExec]);
     procedure UnHookEditor(aEditor: TCustomSynEdit;
       aCommandID: TSynEditorCommand; aShortCut: TShortCut);
     procedure OnCommand(Sender: TObject; AfterProcessing: boolean;
@@ -151,27 +133,14 @@ type
     property CurrentString: String read fCurrentString write SetCurrentString;
   end deprecated;
 
-function NewPluginCommand: TSynEditorCommand; deprecated;
+function NewPluginCommand: TSynEditorCommand; deprecated; // Use AllocatePluginKeyRange
 procedure ReleasePluginCommand(aCmd: TSynEditorCommand); deprecated;
 
 implementation
 
-uses
-  SynEditTypes,
-  SysUtils,
-{$IFDEF SYN_CLX}
-  QForms,
-{$ELSE}
-  Forms,
-{$ENDIF}
-  {$IFNDEF SYN_LAZARUS}
-  SynEditMiscProcs,
-  {$ENDIF}
-  SynEditStrConst;
-
 function NewPluginCommand: TSynEditorCommand;
 begin
-  Result := ecPluginFirst + AllocatePluginKeyRange(1);
+  Result := AllocatePluginKeyRange(1);
 end;
 
 procedure ReleasePluginCommand(aCmd: TSynEditorCommand);
@@ -286,7 +255,8 @@ end;
 { TAbstractSynHookerPlugin }
 
 procedure TAbstractSynHookerPlugin.HookEditor(aEditor: TCustomSynEdit;
-  aCommandID: TSynEditorCommand; aOldShortCut, aNewShortCut: TShortCut);
+  aCommandID: TSynEditorCommand; aOldShortCut, aNewShortCut: TShortCut;
+  AFlags: THookedCommandFlags = [hcfPreExec, hcfPostExec]);
 var
   iIndex: integer;
   iKeystroke: TSynEditKeyStroke;
@@ -323,7 +293,9 @@ begin
     raise;
   end;
   iKeystroke.Command := aCommandID;
-  aEditor.RegisterCommandHandler( {$IFDEF FPC}@{$ENDIF}OnCommand, Self );
+
+  if AFlags <> [] then
+    aEditor.RegisterCommandHandler( {$IFDEF FPC}@{$ENDIF}OnCommand, Self, AFlags);
 end;
 
 procedure TAbstractSynHookerPlugin.UnHookEditor(aEditor: TCustomSynEdit;
@@ -366,7 +338,7 @@ constructor TAbstractSynSingleHookPlugin.Create(aOwner: TComponent);
 begin
   inherited;
   // TODO: subclasses should implement per class, not per instance
-  fCommandID := ecPluginFirst + AllocatePluginKeyRange(1);
+  fCommandID := AllocatePluginKeyRange(1);
   fShortCut := DefaultShortCut;
 end;
 

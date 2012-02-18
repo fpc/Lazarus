@@ -282,7 +282,7 @@ const
 // If ask by SynEdit they add an offset
 
 // Return the next offset
-function AllocatePluginKeyRange(Count: Integer): integer;
+function AllocatePluginKeyRange(Count: Integer; OffsetOnly: Boolean = False): integer;
 
 type
   ESynKeyError = class(Exception);
@@ -693,12 +693,14 @@ begin
 end;
 
 
-function AllocatePluginKeyRange(Count: Integer): integer;
+function AllocatePluginKeyRange(Count: Integer; OffsetOnly: Boolean): integer;
 const
   CurOffset : integer = 0;
 begin
   Result := CurOffset;
   inc(CurOffset, Count);
+  if not OffsetOnly then
+    inc(Result, ecPluginFirst);
 end;
 
 function EditorCommandToDescrString(Cmd: TSynEditorCommand): string;

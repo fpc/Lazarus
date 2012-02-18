@@ -2376,6 +2376,7 @@ resourcestring
   ueFileROText2='" is not writable.';
   ueModified='Modified';
   ueLocked='Locked';
+  ueMacroRecording = 'Recording';
   uepReadonly= 'Readonly';
   uepIns='INS';
   uepOvr='OVR';
@@ -2736,6 +2737,10 @@ resourcestring
   srkmecFindOverloads             = 'Find Overloads';
   srkmecFindOverloadsCapt         = 'Find Overloads ...';
 
+  // Macro edit
+  srkmecSynMacroRecord            = 'Record Macro';
+  srkmecSynMacroPlay              = 'Play Macro';
+
   //Plugin template Edit
   srkmecSynPTmplEdNextCell           = 'Next Cell';
   srkmecSynPTmplEdNextCellSel        = 'Next Cell (all selected)';
@@ -2818,6 +2823,7 @@ resourcestring
   srkmCatFold           = 'Text folding commands';
   lisKMSetFreeBookmark = 'Set free Bookmark';
   srkmCatCodeTools      = 'CodeTools commands';
+  srkmCatMacroRecording = 'Macros';
   srkmCatTemplateEdit   = 'Template Editing';
   srkmCatTemplateEditOff= 'Template Editing (not in Cell)';
   srkmCatSyncroEdit     = 'Syncron Editing';

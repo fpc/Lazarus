@@ -639,6 +639,10 @@ begin
     ecDesignerForwardOne      : Result:= lisDsgOrderForwardOne;
     ecDesignerBackOne         : Result:= lisDsgOrderBackOne;
 
+    // macro
+    ecSynMacroRecord          : Result:= srkmecSynMacroRecord;
+    ecSynMacroPlay            : Result:= srkmecSynMacroPlay;
+
     // Edit template
     ecIdePTmplEdNextCell:           Result := srkmecSynPTmplEdNextCell;
     ecIdePTmplEdNextCellSel:        Result := srkmecSynPTmplEdNextCellSel;
@@ -1215,6 +1219,10 @@ begin
   ecDesignerForwardOne:  SetSingle(VK_PRIOR,[ssCtrl]);
   ecDesignerBackOne:     SetSingle(VK_NEXT,[ssCtrl]);
 
+  // macro
+  ecSynMacroRecord:      SetSingle(VK_R,[ssShift, ssCtrl]);
+  ecSynMacroPlay:        SetSingle(VK_P,[ssShift, ssCtrl]);
+
   ecIdePTmplEdNextCell:         SetSingle(VK_RIGHT,[ssCtrl]);
   ecIdePTmplEdNextCellSel:      SetSingle(VK_TAB,[]);
   ecIdePTmplEdNextCellRotate:   SetSingle(VK_UNKNOWN,[]);
@@ -1634,6 +1642,10 @@ begin
   ecDesignerMoveToBack:  SetSingle(VK_NEXT,[ssShift]);
   ecDesignerForwardOne:  SetSingle(VK_PRIOR,[ssCtrl]);
   ecDesignerBackOne:     SetSingle(VK_NEXT,[ssCtrl]);
+
+  // macro
+  ecSynMacroRecord:      SetSingle(VK_R,[ssShift, ssCtrl]);
+  ecSynMacroPlay:        SetSingle(VK_P,[ssShift, ssCtrl]);
 
   // Edit template
   ecIdePTmplEdNextCell:         SetSingle(VK_RIGHT,[ssCtrl]);
@@ -2240,6 +2252,10 @@ begin
   ecDesignerForwardOne:  SetSingle(VK_PRIOR,[ssMeta]);
   ecDesignerBackOne:     SetSingle(VK_NEXT,[ssMeta]);
 
+  // macro
+  ecSynMacroRecord:      SetSingle(VK_R,[ssShift, ssCtrl]);
+  ecSynMacroPlay:        SetSingle(VK_P,[ssShift, ssCtrl]);
+
   // Edit template
   ecIdePTmplEdNextCell:         SetSingle(VK_RIGHT,[ssCtrl]);
   ecIdePTmplEdNextCellSel:      SetSingle(VK_TAB,[]);
@@ -2607,6 +2623,11 @@ begin
   AddDefault(C, 'Add unit to uses section', lisUseUnit, ecUseUnit);
   AddDefault(C, 'Find overloads', srkmecFindOverloads, ecFindOverloads);
   AddDefault(C, 'Make resource string', srkmecMakeResourceString, ecMakeResourceString);
+
+  // Macro editing
+  C:=Categories[AddCategory('MacroRecording', srkmCatMacroRecording, IDECmdScopeSrcEditOnly)];
+  AddDefault(C, 'Record Macro', srkmecSynMacroRecord, ecSynMacroRecord);
+  AddDefault(C, 'Play Macro', srkmecSynMacroPlay, ecSynMacroPlay);
 
   // Template editing
   C:=Categories[AddCategory('Edit Template', srkmCatTemplateEdit, IDECmdScopeSrcEditOnlyTmplEdit)];

@@ -41,37 +41,10 @@ unit SynMacroRecorder;
 interface
 
 uses
-  Classes,
-  SynEdit,
-  SynEditKeyCmds,  //js 06-04-2002 got consts out here and qconsts in
-{$IFDEF SYN_CLX}
-  QConsts,
-  QStdCtrls,
-  QControls,
-  Qt,
-  Types,
-  QGraphics,
-  QMenus,
-{$ELSE}
-  Controls,
-  {$IFDEF SYN_LAZARUS}
-  {$IFDEF USE_UTF8BIDI_LCL}
-  utf8bidi,
-  {$ENDIF}
-  FileUtil, Types, LCLIntf, LCLType,
-  {$ELSE}
-  Windows, Messages,
-  {$ENDIF}
-  Graphics,
-  Menus,
-{$ENDIF}
-  SynEditPlugins;
+  Classes, SysUtils, FileUtil, Types, LCLType, Menus,
+  SynEdit, SynEditKeyCmds, SynEditPlugins;
 
-{$IFDEF SYN_COMPILER_3_UP}
 resourcestring
-{$ELSE}
-const
-{$ENDIF}
   sCannotRecord = 'Cannot record macro when recording';
   sCannotPlay = 'Cannot playback macro when recording';
   sCannotPause = 'Can only pause when recording';
@@ -89,7 +62,7 @@ type
   public
     constructor Create; {$IFNDEF FPC}virtual;{$ENDIF}
     procedure Initialize(aCmd: TSynEditorCommand;
-      {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
+      const aChar: TUTF8Char;
       aData: Pointer);  virtual; abstract;
     { the CommandID must not be read inside LoadFromStream/SaveToStream. It's read by the
     MacroRecorder component to decide which MacroEvent class to instanciate }
@@ -107,7 +80,7 @@ type
     procedure InitEventParameters(aStr : string); override;
   public
     procedure Initialize(aCmd: TSynEditorCommand;
-      {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
+      const aChar: TUTF8Char;
       aData: Pointer); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
@@ -118,22 +91,18 @@ type
 
   TSynCharEvent = class(TSynMacroEvent)
   protected
-    fKey: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+    fKey: TUTF8Char;
     function GetAsString : string; override;
     procedure InitEventParameters(aStr : string); override;
   public
     procedure Initialize(aCmd: TSynEditorCommand;
-      {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
+      const aChar: TUTF8Char;
       aData: Pointer); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
     procedure Playback(aEditor: TCustomSynEdit); override;
   public
-    {$IFDEF SYN_LAZARUS}
     property Key: TUTF8Char read fKey write fKey;
-    {$ELSE}
-    property Key: Char read fKey write fKey;
-    {$ENDIF}
   end;
 
   TSynStringEvent = class(TSynMacroEvent)
@@ -143,7 +112,7 @@ type
     procedure InitEventParameters(aStr : string); override;
   public
     procedure Initialize(aCmd: TSynEditorCommand;
-      {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
+      const aChar: TUTF8Char;
       aData: Pointer); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
@@ -159,7 +128,7 @@ type
     procedure InitEventParameters(aStr : string); override;
   public
     procedure Initialize(aCmd: TSynEditorCommand;
-      {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
+      const aChar: TUTF8Char;
       aData: Pointer); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
@@ -173,7 +142,7 @@ type
     fData: Pointer;
   public
     procedure Initialize(aCmd: TSynEditorCommand;
-      {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
+      const aChar: TUTF8Char;
       aData: Pointer); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
@@ -195,21 +164,26 @@ type
 
   TCustomSynMacroRecorder = class(TAbstractSynHookerPlugin)
   private
+    fCommandIDs: array [TSynMacroCommand] of TSynEditorCommand;
+    fCommandIDUserSet: array [TSynMacroCommand] of Boolean;
     fShortCuts: array [TSynMacroCommand] of TShortCut;
     fOnStateChange: TNotifyEvent;
     fOnUserCommand: TSynUserCommandEvent;
     fMacroName: string;
     fSaveMarkerPos: boolean;
+    FStartPlayBack: boolean;
     function GetCommandIDs(Index: integer): TSynEditorCommand;
     function GetEvent(aIndex: integer): TSynMacroEvent;
     function GetEventCount: integer;
     function GetAsString: string;
     procedure SetAsString(const Value: string);
+    procedure SetCommandIDs(AIndex: Integer; AValue: TSynEditorCommand);
+    procedure HookEditorCmd(ACmd: TSynMacroCommand; AnOldShortCut: TShortCut = 0);
+    procedure UnHookEditorCmd(ACmd: TSynMacroCommand);
   protected
     fCurrentEditor: TCustomSynEdit;
     fState: TSynMacroState;
     fEvents: TList;
-    fCommandIDs: array [TSynMacroCommand] of TSynEditorCommand;
     procedure SetShortCut(const Index: Integer; const Value: TShortCut);
     function GetIsEmpty: boolean;
     procedure StateChanged;
@@ -217,12 +191,24 @@ type
     procedure DoRemoveEditor(aEditor: TCustomSynEdit); override;
     procedure OnCommand(Sender: TObject; AfterProcessing: boolean;
       var Handled: boolean; var Command: TSynEditorCommand;
-      var aChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+      var aChar: TUTF8Char;
       Data: pointer; HandlerData: pointer); override;
+    // hcfInit for recording, so we get the unmodified command
+    procedure OnPreCommand(Sender: TObject; AfterProcessing: boolean;
+      var Handled: boolean; var Command: TSynEditorCommand;
+      var aChar: TUTF8Char;
+      Data: pointer; HandlerData: pointer);
+    // hcfFinish for playback, so there are no locks.
+    // Locks interfere with selection (locked caret, no callback to selection)
+    // and undo, does not work insid an UndoBlock
+    procedure OnFinishCommand(Sender: TObject; AfterProcessing: boolean;
+      var Handled: boolean; var Command: TSynEditorCommand;
+      var aChar: TUTF8Char;
+      Data: pointer; HandlerData: pointer);
     function CreateMacroEvent(aCmd: TSynEditorCommand): TSynMacroEvent;
   protected
-    property RecordCommandID: TSynEditorCommand index ord(mcRecord) read GetCommandIDs;
-    property PlaybackCommandID: TSynEditorCommand index ord(mcPlayback) read GetCommandIDs;
+    property RecordCommandID: TSynEditorCommand index ord(mcRecord) read GetCommandIDs write SetCommandIDs;
+    property PlaybackCommandID: TSynEditorCommand index ord(mcPlayback) read GetCommandIDs write SetCommandIDs;
     function GetShortCuts(Cmd: integer): TShortCut;
   public
     constructor Create(aOwner: TComponent); override;
@@ -249,6 +235,7 @@ type
     procedure SaveToFile(aFilename : string);
     property EventCount: integer read GetEventCount;
     property Events[aIndex: integer]: TSynMacroEvent read GetEvent;
+    property CurrentEditor: TCustomSynEdit read fCurrentEditor; // while recording
     property RecordShortCut: TShortCut index Ord(mcRecord)
       read GetShortCuts write SetShortCut;
     property PlaybackShortCut: TShortCut index Ord(mcPlayback)
@@ -263,6 +250,9 @@ type
   end;
 
   TSynMacroRecorder = class(TCustomSynMacroRecorder)
+  public
+    property RecordCommandID;
+    property PlaybackCommandID;
   published
     property SaveMarkerPos;
     property RecordShortCut;
@@ -274,25 +264,9 @@ type
 
 implementation
 
-uses
-{$IFNDEF SYN_LAZARUS}
-  SynEditMiscProcs,
-  SynEditTypes,
-{$ENDIF}
-{$IFDEF SYN_CLX}
-  QForms,
-{$ELSE}
-  Forms,
-{$IFDEF SYN_COMPILER_6_UP}
-  RTLConsts,
-{$ENDIF}
-{$ENDIF}
-  SysUtils;
-
 { TSynDataEvent }
 
-procedure TSynDataEvent.Initialize(aCmd: TSynEditorCommand;
-  {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
+procedure TSynDataEvent.Initialize(aCmd: TSynEditorCommand; const aChar: TUTF8Char;
   aData: Pointer);
 begin
   fCommand := aCmd;
@@ -350,15 +324,10 @@ constructor TCustomSynMacroRecorder.Create(aOwner: TComponent);
 begin
   inherited;
   fMacroName := 'unnamed';
-  fCommandIDs[mcRecord] := NewPluginCommand;
-  fCommandIDs[mcPlayback] := NewPluginCommand;
-  {$IFDEF SYN_CLX}  //js 06-04-2002 not only for linux, should also use qmenus when in clx for windows
-  fShortCuts[mcRecord] := QMenus.ShortCut( Ord('R'), [ssCtrl, ssShift] );
-  fShortCuts[mcPlayback] := QMenus.ShortCut( Ord('P'), [ssCtrl, ssShift] );
-  {$ELSE}
+  fCommandIDs[mcRecord] := ecNone;
+  fCommandIDs[mcPlayback] := ecNone;
   fShortCuts[mcRecord] := Menus.ShortCut( Ord('R'), [ssCtrl, ssShift] );
   fShortCuts[mcPlayback] := Menus.ShortCut( Ord('P'), [ssCtrl, ssShift] );
-  {$ENDIF}
 end;
 
 function TCustomSynMacroRecorder.CreateMacroEvent(aCmd: TSynEditorCommand): TSynMacroEvent;
@@ -409,21 +378,33 @@ end;
 destructor TCustomSynMacroRecorder.Destroy;
 begin
   Clear;
+  SetCommandIDs(ord(mcRecord), ecNone);
+  SetCommandIDs(ord(mcPlayback), ecNone);
   inherited;
-  ReleasePluginCommand( PlaybackCommandID );
-  ReleasePluginCommand( RecordCommandID );
 end;
 
 procedure TCustomSynMacroRecorder.DoAddEditor(aEditor: TCustomSynEdit);
 begin
-  HookEditor( aEditor, RecordCommandID, 0, RecordShortCut );
-  HookEditor( aEditor, PlaybackCommandID, 0, PlaybackShortCut );
+  if (RecordCommandID <> ecNone) and (RecordShortCut <> 0) then
+    HookEditor( aEditor, RecordCommandID, 0, RecordShortCut, []);
+  if (PlaybackCommandID <> ecNone) and (PlaybackShortCut <> 0) then
+    HookEditor( aEditor, PlaybackCommandID, 0, PlaybackShortCut, []);
+
+  aEditor.RegisterCommandHandler( {$IFDEF FPC}@{$ENDIF}OnCommand, Self, [hcfPreExec]);
+  aEditor.RegisterCommandHandler( {$IFDEF FPC}@{$ENDIF}OnPreCommand, Self, [hcfInit]);
+  aEditor.RegisterCommandHandler( {$IFDEF FPC}@{$ENDIF}OnFinishCommand, Self, [hcfFinish]);
 end;
 
 procedure TCustomSynMacroRecorder.DoRemoveEditor(aEditor: TCustomSynEdit);
 begin
-  UnHookEditor( aEditor, RecordCommandID, RecordShortCut );
-  UnHookEditor( aEditor, PlaybackCommandID, PlaybackShortCut );
+  if RecordCommandID <> ecNone then
+    UnHookEditor( aEditor, RecordCommandID, RecordShortCut );
+  if PlaybackCommandID <> ecNone then
+    UnHookEditor( aEditor, PlaybackCommandID, PlaybackShortCut );
+
+  aEditor.UnregisterCommandHandler( {$IFDEF FPC}@{$ENDIF}OnCommand);
+  aEditor.UnregisterCommandHandler( {$IFDEF FPC}@{$ENDIF}OnPreCommand);
+  aEditor.UnregisterCommandHandler( {$IFDEF FPC}@{$ENDIF}OnFinishCommand);
 end;
 
 procedure TCustomSynMacroRecorder.Error(const aMsg: String);
@@ -440,6 +421,11 @@ function TCustomSynMacroRecorder.GetCommandIDs(Index: integer
   ): TSynEditorCommand;
 begin
   Result:=fCommandIDs[TSynMacroCommand(Index)];
+  if Result = ecNone then begin
+    Result := AllocatePluginKeyRange(1);
+    fCommandIDs[TSynMacroCommand(Index)] := Result;
+    fCommandIDUserSet[TSynMacroCommand(Index)] := False;
+  end;
 end;
 
 function TCustomSynMacroRecorder.GetEventCount: integer;
@@ -508,63 +494,74 @@ begin
   end;
 end;
 
-procedure TCustomSynMacroRecorder.OnCommand(Sender: TObject;
-  AfterProcessing: boolean; var Handled: boolean;
-  var Command: TSynEditorCommand;
-  var aChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF}; Data,
+procedure TCustomSynMacroRecorder.OnCommand(Sender: TObject; AfterProcessing: boolean;
+  var Handled: boolean; var Command: TSynEditorCommand; var aChar: TUTF8Char; Data: pointer;
+  HandlerData: pointer);
+begin
+  FStartPlayBack := False;
+  case State of
+    msStopped:
+      if Command = RecordCommandID then
+      begin
+        RecordMacro( TCustomSynEdit( Sender ) );
+        Handled := True;
+      end
+      else if Command = PlaybackCommandID then
+      begin
+        FStartPlayBack := True;
+        Handled := True;
+      end;
+    msPlaying:
+      ;
+    msPaused:
+      if Command = PlaybackCommandID then
+      begin
+        Resume;
+        Handled := True;
+      end;
+    msRecording:
+      if Command = PlaybackCommandID then
+      begin
+        Pause;
+        Handled := True;
+      end
+      else if Command = RecordCommandID then
+      begin
+        Stop;
+        Handled := True;
+      end;
+  end;
+end;
+
+procedure TCustomSynMacroRecorder.OnPreCommand(Sender: TObject; AfterProcessing: boolean;
+  var Handled: boolean; var Command: TSynEditorCommand; var aChar: TUTF8Char; Data: pointer;
   HandlerData: pointer);
 var
   iEvent: TSynMacroEvent;
 begin
-  if AfterProcessing then
+  if (Command = PlaybackCommandID) or (Command = RecordCommandID) then
+    exit;
+
+  if (Sender = fCurrentEditor) and (State = msRecording) and (Command <> ecNone) then
   begin
-    if (Sender = fCurrentEditor) and (State = msRecording) and (Command <> ecNone) then
+    iEvent := CreateMacroEvent( Command );
+    iEvent.Initialize( Command, aChar, Data );
+    fEvents.Add( iEvent );
+    if SaveMarkerPos and (Command >= ecSetMarker0) and
+      (Command <= ecSetMarker9) and (Data = nil) then
     begin
-      iEvent := CreateMacroEvent( Command );
-      iEvent.Initialize( Command, aChar, Data );
-      fEvents.Add( iEvent );
-      if SaveMarkerPos and (Command >= ecSetMarker0) and
-        (Command <= ecSetMarker9) and (Data = nil) then
-      begin
-        TSynPositionEvent(iEvent).Position := fCurrentEditor.CaretXY;
-      end;
-    end;
-  end
-  else begin
-    {not AfterProcessing}
-    case State of
-      msStopped:
-        if Command = RecordCommandID then
-        begin
-          RecordMacro( TCustomSynEdit( Sender ) );
-          Handled := True;
-        end
-        else if Command = PlaybackCommandID then
-        begin
-          PlaybackMacro( TCustomSynEdit( Sender ) );
-          Handled := True;
-        end;
-      msPlaying:
-        ;
-      msPaused:
-        if Command = PlaybackCommandID then
-        begin
-          Resume;
-          Handled := True;
-        end;
-      msRecording:
-        if Command = PlaybackCommandID then
-        begin
-          Pause;
-          Handled := True;
-        end
-        else if Command = RecordCommandID then
-        begin
-          Stop;
-          Handled := True;
-        end;
+      TSynPositionEvent(iEvent).Position := fCurrentEditor.CaretXY;
     end;
   end;
+end;
+
+procedure TCustomSynMacroRecorder.OnFinishCommand(Sender: TObject; AfterProcessing: boolean;
+  var Handled: boolean; var Command: TSynEditorCommand; var aChar: TUTF8Char; Data: pointer;
+  HandlerData: pointer);
+begin
+  if not FStartPlayBack then exit;
+  FStartPlayBack := False;
+  PlaybackMacro( TCustomSynEdit( Sender ) );
 end;
 
 procedure TCustomSynMacroRecorder.Pause;
@@ -624,23 +621,13 @@ end;
 
 procedure TCustomSynMacroRecorder.SetShortCut(const Index: Integer;
   const Value: TShortCut);
-var
-  cEditor: integer;
 begin
   if fShortCuts[TSynMacroCommand(Index)] <> Value then
   begin
-    if Assigned(fEditors) then
-      if Value <> 0 then
-      begin
-        for cEditor := 0 to fEditors.Count -1 do
-          HookEditor( Editors[cEditor], fCommandIDs[TSynMacroCommand(Index)],
-            fShortCuts[TSynMacroCommand(Index)], Value );
-      end else
-      begin
-        for cEditor := 0 to fEditors.Count -1 do
-          UnHookEditor( Editors[cEditor], fCommandIDs[TSynMacroCommand(Index)],
-            fShortCuts[TSynMacroCommand(Index)] );
-      end;
+    if Value <> 0 then
+      HookEditorCmd(TSynMacroCommand(Index), fShortCuts[TSynMacroCommand(Index)])
+    else
+      UnHookEditorCmd(TSynMacroCommand(Index));
     fShortCuts[TSynMacroCommand(Index)] := Value;
   end;
 end;
@@ -717,6 +704,58 @@ begin
   end;
 end;
 
+procedure TCustomSynMacroRecorder.SetCommandIDs(AIndex: Integer; AValue: TSynEditorCommand);
+begin
+  if (fCommandIDs[TSynMacroCommand(AIndex)] = AValue) and
+     (fCommandIDUserSet[TSynMacroCommand(AIndex)] or (AValue = ecNone))
+  then
+    exit;
+
+  UnHookEditorCmd(TSynMacroCommand(AIndex));
+
+  //if (fCommandIDs[TSynMacroCommand(Index)] <> ecNone) and
+  //   (not fCommandIDUserSet[TSynMacroCommand(Index)])
+  //then
+  //  ReleasePluginCommand(fCommandIDs[TSynMacroCommand(Index)]);
+
+  fCommandIDs[TSynMacroCommand(AIndex)] := AValue;
+  fCommandIDUserSet[TSynMacroCommand(AIndex)] := AValue <> ecNone;
+
+  HookEditorCmd(TSynMacroCommand(AIndex));
+end;
+
+procedure TCustomSynMacroRecorder.HookEditorCmd(ACmd: TSynMacroCommand;
+  AnOldShortCut: TShortCut);
+var
+  cEditor: Integer;
+  c: TSynEditorCommand;
+begin
+  c := GetCommandIDs(ord(ACmd));
+  if (not Assigned(fEditors)) or (c = ecNone) then
+    exit;
+
+  if fShortCuts[ACmd] = 0 then begin
+    UnHookEditorCmd(ACmd);
+    exit;
+  end;
+
+  for cEditor := 0 to fEditors.Count -1 do
+    HookEditor(Editors[cEditor], c, AnOldShortCut, fShortCuts[ACmd], []);
+end;
+
+procedure TCustomSynMacroRecorder.UnHookEditorCmd(ACmd: TSynMacroCommand);
+var
+  c: TSynEditorCommand;
+  cEditor: Integer;
+begin
+  c := GetCommandIDs(ord(ACmd));
+  if (not Assigned(fEditors)) or (c = ecNone) then
+    exit;
+
+  for cEditor := 0 to fEditors.Count -1 do
+    UnHookEditor(Editors[cEditor], c, fShortCuts[ACmd]);
+end;
+
 procedure TCustomSynMacroRecorder.LoadFromFile(aFilename: string);
 var
   F : TFileStream;
@@ -758,8 +797,7 @@ begin
   RepeatCount := Byte(StrToIntDef(Trim(aStr), 1));
 end;
 
-procedure TSynBasicEvent.Initialize(aCmd: TSynEditorCommand;
-  {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
+procedure TSynBasicEvent.Initialize(aCmd: TSynEditorCommand; const aChar: TUTF8Char;
   aData: Pointer);
 begin
   Command := aCmd;
@@ -811,8 +849,7 @@ begin
   RepeatCount := Byte(StrToIntDef(Trim(aStr), 1));
 end;
 
-procedure TSynCharEvent.Initialize(aCmd: TSynEditorCommand;
-  {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
+procedure TSynCharEvent.Initialize(aCmd: TSynEditorCommand; const aChar: TUTF8Char;
   aData: Pointer);
 begin
   Key := aChar;
@@ -881,8 +918,7 @@ begin
   end;
 end;
 
-procedure TSynPositionEvent.Initialize(aCmd: TSynEditorCommand;
-  {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
+procedure TSynPositionEvent.Initialize(aCmd: TSynEditorCommand; const aChar: TUTF8Char;
   aData: Pointer);
 begin
   inherited;
@@ -953,8 +989,7 @@ begin
   RepeatCount := Byte(StrToIntDef(Trim(aStr), 1));
 end;
 
-procedure TSynStringEvent.Initialize(aCmd: TSynEditorCommand;
-  {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
+procedure TSynStringEvent.Initialize(aCmd: TSynEditorCommand; const aChar: TUTF8Char;
   aData: Pointer);
 begin
   Value := String(aData);
@@ -968,13 +1003,7 @@ begin
   aStream.Read(l, SizeOf(l));
   GetMem(Buff, l);
   try
-    {$IFDEF FPC}
     FillChar(Buff^,l,0);
-    {$ELSE}
-    {$IFNDEF SYN_CLX} //js 07-04-2002 changed from IFDEF WINDOWS
-    FillMemory(Buff, l, 0);
-    {$ENDIF}
-    {$ENDIF}
     aStream.Read(Buff^, l);
     fString := Buff;
   finally
@@ -1009,13 +1038,7 @@ begin
   aStream.Write(l, sizeof(l));
   GetMem(Buff, l);
   try
-    {$IFDEF FPC}
     FillChar(Buff^,l,0);
-    {$ELSE}
-    {$IFNDEF SYN_CLX} //js 07-04-2002 changed from IFDEF WINDOWS
-    FillMemory(Buff, l, 0);
-    {$ENDIF}
-    {$ENDIF}
     StrPCopy(Buff, Value);
     aStream.Write(Buff^, l);
   finally

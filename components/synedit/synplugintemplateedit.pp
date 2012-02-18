@@ -478,7 +478,7 @@ begin
 end;
 
 initialization
-  KeyOffset := AllocatePluginKeyRange(ecSynPTmplEdCount + 1);
+  KeyOffset := AllocatePluginKeyRange(ecSynPTmplEdCount + 1, True);
 
 end.
 

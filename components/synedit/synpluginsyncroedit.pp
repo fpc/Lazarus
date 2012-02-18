@@ -1564,8 +1564,8 @@ end;
 
 
 initialization
-  MouseOffset  := AllocatePluginMouseRange(emcSynPSyncroEdCount);
-  KeyOffset    := AllocatePluginKeyRange(ecSynPSyncroEdCount);
+  MouseOffset  := AllocatePluginMouseRange(emcSynPSyncroEdCount, True);
+  KeyOffset    := AllocatePluginKeyRange(ecSynPSyncroEdCount, True);
 
   RegisterKeyCmdIdentProcs({$IFDEF FPC}@{$ENDIF}IdentToSyncroCommand,
                            {$IFDEF FPC}@{$ENDIF}SyncroCommandToIdent);

@@ -53,7 +53,7 @@ uses
   SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
   SynEditMiscClasses, SynEditMarkupHighAll, SynEditMarks,
   SynBeautifier, SynEditTextBase, LazSynEditText,
-  SynPluginSyncronizedEditBase, SourceSynEditor,
+  SynPluginSyncronizedEditBase, SourceSynEditor, SynMacroRecorder,
   // Intf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
   IDEWindowIntf, ProjectIntf,
@@ -917,10 +917,13 @@ type
     procedure DecUpdateLock;
     procedure ShowActiveWindowOnTop(Focus: Boolean = False);
   private
+    FMacroRecorder: TSynMacroRecorder;
     FOnCurrentCodeBufferChanged: TNotifyEvent;
+    procedure DoMacroRecorderState(Sender: TObject);
   public
     property OnCurrentCodeBufferChanged: TNotifyEvent
              read FOnCurrentCodeBufferChanged write FOnCurrentCodeBufferChanged;
+    property MacroRecorder: TSynMacroRecorder read FMacroRecorder;
   end;
 
   { TSourceEditorManager }
@@ -4045,6 +4048,7 @@ Begin
       Parent := AParent;
     end;
     Manager.CodeTemplateModul.AddEditor(FEditor);
+    Manager.MacroRecorder.AddEditor(FEditor);
     Manager.NewEditorCreated(self);
     FEditor.TemplateEdit.OnActivate := @EditorActivateSyncro;
     FEditor.TemplateEdit.OnDeactivate := @EditorDeactivateSyncro;
@@ -6948,6 +6952,14 @@ begin
       PanelFileMode := PanelFileMode + uepReadonly;
     end;
 
+    if (Manager.MacroRecorder.State = msRecording) and
+       (Manager.MacroRecorder.CurrentEditor = CurEditor)
+    then begin
+      if PanelFileMode <> '' then
+        PanelFileMode := PanelFileMode + lisUEModeSeparator;
+      PanelFileMode := PanelFileMode + ueMacroRecording;
+    end;
+
     If TempEditor.IsLocked then begin
       if PanelFileMode <> '' then
         PanelFileMode := PanelFileMode + lisUEModeSeparator;
@@ -7657,6 +7669,14 @@ end;
 
 { TSourceEditorManagerBase }
 
+procedure TSourceEditorManagerBase.DoMacroRecorderState(Sender: TObject);
+var
+  i: Integer;
+begin
+  For i := 0 to SourceWindowCount - 1 do
+    TSourceNotebook(SourceWindows[i]).UpdateStatusBar;
+end;
+
 procedure TSourceEditorManagerBase.FreeSourceWindows;
 var
   s: TSourceEditorWindowInterface;
@@ -8086,6 +8106,14 @@ var
   i: TsemChangeReason;
   h: TSrcEditMangerHandlerType;
 begin
+  FMacroRecorder := TSynMacroRecorder.Create(nil);
+  FMacroRecorder.OnStateChange  := @DoMacroRecorderState;
+  FMacroRecorder.RecordCommandID := ecSynMacroRecord;
+  FMacroRecorder.PlaybackCommandID := ecSynMacroPlay;
+  FMacroRecorder.RecordShortCut := 0;
+  FMacroRecorder.PlaybackShortCut := 0;
+
+
   FUpdateFlags := [];
   FAutoFocusLock := 0;
   for i := low(TsemChangeReason) to high(TsemChangeReason) do
@@ -8115,6 +8143,7 @@ begin
   FreeCompletionPlugins;
   FreeSourceWindows;
   SrcEditorIntf.SourceEditorManagerIntf := nil; // xx move down
+  FreeAndNil(FMacroRecorder);
   FreeAndNil(FCompletionPlugins);
   FreeAndNil(FSourceWindowList);
   FreeAndNil(FSourceWindowByFocusList);
