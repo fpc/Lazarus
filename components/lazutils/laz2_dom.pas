@@ -850,12 +850,74 @@ const
   stduri_xml: DOMString = 'http://www.w3.org/XML/1998/namespace';
   stduri_xmlns: DOMString = 'http://www.w3.org/2000/xmlns/';
 
-
+function StrToXMLValue(const s: string): string;
 
 // =======================================================
 // =======================================================
 
 implementation
+
+function StrToXMLValue(const s: string): string;
+
+  function Convert(Dst: PChar; out NewLen: PtrUInt): boolean;
+  var
+    h: PChar;
+    l: Integer;
+    NewLength: Integer;
+    Src: PChar;
+    i: Integer;
+  begin
+    Result:=false;
+    NewLength:=0;
+    Src:=PChar(s);
+    repeat
+      case Src^ of
+      #0:
+        if Src-PChar(s)=length(s) then
+          break
+        else begin
+          h:=''; l:=0;
+        end;
+      '&': begin h:='&amp;'; l:=5; end;
+      '<': begin h:='&lt;'#0; l:=4; end;
+      '>': begin h:='&gt;'#0; l:=4; end;
+      '"': begin h:='&quot;'#0; l:=6; end;
+      '''': begin h:='&apos;'#0; l:=6; end;
+      else
+        if Dst<>nil then begin
+          Dst^:=Src^;
+          inc(Dst);
+        end else
+          inc(NewLength);
+        inc(Src);
+        continue;
+      end;
+      Result:=true;
+      if l>0 then begin
+        if Dst<>nil then begin
+          for i:=1 to l do begin
+            Dst^:=h^;
+            inc(Dst);
+            inc(h);
+          end;
+        end else
+          inc(NewLength,l);
+      end;
+      inc(Src);
+    until false;
+    NewLen:=NewLength;
+  end;
+
+var
+  NewLen: PtrUInt;
+begin
+  Result:=s;
+  if Result='' then exit;
+  if not Convert(nil,NewLen) then exit;
+  SetLength(Result,NewLen);
+  if NewLen=0 then exit;
+  Convert(PChar(Result),NewLen);
+end;
 
 { a namespace-enabled NamedNodeMap }
 type
