@@ -29,6 +29,14 @@ msgstr "Автор"
 msgid "Commit"
 msgstr "Фиксировать"
 
+#: svnclasses.rscommitmsg
+msgid "Commit Message"
+msgstr ""
+
+#: svnclasses.rscommitmsghistory
+msgid "Commit Message History"
+msgstr ""
+
 #: svnclasses.rscommitrevision
 msgid "Commit revision"
 msgstr "Ревизия с изменениями"

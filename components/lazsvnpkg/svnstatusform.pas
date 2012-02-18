@@ -91,7 +91,6 @@ begin
   if not Assigned(SVNStatusFrm) then
     SVNStatusFrm := TSVNStatusFrm.Create(nil);
   SVNStatusFrm.ChangeCursor(crHourGlass);
-
   SVNStatusFrm.RepositoryPath:=ARepoPath;
   SVNStatusFrm.Show;
 end;
@@ -101,9 +100,10 @@ end;
 procedure TSVNStatusFrm.FormShow(Sender: TObject);
 begin
   Caption := Format('%s - %s...', [RepositoryPath, rsLazarusSVNCommit]);
-  Application.QueueAsyncCall(@Initialize, 0);
   CommitMsgHistoryLabel.Caption:=rsCommitMsgHistory;
   CommitMsgLabel.Caption:=rsCommitMsg;
+//  Application.QueueAsyncCall(@Initialize, 0);
+  Initialize(0);
 end;
 
 procedure TSVNStatusFrm.Initialize(Data: PtrInt);
@@ -204,7 +204,7 @@ procedure TSVNStatusFrm.OKButtonClick(Sender: TObject);
 var
   i: integer;
   CmdLine: string;
-  StatusItem : PSVNStatusItem;
+  StatusItem : TSVNStatusItem;
   FileName: string;
 begin
   UpdateCheckedStatus;
@@ -218,13 +218,12 @@ begin
 
   for i := 0 to SVNStatus.List.Count - 1 do
   begin
-    StatusItem := PSVNStatusItem(SVNStatus.List.Items[i]);
-
-    if StatusItem^.Checked then
-      if pos(RepositoryPath,StatusItem^.Path) = 0 then
-        CmdLine := CmdLine + ' "' + AppendPathDelim(RepositoryPath) + StatusItem^.Path + '"'
+    StatusItem := SVNStatus.List[i];
+    if StatusItem.Checked then
+      if pos(RepositoryPath,StatusItem.Path) = 0 then
+        CmdLine := CmdLine + ' "' + AppendPathDelim(RepositoryPath) + StatusItem.Path + '"'
       else
-        CmdLine := CmdLine + ' "' + StatusItem^.Path + '"';
+        CmdLine := CmdLine + ' "' + StatusItem.Path + '"';
   end;
 
   FileName := GetTempFileName('','');
@@ -239,7 +238,7 @@ end;
 procedure TSVNStatusFrm.PatchButtonClick(Sender: TObject);
 var
   i: Integer;
-  StatusItem: PSVNStatusItem;
+  StatusItem: TSVNStatusItem;
   FileNames: TStringList;
 begin
   UpdateCheckedStatus;
@@ -247,12 +246,12 @@ begin
   FileNames.Sorted := True;
   for i := 0 to SVNStatus.List.Count - 1 do
   begin
-    StatusItem := PSVNStatusItem(SVNStatus.List.Items[i]);
-    if StatusItem^.Checked then
-      if pos(RepositoryPath,StatusItem^.Path) = 0 then
-        FileNames.Append(AppendPathDelim(RepositoryPath) + StatusItem^.Path)
+    StatusItem := SVNStatus.List.Items[i];
+    if StatusItem.Checked then
+      if pos(RepositoryPath,StatusItem.Path) = 0 then
+        FileNames.Append(AppendPathDelim(RepositoryPath) + StatusItem.Path)
       else
-        FileNames.Append(StatusItem^.Path);
+        FileNames.Append(StatusItem.Path);
   end;
   ShowSVNDiffFrm('-r BASE', FileNames);
 end;
@@ -287,7 +286,8 @@ end;
 procedure TSVNStatusFrm.SVNCommitMsgHistoryComboBoxChange(Sender: TObject);
 begin
   with SVNCommitMsgHistoryComboBox do
-    SVNCommitMsgMemo.Text := Items[ItemIndex];
+    if ItemIndex > -1 then
+      SVNCommitMsgMemo.Text := Items[ItemIndex];
 end;
 
 procedure TSVNStatusFrm.SVNFileListViewColumnClick(Sender: TObject;
@@ -311,53 +311,42 @@ end;
 procedure TSVNStatusFrm.UpdateFilesListView;
 var
   i: integer;
-  StatusItem : PSVNStatusItem;
+  StatusItem : TSVNStatusItem;
   Path: string;
 begin
   SVNFileListView.BeginUpdate;
   SVNFileListView.Clear;
-
   for i := 0 to SVNStatus.List.Count - 1 do
   begin
-
     with SVNFileListView.Items.Add do
     begin
-      StatusItem := PSVNStatusItem(SVNStatus.List.Items[i]);
-
+      StatusItem := SVNStatus.List.Items[i];
       //checkboxes
       Caption := '';
-      Checked := StatusItem^.Checked;
-
+      Checked := StatusItem.Checked;
       //path
-      Path := StatusItem^.Path;
+      Path := StatusItem.Path;
       if pos(RepositoryPath, Path) = 1 then
         path := CreateRelativePath(path, RepositoryPath, false);
       SubItems.Add(Path);
-
       //extension
-      SubItems.Add(StatusItem^.Extension);
-
+      SubItems.Add(StatusItem.Extension);
       //file status
-      SubItems.Add(StatusItem^.ItemStatus);
-
+      SubItems.Add(StatusItem.ItemStatus);
       //property status
-      SubItems.Add(StatusItem^.PropStatus);
-
+      SubItems.Add(StatusItem.PropStatus);
       //check if file is versioned
-      if (LowerCase(StatusItem^.ItemStatus) <> 'unversioned') and
-         (LowerCase(StatusItem^.ItemStatus) <> 'added') then
+      if (LowerCase(StatusItem.ItemStatus) <> 'unversioned') and
+         (LowerCase(StatusItem.ItemStatus) <> 'added') then
       begin
         //revision
-        SubItems.Add(IntToStr(StatusItem^.Revision));
-
+        SubItems.Add(IntToStr(StatusItem.Revision));
         //commit revision
-        SubItems.Add(IntToStr(StatusItem^.CommitRevision));
-
+        SubItems.Add(IntToStr(StatusItem.CommitRevision));
         //author
-        SubItems.Add(StatusItem^.Author);
-
+        SubItems.Add(StatusItem.Author);
         //date
-        SubItems.Add(DateTimeToStr(StatusItem^.Date));
+        SubItems.Add(DateTimeToStr(StatusItem.Date));
       end;
     end;
   end;
@@ -368,7 +357,7 @@ procedure TSVNStatusFrm.ChangeCursor(ACursor: TCursor);
 begin
   Cursor := ACursor;
   SVNCommitMsgMemo.Cursor := ACursor;
-  //SVNFileListView.Cursor := ACursor;
+  SVNFileListView.Cursor := ACursor;
   Self.Cursor := ACursor;
   Application.ProcessMessages;
 end;
@@ -378,10 +367,8 @@ var
   i : Integer;
 begin
   for i := 0 to SVNFileListView.Items.Count - 1 do
-  with SVNFileListView.Items[i] do
-  begin
-    PSVNStatusItem(SVNStatus.List.Items[Index])^.Checked := Checked;
-  end;
+    with SVNFileListView.Items[i] do
+      SVNStatus.List[Index].Checked := Checked;
 end;
 
 procedure TSVNStatusFrm.FormCreate(Sender: TObject);
@@ -414,14 +401,12 @@ begin
 
   ImageList.AddLazarusResource('menu_svn_diff');
   ImageList.AddLazarusResource('menu_svn_revert');
-
   try
     Config := GetIDEConfigStorage('lazsvnpkg.xml', true);
-
     count := Config.GetValue('HistoryCount', 0);
     //limit to 100 entries
-    if count > 100 then count := 100;
-
+    if count > 100 then
+      count := 100;
     for i := count downto 0 do
     begin
       s := Config.GetValue('Msg' + IntToStr(i), '');
@@ -447,10 +432,8 @@ begin
   begin
     try
       Config := GetIDEConfigStorage('lazsvnpkg.xml', true);
-
       count := Config.GetValue('HistoryCount', 0);
       Config.SetValue('HistoryCount', count + 1);
-
       Config.SetValue('Msg' + IntToStr(count + 1), SVNCommitMsgMemo.Text);
     finally
       Config.Free;

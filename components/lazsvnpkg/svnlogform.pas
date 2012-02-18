@@ -206,7 +206,8 @@ procedure TSVNLogFrm.FormShow(Sender: TObject);
 begin
   ChangeCursor(crHourGlass);
   Caption := Format(rsLazarusSVNLog, [RepositoryPath]);
-  Application.QueueAsyncCall(@Execute, 0);
+//  Application.QueueAsyncCall(@Execute, 0);
+  Execute(0);
 end;
 
 procedure TSVNLogFrm.LogListViewSelectItem(Sender: TObject; Item: TListItem;
@@ -218,18 +219,13 @@ var
 begin
   if not Selected then
     exit; // this event always fires twice, once for select and once for unselect
-
   RevNo := StrToInt(Item.Caption);
-
   SVNLogItem := FindSVNLogItemByRevision(LogList, RevNo);
-
   SVNActionsListView.Visible := False; // BeginUpdate won't help when autosize is true
   SVNActionsListView.Clear;
-
   if Assigned(SVNLogItem) then
   begin
     SVNLogMsgMemo.Lines.Text:=SVNLogItem.Msg;
-
     for i := 0 to SVNLogItem.Count - 1 do
       with SVNActionsListView.Items.Add do
       begin
@@ -280,9 +276,9 @@ end;
 
 procedure TSVNLogFrm.ChangeCursor(ACursor: TCursor);
 begin
-  //LogListView.Cursor:=ACursor;
+  LogListView.Cursor:=ACursor;
   SVNLogMsgMemo.Cursor:=ACursor;
-  //SVNActionsListView.Cursor:=ACursor;
+  SVNActionsListView.Cursor:=ACursor;
   Self.Cursor:=ACursor;
   Application.ProcessMessages;
 end;
@@ -446,57 +442,40 @@ begin
     InfoUrl := Node.TextContent;
     Node := Doc.DocumentElement.FirstChild.FindNode('repository').FindNode('root');
     InfoRoot := Node.TextContent;
-  except
     Doc.Free;
-    UpdateLogListView;
-    ChangeCursor(crDefault);
-    exit();
-  end;
-  Doc.Free;
-
-  Doc := ExecuteSvnReturnXml('log --xml --verbose --limit ' + IntToStr(SVNLogLimit.Value) + ' "' + RepositoryPath  + '" --non-interactive');
-  LogList.Clear;
-  Node := Doc.DocumentElement.FirstChild;
-  if Assigned(Node) then
-  begin
+    Doc := ExecuteSvnReturnXml('log --xml --verbose --limit ' + IntToStr(SVNLogLimit.Value) + ' "' + RepositoryPath  + '" --non-interactive');
+    LogList.Clear;
+    Node := Doc.DocumentElement.FirstChild;
+    if Assigned(Node) then
     repeat
       SubNode := Node;
-
       LogItem := TSVNLogItem.Create;
-
       //revision
       LogItem.Revision := StrToInt(SubNode.Attributes.Item[0].NodeValue);
-
       //action
       tmpNode := SubNode.FirstChild;
       while Assigned(tmpNode) do
       begin
         NodeName := tmpNode.NodeName;
-
         //Author
         if NodeName = 'author' then
           LogItem.Author := tmpNode.FirstChild.NodeValue;
-
         //Date
         if NodeName = 'date' then
           LogItem.Date := ISO8601ToDateTime(tmpNode.FirstChild.NodeValue);
-
         //message
         if NodeName = 'msg' then
           if Assigned(tmpNode.FirstChild) then
             LogItem.Msg:=ReplaceLineEndings(tmpNode.FirstChild.NodeValue, LineEnding);
-
         ActionNode := tmpNode.FirstChild;
         if Assigned(ActionNode) and Assigned(ActionNode.Attributes) then
         repeat
           ActionItem.CopyRev := '';
           ActionItem.CopyPath := '';
-
           //attributes
           for i := 0 to ActionNode.Attributes.Length-1 do
           begin
             t := ActionNode.Attributes.Item[i].NodeName;
-
             if t = 'action' then
               ActionItem.Action := ActionNode.Attributes.Item[i].NodeValue
             else
@@ -507,25 +486,21 @@ begin
                   ActionItem.CopyPath := AbsPath(
                     ActionNode.Attributes.Item[i].NodeValue);
           end;
-
           //paths
           ActionItem.Path:=AbsPath(ActionNode.FirstChild.NodeValue);
-
           LogItem.AddAction(ActionItem);
           ActionNode := ActionNode.NextSibling;
         until not Assigned(ActionNode);
         tmpNode := tmpNode.NextSibling;
-
       end;
-
       LogList.Add(LogItem);
-
       Node := Node.NextSibling;
     until not Assigned(Node);
+  finally
+    Doc.Free;
+    UpdateLogListView;
+    ChangeCursor(crDefault);
   end;
-  Doc.Free;
-  UpdateLogListView;
-  ChangeCursor(crDefault);
 end;
 
 end.

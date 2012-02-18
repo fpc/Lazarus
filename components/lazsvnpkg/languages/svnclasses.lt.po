@@ -1,4 +1,4 @@
-# Valdas Jankūnas <zmuogs@gmail.com>, 2010.
+ Valdas Jankūnas <zmuogs@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -30,6 +30,14 @@ msgstr "Autorius"
 #: svnclasses.rscommit
 msgid "Commit"
 msgstr "Nusiųsta"
+
+#: svnclasses.rscommitmsg
+msgid "Commit Message"
+msgstr ""
+
+#: svnclasses.rscommitmsghistory
+msgid "Commit Message History"
+msgstr ""
 
 #: svnclasses.rscommitrevision
 msgid "Commit revision"

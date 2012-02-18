@@ -1,4 +1,4 @@
-# Massimo Soricetti <notturno@quipo.it>, 2011.
+ Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2011-04-19 01:57+0200\n"
@@ -29,6 +29,14 @@ msgstr "Autore"
 
 #: svnclasses.rscommit
 msgid "Commit"
+msgstr ""
+
+#: svnclasses.rscommitmsg
+msgid "Commit Message"
+msgstr ""
+
+#: svnclasses.rscommitmsghistory
+msgid "Commit Message History"
 msgstr ""
 
 #: svnclasses.rscommitrevision

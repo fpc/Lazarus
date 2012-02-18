@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, ComCtrls, FileUtil, LCLProc, Controls,
-  XMLRead, DOM, Process, StdCtrls, Forms;
+  XMLRead, DOM, Process, StdCtrls, Forms, contnrs, fgl;
 
 resourcestring
   rsAction = 'Action';
@@ -96,8 +96,8 @@ type
   TStatusItemName = (siChecked, siPath, siExtension, siPropStatus, siItemStatus,
                      siRevision, siCommitRevision, siAuthor, siDate);
 
-  PSVNStatusItem = ^TSVNStatusItem;
-  TSVNStatusItem = record
+//  PSVNStatusItem = ^TSVNStatusItem;
+  TSVNStatusItem = class //record
     Checked: boolean;
     Path: string;
     Extension: string;
@@ -109,6 +109,8 @@ type
     Date: TDate;
   end;
 
+  TSVNStatusList = specialize TFPGObjectList<TSVNStatusItem>;
+
   { TSVNStatus }
 
   TSVNStatus = class(TObject)
@@ -117,7 +119,7 @@ type
     FSortDirection: TSortDirection;
     FSortItem: TStatusItemName;
   public
-    List: TFPList;
+    List: TSVNStatusList; // TFPList;
 
     constructor Create(const ARepoPath: string; verbose: Boolean);
     destructor Destroy; override;
@@ -261,116 +263,116 @@ begin
   Result := EncodeDate(y,m,d) + EncodeTime(h,n,s,0);
 end;
 
-function SortPathAscending(Item1, Item2: Pointer): Integer;
+function SortPathAscending(const Item1, Item2: TSVNStatusItem): Integer;
 begin
-   Result := CompareText(PSVNStatusItem(Item1)^.Path, PSVNStatusItem(Item2)^.Path);
+   Result := CompareText(Item1.Path, Item2.Path);
 end;
 
-function SortPathDescending(Item1, Item2: Pointer): Integer;
+function SortPathDescending(const Item1, Item2: TSVNStatusItem): Integer;
 begin
   Result := -SortPathAscending(Item1, Item2);
 end;
 
-function SortSelectedAscending(Item1, Item2: Pointer): Integer;
+function SortSelectedAscending(const Item1, Item2: TSVNStatusItem): Integer;
 begin
-   if PSVNStatusItem(Item1)^.Checked > PSVNStatusItem(Item2)^.Checked then
+   if Item1.Checked > Item2.Checked then
      Result := 1
    else
-     if PSVNStatusItem(Item1)^.Checked = PSVNStatusItem(Item2)^.Checked then
+     if Item1.Checked = Item2.Checked then
        Result := SortPathDescending(Item1, Item2)
      else
        Result := -1;
 end;
 
-function SortSelectedDescending(Item1, Item2: Pointer): Integer;
+function SortSelectedDescending(const Item1, Item2: TSVNStatusItem): Integer;
 begin
   Result := -SortSelectedAscending(Item1, Item2);
 end;
 
-function SortExtensionAscending(Item1, Item2: Pointer): Integer;
+function SortExtensionAscending(const Item1, Item2: TSVNStatusItem): Integer;
 begin
-   Result := CompareText(PSVNStatusItem(Item1)^.Extension, PSVNStatusItem(Item2)^.Extension);
+   Result := CompareText(Item1.Extension, Item2.Extension);
 end;
 
-function SortExtensionDescending(Item1, Item2: Pointer): Integer;
+function SortExtensionDescending(const Item1, Item2: TSVNStatusItem): Integer;
 begin
   Result := -SortExtensionAscending(Item1, Item2);
 end;
 
-function SortItemStatusAscending(Item1, Item2: Pointer): Integer;
+function SortItemStatusAscending(const Item1, Item2: TSVNStatusItem): Integer;
 begin
-   Result := CompareText(PSVNStatusItem(Item1)^.ItemStatus, PSVNStatusItem(Item2)^.ItemStatus);
+   Result := CompareText(Item1.ItemStatus, Item2.ItemStatus);
 end;
 
-function SortItemStatusDescending(Item1, Item2: Pointer): Integer;
+function SortItemStatusDescending(const Item1, Item2: TSVNStatusItem): Integer;
 begin
   Result := -SortItemStatusAscending(Item1, Item2);
 end;
 
-function SortPropStatusAscending(Item1, Item2: Pointer): Integer;
+function SortPropStatusAscending(const Item1, Item2: TSVNStatusItem): Integer;
 begin
-   Result := CompareText(PSVNStatusItem(Item1)^.PropStatus, PSVNStatusItem(Item2)^.PropStatus);
+   Result := CompareText(Item1.PropStatus, Item2.PropStatus);
 end;
 
-function SortPropStatusDescending(Item1, Item2: Pointer): Integer;
+function SortPropStatusDescending(const Item1, Item2: TSVNStatusItem): Integer;
 begin
   Result := -SortPropStatusAscending(Item1, Item2);
 end;
 
-function SortPropertyAuthorAscending(Item1, Item2: Pointer): Integer;
+function SortPropertyAuthorAscending(const Item1, Item2: TSVNStatusItem): Integer;
 begin
-   Result := CompareText(PSVNStatusItem(Item1)^.Author, PSVNStatusItem(Item2)^.Author);
+   Result := CompareText(Item1.Author, Item2.Author);
 end;
 
-function SortPropertyAuthorDescending(Item1, Item2: Pointer): Integer;
+function SortPropertyAuthorDescending(const Item1, Item2: TSVNStatusItem): Integer;
 begin
   Result := -SortPropertyAuthorAscending(Item1, Item2);
 end;
 
-function SortPropertyRevisionAscending(Item1, Item2: Pointer): Integer;
+function SortPropertyRevisionAscending(const Item1, Item2: TSVNStatusItem): Integer;
 begin
-   if PSVNStatusItem(Item1)^.Revision > PSVNStatusItem(Item2)^.Revision then
+   if Item1.Revision > Item2.Revision then
      Result := 1
    else
-     if PSVNStatusItem(Item1)^.Revision = PSVNStatusItem(Item2)^.Revision then
+     if Item1.Revision = Item2.Revision then
        Result := 0
      else
        Result := -1;
 end;
 
-function SortPropertyRevisionDescending(Item1, Item2: Pointer): Integer;
+function SortPropertyRevisionDescending(const Item1, Item2: TSVNStatusItem): Integer;
 begin
   Result := -SortPropertyRevisionAscending(Item1, Item2);
 end;
 
-function SortPropertyCommitRevisionAscending(Item1, Item2: Pointer): Integer;
+function SortPropertyCommitRevisionAscending(const Item1, Item2: TSVNStatusItem): Integer;
 begin
-   if PSVNStatusItem(Item1)^.CommitRevision > PSVNStatusItem(Item2)^.CommitRevision then
+   if Item1.CommitRevision > Item2.CommitRevision then
      Result := 1
    else
-     if PSVNStatusItem(Item1)^.CommitRevision = PSVNStatusItem(Item2)^.CommitRevision then
+     if Item1.CommitRevision = Item2.CommitRevision then
        Result := 0
      else
        Result := -1;
 end;
 
-function SortPropertyCommitRevisionDescending(Item1, Item2: Pointer): Integer;
+function SortPropertyCommitRevisionDescending(const Item1, Item2: TSVNStatusItem): Integer;
 begin
   Result := -SortPropertyCommitRevisionAscending(Item1, Item2);
 end;
 
-function SortPropertyDateAscending(Item1, Item2: Pointer): Integer;
+function SortPropertyDateAscending(const Item1, Item2: TSVNStatusItem): Integer;
 begin
-   if PSVNStatusItem(Item1)^.Date > PSVNStatusItem(Item2)^.Date then
+   if Item1.Date > Item2.Date then
      Result := 1
    else
-     if PSVNStatusItem(Item1)^.Date = PSVNStatusItem(Item2)^.Date then
+     if Item1.Date = Item2.Date then
        Result := 0
      else
        Result := -1;
 end;
 
-function SortPropertyDateDescending(Item1, Item2: Pointer): Integer;
+function SortPropertyDateDescending(const Item1, Item2: TSVNStatusItem): Integer;
 begin
   Result := -SortPropertyDateAscending(Item1, Item2);
 end;
@@ -436,14 +438,14 @@ var
   Doc: TXMLDocument;
   F: LongInt;
   i: integer;
-  ListItem: PSVNStatusItem;
+  ListItem: TSVNStatusItem;
   Node: TDOMNode;
   NodeName: string;
   NodeValue: string;
   Path: string;
   SubNode: TDOMNode;
 begin
-  List := TFPList.Create;
+  List := TSVNStatusList.Create;
   RepositoryPath := ARepoPath;
 
   if Verbose then
@@ -460,81 +462,63 @@ begin
 
   repeat
     SubNode := Node;
-
-    New(ListItem);
-
     Path := SubNode.Attributes.Item[0].NodeValue;
     debugln('TSVNStatus.Create ' + Path);
-
     F:=FileGetAttr(Path);
-    If F<>-1 then
-      If (F and faDirectory)=0 then
+    If (F<>-1) and ((F and faDirectory)=0) then
+    begin
+      ListItem := TSVNStatusItem.Create;
+      //initialize author (anonymous repositories)
+      ListItem.Author := rsNoAuthor;
+      //path
+      ListItem.Path := Path;
+      //Extension
+      ListItem.Extension:=ExtractFileExt(Path);
+      //get the wc-status attributes
+      ListItem.ItemStatus:='';
+      ListItem.Checked:=False;
+      ListItem.PropStatus:='';
+      for i := 0 to SubNode.ChildNodes.Item[0].Attributes.Length -1 do
       begin
-        //initialize author (anonymous repositories)
-        ListItem^.Author := rsNoAuthor;
-
-        //path
-        ListItem^.Path := Path;
-
-        //Extension
-        ListItem^.Extension:=ExtractFileExt(Path);
-
-        //get the wc-status attributes
-        ListItem^.ItemStatus:='';
-        ListItem^.Checked:=False;
-        ListItem^.PropStatus:='';
-        for i := 0 to SubNode.ChildNodes.Item[0].Attributes.Length -1 do
+        NodeName := SubNode.ChildNodes.Item[0].Attributes.Item[i].NodeName;
+        NodeValue := SubNode.ChildNodes.Item[0].Attributes.Item[i].NodeValue;
+        if NodeName = 'item' then
         begin
-          NodeName := SubNode.ChildNodes.Item[0].Attributes.Item[i].NodeName;
-          NodeValue := SubNode.ChildNodes.Item[0].Attributes.Item[i].NodeValue;
-
-          if NodeName = 'item' then
-          begin
-            //ItemStatus
-            ListItem^.ItemStatus := LowerCase(NodeValue);
-
-            //Checked
-            ListItem^.Checked:=(NodeValue<>'unversioned') and (NodeValue<>'normal');
-          end;
-
-          if NodeName = 'props' then
-            //PropStatus
-            ListItem^.PropStatus := NodeValue;
-
-          if NodeName = 'revision' then
-            //Revision
-            ListItem^.Revision := StrToInt(NodeValue);
+          //ItemStatus
+          ListItem.ItemStatus := LowerCase(NodeValue);
+          //Checked
+          ListItem.Checked:=(NodeValue<>'unversioned') and (NodeValue<>'normal');
         end;
-
-        //get the commit attributes
-        SubNode := SubNode.ChildNodes.Item[0].ChildNodes.Item[0];
-        if Assigned(SubNode) then
-        begin
-          //CommitRevision
-          ListItem^.CommitRevision:=StrToInt(SubNode.Attributes.Item[0].NodeValue);
-
-          for i := 0 to SubNode.ChildNodes.Count - 1 do
-          begin
-            ActNode := SubNode.ChildNodes.Item[i];
-
-            if Assigned(ActNode) then
-            begin
-              NodeName := ActNode.NodeName;
-
-              //Author
-              if NodeName = 'author' then
-                ListItem^.Author := ActNode.FirstChild.NodeValue;
-
-              //Date
-              if NodeName = 'date' then
-                ListItem^.Date := ISO8601ToDateTime(ActNode.FirstChild.NodeValue);
-            end;
-          end;
-        end;
-
-        List.Add(ListItem);
+        if NodeName = 'props' then
+          //PropStatus
+          ListItem.PropStatus := NodeValue;
+        if NodeName = 'revision' then
+          //Revision
+          ListItem.Revision := StrToInt(NodeValue);
       end;
-
+      //get the commit attributes
+      SubNode := SubNode.ChildNodes.Item[0].ChildNodes.Item[0];
+      if Assigned(SubNode) then
+      begin
+        //CommitRevision
+        ListItem.CommitRevision:=StrToInt(SubNode.Attributes.Item[0].NodeValue);
+        for i := 0 to SubNode.ChildNodes.Count - 1 do
+        begin
+          ActNode := SubNode.ChildNodes.Item[i];
+          if Assigned(ActNode) then
+          begin
+            NodeName := ActNode.NodeName;
+            //Author
+            if NodeName = 'author' then
+              ListItem.Author := ActNode.FirstChild.NodeValue;
+            //Date
+            if NodeName = 'date' then
+              ListItem.Date := ISO8601ToDateTime(ActNode.FirstChild.NodeValue);
+          end;
+        end;
+      end;
+      List.Add(ListItem);
+    end;
     Node := Node.NextSibling;
   until not Assigned(Node);
   Doc.Free;
@@ -543,7 +527,6 @@ end;
 destructor TSVNStatus.Destroy;
 begin
   List.Free;
-
   inherited Destroy;
 end;
 

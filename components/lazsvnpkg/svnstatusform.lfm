@@ -14,8 +14,8 @@ object SVNStatusFrm: TSVNStatusFrm
   LCLVersion = '0.9.31'
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 41
-    Top = 423
+    Height = 38
+    Top = 426
     Width = 739
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&Commit'
@@ -37,7 +37,7 @@ object SVNStatusFrm: TSVNStatusFrm
   end
   object SVNFileListView: TListView
     Left = 6
-    Height = 266
+    Height = 269
     Top = 151
     Width = 739
     Align = alClient
@@ -49,39 +49,39 @@ object SVNStatusFrm: TSVNStatusFrm
     Columns = <    
       item
         AutoSize = True
-        Width = 100
+        Width = 10
       end    
       item
         AutoSize = True
-        Width = 100
+        Width = 10
       end    
       item
         AutoSize = True
-        Width = 100
+        Width = 10
       end    
       item
         AutoSize = True
-        Width = 100
+        Width = 10
       end    
       item
         AutoSize = True
-        Width = 100
+        Width = 10
       end    
       item
         AutoSize = True
-        Width = 100
+        Width = 10
       end    
       item
         AutoSize = True
-        Width = 100
+        Width = 10
       end    
       item
         AutoSize = True
-        Width = 100
+        Width = 10
       end    
       item
         AutoSize = True
-        Width = 100
+        Width = 636
       end>
     PopupMenu = PopupMenu1
     RowSelect = True
@@ -116,7 +116,7 @@ object SVNStatusFrm: TSVNStatusFrm
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 72
-      Top = 66
+      Top = 69
       Width = 736
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 3
@@ -127,9 +127,9 @@ object SVNStatusFrm: TSVNStatusFrm
       AnchorSideTop.Control = SVNCommitMsgHistoryComboBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 15
-      Top = 48
-      Width = 97
+      Height = 16
+      Top = 50
+      Width = 105
       BorderSpacing.Top = 6
       Caption = 'CommitMsgLabel'
       ParentColor = False
@@ -138,20 +138,21 @@ object SVNStatusFrm: TSVNStatusFrm
       AnchorSideTop.Control = CommitMsgHistoryLabel
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 24
-      Top = 18
+      Height = 25
+      Top = 19
       Width = 736
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 3
       ItemHeight = 0
       OnChange = SVNCommitMsgHistoryComboBoxChange
+      Style = csDropDownList
       TabOrder = 1
     end
     object CommitMsgHistoryLabel: TLabel
       Left = 6
-      Height = 15
+      Height = 16
       Top = 0
-      Width = 137
+      Width = 148
       Caption = 'CommitMsgHistoryLabel'
       ParentColor = False
     end

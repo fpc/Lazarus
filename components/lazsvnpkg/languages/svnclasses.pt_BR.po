@@ -29,6 +29,14 @@ msgstr "Autor"
 msgid "Commit"
 msgstr "Enviar"
 
+#: svnclasses.rscommitmsg
+msgid "Commit Message"
+msgstr ""
+
+#: svnclasses.rscommitmsghistory
+msgid "Commit Message History"
+msgstr ""
+
 #: svnclasses.rscommitrevision
 msgid "Commit revision"
 msgstr "Enviar revisão"
