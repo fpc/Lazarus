@@ -153,6 +153,7 @@ type
     procedure FilterEditExit(Sender: TObject);
     procedure FilterEditKeyDown(Sender: TObject; var Key: Word;
       {%H-}Shift: TShiftState);
+    procedure FormDestroy(Sender: TObject);
     procedure JumpButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -763,6 +764,11 @@ begin
     else if i>0 then
       ItemsListBox.ItemIndex:=i-1;
   end;
+end;
+
+procedure TCodyIdentifiersDlg.FormDestroy(Sender: TObject);
+begin
+  IdleConnected:=false;
 end;
 
 procedure TCodyIdentifiersDlg.JumpButtonClick(Sender: TObject);
