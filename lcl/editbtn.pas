@@ -971,6 +971,7 @@ begin
   inherited Create(AOwner);
   FDialogFiles := TStringList.Create;
   FDialogKind := dkOpen;
+  FDialogOptions := DefaultOpenDialogOptions;
 end;
 
 destructor TFileNameEdit.Destroy;
@@ -1015,6 +1016,7 @@ begin
     begin
       S:=TSaveDialog.Create(Self);
       S.DefaultExt := FDefaultExt;
+      S.Options := DialogOptions;
       S.InitialDir := InitialDir;
       S.Filter := Filter;
       S.FilterIndex := FilterIndex;
