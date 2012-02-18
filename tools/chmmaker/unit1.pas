@@ -105,7 +105,11 @@ var
   CHMForm: TCHMForm;
 
 implementation
+
+{$R *.lfm}
+
 uses CHMSiteMapEditor, LHelpControl, Process;
+
 { TCHMForm }
 
 procedure TCHMForm.AddItems(AParentItem: TTreeNode; ChmItems: TChmSiteMapItems);
@@ -541,9 +545,6 @@ begin
   if (Project=nil) or (not FilenameIsAbsolute(Project.FileName)) then exit;
   Result:=ExtractFilePath(Project.FileName)+Filename;
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

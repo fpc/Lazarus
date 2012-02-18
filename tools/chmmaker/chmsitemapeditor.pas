@@ -62,6 +62,9 @@ var
   SitemapEditForm: TSitemapEditForm;
 
 implementation
+
+{$R *.lfm}
+
 uses
   LCLType;
 
@@ -308,9 +311,6 @@ begin
     
   Result := ModalResult = mrOK;
 end;
-
-initialization
-  {$I chmsitemapeditor.lrs}
 
 end.
 

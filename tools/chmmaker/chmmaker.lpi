@@ -6,8 +6,9 @@
       <Flags>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
-      <SessionStorage Value="InProjectDir"/>
+      <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
+      <ResourceType Value="res"/>
     </General>
     <VersionInfo>
       <StringTable ProductVersion=""/>
