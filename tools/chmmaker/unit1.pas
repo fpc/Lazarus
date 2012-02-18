@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ComCtrls, chmsitemap, SynEdit, LazFileUtils, Menus, ExtCtrls,
-  EditBtn, chmfilewriter;
+  Buttons, ComCtrls, chmsitemap, SynEdit, LazFileUtils, LazLogger, Menus,
+  ExtCtrls, EditBtn, LCLProc, chmfilewriter;
 
 type
 
@@ -91,6 +91,8 @@ type
     procedure CloseProject;
 
     procedure AddFilesToProject(Strings: TStrings);
+    procedure InitFileDialog(Dlg: TFileDialog);
+    procedure ProjectDirChanged;
   public
     Project: TChmProject;
     procedure OpenProject(AFileName: String);
@@ -132,6 +134,7 @@ end;
 
 procedure TCHMForm.AddFilesBtnClick(Sender: TObject);
 begin
+  InitFileDialog(OpenDialog2);
   if OpenDialog2.Execute = False then exit;
   Modified := True;
   AddFilesToProject(OpenDialog2.Files);
@@ -292,9 +295,6 @@ end;
 procedure TCHMForm.FormCreate(Sender: TObject);
 begin
   CloseProject;
-  OpenDialog1.InitialDir:=GetCurrentDirUTF8;
-  OpenDialog2.InitialDir:=OpenDialog1.InitialDir;
-  SaveDialog1.InitialDir:=OpenDialog1.InitialDir;
 end;
 
 procedure TCHMForm.IndexEditAcceptFileName(Sender: TObject; var Value: String);
@@ -333,12 +333,8 @@ begin
 end;
 
 procedure TCHMForm.ProjNewItemClick(Sender: TObject);
-var
-  Dir: String;
 begin
-  Dir:=ExtractFilePath(Project.FileName);
-  if DirectoryExistsUTF8(Dir) then
-    SaveDialog1.InitialDir:=Dir;
+  InitFileDialog(SaveDialog1);
   If SaveDialog1.Execute then begin
     if FileExists(SaveDialog1.FileName)
     and (MessageDlg('File Already Exists! Ovewrite?', mtWarning, [mbYes, mbNo],0) = mrNo) then Exit;
@@ -349,6 +345,7 @@ end;
 
 procedure TCHMForm.ProjOpenItemClick(Sender: TObject);
 begin
+  InitFileDialog(OpenDialog1);
   if OpenDialog1.Execute then begin
     CloseProject;
     OpenProject(OpenDialog1.FileName);
@@ -419,16 +416,15 @@ begin
 end;
 
 procedure TCHMForm.Save(aAs: Boolean);
-var
-  Dir: String;
 begin
   if aAs or (Project.FileName = '') then
   begin
-    Dir:=ExtractFilePath(Project.FileName);
-    if DirectoryExistsUTF8(Dir) then
-      SaveDialog1.InitialDir:=Dir;
+    InitFileDialog(SaveDialog1);
     if SaveDialog1.Execute then
+    begin
       Project.FileName := ChangeFileExt(SaveDialog1.FileName,'.hfp');
+      ProjectDirChanged;
+    end;
   end;
   Project.Files.Assign(FileListBox.Items);
   Project.TableOfContentsFileName := TOCEdit.FileName;
@@ -470,7 +466,7 @@ begin
   ProjSaveAsItem.Enabled := True;
   ProjSaveItem.Enabled   := True;
   ProjCloseItem.Enabled  := True;
-  
+
   FileListBox.Items.AddStrings(Project.Files);
   TOCEdit.FileName := Project.TableOfContentsFileName;
   IndexEdit.FileName := Project.IndexFileName;
@@ -479,6 +475,8 @@ begin
   FollowLinksCheck.Checked := Project.AutoFollowLinks;
   CreateSearchableCHMCheck.Checked := Project.MakeSearchable;
   ChmFileNameEdit.FileName := Project.OutputFileName;
+
+  ProjectDirChanged;
 end;
 
 procedure TCHMForm.AddFilesToProject(Strings: TStrings);
@@ -501,7 +499,30 @@ begin
       FileListBox.Items.AddObject(RelativePath, TObject(0));
   end;
   DefaultPageCombo.Items.Assign(FileListBox.Items);
+end;
 
+procedure TCHMForm.InitFileDialog(Dlg: TFileDialog);
+var
+  Dir: String;
+begin
+  Dir:='';
+  if (Project<>nil) then
+    Dir:=ExtractFilePath(Project.FileName);
+  if not DirPathExists(Dir) then
+    Dir:=GetCurrentDirUTF8;
+  Dlg.InitialDir:=Dir;
+end;
+
+procedure TCHMForm.ProjectDirChanged;
+var
+  Dir: String;
+begin
+  if Project=nil then exit;
+  Dir:=ExtractFilePath(Project.FileName);
+
+  TOCEdit.InitialDir:=Dir;
+  IndexEdit.InitialDir:=Dir;
+  ChmFileNameEdit.InitialDir:=Dir;
 end;
 
 initialization

@@ -166,7 +166,6 @@ object CHMForm: TCHMForm
       Top = 31
       Width = 203
       OnAcceptFileName = TOCEditAcceptFileName
-      DialogOptions = []
       Filter = 'Table of Contents Files(*.hhc)|*.hhc|All files|*'
       FilterIndex = 0
       HideDirectories = False
@@ -183,7 +182,6 @@ object CHMForm: TCHMForm
       Top = 79
       Width = 203
       OnAcceptFileName = IndexEditAcceptFileName
-      DialogOptions = []
       Filter = 'Index Files(*.hhk)|*.hhk|All Files|*'
       FilterIndex = 0
       HideDirectories = False
@@ -282,7 +280,6 @@ object CHMForm: TCHMForm
       OnAcceptFileName = ChmFileNameEditAcceptFileName
       DialogKind = dkSave
       DialogTitle = 'Save CHM as...'
-      DialogOptions = []
       Filter = 'Compressed HTML Help Files|*.chm'
       FilterIndex = 0
       HideDirectories = False
