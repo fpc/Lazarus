@@ -3018,6 +3018,7 @@ function dbgs(AnAttributes: TDBGSymbolAttributes): String;
 var
   i: TDBGSymbolAttribute;
 begin
+  Result:='';
   for i := low(TDBGSymbolAttributes) to high(TDBGSymbolAttributes) do
     if i in AnAttributes then begin
       if Result <> '' then Result := Result + ', ';
@@ -3035,6 +3036,7 @@ function dbgs(AFlags: TDebuggerLocationFlags): String;
 var
   i: TDebuggerLocationFlag;
 begin
+  Result:='';
   for i := low(TDebuggerLocationFlags) to high(TDebuggerLocationFlags) do
     if i in AFlags then begin
       if Result <> '' then Result := Result + ', ';
