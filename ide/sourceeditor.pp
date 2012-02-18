@@ -920,6 +920,8 @@ type
     FMacroRecorder: TSynMacroRecorder;
     FOnCurrentCodeBufferChanged: TNotifyEvent;
     procedure DoMacroRecorderState(Sender: TObject);
+    procedure DoMacroRecorderUserCommand(aSender: TCustomSynMacroRecorder;
+      aCmd: TSynEditorCommand; var aEvent: TSynMacroEvent);
   public
     property OnCurrentCodeBufferChanged: TNotifyEvent
              read FOnCurrentCodeBufferChanged write FOnCurrentCodeBufferChanged;
@@ -7684,6 +7686,19 @@ begin
     TSourceNotebook(SourceWindows[i]).UpdateStatusBar;
 end;
 
+procedure TSourceEditorManagerBase.DoMacroRecorderUserCommand(aSender: TCustomSynMacroRecorder;
+  aCmd: TSynEditorCommand; var aEvent: TSynMacroEvent);
+begin
+  case aCmd of
+    ecToggleFormUnit..ecViewThreads, ecViewHistory,
+    ecNextEditor, ecPrevEditor, ecNextWindow, ecPrevWindow,
+    ecGotoEditor1..ecGotoEditor0:
+      aEvent := TSynIgnoredEvent.Create;
+    else
+      ;//
+  end;
+end;
+
 procedure TSourceEditorManagerBase.FreeSourceWindows;
 var
   s: TSourceEditorWindowInterface;
@@ -8115,6 +8130,7 @@ var
 begin
   FMacroRecorder := TSynMacroRecorder.Create(nil);
   FMacroRecorder.OnStateChange  := @DoMacroRecorderState;
+  FMacroRecorder.OnUserCommand   := @DoMacroRecorderUserCommand;
   FMacroRecorder.RecordCommandID := ecSynMacroRecord;
   FMacroRecorder.PlaybackCommandID := ecSynMacroPlay;
   FMacroRecorder.RecordShortCut := 0;

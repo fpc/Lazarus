@@ -73,6 +73,21 @@ type
     property RepeatCount : Byte read fRepeatCount write fRepeatCount;
   end;
 
+  { TSynIgnoredEvent }
+
+  TSynIgnoredEvent = class(TSynMacroEvent)
+  protected
+    function GetAsString : string; override;
+    procedure InitEventParameters(aStr : string); override;
+  public
+    procedure Initialize(aCmd: TSynEditorCommand;
+      const aChar: TUTF8Char;
+      aData: Pointer); override;
+    procedure LoadFromStream(aStream: TStream); override;
+    procedure SaveToStream(aStream: TStream); override;
+    procedure Playback(aEditor: TCustomSynEdit); override;
+  end;
+
   TSynBasicEvent = class(TSynMacroEvent)
   protected
     fCommand: TSynEditorCommand;
@@ -263,6 +278,39 @@ type
   end;
 
 implementation
+
+{ TSynIgnoredEvent }
+
+function TSynIgnoredEvent.GetAsString: string;
+begin
+  Result := '';
+end;
+
+procedure TSynIgnoredEvent.InitEventParameters(aStr: string);
+begin
+  //
+end;
+
+procedure TSynIgnoredEvent.Initialize(aCmd: TSynEditorCommand; const aChar: TUTF8Char;
+  aData: Pointer);
+begin
+  //
+end;
+
+procedure TSynIgnoredEvent.LoadFromStream(aStream: TStream);
+begin
+  //
+end;
+
+procedure TSynIgnoredEvent.SaveToStream(aStream: TStream);
+begin
+  //
+end;
+
+procedure TSynIgnoredEvent.Playback(aEditor: TCustomSynEdit);
+begin
+  //
+end;
 
 { TSynDataEvent }
 
