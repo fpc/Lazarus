@@ -3312,7 +3312,149 @@ begin
   DeliverMessage(Data, Mess);
 end;
 
-{$I gtk2DragCallback.inc}
-{$I gtk2ComboBoxCallback.inc}
-{$I gtk2PageCallback.inc}
+//DRAG CALLBACK FUNCTIONS
+
+function edit_drag_data_received(widget : pgtkWidget;
+  Context : pGdkDragContext;
+  X, Y : Integer;
+  SelData : pGtkSelectionData;
+  info : Integer;
+  time : Integer;
+  data : pointer) : GBoolean; cdecl;
+Var
+  Texts : String;
+Begin
+  Result:=false;
+  if (Widget=nil) or (X=0) or (Y=0) or (Info=0) then exit;
+  //DebugLn('Trace:***********Drag Data Received*******************');
+  if Seldata^.Length > 0 then
+  Begin
+    Texts := StrPas(PChar(SelData^.data));
+    //DebugLn('Trace:' + Texts);
+    //DebugLn('Trace:0');
+    TCustomEdit(Data).Caption := Texts;
+    //DebugLn('Trace:1');
+  end;
+  gtk_drag_finish(Context,false,false,time);
+end;
+
+function edit_source_drag_data_get(widget : pgtkWidget;
+  Context : pGdkDragContext;
+  Selection_data : pGtkSelectionData;
+  info : Integer;
+  time : Integer;
+  data : pointer) : GBoolean; cdecl;
+var
+  strTemp : PChar;
+  Texts : String;
+Begin
+  Result:=false;
+  if (Time=0) or (Context=nil) or (Widget=nil) then ;
+  if (info = TARGET_ROOTWIN) then begin
+    //DebugLn('Trace:I WAS DROPPED ON THE ROOTWIN')
+  end
+  else Begin
+    //DebugLn('Trace:*********Setting Data************');
+    Texts := TCustomEdit(data).Text;
+    //DebugLn('Trace:0');
+    strTemp := StrAlloc(length(Texts) + 1);
+    try
+      StrPCopy(strTemp, Texts);
+      //DebugLn('Trace:1');
+      gtk_selection_data_set(selection_data,selection_data^.target,
+                    8,
+                    PGUChar(StrTemp),
+                    length(Texts)+1);
+      //DebugLn('Trace:2');
+    finally
+      strDispose(strTemp);
+    end;
+    //DebugLn('Trace:3');
+  end;
+end;
+
+
+function Edit_source_drag_data_delete (Widget: pGtkWidget;
+  Context: pGdkDragContext; Data: gpointer): gBoolean ; cdecl;
+begin
+  if (Widget=nil) or (Context=nil) or (Data=nil) then ;
+  //DebugLn('Trace:***************');
+  //DebugLn('Trace:DELETE THE DATA');
+  Result:=false;
+end;
+
+// combobox callbacks
+function gtkComboBoxShowAfter(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+var
+  Mess : TLMCommand;
+  AComboBox: TCustomComboBox;
+begin
+  Result := True;
+  EventTrace('ComboBoxShowAfter', data);
+
+  AComboBox:=TObject(Data) as TCustomComboBox;
+  AComboBox.IntfGetItems;
+
+  if (Widget=nil) then ;
+  FillChar(Mess,SizeOf(Mess),0);
+  Mess.Msg := CN_Command;
+  Mess.NotifyCode := CBN_DROPDOWN;
+
+  Result := DeliverMessage(Data, Mess) = 0;
+end;
+
+function gtkComboBoxHideAfter(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+var
+  Mess : TLMCommand;
+begin
+  Result := True;
+  if (Widget=nil) then ;
+  EventTrace('ComboBoxHideAfter', data);
+  FillChar(Mess,SizeOf(Mess),0);
+  Mess.Msg := CN_Command;
+  Mess.NotifyCode := CBN_CLOSEUP;
+
+  Result := DeliverMessage(Data, Mess) = 0;
+end;
+
+// notebook callbacks
+procedure DrawNotebookPageIcon(Page: TCustomPage; Widget: PGtkWidget);
+var
+  NoteBook: TCustomTabControl;
+  NoteBookWidget: PGtkWidget;
+  PageWidget: PGtkWidget;
+  TabWidget: PGtkWidget;
+  ImageIndex: Integer;
+begin
+  NoteBook := Page.Parent as TCustomTabControl;
+  ImageIndex := NoteBook.GetImageIndex(Page.PageIndex);
+  if (NoteBook.Images = nil) or (ImageIndex < 0)
+  or (Page.ImageIndex >= NoteBook.Images.Count)
+  or (not NoteBook.HandleAllocated)
+  or (not Page.HandleAllocated)
+  then exit;
+  NoteBookWidget := PGtkWidget(NoteBook.Handle);
+  PageWidget := PGtkWidget(Page.Handle);
+
+  // get the tab container and the tab icon widget
+  TabWidget := gtk_notebook_get_tab_label(PGtkNoteBook(NotebookWidget),
+                                        PageWidget);
+  if TabWidget = nil then exit;
+  {$IFDEF VerboseGtkToDos}{$note reimplement}{$ENDIF}
+  DrawImageListIconOnWidget(NoteBook.Images, ImageIndex, Widget);
+end;
+
+function PageIconWidgetExposeAfter(Widget: PGtkWidget; Event: PGDKEventExpose;
+  Data: gPointer): GBoolean; cdecl;
+var
+  ThePage: TCustomPage;
+begin
+  Result := false;
+  //DebugLn('PageIconWidgetExposeAfter ',DbgS(Widget));
+  EventTrace('PageIconWidgetExposeAfter', Data);
+  if (Event^.Count > 0) then exit;
+  ThePage := TObject(Data) as TCustomPage;
+  DrawNotebookPageIcon(ThePage, Widget);
+end;
+
 

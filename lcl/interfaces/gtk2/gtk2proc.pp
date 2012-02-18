@@ -235,7 +235,7 @@ procedure GTKStyleChanged(Widget: PGtkWidget; previous_style :
 function gtkListBoxSelectionChangedAfter(widget: PGtkWidget;
                                       data: gPointer): GBoolean; cdecl;
 
-// gtkDragCallback.inc headers
+// drag callbacks
 function edit_drag_data_received(widget: pgtkWidget;
              Context: pGdkDragContext;
              X: Integer;
@@ -254,11 +254,11 @@ function Edit_source_drag_data_delete (widget: pGtkWidget;
                    context: pGdkDragContext;
                    data: gpointer): gBoolean ; cdecl;
 
-// gtkcomboboxcallbacks.inc headers
+// combobox callbacks
 function gtkComboBoxShowAfter(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkComboBoxHideAfter(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 
-// gtkpagecallbacks.inc headers
+// notebook callbacks
 function PageIconWidgetExposeAfter(Widget: PGtkWidget; Event: PGDKEventExpose;
   Data: gPointer): GBoolean; cdecl;
 
