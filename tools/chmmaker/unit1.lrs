@@ -1,3 +1,5 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TCHMForm','FORMDATA',[
   'TPF0'#8'TCHMForm'#7'CHMForm'#4'Left'#3#13#1#6'Height'#3#255#1#3'Top'#3#217#0
   +#5'Width'#3'c'#2#18'HorzScrollBar.Page'#3'c'#2#18'VertScrollBar.Page'#3#233#1
@@ -30,77 +32,86 @@ LazarusResources.Add('TCHMForm','FORMDATA',[
   +'er'#2#2#0#0#7'TButton'#9'AddAllBtn'#4'Left'#2#11#6'Height'#2#25#3'Top'#2' '
   +#5'Width'#3#239#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6'"Add all fi'
   +'les in Project Directory'#7'OnClick'#7#14'AddAllBtnClick'#8'TabOrder'#2#3#0
-  +#0#0#0#6'TPanel'#6'Panel1'#4'Left'#3#12#1#6'Height'#3#215#1#3'Top'#2#0#5'Wid'
-  +'th'#3'W'#1#5'Align'#7#8'alClient'#12'ClientHeight'#3#215#1#11'ClientWidth'#3
-  +'W'#1#8'TabOrder'#2#1#0#6'TLabel'#20'TableOfContentsLabel'#4'Left'#2#11#6'He'
-  +'ight'#2#15#3'Top'#2#11#5'Width'#3#136#0#7'Caption'#6#25'Table of Contents ('
-  +'*.hhc)'#11'ParentColor'#8#0#0#6'TLabel'#10'IndexLabel'#4'Left'#2#11#6'Heigh'
-  +'t'#2#15#3'Top'#2';'#5'Width'#2'F'#7'Caption'#6#13'Index (*.hhk)'#11'ParentC'
-  +'olor'#8#0#0#6'TLabel'#23'CompileTimeOptionsLabel'#4'Left'#2#11#6'Height'#2
-  +#15#3'Top'#3#219#0#5'Width'#2'{'#7'Caption'#6#21'Compile time options:'#11'P'
-  +'arentColor'#8#0#0#6'TLabel'#16'DefaultPageLabel'#4'Left'#2#11#6'Height'#2#15
-  +#3'Top'#2'l'#5'Width'#2'H'#7'Caption'#6#12'Default Page'#11'ParentColor'#8#0
-  +#0#6'TLabel'#16'CHMFilenameLabel'#4'Left'#2#12#6'Height'#2#15#3'Top'#3'd'#1#5
-  +'Width'#2'N'#7'Caption'#6#12'CHM filename'#11'ParentColor'#8#0#0#13'TFileNam'
-  +'eEdit'#7'TOCEdit'#4'Left'#2#10#6'Height'#2#23#3'Top'#2#31#5'Width'#3#203#0
-  +#16'OnAcceptFileName'#7#21'TOCEditAcceptFileName'#6'Filter'#6'0Table of Cont'
-  +'ents Files(*.hhc)|*.hhc|All files|*'#11'FilterIndex'#2#0#15'HideDirectories'
-  +#8#11'ButtonWidth'#2#23#9'NumGlyphs'#2#1#10'AutoSelect'#8#8'AutoSize'#8#9'Ma'
-  +'xLength'#2#0#8'TabOrder'#2#0#0#0#13'TFileNameEdit'#9'IndexEdit'#4'Left'#2#10
-  +#6'Height'#2#23#3'Top'#2'O'#5'Width'#3#203#0#16'OnAcceptFileName'#7#23'Index'
-  +'EditAcceptFileName'#6'Filter'#6'$Index Files(*.hhk)|*.hhk|All Files|*'#11'F'
-  +'ilterIndex'#2#0#15'HideDirectories'#8#11'ButtonWidth'#2#23#9'NumGlyphs'#2#1
-  +#10'AutoSelect'#8#8'AutoSize'#8#9'MaxLength'#2#0#8'TabOrder'#2#1#0#0#7'TButt'
-  +'on'#10'TOCEditBtn'#4'Left'#3#247#0#6'Height'#2#23#3'Top'#2#31#5'Width'#2'3'
-  +#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#4'Edit'#7'OnClick'#7#15'TOCE'
-  +'ditBtnClick'#8'TabOrder'#2#2#0#0#7'TButton'#12'IndexEditBtn'#4'Left'#3#247#0
-  +#6'Height'#2#23#3'Top'#2'P'#5'Width'#2'3'#25'BorderSpacing.InnerBorder'#2#4#7
-  +'Caption'#6#4'Edit'#7'OnClick'#7#17'IndexEditBtnClick'#8'TabOrder'#2#3#0#0#9
-  +'TCheckBox'#16'FollowLinksCheck'#4'Left'#2#19#6'Height'#2' '#3'Top'#3#252#0#5
-  +'Width'#3#179#0#7'Caption'#6'6Parse *.htm* files to include '#10'linked page'
-  +'s and images'#7'Enabled'#8#8'TabOrder'#2#4#0#0#9'TCheckBox'#24'CreateSearch'
-  +'ableCHMCheck'#4'Left'#2#19#6'Height'#2#22#4'Hint'#6'FOnly indexes files add'
-  +'ed to the project'#10'not files automatically added.'#3'Top'#3'0'#1#5'Width'
-  +#3#162#0#7'Caption'#6#23'Create a searchable chm'#14'ParentShowHint'#8#8'Sho'
-  +'wHint'#9#8'TabOrder'#2#5#0#0#9'TComboBox'#16'DefaultPageCombo'#4'Left'#2#11
-  ,#6'Height'#2#28#3'Top'#3#128#0#5'Width'#3#31#1#10'AutoSelect'#8#10'ItemHeigh'
-  +'t'#2#0#5'Style'#7#14'csDropDownList'#8'TabOrder'#2#6#0#0#7'TButton'#10'Comp'
-  +'ileBtn'#19'AnchorSideLeft.Side'#7#9'asrBottom'#23'AnchorSideRight.Control'#7
-  +#14'CompileViewBtn'#4'Left'#2'n'#6'Height'#2'"'#3'Top'#3#167#1#5'Width'#2'B'
-  +#7'Anchors'#11#7'akRight'#8'akBottom'#0#8'AutoSize'#9#19'BorderSpacing.Right'
-  +#2#9#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#7'Compile'#7'OnClick'#7
-  +#15'CompileBtnClick'#8'TabOrder'#2#7#0#0#7'TButton'#14'CompileViewBtn'#22'An'
-  +'chorSideLeft.Control'#7#10'CompileBtn'#19'AnchorSideLeft.Side'#7#9'asrBotto'
-  +'m'#4'Left'#3#185#0#6'Height'#2'"'#3'Top'#3#167#1#5'Width'#2'w'#7'Anchors'#11
-  +#7'akRight'#8'akBottom'#0#8'AutoSize'#9#19'BorderSpacing.Right'#2#13#25'Bord'
-  +'erSpacing.InnerBorder'#2#4#7'Caption'#6#16'Compile and View'#7'OnClick'#7#19
-  +'CompileViewBtnClick'#8'TabOrder'#2#8#0#0#13'TFileNameEdit'#15'ChmFileNameEd'
-  +'it'#4'Left'#2#11#6'Height'#2#23#3'Top'#3'|'#1#5'Width'#3#14#1#16'OnAcceptFi'
-  +'leName'#7#29'ChmFileNameEditAcceptFileName'#10'DialogKind'#7#6'dkSave'#11'D'
-  +'ialogTitle'#6#14'Save CHM as...'#6'Filter'#6' Compressed HTML Help Files|*.'
-  +'chm'#11'FilterIndex'#2#0#15'HideDirectories'#8#11'ButtonWidth'#2#23#9'NumGl'
-  +'yphs'#2#1#10'AutoSelect'#8#8'AutoSize'#8#9'MaxLength'#2#0#8'TabOrder'#2#9#0
-  +#0#0#11'TOpenDialog'#11'OpenDialog1'#6'Filter'#6#30'Help File Project(*.hfp)'
-  +'|*.hfp'#11'FilterIndex'#2#0#7'Options'#11#15'ofFileMustExist'#14'ofEnableSi'
-  +'zing'#12'ofViewDetail'#0#4'left'#2#8#3'top'#2#16#0#0#11'TSaveDialog'#11'Sav'
-  +'eDialog1'#6'Filter'#6#30'Help File Project(*.hfp)|*.hfp'#11'FilterIndex'#2#0
-  +#4'left'#2'$'#3'top'#2#15#0#0#9'TMainMenu'#9'MainMenu1'#4'left'#2'D'#3'top'#2
-  +#15#0#9'TMenuItem'#9'MenuItem1'#7'Caption'#6#7'Project'#0#9'TMenuItem'#11'Pr'
-  +'ojNewItem'#7'Caption'#6#3'New'#7'OnClick'#7#16'ProjNewItemClick'#0#0#9'TMen'
-  +'uItem'#12'ProjOpenItem'#7'Caption'#6#4'Open'#7'OnClick'#7#17'ProjOpenItemCl'
-  +'ick'#0#0#9'TMenuItem'#9'MenuItem9'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#12'Pr'
-  +'ojSaveItem'#7'Caption'#6#4'Save'#7'OnClick'#7#17'ProjSaveItemClick'#0#0#9'T'
-  +'MenuItem'#14'ProjSaveAsItem'#7'Caption'#6#7'Save as'#7'OnClick'#7#19'ProjSa'
-  +'veAsItemClick'#0#0#9'TMenuItem'#13'ProjCloseItem'#7'Caption'#6#5'Close'#7'O'
-  +'nClick'#7#18'ProjCloseItemClick'#0#0#9'TMenuItem'#10'MenuItem12'#7'Caption'
-  +#6#1'-'#0#0#9'TMenuItem'#12'ProjQuitItem'#7'Caption'#6#12'Quit Program'#7'On'
-  +'Click'#7#17'ProjQuitItemClick'#0#0#0#9'TMenuItem'#11'CompileItem'#7'Caption'
-  +#6#7'Compile'#0#9'TMenuItem'#15'CompileProjItem'#7'Caption'#6#15'Compile Pro'
-  +'ject'#0#0#9'TMenuItem'#15'CompileOpenBttn'#7'Caption'#6#20'Compile and Open'
-  +' chm'#0#0#0#9'TMenuItem'#9'MenuItem3'#7'Caption'#6#4'Help'#0#9'TMenuItem'#12
-  +'HelpHelpItem'#7'Caption'#6#4'Help'#0#0#9'TMenuItem'#9'MenuItem5'#7'Caption'
-  +#6#1'-'#0#0#9'TMenuItem'#13'HelpAboutItem'#7'Caption'#6#5'About'#0#0#0#0#11
-  +'TOpenDialog'#11'OpenDialog2'#11'FilterIndex'#2#0#7'Options'#11#18'ofAllowMu'
-  +'ltiSelect'#14'ofEnableSizing'#12'ofViewDetail'#0#4'left'#2#12#3'top'#3'0'#1
-  +#0#0#0
+  +#0#0#0#6'TPanel'#9'MainPanel'#4'Left'#3#12#1#6'Height'#3#215#1#3'Top'#2#0#5
+  +'Width'#3'W'#1#5'Align'#7#8'alClient'#12'ClientHeight'#3#215#1#11'ClientWidt'
+  +'h'#3'W'#1#8'TabOrder'#2#1#0#6'TLabel'#20'TableOfContentsLabel'#4'Left'#2#11
+  +#6'Height'#2#15#3'Top'#2#11#5'Width'#3#136#0#7'Caption'#6#25'Table of Conten'
+  +'ts (*.hhc)'#11'ParentColor'#8#0#0#6'TLabel'#10'IndexLabel'#4'Left'#2#11#6'H'
+  +'eight'#2#15#3'Top'#2';'#5'Width'#2'F'#7'Caption'#6#13'Index (*.hhk)'#11'Par'
+  +'entColor'#8#0#0#6'TLabel'#23'CompileTimeOptionsLabel'#4'Left'#2#11#6'Height'
+  +#2#15#3'Top'#3#219#0#5'Width'#2'{'#7'Caption'#6#21'Compile time options:'#11
+  +'ParentColor'#8#0#0#6'TLabel'#16'DefaultPageLabel'#4'Left'#2#11#6'Height'#2
+  +#15#3'Top'#2'l'#5'Width'#2'H'#7'Caption'#6#12'Default Page'#11'ParentColor'#8
+  +#0#0#6'TLabel'#16'CHMFilenameLabel'#4'Left'#2#12#6'Height'#2#15#3'Top'#3'd'#1
+  +#5'Width'#2'N'#7'Caption'#6#12'CHM filename'#11'ParentColor'#8#0#0#13'TFileN'
+  +'ameEdit'#7'TOCEdit'#23'AnchorSideRight.Control'#7#10'TOCEditBtn'#4'Left'#2
+  +#10#6'Height'#2#23#3'Top'#2#31#5'Width'#3#236#0#16'OnAcceptFileName'#7#21'TO'
+  +'CEditAcceptFileName'#13'DialogOptions'#11#0#6'Filter'#6'0Table of Contents '
+  +'Files(*.hhc)|*.hhc|All files|*'#11'FilterIndex'#2#0#15'HideDirectories'#8#11
+  +'ButtonWidth'#2#23#9'NumGlyphs'#2#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRig'
+  +'ht'#0#10'AutoSelect'#8#8'AutoSize'#8#9'MaxLength'#2#0#8'TabOrder'#2#0#0#0#13
+  +'TFileNameEdit'#9'IndexEdit'#23'AnchorSideRight.Control'#7#12'IndexEditBtn'#4
+  +'Left'#2#10#6'Height'#2#23#3'Top'#2'O'#5'Width'#3#236#0#16'OnAcceptFileName'
+  +#7#23'IndexEditAcceptFileName'#13'DialogOptions'#11#0#6'Filter'#6'$Index Fil'
+  +'es(*.hhk)|*.hhk|All Files|*'#11'FilterIndex'#2#0#15'HideDirectories'#8#11'B'
+  +'uttonWidth'#2#23#9'NumGlyphs'#2#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRigh'
+  +'t'#0#10'AutoSelect'#8#8'AutoSize'#8#9'MaxLength'#2#0#8'TabOrder'#2#1#0#0#7
+  +'TButton'#10'TOCEditBtn'#21'AnchorSideTop.Control'#7#7'TOCEdit'#23'AnchorSid'
+  +'eRight.Control'#7#9'MainPanel'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Le'
+  +'ft'#3#20#1#6'Height'#2#26#3'Top'#2#31#5'Width'#2'<'#7'Anchors'#11#5'akTop'#7
+  +'akRight'#0#8'AutoSize'#9#18'BorderSpacing.Left'#2#30#19'BorderSpacing.Right'
+  +#2#6#7'Caption'#6#4'Edit'#20'Constraints.MinWidth'#2'<'#7'OnClick'#7#15'TOCE'
+  +'ditBtnClick'#8'TabOrder'#2#2#0#0#7'TButton'#12'IndexEditBtn'#21'AnchorSideT'
+  +'op.Control'#7#9'IndexEdit'#23'AnchorSideRight.Control'#7#9'MainPanel'#20'An'
+  +'chorSideRight.Side'#7#9'asrBottom'#4'Left'#3#20#1#6'Height'#2#26#3'Top'#2'O'
+  +#5'Width'#2'<'#7'Anchors'#11#5'akTop'#7'akRight'#0#8'AutoSize'#9#18'BorderSp'
+  ,'acing.Left'#2#30#19'BorderSpacing.Right'#2#6#7'Caption'#6#4'Edit'#20'Constr'
+  +'aints.MinWidth'#2'<'#7'OnClick'#7#17'IndexEditBtnClick'#8'TabOrder'#2#3#0#0
+  +#9'TCheckBox'#16'FollowLinksCheck'#4'Left'#2#19#6'Height'#2' '#3'Top'#3#252#0
+  +#5'Width'#3#179#0#7'Caption'#6'6Parse *.htm* files to include '#10'linked pa'
+  +'ges and images'#7'Enabled'#8#8'TabOrder'#2#4#0#0#9'TCheckBox'#24'CreateSear'
+  +'chableCHMCheck'#4'Left'#2#19#6'Height'#2#22#4'Hint'#6'FOnly indexes files a'
+  +'dded to the project'#10'not files automatically added.'#3'Top'#3'0'#1#5'Wid'
+  +'th'#3#162#0#7'Caption'#6#23'Create a searchable chm'#14'ParentShowHint'#8#8
+  +'ShowHint'#9#8'TabOrder'#2#5#0#0#9'TComboBox'#16'DefaultPageCombo'#4'Left'#2
+  +#11#6'Height'#2#28#3'Top'#3#128#0#5'Width'#3#31#1#10'AutoSelect'#8#10'ItemHe'
+  +'ight'#2#0#5'Style'#7#14'csDropDownList'#8'TabOrder'#2#6#0#0#7'TButton'#10'C'
+  +'ompileBtn'#19'AnchorSideLeft.Side'#7#9'asrBottom'#23'AnchorSideRight.Contro'
+  +'l'#7#14'CompileViewBtn'#4'Left'#2'n'#6'Height'#2'"'#3'Top'#3#167#1#5'Width'
+  +#2'B'#7'Anchors'#11#7'akRight'#8'akBottom'#0#8'AutoSize'#9#19'BorderSpacing.'
+  +'Right'#2#9#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#7'Compile'#7'OnCl'
+  +'ick'#7#15'CompileBtnClick'#8'TabOrder'#2#7#0#0#7'TButton'#14'CompileViewBtn'
+  +#22'AnchorSideLeft.Control'#7#10'CompileBtn'#19'AnchorSideLeft.Side'#7#9'asr'
+  +'Bottom'#4'Left'#3#185#0#6'Height'#2'"'#3'Top'#3#167#1#5'Width'#2'w'#7'Ancho'
+  +'rs'#11#7'akRight'#8'akBottom'#0#8'AutoSize'#9#19'BorderSpacing.Right'#2#13
+  +#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#16'Compile and View'#7'OnCli'
+  +'ck'#7#19'CompileViewBtnClick'#8'TabOrder'#2#8#0#0#13'TFileNameEdit'#15'ChmF'
+  +'ileNameEdit'#4'Left'#2#11#6'Height'#2#23#3'Top'#3'|'#1#5'Width'#3#14#1#16'O'
+  +'nAcceptFileName'#7#29'ChmFileNameEditAcceptFileName'#10'DialogKind'#7#6'dkS'
+  +'ave'#11'DialogTitle'#6#14'Save CHM as...'#13'DialogOptions'#11#0#6'Filter'#6
+  +' Compressed HTML Help Files|*.chm'#11'FilterIndex'#2#0#15'HideDirectories'#8
+  +#11'ButtonWidth'#2#23#9'NumGlyphs'#2#1#10'AutoSelect'#8#8'AutoSize'#8#9'MaxL'
+  +'ength'#2#0#8'TabOrder'#2#9#0#0#0#11'TOpenDialog'#11'OpenDialog1'#6'Filter'#6
+  +#30'Help File Project(*.hfp)|*.hfp'#11'FilterIndex'#2#0#7'Options'#11#15'ofF'
+  +'ileMustExist'#14'ofEnableSizing'#12'ofViewDetail'#0#4'left'#2#10#3'top'#2#20
+  +#0#0#11'TSaveDialog'#11'SaveDialog1'#6'Filter'#6#30'Help File Project(*.hfp)'
+  +'|*.hfp'#11'FilterIndex'#2#0#4'left'#2'('#3'top'#2#20#0#0#9'TMainMenu'#9'Mai'
+  +'nMenu1'#4'left'#2'K'#3'top'#2#20#0#9'TMenuItem'#9'MenuItem1'#7'Caption'#6#7
+  +'Project'#0#9'TMenuItem'#11'ProjNewItem'#7'Caption'#6#3'New'#7'OnClick'#7#16
+  +'ProjNewItemClick'#0#0#9'TMenuItem'#12'ProjOpenItem'#7'Caption'#6#4'Open'#7
+  +'OnClick'#7#17'ProjOpenItemClick'#0#0#9'TMenuItem'#9'MenuItem9'#7'Caption'#6
+  +#1'-'#0#0#9'TMenuItem'#12'ProjSaveItem'#7'Caption'#6#4'Save'#7'OnClick'#7#17
+  +'ProjSaveItemClick'#0#0#9'TMenuItem'#14'ProjSaveAsItem'#7'Caption'#6#7'Save '
+  +'as'#7'OnClick'#7#19'ProjSaveAsItemClick'#0#0#9'TMenuItem'#13'ProjCloseItem'
+  +#7'Caption'#6#5'Close'#7'OnClick'#7#18'ProjCloseItemClick'#0#0#9'TMenuItem'
+  +#10'MenuItem12'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#12'ProjQuitItem'#7'Captio'
+  +'n'#6#12'Quit Program'#7'OnClick'#7#17'ProjQuitItemClick'#0#0#0#9'TMenuItem'
+  +#11'CompileItem'#7'Caption'#6#7'Compile'#0#9'TMenuItem'#15'CompileProjItem'#7
+  +'Caption'#6#15'Compile Project'#0#0#9'TMenuItem'#15'CompileOpenBttn'#7'Capti'
+  +'on'#6#20'Compile and Open chm'#0#0#0#9'TMenuItem'#9'MenuItem3'#7'Caption'#6
+  +#4'Help'#0#9'TMenuItem'#12'HelpHelpItem'#7'Caption'#6#4'Help'#0#0#9'TMenuIte'
+  +'m'#9'MenuItem5'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#13'HelpAboutItem'#7'Capt'
+  +'ion'#6#5'About'#0#0#0#0#11'TOpenDialog'#11'OpenDialog2'#11'FilterIndex'#2#0
+  +#7'Options'#11#18'ofAllowMultiSelect'#14'ofEnableSizing'#12'ofViewDetail'#0#4
+  +'left'#2#12#3'top'#3'0'#1#0#0#0
 ]);

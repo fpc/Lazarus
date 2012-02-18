@@ -54,7 +54,7 @@ type
     ProjOpenItem: TMenuItem;
     MenuItem9: TMenuItem;
     OpenDialog1: TOpenDialog;
-    Panel1: TPanel;
+    MainPanel: TPanel;
     Panel2: TPanel;
     SaveDialog1: TSaveDialog;
     StatusBar1: TStatusBar;
@@ -93,6 +93,8 @@ type
     procedure AddFilesToProject(Strings: TStrings);
     procedure InitFileDialog(Dlg: TFileDialog);
     procedure ProjectDirChanged;
+    function CreateRelativeProjectFile(Filename: string): string;
+    function CreateAbsoluteProjectFile(Filename: string): string;
   public
     Project: TChmProject;
     procedure OpenProject(AFileName: String);
@@ -427,12 +429,12 @@ begin
     end;
   end;
   Project.Files.Assign(FileListBox.Items);
-  Project.TableOfContentsFileName := TOCEdit.FileName;
-  Project.IndexFileName           := IndexEdit.FileName;
+  Project.TableOfContentsFileName := CreateRelativeProjectFile(TOCEdit.FileName);
+  Project.IndexFileName           := CreateRelativeProjectFile(IndexEdit.FileName);
   Project.DefaultPage             := DefaultPageCombo.Text;
   Project.AutoFollowLinks         := FollowLinksCheck.Checked;
   Project.MakeSearchable          := CreateSearchableCHMCheck.Checked;
-  Project.OutputFileName          := ChmFileNameEdit.FileName;
+  Project.OutputFileName          := CreateRelativeProjectFile(ChmFileNameEdit.FileName);
 
   Project.SaveToFile(Project.FileName);
   Modified := False;
@@ -445,7 +447,7 @@ begin
   TOCEdit.Clear;
   IndexEdit.Clear;
   GroupBox1.Enabled      := False;
-  Panel1.Enabled         := False;
+  MainPanel.Enabled         := False;
   CompileItem.Enabled    := False;
   ProjSaveAsItem.Enabled := False;
   ProjSaveItem.Enabled   := False;
@@ -461,7 +463,7 @@ begin
   if not Assigned(Project) then Project := TChmProject.Create;
   Project.LoadFromFile(AFileName);
   GroupBox1.Enabled      := True;
-  Panel1.Enabled         := True;
+  MainPanel.Enabled         := True;
   CompileItem.Enabled    := True;
   ProjSaveAsItem.Enabled := True;
   ProjSaveItem.Enabled   := True;
@@ -523,6 +525,21 @@ begin
   TOCEdit.InitialDir:=Dir;
   IndexEdit.InitialDir:=Dir;
   ChmFileNameEdit.InitialDir:=Dir;
+end;
+
+function TCHMForm.CreateRelativeProjectFile(Filename: string): string;
+begin
+  Result:=Filename;
+  if (Project=nil) or (not FilenameIsAbsolute(Project.FileName)) then exit;
+  Result:=CreateRelativePath(Filename,ExtractFilePath(Project.FileName));
+end;
+
+function TCHMForm.CreateAbsoluteProjectFile(Filename: string): string;
+begin
+  Result:=Filename;
+  if FilenameIsAbsolute(Result) then exit;
+  if (Project=nil) or (not FilenameIsAbsolute(Project.FileName)) then exit;
+  Result:=ExtractFilePath(Project.FileName)+Filename;
 end;
 
 initialization
