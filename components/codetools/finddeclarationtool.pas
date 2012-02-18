@@ -1483,7 +1483,7 @@ begin
       RaiseCursorOutsideCode(CursorPos);
     end;
     {$IFDEF CTDEBUG}
-    DebugLn('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc),' HasChilds=',dbgs(CursorNode.FirstChild<>nil));
+    DebugLn('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc),' HasChildren=',dbgs(CursorNode.FirstChild<>nil));
     {$ENDIF}
     if (not IsDirtySrcValid)
     and (CursorNode.Desc in [ctnUsesSection,ctnUseUnit]) then begin
@@ -2745,7 +2745,7 @@ var
     RaiseNotFound;
   end;
   
-  procedure MoveContextNodeToChilds;
+  procedure MoveContextNodeToChildren;
   begin
     if (ContextNode.LastChild<>nil) then begin
       if not (fdfSearchForward in Params.Flags) then begin
@@ -3199,7 +3199,7 @@ begin
           // these nodes build a parent-child relationship. But in pascal
           // they just define a range and not a context.
           // -> search in all children
-          MoveContextNodeToChilds;
+          MoveContextNodeToChildren;
 
         ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition,
         ctnGenericType, ctnGlobalProperty:
@@ -3272,7 +3272,7 @@ begin
         ctnRecordCase:
           begin
             // search in variable and variants
-            MoveContextNodeToChilds;
+            MoveContextNodeToChildren;
           end;
           
         end;
@@ -6127,13 +6127,13 @@ function TFindDeclarationTool.BuildInterfaceIdentifierCache(
     end;
   end;
 
-  procedure ScanChilds(ParentNode: TCodeTreeNode); forward;
+  procedure ScanChildren(ParentNode: TCodeTreeNode); forward;
 
   procedure ScanNode(Node: TCodeTreeNode);
   begin
     case Node.Desc of
     ctnTypeSection,ctnConstSection,ctnVarSection,ctnResStrSection,ctnPropertySection:
-      ScanChilds(Node);
+      ScanChildren(Node);
     ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnGlobalProperty:
       begin
         FInterfaceIdentifierCache.Add(@Src[Node.StartPos],Node,Node.StartPos);
@@ -6156,7 +6156,7 @@ function TFindDeclarationTool.BuildInterfaceIdentifierCache(
     end;
   end;
 
-  procedure ScanChilds(ParentNode: TCodeTreeNode);
+  procedure ScanChildren(ParentNode: TCodeTreeNode);
   var
     Node: TCodeTreeNode;
   begin
@@ -6209,7 +6209,7 @@ begin
   // create nodes
   if InterfaceNode<>nil then
     // scan interface
-    ScanChilds(InterfaceNode)
+    ScanChildren(InterfaceNode)
   else begin
     // scan program
     Node:=Tree.Root;
@@ -7000,7 +7000,7 @@ var
     NewNode: TCodeTreeNode;
   begin
     {$IFDEF ShowExprEval}
-    debugln(['  FindExpressionTypeOfTerm ResolveChilds used unit -> interface node ',dbgstr(ExprType.Context.Tool.ExtractNode(ExprType.Context.Node,[]))]);
+    debugln(['  FindExpressionTypeOfTerm ResolveChildren used unit -> interface node ',dbgstr(ExprType.Context.Tool.ExtractNode(ExprType.Context.Node,[]))]);
     {$ENDIF}
     aTool:=ExprType.Context.Tool;
     AnUnitName:=aTool.ExtractUsedUnitName(ExprType.Context.Node,@InFilename);
@@ -7011,18 +7011,18 @@ var
     ExprType.Context.Node:=NewNode;
   end;
 
-  procedure ResolveChilds;
+  procedure ResolveChildren;
   begin
     if (ExprType.Context.Node=nil) then exit;
     {$IFDEF ShowExprEval}
-    debugln(['  FindExpressionTypeOfTerm ResolveChilds']);
+    debugln(['  FindExpressionTypeOfTerm ResolveChildren']);
     {$ENDIF}
     ResolveBaseTypeOfIdentifier;
     if (ExprType.Context.Node=nil) then exit;
     if (ExprType.Context.Node.Desc in AllUsableSourceTypes) then begin
       // unit name => interface
       {$IFDEF ShowExprEval}
-      debugln(['  FindExpressionTypeOfTerm ResolveChilds unit -> interface node']);
+      debugln(['  FindExpressionTypeOfTerm ResolveChildren unit -> interface node']);
       {$ENDIF}
       ExprType.Context.Node:=ExprType.Context.Tool.GetInterfaceNode;
     end
@@ -7061,7 +7061,7 @@ var
       ReadNextAtom;
       RaiseIdentExpected;
     end;
-    ResolveChilds;
+    ResolveChildren;
     if (ExprType.Context.Node=nil) then begin
       MoveCursorToCleanPos(CurAtom.StartPos);
       ReadNextAtom;
@@ -7466,7 +7466,7 @@ begin
   until CurAtom.EndPos>EndPos;
 
   if fdfFunctionResult in StartFlags then
-    ResolveChilds;
+    ResolveChildren;
 
   Result:=ExprType;
   if (Result.Desc=xtContext) and (not (fdfFindVariable in StartFlags)) then
