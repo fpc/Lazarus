@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, chmwriter, ComCtrls, chmsitemap, SynEdit, Menus, ExtCtrls, CheckLst,
+  Buttons, ComCtrls, chmsitemap, SynEdit, LazFileUtils, Menus, ExtCtrls,
   EditBtn, chmfilewriter;
 
 type
@@ -67,8 +67,8 @@ type
     procedure ChmFileNameEditAcceptFileName(Sender: TObject; var Value: String);
     procedure CompileBtnClick(Sender: TObject);
     procedure CompileViewBtnClick(Sender: TObject);
-    procedure FileListBoxDrawItem(Control: TWinControl; Index: Integer;
-      ARect: TRect; State: TOwnerDrawState);
+    procedure FileListBoxDrawItem({%H-}Control: TWinControl; Index: Integer;
+      ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure IndexEditAcceptFileName(Sender: TObject; var Value: String);
@@ -84,7 +84,7 @@ type
     procedure TOCEditBtnClick(Sender: TObject);
   private
     FModified: Boolean;
-    procedure AddItems(AParentItem: TTreeNode; ChmItems: TChmSiteMapItems);
+    procedure AddItems({%H-}AParentItem: TTreeNode; {%H-}ChmItems: TChmSiteMapItems);
 
     function GetModified: Boolean;
     procedure Save(aAs: Boolean);
@@ -105,9 +105,6 @@ uses CHMSiteMapEditor, LHelpControl, Process;
 { TCHMForm }
 
 procedure TCHMForm.AddItems(AParentItem: TTreeNode; ChmItems: TChmSiteMapItems);
-  var
-    Item: TTreeNode;
-    I: Integer;
   begin
 {    for I := 0 to ChmItems.Count-1 do begin
       Item := TreeView1.Items.AddChild(AParentItem, ChmItems.Item[I].Text);
@@ -116,9 +113,6 @@ procedure TCHMForm.AddItems(AParentItem: TTreeNode; ChmItems: TChmSiteMapItems);
  } end;
 
 procedure TCHMForm.Button1Click(Sender: TObject);
-var
-  SiteMap: TChmSiteMap;
-  Stream: TMemoryStream;
 begin
   {SiteMap := TChmSiteMap.Create(stTOC);
   OpenDialog1.InitialDir := GetCurrentDir;
@@ -186,10 +180,6 @@ begin
 end;
 
 procedure TCHMForm.Button2Click(Sender: TObject);
-var
-  OutStream: TFileStream;
-  CHM: TChmWriter;
-  I: Integer;
 begin
     {
   if OpenDialog1.Execute = False then Exit;
@@ -422,8 +412,6 @@ begin
 end;
 
 procedure TCHMForm.Save(aAs: Boolean);
-var
-  SaveName: String;
 begin
   if aAs or (Project.FileName = '') then
     if  SaveDialog1.Execute then
@@ -481,11 +469,10 @@ end;
 
 procedure TCHMForm.AddFilesToProject(Strings: TStrings);
 var
-  ADir, BDir: String;
+  BDir: String;
   I: Integer;
   RelativePath: String;
   FileName: String;
-  NewFileName: String;
 begin
   Modified := True;
   BDir := ExtractFilePath(Project.FileName);
