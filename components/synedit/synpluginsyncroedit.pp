@@ -739,13 +739,15 @@ begin
   if FGlyphLastLine <> -2 then begin
     if SynEdit.HandleAllocated then begin
       rcInval := GetGutterGlyphRect(FGlyphLastLine);
+      // and make sure we trigger the Markup // TODO: triigger markup on gutter paint too
+      rcInval.Right := Max(rcInval.Right, TCustomSynEdit(SynEdit).ClientRect.Right);
       InvalidateRect(SynEdit.Handle, @rcInval, False);
     end;
   end;
   if SynEdit.HandleAllocated then begin
     rcInval := GetGutterGlyphRect;
     // and make sure we trigger the Markup // TODO: triigger markup on gutter paint too
-    rcInval.Right := Max(rcInval.Right, TCustomSynEdit(SynEdit).Gutter.Width + 2);
+    rcInval.Right := Max(rcInval.Right, TCustomSynEdit(SynEdit).ClientRect.Right);
     InvalidateRect(SynEdit.Handle, @rcInval, False);
   end;
 end;
