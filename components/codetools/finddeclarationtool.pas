@@ -1096,7 +1096,7 @@ begin
             FindContext.Tool.ExtractIdentifier(IdentNode.FirstChild.StartPos)+'"'
         else
           Result:=Result+' Generic=?';
-      end else if IdentNode.Desc=ctnProperty then begin
+      end else if IdentNode.Desc in [ctnProperty,ctnGlobalProperty] then begin
         Result:=Result+' PropName="'+
           FindContext.Tool.ExtractPropName(IdentNode,false)+'"';
         break;
@@ -3661,7 +3661,8 @@ begin
 
       AddNodeToStack(NodeStack,Result.Tool,Result.Node);
 
-      if (Result.Node.Desc in AllIdentifierDefinitions) then begin
+      if (Result.Node.Desc in (AllSimpleIdentifierDefinitions+[ctnGenericType]))
+      then begin
         // instead of variable/const/type definition, return the type
         TestContext.Node:=FindTypeNodeOfDefinition(Result.Node);
         if TestContext.Node=nil then
@@ -3790,7 +3791,8 @@ begin
             RaiseException(ctsAncestorIsNotProperty);
           end;
           Result:=TestContext;
-        end;
+        end else
+          break;
       end else
       if (Result.Node.Desc in [ctnProcedure,ctnProcedureHead]) then begin
         if Result.Node.Desc=ctnProcedure then
@@ -3893,7 +3895,7 @@ var
     else if (NewNode.Desc in [ctnProcedure,ctnProcedureHead])
     and (PositionInProcName(NewNode,false,CleanPos)) then
       Result:=true
-    else if (NewNode.Desc=ctnProperty)
+    else if (NewNode.Desc in [ctnProperty,ctnGlobalProperty])
     and (PositionInPropertyName(NewNode,CleanPos)) then
       Result:=true
     else if (NewNode.Desc in AllSourceTypes)
@@ -4319,7 +4321,7 @@ var
     if Node.Desc in [ctnProcedure,ctnProcedureHead] then begin
       MoveCursorToProcName(Node,true);
       p:=CurPos.StartPos;
-    end else if Node.Desc=ctnProperty then begin
+    end else if Node.Desc in [ctnProperty,ctnGlobalProperty] then begin
       MoveCursorToPropName(Node);
       p:=CurPos.StartPos;
     end;
@@ -4933,7 +4935,7 @@ begin
   Result:=false;
   if (ANode=nil) or (ANode.StartPos<1) then exit;
   JumpPos:=ANode.StartPos;
-  if ANode.Desc=ctnProperty then begin
+  if ANode.Desc in [ctnProperty,ctnGlobalProperty] then begin
     MoveCursorToPropName(ANode);
     JumpPos:=CurPos.StartPos;
   end;
@@ -6778,7 +6780,7 @@ var
       // the variable is wanted, not its type
       exit;
     if (not AtEnd)
-    and (Context.Node.Desc=ctnProperty)
+    and (Context.Node.Desc in [ctnProperty,ctnGlobalProperty])
     and Context.Tool.PropertyNodeHasParamList(Context.Node)
     then begin
       // the parameter list is resolved with the [] operators
@@ -8226,7 +8228,7 @@ begin
   {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   Result:=Node;
   if Result=nil then exit;
-  if (Result.Desc=ctnProperty) then
+  if (Result.Desc in [ctnProperty,ctnGlobalProperty]) then
     Result:=Result.FirstChild
   else if Result.Desc in [ctnProcedure,ctnProcedureHead,ctnProcedureType] then begin
     BuildSubTreeForProcHead(Result);
@@ -8615,7 +8617,7 @@ begin
       Result:=vatKeyWord
     else if UpAtomIs('PROPERTY') then begin
       Node:=FindDeepestNodeAtPos(CurPos.StartPos,false);
-      if (Node<>nil) and (Node.Desc=ctnProperty) then
+      if (Node<>nil) and (Node.Desc in [ctnProperty,ctnPropertySection]) then
         Result:=vatKeyword
       else
         Result:=vatIdentifier;
