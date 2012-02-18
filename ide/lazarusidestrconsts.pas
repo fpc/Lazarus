@@ -2377,6 +2377,7 @@ resourcestring
   ueModified='Modified';
   ueLocked='Locked';
   ueMacroRecording = 'Recording';
+  ueMacroRecordingPaused = 'Rec-pause';
   uepReadonly= 'Readonly';
   uepIns='INS';
   uepOvr='OVR';

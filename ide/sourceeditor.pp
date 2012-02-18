@@ -6959,6 +6959,13 @@ begin
         PanelFileMode := PanelFileMode + lisUEModeSeparator;
       PanelFileMode := PanelFileMode + ueMacroRecording;
     end;
+    if (Manager.MacroRecorder.State = msPaused) and
+       (Manager.MacroRecorder.CurrentEditor = CurEditor)
+    then begin
+      if PanelFileMode <> '' then
+        PanelFileMode := PanelFileMode + lisUEModeSeparator;
+      PanelFileMode := PanelFileMode + ueMacroRecordingPaused;
+    end;
 
     If TempEditor.IsLocked then begin
       if PanelFileMode <> '' then
