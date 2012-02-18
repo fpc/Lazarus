@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, LResources, Graphics,
-  Controls, ComCtrls, EditBtn, FileUtil, AvgLvlTree, fgl;
+  Controls, ComCtrls, EditBtn, LCLType, FileUtil, AvgLvlTree, fgl;
 
 type
 
@@ -65,6 +65,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MoveNext; override;
     procedure MovePrev; override;
+    procedure ReturnPressed; override;
     procedure SortAndFilter; override;
     procedure ApplyFilterCore; override;
     function GetDefaultGlyph: TBitmap; override;
@@ -517,6 +518,15 @@ end;
 procedure TTreeFilterEdit.MovePrev;
 begin
   fFilteredTreeview.MoveToPrevNode;
+end;
+
+procedure TTreeFilterEdit.ReturnPressed;
+var
+  Key: Char;
+begin
+  Key:=Char(VK_RETURN);
+  if Assigned(fFilteredTreeview.OnKeyPress) then
+    fFilteredTreeview.OnKeyPress(fFilteredTreeview, Key);
 end;
 
 end.

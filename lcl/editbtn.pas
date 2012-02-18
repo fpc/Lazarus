@@ -188,6 +188,7 @@ type
     procedure ApplyFilterCore; virtual; abstract;
     procedure MoveNext; virtual; abstract;
     procedure MovePrev; virtual; abstract;
+    procedure ReturnPressed; virtual; abstract;
     function GetDefaultGlyphName: String; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -896,13 +897,14 @@ end;
 
 procedure TCustomControlFilterEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  if (Key in [VK_UP, VK_DOWN]) and (Shift = []) then
+  if (Key in [VK_UP, VK_DOWN, VK_RETURN]) and (Shift = []) then
   begin
     case Key of
-      VK_UP:   MovePrev;
-      VK_DOWN: MoveNext;
+      VK_UP:     MovePrev;
+      VK_DOWN:   MoveNext;
+      VK_RETURN: ReturnPressed;
     end;
-    Key:=0;
+    Key:=VK_UNKNOWN;
   end
   else inherited KeyDown(Key, Shift);
 end;
@@ -946,8 +948,8 @@ begin
     RestoreSelection;
   end
   else begin
-    if [csDestroying,csDesigning]*ComponentState<>[] then exit;
-    InvalidateFilter;
+    if [csDestroying,csDesigning]*ComponentState=[] then
+      InvalidateFilter;
   end;
 end;
 

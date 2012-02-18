@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, LResources, Graphics, Controls, StdCtrls,
-  LCLProc, EditBtn, FileUtil, AvgLvlTree;
+  LCLProc, LCLType, EditBtn, CheckLst, FileUtil, AvgLvlTree;
 
 type
 
@@ -31,6 +31,7 @@ type
   protected
     procedure MoveNext; override;
     procedure MovePrev; override;
+    procedure ReturnPressed; override;
     procedure SortAndFilter; override;
     procedure ApplyFilterCore; override;
     function GetDefaultGlyph: TBitmap; override;
@@ -54,8 +55,6 @@ var
 procedure Register;
 
 implementation
-
-uses CheckLst;
 
 procedure Register;
 begin
@@ -251,6 +250,15 @@ begin
     UnselectAll;
     fFilteredListbox.Selected[i] := True;
   end;
+end;
+
+procedure TListFilterEdit.ReturnPressed;
+var
+  Key: Char;
+begin
+  Key:=Char(VK_RETURN);
+  if Assigned(fFilteredListbox.OnKeyPress) then
+    fFilteredListbox.OnKeyPress(fFilteredListbox, Key);
 end;
 
 end.
