@@ -678,6 +678,7 @@ function DbgStr(const StringWithSpecialChars: string): string;
 var
   i: Integer;
   s: String;
+  l: Integer;
 begin
   Result:=StringWithSpecialChars;
   i:=1;
@@ -686,7 +687,12 @@ begin
     ' '..#126: inc(i);
     else
       s:='#'+HexStr(ord(Result[i]),2);
-      Result:=copy(Result,1,i-1)+s+copy(Result,i+1,length(Result)-i);
+      // Note: do not use copy, fpc 2.7.1 changes broken UTF-8 characters to '?'
+      l:=length(Result)-i;
+      SetLength(Result,length(Result)-1+length(s));
+      if l>0 then
+        system.Move(Result[i+1],Result[i+length(s)],l);
+      system.Move(s[1],Result[i],length(s));
       inc(i,length(s));
     end;
   end;
