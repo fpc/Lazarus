@@ -121,7 +121,7 @@ function DbgSName(const p: TObject): string; overload;
 function DbgSName(const p: TClass): string; overload;
 function DbgStr(const StringWithSpecialChars: string): string; overload;
 function DbgWideStr(const StringWithSpecialChars: widestring): string; overload;
-function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string; overload;
+function dbgMemRange(P: Pointer; Count: integer; Width: integer = 0): string; overload;
 function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string; overload;
 function dbgObjMem(AnObject: TObject): string; overload;
 function dbghex(i: Int64): string; overload;
@@ -726,7 +726,7 @@ begin
   end;
 end;
 
-function dbgMemRange(P: PByte; Count: integer; Width: integer): string;
+function dbgMemRange(P: Pointer; Count: integer; Width: integer): string;
 const
   HexChars: array[0..15] of char = '0123456789ABCDEF';
   LineEnd: shortstring = LineEnding;
