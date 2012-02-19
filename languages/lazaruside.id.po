@@ -697,11 +697,6 @@ msgstr ""
 msgid "Apply"
 msgstr "Terapkan"
 
-#: lazarusidestrconsts.dlgcancel
-msgctxt "lazarusidestrconsts.dlgcancel"
-msgid "Cancel"
-msgstr "Batal"
-
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
 msgid "&Case sensitive"
@@ -1021,22 +1016,6 @@ msgstr ""
 msgid "Command line parameters (without application name)"
 msgstr "Parameter baris perintah (tanpa nama aplikasi)"
 
-#: lazarusidestrconsts.dlgcomovedown
-msgid "Move down"
-msgstr ""
-
-#: lazarusidestrconsts.dlgcomoveleveldown
-msgid "Move level down"
-msgstr ""
-
-#: lazarusidestrconsts.dlgcomovelevelup
-msgid "Move level up"
-msgstr ""
-
-#: lazarusidestrconsts.dlgcomoveup
-msgid "Move up"
-msgstr ""
-
 #: lazarusidestrconsts.dlgcompilermessage
 msgid "Compiler messages"
 msgstr ""
@@ -1333,11 +1312,6 @@ msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
 msgstr ""
 
-#: lazarusidestrconsts.dlgdownword
-msgctxt "lazarusidestrconsts.dlgdownword"
-msgid "Down"
-msgstr "Turun"
-
 #: lazarusidestrconsts.dlgedadd
 #, fuzzy
 #| msgid "Add..."
@@ -1377,11 +1351,6 @@ msgstr "Penangguhan"
 #: lazarusidestrconsts.dlgeddelayinsec
 msgid "(%s sec delay)"
 msgstr ""
-
-#: lazarusidestrconsts.dlgeddelete
-msgctxt "lazarusidestrconsts.dlgeddelete"
-msgid "Delete"
-msgstr "Hapus"
 
 #: lazarusidestrconsts.dlgeddisplay
 msgid "Display"
@@ -1614,11 +1583,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgfolddiffchunksect
 msgid "Chunk section"
 msgstr ""
-
-#: lazarusidestrconsts.dlgfolddifffile
-msgctxt "lazarusidestrconsts.dlgfolddifffile"
-msgid "File"
-msgstr "File"
 
 #: lazarusidestrconsts.dlgfoldhtmlasp
 msgid "ASP"
@@ -1870,11 +1834,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.dlggroupenvironment"
 msgid "Environment"
 msgstr "Lingkungan"
-
-#: lazarusidestrconsts.dlggrouphelp
-msgctxt "lazarusidestrconsts.dlggrouphelp"
-msgid "Help"
-msgstr "Panduan"
 
 #: lazarusidestrconsts.dlggroupundo
 msgid "Group Undo"
@@ -2246,11 +2205,6 @@ msgstr ""
 msgid "Unfold One (Some Colapsed)"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmousefoldenabled
-msgctxt "lazarusidestrconsts.dlgmousefoldenabled"
-msgid "Enabled"
-msgstr "Hidupkan"
-
 #: lazarusidestrconsts.dlgmousefoldexpfoldall
 msgid "Fold All (All Expanded)"
 msgstr ""
@@ -2305,29 +2259,9 @@ msgctxt "lazarusidestrconsts.dlgmouseoptbtn4"
 msgid "Quad"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmouseoptbtnadd
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnadd"
-msgid "Add"
-msgstr "Tambah"
-
 #: lazarusidestrconsts.dlgmouseoptbtnany
 msgid "Any"
 msgstr ""
-
-#: lazarusidestrconsts.dlgmouseoptbtncancel
-msgctxt "lazarusidestrconsts.dlgmouseoptbtncancel"
-msgid "Cancel"
-msgstr "Batal"
-
-#: lazarusidestrconsts.dlgmouseoptbtndel
-msgctxt "lazarusidestrconsts.dlgmouseoptbtndel"
-msgid "Delete"
-msgstr "Hapus"
-
-#: lazarusidestrconsts.dlgmouseoptbtndown
-msgctxt "lazarusidestrconsts.dlgmouseoptbtndown"
-msgid "Down"
-msgstr "Turun"
 
 #: lazarusidestrconsts.dlgmouseoptbtnexport
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
@@ -2363,27 +2297,10 @@ msgstr ""
 msgid "Make Fallback"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmouseoptbtnok
-#, fuzzy
-#| msgid "Ok"
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnok"
-msgid "OK"
-msgstr "Ok"
-
 #: lazarusidestrconsts.dlgmouseoptbtnright
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnright"
 msgid "Right"
 msgstr "Right"
-
-#: lazarusidestrconsts.dlgmouseoptbtnudp
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnudp"
-msgid "Change"
-msgstr "Ubah"
-
-#: lazarusidestrconsts.dlgmouseoptbtnup
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnup"
-msgid "Up"
-msgstr "Naik"
 
 #: lazarusidestrconsts.dlgmouseoptbtnwheeldown
 msgid "Wheel down"
@@ -2643,26 +2560,6 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"
-msgstr ""
-
-#: lazarusidestrconsts.dlgnotebooktabposbottom
-msgctxt "lazarusidestrconsts.dlgnotebooktabposbottom"
-msgid "Bottom"
-msgstr ""
-
-#: lazarusidestrconsts.dlgnotebooktabposleft
-msgctxt "lazarusidestrconsts.dlgnotebooktabposleft"
-msgid "Left"
-msgstr "Left"
-
-#: lazarusidestrconsts.dlgnotebooktabposright
-msgctxt "lazarusidestrconsts.dlgnotebooktabposright"
-msgid "Right"
-msgstr "Right"
-
-#: lazarusidestrconsts.dlgnotebooktabpostop
-msgctxt "lazarusidestrconsts.dlgnotebooktabpostop"
-msgid "Top"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnotsplitlineafter
@@ -2989,15 +2886,6 @@ msgstr "Gunakan tampilan"
 #: lazarusidestrconsts.dlgrunouseroverrides
 msgid "User overrides"
 msgstr "Penolakan pemakai"
-
-#: lazarusidestrconsts.dlgrunovalue
-msgctxt "lazarusidestrconsts.dlgrunovalue"
-msgid "Value"
-msgstr ""
-
-#: lazarusidestrconsts.dlgrunovariable
-msgid "Variable"
-msgstr "Variabel"
 
 #: lazarusidestrconsts.dlgrunparameters
 #, fuzzy
@@ -3365,11 +3253,6 @@ msgstr ""
 msgid "Undo limit"
 msgstr "Batas Undo"
 
-#: lazarusidestrconsts.dlgunitdepbrowse
-msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
-msgid "Open"
-msgstr ""
-
 #: lazarusidestrconsts.dlgunitdepcaption
 #, fuzzy
 #| msgid "Unit dependencies"
@@ -3388,11 +3271,6 @@ msgstr "Direktori output unit (-FU):"
 #: lazarusidestrconsts.dlgunsavedlinecolor
 msgid "Unsaved line"
 msgstr ""
-
-#: lazarusidestrconsts.dlgupword
-msgctxt "lazarusidestrconsts.dlgupword"
-msgid "Up"
-msgstr "Naik"
 
 #: lazarusidestrconsts.dlgusecodefolding
 #, fuzzy
@@ -4014,9 +3892,17 @@ msgstr ""
 msgid "Actions:"
 msgstr ""
 
+#: lazarusidestrconsts.lisactivate
+msgid "Activate"
+msgstr ""
+
 #: lazarusidestrconsts.lisactivateregularexpressionsyntaxfortextandreplaceme
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
 msgstr "Aktifkan aturan ekspresi reguler untuk teks dan penggantian (mirip sekali dengan perl)"
+
+#: lazarusidestrconsts.lisactivateselected
+msgid "Activate Selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisactive
 msgid "Active"
@@ -4025,6 +3911,11 @@ msgstr ""
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr ""
+
+#: lazarusidestrconsts.lisadd
+msgctxt "lazarusidestrconsts.lisadd"
+msgid "Add"
+msgstr "Tambah"
 
 #: lazarusidestrconsts.lisadddirectory
 msgid "Add directory"
@@ -4245,6 +4136,14 @@ msgstr "Unit Dwimakna ditemukan"
 msgid "Ambiguous unit found"
 msgstr ""
 
+#: lazarusidestrconsts.lisanchorbottomtobottomside
+msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
+msgstr ""
+
+#: lazarusidestrconsts.lisanchorbottomtotopside
+msgid "Anchor bottom side to top side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling."
+msgstr ""
+
 #: lazarusidestrconsts.lisanchoreditornocontrolselected
 msgid "Anchor Editor - no control selected"
 msgstr "Editor Anchor - tidak ada kontrol dipilih"
@@ -4253,25 +4152,33 @@ msgstr "Editor Anchor - tidak ada kontrol dipilih"
 msgid "Enabled = Include %s in Anchors"
 msgstr ""
 
+#: lazarusidestrconsts.lisanchorlefttoleftside
+msgid "Anchor left side to left side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
+msgstr ""
+
+#: lazarusidestrconsts.lisanchorlefttorightside
+msgid "Anchor left side to right side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling."
+msgstr ""
+
+#: lazarusidestrconsts.lisanchorrighttoleftside
+msgid "Anchor right side to left side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling."
+msgstr ""
+
+#: lazarusidestrconsts.lisanchorrighttorightside
+msgid "Anchor right side to right side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
+msgstr ""
+
 #: lazarusidestrconsts.lisanchorsofselectedcontrols
 msgid "Anchors of selected controls"
 msgstr "Anchor dari kontrol yang dipilih"
 
-#: lazarusidestrconsts.lisanchortobottomsidekeepborderspace
-msgid "Anchor to bottom side of sibling, keep border space"
-msgstr "Anchor ke sisi bawah dari yang terdekat, biarkan batas spasi"
+#: lazarusidestrconsts.lisanchortoptobottomside
+msgid "Anchor top side to bottom side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling."
+msgstr ""
 
-#: lazarusidestrconsts.lisanchortoleftsidekeepborderspace
-msgid "Anchor to left side of sibling, keep border space"
-msgstr "Anchor ke sisi kiri dari yang terdekat, biarkan batas spasi"
-
-#: lazarusidestrconsts.lisanchortorightsidekeepborderspace
-msgid "Anchor to right side of sibling, keep border space"
-msgstr "Anchor ke sisi kanan dari yang terdekat, biarkan batas spasi"
-
-#: lazarusidestrconsts.lisanchortotopsidekeepborderspace
-msgid "Anchor to top side of sibling, keep border space"
-msgstr "Anchor ke sisi atas dari yang terdekat, biarkan batas spasi"
+#: lazarusidestrconsts.lisanchortoptotopside
+msgid "Anchor top side to top side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
+msgstr ""
 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
 msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
@@ -4514,19 +4421,46 @@ msgstr ""
 msgid "Browse for Compiler (%s)"
 msgstr "Melihat Kompilator (%s)"
 
-#: lazarusidestrconsts.lisbtnbreak
-msgctxt "lazarusidestrconsts.lisbtnbreak"
-msgid "Break"
+#: lazarusidestrconsts.lisbtnadd
+msgctxt "lazarusidestrconsts.lisbtnadd"
+msgid "&Add"
+msgstr "T&ambah"
+
+#: lazarusidestrconsts.lisbtnclose
+msgctxt "lazarusidestrconsts.lisbtnclose"
+msgid "&Close"
+msgstr "&Tutup"
+
+#: lazarusidestrconsts.lisbtndelete
+msgctxt "lazarusidestrconsts.lisbtndelete"
+msgid "&Delete"
+msgstr "&Hapus"
+
+#: lazarusidestrconsts.lisbtndlgreplace
+msgctxt "lazarusidestrconsts.lisbtndlgreplace"
+msgid "&Replace ..."
 msgstr ""
 
-#: lazarusidestrconsts.lisbtncontinue
-msgctxt "lazarusidestrconsts.lisbtncontinue"
-msgid "Continue"
-msgstr "Lanjutkan"
+#: lazarusidestrconsts.lisbtnenabled
+msgctxt "lazarusidestrconsts.lisbtnenabled"
+msgid "&Enabled"
+msgstr "&Dihidupkan"
 
 #: lazarusidestrconsts.lisbtnfind
 msgid "&Find"
 msgstr ""
+
+#: lazarusidestrconsts.lisbtnquit
+#, fuzzy
+#| msgid "Quit"
+msgctxt "lazarusidestrconsts.lisbtnquit"
+msgid "&Quit"
+msgstr "Keluar"
+
+#: lazarusidestrconsts.lisbtnremove
+msgctxt "lazarusidestrconsts.lisbtnremove"
+msgid "&Remove"
+msgstr "&Hapus"
 
 #: lazarusidestrconsts.lisbtnreplace
 msgid "&Replace"
@@ -4865,11 +4799,15 @@ msgid "Nested procedures count treated as \"many\""
 msgstr ""
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
-msgid "Center control horizontally relative to the given sibling"
+#, fuzzy
+#| msgid "Center control horizontally relative to the given sibling"
+msgid "Center control horizontally relative to the given sibling. BorderSpacing is ignored."
 msgstr "Tengahkan kontrol secara horisontal relatif ke yang terdekat"
 
 #: lazarusidestrconsts.liscentercontrolverticallyrelativetosibling
-msgid "Center control vertically relative to the given sibling"
+#, fuzzy
+#| msgid "Center control vertically relative to the given sibling"
+msgid "Center control vertically relative to the given sibling. BorderSpacing is ignored."
 msgstr "Tengahkan kontrol secara vertikal relatif ke yang terdekat"
 
 #: lazarusidestrconsts.liscenterform
@@ -5102,6 +5040,11 @@ msgstr ""
 msgid "Unable to clear the form editing selection%s%s"
 msgstr ""
 
+#: lazarusidestrconsts.lischange
+msgctxt "lazarusidestrconsts.lischange"
+msgid "Change"
+msgstr "Ubah"
+
 #: lazarusidestrconsts.lischangebuildmode
 msgid "Change build mode"
 msgstr ""
@@ -5143,6 +5086,10 @@ msgstr ""
 #: lazarusidestrconsts.lischaractermap
 msgid "Character Map"
 msgstr "Peta Karakter"
+
+#: lazarusidestrconsts.lischeckall
+msgid "Check All"
+msgstr ""
 
 #: lazarusidestrconsts.lischeckfordiskfilechangesviacontentratherthantimesta
 msgid "Check for disk file changes via content rather than timestamp"
@@ -5341,7 +5288,7 @@ msgid "Clear Directory?"
 msgstr ""
 
 #: lazarusidestrconsts.lisclearkeymapping
-msgid "Clear Key Mapping"
+msgid "Clear Command's Mapping"
 msgstr ""
 
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
@@ -5353,8 +5300,20 @@ msgid "Click to see the possible uses"
 msgstr ""
 
 #: lazarusidestrconsts.lisclose
-msgid "&Close"
+#, fuzzy
+#| msgid "&Close"
+msgctxt "lazarusidestrconsts.lisclose"
+msgid "Close"
 msgstr "&Tutup"
+
+#: lazarusidestrconsts.liscloseall
+msgctxt "lazarusidestrconsts.liscloseall"
+msgid "Close All"
+msgstr "Tutup Semua"
+
+#: lazarusidestrconsts.liscloseallchecked
+msgid "Close All Checked"
+msgstr ""
 
 #: lazarusidestrconsts.lisclosealltabsclose
 msgid "Close files"
@@ -5555,16 +5514,6 @@ msgstr ""
 msgid "<NONE>"
 msgstr "<TIDAK ADA>"
 
-#: lazarusidestrconsts.liscodehelpreplacebutton
-msgctxt "lazarusidestrconsts.liscodehelpreplacebutton"
-msgid "Replace"
-msgstr ""
-
-#: lazarusidestrconsts.liscodehelpsavebutton
-msgctxt "lazarusidestrconsts.liscodehelpsavebutton"
-msgid "Save"
-msgstr ""
-
 #: lazarusidestrconsts.liscodehelpseealsotag
 msgid "See also"
 msgstr "Lihat juga"
@@ -5597,8 +5546,10 @@ msgid "Ignore next unnamed constants"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetempladd
+#, fuzzy
+#| msgid "Add"
 msgctxt "lazarusidestrconsts.liscodetempladd"
-msgid "Add"
+msgid "Add template"
 msgstr "Tambah"
 
 #: lazarusidestrconsts.liscodetempladdcodetemplate
@@ -5725,11 +5676,6 @@ msgstr "Deskripsi:"
 msgid "%s directory"
 msgstr "direktori %s"
 
-#: lazarusidestrconsts.liscodetoolsdefsedit
-msgctxt "lazarusidestrconsts.liscodetoolsdefsedit"
-msgid "Edit"
-msgstr "Edit"
-
 #: lazarusidestrconsts.liscodetoolsdefselse
 msgid "Else"
 msgstr "Else"
@@ -5753,11 +5699,6 @@ msgstr "Kesalahan ketika penulisan %s%s%s%s%s"
 #: lazarusidestrconsts.liscodetoolsdefserrorwhilewritingprojectinfofile
 msgid "Error while writing project info file %s%s%s%s%s"
 msgstr "Kesalahan ketika penulisan file info proyek %s%s%s%s%s"
-
-#: lazarusidestrconsts.liscodetoolsdefsexit
-msgctxt "lazarusidestrconsts.liscodetoolsdefsexit"
-msgid "Exit"
-msgstr "Keluar"
 
 #: lazarusidestrconsts.liscodetoolsdefsexitwithoutsave
 msgid "Exit without Save"
@@ -6061,11 +6002,6 @@ msgstr "Tidak ada"
 msgid "Number"
 msgstr "Nomor"
 
-#: lazarusidestrconsts.liscodetoolsoptsok
-msgctxt "lazarusidestrconsts.liscodetoolsoptsok"
-msgid "Ok"
-msgstr "Ok"
-
 #: lazarusidestrconsts.liscodetoolsoptspoint
 msgid "Point"
 msgstr "Titik"
@@ -6122,6 +6058,10 @@ msgstr "Perintah seteleahnya tidak benar"
 #: lazarusidestrconsts.liscommandafterpublishingmodule
 msgid "Command after publishing module"
 msgstr "Perintah setelah mempublikasikan modul"
+
+#: lazarusidestrconsts.liscommandedithint
+msgid "Edit command's mapping with double click, Return key or Popup menu"
+msgstr ""
 
 #: lazarusidestrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
@@ -6592,6 +6532,11 @@ msgstr ""
 msgid "Unknown properties"
 msgstr ""
 
+#: lazarusidestrconsts.liscopy
+msgctxt "lazarusidestrconsts.liscopy"
+msgid "Copy"
+msgstr "Copy"
+
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
 msgstr ""
@@ -6833,6 +6778,11 @@ msgstr "Program Kustom"
 msgid "Custom Program%sA Free Pascal program."
 msgstr "Program Kustom%sProgram freepascal"
 
+#: lazarusidestrconsts.liscut
+msgctxt "lazarusidestrconsts.liscut"
+msgid "Cut"
+msgstr "Cut"
+
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr ""
@@ -7027,13 +6977,6 @@ msgctxt "lazarusidestrconsts.lisdebuggerfeedbackmore"
 msgid "More"
 msgstr ""
 
-#: lazarusidestrconsts.lisdebuggerfeedbackok
-#, fuzzy
-#| msgid "Ok"
-msgctxt "lazarusidestrconsts.lisdebuggerfeedbackok"
-msgid "OK"
-msgstr "Ok"
-
 #: lazarusidestrconsts.lisdebuggerfeedbackstop
 msgctxt "lazarusidestrconsts.lisdebuggerfeedbackstop"
 msgid "Stop"
@@ -7109,10 +7052,6 @@ msgstr "Ditangani oleh Debugger"
 msgid "Handled by Program"
 msgstr "Ditangani oleh Program"
 
-#: lazarusidestrconsts.lisdebugoptionsfrmid
-msgid "ID"
-msgstr "ID"
-
 #: lazarusidestrconsts.lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
 msgstr "Abaikan eksepsi ini"
@@ -7131,11 +7070,6 @@ msgstr "Batasi hitungan baris ke"
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmmodule"
 msgid "Module"
 msgstr ""
-
-#: lazarusidestrconsts.lisdebugoptionsfrmname
-msgctxt "lazarusidestrconsts.lisdebugoptionsfrmname"
-msgid "Name"
-msgstr "Nama"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
 msgid "Notify on Lazarus Exceptions"
@@ -7217,6 +7151,11 @@ msgstr ""
 #: lazarusidestrconsts.lisdelayforhintsandcompletionbox
 msgid "Delay for hints and completion box"
 msgstr ""
+
+#: lazarusidestrconsts.lisdelete
+msgctxt "lazarusidestrconsts.lisdelete"
+msgid "Delete"
+msgstr "Hapus"
 
 #: lazarusidestrconsts.lisdeleteall
 msgid "&Delete All"
@@ -7523,6 +7462,20 @@ msgstr "Beberapa file telah berubah pada disk:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Bedakan huruf besar dan kecil contoh A dan a"
 
+#: lazarusidestrconsts.lisdlgeditorwindowmanager
+msgid "Editor Window Manager ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisdlgopen
+msgctxt "lazarusidestrconsts.lisdlgopen"
+msgid "Open ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisdlgsave
+msgctxt "lazarusidestrconsts.lisdlgsave"
+msgid "Save ..."
+msgstr "Simpan ..."
+
 #: lazarusidestrconsts.lisdocumentationeditor
 msgid "Documentation Editor"
 msgstr "Editor Dokumentasi"
@@ -7562,6 +7515,11 @@ msgstr ""
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
 msgstr ""
+
+#: lazarusidestrconsts.lisdown
+msgctxt "lazarusidestrconsts.lisdown"
+msgid "Down"
+msgstr "Turun"
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
@@ -7635,6 +7593,11 @@ msgstr ""
 msgid "Duplicate sources. Delete one or make sure all search paths have correct order (Hint: FPC uses last path first)."
 msgstr ""
 
+#: lazarusidestrconsts.lisedit
+msgctxt "lazarusidestrconsts.lisedit"
+msgid "Edit"
+msgstr "Edit"
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr ""
@@ -7643,8 +7606,16 @@ msgstr ""
 msgid "Edit help"
 msgstr ""
 
+#: lazarusidestrconsts.liseditkeymapping
+msgid "Edit Command's Mapping"
+msgstr ""
+
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
+msgstr ""
+
+#: lazarusidestrconsts.liseditorwindowmanager
+msgid "Editor Window Manager"
 msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
@@ -7745,16 +7716,13 @@ msgstr "Edit Piranti"
 msgid "Hide main form"
 msgstr ""
 
-#: lazarusidestrconsts.lisedtexttoolinsert
-msgid "Insert"
-msgstr "Insert"
-
 #: lazarusidestrconsts.lisedtexttoolkey
 msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
 msgstr "Kunci"
 
 #: lazarusidestrconsts.lisedtexttoolmacros
+msgctxt "lazarusidestrconsts.lisedtexttoolmacros"
 msgid "Macros"
 msgstr "Makro"
 
@@ -8145,7 +8113,7 @@ msgid "Add Comment"
 msgstr ""
 
 #: lazarusidestrconsts.liseverynthlinenumber
-msgid "Every n-th line number:"
+msgid "Every n-th line number"
 msgstr ""
 
 #: lazarusidestrconsts.lisexamplefile
@@ -8206,6 +8174,11 @@ msgstr "Eksekusi dihentikan"
 msgid "Programs"
 msgstr ""
 
+#: lazarusidestrconsts.lisexit
+msgctxt "lazarusidestrconsts.lisexit"
+msgid "Exit"
+msgstr "Keluar"
+
 #: lazarusidestrconsts.lisexpandall
 msgid "Expand All (*)"
 msgstr ""
@@ -8265,21 +8238,6 @@ msgstr "Gagal untuk menjalankan piranti"
 msgid "Maximum Tools reached"
 msgstr "Piranti Maksimum tercapai"
 
-#: lazarusidestrconsts.lisexttoolmovedown
-msgctxt "lazarusidestrconsts.lisexttoolmovedown"
-msgid "Down"
-msgstr "Turun"
-
-#: lazarusidestrconsts.lisexttoolmoveup
-msgctxt "lazarusidestrconsts.lisexttoolmoveup"
-msgid "Up"
-msgstr "Naik"
-
-#: lazarusidestrconsts.lisexttoolremove
-msgctxt "lazarusidestrconsts.lisexttoolremove"
-msgid "Remove"
-msgstr "Hapus"
-
 #: lazarusidestrconsts.lisexttoolthereisamaximumoftools
 msgid "There is a maximum of %s tools."
 msgstr "Terdapat jumlah maksimum %s piranti."
@@ -8307,6 +8265,11 @@ msgstr "Kurangi penggambaran pendesain"
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
 msgstr "Gambar item pendesain hanya saat menganggur (mengurangi kelebihan beban untuk komputer lambat)"
+
+#: lazarusidestrconsts.lisfile
+msgctxt "lazarusidestrconsts.lisfile"
+msgid "File"
+msgstr "File"
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
@@ -8345,11 +8308,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfilefiltersmask
 msgid "File mask"
 msgstr ""
-
-#: lazarusidestrconsts.lisfilefiltersname
-msgctxt "lazarusidestrconsts.lisfilefiltersname"
-msgid "Name"
-msgstr "Nama"
 
 #: lazarusidestrconsts.lisfilefilterssetdefaults
 msgid "Set defaults"
@@ -8689,11 +8647,6 @@ msgstr "dalam proyek/paket pemilik unit saat ini"
 msgid "Invalid Identifier"
 msgstr "Pengenal tidak benar"
 
-#: lazarusidestrconsts.lisfrirename
-msgctxt "lazarusidestrconsts.lisfrirename"
-msgid "Rename"
-msgstr "Ganti nama"
-
 #: lazarusidestrconsts.lisfrirenameallreferences
 msgid "Rename all References"
 msgstr "Ganti nama semua Referensi"
@@ -8773,6 +8726,10 @@ msgstr ""
 msgid "Clear group(s)"
 msgstr ""
 
+#: lazarusidestrconsts.lisgroupsfordebugoutput
+msgid "Enable or Disable groups of debug output. Valid Options are:"
+msgstr ""
+
 #: lazarusidestrconsts.lisgrowtolarges
 msgid "Grow to Largest"
 msgstr ""
@@ -8784,6 +8741,11 @@ msgstr ""
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "Komentar header untuk class"
+
+#: lazarusidestrconsts.lishelp
+msgctxt "lazarusidestrconsts.lishelp"
+msgid "Help"
+msgstr "Panduan"
 
 #: lazarusidestrconsts.lishelpentries
 msgid "Help entries"
@@ -8819,15 +8781,6 @@ msgstr ""
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr ""
 
-#: lazarusidestrconsts.lishintdoubleclickonthecommandyouwanttoedit
-msgid "Hint: double click on the command you want to edit"
-msgstr ""
-
-#: lazarusidestrconsts.lishintopen
-msgctxt "lazarusidestrconsts.lishintopen"
-msgid "Open"
-msgstr "Buka"
-
 #: lazarusidestrconsts.lishintpause
 msgctxt "lazarusidestrconsts.lishintpause"
 msgid "Pause"
@@ -8837,11 +8790,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lishintrun"
 msgid "Run"
 msgstr "Jalankan"
-
-#: lazarusidestrconsts.lishintsave
-msgctxt "lazarusidestrconsts.lishintsave"
-msgid "Save"
-msgstr ""
 
 #: lazarusidestrconsts.lishintsaveall
 msgid "Save all"
@@ -8911,6 +8859,11 @@ msgstr "Path FPC Doc HTML"
 #: lazarusidestrconsts.lishorizontal
 msgid "Horizontal"
 msgstr "Horisontal"
+
+#: lazarusidestrconsts.lisid
+msgctxt "lazarusidestrconsts.lisid"
+msgid "ID"
+msgstr "ID"
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -9015,11 +8968,6 @@ msgstr "Simpan ke file"
 #: lazarusidestrconsts.lisiecosavetorecent
 msgid "Save to recent"
 msgstr "Simpan ke terbaru"
-
-#: lazarusidestrconsts.lisifdok
-msgctxt "lazarusidestrconsts.lisifdok"
-msgid "OK"
-msgstr "OK"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -9184,6 +9132,11 @@ msgstr ""
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
 msgstr ""
+
+#: lazarusidestrconsts.lisinsert
+msgctxt "lazarusidestrconsts.lisinsert"
+msgid "Insert"
+msgstr "Insert"
 
 #: lazarusidestrconsts.lisinsertdate
 msgid "insert date"
@@ -9421,10 +9374,6 @@ msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr ""
 
-#: lazarusidestrconsts.liskeep
-msgid "keep"
-msgstr ""
-
 #: lazarusidestrconsts.liskeep2
 msgid "Keep"
 msgstr ""
@@ -9456,6 +9405,11 @@ msgstr ""
 #: lazarusidestrconsts.liskeepthemandcontinue
 msgid "Keep them and continue"
 msgstr "Biarkan mereka dan lanjutkan"
+
+#: lazarusidestrconsts.liskey
+msgctxt "lazarusidestrconsts.liskey"
+msgid "Key"
+msgstr "Kunci"
 
 #: lazarusidestrconsts.liskeycatcustom
 msgid "Custom commands"
@@ -9508,10 +9462,6 @@ msgstr "Klasik"
 #: lazarusidestrconsts.liskmcleanupcompiled
 msgid "Clean up build files"
 msgstr ""
-
-#: lazarusidestrconsts.liskmcloseall
-msgid "Close All"
-msgstr "Tutup Semua"
 
 #: lazarusidestrconsts.liskmcloseproject
 msgid "Close project"
@@ -10035,6 +9985,11 @@ msgstr "Menjalankan aplikasi tidak benar"
 msgid "Launching target command line"
 msgstr "Menjalankan baris perintah target"
 
+#: lazarusidestrconsts.lislazarus
+msgctxt "lazarusidestrconsts.lislazarus"
+msgid "Lazarus"
+msgstr "Lazarus"
+
 #: lazarusidestrconsts.lislazarusdesktopsettings
 msgid "Lazarus Desktop Settings"
 msgstr "Seting Desktop Lazarus"
@@ -10122,11 +10077,6 @@ msgstr ""
 msgid "Choose output directory of the IDE executable "
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildadd
-msgctxt "lazarusidestrconsts.lislazbuildadd"
-msgid "Add"
-msgstr "Tambah"
-
 #: lazarusidestrconsts.lislazbuildareyousureyouwanttodeletethisbuildprofile
 msgid "Are you sure you want to delete this build profile?"
 msgstr ""
@@ -10163,11 +10113,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
 msgstr "Bangun SynEdit"
-
-#: lazarusidestrconsts.lislazbuildcancel
-msgctxt "lazarusidestrconsts.lislazbuildcancel"
-msgid "Cancel"
-msgstr "Batal"
 
 #: lazarusidestrconsts.lislazbuildcleanallbuild
 msgid "Clean All + Build"
@@ -10258,13 +10203,6 @@ msgstr ""
 msgid "Normal IDE"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildok
-#, fuzzy
-#| msgid "Ok"
-msgctxt "lazarusidestrconsts.lislazbuildok"
-msgid "OK"
-msgstr "Ok"
-
 #: lazarusidestrconsts.lislazbuildoptimizedide
 msgid "Optimized IDE"
 msgstr ""
@@ -10285,16 +10223,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lislazbuildrefresh"
 msgid "Refresh"
 msgstr "Segarkan"
-
-#: lazarusidestrconsts.lislazbuildremove
-msgctxt "lazarusidestrconsts.lislazbuildremove"
-msgid "Remove"
-msgstr "Hapus"
-
-#: lazarusidestrconsts.lislazbuildrename
-msgctxt "lazarusidestrconsts.lislazbuildrename"
-msgid "Rename"
-msgstr "Ganti nama"
 
 #: lazarusidestrconsts.lislazbuildrenameprof
 msgid "Rename Profile"
@@ -10484,16 +10412,6 @@ msgstr ""
 #: lazarusidestrconsts.lislocalsdlgcopyvalue
 msgid "C&opy Value"
 msgstr ""
-
-#: lazarusidestrconsts.lislocalsdlgname
-msgctxt "lazarusidestrconsts.lislocalsdlgname"
-msgid "Name"
-msgstr "Nama"
-
-#: lazarusidestrconsts.lislocalsdlgvalue
-msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
-msgid "Value"
-msgstr "Nilai"
 
 #: lazarusidestrconsts.lislocalsnotevaluated
 msgid "Locals not evaluated"
@@ -10747,11 +10665,6 @@ msgstr "Bersihkan direktori ..."
 msgid "Clean up Build Files ..."
 msgstr ""
 
-#: lazarusidestrconsts.lismenuclose
-msgctxt "lazarusidestrconsts.lismenuclose"
-msgid "Close"
-msgstr "Tutup"
-
 #: lazarusidestrconsts.lismenucloseall
 #, fuzzy
 #| msgid "Close a&ll editor files"
@@ -10846,11 +10759,6 @@ msgstr "Konversi file DFM ke LFM ..."
 msgid "Convert Encoding of Projects/Packages ..."
 msgstr ""
 
-#: lazarusidestrconsts.lismenucopy
-msgctxt "lazarusidestrconsts.lismenucopy"
-msgid "Copy"
-msgstr "Copy"
-
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr ""
@@ -10858,11 +10766,6 @@ msgstr ""
 #: lazarusidestrconsts.lismenucreatepofile
 msgid "Create .po files"
 msgstr "Buat file .po"
-
-#: lazarusidestrconsts.lismenucut
-msgctxt "lazarusidestrconsts.lismenucut"
-msgid "Cut"
-msgstr "Cut"
 
 #: lazarusidestrconsts.lismenudebugwindows
 #, fuzzy
@@ -10898,11 +10801,6 @@ msgstr "Konfigurasi paket terinstalasi ..."
 #: lazarusidestrconsts.lismenueditor
 msgid "Menu Editor ..."
 msgstr ""
-
-#: lazarusidestrconsts.lismenueditorcancel
-msgctxt "lazarusidestrconsts.lismenueditorcancel"
-msgid "Cancel"
-msgstr "Batal"
 
 #: lazarusidestrconsts.lismenueditorcreatesubmenu
 msgid "Create Submenu"
@@ -11242,6 +11140,13 @@ msgctxt "lazarusidestrconsts.lismenunewunit"
 msgid "New Unit"
 msgstr "Unit Baru"
 
+#: lazarusidestrconsts.lismenuok
+#, fuzzy
+#| msgid "&Ok"
+msgctxt "lazarusidestrconsts.lismenuok"
+msgid "&OK"
+msgstr "&Ok"
+
 #: lazarusidestrconsts.lismenuonlinehelp
 msgid "Online Help"
 msgstr "Panduan Online"
@@ -11313,11 +11218,6 @@ msgstr "Paket Grafik ..."
 msgid "Package Links ..."
 msgstr ""
 
-#: lazarusidestrconsts.lismenupaste
-msgctxt "lazarusidestrconsts.lismenupaste"
-msgid "Paste"
-msgstr "Paste"
-
 #: lazarusidestrconsts.lismenupause
 msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
@@ -11371,17 +11271,6 @@ msgstr "Pemeriksaan sintaks cepat"
 msgid "Quick syntax check OK"
 msgstr ""
 
-#: lazarusidestrconsts.lismenuquit
-#, fuzzy
-#| msgid "Quit"
-msgid "&Quit"
-msgstr "Keluar"
-
-#: lazarusidestrconsts.lismenuredo
-msgctxt "lazarusidestrconsts.lismenuredo"
-msgid "Redo"
-msgstr "Redo"
-
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
 msgstr "Hapus dari Proyek ..."
@@ -11389,15 +11278,6 @@ msgstr "Hapus dari Proyek ..."
 #: lazarusidestrconsts.lismenurenameidentifier
 msgid "Rename Identifier ..."
 msgstr "Ganti nama Pengenal ..."
-
-#: lazarusidestrconsts.lismenureplace
-msgctxt "lazarusidestrconsts.lismenureplace"
-msgid "Replace"
-msgstr "Ganti"
-
-#: lazarusidestrconsts.lismenureplace2
-msgid "&Replace ..."
-msgstr ""
 
 #: lazarusidestrconsts.lismenureportingbug
 #, fuzzy
@@ -11417,10 +11297,6 @@ msgstr "Cari lagi direktori sumber FPC"
 #| msgid "Reset debugger"
 msgid "Reset Debugger"
 msgstr "Reset debugger"
-
-#: lazarusidestrconsts.lismenurestart
-msgid "Restart"
-msgstr "Mulai lagi"
 
 #: lazarusidestrconsts.lismenurevert
 msgid "Revert"
@@ -11453,10 +11329,6 @@ msgstr "Jalanjan sampai kursor"
 msgctxt "lazarusidestrconsts.lismenusave"
 msgid "&Save"
 msgstr "Simpan"
-
-#: lazarusidestrconsts.lismenusaveall
-msgid "Save All"
-msgstr "Simpan Semua"
 
 #: lazarusidestrconsts.lismenusaveas
 #, fuzzy
@@ -11601,24 +11473,9 @@ msgstr "Tab ke spasi dalam pilihan"
 msgid "About"
 msgstr "Tentang"
 
-#: lazarusidestrconsts.lismenutemplateclose
-msgctxt "lazarusidestrconsts.lismenutemplateclose"
-msgid "Close"
-msgstr "Tutup"
-
 #: lazarusidestrconsts.lismenutemplatecontents
 msgid "Contents"
 msgstr "Isi"
-
-#: lazarusidestrconsts.lismenutemplatecopy
-msgctxt "lazarusidestrconsts.lismenutemplatecopy"
-msgid "Copy"
-msgstr "Copy"
-
-#: lazarusidestrconsts.lismenutemplatecut
-msgctxt "lazarusidestrconsts.lismenutemplatecut"
-msgid "Cut"
-msgstr "Cut"
 
 #: lazarusidestrconsts.lismenutemplatedescriptionstandardeditmenu
 msgid "Standard Edit Menu"
@@ -11632,21 +11489,6 @@ msgstr "Menu File Standar"
 msgid "Standard Help Menu"
 msgstr "Menu Panduan Standar"
 
-#: lazarusidestrconsts.lismenutemplateedit
-msgctxt "lazarusidestrconsts.lismenutemplateedit"
-msgid "Edit"
-msgstr "Edit"
-
-#: lazarusidestrconsts.lismenutemplateexit
-msgctxt "lazarusidestrconsts.lismenutemplateexit"
-msgid "Exit"
-msgstr "Keluar"
-
-#: lazarusidestrconsts.lismenutemplatefile
-msgctxt "lazarusidestrconsts.lismenutemplatefile"
-msgid "File"
-msgstr "File"
-
 #: lazarusidestrconsts.lismenutemplatefind
 msgctxt "lazarusidestrconsts.lismenutemplatefind"
 msgid "Find"
@@ -11657,52 +11499,14 @@ msgctxt "lazarusidestrconsts.lismenutemplatefindnext"
 msgid "Find Next"
 msgstr "Cari Berikutnya"
 
-#: lazarusidestrconsts.lismenutemplatehelp
-msgctxt "lazarusidestrconsts.lismenutemplatehelp"
-msgid "Help"
-msgstr "Panduan"
-
-#: lazarusidestrconsts.lismenutemplatenew
-msgid "New"
-msgstr "Baru"
-
-#: lazarusidestrconsts.lismenutemplateopen
-msgctxt "lazarusidestrconsts.lismenutemplateopen"
-msgid "Open"
-msgstr "Buka"
-
 #: lazarusidestrconsts.lismenutemplateopenrecent
 msgctxt "lazarusidestrconsts.lismenutemplateopenrecent"
 msgid "Open Recent"
 msgstr "Buka yang Terakhir"
 
-#: lazarusidestrconsts.lismenutemplatepaste
-msgctxt "lazarusidestrconsts.lismenutemplatepaste"
-msgid "Paste"
-msgstr "Paste"
-
-#: lazarusidestrconsts.lismenutemplateredo
-msgctxt "lazarusidestrconsts.lismenutemplateredo"
-msgid "Redo"
-msgstr "Redo"
-
-#: lazarusidestrconsts.lismenutemplatesave
-msgctxt "lazarusidestrconsts.lismenutemplatesave"
-msgid "Save"
-msgstr "Simpan"
-
-#: lazarusidestrconsts.lismenutemplatesaveas
-msgid "Save As"
-msgstr "Simpan Sebagai"
-
 #: lazarusidestrconsts.lismenutemplatetutorial
 msgid "Tutorial"
 msgstr "Tutorial"
-
-#: lazarusidestrconsts.lismenutemplateundo
-msgctxt "lazarusidestrconsts.lismenutemplateundo"
-msgid "Undo"
-msgstr ""
 
 #: lazarusidestrconsts.lismenutogglecomment
 msgid "Toggle Comment in Selection"
@@ -11717,11 +11521,6 @@ msgstr "&Piranti"
 #| msgid "Uncomment selection"
 msgid "Uncomment Selection"
 msgstr "Jangan komentari pilihan"
-
-#: lazarusidestrconsts.lismenuundo
-msgctxt "lazarusidestrconsts.lismenuundo"
-msgid "Undo"
-msgstr "Undo"
 
 #: lazarusidestrconsts.lismenuunindentselection
 #, fuzzy
@@ -12015,6 +11814,11 @@ msgstr ""
 msgid "Save messages to file (*.txt)"
 msgstr "Simpan pesan ke file (*.txt)"
 
+#: lazarusidestrconsts.lisname
+msgctxt "lazarusidestrconsts.lisname"
+msgid "Name"
+msgstr "Nama"
+
 #: lazarusidestrconsts.lisnameconflict
 msgid "Name conflict"
 msgstr ""
@@ -12029,8 +11833,9 @@ msgid "Never"
 msgstr ""
 
 #: lazarusidestrconsts.lisnew
-msgid "new"
-msgstr ""
+msgctxt "lazarusidestrconsts.lisnew"
+msgid "New"
+msgstr "Baru"
 
 #: lazarusidestrconsts.lisnewancestors
 msgid "New Ancestors"
@@ -12256,6 +12061,10 @@ msgstr ""
 msgid "Not now"
 msgstr "Tdak sekarang"
 
+#: lazarusidestrconsts.lisnowloadedscheme
+msgid "Now loaded: "
+msgstr ""
+
 #: lazarusidestrconsts.lisnpcreate
 msgid "Create"
 msgstr "Buat"
@@ -12384,14 +12193,9 @@ msgid "%sThis package was automatically created"
 msgstr "%sPaket ini otomatis dibuat"
 
 #: lazarusidestrconsts.lisok
-#, fuzzy
-#| msgid "&Ok"
-msgid "&OK"
-msgstr "&Ok"
-
-#: lazarusidestrconsts.lisold
-msgid "old"
-msgstr ""
+msgctxt "lazarusidestrconsts.lisok"
+msgid "OK"
+msgstr "OK"
 
 #: lazarusidestrconsts.lisoldancestors
 msgid "Old Ancestors"
@@ -12418,8 +12222,9 @@ msgid "On paste from clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.lisopen
-msgid "Open ..."
-msgstr ""
+msgctxt "lazarusidestrconsts.lisopen"
+msgid "Open"
+msgstr "Buka"
 
 #: lazarusidestrconsts.lisopenasxmlfile
 msgid "Open as XML file"
@@ -12609,6 +12414,11 @@ msgstr "Unit Pascal"
 msgid "Pass Count"
 msgstr ""
 
+#: lazarusidestrconsts.lispaste
+msgctxt "lazarusidestrconsts.lispaste"
+msgid "Paste"
+msgstr "Paste"
+
 #: lazarusidestrconsts.lispasteclipboard
 msgid "paste clipboard"
 msgstr ""
@@ -12626,13 +12436,41 @@ msgctxt "lazarusidestrconsts.lispatheditbrowse"
 msgid "Browse"
 msgstr "Browse"
 
+#: lazarusidestrconsts.lispatheditdeleteinvalidpaths
+msgid "Delete Invalid Paths"
+msgstr ""
+
 #: lazarusidestrconsts.lispatheditmovepathdown
-msgid "Move path down"
+#, fuzzy
+#| msgid "Move path down"
+msgid "Move path down (Ctrl+Down)"
 msgstr "Turunkan path"
 
 #: lazarusidestrconsts.lispatheditmovepathup
-msgid "Move path up"
+#, fuzzy
+#| msgid "Move path up"
+msgid "Move path up (Ctrl+Up)"
 msgstr "Naikkan path"
+
+#: lazarusidestrconsts.lispatheditoraddhint
+msgid "Add new path to the list"
+msgstr ""
+
+#: lazarusidestrconsts.lispatheditordeletehint
+msgid "Delete the selected path"
+msgstr ""
+
+#: lazarusidestrconsts.lispatheditordeleteinvalidhint
+msgid "Remove non-existent (gray) paths from the list"
+msgstr ""
+
+#: lazarusidestrconsts.lispatheditorreplacehint
+msgid "Replace the selected path with a new path"
+msgstr ""
+
+#: lazarusidestrconsts.lispatheditortempladdhint
+msgid "Add template to the list"
+msgstr ""
 
 #: lazarusidestrconsts.lispatheditpathtemplates
 msgid "Path templates"
@@ -12737,11 +12575,6 @@ msgstr "Properti File"
 #: lazarusidestrconsts.lispckeditgeneraloptions
 msgid "General Options"
 msgstr "Opsi Umum"
-
-#: lazarusidestrconsts.lispckedithelp
-msgctxt "lazarusidestrconsts.lispckedithelp"
-msgid "Help"
-msgstr "Panduan"
 
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
@@ -13425,10 +13258,6 @@ msgstr "File %s%s%s tidak ditemukan."
 msgid "File not saved"
 msgstr "File tidak disimpan"
 
-#: lazarusidestrconsts.lispkgmangignoreandsavepackagenow
-msgid "Ignore and save package now"
-msgstr "Abaikan dan simpan paket sekarang"
-
 #: lazarusidestrconsts.lispkgmanginstallingthepackagewillautomaticallyinstallthepac
 msgid "Installing the package %s will automatically install the package:"
 msgstr "Menginstalasi paket %s akan menginstalasi paket secara otomatis:"
@@ -13461,11 +13290,6 @@ msgstr "Nama paket tidak benar"
 msgid "Invalid Package Name"
 msgstr "Nama Paket Tidak Benar"
 
-#: lazarusidestrconsts.lispkgmanglazarus
-msgctxt "lazarusidestrconsts.lispkgmanglazarus"
-msgid "Lazarus"
-msgstr "Lazarus"
-
 #: lazarusidestrconsts.lispkgmangloadingpackagewillreplacepackage
 msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave old package %s?"
 msgstr "Pengambilan paket %s akan menimpa paket %s%sdari file %s.%sPaket lama diubah.%s%sSimpan paket lama %s?"
@@ -13481,14 +13305,6 @@ msgstr "Paket: %s"
 #: lazarusidestrconsts.lispkgmangpackageconflicts
 msgid "Package conflicts"
 msgstr "Paket konflik"
-
-#: lazarusidestrconsts.lispkgmangpackagefilemissing
-msgid "Package file missing"
-msgstr "File Paket hilang"
-
-#: lazarusidestrconsts.lispkgmangpackagefilenotsaved
-msgid "Package file not saved"
-msgstr ""
 
 #: lazarusidestrconsts.lispkgmangpackagehasnovalidoutputdirectory
 msgid "Package %s%s%s has no valid output directory:%s%s%s%s"
@@ -13589,13 +13405,9 @@ msgstr "Nama file %s%s%s adalah bagian dari proyek saat ini.%sProyek dan Paket s
 msgid "The file name %s%s%s is used by%sthe package %s%s%s%sin file %s%s%s."
 msgstr "Nama file %s%s%s digunakan oleh%spaket %s%s%s%sdalam file %s%s%s."
 
-#: lazarusidestrconsts.lispkgmangthefileofpackageismissing
-msgid "The file %s%s%s%sof package %s is missing."
-msgstr "File %s%s%s%sdari paket %s hilang."
-
-#: lazarusidestrconsts.lispkgmangthefileofpackageneedstobesavedfirst
-msgid "The file %s%s%s%sof package %s needs to be saved first."
-msgstr "File %s%s%s%sdari paket %s perlu disimpan lebih dulu."
+#: lazarusidestrconsts.lispkgmangthefileofpackagewasnotfound
+msgid "The file \"%s\" of package %s was not found."
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
@@ -13756,6 +13568,21 @@ msgstr "Gunakan unit"
 #: lazarusidestrconsts.lispkgmangwarningthefilebelongstothecurrentproject
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgstr "Perhatian: File %s%s%s%smilik proyek saat ini."
+
+#: lazarusidestrconsts.lispkgmgrkeep
+msgctxt "lazarusidestrconsts.lispkgmgrkeep"
+msgid "keep"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmgrnew
+msgctxt "lazarusidestrconsts.lispkgmgrnew"
+msgid "new"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmgrremove
+msgctxt "lazarusidestrconsts.lispkgmgrremove"
+msgid "remove"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
@@ -14427,6 +14254,11 @@ msgstr ""
 msgid "Search identifier"
 msgstr ""
 
+#: lazarusidestrconsts.lisquit
+msgctxt "lazarusidestrconsts.lisquit"
+msgid "Quit"
+msgstr ""
+
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"
 msgstr "Keluar Lazarus"
@@ -14439,20 +14271,15 @@ msgstr "Pembacaan Salah"
 msgid "Record/Structure"
 msgstr ""
 
+#: lazarusidestrconsts.lisredo
+msgctxt "lazarusidestrconsts.lisredo"
+msgid "Redo"
+msgstr "Redo"
+
 #: lazarusidestrconsts.lisregisters
 msgctxt "lazarusidestrconsts.lisregisters"
 msgid "Registers"
 msgstr ""
-
-#: lazarusidestrconsts.lisregistersdlgname
-msgctxt "lazarusidestrconsts.lisregistersdlgname"
-msgid "Name"
-msgstr "Nama"
-
-#: lazarusidestrconsts.lisregistersdlgvalue
-msgctxt "lazarusidestrconsts.lisregistersdlgvalue"
-msgid "Value"
-msgstr "Nilai"
 
 #: lazarusidestrconsts.lisregularexpression
 msgid "Regular expression"
@@ -14463,7 +14290,8 @@ msgid "Relative paths"
 msgstr "Path relatif"
 
 #: lazarusidestrconsts.lisremove
-msgid "remove"
+msgctxt "lazarusidestrconsts.lisremove"
+msgid "Remove"
 msgstr ""
 
 #: lazarusidestrconsts.lisremoveallinvalidproperties
@@ -14524,6 +14352,11 @@ msgstr ""
 msgid "Remove unit path?"
 msgstr ""
 
+#: lazarusidestrconsts.lisrename
+msgctxt "lazarusidestrconsts.lisrename"
+msgid "Rename"
+msgstr "Ganti nama"
+
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
 msgstr "Ganti nama file?"
@@ -14551,6 +14384,11 @@ msgstr ""
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
 msgstr ""
+
+#: lazarusidestrconsts.lisreplace
+msgctxt "lazarusidestrconsts.lisreplace"
+msgid "Replace"
+msgstr "Ganti"
 
 #: lazarusidestrconsts.lisreplacement
 msgid "Replacement"
@@ -14607,6 +14445,11 @@ msgstr ""
 #: lazarusidestrconsts.lisresponsecontinue
 msgid "Response: %sContinue ?"
 msgstr ""
+
+#: lazarusidestrconsts.lisrestart
+msgctxt "lazarusidestrconsts.lisrestart"
+msgid "Restart"
+msgstr "Mulai lagi"
 
 #: lazarusidestrconsts.lisresult
 msgid "Result :="
@@ -14726,8 +14569,20 @@ msgid "Unable to show abstract methods of the current class, because"
 msgstr ""
 
 #: lazarusidestrconsts.lissave
-msgid "Save ..."
+#, fuzzy
+#| msgid "Save ..."
+msgctxt "lazarusidestrconsts.lissave"
+msgid "Save"
 msgstr "Simpan ..."
+
+#: lazarusidestrconsts.lissaveall
+msgctxt "lazarusidestrconsts.lissaveall"
+msgid "Save All"
+msgstr "Simpan Semua"
+
+#: lazarusidestrconsts.lissaveallchecked
+msgid "Save All Checked"
+msgstr ""
 
 #: lazarusidestrconsts.lissaveallmessagestofile
 #, fuzzy
@@ -14748,6 +14603,11 @@ msgstr "Dialog Simpan dan keluar"
 #: lazarusidestrconsts.lissaveandrebuildide
 msgid "Save and rebuild IDE"
 msgstr "Simpan dan bangun ulang IDE"
+
+#: lazarusidestrconsts.lissaveas
+msgctxt "lazarusidestrconsts.lissaveas"
+msgid "Save As"
+msgstr "Simpan Sebagai"
 
 #: lazarusidestrconsts.lissavechanges
 msgid "Save changes?"
@@ -14961,6 +14821,10 @@ msgstr "Tampilkan pengenal"
 msgid "Show information box"
 msgstr ""
 
+#: lazarusidestrconsts.lisshowoverviewgutter
+msgid "Show overview Gutter"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
 msgstr "Tampilkan paket"
@@ -15042,11 +14906,6 @@ msgstr "Maaf, tipe ini belum diimplementasikan"
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"
 msgstr "Membesar"
-
-#: lazarusidestrconsts.lissortselcancel
-msgctxt "lazarusidestrconsts.lissortselcancel"
-msgid "Cancel"
-msgstr "Batal"
 
 #: lazarusidestrconsts.lissortselcasesensitive
 msgctxt "lazarusidestrconsts.lissortselcasesensitive"
@@ -15844,19 +15703,10 @@ msgstr ""
 msgid "Goto"
 msgstr ""
 
-#: lazarusidestrconsts.listhreadsid
-msgid "Id"
-msgstr ""
-
 #: lazarusidestrconsts.listhreadsline
 msgctxt "lazarusidestrconsts.listhreadsline"
 msgid "Line"
 msgstr "Baris"
-
-#: lazarusidestrconsts.listhreadsname
-msgctxt "lazarusidestrconsts.listhreadsname"
-msgid "Name"
-msgstr "Nama"
 
 #: lazarusidestrconsts.listhreadsnotevaluated
 msgid "Threads not evaluated"
@@ -16045,11 +15895,6 @@ msgstr "Nama:"
 msgid "no"
 msgstr "tidak"
 
-#: lazarusidestrconsts.lisuidok
-msgctxt "lazarusidestrconsts.lisuidok"
-msgid "Ok"
-msgstr "Ok"
-
 #: lazarusidestrconsts.lisuidpathsreadonly
 msgid "Paths (Read Only)"
 msgstr "Path (Hanya Baca)"
@@ -16057,10 +15902,6 @@ msgstr "Path (Hanya Baca)"
 #: lazarusidestrconsts.lisuidsize
 msgid "Size:"
 msgstr "Ukuran:"
-
-#: lazarusidestrconsts.lisuidsrc
-msgid "Src"
-msgstr "Src"
 
 #: lazarusidestrconsts.lisuidtype
 msgid "Type:"
@@ -16427,6 +16268,15 @@ msgstr ""
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisuncheckall
+msgid "Uncheck All"
+msgstr ""
+
+#: lazarusidestrconsts.lisundo
+msgctxt "lazarusidestrconsts.lisundo"
+msgid "Undo"
+msgstr ""
+
 #: lazarusidestrconsts.lisunexpectedresultthedebuggerwillterminate
 msgid "Unexpected result:%sThe debugger will terminate"
 msgstr ""
@@ -16494,6 +16344,11 @@ msgstr ""
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr ""
+
+#: lazarusidestrconsts.lisup
+msgctxt "lazarusidestrconsts.lisup"
+msgid "Up"
+msgstr "Naik"
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
@@ -16585,8 +16440,9 @@ msgid "UTF-8 with BOM"
 msgstr ""
 
 #: lazarusidestrconsts.lisvalue
-msgid "Value:"
-msgstr ""
+msgctxt "lazarusidestrconsts.lisvalue"
+msgid "Value"
+msgstr "Nilai"
 
 #: lazarusidestrconsts.lisvalue2
 msgid "Value%s"
@@ -16599,6 +16455,11 @@ msgstr ""
 #: lazarusidestrconsts.lisvalues
 msgid "Values"
 msgstr ""
+
+#: lazarusidestrconsts.lisvariable
+msgctxt "lazarusidestrconsts.lisvariable"
+msgid "Variable"
+msgstr "Variabel"
 
 #: lazarusidestrconsts.lisverifymethodcalls
 msgid "Verify method calls"
@@ -16755,14 +16616,6 @@ msgstr ""
 msgid "With required packages"
 msgstr "Dengan paket yang diperlukan"
 
-#: lazarusidestrconsts.liswladd
-msgid "&Add"
-msgstr "T&ambah"
-
-#: lazarusidestrconsts.liswldelete
-msgid "&Delete"
-msgstr "&Hapus"
-
 #: lazarusidestrconsts.liswldeleteall
 msgid "De&lete All"
 msgstr "&Hapus Semua"
@@ -16774,10 +16627,6 @@ msgstr "Mat&ikan Semua"
 #: lazarusidestrconsts.liswlenableall
 msgid "E&nable All"
 msgstr "Hidupka&n Semua"
-
-#: lazarusidestrconsts.liswlenabled
-msgid "&Enabled"
-msgstr "&Dihidupkan"
 
 #: lazarusidestrconsts.liswlexpression
 msgid "Expression"
@@ -16989,11 +16838,6 @@ msgstr ""
 msgid "Use windowmanager setting"
 msgstr "Gunakan seting windowmanager"
 
-#: lazarusidestrconsts.rskey
-msgctxt "lazarusidestrconsts.rskey"
-msgid "Key"
-msgstr "Kunci"
-
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"
 msgstr "Afrikaans"
@@ -17106,11 +16950,6 @@ msgstr ""
 msgid "Mi&nor version:"
 msgstr ""
 
-#: lazarusidestrconsts.rsok
-msgctxt "lazarusidestrconsts.rsok"
-msgid "OK"
-msgstr "OK"
-
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
 msgstr ""
@@ -17118,10 +16957,6 @@ msgstr ""
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr ""
-
-#: lazarusidestrconsts.rsremove
-msgid "&Remove"
-msgstr "&Hapus"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
@@ -17138,11 +16973,6 @@ msgstr ""
 #: lazarusidestrconsts.rsstartanewsearch
 msgid "Start a new search"
 msgstr ""
-
-#: lazarusidestrconsts.rsvalue
-msgctxt "lazarusidestrconsts.rsvalue"
-msgid "Value"
-msgstr "Nilai"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
@@ -17172,10 +17002,6 @@ msgstr "Perintah pemindahan kursor"
 msgid "Text editing commands"
 msgstr "Perintah pengeditan teks"
 
-#: lazarusidestrconsts.srkmcatenvmenu
-msgid "Environment menu commands"
-msgstr "Perintah menu Lingkungan"
-
 #: lazarusidestrconsts.srkmcatfilemenu
 msgid "File menu commands"
 msgstr "Perintah menu File"
@@ -17183,6 +17009,11 @@ msgstr "Perintah menu File"
 #: lazarusidestrconsts.srkmcatfold
 msgid "Text folding commands"
 msgstr ""
+
+#: lazarusidestrconsts.srkmcatmacrorecording
+msgctxt "lazarusidestrconsts.srkmcatmacrorecording"
+msgid "Macros"
+msgstr "Makro"
 
 #: lazarusidestrconsts.srkmcatmarker
 msgid "Text marker commands"
@@ -17507,6 +17338,10 @@ msgctxt "lazarusidestrconsts.srkmecdiff"
 msgid "Diff"
 msgstr "Diff"
 
+#: lazarusidestrconsts.srkmecdown
+msgid "Move cursor down"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeceditorbottom
 msgid "Move cursor to absolute end"
 msgstr "Pindahkan kursor ke absolut akhir"
@@ -17756,6 +17591,10 @@ msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Balikkan penempatan"
 
+#: lazarusidestrconsts.srkmecleft
+msgid "Move cursor left"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeclinebreak
 msgid "Break line and move cursor"
 msgstr "Pisahkan baris dan pindahkan kursor"
@@ -17900,10 +17739,6 @@ msgstr ""
 msgid "quick compile, no linking"
 msgstr "kompilasi cepat, tanpa linking"
 
-#: lazarusidestrconsts.srkmecquit
-msgid "Quit"
-msgstr ""
-
 #: lazarusidestrconsts.srkmecremovebreakpoint
 msgid "remove break point"
 msgstr "hapus break point"
@@ -17937,6 +17772,10 @@ msgstr "Melaporkan bug..."
 msgid "reset debugger"
 msgstr "reset debugger"
 
+#: lazarusidestrconsts.srkmecright
+msgid "Move cursor right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecrun
 msgid "run program"
 msgstr "jalankan program"
@@ -17948,11 +17787,6 @@ msgstr "jalankan file"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "parameter menjalankan"
-
-#: lazarusidestrconsts.srkmecsave
-msgctxt "lazarusidestrconsts.srkmecsave"
-msgid "Save"
-msgstr "Simpan"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
@@ -18103,6 +17937,14 @@ msgstr ""
 #: lazarusidestrconsts.srkmecstopprogram
 msgid "stop program"
 msgstr "hentikan program"
+
+#: lazarusidestrconsts.srkmecsynmacroplay
+msgid "Play Macro"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynmacrorecord
+msgid "Record Macro"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecsynpsyncroedcellend
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellend"
@@ -18309,6 +18151,10 @@ msgstr "perintah editor tidak dikenal"
 msgid "Unused Units ..."
 msgstr ""
 
+#: lazarusidestrconsts.srkmecup
+msgid "Move cursor up"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"
 msgstr "Pemakai Pertama"
@@ -18415,6 +18261,14 @@ msgstr "\" tidak bisa ditulisi."
 msgid "Locked"
 msgstr ""
 
+#: lazarusidestrconsts.uemacrorecording
+msgid "Recording"
+msgstr ""
+
+#: lazarusidestrconsts.uemacrorecordingpaused
+msgid "Rec-pause"
+msgstr ""
+
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "Tambah &Pengawasan Di Kursor"
@@ -18435,11 +18289,6 @@ msgstr ""
 msgid "&Close Page"
 msgstr "&Tutup Halaman"
 
-#: lazarusidestrconsts.uemcopy
-msgctxt "lazarusidestrconsts.uemcopy"
-msgid "Copy"
-msgstr "Copy"
-
 #: lazarusidestrconsts.uemcopyfilename
 #, fuzzy
 #| msgid "Copy filename"
@@ -18458,11 +18307,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.uemcopytootherwindownew"
 msgid "New Window"
 msgstr ""
-
-#: lazarusidestrconsts.uemcut
-msgctxt "lazarusidestrconsts.uemcut"
-msgid "Cut"
-msgstr "Cut"
 
 #: lazarusidestrconsts.uemdebugword
 msgid "Debug"
@@ -18560,11 +18404,6 @@ msgstr "Dimodifikasi"
 #| msgid "&Open file at cursor"
 msgid "&Open File at Cursor"
 msgstr "&Buka file di kursor"
-
-#: lazarusidestrconsts.uempaste
-msgctxt "lazarusidestrconsts.uempaste"
-msgid "Paste"
-msgstr "Paste"
 
 #: lazarusidestrconsts.uemprevbookmark
 #, fuzzy

@@ -709,11 +709,6 @@ msgstr ""
 msgid "Apply"
 msgstr "יישם"
 
-#: lazarusidestrconsts.dlgcancel
-msgctxt "lazarusidestrconsts.dlgcancel"
-msgid "Cancel"
-msgstr "בטל"
-
 #: lazarusidestrconsts.dlgcasesensitive
 #, fuzzy
 #| msgid "&Case Sensitive"
@@ -1035,22 +1030,6 @@ msgstr "פרמטרים של שורת הפקודה"
 msgid "Command line parameters (without application name)"
 msgstr "פרמטרים של שורת הפקודה (ללא שם היישום)"
 
-#: lazarusidestrconsts.dlgcomovedown
-msgid "Move down"
-msgstr "זוז למטה"
-
-#: lazarusidestrconsts.dlgcomoveleveldown
-msgid "Move level down"
-msgstr "זוז רמה אחת למטה"
-
-#: lazarusidestrconsts.dlgcomovelevelup
-msgid "Move level up"
-msgstr "זוז רמה אחת למעלה"
-
-#: lazarusidestrconsts.dlgcomoveup
-msgid "Move up"
-msgstr "זוז למעלה"
-
 #: lazarusidestrconsts.dlgcompilermessage
 #, fuzzy
 #| msgid "Compiler Messages"
@@ -1349,11 +1328,6 @@ msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
 msgstr "משתנה/סוג (מקומי)"
 
-#: lazarusidestrconsts.dlgdownword
-msgctxt "lazarusidestrconsts.dlgdownword"
-msgid "Down"
-msgstr "למטה"
-
 #: lazarusidestrconsts.dlgedadd
 #, fuzzy
 #| msgid "Add..."
@@ -1394,11 +1368,6 @@ msgstr "השהיה"
 #: lazarusidestrconsts.dlgeddelayinsec
 msgid "(%s sec delay)"
 msgstr "(השהייה של s% שניות)"
-
-#: lazarusidestrconsts.dlgeddelete
-msgctxt "lazarusidestrconsts.dlgeddelete"
-msgid "Delete"
-msgstr "מחק"
 
 #: lazarusidestrconsts.dlgeddisplay
 msgid "Display"
@@ -1631,11 +1600,6 @@ msgstr "חלק"
 #: lazarusidestrconsts.dlgfolddiffchunksect
 msgid "Chunk section"
 msgstr "בחירת חתיכה"
-
-#: lazarusidestrconsts.dlgfolddifffile
-msgctxt "lazarusidestrconsts.dlgfolddifffile"
-msgid "File"
-msgstr "קובץ"
 
 #: lazarusidestrconsts.dlgfoldhtmlasp
 msgid "ASP"
@@ -1890,11 +1854,6 @@ msgstr "עורך"
 msgctxt "lazarusidestrconsts.dlggroupenvironment"
 msgid "Environment"
 msgstr "סביבה"
-
-#: lazarusidestrconsts.dlggrouphelp
-msgctxt "lazarusidestrconsts.dlggrouphelp"
-msgid "Help"
-msgstr "עזרה"
 
 #: lazarusidestrconsts.dlggroupundo
 msgid "Group Undo"
@@ -2277,11 +2236,6 @@ msgstr "פרוש הכל (חלק מצומצמים)"
 msgid "Unfold One (Some Colapsed)"
 msgstr "פרוש אחד (חלק מצומצמים)"
 
-#: lazarusidestrconsts.dlgmousefoldenabled
-msgctxt "lazarusidestrconsts.dlgmousefoldenabled"
-msgid "Enabled"
-msgstr "מאופשר"
-
 #: lazarusidestrconsts.dlgmousefoldexpfoldall
 msgid "Fold All (All Expanded)"
 msgstr "קפל הכל (הכל פרוש)"
@@ -2336,29 +2290,9 @@ msgctxt "lazarusidestrconsts.dlgmouseoptbtn4"
 msgid "Quad"
 msgstr "מרובע"
 
-#: lazarusidestrconsts.dlgmouseoptbtnadd
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnadd"
-msgid "Add"
-msgstr "הוסף"
-
 #: lazarusidestrconsts.dlgmouseoptbtnany
 msgid "Any"
 msgstr "כלשהו"
-
-#: lazarusidestrconsts.dlgmouseoptbtncancel
-msgctxt "lazarusidestrconsts.dlgmouseoptbtncancel"
-msgid "Cancel"
-msgstr "בטל"
-
-#: lazarusidestrconsts.dlgmouseoptbtndel
-msgctxt "lazarusidestrconsts.dlgmouseoptbtndel"
-msgid "Delete"
-msgstr "מחק"
-
-#: lazarusidestrconsts.dlgmouseoptbtndown
-msgctxt "lazarusidestrconsts.dlgmouseoptbtndown"
-msgid "Down"
-msgstr "למטה"
 
 #: lazarusidestrconsts.dlgmouseoptbtnexport
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
@@ -2394,26 +2328,10 @@ msgstr "אמצע"
 msgid "Make Fallback"
 msgstr "צור נתוני שחזור"
 
-#: lazarusidestrconsts.dlgmouseoptbtnok
-#| msgid "Ok"
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnok"
-msgid "OK"
-msgstr "אישור"
-
 #: lazarusidestrconsts.dlgmouseoptbtnright
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnright"
 msgid "Right"
 msgstr "ימין"
-
-#: lazarusidestrconsts.dlgmouseoptbtnudp
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnudp"
-msgid "Change"
-msgstr "שנה"
-
-#: lazarusidestrconsts.dlgmouseoptbtnup
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnup"
-msgid "Up"
-msgstr "למעלה"
 
 #: lazarusidestrconsts.dlgmouseoptbtnwheeldown
 msgid "Wheel down"
@@ -2678,26 +2596,6 @@ msgstr "ללא הדגשה"
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"
 msgstr "מקור מיקום לשוניות הפנקס"
-
-#: lazarusidestrconsts.dlgnotebooktabposbottom
-msgctxt "lazarusidestrconsts.dlgnotebooktabposbottom"
-msgid "Bottom"
-msgstr "תחתית"
-
-#: lazarusidestrconsts.dlgnotebooktabposleft
-msgctxt "lazarusidestrconsts.dlgnotebooktabposleft"
-msgid "Left"
-msgstr "שמאל"
-
-#: lazarusidestrconsts.dlgnotebooktabposright
-msgctxt "lazarusidestrconsts.dlgnotebooktabposright"
-msgid "Right"
-msgstr "ימין"
-
-#: lazarusidestrconsts.dlgnotebooktabpostop
-msgctxt "lazarusidestrconsts.dlgnotebooktabpostop"
-msgid "Top"
-msgstr "פסגה"
 
 #: lazarusidestrconsts.dlgnotsplitlineafter
 #, fuzzy
@@ -3033,15 +2931,6 @@ msgstr "השתמש בצג"
 #: lazarusidestrconsts.dlgrunouseroverrides
 msgid "User overrides"
 msgstr "העמסה של משתמש"
-
-#: lazarusidestrconsts.dlgrunovalue
-msgctxt "lazarusidestrconsts.dlgrunovalue"
-msgid "Value"
-msgstr "ערך"
-
-#: lazarusidestrconsts.dlgrunovariable
-msgid "Variable"
-msgstr "משתנה"
 
 #: lazarusidestrconsts.dlgrunparameters
 #, fuzzy
@@ -3415,11 +3304,6 @@ msgstr "בטל/בצע מחדש:"
 msgid "Undo limit"
 msgstr "בטל גבול"
 
-#: lazarusidestrconsts.dlgunitdepbrowse
-msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
-msgid "Open"
-msgstr "פתח"
-
 #: lazarusidestrconsts.dlgunitdepcaption
 #, fuzzy
 #| msgid "Unit dependencies"
@@ -3438,11 +3322,6 @@ msgstr "התיקייה שאליה כותבת היחידה  (-FU):"
 #: lazarusidestrconsts.dlgunsavedlinecolor
 msgid "Unsaved line"
 msgstr "שורה לא שמורה"
-
-#: lazarusidestrconsts.dlgupword
-msgctxt "lazarusidestrconsts.dlgupword"
-msgid "Up"
-msgstr "למעלה"
 
 #: lazarusidestrconsts.dlgusecodefolding
 #, fuzzy
@@ -4058,9 +3937,17 @@ msgstr "פעולה:"
 msgid "Actions:"
 msgstr "פעולות:"
 
+#: lazarusidestrconsts.lisactivate
+msgid "Activate"
+msgstr ""
+
 #: lazarusidestrconsts.lisactivateregularexpressionsyntaxfortextandreplaceme
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
 msgstr "הפעל תחביר של ביטויים רגולרים עבור טקסט והחלפה (דומה לפרל)"
+
+#: lazarusidestrconsts.lisactivateselected
+msgid "Activate Selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisactive
 msgid "Active"
@@ -4069,6 +3956,11 @@ msgstr "פעיל"
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr "מסנן פעיל"
+
+#: lazarusidestrconsts.lisadd
+msgctxt "lazarusidestrconsts.lisadd"
+msgid "Add"
+msgstr "הוסף"
 
 #: lazarusidestrconsts.lisadddirectory
 msgid "Add directory"
@@ -4289,6 +4181,14 @@ msgstr "נמצאה יחידה רב משמעית"
 msgid "Ambiguous unit found"
 msgstr "נמצאה יחידה רב משמעית"
 
+#: lazarusidestrconsts.lisanchorbottomtobottomside
+msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
+msgstr ""
+
+#: lazarusidestrconsts.lisanchorbottomtotopside
+msgid "Anchor bottom side to top side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling."
+msgstr ""
+
 #: lazarusidestrconsts.lisanchoreditornocontrolselected
 msgid "Anchor Editor - no control selected"
 msgstr "עגן עורך - לא נבחרו פקדים"
@@ -4297,25 +4197,33 @@ msgstr "עגן עורך - לא נבחרו פקדים"
 msgid "Enabled = Include %s in Anchors"
 msgstr "אפשר = כלול s% בעוגנים"
 
+#: lazarusidestrconsts.lisanchorlefttoleftside
+msgid "Anchor left side to left side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
+msgstr ""
+
+#: lazarusidestrconsts.lisanchorlefttorightside
+msgid "Anchor left side to right side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling."
+msgstr ""
+
+#: lazarusidestrconsts.lisanchorrighttoleftside
+msgid "Anchor right side to left side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling."
+msgstr ""
+
+#: lazarusidestrconsts.lisanchorrighttorightside
+msgid "Anchor right side to right side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
+msgstr ""
+
 #: lazarusidestrconsts.lisanchorsofselectedcontrols
 msgid "Anchors of selected controls"
 msgstr "עיגון של הפקדים שנבחרו"
 
-#: lazarusidestrconsts.lisanchortobottomsidekeepborderspace
-msgid "Anchor to bottom side of sibling, keep border space"
-msgstr "עגן לצד התחתון של העצם הדומה, שמור על רווח מפריד"
+#: lazarusidestrconsts.lisanchortoptobottomside
+msgid "Anchor top side to bottom side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling."
+msgstr ""
 
-#: lazarusidestrconsts.lisanchortoleftsidekeepborderspace
-msgid "Anchor to left side of sibling, keep border space"
-msgstr "עגן לצד השמאלי של העצם הדומה, שמור על רווח מפריד"
-
-#: lazarusidestrconsts.lisanchortorightsidekeepborderspace
-msgid "Anchor to right side of sibling, keep border space"
-msgstr "עגן לצד הימני של העצם הדומה, שמור על רווח מפריד"
-
-#: lazarusidestrconsts.lisanchortotopsidekeepborderspace
-msgid "Anchor to top side of sibling, keep border space"
-msgstr "עגן לצד העליון של העצם הדומה, שמור על רווח מפריד"
+#: lazarusidestrconsts.lisanchortoptotopside
+msgid "Anchor top side to top side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
+msgstr ""
 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
 msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
@@ -4557,19 +4465,44 @@ msgstr "תכונות נקודת עצירה"
 msgid "Browse for Compiler (%s)"
 msgstr "דפדף לחיפוש מהדר(s%)"
 
-#: lazarusidestrconsts.lisbtnbreak
-msgctxt "lazarusidestrconsts.lisbtnbreak"
-msgid "Break"
-msgstr "שבור"
+#: lazarusidestrconsts.lisbtnadd
+msgctxt "lazarusidestrconsts.lisbtnadd"
+msgid "&Add"
+msgstr "הו&סף"
 
-#: lazarusidestrconsts.lisbtncontinue
-msgctxt "lazarusidestrconsts.lisbtncontinue"
-msgid "Continue"
-msgstr "המשך"
+#: lazarusidestrconsts.lisbtnclose
+msgctxt "lazarusidestrconsts.lisbtnclose"
+msgid "&Close"
+msgstr "ס&גור"
+
+#: lazarusidestrconsts.lisbtndelete
+msgctxt "lazarusidestrconsts.lisbtndelete"
+msgid "&Delete"
+msgstr "מ&חק"
+
+#: lazarusidestrconsts.lisbtndlgreplace
+msgctxt "lazarusidestrconsts.lisbtndlgreplace"
+msgid "&Replace ..."
+msgstr "החלף&"
+
+#: lazarusidestrconsts.lisbtnenabled
+msgctxt "lazarusidestrconsts.lisbtnenabled"
+msgid "&Enabled"
+msgstr "מאופשר"
 
 #: lazarusidestrconsts.lisbtnfind
 msgid "&Find"
 msgstr "חפש"
+
+#: lazarusidestrconsts.lisbtnquit
+msgctxt "lazarusidestrconsts.lisbtnquit"
+msgid "&Quit"
+msgstr "צא"
+
+#: lazarusidestrconsts.lisbtnremove
+msgctxt "lazarusidestrconsts.lisbtnremove"
+msgid "&Remove"
+msgstr "הס&ר"
 
 #: lazarusidestrconsts.lisbtnreplace
 msgid "&Replace"
@@ -4915,11 +4848,15 @@ msgid "Nested procedures count treated as \"many\""
 msgstr "מספר הפרוצדורות המקוננות מטופל כ many"
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
-msgid "Center control horizontally relative to the given sibling"
+#, fuzzy
+#| msgid "Center control horizontally relative to the given sibling"
+msgid "Center control horizontally relative to the given sibling. BorderSpacing is ignored."
 msgstr "מרכז את הפקד בצורה אופקית יחסית לאח שנבחר"
 
 #: lazarusidestrconsts.liscentercontrolverticallyrelativetosibling
-msgid "Center control vertically relative to the given sibling"
+#, fuzzy
+#| msgid "Center control vertically relative to the given sibling"
+msgid "Center control vertically relative to the given sibling. BorderSpacing is ignored."
 msgstr "מרכז את הפקד בצורה אנכית יחסית לאח שנבחר"
 
 #: lazarusidestrconsts.liscenterform
@@ -5156,6 +5093,11 @@ msgstr "הרכיב מסוג %s  נכשל בקביעת הבעלים להיות %s
 msgid "Unable to clear the form editing selection%s%s"
 msgstr "לא יכול לנקות את בחירת עורך הטפסים"
 
+#: lazarusidestrconsts.lischange
+msgctxt "lazarusidestrconsts.lischange"
+msgid "Change"
+msgstr "שנה"
+
 #: lazarusidestrconsts.lischangebuildmode
 msgid "Change build mode"
 msgstr "שנה את אופן הבנייה"
@@ -5197,6 +5139,10 @@ msgstr "תו"
 #: lazarusidestrconsts.lischaractermap
 msgid "Character Map"
 msgstr "מפת תווים"
+
+#: lazarusidestrconsts.lischeckall
+msgid "Check All"
+msgstr ""
 
 #: lazarusidestrconsts.lischeckfordiskfilechangesviacontentratherthantimesta
 msgid "Check for disk file changes via content rather than timestamp"
@@ -5395,7 +5341,9 @@ msgid "Clear Directory?"
 msgstr "האם לנקות את הספרייה?"
 
 #: lazarusidestrconsts.lisclearkeymapping
-msgid "Clear Key Mapping"
+#, fuzzy
+#| msgid "Clear Key Mapping"
+msgid "Clear Command's Mapping"
 msgstr "נקה מיפוי מקשים"
 
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
@@ -5407,8 +5355,20 @@ msgid "Click to see the possible uses"
 msgstr "הקלק כדי לראות את השימושים האפשריים"
 
 #: lazarusidestrconsts.lisclose
-msgid "&Close"
+#, fuzzy
+#| msgid "&Close"
+msgctxt "lazarusidestrconsts.lisclose"
+msgid "Close"
 msgstr "ס&גור"
+
+#: lazarusidestrconsts.liscloseall
+msgctxt "lazarusidestrconsts.liscloseall"
+msgid "Close All"
+msgstr "סגור הכל"
+
+#: lazarusidestrconsts.liscloseallchecked
+msgid "Close All Checked"
+msgstr ""
 
 #: lazarusidestrconsts.lisclosealltabsclose
 msgid "Close files"
@@ -5611,16 +5571,6 @@ msgstr "(לא נמצא תאור מורש)"
 msgid "<NONE>"
 msgstr "<ללא>"
 
-#: lazarusidestrconsts.liscodehelpreplacebutton
-msgctxt "lazarusidestrconsts.liscodehelpreplacebutton"
-msgid "Replace"
-msgstr "החלף"
-
-#: lazarusidestrconsts.liscodehelpsavebutton
-msgctxt "lazarusidestrconsts.liscodehelpsavebutton"
-msgid "Save"
-msgstr "שמור"
-
 #: lazarusidestrconsts.liscodehelpseealsotag
 msgid "See also"
 msgstr "ראה גם"
@@ -5653,8 +5603,10 @@ msgid "Ignore next unnamed constants"
 msgstr "התעלם מהקבועים חסרי השם הבאים"
 
 #: lazarusidestrconsts.liscodetempladd
+#, fuzzy
+#| msgid "Add"
 msgctxt "lazarusidestrconsts.liscodetempladd"
-msgid "Add"
+msgid "Add template"
 msgstr "הוסף"
 
 #: lazarusidestrconsts.liscodetempladdcodetemplate
@@ -5783,11 +5735,6 @@ msgstr "תאור:"
 msgid "%s directory"
 msgstr "ספרייה %s"
 
-#: lazarusidestrconsts.liscodetoolsdefsedit
-msgctxt "lazarusidestrconsts.liscodetoolsdefsedit"
-msgid "Edit"
-msgstr "עריכה"
-
 #: lazarusidestrconsts.liscodetoolsdefselse
 msgid "Else"
 msgstr "אחרת"
@@ -5811,11 +5758,6 @@ msgstr "שגיאה בכתיבת s%s%s%s%s%"
 #: lazarusidestrconsts.liscodetoolsdefserrorwhilewritingprojectinfofile
 msgid "Error while writing project info file %s%s%s%s%s"
 msgstr "שגיאה בכתיבת קובץ מידע הפרוייקט s%s%s%s%s%"
-
-#: lazarusidestrconsts.liscodetoolsdefsexit
-msgctxt "lazarusidestrconsts.liscodetoolsdefsexit"
-msgid "Exit"
-msgstr "יציאה"
 
 #: lazarusidestrconsts.liscodetoolsdefsexitwithoutsave
 msgid "Exit without Save"
@@ -6119,11 +6061,6 @@ msgstr "ללא"
 msgid "Number"
 msgstr "מספר"
 
-#: lazarusidestrconsts.liscodetoolsoptsok
-msgctxt "lazarusidestrconsts.liscodetoolsoptsok"
-msgid "Ok"
-msgstr "אשר"
-
 #: lazarusidestrconsts.liscodetoolsoptspoint
 msgid "Point"
 msgstr "נקודה"
@@ -6180,6 +6117,10 @@ msgstr "פקודה שאחרי לא חוקית"
 #: lazarusidestrconsts.liscommandafterpublishingmodule
 msgid "Command after publishing module"
 msgstr "פקודה אחרי פרסום מודול"
+
+#: lazarusidestrconsts.liscommandedithint
+msgid "Edit command's mapping with double click, Return key or Popup menu"
+msgstr ""
 
 #: lazarusidestrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
@@ -6660,6 +6601,11 @@ msgstr "יחידות להחלפה"
 msgid "Unknown properties"
 msgstr "תכונות לא ידועות"
 
+#: lazarusidestrconsts.liscopy
+msgctxt "lazarusidestrconsts.liscopy"
+msgid "Copy"
+msgstr "העתק"
+
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
 msgstr "העתק הכל"
@@ -6909,6 +6855,11 @@ msgstr "תכנית של המשתמש"
 msgid "Custom Program%sA Free Pascal program."
 msgstr "תכנית של המשתמש s%. תוכנית ב Free Pascal "
 
+#: lazarusidestrconsts.liscut
+msgctxt "lazarusidestrconsts.liscut"
+msgid "Cut"
+msgstr "חתוך"
+
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "מודול תאריך"
@@ -7105,13 +7056,6 @@ msgctxt "lazarusidestrconsts.lisdebuggerfeedbackmore"
 msgid "More"
 msgstr "עוד"
 
-#: lazarusidestrconsts.lisdebuggerfeedbackok
-#, fuzzy
-#| msgid "Ok"
-msgctxt "lazarusidestrconsts.lisdebuggerfeedbackok"
-msgid "OK"
-msgstr "אשר"
-
 #: lazarusidestrconsts.lisdebuggerfeedbackstop
 msgctxt "lazarusidestrconsts.lisdebuggerfeedbackstop"
 msgid "Stop"
@@ -7187,10 +7131,6 @@ msgstr "מטופל ע\"י מנפה השגיאות"
 msgid "Handled by Program"
 msgstr "מטופל ע\"י התכנית"
 
-#: lazarusidestrconsts.lisdebugoptionsfrmid
-msgid "ID"
-msgstr "ID"
-
 #: lazarusidestrconsts.lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
 msgstr "התעלם מחריגות אלו"
@@ -7209,11 +7149,6 @@ msgstr "הגבל את מספור השורות ל"
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmmodule"
 msgid "Module"
 msgstr "מודול"
-
-#: lazarusidestrconsts.lisdebugoptionsfrmname
-msgctxt "lazarusidestrconsts.lisdebugoptionsfrmname"
-msgid "Name"
-msgstr "שם"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
 msgid "Notify on Lazarus Exceptions"
@@ -7295,6 +7230,11 @@ msgstr "השהייה עבור טיפים ארוכים בתיבת ההשלמה"
 #: lazarusidestrconsts.lisdelayforhintsandcompletionbox
 msgid "Delay for hints and completion box"
 msgstr "השהייה לטיפים ותיבת השלמה"
+
+#: lazarusidestrconsts.lisdelete
+msgctxt "lazarusidestrconsts.lisdelete"
+msgid "Delete"
+msgstr "מחק"
 
 #: lazarusidestrconsts.lisdeleteall
 msgid "&Delete All"
@@ -7613,6 +7553,20 @@ msgstr "מספר קבצים השתנו בדיסק:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "הבחן בין אותיות גדולות וקטנות למשל A ו a"
 
+#: lazarusidestrconsts.lisdlgeditorwindowmanager
+msgid "Editor Window Manager ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisdlgopen
+msgctxt "lazarusidestrconsts.lisdlgopen"
+msgid "Open ..."
+msgstr "פתח..."
+
+#: lazarusidestrconsts.lisdlgsave
+msgctxt "lazarusidestrconsts.lisdlgsave"
+msgid "Save ..."
+msgstr "שמור ..."
+
 #: lazarusidestrconsts.lisdocumentationeditor
 msgid "Documentation Editor"
 msgstr "עורך תיעוד"
@@ -7652,6 +7606,11 @@ msgstr "אל תראה דיאלוג עבור פרוייקט זה"
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
 msgstr "אל תראה הודעה זאת שוב"
+
+#: lazarusidestrconsts.lisdown
+msgctxt "lazarusidestrconsts.lisdown"
+msgid "Down"
+msgstr "למטה"
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
@@ -7725,6 +7684,11 @@ msgstr "מסלול חיפוש כפול"
 msgid "Duplicate sources. Delete one or make sure all search paths have correct order (Hint: FPC uses last path first)."
 msgstr "מקורות כפולים.מחק אחד או שתבדוק שכל נתיבי החיפוש הם בסדר הנכון (טיפ: FPC משתמש קודם בנתיב האחרון). "
 
+#: lazarusidestrconsts.lisedit
+msgctxt "lazarusidestrconsts.lisedit"
+msgid "Edit"
+msgstr "עריכה"
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "ערוך עזרה תלויית הקשר"
@@ -7733,9 +7697,17 @@ msgstr "ערוך עזרה תלויית הקשר"
 msgid "Edit help"
 msgstr ""
 
+#: lazarusidestrconsts.liseditkeymapping
+msgid "Edit Command's Mapping"
+msgstr ""
+
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
 msgstr "סוגי הקבצים של העורך"
+
+#: lazarusidestrconsts.liseditorwindowmanager
+msgid "Editor Window Manager"
+msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
 msgid "Load a scheme"
@@ -7835,16 +7807,13 @@ msgstr "ערוך כלי"
 msgid "Hide main form"
 msgstr "הסתר טופס ראשי"
 
-#: lazarusidestrconsts.lisedtexttoolinsert
-msgid "Insert"
-msgstr "הכנס"
-
 #: lazarusidestrconsts.lisedtexttoolkey
 msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
 msgstr "מפתח"
 
 #: lazarusidestrconsts.lisedtexttoolmacros
+msgctxt "lazarusidestrconsts.lisedtexttoolmacros"
 msgid "Macros"
 msgstr "מאקרויים"
 
@@ -8233,7 +8202,9 @@ msgid "Add Comment"
 msgstr ""
 
 #: lazarusidestrconsts.liseverynthlinenumber
-msgid "Every n-th line number:"
+#, fuzzy
+#| msgid "Every n-th line number:"
+msgid "Every n-th line number"
 msgstr "כל שורה שמספרה הוא n:"
 
 #: lazarusidestrconsts.lisexamplefile
@@ -8294,6 +8265,11 @@ msgstr "הריצה נעצרה"
 msgid "Programs"
 msgstr "תוכנות"
 
+#: lazarusidestrconsts.lisexit
+msgctxt "lazarusidestrconsts.lisexit"
+msgid "Exit"
+msgstr "יציאה"
+
 #: lazarusidestrconsts.lisexpandall
 msgid "Expand All (*)"
 msgstr ""
@@ -8353,21 +8329,6 @@ msgstr "נכשל בהרצת הכלי"
 msgid "Maximum Tools reached"
 msgstr "הגעת לממספר הכלים המירבי"
 
-#: lazarusidestrconsts.lisexttoolmovedown
-msgctxt "lazarusidestrconsts.lisexttoolmovedown"
-msgid "Down"
-msgstr "למטה"
-
-#: lazarusidestrconsts.lisexttoolmoveup
-msgctxt "lazarusidestrconsts.lisexttoolmoveup"
-msgid "Up"
-msgstr "למעלה"
-
-#: lazarusidestrconsts.lisexttoolremove
-msgctxt "lazarusidestrconsts.lisexttoolremove"
-msgid "Remove"
-msgstr "הסר"
-
 #: lazarusidestrconsts.lisexttoolthereisamaximumoftools
 msgid "There is a maximum of %s tools."
 msgstr "יש מקסימום של %s למספר הכלים"
@@ -8395,6 +8356,11 @@ msgstr "צמצם את צביעת המעצב"
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
 msgstr "פריטי מעצב הצבעים מושבתים (צמצם אפשרויות עבור מחשבים איטיים)"
+
+#: lazarusidestrconsts.lisfile
+msgctxt "lazarusidestrconsts.lisfile"
+msgid "File"
+msgstr "קובץ"
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
@@ -8433,11 +8399,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfilefiltersmask
 msgid "File mask"
 msgstr ""
-
-#: lazarusidestrconsts.lisfilefiltersname
-msgctxt "lazarusidestrconsts.lisfilefiltersname"
-msgid "Name"
-msgstr "שם"
 
 #: lazarusidestrconsts.lisfilefilterssetdefaults
 msgid "Set defaults"
@@ -8777,11 +8738,6 @@ msgstr "בפרוייקט/חבילה להם שייכת היחידה"
 msgid "Invalid Identifier"
 msgstr "מזהה לא חוקי"
 
-#: lazarusidestrconsts.lisfrirename
-msgctxt "lazarusidestrconsts.lisfrirename"
-msgid "Rename"
-msgstr "שנה שם"
-
 #: lazarusidestrconsts.lisfrirenameallreferences
 msgid "Rename all References"
 msgstr "שנה שם של כל מראי המקום"
@@ -8863,6 +8819,10 @@ msgstr ""
 msgid "Clear group(s)"
 msgstr ""
 
+#: lazarusidestrconsts.lisgroupsfordebugoutput
+msgid "Enable or Disable groups of debug output. Valid Options are:"
+msgstr ""
+
 #: lazarusidestrconsts.lisgrowtolarges
 msgid "Grow to Largest"
 msgstr "הגדל לגדול ביותר"
@@ -8874,6 +8834,11 @@ msgstr "יש לו עזרה"
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "הערת כותרת למחלקה"
+
+#: lazarusidestrconsts.lishelp
+msgctxt "lazarusidestrconsts.lishelp"
+msgid "Help"
+msgstr "עזרה"
 
 #: lazarusidestrconsts.lishelpentries
 msgid "Help entries"
@@ -8909,15 +8874,6 @@ msgstr "טיפ: ניתן להגדיר ערך ברירת מחדל בהתניות 
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "טיפ: בדוק אם יש שתי חבילות המכילות יחידות עם אותו שם."
 
-#: lazarusidestrconsts.lishintdoubleclickonthecommandyouwanttoedit
-msgid "Hint: double click on the command you want to edit"
-msgstr "טיפ: לחץ לחיצה כפולה על הפקודה שאתה רוצה לערוך"
-
-#: lazarusidestrconsts.lishintopen
-msgctxt "lazarusidestrconsts.lishintopen"
-msgid "Open"
-msgstr "פתח"
-
 #: lazarusidestrconsts.lishintpause
 msgctxt "lazarusidestrconsts.lishintpause"
 msgid "Pause"
@@ -8927,11 +8883,6 @@ msgstr "השהיה"
 msgctxt "lazarusidestrconsts.lishintrun"
 msgid "Run"
 msgstr "ריצה"
-
-#: lazarusidestrconsts.lishintsave
-msgctxt "lazarusidestrconsts.lishintsave"
-msgid "Save"
-msgstr "שמור"
 
 #: lazarusidestrconsts.lishintsaveall
 msgid "Save all"
@@ -9001,6 +8952,11 @@ msgstr "נתיב ל FPC Doc HTML"
 #: lazarusidestrconsts.lishorizontal
 msgid "Horizontal"
 msgstr "אופקי"
+
+#: lazarusidestrconsts.lisid
+msgctxt "lazarusidestrconsts.lisid"
+msgid "ID"
+msgstr "ID"
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -9105,11 +9061,6 @@ msgstr "שמור לקובץ"
 #: lazarusidestrconsts.lisiecosavetorecent
 msgid "Save to recent"
 msgstr "שמור את המצב הקודם האחרון"
-
-#: lazarusidestrconsts.lisifdok
-msgctxt "lazarusidestrconsts.lisifdok"
-msgid "OK"
-msgstr "אשר"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -9282,6 +9233,11 @@ msgstr "רכיב מורש של הפרוייקט"
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
 msgstr "כדי ליצור העתק נקי של הפרוייקט/חבילה, כל הקבצים בתיקייה הבאה יימחקו וכל התוכן יאבד. האם למחוק את כל הקבצים ב s%s%s%?"
+
+#: lazarusidestrconsts.lisinsert
+msgctxt "lazarusidestrconsts.lisinsert"
+msgid "Insert"
+msgstr "הכנס"
 
 #: lazarusidestrconsts.lisinsertdate
 msgid "insert date"
@@ -9521,10 +9477,6 @@ msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "היסטוריית קפיצות"
 
-#: lazarusidestrconsts.liskeep
-msgid "keep"
-msgstr "שמור "
-
 #: lazarusidestrconsts.liskeep2
 msgid "Keep"
 msgstr "שמור"
@@ -9558,6 +9510,11 @@ msgstr "שמור הזחה"
 #: lazarusidestrconsts.liskeepthemandcontinue
 msgid "Keep them and continue"
 msgstr "שמור אותם והמשך"
+
+#: lazarusidestrconsts.liskey
+msgctxt "lazarusidestrconsts.liskey"
+msgid "Key"
+msgstr "מקש"
 
 #: lazarusidestrconsts.liskeycatcustom
 msgid "Custom commands"
@@ -9610,10 +9567,6 @@ msgstr "קלאסי"
 #: lazarusidestrconsts.liskmcleanupcompiled
 msgid "Clean up build files"
 msgstr ""
-
-#: lazarusidestrconsts.liskmcloseall
-msgid "Close All"
-msgstr "סגור הכל"
 
 #: lazarusidestrconsts.liskmcloseproject
 msgid "Close project"
@@ -10137,6 +10090,11 @@ msgstr "טעינת היישום לא חוקית"
 msgid "Launching target command line"
 msgstr "טעינת שורת הפקודה המיועדת"
 
+#: lazarusidestrconsts.lislazarus
+msgctxt "lazarusidestrconsts.lislazarus"
+msgid "Lazarus"
+msgstr "לזארוס"
+
 #: lazarusidestrconsts.lislazarusdesktopsettings
 msgid "Lazarus Desktop Settings"
 msgstr "הגדרות שולחן העבודה של לזארוס"
@@ -10224,11 +10182,6 @@ msgstr "פעולה"
 msgid "Choose output directory of the IDE executable "
 msgstr "בחר בתיקיית הפלט לקבצי הריצה של הIDE"
 
-#: lazarusidestrconsts.lislazbuildadd
-msgctxt "lazarusidestrconsts.lislazbuildadd"
-msgid "Add"
-msgstr "הוסף"
-
 #: lazarusidestrconsts.lislazbuildareyousureyouwanttodeletethisbuildprofile
 msgid "Are you sure you want to delete this build profile?"
 msgstr "האם אתה בטוח שאתה רוצה למחוק את פרופיל הבנייה הזה?"
@@ -10265,11 +10218,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
 msgstr "בנה SynEdit"
-
-#: lazarusidestrconsts.lislazbuildcancel
-msgctxt "lazarusidestrconsts.lislazbuildcancel"
-msgid "Cancel"
-msgstr "בטל"
 
 #: lazarusidestrconsts.lislazbuildcleanallbuild
 msgid "Clean All + Build"
@@ -10362,13 +10310,6 @@ msgstr "אפשרויות הבנייה הנוכחיות יקושרו עם:"
 msgid "Normal IDE"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildok
-#, fuzzy
-#| msgid "Ok"
-msgctxt "lazarusidestrconsts.lislazbuildok"
-msgid "OK"
-msgstr "אשר"
-
 #: lazarusidestrconsts.lislazbuildoptimizedide
 msgid "Optimized IDE"
 msgstr "במצב מיטבי  IDE"
@@ -10391,16 +10332,6 @@ msgstr "פרופיל בנייה"
 msgctxt "lazarusidestrconsts.lislazbuildrefresh"
 msgid "Refresh"
 msgstr "לרענן"
-
-#: lazarusidestrconsts.lislazbuildremove
-msgctxt "lazarusidestrconsts.lislazbuildremove"
-msgid "Remove"
-msgstr "הסר"
-
-#: lazarusidestrconsts.lislazbuildrename
-msgctxt "lazarusidestrconsts.lislazbuildrename"
-msgid "Rename"
-msgstr "שנה שם"
 
 #: lazarusidestrconsts.lislazbuildrenameprof
 msgid "Rename Profile"
@@ -10590,16 +10521,6 @@ msgstr ""
 #: lazarusidestrconsts.lislocalsdlgcopyvalue
 msgid "C&opy Value"
 msgstr ""
-
-#: lazarusidestrconsts.lislocalsdlgname
-msgctxt "lazarusidestrconsts.lislocalsdlgname"
-msgid "Name"
-msgstr "שם"
-
-#: lazarusidestrconsts.lislocalsdlgvalue
-msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
-msgid "Value"
-msgstr "ערך"
 
 #: lazarusidestrconsts.lislocalsnotevaluated
 msgid "Locals not evaluated"
@@ -10861,11 +10782,6 @@ msgstr "נקה ספרייה ..."
 msgid "Clean up Build Files ..."
 msgstr ""
 
-#: lazarusidestrconsts.lismenuclose
-msgctxt "lazarusidestrconsts.lismenuclose"
-msgid "Close"
-msgstr "סגור"
-
 #: lazarusidestrconsts.lismenucloseall
 #, fuzzy
 #| msgid "Close a&ll editor files"
@@ -10964,11 +10880,6 @@ msgstr "המר קובץ בינארי  DFM לקובץ בינארי LFM ובדוק
 msgid "Convert Encoding of Projects/Packages ..."
 msgstr "המר את קידוד הפרויקט/חבילה ..."
 
-#: lazarusidestrconsts.lismenucopy
-msgctxt "lazarusidestrconsts.lismenucopy"
-msgid "Copy"
-msgstr "העתק"
-
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "צור קבצי FPDoc"
@@ -10976,11 +10887,6 @@ msgstr "צור קבצי FPDoc"
 #: lazarusidestrconsts.lismenucreatepofile
 msgid "Create .po files"
 msgstr "צור קבצי po."
-
-#: lazarusidestrconsts.lismenucut
-msgctxt "lazarusidestrconsts.lismenucut"
-msgid "Cut"
-msgstr "חתוך"
 
 #: lazarusidestrconsts.lismenudebugwindows
 #, fuzzy
@@ -11018,11 +10924,6 @@ msgstr "התקן/הסר חבילות ..."
 #| msgid "Menu Editor..."
 msgid "Menu Editor ..."
 msgstr "עורך תפריטים"
-
-#: lazarusidestrconsts.lismenueditorcancel
-msgctxt "lazarusidestrconsts.lismenueditorcancel"
-msgid "Cancel"
-msgstr "בטל"
 
 #: lazarusidestrconsts.lismenueditorcreatesubmenu
 msgid "Create Submenu"
@@ -11372,6 +11273,11 @@ msgctxt "lazarusidestrconsts.lismenunewunit"
 msgid "New Unit"
 msgstr "יחידה חדשה"
 
+#: lazarusidestrconsts.lismenuok
+msgctxt "lazarusidestrconsts.lismenuok"
+msgid "&OK"
+msgstr "א&שר"
+
 #: lazarusidestrconsts.lismenuonlinehelp
 msgid "Online Help"
 msgstr "עזרה מקוונת"
@@ -11446,11 +11352,6 @@ msgstr "גרף החבילות ..."
 msgid "Package Links ..."
 msgstr "קישורי חבילה ..."
 
-#: lazarusidestrconsts.lismenupaste
-msgctxt "lazarusidestrconsts.lismenupaste"
-msgid "Paste"
-msgstr "הדבק"
-
 #: lazarusidestrconsts.lismenupause
 msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
@@ -11504,16 +11405,6 @@ msgstr "בדיקת תחביר מהירה"
 msgid "Quick syntax check OK"
 msgstr "בדיקת תחביר מהירה תקינה"
 
-#: lazarusidestrconsts.lismenuquit
-#| msgid "Quit"
-msgid "&Quit"
-msgstr "צא"
-
-#: lazarusidestrconsts.lismenuredo
-msgctxt "lazarusidestrconsts.lismenuredo"
-msgid "Redo"
-msgstr "בצע שוב"
-
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
 msgstr "הסר מהפרוייקט"
@@ -11521,15 +11412,6 @@ msgstr "הסר מהפרוייקט"
 #: lazarusidestrconsts.lismenurenameidentifier
 msgid "Rename Identifier ..."
 msgstr "שנה שם מזהה"
-
-#: lazarusidestrconsts.lismenureplace
-msgctxt "lazarusidestrconsts.lismenureplace"
-msgid "Replace"
-msgstr "החלף"
-
-#: lazarusidestrconsts.lismenureplace2
-msgid "&Replace ..."
-msgstr "החלף&"
 
 #: lazarusidestrconsts.lismenureportingbug
 #, fuzzy
@@ -11549,10 +11431,6 @@ msgstr "סרוק שוב את תיקיית FPC"
 #| msgid "Reset debugger"
 msgid "Reset Debugger"
 msgstr "אתחל את מנפה השגיאות"
-
-#: lazarusidestrconsts.lismenurestart
-msgid "Restart"
-msgstr "אתחל"
 
 #: lazarusidestrconsts.lismenurevert
 msgid "Revert"
@@ -11584,10 +11462,6 @@ msgstr "רוץ עד לסמן"
 msgctxt "lazarusidestrconsts.lismenusave"
 msgid "&Save"
 msgstr "שמור"
-
-#: lazarusidestrconsts.lismenusaveall
-msgid "Save All"
-msgstr "שמור הכל"
 
 #: lazarusidestrconsts.lismenusaveas
 #| msgid "Save As ..."
@@ -11749,24 +11623,9 @@ msgstr "החלף טאבים לרווחים בבחירה"
 msgid "About"
 msgstr "אודות"
 
-#: lazarusidestrconsts.lismenutemplateclose
-msgctxt "lazarusidestrconsts.lismenutemplateclose"
-msgid "Close"
-msgstr "סגור"
-
 #: lazarusidestrconsts.lismenutemplatecontents
 msgid "Contents"
 msgstr "מכיל"
-
-#: lazarusidestrconsts.lismenutemplatecopy
-msgctxt "lazarusidestrconsts.lismenutemplatecopy"
-msgid "Copy"
-msgstr "העתק"
-
-#: lazarusidestrconsts.lismenutemplatecut
-msgctxt "lazarusidestrconsts.lismenutemplatecut"
-msgid "Cut"
-msgstr "חתוך"
 
 #: lazarusidestrconsts.lismenutemplatedescriptionstandardeditmenu
 msgid "Standard Edit Menu"
@@ -11780,21 +11639,6 @@ msgstr "תפריט קובץ סטנדרטי"
 msgid "Standard Help Menu"
 msgstr "תפריט עזרה סטנדרטי"
 
-#: lazarusidestrconsts.lismenutemplateedit
-msgctxt "lazarusidestrconsts.lismenutemplateedit"
-msgid "Edit"
-msgstr "עריכה"
-
-#: lazarusidestrconsts.lismenutemplateexit
-msgctxt "lazarusidestrconsts.lismenutemplateexit"
-msgid "Exit"
-msgstr "יציאה"
-
-#: lazarusidestrconsts.lismenutemplatefile
-msgctxt "lazarusidestrconsts.lismenutemplatefile"
-msgid "File"
-msgstr "קובץ"
-
 #: lazarusidestrconsts.lismenutemplatefind
 msgctxt "lazarusidestrconsts.lismenutemplatefind"
 msgid "Find"
@@ -11805,52 +11649,14 @@ msgctxt "lazarusidestrconsts.lismenutemplatefindnext"
 msgid "Find Next"
 msgstr "מצא את הבא"
 
-#: lazarusidestrconsts.lismenutemplatehelp
-msgctxt "lazarusidestrconsts.lismenutemplatehelp"
-msgid "Help"
-msgstr "עזרה"
-
-#: lazarusidestrconsts.lismenutemplatenew
-msgid "New"
-msgstr "חדש"
-
-#: lazarusidestrconsts.lismenutemplateopen
-msgctxt "lazarusidestrconsts.lismenutemplateopen"
-msgid "Open"
-msgstr "פתח"
-
 #: lazarusidestrconsts.lismenutemplateopenrecent
 msgctxt "lazarusidestrconsts.lismenutemplateopenrecent"
 msgid "Open Recent"
 msgstr "פתח אחרונים"
 
-#: lazarusidestrconsts.lismenutemplatepaste
-msgctxt "lazarusidestrconsts.lismenutemplatepaste"
-msgid "Paste"
-msgstr "הדבק"
-
-#: lazarusidestrconsts.lismenutemplateredo
-msgctxt "lazarusidestrconsts.lismenutemplateredo"
-msgid "Redo"
-msgstr "בצע שוב"
-
-#: lazarusidestrconsts.lismenutemplatesave
-msgctxt "lazarusidestrconsts.lismenutemplatesave"
-msgid "Save"
-msgstr "שמור"
-
-#: lazarusidestrconsts.lismenutemplatesaveas
-msgid "Save As"
-msgstr "שמור כ"
-
 #: lazarusidestrconsts.lismenutemplatetutorial
 msgid "Tutorial"
 msgstr "מדריך"
-
-#: lazarusidestrconsts.lismenutemplateundo
-msgctxt "lazarusidestrconsts.lismenutemplateundo"
-msgid "Undo"
-msgstr "בטל פעולה"
 
 #: lazarusidestrconsts.lismenutogglecomment
 #, fuzzy
@@ -11867,11 +11673,6 @@ msgstr "כלים&"
 #| msgid "Uncomment selection"
 msgid "Uncomment Selection"
 msgstr "בטל את סימון הבחירה כהערה"
-
-#: lazarusidestrconsts.lismenuundo
-msgctxt "lazarusidestrconsts.lismenuundo"
-msgid "Undo"
-msgstr "בטל"
 
 #: lazarusidestrconsts.lismenuunindentselection
 #, fuzzy
@@ -12167,6 +11968,11 @@ msgstr "(ms)"
 msgid "Save messages to file (*.txt)"
 msgstr "שמור הודעות לקובץ (*.txt)"
 
+#: lazarusidestrconsts.lisname
+msgctxt "lazarusidestrconsts.lisname"
+msgid "Name"
+msgstr "שם"
+
 #: lazarusidestrconsts.lisnameconflict
 msgid "Name conflict"
 msgstr "התנגשות בין שמות"
@@ -12181,7 +11987,8 @@ msgid "Never"
 msgstr "אף פעם"
 
 #: lazarusidestrconsts.lisnew
-msgid "new"
+msgctxt "lazarusidestrconsts.lisnew"
+msgid "New"
 msgstr "חדש"
 
 #: lazarusidestrconsts.lisnewancestors
@@ -12409,6 +12216,10 @@ msgstr "לא ממומש עדיין."
 msgid "Not now"
 msgstr "לא עכשיו"
 
+#: lazarusidestrconsts.lisnowloadedscheme
+msgid "Now loaded: "
+msgstr ""
+
 #: lazarusidestrconsts.lisnpcreate
 msgid "Create"
 msgstr "צור"
@@ -12537,13 +12348,11 @@ msgid "%sThis package was automatically created"
 msgstr "חבילה זאת נוצרה אוטומטית"
 
 #: lazarusidestrconsts.lisok
-#| msgid "&Ok"
-msgid "&OK"
-msgstr "א&שר"
-
-#: lazarusidestrconsts.lisold
-msgid "old"
-msgstr "ישן"
+#, fuzzy
+#| msgid "ok"
+msgctxt "lazarusidestrconsts.lisok"
+msgid "OK"
+msgstr "אשר"
 
 #: lazarusidestrconsts.lisoldancestors
 msgid "Old Ancestors"
@@ -12570,8 +12379,9 @@ msgid "On paste from clipboard"
 msgstr "בהעתקה מהלוח הזמני"
 
 #: lazarusidestrconsts.lisopen
-msgid "Open ..."
-msgstr "פתח..."
+msgctxt "lazarusidestrconsts.lisopen"
+msgid "Open"
+msgstr "פתח"
 
 #: lazarusidestrconsts.lisopenasxmlfile
 msgid "Open as XML file"
@@ -12761,6 +12571,11 @@ msgstr "יחידה של פסקל"
 msgid "Pass Count"
 msgstr "ספירת מעברים"
 
+#: lazarusidestrconsts.lispaste
+msgctxt "lazarusidestrconsts.lispaste"
+msgid "Paste"
+msgstr "הדבק"
+
 #: lazarusidestrconsts.lispasteclipboard
 msgid "paste clipboard"
 msgstr "הדבק את מה שבלוח הזמני"
@@ -12778,13 +12593,41 @@ msgctxt "lazarusidestrconsts.lispatheditbrowse"
 msgid "Browse"
 msgstr "דפדף"
 
+#: lazarusidestrconsts.lispatheditdeleteinvalidpaths
+msgid "Delete Invalid Paths"
+msgstr ""
+
 #: lazarusidestrconsts.lispatheditmovepathdown
-msgid "Move path down"
+#, fuzzy
+#| msgid "Move path down"
+msgid "Move path down (Ctrl+Down)"
 msgstr "הזז נתיב למטה"
 
 #: lazarusidestrconsts.lispatheditmovepathup
-msgid "Move path up"
+#, fuzzy
+#| msgid "Move path up"
+msgid "Move path up (Ctrl+Up)"
 msgstr "הזז נתיב למעלה"
+
+#: lazarusidestrconsts.lispatheditoraddhint
+msgid "Add new path to the list"
+msgstr ""
+
+#: lazarusidestrconsts.lispatheditordeletehint
+msgid "Delete the selected path"
+msgstr ""
+
+#: lazarusidestrconsts.lispatheditordeleteinvalidhint
+msgid "Remove non-existent (gray) paths from the list"
+msgstr ""
+
+#: lazarusidestrconsts.lispatheditorreplacehint
+msgid "Replace the selected path with a new path"
+msgstr ""
+
+#: lazarusidestrconsts.lispatheditortempladdhint
+msgid "Add template to the list"
+msgstr ""
 
 #: lazarusidestrconsts.lispatheditpathtemplates
 msgid "Path templates"
@@ -12891,11 +12734,6 @@ msgstr "תכונות קובץ"
 #: lazarusidestrconsts.lispckeditgeneraloptions
 msgid "General Options"
 msgstr "אפשרויות כלליות"
-
-#: lazarusidestrconsts.lispckedithelp
-msgctxt "lazarusidestrconsts.lispckedithelp"
-msgid "Help"
-msgstr "עזרה"
 
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
@@ -13587,10 +13425,6 @@ msgstr "הקובץ %s%s%s לא נמצא."
 msgid "File not saved"
 msgstr "הקובץ לא נשמר"
 
-#: lazarusidestrconsts.lispkgmangignoreandsavepackagenow
-msgid "Ignore and save package now"
-msgstr "התעלם ושמור את החבילה עכשיו"
-
 #: lazarusidestrconsts.lispkgmanginstallingthepackagewillautomaticallyinstallthepac
 msgid "Installing the package %s will automatically install the package:"
 msgstr "התקנת החבילה s% תתקין אוטומטית את החבילה:"
@@ -13623,11 +13457,6 @@ msgstr "שם החבילה אינו תקין"
 msgid "Invalid Package Name"
 msgstr "שם החבילה לא חוקי"
 
-#: lazarusidestrconsts.lispkgmanglazarus
-msgctxt "lazarusidestrconsts.lispkgmanglazarus"
-msgid "Lazarus"
-msgstr "לזארוס"
-
 #: lazarusidestrconsts.lispkgmangloadingpackagewillreplacepackage
 msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave old package %s?"
 msgstr "טעינת חבילה s% תחליף את החבילה s%s%s מקובץ %. החבילה הישנה שונתה. האם לשמור אותה?"
@@ -13643,14 +13472,6 @@ msgstr "חבילה: %s"
 #: lazarusidestrconsts.lispkgmangpackageconflicts
 msgid "Package conflicts"
 msgstr "התנגשויות בחבילה"
-
-#: lazarusidestrconsts.lispkgmangpackagefilemissing
-msgid "Package file missing"
-msgstr "קובץ החבילה חסר"
-
-#: lazarusidestrconsts.lispkgmangpackagefilenotsaved
-msgid "Package file not saved"
-msgstr "קובץ החבילה לא שמור"
 
 #: lazarusidestrconsts.lispkgmangpackagehasnovalidoutputdirectory
 msgid "Package %s%s%s has no valid output directory:%s%s%s%s"
@@ -13751,13 +13572,9 @@ msgstr "שם הקובץ %s%s%s הוא חלק מהםרוייקט. פרוייקט 
 msgid "The file name %s%s%s is used by%sthe package %s%s%s%sin file %s%s%s."
 msgstr "שם הקובץ %s%s%s בשימוש ע\"י חבילה %s%s%s בקובץ %s%s%s."
 
-#: lazarusidestrconsts.lispkgmangthefileofpackageismissing
-msgid "The file %s%s%s%sof package %s is missing."
-msgstr "הקובץ %s%s%s%s השייך לחבילה s% חסר."
-
-#: lazarusidestrconsts.lispkgmangthefileofpackageneedstobesavedfirst
-msgid "The file %s%s%s%sof package %s needs to be saved first."
-msgstr "קודם צריך לשמור את הקובץ %s%s%s%s השייך לחבילה s% ."
+#: lazarusidestrconsts.lispkgmangthefileofpackagewasnotfound
+msgid "The file \"%s\" of package %s was not found."
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
@@ -13918,6 +13735,21 @@ msgstr "משתמש ביחידה"
 #: lazarusidestrconsts.lispkgmangwarningthefilebelongstothecurrentproject
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgstr "אזהרה: הקובץ %s%s%s%s שייך לפרויקט הנוכחי."
+
+#: lazarusidestrconsts.lispkgmgrkeep
+msgctxt "lazarusidestrconsts.lispkgmgrkeep"
+msgid "keep"
+msgstr "שמור "
+
+#: lazarusidestrconsts.lispkgmgrnew
+msgctxt "lazarusidestrconsts.lispkgmgrnew"
+msgid "new"
+msgstr "חדש"
+
+#: lazarusidestrconsts.lispkgmgrremove
+msgctxt "lazarusidestrconsts.lispkgmgrremove"
+msgid "remove"
+msgstr "הסר"
 
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
@@ -14588,6 +14420,11 @@ msgstr "תיקון מהיר: הסר את היחידה"
 msgid "Search identifier"
 msgstr "חפש מזהה"
 
+#: lazarusidestrconsts.lisquit
+msgctxt "lazarusidestrconsts.lisquit"
+msgid "Quit"
+msgstr "יציאה"
+
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"
 msgstr "צא מלזרוס"
@@ -14600,20 +14437,15 @@ msgstr "שגיאת קריאה"
 msgid "Record/Structure"
 msgstr "רשומה/מבנה נתונים"
 
+#: lazarusidestrconsts.lisredo
+msgctxt "lazarusidestrconsts.lisredo"
+msgid "Redo"
+msgstr "בצע שוב"
+
 #: lazarusidestrconsts.lisregisters
 msgctxt "lazarusidestrconsts.lisregisters"
 msgid "Registers"
 msgstr "אוגרים"
-
-#: lazarusidestrconsts.lisregistersdlgname
-msgctxt "lazarusidestrconsts.lisregistersdlgname"
-msgid "Name"
-msgstr "שם"
-
-#: lazarusidestrconsts.lisregistersdlgvalue
-msgctxt "lazarusidestrconsts.lisregistersdlgvalue"
-msgid "Value"
-msgstr "ערך"
 
 #: lazarusidestrconsts.lisregularexpression
 msgid "Regular expression"
@@ -14624,7 +14456,10 @@ msgid "Relative paths"
 msgstr "נתיב יחסי"
 
 #: lazarusidestrconsts.lisremove
-msgid "remove"
+#, fuzzy
+#| msgid "remove"
+msgctxt "lazarusidestrconsts.lisremove"
+msgid "Remove"
 msgstr "הסר"
 
 #: lazarusidestrconsts.lisremoveallinvalidproperties
@@ -14685,6 +14520,11 @@ msgstr "הסר יחידה מסעיף \"משתמש ב\""
 msgid "Remove unit path?"
 msgstr "להסיר נתיב היחידות ?"
 
+#: lazarusidestrconsts.lisrename
+msgctxt "lazarusidestrconsts.lisrename"
+msgid "Rename"
+msgstr "שנה שם"
+
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
 msgstr "לשנות שם קובץ?"
@@ -14712,6 +14552,11 @@ msgstr "פתח מחדש בקידוד אחר"
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
 msgstr "חזור על הספירה:"
+
+#: lazarusidestrconsts.lisreplace
+msgctxt "lazarusidestrconsts.lisreplace"
+msgid "Replace"
+msgstr "החלף"
 
 #: lazarusidestrconsts.lisreplacement
 msgid "Replacement"
@@ -14771,6 +14616,11 @@ msgstr "סוג משאב של הפרוייקט"
 #: lazarusidestrconsts.lisresponsecontinue
 msgid "Response: %sContinue ?"
 msgstr "תגובה: להמשיך?"
+
+#: lazarusidestrconsts.lisrestart
+msgctxt "lazarusidestrconsts.lisrestart"
+msgid "Restart"
+msgstr "אתחל"
 
 #: lazarusidestrconsts.lisresult
 msgid "Result :="
@@ -14892,8 +14742,20 @@ msgid "Unable to show abstract methods of the current class, because"
 msgstr "לא ניתן להציג את מתודות מופשטות של המחלקה הנוכחית, בגלל"
 
 #: lazarusidestrconsts.lissave
-msgid "Save ..."
+#, fuzzy
+#| msgid "Save ..."
+msgctxt "lazarusidestrconsts.lissave"
+msgid "Save"
 msgstr "שמור ..."
+
+#: lazarusidestrconsts.lissaveall
+msgctxt "lazarusidestrconsts.lissaveall"
+msgid "Save All"
+msgstr "שמור הכל"
+
+#: lazarusidestrconsts.lissaveallchecked
+msgid "Save All Checked"
+msgstr ""
 
 #: lazarusidestrconsts.lissaveallmessagestofile
 #, fuzzy
@@ -14914,6 +14776,11 @@ msgstr "שמור וצא מהדיאלוג"
 #: lazarusidestrconsts.lissaveandrebuildide
 msgid "Save and rebuild IDE"
 msgstr "שמור ובנה מחדש את ה IDE"
+
+#: lazarusidestrconsts.lissaveas
+msgctxt "lazarusidestrconsts.lissaveas"
+msgid "Save As"
+msgstr "שמור כ"
 
 #: lazarusidestrconsts.lissavechanges
 msgid "Save changes?"
@@ -15127,6 +14994,10 @@ msgstr "הראה מזהים"
 msgid "Show information box"
 msgstr "הראה תיבת מידע"
 
+#: lazarusidestrconsts.lisshowoverviewgutter
+msgid "Show overview Gutter"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
 msgstr "הראה חבילות"
@@ -15209,11 +15080,6 @@ msgstr "מצטער, סוג זה לא ממומש עדיין"
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"
 msgstr "עולה"
-
-#: lazarusidestrconsts.lissortselcancel
-msgctxt "lazarusidestrconsts.lissortselcancel"
-msgid "Cancel"
-msgstr "בטל"
 
 #: lazarusidestrconsts.lissortselcasesensitive
 msgctxt "lazarusidestrconsts.lissortselcasesensitive"
@@ -15489,6 +15355,15 @@ msgstr "תא בר עריכה"
 #| "an editable Cell, with a default value\n"
 #| "\"\",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell\n"
 #| "\"default\",Sync, to Sync with a previous cell of equal default\n"
+#| "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")\n"
+#| "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")\n"
+#| "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")\n"
+#| "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")\n"
+#| "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")\n"
+#| "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")\n"
+#| "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")\n"
+#| "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")\n"
+#| "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")\n"
 msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
 msgstr "מכניס תא בר עריכה, עם ערך ברירת מחדל, (Sync=n (,S=n, לסינכרון עם התא הקודם מ n=1 ועד לתא הקודם הגבוה ביותר. ברירת המחדל היא לסנכרן עם התא הקודם עם אותה ברירת מחדל  "
 
@@ -16022,19 +15897,10 @@ msgstr "פונקציה"
 msgid "Goto"
 msgstr ""
 
-#: lazarusidestrconsts.listhreadsid
-msgid "Id"
-msgstr ""
-
 #: lazarusidestrconsts.listhreadsline
 msgctxt "lazarusidestrconsts.listhreadsline"
 msgid "Line"
 msgstr "שורה"
-
-#: lazarusidestrconsts.listhreadsname
-msgctxt "lazarusidestrconsts.listhreadsname"
-msgid "Name"
-msgstr "שם"
 
 #: lazarusidestrconsts.listhreadsnotevaluated
 msgid "Threads not evaluated"
@@ -16221,11 +16087,6 @@ msgstr "שם:"
 msgid "no"
 msgstr "לא"
 
-#: lazarusidestrconsts.lisuidok
-msgctxt "lazarusidestrconsts.lisuidok"
-msgid "Ok"
-msgstr "אשר"
-
 #: lazarusidestrconsts.lisuidpathsreadonly
 msgid "Paths (Read Only)"
 msgstr "נתיבים (קריאה בלבד)"
@@ -16233,10 +16094,6 @@ msgstr "נתיבים (קריאה בלבד)"
 #: lazarusidestrconsts.lisuidsize
 msgid "Size:"
 msgstr "גודל:"
-
-#: lazarusidestrconsts.lisuidsrc
-msgid "Src"
-msgstr "קוד מקור"
 
 #: lazarusidestrconsts.lisuidtype
 msgid "Type:"
@@ -16603,6 +16460,15 @@ msgstr "לא יכול לכתוב לקובץ \"%s\" ."
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "לא יכול לכתוב זרימת xml ל  %s%s שגיאה: %s"
 
+#: lazarusidestrconsts.lisuncheckall
+msgid "Uncheck All"
+msgstr ""
+
+#: lazarusidestrconsts.lisundo
+msgctxt "lazarusidestrconsts.lisundo"
+msgid "Undo"
+msgstr "בטל פעולה"
+
 #: lazarusidestrconsts.lisunexpectedresultthedebuggerwillterminate
 msgid "Unexpected result:%sThe debugger will terminate"
 msgstr "תוצאה לא צפויה: %s מנפה השגיאות ייסגר"
@@ -16670,6 +16536,11 @@ msgstr "ללא סימן"
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "יחידות שאינן בשימוש"
+
+#: lazarusidestrconsts.lisup
+msgctxt "lazarusidestrconsts.lisup"
+msgid "Up"
+msgstr "למעלה"
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
@@ -16765,7 +16636,10 @@ msgid "UTF-8 with BOM"
 msgstr "UTF-8 עם BOM"
 
 #: lazarusidestrconsts.lisvalue
-msgid "Value:"
+#, fuzzy
+#| msgid "Value:"
+msgctxt "lazarusidestrconsts.lisvalue"
+msgid "Value"
 msgstr "ערך:"
 
 #: lazarusidestrconsts.lisvalue2
@@ -16779,6 +16653,11 @@ msgstr "ערך:"
 #: lazarusidestrconsts.lisvalues
 msgid "Values"
 msgstr "ערכים"
+
+#: lazarusidestrconsts.lisvariable
+msgctxt "lazarusidestrconsts.lisvariable"
+msgid "Variable"
+msgstr "משתנה"
 
 #: lazarusidestrconsts.lisverifymethodcalls
 msgid "Verify method calls"
@@ -16939,14 +16818,6 @@ msgstr ""
 msgid "With required packages"
 msgstr "עם החבילות הנידרשות"
 
-#: lazarusidestrconsts.liswladd
-msgid "&Add"
-msgstr "הו&סף"
-
-#: lazarusidestrconsts.liswldelete
-msgid "&Delete"
-msgstr "מ&חק"
-
 #: lazarusidestrconsts.liswldeleteall
 msgid "De&lete All"
 msgstr "מח&ק הכל"
@@ -16958,10 +16829,6 @@ msgstr "ב&טל הכל"
 #: lazarusidestrconsts.liswlenableall
 msgid "E&nable All"
 msgstr "א&פשר הכל"
-
-#: lazarusidestrconsts.liswlenabled
-msgid "&Enabled"
-msgstr "מאופשר"
 
 #: lazarusidestrconsts.liswlexpression
 msgid "Expression"
@@ -17178,11 +17045,6 @@ msgstr ""
 msgid "Use windowmanager setting"
 msgstr "השתמש בהגדרות מנהל החלונות"
 
-#: lazarusidestrconsts.rskey
-msgctxt "lazarusidestrconsts.rskey"
-msgid "Key"
-msgstr "מקש"
-
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"
 msgstr "אפריקנית"
@@ -17295,13 +17157,6 @@ msgstr "גירסה ראשית:"
 msgid "Mi&nor version:"
 msgstr "גירסה משנית"
 
-#: lazarusidestrconsts.rsok
-#, fuzzy
-#| msgid "ok"
-msgctxt "lazarusidestrconsts.rsok"
-msgid "OK"
-msgstr "אשר"
-
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
 msgstr "מידע אחר"
@@ -17309,10 +17164,6 @@ msgstr "מידע אחר"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "ספריית הפלט של קבצי PO"
-
-#: lazarusidestrconsts.rsremove
-msgid "&Remove"
-msgstr "הס&ר"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
@@ -17329,11 +17180,6 @@ msgstr "בחר ערך מורש"
 #: lazarusidestrconsts.rsstartanewsearch
 msgid "Start a new search"
 msgstr "התחל חיפוש חדש"
-
-#: lazarusidestrconsts.rsvalue
-msgctxt "lazarusidestrconsts.rsvalue"
-msgid "Value"
-msgstr "ערך"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
@@ -17363,10 +17209,6 @@ msgstr "פקודות של תזוזות עכבר"
 msgid "Text editing commands"
 msgstr "פקודות של עריכת טקסט"
 
-#: lazarusidestrconsts.srkmcatenvmenu
-msgid "Environment menu commands"
-msgstr "פקודות של תפריט \"סביבה\""
-
 #: lazarusidestrconsts.srkmcatfilemenu
 msgid "File menu commands"
 msgstr "פקודות של תפריט \"קובץ\""
@@ -17374,6 +17216,11 @@ msgstr "פקודות של תפריט \"קובץ\""
 #: lazarusidestrconsts.srkmcatfold
 msgid "Text folding commands"
 msgstr "פקודות של קיפול טקסט"
+
+#: lazarusidestrconsts.srkmcatmacrorecording
+msgctxt "lazarusidestrconsts.srkmcatmacrorecording"
+msgid "Macros"
+msgstr "מאקרויים"
 
 #: lazarusidestrconsts.srkmcatmarker
 msgid "Text marker commands"
@@ -17700,6 +17547,10 @@ msgctxt "lazarusidestrconsts.srkmecdiff"
 msgid "Diff"
 msgstr "השווה"
 
+#: lazarusidestrconsts.srkmecdown
+msgid "Move cursor down"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeceditorbottom
 msgid "Move cursor to absolute end"
 msgstr "הזז את הסמן לסוף המוחלט"
@@ -17953,6 +17804,10 @@ msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "החלף הצבה"
 
+#: lazarusidestrconsts.srkmecleft
+msgid "Move cursor left"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeclinebreak
 msgid "Break line and move cursor"
 msgstr "פצל את השורה והזז את הסמן"
@@ -18097,10 +17952,6 @@ msgstr "גש לחלון הקודם"
 msgid "quick compile, no linking"
 msgstr "הידור מהיר ללא קישור"
 
-#: lazarusidestrconsts.srkmecquit
-msgid "Quit"
-msgstr "יציאה"
-
 #: lazarusidestrconsts.srkmecremovebreakpoint
 msgid "remove break point"
 msgstr "הסר נקודת עצירה"
@@ -18138,6 +17989,10 @@ msgstr "דיווח באג"
 msgid "reset debugger"
 msgstr "אתחל את מנפה השגיאות"
 
+#: lazarusidestrconsts.srkmecright
+msgid "Move cursor right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecrun
 msgid "run program"
 msgstr "הרץ תוכנה"
@@ -18149,11 +18004,6 @@ msgstr "הרץ קובץ"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "הרץ פרמטרים"
-
-#: lazarusidestrconsts.srkmecsave
-msgctxt "lazarusidestrconsts.srkmecsave"
-msgid "Save"
-msgstr "שמור"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
@@ -18306,6 +18156,14 @@ msgstr "הצג נקודת ריצה"
 #: lazarusidestrconsts.srkmecstopprogram
 msgid "stop program"
 msgstr "עצור תכנית"
+
+#: lazarusidestrconsts.srkmecsynmacroplay
+msgid "Play Macro"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynmacrorecord
+msgid "Record Macro"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecsynpsyncroedcellend
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellend"
@@ -18514,6 +18372,10 @@ msgstr "פקודת עורך לא ידועה"
 msgid "Unused Units ..."
 msgstr "יחידות שלא השתמשו בהן"
 
+#: lazarusidestrconsts.srkmecup
+msgid "Move cursor up"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"
 msgstr "קודם המשתמש"
@@ -18624,6 +18486,14 @@ msgstr "\" אינו בר כתיבה"
 msgid "Locked"
 msgstr "נעול"
 
+#: lazarusidestrconsts.uemacrorecording
+msgid "Recording"
+msgstr ""
+
+#: lazarusidestrconsts.uemacrorecordingpaused
+msgid "Rec-pause"
+msgstr ""
+
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "הוסף משגיח במיקום הסמן"
@@ -18643,11 +18513,6 @@ msgstr "סגור את כל הדפים האחרים"
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"
 msgstr "ס&גור את הדף"
-
-#: lazarusidestrconsts.uemcopy
-msgctxt "lazarusidestrconsts.uemcopy"
-msgid "Copy"
-msgstr "העתק"
 
 #: lazarusidestrconsts.uemcopyfilename
 #| msgid "Copy filename"
@@ -18670,11 +18535,6 @@ msgstr "שכפל לחלון אחר"
 msgctxt "lazarusidestrconsts.uemcopytootherwindownew"
 msgid "New Window"
 msgstr "חלון חדש"
-
-#: lazarusidestrconsts.uemcut
-msgctxt "lazarusidestrconsts.uemcut"
-msgid "Cut"
-msgstr "חתוך"
 
 #: lazarusidestrconsts.uemdebugword
 msgid "Debug"
@@ -18790,11 +18650,6 @@ msgstr "שונה"
 #| msgid "&Open file at cursor"
 msgid "&Open File at Cursor"
 msgstr "פתח &קובץ במיקום הסמן"
-
-#: lazarusidestrconsts.uempaste
-msgctxt "lazarusidestrconsts.uempaste"
-msgid "Paste"
-msgstr "הדבק"
 
 #: lazarusidestrconsts.uemprevbookmark
 #, fuzzy

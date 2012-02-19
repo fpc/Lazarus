@@ -706,11 +706,6 @@ msgstr ""
 msgid "Apply"
 msgstr "適用"
 
-#: lazarusidestrconsts.dlgcancel
-msgctxt "lazarusidestrconsts.dlgcancel"
-msgid "Cancel"
-msgstr "取消"
-
 #: lazarusidestrconsts.dlgcasesensitive
 #, fuzzy
 #| msgid "&Case Sensitive"
@@ -1032,22 +1027,6 @@ msgstr "コマンドライン引数"
 msgid "Command line parameters (without application name)"
 msgstr "コマンドライン引数（アプリケーション名なしで）"
 
-#: lazarusidestrconsts.dlgcomovedown
-msgid "Move down"
-msgstr "下に移動"
-
-#: lazarusidestrconsts.dlgcomoveleveldown
-msgid "Move level down"
-msgstr "レベルを下に移動"
-
-#: lazarusidestrconsts.dlgcomovelevelup
-msgid "Move level up"
-msgstr "レベルを上に移動"
-
-#: lazarusidestrconsts.dlgcomoveup
-msgid "Move up"
-msgstr "上に移動"
-
 #: lazarusidestrconsts.dlgcompilermessage
 #, fuzzy
 #| msgid "Compiler Messages"
@@ -1350,11 +1329,6 @@ msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
 msgstr "Var/Type (local)"
 
-#: lazarusidestrconsts.dlgdownword
-msgctxt "lazarusidestrconsts.dlgdownword"
-msgid "Down"
-msgstr "下へ"
-
 #: lazarusidestrconsts.dlgedadd
 #, fuzzy
 #| msgid "Add..."
@@ -1396,11 +1370,6 @@ msgstr "遅延"
 #: lazarusidestrconsts.dlgeddelayinsec
 msgid "(%s sec delay)"
 msgstr "(%s 秒遅れ)"
-
-#: lazarusidestrconsts.dlgeddelete
-msgctxt "lazarusidestrconsts.dlgeddelete"
-msgid "Delete"
-msgstr "削除"
 
 #: lazarusidestrconsts.dlgeddisplay
 msgid "Display"
@@ -1633,11 +1602,6 @@ msgstr "厚切り"
 #: lazarusidestrconsts.dlgfolddiffchunksect
 msgid "Chunk section"
 msgstr "厚切りのセクション"
-
-#: lazarusidestrconsts.dlgfolddifffile
-msgctxt "lazarusidestrconsts.dlgfolddifffile"
-msgid "File"
-msgstr "ファイル"
 
 #: lazarusidestrconsts.dlgfoldhtmlasp
 msgid "ASP"
@@ -1893,11 +1857,6 @@ msgstr "エディタ"
 msgctxt "lazarusidestrconsts.dlggroupenvironment"
 msgid "Environment"
 msgstr "環境"
-
-#: lazarusidestrconsts.dlggrouphelp
-msgctxt "lazarusidestrconsts.dlggrouphelp"
-msgid "Help"
-msgstr "ヘルプ"
 
 #: lazarusidestrconsts.dlggroupundo
 msgid "Group Undo"
@@ -2281,11 +2240,6 @@ msgstr "すべて展開（いくつか折りたたみ）"
 msgid "Unfold One (Some Colapsed)"
 msgstr "一つ展開 （いくつか折りたたみ）"
 
-#: lazarusidestrconsts.dlgmousefoldenabled
-msgctxt "lazarusidestrconsts.dlgmousefoldenabled"
-msgid "Enabled"
-msgstr "有効"
-
 #: lazarusidestrconsts.dlgmousefoldexpfoldall
 msgid "Fold All (All Expanded)"
 msgstr "すべて折りたたみ（すべて展開済み）"
@@ -2340,29 +2294,9 @@ msgctxt "lazarusidestrconsts.dlgmouseoptbtn4"
 msgid "Quad"
 msgstr "Quad"
 
-#: lazarusidestrconsts.dlgmouseoptbtnadd
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnadd"
-msgid "Add"
-msgstr "追加"
-
 #: lazarusidestrconsts.dlgmouseoptbtnany
 msgid "Any"
 msgstr "いずれも"
-
-#: lazarusidestrconsts.dlgmouseoptbtncancel
-msgctxt "lazarusidestrconsts.dlgmouseoptbtncancel"
-msgid "Cancel"
-msgstr "取消"
-
-#: lazarusidestrconsts.dlgmouseoptbtndel
-msgctxt "lazarusidestrconsts.dlgmouseoptbtndel"
-msgid "Delete"
-msgstr "削除"
-
-#: lazarusidestrconsts.dlgmouseoptbtndown
-msgctxt "lazarusidestrconsts.dlgmouseoptbtndown"
-msgid "Down"
-msgstr "下へ"
 
 #: lazarusidestrconsts.dlgmouseoptbtnexport
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
@@ -2398,25 +2332,10 @@ msgstr "中央"
 msgid "Make Fallback"
 msgstr "予備を作成"
 
-#: lazarusidestrconsts.dlgmouseoptbtnok
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnok"
-msgid "OK"
-msgstr "OK"
-
 #: lazarusidestrconsts.dlgmouseoptbtnright
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnright"
 msgid "Right"
 msgstr "右"
-
-#: lazarusidestrconsts.dlgmouseoptbtnudp
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnudp"
-msgid "Change"
-msgstr "変更"
-
-#: lazarusidestrconsts.dlgmouseoptbtnup
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnup"
-msgid "Up"
-msgstr "上へ"
 
 #: lazarusidestrconsts.dlgmouseoptbtnwheeldown
 msgid "Wheel down"
@@ -2683,26 +2602,6 @@ msgstr "強調しない"
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"
 msgstr "ソースノートブックのタブ位置"
-
-#: lazarusidestrconsts.dlgnotebooktabposbottom
-msgctxt "lazarusidestrconsts.dlgnotebooktabposbottom"
-msgid "Bottom"
-msgstr "底"
-
-#: lazarusidestrconsts.dlgnotebooktabposleft
-msgctxt "lazarusidestrconsts.dlgnotebooktabposleft"
-msgid "Left"
-msgstr "左"
-
-#: lazarusidestrconsts.dlgnotebooktabposright
-msgctxt "lazarusidestrconsts.dlgnotebooktabposright"
-msgid "Right"
-msgstr "右"
-
-#: lazarusidestrconsts.dlgnotebooktabpostop
-msgctxt "lazarusidestrconsts.dlgnotebooktabpostop"
-msgid "Top"
-msgstr "上端"
 
 #: lazarusidestrconsts.dlgnotsplitlineafter
 #, fuzzy
@@ -3042,15 +2941,6 @@ msgstr "ディスプレイを使用"
 #: lazarusidestrconsts.dlgrunouseroverrides
 msgid "User overrides"
 msgstr "ユーザーオーバーライド"
-
-#: lazarusidestrconsts.dlgrunovalue
-msgctxt "lazarusidestrconsts.dlgrunovalue"
-msgid "Value"
-msgstr "値"
-
-#: lazarusidestrconsts.dlgrunovariable
-msgid "Variable"
-msgstr "変数"
 
 #: lazarusidestrconsts.dlgrunparameters
 #, fuzzy
@@ -3426,11 +3316,6 @@ msgstr "元に戻す／やり直し"
 msgid "Undo limit"
 msgstr "元に戻す回数の上限"
 
-#: lazarusidestrconsts.dlgunitdepbrowse
-msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
-msgid "Open"
-msgstr "開く"
-
 #: lazarusidestrconsts.dlgunitdepcaption
 #, fuzzy
 #| msgid "Unit dependencies"
@@ -3449,11 +3334,6 @@ msgstr "ユニット出力ディレクトリ(-FU):"
 #: lazarusidestrconsts.dlgunsavedlinecolor
 msgid "Unsaved line"
 msgstr "保存されていない行"
-
-#: lazarusidestrconsts.dlgupword
-msgctxt "lazarusidestrconsts.dlgupword"
-msgid "Up"
-msgstr "上へ"
 
 #: lazarusidestrconsts.dlgusecodefolding
 #, fuzzy
@@ -4081,9 +3961,17 @@ msgstr "動作："
 msgid "Actions:"
 msgstr "動作："
 
+#: lazarusidestrconsts.lisactivate
+msgid "Activate"
+msgstr ""
+
 #: lazarusidestrconsts.lisactivateregularexpressionsyntaxfortextandreplaceme
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
 msgstr "テキストと置換のためのアクティブな正規表現語法(perlと類似)"
+
+#: lazarusidestrconsts.lisactivateselected
+msgid "Activate Selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisactive
 msgid "Active"
@@ -4092,6 +3980,11 @@ msgstr "アクティブ"
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr "アクティブフィルタ"
+
+#: lazarusidestrconsts.lisadd
+msgctxt "lazarusidestrconsts.lisadd"
+msgid "Add"
+msgstr "追加"
 
 #: lazarusidestrconsts.lisadddirectory
 msgid "Add directory"
@@ -4312,6 +4205,14 @@ msgstr "曖昧なユニットがみつかりました"
 msgid "Ambiguous unit found"
 msgstr "曖昧なユニットが見つかりました"
 
+#: lazarusidestrconsts.lisanchorbottomtobottomside
+msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
+msgstr ""
+
+#: lazarusidestrconsts.lisanchorbottomtotopside
+msgid "Anchor bottom side to top side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling."
+msgstr ""
+
 #: lazarusidestrconsts.lisanchoreditornocontrolselected
 msgid "Anchor Editor - no control selected"
 msgstr "アンカーエディタ - どのコントロールも選択されていません。"
@@ -4320,25 +4221,33 @@ msgstr "アンカーエディタ - どのコントロールも選択されてい
 msgid "Enabled = Include %s in Anchors"
 msgstr "Enabled = アンカーに %s をインクルード"
 
+#: lazarusidestrconsts.lisanchorlefttoleftside
+msgid "Anchor left side to left side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
+msgstr ""
+
+#: lazarusidestrconsts.lisanchorlefttorightside
+msgid "Anchor left side to right side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling."
+msgstr ""
+
+#: lazarusidestrconsts.lisanchorrighttoleftside
+msgid "Anchor right side to left side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling."
+msgstr ""
+
+#: lazarusidestrconsts.lisanchorrighttorightside
+msgid "Anchor right side to right side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
+msgstr ""
+
 #: lazarusidestrconsts.lisanchorsofselectedcontrols
 msgid "Anchors of selected controls"
 msgstr "選択されたコントロールへのアンカー"
 
-#: lazarusidestrconsts.lisanchortobottomsidekeepborderspace
-msgid "Anchor to bottom side of sibling, keep border space"
-msgstr "下端へのアンカー。境界間隔を保持"
+#: lazarusidestrconsts.lisanchortoptobottomside
+msgid "Anchor top side to bottom side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling."
+msgstr ""
 
-#: lazarusidestrconsts.lisanchortoleftsidekeepborderspace
-msgid "Anchor to left side of sibling, keep border space"
-msgstr "左端へのアンカー。境界間隔を保持"
-
-#: lazarusidestrconsts.lisanchortorightsidekeepborderspace
-msgid "Anchor to right side of sibling, keep border space"
-msgstr "右端へのアンカー。境界間隔を保持"
-
-#: lazarusidestrconsts.lisanchortotopsidekeepborderspace
-msgid "Anchor to top side of sibling, keep border space"
-msgstr "上端へのアンカー。境界間隔を保持"
+#: lazarusidestrconsts.lisanchortoptotopside
+msgid "Anchor top side to top side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
+msgstr ""
 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
 msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
@@ -4581,19 +4490,46 @@ msgstr "ブレークポイントプロパティ"
 msgid "Browse for Compiler (%s)"
 msgstr "コンパイラ (%s)を閲覧する"
 
-#: lazarusidestrconsts.lisbtnbreak
-msgctxt "lazarusidestrconsts.lisbtnbreak"
-msgid "Break"
-msgstr "ブレーク"
+#: lazarusidestrconsts.lisbtnadd
+msgctxt "lazarusidestrconsts.lisbtnadd"
+msgid "&Add"
+msgstr "追加(&A)"
 
-#: lazarusidestrconsts.lisbtncontinue
-msgctxt "lazarusidestrconsts.lisbtncontinue"
-msgid "Continue"
-msgstr "継続"
+#: lazarusidestrconsts.lisbtnclose
+msgctxt "lazarusidestrconsts.lisbtnclose"
+msgid "&Close"
+msgstr "閉じる(&C)"
+
+#: lazarusidestrconsts.lisbtndelete
+msgctxt "lazarusidestrconsts.lisbtndelete"
+msgid "&Delete"
+msgstr "削除(&D)"
+
+#: lazarusidestrconsts.lisbtndlgreplace
+msgctxt "lazarusidestrconsts.lisbtndlgreplace"
+msgid "&Replace ..."
+msgstr "置換(&R)"
+
+#: lazarusidestrconsts.lisbtnenabled
+msgctxt "lazarusidestrconsts.lisbtnenabled"
+msgid "&Enabled"
+msgstr "有効にする(&E)"
 
 #: lazarusidestrconsts.lisbtnfind
 msgid "&Find"
 msgstr "検索(&F)"
+
+#: lazarusidestrconsts.lisbtnquit
+#, fuzzy
+#| msgid "Quit"
+msgctxt "lazarusidestrconsts.lisbtnquit"
+msgid "&Quit"
+msgstr "終了"
+
+#: lazarusidestrconsts.lisbtnremove
+msgctxt "lazarusidestrconsts.lisbtnremove"
+msgid "&Remove"
+msgstr "消去(&R)"
 
 #: lazarusidestrconsts.lisbtnreplace
 msgid "&Replace"
@@ -4940,11 +4876,15 @@ msgid "Nested procedures count treated as \"many\""
 msgstr "「多い」と扱われるネストされた手続きの数"
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
-msgid "Center control horizontally relative to the given sibling"
+#, fuzzy
+#| msgid "Center control horizontally relative to the given sibling"
+msgid "Center control horizontally relative to the given sibling. BorderSpacing is ignored."
 msgstr "コントロールを与えられた兄弟に対し水平に中寄せ"
 
 #: lazarusidestrconsts.liscentercontrolverticallyrelativetosibling
-msgid "Center control vertically relative to the given sibling"
+#, fuzzy
+#| msgid "Center control vertically relative to the given sibling"
+msgid "Center control vertically relative to the given sibling. BorderSpacing is ignored."
 msgstr "コントロールを与えられた兄弟に対し垂直に中寄せ"
 
 #: lazarusidestrconsts.liscenterform
@@ -5181,6 +5121,11 @@ msgstr ""
 msgid "Unable to clear the form editing selection%s%s"
 msgstr ""
 
+#: lazarusidestrconsts.lischange
+msgctxt "lazarusidestrconsts.lischange"
+msgid "Change"
+msgstr "変更"
+
 #: lazarusidestrconsts.lischangebuildmode
 msgid "Change build mode"
 msgstr "構築モードを変更"
@@ -5222,6 +5167,10 @@ msgstr "キャラクタ"
 #: lazarusidestrconsts.lischaractermap
 msgid "Character Map"
 msgstr "キャラクターマップ"
+
+#: lazarusidestrconsts.lischeckall
+msgid "Check All"
+msgstr ""
 
 #: lazarusidestrconsts.lischeckfordiskfilechangesviacontentratherthantimesta
 msgid "Check for disk file changes via content rather than timestamp"
@@ -5420,7 +5369,9 @@ msgid "Clear Directory?"
 msgstr "ディレクトリ内を消去しますか？"
 
 #: lazarusidestrconsts.lisclearkeymapping
-msgid "Clear Key Mapping"
+#, fuzzy
+#| msgid "Clear Key Mapping"
+msgid "Clear Command's Mapping"
 msgstr "キーマップを消去します"
 
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
@@ -5432,8 +5383,20 @@ msgid "Click to see the possible uses"
 msgstr "可能なuses節を見るにはクリック"
 
 #: lazarusidestrconsts.lisclose
-msgid "&Close"
+#, fuzzy
+#| msgid "&Close"
+msgctxt "lazarusidestrconsts.lisclose"
+msgid "Close"
 msgstr "閉じる(&C)"
+
+#: lazarusidestrconsts.liscloseall
+msgctxt "lazarusidestrconsts.liscloseall"
+msgid "Close All"
+msgstr "すべて閉じる"
+
+#: lazarusidestrconsts.liscloseallchecked
+msgid "Close All Checked"
+msgstr ""
 
 #: lazarusidestrconsts.lisclosealltabsclose
 msgid "Close files"
@@ -5636,16 +5599,6 @@ msgstr "（継承された記述が見つかりません）"
 msgid "<NONE>"
 msgstr "<無し>"
 
-#: lazarusidestrconsts.liscodehelpreplacebutton
-msgctxt "lazarusidestrconsts.liscodehelpreplacebutton"
-msgid "Replace"
-msgstr "置換"
-
-#: lazarusidestrconsts.liscodehelpsavebutton
-msgctxt "lazarusidestrconsts.liscodehelpsavebutton"
-msgid "Save"
-msgstr "保存"
-
 #: lazarusidestrconsts.liscodehelpseealsotag
 msgid "See also"
 msgstr "参照"
@@ -5678,8 +5631,10 @@ msgid "Ignore next unnamed constants"
 msgstr "次の名付けられていない定数を無視"
 
 #: lazarusidestrconsts.liscodetempladd
+#, fuzzy
+#| msgid "Add"
 msgctxt "lazarusidestrconsts.liscodetempladd"
-msgid "Add"
+msgid "Add template"
 msgstr "追加"
 
 #: lazarusidestrconsts.liscodetempladdcodetemplate
@@ -5808,11 +5763,6 @@ msgstr "説明:"
 msgid "%s directory"
 msgstr "%s ディレクトリ"
 
-#: lazarusidestrconsts.liscodetoolsdefsedit
-msgctxt "lazarusidestrconsts.liscodetoolsdefsedit"
-msgid "Edit"
-msgstr "編集"
-
 #: lazarusidestrconsts.liscodetoolsdefselse
 msgid "Else"
 msgstr "Else"
@@ -5836,11 +5786,6 @@ msgstr "%s%s%s%s%s を書き込み中にエラー"
 #: lazarusidestrconsts.liscodetoolsdefserrorwhilewritingprojectinfofile
 msgid "Error while writing project info file %s%s%s%s%s"
 msgstr "プロジェクト情報ファイル %s%s%s%s%s への書き込み中にエラー"
-
-#: lazarusidestrconsts.liscodetoolsdefsexit
-msgctxt "lazarusidestrconsts.liscodetoolsdefsexit"
-msgid "Exit"
-msgstr "終了"
 
 #: lazarusidestrconsts.liscodetoolsdefsexitwithoutsave
 msgid "Exit without Save"
@@ -6144,11 +6089,6 @@ msgstr "なし"
 msgid "Number"
 msgstr "数値"
 
-#: lazarusidestrconsts.liscodetoolsoptsok
-msgctxt "lazarusidestrconsts.liscodetoolsoptsok"
-msgid "Ok"
-msgstr "Ok"
-
 #: lazarusidestrconsts.liscodetoolsoptspoint
 msgid "Point"
 msgstr "ポイント"
@@ -6205,6 +6145,10 @@ msgstr "無効の後のコマンド"
 #: lazarusidestrconsts.liscommandafterpublishingmodule
 msgid "Command after publishing module"
 msgstr "モジュールの発行後のコマンド"
+
+#: lazarusidestrconsts.liscommandedithint
+msgid "Edit command's mapping with double click, Return key or Popup menu"
+msgstr ""
 
 #: lazarusidestrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
@@ -6686,6 +6630,11 @@ msgstr "置換するユニット"
 msgid "Unknown properties"
 msgstr "不明なプロパティ"
 
+#: lazarusidestrconsts.liscopy
+msgctxt "lazarusidestrconsts.liscopy"
+msgid "Copy"
+msgstr "コピー"
+
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
 msgstr "すべてコピー"
@@ -6937,6 +6886,11 @@ msgstr "カスタムプログラム"
 msgid "Custom Program%sA Free Pascal program."
 msgstr "Custom Program%sFreePascalプログラム"
 
+#: lazarusidestrconsts.liscut
+msgctxt "lazarusidestrconsts.liscut"
+msgid "Cut"
+msgstr "切り取り"
+
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "データモジュール"
@@ -7133,13 +7087,6 @@ msgctxt "lazarusidestrconsts.lisdebuggerfeedbackmore"
 msgid "More"
 msgstr "その他"
 
-#: lazarusidestrconsts.lisdebuggerfeedbackok
-#, fuzzy
-#| msgid "Ok"
-msgctxt "lazarusidestrconsts.lisdebuggerfeedbackok"
-msgid "OK"
-msgstr "Ok"
-
 #: lazarusidestrconsts.lisdebuggerfeedbackstop
 msgctxt "lazarusidestrconsts.lisdebuggerfeedbackstop"
 msgid "Stop"
@@ -7215,10 +7162,6 @@ msgstr "デバッガに扱われました"
 msgid "Handled by Program"
 msgstr "プログラムに扱われました"
 
-#: lazarusidestrconsts.lisdebugoptionsfrmid
-msgid "ID"
-msgstr "ID"
-
 #: lazarusidestrconsts.lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
 msgstr "これらの例外を無視"
@@ -7237,11 +7180,6 @@ msgstr "行数を以下に制限："
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmmodule"
 msgid "Module"
 msgstr "モジュール"
-
-#: lazarusidestrconsts.lisdebugoptionsfrmname
-msgctxt "lazarusidestrconsts.lisdebugoptionsfrmname"
-msgid "Name"
-msgstr "名前"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
 msgid "Notify on Lazarus Exceptions"
@@ -7323,6 +7261,11 @@ msgstr "補完ボックスの長いヒントを遅らせる"
 #: lazarusidestrconsts.lisdelayforhintsandcompletionbox
 msgid "Delay for hints and completion box"
 msgstr "補完ボックスとヒントを遅らせる"
+
+#: lazarusidestrconsts.lisdelete
+msgctxt "lazarusidestrconsts.lisdelete"
+msgid "Delete"
+msgstr "削除"
 
 #: lazarusidestrconsts.lisdeleteall
 msgid "&Delete All"
@@ -7639,6 +7582,20 @@ msgstr "ディスク上のいくつかのファイルが変更されました。
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "大文字と小文字（例:Aとa）を区別する"
 
+#: lazarusidestrconsts.lisdlgeditorwindowmanager
+msgid "Editor Window Manager ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisdlgopen
+msgctxt "lazarusidestrconsts.lisdlgopen"
+msgid "Open ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisdlgsave
+msgctxt "lazarusidestrconsts.lisdlgsave"
+msgid "Save ..."
+msgstr "保存 ..."
+
 #: lazarusidestrconsts.lisdocumentationeditor
 msgid "Documentation Editor"
 msgstr "ドキュメントエディタ"
@@ -7678,6 +7635,11 @@ msgstr "このプロジェクトについてはこのダイアログを表示し
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
 msgstr "このメッセージを再び表示しない"
+
+#: lazarusidestrconsts.lisdown
+msgctxt "lazarusidestrconsts.lisdown"
+msgid "Down"
+msgstr "下へ"
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
@@ -7751,6 +7713,11 @@ msgstr "重複した検索パス"
 msgid "Duplicate sources. Delete one or make sure all search paths have correct order (Hint: FPC uses last path first)."
 msgstr ""
 
+#: lazarusidestrconsts.lisedit
+msgctxt "lazarusidestrconsts.lisedit"
+msgid "Edit"
+msgstr "編集"
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "状況依存ヘルプを編集"
@@ -7759,8 +7726,16 @@ msgstr "状況依存ヘルプを編集"
 msgid "Edit help"
 msgstr ""
 
+#: lazarusidestrconsts.liseditkeymapping
+msgid "Edit Command's Mapping"
+msgstr ""
+
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
+msgstr ""
+
+#: lazarusidestrconsts.liseditorwindowmanager
+msgid "Editor Window Manager"
 msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
@@ -7861,16 +7836,13 @@ msgstr "ツールを編集"
 msgid "Hide main form"
 msgstr "メインフォームを隠す"
 
-#: lazarusidestrconsts.lisedtexttoolinsert
-msgid "Insert"
-msgstr "挿入"
-
 #: lazarusidestrconsts.lisedtexttoolkey
 msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
 msgstr "キー"
 
 #: lazarusidestrconsts.lisedtexttoolmacros
+msgctxt "lazarusidestrconsts.lisedtexttoolmacros"
 msgid "Macros"
 msgstr "マクロ"
 
@@ -8261,7 +8233,9 @@ msgid "Add Comment"
 msgstr ""
 
 #: lazarusidestrconsts.liseverynthlinenumber
-msgid "Every n-th line number:"
+#, fuzzy
+#| msgid "Every n-th line number:"
+msgid "Every n-th line number"
 msgstr "すべてのn番目の行番号"
 
 #: lazarusidestrconsts.lisexamplefile
@@ -8322,6 +8296,11 @@ msgstr "実行を停止しました"
 msgid "Programs"
 msgstr "プログラム"
 
+#: lazarusidestrconsts.lisexit
+msgctxt "lazarusidestrconsts.lisexit"
+msgid "Exit"
+msgstr "終了"
+
 #: lazarusidestrconsts.lisexpandall
 msgid "Expand All (*)"
 msgstr ""
@@ -8381,21 +8360,6 @@ msgstr "ツールの実行に失敗"
 msgid "Maximum Tools reached"
 msgstr "利用できるツールの上限"
 
-#: lazarusidestrconsts.lisexttoolmovedown
-msgctxt "lazarusidestrconsts.lisexttoolmovedown"
-msgid "Down"
-msgstr "下へ"
-
-#: lazarusidestrconsts.lisexttoolmoveup
-msgctxt "lazarusidestrconsts.lisexttoolmoveup"
-msgid "Up"
-msgstr "上へ"
-
-#: lazarusidestrconsts.lisexttoolremove
-msgctxt "lazarusidestrconsts.lisexttoolremove"
-msgid "Remove"
-msgstr "削除"
-
 #: lazarusidestrconsts.lisexttoolthereisamaximumoftools
 msgid "There is a maximum of %s tools."
 msgstr "%sツールに上限があります。"
@@ -8423,6 +8387,11 @@ msgstr "デザイナーによる描画を減らす"
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
 msgstr "ペイントデザイナーアイテムはアイドル状態のみです（遅いコンピュータのオーバーヘッドを減らすため）"
+
+#: lazarusidestrconsts.lisfile
+msgctxt "lazarusidestrconsts.lisfile"
+msgid "File"
+msgstr "ファイル"
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
@@ -8461,11 +8430,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfilefiltersmask
 msgid "File mask"
 msgstr ""
-
-#: lazarusidestrconsts.lisfilefiltersname
-msgctxt "lazarusidestrconsts.lisfilefiltersname"
-msgid "Name"
-msgstr "名前"
 
 #: lazarusidestrconsts.lisfilefilterssetdefaults
 msgid "Set defaults"
@@ -8807,11 +8771,6 @@ msgstr "現在のユニットを所有しているパッケージ/プロジェ�
 msgid "Invalid Identifier"
 msgstr "無効な識別子"
 
-#: lazarusidestrconsts.lisfrirename
-msgctxt "lazarusidestrconsts.lisfrirename"
-msgid "Rename"
-msgstr "名前の変更"
-
 #: lazarusidestrconsts.lisfrirenameallreferences
 msgid "Rename all References"
 msgstr "すべての参照名を変更"
@@ -8893,6 +8852,10 @@ msgstr ""
 msgid "Clear group(s)"
 msgstr ""
 
+#: lazarusidestrconsts.lisgroupsfordebugoutput
+msgid "Enable or Disable groups of debug output. Valid Options are:"
+msgstr ""
+
 #: lazarusidestrconsts.lisgrowtolarges
 msgid "Grow to Largest"
 msgstr "最大に成長"
@@ -8904,6 +8867,11 @@ msgstr "Helpあり"
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "クラスのためのヘッダコメント"
+
+#: lazarusidestrconsts.lishelp
+msgctxt "lazarusidestrconsts.lishelp"
+msgid "Help"
+msgstr "ヘルプ"
 
 #: lazarusidestrconsts.lishelpentries
 msgid "Help entries"
@@ -8939,15 +8907,6 @@ msgstr "ヒント： 既定の値を条件文で設定することができま�
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "ヒント： ２つのパッケージが同じ名前のユニットを含んでいないかチェックしてください。"
 
-#: lazarusidestrconsts.lishintdoubleclickonthecommandyouwanttoedit
-msgid "Hint: double click on the command you want to edit"
-msgstr "ヒント： 編集したいコマンドをダブルクリックしてください"
-
-#: lazarusidestrconsts.lishintopen
-msgctxt "lazarusidestrconsts.lishintopen"
-msgid "Open"
-msgstr "開く"
-
 #: lazarusidestrconsts.lishintpause
 msgctxt "lazarusidestrconsts.lishintpause"
 msgid "Pause"
@@ -8957,11 +8916,6 @@ msgstr "一時停止"
 msgctxt "lazarusidestrconsts.lishintrun"
 msgid "Run"
 msgstr "実行"
-
-#: lazarusidestrconsts.lishintsave
-msgctxt "lazarusidestrconsts.lishintsave"
-msgid "Save"
-msgstr "保存"
 
 #: lazarusidestrconsts.lishintsaveall
 msgid "Save all"
@@ -9031,6 +8985,11 @@ msgstr "FPC Doc HTML パス"
 #: lazarusidestrconsts.lishorizontal
 msgid "Horizontal"
 msgstr "水平"
+
+#: lazarusidestrconsts.lisid
+msgctxt "lazarusidestrconsts.lisid"
+msgid "ID"
+msgstr "ID"
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -9135,11 +9094,6 @@ msgstr "ファイルへ保存"
 #: lazarusidestrconsts.lisiecosavetorecent
 msgid "Save to recent"
 msgstr "最近扱ったファイルに保存"
-
-#: lazarusidestrconsts.lisifdok
-msgctxt "lazarusidestrconsts.lisifdok"
-msgid "OK"
-msgstr "OK"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -9312,6 +9266,11 @@ msgstr ""
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
 msgstr "プロジェクトもしくはパッケージのクリーンコピーを作成するためには、次のディレクトリ内の全てのファイルが削除され、その中身が失われます。%s%s %s%s%s内のすべてのファイルを削除しますか？"
+
+#: lazarusidestrconsts.lisinsert
+msgctxt "lazarusidestrconsts.lisinsert"
+msgid "Insert"
+msgstr "挿入"
 
 #: lazarusidestrconsts.lisinsertdate
 msgid "insert date"
@@ -9551,10 +9510,6 @@ msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "移動履歴"
 
-#: lazarusidestrconsts.liskeep
-msgid "keep"
-msgstr "保持"
-
 #: lazarusidestrconsts.liskeep2
 msgid "Keep"
 msgstr ""
@@ -9586,6 +9541,11 @@ msgstr ""
 #: lazarusidestrconsts.liskeepthemandcontinue
 msgid "Keep them and continue"
 msgstr "それらを保持し、続行"
+
+#: lazarusidestrconsts.liskey
+msgctxt "lazarusidestrconsts.liskey"
+msgid "Key"
+msgstr "キー"
 
 #: lazarusidestrconsts.liskeycatcustom
 msgid "Custom commands"
@@ -9638,10 +9598,6 @@ msgstr "クラッシック"
 #: lazarusidestrconsts.liskmcleanupcompiled
 msgid "Clean up build files"
 msgstr ""
-
-#: lazarusidestrconsts.liskmcloseall
-msgid "Close All"
-msgstr "すべて閉じる"
 
 #: lazarusidestrconsts.liskmcloseproject
 msgid "Close project"
@@ -10165,6 +10121,11 @@ msgstr "アプリケーションの実行が無効です"
 msgid "Launching target command line"
 msgstr "対象となるコマンドラインを実行"
 
+#: lazarusidestrconsts.lislazarus
+msgctxt "lazarusidestrconsts.lislazarus"
+msgid "Lazarus"
+msgstr "Lazarus"
+
 #: lazarusidestrconsts.lislazarusdesktopsettings
 msgid "Lazarus Desktop Settings"
 msgstr "Lazarusデスクトップ設定"
@@ -10252,11 +10213,6 @@ msgstr "アクション"
 msgid "Choose output directory of the IDE executable "
 msgstr "IDE実行ファイルの出力ディレクトリを選択してください。"
 
-#: lazarusidestrconsts.lislazbuildadd
-msgctxt "lazarusidestrconsts.lislazbuildadd"
-msgid "Add"
-msgstr "追加"
-
 #: lazarusidestrconsts.lislazbuildareyousureyouwanttodeletethisbuildprofile
 msgid "Are you sure you want to delete this build profile?"
 msgstr "本当にこの構築プロファイルを削除してもよろしいですか？"
@@ -10293,11 +10249,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
 msgstr "SynEditを構築"
-
-#: lazarusidestrconsts.lislazbuildcancel
-msgctxt "lazarusidestrconsts.lislazbuildcancel"
-msgid "Cancel"
-msgstr "取消"
 
 #: lazarusidestrconsts.lislazbuildcleanallbuild
 msgid "Clean All + Build"
@@ -10390,13 +10341,6 @@ msgstr "現在の構築オプションは右と関連します："
 msgid "Normal IDE"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildok
-#, fuzzy
-#| msgid "Ok"
-msgctxt "lazarusidestrconsts.lislazbuildok"
-msgid "OK"
-msgstr "Ok"
-
 #: lazarusidestrconsts.lislazbuildoptimizedide
 msgid "Optimized IDE"
 msgstr ""
@@ -10419,16 +10363,6 @@ msgstr "プロファイルを構築"
 msgctxt "lazarusidestrconsts.lislazbuildrefresh"
 msgid "Refresh"
 msgstr "リフレッシュ"
-
-#: lazarusidestrconsts.lislazbuildremove
-msgctxt "lazarusidestrconsts.lislazbuildremove"
-msgid "Remove"
-msgstr "削除"
-
-#: lazarusidestrconsts.lislazbuildrename
-msgctxt "lazarusidestrconsts.lislazbuildrename"
-msgid "Rename"
-msgstr "名前の変更"
 
 #: lazarusidestrconsts.lislazbuildrenameprof
 msgid "Rename Profile"
@@ -10620,16 +10554,6 @@ msgstr ""
 #: lazarusidestrconsts.lislocalsdlgcopyvalue
 msgid "C&opy Value"
 msgstr ""
-
-#: lazarusidestrconsts.lislocalsdlgname
-msgctxt "lazarusidestrconsts.lislocalsdlgname"
-msgid "Name"
-msgstr "名前"
-
-#: lazarusidestrconsts.lislocalsdlgvalue
-msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
-msgid "Value"
-msgstr "値"
 
 #: lazarusidestrconsts.lislocalsnotevaluated
 msgid "Locals not evaluated"
@@ -10891,11 +10815,6 @@ msgstr "ディレクトリの中身を消去 ..."
 msgid "Clean up Build Files ..."
 msgstr ""
 
-#: lazarusidestrconsts.lismenuclose
-msgctxt "lazarusidestrconsts.lismenuclose"
-msgid "Close"
-msgstr "閉じる"
-
 #: lazarusidestrconsts.lismenucloseall
 #, fuzzy
 #| msgid "Close a&ll editor files"
@@ -10994,11 +10913,6 @@ msgstr "バイナリDFMファイルをテキストLFMへ変換し、表記法を
 msgid "Convert Encoding of Projects/Packages ..."
 msgstr "プロジェクト/パッケージのエンコーディングを変換"
 
-#: lazarusidestrconsts.lismenucopy
-msgctxt "lazarusidestrconsts.lismenucopy"
-msgid "Copy"
-msgstr "コピー"
-
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "FPDocファイルを作成"
@@ -11006,11 +10920,6 @@ msgstr "FPDocファイルを作成"
 #: lazarusidestrconsts.lismenucreatepofile
 msgid "Create .po files"
 msgstr ".poファイルを作成"
-
-#: lazarusidestrconsts.lismenucut
-msgctxt "lazarusidestrconsts.lismenucut"
-msgid "Cut"
-msgstr "切り取り"
 
 #: lazarusidestrconsts.lismenudebugwindows
 #, fuzzy
@@ -11048,11 +10957,6 @@ msgstr "パッケージをインストールもしくはアンインストール
 #| msgid "Menu Editor..."
 msgid "Menu Editor ..."
 msgstr "メニュー エディタ..."
-
-#: lazarusidestrconsts.lismenueditorcancel
-msgctxt "lazarusidestrconsts.lismenueditorcancel"
-msgid "Cancel"
-msgstr "取消"
 
 #: lazarusidestrconsts.lismenueditorcreatesubmenu
 msgid "Create Submenu"
@@ -11398,6 +11302,11 @@ msgctxt "lazarusidestrconsts.lismenunewunit"
 msgid "New Unit"
 msgstr "新規ユニット"
 
+#: lazarusidestrconsts.lismenuok
+msgctxt "lazarusidestrconsts.lismenuok"
+msgid "&OK"
+msgstr "&OK"
+
 #: lazarusidestrconsts.lismenuonlinehelp
 msgid "Online Help"
 msgstr "オンラインヘルプ"
@@ -11473,11 +11382,6 @@ msgstr "パッケージグラフ ..."
 msgid "Package Links ..."
 msgstr "パッケージリンク ..."
 
-#: lazarusidestrconsts.lismenupaste
-msgctxt "lazarusidestrconsts.lismenupaste"
-msgid "Paste"
-msgstr "貼り付け"
-
 #: lazarusidestrconsts.lismenupause
 msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
@@ -11531,17 +11435,6 @@ msgstr "クイック表記法チェック"
 msgid "Quick syntax check OK"
 msgstr "クイック表記法チェックOK"
 
-#: lazarusidestrconsts.lismenuquit
-#, fuzzy
-#| msgid "Quit"
-msgid "&Quit"
-msgstr "終了"
-
-#: lazarusidestrconsts.lismenuredo
-msgctxt "lazarusidestrconsts.lismenuredo"
-msgid "Redo"
-msgstr "やり直し"
-
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
 msgstr "プロジェクトから削除 ..."
@@ -11549,15 +11442,6 @@ msgstr "プロジェクトから削除 ..."
 #: lazarusidestrconsts.lismenurenameidentifier
 msgid "Rename Identifier ..."
 msgstr "識別子名を変更 ..."
-
-#: lazarusidestrconsts.lismenureplace
-msgctxt "lazarusidestrconsts.lismenureplace"
-msgid "Replace"
-msgstr "置換"
-
-#: lazarusidestrconsts.lismenureplace2
-msgid "&Replace ..."
-msgstr "置換(&R)"
 
 #: lazarusidestrconsts.lismenureportingbug
 #, fuzzy
@@ -11577,10 +11461,6 @@ msgstr "FPCソースディレクトリを再スキャン"
 #| msgid "Reset debugger"
 msgid "Reset Debugger"
 msgstr "デバッガをリセット"
-
-#: lazarusidestrconsts.lismenurestart
-msgid "Restart"
-msgstr "再起動"
 
 #: lazarusidestrconsts.lismenurevert
 msgid "Revert"
@@ -11613,10 +11493,6 @@ msgstr "カーソル位置まで実行"
 msgctxt "lazarusidestrconsts.lismenusave"
 msgid "&Save"
 msgstr "保存"
-
-#: lazarusidestrconsts.lismenusaveall
-msgid "Save All"
-msgstr "すべて保存"
 
 #: lazarusidestrconsts.lismenusaveas
 #, fuzzy
@@ -11777,24 +11653,9 @@ msgstr "選択部分のTabをスペースに変換"
 msgid "About"
 msgstr "紹介"
 
-#: lazarusidestrconsts.lismenutemplateclose
-msgctxt "lazarusidestrconsts.lismenutemplateclose"
-msgid "Close"
-msgstr "閉じる"
-
 #: lazarusidestrconsts.lismenutemplatecontents
 msgid "Contents"
 msgstr "目次"
-
-#: lazarusidestrconsts.lismenutemplatecopy
-msgctxt "lazarusidestrconsts.lismenutemplatecopy"
-msgid "Copy"
-msgstr "コピー"
-
-#: lazarusidestrconsts.lismenutemplatecut
-msgctxt "lazarusidestrconsts.lismenutemplatecut"
-msgid "Cut"
-msgstr "切り取り"
 
 #: lazarusidestrconsts.lismenutemplatedescriptionstandardeditmenu
 msgid "Standard Edit Menu"
@@ -11808,21 +11669,6 @@ msgstr "標準ファイルメニュー"
 msgid "Standard Help Menu"
 msgstr "標準ヘルプメニュー"
 
-#: lazarusidestrconsts.lismenutemplateedit
-msgctxt "lazarusidestrconsts.lismenutemplateedit"
-msgid "Edit"
-msgstr "編集"
-
-#: lazarusidestrconsts.lismenutemplateexit
-msgctxt "lazarusidestrconsts.lismenutemplateexit"
-msgid "Exit"
-msgstr "終了"
-
-#: lazarusidestrconsts.lismenutemplatefile
-msgctxt "lazarusidestrconsts.lismenutemplatefile"
-msgid "File"
-msgstr "ファイル"
-
 #: lazarusidestrconsts.lismenutemplatefind
 msgctxt "lazarusidestrconsts.lismenutemplatefind"
 msgid "Find"
@@ -11833,52 +11679,14 @@ msgctxt "lazarusidestrconsts.lismenutemplatefindnext"
 msgid "Find Next"
 msgstr "次を検索"
 
-#: lazarusidestrconsts.lismenutemplatehelp
-msgctxt "lazarusidestrconsts.lismenutemplatehelp"
-msgid "Help"
-msgstr "ヘルプ"
-
-#: lazarusidestrconsts.lismenutemplatenew
-msgid "New"
-msgstr "新規"
-
-#: lazarusidestrconsts.lismenutemplateopen
-msgctxt "lazarusidestrconsts.lismenutemplateopen"
-msgid "Open"
-msgstr "開く"
-
 #: lazarusidestrconsts.lismenutemplateopenrecent
 msgctxt "lazarusidestrconsts.lismenutemplateopenrecent"
 msgid "Open Recent"
 msgstr "最近扱ったファイルを開く"
 
-#: lazarusidestrconsts.lismenutemplatepaste
-msgctxt "lazarusidestrconsts.lismenutemplatepaste"
-msgid "Paste"
-msgstr "貼り付け"
-
-#: lazarusidestrconsts.lismenutemplateredo
-msgctxt "lazarusidestrconsts.lismenutemplateredo"
-msgid "Redo"
-msgstr "やり直し"
-
-#: lazarusidestrconsts.lismenutemplatesave
-msgctxt "lazarusidestrconsts.lismenutemplatesave"
-msgid "Save"
-msgstr "保存"
-
-#: lazarusidestrconsts.lismenutemplatesaveas
-msgid "Save As"
-msgstr "名前を付けて保存"
-
 #: lazarusidestrconsts.lismenutemplatetutorial
 msgid "Tutorial"
 msgstr "チュートリアル"
-
-#: lazarusidestrconsts.lismenutemplateundo
-msgctxt "lazarusidestrconsts.lismenutemplateundo"
-msgid "Undo"
-msgstr "元に戻す"
 
 #: lazarusidestrconsts.lismenutogglecomment
 #, fuzzy
@@ -11895,11 +11703,6 @@ msgstr "ツール(&T)"
 #| msgid "Uncomment selection"
 msgid "Uncomment Selection"
 msgstr "選択部分の注釈を外す"
-
-#: lazarusidestrconsts.lismenuundo
-msgctxt "lazarusidestrconsts.lismenuundo"
-msgid "Undo"
-msgstr "元に戻す"
 
 #: lazarusidestrconsts.lismenuunindentselection
 #, fuzzy
@@ -12195,6 +11998,11 @@ msgstr "(ms)"
 msgid "Save messages to file (*.txt)"
 msgstr "メッセージをファイル(*.txt)に保存"
 
+#: lazarusidestrconsts.lisname
+msgctxt "lazarusidestrconsts.lisname"
+msgid "Name"
+msgstr "名前"
+
 #: lazarusidestrconsts.lisnameconflict
 msgid "Name conflict"
 msgstr "名前の衝突"
@@ -12209,7 +12017,8 @@ msgid "Never"
 msgstr "しない(ない)"
 
 #: lazarusidestrconsts.lisnew
-msgid "new"
+msgctxt "lazarusidestrconsts.lisnew"
+msgid "New"
 msgstr "新規"
 
 #: lazarusidestrconsts.lisnewancestors
@@ -12442,6 +12251,10 @@ msgstr "まだ実装されていません。"
 msgid "Not now"
 msgstr "今ではありません"
 
+#: lazarusidestrconsts.lisnowloadedscheme
+msgid "Now loaded: "
+msgstr ""
+
 #: lazarusidestrconsts.lisnpcreate
 msgid "Create"
 msgstr "作成"
@@ -12570,12 +12383,11 @@ msgid "%sThis package was automatically created"
 msgstr "%sこのパッケージは自動的に作成されました"
 
 #: lazarusidestrconsts.lisok
-msgid "&OK"
-msgstr "&OK"
-
-#: lazarusidestrconsts.lisold
-msgid "old"
-msgstr "古い"
+#, fuzzy
+#| msgid "ok"
+msgctxt "lazarusidestrconsts.lisok"
+msgid "OK"
+msgstr "ok"
 
 #: lazarusidestrconsts.lisoldancestors
 msgid "Old Ancestors"
@@ -12602,8 +12414,9 @@ msgid "On paste from clipboard"
 msgstr "クリップボードから貼り付けたとき"
 
 #: lazarusidestrconsts.lisopen
-msgid "Open ..."
-msgstr ""
+msgctxt "lazarusidestrconsts.lisopen"
+msgid "Open"
+msgstr "開く"
 
 #: lazarusidestrconsts.lisopenasxmlfile
 msgid "Open as XML file"
@@ -12793,6 +12606,11 @@ msgstr "Pascalユニット"
 msgid "Pass Count"
 msgstr "通過カウント"
 
+#: lazarusidestrconsts.lispaste
+msgctxt "lazarusidestrconsts.lispaste"
+msgid "Paste"
+msgstr "貼り付け"
+
 #: lazarusidestrconsts.lispasteclipboard
 msgid "paste clipboard"
 msgstr "クリップボードを貼り付け"
@@ -12810,13 +12628,41 @@ msgctxt "lazarusidestrconsts.lispatheditbrowse"
 msgid "Browse"
 msgstr "ブラウズ"
 
+#: lazarusidestrconsts.lispatheditdeleteinvalidpaths
+msgid "Delete Invalid Paths"
+msgstr ""
+
 #: lazarusidestrconsts.lispatheditmovepathdown
-msgid "Move path down"
+#, fuzzy
+#| msgid "Move path down"
+msgid "Move path down (Ctrl+Down)"
 msgstr "パスを下に移動"
 
 #: lazarusidestrconsts.lispatheditmovepathup
-msgid "Move path up"
+#, fuzzy
+#| msgid "Move path up"
+msgid "Move path up (Ctrl+Up)"
 msgstr "パスを上に移動"
+
+#: lazarusidestrconsts.lispatheditoraddhint
+msgid "Add new path to the list"
+msgstr ""
+
+#: lazarusidestrconsts.lispatheditordeletehint
+msgid "Delete the selected path"
+msgstr ""
+
+#: lazarusidestrconsts.lispatheditordeleteinvalidhint
+msgid "Remove non-existent (gray) paths from the list"
+msgstr ""
+
+#: lazarusidestrconsts.lispatheditorreplacehint
+msgid "Replace the selected path with a new path"
+msgstr ""
+
+#: lazarusidestrconsts.lispatheditortempladdhint
+msgid "Add template to the list"
+msgstr ""
 
 #: lazarusidestrconsts.lispatheditpathtemplates
 msgid "Path templates"
@@ -12923,11 +12769,6 @@ msgstr "ファイルのプロパティ"
 #: lazarusidestrconsts.lispckeditgeneraloptions
 msgid "General Options"
 msgstr "一般的なオプション"
-
-#: lazarusidestrconsts.lispckedithelp
-msgctxt "lazarusidestrconsts.lispckedithelp"
-msgid "Help"
-msgstr "ヘルプ"
 
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
@@ -13613,10 +13454,6 @@ msgstr "ファイル %s%s%s は見つかりません"
 msgid "File not saved"
 msgstr "ファイルは保存されていません"
 
-#: lazarusidestrconsts.lispkgmangignoreandsavepackagenow
-msgid "Ignore and save package now"
-msgstr "無視して今すぐパッケージを保存"
-
 #: lazarusidestrconsts.lispkgmanginstallingthepackagewillautomaticallyinstallthepac
 msgid "Installing the package %s will automatically install the package:"
 msgstr " %sは自動的に次のパッケージをインストールします："
@@ -13649,11 +13486,6 @@ msgstr "無効なパッケージ名"
 msgid "Invalid Package Name"
 msgstr "無効なパッケージ名"
 
-#: lazarusidestrconsts.lispkgmanglazarus
-msgctxt "lazarusidestrconsts.lispkgmanglazarus"
-msgid "Lazarus"
-msgstr "Lazarus"
-
 #: lazarusidestrconsts.lispkgmangloadingpackagewillreplacepackage
 msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave old package %s?"
 msgstr "パッケージを読み込み中 %sはパッケージ %s%sを%sファイルから置き換えます。%s古いパッケージは修正されます。%s%s古いパッケージ%sを保存しますか？"
@@ -13669,14 +13501,6 @@ msgstr "パッケージ: %s"
 #: lazarusidestrconsts.lispkgmangpackageconflicts
 msgid "Package conflicts"
 msgstr "パッケージが競合しています"
-
-#: lazarusidestrconsts.lispkgmangpackagefilemissing
-msgid "Package file missing"
-msgstr "パッケージファイルが見つかりません。"
-
-#: lazarusidestrconsts.lispkgmangpackagefilenotsaved
-msgid "Package file not saved"
-msgstr "パッケージファイルが保存されていません"
 
 #: lazarusidestrconsts.lispkgmangpackagehasnovalidoutputdirectory
 msgid "Package %s%s%s has no valid output directory:%s%s%s%s"
@@ -13777,13 +13601,9 @@ msgstr "ファイル名 %s%s%sは現在のプロジェクトの一部です。%s
 msgid "The file name %s%s%s is used by%sthe package %s%s%s%sin file %s%s%s."
 msgstr "ファイル名 %s%s%sは、%sパッケージ%s%s%s%sのファイル %s%s%sで用いられています。"
 
-#: lazarusidestrconsts.lispkgmangthefileofpackageismissing
-msgid "The file %s%s%s%sof package %s is missing."
-msgstr "パッケージ %s のファイル %s%s%sが見つかりません。"
-
-#: lazarusidestrconsts.lispkgmangthefileofpackageneedstobesavedfirst
-msgid "The file %s%s%s%sof package %s needs to be saved first."
-msgstr "パッケージ %s のファイル %s%s%sをまず保存しなければなりません。"
+#: lazarusidestrconsts.lispkgmangthefileofpackagewasnotfound
+msgid "The file \"%s\" of package %s was not found."
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
@@ -13944,6 +13764,21 @@ msgstr "ユニットを使用"
 #: lazarusidestrconsts.lispkgmangwarningthefilebelongstothecurrentproject
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgstr "警告：ファイル%s%s%s%sは現在のプロジェクトに属しています。"
+
+#: lazarusidestrconsts.lispkgmgrkeep
+msgctxt "lazarusidestrconsts.lispkgmgrkeep"
+msgid "keep"
+msgstr "保持"
+
+#: lazarusidestrconsts.lispkgmgrnew
+msgctxt "lazarusidestrconsts.lispkgmgrnew"
+msgid "new"
+msgstr "新規"
+
+#: lazarusidestrconsts.lispkgmgrremove
+msgctxt "lazarusidestrconsts.lispkgmgrremove"
+msgid "remove"
+msgstr "削除"
 
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
@@ -14615,6 +14450,11 @@ msgstr "クイック修正：ユニット削除"
 msgid "Search identifier"
 msgstr "検索識別子"
 
+#: lazarusidestrconsts.lisquit
+msgctxt "lazarusidestrconsts.lisquit"
+msgid "Quit"
+msgstr "終了"
+
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"
 msgstr "Lazarusを終了"
@@ -14627,20 +14467,15 @@ msgstr "読み取りエラー"
 msgid "Record/Structure"
 msgstr "構造体"
 
+#: lazarusidestrconsts.lisredo
+msgctxt "lazarusidestrconsts.lisredo"
+msgid "Redo"
+msgstr "やり直し"
+
 #: lazarusidestrconsts.lisregisters
 msgctxt "lazarusidestrconsts.lisregisters"
 msgid "Registers"
 msgstr "レジスタ"
-
-#: lazarusidestrconsts.lisregistersdlgname
-msgctxt "lazarusidestrconsts.lisregistersdlgname"
-msgid "Name"
-msgstr "名前"
-
-#: lazarusidestrconsts.lisregistersdlgvalue
-msgctxt "lazarusidestrconsts.lisregistersdlgvalue"
-msgid "Value"
-msgstr "値"
 
 #: lazarusidestrconsts.lisregularexpression
 msgid "Regular expression"
@@ -14651,7 +14486,10 @@ msgid "Relative paths"
 msgstr "相対パス"
 
 #: lazarusidestrconsts.lisremove
-msgid "remove"
+#, fuzzy
+#| msgid "remove"
+msgctxt "lazarusidestrconsts.lisremove"
+msgid "Remove"
 msgstr "削除"
 
 #: lazarusidestrconsts.lisremoveallinvalidproperties
@@ -14712,6 +14550,11 @@ msgstr "uses節からユニットを削除"
 msgid "Remove unit path?"
 msgstr ""
 
+#: lazarusidestrconsts.lisrename
+msgctxt "lazarusidestrconsts.lisrename"
+msgid "Rename"
+msgstr "名前の変更"
+
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
 msgstr "ファイル名を変更しますか?"
@@ -14739,6 +14582,11 @@ msgstr "他のエンコーディングで開き直す"
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
 msgstr "反復回数："
+
+#: lazarusidestrconsts.lisreplace
+msgctxt "lazarusidestrconsts.lisreplace"
+msgid "Replace"
+msgstr "置換"
 
 #: lazarusidestrconsts.lisreplacement
 msgid "Replacement"
@@ -14797,6 +14645,11 @@ msgstr "プロジェクトのリソース型"
 #: lazarusidestrconsts.lisresponsecontinue
 msgid "Response: %sContinue ?"
 msgstr "応答： %s 続けますか？"
+
+#: lazarusidestrconsts.lisrestart
+msgctxt "lazarusidestrconsts.lisrestart"
+msgid "Restart"
+msgstr "再起動"
 
 #: lazarusidestrconsts.lisresult
 msgid "Result :="
@@ -14918,8 +14771,20 @@ msgid "Unable to show abstract methods of the current class, because"
 msgstr "現在のクラスの抽象メソッドを表示できません、なぜなら"
 
 #: lazarusidestrconsts.lissave
-msgid "Save ..."
+#, fuzzy
+#| msgid "Save ..."
+msgctxt "lazarusidestrconsts.lissave"
+msgid "Save"
 msgstr "保存 ..."
+
+#: lazarusidestrconsts.lissaveall
+msgctxt "lazarusidestrconsts.lissaveall"
+msgid "Save All"
+msgstr "すべて保存"
+
+#: lazarusidestrconsts.lissaveallchecked
+msgid "Save All Checked"
+msgstr ""
 
 #: lazarusidestrconsts.lissaveallmessagestofile
 #, fuzzy
@@ -14940,6 +14805,11 @@ msgstr "保存と終了ダイアログ"
 #: lazarusidestrconsts.lissaveandrebuildide
 msgid "Save and rebuild IDE"
 msgstr "保存してIDEを再構築"
+
+#: lazarusidestrconsts.lissaveas
+msgctxt "lazarusidestrconsts.lissaveas"
+msgid "Save As"
+msgstr "名前を付けて保存"
 
 #: lazarusidestrconsts.lissavechanges
 msgid "Save changes?"
@@ -15153,6 +15023,10 @@ msgstr "識別子を表示"
 msgid "Show information box"
 msgstr "情報ボックスを表示"
 
+#: lazarusidestrconsts.lisshowoverviewgutter
+msgid "Show overview Gutter"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
 msgstr "パッケージを表示"
@@ -15234,11 +15108,6 @@ msgstr "すみません、この型はまだ実装されていません"
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"
 msgstr "昇順"
-
-#: lazarusidestrconsts.lissortselcancel
-msgctxt "lazarusidestrconsts.lissortselcancel"
-msgid "Cancel"
-msgstr "取消"
 
 #: lazarusidestrconsts.lissortselcasesensitive
 msgctxt "lazarusidestrconsts.lissortselcasesensitive"
@@ -16040,19 +15909,10 @@ msgstr "関数"
 msgid "Goto"
 msgstr ""
 
-#: lazarusidestrconsts.listhreadsid
-msgid "Id"
-msgstr ""
-
 #: lazarusidestrconsts.listhreadsline
 msgctxt "lazarusidestrconsts.listhreadsline"
 msgid "Line"
 msgstr "行"
-
-#: lazarusidestrconsts.listhreadsname
-msgctxt "lazarusidestrconsts.listhreadsname"
-msgid "Name"
-msgstr "名前"
 
 #: lazarusidestrconsts.listhreadsnotevaluated
 msgid "Threads not evaluated"
@@ -16241,11 +16101,6 @@ msgstr "名前:"
 msgid "no"
 msgstr "いいえ"
 
-#: lazarusidestrconsts.lisuidok
-msgctxt "lazarusidestrconsts.lisuidok"
-msgid "Ok"
-msgstr "Ok"
-
 #: lazarusidestrconsts.lisuidpathsreadonly
 msgid "Paths (Read Only)"
 msgstr "パス（読み込専用）"
@@ -16253,10 +16108,6 @@ msgstr "パス（読み込専用）"
 #: lazarusidestrconsts.lisuidsize
 msgid "Size:"
 msgstr "サイズ"
-
-#: lazarusidestrconsts.lisuidsrc
-msgid "Src"
-msgstr "ソース"
 
 #: lazarusidestrconsts.lisuidtype
 msgid "Type:"
@@ -16625,6 +16476,15 @@ msgstr "ファイル \"%s\" に書き込めません。"
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "xmlストリームを%s%sに書き込めません。エラー：%s"
 
+#: lazarusidestrconsts.lisuncheckall
+msgid "Uncheck All"
+msgstr ""
+
+#: lazarusidestrconsts.lisundo
+msgctxt "lazarusidestrconsts.lisundo"
+msgid "Undo"
+msgstr "元に戻す"
+
 #: lazarusidestrconsts.lisunexpectedresultthedebuggerwillterminate
 msgid "Unexpected result:%sThe debugger will terminate"
 msgstr "期待されない結果：%sデバッガは終了します。"
@@ -16692,6 +16552,11 @@ msgstr "未署名"
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "使われていないユニット"
+
+#: lazarusidestrconsts.lisup
+msgctxt "lazarusidestrconsts.lisup"
+msgid "Up"
+msgstr "上へ"
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
@@ -16785,7 +16650,10 @@ msgid "UTF-8 with BOM"
 msgstr "BOMつきUTF-8"
 
 #: lazarusidestrconsts.lisvalue
-msgid "Value:"
+#, fuzzy
+#| msgid "Value:"
+msgctxt "lazarusidestrconsts.lisvalue"
+msgid "Value"
 msgstr "値："
 
 #: lazarusidestrconsts.lisvalue2
@@ -16799,6 +16667,11 @@ msgstr ""
 #: lazarusidestrconsts.lisvalues
 msgid "Values"
 msgstr "値"
+
+#: lazarusidestrconsts.lisvariable
+msgctxt "lazarusidestrconsts.lisvariable"
+msgid "Variable"
+msgstr "変数"
 
 #: lazarusidestrconsts.lisverifymethodcalls
 msgid "Verify method calls"
@@ -16959,14 +16832,6 @@ msgstr ""
 msgid "With required packages"
 msgstr "要求されるパッケージ付き"
 
-#: lazarusidestrconsts.liswladd
-msgid "&Add"
-msgstr "追加(&A)"
-
-#: lazarusidestrconsts.liswldelete
-msgid "&Delete"
-msgstr "削除(&D)"
-
 #: lazarusidestrconsts.liswldeleteall
 msgid "De&lete All"
 msgstr "すべて削除(&l)"
@@ -16978,10 +16843,6 @@ msgstr "すべて無効にする(&i)"
 #: lazarusidestrconsts.liswlenableall
 msgid "E&nable All"
 msgstr "全てを有効化(&n)"
-
-#: lazarusidestrconsts.liswlenabled
-msgid "&Enabled"
-msgstr "有効にする(&E)"
 
 #: lazarusidestrconsts.liswlexpression
 msgid "Expression"
@@ -17197,11 +17058,6 @@ msgstr ""
 msgid "Use windowmanager setting"
 msgstr "ウィンドウマネージャーの設定を使う"
 
-#: lazarusidestrconsts.rskey
-msgctxt "lazarusidestrconsts.rskey"
-msgid "Key"
-msgstr "キー"
-
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"
 msgstr "アフリカ語"
@@ -17314,13 +17170,6 @@ msgstr "メジャーバージョン(&M)"
 msgid "Mi&nor version:"
 msgstr "マイナーバージョン(&n)"
 
-#: lazarusidestrconsts.rsok
-#, fuzzy
-#| msgid "ok"
-msgctxt "lazarusidestrconsts.rsok"
-msgid "OK"
-msgstr "ok"
-
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
 msgstr "その他の情報"
@@ -17328,10 +17177,6 @@ msgstr "その他の情報"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "PO出力ディレクトリ"
-
-#: lazarusidestrconsts.rsremove
-msgid "&Remove"
-msgstr "消去(&R)"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
@@ -17348,11 +17193,6 @@ msgstr "継承されたエントリを選択"
 #: lazarusidestrconsts.rsstartanewsearch
 msgid "Start a new search"
 msgstr "新しい検索を開始"
-
-#: lazarusidestrconsts.rsvalue
-msgctxt "lazarusidestrconsts.rsvalue"
-msgid "Value"
-msgstr "値"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
@@ -17382,10 +17222,6 @@ msgstr "カーソル移動コマンド"
 msgid "Text editing commands"
 msgstr "テキスト編集コマンド"
 
-#: lazarusidestrconsts.srkmcatenvmenu
-msgid "Environment menu commands"
-msgstr "環境メニューコマンド"
-
 #: lazarusidestrconsts.srkmcatfilemenu
 msgid "File menu commands"
 msgstr "ファイルメニューコマンド"
@@ -17393,6 +17229,11 @@ msgstr "ファイルメニューコマンド"
 #: lazarusidestrconsts.srkmcatfold
 msgid "Text folding commands"
 msgstr "テキスト折りたたみコマンド"
+
+#: lazarusidestrconsts.srkmcatmacrorecording
+msgctxt "lazarusidestrconsts.srkmcatmacrorecording"
+msgid "Macros"
+msgstr "マクロ"
 
 #: lazarusidestrconsts.srkmcatmarker
 msgid "Text marker commands"
@@ -17717,6 +17558,10 @@ msgctxt "lazarusidestrconsts.srkmecdiff"
 msgid "Diff"
 msgstr "差分"
 
+#: lazarusidestrconsts.srkmecdown
+msgid "Move cursor down"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeceditorbottom
 msgid "Move cursor to absolute end"
 msgstr "カーソルを末尾に移動"
@@ -17968,6 +17813,10 @@ msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "代入を反転"
 
+#: lazarusidestrconsts.srkmecleft
+msgid "Move cursor left"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeclinebreak
 msgid "Break line and move cursor"
 msgstr "改行してカーソルを移動"
@@ -18112,10 +17961,6 @@ msgstr "前のウィンドウに移動"
 msgid "quick compile, no linking"
 msgstr "高速コンパイル、リンクなし"
 
-#: lazarusidestrconsts.srkmecquit
-msgid "Quit"
-msgstr "終了"
-
 #: lazarusidestrconsts.srkmecremovebreakpoint
 msgid "remove break point"
 msgstr "ブレークポイントを削除"
@@ -18153,6 +17998,10 @@ msgstr "バグを報告中"
 msgid "reset debugger"
 msgstr "デバッガをリセット"
 
+#: lazarusidestrconsts.srkmecright
+msgid "Move cursor right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecrun
 msgid "run program"
 msgstr "プログラムを実行"
@@ -18164,11 +18013,6 @@ msgstr "ファイルを実行"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "実行パラメータ"
-
-#: lazarusidestrconsts.srkmecsave
-msgctxt "lazarusidestrconsts.srkmecsave"
-msgid "Save"
-msgstr "保存"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
@@ -18321,6 +18165,14 @@ msgstr "実行位置を表示"
 #: lazarusidestrconsts.srkmecstopprogram
 msgid "stop program"
 msgstr "プログラムを停止"
+
+#: lazarusidestrconsts.srkmecsynmacroplay
+msgid "Play Macro"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynmacrorecord
+msgid "Record Macro"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecsynpsyncroedcellend
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellend"
@@ -18527,6 +18379,10 @@ msgstr "不明なエディタコマンド"
 msgid "Unused Units ..."
 msgstr ""
 
+#: lazarusidestrconsts.srkmecup
+msgid "Move cursor up"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"
 msgstr "ユーザー第一"
@@ -18637,6 +18493,14 @@ msgstr "\"は書き込み不可です。"
 msgid "Locked"
 msgstr "ロック済み"
 
+#: lazarusidestrconsts.uemacrorecording
+msgid "Recording"
+msgstr ""
+
+#: lazarusidestrconsts.uemacrorecordingpaused
+msgid "Rec-pause"
+msgstr ""
+
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "カーソル位置の変数を監視に追加(&W)"
@@ -18656,11 +18520,6 @@ msgstr "すべての他のページを閉じる(&O)"
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"
 msgstr "ページを閉じる(&C)"
-
-#: lazarusidestrconsts.uemcopy
-msgctxt "lazarusidestrconsts.uemcopy"
-msgid "Copy"
-msgstr "コピー"
 
 #: lazarusidestrconsts.uemcopyfilename
 #, fuzzy
@@ -18684,11 +18543,6 @@ msgstr "他のウィンドウのクローン"
 msgctxt "lazarusidestrconsts.uemcopytootherwindownew"
 msgid "New Window"
 msgstr "新しいウィンドウ"
-
-#: lazarusidestrconsts.uemcut
-msgctxt "lazarusidestrconsts.uemcut"
-msgid "Cut"
-msgstr "切り取り"
 
 #: lazarusidestrconsts.uemdebugword
 msgid "Debug"
@@ -18804,11 +18658,6 @@ msgstr "修正済"
 #| msgid "&Open file at cursor"
 msgid "&Open File at Cursor"
 msgstr "カーソルのファイルを開く(&O)"
-
-#: lazarusidestrconsts.uempaste
-msgctxt "lazarusidestrconsts.uempaste"
-msgid "Paste"
-msgstr "貼り付け"
 
 #: lazarusidestrconsts.uemprevbookmark
 #, fuzzy

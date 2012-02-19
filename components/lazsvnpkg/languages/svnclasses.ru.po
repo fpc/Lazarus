@@ -31,11 +31,11 @@ msgstr "Фиксировать"
 
 #: svnclasses.rscommitmsg
 msgid "Commit Message"
-msgstr ""
+msgstr "Сообщение ревизии"
 
 #: svnclasses.rscommitmsghistory
 msgid "Commit Message History"
-msgstr ""
+msgstr "История сообщений ревизий"
 
 #: svnclasses.rscommitrevision
 msgid "Commit revision"
