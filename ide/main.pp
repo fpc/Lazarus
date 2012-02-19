@@ -3372,6 +3372,9 @@ begin
   ecConfigBuildLazarus:
     mnuToolConfigBuildLazClicked(Self);
 
+  ecWindowManager:
+    mnuWindowManagerClicked(Self);
+
   ecToggleFormUnit:
     mnuToggleFormUnitClicked(Self);
 

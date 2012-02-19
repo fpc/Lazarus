@@ -89,7 +89,7 @@ begin
     end;
   FilterEdit.InvalidateFilter;
   // Captions
-  Caption:=lisEditorFileManager;
+  Caption:=lisEditorWindowManager;
   ActivateMenuItem.Caption:=lisActivate;
   CloseMenuItem.Caption:=lisMenuClose;
   SelectAllCheckBox.Caption:=lisCheckAll;

@@ -606,6 +606,11 @@ begin
     ecConfigCustomComps       : Result:= lisMenuConfigCustomComps;
 
     // tools menu
+    ecEnvironmentOptions      : Result:= srkmecEnvironmentOptions;
+    ecRescanFPCSrcDir         : Result:= lisMenuRescanFPCSourceDirectory;
+    ecEditCodeTemplates       : Result:= lisMenuEditCodeTemplates;
+    ecCodeToolsDefinesEd      : Result:= srkmecCodeToolsDefinesEd;
+
     ecExtToolSettings         : Result:= srkmecExtToolSettings;
     ecManageExamples          : Result:= lisMenuExampleProjects;
     ecConfigBuildLazarus      : Result:= lismenuconfigurebuildlazarus;
@@ -615,11 +620,8 @@ begin
     ecMakeResourceString      : Result:= srkmecMakeResourceString;
     ecDiff                    : Result:= srkmecDiff;
 
-    // environment menu
-    ecEnvironmentOptions      : Result:= srkmecEnvironmentOptions;
-    ecRescanFPCSrcDir         : Result:= lisMenuRescanFPCSourceDirectory;
-    ecEditCodeTemplates       : Result:= lisMenuEditCodeTemplates;
-    ecCodeToolsDefinesEd      : Result:= srkmecCodeToolsDefinesEd;
+    // window menu
+    ecWindowManager           : Result:= lisEditorWindowManager;
 
     // help menu
     ecAboutLazarus            : Result:= lisAboutLazarus;
@@ -890,7 +892,7 @@ begin
   ecSelectionEnclose:    SetSingle(VK_N,[ssShift,ssCtrl]);
   ecSelectionComment:    SetSingle(VK_V,[ssShift,ssCtrl]);
   ecSelectionUncomment:  SetSingle(VK_U,[ssShift,ssCtrl]);
-  ecToggleComment:       SetSingle(VK_W,[ssShift,ssCtrl], VK_OEM_2,[ssCtrl]);
+  ecToggleComment:       SetSingle(VK_T,[ssShift,ssCtrl], VK_OEM_2,[ssCtrl]);
   ecSelectionEncloseIFDEF:SetSingle(VK_D,[ssShift,ssCtrl]);
   ecSelectionSort:       SetSingle(VK_UNKNOWN,[]);
   ecSelectionBreakLines: SetSingle(VK_UNKNOWN,[]);
@@ -1188,6 +1190,11 @@ begin
   ecConfigCustomComps:   SetSingle(VK_UNKNOWN,[]);
 
   // tools menu
+  ecEnvironmentOptions:  SetSingle(VK_O,[ssShift,ssCtrl]);
+  ecRescanFPCSrcDir:     SetSingle(VK_UNKNOWN,[]);
+  ecEditCodeTemplates:   SetSingle(VK_UNKNOWN,[]);
+  ecCodeToolsDefinesEd:  SetSingle(VK_UNKNOWN,[]);
+
   ecExtToolSettings:     SetSingle(VK_UNKNOWN,[]);
   ecManageExamples:      SetSingle(VK_UNKNOWN,[]);
   ecBuildLazarus:        SetSingle(VK_UNKNOWN,[]);
@@ -1195,11 +1202,8 @@ begin
   ecMakeResourceString:  SetSingle(VK_UNKNOWN,[]);
   ecDiff:                SetSingle(VK_UNKNOWN,[]);
 
-  // environment (in Tools menu)
-  ecEnvironmentOptions:  SetSingle(VK_O,[ssShift,ssCtrl]);
-  ecRescanFPCSrcDir:     SetSingle(VK_UNKNOWN,[]);
-  ecEditCodeTemplates:   SetSingle(VK_UNKNOWN,[]);
-  ecCodeToolsDefinesEd:  SetSingle(VK_UNKNOWN,[]);
+  // window menu
+  ecWindowManager:       SetSingle(VK_W,[ssShift,ssCtrl]);
 
   // help menu
   ecAboutLazarus:        SetSingle(VK_UNKNOWN,[]);
@@ -1612,6 +1616,11 @@ begin
   ecConfigCustomComps:   SetSingle(VK_UNKNOWN,[]);
 
   // tools menu
+  ecEnvironmentOptions:  SetSingle(VK_UNKNOWN,[]);
+  ecRescanFPCSrcDir:     SetSingle(VK_UNKNOWN,[]);
+  ecEditCodeTemplates:   SetSingle(VK_UNKNOWN,[]);
+  ecCodeToolsDefinesEd:  SetSingle(VK_UNKNOWN,[]);
+
   ecExtToolSettings:     SetSingle(VK_UNKNOWN,[]);
   ecManageExamples:      SetSingle(VK_UNKNOWN,[]);
   ecBuildLazarus:        SetSingle(VK_UNKNOWN,[]);
@@ -1619,11 +1628,8 @@ begin
   ecMakeResourceString:  SetSingle(VK_UNKNOWN,[]);
   ecDiff:                SetSingle(VK_UNKNOWN,[]);
 
-  // environment menu
-  ecEnvironmentOptions:  SetSingle(VK_UNKNOWN,[]);
-  ecRescanFPCSrcDir:     SetSingle(VK_UNKNOWN,[]);
-  ecEditCodeTemplates:   SetSingle(VK_UNKNOWN,[]);
-  ecCodeToolsDefinesEd:  SetSingle(VK_UNKNOWN,[]);
+  // window menu
+  ecWindowManager:       SetSingle(VK_UNKNOWN,[]);
 
   // help menu
   ecAboutLazarus:        SetSingle(VK_UNKNOWN,[]);
@@ -2221,6 +2227,11 @@ begin
   ecConfigCustomComps:   SetSingle(VK_UNKNOWN,[]);
 
   // tools menu
+  ecEnvironmentOptions:  SetSingle(VK_UNKNOWN,[]);
+  ecRescanFPCSrcDir:     SetSingle(VK_UNKNOWN,[]);
+  ecEditCodeTemplates:   SetSingle(VK_UNKNOWN,[]);
+  ecCodeToolsDefinesEd:  SetSingle(VK_UNKNOWN,[]);
+
   ecExtToolSettings:     SetSingle(VK_UNKNOWN,[]);
   ecManageExamples:      SetSingle(VK_UNKNOWN,[]);
   ecBuildLazarus:        SetSingle(VK_UNKNOWN,[]);
@@ -2228,11 +2239,8 @@ begin
   ecMakeResourceString:  SetSingle(VK_UNKNOWN,[]);
   ecDiff:                SetSingle(VK_UNKNOWN,[]);
 
-  // environment menu
-  ecEnvironmentOptions:  SetSingle(VK_UNKNOWN,[]);
-  ecRescanFPCSrcDir:     SetSingle(VK_UNKNOWN,[]);
-  ecEditCodeTemplates:   SetSingle(VK_UNKNOWN,[]);
-  ecCodeToolsDefinesEd:  SetSingle(VK_UNKNOWN,[]);
+  // window menu
+  ecWindowManager:       SetSingle(VK_W,[ssShift,ssCtrl]);
 
   // help menu
   ecAboutLazarus:        SetSingle(VK_UNKNOWN,[]);
@@ -2383,7 +2391,7 @@ begin
 end;
 
 procedure TKeyCommandRelationList.CreateDefaultMapping;
-// create default keymapping
+// Define a category for each command
 var
   C: TIDECommandCategory;
 begin
@@ -2824,6 +2832,12 @@ begin
 
   // tools menu
   C:=Categories[AddCategory(CommandCategoryToolMenuName,srkmCatToolMenu,nil)];
+//  C:=Categories[AddCategory('EnvironmentMenu',srkmCatEnvMenu,nil)];
+  AddDefault(C, 'General environment options', srkmecEnvironmentOptions, ecEnvironmentOptions);
+  AddDefault(C, 'Rescan FPC source directory', lisMenuRescanFPCSourceDirectory, ecRescanFPCSrcDir);
+  AddDefault(C, 'Edit Code Templates', lisKMEditCodeTemplates, ecEditCodeTemplates);
+  AddDefault(C, 'CodeTools defines editor', lisKMCodeToolsDefinesEditor, ecCodeToolsDefinesEd);
+
   AddDefault(C, 'External Tools settings', lisKMExternalToolsSettings, ecExtToolSettings);
   AddDefault(C, 'Example Projects', lisKMExampleProjects, ecManageExamples);
   AddDefault(C, 'Build Lazarus', lisMenuBuildLazarus, ecBuildLazarus);
@@ -2838,13 +2852,9 @@ begin
   AddDefault(C, 'Convert Delphi package to Lazarus package',
     lisKMConvertDelphiPackageToLazarusPackage, ecConvertDelphiPackage);
   AddDefault(C, 'Convert encoding', lisConvertEncodingOfProjectsPackages, ecConvertEncoding);
-
-  // environment (in Tools menu)
-  C:=Categories[AddCategory('EnvironmentMenu',srkmCatEnvMenu,nil)];
-  AddDefault(C, 'General environment options', srkmecEnvironmentOptions, ecEnvironmentOptions);
-  AddDefault(C, 'Rescan FPC source directory', lisMenuRescanFPCSourceDirectory, ecRescanFPCSrcDir);
-  AddDefault(C, 'Edit Code Templates', lisKMEditCodeTemplates, ecEditCodeTemplates);
-  AddDefault(C, 'CodeTools defines editor', lisKMCodeToolsDefinesEditor, ecCodeToolsDefinesEd);
+  // window menu
+//  C:=Categories[AddCategory('WindowMenu',srkmCarWindowMenu,nil)];
+  AddDefault(C, 'Editor Window Manager', lisEditorWindowManager, ecWindowManager);
 
   // help menu
   C:=Categories[AddCategory('HelpMenu',srkmCarHelpMenu,nil)];

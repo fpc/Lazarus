@@ -47,8 +47,7 @@ const
      1. Add a constant with a unique value in the list below.
      2. Add it to GetDefaultKeyForCommand to define the default keys+shiftstates
      3. Add it to EditorCommandToDescriptionString to define the description
-     4. Add it to TKeyCommandRelationList.CreateDefaultMapping to define the
-        category.
+     4. Add it to TKeyCommandRelationList.CreateDefaultMapping to define the category.
   }
   ecNone                    = 0;
   
@@ -299,15 +298,19 @@ const
   ecExtToolLast             = ecFirstLazarus + 799;
 
   // tools menu
-  ecExtToolSettings         = ecFirstLazarus + 820;
-  ecEnvironmentOptions      = ecFirstLazarus + 821;
+  ecEnvironmentOptions      = ecFirstLazarus + 820;
+  ecRescanFPCSrcDir         = ecFirstLazarus + 821;
   ecEditCodeTemplates       = ecFirstLazarus + 822;
   ecCodeToolsDefinesEd      = ecFirstLazarus + 823;
-  ecRescanFPCSrcDir         = ecFirstLazarus + 824;
+
+  ecExtToolSettings         = ecFirstLazarus + 824;
   ecManageExamples          = ecFirstLazarus + 825;
   ecConfigBuildLazarus      = ecFirstLazarus + 830;
   ecBuildLazarus            = ecFirstLazarus + 831;
   ecBuildAdvancedLazarus    = ecFirstLazarus + 832;
+
+  // window menu
+  ecWindowManager           = ecFirstLazarus + 840;
 
   // help menu
   ecAboutLazarus            = ecFirstLazarus + 900;

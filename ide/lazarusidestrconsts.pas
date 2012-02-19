@@ -451,8 +451,8 @@ resourcestring
   lisMenuBuildLazarus = 'Build Lazarus with Current Profile';
   lisMenuBuildLazarusProf = 'Build Lazarus with Profile: %s';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus" ...';
-  lisDlgEditorFileManager = 'Editor File Manager ...';
-  lisEditorFileManager = 'Editor File Manager';
+  lisDlgEditorWindowManager = 'Editor Window Manager ...';
+  lisEditorWindowManager = 'Editor Window Manager';
 
   lisSearchProjectsFrom = 'Search projects from';
   lisMEOther = 'Other';
@@ -2867,7 +2867,6 @@ resourcestring
   srkmCatPackageMenu = 'Package menu commands';
   srkmCatToolMenu       = 'Tools menu commands';
   lisKMExternalToolsSettings = 'External Tools settings';
-  srkmCatEnvMenu        = 'Environment menu commands';
   lisKMConvertDelphiPackageToLazarusPackage = 'Convert Delphi package to Lazarus package';
   srkmCarHelpMenu       = 'Help menu commands';
   lisKeyCatDesigner     = 'Designer commands';
