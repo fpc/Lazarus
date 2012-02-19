@@ -6227,6 +6227,7 @@ var
   SrcMatrix: QTransformH;
   dx, dy: integer;
   OldRop: Integer;
+  OldBkColor: TColorRef;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI StretchMaskBlt]',
@@ -6333,14 +6334,32 @@ begin
       QImage_destroy(TmpMask);
   end else
   begin
-    OldRop := DstQDC.Rop2;
-    if Rop <> SRCCOPY then
-      DstQDC.Rop2 := Integer(Rop);
-    try
-      DstQDC.drawImage(@DstRect, Image, @SrcRect, QMask, @MaskRect);
-    finally
-      if Rop <> SRCCOPY then
+    if (Rop = BLACKNESS) or (Rop = WHITENESS) then
+    begin
+      OldRop := DstQDC.Rop2;
+      DstQDC.Rop2 := SRCCOPY;
+      try
+        if (Rop = BLACKNESS) then
+          OldBkColor := DstQDC.SetBkColor(clBlack)
+        else
+          OldBkColor := DstQDC.SetBkColor(clWhite);
+        with DstRect do
+          DstQDC.fillRect(Left, Top, Right - Left, Bottom - Top);
+      finally
+        DstQDC.SetBkColor(OldBkColor);
         DstQDC.Rop2 := OldRop;
+      end;
+    end else
+    begin
+      OldRop := DstQDC.Rop2;
+      if Rop <> SRCCOPY then
+        DstQDC.Rop2 := Integer(Rop);
+      try
+        DstQDC.drawImage(@DstRect, Image, @SrcRect, QMask, @MaskRect);
+      finally
+        if Rop <> SRCCOPY then
+          DstQDC.Rop2 := OldRop;
+      end;
     end;
   end;
 
