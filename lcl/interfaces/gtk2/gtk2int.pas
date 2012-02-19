@@ -41,7 +41,7 @@ uses
   Types, Classes, SysUtils, Math, maps,
   {$IfNDef GTK2_2}
     {$IfDef HasX}
-     XLib, xatom, X, //XUtil,
+     XLib, xatom, X, gdk2x, //XUtil,
     {$EndIf}
   {$EndIf}
 

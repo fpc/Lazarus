@@ -42,9 +42,11 @@ const
 const
   gdkdll = gdklib;
 
+{$IF FPC_FULLVERSION<20600}
 // missing declarations in fpc 2.2
 const
    GTK_CELL_RENDERER_FOCUSED = 1 shl 4;
+{$ENDIF}
 
 {$IFNDEF MSWINDOWS} // this is required for compilation under windows
 {$if defined(HasX)} // This is required for compilation under Mac OS X
@@ -78,6 +80,7 @@ type
     PANGO_GRAVITY_AUTO
   );
 
+{$IF FPC_FULLVERSION<20600}
 // ----------------- this pango symbols can be removed after fpc 2.2.4
 // pango 1.6
   PPangoMatrix = ^TPangoMatrix;
@@ -91,6 +94,7 @@ type
   end;
 
 // pango 1.8
+
   TPangoRenderer = pointer;
   PPangoRenderer = ^TPangoRenderer;
   TPangoRenderPart = (
@@ -101,6 +105,9 @@ type
   );
 
 procedure pango_renderer_draw_layout(renderer: PPangoRenderer; layout: PPangoLayout; x, y: Integer); cdecl; external pangolib;
+procedure pango_matrix_translate(matrix: PPangoMatrix; tx, ty: double); cdecl; external pangolib;
+procedure pango_matrix_rotate(matrix: PPangoMatrix; degrees: double); cdecl; external pangolib;
+{$ENDIF}
 
 // ------------------end of symbold to remove --------------------------
 
@@ -109,8 +116,6 @@ procedure pango_context_set_base_gravity(Context: PPangoContext; gravity: TPango
 
 function pango_context_get_matrix(Context: PPangoContext): PPangoMatrix; cdecl; external pangolib;
 procedure pango_context_set_matrix(context: PPangoContext; const matrix: PPangoMatrix); cdecl; external pangolib;
-procedure pango_matrix_translate(matrix: PPangoMatrix; tx, ty: double); cdecl; external pangolib;
-procedure pango_matrix_rotate(matrix: PPangoMatrix; degrees: double); cdecl; external pangolib;
 
 function pango_font_description_get_gravity(desc: PPangoFontDescription): TPangoGravity; cdecl; external pangolib;
 procedure pango_font_description_set_gravity(desc: PPangoFontDescription; gravity: TPangoGravity); cdecl; external pangolib;
@@ -131,6 +136,8 @@ function pango_font_family_is_monospace(family:PPangoFontFamily):gboolean; cdecl
 // - - - - - - - - - gtk extras - - - - - - - - -
 
 // ----------------- this gtk symbols can be removed after fpc 2.2.4
+
+{$IF FPC_FULLVERSION<20600}
 // gtk 2.2
 function gtk_tree_path_new_from_indices(first_index: gint): PGtkTreePath; cdecl; varargs; external gtklib name 'gtk_tree_path_new_from_indices';
 
@@ -140,6 +147,7 @@ procedure gtk_event_box_set_visible_window(event_box: PGtkEventBox; visible_wind
 procedure gtk_event_box_set_above_child(event_box: PGtkEventBox; visible_window: gboolean); cdecl; external gtklib name 'gtk_event_box_set_above_child';
 procedure gtk_draw_insertion_cursor(widget:PGtkWidget; drawable:PGdkDrawable; area:PGdkRectangle; location:PGdkRectangle; is_primary:gboolean;
             direction:TGtkTextDirection; draw_arrow:gboolean); cdecl; external gtklib;
+{$ENDIF}
 
 // gtk 2.6
 type
@@ -172,6 +180,7 @@ procedure gtk_im_context_get_preedit_string_laz(context:PGtkIMContext; str:PPgch
 // - - - - - - - - - gdk extras - - - - - - - - -
 
 // ----------------- this gdk symbols can be removed after fpc 2.2.4
+{$IF FPC_FULLVERSION<20600}
 type
   PGdkPangoRenderer = pointer;
 // gdk 2.2
@@ -201,6 +210,7 @@ procedure gdk_pango_renderer_set_override_color(gdk_renderer: PGdkPangoRenderer;
 
 // gdk-pixbuf 2.6
 function gdk_pixbuf_flip(src: PGdkPixbuf; horizontal: gboolean): PGdkPixbuf; cdecl; external gdkpixbuflib;
+{$ENDIF}
 
 {$ifdef GTK_2_8}
 // gdk 2.8
@@ -219,7 +229,9 @@ const
 
 procedure gtk_menu_bar_set_pack_direction(menubar : PGtkMenuBar; pack_dir : TGtkPackDirection); cdecl; external gtklib;
 procedure gtk_menu_bar_set_child_pack_direction(menubar : PGtkMenuBar; pack_dir : TGtkPackDirection); cdecl; external gtklib;
+{$IF FPC_FULLVERSION<20600}
 procedure gtk_file_chooser_set_do_overwrite_confirmation(chooser:PGtkFileChooser; do_overwrite_confirmation:gboolean); cdecl; external gtklib;
+{$ENDIF}
 procedure gtk_icon_view_scroll_to_path(icon_view: PGtkIconView; path: PGtkTreePath; use_align: gboolean; row_align: gfloat; col_align: gfloat); cdecl; external gtklib;
 function gtk_icon_view_get_cursor(icon_view: PGtkIconView; var path: PGtkTreePath; var cell: PGtkCellRenderer): gboolean; cdecl; external gtklib;
 procedure gtk_icon_view_set_cursor(icon_view: PGtkIconView; path: PGtkTreePath; cell: PGtkCellRenderer; start_editing: gboolean); cdecl; external gtklib;
