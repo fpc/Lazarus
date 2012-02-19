@@ -15,7 +15,7 @@ object EditorFileManagerForm: TEditorFileManagerForm
     AnchorSideRight.Control = Panel1
     AnchorSideBottom.Control = ButtonPanel1
     Left = 3
-    Height = 298
+    Height = 305
     Top = 29
     Width = 533
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -31,8 +31,8 @@ object EditorFileManagerForm: TEditorFileManagerForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 41
-    Top = 333
+    Height = 34
+    Top = 340
     Width = 710
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -50,38 +50,39 @@ object EditorFileManagerForm: TEditorFileManagerForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 536
-    Height = 327
+    Height = 334
     Top = 0
     Width = 186
     Anchors = [akTop, akRight, akBottom]
-    ClientHeight = 327
+    ClientHeight = 334
     ClientWidth = 186
     TabOrder = 2
     object SelectAllCheckBox: TCheckBox
       AnchorSideLeft.Control = Panel1
-      AnchorSideLeft.Side = asrCenter
       AnchorSideTop.Side = asrBottom
-      Left = 29
-      Height = 20
+      Left = 7
+      Height = 17
       Top = 40
-      Width = 128
+      Width = 105
       BorderSpacing.Top = 21
-      BorderSpacing.Around = 11
+      BorderSpacing.Around = 6
       Caption = 'SelectAllCheckBox'
       OnClick = SelectAllCheckBoxClick
       TabOrder = 0
     end
     object SaveCheckedButton: TBitBtn
       AnchorSideLeft.Control = Panel1
-      AnchorSideLeft.Side = asrCenter
       AnchorSideTop.Control = SelectAllCheckBox
       AnchorSideTop.Side = asrBottom
-      Left = 46
-      Height = 25
-      Top = 71
-      Width = 94
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 7
+      Height = 23
+      Top = 63
+      Width = 172
+      Anchors = [akTop, akLeft, akRight]
       AutoSize = True
-      BorderSpacing.Around = 11
+      BorderSpacing.Around = 6
       Caption = 'Save Checked'
       Enabled = False
       OnClick = SaveCheckedButtonClick
@@ -89,15 +90,17 @@ object EditorFileManagerForm: TEditorFileManagerForm
     end
     object CloseCheckedButton: TBitBtn
       AnchorSideLeft.Control = Panel1
-      AnchorSideLeft.Side = asrCenter
       AnchorSideTop.Control = SaveCheckedButton
       AnchorSideTop.Side = asrBottom
-      Left = 45
-      Height = 25
-      Top = 107
-      Width = 97
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 7
+      Height = 23
+      Top = 92
+      Width = 172
+      Anchors = [akTop, akLeft, akRight]
       AutoSize = True
-      BorderSpacing.Around = 11
+      BorderSpacing.Around = 6
       Caption = 'Close Checked'
       Enabled = False
       OnClick = CloseCheckedButtonClick
@@ -110,7 +113,7 @@ object EditorFileManagerForm: TEditorFileManagerForm
       AnchorSideTop.Side = asrBottom
       Left = 82
       Height = 26
-      Top = 156
+      Top = 139
       Width = 22
       BorderSpacing.Top = 24
       Enabled = False
@@ -125,7 +128,7 @@ object EditorFileManagerForm: TEditorFileManagerForm
       AnchorSideTop.Side = asrBottom
       Left = 82
       Height = 26
-      Top = 189
+      Top = 172
       Width = 22
       BorderSpacing.Top = 7
       Enabled = False
@@ -151,8 +154,8 @@ object EditorFileManagerForm: TEditorFileManagerForm
       AnchorSideTop.Control = SortAlphabeticallyButton
       AnchorSideTop.Side = asrCenter
       Left = 76
-      Height = 24
-      Top = 2
+      Height = 21
+      Top = 4
       Width = 224
       ButtonWidth = 23
       NumGlyphs = 0
