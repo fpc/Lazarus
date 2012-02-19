@@ -359,6 +359,8 @@ type
 
   TLazSynEditPlugin = class(TSynEditFriend)
   protected
+    procedure BeforeEditorChange; virtual;
+    procedure AfterEditorChange; virtual;
     procedure RegisterToEditor(AValue: TCustomSynEdit);
     procedure UnRegisterFromEditor(AValue: TCustomSynEdit);
     procedure SetEditor(const AValue: TCustomSynEdit); virtual;
@@ -366,8 +368,8 @@ type
     function  OwnedByEditor: Boolean; virtual; // if true, this will be destroyed by synedit
     procedure DoEditorDestroyed(const AValue: TCustomSynEdit); virtual;
 
-    procedure DoAddEditor(AValue: TCustomSynEdit); virtual;
-    procedure DoRemoveEditor(AValue: TCustomSynEdit); virtual;
+    procedure DoEditorAdded(AValue: TCustomSynEdit); virtual;
+    procedure DoEditorRemoving(AValue: TCustomSynEdit); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -8670,6 +8672,22 @@ begin
   inherited Destroy;
 end;
 
+procedure TLazSynEditPlugin.BeforeEditorChange;
+begin
+  if (Editor <> nil) then begin
+    DoEditorRemoving(Editor);
+    UnRegisterFromEditor(Editor);
+  end;
+end;
+
+procedure TLazSynEditPlugin.AfterEditorChange;
+begin
+  if Editor <> nil then begin
+    RegisterToEditor(Editor);
+    DoEditorAdded(Editor);
+  end;
+end;
+
 procedure TLazSynEditPlugin.RegisterToEditor(AValue: TCustomSynEdit);
 begin
   if AValue.fPlugins <> nil then
@@ -8686,17 +8704,9 @@ procedure TLazSynEditPlugin.SetEditor(const AValue: TCustomSynEdit);
 begin
   if AValue = FriendEdit then exit;
 
-  if (FriendEdit <> nil) then begin
-    DoRemoveEditor(Editor);
-    UnRegisterFromEditor(Editor);
-  end;
-
+  BeforeEditorChange;
   FriendEdit := AValue;
-
-  if FriendEdit <> nil then begin
-    RegisterToEditor(Editor);
-    DoAddEditor(Editor);
-  end;
+  AfterEditorChange;
 end;
 
 function TLazSynEditPlugin.GetEditor: TCustomSynEdit;
@@ -8718,12 +8728,12 @@ begin
     Editor := nil;
 end;
 
-procedure TLazSynEditPlugin.DoAddEditor(AValue: TCustomSynEdit);
+procedure TLazSynEditPlugin.DoEditorAdded(AValue: TCustomSynEdit);
 begin
   //
 end;
 
-procedure TLazSynEditPlugin.DoRemoveEditor(AValue: TCustomSynEdit);
+procedure TLazSynEditPlugin.DoEditorRemoving(AValue: TCustomSynEdit);
 begin
   //
 end;

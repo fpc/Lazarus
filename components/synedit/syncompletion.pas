@@ -43,7 +43,7 @@ interface
 uses
   LCLProc, LCLIntf, LCLType, LMessages, Classes, Graphics, Forms,
   Controls, StdCtrls, ExtCtrls, Menus, SysUtils,
-  SynEditMiscProcs, SynEditKeyCmds, SynEdit, SynEditTypes;
+  SynEditMiscProcs, SynEditKeyCmds, SynEdit, SynEditTypes, SynEditPlugins;
 
 type
   TSynBaseCompletionPaintItem =
@@ -141,7 +141,6 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
     procedure Paint; override;
-    function Focused: Boolean; override;
     procedure AppDeactivated(Sender: TObject); // Because Form.Deactivate isn't called
     procedure Deactivate; override;
     procedure SelectPrec;
@@ -162,7 +161,7 @@ type
     procedure FontChanged(Sender: TObject); override;
     procedure WMMouseWheel(var Msg: TLMMouseEvent); message LM_MOUSEWHEEL;
   private
-    fCurrentEditor: TComponent;
+    FCurrentEditor: TCustomSynEdit; // Must only be set via TSynCompletion.SetEditor
     FDoubleClickSelects: Boolean;
     FDrawBorderWidth: Integer;
     FOnDragResized: TNotifyEvent;
@@ -170,12 +169,14 @@ type
     FOnPositionChanged: TNotifyEvent;
     FShowSizeDrag: Boolean;
     FHintLock: Integer;
-    procedure SetCurrentEditor(const AValue: TComponent);
+    procedure SetCurrentEditor(const AValue: TCustomSynEdit);
     procedure SetDrawBorderWidth(const AValue: Integer);
     procedure SetLongLineHintTime(const AValue: Integer);
     procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
     procedure SetShowSizeDrag(const AValue: Boolean);
   protected
+    procedure RegisterHandlers(EditOnly: Boolean = False);
+    procedure UnRegisterHandlers(EditOnly: Boolean = False);
     procedure SetVisible(Value: Boolean); override;
     property DrawBorderWidth: Integer read FDrawBorderWidth write SetDrawBorderWidth;
     procedure IncHintLock;
@@ -184,8 +185,11 @@ type
   public
     constructor Create(AOwner: Tcomponent); override;
     destructor Destroy; override;
+    function Focused: Boolean; override;
     procedure ShowItemHint(AIndex: Integer);
     procedure OnHintTimer(Sender: TObject);
+    // Must only be set via TSynCompletion.SetEditor
+    property CurrentEditor: TCustomSynEdit read FCurrentEditor;
   published
     property CurrentString: string read FCurrentString write SetCurrentString;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
@@ -202,7 +206,6 @@ type
       write SetNbLinesInWindow;
     property ClSelect: TColor read FClSelect write FClSelect;
     property CaseSensitive: boolean read FCaseSensitive write FCaseSensitive;
-    property CurrentEditor: TComponent read fCurrentEditor write SetCurrentEditor;
     property FontHeight:integer read FFontHeight;
     property OnSearchPosition:TSynBaseCompletionSearchPosition
       read FOnSearchPosition write FOnSearchPosition;
@@ -225,7 +228,7 @@ type
 
   { TSynBaseCompletion }
 
-  TSynBaseCompletion = class(TComponent)
+  TSynBaseCompletion = class(TLazSynMultiEditPlugin)
   private
     Form: TSynBaseCompletionForm;
     FAddedPersistentCaret: boolean;
@@ -281,7 +284,6 @@ type
     procedure SetOnKeyPrevChar(const AValue: TNotifyEvent);
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure Execute(s: string; x, y: integer); overload;
     procedure Execute(s: string; TopLeft: TPoint); overload;
     procedure Execute(s: string; TokenRect: TRect); overload; // Excute below or above the token // may be extended to adjust left corner too
@@ -333,47 +335,45 @@ type
   TSynCompletion = class(TSynBaseCompletion)
   private
     FShortCut: TShortCut;
-    fEditors: TList;
-    fEditstuffs: TList;
+    FExecCommandID: TSynEditorCommand;
     FEndOfTokenChr: string;
     FOnCodeCompletion: TCodeCompletionEvent;
-    procedure SetEditor(const Value: TCustomSynEdit);
     procedure backspace(Sender: TObject);
     procedure Cancel(Sender: TObject);
     procedure Validate(Sender: TObject; KeyChar: TUTF8Char; Shift: TShiftState);
-    procedure UTF8KeyPress(Sender: TObject; var Key: TUTF8Char);
-    procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure EditorKeyPress(Sender: TObject; var Key: char);
-    procedure EditorUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+    procedure UTF8KeyPress(Sender: TObject; var Key: TUTF8Char); // called by the form
     function GetPreviousToken(FEditor: TCustomSynEdit): string;
-    function GetFEditor: TCustomSynEdit;
-    function GetEditor(i: integer): TCustomSynEdit;
   protected
     procedure OnFormPaint(Sender: TObject);
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure SetEditor(const Value: TCustomSynEdit); override;
+    procedure DoEditorAdded(AValue: TCustomSynEdit); override;
+    procedure DoEditorRemoving(AValue: TCustomSynEdit); override; /////////////
     procedure SetShortCut(Value: TShortCut);
+    procedure TranslateKey(Sender: TObject; Code: word; SState: TShiftState;
+      var Data: pointer; var IsStartOfCombo: boolean; var Handled: boolean;
+      var Command: TSynEditorCommand; FinishComboOnly: Boolean;
+      var ComboKeyStrokes: TSynEditKeyStrokes);
+    procedure ProcessSynCommand(Sender: TObject; AfterProcessing: boolean;
+              var Handled: boolean; var Command: TSynEditorCommand;
+              var AChar: TUTF8Char; Data: pointer; HandlerData: pointer);
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    property Editors[i: integer]: TCustomSynEdit read GetEditor;
-    procedure AddEditor(aEditor: TCustomSynEdit);
-    function RemoveEditor(aEditor: TCustomSynEdit): boolean;
-    function EditorsCount: integer;
+    function EditorsCount: integer; deprecated; // use EditorCount
   published
     property ShortCut: TShortCut read FShortCut write SetShortCut;
-    property Editor: TCustomSynEdit read GetFEditor write SetEditor;
     property EndOfTokenChr: string read FEndOfTokenChr write FEndOfTokenChr;
     property OnCodeCompletion: TCodeCompletionEvent
       read FOnCodeCompletion write FOnCodeCompletion;
+    property ExecCommandID: TSynEditorCommand read FExecCommandID write FExecCommandID;
   end;
 
   { TSynAutoComplete }
 
   TSynAutoComplete = class(TComponent)
   private
+    fEditstuffs: TList;
     FShortCut: TShortCut;
     fEditors: TList;
-    fEditstuffs: TList;
     fAutoCompleteList: TStrings;
     FEndOfTokenChr: string;
     procedure SetAutoCompleteList(List: TStrings);
@@ -410,8 +410,15 @@ type
 
 procedure PrettyTextOut(c: TCanvas; x, y: integer; s: string);
 
+const
+  ecSynCompletionExecute   = ecPluginFirst +  0;
+
+  ecSynCompletionCount = 1;
 
 implementation
+
+var
+  KeyOffset: integer;
 
 { TSynBaseCompletionFormSizeDrag }
 
@@ -588,6 +595,7 @@ end;
 
 destructor TSynBaseCompletionForm.Destroy;
 begin
+  UnRegisterHandlers;
   FreeAndNil(Scroll);
   FreeAndNil(SizeDrag);
   FItemList.Free;
@@ -1069,15 +1077,30 @@ begin
   SizeDrag.Visible := AValue;
 end;
 
-procedure TSynBaseCompletionForm.SetCurrentEditor(const AValue: TComponent);
+procedure TSynBaseCompletionForm.RegisterHandlers(EditOnly: Boolean);
 begin
-  if fCurrentEditor = AValue then exit;
-  if fCurrentEditor <> nil then
-    TCustomSynEdit(fCurrentEditor).UnRegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged);
-  fCurrentEditor := AValue;
-  if (fCurrentEditor <> nil) and Visible then
-    TCustomSynEdit(fCurrentEditor).RegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged,
-                                                          [scTopLine]);
+  if FCurrentEditor <> nil then
+    FCurrentEditor.RegisterStatusChangedHandler
+    ({$IFDEF FPC}@{$ENDIF}EditorStatusChanged, [scTopLine]);
+  if not EditOnly then
+    Application.AddOnDeactivateHandler({$IFDEF FPC}@{$ENDIF}AppDeactivated);
+end;
+
+procedure TSynBaseCompletionForm.UnRegisterHandlers(EditOnly: Boolean);
+begin
+  if FCurrentEditor <> nil then
+    FCurrentEditor.UnRegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged);
+  if not EditOnly then
+    Application.RemoveOnDeactivateHandler({$IFDEF FPC}@{$ENDIF}AppDeactivated);
+end;
+
+procedure TSynBaseCompletionForm.SetCurrentEditor(const AValue: TCustomSynEdit);
+begin
+  if FCurrentEditor = AValue then exit;
+  UnRegisterHandlers(True);
+  FCurrentEditor := AValue;
+  if Visible then
+    RegisterHandlers(True);
 end;
 
 procedure TSynBaseCompletionForm.SetDrawBorderWidth(const AValue: Integer);
@@ -1099,17 +1122,11 @@ procedure TSynBaseCompletionForm.SetVisible(Value: Boolean);
 begin
   if Visible = Value then exit;;
   inherited SetVisible(Value);
-  if (fCurrentEditor <> nil) then begin
-    if Visible then
-      TCustomSynEdit(fCurrentEditor).RegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged,
-                                                            [scTopLine])
-    else
-      TCustomSynEdit(fCurrentEditor).UnRegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged);
-  end;
+
   if Value then
-    Application.AddOnDeactivateHandler({$IFDEF FPC}@{$ENDIF}AppDeactivated)
+    RegisterHandlers
   else
-    Application.RemoveOnDeactivateHandler({$IFDEF FPC}@{$ENDIF}AppDeactivated);
+    UnRegisterHandlers;
 end;
 
 procedure TSynBaseCompletionForm.IncHintLock;
@@ -1184,12 +1201,6 @@ begin
   inherited Create(AOwner);
   Form := TSynBaseCompletionForm.Create(Self);
   Form.Width := FWidth;
-end;
-
-destructor TSynBaseCompletion.Destroy;
-begin
-  Form.Free;
-  inherited Destroy;
 end;
 
 function TSynBaseCompletion.GetOnUTF8KeyPress: TUTF8KeyPressEvent;
@@ -1683,21 +1694,6 @@ begin
   end;
 end;
 
-procedure TSynCompletion.SetEditor(const Value: TCustomSynEdit);
-begin
-  AddEditor(Value);
-  Form.FCurrentEditor:=Value;
-end;
-
-procedure TSynCompletion.Notification(AComponent: TComponent;
-  Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (fEditors <> nil) then
-    if (fEditors.IndexOf(AComponent) > -1) then
-      RemoveEditor(AComponent as TCustomSynEdit);
-end;
-
 constructor TSynCompletion.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1707,9 +1703,8 @@ begin
   Form.OnCancel := {$IFDEF FPC}@{$ENDIF}Cancel;
   Form.OnPaint:=@OnFormPaint;
   FEndOfTokenChr := '()[].';
-  fEditors := TList.Create;
-  fEditstuffs := TList.Create;
   fShortCut := Menus.ShortCut(Ord(' '), [ssCtrl]);
+  FExecCommandID := KeyOffset + ecSynCompletionExecute;
 end;
 
 procedure TSynCompletion.SetShortCut(Value: TShortCut);
@@ -1717,39 +1712,50 @@ begin
   FShortCut := Value;
 end;
 
-procedure TSynCompletion.EditorKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
+procedure TSynCompletion.TranslateKey(Sender: TObject; Code: word; SState: TShiftState;
+  var Data: pointer; var IsStartOfCombo: boolean; var Handled: boolean;
+  var Command: TSynEditorCommand; FinishComboOnly: Boolean;
+  var ComboKeyStrokes: TSynEditKeyStrokes);
 var
-  p: TPoint;
   i: integer;
   ShortCutKey: Word;
   ShortCutShift: TShiftState;
 begin
-  if Key=VK_UNKNOWN then exit;
-  //debugln('TSynCompletion.EditorKeyDown A ',dbgs(Key));
-  if (Form<>nil) and Form.Visible then begin
-    // completion form is visible, but the synedit got a key
-    // -> redirect to form
-    Form.KeyDown(Key,Shift);
-    //debugln('TSynCompletion.EditorKeyDown B ',dbgs(Key));
+  if (Code = VK_UNKNOWN) or Handled or FinishComboOnly or (FExecCommandID = ecNone) then exit;
+
+  i := IndexOfEditor(Sender as TCustomSynEdit);
+  if i >= 0 then begin
+    ShortCutToKey(FShortCut, ShortCutKey, ShortCutShift);
+    if (SState = ShortCutShift) and (Code = ShortCutKey) then begin
+      Command := FExecCommandID;
+      Handled := True;
+    end;
   end;
 
-  i := fEditors.IndexOf(Sender);
-  if i <> -1 then begin
-    ShortCutToKey(FShortCut, ShortCutKey, ShortCutShift);
-    if (Shift = ShortCutShift) and (Key = ShortCutKey) then
+end;
+
+procedure TSynCompletion.ProcessSynCommand(Sender: TObject; AfterProcessing: boolean;
+  var Handled: boolean; var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
+  HandlerData: pointer);
+var
+  p: TPoint;
+  i: integer;
+begin
+  if Handled or (Command <> FExecCommandID) then
+    exit;
+
+  i := IndexOfEditor(Sender as TCustomSynEdit);
+  if i >= 0 then begin
     with sender as TCustomSynEdit do begin
-      if not ReadOnly and (Shift = ShortCutShift) and (Key = ShortCutKey) then begin
+      if not ReadOnly then begin
         p := ClientToScreen(Point(CaretXPix, CaretYPix + LineHeight + 1));
-        Form.CurrentEditor := Sender as TCustomSynEdit;
+        Editor := Sender as TCustomSynEdit; // Will set Form.SetCurrentEditor
         Execute(GetPreviousToken(Sender as TCustomSynEdit), p.x, p.y);
-        // eat it
-        Key := VK_UNKNOWN;
+        Handled := True;
       end;
     end;
-    if Assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).KeyDown) then
-      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).KeyDown(sender, key, shift);
   end;
+
 end;
 
 function TSynCompletion.GetPreviousToken(FEditor: TCustomSynEdit): string;
@@ -1774,95 +1780,35 @@ begin
     result := '';
 end;
 
-procedure TSynCompletion.EditorKeyPress(Sender: TObject; var Key: char);
+procedure TSynCompletion.DoEditorAdded(AValue: TCustomSynEdit);
+begin
+  inherited DoEditorAdded(AValue);
+
+  AValue.RegisterCommandHandler(@ProcessSynCommand, nil);
+  AValue.RegisterKeyTranslationHandler(@TranslateKey);
+end;
+
+procedure TSynCompletion.DoEditorRemoving(AValue: TCustomSynEdit);
 var
-  i: integer;
+  i: Integer;
 begin
-  //debugln(['TSynCompletion.EditorKeyPress ']);
-  i := fEditors.IndexOf(Sender);
-  if i <> -1 then begin
-    if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).KeyPress) then
-      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).KeyPress(sender, key);
-  end;
+  inherited DoEditorRemoving(AValue);
+  if Form.CurrentEditor = AValue then
+    Form.SetCurrentEditor(nil);
+
+  AValue.UnregisterCommandHandler(@ProcessSynCommand);
+  AValue.UnRegisterKeyTranslationHandler(@TranslateKey);
 end;
 
-procedure TSynCompletion.EditorUTF8KeyPress(Sender: TObject;
-  var UTF8Key: TUTF8Char);
-var
-  i: integer;
+procedure TSynCompletion.SetEditor(const Value: TCustomSynEdit);
 begin
-  //debugln(['TSynCompletion.EditorUTF8KeyPress ']);
-  i := fEditors.IndexOf(Sender);
-  if i <> -1 then begin
-    if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).UTF8KeyPress) then
-      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).UTF8KeyPress(sender,UTF8Key);
-  end;
-end;
-
-destructor TSynCompletion.Destroy;
-begin
-  // necessary to get Notification called before fEditors is freed
-  Form.Free;
-  Form := nil;
-  while fEditors.Count <> 0 do
-    RemoveEditor(TCustomSynEdit(fEditors.last));
-  FreeAndNil(fEditors);
-  FreeAndNil(fEditstuffs);
-  inherited;
-end;
-
-function TSynCompletion.GetFEditor: TCustomSynEdit;
-begin
-  Result:=TCustomSynEdit(Form.fCurrentEditor);
-end;
-
-procedure TSynCompletion.AddEditor(aEditor: TCustomSynEdit);
-var
-  p: PRecordUsedToStoreEachEditorVars;
-begin
-  if fEditors.IndexOf(aEditor) = -1 then begin
-    fEditors.Add(aEditor);
-    new(p);
-    p^.KeyPress := aEditor.OnKeyPress;
-    p^.UTF8KeyPress := aEditor.OnUTF8KeyPress;
-    p^.KeyDown := aEditor.OnKeyDown;
-    fEditstuffs.add(p);
-    aEditor.FreeNotification(self);
-    if not (csDesigning in ComponentState) then begin
-      aEditor.OnKeyDown := {$IFDEF FPC}@{$ENDIF}EditorKeyDown;
-      aEditor.OnKeyPress := {$IFDEF FPC}@{$ENDIF}EditorKeyPress;
-      aEditor.OnUTF8KeyPress := {$IFDEF FPC}@{$ENDIF}EditorUTF8KeyPress;
-    end;
-  end;
+  inherited SetEditor(Value);
+  Form.SetCurrentEditor(Value);
 end;
 
 function TSynCompletion.EditorsCount: integer;
 begin
-  result := fEditors.count;
-end;
-
-function TSynCompletion.GetEditor(i: integer): TCustomSynEdit;
-begin
-  if (i < 0) or (i >= EditorsCount) then
-    result := nil
-  else
-    result := TCustomSynEdit(fEditors[i]);
-end;
-
-function TSynCompletion.RemoveEditor(aEditor: TCustomSynEdit): boolean;
-var
-  i: integer;
-  P : PRecordUsedToStoreEachEditorVars;
-begin
-  i := fEditors.Remove(aEditor);
-  result := i <> -1;
-  if result then
-  begin
-    p := fEditStuffs[i];  //shane
-    dispose(p);           //shane
-//    dispose(fEditstuffs[i]);  //commented out by shane
-    fEditstuffs.delete(i);
-  end;
+  result := EditorCount;
 end;
 
 { TSynAutoComplete }
@@ -2183,6 +2129,9 @@ begin
   else
     Result := Rect(0, 0, Canvas.TextWidth(AHint) + 4, FCompletionForm.FontHeight);
 end;
+
+initialization
+  KeyOffset    := AllocatePluginKeyRange(ecSynCompletionCount, True);
 
 end.
 

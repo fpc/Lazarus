@@ -202,8 +202,8 @@ type
     procedure SetShortCut(const Index: Integer; const Value: TShortCut);
     function GetIsEmpty: boolean;
     procedure StateChanged;
-    procedure DoAddEditor(aEditor: TCustomSynEdit); override;
-    procedure DoRemoveEditor(aEditor: TCustomSynEdit); override;
+    procedure DoEditorAdded(aEditor: TCustomSynEdit); override;
+    procedure DoEditorRemoving(aEditor: TCustomSynEdit); override;
     procedure OnCommand(Sender: TObject; AfterProcessing: boolean;
       var Handled: boolean; var Command: TSynEditorCommand;
       var aChar: TUTF8Char;
@@ -431,7 +431,7 @@ begin
   inherited;
 end;
 
-procedure TCustomSynMacroRecorder.DoAddEditor(aEditor: TCustomSynEdit);
+procedure TCustomSynMacroRecorder.DoEditorAdded(aEditor: TCustomSynEdit);
 begin
   if (RecordCommandID <> ecNone) and (RecordShortCut <> 0) then
     HookEditor( aEditor, RecordCommandID, 0, RecordShortCut, []);
@@ -443,7 +443,7 @@ begin
   aEditor.RegisterCommandHandler( {$IFDEF FPC}@{$ENDIF}OnFinishCommand, Self, [hcfFinish]);
 end;
 
-procedure TCustomSynMacroRecorder.DoRemoveEditor(aEditor: TCustomSynEdit);
+procedure TCustomSynMacroRecorder.DoEditorRemoving(aEditor: TCustomSynEdit);
 begin
   if RecordCommandID <> ecNone then
     UnHookEditor( aEditor, RecordCommandID, RecordShortCut );
@@ -779,7 +779,7 @@ var
   c: TSynEditorCommand;
 begin
   c := GetCommandIDs(ord(ACmd));
-  if (not Assigned(fEditors)) or (c = ecNone) then
+  if (c = ecNone) then
     exit;
 
   if fShortCuts[ACmd] = 0 then begin
@@ -787,7 +787,7 @@ begin
     exit;
   end;
 
-  for cEditor := 0 to fEditors.Count -1 do
+  for cEditor := 0 to EditorCount -1 do
     HookEditor(Editors[cEditor], c, AnOldShortCut, fShortCuts[ACmd], []);
 end;
 
@@ -797,10 +797,10 @@ var
   cEditor: Integer;
 begin
   c := GetCommandIDs(ord(ACmd));
-  if (not Assigned(fEditors)) or (c = ecNone) then
+  if (c = ecNone) then
     exit;
 
-  for cEditor := 0 to fEditors.Count -1 do
+  for cEditor := 0 to EditorCount -1 do
     UnHookEditor(Editors[cEditor], c, fShortCuts[ACmd]);
 end;
 

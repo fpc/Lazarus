@@ -50,16 +50,27 @@ type
 
   TLazSynMultiEditPlugin = class(TLazSynEditPlugin)
   private
+    FEditors: TList;
     FEditorWasAdded: Boolean;
     function GetEditorCount: integer;
     function GetEditors(aIndex: integer): TCustomSynEdit;
   protected
-    FEditors: TList;
-    procedure SetEditor(const AValue: TCustomSynEdit); override;
-    procedure DoEditorDestroyed(const AValue: TCustomSynEdit); override;
     function  IndexOfEditor(const AValue: TCustomSynEdit): integer;
+    procedure BeforeEditorChange; override;
+    procedure AfterEditorChange; override;
+    function  DoRemoveEditor(AValue: TCustomSynEdit): integer;
+    procedure DoEditorDestroyed(const AValue: TCustomSynEdit); override;
   public
     destructor Destroy; override;
+    (* Add/RemoveEditor versus Editor
+       Unless stated otherwise Plugins inherting from TLazSynMultiEditPlugin can
+       either use Add/RemoveEditor or Editor (single-editor-property).
+       If Editors are added via AddEditor, then an Editor only set via "Editor:="
+       may be lost/ignored.
+       If using AddEditor, the "Editor" property may be used to set/read the
+       current Editor (out of those in the list). This does however depend on the
+       inherited class.
+    *)
     function  AddEditor(AValue: TCustomSynEdit): integer;
     function  RemoveEditor(AValue: TCustomSynEdit): integer;
     property Editors[aIndex: integer]: TCustomSynEdit read GetEditors;
@@ -92,8 +103,8 @@ type
     fCurrentEditor: TCustomSynEdit;
     fShortCut: TShortCut;
     class function DefaultShortCut: TShortCut; virtual;
-    procedure DoAddEditor(aEditor: TCustomSynEdit); override;
-    procedure DoRemoveEditor(aEditor: TCustomSynEdit); override;
+    procedure DoEditorAdded(aEditor: TCustomSynEdit); override;
+    procedure DoEditorRemoving(aEditor: TCustomSynEdit); override;
     {}
     procedure DoExecute; virtual; abstract;
     procedure DoAccept; virtual; abstract;
@@ -165,46 +176,54 @@ begin
     Result := TCustomSynEdit(FEditors[aIndex]);
 end;
 
-procedure TLazSynMultiEditPlugin.SetEditor(const AValue: TCustomSynEdit);
-var
-  i: Integer;
-begin
-  if AValue = FriendEdit then exit;
-
-  if (not FEditorWasAdded) and (Editor <> nil) then
-    RemoveEditor(Editor);
-
-  FEditorWasAdded := False;
-  i := IndexOfEditor(AValue);
-
-  if (i < 0) then
-    inherited SetEditor(nil)
-  else
-    FriendEdit := nil; // keep registered / do not call EditorRemoved
-
-  if AValue = nil then
-    exit;
-
-  FEditorWasAdded := i >= 0;
-
-  if not FEditorWasAdded then
-    inherited SetEditor(AValue)
-  else
-    FriendEdit := AValue; // alreade registered / do not call EditorAdded
-end;
-
-procedure TLazSynMultiEditPlugin.DoEditorDestroyed(const AValue: TCustomSynEdit);
-begin
-  RemoveEditor(AValue);
-  inherited DoEditorDestroyed(AValue);
-end;
-
 function TLazSynMultiEditPlugin.IndexOfEditor(const AValue: TCustomSynEdit): integer;
 begin
   if FEditors = nil then
     Result := -1
   else
     Result := FEditors.IndexOf(AValue);
+end;
+
+procedure TLazSynMultiEditPlugin.BeforeEditorChange;
+begin
+  if (Editor = nil) or FEditorWasAdded then
+    exit;
+
+  // Current Editor was not explicitly added by user via "AddEditor"
+  DoRemoveEditor(Editor);
+end;
+
+procedure TLazSynMultiEditPlugin.AfterEditorChange;
+begin
+  if (Editor = nil) then
+    exit;
+  FEditorWasAdded := IndexOfEditor(Editor) >= 0;
+  if FEditorWasAdded  then
+    exit;
+
+  // Current Editor was not explicitly added by user via "AddEditor"
+  // Temporary add it
+  AddEditor(Editor);
+  FEditorWasAdded := False; // Reset Flag, after AddEditor
+end;
+
+function TLazSynMultiEditPlugin.DoRemoveEditor(AValue: TCustomSynEdit): integer;
+begin
+  if IndexOfEditor(AValue) < 0 then begin
+    Result := -1;
+    Exit;
+  end;
+
+  DoEditorRemoving(AValue);
+  UnRegisterFromEditor(AValue);
+  Result := FEditors.Remove(AValue);
+end;
+
+procedure TLazSynMultiEditPlugin.DoEditorDestroyed(const AValue: TCustomSynEdit);
+begin
+  RemoveEditor(AValue);
+  if EditorCount = 0 then
+    inherited DoEditorDestroyed(nil); // Editor is nil now, so pass nil as param too
 end;
 
 function TLazSynMultiEditPlugin.AddEditor(AValue: TCustomSynEdit): integer;
@@ -219,28 +238,17 @@ begin
 
   if FEditors = nil then
     FEditors := TList.Create;
-
   Result := FEditors.Add(AValue);
   RegisterToEditor(AValue);
-  DoAddEditor( AValue );
+  DoEditorAdded(AValue);
 end;
 
 function TLazSynMultiEditPlugin.RemoveEditor(AValue: TCustomSynEdit): integer;
 begin
   if AValue = Editor then
-    FEditorWasAdded := False;
-
-  if IndexOfEditor(AValue) < 0 then begin
-    Result := -1;
-    Exit;
-  end;
+    Editor := nil;
 
   DoRemoveEditor(AValue);
-  UnRegisterFromEditor(AValue);
-  Result := FEditors.Remove( AValue );
-
-  if AValue = Editor then
-    FriendEdit := nil;
 end;
 
 destructor TLazSynMultiEditPlugin.Destroy;
@@ -355,7 +363,7 @@ begin
   inherited;
 end;
 
-procedure TAbstractSynSingleHookPlugin.DoAddEditor(
+procedure TAbstractSynSingleHookPlugin.DoEditorAdded(
   aEditor: TCustomSynEdit);
 begin
   if ShortCut <> 0 then
@@ -388,7 +396,7 @@ begin
   Result := fShortCut <> DefaultShortCut;
 end;
 
-procedure TAbstractSynSingleHookPlugin.DoRemoveEditor(aEditor: TCustomSynEdit);
+procedure TAbstractSynSingleHookPlugin.DoEditorRemoving(aEditor: TCustomSynEdit);
 begin
   if ShortCut <> 0 then
     UnHookEditor( aEditor, CommandID, ShortCut );
