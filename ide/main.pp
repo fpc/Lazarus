@@ -2159,7 +2159,7 @@ begin
   IDECmdScopeSrcEditOnlySyncroEdit.AddWindowClass(TLazSynPluginSyncroEditForm);
   IDECmdScopeSrcEditOnlySyncroEditOff.AddWindowClass(TLazSynPluginSyncroEditFormOff);
 
-  EditorOpts.KeyMap.CreateDefaultMapping;
+  EditorOpts.KeyMap.DefineCommandCategories;
 end;
 
 procedure TMainIDE.SetupIDEMsgQuickFixItems;

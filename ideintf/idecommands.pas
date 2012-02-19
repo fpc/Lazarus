@@ -47,7 +47,7 @@ const
      1. Add a constant with a unique value in the list below.
      2. Add it to GetDefaultKeyForCommand to define the default keys+shiftstates
      3. Add it to EditorCommandToDescriptionString to define the description
-     4. Add it to TKeyCommandRelationList.CreateDefaultMapping to define the category.
+     4. Add it to TKeyCommandRelationList.DefineCommandCategories to define the category.
   }
   ecNone                    = 0;
   

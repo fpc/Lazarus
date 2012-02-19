@@ -147,7 +147,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure CreateDefaultMapping;
+    procedure DefineCommandCategories;
     procedure Clear;
     function Count: integer;
     function CategoryCount: integer; override;
@@ -2390,7 +2390,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TKeyCommandRelationList.CreateDefaultMapping;
+procedure TKeyCommandRelationList.DefineCommandCategories;
 // Define a category for each command
 var
   C: TIDECommandCategory;
