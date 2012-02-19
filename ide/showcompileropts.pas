@@ -88,7 +88,7 @@ begin
   CmdLineGroupBox.Caption:=dlgCommandLineParameters;
   Self.Caption:=dlgCompilerOptions;
   RelativePathsCheckBox.Caption:=lisRelativePaths;
-  CloseButton.Caption:=lisClose;
+  CloseButton.Caption:=lisBtnClose;
 end;
 
 procedure TShowCompilerOptionsDlg.SetCompilerOpts(

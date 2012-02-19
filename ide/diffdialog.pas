@@ -271,9 +271,9 @@ begin
 
   // buttons
   CancelScanningButton.LoadGlyphFromLazarusResource('btn_cancel');
-  CloseButton.Caption:=lisMenuClose;
+  CloseButton.Caption:=lisClose;
   OpenInEditorButton.Caption:=lisDiffDlgOpenDiffInEditor;
-  SaveDiffButton.Caption:=lisSave;
+  SaveDiffButton.Caption:=lisDlgSave;
   HelpButton.Caption:=lisMenuHelp;
 
   OpenInEditorButton.LoadGlyphFromStock(idButtonOpen);

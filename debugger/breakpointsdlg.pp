@@ -337,19 +337,19 @@ begin
   actDisableSelected.Hint    := lisDbgItemDisableHint;
   actDisableSelected.ImageIndex := IDEImages.LoadImage(16, 'debugger_disable');
 
-  actDeleteSelected.Caption := liswlDelete; //lisDbgItemDelete;
+  actDeleteSelected.Caption := lisBtnDelete;
   actDeleteSelected.Hint    := lisDbgItemDeleteHint;
   actDeleteSelected.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
 
-  actEnableAll.Caption := lisEnableAll; //lisDbgAllItemEnable;
+  actEnableAll.Caption := lisEnableAll;
   actEnableAll.Hint    := lisDbgAllItemEnableHint;
   actEnableAll.ImageIndex := IDEImages.LoadImage(16, 'debugger_enable_all');
 
-  actDisableAll.Caption := liswlDIsableAll; //lisDbgAllItemDisable;
+  actDisableAll.Caption := liswlDIsableAll;
   actDisableAll.Hint    := lisDbgAllItemDisableHint;
   actDisableAll.ImageIndex := IDEImages.LoadImage(16, 'debugger_disable_all');
 
-  actDeleteAll.Caption := lisDeleteAll; //lisDbgAllItemDelete;
+  actDeleteAll.Caption := lisDeleteAll;
   actDeleteAll.Hint    := lisDbgAllItemDeleteHint;
   actDeleteAll.ImageIndex := IDEImages.LoadImage(16, 'menu_clean');
 
@@ -357,7 +357,7 @@ begin
   actProperties.Hint := lisDbgBreakpointPropertiesHint;
   actProperties.ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
 
-  actToggleCurrentEnable.Caption:= liswlEnabled;
+  actToggleCurrentEnable.Caption:= lisBtnEnabled;
 
   actEnableAllInSrc.Caption:= lisEnableAllInSameSource;
   actDisableAllInSrc.Caption:= lisDisableAllInSameSource;

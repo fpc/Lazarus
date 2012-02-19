@@ -274,7 +274,7 @@ begin
   OpenXMLButton.Enabled:=false;
   SaveButton.Caption := '';
   SaveButton.Enabled:=false;
-  SaveButton.Hint:=lisHintSave;
+  SaveButton.Hint:=lisSave;
   SaveButton.ShowHint:=true;
 
   BrowseExampleButton.Caption := lisCodeHelpBrowseExampleButton;

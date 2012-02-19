@@ -192,10 +192,10 @@ begin
   actPower.Caption := lisDbgWinPower;
   actPower.Hint := lisDbgWinPowerHint;
 
-  actAddWatch.Caption:=liswlAdd;
+  actAddWatch.Caption:=lisBtnAdd;
   actAddWatch.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
 
-  actToggleCurrentEnable.Caption := liswlEnabled;
+  actToggleCurrentEnable.Caption := lisBtnEnabled;
 
   actEnableSelected.Caption := lisDbgItemEnable;
   actEnableSelected.Hint    := lisDbgItemEnableHint;
@@ -205,7 +205,7 @@ begin
   actDisableSelected.Hint    := lisDbgItemDisableHint;
   actDisableSelected.ImageIndex := IDEImages.LoadImage(16, 'debugger_disable');
 
-  actDeleteSelected.Caption := liswlDelete; //lisDbgItemDelete;
+  actDeleteSelected.Caption := lisBtnDelete;
   actDeleteSelected.Hint    := lisDbgItemDeleteHint;
   actDeleteSelected.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
 

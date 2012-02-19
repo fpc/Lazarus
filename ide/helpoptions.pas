@@ -102,7 +102,7 @@ end;
 
 class function THelpOptions.GetGroupCaption: string;
 begin
-  Result := dlgGroupHelp;
+  Result := lisHelp;
 end;
 
 class function THelpOptions.GetInstance: TAbstractIDEOptions;

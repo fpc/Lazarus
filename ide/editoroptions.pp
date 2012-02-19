@@ -535,7 +535,7 @@ const
 
   EditorOptionsFoldInfoDiff: Array [0..2] of TEditorOptionsFoldInfo
   = (
-      ( Name:    dlgFoldDiffFile;
+      ( Name:    lisFile;
         Xml:    'File';
         Index:   ord(cfbtDiffFile);
         Enabled: True
@@ -1779,7 +1779,7 @@ begin
   EditorOptionsFoldInfoXML[3].Name := dlgFoldXmlDocType;
   EditorOptionsFoldInfoXML[4].Name := dlgFoldXmlProcess;
 
-  EditorOptionsFoldInfoDiff[0].Name := dlgFoldDiffFile;
+  EditorOptionsFoldInfoDiff[0].Name := lisFile;
   EditorOptionsFoldInfoDiff[1].Name := dlgFoldDiffChunk;
   EditorOptionsFoldInfoDiff[2].Name := dlgFoldDiffChunkSect;
 

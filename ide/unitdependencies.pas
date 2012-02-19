@@ -422,10 +422,10 @@ begin
 
   RefreshHistoryList;
 
-  SelectUnitButton.Caption:=dlgUnitDepBrowse;
+  SelectUnitButton.Caption:=lisOpen;
   RefreshButton.Caption:=dlgUnitDepRefresh;
   ShowProjectButton.Caption:=dlgEnvProject;
-  CloseButton.Caption:=lisClose;
+  CloseButton.Caption:=lisBtnClose;
   UnitTreeView.Images := IDEImages.Images_16;
   ToolBar.Images := IDEImages.Images_16;
   ShowProjectButton.ImageIndex := IDEImages.LoadImage(16, 'item_project');

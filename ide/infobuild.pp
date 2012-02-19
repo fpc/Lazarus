@@ -246,7 +246,7 @@ procedure TCompileInfoDlg.SetCanClose;
 begin
   ToAbort        := False;
   BClose.Kind    := bkOk;
-  BClose.Caption := lisMenuClose;
+  BClose.Caption := lisClose;
   if cbAutoCloseOnSuccess.Checked and (NErrors = 0) then
     tmrCloseForm.Enabled := True;
 end;

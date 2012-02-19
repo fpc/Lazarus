@@ -998,14 +998,14 @@ begin
       case TemplateMenuForm.GetSelectedMenuTemplate of
       1: Begin
            // Change a caption of selected designermenuitem fo "File"
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateFile);
+           ChangeCaption (temp_designermenuitem, lisFile);
            UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
            
            // Add an submenu with first item and set it's caption to "New"
            SelectedDesignerMenuItem:=temp_designermenuitem.ID;
            AddSubMenuClick(self);
            temp_designermenuitem:=temp_designermenuitem.SubMenu;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateNew);
+           ChangeCaption (temp_designermenuitem, lisNew);
            UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
            
            // Add new separator
@@ -1019,7 +1019,7 @@ begin
            SelectedDesignerMenuItem:=temp_designermenuitem.ID;
            AddNewItemAfterClick(self);
            temp_designermenuitem:=temp_designermenuitem.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateOpen);
+           ChangeCaption (temp_designermenuitem, lisOpen);
            UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
            
            // Add new item and set it's caption to "Open Recent"
@@ -1033,21 +1033,21 @@ begin
            SelectedDesignerMenuItem:=temp_designermenuitem.ID;
            AddNewItemAfterClick(self);
            temp_designermenuitem:=temp_designermenuitem.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateSave);
+           ChangeCaption (temp_designermenuitem, lisSave);
            UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
            
            // Add new item and set it's caption to "Save As"
            SelectedDesignerMenuItem:=temp_designermenuitem.ID;
            AddNewItemAfterClick(self);
            temp_designermenuitem:=temp_designermenuitem.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateSaveAs);
+           ChangeCaption (temp_designermenuitem, lisSaveAs);
            UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
            
            // Add new item and set it's caption to "Close"
            SelectedDesignerMenuItem:=temp_designermenuitem.ID;
            AddNewItemAfterClick(self);
            temp_designermenuitem:=temp_designermenuitem.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateClose);
+           ChangeCaption (temp_designermenuitem, lisClose);
            UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
 
            // Add new separator
@@ -1061,7 +1061,7 @@ begin
            SelectedDesignerMenuItem:=temp_designermenuitem.ID;
            AddNewItemAfterClick(self);
            temp_designermenuitem:=temp_designermenuitem.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateExit);
+           ChangeCaption (temp_designermenuitem, lisExit);
            UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
          end;
       2: begin
@@ -1134,7 +1134,7 @@ begin
          end;
       3: begin
            // Change a caption of selected designermenuitem fo "Help"
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateHelp);
+           ChangeCaption (temp_designermenuitem, lisHelp);
            UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
 
            // Add an submenu with first item and set it's caption to "Contents"
@@ -2117,16 +2117,16 @@ begin
   begin
     case default_template of
     1: begin
-         ListBoxView.Items.Add(lisMenuTemplateFile);
-         ListBoxView.Items.Add(' ' + lisMenuTemplateNew);
+         ListBoxView.Items.Add(lisFile);
+         ListBoxView.Items.Add(' ' + lisNew);
          ListBoxView.Items.Add(' -');
-         ListBoxView.Items.Add(' ' + lisMenuTemplateOpen);
+         ListBoxView.Items.Add(' ' + lisOpen);
          ListBoxView.Items.Add(' ' + lisMenuTemplateOpenRecent);
-         ListBoxView.Items.Add(' ' + lisMenuTemplateSave);
-         ListBoxView.Items.Add(' ' + lisMenuTemplateSaveAs);
-         ListBoxView.Items.Add(' ' + lisMenuTemplateClose);
+         ListBoxView.Items.Add(' ' + lisSave);
+         ListBoxView.Items.Add(' ' + lisSaveAs);
+         ListBoxView.Items.Add(' ' + lisClose);
          ListBoxView.Items.Add(' -');
-         ListBoxView.Items.Add(' ' + lisMenuTemplateExit);
+         ListBoxView.Items.Add(' ' + lisExit);
        end;
     2: begin
          ListBoxView.Items.Add(lisEdit);
@@ -2141,7 +2141,7 @@ begin
          ListBoxView.Items.Add(' ' + lisMenuTemplateFindNext);
        end;
     3: begin
-         ListBoxView.Items.Add(lisMenuTemplateHelp);
+         ListBoxView.Items.Add(lisHelp);
          ListBoxView.Items.Add(' ' + lisMenuTemplateContents);
          ListBoxView.Items.Add(' ' + lisMenuTemplateTutorial);
          ListBoxView.Items.Add(' -');

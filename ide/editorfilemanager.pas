@@ -91,7 +91,7 @@ begin
   // Captions
   Caption:=lisEditorWindowManager;
   ActivateMenuItem.Caption:=lisActivate;
-  CloseMenuItem.Caption:=lisMenuClose;
+  CloseMenuItem.Caption:=lisClose;
   SelectAllCheckBox.Caption:=lisCheckAll;
   SaveCheckedButton.Caption:=lisSaveAllChecked;
   CloseCheckedButton.Caption:=lisCloseAllChecked;

@@ -189,7 +189,7 @@ begin
 
   LoadContributors;
   LoadAcknowledgements;
-  CloseButton.Caption:=lisClose;
+  CloseButton.Caption:=lisBtnClose;
 end;
 
 procedure TAboutForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);

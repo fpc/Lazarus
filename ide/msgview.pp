@@ -271,7 +271,7 @@ begin
   MsgCopyAllMenuItem := RegisterIDEMenuCommand(Path, 'Copy all',lisCopyAllShownMessagesToClipboard);
   MsgCopyAllAndHiddenMenuItem := RegisterIDEMenuCommand(Path,
     'Copy all, including hidden messages',lisCopyAllShownAndHiddenMessagesToClipboard);
-  MsgHelpMenuItem := RegisterIDEMenuCommand(Path, 'Help for message',lisPckEditHelp);
+  MsgHelpMenuItem := RegisterIDEMenuCommand(Path, 'Help for message',lisHelp);
   MsgEditHelpMenuItem := RegisterIDEMenuCommand(Path, 'Edit help for messages',lisEditHelp);
   MsgSaveAllToFileMenuItem :=
     RegisterIDEMenuCommand(Path, 'Copy selected',lisSaveAllMessagesToFile);

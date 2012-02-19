@@ -720,8 +720,8 @@ begin
   FuncReplaceButton.Caption:=lisEdit;
   FuncReplaceDivider.Hint:=lisConvFuncReplHint;
   FuncReplaceButton.Hint:=lisConvFuncReplHint;
-  FuncReplaceComboBox.Items.Add(lisDisabled);    // 'Disabled'
-  FuncReplaceComboBox.Items.Add(lisEnabled);     // 'Enabled'
+  FuncReplaceComboBox.Items.Add(lisDisabled);
+  FuncReplaceComboBox.Items.Add(lisEnabled);
   // Coordinate Offsets
   CoordOffsDivider.Caption:=lisConvCoordOffs;
   CoordOffsButton.Caption:=lisEdit;

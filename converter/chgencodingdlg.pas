@@ -107,9 +107,9 @@ begin
   FileFilterLabel.Caption:=lisFilter;
   RegExprCheckBox.Caption:=lisRegularExpression;
 
-  CloseButton.Caption:=lisMenuClose;
+  CloseButton.Caption:=lisClose;
   ApplyButton.Caption:=lisConvert;
-  HelpButton.Caption:=dlgGroupHelp;
+  HelpButton.Caption:=lisHelp;
   CloseButton.LoadGlyphFromLazarusResource('btn_close');
   ApplyButton.LoadGlyphFromLazarusResource('btn_ok');
   HelpButton.LoadGlyphFromLazarusResource('btn_help');

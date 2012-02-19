@@ -43,28 +43,47 @@ resourcestring
   // Common strings that can be used around Lazarus:
   lisLazarus = 'Lazarus';
   lisAdd  = 'Add';
+  lisBtnAdd = '&Add';
   lisInsert = 'Insert';
   lisChange  = 'Change';
   lisDelete  = 'Delete';
+  lisBtnDelete = '&Delete';
   lisRemove = 'Remove';
+  lisBtnRemove = '&Remove';
   lisRename = 'Rename';
   lisReplace = 'Replace';
+  lisBtnReplace = '&Replace';
+  lisBtnDlgReplace = '&Replace ...';
   lisEdit = 'Edit';
+  lisOpen = 'Open';
+  lisSave = 'Save';
+  lisDlgSave = 'Save ...';
+  lisSaveAs = 'Save As';
+  lisSaveAll = 'Save All';
+  lisCloseAll = 'Close All';
+  lisFile = 'File';
+  lisNew = 'New';
+  lisClose = 'Close';
+  lisBtnClose = '&Close';
+  lisOk = 'OK';
   lisMenuOk = '&OK';
-  rsOk = 'OK';
   lisCancel = 'Cancel';
 //  lisYes = 'Yes';
   lisNo = 'No';
   lisContinue = 'Continue';
   lisBreak = 'Break';
   lisExit = 'Exit';
-
+  lisQuit = 'Quit';
+  lisBtnQuit = '&Quit';
+  lisRestart = 'Restart';
+  lisHelp = 'Help';
+  lisEnabled = 'Enabled';
+  lisBtnEnabled = '&Enabled';
   lisUndo = 'Undo';
   lisRedo = 'Redo';
   lisCut = 'Cut';
   lisCopy = 'Copy';
   lisPaste = 'Paste';
-
   lisDown = 'Down';
   lisUp   = 'Up';
   lisRight = 'Right';
@@ -205,19 +224,14 @@ resourcestring
   lisDoNotCloseTheProject = 'Do not close the project';
   lisDoNotCloseTheIDE = 'Do not close the IDE';
   lisMenuSaveAs = 'Save &As ...';
-  lisMenuSaveAll = 'Save All';
-  lisMenuClose = 'Close';
   lisConvert = 'Convert';
   lisPLDOnlyExistingFiles = 'Only existing files';
   lisPLDShowGlobalLinks = 'Show global links';
   lisPLDShowUserLinks = 'Show user links';
   lisPLDGlobal = 'Global';
-  lisKMCloseAll = 'Close All';
   lisCTDefDefineTemplates = 'Define templates';
   lisMenuCloseAll = 'Close A&ll Editor Files';
   lisMenuCleanDirectory = 'Clean Directory ...';
-  lisMenuQuit = '&Quit';
-  lisMenuRestart = 'Restart';
 
   lisMenuIndentSelection = 'Indent Selection';
   lisMenuUnindentSelection = 'Unindent Selection';
@@ -274,9 +288,7 @@ resourcestring
   lisMenuFind2 = '&Find ...';
   lisMenuFindPrevious = 'Find &Previous';
   lisMenuFindInFiles = 'Find &in Files ...';
-  lisBtnReplace = '&Replace';
   lisMenuIncrementalFind = 'Incremental Find';
-  lisMenuReplace2 = '&Replace ...';
   lisMenuGotoLine = 'Goto Line ...';
   lisMenuJumpBack = 'Jump Back';
   lisMenuJumpForward = 'Jump Forward';
@@ -787,8 +799,7 @@ resourcestring
   lisError = 'Error: ';
   lisWarning = 'Warning: ';
   lisSaveChanges = 'Save changes?';
-  lisSaveFileBeforeClosingForm =
-    'Save file %s%s%s%sbefore closing form %s%s%s?';
+  lisSaveFileBeforeClosingForm = 'Save file %s%s%s%sbefore closing form %s%s%s?';
   lisUnableToRenameFormInSource = 'Unable to rename form in source.';
   lisTheComponentIsInheritedFromToRenameAnInheritedComp = 'The component %s '
     +'is inherited from %s.%sTo rename an inherited component open the '
@@ -897,7 +908,6 @@ resourcestring
   lisDate = 'Date';
   lisFPCVersion = 'FPC Version: ';
   lisSVNRevision = 'SVN Revision: ';
-  lisClose = '&Close';
   lisAboutLazarusMsg =
        'License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.'
       +'%s'
@@ -932,8 +942,6 @@ resourcestring
   lisActivateSelected = 'Activate Selected';
 
   // hints
-  lisHintOpen = 'Open';
-  lisHintSave = 'Save';
   lisHintSaveAll = 'Save all';
   lisHintToggleFormUnit = 'Toggle Form/Unit';
   lisHintViewUnits = 'View Units';
@@ -1023,7 +1031,6 @@ resourcestring
   lisUnexpectedResultTheDebuggerWillTerminate = 'Unexpected result:%sThe '
     +'debugger will terminate';
   lisResponseContinue = 'Response: %sContinue ?';
-  dlgGroupHelp = 'Help';
 
   // Options dialog
   dlgIDEOptions = 'IDE Options';
@@ -1225,10 +1232,7 @@ resourcestring
   dlgPropNameColor = 'Property Name';
   dlgGutterEdgeColor = 'Gutter Edge Color';
 
-  liswlAdd = '&Add';
   liswlProperties = '&Properties';
-  liswlEnabled = '&Enabled';
-  liswlDelete = '&Delete';
   liswlDIsableAll = 'D&isable All';
   liswlENableAll = 'E&nable All';
   liswlDeLeteAll = 'De&lete All';
@@ -1663,7 +1667,6 @@ resourcestring
   dlgFoldHtmlComment     = 'Comment';
   dlgFoldHtmlAsp         = 'ASP';
 
-  dlgFoldDiffFile      = 'File';
   dlgFoldDiffChunk     = 'Chunk';
   dlgFoldDiffChunkSect = 'Chunk section';
 
@@ -1676,7 +1679,6 @@ resourcestring
 
   dlgMouseFoldGroup1        = 'Setting 1';
   dlgMouseFoldGroup2        = 'Setting 2';
-  dlgMouseFoldEnabled       = 'Enabled';
   dlgMouseFoldButton        = 'Button';
   dlgMouseFoldButtonLeft    = 'Left';
   dlgMouseFoldButtonMiddle  = 'Middle';
@@ -2542,9 +2544,6 @@ resourcestring
   srkmecBlockIndent           = 'Indent block';
   srkmecBlockUnindent         = 'Unindent block';
 
-  srkmecSave                  = 'Save';
-  srkmecQuit                  = 'Quit';
-
   srkmecBlockSetBegin   = 'Set block begin';
   srkmecBlockSetEnd     = 'Set block end';
   srkmecBlockToggleHide = 'Toggle block';
@@ -2906,7 +2905,6 @@ resourcestring
 
   // Unit dependencies
   dlgUnitDepCaption      = 'Unit Dependencies';
-  dlgUnitDepBrowse       = 'Open';
   dlgUnitDepRefresh      = 'Refresh';
 
   // Doc Editor
@@ -3252,7 +3250,6 @@ resourcestring
   lisDiffDlgIgnoreIfSpaceCharsWereAdd = 'Ignore amount of space chars';
   lisDiffDlgIgnoreSpaces = 'Ignore spaces (newline chars not included)';
   lisDiffDlgOpenDiffInEditor = 'Open Diff in editor';
-  lisSave = 'Save ...';
 
   // packages
   lisPkgFileTypeUnit = 'Unit';
@@ -4083,7 +4080,6 @@ resourcestring
   lisClickToSeeThePossibleUses = 'Click to see the possible uses';
   lisPckEditEditGeneralOptions = 'Edit General Options';
   lisPckEditCompOpts = 'Compiler Options';
-  lisPckEditHelp = 'Help';
   lisPkgEdThereAreMoreFunctionsInThePopupmenu = 'There are more functions in '
     +'the popupmenu';
   lisPckEditMore = 'More >>';
@@ -4219,30 +4215,16 @@ resourcestring
 
   // Standard File menu
   lisMenuTemplateDescriptionStandardFileMenu = 'Standard File Menu';
-  lisMenuTemplateFile = 'File';
-  lisMenuTemplateNew = 'New';
   lisKMNewUnit = 'New Unit';
-  lisMenuTemplateOpen = 'Open';
   lisMenuTemplateOpenRecent = 'Open Recent';
-  lisMenuTemplateSave = 'Save';
-  lisMenuTemplateSaveAs = 'Save As';
-  lisMenuTemplateClose = 'Close';
-  lisMenuTemplateExit = 'Exit';
 
   // Standard Edit menu
   lisMenuTemplateDescriptionStandardEditMenu = 'Standard Edit Menu';
-  //lisMenuTemplateEdit = 'Edit';
-  //lisMenuTemplateUndo = 'Undo';
-  //lisMenuTemplateRedo = 'Redo';
-  //lisMenuTemplateCut = 'Cut';
-  //lisMenuTemplateCopy = 'Copy';
-  //lisMenuTemplatePaste = 'Paste';
   lisMenuTemplateFind = 'Find';
   lisMenuTemplateFindNext = 'Find Next';
 
   // Standard Help menu
   lisMenuTemplateDescriptionStandardHelpMenu = 'Standard Help Menu';
-  lisMenuTemplateHelp = 'Help';
   lisMenuTemplateContents = 'Contents';
   lisMenuTemplateTutorial = 'Tutorial';
   lisMenuTemplateAbout = 'About';
@@ -4486,7 +4468,6 @@ resourcestring
   lisOpenXML = 'Open XML';
   lisCodeHelpInsertALink = 'Insert a link ...';
   lisCodeHelpInsertParagraphFormattingTag = 'Insert paragraph formatting tag';
-  lisCodeHelpSaveButton = 'Save';
   lisCodeHelpExampleTag = 'Example';
   lisCodeHelpBrowseExampleButton = 'Browse';
   lisLDMoveEntriesToInherited = 'Move entries to inherited';
@@ -4526,7 +4507,6 @@ resourcestring
   lisLeftSiblingComboBoxHint = 'This is the sibling control to which the left side is anchored. Leave empty for parent.';
   lisBorderSpace = 'Border space';
   lisSibling = 'Sibling';
-  lisEnabled = 'Enabled';
   lisRightAnchoring = 'Right anchoring';
   lisTopAnchoring = 'Top anchoring';
   lisLeftGroupBoxCaption = 'Left anchoring';
@@ -4610,7 +4590,6 @@ resourcestring
   rsCreateNewDefine = 'Create new define';
   rsConditionalDefines = 'Conditional defines';
   rsAddInverse = 'Add Inverse';
-  rsRemove = '&Remove';
   lisAutomaticallyOnLineBreak = 'line break';
   lisAutomaticallyOnSpace = 'space';
   lisAutomaticallyOnWordEnd = 'word end';

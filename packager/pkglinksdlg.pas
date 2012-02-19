@@ -99,7 +99,7 @@ end;
 procedure TPackageLinksDialog.FormCreate(Sender: TObject);
 begin
   Caption:=lisPLDPackageLinks;
-  CloseBitBtn.Caption:=lisMenuClose;
+  CloseBitBtn.Caption:=lisClose;
   ScopeGroupBox.Caption:=dlgScope;
   FileMustExistCheckBox.Caption:=lisPLDOnlyExistingFiles;
   ShowGlobalLinksCheckBox.Caption:=lisPLDShowGlobalLinks

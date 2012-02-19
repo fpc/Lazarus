@@ -156,9 +156,9 @@ begin
     NewColumn.Width:=300;
   end;
 
-  OpenButton.Caption:=lisMenuTemplateOpen;
+  OpenButton.Caption:=lisOpen;
   CancelButton.Caption:=lisCancel;
-  HelpButton.Caption:=dlgGroupHelp;
+  HelpButton.Caption:=lisHelp;
 end;
 
 procedure TOpenInstalledPackagesDlg.HelpButtonClick(Sender: TObject);

@@ -170,9 +170,9 @@ var
 begin
   NewTestGroupBox.Caption := rsCreateNewDefine;
   Caption := rsConditionalDefines;
-  AddBtn.Caption := liswlAdd;
+  AddBtn.Caption := lisBtnAdd;
   AddInverse.Caption := rsAddInverse;
-  RemoveBtn.Caption := rsRemove;
+  RemoveBtn.Caption := lisBtnRemove;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
   try
     XMLConfig:=CreateXMLConfig;

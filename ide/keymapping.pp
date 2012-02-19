@@ -427,14 +427,14 @@ begin
     ecNewForm                 : Result:= lisMenuNewForm;
     ecOpen                    : Result:= lisMenuOpen;
     ecRevert                  : Result:= lisMenuRevert;
-    ecSave                    : Result:= srkmecSave;
+    ecSave                    : Result:= lisSave;
     ecSaveAs                  : Result:= lisMenuSaveAs;
-    ecSaveAll                 : Result:= lisMenuSaveAll;
-    ecClose                   : Result:= lisMenuClose;
+    ecSaveAll                 : Result:= lisSaveAll;
+    ecClose                   : Result:= lisClose;
     ecCloseAll                : Result:= lisMenuCloseAll;
     ecCleanDirectory          : Result:= lisMenuCleanDirectory;
-    ecRestart                 : Result:= lisMenuRestart;
-    ecQuit                    : Result:= srkmecQuit;
+    ecRestart                 : Result:= lisRestart;
+    ecQuit                    : Result:= lisQuit;
 
     // edit menu
     ecSelectionUpperCase      : Result:= lisMenuUpperCaseSelection;
@@ -2727,19 +2727,19 @@ begin
 
   // file menu
   C:=Categories[AddCategory('FileMenu',srkmCatFileMenu,nil)];
-  AddDefault(C, 'New', lisMenuTemplateNew, ecNew);
+  AddDefault(C, 'New', lisNew, ecNew);
   AddDefault(C, 'NewUnit', lisKMNewUnit, ecNewUnit);
   AddDefault(C, 'NewForm', lisMenuNewForm, ecNewForm);
-  AddDefault(C, 'Open', lisHintOpen, ecOpen);
+  AddDefault(C, 'Open', lisOpen, ecOpen);
   AddDefault(C, 'Revert', lisMenuRevert, ecRevert);
-  AddDefault(C, 'Save', srkmecSave, ecSave);
+  AddDefault(C, 'Save', lisSave, ecSave);
   AddDefault(C, 'SaveAs', lisKMSaveAs, ecSaveAs);
   AddDefault(C, 'SaveAll', lisKMSaveAll, ecSaveAll);
-  AddDefault(C, 'Close', lisMenuClose, ecClose);
-  AddDefault(C, 'CloseAll', lisKMCloseAll, ecCloseAll);
+  AddDefault(C, 'Close', lisClose, ecClose);
+  AddDefault(C, 'CloseAll', lisCloseAll, ecCloseAll);
   AddDefault(C, 'Clean Directory', lisClDirCleanDirectory, ecCleanDirectory);
-  AddDefault(C, 'Restart', lisMenuRestart, ecRestart);
-  AddDefault(C, 'Quit', srkmecQuit, ecQuit);
+  AddDefault(C, 'Restart', lisRestart, ecRestart);
+  AddDefault(C, 'Quit', lisQuit, ecQuit);
 
   // view menu
   C:=Categories[AddCategory(CommandCategoryViewName,srkmCatViewMenu,nil)];

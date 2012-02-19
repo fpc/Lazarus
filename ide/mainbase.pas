@@ -380,8 +380,8 @@ begin
     CreateMenuSubSection(ParentMI,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent);
     CreateMenuItem(ParentMI,itmFileSave,'itmFileSave',lisMenuSave,'laz_save');
     CreateMenuItem(ParentMI,itmFileSaveAs,'itmFileSaveAs',lisMenuSaveAs,'menu_saveas');
-    CreateMenuItem(ParentMI,itmFileSaveAll,'itmFileSaveAll',lisMenuSaveAll,'menu_save_all');
-    CreateMenuItem(ParentMI,itmFileClose,'itmFileClose',lisMenuClose,'menu_close',false);
+    CreateMenuItem(ParentMI,itmFileSaveAll,'itmFileSaveAll',lisSaveAll,'menu_save_all');
+    CreateMenuItem(ParentMI,itmFileClose,'itmFileClose',lisClose,'menu_close',false);
     CreateMenuItem(ParentMI,itmFileCloseAll,'itmFileCloseAll',lisMenuCloseAll,'menu_close_all',false);
 
     CreateMenuSeparatorSection(mnuFile,itmFileDirectories,'itmFileDirectories');
@@ -390,8 +390,8 @@ begin
 
     CreateMenuSeparatorSection(mnuFile,itmFileIDEStart,'itmFileIDEStart');
     ParentMI:=itmFileIDEStart;
-    CreateMenuItem(ParentMI,itmFileRestart,'itmFileRestart',lisMenuRestart, 'laz_refresh');
-    CreateMenuItem(ParentMI,itmFileQuit,'itmFileQuit',lisMenuQuit, 'menu_exit');
+    CreateMenuItem(ParentMI,itmFileRestart,'itmFileRestart',lisRestart, 'laz_refresh');
+    CreateMenuItem(ParentMI,itmFileQuit,'itmFileQuit',lisBtnQuit, 'menu_exit');
   end;
 end;
 
@@ -452,8 +452,7 @@ begin
     CreateMenuItem(ParentMI,itmSearchFindNext,'itmSearchFindNext',lisMenuFindNext, 'menu_search_find_next');
     CreateMenuItem(ParentMI,itmSearchFindPrevious,'itmSearchFindPrevious',lisMenuFindPrevious, 'menu_search_find_previous');
     CreateMenuItem(ParentMI,itmSearchFindInFiles,'itmSearchFindInFiles',lisMenuFindInFiles, 'menu_search_files');
-    CreateMenuItem(ParentMI, itmSearchReplace, 'itmSearchReplace',
-      lisMenuReplace2, 'menu_search_replace');
+    CreateMenuItem(ParentMI, itmSearchReplace, 'itmSearchReplace', lisBtnDlgReplace, 'menu_search_replace');
     CreateMenuItem(ParentMI,itmIncrementalFind,'itmIncrementalFind',lisMenuIncrementalFind, 'menu_search_incremental');
 
     CreateMenuSeparatorSection(mnuSearch,itmJumpings,'itmJumpings');

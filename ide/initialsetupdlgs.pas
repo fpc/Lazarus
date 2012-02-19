@@ -241,7 +241,7 @@ begin
         Result:=sddqWrongVersion;
         exit;
       end;
-      Note:=rsOk;
+      Note:=lisOk;
       Result:=sddqCompatible;
     except
       on E: Exception do begin
@@ -411,7 +411,7 @@ begin
     end;
   end;
 
-  Note:=rsOk;
+  Note:=lisOk;
   Result:=sddqCompatible;
 end;
 
@@ -674,7 +674,7 @@ begin
       end;
     end;
   end;
-  Note:=rsOk;
+  Note:=lisOk;
   Result:=sddqCompatible;
 end;
 

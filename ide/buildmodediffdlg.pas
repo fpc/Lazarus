@@ -85,7 +85,7 @@ begin
 
   ModeLabel.Caption:=lisBuildModeDiffMode;
   DiffsGroupBox.Caption:=lisBuildModeDiffDifferencesToOtherBuildModes;
-  ButtonPanel.CloseButton.Caption:=lisClose;
+  ButtonPanel.CloseButton.Caption:=lisBtnClose;
 end;
 
 procedure TBuildModeDiffDialog.ModeComboBoxChange(Sender: TObject);
