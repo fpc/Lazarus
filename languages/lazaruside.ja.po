@@ -12235,6 +12235,10 @@ msgstr "注意：Free Pascalソースのための宣言テンプレートを作�
 msgid "NOTE: Could not create Define Template for Lazarus Sources"
 msgstr "注意：ソースのための宣言テンプレートを作成できませんでした。"
 
+#: lazarusidestrconsts.lisnotemplateselected
+msgid "no template selected"
+msgstr ""
+
 #: lazarusidestrconsts.lisnotimplemented
 msgid "Not implemented"
 msgstr "実装されていません"

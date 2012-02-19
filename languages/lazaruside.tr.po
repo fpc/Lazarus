@@ -11817,6 +11817,10 @@ msgstr "NOT: Free Pascal Kaynak Dosyaları için Define Şablonu oluşturulamad�
 msgid "NOTE: Could not create Define Template for Lazarus Sources"
 msgstr "NOT: Lazarus kaynak kodları için Tanımlama Şablonu oluşturulamadı"
 
+#: lazarusidestrconsts.lisnotemplateselected
+msgid "no template selected"
+msgstr ""
+
 #: lazarusidestrconsts.lisnotimplemented
 msgid "Not implemented"
 msgstr ""

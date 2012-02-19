@@ -11557,6 +11557,10 @@ msgstr ""
 msgid "NOTE: Could not create Define Template for Lazarus Sources"
 msgstr ""
 
+#: lazarusidestrconsts.lisnotemplateselected
+msgid "no template selected"
+msgstr ""
+
 #: lazarusidestrconsts.lisnotimplemented
 msgid "Not implemented"
 msgstr ""

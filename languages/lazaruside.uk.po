@@ -12052,6 +12052,10 @@ msgstr "ЗАУВАЖЕННЯ:Не можу створити означений �
 msgid "NOTE: Could not create Define Template for Lazarus Sources"
 msgstr "ЗАУВАЖЕННЯ:Не можу створити означений шаблон для текстів Lazarus"
 
+#: lazarusidestrconsts.lisnotemplateselected
+msgid "no template selected"
+msgstr ""
+
 #: lazarusidestrconsts.lisnotimplemented
 msgid "Not implemented"
 msgstr "Не реалізовано"

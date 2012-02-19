@@ -12045,6 +12045,10 @@ msgstr "CATATAN: Tidak bisa membuat  Define Template untuk Sumber Free Pascal"
 msgid "NOTE: Could not create Define Template for Lazarus Sources"
 msgstr "CATATAN: Tidak bisa membuat  Define Template untuk Sumber Lazarus"
 
+#: lazarusidestrconsts.lisnotemplateselected
+msgid "no template selected"
+msgstr ""
+
 #: lazarusidestrconsts.lisnotimplemented
 msgid "Not implemented"
 msgstr ""

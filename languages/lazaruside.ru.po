@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-02-19 21:01+0400\n"
+"PO-Revision-Date: 2012-02-20 00:16+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5517,7 +5517,7 @@ msgstr "Добавить шаблон"
 
 #: lazarusidestrconsts.liscodetempladdcodetemplate
 msgid "Add code template"
-msgstr "Добавить шаблон кода"
+msgstr "Добавление шаблона кода"
 
 #: lazarusidestrconsts.liscodetemplatokenalreadyexists
 msgid " A token %s%s%s already exists! "
@@ -5539,7 +5539,7 @@ msgstr "Комментарий:"
 
 #: lazarusidestrconsts.liscodetempleditcodetemplate
 msgid "Edit code template"
-msgstr "Править шаблоны кода"
+msgstr "Редактирование шаблона кода"
 
 #: lazarusidestrconsts.liscodetemplerror
 msgctxt "lazarusidestrconsts.liscodetemplerror"
@@ -11941,6 +11941,10 @@ msgstr "ЗАМЕТКА: Невозможно создать шаблон опр�
 #: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforlazarussources
 msgid "NOTE: Could not create Define Template for Lazarus Sources"
 msgstr "ЗАМЕТКА: Невозможно создать шаблон определений из исходного кода Lazarus"
+
+#: lazarusidestrconsts.lisnotemplateselected
+msgid "no template selected"
+msgstr "шаблон не выбран"
 
 #: lazarusidestrconsts.lisnotimplemented
 msgid "Not implemented"

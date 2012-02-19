@@ -11550,6 +11550,10 @@ msgstr "POZNÁMKA: Nelze vytvořit definiční šablonu pro zdroje Free Pascalu"
 msgid "NOTE: Could not create Define Template for Lazarus Sources"
 msgstr "POZNÁMKA: Nelze vytvořit definiční šablonu pro zdroje Lazarusu"
 
+#: lazarusidestrconsts.lisnotemplateselected
+msgid "no template selected"
+msgstr ""
+
 #: lazarusidestrconsts.lisnotimplemented
 msgid "Not implemented"
 msgstr "Doposud neimplementováno"
