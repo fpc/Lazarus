@@ -3124,7 +3124,7 @@ begin
   end;
 
   {$IFDEF VerboseRawImage}
-  DebugLn('TGtk2WidgetSet.GetWindowRawImageDescription A ',RawImageDescriptionAsString(Desc));
+  DebugLn('TGtk2WidgetSet.GetWindowRawImageDescription A ',ADesc.AsString);
   {$ENDIF}
 
   Result := True;
