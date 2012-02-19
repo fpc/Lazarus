@@ -4829,7 +4829,7 @@ resourcestring
     +'all files in %s%s%s?';
   lisFileExtensionOfPrograms = 'File extension of programs';
   lisEveryNThLineNumber = 'Every n-th line number';
-  lisShowOverviewGutter = 'Shov overview Gutter';
+  lisShowOverviewGutter = 'Show overview Gutter';
   lisLink = 'Link:';
   lisShort = 'Short:';
   lisInsertUrlTag = 'Insert url tag';
