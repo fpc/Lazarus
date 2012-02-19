@@ -240,39 +240,39 @@ end;
 procedure TEditorFileManagerForm.MoveDownBtnClick(Sender: TObject);
 var
   SrcEdit: TSourceEditor;
-  ANoteBook: TSourceNotebook;
   i: Integer;
 begin
   i:=CheckListBox1.ItemIndex;
   if (i>-1) and (i<CheckListBox1.Items.Count-1)
   and (FilterEdit.Filter='') and not SortAlphabetically then begin
-    // First move the source editor tab
     SrcEdit:=SourceEditorManager.SourceEditorIntfWithFilename(CheckListBox1.Items[i]);
-    ANoteBook:=SrcEdit.SourceNotebook;
-    ANoteBook.NotebookPages.Move(SrcEdit.PageIndex, SrcEdit.PageIndex+1);
-    // Then switch the list items
-    FilterEdit.Data.Exchange(i, i+1); //  CheckListBox1.Items.Exchange(i, i+1);
-    FilterEdit.InvalidateFilter;
-    UpdateMoveButtons(i+1);
+    if SrcEdit.PageIndex < SrcEdit.SourceNotebook.PageCount-1 then begin
+      // First move the source editor tab
+      SrcEdit.SourceNotebook.MoveEditor(SrcEdit.PageIndex, SrcEdit.PageIndex+1);
+      // Then switch the list items
+      FilterEdit.Data.Exchange(i, i+1); //  CheckListBox1.Items.Exchange(i, i+1);
+      FilterEdit.InvalidateFilter;
+      UpdateMoveButtons(i+1);
+    end;
   end;
 end;
 
 procedure TEditorFileManagerForm.MoveUpBtnClick(Sender: TObject);
 var
   SrcEdit: TSourceEditor;
-  ANoteBook: TSourceNotebook;
   i: Integer;
 begin
   i := CheckListBox1.ItemIndex;
   if (i > 0) and (FilterEdit.Filter='') and not SortAlphabetically then begin
-    // First move the source editor tab
     SrcEdit:=SourceEditorManager.SourceEditorIntfWithFilename(CheckListBox1.Items[i]);
-    ANoteBook:=SrcEdit.SourceNotebook;
-    ANoteBook.NotebookPages.Move(SrcEdit.PageIndex, SrcEdit.PageIndex-1);
-    // Then switch the list items
-    FilterEdit.Data.Exchange(i, i-1);
-    FilterEdit.InvalidateFilter;
-    UpdateMoveButtons(i-1);
+    if SrcEdit.PageIndex > 0 then begin
+      // First move the source editor tab
+      SrcEdit.SourceNotebook.MoveEditor(SrcEdit.PageIndex, SrcEdit.PageIndex-1);
+      // Then switch the list items
+      FilterEdit.Data.Exchange(i, i-1);
+      FilterEdit.InvalidateFilter;
+      UpdateMoveButtons(i-1);
+    end;
   end;
 end;
 
@@ -324,11 +324,20 @@ end;
 
 procedure TEditorFileManagerForm.UpdateMoveButtons(ListIndex: integer);
 var
-  b: Boolean;
+  SrcEdit: TSourceEditor;
+  UpEnabled, DownEnabled: Boolean;
 begin
-  b:=(FilterEdit.Filter='') and not SortAlphabetically;
-  MoveUpBtn.Enabled:=(ListIndex>0) and b;
-  MoveDownBtn.Enabled:=(ListIndex>-1) and (ListIndex<CheckListBox1.Items.Count-1) and b;
+  UpEnabled:=False;
+  DownEnabled:=False;
+  if (ListIndex>-1) and (ListIndex<CheckListBox1.Items.Count)
+  and (FilterEdit.Filter='') and not SortAlphabetically then begin
+    SrcEdit:=SourceEditorManager.SourceEditorIntfWithFilename(CheckListBox1.Items[ListIndex]);
+    DownEnabled:=(ListIndex<CheckListBox1.Items.Count-1)
+             and (SrcEdit.PageIndex<SrcEdit.SourceNotebook.PageCount-1);
+    UpEnabled:=(ListIndex>0) and (SrcEdit.PageIndex>0);
+  end;
+  MoveUpBtn.Enabled:=UpEnabled;
+  MoveDownBtn.Enabled:=DownEnabled;
 end;
 
 end.

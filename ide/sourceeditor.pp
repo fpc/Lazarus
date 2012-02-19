@@ -695,7 +695,6 @@ type
 
     procedure NextEditor;
     procedure PrevEditor;
-    procedure MoveEditor(OldPageIndex, NewPageIndex: integer);
     procedure MoveEditorLeft(CurrentPageIndex: integer);
     procedure MoveEditorRight(CurrentPageIndex: integer);
     procedure MoveActivePageLeft;
@@ -707,7 +706,6 @@ type
     procedure GotoNextWindow(Backward: Boolean = False);
     procedure GotoNextSharedEditor(Backward: Boolean = False);
     procedure MoveEditorNextWindow(Backward: Boolean = False; Copy: Boolean = False);
-    procedure MoveEditor(OldPageIndex, NewWindowIndex, NewPageIndex: integer);
     procedure CopyEditor(OldPageIndex, NewWindowIndex, NewPageIndex: integer; Focus: Boolean = False);
     procedure ProcessParentCommand(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
@@ -777,6 +775,8 @@ type
     function GetActiveSE: TSourceEditor;                                        { $note deprecate and use SetActiveEditor}
     procedure CheckCurrentCodeBufferChanged;
     function IndexOfEditorInShareWith(AnOtherEditor: TSourceEditor): Integer;
+    procedure MoveEditor(OldPageIndex, NewPageIndex: integer);
+    procedure MoveEditor(OldPageIndex, NewWindowIndex, NewPageIndex: integer);
 
     procedure UpdateStatusBar;
     procedure ClearErrorLines; override;
