@@ -117,7 +117,6 @@ type
     CommentEdit: TEdit;
     OkButton: TButton;
     CancelButton: TButton;
-    procedure CodeTemplateEditFormResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
   public
     SynAutoComplete: TSynEditAutoComplete;
@@ -797,17 +796,24 @@ begin
   if LazarusResources.Find(ClassName)=nil then begin
     Width:=300;
     Height:=150;
+    Constraints.MinWidth:=300;
+    Constraints.MinHeight:=150;
+    BorderIcons:=[biSystemMenu];
     Position:=poScreenCenter;
-    OnResize:=@CodeTemplateEditFormResize;
 
     TokenLabel:=TLabel.Create(Self);
     with TokenLabel do begin
       Name:='TokenLabel';
       Parent:=Self;
       Caption:=lisCodeTemplToken;
-      Left:=12;
-      Top:=6;
-      Width:=Self.ClientWidth-Left-Left;
+      AutoSize:=true;
+      AnchorSide[akLeft].Control:=Self;
+      AnchorSide[akTop].Control:=Self;
+      AnchorSide[akLeft].Side:=asrLeft;
+      AnchorSide[akTop].Side:=asrTop;
+      BorderSpacing.Left:=6;
+      BorderSpacing.Top:=12;
+      Anchors:=[akLeft,akTop];
       Show;
     end;
 
@@ -815,9 +821,16 @@ begin
     with TokenEdit do begin
       Name:='TokenEdit';
       Parent:=Self;
-      Left:=10;
-      Top:=TokenLabel.Top+TokenLabel.Height+2;
-      Width:=Self.ClientWidth-Left-Left-4;
+      AnchorSide[akLeft].Control:=Self;
+      AnchorSide[akTop].Control:=TokenLabel;
+      AnchorSide[akRight].Control:=Self;
+      AnchorSide[akLeft].Side:=asrLeft;
+      AnchorSide[akTop].Side:=asrBottom;
+      AnchorSide[akRight].Side:=asrRight;
+      BorderSpacing.Left:=6;
+      BorderSpacing.Right:=6;
+      BorderSpacing.Top:=0;
+      Anchors:=[akLeft,akTop,akRight];
       Text:='';
       Show;
     end;
@@ -827,9 +840,14 @@ begin
       Name:='CommentLabel';
       Parent:=Self;
       Caption:=lisCodeTemplComment;
-      Left:=12;
-      Top:=TokenEdit.Top+TokenEdit.Height+10;
-      Width:=Self.ClientWidth-Left-Left;
+      AutoSize:=true;
+      AnchorSide[akLeft].Control:=Self;
+      AnchorSide[akTop].Control:=TokenEdit;
+      AnchorSide[akLeft].Side:=asrLeft;
+      AnchorSide[akTop].Side:=asrBottom;
+      BorderSpacing.Left:=6;
+      BorderSpacing.Top:=12;
+      Anchors:=[akLeft,akTop];
       Show;
     end;
 
@@ -837,22 +855,17 @@ begin
     with CommentEdit do begin
       Name:='CommentEdit';
       Parent:=Self;
-      Left:=10;
-      Top:=CommentLabel.Top+CommentLabel.Height+2;
-      Width:=Self.ClientWidth-Left-Left-4;
+      AnchorSide[akLeft].Control:=Self;
+      AnchorSide[akTop].Control:=CommentLabel;
+      AnchorSide[akRight].Control:=Self;
+      AnchorSide[akLeft].Side:=asrLeft;
+      AnchorSide[akTop].Side:=asrBottom;
+      AnchorSide[akRight].Side:=asrRight;
+      BorderSpacing.Left:=6;
+      BorderSpacing.Right:=6;
+      BorderSpacing.Top:=0;
+      Anchors:=[akLeft,akTop,akRight];
       Text:='';
-      Show;
-    end;
-
-    OkButton:=TButton.Create(Self);
-    with OkButton do begin
-      Name:='OkButton';
-      Parent:=Self;
-      Caption:=lisMenuOk;
-      OnClick:=@OkButtonClick;
-      Left:=50;
-      Top:=Self.ClientHeight-Height-12;
-      Width:=80;
       Show;
     end;
 
@@ -862,51 +875,31 @@ begin
       Parent:=Self;
       Caption:=lisCancel;
       ModalResult:=mrCancel;
-      Width:=80;
-      Left:=Self.ClientWidth-50-Width;
-      Top:=Self.ClientHeight-Height-12;
+      AutoSize:=true;
+      AnchorSide[akRight].Control:=Self;
+      AnchorSide[akBottom].Control:=Self;
+      AnchorSide[akRight].Side:=asrRight;
+      AnchorSide[akBottom].Side:=asrBottom;
+      BorderSpacing.Around:=6;
+      Anchors:=[akRight,akBottom];
       Show;
     end;
-  end;
-  CodeTemplateEditFormResize(nil);
-end;
 
-procedure TCodeTemplateEditForm.CodeTemplateEditFormResize(Sender: TObject);
-begin
-  with TokenLabel do begin
-    Left:=12;
-    Top:=6;
-    Width:=Self.ClientWidth-Left-Left;
-  end;
-
-  with TokenEdit do begin
-    Left:=10;
-    Top:=TokenLabel.Top+TokenLabel.Height+2;
-    Width:=Self.ClientWidth-Left-Left-4;
-  end;
-
-  with CommentLabel do begin
-    Left:=12;
-    Top:=TokenEdit.Top+TokenEdit.Height+10;
-    Width:=Self.ClientWidth-Left-Left;
-  end;
-
-  with CommentEdit do begin
-    Left:=10;
-    Top:=CommentLabel.Top+CommentLabel.Height+2;
-    Width:=Self.ClientWidth-Left-Left-4;
-  end;
-
-  with OkButton do begin
-    Left:=50;
-    Top:=Self.ClientHeight-Height-12;
-    Width:=80;
-  end;
-
-  with CancelButton do begin
-    Width:=80;
-    Left:=Self.ClientWidth-50-Width;
-    Top:=Self.ClientHeight-Height-12;
+    OkButton:=TButton.Create(Self);
+    with OkButton do begin
+      Name:='OkButton';
+      Parent:=Self;
+      Caption:=lisMenuOk;
+      OnClick:=@OkButtonClick;
+      AutoSize:=true;
+      AnchorSide[akRight].Control:=CancelButton;
+      AnchorSide[akBottom].Control:=Self;
+      AnchorSide[akRight].Side:=asrLeft;
+      AnchorSide[akBottom].Side:=asrBottom;
+      BorderSpacing.Around:=6;
+      Anchors:=[akRight,akBottom];
+      Show;
+    end;
   end;
 end;
 
@@ -1255,7 +1248,7 @@ begin
     if (ep>sp) or ((s<>'') and (s[length(s)] in [#10,#13])) then
       AddLine(copy(s,sp,ep-sp));
   end else begin
-    EditTemplateGroupBox.Caption:='no template selected';
+    EditTemplateGroupBox.Caption:=lisNoTemplateSelected;
   end;
   LastTemplate := a;
   TemplateSynEdit.Lines.EndUpdate;

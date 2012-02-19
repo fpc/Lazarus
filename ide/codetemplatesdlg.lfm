@@ -20,15 +20,15 @@ object CodeTemplateDialog: TCodeTemplateDialog
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'FilenameGroupBox'
-    ClientHeight = 30
-    ClientWidth = 477
+    ClientHeight = 33
+    ClientWidth = 481
     TabOrder = 0
     object FilenameEdit: TEdit
       AnchorSideRight.Control = FilenameButton
       Left = 9
-      Height = 27
+      Height = 21
       Top = 4
-      Width = 431
+      Width = 435
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Right = 5
       TabOrder = 0
@@ -39,9 +39,9 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = FilenameEdit
       AnchorSideBottom.Side = asrBottom
-      Left = 445
+      Left = 449
       Height = 23
-      Top = 8
+      Top = 2
       Width = 26
       Anchors = [akRight, akBottom]
       BorderSpacing.Right = 6
@@ -58,8 +58,8 @@ object CodeTemplateDialog: TCodeTemplateDialog
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'TemplatesGroupBox'
-    ClientHeight = 146
-    ClientWidth = 477
+    ClientHeight = 149
+    ClientWidth = 481
     TabOrder = 1
     object TemplateListBox: TListBox
       AnchorSideLeft.Control = TemplatesGroupBox
@@ -68,9 +68,9 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideBottom.Control = TemplatesGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 134
+      Height = 137
       Top = 6
-      Width = 311
+      Width = 315
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -84,7 +84,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideTop.Control = TemplateListBox
       AnchorSideRight.Control = TemplatesGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 323
+      Left = 327
       Height = 30
       Top = 6
       Width = 148
@@ -100,7 +100,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = AddButton
       AnchorSideRight.Side = asrBottom
-      Left = 323
+      Left = 327
       Height = 30
       Top = 42
       Width = 148
@@ -116,7 +116,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = DeleteButton
       AnchorSideRight.Side = asrBottom
-      Left = 323
+      Left = 327
       Height = 30
       Top = 78
       Width = 148
@@ -132,20 +132,20 @@ object CodeTemplateDialog: TCodeTemplateDialog
     AnchorSideRight.Control = Owner
     AnchorSideBottom.Control = FilenameGroupBox
     Left = 6
-    Height = 260
+    Height = 268
     Top = 236
     Width = 485
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'EditTemplateGroupBox'
-    ClientHeight = 239
-    ClientWidth = 477
+    ClientHeight = 250
+    ClientWidth = 481
     TabOrder = 2
     object UseMacrosCheckBox: TCheckBox
       Left = 6
-      Height = 22
+      Height = 17
       Top = 6
-      Width = 171
+      Width = 117
       BorderSpacing.Bottom = 7
       Caption = 'UseMacrosCheckBox'
       ParentShowHint = False
@@ -158,10 +158,10 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideTop.Control = UseMacrosCheckBox
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Side = asrBottom
-      Left = 203
-      Height = 27
-      Top = 4
-      Width = 148
+      Left = 149
+      Height = 23
+      Top = 3
+      Width = 116
       AutoSize = True
       BorderSpacing.Left = 20
       BorderSpacing.Around = 6
@@ -177,9 +177,9 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideBottom.Control = EditTemplateGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 125
-      Top = 108
-      Width = 465
+      Height = 146
+      Top = 98
+      Width = 469
       BorderSpacing.Around = 6
       Anchors = [akTop, akLeft, akRight, akBottom]
       Font.Height = -14
@@ -192,50 +192,24 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Gutter.Width = 57
       Gutter.MouseActions = <      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccAny
           ClickDir = cdDown
-          Command = 13
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcOnMainGutterClick
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbRight
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 12
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcContextMenu
         end>
       RightGutter.Width = 0
       RightGutter.MouseActions = <      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccAny
           ClickDir = cdDown
-          Command = 13
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcOnMainGutterClick
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbRight
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 12
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcContextMenu
         end>
       Keystrokes = <      
         item
@@ -560,134 +534,91 @@ object CodeTemplateDialog: TCodeTemplateDialog
         end>
       MouseActions = <      
         item
-          Shift = []
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 1
+          Command = emcStartSelections
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
           Shift = [ssShift]
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 1
+          Command = emcStartSelections
           MoveCaret = True
           Option = 1
-          Priority = 0
         end      
         item
           Shift = [ssAlt]
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 3
+          Command = emcStartColumnSelections
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
           Shift = [ssShift, ssAlt]
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 3
+          Command = emcStartColumnSelections
           MoveCaret = True
           Option = 1
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbRight
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 12
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcContextMenu
         end      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccDouble
           ClickDir = cdDown
-          Command = 6
+          Command = emcSelectWord
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccTriple
           ClickDir = cdDown
-          Command = 7
+          Command = emcSelectLine
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccQuad
           ClickDir = cdDown
-          Command = 8
+          Command = emcSelectPara
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbMiddle
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 10
+          Command = emcPasteSelection
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
           Shift = [ssCtrl]
           ShiftMask = [ssShift, ssAlt, ssCtrl]
-          Button = mbLeft
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 11
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcMouseLink
         end>
       MouseSelActions = <      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 9
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcStartDragMove
         end>
       Lines.Strings = (
         'TemplateSynEdit'
       )
+      VisibleSpecialChars = [vscSpace, vscTabAtLast]
       BracketHighlightStyle = sbhsBoth
+      BracketMatchColor.Background = clNone
+      BracketMatchColor.Foreground = clNone
+      BracketMatchColor.Style = [fsBold]
+      FoldedCodeColor.Background = clNone
+      FoldedCodeColor.Foreground = clGray
+      FoldedCodeColor.FrameColor = clGray
+      MouseLinkColor.Background = clNone
+      MouseLinkColor.Foreground = clBlue
+      LineHighlightColor.Background = clNone
+      LineHighlightColor.Foreground = clNone
       inline TSynGutterPartList
         object TSynGutterMarks
           Width = 24
+          MouseActions = <>
         end
         object TSynGutterLineNumber
           Width = 17
@@ -701,35 +632,26 @@ object CodeTemplateDialog: TCodeTemplateDialog
         end
         object TSynGutterChanges
           Width = 4
+          MouseActions = <>
           ModifiedColor = 59900
           SavedColor = clGreen
         end
         object TSynGutterSeparator
           Width = 2
+          MouseActions = <>
         end
         object TSynGutterCodeFolding
           MouseActions = <          
             item
-              Shift = []
-              ShiftMask = []
               Button = mbRight
-              ClickCount = ccSingle
-              ClickDir = cdUp
-              Command = 16
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldContextMenu
             end          
             item
-              Shift = []
               ShiftMask = [ssShift]
               Button = mbMiddle
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 14
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldCollaps
             end          
             item
               Shift = [ssShift]
@@ -737,58 +659,36 @@ object CodeTemplateDialog: TCodeTemplateDialog
               Button = mbMiddle
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 14
-              MoveCaret = False
+              Command = emcCodeFoldCollaps
               Option = 1
-              Priority = 0
             end          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 0
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcNone
             end>
           MarkupInfo.Background = clNone
           MarkupInfo.Foreground = clGray
           MouseActionsExpanded = <          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 14
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldCollaps
             end>
           MouseActionsCollapsed = <          
             item
               Shift = [ssCtrl]
               ShiftMask = [ssCtrl]
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 15
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldExpand
             end          
             item
-              Shift = []
               ShiftMask = [ssCtrl]
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 15
-              MoveCaret = False
+              Command = emcCodeFoldExpand
               Option = 1
-              Priority = 0
             end>
         end
       end
@@ -801,8 +701,8 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 39
-      Top = 63
-      Width = 465
+      Top = 53
+      Width = 469
       Anchors = [akTop, akLeft, akRight]
       AutoFill = True
       AutoSize = True
@@ -825,9 +725,9 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideTop.Control = UseMacrosCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 35
-      Width = 198
+      Height = 17
+      Top = 30
+      Width = 139
       BorderSpacing.Top = 6
       Caption = 'KeepSubIndentCheckBox'
       ParentShowHint = False
@@ -837,16 +737,20 @@ object CodeTemplateDialog: TCodeTemplateDialog
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 502
+    Height = 26
+    Top = 510
     Width = 485
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     OKButton.OnClick = OkButtonClick
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False

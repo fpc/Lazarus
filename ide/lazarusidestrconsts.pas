@@ -3192,6 +3192,7 @@ resourcestring
   lisCodeTemplComment = 'Comment:';
   lisCodeTemplATokenAlreadyExists = ' A token %s%s%s already exists! ';
   lisCodeTemplError = 'Error';
+  lisNoTemplateSelected = 'no template selected';
   lisUnableToFindTheLfmFileOfComponentClassNeededByUnit = 'Unable to find the '
     +'lfm file of component class "%s".%sNeeded by unit:%s%s';
   lisUnableToOpenDesignerTheClassDoesNotDescendFromADes = 'Unable to open '
