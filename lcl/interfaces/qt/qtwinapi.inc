@@ -6228,6 +6228,7 @@ var
   dx, dy: integer;
   OldRop: Integer;
   OldBkColor: TColorRef;
+  ABrush: QBrushH;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI StretchMaskBlt]',
@@ -6334,6 +6335,18 @@ begin
       QImage_destroy(TmpMask);
   end else
   begin
+    if (Rop = PATCOPY) then
+    begin
+      OldRop := DstQDC.Rop2;
+      DstQDC.Rop2 := SRCCOPY;
+      try
+        DstQDC.setBrush(DstQDC.BackgroundBrush);
+        with DstRect do
+          DstQDC.fillRect(Left, Top, Right - Left, Bottom - Top);
+      finally
+        DstQDC.Rop2 := OldRop;
+      end;
+    end else
     if (Rop = BLACKNESS) or (Rop = WHITENESS) then
     begin
       OldRop := DstQDC.Rop2;
