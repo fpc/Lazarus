@@ -1,5 +1,3 @@
-# translation of lclstrconsts.po to Slovenský
-# Slavko <slavino@slavino.sk>, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: lclstrconsts\n"

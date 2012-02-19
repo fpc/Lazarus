@@ -1,4 +1,3 @@
-# Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2011-04-20 17:43+0200\n"

@@ -1,4 +1,3 @@
-# Valdas Jankūnas <zmuogs@gmail.com>, 2008.
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"

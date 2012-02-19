@@ -1,4 +1,3 @@
-# Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
