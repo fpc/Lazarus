@@ -123,6 +123,11 @@ function pango_version_check(required_major, required_minor, required_micro: int
 function pango_layout_get_font_description(layout:PPangoLayout):PPangoFontDescription; cdecl; external pangolib;
 {$ifend}
 
+{$IF FPC_FULLVERSION<20405}
+function pango_font_family_is_monospace(family:PPangoFontFamily):gboolean; cdecl; external pangolib;
+{$ENDIF}
+
+
 // - - - - - - - - - gtk extras - - - - - - - - -
 
 // ----------------- this gtk symbols can be removed after fpc 2.2.4
