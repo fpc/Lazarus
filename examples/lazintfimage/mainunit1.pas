@@ -21,7 +21,9 @@ type
     procedure Button2Click(Sender: TObject);
     procedure Form1Create(Sender: TObject);
     procedure Form1Destroy(Sender: TObject);
+    procedure FormPaint(Sender: TObject);
   private
+    FKind: Byte; // 1 = FadeIn 2 = Rotate
     procedure FadeIn(ABitmap: TBitmap; x, y: integer);
     procedure Rotate(ABitmap: TBitmap; aCanvas : TCanvas; x, y, Angle : integer);
 
@@ -40,16 +42,19 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  FadeIn(SampleBitmapABitmap,120,120);
+  FKind := 1;
+  Invalidate;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
-  Rotate(SampleBitmapABitmap,Canvas,120,120,StrToIntDef(Edit1.Text,90));
+  FKind := 2;
+  Invalidate;
 end;
 
 procedure TForm1.Form1Create(Sender: TObject);
 begin
+  FKind := 0;
   SampleBitmapABitmap:=TBitmap.Create;
   SampleBitmapABitmap.LoadFromFile(SetDirSeparators('../../images/LazarusForm.bmp'));
 end;
@@ -57,6 +62,16 @@ end;
 procedure TForm1.Form1Destroy(Sender: TObject);
 begin
   SampleBitmapABitmap.Free;
+end;
+
+procedure TForm1.FormPaint(Sender: TObject);
+begin
+  if FKind = 1 then
+    FadeIn(SampleBitmapABitmap,120,120)
+  else
+  if FKind = 2 then
+    Rotate(SampleBitmapABitmap,Canvas,120,120,StrToIntDef(Edit1.Text,90));
+  FKind := 0;
 end;
 
 procedure TForm1.FadeIn(ABitmap: TBitmap; x, y: integer);
