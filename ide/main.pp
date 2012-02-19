@@ -8445,6 +8445,8 @@ end;
 
 function TMainIDE.AskSaveProject(const ContinueText, ContinueBtn: string): TModalResult;
 begin
+  if Project1=nil then exit(mrOk);
+  //debugln(['TMainIDE.AskSaveProject SomethingOfProjectIsModified=',SomethingOfProjectIsModified,' Project1.SomeDataModified(false)=',Project1.SomeDataModified(false)]);
   if not SomethingOfProjectIsModified then exit(mrOk);
 
   if (Project1.SessionStorage=pssInProjectInfo)
