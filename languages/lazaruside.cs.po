@@ -63,7 +63,7 @@ msgstr "Kontextové menu"
 
 #: lazarusidestrconsts.dlfmousesimplebuttoncontextmenudbg
 msgid "Context Menu (debug)"
-msgstr ""
+msgstr "Kontextové menu (ladění)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
@@ -3227,8 +3227,6 @@ msgid "Open"
 msgstr "Otevřít"
 
 #: lazarusidestrconsts.dlgunitdepcaption
-#, fuzzy
-#| msgid "Unit dependencies"
 msgid "Unit Dependencies"
 msgstr "Závislosti jednotky"
 
@@ -3338,7 +3336,7 @@ msgstr "Poloha okna"
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"
-msgstr ""
+msgstr "Výjimky"
 
 #: lazarusidestrconsts.dlgwordspolicies
 msgctxt "lazarusidestrconsts.dlgwordspolicies"
@@ -3396,8 +3394,6 @@ msgid "Move to Front"
 msgstr "Přesunout dopředu"
 
 #: lazarusidestrconsts.fdmsaveformasxml
-#, fuzzy
-#| msgid "Save form as XML"
 msgid "Save Form as XML"
 msgstr "Uložit formulář jako XML"
 
@@ -3502,8 +3498,6 @@ msgid "Add Files"
 msgstr "Přidat soubory"
 
 #: lazarusidestrconsts.lisa2paddfilestopackage
-#, fuzzy
-#| msgid "Add files to package"
 msgid "Add Files to Package"
 msgstr "Přidat soubory do balíčku"
 
@@ -3554,17 +3548,15 @@ msgstr "Jméno třídy již existuje"
 
 #: lazarusidestrconsts.lisa2pcreatenewcomp
 msgid "Create New Component"
-msgstr ""
+msgstr "Vytvořit novou komponentu"
 
 #: lazarusidestrconsts.lisa2pcreatenewfile
-#, fuzzy
-#| msgid "Create new file"
 msgid "Create New File"
 msgstr "Vytvořit nový soubor"
 
 #: lazarusidestrconsts.lisa2pcreatenewreq
 msgid "Create New Requirement"
-msgstr ""
+msgstr "Vytvořit nový požadavek"
 
 #: lazarusidestrconsts.lisa2pdependency
 msgid "Dependency"
@@ -3608,7 +3600,7 @@ msgstr "Neplatný typ předka"
 
 #: lazarusidestrconsts.lisa2pinvalidcirculardependency
 msgid "Invalid Circular Dependency"
-msgstr ""
+msgstr "Neplatná kruhová závislost"
 
 #: lazarusidestrconsts.lisa2pinvalidclassname
 msgid "Invalid Class Name"
@@ -4135,7 +4127,7 @@ msgstr "Zeptat před nahrazením každého nalezeného textu"
 
 #: lazarusidestrconsts.lisaskbeforesavingprojectssession
 msgid "Ask before saving project's session"
-msgstr ""
+msgstr "Zeptat se před uložením sezení projektu"
 
 #: lazarusidestrconsts.lisaskforcomponentnameafterputtingitonform
 msgid "Ask for component name after putting it on a designer form"
@@ -4620,10 +4612,8 @@ msgid "Empty procedures"
 msgstr "Prázdné procedury"
 
 #: lazarusidestrconsts.liscefilter
-#, fuzzy
-#| msgid "(Filter)"
 msgid "(filter)"
-msgstr "(Filtr)"
+msgstr "(filtr)"
 
 #: lazarusidestrconsts.liscefollowcursor
 msgid "Follow cursor"
@@ -4679,8 +4669,6 @@ msgid "Center control vertically relative to the given sibling"
 msgstr "Vystředit prvky svisle, relativně k daným sourozencům"
 
 #: lazarusidestrconsts.liscenterform
-#, fuzzy
-#| msgid "Center form"
 msgid "Center Form"
 msgstr "Vystředit formulář"
 
@@ -4984,7 +4972,7 @@ msgstr "Vyberte jméno pro novou komponentu"
 
 #: lazarusidestrconsts.lischooseanexamplefile
 msgid "Choose an example file"
-msgstr ""
+msgstr "Vyberte ukázkový soubor"
 
 #: lazarusidestrconsts.lischooseanfpcmessagefile
 msgid "Choose an FPC message file"
@@ -5068,7 +5056,7 @@ msgstr "Vyberte adresář na zkoušky"
 
 #: lazarusidestrconsts.liscirculardependencydetected
 msgid "Circular dependency detected"
-msgstr ""
+msgstr "Detekována kruhová závislost"
 
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
@@ -5302,7 +5290,7 @@ msgstr "Příklad"
 
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
-msgstr ""
+msgstr "Nastavení FPDoc"
 
 #: lazarusidestrconsts.liscodehelphintboldformat
 msgid "Insert bold formatting tag"
@@ -5998,13 +5986,11 @@ msgstr "Jméno komponenty není platný identifikátor"
 
 #: lazarusidestrconsts.liscomppalcomponentlist
 msgid "View All"
-msgstr ""
+msgstr "Zobrazit vše"
 
 #: lazarusidestrconsts.liscomppalfindcomponent
-#, fuzzy
-#| msgid "Find component"
 msgid "Find component (to be removed)"
-msgstr "Najít komponentu"
+msgstr "Najít komponentu (k odstranění)"
 
 #: lazarusidestrconsts.liscomppalopenpackage
 msgid "Open package"
@@ -6083,7 +6069,7 @@ msgstr "Stará sada balíčků"
 
 #: lazarusidestrconsts.lisconflict
 msgid "Conflict"
-msgstr ""
+msgstr "Konflikt"
 
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
@@ -6520,11 +6506,11 @@ msgstr "Vytvořit to"
 
 #: lazarusidestrconsts.liscreatenewpackage
 msgid "(Create new package)"
-msgstr ""
+msgstr "(Vytvořit nový balíček)"
 
 #: lazarusidestrconsts.liscreatenewpackagecomponent
 msgid "Create new package component"
-msgstr ""
+msgstr "(Vytvořit novou komponentu balíčku)"
 
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
@@ -6933,7 +6919,7 @@ msgstr "Proces"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmresetdebuggeroneachrun
 msgid "Reset Debugger after each run"
-msgstr ""
+msgstr "Resetovat ladič po každém běhu"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmresume
 msgid "Resume"
@@ -6982,7 +6968,7 @@ msgstr "Číselný"
 
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
-msgstr ""
+msgstr "(výchozí)"
 
 #: lazarusidestrconsts.lisdefaultvalue
 msgid "Default value"
@@ -7057,10 +7043,8 @@ msgid "Delete file failed"
 msgstr "Odstranění souboru selhalo"
 
 #: lazarusidestrconsts.lisdeletemacro
-#, fuzzy
-#| msgid "Delete macro %s"
 msgid "Delete macro %s%s%s?"
-msgstr "Smazat makro %s"
+msgstr "Smazat makro %s%s%s?"
 
 #: lazarusidestrconsts.lisdeletemode
 msgid "Delete mode \"%s\""
@@ -7393,7 +7377,7 @@ msgstr "Vybrat rodičovskou komponentu"
 
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
-msgstr ""
+msgstr "Duplicitní"
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value %s%s%s."
@@ -7421,7 +7405,7 @@ msgstr "Upravit kontextovou nápovědu"
 
 #: lazarusidestrconsts.lisedithelp
 msgid "Edit help"
-msgstr ""
+msgstr "Upravit nápovědu"
 
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
@@ -7669,7 +7653,7 @@ msgstr "Kódování souboru %s%s%s%sna disku je %s. Nové kódování je %s."
 
 #: lazarusidestrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
-msgstr ""
+msgstr "Nekonečná smyčka v makrech"
 
 #: lazarusidestrconsts.lisentertransla
 msgid "Enter translation language"
@@ -8369,11 +8353,11 @@ msgstr "Syntaktická chyba FPDoc"
 
 #: lazarusidestrconsts.lisfpdocpackagename
 msgid "FPDoc package name:"
-msgstr ""
+msgstr "Jméno balíčku FPDoc:"
 
 #: lazarusidestrconsts.lisfpdocpackagenamedefaultisprojectfilename
 msgid "FPDoc package name. Default is project file name."
-msgstr ""
+msgstr "Jméno balíčku FPDoc. Výchozí je jméno souboru projektu."
 
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
@@ -8702,11 +8686,11 @@ msgstr "VAROVÁNÍ: neplatné jméno jednotky %s, balíček=%s"
 
 #: lazarusidestrconsts.lisidemacros
 msgid "IDE Macros"
-msgstr ""
+msgstr "Makra IDE"
 
 #: lazarusidestrconsts.lisidemacrovaluesforfpcmacrosusecustomoptions
 msgid "IDE macro values (for FPC macros use custom options)"
-msgstr ""
+msgstr "Hodnoty makra IDE (pro makra FPC použijte vlastní volby)"
 
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
@@ -9092,11 +9076,11 @@ msgstr "Chybný řádek, sloupec ve zprávě%s%s"
 
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
 msgid "Invalid macro %s%s%s. The macro name must be a pascal identifier."
-msgstr ""
+msgstr "Neplatné makro %s%s%s. Jméno makra musí být identifikátor pascalu."
 
 #: lazarusidestrconsts.lisinvalidmacrothenameisakeyword
 msgid "Invalid macro name \"%s\". The name is a keyword."
-msgstr ""
+msgstr "Neplatné jméno makra \"%s\". Jméno je klíčovým slovem."
 
 #: lazarusidestrconsts.lisinvalidmask
 msgid "Invalid Mask"
@@ -9160,7 +9144,7 @@ msgstr "%s%s%s je chybné jméno projektu.%sProsím vyberte jiné (např. projec
 
 #: lazarusidestrconsts.lisisathiscirculardependencyisnotallowed
 msgid "%s is a %s.%sThis circular dependency is not allowed."
-msgstr ""
+msgstr "%s je %s.%sTato kruhová závislost není povolena."
 
 #: lazarusidestrconsts.lisisddirectorynotfound
 msgid "directory not found"
@@ -9168,7 +9152,7 @@ msgstr "adresář nenalezen"
 
 #: lazarusidestrconsts.lisissues
 msgid "Issues"
-msgstr ""
+msgstr "Záležitosti"
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
 msgid "I wonder how you did that. Error in the %s:"
@@ -10088,7 +10072,7 @@ msgstr "Kopírovat ze zděděného"
 
 #: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
 msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
-msgstr ""
+msgstr "%s nemá platnou cestu FPDoc.%sNelze vytvořit fpdoc soubor pro %s"
 
 #: lazarusidestrconsts.lisldmoveentriestoinherited
 msgid "Move entries to inherited"
@@ -10096,7 +10080,7 @@ msgstr "Přesunout položky do zděděného"
 
 #: lazarusidestrconsts.lisldnovalidfpdocpath
 msgid "No valid FPDoc path"
-msgstr ""
+msgstr "Neplatná cesta FPDoc"
 
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
@@ -10754,8 +10738,6 @@ msgid "Current Date and Time"
 msgstr "Aktuální datum a čas"
 
 #: lazarusidestrconsts.lismenuinsertfilename
-#, fuzzy
-#| msgid "Insert full Filename ..."
 msgid "Insert Full Filename ..."
 msgstr "Vložit plné jméno souboru ..."
 
@@ -10827,7 +10809,7 @@ msgstr "Vytvořit zdrojový řetězec..."
 
 #: lazarusidestrconsts.lismenunewcomponent
 msgid "New component"
-msgstr ""
+msgstr "Nová komponenta"
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
@@ -10919,7 +10901,7 @@ msgstr "Pozastavit"
 
 #: lazarusidestrconsts.lismenupkgnewpackagecomponent
 msgid "New package component"
-msgstr ""
+msgstr "Nová komponenta balíčku"
 
 #: lazarusidestrconsts.lismenuprocedurelist
 msgctxt "lazarusidestrconsts.lismenuprocedurelist"
@@ -11407,13 +11389,11 @@ msgstr "Seznam úkolů"
 
 #: lazarusidestrconsts.lismenuviewtoggleformunit
 msgid "Toggle Form/Unit View"
-msgstr "Změnit zobrazení formulář/jednotka"
+msgstr "Přepnout zobrazení formulář/jednotka"
 
 #: lazarusidestrconsts.lismenuviewunitdependencies
-#, fuzzy
-#| msgid "Unit Dependencies"
 msgid "Unit Dependencies ..."
-msgstr "Závislosti jednotky"
+msgstr "Závislosti jednotky ..."
 
 #: lazarusidestrconsts.lismenuviewunitinfo
 msgid "Unit Information ..."
@@ -11527,11 +11507,11 @@ msgstr "Přesunout stránku"
 
 #: lazarusidestrconsts.lismoveselecteddown
 msgid "Move selected item down (Ctrl+Down)"
-msgstr ""
+msgstr "Přesunout vybranou položku dolu (Ctrl+Dolu)"
 
 #: lazarusidestrconsts.lismoveselectedup
 msgid "Move selected item up (Ctrl+Up)"
-msgstr ""
+msgstr "Přesunout vybranou položku nahoru (Ctrl+Nahoru)"
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -11740,7 +11720,7 @@ msgstr "Nenalezeny žádné konstantní řetězce."
 
 #: lazarusidestrconsts.lisnotadesigntimepackage
 msgid "Not a designtime package"
-msgstr ""
+msgstr "Není balíčkem doby návrhu"
 
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
@@ -12103,7 +12083,7 @@ msgstr ", zanalyzovný "
 
 #: lazarusidestrconsts.lispascalfile
 msgid "Pascal file"
-msgstr ""
+msgstr "Soubor Pascalu"
 
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
@@ -12168,11 +12148,11 @@ msgstr "Cesta ke špatné instanci:"
 
 #: lazarusidestrconsts.lispckcleartousethepackagename
 msgid "Clear to use the package name"
-msgstr ""
+msgstr "Vyčistit pro použití jména balíčku"
 
 #: lazarusidestrconsts.lispckdisablei18noflfm
 msgid "Disable I18N of lfm"
-msgstr ""
+msgstr "Zakázat I18N v lfm"
 
 #: lazarusidestrconsts.lispckeditaddanitem
 msgid "Add an item"
@@ -12475,7 +12455,7 @@ msgstr "Popis / obsah"
 
 #: lazarusidestrconsts.lispckoptsdesigntime
 msgid "Designtime"
-msgstr ""
+msgstr "Čas návrhu"
 
 #: lazarusidestrconsts.lispckoptsdesigntimeandruntime
 msgid "Designtime and runtime"
@@ -12539,7 +12519,7 @@ msgstr "Uvolnění"
 
 #: lazarusidestrconsts.lispckoptsruntime
 msgid "Runtime"
-msgstr ""
+msgstr "Čas běhu"
 
 #: lazarusidestrconsts.lispckoptsthepackagehastheautoinstallflagthismeans
 msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
@@ -12559,15 +12539,15 @@ msgstr "Použití"
 
 #: lazarusidestrconsts.lispckpackage
 msgid "Package:"
-msgstr ""
+msgstr "Balíček:"
 
 #: lazarusidestrconsts.lispcksearchpathsforfpdocxmlfilesmultiplepathsmustbesepa
 msgid "Search paths for fpdoc xml files. Multiple paths must be separated by semicolon."
-msgstr ""
+msgstr "Prohledávané cesty XML souborů pro fpdoc. Více cest musí být odděleno středníkem."
 
 #: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
 msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
-msgstr ""
+msgstr "Když je formulář uložen, IDE může uložit všechny vlastnosti TTranslateString do \"po\" souboru balíčku. K tomu je nutné povolit I18N pro tento balíček, zadat výstupní adresář \"po\" souboru a ponechat tuto volbu nezatrženou."
 
 #: lazarusidestrconsts.lispdabort
 msgctxt "lazarusidestrconsts.lispdabort"
@@ -12665,10 +12645,8 @@ msgid "Show Missing Files"
 msgstr "Zobrazit chybějící soubory"
 
 #: lazarusidestrconsts.lispesortfiles
-#, fuzzy
-#| msgid "Sort Files"
 msgid "Sort Files Permanently"
-msgstr "Řadit soubory"
+msgstr "Řadit soubory trvale"
 
 #: lazarusidestrconsts.lispesortfilesalphabetically
 msgid "Sort files alphabetically"
@@ -12842,7 +12820,7 @@ msgstr "Porušená závislost"
 
 #: lazarusidestrconsts.lispkgmangcirculardependencies
 msgid "Circular dependencies found"
-msgstr ""
+msgstr "Nalezeny kruhové závislosti"
 
 #: lazarusidestrconsts.lispkgmangcompilingpackage
 msgid "Compiling package %s"
@@ -13108,10 +13086,8 @@ msgid "The package %s is a runtime only package.%sRuntime only packages can not 
 msgstr "Balíček %s je balíčkem jen pro dobu běhu. %sBalíčky jen pro dobu běhu nelze instalovat do IDE."
 
 #: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
-#, fuzzy
-#| msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also uses the default unit search of the compiler. This creates a cycle.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
 msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also uses the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
-msgstr "Balíček %s je překládán automaticky a jeho výstupní adresář je \"%s\", což je přednastavená prohledávaná cesta jednotek překladače. Balíček používá jiné balíčky, které rovněž používají přednastavenou prohledávanou cestu jednotek překladače. To vytváří zacyklení.%sTento problém%smůžete opravit odstraněním cesty z Vaší konfigurace překladače (např. fpc.cfg)%snebo zakázáním automatické změny tohoto balíčku%snebo odstraněním závislostí."
+msgstr "Balíček %s je překládán automaticky a jeho výstupní adresář je \"%s\", což je přednastavená prohledávaná cesta jednotek překladače. Balíček používá jiné balíčky, které rovněž používají přednastavenou prohledávanou cestu jednotek překladače. To vytváří nekonečné smyčky.%sTento problém%smůžete opravit odstraněním cesty z Vaší konfigurace překladače (např. fpc.cfg)%snebo zakázáním automatické změny tohoto balíčku%snebo odstraněním závislostí."
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
 msgid "The package %s%s%s is marked for installation, but can not be found.%sRemove dependency from the installation list of packages?"
@@ -13147,7 +13123,7 @@ msgstr "Dvě jednotky mají stejné jméno:%s%s1. %s%s%s z %s%s2. %s%s%s z %s%s%
 
 #: lazarusidestrconsts.lispkgmangthereisacirculardependency
 msgid "There is a circular dependency in the packages. See package graph."
-msgstr ""
+msgstr "Kruhová závislost v balíčcích. Viz graf balíčků."
 
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenameasapackage
 msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
@@ -13247,7 +13223,7 @@ msgstr "Varování: Soubor %s%s%s%spatří k aktuálnímu projektu."
 
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
-msgstr ""
+msgstr "Vybrat balíček"
 
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
@@ -13275,7 +13251,7 @@ msgstr "Neplatné jméno jednotky: %s"
 
 #: lazarusidestrconsts.lispkgsyslpkfilename
 msgid "%s%slpk file: %s%s%s"
-msgstr ""
+msgstr "%s%ssoubor lpk: %s%s%s"
 
 #: lazarusidestrconsts.lispkgsyspackagefilenotfound
 msgid "Package file not found"
@@ -13307,7 +13283,7 @@ msgstr "LCL - Lazarus Component Library obsahuje všechny základní komponenty 
 
 #: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
 msgid "%s%sThe lpk file was not found."
-msgstr ""
+msgstr "%s%sSoubor lpk nebyl nalezen."
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
 msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
@@ -13681,7 +13657,7 @@ msgstr "Adresář, v němž musí být hlavní soubor projektu"
 
 #: lazarusidestrconsts.lisprojectsessionchanged
 msgid "Project session changed"
-msgstr ""
+msgstr "Sezení projektu se změnilo"
 
 #: lazarusidestrconsts.lisprojectsourcedirectories
 msgid "Project source directories"
@@ -14133,7 +14109,7 @@ msgstr "Hostitelská aplikace %s%s%s není spustitelná."
 
 #: lazarusidestrconsts.lisruntimeonlycannotbeinstalledinide
 msgid "Runtime only, can not be installed in IDE"
-msgstr ""
+msgstr "Pouze čas běhu, nelze instalovat v IDE"
 
 #: lazarusidestrconsts.lisruntofailed
 msgid "Run-to failed"
@@ -14249,7 +14225,7 @@ msgstr "Uložit projekt %s (*%s)"
 
 #: lazarusidestrconsts.lissavesessionchangestoproject
 msgid "Save session changes to project %s?"
-msgstr ""
+msgstr "Uložit změny sezení do projektu %s?"
 
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
@@ -14269,7 +14245,7 @@ msgstr "Hledat pro "
 
 #: lazarusidestrconsts.lissearchpaths2
 msgid "Search paths"
-msgstr ""
+msgstr "Prohledávané cesty"
 
 #: lazarusidestrconsts.lissearchprojectsfrom
 msgid "Search projects from"
@@ -14769,16 +14745,8 @@ msgid "Editable Cell"
 msgstr "Upravitelná buňka"
 
 #: lazarusidestrconsts.listemplateeditparamcellhelp
-#, fuzzy
-#| msgid ""
-#| "an editable Cell, with a default value\n"
-#| "\"\",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell\n"
-#| "\"default\",Sync, to Sync with a previous cell of equal default\n"
 msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
-msgstr ""
-"Vložit upravitelné buňky s výchozími hodnotami\n"
-"\"\",Sync=n (,S=n), k Sync s předchozí buňkou (n= 1 po nejvyšší předchozí buňku\n"
-"\"výchozí\",Sync, po Sync s předchozí buňkou odpovídající výchozí\n"
+msgstr "Vloží upravitelné buňky. Mezi buňkami můžete přecházet klávesou Tab.%0:sMakro \"param\" přijímá seznam argumentů oddělených čárkou.%0:sPrvním argumentem je výchozí hodnota.%0:sDruhý argument (nepovinný) může být použit k propojení buňky s jinou buňkou (synchronní úprava)%0:s%0:s  while param(\"foo\") do param(foo);%0:sVloží dvě nezávislé buňky, obě s výchozím textem \"foo\"%0:sUvozovky nejsou povinné%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sVloží dvě propojené buňky. Úprava jedné z nich se promítne i do druhé%0:sHodnota \"1\" odkazuje na pozici dalšího \"param()\", takže pokud je více parametrů:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sDruhá a třetí jsou propojené (třetí odkazuje na \"2\") %0:s%0:s\"sync\" může být zkráceno na \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sDruhá a třetí jsou propojené.%0:sPoznámka: Pokud \"sync\" namá uvedeno \"=\" a pozici, propojí se k předchozí buňce se stejnou výchozí hodnotou (v tomto případě \"foo\")"
 
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
@@ -15003,7 +14971,7 @@ msgstr "Soubor LFM (formulář Lazarusu) obsahuje neplatné vlastnosti. To např
 
 #: lazarusidestrconsts.listhemacrodoesnotbeginwith
 msgid "The macro \"%s\" does not begin with \"%s\"."
-msgstr ""
+msgstr "Makro \"%s\" nezačíná na \"%s\"."
 
 #: lazarusidestrconsts.listhenameisnotavalidpascalidentifier
 msgid "The name %s%s%s is not a valid pascal identifier."
@@ -15067,7 +15035,7 @@ msgstr "Balíček již obsahuje jednotku s tímto jménem."
 
 #: lazarusidestrconsts.listhepackagecannotbeinstalledbecauseitrequireswhichi
 msgid "The package %s can not be installed, because it requires the package \"%s\", which is a runtime only package."
-msgstr ""
+msgstr "Balíček %s nelze nainstalovat, protože vyžaduje balíček \"%s\", který je pouze balíčkem času běhu."
 
 #: lazarusidestrconsts.listhepackagecannotbeuninstalledbecauseitisneededbyth
 msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
@@ -15079,11 +15047,11 @@ msgstr "Balíček %s nemá proceduru \"Register\", což typicky znamená, že ne
 
 #: lazarusidestrconsts.listhepackageisalreadyinthelist
 msgid "The package %s is already in the list"
-msgstr ""
+msgstr "Balíček %s je již v seznamu"
 
 #: lazarusidestrconsts.listhepackageisnotadesigntimepackageitcannotbeinstall
 msgid "The package %s is not a design time package. It can not be installed in the IDE"
-msgstr ""
+msgstr "Balíček %s není balíčkem času návrhu. Nelze jej nainstalovat v IDE"
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
@@ -15139,7 +15107,7 @@ msgstr "Již existuje formulář se jménem %s%s%s"
 
 #: lazarusidestrconsts.listhereisalreadyamacrowiththename
 msgid "There is already a macro with the name %s%s%s."
-msgstr ""
+msgstr "Makro se jménem %s%s%s již existuje."
 
 #: lazarusidestrconsts.listhereisalreadyanidemacrowiththename
 msgid "There is already an IDE macro with the name \"%s\""
@@ -15147,7 +15115,7 @@ msgstr "IDE makro se jménem \"%s\" již existuje"
 
 #: lazarusidestrconsts.listhereisalreadyapackageinthelist
 msgid "There is already a package %s in the list"
-msgstr ""
+msgstr "Balíček %s je již v seznamu"
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
@@ -15223,7 +15191,7 @@ msgstr "Jméno souboru jednotky %s%s%s není malými písmeny.%sPřekladač Free
 
 #: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
 msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
-msgstr ""
+msgstr "Jednotka %s je součastí zdrojů FPC, ale odpovídající XML soubor fpdoc nebyl nalezen.%sBuď jste dosud nepřidali adresář fpdoc do prohledávané cesty, nebo jednotka ještě není dokumentovaná.%sSoubory fpdoc pro FPC můžete stáhnout z: %s%sPřidejte, prosím, adresář do voleb editoru fpdoc.%sPro vytvoření nového souboru musí být adresář zapisovatelný."
 
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
@@ -15267,7 +15235,7 @@ msgstr "Tento příkaz nelze vyjmout.%sProsím, vyberte nějaký kód pro vyjmut
 
 #: lazarusidestrconsts.listhiswillcreateacirculardependency
 msgid "This will create a circular dependency."
-msgstr ""
+msgstr "Toto vytvoří kruhovou závislost."
 
 #: lazarusidestrconsts.listhreads
 msgctxt "lazarusidestrconsts.listhreads"
@@ -15551,7 +15519,7 @@ msgstr "Nelze přidat závislost %s, neboť balíček %s již závisí na %s"
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethiswouldcreatea
 msgid "Unable to add the dependency %s, because this would create a circular dependency. Dependency %s"
-msgstr ""
+msgstr "Nelze přidat závislost %s, protože by vznikla kruhová závislost. Závislost %s"
 
 #: lazarusidestrconsts.lisunabletoaddtoprojectbecausethereisalreadyaunitwith
 msgid "Unable to add %s to project, because there is already a unit with the same name in the Project."
@@ -15687,7 +15655,7 @@ msgstr "Nelze najít pascalovskou jednotku (.pas,.pp) pro soubor .lfm%s%%s%s"
 
 #: lazarusidestrconsts.lisunabletofindthelfmfileofcomponentclassneededbyunit
 msgid "Unable to find the lfm file of component class \"%s\".%sNeeded by unit:%s%s"
-msgstr ""
+msgstr "Nelze najít soubor lfm komponenty třídy \"%s\".%sVyžadováno jednotkou:%s%s"
 
 #: lazarusidestrconsts.lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
@@ -15873,7 +15841,7 @@ msgstr "Neočekávaná výsledek:%sLadič bude ukončen"
 
 #: lazarusidestrconsts.lisuninstall
 msgid "Uninstall %s"
-msgstr ""
+msgstr "Odinstalovat %s"
 
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
@@ -16269,7 +16237,7 @@ msgstr "Chyba XML analyzátoru v souboru %s%sChyba: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"
-msgstr ""
+msgstr "Toto můžete zakázat pro jednotlivé formuláře v editoru balíčku"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
 msgid "You can disable this for individual forms via the popup menu in the project inspector"
@@ -16364,7 +16332,7 @@ msgstr "Povolit i18n"
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
-msgstr ""
+msgstr "Filtrovat řádky v seznamu s řetězcem"
 
 #: lazarusidestrconsts.rsformdatafiledfm
 msgid "Form data file (*.dfm)|*.dfm"
@@ -17061,11 +17029,11 @@ msgstr "Hádat chybně umístěné $IFDEF"
 
 #: lazarusidestrconsts.srkmechalfwordleft
 msgid "Move cursor half-word left"
-msgstr ""
+msgstr "Posunout kurzor půl slova vlevo"
 
 #: lazarusidestrconsts.srkmechalfwordright
 msgid "Move cursor half-word right"
-msgstr ""
+msgstr "Posunout kurzor půl slova vpravo"
 
 #: lazarusidestrconsts.srkmecimestr
 msgid "Ime Str"
@@ -17073,7 +17041,7 @@ msgstr "Ime Str"
 
 #: lazarusidestrconsts.srkmecinsertchangelogentry
 msgid "Insert ChangeLog entry"
-msgstr "Vložit položku ZáznamuZměn"
+msgstr "Vložit položku ZáznamZměn"
 
 #: lazarusidestrconsts.srkmecinsertcharacter
 msgid "Insert from Charactermap"
@@ -17116,8 +17084,6 @@ msgid "Insert current date and time"
 msgstr "Vložit aktuální datum a čas"
 
 #: lazarusidestrconsts.srkmecinsertfilename
-#, fuzzy
-#| msgid "Insert full Filename"
 msgid "Insert Full Filename"
 msgstr "Vložit plné jméno souboru"
 
@@ -17391,11 +17357,11 @@ msgstr "Vybrat Goto XY"
 
 #: lazarusidestrconsts.srkmecselhalfwordleft
 msgid "Select half-word left"
-msgstr ""
+msgstr "Vybrat půl slova vlevo"
 
 #: lazarusidestrconsts.srkmecselhalfwordright
 msgid "Select half-word right"
-msgstr ""
+msgstr "Vybrat půl slova vpravo"
 
 #: lazarusidestrconsts.srkmecselleft
 msgid "SelLeft"
@@ -17451,11 +17417,11 @@ msgstr "Vybrat nahoru"
 
 #: lazarusidestrconsts.srkmecselwordendleft
 msgid "Select word-end left"
-msgstr ""
+msgstr "Vybrat do konce slova vlevo"
 
 #: lazarusidestrconsts.srkmecselwordendright
 msgid "Select word-end right"
-msgstr ""
+msgstr "Vybrat do konce slova vpravo"
 
 #: lazarusidestrconsts.srkmecselwordleft
 msgctxt "lazarusidestrconsts.srkmecselwordleft"
@@ -17749,11 +17715,11 @@ msgstr "Doplnění slova"
 
 #: lazarusidestrconsts.srkmecwordendleft
 msgid "Move cursor word-end left"
-msgstr ""
+msgstr "Posunout kurzor na konec slova vlevo"
 
 #: lazarusidestrconsts.srkmecwordendright
 msgid "Move cursor word-end right"
-msgstr ""
+msgstr "Posunout kurzor na konec slova vpravo"
 
 #: lazarusidestrconsts.srkmecwordleft
 msgid "Move cursor word left"
