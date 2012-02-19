@@ -2667,6 +2667,7 @@ begin
     NOTSRCCOPY,
     R2_NOTCOPYPEN: Result := QPainterRasterOp_NotSource;
 
+    PATPAINT,
     R2_NOTMASKPEN: Result := QPainterRasterOp_NotSourceOrNotDestination;
 
     NOTSRCERASE,
