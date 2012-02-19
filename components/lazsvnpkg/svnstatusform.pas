@@ -102,8 +102,7 @@ begin
   Caption := Format('%s - %s...', [RepositoryPath, rsLazarusSVNCommit]);
   CommitMsgHistoryLabel.Caption:=rsCommitMsgHistory;
   CommitMsgLabel.Caption:=rsCommitMsg;
-//  Application.QueueAsyncCall(@Initialize, 0);
-  Initialize(0);
+  Application.QueueAsyncCall(@Initialize, 0);
 end;
 
 procedure TSVNStatusFrm.Initialize(Data: PtrInt);

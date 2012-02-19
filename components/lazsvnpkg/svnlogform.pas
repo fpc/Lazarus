@@ -206,8 +206,7 @@ procedure TSVNLogFrm.FormShow(Sender: TObject);
 begin
   ChangeCursor(crHourGlass);
   Caption := Format(rsLazarusSVNLog, [RepositoryPath]);
-//  Application.QueueAsyncCall(@Execute, 0);
-  Execute(0);
+  Application.QueueAsyncCall(@Execute, 0);
 end;
 
 procedure TSVNLogFrm.LogListViewSelectItem(Sender: TObject; Item: TListItem;
