@@ -120,6 +120,8 @@ function DbgS(const m: TMethod): string; overload;
 function DbgSName(const p: TObject): string; overload;
 function DbgSName(const p: TClass): string; overload;
 function DbgStr(const StringWithSpecialChars: string): string; overload;
+function DbgStr(const StringWithSpecialChars: string; StartPos, Len: PtrInt): string; overload;
+function DbgStr(const p: PChar; Len: PtrInt): string; overload;
 function DbgWideStr(const StringWithSpecialChars: widestring): string; overload;
 function dbgMemRange(P: Pointer; Count: integer; Width: integer = 0): string; overload;
 function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string; overload;
@@ -695,6 +697,56 @@ begin
       system.Move(s[1],Result[i],length(s));
       inc(i,length(s));
     end;
+  end;
+end;
+
+function DbgStr(const StringWithSpecialChars: string; StartPos, Len: PtrInt
+  ): string;
+begin
+  Result:=dbgstr(copy(StringWithSpecialChars,StartPos,Len));
+end;
+
+function DbgStr(const p: PChar; Len: PtrInt): string;
+const
+  Hex: array[0..15] of char='0123456789ABCDEF';
+var
+  UsedLen: PtrUInt;
+  ResultLen: PtrUInt;
+  Src: PChar;
+  Dest: PChar;
+  c: Char;
+begin
+  if (p=nil) or (p^=#0) or (Len<=0) then exit('');
+  UsedLen:=0;
+  ResultLen:=0;
+  Src:=p;
+  while Src^<>#0 do begin
+    inc(UsedLen);
+    if Src^ in [' '..#126] then
+      inc(ResultLen)
+    else
+      inc(ResultLen,3);
+    if UsedLen>=Len then break;
+    inc(Src);
+  end;
+  SetLength(Result,ResultLen);
+  Src:=p;
+  Dest:=PChar(Result);
+  while UsedLen>0 do begin
+    dec(UsedLen);
+    c:=Src^;
+    if c in [' '..#126] then begin
+      Dest^:=c;
+      inc(Dest);
+    end else begin
+      Dest^:='#';
+      inc(Dest);
+      Dest^:=Hex[ord(c) shr 4];
+      inc(Dest);
+      Dest^:=Hex[ord(c) and $f];
+      inc(Dest);
+    end;
+    inc(Src);
   end;
 end;
 
