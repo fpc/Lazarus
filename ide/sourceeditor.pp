@@ -8128,7 +8128,7 @@ var
   i: TsemChangeReason;
   h: TSrcEditMangerHandlerType;
 begin
-  FMacroRecorder := TSynMacroRecorder.Create(nil);
+  FMacroRecorder := TSynMacroRecorder.Create(self);
   FMacroRecorder.OnStateChange  := @DoMacroRecorderState;
   FMacroRecorder.OnUserCommand   := @DoMacroRecorderUserCommand;
   FMacroRecorder.RecordCommandID := ecSynMacroRecord;
