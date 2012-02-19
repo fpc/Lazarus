@@ -1,5 +1,7 @@
-inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
+object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
+  Left = 0
   Height = 510
+  Top = 0
   Width = 461
   ClientHeight = 510
   ClientWidth = 461
@@ -7,113 +9,138 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
   Visible = False
   DesignLeft = 303
   DesignTop = 99
-  object KeyMappingHelpLabel: TLabel[0]
+  object HelpLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 0
-    Height = 18
+    Height = 15
     Top = 0
-    Width = 140
-    Caption = 'KeyMappingHelpLabel'
+    Width = 56
+    Caption = 'HelpLabel'
     ParentColor = False
   end
-  object KeyMappingFilterEdit: TEdit[1]
+  object TreeView: TTreeView
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = KeyMappingHelpLabel
+    AnchorSideTop.Control = FilterEdit
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 27
-    Top = 24
-    Width = 461
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 6
-    OnChange = KeyMappingFilterEditChange
-    OnEnter = KeyMappingFilterEditEnter
-    OnExit = KeyMappingFilterEditExit
-    TabOrder = 0
-    Text = 'KeyMappingFilterEdit'
-  end
-  object KeyMappingTreeView: TTreeView[2]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = KeyMappingFilterEdit
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = KeyMappingFindKeyButton
-    Left = 0
-    Height = 383
-    Top = 57
+    Height = 402
+    Top = 48
     Width = 461
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Top = 6
-    BorderSpacing.Bottom = 6
-    DefaultItemHeight = 19
+    BorderSpacing.Top = 3
+    DefaultItemHeight = 16
+    PopupMenu = PopupMenu1
     ReadOnly = True
+    RightClickSelect = True
     RowSelect = True
     ScrollBars = ssAutoBoth
-    TabOrder = 1
-    OnDblClick = KeyMappingTreeViewDblClick
-    OnSelectionChanged = KeyMappingTreeViewSelectionChanged
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    TabOrder = 0
+    OnDblClick = TreeViewDblClick
+    OnKeyPress = TreeViewKeyPress
+    OnSelectionChanged = TreeViewSelectionChanged
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
-  object KeyMappingFindKeyButton: TButton[3]
+  object FilterEdit: TTreeFilterEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = HelpLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 24
+    Top = 21
+    Width = 224
+    ButtonWidth = 23
+    NumGlyphs = 0
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    MaxLength = 0
+    TabOrder = 1
+    FilteredTreeview = TreeView
+    ExpandAllInitially = True
+  end
+  object ClearButton: TBitBtn
+    AnchorSideRight.Side = asrBottom
+    Left = 380
+    Height = 25
+    Top = 455
+    Width = 81
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Bottom = 6
+    Caption = 'ClearButton'
+    OnClick = ClearButtonClick
+    TabOrder = 2
+  end
+  object FindKeyButton: TBitBtn
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = KeyMappingChooseSchemeButton
     Left = 0
-    Height = 29
-    Top = 446
-    Width = 178
+    Height = 25
+    Top = 455
+    Width = 93
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Bottom = 6
-    Caption = 'KeyMappingFindKeyButton'
-    OnClick = KeyMappingFindKeyButtonClick
-    TabOrder = 2
-  end
-  object KeyMappingChooseSchemeButton: TButton[4]
-    AnchorSideLeft.Control = Owner
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 0
-    Height = 29
-    Top = 481
-    Width = 232
-    Anchors = [akLeft, akBottom]
-    AutoSize = True
-    Caption = 'KeyMappingChooseSchemeButton'
-    OnClick = KeyMappingChooseSchemeButtonClick
+    Caption = 'FindKeyButton'
+    OnClick = FindKeyButtonClick
     TabOrder = 3
   end
-  object KeyMappingConsistencyCheckButton: TButton[5]
+  object ConsistencyCheckButton: TBitBtn
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 214
-    Height = 29
-    Top = 481
-    Width = 247
+    Left = 308
+    Height = 25
+    Top = 485
+    Width = 153
     Anchors = [akRight, akBottom]
     AutoSize = True
-    Caption = 'KeyMappingConsistencyCheckButton'
-    OnClick = KeyMappingConsistencyCheckButtonClick
+    Caption = 'ConsistencyCheckButton'
+    OnClick = ConsistencyCheckButtonClick
     TabOrder = 4
   end
-  object KeyMappingClearButton: TButton[6]
-    AnchorSideTop.Control = KeyMappingFindKeyButton
-    AnchorSideRight.Control = KeyMappingConsistencyCheckButton
-    AnchorSideRight.Side = asrBottom
-    Left = 297
-    Height = 29
-    Top = 446
-    Width = 164
-    Anchors = [akTop, akRight]
+  object ChooseSchemeButton: TBitBtn
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 25
+    Top = 485
+    Width = 138
+    Anchors = [akLeft, akBottom]
     AutoSize = True
-    Caption = 'KeyMappingClearButton'
-    OnClick = KeyMappingClearButtonClick
+    Caption = 'ChooseSchemeButton'
+    OnClick = ChooseSchemeButtonClick
     TabOrder = 5
+  end
+  object SchemeLabel: TLabel
+    AnchorSideLeft.Control = ChooseSchemeButton
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = ChooseSchemeButton
+    AnchorSideTop.Side = asrCenter
+    Left = 144
+    Height = 15
+    Top = 490
+    Width = 76
+    BorderSpacing.Around = 6
+    Caption = 'SchemeLabel'
+    ParentColor = False
+  end
+  object PopupMenu1: TPopupMenu
+    OnPopup = PopupMenu1Popup
+    left = 356
+    top = 16
+    object EditMenuItem: TMenuItem
+      Caption = 'Edit Key Mapping'
+      OnClick = EditMenuItemClick
+    end
+    object ClearMenuItem: TMenuItem
+      Caption = 'Clear Key Mapping'
+      OnClick = ClearMenuItemClick
+    end
   end
 end

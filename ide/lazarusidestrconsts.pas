@@ -1533,6 +1533,10 @@ resourcestring
   dlgKeyMappingScheme = 'Key Mapping Scheme';
   dlgCheckConsistency = 'Check consistency';
   lisEdOptsLoadAScheme = 'Load a scheme';
+  lisFindKeyCombination = 'Find key combination';
+  lisClearKeyMapping = 'Clear Command''s Mapping';
+  lisEditKeyMapping = 'Edit Command''s Mapping';
+  lisNowLoadedScheme = 'Now loaded: ';
   dlgLang = 'Language';
   dlgEditSchemDefaults = 'Scheme globals';
   lis0No1DrawDividerLinesOnlyForTopLevel2DrawLinesForFi = '0 = no, 1 = draw '
@@ -1731,12 +1735,10 @@ resourcestring
     'This option will use a locked (and only a locked) Editor, '+
     'which does not need to scroll in order to display the target jump point '+
     '(target jump point is already in visible screen area).';
-  dlgEditAccessDescUnLockedInSoftView =
-    'This option will use a not locked Editor, '+
+  dlgEditAccessDescUnLockedInSoftView = 'This option will use a not locked Editor, '+
     'which does not need to scroll in order to display the target jump point '+
     '(target jump point is already in visible screen center area, excluding 2-5 lines at the top/bottom).';
-  dlgEditAccessDescUnLocked =
-    'This option will use any not locked Editor.';
+  dlgEditAccessDescUnLocked = 'This option will use any not locked Editor.';
   dlgEditAccessDescUnLockedOpenNewInOldWin =
     'If no unlocked tab is found, then this option will open a new Tab in an existing '+
     '(and only in an existing) Window. '+
@@ -1761,9 +1763,6 @@ resourcestring
     'This option will open a new Tab in an existing or new Window, '+
     'if no unlocked tab is found. '+
     'This option will always succeed, further options are never tested.';
-
-  
-  lisClearKeyMapping = 'Clear Key Mapping';
 
   // CodeTools dialog
   dlgCodeToolsOpts = 'CodeTools Options';
@@ -4839,7 +4838,6 @@ resourcestring
     +'dependency is not allowed.';
   lisTheComponentCanNotBeDeletedBecauseItIsNotOwnedBy = 'The component %s can '
     +'not be deleted, because it is not owned by %s.';
-  lisFindKeyCombination = 'Find key combination';
   lisFilter3 = 'Filter: %s';
   lisInvalidPublishingDirectory = 'Invalid publishing Directory';
   lisSourceDirectoryAndDestinationDirectoryAreTheSameMa = 'Source directory %'
@@ -5177,8 +5175,7 @@ resourcestring
 
   //Jump History dialog
   lisJHJumpHistory = 'Jump History';
-  lisHintDoubleClickOnTheCommandYouWantToEdit = 'Hint: double click on the '
-    +'command you want to edit';
+  lisCommandEditHint = 'Edit command''s mapping with double click, Return key or Popup menu';
   lisTheGNUDebuggerThroughSshAllowsToRemoteDebugViaASsh =
       'The GNU debugger '
     +'through ssh allows to remote debug via a ssh connection. See docs/'

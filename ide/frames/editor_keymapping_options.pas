@@ -25,10 +25,9 @@ unit editor_keymapping_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, StdCtrls, ComCtrls, Controls,
-  Dialogs, LCLType, LCLProc,
-  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, IDEImagesIntf,
-  editor_general_options,
+  Classes, SysUtils, FileUtil, TreeFilterEdit, Forms, StdCtrls, ComCtrls,
+  Controls, Dialogs, LCLType, LCLProc, Menus, Buttons, EditorOptions,
+  LazarusIDEStrConsts, IDEOptionsIntf, IDEImagesIntf, editor_general_options,
   KeymapSchemeDlg, KeyMapping, IDECommands, KeyMapShortCutDlg, SrcEditorIntf;
 
 type
@@ -36,33 +35,40 @@ type
   { TEditorKeymappingOptionsFrame }
 
   TEditorKeymappingOptionsFrame = class(TAbstractIDEOptionsEditor)
-    KeyMappingClearButton: TButton;
-    KeyMappingChooseSchemeButton: TButton;
-    KeyMappingConsistencyCheckButton: TButton;
-    KeyMappingFilterEdit: TEdit;
-    KeyMappingFindKeyButton: TButton;
-    KeyMappingHelpLabel: TLabel;
-    KeyMappingTreeView: TTreeView;
-    procedure KeyMappingChooseSchemeButtonClick(Sender: TObject);
-    procedure KeyMappingClearButtonClick(Sender: TObject);
-    procedure KeyMappingConsistencyCheckButtonClick(Sender: TObject);
-    procedure KeyMappingFilterEditChange(Sender: TObject);
-    procedure KeyMappingFilterEditEnter(Sender: TObject);
-    procedure KeyMappingFilterEditExit(Sender: TObject);
-    procedure KeyMappingFindKeyButtonClick(Sender: TObject);
-    procedure KeyMappingTreeViewDblClick(Sender: TObject);
-    procedure KeyMappingTreeViewSelectionChanged(Sender: TObject);
+    ChooseSchemeButton: TBitBtn;
+    ClearButton: TBitBtn;
+    ConsistencyCheckButton: TBitBtn;
+    FilterEdit: TTreeFilterEdit;
+    FindKeyButton: TBitBtn;
+    HelpLabel: TLabel;
+    SchemeLabel: TLabel;
+    TreeView: TTreeView;
+    EditMenuItem: TMenuItem;
+    ClearMenuItem: TMenuItem;
+    PopupMenu1: TPopupMenu;
+    procedure ClearMenuItemClick(Sender: TObject);
+    procedure EditMenuItemClick(Sender: TObject);
+    procedure ChooseSchemeButtonClick(Sender: TObject);
+    procedure ClearButtonClick(Sender: TObject);
+    procedure ConsistencyCheckButtonClick(Sender: TObject);
+    procedure FindKeyButtonClick(Sender: TObject);
+    procedure TreeViewDblClick(Sender: TObject);
+    procedure TreeViewKeyPress(Sender: TObject; var Key: char);
+    procedure TreeViewSelectionChanged(Sender: TObject);
+    procedure PopupMenu1Popup(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
-    KeyMapNameFilter: string;
     EditingKeyMap: TKeyCommandRelationList;
     KeyMapKeyFilter: TIDEShortCut;
-
+    fModified: Boolean;
     function GeneralPage: TEditorGeneralOptionsFrame; inline;
     procedure FillKeyMappingTreeView;
+    procedure EditCommandMapping(ANode: TTreeNode);
+    procedure ClearCommandMapping(ANode: TTreeNode);
     function KeyMappingRelationToString(Index: Integer): String;
     function KeyMappingRelationToString(KeyRelation: TKeyCommandRelation): String;
     procedure UpdateKeyFilterButton;
+    procedure UpdateSchemeLabel;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -126,21 +132,21 @@ end;
 
 { TEditorKeymappingOptionsFrame }
 
-procedure TEditorKeymappingOptionsFrame.KeyMappingFilterEditChange(Sender: TObject);
-var
-  Filter: String;
+constructor TEditorKeymappingOptionsFrame.Create(AOwner: TComponent);
 begin
-  if [csLoading, csDestroying] * ComponentState <> [] then
-    Exit;
-  Filter := KeyMappingFilterEdit.Text;
-  if (Filter = lisCEFilter) or (Filter = KeyMappingFilterEdit.Name) then
-    Filter := '';
-  KeyMapNameFilter := Filter;
-  FillKeyMappingTreeView;
+  inherited Create(AOwner);
+  EditingKeyMap := TKeyCommandRelationList.Create;
+  ClearButton.Enabled:=false;
+  fModified:=False;
 end;
 
-procedure TEditorKeymappingOptionsFrame.KeyMappingChooseSchemeButtonClick(
-  Sender: TObject);
+destructor TEditorKeymappingOptionsFrame.Destroy;
+begin
+  EditingKeyMap.Free;
+  inherited Destroy;
+end;
+
+procedure TEditorKeymappingOptionsFrame.ChooseSchemeButtonClick(Sender: TObject);
 var
   NewScheme: String;
 begin
@@ -150,35 +156,16 @@ begin
   EditorOpts.KeyMappingScheme := NewScheme;
   EditingKeyMap.LoadScheme(NewScheme);
   FillKeyMappingTreeView;
+  fModified:=False;
+  UpdateSchemeLabel;
 end;
 
-procedure TEditorKeymappingOptionsFrame.KeyMappingClearButtonClick(
-  Sender: TObject);
-var
-  i: integer;
-  ARelation: TKeyCommandRelation;
-  ANode: TTreeNode;
+procedure TEditorKeymappingOptionsFrame.ClearButtonClick(Sender: TObject);
 begin
-  ANode := KeyMappingTreeView.Selected;
-  if (ANode <> nil) and (ANode.Data <> nil) and
-     (TObject(ANode.Data) is TKeyCommandRelation) then
-  begin
-    ARelation := TKeyCommandRelation(ANode.Data);
-    i := EditingKeyMap.IndexOf(ARelation);
-    if (i >= 0) {and (ShowKeyMappingEditForm(i, EditingKeyMap) = mrOk)} then
-    begin
-      ARelation.ShortcutA := IDEShortCut(VK_UNKNOWN, []);
-      ARelation.ShortcutB := IDEShortCut(VK_UNKNOWN, []);
-      FillKeyMappingTreeView;
-      with GeneralPage do
-        for i := Low(PreviewEdits) to High(PreviewEdits) do
-          if PreviewEdits[i] <> nil then
-            EditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes, TSourceEditorWindowInterface);
-    end;
-  end;
+  ClearCommandMapping(TreeView.Selected);
 end;
 
-procedure TEditorKeymappingOptionsFrame.KeyMappingConsistencyCheckButtonClick(
+procedure TEditorKeymappingOptionsFrame.ConsistencyCheckButtonClick(
   Sender: TObject);
 var
   Protocol: TStringList;
@@ -210,64 +197,61 @@ begin
   end;
 end;
 
-procedure TEditorKeymappingOptionsFrame.KeyMappingFilterEditEnter(Sender: TObject);
-begin
-  if KeyMappingFilterEdit.Text = lisCEFilter then
-    KeyMappingFilterEdit.Text := '';
-end;
-
-procedure TEditorKeymappingOptionsFrame.KeyMappingFilterEditExit(Sender: TObject);
-begin
-  if KeyMappingFilterEdit.Text = '' then
-    KeyMappingFilterEdit.Text := lisCEFilter;
-end;
-
-procedure TEditorKeymappingOptionsFrame.KeyMappingFindKeyButtonClick(Sender: TObject);
+procedure TEditorKeymappingOptionsFrame.FindKeyButtonClick(Sender: TObject);
 var
   KeyFilter: TIDEShortCut;
 begin
   if ShowKeyMappingGrabForm(KeyFilter) <> mrOK then
     Exit;
-  //debugln(['TEditorOptionsForm.KeyMappingFindKeyButtonClick ',KeyAndShiftStateToEditorKeyString(KeyFilter)]);
   KeyMapKeyFilter := KeyFilter;
   UpdateKeyFilterButton;
   FillKeyMappingTreeView;
 end;
 
-procedure TEditorKeymappingOptionsFrame.KeyMappingTreeViewDblClick(
-  Sender: TObject);
+procedure TEditorKeymappingOptionsFrame.TreeViewDblClick(Sender: TObject);
 var
   P: TPoint;
-  i: integer;
-  ARelation: TKeyCommandRelation;
   ANode: TTreeNode;
 begin
-  P := KeyMappingTreeView.ScreenToClient(Mouse.CursorPos);
-  ANode := KeyMappingTreeView.GetNodeAt(P.X, P.Y);
-  if (ANode <> nil) and (ANode.Data <> nil) and
-     (TObject(ANode.Data) is TKeyCommandRelation) then
-  begin
-    ARelation := TKeyCommandRelation(ANode.Data);
-    i := EditingKeyMap.IndexOf(ARelation);
-    if (i >= 0) and (ShowKeyMappingEditForm(i, EditingKeyMap) = mrOk) then
-    begin
-      FillKeyMappingTreeView;
-      with GeneralPage do
-        for i := Low(PreviewEdits) to High(PreviewEdits) do
-          if PreviewEdits[i] <> nil then
-            EditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes, TSourceEditorWindowInterface);
-    end;
-  end;
+  P := TreeView.ScreenToClient(Mouse.CursorPos);
+  ANode := TreeView.GetNodeAt(P.X, P.Y);
+  if (ANode<>nil) and (ANode.Data<>nil) and (TObject(ANode.Data) is TKeyCommandRelation) then
+    EditCommandMapping(ANode);
 end;
 
-procedure TEditorKeymappingOptionsFrame.KeyMappingTreeViewSelectionChanged(
-  Sender: TObject);
+procedure TEditorKeymappingOptionsFrame.TreeViewKeyPress(Sender: TObject; var Key: char);
+begin
+  if Key = char(VK_RETURN) then
+    EditCommandMapping(TreeView.Selected);
+end;
+
+procedure TEditorKeymappingOptionsFrame.TreeViewSelectionChanged(Sender: TObject);
 var
   ANode: TTreeNode;
 begin
-  ANode := KeyMappingTreeView.Selected;
-  KeyMappingClearButton.Enabled:=(ANode <> nil) and (ANode.Data <> nil)
-                               and (TObject(ANode.Data) is TKeyCommandRelation);
+  ANode := TreeView.Selected;
+  ClearButton.Enabled:=
+    (ANode<>nil) and (ANode.Data<>nil) and (TObject(ANode.Data) is TKeyCommandRelation);
+end;
+
+procedure TEditorKeymappingOptionsFrame.PopupMenu1Popup(Sender: TObject);
+var
+  ANode: TTreeNode;
+begin
+  ANode := TreeView.Selected;
+  EditMenuItem.Enabled:=
+    (ANode<>nil) and (ANode.Data<>nil) and (TObject(ANode.Data) is TKeyCommandRelation);
+  ClearMenuItem.Enabled := EditMenuItem.Enabled;
+end;
+
+procedure TEditorKeymappingOptionsFrame.EditMenuItemClick(Sender: TObject);
+begin
+  EditCommandMapping(TreeView.Selected);
+end;
+
+procedure TEditorKeymappingOptionsFrame.ClearMenuItemClick(Sender: TObject);
+begin
+  ClearCommandMapping(TreeView.Selected);
 end;
 
 function TEditorKeymappingOptionsFrame.GeneralPage: TEditorGeneralOptionsFrame; inline;
@@ -283,15 +267,27 @@ end;
 procedure TEditorKeymappingOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   FDialog := ADialog;
-  KeyMappingChooseSchemeButton.Caption := lisEdOptsLoadAScheme;
-  KeyMappingConsistencyCheckButton.Caption := dlgCheckConsistency;
-  KeyMappingHelpLabel.Caption := lisHintDoubleClickOnTheCommandYouWantToEdit;
-  KeyMappingFilterEdit.Text := lisCEFilter;
-  KeyMappingFindKeyButton.Caption := lisFindKeyCombination;
-  KeyMappingTreeView.Images := IDEImages.Images_16;
-  KeyMappingClearButton.Caption := lisClearKeyMapping;
+  HelpLabel.Caption := lisCommandEditHint;
+  ChooseSchemeButton.Caption := lisEdOptsLoadAScheme;
+  ConsistencyCheckButton.Caption := dlgCheckConsistency;
+  FindKeyButton.Caption := lisFindKeyCombination;
+  ClearButton.Caption := lisClearKeyMapping;
+  ClearMenuItem.Caption := lisClearKeyMapping;
+  EditMenuItem.Caption := lisEditKeyMapping;
+
+  TreeView.Images := IDEImages.Images_16;
   imgKeyCategory := IDEImages.LoadImage(16, 'item_keyboard');
   imgKeyItem := IDEImages.LoadImage(16, 'item_character');
+  ChooseSchemeButton.LoadGlyphFromLazarusResource('item_keyboard'); // keymapcategory
+  ConsistencyCheckButton.LoadGlyphFromLazarusResource('menu_tool_check_lfm');
+  FindKeyButton.LoadGlyphFromLazarusResource('menu_search_find');
+  ClearButton.LoadGlyphFromLazarusResource('menu_clean');
+  PopupMenu1.Images := IDEImages.Images_16;
+  ClearMenuItem.ImageIndex := IDEImages.LoadImage(16, 'menu_clean');
+  EditMenuItem.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
+
+  FillKeyMappingTreeView;
+  UpdateSchemeLabel;
 end;
 
 procedure TEditorKeymappingOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -327,13 +323,9 @@ var
   CurKeyRelation: TKeyCommandRelation;
   ChildNodeIndex: Integer;
   CategoryNodeIndex: Integer;
-  HasFilter: Boolean;
   ItemCaption: String;
-  NameFilterUp: String;
 begin
-  HasFilter:=(KeyMapNameFilter<>'');
-  NameFilterUp:=uppercase(KeyMapNameFilter);
-  with KeyMappingTreeView do
+  with TreeView do
   begin
     BeginUpdate;
     CategoryNodeIndex:=0;
@@ -355,9 +347,6 @@ begin
       begin
         CurKeyRelation := TKeyCommandRelation(CurCategory[j]);
         ItemCaption:=KeyMappingRelationToString(CurKeyRelation);
-        if (NameFilterUp<>'')
-        and (System.Pos(NameFilterUp,UpperCase(ItemCaption))=0) then
-          continue;
         if (KeyMapKeyFilter.Key1<>VK_UNKNOWN)
         and (CompareIDEShortCutKey1s(@KeyMapKeyFilter,@CurKeyRelation.ShortcutA)<>0)
         and (CompareIDEShortCutKey1s(@KeyMapKeyFilter,@CurKeyRelation.ShortcutB)<>0)
@@ -370,8 +359,7 @@ begin
           NewKeyNode.Data := CurKeyRelation;
         end
         else
-          NewKeyNode := Items.AddChildObject(NewCategoryNode,
-            ItemCaption, CurKeyRelation);
+          NewKeyNode := Items.AddChildObject(NewCategoryNode,ItemCaption, CurKeyRelation);
         NewKeyNode.ImageIndex := imgKeyItem;
         NewKeyNode.SelectedIndex := NewKeyNode.ImageIndex;
         inc(ChildNodeIndex);
@@ -379,11 +367,8 @@ begin
       // delete unneeded ones
       while NewCategoryNode.Count > ChildNodeIndex do
         NewCategoryNode[NewCategoryNode.Count - 1].Delete;
-      if NewCategoryNode.Count>0 then begin
-        if HasFilter then
-          NewCategoryNode.Expanded:=true;
+      if NewCategoryNode.Count>0 then
         inc(CategoryNodeIndex);
-      end;
     end;
     while Items.TopLvlCount > CategoryNodeIndex do
       Items.TopLvlItems[Items.TopLvlCount - 1].Delete;
@@ -432,23 +417,60 @@ end;
 procedure TEditorKeymappingOptionsFrame.UpdateKeyFilterButton;
 begin
   if IDEShortCutEmpty(KeyMapKeyFilter) then
-    KeyMappingFindKeyButton.Caption:=lisFindKeyCombination
+    FindKeyButton.Caption:=lisFindKeyCombination
   else
-    KeyMappingFindKeyButton.Caption:=
+    FindKeyButton.Caption:=
       Format(lisFilter3, [KeyAndShiftStateToEditorKeyString(KeyMapKeyFilter)]);
 end;
 
-constructor TEditorKeymappingOptionsFrame.Create(AOwner: TComponent);
+procedure TEditorKeymappingOptionsFrame.UpdateSchemeLabel;
+var
+  s: String;
 begin
-  inherited Create(AOwner);
-  EditingKeyMap := TKeyCommandRelationList.Create;
-  KeyMappingClearButton.Enabled:=false;
+  s:=lisNowLoadedScheme+EditorOpts.KeyMappingScheme;
+  if fModified then
+    s:=s+' (*)';
+  SchemeLabel.Caption:=s;
 end;
 
-destructor TEditorKeymappingOptionsFrame.Destroy;
+procedure TEditorKeymappingOptionsFrame.EditCommandMapping(ANode: TTreeNode);
+var
+  i: integer;
+  ARelation: TKeyCommandRelation;
 begin
-  EditingKeyMap.Free;
-  inherited Destroy;
+  ARelation := TKeyCommandRelation(ANode.Data);
+  i := EditingKeyMap.IndexOf(ARelation);
+  if (i >= 0) and (ShowKeyMappingEditForm(i, EditingKeyMap) = mrOk) then
+  begin
+    FillKeyMappingTreeView;
+    fModified:=True;
+    UpdateSchemeLabel;
+    with GeneralPage do
+      for i := Low(PreviewEdits) to High(PreviewEdits) do
+        if PreviewEdits[i] <> nil then
+          EditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes, TSourceEditorWindowInterface);
+  end;
+end;
+
+procedure TEditorKeymappingOptionsFrame.ClearCommandMapping(ANode: TTreeNode);
+var
+  i: integer;
+  ARelation: TKeyCommandRelation;
+begin
+  ARelation := TKeyCommandRelation(ANode.Data);
+  i := EditingKeyMap.IndexOf(ARelation);
+  if (i >= 0) {and (ShowKeyMappingEditForm(i, EditingKeyMap) = mrOk)} then
+  begin
+    ARelation.ShortcutA := IDEShortCut(VK_UNKNOWN, []);
+    ARelation.ShortcutB := IDEShortCut(VK_UNKNOWN, []);
+    FillKeyMappingTreeView;
+    fModified:=True;
+    UpdateSchemeLabel;
+    with GeneralPage do
+      for i := Low(PreviewEdits) to High(PreviewEdits) do
+        if PreviewEdits[i] <> nil then
+          EditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes, TSourceEditorWindowInterface);
+  end;
 end;
 
 initialization
