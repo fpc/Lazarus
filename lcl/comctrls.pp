@@ -2719,6 +2719,7 @@ type
 
   TCustomTreeView = class(TCustomControl)
   private
+    FAccessibilityOn: Boolean;
     FBackgroundColor: TColor;
     FBottomItem: TTreeNode;
     FEditingItem: TTreeNode;
@@ -2918,6 +2919,10 @@ type
     // Accessibility
     function GetSelectedChildAccessibleObject: TLazAccessibleObject; override;
     function GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject; override;
+    // This property is provided when a tree view contains a huge amount of items,
+    // lets say 10.000+. In this case accessibility might slow the tree down, so turning
+    // it off might make things faster
+    property AccessibilityOn: Boolean read FAccessibilityOn write FAccessibilityOn default True;
   protected
     property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand default False;
     property BorderStyle default bsSingle;

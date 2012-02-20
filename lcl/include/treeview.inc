@@ -2257,7 +2257,7 @@ begin
     if (FUpdateCount=0) and (Owner<>nil) then
       Owner.Invalidate;
     ok:=true;
-    if ok and (Owner<>nil) then
+    if ok and (Owner<>nil) and (Owner.AccessibilityOn) then
     begin
       lAccessibleObject := FOwner.GetAccessibleObject().AddChildAccessibleObject();
       lAccessibleObject.AccessibleDescription := 'Item';
@@ -3068,6 +3068,7 @@ begin
   // Accessibility
   AccessibleDescription := rsTTreeViewAccessibilityDescription;
   AccessibleRole := larTreeView;
+  FAccessibilityOn := True;
 end;
 
 destructor TCustomTreeView.Destroy;

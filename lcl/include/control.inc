@@ -118,7 +118,6 @@ begin
   if (WidgetsetClass <> nil) and (FHandle <> 0) then
     WidgetsetClass.DestroyHandle(Self);
   FreeAndNil(FChildrenSortedForDataObject);
-  FreeAndNil(FChildrenSortedForDataObject);
   inherited Destroy;
 end;
 
