@@ -7359,7 +7359,6 @@ end;
 procedure TSourceNotebook.EditorMouseWheel(Sender: TObject; Shift: TShiftState;
   WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
-  HideHint;
   //handled:=true; //The scrolling is not done: it's not handled! See TWinControl.DoMouseWheel
 end;
 
@@ -7448,7 +7447,9 @@ end;
 procedure TSourceNotebook.OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
 begin
   //debugln('TSourceNotebook.OnApplicationUserInput');
-  HideHint;
+  // don't hide hint if Sender is a hint window
+  if Sender <> FHintWindow then
+    HideHint;
 end;
 
 procedure TSourceNotebook.EditorKeyDown(Sender: TObject; var Key: Word;
