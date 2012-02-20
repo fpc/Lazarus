@@ -273,7 +273,9 @@ const
   ecGotFocus        = 700;
   ecLostFocus       = 701;
 
-  ecMax             = 630; // for propertyEditor
+  ecUserDefinedFirst  = 900;
+  ecUserDefinedLast   = 999;
+
   ecUserFirst       = 1001; // Start of user-defined commands
 
   ecPluginFirst = 20000;
@@ -375,6 +377,8 @@ type
     property UsePluginOffset: Boolean read FUsePluginOffset write FUsePluginOffset;
   end;
 
+  TGetEditorCommandValuesProc = procedure(Proc: TGetStrProc);
+
 // These are mainly for the TSynEditorCommand property editor, but could be
 // useful elsewhere.
 function EditorCommandToDescrString(Cmd: TSynEditorCommand): string;
@@ -384,6 +388,7 @@ function IdentToEditorCommand(const Ident: string; var Cmd: longint): boolean;
 function EditorCommandToIdent(Cmd: longint; var Ident: string): boolean;
 
 procedure RegisterKeyCmdIdentProcs(IdentToIntFn: TIdentToInt; IntToIdentFn: TIntToIdent);
+procedure RegisterExtraGetEditorCommandValues(AProc: TGetEditorCommandValuesProc);
 
 implementation
 
@@ -647,19 +652,33 @@ const
 var
   ExtraIdentToIntFn: Array of TIdentToInt = nil;
   ExtraIntToIdentFn: Array of TIntToIdent = nil;
+  ExtraGetEditorCommandValues: Array of TGetEditorCommandValuesProc = nil;
 
 procedure GetEditorCommandValues(Proc: TGetStrProc);
 var
   i: integer;
 begin
+  for i := 0 to 19 do
+    Proc('ecUserDefined' + IntToStr(i));
   for i := Low(EditorCommandStrs) to High(EditorCommandStrs) do
     Proc(EditorCommandStrs[I].Name);
+  i := 0;
+  while (i < length(ExtraGetEditorCommandValues)) do begin
+    ExtraGetEditorCommandValues[i](Proc);
+    inc(i);
+  end;
 end;
 
 function IdentToEditorCommand(const Ident: string; var Cmd: longint): boolean;
 var
   i: Integer;
 begin
+  if (copy(Ident, 1 , 13) = 'ecUserDefined') then begin
+    Cmd := StrToIntDef(copy(Ident, 14, length(Ident)), -1) + ecUserDefinedFirst;
+    Result := (Cmd >= ecUserDefinedFirst) and (Cmd <= ecUserDefinedLast);
+    if Result then
+      exit;
+  end;
   Result := IdentToInt(Ident, Cmd, EditorCommandStrs);
   i := 0;
   while (i < length(ExtraIdentToIntFn)) and (not Result) do begin
@@ -672,6 +691,11 @@ function EditorCommandToIdent(Cmd: longint; var Ident: string): boolean;
 var
   i: Integer;
 begin
+  if (Cmd >= ecUserDefinedFirst) and (Cmd <= ecUserDefinedLast) then begin
+    Ident := 'ecUserDefined' + IntToStr(Cmd - ecUserDefinedFirst);
+    Result := True;
+    exit;
+  end;
   Result := IntToIdent(Cmd, Ident, EditorCommandStrs);
   i := 0;
   while (i < length(ExtraIntToIdentFn)) and (not Result) do begin
@@ -691,6 +715,15 @@ begin
   i := length(ExtraIntToIdentFn);
   SetLength(ExtraIntToIdentFn, i + 1);
   ExtraIntToIdentFn[i] := IntToIdentFn;
+end;
+
+procedure RegisterExtraGetEditorCommandValues(AProc: TGetEditorCommandValuesProc);
+var
+  i: Integer;
+begin
+  i := length(ExtraGetEditorCommandValues);
+  SetLength(ExtraGetEditorCommandValues, i + 1);
+  ExtraGetEditorCommandValues[i] := AProc;
 end;
 
 

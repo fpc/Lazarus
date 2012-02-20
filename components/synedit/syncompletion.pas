@@ -1800,8 +1800,6 @@ begin
 end;
 
 procedure TSynCompletion.DoEditorRemoving(AValue: TCustomSynEdit);
-var
-  i: Integer;
 begin
   inherited DoEditorRemoving(AValue);
   if Form.CurrentEditor = AValue then
@@ -2159,11 +2157,21 @@ begin
   Result := IntToIdent(Cmd - KeyOffset, Ident, SynComplutionCommandStrs);
 end;
 
+procedure GetEditorCommandValues(Proc: TGetStrProc);
+var
+  i: integer;
+begin
+  for i := Low(SynComplutionCommandStrs) to High(SynComplutionCommandStrs) do
+    Proc(SynComplutionCommandStrs[I].Name);
+end;
+
+
 initialization
   KeyOffset    := AllocatePluginKeyRange(ecSynCompletionCount, True);
 
   RegisterKeyCmdIdentProcs({$IFDEF FPC}@{$ENDIF}IdentToSynCompletionCommand,
                            {$IFDEF FPC}@{$ENDIF}SynCompletionCommandToIdent);
+  RegisterExtraGetEditorCommandValues({$IFDEF FPC}@{$ENDIF}GetEditorCommandValues);
 
 
 end.

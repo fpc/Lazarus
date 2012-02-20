@@ -1562,6 +1562,14 @@ begin
   Result := IntToIdent(Cmd - KeyOffset, Ident, EditorSyncroCommandStrs);
 end;
 
+procedure GetEditorCommandValues(Proc: TGetStrProc);
+var
+  i: integer;
+begin
+  for i := Low(EditorSyncroCommandStrs) to High(EditorSyncroCommandStrs) do
+    Proc(EditorSyncroCommandStrs[I].Name);
+end;
+
 
 initialization
   MouseOffset  := AllocatePluginMouseRange(emcSynPSyncroEdCount, True);
@@ -1569,6 +1577,7 @@ initialization
 
   RegisterKeyCmdIdentProcs({$IFDEF FPC}@{$ENDIF}IdentToSyncroCommand,
                            {$IFDEF FPC}@{$ENDIF}SyncroCommandToIdent);
+  RegisterExtraGetEditorCommandValues({$IFDEF FPC}@{$ENDIF}GetEditorCommandValues);
 
 end.
 

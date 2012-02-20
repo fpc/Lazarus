@@ -216,8 +216,7 @@ var
   i: TSynEditorMouseCommand;
 begin
   if not IdentToSynMouseCmd(GetVisualValue, CValue) then Proc(GetVisualValue);
-  for i := 0 to ecMax do
-    if EditorCommandToIdent(i, CName) then Proc(CName);
+  GetEditorCommandValues(Proc);
 end;
 
 procedure TSynKeyCommandPropertyEditor.SetValue(const NewValue: ansistring);
