@@ -469,7 +469,7 @@ var
 begin
   p := GetRawImagePtr;
   if p = nil
-  then Result.Init
+  then Result{%H-}.Init
   else Result := p^;
 end;
 

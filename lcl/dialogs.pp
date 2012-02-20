@@ -593,6 +593,7 @@ function dbgs(Options: TOpenOptions): string;
 var
   o: TOpenOption;
 begin
+  Result:='';
   for o in Options do
     Result:=Result+dbgs(o)+',';
   Result:='['+LeftStr(Result,length(Result)-1)+']';

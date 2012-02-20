@@ -691,7 +691,7 @@ begin
     ' '..#126: inc(i);
     else
       s:='#'+HexStr(ord(Result[i]),2);
-      // Note: do not use copy, fpc 2.7.1 changes broken UTF-8 characters to '?'
+      // Note: do not use copy, fpc might change broken UTF-8 characters to '?'
       l:=length(Result)-i;
       SetLength(Result,length(Result)-1+length(s));
       if l>0 then
