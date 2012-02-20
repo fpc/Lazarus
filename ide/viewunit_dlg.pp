@@ -112,11 +112,11 @@ begin
     end;
     FilterEdit.InvalidateFilter;
     // Initial selection
-    for i:=0 to Entries.Count-1 do
-      if TViewUnitsEntry(Entries.Objects[i]).Selected then begin
-        UEntry:=TViewUnitsEntry(Entries.Objects[i]);
+    for i:=0 to Entries.Count-1 do begin
+      UEntry:=TViewUnitsEntry(Entries.Objects[i]);
+      if UEntry.Selected then
         FilterEdit.SelectionList.Add(UEntry.Name);
-      end;
+    end;
     // Show the dialog
     Result:=ShowModal;
     if Result=mrOk then begin
