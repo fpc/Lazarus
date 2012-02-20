@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 819
+  Left = 797
   Height = 563
-  Top = 103
+  Top = 106
   Width = 559
   Caption = 'Form1'
   ClientHeight = 563
@@ -813,9 +813,9 @@ object Form1: TForm1
   object SynCompletion1: TSynCompletion
     OnExecute = DoExecute
     Position = 0
-    NbLinesInWindow = 6
+    LinesInWindow = 6
     OnSearchPosition = DoSearchPosition
-    ClSelect = clHighlight
+    SelectedColor = clHighlight
     CaseSensitive = False
     Width = 262
     ShowSizeDrag = True

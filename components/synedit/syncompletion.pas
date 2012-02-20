@@ -300,6 +300,8 @@ type
     property OnCancel: TNotifyEvent read GetOnCancel write SetOnCancel;
     property CurrentString: string read GetCurrentString write SetCurrentString;
     property FontHeight: integer read GetFontHeight;
+    property ClSelect: TColor read GetClSelect write SetClSelect; deprecated; // use SelectedColor
+    property NbLinesInWindow: Integer read GetNbLinesInWindow write SetNbLinesInWindow; deprecated;
   published
     property OnExecute: TNotifyEvent read FOnExecute write FOnExecute;
     property OnPaintItem: TSynBaseCompletionPaintItem
@@ -308,7 +310,7 @@ type
              write SetOnMeasureItem;
     property ItemList: TStrings read GetItemList write SetItemList;
     property Position: Integer read GetPosition write SetPosition;
-    property NbLinesInWindow: Integer read GetNbLinesInWindow
+    property LinesInWindow: Integer read GetNbLinesInWindow
                                       write SetNbLinesInWindow;
     property OnSearchPosition: TSynBaseCompletionSearchPosition
                              read GetOnSearchPosition write SetOnSearchPosition;
@@ -320,7 +322,7 @@ type
                                          write SetOnKeyPrevChar;// e.g. arrow left
     property OnPositionChanged: TNotifyEvent read GetOnPositionChanged
                                              write SetOnPositionChanged;
-    property ClSelect: TColor read GetClSelect write SetClSelect;
+    property SelectedColor: TColor read GetClSelect write SetClSelect;
     property CaseSensitive: boolean read GetCaseSensitive write SetCaseSensitive;
     property Width: Integer read FWidth write SetWidth;
     property LongLineHintTime: Integer read GetLongLineHintTime
