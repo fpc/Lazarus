@@ -32,9 +32,14 @@ procedure TTestLazUtils.TestReplaceSubstring;
 
   function r(const s: string; StartPos, Count: SizeInt;
              const Insertion: string): string;
+  var
+    OldS: String;
   begin
     Result:=s;
+    OldS:=s;
+    UniqueString(OldS);
     ReplaceSubstring(Result,StartPos,Count,Insertion);
+    AssertEquals('s unchanged',OldS,s);
   end;
 
 begin
@@ -51,8 +56,10 @@ begin
   AssertEquals('last char multi','ababc',r('abc',3,1,'abc'));
   AssertEquals('middle char same','abc',r('abc',2,1,'b'));
   AssertEquals('middle char single','adc',r('abc',2,1,'d'));
-  AssertEquals('middle char multi','acdec',r('abc',2,1,'cde'));
+  AssertEquals('middle char longen','acdec',r('abc',2,1,'cde'));
   AssertEquals('last multi','adef',r('abc',2,2,'def'));
+  AssertEquals('middle chars same','abcde',r('abcde',2,3,'bcd'));
+  AssertEquals('middle chars shorten','axe',r('abcde',2,3,'x'));
 end;
 
 initialization

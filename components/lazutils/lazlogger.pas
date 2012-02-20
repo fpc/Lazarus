@@ -953,6 +953,7 @@ begin
     if InsertionLen<Count then begin
       // shorten
       if RestLen>0 then begin
+        UniqueString(s);
         p:=PByte(s)+StartPos-1;
         System.Move((p+Count)^,(p+InsertionLen)^,RestLen);
       end;
