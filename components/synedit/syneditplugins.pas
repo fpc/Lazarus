@@ -248,7 +248,7 @@ begin
   if AValue = Editor then
     Editor := nil;
 
-  DoRemoveEditor(AValue);
+  Result := DoRemoveEditor(AValue);
 end;
 
 destructor TLazSynMultiEditPlugin.Destroy;
