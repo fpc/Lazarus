@@ -284,6 +284,7 @@ type
     procedure SetOnKeyPrevChar(const AValue: TNotifyEvent);
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure Execute(s: string; x, y: integer); overload;
     procedure Execute(s: string; TopLeft: TPoint); overload;
     procedure Execute(s: string; TokenRect: TRect); overload; // Excute below or above the token // may be extended to adjust left corner too
@@ -298,17 +299,17 @@ type
     property OnValidate: TValidateEvent read GetOnValidate write SetOnValidate;
     property OnCancel: TNotifyEvent read GetOnCancel write SetOnCancel;
     property CurrentString: string read GetCurrentString write SetCurrentString;
+    property FontHeight: integer read GetFontHeight;
   published
     property OnExecute: TNotifyEvent read FOnExecute write FOnExecute;
     property OnPaintItem: TSynBaseCompletionPaintItem
-      read GetOnPaintItem write SetOnPaintItem;
+             read GetOnPaintItem write SetOnPaintItem;
     property OnMeasureItem: TSynBaseCompletionMeasureItem read GetOnMeasureItem
-      write SetOnMeasureItem;
+             write SetOnMeasureItem;
     property ItemList: TStrings read GetItemList write SetItemList;
     property Position: Integer read GetPosition write SetPosition;
     property NbLinesInWindow: Integer read GetNbLinesInWindow
                                       write SetNbLinesInWindow;
-    property FontHeight: integer read GetFontHeight;
     property OnSearchPosition: TSynBaseCompletionSearchPosition
                              read GetOnSearchPosition write SetOnSearchPosition;
     property OnKeyCompletePrefix: TNotifyEvent read GetOnKeyCompletePrefix
@@ -347,7 +348,7 @@ type
     procedure OnFormPaint(Sender: TObject);
     procedure SetEditor(const Value: TCustomSynEdit); override;
     procedure DoEditorAdded(AValue: TCustomSynEdit); override;
-    procedure DoEditorRemoving(AValue: TCustomSynEdit); override; /////////////
+    procedure DoEditorRemoving(AValue: TCustomSynEdit); override;
     procedure SetShortCut(Value: TShortCut);
     procedure TranslateKey(Sender: TObject; Code: word; SState: TShiftState;
       var Data: pointer; var IsStartOfCombo: boolean; var Handled: boolean;
@@ -365,6 +366,7 @@ type
     property OnCodeCompletion: TCodeCompletionEvent
       read FOnCodeCompletion write FOnCodeCompletion;
     property ExecCommandID: TSynEditorCommand read FExecCommandID write FExecCommandID;
+    property Editor;
   end;
 
   { TSynAutoComplete }
@@ -495,6 +497,7 @@ end;
 
 constructor TSynBaseCompletionForm.Create(AOwner: TComponent);
 begin
+  ControlStyle := ControlStyle + [csNoDesignVisible];
   FResizeLock := 1; // prevent DoResize (on Handle Creation) do reset LinesInWindow
   FDoubleClickSelects := True;
   FHintLock := 0;
@@ -1199,8 +1202,14 @@ constructor TSynBaseCompletion.Create(AOwner: TComponent);
 begin
   FWidth := 262;
   inherited Create(AOwner);
-  Form := TSynBaseCompletionForm.Create(Self);
+  Form := TSynBaseCompletionForm.Create(nil); // Do not create with owner, or the designer will make it visible
   Form.Width := FWidth;
+end;
+
+destructor TSynBaseCompletion.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(Form);
 end;
 
 function TSynBaseCompletion.GetOnUTF8KeyPress: TUTF8KeyPressEvent;
@@ -2130,8 +2139,30 @@ begin
     Result := Rect(0, 0, Canvas.TextWidth(AHint) + 4, FCompletionForm.FontHeight);
 end;
 
+const
+  SynComplutionCommandStrs: array[0..0] of TIdentMapEntry = (
+    (Value: ecSynCompletionExecute;       Name: 'ecSynCompletionExecute')
+  );
+
+function IdentToSynCompletionCommand(const Ident: string; var Cmd: longint): boolean;
+begin
+  Result := IdentToInt(Ident, Cmd, SynComplutionCommandStrs);
+  if Result then inc(Cmd, KeyOffset);
+end;
+
+function SynCompletionCommandToIdent(Cmd: longint; var Ident: string): boolean;
+begin
+  Result := (Cmd - ecPluginFirst >= KeyOffset) and (Cmd - ecPluginFirst < KeyOffset + ecSynCompletionCount);
+  if not Result then exit;
+  Result := IntToIdent(Cmd - KeyOffset, Ident, SynComplutionCommandStrs);
+end;
+
 initialization
   KeyOffset    := AllocatePluginKeyRange(ecSynCompletionCount, True);
+
+  RegisterKeyCmdIdentProcs({$IFDEF FPC}@{$ENDIF}IdentToSynCompletionCommand,
+                           {$IFDEF FPC}@{$ENDIF}SynCompletionCommandToIdent);
+
 
 end.
 

@@ -25,3 +25,4 @@ tsynbatsyn.png
 tsyninisyn.png
 tsynposyn.png
 tsynpluginsyncroedit.png
+tsyncompletion.png

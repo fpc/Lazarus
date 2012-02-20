@@ -24,7 +24,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc,
-  SynEdit, SynGutterBase, SynEditMiscClasses, SynEditMouseCmds, SynDesignStringConstants,
+  SynEdit, SynGutterBase, SynEditMiscClasses, SynEditMouseCmds, SynEditKeyCmds,
+  SynDesignStringConstants,
   PropEdits, PropEditUtils, Forms, StdCtrls, ComCtrls, Dialogs, ComponentEditors,
   ObjInspStrConsts, Controls, IDEImagesIntf, typinfo, FormEditingIntf;
 
@@ -98,6 +99,16 @@ type
     property SynObjectPartList: TSynObjectList read FSynObjectPartList;
     property OwnerPersistent: TPersistent read FOwnerPersistent;
     property PropertyName: String read FPropertyName;
+  end;
+
+  { TSynKeyCommandPropertyEditor }
+
+  TSynKeyCommandPropertyEditor = class(TIntegerPropertyEditor)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    function OrdValueToVisualValue(OrdValue: longint): string; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+    procedure SetValue(const NewValue: ansistring); override;
   end;
 
   { TSynMouseCommandPropertyEditor }
@@ -181,6 +192,40 @@ begin
       if not(TSynEditorOption(I) in SYNEDIT_UNIMPLEMENTED_OPTIONS)
       then
         Proc(TSetElementPropertyEditor.Create(Self, I));
+end;
+
+{ TSynKeyCommandPropertyEditor }
+
+function TSynKeyCommandPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paValueList, paRevertable];
+  if GetDefaultOrdValue <> NoDefaultValue then
+    Result := Result + [paHasDefaultValue];
+end;
+
+function TSynKeyCommandPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
+begin
+  if not EditorCommandToIdent(OrdValue, Result) then
+    Result := inherited OrdValueToVisualValue(OrdValue);
+end;
+
+procedure TSynKeyCommandPropertyEditor.GetValues(Proc: TGetStrProc);
+var
+  CValue: Integer;
+  CName: String;
+  i: TSynEditorMouseCommand;
+begin
+  if not IdentToSynMouseCmd(GetVisualValue, CValue) then Proc(GetVisualValue);
+  for i := 0 to ecMax do
+    if EditorCommandToIdent(i, CName) then Proc(CName);
+end;
+
+procedure TSynKeyCommandPropertyEditor.SetValue(const NewValue: ansistring);
+var
+  CValue: Integer;
+begin
+  if IdentToEditorCommand(NewValue, CValue) then SetOrdValue(CValue)
+  else inherited SetValue(NewValue);
 end;
 
 { TSynMouseCommandPropertyEditor }

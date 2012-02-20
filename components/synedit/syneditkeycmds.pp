@@ -273,6 +273,7 @@ const
   ecGotFocus        = 700;
   ecLostFocus       = 701;
 
+  ecMax             = 630; // for propertyEditor
   ecUserFirst       = 1001; // Start of user-defined commands
 
   ecPluginFirst = 20000;

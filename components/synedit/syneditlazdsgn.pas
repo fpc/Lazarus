@@ -35,7 +35,7 @@ uses
   Classes, SysUtils,
   SynGutter, SynGutterCodeFolding, SynGutterChanges, SynGutterLineNumber,
   SynGutterMarks, SynGutterBase, SynGutterLineOverview, SynEditMouseCmds,
-  SynEdit, SynCompletion, SynExportHTML, SynMacroRecorder,
+  SynEditKeyCmds, SynEdit, SynCompletion, SynExportHTML, SynMacroRecorder,
   SynMemo, SynHighlighterPas, SynHighlighterCPP, SynHighlighterJava,
   SynHighlighterPerl, SynHighlighterHTML, SynHighlighterXML,
   SynHighlighterLFM, SynHighlighterMulti, SynHighlighterUNIXShellScript,
@@ -52,6 +52,7 @@ implementation
 
 procedure RegisterSynCompletion;
 begin
+  RegisterComponents('SynEdit',[TSynCompletion]);
   RegisterComponents('SynEdit',[TSynAutoComplete]);
 end;
 
@@ -257,6 +258,8 @@ begin
     '', TSynPropertyEditGutterPartList);
   RegisterPropertyEditor(TypeInfo(TSynEditorMouseCommand), nil,
     '', TSynMouseCommandPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TSynEditorCommand), nil,
+    '', TSynKeyCommandPropertyEditor);
 
   RegisterGutterPartClass(TSynGutterLineNumber, syndsLineNumbers);
   RegisterGutterPartClass(TSynGutterCodeFolding, syndsCodeFolding);

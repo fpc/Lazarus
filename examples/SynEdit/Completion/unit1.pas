@@ -26,17 +26,17 @@ type
     Splitter1: TSplitter;
     Splitter2: TSplitter;
     SynAutoComplete1: TSynAutoComplete;
+    SynCompletion1: TSynCompletion;
     SynEdit1: TSynEdit;
     procedure chkExecChange(Sender: TObject);
     procedure chkSearchChange(Sender: TObject);
     procedure chkSizeDragChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Memo1Change(Sender: TObject);
-  private
-    { private declarations }
-    SynCompletion: TSynCompletion;
     procedure DoExecute(Sender: TObject);
     procedure DoSearchPosition(var APosition: integer);
+  private
+    { private declarations }
   public
     { public declarations }
   end; 
@@ -58,11 +58,11 @@ end;
 procedure TForm1.DoExecute(Sender: TObject);
   procedure Add(s: String);
   begin
-    if pos(lowercase(SynCompletion.CurrentString), lowercase(s)) = 1 then
-      SynCompletion.ItemList.Add(s);
+    if pos(lowercase(SynCompletion1.CurrentString), lowercase(s)) = 1 then
+      SynCompletion1.ItemList.Add(s);
   end;
 begin
-  SynCompletion.ItemList.Clear;
+  SynCompletion1.ItemList.Clear;
   if chkExec.Checked then begin
     Add('Personal Computer');
     Add('Personal');
@@ -71,30 +71,30 @@ begin
     Add('Police');
     Add('Constable');
   end else begin
-    SynCompletion.ItemList.Add('Personal Computer');
-    SynCompletion.ItemList.Add('Personal');
-    SynCompletion.ItemList.Add('Computer');
-    SynCompletion.ItemList.Add('Police Constable');
-    SynCompletion.ItemList.Add('Police');
-    SynCompletion.ItemList.Add('Constable');
+    SynCompletion1.ItemList.Add('Personal Computer');
+    SynCompletion1.ItemList.Add('Personal');
+    SynCompletion1.ItemList.Add('Computer');
+    SynCompletion1.ItemList.Add('Police Constable');
+    SynCompletion1.ItemList.Add('Police');
+    SynCompletion1.ItemList.Add('Constable');
   end;
 end;
 
 procedure TForm1.DoSearchPosition(var APosition: integer);
   procedure Add(s: String);
   begin
-    if pos(lowercase(SynCompletion.CurrentString), lowercase(s)) = 1 then
-      SynCompletion.ItemList.Add(s);
+    if pos(lowercase(SynCompletion1.CurrentString), lowercase(s)) = 1 then
+      SynCompletion1.ItemList.Add(s);
   end;
 begin
-  SynCompletion.ItemList.Clear;
+  SynCompletion1.ItemList.Clear;
   Add('Personal Computer');
   Add('Personal');
   Add('Computer');
   Add('Police Constable');
   Add('Police');
   Add('Constable');
-  if SynCompletion.ItemList.Count > 0 then
+  if SynCompletion1.ItemList.Count > 0 then
     APosition := 0
   else
     APosition := -1;
@@ -103,13 +103,6 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   Memo1Change(nil);
-  SynCompletion := TSynCompletion.Create(Form1);
-  SynCompletion.Editor := SynEdit1;
-  SynCompletion.CaseSensitive := False;
-  SynCompletion.OnExecute := @DoExecute;
-  SynCompletion.OnSearchPosition := @DoSearchPosition;
-  SynCompletion.ShowSizeDrag := True;
-  SynCompletion.DoubleClickSelects := True;
 end;
 
 procedure TForm1.chkExecChange(Sender: TObject);
@@ -120,15 +113,15 @@ end;
 procedure TForm1.chkSearchChange(Sender: TObject);
 begin
   if chkSearch.Checked then
-    SynCompletion.OnSearchPosition := @DoSearchPosition
+    SynCompletion1.OnSearchPosition := @DoSearchPosition
   else
-    SynCompletion.OnSearchPosition := nil;
+    SynCompletion1.OnSearchPosition := nil;
   SynEdit1.SetFocus;
 end;
 
 procedure TForm1.chkSizeDragChange(Sender: TObject);
 begin
-  SynCompletion.ShowSizeDrag := chkSizeDrag.Checked;
+  SynCompletion1.ShowSizeDrag := chkSizeDrag.Checked;
 end;
 
 end.

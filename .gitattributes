@@ -2278,6 +2278,7 @@ components/synedit/design/syneditlazdsgn.txt svneol=native#text/plain
 components/synedit/design/tsynanysyn.png -text svneol=unset#image/png
 components/synedit/design/tsynautocomplete.png -text svneol=unset#image/png
 components/synedit/design/tsynbatsyn.png -text
+components/synedit/design/tsyncompletion.png -text
 components/synedit/design/tsyncppsyn.png -text svneol=unset#image/png
 components/synedit/design/tsyncsssyn.png -text svneol=unset#image/png
 components/synedit/design/tsyndiffsyn.png -text
