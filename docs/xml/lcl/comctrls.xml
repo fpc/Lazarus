@@ -14900,7 +14900,18 @@ the comparision is case sensitive.
           <var>TCustomTreeView</var> - ancestor class for <var>TTreeView</var>
         </short>
         <descr>
-          <var>TCustomTreeView</var> - ancestor class for <var>TTreeView</var>, which displays a collection of items in a hierarchical tree form. This class defines many properties which are inherited by children classes, including loading the data from files or streams, saving to files or streams, updating, sorting alphabetically, editing, making visible or invisible, expanding or collapsing the tree display, and many more.</descr>
+          <p><var>TCustomTreeView</var> - ancestor class for <var>TTreeView</var>,
+            which displays a collection of items in a hierarchical tree form.
+            This class defines many properties which are inherited by children classes,
+            including loading the data from files or streams, saving to files or streams,
+            updating, sorting alphabetically, editing, making visible or invisible, expanding
+            or collapsing the tree display, and many more.</p>
+          <p>Please note that Accessibility support in TCustomTreeView might make this control
+            slower if there is a very large number of items, for example, 10.000+ items.
+            If the performance impact is unacceptable it is possible to turn accessibility
+            off for tree view items by setting TCustomTreeView.AccessibilityOn to false.
+            The default value is true.</p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomTreeView.FBackgroundColor">
@@ -16616,6 +16627,14 @@ the comparision is case sensitive.
         <short/>
         <descr/>
         <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomTreeView.AccessibilityOn">
+        <short>Allows to turn accessibility off to speed up the control</short>
+        <descr>This property is provided for the case when a tree view contains a huge amount
+        of items, lets say 10.000+. In this case accessibility might slow the tree down, so
+        turning this property off might make things faster.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->

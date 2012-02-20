@@ -2919,7 +2919,7 @@ type
     // Accessibility
     function GetSelectedChildAccessibleObject: TLazAccessibleObject; override;
     function GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject; override;
-    // This property is provided when a tree view contains a huge amount of items,
+    // This property is provided for the case when a tree view contains a huge amount of items,
     // lets say 10.000+. In this case accessibility might slow the tree down, so turning
     // it off might make things faster
     property AccessibilityOn: Boolean read FAccessibilityOn write FAccessibilityOn default True;
