@@ -30,7 +30,7 @@ uses
   TestLpi, BugTestCase,
   bug8432, testfileutil, testfileproc,
   // lazutils
-  TestLazUTF8,
+  TestLazUtils, TestLazUTF8,
   // codetools
   TestBasicCodetools, TestCTXMLFixFragments, TestCTRangeScan, TestCTH2Pas,
   TestCompleteBlock, TestStdCodetools,

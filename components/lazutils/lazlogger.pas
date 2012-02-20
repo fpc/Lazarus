@@ -134,6 +134,8 @@ function DbgS(const Shift: TShiftState): string; overload;
 function DbgS(const ASize: TSize): string; overload;
 
 function ConvertLineEndings(const s: string): string;
+function ReplaceSubstring(const s: string; StartPos, Count: SizeInt;
+                          const Insertion: string): string;
 
 type
 
@@ -919,6 +921,45 @@ begin
     end else
       inc(i);
   end;
+end;
+
+function ReplaceSubstring(const s: string; StartPos, Count: SizeInt;
+  const Insertion: string): string;
+var
+  MaxCount: SizeInt;
+  InsertionLen: SizeInt;
+  SLen: SizeInt;
+  RestLen: SizeInt;
+  Dest: PByte;
+begin
+  SLen:=length(s);
+  if StartPos>SLen then
+    StartPos:=SLen;
+  if StartPos<1 then StartPos:=1;
+  if Count<0 then Count:=0;
+  MaxCount:=SLen-StartPos+1;
+  if Count>MaxCount then
+    Count:=MaxCount;
+  InsertionLen:=length(Insertion);
+  if (Count=0) and (InsertionLen=0) then
+    exit(s); // nothing to do
+  if (Count=InsertionLen)
+  and CompareMem(PByte(s)+StartPos-1,Pointer(Insertion),Count) then
+    // already the same content
+    exit(s);
+  Setlength(Result,SLen-Count+InsertionLen);
+  Dest:=PByte(Result);
+  if StartPos>1 then begin
+    System.Move(PByte(s)^,Dest^,StartPos-1);
+    inc(Dest,StartPos-1);
+  end;
+  if InsertionLen>0 then begin
+    System.Move(PByte(Insertion)^,Dest^,InsertionLen);
+    inc(Dest,InsertionLen);
+  end;
+  RestLen:=SLen-StartPos-Count+1;
+  if RestLen>0 then
+    System.Move((PByte(s)+StartPos-1+Count)^,Dest^,RestLen);
 end;
 
 { TLazLoggerLogGroupList }
