@@ -94,6 +94,7 @@ procedure RemoveStayOnTopFlags(AppHandle: HWND; ASystemTopAlso: Boolean = False)
 procedure RestoreStayOnTopFlags(AppHandle: HWND);
 procedure HidePopups(AppHandle: HWND);
 procedure RestorePopups;
+function LookupTopWindow(AppHandle: HWND): HWND;
 
 procedure AddToChangedMenus(Window: HWnd);
 procedure RedrawMenus;
@@ -132,6 +133,12 @@ type
   TPopupOwnersWindowInfo = record
     AppHandle: HWND;
     OwnersList: TFPList;
+  end;
+
+  PLookupTopWindowInfo = ^TLookupTopWindowInfo;
+  TLookupTopWindowInfo = record
+    AppHandle: HWND;
+    TopWindow: HWND;
   end;
   
   TWindowsVersion = (
@@ -907,6 +914,43 @@ begin
       ShowOwnedPopups(HWND(PopupOwnersList[i]), True);
     FreeAndNil(PopupOwnersList);
   end;
+end;
+
+function EnumLookupTopWindow(Handle: HWND; Param: LPARAM): WINBOOL; stdcall;
+begin
+  Result := True;
+  if IsWindowVisible(Handle) and IsWindowEnabled(Handle) then
+  begin
+    with PLookupTopWindowInfo(Param)^ do
+    begin
+      if (Handle = AppHandle) or (Handle = TopWindow) then
+        Exit;
+      if GetWindowLong(Handle, GWL_EXSTYLE) and WS_EX_TOPMOST <> 0 then
+      begin
+        // we've found the top most window => stop
+        TopWindow := Handle;
+        Result := False;
+      end
+      else
+      if TopWindow = 0 then
+        TopWindow := Handle;
+    end;
+  end;
+end;
+
+function LookupTopWindow(AppHandle: HWND): HWND;
+var
+  Info: PLookupTopWindowInfo;
+begin
+  New(Info);
+  Info^.AppHandle := AppHandle;
+  Info^.TopWindow := 0;
+  EnumThreadWindows(GetWindowThreadProcessId(AppHandle, nil),
+      @EnumLookupTopWindow, LPARAM(Info));
+  Result := Info^.TopWindow;
+  if Result = 0 then
+    Result := AppHandle;
+  Dispose(Info);
 end;
 
 {-------------------------------------------------------------------------------

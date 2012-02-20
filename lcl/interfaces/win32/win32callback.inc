@@ -2012,8 +2012,14 @@ begin
     begin
       if (Window = Win32WidgetSet.AppHandle) then
       begin
-        if not IsIconic(Window) and IsWindow(WindowLastFocused) then
-          SetFocus(WindowLastFocused);
+        // if application window is still focused then move the focus
+        // to the next top window
+        if not IsIconic(Window) and (GetFocus = Window) then
+        begin
+          TargetWindow := LookupTopWindow(Window);
+          if TargetWindow <> Window then
+            SetFocus(TargetWindow);
+        end;
         Result := 0;
         Exit;
       end;
@@ -2026,9 +2032,7 @@ begin
 {$endif}
       // move focus to another application window but process event first
       if (Window = Win32WidgetSet.AppHandle) then
-        PostMessage(Window, CM_ACTIVATE, 0, 0)
-      else
-        WindowLastFocused := Window;
+        PostMessage(Window, CM_ACTIVATE, 0, 0);
       // handle feature mouse-click, setfocus, mouse-click -> double-click
       if (Window <> MouseDownWindow) and (MouseDownFocusStatus <> mfNone) then
       begin

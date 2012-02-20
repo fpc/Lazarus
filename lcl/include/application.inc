@@ -1424,6 +1424,7 @@ procedure TApplication.Activate;
 begin
   if AppActive in FFlags then exit;
   Include(FFlags, AppActive);
+  Screen.RestoreLastActive;
   NotifyActivateHandler;
 end;
 
