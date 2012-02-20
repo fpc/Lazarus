@@ -581,13 +581,9 @@ begin
   if not (riqfUpdate in AFlags) then
     ADesc.Init;
 
-  // if there's mask gtk2 assumes it's rgba. issue #12362
-  // Zeljko: removed since it totally crashes shaped controls -
-  // see examples/shapedcontrols.
-  {
-  if (riqfMono in AFlags) and (riqfMask in AFlags) and
-    (Desc.BitsPerPixel = 32) then
-      AFlags := AFlags - [riqfMono] + [riqfRgb];}
+  // if there's mask gtk2 assumes it's rgba (not XBM format).issue #12362
+  if (riqfUpdate in AFlags) and (riqfMono in AFlags) and (riqfMask in AFlags) then
+      AFlags := AFlags - [riqfMono] + [riqfRgb];
 
   if riqfMono in AFlags then
   begin

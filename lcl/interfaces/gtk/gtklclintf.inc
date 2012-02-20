@@ -562,8 +562,12 @@ begin
   Result := RawImage_DescriptionFromDrawable(Desc, nil, riqfAlpha in AFlags);
   if not Result then Exit;
 
-  if not (riqfUpdate in AFlags)
-  then ADesc.Init;
+  if not (riqfUpdate in AFlags) then
+    ADesc.Init;
+
+  // if there's mask gtk assumes it's rgba (not XBM format).issue #12362
+  if (riqfUpdate in AFlags) and (riqfMono in AFlags) and (riqfMask in AFlags) then
+      AFlags := AFlags - [riqfMono] + [riqfRgb];
 
   if riqfMono in AFlags
   then begin

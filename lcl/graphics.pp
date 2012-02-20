@@ -2275,6 +2275,14 @@ begin
       DstImage.CopyPixels(SrcImage, 0, 0, True, $8000);
     end
     else begin
+      // update DevDesc because of unusual bitmaps. issue #12362
+      // widgetset can provide same DevDesc, but also can change it
+      // like gtk/gtk2 does since it expects XBM format for mono bitmaps.
+      if DevDesc.Depth = 1 then
+      begin
+        QueryFlags := QueryFlags + [riqfUpdate];
+        QueryDescription(DevDesc, QueryFlags);
+      end;
       DstImage.DataDescription := DevDesc;
       DstImage.CopyPixels(SrcImage);
     end;
