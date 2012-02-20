@@ -1248,7 +1248,7 @@ begin
   // send the message directly to the LCL
   // (Posting the message via queue
   //  has the risk of getting out of sync with the gtk)
-  NotifyApplicationUserInput(Msg.Msg);
+  NotifyApplicationUserInput(AWinControl, Msg.Msg);
   //DebugLn(['DeliverMouseMoveMessage ',dbgsName(AWinControl)]);
   DeliverMessage(AWinControl, Msg);
 
@@ -1796,7 +1796,7 @@ begin
     MessE.Button := 0;
 
     // send the message directly to the LCL
-    NotifyApplicationUserInput(MessE.Msg);
+    NotifyApplicationUserInput(AWinControl, MessE.Msg);
     Result:=DeliverMessage(AWinControl, MessE);
   end
   else
@@ -1827,7 +1827,7 @@ begin
 
     MessI.Result:=0;
     // send the message directly to the LCL
-    NotifyApplicationUserInput(MessI.Msg);
+    NotifyApplicationUserInput(AWinControl, MessI.Msg);
     Result := DeliverMessage(AWinControl, MessI);
 
     // issue #19914
@@ -1947,7 +1947,7 @@ begin
     // (Posting the message via queue
     //  has the risk of getting out of sync with the gtk)
     MessI.Result := 0;
-    NotifyApplicationUserInput(MessI.Msg);
+    NotifyApplicationUserInput(AWinControl, MessI.Msg);
     DeliverMessage(AWinControl, MessI);
     if MessI.Result <> 0 then
     begin
@@ -2098,7 +2098,7 @@ begin
   MessE.Button := 0;
 
   // send the message directly to the LCL
-  NotifyApplicationUserInput(MessE.Msg);
+  NotifyApplicationUserInput(AWinControl, MessE.Msg);
   if DeliverMessage(AWinControl, MessE) <> 0 then
     Result := True; // message handled by LCL, stop processing
 end;

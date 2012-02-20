@@ -343,7 +343,7 @@ begin
   begin
     if Widget.NeedDeliverMouseEvent(Msg.Message.Msg, Msg) then begin
       // Msg is set in the Appropriate HandleMousexxx procedure
-      NotifyApplicationUserInput(Msg.Message.Msg);
+      NotifyApplicationUserInput(Widget.LCLObject, Msg.Message.Msg);
       if DeliverMessage(Widget.LCLObject, Msg) = 0 then
       begin
         Result := EventNotHandledErr;
@@ -759,7 +759,7 @@ const
           DebugLn('[HandleRawKeyDownEvent] LCL handled CN_KEYDOWN, exiting');
         {$ENDIF}
         
-        NotifyApplicationUserInput(KeyMsg.Msg);
+        NotifyApplicationUserInput(Widget.LCLObject, KeyMsg.Msg);
         Result := noErr;
         Exit;
       end;
@@ -779,7 +779,7 @@ const
         {$ENDIF}
         //Result already set by CallNextEventHandler
         
-        NotifyApplicationUserInput(KeyMsg.Msg);
+        NotifyApplicationUserInput(Widget.LCLObject, KeyMsg.Msg);
         Exit;
       end;
     end;
@@ -819,7 +819,7 @@ const
         if Result=EventNotHandledErr then
           Result := noErr;
           
-        NotifyApplicationUserInput(CharMsg.Msg);
+        NotifyApplicationUserInput(Widget.LCLObject, CharMsg.Msg);
         Exit;
       end;
       if CharMsg.CharCode<>ord(KeyChar) then
@@ -853,7 +853,7 @@ const
         if Result=EventNotHandledErr then
           Result := noErr;
           
-        NotifyApplicationUserInput(CharMsg.Msg);
+        NotifyApplicationUserInput(Widget.LCLObject, CharMsg.Msg);
         Exit;
       end;
     end;
@@ -886,7 +886,7 @@ const
         {$ENDIF}
         Result := noErr;
         
-        NotifyApplicationUserInput(KeyMsg.Msg);
+        NotifyApplicationUserInput(Widget.LCLObject, KeyMsg.Msg);
         Exit;
       end;
       
@@ -907,7 +907,7 @@ const
         if Result=EventNotHandledErr then
           Result := noErr;
           
-        NotifyApplicationUserInput(KeyMsg.Msg);
+        NotifyApplicationUserInput(Widget.LCLObject, KeyMsg.Msg);
         Exit;
       end;
     end;

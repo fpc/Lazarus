@@ -1005,7 +1005,7 @@ begin
   WinProcess := True;
   NotifyUserInput := False;
 
-  // WriteLn('Msg: ', WM_To_String(Msg));
+  //WriteLn('Msg: ', WM_To_String(Msg), ' ', WndClassName(Window));
   WindowInfo := GetWin32WindowInfo(Window);
   if WindowInfo^.isChildEdit then
   begin
@@ -2401,9 +2401,9 @@ begin
   if NotifyUserInput then
   begin
     CurrentWindow := Window;
-    NotifyApplicationUserInput(PLMsg^.Msg);
-    if CurrentWindow=0 then
-      // Invalidate associated lWinControl if current window has been destroyed
+    NotifyApplicationUserInput(lWinControl, PLMsg^.Msg);
+    // Invalidate associated lWinControl if current window has been destroyed
+    if CurrentWindow = 0 then
       lWinControl := nil;
   end;
 

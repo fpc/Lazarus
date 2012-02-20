@@ -48,7 +48,7 @@ begin
   // send postponed mouse up event
   DeliverMessage(LCLTarget, SavedMouseUpMsg);
   
-  NotifyApplicationUserInput(SavedMouseUpMsg.Msg);
+  NotifyApplicationUserInput(LCLTarget, SavedMouseUpMsg.Msg);
   CarbonWidgetSet.SetCaptureWidget(0); // capture is released
 end;
 

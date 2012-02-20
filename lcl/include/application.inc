@@ -1612,7 +1612,7 @@ end;
   procedure TApplication.NotifyUserInputHandler;
 
  ------------------------------------------------------------------------------}
-procedure TApplication.NotifyUserInputHandler(Msg: Cardinal);
+procedure TApplication.NotifyUserInputHandler(Sender: TObject; Msg: Cardinal);
 var
   i: integer;
 begin
@@ -1623,13 +1623,16 @@ begin
     else
       CancelHint;
   end;
-  
+
+  if not Assigned(Sender) then
+    Sender := Self;
+
   if Assigned(FOnUserInput) then
-    FOnUserInput(Self, Msg);
+    FOnUserInput(Sender, Msg);
 
   i := FApplicationHandlers[ahtUserInput].Count;
   while FApplicationHandlers[ahtUserInput].NextDownIndex(i) do
-    TOnUserInputEvent(FApplicationHandlers[ahtUserInput][i])(Self, Msg);
+    TOnUserInputEvent(FApplicationHandlers[ahtUserInput][i])(Sender, Msg);
 end;
 
 procedure TApplication.NotifyKeyDownBeforeHandler(Sender: TObject;

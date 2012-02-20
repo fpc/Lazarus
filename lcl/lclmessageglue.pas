@@ -892,7 +892,7 @@ begin
   Result := DeliverMessage(Target, Mess);
   CharCode := Mess.CharCode;
 
-  if ANotifyUserInput then NotifyApplicationUserInput(Mess.Msg);
+  if ANotifyUserInput then NotifyApplicationUserInput(Target, Mess.Msg);
 end;
 
 function LCLSendUTF8KeyPress(const Target: TWinControl; AUTF8Char: TUTF8Char;

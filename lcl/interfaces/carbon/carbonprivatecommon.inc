@@ -198,7 +198,7 @@ begin
 
     if Widget.NeedDeliverMouseEvent(Msg.Msg, Msg) then
     begin
-      NotifyApplicationUserInput(Msg.Msg);
+      NotifyApplicationUserInput(Widget.LCLObject, Msg.Msg);
       DeliverMessage(Widget.LCLObject, Msg);
     end;
   end;
@@ -236,7 +236,7 @@ begin
     PostponedDown := False;
     if AWidget.NeedDeliverMouseEvent(PostponedDownMsg.Msg, PostponedDownMsg) then
     begin
-      NotifyApplicationUserInput(PostponedDownMsg.Msg);
+      NotifyApplicationUserInput(AWidget.LCLObject, PostponedDownMsg.Msg);
       DeliverMessage(AWidget.LCLObject, PostponedDownMsg);
     end;
   end;
@@ -302,7 +302,7 @@ begin
   begin
     DeliverMessage(AWidget.LCLObject, Msg);
   
-    NotifyApplicationUserInput(Msg.Msg);
+    NotifyApplicationUserInput(AWidget.LCLObject, Msg.Msg);
     CarbonWidgetSet.SetCaptureWidget(0); // capture is released
   end;
 end;

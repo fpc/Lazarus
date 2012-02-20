@@ -1399,7 +1399,7 @@ type
     procedure Terminate; override;
     procedure DisableIdleHandler;
     procedure EnableIdleHandler;
-    procedure NotifyUserInputHandler(Msg: Cardinal);
+    procedure NotifyUserInputHandler(Sender: TObject; Msg: Cardinal);
     procedure NotifyKeyDownBeforeHandler(Sender: TObject;
                                          var Key: Word; Shift: TShiftState);
     procedure NotifyKeyDownHandler(Sender: TObject;
@@ -1689,7 +1689,7 @@ function GetDesignerForm(APersistent: TPersistent): TCustomForm;
 function FindRootDesigner(APersistent: TPersistent): TIDesigner;
 
 function IsAccel(VK: word; const Str: string): Boolean;
-procedure NotifyApplicationUserInput(Msg: Cardinal);
+procedure NotifyApplicationUserInput(Target: TControl; Msg: Cardinal);
 
 
 function GetShortHint(const Hint: string): string;
@@ -1750,10 +1750,10 @@ end;
   procedure NotifyApplicationUserInput;
 
  ------------------------------------------------------------------------------}
-procedure NotifyApplicationUserInput(Msg: Cardinal);
+procedure NotifyApplicationUserInput(Target: TControl; Msg: Cardinal);
 begin
-  if Application <> nil then
-    Application.NotifyUserInputHandler(Msg);
+  if Assigned(Application) then
+    Application.NotifyUserInputHandler(Target, Msg);
 end;
 
 

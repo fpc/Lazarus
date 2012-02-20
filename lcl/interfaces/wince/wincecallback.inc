@@ -2166,7 +2166,7 @@ begin
 
   // application processing
   if NotifyUserInput then
-    NotifyApplicationUserInput(PLMsg^.Msg);
+    NotifyApplicationUserInput(lWinControl, PLMsg^.Msg);
 
   if (lWinControl <> nil) and (PLMsg^.Msg <> LM_NULL) then
     DeliverMessage(lWinControl, PLMsg^);

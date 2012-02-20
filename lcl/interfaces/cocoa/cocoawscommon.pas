@@ -292,7 +292,7 @@ begin
     begin
       Msg.Msg := CheckMouseButtonDown(MButton);
 
-      NotifyApplicationUserInput(Msg.Msg);
+      NotifyApplicationUserInput(Target, Msg.Msg);
       Result := DeliverMessage(Msg) <> 0;
     end;
     NSLeftMouseUp,
@@ -301,7 +301,7 @@ begin
     begin
       Msg.Msg := MSGKINDUP[MButton];
 
-      NotifyApplicationUserInput(Msg.Msg);
+      NotifyApplicationUserInput(Target, Msg.Msg);
       Result := DeliverMessage(Msg) <> 0;
     end;
   end;
@@ -513,7 +513,7 @@ var
       if (DeliverMessage(KeyMsg) <> 0) or (KeyMsg.CharCode = VK_UNKNOWN) then
       begin
         // the LCL handled the key
-        NotifyApplicationUserInput(KeyMsg.Msg);
+        NotifyApplicationUserInput(Target, KeyMsg.Msg);
         Exit;
       end;
 
@@ -528,7 +528,7 @@ var
         KeyMsg.Msg := LM_KEYDOWN;
       if (DeliverMessage(KeyMsg) <> 0) or (KeyMsg.CharCode = VK_UNKNOWN) then
       begin
-        NotifyApplicationUserInput(KeyMsg.Msg);
+        NotifyApplicationUserInput(Target, KeyMsg.Msg);
         Exit;
       end;
     end;
@@ -559,7 +559,7 @@ var
       if (DeliverMessage(CharMsg) <> 0) or (CharMsg.CharCode=VK_UNKNOWN) then
       begin
         // the LCL handled the key
-        NotifyApplicationUserInput(CharMsg.Msg);
+        NotifyApplicationUserInput(Target, CharMsg.Msg);
         Exit;
       end;
 
@@ -575,7 +575,7 @@ var
       if DeliverMessage(CharMsg) <> 0 then
       begin
         // the LCL handled the key
-        NotifyApplicationUserInput(CharMsg.Msg);
+        NotifyApplicationUserInput(Target, CharMsg.Msg);
         Exit;
       end;
     end;
@@ -603,7 +603,7 @@ var
       if (DeliverMessage(KeyMsg) <> 0) or (KeyMsg.CharCode = VK_UNKNOWN) then
       begin
         // the LCL has handled the key
-        NotifyApplicationUserInput(KeyMsg.Msg);
+        NotifyApplicationUserInput(Target, KeyMsg.Msg);
         Exit;
       end;
 
@@ -619,7 +619,7 @@ var
       if DeliverMessage(KeyMsg) <> 0 then
       begin
         // the LCL handled the key
-        NotifyApplicationUserInput(KeyMsg.Msg);
+        NotifyApplicationUserInput(Target, KeyMsg.Msg);
         Exit;
       end;
     end;
@@ -701,7 +701,7 @@ begin
   Msg.XPos := Round(MousePos.X);
   Msg.YPos := Round(MousePos.Y);
 
-  NotifyApplicationUserInput(Msg.Msg);
+  NotifyApplicationUserInput(Target, Msg.Msg);
   Result := DeliverMessage(Msg) <> 0;
 end;
 

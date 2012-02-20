@@ -2640,7 +2640,7 @@ begin
           MouseMsg.YPos := SmallInt(MousePos.Y);
         end;
     end;
-    NotifyApplicationUserInput(Msg.Msg);
+    NotifyApplicationUserInput(LCLObject, Msg.Msg);
     DeliverMessage(Msg);
     SetNoMousePropagation(QWidgetH(Sender), True);
   end;
@@ -2906,7 +2906,7 @@ begin
   {$endif}
   if KeyMsg.CharCode <> VK_UNKNOWN then
   begin
-    NotifyApplicationUserInput(KeyMsg.Msg);
+    NotifyApplicationUserInput(LCLObject, KeyMsg.Msg);
     if (DeliverMessage(KeyMsg, True) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
     begin
   {$ifdef VerboseQt}
@@ -2925,7 +2925,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn(' message: ', KeyMsg.Msg);
   {$endif}
-    NotifyApplicationUserInput(KeyMsg.Msg);
+    NotifyApplicationUserInput(LCLObject, KeyMsg.Msg);
     if (DeliverMessage(KeyMsg, True) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
     begin
       // the LCL handled the key
@@ -2971,7 +2971,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn(' message: ', CharMsg.Msg);
   {$endif}
-    NotifyApplicationUserInput(CharMsg.Msg);
+    NotifyApplicationUserInput(LCLObject, CharMsg.Msg);
     if (DeliverMessage(CharMsg, True) <> 0) or (CharMsg.CharCode = VK_UNKNOWN) then
     begin
       // the LCL has handled the key
@@ -2990,7 +2990,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn(' message: ', CharMsg.Msg);
   {$endif}
-    NotifyApplicationUserInput(CharMsg.Msg);
+    NotifyApplicationUserInput(LCLObject, CharMsg.Msg);
     DeliverMessage(CharMsg, True);
     if (LCLObject = nil) then
       Exit(False);
@@ -3148,7 +3148,7 @@ begin
         QtRightButton: Msg.Msg := CheckMouseButtonDown(1);
         QtMidButton: Msg.Msg := CheckMouseButtonDown(2);
       end;
-      NotifyApplicationUserInput(Msg.Msg);
+      NotifyApplicationUserInput(LCLObject, Msg.Msg);
       DeliverMessage(Msg, True);
       // Check if our objects exists since LCL can destroy object during
       // mouse events...
@@ -3169,7 +3169,7 @@ begin
         QtMidButton: Msg.Msg := LM_MBUTTONUP;
       end;
 
-      NotifyApplicationUserInput(Msg.Msg);
+      NotifyApplicationUserInput(LCLObject, Msg.Msg);
       DeliverMessage(Msg, True);
 
       // Check if our objects exists since LCL can destroy object during
@@ -3349,7 +3349,7 @@ begin
 
   Msg.Msg := LM_MOUSEMOVE;
 
-  NotifyApplicationUserInput(Msg.Msg);
+  NotifyApplicationUserInput(LCLObject, Msg.Msg);
   DeliverMessage(Msg);
   SetNoMousePropagation(QWidgetH(Sender), True);
 end;
@@ -3428,7 +3428,7 @@ begin
   end;
   {$ENDIF}
 
-  NotifyApplicationUserInput(Msg.Msg);
+  NotifyApplicationUserInput(LCLObject, Msg.Msg);
   Result := DeliverMessage(Msg) <> 0;
 
   SetNoMousePropagation(QWidgetH(Sender), False);
