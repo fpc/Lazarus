@@ -45,7 +45,7 @@ unit SynEditFoldedView;
 interface
 
 uses
-  LCLProc, Graphics,
+  LCLProc, LazLogger, Graphics,
   Classes, SysUtils, LazSynEditText, SynEditTypes, SynEditMiscClasses,
   SynEditMiscProcs, SynEditPointClasses,
   SynEditHighlighter, SynEditHighlighterFoldBase;
@@ -105,6 +105,7 @@ type
 
   TSynTextFoldAVLNode = object
   private
+    function GetClassification: TFoldNodeClassification;
     function GetFoldColumn: Integer;
     function GetFoldColumnLen: Integer;
     function GetFoldIndex: Integer;
@@ -134,6 +135,7 @@ type
     property FoldColumnLen: Integer read GetFoldColumnLen;
     property SourceLine: integer read GetSourceLine;    // The SourceLine with the fold-keyword
     property SourceLineOffset: integer read GetSourceLineOffset;    // The SourceLine with the fold-keyword
+    property Classification: TFoldNodeClassification read GetClassification;
   end;
 
   { TSynTextFoldAVLNodeNestedIterator:
@@ -575,8 +577,13 @@ type
 
     property DisplayView: TLazSynDisplayView read GetDisplayView;
   end;
-  
+
+function dbgs(AClassification: TFoldNodeClassification): String; overload;
+
 implementation
+
+//var
+//  SYN_FOLD_DEBUG: PLazLoggerLogGroup;
 
 type
   TFoldExportEntry = Record
@@ -1752,6 +1759,13 @@ begin
 end;
 
 { TSynTextFoldAVLNode }
+
+function TSynTextFoldAVLNode.GetClassification: TFoldNodeClassification;
+begin
+  if fData = nil
+  then Result := fncInvalid
+  else Result := fData.Classification;
+end;
 
 function TSynTextFoldAVLNode.GetFoldColumn: Integer;
 begin
@@ -4127,6 +4141,7 @@ function TSynEditFoldedView.FixFolding(AStart: Integer; AMinEnd: Integer;
   aFoldTree: TSynTextFoldAVLTree): Boolean;
 var
   FirstchangedLine, MaxCol: Integer;
+  SrcLineForFldInfos: Integer;
   FldInfos: TSynEditFoldProviderNodeInfoList;
 
   function DoFixFolding(doStart: Integer; doMinEnd, AtColumn: Integer;
@@ -4150,13 +4165,14 @@ var
   var
     FldSrcLine, FldSrcIndex, FLdNodeLine, FldLen, FndLen: Integer;
     i, j, CurLen: Integer;
-    PrevFldSrcLine: Integer;
     SubTree: TSynTextFoldAVLTree;
   begin
+    {$IFDEF SynFoldDebug}try DebugLnEnter(['>>FOLD-- DoFixFolding: doStart=', doStart, '  AMinEnd=',AMinEnd]);{$ENDIF}
+    {$IFDEF SynFoldDebug}aFoldTree.Debug;{$ENDIF}
     Result := False;
     FldSrcLine := doStart;
     while node.IsInFold do begin
-      PrevFldSrcLine := FldSrcLine;
+      {$IFDEF SynFoldDebug}debugln(['>>FOLD-- Node StartLine=', node.StartLine, ' FoldColumn=', node.FoldColumn, ' FoldIndex=', node.FoldIndex, ' FullCount=', node.FullCount, ' Classification=', dbgs(node.Classification)]);{$ENDIF}
       FldSrcLine := node.SourceLine; // the 1-based cfCollapsed (last visible) Line (or 1st hidden)
       FLdNodeLine := node.StartLine; // the 1 based, first hidden line
       FldSrcIndex := FldSrcLine - 1;
@@ -4169,15 +4185,17 @@ var
 
       //{$IFDEF SynAssertFold}
       //With mixed fold/hide => line goes up/down
-      //SynAssert(FldSrcLine >= PrevFldSrcLine, 'TSynEditFoldedView.FixFolding: FoldLine went backwards now %d was %d', [FldSrcLine, PrevFldSrcLine]);
+      //SynAssert(FldSrcLine >= SrcLineForFldInfos, 'TSynEditFoldedView.FixFolding: FoldLine went backwards now %d was %d', [FldSrcLine, SrcLineForFldInfos]);
       //{$ENDIF}
-      if (FldSrcLine <> PrevFldSrcLine) then begin
+      if (FldSrcLine <> SrcLineForFldInfos) then begin
         // Next Line
+        SrcLineForFldInfos := FldSrcLine;
         AtColumn := 0;
                   // AtColumn is used for nodes, behing the HLs index-range (fncHighlighterEx, fncBlockSelection)
                   // TODO: At Colum may be wrong for mixed fold/hide
         FldInfos := FoldProvider.InfoListForFoldsAtTextIndex(FldSrcIndex, False);
         MaxCol := length(FldInfos)-1;
+        {$IFDEF SynFoldDebug}debugln(['>>FOLD-- Got FldInfos for FldSrcIndex=', FldSrcIndex, ' MaxCol=', MaxCol]);{$ENDIF}
       end;
 
       if node.fData.Classification in [fncHighlighter, fncHighlighterEx] then begin
@@ -4196,7 +4214,7 @@ var
             FndLen := FoldProvider.FoldLineLength(FldSrcIndex, i);
             if node.IsHide then inc(FndLen);
             if FndLen <> node.FullCount then Continue;
-            debugln('******** FixFolding: Adjusting x pos');
+            {$IFDEF SynFoldDebug}debugln('******** FixFolding: Adjusting x pos');{$ENDIF}
             //FldInfos[i].Column := node.FoldColumn;
           end;
           if (FndLen > 0) or (FldInfos[i].Column = node.FoldColumn) then begin
@@ -4251,12 +4269,13 @@ var
       if node.StartLine >= doMinEnd then break;
       node := node.Next;
     end;
+    {$IFDEF SynFoldDebug}finally DebugLnExit(['<<FOLD-- DoFixFolding: DONE=', Result]); end{$ENDIF}
   end;
 
 var
   node, tmpnode: TSynTextFoldAVLNode;
 begin
-  {$IFDEF SynFoldDebug}debugln(['>>FOLD-- FixFolding: Start=', AStart, '  AMinEnd=',AMinEnd]);{$ENDIF}
+  {$IFDEF SynFoldDebug}try DebugLnEnter(['>>FOLD-- FixFolding: Start=', AStart, '  AMinEnd=',AMinEnd]);{$ENDIF}
   Result := false;
   if fLockCount > 0 then begin
     fNeedCaretCheck := true; // We may be here as a result of lines deleted/inserted
@@ -4284,12 +4303,13 @@ begin
 
   FirstchangedLine := -1;
   FldInfos := nil;
-  MaxCol := 0;
+  MaxCol := -1;
+  SrcLineForFldInfos := -1;
   Result := DoFixFolding(-1, AMinEnd, 0, aFoldTree, node);
   CalculateMaps;
   if Assigned(fOnFoldChanged) and (FirstchangedLine >= 0) then
     fOnFoldChanged(FirstchangedLine);
-  {$IFDEF SynFoldDebug}debugln(['<<FOLD-- FixFolding: DONE=', Result]);{$ENDIF}
+  {$IFDEF SynFoldDebug}finally DebugLnExit(['<<FOLD-- FixFolding: DONE=', Result]); end{$ENDIF}
 end;
 
 procedure TSynEditFoldedView.DoCaretChanged(Sender : TObject);
@@ -4524,6 +4544,11 @@ begin
   end;
 end;
 
+function dbgs(AClassification: TFoldNodeClassification): String;
+begin
+  WriteStr(Result, AClassification);
+end;
+
 {$IFDEF SynDebug}
 procedure TSynEditFoldedView.debug;
 begin
@@ -4533,6 +4558,7 @@ end;
 
 initialization
   InitNumEncodeValues;
+  //SYN_FOLD_DEBUG := DebugLogger.RegisterLogGroup('SynFoldDebug' {$IFDEF SynFoldDebug} , True {$ENDIF} );
 
 end.
 

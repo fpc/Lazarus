@@ -41,6 +41,7 @@ type
     function TestText7: TStringArray;
     function TestText8: TStringArray;
     function TestText9: TStringArray;
+    function TestText10: TStringArray;
     function TestTextHide(ALen: Integer): TStringArray;
     function TestTextHide2(ALen: Integer): TStringArray;
     function TestTextHide3: TStringArray;
@@ -449,6 +450,29 @@ begin
   Result[6]  := 'end;';
   Result[7] := 'end';
   Result[8] := '';
+
+end;
+
+function TTestFoldedView.TestText10: TStringArray;
+begin
+  SetLength(Result, 17);
+  Result[0]  := 'program Project1;';
+  Result[1]  := 'begin';
+  Result[2]  := '';
+  Result[3]  := '  if 1=2 then begin';
+  Result[4]  := '';
+  Result[5]  := '  end;';
+  Result[6]  := '';
+  Result[7]  := '  if 1=3 then begin';
+  Result[8]  := '';
+  Result[9]  := '';
+  Result[10] := '';
+  Result[11] := '';
+  Result[12] := '  end;';
+  Result[13] := '';
+  Result[14] := 'end.';
+  Result[15] := '';
+  Result[16] := '';
 
 end;
 
@@ -881,12 +905,13 @@ procedure TTestFoldedView.TestFoldEdit;
     SynEdit.CommandProcessor(ecDeleteLastChar, '', nil);
   end;
 
-  procedure TestNodeAtPos(name: string; x, y: integer);
+  procedure TestNodeAtPos(name: string; x, y: integer; ExpClassification: TFoldNodeClassification = fncHighlighter);
   var
     n: TSynTextFoldAVLNode;
   begin
     n := TSynEditFoldedViewHack(FoldedView).FoldTree.FindFoldForLine(y, true);
     AssertTrue(BaseTestName+' '+ name+ ' got node for line '+inttostr(y), n.IsInFold);
+    AssertTrue(BaseTestName+' '+ name+ ' got node Classification for line '+inttostr(y), n.Classification = ExpClassification);
     AssertEquals(BaseTestName+' '+ name+ ' got node for src-line '+inttostr(y), y, n.SourceLine);
     AssertEquals(BaseTestName+' '+ name+ ' got node for src-line '+inttostr(y)+' col='+inttostr(x), x, n.FoldColumn);
   end;
@@ -1354,6 +1379,21 @@ begin
     TestNodeAtPos('(del newline inside)', 1, 2);
 
     PopBaseName;
+  {%endregion}
+
+  {%region}
+    TstSetText('TestText10 remove one entire fold', TestText10);
+    TstFold('f1', 7, -1, 1, False, 1, [0, 1, 2, 3, 4, 5, 6, 7, 13, 14, 15]);
+    TstFold('f2', 3, -1, 1, False, 1, [0, 1, 2, 3, 6, 7, 13, 14, 15]);
+    TestNodeAtPos('n1', 15, 4);
+    TestNodeAtPos('n2', 15, 8);
+
+    SetCaretAndSel(1, 4, 1, 8);
+    SynEdit.CutToClipboard;
+
+    TstFold('f2', 3, -1, 1, False, 1, [0, 1, 2, 3, 9, 10, 11]);
+    TestNodeAtPos('n3', 15, 4);
+
   {%endregion}
 
 end;
