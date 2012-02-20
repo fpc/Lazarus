@@ -1543,6 +1543,8 @@ type
     FHintPause: Integer;
     FHintShortCuts: Boolean;
     FHintShortPause: Integer;
+    FOnActivate: TNotifyEvent;
+    FOnDeactivate: TNotifyEvent;
     FOnDropFiles: TDropFilesEvent;
     FOnGetMainFormHandle: TGetHandleEvent;
     FOnModalBegin: TNotifyEvent;
@@ -1579,6 +1581,8 @@ type
     procedure SetShowMainForm(const AValue: Boolean);
     procedure SetTitle(const AValue : String);
 
+    procedure SetOnActivate(AValue: TNotifyEvent);
+    procedure SetOnDeactivate(AValue: TNotifyEvent);
     procedure SetOnException(const AValue : TExceptionEvent);
     procedure SetOnGetMainFormHandle(const AValue: TGetHandleEvent);
     procedure SetOnIdle(const AValue : TIdleEvent);
@@ -1613,16 +1617,18 @@ type
     property ShowMainForm: Boolean read FShowMainForm write SetShowMainForm default True;
     property Title: String read FTitle write SetTitle;
 
+    property OnActivate: TNotifyEvent read FOnActivate write SetOnActivate;
+    property OnDeactivate: TNotifyEvent read FOnDeactivate write SetOnDeactivate;
     property OnException: TExceptionEvent read FOnException write SetOnException;
     property OnGetMainFormHandle: TGetHandleEvent read FOnGetMainFormHandle write SetOnGetMainFormHandle;
     property OnIdle: TIdleEvent read FOnIdle write SetOnIdle;
     property OnIdleEnd: TNotifyEvent read FOnIdleEnd write SetOnIdleEnd;
-    property OnEndSession : TNotifyEvent read FOnEndSession write SetOnEndSession;
-    property OnQueryEndSession : TQueryEndSessionEvent read FOnQueryEndSession write SetOnQueryEndSession;
-    property OnMinimize : TNotifyEvent read FOnMinimize write SetOnMinimize;
+    property OnEndSession: TNotifyEvent read FOnEndSession write SetOnEndSession;
+    property OnQueryEndSession: TQueryEndSessionEvent read FOnQueryEndSession write SetOnQueryEndSession;
+    property OnMinimize: TNotifyEvent read FOnMinimize write SetOnMinimize;
     property OnModalBegin: TNotifyEvent read FOnModalBegin write SetOnModalBegin;
     property OnModalEnd: TNotifyEvent read FOnModalEnd write SetOnModalEnd;
-    property OnRestore : TNotifyEvent read FOnRestore write SetOnRestore;
+    property OnRestore: TNotifyEvent read FOnRestore write SetOnRestore;
     property OnDropFiles: TDropFilesEvent read FOnDropFiles write SetOnDropFiles;
     property OnHelp: THelpEvent read FOnHelp write SetOnHelp;
     property OnHint: TNotifyEvent read FOnHint write SetOnHint;

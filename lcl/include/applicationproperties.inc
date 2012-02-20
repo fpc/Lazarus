@@ -50,6 +50,28 @@ begin
     Application.AddOnGetMainFormHandleHandler(FOnGetMainFormHandle);
 end;
 
+procedure TApplicationProperties.SetOnActivate(AValue: TNotifyEvent);
+begin
+  if (TMethod(FOnActivate).Data = TMethod(AValue).Data) and
+     (TMethod(FOnActivate).Code = TMethod(AValue).Code) then Exit;
+  if not (csDesigning in ComponentState) and Assigned(FOnActivate) then
+    Application.RemoveOnActivateHandler(FOnActivate);
+  FOnActivate := AValue;
+  if not (csDesigning in ComponentState) and Assigned(FOnActivate) then
+    Application.AddOnActivateHandler(FOnActivate);
+end;
+
+procedure TApplicationProperties.SetOnDeactivate(AValue: TNotifyEvent);
+begin
+  if (TMethod(FOnDeactivate).Data = TMethod(AValue).Data) and
+     (TMethod(FOnDeactivate).Code = TMethod(AValue).Code) then Exit;
+  if not (csDesigning in ComponentState) and Assigned(FOnDeactivate) then
+    Application.RemoveOnDeactivateHandler(FOnDeactivate);
+  FOnDeactivate := AValue;
+  if not (csDesigning in ComponentState) and Assigned(FOnDeactivate) then
+    Application.AddOnDeactivateHandler(FOnDeactivate);
+end;
+
 procedure TApplicationProperties.SetCaptureExceptions(const AValue : boolean);
 begin
   FCaptureExceptions := AValue;
@@ -321,6 +343,8 @@ begin
   end;
   FShowMainForm := True;
 
+  FOnActivate := nil;
+  FOnDeactivate := nil;
   FOnException := nil;
   FOnGetMainFormHandle := nil;
   FOnIdle := nil;
@@ -342,6 +366,8 @@ destructor TApplicationProperties.Destroy;
 begin
   if not (csDesigning in ComponentState) then
   begin
+    Application.RemoveOnActivateHandler(FOnActivate);
+    Application.RemoveOnDeactivateHandler(FOnDeactivate);
     Application.RemoveOnExceptionHandler(FOnException);
     Application.RemoveOnGetMainFormHandleHandler(FOnGetMainFormHandle);
     Application.RemoveOnIdleHandler(FOnIdle);
