@@ -782,6 +782,7 @@ function TProjectInspectorForm.GetSelectedDependency: TPkgDependency;
 var
   CurNode: TTreeNode;
   Branch: TTreeFilterBranch;
+  AnObject: TObject;
 begin
   Result:=nil;
   if LazProject=nil then exit;
@@ -791,7 +792,9 @@ begin
   then begin
     Branch:=FilterEdit.GetExistingBranch(CurNode.Parent);
     Assert(Assigned(Branch));
-    Result:=Branch.GetData(CurNode.Index) as TPkgDependency;
+    AnObject := Branch.GetData(CurNode.Index);
+    if (AnObject <> nil) and (AnObject is TPkgDependency) then
+      Result := TPkgDependency(AnObject);
   end;
 end;
 
