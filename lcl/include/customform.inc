@@ -474,48 +474,39 @@ end;
 
   Activate event handler.
  ------------------------------------------------------------------------------}
-procedure TCustomForm.WMActivate(var Message : TLMActivate);
+procedure TCustomForm.WMActivate(var Message: TLMActivate);
 begin
   {$IFDEF VerboseFocus}
   DebugLn('TCustomForm.WMActivate A ',DbgSName(Self),' Msg.Active=',dbgs(Message.Active));
   {$ENDIF}
-  if (Parent = nil) and (ParentWindow = 0) and
-     (FormStyle <> fsMDIForm) or (csDesigning in ComponentState) then
-    SetActive(Message.Active);
+  if Message.Active = WA_INACTIVE then
+  begin
+    SetActive(False);
+    if Assigned(Application) then
+      {$IFDEF EnableAsyncDeactivate}
+      Application.QueueAsyncCall(@Application.Deactivate,0);
+      {$ELSE}
+      Application.Deactivate;
+      {$ENDIF}
+  end
+  else
+  begin
+    if (Parent = nil) and (ParentWindow = 0) and
+       (FormStyle <> fsMDIForm) or (csDesigning in ComponentState) then
+      SetActive(True);
 
-  if Application <> nil then
-    Application.Activate;
-  // The button reappears in some situations (e.g. when the window gets the
-  //"urgency" flag) so we hide it again here.
-  // This is the most important place to invoke UpdateShowInTaskBar, since
-  //invoking it anywhere else seeems basically useless/frequently reversed.
-  if (ShowInTaskBar = stNever) or
-     ( (ShowInTaskBar = stDefault) and
-       (Application <> nil) and (Application.TaskBarBehavior = tbSingleButton)
-     ) then
-    UpdateShowInTaskBar;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TCustomForm.WMDeactivate
-  Params: Msg: When the form is deactivated (loses focus within application)
-  Returns: nothing
-
-  Form deactivation (losing focus within application)  event handler.
- ------------------------------------------------------------------------------}
-procedure TCustomForm.WMDeactivate(var Message : TLMActivate);
-begin
-  {$IFDEF VerboseFocus}
-  DebugLn('TCustomForm.WMDeactivate ',DbgSName(Self));
-  {$ENDIF}
-  SetActive(False);
-  {$IFDEF EnableAsyncDeactivate}
-  if Application<>nil then
-    Application.QueueAsyncCall(@Application.Deactivate,0);
-  {$ELSE}
-  if Application<>nil then
-    Application.Deactivate;
-  {$ENDIF}
+    if Assigned(Application) then
+      Application.Activate;
+    // The button reappears in some situations (e.g. when the window gets the
+    //"urgency" flag) so we hide it again here.
+    // This is the most important place to invoke UpdateShowInTaskBar, since
+    //invoking it anywhere else seeems basically useless/frequently reversed.
+    if (ShowInTaskBar = stNever) or
+       ( (ShowInTaskBar = stDefault) and
+         Assigned(Application) and (Application.TaskBarBehavior = tbSingleButton)
+       ) then
+      UpdateShowInTaskBar;
+  end;
 end;
 
 procedure TCustomForm.WMHelp(var Message: TLMHelp);

@@ -416,17 +416,7 @@ begin
     end;
     WM_ACTIVATE:
     begin
-      case Lo(WParam) Of
-        WA_ACTIVE, WA_CLICKACTIVE:
-        begin
-          LMessage.Msg := LM_ACTIVATE;
-        end;
-        WA_INACTIVE:
-        begin
-          LMessage.Msg := LM_DEACTIVATE;
-          // Wince => maybe cast to WM_CLOSE?
-        end;
-      end;
+      LMessage.Msg := LM_ACTIVATE;
     end;
     WM_CAPTURECHANGED:
     begin

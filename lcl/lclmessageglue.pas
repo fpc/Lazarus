@@ -37,7 +37,7 @@ uses
 function DeliverMessage(const Target: TObject; var AMessage): PtrInt;
 function SendSimpleMessage(const Target: TControl; Msg: Cardinal): PtrInt;
 
-function LCLSendActivateMsg(const Target: TControl; Active: Boolean; Minimized: Boolean; ActiveWindow: HWND = 0): PtrInt;
+function LCLSendActivateMsg(const Target: TControl; Active: Word; Minimized: Boolean; ActiveWindow: HWND = 0): PtrInt;
 function LCLSendSetFocusMsg(const Target: TControl): PtrInt;
 function LCLSendKillFocusMsg(const Target: TControl): PtrInt;
 function LCLSendShowWindowMsg(const Target: TControl; Show: Boolean; Status: LPARAM = 0): PtrInt;
@@ -75,7 +75,6 @@ function LCLSendTimerMsg(const Target: TControl; TimerID: WParam; TimerProc: LPa
 function LCLSendExitMsg(const Target: TControl): PtrInt;
 function LCLSendCloseQueryMsg(const Target: TControl): PtrInt;
 function LCLSendDragStartMsg(const Target: TControl): PtrInt;
-function LCLSendDeactivateStartMsg(const Target: TControl): PtrInt;
 function LCLSendMonthChangedMsg(const Target: TControl): PtrInt;
 function LCLSendYearChangedMsg(const Target: TControl): PtrInt;
 function LCLSendDayChangedMsg(const Target: TControl): PtrInt;
@@ -160,17 +159,16 @@ end;
  *                active window                                               *
  *                                                                            *
  ******************************************************************************}
-function LCLSendActivateMsg(const Target: TControl; Active: Boolean; Minimized: Boolean; ActiveWindow: HWND = 0): PtrInt;
+function LCLSendActivateMsg(const Target: TControl; Active: Word; Minimized: Boolean; ActiveWindow: HWND = 0): PtrInt;
 var
   Mess: TLMActivate;
 begin
   Result := 0;
-
-  FillChar(Mess,SizeOf(Mess),0);
+  FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_ACTIVATE;
-  Mess.Active:=Active;
-  Mess.Minimized:=Minimized;
-  Mess.ActiveWindow:=ActiveWindow;
+  Mess.Active := Active;
+  Mess.Minimized := Minimized;
+  Mess.ActiveWindow := ActiveWindow;
   Mess.Result := 0;
   DeliverMessage(Target, Mess);
   Result := Mess.Result;
@@ -977,22 +975,6 @@ end;
 function LCLSendDragStartMsg(const Target: TControl): PtrInt;
 begin
   Result := SendSimpleMessage(Target, LM_DRAGSTART);
-end;
-
-{******************************************************************************
- *                                                                            *
- *  LCLSendDeactivateStartMsg                                                 *
- *                                                                            *
- *  Returns     : 0 to accept the message, non-zero to reject the message     *
- *                                                                            *
- *  Params                                                                    *
- *                                                                            *
- *  Target      : The Control that will recieve the message LM_DEACTIVATE     *
- *                                                                            *
- ******************************************************************************}
-function LCLSendDeactivateStartMsg(const Target: TControl): PtrInt;
-begin
-  Result := SendSimpleMessage(Target, LM_DEACTIVATE);
 end;
 
 {******************************************************************************

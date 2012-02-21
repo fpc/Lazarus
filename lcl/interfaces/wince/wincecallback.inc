@@ -1034,11 +1034,12 @@ begin
     end;
     WM_ACTIVATE:
     begin
+      LMessage.Msg := LM_ACTIVATE;
+      LMessage.WParam := WParam;
+      LMessage.LParam := LParam;
       case Lo(WParam) Of
         WA_ACTIVE, WA_CLICKACTIVE:
         begin
-          LMessage.Msg := LM_ACTIVATE;
-
           // Upon activation of a form, rebuild it's menu
           if lWinControl is TCustomForm then
           begin
@@ -1055,11 +1056,6 @@ begin
               TWinCEWidgetset(Widgetset).SetMenu(lWinControl.Handle, 0);
             end;
           end;
-        end;
-        WA_INACTIVE:
-        begin
-          LMessage.Msg := LM_DEACTIVATE;
-          // Wince => maybe cast to WM_CLOSE?
         end;
       end;
     end;

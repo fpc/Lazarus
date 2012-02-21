@@ -489,7 +489,6 @@ type
     procedure SetWindowState(Value : TWindowState);
     procedure WMActivate(var Message : TLMActivate); message LM_ACTIVATE;
     procedure WMCloseQuery(var message: TLMessage); message LM_CLOSEQUERY;
-    procedure WMDeactivate(var Message : TLMActivate); message LM_DEACTIVATE;
     procedure WMHelp(var Message: TLMHelp); message LM_HELP;
     procedure WMShowWindow(var message: TLMShowWindow); message LM_SHOWWINDOW;
     procedure WMSize(var message: TLMSize); message LM_Size;

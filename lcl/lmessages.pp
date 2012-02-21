@@ -72,7 +72,6 @@ const
   LM_EXIT           = LM_LCL + 60;
   LM_CLOSEQUERY     = LM_LCL + 62;
   LM_DRAGSTART      = LM_LCL + 63;
-  LM_DEACTIVATE     = LM_LCL + 64;  //used when a form is no longer in front
   LM_QUIT           = LM_LCL + 65;
   LM_MONTHCHANGED   = LM_LCL + 66;
   LM_YEARCHANGED    = LM_LCL + 67;
@@ -510,17 +509,24 @@ type
        Result: LRESULT);
   end;
 
+// Active state
+const
+  WA_INACTIVE    = 0;
+  WA_ACTIVE      = 1;
+  WA_CLICKACTIVE = 2;
+
+type
   TLMActivate = record
     Msg: Cardinal;
 {$ifdef cpu64}
     UnusedMsg: Cardinal;
 {$endif}
 {$IFDEF FPC_LITTLE_ENDIAN}
-    Active: WordBool;
+    Active: Word;
     Minimized: WordBool;
 {$ELSE}
     Minimized: WordBool;
-    Active: WordBool;
+    Active: Word;
 {$ENDIF}
 {$ifdef cpu64}
     Unused : Longint;
@@ -1011,7 +1017,6 @@ begin
   LM_EXIT           :Result:='LM_EXIT';
   LM_CLOSEQUERY     :Result:='LM_CLOSEQUERY';
   LM_DRAGSTART      :Result:='LM_DRAGSTART';
-  LM_DEACTIVATE     :Result:='LM_DEACTIVATE';
 
   LM_MONTHCHANGED   :Result:='LM_MONTHCHANGED';
   LM_YEARCHANGED    :Result:='LM_YEARCHANGED';

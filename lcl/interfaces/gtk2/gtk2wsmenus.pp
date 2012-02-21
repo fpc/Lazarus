@@ -129,11 +129,11 @@ begin
   and GtkWidgetIsA(PGtkWidget(Widget), GTK_TYPE_CHECK_MENU_ITEM)
   and (not gtk_check_menu_item_get_active(PGTKCheckMenuItem(Widget))) then Exit;
 
-  FillChar(Mess,SizeOf(Mess),#0);
+  FillChar(Mess, SizeOf(Mess), #0);
   Mess.Msg := LM_ACTIVATE;
-  Mess.Active:=true;
-  Mess.Minimized:=false;
-  Mess.ActiveWindow:=0;
+  Mess.Active := WA_ACTIVE;
+  Mess.Minimized := False;
+  Mess.ActiveWindow := 0;
   Mess.Result := 0;
   DeliverMessage(Data, Mess);
 

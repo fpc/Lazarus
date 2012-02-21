@@ -6235,13 +6235,12 @@ begin
   if (vActivate = FIsActivated) or (LCLObject.Parent <> nil) then
     exit;
 
-  Msg.Active := vActivate;
-  Msg.ActiveWindow := LCLObject.Handle;
-
+  Msg.Msg := LM_ACTIVATE;
   if vActivate then
-    Msg.Msg := LM_ACTIVATE
+    Msg.Active := WA_ACTIVE
   else
-    Msg.Msg := LM_DEACTIVATE;
+    Msg.Active := WA_INACTIVE;
+  Msg.ActiveWindow := LCLObject.Handle;
 
   DeliverMessage(Msg);
 end;

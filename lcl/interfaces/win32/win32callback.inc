@@ -1087,20 +1087,9 @@ begin
     WM_ENTERIDLE: Application.Idle(False);
     WM_ACTIVATE:
     begin
-      case LOWORD(WParam) of
-        WA_ACTIVE, WA_CLICKACTIVE:
-        begin
-          LMessage.Msg := LM_ACTIVATE;
-          LMessage.WParam := WParam;
-          LMessage.LParam := LParam;
-        end;
-        WA_INACTIVE:
-        begin
-          LMessage.Msg := LM_DEACTIVATE;
-          LMessage.WParam := WParam;
-          LMessage.LParam := LParam;
-        end;
-      end;
+      LMessage.Msg := LM_ACTIVATE;
+      LMessage.WParam := WParam;
+      LMessage.LParam := LParam;
     end;
     WM_IME_ENDCOMPOSITION:
     begin

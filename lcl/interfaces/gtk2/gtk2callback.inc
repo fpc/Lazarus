@@ -338,13 +338,14 @@ begin
   
   if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
 
-  FillChar(Mess,SizeOf(Mess),#0);
+  FillChar(Mess, SizeOf(Mess), #0);
   Mess.Msg := LM_ACTIVATE;
-  Mess.Active:=true;
-  Mess.Minimized:=false;
-  Mess.ActiveWindow:=0;
+  Mess.Active := WA_ACTIVE;
+  Mess.Minimized := False;
   if GtkWidgetIsA(Widget, gtk_window_get_type) then
-    Mess.ActiveWindow:=HWnd(PtrUInt(PGTKWindow(Widget)^.focus_widget));
+    Mess.ActiveWindow := HWnd(PtrUInt(PGTKWindow(Widget)^.focus_widget))
+  else
+    Mess.ActiveWindow := 0;
   Mess.Result := 0;
   //DebugLn('gtkactivateCB ',DbgSName(TObject(Data)));
   DeliverMessage(Data, Mess);
@@ -673,11 +674,12 @@ begin
     if (Info <> nil) then
       Include(Info^.Flags, wwiActivating);
     Mess.Msg := LM_ACTIVATE;
-    Mess.Active := True;
+    Mess.Active := WA_ACTIVE;
     Mess.Minimized := False;
-    Mess.ActiveWindow := 0;
     if GtkWidgetIsA(Widget, gtk_window_get_type) then
-      Mess.ActiveWindow := HWnd(PtrUInt(PGTKWindow(Widget)^.focus_widget));
+      Mess.ActiveWindow := HWnd(PtrUInt(PGTKWindow(Widget)^.focus_widget))
+    else
+      Mess.ActiveWindow := 0;
     Mess.Result := 0;
     DeliverMessage(Data, Mess); // send message directly (not Post)
   finally
@@ -713,15 +715,20 @@ begin
   ResetDefaultIMContext;
   UpdateMouseCaptureControl;
 
-  Info:=GetWidgetInfo(Widget,false);
+  Info := GetWidgetInfo(Widget,false);
   try
     if (Info<>nil) then
-      Include(Info^.Flags,wwiDeactivating);
-    Mess.Msg := LM_DEACTIVATE;
+      Include(Info^.Flags, wwiDeactivating);
+    FillChar(Mess, SizeOf(Mess), #0);
+    Mess.Msg := LM_ACTIVATE;
+    Mess.Active := WA_INACTIVE;
+    Mess.Minimized := False;
+    Mess.ActiveWindow := 0;
+    Mess.Result := 0;
     DeliverMessage(Data, Mess);
   finally
     if Info<>nil then
-      Exclude(Info^.Flags,wwiDeactivating);
+      Exclude(Info^.Flags, wwiDeactivating);
   end;
 
   Result := CallBackDefaultReturn;
