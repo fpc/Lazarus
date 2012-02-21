@@ -4103,17 +4103,19 @@ begin
   List := TopList;
   while List <> nil do
   begin
-    if (List^.Data <> nil)
-    then begin
+    if (List^.Data <> nil) then
+    begin
       gdk_window_get_user_data(PGDKWindow(List^.Data), Pgpointer(@Window));
-      if gtk_is_window(Window)
-      then begin
+      if GDK_IS_WINDOW(PGDKWindow(List^.Data)) and
+        gdk_window_is_visible(PGDKWindow(List^.Data)) and
+        gtk_is_window(Window) then
+      begin
         Widget := Window^.focus_widget;
         if Widget=nil then Widget:=PGtkWidget(Window);
         //DebugLn('TGtk2WidgetSet.GetActiveWindow Window=',GetWidgetDebugReport(PgtkWidget(Window)),' Window^.focus_widget= ',GetWidgetDebugReport(Window^.focus_widget));
 
-        if (Widget <> nil) and gtk_widget_has_focus(Widget)
-        then begin
+        if (Widget <> nil) and gtk_widget_has_focus(Widget) then
+        begin
           // return the window
           Result := HWND(PtrUInt(GetMainWidget(PGtkWidget(Window))));
           //DebugLn('TGtk2WidgetSet.GetActiveWindow Result=',GetWidgetDebugReport(PgtkWidget(Result)));
