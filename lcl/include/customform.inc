@@ -2091,8 +2091,6 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCustomForm.Hide;
 begin
-  if (fsModal in FormState) and (ModalResult = 0) then
-    ModalResult := mrCancel;
   Visible := False;
 end;
 
@@ -2675,10 +2673,29 @@ begin
     Result := TWSCustomFormClass(WidgetSetClass).GetMDIChildren(Self, AIndex);
 end;
 
+
 {------------------------------------------------------------------------------
   TCustomForm ShowModal
 ------------------------------------------------------------------------------}
 function TCustomForm.ShowModal: Integer;
+
+  function HasVisibleForms: Boolean;
+  var
+    i: integer;
+    AForm: TCustomForm;
+  begin
+    Result := False;
+    for i := 0 to Screen.CustomFormZOrderCount - 1 do
+    begin
+      AForm := Screen.CustomFormsZOrdered[i];
+      if (AForm <> Self) and not (AForm.FormStyle = fsMDIChild) and
+        (AForm.Parent = nil) and AForm.Visible and AForm.HandleAllocated then
+      begin
+        Result := True;
+        break;
+      end;
+    end;
+  end;
 
   procedure RaiseShowModalImpossible;
   var
@@ -2773,6 +2790,21 @@ begin
             CloseModal;
             if ModalResult<>0 then break;
           end;
+
+          // When modal form is hidden via TCustomForm.Hide then
+          // really hide it and keep it alive. issue #15390
+          if not Application.Terminated and
+            (ModalResult = 0) and not Visible then
+          begin
+            DebugLn('TCustomForm.ShowModal: *********** modal form invisible in loop ',dbgsName(Self));
+            ModalResult := mrCancel;
+            // CloseModal; do not process CloseModal stuff,
+            // it can trigger OnCloseQuery and that's not our intention
+            // since we are here because programmer called Hide of modal form.
+            Application.Idle(HasVisibleForms);
+            break;
+          end;
+
           Application.Idle(true);
         until False;
 
@@ -2784,6 +2816,10 @@ begin
         Screen.EnableForms(DisabledList);
         { guarantee execution of widgetset CloseModal }
         TWSCustomFormClass(WidgetSetClass).CloseModal(Self);
+
+        // set our modalresult to mrCancel before hiding.
+        if ModalResult = 0 then
+          ModalResult := mrCancel;
         Hide;
       end;
     finally
