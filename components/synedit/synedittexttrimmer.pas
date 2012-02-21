@@ -821,7 +821,7 @@ begin
   {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- EditMoveFromTrim()', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), ' Y=',LogY, '  len=',Len]);{$ENDIF}
   s := Spaces(LogY - 1);
   t := fSynStrings[LogY - 1] + copy(s, 1, Len);
-  s := copy(s, 1 + Len, Len);
+  s := copy(s, 1 + Len, length(s));
   StoreSpacesForLine(LogY - 1, s, t);
   fSynStrings[LogY - 1] := t;
   CurUndoList.AddChange(TSynEditUndoTrimMoveFrom.Create(LogY, Len));

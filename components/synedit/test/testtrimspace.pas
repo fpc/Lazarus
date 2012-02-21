@@ -44,6 +44,7 @@ type
     procedure TrimUndoRedoEc;
     procedure NoTrimUndoRedo;
     procedure TestInUndoBlock;
+    procedure TimmEdit;
   end;
 
 implementation
@@ -592,6 +593,23 @@ begin
   DoTestInUndoBlock;
 
   PopBaseName;
+end;
+
+procedure TTestTrimSpace.TimmEdit;
+var
+  i: Integer;
+begin
+  ReCreateEdit;
+  SynEdit.Options := [eoTrimTrailingSpaces, eoAutoIndent, eoScrollPastEol]; // eoGroupUndo
+  SynEdit.TrimSpaceType := settLeaveLine;
+  SetLines(['', '', '', 'xyz', '']);
+  SetCaret(1,2);
+  for i := 1 to 7 do
+    SynEdit.CommandProcessor(ecChar, ' ', nil);
+  SetCaret(3,2);
+  SynEdit.CommandProcessor(ecChar, '/', nil);
+  TestIsFullText ('spaces after edit', ['', '  /     ', '', 'xyz', '']);
+
 end;
 
 
