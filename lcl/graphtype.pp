@@ -907,7 +907,7 @@ end;
 
 function TRawImageDescription.GetDescriptionFromMask: TRawImageDescription;
 begin
-  Result.Init;
+  Result{%H-}.Init;
 
   Result.Format       := ricfGray;
   Result.Width        := Width;
@@ -934,7 +934,7 @@ end;
 
 function TRawImageDescription.GetDescriptionFromAlpha: TRawImageDescription;
 begin
-  Result.Init;
+  Result{%H-}.Init;
 
   Result.Format       := ricfGray;
   Result.Width        := Width;

@@ -173,7 +173,7 @@ var
   i: integer;
 begin
   impl := TDefaultImageListImplementor.Create(AList);
-  Result._Init(impl);
+  Result{%H-}._Init(impl);
 
   if AData <> nil then
   begin

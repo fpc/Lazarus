@@ -670,6 +670,7 @@ function dbgs(const ModeSwitches: TCompilerModeSwitches): string;
 var
   ms: TCompilerModeSwitch;
 begin
+  Result:='';
   for ms:=Low(TCompilerModeSwitches) to high(TCompilerModeSwitches) do
     if ms in ModeSwitches then begin
       Result:=Result+CompilerModeSwitchNames[ms]+',';

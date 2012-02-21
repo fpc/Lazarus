@@ -820,7 +820,7 @@ end;
 function QueryDescription(AFlags: TRawImageQueryFlags; AWidth: Integer = -1; AHeight: integer = -1): TRawImageDescription;
 begin
   Exclude(AFlags, riqfUpdate);
-  Result.Init;
+  Result{%H-}.Init;
   QueryDescription(Result, AFlags, AWidth, AHeight);
 end;
 
@@ -838,7 +838,7 @@ end;
 
 function GetDescriptionFromDevice(ADC: HDC; AWidth, AHeight: integer): TRawImageDescription;
 begin
-  Result.Init;
+  Result{%H-}.Init;
   if not RawImage_DescriptionFromDevice(ADC, Result) then Exit;
   if AWidth <> -1 then Result.Width := AWidth;
   if AHeight <> -1 then Result.Height := AHeight;
@@ -846,7 +846,7 @@ end;
 
 function GetDescriptionFromBitmap(ABitmap: HBitmap; AWidth: Integer = -1; AHeight: integer = -1): TRawImageDescription;
 begin
-  Result.Init;
+  Result{%H-}.Init;
   if not RawImage_DescriptionFromBitmap(ABitmap, Result) then Exit;
   if AWidth <> -1 then Result.Width := AWidth;
   if AHeight <> -1 then Result.Height := AHeight;
