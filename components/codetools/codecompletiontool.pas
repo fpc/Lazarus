@@ -1290,9 +1290,10 @@ begin
     end;
   end;
 
-  // extract method param list and result type
+  // extract method param list, result type and modifiers
   MethodAttr:=[phpWithStart, phpWithoutClassKeyword, phpWithVarModifiers,
-               phpWithParameterNames,phpWithDefaultValues,phpWithResultType];
+               phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
+               phpWithCallingSpecs];
   MethodDefinition:=TrimCodeSpace(
                 ProcContext.Tool.ExtractProcHead(ProcContext.Node,
                               MethodAttr+[phpWithoutClassName,phpWithoutName]));
