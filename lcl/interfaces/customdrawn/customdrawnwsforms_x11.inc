@@ -608,12 +608,12 @@ end;
 // Here we have 1 handle per window, so the X11 backend should only send LM_ACTIVATE
 class procedure TCDWSCustomForm.EvFocusIn(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
 begin
-  LCLSendActivateMsg(AWinControl, True, false);
+  LCLSendActivateMsg(AWinControl, WA_ACTIVE, false);
 end;
 
 class procedure TCDWSCustomForm.EvFocusOut(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
 begin
-  LCLSendDeactivateStartMsg(AWinControl);
+  LCLSendActivateMsg(AWinControl, WA_INACTIVE, false);
 end;
 
 class procedure TCDWSCustomForm.EvPaint(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);

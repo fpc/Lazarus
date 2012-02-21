@@ -586,12 +586,12 @@ end;
 
 procedure TCocoaForm.CallbackActivate;
 begin
-  LCLSendActivateMsg(WindowHandle.LCLForm, True, false);
+  LCLSendActivateMsg(WindowHandle.LCLForm, WA_ACTIVE, false);
 end;
 
 procedure TCocoaForm.CallbackDeactivate;
 begin
-  LCLSendDeactivateStartMsg(WindowHandle.LCLForm);
+  LCLSendActivateMsg(WindowHandle.LCLForm, WA_INACTIVE, false);
 end;
 
 procedure TCocoaForm.CallbackCloseQuery(var CanClose: Boolean);
