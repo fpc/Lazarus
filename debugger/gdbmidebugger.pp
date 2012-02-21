@@ -8920,7 +8920,8 @@ end;
 function TGDBMIDebuggerCommandEvaluate.GetTypeInfo: TGDBType;
 begin
   Result := FTypeInfo;
-  FTypeInfoAutoDestroy := False;
+  // if the command wasn't executed, typeinfo may still get set, and need auto-destroy
+  FTypeInfoAutoDestroy := FTypeInfo = nil;
 end;
 
 function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
