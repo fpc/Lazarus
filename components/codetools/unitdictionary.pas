@@ -555,6 +555,7 @@ procedure TUnitDictionary.SaveToStream(aStream: TStream);
     l: shortstring = '0123456789ABCDEFGHIJKLMNOPQRSTUV';
   begin
     Result:='';
+    if i=0 then exit('0');
     while i>0 do begin
       Result:=Result+l[(i mod 32)+1];
       i:=i div 32;
@@ -597,6 +598,7 @@ var
   SubAVLNode: TAVLTreeNode;
   UnitID: TFilenameToStringTree;
   i: Integer;
+  ID: String;
 begin
   // write format version
   w(UDFileHeader);
@@ -648,8 +650,11 @@ begin
       SubAVLNode:=Group.Units.FindLowest;
       while SubAVLNode<>nil do begin
         CurUnit:=TUDUnit(SubAVLNode.Data);
-        w(UnitID[CurUnit.Filename]);
-        w(LineEnding);
+        ID:=UnitID[CurUnit.Filename];
+        if ID<>'' then begin
+          w(UnitID[CurUnit.Filename]);
+          w(LineEnding);
+        end;
         SubAVLNode:=Group.Units.FindSuccessor(SubAVLNode);
       end;
       w(LineEnding); // empty line as end of group
@@ -686,12 +691,12 @@ var
   Version: Integer;
   IDToUnit: TStringToPointerTree;
 
-  procedure E(Msg: string; Col: PtrInt = 0);
+  procedure E(Msg: string; Col: PtrInt = -1);
   var
     s: String;
   begin
     s:='Error in line '+IntToStr(Y);
-    if Col=0 then
+    if Col=-1 then
       Col:=p-LineStart+1;
     if Col>0 then
       s:=s+', column '+IntToStr(Col);
@@ -763,7 +768,7 @@ var
       StartP:=p;
       while (p<EndP) and (p^ in ['0'..'9','A'..'Z']) do inc(p);
       if (StartP=p) or (p^<>';') then
-        e('unit id expected');
+        e('unit id expected, but found "'+dbgstr(p^)+'"');
       SetLength(UnitID,p-StartP);
       Move(StartP^,UnitID[1],length(UnitID));
       inc(p); // skip semicolon
@@ -772,7 +777,7 @@ var
       StartP:=p;
       while (p<EndP) and (p^ in ['0'..'9','A'..'Z','a'..'z','_','.']) do inc(p);
       if (StartP=p) or (p^<>';') then
-        e('unit name expected');
+        e('unit name expected, but found "'+dbgstr(p^)+'"');
       SetLength(CurUnitName,p-StartP);
       Move(StartP^,CurUnitName[1],length(CurUnitName));
       inc(p); // skip semicolon
@@ -781,7 +786,7 @@ var
       StartP:=p;
       while (p<EndP) and (not (p^ in [#10,#13])) do inc(p);
       if (StartP=p) or (not (p^ in [#10,#13])) then
-        e('file name expected');
+        e('file name expected, but found "'+dbgstr(p^)+'"');
       SetLength(UnitFilename,p-StartP);
       Move(StartP^,UnitFilename[1],length(UnitFilename));
       ReadLineEnding;
@@ -799,7 +804,7 @@ var
         StartP:=p;
         while (p<EndP) and (p^ in ['0'..'9','A'..'Z','a'..'z','_']) do inc(p);
         if (not (p^ in [#10,#13])) then
-          e('identifier expected');
+          e('identifier expected, but found "'+dbgstr(p^)+'"');
         if p=StartP then break;
         SetLength(Identifier,p-StartP);
         Move(StartP^,Identifier[1],length(Identifier));
@@ -834,7 +839,7 @@ var
       StartP:=p;
       while (p<EndP) and (p^ in ['0'..'9','A'..'Z','a'..'z','_','.']) do inc(p);
       if (p^<>';') then
-        e('group name expected');
+        e('group name expected, but found "'+dbgstr(p^)+'"');
       SetLength(GroupName,p-StartP);
       if GroupName<>'' then
         Move(StartP^,GroupName[1],length(GroupName));
@@ -844,7 +849,7 @@ var
       StartP:=p;
       while (p<EndP) and (not (p^ in [#10,#13])) do inc(p);
       if (not (p^ in [#10,#13])) then
-        e('file name expected');
+        e('file name expected, but found "'+dbgstr(p^)+'"');
       SetLength(GroupFilename,p-StartP);
       if GroupFilename<>'' then
         Move(StartP^,GroupFilename[1],length(GroupFilename));
@@ -859,7 +864,7 @@ var
         StartP:=p;
         while (p<EndP) and (p^ in ['0'..'9','A'..'Z','a'..'z','_']) do inc(p);
         if (not (p^ in [#10,#13])) then
-          e('unit identifier expected');
+          e('unit identifier expected, but found "'+dbgstr(p^)+'"');
         if p=StartP then break;
         SetLength(UnitID,p-StartP);
         Move(StartP^,UnitID[1],length(UnitID));
