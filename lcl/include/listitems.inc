@@ -278,27 +278,26 @@ var
 begin
   // Don't use IndexOf, it updates the cache, which then will become invalid
   //DebugLn('TListItems.ItemDestroying ',dbgs(AItem));
-  if  (FCacheIndex <> -1)
-  and (FCacheItem = AItem)
-  then idx := FCacheIndex
-  else idx := FItems.IndexOf(AItem);
+  if  (FCacheIndex <> -1) and (FCacheItem = AItem) then
+    idx := FCacheIndex
+  else
+    idx := FItems.IndexOf(AItem);
 
   if idx = -1 then Exit; //?????
 
-  if FOwner <> nil
-  then begin
+  if FOwner <> nil then
+  begin
     FOwner.ItemDeleted(AItem);
 
-    if (FOwner.HandleAllocated)
-    and (lifCreated in AItem.FFlags)
-    then begin
+    if (FOwner.HandleAllocated) and (lifCreated in AItem.FFlags) then
+    begin
       Exclude(AItem.FFlags, lifCreated);
       TWSCustomListViewClass(FOwner.WidgetSetClass).ItemDelete(FOwner, idx);
     end;
   end;
 
-  if FCacheIndex = idx 
-  then FCacheIndex := -1;
+  if FCacheIndex = idx then
+    FCacheIndex := -1;
   FItems.Delete(idx);
 end;
 
