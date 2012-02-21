@@ -6555,7 +6555,7 @@ var
 begin
   Widget:=PGtkWidget(handle);
   Result:=(Widget<>nil) and GTK_WIDGET_SENSITIVE(Widget)
-          and GTK_WIDGET_PARENT_SENSITIVE(Widget);
+          and GTK_WIDGET_PARENT_SENSITIVE(Widget) and GTK_WIDGET_VISIBLE(Widget);
   LCLObject:=GetLCLObject(PGtkWidget(Handle));
   //debugln('TGtk2WidgetSet.IsWindowEnabled A ',DbgSName(LCLObject),' Result=',dbgs(Result),
   //  ' SENSITIVE=',dbgs(GTK_WIDGET_SENSITIVE(Widget)),
@@ -6574,6 +6574,7 @@ begin
       //end;
     end;
   end;
+  writeln('Result of IsWindowEnabled ',Result);
 end;
 
 {------------------------------------------------------------------------------

@@ -4606,7 +4606,7 @@ end;
 
 function TQtWidgetSet.IsWindowEnabled(Handle: HWND): boolean;
 begin
-  Result := TQtWidget(Handle).getEnabled;
+  Result := TQtWidget(Handle).getEnabled and TQtWidget(Handle).getVisible;
 end;
 
 function TQtWidgetSet.IsWindowVisible(Handle: HWND): boolean;
