@@ -62,7 +62,8 @@ type
     fpdefValueControlsNeedsUpdate,
     fpdefInheritedControlsNeedsUpdate,
     fpdefTopicSettingUp,
-    fpdefTopicNeedsUpdate
+    fpdefTopicNeedsUpdate,
+    fpdefWasHidden
     );
   TFPDocEditorFlags = set of TFPDocEditorFlag;
   
@@ -191,15 +192,22 @@ type
     function GUIModified: boolean;
     procedure DoEditorUpdate(Sender: TObject);
   private
+    FFollowCursor: boolean;
+    FIdleConnected: boolean;
     FLastTopicControl: TControl;
     FCurrentTopic: String;
+    procedure SetFollowCursor(AValue: boolean);
+    procedure SetIdleConnected(AValue: boolean);
     procedure UpdateTopicCombo;
     procedure ClearTopicControls;
     procedure UpdateTopic;
+  protected
+    procedure UpdateShowing; override;
   public
     procedure Reset;
     procedure InvalidateChain;
-    procedure UpdateFPDocEditor(const SrcFilename: string; const Caret: TPoint);
+    procedure LoadIdentifierAt(const SrcFilename: string; const Caret: TPoint);
+    procedure LoadIdentifierAtCursor;
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure ClearEntry(DoSave: Boolean);
@@ -208,6 +216,8 @@ type
     property SourceFilename: string read GetSourceFilename;
     property CaretXY: TPoint read FCaretXY;
     property Modified: boolean read FModified write SetModified;
+    property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
+    property FollowCursor: boolean read FFollowCursor write SetFollowCursor;
   end;
 
 var
@@ -287,8 +297,7 @@ begin
   
   CodeHelpBoss.AddHandlerOnChanging(@OnFPDocChanging);
   CodeHelpBoss.AddHandlerOnChanged(@OnFPDocChanged);
-  Application.AddOnIdleHandler(@ApplicationIdle);
-  
+
   Name := NonModalIDEWindowNames[nmiwFPDocEditorName];
 
   BoldFormatButton.LoadGlyphFromLazarusResource('formatbold');
@@ -302,10 +311,14 @@ begin
 
   SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate, @DoEditorUpdate);
   SourceEditorManagerIntf.RegisterChangeEvent(semEditorStatus, @DoEditorUpdate);
+
+  FollowCursor:=true;
+  IdleConnected:=true;
 end;
 
 procedure TFPDocEditor.FormDestroy(Sender: TObject);
 begin
+  IdleConnected:=false;
   Reset;
   FreeAndNil(fChain);
   if assigned(CodeHelpBoss) then
@@ -436,7 +449,11 @@ begin
     DebugLn(['WARNING: TFPDocEditor.ApplicationIdle fUpdateLock>0']);
     exit;
   end;
-  if not IsVisible then exit;
+  if not IsVisible then begin
+    Include(FFlags,fpdefWasHidden);
+    IdleConnected:=false;
+    exit;
+  end;
   ActiveForm:=Screen.ActiveCustomForm;
   if (ActiveForm<>nil) and (fsModal in ActiveForm.FormState) then exit;
   Done:=false;
@@ -452,8 +469,11 @@ begin
     UpdateInheritedControls
   else if fpdefTopicNeedsUpdate in FFlags then
     UpdateTopicCombo
-  else
+  else begin
+    //debugln(['TFPDocEditor.ApplicationIdle updated']);
     Done:=true;
+    IdleConnected:=false;
+  end;
 end;
 
 procedure TFPDocEditor.MoveToInheritedButtonClick(Sender: TObject);
@@ -1061,14 +1081,9 @@ begin
 end;
 
 procedure TFPDocEditor.DoEditorUpdate(Sender: TObject);
-var
-  SrcEdit: TSourceEditorInterface;
-  CaretPos: TPoint;
 begin
-  SrcEdit:= SourceEditorManagerIntf.ActiveEditor;
-  if SrcEdit=nil then exit;
-  CaretPos := SrcEdit.CursorScreenXY;
-  UpdateFPDocEditor(SrcEdit.FileName, CaretPos);
+  if FollowCursor then
+    LoadIdentifierAtCursor;
 end;
 
 procedure TFPDocEditor.UpdateTopicCombo;
@@ -1094,6 +1109,24 @@ begin
     Exclude(FFlags,fpdefTopicSettingUp);
     Topics.Free;
   end;
+end;
+
+procedure TFPDocEditor.SetIdleConnected(AValue: boolean);
+begin
+  if FIdleConnected=AValue then Exit;
+  FIdleConnected:=AValue;
+  if IdleConnected then
+    Application.AddOnIdleHandler(@ApplicationIdle)
+  else
+    Application.RemoveOnIdleHandler(@ApplicationIdle);
+end;
+
+procedure TFPDocEditor.SetFollowCursor(AValue: boolean);
+begin
+  if FFollowCursor=AValue then Exit;
+  FFollowCursor:=AValue;
+  if FollowCursor then
+    LoadIdentifierAtCursor;
 end;
 
 function TFPDocEditor.GetDefaultDocFile(CreateIfNotExists: Boolean): TLazFPDocFile;
@@ -1149,18 +1182,18 @@ begin
   FFlags:=FFlags+[fpdefCodeCacheNeedsUpdate,
       fpdefChainNeedsUpdate,fpdefCaptionNeedsUpdate,
       fpdefValueControlsNeedsUpdate,fpdefInheritedControlsNeedsUpdate];
+  IdleConnected:=true;
 end;
 
-procedure TFPDocEditor.UpdateFPDocEditor(const SrcFilename: string;
+procedure TFPDocEditor.LoadIdentifierAt(const SrcFilename: string;
   const Caret: TPoint);
 var
   NewSrcFilename: String;
 begin
+  //debugln(['TFPDocEditor.LoadIdentifierAt START ',SrcFilename,' ',dbgs(Caret)]);
   // save the current changes to documentation
   Save(IsVisible);
-  // check if visible
-  if not IsVisible then exit;
-  
+
   NewSrcFilename:=TrimAndExpandFilename(SrcFilename);
   if (NewSrcFilename=SourceFilename) and (CompareCaret(Caret,CaretXY)=0)
   and (fChain<>nil) and fChain.IsValid
@@ -1173,6 +1206,20 @@ begin
   Reset;
   Include(FFlags,fpdefTopicNeedsUpdate);
   InvalidateChain;
+end;
+
+procedure TFPDocEditor.LoadIdentifierAtCursor;
+var
+  SrcEdit: TSourceEditorInterface;
+begin
+  if SourceEditorManagerIntf=nil then exit;
+  if csDestroying in ComponentState then exit;
+  if FFlags*[fpdefReading,fpdefWriting]<>[] then exit;
+  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
+  if SrcEdit=nil then
+    Reset
+  else
+    LoadIdentifierAt(SrcEdit.FileName,SrcEdit.CursorTextXY);
 end;
 
 procedure TFPDocEditor.BeginUpdate;
@@ -1335,6 +1382,15 @@ begin
   finally
     if FCurrentTopic='' then
       ClearTopicControls;
+  end;
+end;
+
+procedure TFPDocEditor.UpdateShowing;
+begin
+  inherited UpdateShowing;
+  if IsVisible and (fpdefWasHidden in FFlags) then begin
+    Exclude(FFlags,fpdefWasHidden);
+    LoadIdentifierAtCursor;
   end;
 end;
 
