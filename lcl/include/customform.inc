@@ -2796,7 +2796,7 @@ begin
           if not Application.Terminated and
             (ModalResult = 0) and not Visible then
           begin
-            DebugLn('TCustomForm.ShowModal: *********** modal form invisible in loop ',dbgsName(Self));
+            DebugLn('NOTICE: TCustomForm.ShowModal() modal form invisible in loop ',dbgsName(Self));
             ModalResult := mrCancel;
             // CloseModal; do not process CloseModal stuff,
             // it can trigger OnCloseQuery and that's not our intention
