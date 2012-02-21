@@ -7445,10 +7445,34 @@ end;
     Msg: Cardinal);
 ------------------------------------------------------------------------------}
 procedure TSourceNotebook.OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
+
+  function IsHintControl(Control: TWinControl): Boolean;
+  var
+    I: Integer;
+  begin
+    if not Assigned(Control) then
+      Exit(False);
+    Result := Control = Sender;
+    if Result then
+      Exit;
+    for I := 0 to Control.ControlCount - 1 do
+    begin
+      Result := Control.Controls[I] = Sender;
+      if Result then
+        Exit;
+      if (Control.Controls[I] is TWinControl) then
+      begin
+        Result := IsHintControl(TWinControl(Control.Controls[I]));
+        if Result then
+          Exit;
+      end;
+    end;
+  end;
+
 begin
   //debugln('TSourceNotebook.OnApplicationUserInput');
-  // don't hide hint if Sender is a hint window
-  if Sender <> FHintWindow then
+  // don't hide hint if Sender is a hint window or child control
+  if not Assigned(Sender) or not IsHintControl(FHintWindow) then
     HideHint;
 end;
 
