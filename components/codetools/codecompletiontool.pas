@@ -75,6 +75,8 @@ interface
 {$DEFINE VerboseCompletionAdds}
 {off $DEFINE VerboseUpdateProcBodySignatures}
 {off $DEFINE VerboseCompleteMethod}
+{off $DEFINE VerboseCompleteLocalVarAssign}
+{off $DEFINE VerboseCompleteEventAssign}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -942,10 +944,10 @@ begin
   // find variable name
   GetIdentStartEndAtPosition(Src,CleanCursorPos,
     VarNameAtom.StartPos,VarNameAtom.EndPos);
-  debugln('TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax A ',GetAtom(VarNameAtom),' "',copy(Src,CleanCursorPos,10),'"');
+  debugln('TCodeCompletionCodeTool.CheckLocalVarForInSyntax A ',GetAtom(VarNameAtom),' "',copy(Src,CleanCursorPos,10),'"');
   if VarNameAtom.StartPos=VarNameAtom.EndPos then begin
     {$IFDEF VerboseForInCompletion}
-    debugln('TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax no identifier at cursor ',GetAtom(VarNameAtom),' "',copy(Src,CleanCursorPos,10),'"');
+    debugln('TCodeCompletionCodeTool.CheckLocalVarForInSyntax no identifier at cursor ',GetAtom(VarNameAtom),' "',copy(Src,CleanCursorPos,10),'"');
     {$ENDIF}
     exit;
   end;
@@ -956,7 +958,7 @@ begin
   ReadNextAtom;
   if not UpAtomIs('IN') then begin
     {$IFDEF VerboseForInCompletion}
-    debugln('TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax no in keyword ',GetAtom(VarNameAtom));
+    debugln('TCodeCompletionCodeTool.CheckLocalVarForInSyntax no in keyword ',GetAtom(VarNameAtom));
     {$ENDIF}
     exit;
   end;
@@ -967,7 +969,7 @@ begin
   ReadPriorAtom;
   if not UpAtomIs('FOR') then begin
     {$IFDEF VerboseForInCompletion}
-    debugln('TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax no for keyword ',GetAtom);
+    debugln('TCodeCompletionCodeTool.CheckLocalVarForInSyntax no for keyword ',GetAtom);
     {$ENDIF}
     exit;
   end;
@@ -979,7 +981,7 @@ begin
   TermAtom.EndPos:=FindEndOfExpression(TermAtom.StartPos);
 
   {$IFDEF VerboseForInCompletion}
-  debugln('TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax term="',GetAtom(TermAtom),'"');
+  debugln('TCodeCompletionCodeTool.CheckLocalVarForInSyntax term="',GetAtom(TermAtom),'"');
   {$ENDIF}
   Result:=TermAtom.EndPos>TermAtom.StartPos;
 end;
@@ -1540,7 +1542,7 @@ var
 begin
   Result:=false;
 
-  {$IFDEF CTDEBUG}
+  {$IFDEF VerboseCompleteLocalVarAssign}
   DebugLn('  CompleteLocalVariableAssignment: A');
   {$ENDIF}
   if not ((CursorNode.Desc=ctnBeginBlock)
@@ -1549,19 +1551,19 @@ begin
     BuildSubTreeForBeginBlock(CursorNode);
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
-  {$IFDEF CTDEBUG}
+  {$IFDEF VerboseCompleteLocalVarAssign}
   DebugLn('  CompleteLocalVariableAssignment: B CheckLocalVarAssignmentSyntax ...');
   {$ENDIF}
   // check assignment syntax
   if not CheckLocalVarAssignmentSyntax(CleanCursorPos,
     VarNameAtom,AssignmentOperator,TermAtom)
   then begin
-    {$IFDEF CTDEBUG}
+    {$IFDEF VerboseCompleteLocalVarAssign}
     debugln(['TCodeCompletionCodeTool.CompleteLocalVariableAssignment CheckLocalVarAssignmentSyntax=false']);
     {$ENDIF}
     exit;
   end;
-  {$IFDEF CTDEBUG}
+  {$IFDEF VerboseCompleteLocalVarAssign}
   debugln(['TCodeCompletionCodeTool.CompleteLocalVariableAssignment VarNameAtom=',dbgstr(Src,VarNameAtom.StartPos,VarNameAtom.EndPos-VarNameAtom.StartPos),' AssignmentOperator=',dbgstr(Src,AssignmentOperator.StartPos,AssignmentOperator.EndPos-AssignmentOperator.StartPos),' TermAtom=',dbgstr(Src,TermAtom.StartPos,TermAtom.EndPos-TermAtom.StartPos)]);
   {$ENDIF}
 
@@ -1569,7 +1571,7 @@ begin
   ActivateGlobalWriteLock;
   Params:=TFindDeclarationParams.Create;
   try
-    {$IFDEF CTDEBUG}
+    {$IFDEF VerboseCompleteLocalVarAssign}
     DebugLn('  CompleteLocalVariableAssignment: check if variable is already defined ...');
     {$ENDIF}
     // check if identifier exists
@@ -1581,7 +1583,7 @@ begin
       RaiseExceptionFmt(ctsIdentifierAlreadyDefined,[GetAtom]);
     end;
 
-    {$IFDEF CTDEBUG}
+    {$IFDEF VerboseCompleteLocalVarAssign}
     DebugLn('  CompleteLocalVariableAssignment: Find type of term ...',
     ' Term="',copy(Src,TermAtom.StartPos,TermAtom.EndPos-TermAtom.StartPos),'"');
     {$ENDIF}
@@ -1622,7 +1624,7 @@ var
   be added to the published section of the class of the Begin..End Block.
 }
 
-  function CheckEventAssignmentSyntax(out PropertyAtom: TAtomPosition;
+  function CheckEventAssignmentSyntax(out PropVarAtom: TAtomPosition;
     out AssignmentOperator, AddrOperatorPos: integer;
     out UserEventAtom: TAtomPosition;
     out SemicolonPos: integer): boolean;
@@ -1654,7 +1656,7 @@ var
     ReadPriorAtom;
     // check event name
     if not AtomIsIdentifier(false) then exit;
-    PropertyAtom:=CurPos;
+    PropVarAtom:=CurPos;
 
     // check for semicolon at end of statement
     MoveCursorToCleanPos(UserEventAtom.EndPos);
@@ -1672,32 +1674,37 @@ var
     Result:=true;
   end;
 
-  function FindEventTypeAtCursor(PropertyAtom: TAtomPosition;
-    out PropertyContext, ProcContext: TFindContext;
+  function FindEventTypeAtCursor(PropVarAtom: TAtomPosition;
+    out PropVarContext, ProcContext: TFindContext;
     Params: TFindDeclarationParams): boolean;
   begin
     Result:=false;
     // find declaration of property identifier
     Params.ContextNode:=CursorNode;
-    MoveCursorToCleanPos(PropertyAtom.StartPos);
+    MoveCursorToCleanPos(PropVarAtom.StartPos);
     Params.SetIdentifier(Self,@Src[CurPos.StartPos],nil);
     fFullTopLvlName:='';
     Params.OnTopLvlIdentifierFound:=@OnTopLvlIdentifierFound;
     Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
                    fdfTopLvlResolving,fdfFindVariable];
-    if (not FindDeclarationOfIdentAtParam(Params))
-    or (Params.NewNode.Desc<>ctnProperty) then begin
+    if (not FindDeclarationOfIdentAtParam(Params)) then begin
       {$IFDEF CTDEBUG}
-      DebugLn('FindEventTypeAtCursor not a property');
+      DebugLn('FindEventTypeAtCursor identifier "',GetIdentifier(@Src[CurPos.StartPos]),'" not found');
       {$ENDIF}
       exit;
     end;
-    PropertyContext:=CreateFindContext(Params);
+    if not (Params.NewNode.Desc in [ctnProperty,ctnVarDefinition]) then begin
+      {$IFDEF CTDEBUG}
+      DebugLn('FindEventTypeAtCursor not a property/variable');
+      {$ENDIF}
+      exit;
+    end;
+    PropVarContext:=CreateFindContext(Params);
     // identifier is property
     // -> check type of property
     Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors];
-    ProcContext:=PropertyContext.Tool.FindBaseTypeOfNode(
-                                               Params,PropertyContext.Node);
+    ProcContext:=PropVarContext.Tool.FindBaseTypeOfNode(
+                                                    Params,PropVarContext.Node);
     if (ProcContext.Node=nil) or (ProcContext.Node.Desc<>ctnProcedureType)
     then begin
       {$IFDEF CTDEBUG}
@@ -1705,22 +1712,22 @@ var
       {$ENDIF}
       exit;
     end;
-    // identifier is property of type proc => this is an event
+    // identifier is property/var of type proc => this is an event
     Result:=true;
   end;
 
   function CreateEventFullName(AClassNode: TCodeTreeNode; UserEventAtom,
-    PropertyAtom: TAtomPosition): string;
-  var PropertyName, AClassName: string;
+    PropVarAtom: TAtomPosition): string;
+  var PropVarName, AClassName: string;
     l: integer;
   begin
     if UserEventAtom.StartPos=UserEventAtom.EndPos then begin
       Result:=fFullTopLvlName;
-      l:=PropertyAtom.EndPos-PropertyAtom.StartPos;
-      PropertyName:=copy(Src,PropertyAtom.StartPos,l);
-      if SysUtils.CompareText(PropertyName,RightStr(Result,l))<>0 then
-        Result:=Result+PropertyName;
-      if SysUtils.CompareText(PropertyName,Result)=0 then begin
+      l:=PropVarAtom.EndPos-PropVarAtom.StartPos;
+      PropVarName:=copy(Src,PropVarAtom.StartPos,l);
+      if SysUtils.CompareText(PropVarName,RightStr(Result,l))<>0 then
+        Result:=Result+PropVarName;
+      if SysUtils.CompareText(PropVarName,Result)=0 then begin
         // this is an event of the class (not event of published objects)
         // -> add form name
         MoveCursorToNodeStart(AClassNode.Parent);
@@ -1731,8 +1738,8 @@ var
         Result:=AClassName+Result;
       end;
       // convert OnClick to Click
-      if (UpperCaseStr(LeftStr(PropertyName,2))='ON')
-      and (SysUtils.CompareText(RightStr(Result,l),PropertyName)=0)
+      if (UpperCaseStr(LeftStr(PropVarName,2))='ON')
+      and (SysUtils.CompareText(RightStr(Result,l),PropVarName)=0)
       then
         Result:=LeftStr(Result,length(Result)-l)+RightStr(Result,l-2);
     end else begin
@@ -1744,12 +1751,13 @@ var
     {$ENDIF}
   end;
 
-  function FindClassAndProcNode(out ProcNode, AClassNode: TCodeTreeNode
+  function FindProcAndClassNode(out ProcNode, AClassNode: TCodeTreeNode
     ): boolean;
   var
     ANode: TCodeTreeNode;
   begin
     Result:=false;
+    AClassNode:=nil;
     ProcNode:=CursorNode;
     while (ProcNode<>nil) do begin
       if (ProcNode.Desc=ctnProcedure) then begin
@@ -1759,12 +1767,15 @@ var
       ProcNode:=ProcNode.Parent;
     end;
     if (ProcNode=nil) then exit;
-    ANode:=FindFirstNodeOnSameLvl(ProcNode);
+    ANode:=FindClassNodeForMethodBody(ProcNode,true,false);
     if (ANode=nil) then exit;
     // search class node
-    AClassNode:=FindClassNode(ANode,UpperCaseStr(SearchedClassName),
-                              true,false);
-    if AClassNode=nil then exit;
+    while ANode<>nil do begin
+      if ANode.Desc in AllClassObjects then break;
+      ANode:=ANode.Parent;
+    end;
+    if ANode=nil then exit;
+    AClassNode:=ANode;
     Result:=true;
   end;
 
@@ -1798,25 +1809,52 @@ var
                                       StartInsertPos,EndInsertPos,RValue);
   end;
 
+  procedure AddProcedure(Identifier: string;
+    TypeTool: TFindDeclarationTool; TypeNode: TCodeTreeNode);
+  var
+    ProcContext: TFindContext;
+    AMethodDefinition: string;
+    AMethodAttr: TProcHeadAttributes;
+  begin
+    // create new method
+    ProcContext:=CreateFindContext(TypeTool,TypeNode);
+    AddProcedureCompatibleToProcType(Identifier,
+      ProcContext,AMethodDefinition,AMethodAttr,SourceChangeCache,
+      CursorNode);
+
+    // apply the changes
+    if not SourceChangeCache.Apply then
+      RaiseException(ctsUnableToApplyChanges);
+
+    {$IFDEF CTDEBUG}
+    DebugLn('  CompleteLocalIdentifierByParameter.AddProcedure: jumping to new method body...');
+    {$ENDIF}
+    // jump to new method body
+    if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine,false)
+    then
+      RaiseException('CompleteLocalIdentifierByParameter.AddProcedure JumpToMethod failed');
+  end;
+
 // function CompleteEventAssignment: boolean
 var
-  UserEventAtom, PropertyAtom: TAtomPosition;
+  UserEventAtom, PropVarAtom: TAtomPosition;
   AssignmentOperator, AddrOperatorPos, SemicolonPos: integer;
   Params: TFindDeclarationParams;
   PropertyContext, ProcContext: TFindContext;
   FullEventName, AMethodDefinition: string;
   AMethodAttr: TProcHeadAttributes;
   ProcNode, AClassNode: TCodeTreeNode;
+  Identifier: String;
 begin
   IsEventAssignment:=false;
   Result:=false;
 
-  {$IFDEF CTDEBUG}
+  {$IFDEF VerboseCompleteEventAssign}
   DebugLn('  CompleteEventAssignment: CheckEventAssignmentSyntax...');
   {$ENDIF}
   // check assigment syntax
-  if not CheckEventAssignmentSyntax(PropertyAtom, AssignmentOperator,
-                                 AddrOperatorPos, UserEventAtom, SemicolonPos)
+  if not CheckEventAssignmentSyntax(PropVarAtom, AssignmentOperator,
+                                   AddrOperatorPos, UserEventAtom, SemicolonPos)
   then
     exit;
   IsEventAssignment:=true;
@@ -1829,49 +1867,79 @@ begin
     BuildSubTreeForBeginBlock(CursorNode);
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
-  {$IFDEF CTDEBUG}
-  DebugLn('  CompleteEventAssignment: find class of method...');
+  {$IFDEF VerboseCompleteEventAssign}
+  DebugLn('  CompleteEventAssignment: check if a method and find class...');
   {$ENDIF}
-  if not FindClassAndProcNode(ProcNode,AClassNode) then exit;
+  FindProcAndClassNode(ProcNode,AClassNode);
 
-  ActivateGlobalWriteLock;
   Params:=TFindDeclarationParams.Create;
   try
-    {$IFDEF CTDEBUG}
+    {$IFDEF VerboseCompleteEventAssign}
     DebugLn('  CompleteEventAssignment: FindEventTypeAtCursor...');
     {$ENDIF}
     // check if identifier is event property and build
-    Result:=FindEventTypeAtCursor(PropertyAtom,PropertyContext,ProcContext,
+    Result:=FindEventTypeAtCursor(PropVarAtom,PropertyContext,ProcContext,
                                   Params);
     if not Result then exit;
 
-    {$IFDEF CTDEBUG}
-    DebugLn('  CompleteEventAssignment: CreateEventFullName... UserEventAtom.StartPos=',dbgs(UserEventAtom.StartPos));
-    {$ENDIF}
-    // create a nice event name
-    FullEventName:=CreateEventFullName(AClassNode,UserEventAtom,PropertyAtom);
-    if FullEventName='' then exit;
+    if ProcContext.Tool.ProcNodeHasOfObject(ProcContext.Node) then begin
+      if AClassNode<>nil then begin
+        {$IFDEF VerboseCompleteEventAssign}
+        DebugLn('  CompleteEventAssignment: CreateEventFullName... UserEventAtom.StartPos=',dbgs(UserEventAtom.StartPos));
+        {$ENDIF}
+        // create a nice event name
+        FullEventName:=CreateEventFullName(AClassNode,UserEventAtom,PropVarAtom);
+        if FullEventName='' then exit;
 
+        // add published method and method body and right side of assignment
+        AddMethodCompatibleToProcType(AClassNode,FullEventName,ProcContext,
+          AMethodDefinition,AMethodAttr,SourceChangeCache);
+        if not CompleteAssignment(FullEventName,AssignmentOperator,
+          AddrOperatorPos,SemicolonPos,UserEventAtom)
+        then
+          RaiseException('CompleteEventAssignment CompleteAssignment failed');
+      end else if ProcContext.Tool.ProcNodeHasOfObject(ProcContext.Node) then begin
+        {$IFDEF VerboseCompleteEventAssign}
+        debugln(['  CompleteEventAssignment:  proc is "of object"']);
+        {$ENDIF}
+        MoveCursorToCleanPos(PropVarAtom.StartPos);
+        RaiseException('Complete event failed: procedure of object needs a class');
+      end;
+    end else begin
+      // create procedure (not method)
+      {$IFDEF VerboseCompleteEventAssign}
+      debugln(['  CompleteEventAssignment: create a proc name']);
+      {$ENDIF}
+      // get name
+      Identifier:='';
+      if (UserEventAtom.StartPos>1) and (UserEventAtom.StartPos<=SrcLen) then
+        Identifier:=GetIdentifier(@Src[UserEventAtom.StartPos]);
+      if Identifier='' then
+        Identifier:=GetIdentifier(@Src[PropVarAtom.StartPos]);
+      if Identifier='' then begin
+        MoveCursorToCleanPos(PropVarAtom.StartPos);
+        RaiseException('Complete event failed: need a name');
+      end;
+      // create proc
+      {$IFDEF VerboseCompleteEventAssign}
+      debugln(['  CompleteEventAssignment: create a proc name']);
+      {$ENDIF}
+      AddProcedureCompatibleToProcType(Identifier,
+        ProcContext,AMethodDefinition,AMethodAttr,SourceChangeCache,
+        CursorNode);
+    end;
   finally
     Params.Free;
-    DeactivateGlobalWriteLock;
   end;
 
-  // add published method and method body and right side of assignment
-  AddMethodCompatibleToProcType(AClassNode,FullEventName,ProcContext,
-    AMethodDefinition,AMethodAttr,SourceChangeCache);
-  if not CompleteAssignment(FullEventName,AssignmentOperator,
-    AddrOperatorPos,SemicolonPos,UserEventAtom)
-  then
-    RaiseException('CompleteEventAssignment CompleteAssignment failed');
-  {$IFDEF CTDEBUG}
+  {$IFDEF VerboseCompleteEventAssign}
   DebugLn('  CompleteEventAssignment: Applying changes...');
   {$ENDIF}
   // apply the changes
   if not SourceChangeCache.Apply then
     RaiseException(ctsUnableToApplyChanges);
 
-  {$IFDEF CTDEBUG}
+  {$IFDEF VerboseCompleteEventAssign}
   DebugLn('  CompleteEventAssignment: jumping to new method body...');
   {$ENDIF}
   // jump to new method body
