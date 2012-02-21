@@ -287,6 +287,12 @@ begin
 
   if FOwner <> nil then
   begin
+
+    // trigger DoSelectItem before deletion - Delphi compat. issue #21335
+    if FOwner.HandleAllocated and AItem.Selected and
+      not (csDestroying in FOwner.Componentstate) then
+      FOwner.DoSelectItem(AItem, False);
+
     FOwner.ItemDeleted(AItem);
 
     if (FOwner.HandleAllocated) and (lifCreated in AItem.FFlags) then
