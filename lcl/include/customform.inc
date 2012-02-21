@@ -2785,11 +2785,6 @@ begin
         { guarantee execution of widgetset CloseModal }
         TWSCustomFormClass(WidgetSetClass).CloseModal(Self);
         Hide;
-        // free handles to save resources and to reduce overhead in the interfaces
-        // for bookkeeping changing between Show and ShowModal.
-        // (e.g.: the gtk interface creates some specials on ShowModal, so the
-        //  combination ShowModal, Close, Show makes problems.)
-        DestroyHandle;
       end;
     finally
       RestoreFocusState(SavedFocusState);
