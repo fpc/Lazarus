@@ -6574,7 +6574,6 @@ begin
       //end;
     end;
   end;
-  writeln('Result of IsWindowEnabled ',Result);
 end;
 
 {------------------------------------------------------------------------------
