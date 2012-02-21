@@ -187,10 +187,9 @@ var
   i: Integer;
 begin
   fSelectionList.Clear;
-  if fFilteredListbox.SelCount > 0 then
-    for i := 0 to fFilteredListbox.Count-1 do
-      if fFilteredListbox.Selected[i] then
-        fSelectionList.Add(fFilteredListbox.Items[i]);
+  for i := 0 to fFilteredListbox.Count-1 do
+    if fFilteredListbox.Selected[i] then
+      fSelectionList.Add(fFilteredListbox.Items[i]);
 end;
 
 procedure TListFilterEdit.RestoreSelection;
