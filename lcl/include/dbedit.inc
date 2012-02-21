@@ -126,36 +126,27 @@ begin
   end;
 end;
 
-procedure TDBEdit.KeyPress(var Key: char);
+procedure TDBEdit.UTF8KeyPress(var UTF8Key: TUTF8Char);
 var
-  SavedKey: Char;
+  CharKey: Char;
 begin
-  SavedKey := Key;
-  inherited KeyPress(Key);
-  //TCustomMaskEdit sets all normal Keys (and BackSpace) to #0 if IsMasked
-  //but not if control is ReadOnly
-  if (not IsMasked) or (inherited ReadOnly) then
-  begin
-    case Key of
-      #8: // special keys
-        if not FDatalink.Edit then
-          Key:=#0;
-
-      #32..#255: //standard keys
-        if not FieldCanAcceptKey(FDataLink.Field, Key) or not FDatalink.Edit then
-          Key:=#0;
-    end;//case
-  end
+  inherited UTF8KeyPress(UTF8Key);
+  //If the pressed key is unicode then map the char to #255
+  //Necessary to keep the TField.IsValidChar check
+  if Length(UTF8Key) = 1 then
+    CharKey := UTF8Key[1]
   else
-  begin
-    case SavedKey of
-      #8: // special keys
-        FDatalink.Edit;
-      #32..#255: //standard keys
-        if FieldCanAcceptKey(FDataLink.Field, SavedKey) then
-          FDatalink.Edit;
-    end;//case
-  end;
+    CharKey := #255;
+
+  case CharKey of
+    #8: // special keys
+      if not FDatalink.Edit then
+        UTF8Key:='';
+
+    #32..#255: //standard keys
+      if not FieldCanAcceptKey(FDataLink.Field, CharKey) or not FDatalink.Edit then
+        UTF8Key:='';
+  end;//case
 end;
 
 procedure TDBEdit.Notification(AComponent: TComponent; Operation: TOperation);

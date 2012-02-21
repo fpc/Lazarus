@@ -184,7 +184,7 @@ Type
     function GetReadOnly: Boolean; override;
     procedure SetReadOnly(Value: Boolean); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure KeyPress(var Key: char); override;
+    procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
 
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
