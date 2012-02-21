@@ -198,12 +198,12 @@ end;
 
 procedure TLCLWindowCallback.Activate;
 begin
-  LCLSendActivateMsg(Target, True, false);
+  LCLSendActivateMsg(Target, WA_ACTIVE, false);
 end;
 
 procedure TLCLWindowCallback.Deactivate;
 begin
-  LCLSendDeactivateStartMsg(Target);
+  LCLSendActivateMsg(Target, WA_INACTIVE, false);
 end;
 
 procedure TLCLWindowCallback.CloseQuery(var CanClose: Boolean);
