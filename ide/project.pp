@@ -971,7 +971,6 @@ type
     function RemoveProjectPathFromFilename(const AFilename: string): string;
     function FileIsInProjectDir(const AFilename: string): boolean;
     procedure GetVirtualDefines(DefTree: TDefineTree; DirDef: TDirectoryDefines);
-    function SearchFile(const Filename,SearchPaths,InitialDir:string):string;
     function GetShortFilename(const Filename: string; UseUp: boolean): string; override;
     procedure ConvertToLPIFilename(var AFilename: string); override;
     procedure ConvertFromLPIFilename(var AFilename: string); override;
@@ -4088,34 +4087,6 @@ end;
 procedure TProject.LoadDefaultIcon;
 begin
   TProjectIcon(ProjResources[TProjectIcon]).LoadDefaultIcon;
-end;
-
-function TProject.SearchFile(const Filename,SearchPaths,InitialDir:string):string;
-var StartPos,EndPos:integer;
-  CurPath: string;
-  OldDir: string;
-begin
-  OldDir:=GetCurrentDirUTF8;
-  SetCurrentDirUTF8(ExtractFilePath(InitialDir));
-  try
-    StartPos:=1;
-    while StartPos<=length(SearchPaths) do begin
-      EndPos:=Startpos;
-      while (EndPos<=length(SearchPaths)) and (SearchPaths[EndPos]<>';') do 
-        inc(EndPos);
-      CurPath:=copy(SearchPaths,Startpos,EndPos-StartPos);
-      if CurPath<>'' then begin
-        if CurPath[length(CurPath)]<>PathDelim then
-          CurPath:=CurPath+PathDelim;
-        Result:=CurPath+Filename;
-        if FileExistsUTF8(Result) then exit;
-      end;
-      StartPos:=EndPos+1;
-    end;
-  finally
-    SetCurrentDirUTF8(OldDir);
-  end;
-  Result:='';
 end;
 
 function TProject.GetShortFilename(const Filename: string; UseUp: boolean
