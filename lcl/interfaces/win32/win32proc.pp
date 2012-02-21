@@ -844,7 +844,7 @@ begin
       @EnumStayOnTopRemove, LPARAM(StayOnTopWindowsInfo));
     for I := 0 to WindowInfo^.StayOnTopList.Count - 1 do
       SetWindowPos(HWND(WindowInfo^.StayOnTopList[I]), HWND_NOTOPMOST, 0, 0, 0, 0,
-        SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER {or SWP_DRAWFRAME});
+        SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_DRAWFRAME);
     Dispose(StayOnTopWindowsInfo);
   end;
   inc(InRemoveStayOnTopFlags);
