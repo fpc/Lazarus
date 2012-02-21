@@ -727,6 +727,7 @@ begin
       FilterEdit.DeleteBranch(RemovedDependenciesNode);
       FreeThenNil(RemovedDependenciesNode);
     end;
+    FilterEdit.InvalidateFilter;
   finally
     ItemsTreeView.EndUpdate;
   end;
