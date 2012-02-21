@@ -870,6 +870,7 @@ function dbgs(AFlags: TGDBPTypeResultFlags): string;
 var
   i: TGDBPTypeResultFlag;
 begin
+  Result:='';
   for i := low(TGDBPTypeResultFlags) to high(TGDBPTypeResultFlags) do
     if i in AFlags then begin
       if Result <> '' then Result := Result + ', ';

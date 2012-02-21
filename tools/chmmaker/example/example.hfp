@@ -21,7 +21,7 @@
     <MakeBinaryTOC Value="True"/>
     <MakeBinaryIndex Value="False"/>
     <AutoFollowLinks Value="False"/>
-    <MakeSearchable Value="False"/>
+    <MakeSearchable Value="True"/>
     <DefaultPage Value="MainPage.html"/>
     <Title Value=""/>
     <OutputFileName Value="example.chm"/>

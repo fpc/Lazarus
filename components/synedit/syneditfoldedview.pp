@@ -2217,7 +2217,7 @@ begin
     r := r.Right; // rStartLine points to r, which now is the start of the previous fold;
   end;
 
-  Result.Init(r, rStartLine, rFoldedBefore);
+  Result{%H-}.Init(r, rStartLine, rFoldedBefore);
 end;
 
 (* Find Fold by Line in Folded Text // always returns unfolded, unless next=true *)
@@ -2253,7 +2253,7 @@ begin
     r := r.Right; // rStartLine points to r, which now is the start of the previous fold;
   end;
 
-  Result.Init(r, rStartLine, rFoldedBefore);
+  Result{%H-}.Init(r, rStartLine, rFoldedBefore);
 end;
 
 procedure TSynTextFoldAVLTree.AdjustForLinesInserted(AStartLine, ALineCount, ABytePos: Integer);
@@ -2409,7 +2409,7 @@ begin
     r := r.Right; // rStartLine points to r, which now is the start of the previous fold;
   end;
 
-  Result.Init(r, rStartLine, rFoldedBefore);
+  Result{%H-}.Init(r, rStartLine, rFoldedBefore);
 end;
 
 function TSynTextFoldAVLTree.FindFirstFold : TSynTextFoldAVLNode;
@@ -2425,7 +2425,7 @@ begin
     r := r.Left;
   end;
 
-  Result.Init(r, rStartLine, 0);
+  Result{%H-}.Init(r, rStartLine, 0);
 end;
 
 function TSynTextFoldAVLTree.LastFoldedLine: integer;
@@ -2483,7 +2483,7 @@ begin
   r.Classification := AClassification;
   r.FoldTypeCompatible := AFoldTypeCompatible;
 
-  Result.Init(r, ALine, 0);
+  Result{%H-}.Init(r, ALine, 0);
   Result.fFoldedBefore := InsertNode(r);
 end;
 
