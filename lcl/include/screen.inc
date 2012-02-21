@@ -1005,9 +1005,18 @@ procedure TScreen.RestoreLastActive;
   end;
 
 begin
-  if (FLastActiveControl <> nil) and FLastActiveControl.CanFocus and CanFocusForm(FLastActiveControl) then
-    FLastActiveControl.SetFocus
-  else
+  if (FLastActiveControl <> nil) and FLastActiveControl.CanFocus and
+    CanFocusForm(FLastActiveControl) then
+  begin
+    // when mdiform is restored it should raise it's active mdi child
+    // not focus itself.
+    if (FLastActiveControl = FLastActiveCustomForm) and
+      (FLastActiveCustomForm.FormStyle = fsMDIForm) and
+      (FLastActiveCustomForm.ActiveMDIChild <> nil) then
+        FLastActiveCustomForm.ActiveMDIChild.BringToFront
+    else
+      FLastActiveControl.SetFocus;
+  end else
   if (FLastActiveCustomForm <> nil) and FLastActiveCustomForm.CanFocus then
     FLastActiveCustomForm.SetFocus;
 end;
