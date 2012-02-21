@@ -77,7 +77,8 @@ type
     pifAllChanged,
     pifItemsChanged,
     pifButtonsChanged,
-    pifTitleChanged
+    pifTitleChanged,
+    pifWasHidden
     );
   TProjectInspectorFlags = set of TProjectInspectorFlag;
 
@@ -161,6 +162,7 @@ type
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure IdleHandler(Sender: TObject; var Done: Boolean);
+    procedure UpdateShowing; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -753,7 +755,13 @@ end;
 
 procedure TProjectInspectorForm.IdleHandler(Sender: TObject; var Done: Boolean);
 begin
-  if (not Visible) or (FUpdateLock>0) then begin
+  if not IsVisible then begin
+    Include(FFlags,pifWasHidden);
+    IdleConnected:=false;
+    exit;
+  end;
+  Exclude(FFlags,pifWasHidden);
+  if FUpdateLock>0 then begin
     IdleConnected:=false;
     exit;
   end;
@@ -767,6 +775,18 @@ begin
     UpdateButtons
   else
     IdleConnected:=false;
+end;
+
+procedure TProjectInspectorForm.UpdateShowing;
+begin
+  inherited UpdateShowing;
+  if IsVisible and (pifWasHidden in FFlags) then begin
+    Exclude(FFlags,pifWasHidden);
+    if FFlags<>[] then begin
+      // the form is visible again and some updates are pending
+      IdleConnected:=true;
+    end;
+  end;
 end;
 
 function TProjectInspectorForm.GetSelectedFile: TUnitInfo;

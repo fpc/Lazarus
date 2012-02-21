@@ -4179,7 +4179,7 @@ begin
         if (not Visible) and Assigned(Parent) then
         begin
           // control became invisible, so AdjustSize was not propagated
-          // propagate
+          // => propagate now
           Parent.InvalidatePreferredSize;
           Parent.AdjustSize;
         end;
