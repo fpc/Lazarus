@@ -36,8 +36,6 @@
     - project groups:
       - activate
    popup menu:
-      - add
-      - remove
       - copy file name
       - save
       - options
@@ -543,7 +541,7 @@ begin
   if (CurDependency=nil) then exit;
   if CurDependency.RequiredPackage=nil then exit;
   NewFilename:=CurDependency.RequiredPackage.Filename;
-  if (NewFilename=CurDependency.DefaultFilename)
+  if (NewFilename=CurDependency.DefaultFilename) // do not use CompareFilenames
   and (CurDependency.PreferDefaultFilename=AsPreferred) then exit;
   CurDependency.DefaultFilename:=NewFilename;
   CurDependency.PreferDefaultFilename:=AsPreferred;
@@ -653,22 +651,27 @@ var
   FilesBranch: TTreeFilterBranch;
   Filename: String;
 begin
-  FilesBranch:=FilterEdit.GetBranch(FFilesNode);
-  if LazProject<>nil then begin
-    FilterEdit.SelectedPart:=FNextSelectedPart;
-    FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
-    FilterEdit.SortData:=SortAlphabetically;
-    FilterEdit.ImageIndexDirectory:=ImageIndexDirectory;
-    // collect and sort files
-    CurFile:=LazProject.FirstPartOfProject;
-    while CurFile<>nil do begin
-      Filename:=CurFile.GetShortFilename(true);
-      if Filename<>'' then
-        FilesBranch.AddNodeData(Filename, CurFile, CurFile.Filename);
-      CurFile:=CurFile.NextPartOfProject;
+  ItemsTreeView.BeginUpdate;
+  try
+    FilesBranch:=FilterEdit.GetBranch(FFilesNode);
+    if LazProject<>nil then begin
+      FilterEdit.SelectedPart:=FNextSelectedPart;
+      FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
+      FilterEdit.SortData:=SortAlphabetically;
+      FilterEdit.ImageIndexDirectory:=ImageIndexDirectory;
+      // collect and sort files
+      CurFile:=LazProject.FirstPartOfProject;
+      while CurFile<>nil do begin
+        Filename:=CurFile.GetShortFilename(true);
+        if Filename<>'' then
+          FilesBranch.AddNodeData(Filename, CurFile, CurFile.Filename);
+        CurFile:=CurFile.NextPartOfProject;
+      end;
     end;
+    FilterEdit.InvalidateFilter;            // Data is shown by FilterEdit.
+  finally
+    ItemsTreeView.EndUpdate;
   end;
-  FilterEdit.InvalidateFilter;            // Data is shown by FilterEdit.
 end;
 
 procedure TProjectInspectorForm.UpdateRequiredPackages;
@@ -677,50 +680,55 @@ var
   RequiredBranch, RemovedBranch: TTreeFilterBranch;
   NodeText, AFilename: String;
 begin
-  RequiredBranch:=FilterEdit.GetBranch(DependenciesNode);
-  Dependency:=Nil;
-  if LazProject<>nil then begin
-    // required packages
-    Dependency:=LazProject.FirstRequiredDependency;
-    while Dependency<>nil do begin
-      // Figure out the item's caption
-      NodeText:=Dependency.AsString;
-      if Dependency.DefaultFilename<>'' then begin
-        AFilename:=Dependency.MakeFilenameRelativeToOwner(Dependency.DefaultFilename);
-        if Dependency.PreferDefaultFilename then
-          NodeText:=Format(lisCEIn, [NodeText,AFilename])  // like the 'in' keyword in the uses section
-        else
-          NodeText:=Format(lisPckEditDefault, [NodeText, AFilename]);
-      end;
-      // Add the required package under the branch
-      RequiredBranch.AddNodeData(NodeText, Dependency);
-      Dependency:=Dependency.NextRequiresDependency;
-    end;
-
-    // removed required packages
-    Dependency:=LazProject.FirstRemovedDependency;
-    if Dependency<>nil then begin
-      // Create root node for removed dependencies if not done yet.
-      if RemovedDependenciesNode=nil then begin
-        RemovedDependenciesNode:=ItemsTreeView.Items.Add(DependenciesNode,
-                                                lisProjInspRemovedRequiredPackages);
-        RemovedDependenciesNode.ImageIndex:=ImageIndexRemovedRequired;
-        RemovedDependenciesNode.SelectedIndex:=RemovedDependenciesNode.ImageIndex;
-      end;
-      RemovedBranch:=FilterEdit.GetBranch(RemovedDependenciesNode);
-      // Add all removed dependencies under the branch
+  ItemsTreeView.BeginUpdate;
+  try
+    RequiredBranch:=FilterEdit.GetBranch(DependenciesNode);
+    Dependency:=Nil;
+    if LazProject<>nil then begin
+      // required packages
+      Dependency:=LazProject.FirstRequiredDependency;
       while Dependency<>nil do begin
-        RemovedBranch.AddNodeData(Dependency.AsString, Dependency);
+        // Figure out the item's caption
+        NodeText:=Dependency.AsString;
+        if Dependency.DefaultFilename<>'' then begin
+          AFilename:=Dependency.MakeFilenameRelativeToOwner(Dependency.DefaultFilename);
+          if Dependency.PreferDefaultFilename then
+            NodeText:=Format(lisCEIn, [NodeText,AFilename])  // like the 'in' keyword in the uses section
+          else
+            NodeText:=Format(lisPckEditDefault, [NodeText, AFilename]);
+        end;
+        // Add the required package under the branch
+        RequiredBranch.AddNodeData(NodeText, Dependency);
         Dependency:=Dependency.NextRequiresDependency;
       end;
-    end;
-  end;
 
-  // Dependency is set to removed required packages if there is active project
-  if (Dependency=nil) and (RemovedDependenciesNode<>nil) then begin
-    // No removed dependencies -> delete the root node
-    FilterEdit.DeleteBranch(RemovedDependenciesNode);
-    FreeThenNil(RemovedDependenciesNode);
+      // removed required packages
+      Dependency:=LazProject.FirstRemovedDependency;
+      if Dependency<>nil then begin
+        // Create root node for removed dependencies if not done yet.
+        if RemovedDependenciesNode=nil then begin
+          RemovedDependenciesNode:=ItemsTreeView.Items.Add(DependenciesNode,
+                                                  lisProjInspRemovedRequiredPackages);
+          RemovedDependenciesNode.ImageIndex:=ImageIndexRemovedRequired;
+          RemovedDependenciesNode.SelectedIndex:=RemovedDependenciesNode.ImageIndex;
+        end;
+        RemovedBranch:=FilterEdit.GetBranch(RemovedDependenciesNode);
+        // Add all removed dependencies under the branch
+        while Dependency<>nil do begin
+          RemovedBranch.AddNodeData(Dependency.AsString, Dependency);
+          Dependency:=Dependency.NextRequiresDependency;
+        end;
+      end;
+    end;
+
+    // Dependency is set to removed required packages if there is active project
+    if (Dependency=nil) and (RemovedDependenciesNode<>nil) then begin
+      // No removed dependencies -> delete the root node
+      FilterEdit.DeleteBranch(RemovedDependenciesNode);
+      FreeThenNil(RemovedDependenciesNode);
+    end;
+  finally
+    ItemsTreeView.EndUpdate;
   end;
 end;
 
@@ -903,9 +911,12 @@ begin
   end;
   Exclude(FFlags,pifItemsChanged);
   ItemsTreeView.BeginUpdate;
-  UpdateProjectFiles;
-  UpdateRequiredPackages;
-  ItemsTreeView.EndUpdate;
+  try
+    UpdateProjectFiles;
+    UpdateRequiredPackages;
+  finally
+    ItemsTreeView.EndUpdate;
+  end;
 end;
 
 end.
