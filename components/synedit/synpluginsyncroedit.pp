@@ -189,6 +189,9 @@ type
   private
     FGutterGlyph: TBitmap;
     FLowerLines: TSynPluginSyncroEditLowerLineCache;
+    FOnBeginEdit: TNotifyEvent;
+    FOnEndEdit: TNotifyEvent;
+    FOnModeChange: TNotifyEvent;
     FWordIndex: TSynPluginSyncroEditWordsHash;
     FWordScanCount: Integer;
     FCallQueued: Boolean;
@@ -206,6 +209,7 @@ type
     function  GetMarkup: TSynPluginSyncroEditMarkup;
     function  Scan(AFrom, aTo: TPoint; BackWard: Boolean): TPoint;
     procedure SetGutterGlyph(const AValue: TBitmap);
+    procedure SetMode(AValue: TSynPluginSyncroEditModes);
     function  UnScan(AFrom, aTo: TPoint; BackWard: Boolean): TPoint;
     procedure StartSyncroMode;
     procedure StopSyncroMode;
@@ -215,7 +219,8 @@ type
     procedure DoSelectionChanged(Sender: TObject);
     procedure DoScanSelection(Data: PtrInt);
     procedure DoOnDeactivate; override;
-    procedure DoBeforeEdit(aX, aY, aCount, aLineBrkCnt: Integer; aUndoRedo: Boolean); override;
+    procedure DoPreActiveEdit(aX, aY, aCount, aLineBrkCnt: Integer; aUndoRedo: Boolean);
+      override;
 
     function MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
                          HandleActionProc: TSynEditMouseActionHandler): Boolean;
@@ -224,6 +229,7 @@ type
 
     procedure SetEditor(const AValue: TCustomSynEdit); override;
     procedure DoClear; override;
+    procedure DoModeChanged;
 
     procedure TranslateKey(Sender: TObject; Code: word; SState: TShiftState;
       var Data: pointer; var IsStartOfCombo: boolean; var Handled: boolean;
@@ -234,6 +240,7 @@ type
               var AChar: TUTF8Char; Data: pointer; HandlerData: pointer);
 
     property Markup: TSynPluginSyncroEditMarkup read GetMarkup;
+    property Mode: TSynPluginSyncroEditModes read FMode write SetMode;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -252,6 +259,9 @@ type
       read FKeystrokes write SetKeystrokes;
     property KeystrokesOffCell: TSynEditKeyStrokes
       read FKeystrokesOffCell write SetKeystrokesOffCell;
+    property OnModeChange: TNotifyEvent read FOnModeChange write FOnModeChange;
+    property OnBeginEdit: TNotifyEvent read FOnBeginEdit write FOnBeginEdit;
+    property OnEndEdit: TNotifyEvent read FOnEndEdit write FOnEndEdit;
   end;
 
 const
@@ -944,6 +954,17 @@ begin
   FGutterGlyph.Assign(AValue);
 end;
 
+procedure TSynPluginSyncroEdit.SetMode(AValue: TSynPluginSyncroEditModes);
+begin
+  if Mode = AValue then Exit;
+  if (FMode= spseEditing) and Assigned(FOnEndEdit) then
+    FOnEndEdit(Self);
+  FMode := AValue;
+  if (FMode= spseEditing) and Assigned(FOnBeginEdit) then
+    FOnBeginEdit(Self);
+  DoModeChanged;
+end;
+
 function TSynPluginSyncroEdit.UnScan(AFrom, aTo: TPoint; BackWard: Boolean): TPoint;
 var
   x2: Integer;
@@ -1002,7 +1023,8 @@ begin
   FEditModeQueued := False;
   if FWordIndex.MultiWordCount = 0 then exit;
 
-  FMode :=  spseEditing;
+  Mode :=  spseEditing;
+  Active := True;
   AreaMarkupEnabled := True;
   SetUndoStart;
 
@@ -1076,29 +1098,29 @@ end;
 
 procedure TSynPluginSyncroEdit.DoSelectionChanged(Sender: TObject);
 begin
-  if FMode = spseEditing then exit;
+  if Mode = spseEditing then exit;
   If (not SelectionObj.SelAvail) or (SelectionObj.ActiveSelectionMode = smColumn) then begin
     FLastSelStart := Point(-1,-1);
     FLastSelEnd := Point(-1,-1);
-    if Active then begin
+    if Active or PreActive then begin
       FWordIndex.Clear;
       Editor.Invalidate;
       Active := False;
       MarkupEnabled := False;
     end;
-    FMode := spseIncative;
+    Mode := spseIncative;
     exit;
   end;
 
-  if FMode = spseInvalid then exit;
+  if Mode = spseInvalid then exit;
 
-  if FMode = spseIncative then begin
+  if Mode = spseIncative then begin
     Cells.Clear;
     AreaMarkupEnabled := False;
     MarkupEnabled := False;
-    Active := True;
+    PreActive := True;
   end;
-  FMode := spseSelecting;
+  Mode := spseSelecting;
   Markup.GlyphAtLine := -1;
   if not FCallQueued then
     Application.QueueAsyncCall(@DoScanSelection, 0);
@@ -1136,7 +1158,7 @@ var
   StartTime, t: Double;
 begin
   StartTime := now();
-  while (FCallQueued) and (FMode = spseSelecting) do begin
+  while (FCallQueued) and (Mode = spseSelecting) do begin
     FCallQueued := False;
     FWordScanCount := 0;
 
@@ -1204,28 +1226,25 @@ begin
     end;
   end;
   FCallQueued := False;
-  if FEditModeQueued and (FMode = spseSelecting) then
+  if FEditModeQueued and (Mode = spseSelecting) then
     StartSyncroMode;
   FEditModeQueued := False;
 end;
 
 procedure TSynPluginSyncroEdit.DoOnDeactivate;
 begin
-  FMode := spseIncative;
+  Mode := spseIncative;
   AreaMarkupEnabled := False;
   Cells.Clear;
   inherited DoOnDeactivate;
 end;
 
-procedure TSynPluginSyncroEdit.DoBeforeEdit(aX, aY, aCount, aLineBrkCnt: Integer; aUndoRedo: Boolean);
+procedure TSynPluginSyncroEdit.DoPreActiveEdit(aX, aY, aCount, aLineBrkCnt: Integer;
+  aUndoRedo: Boolean);
 begin
-  if (FMode = spseSelecting) then begin
     FWordIndex.Clear;
     Active := False;
-    FMode := spseInvalid;
-  end
-  else
-    inherited DoBeforeEdit(aX, aY, aCount, aLineBrkCnt, aUndoRedo);
+    Mode := spseInvalid;
 end;
 
 function TSynPluginSyncroEdit.MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
@@ -1233,9 +1252,9 @@ function TSynPluginSyncroEdit.MaybeHandleMouseAction(var AnInfo: TSynEditMouseAc
 var
   r: TRect;
 begin
-  Result := Active and
-            ( ((FMode = spseSelecting) and (MarkupEnabled = True)) or
-              (FMode = spseEditing) );
+  Result := (Active or PreActive) and
+            ( ((Mode = spseSelecting) and (MarkupEnabled = True)) or
+              (Mode = spseEditing) );
   if not Result then exit;
 
   r := Markup.GutterGlyphRect;
@@ -1254,7 +1273,7 @@ begin
   Result := False;
 
   if AnAction.Command = MouseOffset + emcSynPSyncroEdGutterGlyph then begin
-    if FMode = spseSelecting then
+    if Mode = spseSelecting then
       StartSyncroMode
     else
       StopSyncroMode;
@@ -1290,6 +1309,12 @@ begin
   inherited DoClear;
 end;
 
+procedure TSynPluginSyncroEdit.DoModeChanged;
+begin
+  if Assigned(FOnModeChange) then
+    FOnModeChange(Self);
+end;
+
 procedure TSynPluginSyncroEdit.TranslateKey(Sender: TObject; Code: word; SState: TShiftState;
   var Data: pointer; var IsStartOfCombo: boolean; var Handled: boolean;
   var Command: TSynEditorCommand; FinishComboOnly: Boolean;
@@ -1297,14 +1322,14 @@ procedure TSynPluginSyncroEdit.TranslateKey(Sender: TObject; Code: word; SState:
 var
   keys: TSynEditKeyStrokes;
 begin
-  if (not Active) or Handled then
+  if (not (Active or  PreActive)) or Handled then
     exit;
 
   keys := nil;
-  if FMode = spseSelecting then
+  if Mode = spseSelecting then
     keys := FKeystrokesSelecting;
 
-  if FMode = spseEditing then begin
+  if Mode = spseEditing then begin
     if CurrentCell < 0 then begin
       keys := FKeyStrokesOffCell;
       FKeyStrokes.ResetKeyCombo;
@@ -1341,9 +1366,9 @@ procedure TSynPluginSyncroEdit.ProcessSynCommand(Sender: TObject; AfterProcessin
 var
   Cmd: TSynEditorCommand;
 begin
-  if Handled or AfterProcessing or not Active then exit;
+  if Handled or AfterProcessing or not (Active or PreActive) then exit;
 
-  if FMode = spseSelecting then begin
+  if Mode = spseSelecting then begin
     // todo: finish word-hash calculations / check if any cells exist
     Cmd := ConvertCommandToBaseSel(Command);
     Handled := True;
@@ -1354,7 +1379,7 @@ begin
     end;
   end;
 
-  if FMode = spseEditing then begin
+  if Mode = spseEditing then begin
     Cmd := ConvertCommandToBase(Command);
     if Cmd = ecNone then
       Cmd := ConvertCommandToBaseOff(Command);
@@ -1381,7 +1406,7 @@ end;
 
 constructor TSynPluginSyncroEdit.Create(AOwner: TComponent);
 begin
-  FMode := spseIncative;
+  Mode := spseIncative;
   FEditModeQueued := False;
 
   FMouseActions := TSynPluginSyncroEditMouseActions.Create(self);

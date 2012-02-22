@@ -179,6 +179,7 @@ type
     fMarkupInfoArea: TSynSelectedColor;
     FOnActivate: TNotifyEvent;
     FOnDeactivate: TNotifyEvent;
+    FPreActive: Boolean;
 
     function GetActive: Boolean;
     procedure SetActive(const AValue: Boolean);
@@ -195,6 +196,7 @@ type
     procedure DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
                             aLineBrkCnt: Integer; aText: String);
     procedure ApplyChangeList;
+    procedure DoPreActiveEdit(aX, aY, aCount, aLineBrkCnt: Integer; aUndoRedo: Boolean); virtual;
     procedure DoBeforeEdit(aX, aY, aCount, aLineBrkCnt: Integer; aUndoRedo: Boolean); virtual;
     procedure DoAfterEdit(aX, aY: Integer; aUndoRedo: Boolean); virtual;
     procedure DoPaintLockStarted; virtual;
@@ -216,6 +218,7 @@ type
     procedure Clear;
     property Enabled: Boolean read FEnabled write SetEnabled;
     property Active: Boolean read GetActive write SetActive;
+    property PreActive: Boolean read FPreActive write FPreActive;           // e.g. collecting words => Reacts to LinesEdited
 
     property MarkupInfo: TSynSelectedColor read FMarkupInfo;
     property MarkupInfoCurrent: TSynSelectedColor read FMarkupInfoCurrent;
@@ -753,7 +756,7 @@ begin
     FMarkup := CreateMarkup;
     FMarkup.Cells := FCells;
     FMarkup.CurrentCell := FCurrentCell;
-    FMarkup.Enabled := Active;
+    FMarkup.Enabled := (Active or PreActive) and FMarkupEnabled;
     TSynEditMarkupManager(MarkupMgr).AddMarkUp(FMarkup);
     FMarkupArea := TSynPluginSyncronizedEditMarkupArea.Create(Editor);
     FMarkupArea.Cells := FCells;
@@ -789,7 +792,7 @@ begin
   IsActive := Active;
   FEnabled := AValue;
   if FMarkup <> nil then
-    FMarkup.Enabled := Active and FMarkupEnabled;
+    FMarkup.Enabled := (Active or PreActive) and FMarkupEnabled;
   if FMarkupArea <> nil then
     FMarkupArea.Enabled := Active and FAreaMarkupEnabled;
   if IsActive <> Active then begin
@@ -804,7 +807,7 @@ begin
   if FMarkupEnabled = AValue then exit;
   FMarkupEnabled := AValue;
   if FMarkup <> nil then
-    FMarkup.Enabled := Active and FMarkupEnabled;
+    FMarkup.Enabled := (Active or PreActive) and FMarkupEnabled;
 end;
 
 procedure TSynPluginSyncronizedEditBase.MarkupChanged(AMarkup: TObject);
@@ -834,8 +837,9 @@ var
 begin
   IsActive := Active;
   FActive := AValue;
+  PreActive := False; // change in active, always disables PreActive
   if FMarkup <> nil then
-    FMarkup.Enabled := Active and FMarkupEnabled;
+    FMarkup.Enabled := (Active or PreActive) and FMarkupEnabled;
   if FMarkupArea <> nil then
     FMarkupArea.Enabled := Active and FAreaMarkupEnabled;
   if IsActive <> Active then begin
@@ -886,7 +890,10 @@ var
   edit: Boolean;
   CellAtPos: Integer;
 begin
-  if not Active then exit;
+  if not Active then begin
+    if PreActive then DoPreActiveEdit(aBytePos, aLinePos, aCount, aLineBrkCnt, IsUndoing or IsRedoing);
+    exit;
+  end;
   Pos := Point(aBytePos, aLinePos);
   Pos2 := Pos;
   if not FEditing then
@@ -990,6 +997,12 @@ begin
     ViewedTextBuffer.EndUpdate;
   end;
   FChangeList.Clear;
+end;
+
+procedure TSynPluginSyncronizedEditBase.DoPreActiveEdit(aX, aY, aCount, aLineBrkCnt: Integer;
+  aUndoRedo: Boolean);
+begin
+  //
 end;
 
 procedure TSynPluginSyncronizedEditBase.DoBeforeEdit(aX, aY, aCount, aLineBrkCnt: Integer; aUndoRedo: Boolean);
