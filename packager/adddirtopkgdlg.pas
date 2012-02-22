@@ -96,7 +96,7 @@ end;
 
 procedure TAddDirToPkgDialog.FormCreate(Sender: TObject);
 begin
-  Caption:=lisAddFilesOfDirectory;
+  Caption:=lisAddFilesInDirectory;
   DirGroupBox.Caption:=lisCodeToolsDefsInsertBehindDirectory;
   SubDirCheckBox.Caption:=lisFindFileIncludeSubDirectories;
   IncludeGroupBox.Caption:=lisFilter;

@@ -3467,10 +3467,9 @@ resourcestring
     +'already exists in the selection%swith file: %s%s%s.';
   lisProjAddToProject = 'Add to Project';
   lisProjAddNewRequirement = 'New Requirement';
-  lisProjAddFiles = 'Add files';
   lisProjAddEditorFile = 'Add editor files';
-  lisProjAddAddFileToProject = 'Add file to project:';
-  lisProjAddAddFilesToProject = 'Add files to project';
+  lisProjFiles = 'Files:';
+  lisProjAddAddFilesToProject = 'Add Files to Project';
   lisProjAddPackageName = 'Package Name:';
   lisProjAddMinimumVersionOptional = 'Minimum Version (optional):';
   lisProjAddMaximumVersionOptional = 'Maximum Version (optional):';
@@ -4862,8 +4861,7 @@ resourcestring
   lisToggleShowingFilenamesWithFullPathOrWithRelativePa = 'Toggle showing '
     +'filenames with full path or with relative path';
   lisDeleteSelectedFiles = 'Delete selected files';
-  lisAddDirectory = 'Add directory';
-  lisAddFilesOfDirectory = 'Add files of directory';
+  lisAddFilesInDirectory = 'Add Files in Directory';
   lisUnableToCreateLinkWithTarget = 'Unable to create link %s%s%s with target %s%s%s';
   lisBuildAllFilesOfProjectPackageIDE =
     'build all files of project/package/IDE';

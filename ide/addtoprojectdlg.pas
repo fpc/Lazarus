@@ -229,6 +229,7 @@ begin
         NewListItem:=FilesListView.Items.Add;
         NewListItem.Caption:=AFilename;
         NewListItem.SubItems.Add(GetPkgFileTypeLocalizedName(NewPgkFileType));
+        NewListItem.Selected:=True;
       end;
       UpdateFilesButtons;
     end;
@@ -299,17 +300,17 @@ var
 begin
   try
     NewFiles:=TStringList.Create;
-    for i:=0 to AddFileListBox.Items.Count-1 do begin
-      if not AddFileListBox.Selected[i] then continue;
-      NewFilename:=AddFileListBox.Items[i];
-      case CheckAddingFile(NewFiles, NewFilename) of
-        mrOk: ;
-        mrIgnore: continue;
-      else
-        exit;
+    for i:=0 to AddFileListBox.Items.Count-1 do
+      if AddFileListBox.Selected[i] then begin
+        NewFilename:=AddFileListBox.Items[i];
+        case CheckAddingFile(NewFiles, NewFilename) of
+          mrOk: ;
+          mrIgnore: continue;
+        else
+          exit;
+        end;
+        NewFiles.Add(NewFilename);
       end;
-      NewFiles.Add(NewFilename);
-    end;
     // everything ok
     AddResult:=TAddToProjectResult.Create;
     AddResult.AddType:=a2pFiles;
@@ -329,16 +330,17 @@ var
 begin
   try
     NewFiles:=TStringList.Create;
-    for i:=0 to FilesListView.Items.Count-1 do begin
-      NewFilename:=FilesListView.Items[i].Caption;
-      case CheckAddingFile(NewFiles, NewFilename) of
-        mrOk: ;
-        mrIgnore: continue;
-      else
-        exit;
+    for i:=0 to FilesListView.Items.Count-1 do
+      if FilesListView.Items[i].Selected then begin
+        NewFilename:=FilesListView.Items[i].Caption;
+        case CheckAddingFile(NewFiles, NewFilename) of
+          mrOk: ;
+          mrIgnore: continue;
+        else
+          exit;
+        end;
+        NewFiles.Add(NewFilename);
       end;
-      NewFiles.Add(NewFilename);
-    end;
     // everything ok
     AddResult:=TAddToProjectResult.Create;
     AddResult.AddType:=a2pFiles;
@@ -383,6 +385,7 @@ begin
           NewListItem:=FilesListView.Items.Add;
           NewListItem.Caption:=AFilename;
           NewListItem.SubItems.Add(GetPkgFileTypeLocalizedName(NewPgkFileType));
+          NewListItem.Selected:=True;
         end;
       end;
       UpdateFilesButtons;
@@ -429,7 +432,7 @@ procedure TAddToProjectDialog.NotebookChange(Sender: TObject);
 begin
   case NoteBook.PageIndex of
     0: begin              // Add Editor Files
-      ButtonPanel.OKButton.Caption:=lisProjAddFiles;
+      ButtonPanel.OKButton.Caption:=lisA2PAddFiles;
       ButtonPanel.OkButton.OnClick:=@AddFileButtonClick;
       ButtonPanel.OkButton.Enabled:=AddFileListBox.Items.Count>0;
     end;
@@ -461,7 +464,7 @@ end;
 procedure TAddToProjectDialog.SetupAddEditorFilePage;
 begin
   AddEditorFilePage.Caption := lisProjAddEditorFile;
-  AddFileLabel.Caption:=lisProjAddAddFileToProject;
+  AddFileLabel.Caption:=lisProjFiles;
 end;
 
 procedure TAddToProjectDialog.SetupAddRequirementPage;
@@ -482,7 +485,7 @@ procedure TAddToProjectDialog.SetupAddFilesPage;
 var
   CurColumn: TListColumn;
 begin
-  AddFilesPage.Caption := lisProjAddFiles;
+  AddFilesPage.Caption := lisA2PAddFiles;
 
   with FilesListView do begin
     CurColumn:=Columns.Add;
@@ -493,12 +496,12 @@ begin
   end;
 
   with FilesBrowseButton do begin
-    Caption:=lisProjAddFiles;
+    Caption:=lisA2PAddFiles;
     LoadGlyphFromLazarusResource('laz_add');
   end;
 
   with FilesDirButton do begin
-    Caption:=lisAddDirectory;
+    Caption:=lisAddFilesInDirectory;
     LoadGlyphFromLazarusResource('pkg_files');
   end;
 
@@ -632,12 +635,12 @@ begin
     CurFile:=TheProject.FirstUnitWithEditorIndex;
     while CurFile<>nil do begin
       if (not CurFile.IsPartOfProject) and (not CurFile.IsVirtual) then begin
-        NewFilename:=
-          CreateRelativePath(CurFile.Filename,TheProject.ProjectDirectory);
+        NewFilename:=CreateRelativePath(CurFile.Filename,TheProject.ProjectDirectory);
         if Index<AddFileListBox.Items.Count then
           AddFileListBox.Items[Index]:=NewFilename
         else
           AddFileListBox.Items.Add(NewFilename);
+        AddFileListBox.Selected[Index]:=True;
         inc(Index);
       end;
       CurFile:=CurFile.NextUnitWithEditorIndex;

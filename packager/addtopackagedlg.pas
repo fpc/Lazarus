@@ -1196,7 +1196,7 @@ begin
   end;
 
   with FilesDirButton do begin
-    Caption:=lisAddDirectory;
+    Caption:=lisAddFilesInDirectory;
     LoadGlyphFromLazarusResource('pkg_files');
   end;
 
