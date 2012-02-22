@@ -16,8 +16,8 @@ object ViewUnitDialog: TViewUnitDialog
   LCLVersion = '0.9.31'
   object Listbox: TListBox
     Left = 6
-    Height = 304
-    Top = 30
+    Height = 307
+    Top = 31
     Width = 366
     Align = alClient
     BorderSpacing.Around = 6
@@ -32,8 +32,8 @@ object ViewUnitDialog: TViewUnitDialog
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 346
+    Height = 36
+    Top = 344
     Width = 366
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -52,22 +52,24 @@ object ViewUnitDialog: TViewUnitDialog
   end
   object BtnPanel: TPanel
     Left = 0
-    Height = 24
+    Height = 25
     Top = 0
     Width = 378
     Align = alTop
     AutoSize = True
-    ClientHeight = 24
+    ClientHeight = 25
     ClientWidth = 378
     TabOrder = 2
     object SortAlphabeticallySpeedButton: TSpeedButton
       Left = 1
-      Height = 22
+      Height = 23
       Top = 1
-      Width = 25
+      Width = 15
       Align = alLeft
       AllowAllUp = True
       AutoSize = True
+      Constraints.MinHeight = 15
+      Constraints.MinWidth = 15
       GroupIndex = 2
       NumGlyphs = 0
       OnClick = SortAlphabeticallySpeedButtonClick
@@ -79,13 +81,14 @@ object ViewUnitDialog: TViewUnitDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = SortAlphabeticallySpeedButton
       AnchorSideTop.Side = asrCenter
-      Left = 26
-      Height = 23
+      Left = 22
+      Height = 20
       Top = 2
-      Width = 324
+      Width = 328
       ButtonWidth = 23
       NumGlyphs = 0
       Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
       Font.Color = clBtnShadow
       MaxLength = 0
       ParentFont = False
