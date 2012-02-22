@@ -539,6 +539,11 @@ begin
 
       InfCnt := List.Count;
       for i := InfCnt-1 downto 0 do begin
+        if not(TPascalCodeFoldBlockType(List.NodeFoldType[i]) in
+           [cfbtClass, cfbtClassSection, cfbtProcedure])
+        then
+          continue;
+
         Inf := List.HLNode[i];
         if sfaInvalid in Inf.FoldAction then
           continue;

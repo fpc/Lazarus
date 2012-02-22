@@ -537,6 +537,8 @@ type
     //function FoldBlockClosingCount(ALineIndex: TLineIdx; const AFilter: TSynFoldBlockFilter): integer; override; overload;
     function FoldBlockEndLevel(ALineIndex: TLineIdx; const AFilter: TSynFoldBlockFilter): integer; override; overload;
     function FoldBlockMinLevel(ALineIndex: TLineIdx; const AFilter: TSynFoldBlockFilter): integer; override; overload;
+    function FoldBlockNestedTypes(ALineIndex: TLineIdx; ANestIndex: Integer; out
+      AType: Pointer; const AFilter: TSynFoldBlockFilter): boolean; override; overload;
 
     function FoldTypeCount: integer; override;
     function FoldTypeAtNodeIndex(ALineIndex, FoldIndex: Integer;                // accesses FoldNodeInfo
@@ -3254,6 +3256,78 @@ begin
   if AFilter.FoldGroup  in [0, FOLDGROUP_IFDEF] then begin
     // All or IFDEF
     Result := Result + inf.MinLevelIfDef;
+  end;
+end;
+
+function TSynPasSyn.FoldBlockNestedTypes(ALineIndex: TLineIdx; ANestIndex: Integer; out
+  AType: Pointer; const AFilter: TSynFoldBlockFilter): boolean;
+var
+  r, r2: Pointer;
+  c: Integer;
+  Fold: TSynCustomCodeFoldBlock;
+begin
+  Result := false;
+  if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count - 1) then
+    exit;
+  if ANestIndex < 0 then exit;
+
+  if AFilter.FoldGroup = FOLDGROUP_PASCAL then begin
+    if AFilter.Flags = [] then begin
+
+      r := CurrentRanges[ALineIndex];
+      if (r <> nil) and (r <> NullRange) then begin
+        r2 := TSynPasSynRange(CurrentRanges[ALineIndex + 1]);
+        c := TSynPasSynRange(r).PasFoldEndLevel;
+        if (r2 <> nil) and (r2 <> NullRange) then
+          c := c + TSynPasSynRange(r2).PasFoldFixLevel;
+
+        if ANestIndex < c then begin
+          c := TSynPasSynRange(r).CodeFoldStackSize - 1 - ANestIndex;
+          Fold := TSynPasSynRange(r).Top;
+          while (Fold <> nil) and
+                ( (c > 0) or (Fold.BlockType >= CountPascalCodeFoldBlockOffset) )
+          do begin
+            if (Fold.BlockType < CountPascalCodeFoldBlockOffset) then
+              dec(c);
+            Fold := Fold.Parent;
+          end;
+          if Fold <> nil then begin
+            AType := Fold.BlockType;
+            if AType >= CountPascalCodeFoldBlockOffset then
+              AType := AType - PtrUInt(CountPascalCodeFoldBlockOffset);
+            Result := True;
+          end;
+        end;
+
+      end;
+
+    end;
+    if AFilter.Flags = [sfbIncludeDisabled] then begin
+
+      r := CurrentRanges[ALineIndex];
+      if (r <> nil) and (r <> NullRange) then begin
+        r2 := TSynPasSynRange(CurrentRanges[ALineIndex + 1]);
+        c := TSynPasSynRange(r).CodeFoldStackSize;
+        if (r2 <> nil) and (r2 <> NullRange) then
+          c := c + TSynPasSynRange(r2).LastLineCodeFoldLevelFix;
+
+        if ANestIndex < c then begin
+          c := TSynPasSynRange(r).CodeFoldStackSize - 1 - ANestIndex;
+          Fold := TSynPasSynRange(r).Top;
+          while (Fold <> nil) and (c > 0) do begin
+            Fold := Fold.Parent;
+            dec(c);
+          end;
+          if Fold <> nil then begin
+            AType := Fold.BlockType;
+            if AType >= CountPascalCodeFoldBlockOffset then
+              AType := AType - PtrUInt(CountPascalCodeFoldBlockOffset);
+            Result := True;
+          end;
+        end;
+
+      end;
+    end;
   end;
 end;
 

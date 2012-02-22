@@ -323,6 +323,8 @@ type
     FNestInfo: Array of TLazSynEditNestedFoldsListEntry;
     FEvaluationIndex: Integer;
     function GetHLNode(Index: Integer): TSynFoldNodeInfo;
+    function GetNodeFoldGroup(Index: Integer): Integer;
+    function GetNodeFoldType(Index: Integer): Pointer;
     procedure InitSubGroupEndLevels;
     procedure InitNestInfoForIndex(AnIndex: Integer);
     procedure SetFoldFlags(AValue: TSynFoldBlockFilterFlags);
@@ -339,6 +341,9 @@ type
     property IncludeOpeningOnLine: Boolean read FIncludeOpeningOnLine write SetIncludeOpeningOnLine;
   public
     property HLNode[Index: Integer]: TSynFoldNodeInfo read GetHLNode;
+    property NodeFoldType[Index: Integer]: Pointer read GetNodeFoldType;           // e.g.cfbtBeginEnd, cfbtcfbtProcedure ...
+    property NodeFoldGroup[Index: Integer]: Integer read GetNodeFoldGroup;          // independend/overlapping folds, e.g begin/end; ifdef, region
+
   end;
 
   TSynEditFoldProvider = class
@@ -2870,6 +2875,28 @@ begin
   Result := FNestInfo[Index].HNode;
 end;
 
+function TLazSynEditNestedFoldsList.GetNodeFoldGroup(Index: Integer): Integer;
+begin
+  if FoldGroup <> 0 then
+    Result := FoldGroup
+  else
+    Result := HLNode[Index].FoldGroup;
+end;
+
+function TLazSynEditNestedFoldsList.GetNodeFoldType(Index: Integer): Pointer;
+var
+  hl: TSynCustomFoldHighlighter;
+begin
+  Result := nil;
+  hl := FFoldProvider.HighLighterWithLines;
+  if hl = nil then exit;
+
+  if hl.FoldBlockNestedTypes(Line - 1, Index, Result, FFoldGroup, FFoldFlags) then
+    exit;
+
+  Result := HLNode[Index].FoldType;
+end;
+
 procedure TLazSynEditNestedFoldsList.InitNestInfoForIndex(AnIndex: Integer);
 var
   CurLine: TLineIdx;
@@ -2934,6 +2961,7 @@ begin
 
     if (AnIndex >= FEvaluationIndex) then Break;
   end;
+
 
   assert(AnIndex >= FEvaluationIndex, 'TLazSynEditNestedFoldsList.InitNestInfoForIndex Index not found');
 end;

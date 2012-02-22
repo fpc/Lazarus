@@ -307,6 +307,12 @@ type
                                const AFilter: TSynFoldBlockFilter): integer; virtual; overload;
     function FoldBlockMinLevel(ALineIndex: TLineIdx;
                                const AFilter: TSynFoldBlockFilter): integer; virtual; overload;
+    (* All nested FoldType (cfbtBegin) if available. Similar to TopCodeFoldBlockType
+       - Index=0 is most outer / Index=FoldBlockEndLevel is most inner (TopCodeFoldBlockType 0=inner)
+       - False, if it can not be determined for the filter settings
+    *)
+    function FoldBlockNestedTypes(ALineIndex: TLineIdx; ANestIndex: Integer; out AType: Pointer;
+                                  const AFilter: TSynFoldBlockFilter): boolean; virtual; overload;
 
     function FoldBlockOpeningCount(ALineIndex: TLineIdx; AFoldGroup: integer = 0;
                                    AFlags: TSynFoldBlockFilterFlags = []): integer; overload;
@@ -316,6 +322,9 @@ type
                                AFlags: TSynFoldBlockFilterFlags = []): integer; overload;
     function FoldBlockMinLevel(ALineIndex: TLineIdx; AFoldGroup: integer = 0;
                                AFlags: TSynFoldBlockFilterFlags = []): integer; overload;
+    function FoldBlockNestedTypes(ALineIndex: TLineIdx; ANestIndex: Integer; out AType: Pointer;
+                                  AFoldGroup: integer = 0;
+                                  AFlags: TSynFoldBlockFilterFlags = []): boolean; virtual; overload;
 
     function FoldOpenCount(ALineIndex: Integer; AType: Integer = 0): integer;  deprecated;
     function FoldCloseCount(ALineIndex: Integer; AType: Integer = 0): integer; deprecated;
@@ -751,6 +760,12 @@ begin
     Result:=0;
 end;
 
+function TSynCustomFoldHighlighter.FoldBlockNestedTypes(ALineIndex: TLineIdx;
+  ANestIndex: Integer; out AType: Pointer; const AFilter: TSynFoldBlockFilter): boolean;
+begin
+  Result := False;
+end;
+
 function TSynCustomFoldHighlighter.FoldBlockOpeningCount(ALineIndex: TLineIdx;
   AFoldGroup: integer; AFlags: TSynFoldBlockFilterFlags): integer;
 var
@@ -789,6 +804,17 @@ begin
   Filter.FoldGroup := AFoldGroup;
   Filter.Flags := AFlags;
   Result := FoldBlockMinLevel(ALineIndex, Filter);
+end;
+
+function TSynCustomFoldHighlighter.FoldBlockNestedTypes(ALineIndex: TLineIdx;
+  ANestIndex: Integer; out AType: Pointer; AFoldGroup: integer;
+  AFlags: TSynFoldBlockFilterFlags): boolean;
+var
+  Filter: TSynFoldBlockFilter;
+begin
+  Filter.FoldGroup := AFoldGroup;
+  Filter.Flags := AFlags;
+  Result := FoldBlockNestedTypes(ALineIndex, ANestIndex, AType, Filter);
 end;
 
 procedure TSynCustomFoldHighlighter.ResetRange;
