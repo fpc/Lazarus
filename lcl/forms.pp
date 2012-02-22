@@ -1332,8 +1332,8 @@ type
     procedure RemoveHandler(HandlerType: TApplicationHandlerType;
                             const Handler: TMethod);
     procedure RunLoop;
-    procedure Activate;
-    procedure Deactivate(Force: Boolean = False);
+    procedure Activate(Data: PtrInt);
+    procedure Deactivate(Data: PtrInt);
   protected
     function GetConsoleApplication: boolean; override;
     procedure NotifyIdleHandler(var Done: Boolean);
@@ -1450,8 +1450,8 @@ type
     function  IsShortcut(var Message: TLMKey): boolean;
     procedure IntfQueryEndSession(var Cancel: Boolean);
     procedure IntfEndSession;
-    procedure IntfAppActivate;
-    procedure IntfAppDeactivate;
+    procedure IntfAppActivate(const Async: Boolean = False);
+    procedure IntfAppDeactivate(const Async: Boolean = False);
     procedure IntfAppMinimize;
     procedure IntfAppRestore;
     procedure IntfDropFiles(const FileNames: Array of String);

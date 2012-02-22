@@ -2211,14 +2211,14 @@ begin
           //WriteLn('Restore');
           RestoreStayOnTopFlags(Window);
           if Assigned(Application) then
-            Application.IntfAppActivate;
+            Application.IntfAppActivate(True);
         end
         else
         begin // deactivated
           //WriteLn('Remove');
           RemoveStayOnTopFlags(Window);
           if Assigned(Application) then
-            Application.IntfAppDeactivate;
+            Application.IntfAppDeactivate(True);
         end;
       end;
     end;

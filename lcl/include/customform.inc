@@ -485,16 +485,12 @@ begin
   if Message.Active = WA_INACTIVE then
   begin
     if Assigned(Application) then
-      {$IFDEF EnableAsyncDeactivate}
-      Application.QueueAsyncCall(@Application.Deactivate,0);
-      {$ELSE}
-      Application.Deactivate;
-      {$ENDIF}
+      Application.Deactivate(0);
   end
   else
   begin
     if Assigned(Application) then
-      Application.Activate;
+      Application.Activate(0);
     // The button reappears in some situations (e.g. when the window gets the
     //"urgency" flag) so we hide it again here.
     // This is the most important place to invoke UpdateShowInTaskBar, since

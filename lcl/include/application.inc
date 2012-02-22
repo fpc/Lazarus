@@ -1420,7 +1420,7 @@ begin
   until Terminated;
 end;
 
-procedure TApplication.Activate;
+procedure TApplication.Activate(Data: PtrInt);
 begin
   if AppActive in FFlags then exit;
   Include(FFlags, AppActive);
@@ -1428,14 +1428,14 @@ begin
   NotifyActivateHandler;
 end;
 
-procedure TApplication.Deactivate(Force: Boolean = False);
+procedure TApplication.Deactivate(Data: PtrInt);
 begin
   if (AppDestroying in FFlags) or (not (AppActive in FFlags)) then Exit;
 
   // widgetset has passed deactivate or no control
   // of this application has got the focus.
   // Force=True means that IntfAppDeactivate called us
-  if Force then //TODO: or not Assigned(FindControl(GetFocus)) then
+  if Data = 1 then //TODO: or not Assigned(FindControl(GetFocus)) then
   begin
     Exclude(FFlags, AppActive);
     NotifyDeactivateHandler;
@@ -1933,14 +1933,20 @@ begin
   FApplicationHandlers[ahtEndSession].CallNotifyEvents(Self);
 end;
 
-procedure TApplication.IntfAppActivate;
+procedure TApplication.IntfAppActivate(const Async: Boolean = False);
 begin
-  Activate;
+  if Async then
+    QueueAsyncCall(@Activate, 1)
+  else
+    Activate(1);
 end;
 
-procedure TApplication.IntfAppDeactivate;
+procedure TApplication.IntfAppDeactivate(const Async: Boolean = False);
 begin
-  Deactivate(True);
+  if Async then
+    QueueAsyncCall(@Deactivate, 1)
+  else
+    Deactivate(1);
 end;
 
 {------------------------------------------------------------------------------
