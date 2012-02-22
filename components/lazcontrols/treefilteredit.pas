@@ -65,7 +65,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MoveNext; override;
     procedure MovePrev; override;
-    procedure ReturnPressed; override;
+    function ReturnPressed: Boolean; override;
     procedure SortAndFilter; override;
     procedure ApplyFilterCore; override;
     function GetDefaultGlyph: TBitmap; override;
@@ -520,12 +520,14 @@ begin
   fFilteredTreeview.MoveToPrevNode;
 end;
 
-procedure TTreeFilterEdit.ReturnPressed;
+function TTreeFilterEdit.ReturnPressed: Boolean;
+// Retuns true if the Return press was forwarded to the Tree
 var
   Key: Char;
 begin
   Key:=Char(VK_RETURN);
-  if Assigned(fFilteredTreeview.OnKeyPress) then
+  Result:=Assigned(fFilteredTreeview.OnKeyPress);
+  if Result then
     fFilteredTreeview.OnKeyPress(fFilteredTreeview, Key);
 end;
 

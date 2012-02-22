@@ -31,7 +31,7 @@ type
   protected
     procedure MoveNext; override;
     procedure MovePrev; override;
-    procedure ReturnPressed; override;
+    function ReturnPressed: Boolean; override;
     procedure SortAndFilter; override;
     procedure ApplyFilterCore; override;
     function GetDefaultGlyph: TBitmap; override;
@@ -252,12 +252,14 @@ begin
   end;
 end;
 
-procedure TListFilterEdit.ReturnPressed;
+function TListFilterEdit.ReturnPressed: Boolean;
+// Retuns true if the Return press was forwarded to the ListBox
 var
   Key: Char;
 begin
   Key:=Char(VK_RETURN);
-  if Assigned(fFilteredListbox.OnKeyPress) then
+  Result:=Assigned(fFilteredListbox.OnKeyPress);
+  if Result then
     fFilteredListbox.OnKeyPress(fFilteredListbox, Key);
 end;
 
