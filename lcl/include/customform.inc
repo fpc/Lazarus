@@ -423,7 +423,7 @@ var
   NewFocusControl: TWinControl;
 begin
   if [csLoading,csDestroying]*ComponentState<>[] then exit;
-  if (FActiveControl <> nil) and (FDesigner = nil) then
+  if Assigned(FActiveControl) and not Assigned(FDesigner) then
     NewFocusControl := ActiveControl
   else
     NewFocusControl := Self;
@@ -432,8 +432,8 @@ begin
     ' NewFocusControl=',NewFocusControl.Name,':',NewFocusControl.ClassName,
     ' HndAlloc=',dbgs(NewFocusControl.HandleAllocated));
   {$ENDIF}
-  if (not NewFocusControl.HandleAllocated)
-  or (not NewFocusControl.CanFocus) then
+  if not NewFocusControl.HandleAllocated or
+     not NewFocusControl.CanFocus then
     exit;
   //DebugLn(['TCustomForm.SetWindowFocus ',DbgSName(Self),' NewFocusControl',DbgSName(NewFocusControl)]);
   LCLIntf.SetFocus(NewFocusControl.Handle);
@@ -479,9 +479,11 @@ begin
   {$IFDEF VerboseFocus}
   DebugLn('TCustomForm.WMActivate A ',DbgSName(Self),' Msg.Active=',dbgs(Message.Active));
   {$ENDIF}
+  if (Parent = nil) and (ParentWindow = 0) and
+     (FormStyle <> fsMDIForm) or (csDesigning in ComponentState) then
+    SetActive(Message.Active <> WA_INACTIVE);
   if Message.Active = WA_INACTIVE then
   begin
-    SetActive(False);
     if Assigned(Application) then
       {$IFDEF EnableAsyncDeactivate}
       Application.QueueAsyncCall(@Application.Deactivate,0);
@@ -491,10 +493,6 @@ begin
   end
   else
   begin
-    if (Parent = nil) and (ParentWindow = 0) and
-       (FormStyle <> fsMDIForm) or (csDesigning in ComponentState) then
-      SetActive(True);
-
     if Assigned(Application) then
       Application.Activate;
     // The button reappears in some situations (e.g. when the window gets the
