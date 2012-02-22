@@ -2383,9 +2383,17 @@ begin
   {$endif}
   Result:=mrCancel;
   if Destroying then exit;
-  if [dmsWaitForRun,dmsRunning]*FManagerStates<>[] then exit;
+  if dmsWaitForRun in FManagerStates then exit;
   if (FDebugger <> nil) then
   begin
+    // dmsRunning + dsPause => evaluating stack+watches after run
+    if (dmsRunning in FManagerStates) then begin
+      if (FDebugger.State = dsPause) then
+        FDebugger.Run;
+
+      exit;
+    end;
+
     {$ifdef VerboseDebugger}
     DebugLn('TDebugManager.StartDebugging B ',FDebugger.ClassName);
     {$endif}
