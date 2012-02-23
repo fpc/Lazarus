@@ -288,12 +288,13 @@ begin
   if FOwner <> nil then
   begin
 
+    FOwner.ItemDeleted(AItem);
+
     // trigger DoSelectItem before deletion - Delphi compat. issue #21335
+    // but fire after ItemIndex is invalidated. issue #21346
     if FOwner.HandleAllocated and AItem.Selected and
       not (csDestroying in FOwner.Componentstate) then
       FOwner.DoSelectItem(AItem, False);
-
-    FOwner.ItemDeleted(AItem);
 
     if (FOwner.HandleAllocated) and (lifCreated in AItem.FFlags) then
     begin
