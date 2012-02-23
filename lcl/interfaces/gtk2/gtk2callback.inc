@@ -1305,6 +1305,8 @@ begin
           // here we are
           if gtk_tree_view_get_bin_window(PGtkTreeView(MainView)) <> Event^.window then
             Result := False;
+          //TODO: queue column resize when x < 0
+          // gtk_tree_view_column_queue_resize(tree_column: PGtkTreeViewColumn)
         end;
       end;
     end;
