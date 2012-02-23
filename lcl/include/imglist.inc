@@ -778,7 +778,6 @@ procedure TCustomImageList.InsertMasked(Index: Integer; AImage: TCustomBitmap;
 var
   RawImg: TRawImage;
   SourceImage, MaskedImage: TLazIntfImage;
-  Bmp: TBitmap;
 begin
   if AImage = nil then Exit;
   SourceImage := TLazIntfImage.Create(AImage.RawImage, False);

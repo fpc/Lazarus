@@ -193,7 +193,6 @@ end;
 
 procedure TLazAccessibleObject.ClearChildAccessibleObjects;
 var
-  i: Integer;
   lXObject: TLazAccessibleObject;
   AVLNode: TAvgLvlTreeNode;
 begin
@@ -213,7 +212,6 @@ end;
 procedure TLazAccessibleObject.RemoveChildAccessibleObject(
   AObject: TLazAccessibleObject; AFreeObject: Boolean = True);
 var
-  lIndex: Integer;
   Node: TAvgLvlTreeNode;
 begin
   if FChildrenSortedForDataObject = nil then Exit;
@@ -227,8 +225,6 @@ end;
 function TLazAccessibleObject.GetChildAccessibleObjectWithDataObject(
   ADataObject: TObject): TLazAccessibleObject;
 var
-  i: Integer;
-  lCurObject: TLazAccessibleObject;
   Node: TAvgLvlTreeNode;
 begin
   Result := nil;
