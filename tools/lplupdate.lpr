@@ -66,13 +66,13 @@ type
   TLink = class
   public
     Filename: string;
-    InLazarusDir: boolean; // PkgFilename starts with $(LazarusDir)
+    InLazarusDir: boolean; // true = PkgFilename starts with $(LazarusDir)
     PkgName: string;
     Major: integer;
     Minor: integer;
     Release: integer;
     Build: integer;
-    PkgFilename: string;
+    PkgFilename: string; // can have macros
     ExpFilename: string; // full PkgFilename without macros
   end;
 
@@ -449,8 +449,14 @@ function TLPLUpdate.GetDefaultLazarusDir: string;
 begin
   if GetEnvironmentVariableUTF8('LAZARUSDIR')<>'' then
     Result:=GetEnvironmentVariableUTF8('LAZARUSDIR')
-  else
-    Result:=GetCurrentDirUTF8;
+  else begin
+    Result:=ChompPathDelim(GetCurrentDirUTF8);
+    if (ExtractFileName(Result)='tools')
+    and (DirPathExists(ExtractFilePath(Result)+'packager')) then begin
+      // common mistake: lplupdate started in tools
+      Result:=ExtractFilePath(Result)
+    end;
+  end;
   Result:=CleanAndExpandDirectory(Result);
 end;
 
