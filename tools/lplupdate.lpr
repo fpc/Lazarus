@@ -104,7 +104,8 @@ type
     procedure ScanLinks(Dir: string; Links: TLinks);
     procedure ScanLink(Filename: string; Links: TLinks);
     procedure WriteMissingLinks(Packages: TPackages; Links: TLinks);
-    procedure WriteDeadLinks(Links: TLinks);
+    procedure WriteLinksWithWrongFilename(Packages: TPackages; Links: TLinks);
+    procedure WriteDeadLinks(Packages: TPackages; Links: TLinks);
     procedure WriteLinksWithWrongVersion(Packages: TPackages; Links: TLinks);
   public
     constructor Create(TheOwner: TComponent); override;
@@ -184,7 +185,8 @@ begin
     ScanLinks(LinksDir,Links);
 
     WriteMissingLinks(Packages,Links);
-    WriteDeadLinks(Links);
+    WriteLinksWithWrongFilename(Packages,Links);
+    WriteDeadLinks(Packages,Links);
     WriteLinksWithWrongVersion(Packages,Links);
 
   finally
@@ -343,27 +345,50 @@ var
 begin
   for i:=0 to Packages.Count-1 do begin
     Pkg:=Packages[i];
-    if Links.FindLinkWithName(Pkg.Name)=nil then begin
-      if not (Quiet and WriteCommands) then
-        writeln('Missing link ',Pkg.Name+'-'+Pkg.VersionAsString,' in '+CreateRelativePath(Pkg.Filename,PkgDir));
-      if WriteCommands then begin
-        LinkFilename:=CreateRelativePath(LinksDir,LazarusDir)+Pkg.Name+'-'+Pkg.VersionAsString+'.lpl';
-        writeln('echo ''$(LazarusDir)/'+StringReplace(CreateRelativePath(Pkg.Filename,PkgDir),'\','/',[rfReplaceAll])+''' > '+LinkFilename);
-        writeln('svn add '+LinkFilename);
-      end;
+    if Links.FindLinkWithName(Pkg.Name)<>nil then continue;
+    if not (Quiet and WriteCommands) then
+      writeln('Missing link ',Pkg.Name+'-'+Pkg.VersionAsString,' in '+CreateRelativePath(Pkg.Filename,PkgDir));
+    if WriteCommands then begin
+      LinkFilename:=CreateRelativePath(LinksDir,LazarusDir)+Pkg.Name+'-'+Pkg.VersionAsString+'.lpl';
+      writeln('echo ''$(LazarusDir)/'+StringReplace(CreateRelativePath(Pkg.Filename,PkgDir),'\','/',[rfReplaceAll])+''' > '+LinkFilename);
+      writeln('svn add '+LinkFilename);
     end;
   end;
 end;
 
-procedure TLPLUpdate.WriteDeadLinks(Links: TLinks);
+procedure TLPLUpdate.WriteLinksWithWrongFilename(Packages: TPackages;
+  Links: TLinks);
+var
+  i: Integer;
+  Pkg: TPackage;
+  Link: TLink;
+  LinkFilename: String;
+begin
+  for i:=0 to Packages.Count-1 do begin
+    Pkg:=Packages[i];
+    Link:=Links.FindLinkWithName(Pkg.Name);
+    if Link=nil then continue;
+    if FileExistsUTF8(Link.ExpFilename) then continue;
+    LinkFilename:=CreateRelativePath(LinksDir,LazarusDir)+Pkg.Name+'-'+Pkg.VersionAsString+'.lpl';
+    if not (Quiet and WriteCommands) then
+      writeln('Wrong filename in link ',ExtractFileNameOnly(Link.Filename),' should be '+LinkFilename);
+    if WriteCommands then begin
+      writeln('echo ''$(LazarusDir)/'+StringReplace(CreateRelativePath(Pkg.Filename,PkgDir),'\','/',[rfReplaceAll])+''' > '+LinkFilename);
+    end;
+  end;
+end;
+
+procedure TLPLUpdate.WriteDeadLinks(Packages: TPackages; Links: TLinks);
 // write links that points to non existing files
 var
   i: Integer;
   Link: TLink;
+  Pkg: TPackage;
 begin
   for i:=0 to Links.Count-1 do begin
     Link:=Links[i];
-    if not FileExistsUTF8(Link.ExpFilename) then begin
+    Pkg:=Packages.FindByName(Link.PkgName);
+    if (Pkg=nil) then begin
       if not (Quiet and WriteCommands) then
         writeln('Dead link ',ExtractFileNameOnly(Link.Filename),' to missing '+CreateRelativePath(Link.PkgFilename,PkgDir));
       if WriteCommands then begin
