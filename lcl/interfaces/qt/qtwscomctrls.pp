@@ -1355,7 +1355,7 @@ begin
     LWI := QtListWidget.getItem(AIndex);
     QtListWidget.BeginUpdate;
     case AState of
-      lisFocused: QtListWidget.setCurrentItem(LWI);
+      lisFocused: QtListWidget.setCurrentItem(LWI, AIsSet);
       lisSelected:
       begin
         if AIsSet and not ALV.MultiSelect then

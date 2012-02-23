@@ -1117,7 +1117,7 @@ type
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual;
     procedure setDefaultColorRoles; override;
   public
-    procedure clearSelection;
+    procedure clearSelection; virtual;
     function getModel: QAbstractItemModelH;
     function getRowHeight(ARowIndex: integer): integer;
     function getSelectionMode: QAbstractItemViewSelectionMode;
@@ -1127,7 +1127,7 @@ type
     procedure modelIndex(retval: QModelIndexH; row, column: Integer; parent: QModelIndexH = nil);
     function visualRect(Index: QModelIndexH): TRect;
     procedure setEditTriggers(ATriggers: QAbstractItemViewEditTriggers);
-    procedure setSelectionMode(AMode: QAbstractItemViewSelectionMode);
+    procedure setSelectionMode(AMode: QAbstractItemViewSelectionMode); virtual;
     procedure setSelectionBehavior(ABehavior: QAbstractItemViewSelectionBehavior);
     procedure setWordWrap(const AValue: Boolean); virtual;
     property AllowGrayed: boolean read FAllowGrayed write FAllowGrayed;
@@ -1211,6 +1211,7 @@ type
     procedure signalSelectionChanged(); cdecl; virtual;
     procedure ItemDelegatePaint(painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; override;
   public
+    procedure clearSelection; override;
     procedure ClearItems;
     function currentRow: Integer;
     function currentItem: QListWidgetItemH;
@@ -1229,11 +1230,12 @@ type
     function getVisualItemRect(AItem: QListWidgetItemH): TRect;
     function selectedItems: TPtrIntArray;
     procedure setCurrentRow(row: Integer);
-    procedure setCurrentItem(AItem: QListWidgetItemH);
+    procedure setCurrentItem(AItem: QListWidgetItemH; const AIsSet: Boolean = True);
     procedure setItemText(AIndex: Integer; AText: String); overload;
     procedure setItemText(AIndex: Integer; AText: String; AAlignment: Integer); overload;
     procedure setItemSelected(AItem: QListWidgetItemH; const ASelect: Boolean);
     procedure setItemVisible(AItem: QListWidgetItemH; const AVisible: Boolean);
+    procedure setSelectionMode(AMode: QAbstractItemViewSelectionMode); override;
     procedure scrollToItem(row: integer; hint: QAbstractItemViewScrollHint);
     procedure removeItem(AIndex: Integer);
     function rowCount: integer;
@@ -1359,6 +1361,7 @@ type
     procedure DestroyNotify(AWidget: TQtWidget); override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure ClearItems;
+    procedure clearSelection; override;
     procedure DeleteItem(const AIndex: integer);
     function currentRow: Integer;
     procedure setCurrentRow(row: Integer);
@@ -1398,6 +1401,7 @@ type
     function getClientBounds: TRect; override;
     function getClientOffset: TPoint; override;
 
+    procedure setSelectionMode(AMode: QAbstractItemViewSelectionMode); override;
     procedure SignalItemClicked(item: QTreeWidgetItemH; column: Integer); cdecl;
     procedure SignalItemDoubleClicked(item: QTreeWidgetItemH; column: Integer); cdecl;
     procedure SignalItemActivated(item: QTreeWidgetItemH; column: Integer); cdecl;
@@ -10373,9 +10377,12 @@ end;
 function TQtListWidget.itemViewViewportEventFilter(Sender: QObjectH;
   Event: QEventH): Boolean; cdecl;
 var
-  Item: QListWidgetItemH;
+  Item, CurrItem: QListWidgetItemH;
   MousePos: TQtPoint;
   X: Integer;
+  Arr: TPtrIntArray;
+  Modifiers: QtKeyboardModifiers;
+  ItemRow, CurrItemRow: Integer;
 
   procedure SendEventToParent;
   var
@@ -10427,8 +10434,104 @@ begin
             // qt selection in QListWidget is ugly, and LCL needs that info
             // when mouse button is pressed, not after that, so we
             // trigger selectionChanged() here
-            if not QListWidgetItem_isSelected(Item) then
-              QListWidgetItem_setSelected(Item, True);
+            // Multiselection needs special handling to get proper
+            // order of OnSelectItem.
+
+            if getSelectionMode > QAbstractItemViewSingleSelection then
+            begin
+              Modifiers := QInputEvent_modifiers(QInputEventH(Event));
+              SlotMouse(Sender, Event);
+
+              if not QListWidgetItem_isSelected(Item) then
+              begin
+                if Modifiers = 0 then
+                  QListWidget_setCurrentItem(QListWidgetH(Widget), Item,
+                    QItemSelectionModelClearAndSelect or QItemSelectionModelCurrent)
+                else
+                if (Modifiers and QtControlModifier <> 0) then
+                begin
+                  X := getSelCount;
+                  // DebugLn('**** Called SELECT IN 1 X=', dbgs(X));
+                  QListWidget_setCurrentItem(QListWidgetH(Widget), Item,
+                    QItemSelectionModelSelect);
+                  if (X <= 1) then
+                    signalCurrentItemChanged(Item, nil);
+                end else
+                if (Modifiers and QtShiftModifier <> 0) then
+                begin
+                  // select this and all other's (calculate is it up or down)
+                  X := getSelCount;
+                  CurrItem := currentItem; //<-- doesn't smell good with QtShiftModifier
+                  if CurrItem = nil then // <-- do not crash
+                    CurrItem := Item;
+                  ItemRow := getRow(Item);
+                  CurrItemRow := getRow(CurrItem);
+                  if (ItemRow < CurrItemRow) and (ItemRow >= 0) then
+                  begin
+                    for x := CurrItemRow + 1 to rowCount - 1 do
+                    begin
+                      CurrItem := getItem(x);
+                      QListWidget_setCurrentItem(QListWidgetH(Widget), CurrItem,
+                        QItemSelectionModelClear or QItemSelectionModelDeselect);
+                    end;
+                    for x := CurrItemRow downto ItemRow do
+                    begin
+                      CurrItem := getItem(x);
+                      QListWidget_setCurrentItem(QListWidgetH(Widget), CurrItem,
+                        QItemSelectionModelSelect);
+                    end;
+                  end else
+                  if (ItemRow > CurrItemRow) then
+                  begin
+                    for x := 0 to CurrItemRow - 1 do
+                    begin
+                      CurrItem := getItem(x);
+                      QListWidget_setCurrentItem(QListWidgetH(Widget), CurrItem,
+                        QItemSelectionModelClear or QItemSelectionModelDeselect);
+                    end;
+                    for x := ItemRow downto CurrItemRow do
+                    begin
+                      CurrItem := getItem(x);
+                      QListWidget_setCurrentItem(QListWidgetH(Widget), CurrItem,
+                        QItemSelectionModelSelect);
+                    end;
+                  end;
+                end;
+              end else
+              begin
+                X := getSelCount;
+                if (Modifiers = 0) and (X > 1) then
+                begin
+                  Arr := selectedItems;
+                  for x := 0 to High(Arr) do
+                  begin
+                    if QListWidgetItemH(Arr[x]) <> Item then
+                      QListWidget_setCurrentItem(QListWidgetH(Widget),
+                        QListWidgetItemH(Arr[x]), QItemSelectionModelDeSelect);
+                  end;
+                  QListWidget_setCurrentItem(QListWidgetH(Widget), Item,
+                    QItemSelectionModelSelectCurrent);
+                end else
+                if (Modifiers and QtControlModifier <> 0) then
+                begin
+                  QListWidget_setCurrentItem(QListWidgetH(Widget), Item,
+                    QItemSelectionModelDeSelect);
+                  if (X = 1) or (currentItem = Item) then
+                    signalCurrentItemChanged(nil, Item);
+                end;
+              end;
+              QEvent_ignore(Event);
+              Result := True;
+              exit;
+            end else
+            begin
+              SlotMouse(Sender, Event);
+              if not QListWidgetItem_isSelected(Item) then
+                QListWidget_setCurrentItem(QListWidgetH(Widget), Item, QItemSelectionModelSelect);
+              QEvent_ignore(Event);
+              Result := True;
+              exit;
+            end;
           end;
         end;
 
@@ -10502,6 +10605,9 @@ begin
 
   Msg.NMHdr := @NMLV.hdr;
   DeliverMessage(Msg);
+
+  // if getSelectionMode > QAbstractItemViewSingleSelection then
+  //  DebugLn('*** MultiSelect: SignalCurrentItemChanged Current ',dbgs(Current),' Previous ',dbgs(Previous));
 
   FSyncingItems := True;
   try
@@ -10587,7 +10693,7 @@ begin
         begin
           Item := QListWidgetItemH(FSavedSelection[i]);
           if (Item <> nil) then
-            signalItemClicked(Item);
+            signalCurrentItemChanged(nil, Item);
         end;
       end;
       setLength(FSavedSelection, 0);
@@ -10607,7 +10713,7 @@ begin
   DeliverMessage(Msg);
 end;
 
-procedure TQtListWidget.signalItemClicked(item: QListWidgetItemH)cdecl;
+procedure TQtListWidget.signalItemClicked(item: QListWidgetItemH); cdecl;
 var
   Msg: TLMessage;
   ItemRow: Integer;
@@ -10646,24 +10752,6 @@ begin
     MsgN.NMHdr := @NMLV.hdr;
 
     DeliverMessage(MsgN);
-
-    {sync LCL items for selected property}
-    if (LCLObject <> nil) and (LCLObject is TListView) then
-      for i := 0 to TListView(LCLObject).Items.Count - 1 do
-        TListView(LCLObject).Items[i].Selected;
-
-    {inform LCL about current change}
-    MsgN.Msg := CN_NOTIFY;
-    NMLV.hdr.code := LVN_ITEMCHANGED;
-    NMLV.uNewState := 0;
-    NMLV.uOldState := 0;
-    if QListWidget_isItemSelected(QListWidgetH(Widget), Item) then
-      NMLV.uNewState := LVIS_SELECTED
-    else
-      NMLV.uOldState := LVIS_SELECTED;
-    NMLV.uChanged :=  LVIF_STATE;
-    MsgN.NMHdr := @NMLV.hdr;
-    DeliverMessage(Msgn);
   end;
 
   if Checkable then
@@ -10721,8 +10809,15 @@ begin
   TQtDeviceContext(DrawStruct.DC).Free;
 end;
 
+procedure TQtListWidget.clearSelection;
+begin
+  inherited clearSelection;
+  SetLength(FSavedSelection, 0);
+end;
+
 procedure TQtListWidget.ClearItems;
 begin
+  SetLength(FSavedSelection, 0);
   QListWidget_clear(QListWidgetH(Widget));
 end;
 
@@ -10892,9 +10987,11 @@ begin
   end;
 end;
 
-procedure TQtListWidget.setCurrentItem(AItem: QListWidgetItemH);
+procedure TQtListWidget.setCurrentItem(AItem: QListWidgetItemH;
+  const AIsSet: Boolean = True);
 begin
-  QListWidget_setCurrentItem(QListWidgetH(Widget), AItem);
+  if AIsSet then
+    QListWidget_setCurrentItem(QListWidgetH(Widget), AItem);
 end;
 
 procedure TQtListWidget.setItemText(AIndex: Integer; AText: String);
@@ -10953,6 +11050,42 @@ procedure TQtListWidget.setItemVisible(AItem: QListWidgetItemH;
 begin
   if AItem <> nil then
     QListWidget_setItemHidden(QListWidgetH(Widget), AItem, not AVisible);
+end;
+
+procedure TQtListWidget.setSelectionMode(AMode: QAbstractItemViewSelectionMode);
+var
+  SavedItem: QListWidgetItemH;
+  Arr: TPtrIntArray;
+  i: Integer;
+begin
+  SavedItem := nil;
+  // this code is here due to Qt bug with QListView/QListWidget ..
+  // QTreeWidget works correct .. clearSelection does not trigger signals
+  // so we must do that manually.
+  if (ViewStyle > 0) and (AMode < QAbstractItemViewMultiSelection) and
+    (getSelectionMode > QAbstractItemViewSingleSelection) then
+  begin
+    SavedItem := CurrentItem;
+    Arr := selectedItems;
+    if not ((SavedItem <> nil) and (QListWidgetItem_isSelected(SavedItem))) then
+    begin
+      SavedItem := nil;
+      if length(Arr) > 0 then
+        SavedItem := QListWidgetItemH(Arr[0]);
+    end;
+    for i := 0 to High(Arr) do
+    begin
+      if QListWidgetItemH(Arr[i]) <> SavedItem then
+      begin
+        QListWidgetItem_setSelected(QListWidgetItemH(Arr[i]), False);
+        signalCurrentItemChanged(nil, QListWidgetItemH(Arr[i]));
+      end;
+    end;
+    clearSelection;
+  end;
+  inherited setSelectionMode(AMode);
+  if SavedItem <> nil then
+    setItemSelected(SavedItem, True);
 end;
 
 procedure TQtListWidget.scrollToItem(row: integer;
@@ -11661,6 +11794,12 @@ begin
   QTreeWidget_clear(QTreeWidgetH(Widget));
 end;
 
+procedure TQtTreeWidget.clearSelection;
+begin
+  inherited clearSelection;
+  FSelection.Clear;
+end;
+
 procedure TQtTreeWidget.DeleteItem(const AIndex: integer);
 var
   Item: QTreeWidgetItemH;
@@ -12224,6 +12363,39 @@ begin
     Result := Point(0, 0)
   else
     Result := inherited getClientOffset;
+end;
+
+procedure TQtTreeWidget.setSelectionMode(AMode: QAbstractItemViewSelectionMode);
+var
+  SavedItem: QTreeWidgetItemH;
+  i: Integer;
+  Arr: TPtrIntArray;
+begin
+  SavedItem := nil;
+  if (ViewStyle > 0) and (AMode < QAbstractItemViewMultiSelection) and
+    (getSelectionMode > QAbstractItemViewSingleSelection) then
+  begin
+    SavedItem := CurrentItem;
+    Arr := selectedItems;
+    if not ((SavedItem <> nil) and (QTreeWidgetItem_isSelected(SavedItem))) then
+    begin
+      SavedItem := nil;
+      if length(Arr) > 0 then
+        SavedItem := QTreeWidgetItemH(Arr[0]);
+    end;
+    for i := 0 to High(Arr) do
+    begin
+      if QTreeWidgetItemH(Arr[i]) <> SavedItem then
+      begin
+        QTreeWidgetItem_setSelected(QTreeWidgetItemH(Arr[i]), False);
+        signalCurrentItemChanged(nil, QTreeWidgetItemH(Arr[i]));
+      end;
+    end;
+    clearSelection;
+  end;
+  inherited setSelectionMode(AMode);
+  if SavedItem <> nil then
+    setItemSelected(SavedItem, True);
 end;
 
 {------------------------------------------------------------------------------
