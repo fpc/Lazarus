@@ -10363,12 +10363,11 @@ begin
     end;
   end else
   begin
-    if ((ViewStyle >= 0) or ((QtVersionMajor = 4) and (QtVersionMinor >= 7))) and
-    ((QEvent_type(Event) = QEventMouseButtonPress) or
-    (QEvent_type(Event) = QEventMouseButtonRelease)) then
+    if (QEvent_type(Event) = QEventMouseButtonPress) or
+      (QEvent_type(Event) = QEventMouseButtonRelease) then
       {eat mouse button events when we are TListView class.
        Such events are handled by itemViewportEventFilter.
-       With Qt-4.7 TListBox and TCheckListBox are also affected. issue #21318}
+       With Qt TListBox and TCheckListBox are also affected. issue #21318}
     else
       Result:=inherited EventFilter(Sender, Event);
   end;
@@ -10385,23 +10384,9 @@ var
   ItemRow, CurrItemRow: Integer;
 
   procedure SendEventToParent;
-  var
-    AEvent: QEventH;
   begin
     //issue #21318
-    if (QtVersionMajor = 4) and (QtVersionMinor >=7) then
-    begin
-      SlotMouse(Widget, Event);
-    end else
-    begin
-      AEvent := QMouseEvent_create(QEvent_type(Event),
-        QMouseEvent_pos(QMouseEventH(Event)),
-        QMouseEvent_globalPos(QMouseEventH(Event)),
-        QMouseEvent_button(QMouseEventH(Event)),
-        QMouseEvent_buttons(QMouseEventH(Event)),
-        QInputEvent_modifiers(QInputEventH(Event)));
-        QCoreApplication_postEvent(Widget, AEvent, 1);
-    end;
+    SlotMouse(Widget, Event);
   end;
 
 begin
@@ -11231,26 +11216,22 @@ begin
       QEventMouseButtonDblClick:
         begin
           // issue #21318
-          if (QtVersionMajor = 4) and (QtVersionMinor >=7) then
+          MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+          Item := itemAt(MousePos.x, MousePos.y);
+          if QEvent_Type(Event) = QEventMouseButtonDblClick then
+          begin
+            SlotMouse(Widget, Event);
+            QEvent_ignore(Event);
+            // qt capture locks for some reason under qt-4.7.4 ?!?
+            // when we dbl click on viewport without checkable items
+            if (Item = nil) and (Sender = QWidget_mouseGrabber) then
+              QWidget_releaseMouse(QWidgetH(Sender));
+          end else
           begin
             MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
-            Item := itemAt(MousePos.x, MousePos.y);
-            if QEvent_Type(Event) = QEventMouseButtonDblClick then
-            begin
-              SlotMouse(Widget, Event);
-              QEvent_ignore(Event);
-              // qt capture locks for some reason under qt-4.7.4 ?!?
-              // when we dbl click on viewport without checkable items
-              if (Item = nil) and (Sender = QWidget_mouseGrabber) then
-                QWidget_releaseMouse(QWidgetH(Sender));
-            end else
-            begin
-              MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
-              if Item = nil then
-                Result := inherited itemViewViewportEventFilter(Sender, Event);
-            end;
-          end else
-            Result := inherited itemViewViewportEventFilter(Sender, Event);
+            if Item = nil then
+              Result := inherited itemViewViewportEventFilter(Sender, Event);
+          end;
         end;
       else
       begin
