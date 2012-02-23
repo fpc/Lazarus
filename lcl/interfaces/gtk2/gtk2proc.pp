@@ -140,7 +140,7 @@ function gtkresizeCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkMonthChanged(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 procedure DeliverMouseMoveMessage(Widget:PGTKWidget; Event: PGDKEventMotion;
                                   AWinControl: TWinControl);
-function ControlGetsMouseMoveBefore(AControl: TControl): boolean;
+
 function gtkMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
                          Data: gPointer): GBoolean; cdecl;
 function GTKMotionNotifyAfter(widget:PGTKWidget; event: PGDKEventMotion;

@@ -1274,11 +1274,42 @@ end;
   Returns true, if mouse move event should be sent before the widget istelf
   reacts.
 -------------------------------------------------------------------------------}
-function ControlGetsMouseMoveBefore(AControl: TControl): boolean;
+function ControlGetsMouseMoveBefore(AControl: TControl;
+  const ABefore: Boolean; Event: PGDKEventMotion): boolean;
+var
+  ShiftState: TShiftState;
+  Widget: PGtkWidget;
+  MainView: PGtkWidget;
+  i: Integer;
 begin
   if (AControl=nil) then ;
   // currently there are no controls, that need after events.
-  Result:=true;
+  Result := True;
+
+  // gtk2 column resizing ... issue #21354
+  if (Event <> nil) and not (csDesigning in AControl.ComponentState) and
+    (AControl is TWinControl) and
+    (TWinControl(AControl).FCompStyle = csListView) and
+    (TListView(AControl).ViewStyle = vsReport) and
+    (TListView(AControl).ShowColumnHeaders) then
+  begin
+    ShiftState := GTKEventStateToShiftState(Event^.State);
+    if ssLeft in ShiftState then
+    begin
+      Widget := PGtkWidget(TWinControl(AControl).Handle);
+      if GTK_IS_SCROLLED_WINDOW(Widget) then
+      begin
+        MainView := gtk_bin_get_child(PGtkBin(Widget));
+        if GTK_IS_TREE_VIEW(MainView) then
+        begin
+          // here we are
+          if gtk_tree_view_get_bin_window(PGtkTreeView(MainView)) <> Event^.window then
+            Result := False;
+        end;
+      end;
+    end;
+  end;
+
 end;
 
 procedure GTKGetDevicePointer(win: PGdkWindow; dev: PGdkDevice;
@@ -1359,7 +1390,7 @@ begin
   begin
     DesignOnlySignal := GetDesignOnlySignalFlag(Widget, dstMouseMotion);
     if DesignOnlySignal then exit;
-    if not ControlGetsMouseMoveBefore(TControl(Data)) then exit;
+    if not ControlGetsMouseMoveBefore(TControl(Data), True, Event) then exit;
   end else
   begin
     // stop the signal, so that the widget does not auto react
@@ -1410,7 +1441,7 @@ begin
   UpdateMouseCaptureControl;
 
   if (csDesigning in TComponent(Data).ComponentState) then exit;
-  if ControlGetsMouseMoveBefore(TControl(Data)) then exit;
+  if ControlGetsMouseMoveBefore(TControl(Data), True, Event) then exit;
 
   DeliverMouseMoveMessage(Widget,Event, TWinControl(Data));
 end;
