@@ -42,8 +42,8 @@ begin
       while (Gtk2WidgetSet.FMainPoll <> nil) and
         (Gtk2WidgetSet.FMainPoll^.revents = 0) do
       begin
-        Gtk2MPF(ufds, nfsd, 1);
-        if Gtk2WidgetSet.FMessageQueue.Count > 0 then
+        if (Gtk2MPF(ufds, nfsd, 1) = 1) or
+        (Gtk2WidgetSet.FMessageQueue.Count > 0) then
           break;
       end;
     end else
