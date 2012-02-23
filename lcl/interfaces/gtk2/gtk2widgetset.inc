@@ -1398,10 +1398,9 @@ begin
   FLastFocusOut := nil;
 
   LastWFPMousePos := Point(MaxInt, MaxInt);
-  {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
+
   FIsLibraryInstance := False;
   FGtkTerminated := False;
-  {$ENDIF}
 
   {$IFDEF EnabledGtkThreading}
     {$IFNDEF Win32}
@@ -2359,14 +2358,17 @@ begin
     // let gtk handle up to 100 messages and call our callbacks
     i:=100;
 
-    {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
-    while (gtk_events_pending<>0) and (i>0) do
-    begin
-      gtk_main_iteration_do(False);
-      dec(i);
-    end;
-    {$ELSE}
     if not FGtkTerminated then
+    begin
+      {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
+      while (gtk_events_pending<>0) and (i>0) do
+      begin
+        if FGtkTerminated then
+          break;
+        gtk_main_iteration_do(False);
+        dec(i);
+      end;
+      {$ELSE}
       while g_main_context_pending(g_main_context_default) and (i>0) do
       begin
         if FGtkTerminated then
@@ -2375,7 +2377,8 @@ begin
           break;
         dec(i);
       end;
-    {$ENDIF}
+      {$ENDIF}
+    end;
 
     //DebugLn(['TGtk2WidgetSet.AppProcessMessages SendCachedGtkMessages']);
     // send cached gtk messages to the lcl
@@ -2443,12 +2446,14 @@ end;
 procedure TGtk2WidgetSet.AppWaitMessage;
 begin
   WaitingForMessages:=true;
-  {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
-  gtk_main_iteration_do(True);
-  {$ELSE}
   if not FGtkTerminated then
+  begin
+    {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
+    gtk_main_iteration_do(True);
+    {$ELSE}
     g_main_context_iteration(g_main_context_default, True);
-  {$ENDIF}
+    {$ENDIF}
+  end;
   WaitingForMessages:=false;
 end;
 
@@ -2534,14 +2539,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtk2WidgetSet.AppTerminate;
 begin
-  {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
   if FIsLibraryInstance then
-  begin
     FGtkTerminated := True;
     // writeln('TGtk2WidgetSet.AppTerminate called from library ...');
     // g_main_context_wakeup(g_main_context_default);
-  end;
-  {$ENDIF}
   // MG: using gtk_main_quit is not a clean way to close
   //gtk_main_quit;
 end;
