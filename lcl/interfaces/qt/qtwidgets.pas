@@ -10436,7 +10436,9 @@ begin
                 if (Modifiers and QtControlModifier <> 0) then
                 begin
                   X := getSelCount;
-                  // DebugLn('**** Called SELECT IN 1 X=', dbgs(X));
+                  // DebugLn('**** Called SELECT IN 1 X=', dbgs(X),' is curr ? ',dbgs(CurrentItem = Item));
+                  if CurrentItem = Item then
+                    X := 0;
                   QListWidget_setCurrentItem(QListWidgetH(Widget), Item,
                     QItemSelectionModelSelect);
                   if (X <= 1) then
