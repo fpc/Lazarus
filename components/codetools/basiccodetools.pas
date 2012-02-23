@@ -49,7 +49,8 @@ uses
 function FindNextNonSpace(const ASource: string; StartPos: integer): integer;
 function FindPrevNonSpace(const ASource: string; StartPos: integer): integer;
 function FindCommentEnd(const ASource: string; StartPos: integer;
-    NestedComments: boolean): integer;
+    NestedComments: boolean): integer; overload;
+function FindCommentEnd(Src: PChar; NestedComments: boolean): PChar; overload;
 function IsCommentEnd(const ASource: string; EndPos: integer): boolean;
 function FindNextComment(const ASource: string;
     StartPos: integer; MaxPos: integer = 0): integer;
@@ -1104,6 +1105,68 @@ begin
   until false;
 end;
 
+function FindCommentEnd(Src: PChar; NestedComments: boolean): PChar;
+// returns position after the comment end, e.g. after }
+var
+  CommentLvl: integer;
+begin
+  Result:=Src;
+  if Result=nil then exit;
+  case Result^ of
+  '/':
+    if Result[1]='/' then begin
+      inc(Result,2);
+      while not (Result^ in [#0,#10,#13]) do inc(Result);
+    end;
+
+  '{':
+    begin
+      CommentLvl:=1;
+      inc(Result);
+      repeat
+        case Result^ of
+        #0: break;
+        '{':
+          if NestedComments then
+            inc(CommentLvl);
+
+        '}':
+          begin
+            dec(CommentLvl);
+            if CommentLvl=0 then begin
+              inc(Result);
+              break;
+            end;
+          end;
+
+        end;
+        inc(Result);
+      until false;
+    end;
+
+  '(':
+    if Result[1]='*' then begin
+      inc(Result,2);
+      CommentLvl:=1;
+      repeat
+        if Result^=#0 then break;
+        if (Result^='*') and (Result[1]=')') then begin
+          inc(Result,2);
+          dec(CommentLvl);
+          if CommentLvl=0 then
+            break;
+        end else if (Result^='(') and (Result[1]='*') then begin
+          inc(Result,2);
+          if NestedComments then
+            inc(CommentLvl);
+        end else
+          inc(Result);
+      until false;
+    end;
+
+  end;
+end;
+
 function IsCommentEnd(const ASource: string; EndPos: integer): boolean;
 // return true if EndPos on } or on *) or in a // comment
 var
@@ -1744,7 +1807,7 @@ var
   Src: PChar;
 begin
   Src:=Position;
-  // read til next atom
+  // read till next atom
   while true do begin
     case Src^ of
     #0:
