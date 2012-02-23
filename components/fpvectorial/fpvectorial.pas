@@ -295,10 +295,14 @@ type
    RasterImage should be filled with either a FPImage.TFPMemoryImage or with
    a TLazIntfImage. The property RasterImage might be nil.
   }
-  TvRasterImage = class(TvEntityWithPenAndBrush)
+
+  { TvRasterImage }
+
+  TvRasterImage = class(TvEntity)
   public
     RasterImage: TFPCustomImage;
     Top, Left, Width, Height: Double;
+    procedure InitializeWithConvertionOf3DPointsToHeightMap(APage: TvVectorialPage; AWidth, AHeight: Integer);
   end;
 
   { TvPoint }
@@ -558,6 +562,42 @@ begin
   Result.X := AX;
   Result.Y := AY;
   Result.Z := 0;
+end;
+
+{ TvRasterImage }
+
+procedure TvRasterImage.InitializeWithConvertionOf3DPointsToHeightMap(APage: TvVectorialPage; AWidth, AHeight: Integer);
+var
+  lEntity: TvEntity;
+  i: Integer;
+  lPos: TPoint;
+  lValue: TFPColor;
+begin
+  // First setup the map and initialize it
+  if RasterImage <> nil then RasterImage.Free;
+  RasterImage := TFPMemoryImage.create(AWidth, AHeight);
+
+  // Now go through all points and attempt to fit them to our grid
+  for i := 0 to APage.GetEntitiesCount - 1 do
+  begin
+    lEntity := APage.GetEntity(i);
+    if lEntity is TvPoint then
+    begin
+      lPos.X := Round((lEntity.X - APage.MinX) * AWidth / (APage.MaxX - APage.MinX));
+      lPos.Y := Round((lEntity.Y - APage.MinY) * AHeight / (APage.MaxY - APage.MinY));
+
+      if lPos.X >= AWidth then lPos.X := AWidth-1;
+      if lPos.Y >= AHeight then lPos.Y := AHeight-1;
+      if lPos.X < 0 then lPos.X := 0;
+      if lPos.Y < 0 then lPos.Y := 0;
+
+      lValue.Red := Round((lEntity.Z - APage.MinZ) * 256 / (APage.MaxZ - APage.MinZ));
+      lValue.Green := lValue.Red;
+      lValue.Blue := lValue.Red;
+      //lValue.alpha:=;
+      RasterImage.Colors[lPos.X, lPos.Y] := lValue;
+    end;
+  end;
 end;
 
 constructor TvEntityWithPen.Create;

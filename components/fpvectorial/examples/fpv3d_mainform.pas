@@ -14,6 +14,7 @@ type
 
   TformFPV3D = class(TForm)
     Button1: TButton;
+    btnConvert3DPointArrayToHeightMap: TButton;
     buttonCutFile: TButton;
     buttonRotZ: TButton;
     buttonZoomIn: TButton;
@@ -21,6 +22,7 @@ type
     buttonZoomOut: TButton;  buttonLoad: TButton;
     editFileName: TFileNameEdit;
     glControl: TOpenGLControl;
+    procedure btnConvert3DPointArrayToHeightMapClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure buttonCutFileClick(Sender: TObject);
     procedure buttonLoadClick(Sender: TObject);
@@ -140,6 +142,27 @@ end;
 procedure TformFPV3D.Button1Click(Sender: TObject);
 begin
   glControl.Invalidate;
+end;
+
+procedure TformFPV3D.btnConvert3DPointArrayToHeightMapClick(Sender: TObject);
+var
+  lRasterImage: TvRasterImage;
+  lPage: TvVectorialPage;
+  lFile: TFileStream;
+  x, y: Integer;
+begin
+  lRasterImage := TvRasterImage.Create;
+  lPage := VecDoc.GetPage(0);
+  lPage.AddEntity(lRasterImage);
+  lRasterImage.InitializeWithConvertionOf3DPointsToHeightMap(lPage, 1024, 1024);
+
+  lFile := TFileStream.Create('Terrain.raw', fmCreate);
+
+  for x := 0 to 1023 do
+    for y := 0 to 1023 do
+      lFile.WriteByte(Byte(lRasterImage.RasterImage.Colors[x, y].Red div $FF));
+
+  lFile.Free;
 end;
 
 procedure TformFPV3D.buttonCutFileClick(Sender: TObject);

@@ -92,4 +92,13 @@ object formFPV3D: TformFPV3D
     OnClick = buttonCutFileClick
     TabOrder = 7
   end
+  object btnConvert3DPointArrayToHeightMap: TButton
+    Left = 178
+    Height = 25
+    Top = 72
+    Width = 278
+    Caption = 'Convert 3D point array to height map'
+    OnClick = btnConvert3DPointArrayToHeightMapClick
+    TabOrder = 8
+  end
 end
