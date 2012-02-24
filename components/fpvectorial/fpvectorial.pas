@@ -310,10 +310,13 @@ type
   public
   end;
 
+  TvProgressEvent = procedure (APercentage: Byte) of object;
+
   { TvVectorialDocument }
 
   TvVectorialDocument = class
   private
+    FOnProgress: TvProgressEvent;
     FPages: TFPList;
     FCurrentPageIndex: Integer;
     function CreateVectorialWriter(AFormat: TvVectorialFormat): TvCustomVectorialWriter;
@@ -350,6 +353,8 @@ type
     function AddPage(): TvVectorialPage;
     { Data removing methods }
     procedure Clear; virtual;
+    { Events }
+    property OnProgress: TvProgressEvent read FOnProgress write FOnprogress;
   end;
 
   { TvVectorialPage }
@@ -571,6 +576,8 @@ var
   i: Integer;
   lPos: TPoint;
   lValue: TFPColor;
+  PreviousValue: Word;
+  PreviousCount: Integer;
 begin
   // First setup the map and initialize it
   if RasterImage <> nil then RasterImage.Free;
@@ -590,9 +597,18 @@ begin
       if lPos.X < 0 then lPos.X := 0;
       if lPos.Y < 0 then lPos.Y := 0;
 
+      // Calculate the height of this point
+      PreviousValue := lValue.Red;
       lValue.Red := Round((lEntity.Z - APage.MinZ) * $FFFF / (APage.MaxZ - APage.MinZ));
+
+      // And apply it as a fraction of the total number of points which fall in this square
+      // we store the number of points in the Alpha channel
+      PreviousCount := lValue.Alpha div $100;
+      lValue.Red := Round((PreviousCount * PreviousValue + lValue.Red) / (PreviousCount + 1));
+
       lValue.Green := lValue.Red;
       lValue.Blue := lValue.Red;
+      lValue.Alpha := lValue.Alpha + $100;
       //lValue.alpha:=;
       RasterImage.Colors[lPos.X, lPos.Y] := lValue;
     end;

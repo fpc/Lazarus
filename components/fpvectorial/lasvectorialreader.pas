@@ -129,6 +129,7 @@ type
     procedure DebugOutPublicHeaderBlock();
     {$endif}
     procedure ReadVariableLengthRecords(AStream: TStream);
+    procedure DoProgress(AProgress: Byte; AData: TvVectorialDocument);
   public
     // Public Header
     PublicHeaderBlock_1_0: TLASPublicHeaderBlock_1_0;
@@ -343,6 +344,11 @@ begin
   end;
 end;
 
+procedure TvLASVectorialReader.DoProgress(AProgress: Byte; AData: TvVectorialDocument);
+begin
+  if @AData.OnProgress <> nil then AData.OnProgress(AProgress);
+end;
+
 procedure TvLASVectorialReader.ReadFromStream(AStream: TStream;
   AData: TvVectorialDocument);
 var
@@ -353,6 +359,7 @@ var
   lPoint: TvPoint;
   lClassification: Integer = -1;
   lColor: TFPColor;
+  lPointsCounter: Integer = 0;
 begin
   // Clear and add the first page
   AData.Clear;
@@ -389,6 +396,11 @@ begin
   AStream.Position := InitialPos + PublicHeaderBlock_1_0.OffsetToPointData;
   while AStream.Position < AStream.Size do
   begin
+    // Send a progress event every 1k points
+    Inc(lPointsCounter);
+    if lPointsCounter mod 1000 = 0 then
+      DoProgress(Round(AStream.Position * 100 / AStream.Size), AData);
+
     // hack to cut las files: if lPage.GetEntitiesCount = 100000 then Exit;
     case PublicHeaderBlock_1_0.PointDataFormatID of
     0:

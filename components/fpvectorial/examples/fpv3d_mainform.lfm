@@ -1,10 +1,10 @@
 object formFPV3D: TformFPV3D
   Left = 336
-  Height = 409
+  Height = 470
   Top = 171
   Width = 514
   Caption = 'formFPV3D'
-  ClientHeight = 409
+  ClientHeight = 470
   ClientWidth = 514
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -38,8 +38,8 @@ object formFPV3D: TformFPV3D
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 5
-    Height = 300
-    Top = 104
+    Height = 337
+    Top = 128
     Width = 504
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 5
@@ -100,5 +100,12 @@ object formFPV3D: TformFPV3D
     Caption = 'Convert 3D point array to height map'
     OnClick = btnConvert3DPointArrayToHeightMapClick
     TabOrder = 8
+  end
+  object progressBar: TProgressBar
+    Left = 12
+    Height = 20
+    Top = 104
+    Width = 220
+    TabOrder = 9
   end
 end

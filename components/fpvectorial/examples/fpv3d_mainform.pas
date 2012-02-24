@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, OpenGLContext, Forms, Controls, Graphics,
-  Dialogs, EditBtn, StdCtrls, fpvectorial, gl, glu, FPimage,
+  Dialogs, EditBtn, StdCtrls, ComCtrls, fpvectorial, gl, glu, FPimage,
   Math, lasvectorialreader;
 
 type
@@ -23,6 +23,7 @@ type
     buttonZoomOut: TButton;  buttonLoad: TButton;
     editFileName: TFileNameEdit;
     glControl: TOpenGLControl;
+    progressBar: TProgressBar;
     procedure btnConvert3DPointArrayToHeightMapClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure buttonCutFileClick(Sender: TObject);
@@ -33,6 +34,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure glControlPaint(Sender: TObject);
+    procedure HandleVecDocProgress(APercentage: Byte);
   private
     { private declarations }
     procedure Render3DPointsArrayAlternative1();
@@ -69,6 +71,12 @@ begin
   //Render3DPointsArrayAlternative1;
 
   RenderHeightMapV1();
+end;
+
+procedure TformFPV3D.HandleVecDocProgress(APercentage: Byte);
+begin
+  progressBar.Position := APercentage;
+  Application.ProcessMessages;
 end;
 
 procedure TformFPV3D.Render3DPointsArrayAlternative1;
@@ -263,6 +271,7 @@ end;
 
 procedure TformFPV3D.buttonLoadClick(Sender: TObject);
 begin
+  VecDoc.OnProgress := @HandleVecDocProgress;
   VecDoc.ReadFromFile(editFileName.FileName);
   glControl.Invalidate;
 end;
