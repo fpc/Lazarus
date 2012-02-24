@@ -150,6 +150,7 @@ var
   lPage: TvVectorialPage;
   lFile: TFileStream;
   x, y: Integer;
+  lRed: Word;
 begin
   lRasterImage := TvRasterImage.Create;
   lPage := VecDoc.GetPage(0);
@@ -160,7 +161,10 @@ begin
 
   for x := 0 to 1023 do
     for y := 0 to 1023 do
-      lFile.WriteByte(Byte(lRasterImage.RasterImage.Colors[x, y].Red div $FF));
+    begin
+      lRed := lRasterImage.RasterImage.Colors[x, y].Red;
+      lFile.WriteByte(Byte(lRed div $FF));
+    end;
 
   lFile.Free;
 end;

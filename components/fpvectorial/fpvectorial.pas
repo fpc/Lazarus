@@ -184,7 +184,6 @@ type
 
   TvEntityWithPen = class(TvEntity)
   public
-    X, Y, Z: Double;
     {@@ The global Pen for the entire entity. In the case of paths, individual
         elements might be able to override this setting. }
     Pen: TvPen;
@@ -591,7 +590,7 @@ begin
       if lPos.X < 0 then lPos.X := 0;
       if lPos.Y < 0 then lPos.Y := 0;
 
-      lValue.Red := Round((lEntity.Z - APage.MinZ) * 256 / (APage.MaxZ - APage.MinZ));
+      lValue.Red := Round((lEntity.Z - APage.MinZ) * $FFFF / (APage.MaxZ - APage.MinZ));
       lValue.Green := lValue.Red;
       lValue.Blue := lValue.Red;
       //lValue.alpha:=;
