@@ -65,7 +65,7 @@ type
 
     // global actions
     FGlobalActions: TFPList;
-    FEatNextDeactivate: Boolean;
+    FAppActive: Boolean;
     FOverrideCursor: TObject;
     SavedDCList: TFPList;
     CriticalSection: TRTLCriticalSection;
@@ -191,6 +191,7 @@ type
     procedure FreeStockItems;
     procedure FreeSysColorBrushes(const AInvalidateHandlesOnly: Boolean = False);
 
+    property AppActive: Boolean read FAppActive;
     property DragImageLock: Boolean read FDragImageLock write FDragImageLock;
 
     {do not create new QApplication object if we are called from library }
@@ -241,11 +242,19 @@ const
 
    TargetEntrys = 3;
    QEventLCLMessage = QEventUser;
+   // QEventType(Ord(QEventUser) + $1000) is reserved by
+   // LCLQt_Destroy (qtobjects) to reduce includes !
    LCLQt_CheckSynchronize = QEventType(Ord(QEventUser) + $1001);
    LCLQt_PopupMenuClose = QEventType(Ord(QEventUser) + $1002);
    LCLQt_PopupMenuTriggered = QEventType(Ord(QEventUser) + $1003);
    // QEventType(Ord(QEventUser) + $1004 is reserved by
    // LCLQt_ClipboardPrimarySelection (qtobjects) to reduce includes !
+   LCLQt_ApplicationActivate = QEventType(Ord(QEventUser) + $1005);
+   // deactivate sent from qt
+   LCLQt_ApplicationDeactivate = QEventType(Ord(QEventUser) + $1006);
+   // deactivate sent from LCLQt_ApplicationDeactivate to check it twice
+   // instead of using timer.
+   LCLQt_ApplicationDeactivate_Check = QEventType(Ord(QEventUser) + $1007);
 
 var
   QtWidgetSet: TQtWidgetSet;
