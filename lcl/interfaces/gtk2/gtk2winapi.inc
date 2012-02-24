@@ -7595,16 +7595,14 @@ function TGtk2WidgetSet.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
 var
   X, Y: Integer;
   Widget: PGTKWidget;
-  Window: PgdkWindow;
+  Window: PGdkWindow;
 Begin
-
-  if Handle = 0
-  then begin
+  if Handle = 0 then
+  begin
     X := 0;
     Y := 0;
-  end
-  else
-   begin
+  end else
+  begin
     Widget := GetFixedWidget(pgtkwidget(Handle));
     if Widget = nil then
       Widget := pgtkwidget(Handle);
@@ -7612,13 +7610,24 @@ Begin
     begin
       X := 0;
       Y := 0;
-    end
-    else begin
-      Window:=GetControlWindow(Widget);
+    end else
+    begin
+      Window := GetControlWindow(Widget);
       {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-      if Window<>nil then
-        gdk_window_get_origin(Window, @X, @Y)
-      else begin
+      if Window <> nil then
+      begin
+        gdk_window_get_origin(Window, @X, @Y);
+        // set pos to client coords. issue #21366
+        if GTK_WIDGET_NO_WINDOW(Widget) and (gtk_widget_get_parent(Widget) <> nil) then
+        begin
+          P.X := P.X - X - Widget^.allocation.x;
+          P.Y := P.Y - Y - Widget^.allocation.y;
+          Result := -1;
+          exit;
+        end;
+
+      end else
+      begin
         X:=0;
         Y:=0;
       end;
