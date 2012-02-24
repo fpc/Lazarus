@@ -125,7 +125,8 @@ begin
   Result := (Collection <> nil)
     and (TListColumns(Collection).FOwner <> nil)
     and TListColumns(Collection).FOwner.HandleAllocated
-    and ([csReading, csLoading] * TListColumns(Collection).FOwner.ComponentState = []);
+    and ([csReading, csLoading] * TListColumns(Collection).FOwner.ComponentState = [])
+    and not (wcfInitializing in TCustomListView(TListColumns(Collection).FOwner).FWinControlFlags);
 end;
 
 function TListColumn.GetWidth: TWidth;
