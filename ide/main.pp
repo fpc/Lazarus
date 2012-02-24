@@ -9940,9 +9940,7 @@ begin
         end;
       end;  { for }
       if (AnUnitInfo <> nil) and (not OnlyForms) then
-      begin
-        SourceEditorManager.ShowActiveWindowOnTop(False);
-      end;
+        SourceEditorManager.ShowActiveWindowOnTop(True);
     end;  { if ShowViewUnitDlg... }
   finally
     for i := 0 to UnitList.Count-1 do
