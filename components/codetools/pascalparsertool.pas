@@ -164,6 +164,7 @@ type
     function KeyWordFuncClassConstSection: boolean;
     function KeyWordFuncClassTypeSection: boolean;
     function KeyWordFuncClassVarSection: boolean;
+    procedure ClassConstTypeVarSection;
     function KeyWordFuncClassClass: boolean;
     function KeyWordFuncClassMethod: boolean;
     function KeyWordFuncClassProperty: boolean;
@@ -1154,6 +1155,26 @@ begin
   Result:=true;
 end;
 
+procedure TPascalParserTool.ClassConstTypeVarSection;
+var
+  Node: TCodeTreeNode;
+begin
+  if not (CurNode.Desc in [ctnClassType,ctnClassVar,ctnClassConst,ctnClassClassVar])
+  then exit;
+  // end last section
+  CurNode.EndPos:=CurPos.StartPos;
+  EndChildNode;
+  // start new section with last visibility
+  CreateChildNode;
+  Node:=CurNode;
+  while (Node<>nil) and (not (Node.Desc in AllClassBaseSections)) do
+    Node:=Node.PriorBrother;
+  if Node=nil then
+    CurNode.Desc:=ctnClassPublished
+  else
+    CurNode.Desc:=Node.Desc;
+end;
+
 function TPascalParserTool.KeyWordFuncClassClass: boolean;
 { parse
     class procedure
@@ -1198,11 +1219,18 @@ function TPascalParserTool.KeyWordFuncClassMethod: boolean;
    dispid <id>
    enumerator <id>
    }
+  procedure RaiseWrongNode;
+  begin
+    debugln(['TPascalParserTool.KeyWordFuncClassMethod CurNode=',CurNode.DescAsString]);
+    RaiseIdentExpectedButAtomFound;
+  end;
+
 var IsFunction, HasForwardModifier: boolean;
   ParseAttr: TParseProcHeadAttributes;
 begin
+  ClassConstTypeVarSection;
   if not (CurNode.Desc in (AllClassSections+AllClassInterfaces)) then
-    RaiseIdentExpectedButAtomFound;
+    RaiseWrongNode;
 
   HasForwardModifier:=false;
   // create class method node
@@ -2306,9 +2334,16 @@ function TPascalParserTool.KeyWordFuncClassProperty: boolean;
     SaveRaiseExceptionFmt(ctsSemicolonAfterPropSpecMissing,[s,GetAtom]);
   end;
 
-begin
-  if not (CurNode.Desc in (AllClassBaseSections+AllClassInterfaces)) then
+  procedure RaiseWrongNode;
+  begin
+    debugln(['TPascalParserTool.KeyWordFuncClassProperty CurNode=',CurNode.DescAsString]);
     RaiseIdentExpectedButAtomFound;
+  end;
+
+begin
+  ClassConstTypeVarSection;
+  if not (CurNode.Desc in (AllClassBaseSections+AllClassInterfaces)) then
+    RaiseWrongNode;
   // create class method node
   CreateChildNode;
   CurNode.Desc:=ctnProperty;

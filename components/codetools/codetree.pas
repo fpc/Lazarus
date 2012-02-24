@@ -377,9 +377,9 @@ begin
   ctnClassPrivate: Result:='Private';
   ctnClassProtected: Result:='Protected';
   ctnClassPublic: Result:='Public';
-  ctnClassConst: Result:='Const';
-  ctnClassType: Result:='Type';
-  ctnClassVar: Result:='Var';
+  ctnClassConst: Result:='ConstInClass';
+  ctnClassType: Result:='TypeInClass';
+  ctnClassVar: Result:='VarInClass';
   ctnClassClassVar: Result:='Class Var';
   ctnClassAbstract: Result:='abstract';
   ctnClassSealed: Result:='sealed';
