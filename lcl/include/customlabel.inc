@@ -213,6 +213,8 @@ begin
   FInternalSetBounds := False;
   Color := clNone;
   AutoSize := True;
+  // Accessibility
+  AccessibleRole := larLabel;
 end;
 
 function TCustomLabel.GetTransparent: boolean;
