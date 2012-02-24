@@ -1626,10 +1626,18 @@ begin
     begin
       if (csDesigning in AForm.ComponentState) and (AForm.Designer <> nil) then
         ARestoreVisible := AForm.Visible;
-      AForm.Visible:=true;
 
-      if BringToFront and (AForm.WindowState in [wsMinimized]) then
-        AForm.WindowState := wsNormal;
+      AForm.Visible := True;
+      if (AForm.WindowState in [wsMinimized]) then
+      begin
+        if BringToFront then
+        begin
+          // issue #19769
+          if AForm.Visible and not (fsModal in AForm.FormState) then
+            AForm.Visible := False;
+          AForm.ShowOnTop;
+        end;
+      end;
 
       if (csDesigning in AForm.ComponentState) and (AForm.Designer <> nil) then
         AForm.Visible := ARestoreVisible;
