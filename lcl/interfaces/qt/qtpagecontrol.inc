@@ -181,7 +181,7 @@ begin
   TabWidget.insertTab(NewIndex, Page.Widget, Page.getIcon, Page.getText);
   TabWidget.setUpdatesEnabled(true);
   if TabWidget.getCurrentIndex <> NewIndex then
-    TabWidget.setCurrentWidget(Page);
+    TabWidget.setCurrentWidget(Page, True);
   TabWidget.EndUpdate;
 end;
 
@@ -284,7 +284,7 @@ begin
 
   TabWidget.BeginUpdate;
   if ATabControl.Page[AIndex].HandleAllocated then
-    TabWidget.setCurrentWidget(TQtWidget(ATabControl.Page[AIndex].Handle));
+    TabWidget.setCurrentWidget(TQtWidget(ATabControl.Page[AIndex].Handle), False);
   TabWidget.EndUpdate;
 end;
 

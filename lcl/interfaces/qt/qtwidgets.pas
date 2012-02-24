@@ -886,7 +886,7 @@ type
     function getTabPosition: QTabWidgetTabPosition;
     procedure removeTab(AIndex: Integer);
     procedure setCurrentIndex(AIndex: Integer);
-    procedure setCurrentWidget(APage: TQtWidget);
+    procedure setCurrentWidget(APage: TQtWidget; const AIsMoved: Boolean);
     procedure setTabPosition(ATabPosition: QTabWidgetTabPosition);
     procedure setTabIcon(index: Integer; icon: QIconH);
     procedure setTabText(index: Integer; p2: WideString);
@@ -8707,10 +8707,11 @@ begin
   QTabWidget_setCurrentIndex(QTabWidgetH(Widget), AIndex);
 end;
 
-procedure TQtTabWidget.setCurrentWidget(APage: TQtWidget);
+procedure TQtTabWidget.setCurrentWidget(APage: TQtWidget; const AIsMoved: Boolean);
 begin
   QTabWidget_setCurrentWidget(QTabWidgetH(Widget), APage.Widget);
-  APage.setFocus;
+  if AisMoved then
+    APage.setFocus;
 end;
 
 {------------------------------------------------------------------------------
