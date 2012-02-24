@@ -2316,7 +2316,7 @@ end;
 
 procedure TCustomSynEdit.FontChanged(Sender: TObject);
 begin // TODO: inherited ?
-  FTextArea.ForegroundColor := Font.Color;
+  FPaintArea.ForegroundColor := Font.Color;
   FLastSetFontSize := Font.Height;
   RecalcCharExtent;
 end;
@@ -3029,7 +3029,7 @@ end;
 procedure TCustomSynEdit.SetColor(Value: TColor);
 begin
   inherited SetColor(Value);
-  FTextArea.BackgroundColor := Color;
+  FPaintArea.BackgroundColor := Color;
 end;
 
 procedure TCustomSynEdit.FindAndHandleMouseAction(AButton: TSynMouseButton;
@@ -5364,8 +5364,8 @@ begin
   FVisibleSpecialChars := AValue;
   fMarkupSpecialChar.VisibleSpecialChars := AValue;
   if eoShowSpecialChars in Options
-  then FTextArea.VisibleSpecialChars := AValue
-  else FTextArea.VisibleSpecialChars := [];
+  then FPaintArea.VisibleSpecialChars := AValue
+  else FPaintArea.VisibleSpecialChars := [];
   if eoShowSpecialChars in Options then Invalidate;
 end;
 
@@ -5568,8 +5568,9 @@ end;
 
 procedure TCustomSynEdit.SetRightEdge(Value: Integer);
 begin
+  // Todo: check and invalidate in text area
   if FTextArea.RightEdgeColumn <> Value then begin
-    FTextArea.RightEdgeColumn := Value;
+    FPaintArea.RightEdgeColumn := Value;
     if FTextArea.RightEdgeVisible then
       Invalidate;
   end;
@@ -5580,8 +5581,9 @@ var
   nX: integer;
   rcInval: TRect;
 begin
+  // Todo: check and invalidate in text area
   if RightEdgeColor <> Value then begin
-    FTextArea.RightEdgeColor := Value;
+    FPaintArea.RightEdgeColor := Value;
     if HandleAllocated then begin
       nX := FTextArea.ScreenColumnToXValue(FTextArea.RightEdgeColumn + 1);
       rcInval := Rect(nX - 1, 0, nX + 1, ClientHeight-ScrollBarWidth);
@@ -5804,7 +5806,7 @@ procedure TCustomSynEdit.SetExtraCharSpacing(const Value: integer);
 begin
   if fExtraCharSpacing=Value then exit;
   fExtraCharSpacing := Value;
-  FTextArea.ExtraCharSpacing := Value;
+  FPaintArea.ExtraCharSpacing := Value;
   FontChanged(self);
 end;
 
@@ -6767,7 +6769,7 @@ procedure TCustomSynEdit.SetExtraLineSpacing(const Value: integer);
 begin
   if fExtraLineSpacing=Value then exit;
   fExtraLineSpacing := Value;
-  FTextArea.ExtraLineSpacing := Value;
+  FPaintArea.ExtraLineSpacing := Value;
   FontChanged(self);
 end;
 
@@ -7172,15 +7174,15 @@ begin
   end;
   if (eoShowSpecialChars in ChangedOptions) then begin
     if eoShowSpecialChars in FOptions
-    then FTextArea.VisibleSpecialChars := VisibleSpecialChars
-    else FTextArea.VisibleSpecialChars := [];
+    then FPaintArea.VisibleSpecialChars := VisibleSpecialChars
+    else FPaintArea.VisibleSpecialChars := [];
     if HandleAllocated then
       Invalidate;
   end;
   fMarkupSpecialChar.Enabled := (eoShowSpecialChars in fOptions);
 
   if (eoHideRightMargin in ChangedOptions) then
-    FTextArea.RightEdgeVisible := not(eoHideRightMargin in FOptions);
+    FPaintArea.RightEdgeVisible := not(eoHideRightMargin in FOptions);
 
   (* Deal with deprecated Mouse values
      Those are all controlled by mouse-actions.
@@ -7315,11 +7317,11 @@ begin
   FPaintArea.RightGutterWidth := r;
 
   if FLeftGutter.Visible
-  then FTextArea.Padding[bsLeft] := GutterTextDist
-  else FTextArea.Padding[bsLeft] := 1;
+  then FPaintArea.Padding[bsLeft] := GutterTextDist
+  else FPaintArea.Padding[bsLeft] := 1;
   if FRightGutter.Visible
-  then FTextArea.Padding[bsRight] := 0 //GutterTextDist
-  else FTextArea.Padding[bsRight] := 0;
+  then FPaintArea.Padding[bsRight] := 0 //GutterTextDist
+  else FPaintArea.Padding[bsRight] := 0;
 
   //CharsInWindow := Max(1, w div CharWidth);
   if OldLinesInWindow <> FTextArea.LinesInWindow then
@@ -7463,9 +7465,11 @@ begin
   FFontDummy.Assign(Font);
   with FFontDummy do begin
     // Keep GTK happy => By ensuring a change the XFLD fontname gets cleared
+    {$IFDEF LCLGTK1}
     Pitch := fpVariable;
     Style := [fsBold];
     Pitch := fpDefault; // maybe Fixed
+    {$ENDIF}
     // TODO: Clear style only, if Highlighter uses styles
     Style := [];        // Reserved for Highlighter
   end;

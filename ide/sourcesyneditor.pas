@@ -88,6 +88,20 @@ type
     FTopLineCount: Integer;
     procedure SetTopLineCount(AValue: Integer);
   protected
+    function GetLeftGutterArea: TLazSynSurface; override;
+    function GetRightGutterArea: TLazSynSurface; override;
+    function GetTextArea: TLazSynTextArea; override;
+  protected
+    procedure SetBackgroundColor(AValue: TColor); override;
+    procedure SetExtraCharSpacing(AValue: integer); override;
+    procedure SetExtraLineSpacing(AValue: integer); override;
+    procedure SetForegroundColor(AValue: TColor); override;
+    procedure SetPadding(Side: TLazSynBorderSide; AValue: integer); override;
+    procedure SetRightEdgeColor(AValue: TColor); override;
+    procedure SetRightEdgeColumn(AValue: integer); override;
+    procedure SetRightEdgeVisible(AValue: boolean); override;
+    procedure SetVisibleSpecialChars(AValue: TSynVisibleSpecialChars); override;
+  protected
     procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
     procedure BoundsChanged; override;
   public
@@ -433,6 +447,76 @@ begin
   if FTopLineCount = AValue then Exit;
   FTopLineCount := AValue;
   BoundsChanged;
+end;
+
+function TSourceLazSynSurfaceManager.GetLeftGutterArea: TLazSynSurface;
+begin
+  Result := FOriginalManager.LeftGutterArea;
+end;
+
+function TSourceLazSynSurfaceManager.GetRightGutterArea: TLazSynSurface;
+begin
+  Result := FOriginalManager.RightGutterArea;
+end;
+
+function TSourceLazSynSurfaceManager.GetTextArea: TLazSynTextArea;
+begin
+  Result := FOriginalManager.TextArea;
+end;
+
+procedure TSourceLazSynSurfaceManager.SetBackgroundColor(AValue: TColor);
+begin
+  FOriginalManager.BackgroundColor := AValue;
+  //FExtraManager.BackgroundColor := AValue;
+end;
+
+procedure TSourceLazSynSurfaceManager.SetExtraCharSpacing(AValue: integer);
+begin
+  FOriginalManager.ExtraCharSpacing := AValue;
+  FExtraManager.ExtraCharSpacing := AValue;
+end;
+
+procedure TSourceLazSynSurfaceManager.SetExtraLineSpacing(AValue: integer);
+begin
+  FOriginalManager.ExtraLineSpacing := AValue;
+  FExtraManager.ExtraLineSpacing := AValue;
+  BoundsChanged;
+end;
+
+procedure TSourceLazSynSurfaceManager.SetForegroundColor(AValue: TColor);
+begin
+  FOriginalManager.ForegroundColor := AValue;
+  //FExtraManager.ForegroundColor := AValue;
+end;
+
+procedure TSourceLazSynSurfaceManager.SetPadding(Side: TLazSynBorderSide; AValue: integer);
+begin
+  FOriginalManager.Padding[Side] := AValue;
+  FExtraManager.Padding[Side] := AValue;
+end;
+
+procedure TSourceLazSynSurfaceManager.SetRightEdgeColor(AValue: TColor);
+begin
+  FOriginalManager.RightEdgeColor := AValue;
+  FExtraManager.RightEdgeColor := AValue;
+end;
+
+procedure TSourceLazSynSurfaceManager.SetRightEdgeColumn(AValue: integer);
+begin
+  FOriginalManager.RightEdgeColumn := AValue;
+  FExtraManager.RightEdgeColumn := AValue;
+end;
+
+procedure TSourceLazSynSurfaceManager.SetRightEdgeVisible(AValue: boolean);
+begin
+  FOriginalManager.RightEdgeVisible := AValue;
+  FExtraManager.RightEdgeVisible := AValue;
+end;
+
+procedure TSourceLazSynSurfaceManager.SetVisibleSpecialChars(AValue: TSynVisibleSpecialChars);
+begin
+  FOriginalManager.VisibleSpecialChars := AValue;
+  FExtraManager.VisibleSpecialChars := AValue;
 end;
 
 procedure TSourceLazSynSurfaceManager.DoPaint(ACanvas: TCanvas; AClip: TRect);
