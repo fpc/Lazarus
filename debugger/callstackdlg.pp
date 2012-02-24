@@ -163,6 +163,7 @@ const
   COL_STACK_SOURCE    = 3;
   COL_STACK_LINE      = 4;
   COL_STACK_FUNC      = 5;
+  COL_WIDTHS: Array[0..4] of integer = ( 50,   0, 150,   50, 280);
 
 function CallStackDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
 begin
@@ -180,6 +181,8 @@ end;
 { TCallStackDlg }
 
 constructor TCallStackDlg.Create(AOwner: TComponent);
+var
+  i: Integer;
 begin
   inherited Create(AOwner);
   CallStackNotification.OnChange   := @CallStackChanged;
@@ -196,6 +199,12 @@ begin
   FInUpdateView := False;
   actViewLimit.Caption := popLimit10.Caption;
   actToggleBreakPoint.ShortCut := IDECommandList.FindIDECommand(ecToggleBreakPoint).AsShortCut;
+
+  for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
+    if COL_WIDTHS[i] > 0 then
+      lvCallStack.Column[i].Width := COL_WIDTHS[i]
+    else
+      lvCallStack.Column[i].AutoSize := True;
 end;
 
 procedure TCallStackDlg.CallStackChanged(Sender: TObject);
@@ -217,16 +226,12 @@ end;
 
 function TCallStackDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
 begin
-  Result := True;
-  case AColId of
-    COL_STACK_BRKPOINT:  ASize := lvCallStack.Column[0].Width;
-    COL_STACK_INDEX:     ASize := lvCallStack.Column[1].Width;
-    COL_STACK_SOURCE:    ASize := lvCallStack.Column[2].Width;
-    COL_STACK_LINE:      ASize := lvCallStack.Column[3].Width;
-    COL_STACK_FUNC:      ASize := lvCallStack.Column[4].Width;
-    else
-      Result := False;
-  end;
+  if (AColId - 1 >= 0) and (AColId - 1 < lvCallStack.ColumnCount) then begin
+    ASize := lvCallStack.Column[AColId - 1].Width;
+    Result := (ASize <> COL_WIDTHS[AColId - 1]) and (not lvCallStack.Column[AColId - 1].AutoSize);
+  end
+  else
+    Result := False;
 end;
 
 procedure TCallStackDlg.ColSizeSetter(AColId: Integer; ASize: Integer);

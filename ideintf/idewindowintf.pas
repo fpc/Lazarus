@@ -615,8 +615,10 @@ var
 begin
   c := 0;
   for i := 0 to Count - 1 do
-    if Items[i].SaveToConfig(Config, Path + 'Item' + IntToStr(i) + '/') then
+    if Items[i].SaveToConfig(Config, Path + 'Item' + IntToStr(c) + '/') then
       inc(c);
+  for i := c to Count - 1 do
+    Config.DeletePath(Path + 'Item' + IntToStr(i) + '/');
   Config.SetDeleteValue(Path+'Count', c, 0);
 end;
 
@@ -1314,7 +1316,7 @@ begin
       if Creator.OnGetDividerSize(fForm, FDividers[i].Id, j) then
         FDividers[i].Size := j
       else
-        FDividers[i].Size := -1;
+        FDividers[i].Size := -1; // Default / Not Changed / Unavailable
   end;
 end;
 

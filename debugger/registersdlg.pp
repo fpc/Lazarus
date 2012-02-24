@@ -97,6 +97,7 @@ var
 const
   COL_REGISTER_NAME   = 1;
   COL_REGISTER_VALUE  = 2;
+  COL_WIDTHS: Array[0..1] of integer = ( 150, 50);
 
 function RegisterDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
 begin
@@ -114,6 +115,8 @@ end;
 { TRegistersDlg }
 
 constructor TRegistersDlg.Create(AOwner: TComponent);
+var
+  i: Integer;
 begin
   inherited Create(AOwner);
   FRegistersNotification := TIDERegistersNotification.Create;
@@ -146,6 +149,9 @@ begin
   DispOct.Tag := ord(rdOctal);
   DispDec.Tag := ord(rdDecimal);
   DispRaw.Tag := ord(rdRaw);
+
+  for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
+    lvRegisters.Column[i].Width := COL_WIDTHS[i];
 end;
 
 destructor TRegistersDlg.Destroy;
@@ -351,13 +357,12 @@ end;
 
 function TRegistersDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
 begin
-  Result := True;
-  case AColId of
-    COL_REGISTER_NAME:   ASize := lvRegisters.Column[0].Width;
-    COL_REGISTER_VALUE:  ASize := lvRegisters.Column[1].Width;
-    else
-      Result := False;
-  end;
+  if (AColId - 1 >= 0) and (AColId - 1 < lvRegisters.ColumnCount) then begin
+    ASize := lvRegisters.Column[AColId - 1].Width;
+    Result := ASize <> COL_WIDTHS[AColId - 1];
+  end
+  else
+    Result := False;
 end;
 
 procedure TRegistersDlg.ColSizeSetter(AColId: Integer; ASize: Integer);

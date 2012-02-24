@@ -434,7 +434,7 @@ end;
 
 function TIDEInspectDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
 begin
-  Result := True;
+  ASize := -1;
   case AColId of
     COL_INSPECT_DNAME:    ASize := FGridData.ColWidths[0];
     COL_INSPECT_DTYPE:    ASize := FGridData.ColWidths[1];
@@ -443,9 +443,8 @@ begin
     COL_INSPECT_MTYPE:    ASize := FGridMethods.ColWidths[1];
     COL_INSPECT_MRETURNS: ASize := FGridMethods.ColWidths[2];
     COL_INSPECT_MADDRESS: ASize := FGridMethods.ColWidths[3];
-    else
-      Result := False;
   end;
+  Result := (ASize > 0) and (ASize <> 100); // The default for all
 end;
 
 procedure TIDEInspectDlg.ColSizeSetter(AColId: Integer; ASize: Integer);

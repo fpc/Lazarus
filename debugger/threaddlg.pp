@@ -54,6 +54,7 @@ const
   COL_THREAD_SOURCE   = 5;
   COL_THREAD_LINE     = 6;
   COL_THREAD_FUNC     = 7;
+  COL_WIDTHS: Array[0..6] of integer = ( 20, 50, 100, 50,  150, 50, 300);
 
 function ThreadsDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
 begin
@@ -153,18 +154,12 @@ end;
 
 function TThreadsDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
 begin
-  Result := True;
-  case AColId of
-    COL_THREAD_BRKPOINT: ASize := lvThreads.Column[0].Width;
-    COL_THREAD_INDEX:    ASize := lvThreads.Column[1].Width;
-    COL_THREAD_NAME:     ASize := lvThreads.Column[2].Width;
-    COL_THREAD_STATE:    ASize := lvThreads.Column[3].Width;
-    COL_THREAD_SOURCE:   ASize := lvThreads.Column[4].Width;
-    COL_THREAD_LINE:     ASize := lvThreads.Column[5].Width;
-    COL_THREAD_FUNC:     ASize := lvThreads.Column[6].Width;
-    else
-      Result := False;
-  end;
+  if (AColId - 1 >= 0) and (AColId - 1 < lvThreads.ColumnCount) then begin
+    ASize := lvThreads.Column[AColId - 1].Width;
+    Result := ASize <> COL_WIDTHS[AColId - 1];
+  end
+  else
+    Result := False;
 end;
 
 procedure TThreadsDlg.ColSizeSetter(AColId: Integer; ASize: Integer);
@@ -238,6 +233,8 @@ begin
 end;
 
 constructor TThreadsDlg.Create(TheOwner: TComponent);
+var
+  i: Integer;
 begin
   inherited Create(TheOwner);
   Caption:= lisThreads;
@@ -255,6 +252,9 @@ begin
 
   imgCurrentLine := IDEImages.LoadImage(16, 'debugger_current_line');
   lvThreads.SmallImages := IDEImages.Images_16;
+
+  for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
+    lvThreads.Column[i].Width := COL_WIDTHS[i];
 end;
 
 initialization

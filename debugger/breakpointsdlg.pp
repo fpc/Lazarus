@@ -182,6 +182,7 @@ const
   COL_BREAK_ACTION    = 5;
   COL_BREAK_PASS      = 6;
   COL_BREAK_GROUP     = 7;
+  COL_WIDTHS: Array[0..6] of integer = ( 50, 150, 100,  75, 150, 100, 80);
 
 function BreakPointDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
 begin
@@ -317,6 +318,8 @@ begin
 end;
 
 constructor TBreakPointsDlg.Create(AOwner: TComponent);
+var
+  i: Integer;
 begin
   inherited;
   Name:='BreakPointsDlg';
@@ -362,6 +365,8 @@ begin
   actEnableAllInSrc.Caption:= lisEnableAllInSameSource;
   actDisableAllInSrc.Caption:= lisDisableAllInSameSource;
   actDeleteAllInSrc.Caption:= lisDeleteAllInSameSource;
+  for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
+    lvBreakPoints.Column[i].Width := COL_WIDTHS[i];
 
   FLockActionUpdate := 0;
 end;
@@ -815,18 +820,12 @@ end;
 
 function TBreakPointsDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
 begin
-  Result := True;
-  case AColId of
-    COL_BREAK_STATE:     ASize := lvBreakPoints.Column[0].Width;
-    COL_BREAK_FILE:      ASize := lvBreakPoints.Column[1].Width;
-    COL_BREAK_LINE:      ASize := lvBreakPoints.Column[2].Width;
-    COL_BREAK_CONDITION: ASize := lvBreakPoints.Column[3].Width;
-    COL_BREAK_ACTION:    ASize := lvBreakPoints.Column[4].Width;
-    COL_BREAK_PASS:      ASize := lvBreakPoints.Column[5].Width;
-    COL_BREAK_GROUP:     ASize := lvBreakPoints.Column[6].Width;
-    else
-      Result := False;
-  end;
+  if (AColId - 1 >= 0) and (AColId - 1 < lvBreakPoints.ColumnCount) then begin
+    ASize := lvBreakPoints.Column[AColId - 1].Width;
+    Result := ASize <> COL_WIDTHS[AColId - 1];
+  end
+  else
+    Result := False;
 end;
 
 procedure TBreakPointsDlg.ColSizeSetter(AColId: Integer; ASize: Integer);

@@ -100,6 +100,7 @@ var
 const
   COL_LOCALS_NAME   = 1;
   COL_LOCALS_VALUE  = 2;
+  COL_WIDTHS: Array[0..1] of integer = ( 50,   150);
 
 function LocalsDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
 begin
@@ -117,6 +118,8 @@ end;
 { TLocalsDlg }
 
 constructor TLocalsDlg.Create(AOwner: TComponent);
+var
+  i: Integer;
 begin
   inherited Create(AOwner);
   LocalsNotification.OnChange     := @LocalsChanged;
@@ -132,6 +135,9 @@ begin
   actEvaluate.Caption := lisEvaluateModify;
   actCopyName.Caption := lisLocalsDlgCopyName;
   actCopyValue.Caption := lisLocalsDlgCopyValue;
+
+  for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
+    lvLocals.Column[i].Width := COL_WIDTHS[i];
 end;
 
 procedure TLocalsDlg.actInspectUpdate(Sender: TObject);
@@ -336,13 +342,12 @@ end;
 
 function TLocalsDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
 begin
-  Result := True;
-  case AColId of
-    COL_LOCALS_NAME:   ASize := lvLocals.Column[0].Width;
-    COL_LOCALS_VALUE:  ASize := lvLocals.Column[1].Width;
-    else
-      Result := False;
-  end;
+  if (AColId - 1 >= 0) and (AColId - 1 < lvLocals.ColumnCount) then begin
+    ASize := lvLocals.Column[AColId - 1].Width;
+    Result := (ASize <> COL_WIDTHS[AColId - 1]) and (not lvLocals.Column[AColId - 1].AutoSize);
+  end
+  else
+    Result := False;
 end;
 
 procedure TLocalsDlg.ColSizeSetter(AColId: Integer; ASize: Integer);

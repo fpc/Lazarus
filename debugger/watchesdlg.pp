@@ -153,6 +153,7 @@ var
 const
   COL_WATCH_EXPR  = 1;
   COL_WATCH_VALUE = 2;
+  COL_WIDTHS: Array[0..1] of integer = ( 100,  200);
 
 function WatchesDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
 begin
@@ -170,6 +171,8 @@ end;
 { TWatchesDlg }
 
 constructor TWatchesDlg.Create(AOwner: TComponent);
+var
+  i: Integer;
 begin
   inherited Create(AOwner);
   FWatchesInView := nil;
@@ -230,8 +233,9 @@ begin
 
   lvWatches.Columns[0].Caption:=liswlExpression;
   lvWatches.Columns[1].Caption:=dlgValueColor;
-  lvWatches.Column[0].Width := 100;
-  lvWatches.Column[1].Width := 200;
+
+  for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
+    lvWatches.Column[i].Width := COL_WIDTHS[i];
 end;
 
 function TWatchesDlg.GetSelected: TCurrentWatch;
@@ -515,13 +519,12 @@ end;
 
 function TWatchesDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
 begin
-  Result := True;
-  case AColId of
-    COL_WATCH_EXPR:  ASize := lvWatches.Column[0].Width;
-    COL_WATCH_VALUE: ASize := lvWatches.Column[1].Width;
-    else
-      Result := False;
-  end;
+  if (AColId - 1 >= 0) and (AColId - 1 < lvWatches.ColumnCount) then begin
+    ASize := lvWatches.Column[AColId - 1].Width;
+    Result := ASize <> COL_WIDTHS[AColId - 1];
+  end
+  else
+    Result := False;
 end;
 
 procedure TWatchesDlg.ColSizeSetter(AColId: Integer; ASize: Integer);

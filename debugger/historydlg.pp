@@ -67,6 +67,7 @@ const
   COL_HISTORY_CUR    = 1;
   COL_HISTORY_TIME   = 2;
   COL_HISTORY_LOC    = 3;
+  COL_WIDTHS: Array[0..2] of integer = ( 25,  120, 250);
 
 function HistoryDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
 begin
@@ -290,14 +291,12 @@ end;
 
 function THistoryDialog.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
 begin
-  Result := True;
-  case AColId of
-    COL_HISTORY_CUR:    ASize := lvHistory.Column[0].Width;
-    COL_HISTORY_TIME:   ASize := lvHistory.Column[1].Width;
-    COL_HISTORY_LOC:    ASize := lvHistory.Column[2].Width;
-    else
-      Result := False;
-  end;
+  if (AColId - 1 >= 0) and (AColId - 1 < lvHistory.ColumnCount) then begin
+    ASize := lvHistory.Column[AColId - 1].Width;
+    Result := ASize <> COL_WIDTHS[AColId - 1];
+  end
+  else
+    Result := False;
 end;
 
 procedure THistoryDialog.ColSizeSetter(AColId: Integer; ASize: Integer);
@@ -310,6 +309,8 @@ begin
 end;
 
 constructor THistoryDialog.Create(TheOwner: TComponent);
+var
+  i: Integer;
 begin
   inherited Create(TheOwner);
   FInSnapshotChanged := False;
@@ -357,6 +358,10 @@ begin
 
   tbPowerClick(nil);
   tbHistorySelectedClick(nil);
+
+  for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
+    lvHistory.Column[i].Width := COL_WIDTHS[i];
+
 end;
 
 initialization
