@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, OpenGLContext, Forms, Controls, Graphics,
-  Dialogs, EditBtn, StdCtrls, fpvectorial, gl, glu, FPimage, lasvectorialreader;
+  Dialogs, EditBtn, StdCtrls, fpvectorial, gl, glu, FPimage,
+  Math, lasvectorialreader;
 
 type
 
@@ -34,12 +35,23 @@ type
     procedure glControlPaint(Sender: TObject);
   private
     { private declarations }
+    procedure Render3DPointsArrayAlternative1();
+    //
+    function GetMapHeight(X, Y: Integer): Byte;
+    procedure SetVertexColor(bRenderPolygons: Boolean; x, y: Integer);
+    procedure RenderHeightMapV1Helper(bRenderPolygons: Boolean);
+    procedure RenderHeightMapV1;
   public
     { public declarations }
     VecDoc: TvVectorialDocument;
     glAltitude: Integer;
     glRotateAngle, glRotateX, glRotateY, glRotateZ: Double;
+    HeightMap: TvRasterImage;
   end; 
+
+const
+  STEP_SIZE    = 16;		     // Width And Height Of Each Quad (NEW)
+  HEIGHT_RATIO = 1.5;		     // Ratio That The Y Is Scaled According To The X And Z (NEW)
 
 var
   formFPV3D: TformFPV3D;
@@ -51,6 +63,15 @@ implementation
 { TformFPV3D }
 
 procedure TformFPV3D.glControlPaint(Sender: TObject);
+begin
+  glControl.SwapBuffers;
+
+  //Render3DPointsArrayAlternative1;
+
+  RenderHeightMapV1();
+end;
+
+procedure TformFPV3D.Render3DPointsArrayAlternative1;
 var
   VecPage: TvVectorialPage;
   i: Integer;
@@ -101,8 +122,137 @@ begin
       glVertex3f(lPos3.X, lPos3.Y, lPos3.Z);
     glEnd();					// Finished Drawing
   end;
+end;
 
-  glControl.SwapBuffers;
+function TformFPV3D.GetMapHeight(X, Y: Integer): Byte;
+var
+  lPos: TPoint;
+begin
+  lPos.X := Min(X, HeightMap.RasterImage.Width-1);
+  lPos.Y := Min(Y, HeightMap.RasterImage.Height-1);
+  Result := Byte(HeightMap.RasterImage.Colors[lPos.X, lPos.Y].Red div $FF);
+end;
+
+{-----------------------------------------------------------------------------}
+{  Sets The Color Value For A Particular Index, Depending On The Height Index }
+{-----------------------------------------------------------------------------}
+procedure TformFPV3D.SetVertexColor(bRenderPolygons: Boolean; x, y : Integer);
+var fColor : glFloat;
+begin
+  fColor :=-0.2 + GetMapHeight(X, Y) / $FF;
+
+  // Assign This Blue Shade To The Current Vertex
+  if bRenderPolygons then
+    glColor3f((220-104*fColor)/256, (220-110*abs(fColor-0.4))/256, (220-200*abs(fColor-0.6))/256)
+  else
+    glColor3i(0, 0, 0);
+end;
+
+procedure TformFPV3D.RenderHeightMapV1Helper(bRenderPolygons: Boolean);
+var
+  X, Y : Integer;
+  x2, y2, z2 : Integer;
+begin
+  if HeightMap = nil then Exit;
+  if HeightMap.RasterImage = nil then Exit;
+
+  if (bRenderPolygons) then                        // What We Want To Render
+    glBegin( GL_QUADS )                    // Render Polygons
+  else
+    glBegin( GL_LINES );                   // Render Lines Instead
+
+  X :=0;
+  while X < HeightMap.RasterImage.Width-1 do
+  begin
+    Y :=0;
+    while Y < HeightMap.RasterImage.Height-1 do
+    begin
+      // Get The (X, Y, Z) Value For The Bottom Left Vertex
+      x2 := X;
+      y2 := GetMapHeight(X, Y);
+      z2 := Y;
+
+      // Set The Color Value Of The Current Vertex
+      SetVertexColor(bRenderPolygons, x2, z2);
+
+      // Send This Vertex To OpenGL To Be Rendered (Integer Points Are Faster)
+      glVertex3i(x2, y2, z2);
+
+      // Get The (X, Y, Z) Value For The Top Left Vertex
+      x2 := X;
+      y2 := GetMapHeight(X, Y + STEP_SIZE);
+      z2 := Y + STEP_SIZE ;
+
+      // Set The Color Value Of The Current Vertex
+      SetVertexColor(bRenderPolygons, x2, z2);
+
+      // Send This Vertex To OpenGL To Be Rendered
+      glVertex3i(x2, y2, z2);
+
+      // Get The (X, Y, Z) Value For The Top Right Vertex
+      x2 := X + STEP_SIZE;
+      y2 := GetMapHeight(X + STEP_SIZE, Y + STEP_SIZE);
+      z2 := Y + STEP_SIZE ;
+
+      // Set The Color Value Of The Current Vertex
+      SetVertexColor(bRenderPolygons, x2, z2);
+
+      // Send This Vertex To OpenGL To Be Rendered
+      glVertex3i(x2, y2, z2);
+
+      // Get The (X, Y, Z) Value For The Bottom Right Vertex
+      x2 := X + STEP_SIZE;
+      y2 := GetMapHeight(X + STEP_SIZE, Y );
+      z2 := Y;
+
+      // Set The Color Value Of The Current Vertex
+      SetVertexColor(bRenderPolygons, x2, z2);
+
+      // Send This Vertex To OpenGL To Be Rendered
+      glVertex3i(x2, y2, z2);
+
+      Y :=Y + STEP_SIZE
+    end;
+    X := X + STEP_SIZE
+  end;
+  glEnd();
+  glColor4f(1.0, 1.0, 1.0, 1.0);             // Reset The Color
+end;
+
+procedure TformFPV3D.RenderHeightMapV1();
+var
+  ScaleValue: Double;
+begin
+  // Init
+  glClearColor(0.0, 0.0, 0.0, 0.5); 	   // Black Background
+  glShadeModel(GL_SMOOTH);                 // Enables Smooth Color Shading
+  glClearDepth(1.0);                       // Depth Buffer Setup
+  glEnable(GL_DEPTH_TEST);                 // Enable Depth Buffer
+  glDepthFunc(GL_LEQUAL);	           // The Type Of Depth Test To Do
+  glDisable(GL_TEXTURE_2D);                // Disable Texture Mapping
+  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);   //Realy Nice perspective calculations
+
+  // Resize
+  glViewport(0, 0, Width, Height);    // Set the viewport for the OpenGL window
+  glMatrixMode(GL_PROJECTION);        // Change Matrix Mode to Projection
+  glLoadIdentity();                   // Reset View
+  gluPerspective(45.0, glControl.Width/glControl.Height, 1.0, 500.0);  // Do the perspective calculations. Last value = max clipping depth
+  glMatrixMode(GL_MODELVIEW);         // Return to the modelview matrix
+  glLoadIdentity();                   // Reset View
+
+  //bRender :=TRUE;
+  ScaleValue := 0.18 - glAltitude * 0.01;
+
+  // Paint repetition
+
+  glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);    // Clear The Screen And The Depth Buffer
+  glLoadIdentity();                                       // Reset The View
+  //           Position        View      Up Vector
+  gluLookAt(212, 60, 194,  186, 55, 171,  0, 1, 0);	  // This Determines Where The Camera's Position And View Is
+  glScalef(scaleValue, scaleValue * HEIGHT_RATIO, scaleValue);
+
+  RenderHeightMapV1Helper(True);
+  RenderHeightMapV1Helper(False);
 end;
 
 procedure TformFPV3D.FormCreate(Sender: TObject);
@@ -153,20 +303,24 @@ var
   lRed: Word;
 begin
   lRasterImage := TvRasterImage.Create;
+  HeightMap := lRasterImage;
   lPage := VecDoc.GetPage(0);
   lPage.AddEntity(lRasterImage);
   lRasterImage.InitializeWithConvertionOf3DPointsToHeightMap(lPage, 1024, 1024);
 
   lFile := TFileStream.Create('Terrain.raw', fmCreate);
+  try
+    for x := 0 to 1023 do
+      for y := 0 to 1023 do
+      begin
+        lRed := lRasterImage.RasterImage.Colors[x, y].Red;
+        lFile.WriteByte(Byte(lRed div $FF));
+      end;
+  finally
+    lFile.Free;
+  end;
 
-  for x := 0 to 1023 do
-    for y := 0 to 1023 do
-    begin
-      lRed := lRasterImage.RasterImage.Colors[x, y].Red;
-      lFile.WriteByte(Byte(lRed div $FF));
-    end;
-
-  lFile.Free;
+  glControl.Invalidate;
 end;
 
 procedure TformFPV3D.buttonCutFileClick(Sender: TObject);
