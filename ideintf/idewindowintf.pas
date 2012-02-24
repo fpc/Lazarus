@@ -1526,6 +1526,7 @@ var
   DockSibling: TCustomForm;
   DockSiblingBounds: TRect;
   Offset: TPoint;
+  ARestoreVisible: Boolean;
 begin
   {$IFDEF VerboseIDEDocking}
   debugln(['TSimpleWindowLayoutList.ApplyAndShow Form=',DbgSName(AForm),' ',BringToFront,
@@ -1611,12 +1612,27 @@ begin
     end;
   finally
     if (AForm.WindowState in [wsNormal,wsMaximized]) and BringToFront then
-      AForm.ShowOnTop
-    else
     begin
+      // do not change Visible property while designing form. issue #20602
+      // we save it into ARestoreVisible before any changes from here.
+      if (csDesigning in AForm.ComponentState) and (AForm.Designer <> nil) then
+        ARestoreVisible := AForm.Visible;
+
+      AForm.ShowOnTop;
+
+      if (csDesigning in AForm.ComponentState) and (AForm.Designer <> nil) then
+        AForm.Visible := ARestoreVisible;
+    end else
+    begin
+      if (csDesigning in AForm.ComponentState) and (AForm.Designer <> nil) then
+        ARestoreVisible := AForm.Visible;
       AForm.Visible:=true;
+
       if BringToFront and (AForm.WindowState in [wsMinimized]) then
         AForm.WindowState := wsNormal;
+
+      if (csDesigning in AForm.ComponentState) and (AForm.Designer <> nil) then
+        AForm.Visible := ARestoreVisible;
     end;
   end;
 end;
