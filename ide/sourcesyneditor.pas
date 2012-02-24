@@ -609,6 +609,7 @@ var
   Inf: TSynFoldNodeInfo;
 begin
   if FSrcSynCaretChangedLock or not(TextView.HighLighter is TSynPasSyn) then exit;
+  if not HandleAllocated then exit;
 
   FSrcSynCaretChangedLock := True;
   try
