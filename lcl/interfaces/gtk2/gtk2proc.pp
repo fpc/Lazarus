@@ -145,8 +145,7 @@ function gtkMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
                          Data: gPointer): GBoolean; cdecl;
 function GTKMotionNotifyAfter(widget:PGTKWidget; event: PGDKEventMotion;
                               data: gPointer): GBoolean; cdecl;
-function ControlGetsMouseDownBefore(AControl: TControl;
-                                    AWidget: PGtkWidget): boolean;
+
 function DeliverMouseDownMessage(widget: PGtkWidget; event: pgdkEventButton;
                                   AWinControl: TWinControl): PtrInt;
 

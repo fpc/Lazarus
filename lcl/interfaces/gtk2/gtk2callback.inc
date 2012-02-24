@@ -1280,7 +1280,6 @@ var
   ShiftState: TShiftState;
   Widget: PGtkWidget;
   MainView: PGtkWidget;
-  i: Integer;
 begin
   if (AControl=nil) then ;
   // currently there are no controls, that need after events.
@@ -1448,6 +1447,101 @@ begin
   DeliverMouseMoveMessage(Widget,Event, TWinControl(Data));
 end;
 
+
+// restore old column sizing after dblclick. issue #18381
+function ReturnColumnSizing(AGtkWidget: Pointer): gboolean; cdecl;
+var
+  AIndex: PtrInt;
+  ASizing: TGtkTreeViewColumnSizing;
+  Column: PGtkTreeViewColumn;
+  ColWidth: gint;
+begin
+  Result := AGtkWidget <> nil;
+  if AGtkWidget <> nil then
+  begin
+    if g_object_get_data(PGObject(AGtkWidget),'lcl-column-resized-dblclick') <> nil then
+    begin
+      AIndex := PtrInt(g_object_get_data(PGObject(AGtkWidget),'lcl-column-resized-dblclick') - 1);
+      ASizing := TGtkTreeViewColumnSizing(PtrInt(g_object_get_data(PGObject(AGtkWidget),'lcl-column-resized-dblclick-oldsizing')) - 1);
+      g_object_set_data(PGObject(AGtkWidget),'lcl-column-resized-dblclick', nil);
+      g_object_set_data(PGObject(AGtkWidget),'lcl-column-resized-dblclick-oldsizing', nil);
+      if (AIndex >= 0) then
+      begin
+        Column := gtk_tree_view_get_column(PGtkTreeView(AGtkWidget), AIndex);
+        ColWidth := gtk_tree_view_column_get_width(Column);
+        gtk_tree_view_column_set_sizing(Column, ASizing);
+        gtk_tree_view_column_set_fixed_width(Column, ColWidth);
+      end;
+    end;
+    g_idle_remove_by_data(AGtkWidget);
+  end;
+end;
+
+{resizes column to like autosize does when dblclicked separator. issue #18381}
+function ResizeColumnOnDblClick(ACtl: TWinControl; ScrolledWin: PGtkWidget;
+  TreeView: PGtkTreeView; const AMouseCoord: TPoint): Boolean;
+var
+  Adjustment: PGtkAdjustment;
+  List: PGList;
+  Column: PGtkTreeViewColumn;
+  i, Accu: PtrInt;
+  xoffset: Integer;
+  Pt: TPoint;
+  CurSizing: TGtkTreeViewColumnSizing;
+  ColIndex: Integer;
+  ColWidth: Integer;
+begin
+  Result := True;
+  Pt := AMouseCoord;
+  Accu := 0;
+  ColIndex := -1;
+  // think about horizontal scrollbar position too !
+  Adjustment := gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(ScrolledWin));
+  if Adjustment <> nil then
+    xoffset := Round(gtk_adjustment_get_value(Adjustment))
+  else
+    xoffset := 0;
+
+  List := gtk_tree_view_get_columns(TreeView);
+  try
+    for i := 0 to g_list_length(List) - 1 do
+    begin
+      Column := g_list_nth_data(List, i);
+      if Column = nil then
+        continue;
+      if gtk_tree_view_column_get_visible(Column) then
+      begin
+        ColWidth := gtk_tree_view_column_get_width(Column);
+        if (Accu + ColWidth + 3 >= Pt.X + xoffset) then
+        begin
+          // DebugLn('NOTICE: GtkTreeView column resizing on dblclick ',i);
+          CurSizing := gtk_tree_view_column_get_sizing(Column);
+          if gtk_tree_view_column_get_resizable(Column) and
+            (CurSizing <> GTK_TREE_VIEW_COLUMN_AUTOSIZE) then
+          begin
+            gtk_tree_view_column_set_sizing(Column, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
+            gtk_tree_view_column_set_resizable(Column, True);
+
+            ColIndex := i;
+            // we are adding i + 1 since if i = 0 then ptr is null !
+            g_object_set_data(PGObject(TreeView),'lcl-column-resized-dblclick', GPointer(ColIndex + 1));
+            Accu := Ord(CurSizing);
+            // we are adding Accu + 1 since if Accu = 0 then ptr is null !
+            g_object_set_data(PGObject(TreeView),'lcl-column-resized-dblclick-oldsizing', GPointer(Accu + 1));
+            Accu := g_idle_add(@ReturnColumnSizing, TreeView);
+            break;
+          end;
+          break;
+        end;
+        Accu := Accu + ColWidth + 3 {section separator offset};
+      end;
+    end;
+    Result := not (ColIndex >= 0);
+  finally
+    g_list_free(List);
+  end;
+end;
+
 {-------------------------------------------------------------------------------
   function ControlGetsMouseDownBefore(AControl: TControl): boolean;
 
@@ -1455,11 +1549,39 @@ end;
   reacts.
 -------------------------------------------------------------------------------}
 function ControlGetsMouseDownBefore(AControl: TControl;
-  AWidget: PGtkWidget): boolean;
+  AWidget: PGtkWidget; Event : PGdkEventButton): boolean;
+var
+  Widget: PGtkWidget;
+  MainView: PGtkWidget;
+  Pt: TPoint;
 begin
-  Result:=true;
-  if AControl=nil then exit;
-  if GtkWidgetIsA(AWidget,gtk_toggle_button_get_type) then begin
+  Result := True;
+  if AControl = nil then exit;
+
+  if not (csDesigning in AControl.ComponentState) and
+    (Event^.button = 1) and
+    (gdk_event_get_type(Event) = GDK_2BUTTON_PRESS) and
+    (AControl is TWinControl) and
+    (TWinControl(AControl).FCompStyle = csListView) and
+    (TListView(AControl).ViewStyle = vsReport) and
+    (TListView(AControl).ShowColumnHeaders) then
+  begin
+    Widget := PGtkWidget(TWinControl(AControl).Handle);
+    if GTK_IS_SCROLLED_WINDOW(Widget) then
+    begin
+      MainView := gtk_bin_get_child(PGtkBin(Widget));
+      if GTK_IS_TREE_VIEW(MainView) then
+      begin
+        if gtk_tree_view_get_bin_window(PGtkTreeView(MainView)) <> Event^.window then
+        begin
+          Pt.X := Round(Event^.x_root);
+          Pt.Y := Round(Event^.y_root);
+          ScreenToClient(TWinControl(AControl).Handle, Pt);
+          Result := ResizeColumnOnDblClick(TWinControl(AControl), Widget,
+            PGtkTreeView(MainView), Pt);
+        end;
+      end;
+    end;
   end;
 end;
 
@@ -1599,7 +1721,7 @@ begin
 
     DesignOnlySignal := GetDesignOnlySignalFlag(Widget, dstMousePress);
     if DesignOnlySignal then exit;
-    if not ControlGetsMouseDownBefore(TControl(Data), Widget) then Exit;
+    if not ControlGetsMouseDownBefore(TControl(Data), Widget, Event) then Exit;
 
     if Event^.button = 1 then
     begin
@@ -1908,7 +2030,7 @@ begin
   g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
 
   if (csDesigning in TComponent(Data).ComponentState) then exit;
-  if ControlGetsMouseDownBefore(TControl(Data),Widget) then exit;
+  if ControlGetsMouseDownBefore(TControl(Data),Widget, Event) then exit;
 
   //debugln('[gtkMouseBtnPressAfter] calling DeliverMouseDownMessage');
   DeliverMouseDownMessage(Widget, Event, TWinControl(Data));
