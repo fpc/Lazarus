@@ -128,7 +128,7 @@ function pango_version_check(required_major, required_minor, required_micro: int
 function pango_layout_get_font_description(layout:PPangoLayout):PPangoFontDescription; cdecl; external pangolib;
 {$ifend}
 
-{$IF FPC_FULLVERSION<20405}
+{$IF FPC_FULLVERSION<20501}
 function pango_font_family_is_monospace(family:PPangoFontFamily):gboolean; cdecl; external pangolib;
 {$ENDIF}
 
