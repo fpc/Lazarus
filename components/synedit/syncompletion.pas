@@ -136,6 +136,9 @@ type
     FLongLineHintTime: Integer;
     FLongLineHintType: TSynCompletionLongHintType;
     FMouseWheelAccumulator: Integer;
+    procedure DoEditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure DoEditorKeyPress(Sender: TObject; var Key: char);
+    procedure DoEditorUtf8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     procedure SetCurrentString(const Value: string);
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -923,6 +926,28 @@ begin
     Position := Position - 1;
 end;
 
+procedure TSynBaseCompletionForm.DoEditorKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (not Visible) or (FCurrentEditor = nil) or (Sender <> FCurrentEditor) then exit;
+  KeyDown(Key, Shift);
+  Key := 0;
+end;
+
+procedure TSynBaseCompletionForm.DoEditorKeyPress(Sender: TObject; var Key: char);
+begin
+  if (not Visible) or (FCurrentEditor = nil) or (Sender <> FCurrentEditor) then exit;
+  KeyPress(Key);
+  Key := #0;
+end;
+
+procedure TSynBaseCompletionForm.DoEditorUtf8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+begin
+  if (not Visible) or (FCurrentEditor = nil) or (Sender <> FCurrentEditor) then exit;
+  UTF8KeyPress(UTF8Key);
+  UTF8Key := '';
+end;
+
 procedure TSynBaseCompletionForm.SDKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -1084,17 +1109,27 @@ end;
 
 procedure TSynBaseCompletionForm.RegisterHandlers(EditOnly: Boolean);
 begin
-  if FCurrentEditor <> nil then
+  if FCurrentEditor <> nil then begin
     FCurrentEditor.RegisterStatusChangedHandler
     ({$IFDEF FPC}@{$ENDIF}EditorStatusChanged, [scTopLine]);
+    // Catch Editor events. Some Widgetset may report keys to the editor,
+    // if the user types faster, then the app can open the form
+    FCurrentEditor.RegisterBeforeKeyDownHandler(@DoEditorKeyDown);
+    FCurrentEditor.RegisterBeforeKeyPressHandler(@DoEditorKeyPress);
+    FCurrentEditor.RegisterBeforeUtf8KeyPressHandler(@DoEditorUtf8KeyPress);
+  end;
   if not EditOnly then
     Application.AddOnDeactivateHandler({$IFDEF FPC}@{$ENDIF}AppDeactivated);
 end;
 
 procedure TSynBaseCompletionForm.UnRegisterHandlers(EditOnly: Boolean);
 begin
-  if FCurrentEditor <> nil then
+  if FCurrentEditor <> nil then begin
     FCurrentEditor.UnRegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged);
+    FCurrentEditor.UnregisterBeforeKeyDownHandler(@DoEditorKeyDown);
+    FCurrentEditor.UnregisterBeforeKeyPressHandler(@DoEditorKeyPress);
+    FCurrentEditor.UnregisterBeforeUtf8KeyPressHandler(@DoEditorUtf8KeyPress);
+  end;
   if not EditOnly then
     Application.RemoveOnDeactivateHandler({$IFDEF FPC}@{$ENDIF}AppDeactivated);
 end;
@@ -1126,12 +1161,13 @@ end;
 procedure TSynBaseCompletionForm.SetVisible(Value: Boolean);
 begin
   if Visible = Value then exit;;
-  inherited SetVisible(Value);
 
   if Value then
     RegisterHandlers
   else
     UnRegisterHandlers;
+
+  inherited SetVisible(Value);
 end;
 
 procedure TSynBaseCompletionForm.IncHintLock;

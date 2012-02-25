@@ -389,6 +389,28 @@ type
     );
   end;
 
+  { TLazSynKeyDownEventList }
+
+  TLazSynKeyDownEventList = Class(TMethodList)
+  public
+    procedure CallKeyDownHandlers(Sender: TObject; var Key: Word; Shift: TShiftState);
+  end;
+
+  { TLazSynKeyPressEventList }
+
+  TLazSynKeyPressEventList = Class(TMethodList)
+  public
+    procedure CallKeyPressHandlers(Sender: TObject; var Key: char);
+  end;
+
+  { TLazSynUtf8KeyPressEventList }
+
+  TLazSynUtf8KeyPressEventList = Class(TMethodList)
+  public
+    procedure CallUtf8KeyPressHandlers(Sender: TObject; var UTF8Key: TUTF8Char);
+  end;
+
+
   TSynMouseLinkEvent = procedure (
     Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean) of object;
 
@@ -514,6 +536,9 @@ type
     fTSearch: TSynEditSearch;
     fHookedCommandHandlers: TList;
     FHookedKeyTranslationList: TSynHookedKeyTranslationList;
+    FKeyDownEventList: TLazSynKeyDownEventList;
+    FKeyPressEventList: TLazSynKeyPressEventList;
+    FUtf8KeyPressEventList: TLazSynUtf8KeyPressEventList;
     FStatusChangedList: TObject;
     FPlugins: TList;
     fScrollTimer: TTimer;
@@ -967,6 +992,13 @@ type
 
     procedure RegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent; AChanges: TSynStatusChanges);
     procedure UnRegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent);
+
+    procedure RegisterBeforeKeyDownHandler(AHandlerProc: TKeyEvent);
+    procedure UnregisterBeforeKeyDownHandler(AHandlerProc: TKeyEvent);
+    procedure RegisterBeforeKeyPressHandler(AHandlerProc: TKeyPressEvent);
+    procedure UnregisterBeforeKeyPressHandler(AHandlerProc: TKeyPressEvent);
+    procedure RegisterBeforeUtf8KeyPressHandler(AHandlerProc: TUTF8KeyPressEvent);
+    procedure UnregisterBeforeUtf8KeyPressHandler(AHandlerProc: TUTF8KeyPressEvent);
 
     function SearchReplace(const ASearch, AReplace: string;
       AOptions: TSynSearchOptions): integer;
@@ -2283,6 +2315,9 @@ begin
   FreeAndNil(FStatusChangedList);
   FBeautifier := nil;
   FreeAndNil(FDefaultBeautifier);
+  FreeAndNil(FKeyDownEventList);
+  FreeAndNil(FKeyPressEventList);
+  FreeAndNil(FUtf8KeyPressEventList);
   inherited Destroy;
 end;
 
@@ -2600,6 +2635,12 @@ begin
   {$IFDEF VerboseKeys}
   DebugLn('[TCustomSynEdit.KeyDown] ',dbgs(Key),' ',dbgs(Shift));
   {$ENDIF}
+
+  // Run even before OnKeyDown
+  if FKeyDownEventList <> nil then
+    FKeyDownEventList.CallKeyDownHandlers(Self, Key, Shift);
+  if Key=0 then exit;
+
   inherited;
   if assigned(fMarkupCtrlMouse) then
     fMarkupCtrlMouse.UpdateCtrlState(Shift);
@@ -2708,6 +2749,12 @@ end;
 procedure TCustomSynEdit.UTF8KeyPress(var Key: TUTF8Char);
 begin
   if Key='' then exit;
+
+  // Run even before OnKeyPress
+  if FUtf8KeyPressEventList <> nil then
+    FUtf8KeyPressEventList.CallUtf8KeyPressHandlers(Self, Key);
+  if Key='' then exit;
+
   // don't fire the event if key is to be ignored
   if not (sfIgnoreNextChar in fStateFlags) then begin
     Include(FStateFlags, sfHideCursor);
@@ -2734,6 +2781,12 @@ end;
 procedure TCustomSynEdit.KeyPress(var Key: Char);
 begin
   if Key=#0 then exit;
+
+  // Run even before OnKeyPress
+  if FKeyPressEventList <> nil then
+    FKeyPressEventList.CallKeyPressHandlers(Self, Key);
+  if Key=#0 then exit;
+
   // don't fire the event if key is to be ignored
   if not (sfIgnoreNextChar in fStateFlags) then begin
     Include(FStateFlags, sfHideCursor);
@@ -8529,6 +8582,45 @@ begin
   TSynStatusChangedHandlerList(FStatusChangedList).Remove(AStatusChangeProc);
 end;
 
+procedure TCustomSynEdit.RegisterBeforeKeyDownHandler(AHandlerProc: TKeyEvent);
+begin
+  if FKeyDownEventList = nil then
+    FKeyDownEventList := TLazSynKeyDownEventList.Create;
+  FKeyDownEventList.Add(TMethod(AHandlerProc));
+end;
+
+procedure TCustomSynEdit.UnregisterBeforeKeyDownHandler(AHandlerProc: TKeyEvent);
+begin
+  if FKeyDownEventList <> nil then
+    FKeyDownEventList.Remove(TMethod(AHandlerProc));
+end;
+
+procedure TCustomSynEdit.RegisterBeforeKeyPressHandler(AHandlerProc: TKeyPressEvent);
+begin
+  if FKeyPressEventList = nil then
+    FKeyPressEventList := TLazSynKeyPressEventList.Create;
+  FKeyPressEventList.Add(TMethod(AHandlerProc));
+end;
+
+procedure TCustomSynEdit.UnregisterBeforeKeyPressHandler(AHandlerProc: TKeyPressEvent);
+begin
+  if FKeyPressEventList <> nil then
+    FKeyPressEventList.Remove(TMethod(AHandlerProc));
+end;
+
+procedure TCustomSynEdit.RegisterBeforeUtf8KeyPressHandler(AHandlerProc: TUTF8KeyPressEvent);
+begin
+  if FUtf8KeyPressEventList = nil then
+    FUtf8KeyPressEventList := TLazSynUtf8KeyPressEventList.Create;
+  FUtf8KeyPressEventList.Add(TMethod(AHandlerProc));
+end;
+
+procedure TCustomSynEdit.UnregisterBeforeUtf8KeyPressHandler(AHandlerProc: TUTF8KeyPressEvent);
+begin
+  if FUtf8KeyPressEventList <> nil then
+    FUtf8KeyPressEventList.Remove(TMethod(AHandlerProc));
+end;
+
 procedure TCustomSynEdit.NotifyHookedCommandHandlers(var Command: TSynEditorCommand;
   var AChar: TUTF8Char; Data: pointer; ATime: THookedCommandFlag);
 var
@@ -8791,6 +8883,41 @@ begin
       THookedKeyTranslationEvent(Items[i])(Sender, Code, SState, Data,
         IsStartOfCombo, Handled, Command, False, ComboKeyStrokes);
   end;
+end;
+
+{ TLazSynUtf8KeyPressEventList }
+
+procedure TLazSynUtf8KeyPressEventList.CallUtf8KeyPressHandlers(Sender: TObject;
+  var UTF8Key: TUTF8Char);
+var
+  i: LongInt;
+begin
+  i:=Count;
+  while NextDownIndex(i) do
+    TUTF8KeyPressEvent(Items[i])(Sender, UTF8Key);
+end;
+
+{ TLazSynKeyPressEventList }
+
+procedure TLazSynKeyPressEventList.CallKeyPressHandlers(Sender: TObject; var Key: char);
+var
+  i: LongInt;
+begin
+  i:=Count;
+  while NextDownIndex(i) do
+    TKeyPressEvent(Items[i])(Sender, Key);
+end;
+
+{ TLazSynKeyDownEventList }
+
+procedure TLazSynKeyDownEventList.CallKeyDownHandlers(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  i: LongInt;
+begin
+  i:=Count;
+  while NextDownIndex(i) do
+    TKeyEvent(Items[i])(Sender, Key, Shift);
 end;
 
 { TSynStatusChangedHandlerList }
