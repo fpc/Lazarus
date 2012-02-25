@@ -35,6 +35,7 @@
           <ahaGutterSeparator Background="clWhite" Foreground="clGray"/>
           <ahaGutter Background="clBtnFace"/>
           <ahaRightMargin Foreground="clSilver"/>
+          <ahaTopInfoHint Background="clActiveCaption" Foreground="clBlack" FrameColor="clMaroon" FrameStyle="slsDashed" FrameEdges="sfeBottom"/>
         </SchemeDelphi>
       </Globals>
       <LangObjectPascal Version="6">

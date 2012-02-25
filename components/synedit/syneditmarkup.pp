@@ -242,7 +242,7 @@ procedure TSynEditMarkup.SetCaret(const AValue : TSynEditCaret);
 var
   r: Boolean;
 begin
-  // inly register caret change callback, if handler is overriden
+  // only register caret change callback, if handler is overriden
   r := TMethod(@Self.DoCaretChanged).Code <> Pointer(@TSynEditMarkup.DoCaretChanged);
   if r and (FCaret <> nil) then
     FCaret.RemoveChangeHandler(@DoCaretChanged);

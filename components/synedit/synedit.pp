@@ -5619,7 +5619,7 @@ begin
       fMarkupHighCaret.Highlighter := nil;
       fMarkupWordGroup.Highlighter := nil;
       FFoldedLinesView.Highlighter := nil;
-      FTextArea.Highlighter := nil;
+      FPaintArea.Highlighter := nil;
       if not (csDestroying in ComponentState) then begin
         RecalcCharExtent;
         Invalidate;
@@ -5660,7 +5660,7 @@ begin
       fMarkupHighCaret.Highlighter := Value;
       fMarkupWordGroup.Highlighter := Value;
       FFoldedLinesView.Highlighter := Value;
-      FTextArea.Highlighter := Value;
+      FPaintArea.Highlighter := Value;
       FWordBreaker.Reset;
       if fHighlighter<>nil then begin
         fTSearch.IdentChars := fHighlighter.IdentChars;

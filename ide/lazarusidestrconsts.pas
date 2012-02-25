@@ -1715,6 +1715,7 @@ resourcestring
   dlgAddHiAttrSyncroEditArea      = 'Selected Area';
   dlgAddHiAttrGutterSeparator     = 'Gutter Separator';
   dlgAddHiSpecialVisibleChars     = 'Visualized Special Chars';
+  dlgTopInfoHint                  = 'Current Class/Proc Hint';
 
   dlgAddHiAttrGroupDefault  = 'Global';
   dlgAddHiAttrGroupText     = 'Text';
@@ -4830,6 +4831,7 @@ resourcestring
   lisFileExtensionOfPrograms = 'File extension of programs';
   lisEveryNThLineNumber = 'Every n-th line number';
   lisShowOverviewGutter = 'Show overview Gutter';
+  lisTopInfoView = 'Show Class/Proc Hint';
   lisLink = 'Link:';
   lisShort = 'Short:';
   lisInsertUrlTag = 'Insert url tag';

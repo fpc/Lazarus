@@ -122,6 +122,7 @@ type
     procedure SetRightEdgeColumn(AValue: integer); virtual;
     procedure SetRightEdgeVisible(AValue: boolean); virtual;
     procedure SetVisibleSpecialChars(AValue: TSynVisibleSpecialChars); virtual;
+    procedure SetHighlighter(AValue: TSynCustomHighlighter); virtual;
   protected
     procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
     procedure DoDisplayViewChanged; override;
@@ -148,6 +149,7 @@ type
     property RightEdgeColumn: integer  write SetRightEdgeColumn;
     property RightEdgeVisible: boolean write SetRightEdgeVisible;
     property RightEdgeColor: TColor    write SetRightEdgeColor;
+    property Highlighter:   TSynCustomHighlighter write SetHighlighter;
   end;
 
 
@@ -248,6 +250,11 @@ end;
 procedure TLazSynSurfaceManager.SetVisibleSpecialChars(AValue: TSynVisibleSpecialChars);
 begin
   FTextArea.VisibleSpecialChars := AValue;
+end;
+
+procedure TLazSynSurfaceManager.SetHighlighter(AValue: TSynCustomHighlighter);
+begin
+  FTextArea.Highlighter := AValue;
 end;
 
 procedure TLazSynSurfaceManager.DoPaint(ACanvas: TCanvas; AClip: TRect);
@@ -792,15 +799,14 @@ var
 
   procedure PaintHighlightToken(bFillToEOL: boolean);
   var
+    Spaces: String = '  ';
     nX1, eolx: integer;
-    NextPos : Integer;
+    NextPos, CurPos: Integer;
     MarkupInfo: TSynSelectedColor;
-    FillFCol, FillBCol, FillFrame: TColor;
-    FrameStyle: TSynLineStyle;
-    FillStyle: TFontStyles;
     tok: TRect;
     Attr: TSynHighlighterAttributes;
     s: TLazSynBorderSide;
+    HasFrame: Boolean;
   begin
     {debugln('PaintHighlightToken A TokenAccu: Len=',dbgs(TokenAccu.Len),
       ' PhysicalStartPos=',dbgs(TokenAccu.PhysicalStartPos),
@@ -834,38 +840,30 @@ var
     if bFillToEOL and (rcToken.Left < rcLine.Right) then begin
       eolx := rcToken.Left; // remeber end of actual line, so we can decide to draw the right edge
       NextPos := Min(LastCol, TokenAccu.PhysicalEndPos+1);
+      MarkupInfo := TSynSelectedColor.Create;
       if Assigned(fHighlighter) then
         Attr := fHighlighter.GetEndOfLineAttribute
       else
         Attr := nil;
       repeat
-        MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(CurTextIndex+1, NextPos);
+        CurPos := NextPos;
         NextPos := fMarkupManager.GetNextMarkupColAfterRowCol(CurTextIndex+1, NextPos);
 
         if Assigned(Attr) then
-        begin
-          FillFCol := Attr.Foreground;
-          FillBCol := Attr.Background;
-          FillFrame := Attr.FrameColor;
-          FillStyle := Attr.Style;
-          FrameStyle := Attr.FrameStyle;
-          if FillFCol = clNone then FillFCol := ForegroundColor;
-          if FillBCol = clNone then FillBCol := colEditorBG;
-        end else
-        begin
-          FillFCol := ForegroundColor;
-          FillBCol := colEditorBG;
-          FillFrame := clNone;
-          FillStyle := []; // Font.Style; // currently always cleared
-          FrameStyle := slsSolid;
-        end;
+          MarkupInfo.Assign(Attr)
+        else
+          MarkupInfo.Clear;
+        MarkupInfo.MergeFinalStyle := True;
+        MarkupInfo.StyleMask  := [];
+        if MarkupInfo.Background = clNone then
+          MarkupInfo.Background := colEditorBG;
+        if MarkupInfo.Foreground = clNone then
+          MarkupInfo.Foreground := ForegroundColor;
+        MarkupInfo.StartX := CurPos;
+        MarkupInfo.EndX   := NextPos;
 
-        if Assigned(MarkupInfo) then
-          MarkupInfo.ModifyColors(FillFCol, FillBCol, FillFrame, FillStyle, FrameStyle);
-
-        fTextDrawer.BackColor := FillBCol;
-        //fTextDrawer.ForeColor := FillFCol; // for underline
-        //fTextDrawer.Style := FillStyle;
+        fMarkupManager.MergeMarkupAttributeAtRowCol(CurTextIndex+1,
+          CurPos, NextPos, MarkupInfo);
 
         if NextPos < 1
         then nX1 := rcLine.Right
@@ -875,17 +873,45 @@ var
           then nX1 := rcLine.Right;
         end;
 
+        HasFrame := False;
+        with fTextDrawer do
+        begin
+          SetBackColor(MarkupInfo.Background);
+          SetForeColor(MarkupInfo.Foreground);
+          SetStyle(MarkupInfo.Style);
+          for s := low(TLazSynBorderSide) to high(TLazSynBorderSide) do begin
+            HasFrame := HasFrame or (MarkupInfo.FrameSideColors[s] <> clNone);
+            FrameColor[s] := MarkupInfo.FrameSideColors[s];
+            FrameStyle[s] := MarkupInfo.FrameSideStyles[s];
+          end;
+        end;
+        // Paint the chars
+        rcToken.Right := ScreenColumnToXValue(TokenAccu.PhysicalEndPos+1);
+        if nX1 > AClip.Right then begin
+          fTextDrawer.FrameColor[bsRight] := clNone; // right side of char is not painted
+        end;
+
+
         if nX1 > nRightEdge then begin
           if rcToken.Left < nRightEdge then begin
             tok := rcToken;
             tok.Right := nRightEdge;
-            InternalFillRect(dc, tok);
+            if (fsUnderline in MarkupInfo.Style) or (HasFrame) then
+              fTextDrawer.ExtTextOut(tok.Right, tok.Top, ETOOptions, tok,
+                                 @Spaces, 1, rcLine.Bottom)
+            else
+              InternalFillRect(dc, tok);
             rcToken.Left := nRightEdge;
           end;
           rcToken.Bottom := rcLine.Bottom;
         end;
         rcToken.Right := nX1;
-        InternalFillRect(dc, rcToken); {TODO: if style underline, then print spaces}
+
+        if (fsUnderline in MarkupInfo.Style) or (HasFrame) then
+          fTextDrawer.ExtTextOut(rcToken.Right, rcToken.Top, ETOOptions, rcToken,
+                             @Spaces, 1, rcLine.Bottom)
+        else
+          InternalFillRect(dc, rcToken);
         rcToken.Left := nX1;
       until nX1 >= rcLine.Right;
 
@@ -895,6 +921,7 @@ var
         LCLIntf.MoveToEx(dc, nRightEdge, rcLine.Top, nil);
         LCLIntf.LineTo(dc, nRightEdge, rcLine.Bottom + 1);
       end;
+      FreeAndNil(MarkupInfo);
     end;
   end;
 

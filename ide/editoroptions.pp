@@ -91,7 +91,8 @@ type
      ahaWordGroup,         ahaTemplateEditCur,    ahaTemplateEditSync,
      ahaTemplateEditOther, ahaSyncroEditCur,      ahaSyncroEditSync,
      ahaSyncroEditOther,   ahaSyncroEditArea,     ahaGutterSeparator,
-     ahaGutter,            ahaRightMargin,        ahaSpecialVisibleChars);
+     ahaGutter,            ahaRightMargin,        ahaSpecialVisibleChars,
+     ahaTopInfoHint);
 
   TAhaGroupName = (agnDefault, agnLanguage, agnText, agnLine, agnGutter, agnTemplateMode, agnSyncronMode);
 
@@ -119,7 +120,8 @@ const
     '', // scaGutterSeparator => uses RTTI only
     '', // ahaGutter
     '',  // ahaRightMargin
-    ''   // ahaSpecialVisibleChars
+    '',  // ahaSpecialVisibleChars
+    ''   // ahaTopInfoHint
   );
 
   ahaGroupMap: array[TAdditionalHilightAttribute] of TAhaGroupName = (
@@ -152,7 +154,8 @@ const
     { ahaGutterSeparator }     agnGutter,
     { ahaGutter }              agnGutter,
     { ahaRightMargin}          agnGutter,
-    { ahaSpecialVisibleChars } agnText
+    { ahaSpecialVisibleChars } agnText,
+    { ahaTopInfoHint }    agnLine
   );
   ahaSupportedFeatures: array[TAdditionalHilightAttribute] of TSynHighlighterAttrFeatures =
   (
@@ -185,7 +188,8 @@ const
     { ahaGutterSeparator }    [hafBackColor, hafForeColor],
     { ahaGutter }             [hafBackColor],
     { ahaRightMargin}         [hafForeColor],
-    { ahaSpecialVisibleChars }[hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
+    { ahaSpecialVisibleChars }[hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaTopInfoHint }   [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
   );
 
 
@@ -1155,6 +1159,7 @@ type
     FPasExtendedKeywordsMode: Boolean;
     FHideSingleTabInWindow: Boolean;
     FPasStringKeywordMode: TSynPasStringMode;
+    FTopInfoView: boolean;
     xmlconfig: TRttiXMLConfig;
 
     // general options
@@ -1405,6 +1410,8 @@ type
     // Display
     property ShowOverviewGutter: boolean
       read FShowOverviewGutter write FShowOverviewGutter default True;
+    property TopInfoView: boolean
+      read FTopInfoView write FTopInfoView default False;
     // Code Folding
     property ReverseFoldPopUpOrder: Boolean
         read FReverseFoldPopUpOrder write FReverseFoldPopUpOrder default True;
@@ -1823,6 +1830,7 @@ begin
   AdditionalHighlightAttributes[ahaGutter]              := dlgGutter;
   AdditionalHighlightAttributes[ahaRightMargin]         := dlgRightMargin;
   AdditionalHighlightAttributes[ahaSpecialVisibleChars] := dlgAddHiSpecialVisibleChars;
+  AdditionalHighlightAttributes[ahaTopInfoHint]         := dlgTopInfoHint;
 
   AdditionalHighlightGroupNames[agnDefault]      := dlgAddHiAttrGroupDefault;
   AdditionalHighlightGroupNames[agnText]         := dlgAddHiAttrGroupText;
@@ -3678,6 +3686,7 @@ begin
   fEditorFontSize := SynDefaultFontSize;
   fDisableAntialiasing := DefaultEditorDisableAntiAliasing;
   FShowOverviewGutter := True;
+  FTopInfoView := False;
 
   // Key Mappings
   fKeyMappingScheme := KeyMapSchemeNames[kmsLazarus];
@@ -4648,6 +4657,8 @@ begin
   ASynEdit.Gutter.LineNumberPart(0).ShowOnlyLineNumbersMultiplesOf :=
     fShowOnlyLineNumbersMultiplesOf;
   ASynEdit.RightGutter.Visible := ShowOverviewGutter;
+  if ASynEdit is TIDESynEditor then
+    TIDESynEditor(ASynEdit).ShowTopInfo := TopInfoView;
 
   ASynEdit.Gutter.CodeFoldPart.Visible := FUseCodeFolding;
   if not FUseCodeFolding then
@@ -5310,6 +5321,8 @@ begin
     SetMarkupColor(ahaMouseLink,         aSynEdit.MouseLinkColor);
     SetMarkupColor(ahaFoldedCode,        aSynEdit.FoldedCodeColor);
     SetMarkupColor(ahaLineHighlight,     aSynEdit.LineHighlightColor);
+    if ASynEdit is TIDESynEditor then
+      SetMarkupColor(ahaTopInfoHint,  TIDESynEditor(aSynEdit).TopInfoMarkup);
     SetMarkupColorByClass(ahaHighlightWord, TSynEditMarkupHighlightAllCaret);
     SetMarkupColorByClass(ahaWordGroup,     TSynEditMarkupWordGroup);
     SetMarkupColorByClass(ahaSpecialVisibleChars, TSynEditMarkupSpecialChar);

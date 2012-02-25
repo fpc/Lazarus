@@ -40,7 +40,7 @@ uses
   Classes, SysUtils, Controls, LCLProc, LCLType, Graphics, Menus, math, LazarusIDEStrConsts,
   SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks,
   SynEditTypes,  SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
-  SynGutterLineOverview, SynEditMarkup, SynEditMarkupGutterMark,
+  SynGutterLineOverview, SynEditMarkup, SynEditMarkupGutterMark, SynEditMarkupSpecialLine,
   SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase, LazSynEditText,
   SynPluginTemplateEdit, SynPluginSyncroEdit, LazSynTextArea,
   SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterPas;
@@ -101,6 +101,7 @@ type
     procedure SetRightEdgeColumn(AValue: integer); override;
     procedure SetRightEdgeVisible(AValue: boolean); override;
     procedure SetVisibleSpecialChars(AValue: TSynVisibleSpecialChars); override;
+    procedure SetHighlighter(AValue: TSynCustomHighlighter); override;
   protected
     procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
     procedure BoundsChanged; override;
@@ -121,21 +122,24 @@ type
 
   TIDESynEditor = class(TSynEdit)
   private
+    FShowTopInfo: boolean;
     FSyncroEdit: TSynPluginSyncroEdit;
     FTemplateEdit: TSynPluginTemplateEdit;
     FMarkupForGutterMark: TSynEditMarkupGutterMark;
-    {$IFDEF WithSynInfoView}
     FTopInfoDisplay: TSourceLazSynTopInfoView;
     FSrcSynCaretChangedLock: boolean;
-    {$ENDIF}
+    FExtraMarkupLine: TSynEditMarkupSpecialLine;
+    FExtraMarkupMgr: TSynEditMarkupManager;
+    FTopInfoMarkup: TSynSelectedColor;
+
     function GetIDEGutterMarks: TIDESynGutterMarks;
-    {$IFDEF WithSynInfoView}
+    procedure GetTopInfoMarkupForLine(Sender: TObject; Line: integer; var Special: boolean;
+      aMarkup: TSynSelectedColor);
+    procedure SetShowTopInfo(AValue: boolean);
+    procedure SetTopInfoMarkup(AValue: TSynSelectedColor);
     procedure SrcSynCaretChanged(Sender: TObject);
-    {$ENDIF}
   protected
-    {$IFDEF WithSynInfoView}
     procedure DoOnStatusChange(Changes: TSynStatusChanges); override;
-    {$ENDIF}
     function CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
                           ATextDrawer: TheTextDrawer): TSynGutter; override;
   public
@@ -147,6 +151,9 @@ type
     property TextBuffer;
     property TemplateEdit: TSynPluginTemplateEdit read FTemplateEdit;
     property SyncroEdit: TSynPluginSyncroEdit read FSyncroEdit;
+    //////
+    property TopInfoMarkup: TSynSelectedColor read FTopInfoMarkup write SetTopInfoMarkup;
+    property ShowTopInfo: boolean read FShowTopInfo write SetShowTopInfo;
   end;
 
   TIDESynHighlighterPasRangeList = class(TSynHighlighterPasRangeList)
@@ -467,7 +474,7 @@ end;
 procedure TSourceLazSynSurfaceManager.SetBackgroundColor(AValue: TColor);
 begin
   FOriginalManager.BackgroundColor := AValue;
-  //FExtraManager.BackgroundColor := AValue;
+  FExtraManager.BackgroundColor := AValue;
 end;
 
 procedure TSourceLazSynSurfaceManager.SetExtraCharSpacing(AValue: integer);
@@ -486,7 +493,7 @@ end;
 procedure TSourceLazSynSurfaceManager.SetForegroundColor(AValue: TColor);
 begin
   FOriginalManager.ForegroundColor := AValue;
-  //FExtraManager.ForegroundColor := AValue;
+  FExtraManager.ForegroundColor := AValue;
 end;
 
 procedure TSourceLazSynSurfaceManager.SetPadding(Side: TLazSynBorderSide; AValue: integer);
@@ -517,6 +524,12 @@ procedure TSourceLazSynSurfaceManager.SetVisibleSpecialChars(AValue: TSynVisible
 begin
   FOriginalManager.VisibleSpecialChars := AValue;
   FExtraManager.VisibleSpecialChars := AValue;
+end;
+
+procedure TSourceLazSynSurfaceManager.SetHighlighter(AValue: TSynCustomHighlighter);
+begin
+  FOriginalManager.Highlighter := AValue;
+  FExtraManager.Highlighter := AValue;
 end;
 
 procedure TSourceLazSynSurfaceManager.DoPaint(ACanvas: TCanvas; AClip: TRect);
@@ -599,7 +612,6 @@ end;
 
 { TIDESynEditor }
 
-{$IFDEF WithSynInfoView}
 procedure TIDESynEditor.SrcSynCaretChanged(Sender: TObject);
 var
   InfCnt, i, t, ListCnt: Integer;
@@ -608,8 +620,8 @@ var
   List: TLazSynEditNestedFoldsList;
   Inf: TSynFoldNodeInfo;
 begin
+  if (not FShowTopInfo) or (not HandleAllocated) then exit;
   if FSrcSynCaretChangedLock or not(TextView.HighLighter is TSynPasSyn) then exit;
-  if not HandleAllocated then exit;
 
   FSrcSynCaretChangedLock := True;
   try
@@ -698,7 +710,29 @@ begin
   if Changes * [scTopLine, scLinesInWindow] <> []then
       SrcSynCaretChanged(nil);
 end;
-{$ENDIF}
+
+procedure TIDESynEditor.GetTopInfoMarkupForLine(Sender: TObject; Line: integer;
+  var Special: boolean; aMarkup: TSynSelectedColor);
+begin
+  Special := True;
+  aMarkup.Assign(FTopInfoMarkup);
+end;
+
+procedure TIDESynEditor.SetShowTopInfo(AValue: boolean);
+begin
+  if FShowTopInfo = AValue then Exit;
+  FShowTopInfo := AValue;
+  if FShowTopInfo then
+    SrcSynCaretChanged(nil)
+  else
+    TSourceLazSynSurfaceManager(FPaintArea).TopLineCount := 0;
+end;
+
+procedure TIDESynEditor.SetTopInfoMarkup(AValue: TSynSelectedColor);
+begin
+  if FTopInfoMarkup = AValue then Exit;
+  FTopInfoMarkup.Assign(AValue);
+end;
 
 function TIDESynEditor.GetIDEGutterMarks: TIDESynGutterMarks;
 begin
@@ -719,16 +753,28 @@ begin
   FMarkupForGutterMark := TSynEditMarkupGutterMark.Create(Self, FWordBreaker);
   TSynEditMarkupManager(MarkupMgr).AddMarkUp(FMarkupForGutterMark);
 
-  {$IFDEF WithSynInfoView}
   FPaintArea := TSourceLazSynSurfaceManager.Create(Self, FPaintArea);
   GetCaretObj.AddChangeHandler({$IFDEF FPC}@{$ENDIF}SrcSynCaretChanged);
 
   FTopInfoDisplay := TSourceLazSynTopInfoView.Create;
   FTopInfoDisplay.NextView := ViewedTextBuffer.DisplayView;
   TSourceLazSynSurfaceManager(FPaintArea).TopLineCount := 0;
-  TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.TextArea.BackgroundColor := clSilver;
+//  TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.TextArea.BackgroundColor := clSilver;
   TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.DisplayView := FTopInfoDisplay;
-  {$ENDIF}
+
+  FTopInfoMarkup := TSynSelectedColor.Create;
+  FTopInfoMarkup.Clear;
+  FExtraMarkupLine := TSynEditMarkupSpecialLine.Create(Self);
+  FExtraMarkupLine.OnSpecialLineMarkup  := @GetTopInfoMarkupForLine;
+  FExtraMarkupMgr := TSynEditMarkupManager.Create(Self);
+  FExtraMarkupMgr.AddMarkUp(TSynEditMarkup(MarkupMgr));
+  FExtraMarkupMgr.AddMarkUp(FExtraMarkupLine);
+  FExtraMarkupMgr.Lines := ViewedTextBuffer;
+  FExtraMarkupMgr.Caret := GetCaretObj;
+  FExtraMarkupMgr.InvalidateLinesMethod := @InvalidateLines;
+
+  TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.TextArea.MarkupManager :=
+    FExtraMarkupMgr;
   {$IFDEF WithSynDebugGutter}
   TIDESynGutter(RightGutter).DebugGutter.TheLinesView := ViewedTextBuffer;
   {$ENDIF}
@@ -736,10 +782,11 @@ end;
 
 destructor TIDESynEditor.Destroy;
 begin
-  inherited Destroy;
-  {$IFDEF WithSynInfoView}
+  FExtraMarkupMgr.RemoveMarkUp(TSynEditMarkup(MarkupMgr));
   FreeAndNil(FTopInfoDisplay);
-  {$ENDIF}
+  FreeAndNil(FExtraMarkupMgr);
+  FreeAndNil(FTopInfoMarkup);
+  inherited Destroy;
 end;
 
 function TIDESynEditor.TextIndexToViewPos(aTextIndex: Integer): Integer;

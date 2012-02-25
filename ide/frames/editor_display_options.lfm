@@ -12,13 +12,13 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
   object MarginAndGutterGroupBox: TGroupBox
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 124
+    Height = 149
     Top = 0
     Width = 501
     Align = alTop
     AutoSize = True
     Caption = 'MarginAndGutterGroupBox'
-    ClientHeight = 106
+    ClientHeight = 131
     ClientWidth = 497
     TabOrder = 0
     object RightMarginLabel: TLabel
@@ -178,12 +178,24 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       OnChange = GeneralCheckBoxOnChange
       TabOrder = 6
     end
+    object chkTopInfoView: TCheckBox
+      AnchorSideLeft.Control = MarginAndGutterGroupBox
+      AnchorSideTop.Control = chkShowOverview
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 106
+      Width = 106
+      BorderSpacing.Around = 6
+      Caption = 'chkTopInfoView'
+      TabOrder = 7
+    end
   end
   object EditorFontGroupBox: TGroupBox
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 111
-    Top = 130
+    Top = 155
     Width = 501
     Align = alTop
     AutoSize = True
@@ -336,8 +348,8 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 208
-    Top = 247
+    Height = 183
+    Top = 272
     Width = 501
     Align = alClient
     BorderSpacing.Top = 6

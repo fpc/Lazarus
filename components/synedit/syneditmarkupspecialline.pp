@@ -166,8 +166,7 @@ begin
     if (FHighlightedLine = ARow) and HasLineHighlight then
     begin
       FSpecialLine := True;
-      MarkupInfo.Foreground := FMarkupLineHighlightInfo.Foreground;
-      MarkupInfo.Background := FMarkupLineHighlightInfo.Background;
+      MarkupInfo.Assign(FMarkupLineHighlightInfo);
     end;
   end;
 end;
@@ -175,8 +174,8 @@ end;
 function TSynEditMarkupSpecialLine.GetMarkupAttributeAtRowCol(const ARow, ACol : Integer): TSynSelectedColor;
 begin
   Result := nil;
-  MarkupInfo.StartX := -1;
-  MarkupInfo.EndX := -1;
+  MarkupInfo.StartX := 1;
+  MarkupInfo.EndX := MaxInt;
   if FSpecialLine then
     Result := MarkupInfo;
 end;

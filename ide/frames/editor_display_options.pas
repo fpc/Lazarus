@@ -34,6 +34,7 @@ type
   { TEditorDisplayOptionsFrame }
 
   TEditorDisplayOptionsFrame = class(TAbstractIDEOptionsEditor)
+    chkTopInfoView: TCheckBox;
     chkShowOverview: TCheckBox;
     DisableAntialiasingCheckBox: TCheckBox;
     DisplayPreview: TSynEdit;
@@ -349,6 +350,7 @@ begin
   DisableAntialiasingCheckBox.Caption := dlgDisableAntialiasing;
   RightMarginColorLink.Caption := dlgColorLink;
   chkShowOverview.Caption := lisShowOverviewGutter;
+  chkTopInfoView.Caption := lisTopInfoView;
 
   with GeneralPage do
     AddPreviewEdit(DisplayPreview);
@@ -394,6 +396,7 @@ begin
     SetComboBoxText(ExtraLineSpacingComboBox, IntToStr(ExtraLineSpacing),cstCaseInsensitive);
     DisableAntialiasingCheckBox.Checked := DisableAntialiasing;
     chkShowOverview.Checked := ShowOverviewGutter;
+    chkTopInfoView.Checked := TopInfoView;
   end;
 
   ShowOnlyLineNumbersMultiplesOfLabel.Enabled := ShowLineNumbersCheckBox.Checked;
@@ -417,6 +420,7 @@ begin
     ExtraLineSpacing := StrToIntDef(ExtraLineSpacingComboBox.Text, ExtraLineSpacing);
     DisableAntialiasing := DisableAntialiasingCheckBox.Checked;
     ShowOverviewGutter := chkShowOverview.Checked;
+    TopInfoView := chkTopInfoView.Checked;
   end;
 end;
 
