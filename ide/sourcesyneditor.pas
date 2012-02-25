@@ -636,7 +636,7 @@ begin
 
       InfCnt := List.Count;
       for i := InfCnt-1 downto 0 do begin
-        if not(TPascalCodeFoldBlockType(List.NodeFoldType[i]) in
+        if not(TPascalCodeFoldBlockType(PtrUInt(List.NodeFoldType[i])) in
            [cfbtClass, cfbtClassSection, cfbtProcedure])
         then
           continue;
