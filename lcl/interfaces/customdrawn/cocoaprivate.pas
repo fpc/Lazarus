@@ -15,6 +15,7 @@ uses
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects, lazutf8sysutils,
   //
+  LMessages,
   Forms, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc, GraphType;
 
 type
