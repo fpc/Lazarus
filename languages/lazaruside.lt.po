@@ -3249,6 +3249,10 @@ msgstr "Reiškinio įverčio informacinis langelis"
 msgid "Tooltip symbol Tools"
 msgstr "Simbolio įrankių informacinis langelis"
 
+#: lazarusidestrconsts.dlgtopinfohint
+msgid "Current Class/Proc Hint"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoppos
 msgid "Top:"
 msgstr "Viršus:"
@@ -3966,13 +3970,9 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Pridėti"
 
-#: lazarusidestrconsts.lisadddirectory
-msgid "Add directory"
-msgstr "Pridėti aplanką"
-
-#: lazarusidestrconsts.lisaddfilesofdirectory
-msgid "Add files of directory"
-msgstr "Pridėti aplanko failus"
+#: lazarusidestrconsts.lisaddfilesindirectory
+msgid "Add Files in Directory"
+msgstr ""
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
@@ -13989,12 +13989,10 @@ msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Programos pirminio kodo failo plėtinys turi būti panašus į paskalio: .pas, .pp arba .lpr"
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
-msgid "Add files to project"
+#, fuzzy
+#| msgid "Add files to project"
+msgid "Add Files to Project"
 msgstr "Projektą papildyti failais"
-
-#: lazarusidestrconsts.lisprojaddaddfiletoproject
-msgid "Add file to project:"
-msgstr "Įdėti failą į projektą:"
 
 #: lazarusidestrconsts.lisprojadddependencyalreadyexists
 msgid "Dependency already exists"
@@ -14003,10 +14001,6 @@ msgstr "Priklausomybė jau yra"
 #: lazarusidestrconsts.lisprojaddeditorfile
 msgid "Add editor files"
 msgstr "Pridėti rengyklės failus"
-
-#: lazarusidestrconsts.lisprojaddfiles
-msgid "Add files"
-msgstr "Pridėti failus"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -14209,6 +14203,10 @@ msgstr "Kelias iki projekto modulių"
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "Projekto vediklis"
+
+#: lazarusidestrconsts.lisprojfiles
+msgid "Files:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
@@ -15943,6 +15941,10 @@ msgid "Top borderspace. This value is added to base borderspace and used for the
 msgstr ""
 "Viršutinės kraštinės plotis.\n"
 "Ši vertė, pridėta prie pagrindinio kraštinės pločio, nusakys bendrą viršutinės kraštinės plotį.\n"
+
+#: lazarusidestrconsts.listopinfoview
+msgid "Show Class/Proc Hint"
+msgstr ""
 
 #: lazarusidestrconsts.listops
 msgid "Tops"

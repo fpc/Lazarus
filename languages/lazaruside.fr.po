@@ -1,4 +1,3 @@
- 
 msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
@@ -3183,6 +3182,10 @@ msgstr "Evaluation d'expression ToolTip"
 msgid "Tooltip symbol Tools"
 msgstr "Outils des symboles Tooltip"
 
+#: lazarusidestrconsts.dlgtopinfohint
+msgid "Current Class/Proc Hint"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoppos
 msgid "Top:"
 msgstr "Haut:"
@@ -3900,13 +3903,9 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Ajouter"
 
-#: lazarusidestrconsts.lisadddirectory
-msgid "Add directory"
-msgstr "Ajouter un répertoire"
-
-#: lazarusidestrconsts.lisaddfilesofdirectory
-msgid "Add files of directory"
-msgstr "Ajouter fichiers du répertoire"
+#: lazarusidestrconsts.lisaddfilesindirectory
+msgid "Add Files in Directory"
+msgstr ""
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
@@ -13891,12 +13890,10 @@ msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Le fichier source du programme doit avoir une extension Pascal comme .pas, .pp ou .lpr"
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
-msgid "Add files to project"
+#, fuzzy
+#| msgid "Add files to project"
+msgid "Add Files to Project"
 msgstr "Ajoute des fichiers au projet"
-
-#: lazarusidestrconsts.lisprojaddaddfiletoproject
-msgid "Add file to project:"
-msgstr "Ajouter un fichier au projet:"
 
 #: lazarusidestrconsts.lisprojadddependencyalreadyexists
 msgid "Dependency already exists"
@@ -13905,10 +13902,6 @@ msgstr "Dépendance déjà existante"
 #: lazarusidestrconsts.lisprojaddeditorfile
 msgid "Add editor files"
 msgstr "Ajouter les fichiers de l'éditeur"
-
-#: lazarusidestrconsts.lisprojaddfiles
-msgid "Add files"
-msgstr "Ajouter fichiers"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -14109,6 +14102,10 @@ msgstr "Chemin des unités du projet"
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "Assistant de projet"
+
+#: lazarusidestrconsts.lisprojfiles
+msgid "Files:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
@@ -15811,6 +15808,10 @@ msgstr "Ancrage en haut"
 msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
 msgstr "L'espace de frontière supérieur. Cette valeur est ajoutée à la base de l'espace de frontière et utilisée pour l'espace au-dessus de la commande."
 
+#: lazarusidestrconsts.listopinfoview
+msgid "Show Class/Proc Hint"
+msgstr ""
+
 #: lazarusidestrconsts.listops
 msgid "Tops"
 msgstr "Hauts"
@@ -16456,6 +16457,7 @@ msgstr "UTF-8 avec BOM"
 #: lazarusidestrconsts.lisvalue
 #, fuzzy
 #| msgid "Value:"
+msgctxt "lazarusidestrconsts.lisvalue"
 msgid "Value"
 msgstr "Valeur :"
 

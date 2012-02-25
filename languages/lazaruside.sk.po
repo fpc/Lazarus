@@ -3218,6 +3218,10 @@ msgstr "Rady vo Vyhodnocovaní výrazov"
 msgid "Tooltip symbol Tools"
 msgstr "Rady v symboloch Nástrojov"
 
+#: lazarusidestrconsts.dlgtopinfohint
+msgid "Current Class/Proc Hint"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoppos
 msgid "Top:"
 msgstr "Hore:"
@@ -3934,13 +3938,9 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Pridať"
 
-#: lazarusidestrconsts.lisadddirectory
-msgid "Add directory"
-msgstr "Pridať adresár"
-
-#: lazarusidestrconsts.lisaddfilesofdirectory
-msgid "Add files of directory"
-msgstr "Pridať súbory adresára"
+#: lazarusidestrconsts.lisaddfilesindirectory
+msgid "Add Files in Directory"
+msgstr ""
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
@@ -13929,12 +13929,8 @@ msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Zdrojový kód programu musí mať príponu Pascalu ako .pas, .pp or .lpr"
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
-msgid "Add files to project"
+msgid "Add Files to Project"
 msgstr ""
-
-#: lazarusidestrconsts.lisprojaddaddfiletoproject
-msgid "Add file to project:"
-msgstr "Pridať súbor do projektu:"
 
 #: lazarusidestrconsts.lisprojadddependencyalreadyexists
 msgid "Dependency already exists"
@@ -13943,10 +13939,6 @@ msgstr "Závislosť už existuje"
 #: lazarusidestrconsts.lisprojaddeditorfile
 msgid "Add editor files"
 msgstr "Pridať súbory editora"
-
-#: lazarusidestrconsts.lisprojaddfiles
-msgid "Add files"
-msgstr "Pridať súbory"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -14150,6 +14142,10 @@ msgstr "Cesta k jednotkám projektu"
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "Sprievodca projektom"
+
+#: lazarusidestrconsts.lisprojfiles
+msgid "Files:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
@@ -15871,6 +15867,10 @@ msgstr "Horné zarovnanie"
 #: lazarusidestrconsts.listopborderspacespinedithint
 msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
 msgstr "Horný·okraj.·Táto·hodnota·je·pridaná·k·základnému·okraju·a·použitá·pre·medzeru·nad·prvkom."
+
+#: lazarusidestrconsts.listopinfoview
+msgid "Show Class/Proc Hint"
+msgstr ""
 
 #: lazarusidestrconsts.listops
 msgid "Tops"

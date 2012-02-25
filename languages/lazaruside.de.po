@@ -3205,6 +3205,10 @@ msgstr "Tooltip-Ausdrucksauswertung"
 msgid "Tooltip symbol Tools"
 msgstr "Tooltip-Symbol-Werkzeuge"
 
+#: lazarusidestrconsts.dlgtopinfohint
+msgid "Current Class/Proc Hint"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoppos
 msgid "Top:"
 msgstr "Oben:"
@@ -3918,13 +3922,9 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: lazarusidestrconsts.lisadddirectory
-msgid "Add directory"
-msgstr "Ordner zufügen"
-
-#: lazarusidestrconsts.lisaddfilesofdirectory
-msgid "Add files of directory"
-msgstr "Dateien des Verzeichnisses zufügen"
+#: lazarusidestrconsts.lisaddfilesindirectory
+msgid "Add Files in Directory"
+msgstr ""
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
@@ -13809,12 +13809,10 @@ msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Der Programmquelltext muß eine Pascal-Endung wie .pas, .pp oder .lpr besitzen"
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
-msgid "Add files to project"
+#, fuzzy
+#| msgid "Add files to project"
+msgid "Add Files to Project"
 msgstr "Dateien zum Projekt hinzufügen"
-
-#: lazarusidestrconsts.lisprojaddaddfiletoproject
-msgid "Add file to project:"
-msgstr "Datei ins Projekt aufnehmen:"
 
 #: lazarusidestrconsts.lisprojadddependencyalreadyexists
 msgid "Dependency already exists"
@@ -13822,10 +13820,6 @@ msgstr "Abhängigkeit ist bereits vorhanden"
 
 #: lazarusidestrconsts.lisprojaddeditorfile
 msgid "Add editor files"
-msgstr "Dateien hinzufügen"
-
-#: lazarusidestrconsts.lisprojaddfiles
-msgid "Add files"
 msgstr "Dateien hinzufügen"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
@@ -14027,6 +14021,10 @@ msgstr "Projekt-Unitpfad"
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "Projektassistent"
+
+#: lazarusidestrconsts.lisprojfiles
+msgid "Files:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
@@ -15737,6 +15735,10 @@ msgstr "Oben verankert"
 #: lazarusidestrconsts.listopborderspacespinedithint
 msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
 msgstr "Oberer Randabstand. Der Wert wird zum Grund-Randabstand addiert und für den Platz über dem Element verwendet."
+
+#: lazarusidestrconsts.listopinfoview
+msgid "Show Class/Proc Hint"
+msgstr ""
 
 #: lazarusidestrconsts.listops
 msgid "Tops"

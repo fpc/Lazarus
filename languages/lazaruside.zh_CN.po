@@ -3234,6 +3234,10 @@ msgstr "表达式求值提示"
 msgid "Tooltip symbol Tools"
 msgstr "符号工具提示"
 
+#: lazarusidestrconsts.dlgtopinfohint
+msgid "Current Class/Proc Hint"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoppos
 msgid "Top:"
 msgstr "上方:"
@@ -3958,13 +3962,9 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "添加"
 
-#: lazarusidestrconsts.lisadddirectory
-msgid "Add directory"
-msgstr "添加目录"
-
-#: lazarusidestrconsts.lisaddfilesofdirectory
-msgid "Add files of directory"
-msgstr "\"添加目录的文件"
+#: lazarusidestrconsts.lisaddfilesindirectory
+msgid "Add Files in Directory"
+msgstr ""
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
@@ -13959,12 +13959,8 @@ msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "程序源代码必须有一个 pascal 后缀,例如 .pas, .pp 或者 .lpr"
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
-msgid "Add files to project"
+msgid "Add Files to Project"
 msgstr ""
-
-#: lazarusidestrconsts.lisprojaddaddfiletoproject
-msgid "Add file to project:"
-msgstr "添加文件到工程:"
 
 #: lazarusidestrconsts.lisprojadddependencyalreadyexists
 msgid "Dependency already exists"
@@ -13973,10 +13969,6 @@ msgstr "依赖关系已经存在"
 #: lazarusidestrconsts.lisprojaddeditorfile
 msgid "Add editor files"
 msgstr "添加代码编辑器文件"
-
-#: lazarusidestrconsts.lisprojaddfiles
-msgid "Add files"
-msgstr "添加文件"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -14180,6 +14172,10 @@ msgstr "工程单元路径"
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "工程向导"
+
+#: lazarusidestrconsts.lisprojfiles
+msgid "Files:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
@@ -15899,6 +15895,10 @@ msgstr "顶锚"
 #: lazarusidestrconsts.listopborderspacespinedithint
 msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
 msgstr "顶部边缘.  这个值将添加为基础边距并且设置为控件的上面."
+
+#: lazarusidestrconsts.listopinfoview
+msgid "Show Class/Proc Hint"
+msgstr ""
 
 #: lazarusidestrconsts.listops
 msgid "Tops"

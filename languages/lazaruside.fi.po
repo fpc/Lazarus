@@ -3047,6 +3047,10 @@ msgstr ""
 msgid "Tooltip symbol Tools"
 msgstr ""
 
+#: lazarusidestrconsts.dlgtopinfohint
+msgid "Current Class/Proc Hint"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoppos
 msgid "Top:"
 msgstr "Ylhäältä:"
@@ -3732,13 +3736,9 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Lisää"
 
-#: lazarusidestrconsts.lisadddirectory
-msgid "Add directory"
-msgstr "Lisää hakemisto"
-
-#: lazarusidestrconsts.lisaddfilesofdirectory
-msgid "Add files of directory"
-msgstr "Lisää hakemiston tiedostot"
+#: lazarusidestrconsts.lisaddfilesindirectory
+msgid "Add Files in Directory"
+msgstr ""
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
@@ -13301,12 +13301,10 @@ msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Ohjelman lähdekoodin tiedosto tarkennin pitää olla .pas, .pp tai .lpr"
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
-msgid "Add files to project"
+#, fuzzy
+#| msgid "Add files to project"
+msgid "Add Files to Project"
 msgstr "Lisää tiedostoja projektiin"
-
-#: lazarusidestrconsts.lisprojaddaddfiletoproject
-msgid "Add file to project:"
-msgstr "Lisää tiedosto projektiin:"
 
 #: lazarusidestrconsts.lisprojadddependencyalreadyexists
 msgid "Dependency already exists"
@@ -13315,10 +13313,6 @@ msgstr "Riippuvuus on jo olemassa"
 #: lazarusidestrconsts.lisprojaddeditorfile
 msgid "Add editor files"
 msgstr "Lisää editorissa avoinna olevia tiedostoja"
-
-#: lazarusidestrconsts.lisprojaddfiles
-msgid "Add files"
-msgstr "Lisää tiedostoja"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -13516,6 +13510,10 @@ msgstr "Projektin käännösyksikköjen polku"
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "Projektin valinta"
+
+#: lazarusidestrconsts.lisprojfiles
+msgid "Files:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
@@ -15188,6 +15186,10 @@ msgstr "Yläosan ankkurointi"
 #: lazarusidestrconsts.listopborderspacespinedithint
 msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
 msgstr "Yläpuolen reuna-alue. Tämä arvo lisätään yhteiseen reuna-alueeseen."
+
+#: lazarusidestrconsts.listopinfoview
+msgid "Show Class/Proc Hint"
+msgstr ""
 
 #: lazarusidestrconsts.listops
 msgid "Tops"

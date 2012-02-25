@@ -3193,6 +3193,10 @@ msgstr "Avaluació de l'expressió del rètol indicador de funcions"
 msgid "Tooltip symbol Tools"
 msgstr "Eines del símbol del rètol indicador de funcions"
 
+#: lazarusidestrconsts.dlgtopinfohint
+msgid "Current Class/Proc Hint"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoppos
 msgid "Top:"
 msgstr "Límit superior:"
@@ -3903,12 +3907,8 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Afegeix"
 
-#: lazarusidestrconsts.lisadddirectory
-msgid "Add directory"
-msgstr ""
-
-#: lazarusidestrconsts.lisaddfilesofdirectory
-msgid "Add files of directory"
+#: lazarusidestrconsts.lisaddfilesindirectory
+msgid "Add Files in Directory"
 msgstr ""
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
@@ -13772,12 +13772,8 @@ msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "El codi font del programa ha de tenir una extensió pascal com .pas, .pp o .lpr"
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
-msgid "Add files to project"
+msgid "Add Files to Project"
 msgstr ""
-
-#: lazarusidestrconsts.lisprojaddaddfiletoproject
-msgid "Add file to project:"
-msgstr "Afegeix el fitxer al projecte"
 
 #: lazarusidestrconsts.lisprojadddependencyalreadyexists
 msgid "Dependency already exists"
@@ -13786,10 +13782,6 @@ msgstr "Ja existeix la dependència"
 #: lazarusidestrconsts.lisprojaddeditorfile
 msgid "Add editor files"
 msgstr "Afegeix els fitxers de l'editor"
-
-#: lazarusidestrconsts.lisprojaddfiles
-msgid "Add files"
-msgstr "Afegeix els fitxers"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -13992,6 +13984,10 @@ msgstr "Trajectòria de les unitats del projecte"
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojfiles
+msgid "Files:"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
@@ -15699,6 +15695,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listopborderspacespinedithint
 msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
+msgstr ""
+
+#: lazarusidestrconsts.listopinfoview
+msgid "Show Class/Proc Hint"
 msgstr ""
 
 #: lazarusidestrconsts.listops

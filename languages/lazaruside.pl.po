@@ -3265,6 +3265,10 @@ msgstr "Rozwijaj wartości w podpowiedziach"
 msgid "Tooltip symbol Tools"
 msgstr "Podpowiedzi narzędzi symbolicznych"
 
+#: lazarusidestrconsts.dlgtopinfohint
+msgid "Current Class/Proc Hint"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoppos
 msgid "Top:"
 msgstr "Od góry:"
@@ -3975,12 +3979,8 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Dodaj"
 
-#: lazarusidestrconsts.lisadddirectory
-msgid "Add directory"
-msgstr "Dodaj katalog"
-
-#: lazarusidestrconsts.lisaddfilesofdirectory
-msgid "Add files of directory"
+#: lazarusidestrconsts.lisaddfilesindirectory
+msgid "Add Files in Directory"
 msgstr ""
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
@@ -13889,12 +13889,8 @@ msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Plik źródłowy powinien mieć odpowiednie rozszerzenie, jak .pas, .pp lub .lpr"
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
-msgid "Add files to project"
+msgid "Add Files to Project"
 msgstr ""
-
-#: lazarusidestrconsts.lisprojaddaddfiletoproject
-msgid "Add file to project:"
-msgstr "Dodaj plik do projektu:"
 
 #: lazarusidestrconsts.lisprojadddependencyalreadyexists
 msgid "Dependency already exists"
@@ -13903,10 +13899,6 @@ msgstr "Zależność już istnieje"
 #: lazarusidestrconsts.lisprojaddeditorfile
 msgid "Add editor files"
 msgstr ""
-
-#: lazarusidestrconsts.lisprojaddfiles
-msgid "Add files"
-msgstr "Dodaj pliki"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -14107,6 +14099,10 @@ msgstr "Ścieżka do modułów projektu"
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojfiles
+msgid "Files:"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
@@ -15798,6 +15794,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listopborderspacespinedithint
 msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
+msgstr ""
+
+#: lazarusidestrconsts.listopinfoview
+msgid "Show Class/Proc Hint"
 msgstr ""
 
 #: lazarusidestrconsts.listops

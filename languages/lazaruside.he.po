@@ -3250,6 +3250,10 @@ msgstr "חישוב הביטוי עבור טיפ לתפריט"
 msgid "Tooltip symbol Tools"
 msgstr "כלים סימבוליים עבור טיפ לתפריט"
 
+#: lazarusidestrconsts.dlgtopinfohint
+msgid "Current Class/Proc Hint"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoppos
 msgid "Top:"
 msgstr "פסגה:"
@@ -3962,13 +3966,9 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "הוסף"
 
-#: lazarusidestrconsts.lisadddirectory
-msgid "Add directory"
-msgstr "הוסף ספרייה"
-
-#: lazarusidestrconsts.lisaddfilesofdirectory
-msgid "Add files of directory"
-msgstr "הוסף קבצים של ספרייה"
+#: lazarusidestrconsts.lisaddfilesindirectory
+msgid "Add Files in Directory"
+msgstr ""
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
@@ -14030,12 +14030,10 @@ msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "קובץ קוד המקור של תוכנה חייב להכיל סיומות כדוגמת .pas, .pp או .lpr"
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
-msgid "Add files to project"
+#, fuzzy
+#| msgid "Add files to project"
+msgid "Add Files to Project"
 msgstr "הוסף קבצים לפרוייקט"
-
-#: lazarusidestrconsts.lisprojaddaddfiletoproject
-msgid "Add file to project:"
-msgstr "הוסף קובץ לפרויקט: "
 
 #: lazarusidestrconsts.lisprojadddependencyalreadyexists
 msgid "Dependency already exists"
@@ -14044,10 +14042,6 @@ msgstr "התלות כבר קיימת"
 #: lazarusidestrconsts.lisprojaddeditorfile
 msgid "Add editor files"
 msgstr "הוסף קבצי עורך"
-
-#: lazarusidestrconsts.lisprojaddfiles
-msgid "Add files"
-msgstr "הוסף קבצים"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -14250,6 +14244,10 @@ msgstr "נתיב יחידות הפרויקט"
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "אשף הפרויקטים"
+
+#: lazarusidestrconsts.lisprojfiles
+msgid "Files:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
@@ -15979,6 +15977,10 @@ msgstr "עיגון למעלה"
 #: lazarusidestrconsts.listopborderspacespinedithint
 msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
 msgstr "גבול עליון. ערך זה יתווסף לרווח הבסיסי וישמש לרווח מעל הפקד."
+
+#: lazarusidestrconsts.listopinfoview
+msgid "Show Class/Proc Hint"
+msgstr ""
 
 #: lazarusidestrconsts.listops
 msgid "Tops"

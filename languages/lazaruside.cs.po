@@ -3062,6 +3062,10 @@ msgstr "Výraz pro vyhodnocení nástrojových tipů."
 msgid "Tooltip symbol Tools"
 msgstr "Tipy v symbolech Nástrojů"
 
+#: lazarusidestrconsts.dlgtopinfohint
+msgid "Current Class/Proc Hint"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoppos
 msgid "Top:"
 msgstr "Nahoře:"
@@ -3742,13 +3746,9 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Přidat"
 
-#: lazarusidestrconsts.lisadddirectory
-msgid "Add directory"
-msgstr "Přidat adresář"
-
-#: lazarusidestrconsts.lisaddfilesofdirectory
-msgid "Add files of directory"
-msgstr "Přidat soubory nebo z adresáře"
+#: lazarusidestrconsts.lisaddfilesindirectory
+msgid "Add Files in Directory"
+msgstr ""
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
@@ -13331,12 +13331,10 @@ msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Zdrojový soubor programu musí mít pascalovkou příponu jako .pas, .pp nebo .lpr"
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
-msgid "Add files to project"
+#, fuzzy
+#| msgid "Add files to project"
+msgid "Add Files to Project"
 msgstr "Přidat soubory do projektu"
-
-#: lazarusidestrconsts.lisprojaddaddfiletoproject
-msgid "Add file to project:"
-msgstr "Přidat soubor do projektu:"
 
 #: lazarusidestrconsts.lisprojadddependencyalreadyexists
 msgid "Dependency already exists"
@@ -13345,10 +13343,6 @@ msgstr "Závislost již existuje"
 #: lazarusidestrconsts.lisprojaddeditorfile
 msgid "Add editor files"
 msgstr "Přidat editované soubory"
-
-#: lazarusidestrconsts.lisprojaddfiles
-msgid "Add files"
-msgstr "Přidat soubory"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -13546,6 +13540,10 @@ msgstr "Cesta jednotek projektu"
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "Průvodce projektu"
+
+#: lazarusidestrconsts.lisprojfiles
+msgid "Files:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
@@ -15221,6 +15219,10 @@ msgstr "Přichycení nahoru"
 #: lazarusidestrconsts.listopborderspacespinedithint
 msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
 msgstr "Horní okrajový prostor. Tato hodnota je přidána jako základ okrajového prostoru a použita pro prostor nad prvkem."
+
+#: lazarusidestrconsts.listopinfoview
+msgid "Show Class/Proc Hint"
+msgstr ""
 
 #: lazarusidestrconsts.listops
 msgid "Tops"

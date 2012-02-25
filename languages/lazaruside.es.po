@@ -3250,6 +3250,10 @@ msgstr "Evaluación de expresión de información de Herramienta"
 msgid "Tooltip symbol Tools"
 msgstr "Pistas de información para símbolos"
 
+#: lazarusidestrconsts.dlgtopinfohint
+msgid "Current Class/Proc Hint"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoppos
 msgid "Top:"
 msgstr "Alto:"
@@ -3968,13 +3972,9 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Añadir"
 
-#: lazarusidestrconsts.lisadddirectory
-msgid "Add directory"
-msgstr "Añadir directorio"
-
-#: lazarusidestrconsts.lisaddfilesofdirectory
-msgid "Add files of directory"
-msgstr "Añadir archivos del directorio"
+#: lazarusidestrconsts.lisaddfilesindirectory
+msgid "Add Files in Directory"
+msgstr ""
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
@@ -14015,12 +14015,10 @@ msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "El archivo de código del programa debe de tener una extensión de pascal del tipo .pas, .pp o .lpr"
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
-msgid "Add files to project"
+#, fuzzy
+#| msgid "Add files to project"
+msgid "Add Files to Project"
 msgstr "Todos los archivos al proyecto"
-
-#: lazarusidestrconsts.lisprojaddaddfiletoproject
-msgid "Add file to project:"
-msgstr "Añadir archivo al proyecto:"
 
 #: lazarusidestrconsts.lisprojadddependencyalreadyexists
 msgid "Dependency already exists"
@@ -14029,10 +14027,6 @@ msgstr "Ya existe la dependencia"
 #: lazarusidestrconsts.lisprojaddeditorfile
 msgid "Add editor files"
 msgstr "Añadir archivos de editor"
-
-#: lazarusidestrconsts.lisprojaddfiles
-msgid "Add files"
-msgstr "Añadir archivos"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -14235,6 +14229,10 @@ msgstr "Ruta de Unidad del proyecto"
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "Asistente de proyecto"
+
+#: lazarusidestrconsts.lisprojfiles
+msgid "Files:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
@@ -15961,6 +15959,10 @@ msgstr "Anclaje superior"
 #: lazarusidestrconsts.listopborderspacespinedithint
 msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
 msgstr "Frontera superior. Este valor se añadirá a la frontera superior y se usará para el espacio sobre el control."
+
+#: lazarusidestrconsts.listopinfoview
+msgid "Show Class/Proc Hint"
+msgstr ""
 
 #: lazarusidestrconsts.listops
 msgid "Tops"

@@ -3203,6 +3203,10 @@ msgstr "Evaulasi ekspresi tooltip"
 msgid "Tooltip symbol Tools"
 msgstr "Piranti simbol tooltip"
 
+#: lazarusidestrconsts.dlgtopinfohint
+msgid "Current Class/Proc Hint"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoppos
 msgid "Top:"
 msgstr "Atas:"
@@ -3917,12 +3921,8 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Tambah"
 
-#: lazarusidestrconsts.lisadddirectory
-msgid "Add directory"
-msgstr ""
-
-#: lazarusidestrconsts.lisaddfilesofdirectory
-msgid "Add files of directory"
+#: lazarusidestrconsts.lisaddfilesindirectory
+msgid "Add Files in Directory"
 msgstr ""
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
@@ -13864,12 +13864,8 @@ msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Sumber program harus ekstensi pascal seperti .pas, .pp or .lpr"
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
-msgid "Add files to project"
+msgid "Add Files to Project"
 msgstr ""
-
-#: lazarusidestrconsts.lisprojaddaddfiletoproject
-msgid "Add file to project:"
-msgstr "Tambah file ke proyek:"
 
 #: lazarusidestrconsts.lisprojadddependencyalreadyexists
 msgid "Dependency already exists"
@@ -13878,10 +13874,6 @@ msgstr "Dependensi sudah ada"
 #: lazarusidestrconsts.lisprojaddeditorfile
 msgid "Add editor files"
 msgstr "Tambah file editor"
-
-#: lazarusidestrconsts.lisprojaddfiles
-msgid "Add files"
-msgstr "Tambah file"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -14084,6 +14076,10 @@ msgstr "Path Unir Proyek"
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojfiles
+msgid "Files:"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
@@ -15798,6 +15794,10 @@ msgstr "Anchor Atas"
 #: lazarusidestrconsts.listopborderspacespinedithint
 msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
 msgstr "Batas spasi Atas. Nilai ini ditambahkan ke batas spasi dasar dan digunakan untuk spasi diatas kontrol."
+
+#: lazarusidestrconsts.listopinfoview
+msgid "Show Class/Proc Hint"
+msgstr ""
 
 #: lazarusidestrconsts.listops
 msgid "Tops"

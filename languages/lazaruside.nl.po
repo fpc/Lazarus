@@ -3199,6 +3199,10 @@ msgstr "Tooltip expressie evaluatie"
 msgid "Tooltip symbol Tools"
 msgstr "Tooltip symbool Hulpmiddelen"
 
+#: lazarusidestrconsts.dlgtopinfohint
+msgid "Current Class/Proc Hint"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoppos
 msgid "Top:"
 msgstr "Top:"
@@ -3911,12 +3915,8 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Toevoegen"
 
-#: lazarusidestrconsts.lisadddirectory
-msgid "Add directory"
-msgstr ""
-
-#: lazarusidestrconsts.lisaddfilesofdirectory
-msgid "Add files of directory"
+#: lazarusidestrconsts.lisaddfilesindirectory
+msgid "Add Files in Directory"
 msgstr ""
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
@@ -13812,12 +13812,8 @@ msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Programma broncode dient een Pascal extensie, zoals .pas, .pp of .lpr, te hebben."
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
-msgid "Add files to project"
+msgid "Add Files to Project"
 msgstr ""
-
-#: lazarusidestrconsts.lisprojaddaddfiletoproject
-msgid "Add file to project:"
-msgstr "Bestand aan project toevoegen:"
 
 #: lazarusidestrconsts.lisprojadddependencyalreadyexists
 msgid "Dependency already exists"
@@ -13826,10 +13822,6 @@ msgstr "Afhankelijkheid bestaat al"
 #: lazarusidestrconsts.lisprojaddeditorfile
 msgid "Add editor files"
 msgstr "Bewerker-bestanden toevoegen"
-
-#: lazarusidestrconsts.lisprojaddfiles
-msgid "Add files"
-msgstr "Bestanden toevoegen"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -14032,6 +14024,10 @@ msgstr "Project Unit pad"
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojfiles
+msgid "Files:"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
@@ -15744,6 +15740,10 @@ msgstr "Top verankering"
 #: lazarusidestrconsts.listopborderspacespinedithint
 msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
 msgstr "Top randruimte."
+
+#: lazarusidestrconsts.listopinfoview
+msgid "Show Class/Proc Hint"
+msgstr ""
 
 #: lazarusidestrconsts.listops
 msgid "Tops"

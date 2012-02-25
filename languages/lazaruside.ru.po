@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-02-20 00:16+0400\n"
+"PO-Revision-Date: 2012-02-25 20:30+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3192,6 +3192,10 @@ msgstr "Отображать вычисленные значения в подс
 msgid "Tooltip symbol Tools"
 msgstr "Отображать подсказки для идентификаторов"
 
+#: lazarusidestrconsts.dlgtopinfohint
+msgid "Current Class/Proc Hint"
+msgstr "Подсказка о текущих классе/процедуре"
+
 #: lazarusidestrconsts.dlgtoppos
 msgid "Top:"
 msgstr "Верх:"
@@ -3895,13 +3899,9 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Добавить"
 
-#: lazarusidestrconsts.lisadddirectory
-msgid "Add directory"
-msgstr "Добавить каталог"
-
-#: lazarusidestrconsts.lisaddfilesofdirectory
-msgid "Add files of directory"
-msgstr "Добавить файлы каталога"
+#: lazarusidestrconsts.lisaddfilesindirectory
+msgid "Add Files in Directory"
+msgstr "Добавить файлы из каталога"
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
@@ -13750,12 +13750,9 @@ msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Исходный код программы должен иметь расширение Паскаля, например, .pas, .pp или .lpr"
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
-msgid "Add files to project"
+#| msgid "Add files to project"
+msgid "Add Files to Project"
 msgstr "Добавить файлы в проект"
-
-#: lazarusidestrconsts.lisprojaddaddfiletoproject
-msgid "Add file to project:"
-msgstr "Добавить файл к проекту"
 
 #: lazarusidestrconsts.lisprojadddependencyalreadyexists
 msgid "Dependency already exists"
@@ -13764,10 +13761,6 @@ msgstr "Зависимость уже есть"
 #: lazarusidestrconsts.lisprojaddeditorfile
 msgid "Add editor files"
 msgstr "Добавить файлы редактора"
-
-#: lazarusidestrconsts.lisprojaddfiles
-msgid "Add files"
-msgstr "Добавить файлы"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -13968,6 +13961,10 @@ msgstr "Путь поиска модулей проекта"
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "Мастер создания проекта"
+
+#: lazarusidestrconsts.lisprojfiles
+msgid "Files:"
+msgstr "Файлы:"
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
@@ -15670,6 +15667,10 @@ msgstr "Верхняя привязка"
 #: lazarusidestrconsts.listopborderspacespinedithint
 msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
 msgstr "Верхний зазор. Его значение добавляется к базовуму зазору и используется для определения пространства над компонентом."
+
+#: lazarusidestrconsts.listopinfoview
+msgid "Show Class/Proc Hint"
+msgstr "Подсказывать текущие класс/процедуру"
 
 #: lazarusidestrconsts.listops
 msgid "Tops"

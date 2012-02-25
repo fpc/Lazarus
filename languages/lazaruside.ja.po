@@ -3262,6 +3262,10 @@ msgstr "ツールチップ式評価"
 msgid "Tooltip symbol Tools"
 msgstr "ツールチップ記号ツール"
 
+#: lazarusidestrconsts.dlgtopinfohint
+msgid "Current Class/Proc Hint"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoppos
 msgid "Top:"
 msgstr "上端："
@@ -3986,13 +3990,9 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "追加"
 
-#: lazarusidestrconsts.lisadddirectory
-msgid "Add directory"
-msgstr "ディレクトリを追加"
-
-#: lazarusidestrconsts.lisaddfilesofdirectory
-msgid "Add files of directory"
-msgstr "ディレクトリのファイルを追加"
+#: lazarusidestrconsts.lisaddfilesindirectory
+msgid "Add Files in Directory"
+msgstr ""
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
@@ -14060,11 +14060,9 @@ msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "プログラムソースは .pas, .ppあるいは.lprのようなpascal拡張子をもたなければなりません"
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
-msgid "Add files to project"
-msgstr "プロジェクトにファイルを追加"
-
-#: lazarusidestrconsts.lisprojaddaddfiletoproject
-msgid "Add file to project:"
+#, fuzzy
+#| msgid "Add files to project"
+msgid "Add Files to Project"
 msgstr "プロジェクトにファイルを追加"
 
 #: lazarusidestrconsts.lisprojadddependencyalreadyexists
@@ -14074,10 +14072,6 @@ msgstr "依存関係が既に存在します"
 #: lazarusidestrconsts.lisprojaddeditorfile
 msgid "Add editor files"
 msgstr "編集ファイルを追加"
-
-#: lazarusidestrconsts.lisprojaddfiles
-msgid "Add files"
-msgstr "ファイル追加"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -14281,6 +14275,10 @@ msgstr "プロジェクトのユニットパス"
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "プロジェクトウィザード"
+
+#: lazarusidestrconsts.lisprojfiles
+msgid "Files:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
@@ -16004,6 +16002,10 @@ msgstr "上端アンカー"
 #: lazarusidestrconsts.listopborderspacespinedithint
 msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
 msgstr "上部の境界間隔。この値は基本境界間隔に加算され、コントロールの下の間隔に用いられます"
+
+#: lazarusidestrconsts.listopinfoview
+msgid "Show Class/Proc Hint"
+msgstr ""
 
 #: lazarusidestrconsts.listops
 msgid "Tops"

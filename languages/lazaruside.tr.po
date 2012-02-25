@@ -3083,6 +3083,10 @@ msgstr ""
 msgid "Tooltip symbol Tools"
 msgstr ""
 
+#: lazarusidestrconsts.dlgtopinfohint
+msgid "Current Class/Proc Hint"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoppos
 msgid "Top:"
 msgstr ""
@@ -3771,12 +3775,8 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Ekle"
 
-#: lazarusidestrconsts.lisadddirectory
-msgid "Add directory"
-msgstr ""
-
-#: lazarusidestrconsts.lisaddfilesofdirectory
-msgid "Add files of directory"
+#: lazarusidestrconsts.lisaddfilesindirectory
+msgid "Add Files in Directory"
 msgstr ""
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
@@ -13600,12 +13600,8 @@ msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Program kaynağı .pas, .pp or .lpr gibi bir pascal uzantısına sahip olmalı"
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
-msgid "Add files to project"
+msgid "Add Files to Project"
 msgstr ""
-
-#: lazarusidestrconsts.lisprojaddaddfiletoproject
-msgid "Add file to project:"
-msgstr "Projeye bir dosya ekle:"
 
 #: lazarusidestrconsts.lisprojadddependencyalreadyexists
 msgid "Dependency already exists"
@@ -13614,10 +13610,6 @@ msgstr ""
 #: lazarusidestrconsts.lisprojaddeditorfile
 msgid "Add editor files"
 msgstr "Düzenleyici dosyaları ekle"
-
-#: lazarusidestrconsts.lisprojaddfiles
-msgid "Add files"
-msgstr "Dosyaları ekle"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -13820,6 +13812,10 @@ msgstr "Proje Birim(Unit) Yolu"
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojfiles
+msgid "Files:"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
@@ -15507,6 +15503,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listopborderspacespinedithint
 msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
+msgstr ""
+
+#: lazarusidestrconsts.listopinfoview
+msgid "Show Class/Proc Hint"
 msgstr ""
 
 #: lazarusidestrconsts.listops

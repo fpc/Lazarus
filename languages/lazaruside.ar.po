@@ -3063,6 +3063,10 @@ msgstr ""
 msgid "Tooltip symbol Tools"
 msgstr ""
 
+#: lazarusidestrconsts.dlgtopinfohint
+msgid "Current Class/Proc Hint"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtoppos
 msgid "Top:"
 msgstr ""
@@ -3745,12 +3749,8 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr ""
 
-#: lazarusidestrconsts.lisadddirectory
-msgid "Add directory"
-msgstr ""
-
-#: lazarusidestrconsts.lisaddfilesofdirectory
-msgid "Add files of directory"
+#: lazarusidestrconsts.lisaddfilesindirectory
+msgid "Add Files in Directory"
 msgstr ""
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
@@ -13334,11 +13334,7 @@ msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
-msgid "Add files to project"
-msgstr ""
-
-#: lazarusidestrconsts.lisprojaddaddfiletoproject
-msgid "Add file to project:"
+msgid "Add Files to Project"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojadddependencyalreadyexists
@@ -13347,10 +13343,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisprojaddeditorfile
 msgid "Add editor files"
-msgstr ""
-
-#: lazarusidestrconsts.lisprojaddfiles
-msgid "Add files"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
@@ -13548,6 +13540,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojfiles
+msgid "Files:"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
@@ -15221,6 +15217,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listopborderspacespinedithint
 msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
+msgstr ""
+
+#: lazarusidestrconsts.listopinfoview
+msgid "Show Class/Proc Hint"
 msgstr ""
 
 #: lazarusidestrconsts.listops
