@@ -1535,10 +1535,8 @@ var
               Include(NewPkgFileFlags,pffHasRegisterProc);
           end;
         end;
-        debugln(['AddNewFile AAA1 NewFilename=',NewFilename]);
         FNextSelectedPart := LazPackage.AddFile(NewFilename,NewUnitName,NewFileType,
                                             NewPkgFileFlags, cpNormal);
-        debugln(['AddNewFile AAA2 ',TPkgFile(FNextSelectedPart).Filename]);
         UpdateAll(true);
       end;
     end;

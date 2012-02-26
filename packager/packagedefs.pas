@@ -3253,7 +3253,7 @@ begin
   end;
   with Result do begin
     Filename:=NewFilename;
-    debugln(['TLazPackage.AddFile Is=',Filename,' Should=',NewFilename]);
+    //debugln(['TLazPackage.AddFile Is=',Filename,' Should=',NewFilename]);
     Unit_Name:=NewUnitName;
     FileType:=NewFileType;
     Flags:=NewFlags;
@@ -3264,7 +3264,7 @@ begin
     AutoReferenceSourceDir:=true;
   end;
   FFiles.Add(Result);
-  debugln(['TLazPackage.AddFile Is=',Result.Filename,' Should=',NewFilename]);
+  //debugln(['TLazPackage.AddFile Is=',Result.Filename,' Should=',NewFilename]);
   Modified:=true;
 end;
 
