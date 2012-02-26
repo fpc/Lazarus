@@ -9030,21 +9030,17 @@ begin
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoSaveEditorFile A');{$ENDIF}
   Result:=mrCancel;
-  if not (ToolStatus in [itNone,itDebugger]) then begin
-    Result:=mrAbort;
-    exit;
-  end;
+  if not (ToolStatus in [itNone,itDebugger]) then
+    exit(mrAbort);
   CanAbort:=[sfCanAbort,sfProjectSaving]*Flags<>[];
 
-  if AEditor=nil then exit;
+  if AEditor=nil then exit(mrCancel);
   AnUnitInfo := Project1.UnitWithEditorComponent(AEditor);
-  if AnUnitInfo=nil then exit;
+  if AnUnitInfo=nil then exit(mrCancel);
 
   // check if the unit is currently reverting
-  if AnUnitInfo.IsReverting then begin
-    Result:=mrOk;
-    exit;
-  end;
+  if AnUnitInfo.IsReverting then
+    exit(mrOk);
   WasVirtual:=AnUnitInfo.IsVirtual;
   WasPascalSource:=FilenameIsPascalSource(AnUnitInfo.Filename);
 
@@ -9092,8 +9088,7 @@ begin
       AnUnitInfo.SessionModified:=true;
       AEditor.Modified:=false;
     end;
-    Result:=mrOk;
-    exit;
+    exit(mrOk);
   end;
 
   // check if file is writable on disk
@@ -9105,10 +9100,7 @@ begin
 
   // if file is readonly then a simple Save is skipped
   if (AnUnitInfo.ReadOnly) and ([sfSaveToTestDir,sfSaveAs]*Flags=[]) then
-  begin
-    Result:=mrOk;
-    exit;
-  end;
+    exit(mrOk);
 
   // load old resource file
   LFMCode:=nil;
@@ -9117,9 +9109,7 @@ begin
   begin
     Result:=DoLoadResourceFile(AnUnitInfo,LFMCode,ResourceCode,
                                not (sfSaveAs in Flags),true,CanAbort);
-    if Result in [mrIgnore,mrOk] then
-      Result:=mrCancel
-    else
+    if not (Result in [mrIgnore,mrOk]) then
       exit;
   end;
 
@@ -9132,9 +9122,7 @@ begin
     // let user choose a filename
     NewFilename:=OldFilename;
     Result:=DoShowSaveFileAsDialog(NewFilename,AnUnitInfo,ResourceCode,CanAbort);
-    if Result in [mrIgnore,mrOk] then
-      Result:=mrCancel
-    else
+    if not (Result in [mrIgnore,mrOk]) then
       exit;
     LFMCode:=nil;
   end;
@@ -9166,7 +9154,7 @@ begin
       DestFilename := TestFilename;
     end
     else
-      exit;
+      exit(mrCancel);
   end else
   begin
     if AnUnitInfo.Modified or AnUnitInfo.NeedsSaveToDisk then
@@ -9174,7 +9162,7 @@ begin
       // save source to file
       Result := AnUnitInfo.WriteUnitSource;
       if Result <> mrOK then
-        Exit;
+        exit;
       DestFilename := AnUnitInfo.Filename;
     end;
   end;
@@ -9189,9 +9177,7 @@ begin
   // save resource file and lfm file
   if (ResourceCode<>nil) or (AnUnitInfo.Component<>nil) then begin
     Result:=DoSaveUnitComponent(AnUnitInfo,ResourceCode,LFMCode,Flags);
-    if Result in [mrIgnore, mrOk] then
-      Result:=mrCancel
-    else
+    if not (Result in [mrIgnore, mrOk]) then
       exit;
   end;
 
@@ -9212,17 +9198,16 @@ begin
   and  ((OldUnitName<>NewUnitName)
         or (CompareFilenames(OldFilename,NewFilename)<>0))
   then begin
-    if EnvironmentOptions.UnitRenameReferencesAction=urraNever then
-      Result:=mrOK
-    else begin
+    if EnvironmentOptions.UnitRenameReferencesAction<>urraNever then
+    begin
       // silently update references of new units (references were auto created
       // and keeping old references makes no sense)
       Confirm:=(EnvironmentOptions.UnitRenameReferencesAction=urraAsk)
                and (not WasVirtual);
       Result:=DoReplaceUnitUse(OldFilename,OldUnitName,NewFilename,NewUnitName,
                true,true,Confirm);
+      if Result<>mrOk then exit;
     end;
-    if Result<>mrOk then exit;
   end;
 
   {$IFDEF IDE_VERBOSE}
@@ -18743,10 +18728,13 @@ var
   PascalReferences: TAVLTree;
   i: Integer;
   MsgResult: TModalResult;
+  OnlyEditorFiles: Boolean;
+  aFilename: String;
 begin
   if (CompareFilenames(OldFilename,NewFilename)=0)
   and (OldUnitName=NewUnitName) then // compare unitnames case sensitive, maybe only the case changed
     exit(mrOk);
+  OnlyEditorFiles:=not FilenameIsAbsolute(OldFilename); // this was a new file, files on disk can not refer to it
 
   OwnerList:=nil;
   OldCode:=nil;
@@ -18754,19 +18742,31 @@ begin
   PascalReferences:=nil;
   Files:=TStringList.Create;
   try
-    // get owners of unit
-    OwnerList:=PkgBoss.GetOwnersOfUnit(NewFilename);
-    if OwnerList=nil then exit(mrOk);
-    PkgBoss.ExtendOwnerListWithUsedByOwners(OwnerList);
-    ReverseList(OwnerList);
+    if OnlyEditorFiles then begin
+      // search only in open files
+      for i:=0 to SourceEditorManagerIntf.UniqueSourceEditorCount-1 do begin
+        aFilename:=SourceEditorManagerIntf.UniqueSourceEditors[i].FileName;
+        if not FilenameIsPascalSource(aFilename) then continue;
+        Files.Add(aFileName);
+      end;
+      // add project's main source file
+      if (Project1<>nil) and (Project1.MainUnitID>=0) then
+        Files.Add(Project1.MainFilename);
+    end else begin
+      // get owners of unit
+      OwnerList:=PkgBoss.GetOwnersOfUnit(NewFilename);
+      if OwnerList=nil then exit(mrOk);
+      PkgBoss.ExtendOwnerListWithUsedByOwners(OwnerList);
+      ReverseList(OwnerList);
 
-    // get source files of packages and projects
-    ExtraFiles:=PkgBoss.GetSourceFilesOfOwners(OwnerList);
-    try
-      if ExtraFiles<>nil then
-        Files.AddStrings(ExtraFiles);
-    finally
-      ExtraFiles.Free;
+      // get source files of packages and projects
+      ExtraFiles:=PkgBoss.GetSourceFilesOfOwners(OwnerList);
+      try
+        if ExtraFiles<>nil then
+          Files.AddStrings(ExtraFiles);
+      finally
+        ExtraFiles.Free;
+      end;
     end;
     for i:=Files.Count-1 downto 0 do begin
       if (CompareFilenames(Files[i],OldFilename)=0)
