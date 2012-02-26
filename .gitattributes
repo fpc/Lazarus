@@ -5513,7 +5513,6 @@ lcl/interfaces/customdrawn/android/asset_manager.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/android/bitmap.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/android/configuration.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/android/egl.pas svneol=native#text/pascal
-lcl/interfaces/customdrawn/android/eglplatform.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/android/gles.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/android/input.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/android/jni.pas svneol=native#text/pascal
