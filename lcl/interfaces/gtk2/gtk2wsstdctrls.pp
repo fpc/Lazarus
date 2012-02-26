@@ -1277,7 +1277,8 @@ begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetSelStart') then
     Exit;
   Entry := PGtkEntry(ACustomEdit.Handle);
-  if GetSelStart(ACustomEdit) = NewStart then exit;
+  // make gtk2 consistent with others. issue #11802
+  // if GetSelStart(ACustomEdit) = NewStart then exit;
 
   if Entry^.text_max_length > 0 then
     NewPos := Min(NewStart, Entry^.text_max_length)
