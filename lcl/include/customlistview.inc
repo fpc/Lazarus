@@ -354,7 +354,11 @@ begin
             begin
               FSelected := Item;
               Include(FFlags,lffSelectedValid);
-              if OwnerData then FSelectedIdx:=nm^.iItem;
+              if OwnerData then
+              begin
+                if (MultiSelect and (FSelectedIdx = -1)) or not MultiSelect then
+                  FSelectedIdx:=nm^.iItem;
+              end;
               //DebugLn('TCustomListView.CNNotify FSelected=',dbgs(FSelected));
               DoSelectItem(Item, True);
             end;
@@ -1351,17 +1355,19 @@ begin
   if (AValue < -1) or (AValue >= Items.Count) then
     raise Exception.CreateFmt(rsListIndexExceedsBounds,[AValue]);
 
-  if OwnerData then
-    FSelectedIdx := AValue;
   if AValue = -1 then
-  begin
-    Selected := nil;
-  end else
+    Selected := nil
+  else
   begin
     // trigger ws selection update, it'll update Selected too
     if OwnerData then
-      Items.Item[AValue].Selected := True
-    else
+    begin
+      // clean selection when itemindex is changed. issue #19825
+      if MultiSelect then
+        Selected := nil;
+      FSelectedIdx := AValue;
+      Items.Item[AValue].Selected := True;
+    end else
       Selected := Items.Item[AValue];
   end;
 end;
@@ -1377,8 +1383,10 @@ begin
     raise Exception.Create('Item does not belong to this listview');
   if FSelected = AValue then Exit;
   //DebugLn('TCustomListView.SetSelection FSelected=',dbgs(FSelected));
-  if AValue = nil then begin
-    if MultiSelect then begin
+  if AValue = nil then
+  begin
+    if MultiSelect then
+    begin
       BeginUpdate;
       try
         for i:=0 to Items.Count-1 do
@@ -1388,17 +1396,16 @@ begin
       finally
         EndUpdate;
       end;
-    end
-    else
+    end else
       FSelected.Selected := False;
     FSelected := nil;
     Include(FFlags,lffSelectedValid);
-  end
-  else begin
+  end else
+  begin
     FSelected := AValue;
     if HandleAllocated then
       TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, FSelected.Index,
-                                                      FSelected, lisSelected, True);
+          FSelected, lisSelected, True);
   end;
 end;
 

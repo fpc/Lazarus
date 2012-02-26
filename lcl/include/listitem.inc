@@ -727,9 +727,10 @@ begin
 
   if (AState in FStates) = AIsSet then Exit;
 
-  if AIsSet
-  then Include(FStates, AState)
-  else Exclude(FStates, AState);
+  if AIsSet then
+    Include(FStates, AState)
+  else
+    Exclude(FStates, AState);
 
   if not WSUpdateAllowed and not IsOwnerData then Exit;
   LV := FOwner.FOwner;
