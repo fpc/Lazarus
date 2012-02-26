@@ -6134,14 +6134,30 @@ end;
 function TGtk2WidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
 var
   Widget: PGTKWidget;
+  GRect: TGdkRectangle;
+  R: TRect;
+  P: TPoint;
 begin
   Result := 0; //default
   if Handle <> 0 then
   begin
     Widget := PGtkWidget(Handle);
+
+    if GTK_IS_WINDOW(Widget) then
+    begin
+      gdk_window_get_origin(Widget^.window, @ARect.Left, @ARect.Top);
+      gdk_window_get_size(Widget^.window, @ARect.Right, @ARect.Bottom);
+      P := GetWidgetOrigin(Widget);
+      gdk_window_get_frame_extents(Widget^.window, @GRect);
+      R := RectFromGdkRect(GRect);
+      ARect := Bounds(P.X,P.Y,R.Right-R.Left,R.Bottom-R.Top);
+      // writeln('Frame extents are: ',dbgs(R),' ARECT=',dbgs(AREct));
+      exit;
+    end;
+
     ARect.TopLeft := GetWidgetOrigin(Widget);
     ARect.BottomRight := Point(ARect.Left + Widget^.allocation.width,
-                               ARect.Top + Widget^.allocation.height);
+                    ARect.Top + Widget^.allocation.height);
   end;
 end;
 {------------------------------------------------------------------------------
