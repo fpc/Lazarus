@@ -717,7 +717,7 @@ type
     procedure ShortenFilename(var ExpandedFilename: string; UseUp: boolean);
     procedure LongenFilename(var AFilename: string);
     function FindPkgFile(const AFilename: string;
-                         IgnoreRemoved, FindNewFile: boolean): TPkgFile;
+                         IgnoreRemoved, FindVirtualFile: boolean): TPkgFile;
     function FindUnitWithRegister(IgnorePkgFile: TPkgFile = nil): TPkgFile;
     function FindUnit(const TheUnitName: string): TPkgFile;
     function FindUnit(const TheUnitName: string; IgnoreRemoved: boolean): TPkgFile;
@@ -3086,8 +3086,8 @@ begin
   Result:=FComponents.IndexOf(PkgComponent);
 end;
 
-function TLazPackage.FindPkgFile(const AFilename: string;
-  IgnoreRemoved, FindNewFile: boolean): TPkgFile;
+function TLazPackage.FindPkgFile(const AFilename: string; IgnoreRemoved,
+  FindVirtualFile: boolean): TPkgFile;
 var
   TheFilename: String;
   Cnt: Integer;
@@ -3097,20 +3097,11 @@ begin
   
   TheFilename:=AFilename;
   
-  if FindNewFile and (not FilenameIsAbsolute(TheFilename)) then begin
-    // this is a virtual file, not yet saved
-    // -> prepend Package Directory and check if it does not exists yet in
-    // the package directory
-    LongenFilename(TheFilename);
-    if FileExistsUTF8(TheFilename) then begin
-      // the file exists -> this virtual file does not belong to the package
-      exit;
-    end;
-  end;
-  
   Cnt:=FileCount;
   for i:=0 to Cnt-1 do begin
     Result:=Files[i];
+    if (not FindVirtualFile) and (not FilenameIsAbsolute(Result.Filename)) then
+      continue;
     if (CompareFilenames(Result.Filename,TheFilename)=0)
     or (CompareFilenames(Result.GetFullFilename,TheFilename)=0) then
       exit;
@@ -3119,6 +3110,8 @@ begin
     Cnt:=RemovedFilesCount;
     for i:=0 to Cnt-1 do begin
       Result:=RemovedFiles[i];
+      if (not FindVirtualFile) and (not FilenameIsAbsolute(Result.Filename)) then
+        continue;
       if (CompareFilenames(Result.Filename,TheFilename)=0)
       or (CompareFilenames(Result.GetFullFilename,TheFilename)=0) then
         exit;

@@ -207,7 +207,7 @@ type
                                 var File1: TPkgFile;
                                 var ConflictPkg: TLazPackage): boolean;
     function FindFileInAllPackages(const TheFilename: string;
-                                IgnoreDeleted, FindNewFile: boolean): TPkgFile;
+                                IgnoreDeleted, FindVirtualFile: boolean): TPkgFile;
     procedure FindPossibleOwnersOfUnit(const TheFilename: string;
                                        OwnerList: TFPList);
     function FindLowestPkgNodeByName(const PkgName: string): TAVLTreeNode;
@@ -1185,7 +1185,7 @@ begin
 end;
 
 function TLazPackageGraph.FindFileInAllPackages(const TheFilename: string;
-  IgnoreDeleted, FindNewFile: boolean): TPkgFile;
+  IgnoreDeleted, FindVirtualFile: boolean): TPkgFile;
 var
   Cnt: Integer;
   i: Integer;
@@ -1193,7 +1193,7 @@ begin
   Cnt:=Count;
   for i:=0 to Cnt-1 do begin
     Result:=Packages[i].FindPkgFile(TheFilename,IgnoreDeleted,
-                                    FindNewFile);
+                                    FindVirtualFile);
     if Result<>nil then exit;
   end;
   Result:=nil;

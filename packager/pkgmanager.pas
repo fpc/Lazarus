@@ -1641,6 +1641,10 @@ var
   PkgFile: TPkgFile;
 begin
   Result:='';
+  if FilenameIsAbsolute(Filename) then begin
+    Result:=ExtractFilePath(Filename);
+    exit;
+  end;
   PkgFile:=PackageGraph.FindFileInAllPackages(Filename,true,true);
   if PkgFile=nil then exit;
   APackage:=PkgFile.LazPackage;
