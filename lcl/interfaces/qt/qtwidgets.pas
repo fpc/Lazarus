@@ -1502,12 +1502,19 @@ type
 
   TQtMenuBar = class(TQtWidget)
   private
+    {$IFNDEF DARWIN}
+    FCatchNextResizeEvent: Boolean; {needed during design time}
+    FNumOfActions: PtrInt;
+    {$ENDIF}
     FVisible: Boolean;
     FHeight: Integer;
     FIsApplicationMainMenu: Boolean;
   public
     constructor Create(const AParent: QWidgetH); overload;
   public
+    {$IFNDEF DARWIN}
+    function IsDesigning: Boolean;
+    {$ENDIF}
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function addMenu(AMenu: QMenuH): QActionH;
     function insertMenu(AIndex: Integer; AMenu: QMenuH): QActionH;
@@ -5735,7 +5742,12 @@ begin
     MenuBar := TQtMenuBar.Create(Result);
 
     if not (csDesigning in LCLObject.ComponentState) then
-      MenuBar.FIsApplicationMainMenu := True;
+      MenuBar.FIsApplicationMainMenu := True
+    else
+      {$IFNDEF DARWIN}
+      MenuBar.setProperty(MenuBar.Widget,'lcldesignmenubar',1)
+      {$ENDIF}
+      ;
 
     if (Application.MainForm <> nil) and
        (Application.MainForm.FormStyle = fsMDIForm) and
@@ -5799,6 +5811,8 @@ begin
     MenuBar := TQtMenuBar.Create(nil);
     {$ELSE}
     MenuBar := TQtMenuBar.Create(Result);
+    if (csDesigning in LCLObject.ComponentState) then
+      MenuBar.setProperty(MenuBar.Widget,'lcldesignmenubar',1);
     {$ENDIF}
 
     FCentralWidget := QWidget_create(Result);
@@ -13280,6 +13294,10 @@ constructor TQtMenuBar.Create(const AParent: QWidgetH);
 begin
   Create;
   Widget := QMenuBar_create(AParent);
+  {$IFNDEF DARWIN}
+  FCatchNextResizeEvent := False;
+  FNumOfActions := 0;
+  {$ENDIF}
   FOwnWidget := AParent = nil;
   FWidgetDefaultFont := TQtFont.Create(QWidget_font(Widget));
   FWidgetLCLFont := nil;
@@ -13293,13 +13311,103 @@ begin
   QtWidgetSet.AddHandle(Self);
 end;
 
+{$IFNDEF DARWIN}
+function TQtMenuBar.IsDesigning: Boolean;
+var
+  V: QVariantH;
+  B: Boolean;
+begin
+  Result := (Widget <> nil);
+  if not Result then
+    exit(False);
+
+  Result := False;
+  v := QVariant_create();
+  try
+    B := False;
+    QObject_property(Widget, v, 'lcldesignmenubar');
+    if QVariant_isValid(v) and not QVariant_isNull(v) then
+      Result := QVariant_toInt(V, @B) = 1;
+  finally
+    QVariant_destroy(v);
+  end;
+end;
+{$ENDIF}
+
 function TQtMenuBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   cdecl;
+  {$IFNDEF DARWIN}
+  procedure UpdateDesignerClientRect;
+  var
+    B: Boolean;
+    WParent: QWidgetH;
+    Window: HWND;
+    ACtl: TWinControl;
+  begin
+    WParent := getParent;
+    if (WParent <> nil) then
+    begin
+      Window := HwndFromWidgetH(WParent);
+      if (Window <> 0) and (TQtWidget(Window) is TQtDesignWidget) and
+        (TQtWidget(Window).getVisible) then
+      begin
+        ACtl := TQtMainWindow(Window).LCLObject;
+        if Assigned(ACtl) and not (csDestroying in ACtl.ComponentState) then
+        begin
+          {$IFDEF VerboseQtEvents}
+          DebugLn('TQtMenuBar.EventFilter: before DoAdjustClientRecChange=',
+            dbgs(ACtl.ClientRect));
+          {$ENDIF}
+          ACtl.DoAdjustClientRectChange(True);
+          {$IFDEF VerboseQtEvents}
+          DebugLn('TQtMenuBar.EventFilter: after  DoAdjustClientRecChange=',
+            dbgs(ACtl.ClientRect));
+          {$ENDIF}
+        end;
+      end;
+    end;
+  end;
+  {$ENDIF}
 begin
   Result := False;
   QEvent_accept(Event);
   if (QEvent_type(Event) = QEventFontChange) then
     AssignQtFont(FWidgetDefaultFont.FHandle, QWidget_font(QWidgetH(Sender)));
+
+  {$IFNDEF DARWIN}
+  if (QEvent_type(Event) = QEventResize) then
+  begin
+    // adjusts client rect of designer form.
+    if FCatchNextResizeEvent then
+    begin
+      FCatchNextResizeEvent := False;
+      if IsDesigning then
+        UpdateDesignerClientRect;
+    end;
+  end else
+  if (QEvent_type(Event) = QEventActionAdded) then
+  begin
+    if IsDesigning then
+    begin
+      inc(FNumOfActions);
+      FCatchNextResizeEvent := FNumOfActions = 1;
+      {$IFDEF VerboseQtEvents}
+      DebugLn(Format('TQtMenuBar: Added new action now have %d actions ',[FNumOfActions]));
+      {$ENDIF}
+    end;
+  end else
+  if (QEvent_type(Event) = QEventActionRemoved) then
+  begin
+    if IsDesigning then
+    begin
+      dec(FNumOfActions);
+      {$IFDEF VerboseQtEvents}
+      DebugLn(Format('TQtMenuBar: Removed action still have %d actions ',[FNumOfActions]));
+      {$ENDIF}
+      FCatchNextResizeEvent := FNumOfActions = 0;
+    end;
+  end;
+  {$ENDIF}
 end;
 
 function TQtMenuBar.addMenu(AMenu: QMenuH): QActionH;
