@@ -6143,7 +6143,7 @@ begin
   begin
     Widget := PGtkWidget(Handle);
 
-    if GTK_IS_WINDOW(Widget) then
+    if GTK_IS_WINDOW(Widget) and Assigned(Widget^.window) then
     begin
       gdk_window_get_origin(Widget^.window, @ARect.Left, @ARect.Top);
       gdk_window_get_size(Widget^.window, @ARect.Right, @ARect.Bottom);
