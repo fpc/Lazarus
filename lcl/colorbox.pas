@@ -474,7 +474,9 @@ begin
     begin
       if not (cbStandardColors in Style) and (Index < StandardColorsCount) then
         Exit;
-      if not (cbExtendedColors in Style) and (Index < StandardColorsCount + ExtendedColorCount) then
+      if not (cbExtendedColors in Style) and
+          (Index < StandardColorsCount + ExtendedColorCount) and
+          (Index >= StandardColorsCount) then
         Exit;
     end;
 
