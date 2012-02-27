@@ -1360,7 +1360,6 @@ function TSynPasSyn.Func65: TtkTokenKind;
 begin
   if KeyComp('Repeat') then begin
     Result := tkKey;
-    SmartCloseBeginEndBlocks(cfbtRepeat);
     StartPascalCodeFoldBlock(cfbtRepeat);
    end
    else Result := tkIdentifier;
@@ -1469,6 +1468,7 @@ function TSynPasSyn.Func76: TtkTokenKind;
 begin
   if KeyComp('Until') then begin
     Result := tkKey;
+    SmartCloseBeginEndBlocks(cfbtRepeat);
     if TopPascalCodeFoldBlockType = cfbtRepeat then EndPascalCodeFoldBlock;
   end
   else Result := tkIdentifier;
@@ -3676,7 +3676,7 @@ end;
 
 procedure TSynPasSyn.SmartCloseBeginEndBlocks(SearchFor: TPascalCodeFoldBlockType);
 var
-  i, nc: Integer;
+  i: Integer;
   t: TPascalCodeFoldBlockType;
 begin
   // Close unfinished blocks, IF the expected type is found
@@ -3696,9 +3696,8 @@ begin
   while i > 0 do begin
     EndPascalCodeFoldBlockLastLine;
     // Todo: FCatchNodeInfoList.CountAll > nc  can not happen
-    nc := FCatchNodeInfoList.CountAll;
-    if FCatchNodeInfo and (FCatchNodeInfoList.CountAll > nc) then
-      exclude(FCatchNodeInfoList.LastItemPointer^.FoldAction, sfaMarkup);
+    //if FCatchNodeInfo and (FCatchNodeInfoList.CountAll > FCatchNodeInfoList.CountAll) then
+    //  exclude(FCatchNodeInfoList.LastItemPointer^.FoldAction, sfaMarkup);
     dec(i);
   end;
 end;
