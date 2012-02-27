@@ -914,6 +914,52 @@ class procedure TGtk2WSWinControl.PaintTo(const AWinControl: TWinControl;
 var
   DC: TGtkDeviceContext absolute ADC;
 
+  procedure PaintGtkForm(AWindow: PGdkWindow);
+  var
+    W, H: gint;
+    Pixbuf: PGdkPixbuf;
+    MenuPixBuf: PGdkPixBuf;
+    AMenuBar: PGtkWidget;
+    OffsetY: Integer;
+  begin
+    OffsetY := 0;
+    MenuPixBuf := nil;
+
+    if Assigned(TCustomForm(AWinControl).Menu) then
+    begin
+      AMenuBar := PGtkWidget(TCustomForm(AWinControl).Menu.Handle);
+      if GTK_IS_MENU_BAR(AMenuBar) and GTK_WIDGET_VISIBLE(AMenuBar) then
+      begin
+        OffsetY := AMenuBar^.allocation.height;
+        MenuPixbuf := gdk_pixbuf_get_from_drawable(nil, AMenuBar^.Window, nil,
+          0, 0, 0, 0, AMenuBar^.allocation.Width, AMenuBar^.Allocation.Height);
+
+        gdk_pixbuf_render_to_drawable(MenuPixbuf, DC.Drawable, DC.GC, 0, 0, X, Y + OffsetY,
+          AMenuBar^.allocation.Width, AMenuBar^.Allocation.Height, GDK_RGB_DITHER_NONE, 0, 0);
+
+        gdk_pixbuf_unref(MenuPixbuf);
+      end;
+    end;
+    gdk_window_get_size(AWindow, @W, @H);
+
+    Pixbuf := gdk_pixbuf_get_from_drawable(nil, AWindow, nil,
+      0, 0, 0, 0, W, H);
+
+    // put menubar into form screenshoot too
+    if OffsetY <> 0 then
+    begin
+      MenuPixBuf := gdk_pixbuf_scale_simple(PixBuf, W, H - OffsetY,GDK_INTERP_NEAREST);
+      gdk_pixbuf_render_to_drawable(MenuPixbuf, DC.Drawable, DC.GC, 0, 0, X, Y + (OffsetY * 2),
+        -1, -1, GDK_RGB_DITHER_NONE, 0, 0);
+      if MenuPixBuf <> nil then
+        gdk_pixbuf_unref(MenuPixBuf);
+    end else
+      gdk_pixbuf_render_to_drawable(Pixbuf, DC.Drawable, DC.GC, 0, 0, X, Y,
+        -1, -1, GDK_RGB_DITHER_NONE, 0, 0);
+
+    gdk_pixbuf_unref(Pixbuf);
+  end;
+
   procedure PaintWindow(AWindow: PGdkWindow);
   var
     W, H: gint;
@@ -933,15 +979,19 @@ var
     AOffset: TPoint;
     AWindow: PGdkWindow;
   begin
-    AWindow := GetControlWindow(AWidget);
-
-    if AWindow <> nil then
-      PaintWindow(AWindow);
+    if (AWinControl.FCompStyle = csForm) then
+      PaintGtkForm(AWidget^.window)
+    else
+    begin
+      AWindow := GetControlWindow(AWidget);
+      if AWindow <> nil then
+        PaintWindow(AWindow);
+    end;
   end;
 
 begin
-  if not WSCheckHandleAllocated(AWinControl, 'PaintTo')
-  then Exit;
+  if not WSCheckHandleAllocated(AWinControl, 'PaintTo') then
+    Exit;
   PaintWidget(GetFixedWidget(PGtkWidget(AWinControl.Handle)));
 end;
 
