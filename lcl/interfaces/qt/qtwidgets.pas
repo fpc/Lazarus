@@ -5318,7 +5318,7 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
     BMargin, HMargin, VMargin, SHorz, SVert: Integer;
     IconMode: QIconMode;
     IconAlign: QtAlignment;
-    CenterOffset, W, H: Integer;
+    CenterOffset, W {, H}: Integer;
     AFontMetrics: QFontMetricsH;
     AText: WideString;
     DTFLAGS: DWord;
@@ -5361,7 +5361,7 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
       dec(R.Bottom, VMargin + SVert);
 
       W := R.Right - R.Left;
-      H := R.Bottom - R.Top;
+      // H := R.Bottom - R.Top;
 
       ContentSize.CX := 0;
       ContentSize.CY := 0;
