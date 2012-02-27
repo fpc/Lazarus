@@ -13392,7 +13392,8 @@ begin
       inc(FNumOfActions);
       FCatchNextResizeEvent := FNumOfActions = 1;
       {$IFDEF VerboseQtEvents}
-      DebugLn(Format('TQtMenuBar: Added new action now have %d actions ',[FNumOfActions]));
+      DebugLn(Format('TQtMenuBar: Added new action now have %d actions ',
+        [FNumOfActions]));
       {$ENDIF}
     end;
   end else
@@ -13402,7 +13403,8 @@ begin
     begin
       dec(FNumOfActions);
       {$IFDEF VerboseQtEvents}
-      DebugLn(Format('TQtMenuBar: Removed action still have %d actions ',[FNumOfActions]));
+      DebugLn(Format('TQtMenuBar: Removed action still have %d actions ',
+        [FNumOfActions]));
       {$ENDIF}
       FCatchNextResizeEvent := FNumOfActions = 0;
     end;
