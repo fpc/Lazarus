@@ -674,6 +674,7 @@ Type
     property Anchors;
     property ArrowKeysTraverseList;
     property AutoDropDown;
+    property AutoComplete;
     property AutoSize;
     property BiDiMode;
     property BorderSpacing;
