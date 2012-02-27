@@ -1047,15 +1047,9 @@ begin
     dtFlags := DT_VCENTER or DT_SINGLELINE;
     shortCutText := MenuItemShortCut(AMenuItem);
     if IsRightToLeft then
-    begin
-      Inc(ARect.Left, GetSystemMetrics(SM_CXMENUCHECK));
-      dtFlags := dtFlags or DT_LEFT;
-    end
+      dtFlags := dtFlags or DT_LEFT
     else
-    begin
-      Dec(ARect.Right, GetSystemMetrics(SM_CXMENUCHECK));
       dtFlags := dtFlags or DT_RIGHT;
-    end;
 
     {$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then
