@@ -378,10 +378,13 @@ class procedure TQtWSWinControl.PaintTo(const AWinControl: TWinControl;
 var
   Context: TQtDeviceContext absolute ADC;
   Widget: TQtWidget;
+  Window: TQtMainWindow;
   Pixmap: TQtPixmap;
   DCSize: TSize;
   APoint: TQtPoint;
   ARect, GRect: TRect;
+  OffsetY: Integer;
+  NewHandle: QPixmapH;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'PaintTo') or (ADC = 0) then
     Exit;
@@ -389,18 +392,41 @@ begin
   Widget := TQtWidget(AWinControl.Handle);
   ARect := Widget.getFrameGeometry;
   GRect := Widget.getGeometry;
+
+  // calculate OffsetY only in case when we are form
+  if (AWinControl.FCompStyle = csForm) and Assigned(TCustomForm(AWinControl).Menu) then
+  begin
+    Window := TQtMainWindow(TCustomForm(AWinControl).Handle);
+    if Window.MenuBar.getVisible then
+      OffsetY := Window.MenuBar.getHeight;
+  end else
+    OffsetY := 0;
+
   with DCSize, ARect do
   begin
     cx := Right - Left;
     cy := Bottom - Top;
   end;
   Pixmap := TQtPixmap.Create(@DCSize);
-  OffsetRect(GRect, -ARect.Left, -ARect.Top);
-  Pixmap.grabWidget(Widget.Widget, 0, 0);
-  APoint := QtPoint(X + GRect.Left, Y + GRect.Top);
-  ARect := Rect(0, 0, Pixmap.getWidth, Pixmap.getHeight);
-  Context.drawPixmap(@APoint, Pixmap.Handle, @ARect);
-  Pixmap.Free;
+  try
+    OffsetRect(GRect, -ARect.Left, -ARect.Top);
+    Pixmap.grabWidget(Widget.Widget, 0, 0);
+
+    // apply offset if we have main menu
+    APoint := QtPoint(X, Y + OffsetY);
+    ARect := Rect(0, 0, Pixmap.getWidth, Pixmap.getHeight);
+    // also scale pixmap by height of menu, so it's catched in our image.
+    if OffsetY <> 0 then
+    begin
+      NewHandle := QPixmap_create();
+      QPixmap_scaled(Pixmap.Handle, NewHandle, Pixmap.GetWidth, Pixmap.GetHeight - OffsetY);
+      Context.drawPixmap(@APoint, NewHandle, @ARect);
+      QPixmap_destroy(NewHandle);
+    end else
+      Context.drawPixmap(@APoint, Pixmap.Handle, @ARect);
+  finally
+    Pixmap.Free;
+  end;
 end;
 
 {------------------------------------------------------------------------------
