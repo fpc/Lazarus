@@ -356,8 +356,7 @@ begin
               Include(FFlags,lffSelectedValid);
               if OwnerData then
               begin
-                if (MultiSelect and (FSelectedIdx = -1)) or not MultiSelect then
-                  FSelectedIdx:=nm^.iItem;
+                FSelectedIdx:=nm^.iItem;
               end;
               //DebugLn('TCustomListView.CNNotify FSelected=',dbgs(FSelected));
               DoSelectItem(Item, True);
