@@ -363,6 +363,8 @@ begin
         // a change
         Page:=LeftStr(href,Pos('&',href)-1);
         //writeln('TWikiGet.GetRecent page="'+Page+'"');
+        if not (FAllPages.Contains(Page)) then
+          continue; // deleted in the mean time
         if CheckedPages.Contains(Page) then continue;
         if IsIgnoredPage(Page) then continue;
         if FNeededPages.Contains(Page) then continue;
@@ -749,6 +751,7 @@ begin
   writeln('--allmissing          : download all wiki pages, if file not already there.');
   writeln('--recent=<days>       : download pages again if changed in the last days on the site.');
   writeln('                        includes --allmissing.');
+  writeln('                 ToDo: check more than last 500 changes.');
   writeln('--ignore-recent=<minutes> : do not download again files younger than this on disk.');
   writeln('                        combine with --recent. Default: ',IgnoreFilesYoungerThanMin);
   writeln('--shownotusedpages    : show not used files in the output directory.');
@@ -762,7 +765,7 @@ begin
   writeln('Example: download the whole wiki');
   writeln('  ',ExeName,' --allmissing');
   writeln('Example: call this to download new files once per week');
-  writeln('  ',ExeName,' --recent=8');
+  writeln('  ',ExeName,' --recent=8 --deletenotusedpages --deletenotusedimages');
 end;
 
 var

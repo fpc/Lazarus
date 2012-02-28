@@ -53,6 +53,7 @@ type
     wptSup, // <sup>
     wptSub, // <sub>
     wptSmall, // <small>
+    wptEm, // <em>
     wptString, // <string>
     wptVar, // <var>
     wptKey, // <key>
@@ -139,6 +140,7 @@ const
     (Caption: 'Sup'; Flags: []; Group: wpgFont; BaseToken: wptSup), // wptSup,
     (Caption: 'Sub'; Flags: []; Group: wpgFont; BaseToken: wptSub), // wptSub,
     (Caption: 'Small'; Flags: []; Group: wpgFont; BaseToken: wptSmall), // wptSmall,
+    (Caption: 'Em'; Flags: []; Group: wpgFont; BaseToken: wptEm), // wptEm,
     (Caption: 'String'; Flags: []; Group: wpgFont; BaseToken: wptString), // wptString,
     (Caption: 'Var'; Flags: []; Group: wpgFont; BaseToken: wptVar), // wptVar,
     (Caption: 'Key'; Flags: []; Group: wpgFont; BaseToken: wptKey), // wptKey,
@@ -276,6 +278,7 @@ type
     procedure EmitTextToken;
     procedure ParseCell;
     procedure ParseAttributes(StartPos, EndPos: PChar);
+    procedure ParseNoWiki;
     procedure CloseTableCell;
     procedure CloseRangeToken(Typ: TWPTokenType);
     procedure OpenRangeToken(Typ: TWPTokenType);
@@ -585,6 +588,27 @@ begin
     inc(p);
   until p>=EndPos;
   //debugln(['TWikiPage.ParseAttributes stopped at <',dbgstr(StartPos,p-StartPos),'>']);
+end;
+
+procedure TWikiPage.ParseNoWiki;
+begin
+  // ignore all tags
+  // this is not the same as pre (preformatted treats spaces and line breaks)
+  EmitTextToken;
+  FCurP:=FindTagEnd(FCurP);
+  FLastEmitPos:=FCurP;
+  repeat
+    case FCurP^ of
+    #0: break;
+    '<':
+      if TokenIs('</nowiki>') then
+        break;
+    end;
+    inc(FCurP);
+  until false;
+  EmitTextToken;
+  FCurP:=FindTagEnd(FCurP);
+  FLastEmitPos:=FCurP;
 end;
 
 procedure TWikiPage.CloseTableCell;
@@ -993,6 +1017,9 @@ begin
     if NextBar^='[' then begin
       // a link
       break;
+    end else if (NextBar^='<') and IsIdentStartChar[NextBar[1]] then begin
+      // a tag
+      break;
     end;
     inc(NextBar);
   end;
@@ -1051,6 +1078,7 @@ begin
     else if CompareIdentifiers(NameP,'sup')=0 then EmitTag(wptSup,Range)
     else if CompareIdentifiers(NameP,'sub')=0 then EmitTag(wptSub,Range)
     else if CompareIdentifiers(NameP,'small')=0 then EmitTag(wptSmall,Range)
+    else if CompareIdentifiers(NameP,'em')=0 then EmitTag(wptEm,Range)
     else if CompareIdentifiers(NameP,'string')=0 then EmitTag(wptString, Range)
     else if CompareIdentifiers(NameP,'var')=0 then EmitTag(wptVar,Range)
     else if CompareIdentifiers(NameP,'key')=0 then EmitTag(wptKey,Range)
@@ -1079,23 +1107,7 @@ begin
       //debugln(['TWikiPage.Parse ',dbgs(Pointer(FCurP)),' ',FCurP^,' ',FindTagEnd(FCurP)-FCurP]);
       HandleCode;
     end else if TokenIs('<nowiki>') then begin
-      // ignore all tags
-      // this is not the same as pre (preformatted treats spaces and line breaks)
-      EmitTextToken;
-      FCurP:=FindTagEnd(FCurP);
-      FLastEmitPos:=FCurP;
-      repeat
-        case FCurP^ of
-        #0: break;
-        '<':
-          if TokenIs('</nowiki>') then
-            break;
-        end;
-        inc(FCurP);
-      until false;
-      EmitTextToken;
-      FCurP:=FindTagEnd(FCurP);
-      FLastEmitPos:=FCurP;
+      ParseNoWiki;
     end else begin
       UnknownTag;
     end;

@@ -299,7 +299,7 @@ begin
   writeln('  --format=[fpdoc|html|xhtml|chm]');
   writeln('  --outputdir=<output directory> : directory for all files. default: ',Converter.OutputDir);
   writeln('  --imagesdir=<images directory> : directory of image files. default: ',Converter.ImagesDir);
-  writeln('  --title=<string> : the title of the wiki. default: ',Converter.ImagesDir);
+  writeln('  --title=<string> : the title of the wiki. default: "',Converter.Title,'"');
   writeln('  --nowarnurl=<string> : do not warn for URLs starting with this. Can be given multiple times.');
   writeln('  <inputfile> : wiki page in xml format, can be given multiple times');
   writeln('     Duplicates are ignored.');

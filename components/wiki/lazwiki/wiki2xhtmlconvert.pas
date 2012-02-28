@@ -348,7 +348,7 @@ begin
     end;
 
   wptP, wptBold, wptItalic, wptStrikeTagShort, wptUnderlineTag, wptTT,
-  wptSup, wptSub, wptSmall, wptSpan, wptString, wptVar, wptKey,
+  wptSup, wptSub, wptSmall, wptEm, wptSpan, wptString, wptVar, wptKey,
   wptPre, wptCenter,
   wptBulletList, wptNumberedList, wptDefinitionList,
   wptTable, wptTableRow, wptTableCell, wptTableHeadCell,

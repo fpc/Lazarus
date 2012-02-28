@@ -133,7 +133,7 @@ var
   Filename: String;
 begin
   Filename:=PageToFilename(Page,true);
-  DebugLn(['TWiki2HTMLConverter.SavePage ',Filename]);
+  //DebugLn(['TWiki2HTMLConverter.SavePage ',Filename]);
   ms:=TMemoryStream.Create;
   try
     SavePageToStream(Page,ms);
