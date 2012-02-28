@@ -39,6 +39,20 @@ uses
   {$ENDIF}
   WikiParser, WikiFormat;
 
+const
+  IgnorePrefixes: array[1..11] of string = (
+    'Special:',
+    'Help:',
+    'Random:',
+    'User:',
+    'http:',
+    'https:',
+    'doc:',
+    'Category:',
+    'User:',
+    'User_talk:',
+    'index.php'
+    );
 type
 
   { TFetchWikiPage }
@@ -54,6 +68,7 @@ type
   private
     FBaseURL: string;
     FFirstPage: string;
+    FIgnoreFilesYoungerThanMin: integer;
     FImagesDir: string;
     FNoWrite: boolean;
     FOutputDir: string;
@@ -63,6 +78,7 @@ type
   protected
     procedure DoRun; override;
     procedure GetAll;
+    procedure GetRecent(Days: integer);
     procedure DownloadPage(Page: string);
     procedure DownloadFirstNeededPage;
     procedure CheckNotUsedPages(Show, Delete: boolean);
@@ -76,6 +92,7 @@ type
     function PageToFilename(Page: string; IsInternalLink: boolean): string;
     function ImageToFilename(Image: string; IsInternalLink, KeepScheme: boolean): string;
     function EscapeDocumentName(aName: string): string;
+    function IsIgnoredPage(Page: string): boolean;
     procedure Test;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -85,6 +102,7 @@ type
     property ImagesDir: string read FImagesDir;
     property BaseURL: string read FBaseURL;
     property NoWrite: boolean read FNoWrite;
+    property IgnoreFilesYoungerThanMin: integer read FIgnoreFilesYoungerThanMin;
   end;
 
 { TWikiGet }
@@ -109,10 +127,12 @@ var
   ErrorMsg: String;
   i: Integer;
   Param: String;
+  NeedSinglePage: Boolean;
+  RecentDays: Integer;
 begin
   //Test;
   // quick check parameters
-  ErrorMsg:=CheckOptions('h','help dir: images: baseurl: page: allmissing nowrite'
+  ErrorMsg:=CheckOptions('h','help dir: images: baseurl: page: allmissing recent: ignore-recent: nowrite'
     +' shownotusedpages deletenotusedpages'
     +' shownotusedimages deletenotusedimages');
   if ErrorMsg<>'' then
@@ -151,18 +171,33 @@ begin
   if copy(BaseURL,1,7)<>'http://' then
     E('invalid baseurl "'+BaseURL+'"');
 
-  if HasOption('allmissing') then begin
-    GetAll;
-  end else begin
-    for i:=1 to GetParamCount do begin
-      Param:=GetParams(i);
-      //writeln('TWikiGet.DoRun Param="',Param,'"');
-      if copy(Param,1,length(pPage))=pPage then
-        NeedWikiPage(WikiInternalLinkToPage(copy(Param,length(pPage)+1,length(Param))));
-    end;
-    if FNeededPages.Tree.Count=0 then
-      E('nothing to do',true);
+  if HasOption('ignore-recent') then begin
+    fIgnoreFilesYoungerThanMin:=StrToIntDef(GetOptionValue('ignore-recent'),-1);
+    if IgnoreFilesYoungerThanMin<0 then
+      E('invalid --ignore-recent value "'+GetOptionValue('ignore-recent')+'"');
   end;
+
+  NeedSinglePage:=true;
+  if HasOption('allmissing') or HasOption('recent') then begin
+    NeedSinglePage:=false;
+    RecentDays:=-1;
+    if HasOption('recent') then begin
+      RecentDays:=StrToIntDef(GetOptionValue('recent'),-1);
+      if RecentDays<1 then
+        E('invalid --recent value "'+GetOptionValue('recent')+'"');
+    end;
+    GetAll;
+    if RecentDays>0 then
+      GetRecent(RecentDays);
+  end;
+  for i:=1 to GetParamCount do begin
+    Param:=GetParams(i);
+    //writeln('TWikiGet.DoRun Param="',Param,'"');
+    if copy(Param,1,length(pPage))=pPage then
+      NeedWikiPage(WikiInternalLinkToPage(copy(Param,length(pPage)+1,length(Param))));
+  end;
+  if (NeedSinglePage) and (FNeededPages.Tree.Count=0) then
+    E('nothing to do',true);
 
   while FNeededPages.Tree.Count>0 do
     DownloadFirstNeededPage;
@@ -177,18 +212,6 @@ begin
 end;
 
 procedure TWikiGet.GetAll;
-const
-  IgnorePrefixes: array[1..9] of string = (
-    'Special:',
-    'Help:',
-    'Random:',
-    'User:',
-    'http:',
-    'https:',
-    'doc:',
-    'Category:',
-    'index.php'
-    );
 var
   Client: TFPHTTPClient;
   Response: TMemoryStream;
@@ -199,7 +222,6 @@ var
   StartPos: SizeInt;
   URLs: TStringList;
   i: Integer;
-  j: Integer;
   Page: String;
   SaveTOC: Boolean;
 begin
@@ -270,21 +292,13 @@ begin
           Page:=copy(s,StartPos,p-StartPos);
           while (Page<>'') and (Page[1]='/') do
             System.Delete(Page,1,1);
-          if (Page<>'') then begin;
-            j:=low(IgnorePrefixes);
-            while j<=high(IgnorePrefixes) do begin
-              if copy(Page,1,length(IgnorePrefixes[j]))=IgnorePrefixes[j] then
-                break;
-              inc(j);
-            end;
-            if j>high(IgnorePrefixes) then begin
-              //writeln('TWikiGet.GetAll Page="',Page,'"');
-              Filename:=PageToFilename(Page,false);
-              AddWikiPage(Page);
-              if not FileExistsUTF8(Filename) then begin
-                writeln('TWikiGet.GetAll missing Page="',Page,'"');
-                NeedWikiPage(Page);
-              end;
+          if (Page<>'') and (not IsIgnoredPage(Page)) then begin;
+            //writeln('TWikiGet.GetAll Page="',Page,'"');
+            Filename:=PageToFilename(Page,false);
+            AddWikiPage(Page);
+            if not FileExistsUTF8(Filename) then begin
+              writeln('TWikiGet.GetAll missing Page="',Page,'"');
+              NeedWikiPage(Page);
             end;
           end;
           System.Delete(s,1,p);
@@ -293,6 +307,80 @@ begin
     end;
   finally
     URLs.Free;
+    Client.Free;
+    Response.Free;
+  end;
+end;
+
+procedure TWikiGet.GetRecent(Days: integer);
+const
+  linksstart = '<a href="/index.php?title=';
+var
+  Client: TFPHTTPClient;
+  Response: TMemoryStream;
+  URL: String;
+  s: string;
+  Page: String;
+  href: String;
+  p: SizeInt;
+  Filename: String;
+  NowDate: LongInt;
+  AgeInMin: Integer;
+  CheckedPages: TStringToStringTree;
+begin
+  //writeln('TWikiGet.GetRecent Days=',Days);
+  Client:=nil;
+  CheckedPages:=TStringToStringTree.Create(true);
+  try
+    Client:=TFPHTTPClient.Create(nil);
+    Response:=TMemoryStream.Create;
+    URL:=BaseURL+'index.php?title=Special:Recentchanges&days='+IntToStr(Days)+'&limit=500';
+    writeln('getting page "',URL,'" ...');
+    Client.Get(URL,Response);
+    //Client.ResponseHeaders.SaveToFile('responseheaders.txt');
+    //Response.SaveToFile('test.html');
+    NowDate:=DateTimeToFileDate(Now);
+    if Response.Size>0 then begin
+      SetLength(s,Response.Size);
+      Response.Position:=0;
+      Response.Read(s[1],length(s));
+      repeat
+        // find next a href tag
+        p:=Pos(linksstart,s);
+        if p<1 then break;
+        Delete(s,1,p+length(linksstart)-1);
+        // get href attribute
+        p:=1;
+        while (p<=length(s)) and (not (s[p] in ['"'])) do inc(p);
+        if p>length(s) then break;
+        href:=LeftStr(s,p-1);
+        //writeln('TWikiGet.GetRecent href="'+href+'"');
+        Delete(s,1,p);
+        if Pos('&amp;diff=',href)<1 then begin
+          // this is not a change
+          continue;
+        end;
+        // a change
+        Page:=LeftStr(href,Pos('&',href)-1);
+        //writeln('TWikiGet.GetRecent page="'+Page+'"');
+        if CheckedPages.Contains(Page) then continue;
+        if IsIgnoredPage(Page) then continue;
+        if FNeededPages.Contains(Page) then continue;
+        CheckedPages[Page]:='1';
+        Filename:=PageToFilename(Page,false);
+        //writeln('TWikiGet.GetRecent recent diff page="'+Page+'" File="',Filename,'"');
+        if FileExistsUTF8(Filename) then begin
+          AgeInMin:=(NowDate-FileAgeUTF8(Filename)) div 60;
+          //writeln('TWikiGet.GetRecent FileAge=',AgeInMin,' Ignore=',IgnoreFilesYoungerThanMin,' File="',Filename,'"');
+          if AgeInMin<IgnoreFilesYoungerThanMin then continue;
+        end;
+        writeln('  recently changed: "',Page,'" File="',Filename,'"');
+        NeedWikiPage(Page);
+      until false;
+    end;
+
+  finally
+    CheckedPages.Free;
     Client.Free;
     Response.Free;
   end;
@@ -594,6 +682,17 @@ begin
     Delete(Result,1,1);
 end;
 
+function TWikiGet.IsIgnoredPage(Page: string): boolean;
+var
+  i: Integer;
+begin
+  for i:=low(IgnorePrefixes) to high(IgnorePrefixes) do begin
+    if LeftStr(Page,length(IgnorePrefixes[i]))=IgnorePrefixes[i] then
+      exit(true);
+  end;
+  Result:=false;
+end;
+
 procedure TWikiGet.Test;
 
   procedure w(URL: string);
@@ -628,6 +727,7 @@ begin
   FAllPages:=TStringToPointerTree.Create(true);
   FNeededPages:=TStringToPointerTree.Create(true);
   FAllImages:=TStringToStringTree.Create(true);
+  FIgnoreFilesYoungerThanMin:=60;
 end;
 
 destructor TWikiGet.Destroy;
@@ -647,14 +747,22 @@ begin
   writeln('--baseurl=<URL>       : URL of the wiki. Default: ',BaseURL);
   writeln('--page=<pagename>     : download this wiki page. Can be given multiple times.');
   writeln('--allmissing          : download all wiki pages, if file not already there.');
+  writeln('--recent=<days>       : download pages again if changed in the last days on the site.');
+  writeln('                        includes --allmissing.');
+  writeln('--ignore-recent=<minutes> : do not download again files younger than this on disk.');
+  writeln('                        combine with --recent. Default: ',IgnoreFilesYoungerThanMin);
   writeln('--shownotusedpages    : show not used files in the output directory.');
   writeln('--deletenotusedpages  : delete the files in the output directory that are not used.');
   writeln('--shownotusedimages   : show not used files in the images directory.');
   writeln('--deletenotusedimages : delete the files in the images directory that are not used.');
   writeln('--nowrite             : do not write files, just print what would be written.');
   writeln;
-  writeln('Example:');
-  writeln('  ',ExeName,' --dir=. --images=images --page=Install_Packages');
+  writeln('Example: download one page');
+  writeln('  ',ExeName,' --dir=html --images=images --page=Install_Packages');
+  writeln('Example: download the whole wiki');
+  writeln('  ',ExeName,' --allmissing');
+  writeln('Example: call this to download new files once per week');
+  writeln('  ',ExeName,' --recent=8');
 end;
 
 var
