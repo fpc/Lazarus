@@ -309,6 +309,12 @@ var
       +' Token='+dbgs(Token.Token)+' '+DbgSName(Token)+' CurNode='+Page.CurNode.TagName);
   end;
 
+  procedure MissingNodeName;
+  begin
+    raise Exception.Create('TWiki2XHTMLConverter.OnWikiToken have no node name:'
+      +' Token='+dbgs(Token.Token)+' '+DbgSName(Token));
+  end;
+
 var
   doc: TXMLDocument;
   NodeName: string;
@@ -367,6 +373,7 @@ begin
       wptSup: NodeName:='sup';
       wptSub: NodeName:='sub';
       wptSmall: NodeName:='small';
+      wptEm: NodeName:='em';
       wptSpan: NodeName:='span';
       wptString: begin NodeName:='span'; NodeClass:='string'; end;
       wptVar: begin NodeName:='span'; NodeClass:='var'; end;
@@ -406,6 +413,8 @@ begin
           end;
         end;
       end;
+      if NodeName='' then
+        MissingNodeName;
 
       if Token.Range=wprOpen then begin
         Node:=doc.CreateElement(NodeName);
@@ -509,7 +518,8 @@ begin
       Txt:=UTF8Trim(Txt,[u8tKeepEnd]);
   end;
   //debugln(['TWiki2XHTMLConverter.InsertText Node="',Page.CurNode.TagName,'" Text="',Txt,'"']);
-  Page.CurNode.AppendChild(doc.CreateTextNode(EncodeLesserAndGreaterThan(Txt)));
+  Txt:=EncodeLesserAndGreaterThan(Txt);
+  Page.CurNode.AppendChild(doc.CreateTextNode(Txt));
 end;
 
 procedure TWiki2XHTMLConverter.InsertCode(Token: TWPNameValueToken);
