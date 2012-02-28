@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="LazWiki"/>
+    <Author Value="Mattias Gaertner mattias@freepascal.org"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <MsgFileName Value=""/>
+        </CompilerMessages>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Parsing wiki exports, converters for fpdoc and html."/>
+    <License Value="GPL-2"/>
+    <Version Major="1" Release="1"/>
+    <Files Count="15">
+      <Item1>
+        <Filename Value="wiki2fpdocconvert.pas"/>
+        <UnitName Value="Wiki2FPDocConvert"/>
+      </Item1>
+      <Item2>
+        <Filename Value="wikiformat.pas"/>
+        <UnitName Value="WikiFormat"/>
+      </Item2>
+      <Item3>
+        <Filename Value="wiki2xhtmlconvert.pas"/>
+        <UnitName Value="Wiki2XHTMLConvert"/>
+      </Item3>
+      <Item4>
+        <Filename Value="wiki2chmconvert.pas"/>
+        <UnitName Value="Wiki2CHMConvert"/>
+      </Item4>
+      <Item5>
+        <Filename Value="wikiparser.pas"/>
+        <UnitName Value="WikiParser"/>
+      </Item5>
+      <Item6>
+        <Filename Value="wiki2htmlconvert.pas"/>
+        <UnitName Value="Wiki2HTMLConvert"/>
+      </Item6>
+      <Item7>
+        <Filename Value="wikichmwriter.pas"/>
+        <UnitName Value="wikichmwriter"/>
+      </Item7>
+      <Item8>
+        <Filename Value="wikichmfilewriter.pas"/>
+        <UnitName Value="wikichmfilewriter"/>
+      </Item8>
+      <Item9>
+        <Filename Value="wikichmobjinstconst.inc"/>
+        <Type Value="Include"/>
+      </Item9>
+      <Item10>
+        <Filename Value="wikichmfiftimain.pas"/>
+        <UnitName Value="wikichmfiftimain"/>
+      </Item10>
+      <Item11>
+        <Filename Value="wikichmsitemap.pas"/>
+        <UnitName Value="wikichmsitemap"/>
+      </Item11>
+      <Item12>
+        <Filename Value="wikichmtypes.pas"/>
+        <UnitName Value="wikichmtypes"/>
+      </Item12>
+      <Item13>
+        <Filename Value="wikichmbase.pas"/>
+        <UnitName Value="wikichmbase"/>
+      </Item13>
+      <Item14>
+        <Filename Value="wikihtmlindexer.pas"/>
+        <UnitName Value="wikihtmlindexer"/>
+      </Item14>
+      <Item15>
+        <Filename Value="wikichmspecialfiles.pas"/>
+        <UnitName Value="wikichmspecialfiles"/>
+      </Item15>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="CodeTools"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LazUtils"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
