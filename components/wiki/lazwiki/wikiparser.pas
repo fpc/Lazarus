@@ -1104,7 +1104,7 @@ begin
         and FLanguageTags.DoIdentifier(NameP)
     then begin
       // special parse for different language
-      //debugln(['TWikiPage.Parse ',dbgs(Pointer(FCurP)),' ',FCurP^,' ',FindTagEnd(FCurP)-FCurP]);
+      //debugln(['TWikiPage.Parse code tag ',dbgs(Pointer(FCurP)),' tag=',GetIdentifier(NameP),' ',FindTagEnd(FCurP)-FCurP]);
       HandleCode;
     end else if TokenIs('<nowiki>') then begin
       ParseNoWiki;
@@ -1166,6 +1166,7 @@ begin
   FNameValueToken.ValueEndPos:=StrPos(p);
   FCurP:=FindTagEnd(p);
   FNameValueToken.SubToken:=wptCode;
+  //debugln(['TWikiPage.HandleCode name="',copy(Src,FNameValueToken.NameStartPos,FNameValueToken.NameEndPos-FNameValueToken.NameStartPos),'"']);
   DoToken(FNameValueToken);
   FLastEmitPos:=FCurP;
 end;

@@ -509,7 +509,7 @@ begin
       Txt:=UTF8Trim(Txt,[u8tKeepEnd]);
   end;
   //debugln(['TWiki2XHTMLConverter.InsertText Node="',Page.CurNode.TagName,'" Text="',Txt,'"']);
-  Page.CurNode.AppendChild(doc.CreateTextNode(Txt));
+  Page.CurNode.AppendChild(doc.CreateTextNode(EncodeLesserAndGreaterThan(Txt)));
 end;
 
 procedure TWiki2XHTMLConverter.InsertCode(Token: TWPNameValueToken);
