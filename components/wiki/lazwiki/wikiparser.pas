@@ -21,6 +21,7 @@ ToDo:
   links without brackets: http://...  see bidimode
   div, div class="key", font: this is pure HTML and maybe should be better fixed in the wiki
   attributes in pre  <pre>'''Text'''</pre> see page BidiMode
+  code in list items, see Compile_and_Develop_on_Maemo_device
 }
 unit WikiParser;
 
