@@ -5847,6 +5847,8 @@ begin
           if P <> nil then
             Result := Result + GTK_Widget(P)^.requisition.Height;
         end;
+        if compositeManagerRunning then
+          inc(Result, FCachedBorderSize);
       end;
     SM_CYSMCAPTION:
       begin
