@@ -1201,16 +1201,17 @@ procedure TChartArrow.Draw(
   APen: TFPCustomPen);
 var
   da: Double;
-  pt, pt1, pt2, ptBase: TPoint;
+  diag: Integer;
+  pt1, pt2, ptBase: TPoint;
 begin
   if not Visible then exit;
   da := ArcTan2(Width, Length);
 
-  pt := Point(-ADrawer.Scale(Round(Sqrt(Sqr(Length) + Sqr(Width)))), 0);
-  pt1 := AEndPos + RotatePoint(pt, AAngle - da);
-  pt2 := AEndPos + RotatePoint(pt, AAngle + da);
+  diag := -ADrawer.Scale(Round(Sqrt(Sqr(Length) + Sqr(Width))));
+  pt1 := AEndPos + RotatePointX(diag, AAngle - da);
+  pt2 := AEndPos + RotatePointX(diag, AAngle + da);
   if BaseLength > 0 then begin
-    ptBase := AEndPos + RotatePoint(Point(-ADrawer.Scale(BaseLength), 0), AAngle);
+    ptBase := AEndPos + RotatePointX(-ADrawer.Scale(BaseLength), AAngle);
     ADrawer.SetBrushParams(bsSolid, FPColorToChartColor(APen.FPColor));
     ADrawer.Polygon([pt1, AEndPos, pt2, ptBase], 0, 4);
   end

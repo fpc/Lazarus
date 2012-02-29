@@ -225,8 +225,8 @@ begin
     lineExtent := FSimpleTextOut.SimpleTextExtent(FText2[i]);
     p := FPos;
     case FAlignment of
-      taCenter: p += RotatePoint(Point((FWidth - lineExtent.X) div 2, 0), a);
-      taRightJustify: p += RotatePoint(Point(FWidth - lineExtent.X, 0), a);
+      taCenter: p += RotatePointX((FWidth - lineExtent.X) div 2, a);
+      taRightJustify: p += RotatePointX(FWidth - lineExtent.X, a);
     end;
     FSimpleTextOut.SimpleTextOut(p.X, p.Y, FText2[i]);
     FPos += RotatePoint(Point(0, lineExtent.Y + LINE_INTERVAL), a);

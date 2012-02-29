@@ -346,7 +346,7 @@ function TCustomPieSeries.TryRadius(ADrawer: IChartDrawer): TRect;
 
   function EndPoint(AAngle, ARadius: Double): TPoint;
   begin
-    Result := RotatePoint(Point(Round(ARadius), 0), -AAngle);
+    Result := RotatePointX(ARadius, -AAngle);
   end;
 
   function LabelExtraDist(APoly: TPointArray; AAngle: Double): Double;

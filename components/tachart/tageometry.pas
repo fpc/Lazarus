@@ -58,6 +58,7 @@ function RectIntersectsRect(
   var ARect: TDoubleRect; const AFixed: TDoubleRect): Boolean;
 function RotatePoint(const APoint: TDoublePoint; AAngle: Double): TDoublePoint; overload;
 function RotatePoint(const APoint: TPoint; AAngle: Double): TPoint; overload;
+function RotatePointX(AX, AAngle: Double): TPoint;
 function RotateRect(const ASize: TPoint; AAngle: Double): TPointArray;
 
 operator +(const A: TPoint; B: TSize): TPoint; overload; inline;
@@ -134,17 +135,15 @@ procedure ExpandRect(
   var ARect: TRect; const ACenter: TPoint; ARadius: Integer;
   AAngle1, AAngle2: Double);
 var
-  p: TPoint;
   i, j: Integer;
 begin
-  p := Point(ARadius, 0);
   EnsureOrder(AAngle1, AAngle2);
-  ExpandRect(ARect, RotatePoint(p, AAngle1) + ACenter);
-  ExpandRect(ARect, RotatePoint(p, AAngle2) + ACenter);
+  ExpandRect(ARect, RotatePointX(ARadius, AAngle1) + ACenter);
+  ExpandRect(ARect, RotatePointX(ARadius, AAngle2) + ACenter);
   j := Floor(AAngle1 / Pi * 2);
   for i := j to j + 4 do
     if InRange(Pi / 2 * i, AAngle1, AAngle2) then
-      ExpandRect(ARect, RotatePoint(p, Pi / 2 * i) + ACenter);
+      ExpandRect(ARect, RotatePointX(ARadius, Pi / 2 * i) + ACenter);
 end;
 
 function IsPointOnLine(const AP, A1, A2: TPoint): Boolean;
@@ -405,6 +404,15 @@ begin
   SinCos(AAngle, sa, ca);
   Result.X := Round(ca * APoint.X - sa * APoint.Y);
   Result.Y := Round(sa * APoint.X + ca * APoint.Y);
+end;
+
+function RotatePointX(AX, AAngle: Double): TPoint;
+var
+  sa, ca: Extended;
+begin
+  SinCos(AAngle, sa, ca);
+  Result.X := Round(ca * AX);
+  Result.Y := Round(sa * AX);
 end;
 
 function RotateRect(const ASize: TPoint; AAngle: Double): TPointArray;
