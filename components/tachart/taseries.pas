@@ -654,12 +654,12 @@ begin
       lsHorizontal: begin
         p := YGraphToImage(AxisToGraphX(Position));
         DrawLineHoriz(ADrawer, p);
-        Arrow.Draw(ADrawer, Point(ClipRect.Right - 1, p), 0);
+        Arrow.Draw(ADrawer, Point(ClipRect.Right - 1, p), 0, Pen);
       end;
       lsVertical: begin
         p := XGraphToImage(AxisToGraphX(Position));
         DrawLineVert(ADrawer, p);
-        Arrow.Draw(ADrawer, Point(p, ClipRect.Top), -Pi / 2);
+        Arrow.Draw(ADrawer, Point(p, ClipRect.Top), -Pi / 2, Pen);
       end;
     end;
 end;

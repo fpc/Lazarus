@@ -381,16 +381,22 @@ type
 
   TChartArrow = class(TChartElement)
   strict private
+    FBaseLength: TChartDistance;
     FLength: TChartDistance;
     FWidth: TChartDistance;
+    procedure SetBaseLength(AValue: TChartDistance);
     procedure SetLength(AValue: TChartDistance);
     procedure SetWidth(AValue: TChartDistance);
   public
     constructor Create(AOwner: TCustomChart);
   public
     procedure Assign(ASource: TPersistent); override;
-    procedure Draw(ADrawer: IChartDrawer; const AEndPos: TPoint; AAngle: Double);
+    procedure Draw(
+      ADrawer: IChartDrawer; const AEndPos: TPoint; AAngle: Double;
+      APen: TFPCustomPen);
   published
+    property BaseLength: TChartDistance
+      read FBaseLength write SetBaseLength default 0;
     property Length: TChartDistance
       read FLength write SetLength default DEF_ARROW_LENGTH;
     property Visible default false;
@@ -1191,17 +1197,32 @@ begin
 end;
 
 procedure TChartArrow.Draw(
-  ADrawer: IChartDrawer; const AEndPos: TPoint; AAngle: Double);
+  ADrawer: IChartDrawer; const AEndPos: TPoint; AAngle: Double;
+  APen: TFPCustomPen);
 var
   da: Double;
-  pt: TPoint;
+  pt, pt1, pt2, ptBase: TPoint;
 begin
   if not Visible then exit;
-  da := ArcTan2(ADrawer.Scale(Width), ADrawer.Scale(Length));
+  da := ArcTan2(Width, Length);
+
   pt := Point(-ADrawer.Scale(Round(Sqrt(Sqr(Length) + Sqr(Width)))), 0);
-  ADrawer.Polyline([
-    AEndPos + RotatePoint(pt, AAngle - da), AEndPos,
-    AEndPos + RotatePoint(pt, AAngle + da)], 0, 3);
+  pt1 := AEndPos + RotatePoint(pt, AAngle - da);
+  pt2 := AEndPos + RotatePoint(pt, AAngle + da);
+  if BaseLength > 0 then begin
+    ptBase := AEndPos + RotatePoint(Point(-ADrawer.Scale(BaseLength), 0), AAngle);
+    ADrawer.SetBrushParams(bsSolid, FPColorToChartColor(APen.FPColor));
+    ADrawer.Polygon([pt1, AEndPos, pt2, ptBase], 0, 4);
+  end
+  else
+    ADrawer.Polyline([pt1, AEndPos, pt2], 0, 3);
+end;
+
+procedure TChartArrow.SetBaseLength(AValue: TChartDistance);
+begin
+  if FBaseLength = AValue then exit;
+  FBaseLength := AValue;
+  StyleChanged(Self);
 end;
 
 procedure TChartArrow.SetLength(AValue: TChartDistance);

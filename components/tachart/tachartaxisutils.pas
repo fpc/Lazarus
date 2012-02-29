@@ -349,7 +349,7 @@ begin
   if APen.Visible then
     LineZ(AStart, AEnd);
   if FAxis.Arrow.Visible then
-    FAxis.Arrow.Draw(FDrawer, AEnd + FZOffset, AAngle);
+    FAxis.Arrow.Draw(FDrawer, AEnd + FZOffset, AAngle, APen);
 end;
 
 function TAxisDrawHelper.IsInClipRange(ACoord: Integer): Boolean;
