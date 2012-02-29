@@ -4424,6 +4424,22 @@ begin
 
   if Valid then Result := HWND(gdk_window_foreign_new(ResultWindow));
 end;
+
+function TGtk2WidgetSet.compositeManagerRunning: Boolean;
+var
+  XDisplay: PDisplay;
+  WMAtom: TAtom;
+begin
+  Result := False;
+  // who's running such old composition manager ?
+  if (gtk_major_version = 2) and (gtk_minor_version < 10) then
+    exit;
+  XDisplay := gdk_display;
+  WMAtom := XInternAtom(XDisplay,'_NET_WM_CM_S0', False);
+  if WMAtom > 0 then
+    Result := XGetSelectionOwner(XDisplay, WMAtom) <> 0;
+end;
+
 {$ENDIF}
 {------------------------------------------------------------------------------
   procedure TGtk2WidgetSet.BringFormToFront(Sender: TObject);

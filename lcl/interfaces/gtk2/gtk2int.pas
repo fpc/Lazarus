@@ -306,6 +306,7 @@ type
     {$I gtk2lclintfh.inc}
   public
     {$IFDEF HASX}
+    function compositeManagerRunning: Boolean;
     function GetDesktopWidget: PGtkWidget;
     //function X11Raise(AHandle: HWND): boolean; currently not used
     function GetWindowManager: String;
