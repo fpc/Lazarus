@@ -357,6 +357,7 @@ begin
 
   // interactive design
   if (EventKind = kEventMouseDown)
+  and Assigned(Widget.LCLObject)
   and ((csDesigning in Widget.LCLObject.ComponentState) or (Widget is TCarbonDesignWindow))
   and (GetCarbonMouseButton(AEvent) = 1) then
   begin
