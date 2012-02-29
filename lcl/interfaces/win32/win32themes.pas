@@ -485,8 +485,16 @@ end;
 procedure TWin32ThemeServices.DrawText(ACanvas: TPersistent;
   Details: TThemedElementDetails; const S: String; R: TRect; Flags,
   Flags2: Cardinal);
+
+  function NotImplementedInXP: Boolean; inline;
+  begin
+    Result :=
+      ((Details.Element = teTreeview) and (Details.Part = TVP_TREEITEM)) or
+      (Details.Element = teToolTip);
+  end;
+
 begin
-  if (Details.Element = teTreeview) and (Details.Part = TVP_TREEITEM) and (WindowsVersion < wvVista) then
+  if NotImplementedInXP and (WindowsVersion < wvVista) then
   begin
     inherited;
     Exit;
