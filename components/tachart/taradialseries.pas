@@ -194,10 +194,15 @@ begin
 end;
 
 procedure TCustomPieSeries.Draw(ADrawer: IChartDrawer);
+const
+  STEP = 4;
 var
   prevAngle: Double = 0;
   prevLabelPoly: TPointArray = nil;
   ps: TPieSlice;
+  i, numSteps: Integer;
+  nextAngle: Double;
+  p: array of TPoint;
 begin
   if IsEmpty then exit;
 
@@ -205,6 +210,38 @@ begin
   Measure(ADrawer);
 
   ADrawer.PrepareSimplePen(clBlack);
+  if Depth > 0 then begin
+    prevAngle := 0;
+    for ps in FSlices do begin
+      nextAngle := prevAngle + ps.FAngle;
+      if ps.FVisible then begin
+        ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
+        if not InRange(nextAngle, Pi / 4, 5 * Pi / 4) then
+          ADrawer.DrawLineDepth(
+            ps.FBase, ps.FBase + RotatePointX(FRadius, -nextAngle), Depth);
+        if InRange(prevAngle, Pi / 4, 5 * Pi / 4) then
+          ADrawer.DrawLineDepth(
+            ps.FBase, ps.FBase + RotatePointX(FRadius, -prevAngle), Depth);
+      end;
+      prevAngle := nextAngle;
+    end;
+    prevAngle := 0;
+    for ps in FSlices do begin
+      nextAngle := prevAngle + ps.FAngle;
+      if ps.FVisible then begin
+        ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
+        numSteps := Round(2 * Pi * ps.FAngle * FRadius / STEP);
+        SetLength(p, 2 * numSteps);
+        for i := 0 to numSteps - 1 do begin
+          p[i] := ps.FBase + RotatePointX(FRadius, -prevAngle - ps.FAngle * i / (numSteps - 1));
+          p[High(p) - i] := p[i] + Point(Depth, -Depth);
+        end;
+        ADrawer.Polygon(p, 0, Length(p));
+      end;
+      prevAngle := nextAngle;
+    end;
+  end;
+  prevAngle := 0;
   for ps in FSlices do begin
     if ps.FVisible then begin
       ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
@@ -435,7 +472,11 @@ begin
         a := prevAngle + FAngle / 2;
         if Exploded and (di^.X > 0) then
           FBase += EndPoint(a, FRadius * di^.X);
-        ExpandRect(Result, FBase, FRadius, - prevAngle, - prevAngle - FAngle);
+        ExpandRect(Result, FBase, FRadius, -prevAngle, -prevAngle - FAngle);
+        if Depth > 0 then
+          ExpandRect(
+            Result, FBase + Point(Depth, -Depth),
+            FRadius, -prevAngle, -prevAngle - FAngle);
         FLabel.FAttachment := EndPoint(a, FRadius) + FBase;
         PrepareLabel(FLabel, i, a);
       end;

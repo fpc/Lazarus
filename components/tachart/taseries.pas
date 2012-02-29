@@ -111,6 +111,7 @@ type
 
   TPieSeries = class(TCustomPieSeries)
   published
+    property Depth;
     property Exploded;
     property FixedRadius;
     property MarkPositions;
