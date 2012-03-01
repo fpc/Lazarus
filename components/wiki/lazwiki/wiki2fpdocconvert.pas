@@ -38,6 +38,43 @@
   </package>
 </fpdoc>
 
+
+  wptText,  // TWPTextToken
+  wptAttribute, // e.g. class="code" TWPNameValueToken
+  wptLineBreak, // <br> /br> <br/>
+  wptBold,    // '''
+  wptItalic,  // ''
+  wptStrikeTagShort, // <s>
+  wptUnderlineTag, // <u>
+  wptTT, // <tt>
+  wptSup, // <sup>
+  wptSub, // <sub>
+  wptSmall, // <small>
+  wptEm, // <em>
+  wptString, // <string>
+  wptVar, // <var>
+  wptKey, // <key>
+  wptCmt, // <cmt>
+  wptSpan, // <span>
+  wptCode, // TWPNameValueToken
+  wptSpecial, // double curly bracket: title, shortcut like Ctrl+Shift+1
+  wptPre,  // space at line start
+  wptP, // paragraph
+  wptCenter, // <center>
+  wptInternLink, // [[]]
+  wptExternLink, // []
+  wptHorizontalRow, // ----
+  wptNumberedList, // #
+  wptBulletList, // *
+  wptDefinitionList, // : or ;
+  wptListItem,
+  wptTable, // wiki tag for table
+  wptTableRow, // wiki tag for table row
+  wptTableHeadCell, // wiki tag for table head cell
+  wptTableCell, // wiki tag for table cell
+  wptSection, // started/ended by =
+  wptHeader, // =Text=
+
 }
 unit Wiki2FPDocConvert;
 

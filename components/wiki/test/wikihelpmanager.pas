@@ -5,10 +5,27 @@ unit WikiHelpManager;
 interface
 
 uses
-  Classes, SysUtils, LazFileUtils, LazLogger, Wiki2HTMLConvert;
+  Classes, SysUtils, LazFileUtils, LazLogger, Wiki2HTMLConvert,
+  MTProcs;
 
 type
   TWikiHelp = class;
+
+  { TW2HelpPage
+    for future extensions and descendants }
+
+  TW2HelpPage = class(TW2HTMLPage)
+  public
+
+  end;
+
+  { TWiki2HelpConverter }
+
+  TWiki2HelpConverter = class(TWiki2HTMLConverter)
+  protected
+  public
+    constructor Create; override;
+  end;
 
   { TWikiHelpThread }
 
@@ -19,6 +36,7 @@ type
     procedure MainThreadLog;
     procedure Log(Msg: string);
     procedure OnScanComplete; // called in thread at end
+    procedure LoadWikiPage(Index: PtrInt; {%H-}Data: Pointer; {%H-}Item: TMultiThreadProcItem);
   public
     Help: TWikiHelp;
     XMLDirectory: string;
@@ -30,6 +48,7 @@ type
   TWikiHelp = class(TComponent)
   private
     FAborting: boolean;
+    FConverter: TWiki2HelpConverter;
     FImagesDirectory: string;
     FScanning: boolean;
     FXMLDirectory: string;
@@ -48,6 +67,7 @@ type
     property Aborting: boolean read FAborting;
     property XMLDirectory: string read FXMLDirectory write SetXMLDirectory; // directory where the wiki xml files are
     property ImagesDirectory: string read FImagesDirectory write SetImagesDirectory; // directory where the wiki image files are
+    property Converter: TWiki2HelpConverter read FConverter;
   end;
 
 var
@@ -55,12 +75,49 @@ var
 
 implementation
 
+{ TWiki2HelpConverter }
+
+constructor TWiki2HelpConverter.Create;
+begin
+  inherited Create;
+  fPageClass:=TW2HelpPage;
+end;
+
 { TWikiHelpThread }
 
 procedure TWikiHelpThread.Execute;
+var
+  FileInfo: TSearchRec;
+  Files: TStringList;
+  i: Integer;
+  Filename: String;
 begin
+  Files:=nil;
   try
     Log('TWikiHelpThread.Execute START XMLDirectory="'+XMLDirectory+'"');
+
+    Files:=TStringList.Create;
+    try
+      // get all wiki xml files
+      if FindFirstUTF8(XMLDirectory+AllFilesMask,faAnyFile,FileInfo)=0 then begin
+        repeat
+          if CompareFileExt(FileInfo.Name,'.xml',false)=0 then
+            Files.Add(FileInfo.Name);
+        until FindNextUTF8(FileInfo)<>0;
+      end;
+      FindCloseUTF8(FileInfo);
+
+      // add file names to converter
+      for i:=0 to Files.Count-1 do begin
+        Filename:=XMLDirectory+Files[i];
+        Help.Converter.AddWikiPage(Filename,false);
+      end;
+    finally
+      Files.Free;
+    end;
+
+    // load xml files
+    ProcThreadPool.DoParallel(@LoadWikiPage,0,Help.Converter.Count-1);
 
     Log('TWikiHelpThread.Execute SCAN complete XMLDirectory="'+XMLDirectory+'"');
   except
@@ -95,13 +152,22 @@ begin
   end;
 end;
 
+procedure TWikiHelpThread.LoadWikiPage(Index: PtrInt; Data: Pointer;
+  Item: TMultiThreadProcItem);
+var
+  Page: TW2HelpPage;
+begin
+  Page:=TW2HelpPage(Help.Converter.Pages[Index]);
+  Page.ParseWikiDoc;
+end;
+
 { TWikiHelp }
 
 procedure TWikiHelp.SetImagesDirectory(AValue: string);
 var
   NewDir: String;
 begin
-  NewDir:=AppendPathDelim(TrimFilename(AValue));
+  NewDir:=TrimAndExpandDirectory(TrimFilename(AValue));
   if FImagesDirectory=NewDir then Exit;
   FImagesDirectory:=NewDir;
 end;
@@ -110,7 +176,7 @@ procedure TWikiHelp.SetXMLDirectory(AValue: string);
 var
   NewDir: String;
 begin
-  NewDir:=AppendPathDelim(TrimFilename(AValue));
+  NewDir:=TrimAndExpandDirectory(TrimFilename(AValue));
   if FXMLDirectory=NewDir then Exit;
   FXMLDirectory:=NewDir;
 end;
@@ -129,11 +195,13 @@ constructor TWikiHelp.Create(AOwner: TComponent);
 begin
   InitCriticalSection(FCritSec);
   inherited Create(AOwner);
+  FConverter:=TWiki2HelpConverter.Create;
 end;
 
 destructor TWikiHelp.Destroy;
 begin
   Abort;
+  FreeAndNil(FConverter);
   inherited Destroy;
   DoneCriticalsection(FCritSec);
 end;

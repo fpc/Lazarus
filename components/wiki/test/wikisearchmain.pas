@@ -5,8 +5,8 @@ unit WikiSearchMain;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, IpHtml, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, WikiHelpManager;
+  Classes, SysUtils, FileUtil, IpHtml, Forms, Controls, Graphics,
+  Dialogs, StdCtrls, ExtCtrls, WikiHelpManager;
 
 type
 
@@ -46,6 +46,9 @@ begin
   WikiHelp:=TWikiHelp.Create(nil);
   WikiHelp.XMLDirectory:=SetDirSeparators('../wikixml');
   WikiHelp.ImagesDirectory:=SetDirSeparators('../images');
+  WikiHelp.Converter.OutputDir:='';
+  WikiHelp.Converter.CSSFilename:='wiki.css';
+
   WikiHelp.StartScan;
 end;
 

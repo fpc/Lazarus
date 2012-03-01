@@ -709,7 +709,7 @@ var
   Filename: String;
 begin
   inherited Convert;
-  if (CSSFilename<>'') then begin
+  if (CSSFilename<>'') and (OutputDir<>'') then begin
     Filename:=TrimAndExpandFilename(CSSFilename);
     if not FileExistsUTF8(Filename) then
       raise Exception.Create('css file not found: "'+Filename+'"');
@@ -722,7 +722,10 @@ end;
 
 function TWiki2XHTMLConverter.GetRelativeCSSFilename: string;
 begin
-  Result:=TrimAndExpandFilename(CSSFilename);
+  Result:=CSSFilename;
+  if (OutputDir='') or not FilenameIsAbsolute(OutputDir) then
+    exit;
+  Result:=TrimAndExpandFilename(Result);
   if Result='' then exit;
   Result:=CreateRelativePath(Result,OutputDir);
 end;

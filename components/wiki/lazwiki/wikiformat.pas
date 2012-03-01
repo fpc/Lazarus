@@ -62,6 +62,7 @@ type
     FOutputDir: string;
     fPages: TW2FormatPageList;
     FPageClass: TW2FormatPageClass;
+    fMultiReadExclusiveWrite: TMultiReadExclusiveWriteSynchronizer;
     function GetPages(Index: integer): TW2FormatPage;
     procedure SetOutputDir(AValue: string);
     procedure SetImagesDir(AValue: string);
@@ -73,9 +74,13 @@ type
     function AddWikiPage(Filename: string; ParseNow: boolean = true): TW2FormatPage;
     procedure Convert; virtual;
     function Count: integer;
+    procedure BeginRead;
+    procedure EndRead;
+    procedure BeginWrite;
+    procedure EndWrite;
     property Pages[Index: integer]: TW2FormatPage read GetPages; default;
     property PageClass: TW2FormatPageClass read FPageClass;
-    property OutputDir: string read FOutputDir write SetOutputDir; // the directory of the fpdoc files
+    property OutputDir: string read FOutputDir write SetOutputDir;
     property ImagesDir: string read FImagesDir write SetImagesDir;
     property Title: string read FTitle write SetTitle;
     property WarnMissingPageLinks: boolean read FWarnMissingPageLinks write FWarnMissingPageLinks; // warn if an internal link links to non existing page
@@ -87,6 +92,7 @@ function WikiPageToFilename(Page: string; IsInternalLink, AppendCaseID: boolean)
 function WikiFilenameToPage(Filename: string): string;
 function WikiImageToFilename(Image: string; IsInternalLink, InsertCaseID: boolean;
   KeepScheme: boolean = false): string;
+function WikiCreateCommonLanguageList(AddLazWikiLangs: boolean): TKeyWordFunctionList;
 
 implementation
 
@@ -123,6 +129,7 @@ end;
 
 constructor TWiki2FormatConverter.Create;
 begin
+  fMultiReadExclusiveWrite:=TMultiReadExclusiveWriteSynchronizer.Create;
   FPageClass:=TW2FormatPage;
   fPages:=TW2FormatPageList.Create;
   FTitle:='FPC/Lazarus Wiki (offline, generated '+DatetoStr(Now)+')';
@@ -136,6 +143,7 @@ begin
   FreeAndNil(FNoWarnBaseURLs);
   FreeAndNil(fPages);
   inherited Destroy;
+  FreeAndNil(fMultiReadExclusiveWrite);
 end;
 
 procedure TWiki2FormatConverter.Clear;
@@ -193,6 +201,26 @@ end;
 function TWiki2FormatConverter.Count: integer;
 begin
   Result:=fPages.Count;
+end;
+
+procedure TWiki2FormatConverter.BeginRead;
+begin
+  fMultiReadExclusiveWrite.Beginread;
+end;
+
+procedure TWiki2FormatConverter.EndRead;
+begin
+  fMultiReadExclusiveWrite.Endread;
+end;
+
+procedure TWiki2FormatConverter.BeginWrite;
+begin
+  fMultiReadExclusiveWrite.Beginwrite;
+end;
+
+procedure TWiki2FormatConverter.EndWrite;
+begin
+  fMultiReadExclusiveWrite.Endwrite;
 end;
 
 { TW2FormatPage }
@@ -323,6 +351,27 @@ begin
   if InsertCaseID then
     id:='.'+WikiPageToCaseID(Result+Ext); // Note: compute case id with extension
   Result:=Result+id+'.'+Ext;
+end;
+
+function WikiCreateCommonLanguageList(AddLazWikiLangs: boolean): TKeyWordFunctionList;
+begin
+  Result:=TKeyWordFunctionList.Create('LanguageTags');
+  with Result do begin
+    Add('code',@AllwaysTrue);
+    Add('source',@AllwaysTrue);
+    Add('pascal',@AllwaysTrue);
+    Add('delphi',@AllwaysTrue);
+    if AddLazWikiLangs then begin
+      Add('bash',@AllwaysTrue);
+      Add('java',@AllwaysTrue);
+      Add('javascript',@AllwaysTrue);
+      Add('xml',@AllwaysTrue);
+      Add('perl',@AllwaysTrue);
+      Add('python',@AllwaysTrue);
+      Add('sql',@AllwaysTrue);
+      Add('objc',@AllwaysTrue);
+    end;
+  end;
 end;
 
 end.

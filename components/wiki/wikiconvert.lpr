@@ -257,21 +257,7 @@ constructor TWiki2FPDocApplication.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   StopOnException:=True;
-  FLanguageTags:=TKeyWordFunctionList.Create('LanguageTags');
-  with FLanguageTags do begin
-    Add('code',@AllwaysTrue);
-    Add('source',@AllwaysTrue);
-    Add('pascal',@AllwaysTrue);
-    Add('delphi',@AllwaysTrue);
-    Add('bash',@AllwaysTrue);
-    Add('java',@AllwaysTrue);
-    Add('javascript',@AllwaysTrue);
-    Add('xml',@AllwaysTrue);
-    Add('perl',@AllwaysTrue);
-    Add('python',@AllwaysTrue);
-    Add('sql',@AllwaysTrue);
-    Add('objc',@AllwaysTrue);
-  end;
+  FLanguageTags:=WikiCreateCommonLanguageList(true);
   FFPDocConverter:=TWiki2FPDocConverter.Create;
   FPDocConverter.LanguageTags:=LanguageTags;
   FXHTMLConverter:=TWiki2XHTMLConverter.Create;
