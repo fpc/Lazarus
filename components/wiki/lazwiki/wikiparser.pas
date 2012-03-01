@@ -61,10 +61,10 @@ type
     wptKey, // <key>
     wptCmt, // <cmt>
     wptSpan, // <span>
+    wptCode, // TWPNameValueToken
     wptSpecial, // {{text}}
     wptPre,  // space at line start
     wptPreTag,  // <pre>
-    wptCode, // TWPNameValueToken
     wptP, // paragraph
     wptPTag, // <p>
     wptDivTag, // <div>
@@ -148,10 +148,10 @@ const
     (Caption: 'Key'; Flags: []; Group: wpgFont; BaseToken: wptKey), // wptKey,
     (Caption: 'Cmt'; Flags: []; Group: wpgFont; BaseToken: wptCmt), // wptCmt,
     (Caption: 'Span'; Flags: []; Group: wpgFont; BaseToken: wptSpan), // wptSpan,
+    (Caption: 'Code'; Flags: []; Group: wpgFont; BaseToken: wptCode), // wptCode,
     (Caption: 'Special'; Flags: []; Group: wpgFont; BaseToken: wptSpecial), // wptSpecial,
     (Caption: 'Pre'; Flags: []; Group: wpgParagraph; BaseToken: wptPre), // wptPre,
     (Caption: 'PreTag'; Flags: []; Group: wpgParagraph; BaseToken: wptPre), // wptPreTag,
-    (Caption: 'Code'; Flags: []; Group: wpgParagraph; BaseToken: wptCode), // wptCode,
     (Caption: 'P'; Flags: []; Group: wpgParagraph; BaseToken: wptP), // wptP,
     (Caption: 'PTag'; Flags: []; Group: wpgParagraph; BaseToken: wptP), // wptPTag,
     (Caption: 'DivTag'; Flags: []; Group: wpgParagraph; BaseToken: wptP), // wptDivTag,

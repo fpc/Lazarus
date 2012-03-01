@@ -592,6 +592,7 @@ begin
   if (CurName='pascal')
   or (CurName='delphi')
   or (CurName='code')
+  or (CurName='source')
   or (CurName='fpc')
   then
     CurName:='pascal';

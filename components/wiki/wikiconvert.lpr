@@ -260,6 +260,7 @@ begin
   FLanguageTags:=TKeyWordFunctionList.Create('LanguageTags');
   with FLanguageTags do begin
     Add('code',@AllwaysTrue);
+    Add('source',@AllwaysTrue);
     Add('pascal',@AllwaysTrue);
     Add('delphi',@AllwaysTrue);
     Add('bash',@AllwaysTrue);
