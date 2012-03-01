@@ -9,7 +9,10 @@ Downloading the wiki:
 Compile wikiget.lpi
 
 Download all pages and images:
-./wikiget --dir=wikixml --allmissing
+./wikiget --allmissing
+
+Download changes of last 2 days
+./wikiget --recent=2 --deletenotusedpages --deletenotusedimages
 
 Note: you can stop/kill the tool at any time and run it again. It will download
 only the missing files.

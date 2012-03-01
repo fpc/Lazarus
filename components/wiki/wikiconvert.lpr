@@ -269,6 +269,7 @@ begin
     Add('perl',@AllwaysTrue);
     Add('python',@AllwaysTrue);
     Add('sql',@AllwaysTrue);
+    Add('objc',@AllwaysTrue);
   end;
   FFPDocConverter:=TWiki2FPDocConverter.Create;
   FPDocConverter.LanguageTags:=LanguageTags;

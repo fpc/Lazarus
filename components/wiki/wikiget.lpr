@@ -18,9 +18,8 @@
   to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
   MA 02111-1307, USA.
 
-
 ToDo:
-  - option to download only files changed in last n days.
+  - get more than 500 changes
 }
 program wikiget;
 

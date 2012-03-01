@@ -29,6 +29,7 @@ unit WikiParser;
 
 { $DEFINE VerboseWikiStack}
 { $DEFINE VerboseWikiOnToken}
+{ $DEFINE VerboseUnknownOpenTags}
 
 interface
 
@@ -1038,9 +1039,11 @@ procedure TWikiPage.HandleAngleBracket;
   begin
     // unknown tag
     if Verbosity>=wpvWarning then begin
-      if IsWikiTagStartChar[FCurP[1]] then
-        debugln('WARNING: TWikiPage.Parse unknown opening tag: <'+GetIdentifier(FCurP+1),'> at ',PosToStr(FCurP,true))
-      else if (FCurP[1]='/') and IsWikiTagStartChar[FCurP[2]] then
+      if IsWikiTagStartChar[FCurP[1]] then begin
+        {$IFDEF VerboseUnknownOpenTags}
+        debugln('WARNING: TWikiPage.Parse unknown opening tag: <'+GetIdentifier(FCurP+1),'> at ',PosToStr(FCurP,true));
+        {$ENDIF}
+      end else if (FCurP[1]='/') and IsWikiTagStartChar[FCurP[2]] then
         debugln('WARNING: TWikiPage.Parse unknown closing tag: </'+GetIdentifier(FCurP+2),'> at ',PosToStr(FCurP,true))
       else
         debugln('WARNING: TWikiPage.Parse broken close tag at ',PosToStr(FCurP,true));
