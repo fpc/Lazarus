@@ -974,6 +974,8 @@ begin
 end;
 
 procedure TWikiPage.HandleEdgedBracketOpen;
+var
+  p: PChar;
 begin
   if FCurP[1] in [#0..#31,' '] then begin
     inc(FCurP);
@@ -996,6 +998,11 @@ begin
   end else begin
     // external link
     // for example [url|caption] or [url caption]
+    p:=FCurP;
+    if not IsIdentStartChar[p^] then exit; // not a valid scheme
+    inc(p);
+    while IsIdentChar[p^] do inc(p);
+    if (p^<>':') or (p[1]<>'/') or (p[2]<>'/') then exit; // not a valid scheme
     FLinkToken.SubToken:=wptExternLink;
     FLinkToken.LinkStartPos:=StrPos(FCurP);
     while not (FCurP^ in [#0..#31, ' ' , '|' , ']']) do inc(FCurP);
@@ -1013,6 +1020,7 @@ begin
       FLinkToken.CaptionEndPos:=FLinkToken.LinkEndPos;
     end;
   end;
+
   if (BaseURL<>'')
   and (LeftStr(FLinkToken.Link,length(BaseURL))=BaseURL) then begin
     // a link to a wiki page, but with full URL => shorten
@@ -1021,6 +1029,7 @@ begin
     while (FLinkToken.Link<>'') and (FLinkToken.Link[1]='/') do
       Delete(FLinkToken.Link,1,1);
   end;
+
   if FCurP^='|' then begin
     // link with caption
     inc(FCurP);
