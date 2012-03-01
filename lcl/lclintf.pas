@@ -82,6 +82,9 @@ function FindDefaultBrowser(out ABrowser, AParams: String): Boolean;
 function OpenURL(AURL: String): Boolean;
 function OpenDocument(APath: String): Boolean;
 
+var
+  OnShowSelectItemDialogResult: TOnShowSelectItemDialogResult;
+
 implementation
 
 type

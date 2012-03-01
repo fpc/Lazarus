@@ -188,7 +188,6 @@ type
   private
     DragDropStarted: boolean;
     FCaretTimer: TTimer;
-    FEditState: TCDEditStateEx; // Points to the same object as FStateEx, so don't Free!
     function GetLeftTextMargin: Integer;
     function GetRightTextMargin: Integer;
     procedure HandleCaretTimer(Sender: TObject);
@@ -202,6 +201,7 @@ type
     function MousePosToCaretPos(X, Y: Integer): TPoint;
     function IsSomethingSelected: Boolean;
   protected
+    FEditState: TCDEditStateEx; // Points to the same object as FStateEx, so don't Free!
     function GetControlId: TCDControlID; override;
     procedure CreateControlStateEx; override;
     // keyboard
@@ -265,6 +265,30 @@ type
     property DrawStyle;
     property Enabled;
     property TabStop default True;
+  end;
+
+  { TCDComboBox }
+
+  TCDComboBox = class(TCDEdit)
+  private
+    FIsClickingButton: Boolean;
+    FItemIndex: Integer;
+    FItems: TStringList;
+    function GetItems: TStrings;
+    procedure OnShowSelectItemDialogResult(ASelectedItem: Integer);
+    procedure SetItemIndex(AValue: Integer);
+  protected
+    function GetControlId: TCDControlID; override;
+    // mouse
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property Items: TStrings read GetItems;
+    property ItemIndex: Integer read FItemIndex write SetItemIndex;
   end;
 
   { TCDPositionedControl }
@@ -673,6 +697,86 @@ implementation
 
 const
   sTABSHEET_DEFAULT_NAME = 'CTabSheet';
+
+{ TCDComboBox }
+
+function TCDComboBox.GetItems: TStrings;
+begin
+  Result := FItems;
+end;
+
+procedure TCDComboBox.OnShowSelectItemDialogResult(ASelectedItem: Integer);
+begin
+  SetItemIndex(ASelectedItem);
+end;
+
+procedure TCDComboBox.SetItemIndex(AValue: Integer);
+var
+  lValue: Integer;
+begin
+  lValue := AValue;
+
+  // First basic check
+  if lValue > FItems.Count then lValue := FItems.Count;
+  if lValue < -1 then lValue := -1;
+
+  if FItemIndex=lValue then Exit;
+  FItemIndex:=lValue;
+  if lValue >= 0 then Text := FItems.Strings[lValue];
+end;
+
+function TCDComboBox.GetControlId: TCDControlID;
+begin
+  Result := cidComboBox;
+end;
+
+procedure TCDComboBox.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+  Y: integer);
+begin
+  if (X > Width - Height) then
+  begin
+    FIsClickingButton := True;
+    FEditState.ExtraButtonState := FEditState.ExtraButtonState + [csfSunken];
+    Invalidate;
+    Exit;
+  end;
+
+  inherited MouseDown(Button, Shift, X, Y);
+end;
+
+procedure TCDComboBox.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
+  Y: integer);
+begin
+  if FIsClickingButton then
+  begin
+    FIsClickingButton := False;
+    FEditState.ExtraButtonState := FEditState.ExtraButtonState - [csfSunken];
+    Invalidate;
+    if (X > Width - Height) then
+    begin
+      // Call the combobox dialog
+      LCLIntf.OnShowSelectItemDialogResult := @OnShowSelectItemDialogResult;
+      LCLIntf.ShowSelectItemDialog(FItems);
+
+      Exit;
+    end;
+  end;
+
+  inherited MouseUp(Button, Shift, X, Y);
+end;
+
+constructor TCDComboBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  FItems := TStringList.Create;
+end;
+
+destructor TCDComboBox.Destroy;
+begin
+  FItems.Free;
+  inherited Destroy;
+end;
 
 { TCDPanel }
 

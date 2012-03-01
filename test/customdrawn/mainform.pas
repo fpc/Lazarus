@@ -32,10 +32,12 @@ type
     CDCheckBox6: TCDCheckBox;
     CDCheckBox7: TCDCheckBox;
     CDCheckBox8: TCDCheckBox;
+    CDComboBox1: TCDComboBox;
     CDEdit1: TCDEdit;
     CDEdit2: TCDEdit;
     CDEdit3: TCDEdit;
     CDTabControl1: TCDTabControl;
+    ComboBox1: TComboBox;
     Edit2: TEdit;
     FloatSpinEdit1: TFloatSpinEdit;
     pageSpins: TPage;

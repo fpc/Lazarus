@@ -120,6 +120,7 @@ function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean
 function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function ShowSelectItemDialog(const AItems: TStrings): Boolean;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function TextUTF8Out(DC: HDC; X, Y: Integer;  Str: PChar; Count: Longint): Boolean;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

@@ -457,6 +457,11 @@ begin
   WidgetSet.SetRubberBandRect(ARubberBand, ARect);
 end;
 
+function ShowSelectItemDialog(const AItems: TStrings): Boolean;
+begin
+  Result := Widgetset.ShowSelectItemDialog(AItems);
+end;
+
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
   Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;

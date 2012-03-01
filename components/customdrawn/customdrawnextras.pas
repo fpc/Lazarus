@@ -184,7 +184,7 @@ procedure Register;
 begin
   RegisterComponents('Custom Drawn', [
     // Standard tab
-    TCDButton, TCDEdit, TCDCheckBox, TCDRadioButton, TCDScrollBar, TCDGroupBox,
+    TCDButton, TCDEdit, TCDCheckBox, TCDRadioButton, TCDComboBox, TCDScrollBar, TCDGroupBox,
     // Additional
     TCDStaticText,
     // Common Controls

@@ -44,9 +44,10 @@ type
     procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); override;
     procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); override;
-    procedure DrawCompactArrow(ADest: TCanvas; ADestPos: TPoint; ADirection: TCDControlState); override;
+    procedure DrawArrow(ADest: TCanvas; ADestPos: TPoint; ADirection: TCDControlState; ASize: Integer = 7); override;
     // Extra buttons drawing routines
     procedure DrawSmallCloseButton(ADest: TCanvas; ADestPos: TPoint); override;
+    procedure DrawButtonWithArrow(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); override;
     // TCDControl
     procedure DrawControl(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
@@ -75,6 +76,9 @@ type
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     procedure DrawRadioButton(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
+    // TCDComboBox
+    procedure DrawComboBox(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDEditStateEx); override;
     // TCDScrollBar
     procedure DrawScrollBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDPositionedCStateEx); override;
@@ -550,39 +554,42 @@ begin
   end;
 end;
 
-procedure TCDDrawerCommon.DrawCompactArrow(ADest: TCanvas; ADestPos: TPoint;
-  ADirection: TCDControlState);
+procedure TCDDrawerCommon.DrawArrow(ADest: TCanvas; ADestPos: TPoint;
+  ADirection: TCDControlState; ASize: Integer = 7);
 var
   lPoints: array[0..2] of TPoint;
   lPos: TPoint;
+  lSize, lSizeHalf: Integer;
 begin
   lPos := ADestPos;
+  lSize := ASize - 1;
+  lSizeHalf := ASize div 2;
   // Move the arrow a little bit when a sunken state is passed
   if csfSunken in ADirection then lPos := Point(lPos.X+1, lPos.Y+1);
 
   if csfLeftArrow in ADirection then
   begin
-    lPoints[0] := Point(lPos.X,   lPos.Y+3);// left point
-    lPoints[1] := Point(lPos.X+3, lPos.Y+6);// lower point
-    lPoints[2] := Point(lPos.X+3, lPos.Y);  // upper point
+    lPoints[0] := Point(lPos.X,           lPos.Y+lSizeHalf);// left point
+    lPoints[1] := Point(lPos.X+lSizeHalf, lPos.Y+lSize);// lower point
+    lPoints[2] := Point(lPos.X+lSizeHalf, lPos.Y);  // upper point
   end
   else if csfRightArrow in ADirection then
   begin
-    lPoints[0] := Point(lPos.X+1, lPos.Y);  // upper point
-    lPoints[1] := Point(lPos.X+1, lPos.Y+6);// lower point
-    lPoints[2] := Point(lPos.X+4, lPos.Y+3);// right point
+    lPoints[0] := Point(lPos.X+1,           lPos.Y);  // upper point
+    lPoints[1] := Point(lPos.X+1,           lPos.Y+lSize);// lower point
+    lPoints[2] := Point(lPos.X+1+lSizeHalf, lPos.Y+lSizeHalf);// right point
   end
   else if csfUpArrow in ADirection then
   begin
-    lPoints[0] := Point(lPos.X+3, lPos.Y);  // upper point
-    lPoints[1] := Point(lPos.X,   lPos.Y+3);// left point
-    lPoints[2] := Point(lPos.X+6, lPos.Y+3);// right point
+    lPoints[0] := Point(lPos.X+lSizeHalf, lPos.Y);  // upper point
+    lPoints[1] := Point(lPos.X,           lPos.Y+lSizeHalf);// left point
+    lPoints[2] := Point(lPos.X+lSize,     lPos.Y+lSizeHalf);// right point
   end
   else // downArrow
   begin
-    lPoints[0] := Point(lPos.X,   lPos.Y+1);// left point
-    lPoints[1] := Point(lPos.X+6, lPos.Y+1);// right point
-    lPoints[2] := Point(lPos.X+3, lPos.Y+4);// lower point
+    lPoints[0] := Point(lPos.X,           lPos.Y+1);// left point
+    lPoints[1] := Point(lPos.X+lSize,     lPos.Y+1);// right point
+    lPoints[2] := Point(lPos.X+lSizeHalf, lPos.Y+1+lSizeHalf);// lower point
   end;
   ADest.Brush.Style := bsSolid;
   ADest.Brush.Color := clBlack;
@@ -599,6 +606,22 @@ begin
   ADest.Line(ADestPos.X, ADestPos.Y, ADestPos.X+10, ADestPos.Y+10);
   ADest.Line(ADestPos.X+9, ADestPos.Y, ADestPos.X-1, ADestPos.Y+10);
   ADest.Pen.Width := 1;
+end;
+
+procedure TCDDrawerCommon.DrawButtonWithArrow(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState);
+begin
+  // First the background color
+  ADest.Brush.Color := WIN2000_BTNFACE;
+  ADest.Brush.Style := bsSolid;
+  ADest.FillRect(Bounds(ADestPos.X, ADestPos.Y, ASize.CX, ASize.CY));
+
+  // Now the button frame
+  if csfSunken in AState then DrawSunkenFrame(ADest, ADestPos, ASize)
+  else DrawRaisedFrame(ADest, ADestPos, ASize);
+
+  // Now the arrow
+  DrawArrow(ADest, Point(ADestPos.X + ASize.CY div 4, ADestPos.Y + ASize.CY * 3 div 8), AState, ASize.CY div 2);
 end;
 
 procedure TCDDrawerCommon.DrawControl(ADest: TCanvas;
@@ -1040,6 +1063,18 @@ begin
   ADest.TextOut(lCircleHeight+5, 0, AStateEx.Caption);
 end;
 
+procedure TCDDrawerCommon.DrawComboBox(ADest: TCanvas; ASize: TSize;
+  AState: TCDControlState; AStateEx: TCDEditStateEx);
+begin
+  // First the edit, with a margin on the right for the button
+  AStateEx.RightTextMargin := ASize.CY;
+  DrawEdit(ADest, ASize, AState, AStateEx);
+
+  // Now the button
+  DrawButtonWithArrow(ADest, Point(ASize.CX - ASize.CY, 0), Size(ASize.CY, ASize.CY),
+    AStateEx.ExtraButtonState);
+end;
+
 procedure TCDDrawerCommon.DrawScrollBar(ADest: TCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDPositionedCStateEx);
 var
@@ -1076,8 +1111,8 @@ begin
   end;
 
   if csfHorizontal in AState then
-    DrawCompactArrow(ADest, Point(lPos.X+5, lPos.Y+5), [csfLeftArrow]+lArrowState)
-  else DrawCompactArrow(ADest, Point(lPos.X+5, lPos.Y+5), [csfUpArrow]+lArrowState);
+    DrawArrow(ADest, Point(lPos.X+5, lPos.Y+5), [csfLeftArrow]+lArrowState)
+  else DrawArrow(ADest, Point(lPos.X+5, lPos.Y+5), [csfUpArrow]+lArrowState);
 
   // Right/Bottom button
   if csfHorizontal in AState then
@@ -1099,8 +1134,8 @@ begin
   end;
 
   if csfHorizontal in AState then
-    DrawCompactArrow(ADest, Point(lPos.X+5, lPos.Y+5), [csfRightArrow] + lArrowState)
-  else DrawCompactArrow(ADest, Point(lPos.X+5, lPos.Y+5), [csfDownArrow] + lArrowState);
+    DrawArrow(ADest, Point(lPos.X+5, lPos.Y+5), [csfRightArrow] + lArrowState)
+  else DrawArrow(ADest, Point(lPos.X+5, lPos.Y+5), [csfDownArrow] + lArrowState);
 
   // The slider
   lPos := Point(0, 0);

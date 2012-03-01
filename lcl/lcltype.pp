@@ -96,6 +96,11 @@ type
   TNativeCanvasType = (nctWindowsDC, nctLazCanvas);
   TNativeCanvasTypes = set of TNativeCanvasType;
 
+  // Callback types for new LCLIntf dialogs
+
+  // -1 indicates that the dialog was canceled and no item selected
+  TOnShowSelectItemDialogResult = procedure (ASelectedItem: Integer) of object;
+
   {$ifndef WINDOWS}
   THandle = type PtrUInt; // define our own, because the SysUtils.THandle = System.THandle is a longint
   HANDLE = THandle;

@@ -10,10 +10,10 @@ object Form1: TForm1
   LCLVersion = '0.9.31'
   object comboControls: TComboBox
     Left = 80
-    Height = 21
+    Height = 27
     Top = 12
     Width = 136
-    ItemHeight = 13
+    ItemHeight = 0
     ItemIndex = 0
     Items.Strings = (
       'TCDMenu'
@@ -61,7 +61,7 @@ object Form1: TForm1
     Height = 240
     Top = 40
     Width = 463
-    PageIndex = 23
+    PageIndex = 9
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 2
     TabStop = True
@@ -396,6 +396,30 @@ object Form1: TForm1
     object pageListBoxes: TPage
     end
     object pageComboBoxes: TPage
+      object ComboBox1: TComboBox
+        Left = 12
+        Height = 27
+        Top = 18
+        Width = 124
+        ItemHeight = 0
+        ItemIndex = 0
+        Items.Strings = (
+          'TComboBox'
+          'Item2'
+          'Item3'
+          'Item4'
+        )
+        TabOrder = 0
+        Text = 'TComboBox'
+      end
+      object CDComboBox1: TCDComboBox
+        Left = 160
+        Height = 25
+        Top = 20
+        Width = 128
+        DrawStyle = dsDefault
+        Text = 'CDComboBox1'
+      end
     end
     object pageScrollBars: TPage
       object sbNative1: TScrollBar

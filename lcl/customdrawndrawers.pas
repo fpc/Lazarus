@@ -150,6 +150,8 @@ type
     EventArrived: Boolean; // Added by event handlers and used by the caret so that it stops blinking while events are incoming
     // customizable extra margins, zero is the base value
     LeftTextMargin, RightTextMargin: Integer;
+    // For the combo box for example
+    ExtraButtonState: TCDControlState;
   end;
 
   TCDPanelStateEx = class(TCDControlStateEx)
@@ -302,9 +304,10 @@ type
     procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); virtual; abstract;
     procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); virtual; abstract;
-    procedure DrawCompactArrow(ADest: TCanvas; ADestPos: TPoint; ADirection: TCDControlState); virtual; abstract;
+    procedure DrawArrow(ADest: TCanvas; ADestPos: TPoint; ADirection: TCDControlState; ASize: Integer = 7); virtual; abstract;
     // Extra buttons drawing routines
     procedure DrawSmallCloseButton(ADest: TCanvas; ADestPos: TPoint); virtual; abstract;
+    procedure DrawButtonWithArrow(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); virtual; abstract;
     // TCDControl
     procedure DrawControl(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
@@ -330,6 +333,9 @@ type
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     procedure DrawRadioButton(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
+    // TCDComboBox
+    procedure DrawComboBox(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDEditStateEx); virtual; abstract;
     // TCDScrollBar
     procedure DrawScrollBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDPositionedCStateEx); virtual; abstract;
@@ -642,6 +648,7 @@ begin
   cidEdit:       DrawEdit(ADest, ASize, AState, TCDEditStateEx(AStateEx));
   cidCheckBox:   DrawCheckBox(ADest, ASize, AState, AStateEx);
   cidRadioButton:DrawRadioButton(ADest, ASize, AState, AStateEx);
+  cidComboBox:   DrawComboBox(ADest, ASize, AState, TCDEditStateEx(AStateEx));
   cidScrollBar:  DrawScrollBar(ADest, ASize, AState, TCDPositionedCStateEx(AStateEx));
   cidGroupBox:   DrawGroupBox(ADest, ASize, AState, AStateEx);
   cidPanel:      DrawPanel(ADest, ASize, AState, TCDPanelStateEx(AStateEx));
