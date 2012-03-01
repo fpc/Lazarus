@@ -51,12 +51,14 @@ type
     FText: String;
   end;
 
-  TPieSlice = record
-    FAngle: Double;
+  TPieSlice = object
     FBase: TPoint;
     FLabel: TLabelParams;
     FOrigIndex: Integer;
+    FPrevAngle, FNextAngle: Double;
     FVisible: Boolean;
+    function Angle: Double; inline;
+    function CenterAngle: Double; inline;
   end;
 
   TPieMarkPositions = (pmpAround, pmpInside, pmpLeftRight);
@@ -140,6 +142,20 @@ uses
   Math,
   TACustomSource, TAGeometry, TAGraph;
 
+{ TPieSlice }
+
+function TPieSlice.Angle: Double;
+begin
+  Result := FNextAngle - FPrevAngle;
+end;
+
+function TPieSlice.CenterAngle: Double;
+begin
+  Result := (FNextAngle + FPrevAngle) / 2;
+end;
+
+{ TLegendItemPieS }
+
 procedure TLegendItemPie.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 const
   INDEX_TO_ANGLE = 360 * 16 / Length(FColors);
@@ -197,12 +213,11 @@ procedure TCustomPieSeries.Draw(ADrawer: IChartDrawer);
 const
   STEP = 4;
 var
-  prevAngle: Double = 0;
   prevLabelPoly: TPointArray = nil;
   ps: TPieSlice;
   i, numSteps: Integer;
-  nextAngle: Double;
   p: array of TPoint;
+  a: Double;
 begin
   if IsEmpty then exit;
 
@@ -211,64 +226,51 @@ begin
 
   ADrawer.PrepareSimplePen(clBlack);
   if Depth > 0 then begin
-    prevAngle := 0;
     for ps in FSlices do begin
-      nextAngle := prevAngle + ps.FAngle;
-      if ps.FVisible then begin
-        ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
-        if not InRange(nextAngle, Pi / 4, 5 * Pi / 4) then
-          ADrawer.DrawLineDepth(
-            ps.FBase, ps.FBase + RotatePointX(FRadius, -nextAngle), Depth);
-        if InRange(prevAngle, Pi / 4, 5 * Pi / 4) then
-          ADrawer.DrawLineDepth(
-            ps.FBase, ps.FBase + RotatePointX(FRadius, -prevAngle), Depth);
-      end;
-      prevAngle := nextAngle;
+      if not ps.FVisible then continue;
+      ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
+      if not InRange(ps.FNextAngle, Pi / 4, 5 * Pi / 4) then
+        ADrawer.DrawLineDepth(
+          ps.FBase, ps.FBase + RotatePointX(FRadius, -ps.FNextAngle), Depth);
+      if InRange(ps.FPrevAngle, Pi / 4, 5 * Pi / 4) then
+        ADrawer.DrawLineDepth(
+          ps.FBase, ps.FBase + RotatePointX(FRadius, -ps.FPrevAngle), Depth);
     end;
-    prevAngle := 0;
     for ps in FSlices do begin
-      nextAngle := prevAngle + ps.FAngle;
-      if ps.FVisible then begin
-        ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
-        numSteps := Round(2 * Pi * ps.FAngle * FRadius / STEP);
-        SetLength(p, 2 * numSteps);
-        for i := 0 to numSteps - 1 do begin
-          p[i] := ps.FBase + RotatePointX(FRadius, -prevAngle - ps.FAngle * i / (numSteps - 1));
-          p[High(p) - i] := p[i] + Point(Depth, -Depth);
-        end;
-        ADrawer.Polygon(p, 0, Length(p));
+      if not ps.FVisible then continue;
+      ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
+      numSteps := Round(2 * Pi * ps.Angle * FRadius / STEP);
+      SetLength(p, 2 * numSteps);
+      for i := 0 to numSteps - 1 do begin
+        a := WeightedAverage(ps.FPrevAngle, ps.FNextAngle, i / (numSteps - 1));
+        p[i] := ps.FBase + RotatePointX(FRadius, -a);
+        p[High(p) - i] := p[i] + Point(Depth, -Depth);
       end;
-      prevAngle := nextAngle;
+      ADrawer.Polygon(p, 0, Length(p));
     end;
   end;
-  prevAngle := 0;
   for ps in FSlices do begin
-    if ps.FVisible then begin
-      ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
-      ADrawer.RadialPie(
-        ps.FBase.X - FRadius, ps.FBase.Y - FRadius,
-        ps.FBase.X + FRadius, ps.FBase.Y + FRadius,
-        RadToDeg16(prevAngle), RadToDeg16(ps.FAngle));
-    end;
-    prevAngle += ps.FAngle;
+    if not ps.FVisible then continue;
+    ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
+    ADrawer.RadialPie(
+      ps.FBase.X - FRadius, ps.FBase.Y - FRadius,
+      ps.FBase.X + FRadius, ps.FBase.Y + FRadius,
+      RadToDeg16(ps.FPrevAngle), RadToDeg16(ps.Angle));
   end;
   if not Marks.IsMarkLabelsVisible then exit;
-  prevAngle := 0;
   for ps in FSlices do begin
-    if ps.FVisible then
-      with ps.FLabel do
-        if FText <> '' then begin
-          if RotateLabels then
-            Marks.SetAdditionalAngle(prevAngle + ps.FAngle / 2);
-          Marks.DrawLabel(ADrawer, FAttachment, FCenter, FText, prevLabelPoly);
-        end;
-    prevAngle += ps.FAngle;
+    if not ps.FVisible then continue;
+    with ps.FLabel do
+      if FText <> '' then begin
+        if RotateLabels then
+          Marks.SetAdditionalAngle(ps.CenterAngle);
+        Marks.DrawLabel(ADrawer, FAttachment, FCenter, FText, prevLabelPoly);
+      end;
   end;
 end;
 
 function TCustomPieSeries.FindContainingSlice(const APoint: TPoint): Integer;
 var
-  prevAngle: Double = 0;
   c: TPoint;
   pointAngle: Double;
 begin
@@ -281,11 +283,10 @@ begin
       if pointAngle < 0 then
         pointAngle += 2 * Pi;
       if
-        InRange(pointAngle - prevAngle, 0, FAngle) and
+        InRange(pointAngle, FPrevAngle, FNextAngle) and
         (Sqr(c.X) + Sqr(c.Y) <= Sqr(FRadius))
       then
         exit;
-      prevAngle += FAngle;
     end;
   Result := -1;
 end;
@@ -465,22 +466,23 @@ begin
     if IsNan(di^.Y) then continue;
     with FSlices[j] do begin
       FOrigIndex := i;
-      FAngle := CycleToRad(di^.Y / Source.ValuesTotal);
+      FPrevAngle := prevAngle;
+      FNextAngle := FPrevAngle + CycleToRad(di^.Y / Source.ValuesTotal);
       FVisible := not IsNan(di^.X);
       if FVisible then begin
         FBase := FCenter;
-        a := prevAngle + FAngle / 2;
+        a := CenterAngle;
         if Exploded and (di^.X > 0) then
           FBase += EndPoint(a, FRadius * di^.X);
-        ExpandRect(Result, FBase, FRadius, -prevAngle, -prevAngle - FAngle);
+        ExpandRect(Result, FBase, FRadius, -FPrevAngle, -FNextAngle);
         if Depth > 0 then
           ExpandRect(
             Result, FBase + Point(Depth, -Depth),
-            FRadius, -prevAngle, -prevAngle - FAngle);
+            FRadius, -FPrevAngle, -FNextAngle);
         FLabel.FAttachment := EndPoint(a, FRadius) + FBase;
         PrepareLabel(FLabel, i, a);
       end;
-      prevAngle += FAngle;
+      prevAngle := FNextAngle;
     end;
     j += 1;
   end;
