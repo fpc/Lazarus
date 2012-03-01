@@ -292,21 +292,20 @@ function TCustomPieSeries.FindContainingSlice(const APoint: TPoint): Integer;
 var
   c: TPoint;
   pointAngle: Double;
+  ps: TPieSlice;
 begin
-  if IsEmpty then exit(-1);
-
-  for Result := 0 to Count - 1 do
-    with FSlices[Result] do begin
-      c := APoint - FBase;
-      pointAngle := ArcTan2(-c.Y, c.X);
-      if pointAngle < 0 then
-        pointAngle += 2 * Pi;
-      if
-        InRange(pointAngle, FPrevAngle, FNextAngle) and
-        (Sqr(c.X) + Sqr(c.Y) <= Sqr(FRadius))
-      then
-        exit;
-    end;
+  for ps in FSlices do begin
+    if not ps.FVisible then continue;
+    c := APoint - ps.FBase;
+    pointAngle := ArcTan2(-c.Y, c.X);
+    if pointAngle < 0 then
+      pointAngle += 2 * Pi;
+    if
+      InRange(pointAngle, ps.FPrevAngle, ps.FNextAngle) and
+      (Sqr(c.X) + Sqr(c.Y) <= Sqr(FRadius))
+    then
+      exit(ps.FOrigIndex);
+  end;
   Result := -1;
 end;
 
