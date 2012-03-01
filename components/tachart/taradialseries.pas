@@ -72,10 +72,12 @@ type
     FRadius: Integer;
     FSlices: array of TPieSlice;
   private
+    FEdgePen: TPen;
     FExploded: Boolean;
     FFixedRadius: TChartDistance;
     FRotateLabels: Boolean;
     procedure Measure(ADrawer: IChartDrawer);
+    procedure SetEdgePen(AValue: TPen);
     procedure SetExploded(AValue: Boolean);
     procedure SetFixedRadius(AValue: TChartDistance);
     procedure SetMarkPositions(AValue: TPieMarkPositions);
@@ -85,11 +87,15 @@ type
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  public
     function AddPie(AValue: Double; AText: String; AColor: TColor): Integer;
     procedure Assign(ASource: TPersistent); override;
     procedure Draw(ADrawer: IChartDrawer); override;
     function FindContainingSlice(const APoint: TPoint): Integer;
 
+    property EdgePen: TPen read FEdgePen write SetEdgePen;
     // Offset slices away from center based on X value.
     property Exploded: Boolean read FExploded write SetExploded default false;
     property FixedRadius: TChartDistance
@@ -209,6 +215,19 @@ begin
   inherited Assign(ASource);
 end;
 
+constructor TCustomPieSeries.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FEdgePen := TPen.Create;
+  FEdgePen.OnChange := @StyleChanged;
+end;
+
+destructor TCustomPieSeries.Destroy;
+begin
+  FreeAndNil(FEdgePen);
+  inherited;
+end;
+
 procedure TCustomPieSeries.Draw(ADrawer: IChartDrawer);
 const
   STEP = 4;
@@ -224,7 +243,7 @@ begin
   Marks.SetAdditionalAngle(0);
   Measure(ADrawer);
 
-  ADrawer.PrepareSimplePen(clBlack);
+  ADrawer.SetPen(EdgePen);
   if Depth > 0 then begin
     for ps in FSlices do begin
       if not ps.FVisible then continue;
@@ -337,6 +356,12 @@ begin
     FRadius := FixedRadius;
     TryRadius(ADrawer);
   end;
+end;
+
+procedure TCustomPieSeries.SetEdgePen(AValue: TPen);
+begin
+  if FEdgePen = AValue then exit;
+  FEdgePen.Assign(AValue);
 end;
 
 procedure TCustomPieSeries.SetExploded(AValue: Boolean);
@@ -574,7 +599,7 @@ end;
 procedure TPolarSeries.SetLinePen(AValue: TPen);
 begin
   if FLinePen = AValue then exit;
-  FLinePen := AValue;
+  FLinePen.Assign(AValue);
 end;
 
 procedure TPolarSeries.SetOriginX(AValue: Double);

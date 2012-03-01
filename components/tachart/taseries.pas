@@ -111,6 +111,7 @@ type
 
   TPieSeries = class(TCustomPieSeries)
   published
+    property EdgePen;
     property Depth;
     property Exploded;
     property FixedRadius;
