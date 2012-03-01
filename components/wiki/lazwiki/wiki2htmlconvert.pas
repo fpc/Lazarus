@@ -132,8 +132,9 @@ var
   ms: TMemoryStream;
   Filename: String;
 begin
+  if OutputDir='' then exit;
   Filename:=PageToFilename(Page,true);
-  DebugLn(['TWiki2HTMLConverter.SavePage ',Filename]);
+  Log('TWiki2HTMLConverter.SavePage '+Filename);
   ms:=TMemoryStream.Create;
   try
     SavePageToStream(Page,ms);

@@ -232,6 +232,8 @@ type
     wpvHint
     );
 
+  TWikiOnLog = procedure(Msg: string) of object;
+
   { TWikiPage }
 
   TWikiPage = class
@@ -247,6 +249,7 @@ type
     FFilename: string;
     FAutoFixUTF8: boolean;
     FLanguageTags: TKeyWordFunctionList;
+    FOnLog: TWikiOnLog;
     FStack: PStackItem;
     FStackPtr: integer;
     FStackCapacity: integer;
@@ -322,6 +325,8 @@ type
     function TrimLink(const Link: string): string;
     function CurrentPos: integer;
     property LanguageTags: TKeyWordFunctionList read FLanguageTags write FLanguageTags;
+    procedure Log(Msg: string);
+    property OnLog: TWikiOnLog read FOnLog write FOnLog;
   end;
 
 var
@@ -438,7 +443,7 @@ var
 begin
   inc(FStackPtr);
   {$IFDEF VerboseWikiStack}
-  debugln(['Push :',GetIndentStr(FStackPtr*2),dbgs(Token),' at ',PosToStr(FCurP)]);
+  Log(['Push :',GetIndentStr(FStackPtr*2),dbgs(Token),' at ',PosToStr(FCurP)]);
   {$ENDIF}
   if FStackPtr>=FStackCapacity then begin
     NewCapacity:=FStackCapacity*2+8;
@@ -454,6 +459,20 @@ begin
 end;
 
 function TWikiPage.Pop(Token: TWPTokenType): boolean;
+
+  procedure LogMissingClose;
+  var
+    Item: PStackItem;
+  begin
+    Item:=@FStack[FStackPtr];
+    Log('TWikiPage.Pop WARNING: missing closing for '+dbgs(Item^.Token)+' at '+PosToStr(FCurP,true));
+  end;
+
+  procedure LogNotOpen;
+  begin
+    Log('TWikiPage.Pop Hint: tag was not open: '+dbgs(Token)+' at '+PosToStr(FCurP,true));
+  end;
+
 var
   i: Integer;
   Group: TWPTokenGroup;
@@ -468,13 +487,12 @@ begin
       // found
       while FStackPtr>=i do begin
         Item:=@FStack[FStackPtr];
-        if (FStackPtr>i) and (wpifWarnOnAutoClose in WPTokenInfos[Item^.Token].Flags)
-        then begin
-          if Verbosity>=wpvWarning then
-            DebugLn(['TWikiPage.Pop WARNING: missing closing for ',dbgs(Item^.Token),' at ',PosToStr(FCurP,true)]);
-        end;
+        if (Verbosity>=wpvWarning)
+        and (FStackPtr>i) and (wpifWarnOnAutoClose in WPTokenInfos[Item^.Token].Flags)
+        then
+          LogMissingClose;
         {$IFDEF VerboseWikiStack}
-        debugln(['Pop  :',GetIndentStr(FStackPtr*2),dbgs(Item^.Token),' at ',PosToStr(FCurP)]);
+        Log('Pop  :'+GetIndentStr(FStackPtr*2)+dbgs(Item^.Token)+' at '+PosToStr(FCurP));
         {$ENDIF}
         if Item^.Token in [wptPre,wptPreTag] then
           dec(FInPre);
@@ -487,7 +505,7 @@ begin
   end;
   // not found
   if Verbosity>=wpvHint then
-    debugln(['TWikiPage.Pop Hint: tag was not open: ',dbgs(Token),' at ',PosToStr(FCurP,true)]);
+    LogNotOpen;
 end;
 
 procedure TWikiPage.Pop(Index: integer);
@@ -538,7 +556,7 @@ begin
   {$IFDEF VerboseWikiOnToken}
   i:=FStackPtr;
   if i<0 then i:=0;
-  debugln(['Token:',GetIndentStr(i*2),dbgs(Token.Token),' at ',PosToStr(FCurP)]);
+  Log('Token:'+GetIndentStr(i*2)+dbgs(Token.Token)+' at '+PosToStr(FCurP));
   {$ENDIF}
   FOnToken(Token);
 end;
@@ -569,7 +587,7 @@ procedure TWikiPage.ParseAttributes(StartPos, EndPos: PChar);
 var
   p: PChar;
 begin
-  //debugln(['TWikiPage.ParseAttributes ',PosToStr(StartPos),' ',PosToStr(EndPos),' <',dbgstr(StartPos,EndPos-StartPos),'>']);
+  //Log('TWikiPage.ParseAttributes '+PosToStr(StartPos)+' '+PosToStr(EndPos)+' <'+dbgstr(StartPos,EndPos-StartPos),'>');
   p:=StartPos;
   repeat
     // skip whitespace
@@ -601,7 +619,7 @@ begin
     DoToken(FNameValueToken);
     inc(p);
   until p>=EndPos;
-  //debugln(['TWikiPage.ParseAttributes stopped at <',dbgstr(StartPos,p-StartPos),'>']);
+  //Log(['TWikiPage.ParseAttributes stopped at <'+dbgstr(StartPos,p-StartPos)+'>');
 end;
 
 procedure TWikiPage.ParseNoWiki;
@@ -647,6 +665,14 @@ end;
 function TWikiPage.CurrentPos: integer;
 begin
   Result:=StrPos(FCurP);
+end;
+
+procedure TWikiPage.Log(Msg: string);
+begin
+  if Assigned(OnLog) then
+    OnLog(Msg)
+  else
+    debugln(Msg);
 end;
 
 procedure TWikiPage.CloseRangeToken(Typ: TWPTokenType);
@@ -730,7 +756,7 @@ begin
     inc(i);
   end;
   // maybe new header
-  //debugln(['HandleHeader START ',PosToStr(FCurP),' ',AtLineStart(FCurP)]);
+  //Log(['HandleHeader START '+PosToStr(FCurP)+' '+AtLineStart(FCurP));
   if not AtLineStart(FCurP) then begin
     // normal =
     inc(FCurP);
@@ -801,7 +827,7 @@ begin
     inc(CurDepth);
     if CurDepth=NewDepth then begin
       // close fonts, spans and previous list item
-      //debugln(['TWikiPage.HandleListChar close fonts, spans, listitem']);
+      //Log('TWikiPage.HandleListChar close fonts, spans, listitem');
       Pop(i);
     end;
     if (i>FStackPtr) then
@@ -831,7 +857,7 @@ begin
     exit;
   end;
   // preformatted text
-  //debugln(['TWikiPage.HandleSpace start pre "',dbgstr(GetLineInSrc(Src,StrPos(FCurP))),'"']);
+  //Log('TWikiPage.HandleSpace start pre "'+dbgstr(GetLineInSrc(Src,StrPos(FCurP)))+'"');
   // ToDo: flags
   EmitFlag(wptPre,wprOpen,1);
   repeat
@@ -845,11 +871,11 @@ begin
     if FCurP^<>' ' then break;
     // next line is also preformatted
     inc(FCurP);
-    //debugln(['TWikiPage.HandleSpace line break']);
+    //Log('TWikiPage.HandleSpace line break');
     FLastEmitPos:=FCurP;
     EmitFlag(wptLineBreak,wprNone,0);
   until false;
-  //debugln(['TWikiPage.HandleSpace end pre']);
+  //Log('TWikiPage.HandleSpace end pre');
   FLastEmitPos:=FCurP;
   EmitFlag(wptPre,wprClose,0);
 end;
@@ -1093,12 +1119,12 @@ procedure TWikiPage.HandleAngleBracket;
     if Verbosity>=wpvWarning then begin
       if IsWikiTagStartChar[FCurP[1]] then begin
         {$IFDEF VerboseUnknownOpenTags}
-        debugln('WARNING: TWikiPage.Parse unknown opening tag: <'+GetIdentifier(FCurP+1),'> at ',PosToStr(FCurP,true));
+        Log('WARNING: TWikiPage.Parse unknown opening tag: <'+GetIdentifier(FCurP+1)+'> at '+PosToStr(FCurP,true));
         {$ENDIF}
       end else if (FCurP[1]='/') and IsWikiTagStartChar[FCurP[2]] then
-        debugln('WARNING: TWikiPage.Parse unknown closing tag: </'+GetIdentifier(FCurP+2),'> at ',PosToStr(FCurP,true))
+        Log('WARNING: TWikiPage.Parse unknown closing tag: </'+GetIdentifier(FCurP+2)+'> at '+PosToStr(FCurP,true))
       else
-        debugln('WARNING: TWikiPage.Parse broken close tag at ',PosToStr(FCurP,true));
+        Log('WARNING: TWikiPage.Parse broken close tag at '+PosToStr(FCurP,true));
     end;
     inc(FCurP);
   end;
@@ -1160,7 +1186,7 @@ begin
         and FLanguageTags.DoIdentifier(NameP)
     then begin
       // special parse for different language
-      //debugln(['TWikiPage.Parse code tag ',dbgs(Pointer(FCurP)),' tag=',GetIdentifier(NameP),' ',FindTagEnd(FCurP)-FCurP]);
+      //Log('TWikiPage.Parse code tag '+dbgs(Pointer(FCurP))+' tag='+GetIdentifier(NameP)+' '+FindTagEnd(FCurP)-FCurP);
       HandleCode;
     end else if TokenIs('<nowiki>') then begin
       ParseNoWiki;
@@ -1222,7 +1248,7 @@ begin
   FNameValueToken.ValueEndPos:=StrPos(p);
   FCurP:=FindTagEnd(p);
   FNameValueToken.SubToken:=wptCode;
-  //debugln(['TWikiPage.HandleCode name="',copy(Src,FNameValueToken.NameStartPos,FNameValueToken.NameEndPos-FNameValueToken.NameStartPos),'"']);
+  //Log('TWikiPage.HandleCode name="'+copy(Src,FNameValueToken.NameStartPos,FNameValueToken.NameEndPos-FNameValueToken.NameStartPos)+'"');
   DoToken(FNameValueToken);
   FLastEmitPos:=FCurP;
 end;

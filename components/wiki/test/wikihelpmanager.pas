@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LazFileUtils, LazLogger, Wiki2HTMLConvert,
-  MTProcs;
+  Wiki2XHTMLConvert, WikiFormat, MTProcs;
 
 type
   TWikiHelp = class;
@@ -23,6 +23,7 @@ type
 
   TWiki2HelpConverter = class(TWiki2HTMLConverter)
   protected
+    procedure SavePage({%H-}Page: TW2XHTMLPage); override;
   public
     constructor Create; override;
   end;
@@ -77,6 +78,11 @@ implementation
 
 { TWiki2HelpConverter }
 
+procedure TWiki2HelpConverter.SavePage(Page: TW2XHTMLPage);
+begin
+  // do not save
+end;
+
 constructor TWiki2HelpConverter.Create;
 begin
   inherited Create;
@@ -98,6 +104,7 @@ begin
 
     Files:=TStringList.Create;
     try
+      Help.Converter.OnLog:=@Log;
       // get all wiki xml files
       if FindFirstUTF8(XMLDirectory+AllFilesMask,faAnyFile,FileInfo)=0 then begin
         repeat
@@ -112,13 +119,14 @@ begin
         Filename:=XMLDirectory+Files[i];
         Help.Converter.AddWikiPage(Filename,false);
       end;
+      // load xml files
+      ProcThreadPool.DoParallel(@LoadWikiPage,0,Help.Converter.Count-1);
+
+      Help.Converter.Convert;
     finally
       Files.Free;
+      Help.Converter.OnLog:=nil;
     end;
-
-    // load xml files
-    ProcThreadPool.DoParallel(@LoadWikiPage,0,Help.Converter.Count-1);
-
     Log('TWikiHelpThread.Execute SCAN complete XMLDirectory="'+XMLDirectory+'"');
   except
     on E: Exception do begin
@@ -196,11 +204,13 @@ begin
   InitCriticalSection(FCritSec);
   inherited Create(AOwner);
   FConverter:=TWiki2HelpConverter.Create;
+  FConverter.LanguageTags:=WikiCreateCommonLanguageList(true);
 end;
 
 destructor TWikiHelp.Destroy;
 begin
   Abort;
+  FConverter.LanguageTags.Free;
   FreeAndNil(FConverter);
   inherited Destroy;
   DoneCriticalsection(FCritSec);

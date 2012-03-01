@@ -172,7 +172,7 @@ var
           exit(true);
         end;
         if WarnURL(LinkToken.Link) then
-          debugln(['WARNING: TWiki2XHTMLConverter.InsertLink "'+dbgstr(LinkToken.Link)+'": image file not found: "',Filename,'" at ',W.PosToStr(LinkToken.LinkStartPos,true)]);
+          Log('WARNING: TWiki2XHTMLConverter.InsertLink "'+dbgstr(LinkToken.Link)+'": image file not found: "'+Filename+'" at '+W.PosToStr(LinkToken.LinkStartPos,true));
         URL:='';
         exit;
       end;
@@ -207,7 +207,7 @@ var
         URL:=GetPageLink(TargetPage);
       end else if (not FileExistsUTF8(Filename)) then begin
         if WarnMissingPageLinks and WarnURL(LinkToken.Link) then
-          debugln(['WARNING: TWiki2XHTMLConverter.InsertLink "'+dbgstr(LinkToken.Link)+'": file not found: "',Filename,'" at ',W.PosToStr(LinkToken.LinkStartPos,true)]);
+          Log('WARNING: TWiki2XHTMLConverter.InsertLink "'+dbgstr(LinkToken.Link)+'": file not found: "'+Filename+'" at '+W.PosToStr(LinkToken.LinkStartPos,true));
         URL:='';
       end;
     end;
@@ -328,7 +328,7 @@ begin
   Page:=TW2XHTMLPage(Token.UserData);
   W:=Page.WikiPage;
   doc:=Page.XHTML;
-  //debugln(['TWiki2XHTMLConverter.OnWikiToken Token=',dbgs(Token.Token),' ',dbgs(Token)]);
+  //Log(['TWiki2XHTMLConverter.OnWikiToken Token='+dbgs(Token.Token)+' '+dbgs(Token));
   case Token.Token of
   wptText:
     if Token is TWPTextToken then begin
@@ -487,7 +487,7 @@ begin
 
   end;
 
-  debugln(['TWiki2XHTMLConverter.OnWikiToken ToDo: Token=',dbgs(Token.Token),' Range=',dbgs(Token.Range),' Class=',Token.ClassName,' ',W.PosToStr(W.CurrentPos)]);
+  Log('TWiki2XHTMLConverter.OnWikiToken ToDo: Token='+dbgs(Token.Token)+' Range='+dbgs(Token.Range)+' Class='+Token.ClassName+' '+W.PosToStr(W.CurrentPos));
 end;
 
 function TWiki2XHTMLConverter.GetImageLink(ImgFilename: string): string;
@@ -507,7 +507,7 @@ var
 begin
   Page:=TW2XHTMLPage(Token.UserData);
   doc:=Page.XHTML;
-  //debugln(['TWiki2XHTMLConverter.InsertText Txt="',dbgstr(Txt),'"']);
+  //Log(['TWiki2XHTMLConverter.InsertText Txt="'+dbgstr(Txt)+'"']);
   if Txt='' then exit;
   if Page.CurNode.TagName<>'pre' then begin
     if UTF8Trim(Txt)='' then begin
@@ -517,7 +517,7 @@ begin
     if Page.CurNode.FirstChild=nil then
       Txt:=UTF8Trim(Txt,[u8tKeepEnd]);
   end;
-  //debugln(['TWiki2XHTMLConverter.InsertText Node="',Page.CurNode.TagName,'" Text="',Txt,'"']);
+  //Log('TWiki2XHTMLConverter.InsertText Node="'+Page.CurNode.TagName+'" Text="'+Txt+'"');
   Txt:=EncodeLesserAndGreaterThan(Txt);
   Page.CurNode.AppendChild(doc.CreateTextNode(Txt));
 end;
@@ -644,8 +644,9 @@ procedure TWiki2XHTMLConverter.SavePage(Page: TW2XHTMLPage);
 var
   Filename: String;
 begin
+  if OutputDir='' then exit;
   Filename:=PageToFilename(Page,true);
-  DebugLn(['TWiki2HTMLConverter.SavePage ',Filename]);
+  Log('TWiki2HTMLConverter.SavePage '+Filename);
   WriteXMLFile(Page.XHTML,Filename);
 end;
 
