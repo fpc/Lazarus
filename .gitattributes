@@ -2848,6 +2848,13 @@ components/wiki/lazwiki/wikiparser.pas svneol=native#text/plain
 components/wiki/myfphttpclient.pp svneol=native#text/plain
 components/wiki/parsewikipage.lpi svneol=native#text/plain
 components/wiki/parsewikipage.lpr svneol=native#text/plain
+components/wiki/test/wikihelpmanager.pas svneol=native#text/plain
+components/wiki/test/wikisearchdemo.ico -text svneol=unset#image/ico
+components/wiki/test/wikisearchdemo.lpi svneol=native#text/plain
+components/wiki/test/wikisearchdemo.lpr svneol=native#text/plain
+components/wiki/test/wikisearchdemo.res -text
+components/wiki/test/wikisearchmain.lfm svneol=native#text/plain
+components/wiki/test/wikisearchmain.pas svneol=native#text/plain
 components/wiki/wikiconvert.lpi svneol=native#text/plain
 components/wiki/wikiconvert.lpr svneol=native#text/plain
 components/wiki/wikiget.lpi svneol=native#text/plain

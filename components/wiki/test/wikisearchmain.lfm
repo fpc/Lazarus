@@ -1,0 +1,108 @@
+object WikiSearchDemoForm: TWikiSearchDemoForm
+  Left = 734
+  Height = 501
+  Top = 312
+  Width = 663
+  Caption = 'WikiSearchDemoForm'
+  ClientHeight = 501
+  ClientWidth = 663
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object SearchLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = SearchEdit
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 18
+    Top = 10
+    Width = 84
+    BorderSpacing.Around = 6
+    Caption = 'SearchLabel'
+    ParentColor = False
+  end
+  object SearchEdit: TEdit
+    AnchorSideLeft.Control = SearchLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 96
+    Height = 27
+    Top = 6
+    Width = 561
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    TabOrder = 0
+    Text = 'SearchEdit'
+  end
+  object ResultsGroupBox: TGroupBox
+    AnchorSideTop.Control = SearchEdit
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 287
+    Top = 39
+    Width = 651
+    Align = alBottom
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'ResultsGroupBox'
+    ClientHeight = 268
+    ClientWidth = 647
+    TabOrder = 1
+    object ResultsIpHtmlPanel: TIpHtmlPanel
+      Left = 0
+      Height = 268
+      Top = 0
+      Width = 647
+      Align = alClient
+      FixedTypeface = 'Courier New'
+      DefaultTypeFace = 'default'
+      DefaultFontSize = 12
+      FlagErrors = False
+      PrintSettings.MarginLeft = 0.5
+      PrintSettings.MarginTop = 0.5
+      PrintSettings.MarginRight = 0.5
+      PrintSettings.MarginBottom = 0.5
+      TabOrder = 0
+    end
+  end
+  object PageGroupBox: TGroupBox
+    Left = 6
+    Height = 152
+    Top = 343
+    Width = 651
+    Align = alBottom
+    BorderSpacing.Around = 6
+    Caption = 'PageGroupBox'
+    ClientHeight = 133
+    ClientWidth = 647
+    TabOrder = 2
+    object PageIpHtmlPanel: TIpHtmlPanel
+      Left = 0
+      Height = 133
+      Top = 0
+      Width = 647
+      Align = alClient
+      FixedTypeface = 'Courier New'
+      DefaultTypeFace = 'default'
+      DefaultFontSize = 12
+      FlagErrors = False
+      PrintSettings.MarginLeft = 0.5
+      PrintSettings.MarginTop = 0.5
+      PrintSettings.MarginRight = 0.5
+      PrintSettings.MarginBottom = 0.5
+      TabOrder = 0
+    end
+  end
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 332
+    Width = 663
+    Align = alBottom
+    ResizeAnchor = akBottom
+  end
+end
