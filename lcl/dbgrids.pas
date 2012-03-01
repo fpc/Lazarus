@@ -124,22 +124,15 @@ type
 
 type
 
-  { TBMStringList }
-
-  TBMStringList = class (TStringList)
-  protected
-    function DoCompareText(const s1,s2 : string) : PtrInt; override;
-  end;
-
   { TBookmarkList }
 
-  TBookmarkList=class
+  TBookmarkList = class
   private
-    FList: TBMStringList;
+    FList: TFPList;
     FGrid: TCustomDbGrid;
     function GetCount: integer;
     function GetCurrentRowSelected: boolean;
-    function GetItem(AIndex: Integer): TBookmarkStr;
+    function GetItem(AIndex: Integer): TBookmark;
     procedure SetCurrentRowSelected(const AValue: boolean);
     procedure CheckActive;
   public
@@ -148,14 +141,14 @@ type
 
     procedure Clear;
     procedure Delete;
-    function  Find(const Item: TBookmarkStr; var AIndex: Integer): boolean;
-    function  IndexOf(const Item: TBookmarkStr): Integer;
+    function  Find(const Item: TBookmark; var AIndex: Integer): boolean;
+    function  IndexOf(const Item: TBookmark): Integer;
     function  Refresh: boolean;
 
     property Count: integer read GetCount;
     property CurrentRowSelected: boolean
       read GetCurrentRowSelected write SetCurrentRowSelected;
-    property Items[AIndex: Integer]: TBookmarkStr read GetItem; default;
+    property Items[AIndex: Integer]: TBookmark read GetItem; default;
   end;
 
   { TComponentDataLink }
@@ -313,7 +306,7 @@ type
     FOldControlStyle: TControlStyle;
     FSelectedRows: TBookmarkList;
     FOnPrepareCanvas: TPrepareDbGridCanvasEvent;
-    FKeyBookmark: TBookmarkStr;
+    FKeyBookmark: TBookmark;
     FKeySign: Integer;
     FSavedRecord: Integer;
     FOnGetCellHint: TDbGridCellHintEvent;
@@ -1070,7 +1063,7 @@ begin
 
     if MultiSel and not (dgMultiSelect in FOptions) then begin
       FSelectedRows.Clear;
-      FKeyBookmark:='';
+      FKeyBookmark:=nil;
     end;
 
     EndLayout;
@@ -1726,8 +1719,10 @@ end;
 
 procedure TCustomDBGrid.LinkActive(Value: Boolean);
 begin
-  if not Value then
+  if not Value then begin
+    FSelectedRows.Clear;
     RemoveAutomaticColumns;
+  end;
   LayoutChanged;
 end;
 
@@ -1981,15 +1976,15 @@ var
   procedure SelectNext(const AStart,ADown:Boolean);
   var
     N: Integer;
-    CurBookmark: TBookmarkStr;
+    CurBookmark: TBookmark;
   begin
     if dgPersistentMultiSelect in Options then
       exit;
 
     if (ssShift in Shift) then begin
 
-      CurBookmark := FDatalink.DataSet.Bookmark;
-      if FKeyBookmark='' then
+      CurBookmark := FDatalink.DataSet.GetBookmark;
+      if FKeyBookmark=nil then
         FKeyBookmark:=CurBookmark;
 
       if (FKeyBookmark=CurBookmark) then begin
@@ -2318,7 +2313,7 @@ begin
     else
       begin
 
-        FKeyBookmark:=''; // force new keyboard selection start
+        FKeyBookmark:=nil; // force new keyboard selection start
         SetFocus;
 
         P:=MouseToCell(Point(X,Y));
@@ -3237,7 +3232,7 @@ begin
     if SelCurrent then
       SelectRecord(true);
   end;
-  FKeyBookmark:='';
+  FKeyBookmark:=nil;
 end;
 
 function TCustomDBGrid.NeedAutoSizeColumns: boolean;
@@ -3302,7 +3297,7 @@ end;
 procedure TComponentDataLink.ActiveChanged;
 begin
   {$ifdef dbgDBGrid}
-  DebugLn('TComponentDataLink.ActiveChanged');
+  DebugLnEnter('TComponentDataLink.ActiveChanged INIT');
   {$endif}
   if Active then begin
     fDataSet := DataSet;
@@ -3328,6 +3323,9 @@ begin
       end;
     end;
   end;
+  {$ifdef dbgDBGrid}
+  DebugLnExit('TComponentDataLink.ActiveChanged DONE');
+  {$endif}
 end;
 
 procedure TComponentDataLink.LayoutChanged;
@@ -3823,35 +3821,42 @@ begin
 end;
 
 function TBookmarkList.GetCurrentRowSelected: boolean;
+var
+  Bookmark: TBookmark;
 begin
   CheckActive;
-  Result := IndexOf(FGrid.Datasource.Dataset.Bookmark)>=0;
+  Bookmark := FGrid.Datasource.Dataset.GetBookmark;
+  Result := IndexOf(Bookmark)>=0;
+  FGrid.Datasource.Dataset.FreeBookmark(Bookmark);
 end;
 
-function TBookmarkList.GetItem(AIndex: Integer): TBookmarkStr;
+function TBookmarkList.GetItem(AIndex: Integer): TBookmark;
 begin
   Result := FList[AIndex];
 end;
 
 procedure TBookmarkList.SetCurrentRowSelected(const AValue: boolean);
 var
-  aBookStr: TBookmarkstr;
-  aIndex: Integer;
+  Bookmark: TBookmark;
+  Index: Integer;
+  ADataset: TDataset;
 begin
   CheckActive;
 
-  aBookStr := FGrid.Datasource.Dataset.Bookmark;
-  if ABookStr='' then
-    exit;
+  Bookmark := FGrid.Datasource.Dataset.GetBookmark;
+  if Bookmark = nil then
+    Exit;
 
-  if Find(ABookStr, aIndex) then begin
+  if Find(Bookmark, Index) then begin
+    FGrid.Datasource.Dataset.FreeBookmark(Bookmark);
     if not AValue then begin
-      FList.Delete(aIndex);
+      FGrid.Datasource.Dataset.FreeBookmark(Items[Index]);
+      FList.Delete(Index);
       FGrid.Invalidate;
     end;
   end else begin
     if AValue then begin
-      FList.Add(ABookStr);
+      FList.Insert(Index, Bookmark);
       FGrid.Invalidate;
     end;
   end;
@@ -3859,7 +3864,7 @@ end;
 
 procedure TBookmarkList.CheckActive;
 begin
-  if not Fgrid.FDataLink.Active then
+  if not FGrid.FDataLink.Active then
     raise EInvalidGridOperation.Create('Dataset Inactive');
 end;
 
@@ -3867,9 +3872,7 @@ constructor TBookmarkList.Create(AGrid: TCustomDBGrid);
 begin
   inherited Create;
   FGrid := AGrid;
-  FList := TBMStringList.Create;
-  FList.CaseSensitive:=True;
-  FList.Sorted:=True;
+  FList := TFPList.Create;
 end;
 
 destructor TBookmarkList.Destroy;
@@ -3880,7 +3883,11 @@ begin
 end;
 
 procedure TBookmarkList.Clear;
+var
+  i: Integer;
 begin
+  for i:=0 to FList.Count-1 do
+    FGrid.Datasource.Dataset.FreeBookmark(Items[i]);
   FList.Clear;
   FGrid.Invalidate;
 end;
@@ -3891,29 +3898,48 @@ var
   ds: TDataSet;
 begin
   ds := FGrid.Datasource.Dataset;
-  for i:=0 to FList.Count-1 do begin
-    ds.Bookmark := Items[i];
+  for i := 0 to FList.Count - 1 do begin
+    ds.GotoBookmark(Items[i]);
     ds.Delete;
-    FList.delete(i);
+    FList.Delete(i);
   end;
 end;
 
-function TBookmarkList.Find(const Item: TBookmarkStr; var AIndex: Integer): boolean;
+function TBookmarkList.Find(const Item: TBookmark; var AIndex: Integer): boolean;
 var
-  Indx: integer;
+  L, R, I: Integer;
+  CompareRes: PtrInt;
+  ds: TDataSet;
 begin
-  Indx := FList.IndexOf(Item);
-  if indx<0 then
-    Result := False
-  else begin
-    Result := True;
-    AIndex := indx;
+  // From TStringList.Find() Use binary search.
+  Result := False;
+  L := 0;
+  R := FList.Count - 1;
+  ds := FGrid.Datasource.Dataset;
+  while (L <= R) do
+  begin
+    I := L + (R - L) div 2;
+    CompareRes := ds.CompareBookmarks(Item, TBookmark(FList[I]));
+    if (CompareRes > 0) then
+      L := I + 1
+    else
+    begin
+      R := I - 1;
+      if (CompareRes = 0) then
+      begin
+         Result := True;
+         L := I;
+      end;
+    end;
   end;
+  AIndex := L;
+
 end;
 
-function TBookmarkList.IndexOf(const Item: TBookmarkStr): Integer;
+function TBookmarkList.IndexOf(const Item: TBookmark): Integer;
 begin
-  result := FList.IndexOf(Item)
+  if not Find(Item, Result) then
+    Result := -1;
 end;
 
 function TBookmarkList.Refresh: boolean;
@@ -3923,26 +3949,13 @@ var
 begin
   Result := False;
   ds := FGrid.Datasource.Dataset;
-  for i:=FList.Count-1 downto 0 do
+  for i := FList.Count - 1 downto 0 do
     if not ds.BookmarkValid(TBookMark(Items[i])) then begin
       Result := True;
       Flist.Delete(i);
     end;
   if Result then
     FGrid.Invalidate;
-end;
-
-{ TBMStringList }
-
-function TBMStringList.DoCompareText(const s1, s2: string): PtrInt;
-begin
-  if Length(s1)<Length(s2) then
-    result := -1
-  else
-  if Length(s1)>Length(s2) then
-    result := 1
-  else
-    result := CompareMemRange(@s1[1],@s2[1], Length(s1));
 end;
 
 end.
