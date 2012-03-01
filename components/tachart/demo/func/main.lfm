@@ -71,12 +71,18 @@ object Form1: TForm1
         end
         object Chart1XAxis: TConstantLine
           Legend.Visible = False
+          Arrow.BaseLength = 5
+          Arrow.Length = 12
           Arrow.Visible = True
+          Arrow.Width = 4
           Position = 0
         end
         object Chart1YAxis: TConstantLine
           Legend.Visible = False
+          Arrow.BaseLength = 5
+          Arrow.Length = 12
           Arrow.Visible = True
+          Arrow.Width = 4
           LineStyle = lsVertical
           Position = 0
         end
