@@ -183,7 +183,7 @@ var
 
     // check if link to wiki page but with a full baseurl
     if (Page.WikiPage.BaseURL<>'')
-    and (copy(URL,1,length(Page.WikiPage.BaseURL))=Page.WikiPage.BaseURL)
+    and (LeftStr(URL,length(Page.WikiPage.BaseURL))=Page.WikiPage.BaseURL)
     then begin
       Delete(URL,1,length(Page.WikiPage.BaseURL));
       while (URL<>'') and (URL[1]='/') do Delete(URL,1,1);

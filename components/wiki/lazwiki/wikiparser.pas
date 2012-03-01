@@ -987,17 +987,40 @@ begin
     // for example [[url|caption]]
     inc(FCurP);
     FLinkToken.SubToken:=wptInternLink;
+    FLinkToken.LinkStartPos:=StrPos(FCurP);
+    while not (FCurP^ in [#0..#31, '|', ']']) do inc(FCurP);
+    FLinkToken.LinkEndPos:=StrPos(FCurP);
+    FLinkToken.Link:=TrimLink(copy(Src,FLinkToken.LinkStartPos,FLinkToken.LinkEndPos-FLinkToken.LinkStartPos));
+    FLinkToken.CaptionStartPos:=FLinkToken.LinkStartPos;
+    FLinkToken.CaptionEndPos:=FLinkToken.LinkEndPos;
   end else begin
     // external link
-    // for example [url|caption]
+    // for example [url|caption] or [url caption]
     FLinkToken.SubToken:=wptExternLink;
+    FLinkToken.LinkStartPos:=StrPos(FCurP);
+    while not (FCurP^ in [#0..#31, ' ' , '|' , ']']) do inc(FCurP);
+    FLinkToken.LinkEndPos:=StrPos(FCurP);
+    FLinkToken.Link:=TrimLink(copy(Src,FLinkToken.LinkStartPos,FLinkToken.LinkEndPos-FLinkToken.LinkStartPos));
+    if FCurP^=' ' then begin
+      // separate caption
+      inc(FCurP);
+      FLinkToken.CaptionStartPos:=StrPos(FCurP);
+      while not (FCurP^ in [#0..#31, '|', ']']) do inc(FCurP);
+      FLinkToken.CaptionEndPos:=StrPos(FCurP);
+    end else begin
+      // caption = URL
+      FLinkToken.CaptionStartPos:=FLinkToken.LinkStartPos;
+      FLinkToken.CaptionEndPos:=FLinkToken.LinkEndPos;
+    end;
   end;
-  FLinkToken.LinkStartPos:=StrPos(FCurP);
-  while not (FCurP^ in [#0..#31, '|', ']']) do inc(FCurP);
-  FLinkToken.LinkEndPos:=StrPos(FCurP);
-  FLinkToken.Link:=TrimLink(copy(Src,FLinkToken.LinkStartPos,FLinkToken.LinkEndPos-FLinkToken.LinkStartPos));
-  FLinkToken.CaptionStartPos:=FLinkToken.LinkStartPos;
-  FLinkToken.CaptionEndPos:=FLinkToken.LinkEndPos;
+  if (BaseURL<>'')
+  and (LeftStr(FLinkToken.Link,length(BaseURL))=BaseURL) then begin
+    // a link to a wiki page, but with full URL => shorten
+    FLinkToken.SubToken:=wptInternLink;
+    Delete(FLinkToken.Link,1,length(BaseURL));
+    while (FLinkToken.Link<>'') and (FLinkToken.Link[1]='/') do
+      Delete(FLinkToken.Link,1,1);
+  end;
   if FCurP^='|' then begin
     // link with caption
     inc(FCurP);
@@ -1009,6 +1032,8 @@ begin
     inc(FCurP);
     if (FLinkToken.SubToken=wptInternLink) and (FCurP^=']') then
       inc(FCurP);
+
+
     DoToken(FLinkToken);
   end;
   FLastEmitPos:=FCurP;
