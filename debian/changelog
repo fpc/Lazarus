@@ -1,3 +1,10 @@
+
+lazarus (0.9.30.4RC1-0) unstable; urgency=low
+
+  * First release candidate for new release
+
+ -- Vincent Snijders <vincents@freepascal.org>  Thu, 01 Mar 2012 13:31:29 +0100
+
 lazarus (0.9.30.3-0) unstable; urgency=low
 
   * Snapshot building.
