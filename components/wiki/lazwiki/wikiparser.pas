@@ -79,15 +79,16 @@ type
     wptDefinitionList, // : or ;
     wptListItem,
     wptListItemTag, // <li>
-    wptTable, // ToDo: wiki tag for table
+    wptTable, // wiki tag for table
     wptTableTag, // <table>
-    wptTableRow, // ToDo: wiki tag for table row
+    wptTableRow, // wiki tag for table row
     wptTableRowTag, // <tr>
-    wptTableHeadCell, // ToDo: wiki tag for table head cell
+    wptTableHeadCell, // wiki tag for table head cell
     wptTableHeadCellTag, // <th>
-    wptTableCell, // ToDo: wiki tag for table cell
+    wptTableCell, // wiki tag for table cell
     wptTableCellTag, // <td>
     wptSection, // started/ended by =
+    wptSubSection, // started automatically, ended on empty line
     wptHeader, // =Text=
     wptHeader1, // <h1>
     wptHeader2, // <h2>
@@ -107,6 +108,7 @@ type
     wpgParagraph,
     wpgList,
     wpgTable,
+    wpgSubSection,
     wpgSection
     );
   TWPTokenGroups = set of TWPTokenGroup;
@@ -175,6 +177,7 @@ const
     (Caption: 'TableCell'; Flags: []; Group: wpgTable; BaseToken: wptTableCell), // wptTableCell,
     (Caption: 'TableCellTag'; Flags: []; Group: wpgTable; BaseToken: wptTableCell), // wptTableCellTag,
     (Caption: 'Section'; Flags: []; Group: wpgSection; BaseToken: wptSection), // wptSection,
+    (Caption: 'SubSection'; Flags: []; Group: wpgSubSection; BaseToken: wptP), // wptSubSection,
     (Caption: 'Header'; Flags: []; Group: wpgSection; BaseToken: wptHeader), // wptHeader,
     (Caption: 'Header1'; Flags: []; Group: wpgSection; BaseToken: wptHeader), // wptHeader1,
     (Caption: 'Header2'; Flags: []; Group: wpgSection; BaseToken: wptHeader), // wptHeader2,
@@ -262,17 +265,17 @@ type
     FOnToken: TWikiTokenEvent;
     FVerbosity: TWikiPageVerbosity;
     FInPre: integer; // >0 means in a pre range
-    procedure HandleAngleBracket;
-    procedure HandleCode;
-    procedure HandleApostroph;
-    procedure HandleCurlyBracketOpen;
-    procedure HandlePipe;
-    procedure HandleExclamationMark;
-    procedure HandleEdgedBracketOpen;
-    procedure HandleUnderScore;
-    procedure HandleEqual;
-    procedure HandleListChar; // '*', '#', ':', ';'
-    procedure HandleSpace;
+    procedure HandleAngleBracket; // tags
+    procedure HandleCode; // <code>
+    procedure HandleApostroph; // bold, italic
+    procedure HandleCurlyBracketOpen; // special, start of table
+    procedure HandlePipe; // new row, end of table
+    procedure HandleExclamationMark;  // head cell
+    procedure HandleEdgedBracketOpen; // links
+    procedure HandleUnderScore; // __TOC__
+    procedure HandleEqual;   // headers
+    procedure HandleListChar; // lists '*', '#', ':', ';'
+    procedure HandleSpace; // preserve space
     procedure EmitFlag(Typ: TWPTokenType; Range: TWPTokenRange; TagLen: integer);
     procedure EmitToggle(Typ: TWPTokenType; TagLen: integer);
     procedure EmitTag(Typ: TWPTokenType; Range: TWPTokenRange);
@@ -293,7 +296,7 @@ type
     function Pop(Token: TWPTokenType): boolean;
     procedure Pop(Index: integer);
     function TopToken: TWPTokenType;
-    function FindGroupStackPos(Group: TWPTokenGroup): integer;
+    function FindGroupStackPos(Group: TWPTokenGroup; OrHigher: boolean): integer;
     function FindStackItem(Typ: TWPTokenType): integer;
     procedure DoToken(Token: TWPToken);
   public
@@ -502,12 +505,21 @@ begin
     Result:=wptText;
 end;
 
-function TWikiPage.FindGroupStackPos(Group: TWPTokenGroup): integer;
+function TWikiPage.FindGroupStackPos(Group: TWPTokenGroup; OrHigher: boolean
+  ): integer;
+var
+  CurGroup: TWPTokenGroup;
 begin
   Result:=FStackPtr;
-  while (Result>=0)
-  and (ord(WPTokenInfos[FStack[Result].Token].Group)<ord(Group)) do
+  while (Result>=0) do begin
+    CurGroup:=WPTokenInfos[FStack[Result].Token].Group;
+    if (ord(CurGroup)>=ord(Group)) then begin
+      if (not OrHigher) and (CurGroup<>Group) then
+        exit(-1);
+      exit;
+    end;
     dec(Result);
+  end;
 end;
 
 function TWikiPage.FindStackItem(Typ: TWPTokenType): integer;
@@ -542,7 +554,7 @@ begin
 
   if (FStackPtr<0) or (TopToken=wptSection) then begin
     // highest level => start a paragraph
-    Push(wptP,FCurP);
+    Push(wptSubSection,FCurP);
   end;
   // maybe: add an option and when enabled combine multiple spaces and replace line breaks with space
   FTextToken.SubToken:=wptText;
@@ -767,7 +779,7 @@ begin
   while FCurP[NewDepth] in ['*','#',':',';'] do inc(NewDepth);
 
   // a list closes all fonts and spans => skip all fonts and spans
-  i:=FindGroupStackPos(wpgList);
+  i:=FindGroupStackPos(wpgList,true);
   // check all lists with wiki syntax, keep lists with html syntax
   while (i>=0)
   and (FStack[i].Token in WPTWikiLists) do
@@ -775,8 +787,11 @@ begin
   inc(i);
   CurDepth:=0;
   while (CurDepth<NewDepth) do begin
+    // compare old list hierarchy with new list hierarchy
     if (i>FStackPtr) or (FStack[i].Token<>CharToListType(FCurP[CurDepth])) then begin
-      //debugln(['TWikiPage.HandleListChar i=',i,' CurDepth=',CurDepth,' ',dbgs(CharToListType(FCurP[CurDepth]))]);
+      {dbgout(['TWikiPage.HandleListChar listtype does not fit: i=',i,' CurDepth=',CurDepth,' should=',dbgs(CharToListType(FCurP[CurDepth]))]);
+      if i<=FStackPtr then dbgout(' is=',dbgs(FStack[i].Token));
+      debugln;}
       // does not fit
       Pop(i);
       // start new list
@@ -784,12 +799,15 @@ begin
     end;
     inc(i);
     inc(CurDepth);
-    if CurDepth=NewDepth then
-      Pop(i); // close fonts, spans and previous list item
+    if CurDepth=NewDepth then begin
+      // close fonts, spans and previous list item
+      //debugln(['TWikiPage.HandleListChar close fonts, spans, listitem']);
+      Pop(i);
+    end;
     if (i>FStackPtr) then
       EmitFlag(wptListItem,wprOpen,0); // new list item
     if FStack[i].Token<>wptListItem then
-      raise Exception.Create('broken list');
+      raise Exception.Create('broken list: should='+dbgs(wptListItem)+' is='+dbgs(FStack[i].Token));
     inc(i);
   end;
 
@@ -838,7 +856,7 @@ end;
 
 procedure TWikiPage.HandleCurlyBracketOpen;
 begin
-  if FCurP[1]='{' then begin
+  if (FCurP[1]='{') and (FInPre=0) then begin
     // {{special}} or {{name|special}}
     EmitTextToken;
     inc(FCurP,2);
@@ -893,7 +911,7 @@ procedure TWikiPage.HandlePipe;
 var
   i: Integer;
 begin
-  i:=FindGroupStackPos(wpgTable);
+  i:=FindGroupStackPos(wpgTable,false);
   if i>=0 then begin
     // in a table
     if AtLineStart(FCurP) then begin
@@ -928,7 +946,7 @@ procedure TWikiPage.HandleExclamationMark;
 var
   i: Integer;
 begin
-  i:=FindGroupStackPos(wpgTable);
+  i:=FindGroupStackPos(wpgTable,false);
   if i>=0 then begin
     // in a table
     if AtLineStart(FCurP) then begin
@@ -1181,13 +1199,13 @@ begin
   EmitTextToken;
   if ord(WPTokenInfos[Typ].Group)>ord(wpgFont) then begin
     // auto close paragraph
-    if TopToken=wptP then
+    while TopToken=wptP do
       Pop(wptP);
   end else if (Range=wprOpen) and (WPTokenInfos[Typ].Group=wpgFont) then begin
     // font changes
     if (FStackPtr<0) or (TopToken=wptSection) then begin
-      // highest level => start a paragraph
-      Push(wptP,FCurP);
+      // highest level => start a sub section
+      Push(wptSubSection,FCurP);
     end;
   end;
   if Range=wprOpen then begin
@@ -1376,14 +1394,9 @@ begin
           else
             inc(FCurP);
           if FCurP^ in [#10,#13] then begin
-            // empty line(s) closes lists
-            if FindStackItem(wptListItem)>=0 then begin
-              while TopToken in WPTWikiLists do
-                Pop(TopToken);
-            end;
-            // empty line(s) closes paragraphs
-            if TopToken=wptP then
-              Pop(wptP);
+            // empty line(s) closes lists, paragraphs and subsections
+            while TopToken in ([wptP,wptSubSection]+WPTWikiLists) do
+              Pop(TopToken);
             while FCurP^ in [#10,#13] do inc(FCurP);
           end;
           // line breaks closes head cells
