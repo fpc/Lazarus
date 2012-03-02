@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, fgl, WikiParser, laz2_XMLRead, LazFileUtils, laz2_DOM,
-  LazLogger, LazUTF8, AvgLvlTree, KeywordFuncLists;
+  LazLogger, LazUTF8, KeywordFuncLists, CodeToolsStructs;
 
 type
   TWiki2FormatConverter = class;

@@ -54,11 +54,13 @@ type
     procedure SetMaxH(AValue: integer);
     procedure SetPageFileExt(AValue: string);
   protected
-    ShortFilenameToPage: TFilenameToPointerTree;
+    ShortFilenameToPage: TFilenameToPointerTree; // created in ConvertInit
     UsedImages: TFilenameToPointerTree; // image name to first page using the image
     procedure ConvertPage(Page: TW2XHTMLPage); virtual;
     procedure OnWikiToken(Token: TWPToken); virtual;
     function GetImageLink(ImgFilename: string): string; virtual;
+    function FindImage(const ImgFilename: string): string; virtual;
+    procedure MarkImageAsUsed(const ImgFilename: string; Page: TW2XHTMLPage);
     function GetPageLink(Page: TW2XHTMLPage): string; virtual;
     function InsertLink(const LinkToken: TWPLinkToken): boolean;
     procedure InsertText(Token: TWPToken; Txt: string); virtual;
@@ -137,6 +139,7 @@ var
     Filename: String;
     Node: TDOMElement;
     TargetPage: TW2XHTMLPage;
+    FoundImgFile: String;
   begin
     Result:=false;
     if LinkToken.Token=wptExternLink then exit;
@@ -154,16 +157,15 @@ var
         exit;
       end
       else if Scheme='image' then begin
-        if ImagesDir='' then exit;
         URL:=copy(URL,p+1,length(URL));
         URL:=UTF8Trim(URL);
         URL:=WikiInternalLinkToPage(URL);
         if URL='' then exit;
-        Filename:=ImagesDir+WikiImageToFilename(URL,false,true,true);
-        if FileExistsUTF8(Filename) then begin
-          Filename:=GetImageLink(Filename);
-          if not UsedImages.Contains(Filename) then
-            UsedImages[Filename]:=Page;
+        Filename:=WikiImageToFilename(URL,false,true,true);
+        FoundImgFile:=FindImage(Filename);
+        if FoundImgFile<>'' then begin
+          Filename:=GetImageLink(FoundImgFile);
+          MarkImageAsUsed(Filename,Page);
           Node:=doc.CreateElement('img');
           Node.SetAttribute('src', Filename);
           if Caption<>'' then
@@ -493,6 +495,23 @@ end;
 function TWiki2XHTMLConverter.GetImageLink(ImgFilename: string): string;
 begin
   Result:=CreateRelativePath(ImgFilename,OutputDir);
+end;
+
+function TWiki2XHTMLConverter.FindImage(const ImgFilename: string): string;
+begin
+  if ImagesDir='' then exit('');
+  Result:=ImgFilename;
+  if (not FilenameIsAbsolute(Result)) then
+    Result:=ImagesDir+Result;
+  if not FileExistsUTF8(Result) then
+    Result:='';
+end;
+
+procedure TWiki2XHTMLConverter.MarkImageAsUsed(const ImgFilename: string;
+  Page: TW2XHTMLPage);
+begin
+  if not UsedImages.Contains(ImgFilename) then
+    UsedImages[ImgFilename]:=Page;
 end;
 
 function TWiki2XHTMLConverter.GetPageLink(Page: TW2XHTMLPage): string;
