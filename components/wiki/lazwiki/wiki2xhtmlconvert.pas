@@ -56,7 +56,6 @@ type
   protected
     ShortFilenameToPage: TFilenameToPointerTree; // created in ConvertInit
     UsedImages: TFilenameToPointerTree; // image name to first page using the image
-    procedure ConvertPage(Page: TW2XHTMLPage); virtual;
     procedure OnWikiToken(Token: TWPToken); virtual;
     function GetImageLink(ImgFilename: string): string; virtual;
     function FindImage(const ImgFilename: string): string; virtual;
@@ -65,6 +64,7 @@ type
     function InsertLink(const LinkToken: TWPLinkToken): boolean;
     procedure InsertText(Token: TWPToken; Txt: string); virtual;
     procedure InsertCode(Token: TWPNameValueToken); virtual;
+    procedure ConvertPage(Page: TW2XHTMLPage); virtual;
     procedure SavePage(Page: TW2XHTMLPage); virtual;
     procedure ConvertInit; virtual;
     procedure ConvertAllPages; virtual;
