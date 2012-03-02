@@ -97,6 +97,7 @@ type
     function GetMenuHeight: Integer;
 
     procedure ClearCachedColors;
+    function GetStyleName: String;
     procedure SetOverrideCursor(const AValue: TObject);
     procedure QtRemoveStayOnTop(const ASystemTopAlso: Boolean = False);
     procedure QtRestoreStayOnTop(const ASystemTopAlso: Boolean = False);
@@ -198,6 +199,7 @@ type
     property IsLibraryInstance: Boolean read FIsLibraryInstance;
 
     property OverrideCursor: TObject read FOverrideCursor write SetOverrideCursor;
+    property StyleName: String read GetStyleName;
     {$IFDEF HASX11}
     property WindowManagerName: String read FWindowManagerName;
     {$ENDIF}

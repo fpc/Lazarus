@@ -20,15 +20,12 @@
 // with various styles under X11.
 procedure QtX11InitializePalettes;
 var
-  StyleName: WideString;
   Palette: QPaletteH;
   LineEditPalette: QPaletteH;
   ComboBoxPalette: QPaletteH;
   TextEditPalette: QPaletteH;
   Brush: QBrushH;
 begin
-  QObject_objectName(QApplication_style(), @StyleName);
-
   //palette for disabled viewports and edit controls
   Palette := QPalette_create();
   QApplication_palette(Palette);
@@ -1401,9 +1398,20 @@ begin
     QMenuBar_sizeHint(AMenuBar, @Size);
     QMainWindow_destroy(DummyWindow);
     FCachedMenuBarHeight := Size.cy;
+
+    if QStyle_styleHint(QApplication_style(),
+      QStyleSH_MainWindow_SpaceBelowMenuBar) > 0 then
+      inc(FCachedMenuBarHeight, 4);
+    if QStyle_styleHint(QApplication_style(),
+      QStyleSH_ScrollView_FrameOnlyAroundContents) > 0 then
+      inc(FCachedMenuBarHeight, 4);
   end;
   if (FCachedMenuBarHeight <= 0) then
-    FCachedMenuBarHeight := 22;  // default
+  begin
+    FCachedMenuBarHeight := 22;
+    if QStyle_styleHint(QApplication_style(), QStyleSH_MainWindow_SpaceBelowMenuBar) > 0 then
+      inc(FCachedMenuBarHeight, 4);
+  end;
   Result := FCachedMenuBarHeight;
 end;
 
@@ -1417,6 +1425,14 @@ begin
       FreeMem(FCachedColors[i]);
     FCachedColors[i] := nil;
   end;
+end;
+
+function TQtWidgetSet.GetStyleName: String;
+var
+  WStr: WideString;
+begin
+  QObject_objectName(QApplication_style, @WStr);
+  Result := UTF8ToUTF16(WStr);
 end;
 
 //------------------------------------------------------------------------
