@@ -43,7 +43,7 @@ type
     WikiDocumentName: string; // the path in the Wiki
     constructor Create(TheConverter: TWiki2FormatConverter); virtual;
     destructor Destroy; override;
-    procedure ParseWikiDoc;
+    procedure ParseWikiDoc(KeepWikiDoc: boolean);
   end;
   TW2FormatPageClass = class of TW2FormatPage;
 
@@ -174,7 +174,7 @@ begin
     fPages.Add(Result);
   end;
   if ParseNow then
-    Result.ParseWikiDoc;
+    Result.ParseWikiDoc(false);
 end;
 
 procedure TWiki2FormatConverter.Convert;
@@ -189,7 +189,7 @@ begin
   for i:=0 to Count-1 do begin
     Page:=Pages[i];
     Page.WikiPage.LanguageTags:=LanguageTags;
-    Page.ParseWikiDoc;
+    Page.ParseWikiDoc(false);
   end;
 end;
 
@@ -220,31 +220,36 @@ begin
   inherited Destroy;
 end;
 
-procedure TW2FormatPage.ParseWikiDoc;
+procedure TW2FormatPage.ParseWikiDoc(KeepWikiDoc: boolean);
 begin
-  if WikiDoc=nil then begin
-    try
-      ReadXMLFile(WikiDoc,WikiFilename,[]);
-    except
-      on E: Exception do
-        WikiErrorMsg:=E.Message;
+  try
+    if WikiDoc=nil then begin
+      try
+        ReadXMLFile(WikiDoc,WikiFilename,[]);
+      except
+        on E: Exception do
+          WikiErrorMsg:=E.Message;
+      end;
     end;
-  end;
-  if WikiErrorMsg<>'' then
-    raise Exception.Create(WikiFilename+': '+WikiErrorMsg);
-  if WikiPage=nil then begin
-    WikiPage:=TWikiPage.Create;
-    try
-      if Converter<>nil then
-        WikiPage.OnLog:=Converter.OnLog;
-      WikiPage.LoadFromDoc(WikiDoc);
-    except
-      on E: Exception do
-        WikiErrorMsg:=E.Message;
+    if WikiErrorMsg<>'' then
+      raise Exception.Create(WikiFilename+': '+WikiErrorMsg);
+    if WikiPage=nil then begin
+      WikiPage:=TWikiPage.Create;
+      try
+        if Converter<>nil then
+          WikiPage.OnLog:=Converter.OnLog;
+        WikiPage.LoadFromDoc(WikiDoc);
+      except
+        on E: Exception do
+          WikiErrorMsg:=E.Message;
+      end;
     end;
+    if WikiErrorMsg<>'' then
+      raise Exception.Create(WikiFilename+': '+WikiErrorMsg);
+  finally
+    if not KeepWikiDoc then
+      FreeAndNil(WikiDoc);
   end;
-  if WikiErrorMsg<>'' then
-    raise Exception.Create(WikiFilename+': '+WikiErrorMsg);
 end;
 
 function WikiPageToFilename(Page: string; IsInternalLink, AppendCaseID: boolean): string;

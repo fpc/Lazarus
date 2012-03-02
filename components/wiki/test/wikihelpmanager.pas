@@ -215,24 +215,62 @@ procedure TWiki2HelpConverter.ExtractTextToken(Token: TWPToken);
 var
   Page: TW2HelpPage;
   W: TWikiPage;
+  Txt: String;
+  CurNode: TWHTextNode;
+  StartP, EndP: PChar;
+  NodeType: TWHTextNodeType;
+  TextToken: TWPTextToken;
+  LinkToken: TWPLinkToken;
+  Caption: String;
 begin
   Page:=TW2HelpPage(Token.UserData);
   W:=Page.WikiPage;
+  CurNode:=Page.CurNode;
+  if CurNode=nil then CurNode:=Page.TextRoot;
   case Token.Token of
   wptText:
     if Token is TWPTextToken then begin
-      // ToDo
+      TextToken:=TWPTextToken(Token);
+      StartP:=PChar(W.Src)+TextToken.StartPos-1;
+      EndP:=PChar(W.Src)+TextToken.EndPos-1;
+      while (StartP<EndP) and (StartP^ in [#1..#31,' ']) do inc(StartP);
+      if StartP<EndP then begin
+        // not only space
+        Txt:=copy(W.Src,TextToken.StartPos,TextToken.EndPos-TextToken.StartPos);
+        CurNode.Txt:=CurNode.Txt+Txt;
+        exit;
+      end;
     end;
-  wptSection:
-    ; // ToDo
-  wptHeader:
-    ; // ToDo
+
+  wptSection,wptHeader:
+    if Token.Range=wprOpen then begin
+      if Token.Token=wptHeader then
+        NodeType:=whnHeader
+      else
+        NodeType:=whnTxt;
+      Page.CurNode:=TWHTextNode.Create(NodeType,CurNode);
+      exit;
+    end else if Token.Range=wprClose then begin
+      Page.CurNode:=CurNode.Parent;
+      exit;
+    end;
+
   wptInternLink, wptExternLink:
-    ; // ToDo
-  else
-    // add a space to separate words
-    // ToDo
+    if Token is TWPLinkToken then begin
+      LinkToken:=TWPLinkToken(Token);
+      Caption:=copy(W.Src,LinkToken.CaptionStartPos,
+                    LinkToken.CaptionEndPos-LinkToken.CaptionStartPos);
+      if Caption<>'' then begin
+        CurNode:=TWHTextNode.Create(whnLink,CurNode);
+        CurNode.Txt:=Caption;
+        // do not exit, append a space to the current node
+      end;
+    end;
   end;
+  // add a space to separate words
+  if (CurNode.Txt='') or (not (CurNode.Txt[length(CurNode.Txt)] in [#1..#31,' ']))
+  then
+    CurNode.Txt:=CurNode.Txt+' ';
 end;
 
 procedure TWiki2HelpConverter.ParallelExtractPageText(Index: PtrInt;
@@ -261,7 +299,7 @@ begin
   for i:=StartIndex to EndIndex do begin
     Page:=TW2HelpPage(Pages[i]);
     try
-      Page.ParseWikiDoc;
+      Page.ParseWikiDoc(false);
     except
       on E: Exception do begin
         Log('ERROR: '+Page.WikiFilename+': '+E.Message);
