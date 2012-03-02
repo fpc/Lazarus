@@ -2723,6 +2723,10 @@ begin
   Modifiers := QKeyEvent_modifiers(QKeyEventH(Event));
   IsSysKey := (QtAltModifier and Modifiers) <> $0;
   KeyMsg.KeyData := QtKeyModifiersToKeyState(Modifiers);
+  if QKeyEvent_isAutoRepeat(QKeyEventH(Event)) then
+    KeyMsg.Unused := 1
+  else
+    KeyMsg.Unused := 0;
   {$ifdef windows}
     ACharCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
     KeyMsg.CharCode := ACharCode;
