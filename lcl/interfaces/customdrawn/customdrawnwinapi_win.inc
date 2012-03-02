@@ -1231,16 +1231,6 @@ begin
   Result := MultiMon.EnumDisplayMonitors(hdc, lprcClip, lpfnEnum, dwData);
 end;*)
 
-function TCDWidgetSet.EnumFontFamilies(DC: HDC; Family: Pchar;
-  EnumFontFamProc: FontEnumProc; LParam: Lparam): longint;
-begin
-  // TODO: do as EnumFontFamiliesEx
-  Result := Windows.EnumFontFamilies(DC, Family,
-    Windows.FontEnumProc(EnumFontFamProc), LParam);
-end;
-
-(*
-{$ifdef WindowsUnicodeSupport}
 type
   TProcRedirRec = record
     LParam: LParam;
@@ -1277,45 +1267,26 @@ begin
 
   Result := Rec^.CallBack(ALogFont, Metric, FontType, Rec^.LParam);
 end;
-{$endif}
 
-function TWin32WidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
+function TCDWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
   Callback: FontEnumExProc; LParam: Lparam; flags: DWord): longint;
-{$ifdef WindowsUnicodeSupport}
 var
   FontName: String;
   LFW: LogFontW;
-  LFA: LogFontA absolute LFW;
   Rec: TProcRedirRec;
-{$endif}
 begin
-{$ifdef WindowsUnicodeSupport}
   FontName := lpLogFont^.lfFaceName;
   ZeroMemory(@LFW, SizeOf(LFW));
   LFW.lfCharSet := lpLogFont^.lfCharSet;
   LFW.lfPitchAndFamily := lpLogFont^.lfPitchAndFamily;
   Rec.LParam := LParam;
   Rec.CallBack := CallBack;
-  if UnicodeEnabledOS then
-  begin
-    LFW.lfFaceName := UTF8ToUTF16(FontName);
-    Result := LongInt(Windows.EnumFontFamiliesExW(DC,
-      LFW, windows.FontEnumExProc(@EnumExProcRedirW), Windows.LParam(@Rec), Flags));
-  end
-  else
-  begin
-    LFA.lfFaceName := Utf8ToAnsi(FontName);
-    Result := LongInt(Windows.EnumFontFamiliesExA(DC,
-      LFA, windows.FontEnumExProc(@EnumExProcRedirA), Windows.LParam(@Rec), Flags));
-  end;
-{$else}
-  Result := Windows.EnumFontFamiliesEx(DC,
-    windows.LPLOGFONT(lpLogFont),
-    windows.FontEnumExProc(Callback), LParam, Flags);
-{$endif}
+  LFW.lfFaceName := UTF8ToUTF16(FontName);
+  Result := LongInt(Windows.EnumFontFamiliesExW(DC,
+    LFW, windows.FontEnumExProc(@EnumExProcRedirW), Windows.LParam(@Rec), Flags));
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: ExcludeClipRect
   Params:  dc, Left, Top, Right, Bottom
   Returns: integer
