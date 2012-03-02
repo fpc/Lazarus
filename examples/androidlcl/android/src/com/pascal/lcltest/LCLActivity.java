@@ -228,16 +228,6 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
     lclxdpi = (int) metrics.xdpi;
     lclydpi = (int) metrics.ydpi;
     LCLOnCreate(this);
-
-    // Prepare dialog callbacks
-    // for TCDComboBox
-    lclselectitemcallback = new DialogInterface.OnClickListener()
-    {
-      @Override public void onClick(DialogInterface dialog, int which)
-      {
-        LCLOnMessageBoxFinished(which, 1);
-      }
-    };
   }
 
   @Override public void onConfigurationChanged (Configuration newConfig)
@@ -584,6 +574,22 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
     }
   }
 
+  // Prepare dialog callbacks
+  // for TCDComboBox
+  public void LCLDoPrepareSelectItemDialog(CharSequence[] items, int selected, AlertDialog.Builder dialog)
+  {
+    //Log.i("lclapp", "LCLDoPrepareSelectItemDialog");
+    dialog.setSingleChoiceItems(items, selected, new DialogInterface.OnClickListener()
+    {
+      @Override public void onClick(DialogInterface dialog, int which)
+      {
+        //Log.i("lclapp", "LCLDoPrepareSelectItemDialog.onClick");
+        LCLOnMessageBoxFinished(which, 1);
+        dialog.dismiss();
+      }
+    });
+  }
+
   // -------------------------------------------
   // Fields exported to the Pascal side for easier data communication
   // -------------------------------------------
@@ -622,9 +628,6 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   // for LazDeviceAPIs
   public String lcldestination;
   public int lclkind;
-
-  // Dialog callbacks
-  DialogInterface.OnClickListener lclselectitemcallback;
 
   static
   {
