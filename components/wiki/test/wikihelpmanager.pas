@@ -62,12 +62,14 @@ type
     procedure ExtractPageText(Page: TW2HelpPage);
     procedure ExtractTextToken(Token: TWPToken);
     procedure ParallelExtractPageText(Index: PtrInt; {%H-}Data: Pointer; {%H-}Item: TMultiThreadProcItem);
+    procedure ParallelLoadPage(Index: PtrInt; {%H-}Data: Pointer; {%H-}Item: TMultiThreadProcItem);
   public
     constructor Create; override;
     procedure Clear; override;
     destructor Destroy; override;
     procedure ConvertInit; override;
     procedure ExtractAllTexts;
+    procedure LoadPages;
   end;
 
   { TWikiHelpThread }
@@ -80,7 +82,6 @@ type
     procedure Log({%H-}Msg: string);
     procedure ConverterLog({%H-}Msg: string);
     procedure OnScanComplete; // called in thread at end
-    procedure LoadWikiPage(Index: PtrInt; {%H-}Data: Pointer; {%H-}Item: TMultiThreadProcItem);
   public
     Help: TWikiHelp;
   end;
@@ -247,13 +248,36 @@ begin
     ExtractPageText(TW2HelpPage(Pages[i]));
 end;
 
+procedure TWiki2HelpConverter.ParallelLoadPage(Index: PtrInt; Data: Pointer;
+  Item: TMultiThreadProcItem);
+var
+  Page: TW2HelpPage;
+  StartIndex: Integer;
+  EndIndex: integer;
+  i: Integer;
+begin
+  StartIndex:=Index*PagesPerThread;
+  EndIndex:=Min(StartIndex+PagesPerThread-1,Count-1);
+  for i:=StartIndex to EndIndex do begin
+    Page:=TW2HelpPage(Pages[i]);
+    try
+      Page.ParseWikiDoc;
+    except
+      on E: Exception do begin
+        Log('ERROR: '+Page.WikiFilename+': '+E.Message);
+      end;
+    end;
+  end;
+end;
+
 procedure TWiki2HelpConverter.ExtractPageText(Page: TW2HelpPage);
 begin
   FreeAndNil(Page.TextRoot);
   Page.TextRoot:=TWHTextNode.Create(whnTxt,nil);
   try
     Page.CurNode:=Page.TextRoot;
-    Page.WikiPage.Parse(@ExtractTextToken,Page);
+    if Page.WikiPage<>nil then
+      Page.WikiPage.Parse(@ExtractTextToken,Page);
   finally
     Page.CurNode:=nil;
   end;
@@ -280,7 +304,12 @@ end;
 
 procedure TWiki2HelpConverter.ExtractAllTexts;
 begin
-  ProcThreadPool.DoParallel(@ParallelExtractPageText,0,Count div PagesPerThread);
+  ProcThreadPool.DoParallel(@ParallelExtractPageText,0,(Count-1) div PagesPerThread);
+end;
+
+procedure TWiki2HelpConverter.LoadPages;
+begin
+  ProcThreadPool.DoParallel(@ParallelLoadPage,0,(Count-1) div PagesPerThread);
 end;
 
 constructor TWiki2HelpConverter.Create;
@@ -314,49 +343,56 @@ var
   StartTime: TDateTime;
   EndTime: TDateTime;
 begin
-  Files:=nil;
+  CurrentThread:=Self;
   try
-    StartTime:=Now;
-    Log('TWikiHelpThread.Execute START XMLDirectory="'+Help.XMLDirectory+'"');
-
-    Files:=TStringList.Create;
+    Files:=nil;
     try
-      Help.Converter.OnLog:=@ConverterLog;
-      // get all wiki xml files
-      if FindFirstUTF8(Help.XMLDirectory+AllFilesMask,faAnyFile,FileInfo)=0 then begin
-        repeat
-          if CompareFileExt(FileInfo.Name,'.xml',false)=0 then
-            Files.Add(FileInfo.Name);
-        until FindNextUTF8(FileInfo)<>0;
+      StartTime:=Now;
+      Log('TWikiHelpThread.Execute START XMLDirectory="'+Help.XMLDirectory+'"');
+
+      Files:=TStringList.Create;
+      try
+        Help.Converter.OnLog:=@ConverterLog;
+        // get all wiki xml files
+        if FindFirstUTF8(Help.XMLDirectory+AllFilesMask,faAnyFile,FileInfo)=0 then begin
+          repeat
+            if CompareFileExt(FileInfo.Name,'.xml',false)=0 then
+              Files.Add(FileInfo.Name);
+          until FindNextUTF8(FileInfo)<>0;
+        end;
+        FindCloseUTF8(FileInfo);
+        if Help.Aborting then exit;
+
+        // add file names to converter
+        for i:=0 to Files.Count-1 do begin
+          Filename:=Help.XMLDirectory+Files[i];
+          Help.Converter.AddWikiPage(Filename,false);
+        end;
+        if Help.Aborting then exit;
+
+        // load xml files
+        Help.Converter.LoadPages;
+        if Help.Aborting then exit;
+
+        // extract texts
+        Help.Converter.ConvertInit;
+        Help.Converter.ExtractAllTexts;
+
+        EndTime:=Now;
+        Log('TWikiHelpThread.Execute SCAN complete XMLDirectory="'+Help.XMLDirectory+'" '+dbgs(round(Abs(EndTime-StartTime)*86400000))+'msec');
+      finally
+        Files.Free;
+        Help.Converter.OnLog:=nil;
       end;
-      FindCloseUTF8(FileInfo);
-      if Help.Aborting then exit;
-
-      // add file names to converter
-      for i:=0 to Files.Count-1 do begin
-        Filename:=Help.XMLDirectory+Files[i];
-        Help.Converter.AddWikiPage(Filename,false);
+    except
+      on E: Exception do begin
+        Log('TWikiHelpThread.Execute error: '+E.Message);
       end;
-      if Help.Aborting then exit;
-
-      // load xml files
-      ProcThreadPool.DoParallel(@LoadWikiPage,0,Help.Converter.Count-1);
-      if Help.Aborting then exit;
-
-      Help.Converter.ConvertInit;
-      Help.Converter.ExtractAllTexts;
-      EndTime:=Now;
-      Log('TWikiHelpThread.Execute SCAN complete XMLDirectory="'+Help.XMLDirectory+'" '+dbgs(round(Abs(EndTime-StartTime)*86400000))+'msec');
-    finally
-      Files.Free;
-      Help.Converter.OnLog:=nil;
     end;
-  except
-    on E: Exception do begin
-      Log('TWikiHelpThread.Execute error: '+E.Message);
-    end;
+    Synchronize(@OnScanComplete);
+  finally
+    CurrentThread:=nil;
   end;
-  Synchronize(@OnScanComplete);
 end;
 
 procedure TWikiHelpThread.MainThreadLog;
@@ -368,7 +404,7 @@ end;
 procedure TWikiHelpThread.Log(Msg: string);
 begin
   fLogMsg:=Msg;
-  Synchronize(@MainThreadLog);
+  CurrentThread.Synchronize(@MainThreadLog);
 end;
 
 procedure TWikiHelpThread.ConverterLog(Msg: string);
@@ -388,16 +424,6 @@ begin
   finally
     Help.LeaveCritSect;
   end;
-end;
-
-procedure TWikiHelpThread.LoadWikiPage(Index: PtrInt; Data: Pointer;
-  Item: TMultiThreadProcItem);
-var
-  Page: TW2HelpPage;
-begin
-  if Help.Aborting then exit;
-  Page:=TW2HelpPage(Help.Converter.Pages[Index]);
-  Page.ParseWikiDoc;
 end;
 
 { TWikiHelp }

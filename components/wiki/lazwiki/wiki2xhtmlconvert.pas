@@ -255,6 +255,7 @@ var
   CurCSSFilename: String;
 begin
   FreeAndNil(Page.XHTML);
+  if Page.WikiPage=nil then exit;
   Page.XHTML:=TXMLDocument.Create;
   doc:=Page.XHTML;
   // <html>
@@ -664,6 +665,7 @@ var
   Filename: String;
 begin
   if OutputDir='' then exit;
+  if Page.XHTML=nil then exit;
   Filename:=PageToFilename(Page,true);
   Log('TWiki2HTMLConverter.SavePage '+Filename);
   WriteXMLFile(Page.XHTML,Filename);
@@ -679,6 +681,8 @@ begin
   for i:=0 to Count-1 do begin
     Page:=TW2XHTMLPage(Pages[i]);
     Page.Filename:=PageToFilename(Page,false);
+    if Page.WikiPage<>nil then
+      Page.WikiPage.LanguageTags:=LanguageTags;
     ShortFilenameToPage[Page.Filename]:=Page;
   end;
 end;

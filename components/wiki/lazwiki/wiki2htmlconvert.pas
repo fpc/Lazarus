@@ -133,6 +133,7 @@ var
   Filename: String;
 begin
   if OutputDir='' then exit;
+  if Page.XHTML=nil then exit;
   Filename:=PageToFilename(Page,true);
   Log('TWiki2HTMLConverter.SavePage '+Filename);
   ms:=TMemoryStream.Create;

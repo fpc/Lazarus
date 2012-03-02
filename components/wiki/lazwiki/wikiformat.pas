@@ -25,7 +25,7 @@ unit WikiFormat;
 interface
 
 uses
-  Classes, SysUtils, fgl, WikiParser, laz2_XMLRead, LazFileUtils, laz2_DOM,
+  Classes, SysUtils, WikiParser, laz2_XMLRead, LazFileUtils, laz2_DOM,
   LazLogger, LazUTF8, KeywordFuncLists, CodeToolsStructs;
 
 type
@@ -46,7 +46,6 @@ type
     procedure ParseWikiDoc;
   end;
   TW2FormatPageClass = class of TW2FormatPage;
-  TW2FormatPageList = specialize TFPGList<TW2FormatPage>;
 
   { TWiki2FormatConverter }
 
@@ -61,7 +60,7 @@ type
   protected
     FImagesDir: string;
     FOutputDir: string;
-    fPages: TW2FormatPageList;
+    fPages: TFPList; // list of TW2FormatPage
     FPageClass: TW2FormatPageClass;
     function GetPages(Index: integer): TW2FormatPage;
     procedure SetOutputDir(AValue: string);
@@ -113,7 +112,7 @@ end;
 
 function TWiki2FormatConverter.GetPages(Index: integer): TW2FormatPage;
 begin
-  Result:=fPages[Index];
+  Result:=TW2FormatPage(fPages[Index]);
 end;
 
 procedure TWiki2FormatConverter.SetOutputDir(AValue: string);
@@ -128,7 +127,7 @@ end;
 constructor TWiki2FormatConverter.Create;
 begin
   FPageClass:=TW2FormatPage;
-  fPages:=TW2FormatPageList.Create;
+  fPages:=TFPList.Create;
   FTitle:='FPC/Lazarus Wiki (offline, generated '+DatetoStr(Now)+')';
   FImagesDir:='images';
   FNoWarnBaseURLs:=TStringToStringTree.Create(true);
