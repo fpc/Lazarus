@@ -106,17 +106,20 @@ begin
   CDWidgetset.DefaultFontAndroidSize := Round(16 * (Screen.PixelsPerInch / 125));
   // Now inform the application
   if Assigned(CDWidgetset.ActivityOnCreate) then CDWidgetset.ActivityOnCreate()
-  else Application.Run; // <- Support for older code up to 21 dezember
+  else Application.Run; // <- Support for older code up to 21 dezember 2011
 end;
 
 // This one is for all simple dialogs: MessageBox, PromptUser (MessageDlg) and AskUser
 function Java_com_pascal_lclproject_LCLActivity_LCLOnMessageBoxFinished(
-    env:PJNIEnv; this:jobject; AResult: jint): jint; cdecl;
+    env:PJNIEnv; this:jobject; AResult, ADialogType: jint): jint; cdecl;
 begin
-  //__android_log_write(ANDROID_LOG_INFO, 'lclapp', 'LCLOnCreate called by LCLActivity.onCreate');
+  __android_log_write(ANDROID_LOG_INFO, 'lclapp', 'LCLOnMessageBoxFinished called');
   Result := 0;
-  if Assigned(Application.OnMessageDialogFinished) then
-    Application.OnMessageDialogFinished(Application, AResult);
+  case ADialogType of
+  0: if Assigned(Application.OnMessageDialogFinished) then
+       Application.OnMessageDialogFinished(Application, AResult);
+  1: if Assigned(OnShowSelectItemDialogResult) then OnShowSelectItemDialogResult(AResult);
+  end;
 end;
 
 function Java_com_pascal_lclproject_LCLActivity_LCLOnKey(
@@ -342,7 +345,7 @@ const NativeMethods: array[0..7] of JNINativeMethod=
     signature:'(Lcom/pascal/lcltest/LCLActivity;)I'; //android/app/Activity;
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnCreate;),
    (name:'LCLOnMessageBoxFinished';
-    signature:'(I)I';
+    signature:'(II)I';
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnMessageBoxFinished;),
    (name:'LCLOnKey';
     signature:'(IILandroid/view/KeyEvent;I)I';

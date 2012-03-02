@@ -32,6 +32,11 @@ type
     LCLControl: TCustomCheckBox;
   end;
 
+  TCDIntfComboBox = class(TCDComboBox)
+  public
+    LCLControl: TCustomComboBox;
+  end;
+
   // Additional Tab
 
   TCDIntfStaticText = class(TCDProgressBar)

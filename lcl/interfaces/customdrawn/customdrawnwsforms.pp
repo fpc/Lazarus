@@ -40,7 +40,7 @@ uses
   lazutf8sysutils,
   // LCL
   Controls, LCLType, Forms, LCLProc, GraphType, IntfGraphics, lazcanvas,
-  lazregions, LCLIntf,
+  lazregions, LCLIntf, Lmessages,
   customdrawncontrols,
   // Widgetset
   InterfaceBase, WSForms, WSProc, WSLCLClasses, LCLMessageGlue,

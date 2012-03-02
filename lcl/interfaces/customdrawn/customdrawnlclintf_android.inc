@@ -274,6 +274,60 @@ begin
   ARawImage.Init;
 end;
 
+function TCDWidgetset.ShowSelectItemDialog(const AItems: TStrings): Boolean;
+var
+  javaAndroidAppAlertDialogBuilderClass: JClass = nil;
+  javaCharSequence: JClass = nil;
+  javaMethod_AlertDialogBuilder_new, javaMethod_AlertDialogBuilder_setSingleChoiceItems,
+    javaMethod_AlertDialogBuilder_show: JMethodID;
+  JavaField_lclselectitemcallback: JFieldID;
+  javaAlertDialog: JObject;
+  javaObjectArray: JObjectArray;
+  // array for the parameters
+  lParams: array[0..2] of JValue;
+  lJavaString: JString;
+  i: Integer;
+begin
+  //__android_log_write(ANDROID_LOG_INFO, 'lclapp', '[TCDWidgetset.ShowSelectItemDialog]');
+
+  // First get the classes
+  javaAndroidAppAlertDialogBuilderClass := javaEnvRef^^.FindClass(javaEnvRef, 'android/app/AlertDialog$Builder');
+  javaCharSequence := javaEnvRef^^.FindClass(javaEnvRef, 'java/lang/CharSequence');
+  //__android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar('[TCDWidgetset.ShowSelectItemDialog] 2 javaAndroidAppAlertDialogBuilderClass='+IntToStr(PtrInt(javaAndroidAppAlertDialogBuilderClass))));
+
+  // final AlertDialog.Builder ad = new AlertDialog.Builder(this);
+  javaMethod_AlertDialogBuilder_new := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidAppAlertDialogBuilderClass, '<init>', '(Landroid/content/Context;)V');
+  //__android_log_write(ANDROID_LOG_INFO, 'lclapp', '[TCDWidgetset.ShowSelectItemDialog] 2,5');
+  lParams[0].l := javaActivityObject;
+  javaAlertDialog := javaEnvRef^^.NewObjectA(javaEnvRef, javaAndroidAppAlertDialogBuilderClass, javaMethod_AlertDialogBuilder_new, @lParams[0]);
+  //__android_log_write(ANDROID_LOG_INFO, 'lclapp', '[TCDWidgetset.ShowSelectItemDialog] 3');
+
+  // ad.setSingleChoiceItems( adapter, -1, MyOnClickListener);
+  // DialogInterface.OnClickListener lclselectitemcallback;
+  // public AlertDialog.Builder setSingleChoiceItems (CharSequence[] items, int checkedItem, DialogInterface.OnClickListener listener)
+  JavaField_lclselectitemcallback := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclselectitemcallback', 'Landroid/content/DialogInterface$OnClickListener;');
+  javaMethod_AlertDialogBuilder_setSingleChoiceItems := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidAppAlertDialogBuilderClass, 'setSingleChoiceItems',
+    '([Ljava/lang/CharSequence;ILandroid/content/DialogInterface$OnClickListener;)Landroid/app/AlertDialog$Builder;');
+  javaObjectArray := javaEnvRef^^.NewObjectArray(javaEnvRef, AItems.Count, javaCharSequence, nil);
+  lParams[0].l := javaObjectArray;
+  //__android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar('[TCDWidgetset.ShowSelectItemDialog] javaObjectArray='+IntToStr(PtrInt(javaObjectArray))));
+  for i := 0 to AItems.Count-1 do
+  begin
+    lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(AItems.Strings[i]));
+    javaEnvRef^^.SetObjectArrayElement(javaEnvRef, javaObjectArray, i, lJavaString);
+    __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar('[TCDWidgetset.ShowSelectItemDialog] Adding string='+AItems.Strings[i]));
+  end;
+  lParams[1].i := -1;
+  lParams[2].l := javaEnvRef^^.GetObjectField(javaEnvRef, javaActivityClass, JavaField_lclselectitemcallback);
+  javaEnvRef^^.CallObjectMethodA(javaEnvRef, javaAlertDialog, javaMethod_AlertDialogBuilder_setSingleChoiceItems, @lParams[0]);
+
+  // ad.show();
+  javaMethod_AlertDialogBuilder_show := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidAppAlertDialogBuilderClass, 'show', '()Landroid/app/AlertDialog;');
+  javaEnvRef^^.CallObjectMethod(javaEnvRef, javaAlertDialog, javaMethod_AlertDialogBuilder_show);
+
+  __android_log_write(ANDROID_LOG_INFO, 'lclapp', '[TCDWidgetset.ShowSelectItemDialog] END');
+end;
+
 procedure TCDWidgetSet.ShowVirtualKeyboard;
 begin
   DebugLn('[TCDWidgetSet.ShowVirtualKeyboard]');

@@ -280,8 +280,8 @@ end;
 
 function RegisterCustomComboBox: Boolean; alias : 'WSRegisterCustomComboBox';
 begin
-//  RegisterWSComponent(TCustomComboBox, TWinCEWSCustomComboBox);
-  Result := False;
+  RegisterWSComponent(TCustomComboBox, TCDWSCustomComboBox);
+  Result := True;
 end;
 
 function RegisterCustomListBox: Boolean; alias : 'WSRegisterCustomListBox';

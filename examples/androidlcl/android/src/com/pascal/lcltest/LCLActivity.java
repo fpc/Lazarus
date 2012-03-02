@@ -228,6 +228,16 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
     lclxdpi = (int) metrics.xdpi;
     lclydpi = (int) metrics.ydpi;
     LCLOnCreate(this);
+
+    // Prepare dialog callbacks
+    // for TCDComboBox
+    lclselectitemcallback = new DialogInterface.OnClickListener()
+    {
+      @Override public void onClick(DialogInterface dialog, int which)
+      {
+        LCLOnMessageBoxFinished(which, 1);
+      }
+    };
   }
 
   @Override public void onConfigurationChanged (Configuration newConfig)
@@ -253,7 +263,7 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   public native int LCLDrawToBitmap(int width, int height, Bitmap bitmap);
   public native int LCLOnTouch(float x, float y, int action);
   public native int LCLOnCreate(LCLActivity lclactivity);
-  public native int LCLOnMessageBoxFinished(int Result);
+  public native int LCLOnMessageBoxFinished(int Result, int DialogType);
   public native int LCLOnKey(int kind, int keyCode, KeyEvent event, int AChar);
   public native int LCLOnTimer(Runnable timerid);
   public native int LCLOnConfigurationChanged(int ANewDPI, int ANewWidth);
@@ -347,13 +357,13 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
         switch (which)
         {
         case DialogInterface.BUTTON_POSITIVE:
-          LCLOnMessageBoxFinished(lclbutton1);
+          LCLOnMessageBoxFinished(lclbutton1, 0);
           break;
         case DialogInterface.BUTTON_NEUTRAL:
-          LCLOnMessageBoxFinished(lclbutton2);
+          LCLOnMessageBoxFinished(lclbutton2, 0);
           break;
         case DialogInterface.BUTTON_NEGATIVE:
-          LCLOnMessageBoxFinished(lclbutton3);
+          LCLOnMessageBoxFinished(lclbutton3, 0);
           break;
         };
       }
@@ -365,7 +375,7 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
       public void onCancel(DialogInterface dialog)
       {
         // The Cancel button number matches for LCLIntf.MessageBox and LCLIntf.PromptDialog
-        LCLOnMessageBoxFinished(idButtonCancel);
+        LCLOnMessageBoxFinished(idButtonCancel, 0);
       }
     };
 
@@ -612,6 +622,9 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   // for LazDeviceAPIs
   public String lcldestination;
   public int lclkind;
+
+  // Dialog callbacks
+  DialogInterface.OnClickListener lclselectitemcallback;
 
   static
   {

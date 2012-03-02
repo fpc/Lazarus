@@ -82,6 +82,7 @@ procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); overrid
 
 procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword); override;
 procedure SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect); override;*)
+function ShowSelectItemDialog(const AItems: TStrings): Boolean; override;
 procedure ShowVirtualKeyboard();
 
 // No need to implement this one as the default is redirecting to ExtTextOut

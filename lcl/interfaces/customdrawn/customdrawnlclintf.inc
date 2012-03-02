@@ -731,9 +731,16 @@ end;
 procedure TQtWidgetSet.SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect);
 begin
   QRubberBand_setGeometry(QRubberBandH(ARubberBand), @ARect);
-end;
+end;*)
 
-function TQtWidgetSet.TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean;
+{$ifndef CD_HasNativeSelectItemDialog}
+function TCDWidgetset.ShowSelectItemDialog(const AItems: TStrings): Boolean;
+begin
+  Result := False;
+end;
+{$endif}
+
+(*function TQtWidgetSet.TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean;
 begin
   Result := False;
   if IsValidDC(DC) then

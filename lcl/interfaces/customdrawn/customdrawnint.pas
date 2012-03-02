@@ -263,7 +263,7 @@ function Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap(
 function Java_com_pascal_lclproject_LCLActivity_LCLOnCreate(
     env:PJNIEnv; this:jobject; alclactivity: jobject): jint; cdecl;
 function Java_com_pascal_lclproject_LCLActivity_LCLOnMessageBoxFinished(
-    env:PJNIEnv; this:jobject; AResult: jint): jint; cdecl;
+    env:PJNIEnv; this:jobject; AResult, ADialogType: jint): jint; cdecl;
 function Java_com_pascal_lclproject_LCLActivity_LCLOnKey(
     env:PJNIEnv; this:jobject; AKind: jint; AKeyCode: jint;
     AEvent: jobject; AChar: jint): jint; cdecl;

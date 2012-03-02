@@ -20,6 +20,7 @@ type
     Button3: TButton;
     btnShowInfo: TButton;
     CheckBox1: TCheckBox;
+    ComboBox1: TComboBox;
     Label1: TLabel;
     ProgressBar1: TProgressBar;
     TrackBar1: TTrackBar;
