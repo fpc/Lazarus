@@ -6,6 +6,7 @@ object MainMenuEditorForm: TMainMenuEditorForm
   Caption = 'MainMenuEditorForm'
   ClientHeight = 220
   ClientWidth = 600
+  FormStyle = fsStayOnTop
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
