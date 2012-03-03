@@ -25,7 +25,7 @@ unit IDEOptionsIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Controls, Buttons, Forms;
+  Classes, SysUtils, LCLProc, Controls, Buttons, Forms, StdCtrls, Graphics;
 
 const
   NoParent = -1;
@@ -122,6 +122,7 @@ type
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; virtual; abstract;
     class function DefaultCollapseChildNodes: Boolean; virtual;
     function FindOptionControl(AClass: TControlClass): TControl;
+    function ContainsTextInCaption(AText: string): Boolean;
 
     property OnLoadIDEOptions: TOnLoadIDEOptions read FOnLoadIDEOptions write FOnLoadIDEOptions;
     property OnSaveIDEOptions: TOnSaveIDEOptions read FOnSaveIDEOptions write FOnSaveIDEOptions;
@@ -389,8 +390,7 @@ begin
   Result := True;
 end;
 
-procedure TAbstractIDEOptionsEditor.RestoreSettings(
-  AOptions: TAbstractIDEOptions);
+procedure TAbstractIDEOptionsEditor.RestoreSettings(AOptions: TAbstractIDEOptions);
 begin
 
 end;
@@ -400,8 +400,7 @@ begin
   Result := False;
 end;
 
-function TAbstractIDEOptionsEditor.FindOptionControl(AClass: TControlClass
-  ): TControl;
+function TAbstractIDEOptionsEditor.FindOptionControl(AClass: TControlClass): TControl;
 
   function Search(AControl: TControl): TControl;
   var
@@ -422,6 +421,43 @@ function TAbstractIDEOptionsEditor.FindOptionControl(AClass: TControlClass
 
 begin
   Result:=Search(GetParentForm(Self));
+end;
+
+function TAbstractIDEOptionsEditor.ContainsTextInCaption(AText: string): Boolean;
+const
+  FoundColor = clFuchsia;
+var
+  UpperText: String;
+
+  function Search(AControl: TControl): Boolean;
+  var
+    i: Integer;
+    AWinControl: TWinControl;
+  begin
+    if Pos(UpperText, Uppercase(AControl.Caption))>0 then begin
+      //if Length(UpperText)>2 then
+      //  DebugLn('TAbstractIDEOptionsEditor.ContainsTextInCaption: Searching "', UpperText,
+      //          '", Found "', AControl.Caption, '", in ', AControl.Name);
+      AControl.Font.Color:=FoundColor;
+      exit(True);
+    end
+    else if AControl.Font.Color=FoundColor then
+      AControl.Font.Color:=clDefault;
+    if AControl is TWinControl then begin
+      AWinControl:=TWinControl(AControl);
+      for i:=0 to AWinControl.ControlCount-1 do
+        // Memo.Caption return all the lines, skip it.
+        if not (AWinControl.Controls[i] is TMemo) then begin
+          Result:=Search(AWinControl.Controls[i]); // Recursive call
+          if Result then exit;
+        end;
+    end;
+    Result:=False;
+  end;
+
+begin
+  UpperText:=Uppercase(AText);
+  Result:=Search(Self);
 end;
 
 { TIDEOptionsEditorList }

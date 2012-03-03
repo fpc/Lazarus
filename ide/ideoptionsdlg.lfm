@@ -1,8 +1,9 @@
-object IDEOptionsDialog: TIDEOptionsDialog
-  Left = 317
+inherited IDEOptionsDialog: TIDEOptionsDialog
+  Left = 318
   Height = 500
-  Top = 304
+  Top = 182
   Width = 700
+  ActiveControl = CatTVSplitter
   BorderIcons = [biSystemMenu]
   Caption = 'IDEOptionsDialog'
   ClientHeight = 500
@@ -11,53 +12,84 @@ object IDEOptionsDialog: TIDEOptionsDialog
   Constraints.MinWidth = 700
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
-  object ButtonPanel: TButtonPanel
+  object ButtonPanel: TButtonPanel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     Left = 6
-    Height = 34
-    Top = 460
+    Height = 38
+    Top = 456
     Width = 688
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
     BorderSpacing.Around = 0
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    TabOrder = 1
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
-  object CategoryTree: TTreeView
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Owner
-    AnchorSideBottom.Control = ButtonPanel
-    Left = 6
-    Height = 454
-    Top = 6
-    Width = 206
-    Align = alLeft
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
-    Constraints.MinWidth = 206
-    DefaultItemHeight = 17
-    ReadOnly = True
-    TabOrder = 0
-    OnChange = CategoryTreeChange
-    OnCollapsed = CategoryTreeCollapsed
-    OnExpanded = CategoryTreeExpanded
-    OnKeyDown = CategoryTreeKeyDown
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
-  end
-  object CatTVSplitter: TSplitter
-    Left = 212
-    Height = 460
+  object CatTVSplitter: TSplitter[1]
+    Left = 234
+    Height = 456
     Top = 0
     Width = 5
+  end
+  object Panel1: TPanel[2]
+    Left = 0
+    Height = 456
+    Top = 0
+    Width = 234
+    Align = alLeft
+    ClientHeight = 456
+    ClientWidth = 234
+    TabOrder = 2
+    object CategoryTree: TTreeView
+      AnchorSideLeft.Control = FilterEdit
+      AnchorSideTop.Control = FilterEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = Panel1
+      AnchorSideBottom.Side = asrBottom
+      Left = 7
+      Height = 410
+      Top = 39
+      Width = 220
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      Constraints.MinWidth = 206
+      ReadOnly = True
+      TabOrder = 0
+      OnChange = CategoryTreeChange
+      OnCollapsed = CategoryTreeCollapsed
+      OnExpanded = CategoryTreeExpanded
+      OnKeyDown = CategoryTreeKeyDown
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    end
+    object FilterEdit: TTreeFilterEdit
+      AnchorSideLeft.Control = Panel1
+      Left = 7
+      Height = 25
+      Top = 8
+      Width = 136
+      OnFilterItem = FilterEditFilterItem
+      ButtonWidth = 23
+      NumGlyphs = 0
+      BorderSpacing.Left = 6
+      MaxLength = 0
+      TabOrder = 1
+      FilteredTreeview = CategoryTree
+    end
   end
 end

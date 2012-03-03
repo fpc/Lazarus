@@ -34,7 +34,7 @@ uses
   Buttons, ButtonPanel, ExtCtrls,
   IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf,
   EnvironmentOpts, LazarusIDEStrConsts,
-  EditorOptions;
+  EditorOptions, TreeFilterEdit, EditBtn;
 
 type
   TIDEOptsDlgAction = (
@@ -51,10 +51,13 @@ type
     ButtonPanel: TButtonPanel;
     CategoryTree: TTreeView;
     CatTVSplitter: TSplitter;
+    Panel1: TPanel;
+    FilterEdit: TTreeFilterEdit;
     procedure CategoryTreeChange(Sender: TObject; Node: TTreeNode);
     procedure CategoryTreeCollapsed(Sender: TObject; Node: TTreeNode);
     procedure CategoryTreeExpanded(Sender: TObject; Node: TTreeNode);
     procedure CategoryTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    function FilterEditFilterItem(Item: TObject; out Done: Boolean): Boolean;
     procedure FormShow(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure IDEOptionsDialogKeyPress(Sender: TObject; var Key: char);
@@ -71,6 +74,7 @@ type
     SelectNode: TTreeNode;
     NewLastSelected: PIDEOptionsEditorRec;
 
+    procedure TraverseSettings(AOptions: TAbstractIDEOptions; anAction: TIDEOptsDlgAction);
     function CheckValues: boolean;
     procedure DoOpenEditor(EditorToOpen: TAbstractIDEOptionsEditorClass);
     procedure LoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
@@ -82,7 +86,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     function ShowModal: Integer; override;
-
     function AddButton: TBitBtn; override;
     function AddControl(AControlClass: TControlClass): TControl; override;
     procedure OpenEditor(AEditor: TAbstractIDEOptionsEditorClass); override;
@@ -90,10 +93,9 @@ type
     function FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor; override;
     function FindEditor(GroupIndex, AIndex: integer): TAbstractIDEOptionsEditor; override;
     function FindEditorClass(GroupIndex, AIndex: integer): TAbstractIDEOptionsEditorClass; override;
-    procedure TraverseSettings(AOptions: TAbstractIDEOptions; anAction: TIDEOptsDlgAction);
     procedure ReadAll;
     procedure WriteAll(Restore: boolean);
-
+  public
     property OptionsFilter: TIDEOptionsEditorFilter read FOptionsFilter write FOptionsFilter;
     property Settings: TIDEOptionsEditorSettings read FSettings write SetSettings;
     property OnLoadIDEOptions: TOnLoadIDEOptions read FOnLoadOptions write FOnLoadOptions;
@@ -142,17 +144,18 @@ begin
   debugln(['TIDEOptionsDialog.IDEOptionsDialogKeyPress ',ord(Key)]);
 end;
 
-procedure TIDEOptionsDialog.CategoryTreeChange(Sender: TObject;
-  Node: TTreeNode);
+procedure TIDEOptionsDialog.CategoryTreeChange(Sender: TObject; Node: TTreeNode);
 var
   AEditor: TAbstractIDEOptionsEditor;
 begin
+  if Node = nil then Exit;
   while Node <> nil do
   begin
     if Node.Data <> nil then
       break;
     Node := Node.GetFirstChild;
   end;
+  if Node.Data = nil then Exit;
 
   AEditor := TAbstractIDEOptionsEditor(Node.Data);
   NewLastSelected := AEditor.Rec;
@@ -201,6 +204,17 @@ begin
     Key:=VK_UNKNOWN;
     LazarusHelp.ShowHelpForIDEControl(PrevEditor);
   end;
+end;
+
+function TIDEOptionsDialog.FilterEditFilterItem(Item: TObject; out Done: Boolean): Boolean;
+var
+  OptEditor: TAbstractIDEOptionsEditor;
+begin
+  Result:=False;
+  Done:=False;                        // Filter will use also the node caption.
+  if Item=nil then Exit;
+  OptEditor:=TAbstractIDEOptionsEditor(Item);
+  Result:=OptEditor.ContainsTextInCaption(FilterEdit.Filter);
 end;
 
 procedure TIDEOptionsDialog.FormShow(Sender: TObject);

@@ -159,18 +159,18 @@ procedure TTreeFilterBranch.SortAndFilter;
 // Copy data from fOriginalData to fSortedData in sorted order
 var
   Origi, i: Integer;
-  FileN: string;
+  s: string;
 begin
   fSortedData.Clear;
   for Origi:=0 to fOriginalData.Count-1 do begin
-    FileN:=fOriginalData[Origi];
-    if (fOwner.Filter='') or (Pos(fOwner.Filter,lowercase(FileN))>0) then begin
+    s:=fOriginalData[Origi];
+    if (fOwner.Filter='') or (Pos(fOwner.Filter,lowercase(s))>0) then begin
       i:=fSortedData.Count-1;
       while i>=0 do begin
-        if CompareFNs(FileN,fSortedData[i])>=0 then break;
+        if CompareFNs(s,fSortedData[i])>=0 then break;
         dec(i);
       end;
-      fSortedData.InsertObject(i+1,FileN, fOriginalData.Objects[Origi]);
+      fSortedData.InsertObject(i+1,s, fOriginalData.Objects[Origi]);
     end;
   end;
 end;
@@ -374,13 +374,23 @@ end;
 function TTreeFilterEdit.FilterTree(Node: TTreeNode): Boolean;
 // Filter all tree branches recursively, setting Node.Visible as needed.
 // Returns True if Node or its siblings or child nodes have visible items.
+var
+  ChildVisible: Boolean;
+  Pass, Done: Boolean;
 begin
   Result:=False;
+  Done:=False;
   while Node<>nil do
   begin
+    // Call OnFilterItem handler.
+    Pass:=False;
+    if Assigned(OnFilterItem) then
+      Pass:=OnFilterItem(TObject(Node.Data), Done);
+    // Filter by item's title text if needed.
+    if not (Pass or Done) then
+      Pass:=(Filter='') or (Pos(Filter,lowercase(Node.Text))>0);
     // Recursive call for child nodes.
-    Node.Visible:=FilterTree(Node.GetFirstChild)
-                  or (Filter='') or (Pos(Filter,lowercase(Node.Text))>0);
+    Node.Visible:=FilterTree(Node.GetFirstChild) or Pass;
     if Node.Visible then
       Result:=True;
     Node:=Node.GetNextSibling;
@@ -409,7 +419,7 @@ begin
     for i:=0 to fBranches.Count-1 do
       fBranches[i].SortAndFilter;
   end
-  else begin                             // Filter the whole tree.
+  else begin                  // Filter the whole tree (done in ApplyFilterCore).
     //
   end;
 end;
