@@ -178,6 +178,8 @@ type
   // For generic methods added in customdrawn
   // They are used internally in LCL-CustomDrawn, LCL app should not use them
   public
+    DefaultFontSize: Integer;
+    //
     AccumulatedStr: string;
     // The currently focused control
     FocusedControl: TWinControl;

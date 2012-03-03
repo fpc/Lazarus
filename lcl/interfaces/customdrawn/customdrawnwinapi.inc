@@ -2195,7 +2195,7 @@ begin
   if not IsValidDC(DC) then Exit;
   lDestIntfImage := TLazIntfImage(lDestCanvas.Image);
 
-  if (lDestCanvas.Font = nil) or (lDestCanvas.Font.Size = 0) then lFontSize := 10
+  if (lDestCanvas.Font = nil) or (lDestCanvas.Font.Size = 0) then lFontSize := DefaultFontSize
   else lFontSize := Abs(lDestCanvas.Font.Size);
 
   // Preparations finished, draw it using LazFreeType
@@ -4110,6 +4110,7 @@ begin
   ftFont := TFreeTypeFont(LazDC.ExtraFontData);
   Size.cx := Round(ftFont.TextWidth(Str));
   Size.cy := LazDC.AssignedFont.Size;
+  if Size.cy = 0 then Size.cy := DefaultFontSize;
 
   Result := True;
 end;

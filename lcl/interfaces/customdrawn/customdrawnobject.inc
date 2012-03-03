@@ -92,6 +92,7 @@ begin
 
   CDWidgetSet := Self;
   FTerminating := False;
+  DefaultFontSize := 10;
 
   BackendCreate;
 end;
