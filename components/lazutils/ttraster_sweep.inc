@@ -1,4 +1,3 @@
-{$F+ Far calls are necessary for function pointers under BP7}
 {    This flag is currently ignored by the Virtual Compiler }
 
 (***********************************************************************)
