@@ -1,26 +1,26 @@
 object CfgWizard: TCfgWizard
   Left = 368
-  Height = 300
+  Height = 301
   Top = 116
-  Width = 317
+  Width = 315
   Caption = 'Configuration Assistant'
-  ClientHeight = 300
-  ClientWidth = 317
+  ClientHeight = 301
+  ClientWidth = 315
   OnShow = FormShow
   LCLVersion = '0.9.31'
   object Steps: TPageControl
     Left = 0
-    Height = 239
+    Height = 240
     Top = 0
-    Width = 317
+    Width = 315
     ActivePage = SelRoot
     Align = alClient
     TabIndex = 0
     TabOrder = 0
     object SelRoot: TTabSheet
       Caption = 'RootDir'
-      ClientHeight = 211
-      ClientWidth = 309
+      ClientHeight = 212
+      ClientWidth = 307
       OnShow = SelRootShow
       object Label1: TLabel
         Left = 10
@@ -200,8 +200,8 @@ object CfgWizard: TCfgWizard
     end
     object MkFCL: TTabSheet
       Caption = 'FCL'
-      ClientHeight = 211
-      ClientWidth = 309
+      ClientHeight = 212
+      ClientWidth = 307
       OnShow = MkFCLShow
       object Label6: TLabel
         Left = 10
@@ -215,7 +215,7 @@ object CfgWizard: TCfgWizard
         Left = 12
         Height = 19
         Hint = 'Add lazarus/docs/xml/fcl to the FCL descriptions'
-        Top = 56
+        Top = 50
         Width = 169
         Caption = 'Add Lazarus docs to the FCL'
         OnChange = swFCLadsChange
@@ -223,12 +223,12 @@ object CfgWizard: TCfgWizard
       end
       object swDirs: TCheckListBox
         Left = 12
-        Height = 128
+        Height = 113
         Hint = 'Check the directories to include into the FCL docs'
-        Top = 80
-        Width = 280
+        Top = 96
+        Width = 278
         Anchors = [akTop, akLeft, akRight, akBottom]
-        Columns = 2
+        Columns = 3
         Items.Strings = (
           'fcl-base'
           'fcl-db'
@@ -254,23 +254,65 @@ object CfgWizard: TCfgWizard
         OnClick = buScanFclClick
         TabOrder = 2
       end
+      object swAllFclDirs: TCheckBox
+        Left = 12
+        Height = 19
+        Top = 72
+        Width = 115
+        Caption = 'Include entire FCL'
+        OnChange = swAllFclDirsChange
+        TabOrder = 3
+      end
+    end
+    object NoParse: TTabSheet
+      Caption = 'NoParse'
+      ClientHeight = 211
+      ClientWidth = 307
+      object Label7: TLabel
+        Left = 10
+        Height = 46
+        Top = 10
+        Width = 232
+        Caption = 'Some FCL units don''t parse without specific'#13#10'compiler options. Unselect their packages, '#13#10'or add their unit names to this list.'
+        ParentColor = False
+      end
+      object swNoParse: TCheckBox
+        Left = 12
+        Height = 19
+        Top = 64
+        Width = 184
+        Caption = 'Never parse the following units'
+        Checked = True
+        OnChange = swNoParseChange
+        State = cbChecked
+        TabOrder = 0
+      end
+      object edNoParse: TMemo
+        Left = 12
+        Height = 122
+        Top = 88
+        Width = 288
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        OnExit = edNoParseExit
+        TabOrder = 1
+      end
     end
   end
   object sb: TStatusBar
     Left = 0
     Height = 23
-    Top = 277
-    Width = 317
+    Top = 278
+    Width = 315
     Panels = <>
   end
   object Panel1: TPanel
     Left = 0
     Height = 38
-    Top = 239
-    Width = 317
+    Top = 240
+    Width = 315
     Align = alBottom
     ClientHeight = 38
-    ClientWidth = 317
+    ClientWidth = 315
     TabOrder = 2
     object buBack: TButton
       Left = 8
@@ -292,7 +334,7 @@ object CfgWizard: TCfgWizard
       TabOrder = 1
     end
     object buNext: TButton
-      Left = 229
+      Left = 227
       Height = 25
       Top = 5
       Width = 75
@@ -302,7 +344,7 @@ object CfgWizard: TCfgWizard
       TabOrder = 2
     end
     object Button1: TButton
-      Left = 181
+      Left = 179
       Height = 25
       Top = 5
       Width = 35

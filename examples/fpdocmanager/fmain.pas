@@ -588,12 +588,15 @@ begin
   else
     u := '';
   try
-    Manager.Update(CurPkg, u);
-  except
-    on e: Exception do
-    LogToFile(self, e.Message);
+    try
+      Manager.Update(CurPkg, u);
+    except
+      on e: Exception do
+      LogToFile(self, e.Message);
+    end;
+  finally
+    LogDone;
   end;
-  LogDone;
 end;
 
 procedure TMain.buNewProfileClick(Sender: TObject);

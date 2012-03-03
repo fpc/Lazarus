@@ -25,6 +25,10 @@ type
     buRtlBat: TButton;
     buLazDir: TButton;
     buScanFcl: TButton;
+    swAllFclDirs: TCheckBox;
+    swNoParse: TCheckBox;
+    Label7: TLabel;
+    edNoParse: TMemo;
     swDirs: TCheckListBox;
     swFCLads: TCheckBox;
     edFpcDir: TEdit;
@@ -49,6 +53,7 @@ type
     MkRTL: TTabSheet;
     MkLCL: TTabSheet;
     MkFCL: TTabSheet;
+    NoParse: TTabSheet;
     procedure buBackClick(Sender: TObject);
     procedure buFclBatClick(Sender: TObject);
     procedure buLazDirClick(Sender: TObject);
@@ -61,6 +66,7 @@ type
     procedure edFpcDirChange(Sender: TObject);
     procedure edFpcDocsChange(Sender: TObject);
     procedure edLazDirChange(Sender: TObject);
+    procedure edNoParseExit(Sender: TObject);
     procedure edRootChange(Sender: TObject);
     procedure edRtlBatChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -69,8 +75,10 @@ type
     procedure MkRTLShow(Sender: TObject);
     procedure SelFPDirShow(Sender: TObject);
     procedure SelRootShow(Sender: TObject);
+    procedure swAllFclDirsChange(Sender: TObject);
     procedure swDirsExit(Sender: TObject);
     procedure swFCLadsChange(Sender: TObject);
+    procedure swNoParseChange(Sender: TObject);
   private
     NoRun: boolean;
     procedure GetFclDirs;
@@ -127,6 +135,12 @@ begin
   Manager.ImportLpk(Manager.LazarusDir + 'lcl/lclbase.lpk');
 end;
 
+procedure TCfgWizard.edNoParseExit(Sender: TObject);
+begin
+  if edNoParse.Modified then
+    Manager.NoParseUnits := edNoParse.Lines;
+end;
+
 procedure TCfgWizard.edRootChange(Sender: TObject);
 begin
   if NoRun then exit;
@@ -151,6 +165,9 @@ begin
     edLazDir.Text := Manager.LazarusDir;
 
     swFCLads.Checked := Manager.IsExtended('fcl') <> '';
+
+    swNoParse.Checked := Manager.ExcludeUnits;
+    edNoParse.Lines.Assign(Manager.NoParseUnits);
   NoRun:=False;
 end;
 
@@ -255,6 +272,12 @@ begin
   buNext.Enabled := Manager.RootDir <> '';
 end;
 
+procedure TCfgWizard.swAllFclDirsChange(Sender: TObject);
+begin
+  if FclPkg <> nil then
+    FclPkg.AllDirs := swAllFclDirs.Checked;
+end;
+
 procedure TCfgWizard.swDirsExit(Sender: TObject);
 begin
   if swDirs.Count > 0 then
@@ -264,6 +287,11 @@ end;
 procedure TCfgWizard.swFCLadsChange(Sender: TObject);
 begin
   Manager.UpdateFCL(swFCLads.Checked);
+end;
+
+procedure TCfgWizard.swNoParseChange(Sender: TObject);
+begin
+  Manager.ExcludeUnits := swNoParse.Checked;
 end;
 
 procedure TCfgWizard.buScanFclClick(Sender: TObject);

@@ -677,7 +677,7 @@ begin
     FEmittedList:=TStringList.Create;
     FEmittedList.Sorted:=True;
     try
-      Module:=ParseSource(Self,AFileName,ATarget,ACPU);
+      Module:=ParseSource(Self,AFileName,ATarget,ACPU, True); //use streams
       If Options.UpdateMode then
         begin
         N:=FindDocNode(Module);
@@ -1108,6 +1108,9 @@ begin
     WriteLn(f, '</package>');
     WriteLn(f, '</fpdoc-descriptions>');
     Close(f);
+    if Result <> '' then begin
+      DeleteFile(AOutputName); //remove invalid file
+    end;
   end;
 end;
 

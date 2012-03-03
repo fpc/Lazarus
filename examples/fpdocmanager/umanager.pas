@@ -58,6 +58,7 @@ type
 *)
   TDocPackage = class
   private
+    FAllDirs: boolean;
     FAltDir: string;
     FCompOpts: string;
     FDescrDir: string;
@@ -73,6 +74,7 @@ type
     FRequires: TStrings;
     FUnitPath: string;
     FUnits: TStrings;
+    procedure SetAllDirs(AValue: boolean);
     procedure SetAltDir(AValue: string);
     procedure SetCompOpts(AValue: string);
     procedure SetDescrDir(AValue: string);
@@ -102,6 +104,7 @@ type
     property ProjectFile: string read FProjectFile write SetProjectFile; //xml?
   //from LazPkg
     procedure AddUnit(const AFile: string);
+    property AllDirs: boolean read FAllDirs write SetAllDirs;
     property CompOpts: string read FCompOpts write SetCompOpts;
     property LazPkg: string read FLazPkg write SetLazPkg; //LPK name?
     property ProjectDir: string read FProjectDir write SetProjectDir;
@@ -156,10 +159,12 @@ type
 *)
   TFPDocManager = class(TComponent)
   private
+    FExcludedUnits: boolean;
     FFpcDir: string;
     FFPDocDir: string;
     FLazarusDir: string;
     FModified: boolean;
+    FNoParseUnits: TStringList;
     FOnChange: TNotifyEvent;
     FOnLog: TLogHandler;
     FOptions: TCmdOptions;
@@ -169,9 +174,12 @@ type
     FProfiles: string; //CSV list of profile names
     FRootDir: string;
     UpdateCount: integer;
+    function  GetNoParseUnits: TStrings;
+    procedure SetExcludedUnits(AValue: boolean);
     procedure SetFpcDir(AValue: string);
     procedure SetFPDocDir(AValue: string);
     procedure SetLazarusDir(AValue: string);
+    procedure SetNoParseUnits(AValue: TStrings);
     procedure SetOnChange(AValue: TNotifyEvent);
     procedure SetPackage(AValue: TDocPackage);
     procedure SetProfile(AValue: string);
@@ -206,6 +214,8 @@ type
     function  TestRun(APkg: TDocPackage; AUnit: string): boolean;
     function  Update(APkg: TDocPackage; const AUnit: string): boolean;
   public //published?
+    property ExcludeUnits: boolean read FExcludedUnits write SetExcludedUnits;
+    property NoParseUnits: TStrings read GetNoParseUnits write SetNoParseUnits;
     property FpcDir: string read FFpcDir write SetFpcDir;
     property FpcDocDir: string read FFPDocDir write SetFPDocDir;
     property LazarusDir: string read FLazarusDir write SetLazarusDir;
@@ -271,13 +281,17 @@ end;
 procedure ListUnits(const AMask: string; AList: TStrings);
 var
   Info : TSearchRec;
-  s: string;
+  s, f: string;
 begin
   if FindFirst (AMask,faArchive,Info)=0 then begin
     repeat
       s := Info.Name;
-      if s[1] <> '.' then
-        AList.Add(ChangeFileExt(s, '')); //unit name only
+      if s[1] <> '.' then begin
+        f := ChangeFileExt(s, ''); //unit name only
+        if Manager.ExcludeUnits and (Manager.NoParseUnits.IndexOf(f) >= 0) then
+          continue; //excluded unit!
+        AList.Add(f);
+      end;
     until FindNext(info)<>0;
   end;
   FindClose(Info);
@@ -297,7 +311,7 @@ begin
         ext := ChangeFileExt(s, '');
         Result := AList.IndexOf(ext); //ChangeFileExt(s, '.xml'));
         if Result >= 0 then begin
-          AList.Delete(Result); //don't search any more
+          //AList.Delete(Result); //don't search any more
           break;
         end;
       end;
@@ -324,53 +338,60 @@ var
   dirs, descs: TStringList;
   incl, excl: boolean;
 begin
-(* This seems to be called twice for Refresh???
+(* Add Lazarus FCL, and explicit or added or all FCL dirs
 *)
   if APrj.Package <> nil then
     exit(True); //already configured
   Result:=inherited CreateProject(APrj, AFile);
-//add lazdir
-  if AltDir = '' then exit;
-(* Add inputs for all descrs found in AltDir.
-  For *MakeSkel* add all units in the selected(!) fcl packages to inputs.
-  How to distinguish both modes?
-*)
-  dirs := TStringList.Create; //use prepared list?
   descs := TStringList.Create;
-  s := Manager.LazarusDir + 'docs' + DirectorySeparator + 'xml' + DirectorySeparator + 'fcl';
-  //APrj.ParseFPDocOption(Format('--descr-dir="%s"', [s])); //todo: add includes
-  //APrj.AddDirToFileList(descs, s, '*.xml');
-  ListUnits(s+ DirectorySeparator+ '*.xml', descs);
-  descs.Sorted := True;
+//add lazdir
+  if AltDir <> '' then begin
+  (* Add inputs for all descrs found in AltDir.
+    For *MakeSkel* add all units in the selected(!) fcl packages to inputs.
+    How to distinguish both modes?
+  *)
+    s := Manager.LazarusDir + 'docs' + DirectorySeparator + 'xml' + DirectorySeparator + 'fcl';
+    //APrj.ParseFPDocOption(Format('--descr-dir="%s"', [s])); //todo: add includes
+    //APrj.AddDirToFileList(descs, s, '*.xml');
+    ListUnits(s+ DirectorySeparator+ '*.xml', descs); //exclude NoParseUnits
+    descs.Sorted := True;
+  end;
 //scan fcl dirs
+  dirs := TStringList.Create; //use prepared list?
   s := Manager.FFpcDir + 'packages' + DirectorySeparator;
   ListDirs(s, dirs);
 //now match all files in the source dirs
   for i := dirs.Count - 1 downto 0 do begin
     d := s + dirs[i] + DirectorySeparator + 'src';
-    if not DirectoryExists(d) then continue;
-(* Problem: some files may not parse without specific compiler options.
-  Creating skeletons will fail for these files, but how can we in/exclude
-  specific source files from skeleton creation?
-
-  For now: skip explicitly excluded packages!
-*)
-    excl := (assigned(FSrcDirs)
+    if not DirectoryExists(d) then continue; //can this happen?
+  (* skip explicitly excluded packages, and exclude selected units.
+  *)
+    excl := not FAllDirs
+      and assigned(FSrcDirs)
       and (SrcDirs.IndexOfName(dirs[i]) >= 0)
-      and (SrcDirs.Values[dirs[i]] <= '0'));
+      and (SrcDirs.Values[dirs[i]] <= '0');
     if excl then begin
-      //todo: add only selected units
-      Manager.DoLog('Skipping directory ' + dirs[i]);
+      //Manager.DoLog('Skipping directory ' + dirs[i]);
     end else begin
-      incl := (assigned(FSrcDirs)
+      incl := FAllDirs
+      or (assigned(FSrcDirs)
         and (SrcDirs.IndexOfName(dirs[i]) >= 0)
         and (SrcDirs.Values[dirs[i]] > '0'))
-      or (MatchUnits(d, descs) >= 0);
+      or (MatchUnits(d, descs) >= 0); //!!! descs now is empty!
       if incl then begin
       //add dir
         Manager.DoLog('Adding directory ' + dirs[i]);
         APrj.ParseFPDocOption(Format('--input-dir="%s"', [d])); //todo: add includes?
       end;
+    end;
+  end;
+//exclude explicit units - only for FCL?
+  if Manager.ExcludeUnits and (Manager.NoParseUnits.Count > 0) then begin
+  //exclude inputs
+    for i := APrj.InputList.Count - 1 downto 0 do begin
+      s := ExtractUnitName(APrj.InputList, i);
+      if Manager.NoParseUnits.IndexOf(s) >= 0 then //case?
+        APrj.InputList.Delete(i);
     end;
   end;
 //re-create project? The normal project was already created by inherited!
@@ -410,6 +431,12 @@ begin
   FAltDir:=AValue;
 //we must signal config updated
   Config.WriteString(SecDoc, 'AltDir', AltDir);
+end;
+
+procedure TDocPackage.SetAllDirs(AValue: boolean);
+begin
+  if FAllDirs=AValue then Exit;
+  FAllDirs:=AValue;
 end;
 
 procedure TDocPackage.SetDescriptions(AValue: TStrings);
@@ -564,6 +591,7 @@ var
   s, imp: string;
   pkg: TFPDocPackage;
   i: integer;
+  lst: TStringList;
 begin
   Result := APrj.Package <> nil; //already configured?
   if Result then
@@ -605,7 +633,19 @@ begin
   //add descr files
     s := Manager.LazarusDir + AltDir;
     s := FixPath(s);
-    APrj.ParseFPDocOption(Format('--descr-dir="%s"', [s]));
+    if ForceDirectories(s) then begin
+    //exclude NoParse units
+      //APrj.ParseFPDocOption(Format('--descr-dir="%s"', [s]));
+      lst := TStringList.Create;
+      ListUnits(AltDir + '*.xml', lst); //unit names only
+    (* add the unit names from lst to the pkg/project
+    *)
+      pkg := APrj.SelectedPackage;
+      for i := 0 to lst.Count - 1 do begin
+        s := AltDir + lst[i] + '.xml';
+        pkg.Descriptions.Add(s);
+      end;
+    end;
   //add source files!?
   end;
 //add Imports
@@ -688,6 +728,7 @@ begin
   FCompOpts := Config.ReadString(SecDoc, 'options', '');
   FDescrDir := Config.ReadString(SecDoc, 'descrdir', '');
   FAltDir := Config.ReadString(SecDoc, 'AltDir', '');
+  FAllDirs:= Config.ReadBool(SecDoc, 'AllDirs', False);
   Requires.CommaText := Config.ReadString(SecDoc, 'requires', '');
 //units
   Config.ReadSection('units', Units);
@@ -711,6 +752,7 @@ begin
   Config.WriteString(SecDoc, 'options', CompOpts);
   Config.WriteString(SecDoc, 'descrdir', DescrDir);
   Config.WriteString(SecDoc, 'AltDir', AltDir);
+  Config.WriteBool(SecDoc, 'AllDirs', AllDirs);
   Config.WriteString(SecDoc, 'requires', Requires.CommaText);
 //units
   Config.WriteSectionValues('units', Units);
@@ -748,6 +790,7 @@ begin
   lst.OwnsObjects := True;
   FPackages := lst;
   FOptions := TCmdOptions.Create;
+  FNoParseUnits := TStringList.Create;
 end;
 
 destructor TFPDocManager.Destroy;
@@ -757,6 +800,7 @@ begin
   //FPackages.Clear; //destructor seems NOT to clear/destroy owned object!?
   FreeAndNil(FPackages);
   FreeAndNil(FOptions);
+  FreeAndNil(FNoParseUnits);
   inherited Destroy;
 end;
 
@@ -772,6 +816,13 @@ begin
   if FFpcDir=AValue then Exit;
   FFpcDir:=AValue;
   Config.WriteString(SecGen, 'FpcDir', FpcDir);
+end;
+
+procedure TFPDocManager.SetExcludedUnits(AValue: boolean);
+begin
+  if FExcludedUnits=AValue then Exit;
+  FExcludedUnits:=AValue;
+  Config.WriteBool(SecGen, 'ExcludeUnits', AValue);
 end;
 
 procedure TFPDocManager.UpdatePackage(const AName: string);
@@ -819,6 +870,18 @@ begin
 //update RTL and FCL - if exist and Dir exists
   UpdatePackage('rtl');
   UpdatePackage('fcl');
+end;
+
+function TFPDocManager.GetNoParseUnits: TStrings;
+begin
+  Result := FNoParseUnits;
+end;
+
+procedure TFPDocManager.SetNoParseUnits(AValue: TStrings);
+begin
+  FNoParseUnits.Assign(AValue);
+  FNoParseUnits.Sorted := True;
+  Config.WriteSection('NoParseUnits', NoParseUnits);
 end;
 
 procedure TFPDocManager.SetOnChange(AValue: TNotifyEvent);
@@ -948,6 +1011,8 @@ begin
   FProfiles:=Config.ReadString(SecGen, 'Profiles', 'default');
   FProfile := Config.ReadString(SecGen,'Profile', 'default');
   Options.LoadConfig(Config, Profile);
+  FExcludedUnits := Config.ReadBool(SecGen, 'ExcludeUnits', True);
+  Config.ReadSection('NoParseUnits', NoParseUnits);
 //done, nothing modified
   EndUpdate;
 end;
@@ -1337,6 +1402,10 @@ function TFPDocHelper.Update(APkg: TDocPackage; const AUnit: string): boolean;
   var
     OutName, msg: string;
   begin
+    if Manager.NoParseUnits.IndexOf(AUnit) >= 0 then begin
+      DoLog('NoParse ' + AUnit);
+      exit(False);
+    end;
     InputList.Clear;
     InputList.Add(UnitSpec(AUnit));
     DescrList.Clear;
