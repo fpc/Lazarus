@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-procedure Vertical_Sweep_Init( var min, max : Int );
+procedure Vertical_Sweep_Init( var min, {%H-}max : Int );
 begin
   case Cible.flow of
 
@@ -28,11 +28,11 @@ end;
 
 
 
-procedure Vertical_Sweep_Span( y     : Int;
+procedure Vertical_Sweep_Span( {%H-}y     : Int;
                                x1,
                                x2    : TT_F26dot6;
-                               Left,
-                               Right : TProfile );
+                               {%H-}Left,
+                               {%H-}Right : TProfile );
 var
   e1, e2  : Longint;
   c1, c2  : Int;
@@ -311,7 +311,7 @@ end;
 (*                                                                     *)
 (***********************************************************************)
 
-procedure Horizontal_Sweep_Init( var min, max : Int );
+procedure Horizontal_Sweep_Init( var {%H-}min, {%H-}max : Int );
 begin
   (* Nothing, really *)
 end;
@@ -320,8 +320,8 @@ end;
 procedure Horizontal_Sweep_Span( y     : Int;
                                  x1,
                                  x2    : TT_F26dot6;
-                                 Left,
-                                 Right : TProfile );
+                                 {%H-}Left,
+                                 {%H-}Right : TProfile );
 var
   e1, e2  : Longint;
   c1  : Int;
@@ -506,7 +506,7 @@ end;
 (*                                                                     *)
 (***********************************************************************)
 
-procedure Vertical_Gray_Sweep_Init( var min, max : Int );
+procedure Vertical_Gray_Sweep_Init( var min, {%H-}max : Int );
 begin
   case Cible.flow of
 
@@ -525,7 +525,7 @@ begin
   gray_max_x := -Cible.Cols;
 end;
 
-procedure Vertical_Gray_Sweep_Init_HQ( var min, max : Int );
+procedure Vertical_Gray_Sweep_Init_HQ( var min, {%H-}max : Int );
 begin
   case Cible.flow of
 
@@ -672,8 +672,8 @@ end;
 procedure Horizontal_Gray_Sweep_Span( y     : Int;
                                       x1,
                                       x2    : TT_F26dot6;
-                                      Left,
-                                      Right : TProfile );
+                                      {%H-}Left,
+                                      {%H-}Right : TProfile );
 var
   e1, e2    : TT_F26Dot6;
   j : Int;
@@ -791,6 +791,4 @@ begin
          GCible^[j] := color;
    end;
 end;
-
-{$F-  End of dispatching functions definitions }
 
