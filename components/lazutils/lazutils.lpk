@@ -19,7 +19,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="32">
+    <Files Count="58">
       <Item1>
         <Filename Value="laz2_dom.pas"/>
         <UnitName Value="laz2_DOM"/>
@@ -148,6 +148,110 @@
         <Filename Value="lazlogger.pas"/>
         <UnitName Value="LazLogger"/>
       </Item32>
+      <Item33>
+        <Filename Value="lazfreetype.pas"/>
+        <UnitName Value="LazFreeType"/>
+      </Item33>
+      <Item34>
+        <Filename Value="Makefile"/>
+        <Type Value="Text"/>
+      </Item34>
+      <Item35>
+        <Filename Value="Makefile.compiled"/>
+        <Type Value="Text"/>
+      </Item35>
+      <Item36>
+        <Filename Value="Makefile.fpc"/>
+        <Type Value="Text"/>
+      </Item36>
+      <Item37>
+        <Filename Value="ttcache.pas"/>
+        <UnitName Value="TTCache"/>
+      </Item37>
+      <Item38>
+        <Filename Value="ttcalc.pas"/>
+        <UnitName Value="TTCalc"/>
+      </Item38>
+      <Item39>
+        <Filename Value="ttcalc1.inc"/>
+        <Type Value="Include"/>
+      </Item39>
+      <Item40>
+        <Filename Value="ttcalc2.inc"/>
+        <Type Value="Include"/>
+      </Item40>
+      <Item41>
+        <Filename Value="ttcalc3.inc"/>
+        <Type Value="Include"/>
+      </Item41>
+      <Item42>
+        <Filename Value="ttcalc4.inc"/>
+        <Type Value="Include"/>
+      </Item42>
+      <Item43>
+        <Filename Value="ttcmap.pas"/>
+        <UnitName Value="TTCMap"/>
+      </Item43>
+      <Item44>
+        <Filename Value="ttconfig.inc"/>
+        <Type Value="Include"/>
+      </Item44>
+      <Item45>
+        <Filename Value="ttdebug.pas"/>
+        <UnitName Value="TTDebug"/>
+      </Item45>
+      <Item46>
+        <Filename Value="tterror.pas"/>
+        <UnitName Value="TTError"/>
+      </Item46>
+      <Item47>
+        <Filename Value="ttfile.pas"/>
+        <UnitName Value="TTFile"/>
+      </Item47>
+      <Item48>
+        <Filename Value="ttgload.pas"/>
+        <UnitName Value="TTGLoad"/>
+      </Item48>
+      <Item49>
+        <Filename Value="ttinterp.pas"/>
+        <UnitName Value="TTInterp"/>
+      </Item49>
+      <Item50>
+        <Filename Value="ttload.pas"/>
+        <UnitName Value="TTLoad"/>
+      </Item50>
+      <Item51>
+        <Filename Value="ttmemory.pas"/>
+        <UnitName Value="TTMemory"/>
+      </Item51>
+      <Item52>
+        <Filename Value="ttobjs.pas"/>
+        <UnitName Value="TTObjs"/>
+      </Item52>
+      <Item53>
+        <Filename Value="ttprofile.pas"/>
+        <UnitName Value="TTProfile"/>
+      </Item53>
+      <Item54>
+        <Filename Value="ttraster_sweep.inc"/>
+        <Type Value="Include"/>
+      </Item54>
+      <Item55>
+        <Filename Value="ttraster.pas"/>
+        <UnitName Value="TTRASTER"/>
+      </Item55>
+      <Item56>
+        <Filename Value="tttables.pas"/>
+        <UnitName Value="TTTables"/>
+      </Item56>
+      <Item57>
+        <Filename Value="tttypes.pas"/>
+        <UnitName Value="TTTypes"/>
+      </Item57>
+      <Item58>
+        <Filename Value="easylazfreetype.pas"/>
+        <UnitName Value="EasyLazFreeType"/>
+      </Item58>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>
