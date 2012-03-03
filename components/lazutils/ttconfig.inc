@@ -4,9 +4,9 @@
 (* This file contains several definition pragmas that are used to    *)
 (* build several versions of the library. Each constant is commented *)
 
-(* Define the DEBUG constant if you want the library dumping trace *)
+(* Define the FREETYPE_DEBUG constant if you want the library dumping trace *)
 (* information to the standard error output.                       *)
-{ $DEFINE DEBUG}
+{ $DEFINE FREETYPE_DEBUG}
 
 
 (* Define the ASSERT constant if you want to generate runtime integrity  *)

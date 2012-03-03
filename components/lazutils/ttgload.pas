@@ -252,7 +252,7 @@ const
 
    if ( n_contours > left_contours ) then
      begin
-       {$IFDEF DEBUG}
+       {$IFDEF FREETYPE_DEBUG}
        Writeln( 'ERROR: Glyph index ',i,' has ',Gl.numberOfContours );
        Writeln( ' contours > left ', left_contours );
        {$ENDIF}
@@ -272,7 +272,7 @@ const
 
    for k := 0 to n_contours-1 do
      begin
-       {$IFDEF DEBUG} Write( n_points,' '); {$ENDIF}
+       {$IFDEF FREETYPE_DEBUG} Write( n_points,' '); {$ENDIF}
        n_points              := GET_Short;
        exec^.pts.conEnds^[k] := n_points;
        inc( n_points );
@@ -280,7 +280,7 @@ const
 
    if n_points > left_points then
      begin
-       {$IFDEF DEBUG} Writeln( 'ERROR: Too many points' ); {$ENDIF}
+       {$IFDEF FREETYPE_DEBUG} Writeln( 'ERROR: Too many points' ); {$ENDIF}
        error := TT_Err_Too_Many_Points;
        goto Fail;
      end;
@@ -302,11 +302,11 @@ const
    else }
      begin
 
-       {$IFDEF DEBUG} Writeln('Instructions size : ', n_ins); {$ENDIF}
+       {$IFDEF FREETYPE_DEBUG} Writeln('Instructions size : ', n_ins); {$ENDIF}
 
        if n_ins > face^.maxProfile.maxSizeOfInstructions then
        begin
-         {$IFDEF DEBUG} Writeln('Too many instructions'); {$ENDIF}
+         {$IFDEF FREETYPE_DEBUG} Writeln('Too many instructions'); {$ENDIF}
          error := TT_Err_Too_Many_Ins;
          goto Fail;
        end;
@@ -515,11 +515,11 @@ const
      TT_Forget_Frame;
 
      (* load the instructions *)
-     {$IFDEF DEBUG} Writeln('Instructions size : ', n_ins); {$ENDIF}
+     {$IFDEF FREETYPE_DEBUG} Writeln('Instructions size : ', n_ins); {$ENDIF}
 
      if n_ins > exec^.face^.maxProfile.maxSizeOfInstructions then
      begin
-       {$IFDEF DEBUG} Writeln('Too many instructions'); {$ENDIF}
+       {$IFDEF FREETYPE_DEBUG} Writeln('Too many instructions'); {$ENDIF}
        error := TT_Err_Too_Many_Ins;
        goto Fail;
      end;
@@ -732,7 +732,7 @@ const
    table := LookUp_TrueType_Table( face, 'glyf');
    if table < 0 then
      begin
-       {$IFDEF DEBUG}
+       {$IFDEF FREETYPE_DEBUG}
        Trace1( 'TTApi.load_glyph : couldn''t find glyf table' );
        {$ENDIF}
        error := TT_Err_Table_Missing;
@@ -871,7 +871,7 @@ const
 
                TT_Forget_Frame;
 
-               {$IFDEF DEBUG}
+               {$IFDEF FREETYPE_DEBUG}
                Writeln('Glyph ', i );
 
                Writeln(' # of Contours : ',num_contours );
@@ -882,7 +882,7 @@ const
 
                if num_contours > left_contours then
                begin
-                 {$IFDEF DEBUG}
+                 {$IFDEF FREETYPE_DEBUG}
                  Writeln( 'ERROR: Glyph index ', i, ' has ', num_contours );
                  Writeln(' contours > left ', left_contours );
                  {$ENDIF}

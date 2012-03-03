@@ -383,7 +383,7 @@ var
     (* UNLOCK *)
 
     (* Element wasn't found !! *)
-    {$IFDEF DEBUG}
+    {$IFDEF FREETYPE_DEBUG}
     {$ENDIF}
     exit;
 

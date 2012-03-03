@@ -193,7 +193,7 @@ uses TTError, TTMemory, TTFile;
  begin
     Load_TrueType_Directory := Failure;
 
-    {$IFDEF DEBUG} Write('Directory '); {$ENDIF}
+    {$IFDEF FREETYPE_DEBUG} Write('Directory '); {$ENDIF}
 
     if Load_TrueType_Collection(face) then
       begin
@@ -235,7 +235,7 @@ uses TTError, TTMemory, TTFile;
     tableDir.entrySelector := GET_UShort;
     tableDir.rangeShift    := GET_UShort;
 
-    {$IFDEF DEBUG} Writeln('Tables number : ', tableDir.numTables ); {$ENDIF}
+    {$IFDEF FREETYPE_DEBUG} Writeln('Tables number : ', tableDir.numTables ); {$ENDIF}
 
     TT_Forget_Frame;
 
@@ -243,7 +243,7 @@ uses TTError, TTMemory, TTFile;
     if (tableDir.version <> $10000   ) and     (* MS fonts  *)
        (tableDir.version <> $74727565) then    (* Mac fonts *)
     begin
-      {$IFDEF DEBUG} Writeln('Invalid font format'); {$ENDIF}
+      {$IFDEF FREETYPE_DEBUG} Writeln('Invalid font format'); {$ENDIF}
       error := TT_Err_Invalid_File_Format;
       exit;
     end;
@@ -268,7 +268,7 @@ uses TTError, TTMemory, TTFile;
 
    end;
 
-   {$IFDEF DEBUG} Writeln('loaded'); {$ENDIF}
+   {$IFDEF FREETYPE_DEBUG} Writeln('loaded'); {$ENDIF}
 
    Load_TrueType_Directory := Success;
  end;
@@ -295,7 +295,7 @@ uses TTError, TTMemory, TTFile;
 
    Load_TrueType_MaxProfile := Failure;
 
-   {$IFDEF DEBUG} Write('MaxProfile '); {$ENDIF}
+   {$IFDEF FREETYPE_DEBUG} Write('MaxProfile '); {$ENDIF}
 
    table := LookUp_Mandatory_Table( face, 'maxp');
    if table < 0 then exit;
@@ -370,7 +370,7 @@ uses TTError, TTMemory, TTFile;
      inc( maxContours, 4 );
    end;
 
-   {$IFDEF DEBUG} Writeln('loaded'); {$ENDIF}
+   {$IFDEF FREETYPE_DEBUG} Writeln('loaded'); {$ENDIF}
 
    Load_TrueType_MaxProfile := Success;
  end;
@@ -466,7 +466,7 @@ uses TTError, TTMemory, TTFile;
  begin
    Load_TrueType_Header := Failure;
 
-   {$IFDEF DEBUG} Write('Header '); {$ENDIF}
+   {$IFDEF FREETYPE_DEBUG} Write('Header '); {$ENDIF}
 
    i := LookUp_Mandatory_Table(face, 'head');
    if i <= 0 then exit;
@@ -504,7 +504,7 @@ uses TTError, TTMemory, TTFile;
        Index_To_Loc_Format := GET_Short;
        Glyph_Data_Format   := GET_Short;
 
-       {$IFDEF DEBUG} Writeln('Units per EM : ',Units_Per_EM ); {$ENDIF}
+       {$IFDEF FREETYPE_DEBUG} Writeln('Units per EM : ',Units_Per_EM ); {$ENDIF}
 
      end;
 
@@ -512,7 +512,7 @@ uses TTError, TTMemory, TTFile;
 
    end;
 
-   {$IFDEF DEBUG} Writeln('loaded'); {$ENDIF}
+   {$IFDEF FREETYPE_DEBUG} Writeln('loaded'); {$ENDIF}
 
    Load_TrueType_Header := Success;
  end;
@@ -549,7 +549,7 @@ uses TTError, TTMemory, TTFile;
  begin
    Load_TrueType_Metrics := Failure;
 
-   {$IFDEF DEBUG}
+   {$IFDEF FREETYPE_DEBUG}
    if vertical then
      Write('vmtx ')
    else
@@ -593,7 +593,7 @@ uses TTError, TTMemory, TTFile;
 
    if num_shorts < 0 then
    begin
-     {$IFDEF DEBUG} Writeln('!! More metrics than glyphs !\n'); {$ENDIF}
+     {$IFDEF FREETYPE_DEBUG} Writeln('!! More metrics than glyphs !\n'); {$ENDIF}
      if vertical then  error := TT_Err_Invalid_Vert_Metrics
                  else  error := TT_Err_Invalid_Horiz_Metrics;
      exit;
@@ -632,7 +632,7 @@ uses TTError, TTMemory, TTFile;
 
    TT_Forget_Frame;
 
-   {$IFDEF DEBUG} Writeln('loaded'); {$ENDIF}
+   {$IFDEF FREETYPE_DEBUG} Writeln('loaded'); {$ENDIF}
 
    Load_TrueType_Metrics := Success;
  end;
@@ -660,7 +660,7 @@ uses TTError, TTMemory, TTFile;
  begin
    Load_TrueType_Metrics_Header := Failure;
 
-    {$IFDEF DEBUG}
+    {$IFDEF FREETYPE_DEBUG}
     if vertical then
       Write('Vertical Header ')
     else
@@ -733,7 +733,7 @@ uses TTError, TTMemory, TTFile;
 
    end;
 
-   {$IFDEF DEBUG} Writeln('loaded'); {$ENDIF}
+   {$IFDEF FREETYPE_DEBUG} Writeln('loaded'); {$ENDIF}
 
    Load_TrueType_Metrics_Header := Load_TrueType_Metrics( face, vertical );
  end;
@@ -765,7 +765,7 @@ uses TTError, TTMemory, TTFile;
 
    Load_TrueType_Locations := Failure;
 
-   {$IFDEF DEBUG} Write('Locations '); {$ENDIF}
+   {$IFDEF FREETYPE_DEBUG} Write('Locations '); {$ENDIF}
 
    with face^ do
    begin
@@ -782,7 +782,7 @@ uses TTError, TTMemory, TTFile;
 
          numLocations := dirTables^[T].Length shr 2;
 
-         {$IFDEF DEBUG}
+         {$IFDEF FREETYPE_DEBUG}
          Writeln('Glyph locations # ( 32 bits offsets ) : ', numLocations );
          {$ENDIF}
 
@@ -799,7 +799,7 @@ uses TTError, TTMemory, TTFile;
        begin
          numLocations := dirTables^[T].Length shr 1;
 
-         {$IFDEF DEBUG}
+         {$IFDEF FREETYPE_DEBUG}
          Writeln('Glyph locations # ( 16 bits offsets ) : ', numLocations );
          {$ENDIF}
 
@@ -814,7 +814,7 @@ uses TTError, TTMemory, TTFile;
 
    end;
 
-   {$IFDEF DEBUG} Writeln('loaded'); {$ENDIF}
+   {$IFDEF FREETYPE_DEBUG} Writeln('loaded'); {$ENDIF}
 
    Load_TrueType_Locations := Success;
  end;
@@ -925,7 +925,7 @@ uses TTError, TTMemory, TTFile;
  begin
    Load_TrueType_CVT := Failure;
 
-   {$IFDEF DEBUG} Write('CVT '); {$ENDIF}
+   {$IFDEF FREETYPE_DEBUG} Write('CVT '); {$ENDIF}
 
    (* the CVT table is optional *)
 
@@ -935,7 +935,7 @@ uses TTError, TTMemory, TTFile;
      face^.cvt     := nil;
      face^.cvtSize := 0;
      Load_TrueType_CVT := Success;
-     {$IFDEF DEBUG}  writeln('none'); {$ENDIF}
+     {$IFDEF FREETYPE_DEBUG}  writeln('none'); {$ENDIF}
      exit;
    end;
 
@@ -956,7 +956,7 @@ uses TTError, TTMemory, TTFile;
      TT_Forget_Frame;
    end;
 
-   {$IFDEF DEBUG} Writeln('loaded'); {$ENDIF}
+   {$IFDEF FREETYPE_DEBUG} Writeln('loaded'); {$ENDIF}
    Load_TrueType_CVT := Success;
  end;
 
@@ -991,7 +991,7 @@ uses TTError, TTMemory, TTFile;
 
    Load_TrueType_CMap := Failure;
 
-   {$IFDEF DEBUG} Write('CMaps '); {$ENDIF}
+   {$IFDEF FREETYPE_DEBUG} Write('CMaps '); {$ENDIF}
 
    t := LookUp_Mandatory_Table( face,'cmap' );
    if t < 0 then exit;
@@ -1050,7 +1050,7 @@ uses TTError, TTMemory, TTFile;
 
    end;  (* with face^ *)
 
-   {$IFDEF DEBUG} Writeln('loaded'); {$ENDIF}
+   {$IFDEF FREETYPE_DEBUG} Writeln('loaded'); {$ENDIF}
 
    Load_TrueType_CMap := Success;
    exit;
@@ -1117,7 +1117,7 @@ uses TTError, TTMemory, TTFile;
 
    Load_TrueType_Programs := Failure;
 
-   {$IFDEF DEBUG} Write('Font program '); {$ENDIF}
+   {$IFDEF FREETYPE_DEBUG} Write('Font program '); {$ENDIF}
 
    (* The font program is optional *)
 
@@ -1130,7 +1130,7 @@ uses TTError, TTMemory, TTFile;
        fontProgram := nil;
        fontPgmSize := 0;
 
-       {$IFDEF DEBUG} Writeln('none in file'); {$ENDIF}
+       {$IFDEF FREETYPE_DEBUG} Writeln('none in file'); {$ENDIF}
      end
 
    else
@@ -1145,10 +1145,10 @@ uses TTError, TTMemory, TTFile;
                            fontProgram^,
                            fontPgmSize ) then exit;
 
-       {$IFDEF DEBUG} Writeln('loaded, ',fontPgmSize,' bytes'); {$ENDIF}
+       {$IFDEF FREETYPE_DEBUG} Writeln('loaded, ',fontPgmSize,' bytes'); {$ENDIF}
      end;
 
-   {$IFDEF DEBUG} Write('CVT program '); {$ENDIF}
+   {$IFDEF FREETYPE_DEBUG} Write('CVT program '); {$ENDIF}
 
    t := LookUp_trueType_Table( face, 'prep' );
 
@@ -1161,7 +1161,7 @@ uses TTError, TTMemory, TTFile;
        cvtProgram := nil;
        cvtPgmSize := 0;
 
-       {$IFDEF DEBUG} Writeln('none in file'); {$ENDIF}
+       {$IFDEF FREETYPE_DEBUG} Writeln('none in file'); {$ENDIF}
      end
 
    else
@@ -1176,7 +1176,7 @@ uses TTError, TTMemory, TTFile;
                            cvtProgram^,
                            cvtPgmSize ) then exit;
 
-       {$IFDEF DEBUG} Writeln('loaded, ',cvtPgmSize,' bytes'); {$ENDIF}
+       {$IFDEF FREETYPE_DEBUG} Writeln('loaded, ',cvtPgmSize,' bytes'); {$ENDIF}
      end;
 
    Load_TrueType_Programs := Success;
@@ -1201,7 +1201,7 @@ uses TTError, TTMemory, TTFile;
  begin
    Load_TrueType_OS2 := Failure;
 
-   {$IFDEF DEBUG} Write('OS/2 table '); {$ENDIF}
+   {$IFDEF FREETYPE_DEBUG} Write('OS/2 table '); {$ENDIF}
 
    (* We now support Apple fonts who do not have an OS/2 table *)
    table := LookUp_Mandatory_Table( face, 'OS/2' );
@@ -1271,7 +1271,7 @@ uses TTError, TTMemory, TTFile;
 
    end;
 
-   {$IFDEF DEBUG} Writeln('loaded'); {$ENDIF}
+   {$IFDEF FREETYPE_DEBUG} Writeln('loaded'); {$ENDIF}
 
    Load_TrueType_OS2 := Success;
  end;
@@ -1294,7 +1294,7 @@ uses TTError, TTMemory, TTFile;
  begin
    Load_TrueType_Postscript := Failure;
 
-   {$IFDEF DEBUG} Write('post table '); {$ENDIF}
+   {$IFDEF FREETYPE_DEBUG} Write('post table '); {$ENDIF}
 
    table := LookUp_TrueType_Table( face, 'post' );
    if table < 0 then exit;
@@ -1317,7 +1317,7 @@ uses TTError, TTMemory, TTFile;
 
    TT_Forget_Frame;
 
-   {$IFDEF DEBUG} Writeln('loaded'); {$ENDIF}
+   {$IFDEF FREETYPE_DEBUG} Writeln('loaded'); {$ENDIF}
 
    Load_trueType_Postscript := Success;
  end;
