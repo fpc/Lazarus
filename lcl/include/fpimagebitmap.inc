@@ -166,20 +166,23 @@ procedure TFPImageBitmap.WriteStream(AStream: TMemoryStream);
 var
   IntfImg: TLazIntfImage;
   ImgWriter: TFPCustomImageWriter;
+  RawImg: PRawImage;
 begin
   // write image to temporary stream
-
   ImgWriter := nil;
-  IntfImg := TLazIntfImage.Create(0,0,[]);
-  try
-    ImgWriter := GetWriterClass.Create;
-    IntfImg.SetRawImage(GetRawImagePtr^, False);
-    InitializeWriter(IntfImg, ImgWriter);
-    IntfImg.SaveToStream(AStream, ImgWriter);
-    FinalizeWriter(ImgWriter);
-  finally
-    IntfImg.Free;
-    ImgWriter.Free;
+  RawImg:=GetRawImagePtr;
+  if RawImg^.DataSize > 0 then begin
+    IntfImg := TLazIntfImage.Create(0,0,[]);
+    try
+      ImgWriter := GetWriterClass.Create;
+      IntfImg.SetRawImage(RawImg^, False);
+      InitializeWriter(IntfImg, ImgWriter);
+      IntfImg.SaveToStream(AStream, ImgWriter);
+      FinalizeWriter(ImgWriter);
+    finally
+      IntfImg.Free;
+      ImgWriter.Free;
+    end;
   end;
 end;
 
