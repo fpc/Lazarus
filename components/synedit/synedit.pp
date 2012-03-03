@@ -4456,7 +4456,7 @@ begin
   DebugLn(['[TCustomSynEdit.WMSetFocus] A ',Name,':',ClassName, ' time=', dbgs(Now*86640)]);
   {$ENDIF}
   FScreenCaret.DestroyCaret; // Ensure recreation. On Windows only one caret exists, and it must be moved to the focused editor
-  FScreenCaret.Visible := True;
+  FScreenCaret.Visible := not(eoNoCaret in FOptions);
   //if FHideSelection and SelAvail then
   //  Invalidate;
   inherited;
@@ -7220,10 +7220,12 @@ begin
   // (un)register HWND as drop target
   if (eoDropFiles in ChangedOptions) and not (csDesigning in ComponentState) and HandleAllocated then
     ; // ToDo DragAcceptFiles
-  if (eoPersistentCaret in ChangedOptions) and HandleAllocated then begin
+  if (ChangedOptions * [eoPersistentCaret, eoNoCaret] <> []) and HandleAllocated then begin
     UpdateCaret;
-    if not Focused then
-      FScreenCaret.Visible := (eoPersistentCaret in FOptions);
+    if Focused then
+      FScreenCaret.Visible := not(eoNoCaret in FOptions)
+    else
+      FScreenCaret.Visible := (eoPersistentCaret in FOptions) and not(eoNoCaret in FOptions);
   end;
   if (eoShowSpecialChars in ChangedOptions) then begin
     if eoShowSpecialChars in FOptions
