@@ -1,6 +1,8 @@
 {
  Test with:
-     ./runtests --format=plain --suite=TestFindLineEndOrCodeInFrontOfPosition
+   ./runtests --format=plain --suite=TTestBasicCodeTools
+   ./runtests --format=plain --suite=TestFindLineEndOrCodeInFrontOfPosition
+   ./runtests --format=plain --suite=TestHasTxtWord
 }
 unit TestBasicCodetools;
 
@@ -18,6 +20,7 @@ type
   protected
   published
     procedure TestFindLineEndOrCodeInFrontOfPosition;
+    procedure TestHasTxtWord;
   end;
 
 implementation
@@ -52,7 +55,7 @@ procedure TTestBasicCodeTools.TestFindLineEndOrCodeInFrontOfPosition;
 var
   e: String;
 begin
-  writeln('TTestBasicCodeTools.TestFindLineEndOrCodeInFrontOfPosition ');
+  //writeln('TTestBasicCodeTools.TestFindLineEndOrCodeInFrontOfPosition ');
   e:=#13#10; // use windows line endings, they are more complicated
   t(' $'+e+'|a:=1;');
   t('a$'+e+'// comment'+e+' { comment } '+e+'|');
@@ -61,6 +64,29 @@ begin
   t('a:=1; // comment$'+e+'|b:=1');
   t('a:=1; (* comment'+e+' *) $'+e+'|b:=1');
   t('a:=1; (* comment'+e+' *) { comment'+e+' } $'+e+'|b:=1');
+end;
+
+procedure TTestBasicCodeTools.TestHasTxtWord;
+
+  procedure t(aWord,aText: PChar; ExpectedWholeWord: boolean; ExpectedCount: SizeInt);
+  var
+    WholeWord: boolean;
+    Count: SizeInt;
+  begin
+    HasTxtWord(aWord,aText,WholeWord,Count);
+    AssertEquals('Word="'+aWord+'" Text="'+aText+'" WholeWord',ExpectedWholeWord,WholeWord);
+    AssertEquals('Word="'+aWord+'" Text="'+aText+'" Count',ExpectedCount,Count);
+  end;
+
+begin
+  t(nil,nil,false,0);
+  t('a','a',true,1);
+  t('ab','a',false,0); // ab not in a
+  t('a','ab',false,1); // a in ab
+  t('a','aba',false,2);
+  t('a','a a',true,2);
+  t('a','ab a',true,1);
+  t('abc','ab abcd',false,1);
 end;
 
 initialization
