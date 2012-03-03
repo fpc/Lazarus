@@ -5089,7 +5089,7 @@ begin
   FDefaultAttribute := nil;
   NewList := TQuickStringlist.Create;
   for i := 0 to Src.AttributeCount - 1 do begin
-    j := FAttributes.IndexOf(UpperCase(Src.AttributeAtPos[i].Name));
+    j := FAttributes.IndexOf(UpperCase(Src.AttributeAtPos[i].StoredName));
     if j >= 0 then begin
       Attr := TColorSchemeAttribute(FAttributes.Objects[j]);
       FAttributes.Delete(j);
