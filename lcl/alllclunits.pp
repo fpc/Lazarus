@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit alllclunits; 
+unit alllclunits;
 
 interface
 
@@ -26,15 +26,15 @@ uses
   WSStdCtrls, WSToolwin, ActnList, Arrow, AsyncProcess, ButtonPanel, Buttons, 
   Calendar, RegisterLCL, ValEdit, lazcanvas, lazdialogs, lazregions, 
   customdrawn_common, customdrawncontrols, customdrawndrawers, lazdeviceapis, 
-  LDockTree, LazarusPackageIntf;
+  LDockTree, LazFreeTypeIntfDrawer, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('RegisterLCL', @RegisterLCL.Register); 
-end; 
+  RegisterUnit('RegisterLCL', @RegisterLCL.Register);
+end;
 
 initialization
-  RegisterPackage('LCLBase', @Register); 
+  RegisterPackage('LCLBase', @Register);
 end.

@@ -31,7 +31,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="288">
+    <Files Count="289">
       <Item1>
         <Filename Value="barchart.pp"/>
         <UnitName Value="BarChart"/>
@@ -1189,6 +1189,10 @@
         <Filename Value="ldocktree.pas"/>
         <UnitName Value="LDockTree"/>
       </Item288>
+      <Item289>
+        <Filename Value="lazfreetypeintfdrawer.pas"/>
+        <UnitName Value="LazFreeTypeIntfDrawer"/>
+      </Item289>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>
@@ -1211,5 +1215,8 @@
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
   </Package>
 </CONFIG>

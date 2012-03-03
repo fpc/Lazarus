@@ -5950,6 +5950,7 @@ lcl/lazcanvas.pas svneol=native#text/pascal
 lcl/lazconfigstorage.pas svneol=native#text/pascal
 lcl/lazdeviceapis.pas svneol=native#text/plain
 lcl/lazdialogs.pas svneol=native#text/plain
+lcl/lazfreetypeintfdrawer.pas svneol=native#text/plain
 lcl/lazhelphtml.pas svneol=native#text/pascal
 lcl/lazhelpintf.pas svneol=native#text/pascal
 lcl/lazlinkedlist.pas svneol=native#text/pascal
