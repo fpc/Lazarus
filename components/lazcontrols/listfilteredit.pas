@@ -233,10 +233,12 @@ var
   i: Integer;
 begin
   i := GetFirstSelected + 1;
-  if i < fFilteredListbox.Count then
-  begin
+  if fFilteredListbox.Count > 0 then begin
     UnselectAll;
-    fFilteredListbox.Selected[i] := True;
+    if i < fFilteredListbox.Count then
+      fFilteredListbox.Selected[i] := True
+    else
+      fFilteredListbox.Selected[0] := True;
   end;
 end;
 
@@ -245,10 +247,12 @@ var
   i: Integer;
 begin
   i := GetFirstSelected - 1;
-  if i >= 0 then
-  begin
+  if fFilteredListbox.Count > 0 then begin
     UnselectAll;
-    fFilteredListbox.Selected[i] := True;
+    if i >= 0 then
+      fFilteredListbox.Selected[i] := True
+    else
+      fFilteredListbox.Selected[fFilteredListbox.Count-1] := True;
   end;
 end;
 

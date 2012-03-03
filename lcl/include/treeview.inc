@@ -911,10 +911,8 @@ begin
       Result:=ANode;
     end;
   end
-  else begin
-    Assert(Parent.Visible, 'TTreeNode.GetPrevVisible: Parent is not Visible');
+  else
     Result := Parent;
-  end;
   if (Result<>nil) and (TreeView<>nil) and (not TreeView.IsNodeVisible(Result)) then
     Result:=nil;
 end;
@@ -5632,8 +5630,8 @@ begin
   else
     ANode := Selected;
   if ANode <> nil then
-    ANode := ANode.GetNextExpanded
-  else if Items.Count > 0 then
+    ANode := ANode.GetNextVisible;
+  if (ANode = nil) and (Items.Count > 0) then
     ANode := FTreeNodes.GetFirstVisibleNode;
   if ANode <> nil then
     if tvoAllowMultiSelect in FOptions then
@@ -5651,8 +5649,8 @@ begin
   else
     ANode := Selected;
   if ANode <> nil then
-    ANode := ANode.GetPrevExpanded
-  else if Items.Count > 0 then
+    ANode := ANode.GetPrevVisible;
+  if (ANode = nil) and (Items.Count > 0) then
     ANode := Items.GetLastExpandedSubNode;
   if ANode <> nil then
     if tvoAllowMultiSelect in FOptions then
