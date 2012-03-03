@@ -147,29 +147,39 @@ end;
 procedure TIDEOptionsDialog.CategoryTreeChange(Sender: TObject; Node: TTreeNode);
 var
   AEditor: TAbstractIDEOptionsEditor;
+  SelNode: TTreeNode;
 begin
-  if Node = nil then Exit;
-  while Node <> nil do
-  begin
-    if Node.Data <> nil then
-      break;
-    Node := Node.GetFirstChild;
+  if Assigned(Node) then begin
+    if not Node.Visible then
+      Node := Node.GetPrevVisible;
+    while Assigned(Node) do begin
+      if Assigned(Node.Data) then
+        break;
+      Node := Node.GetFirstVisibleChild;
+    end;
   end;
-  if Node.Data = nil then Exit;
-
-  AEditor := TAbstractIDEOptionsEditor(Node.Data);
-  NewLastSelected := AEditor.Rec;
-  if (AEditor <> nil) and (AEditor <> PrevEditor) then
-  begin
-    if PrevEditor <> nil then
-      PrevEditor.Visible := False;
-      //PrevEditor.Parent := nil;
-
-    AEditor.Align := alClient;
-    AEditor.BorderSpacing.Around := 6;
-    //AEditor.Parent := Self;
-    AEditor.Visible := True;
-
+  if Assigned(Node) and Assigned(Node.Data) then begin
+    Assert(TObject(Node.Data) is TAbstractIDEOptionsEditor, 'Node.Data is not TAbstractIDEOptionsEditor');
+    SelNode:=CategoryTree.Selected;
+    if SelNode=nil then
+      Node.Selected:=True
+    else
+      DebugLn('TIDEOptionsDialog.CategoryTreeChange: Selected Node=', SelNode.Text);
+    AEditor := TAbstractIDEOptionsEditor(Node.Data);
+    DebugLn('TIDEOptionsDialog.CategoryTreeChange: Editor=', AEditor.Name);
+  end
+  else
+    AEditor:=nil;
+  if Assigned(AEditor) then
+    NewLastSelected := AEditor.Rec;
+  if (AEditor <> PrevEditor) then begin
+    if Assigned(PrevEditor) then
+      PrevEditor.Visible := False; //PrevEditor.Parent := nil;
+    if Assigned(AEditor) then begin
+      AEditor.Align := alClient;
+      AEditor.BorderSpacing.Around := 6; //AEditor.Parent := Self;
+      AEditor.Visible := True;
+    end;
     PrevEditor := AEditor;
   end;
 end;

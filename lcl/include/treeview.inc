@@ -765,10 +765,12 @@ begin
     Exclude(FStates,nsSelected);
     if (TV<>nil) and (TV.Selected=Self) then
     begin
-      TV.EndEditing(true);
+      DebugLn('TTreeNode.SetSelected: Removing selection from Node (but it does not work): ', Text);
+//      TV.EndEditing(true);    // Done in TV.SetSelection
       TV.Selected:=nil;
-      if TV.Selected=Self then
-        Include(FStates,nsSelected);
+      Assert(TV.Selected<>Self, 'Should not happen');
+      //if TV.Selected=Self then
+      //  Include(FStates,nsSelected);
     end;
   end;
   Update;
@@ -4124,6 +4126,7 @@ begin
   if FSelectedNode = Value then Exit;
   if not CanChange(FSelectedNode) then
     exit;
+  DebugLn('TCustomTreeView.SetSelection: Changing selection for Node: ', Text);
   EndEditing(true); // end editing before FSelectedNode change
   OldNode := FSelectedNode;
   FSelectedNode := Value;

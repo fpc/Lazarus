@@ -25,7 +25,8 @@ unit IDEOptionsIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Controls, Buttons, Forms, StdCtrls, Graphics;
+  Classes, SysUtils, LCLProc, Controls, Buttons, Forms, StdCtrls, Graphics,
+  ComCtrls, Grids;
 
 const
   NoParent = -1;
@@ -429,28 +430,69 @@ const
 var
   LowerText: String;
 
+  function SearchListBox(AControl: TCustomListBox): Boolean;
+  var
+    i: Integer;
+  begin
+    Result:=False;
+    for i := 0 to AControl.Items.Count-1 do begin
+      if Pos(LowerText, LowerCase(AControl.Items[i]))>0 then begin
+        if Length(LowerText)>2 then
+          DebugLn('TAbstractIDEOptionsEditor.ContainsTextInCaption: Searching "',
+              LowerText, '", Found "', AControl.Items[i], '", in ListBox ', AControl.Name);
+        // ToDo: Indicate found item somehow.
+        Result:=True;
+      end;
+    end;
+  end;
+
+  function SearchListView(AControl: TListView): Boolean;
+  begin
+    Result:=False;
+  end;
+
+  function SearchStringGrid(AControl: TStringGrid): Boolean;
+  begin
+    Result:=False;
+  end;
+
   function Search(AControl: TControl): Boolean;
   var
     i: Integer;
-    AWinControl: TWinControl;
+    Found: SizeInt;
+    AWinControl, SubCtrl: TWinControl;
+    lb: TListBox;
   begin
     Result:=False;
-    if Pos(LowerText, LowerCase(AControl.Caption))>0 then begin
-      //if Length(LowerText)>2 then
-      //  DebugLn('TAbstractIDEOptionsEditor.ContainsTextInCaption: Searching "', LowerText,
-      //          '", Found "', AControl.Caption, '", in ', AControl.Name);
-      AControl.Font.Color:=FoundColor;
-      Result:=True;
+    // *** First find matches in different controls ***
+    if AControl is TMemo then begin // Memo.Caption returns all the lines, skip.
     end
-    else if AControl.Font.Color=FoundColor then
-      AControl.Font.Color:=clDefault;
+    //else if AControl is TSynEdit then // Can't be used here in IdeOptionsIntf !
+    //  Found:=SearchSynEdit(AControl)
+    //else if AControl is TComboBox then
+    //  Found:=SearchComboBox(AControl)
+    else if AControl is TCustomListBox then
+      Result:=SearchListBox(TCustomListBox(AControl))
+    else if AControl is TListView then
+      Result:=SearchListView(TListView(AControl))
+    else if AControl is TStringGrid then
+      Result:=SearchStringGrid(TStringGrid(AControl))
+    else begin
+      Result:=Pos(LowerText, LowerCase(AControl.Caption))>0;
+      // ToDo: How to change text color on a button?
+      // if AControl is TButton then begin  end  else
+      if Result then
+        AControl.Font.Color:=FoundColor  // Indicate the match
+      else if AControl.Font.Color=FoundColor then
+        AControl.Font.Color:=clDefault;  // Remove the indication of a found item.
+    end;
+
+    // Check child controls inside this one.
     if AControl is TWinControl then begin
       AWinControl:=TWinControl(AControl);
       for i:=0 to AWinControl.ControlCount-1 do
-        // Memo.Caption return all the lines, skip it.
-        if not (AWinControl.Controls[i] is TMemo) then
-          if Search(AWinControl.Controls[i]) then      // Recursive call
-            Result:=True;
+        if Search(AWinControl.Controls[i]) then      // Recursive call
+          Result:=True;
     end;
   end;
 
