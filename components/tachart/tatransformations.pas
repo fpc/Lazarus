@@ -472,6 +472,7 @@ var
   t: TAxisTransform;
 begin
   Result := AX;
+  if IsNan(Result) then exit;
   for t in List do
     if t.Enabled then
       Result := t.AxisToGraph(Result);
