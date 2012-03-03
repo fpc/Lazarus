@@ -2755,17 +2755,6 @@ begin
   KeyMsg.KeyData := (AKeyCode shl 16) or
     (LCLModifiers shl 16) or $0001;
 
-  (*
-  writeln('Qt: KeyData  LO ',Lo(KeyMsg.KeyData),' HI ',Hi(KeyMsg.KeyData),' REPEATED ? ',
-    Hi(KeyMsg.KeyData) and KF_REPEAT = KF_REPEAT,' lenText ',Length(Text),
-    ' KEY ',QKeyEvent_key(QKeyEventH(Event)),
-    ' Modifiers ',QKeyEvent_modifiers(QKeyEventH(Event)),
-    ' NtModif ',QKeyEvent_nativeModifiers(QKeyEventH(Event)),
-    ' NativeScanCode ',QKeyEvent_nativeScanCode(QKeyEventH(Event)),
-    ' NTVIRTKEYS ',QKeyEvent_nativeVirtualKey(QKeyEventH(Event)));
-    *)
-
-
 
   {$ifdef windows}
     ACharCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
