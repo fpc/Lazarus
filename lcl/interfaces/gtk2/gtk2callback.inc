@@ -1462,7 +1462,7 @@ begin
     if g_object_get_data(PGObject(AGtkWidget),'lcl-column-resized-dblclick') <> nil then
     begin
       AIndex := PtrInt(g_object_get_data(PGObject(AGtkWidget),'lcl-column-resized-dblclick') - 1);
-      ASizing := TGtkTreeViewColumnSizing(PtrInt(g_object_get_data(PGObject(AGtkWidget),'lcl-column-resized-dblclick-oldsizing')) - 1);
+      ASizing := TGtkTreeViewColumnSizing(PtrUInt(g_object_get_data(PGObject(AGtkWidget),'lcl-column-resized-dblclick-oldsizing')) - 1);
       g_object_set_data(PGObject(AGtkWidget),'lcl-column-resized-dblclick', nil);
       g_object_set_data(PGObject(AGtkWidget),'lcl-column-resized-dblclick-oldsizing', nil);
       if (AIndex >= 0) then
@@ -1678,9 +1678,9 @@ var
   Info: PWidgetInfo;
   Old: TObject;
   Mess: TLMessage;
-  { $IFDEF VerboseMouseBugfix}
+  {$IFDEF VerboseMouseBugfix}
   AWinControl: TWinControl;
-  { $ENDIF}
+  {$ENDIF}
 begin
   Result := CallBackDefaultReturn;
 

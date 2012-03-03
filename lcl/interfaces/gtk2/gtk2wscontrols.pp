@@ -976,7 +976,6 @@ var
 
   procedure PaintWidget(AWidget: PGtkWidget);
   var
-    AOffset: TPoint;
     AWindow: PGdkWindow;
   begin
     if (AWinControl.FCompStyle = csForm) then

@@ -343,6 +343,7 @@ function button_release_cb_statusicon(status_icon: PGtkStatusIcon;
 var
   vwsTrayIcon: TCustomTrayIcon absolute user_data;
 begin
+  Result := False;
   case PGdkEventButton(event)^.button of
     1:
     begin

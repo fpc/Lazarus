@@ -245,7 +245,6 @@ end;
 class procedure TGtk2WSCustomPanel.SetColor(const AWinControl: TWinControl);
 var
   MainWidget: PGtkWidget;
-  FontColor, BGColor: TColor;
 begin
   if not AWinControl.HandleAllocated then exit;
   MainWidget:=GetFixedWidget(pGtkWidget(AWinControl.handle));

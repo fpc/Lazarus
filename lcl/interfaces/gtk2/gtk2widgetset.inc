@@ -4339,7 +4339,7 @@ var
   nitemsReturned: PtrInt;
   unused: PtrInt;
   data: Pointer;
-  Screen: PGdkScreen;
+  // Screen: PGdkScreen;
 begin
   Result := '';
 
@@ -4347,7 +4347,7 @@ begin
 
   if Display = nil then
     exit;
-  Screen := gdk_screen_get_default;
+  // Screen := gdk_screen_get_default;
   RootWin := gdk_x11_get_default_root_xwindow;
 
   WMAtom := XInternAtom(Display,'_NET_WM_DESKTOP', True);

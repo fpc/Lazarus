@@ -35,8 +35,6 @@
 
 {off $define VerboseScrollWindowEx}
 
-const
-  BOOL_TEXT: array[Boolean] of string = ('False', 'True');
 
 //##apiwiz##sps##   // Do not remove
 
