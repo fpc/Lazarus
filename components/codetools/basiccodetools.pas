@@ -5007,7 +5007,7 @@ var
   l: SizeInt;
 begin
   if (p=nil) or (Count=0) then exit('');
-  l:=IndexByte(p,Count,0);
+  l:=IndexByte(p^,Count,0);
   if l<0 then l:=Count;
   if l=0 then exit('');
   SetLength(Result,l);
