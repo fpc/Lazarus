@@ -51,6 +51,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     Align = alLeft
     ClientHeight = 456
     ClientWidth = 234
+    Constraints.MinWidth = 150
     TabOrder = 2
     object CategoryTree: TTreeView
       AnchorSideLeft.Control = FilterEdit
@@ -68,7 +69,6 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
-      Constraints.MinWidth = 206
       ReadOnly = True
       TabOrder = 0
       OnChange = CategoryTreeChange
@@ -79,15 +79,19 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     end
     object FilterEdit: TTreeFilterEdit
       AnchorSideLeft.Control = Panel1
+      AnchorSideRight.Side = asrBottom
       Left = 7
       Height = 25
       Top = 8
-      Width = 136
+      Width = 178
       OnFilterItem = FilterEditFilterItem
       ButtonWidth = 23
       NumGlyphs = 0
+      Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
+      Font.Color = clBtnShadow
       MaxLength = 0
+      ParentFont = False
       TabOrder = 1
       FilteredTreeview = CategoryTree
     end
