@@ -8,7 +8,7 @@ uses
   Classes, SysUtils; 
 
 resourcestring
-  ctsFileDoesNotExists = 'file "%s" does not exist';
+  ctsFileDoesNotExist = 'file "%s" does not exist';
   ctsFileIsNotExecutable = '%s is not executable';
 
 implementation

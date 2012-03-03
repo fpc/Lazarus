@@ -225,7 +225,7 @@ begin
   // TProcess does not report, if a program can not be executed
   // to get good error messages consider the OS
   if not FileExistsUTF8(AFilename) then begin
-    raise Exception.CreateFmt(ctsFileDoesNotExists,[AFilename]);
+    raise Exception.CreateFmt(ctsFileDoesNotExist,[AFilename]);
   end;
   {$IFNDEF Windows}
   if not(BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0) then

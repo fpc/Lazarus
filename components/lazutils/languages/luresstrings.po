@@ -1,7 +1,8 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
-#: luresstrings.ctsfiledoesnotexists
+#: luresstrings.ctsfiledoesnotexist
+msgctxt "luresstrings.ctsfiledoesnotexist"
 msgid "file \"%s\" does not exist"
 msgstr ""
 
