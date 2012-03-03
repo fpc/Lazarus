@@ -1,5 +1,7 @@
-inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
+object EditorColorOptionsFrame: TEditorColorOptionsFrame
+  Left = 0
   Height = 440
+  Top = 0
   Width = 640
   ClientHeight = 440
   ClientWidth = 640
@@ -7,7 +9,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
   Visible = False
   DesignLeft = 420
   DesignTop = 200
-  object pnlElementAttributes: TPanel[0]
+  object pnlElementAttributes: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = PnlTop2
     AnchorSideTop.Side = asrBottom
@@ -521,7 +523,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         Style = tbsCheck
       end
       object SetAttributeToDefaultButton: TToolButton
-        Left = 131
+        Left = 133
         Top = 0
         OnClick = SetAttributeToDefaultButtonClick
         ShowCaption = False
@@ -529,7 +531,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       object ToolButton3: TToolButton
         Left = 123
         Top = 0
-        Width = 8
+        Width = 10
         Caption = 'ToolButton3'
         Style = tbsSeparator
       end
@@ -553,7 +555,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       TabOrder = 12
     end
   end
-  object pnlTop: TPanel[1]
+  object pnlTop: TPanel
     Left = 0
     Height = 0
     Top = 25
@@ -571,7 +573,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     ShowHint = True
     TabOrder = 0
   end
-  object PnlTop2: TPanel[2]
+  object PnlTop2: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = pnlTop
     AnchorSideTop.Side = asrBottom
@@ -597,7 +599,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.Top = 6
       BorderSpacing.Right = 1
       Constraints.MinWidth = 150
-      DefaultItemHeight = 17
+      DefaultItemHeight = 18
       ReadOnly = True
       ScrollBars = ssAutoBoth
       ShowButtons = False
@@ -637,50 +639,24 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Gutter.Width = 59
       Gutter.MouseActions = <      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccAny
           ClickDir = cdDown
-          Command = 13
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcOnMainGutterClick
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbRight
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 12
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcContextMenu
         end>
       RightGutter.Width = 0
       RightGutter.MouseActions = <      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccAny
           ClickDir = cdDown
-          Command = 13
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcOnMainGutterClick
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbRight
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 12
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcContextMenu
         end>
       Keystrokes = <      
         item
@@ -1005,134 +981,91 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         end>
       MouseActions = <      
         item
-          Shift = []
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 1
+          Command = emcStartSelections
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
           Shift = [ssShift]
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 1
+          Command = emcStartSelections
           MoveCaret = True
           Option = 1
-          Priority = 0
         end      
         item
           Shift = [ssAlt]
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 3
+          Command = emcStartColumnSelections
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
           Shift = [ssShift, ssAlt]
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 3
+          Command = emcStartColumnSelections
           MoveCaret = True
           Option = 1
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbRight
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 12
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcContextMenu
         end      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccDouble
           ClickDir = cdDown
-          Command = 6
+          Command = emcSelectWord
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccTriple
           ClickDir = cdDown
-          Command = 7
+          Command = emcSelectLine
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccQuad
           ClickDir = cdDown
-          Command = 8
+          Command = emcSelectPara
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbMiddle
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 10
+          Command = emcPasteSelection
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
           Shift = [ssCtrl]
           ShiftMask = [ssShift, ssAlt, ssCtrl]
-          Button = mbLeft
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 11
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcMouseLink
         end>
       MouseSelActions = <      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 9
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcStartDragMove
         end>
       Lines.Strings = (
         'ColorPreview'
       )
+      VisibleSpecialChars = [vscSpace, vscTabAtLast]
       BracketHighlightStyle = sbhsBoth
+      BracketMatchColor.Background = clNone
+      BracketMatchColor.Foreground = clNone
+      BracketMatchColor.Style = [fsBold]
+      FoldedCodeColor.Background = clNone
+      FoldedCodeColor.Foreground = clGray
+      FoldedCodeColor.FrameColor = clGray
+      MouseLinkColor.Background = clNone
+      MouseLinkColor.Foreground = clBlue
+      LineHighlightColor.Background = clNone
+      LineHighlightColor.Foreground = clNone
       inline TSynGutterPartList
         object TSynGutterMarks
           Width = 24
+          MouseActions = <>
         end
         object TSynGutterLineNumber
           Width = 19
@@ -1146,35 +1079,26 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         end
         object TSynGutterChanges
           Width = 4
+          MouseActions = <>
           ModifiedColor = 59900
           SavedColor = clGreen
         end
         object TSynGutterSeparator
           Width = 2
+          MouseActions = <>
         end
         object TSynGutterCodeFolding
           MouseActions = <          
             item
-              Shift = []
-              ShiftMask = []
               Button = mbRight
-              ClickCount = ccSingle
-              ClickDir = cdUp
-              Command = 16
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldContextMenu
             end          
             item
-              Shift = []
               ShiftMask = [ssShift]
               Button = mbMiddle
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 14
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldCollaps
             end          
             item
               Shift = [ssShift]
@@ -1182,58 +1106,36 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
               Button = mbMiddle
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 14
-              MoveCaret = False
+              Command = emcCodeFoldCollaps
               Option = 1
-              Priority = 0
             end          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 0
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcNone
             end>
           MarkupInfo.Background = clNone
           MarkupInfo.Foreground = clGray
           MouseActionsExpanded = <          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 14
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldCollaps
             end>
           MouseActionsCollapsed = <          
             item
               Shift = [ssCtrl]
               ShiftMask = [ssCtrl]
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 15
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldExpand
             end          
             item
-              Shift = []
               ShiftMask = [ssCtrl]
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 15
-              MoveCaret = False
+              Command = emcCodeFoldExpand
               Option = 1
-              Priority = 0
             end>
         end
       end
@@ -1245,7 +1147,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Width = 5
     end
   end
-  object ToolBar: TToolBar[3]
+  object ToolBar: TToolBar
     Left = 0
     Height = 25
     Top = 0
@@ -1267,19 +1169,19 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     object ToolButton2: TToolButton
       Left = 24
       Top = 0
-      Width = 4
+      Width = 5
       Caption = 'ToolButton2'
       Style = tbsDivider
     end
     object LanguageButton: TToolButton
-      Left = 28
+      Left = 29
       Top = 0
       DropdownMenu = LanguageMenu
       OnClick = LanguageButtonClick
       Style = tbsDropDown
     end
     object ColorSchemeButton: TToolButton
-      Left = 63
+      Left = 64
       Top = 0
       DropdownMenu = ColorSchemeMenu
       OnClick = ColorSchemeButtonClick
@@ -1287,7 +1189,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     end
     object FileExtensionsComboBox: TComboBox
       AnchorSideTop.Side = asrBottom
-      Left = 98
+      Left = 99
       Height = 23
       Top = 0
       Width = 139
@@ -1304,37 +1206,37 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       TabOrder = 0
     end
     object ToolButton5: TToolButton
-      Left = 237
+      Left = 238
       Top = 0
-      Width = 4
+      Width = 5
       Caption = 'ToolButton5'
       Style = tbsDivider
     end
     object btnExport: TToolButton
-      Left = 241
+      Left = 243
       Top = 0
       OnClick = btnExportClick
       ShowCaption = False
     end
     object SetAllAttributesToDefaultButton: TToolButton
-      Left = 264
+      Left = 266
       Top = 0
       OnClick = SetAllAttributesToDefaultButtonClick
       ShowCaption = False
     end
   end
-  object ExportSaveDialog: TSaveDialog[4]
+  object ExportSaveDialog: TSaveDialog
     DefaultExt = '.xml'
     Filter = 'xml|*.xml'
     Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
     left = 568
     top = 56
   end
-  object LanguageMenu: TPopupMenu[5]
+  object LanguageMenu: TPopupMenu
     left = 568
     top = 104
   end
-  object ColorSchemeMenu: TPopupMenu[6]
+  object ColorSchemeMenu: TPopupMenu
     left = 568
     top = 160
   end
