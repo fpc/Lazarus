@@ -375,7 +375,6 @@ function TTreeFilterEdit.FilterTree(Node: TTreeNode): Boolean;
 // Filter all tree branches recursively, setting Node.Visible as needed.
 // Returns True if Node or its siblings or child nodes have visible items.
 var
-  ChildVisible: Boolean;
   Pass, Done: Boolean;
 begin
   Result:=False;
