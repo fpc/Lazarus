@@ -1,4 +1,4 @@
-{ Converter for wiki pages to fpdoc topics
+{ Converter for wiki pages to html pages
 
   Copyright (C) 2012  Mattias Gaertner  mattias@freepascal.org
 

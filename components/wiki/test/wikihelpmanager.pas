@@ -1,3 +1,23 @@
+{ Search engine for wiki pages
+
+  Copyright (C) 2012  Mattias Gaertner  mattias@freepascal.org
+
+  This source is free software; you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free
+  Software Foundation; either version 2 of the License, or (at your option)
+  any later version.
+
+  This code is distributed in the hope that it will be useful, but WITHOUT ANY
+  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details.
+
+  A copy of the GNU General Public License is available on the World Wide Web
+  at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing
+  to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+  MA 02111-1307, USA.
+
+}
 unit WikiHelpManager;
 
 {$mode objfpc}{$H+}
@@ -8,12 +28,22 @@ unit WikiHelpManager;
 interface
 
 uses
-  Classes, SysUtils, math, LazFileUtils, LazLogger, CodeToolsStructs,
-  BasicCodeTools, Wiki2HTMLConvert, Wiki2XHTMLConvert, WikiFormat, WikiParser,
-  MTProcs;
+  Classes, SysUtils, math, LazFileUtils, LazLogger, LazDbgLog, LazUTF8,
+  CodeToolsStructs, BasicCodeTools, KeywordFuncLists, Wiki2HTMLConvert,
+  Wiki2XHTMLConvert, WikiFormat, WikiParser, MTProcs;
 
 type
   TWikiHelp = class;
+
+  { TWikiHelpQuery }
+
+  TWikiHelpQuery = class
+  public
+    Phrases: TStrings;
+    LoPhrases: TStrings; // Phrases lowercase
+    constructor Create(const SearchText: string);
+    destructor Destroy; override;
+  end;
 
   TWHTextNodeType = (
     whnTxt,
@@ -38,10 +68,32 @@ type
     procedure Clear;
     procedure Add(Node: TWHTextNode);
     function Count: integer;
-    property ChildNodes[Index: integer]: TWHTextNode read GetChildNodes;
+    property ChildNodes[Index: integer]: TWHTextNode read GetChildNodes; default;
     property IndexInParent: integer read FIndexInParent;
     property Parent: TWHTextNode read FParent;
+    function CalcMemSize: SizeInt;
   end;
+
+  TWHFitsCategory = (
+    whfcPageTitle,
+    whfcHeader,
+    whfcText,
+    whfcLink
+    );
+  TWHFitsCategories = set of TWHFitsCategory;
+
+  TWHFitsStringFlag = (
+    whfsWordStart,
+    whfsWholeWord,
+    whfsWhole
+    );
+  TWHFitsStringFlags = set of TWHFitsStringFlag;
+
+  TWHFitsString = record
+    Flags: TWHFitsStringFlags;
+    Count: integer;
+  end;
+  PWHFitsString = ^TWHFitsString;
 
   { TW2HelpPage
     for future extensions and descendants }
@@ -51,6 +103,7 @@ type
     TextRoot: TWHTextNode;
     CurNode: TWHTextNode;
     destructor Destroy; override;
+    procedure Search(Query: TWikiHelpQuery);
   end;
 
   { TWiki2HelpConverter }
@@ -71,9 +124,10 @@ type
     constructor Create; override;
     procedure Clear; override;
     destructor Destroy; override;
+    procedure LoadPages;
     procedure ConvertInit; override;
     procedure ExtractAllTexts;
-    procedure LoadPages;
+    procedure Search(Query: TWikiHelpQuery);
     property Help: TWikiHelp read FHelp;
   end;
 
@@ -90,15 +144,6 @@ type
     procedure Scanned; // called in thread at end
   public
     Help: TWikiHelp;
-  end;
-
-  { TWikiHelpQuery }
-
-  TWikiHelpQuery = class
-  public
-    Phrases: TStrings;
-    constructor Create(const SearchText: string);
-    destructor Destroy; override;
   end;
 
   { TWikiHelp }
@@ -190,8 +235,13 @@ end;
 { TWikiHelpQuery }
 
 constructor TWikiHelpQuery.Create(const SearchText: string);
+var
+  i: Integer;
 begin
   Phrases:=SearchTextToPhrases(SearchText);
+  LoPhrases:=TStringList.Create;
+  for i:=0 to Phrases.Count-1 do
+    LoPhrases.Add(UTF8LowerCase(Phrases[i]));
 end;
 
 destructor TWikiHelpQuery.Destroy;
@@ -206,6 +256,15 @@ destructor TW2HelpPage.Destroy;
 begin
   FreeAndNil(TextRoot);
   inherited Destroy;
+end;
+
+procedure TW2HelpPage.Search(Query: TWikiHelpQuery);
+begin
+  // check title
+  //WikiPage.Title:=;
+
+  // check nodes
+
 end;
 
 { TWHTextNode }
@@ -275,6 +334,18 @@ begin
     Result:=FChildNodes.Count
   else
     Result:=0;
+end;
+
+function TWHTextNode.CalcMemSize: SizeInt;
+var
+  i: Integer;
+begin
+  Result:=InstanceSize+SizeInt(MemSizeString(Txt));
+  if FChildNodes<>nil then begin
+    inc(Result,FChildNodes.InstanceSize+FChildNodes.Count*SizeOf(Pointer));
+    for i:=0 to Count-1 do
+      inc(Result,ChildNodes[i].CalcMemSize);
+  end;
 end;
 
 { TWiki2HelpConverter }
@@ -429,6 +500,17 @@ begin
   ProcThreadPool.DoParallel(@ParallelExtractPageText,0,(Count-1) div PagesPerThread);
 end;
 
+procedure TWiki2HelpConverter.Search(Query: TWikiHelpQuery);
+var
+  i: Integer;
+  Page: TW2HelpPage;
+begin
+  for i:=0 to Count-1 do begin
+    Page:=TW2HelpPage(Pages[i]);
+    Page.Search(Query);
+  end;
+end;
+
 procedure TWiki2HelpConverter.LoadPages;
 begin
   ProcThreadPool.DoParallel(@ParallelLoadPage,0,(Count-1) div PagesPerThread);
@@ -480,7 +562,7 @@ begin
           repeat
             if CompareFileExt(FileInfo.Name,'.xml',false)<>0 then continue;
             {$IFDEF TestWikiSearch}
-            if FileInfo.Name[1]<>'L' then continue;
+            //if FileInfo.Name[1]<>'L' then continue;
             {$ENDIF}
             Files.Add(FileInfo.Name);
           until FindNextUTF8(FileInfo)<>0;
@@ -692,6 +774,7 @@ end;
 procedure TWikiHelp.TestSearch;
 begin
   debugln(['TWikiHelp.TestSearch ',Query.Phrases.Text]);
+  Converter.Search(Query);
 end;
 
 end.
