@@ -140,8 +140,11 @@ type
     function GetWidget: QWidgetH;
     function LCLKeyToQtKey(AKey: Word): Integer;
     function QtButtonsToLCLButtons(AButtons: QtMouseButton): PtrInt;
-    function QtKeyModifiersToKeyState(AModifiers: QtKeyboardModifiers): PtrInt;
-    function QtKeyToLCLKey(AKey: Integer; AText: WideString): Word;
+    function QtKeyModifiersToKeyState(AModifiers: QtKeyboardModifiers;
+      const AIsKeyEvent: Boolean;
+      AEvent: QKeyEventH = nil): PtrInt;
+    function QtKeyToLCLKey(AKey: Integer; AText: WideString;
+      AEvent: QKeyEventH): Word;
     procedure SetLastCaretPos(const AValue: TQtPoint);
     procedure SetProps(const AnIndex: String; const AValue: pointer);
     procedure SetStyleSheet(const AValue: WideString);
@@ -1792,7 +1795,11 @@ uses
   qtCaret,
   qtproc,
   qtprivate,
-  WSControls;
+  WSControls
+  {$IFDEF HASX11}
+  ,keysym
+  {$ENDIF}
+  ;
 
 const
   DblClickThreshold = 3;// max Movement between two clicks of a DblClick
@@ -2679,6 +2686,8 @@ var
   UTF8Text: String; // use to prevent 3 time convertion from WideString to utf8 string
   UTF8Char: TUTF8Char;
   ACharCode: Word;
+  AKeyCode: Word;
+  LCLModifiers: Word;
   {$IFDEF UNIX}
   ScanCode: LongWord;
   {$ENDIF}
@@ -2722,11 +2731,34 @@ begin
   // Detects special keys (shift, alt, control, etc)
   Modifiers := QKeyEvent_modifiers(QKeyEventH(Event));
   IsSysKey := (QtAltModifier and Modifiers) <> $0;
-  KeyMsg.KeyData := QtKeyModifiersToKeyState(Modifiers);
+
+  AKeyCode := QKeyEvent_nativeScanCode(QKeyEventH(Event));
+
+  LCLModifiers := QtKeyModifiersToKeyState(Modifiers, True, QKeyEventH(Event));
+
   if QKeyEvent_isAutoRepeat(QKeyEventH(Event)) then
-    KeyMsg.Unused := 1
-  else
-    KeyMsg.Unused := 0;
+    LCLModifiers := LCLModifiers or KF_REPEAT;
+
+  // if QKeyEvent_hasExtendedInfo(QKeyEventH(Event)) then
+  //  LCLModifiers := LCLModifiers or KF_EXTENDED;
+
+  if QEvent_type(Event) = QEventKeyRelease then
+    LCLModifiers := LCLModifiers or KF_UP;
+
+  KeyMsg.KeyData := (AKeyCode shl 16) or
+    (LCLModifiers shl 16) or $0001;
+
+  (*
+  writeln('Qt: KeyData  LO ',Lo(KeyMsg.KeyData),' HI ',Hi(KeyMsg.KeyData),' REPEATED ? ',
+    Hi(KeyMsg.KeyData) and KF_REPEAT = KF_REPEAT,' lenText ',Length(Text),
+    ' KEY ',QKeyEvent_key(QKeyEventH(Event)),
+    ' Modifiers ',QKeyEvent_modifiers(QKeyEventH(Event)),
+    ' NtModif ',QKeyEvent_nativeModifiers(QKeyEventH(Event)),
+    ' NativeScanCode ',QKeyEvent_nativeScanCode(QKeyEventH(Event)),
+    ' NTVIRTKEYS ',QKeyEvent_nativeVirtualKey(QKeyEventH(Event)));
+  *)
+
+
   {$ifdef windows}
     ACharCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
     KeyMsg.CharCode := ACharCode;
@@ -2904,7 +2936,7 @@ begin
   // Translates a Qt4 Key to a LCL VK_* key
   if KeyMsg.CharCode = 0 then
   begin
-    ACharCode := QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)), Text);
+    ACharCode := QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)), Text, QKeyEventH(Event));
     KeyMsg.CharCode := ACharCode;
   end;
 
@@ -3147,7 +3179,7 @@ begin
   OffsetMousePos(@MousePos);
 
   Modifiers := QInputEvent_modifiers(QInputEventH(Event));
-  Msg.Keys := QtKeyModifiersToKeyState(Modifiers);
+  Msg.Keys := QtKeyModifiersToKeyState(Modifiers, False, nil);
 
   Msg.XPos := SmallInt(MousePos.X);
   Msg.YPos := SmallInt(MousePos.Y);
@@ -3266,15 +3298,23 @@ begin
     Result := Result or MK_XBUTTON2;
 end;
 
-function TQtWidget.QtKeyModifiersToKeyState(AModifiers: QtKeyboardModifiers): PtrInt;
+function TQtWidget.QtKeyModifiersToKeyState(AModifiers: QtKeyboardModifiers;
+  const AIsKeyEvent: Boolean; AEvent: QKeyEventH = nil): PtrInt;
 begin
+// TODO: remove AIsKeyEvent later
   Result := 0;
-  if AModifiers and qtShiftModifier <> 0 then
+  if AModifiers and QtShiftModifier <> 0 then
     Result := Result or MK_SHIFT;
-  if AModifiers and qtControlModifier <> 0 then
+  if AModifiers and QtControlModifier <> 0 then
     Result := Result or MK_CONTROL;
-  if AModifiers and qtAltModifier <> 0 then
-    Result := Result or $20000000;
+  if AModifiers and QtAltModifier <> 0 then
+  begin
+    if AIsKeyEvent then
+      Result := Result or KF_ALTDOWN
+    else
+      Result := Result or $20000000;
+  end;
+    // $20000000;
   { TODO: add support for ALT, META and NUMKEYPAD }
 end;
 
@@ -3360,7 +3400,7 @@ begin
   Msg.YPos := SmallInt(MousePos.Y);
   
   Msg.Keys := QtButtonsToLCLButtons(QmouseEvent_Buttons(QMouseEventH(Event)))
-    or QtKeyModifiersToKeyState(QInputEvent_modifiers(QInputEventH(Event)));
+    or QtKeyModifiersToKeyState(QInputEvent_modifiers(QInputEventH(Event)), False, nil);
 
   Msg.Msg := LM_MOUSEMOVE;
 
@@ -3400,7 +3440,7 @@ begin
 
   Modifiers := QInputEvent_modifiers(QInputEventH(Event));
   Msg.State := [];
-  ModifierState := QtKeyModifiersToKeyState(Modifiers);
+  ModifierState := QtKeyModifiersToKeyState(Modifiers, False, nil);
   if (ModifierState and MK_SHIFT) <> 0 then
     Msg.State := [ssShift];
   if (ModifierState and MK_CONTROL) <> 0 then
@@ -4399,7 +4439,8 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtWidget.QtKeyToLCLKey(AKey: Integer; AText: WideString): Word;
+function TQtWidget.QtKeyToLCLKey(AKey: Integer; AText: WideString;
+  AEvent: QKeyEventH): Word;
 begin
   // The big problem here with unicode keys
   // Example: for Russian letter A qt returns AKey = $0410 and this is
@@ -4432,8 +4473,23 @@ begin
     QtKey_PageDown: Result := VK_NEXT;
     QtKey_Shift: Result := VK_SHIFT;     // There is also RSHIFT
     QtKey_Control: Result := VK_CONTROL; // There is also RCONTROL
-    QtKey_Meta: Result := VK_UNKNOWN; // ???
+    QtKey_Meta:
+    begin
+      //TODO: Qt sends meta key, but info about left & right is in nativeScanCode
+      {$IFDEF HASX11}
+      if QKeyEvent_nativeVirtualKey(AEvent) = XK_Super_L then
+        Result := VK_LWIN
+      else
+      if QKeyEvent_nativeVirtualKey(AEvent) = XK_Super_R then
+        Result := VK_RWIN
+      else
+        Result := VK_MENU;
+      {$ELSE}
+      Result := VK_LWIN;
+      {$ENDIF}
+    end;
     QtKey_Alt: Result := VK_MENU;
+    QtKey_AltGr: Result := VK_RMENU;
     QtKey_CapsLock: Result := VK_CAPITAL;
     QtKey_NumLock: Result := VK_NUMLOCK;
     QtKey_ScrollLock: Result := VK_SCROLL;
