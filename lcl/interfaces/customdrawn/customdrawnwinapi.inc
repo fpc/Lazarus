@@ -4085,6 +4085,7 @@ end;
 function TCDWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: Types.TSize): Boolean;
 var
   LazDC: TLazCanvas absolute DC;
+  ftFont: TFreeTypeFont;
 begin
   {$ifdef VerboseCDWinAPI}
     DebugLn('[WinAPI GetTextExtentPoint]');
@@ -4094,8 +4095,9 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
-  Size.cx := 0;
-  Size.cy := 0;
+  ftFont := TFreeTypeFont(LazDC.ExtraFontData);
+  Size.cx := Round(ftFont.TextWidth(Str));
+  Size.cy := LazDC.AssignedFont.Size;
 
   Result := True;
 end;
