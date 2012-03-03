@@ -199,6 +199,8 @@ function SearchNextInText(Search: PChar; SearchLen: PtrInt;
     StartPos: PtrInt;// 0 based
     out MatchStart, MatchEnd: PtrInt;// 0 based
     WholeWords: boolean = false; MultiLine: boolean = false): boolean;
+procedure HasTxtWord(SearchWord, Txt: PChar; out WholeWord: boolean;
+  out Count: SizeInt);
 
 // misc
 function SubString(p: PChar; Count: SizeInt): string; overload;
@@ -5000,6 +5002,46 @@ begin
     end;
     inc(CurPos);
   end;
+end;
+
+procedure HasTxtWord(SearchWord, Txt: PChar; out WholeWord: boolean; out
+  Count: SizeInt);
+var
+  StartChar: Char;
+  CurSearchP: PChar;
+  CurTxtP: PChar;
+  TxtRun: PChar;
+begin
+  WholeWord:=false;
+  Count:=0;
+  if (SearchWord=nil) or (SearchWord^=#0) then exit;
+  if (Txt=nil) or (Txt^=#0) then exit;
+  TxtRun:=Txt;
+  StartChar:=SearchWord^;
+  repeat
+    while (TxtRun^<>StartChar) and (TxtRun^<>#0) do inc(TxtRun);
+    if TxtRun^=#0 then exit;
+    CurSearchP:=SearchWord+1;
+    CurTxtP:=TxtRun+1;
+    while (CurTxtP^=CurSearchP^) and (CurTxtP^<>#0) do begin
+      inc(CurTxtP);
+      inc(CurSearchP);
+    end;
+    if CurSearchP^=#0 then begin
+      // word found
+      if ((TxtRun=Txt) or IsNonWordChar[TxtRun[-1]])
+      and IsNonWordChar[CurTxtP^] then begin
+        // word boundaries
+        if not WholeWord then begin
+          WholeWord:=true;
+          Count:=1;
+        end else
+          inc(Count);
+      end else
+        inc(Count);
+    end;
+    inc(TxtRun);
+  until false;
 end;
 
 function SubString(p: PChar; Count: SizeInt): string;
