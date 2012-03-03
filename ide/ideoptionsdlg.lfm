@@ -18,8 +18,8 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     Left = 6
-    Height = 38
-    Top = 456
+    Height = 34
+    Top = 460
     Width = 688
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -39,17 +39,18 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
   end
   object CatTVSplitter: TSplitter[1]
     Left = 234
-    Height = 456
+    Height = 460
     Top = 0
     Width = 5
   end
   object Panel1: TPanel[2]
     Left = 0
-    Height = 456
+    Height = 460
     Top = 0
     Width = 234
     Align = alLeft
-    ClientHeight = 456
+    BevelOuter = bvNone
+    ClientHeight = 460
     ClientWidth = 234
     Constraints.MinWidth = 150
     TabOrder = 2
@@ -61,14 +62,15 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = Panel1
       AnchorSideBottom.Side = asrBottom
-      Left = 7
-      Height = 410
-      Top = 39
-      Width = 220
+      Left = 6
+      Height = 417
+      Top = 37
+      Width = 222
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
+      DefaultItemHeight = 18
       ReadOnly = True
       TabOrder = 0
       OnChange = CategoryTreeChange
@@ -80,10 +82,10 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     object FilterEdit: TTreeFilterEdit
       AnchorSideLeft.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      Left = 7
-      Height = 25
+      Left = 6
+      Height = 23
       Top = 8
-      Width = 178
+      Width = 179
       OnFilterItem = FilterEditFilterItem
       ButtonWidth = 23
       NumGlyphs = 0
