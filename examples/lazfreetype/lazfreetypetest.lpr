@@ -1,4 +1,4 @@
-program lazfreetype;
+program lazfreetypetest;
 
 {$mode objfpc}{$H+}
 

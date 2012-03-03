@@ -5,7 +5,7 @@
     <PathDelim Value="\"/>
     <General>
       <MainUnit Value="0"/>
-      <Title Value="lazfreetype"/>
+      <Title Value="lazfreetypetest"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
@@ -37,9 +37,9 @@
     </RequiredPackages>
     <Units Count="97">
       <Unit0>
-        <Filename Value="lazfreetype.lpr"/>
+        <Filename Value="lazfreetypetest.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="lazfreetype"/>
+        <UnitName Value="lazfreetypetest"/>
         <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
@@ -834,7 +834,7 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="lazfreetype"/>
+      <Filename Value="lazfreetypetest"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>

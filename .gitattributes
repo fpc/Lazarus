@@ -3876,10 +3876,10 @@ examples/jpeg/lazarus.jpg -text svneol=unset#image/jpeg
 examples/jpeg/mainform.lfm svneol=native#text/plain
 examples/jpeg/mainform.lrs svneol=native#text/pascal
 examples/jpeg/mainform.pas svneol=native#text/pascal
-examples/lazfreetype/lazfreetype.ico -text
-examples/lazfreetype/lazfreetype.lpi svneol=native#text/plain
-examples/lazfreetype/lazfreetype.lpr svneol=native#text/plain
-examples/lazfreetype/lazfreetype.res -text
+examples/lazfreetype/lazfreetypetest.ico -text
+examples/lazfreetype/lazfreetypetest.lpi svneol=native#text/plain
+examples/lazfreetype/lazfreetypetest.lpr svneol=native#text/plain
+examples/lazfreetype/lazfreetypetest.res -text
 examples/lazfreetype/mainform.lfm svneol=native#text/plain
 examples/lazfreetype/mainform.pas svneol=native#text/plain
 examples/lazintfimage/fadein1.lpi svneol=native#text/plain
