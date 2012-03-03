@@ -2175,6 +2175,8 @@ var
   FTDrawer: TIntfFreeTypeDrawer;
   ftFont: TFreeTypeFont;
   RealX, RealY: Integer;
+  FreeFTFont: Boolean = false;
+  lLogFont: TLogFont;
 begin
   {$ifdef VerboseCDText}
     DebugLn(Format(':>[WinAPI ExtTextOut] DC=%x Str=%s X=%d Y=%d',
@@ -2200,11 +2202,21 @@ begin
 
   FTDrawer := TIntfFreeTypeDrawer.Create(lDestIntfImage);
   ftFont := TFreeTypeFont(lDestCanvas.ExtraFontData);
+  if ftFont = nil then
+  begin
+    ftFont := TFreeTypeFont.Create;
+    ftFont.Name := BackendGetFontPath(lLogFont, '');
+    ftFont.Hinted := true;
+    ftFont.ClearType := true;
+    ftFont.Quality := grqHighQuality;
+    FreeFTFont := True;
+  end;
   try
     RealX := X + lDestCanvas.WindowOrg.X + lDestCanvas.BaseWindowOrg.X;
     RealY := Y + lDestCanvas.WindowOrg.Y + lDestCanvas.BaseWindowOrg.Y + lFontSize;
     FTDrawer.DrawText(Str, ftFont, RealX, RealY, colBlack, 255);
   finally
+    if FreeFTFont then ftFont.Free;
     FTDrawer.Free;
   end;
 
