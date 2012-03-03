@@ -2730,6 +2730,16 @@ begin
 
   // Detects special keys (shift, alt, control, etc)
   Modifiers := QKeyEvent_modifiers(QKeyEventH(Event));
+  {$IFDEF HASX11}
+  //qt reports WRONG combination under X11 sometimes when Shift + LeftAlt
+  //are pressed, so we must fix modifiers, ssMeta will be reported in keys.
+  if (QtShiftModifier and Modifiers <> 0) and (QtMetaModifier and Modifiers <> 0) then
+  begin
+    if (QtAltModifier and Modifiers = 0) and
+      (QKeyEvent_nativeVirtualKey(QKeyEventH(Event)) = XK_Meta_L) then
+        Modifiers := (Modifiers and not QtMetaModifier) or QtAltModifier;
+  end;
+  {$ENDIF}
   IsSysKey := (QtAltModifier and Modifiers) <> $0;
 
   AKeyCode := QKeyEvent_nativeScanCode(QKeyEventH(Event));
@@ -2738,9 +2748,6 @@ begin
 
   if QKeyEvent_isAutoRepeat(QKeyEventH(Event)) then
     LCLModifiers := LCLModifiers or KF_REPEAT;
-
-  // if QKeyEvent_hasExtendedInfo(QKeyEventH(Event)) then
-  //  LCLModifiers := LCLModifiers or KF_EXTENDED;
 
   if QEvent_type(Event) = QEventKeyRelease then
     LCLModifiers := LCLModifiers or KF_UP;
@@ -2756,7 +2763,8 @@ begin
     ' NtModif ',QKeyEvent_nativeModifiers(QKeyEventH(Event)),
     ' NativeScanCode ',QKeyEvent_nativeScanCode(QKeyEventH(Event)),
     ' NTVIRTKEYS ',QKeyEvent_nativeVirtualKey(QKeyEventH(Event)));
-  *)
+    *)
+
 
 
   {$ifdef windows}
