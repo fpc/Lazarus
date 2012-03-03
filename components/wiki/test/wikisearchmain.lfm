@@ -15,9 +15,9 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
     AnchorSideTop.Control = SearchEdit
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 18
-    Top = 10
-    Width = 84
+    Height = 15
+    Top = 11
+    Width = 69
     BorderSpacing.Around = 6
     Caption = 'SearchLabel'
     ParentColor = False
@@ -28,12 +28,13 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 96
-    Height = 27
+    Left = 81
+    Height = 24
     Top = 6
-    Width = 561
+    Width = 576
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
+    OnChange = SearchEditChange
     TabOrder = 0
     Text = 'SearchEdit'
   end
@@ -41,19 +42,19 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
     AnchorSideTop.Control = SearchEdit
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 287
-    Top = 39
+    Height = 290
+    Top = 36
     Width = 651
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'ResultsGroupBox'
-    ClientHeight = 268
+    ClientHeight = 274
     ClientWidth = 647
     TabOrder = 1
     object ResultsIpHtmlPanel: TIpHtmlPanel
       Left = 0
-      Height = 268
+      Height = 274
       Top = 0
       Width = 647
       Align = alClient
@@ -76,12 +77,12 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
     Align = alBottom
     BorderSpacing.Around = 6
     Caption = 'PageGroupBox'
-    ClientHeight = 133
+    ClientHeight = 136
     ClientWidth = 647
     TabOrder = 2
     object PageIpHtmlPanel: TIpHtmlPanel
       Left = 0
-      Height = 133
+      Height = 136
       Top = 0
       Width = 647
       Align = alClient

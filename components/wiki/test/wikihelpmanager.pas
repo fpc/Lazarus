@@ -3,12 +3,14 @@ unit WikiHelpManager;
 {$mode objfpc}{$H+}
 
 { $DEFINE VerboseWikiHelp}
+{$DEFINE TestWikiSearch}
 
 interface
 
 uses
   Classes, SysUtils, math, LazFileUtils, LazLogger, CodeToolsStructs,
-  Wiki2HTMLConvert, Wiki2XHTMLConvert, WikiFormat, WikiParser, MTProcs;
+  BasicCodeTools, Wiki2HTMLConvert, Wiki2XHTMLConvert, WikiFormat, WikiParser,
+  MTProcs;
 
 type
   TWikiHelp = class;
@@ -54,6 +56,8 @@ type
   { TWiki2HelpConverter }
 
   TWiki2HelpConverter = class(TWiki2HTMLConverter)
+  private
+    FHelp: TWikiHelp;
   protected
     PagesPerThread: integer;
     AvailableImages: TFilenameToStringTree; // existing files in the ImagesDirectory
@@ -70,6 +74,7 @@ type
     procedure ConvertInit; override;
     procedure ExtractAllTexts;
     procedure LoadPages;
+    property Help: TWikiHelp read FHelp;
   end;
 
   { TWikiHelpThread }
@@ -77,46 +82,123 @@ type
   TWikiHelpThread = class(TThread)
   protected
     fLogMsg: string;
+    fCompleted: boolean;
     procedure Execute; override;
     procedure MainThreadLog;
     procedure Log({%H-}Msg: string);
     procedure ConverterLog({%H-}Msg: string);
-    procedure OnScanComplete; // called in thread at end
+    procedure Scanned; // called in thread at end
   public
     Help: TWikiHelp;
+  end;
+
+  { TWikiHelpQuery }
+
+  TWikiHelpQuery = class
+  public
+    Phrases: TStrings;
+    constructor Create(const SearchText: string);
+    destructor Destroy; override;
   end;
 
   { TWikiHelp }
 
   TWikiHelp = class(TComponent)
   private
-    FAborting: boolean;
+    FAbortingLoad: boolean;
     FConverter: TWiki2HelpConverter;
-    FScanning: boolean;
+    FOnScanned: TNotifyEvent;
+    FQuery: TWikiHelpQuery;
+    FLoadComplete: boolean;
+    FLoading: boolean;
     FXMLDirectory: string;
     FCritSec: TRTLCriticalSection;
     FScanThread: TWikiHelpThread;
     function GetImagesDirectory: string;
     procedure SetImagesDirectory(AValue: string);
+    procedure SetQuery(AValue: TWikiHelpQuery);
     procedure SetXMLDirectory(AValue: string);
     procedure EnterCritSect;
     procedure LeaveCritSect;
+    procedure Scanned;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure StartScan;
-    procedure Abort;
-    property Scanning: boolean read FScanning;
-    property Aborting: boolean read FAborting;
+
+    // load wiki files
+    procedure StartLoading; // returns immediately
+    property Loading: boolean read FLoading;
+    procedure AbortLoading(Wait: boolean);
+    property AbortingLoad: boolean read FAbortingLoad;
+    property LoadComplete: boolean read FLoadComplete;
+
+    // search
+    procedure Search(const Term: string);
+    procedure Search(aQuery: TWikiHelpQuery);
+    procedure TestSearch;
+    property Query: TWikiHelpQuery read FQuery;
+  public
     property XMLDirectory: string read FXMLDirectory write SetXMLDirectory; // directory where the wiki xml files are
     property ImagesDirectory: string read GetImagesDirectory write SetImagesDirectory; // directory where the wiki image files are
     property Converter: TWiki2HelpConverter read FConverter;
+    property OnScanned: TNotifyEvent read FOnScanned write FOnScanned;
   end;
 
 var
   WikiHelp: TWikiHelp = nil;
 
+function SearchTextToPhrases(const Txt: string): TStringList;
+
 implementation
+
+function SearchTextToPhrases(const Txt: string): TStringList;
+var
+  p: PChar;
+  StartPos: PChar;
+  Phrase: String;
+begin
+  Result:=TStringList.Create;
+  if Txt='' then exit;
+  p:=PChar(Txt);
+  Phrase:='';
+  while p^<>#0 do begin
+    if p^='"' then begin
+      // quote
+      inc(p);
+      StartPos:=p;
+      while not (p^ in [#0,'"']) do inc(p);
+      Phrase:=Phrase+SubString(StartPos,p-StartPos);
+      if p^<>#0 then inc(p);
+    end else if p^ in [' ',#9,#10,#13] then begin
+      // space => end phrase
+      inc(p);
+      if Phrase<>'' then begin
+        Result.Add(Phrase);
+        Phrase:='';
+      end;
+    end else begin
+      // word
+      StartPos:=p;
+      while not (p^ in [#0,'"',' ',#9,#10,#13]) do inc(p);
+      Phrase:=Phrase+SubString(StartPos,p-StartPos);
+    end;
+  end;
+  if Phrase<>'' then
+    Result.Add(Phrase);
+end;
+
+{ TWikiHelpQuery }
+
+constructor TWikiHelpQuery.Create(const SearchText: string);
+begin
+  Phrases:=SearchTextToPhrases(SearchText);
+end;
+
+destructor TWikiHelpQuery.Destroy;
+begin
+  FreeAndNil(Phrases);
+  inherited Destroy;
+end;
 
 { TW2HelpPage }
 
@@ -282,6 +364,7 @@ var
 begin
   StartIndex:=Index*PagesPerThread;
   EndIndex:=Min(StartIndex+PagesPerThread-1,Count-1);
+  if Help.AbortingLoad then exit;
   for i:=StartIndex to EndIndex do
     ExtractPageText(TW2HelpPage(Pages[i]));
 end;
@@ -297,6 +380,7 @@ begin
   StartIndex:=Index*PagesPerThread;
   EndIndex:=Min(StartIndex+PagesPerThread-1,Count-1);
   for i:=StartIndex to EndIndex do begin
+    if Help.AbortingLoad then exit;
     Page:=TW2HelpPage(Pages[i]);
     try
       Page.ParseWikiDoc(false);
@@ -394,28 +478,33 @@ begin
         // get all wiki xml files
         if FindFirstUTF8(Help.XMLDirectory+AllFilesMask,faAnyFile,FileInfo)=0 then begin
           repeat
-            if CompareFileExt(FileInfo.Name,'.xml',false)=0 then
-              Files.Add(FileInfo.Name);
+            if CompareFileExt(FileInfo.Name,'.xml',false)<>0 then continue;
+            {$IFDEF TestWikiSearch}
+            if FileInfo.Name[1]<>'L' then continue;
+            {$ENDIF}
+            Files.Add(FileInfo.Name);
           until FindNextUTF8(FileInfo)<>0;
         end;
         FindCloseUTF8(FileInfo);
-        if Help.Aborting then exit;
 
         // add file names to converter
         for i:=0 to Files.Count-1 do begin
           Filename:=Help.XMLDirectory+Files[i];
           Help.Converter.AddWikiPage(Filename,false);
         end;
-        if Help.Aborting then exit;
+        if Help.AbortingLoad then exit;
 
         // load xml files
         Help.Converter.LoadPages;
-        if Help.Aborting then exit;
+        if Help.AbortingLoad then exit;
 
         // extract texts
         Help.Converter.ConvertInit;
+        if Help.AbortingLoad then exit;
         Help.Converter.ExtractAllTexts;
+        if Help.AbortingLoad then exit;
 
+        fCompleted:=true;
         EndTime:=Now;
         Log('TWikiHelpThread.Execute SCAN complete XMLDirectory="'+Help.XMLDirectory+'" '+dbgs(round(Abs(EndTime-StartTime)*86400000))+'msec');
       finally
@@ -427,8 +516,8 @@ begin
         Log('TWikiHelpThread.Execute error: '+E.Message);
       end;
     end;
-    Synchronize(@OnScanComplete);
   finally
+    Scanned;
     CurrentThread:=nil;
   end;
 end;
@@ -452,16 +541,19 @@ begin
   {$ENDIF}
 end;
 
-procedure TWikiHelpThread.OnScanComplete;
+procedure TWikiHelpThread.Scanned;
 // called in this thread
 begin
   Help.EnterCritSect;
   try
     Help.FScanThread:=nil;
-    Help.FScanning:=false;
+    Help.FLoading:=false;
+    Help.FLoadComplete:=fCompleted;
+    Help.FAbortingLoad:=false;
   finally
     Help.LeaveCritSect;
   end;
+  Synchronize(@Help.Scanned);
 end;
 
 { TWikiHelp }
@@ -472,7 +564,14 @@ var
 begin
   NewDir:=TrimAndExpandDirectory(TrimFilename(AValue));
   if Converter.ImagesDir=NewDir then Exit;
+  AbortLoading(true);
   Converter.ImagesDir:=NewDir;
+end;
+
+procedure TWikiHelp.SetQuery(AValue: TWikiHelpQuery);
+begin
+  if FQuery=AValue then Exit;
+  FQuery:=AValue;
 end;
 
 function TWikiHelp.GetImagesDirectory: string;
@@ -486,6 +585,7 @@ var
 begin
   NewDir:=TrimAndExpandDirectory(TrimFilename(AValue));
   if FXMLDirectory=NewDir then Exit;
+  AbortLoading(true);
   FXMLDirectory:=NewDir;
 end;
 
@@ -499,24 +599,36 @@ begin
   LeaveCriticalsection(FCritSec);
 end;
 
+procedure TWikiHelp.Scanned;
+begin
+  if Assigned(OnScanned) then
+    OnScanned(Self);
+
+  {$IFDEF TestWikiSearch}
+  Search('documentation');
+  {$ENDIF}
+end;
+
 constructor TWikiHelp.Create(AOwner: TComponent);
 begin
   InitCriticalSection(FCritSec);
   inherited Create(AOwner);
   FConverter:=TWiki2HelpConverter.Create;
   FConverter.LanguageTags:=WikiCreateCommonLanguageList(true);
+  FConverter.FHelp:=Self;
 end;
 
 destructor TWikiHelp.Destroy;
 begin
-  Abort;
+  AbortLoading(true);
   FConverter.LanguageTags.Free;
   FreeAndNil(FConverter);
+  FreeAndNil(FQuery);
   inherited Destroy;
   DoneCriticalsection(FCritSec);
 end;
 
-procedure TWikiHelp.StartScan;
+procedure TWikiHelp.StartLoading;
 begin
   if not DirPathExists(XMLDirectory) then
     raise Exception.Create('TWikiHelp.StartScan XMLDirectory not found: '+XMLDirectory);
@@ -524,8 +636,9 @@ begin
     raise Exception.Create('TWikiHelp.StartScan ImagesDirectory not found: '+ImagesDirectory);
   EnterCritSect;
   try
-    if Scanning then exit;
-    FScanning:=true;
+    if Loading then exit;
+    FLoading:=true;
+    FLoadComplete:=false;
     FScanThread:=TWikiHelpThread.Create(true);
     FScanThread.FreeOnTerminate:=true;
     FScanThread.Help:=Self;
@@ -539,12 +652,46 @@ begin
   end;
 end;
 
-procedure TWikiHelp.Abort;
+procedure TWikiHelp.AbortLoading(Wait: boolean);
 begin
-  FAborting:=true;
-  while Scanning do
+  EnterCritSect;
+  try
+    if not Loading then exit;
+    FAbortingLoad:=true;
+  finally
+    LeaveCritSect;
+  end;
+  if not Wait then exit;
+  while Loading do
     Sleep(10);
-  FAborting:=false;
+  EnterCritSect;
+  try
+    FAbortingLoad:=false;
+  finally
+    LeaveCritSect;
+  end;
+end;
+
+procedure TWikiHelp.Search(const Term: string);
+begin
+  Search(TWikiHelpQuery.Create(Term));
+end;
+
+procedure TWikiHelp.Search(aQuery: TWikiHelpQuery);
+begin
+  EnterCritSect;
+  try
+    FreeAndNil(FQuery);
+    FQuery:=aQuery;
+  finally
+    LeaveCritSect;
+  end;
+  TestSearch;
+end;
+
+procedure TWikiHelp.TestSearch;
+begin
+  debugln(['TWikiHelp.TestSearch ',Query.Phrases.Text]);
 end;
 
 end.

@@ -22,7 +22,9 @@ type
     Splitter1: TSplitter;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure SearchEditChange(Sender: TObject);
   private
+    procedure SearchParamsChanged;
   public
   end;
 
@@ -49,12 +51,22 @@ begin
   WikiHelp.Converter.OutputDir:='';
   WikiHelp.Converter.CSSFilename:='wiki.css';
 
-  WikiHelp.StartScan;
+  WikiHelp.StartLoading;
 end;
 
 procedure TWikiSearchDemoForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(WikiHelp);
+end;
+
+procedure TWikiSearchDemoForm.SearchEditChange(Sender: TObject);
+begin
+  SearchParamsChanged;
+end;
+
+procedure TWikiSearchDemoForm.SearchParamsChanged;
+begin
+
 end;
 
 end.
