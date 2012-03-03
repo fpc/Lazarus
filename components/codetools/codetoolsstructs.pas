@@ -636,10 +636,10 @@ begin
   FCaseSensitive:=TheCaseSensitive;
   if CaseSensitive then begin
     FCompareKeyItemFunc:=@CompareStringAndStringToStringTreeItem;
-    FTree:=TAVLTree.Create(@CompareStringToStringItems);
+    FTree:=TMTAVLTree.Create(@CompareStringToStringItems);
   end else begin
     FCompareKeyItemFunc:=@CompareStringAndStringToStringTreeItemI;
-    FTree:=TAVLTree.Create(@CompareStringToStringItemsI);
+    FTree:=TMTAVLTree.Create(@CompareStringToStringItemsI);
   end;
 end;
 

@@ -200,6 +200,8 @@ function SearchNextInText(Search: PChar; SearchLen: PtrInt;
     out MatchStart, MatchEnd: PtrInt;// 0 based
     WholeWords: boolean = false; MultiLine: boolean = false): boolean;
 
+// misc
+function SubString(p: PChar; Count: SizeInt): string; overload;
 
 // files
 type
@@ -4998,6 +5000,18 @@ begin
     end;
     inc(CurPos);
   end;
+end;
+
+function SubString(p: PChar; Count: SizeInt): string;
+var
+  l: SizeInt;
+begin
+  if (p=nil) or (Count=0) then exit('');
+  l:=IndexByte(p,Count,0);
+  if l<0 then l:=Count;
+  if l=0 then exit('');
+  SetLength(Result,l);
+  System.Move(p^,Result[1],l);
 end;
 
 function GatherUnitFiles(const BaseDir, SearchPath,
