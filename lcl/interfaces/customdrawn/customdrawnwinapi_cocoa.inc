@@ -156,9 +156,16 @@ begin
   if LogFont.lfStrikeOut>0 then Include(cf.Style, cfs_Strikeout);
   cf.Antialiased:=logFont.lfQuality>=ANTIALIASED_QUALITY;
   Result:=HFONT(cf);
-end;
+end;*)
 
-function Create32BitAlphaBitmap(ABitmap, AMask: TCocoaBitmap): TCocoaBitmap;
+{$ifndef CD_UseNativeText}
+function TCDWidgetSet.BackendGetFontPath(const LogFont: TLogFont; const LongFontName: string): string;
+begin
+  Result := '/Library/Fonts/Arial.ttf';
+end;
+{$endif}
+
+(*function Create32BitAlphaBitmap(ABitmap, AMask: TCocoaBitmap): TCocoaBitmap;
 var
   ARawImage: TRawImage;
   Desc: TRawImageDescription absolute ARawimage.Description;
@@ -383,11 +390,6 @@ begin
   // Now blend it into our DC
   lazdc := TLazCanvas(DC);
   lazdc.AlphaBlend(ScreenDC, X, Y, 0, 0, ScreenBitmapWidth, ScreenBitmapHeight);
-end;
-{$else}
-function TCDWidgetSet.BackendGetFontPath(DC: HDC): string;
-begin
-  Result := '/Library/Fonts/Arial.ttf';
 end;
 {$endif}
 

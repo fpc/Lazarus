@@ -628,9 +628,16 @@ begin
       Result := HCURSOR(TQtCursor.Create(APixmap, IconInfo^.xHotspot, IconInfo^.yHotspot));
     QPixmap_destroy(APixmap);
   end;
-end;
+end;*)
 
-{------------------------------------------------------------------------------
+{$ifndef CD_UseNativeText}
+function TCDWidgetSet.BackendGetFontPath(const LogFont: TLogFont; const LongFontName: string): string;
+begin
+  Result := '/Library/Fonts/Arial.ttf';
+end;
+{$endif}
+
+(*{------------------------------------------------------------------------------
   Function:  CreatePatternBrush
   Params:  HBITMAP
   Returns: HBRUSH
@@ -2083,11 +2090,6 @@ begin
   end;
 
   Result := True;   }
-end;
-{$else}
-function TCDWidgetSet.BackendGetFontPath(DC: HDC): string;
-begin
-  Result := '/Library/Fonts/Arial.ttf';
 end;
 {$endif}
 

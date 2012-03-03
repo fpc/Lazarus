@@ -63,6 +63,9 @@ function CreateCompatibleDC(DC: HDC): HDC; override;
 //function CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
+{$ifndef CD_UseNativeText}
+function BackendGetFontPath(const LogFont: TLogFont; const LongFontName: string): string;
+{$endif}
 function CreateIconIndirect(IconInfo: PIconInfo): HICON; override;
 //function CreatePatternBrush(ABitmap: HBITMAP): HBRUSH; override;
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
@@ -91,9 +94,6 @@ function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExPr
 function ExtCreatePen(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN; override;
 function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  override;*)
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
-{$ifndef CD_UseNativeText}
-function BackendGetFontPath(DC: HDC): string;
-{$endif}
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
 //function FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool; override;

@@ -40,8 +40,10 @@ uses
   {$ifdef WinCE}aygshell,{$endif}
   // Widgetset
   customdrawnproc,
+  {$ifndef CD_UseNativeText}
   // LazFreeType
   LazFreeTypeIntfDrawer, LazFreeType, EasyLazFreeType,
+  {$endif}
   // LCL
   customdrawn_common, customdrawncontrols, customdrawndrawers,
   lazcanvas, lazregions, lazdeviceapis,
@@ -83,6 +85,17 @@ type
     function applicationShouldTerminate(sender: NSApplication): NSApplicationTerminateReply; message 'applicationShouldTerminate:';
   end;
   {$endif}
+
+  { TLazCDCustomFont }
+
+  TLazCDCustomFont = class(TFPCustomFont)
+  public
+    {$ifndef CD_UseNativeText}
+    FTFont: TFreeTypeFont;
+    {$endif}
+    constructor Create; override;
+    destructor Destroy; override;
+  end;
 
   { TCDWidgetSet }
 
@@ -382,6 +395,25 @@ const
   {$ifdef CD_Cocoa}
 const
   CDBackendNativeHandle = nhtCocoaNSWindow;
+
+{ TLazCDCustomFont }
+
+constructor TLazCDCustomFont.Create;
+begin
+  inherited Create;
+  {$ifndef CD_UseNativeText}
+  FTFont := TFreeTypeFont.Create;
+  {$endif}
+end;
+
+destructor TLazCDCustomFont.Destroy;
+begin
+  {$ifndef CD_UseNativeText}
+  FTFont.Free;
+  {$endif}
+  inherited Destroy;
+end;
+
   {$define CD_HasNativeFormHandle}
   {$endif}
 

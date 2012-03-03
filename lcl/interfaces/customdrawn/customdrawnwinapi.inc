@@ -538,7 +538,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT;
 var
-  lFont: TFPCustomFont;
+  lFont: TLazCDCustomFont;
 //  FamilyName: string;
 begin
   {$ifdef VerboseCDDrawing}
@@ -546,8 +546,15 @@ begin
       [LongFontName, LogFont.lfHeight]));
   {$endif}
 
-  lFont := TFPCustomFont.Create;
+  lFont := TLazCDCustomFont.Create;
   Result := HFONT(lFont);
+
+  {$ifndef CD_UseNativeText}
+  lFont.ftFont.Name := BackendGetFontPath(LogFont, LongFontName);
+  lFont.ftFont.Hinted := true;
+  lFont.ftFont.ClearType := true;
+  lFont.ftFont.Quality := grqHighQuality;
+  {$endif}
 
 (*const
   QStyleStategy: array [DEFAULT_QUALITY..CLEARTYPE_NATURAL_QUALITY] of QFontStyleStrategy = (
@@ -2192,17 +2199,12 @@ begin
   // Preparations finished, draw it using LazFreeType
 
   FTDrawer := TIntfFreeTypeDrawer.Create(lDestIntfImage);
-  ftFont := TFreeTypeFont.Create; //only one font at once for now...
+  ftFont := TFreeTypeFont(lDestCanvas.ExtraFontData);
   try
-    ftFont.Name := BackendGetFontPath(DC);
-    ftFont.Hinted := true;
-    ftFont.ClearType := true;
-    ftFont.Quality := grqHighQuality;
     RealX := X + lDestCanvas.WindowOrg.X + lDestCanvas.BaseWindowOrg.X;
-    RealY := Y + lDestCanvas.WindowOrg.Y + lDestCanvas.BaseWindowOrg.Y;
+    RealY := Y + lDestCanvas.WindowOrg.Y + lDestCanvas.BaseWindowOrg.Y + lFontSize;
     FTDrawer.DrawText(Str, ftFont, RealX, RealY, colBlack, 255);
   finally
-    ftFont.Free;
     FTDrawer.Free;
   end;
 
@@ -5308,6 +5310,9 @@ begin
     Result := HGDIOBJ(TLazCanvas(DC).AssignedFont);
     TLazCanvas(DC).AssignFontData(lFont); // := doesn't work and Assign() raises exceptions
     TLazCanvas(DC).AssignedFont := lFont;
+    {$ifndef CD_UseNativeText}
+    TLazCanvas(DC).ExtraFontData := TLazCDCustomFont(lFont).FTFont;
+    {$endif}
   end
   else if aObject is TFPCustomPen then
   begin
