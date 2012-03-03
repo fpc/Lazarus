@@ -633,7 +633,7 @@ end;*)
 {$ifndef CD_UseNativeText}
 function TCDWidgetSet.BackendGetFontPath(const LogFont: TLogFont; const LongFontName: string): string;
 begin
-  Result := '/Library/Fonts/Arial.ttf';
+  Result := '/usr/share/fonts/TTF/liberation/LiberationSans-Regular.ttf';
 end;
 {$endif}
 

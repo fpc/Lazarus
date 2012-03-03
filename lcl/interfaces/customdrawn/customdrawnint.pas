@@ -395,6 +395,8 @@ const
   {$ifdef CD_Cocoa}
 const
   CDBackendNativeHandle = nhtCocoaNSWindow;
+  {$define CD_HasNativeFormHandle}
+  {$endif}
 
 { TLazCDCustomFont }
 
@@ -413,9 +415,6 @@ begin
   {$endif}
   inherited Destroy;
 end;
-
-  {$define CD_HasNativeFormHandle}
-  {$endif}
 
 {$I customdrawnobject.inc}
 
