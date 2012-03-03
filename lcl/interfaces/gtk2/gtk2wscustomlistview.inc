@@ -46,7 +46,7 @@ begin
   begin
     ListItem.Checked := not ListItem.GetCheckedInternal;
     if Assigned(LV.OnItemChecked) then
-      LV.OnItemChecked(TListView(LV), LV.Items.Item[Index]);
+      LV.OnItemChecked(TListView(WidgetInfo^.LCLObject), LV.Items.Item[Index]);
 
     // we must update renderer row, otherwise visually it looks different
     // if we change toggle state by keyboard (eg. pressing Space key)
@@ -190,8 +190,6 @@ end;
 
 procedure Gtk2_ItemSelectionChanged(selection: PGtkTreeSelection; WidgetInfo: PWidgetInfo); cdecl;
 var
-  msg: TLMNotify;
-  NM: TNMListView;
   Widgets: PTVWidgets;
   AIndex: String;
   i: Integer;
@@ -202,7 +200,7 @@ var
 begin
   // DebugLn('Gtk2_ItemSelectionChanged');
   Widgets := PTVWidgets(WidgetInfo^.UserData);
-  msg.Msg := CN_NOTIFY;
+
   if (widgets = nil) or (Widgets^.ItemCache = nil) or
     (Widgets^.ItemCache.Count=0) then
   begin
@@ -291,8 +289,6 @@ end;
 
 procedure Gtk2_IconViewSelectionChanged(AIconView: PGtkIconView; WidgetInfo: PWidgetInfo); cdecl;
 var
-  msg: TLMNotify;
-  NM: TNMListView;
   Widgets: PTVWidgets;
   AIndex: String;
   i: Integer;
@@ -300,7 +296,6 @@ var
   Path: PGtkTreePath;
 begin
   Widgets := PTVWidgets(WidgetInfo^.UserData);
-  msg.Msg := CN_NOTIFY;
 
   if (Widgets=nil) or (Widgets^.ItemCache=nil) or (Widgets^.ItemCache.Count=0) then
   begin
@@ -1673,21 +1668,17 @@ begin
 end;
 
 class procedure TGtk2WSCustomListView.BeginUpdate(const ALV: TCustomListView);
-var
-  Widgets: PTVWidgets;
 begin
-  if not WSCheckHandleAllocated(ALV, 'BeginUpdate')
-  then Exit;
+  if not WSCheckHandleAllocated(ALV, 'BeginUpdate') then
+    exit;
   if gtk_object_get_data(PGtkObject(ALV.Handle),'lcl_gtkwidget_in_update') = nil then
     gtk_object_set_data(PGtkObject(ALV.Handle),'lcl_gtkwidget_in_update', ALV);
 end;
 
 class procedure TGtk2WSCustomListView.EndUpdate(const ALV: TCustomListView);
-var
-  Widgets: PTVWidgets;
 begin
-  if not WSCheckHandleAllocated(ALV, 'EndUpdate')
-  then Exit;
+  if not WSCheckHandleAllocated(ALV, 'EndUpdate') then
+    exit;
   if gtk_object_get_data(PGtkObject(ALV.Handle),'lcl_gtkwidget_in_update') <> nil then
     gtk_object_remove_data(PGtkObject(ALV.Handle),'lcl_gtkwidget_in_update');
 end;
