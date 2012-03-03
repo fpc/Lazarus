@@ -641,7 +641,7 @@ var
   arc  : PBezierStack;
   a, b : Long;
 begin
-{$IF defined(CPU32) and not defined(NO_ASM)} {$asmmode intel}
+{$IF defined(CPUI386) and defined(CPU32) and not defined(NO_ASM)} {$asmmode intel}
   asm
     push esi
     push ebx
