@@ -511,7 +511,6 @@ function TQtWidgetSet.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cd
 var
   AObject: TQtObject;
   W: TQtMainWindow;
-  Widget: QWidgetH;
   LCLEvent: QLCLMessageEventH;
 
   function IsAnyWindowActive: Boolean;

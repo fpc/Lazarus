@@ -10780,7 +10780,6 @@ var
   NMLV: TNMListView;
   R: TRect;
   Pt: TPoint;
-  i: Integer;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtListWidget.signalItemClicked');
@@ -13396,7 +13395,6 @@ function TQtMenuBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   {$IFNDEF DARWIN}
   procedure UpdateDesignerClientRect;
   var
-    B: Boolean;
     WParent: QWidgetH;
     Window: HWND;
     ACtl: TWinControl;

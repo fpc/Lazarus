@@ -6228,7 +6228,6 @@ var
   dx, dy: integer;
   OldRop: Integer;
   OldBkColor: TColorRef;
-  ABrush: QBrushH;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI StretchMaskBlt]',
