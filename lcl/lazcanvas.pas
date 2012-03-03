@@ -101,6 +101,7 @@ type
   public
     HasNoImage: Boolean;
     NativeDC: PtrInt; // Utilized by LCL-CustomDrawn
+    ExtraFontData: TObject; // Utilized by LCL-CustomDrawn
     constructor create (AnImage : TFPCustomImage);
     destructor destroy; override;
     procedure SetLazClipRegion(ARegion: TLazRegion);
