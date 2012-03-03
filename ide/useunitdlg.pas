@@ -377,36 +377,26 @@ procedure TUseUnitDialog.DetermineUsesSection(ACode: TCodeBuffer; ACursorPos: TP
 var
   CursorPos: TCodeXYPosition;
   CleanCursorPos: Integer;
-  CursorNode: TCodeTreeNode;
   ImplUsesNode: TCodeTreeNode;
   i: Integer;
+  Tool: TCodeTool;
+  ImplNode: TCodeTreeNode;
 begin
-  if not CodeToolBoss.InitCurCodeTool(ACode) then Exit;
-  with CodeToolBoss.CurCodeTool do
-  begin
-    CursorPos := CodeXYPosition(ACursorPos.X, ACursorPos.Y, ACode);
-    ActivateGlobalWriteLock;
-    try
-      // build code tree
-      BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
-                 [btSetIgnoreErrorPos,btLoadDirtySource,btCursorPosOutAllowed]);
-      if (Tree.Root = nil) or (Tree.Root.StartPos > CleanCursorPos) then Exit;
-      ImplUsesNode := FindImplementationUsesSection;
-      if Assigned(ImplUsesNode) then
-        for i := 0 to FImplUsedUnits.Count - 1 do
-          FImplUsedUnits.Objects[i] := ImplUsesNode;
-      // find CodeTreeNode at cursor
-      CursorNode := BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos, True);
-      if (CursorNode.Desc in [ctnImplementation,ctnInitialization,ctnFinalization])
-      or CursorNode.HasParentOfType(ctnImplementation)
-      or CursorNode.HasParentOfType(ctnInitialization)
-      or CursorNode.HasParentOfType(ctnFinalization) then
-        SectionRadioGroup.ItemIndex := 1;
-      SectionRadioGroup.OnClick(SectionRadioGroup);
-    finally
-      DeactivateGlobalWriteLock
-    end;
-  end;
+  CodeToolBoss.Explore(ACode,Tool,false);
+  if Tool=nil then exit;
+  // collect implementation use unit nodes
+  ImplUsesNode := Tool.FindImplementationUsesSection;
+  if Assigned(ImplUsesNode) then
+    for i := 0 to FImplUsedUnits.Count - 1 do
+      FImplUsedUnits.Objects[i] := ImplUsesNode;
+  // check if cursor is behind interface section
+  CursorPos := CodeXYPosition(ACursorPos.X, ACursorPos.Y, ACode);
+  Tool.CaretToCleanPos(CursorPos,CleanCursorPos);
+  ImplNode:=Tool.FindImplementationNode;
+  if (ImplNode<>nil) and (CleanCursorPos>ImplNode.StartPos) then
+    SectionRadioGroup.ItemIndex := 1;
+  // update
+  SectionRadioGroup.OnClick(SectionRadioGroup);
 end;
 
 procedure TUseUnitDialog.FillAvailableUnitsList;
