@@ -12619,10 +12619,6 @@ msgstr "Lisää käännösyksikkö uses-lausekkeeseen. Estä se vain yksiköilt�
 msgid "Ambiguous units found"
 msgstr "Löytyi ristiriitaisia käännösyksiköitä"
 
-#: lazarusidestrconsts.lispkgmangarequiredpackageswasnotfound
-msgid "A required packages was not found. See package graph."
-msgstr "Tarvittavaa pakettia ei löytynyt. Katso paketti-luettelosta."
-
 #: lazarusidestrconsts.lispkgmangautomaticallyinstalledpackages
 msgid "Automatically installed packages"
 msgstr "Automaattisesti asennettavat komponenttipaketit"
@@ -12808,6 +12804,10 @@ msgstr "Korvaa nykyinen tiedosto %s%s%s?"
 msgid "Replace File"
 msgstr "Korvaa tiedosto"
 
+#: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
+msgid "One or more required packages were not found. See package graph for details."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangsavepackage
 msgid "Save package?"
 msgstr "Tallenna paketti?"
@@ -12934,7 +12934,7 @@ msgid "There is already another package with the name %s%s%s.%sConflict package:
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthereisanunsavedpackageintherequiredpackages

@@ -13202,10 +13202,6 @@ msgstr ""
 msgid "Ambiguous units found"
 msgstr "Znaleziono moduły o dwuznacznej nazwie"
 
-#: lazarusidestrconsts.lispkgmangarequiredpackageswasnotfound
-msgid "A required packages was not found. See package graph."
-msgstr "Nie znalazłem wymaganego pakietu. Spójrz na listę pakietów."
-
 #: lazarusidestrconsts.lispkgmangautomaticallyinstalledpackages
 msgid "Automatically installed packages"
 msgstr "Automatycznie zainstalowane pakiety"
@@ -13391,6 +13387,10 @@ msgstr "Chcesz nadpisać istniejący plik %s%s%s?"
 msgid "Replace File"
 msgstr "Nadpisz plik"
 
+#: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
+msgid "One or more required packages were not found. See package graph for details."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangsavepackage
 #, fuzzy
 #| msgid "Save Package?"
@@ -13519,7 +13519,9 @@ msgid "There is already another package with the name %s%s%s.%sConflict package:
 msgstr "Istnieje już inny pakiet o nazwie %s%s%s.%sKonfklikt w: %s%s%s%sPlik: %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+#, fuzzy
+#| msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
 msgstr "Jest już pakiet %s%s%s załadowany%sz pliku %s%s%s.%sSpójrz na Komponenty -> Lista pakietów.%sNadpisanie jest niemożliwe."
 
 #: lazarusidestrconsts.lispkgmangthereisanunsavedpackageintherequiredpackages

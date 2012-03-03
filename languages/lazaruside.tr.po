@@ -12917,10 +12917,6 @@ msgstr "Birimi paketin uses bölümüne  ekle. Bunu yalnızca her zaman derlenme
 msgid "Ambiguous units found"
 msgstr "Belirsiz birimler bulundu"
 
-#: lazarusidestrconsts.lispkgmangarequiredpackageswasnotfound
-msgid "A required packages was not found. See package graph."
-msgstr "Gereken paketler bulunamadı. Paket grafiğine bakın."
-
 #: lazarusidestrconsts.lispkgmangautomaticallyinstalledpackages
 msgid "Automatically installed packages"
 msgstr "Otomatik yüklenmiş paketler"
@@ -13106,6 +13102,10 @@ msgstr ""
 msgid "Replace File"
 msgstr ""
 
+#: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
+msgid "One or more required packages were not found. See package graph for details."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangsavepackage
 msgid "Save package?"
 msgstr ""
@@ -13232,7 +13232,7 @@ msgid "There is already another package with the name %s%s%s.%sConflict package:
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthereisanunsavedpackageintherequiredpackages

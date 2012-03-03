@@ -13238,10 +13238,6 @@ msgstr "Pridať jednotku do klauzuly uses balíčka. Toto vypnúť len pre jedno
 msgid "Ambiguous units found"
 msgstr "Nájdená nejednoznačné jednotky"
 
-#: lazarusidestrconsts.lispkgmangarequiredpackageswasnotfound
-msgid "A required packages was not found. See package graph."
-msgstr "Vyžadovaný balíček nebol nájdený. Pozrite Graf balíčkov."
-
 #: lazarusidestrconsts.lispkgmangautomaticallyinstalledpackages
 msgid "Automatically installed packages"
 msgstr "Automaticky inštalované balíčky"
@@ -13427,6 +13423,10 @@ msgstr "Nahradiť existujúci súbor %s%s%s?"
 msgid "Replace File"
 msgstr "Nahradiť súbor"
 
+#: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
+msgid "One or more required packages were not found. See package graph for details."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangsavepackage
 #, fuzzy
 #| msgid "Save Package?"
@@ -13555,7 +13555,9 @@ msgid "There is already another package with the name %s%s%s.%sConflict package:
 msgstr "Balíček so zvoleným menom %s%s%s.%suž existuje. Konfliktný balíček: %s%s%s%sSúbor: %s%s%s."
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+#, fuzzy
+#| msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
 msgstr "Balíček %s%s%s načítaný %szo súboru %s%s%s už existuje.%sPozrite Balíček -> Graf balíčkov .%sNahradenie nie je možné."
 
 #: lazarusidestrconsts.lispkgmangthereisanunsavedpackageintherequiredpackages

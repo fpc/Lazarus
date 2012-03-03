@@ -13340,10 +13340,6 @@ msgstr "הוסף יחידה לחלק ה uses של חבילה. בטל אפשרו�
 msgid "Ambiguous units found"
 msgstr "נמצאו חבילות רב משמעיות"
 
-#: lazarusidestrconsts.lispkgmangarequiredpackageswasnotfound
-msgid "A required packages was not found. See package graph."
-msgstr "חבילה שנדרשת לא נמצאה. ראה את גרף החבילות"
-
 #: lazarusidestrconsts.lispkgmangautomaticallyinstalledpackages
 msgid "Automatically installed packages"
 msgstr "חבילות שהותקנו אוטומטית"
@@ -13529,6 +13525,10 @@ msgstr "להחליף קובץ קיים %s%s%s?"
 msgid "Replace File"
 msgstr "החלף קובץ"
 
+#: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
+msgid "One or more required packages were not found. See package graph for details."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangsavepackage
 #, fuzzy
 #| msgid "Save Package?"
@@ -13657,7 +13657,9 @@ msgid "There is already another package with the name %s%s%s.%sConflict package:
 msgstr "יש כבר חבילה אחרת עם השם %s%s%s. מתנגש עם חבילה: %s%s%s%s קובץ %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+#, fuzzy
+#| msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
 msgstr "ש כבר חבילה s%s%s% אשר נטענה מקובץ %s%s%s. ראה  Components -> Package Graph. החלפה אפשרית."
 
 #: lazarusidestrconsts.lispkgmangthereisanunsavedpackageintherequiredpackages

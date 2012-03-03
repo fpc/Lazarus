@@ -13083,10 +13083,6 @@ msgstr "Afegeix unitat a la clausula uses del paquet. Desactiva aquesta opció s
 msgid "Ambiguous units found"
 msgstr ""
 
-#: lazarusidestrconsts.lispkgmangarequiredpackageswasnotfound
-msgid "A required packages was not found. See package graph."
-msgstr "No s'ha trobat un paquet necessari. Mireu-vos la gràfica dels paquets"
-
 #: lazarusidestrconsts.lispkgmangautomaticallyinstalledpackages
 msgid "Automatically installed packages"
 msgstr "Paquets instal·lats automàticament"
@@ -13272,6 +13268,10 @@ msgstr "Voleu substituir el fitxer existent %s%s%s?"
 msgid "Replace File"
 msgstr "Substitueix el fitxer"
 
+#: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
+msgid "One or more required packages were not found. See package graph for details."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangsavepackage
 #, fuzzy
 #| msgid "Save Package?"
@@ -13400,7 +13400,9 @@ msgid "There is already another package with the name %s%s%s.%sConflict package:
 msgstr "Ja hi ha un altre paquet amb el nom %s%s%s.%sPaquet amb conficte: %s%s%s%sFitxer: %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+#, fuzzy
+#| msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
 msgstr "Ja hi ha un paquet %s%s%s carregat%s des del fitxer %s%s%s.%sMireu Components -> Gràfica dels paquets.%sNo es pot reemplaçar."
 
 #: lazarusidestrconsts.lispkgmangthereisanunsavedpackageintherequiredpackages

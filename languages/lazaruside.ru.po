@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-02-25 20:30+0400\n"
+"PO-Revision-Date: 2012-03-04 02:28+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -13062,10 +13062,6 @@ msgstr "Добавить модуль в выражение uses пакета. �
 msgid "Ambiguous units found"
 msgstr "Найдены модули с с дублирующимися именами"
 
-#: lazarusidestrconsts.lispkgmangarequiredpackageswasnotfound
-msgid "A required packages was not found. See package graph."
-msgstr "Требуемый пакет не найден. Смотрите диаграмму пакетов."
-
 #: lazarusidestrconsts.lispkgmangautomaticallyinstalledpackages
 msgid "Automatically installed packages"
 msgstr "Автоустановленные пакеты"
@@ -13251,6 +13247,10 @@ msgstr "Заменить существующий файл %s%s%s?"
 msgid "Replace File"
 msgstr "Заменить файл"
 
+#: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
+msgid "One or more required packages were not found. See package graph for details."
+msgstr "Некоторых требуемых пакетов не найдено. Для получения подробностей смотрите диаграмму пакетов."
+
 #: lazarusidestrconsts.lispkgmangsavepackage
 #| msgid "Save Package?"
 msgid "Save package?"
@@ -13379,8 +13379,9 @@ msgid "There is already another package with the name %s%s%s.%sConflict package:
 msgstr "Уже есть другой пакет с именем %s%s%s.%sКонфликтующий пакет:%s%s%s%sФайл: %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
-msgstr "Уже имеется загруженный пакет %s%s%s %sиз файла %s%s%s.%sСмотрите Компоненты -> Диаграмма пакетов.%sЗамена невозможна."
+#| msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
+msgstr "Загруженный пакет %s%s%s %sиз файла %s%s%s уже имеется.%sСмотрите Пакет -> Диаграмма пакетов.%sЗамена невозможна."
 
 #: lazarusidestrconsts.lispkgmangthereisanunsavedpackageintherequiredpackages
 msgid "There is an unsaved package in the required packages. See package graph."

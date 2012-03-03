@@ -13299,10 +13299,6 @@ msgstr "Pridėti modulį prie paketo naudojamų modulių. Pasyvinkite tik tiems 
 msgid "Ambiguous units found"
 msgstr "Rasti neaiškūs moduliai"
 
-#: lazarusidestrconsts.lispkgmangarequiredpackageswasnotfound
-msgid "A required packages was not found. See package graph."
-msgstr "Nerasti reikiami paketai. Žvilgtelėkit į paketų grafą."
-
 #: lazarusidestrconsts.lispkgmangautomaticallyinstalledpackages
 msgid "Automatically installed packages"
 msgstr "Automatiškai įdiegti paketai"
@@ -13488,6 +13484,10 @@ msgstr "Pakeisti esamą failą %s%s%s?"
 msgid "Replace File"
 msgstr "Pakeisti failą"
 
+#: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
+msgid "One or more required packages were not found. See package graph for details."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangsavepackage
 #, fuzzy
 #| msgid "Save Package?"
@@ -13616,7 +13616,9 @@ msgid "There is already another package with the name %s%s%s.%sConflict package:
 msgstr "Aptiktas paketas jau naudojantis pavadinimą %s%s%s.%sKonfliktinis paketas: %s%s%s%sFailas: %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+#, fuzzy
+#| msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
 msgstr "Paketas %s%s%s jau yra įkeltas%siš failo %s%s%s.%sŽvilgtelėkit į „Paketas -> Paketų grafas“.%sPakeitimas neįmanomas."
 
 #: lazarusidestrconsts.lispkgmangthereisanunsavedpackageintherequiredpackages

@@ -13119,10 +13119,6 @@ msgstr "Füge Unit zum Uses-Abschnitt des Packages. Schalten Sie dies nur bei Un
 msgid "Ambiguous units found"
 msgstr "Mehrdeutige Units gefunden"
 
-#: lazarusidestrconsts.lispkgmangarequiredpackageswasnotfound
-msgid "A required packages was not found. See package graph."
-msgstr "Ein benötigtes Package wurde nicht gefunden. Bitte überprüfen Sie den Package-Graphen."
-
 #: lazarusidestrconsts.lispkgmangautomaticallyinstalledpackages
 msgid "Automatically installed packages"
 msgstr "Automatisch installierte Packages"
@@ -13308,6 +13304,10 @@ msgstr "Ersetzen der vorhandenen Datei %s%s%s?"
 msgid "Replace File"
 msgstr "Ersetze Datei"
 
+#: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
+msgid "One or more required packages were not found. See package graph for details."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangsavepackage
 #| msgid "Save Package?"
 msgid "Save package?"
@@ -13437,7 +13437,9 @@ msgid "There is already another package with the name %s%s%s.%sConflict package:
 msgstr "Es gibt bereits ein Package mit dem Namen %s%s%s.%sPackage-Konflikt: %s%s%s%sDatei: %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+#, fuzzy
+#| msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
 msgstr "Es ist bereits ein Package %s%s%s aus der Datei %s%s%s geladen.%sSiehe Komponenten->Package-Graph.%sErsetzen ist nicht möglich."
 
 #: lazarusidestrconsts.lispkgmangthereisanunsavedpackageintherequiredpackages

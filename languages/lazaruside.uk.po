@@ -13184,10 +13184,6 @@ msgstr "Додати модуль до операторної частини use
 msgid "Ambiguous units found"
 msgstr "Знайдено модулі з однаково розпізнаними назвами"
 
-#: lazarusidestrconsts.lispkgmangarequiredpackageswasnotfound
-msgid "A required packages was not found. See package graph."
-msgstr "Необхідний пакунок не знайдений. Див. діаграму пакунків."
-
 #: lazarusidestrconsts.lispkgmangautomaticallyinstalledpackages
 msgid "Automatically installed packages"
 msgstr "Автом. встановлені пакунки"
@@ -13373,6 +13369,10 @@ msgstr "Замінити існуючий файл %s%s%s?"
 msgid "Replace File"
 msgstr "Замінити файл"
 
+#: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
+msgid "One or more required packages were not found. See package graph for details."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangsavepackage
 #, fuzzy
 #| msgid "Save Package?"
@@ -13501,7 +13501,9 @@ msgid "There is already another package with the name %s%s%s.%sConflict package:
 msgstr "Вже існує іншій пакунок з назвою %s%s%s.%sКонфліктуючий пакунок:%s%s%s%sФайл: %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+#, fuzzy
+#| msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
 msgstr "Вже завантажено пакунок%s%s%s %sз файлу %s%s%s.%sДив. Компоненти -> Діаграма пакунків.%sЗаміна неможлива."
 
 #: lazarusidestrconsts.lispkgmangthereisanunsavedpackageintherequiredpackages

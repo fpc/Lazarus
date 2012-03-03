@@ -13268,10 +13268,6 @@ msgstr "添加语句到包的USES语句.这个只在单元中禁用, 不管什�
 msgid "Ambiguous units found"
 msgstr "发现可疑单元"
 
-#: lazarusidestrconsts.lispkgmangarequiredpackageswasnotfound
-msgid "A required packages was not found. See package graph."
-msgstr "一个所依赖的包没有安装. 请查看包图表."
-
 #: lazarusidestrconsts.lispkgmangautomaticallyinstalledpackages
 msgid "Automatically installed packages"
 msgstr "自动安装包"
@@ -13457,6 +13453,10 @@ msgstr "替换已经存在的文件 %s%s%s?"
 msgid "Replace File"
 msgstr "替换文件"
 
+#: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
+msgid "One or more required packages were not found. See package graph for details."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangsavepackage
 #, fuzzy
 #| msgid "Save Package?"
@@ -13585,7 +13585,9 @@ msgid "There is already another package with the name %s%s%s.%sConflict package:
 msgstr "已经有一个包使用这个名字 %s%s%s.%s包冲突: %s%s%s%s文件: %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+#, fuzzy
+#| msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
 msgstr "已经有一个包 %s%s%s %s从文件 %s%s%s装载.%s查看 组件 -> 包图表.%s不能替换."
 
 #: lazarusidestrconsts.lispkgmangthereisanunsavedpackageintherequiredpackages

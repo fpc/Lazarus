@@ -13173,10 +13173,6 @@ msgstr "Tambah unit ke klausul uses dari paket. Matikan ini hanya untuk unit yan
 msgid "Ambiguous units found"
 msgstr "Unit dwimakna ditemukan"
 
-#: lazarusidestrconsts.lispkgmangarequiredpackageswasnotfound
-msgid "A required packages was not found. See package graph."
-msgstr "Paket yang dibutuhkan tidak ditemukan. Lihat grafik paket."
-
 #: lazarusidestrconsts.lispkgmangautomaticallyinstalledpackages
 msgid "Automatically installed packages"
 msgstr "Otomatis menginstalasi paket"
@@ -13362,6 +13358,10 @@ msgstr "Timpa file yang sudah ada %s%s%s?"
 msgid "Replace File"
 msgstr "Timpa File"
 
+#: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
+msgid "One or more required packages were not found. See package graph for details."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangsavepackage
 #, fuzzy
 #| msgid "Save Package?"
@@ -13490,7 +13490,9 @@ msgid "There is already another package with the name %s%s%s.%sConflict package:
 msgstr "Sudah ada nama paket lain dengan nama %s%s%s.%sPaket konflik: %s%s%s%sFile: %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+#, fuzzy
+#| msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
 msgstr "Sudah ada paket %s%s%s diambil%sdari file %s%s%s.%sLihat Komponen -> Grafik Paket.%sPenimpaan tidak mungkin."
 
 #: lazarusidestrconsts.lispkgmangthereisanunsavedpackageintherequiredpackages

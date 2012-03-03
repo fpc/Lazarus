@@ -13369,10 +13369,6 @@ msgstr "パッケージのuses節にユニットを追加してください。�
 msgid "Ambiguous units found"
 msgstr "曖昧なユニットが見つかりました"
 
-#: lazarusidestrconsts.lispkgmangarequiredpackageswasnotfound
-msgid "A required packages was not found. See package graph."
-msgstr "要求されたパッケージが見つかりません. パッケージグラフを参照してください"
-
 #: lazarusidestrconsts.lispkgmangautomaticallyinstalledpackages
 msgid "Automatically installed packages"
 msgstr "自動的にインストールされたパッケージ"
@@ -13558,6 +13554,10 @@ msgstr "存在するファイル %s%s%s を置換してよろしいですか?"
 msgid "Replace File"
 msgstr "ファイルを置換"
 
+#: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
+msgid "One or more required packages were not found. See package graph for details."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangsavepackage
 #, fuzzy
 #| msgid "Save Package?"
@@ -13686,7 +13686,9 @@ msgid "There is already another package with the name %s%s%s.%sConflict package:
 msgstr "既に%s%s%sという名前の他のパッケージがあります。%s矛盾するパッケージ：%s%s%s%sファイル: %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+#, fuzzy
+#| msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
 msgstr "既にパッケージ%s%s%sが存在し、%sそれはファイル%s%s%sから読み込まれます。%sコンポーネント→パッケージグラフを参照のこと%s置換はできません。"
 
 #: lazarusidestrconsts.lispkgmangthereisanunsavedpackageintherequiredpackages
