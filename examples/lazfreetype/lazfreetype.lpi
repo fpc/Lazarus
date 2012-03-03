@@ -1,0 +1,873 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="9"/>
+    <PathDelim Value="\"/>
+    <General>
+      <MainUnit Value="0"/>
+      <Title Value="lazfreetype"/>
+      <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <Icon Value="0"/>
+      <ActiveWindowIndexAtStart Value="0"/>
+    </General>
+    <i18n>
+      <EnableI18N LFM="False"/>
+    </i18n>
+    <VersionInfo>
+      <StringTable ProductVersion=""/>
+    </VersionInfo>
+    <BuildModes Count="1" Active="Default">
+      <Item1 Name="Default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="97">
+      <Unit0>
+        <Filename Value="lazfreetype.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="lazfreetype"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="25" Y="5"/>
+        <UsageCount Value="156"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="mainform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="mainform"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="122"/>
+        <CursorPos X="1" Y="142"/>
+        <UsageCount Value="156"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\packages\fcl-image\src\freetype.pp"/>
+        <UnitName Value="freetype"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="676"/>
+        <CursorPos X="20" Y="697"/>
+        <UsageCount Value="6"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\packages\fcl-image\src\freetypeh.pp"/>
+        <UnitName Value="freetypeh"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="318"/>
+        <CursorPos X="10" Y="336"/>
+        <UsageCount Value="6"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="C:\Users\ELSASS\Downloads\lazarus-ccr-freetypepascal.tar\lazarus-ccr-freetypepascal\freetypepascal\ttraster.pas"/>
+        <UnitName Value="TTRASTER"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="3073"/>
+        <CursorPos X="22" Y="3082"/>
+        <UsageCount Value="6"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="C:\Users\ELSASS\Downloads\lazarus-ccr-freetypepascal.tar\lazarus-ccr-freetypepascal\freetypepascal\freetype.pas"/>
+        <UnitName Value="FreeType"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="51"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="5"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="C:\Users\ELSASS\Downloads\lazarus-ccr-freetypepascal.tar\lazarus-ccr-freetypepascal\freetypepascal\lazfreetype.pas"/>
+        <UnitName Value="lazfreetype"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="23" Y="7"/>
+        <UsageCount Value="5"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="C:\Users\ELSASS\Downloads\lazarus-ccr-freetypepascal.tar\lazarus-ccr-freetypepascal\freetypepascal\ttmemory.pas"/>
+        <UnitName Value="TTMemory"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="88"/>
+        <CursorPos X="37" Y="100"/>
+        <UsageCount Value="5"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="C:\Users\ELSASS\Downloads\lazarus-ccr-freetypepascal.tar\lazarus-ccr-freetypepascal\freetypepascal\ttobjs.pas"/>
+        <UnitName Value="TTObjs"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1637"/>
+        <CursorPos X="1" Y="1742"/>
+        <UsageCount Value="5"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="C:\Users\ELSASS\Downloads\lazarus-ccr-freetypepascal.tar\lazarus-ccr-freetypepascal\freetypepascal\ttcache.pas"/>
+        <UnitName Value="TTCache"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="319"/>
+        <CursorPos X="1" Y="348"/>
+        <UsageCount Value="3"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="C:\Users\ELSASS\Downloads\lazarus-ccr-freetypepascal.tar\lazarus-ccr-freetypepascal\freetypepascal\ttfile.pas"/>
+        <UnitName Value="TTFile"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="284"/>
+        <CursorPos X="1" Y="303"/>
+        <UsageCount Value="3"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="C:\Users\ELSASS\Downloads\lazarus-ccr-freetypepascal.tar\lazarus-ccr-freetypepascal\freetypepascal\ttinterp.pas"/>
+        <UnitName Value="TTInterp"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="21" Y="1338"/>
+        <UsageCount Value="1"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="..\bgracontrols\bgracontrols\bgrabutton.pas"/>
+        <UnitName Value="BGRAButton"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="664"/>
+        <CursorPos X="28" Y="673"/>
+        <UsageCount Value="1"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="D:\lazarus\lcl\include\control.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1312"/>
+        <CursorPos X="1" Y="1323"/>
+        <UsageCount Value="11"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="D:\lazarus\lcl\graphics.pp"/>
+        <UnitName Value="Graphics"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2538"/>
+        <CursorPos X="1" Y="2563"/>
+        <UsageCount Value="22"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="..\lazpaintsvn\bgrabitmap\bgrabitmaptypes.pas"/>
+        <UnitName Value="BGRABitmapTypes"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="402"/>
+        <CursorPos X="15" Y="420"/>
+        <UsageCount Value="36"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="..\lazpaintsvn\bgrabitmap\bgradefaultbitmap.pas"/>
+        <UnitName Value="BGRADefaultBitmap"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="697"/>
+        <CursorPos X="3" Y="724"/>
+        <UsageCount Value="52"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="..\lazpaintsvn\bgrabitmap\bgratextfx.pas"/>
+        <UnitName Value="BGRATextFX"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="73"/>
+        <CursorPos X="1" Y="90"/>
+        <UsageCount Value="1"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="..\lazpaintsvn\bgrabitmap\bgratext.pas"/>
+        <UnitName Value="BGRAText"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="497"/>
+        <CursorPos X="59" Y="512"/>
+        <UsageCount Value="12"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="D:\lazarus\lcl\include\font.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="76"/>
+        <CursorPos X="21" Y="84"/>
+        <UsageCount Value="19"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="freetype.pas"/>
+        <UnitName Value="FreeType"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="147"/>
+        <CursorPos X="3" Y="165"/>
+        <UsageCount Value="61"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="ttmemory.pas"/>
+        <UnitName Value="TTMemory"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="147"/>
+        <CursorPos X="1" Y="154"/>
+        <UsageCount Value="50"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="ttgload.pas"/>
+        <UnitName Value="TTGLoad"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="553"/>
+        <CursorPos X="13" Y="560"/>
+        <UsageCount Value="48"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="ttobjs.pas"/>
+        <UnitName Value="TTObjs"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1842"/>
+        <CursorPos X="18" Y="1858"/>
+        <UsageCount Value="51"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="ttcache.pas"/>
+        <UnitName Value="TTCache"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="291"/>
+        <CursorPos X="5" Y="312"/>
+        <UsageCount Value="21"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="ttcalc.pas"/>
+        <UnitName Value="TTCalc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="43"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="38"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="ttcalc1.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="10"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="ttcalc2.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="10"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="ttcalc3.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="10"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="ttcalc4.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="85"/>
+        <CursorPos X="37" Y="85"/>
+        <UsageCount Value="37"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="ttcmap.pas"/>
+        <UnitName Value="TTCMap"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="265"/>
+        <CursorPos X="25" Y="257"/>
+        <UsageCount Value="12"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="ttconfig.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="18"/>
+        <CursorPos X="9" Y="74"/>
+        <UsageCount Value="9"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="ttdebug.pas"/>
+        <UnitName Value="TTDebug"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="13" Y="11"/>
+        <UsageCount Value="37"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="tterror.pas"/>
+        <UnitName Value="TTError"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="16"/>
+        <CursorPos X="5" Y="37"/>
+        <UsageCount Value="31"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="ttfile.pas"/>
+        <UnitName Value="TTFile"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="560"/>
+        <CursorPos X="51" Y="573"/>
+        <UsageCount Value="21"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="ttinterp.pas"/>
+        <UnitName Value="TTInterp"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="25"/>
+        <CursorPos X="1" Y="39"/>
+        <UsageCount Value="37"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="ttload.pas"/>
+        <UnitName Value="TTLoad"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="998"/>
+        <CursorPos X="10" Y="1016"/>
+        <UsageCount Value="39"/>
+      </Unit36>
+      <Unit37>
+        <Filename Value="ttraster.pas"/>
+        <UnitName Value="TTRASTER"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="573"/>
+        <CursorPos X="1" Y="591"/>
+        <UsageCount Value="61"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="tttables.pas"/>
+        <UnitName Value="TTTables"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="122"/>
+        <CursorPos X="41" Y="98"/>
+        <UsageCount Value="10"/>
+      </Unit38>
+      <Unit39>
+        <Filename Value="tttypes.pas"/>
+        <UnitName Value="TTTypes"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="40"/>
+        <CursorPos X="3" Y="58"/>
+        <UsageCount Value="54"/>
+      </Unit39>
+      <Unit40>
+        <Filename Value="D:\lazarus\lcl\forms.pp"/>
+        <UnitName Value="Forms"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1326"/>
+        <CursorPos X="26" Y="1335"/>
+        <UsageCount Value="1"/>
+      </Unit40>
+      <Unit41>
+        <Filename Value="easyfreetype.pas"/>
+        <UnitName Value="EasyFreeType"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="40"/>
+        <CursorPos X="3" Y="34"/>
+        <UsageCount Value="65"/>
+      </Unit41>
+      <Unit42>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\rtl\objpas\math.pp"/>
+        <UnitName Value="math"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="12" Y="32"/>
+        <UsageCount Value="3"/>
+      </Unit42>
+      <Unit43>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\rtl\i386\mathuh.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="3"/>
+      </Unit43>
+      <Unit44>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\rtl\win\sysutils.pp"/>
+        <UnitName Value="sysutils"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="10"/>
+        <CursorPos X="10" Y="26"/>
+        <UsageCount Value="3"/>
+      </Unit44>
+      <Unit45>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\rtl\win32\system.pp"/>
+        <UnitName Value="System"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="801"/>
+        <CursorPos X="12" Y="806"/>
+        <UsageCount Value="10"/>
+      </Unit45>
+      <Unit46>
+        <Filename Value="D:\lazarus\lcl\lcltype.pp"/>
+        <UnitName Value="LCLType"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2214"/>
+        <CursorPos X="8" Y="2232"/>
+        <UsageCount Value="49"/>
+      </Unit46>
+      <Unit47>
+        <Filename Value="..\lazpaintsvn\bgrabitmap\bgragradients.pas"/>
+        <UnitName Value="BGRAGradients"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="18" Y="11"/>
+        <UsageCount Value="37"/>
+      </Unit47>
+      <Unit48>
+        <Filename Value="..\lazpaintsvn\bgrabitmap\phongdraw.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="20" Y="2"/>
+        <UsageCount Value="37"/>
+      </Unit48>
+      <Unit49>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\rtl\inc\systemh.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="999"/>
+        <CursorPos X="11" Y="1009"/>
+        <UsageCount Value="11"/>
+      </Unit49>
+      <Unit50>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\rtl\inc\heaph.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="25"/>
+        <CursorPos X="5" Y="43"/>
+        <UsageCount Value="36"/>
+      </Unit50>
+      <Unit51>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\rtl\inc\heap.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="233"/>
+        <CursorPos X="22" Y="247"/>
+        <UsageCount Value="36"/>
+      </Unit51>
+      <Unit52>
+        <Filename Value="ttprofile.pas"/>
+        <UnitName Value="TTProfile"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="504"/>
+        <CursorPos X="1" Y="522"/>
+        <UsageCount Value="51"/>
+      </Unit52>
+      <Unit53>
+        <Filename Value="D:\lazarus\lcl\include\customcontrol.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="62"/>
+        <CursorPos X="1" Y="80"/>
+        <UsageCount Value="24"/>
+      </Unit53>
+      <Unit54>
+        <Filename Value="ok\tttables.pas"/>
+        <UnitName Value="TTTables"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="6"/>
+      </Unit54>
+      <Unit55>
+        <Filename Value="ok\ttraster.pas"/>
+        <UnitName Value="TTRASTER"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2016"/>
+        <CursorPos X="6" Y="2058"/>
+        <UsageCount Value="6"/>
+      </Unit55>
+      <Unit56>
+        <Filename Value="D:\lazarus\lcl\include\interfacebase.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="31"/>
+        <CursorPos X="63" Y="53"/>
+        <UsageCount Value="7"/>
+      </Unit56>
+      <Unit57>
+        <Filename Value="ttraster_sweep.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="546"/>
+        <CursorPos X="11" Y="555"/>
+        <UsageCount Value="20"/>
+      </Unit57>
+      <Unit58>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\rtl\win\wininc\struct.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="641"/>
+        <CursorPos X="20" Y="659"/>
+        <UsageCount Value="19"/>
+      </Unit58>
+      <Unit59>
+        <Filename Value="D:\lazarus\lcl\lclrescache.pas"/>
+        <UnitName Value="LCLResCache"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="358"/>
+        <CursorPos X="40" Y="361"/>
+        <UsageCount Value="19"/>
+      </Unit59>
+      <Unit60>
+        <Filename Value="D:\lazarus\lcl\avglvltree.pas"/>
+        <UnitName Value="AvgLvlTree"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="806"/>
+        <CursorPos X="1" Y="812"/>
+        <UsageCount Value="19"/>
+      </Unit60>
+      <Unit61>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\rtl\objpas\classes\classesh.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="143"/>
+        <CursorPos X="3" Y="161"/>
+        <UsageCount Value="18"/>
+      </Unit61>
+      <Unit62>
+        <Filename Value="D:\lazarus\lcl\include\winapi.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1289"/>
+        <CursorPos X="1" Y="1317"/>
+        <UsageCount Value="9"/>
+      </Unit62>
+      <Unit63>
+        <Filename Value="D:\lazarus\lcl\include\winapih.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="301"/>
+        <CursorPos X="10" Y="319"/>
+        <UsageCount Value="9"/>
+      </Unit63>
+      <Unit64>
+        <Filename Value="D:\lazarus\lcl\include\intfbaselcl.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="290"/>
+        <CursorPos X="3" Y="252"/>
+        <UsageCount Value="11"/>
+      </Unit64>
+      <Unit65>
+        <Filename Value="D:\lazarus\lcl\include\lclintfh.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="89"/>
+        <CursorPos X="10" Y="107"/>
+        <UsageCount Value="11"/>
+      </Unit65>
+      <Unit66>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\rtl\inc\ustringh.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="46"/>
+        <CursorPos X="10" Y="103"/>
+        <UsageCount Value="9"/>
+      </Unit66>
+      <Unit67>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\rtl\inc\ustrings.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2104"/>
+        <CursorPos X="10" Y="1994"/>
+        <UsageCount Value="11"/>
+      </Unit67>
+      <Unit68>
+        <Filename Value="D:\lazarus\lcl\lclproc.pas"/>
+        <UnitName Value="LCLProc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="11"/>
+      </Unit68>
+      <Unit69>
+        <Filename Value="bgrafreetype.pas"/>
+        <UnitName Value="BGRAFreeType"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="82"/>
+        <CursorPos X="18" Y="96"/>
+        <UsageCount Value="29"/>
+      </Unit69>
+      <Unit70>
+        <Filename Value="D:\lazarus\lcl\intfgraphics.pas"/>
+        <UnitName Value="IntfGraphics"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="226"/>
+        <CursorPos X="17" Y="240"/>
+        <UsageCount Value="12"/>
+      </Unit70>
+      <Unit71>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\packages\fcl-image\src\fpimage.pp"/>
+        <UnitName Value="FPimage"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="125"/>
+        <CursorPos X="17" Y="140"/>
+        <UsageCount Value="11"/>
+      </Unit71>
+      <Unit72>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\packages\fcl-image\src\fpimage.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="319"/>
+        <CursorPos X="10" Y="321"/>
+        <UsageCount Value="11"/>
+      </Unit72>
+      <Unit73>
+        <Filename Value="D:\lazarus\lcl\graphtype.pp"/>
+        <UnitName Value="GraphType"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1241"/>
+        <CursorPos X="3" Y="1239"/>
+        <UsageCount Value="12"/>
+      </Unit73>
+      <Unit74>
+        <Filename Value="intfdrawer.pas"/>
+        <UnitName Value="IntfDrawer"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="78"/>
+        <CursorPos X="31" Y="35"/>
+        <UsageCount Value="13"/>
+      </Unit74>
+      <Unit75>
+        <Filename Value="..\lazpaintsvn\bgrabitmap\bgrablend.pas"/>
+        <UnitName Value="BGRABlend"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="474"/>
+        <CursorPos X="1" Y="496"/>
+        <UsageCount Value="12"/>
+      </Unit75>
+      <Unit76>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\packages\fcl-image\src\fpcanvas.pp"/>
+        <UnitName Value="FPCanvas"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="281"/>
+        <CursorPos X="15" Y="299"/>
+        <UsageCount Value="10"/>
+      </Unit76>
+      <Unit77>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\packages\fcl-image\src\fpimgcanv.pp"/>
+        <UnitName Value="FPImgCanv"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="17" Y="23"/>
+        <UsageCount Value="11"/>
+      </Unit77>
+      <Unit78>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\packages\fcl-image\src\fppixlcanv.pp"/>
+        <UnitName Value="FPPixlCanv"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="25"/>
+        <CursorPos X="3" Y="31"/>
+        <UsageCount Value="10"/>
+      </Unit78>
+      <Unit79>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\packages\fcl-image\src\fpinterpolation.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="206"/>
+        <CursorPos X="30" Y="222"/>
+        <UsageCount Value="10"/>
+      </Unit79>
+      <Unit80>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\packages\fcl-image\src\fpcanvas.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="583"/>
+        <CursorPos X="3" Y="623"/>
+        <UsageCount Value="10"/>
+      </Unit80>
+      <Unit81>
+        <Filename Value="..\lazpaintsvn\lazfreetype\ttfile.pas"/>
+        <UnitName Value="TTFile"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="71"/>
+        <CursorPos X="3" Y="190"/>
+        <UsageCount Value="10"/>
+      </Unit81>
+      <Unit82>
+        <Filename Value="..\lazpaintsvn\lazfreetype\ttcmap.pas"/>
+        <UnitName Value="TTCMap"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="130"/>
+        <CursorPos X="30" Y="139"/>
+        <UsageCount Value="10"/>
+      </Unit82>
+      <Unit83>
+        <Filename Value="..\ttintfdrawer.pas"/>
+        <UnitName Value="TTIntfDrawer"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="11"/>
+      </Unit83>
+      <Unit84>
+        <Filename Value="..\easyfreetype.pas"/>
+        <UnitName Value="EasyFreeType"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="10"/>
+      </Unit84>
+      <Unit85>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\rtl\objpas\sysutils\sysutilh.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="188"/>
+        <CursorPos X="3" Y="206"/>
+        <UsageCount Value="10"/>
+      </Unit85>
+      <Unit86>
+        <Filename Value="..\..\easyfreetype.pas"/>
+        <UnitName Value="EasyFreeType"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="10"/>
+        <CursorPos X="42" Y="20"/>
+        <UsageCount Value="10"/>
+      </Unit86>
+      <Unit87>
+        <Filename Value="..\..\freetype.pas"/>
+        <UnitName Value="FreeType"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="10"/>
+      </Unit87>
+      <Unit88>
+        <Filename Value="..\..\ttfile.pas"/>
+        <UnitName Value="TTFile"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="10"/>
+      </Unit88>
+      <Unit89>
+        <Filename Value="D:\lazarus\fpc\2.4.2\source\rtl\inc\system.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="967"/>
+        <CursorPos X="3" Y="969"/>
+        <UsageCount Value="10"/>
+      </Unit89>
+      <Unit90>
+        <Filename Value="..\..\ttintfdrawer.pas"/>
+        <UnitName Value="TTIntfDrawer"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="10"/>
+      </Unit90>
+      <Unit91>
+        <Filename Value="..\..\ttraster_sweep.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="5" Y="43"/>
+        <UsageCount Value="10"/>
+      </Unit91>
+      <Unit92>
+        <Filename Value="..\..\ttraster.pas"/>
+        <UnitName Value="TTRASTER"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="37"/>
+        <CursorPos X="10" Y="44"/>
+        <UsageCount Value="10"/>
+      </Unit92>
+      <Unit93>
+        <Filename Value="..\..\ttconfig.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="64"/>
+        <CursorPos X="38" Y="81"/>
+        <UsageCount Value="10"/>
+      </Unit93>
+      <Unit94>
+        <Filename Value="lazfreetypeintfdrawer.pas"/>
+        <UnitName Value="LazFreeTypeIntfDrawer"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="49"/>
+        <CursorPos X="1" Y="59"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit94>
+      <Unit95>
+        <Filename Value="..\..\components\lazutils\easylazfreetype.pas"/>
+        <UnitName Value="EasyLazFreeType"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="180"/>
+        <CursorPos X="9" Y="183"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit95>
+      <Unit96>
+        <Filename Value="..\..\components\lazutils\ttraster.pas"/>
+        <UnitName Value="TTRASTER"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1100"/>
+        <CursorPos X="29" Y="1103"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit96>
+    </Units>
+    <JumpHistory Count="7" HistoryIndex="6">
+      <Position1>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="57" Column="20" TopLine="49"/>
+      </Position1>
+      <Position2>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="14" Column="30" TopLine="1"/>
+      </Position2>
+      <Position3>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="13" Column="32" TopLine="1"/>
+      </Position3>
+      <Position4>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="114" Column="45" TopLine="102"/>
+      </Position4>
+      <Position5>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="9" Column="29" TopLine="6"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\..\components\lazutils\easylazfreetype.pas"/>
+        <Caret Line="17" Column="57" TopLine="1"/>
+      </Position6>
+      <Position7>
+        <Filename Value="..\..\components\lazutils\easylazfreetype.pas"/>
+        <Caret Line="183" Column="9" TopLine="180"/>
+      </Position7>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="lazfreetype"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <Linking>
+      <Debugging>
+        <UseHeaptrc Value="True"/>
+      </Debugging>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

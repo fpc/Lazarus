@@ -1,0 +1,50 @@
+object Form1: TForm1
+  Left = 238
+  Height = 240
+  Top = 161
+  Width = 323
+  Align = alBottom
+  Caption = 'Form1'
+  ClientHeight = 240
+  ClientWidth = 323
+  KeyPreview = True
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnMouseMove = FormMouseMove
+  OnPaint = FormPaint
+  LCLVersion = '0.9.31'
+  object Panel_Option: TPanel
+    Left = 0
+    Height = 40
+    Top = 200
+    Width = 323
+    Align = alBottom
+    ClientHeight = 40
+    ClientWidth = 323
+    TabOrder = 0
+    object TrackBar_Size: TTrackBar
+      Left = 8
+      Height = 25
+      Top = 8
+      Width = 253
+      Frequency = 0
+      Max = 300
+      Min = 1
+      OnChange = TrackBar_SizeChange
+      Position = 30
+      Anchors = [akTop, akLeft, akRight]
+      TabOrder = 0
+    end
+    object LFontSize: TLabel
+      Left = 266
+      Height = 16
+      Top = 12
+      Width = 51
+      Alignment = taCenter
+      Anchors = [akTop, akRight]
+      AutoSize = False
+      Caption = 'LFontSize'
+      ParentColor = False
+    end
+  end
+end
