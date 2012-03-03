@@ -40,6 +40,8 @@ uses
   {$ifdef WinCE}aygshell,{$endif}
   // Widgetset
   customdrawnproc,
+  // LazFreeType
+  LazFreeTypeIntfDrawer, LazFreeType, EasyLazFreeType,
   // LCL
   customdrawn_common, customdrawncontrols, customdrawndrawers,
   lazcanvas, lazregions, lazdeviceapis,

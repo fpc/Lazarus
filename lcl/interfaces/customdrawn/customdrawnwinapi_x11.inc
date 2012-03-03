@@ -2084,6 +2084,11 @@ begin
 
   Result := True;   }
 end;
+{$else}
+function TCDWidgetSet.BackendGetFontPath(DC: HDC): string;
+begin
+  Result := '/Library/Fonts/Arial.ttf';
+end;
 {$endif}
 
 (*{------------------------------------------------------------------------------

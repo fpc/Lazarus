@@ -384,6 +384,11 @@ begin
   lazdc := TLazCanvas(DC);
   lazdc.AlphaBlend(ScreenDC, X, Y, 0, 0, ScreenBitmapWidth, ScreenBitmapHeight);
 end;
+{$else}
+function TCDWidgetSet.BackendGetFontPath(DC: HDC): string;
+begin
+  Result := '/Library/Fonts/Arial.ttf';
+end;
 {$endif}
 
 (*{------------------------------------------------------------------------------

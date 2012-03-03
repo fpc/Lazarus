@@ -91,6 +91,9 @@ function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExPr
 function ExtCreatePen(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN; override;
 function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  override;*)
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
+{$ifndef CD_UseNativeText}
+function BackendGetFontPath(DC: HDC): string;
+{$endif}
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
 //function FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool; override;

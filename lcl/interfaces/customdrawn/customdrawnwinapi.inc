@@ -2162,25 +2162,57 @@ end;*)
 function TCDWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
-  LazDC: TLazCanvas absolute DC;
+  lDestCanvas: TLazCanvas absolute DC;
+  lDestIntfImage: TLazIntfImage;
+  lFontSize: Integer;
+  FTDrawer: TIntfFreeTypeDrawer;
+  ftFont: TFreeTypeFont;
+  RealX, RealY: Integer;
 begin
-  {$ifdef VerboseCDWinAPI}
-    DebugLn('[WinAPI ExtTextOut]');
+  {$ifdef VerboseCDText}
+    DebugLn(Format(':>[WinAPI ExtTextOut] DC=%x Str=%s X=%d Y=%d',
+      [DC, StrPas(Str), X, Y]));
   {$endif}
 
   Result := False;
 
-  if Rect <> nil then
-  begin
-    Rect^ := Bounds(0, 0, 0, 0);
-  end;
+  if (Str = nil) or (Str = '') then Exit;
 
-  {if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
+  if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
     exit;
 
-  if not IsValidDC(DC) then Exit;
+  if Rect <> nil then Rect^ := Bounds(0, 0, 0, 0);
 
-   if ((Options and ETO_OPAQUE) <> 0) then
+  if not IsValidDC(DC) then Exit;
+  lDestIntfImage := TLazIntfImage(lDestCanvas.Image);
+
+  if (lDestCanvas.Font = nil) or (lDestCanvas.Font.Size = 0) then lFontSize := 10
+  else lFontSize := Abs(lDestCanvas.Font.Size);
+
+  // Preparations finished, draw it using LazFreeType
+
+  FTDrawer := TIntfFreeTypeDrawer.Create(lDestIntfImage);
+  ftFont := TFreeTypeFont.Create; //only one font at once for now...
+  try
+    ftFont.Name := BackendGetFontPath(DC);
+    ftFont.Hinted := true;
+    ftFont.ClearType := true;
+    ftFont.Quality := grqHighQuality;
+    RealX := X + lDestCanvas.WindowOrg.X + lDestCanvas.BaseWindowOrg.X;
+    RealY := Y + lDestCanvas.WindowOrg.Y + lDestCanvas.BaseWindowOrg.Y;
+    FTDrawer.DrawText(Str, ftFont, RealX, RealY, colBlack, 255);
+  finally
+    ftFont.Free;
+    FTDrawer.Free;
+  end;
+
+  {$ifdef VerboseCDText}
+    DebugLn(':<[WinAPI ExtTextOut]');
+  {$endif}
+
+  Result := True;
+
+{   if ((Options and ETO_OPAQUE) <> 0) then
      QtDC.fillRect(Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
 
   if Str <> nil then
