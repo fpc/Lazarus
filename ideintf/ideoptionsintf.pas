@@ -427,19 +427,20 @@ function TAbstractIDEOptionsEditor.ContainsTextInCaption(AText: string): Boolean
 const
   FoundColor = clFuchsia;
 var
-  UpperText: String;
+  LowerText: String;
 
   function Search(AControl: TControl): Boolean;
   var
     i: Integer;
     AWinControl: TWinControl;
   begin
-    if Pos(UpperText, Uppercase(AControl.Caption))>0 then begin
-      //if Length(UpperText)>2 then
-      //  DebugLn('TAbstractIDEOptionsEditor.ContainsTextInCaption: Searching "', UpperText,
+    Result:=False;
+    if Pos(LowerText, LowerCase(AControl.Caption))>0 then begin
+      //if Length(LowerText)>2 then
+      //  DebugLn('TAbstractIDEOptionsEditor.ContainsTextInCaption: Searching "', LowerText,
       //          '", Found "', AControl.Caption, '", in ', AControl.Name);
       AControl.Font.Color:=FoundColor;
-      exit(True);
+      Result:=True;
     end
     else if AControl.Font.Color=FoundColor then
       AControl.Font.Color:=clDefault;
@@ -447,16 +448,14 @@ var
       AWinControl:=TWinControl(AControl);
       for i:=0 to AWinControl.ControlCount-1 do
         // Memo.Caption return all the lines, skip it.
-        if not (AWinControl.Controls[i] is TMemo) then begin
-          Result:=Search(AWinControl.Controls[i]); // Recursive call
-          if Result then exit;
-        end;
+        if not (AWinControl.Controls[i] is TMemo) then
+          if Search(AWinControl.Controls[i]) then      // Recursive call
+            Result:=True;
     end;
-    Result:=False;
   end;
 
 begin
-  UpperText:=Uppercase(AText);
+  LowerText:=LowerCase(AText);
   Result:=Search(Self);
 end;
 

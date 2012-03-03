@@ -3,7 +3,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
   Height = 500
   Top = 182
   Width = 700
-  ActiveControl = CatTVSplitter
+  ActiveControl = FilterEdit
   BorderIcons = [biSystemMenu]
   Caption = 'IDEOptionsDialog'
   ClientHeight = 500
