@@ -1249,7 +1249,7 @@ begin
       end;
       DoShowPackageGraphPathList(PathList);
       Result:=IDEMessageDialogAb(lisPkgMangBrokenDependency,
-        lisPkgMangARequiredPackagesWasNotFound,
+        lisPkgMangRequiredPackagesWereNotFound,
         mtError,Btns,ShowAbort);
       if not ShowAbort then
         Result := mrCancel; // User confirmed error, implicitly cancel the action

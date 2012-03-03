@@ -3679,8 +3679,8 @@ resourcestring
   lisPkgMangTheProjectRequiresThePackageButItWasNotFound = 'The project '
     +'requires the package %s%s%s.%sBut it was not found. See Project -> '
     +'Project Inspector.';
-  lisPkgMangARequiredPackagesWasNotFound = 'A required packages was not '
-    +'found. See package graph.';
+  lisPkgMangRequiredPackagesWereNotFound = 'One or more required packages were not '
+    +'found. See package graph for details.';
   lisPkgMangCircularDependencies = 'Circular dependencies found';
   lisPkgMangThePackageIsCompiledAutomaticallyAndItsOutputDirec = 'The package '
     +'%s is compiled automatically and its output directory is "%s", which is '
@@ -3733,7 +3733,7 @@ resourcestring
     +'interactive, aborting now.';
   lisPkgMangPackageConflicts = 'Package conflicts';
   lisPkgMangThereIsAlreadyAPackageLoadedFromFile = 'There is already a '
-    +'package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package '
+    +'package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package '
     +'Graph.%sReplace is impossible.';
   lisPkgMangSavePackage = 'Save package?';
   lisPkgMangLoadingPackageWillReplacePackage = 'Loading package %s will '
