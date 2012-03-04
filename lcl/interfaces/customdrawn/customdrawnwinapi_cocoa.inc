@@ -159,6 +159,11 @@ begin
 end;*)
 
 {$ifndef CD_UseNativeText}
+procedure TCDWidgetSet.BackendListFontPaths(var AFontPaths: TStringList);
+begin
+  AFontPaths.Add('/Library/Fonts/');
+end;
+
 function TCDWidgetSet.BackendGetFontPath(const LogFont: TLogFont; const LongFontName: string): string;
 begin
   Result := '/Library/Fonts/Arial.ttf';

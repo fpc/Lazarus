@@ -8,6 +8,8 @@ uses
   // rtl+ftl
   Types, Classes, SysUtils,
   fpimage, fpcanvas, Math,
+  // LazUtils
+  fileutil,
   // Custom Drawn Canvas
   IntfGraphics, lazcanvas, lazregions,
   // LCL
@@ -153,6 +155,10 @@ function GetTimerCount(): Integer;
 function GetSmallestTimerInterval(): Integer;
 procedure RemoveTimer(ATimer: TCDTimer);
 function FindTimerWithNativeHandle(ANativeHandle: PtrInt): TCDTimer;
+
+// Font choosing routines
+
+procedure VerifyAndCleanUpFontDirectories(AFontDirectories: TStringList);
 
 implementation
 
@@ -689,6 +695,44 @@ begin
     if lTimer.NativeHandle = ANativeHandle then
       Exit(lTimer);
   end;
+end;
+
+procedure VerifyAndCleanUpFontDirectories(AFontDirectories: TStringList);
+var
+  i, j: Integer;
+begin
+  // Add path delimitiers to the end of all paths
+  for i := 0 to AFontDirectories.Count -1 do
+  begin
+    AFontDirectories.Strings[i] := IncludeTrailingPathDelimiter(AFontDirectories.Strings[i]);
+  end;
+
+  // remove all duplicates
+  i := 0;
+  while i < AFontDirectories.Count do
+  begin
+    j := i+1;
+    while j < AFontDirectories.Count do
+    begin
+      if AFontDirectories.Strings[i] = AFontDirectories.Strings[j] then
+        AFontDirectories.Delete(j);
+      Inc(j);
+    end;
+    Inc(i);
+  end;
+
+  // Now remove all directories which don't exist
+  i := 0;
+  while i < AFontDirectories.Count do
+  begin
+    if not DirectoryExistsUTF8(AFontDirectories.Strings[i]) then
+      AFontDirectories.Delete(i);
+    Inc(i);
+  end;
+
+  // Raise an exception if there are no font directories
+  if AFontDirectories.Count = 0 then
+    raise Exception.Create('[VerifyAndCleanUpFontDirectories] After cleaning up no font directories were found.');
 end;
 
 { TCDBitmap }

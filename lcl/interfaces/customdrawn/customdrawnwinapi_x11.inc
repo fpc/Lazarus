@@ -631,9 +631,79 @@ begin
 end;*)
 
 {$ifndef CD_UseNativeText}
-function TCDWidgetSet.BackendGetFontPath(const LogFont: TLogFont; const LongFontName: string): string;
+procedure TCDWidgetSet.BackendListFontPaths(var AFontPaths: TStringList);
+var
+  Doc: TXMLDocument;
+  lFontDirectories: TStringList;
+  i, FontsCount: cint;
+  lXFontPath: PPChar;
+  XMLFontConfig, XMLDir: TDOMNode;
+  XMLFontConfigChilds: TDOMNodeList;
+const
+  GlobalFontsConfFile = '/etc/fonts/fonts.conf';
 begin
-  Result := '/usr/share/fonts/TTF/liberation/LiberationSans-Regular.ttf';
+  // First paths from X11
+  lXFontPath := XGetFontPath(FDisplay, @FontsCount);
+  for i := 0 to FontsCount-1 do
+    AFontPaths.Add(lXFontPath[i]);
+  XFreeFontPath(lXFontPath);
+
+  // Paths from the global config file
+  if FileUtil. FileExistsUTF8(GlobalFontsConfFile) then
+  begin
+    try
+      ReadXMLFile(Doc, GlobalFontsConfFile);
+      XMLFontConfig := Doc.DocumentElement.FirstChild; // the tag <fontconfig>
+      if Assigned(XMLFontConfig) then
+      begin
+        XMLFontConfigChilds := XMLFontConfig.ChildNodes;
+        for i := 0 to XMLFontConfigChilds.Count-1 do
+          if UTF8CompareText(XMLFontConfigChilds.Item[i].NodeName, 'dir') = 0 then
+            AFontPaths.Add(XMLFontConfigChilds.Item[i].FirstChild.NodeValue);
+      end;
+    finally
+      XMLFontConfig.Free;
+      Doc.Free;
+    end;
+  end;
+
+  // Add a good standards too in case the list is empty
+  AFontPaths.Add('/usr/share/fonts/');
+  AFontPaths.Add('/usr/lib/X11/fonts/');
+  AFontPaths.Add('/usr/X11R6/lib/X11/fonts/');
+  AFontPaths.Add('/opt/ttfonts/');
+  AFontPaths.Add('/usr/share/fonts/TTF/liberation/');
+
+  // Now clear up the list, make sure all paths end with a path delim, etc
+  VerifyAndCleanUpFontDirectories(AFontPaths);
+end;
+
+function TCDWidgetSet.BackendGetFontPath(const LogFont: TLogFont; const LongFontName: string): string;
+var
+  lFontPaths: TStringList;
+  i: Integer;
+  Str: String;
+begin
+  lFontPaths := TStringList.Create;
+  try
+    BackendListFontPaths(lFontPaths);
+
+    // Classify and choose the fonts
+    // ToDo
+
+    // Fallback: Search for known fallback fonts
+    for i := 0 to lFontPaths.Count -1 do
+    begin
+      Str := lFontPaths.Strings[i] + 'LiberationSans-Regular.ttf';
+      if FileExistsUTF8(Str) then
+      begin
+        Result := Str;
+        Break;
+      end;
+    end;
+  finally
+    lFontPaths.Free;
+  end;
 end;
 {$endif}
 

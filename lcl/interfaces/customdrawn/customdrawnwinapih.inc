@@ -64,6 +64,7 @@ function CreateCompatibleDC(DC: HDC): HDC; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
 {$ifndef CD_UseNativeText}
+procedure BackendListFontPaths(var AFontPaths: TStringList);
 function BackendGetFontPath(const LogFont: TLogFont; const LongFontName: string): string;
 {$endif}
 function CreateIconIndirect(IconInfo: PIconInfo): HICON; override;

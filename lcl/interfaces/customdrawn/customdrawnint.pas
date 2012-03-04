@@ -31,6 +31,9 @@ uses
   // RTL
   Types, Classes, SysUtils, Math,
   fpimage, fpcanvas, fpimgcanv, ctypes, dateutils,
+  // XML
+  XMLRead, Dom,
+  // Platform specific
   {$ifdef CD_Windows}Windows, customdrawn_WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, CocoaPrivate, CocoaGDIObjects,{$endif}
   {$ifdef CD_X11}X, XLib, XUtil, BaseUnix, customdrawn_x11proc,{$ifdef CD_UseNativeText}xft, fontconfig,{$endif}{$endif}
@@ -38,12 +41,14 @@ uses
   customdrawn_androidproc, jni, bitmap, log, keycodes,
   {$endif}
   {$ifdef WinCE}aygshell,{$endif}
-  // Widgetset
-  customdrawnproc,
+  // LazUtils
+  fileutil, lazutf8,
   {$ifndef CD_UseNativeText}
   // LazFreeType
   LazFreeTypeIntfDrawer, LazFreeType, EasyLazFreeType,
   {$endif}
+  // Widgetset
+  customdrawnproc,
   // LCL
   customdrawn_common, customdrawncontrols, customdrawndrawers,
   lazcanvas, lazregions, lazdeviceapis,
