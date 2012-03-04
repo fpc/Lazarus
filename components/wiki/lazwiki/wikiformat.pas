@@ -367,10 +367,30 @@ begin
 end;
 
 function GetWikiPageLanguage(const Page: string): string;
+var
+  l: Integer;
+  p: PChar;
 begin
-  Result:=RightStr(Page,3);
-  if (Result='') or (Result[1]<>'/') then exit('');
-  Delete(Result,1,1);
+  l:=length(Page);
+  Result:='';
+  if l=0 then exit;
+  // /de or /zh_TW
+  if (l>3) then begin
+    p:=PChar(Page)+l-3;
+    if (p^='/')
+    and (p[1] in ['a'..'z']) and (p[2] in ['a'..'z']) then
+      // short form: /de
+      exit(RightStr(Page,2));
+  end else if (l>6) then begin
+    p:=PChar(Page)+l-6;
+    if (p^='/')
+    and (p[1] in ['a'..'z']) and (p[2] in ['a'..'z'])
+    and (p[3]='_')
+    and (p[4] in ['A'..'Z']) and (p[5] in ['A'..'Z'])
+    then
+      // long form: /zh_TW
+      exit(RightStr(Page,5));
+  end;
 end;
 
 function WikiPageHasLanguage(const Page, Languages: string): boolean;

@@ -119,6 +119,8 @@ type
 
   TWiki2HelpConverter = class(TWiki2HTMLConverter)
   private
+    FCurQuery: TWikiHelpQuery;
+    FCurScoring: TWHScoring;
     FHelp: TWikiHelp;
   protected
     PagesPerThread: integer;
@@ -129,6 +131,7 @@ type
     procedure ExtractTextToken(Token: TWPToken);
     procedure ParallelExtractPageText(Index: PtrInt; {%H-}Data: Pointer; {%H-}Item: TMultiThreadProcItem);
     procedure ParallelLoadPage(Index: PtrInt; {%H-}Data: Pointer; {%H-}Item: TMultiThreadProcItem);
+    procedure ParallelComputeScores(Index: PtrInt; {%H-}Data: Pointer; {%H-}Item: TMultiThreadProcItem);
   public
     constructor Create; override;
     procedure Clear; override;
@@ -136,7 +139,8 @@ type
     procedure LoadPages;
     procedure ConvertInit; override;
     procedure ExtractAllTexts;
-    procedure Search(Query: TWikiHelpQuery; Scoring: TWHScoring);
+    procedure Search(Query: TWikiHelpQuery; Scoring: TWHScoring;
+      var FoundPages: TFPList);
     property Help: TWikiHelp read FHelp;
   end;
 
@@ -204,6 +208,7 @@ var
   WikiHelp: TWikiHelp = nil;
 
 function SearchTextToPhrases(Txt: string): TStringList;
+function CompareW2HPageForScore(Page1, Page2: Pointer): integer;
 
 implementation
 
@@ -244,6 +249,19 @@ begin
   end;
   if (Phrase<>'') and (Result.IndexOf(Phrase)<0) then
     Result.Add(Phrase);
+end;
+
+function CompareW2HPageForScore(Page1, Page2: Pointer): integer;
+var
+  p1: TW2HelpPage absolute Page1;
+  p2: TW2HelpPage absolute Page2;
+begin
+  if p1.Score>p2.Score then
+    exit(-1)
+  else if p1.Score<p2.Score then
+    exit(1)
+  else
+    exit(0);
 end;
 
 { TWikiHelpQuery }
@@ -527,8 +545,7 @@ end;
 procedure TWiki2HelpConverter.ParallelExtractPageText(Index: PtrInt;
   Data: Pointer; Item: TMultiThreadProcItem);
 var
-  StartIndex: Integer;
-  EndIndex: Integer;
+  StartIndex, EndIndex: Integer;
   i: Integer;
 begin
   StartIndex:=Index*PagesPerThread;
@@ -542,8 +559,7 @@ procedure TWiki2HelpConverter.ParallelLoadPage(Index: PtrInt; Data: Pointer;
   Item: TMultiThreadProcItem);
 var
   Page: TW2HelpPage;
-  StartIndex: Integer;
-  EndIndex: integer;
+  StartIndex, EndIndex: Integer;
   i: Integer;
 begin
   StartIndex:=Index*PagesPerThread;
@@ -558,6 +574,22 @@ begin
         Log('ERROR: '+Page.WikiFilename+': '+E.Message);
       end;
     end;
+  end;
+end;
+
+procedure TWiki2HelpConverter.ParallelComputeScores(Index: PtrInt;
+  Data: Pointer; Item: TMultiThreadProcItem);
+var
+  StartIndex, EndIndex: Integer;
+  i: Integer;
+  Page: TW2HelpPage;
+begin
+  StartIndex:=Index*PagesPerThread;
+  EndIndex:=Min(StartIndex+PagesPerThread-1,Count-1);
+  if Help.AbortingLoad then exit;
+  for i:=StartIndex to EndIndex do begin
+    Page:=TW2HelpPage(Pages[i]);
+    Page.Score:=Page.GetScore(FCurQuery,FCurScoring);
   end;
 end;
 
@@ -598,16 +630,23 @@ begin
   ProcThreadPool.DoParallel(@ParallelExtractPageText,0,(Count-1) div PagesPerThread);
 end;
 
-procedure TWiki2HelpConverter.Search(Query: TWikiHelpQuery; Scoring: TWHScoring
-  );
+procedure TWiki2HelpConverter.Search(Query: TWikiHelpQuery;
+  Scoring: TWHScoring; var FoundPages: TFPList);
 var
   i: Integer;
   Page: TW2HelpPage;
 begin
+  FCurQuery:=Query;
+  FCurScoring:=Scoring;
+  if FoundPages=nil then
+    FoundPages:=TFPList.Create;
+  ProcThreadPool.DoParallel(@ParallelComputeScores,0,(Count-1) div PagesPerThread);
   for i:=0 to Count-1 do begin
     Page:=TW2HelpPage(Pages[i]);
-    Page.GetScore(Query,Scoring);
+    if Page.Score<=0 then continue;
+    FoundPages.Add(Page);
   end;
+  FoundPages.Sort(@CompareW2HPageForScore);
 end;
 
 procedure TWiki2HelpConverter.LoadPages;
@@ -889,12 +928,21 @@ procedure TWikiHelp.TestSearch;
 var
   StartTime: TDateTime;
   EndTime: TDateTime;
+  FoundPages: TFPList;
+  i: Integer;
+  Page: TW2HelpPage;
 begin
   StartTime:=Now;
-  debugln(['TWikiHelp.TestSearch START ',Query.Phrases.Text]);
-  Converter.Search(Query,Scoring);
+  debugln(['TWikiHelp.TestSearch START Search=',Trim(Query.Phrases.Text)]);
+  FoundPages:=nil;
+  Converter.Search(Query,Scoring,FoundPages);
+  for i:=0 to FoundPages.Count-1 do begin
+    Page:=TW2HelpPage(FoundPages[i]);
+    debugln(['TWikiHelp.TestSearch ',Page.WikiDocumentName,' ',Page.Score]);
+  end;
+  FoundPages.Free;
   EndTime:=Now;
-  debugln(['TWikiHelp.TestSearch END "',Query.Phrases.Text,'" ',dbgs(round(Abs(EndTime-StartTime)*86400000))+'msec']);
+  debugln(['TWikiHelp.TestSearch END Search="',Trim(Query.Phrases.Text),'" ',dbgs(round(Abs(EndTime-StartTime)*86400000))+'msec']);
 end;
 
 end.
