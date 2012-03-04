@@ -743,8 +743,7 @@ begin
   HideMouseCheckBox.Caption := dlgAutoHideCursor;
 end;
 
-procedure TEditorMouseOptionsFrame.ReadSettings(
-  AOptions: TAbstractIDEOptions);
+procedure TEditorMouseOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   i: Integer;
 begin
@@ -841,8 +840,7 @@ begin
   CheckForShiftChange(nil);
 end;
 
-procedure TEditorMouseOptionsFrame.WriteSettings(
-  AOptions: TAbstractIDEOptions);
+procedure TEditorMouseOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   TEditorOptions(AOptions).UserMouseSettings.Assign(FTempMouseSettings);
   with TEditorOptions(AOptions) do begin
