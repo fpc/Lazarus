@@ -3468,7 +3468,7 @@ resourcestring
     +'already exists in the selection%swith file: %s%s%s.';
   lisProjAddToProject = 'Add to Project';
   lisProjAddNewRequirement = 'New Requirement';
-  lisProjAddEditorFile = 'Add editor files';
+  lisProjAddEditorFile = 'Add Editor Files';
   lisProjFiles = 'Files:';
   lisProjAddAddFilesToProject = 'Add Files to Project';
   lisProjAddPackageName = 'Package Name:';
