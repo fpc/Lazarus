@@ -2752,9 +2752,7 @@ begin
   if QEvent_type(Event) = QEventKeyRelease then
     LCLModifiers := LCLModifiers or KF_UP;
 
-  KeyMsg.KeyData := (AKeyCode shl 16) or
-    (LCLModifiers shl 16) or $0001;
-
+  KeyMsg.KeyData := PtrInt((AKeyCode shl 16) or (LCLModifiers shl 16) or $0001);
 
   {$ifdef windows}
     ACharCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
