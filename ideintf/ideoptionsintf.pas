@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Controls, Buttons, Forms, StdCtrls, Graphics,
-  ComCtrls, Grids;
+  ComCtrls, Grids, maps;
 
 const
   NoParent = -1;
@@ -36,6 +36,9 @@ type
   TAbstractOptionsEditorDialog = class;
 
   // types
+
+  // Original font styles, used by filter.
+  TDefaultFontStyles = TMap; // specialize  <TControl, TFontStyles>;
 
   TIDEOptionsHandler = (
     iohBeforeRead,
@@ -111,9 +114,12 @@ type
     FOnSaveIDEOptions: TOnSaveIDEOptions;
     FRec: PIDEOptionsEditorRec;
     FGroupRec: PIDEOptionsGroupRec;
+    FDefaultStyles: TDefaultFontStyles;
   protected
     procedure DoOnChange;
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     function Check: Boolean; virtual;
     function GetTitle: String; virtual; abstract;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); virtual; abstract;
@@ -123,6 +129,7 @@ type
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; virtual; abstract;
     class function DefaultCollapseChildNodes: Boolean; virtual;
     function FindOptionControl(AClass: TControlClass): TControl;
+    procedure RememberDefaultStyles;
     function ContainsTextInCaption(AText: string): Boolean;
 
     property OnLoadIDEOptions: TOnLoadIDEOptions read FOnLoadIDEOptions write FOnLoadIDEOptions;
@@ -205,6 +212,9 @@ function RegisterIDEOptionsEditor(AGroupIndex: Integer;
 function IDEEditorGroups: TIDEOptionsGroupList;
 
 const
+  // Font style used by filter
+  MatchFontStyle: TFontStyles = [fsBold, fsItalic, fsUnderline]; // Color = clFuchsia;
+
   // predefined environment options groups
   GroupEnvironment  = 100;
     EnvOptionsFiles         = 100;
@@ -380,6 +390,18 @@ end;
 
 { TAbstractIDEOptionsEditor }
 
+constructor TAbstractIDEOptionsEditor.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FDefaultStyles:=nil;
+end;
+
+destructor TAbstractIDEOptionsEditor.Destroy;
+begin
+  FDefaultStyles.Free;
+  inherited Destroy;
+end;
+
 procedure TAbstractIDEOptionsEditor.DoOnChange;
 begin
   if Assigned(FOnChange) then
@@ -410,10 +432,11 @@ function TAbstractIDEOptionsEditor.FindOptionControl(AClass: TControlClass): TCo
   begin
     if AControl is AClass then
       exit(AControl);
+    // Search child controls inside this one.
     if AControl is TWinControl then begin
       AWinControl:=TWinControl(AControl);
       for i:=0 to AWinControl.ControlCount-1 do begin
-        Result:=Search(AWinControl.Controls[i]);
+        Result:=Search(AWinControl.Controls[i]); // Recursive call.
         if Result<>nil then exit;
       end;
     end;
@@ -424,11 +447,42 @@ begin
   Result:=Search(GetParentForm(Self));
 end;
 
+procedure TAbstractIDEOptionsEditor.RememberDefaultStyles;
+// Store original font styles of controls to a map so the filter can restore them.
+
+  procedure Search(AControl: TControl);
+  var
+    i: Integer;
+    AWinControl: TWinControl;
+  begin
+    // Store only if there is any style defined
+    if AControl.Font.Style <> [] then begin
+      Assert(AControl.Font.Style<>MatchFontStyle, 'Do not use the same font style that filter uses.');
+//      FDefaultStyles.SetData(AControl, AControl.Font.Style);
+    end;
+    // Search child controls inside this one.
+    if AControl is TWinControl then begin
+      AWinControl:=TWinControl(AControl);
+      for i:=0 to AWinControl.ControlCount-1 do
+        Search(AWinControl.Controls[i]);  // Recursive call.
+    end;
+  end;
+
+begin
+  if FDefaultStyles=nil then begin
+//    FDefaultStyles:=TDefaultFontStyles.Create(ituPtrSize, SizeOf(TFontStyles));
+    Search(Self);
+  end;
+end;
+
 function TAbstractIDEOptionsEditor.ContainsTextInCaption(AText: string): Boolean;
-const
-  FoundColor = clFuchsia;
 var
   LowerText: String;
+
+  function SearchComboBox(AControl: TCustomComboBox): Boolean;
+  begin
+    Result:=False;  // ToDo...
+  end;
 
   function SearchListBox(AControl: TCustomListBox): Boolean;
   var
@@ -437,54 +491,69 @@ var
     Result:=False;
     for i := 0 to AControl.Items.Count-1 do begin
       if Pos(LowerText, LowerCase(AControl.Items[i]))>0 then begin
-        if Length(LowerText)>2 then
-          DebugLn('TAbstractIDEOptionsEditor.ContainsTextInCaption: Searching "',
-              LowerText, '", Found "', AControl.Items[i], '", in ListBox ', AControl.Name);
+        //if Length(LowerText)>2 then
+        //  DebugLn('TAbstractIDEOptionsEditor.ContainsTextInCaption: Searching "',
+        //      LowerText, '", Found "', AControl.Items[i], '", in ListBox ', AControl.Name);
         // ToDo: Indicate found item somehow.
         Result:=True;
       end;
     end;
   end;
 
-  function SearchListView(AControl: TListView): Boolean;
+  function SearchListView(AControl: TCustomListView): Boolean;
   begin
-    Result:=False;
+    Result:=False;  // ToDo...
   end;
 
-  function SearchStringGrid(AControl: TStringGrid): Boolean;
+  function SearchTreeView(AControl: TCustomTreeView): Boolean;
   begin
-    Result:=False;
+    Result:=False;  // ToDo...
+  end;
+
+  function SearchStringGrid(AControl: TCustomStringGrid): Boolean;
+  begin
+    Result:=False;  // ToDo...
+  end;
+
+  function SearchMemo(AControl: TCustomMemo): Boolean;
+  begin
+    Result:=False;  // Memo.Caption returns all the lines, skip.
   end;
 
   function Search(AControl: TControl): Boolean;
   var
     i: Integer;
-    Found: SizeInt;
-    AWinControl, SubCtrl: TWinControl;
-    lb: TListBox;
+    AWinControl: TWinControl;
+    DefStyle: TFontStyles;
   begin
     Result:=False;
     // *** First find matches in different controls ***
-    if AControl is TMemo then begin // Memo.Caption returns all the lines, skip.
-    end
-    //else if AControl is TSynEdit then // Can't be used here in IdeOptionsIntf !
-    //  Found:=SearchSynEdit(AControl)
-    //else if AControl is TComboBox then
-    //  Found:=SearchComboBox(AControl)
+    // TSynEdit can't be used here in IdeOptionsIntf !
+    //if AControl is TSynEdit then  Found:=SearchSynEdit(AControl)
+    if AControl is TCustomComboBox then
+      Result:=SearchComboBox(TCustomComboBox(AControl))
     else if AControl is TCustomListBox then
       Result:=SearchListBox(TCustomListBox(AControl))
-    else if AControl is TListView then
-      Result:=SearchListView(TListView(AControl))
-    else if AControl is TStringGrid then
-      Result:=SearchStringGrid(TStringGrid(AControl))
+    else if AControl is TCustomListView then
+      Result:=SearchListView(TCustomListView(AControl))
+    else if AControl is TCustomTreeView then
+      Result:=SearchTreeView(TCustomTreeView(AControl))
+    else if AControl is TCustomStringGrid then
+      Result:=SearchStringGrid(TCustomStringGrid(AControl))
+    else if AControl is TCustomMemo then
+      Result:=SearchMemo(TCustomMemo(AControl))
     else begin
       Result:=Pos(LowerText, LowerCase(AControl.Caption))>0;
-      // ToDo: How to change text color on a button?
-      // if AControl is TButton then begin  end  else
+      // Indicate the match
       if Result then
-        AControl.Font.Color:=FoundColor  // Indicate the match
-      else if AControl.Font.Color=FoundColor then
-        AControl.Font.Color:=clDefault;  // Remove the indication of a found item.
+        AControl.Font.Style:=MatchFontStyle
+      // or, remove the indication.
+      else if AControl.Font.Style=MatchFontStyle then begin
+        DefStyle:=[];
+//        if FDefaultStyles.HasId(AControl) then
+//          FDefaultStyles.GetData(AControl, DefStyle);
+        AControl.Font.Style:=DefStyle;
+      end;
     end;
 
     // Check child controls inside this one.
