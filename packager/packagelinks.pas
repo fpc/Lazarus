@@ -40,8 +40,8 @@ interface
 
 uses
   Classes, SysUtils, AVL_Tree, Laz_XMLCfg, FileProcs, CodeToolManager,
-  CodeCache, CodeToolsStructs, LCLProc, FileUtil, MacroIntf, PackageIntf,
-  IDEProcs, DialogProcs, EnvironmentOpts, PackageDefs, LazConf;
+  CodeToolsStructs, LCLProc, FileUtil, MacroIntf, PackageIntf,
+  IDEProcs, EnvironmentOpts, PackageDefs, LazConf;
   
 const
   PkgLinksFileVersion = 2;

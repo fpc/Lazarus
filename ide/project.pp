@@ -838,7 +838,7 @@ type
     procedure UpdateSourceDirectories;
     procedure EditorInfoAdd(EdInfo: TUnitEditorInfo);
     procedure EditorInfoRemove(EdInfo: TUnitEditorInfo);
-    procedure OnMacroEngineSubstitution(TheMacro: TTransferMacro;
+    procedure OnMacroEngineSubstitution({%H-}TheMacro: TTransferMacro;
       const MacroName: string; var s: string;
       const Data: PtrInt; var Handled, Abort: boolean; Depth: integer);
   protected
@@ -958,7 +958,7 @@ type
 
     // Application.CreateForm statements
     function AddCreateFormToProjectFile(const AClassName, AName:string):boolean;
-    function RemoveCreateFormFromProjectFile(const AClassName,
+    function RemoveCreateFormFromProjectFile(const {%H-}AClassName,
                                                          AName: string):boolean;
     function FormIsCreatedInProjectFile(const AClassname, AName:string):boolean;
     
@@ -1164,6 +1164,7 @@ end;
 
 function dbgs(Flag: TUnitInfoFlag): string;
 begin
+  Result:='';
   WriteStr(Result, Flag);
 end;
 
@@ -1718,7 +1719,7 @@ begin
         then
           Bookmarks.Delete(i)
         else
-        if TSynEdit(OpenEditorInfo[0].EditorComponent.EditorControl).GetBookMark(Bookmarks[i].ID, X, Y)
+        if TSynEdit(OpenEditorInfo[0].EditorComponent.EditorControl).GetBookMark(Bookmarks[i].ID, X{%H-}, Y{%H-})
         then
           Bookmarks[i].CursorPos := Point(X, Y);
       end;
@@ -2641,7 +2642,7 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
     end;
   end;
   
-  function UnitMustBeSaved(i: integer; SaveData, SaveSession: boolean): boolean;
+  function UnitMustBeSaved(i: integer; {%H-}SaveData, SaveSession: boolean): boolean;
   begin
     Result:=false;
     if not Units[i].IsPartOfProject then begin

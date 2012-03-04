@@ -49,7 +49,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, LCLProc, Controls, Forms, Buttons, StdCtrls, ComCtrls,
   Dialogs, ExtCtrls, Laz_XMLCfg,
-  BaseIDEIntf, IDEContextHelpEdit, IDEHelpIntf, ProjectIntf,
+  BaseIDEIntf, IDEHelpIntf, ProjectIntf,
   IDEProcs, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts, FileUtil,
   ButtonPanel;
 

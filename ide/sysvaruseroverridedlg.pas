@@ -36,7 +36,7 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs,
+  Classes, SysUtils, Controls, Forms, Buttons, StdCtrls, Dialogs,
   LazarusIDEStrConsts, ButtonPanel;
 
 type

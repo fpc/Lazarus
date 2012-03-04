@@ -380,7 +380,7 @@ type
     function GetOwnerName: string; override;
     procedure InvalidateOptions;
     function GetDefaultMainSourceFileName: string; override;
-    function CreateTargetFilename(const MainSourceFileName: string): string; override;
+    function CreateTargetFilename(const {%H-}MainSourceFileName: string): string; override;
 
     procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string); override;
     procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string); override;

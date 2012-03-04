@@ -318,7 +318,7 @@ type
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
-    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; override;
   end;
 
   { TProjectProgramDescriptor }
