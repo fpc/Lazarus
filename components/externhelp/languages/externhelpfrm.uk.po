@@ -62,7 +62,9 @@ msgid "Include sub directories"
 msgstr "Включити підтеки"
 
 #: externhelpfrm.ehrsmacrofy
-msgid "Macrofy"
+#, fuzzy
+#| msgid "Macrofy"
+msgid "Use macros"
 msgstr "Перетворити в макрос"
 
 #: externhelpfrm.ehrsmysettings

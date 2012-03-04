@@ -1,12 +1,14 @@
-inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
+object ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
+  Left = 0
   Height = 384
+  Top = 0
   Width = 581
   ClientHeight = 384
   ClientWidth = 581
   TabOrder = 0
   DesignLeft = 358
   DesignTop = 166
-  object ItemsTreeView: TTreeView[0]
+  object ItemsTreeView: TTreeView
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Splitter1
@@ -19,7 +21,7 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
-    DefaultItemHeight = 15
+    DefaultItemHeight = 16
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
@@ -31,7 +33,7 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     OnSelectionChanged = ItemsTreeViewSelectionChanged
     OnStartDrag = ItemsTreeViewStartDrag
   end
-  object AddSpeedButton: TSpeedButton[1]
+  object AddSpeedButton: TSpeedButton
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
@@ -41,13 +43,12 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     Width = 23
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
-    Color = clBtnFace
     NumGlyphs = 0
     OnClick = AddSpeedButtonClick
     ShowHint = True
     ParentShowHint = False
   end
-  object DeleteSpeedButton: TSpeedButton[2]
+  object DeleteSpeedButton: TSpeedButton
     AnchorSideLeft.Control = AddSpeedButton
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = AddSpeedButton
@@ -55,34 +56,33 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     Height = 22
     Top = 356
     Width = 23
-    Color = clBtnFace
     NumGlyphs = 0
     OnClick = DeleteSpeedButtonClick
     ShowHint = True
     ParentShowHint = False
   end
-  object NameLabel: TLabel[3]
+  object NameLabel: TLabel
     AnchorSideLeft.Control = Splitter1
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
     Left = 235
-    Height = 14
+    Height = 15
     Top = 20
-    Width = 53
+    Width = 64
     BorderSpacing.Left = 6
     BorderSpacing.Top = 20
     Caption = 'NameLabel'
     ParentColor = False
   end
-  object NameEdit: TEdit[4]
+  object NameEdit: TEdit
     AnchorSideLeft.Control = NameLabel
     AnchorSideTop.Control = NameLabel
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 235
-    Height = 21
-    Top = 34
+    Height = 24
+    Top = 35
     Width = 340
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Right = 6
@@ -91,27 +91,27 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     TabOrder = 1
     Text = 'NameEdit'
   end
-  object FilenameLabel: TLabel[5]
+  object FilenameLabel: TLabel
     AnchorSideLeft.Control = NameLabel
     AnchorSideTop.Control = NameEdit
     AnchorSideTop.Side = asrBottom
     Left = 235
-    Height = 14
-    Top = 70
-    Width = 68
+    Height = 15
+    Top = 74
+    Width = 81
     BorderSpacing.Top = 15
     Caption = 'FilenameLabel'
     ParentColor = False
   end
-  object FilenameEdit: TEdit[6]
+  object FilenameEdit: TEdit
     AnchorSideLeft.Control = FilenameLabel
     AnchorSideTop.Control = FilenameLabel
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 235
-    Height = 21
-    Top = 84
+    Height = 24
+    Top = 89
     Width = 346
     Anchors = [akTop, akLeft, akRight]
     OnChange = FilenameEditChange
@@ -119,34 +119,34 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     TabOrder = 2
     Text = 'FilenameEdit'
   end
-  object URLLabel: TLabel[7]
+  object URLLabel: TLabel
     AnchorSideLeft.Control = NameLabel
     AnchorSideTop.Control = WithSubDirsCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 235
-    Height = 14
-    Top = 160
-    Width = 45
+    Height = 15
+    Top = 176
+    Width = 53
     BorderSpacing.Top = 15
     Caption = 'URLLabel'
     ParentColor = False
   end
-  object HelpBitBtn: TBitBtn[8]
+  object HelpBitBtn: TBitBtn
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 500
-    Height = 23
-    Top = 355
-    Width = 75
+    Left = 506
+    Height = 26
+    Top = 352
+    Width = 69
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'HelpBitBtn'
     TabOrder = 3
   end
-  object Splitter1: TSplitter[9]
+  object Splitter1: TSplitter
     AnchorSideTop.Control = ItemsTreeView
     AnchorSideBottom.Control = ItemsTreeView
     AnchorSideBottom.Side = asrBottom
@@ -157,32 +157,32 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     Align = alNone
     Anchors = [akTop, akLeft, akBottom]
   end
-  object StoreLabel: TLabel[10]
+  object StoreLabel: TLabel
     AnchorSideLeft.Control = NameLabel
     AnchorSideTop.Control = URLMemo
     AnchorSideTop.Side = asrBottom
     Left = 235
-    Height = 14
-    Top = 252
-    Width = 52
+    Height = 15
+    Top = 269
+    Width = 60
     BorderSpacing.Top = 15
     Caption = 'StoreLabel'
     ParentColor = False
   end
-  object StoreComboBox: TComboBox[11]
+  object StoreComboBox: TComboBox
     AnchorSideLeft.Control = StoreLabel
     AnchorSideTop.Control = StoreLabel
     AnchorSideTop.Side = asrBottom
     Left = 235
-    Height = 21
-    Top = 266
+    Height = 27
+    Top = 284
     Width = 157
-    ItemHeight = 13
+    ItemHeight = 0
     OnEditingDone = StoreComboBoxEditingDone
     TabOrder = 5
     Text = 'StoreComboBox'
   end
-  object FileBrowseButton: TButton[12]
+  object FileBrowseButton: TButton
     AnchorSideLeft.Control = FilenameEdit
     AnchorSideTop.Control = FilenameEdit
     AnchorSideTop.Side = asrBottom
@@ -190,9 +190,9 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideBottom.Control = FilenameEdit
     AnchorSideBottom.Side = asrBottom
     Left = 235
-    Height = 23
-    Top = 105
-    Width = 61
+    Height = 26
+    Top = 113
+    Width = 52
     AutoSize = True
     BorderSpacing.Right = 6
     Caption = 'Browse'
@@ -201,23 +201,23 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     ShowHint = True
     TabOrder = 6
   end
-  object FileMacrofyButton: TButton[13]
+  object FileUseMacrosButton: TButton
     AnchorSideLeft.Control = FileBrowseButton
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = FilenameEdit
     AnchorSideTop.Side = asrBottom
-    Left = 302
-    Height = 23
-    Top = 105
-    Width = 113
+    Left = 293
+    Height = 26
+    Top = 113
+    Width = 126
     AutoSize = True
-    Caption = 'FileMacrofyButton'
-    OnClick = FileMacrofyButtonClick
+    Caption = 'FileUseMacrosButton'
+    OnClick = FileUseMacrosButtonClick
     ParentShowHint = False
     ShowHint = True
     TabOrder = 7
   end
-  object URLMemo: TMemo[14]
+  object URLMemo: TMemo
     AnchorSideLeft.Control = URLLabel
     AnchorSideTop.Control = URLLabel
     AnchorSideTop.Side = asrBottom
@@ -225,7 +225,7 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideRight.Side = asrBottom
     Left = 235
     Height = 63
-    Top = 174
+    Top = 191
     Width = 346
     Anchors = [akTop, akLeft, akRight]
     Lines.Strings = (
@@ -234,26 +234,26 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     OnEditingDone = URLMemoEditingDone
     TabOrder = 8
   end
-  object WithSubDirsCheckBox: TCheckBox[15]
+  object WithSubDirsCheckBox: TCheckBox
     AnchorSideLeft.Control = FileBrowseButton
     AnchorSideTop.Control = FileBrowseButton
     AnchorSideTop.Side = asrBottom
     Left = 235
-    Height = 17
-    Top = 128
-    Width = 123
+    Height = 22
+    Top = 139
+    Width = 145
     Caption = 'WithSubDirsCheckBox'
     OnEditingDone = WithSubDirsCheckBoxEditingDone
     TabOrder = 9
   end
-  object SelEditorFileButton: TButton[16]
-    AnchorSideLeft.Control = FileMacrofyButton
+  object SelEditorFileButton: TButton
+    AnchorSideLeft.Control = FileUseMacrosButton
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = FileMacrofyButton
-    Left = 421
-    Height = 23
-    Top = 105
-    Width = 116
+    AnchorSideTop.Control = FileUseMacrosButton
+    Left = 425
+    Height = 26
+    Top = 113
+    Width = 115
     AutoSize = True
     BorderSpacing.Left = 6
     Caption = 'SelEditorFileButton'

@@ -57,7 +57,7 @@ resourcestring
   ehrsBrowseForPath = 'Browse for path';
   ehrsGeneral = 'General';
   ehrsBrowse = 'Browse ...';
-  ehrsMacrofy = 'Macrofy';
+  ehrsMacrofy = 'Use macros';
   ehrsReplaceCommonDirectoriesWithMacros = 'Replace common directories with '
     +'macros';
   ehrsEditorFile = 'Editor file ...';
@@ -200,7 +200,7 @@ type
     AddSpeedButton: TSpeedButton;
     SelEditorFileButton: TButton;
     WithSubDirsCheckBox: TCheckBox;
-    FileMacrofyButton: TButton;
+    FileUseMacrosButton: TButton;
     DeleteSpeedButton: TSpeedButton;
     FileBrowseButton: TButton;
     FilenameEdit: TEdit;
@@ -217,7 +217,7 @@ type
     procedure AddSpeedButtonClick(Sender: TObject);
     procedure DeleteSpeedButtonClick(Sender: TObject);
     procedure FileBrowseButtonClick(Sender: TObject);
-    procedure FileMacrofyButtonClick(Sender: TObject);
+    procedure FileUseMacrosButtonClick(Sender: TObject);
     procedure FilenameEditChange(Sender: TObject);
     procedure FilenameEditEditingDone(Sender: TObject);
     procedure ItemsTreeViewDragOver(Sender, Source: TObject; X, Y: Integer;
@@ -770,7 +770,7 @@ begin
   end;
 end;
 
-procedure TExternHelpGeneralOptsFrame.FileMacrofyButtonClick(Sender: TObject);
+procedure TExternHelpGeneralOptsFrame.FileUseMacrosButtonClick(Sender: TObject);
 var
   Filename: String;
 begin
@@ -1168,8 +1168,8 @@ begin
   DeleteSpeedButton.Hint:=ehrsDeleteItem;
   FileBrowseButton.Caption:=ehrsBrowse;
   FileBrowseButton.Hint:=ehrsBrowseForPath;
-  FileMacrofyButton.Caption:=ehrsMacrofy;
-  FileMacrofyButton.Hint:=ehrsReplaceCommonDirectoriesWithMacros;
+  FileUseMacrosButton.Caption:=ehrsMacrofy;
+  FileUseMacrosButton.Hint:=ehrsReplaceCommonDirectoriesWithMacros;
   SelEditorFileButton.Caption:=ehrsEditorFile;
   SelEditorFileButton.Hint:=ehrsSelectAFileFromTheSourceEditor;
   WithSubDirsCheckBox.Caption:=ehrsIncludeSubDirectories;
