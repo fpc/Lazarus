@@ -224,6 +224,7 @@ begin
   Done:=False;                        // Filter will use also the node caption.
   if Item=nil then Exit;
   OptEditor:=TAbstractIDEOptionsEditor(Item);
+  OptEditor.RememberDefaultStyles;
   Result:=OptEditor.ContainsTextInCaption(FilterEdit.Filter);
 end;
 

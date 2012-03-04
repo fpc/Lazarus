@@ -70,7 +70,6 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
-      DefaultItemHeight = 18
       ReadOnly = True
       TabOrder = 0
       OnChange = CategoryTreeChange

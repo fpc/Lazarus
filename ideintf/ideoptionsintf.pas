@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Controls, Buttons, Forms, StdCtrls, Graphics,
-  ComCtrls, Grids, maps;
+  ComCtrls, Grids;
 
 const
   NoParent = -1;
@@ -35,10 +35,15 @@ type
   // forward
   TAbstractOptionsEditorDialog = class;
 
-  // types
-
   // Original font styles, used by filter.
-  TDefaultFontStyles = TMap; // specialize  <TControl, TFontStyles>;
+
+  { TDefaultFont }
+
+  TDefaultFont = class
+    FStyles: TFontStyles;  //  FColor: TColor;
+    constructor Create(AStyles: TFontStyles);
+  end;
+  TDefaultFontList = TStringList;
 
   TIDEOptionsHandler = (
     iohBeforeRead,
@@ -114,7 +119,7 @@ type
     FOnSaveIDEOptions: TOnSaveIDEOptions;
     FRec: PIDEOptionsEditorRec;
     FGroupRec: PIDEOptionsGroupRec;
-    FDefaultStyles: TDefaultFontStyles;
+    FDefaultFonts: TDefaultFontList;
   protected
     procedure DoOnChange;
   public
@@ -213,7 +218,7 @@ function IDEEditorGroups: TIDEOptionsGroupList;
 
 const
   // Font style used by filter
-  MatchFontStyle: TFontStyles = [fsBold, fsItalic, fsUnderline]; // Color = clFuchsia;
+  MatchFontStyle: TFontStyles = [fsBold, fsItalic]; // Color = clFuchsia;
 
   // predefined environment options groups
   GroupEnvironment  = 100;
@@ -388,17 +393,30 @@ begin
     Result := 0;
 end;
 
+{ TDefaultFont }
+
+constructor TDefaultFont.Create(AStyles: TFontStyles);
+begin
+  FStyles:=AStyles;
+end;
+
 { TAbstractIDEOptionsEditor }
 
 constructor TAbstractIDEOptionsEditor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FDefaultStyles:=nil;
+  FDefaultFonts:=nil;
 end;
 
 destructor TAbstractIDEOptionsEditor.Destroy;
+var
+  i: Integer;
 begin
-  FDefaultStyles.Free;
+  if Assigned(FDefaultFonts) then begin
+    for i := 0 to FDefaultFonts.Count-1 do
+      FDefaultFonts.Objects[i].Free;
+    FDefaultFonts.Free;
+  end;
   inherited Destroy;
 end;
 
@@ -458,7 +476,7 @@ procedure TAbstractIDEOptionsEditor.RememberDefaultStyles;
     // Store only if there is any style defined
     if AControl.Font.Style <> [] then begin
       Assert(AControl.Font.Style<>MatchFontStyle, 'Do not use the same font style that filter uses.');
-//      FDefaultStyles.SetData(AControl, AControl.Font.Style);
+      FDefaultFonts.AddObject(AControl.Name, TDefaultFont.Create(AControl.Font.Style));
     end;
     // Search child controls inside this one.
     if AControl is TWinControl then begin
@@ -469,9 +487,10 @@ procedure TAbstractIDEOptionsEditor.RememberDefaultStyles;
   end;
 
 begin
-  if FDefaultStyles=nil then begin
-//    FDefaultStyles:=TDefaultFontStyles.Create(ituPtrSize, SizeOf(TFontStyles));
+  if FDefaultFonts=nil then begin
+    FDefaultFonts:=TDefaultFontList.Create;
     Search(Self);
+    FDefaultFonts.Sorted:=True;
   end;
 end;
 
@@ -550,8 +569,8 @@ var
       // or, remove the indication.
       else if AControl.Font.Style=MatchFontStyle then begin
         DefStyle:=[];
-//        if FDefaultStyles.HasId(AControl) then
-//          FDefaultStyles.GetData(AControl, DefStyle);
+        if FDefaultFonts.Find(AControl.Name, i) then
+          DefStyle:=TDefaultFont(FDefaultFonts.Objects[i]).FStyles;
         AControl.Font.Style:=DefStyle;
       end;
     end;
