@@ -58,6 +58,7 @@ type
   { TAddToProjectDialog }
 
   TAddToProjectDialog = class(TForm)
+    AddFileListView: TListView;
     ButtonPanel: TButtonPanel;
     FilesBrowseButton: TBitBtn;
     FilesDeleteButton: TBitBtn;
@@ -70,7 +71,6 @@ type
     AddFilesPage: TTabSheet;
     // add file page
     AddFileLabel: TLabel;
-    AddFileListBox: TListBox;
     // new required package
     DependPkgNameLabel: TLabel;
     DependPkgNameComboBox: TComboBox;
@@ -300,9 +300,9 @@ var
 begin
   try
     NewFiles:=TStringList.Create;
-    for i:=0 to AddFileListBox.Items.Count-1 do
-      if AddFileListBox.Selected[i] then begin
-        NewFilename:=AddFileListBox.Items[i];
+    for i:=0 to AddFileListView.Items.Count-1 do
+      if AddFileListView.Items[i].Selected then begin
+        NewFilename:=AddFileListView.Items[i].Caption;
         case CheckAddingFile(NewFiles, NewFilename) of
           mrOk: ;
           mrIgnore: continue;
@@ -434,7 +434,7 @@ begin
     0: begin              // Add Editor Files
       ButtonPanel.OKButton.Caption:=lisA2PAddFiles;
       ButtonPanel.OkButton.OnClick:=@AddFileButtonClick;
-      ButtonPanel.OkButton.Enabled:=AddFileListBox.Items.Count>0;
+      ButtonPanel.OkButton.Enabled:=AddFileListView.Items.Count>0;
     end;
     1: begin              // New Requirement
       ButtonPanel.OkButton.Caption:=lisA2PCreateNewReq;
@@ -625,33 +625,25 @@ end;
 
 procedure TAddToProjectDialog.UpdateAvailableFiles;
 var
-  Index: Integer;
   CurFile: TUnitInfo;
+  NewListItem: TListItem;
   NewFilename: String;
 begin
-  AddFileListBox.Items.BeginUpdate;
+  AddFileListView.Items.BeginUpdate;
   if TheProject<>nil then begin
-    Index:=0;
     CurFile:=TheProject.FirstUnitWithEditorIndex;
     while CurFile<>nil do begin
       if (not CurFile.IsPartOfProject) and (not CurFile.IsVirtual) then begin
         NewFilename:=CreateRelativePath(CurFile.Filename,TheProject.ProjectDirectory);
-        if Index<AddFileListBox.Items.Count then
-          AddFileListBox.Items[Index]:=NewFilename
-        else
-          AddFileListBox.Items.Add(NewFilename);
-        AddFileListBox.Selected[Index]:=True;
-        inc(Index);
+        NewListItem:=AddFileListView.Items.Add;
+        NewListItem.Caption:=NewFilename;
+        NewListItem.Selected:=True;
       end;
       CurFile:=CurFile.NextUnitWithEditorIndex;
     end;
-    while AddFileListBox.Items.Count>Index do
-      AddFileListBox.Items.Delete(AddFileListBox.Items.Count-1);
-  end else begin
-    AddFileListBox.Items.Clear;
   end;
-  AddFileListBox.Items.EndUpdate;
-  ButtonPanel.OkButton.Enabled:=AddFileListBox.Items.Count>0;
+  AddFileListView.Items.EndUpdate;
+  ButtonPanel.OkButton.Enabled:=AddFileListView.Items.Count>0;
 end;
 
 procedure TAddToProjectDialog.UpdateFilesButtons;

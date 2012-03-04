@@ -35,7 +35,7 @@ object AddToProjectDialog: TAddToProjectDialog
         Caption = 'AddFileLabel'
         ParentColor = False
       end
-      object AddFileListBox: TListBox
+      object AddFileListView: TListView
         Left = 6
         Height = 230
         Top = 27
@@ -43,7 +43,7 @@ object AddToProjectDialog: TAddToProjectDialog
         Align = alTop
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
-        ItemHeight = 0
+        Columns = <>
         MultiSelect = True
         TabOrder = 0
       end
