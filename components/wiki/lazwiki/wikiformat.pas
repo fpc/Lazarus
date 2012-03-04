@@ -90,6 +90,8 @@ function WikiFilenameToPage(Filename: string): string;
 function WikiImageToFilename(Image: string; IsInternalLink, InsertCaseID: boolean;
   KeepScheme: boolean = false): string;
 function WikiCreateCommonLanguageList(AddLazWikiLangs: boolean): TKeyWordFunctionList;
+function GetWikiPageLanguage(const Page: string): string;
+function WikiPageHasLanguage(const Page, Languages: string): boolean;
 
 implementation
 
@@ -361,6 +363,46 @@ begin
       Add('sql',@AllwaysTrue);
       Add('objc',@AllwaysTrue);
     end;
+  end;
+end;
+
+function GetWikiPageLanguage(const Page: string): string;
+begin
+  Result:=RightStr(Page,3);
+  if (Result='') or (Result[1]<>'/') then exit('');
+  Delete(Result,1,1);
+end;
+
+function WikiPageHasLanguage(const Page, Languages: string): boolean;
+// * = fits any
+// de = fits 'de' and original
+// -,de = fits only 'de'
+var
+  Lang: String;
+  p: PChar;
+  StartPos: PChar;
+begin
+  Lang:=GetWikiPageLanguage(Page);
+  if (Languages='') then
+    exit(Lang='');
+  p:=PChar(Languages);
+  while p^<>#0 do begin
+    StartPos:=p;
+    while not (p^ in [#0,',']) do inc(p);
+    if p>StartPos then begin
+      if StartPos^='-' then begin
+        // not original language
+        if Lang='' then exit(false);
+      end else if StartPos^='*' then begin
+        // fit any
+        exit(true);
+      end else if (Lang<>'') and (CompareIdentifiers(StartPos,PChar(Lang))=0)
+      then begin
+        // fits specific
+        exit(true);
+      end;
+    end;
+    while p^=',' do inc(p);
   end;
 end;
 
