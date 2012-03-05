@@ -42,7 +42,8 @@ uses
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
   {$ENDIF}
-  LazarusIDEStrConsts, ComponentReg, DesignerProcs, PackageDefs, FindPaletteComp;
+  LazarusIDEStrConsts, ComponentReg, DesignerProcs, PackageDefs,
+  FindPaletteComp, EnvironmentOpts;
 
 type
   TComponentSelectionMode = (
@@ -712,6 +713,7 @@ begin
           GroupIndex:= 1;
           Down := True;
           Hint := lisSelectionTool;
+          ShowHint := EnvironmentOptions.ShowHintsForComponentPalette;
           SetBounds(0,0,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
           Parent:=CurScrollBox;
         end;
@@ -751,7 +753,7 @@ begin
               OnMouseDown:= @ComponentBtnMouseDown;
               OnMouseUp:=@ComponentBtnMouseUp;
               OnDblClick := @ComponentBtnDblClick;
-              ShowHint := true;
+              ShowHint := EnvironmentOptions.ShowHintsForComponentPalette;
               Hint := CurComponent.ComponentClass.ClassName + sLineBreak
                 + '(' + CurComponent.ComponentClass.UnitName + ')';
               CurBtn.PopupMenu:=Self.PopupMenu;
