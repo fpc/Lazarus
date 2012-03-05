@@ -25,6 +25,7 @@ constructor TScrollBox.Create(AOwner: TComponent);
 begin
   Inherited Create(AOwner);
   fCompStyle:= csScrollBox;
+  ControlStyle := ControlStyle + [csCaptureMouse];
   AutoScroll := True;
   BorderStyle := bsSingle;
 end;
