@@ -191,6 +191,9 @@ type
     FOnSearched: TNotifyEvent;
     FQuery: TWikiHelpQuery;
     FScoring: TWHScoring;
+    FResultsCSS: string;
+    FResultsCSSURL: string;
+    FResultsHTML: string;
     FXMLDirectory: string;
     FCritSec: TRTLCriticalSection;
     FScanThread: TWikiHelpThread;
@@ -216,6 +219,9 @@ type
     function GetProgressCaption: string;
     function Busy: boolean;
 
+    property ResultsCSS: string read FResultsCSS write FResultsCSS;
+    property ResultsCSSURL: string read FResultsCSSURL write FResultsCSSURL;
+
     // load wiki files
     procedure StartLoading; // returns immediately
     function LoadingContent: boolean;
@@ -229,6 +235,7 @@ type
     property Query: TWikiHelpQuery read FQuery;
     property Scoring: TWHScoring read FScoring;
     property MaxResults: integer read FMaxResults write SetMaxResults;
+    property ResultsHTML: string read FResultsHTML;
   public
     property XMLDirectory: string read FXMLDirectory write SetXMLDirectory; // directory where the wiki xml files are
     property ImagesDirectory: string read GetImagesDirectory write SetImagesDirectory; // directory where the wiki image files are
@@ -1086,11 +1093,7 @@ begin
 end;
 
 procedure TWiki2HelpConverter.LoadPages;
-var
-  s: TDateTime;
-  e: TDateTime;
 begin
-  s:=Now;
   Help.EnterCritSect;
   try
     Help.fProgressStep:=whpsWikiLoadPages;
@@ -1100,8 +1103,6 @@ begin
     Help.LeaveCritSect;
   end;
   ProcThreadPool.DoParallel(@ParallelLoadPage,0,(Count-1) div PagesPerThread);
-  e:=Now;
-  debugln(['TWiki2HelpConverter.LoadPages ',round((e-s)*86400000)]);
 end;
 
 constructor TWiki2HelpConverter.Create;
@@ -1146,7 +1147,6 @@ begin
       try
         Help.Converter.OnLog:=@ConverterLog;
         // get all wiki xml files
-        Log('TWikiHelpThread.Execute AAA1');
         if FindFirstUTF8(Help.XMLDirectory+AllFilesMask,faAnyFile,FileInfo)=0 then begin
           repeat
             if CompareFileExt(FileInfo.Name,'.xml',false)<>0 then continue;
@@ -1157,7 +1157,6 @@ begin
           until FindNextUTF8(FileInfo)<>0;
         end;
         FindCloseUTF8(FileInfo);
-        Log('TWikiHelpThread.Execute AAA2');
 
         // add file names to converter
         for i:=0 to Files.Count-1 do begin
@@ -1165,7 +1164,6 @@ begin
           Help.Converter.AddWikiPage(Filename,false);
         end;
         if Help.Aborting then exit;
-        Log('TWikiHelpThread.Execute AAA3');
 
         // load xml files
         Help.Converter.LoadPages;
@@ -1296,7 +1294,9 @@ var
   Page: TW2HelpPage;
   Node: TWHTextNode;
   s: String;
+  HTML: String;
 begin
+  FResultsHTML:='';
   if Query.Phrases.Count=0 then begin
     EnterCritSect;
     try
@@ -1310,12 +1310,23 @@ begin
   //debugln(['TWikiHelp.DoSearch START Search=',Trim(Query.Phrases.Text)]);
   FoundPages:=nil;
   Converter.Search(Query,Scoring,FoundPages);
+  HTML:='<html>'+LineEnding
+       +'<head>'+LineEnding
+       +' <meta content="text/html; charset=utf-8" http-equiv="Content-Type">'+LineEnding;
+  if ResultsCSSURL<>'' then
+  HTML+=' <link href="'+ResultsCSSURL+'" type="text/css" rel="stylesheet">'+LineEnding;
+  HTML+='</head>'+LineEnding
+       +'<body>'+LineEnding;
   for i:=0 to Min(FoundPages.Count-1,MaxResults) do begin
     Page:=TW2HelpPage(FoundPages[i]);
     Node:=Page.GetNodeHighestScore(Query,Scoring);
-    s:=FoundNodeToHTMLSnippet(Page,Node,Query);
+    s:='<div class="wikiSearchResultItem">'+FoundNodeToHTMLSnippet(Page,Node,Query)+'</div>'+LineEnding;
+    HTML+=s;
     //debugln(['TWikiHelp.TestSearch Score=',Page.Score,' HTML="',s,'"']);
   end;
+  HTML+='</body>'+LineEnding
+       +'</html>'+LineEnding;
+  FResultsHTML:=HTML;
   FoundPages.Free;
   EndTime:=Now;
   fWikiSearchTimeMSec:=round(Abs(EndTime-StartTime)*86400000);
@@ -1344,7 +1355,7 @@ begin
       HeaderNode:=HeaderNode.Previous;
     if HeaderNode<>nil then begin
       // add a direct link to the sub topic
-      Result+='Topic: <a href="'+StrToXMLValue(aPage.WikiDocumentName+'#'+WikiHeaderToLink(HeaderNode.Txt))+'" class="wikiLinkTopic">'
+      Result+='Topic <a href="'+StrToXMLValue(aPage.WikiDocumentName+'#'+WikiHeaderToLink(HeaderNode.Txt))+'" class="wikiLinkTopic">'
         +TextToHTMLSnipped(HeaderNode.Txt,aQuery.LoPhrases,200)+'</a>: ';
     end;
     if HeaderNode<>aNode then begin

@@ -275,7 +275,7 @@ begin
   TitleNode.AppendChild(doc.CreateTextNode(Page.WikiPage.Title));
   CurCSSFilename:=GetRelativeCSSFilename;
   if CurCSSFilename<>'' then begin
-    // stylesheet <link href="fp.css" type="text/css" rel="stylesheet">
+    // stylesheet <link href="wiki.css" type="text/css" rel="stylesheet">
     CSSNode:=doc.CreateElement('link');
     HeadNode.AppendChild(CSSNode);
     CSSNode.SetAttribute('href',CurCSSFilename);

@@ -1,7 +1,7 @@
 object WikiSearchDemoForm: TWikiSearchDemoForm
-  Left = 605
+  Left = 767
   Height = 501
-  Top = 233
+  Top = 230
   Width = 663
   Caption = 'WikiSearchDemoForm'
   ClientHeight = 501
@@ -61,13 +61,16 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       Align = alLeft
       FixedTypeface = 'Courier New'
       DefaultTypeFace = 'default'
-      DefaultFontSize = 12
+      DefaultFontSize = 8
       FlagErrors = False
       PrintSettings.MarginLeft = 0.5
       PrintSettings.MarginTop = 0.5
       PrintSettings.MarginRight = 0.5
       PrintSettings.MarginBottom = 0.5
       TabOrder = 0
+      WantTabs = False
+      OnDocumentOpen = ResultsIpHtmlPanelDocumentOpen
+      OnHotClick = ResultsIpHtmlPanelHotClick
     end
     object Splitter1: TSplitter
       Left = 337
@@ -90,6 +93,7 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       PrintSettings.MarginRight = 0.5
       PrintSettings.MarginBottom = 0.5
       TabOrder = 2
+      WantTabs = False
     end
   end
   object LanguagesLabel: TLabel
