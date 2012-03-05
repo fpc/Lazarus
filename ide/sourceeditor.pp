@@ -1266,7 +1266,6 @@ end;
 procedure RegisterStandardSourceTabMenuItems;
 var
   AParent: TIDEMenuSection;
-  I: Integer;
 begin
   SourceTabMenuRoot:=RegisterIDEMenuRoot(SourceTabMenuRootName);
 
