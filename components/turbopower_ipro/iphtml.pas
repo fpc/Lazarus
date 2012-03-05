@@ -10199,9 +10199,13 @@ begin
           end
           else
           {$ENDIF}
-          aCanvas.Brush.Style := bsClear;
+            aCanvas.Brush.Style := bsClear;
           //debugln(['TIpHtmlNodeBlock.RenderQueue ',CurWord.AnsiWord]);
           Owner.PageRectToScreen(CurWord.WordRect2, R);
+          {$IFDEF IP_LAZARUS}
+          if aCanvas.Font.color=-1 then
+            aCanvas.Font.color:=clBlack;
+          {$ENDIF}
           if CurWord.AnsiWord <> NAnchorChar then //JMN
                aCanvas.TextRect(R, P.x, P.y, NoBreakToSpace(CurWord.AnsiWord));
           {$IFDEF IP_LAZARUS}
