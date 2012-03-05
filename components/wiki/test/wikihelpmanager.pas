@@ -1334,7 +1334,7 @@ var
   HTML: String;
 begin
   FResultsHTML:='';
-  if Query.Phrases.Count=0 then begin
+  if (Query=nil) or (Query.Phrases.Count=0) then begin
     EnterCritSect;
     try
       fProgressStep:=whpsWikiLoadComplete;
