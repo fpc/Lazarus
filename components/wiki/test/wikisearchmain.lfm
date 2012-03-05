@@ -61,7 +61,7 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       Align = alLeft
       FixedTypeface = 'Courier New'
       DefaultTypeFace = 'default'
-      DefaultFontSize = 8
+      DefaultFontSize = 10
       FlagErrors = False
       PrintSettings.MarginLeft = 0.5
       PrintSettings.MarginTop = 0.5
@@ -86,7 +86,7 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       Align = alClient
       FixedTypeface = 'Courier New'
       DefaultTypeFace = 'default'
-      DefaultFontSize = 12
+      DefaultFontSize = 10
       FlagErrors = False
       PrintSettings.MarginLeft = 0.5
       PrintSettings.MarginTop = 0.5

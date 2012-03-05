@@ -77,7 +77,7 @@ begin
   Result:=nil;
   if URL='' then exit;
   if URL=WikiHelp.ResultsCSSURL then begin
-    debugln(['TWikiIpHtmlDataProvider.DoGetStream loading css ']);
+    //debugln(['TWikiIpHtmlDataProvider.DoGetStream loading css ']);
     Result:=TMemoryStream.Create;
     if WikiHelp.ResultsCSS<>'' then
       Result.Write(WikiHelp.ResultsCSS[1],length(WikiHelp.ResultsCSS));

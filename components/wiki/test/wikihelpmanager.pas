@@ -1349,7 +1349,10 @@ var
   HeaderNode: TWHTextNode;
 begin
   // link to the page
-  Result:='<a href="'+StrToXMLValue(aPage.WikiDocumentName)+'" class="wikiLinkPage">'
+  Result:='<a href="'+StrToXMLValue(aPage.WikiDocumentName)+'"'
+    +' class="wikiLinkPage"'
+    +' alt="'+StrToXMLValue(aPage.WikiPage.Title)+'"'
+    +'>'
     +TextToHTMLSnipped(aPage.WikiPage.Title,aQuery.LoPhrases,200)+'</a><br>'+LineEnding;
   if aNode<>nil then begin
     HeaderNode:=aNode;
@@ -1357,7 +1360,10 @@ begin
       HeaderNode:=HeaderNode.Previous;
     if HeaderNode<>nil then begin
       // add a direct link to the sub topic
-      Result+='Topic <a href="'+StrToXMLValue(aPage.WikiDocumentName+'#'+WikiHeaderToLink(HeaderNode.Txt))+'" class="wikiLinkTopic">'
+      Result+='Topic <a href="'+StrToXMLValue(aPage.WikiDocumentName+'#'+WikiHeaderToLink(HeaderNode.Txt))+'"'
+        +' class="wikiLinkTopic"'
+        +' alt="'+StrToXMLValue(HeaderNode.Txt)+'"'
+        +'>'
         +TextToHTMLSnipped(HeaderNode.Txt,aQuery.LoPhrases,200)+'</a>: ';
     end;
     if HeaderNode<>aNode then begin
