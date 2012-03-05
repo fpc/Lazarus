@@ -71,6 +71,8 @@ type
     {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
     FMainPoll: PGPollFD;
     {$ENDIF}
+    FIsLibraryInstance: Boolean;
+    FGtkTerminated: Boolean;
     FMultiThreadingEnabled: boolean;
     FocusTimer: cardinal;
     FLastFocusIn: PGtkWidget;
@@ -264,8 +266,8 @@ type
       Widget: PGtkWidget; const AParams: TCreateParams);
 
   private
-    procedure Gtk1Create;
-    procedure Gtk1Destroy;
+    procedure Gtk2Create;
+    procedure Gtk2Destroy;
 
   public
     constructor Create; override;
@@ -300,6 +302,8 @@ type
   public
     procedure StartFocusTimer;
     property AppActive: Boolean read GetAppActive write SetAppActive;
+    property IsLibraryInstance: Boolean read FIsLibraryInstance;
+    property GtkIsTerminated: Boolean read FGtkTerminated;
     property LastFocusIn: PGtkWidget read FLastFocusIn write FLastFocusIn;
     property LastFocusOut: PGtkWidget read FLastFocusOut write FLastFocusOut;
     property MultiThreadingEnabled: boolean read FMultiThreadingEnabled;
