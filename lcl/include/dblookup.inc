@@ -212,10 +212,10 @@ begin
   LinkGetBookMark;
   try
     FListLink.DataSet.First;
-    SetLength(FListKeys, FListLink.Dataset.RecordCount);
     i := 0;
     while not FListLink.DataSet.EOF do
     begin
+      SetLength(FListKeys, i+1);
       s := FListField.DisplayText;
       FListKeys[i] := FListLink.DataSet.FieldValues[FKeyFieldNames];
       Inc(i);
