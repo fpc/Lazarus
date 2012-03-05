@@ -5018,30 +5018,32 @@ begin
   if (Txt=nil) or (Txt^=#0) then exit;
   TxtRun:=Txt;
   StartChar:=SearchWord^;
-  repeat
-    while (TxtRun^<>StartChar) and (TxtRun^<>#0) do inc(TxtRun);
-    if TxtRun^=#0 then exit;
-    CurSearchP:=SearchWord+1;
-    CurTxtP:=TxtRun+1;
-    while (CurTxtP^=CurSearchP^) and (CurTxtP^<>#0) do begin
-      inc(CurTxtP);
-      inc(CurSearchP);
-    end;
-    if CurSearchP^=#0 then begin
-      // word found
-      if ((TxtRun=Txt) or IsNonWordChar[TxtRun[-1]])
-      and IsNonWordChar[CurTxtP^] then begin
-        // word boundaries
-        if not WholeWord then begin
-          WholeWord:=true;
-          Count:=1;
+  while TxtRun^<>#0 do begin
+    if TxtRun^=StartChar then begin
+      CurSearchP:=SearchWord+1;
+      CurTxtP:=TxtRun+1;
+      while (CurTxtP^=CurSearchP^) and (CurTxtP^<>#0) do begin
+        inc(CurTxtP);
+        inc(CurSearchP);
+      end;
+      if CurSearchP^=#0 then begin
+        // word found
+        if ((TxtRun=Txt) or IsNonWordChar[TxtRun[-1]])
+        and IsNonWordChar[CurTxtP^] then begin
+          // word boundaries
+          if not WholeWord then begin
+            WholeWord:=true;
+            Count:=1;
+          end else
+            inc(Count);
         end else
           inc(Count);
-      end else
-        inc(Count);
+        TxtRun:=CurTxtP;
+        continue;
+      end;
     end;
     inc(TxtRun);
-  until false;
+  end;
 end;
 
 function SubString(p: PChar; Count: SizeInt): string;
