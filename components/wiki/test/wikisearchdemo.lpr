@@ -13,7 +13,7 @@ uses
 {$R *.res}
 
 begin
-  Application.Title:='WikiSearchDemo';
+  Application.Title:='project1';
   RequireDerivedFormResource := True;
   Application.Initialize;
   Application.CreateForm(TWikiSearchDemoForm, WikiSearchDemoForm);

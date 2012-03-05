@@ -543,6 +543,7 @@ end;
 destructor TWikiHelpQuery.Destroy;
 begin
   FreeAndNil(Phrases);
+  FreeAndNil(LoPhrases);
   inherited Destroy;
 end;
 
@@ -734,6 +735,7 @@ begin
   Clear;
   if Parent<>nil then
     Parent.RemoveChild(Self);
+  FreeAndNil(FChildNodes);
   inherited Destroy;
 end;
 

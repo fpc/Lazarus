@@ -104,7 +104,7 @@ begin
   LanguagesEdit.Hint:='Empty for only original/untranslated pages, "de" to include german pages, "-,de" for german pages only';
   MainGroupBox.Caption:='Result:';
 
-  FURLDataProvider:=TWikiIpHtmlDataProvider.Create(Self);
+  FURLDataProvider:=TWikiIpHtmlDataProvider.Create(nil);
   ResultsIpHtmlPanel.DataProvider:=FURLDataProvider;
   PageIpHtmlPanel.DataProvider:=FURLDataProvider;
   FURLDataProvider.OnCanHandle:=@DataProviderCanHandle;
@@ -176,6 +176,10 @@ end;
 
 procedure TWikiSearchDemoForm.FormDestroy(Sender: TObject);
 begin
+  // free pages before dataprovider
+  FreeAndNil(ResultsIpHtmlPanel);
+  FreeAndNil(PageIpHtmlPanel);
+  FreeAndNil(FURLDataProvider);
   FreeAndNil(WikiHelp);
 end;
 
