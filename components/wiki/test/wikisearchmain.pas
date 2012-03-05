@@ -36,18 +36,13 @@ type
     function DataProviderCanHandle(Sender: TObject; const URL: string): Boolean;
     procedure DataProviderCheckURL(Sender: TObject; const URL: string;
       var Available: Boolean; var ContentType: string);
-    procedure DataProviderGetHtml(Sender: TObject; const URL: string;
-      const PostData: TIpFormDataEntity; var Stream: TStream);
     procedure DataProviderGetImage(Sender: TIpHtmlNode; const URL: string;
       var Picture: TPicture);
-    procedure DataProviderLeave(Sender: TIpHtml);
-    procedure DataProviderReportReference(Sender: TObject; const URL: string);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure LanguagesEditChange(Sender: TObject);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
-    procedure ResultsIpHtmlPanelDocumentOpen(Sender: TObject);
-    procedure ResultsIpHtmlPanelHotClick(Sender: TObject);
+    procedure IpHtmlPanelHotClick(Sender: TObject);
     procedure SearchEditChange(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure WikiHelpScanned(Sender: TObject);
@@ -109,11 +104,8 @@ begin
   ResultsIpHtmlPanel.DataProvider:=FURLDataProvider;
   PageIpHtmlPanel.DataProvider:=FURLDataProvider;
   FURLDataProvider.OnCanHandle:=@DataProviderCanHandle;
-  FURLDataProvider.OnGetHtml:=@DataProviderGetHtml;
   FURLDataProvider.OnGetImage:=@DataProviderGetImage;
-  FURLDataProvider.OnLeave:=@DataProviderLeave;
   FURLDataProvider.OnCheckURL:=@DataProviderCheckURL;
-  FURLDataProvider.OnReportReference:=@DataProviderReportReference;
 
   WikiHelp:=TWikiHelp.Create(nil);
   WikiHelp.XMLDirectory:=SetDirSeparators('../wikixml');
@@ -150,29 +142,30 @@ begin
   ContentType:='';
 end;
 
-procedure TWikiSearchDemoForm.DataProviderGetHtml(Sender: TObject;
-  const URL: string; const PostData: TIpFormDataEntity; var Stream: TStream);
-begin
-  debugln(['TWikiSearchDemoForm.DataProviderGetHtml URL=',URL]);
-  Stream:=nil;
-end;
-
 procedure TWikiSearchDemoForm.DataProviderGetImage(Sender: TIpHtmlNode;
   const URL: string; var Picture: TPicture);
+var
+  Filename: String;
+  PicCreated: Boolean;
 begin
-  debugln(['TWikiSearchDemoForm.DataProviderGetImage URL=',URL]);
-end;
-
-procedure TWikiSearchDemoForm.DataProviderLeave(Sender: TIpHtml);
-begin
-  //debugln(['TWikiSearchDemoForm.DataProviderLeave ']);
-end;
-
-procedure TWikiSearchDemoForm.DataProviderReportReference(Sender: TObject;
-  const URL: string);
-begin
-  if URL='' then exit;
-  //debugln(['TWikiSearchDemoForm.DataProviderReportReference ',URL]);
+  //debugln(['TWikiSearchDemoForm.DataProviderGetImage URL=',URL]);
+  Filename:=WikiHelp.ImagesDirectory+URL;
+  if not FileExistsUTF8(Filename) then begin
+    debugln(['TWikiSearchDemoForm.DataProviderGetImage image not found "',Filename,'"']);
+    exit;
+  end;
+  PicCreated := False;
+  try
+    if Picture=nil then begin
+      Picture:=TPicture.Create;
+      PicCreated := True;
+    end;
+    Picture.LoadFromFile(Filename);
+  except
+    if PicCreated then
+      Picture.Free;
+    Picture := nil;
+  end;
 end;
 
 procedure TWikiSearchDemoForm.FormDestroy(Sender: TObject);
@@ -195,12 +188,7 @@ begin
   IdleConnected:=false;
 end;
 
-procedure TWikiSearchDemoForm.ResultsIpHtmlPanelDocumentOpen(Sender: TObject);
-begin
-
-end;
-
-procedure TWikiSearchDemoForm.ResultsIpHtmlPanelHotClick(Sender: TObject);
+procedure TWikiSearchDemoForm.IpHtmlPanelHotClick(Sender: TObject);
 var
   HotNode: TIpHtmlNode;
   HRef: String;

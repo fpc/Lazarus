@@ -153,6 +153,9 @@ type
     procedure Search(Query: TWikiHelpQuery; Scoring: TWHScoring;
       var FoundPages: TFPList);
     procedure SavePageAsHTMLToStream(Page: TW2HelpPage; aStream: TStream);
+    function PageToFilename(Page: string; IsInternalLink, {%H-}Full: boolean
+      ): string; override;
+    function PageToFilename(Page: TW2XHTMLPage; {%H-}Full: boolean): string; override;
     property Help: TWikiHelp read FHelp;
   end;
 
@@ -1104,6 +1107,18 @@ begin
   ConvertPage(Page);
   SavePageToStream(Page,aStream);
   Page.ClearConversion;
+end;
+
+function TWiki2HelpConverter.PageToFilename(Page: string; IsInternalLink,
+  Full: boolean): string;
+begin
+  Result:=WikiPageToFilename(Page,IsInternalLink,false);
+end;
+
+function TWiki2HelpConverter.PageToFilename(Page: TW2XHTMLPage; Full: boolean
+  ): string;
+begin
+  Result:=Page.WikiDocumentName;
 end;
 
 procedure TWiki2HelpConverter.LoadPages;

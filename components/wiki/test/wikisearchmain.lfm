@@ -69,8 +69,7 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       PrintSettings.MarginBottom = 0.5
       TabOrder = 0
       WantTabs = False
-      OnDocumentOpen = ResultsIpHtmlPanelDocumentOpen
-      OnHotClick = ResultsIpHtmlPanelHotClick
+      OnHotClick = IpHtmlPanelHotClick
     end
     object Splitter1: TSplitter
       Left = 337
@@ -94,6 +93,7 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       PrintSettings.MarginBottom = 0.5
       TabOrder = 2
       WantTabs = False
+      OnHotClick = IpHtmlPanelHotClick
     end
   end
   object LanguagesLabel: TLabel

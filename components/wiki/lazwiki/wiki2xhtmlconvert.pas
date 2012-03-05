@@ -77,8 +77,8 @@ type
     function GetRelativeCSSFilename: string; virtual;
     property CSSFilename: string read FCSSFilename write SetCSSFilename;
     property MaxH: integer read FMaxH write SetMaxH;
-    function PageToFilename(Page: string; IsInternalLink, Full: boolean): string;
-    function PageToFilename(Page: TW2XHTMLPage; Full: boolean): string;
+    function PageToFilename(Page: string; IsInternalLink, Full: boolean): string; virtual;
+    function PageToFilename(Page: TW2XHTMLPage; Full: boolean): string; virtual;
     property PageFileExt: string read FPageFileExt write SetPageFileExt;
   end;
 
