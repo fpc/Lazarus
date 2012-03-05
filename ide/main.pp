@@ -17988,84 +17988,153 @@ end;
 function TMainIDE.OnPropHookCreateMethod(const AMethodName: ShortString;
   ATypeInfo: PTypeInfo;
   APersistent: TPersistent; const APropertyPath: string): TMethod;
+{ APersistent is the intance that gets the new method, not the lookuproot.
+  For example assign 'Button1Click' to Form1.Button1.OnClick:
+    APersistent = APersistent
+    AMethodName = 'Button1Click'
+    APropertyPath = Form1.Button1.OnClick
+    ATypeInfo = the typeinfo of the event property
+}
+{ $DEFINE VerboseOnPropHookCreateMethod}
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
+
+  function GetInheritedMethodPath: string;
+  var
+    OldJITMethod: TJITMethod;
+    OldMethod: TMethod;
+    APropName: String;
+    p: Integer;
+    OldMethodOwner: TComponent;
+  begin
+    Result:='';
+    {$IFDEF VerboseOnPropHookCreateMethod}
+    debugln(['  GetInheritedMethodPath APersistent=',DbgSName(APersistent),' APropertyPath="',APropertyPath,'" AMethodName="',AMethodName,'"']);
+    {$ENDIF}
+
+    // get old method
+    p:=length(APropertyPath);
+    while (p>0) and (APropertyPath[p]<>'.') do dec(p);
+    if p<1 then exit;
+    APropName:=copy(APropertyPath,p+1,length(APropertyPath));
+    OldMethod:=GetMethodProp(APersistent,APropName);
+    if not GetJITMethod(OldMethod,OldJITMethod) then begin
+      {$IFDEF VerboseOnPropHookCreateMethod}
+      debugln(['  GetInheritedMethodPath old method is not a jitmethod']);
+      {$ENDIF}
+      exit;
+    end;
+
+    {$IFDEF VerboseOnPropHookCreateMethod}
+    debugln(['  GetInheritedMethodPath  OldJITMethod=',DbgSName(OldJITMethod.TheClass),'.',OldJITMethod.TheMethodName]);
+    {$ENDIF}
+
+    // there is an old method
+    if OldJITMethod.TheClass=ActiveUnitInfo.Component.ClassType then begin
+      // old method belongs to same lookup root
+      // => do not call the old method
+      {$IFDEF VerboseOnPropHookCreateMethod}
+      debugln(['  GetInheritedMethodPath old method belongs to same lookuproot (',DbgSName(ActiveUnitInfo.Component),')']);
+      {$ENDIF}
+      exit;
+    end;
+    // the old method is from another lookup root (e.g. not the current form)
+
+    if ActiveUnitInfo.Component.InheritsFrom(OldJITMethod.TheClass) then
+    begin
+      // the old method is from an ancestor
+      // => add a statement 'inherited OldMethodName;'
+      Result:='inherited '+OldJITMethod.TheMethodName;
+      {$IFDEF VerboseOnPropHookCreateMethod}
+      debugln(['  GetInheritedMethodPath old method is from an ancestor. Result="',Result,'"']);
+      {$ENDIF}
+      exit;
+    end;
+
+    // check for nested components
+    // to call a method the instance is needed
+    // => create a path from the current component (e.g. the form) to the nested OldMethodOwner
+    if APersistent is TComponent then
+      OldMethodOwner:=TComponent(APersistent)
+    else begin
+      {$IFDEF VerboseOnPropHookCreateMethod}
+      debugln(['  GetInheritedMethodPath there is no simple way to get the owner of a TPersistent. Not calling old method.']);
+      {$ENDIF}
+      exit;
+    end;
+    while (OldMethodOwner<>nil)
+    and (not OldMethodOwner.ClassType.InheritsFrom(OldJITMethod.TheClass)) do
+      OldMethodOwner:=OldMethodOwner.Owner;
+    if OldMethodOwner=nil then begin
+      {$IFDEF VerboseOnPropHookCreateMethod}
+      debugln(['  GetInheritedMethodPath owner of oldmethod not found.']);
+      {$ENDIF}
+      exit;
+    end;
+
+    {$IFDEF VerboseOnPropHookCreateMethod}
+    DebugLn(['  GetInheritedMethodPath OldMethodOwner=',dbgsName(OldMethodOwner)]);
+    {$ENDIF}
+    // create a path to the nested component
+    while (OldMethodOwner<>nil) and (OldMethodOwner<>ActiveUnitInfo.Component) do
+    begin
+      if Result<>'' then
+        Result:='.'+Result;
+      Result:=OldMethodOwner.Name+Result;
+      OldMethodOwner:=OldMethodOwner.Owner;
+    end;
+    if (OldMethodOwner=ActiveUnitInfo.Component)
+    and (Result<>'') then begin
+      Result:=Result+'.'+OldJITMethod.TheMethodName;
+      {$IFDEF VerboseOnPropHookCreateMethod}
+      DebugLn(['  GetInheritedMethodPath call to nested override: OverrideMethodName=',Result]);
+      {$ENDIF}
+    end;
+    Result:='';
+  end;
+
+var
   r: boolean;
   OldChange: Boolean;
-  p: Integer;
-  APropName: String;
-  OldMethod: TMethod;
-  JITMethod: TJITMethod;
-  OverrideMethodName: String;
-  AComponent: TComponent;
+  InheritedMethodPath: String;
 begin
   Result.Code:=nil;
   Result.Data:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
-  {$IFDEF IDE_DEBUG}
+  {$IFDEF VerboseOnPropHookCreateMethod}
   debugln('');
   debugln('[TMainIDE.OnPropHookCreateMethod] ************ ',AMethodName);
-  DebugLn(['[TMainIDE.OnPropHookCreateMethod] Persistent=',dbgsName(APersistent),' Unit=',GetClassUnitName(APersistent.ClassType),' Path=',APropertyPath]);
+  DebugLn(['  Persistent=',dbgsName(APersistent),' Unit=',GetClassUnitName(APersistent.ClassType),' Path=',APropertyPath]);
   {$ENDIF}
-
-  OverrideMethodName:='';
-  if APersistent is TComponent then begin
-    AComponent:=TComponent(APersistent);
-    p:=length(APropertyPath);
-    while (p>0) and (APropertyPath[p]<>'.') do dec(p);
-    if p>0 then begin
-      APropName:=copy(APropertyPath,p+1,length(APropertyPath));
-      OldMethod:=GetMethodProp(APersistent,APropName);
-      if IsJITMethod(OldMethod) then begin
-        // there is an old method
-        JITMethod:=TJITMethod(OldMethod.Data);
-        if JITMethod.ClassType<>ActiveUnitInfo.Component.ClassType then begin
-          // the old method is inherited
-          // => search the component that has the method
-          //DebugLn(['TMainIDE.OnPropHookCreateMethod ',dbgsName(JITMethod.TheClass),' ',dbgsName(APersistent.ClassType),' ',dbgsName(APersistent)]);
-          while (AComponent<>nil)
-          and (not JITMethod.TheClass.InheritsFrom(AComponent.ClassType)) do
-            AComponent:=AComponent.Owner;
-          // create a path to the component
-          while (AComponent<>nil) and (AComponent<>ActiveUnitInfo.Component) do
-          begin
-            if OverrideMethodName<>'' then
-              OverrideMethodName:='.'+OverrideMethodName;
-            OverrideMethodName:=AComponent.Name+OverrideMethodName;
-            AComponent:=AComponent.Owner;
-          end;
-          if (AComponent=ActiveUnitInfo.Component)
-          and (OverrideMethodName<>'') then begin
-            // the old value does not belong to this main component, but to
-            // a nested/inline component
-            OverrideMethodName:=OverrideMethodName+'.'+JITMethod.TheMethodName;
-            DebugLn(['TMainIDE.OnPropHookCreateMethod OverrideMethodName=',OverrideMethodName]);
-          end;
-        end;
-      end;
-    end;
+  if ActiveUnitInfo.Component=nil then begin
+    {$IFDEF VerboseOnPropHookCreateMethod}
+    debugln(['TMainIDE.OnPropHookCreateMethod failed ActiveUnitInfo.Component=nil']);
+    {$ENDIF}
   end;
 
+  InheritedMethodPath:=GetInheritedMethodPath;
   OldChange:=OpenEditorsOnCodeToolChange;
   OpenEditorsOnCodeToolChange:=true;
   try
     // create published method
+    {$IFDEF VerboseOnPropHookCreateMethod}
+    debugln(['TMainIDE.OnPropHookCreateMethod CreatePublishedMethod ',ActiveUnitInfo.Source.Filename,' LookupRoot=',ActiveUnitInfo.Component.ClassName,' AMethodName="',AMethodName,'" PropertyUnit=',GetClassUnitName(APersistent.ClassType),' APropertyPath="',APropertyPath,'" CallInherited=',InheritedMethodPath]);
+    {$ENDIF}
     r:=CodeToolBoss.CreatePublishedMethod(ActiveUnitInfo.Source,
         ActiveUnitInfo.Component.ClassName,AMethodName,
         ATypeInfo,false,GetClassUnitName(APersistent.ClassType),APropertyPath,
-        OverrideMethodName);
-    {$IFDEF IDE_DEBUG}
-    debugln('');
-    debugln('[TMainIDE.OnPropHookCreateMethod] ************2 ',dbgs(r),' ',AMethodName);
+        InheritedMethodPath);
+    {$IFDEF VerboseOnPropHookCreateMethod}
+    debugln(['[TMainIDE.OnPropHookCreateMethod] ************ ',dbgs(r),' AMethodName="',AMethodName,'"']);
     {$ENDIF}
     ApplyCodeToolChanges;
     if r then begin
       Result:=FormEditor1.CreateNewJITMethod(ActiveUnitInfo.Component,
                                              AMethodName);
     end else begin
-      DebugLn(['TMainIDE.OnPropHookCreateMethod failed adding method to source']);
+      DebugLn(['TMainIDE.OnPropHookCreateMethod failed adding method "'+AMethodName+'" to source']);
       DoJumpToCodeToolBossError;
       raise Exception.Create(lisUnableToCreateNewMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
     end;
