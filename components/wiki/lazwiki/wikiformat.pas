@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, WikiParser, laz2_XMLRead, LazFileUtils, laz2_DOM,
-  LazLogger, LazUTF8, KeywordFuncLists, CodeToolsStructs;
+  LazLogger, LazUTF8, AvgLvlTree, KeywordFuncLists, CodeToolsStructs;
 
 type
   TWiki2FormatConverter = class;
@@ -61,6 +61,7 @@ type
     FImagesDir: string;
     FOutputDir: string;
     fPages: TFPList; // list of TW2FormatPage
+    fPageTree: TAvgLvlTree; // TW2FormatPage sorted for filename
     FPageClass: TW2FormatPageClass;
     function GetPages(Index: integer): TW2FormatPage;
     procedure SetOutputDir(AValue: string);
@@ -69,7 +70,7 @@ type
     constructor Create; virtual;
     destructor Destroy; override;
     procedure Clear; virtual;
-    function IndexOfWikiFilename(Filename: string): integer; virtual;
+    function GetPageWithFilename(Filename: string): TW2FormatPage; virtual;
     function AddWikiPage(Filename: string; ParseNow: boolean = true): TW2FormatPage;
     procedure Convert; virtual;
     procedure Log(Msg: string);
@@ -93,6 +94,9 @@ function WikiHeaderToLink(Header: string): string;
 function WikiCreateCommonLanguageList(AddLazWikiLangs: boolean): TKeyWordFunctionList;
 function GetWikiPageLanguage(const Page: string): string;
 function WikiPageHasLanguage(const Page, Languages: string): boolean;
+
+function ComparePagesWithFilenames(Page1, Page2: Pointer): integer;
+function CompareFilenameWithPage(Filename, Page: Pointer): integer;
 
 implementation
 
@@ -131,6 +135,7 @@ constructor TWiki2FormatConverter.Create;
 begin
   FPageClass:=TW2FormatPage;
   fPages:=TFPList.Create;
+  fPageTree:=TAvgLvlTree.Create(@ComparePagesWithFilenames);
   FTitle:='FPC/Lazarus Wiki (offline, generated '+DatetoStr(Now)+')';
   FImagesDir:='images';
   FNoWarnBaseURLs:=TStringToStringTree.Create(true);
@@ -140,6 +145,7 @@ destructor TWiki2FormatConverter.Destroy;
 begin
   Clear;
   FreeAndNil(FNoWarnBaseURLs);
+  FreeAndNil(fPageTree);
   FreeAndNil(fPages);
   inherited Destroy;
 end;
@@ -148,33 +154,36 @@ procedure TWiki2FormatConverter.Clear;
 var
   i: Integer;
 begin
+  fPageTree.Clear;
   for i:=0 to Count-1 do
     Pages[i].Free;
   fPages.Clear;
   FNoWarnBaseURLs.Clear;
 end;
 
-function TWiki2FormatConverter.IndexOfWikiFilename(Filename: string): integer;
+function TWiki2FormatConverter.GetPageWithFilename(Filename: string
+  ): TW2FormatPage;
+var
+  Node: TAvgLvlTreeNode;
 begin
-  Result:=Count-1;
-  while (Result>=0)
-  and (CompareFilenames(Filename,Pages[Result].WikiFilename)<>0) do
-    dec(Result);
+  if Filename='' then exit(nil);
+  Node:=fPageTree.FindKey(Pointer(Filename),@CompareFilenameWithPage);
+  if Node<>nil then
+    Result:=TW2FormatPage(Node.Data)
+  else
+    Result:=nil;
 end;
 
 function TWiki2FormatConverter.AddWikiPage(Filename: string; ParseNow: boolean
   ): TW2FormatPage;
-var
-  i: Integer;
 begin
-  i:=IndexOfWikiFilename(Filename);
-  if i>=0 then
-    Result:=Pages[i]
-  else begin
+  Result:=GetPageWithFilename(Filename);
+  if Result=nil then begin
     Result:=PageClass.Create(Self);
     Result.WikiFilename:=Filename;
     Result.WikiDocumentName:=WikiFilenameToPage(Filename);
     fPages.Add(Result);
+    fPageTree.Add(Result);
   end;
   if ParseNow then
     Result.ParseWikiDoc(false);
@@ -446,6 +455,21 @@ begin
     end;
     while p^=',' do inc(p);
   end;
+end;
+
+function ComparePagesWithFilenames(Page1, Page2: Pointer): integer;
+var
+  p1: TW2FormatPage absolute Page1;
+  p2: TW2FormatPage absolute Page2;
+begin
+  Result:=CompareFilenames(p1.WikiFilename,p2.WikiFilename);
+end;
+
+function CompareFilenameWithPage(Filename, Page: Pointer): integer;
+var
+  p: TW2FormatPage absolute Page;
+begin
+  Result:=CompareFilenames(AnsiString(Filename),p.WikiFilename);
 end;
 
 end.
