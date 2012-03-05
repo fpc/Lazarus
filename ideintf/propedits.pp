@@ -4028,7 +4028,6 @@ begin
     //   All other not selected properties that use this method, contain just
     //   the TMethod record. So, changing the name in the jitform will change
     //   all other event names in all other components automatically.
-    //writeln('### TMethodPropertyEditor.SetValue D');
     PropertyHook.RenameMethod(CurValue, NewValue)
   end else
   begin
