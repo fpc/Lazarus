@@ -152,6 +152,7 @@ type
     procedure ExtractAllTexts;
     procedure Search(Query: TWikiHelpQuery; Scoring: TWHScoring;
       var FoundPages: TFPList);
+    procedure SavePageAsHTMLToStream(Page: TW2HelpPage; aStream: TStream);
     property Help: TWikiHelp read FHelp;
   end;
 
@@ -236,6 +237,9 @@ type
     property Scoring: TWHScoring read FScoring;
     property MaxResults: integer read FMaxResults write SetMaxResults;
     property ResultsHTML: string read FResultsHTML;
+
+    // get page
+    procedure SavePageToStream(DocumentName: string; aStream: TStream);
   public
     property XMLDirectory: string read FXMLDirectory write SetXMLDirectory; // directory where the wiki xml files are
     property ImagesDirectory: string read GetImagesDirectory write SetImagesDirectory; // directory where the wiki image files are
@@ -1094,6 +1098,14 @@ begin
   FoundPages.Sort(@CompareW2HPageForScore);
 end;
 
+procedure TWiki2HelpConverter.SavePageAsHTMLToStream(Page: TW2HelpPage;
+  aStream: TStream);
+begin
+  ConvertPage(Page);
+  SavePageToStream(Page,aStream);
+  Page.ClearConversion;
+end;
+
 procedure TWiki2HelpConverter.LoadPages;
 begin
   Help.EnterCritSect;
@@ -1505,6 +1517,16 @@ begin
     LeaveCritSect;
   end;
   DoSearch;
+end;
+
+procedure TWikiHelp.SavePageToStream(DocumentName: string; aStream: TStream);
+var
+  Page: TW2HelpPage;
+begin
+  Page:=TW2HelpPage(Converter.GetPageWithDocumentName(DocumentName));
+  if Page=nil then
+    raise Exception.Create('document "'+DocumentName+'" not found in wiki');
+  Converter.SavePageAsHTMLToStream(Page,aStream);
 end;
 
 end.

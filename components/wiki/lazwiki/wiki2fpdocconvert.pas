@@ -96,7 +96,7 @@ type
     CurNode: TDOMElement; // current fpdoc node
   public
     FPDoc: TXMLDocument;
-    destructor Destroy; override;
+    procedure ClearConversion; override;
   end;
 
   { TWiki2FPDocConverter }
@@ -122,10 +122,9 @@ implementation
 
 { TW2FPDocPage }
 
-destructor TW2FPDocPage.Destroy;
+procedure TW2FPDocPage.ClearConversion;
 begin
   FreeAndNil(FPDoc);
-  inherited Destroy;
 end;
 
 { TWiki2FPDocConverter }

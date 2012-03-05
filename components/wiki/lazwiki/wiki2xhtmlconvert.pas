@@ -40,7 +40,7 @@ type
   public
     XHTML: TXMLDocument;
     Filename: string;
-    destructor Destroy; override;
+    procedure ClearConversion; override;
   end;
 
   { TWiki2XHTMLConverter }
@@ -59,7 +59,7 @@ type
     procedure OnWikiToken(Token: TWPToken); virtual;
     function GetImageLink(ImgFilename: string): string; virtual;
     function FindImage(const ImgFilename: string): string; virtual;
-    procedure MarkImageAsUsed(const ImgFilename: string; Page: TW2XHTMLPage);
+    procedure MarkImageAsUsed(const ImgFilename: string; Page: TW2XHTMLPage); virtual;
     function GetPageLink(Page: TW2XHTMLPage): string; virtual;
     function InsertLink(const LinkToken: TWPLinkToken): boolean;
     procedure InsertText(Token: TWPToken; Txt: string); virtual;
@@ -254,7 +254,7 @@ var
   Node: TDOMElement;
   CurCSSFilename: String;
 begin
-  FreeAndNil(Page.XHTML);
+  Page.ClearConversion;
   if Page.WikiPage=nil then exit;
   Page.XHTML:=TXMLDocument.Create;
   doc:=Page.XHTML;
@@ -774,10 +774,12 @@ end;
 
 { TW2XHTMLPage }
 
-destructor TW2XHTMLPage.Destroy;
+procedure TW2XHTMLPage.ClearConversion;
 begin
+  BodyNode:=nil;
+  CurNode:=nil;
+  SectionLevel:=0;
   FreeAndNil(XHTML);
-  inherited Destroy;
 end;
 
 end.

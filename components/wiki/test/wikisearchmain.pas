@@ -5,9 +5,9 @@ unit WikiSearchMain;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazLogger, LazUTF8, LazFileUtils, IpHtml,
-  Ipfilebroker, IpMsg, CodeToolManager, CodeCache, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, ExtCtrls, WikiHelpManager;
+  Classes, SysUtils, FileUtil, LazLogger, LazUTF8, LazFileUtils, laz2_DOM,
+  IpHtml, Ipfilebroker, IpMsg, CodeToolManager, CodeCache, Forms, Controls,
+  Graphics, Dialogs, StdCtrls, ExtCtrls, WikiHelpManager;
 
 type
 
@@ -60,7 +60,8 @@ type
     procedure SearchParamsChanged;
     procedure SetIdleConnected(AValue: boolean);
     procedure UpdateProgress;
-    procedure LoadHTML(Target: TIpHtmlPanel; HTML: string);
+    procedure LoadHTML(Target: TIpHtmlPanel; HTML: string); overload;
+    procedure LoadHTML(Target: TIpHtmlPanel; aStream: TStream); overload;
   public
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
@@ -137,7 +138,7 @@ end;
 function TWikiSearchDemoForm.DataProviderCanHandle(Sender: TObject;
   const URL: string): Boolean;
 begin
-  debugln(['TWikiSearchDemoForm.DataProviderCanHandle URL=',URL]);
+  //debugln(['TWikiSearchDemoForm.DataProviderCanHandle URL=',URL]);
   Result:=false;
 end;
 
@@ -204,6 +205,8 @@ var
   HotNode: TIpHtmlNode;
   HRef: String;
   Panel: TIpHtmlPanel;
+  ms: TMemoryStream;
+  Src: String;
 begin
   Panel:=Sender as TIpHtmlPanel;
   HotNode:=Panel.HotNode;
@@ -215,6 +218,22 @@ begin
     //Target := TIpHtmlNodeAREA(HotNode).Target;
   end;
   debugln(['TWikiSearchDemoForm.ResultsIpHtmlPanelHotClick href=',href]);
+  // open page in PageIpHtmlPanel
+  ms:=TMemoryStream.Create;
+  try
+    try
+      WikiHelp.SavePageToStream(href,ms);
+      ms.Position:=0;
+      LoadHTML(PageIpHtmlPanel,ms);
+    except
+      on E: Exception do begin
+        Src:='<html><body>Error: '+EncodeLesserAndGreaterThan(E.Message)+'</body></html>';
+        LoadHTML(PageIpHtmlPanel,Src);
+      end;
+    end;
+  finally
+    ms.Free;
+  end;
 end;
 
 procedure TWikiSearchDemoForm.SearchEditChange(Sender: TObject);
@@ -279,7 +298,6 @@ end;
 procedure TWikiSearchDemoForm.LoadHTML(Target: TIpHtmlPanel; HTML: string);
 var
   ms: TMemoryStream;
-  NewHTML: TIpHtml;
 begin
   if HTML='' then
     HTML:='<html><body></body></html>';
@@ -288,10 +306,7 @@ begin
     try
       ms.Write(HTML[1],length(HTML));
       ms.Position:=0;
-      NewHTML:=TIpHtml.Create; // Beware: Will be freed automatically by IpHtmlPanel
-      //NewHTML.OnGetImageX:=@HTMLGetImageX;
-      Target.SetHtml(NewHTML);
-      NewHTML.LoadFromStream(ms);
+      LoadHTML(Target,ms);
     except
       on E: Exception do begin
         debugln(['TWikiSearchDemoForm.LoadHTML ',E.Message]);
@@ -299,6 +314,22 @@ begin
     end;
   finally
     ms.Free;
+  end;
+end;
+
+procedure TWikiSearchDemoForm.LoadHTML(Target: TIpHtmlPanel; aStream: TStream);
+var
+  NewHTML: TIpHtml;
+begin
+  try
+    NewHTML:=TIpHtml.Create; // Beware: Will be freed automatically by IpHtmlPanel
+    //NewHTML.OnGetImageX:=@HTMLGetImageX;
+    Target.SetHtml(NewHTML);
+    NewHTML.LoadFromStream(aStream);
+  except
+    on E: Exception do begin
+      debugln(['TWikiSearchDemoForm.LoadHTML ',E.Message]);
+    end;
   end;
 end;
 

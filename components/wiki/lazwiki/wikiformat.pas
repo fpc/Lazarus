@@ -44,6 +44,7 @@ type
     constructor Create(TheConverter: TWiki2FormatConverter); virtual;
     destructor Destroy; override;
     procedure ParseWikiDoc(KeepWikiDoc: boolean);
+    procedure ClearConversion; virtual;
   end;
   TW2FormatPageClass = class of TW2FormatPage;
 
@@ -61,7 +62,8 @@ type
     FImagesDir: string;
     FOutputDir: string;
     fPages: TFPList; // list of TW2FormatPage
-    fPageTree: TAvgLvlTree; // TW2FormatPage sorted for filename
+    fPagesSortFilename: TAvgLvlTree; // TW2FormatPage sorted for WikiFilename
+    fPagesSortDocumentName: TAvgLvlTree; // TW2FormatPage sorted for WikiDocumentName
     FPageClass: TW2FormatPageClass;
     function GetPages(Index: integer): TW2FormatPage;
     procedure SetOutputDir(AValue: string);
@@ -71,6 +73,7 @@ type
     destructor Destroy; override;
     procedure Clear; virtual;
     function GetPageWithFilename(Filename: string): TW2FormatPage; virtual;
+    function GetPageWithDocumentName(DocumentName: string): TW2FormatPage; virtual;
     function AddWikiPage(Filename: string; ParseNow: boolean = true): TW2FormatPage;
     procedure Convert; virtual;
     procedure Log(Msg: string);
@@ -97,6 +100,8 @@ function WikiPageHasLanguage(const Page, Languages: string): boolean;
 
 function ComparePagesWithFilenames(Page1, Page2: Pointer): integer;
 function CompareFilenameWithPage(Filename, Page: Pointer): integer;
+function ComparePagesWithDocumentNames(Page1, Page2: Pointer): integer;
+function CompareDocumentNameWithPage(DocumentName, Page: Pointer): integer;
 
 implementation
 
@@ -135,7 +140,8 @@ constructor TWiki2FormatConverter.Create;
 begin
   FPageClass:=TW2FormatPage;
   fPages:=TFPList.Create;
-  fPageTree:=TAvgLvlTree.Create(@ComparePagesWithFilenames);
+  fPagesSortFilename:=TAvgLvlTree.Create(@ComparePagesWithFilenames);
+  fPagesSortDocumentName:=TAvgLvlTree.Create(@ComparePagesWithDocumentNames);
   FTitle:='FPC/Lazarus Wiki (offline, generated '+DatetoStr(Now)+')';
   FImagesDir:='images';
   FNoWarnBaseURLs:=TStringToStringTree.Create(true);
@@ -145,7 +151,8 @@ destructor TWiki2FormatConverter.Destroy;
 begin
   Clear;
   FreeAndNil(FNoWarnBaseURLs);
-  FreeAndNil(fPageTree);
+  FreeAndNil(fPagesSortFilename);
+  FreeAndNil(fPagesSortDocumentName);
   FreeAndNil(fPages);
   inherited Destroy;
 end;
@@ -154,7 +161,8 @@ procedure TWiki2FormatConverter.Clear;
 var
   i: Integer;
 begin
-  fPageTree.Clear;
+  fPagesSortFilename.Clear;
+  fPagesSortDocumentName.Clear;
   for i:=0 to Count-1 do
     Pages[i].Free;
   fPages.Clear;
@@ -167,7 +175,20 @@ var
   Node: TAvgLvlTreeNode;
 begin
   if Filename='' then exit(nil);
-  Node:=fPageTree.FindKey(Pointer(Filename),@CompareFilenameWithPage);
+  Node:=fPagesSortFilename.FindKey(Pointer(Filename),@CompareFilenameWithPage);
+  if Node<>nil then
+    Result:=TW2FormatPage(Node.Data)
+  else
+    Result:=nil;
+end;
+
+function TWiki2FormatConverter.GetPageWithDocumentName(DocumentName: string
+  ): TW2FormatPage;
+var
+  Node: TAvgLvlTreeNode;
+begin
+  if DocumentName='' then exit(nil);
+  Node:=fPagesSortDocumentName.FindKey(Pointer(DocumentName),@CompareDocumentNameWithPage);
   if Node<>nil then
     Result:=TW2FormatPage(Node.Data)
   else
@@ -183,7 +204,8 @@ begin
     Result.WikiFilename:=Filename;
     Result.WikiDocumentName:=WikiFilenameToPage(Filename);
     fPages.Add(Result);
-    fPageTree.Add(Result);
+    fPagesSortFilename.Add(Result);
+    fPagesSortDocumentName.Add(Result);
   end;
   if ParseNow then
     Result.ParseWikiDoc(false);
@@ -227,6 +249,7 @@ end;
 
 destructor TW2FormatPage.Destroy;
 begin
+  ClearConversion;
   FreeAndNil(WikiDoc);
   FreeAndNil(WikiPage);
   inherited Destroy;
@@ -262,6 +285,11 @@ begin
     if not KeepWikiDoc then
       FreeAndNil(WikiDoc);
   end;
+end;
+
+procedure TW2FormatPage.ClearConversion;
+begin
+
 end;
 
 function WikiPageToFilename(Page: string; IsInternalLink, AppendCaseID: boolean): string;
@@ -470,6 +498,21 @@ var
   p: TW2FormatPage absolute Page;
 begin
   Result:=CompareFilenames(AnsiString(Filename),p.WikiFilename);
+end;
+
+function ComparePagesWithDocumentNames(Page1, Page2: Pointer): integer;
+var
+  p1: TW2FormatPage absolute Page1;
+  p2: TW2FormatPage absolute Page2;
+begin
+  Result:=CompareStr(p1.WikiDocumentName,p2.WikiDocumentName);
+end;
+
+function CompareDocumentNameWithPage(DocumentName, Page: Pointer): integer;
+var
+  p: TW2FormatPage absolute Page;
+begin
+  Result:=CompareStr(AnsiString(DocumentName),p.WikiDocumentName);
 end;
 
 end.
