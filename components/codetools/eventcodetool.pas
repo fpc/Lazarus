@@ -885,9 +885,9 @@ begin
   try
     if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (AMethodName='')
     or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then exit;
-    { $IFDEF CTDEBUG}
+    {$IFDEF CTDEBUG}
     DebugLn(['[TEventsCodeTool.CreateMethod] A AMethodName="',AMethodName,'" in "',MainFilename,'" UseTypeInfoForParameters=',UseTypeInfoForParameters]);
-    { $ENDIF}
+    {$ENDIF}
     // initialize class for code completion
     CodeCompleteClassNode:=ClassNode;
     CodeCompleteSrcChgCache:=SourceChangeCache;
@@ -908,9 +908,9 @@ begin
                          [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
     end;
     if not ProcExistsInCodeCompleteClass(CleanMethodDefinition) then begin
-      { $IFDEF CTDEBUG}
+      {$IFDEF CTDEBUG}
       DebugLn('[TEventsCodeTool.CreateMethod] insert method definition to class');
-      { $ENDIF}
+      {$ENDIF}
       // insert method definition into class
       InsertCall:='';
       if UseTypeInfoForParameters then begin
@@ -939,9 +939,9 @@ begin
                      phpWithoutParamTypes]));
         end;
       end;
-      { $IFDEF CTDEBUG}
+      {$IFDEF CTDEBUG}
       DebugLn('[TEventsCodeTool.CreateMethod] MethodDefinition="',MethodDefinition,'"');
-      { $ENDIF}
+      {$ENDIF}
       if Section in [pcsPublished,pcsPublic] then
         NewSection:=ncpPublishedProcs
       else
@@ -966,9 +966,9 @@ begin
       AddClassInsertion(CleanMethodDefinition, MethodDefinition, AMethodName,
                         NewSection,nil,ProcBody);
     end;
-    { $IFDEF CTDEBUG}
+    {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.CreateMethod] invoke class completion');
-    { $ENDIF}
+    {$ENDIF}
     if not InsertAllNewClassParts then
       RaiseException(ctsErrorDuringInsertingNewClassParts);
     if not CreateMissingProcBodies then
@@ -979,9 +979,9 @@ begin
     // apply the changes
     if not SourceChangeCache.Apply then
       RaiseException(ctsUnableToApplyChanges);
-    { $IFDEF CTDEBUG}
+    {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.CreateMethod] END');
-    { $ENDIF}
+    {$ENDIF}
     Result:=true;
   finally
     FreeClassInsertionList;
@@ -1111,7 +1111,7 @@ begin
     end;
     // search base type of property
     TypeContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,PropNode);
-    debugln(['TEventsCodeTool.FindTypeOfPropertyInfo ',FindContextToString(TypeContext)]);
+    //debugln(['TEventsCodeTool.FindTypeOfPropertyInfo ',FindContextToString(TypeContext)]);
     Result:=true;
   finally
     Params.Free;
