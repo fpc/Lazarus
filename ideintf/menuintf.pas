@@ -375,6 +375,16 @@ var
       itmInfoHelps: TIDEMenuSection;
       itmHelpTools: TIDEMenuSection;
 
+  // Source Editor's tab: Popupmenu
+  SourceTabMenuRoot: TIDEMenuSection = nil;
+    SrcEditMenuSectionPages: TIDEMenuSection;
+      SrcEditSubMenuOpenFile: TIDEMenuSection;
+        // Source Editor: File Specific dynamic section
+        //                The items are cleared automatically after each popup.
+        SrcEditMenuSectionFileDynamic: TIDEMenuSection;
+      SrcEditSubMenuMovePage: TIDEMenuSection;
+
+
   // Source Editor(s): Popupmenu
   SourceEditorMenuRoot: TIDEMenuSection = nil;
     // Source Editor: First dynamic section for often used context sensitive stuff
@@ -382,20 +392,14 @@ var
     SrcEditMenuSectionFirstDynamic: TIDEMenuSection;
     SrcEditMenuSectionFirstStatic: TIDEMenuSection;
       SrcEditSubMenuFind: TIDEMenuSection;
-    SrcEditMenuSectionPages: TIDEMenuSection;
-      SrcEditSubMenuOpenFile: TIDEMenuSection;
-        // Source Editor: File Specific dynamic section
-        //                The items are cleared automatically after each popup.
-        SrcEditMenuSectionFileDynamic: TIDEMenuSection;
-      SrcEditSubMenuMovePage: TIDEMenuSection;
     SrcEditMenuSectionClipboard: TIDEMenuSection;
     SrcEditMenuSectionMarks: TIDEMenuSection;
       SrcEditSubMenuGotoBookmarks: TIDEMenuSection;
       SrcEditSubMenuToggleBookmarks: TIDEMenuSection;
     SrcEditMenuSectionDebug: TIDEMenuSection;
       SrcEditSubMenuDebug: TIDEMenuSection;
-    SrcEditSubMenuRefactor: TIDEMenuSection;
     SrcEditSubMenuSource: TIDEMenuSection;
+    SrcEditSubMenuRefactor: TIDEMenuSection;
     SrcEditSubMenuFlags: TIDEMenuSection;
       SrcEditSubMenuHighlighter: TIDEMenuSection;
       SrcEditSubMenuLineEnding: TIDEMenuSection;
