@@ -1040,7 +1040,7 @@ end;
 
 constructor TGtkDeviceContext.Create;
 begin
-  // nothing
+  BkMode := OPAQUE;
 end;
 
 {------------------------------------------------------------------------------

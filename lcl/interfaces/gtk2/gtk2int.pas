@@ -41,7 +41,7 @@ uses
   Types, Classes, SysUtils, Math, maps,
   {$IfNDef GTK2_2}
     {$IfDef HasX}
-     XLib, X, //XUtil,
+     XLib, xatom, X, //XUtil,
     {$EndIf}
   {$EndIf}
 
@@ -266,6 +266,9 @@ type
       Widget: PGtkWidget; const AParams: TCreateParams);
 
   private
+    {$IFDEF HASX}
+    FDesktopWidget: PGtkWidget;
+    {$ENDIF}
     procedure Gtk2Create;
     procedure Gtk2Destroy;
 
@@ -300,6 +303,12 @@ type
     {$I gtk2winapih.inc}
     {$I gtk2lclintfh.inc}
   public
+    {$IFDEF HASX}
+    function GetDesktopWidget: PGtkWidget;
+    //function X11Raise(AHandle: HWND): boolean; currently not used
+    function GetWindowManager: String;
+    function X11GetActiveWindow: HWND;
+    {$ENDIF}
     procedure StartFocusTimer;
     property AppActive: Boolean read GetAppActive write SetAppActive;
     property IsLibraryInstance: Boolean read FIsLibraryInstance;

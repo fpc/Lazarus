@@ -4937,6 +4937,21 @@ begin
   end;
 end;
 
+function TQtWidgetSet.GetForegroundWindow: HWND;
+var
+  W: QWidgetH;
+begin
+  {$IFDEF HASX11}
+  if WindowManagerName = 'metacity' then
+    W := X11GetActivewindow
+  else
+    W := QApplication_activeWindow();
+  {$ELSE}
+  W := QApplication_activeWindow();
+  {$ENDIF}
+  Result := HwndFromWidgetH(W);
+end;
+
 function TQtWidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
 begin
   Result := False;

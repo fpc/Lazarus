@@ -84,6 +84,11 @@ type
     FDragImageLock: Boolean;
     FCachedColors: array[0..MAX_SYS_COLORS] of PLongWord;
     FSysColorBrushes: array[0..MAX_SYS_COLORS] of HBrush;
+
+    {$IFDEF HASX11}
+    FWindowManagerName: String; // Track various incompatibilities between WM. Initialized at WS start.
+    {$ENDIF}
+
     procedure ClearCachedColors;
     procedure SetOverrideCursor(const AValue: TObject);
     procedure QtRemoveStayOnTop(const ASystemTopAlso: Boolean = False);
@@ -168,6 +173,7 @@ type
   public
     {$IFDEF HASX11}
     FLastMinimizeEvent: DWord; // track mainform minimize events -> TQtMainWindow.EventFilter
+    FMinimizedByPager: Boolean; // track if app is minimized via desktop pager or by us.
     {$ENDIF}
     function CreateDefaultFont: HFONT; virtual;
     function GetDefaultAppFontName: WideString;
@@ -180,7 +186,9 @@ type
 
     property DragImageLock: Boolean read FDragImageLock write FDragImageLock;
     property OverrideCursor: TObject read FOverrideCursor write SetOverrideCursor;
-
+    {$IFDEF HASX11}
+    property WindowManagerName: String read FWindowManagerName;
+    {$ENDIF}
     {$I qtwinapih.inc}
     {$I qtlclintfh.inc}
   end;
@@ -204,6 +212,8 @@ type
   function QtVersionCheck(const AMajor, AMinor, AMicro: Integer): Boolean;
   {$IFDEF HASX11}
   function IsCurrentDesktop(AWidget: QWidgetH): Boolean;
+  function X11Raise(AHandle: HWND): boolean;
+  function X11GetActiveWindow: QWidgetH;
   function GetWindowManager: String;
   procedure SetSkipX11Taskbar(Widget: QWidgetH; const ASkipTaskBar: Boolean);
   {check if we are running under kde3 installation}

@@ -338,6 +338,7 @@ type
     StackAddrs: TCallBacksArray;
     {$endif}
     PenPos: TPoint;
+    BkMode: Integer;
     CurrentTextColor: TGDIColor;
     CurrentBackColor: TGDIColor;
     DCTextMetric: TDevContextTextMetric; // only valid if dcfTextMetricsValid set

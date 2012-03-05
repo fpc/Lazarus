@@ -139,6 +139,7 @@ var
   QtMainWindow: TQtMainWindow;
   Str: WideString;
   PopupParent: QWidgetH;
+  AForm: TCustomForm;
 begin
   {$ifdef VerboseQt}
     WriteLn('[TQtWSCustomForm.CreateHandle] Height: ', IntToStr(AWinControl.Height),
@@ -155,37 +156,38 @@ begin
   else
     QtMainWindow := TQtMainWindow.Create(AWinControl, AParams);
 
-  // Set´s initial properties
-  QtMainWindow.QtFormBorderStyle := Ord(TCustomForm(AWinControl).BorderStyle);
-  QtMainWindow.QtFormStyle := Ord(TCustomForm(AWinControl).FormStyle);
+  AForm := TCustomForm(AWinControl);
+
+  QtMainWindow.QtFormBorderStyle := Ord(AForm.BorderStyle);
+  QtMainWindow.QtFormStyle := Ord(AForm.FormStyle);
 
   Str := GetUtf8String(AWinControl.Caption);
 
   QtMainWindow.SetWindowTitle(@Str);
 
-  if not (csDesigning in TCustomForm(AWinControl).ComponentState) then
+  if not (csDesigning in AForm.ComponentState) then
   begin
-    UpdateWindowFlags(QtMainWindow, TCustomForm(AWinControl).BorderStyle,
-      TCustomForm(AWinControl).BorderIcons, TCustomForm(AWinControl).FormStyle);
+    UpdateWindowFlags(QtMainWindow, AForm.BorderStyle,
+      AForm.BorderIcons, AForm.FormStyle);
   end;
 
-  if not (TCustomForm(AWinControl).FormStyle in [fsMDIChild]) and
+  if not (AForm.FormStyle in [fsMDIChild]) and
      (Application <> nil) and
      (Application.MainForm <> nil) and
      (Application.MainForm.HandleAllocated) and
-     (Application.MainForm <> AWinControl) then
+     (Application.MainForm <> AForm) then
   begin
-    if (TCustomForm(AWinControl).ShowInTaskBar in [stDefault, stNever])
+    if (AForm.ShowInTaskBar in [stDefault, stNever])
        {$ifdef HASX11}
        {QtTool have not minimize button !}
-       and not (TCustomForm(AWinControl).BorderStyle in [bsSizeToolWin, bsToolWindow])
+       and not (AForm.BorderStyle in [bsSizeToolWin, bsToolWindow])
        {$endif} then
       QtMainWindow.setShowInTaskBar(False);
-    if Assigned(TCustomForm(AWinControl).PopupParent) then
-      PopupParent := TQtWidget(TCustomForm(AWinControl).PopupParent.Handle).Widget
+    if Assigned(AForm.PopupParent) then
+      PopupParent := TQtWidget(AForm.PopupParent.Handle).Widget
     else
       PopupParent := nil;
-    QtMainWindow.setPopupParent(TCustomForm(AWinControl).PopupMode, PopupParent);
+    QtMainWindow.setPopupParent(AForm.PopupMode, PopupParent);
   end;
 
   {$IFDEF HASX11}
@@ -196,7 +198,7 @@ begin
   // Sets Various Events
   QtMainWindow.AttachEvents;
   
-  if (TCustomForm(AWinControl).FormStyle in [fsMDIChild]) and
+  if (AForm.FormStyle in [fsMDIChild]) and
      (Application.MainForm.FormStyle = fsMdiForm) and
      not (csDesigning in AWinControl.ComponentState) then
   begin
@@ -366,29 +368,36 @@ begin
       {$endif}
 
       {$ifdef HASX11}
-      W := nil;
-      ActiveWin := GetActiveWindow;
-      if ActiveWin <> 0 then
+      if IsOldKDEInstallation then
       begin
-        if Assigned(TQtWidget(ActiveWin).LCLObject) then
+        W := nil;
+        ActiveWin := GetActiveWindow;
+        if ActiveWin <> 0 then
         begin
-          if (TQtWidget(ActiveWin).LCLObject is TCustomForm) then
+          if Assigned(TQtWidget(ActiveWin).LCLObject) then
           begin
-            with TCustomForm(TQtWidget(ActiveWin).LCLObject) do
+            if (TQtWidget(ActiveWin).LCLObject is TCustomForm) then
             begin
-              if Visible and (FormStyle <> fsSplash) then
-                W := TQtWidget(Handle).Widget;
+              with TCustomForm(TQtWidget(ActiveWin).LCLObject) do
+              begin
+                if Visible and (FormStyle <> fsSplash) then
+                  W := TQtWidget(Handle).Widget;
+              end;
             end;
           end;
         end;
-      end;
-      QWidget_setParent(Widget.Widget, W);
-      QWidget_setWindowFlags(Widget.Widget, QtDialog);
+        QWidget_setParent(Widget.Widget, W);
+      end else
+        QWidget_setParent(Widget.Widget, QApplication_desktop());
       {$endif}
-      {$ifdef darwin}
-      QWidget_setWindowFlags(Widget.Widget, QtDialog or QtWindowSystemMenuHint or QtCustomizeWindowHint
-        or QtWindowTitleHint or QtWindowCloseButtonHint);
-      {$endif}
+
+      QWidget_setWindowFlags(Widget.Widget, QtDialog or
+        {$ifdef darwin}
+        QtWindowSystemMenuHint or
+        {$endif}
+        GetQtBorderIcons(TCustomForm(AWinControl).BorderStyle,
+          TCustomForm(AWinControl).BorderIcons));
+
       Widget.setWindowModality(QtApplicationModal);
     end;
 
@@ -430,6 +439,11 @@ begin
         Flags := Flags or QtWindowStaysOnTopHint;
         Widget.setWindowFlags(Flags);
       end;
+      if not (fsModal in TForm(AWinControl).FormState) and
+        (TForm(AWinControl).FormStyle <> fsMDIChild) and
+        (QApplication_activeModalWidget() <> nil) then
+          TQtMainWindow(Widget).setPopupParent(pmExplicit,
+            QApplication_activeModalWidget());
     end else
     begin
       if (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop)
@@ -441,12 +455,33 @@ begin
       end;
     end;
   end;
+
   Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
   Widget.EndUpdate;
+
   {$IFDEF HASX11}
-  if (QtVersionMajor = 4) and (QtVersionMinor >= 6)
-    and (TForm(AWinControl).FormStyle <> fsMDIChild) then
-    QApplication_syncX();
+  if AWinControl.HandleObjectShouldBeVisible and
+    not (csDesigning in TForm(AWinControl).ComponentState) and
+        (TForm(AWinControl).FormStyle <> fsMDIChild) then
+  begin
+    if (fsModal in TForm(AWinControl).FormState) then
+    begin
+      if (Application.TaskBarBehavior <> tbSingleButton) then
+      begin
+        SetSkipX11Taskbar(Widget.Widget, True);
+        Widget.setShowInTaskBar(False);
+      end;
+      if (QtWidgetSet.WindowManagerName = 'metacity') then
+        X11Raise(QWidget_winID(Widget.Widget));
+    end else
+    if (TForm(AWinControl).FormStyle = fsSplash) then
+    begin
+      //process only qt sys events
+      QCoreApplication_processEvents(QEventLoopExcludeUserInputEvents);
+      //now send repaint to splash form
+      QWidget_repaint(Widget.Widget);
+    end;
+  end;
   {$ENDIF}
 end;
 
@@ -529,6 +564,9 @@ begin
     bsDialog: ABorderIcons := ABorderIcons - [biMaximize, biMinimize];
     bsToolWindow, bsSizeToolWin: ABorderIcons := ABorderIcons - [biMaximize, biMinimize, biHelp];
   end;
+
+  Result := QtCustomizeWindowHint
+        or QtWindowTitleHint or QtWindowCloseButtonHint;
 
   if (biSystemMenu in ABorderIcons) then
     Result := Result or QtWindowSystemMenuHint;
