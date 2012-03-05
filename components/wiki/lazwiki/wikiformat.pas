@@ -483,6 +483,7 @@ begin
     end;
     while p^=',' do inc(p);
   end;
+  Result:=false;
 end;
 
 function ComparePagesWithFilenames(Page1, Page2: Pointer): integer;
