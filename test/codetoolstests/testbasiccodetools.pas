@@ -87,6 +87,7 @@ begin
   t('a','a a',true,2);
   t('a','ab a',true,1);
   t('abc','ab abcd',false,1);
+  t('ab','abab',false,2);
 end;
 
 initialization
