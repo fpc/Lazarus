@@ -89,6 +89,7 @@ function WikiPageToFilename(Page: string; IsInternalLink, AppendCaseID: boolean)
 function WikiFilenameToPage(Filename: string): string;
 function WikiImageToFilename(Image: string; IsInternalLink, InsertCaseID: boolean;
   KeepScheme: boolean = false): string;
+function WikiHeaderToLink(Header: string): string;
 function WikiCreateCommonLanguageList(AddLazWikiLangs: boolean): TKeyWordFunctionList;
 function GetWikiPageLanguage(const Page: string): string;
 function WikiPageHasLanguage(const Page, Languages: string): boolean;
@@ -345,6 +346,27 @@ begin
   Result:=Result+id+'.'+Ext;
 end;
 
+function WikiHeaderToLink(Header: string): string;
+var
+  i: Integer;
+  s: string;
+begin
+  Result:=UTF8Trim(Header);
+  i:=1;
+  while i<=length(Result) do begin
+    s:=Result[i];
+    case s[1] of
+    '-','_',':','.','0'..'9','a'..'z','A'..'Z',#128..#255: ; // keep
+    ' ': s:='_';
+    '+': s:=''; // delete
+    else s:='.'+HexStr(ord(s[1]),2); // non-literal
+    end;
+    if s<>Result[i] then
+      ReplaceSubstring(Result,i,1,s);
+    inc(i,length(s));
+  end;
+end;
+
 function WikiCreateCommonLanguageList(AddLazWikiLangs: boolean): TKeyWordFunctionList;
 begin
   Result:=TKeyWordFunctionList.Create('LanguageTags');
@@ -371,17 +393,17 @@ var
   l: Integer;
   p: PChar;
 begin
-  l:=length(Page);
   Result:='';
+  l:=length(Page);
   if l=0 then exit;
-  // /de or /zh_TW
   if (l>3) then begin
     p:=PChar(Page)+l-3;
     if (p^='/')
     and (p[1] in ['a'..'z']) and (p[2] in ['a'..'z']) then
       // short form: /de
       exit(RightStr(Page,2));
-  end else if (l>6) then begin
+  end;
+  if (l>6) then begin
     p:=PChar(Page)+l-6;
     if (p^='/')
     and (p[1] in ['a'..'z']) and (p[2] in ['a'..'z'])

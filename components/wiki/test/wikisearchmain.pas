@@ -5,7 +5,7 @@ unit WikiSearchMain;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, IpHtml, Forms, Controls, Graphics,
+  Classes, SysUtils, FileUtil, LazLogger, IpHtml, Forms, Controls, Graphics,
   Dialogs, StdCtrls, ExtCtrls, WikiHelpManager;
 
 type
@@ -13,6 +13,8 @@ type
   { TWikiSearchDemoForm }
 
   TWikiSearchDemoForm = class(TForm)
+    LanguagesEdit: TEdit;
+    LanguagesLabel: TLabel;
     PageGroupBox: TGroupBox;
     PageIpHtmlPanel: TIpHtmlPanel;
     ResultsGroupBox: TGroupBox;
@@ -42,6 +44,8 @@ begin
   Caption:='Search Wiki (Proof of concept)';
   SearchLabel.Caption:='Search:';
   SearchEdit.Text:='';
+  LanguagesLabel.Caption:='Languages: empty for only original, "de" for german too, "-,de" for german only';
+  LanguagesEdit.Text:='';
   ResultsGroupBox.Caption:='Result:';
   PageGroupBox.Caption:='Page:';
 

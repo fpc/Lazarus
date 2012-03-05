@@ -39,22 +39,22 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
     Text = 'SearchEdit'
   end
   object ResultsGroupBox: TGroupBox
-    AnchorSideTop.Control = SearchEdit
+    AnchorSideTop.Control = LanguagesEdit
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 290
-    Top = 36
+    Height = 260
+    Top = 66
     Width = 651
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'ResultsGroupBox'
-    ClientHeight = 274
+    ClientHeight = 244
     ClientWidth = 647
     TabOrder = 1
     object ResultsIpHtmlPanel: TIpHtmlPanel
       Left = 0
-      Height = 274
+      Height = 244
       Top = 0
       Width = 647
       Align = alClient
@@ -105,5 +105,30 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
     Width = 663
     Align = alBottom
     ResizeAnchor = akBottom
+  end
+  object LanguagesLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LanguagesEdit
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 15
+    Top = 41
+    Width = 92
+    BorderSpacing.Around = 6
+    Caption = 'LanguagesLabel'
+    ParentColor = False
+  end
+  object LanguagesEdit: TEdit
+    AnchorSideLeft.Control = LanguagesLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = SearchEdit
+    AnchorSideTop.Side = asrBottom
+    Left = 104
+    Height = 24
+    Top = 36
+    Width = 80
+    BorderSpacing.Around = 6
+    TabOrder = 4
+    Text = 'LanguagesEdit'
   end
 end

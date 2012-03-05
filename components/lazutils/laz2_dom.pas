@@ -1186,11 +1186,12 @@ var
   Node: TDOMNode;
 begin
   Result:=LastChild;
-  while Result<>nil do begin
+  if Result=nil then exit;
+  repeat
     Node:=Result.LastChild;
     if Node=nil then exit;
     Result:=Node;
-  end;
+  until false;
 end;
 
 function TDOMNode.GetLevel: integer;

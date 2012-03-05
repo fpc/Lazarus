@@ -29,8 +29,8 @@ interface
 
 uses
   Classes, SysUtils, math, LazFileUtils, LazLogger, LazDbgLog, LazUTF8,
-  CodeToolsStructs, BasicCodeTools, KeywordFuncLists, Wiki2HTMLConvert,
-  Wiki2XHTMLConvert, WikiFormat, WikiParser, MTProcs;
+  laz2_DOM, CodeToolsStructs, BasicCodeTools, KeywordFuncLists,
+  Wiki2HTMLConvert, Wiki2XHTMLConvert, WikiFormat, WikiParser, MTProcs;
 
 type
   TWikiHelp = class;
@@ -73,6 +73,16 @@ type
     property ChildNodes[Index: integer]: TWHTextNode read GetChildNodes; default;
     property IndexInParent: integer read FIndexInParent;
     property Parent: TWHTextNode read FParent;
+    function FirstChild: TWHTextNode;
+    function LastChild: TWHTextNode;
+    function NextSibling: TWHTextNode;
+    function PreviousSibling: TWHTextNode;
+    function Next: TWHTextNode; // first child, then next sibling, then next sibling of parent, ...
+    function NextSkipChildren: TWHTextNode; // first next sibling, then next sibling of parent, ...
+    function Previous: TWHTextNode; // the reverse of Next
+    function LastLeaf: TWHTextNode; // get last child of last child of ...
+    function Level: integer; // root node has 0
+
     function CalcMemSize: SizeInt;
   end;
 
@@ -113,6 +123,7 @@ type
     destructor Destroy; override;
     function GetScore(Query: TWikiHelpQuery; Scoring: TWHScoring): TWHScore;
     procedure GetFit(Query: TWikiHelpQuery; Fit: PWHPhrasePageFit);
+    function GetNodeHighestScore(Query: TWikiHelpQuery; Scoring: TWHScoring): TWHTextNode;
   end;
 
   { TWiki2HelpConverter }
@@ -165,6 +176,7 @@ type
   private
     FAbortingLoad: boolean;
     FConverter: TWiki2HelpConverter;
+    FMaxResults: integer;
     FOnScanned: TNotifyEvent;
     FQuery: TWikiHelpQuery;
     FLoadComplete: boolean;
@@ -175,11 +187,14 @@ type
     FScanThread: TWikiHelpThread;
     function GetImagesDirectory: string;
     procedure SetImagesDirectory(AValue: string);
+    procedure SetMaxResults(AValue: integer);
     procedure SetQuery(AValue: TWikiHelpQuery);
     procedure SetXMLDirectory(AValue: string);
     procedure EnterCritSect;
     procedure LeaveCritSect;
     procedure Scanned;
+    function FoundNodeToHTMLSnippet(aPage: TW2HelpPage; aNode: TWHTextNode;
+      aQuery: TWikiHelpQuery): string;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -197,6 +212,7 @@ type
     procedure TestSearch;
     property Query: TWikiHelpQuery read FQuery;
     property Scoring: TWHScoring read FScoring;
+    property MaxResults: integer read FMaxResults write SetMaxResults;
   public
     property XMLDirectory: string read FXMLDirectory write SetXMLDirectory; // directory where the wiki xml files are
     property ImagesDirectory: string read GetImagesDirectory write SetImagesDirectory; // directory where the wiki image files are
@@ -209,8 +225,230 @@ var
 
 function SearchTextToPhrases(Txt: string): TStringList;
 function CompareW2HPageForScore(Page1, Page2: Pointer): integer;
+function TextToHTMLSnipped(Txt: string; LoCaseStringsToHighlight: TStrings;
+  MaxUTF8Length: integer): string;
+
+procedure Test_TextToHTMLSnipped;
 
 implementation
+
+function TextToHTMLSnipped(Txt: string; LoCaseStringsToHighlight: TStrings;
+  MaxUTF8Length: integer): string;
+var
+  i: Integer;
+  LoTxt: String;
+  Bold: PByte; // for each UTF-8 character: the number of matching phrases
+  Phrase: String;
+  PhraseStartChar: Char;
+  LoTxtP: PChar;
+  CurLoTxtP: PChar;
+  CurPhraseP: PChar;
+  BoldP: PByte;
+  l: Integer;
+  BestPhraseCount: Integer;
+  CurPhraseCount: Integer;
+  BestPos: Integer;
+  IsBold: Boolean;
+  StartChomped: Boolean;
+  EndChomped: Boolean;
+begin
+  if MaxUTF8Length<=0 then exit('');
+  Result:=UTF8Trim(Txt);
+  {$IFDEF VerboseTextToHTMLSnipped}
+  debugln(['TextToHTMLSnipped trimmed Result="',Result,'"']);
+  debugln(['TextToHTMLSnipped LoCaseStringsToHighlight="',Trim(LoCaseStringsToHighlight.Text),'"']);
+  {$ENDIF}
+  // convert white space to single space
+  i:=1;
+  while i<=length(Result) do begin
+    if Result[i] in [#0..#31] then
+      Result[i]:=' ';
+    if (Result[i]=' ') and ((i=1) or (Result[i-1]=' ')) then
+      Delete(Result,i,1)
+    else
+      inc(i);
+  end;
+  if Result='' then exit;
+  LoTxt:=UTF8LowerCase(Result);
+  {$IFDEF VerboseTextToHTMLSnipped}
+  debugln(['TextToHTMLSnipped locase Result="',LoTxt,'"']);
+  {$ENDIF}
+  GetMem(Bold,Max(length(LoTxt),length(Result))+7);
+  try
+    // mark phrases
+    FillByte(Bold^,length(LoTxt)+7,0);
+    for i:=0 to Min(LoCaseStringsToHighlight.Count-1,255) do begin
+      Phrase:=LoCaseStringsToHighlight[i];
+      if Phrase='' then continue;
+      BoldP:=Bold;
+      PhraseStartChar:=Phrase[1];
+      LoTxtP:=PChar(LoTxt);
+      while LoTxtP^<>#0 do begin
+        //debugln(['TextToHTMLSnipped PhraseStartChar=',PhraseStartChar,' ',dbgstr(LoTxtP^)]);
+        if LoTxtP^=PhraseStartChar then begin
+          CurLoTxtP:=LoTxtP+1;
+          CurPhraseP:=PChar(Phrase)+1;
+          while (CurLoTxtP^=CurPhraseP^) and (CurLoTxtP^<>#0) do begin
+            inc(CurLoTxtP);
+            inc(CurPhraseP);
+          end;
+          if CurPhraseP^=#0 then begin
+            // phrase found => mark phrase in Bold array
+            //debugln(['TextToHTMLSnipped phrase "',Phrase,'" found at ',LoTxtP-PChar(LoTxt)]);
+            CurPhraseP:=PChar(Phrase);
+            while (CurPhraseP^<>#0) do begin
+              l:=UTF8CharacterLength(CurPhraseP);
+              inc(LoTxtP,l);
+              inc(CurPhraseP,l);
+              BoldP^+=1;
+              inc(BoldP);
+            end;
+            continue;
+          end;
+        end;
+        inc(LoTxtP,UTF8CharacterLength(LoTxtP));
+        inc(BoldP);
+      end;
+    end;
+
+    {$IFDEF VerboseTextToHTMLSnipped}
+    dbgout(' Bold: ');
+    LoTxtP:=PChar(LoTxt);
+    BoldP:=Bold;
+    while LoTxtP^<>#0 do begin
+      dbgout([' ',dbgstr(LoTxtP^),':',BoldP^]);
+      inc(LoTxtP,UTF8CharacterLength(LoTxtP));
+      inc(BoldP);
+    end;
+    debugln;
+    debugln('Result="',Result,'"');
+    dbgout ('Bold  = ');
+    l:=UTF8Length(Result);
+    for i:=0 to l-1 do
+      dbgout(dbgs(Bold[i]));
+    debugln;
+    {$ENDIF}
+
+    l:=UTF8Length(Result);
+    StartChomped:=false;
+    EndChomped:=false;
+    if (l>MaxUTF8Length) then begin
+      // text too long
+      // => find substring with most phrases
+      CurPhraseCount:=0;
+      for i:=0 to MaxUTF8Length-1 do
+        inc(CurPhraseCount,Bold[i]);
+      BestPhraseCount:=CurPhraseCount;
+      BestPos:=0;
+      for i:=0 to l-MaxUTF8Length-1 do begin
+        CurPhraseCount+=Bold[i+MaxUTF8Length]-Bold[i];
+        if CurPhraseCount>=BestPhraseCount then begin
+          BestPhraseCount:=CurPhraseCount;
+          BestPos:=i+1;
+        end;
+      end;
+      if BestPos>0 then begin
+        // BestPos is the latest substring containing the maximum
+        // => move BestPos to center the maximum
+        // => balance left and right of not marked characters
+        i:=BestPos;
+        while (i>0) and (Bold[i-1]=0)  and (Bold[i+MaxUTF8Length-1]=0) do
+          dec(i);
+        if i<BestPos then inc(i);
+        BestPos:=(i+BestPos) div 2;
+      end;
+
+      // cut down Result and Bold
+      Result:=UTF8Copy(Result,BestPos+1,MaxUTF8Length);
+      if BestPos>0 then begin
+        StartChomped:=true;
+        System.Move(Bold[BestPos],Bold[0],MaxUTF8Length);
+      end;
+      if BestPos+MaxUTF8Length<l then
+        EndChomped:=true;
+    end;
+
+    {$IFDEF VerboseTextToHTMLSnipped}
+    debugln(['TextToHTMLSnipped chomped Result="',Result,'"']);
+    {$ENDIF}
+
+    // add bold tags
+    i:=1;
+    BoldP:=Bold;
+    IsBold:=false;
+    while i<=length(Result) do begin
+      if (BoldP^>0) and (not IsBold) then begin
+        // insert bold start tag
+        Insert('<b>',Result,i);
+        inc(i,length('<b>'));
+        IsBold:=true;
+      end else if (BoldP^=0) and IsBold then begin
+        // insert bold end tag
+        Insert('</b>',Result,i);
+        inc(i,length('</b>'));
+        IsBold:=false;
+      end;
+      if Result[i]='<' then begin
+        // replace <
+        ReplaceSubstring(Result,i,1,'&lt;');
+        inc(i,length('&lt;'));
+      end else if Result[i]='>' then begin
+        // replace >
+        ReplaceSubstring(Result,i,1,'&gt;');
+        inc(i,length('&gt;'));
+      end else
+        inc(i,UTF8CharacterLength(@Result[i]));
+      inc(BoldP);
+    end;
+    if IsBold then
+      Result+='</b>';
+    // prepend and append '...'
+    Result:=UTF8Trim(Result);
+    if StartChomped then
+      Result:='...'+Result;
+    if EndChomped then
+      Result+='...';
+
+    {$IFDEF VerboseTextToHTMLSnipped}
+    debugln(['TextToHTMLSnipped END Result="',Result,'"']);
+    {$ENDIF}
+  finally
+    FreeMem(Bold);
+  end;
+end;
+
+procedure Test_TextToHTMLSnipped;
+
+  procedure t(Txt, LoCaseHighlights: string; MaxUTF8Length: integer; Expected: string);
+  var
+    LoCaseStringsToHighlight: TStringList;
+    s: String;
+  begin
+    LoCaseStringsToHighlight:=TStringList.Create;
+    LoCaseStringsToHighlight.Delimiter:=',';
+    LoCaseStringsToHighlight.StrictDelimiter:=true;
+    LoCaseStringsToHighlight.DelimitedText:=LoCaseHighlights;
+    s:=TextToHTMLSnipped(Txt,LoCaseStringsToHighlight,MaxUTF8Length);
+    if Expected<>s then begin
+      debugln(['Test_TextToHTMLSnipped Txt="'+Txt+'"']);
+      debugln(['Test_TextToHTMLSnipped LoCaseHighlights="'+LoCaseHighlights+'"']);
+      debugln(['Test_TextToHTMLSnipped MaxUTF8Length='+dbgs(MaxUTF8Length)]);
+      debugln(['Test_TextToHTMLSnipped Expected="'+Expected+'"']);
+      debugln(['Test_TextToHTMLSnipped Result  ="'+s+'"']);
+      raise Exception.Create('Test_TextToHTMLSnipped: Txt="'+Txt+'" LoCaseHighlights="'+LoCaseHighlights+'" Max='+dbgs(MaxUTF8Length)+' Expected="'+Expected+'" Result="'+s+'"');
+    end;
+    LoCaseStringsToHighlight.Free;
+  end;
+
+begin
+  t('','',0,'');
+  t('bla','bla',100,'<b>bla</b>');
+  t('bla foo bar','bla,bar',100,'<b>bla</b> foo <b>bar</b>');
+  t('bla foo bar','bla foo,bla,foo',100,'<b>bla foo</b> bar');
+  t('bla foo bar','foo',100,'bla <b>foo</b> bar');
+  t('bla foo bar','foo',7,'...a <b>foo</b> b...');
+  t('bl< foo >ar','foo',7,'...&lt; <b>foo</b> &gt;...');
+end;
 
 function SearchTextToPhrases(Txt: string): TStringList;
 var
@@ -383,6 +621,63 @@ begin
   Traverse(TextRoot);
 end;
 
+function TW2HelpPage.GetNodeHighestScore(Query: TWikiHelpQuery;
+  Scoring: TWHScoring): TWHTextNode;
+
+  function GetNodeScore(Node: TWHTextNode): TWHScore;
+  var
+    s: String;
+    i: Integer;
+    Phrase: String;
+    FitsWholeWord: boolean;
+    FitsCount: SizeInt;
+    Quality: TWHFitsStringFlag;
+    Category: TWHFitsCategory;
+  begin
+    Result:=0;
+    case Node.Typ of
+    whnTxt: Category:=whfcText;
+    whnHeader: Category:=whfcHeader;
+    whnLink: Category:=whfcLink;
+    else exit;
+    end;
+    s:=UTF8LowerCase(Node.Txt);
+    for i:=0 to Query.LoPhrases.Count-1 do begin
+      Phrase:=Query.LoPhrases[i];
+      HasTxtWord(PChar(Phrase),PChar(s),FitsWholeWord,FitsCount);
+      if FitsCount<=0 then continue;
+      if FitsWholeWord then
+        Quality:=whfsWholeWord
+      else
+        Quality:=whfsPart;
+      Result+=Scoring.Phrases[Category,Quality];
+    end;
+  end;
+
+  procedure Traverse(Node: TWHTextNode;
+    var BestNode: TWHTextNode; var BestScore: TWHScore);
+  var
+    i: Integer;
+    NodeScore: TWHScore;
+  begin
+    if Node=nil then exit;
+    NodeScore:=GetNodeScore(Node);
+    if NodeScore>BestScore then begin
+      BestNode:=Node;
+      BestScore:=NodeScore;
+    end;
+    for i:=0 to Node.Count-1 do
+      Traverse(Node[i],BestNode,BestScore);
+  end;
+
+var
+  NodeScore: TWHScore;
+begin
+  Result:=nil;
+  NodeScore:=0;
+  Traverse(TextRoot,Result,NodeScore);
+end;
+
 { TWHTextNode }
 
 function TWHTextNode.GetChildNodes(Index: integer): TWHTextNode;
@@ -450,6 +745,94 @@ begin
     Result:=FChildNodes.Count
   else
     Result:=0;
+end;
+
+function TWHTextNode.FirstChild: TWHTextNode;
+begin
+  if Count>0 then
+    Result:=ChildNodes[0]
+  else
+    Result:=nil;
+end;
+
+function TWHTextNode.LastChild: TWHTextNode;
+var
+  c: Integer;
+begin
+  c:=Count;
+  if c>0 then
+    Result:=ChildNodes[c-1]
+  else
+    Result:=nil;
+end;
+
+function TWHTextNode.NextSibling: TWHTextNode;
+begin
+  if (Parent=nil) or (IndexInParent+2>=Parent.Count) then exit(nil);
+  Result:=Parent[IndexInParent+1];
+end;
+
+function TWHTextNode.PreviousSibling: TWHTextNode;
+begin
+  if (Parent=nil) or (IndexInParent=0) then exit(nil);
+  Result:=Parent[IndexInParent-1];
+end;
+
+function TWHTextNode.Next: TWHTextNode;
+begin
+  Result:=FirstChild;
+  if Result=nil then
+    Result:=NextSkipChildren;
+end;
+
+function TWHTextNode.NextSkipChildren: TWHTextNode;
+var
+  Node: TWHTextNode;
+begin
+  Result:=Self;
+  repeat
+    Node:=Result.NextSibling;
+    if Node<>nil then exit(Node);
+    Result:=Result.Parent;
+  until Result=nil;
+  Result:=nil;
+end;
+
+function TWHTextNode.Previous: TWHTextNode;
+var
+  Node: TWHTextNode;
+begin
+  Result:=PreviousSibling;
+  if Result=nil then
+    exit(Parent);
+  Node:=Result.LastLeaf;
+  if Node<>nil then
+    Result:=Node;
+end;
+
+function TWHTextNode.LastLeaf: TWHTextNode;
+var
+  Node: TWHTextNode;
+begin
+  Result:=LastChild;
+  if Result=nil then exit;
+  repeat
+    Node:=Result.LastChild;
+    if Node=nil then exit;
+    Result:=Node;
+  until false;
+end;
+
+function TWHTextNode.Level: integer;
+var
+  Node: TWHTextNode;
+begin
+  Result:=0;
+  Node:=Parent;
+  while Node<>nil do begin
+    inc(Result);
+    Node:=Node.Parent;
+  end;
 end;
 
 function TWHTextNode.CalcMemSize: SizeInt;
@@ -788,6 +1171,12 @@ begin
   Converter.ImagesDir:=NewDir;
 end;
 
+procedure TWikiHelp.SetMaxResults(AValue: integer);
+begin
+  if FMaxResults=AValue then Exit;
+  FMaxResults:=AValue;
+end;
+
 procedure TWikiHelp.SetQuery(AValue: TWikiHelpQuery);
 begin
   if FQuery=AValue then Exit;
@@ -829,6 +1218,30 @@ begin
   {$ENDIF}
 end;
 
+function TWikiHelp.FoundNodeToHTMLSnippet(aPage: TW2HelpPage;
+  aNode: TWHTextNode; aQuery: TWikiHelpQuery): string;
+var
+  HeaderNode: TWHTextNode;
+begin
+  // link to the page
+  Result:='<a href="'+StrToXMLValue(aPage.WikiDocumentName)+'" class="wikiLinkPage">'
+    +TextToHTMLSnipped(aPage.WikiPage.Title,aQuery.LoPhrases,200)+'</a><br>'+LineEnding;
+  if aNode<>nil then begin
+    HeaderNode:=aNode;
+    while (HeaderNode<>nil) and (HeaderNode.Typ<>whnLink) do
+      HeaderNode:=HeaderNode.Previous;
+    if HeaderNode<>nil then begin
+      // add a direct link to the sub topic
+      Result+='Topic: <a href="'+StrToXMLValue(aPage.WikiDocumentName+'#'+WikiHeaderToLink(HeaderNode.Txt))+'" class="wikiLinkTopic">'
+        +TextToHTMLSnipped(HeaderNode.Txt,aQuery.LoPhrases,200)+'</a>: ';
+    end;
+    if HeaderNode<>aNode then begin
+      // add text
+      Result+=TextToHTMLSnipped(aNode.Txt,aQuery.LoPhrases,200);
+    end;
+  end;
+end;
+
 constructor TWikiHelp.Create(AOwner: TComponent);
 begin
   InitCriticalSection(FCritSec);
@@ -845,6 +1258,7 @@ begin
   FScoring.Phrases[whfcText,whfsPart]:=4;
   FScoring.Phrases[whfcLink,whfsWholeWord]:=2;
   FScoring.Phrases[whfcLink,whfsPart]:=1;
+  FMaxResults:=10;
 end;
 
 destructor TWikiHelp.Destroy;
@@ -931,14 +1345,20 @@ var
   FoundPages: TFPList;
   i: Integer;
   Page: TW2HelpPage;
+  Node: TWHTextNode;
+  s: String;
 begin
   StartTime:=Now;
   debugln(['TWikiHelp.TestSearch START Search=',Trim(Query.Phrases.Text)]);
   FoundPages:=nil;
   Converter.Search(Query,Scoring,FoundPages);
-  for i:=0 to FoundPages.Count-1 do begin
+  for i:=0 to Min(FoundPages.Count-1,MaxResults) do begin
     Page:=TW2HelpPage(FoundPages[i]);
+    debugln('===============================================');
     debugln(['TWikiHelp.TestSearch ',Page.WikiDocumentName,' ',Page.Score]);
+    Node:=Page.GetNodeHighestScore(Query,Scoring);
+    s:=FoundNodeToHTMLSnippet(Page,Node,Query);
+    debugln(['TWikiHelp.TestSearch Score=',Page.Score,' HTML="',s,'"']);
   end;
   FoundPages.Free;
   EndTime:=Now;
