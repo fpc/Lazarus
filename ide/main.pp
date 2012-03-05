@@ -1420,6 +1420,7 @@ begin
     // so we set 22 + 32 + (borders * 2).
     MainIDEBar.Constraints.MaxHeight := AMenuHeight +
       22 {cmd speedbtns} + 32 {component buttons} +
+      LCLIntf.GetSystemMetrics(SM_CYSIZEFRAME) +
       (LCLIntf.GetSystemMetrics(SM_CYBORDER) * 2) {borders};
   end else
     MainIDEBar.Constraints.MaxHeight:=85;
