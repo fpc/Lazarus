@@ -17,7 +17,7 @@
 
  TCSSMargin = record
    Style: TCSSMarginStyle;
-   Size: integer; // negative values are allowed (not implemented)
+   Size: single; // negative values are allowed (not implemented)
  end;
 
 

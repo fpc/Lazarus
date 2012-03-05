@@ -893,7 +893,7 @@ type
 
   TIpHtmlElemMargin = record
     Style: TIpHtmlElemMarginStyle;
-    Size: integer; // negative values are not yet supported
+    Size: single; // negative values are not yet supported
   end;
 
 
@@ -15822,6 +15822,11 @@ procedure TIpHtmlNodeCore.ApplyCSSProps(const ACSSProps: TCSSProps;
     if CssMargin.Style=cmsPx then begin
       ElemMargin.Style:=hemsPx;
       ElemMargin.Size:=CssMargin.Size;
+      exit(true);
+    end;
+    if CssMargin.Style=cmsEm then begin
+      ElemMargin.Style:=hemsPx;
+      ElemMargin.Size:=10*CssMargin.Size; // 1em = 1 current font size
       exit(true);
     end;
     debugln(['TIpHtmlNodeCore.ApplyCSSProps.CssMarginToProps note: margin style not supported ',ord(CssMargin.Style)]);
