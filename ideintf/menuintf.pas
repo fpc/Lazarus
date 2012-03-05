@@ -390,10 +390,10 @@ var
     // Source Editor: First dynamic section for often used context sensitive stuff
     //                The items are cleared automatically after each popup.
     SrcEditMenuSectionFirstDynamic: TIDEMenuSection;
+    SrcEditMenuSectionClipboard: TIDEMenuSection;
     SrcEditMenuSectionFirstStatic: TIDEMenuSection;
       SrcEditSubMenuFind: TIDEMenuSection;
     SrcEditMenuSectionFiles: TIDEMenuSection;
-    SrcEditMenuSectionClipboard: TIDEMenuSection;
     SrcEditMenuSectionMarks: TIDEMenuSection;
       SrcEditSubMenuGotoBookmarks: TIDEMenuSection;
       SrcEditSubMenuToggleBookmarks: TIDEMenuSection;

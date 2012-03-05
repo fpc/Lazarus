@@ -1148,6 +1148,11 @@ const
   SourceEditorMenuRootName = 'SourceEditor';
 
 var
+  // Clipboard
+  SrcEditMenuCut: TIDEMenuCommand;
+  SrcEditMenuCopy: TIDEMenuCommand;
+  SrcEditMenuPaste: TIDEMenuCommand;
+  SrcEditMenuCopyFilename: TIDEMenuCommand;
   SrcEditMenuFindDeclaration: TIDEMenuCommand;
     // finding / jumping
     SrcEditMenuProcedureJump: TIDEMenuCommand;
@@ -1159,10 +1164,6 @@ var
     SrcEditMenuOpenFileAtCursor: TIDEMenuCommand;
   SrcEditMenuClosePage: TIDEMenuCommand;
   SrcEditMenuCloseOtherPages: TIDEMenuCommand;
-  SrcEditMenuCut: TIDEMenuCommand;
-  SrcEditMenuCopy: TIDEMenuCommand;
-  SrcEditMenuPaste: TIDEMenuCommand;
-  SrcEditMenuCopyFilename: TIDEMenuCommand;
     // bookmarks
     SrcEditMenuNextBookmark: TIDEMenuCommand;
     SrcEditMenuPrevBookmark: TIDEMenuCommand;
@@ -1346,10 +1347,20 @@ begin
   AParent:=SourceEditorMenuRoot;
 
   // register the first dynamic section for often used context sensitive stuff
-  SrcEditMenuSectionFirstDynamic:=RegisterIDEMenuSection(AParent, 'First dynamic section');
+  SrcEditMenuSectionFirstDynamic:=RegisterIDEMenuSection(SourceEditorMenuRoot, 'First dynamic section');
+
+  {%region *** Clipboard section ***}
+    SrcEditMenuSectionClipboard:=RegisterIDEMenuSection(SourceEditorMenuRoot, 'Clipboard');
+    AParent:=SrcEditMenuSectionClipboard;
+
+    SrcEditMenuCut:=RegisterIDEMenuCommand(AParent,'Cut',lisCut, nil, nil, nil, 'laz_cut');
+    SrcEditMenuCopy:=RegisterIDEMenuCommand(AParent,'Copy',lisCopy, nil, nil, nil, 'laz_copy');
+    SrcEditMenuPaste:=RegisterIDEMenuCommand(AParent,'Paste',lisPaste, nil, nil, nil, 'laz_paste');
+    SrcEditMenuCopyFilename:=RegisterIDEMenuCommand(AParent,'Copy filename', uemCopyFilename);
+  {%endregion}
 
   {%region *** first static section *** }
-    SrcEditMenuSectionFirstStatic:=RegisterIDEMenuSection(AParent, 'First static section');
+    SrcEditMenuSectionFirstStatic:=RegisterIDEMenuSection(SourceEditorMenuRoot, 'First static section');
     AParent:=SrcEditMenuSectionFirstStatic;
 
     SrcEditMenuFindDeclaration := RegisterIDEMenuCommand
@@ -1401,16 +1412,6 @@ begin
       SrcEditSubMenuEncoding := RegisterIDESubMenu(AParent,'Encoding', uemEncoding);
       SrcEditSubMenuLineEnding := RegisterIDESubMenu(AParent,'LineEnding', uemLineEnding);
     {%endregion}
-  {%endregion}
-
-  {%region *** Clipboard section ***}
-    SrcEditMenuSectionClipboard:=RegisterIDEMenuSection(SourceEditorMenuRoot, 'Clipboard');
-    AParent:=SrcEditMenuSectionClipboard;
-
-    SrcEditMenuCut:=RegisterIDEMenuCommand(AParent,'Cut',lisCut, nil, nil, nil, 'laz_cut');
-    SrcEditMenuCopy:=RegisterIDEMenuCommand(AParent,'Copy',lisCopy, nil, nil, nil, 'laz_copy');
-    SrcEditMenuPaste:=RegisterIDEMenuCommand(AParent,'Paste',lisPaste, nil, nil, nil, 'laz_paste');
-    SrcEditMenuCopyFilename:=RegisterIDEMenuCommand(AParent,'Copy filename', uemCopyFilename);
   {%endregion}
 
   {%region *** Goto Marks section ***}
@@ -5367,19 +5368,20 @@ var
   NBAvail: Boolean;
   PageCtrl: TPageControl;
   PopM: TPopupMenu;
+  PageI: integer;
 begin
   PopM:=TPopupMenu(Sender);
   SourceTabMenuRoot.MenuItem:=PopM.Items;
   SourceTabMenuRoot.BeginUpdate;
   try
-    RemoveUserDefinedMenuItems;
-    RemoveContextMenuItems;
-
     // Get the tab that was clicked
     Assert(PopM.PopupComponent is TPageControl, 'PopupComponent is not TPageControl');
     PageCtrl:=TPageControl(PopM.PopupComponent);
-    PageIndex:=PageCtrl.TabIndexAtClientPos(PageCtrl.ScreenToClient(PopM.PopupPoint));
-    //DebugLn(['TSourceNotebook.TabPopUpMenuPopup: Popup PageIndex=', PageIndex]);
+    PageI:=PageCtrl.TabIndexAtClientPos(PageCtrl.ScreenToClient(PopM.PopupPoint));
+    if (PageI>=0) and (PageI<PageCtrl.PageCount) then
+      PageIndex:=PageI
+    else
+      DebugLn(['TSourceNotebook.TabPopUpMenuPopup: Popup PageIndex=', PageI]);
     ASrcEdit:=Editors[PageIndex];
 
     // editor layout
@@ -5447,16 +5449,23 @@ var
   Marks: PSourceMark;
   i, MarkCount: integer;
   EditorPopupPoint, EditorCaret: TPoint;
-  SelAvail, SelAvailAndWritable: Boolean;
+  SelAvail, SelAvailAndWritable, AtIdentifier: Boolean;
   CurWordAtCursor: String;
-  AtIdentifier: Boolean;
 begin
   SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
   SourceEditorMenuRoot.BeginUpdate;
   try
+    RemoveUserDefinedMenuItems;
+    RemoveContextMenuItems;
+
     ASrcEdit:=FindSourceEditorWithEditorComponent(TPopupMenu(Sender).PopupComponent);
     Assert(Assigned(ASrcEdit), 'TSourceNotebook.SrcPopUpMenuPopup: ASrcEdit=nil');
     EditorComp:=ASrcEdit.EditorComponent;
+
+    // Clipboard section:
+    SrcEditMenuCut.Enabled := ASrcEdit.SelectionAvailable and not ASrcEdit.ReadOnly;
+    SrcEditMenuCopy.Enabled := ASrcEdit.SelectionAvailable;
+    SrcEditMenuPaste.Enabled := not ASrcEdit.ReadOnly;
 
     // Files section: Readonly, ShowLineNumbers
     SrcEditMenuReadOnly.Checked:=ASrcEdit.ReadOnly;
@@ -5509,11 +5518,6 @@ begin
                  [CreateRelativePath(FPDocSrc,ExtractFilePath(CurFilename))]),
           true,@OnPopupMenuOpenFile);
     end;
-
-    // Clipboard
-    SrcEditMenuCut.Enabled := ASrcEdit.SelectionAvailable and not ASrcEdit.ReadOnly;
-    SrcEditMenuCopy.Enabled := ASrcEdit.SelectionAvailable;
-    SrcEditMenuPaste.Enabled := not ASrcEdit.ReadOnly;
 
     // bookmarks
     for BookMarkID:=0 to 9 do begin
