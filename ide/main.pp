@@ -15600,6 +15600,7 @@ var
   PascalReferences: TAVLTree;
   ListOfLazFPDocNode: TFPList;
   CurUnitname: String;
+  OldChange: Boolean;
 begin
   Result:=mrCancel;
   if not BeginCodeTool(TargetSrcEdit,TargetUnitInfo,[]) then exit;
@@ -15713,13 +15714,19 @@ begin
           mtInformation,[mbCancel],'');
         exit(mrCancel);
       end;
-      if not CodeToolBoss.RenameIdentifier(PascalReferences,
-        Identifier,Options.RenameTo)
-      then begin
-        DoJumpToCodeToolBossError;
-        debugln('TMainIDE.DoFindRenameIdentifier unable to commit');
-        Result:=mrCancel;
-        exit;
+      OldChange:=OpenEditorsOnCodeToolChange;
+      OpenEditorsOnCodeToolChange:=true;
+      try
+        if not CodeToolBoss.RenameIdentifier(PascalReferences,
+          Identifier,Options.RenameTo)
+        then begin
+          DoJumpToCodeToolBossError;
+          debugln('TMainIDE.DoFindRenameIdentifier unable to commit');
+          Result:=mrCancel;
+          exit;
+        end;
+      finally
+        OpenEditorsOnCodeToolChange:=OldChange;
       end;
     end;
 
