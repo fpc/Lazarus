@@ -170,21 +170,35 @@ type
     Help: TWikiHelp;
   end;
 
+  TWikiHelpProgressStep = (
+    whpsNone,
+    whpsWikiScanDir,
+    whpsWikiLoadPages,
+    whpsWikiExtractPageTexts,
+    whpsWikiLoadComplete,
+    whpsWikiSearch,
+    whpsWikiSearchComplete
+    );
+
   { TWikiHelp }
 
   TWikiHelp = class(TComponent)
   private
-    FAbortingLoad: boolean;
+    FAborting: boolean;
     FConverter: TWiki2HelpConverter;
     FMaxResults: integer;
     FOnScanned: TNotifyEvent;
+    FOnSearched: TNotifyEvent;
     FQuery: TWikiHelpQuery;
-    FLoadComplete: boolean;
-    FLoading: boolean;
     FScoring: TWHScoring;
     FXMLDirectory: string;
     FCritSec: TRTLCriticalSection;
     FScanThread: TWikiHelpThread;
+    fProgressStep: TWikiHelpProgressStep;
+    fProgressCount: integer;
+    fProgressMax: integer;
+    fWikiLoadTimeMSec: integer;
+    fWikiSearchTimeMSec: integer;
     function GetImagesDirectory: string;
     procedure SetImagesDirectory(AValue: string);
     procedure SetMaxResults(AValue: integer);
@@ -193,23 +207,25 @@ type
     procedure EnterCritSect;
     procedure LeaveCritSect;
     procedure Scanned;
+    procedure DoSearch;
     function FoundNodeToHTMLSnippet(aPage: TW2HelpPage; aNode: TWHTextNode;
       aQuery: TWikiHelpQuery): string;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function GetProgressCaption: string;
+    function Busy: boolean;
 
     // load wiki files
     procedure StartLoading; // returns immediately
-    property Loading: boolean read FLoading;
+    function LoadingContent: boolean;
     procedure AbortLoading(Wait: boolean);
-    property AbortingLoad: boolean read FAbortingLoad;
-    property LoadComplete: boolean read FLoadComplete;
+    property Aborting: boolean read FAborting;
+    function LoadComplete: boolean;
 
     // search
     procedure Search(const Term: string; const Languages: string = '');
     procedure Search(aQuery: TWikiHelpQuery);
-    procedure TestSearch;
     property Query: TWikiHelpQuery read FQuery;
     property Scoring: TWHScoring read FScoring;
     property MaxResults: integer read FMaxResults write SetMaxResults;
@@ -218,6 +234,7 @@ type
     property ImagesDirectory: string read GetImagesDirectory write SetImagesDirectory; // directory where the wiki image files are
     property Converter: TWiki2HelpConverter read FConverter;
     property OnScanned: TNotifyEvent read FOnScanned write FOnScanned;
+    property OnSearched: TNotifyEvent read FOnSearched write FOnSearched;
   end;
 
 var
@@ -533,6 +550,8 @@ begin
   Src:=TWikiHelpQuery(Obj);
   if not Phrases.Equals(Src.Phrases) then exit;
   // LoPhrases is computed from Phrases
+  if Languages<>Src.Languages then exit;
+  Result:=true;
 end;
 
 { TW2HelpPage }
@@ -933,9 +952,15 @@ var
 begin
   StartIndex:=Index*PagesPerThread;
   EndIndex:=Min(StartIndex+PagesPerThread-1,Count-1);
-  if Help.AbortingLoad then exit;
+  if Help.Aborting then exit;
   for i:=StartIndex to EndIndex do
     ExtractPageText(TW2HelpPage(Pages[i]));
+  Help.EnterCritSect;
+  try
+    inc(Help.fProgressCount,PagesPerThread);
+  finally
+    Help.LeaveCritSect;
+  end;
 end;
 
 procedure TWiki2HelpConverter.ParallelLoadPage(Index: PtrInt; Data: Pointer;
@@ -948,7 +973,7 @@ begin
   StartIndex:=Index*PagesPerThread;
   EndIndex:=Min(StartIndex+PagesPerThread-1,Count-1);
   for i:=StartIndex to EndIndex do begin
-    if Help.AbortingLoad then exit;
+    if Help.Aborting then exit;
     Page:=TW2HelpPage(Pages[i]);
     try
       Page.ParseWikiDoc(false);
@@ -957,6 +982,12 @@ begin
         Log('ERROR: '+Page.WikiFilename+': '+E.Message);
       end;
     end;
+  end;
+  Help.EnterCritSect;
+  try
+    inc(Help.fProgressCount,PagesPerThread);
+  finally
+    Help.LeaveCritSect;
   end;
 end;
 
@@ -969,10 +1000,16 @@ var
 begin
   StartIndex:=Index*PagesPerThread;
   EndIndex:=Min(StartIndex+PagesPerThread-1,Count-1);
-  if Help.AbortingLoad then exit;
+  if Help.Aborting then exit;
   for i:=StartIndex to EndIndex do begin
     Page:=TW2HelpPage(Pages[i]);
     Page.Score:=Page.GetScore(FCurQuery,FCurScoring);
+  end;
+  Help.EnterCritSect;
+  try
+    inc(Help.fProgressCount,PagesPerThread);
+  finally
+    Help.LeaveCritSect;
   end;
 end;
 
@@ -1010,6 +1047,14 @@ end;
 
 procedure TWiki2HelpConverter.ExtractAllTexts;
 begin
+  Help.EnterCritSect;
+  try
+    Help.fProgressStep:=whpsWikiExtractPageTexts;
+    Help.fProgressCount:=0;
+    Help.fProgressMax:=Count;
+  finally
+    Help.LeaveCritSect;
+  end;
   ProcThreadPool.DoParallel(@ParallelExtractPageText,0,(Count-1) div PagesPerThread);
 end;
 
@@ -1019,6 +1064,14 @@ var
   i: Integer;
   Page: TW2HelpPage;
 begin
+  Help.EnterCritSect;
+  try
+    Help.fProgressStep:=whpsWikiSearch;
+    Help.fProgressCount:=0;
+    Help.fProgressMax:=Count;
+  finally
+    Help.LeaveCritSect;
+  end;
   FCurQuery:=Query;
   FCurScoring:=Scoring;
   if FoundPages=nil then
@@ -1034,6 +1087,14 @@ end;
 
 procedure TWiki2HelpConverter.LoadPages;
 begin
+  Help.EnterCritSect;
+  try
+    Help.fProgressStep:=whpsWikiLoadPages;
+    Help.fProgressCount:=0;
+    Help.fProgressMax:=Count;
+  finally
+    Help.LeaveCritSect;
+  end;
   ProcThreadPool.DoParallel(@ParallelLoadPage,0,(Count-1) div PagesPerThread);
 end;
 
@@ -1095,21 +1156,22 @@ begin
           Filename:=Help.XMLDirectory+Files[i];
           Help.Converter.AddWikiPage(Filename,false);
         end;
-        if Help.AbortingLoad then exit;
+        if Help.Aborting then exit;
 
         // load xml files
         Help.Converter.LoadPages;
-        if Help.AbortingLoad then exit;
+        if Help.Aborting then exit;
 
         // extract texts
         Help.Converter.ConvertInit;
-        if Help.AbortingLoad then exit;
+        if Help.Aborting then exit;
         Help.Converter.ExtractAllTexts;
-        if Help.AbortingLoad then exit;
+        if Help.Aborting then exit;
 
         fCompleted:=true;
         EndTime:=Now;
-        Log('TWikiHelpThread.Execute SCAN complete XMLDirectory="'+Help.XMLDirectory+'" '+dbgs(round(Abs(EndTime-StartTime)*86400000))+'msec');
+        Help.fWikiLoadTimeMSec:=round(Abs(EndTime-StartTime)*86400000);
+        Log('TWikiHelpThread.Execute SCAN complete XMLDirectory="'+Help.XMLDirectory+'" '+dbgs(Help.fWikiLoadTimeMSec)+'msec');
       finally
         Files.Free;
         Help.Converter.OnLog:=nil;
@@ -1150,9 +1212,10 @@ begin
   Help.EnterCritSect;
   try
     Help.FScanThread:=nil;
-    Help.FLoading:=false;
-    Help.FLoadComplete:=fCompleted;
-    Help.FAbortingLoad:=false;
+    if fCompleted then
+      Help.fProgressStep:=whpsWikiLoadComplete
+    else
+      Help.fProgressStep:=whpsNone;
   finally
     Help.LeaveCritSect;
   end;
@@ -1212,10 +1275,50 @@ procedure TWikiHelp.Scanned;
 begin
   if Assigned(OnScanned) then
     OnScanned(Self);
+  DoSearch;
+end;
 
-  {$IFDEF TestWikiSearch}
-  Search('documentation');
-  {$ENDIF}
+procedure TWikiHelp.DoSearch;
+var
+  StartTime: TDateTime;
+  EndTime: TDateTime;
+  FoundPages: TFPList;
+  i: Integer;
+  Page: TW2HelpPage;
+  Node: TWHTextNode;
+  s: String;
+begin
+  if Query.Phrases.Count=0 then begin
+    EnterCritSect;
+    try
+      fProgressStep:=whpsWikiLoadComplete;
+    finally
+      LeaveCritSect;
+    end;
+    exit;
+  end;
+  StartTime:=Now;
+  //debugln(['TWikiHelp.DoSearch START Search=',Trim(Query.Phrases.Text)]);
+  FoundPages:=nil;
+  Converter.Search(Query,Scoring,FoundPages);
+  for i:=0 to Min(FoundPages.Count-1,MaxResults) do begin
+    Page:=TW2HelpPage(FoundPages[i]);
+    Node:=Page.GetNodeHighestScore(Query,Scoring);
+    s:=FoundNodeToHTMLSnippet(Page,Node,Query);
+    //debugln(['TWikiHelp.TestSearch Score=',Page.Score,' HTML="',s,'"']);
+  end;
+  FoundPages.Free;
+  EndTime:=Now;
+  fWikiSearchTimeMSec:=round(Abs(EndTime-StartTime)*86400000);
+  EnterCritSect;
+  try
+    fProgressStep:=whpsWikiSearchComplete;
+  finally
+    LeaveCritSect;
+  end;
+  //debugln(['TWikiHelp.DoSearch END Search="',Trim(Query.Phrases.Text),'" ',dbgs(fWikiSearchTimeMSec)+'msec']);
+  if Assigned(OnSearched) then
+    OnSearched(Self);
 end;
 
 function TWikiHelp.FoundNodeToHTMLSnippet(aPage: TW2HelpPage;
@@ -1259,6 +1362,7 @@ begin
   FScoring.Phrases[whfcLink,whfsWholeWord]:=2;
   FScoring.Phrases[whfcLink,whfsPart]:=1;
   FMaxResults:=10;
+  fProgressStep:=whpsNone;
 end;
 
 destructor TWikiHelp.Destroy;
@@ -1280,9 +1384,11 @@ begin
     raise Exception.Create('TWikiHelp.StartScan ImagesDirectory not found: '+ImagesDirectory);
   EnterCritSect;
   try
-    if Loading then exit;
-    FLoading:=true;
-    FLoadComplete:=false;
+    if fProgressStep>whpsNone then exit;
+    fProgressStep:=whpsWikiScanDir;
+    fWikiLoadTimeMSec:=0;
+    fProgressCount:=0;
+    fProgressMax:=0;
     FScanThread:=TWikiHelpThread.Create(true);
     FScanThread.FreeOnTerminate:=true;
     FScanThread.Help:=Self;
@@ -1296,24 +1402,58 @@ begin
   end;
 end;
 
+function TWikiHelp.LoadingContent: boolean;
+begin
+  Result:=(fProgressStep>whpsNone) and (fProgressStep<whpsWikiLoadComplete);
+end;
+
 procedure TWikiHelp.AbortLoading(Wait: boolean);
 begin
   EnterCritSect;
   try
-    if not Loading then exit;
-    FAbortingLoad:=true;
+    if not LoadingContent then exit;
+    FAborting:=true;
   finally
     LeaveCritSect;
   end;
   if not Wait then exit;
-  while Loading do
+  while LoadingContent do
     Sleep(10);
   EnterCritSect;
   try
-    FAbortingLoad:=false;
+    FAborting:=false;
   finally
     LeaveCritSect;
   end;
+end;
+
+function TWikiHelp.LoadComplete: boolean;
+begin
+  Result:=(fProgressStep>=whpsWikiLoadComplete);
+end;
+
+function TWikiHelp.GetProgressCaption: string;
+begin
+  EnterCritSect;
+  try
+    case fProgressStep of
+    whpsNone: Result:='Wiki not yet loaded.';
+    whpsWikiScanDir: Result:='Scanning Wiki directory ...';
+    whpsWikiLoadPages: Result:='Loaded '+IntToStr(fProgressCount)+' of '+IntToStr(fProgressMax)+' Wiki pages.';
+    whpsWikiExtractPageTexts: Result:='Read '+IntToStr(fProgressCount)+' of '+IntToStr(fProgressMax)+' Wiki pages.';
+    whpsWikiLoadComplete: Result:='Loaded '+IntToStr(Converter.Count)+' Wiki pages in '+IntToStr(fWikiLoadTimeMSec)+'msec.';
+    whpsWikiSearch: Result:='Searched '+IntToStr(fProgressCount)+' of '+IntToStr(fProgressMax)+' Wiki pages.';
+    whpsWikiSearchComplete: Result:='Searched '+IntToStr(Converter.Count)+' Wiki pages in '+IntToStr(fWikiSearchTimeMSec)+'msec.';
+    else Result:='unknown step: '+IntToStr(ord(fProgressStep));
+    end;
+  finally
+    LeaveCritSect;
+  end;
+end;
+
+function TWikiHelp.Busy: boolean;
+begin
+  Result:=not (fProgressStep in [whpsWikiLoadComplete,whpsWikiSearchComplete]);
 end;
 
 procedure TWikiHelp.Search(const Term: string; const Languages: string);
@@ -1332,37 +1472,11 @@ begin
     end;
     FreeAndNil(FQuery);
     FQuery:=aQuery;
+    if LoadingContent then exit;
   finally
     LeaveCritSect;
   end;
-  TestSearch;
-end;
-
-procedure TWikiHelp.TestSearch;
-var
-  StartTime: TDateTime;
-  EndTime: TDateTime;
-  FoundPages: TFPList;
-  i: Integer;
-  Page: TW2HelpPage;
-  Node: TWHTextNode;
-  s: String;
-begin
-  StartTime:=Now;
-  debugln(['TWikiHelp.TestSearch START Search=',Trim(Query.Phrases.Text)]);
-  FoundPages:=nil;
-  Converter.Search(Query,Scoring,FoundPages);
-  for i:=0 to Min(FoundPages.Count-1,MaxResults) do begin
-    Page:=TW2HelpPage(FoundPages[i]);
-    debugln('===============================================');
-    debugln(['TWikiHelp.TestSearch ',Page.WikiDocumentName,' ',Page.Score]);
-    Node:=Page.GetNodeHighestScore(Query,Scoring);
-    s:=FoundNodeToHTMLSnippet(Page,Node,Query);
-    debugln(['TWikiHelp.TestSearch Score=',Page.Score,' HTML="',s,'"']);
-  end;
-  FoundPages.Free;
-  EndTime:=Now;
-  debugln(['TWikiHelp.TestSearch END Search="',Trim(Query.Phrases.Text),'" ',dbgs(round(Abs(EndTime-StartTime)*86400000))+'msec']);
+  DoSearch;
 end;
 
 end.

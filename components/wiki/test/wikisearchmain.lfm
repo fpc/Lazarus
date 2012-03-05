@@ -1,7 +1,7 @@
 object WikiSearchDemoForm: TWikiSearchDemoForm
-  Left = 734
+  Left = 605
   Height = 501
-  Top = 312
+  Top = 233
   Width = 663
   Caption = 'WikiSearchDemoForm'
   ClientHeight = 501
@@ -35,29 +35,30 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     OnChange = SearchEditChange
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 0
     Text = 'SearchEdit'
   end
-  object ResultsGroupBox: TGroupBox
+  object MainGroupBox: TGroupBox
     AnchorSideTop.Control = LanguagesEdit
     AnchorSideTop.Side = asrBottom
-    Left = 6
-    Height = 260
+    Left = 0
+    Height = 435
     Top = 66
-    Width = 651
+    Width = 663
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Around = 6
-    Caption = 'ResultsGroupBox'
-    ClientHeight = 244
-    ClientWidth = 647
+    Caption = 'MainGroupBox'
+    ClientHeight = 419
+    ClientWidth = 659
     TabOrder = 1
     object ResultsIpHtmlPanel: TIpHtmlPanel
       Left = 0
-      Height = 244
+      Height = 419
       Top = 0
-      Width = 647
-      Align = alClient
+      Width = 337
+      Align = alLeft
       FixedTypeface = 'Courier New'
       DefaultTypeFace = 'default'
       DefaultFontSize = 12
@@ -68,23 +69,17 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       PrintSettings.MarginBottom = 0.5
       TabOrder = 0
     end
-  end
-  object PageGroupBox: TGroupBox
-    Left = 6
-    Height = 152
-    Top = 343
-    Width = 651
-    Align = alBottom
-    BorderSpacing.Around = 6
-    Caption = 'PageGroupBox'
-    ClientHeight = 136
-    ClientWidth = 647
-    TabOrder = 2
+    object Splitter1: TSplitter
+      Left = 337
+      Height = 419
+      Top = 0
+      Width = 5
+    end
     object PageIpHtmlPanel: TIpHtmlPanel
-      Left = 0
-      Height = 136
+      Left = 342
+      Height = 419
       Top = 0
-      Width = 647
+      Width = 317
       Align = alClient
       FixedTypeface = 'Courier New'
       DefaultTypeFace = 'default'
@@ -94,17 +89,8 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       PrintSettings.MarginTop = 0.5
       PrintSettings.MarginRight = 0.5
       PrintSettings.MarginBottom = 0.5
-      TabOrder = 0
+      TabOrder = 2
     end
-  end
-  object Splitter1: TSplitter
-    Cursor = crVSplit
-    Left = 0
-    Height = 5
-    Top = 332
-    Width = 663
-    Align = alBottom
-    ResizeAnchor = akBottom
   end
   object LanguagesLabel: TLabel
     AnchorSideLeft.Control = Owner
@@ -128,7 +114,30 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
     Top = 36
     Width = 80
     BorderSpacing.Around = 6
-    TabOrder = 4
+    OnChange = LanguagesEditChange
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
     Text = 'LanguagesEdit'
+  end
+  object ProgressLabel: TLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = LanguagesEdit
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 578
+    Height = 15
+    Top = 41
+    Width = 79
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
+    Caption = 'ProgressLabel'
+    ParentColor = False
+  end
+  object Timer1: TTimer
+    OnTimer = Timer1Timer
+    left = 380
+    top = 40
   end
 end
