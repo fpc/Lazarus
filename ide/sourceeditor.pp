@@ -5339,23 +5339,7 @@ end;
 
 procedure TSourceNotebook.TabPopUpMenuPopup(Sender: TObject);
 var
-  CurFilename: String;
   ASrcEdit: TSourceEditor;
-
-  function MaybeAddPopup(const ASuffix: String; ANewOnClick: TNotifyEvent = nil;
-    Filename: string = ''): TIDEMenuItem;
-  begin
-    Result:=nil;
-    if ANewOnClick=nil then
-      ANewOnClick:=@OnPopupMenuOpenFile;
-    if Filename='' then
-      Filename:=CurFilename;
-    Filename:=ChangeFileExt(Filename,ASuffix);
-    if FileExistsCached(Filename) then begin
-      Filename:=CreateRelativePath(Filename,ExtractFilePath(ASrcEdit.FileName));
-      Result:=AddContextPopupMenuItem(Format(lisOpenLfm,[Filename]), true, ANewOnClick);
-    end;
-  end;
 
   {$IFnDEF SingleSrcWindow}
   function ToWindow(ASection: TIDEMenuSection; const OpName: string;
@@ -5372,8 +5356,7 @@ var
       SharedEditor:=nb.IndexOfEditorInShareWith(ASrcEdit);
       if (i <> ThisWin) and ((SharedEditor < 0) <> WinForFind) then begin
         Result := True;
-        with RegisterIDEMenuCommand(ASection, OpName+IntToStr(i), nb.Caption,
-                                    OnClickMethod) do
+        with RegisterIDEMenuCommand(ASection,OpName+IntToStr(i),nb.Caption,OnClickMethod) do
           Tag := i;
       end;
     end;
@@ -5381,9 +5364,6 @@ var
   {$ENDIF}
 
 var
-  MainCodeBuf: TCodeBuffer;
-  FPDocSrc, ShortFileName: String;
-  AnOwner: TObject;
   NBAvail: Boolean;
   PageCtrl: TPageControl;
   PopM: TPopupMenu;
@@ -5402,7 +5382,83 @@ begin
     //DebugLn(['TSourceNotebook.TabPopUpMenuPopup: Popup PageIndex=', PageIndex]);
     ASrcEdit:=Editors[PageIndex];
 
-    // Readonly, ShowLineNumbers
+    // editor layout
+    SrcEditMenuMoveEditorLeft.MenuItem.Enabled:= (PageCount>1);
+    SrcEditMenuMoveEditorRight.MenuItem.Enabled:= (PageCount>1);
+    SrcEditMenuMoveEditorFirst.MenuItem.Enabled:= (PageCount>1) and (PageIndex>0);
+    SrcEditMenuMoveEditorLast.MenuItem.Enabled:= (PageCount>1) and (PageIndex<(PageCount-1));
+
+    {$IFnDEF SingleSrcWindow}
+    SrcEditMenuEditorLock.Checked := ASrcEdit.IsLocked;       // Editor locks
+    // Multi win
+    NBAvail := ToWindow(SrcEditMenuMoveToOtherWindowList, 'MoveToWindow',
+                       @SrcEditMenuMoveToExistingWindowClicked);
+    SrcEditMenuMoveToNewWindow.Visible := not NBAvail;
+    SrcEditMenuMoveToNewWindow.Enabled := PageCount > 1;
+    SrcEditMenuMoveToOtherWindow.Visible := NBAvail;
+    SrcEditMenuMoveToOtherWindowNew.Enabled := (PageCount > 1);
+
+    NBAvail := ToWindow(SrcEditMenuCopyToOtherWindowList, 'CopyToWindow',
+                       @SrcEditMenuCopyToExistingWindowClicked);
+    SrcEditMenuCopyToNewWindow.Visible := not NBAvail;
+    SrcEditMenuCopyToOtherWindow.Visible := NBAvail;
+
+    NBAvail := ToWindow(SrcEditMenuFindInOtherWindowList, 'FindInWindow',
+                       @SrcEditMenuFindInWindowClicked, True);
+    SrcEditMenuFindInOtherWindow.Enabled := NBAvail;
+    {$ENDIF}
+
+    if Assigned(Manager.OnPopupMenu) then
+      Manager.OnPopupMenu(@AddContextPopupMenuItem);
+    SourceTabMenuRoot.NotifySubSectionOnShow(Self);
+  finally
+    SourceTabMenuRoot.EndUpdate;
+  end;
+end;
+
+procedure TSourceNotebook.SrcPopUpMenuPopup(Sender: TObject);
+var
+  ASrcEdit: TSourceEditor;
+  CurFilename: String;
+
+  function MaybeAddPopup(const ASuffix: String; ANewOnClick: TNotifyEvent = nil;
+    Filename: string = ''): TIDEMenuItem;
+  begin
+    Result:=nil;
+    if ANewOnClick=nil then
+      ANewOnClick:=@OnPopupMenuOpenFile;
+    if Filename='' then
+      Filename:=CurFilename;
+    Filename:=ChangeFileExt(Filename,ASuffix);
+    if FileExistsCached(Filename) then begin
+      Filename:=CreateRelativePath(Filename,ExtractFilePath(ASrcEdit.FileName));
+      Result:=AddContextPopupMenuItem(Format(lisOpenLfm,[Filename]), true, ANewOnClick);
+    end;
+  end;
+
+var
+  MarkSrcEdit, se: TSourceEditor;
+  BookMarkID, BookMarkX, BookMarkY: integer;
+  MarkDesc, FPDocSrc, ShortFileName: String;
+  MarkMenuItem: TIDEMenuItem;
+  EditorComp: TSynEdit;
+  MainCodeBuf: TCodeBuffer;
+  AnOwner: TObject;
+  Marks: PSourceMark;
+  i, MarkCount: integer;
+  EditorPopupPoint, EditorCaret: TPoint;
+  SelAvail, SelAvailAndWritable: Boolean;
+  CurWordAtCursor: String;
+  AtIdentifier: Boolean;
+begin
+  SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
+  SourceEditorMenuRoot.BeginUpdate;
+  try
+    ASrcEdit:=FindSourceEditorWithEditorComponent(TPopupMenu(Sender).PopupComponent);
+    Assert(Assigned(ASrcEdit), 'TSourceNotebook.SrcPopUpMenuPopup: ASrcEdit=nil');
+    EditorComp:=ASrcEdit.EditorComponent;
+
+    // Files section: Readonly, ShowLineNumbers
     SrcEditMenuReadOnly.Checked:=ASrcEdit.ReadOnly;
     SrcEditMenuShowLineNumbers.Checked := ASrcEdit.EditorComponent.Gutter.LineNumberPart.Visible;
     SrcEditMenuDisableI18NForLFM.Visible:=false;
@@ -5410,12 +5466,6 @@ begin
     UpdateHighlightMenuItems;
     UpdateEncodingMenuItems;
     UpdateLineEndingMenuItems;
-
-    // editor layout
-    SrcEditMenuMoveEditorLeft.MenuItem.Enabled:= (PageCount>1);
-    SrcEditMenuMoveEditorRight.MenuItem.Enabled:= (PageCount>1);
-    SrcEditMenuMoveEditorFirst.MenuItem.Enabled:= (PageCount>1) and (PageIndex>0);
-    SrcEditMenuMoveEditorLast.MenuItem.Enabled:= (PageCount>1) and (PageIndex<(PageCount-1));
 
     // add context specific menu items
     CurFilename:=ASrcEdit.FileName;
@@ -5459,56 +5509,6 @@ begin
                  [CreateRelativePath(FPDocSrc,ExtractFilePath(CurFilename))]),
           true,@OnPopupMenuOpenFile);
     end;
-
-    {$IFnDEF SingleSrcWindow}
-    SrcEditMenuEditorLock.Checked := ASrcEdit.IsLocked;       // Editor locks
-    // Multi win
-    NBAvail := ToWindow(SrcEditMenuMoveToOtherWindowList, 'MoveToWindow',
-                       @SrcEditMenuMoveToExistingWindowClicked);
-    SrcEditMenuMoveToNewWindow.Visible := not NBAvail;
-    SrcEditMenuMoveToNewWindow.Enabled := PageCount > 1;
-    SrcEditMenuMoveToOtherWindow.Visible := NBAvail;
-    SrcEditMenuMoveToOtherWindowNew.Enabled := (PageCount > 1);
-
-    NBAvail := ToWindow(SrcEditMenuCopyToOtherWindowList, 'CopyToWindow',
-                       @SrcEditMenuCopyToExistingWindowClicked);
-    SrcEditMenuCopyToNewWindow.Visible := not NBAvail;
-    SrcEditMenuCopyToOtherWindow.Visible := NBAvail;
-
-    NBAvail := ToWindow(SrcEditMenuFindInOtherWindowList, 'FindInWindow',
-                       @SrcEditMenuFindInWindowClicked, True);
-    SrcEditMenuFindInOtherWindow.Enabled := NBAvail;
-    {$ENDIF}
-
-    if Assigned(Manager.OnPopupMenu) then
-      Manager.OnPopupMenu(@AddContextPopupMenuItem);
-    SourceTabMenuRoot.NotifySubSectionOnShow(Self);
-  finally
-    SourceTabMenuRoot.EndUpdate;
-  end;
-end;
-
-procedure TSourceNotebook.SrcPopUpMenuPopup(Sender: TObject);
-var
-  ASrcEdit: TSourceEditor;
-  MarkSrcEdit, se: TSourceEditor;
-  BookMarkID, BookMarkX, BookMarkY: integer;
-  MarkDesc: String;
-  MarkMenuItem: TIDEMenuItem;
-  EditorComp: TSynEdit;
-  Marks: PSourceMark;
-  i, MarkCount: integer;
-  EditorPopupPoint, EditorCaret: TPoint;
-  SelAvail, SelAvailAndWritable: Boolean;
-  CurWordAtCursor: String;
-  AtIdentifier: Boolean;
-begin
-  SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
-  SourceEditorMenuRoot.BeginUpdate;
-  try
-    ASrcEdit:=FindSourceEditorWithEditorComponent(TPopupMenu(Sender).PopupComponent);
-    Assert(Assigned(ASrcEdit), 'TSourceNotebook.SrcPopUpMenuPopup: ASrcEdit=nil');
-    EditorComp:=ASrcEdit.EditorComponent;
 
     // Clipboard
     SrcEditMenuCut.Enabled := ASrcEdit.SelectionAvailable and not ASrcEdit.ReadOnly;
