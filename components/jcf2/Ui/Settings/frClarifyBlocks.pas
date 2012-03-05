@@ -81,7 +81,6 @@ end;
 
 procedure TfClarifyBlocks.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  inherited Setup(ADialog);
   Label1.Caption := lisBlocksUseANewLineInBlocksAt;
   rgBlockBegin.Caption := lisBlocksBlockWithBegin;
   rgBlockBegin.Items[0] := lisCaseBlocksAlways;
