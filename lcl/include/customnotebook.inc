@@ -306,7 +306,7 @@ end;
 
   Returns the index of the page of the tab at the client position.
   For example:
-    Index:=NoteBook1.PageIndexAtClientPos(
+    Index:=NoteBook1.TabIndexAtClientPos(
                NoteBook1.ScreenToClient(Mouse.CursorPos));
  ------------------------------------------------------------------------------}
 function TCustomTabControl.TabIndexAtClientPos(ClientPos: TPoint): integer;
