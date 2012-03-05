@@ -392,6 +392,7 @@ var
     SrcEditMenuSectionFirstDynamic: TIDEMenuSection;
     SrcEditMenuSectionFirstStatic: TIDEMenuSection;
       SrcEditSubMenuFind: TIDEMenuSection;
+    SrcEditMenuSectionFiles: TIDEMenuSection;
     SrcEditMenuSectionClipboard: TIDEMenuSection;
     SrcEditMenuSectionMarks: TIDEMenuSection;
       SrcEditSubMenuGotoBookmarks: TIDEMenuSection;

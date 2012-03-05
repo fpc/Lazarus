@@ -1334,31 +1334,6 @@ begin
           (AParent,'MoveEditorRightmost', uemMovePageRightmost, nil, @ExecuteIdeMenuClick);
     {%endregion}
 
-    {%region * sub menu Open File *}
-      SrcEditSubMenuOpenFile :=
-        RegisterIDESubMenu(SrcEditMenuSectionPages, 'Open File', lisOpenFile);
-      AParent:=SrcEditSubMenuOpenFile;
-
-      SrcEditMenuOpenFileAtCursor:=RegisterIDEMenuCommand(AParent, 'Open File At Cursor',
-          uemOpenFileAtCursor, nil, @ExecuteIdeMenuClick, nil, 'menu_search_openfile_atcursor');
-      // register the File Specific dynamic section
-      SrcEditMenuSectionFileDynamic:=RegisterIDEMenuSection(AParent, 'File dynamic section');
-    {%endregion}
-
-    {%region * sub menu Flags section *}
-      SrcEditSubMenuFlags :=
-        RegisterIDESubMenu(SrcEditMenuSectionPages, 'Flags section', lisFileSettings);
-      AParent:=SrcEditSubMenuFlags;
-
-      SrcEditMenuReadOnly := RegisterIDEMenuCommand(AParent,'ReadOnly',uemReadOnly);
-      SrcEditMenuReadOnly.ShowAlwaysCheckable:=true;
-      SrcEditMenuShowLineNumbers := RegisterIDEMenuCommand(AParent, 'ShowLineNumbers',uemShowLineNumbers);
-      SrcEditMenuShowLineNumbers.ShowAlwaysCheckable:=true;
-      SrcEditMenuDisableI18NForLFM := RegisterIDEMenuCommand(AParent, 'DisableI18NForLFM',lisDisableI18NForLFM);
-      SrcEditSubMenuHighlighter := RegisterIDESubMenu(AParent,'Highlighter', uemHighlighter);
-      SrcEditSubMenuEncoding := RegisterIDESubMenu(AParent,'Encoding', uemEncoding);
-      SrcEditSubMenuLineEnding := RegisterIDESubMenu(AParent,'LineEnding', uemLineEnding);
-    {%endregion}
   {%endregion}
 end;
 
@@ -1400,6 +1375,34 @@ begin
     {%endregion}
   {%endregion}
 
+  {%region *** Files section ***}
+    SrcEditMenuSectionFiles:=RegisterIDEMenuSection(SourceEditorMenuRoot, 'Files');
+
+    {%region * sub menu Open File *}
+      SrcEditSubMenuOpenFile:=RegisterIDESubMenu(SrcEditMenuSectionFiles,'Open File',lisOpenFile);
+      AParent:=SrcEditSubMenuOpenFile;
+
+      SrcEditMenuOpenFileAtCursor:=RegisterIDEMenuCommand(AParent, 'Open File At Cursor',
+          uemOpenFileAtCursor, nil, @ExecuteIdeMenuClick, nil, 'menu_search_openfile_atcursor');
+      // register the File Specific dynamic section
+      SrcEditMenuSectionFileDynamic:=RegisterIDEMenuSection(AParent, 'File dynamic section');
+    {%endregion}
+
+    {%region * sub menu Flags section *}
+      SrcEditSubMenuFlags:=RegisterIDESubMenu(SrcEditMenuSectionFiles,'Flags section',lisFileSettings);
+      AParent:=SrcEditSubMenuFlags;
+
+      SrcEditMenuReadOnly := RegisterIDEMenuCommand(AParent,'ReadOnly',uemReadOnly);
+      SrcEditMenuReadOnly.ShowAlwaysCheckable:=true;
+      SrcEditMenuShowLineNumbers := RegisterIDEMenuCommand(AParent, 'ShowLineNumbers',uemShowLineNumbers);
+      SrcEditMenuShowLineNumbers.ShowAlwaysCheckable:=true;
+      SrcEditMenuDisableI18NForLFM := RegisterIDEMenuCommand(AParent, 'DisableI18NForLFM',lisDisableI18NForLFM);
+      SrcEditSubMenuHighlighter := RegisterIDESubMenu(AParent,'Highlighter', uemHighlighter);
+      SrcEditSubMenuEncoding := RegisterIDESubMenu(AParent,'Encoding', uemEncoding);
+      SrcEditSubMenuLineEnding := RegisterIDESubMenu(AParent,'LineEnding', uemLineEnding);
+    {%endregion}
+  {%endregion}
+
   {%region *** Clipboard section ***}
     SrcEditMenuSectionClipboard:=RegisterIDEMenuSection(SourceEditorMenuRoot, 'Clipboard');
     AParent:=SrcEditMenuSectionClipboard;
@@ -1411,8 +1414,7 @@ begin
   {%endregion}
 
   {%region *** Goto Marks section ***}
-  SrcEditMenuSectionMarks:=RegisterIDEMenuSection(SourceEditorMenuRoot,
-                                                  'Marks section');
+  SrcEditMenuSectionMarks:=RegisterIDEMenuSection(SourceEditorMenuRoot, 'Marks section');
     // register the Goto Bookmarks Submenu
     SrcEditSubMenuGotoBookmarks:=RegisterIDESubMenu(SrcEditMenuSectionMarks,
                                               'Goto bookmarks',uemGotoBookmark);
