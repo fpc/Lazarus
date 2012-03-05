@@ -273,6 +273,7 @@ type
   end;
   
 function IsJITMethod(const aMethod: TMethod): boolean;
+function GetJITMethod(const aMethod: TMethod; out aJITMethod: TJITMethod): boolean;
 function CompareJITMethod(Data1, Data2: Pointer): integer;
 
 var
@@ -655,6 +656,18 @@ begin
   {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
   Result := Align(Result, SizeOf(Pointer));
   {$endif}
+end;
+
+function GetJITMethod(const aMethod: TMethod; out aJITMethod: TJITMethod
+  ): boolean;
+begin
+  if IsJITMethod(aMethod) then begin
+    Result:=true;
+    aJITMethod:=TJITMethod(aMethod.Data);
+  end else begin
+    Result:=false;
+    aJITMethod:=nil;
+  end;
 end;
 
 function CompareJITMethod(Data1, Data2: Pointer): integer;
