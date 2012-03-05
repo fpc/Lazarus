@@ -33,9 +33,7 @@ type
     SearchLabel: TLabel;
     Splitter1: TSplitter;
     Timer1: TTimer;
-    function DataProviderCanHandle(Sender: TObject; const URL: string): Boolean;
-    procedure DataProviderCheckURL(Sender: TObject; const URL: string;
-      var Available: Boolean; var ContentType: string);
+    function DataProviderCanHandle(Sender: TObject; const {%H-}URL: string): Boolean;
     procedure DataProviderGetImage(Sender: TIpHtmlNode; const URL: string;
       var Picture: TPicture);
     procedure FormCreate(Sender: TObject);
@@ -105,7 +103,6 @@ begin
   PageIpHtmlPanel.DataProvider:=FURLDataProvider;
   FURLDataProvider.OnCanHandle:=@DataProviderCanHandle;
   FURLDataProvider.OnGetImage:=@DataProviderGetImage;
-  FURLDataProvider.OnCheckURL:=@DataProviderCheckURL;
 
   WikiHelp:=TWikiHelp.Create(nil);
   WikiHelp.XMLDirectory:=SetDirSeparators('../wikixml');
@@ -132,14 +129,6 @@ function TWikiSearchDemoForm.DataProviderCanHandle(Sender: TObject;
 begin
   //debugln(['TWikiSearchDemoForm.DataProviderCanHandle URL=',URL]);
   Result:=false;
-end;
-
-procedure TWikiSearchDemoForm.DataProviderCheckURL(Sender: TObject;
-  const URL: string; var Available: Boolean; var ContentType: string);
-begin
-  debugln(['TWikiSearchDemoForm.DataProviderCheckURL URL=',URL]);
-  Available:=false;
-  ContentType:='';
 end;
 
 procedure TWikiSearchDemoForm.DataProviderGetImage(Sender: TIpHtmlNode;
@@ -195,6 +184,8 @@ var
   Panel: TIpHtmlPanel;
   ms: TMemoryStream;
   Src: String;
+  DocumentName: String;
+  p: SizeInt;
 begin
   Panel:=Sender as TIpHtmlPanel;
   HotNode:=Panel.HotNode;
@@ -210,7 +201,13 @@ begin
   ms:=TMemoryStream.Create;
   try
     try
-      WikiHelp.SavePageToStream(href,ms);
+      DocumentName:=HRef;
+      p:=Pos('#',DocumentName);
+      if p>0 then begin
+        DocumentName:=LeftStr(DocumentName,p-1);
+        // ToDo: anchor
+      end;
+      WikiHelp.SavePageToStream(DocumentName,ms);
       ms.Position:=0;
       LoadHTML(PageIpHtmlPanel,ms);
     except

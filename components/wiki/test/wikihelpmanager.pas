@@ -259,6 +259,8 @@ function CompareW2HPageForScore(Page1, Page2: Pointer): integer;
 function TextToHTMLSnipped(Txt: string; LoCaseStringsToHighlight: TStrings;
   MaxUTF8Length: integer): string;
 
+function dbgs(t: TWHTextNodeType): string; overload;
+
 procedure Test_TextToHTMLSnipped;
 
 implementation
@@ -446,6 +448,12 @@ begin
   finally
     FreeMem(Bold);
   end;
+end;
+
+function dbgs(t: TWHTextNodeType): string;
+begin
+  Result:='';
+  writestr(Result,t);
 end;
 
 procedure Test_TextToHTMLSnipped;
@@ -1350,8 +1358,8 @@ begin
     Page:=TW2HelpPage(FoundPages[i]);
     Node:=Page.GetNodeHighestScore(Query,Scoring);
     s:='<div class="wikiSearchResultItem">'+FoundNodeToHTMLSnippet(Page,Node,Query)+'</div>'+LineEnding;
-    HTML+=s;
     //debugln(['TWikiHelp.TestSearch Score=',Page.Score,' HTML="',s,'"']);
+    HTML+=s;
   end;
   HTML+='</body>'+LineEnding
        +'</html>'+LineEnding;
@@ -1381,10 +1389,23 @@ begin
     +' alt="'+StrToXMLValue(aPage.WikiPage.Title)+'"'
     +'>'
     +TextToHTMLSnipped(aPage.WikiPage.Title,aQuery.LoPhrases,200)+'</a><br>'+LineEnding;
+  if aNode=nil then begin
+    // get the first node with some text
+    aNode:=aPage.TextRoot;
+    while (aNode<>nil) and (UTF8Trim(aNode.Txt)='') do
+      aNode:=aNode.Next;
+  end;
   if aNode<>nil then begin
+    //debugln(['TWikiHelp.FoundNodeToHTMLSnippet ',dbgs(aNode.Typ),' Txt="'+dbgstr(ANode.Txt)+'"']);
     HeaderNode:=aNode;
-    while (HeaderNode<>nil) and (HeaderNode.Typ<>whnLink) do
+    while (HeaderNode<>nil) and (HeaderNode.Typ<>whnHeader) do
       HeaderNode:=HeaderNode.Previous;
+    if aNode=HeaderNode then begin
+      // get the first node after the header with some text
+      repeat
+        aNode:=aNode.Next;
+      until (aNode=nil) or (UTF8Trim(aNode.Txt)<>'');
+    end;
     if HeaderNode<>nil then begin
       // add a direct link to the sub topic
       Result+='Topic <a href="'+StrToXMLValue(aPage.WikiDocumentName+'#'+WikiHeaderToLink(HeaderNode.Txt))+'"'
@@ -1393,7 +1414,7 @@ begin
         +'>'
         +TextToHTMLSnipped(HeaderNode.Txt,aQuery.LoPhrases,200)+'</a>: ';
     end;
-    if HeaderNode<>aNode then begin
+    if aNode<>nil then begin
       // add text
       Result+=TextToHTMLSnipped(aNode.Txt,aQuery.LoPhrases,200);
     end;
