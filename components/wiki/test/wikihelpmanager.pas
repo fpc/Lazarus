@@ -1086,7 +1086,11 @@ begin
 end;
 
 procedure TWiki2HelpConverter.LoadPages;
+var
+  s: TDateTime;
+  e: TDateTime;
 begin
+  s:=Now;
   Help.EnterCritSect;
   try
     Help.fProgressStep:=whpsWikiLoadPages;
@@ -1096,6 +1100,8 @@ begin
     Help.LeaveCritSect;
   end;
   ProcThreadPool.DoParallel(@ParallelLoadPage,0,(Count-1) div PagesPerThread);
+  e:=Now;
+  debugln(['TWiki2HelpConverter.LoadPages ',round((e-s)*86400000)]);
 end;
 
 constructor TWiki2HelpConverter.Create;
@@ -1140,6 +1146,7 @@ begin
       try
         Help.Converter.OnLog:=@ConverterLog;
         // get all wiki xml files
+        Log('TWikiHelpThread.Execute AAA1');
         if FindFirstUTF8(Help.XMLDirectory+AllFilesMask,faAnyFile,FileInfo)=0 then begin
           repeat
             if CompareFileExt(FileInfo.Name,'.xml',false)<>0 then continue;
@@ -1150,6 +1157,7 @@ begin
           until FindNextUTF8(FileInfo)<>0;
         end;
         FindCloseUTF8(FileInfo);
+        Log('TWikiHelpThread.Execute AAA2');
 
         // add file names to converter
         for i:=0 to Files.Count-1 do begin
@@ -1157,6 +1165,7 @@ begin
           Help.Converter.AddWikiPage(Filename,false);
         end;
         if Help.Aborting then exit;
+        Log('TWikiHelpThread.Execute AAA3');
 
         // load xml files
         Help.Converter.LoadPages;

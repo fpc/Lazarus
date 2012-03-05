@@ -71,6 +71,8 @@ begin
   WikiHelp.OnSearched:=@WikiHelpSearched;
 
   WikiHelp.StartLoading;
+  UpdateProgress;
+  Timer1.Enabled:=true;
 end;
 
 procedure TWikiSearchDemoForm.FormDestroy(Sender: TObject);
@@ -97,6 +99,7 @@ end;
 procedure TWikiSearchDemoForm.Timer1Timer(Sender: TObject);
 begin
   ProgressLabel.Caption:=WikiHelp.GetProgressCaption;
+  debugln(['TWikiSearchDemoForm.Timer1Timer ',ProgressLabel.Caption]);
   Timer1.Enabled:=WikiHelp.Busy;
 end;
 
