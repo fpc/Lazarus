@@ -211,11 +211,13 @@ begin
     Exit;
   LinkGetBookMark;
   try
+    //needed to handle sqldb.TSQLQuery that does not has a reliable recordcount after Open
+    FListLink.DataSet.Last;
     FListLink.DataSet.First;
+    SetLength(FListKeys, FListLink.DataSet.RecordCount);
     i := 0;
     while not FListLink.DataSet.EOF do
     begin
-      SetLength(FListKeys, i+1);
       s := FListField.DisplayText;
       FListKeys[i] := FListLink.DataSet.FieldValues[FKeyFieldNames];
       Inc(i);
