@@ -2,7 +2,23 @@ lazarus (0.9.31-0) unstable; urgency=low
 
   * Snapshot building.
 
- -- Abou Al Montacir <abou.almontacir@sfr.fr>  Wed, 20 Jul 2011 09:32:00 +0100
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Tue, 06 Mar 2012 09:16:00 +0100
+
+lazarus (0.9.30.2-3) unstable; urgency=low
+
+  * Set priority according to version in lcl-utils and lazarus-ide-gtk so that
+    newer version is automatically selected. (Closes: Bug#656913)
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Tue, 15 Feb 2012 18:49:00 +0100
+
+lazarus (0.9.30.2-2) unstable; urgency=low
+
+  * Set priority according to version so that newer version is automatically
+    selected. (Closes: Bug#656913)
+  * Fix target specific compiler flags causing FPC-2.6.0 to abort compilation.
+    (Closes: Bug#656251)
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Tue, 07 Feb 2012 10:58:00 +0100
 
 lazarus (0.9.30-3) unstable; urgency=low
 

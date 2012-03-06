@@ -2,13 +2,13 @@
 #
 # Create debian files from *.in files
 #
-# $1 = path to debian files
-# $2 = fpc target (i386-linux)
-# $3 = ppcXXX binary name (ppc386)
-#
+
 #set -x
 if [ $# != 2 ]; then
-  echo 'Usage : fixdeb <path> <target>'
+  echo 'Usage : fixdeb <path> <target> [priority]'
+  echo '        <path>     = path to debian files'
+  echo '        <target>   = fpc target (i386-linux)'
+  echo '        [priority] = package priority in alternative system'
   exit 1
 fi
 
@@ -18,6 +18,7 @@ DEB_SUBST_DEBVERSION=`echo $DEB_SUBST_PACKAGEVERSION | awk -F '-' '{ print $NF }
 DEB_SUBST_SVNPATH=`echo $DEB_SUBST_VERSION | awk -F '.' '{ print "release_"$1"_"$2"_"$3 }'`
 DEB_SUBST_TARGET="$2"
 DEB_SUBST_PACKAGESUFFIX=${PACKAGESUFFIX}
+DEB_SUBST_PRIORITY=${3:-$(($(echo ${DEB_SUBST_VERSION}.0.0.0.0 | sed -e 's@\([0-9]\)\+\.\([0-9]\)\+\.\([0-9]\+\)\.\([0-9]\+\).*@((\1*100+\2)*100+\3)*100+\4@')))}
 
 SUBST_CMD=`set | sed -n -e 's/^DEB_SUBST_\([A-Z_]\+\)=\(.*\)/-e s@\${\1}@\2@g/p'`
 

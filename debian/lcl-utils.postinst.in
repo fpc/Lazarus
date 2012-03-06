@@ -19,7 +19,7 @@ then
 fi
 # Add alternatives
 update-alternatives \
-	--install /usr/lib/lazarus/default lazarus ${LAZARUS_DIR} 20 \
+	--install /usr/lib/lazarus/default lazarus ${LAZARUS_DIR} ${PRIORITY} \
 	--slave "${CFG_DIR}" lazarus.cfg /etc/lazarus-${VERSION} \
     --slave /usr/bin/lazbuild lazbuild ${LAZARUS_DIR}/lazbuild \
     --slave ${MAN_DIR}/lazbuild.1.gz lazbuild.1.gz ${MAN_DIR}/lazbuild-${VERSION}.1.gz \
