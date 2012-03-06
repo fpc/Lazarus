@@ -311,7 +311,7 @@ begin
       sw:=SourceWindows[i];
       Assert(sw.PageCount=sw.EditorCount, 'sw.PageCount<>sw.EditorCount');
       for j:=0 to sw.EditorCount-1 do begin
-        SrcEdit:=sw.Editors[j];
+        SrcEdit:=sw.FindSourceEditorWithPageIndex(j);
         if SrcEdit.Modified then
           Modi:='* '
         else
@@ -319,12 +319,6 @@ begin
         FilterEdit.Data.Add(Modi+SrcEdit.FileName);
       end;
     end;
-
-    //for i:=0 to SourceEditorCount-1 do begin  // Same thing...
-    //  SrcEdit:=SourceEditors[i];
-    //  FilterEdit.Data.Add(SrcEdit.FileName);
-    //end;
-
   FilterEdit.InvalidateFilter;
 end;
 
