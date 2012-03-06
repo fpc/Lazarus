@@ -6821,8 +6821,7 @@ begin
   Result:=FSourceEditorList.Count;
 end;
 
-function TSourceNotebook.IndexOfEditor(aEditor: TSourceEditorInterface
-  ): integer;
+function TSourceNotebook.IndexOfEditor(aEditor: TSourceEditorInterface): integer;
 begin
   Result := FSourceEditorList.IndexOf(aEditor);
 end;
@@ -7786,8 +7785,7 @@ begin
   Result := TSourceEditorWindowInterface(FSourceWindowByFocusList[Index]);
 end;
 
-procedure TSourceEditorManagerBase.SetActiveSourceWindowIndex(
-  const AValue: integer);
+procedure TSourceEditorManagerBase.SetActiveSourceWindowIndex(const AValue: integer);
 begin
   ActiveSourceWindow := SourceWindows[AValue];
 end;
@@ -7807,7 +7805,6 @@ begin
   FActiveWindow := AValue as TSourceNotebook;
   FSourceWindowByFocusList.Remove(AValue);
   FSourceWindowByFocusList.Insert(0, AValue);
-
 
   if Assigned(OnCurrentCodeBufferChanged) then
     OnCurrentCodeBufferChanged(nil);
@@ -7870,8 +7867,7 @@ begin
   FChangeNotifyLists[semEditorStatus].CallNotifyEvents(AEditor);
 end;
 
-function TSourceEditorManagerBase.GetSourceEditors(Index: integer
-  ): TSourceEditorInterface;
+function TSourceEditorManagerBase.GetSourceEditors(Index: integer): TSourceEditorInterface;
 var
   i: Integer;
 begin
@@ -7974,8 +7970,7 @@ begin
   end;
 end;
 
-function TSourceEditorManagerBase.GetEditorControlSettings(EditControl: TControl
-  ): boolean;
+function TSourceEditorManagerBase.GetEditorControlSettings(EditControl: TControl): boolean;
 begin
   Result:=true;
   if EditControl is TSynEdit then begin
@@ -7986,8 +7981,7 @@ begin
   end;
 end;
 
-function TSourceEditorManagerBase.GetHighlighterSettings(Highlighter: TObject
-  ): boolean;
+function TSourceEditorManagerBase.GetHighlighterSettings(Highlighter: TObject): boolean;
 begin
   Result:=true;
   if Highlighter is TSynCustomHighlighter then begin
@@ -8424,14 +8418,12 @@ begin
   Result := TSourceEditor(inherited SourceEditors[Index]);
 end;
 
-procedure TSourceEditorManager.SetActiveSourceNotebook(
-  const AValue: TSourceNotebook);
+procedure TSourceEditorManager.SetActiveSourceNotebook(const AValue: TSourceNotebook);
 begin
   inherited ActiveSourceWindow := AValue;
 end;
 
-function TSourceEditorManager.GetSourceNotebook(Index: integer
-  ): TSourceNotebook;
+function TSourceEditorManager.GetSourceNotebook(Index: integer): TSourceNotebook;
 begin
   Result := TSourceNotebook(inherited SourceWindows[Index]);
 end;
@@ -8483,9 +8475,8 @@ begin
   AForm.Name:=aFormName;
 end;
 
-procedure TSourceEditorManager.GetDefaultLayout(Sender: TObject;
-  aFormName: string; out aBounds: TRect; out DockSibling: string; out
-  DockAlign: TAlign);
+procedure TSourceEditorManager.GetDefaultLayout(Sender: TObject; aFormName: string;
+  out aBounds: TRect; out DockSibling: string; out DockAlign: TAlign);
 var
   i: LongInt;
   p: Integer;
