@@ -1,4 +1,4 @@
-# Massimo Soricetti <notturno@quipo.it>, 2011.
+ Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2011-04-22 01:27+0200\n"
@@ -315,7 +315,7 @@ msgid "Insert File Contents at Cursor ..."
 msgstr ""
 
 #: codystrconsts.crsjumpto
-msgid "Jump to"
+msgid "&Jump to"
 msgstr ""
 
 #: codystrconsts.crskbytes
@@ -579,7 +579,7 @@ msgid "Used by"
 msgstr "Usato da"
 
 #: codystrconsts.crsuseidentifier
-msgid "Use identifier"
+msgid "&Use identifier"
 msgstr ""
 
 #: codystrconsts.crsuses
