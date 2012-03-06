@@ -3,7 +3,9 @@
 #/usr/lib/lazarus/${VERSION}/components/custom
 /usr/lib/lazarus/${VERSION}/components/jcf2
 #/usr/lib/lazarus/${VERSION}/components/rx
+/usr/lib/lazarus/${VERSION}/components/externhelp
 /usr/lib/lazarus/${VERSION}/components/fpcunit
+/usr/lib/lazarus/${VERSION}/components/instantfpc
 /usr/lib/lazarus/${VERSION}/components/memds
 /usr/lib/lazarus/${VERSION}/components/sqldb
 /usr/lib/lazarus/${VERSION}/components/printers
@@ -33,6 +35,7 @@
 #/usr/lib/lazarus/${VERSION}/components/h2pas
 #/usr/lib/lazarus/${VERSION}/components/images
 /usr/lib/lazarus/${VERSION}/components/lazreport
+/usr/lib/lazarus/${VERSION}/components/lazutils
 /usr/lib/lazarus/${VERSION}/components/sqlite
 /usr/lib/lazarus/${VERSION}/components/todolist
 #/usr/lib/lazarus/${VERSION}/converter
@@ -41,6 +44,7 @@
 #/usr/lib/lazarus/${VERSION}/ide
 /usr/lib/lazarus/${VERSION}/ideintf
 /usr/lib/lazarus/${VERSION}/lcl/units/*/*.*
+/usr/lib/lazarus/${VERSION}/lcl/interfaces/*.lpk
 /usr/lib/lazarus/${VERSION}/lcl/*.lpk
 /usr/lib/lazarus/${VERSION}/packager
 /usr/lib/lazarus/${VERSION}/units
