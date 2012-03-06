@@ -1916,40 +1916,37 @@ begin
   inherited Create;
   FOwner := AOwner;
   FNodeType := ANodeType;
-  FSortedList := TFPList.Create;
-  FPosList := TFPList.Create;
 end;
 
 destructor TDOMNamedNodeMap.Destroy;
 var
   I: Integer;
 begin
-  for I := FPosList.Count-1 downto 0 do
-    TDOMNode(FPosList[I]).Free;
   FSortedList.Free;
-  FPosList.Free;
+  if FPosList<>nil then begin
+    for I := FPosList.Count-1 downto 0 do
+      TDOMNode(FPosList[I]).Free;
+    FPosList.Free;
+  end;
   inherited Destroy;
 end;
 
 function TDOMNamedNodeMap.GetSortedItem(index: LongWord): TDOMNode;
 begin
-  if index < LongWord(FSortedList.Count) then
-    Result := TDOMNode(FSortedList.List^[index])
-  else
-    Result := nil;
+  Result := TDOMNode(FSortedList.List^[index]);
 end;
 
 function TDOMNamedNodeMap.GetPosItem(index: LongWord): TDOMNode;
 begin
-  if index < LongWord(FPosList.Count) then
-    Result := TDOMNode(FPosList.List^[index])
-  else
-    Result := nil;
+  Result := TDOMNode(FPosList.List^[index]);
 end;
 
 function TDOMNamedNodeMap.GetLength: LongWord;
 begin
-  Result := FPosList.Count;
+  if FPosList<>nil then
+    Result := FPosList.Count
+  else
+    Result := 0;
 end;
 
 function TDOMNamedNodeMap.FindSorted(const name: DOMString; out Index: LongWord): Boolean;
@@ -1958,18 +1955,20 @@ var
 begin
   Result := False;
   L := 0;
-  H := FSortedList.Count - 1;
-  while L <= H do
-  begin
-    I := (L + H) shr 1;
-    C := TDOMNode(FSortedList.List^[I]).CompareName(name);
-    if C > 0 then L := I + 1 else
+  if FPosList<>nil then begin
+    H := FSortedList.Count - 1;
+    while L <= H do
     begin
-      H := I - 1;
-      if C = 0 then
+      I := (L + H) shr 1;
+      C := TDOMNode(FSortedList.List^[I]).CompareName(name);
+      if C > 0 then L := I + 1 else
       begin
-        Result := True;
-        L := I;
+        H := I - 1;
+        if C = 0 then
+        begin
+          Result := True;
+          L := I;
+        end;
       end;
     end;
   end;
@@ -2043,7 +2042,9 @@ begin
     end;
     exit;
   end;
+  if FSortedList=nil then FSortedList:=TFPList.Create;
   FSortedList.Insert(i, arg);
+  if FPosList=nil then FPosList:=TFPList.Create;
   FPosList.Add(arg);
   Result := nil;
 end;
@@ -2126,20 +2127,22 @@ var
   I: Integer;
   P: DOMPChar;
 begin
-  for I := 0 to FSortedList.Count-1 do
-  begin
-    with TDOMAttr(FSortedList.List^[I]) do
+  if FSortedList<>nil then begin
+    for I := 0 to FSortedList.Count-1 do
     begin
-      if nsIndex = FNSI.NSIndex then
+      with TDOMAttr(FSortedList.List^[I]) do
       begin
-        P := DOMPChar(FNSI.QName^.Key);
-        if FNSI.PrefixLen > 1 then
-          Inc(P, FNSI.PrefixLen);
-        if CompareDOMStrings(DOMPChar(aLocalName), P, System.Length(aLocalName), System.Length(FNSI.QName^.Key) - FNSI.PrefixLen) = 0 then
+        if nsIndex = FNSI.NSIndex then
         begin
-          SortedIndex := I;
-          Result := True;
-          Exit;
+          P := DOMPChar(FNSI.QName^.Key);
+          if FNSI.PrefixLen > 1 then
+            Inc(P, FNSI.PrefixLen);
+          if CompareDOMStrings(DOMPChar(aLocalName), P, System.Length(aLocalName), System.Length(FNSI.QName^.Key) - FNSI.PrefixLen) = 0 then
+          begin
+            SortedIndex := I;
+            Result := True;
+            Exit;
+          end;
         end;
       end;
     end;
@@ -2204,7 +2207,9 @@ begin
       FPosList.List^[i] := arg;
     end
     else begin
+      if FSortedList=nil then FSortedList:=TFPList.Create;
       FSortedList.Insert(i, arg);
+      if FPosList=nil then FPosList:=TFPList.Create;
       FPosList.Add(arg);
     end;
   end;
@@ -3162,7 +3167,9 @@ begin
   begin
     Attr := FOwnerDocument.CreateAttribute(name);
     Attr.FOwnerElement := Self;
+    if FAttributes.FSortedList=nil then FAttributes.FSortedList:=TFPList.Create;
     FAttributes.FSortedList.Insert(I, Attr);
+    if FAttributes.FPosList=nil then FAttributes.FPosList:=TFPList.Create;
     FAttributes.FPosList.Add(Attr);
   end;
   Attr.NodeValue := value;
@@ -3214,7 +3221,9 @@ begin
   end;
   // keep list sorted by DOM Level 1 name
   FAttributes.FindSorted(qualifiedName, I);
+  if FAttributes.FSortedList=nil then FAttributes.FSortedList:=TFPList.Create;
   FAttributes.FSortedList.Insert(I, Attr);
+  if FAttributes.FPosList=nil then FAttributes.FPosList:=TFPList.Create;
   FAttributes.FPosList.Add(Attr);
   // TODO: rehash properly, same issue as with Node.SetPrefix()
   Attr.FNSI.QName := FOwnerDocument.FNames.FindOrAdd(DOMPChar(qualifiedName), Length(qualifiedName));
@@ -3253,8 +3262,9 @@ function TDOMElement.RemoveAttributeNode(OldAttr: TDOMAttr): TDOMAttr;
 begin
   Changing;
   Result:=OldAttr;
-  if Assigned(FAttributes) and (FAttributes.FSortedList.Remove(OldAttr) > -1) then
-  begin
+  if Assigned(FAttributes) and (FAttributes.FSortedList<>nil)
+  and (FAttributes.FSortedList.Remove(OldAttr) > -1)
+  then begin
     FAttributes.FPosList.Remove(OldAttr);
     if Assigned(OldAttr.FNSI.QName) then  // safeguard
       FAttributes.RestoreDefault(OldAttr.FNSI.QName^.Key);
