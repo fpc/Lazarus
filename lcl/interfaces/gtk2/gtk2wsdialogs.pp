@@ -1203,7 +1203,7 @@ begin
   end;
 
   gtk_window_set_position(GtkWindow, GTK_WIN_POS_CENTER);
-  GtkWindowShowModal(GtkWindow);
+  GtkWindowShowModal(nil, GtkWindow);
 end;
 
 class procedure TGtk2WSCommonDialog.DestroyHandle(

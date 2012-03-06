@@ -75,7 +75,6 @@ end;
 
 procedure TfWarnings.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  inherited Setup(ADialog);
   cbWarningsOn.Caption := lisWarningsWarningsOn;
   cbWarnUnusedParams.Caption := lisWarningsWarnAboutUnusedParameters;
   Label1.Caption := lisWarningsIgnoreUnusedParametersNamed;

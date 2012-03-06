@@ -4933,11 +4933,13 @@ begin
   else
     inherited Activate;
   {$IFDEF HASX11}
-  // qt X11 bug ?  activates window but it's not in
-  // front of others.
-  {$note TQtWidget.Activate: Check this with next qt version (>=4.7)}
   if not QWidget_isModal(Widget) then
-    QWidget_raise(Widget);
+  begin
+    if (QtWidgetSet.WindowManagerName = 'metacity') and not IsMDIChild then
+      X11Raise(QWidget_winID(Widget))
+    else
+      QWidget_raise(Widget);
+  end;
   {$ENDIF}
 end;
 
@@ -4981,6 +4983,11 @@ var
   AState: QtWindowStates;
   AOldState: QtWindowStates;
   CanSendEvent: Boolean;
+  {$IFDEF MSWINDOWS}
+  i: Integer;
+  AForm: TCustomForm;
+  w: QWidgetH;
+  {$ENDIF}
   {$IFDEF HASX11}
   IsMinimizeEvent: Boolean;
   {$ENDIF}
@@ -5027,7 +5034,10 @@ begin
       AState := getWindowState;
       IsMinimizeEvent := AState and QtWindowMinimized <> 0;
       if IsMinimizeEvent then
+      begin
         CanSendEvent := IsCurrentDesktop(Widget);
+        QtWidgetSet.FMinimizedByPager := not CanSendEvent;
+      end;
       {$ENDIF}
       if IsMainForm and CanSendEvent then
       begin
@@ -5037,15 +5047,79 @@ begin
         AStateEvent := QWindowStateChangeEventH(Event);
         AOldState := QWindowStateChangeEvent_oldState(AStateEvent);
         if AState and QtWindowMinimized <> 0 then
-          Application.IntfAppMinimize
+        begin
+          {$IFDEF MSWINDOWS}
+          for i := 0 to Screen.CustomFormZOrderCount - 1 do
+          begin
+            AForm := Screen.CustomFormsZOrdered[i];
+            if (AForm <> Application.MainForm) and
+              (AForm.FormStyle in [fsStayOnTop, fsSystemStayOnTop]) and
+              AForm.HandleAllocated and AForm.Visible then
+            begin
+              W := TQtWidget(AForm.Handle).Widget;
+              if not QWidget_isMinimized(W) then
+              begin
+                TQtWidget(AForm.Handle).BeginUpdate;
+                try
+                  QWidget_showMinimized(W);
+                finally
+                  TQtWidget(AForm.Handle).EndUpdate;
+                end;
+              end;
+            end;
+          end;
+          {$ENDIF}
+          Application.IntfAppMinimize;
+        end
         else
         if (AOldState and QtWindowMinimized <> 0) or
           (AOldState and QtWindowMaximized <> 0) or
           (AOldState and QtWindowFullScreen <> 0) then
+        begin
+          {$IFDEF MSWINDOWS}
+          for i := 0 to Screen.CustomFormZOrderCount - 1 do
+          begin
+            AForm := Screen.CustomFormsZOrdered[i];
+            if (AForm <> Application.MainForm) and
+              (AForm.FormStyle in [fsStayOnTop, fsSystemStayOnTop]) and
+              AForm.HandleAllocated and AForm.Visible then
+            begin
+              W := TQtWidget(AForm.Handle).Widget;
+              if QWidget_isMinimized(W) then
+              begin
+                TQtWidget(AForm.Handle).BeginUpdate;
+                try
+                  QWidget_showNormal(W);
+                finally
+                  TQtWidget(AForm.Handle).EndUpdate;
+                end;
+              end;
+            end;
+          end;
           Application.IntfAppRestore;
+          {$ELSE}
+
+          {$IFDEF HASX11}
+          // do not activate lazarus app if it wasn't active during
+          // pager switch !
+          if (AOldState and QtWindowMinimized <> 0) and QtWidgetSet.FMinimizedByPager then
+              QtWidgetSet.FMinimizedByPager := False
+          else
+          {$ENDIF}
+            Application.IntfAppRestore;
+          {$ENDIF}
+        end;
       end;
       if CanSendEvent then
+      begin
+        {$IFDEF MSWINDOWS}
+        AForm := TCustomForm(LCLObject);
+        if (AForm.FormStyle in [fsStayOnTop, fsSystemStayOnTop]) and InUpdate then
+          // do not trigger LCL
+        else
+        {$ENDIF}
         SlotWindowStateChange;
+      end;
     end;
     QEventDrop,
     QEventDragMove,
@@ -13744,6 +13818,12 @@ begin
 
   BeginEventProcessing;
   case QEvent_type(Event) of
+    QEventWindowActivate:
+    begin
+      Result := inherited EventFilter(Sender, Event);
+      setFocus;
+      BringDesignerToFront;
+    end;
     QEventChildAdded,
     QEventChildRemoved: BringDesignerToFront;
     QEventResize:
@@ -13935,6 +14015,12 @@ begin
   {$ELSE}
   QMessageBox_setWindowModality(QMessageBoxH(Widget), QtApplicationModal);
   QWidget_show(Widget);
+
+  {$IFDEF HASX11}
+  if (QtWidgetSet.WindowManagerName = 'metacity') then
+      X11Raise(QWidget_winID(Widget));
+  {$ENDIF}
+
   repeat
     QCoreApplication_processEvents();
     Application.Idle(true);

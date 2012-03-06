@@ -81,6 +81,75 @@ begin
   end;
 end;
 
+function X11Raise(AHandle: HWND): boolean;
+var
+   Display: PDisplay;
+   RootWin: TWindow;
+   ScreenNum: Integer;
+   XClient: TXClientMessageEvent;
+   WMAtom: TAtom;
+begin
+  Result := False;
+  Display := QX11Info_display();
+
+  if Display = nil then
+    exit;
+
+  ScreenNum := QX11Info_appScreen();
+  RootWin := XRootWindow(Display, ScreenNum);
+
+  XClient._type := ClientMessage;
+  XClient.window := AHandle;
+  WMAtom := XInternAtom(Display,'_NET_ACTIVE_WINDOW', False);
+  XClient.message_type := WMATom;
+  XClient.format := 32;
+  XClient.data.l[0] := 1;
+  XClient.data.l[1] := 0;
+  XClient.data.l[2] := 0;
+  Result := XSendEvent(Display, RootWin, False,
+	      SubstructureRedirectMask or SubstructureNotifyMask,
+	      @XClient) <> Success;
+end;
+
+function X11GetActivewindow: QWidgetH;
+var
+  Display: PDisplay;
+  RootWin: TWindow;
+  ScreenNum: Integer;
+  WMAtom: TAtom;
+  ActualTypeReturn: TAtom;
+  ActualFormatReturn: LongInt;
+  NItemsReturn, BytesAfterReturn: Cardinal;
+  Ptr: Pointer;
+  Valid: Boolean;
+begin
+  Result := nil;
+  Display := QX11Info_display();
+
+  if Display = nil then
+    exit;
+  Ptr := nil;
+  ScreenNum := QX11Info_appScreen();
+  RootWin := XRootWindow(Display, ScreenNum);
+  WMAtom := XInternAtom(Display,'_NET_ACTIVE_WINDOW', False);
+  Valid := XGetWindowProperty(Display, RootWin, WMAtom, 0, 1, False,
+                                 AnyPropertyType, @ActualTypeReturn,
+                                 @ActualFormatReturn, @NItemsReturn,
+                                 @BytesAfterReturn, @Ptr) = Success;
+  if Valid and (Ptr <> nil) and (ActualTypeReturn = XA_WINDOW) and
+    (ActualFormatReturn = 32) then
+  begin
+    RootWin := TWindow(Ptr^);
+    try
+     Result := QWidget_find(RootWin);
+    finally
+      XFree(Ptr);
+    end;
+  end else
+  if Assigned(Ptr) then
+    XFree(Ptr);
+end;
+
 function GetWindowManager: String;
 {used to get window manager name, so we can handle different wm's behaviour
  eg. kde vs. gnome}

@@ -42,8 +42,8 @@ begin
       while (Gtk2WidgetSet.FMainPoll <> nil) and
         (Gtk2WidgetSet.FMainPoll^.revents = 0) do
       begin
-        Gtk2MPF(ufds, nfsd, 1);
-        if Gtk2WidgetSet.FMessageQueue.Count > 0 then
+        if (Gtk2MPF(ufds, nfsd, 1) = 1) or
+        (Gtk2WidgetSet.FMessageQueue.Count > 0) then
           break;
       end;
     end else
@@ -1090,16 +1090,36 @@ end;
 constructor TGtk2WidgetSet.Create;
 begin
   inherited Create;
-  Gtk1Create;
+  Gtk2Create;
   {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
   FMainPoll := nil;
-  Gtk2MPF := g_main_context_get_poll_func(g_main_context_default);
-  g_main_context_set_poll_func(g_main_context_default, @Gtk2PollFunction);
+  if not FIsLibraryInstance then
+  begin
+    Gtk2MPF := g_main_context_get_poll_func(g_main_context_default);
+    g_main_context_set_poll_func(g_main_context_default, @Gtk2PollFunction);
+  end else
+    Gtk2MPF := nil;
   {$ENDIF}
   StayOnTopList := nil;
   im_context:=gtk_im_multicontext_new;
   g_signal_connect (G_OBJECT (im_context), 'commit',
     G_CALLBACK (@gtk_commit_cb), nil);
+  {$IFDEF HASX}
+  if GetWindowManager = 'kwin' then
+  begin
+    //kwin does it's own transient settings
+    UseTransientForModalWindows := False;
+    FDesktopWidget := gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_widget_set_parent_window(FDesktopWidget, gdk_get_default_root_window);
+    gtk_widget_set_uposition(FDesktopWidget, 0, 0);
+    gtk_widget_set_usize(FDesktopWidget, 1, 1);
+    //we must show it, so X11 maps this widget
+    gtk_widget_show(FDesktopWidget);
+    //hide it imediatelly, so it is really invisible widget
+    gtk_widget_hide(FDesktopWidget);
+  end else
+    FDesktopWidget := nil;
+  {$ENDIF}
 end;
 
 destructor TGtk2WidgetSet.Destroy;
@@ -1112,7 +1132,15 @@ begin
     StayOnTopList.Free;
     StayOnTopList := nil;
   end;
-  Gtk1Destroy;
+  Gtk2Destroy;
+  {$IFDEF HASX}
+  if FDesktopWidget <> nil then
+  begin
+    gtk_widget_destroy(FDesktopWidget);
+    FDesktopWidget := nil;
+  end;
+  {$ENDIF}
+
   inherited Destroy;
 end;
 
@@ -1156,6 +1184,8 @@ procedure TGtk2WidgetSet.AppBringToFront;
 begin
   if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
     gdk_window_raise(PGtkWidget(Application.MainForm.Handle)^.window);
+    gdk_window_focus(PGtkWidget(Application.MainForm.Handle)^.window,
+                                gtk_get_current_event_time);
 end;
 
 procedure TGtk2WidgetSet.AppMinimize;
@@ -1421,11 +1451,12 @@ end;
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-procedure TGtk2WidgetSet.Gtk1Create;
+procedure TGtk2WidgetSet.Gtk2Create;
 {$IFDEF EnabledGtkThreading}
 {$IFNDEF Win32}
 var
   TM: TThreadManager;
+  GtkThread: PGThread;
 {$ENDIF}
 {$ENDIF}
 begin
@@ -1438,13 +1469,26 @@ begin
 
   LastWFPMousePos := Point(MaxInt, MaxInt);
 
+  FIsLibraryInstance := False;
+  FGtkTerminated := False;
+
   {$IFDEF EnabledGtkThreading}
     {$IFNDEF Win32}
+      GtkThread := g_thread_self();
+      if GtkThread <> nil then
+      begin
+        if GtkThread^.data = nil then
+          GtkThread^.data := @Self
+        else
+          FIsLibraryInstance := True;
+      end;
       if GetThreadManager(TM) and Assigned(TM.InitManager) and g_thread_supported then
       begin
         g_thread_init(nil);
+        {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
         gdk_threads_init;
         gdk_threads_enter;
+        {$ENDIF}
         fMultiThreadingEnabled := True;
       end;
     {$ELSE}
@@ -1568,7 +1612,7 @@ procedure TGtk2WidgetSet.PassCmdLineOptions;
 
 begin
   gtk_init(@argc,@argv);
-  UseTransientForModalWindows:=not SearchOption('--lcl-no-transient',true);
+  UseTransientForModalWindows := not SearchOption('--lcl-no-transient',true);
 end;
 
 {------------------------------------------------------------------------------
@@ -1625,9 +1669,9 @@ end;
   Params:  None
   Returns: Nothing
 
-  Gtk1 original Destructor for the class.
+  Gtk2 original Destructor for the class.
  ------------------------------------------------------------------------------}
-procedure TGtk2WidgetSet.Gtk1Destroy;
+procedure TGtk2WidgetSet.Gtk2Destroy;
 const
   ProcName = '[TGtk2WidgetSet.Destroy]';
 var
@@ -1812,7 +1856,9 @@ begin
     if MultiThreadingEnabled then
     begin
       {$IFNDEF Win32}
+        {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
         gdk_threads_leave;
+        {$ENDIF}
       {$ENDIF}
       fMultiThreadingEnabled := False;
     end;
@@ -2383,19 +2429,27 @@ begin
     // let gtk handle up to 100 messages and call our callbacks
     i:=100;
 
-    {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
-    while (gtk_events_pending<>0) and (i>0) do
+    if not FGtkTerminated then
     begin
-      gtk_main_iteration_do(False);
-      dec(i);
+      {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
+      while (gtk_events_pending<>0) and (i>0) do
+      begin
+        if FGtkTerminated then
+          break;
+        gtk_main_iteration_do(False);
+        dec(i);
+      end;
+      {$ELSE}
+      while g_main_context_pending(g_main_context_default) and (i>0) do
+      begin
+        if FGtkTerminated then
+          break;
+        if not g_main_context_iteration(g_main_context_default, False) then
+          break;
+        dec(i);
+      end;
+      {$ENDIF}
     end;
-    {$ELSE}
-    while g_main_context_pending(g_main_context_default) and (i>0) do
-    begin
-      g_main_context_iteration(g_main_context_default, False);
-      dec(i);
-    end;
-    {$ENDIF}
 
     //DebugLn(['TGtk2WidgetSet.AppProcessMessages SendCachedGtkMessages']);
     // send cached gtk messages to the lcl
@@ -2463,11 +2517,14 @@ end;
 procedure TGtk2WidgetSet.AppWaitMessage;
 begin
   WaitingForMessages:=true;
-  {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
-  gtk_main_iteration_do(True);
-  {$ELSE}
-  g_main_context_iteration(g_main_context_default, True);
-  {$ENDIF}
+  if not FGtkTerminated then
+  begin
+    {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
+    gtk_main_iteration_do(True);
+    {$ELSE}
+    g_main_context_iteration(g_main_context_default, True);
+    {$ENDIF}
+  end;
   WaitingForMessages:=false;
 end;
 
@@ -2553,7 +2610,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtk2WidgetSet.AppTerminate;
 begin
-  FreeAllStyles;
+  if FIsLibraryInstance then
+    FGtkTerminated := True;
+    // writeln('TGtk2WidgetSet.AppTerminate called from library ...');
+    // g_main_context_wakeup(g_main_context_default);
   // MG: using gtk_main_quit is not a clean way to close
   //gtk_main_quit;
 end;
@@ -3860,15 +3920,16 @@ var
     MskBitmap: PGdkBitmap;
     ClipMask: PGdkBitmap;
     SrcGDIBitmap: PGdiObject;
+    B: Boolean;
   begin
     Result:=true;
     {$IFDEF VerboseStretchCopyArea}
     DebugLn('SrcDevBitmapToDrawable Start');
     {$ENDIF}
-
+    B := False;
     SrcGDIBitmap := SrcDevContext.CurrentBitmap;
-    if SrcGDIBitmap = nil
-    then begin
+    if SrcGDIBitmap = nil then
+    begin
       SrcDrawable := SrcDevContext.Drawable;
       MskBitmap := nil;
       if SrcDrawable = nil then
@@ -3876,8 +3937,8 @@ var
         DebugLn('SrcDevBitmapToDrawable NOTE: SrcDevContext.CurrentBitmap=nil, SrcDevContext.Drawable = nil');
         exit;
       end;
-    end
-    else begin
+    end else
+    begin
       SrcDrawable := SrcGDIBitmap^.GDIPixmapObject.Image;
       MskBitmap := CreateGdkMaskBitmap(HBITMAP(PtrUInt(SrcGDIBitmap)), Mask);
     end;
@@ -3887,8 +3948,8 @@ var
       ' MaskPixmap=[',GetWindowDebugReport(MskBitmap),']');
     {$ENDIF}
 
-    if (MskBitmap = nil) and (not SizeChange) and (ROP=SRCCOPY)
-    then begin
+    if (MskBitmap = nil) and (not SizeChange) and (ROP=SRCCOPY) then
+    begin
       // simply copy the area
       {$IFDEF VerboseStretchCopyArea}
       DebugLn('SrcDevBitmapToDrawable Simple copy');
@@ -3903,8 +3964,10 @@ var
 
     // perform raster operation and scaling into Scale and fGC
     DstDevContext.SelectedColors := dcscCustom;
-    if not ScaleAndROP(DstDevContext.GC, SrcDevContext.Drawable, SrcDrawable, MskBitmap)
-    then begin
+    if not ScaleAndROP(DstDevContext.GC, SrcDevContext.Drawable, SrcDrawable, MskBitmap) then
+    begin
+      if MskBitmap <> nil then
+        gdk_bitmap_unref(MskBitmap);
       DebugLn('WARNING: SrcDevBitmapToDrawable: ScaleAndROP failed');
       Exit;
     end;
@@ -3912,16 +3975,21 @@ var
     {$IFDEF VerboseStretchCopyArea}
     DebugLn('SrcDevBitmapToDrawable TempPixmap=',DbgS(TempPixmap),' TempMaskPixmap=',DbgS(TempMaskBitmap));
     {$ENDIF}
-    if TempPixmap <> nil
-    then begin
+    if TempPixmap <> nil then
+    begin
       SrcDrawable := TempPixmap;
       XSrc := 0;
       YSrc := 0;
       SrcWidth := Width;
       SrcHeight := Height;
     end;
-    if TempMaskBitmap <> nil
-    then begin
+    if TempMaskBitmap <> nil then
+    begin
+      if MskBitmap <> nil then
+      begin
+        gdk_bitmap_unref(MskBitmap);
+        B := True;
+      end;
       MskBitmap := TempMaskBitmap;
       XMask := 0;
       YMask := 0;
@@ -3953,8 +4021,11 @@ var
 
     // unset clipping mask for transparency
     DstDevContext.ResetGCClipping;
-    if ClipMask <> nil
-    then gdk_bitmap_unref(ClipMask);
+    if ClipMask <> nil then
+      gdk_bitmap_unref(ClipMask);
+
+    if not B and (MskBitmap <> nil) then
+      gdk_bitmap_unref(MskBitmap);
 
     // restore raster operation to SRCCOPY
     gdk_gc_set_function(DstDevContext.GC, GDK_Copy);
@@ -4253,6 +4324,145 @@ begin
   then gdk_pixmap_unref(TempMaskBitmap);
 end;
 
+{$IFDEF HASX}
+function TGtk2WidgetSet.GetDesktopWidget: PGtkWidget;
+begin
+  Result := FDesktopWidget;
+end;
+
+{function TGtk2WidgetSet.X11Raise(AHandle: HWND): boolean;
+var
+   Display: PDisplay;
+   RootWin: TWindow;
+   ScreenNum: Integer;
+   XClient: TXClientMessageEvent;
+   WMAtom: TAtom;
+   screen: PGdkScreen;
+begin
+  Result:=false;
+  screen:=gdk_screen_get_default;
+  Display := gdk_x11_get_default_xdisplay;
+
+  if Display = nil then
+    exit;
+  ScreenNum := gdk_screen_get_number(screen);
+  RootWin := gdk_x11_get_default_root_xwindow;
+
+  XClient._type := ClientMessage;
+  XClient.window := AHandle;
+  WMAtom := XInternAtom(Display,'_NET_ACTIVE_WINDOW', False);
+  XClient.message_type := WMATom;
+  XClient.format := 32;
+  XClient.data.l[0] := 1;
+  XClient.data.l[1] := 0;
+  XClient.data.l[2] := 0;
+  Result:=XSendEvent (Display, RootWin, False,
+	      SubstructureRedirectMask or SubstructureNotifyMask,
+	      @XClient)<>0;
+end;}
+
+function TGtk2WidgetSet.GetWindowManager: String;
+{used to get window manager name, so we can handle different wm's behaviour
+ eg. kde vs. gnome}
+var
+  Display: PDisplay;
+  RootWin: TWindow;
+  WMAtom: TAtom;
+  WMWindow: TWindow;
+
+  typeReturned: TAtom;
+  formatReturned: Integer;
+  nitemsReturned: PtrInt;
+  unused: PtrInt;
+  data: Pointer;
+  Screen: PGdkScreen;
+begin
+  Result := '';
+
+  Display := gdk_x11_get_default_xdisplay;
+
+  if Display = nil then
+    exit;
+  Screen := gdk_screen_get_default;
+  RootWin := gdk_x11_get_default_root_xwindow;
+
+  WMAtom := XInternAtom(Display,'_NET_WM_DESKTOP', True);
+
+  if WMAtom > 0 then
+  begin
+    WMAtom := XInternAtom(Display,'_NET_SUPPORTING_WM_CHECK', False);
+    if WMAtom > 0 then
+    begin
+      data := nil;
+      WMWindow := 0;
+      if XGetWindowProperty(Display, RootWin, WMAtom, 0, 1024, False, XA_WINDOW,
+        @typeReturned, @formatReturned, @nitemsReturned,
+        @unused, @data) = Success then
+        begin
+          if (typeReturned = XA_WINDOW) and (formatReturned = 32) and
+            (Data <> nil) then
+          begin
+            // this is our window manager window
+            WMWindow := TWindow(Data^);
+            XFree(Data);
+            Data := nil;
+          end;
+          if WMWindow = 0 then
+            exit;
+          WMAtom := XInternAtom(Display,'UTF8_STRING', False);
+          if XGetWindowProperty(Display, WMWindow,
+            XInternAtom(Display,'_NET_WM_NAME', False), 0, 1024, False,
+            WMAtom, @typeReturned, @formatReturned, @nitemsReturned,
+            @unused, @data) = Success then
+          begin
+            if (typeReturned = WMAtom) and (formatReturned = 8) then
+              Result := LowerCase(StrPas(Data));
+            if Data <> nil then
+              XFree(Data);
+            Data := nil;
+          end;
+       end;
+    end;
+  end;
+end;
+
+function TGtk2WidgetSet.X11GetActivewindow: HWND;
+var
+  Display: PDisplay;
+  RootWin, ResultWindow: TWindow;
+  WMAtom: TAtom;
+  ActualTypeReturn: TAtom;
+  ActualFormatReturn: LongInt;
+  NItemsReturn, BytesAfterReturn: Cardinal;
+  Ptr: PByte;
+  screen: PGdkScreen;
+  Valid: Boolean;
+begin
+  Result := 0;
+
+  screen:=gdk_screen_get_default;
+  Display := gdk_x11_get_default_xdisplay;
+
+  if Display = nil then Exit;
+
+  RootWin := gdk_x11_get_default_root_xwindow;
+  WMAtom := XInternAtom(Display,'_NET_ACTIVE_WINDOW', False);
+  Valid:=XGetWindowProperty(Display, RootWin, WMAtom, 0, 1, False,
+                                 AnyPropertyType, @ActualTypeReturn,
+                                 @ActualFormatReturn, @NItemsReturn,
+                                 @BytesAfterReturn, @Ptr)=0;
+  if Valid then
+  try
+    if (ActualTypeReturn = None) or (ActualFormatReturn <> 32) or not Assigned(Ptr) then
+      Valid := False;
+    if Valid then ResultWindow := PWindow(Ptr)^;
+  finally
+    if Assigned(Ptr) then XFree(Ptr);
+  end;
+
+  if Valid then Result := HWND(gdk_window_foreign_new(ResultWindow));
+end;
+{$ENDIF}
 {------------------------------------------------------------------------------
   procedure TGtk2WidgetSet.BringFormToFront(Sender: TObject);
 ------------------------------------------------------------------------------}
@@ -4739,6 +4949,7 @@ var
   AWindow: PGdkWindow;
   ACustomForm: TCustomForm;
   CurWindowState: TWindowState;
+  WidgetInfo: PWidgetInfo;
 begin
   if not (Sender is TWinControl) then
     RaiseWrongClass;
@@ -4830,8 +5041,15 @@ begin
       case CurWindowState of
         wsNormal:
         begin
-          gtk_window_deiconify(PGtkWindow(SenderWidget));
-          gtk_window_unmaximize(PGtkWindow(SenderWidget));
+          WidgetInfo := GetWidgetInfo(SenderWidget);
+          with WidgetInfo^.FormWindowState do
+          begin
+            if new_window_state and GDK_WINDOW_STATE_ICONIFIED <> 0 then
+              gtk_window_deiconify(PGtkWindow(SenderWidget));
+            if (new_window_state and GDK_WINDOW_STATE_MAXIMIZED <> 0) or
+              (new_window_state and GDK_WINDOW_STATE_FULLSCREEN <> 0) then
+                gtk_window_unmaximize(PGtkWindow(SenderWidget));
+          end;
         end;
         wsMaximized: gtk_window_maximize(PGtkWindow(SenderWidget));
         wsMinimized: gtk_window_iconify(PGtkWindow(SenderWidget));

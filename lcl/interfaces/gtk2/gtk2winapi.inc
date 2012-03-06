@@ -3506,10 +3506,19 @@ end;
   bottom borders of the rectangle.
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
+var
+  TempBr: HBrush;
 begin
   Result := IsValidDC(DC) and IsValidGDIObject(Brush);
   if not Result or IsRectEmpty(Rect) then
-    exit;
+    Exit;
+  if (PGdiObject(Brush)^.GDIBrushFill <> GDK_SOLID) and (TGtkDeviceContext(DC).BkMode = OPAQUE) then
+  begin
+    // fill a rectangle with a solid back color first
+    TempBr := CreateSolidBrush(TGtkDeviceContext(DC).CurrentBackColor.ColorRef);
+    TGtkDeviceContext(DC).FillRect(Rect, TempBr, True);
+    DeleteObject(TempBr);
+  end;
   Result := TGtkDeviceContext(DC).FillRect(Rect, Brush, True);
   Assert(False, Format('trace:< [TGtk2WidgetSet.FillRect] DC:0x%x; Rect: ((%d,%d)(%d,%d)); brush: %x', [Integer(DC), Rect.left, rect.top, rect.right, rect.bottom, brush]));
 end;
@@ -3716,6 +3725,14 @@ begin
   end;
   if TopList <> nil
   then g_list_free(TopList);
+end;
+
+function TGtk2WidgetSet.GetForegroundWindow: HWND;
+begin
+  Result:=0;
+  {$IFDEF HASX}
+  Result:=X11GetActiveWindow;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -6260,7 +6277,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.IsWindowVisible(handle: HWND): boolean;
 begin
-  Result:=(handle<>0) and GTK_WIDGET_VISIBLE(PGtkWidget(handle));
+  Result := (handle <> 0) and GTK_WIDGET_VISIBLE(PGtkWidget(handle));
 end;
 
 function TGtk2WidgetSet.IsZoomed(handle: HWND): boolean;
@@ -7759,12 +7776,13 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.SetBkMode(DC: HDC; bkMode : Integer) : Integer;
+function TGtk2WidgetSet.SetBkMode(DC: HDC; bkMode: Integer) : Integer;
 var
   DevCtx: TGtkDeviceContext absolute DC;
 begin
   // Your code here
-  Result:=0;
+  Result := DevCtx.BkMode;
+  DevCtx.BkMode := bkMode;
 end;
 
 {------------------------------------------------------------------------------
@@ -8213,6 +8231,7 @@ begin
       {$ENDIF}
       gdk_window_show(GdkWindow);
       gdk_window_raise(GdkWindow);
+      gdk_window_focus(GdkWindow, gtk_get_current_event_time);
       {$IFDEF DebugGDKTraps}
       EndGDKErrorTrap;
       {$ENDIF}

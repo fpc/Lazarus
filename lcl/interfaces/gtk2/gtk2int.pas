@@ -41,7 +41,7 @@ uses
   Types, Classes, SysUtils, Math, maps,
   {$IfNDef GTK2_2}
     {$IfDef HasX}
-     XLib, X, //XUtil,
+     XLib, xatom, X, //XUtil,
     {$EndIf}
   {$EndIf}
 
@@ -71,6 +71,8 @@ type
     {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
     FMainPoll: PGPollFD;
     {$ENDIF}
+    FIsLibraryInstance: Boolean;
+    FGtkTerminated: Boolean;
     FMultiThreadingEnabled: boolean;
     FocusTimer: cardinal;
     FLastFocusIn: PGtkWidget;
@@ -264,8 +266,11 @@ type
       Widget: PGtkWidget; const AParams: TCreateParams);
 
   private
-    procedure Gtk1Create;
-    procedure Gtk1Destroy;
+    {$IFDEF HASX}
+    FDesktopWidget: PGtkWidget;
+    {$ENDIF}
+    procedure Gtk2Create;
+    procedure Gtk2Destroy;
 
   public
     constructor Create; override;
@@ -298,8 +303,16 @@ type
     {$I gtk2winapih.inc}
     {$I gtk2lclintfh.inc}
   public
+    {$IFDEF HASX}
+    function GetDesktopWidget: PGtkWidget;
+    //function X11Raise(AHandle: HWND): boolean; currently not used
+    function GetWindowManager: String;
+    function X11GetActiveWindow: HWND;
+    {$ENDIF}
     procedure StartFocusTimer;
     property AppActive: Boolean read GetAppActive write SetAppActive;
+    property IsLibraryInstance: Boolean read FIsLibraryInstance;
+    property GtkIsTerminated: Boolean read FGtkTerminated;
     property LastFocusIn: PGtkWidget read FLastFocusIn write FLastFocusIn;
     property LastFocusOut: PGtkWidget read FLastFocusOut write FLastFocusOut;
     property MultiThreadingEnabled: boolean read FMultiThreadingEnabled;
