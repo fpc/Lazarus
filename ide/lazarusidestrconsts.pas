@@ -1608,16 +1608,16 @@ resourcestring
   dlgMultiWinOptions = 'Pages and Windows';
   dlgMultiWinTabGroup = 'Notebook Tabs';
   dlgMultiWinAccessGroup = 'Find Editor for Jump Targets';
-  dlgMultiWinAccessOrder     = 'Order to use for editors matching the same criteria';
-  dlgMultiWinAccessOrderEdit = 'Most recent focused editor for this file';
-  dlgMultiWinAccessOrderWin  = 'Editor (for file) in most recent focused window';
-  dlgMultiWinAccessType      = 'Priority list of criteria to choose an editor:';
+  dlgMultiWinAccessOrder    = 'Order to use for editors matching the same criteria';
+  dlgMultiWinAccessOrderEdit= 'Most recent focused editor for this file';
+  dlgMultiWinAccessOrderWin = 'Editor (for file) in most recent focused window';
+  dlgMultiWinAccessType     = 'Priority list of criteria to choose an editor:';
 
-  dlgDividerOnOff = 'Draw divider';
-  dlgDividerDrawDepth = 'Draw divider level';
-  dlgDividerTopColor = 'Line color';
-  dlgDividerColorDefault = 'Use right margin color';
-  dlgDividerNestColor = 'Nested line color';
+  dlgDividerOnOff           = 'Draw divider';
+  dlgDividerDrawDepth       = 'Draw divider level';
+  dlgDividerTopColor        = 'Line color';
+  dlgDividerColorDefault    = 'Use right margin color';
+  dlgDividerNestColor       = 'Nested line color';
 
   dlgDivPasUnitSectionName  = 'Unit sections';
   dlgDivPasUsesName         = 'Uses clause';
@@ -2397,8 +2397,7 @@ resourcestring
   lisUnableConvertBinaryStreamToText = 'Unable convert binary stream to text';
   lisUnableToStreamSelectedComponents = 'Unable to stream selected components';
   lisCanNotCopyTopLevelComponent = 'Can not copy top level component.';
-  lisCopyingAWholeFormIsNotImplemented = 'Copying a whole form is not '
-    +'implemented.';
+  lisCopyingAWholeFormIsNotImplemented = 'Copying a whole form is not implemented.';
   lisThereWasAnErrorDuringWritingTheSelectedComponent = 'There was an error '
     +'during writing the selected component %s:%s:%s%s';
   lisThereWasAnErrorWhileConvertingTheBinaryStreamOfThe = 'There was an error '

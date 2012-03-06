@@ -2039,7 +2039,8 @@ begin
   if Manager.ActiveCompletionPlugin<>nil then
   begin
     Result := Manager.ActiveCompletionPlugin.Collect(S);
-  end else if Assigned(Manager.OnInitIdentCompletion) then
+  end
+  else if Assigned(Manager.OnInitIdentCompletion) then
   begin
     Manager.OnInitIdentCompletion(Self, FIdentCompletionJumpToError, Handled, Abort);
     if Handled then begin
