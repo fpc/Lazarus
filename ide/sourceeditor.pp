@@ -5440,7 +5440,7 @@ var
   end;
 
 var
-  MarkSrcEdit, se: TSourceEditor;
+  se: TSourceEditor;
   BookMarkID, BookMarkX, BookMarkY: integer;
   MarkDesc, FPDocSrc, ShortFileName: String;
   MarkMenuItem: TIDEMenuItem;
@@ -5523,26 +5523,24 @@ begin
     // bookmarks
     for BookMarkID:=0 to 9 do begin
       MarkDesc:=' '+IntToStr(BookMarkID);
-      MarkSrcEdit := nil;
+      SelAvail:=False;
       i := 0;
       while i < Manager.SourceEditorCount do begin
         se:=Manager.SourceEditors[i];
         if se.EditorComponent.GetBookMark(BookMarkID,BookMarkX,BookMarkY) then
         begin
           MarkDesc:=MarkDesc+': '+se.PageName+' ('+IntToStr(BookMarkY)+','+IntToStr(BookMarkX)+')';
+          SelAvail:=True;
           break;
         end;
         inc(i);
       end;
       // goto book mark item
       MarkMenuItem:=SrcEditSubMenuGotoBookmarks[BookMarkID];
-      if MarkMenuItem is TIDEMenuCommand then
-        TIDEMenuCommand(MarkMenuItem).Checked:=(MarkSrcEdit<>nil);
       MarkMenuItem.Caption:=uemBookmarkN+MarkDesc;
+      MarkMenuItem.Enabled:=SelAvail;
       // set book mark item
       MarkMenuItem:=SrcEditSubMenuToggleBookmarks[BookMarkID];
-      if MarkMenuItem is TIDEMenuCommand then
-        TIDEMenuCommand(MarkMenuItem).Checked:=(MarkSrcEdit<>nil);
       MarkMenuItem.Caption:=uemToggleBookmark+MarkDesc;
     end;
 
