@@ -1962,7 +1962,7 @@ begin
   if fSource<>nil then
     Result:=fSource.IsVirtual
   else
-    Result:=(fFileName<>ExpandFileNameUTF8(fFileName));
+    Result:=not FilenameIsAbsolute(fFileName);
 end;
 
 function TUnitInfo.GetDirectory: string;
