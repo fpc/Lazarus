@@ -3324,6 +3324,7 @@ docs/xml/lcl/lazcanvas.xml svneol=native#text/plain
 docs/xml/lcl/lazconfigstorage.xml svneol=native#text/plain
 docs/xml/lcl/lazdeviceapis.xml svneol=native#text/plain
 docs/xml/lcl/lazdialogs.xml svneol=native#text/plain
+docs/xml/lcl/lazfreetypeintfdrawer.xml svneol=native#text/plain
 docs/xml/lcl/lazhelphtml.xml svneol=native#text/plain
 docs/xml/lcl/lazhelpintf.xml svneol=native#text/plain
 docs/xml/lcl/lazlinkedlist.xml svneol=LF#text/xml eol=lf

@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    LazFreeTypeIntfDrawer
+  ====================================================================
+-->
+
+<module name="LazFreeTypeIntfDrawer">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TIntfFreeTypeDrawer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TIntfFreeTypeDrawer.FColor">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TIntfFreeTypeDrawer.RenderDirectly">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.RenderDirectly.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.RenderDirectly.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.RenderDirectly.tx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.RenderDirectly.data">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TIntfFreeTypeDrawer.RenderDirectlyClearType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.RenderDirectlyClearType.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.RenderDirectlyClearType.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.RenderDirectlyClearType.tx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.RenderDirectlyClearType.data">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TIntfFreeTypeDrawer.MergeColorOver">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.MergeColorOver.merge">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.MergeColorOver.c">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TIntfFreeTypeDrawer.ClearTypePixel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.ClearTypePixel.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.ClearTypePixel.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.ClearTypePixel.Cr">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.ClearTypePixel.Cg">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.ClearTypePixel.Cb">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.ClearTypePixel.Color">
+<short></short>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TIntfFreeTypeDrawer.Destination">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TIntfFreeTypeDrawer.ClearTypeRGBOrder">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TIntfFreeTypeDrawer.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.Create.ADestination">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TIntfFreeTypeDrawer.ClippedDrawPixel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.ClippedDrawPixel.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.ClippedDrawPixel.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.ClippedDrawPixel.c">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TIntfFreeTypeDrawer.DrawPixel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.DrawPixel.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.DrawPixel.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.DrawPixel.c">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TIntfFreeTypeDrawer.DrawVertLine">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.DrawVertLine.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.DrawVertLine.y1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.DrawVertLine.y2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.DrawVertLine.c">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TIntfFreeTypeDrawer.DrawText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.DrawText.AText">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.DrawText.AFont">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.DrawText.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.DrawText.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.DrawText.AColor">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIntfFreeTypeDrawer.DrawText.AOpacity">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TIntfFreeTypeDrawer.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- LazFreeTypeIntfDrawer -->
+
+</package>
+</fpdoc-descriptions>
