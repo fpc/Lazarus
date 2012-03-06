@@ -38,7 +38,7 @@ unit WatchesDlg;
 interface
 
 uses
-  Classes, Forms, Controls, math, LCLProc, LazLogger,
+  Classes, Forms, Controls, math, LazLoggerBase,
   IDEWindowIntf, Menus, ComCtrls, ActnList, IDEImagesIntf, LazarusIDEStrConsts, DebuggerStrConst,
   Debugger, DebuggerDlg, BaseDebugManager;
 

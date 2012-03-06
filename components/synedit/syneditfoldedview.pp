@@ -45,7 +45,7 @@ unit SynEditFoldedView;
 interface
 
 uses
-  LCLProc, LazLogger, Graphics,
+  LCLProc, LazLoggerBase, Graphics,
   Classes, SysUtils, LazSynEditText, SynEditTypes, SynEditMiscClasses,
   SynEditMiscProcs, SynEditPointClasses,
   SynEditHighlighter, SynEditHighlighterFoldBase;

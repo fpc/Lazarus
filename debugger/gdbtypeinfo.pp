@@ -34,7 +34,7 @@ unit GDBTypeInfo;
 interface
 
 uses
-  Classes, SysUtils, Debugger, LclProc, LazLogger, DebugUtils, GDBMIMiscClasses;
+  Classes, SysUtils, Debugger, LclProc, LazLoggerBase, DebugUtils, GDBMIMiscClasses;
 
 (*
   ptype = {

@@ -729,8 +729,8 @@ procedure TCDWidgetSet.BackendCreate;
 begin
   // Setup DebugLn
   {$IFnDEF WithOldDebugln}
-  DebugLogger.OnDebugLn := @AndroidDebugLn;
-  DebugLogger.OnDbgOut := @AccumulatingDebugOut;
+  OnWidgetSetDebugLn := @AndroidDebugLn;
+  OnWidgetSetDbgOut := @AccumulatingDebugOut;
   {$ELSE}
   DebugLnProc := @AndroidDebugLn;
   DebugOutProc := @AccumulatingDebugOut;

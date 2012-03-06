@@ -36,7 +36,7 @@ unit CallStackDlg;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, LCLProc, LazLogger,
+  SysUtils, Classes, Controls, Forms, LCLProc, LazLoggerBase,
   IDEWindowIntf, DebuggerStrConst,
   ComCtrls, Debugger, DebuggerDlg, Menus, ClipBrd, ExtCtrls, StdCtrls,
   ActnList, IDEImagesIntf, IDECommands;

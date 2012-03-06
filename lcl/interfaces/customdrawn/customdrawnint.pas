@@ -54,7 +54,7 @@ uses
   lazcanvas, lazregions, lazdeviceapis,
   InterfaceBase,
   Controls,  Forms, lclproc, IntfGraphics, GraphType,
-  LCLType, LMessages, Graphics, LCLStrConsts, LazLogger;
+  LCLType, LMessages, Graphics, LCLStrConsts, LazLoggerBase;
 
 type
   {$ifdef CD_Windows}

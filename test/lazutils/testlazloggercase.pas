@@ -5,7 +5,7 @@ unit TestLazLoggerCase;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testutils, testregistry, LazLogger;
+  Classes, SysUtils, fpcunit, testutils, testregistry, LazLoggerBase, LazLogger, LazClasses;
 
 type
   TStringArray = array of string;
@@ -14,7 +14,7 @@ type
 
   TTestLazLogger = class(TTestCase)
   protected
-    FTheLogger: TLazLogger;
+    FTheLogger: TLazLoggerFile;
     FOnDbgOutCount, FOnDebugLnCount: Integer;
     FOnDbgOutText, FOnDebugLnText: string;
     FArgcMem, FArgVSaved: PPChar;
@@ -33,6 +33,10 @@ type
   published
     procedure TestEvent;
     procedure TestFilter;
+    procedure TestReCreate;
+  end;
+
+  TLazLoggerForTest = class(TLazLogger)
   end;
 
 implementation
@@ -54,7 +58,7 @@ end;
 procedure TTestLazLogger.InitLogger;
 begin
   FreeAndNil(FTheLogger);
-  FTheLogger := TLazLogger.Create;
+  FTheLogger := TLazLoggerFile.Create;
   FTheLogger.OnDebugLn  := @TestOnDebugln;
   FTheLogger.OnDbgOut  := @TestOnDbgOut;
   FOnDebugLnCount := 0;
@@ -424,6 +428,27 @@ begin
     RestoreArgs;
     FreeAndNil(FTheLogger);
   end;
+end;
+
+function CreateDebugLogger: TRefCountedObject;
+begin
+  Result := TLazLoggerForTest.Create;
+  TLazLoggerFile(Result).Assign(GetExistingDebugLogger);
+end;
+
+procedure TTestLazLogger.TestReCreate;
+begin
+  AssertTrue('DebugLogger is TLazLoggerFile', DebugLogger is TLazLoggerFile);
+
+  DebugLogger.MaxNestPrefixLen := 122;
+  LazDebugLoggerCreator := @CreateDebugLogger;
+
+  AssertTrue('still DebugLogger is TLazLoggerFile', DebugLogger is TLazLoggerFile);
+
+  RecreateDebugLogger;
+  AssertTrue('DebugLogger is TLazLoggerForTest', LazLoggerBase.DebugLogger is TLazLoggerForTest);
+  AssertEquals('MaxNestPrefixLen = 122', 122, TLazLoggerForTest(LazLoggerBase.DebugLogger).MaxNestPrefixLen);
+
 end;
 
 

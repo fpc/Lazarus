@@ -19,7 +19,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="58">
+    <Files Count="62">
       <Item1>
         <Filename Value="laz2_dom.pas"/>
         <UnitName Value="laz2_DOM"/>
@@ -252,6 +252,22 @@
         <Filename Value="easylazfreetype.pas"/>
         <UnitName Value="EasyLazFreeType"/>
       </Item58>
+      <Item59>
+        <Filename Value="lazloggerbase.pas"/>
+        <UnitName Value="LazLoggerBase"/>
+      </Item59>
+      <Item60>
+        <Filename Value="LazLoggerIntf.inc"/>
+        <Type Value="Include"/>
+      </Item60>
+      <Item61>
+        <Filename Value="lazloggerdummy.pas"/>
+        <UnitName Value="LazLoggerDummy"/>
+      </Item61>
+      <Item62>
+        <Filename Value="lazclasses.pas"/>
+        <UnitName Value="LazClasses"/>
+      </Item62>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>

@@ -36,7 +36,7 @@ unit LocalsDlg;
 interface
 
 uses
-  SysUtils, Classes, Forms, ClipBrd, LCLProc, LazLogger,
+  SysUtils, Classes, Forms, ClipBrd, LCLProc, LazLoggerBase,
   IDEWindowIntf, DebuggerStrConst,
   ComCtrls, ActnList, Menus, BaseDebugManager, Debugger, DebuggerDlg;
 
