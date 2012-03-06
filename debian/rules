@@ -24,7 +24,7 @@ FPCVER=$(shell ${FPC} -iV)
 
 FPCTARGET=$(CPU_TARGET)-linux
 # Get version information from changelog file
-DEB_VERSION:=$(shell dpkg-parsechangelog | egrep '^Version:' | cut -f 2 -d ' ')
+DEB_VERSION:=$(shell dpkg-parsechangelog | grep '^Version:' | cut -f 2 -d ' ')
 DEB_UPSTREAM_VERSION:=$(shell echo $(DEB_VERSION) | cut -f 1 -d -)
 DEB_UPSTREAM_MAIN_VERSION:=$(shell echo ${DEB_UPSTREAM_VERSION} | sed -e 's/^\([0-9\.]*\).*/\1/')
 DEB_BUILD=$(lastword $(subst -, ,${DEB_VERSION}))
