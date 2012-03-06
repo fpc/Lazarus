@@ -842,6 +842,16 @@ begin
   LastPos:=CurPos.EndPos;
   ReadNextAtom;
   if FindNextNonSpace(Src,LastPos)<>CurPos.StartPos then exit;
+  // inherited is allowed
+  if UpAtomIs('INHERITED') then begin
+    ReadNextAtom;
+    if CurPos.Flag=cafSemicolon then begin
+      // semicolon is allowed
+      LastPos:=CurPos.EndPos;
+      ReadNextAtom;
+      if FindNextNonSpace(Src,LastPos)<>CurPos.StartPos then exit;
+    end;
+  end;
   if not UpAtomIs('END') then exit;
   Result:=true;
 end;
