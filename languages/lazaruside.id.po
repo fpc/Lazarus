@@ -13874,7 +13874,9 @@ msgid "Dependency already exists"
 msgstr "Dependensi sudah ada"
 
 #: lazarusidestrconsts.lisprojaddeditorfile
-msgid "Add editor files"
+#, fuzzy
+#| msgid "Add editor files"
+msgid "Add Editor Files"
 msgstr "Tambah file editor"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion

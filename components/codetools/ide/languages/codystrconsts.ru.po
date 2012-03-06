@@ -323,10 +323,9 @@ msgid "Insert File Contents at Cursor ..."
 msgstr "Вставить содержимое файла в месте расположения курсора ..."
 
 #: codystrconsts.crsjumpto
-#, fuzzy
 #| msgid "Jump to"
 msgid "&Jump to"
-msgstr "Перейти"
+msgstr "&Перейти"
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -590,10 +589,9 @@ msgid "Used by"
 msgstr "Используется"
 
 #: codystrconsts.crsuseidentifier
-#, fuzzy
 #| msgid "Use identifier"
 msgid "&Use identifier"
-msgstr "Использовать идентификатор"
+msgstr "&Использовать идентификатор"
 
 #: codystrconsts.crsuses
 msgid "Uses"

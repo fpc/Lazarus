@@ -13311,7 +13311,9 @@ msgid "Dependency already exists"
 msgstr "Riippuvuus on jo olemassa"
 
 #: lazarusidestrconsts.lisprojaddeditorfile
-msgid "Add editor files"
+#, fuzzy
+#| msgid "Add editor files"
+msgid "Add Editor Files"
 msgstr "Lisää editorissa avoinna olevia tiedostoja"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion

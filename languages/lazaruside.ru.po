@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-03-04 02:28+0400\n"
+"PO-Revision-Date: 2012-03-07 02:05+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -13760,7 +13760,8 @@ msgid "Dependency already exists"
 msgstr "Зависимость уже есть"
 
 #: lazarusidestrconsts.lisprojaddeditorfile
-msgid "Add editor files"
+#| msgid "Add editor files"
+msgid "Add Editor Files"
 msgstr "Добавить файлы редактора"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion

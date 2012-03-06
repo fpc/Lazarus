@@ -14042,7 +14042,9 @@ msgid "Dependency already exists"
 msgstr "התלות כבר קיימת"
 
 #: lazarusidestrconsts.lisprojaddeditorfile
-msgid "Add editor files"
+#, fuzzy
+#| msgid "Add editor files"
+msgid "Add Editor Files"
 msgstr "הוסף קבצי עורך"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion

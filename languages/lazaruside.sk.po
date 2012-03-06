@@ -13939,7 +13939,9 @@ msgid "Dependency already exists"
 msgstr "Závislosť už existuje"
 
 #: lazarusidestrconsts.lisprojaddeditorfile
-msgid "Add editor files"
+#, fuzzy
+#| msgid "Add editor files"
+msgid "Add Editor Files"
 msgstr "Pridať súbory editora"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion

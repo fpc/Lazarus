@@ -13969,7 +13969,9 @@ msgid "Dependency already exists"
 msgstr "依赖关系已经存在"
 
 #: lazarusidestrconsts.lisprojaddeditorfile
-msgid "Add editor files"
+#, fuzzy
+#| msgid "Add editor files"
+msgid "Add Editor Files"
 msgstr "添加代码编辑器文件"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion

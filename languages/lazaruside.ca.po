@@ -13782,7 +13782,9 @@ msgid "Dependency already exists"
 msgstr "Ja existeix la dependència"
 
 #: lazarusidestrconsts.lisprojaddeditorfile
-msgid "Add editor files"
+#, fuzzy
+#| msgid "Add editor files"
+msgid "Add Editor Files"
 msgstr "Afegeix els fitxers de l'editor"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion

@@ -14001,7 +14001,9 @@ msgid "Dependency already exists"
 msgstr "Priklausomybė jau yra"
 
 #: lazarusidestrconsts.lisprojaddeditorfile
-msgid "Add editor files"
+#, fuzzy
+#| msgid "Add editor files"
+msgid "Add Editor Files"
 msgstr "Pridėti rengyklės failus"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
