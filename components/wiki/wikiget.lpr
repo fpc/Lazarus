@@ -502,6 +502,8 @@ var
   Prefix: String;
   Data: string;
   SrcLink: String;
+  j: Integer;
+  Header: String;
 begin
   p:=TFetchWikiPage(Token.UserData);
   if Token.Token=wptInternLink then begin
@@ -546,6 +548,7 @@ begin
           writeln('saving response.txt ...');
           if not NoWrite then
             Response.SaveToFile('response.txt');
+          exit;
         end;
         while i<=length(Data) do begin
           if (copy(Data,i,5)='src="') then begin
@@ -561,10 +564,19 @@ begin
             writeln('getting image "',URL,'" ...');
             Response.Clear;
             Client.Get(URL,Response);
+            for j:=0 to Client.ResponseHeaders.Count-1 do begin
+              Header:=Client.ResponseHeaders[j];
+              if LeftStr(Header,length('Content-Type:'))='Content-Type:' then begin
+                if Pos('image/',Header)<1 then begin
+                  writeln('this is not an image: ',Header);
+                  exit;
+                end;
+              end;
+            end;
             writeln('saving image to "',Filename,'" ...');
             if not NoWrite then
               Response.SaveToFile(Filename);
-            break;
+            exit;
           end;
           inc(i);
         end;
