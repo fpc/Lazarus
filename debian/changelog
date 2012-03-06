@@ -1,3 +1,9 @@
+lazarus (0.9.30.4RC2-0) unstable; urgency=low
+
+  * Second release candidate for new release
+
+ -- Vincent Snijders <vincents@freepascal.org>  Tue, 06 Mar 2012 16:10:10 +0100
+
 lazarus (0.9.30.4RC1-0) unstable; urgency=low
 
   * First release candidate for new release
