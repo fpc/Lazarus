@@ -2781,7 +2781,8 @@ begin
       (ScanCode <> QtKey_Right) and (ScanCode <> QtKey_Down) then
     begin
       Modifiers := QtGroupSwitchModifier;
-      KeyMsg.KeyData := QtKeyModifiersToKeyState(Modifiers);
+      LCLModifiers := QtKeyModifiersToKeyState(Modifiers, True, QKeyEventH(Event));
+      KeyMsg.KeyData := PtrInt((LCLModifiers shl 16) or $0001);
       IsSysKey := False; // was true above
     end;
     ScanCode := 0;
