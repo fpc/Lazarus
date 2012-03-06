@@ -245,9 +245,7 @@ begin
   UpdateProgress;
 
   HTML:=WikiHelp.ResultsHTML;
-  if HTML='' then begin
-    HTML:='<html><body><h1>Search Results</h1></body></html>';
-  end;
+  if HTML='' then exit;
   LoadHTML(ResultsIpHtmlPanel,HTML);
 end;
 
@@ -260,6 +258,8 @@ begin
   NewLanguages:=UTF8Trim(LanguagesEdit.Text);
   if (NewSearchText=fLastSearchText) and (NewLanguages=fLastLanguages) then
     exit;
+  fLastSearchText:=NewSearchText;
+  fLastLanguages:=NewLanguages;
   WikiHelp.Search(NewSearchText,NewLanguages);
   Timer1.Enabled:=true;
 end;

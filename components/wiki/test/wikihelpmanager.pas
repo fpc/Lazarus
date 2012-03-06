@@ -1341,39 +1341,39 @@ begin
     finally
       LeaveCritSect;
     end;
-    exit;
+  end else begin
+    StartTime:=Now;
+    //debugln(['TWikiHelp.DoSearch START Search=',Trim(Query.Phrases.Text)]);
+    FoundPages:=nil;
+    Converter.Search(Query,Scoring,FoundPages);
+    HTML:='<html>'+LineEnding
+         +'<head>'+LineEnding
+         +' <meta content="text/html; charset=utf-8" http-equiv="Content-Type">'+LineEnding;
+    if ResultsCSSURL<>'' then
+    HTML+=' <link href="'+ResultsCSSURL+'" type="text/css" rel="stylesheet">'+LineEnding;
+    HTML+='</head>'+LineEnding
+         +'<body>'+LineEnding;
+    for i:=0 to Min(FoundPages.Count-1,MaxResults) do begin
+      Page:=TW2HelpPage(FoundPages[i]);
+      Node:=Page.GetNodeHighestScore(Query,Scoring);
+      s:='<div class="wikiSearchResultItem">'+FoundNodeToHTMLSnippet(Page,Node,Query)+'</div>'+LineEnding;
+      //debugln(['TWikiHelp.TestSearch Score=',Page.Score,' HTML="',s,'"']);
+      HTML+=s;
+    end;
+    HTML+='</body>'+LineEnding
+         +'</html>'+LineEnding;
+    FResultsHTML:=HTML;
+    FoundPages.Free;
+    EndTime:=Now;
+    fWikiSearchTimeMSec:=round(Abs(EndTime-StartTime)*86400000);
+    EnterCritSect;
+    try
+      fProgressStep:=whpsWikiSearchComplete;
+    finally
+      LeaveCritSect;
+    end;
+    //debugln(['TWikiHelp.DoSearch END Search="',Trim(Query.Phrases.Text),'" ',dbgs(fWikiSearchTimeMSec)+'msec']);
   end;
-  StartTime:=Now;
-  //debugln(['TWikiHelp.DoSearch START Search=',Trim(Query.Phrases.Text)]);
-  FoundPages:=nil;
-  Converter.Search(Query,Scoring,FoundPages);
-  HTML:='<html>'+LineEnding
-       +'<head>'+LineEnding
-       +' <meta content="text/html; charset=utf-8" http-equiv="Content-Type">'+LineEnding;
-  if ResultsCSSURL<>'' then
-  HTML+=' <link href="'+ResultsCSSURL+'" type="text/css" rel="stylesheet">'+LineEnding;
-  HTML+='</head>'+LineEnding
-       +'<body>'+LineEnding;
-  for i:=0 to Min(FoundPages.Count-1,MaxResults) do begin
-    Page:=TW2HelpPage(FoundPages[i]);
-    Node:=Page.GetNodeHighestScore(Query,Scoring);
-    s:='<div class="wikiSearchResultItem">'+FoundNodeToHTMLSnippet(Page,Node,Query)+'</div>'+LineEnding;
-    //debugln(['TWikiHelp.TestSearch Score=',Page.Score,' HTML="',s,'"']);
-    HTML+=s;
-  end;
-  HTML+='</body>'+LineEnding
-       +'</html>'+LineEnding;
-  FResultsHTML:=HTML;
-  FoundPages.Free;
-  EndTime:=Now;
-  fWikiSearchTimeMSec:=round(Abs(EndTime-StartTime)*86400000);
-  EnterCritSect;
-  try
-    fProgressStep:=whpsWikiSearchComplete;
-  finally
-    LeaveCritSect;
-  end;
-  //debugln(['TWikiHelp.DoSearch END Search="',Trim(Query.Phrases.Text),'" ',dbgs(fWikiSearchTimeMSec)+'msec']);
   if Assigned(OnSearched) then
     OnSearched(Self);
 end;
