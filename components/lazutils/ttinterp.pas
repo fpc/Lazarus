@@ -1271,7 +1271,7 @@ end;
 (* POP[]     : POPs the stack's top elt.   *)
 (* CodeRange : $21                         *)
 
-   procedure Ins_POP( args : PStorage );
+   procedure Ins_POP( {%H-}args : PStorage );
    begin
      (* nothing to do *)
    end;
@@ -1280,7 +1280,7 @@ end;
 (* CLEAR[]   : Clear the entire stack      *)
 (* CodeRange : $22                         *)
 
-   procedure Ins_CLEAR( args : PStorage );
+   procedure Ins_CLEAR( {%H-}args : PStorage );
    begin
      exc.new_top := 0;
    end;
@@ -1429,7 +1429,7 @@ end;
 (* ELSE[]    : ELSE                        *)
 (* CodeRange : $1B                         *)
 
-   procedure Ins_ELSE( args : PStorage );
+   procedure Ins_ELSE( {%H-}args : PStorage );
    var
      nIfs : Int;
    begin
@@ -1455,7 +1455,7 @@ end;
 (* EIF[]     : End IF                      *)
 (* CodeRange : $59                         *)
 
-   procedure Ins_EIF( args : PStorage );
+   procedure Ins_EIF( {%H-}args : PStorage );
    begin
      (* nothing to do *)
    end;
@@ -1808,7 +1808,7 @@ end;
 (* ENDF[]    : END Function definition     *)
 (* CodeRange : $2D                         *)
 
-   procedure Ins_ENDF( args : PStorage );
+   procedure Ins_ENDF( {%H-}args : PStorage );
    begin
 
      if exc.callTop <= 0 then   (* We encountered an ENDF without a call *)
@@ -2201,7 +2201,7 @@ end;
 (* SVTCA[a]  : Set F and P vectors to axis *)
 (* CodeRange : $00-$01                     *)
 
-   procedure Ins_SVTCA( args : PStorage );
+   procedure Ins_SVTCA( {%H-}args : PStorage );
    var A, B : Short;
    begin
      case (exc.opcode and 1) of
@@ -2225,7 +2225,7 @@ end;
 (* SPVTCA[a] : Set PVector to Axis         *)
 (* CodeRange : $02-$03                     *)
 
-   procedure Ins_SPVTCA( args : PStorage );
+   procedure Ins_SPVTCA( {%H-}args : PStorage );
    var A, B : Short;
    begin
      case (exc.opcode and 1) of
@@ -2247,7 +2247,7 @@ end;
 (* SFVTCA[a] : Set FVector to Axis         *)
 (* CodeRange : $04-$05                     *)
 
-   procedure Ins_SFVTCA( args : PStorage );
+   procedure Ins_SFVTCA( {%H-}args : PStorage );
    var A, B : Short;
    begin
      case (exc.opcode and 1) of
@@ -2346,7 +2346,7 @@ end;
 (* SFVTPV[]  : Set FVector to PVector      *)
 (* CodeRange : $0E                         *)
 
-   procedure Ins_SFVTPV( args : PStorage );
+   procedure Ins_SFVTPV( {%H-}args : PStorage );
    begin
      exc.GS.freeVector := exc.GS.projVector;
      Compute_Funcs;
@@ -2564,7 +2564,7 @@ end;
 (* RTHG[]    : Round To Half Grid          *)
 (* CodeRange : $19                         *)
 
-   procedure Ins_RTHG( args : PStorage );
+   procedure Ins_RTHG( {%H-}args : PStorage );
    begin
      exc.GS.round_state := TT_Round_To_Half_Grid;
 
@@ -2579,7 +2579,7 @@ end;
 (* RTG[]     : Round To Grid               *)
 (* CodeRange : $18                         *)
 
-   procedure Ins_RTG( args : PStorage );
+   procedure Ins_RTG( {%H-}args : PStorage );
    begin
      exc.GS.round_state := TT_Round_To_Grid;
 
@@ -2594,7 +2594,7 @@ end;
 (* RTDG[]    : Round To Double Grid        *)
 (* CodeRange : $3D                         *)
 
-   procedure Ins_RTDG( args : PStorage );
+   procedure Ins_RTDG( {%H-}args : PStorage );
    begin
      exc.GS.round_state := TT_Round_To_Double_Grid;
 
@@ -2609,7 +2609,7 @@ end;
 (* RUTG[]    : Round Up To Grid            *)
 (* CodeRange : $7C                         *)
 
-   procedure Ins_RUTG( args : PStorage );
+   procedure Ins_RUTG( {%H-}args : PStorage );
    begin
      exc.GS.round_state := TT_Round_Up_To_Grid;
 
@@ -2624,7 +2624,7 @@ end;
 (* RDTG[]    : Round Down To Grid          *)
 (* CodeRange : $7D                         *)
 
-   procedure Ins_RDTG( args : PStorage );
+   procedure Ins_RDTG( {%H-}args : PStorage );
    begin
      exc.GS.round_state := TT_Round_Down_To_Grid;
 
@@ -2639,7 +2639,7 @@ end;
 (* ROFF[]    : Round OFF                   *)
 (* CodeRange : $7A                         *)
 
-   procedure Ins_ROFF( args : PStorage );
+   procedure Ins_ROFF( {%H-}args : PStorage );
    begin
      exc.GS.round_state := TT_Round_Off;
 
@@ -2815,7 +2815,7 @@ end;
 (* FLIPON[]  : Set Auto_flip to On            *)
 (* CodeRange : $4D                            *)
 
-   procedure Ins_FLIPON( args : PStorage );
+   procedure Ins_FLIPON( {%H-}args : PStorage );
    begin
      exc.GS.auto_flip := True;
    end;
@@ -2824,7 +2824,7 @@ end;
 (* FLIPOFF[] : Set Auto_flip to Off           *)
 (* CodeRange : $4E                            *)
 
-   procedure Ins_FLIPOFF( args : PStorage );
+   procedure Ins_FLIPOFF( {%H-}args : PStorage );
    begin
      exc.GS.auto_flip := False;
    end;
@@ -2833,7 +2833,7 @@ end;
 (* SANGW[]   : Set Angle Weigth               *)
 (* CodeRange : $7E                            *)
 
-   procedure Ins_SANGW( args : PStorage );
+   procedure Ins_SANGW( {%H-}args : PStorage );
    begin
      (* instruction not supported anymore *)
    end;
@@ -2982,7 +2982,7 @@ end;
 (* FLIPPT[]  : FLIP PoinT                     *)
 (* CodeRange : $80                            *)
 
-   procedure Ins_FLIPPT( args : PStorage );
+   procedure Ins_FLIPPT( {%H-}args : PStorage );
    var
      point : Int;
    begin
@@ -3059,10 +3059,10 @@ end;
 
 
 
-  function Compute_Point_Displacement( var x    : TT_F26dot6;
-                                       var y    : TT_F26dot6;
-                                       var zone : PGlyph_Zone;
-                                       var refp : Int ) : TError;
+  function Compute_Point_Displacement( out x    : TT_F26dot6;
+                                       out y    : TT_F26dot6;
+                                       out zone : PGlyph_Zone;
+                                       out refp : Int ) : TError;
   var
     zp   : PGlyph_Zone;
     p    : Int;
@@ -3115,7 +3115,7 @@ end;
 (* SHP[a]    : SHift Point by the last point  *)
 (* CodeRange : $32-33                         *)
 
-   procedure Ins_SHP( args : PStorage );
+   procedure Ins_SHP( {%H-}args : PStorage );
    var
      zp   : PGlyph_Zone;
      refp : Int;
@@ -3210,12 +3210,12 @@ end;
      dx   : TT_F26dot6;
      dy   : TT_F26dot6;
 
-     zone, i : Int;
+     i : Int;
 
      last_point : Int;
    begin
 
-     zone := args^[0];
+     //zone := args^[0];
 
      if (args^[0] < 0) or (args^[0] > 1) then
      begin
@@ -3627,7 +3627,7 @@ end;
 (* ALIGNRP[]   : ALIGN Relative Point         *)
 (* CodeRange   : $3C                          *)
 
-   procedure Ins_ALIGNRP( args : PStorage );
+   procedure Ins_ALIGNRP( {%H-}args : PStorage );
    var
      point    : Int;
      distance : TT_F26dot6;
@@ -3667,7 +3667,7 @@ end;
 (* AA[]        : Adjust Angle                 *)
 (* CodeRange   : $7F                          *)
 
-   procedure Ins_AA( args : PStorage );
+   procedure Ins_AA( {%H-}args : PStorage );
    begin
      (* Intentional - no longer supported *)
    end;
@@ -3691,7 +3691,6 @@ end;
 
      R : TT_Vector;
 
-     T1, T2 : Int64;
    begin
 
      point := args^[0];
@@ -3824,7 +3823,7 @@ end;
 (* IP[]        : Interpolate Point            *)
 (* CodeRange   : $39                          *)
 
-   procedure Ins_IP( args : PStorage );
+   procedure Ins_IP( {%H-}args : PStorage );
    var
      org_a : TT_F26dot6;
      org_b : TT_F26dot6;
@@ -3919,7 +3918,7 @@ end;
 (* IUP[a]      : Interpolate Untouched Points *)
 (* CodeRange   : $30-$31                      *)
 
-   procedure Ins_IUP( args : PStorage );
+   procedure Ins_IUP( {%H-}args : PStorage );
    var
      mask : byte;
 
@@ -4273,7 +4272,7 @@ end;
 
 (* NOTE : The original instruction pops a value from the stack *)
 
-   procedure Ins_DEBUG( args : PStorage );
+   procedure Ins_DEBUG( {%H-}args : PStorage );
    begin
      exc.error := TT_Err_Debug_Opcode;
    end;
@@ -4292,11 +4291,11 @@ end;
      (* We return then Windows 3.1 version number *)
      (* for the font scaler                       *)
 
-     if false then K := K or $80;
+     if false then {%H-}K := K or $80;
      (* Has the glyph been rotated ? *)
      (* XXXX TO DO *)
 
-     if false then K := K or $100;
+     if false then {%H-}K := K or $100;
      (* Has the glyph been stretched ? *)
      (* XXXX TO DO *)
 
@@ -4304,7 +4303,7 @@ end;
    end;
 
 
-   procedure Ins_UNKNOWN( args : PStorage );
+   procedure Ins_UNKNOWN( {%H-}args : PStorage );
    begin
      exc.error := TT_Err_Invalid_Opcode;
    end;
