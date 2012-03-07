@@ -332,7 +332,7 @@ end;
 function DbgS(const p: pointer): string;
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
-  Result:=HexStr(PtrUInt(p),2*sizeof(PtrInt));
+  Result:=HexStr({%H-}PtrUInt(p),2*sizeof(PtrInt));
   {$ELSE}
   Result := '';
   {$ENDIF}

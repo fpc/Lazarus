@@ -81,13 +81,13 @@ type
 
     procedure IncreaseIndent; overload; virtual;
     procedure DecreaseIndent; overload; virtual;
-    procedure IncreaseIndent(LogGroup: PLazLoggerLogGroup); overload; virtual;
-    procedure DecreaseIndent(LogGroup: PLazLoggerLogGroup); overload; virtual;
+    procedure IncreaseIndent({%H-}LogGroup: PLazLoggerLogGroup); overload; virtual;
+    procedure DecreaseIndent({%H-}LogGroup: PLazLoggerLogGroup); overload; virtual;
     procedure IndentChanged; virtual;
 
-    procedure DoDbgOut(const s: string); virtual;
-    procedure DoDebugLn(const s: string); virtual;
-    procedure DoDebuglnStack(const s: string); virtual;
+    procedure DoDbgOut(const {%H-}s: string); virtual;
+    procedure DoDebugLn(const {%H-}s: string); virtual;
+    procedure DoDebuglnStack(const {%H-}s: string); virtual;
 
     function  ArgsToString(Args: array of const): string;
     property  IsInitialized: Boolean read FIsInitialized;
