@@ -913,12 +913,14 @@ begin
       {$ENDIF}
       // insert method definition into class
       InsertCall:='';
+      if CompareTextIgnoringSpace(CallAncestorMethod,'inherited',false)=0 then
+        InsertCall:=CallAncestorMethod+';';
       if UseTypeInfoForParameters then begin
         MethodDefinition:=MethodTypeDataToStr(ATypeData,
                     [phpWithStart, phpWithoutClassKeyword, phpWithoutClassName,
                      phpWithoutName, phpWithVarModifiers, phpWithParameterNames,
                      phpWithDefaultValues, phpWithResultType]);
-        if CallAncestorMethod<>'' then begin
+        if (InsertCall='') and (CallAncestorMethod<>'') then begin
           InsertCall:=CallAncestorMethod+MethodTypeDataToStr(ATypeData,
                       [phpWithoutClassKeyword, phpWithoutClassName,
                        phpWithoutName, phpWithParameterNames,
@@ -930,7 +932,7 @@ begin
                     [phpWithStart, phpWithoutClassKeyword, phpWithoutClassName,
                      phpWithoutName, phpWithVarModifiers, phpWithParameterNames,
                      phpWithDefaultValues, phpWithResultType]));
-        if CallAncestorMethod<>'' then begin
+        if (InsertCall='') and (CallAncestorMethod<>'') then begin
           InsertCall:=CallAncestorMethod
                     +TrimCodeSpace(FindContext.Tool.ExtractProcHead(
                      FindContext.Node,
