@@ -133,8 +133,7 @@ begin
   NewIdeItems.Add(ACategory);
 end;
 
-procedure RegisterNewDialogItem(const Paths: string;
-  NewItem: TNewIDEItemTemplate);
+procedure RegisterNewDialogItem(const Paths: string; NewItem: TNewIDEItemTemplate);
 begin
   if NewIDEItems=nil then
     raise Exception.Create('RegisterNewDialogItem NewIDEItems=nil');
@@ -199,16 +198,14 @@ begin
   Result:='';
 end;
 
-function TNewIDEItemCategory.IndexOfTemplate(const TemplateName: string
-  ): integer;
+function TNewIDEItemCategory.IndexOfTemplate(const TemplateName: string): integer;
 begin
   Result:=FItems.Count-1;
   while (Result>=0) and (SysUtils.CompareText(Items[Result].Name,TemplateName)<>0) do
     dec(Result);
 end;
 
-function TNewIDEItemCategory.FindTemplateByName(const TemplateName: string
-  ): TNewIDEItemTemplate;
+function TNewIDEItemCategory.FindTemplateByName(const TemplateName: string): TNewIDEItemTemplate;
 var
   i: LongInt;
 begin
@@ -219,14 +216,12 @@ begin
     Result := nil;
 end;
 
-function TNewIDEItemCategory.IndexOfCategory(const CategoryName: string
-  ): integer;
+function TNewIDEItemCategory.IndexOfCategory(const CategoryName: string): integer;
 begin
   Result:=-1; // ToDo
 end;
 
-function TNewIDEItemCategory.FindCategoryByName(const CategoryName: string
-  ): TNewIDEItemCategory;
+function TNewIDEItemCategory.FindCategoryByName(const CategoryName: string): TNewIDEItemCategory;
 var
   i: LongInt;
 begin
@@ -262,8 +257,7 @@ end;
 
 function TNewIDEItemTemplate.CreateCopy: TNewIDEItemTemplate;
 begin
-  Result:=TNewIDEItemTemplateClass(ClassType).Create(
-                                                 Name,DefaultFlag,AllowedFlags);
+  Result:=TNewIDEItemTemplateClass(ClassType).Create(Name,DefaultFlag,AllowedFlags);
   Result.Assign(Self);
 end;
 

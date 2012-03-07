@@ -1078,16 +1078,14 @@ begin
     dec(Result);
 end;
 
-function TLazProjectFileDescriptors.IndexOf(
-  FileDescriptor: TProjectFileDescriptor): integer;
+function TLazProjectFileDescriptors.IndexOf(FileDescriptor: TProjectFileDescriptor): integer;
 begin
   Result:=Count-1;
   while (Result>=0) and (Items[Result]<>FileDescriptor) do
     dec(Result);
 end;
 
-function TLazProjectFileDescriptors.FindByName(const Name: string
-  ): TProjectFileDescriptor;
+function TLazProjectFileDescriptors.FindByName(const Name: string): TProjectFileDescriptor;
 var
   i: LongInt;
 begin
@@ -1143,7 +1141,8 @@ var
 begin
   DefPasExt:=DefaultPascalFileExt;
   if DefPasExt='' then exit;
-  for i:=0 to Count-1 do Items[i].UpdateDefaultPascalFileExtension(DefPasExt);
+  for i:=0 to Count-1 do
+    Items[i].UpdateDefaultPascalFileExtension(DefPasExt);
 end;
 
 { TLazProjectDescriptors }
@@ -1203,8 +1202,7 @@ begin
     dec(Result);
 end;
 
-function TLazProjectDescriptors.IndexOf(Descriptor: TProjectDescriptor
-  ): integer;
+function TLazProjectDescriptors.IndexOf(Descriptor: TProjectDescriptor): integer;
 begin
   Result:=Count-1;
   while (Result>=0) and (Items[Result]<>Descriptor) do
@@ -1222,8 +1220,7 @@ begin
     Result:=nil;
 end;
 
-procedure TLazProjectDescriptors.RegisterDescriptor(
-  Descriptor: TProjectDescriptor);
+procedure TLazProjectDescriptors.RegisterDescriptor(Descriptor: TProjectDescriptor);
 begin
   if Descriptor.Name='' then
     raise Exception.Create('TLazProjectDescriptors.RegisterDescriptor Descriptor.Name empty');
@@ -1235,8 +1232,7 @@ begin
     ;
 end;
 
-procedure TLazProjectDescriptors.UnregisterDescriptor(
-  Descriptor: TProjectDescriptor);
+procedure TLazProjectDescriptors.UnregisterDescriptor(Descriptor: TProjectDescriptor);
 var
   i: LongInt;
 begin
@@ -1536,8 +1532,7 @@ end;
 
 function TProjectConsoleApplicationDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=GetLocalizedName+#13
-    +lisFreepascalProgramUsingTCustomApplicationToEasilyCh;
+  Result:=GetLocalizedName+#13+lisFreepascalProgramUsingTCustomApplicationToEasilyCh;
 end;
 
 function TProjectConsoleApplicationDescriptor.InitProject(AProject: TLazProject
