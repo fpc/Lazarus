@@ -1147,7 +1147,7 @@ end;
 
 function TDOMCharacterData.SubstringData(offset, count: LongWord): DOMString;
 begin
-  if (offset < 0) or (longint(offset) > Length) or (count < 0) then
+  if (longint(offset) > Length) then
     raise EDOMIndexSize.Create('CharacterData.SubstringData');
   Result := Copy(FNodeValue, offset + 1, count);
 end;
@@ -1159,7 +1159,7 @@ end;
 
 procedure TDOMCharacterData.InsertData(offset: LongWord; const arg: DOMString);
 begin
-  if (offset < 0) or (longint(offset) > Length) then
+  if (longint(offset) > Length) then
     raise EDOMIndexSize.Create('CharacterData.InsertData');
 
   FNodeValue := Copy(FNodeValue, 1, offset) + arg +
@@ -1168,7 +1168,7 @@ end;
 
 procedure TDOMCharacterData.DeleteData(offset, count: LongWord);
 begin
-  if (offset < 0) or (longint(offset) > Length) or (count < 0) then
+  if (longint(offset) > Length) then
     raise EDOMIndexSize.Create('CharacterData.DeleteData');
 
   FNodeValue := Copy(FNodeValue, 1, offset) +

@@ -1,5 +1,4 @@
 {
-    $Id$
     This file is part of the Free Component Library
 
     XML reading routines.

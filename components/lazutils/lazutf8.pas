@@ -743,6 +743,7 @@ var
   // Language identification
   IsTurkish: Boolean;
   c1, c2, c3, new_c1, new_c2, new_c3: Char;
+  p: SizeInt;
 begin
   Result:=AInStr;
   InStr := PChar(AInStr);
@@ -810,9 +811,9 @@ begin
         // capital undotted I to small undotted i
         if IsTurkish and (c1 = 'I') then
         begin
-          OutStr := PChar(OutStr - PChar(Result));
+          p:=OutStr - PChar(Result);
           SetLength(Result,Length(Result)+1);// Increase the buffer
-          OutStr := PtrInt(OutStr) + PChar(Result);
+          OutStr := PChar(Result)+p;
           OutStr^ := #$C4;
           inc(OutStr);
           OutStr^ := #$B1;
@@ -1171,9 +1172,9 @@ begin
           }
           #$BA,#$BE:
           begin
-            OutStr := PChar(OutStr - PChar(Result));
+            p:= OutStr - PChar(Result);
             SetLength(Result,Length(Result)+1);// Increase the buffer
-            OutStr := PtrInt(OutStr) + PChar(Result);
+            OutStr := PChar(Result)+p;
             OutStr^ := #$E2;
             inc(OutStr);
             OutStr^ := #$B1;
