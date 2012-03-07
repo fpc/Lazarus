@@ -53,7 +53,6 @@ object NewProjectDialog: TNewProjectDialog
       Anchors = []
       ItemHeight = 0
       OnDblClick = ListBoxDblClick
-      Sorted = True
       TabOrder = 1
     end
     object Splitter1: TSplitter
@@ -69,11 +68,15 @@ object NewProjectDialog: TNewProjectDialog
     Top = 264
     Width = 549
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
