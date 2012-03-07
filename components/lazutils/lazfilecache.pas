@@ -73,7 +73,6 @@ type
                       CreateIfNotExists: boolean): TFileStateCacheItem;
     function Check(const Filename: string; AFlag: TFileStateCacheItemFlag;
                    out AFile: TFileStateCacheItem; var FlagIsSet: boolean): boolean;
-    procedure WriteDebugReport;
     procedure AddChangeTimeStampHandler(const Handler: TOnChangeFileStateTimeStamp);
     procedure RemoveChangeTimeStampHandler(const Handler: TOnChangeFileStateTimeStamp);
     function CalcMemSize: PtrUint;
@@ -413,7 +412,6 @@ begin
                       @CompareFilenameWithFileStateCacheItem)=nil
     then begin
       //DebugLn(format('FileStateCache.FindFile: "%s"',[FileName]));
-      WriteDebugReport;
       raise Exception.Create('');
     end;
   end else
@@ -436,23 +434,6 @@ begin
   end;
   //WriteStr(s, AFlag);
   //debugln('TFileStateCache.Check Filename=',Filename,' AFile.Filename=',AFile.Filename,' ',s,'=',dbgs(FlagIsSet),' Valid=',dbgs(Result));
-end;
-
-procedure TFileStateCache.WriteDebugReport;
-var
-  ANode: TAVLTreeNode;
-  //AFile: TFileStateCacheItem;
-begin
-  {$NOTE ToDo}
-  //debugln('TFileStateCache.WriteDebugReport FTimeStamp=',dbgs(FTimeStamp));
-  ANode:=FFiles.FindLowest;
-  while ANode<>nil do begin
-    //AFile:=TFileStateCacheItem(ANode.Data);
-    //debugln('  "',AFile.Filename,'" TimeStamp=',dbgs(AFile.TimeStamp));
-    ANode:=FFiles.FindSuccessor(ANode);
-  end;
-  //debugln(' FFiles=',dbgs(FFiles.ConsistencyCheck));
-  //debugln(FFiles.ReportAsString);
 end;
 
 procedure TFileStateCache.AddChangeTimeStampHandler(
