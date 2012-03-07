@@ -59,9 +59,7 @@ implementation
 uses
   TTTables,
   TTCalc,
-  TTMemory,
   TTFile,
-  TTInterp,
   TTLoad;
 
 const
@@ -671,7 +669,6 @@ const
    left_contours : Int;
 
    table,
-   num_ins,
    index,
    load_top : Int;
 
@@ -679,11 +676,7 @@ const
 
    glyph_offset, offset : Long;
 
-   c : Byte;
-
    vec, nvec : TT_Vector;
-
-   xmin, xmax, ymin, ymax : TT_F26Dot6;
 
    xx, xy, yx, yy : TT_Fixed;
 
@@ -698,13 +691,10 @@ const
 
    debug : Boolean;
 
-   leftSideBearing : TT_Pos;
-   advanceWidth    : TT_Pos;
-
    top_bearing     : TT_Pos;
    advance_height  : TT_Pos;
 
-   error      : TT_Error;
+   //error      : TT_Error;
    delta      : Long;
    widths     : PByte;
    horizontal : TT_Horizontal_Header;
@@ -1274,6 +1264,8 @@ const
        (*                 advance_height );                               *)
        (*                                                                 *)
           horizontal := TT_Horizontal_Header(face^.verticalHeader);
+          top_bearing:=0;
+          advance_height:=0;
           TT_Get_Metrics( horizontal,
                           glyph_index,
                           top_bearing,

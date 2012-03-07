@@ -108,8 +108,7 @@ function Hex32( L : Long ) : LongHexStr;
 
 implementation
 
-type
-  PStorageLong = ^TStorageLong;
+{type
   TStorageLong = record           (* do-it-all union record type *)
                    case Byte of
                     0 : ( L      : LongInt );
@@ -119,7 +118,7 @@ type
                           B3, B4 : Byte );
                     4 : ( P      : Pointer );
                   end;
-
+}
 const
   OpStr : array[ 0..255 ] of String[10]
         = (

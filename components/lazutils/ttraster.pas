@@ -175,7 +175,7 @@ var
   Flags    : PByte;           (* current flags array     *)
   Outs     : TT_PConStarts;   (* current endpoints array *)
 
-  nPoints,            (* current number of points   *)
+  //nPoints,            (* current number of points   *)
   nContours : Int;    (* current number of contours *)
 
   DropOutControl : Byte;  (* current drop-out control mode *)
@@ -656,7 +656,7 @@ begin
 
  Outs      := glyph.conEnds;
  Flags     := PByte(glyph.flags);
- nPoints   := Glyph.n_points;
+ //nPoints   := Glyph.n_points;
  nContours := Glyph.n_contours;
 
  points := Glyph.points;
@@ -753,7 +753,7 @@ begin
 
  Outs      := Glyph.conEnds;
  Flags     := PByte(glyph.flags);
- nPoints   := Glyph.n_points;
+ //nPoints   := Glyph.n_points;
  nContours := Glyph.n_contours;
 
  points := Glyph.points;
@@ -827,7 +827,7 @@ begin
 
   Outs      := Glyph.conEnds;
   Flags     := PByte(glyph.flags);
-  nPoints   := Glyph.n_points;
+  //nPoints   := Glyph.n_points;
   nContours := Glyph.n_contours;
 
   points := Glyph.points;
@@ -932,7 +932,7 @@ begin
 
   Outs      := Glyph.conEnds;
   Flags     := PByte(glyph.flags);
-  nPoints   := Glyph.n_points;
+  //nPoints   := Glyph.n_points;
   nContours := Glyph.n_contours;
 
   points := Glyph.points;
@@ -994,7 +994,7 @@ begin
 
   Outs      := Glyph.conEnds;
   Flags     := PByte(glyph.flags);
-  nPoints   := Glyph.n_points;
+  //nPoints   := Glyph.n_points;
   nContours := Glyph.n_contours;
 
   points := Glyph.points;
