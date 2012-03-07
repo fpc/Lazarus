@@ -183,10 +183,12 @@ begin
 
   SplitIntoChangeSections(lcSourceLines, lcDestLines, lcSameStart, lcSameEnd);
   try
+    pcUnit.BeginUpdate;
+    pcUnit.BeginUndoBlock;
+
     liStart := lcSameStart.Count;
     liIndex := 0;
     liMaxIndex := Max(lcSourceLines.Count, lcDestLines.Count);
-    pcUnit.BeginUndoBlock;
     while (liIndex < liMaxIndex) do
     begin
       if liIndex < lcSourceLines.Count then
@@ -205,8 +207,9 @@ begin
 
        inc(liIndex);
      end;
-    pcUnit.EndUndoBlock;
    finally
+    pcUnit.EndUndoBlock;
+    pcUnit.EndUpdate;
     lcSourceLines.Free;
     lcDestLines.Free;
     lcSameStart.Free;
