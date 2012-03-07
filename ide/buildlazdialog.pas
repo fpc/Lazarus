@@ -421,7 +421,7 @@ begin
       // Case 2. crosscompiling the IDE
       // create directory <primary config dir>/bin/<TargetCPU>-<TargetOS>
       NewTargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin'
-                          +PathDelim+NewTargetOS+'-'+NewTargetCPU;
+                          +PathDelim+NewTargetCPU+'-'+NewTargetOS;
       NewUnitDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'units'
                       +PathDelim+NewTargetCPU+'-'+NewTargetOS;
       debugln('CreateBuildLazarusOptions Options.TargetOS=',Options.FPCTargetOS,' Options.TargetCPU=',
