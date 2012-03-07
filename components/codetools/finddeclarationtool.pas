@@ -7242,36 +7242,8 @@ var
           ExprType.Context.Tool.FindIdentifierInContext(Params);
           ExprType.Context:=CreateFindContext(Params);
           Params.Load(OldInput,true);
-        end;
-        // find base type of property
-        if ExprType.Context.Tool.ReadTilTypeOfProperty(ExprType.Context.Node)
-        then begin
-          // property has type
-          Params.Save(OldInput);
-          with ExprType.Context.Tool do
-            Params.SetIdentifier(ExprType.Context.Tool,
-                                 @Src[CurPos.StartPos],nil);
-          Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
-                        +(fdfGlobals*Params.Flags);
-          Params.ContextNode:=ExprType.Context.Node.Parent;
-          if ExprType.Context.Tool.FindIdentifierInContext(Params) then begin
-            // only types allowed
-            if Params.NewNode.Desc=ctnTypeDefinition then begin
-              ExprType.Context:=CreateFindContext(Params);
-            end else if Params.NewNode.Desc=ctnGenericParameter then begin
-              if not Params.FindGenericParamType then
-                RaiseIdentInCurContextNotFound;
-              ExprType.Context.Tool:=Params.NewCodeTool;
-              ExprType.Context.Node:=Params.NewNode;
-            end else begin
-              // not a type
-              ExprType.Context.Tool.ReadTilTypeOfProperty(ExprType.Context.Node);
-              RaiseTypeIdentNotFound;
-            end;
-          end else begin
-            // predefined identifier
-          end;
-          Params.Load(OldInput,true);
+          ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
+                                                  ExprType.Context.Node);
         end else
           RaiseIdentInCurContextNotFound;
       end;
