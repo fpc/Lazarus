@@ -7,7 +7,7 @@ uses
   cthreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, WikiSearchMain, WikiHelpManager
+  Forms, WikiSearchMain, WikiHelpManager, WikiSearchOptions
   { you can add units after this };
 
 {$R *.res}
@@ -17,6 +17,7 @@ begin
   RequireDerivedFormResource := True;
   Application.Initialize;
   Application.CreateForm(TWikiSearchDemoForm, WikiSearchDemoForm);
+  Application.CreateForm(TWikiSearchOptsWnd, WikiSearchOptsWnd);
   Application.Run;
 end.
 

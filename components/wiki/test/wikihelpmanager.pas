@@ -233,6 +233,11 @@ type
     property Aborting: boolean read FAborting;
     function LoadComplete: boolean;
 
+    // languages
+    function CollectAllLanguages(AsCaption: boolean): TStrings;
+    function LangCodeToCaption(LangCode: string): string;
+    function LangCaptionToCode(Caption: string): string;
+
     // search
     procedure Search(const Term: string; const Languages: string = '');
     procedure Search(aQuery: TWikiHelpQuery);
@@ -1426,7 +1431,7 @@ begin
   InitCriticalSection(FCritSec);
   inherited Create(AOwner);
   FConverter:=TWiki2HelpConverter.Create;
-  FConverter.LanguageTags:=WikiCreateCommonLanguageList(true);
+  FConverter.CodeTags:=WikiCreateCommonCodeTagList(true);
   FConverter.FHelp:=Self;
   FScoring:=TWHScoring.Create;
   FScoring.Phrases[whfcPageTitle,whfsWholeWord]:=128;
@@ -1444,7 +1449,7 @@ end;
 destructor TWikiHelp.Destroy;
 begin
   AbortLoading(true);
-  FConverter.LanguageTags.Free;
+  FConverter.CodeTags.Free;
   FreeAndNil(FConverter);
   FreeAndNil(FScoring);
   FreeAndNil(FQuery);
@@ -1506,6 +1511,45 @@ end;
 function TWikiHelp.LoadComplete: boolean;
 begin
   Result:=(fProgressStep>=whpsWikiLoadComplete);
+end;
+
+function TWikiHelp.CollectAllLanguages(AsCaption: boolean): TStrings;
+
+  procedure Add(Code: string);
+  begin
+    if AsCaption then
+      Code:=LangCodeToCaption(Code);
+    CollectAllLanguages.Add(Code);
+  end;
+
+var
+  Codes: String;
+  p: SizeInt;
+  Code: String;
+begin
+  Result:=TStringList.Create;
+  Add('');
+  if LoadComplete then begin
+    Codes:=Converter.CollectAllLangCodes(';')+';';
+    repeat
+      p:=Pos(';',Codes);
+      if p<1 then p:=length(Codes)+1;
+      Code:=LeftStr(Codes,p-1);
+      Delete(Codes,1,p);
+      if Code<>'' then
+        Add(Code);
+    until Codes='';
+  end;
+end;
+
+function TWikiHelp.LangCodeToCaption(LangCode: string): string;
+begin
+  Result:=LangCode;
+end;
+
+function TWikiHelp.LangCaptionToCode(Caption: string): string;
+begin
+  Result:=Caption;
 end;
 
 function TWikiHelp.GetProgressCaption: string;

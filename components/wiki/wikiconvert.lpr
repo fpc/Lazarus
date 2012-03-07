@@ -257,15 +257,15 @@ constructor TWiki2FPDocApplication.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   StopOnException:=True;
-  FLanguageTags:=WikiCreateCommonLanguageList(true);
+  FLanguageTags:=WikiCreateCommonCodeTagList(true);
   FFPDocConverter:=TWiki2FPDocConverter.Create;
-  FPDocConverter.LanguageTags:=LanguageTags;
+  FPDocConverter.CodeTags:=LanguageTags;
   FXHTMLConverter:=TWiki2XHTMLConverter.Create;
-  XHTMLConverter.LanguageTags:=LanguageTags;
+  XHTMLConverter.CodeTags:=LanguageTags;
   FHTMLConverter:=TWiki2HTMLConverter.Create;
-  HTMLConverter.LanguageTags:=LanguageTags;
+  HTMLConverter.CodeTags:=LanguageTags;
   FCHMConverter:=TWiki2CHMConverter.Create;
-  CHMConverter.LanguageTags:=LanguageTags;
+  CHMConverter.CodeTags:=LanguageTags;
   FConverter:=FHTMLConverter;
 end;
 

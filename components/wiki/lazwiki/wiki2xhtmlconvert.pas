@@ -682,7 +682,7 @@ begin
     Page:=TW2XHTMLPage(Pages[i]);
     Page.Filename:=PageToFilename(Page,false);
     if Page.WikiPage<>nil then
-      Page.WikiPage.LanguageTags:=LanguageTags;
+      Page.WikiPage.LanguageTags:=CodeTags;
     ShortFilenameToPage[Page.Filename]:=Page;
   end;
 end;

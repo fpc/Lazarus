@@ -52,7 +52,7 @@ type
 
   TWiki2FormatConverter = class
   private
-    FLanguageTags: TKeyWordFunctionList;
+    FCodeTags: TKeyWordFunctionList;
     FNoWarnBaseURLs: TStringToStringTree;
     FOnLog: TWikiOnLog;
     FTitle: string;
@@ -86,7 +86,8 @@ type
     property Title: string read FTitle write SetTitle;
     property WarnMissingPageLinks: boolean read FWarnMissingPageLinks write FWarnMissingPageLinks; // warn if an internal link links to non existing page
     property NoWarnBaseURLs: TStringToStringTree read FNoWarnBaseURLs;
-    property LanguageTags: TKeyWordFunctionList read FLanguageTags write FLanguageTags;
+    property CodeTags: TKeyWordFunctionList read FCodeTags write FCodeTags;
+    function CollectAllLangCodes(Delimiter: char = ','): string;
   end;
 
 function WikiPageToFilename(Page: string; IsInternalLink, AppendCaseID: boolean): string;
@@ -94,7 +95,7 @@ function WikiFilenameToPage(Filename: string): string;
 function WikiImageToFilename(Image: string; IsInternalLink, InsertCaseID: boolean;
   KeepScheme: boolean = false): string;
 function WikiHeaderToLink(Header: string): string;
-function WikiCreateCommonLanguageList(AddLazWikiLangs: boolean): TKeyWordFunctionList;
+function WikiCreateCommonCodeTagList(AddLazWikiLangs: boolean): TKeyWordFunctionList;
 function GetWikiPageLanguage(const Page: string): string;
 function WikiPageHasLanguage(const Page, Languages: string): boolean;
 
@@ -222,7 +223,7 @@ begin
   // load wiki pages
   for i:=0 to Count-1 do begin
     Page:=Pages[i];
-    Page.WikiPage.LanguageTags:=LanguageTags;
+    Page.WikiPage.LanguageTags:=CodeTags;
     Page.ParseWikiDoc(false);
   end;
 end;
@@ -238,6 +239,29 @@ end;
 function TWiki2FormatConverter.Count: integer;
 begin
   Result:=fPages.Count;
+end;
+
+function TWiki2FormatConverter.CollectAllLangCodes(Delimiter: char): string;
+var
+  i: Integer;
+  Page: TW2FormatPage;
+  Lang: String;
+  Langs: TStringToStringTree;
+begin
+  Result:='';
+  Langs:=TStringToStringTree.Create(false);
+  try
+    for i:=0 to Count-1 do begin
+      Page:=Pages[i];
+      Lang:=GetWikiPageLanguage(Page.WikiDocumentName);
+      if Lang='' then continue;
+      if Langs.Contains(Lang) then continue;
+      Langs[Lang]:='1';
+      Result+=Delimiter+Lang;
+    end;
+  finally
+    Langs.Free;
+  end;
 end;
 
 { TW2FormatPage }
@@ -404,7 +428,7 @@ begin
   end;
 end;
 
-function WikiCreateCommonLanguageList(AddLazWikiLangs: boolean): TKeyWordFunctionList;
+function WikiCreateCommonCodeTagList(AddLazWikiLangs: boolean): TKeyWordFunctionList;
 begin
   Result:=TKeyWordFunctionList.Create('LanguageTags');
   with Result do begin

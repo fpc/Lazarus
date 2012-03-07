@@ -1,3 +1,23 @@
+{ Browse and search form for offline wiki
+
+  Copyright (C) 2012  Mattias Gaertner  mattias@freepascal.org
+
+  This source is free software; you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free
+  Software Foundation; either version 2 of the License, or (at your option)
+  any later version.
+
+  This code is distributed in the hope that it will be useful, but WITHOUT ANY
+  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details.
+
+  A copy of the GNU General Public License is available on the World Wide Web
+  at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing
+  to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+  MA 02111-1307, USA.
+
+}
 unit WikiSearchMain;
 
 {$mode objfpc}{$H+}
@@ -6,8 +26,10 @@ interface
 
 uses
   Classes, SysUtils, math, FileUtil, LazLogger, LazUTF8, LazFileUtils, laz2_DOM,
-  IpHtml, Ipfilebroker, IpMsg, CodeToolManager, CodeCache, Forms, Controls,
-  Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls, WikiHelpManager;
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls,
+  IpHtml, Ipfilebroker, IpMsg,
+  CodeToolManager, CodeCache,
+  WikiHelpManager, WikiSearchOptions;
 
 type
 
@@ -24,8 +46,7 @@ type
 
   TWikiSearchDemoForm = class(TForm)
     HideSearchButton: TButton;
-    LanguagesEdit: TEdit;
-    LanguagesLabel: TLabel;
+    OptionsButton: TButton;
     PagePanel: TPanel;
     PageIpHtmlPanel: TIpHtmlPanel;
     PageToolBar: TToolBar;
@@ -44,13 +65,11 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure HideSearchButtonClick(Sender: TObject);
     procedure LanguagesEditChange(Sender: TObject);
-    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure IpHtmlPanelHotClick(Sender: TObject);
+    procedure OptionsButtonClick(Sender: TObject);
     procedure SearchEditChange(Sender: TObject);
     procedure ShowSearchToolButtonClick(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
-    procedure WikiHelpScanned(Sender: TObject);
-    procedure WikiHelpSearched(Sender: TObject);
   private
     fLastSearchText: string;
     fLastLanguages: string;
@@ -61,12 +80,17 @@ type
     procedure UpdateProgress;
     procedure LoadHTML(Target: TIpHtmlPanel; HTML: string); overload;
     procedure LoadHTML(Target: TIpHtmlPanel; aStream: TStream); overload;
+    procedure ShowOptions;
+    procedure WikiHelpScanned(Sender: TObject);
+    procedure WikiHelpSearched(Sender: TObject);
+    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
+    function GetLanguages: string;
   public
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
 
 var
-  WikiSearchDemoForm: TWikiSearchDemoForm;
+  WikiSearchDemoForm: TWikiSearchDemoForm = nil;
 
 implementation
 
@@ -101,10 +125,8 @@ begin
   SearchLabel.Caption:='Search:';
   SearchEdit.Text:='Documentation';
   SearchEdit.Hint:='Type one or more words separated by space, use " for phrases with spaces';
-  LanguagesLabel.Caption:='Languages:';
-  LanguagesEdit.Text:='';
-  LanguagesEdit.Hint:='Empty for only original/untranslated pages, "de" to include german pages, "-,de" for german pages only';
   HideSearchButton.Caption:='Hide';
+  OptionsButton.Caption:='Options';
 
   // page panel
   ShowSearchToolButton.Caption:='Search';
@@ -200,6 +222,14 @@ begin
   IdleConnected:=false;
 end;
 
+function TWikiSearchDemoForm.GetLanguages: string;
+begin
+  if WikiSearchOptsWnd<>nil then
+    Result:=WikiSearchOptsWnd.Languages
+  else
+    Result:='';
+end;
+
 procedure TWikiSearchDemoForm.IpHtmlPanelHotClick(Sender: TObject);
 var
   HotNode: TIpHtmlNode;
@@ -244,6 +274,11 @@ begin
   end;
 end;
 
+procedure TWikiSearchDemoForm.OptionsButtonClick(Sender: TObject);
+begin
+  ShowOptions;
+end;
+
 procedure TWikiSearchDemoForm.SearchEditChange(Sender: TObject);
 begin
   IdleConnected:=true;
@@ -273,6 +308,8 @@ end;
 procedure TWikiSearchDemoForm.WikiHelpScanned(Sender: TObject);
 begin
   UpdateProgress;
+  if WikiSearchOptsWnd<>nil then
+    WikiSearchOptsWnd.UpdateAvailableLanguages;
 end;
 
 procedure TWikiSearchDemoForm.WikiHelpSearched(Sender: TObject);
@@ -292,7 +329,7 @@ var
   NewLanguages: String;
 begin
   NewSearchText:=UTF8Trim(SearchEdit.Text);
-  NewLanguages:=UTF8Trim(LanguagesEdit.Text);
+  NewLanguages:=GetLanguages;
   if (NewSearchText=fLastSearchText) and (NewLanguages=fLastLanguages) then
     exit;
   fLastSearchText:=NewSearchText;
@@ -353,6 +390,14 @@ begin
       debugln(['TWikiSearchDemoForm.LoadHTML ',E.Message]);
     end;
   end;
+end;
+
+procedure TWikiSearchDemoForm.ShowOptions;
+begin
+  if WikiSearchOptsWnd=nil then
+    WikiSearchOptsWnd:=TWikiSearchOptsWnd.Create(Self);
+  WikiSearchOptsWnd.UpdateAvailableLanguages;
+  WikiSearchOptsWnd.ShowOnTop;
 end;
 
 end.

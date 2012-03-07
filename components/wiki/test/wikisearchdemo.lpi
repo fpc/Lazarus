@@ -44,7 +44,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="wikisearchdemo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -62,6 +62,13 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="WikiHelpManager"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="wikisearchoptions.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="WikiSearchOptsWnd"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="WikiSearchOptions"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -1,7 +1,7 @@
 object WikiSearchDemoForm: TWikiSearchDemoForm
-  Left = 717
+  Left = 635
   Height = 501
-  Top = 218
+  Top = 222
   Width = 663
   Caption = 'WikiSearchDemoForm'
   ClientHeight = 501
@@ -75,11 +75,11 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
     ClientWidth = 320
     TabOrder = 2
     object ResultsIpHtmlPanel: TIpHtmlPanel
-      AnchorSideTop.Control = ProgressLabel
+      AnchorSideTop.Control = OptionsButton
       AnchorSideTop.Side = asrBottom
       Left = 1
-      Height = 412
-      Top = 88
+      Height = 431
+      Top = 69
       Width = 318
       Align = alBottom
       FixedTypeface = 'Courier New'
@@ -123,42 +123,14 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       Caption = 'SearchLabel'
       ParentColor = False
     end
-    object LanguagesEdit: TEdit
-      AnchorSideLeft.Control = LanguagesLabel
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = SearchEdit
-      AnchorSideTop.Side = asrBottom
-      Left = 105
-      Height = 24
-      Top = 37
-      Width = 80
-      BorderSpacing.Around = 6
-      OnChange = LanguagesEditChange
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 2
-      Text = 'LanguagesEdit'
-    end
-    object LanguagesLabel: TLabel
-      AnchorSideLeft.Control = SearchPanel
-      AnchorSideTop.Control = LanguagesEdit
-      AnchorSideTop.Side = asrCenter
-      Left = 7
-      Height = 15
-      Top = 42
-      Width = 92
-      BorderSpacing.Around = 6
-      Caption = 'LanguagesLabel'
-      ParentColor = False
-    end
     object ProgressLabel: TLabel
       AnchorSideLeft.Control = SearchPanel
-      AnchorSideTop.Control = LanguagesEdit
-      AnchorSideTop.Side = asrBottom
+      AnchorSideTop.Control = OptionsButton
+      AnchorSideTop.Side = asrCenter
       AnchorSideRight.Side = asrBottom
       Left = 7
       Height = 15
-      Top = 67
+      Top = 43
       Width = 79
       BorderSpacing.Around = 6
       Caption = 'ProgressLabel'
@@ -178,6 +150,21 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       BorderSpacing.Around = 6
       Caption = 'HideSearchButton'
       OnClick = HideSearchButtonClick
+      TabOrder = 2
+    end
+    object OptionsButton: TButton
+      AnchorSideLeft.Control = SearchPanel
+      AnchorSideRight.Control = SearchPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 222
+      Height = 26
+      Top = 37
+      Width = 91
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'OptionsButton'
+      OnClick = OptionsButtonClick
       TabOrder = 3
     end
   end
