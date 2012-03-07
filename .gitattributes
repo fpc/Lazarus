@@ -2875,6 +2875,8 @@ components/wiki/test/wikisearchdemo.lpr svneol=native#text/plain
 components/wiki/test/wikisearchdemo.res -text
 components/wiki/test/wikisearchmain.lfm svneol=native#text/plain
 components/wiki/test/wikisearchmain.pas svneol=native#text/plain
+components/wiki/test/wikisearchoptions.lfm svneol=native#text/plain
+components/wiki/test/wikisearchoptions.pas svneol=native#text/plain
 components/wiki/wikiconvert.lpi svneol=native#text/plain
 components/wiki/wikiconvert.lpr svneol=native#text/plain
 components/wiki/wikiget.lpi svneol=native#text/plain

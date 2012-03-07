@@ -1,0 +1,42 @@
+object WikiSearchOptsWnd: TWikiSearchOptsWnd
+  Left = 364
+  Height = 308
+  Top = 392
+  Width = 364
+  Caption = 'WikiSearchOptsWnd'
+  ClientHeight = 308
+  ClientWidth = 364
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object LanguagesGroupBox: TGroupBox
+    Left = 0
+    Height = 308
+    Top = 0
+    Width = 159
+    Align = alLeft
+    Caption = 'LanguagesGroupBox'
+    ClientHeight = 292
+    ClientWidth = 155
+    TabOrder = 0
+    object LanguagesTreeView: TTreeView
+      Left = 0
+      Height = 292
+      Top = 0
+      Width = 155
+      Align = alClient
+      DefaultItemHeight = 16
+      ReadOnly = True
+      ShowLines = False
+      ShowRoot = False
+      TabOrder = 0
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoToolTips, tvoThemedDraw]
+    end
+  end
+  object LanguagesSplitter: TSplitter
+    Left = 159
+    Height = 308
+    Top = 0
+    Width = 5
+  end
+end
