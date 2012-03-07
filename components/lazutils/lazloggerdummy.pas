@@ -37,7 +37,10 @@ type
 
 
 {$DEFINE USED_BY_LAZLOGGER_DUMMY}
+{$push}
+{$H-}
 {$I LazLoggerIntf.inc}
+{$pop}
 
 type
   (* All empty methods *)
@@ -46,12 +49,12 @@ type
 
   TLazLoggerLogGroupList = class(TRefCountedObject)
   private
-    function GetItem(Index: Integer): PLazLoggerLogGroup;
+    function GetItem({%H-}Index: Integer): PLazLoggerLogGroup;
   public
-    procedure Assign(Src: TLazLoggerLogGroupList);
-    function  IndexOf(const AConfigName: String): integer;
-    function  IndexOf(const AnEntry: PLazLoggerLogGroup): integer;
-    function  Find(const AConfigName: String): PLazLoggerLogGroup;
+    procedure Assign({%H-}Src: TLazLoggerLogGroupList);
+    function  IndexOf(const {%H-}AConfigName: String): integer;
+    function  IndexOf(const {%H-}AnEntry: PLazLoggerLogGroup): integer;
+    function  Find(const {%H-}AConfigName: String): PLazLoggerLogGroup;
     function  Count: integer;
     property  Item[Index: Integer]: PLazLoggerLogGroup read GetItem; default;
   end;
@@ -68,7 +71,7 @@ type
     procedure SetNestLvlIndent(AValue: Integer);
     procedure SetUseGlobalLogGroupList(AValue: Boolean);
   public
-    procedure Assign(Src: TLazLogger); virtual;
+    procedure Assign({%H-}Src: TLazLogger); virtual;
     procedure Init;
     procedure Finish;
 
@@ -76,107 +79,107 @@ type
     property  MaxNestPrefixLen: Integer read FMaxNestPrefixLen write SetMaxNestPrefixLen;
 
   public
-    function  RegisterLogGroup(const AConfigName: String; ADefaulEnabled: Boolean) : PLazLoggerLogGroup; virtual;
-    function  RegisterLogGroup(const AConfigName: String) : PLazLoggerLogGroup; virtual;
-    function  FindOrRegisterLogGroup(const AConfigName: String; ADefaulEnabled: Boolean) : PLazLoggerLogGroup; virtual;
-    function  FindOrRegisterLogGroup(const AConfigName: String) : PLazLoggerLogGroup; virtual;
+    function  RegisterLogGroup(const {%H-}AConfigName: String; {%H-}ADefaulEnabled: Boolean) : PLazLoggerLogGroup; virtual;
+    function  RegisterLogGroup(const {%H-}AConfigName: String) : PLazLoggerLogGroup; virtual;
+    function  FindOrRegisterLogGroup(const {%H-}AConfigName: String; {%H-}ADefaulEnabled: Boolean) : PLazLoggerLogGroup; virtual;
+    function  FindOrRegisterLogGroup(const {%H-}AConfigName: String) : PLazLoggerLogGroup; virtual;
     property  LogGroupList: TLazLoggerLogGroupList read GetLogGroupList;
     property  UseGlobalLogGroupList: Boolean read FUseGlobalLogGroupList write SetUseGlobalLogGroupList;
   public
-    procedure DebuglnStack(const s: string = '');
+    procedure DebuglnStack(const {%H-}s: string = '');
 
-    procedure DbgOut(const s: string = ''); overload;
-    procedure DbgOut(Args: array of const); overload;
-    procedure DbgOut(const S: String; Args: array of const); overload;// similar to Format(s,Args)
-    procedure DbgOut(const s1, s2: string; const s3: string = '';
-                     const s4: string = ''; const s5: string = ''; const s6: string = '';
-                     const s7: string = ''; const s8: string = ''; const s9: string = '';
-                     const s10: string = ''; const s11: string = ''; const s12: string = '';
-                     const s13: string = ''; const s14: string = ''; const s15: string = '';
-                     const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
+    procedure DbgOut(const {%H-}s: string = ''); overload;
+    procedure DbgOut({%H-}Args: array of const); overload;
+    procedure DbgOut(const {%H-}S: String; {%H-}Args: array of const); overload;// similar to Format(s,Args)
+    procedure DbgOut(const {%H-}s1, {%H-}s2: string; const {%H-}s3: string = '';
+                     const {%H-}s4: string = ''; const {%H-}s5: string = ''; const {%H-}s6: string = '';
+                     const {%H-}s7: string = ''; const {%H-}s8: string = ''; const {%H-}s9: string = '';
+                     const {%H-}s10: string = ''; const {%H-}s11: string = ''; const {%H-}s12: string = '';
+                     const {%H-}s13: string = ''; const {%H-}s14: string = ''; const {%H-}s15: string = '';
+                     const {%H-}s16: string = ''; const {%H-}s17: string = ''; const {%H-}s18: string = ''); overload;
 
-    procedure DebugLn(const s: string = ''); overload;
-    procedure DebugLn(Args: array of const); overload;
-    procedure DebugLn(const S: String; Args: array of const); overload;// similar to Format(s,Args)
-    procedure DebugLn(const s1, s2: string; const s3: string = '';
-                      const s4: string = ''; const s5: string = ''; const s6: string = '';
-                      const s7: string = ''; const s8: string = ''; const s9: string = '';
-                      const s10: string = ''; const s11: string = ''; const s12: string = '';
-                      const s13: string = ''; const s14: string = ''; const s15: string = '';
-                      const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
+    procedure DebugLn(const {%H-}s: string = ''); overload;
+    procedure DebugLn({%H-}Args: array of const); overload;
+    procedure DebugLn(const {%H-}S: String; {%H-}Args: array of const); overload;// similar to Format(s,Args)
+    procedure DebugLn(const {%H-}s1, {%H-}s2: string; const {%H-}s3: string = '';
+                      const {%H-}s4: string = ''; const {%H-}s5: string = ''; const {%H-}s6: string = '';
+                      const {%H-}s7: string = ''; const {%H-}s8: string = ''; const {%H-}s9: string = '';
+                      const {%H-}s10: string = ''; const {%H-}s11: string = ''; const {%H-}s12: string = '';
+                      const {%H-}s13: string = ''; const {%H-}s14: string = ''; const {%H-}s15: string = '';
+                      const {%H-}s16: string = ''; const {%H-}s17: string = ''; const {%H-}s18: string = ''); overload;
 
-    procedure DebugLnEnter(const s: string = ''); overload;
-    procedure DebugLnEnter(Args: array of const); overload;
-    procedure DebugLnEnter(s: string; Args: array of const); overload;
-    procedure DebugLnEnter(const s1, s2: string; const s3: string = '';
-                           const s4: string = ''; const s5: string = ''; const s6: string = '';
-                           const s7: string = ''; const s8: string = ''; const s9: string = '';
-                           const s10: string = ''; const s11: string = ''; const s12: string = '';
-                           const s13: string = ''; const s14: string = ''; const s15: string = '';
-                           const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
+    procedure DebugLnEnter(const {%H-}s: string = ''); overload;
+    procedure DebugLnEnter({%H-}Args: array of const); overload;
+    procedure DebugLnEnter({%H-}s: string; {%H-}Args: array of const); overload;
+    procedure DebugLnEnter(const {%H-}s1, {%H-}s2: string; const {%H-}s3: string = '';
+                           const {%H-}s4: string = ''; const {%H-}s5: string = ''; const {%H-}s6: string = '';
+                           const {%H-}s7: string = ''; const {%H-}s8: string = ''; const {%H-}s9: string = '';
+                           const {%H-}s10: string = ''; const {%H-}s11: string = ''; const {%H-}s12: string = '';
+                           const {%H-}s13: string = ''; const {%H-}s14: string = ''; const {%H-}s15: string = '';
+                           const {%H-}s16: string = ''; const {%H-}s17: string = ''; const {%H-}s18: string = ''); overload;
 
-    procedure DebugLnExit(const s: string = ''); overload;
-    procedure DebugLnExit(Args: array of const); overload;
-    procedure DebugLnExit(s: string; Args: array of const); overload;
-    procedure DebugLnExit(const s1, s2: string; const s3: string = '';
-                          const s4: string = ''; const s5: string = ''; const s6: string = '';
-                          const s7: string = ''; const s8: string = ''; const s9: string = '';
-                          const s10: string = ''; const s11: string = ''; const s12: string = '';
-                          const s13: string = ''; const s14: string = ''; const s15: string = '';
-                          const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
+    procedure DebugLnExit(const {%H-}s: string = ''); overload;
+    procedure DebugLnExit({%H-}Args: array of const); overload;
+    procedure DebugLnExit({%H-}s: string; {%H-}Args: array of const); overload;
+    procedure DebugLnExit(const {%H-}s1, {%H-}s2: string; const {%H-}s3: string = '';
+                          const {%H-}s4: string = ''; const {%H-}s5: string = ''; const {%H-}s6: string = '';
+                          const {%H-}s7: string = ''; const {%H-}s8: string = ''; const {%H-}s9: string = '';
+                          const {%H-}s10: string = ''; const {%H-}s11: string = ''; const {%H-}s12: string = '';
+                          const {%H-}s13: string = ''; const {%H-}s14: string = ''; const {%H-}s15: string = '';
+                          const {%H-}s16: string = ''; const {%H-}s17: string = ''; const {%H-}s18: string = ''); overload;
 
 
-    procedure DebuglnStack(LogGroup: PLazLoggerLogGroup; const s: string = '');
+    procedure DebuglnStack({%H-}LogGroup: PLazLoggerLogGroup; const {%H-}s: string = '');
 
-    procedure DbgOut(LogGroup: PLazLoggerLogGroup; const s: string = ''); overload;
-    procedure DbgOut(LogGroup: PLazLoggerLogGroup; Args: array of const); overload;
-    procedure DbgOut(LogGroup: PLazLoggerLogGroup; const S: String; Args: array of const); overload;// similar to Format(s,Args)
-    procedure DbgOut(LogGroup: PLazLoggerLogGroup; const s1, s2: string; const s3: string = '';
-                     const s4: string = ''; const s5: string = ''; const s6: string = '';
-                     const s7: string = ''; const s8: string = ''; const s9: string = '';
-                     const s10: string = ''; const s11: string = ''; const s12: string = '';
-                     const s13: string = ''; const s14: string = ''; const s15: string = '';
-                     const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
+    procedure DbgOut({%H-}LogGroup: PLazLoggerLogGroup; const {%H-}s: string = ''); overload;
+    procedure DbgOut({%H-}LogGroup: PLazLoggerLogGroup; {%H-}Args: array of const); overload;
+    procedure DbgOut({%H-}LogGroup: PLazLoggerLogGroup; const {%H-}S: String; {%H-}Args: array of const); overload;// similar to Format(s,Args)
+    procedure DbgOut({%H-}LogGroup: PLazLoggerLogGroup; const {%H-}s1, {%H-}s2: string; const {%H-}s3: string = '';
+                     const {%H-}s4: string = ''; const {%H-}s5: string = ''; const {%H-}s6: string = '';
+                     const {%H-}s7: string = ''; const {%H-}s8: string = ''; const {%H-}s9: string = '';
+                     const {%H-}s10: string = ''; const {%H-}s11: string = ''; const {%H-}s12: string = '';
+                     const {%H-}s13: string = ''; const {%H-}s14: string = ''; const {%H-}s15: string = '';
+                     const {%H-}s16: string = ''; const {%H-}s17: string = ''; const {%H-}s18: string = ''); overload;
 
-    procedure DebugLn(LogGroup: PLazLoggerLogGroup; const s: string = ''); overload;
-    procedure DebugLn(LogGroup: PLazLoggerLogGroup; Args: array of const); overload;
-    procedure DebugLn(LogGroup: PLazLoggerLogGroup; const S: String; Args: array of const); overload;// similar to Format(s,Args)
-    procedure DebugLn(LogGroup: PLazLoggerLogGroup; const s1, s2: string; const s3: string = '';
-                      const s4: string = ''; const s5: string = ''; const s6: string = '';
-                      const s7: string = ''; const s8: string = ''; const s9: string = '';
-                      const s10: string = ''; const s11: string = ''; const s12: string = '';
-                      const s13: string = ''; const s14: string = ''; const s15: string = '';
-                      const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
+    procedure DebugLn({%H-}LogGroup: PLazLoggerLogGroup; const {%H-}s: string = ''); overload;
+    procedure DebugLn({%H-}LogGroup: PLazLoggerLogGroup; {%H-}Args: array of const); overload;
+    procedure DebugLn({%H-}LogGroup: PLazLoggerLogGroup; const {%H-}S: String; {%H-}Args: array of const); overload;// similar to Format(s,Args)
+    procedure DebugLn({%H-}LogGroup: PLazLoggerLogGroup; const {%H-}s1, {%H-}s2: string; const {%H-}s3: string = '';
+                      const {%H-}s4: string = ''; const {%H-}s5: string = ''; const {%H-}s6: string = '';
+                      const {%H-}s7: string = ''; const {%H-}s8: string = ''; const {%H-}s9: string = '';
+                      const {%H-}s10: string = ''; const {%H-}s11: string = ''; const {%H-}s12: string = '';
+                      const {%H-}s13: string = ''; const {%H-}s14: string = ''; const {%H-}s15: string = '';
+                      const {%H-}s16: string = ''; const {%H-}s17: string = ''; const {%H-}s18: string = ''); overload;
 
-    procedure DebugLnEnter(LogGroup: PLazLoggerLogGroup; const s: string = ''); overload;
-    procedure DebugLnEnter(LogGroup: PLazLoggerLogGroup; Args: array of const); overload;
-    procedure DebugLnEnter(LogGroup: PLazLoggerLogGroup; s: string; Args: array of const); overload;
-    procedure DebugLnEnter(LogGroup: PLazLoggerLogGroup; const s1, s2: string; const s3: string = '';
-                           const s4: string = ''; const s5: string = ''; const s6: string = '';
-                           const s7: string = ''; const s8: string = ''; const s9: string = '';
-                           const s10: string = ''; const s11: string = ''; const s12: string = '';
-                           const s13: string = ''; const s14: string = ''; const s15: string = '';
-                           const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
+    procedure DebugLnEnter({%H-}LogGroup: PLazLoggerLogGroup; const {%H-}s: string = ''); overload;
+    procedure DebugLnEnter({%H-}LogGroup: PLazLoggerLogGroup; {%H-}Args: array of const); overload;
+    procedure DebugLnEnter({%H-}LogGroup: PLazLoggerLogGroup; {%H-}s: string; {%H-}Args: array of const); overload;
+    procedure DebugLnEnter({%H-}LogGroup: PLazLoggerLogGroup; const {%H-}s1, {%H-}s2: string; const {%H-}s3: string = '';
+                           const {%H-}s4: string = ''; const {%H-}s5: string = ''; const {%H-}s6: string = '';
+                           const {%H-}s7: string = ''; const {%H-}s8: string = ''; const {%H-}s9: string = '';
+                           const {%H-}s10: string = ''; const {%H-}s11: string = ''; const {%H-}s12: string = '';
+                           const {%H-}s13: string = ''; const {%H-}s14: string = ''; const {%H-}s15: string = '';
+                           const {%H-}s16: string = ''; const {%H-}s17: string = ''; const {%H-}s18: string = ''); overload;
 
-    procedure DebugLnExit(LogGroup: PLazLoggerLogGroup; const s: string = ''); overload;
-    procedure DebugLnExit(LogGroup: PLazLoggerLogGroup; Args: array of const); overload;
-    procedure DebugLnExit(LogGroup: PLazLoggerLogGroup; s: string; Args: array of const); overload;
-    procedure DebugLnExit(LogGroup: PLazLoggerLogGroup; const s1, s2: string; const s3: string = '';
-                          const s4: string = ''; const s5: string = ''; const s6: string = '';
-                          const s7: string = ''; const s8: string = ''; const s9: string = '';
-                          const s10: string = ''; const s11: string = ''; const s12: string = '';
-                          const s13: string = ''; const s14: string = ''; const s15: string = '';
-                          const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
+    procedure DebugLnExit({%H-}LogGroup: PLazLoggerLogGroup; const {%H-}s: string = ''); overload;
+    procedure DebugLnExit({%H-}LogGroup: PLazLoggerLogGroup; {%H-}Args: array of const); overload;
+    procedure DebugLnExit({%H-}LogGroup: PLazLoggerLogGroup; {%H-}s: string; {%H-}Args: array of const); overload;
+    procedure DebugLnExit({%H-}LogGroup: PLazLoggerLogGroup; const {%H-}s1, {%H-}s2: string; const {%H-}s3: string = '';
+                          const {%H-}s4: string = ''; const {%H-}s5: string = ''; const {%H-}s6: string = '';
+                          const {%H-}s7: string = ''; const {%H-}s8: string = ''; const {%H-}s9: string = '';
+                          const {%H-}s10: string = ''; const {%H-}s11: string = ''; const {%H-}s12: string = '';
+                          const {%H-}s13: string = ''; const {%H-}s14: string = ''; const {%H-}s15: string = '';
+                          const {%H-}s16: string = ''; const {%H-}s17: string = ''; const {%H-}s18: string = ''); overload;
 
   end;
 
 
 function GetDebugLoggerGroups: TLazLoggerLogGroupList; inline;
-procedure SetDebugLoggerGroups(ALogGroups: TLazLoggerLogGroupList);
+procedure SetDebugLoggerGroups({%H-}ALogGroups: TLazLoggerLogGroupList);
 
 function GetDebugLogger: TLazLogger; inline;
 function GetExistingDebugLogger: TLazLogger; inline; // No Autocreate
-procedure SetDebugLogger(ALogger: TLazLogger);
+procedure SetDebugLogger({%H-}ALogger: TLazLogger);
 
 procedure RecreateDebugLogger;
 
@@ -199,7 +202,10 @@ var // Using base TRefCountedObject, so if none of the functions is used in the 
   TheLazLogger: TRefCountedObject = nil;
   TheLazLoggerGroups: TRefCountedObject = nil;
 
+{$push}
+{$H-}
 {$I LazLoggerImpl.inc}
+{$pop}
 
 procedure CreateDebugLogger;
 begin
