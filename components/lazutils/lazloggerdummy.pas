@@ -38,7 +38,7 @@ type
 
 {$DEFINE USED_BY_LAZLOGGER_DUMMY}
 {$push}
-{$H-}
+{$HINTS off}
 {$I LazLoggerIntf.inc}
 {$pop}
 
@@ -203,7 +203,7 @@ var // Using base TRefCountedObject, so if none of the functions is used in the 
   TheLazLoggerGroups: TRefCountedObject = nil;
 
 {$push}
-{$H-}
+{$HINTS off}
 {$I LazLoggerImpl.inc}
 {$pop}
 

@@ -1,4 +1,3 @@
-
 procedure DebuglnStack(const s: string = '');
 
 procedure DbgOut(const s: string = ''); inline; overload;
