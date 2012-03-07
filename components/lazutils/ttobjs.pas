@@ -775,24 +775,24 @@ implementation
 uses TTMemory, TTFile, TTCalc, TTLoad, TTInterp;
 
   function Face_Create( _face  : Pointer;
-                        _input : Pointer ) : TError; far; forward;
+                        _input : Pointer ) : TError; forward;
 
-  function Face_Destroy( _face : Pointer ) : TError; far; forward;
+  function Face_Destroy( _face : Pointer ) : TError; forward;
 
   function Context_Create( _context : Pointer;
-                           _face    : Pointer ) : TError; far; forward;
+                           _face    : Pointer ) : TError; forward;
 
-  function Context_Destroy( exec : Pointer ) : TError; far; forward;
+  function Context_Destroy( exec : Pointer ) : TError; forward;
 
   function Instance_Create( _ins  : Pointer;
-                            _face : Pointer  ) : TError; far; forward;
+                            _face : Pointer  ) : TError; forward;
 
-  function Instance_Destroy( instance : Pointer ) : TError; far; forward;
+  function Instance_Destroy( instance : Pointer ) : TError; forward;
 
   function Glyph_Create( _glyph : Pointer;
-                         _face  : Pointer  ) : TError; far; forward;
+                         _face  : Pointer  ) : TError; forward;
 
-  function Glyph_Destroy( _glyph : Pointer ) : TError; far; forward;
+  function Glyph_Destroy( _glyph : Pointer ) : TError; forward;
 
 
 
@@ -1137,8 +1137,6 @@ const
  function Context_Create( _context : Pointer;
                           _face    : Pointer ) : TError;
  var
-   n_points   : Int;
-
    exec : PExec_Context;
  label
    Fail_Memory;
@@ -1158,7 +1156,7 @@ const
      (* Allocate a little extra for broken fonts like Courbs.ttf *)
      (* and Timesbs.ttf                                          *)
 
-     n_points   := face^.maxPoints + 2;
+     //n_points   := face^.maxPoints + 2;
 
      (* Reserve glyph code range *)
      if Alloc( glyphIns, face^.MaxProfile.maxSizeOfInstructions )  or

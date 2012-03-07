@@ -4308,9 +4308,6 @@ end;
    begin
      exc.error := TT_Err_Invalid_Opcode;
    end;
-   {$F-}
-
-
 
 const
   Instruct_Dispatch : array[0..255] of TInstruction_Function

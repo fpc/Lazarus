@@ -121,7 +121,7 @@ const
  var
    left_bearing, advance : TT_Pos;
  begin
-   TT_Get_Metrics( face^.horizontalHeader, index, left_bearing, advance );
+   TT_Get_Metrics( face^.horizontalHeader, index, left_bearing{%H-}, advance {%H-});
 
    lsb := Int(left_bearing);
    aw  := Int(advance);
@@ -222,7 +222,7 @@ const
 
 
  function Load_Simple_Glyph( exec          : PExec_Context;
-                             stream        : TT_Stream;
+                             {%H-}stream        : TT_Stream;
                              n_contours    : Int;
                              left_contours : Int;
                              left_points   : Int;
@@ -490,7 +490,7 @@ const
  ******************************************************************)
 
  function  Load_Composite_End( n_points   : Int;
-                               n_contours : Int;
+                               {%H-}n_contours : Int;
                                exec       : PExec_Context;
                                subg       : PSubglyph_Record;
                                debug      : Boolean ) : TError;
@@ -610,8 +610,6 @@ const
  procedure Init_Glyph_Component( element   : PSubGlyph_Record;
                                  original  : PSubGlyph_Record;
                                  exec      : PExec_Context );
- var
-   n: Int;
  begin
    with element^ do
    begin
@@ -780,7 +778,7 @@ const
 
    (* now access stream *)
 
-   if TT_Use_Stream( face^.stream, stream ) then
+   if TT_Use_Stream( face^.stream, stream {%H-}) then
      goto Fin;
 
    (* Main Loading Loop *)
