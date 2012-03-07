@@ -5,9 +5,9 @@ unit WikiSearchMain;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazLogger, LazUTF8, LazFileUtils, laz2_DOM,
+  Classes, SysUtils, math, FileUtil, LazLogger, LazUTF8, LazFileUtils, laz2_DOM,
   IpHtml, Ipfilebroker, IpMsg, CodeToolManager, CodeCache, Forms, Controls,
-  Graphics, Dialogs, StdCtrls, ExtCtrls, WikiHelpManager;
+  Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls, WikiHelpManager;
 
 type
 
@@ -23,25 +23,31 @@ type
   { TWikiSearchDemoForm }
 
   TWikiSearchDemoForm = class(TForm)
+    HideSearchButton: TButton;
     LanguagesEdit: TEdit;
     LanguagesLabel: TLabel;
+    PagePanel: TPanel;
     PageIpHtmlPanel: TIpHtmlPanel;
+    PageToolBar: TToolBar;
     ProgressLabel: TLabel;
-    MainGroupBox: TGroupBox;
     ResultsIpHtmlPanel: TIpHtmlPanel;
     SearchEdit: TEdit;
+    SearchPanel: TPanel;
     SearchLabel: TLabel;
     Splitter1: TSplitter;
     Timer1: TTimer;
+    ShowSearchToolButton: TToolButton;
     function DataProviderCanHandle(Sender: TObject; const {%H-}URL: string): Boolean;
     procedure DataProviderGetImage(Sender: TIpHtmlNode; const URL: string;
       var Picture: TPicture);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure HideSearchButtonClick(Sender: TObject);
     procedure LanguagesEditChange(Sender: TObject);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure IpHtmlPanelHotClick(Sender: TObject);
     procedure SearchEditChange(Sender: TObject);
+    procedure ShowSearchToolButtonClick(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure WikiHelpScanned(Sender: TObject);
     procedure WikiHelpSearched(Sender: TObject);
@@ -90,13 +96,18 @@ var
   Code: TCodeBuffer;
 begin
   Caption:='Search Wiki (Proof of concept)';
+
+  // search panel
   SearchLabel.Caption:='Search:';
   SearchEdit.Text:='Documentation';
   SearchEdit.Hint:='Type one or more words separated by space, use " for phrases with spaces';
   LanguagesLabel.Caption:='Languages:';
   LanguagesEdit.Text:='';
   LanguagesEdit.Hint:='Empty for only original/untranslated pages, "de" to include german pages, "-,de" for german pages only';
-  MainGroupBox.Caption:='Result:';
+  HideSearchButton.Caption:='Hide';
+
+  // page panel
+  ShowSearchToolButton.Caption:='Search';
 
   FURLDataProvider:=TWikiIpHtmlDataProvider.Create(nil);
   ResultsIpHtmlPanel.DataProvider:=FURLDataProvider;
@@ -166,6 +177,18 @@ begin
   FreeAndNil(WikiHelp);
 end;
 
+procedure TWikiSearchDemoForm.HideSearchButtonClick(Sender: TObject);
+begin
+  DisableAutoSizing;
+  try
+    SearchPanel.Hide;
+    Splitter1.Hide;
+    ShowSearchToolButton.Visible:=true;
+  finally
+    EnableAutoSizing;
+  end;
+end;
+
 procedure TWikiSearchDemoForm.LanguagesEditChange(Sender: TObject);
 begin
   IdleConnected:=true;
@@ -224,6 +247,20 @@ end;
 procedure TWikiSearchDemoForm.SearchEditChange(Sender: TObject);
 begin
   IdleConnected:=true;
+end;
+
+procedure TWikiSearchDemoForm.ShowSearchToolButtonClick(Sender: TObject);
+begin
+  DisableAutoSizing;
+  try
+    Splitter1.Show;
+    SearchPanel.Show;
+    SearchPanel.Width:=Max(SearchPanel.Width,30);
+    Splitter1.Left:=Max(Splitter1.Left,SearchPanel.Width);
+    ShowSearchToolButton.Visible:=false;
+  finally
+    EnableAutoSizing;
+  end;
 end;
 
 procedure TWikiSearchDemoForm.Timer1Timer(Sender: TObject);

@@ -1,7 +1,7 @@
 object WikiSearchDemoForm: TWikiSearchDemoForm
-  Left = 767
+  Left = 717
   Height = 501
-  Top = 230
+  Top = 218
   Width = 663
   Caption = 'WikiSearchDemoForm'
   ClientHeight = 501
@@ -10,55 +10,24 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
   OnDestroy = FormDestroy
   Position = poScreenCenter
   LCLVersion = '0.9.31'
-  object SearchLabel: TLabel
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = SearchEdit
-    AnchorSideTop.Side = asrCenter
-    Left = 6
-    Height = 15
-    Top = 11
-    Width = 69
-    BorderSpacing.Around = 6
-    Caption = 'SearchLabel'
-    ParentColor = False
-  end
-  object SearchEdit: TEdit
-    AnchorSideLeft.Control = SearchLabel
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 81
-    Height = 24
-    Top = 6
-    Width = 576
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Around = 6
-    OnChange = SearchEditChange
-    ParentShowHint = False
-    ShowHint = True
+  object PagePanel: TPanel
+    Left = 325
+    Height = 501
+    Top = 0
+    Width = 338
+    Align = alClient
+    Caption = 'PagePanel'
+    ClientHeight = 501
+    ClientWidth = 338
     TabOrder = 0
-    Text = 'SearchEdit'
-  end
-  object MainGroupBox: TGroupBox
-    AnchorSideTop.Control = LanguagesEdit
-    AnchorSideTop.Side = asrBottom
-    Left = 0
-    Height = 435
-    Top = 66
-    Width = 663
-    Align = alBottom
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    Caption = 'MainGroupBox'
-    ClientHeight = 419
-    ClientWidth = 659
-    TabOrder = 1
-    object ResultsIpHtmlPanel: TIpHtmlPanel
-      Left = 0
-      Height = 419
-      Top = 0
-      Width = 337
-      Align = alLeft
+    object PageIpHtmlPanel: TIpHtmlPanel
+      AnchorSideTop.Control = PageToolBar
+      AnchorSideTop.Side = asrBottom
+      Left = 1
+      Height = 473
+      Top = 27
+      Width = 336
+      Align = alBottom
       FixedTypeface = 'Courier New'
       DefaultTypeFace = 'default'
       DefaultFontSize = 10
@@ -71,18 +40,48 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       WantTabs = False
       OnHotClick = IpHtmlPanelHotClick
     end
-    object Splitter1: TSplitter
-      Left = 337
-      Height = 419
-      Top = 0
-      Width = 5
+    object PageToolBar: TToolBar
+      Left = 1
+      Height = 26
+      Top = 1
+      Width = 336
+      Caption = 'PageToolBar'
+      ShowCaptions = True
+      TabOrder = 1
+      object ShowSearchToolButton: TToolButton
+        Left = 1
+        Top = 2
+        AutoSize = True
+        Caption = 'Search'
+        OnClick = ShowSearchToolButtonClick
+        Visible = False
+      end
     end
-    object PageIpHtmlPanel: TIpHtmlPanel
-      Left = 342
-      Height = 419
-      Top = 0
-      Width = 317
-      Align = alClient
+  end
+  object Splitter1: TSplitter
+    Left = 320
+    Height = 501
+    Top = 0
+    Width = 5
+  end
+  object SearchPanel: TPanel
+    Left = 0
+    Height = 501
+    Top = 0
+    Width = 320
+    Align = alLeft
+    Caption = 'SearchPanel'
+    ClientHeight = 501
+    ClientWidth = 320
+    TabOrder = 2
+    object ResultsIpHtmlPanel: TIpHtmlPanel
+      AnchorSideTop.Control = ProgressLabel
+      AnchorSideTop.Side = asrBottom
+      Left = 1
+      Height = 412
+      Top = 88
+      Width = 318
+      Align = alBottom
       FixedTypeface = 'Courier New'
       DefaultTypeFace = 'default'
       DefaultFontSize = 10
@@ -91,57 +90,100 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       PrintSettings.MarginTop = 0.5
       PrintSettings.MarginRight = 0.5
       PrintSettings.MarginBottom = 0.5
-      TabOrder = 2
+      TabOrder = 0
       WantTabs = False
       OnHotClick = IpHtmlPanelHotClick
     end
-  end
-  object LanguagesLabel: TLabel
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = LanguagesEdit
-    AnchorSideTop.Side = asrCenter
-    Left = 6
-    Height = 15
-    Top = 41
-    Width = 92
-    BorderSpacing.Around = 6
-    Caption = 'LanguagesLabel'
-    ParentColor = False
-  end
-  object LanguagesEdit: TEdit
-    AnchorSideLeft.Control = LanguagesLabel
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = SearchEdit
-    AnchorSideTop.Side = asrBottom
-    Left = 104
-    Height = 24
-    Top = 36
-    Width = 80
-    BorderSpacing.Around = 6
-    OnChange = LanguagesEditChange
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 2
-    Text = 'LanguagesEdit'
-  end
-  object ProgressLabel: TLabel
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = LanguagesEdit
-    AnchorSideTop.Side = asrCenter
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 578
-    Height = 15
-    Top = 41
-    Width = 79
-    Anchors = [akTop, akRight]
-    BorderSpacing.Right = 6
-    Caption = 'ProgressLabel'
-    ParentColor = False
+    object SearchEdit: TEdit
+      AnchorSideLeft.Control = SearchLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = SearchPanel
+      AnchorSideRight.Control = HideSearchButton
+      Left = 82
+      Height = 24
+      Top = 7
+      Width = 114
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      OnChange = SearchEditChange
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+      Text = 'SearchEdit'
+    end
+    object SearchLabel: TLabel
+      AnchorSideLeft.Control = SearchPanel
+      AnchorSideTop.Control = SearchEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 7
+      Height = 15
+      Top = 12
+      Width = 69
+      BorderSpacing.Around = 6
+      Caption = 'SearchLabel'
+      ParentColor = False
+    end
+    object LanguagesEdit: TEdit
+      AnchorSideLeft.Control = LanguagesLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = SearchEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 105
+      Height = 24
+      Top = 37
+      Width = 80
+      BorderSpacing.Around = 6
+      OnChange = LanguagesEditChange
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+      Text = 'LanguagesEdit'
+    end
+    object LanguagesLabel: TLabel
+      AnchorSideLeft.Control = SearchPanel
+      AnchorSideTop.Control = LanguagesEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 7
+      Height = 15
+      Top = 42
+      Width = 92
+      BorderSpacing.Around = 6
+      Caption = 'LanguagesLabel'
+      ParentColor = False
+    end
+    object ProgressLabel: TLabel
+      AnchorSideLeft.Control = SearchPanel
+      AnchorSideTop.Control = LanguagesEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Side = asrBottom
+      Left = 7
+      Height = 15
+      Top = 67
+      Width = 79
+      BorderSpacing.Around = 6
+      Caption = 'ProgressLabel'
+      ParentColor = False
+    end
+    object HideSearchButton: TButton
+      AnchorSideTop.Control = SearchEdit
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = SearchPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 202
+      Height = 26
+      Top = 6
+      Width = 111
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'HideSearchButton'
+      OnClick = HideSearchButtonClick
+      TabOrder = 3
+    end
   end
   object Timer1: TTimer
     OnTimer = Timer1Timer
-    left = 380
-    top = 40
+    left = 155
+    top = 175
   end
 end
