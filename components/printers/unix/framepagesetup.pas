@@ -44,11 +44,11 @@ type
     procedure cbPaperChange(Sender: TObject);
     procedure panPreviewResize(Sender: TObject);
     procedure pbPreviewMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure pbPreviewMouseWheelDown(Sender: TObject; Shift: TShiftState;
-      MousePos: TPoint; var Handled: Boolean);
-    procedure pbPreviewMouseWheelUp(Sender: TObject; Shift: TShiftState;
-      MousePos: TPoint; var Handled: Boolean);
+      {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+    procedure pbPreviewMouseWheelDown(Sender: TObject; {%H-}Shift: TShiftState;
+      {%H-}MousePos: TPoint; var Handled: Boolean);
+    procedure pbPreviewMouseWheelUp(Sender: TObject; {%H-}Shift: TShiftState;
+      {%H-}MousePos: TPoint; var Handled: Boolean);
     procedure pbPreviewPaint(Sender: TObject);
     procedure radPortraitClick(Sender: TObject);
   private

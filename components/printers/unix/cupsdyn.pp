@@ -675,7 +675,8 @@ Type
   {Format tags for attribute formats...
    Mask for copied attribute values
    Bitflag for copied attribute values  }
-  ipp_tag_t = (IPP_TAG_ZERO := $00,
+  ipp_tag_t = (IPP_TAG_COPY := (-($7fffffff)) - 1,
+               IPP_TAG_ZERO := $00,
                IPP_TAG_OPERATION,
                IPP_TAG_JOB,
                IPP_TAG_END,
@@ -710,8 +711,8 @@ Type
                IPP_TAG_LANGUAGE,
                IPP_TAG_MIMETYPE,
                IPP_TAG_MEMBERNAME,
-               IPP_TAG_MASK := $7fffffff,
-               IPP_TAG_COPY := (-($7fffffff)) - 1);
+               IPP_TAG_MASK := $7fffffff
+               );
 
   //Resolution units...
   ipp_res_t = (IPP_RES_PER_INCH := 3,
@@ -1065,9 +1066,9 @@ var
   //httpEncode64: function (out:Pchar; in:Pchar):Pchar;cdecl;
   //httpDecode64: function (out:Pchar; in:Pchar):Pchar;cdecl;
   httpGetLength: function (http:Phttp_t):longint;cdecl;
-  httpMD5: function (_para1:Pchar; _para2:Pchar; _para3:Pchar; _para4:TArrayChar32):Pchar;cdecl;
-  httpMD5Final: function (_para1:Pchar; _para2:Pchar; _para3:Pchar; _para4:TArrayChar32):Pchar;cdecl;
-  httpMD5String: function (_para1:Pmd5_byte_t; _para2:TArrayChar32):Pchar;cdecl;
+  httpMD5: function (_para1:Pchar; _para2:Pchar; _para3:Pchar; {%H-}_para4:TArrayChar32):Pchar;cdecl;
+  httpMD5Final: function (_para1:Pchar; _para2:Pchar; _para3:Pchar; {%H-}_para4:TArrayChar32):Pchar;cdecl;
+  httpMD5String: function (_para1:Pmd5_byte_t; {%H-}_para2:TArrayChar32):Pchar;cdecl;
 
   //
   // cups_ppd
