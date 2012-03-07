@@ -8,9 +8,7 @@ interface
 
 uses
   Wiki2FPDocConvert, WikiFormat, Wiki2XHTMLConvert, Wiki2CHMConvert, 
-  WikiParser, Wiki2HTMLConvert, wikichmwriter, wikichmfilewriter, 
-  wikichmfiftimain, wikichmsitemap, wikichmtypes, wikichmbase, 
-  wikihtmlindexer, wikichmspecialfiles, LazarusPackageIntf;
+  WikiParser, Wiki2HTMLConvert, wikihtmlindexer, LazarusPackageIntf;
 
 implementation
 

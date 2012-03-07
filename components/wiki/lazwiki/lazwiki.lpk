@@ -19,7 +19,7 @@
     <Description Value="Parsing wiki exports, converters for fpdoc and html."/>
     <License Value="GPL-2"/>
     <Version Major="1" Release="1"/>
-    <Files Count="15">
+    <Files Count="7">
       <Item1>
         <Filename Value="wiki2fpdocconvert.pas"/>
         <UnitName Value="Wiki2FPDocConvert"/>
@@ -45,41 +45,9 @@
         <UnitName Value="Wiki2HTMLConvert"/>
       </Item6>
       <Item7>
-        <Filename Value="wikichmwriter.pas"/>
-        <UnitName Value="wikichmwriter"/>
-      </Item7>
-      <Item8>
-        <Filename Value="wikichmfilewriter.pas"/>
-        <UnitName Value="wikichmfilewriter"/>
-      </Item8>
-      <Item9>
-        <Filename Value="wikichmobjinstconst.inc"/>
-        <Type Value="Include"/>
-      </Item9>
-      <Item10>
-        <Filename Value="wikichmfiftimain.pas"/>
-        <UnitName Value="wikichmfiftimain"/>
-      </Item10>
-      <Item11>
-        <Filename Value="wikichmsitemap.pas"/>
-        <UnitName Value="wikichmsitemap"/>
-      </Item11>
-      <Item12>
-        <Filename Value="wikichmtypes.pas"/>
-        <UnitName Value="wikichmtypes"/>
-      </Item12>
-      <Item13>
-        <Filename Value="wikichmbase.pas"/>
-        <UnitName Value="wikichmbase"/>
-      </Item13>
-      <Item14>
         <Filename Value="wikihtmlindexer.pas"/>
         <UnitName Value="wikihtmlindexer"/>
-      </Item14>
-      <Item15>
-        <Filename Value="wikichmspecialfiles.pas"/>
-        <UnitName Value="wikichmspecialfiles"/>
-      </Item15>
+      </Item7>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
