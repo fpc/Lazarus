@@ -4749,7 +4749,7 @@ begin
       end;
     end;
   end;
-  SetLength(Result,PtrUInt(Dest)-PtrUInt(Result));
+  SetLength(Result,{%H-}PtrUInt(Dest)-PtrUInt(Result));
 end;
 
 function UCS2LEToUTF8(const s: string): string;
@@ -4778,7 +4778,7 @@ begin
       inc(Dest,UnicodeToUTF8SkipErrors(c,Dest));
     end;
   end;
-  len:=PtrUInt(Dest)-PtrUInt(Result);
+  len:={%H-}PtrUInt(Dest)-PtrUInt(Result);
   if len>length(Result) then
     raise Exception.Create('');
   SetLength(Result,len);
@@ -4810,7 +4810,7 @@ begin
       inc(Dest,UnicodeToUTF8SkipErrors(c,Dest));
     end;
   end;
-  len:=PtrUInt(Dest)-PtrUInt(Result);
+  len:={%H-}PtrUInt(Dest)-PtrUInt(Result);
   if len>length(Result) then
     raise Exception.Create('');
   SetLength(Result,len);
@@ -6133,7 +6133,7 @@ begin
       end;
     end;
   end;
-  len:=PtrUInt(Dest)-PtrUInt(Result);
+  len:={%H-}PtrUInt(Dest)-PtrUInt(Result);
   if len>length(Result) then
     raise Exception.Create('');
   SetLength(Result,len);
@@ -6173,7 +6173,7 @@ begin
       end;
     end;
   end;
-  len:=PtrUInt(Dest)-PtrUInt(Result);
+  len:={%H-}PtrUInt(Dest)-PtrUInt(Result);
   if len>length(Result) then
     raise Exception.Create('');
   SetLength(Result,len);

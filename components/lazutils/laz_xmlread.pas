@@ -216,7 +216,7 @@ type
     function  GetString(BufPos: PChar; Len: integer): String;
 
     function  CheckName: Boolean;
-    function  GetName(var s: String): Boolean;
+    function  GetName(out s: String): Boolean;
     function  ExpectName: String;                                       // [5]
     procedure SkipName;
     procedure ExpectAttValue(attr: TDOMAttr);                           // [10]
@@ -290,8 +290,10 @@ function TXMLReader.BufPosToStr(p: PChar): string;
 var
   LineCol: TPoint;
 begin
+  if p<BufStart then
+    p:=BufStart;
   // find out the line in which the error occured
-  LineCol:=BufPosToLineCol(BufStart);
+  LineCol:=BufPosToLineCol(p);
   Result:=IntToStr(LineCol.y)+','+IntToStr(LineCol.x);
 end;
 
@@ -466,7 +468,7 @@ begin
   Result := True;
 end;
 
-function TXMLReader.GetName(var s: String): Boolean;    // [5]
+function TXMLReader.GetName(out s: String): Boolean;    // [5]
 var OldBuf: PChar;
 begin
   if not (buf[0] in (Letter + ['_', ':'])) then begin

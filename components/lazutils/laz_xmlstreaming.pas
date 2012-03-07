@@ -98,7 +98,7 @@ type
     procedure WriteVariant(const VarValue: Variant); override;
     {$ENDIF}
     {$IFDEF HasReadWriteBuf}
-    procedure Write(const Buffer; Count: Longint); override;
+    procedure Write(const {%H-}Buffer; Count: Longint); override;
     {$ENDIF}
   public
     property Doc: TDOMDocument read FDoc;
@@ -149,7 +149,7 @@ type
     procedure SkipComponent(SkipComponentInfos: Boolean); override;
     procedure SkipValue; override;
     {$IFDEF HasReadWriteBuf}
-    procedure Read(var Buf; Count: LongInt); override;
+    procedure Read(var {%H-}Buf; Count: LongInt); override;
     {$ENDIF}
   public
     property Doc: TDOMDocument read FDoc;
@@ -347,6 +347,13 @@ begin
     StackEl.Element['name'] := Component.Name;
   StackEl.Element['class'] := Component.ClassName;
 
+  if ChildPos>=0 then begin
+    // ToDo
+  end;
+  if Flags<>[] then begin
+    // ToDo
+  end;
+
   StackPush('properties',elPropertyList);
 end;
 
@@ -536,6 +543,7 @@ end;
 {$IFDEF HasReadWriteBuf}
 procedure TXMLObjectWriter.Write(const Buffer; Count: Longint);
 begin
+  if Count<=0 then exit;
   // there can be arbitrary lots of Write calls
   raise Exception.Create('TODO: TXMLObjectWriter.Write');
 end;
@@ -911,7 +919,13 @@ var
   PropertiesNode: TDOMNode;
 begin
   //writeln('TXMLObjectReader.BeginComponent START');
-  
+  if AChildPos>0 then begin
+    // ToDo
+  end;
+  if Flags<>[] then begin
+    // ToDo
+  end;
+
   if FElement.NodeName='component' then
     ComponentNode:=FElement
   else
@@ -1009,6 +1023,8 @@ function TXMLObjectReader.ReadIdent(ValueType: TValueType): String;
 begin
   Result:=FElement['value'];
   ReadValue;
+  // ToDo: check type
+  if ValueType=vaNull then ;
   //writeln('TXMLObjectReader.ReadIdent ',Result);
 end;
 
@@ -1141,6 +1157,8 @@ begin
   NextNode:=FElement.NextSibling;
   if (NextNode=nil) or (NextNode is TDOMElement) then
     FElement:=TDOMElement(NextNode);
+  // ToDo: SkipComponentInfos
+  if SkipComponentInfos then ;
   //writeln('TXMLObjectReader.SkipComponent ');
 end;
 
@@ -1153,6 +1171,7 @@ end;
 {$IFDEF HasReadWriteBuf}
 procedure TXMLObjectReader.Read(var Buf; Count: LongInt);
 begin
+  if Count<=0 then exit;
   raise Exception.Create('TODO: TXMLObjectReader.Read');
   //writeln('TXMLObjectReader.Read ');
 end;

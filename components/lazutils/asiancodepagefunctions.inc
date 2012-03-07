@@ -87,7 +87,7 @@ begin
       end;
     end;
   end;
-  SetLength(Result, PtrUInt(Dest) - PtrUInt(Result));
+  SetLength(Result, {%H-}PtrUInt(Dest) - PtrUInt(Result));
 end;
 
 function CP936ToUTF8(const s: string): string;
@@ -198,7 +198,7 @@ begin
     end;
   end;
   //SetLength(Result, Dest - PChar(Result));
-  SetLength(Result, PtrUInt(Dest) - PtrUInt(Result));
+  SetLength(Result, {%H-}PtrUInt(Dest) - PtrUInt(Result));
 end;
 
 function UTF8ToCP936(const s: string): string;
