@@ -2507,13 +2507,14 @@ begin
     DebugBoss.UnLockCommandProcessing;
     FInEditorChangedUpdating := False;
   end;
-
+  PopupMenu := nil;
   if (FAOwner<>nil) and (FEditor<>nil) then begin
     UnbindEditor;
     FEditor.Visible:=false;
     FEditor.Parent:=nil;
     TSourceNotebook(FAOwner).ReleaseEditor(self);
     // free the synedit control after processing the events
+    EditorComponent.Owner.RemoveComponent(EditorComponent);
     Application.ReleaseComponent(FEditor);
   end;
   FEditor:=nil;
