@@ -13,13 +13,12 @@ function GetTickCount64: QWord;
 implementation
 
 uses
-  Classes,
   {$ifdef Windows}
-  Windows
+  Windows,
   {$else}
-  Unix, BaseUnix, UnixUtil
+  Unix, BaseUnix,
   {$endif}
-  ;
+  Classes;
 
 // ToDo: Move the code to 1 include file per platform
 {$IFDEF WINDOWS}
