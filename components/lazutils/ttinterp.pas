@@ -416,12 +416,11 @@ const
 
 
   function Read_CVT( index : Int ) : TT_F26Dot6;
-  {$IFNDEF FPK} far; {$ENDIF}
   begin
     Read_CVT := exc.cvt^[index];
   end;
 
-  function Read_CVT_Stretched( index : Int ) : TT_F26Dot6; far;
+  function Read_CVT_Stretched( index : Int ) : TT_F26Dot6;
   begin
     Read_CVT_Stretched := MulDiv_Round( exc.cvt^[index],
                                         Get_Current_Ratio,
@@ -429,12 +428,12 @@ const
   end;
 
 
-  procedure Write_CVT( index : Int; value : TT_F26Dot6 ); far;
+  procedure Write_CVT( index : Int; value : TT_F26Dot6 );
   begin
     exc.cvt^[index] := value;
   end;
 
-  procedure Write_CVT_Stretched( index : Int; value : TT_F26Dot6 ); far;
+  procedure Write_CVT_Stretched( index : Int; value : TT_F26Dot6 );
   begin
     exc.cvt^[index] := MulDiv_Round( value,
                                      $10000,
@@ -442,12 +441,12 @@ const
   end;
 
 
-  procedure Move_CVT( index : Int; value : TT_F26Dot6 ); far;
+  procedure Move_CVT( index : Int; value : TT_F26Dot6 );
   begin
     inc( exc.cvt^[index], value );
   end;
 
-  procedure Move_CVT_Stretched( index : Int; value : TT_F26dot6 ); far;
+  procedure Move_CVT_Stretched( index : Int; value : TT_F26dot6 );
   begin
     inc( exc.cvt^[index], MulDiv_Round( value,
                                         $10000,
@@ -578,7 +577,6 @@ const
  *
  *****************************************************************)
 
- {$F+}
  procedure Direct_Move( zone     : PGlyph_Zone;
                         point    : Int;
                         distance : TT_F26dot6 );
@@ -911,7 +909,6 @@ const
 
    Round_Super_45 := val;
  end;
- {$F-}
 
  procedure Compute_Round( round_mode : Byte );
  begin
@@ -1006,7 +1003,6 @@ const
  *
  *****************************************************************)
 
- {$F+}
  function Project( var P1, P2 : TT_Vector ) : TT_F26dot6;
  var
    T1, T2 : Int64;
@@ -1058,7 +1054,6 @@ const
  begin
    Project_y := P1.y - P2.y;
  end;
- {$F-}
 
 (*******************************************************************
  *
@@ -1248,7 +1243,6 @@ begin
   Normalize := True;
 end;
 
-{$F+}
 
 (****************************************************************)
 (*                                                              *)
