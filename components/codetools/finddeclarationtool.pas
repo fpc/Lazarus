@@ -7228,26 +7228,30 @@ var
                                               ExprType.Context.Node.FirstChild);
 
     ctnClass, ctnClassInterface, ctnDispinterface, ctnObject, ctnRecordType,
-    ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass,
+    ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass:
+      begin
+        // search default property of the class / interface
+        Params.Save(OldInput);
+        Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
+                      +fdfGlobals*Params.Flags;
+        // special identifier for default property
+        Params.SetIdentifier(Self,@Src[CurAtom.StartPos],nil);
+        Params.ContextNode:=ExprType.Context.Node;
+        ExprType.Context.Tool.FindIdentifierInContext(Params);
+        ExprType.Context:=CreateFindContext(Params);
+        Params.Load(OldInput,true);
+        ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
+                                                ExprType.Context.Node);
+      end;
+
     ctnProperty, ctnGlobalProperty:
       begin
-        if ExprType.Context.Node.Desc in AllClasses then begin
-          // search default property of the class / interface
-          Params.Save(OldInput);
-          Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
-                        +fdfGlobals*Params.Flags;
-          // special identifier for default property
-          Params.SetIdentifier(Self,@Src[CurAtom.StartPos],nil);
-          Params.ContextNode:=ExprType.Context.Node;
-          ExprType.Context.Tool.FindIdentifierInContext(Params);
-          ExprType.Context:=CreateFindContext(Params);
-          Params.Load(OldInput,true);
-          ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
-                                                  ExprType.Context.Node);
-        end else
+        if not ExprType.Context.Tool.PropertyNodeHasParamList(ExprType.Context.Node) then
           RaiseIdentInCurContextNotFound;
+        ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
+                                                ExprType.Context.Node);
       end;
-      
+
     ctnIdentifier:
       begin
         MoveCursorToNodeStart(ExprType.Context.Node);
