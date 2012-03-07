@@ -3,6 +3,7 @@ object EditorFileManagerForm: TEditorFileManagerForm
   Height = 380
   Top = 126
   Width = 722
+  ActiveControl = FilterEdit
   Caption = 'EditorFileManagerForm'
   ClientHeight = 380
   ClientWidth = 722
