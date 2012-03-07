@@ -237,7 +237,7 @@ type
 
     function  GetNodeName: DOMString; virtual; abstract;
     function  GetNodeValue: DOMString; virtual;
-    procedure SetNodeValue(const AValue: DOMString); virtual;
+    procedure SetNodeValue(const {%H-}AValue: DOMString); virtual;
     function  GetFirstChild: TDOMNode; virtual;
     function  GetLastChild: TDOMNode; virtual;
     function  GetAttributes: TDOMNamedNodeMap; virtual;
@@ -248,7 +248,7 @@ type
     function GetLocalName: DOMString; virtual;
     function GetNamespaceURI: DOMString; virtual;
     function GetPrefix: DOMString; virtual;
-    procedure SetPrefix(const Value: DOMString); virtual;
+    procedure SetPrefix(const {%H-}Value: DOMString); virtual;
     function GetOwnerDocument: TDOMDocument; virtual;
     function GetBaseURI: DOMString;
     procedure SetReadOnly(Value: Boolean);
@@ -279,9 +279,9 @@ type
     function GetLastLeaf: TDOMNode; // get last child of last child of ...
     function GetLevel: integer; // root node has 0
 
-    function InsertBefore(NewChild, RefChild: TDOMNode): TDOMNode; virtual;
-    function ReplaceChild(NewChild, OldChild: TDOMNode): TDOMNode; virtual;
-    function DetachChild(OldChild: TDOMNode): TDOMNode; virtual;
+    function InsertBefore({%H-}NewChild, {%H-}RefChild: TDOMNode): TDOMNode; virtual;
+    function ReplaceChild({%H-}NewChild, {%H-}OldChild: TDOMNode): TDOMNode; virtual;
+    function DetachChild({%H-}OldChild: TDOMNode): TDOMNode; virtual;
     function RemoveChild(OldChild: TDOMNode): TDOMNode;
     function AppendChild(NewChild: TDOMNode): TDOMNode;
     function HasChildNodes: Boolean; virtual;
@@ -302,8 +302,8 @@ type
     function IsDefaultNamespace(const nsURI: DOMString): Boolean;
     property baseURI: DOMString read GetBaseURI;
     // Extensions to DOM interface:
-    function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; virtual;
-    function FindNode(const ANodeName: DOMString): TDOMNode; virtual;
+    function CloneNode({%H-}deep: Boolean; {%H-}ACloneOwner: TDOMDocument): TDOMNode; overload; virtual;
+    function FindNode(const {%H-}ANodeName: DOMString): TDOMNode; virtual;
     function CompareName(const name: DOMString): Integer; virtual;
     property Flags: TNodeFlags read FFlags;
   end;
@@ -348,7 +348,7 @@ type
     FList: TFPList;
     function GetCount: LongWord;
     function GetItem(index: LongWord): TDOMNode;
-    function NodeFilter(aNode: TDOMNode): TFilterResult; virtual;
+    function NodeFilter({%H-}aNode: TDOMNode): TFilterResult; virtual;
     // now deprecated in favor of NodeFilter
     procedure BuildList; virtual;
   public
@@ -404,9 +404,9 @@ type
     function SetNamedItem(arg: TDOMNode): TDOMNode;
     function RemoveNamedItem(const name: DOMString): TDOMNode;
     // Introduced in DOM Level 2:
-    function getNamedItemNS(const namespaceURI, localName: DOMString): TDOMNode; virtual;
+    function getNamedItemNS(const {%H-}namespaceURI, {%H-}localName: DOMString): TDOMNode; virtual;
     function setNamedItemNS(arg: TDOMNode): TDOMNode; virtual;
-    function removeNamedItemNS(const namespaceURI,localName: DOMString): TDOMNode; virtual;
+    function removeNamedItemNS(const {%H-}namespaceURI,{%H-}localName: DOMString): TDOMNode; virtual;
 
     property Item[index: LongWord]: TDOMNode read GetPosItem; default;
     property SortedItem[index: LongWord]: TDOMNode read GetSortedItem;
@@ -491,7 +491,7 @@ type
     function GetNodeName: DOMString; override;
     function GetTextContent: DOMString; override;
     function GetOwnerDocument: TDOMDocument; override;
-    procedure SetTextContent(const value: DOMString); override;
+    procedure SetTextContent(const {%H-}value: DOMString); override;
     procedure RemoveID(Elem: TDOMElement);
     function GetChildNodeList(aNode: TDOMNode): TDOMNodeList;
     function GetElementList(aNode: TDOMNode; const nsURI, aLocalName: DOMString; UseNS: Boolean): TDOMNodeList;
@@ -512,14 +512,14 @@ type
     function CreateTextNodeBuf(Buf: DOMPChar; Length: Integer; IgnWS: Boolean): TDOMText;
     function CreateComment(const data: DOMString): TDOMComment;
     function CreateCommentBuf(Buf: DOMPChar; Length: Integer): TDOMComment;
-    function CreateCDATASection(const data: DOMString): TDOMCDATASection;
+    function CreateCDATASection(const {%H-}data: DOMString): TDOMCDATASection;
       virtual;
-    function CreateProcessingInstruction(const target, data: DOMString):
+    function CreateProcessingInstruction(const {%H-}target, {%H-}data: DOMString):
       TDOMProcessingInstruction; virtual;
     function CreateAttribute(const name: DOMString): TDOMAttr;
     function CreateAttributeBuf(Buf: DOMPChar; Length: Integer): TDOMAttr;
     function CreateAttributeDef(Buf: DOMPChar; Length: Integer): TDOMAttrDef;
-    function CreateEntityReference(const name: DOMString): TDOMEntityReference;
+    function CreateEntityReference(const {%H-}name: DOMString): TDOMEntityReference;
       virtual;
     function GetElementsByTagName(const tagname: DOMString): TDOMNodeList;
 
@@ -604,7 +604,7 @@ type
     procedure SetNodeValue(const AValue: DOMString); override;
   public
     destructor Destroy; override;
-    function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
+    function CloneNode({%H-}deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
     property Name: DOMString read GetNodeName;
     property Specified: Boolean read GetSpecified;
     property Value: DOMString read GetNodeValue write SetNodeValue;
@@ -668,7 +668,7 @@ type
     function GetNodeName: DOMString; override;
     procedure SetNodeValue(const aValue: DOMString); override;
   public
-    function  CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
+    function  CloneNode({%H-}deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
     function SplitText(offset: LongWord): TDOMText;
     function IsElementContentWhitespace: Boolean;
   end;
@@ -683,7 +683,7 @@ type
     function GetNodeType: Integer; override;
     function GetNodeName: DOMString; override;
   public
-    function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
+    function CloneNode({%H-}deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
   end;
 
 
@@ -696,7 +696,7 @@ type
     function GetNodeType: Integer; override;
     function GetNodeName: DOMString; override;
   public
-    function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
+    function CloneNode({%H-}deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
   end;
 
 
@@ -738,7 +738,7 @@ type
     function GetNodeType: Integer; override;
     function GetNodeName: DOMString; override;
   public
-    function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
+    function CloneNode({%H-}deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
     property PublicID: DOMString read FPublicID;
     property SystemID: DOMString read FSystemID;
   end;
@@ -772,7 +772,7 @@ type
     function GetNodeType: Integer; override;
     function GetNodeName: DOMString; override;
   public
-    function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
+    function CloneNode({%H-}deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
   end;
 
 
@@ -790,7 +790,7 @@ type
     function GetNodeValue: DOMString; override;
     procedure SetNodeValue(const AValue: DOMString); override;
   public
-    function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
+    function CloneNode({%H-}deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
     property Target: DOMString read FTarget;
     property Data: DOMString read FNodeValue write SetNodeValue;
   end;

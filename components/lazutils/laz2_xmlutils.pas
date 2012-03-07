@@ -77,7 +77,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     function Find(Key: PXMLUtilChar; KeyLen: Integer): PHashItem;
-    function FindOrAdd(Key: PXMLUtilChar; KeyLen: Integer; var Found: Boolean): PHashItem; overload;
+    function FindOrAdd(Key: PXMLUtilChar; KeyLen: Integer; out Found: Boolean): PHashItem; overload;
     function FindOrAdd(Key: PXMLUtilChar; KeyLen: Integer): PHashItem; overload;
     function Get(Key: PXMLUtilChar; KeyLen: Integer): TObject;
     function Remove(Entry: PHashItem): Boolean;
@@ -457,7 +457,7 @@ begin
 end;
 
 function THashTable.FindOrAdd(Key: PXMLUtilChar; KeyLen: Integer;
-  var Found: Boolean): PHashItem;
+  out Found: Boolean): PHashItem;
 begin
   Result := Lookup(Key, KeyLen, Found, True);
 end;

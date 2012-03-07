@@ -1,11 +1,4 @@
 {
-  BEWARE !!!
-  This is a TEMPORARY file.
-  As soon as it is moved to the fcl, it will be removed.
-}
-
-{
-    $Id$
     This file is part of the Free Component Library
 
     Implementation of DOM interfaces
