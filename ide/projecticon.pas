@@ -35,8 +35,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Process, LCLProc, Controls, Forms,
-  CodeToolManager, LazConf, Laz_XMLCfg, LResources, resource, groupiconresource,
-  ProjectIntf, ProjectResourcesIntf;
+  CodeToolManager, CodeCache, LazConf, Laz_XMLCfg, LResources, resource,
+  DialogProcs, groupiconresource, ProjectIntf, ProjectResourcesIntf;
    
 type
   TIconData = array of byte;
@@ -127,7 +127,8 @@ begin
 
   SetFileNames(MainFilename);
   if FilenameIsAbsolute(FIcoFileName) then
-    CreateIconFile;
+    if not CreateIconFile then
+      exit(false);
 
 { to create an lrs with icon we can use this but there is no reason anymore
   if AResources.ResourceType <> rtRes then
@@ -182,19 +183,20 @@ end;
 
 function TProjectIcon.CreateIconFile: Boolean;
 var
-  FileStream, AStream: TStream;
+  AStream: TStream;
+  Code: TCodeBuffer;
 begin
   Result := False;
   AStream := GetStream;
-  FileStream := nil;
+  if AStream=nil then exit;
   try
-    FileStream := TFileStream.Create(UTF8ToSys(FicoFileName), fmCreate);
-    FileStream.CopyFrom(AStream, AStream.Size);
-    Result := True;
+    Code:=CodeToolBoss.CreateFile(FicoFileName);
+    if Code=nil then exit;
+    Code.LoadFromStream(AStream);
+    Result:=SaveCodeBuffer(Code) in [mrOk,mrIgnore];
   finally
-    FileStream.Free;
+    AStream.Free;
   end;
-  AStream.Free;
 end;
 
 {-----------------------------------------------------------------------------

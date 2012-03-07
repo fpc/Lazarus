@@ -369,6 +369,7 @@ function TProjectResources.Update: Boolean;
 var
   i: integer;
 begin
+  Result:=true;
   Clear;
   for i := 0 to FResources.Count - 1 do
   begin
@@ -483,7 +484,7 @@ begin
   Result := False;
 
   if (MainFileName = '') then
-    Exit;
+    Exit(true);
 
   // remember old codebuffer filenames
   LastResFilename := resFileName;
