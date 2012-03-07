@@ -474,11 +474,13 @@ begin
 end;
 
 {$IFnDEF WithOldDebugln}
-procedure TCDWidgetSet.AndroidDebugLn(ASender: TObject; AStr: string; var AHandled: Boolean);
+procedure TCDWidgetSet.AndroidDebugLn(ASender: TObject; AStr: string; var AHandled: Boolean;
+  Target: TLazLoggerWriteTarget; Data: Pointer);
 begin
+  AHandled := Target in [lwtStdOut, lwtStdErr];
+  if not AHandled then exit;
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(AccumulatedStr+AStr));
   AccumulatedStr := '';
-  AHandled := True;
 end;
 {$ELSE}
 procedure TCDWidgetSet.AndroidDebugLn(AStr: string);

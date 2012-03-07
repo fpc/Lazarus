@@ -168,7 +168,8 @@ type
     {$ifdef CD_Android}
     CombiningAccent: Cardinal;
     {$IFnDEF WithOldDebugln}
-    procedure AndroidDebugLn(ASender: TObject; AStr: string; var AHandled: Boolean);
+    procedure AndroidDebugLn(ASender: TObject; AStr: string; var AHandled: Boolean;
+      Target: TLazLoggerWriteTarget; Data: Pointer);
     {$ELSE}
     procedure AndroidDebugLn(AStr: string);
     {$ENDIF}
@@ -196,7 +197,8 @@ type
     MobileMainForm: TLCLIntfHandle;
     // For unusual implementations of DebugLn/DebugOut
     {$IFnDEF WithOldDebugln}
-    procedure AccumulatingDebugOut(ASender: TObject; AStr: string; var AHandled: Boolean);
+    procedure AccumulatingDebugOut(ASender: TObject; AStr: string; var AHandled: Boolean;
+      Target: TLazLoggerWriteTarget; Data: Pointer);
     {$ELSE}
     procedure AccumulatingDebugOut(AStr: string);
     {$ENDIF}

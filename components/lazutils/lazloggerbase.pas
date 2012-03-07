@@ -30,7 +30,18 @@ type
   end;
   PLazLoggerLogGroup = ^TLazLoggerLogGroup;
 
-  TLazLoggerWriteEvent = procedure (Sender: TObject; S: string; var Handled: Boolean) of object;
+  TLazLoggerWriteTarget = (
+    lwtNone,
+    lwtStdOut, lwtStdErr,
+    lwtTextFile  // Data will be ^Text
+  );
+
+  TLazLoggerWriteEvent = procedure(Sender: TObject; S: string; var Handled: Boolean) of object;
+  TLazLoggerWidgetSetWriteEvent = procedure(Sender: TObject;
+      S: string;
+      var Handled: Boolean;
+      Target: TLazLoggerWriteTarget;
+      Data: Pointer) of object;
 
 type
 
@@ -252,8 +263,8 @@ type
 // Using base TRefCountedObject, so if none of the functions is used in the app, then even the class should be smart linked
 var
   LazDebugLoggerCreator: TLazDebugLoggerCreator = nil;
-  OnWidgetSetDebugLn: TLazLoggerWriteEvent;
-  OnWidgetSetDbgOut:  TLazLoggerWriteEvent;
+  OnWidgetSetDebugLn: TLazLoggerWidgetSetWriteEvent;
+  OnWidgetSetDbgOut:  TLazLoggerWidgetSetWriteEvent;
 
 implementation
 

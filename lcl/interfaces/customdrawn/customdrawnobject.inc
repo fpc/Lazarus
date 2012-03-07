@@ -16,10 +16,12 @@
 //---------------------------------------------------------------
 
 {$IFnDEF WithOldDebugln}
-procedure TCDWidgetSet.AccumulatingDebugOut(ASender: TObject; AStr: string; var AHandled: Boolean);
+procedure TCDWidgetSet.AccumulatingDebugOut(ASender: TObject; AStr: string; var AHandled: Boolean;
+  Target: TLazLoggerWriteTarget; Data: Pointer);
 begin
+  AHandled := Target in [lwtStdOut, lwtStdErr];
+  if not AHandled then exit;
   AccumulatedStr := AccumulatedStr + AStr;
-  AHandled := True;
 end;
 {$ELSE}
 procedure TCDWidgetSet.AccumulatingDebugOut(AStr: string);

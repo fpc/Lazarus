@@ -8,14 +8,7 @@ uses
 
 type
 
-  //TLazLoggerLogGroupFlag = LazLoggerBase.TLazLoggerLogGroupFlag;
-  //TLazLoggerLogGroupFlags = LazLoggerBase.TLazLoggerLogGroupFlags;
-  //TLazLoggerLogGroup = LazLoggerBase.TLazLoggerLogGroup;
   PLazLoggerLogGroup = LazLoggerBase.PLazLoggerLogGroup;
-
-  //TLazLoggerWriteEvent = LazLoggerBase.LazLoggerBase.;
-
-  //TLazLogger = LazLoggerBase.TLazLogger;
 
 {$DEFINE USED_BY_LAZLOGGER}
 {$I LazLoggerIntf.inc}
@@ -44,6 +37,7 @@ type
     FUseStdOut: Boolean;
     procedure DoOpenFile;
     procedure DoCloseFile;
+    function GetWriteTarget: TLazLoggerWriteTarget;
     procedure SetCloseLogFileBetweenWrites(AValue: Boolean);
     procedure SetLogName(AValue: String);
   public
@@ -58,6 +52,8 @@ type
     property  LogName: String read FLogName write SetLogName;
     property  UseStdOut: Boolean read FUseStdOut write FUseStdOut;
     property  CloseLogFileBetweenWrites: Boolean read FCloseLogFileBetweenWrites write SetCloseLogFileBetweenWrites;
+    property  WriteTarget: TLazLoggerWriteTarget read GetWriteTarget;
+    property  ActiveLogText: PText read FActiveLogText;
   end;
 
   { TLazLoggerFile }
@@ -222,6 +218,16 @@ begin
     FLogTextInUse := false;
   end;
   FActiveLogText := nil;
+end;
+
+function TLazLoggerFileHandle.GetWriteTarget: TLazLoggerWriteTarget;
+begin
+  Result := lwtNone;
+  if FActiveLogText = @Output then
+    Result := lwtStdOut
+  else
+  if FLogTextInUse then
+    Result := lwtTextFile;
 end;
 
 procedure TLazLoggerFileHandle.SetCloseLogFileBetweenWrites(AValue: Boolean);
@@ -465,9 +471,10 @@ begin
   begin
     Handled := False;
     if FDebugNestAtBOL and (s <> '') then
-      OnWidgetSetDbgOut(Self, FDebugIndent + s, Handled)
+      OnWidgetSetDbgOut(Self, FDebugIndent + s, Handled,
+                        FileHandle.WriteTarget, FileHandle.ActiveLogText)
     else
-      OnWidgetSetDbgOut(Self, s, Handled);
+      OnWidgetSetDbgOut(Self, s, Handled, FileHandle.WriteTarget, FileHandle.ActiveLogText);
     if Handled then
       Exit;
   end;
@@ -500,9 +507,10 @@ begin
   begin
     Handled := False;
     if FDebugNestAtBOL and (s <> '') then
-      OnWidgetSetDebugLn(Self, FDebugIndent + s, Handled)
+      OnWidgetSetDebugLn(Self, FDebugIndent + s, Handled,
+                         FileHandle.WriteTarget, FileHandle.ActiveLogText)
     else
-      OnWidgetSetDebugLn(Self, s, Handled);
+      OnWidgetSetDebugLn(Self, s, Handled, FileHandle.WriteTarget, FileHandle.ActiveLogText);
     if Handled then
       Exit;
   end;
