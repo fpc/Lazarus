@@ -172,7 +172,6 @@ const
 type
   PString = ^string;
   PFile   = ^FILE;
-  PError  = ^TT_Error;
 
   PStream_Rec = ^TStream_Rec;
   TStream_Rec = record
@@ -445,7 +444,7 @@ var
  begin
    TT_Open_Stream := Failure;
 
-   if Stream_New( name, rec ) then exit;
+   if Stream_New( name, rec {%H-}) then exit;
 
    if Stream_Activate( rec )  then
    begin
@@ -970,7 +969,7 @@ end;
  var
    C : array[0..3] of Byte;
  begin
-   move ( current_frame^[frame_cursor], c, 4 );
+   move ( current_frame^[frame_cursor], c{%H-}, 4 );
    inc( frame_cursor, 4 );
 
    GET_Tag4 := ULong(C);

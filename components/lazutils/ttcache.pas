@@ -67,7 +67,7 @@ unit TTCache;
 
 interface
 
-uses TTError, TTTypes;
+uses TTTypes;
 
 type
 
@@ -321,6 +321,7 @@ var
     if current = nil then
       begin
         (* if no object was found in the cache, create a new one *)
+        obj:=nil;
         if Alloc( obj, cache.clazz^.object_size ) then exit;
 
         current := Element_New;
@@ -357,7 +358,6 @@ var
 
   function Cache_Done( var cache : TCache; obj : Pointer ) : TError;
   var
-    error   : TError;
     element : PList_Element;
     parent  : ^PList_Element;
   label

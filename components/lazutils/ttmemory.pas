@@ -89,11 +89,8 @@ const
 
 implementation
 
-uses TTError;
 
 type
-  TByte = array[0..0] of Byte;
-
   PBlock_Header = ^TBlock_Header;
   TBlock_Header = record
                     magic : longword;  (* magic cookie                     *)
@@ -123,7 +120,7 @@ const
  (*                                                                      *)
  (************************************************************************)
 
- function MyHeapErr( Size: Integer ): Integer; far;
+ function MyHeapErr( {%H-}Size: Integer ): Integer;
  begin
    MyHeapErr := 1;
  end;
@@ -146,8 +143,6 @@ const
 
  function Alloc( var P; size : Longint ) : TError;
  var
-   OldHeapError : Pointer;
-
    L  : Longint;
    P2 : Pointer;
  begin

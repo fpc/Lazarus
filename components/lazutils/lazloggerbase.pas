@@ -579,7 +579,7 @@ begin
       vtAnsiString: Result := Result + AnsiString(Args[i].VAnsiString);
       vtChar:       Result := Result + Args[i].VChar;
       vtPChar:      Result := Result + Args[i].VPChar;
-      vtPWideChar:  Result := Result + Args[i].VPWideChar;
+      vtPWideChar:  Result := {%H-}Result {%H-}+ Args[i].VPWideChar;
       vtWideChar:   Result := Result + AnsiString(Args[i].VWideChar);
       vtWidestring: Result := Result + AnsiString(WideString(Args[i].VWideString));
       vtObject:     Result := Result + DbgSName(Args[i].VObject);

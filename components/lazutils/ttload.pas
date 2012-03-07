@@ -420,6 +420,7 @@ uses TTError, TTMemory, TTFile;
 
    TT_Forget_Frame;
 
+   gRanges:=nil;
    if Alloc( gRanges, face^.gasp.numRanges * sizeof(TGaspRange) ) or
       TT_Access_Frame( face^.gasp.numRanges * 4 ) then
      goto Fail;
@@ -1485,7 +1486,7 @@ uses TTError, TTMemory, TTFile;
          exit;
        end;
 
-   TT_Use_Stream( face^.stream, stream );
+   TT_Use_Stream( face^.stream, stream {%H-});
    Load_TrueType_Any := TT_Read_At_File( offset, buffer, length );
    TT_Done_Stream( face^.stream );
  end;

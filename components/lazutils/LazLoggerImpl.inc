@@ -428,7 +428,7 @@ type
   TComponentStateEnum = low(TComponentState)..high(TComponentState);
   function DbgSComponentStateEnum(const se: TComponentStateEnum): string;
   begin
-    WriteStr(Result, se);
+    WriteStr(Result{%H-}, se);
   end;
 var
   i: TComponentStateEnum;
@@ -494,7 +494,7 @@ end;
 function DbgS(const Shift: TShiftStateEnum): string;
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
-  WriteStr(Result, Shift);
+  WriteStr(Result{%H-}, Shift);
   {$ELSE}
   Result := '';
   {$ENDIF}
