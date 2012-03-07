@@ -36,7 +36,7 @@ uses
   Dialogs, ExtCtrls, StdCtrls, ButtonPanel, SynEdit, SynHighlighterPas,
   CodeToolsStructs, CodeAtom, CodeCache, CodeToolManager, PascalParserTool,
   CodeTree,
-  SrcEditorIntf, LazIDEIntf, PropEdits,
+  SrcEditorIntf, LazIDEIntf, PropEdits, CustomFormEditor, JitForms,
   Project, LazarusIDEStrConsts, EditorOptions;
 
 type
@@ -176,6 +176,38 @@ var
     end;
   end;
 
+  function GetInheritedMethod(AComponent: TComponent; PropInfo: PPropInfo): TMethod;
+  var
+    AncestorRoot, AncestorComponent: TComponent;
+    AncestorMethod: TMethod;
+  begin
+    FillByte(Result, SizeOf(Result), 0);
+    if csAncestor in AComponent.ComponentState then
+    begin
+      // search for ancestor component
+      if Assigned(AComponent.Owner) then
+      begin
+        AncestorRoot := BaseFormEditor1.GetAncestorLookupRoot(AComponent);
+        if Assigned(AncestorRoot) then
+          AncestorComponent := AncestorRoot.FindComponent(AComponent.Name)
+        else
+          AncestorComponent := nil;
+      end
+      else
+      begin
+        AncestorRoot := BaseFormEditor1.GetAncestorInstance(AComponent);
+        AncestorComponent := AncestorRoot;
+      end;
+
+      if Assigned(AncestorComponent) then
+      begin
+        AncestorMethod := GetMethodProp(AncestorComponent, PropInfo);
+        if IsJITMethod(AncestorMethod) then
+          Result := AncestorMethod
+      end;
+    end;
+  end;
+
   procedure CheckEvents(LookupRoot, AComponent: TComponent);
   var
     TypeInfo: PTypeInfo;
@@ -210,8 +242,8 @@ var
                 dec(i);
               if i>=0 then begin
                 DebugLn(['RemoveEmptyMethods Clearing Property=',PropInfo^.Name,' AMethodName=',AMethodName]);
-                FillByte(AMethod,SizeOf(AMethod),0);
-                SetMethodProp(AComponent,PropInfo,AMethod);
+                AMethod := GetInheritedMethod(AComponent, PropInfo);
+                SetMethodProp(AComponent, PropInfo, AMethod);
                 PropChanged:=true;
               end;
             end;
