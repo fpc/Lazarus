@@ -18046,7 +18046,7 @@ var
     begin
       // the old method is from an ancestor
       // => add a statement 'inherited OldMethodName;'
-      Result:='inherited '+OldJITMethod.TheMethodName;
+      Result:='inherited';
       {$IFDEF VerboseOnPropHookCreateMethod}
       debugln(['  GetInheritedMethodPath old method is from an ancestor. Result="',Result,'"']);
       {$ENDIF}
