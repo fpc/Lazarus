@@ -186,7 +186,7 @@ begin
     liStart := lcSameStart.Count;
     liIndex := 0;
     liMaxIndex := Max(lcSourceLines.Count, lcDestLines.Count);
-
+    pcUnit.BeginUndoBlock;
     while (liIndex < liMaxIndex) do
     begin
       if liIndex < lcSourceLines.Count then
@@ -205,6 +205,7 @@ begin
 
        inc(liIndex);
      end;
+    pcUnit.EndUndoBlock;
    finally
     lcSourceLines.Free;
     lcDestLines.Free;
