@@ -8,7 +8,8 @@ interface
 
 uses
   Wiki2FPDocConvert, WikiFormat, Wiki2XHTMLConvert, Wiki2CHMConvert, 
-  WikiParser, Wiki2HTMLConvert, wikihtmlindexer, LazarusPackageIntf;
+  WikiParser, Wiki2HTMLConvert, wikihtmlindexer, WikiStrConsts, 
+  LazarusPackageIntf;
 
 implementation
 

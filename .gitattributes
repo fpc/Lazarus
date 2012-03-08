@@ -2865,6 +2865,7 @@ components/wiki/lazwiki/wiki2xhtmlconvert.pas svneol=native#text/plain
 components/wiki/lazwiki/wikiformat.pas svneol=native#text/plain
 components/wiki/lazwiki/wikihtmlindexer.pas svneol=native#text/plain
 components/wiki/lazwiki/wikiparser.pas svneol=native#text/plain
+components/wiki/lazwiki/wikistrconsts.pas svneol=native#text/plain
 components/wiki/myfphttpclient.pp svneol=native#text/plain
 components/wiki/parsewikipage.lpi svneol=native#text/plain
 components/wiki/parsewikipage.lpr svneol=native#text/plain

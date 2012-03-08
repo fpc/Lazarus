@@ -25,8 +25,8 @@ unit WikiSearchOptions;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, WikiHelpManager, Forms, Controls, Graphics,
-  Dialogs, ExtCtrls, StdCtrls, ComCtrls;
+  Classes, SysUtils, FileUtil, AvgLvlTree, WikiHelpManager, WikiFormat, Forms,
+  Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, ComCtrls;
 
 type
 
@@ -69,11 +69,34 @@ end;
 
 procedure TWikiSearchOptsWnd.UpdateAvailableLanguages;
 var
-  Langs: TStrings;
+  Langs: TStringList;
   i: Integer;
   TVNode: TTreeNode;
+  LangToCount: TStringToPointerTree;
+  Lang: String;
+  S2PItem: PStringToPointerItem;
 begin
-  Langs:=WikiHelp.CollectAllLanguages(true);
+  // collect all languages and count them
+  Langs:=TStringList.Create;
+  if WikiHelp.LoadComplete then begin
+    LangToCount:=TStringToPointerTree.Create(true);
+    try
+      for i:=0 to WikiHelp.Converter.Count-1 do begin
+        Lang:=GetWikiPageLanguage(WikiHelp.Converter[i].WikiDocumentName);
+        LangToCount[Lang]:=LangToCount[Lang]+1;
+      end;
+      for S2PItem in LangToCount do
+        if S2PItem^.Name<>'' then
+          Langs.Add(WikiHelp.LangCodeToCaption(S2PItem^.Name)+' ('+IntToStr({%H-}PtrUInt(S2PItem^.Value))+')');
+      Langs.Sort;
+      Langs.Insert(0,WikiHelp.LangCodeToCaption('')+' ('+IntToStr({%H-}PtrUInt(LangToCount['']))+')');
+    finally
+      LangToCount.Free;
+    end;
+  end else begin
+    Langs.Add(WikiHelp.LangCodeToCaption(''));
+  end;
+
   LanguagesTreeView.BeginUpdate;
   try
     for i:=0 to Langs.Count-1 do begin
