@@ -47,6 +47,7 @@ type
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
   public
     constructor Create(AOwner: TCarbonComboBox);
+    destructor Destroy; override;
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Sort; override;
@@ -66,6 +67,7 @@ type
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
   public
     constructor Create(AOwner: TCarbonListBox; AWinControl: TWinControl);
+    destructor Destroy; override;
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Move(CurIndex, NewIndex: Integer); override;
@@ -159,6 +161,12 @@ begin
   FOwner := AOwner;
 end;
 
+destructor TCarbonComboBoxStrings.Destroy;
+begin
+  FOwner := nil;
+  inherited Destroy;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonComboBoxStrings.Clear
 
@@ -169,11 +177,12 @@ var
   I: Integer;
   C: Integer;
 begin
-  C := Count;
-  
+  if Assigned(FOwner) then
+    C := Count;
   inherited Clear;
-  
-  for I := C - 1 downto 0 do FOwner.Remove(I);
+  if Assigned(FOwner) then
+    for I := C - 1 downto 0 do
+      FOwner.Remove(I);
 end;
 
 {------------------------------------------------------------------------------
@@ -266,6 +275,12 @@ begin
   FWinControl := AWinControl;
 end;
 
+destructor TCarbonListBoxStrings.Destroy;
+begin
+  FOwner := nil;
+  inherited Destroy;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonListBoxStrings.Clear
 
@@ -274,8 +289,8 @@ end;
 procedure TCarbonListBoxStrings.Clear;
 begin
   inherited Clear;
-
-  FOwner.ClearItems;
+  if Assigned(FOwner) then
+    FOwner.ClearItems;
 end;
 
 {------------------------------------------------------------------------------
