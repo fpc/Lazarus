@@ -123,6 +123,7 @@ type
     cfbtSlashComment, // //
     // Internal type / not configurable
     cfbtCaseElse,     // "else" in case can have multiply statements
+    cfbtPackage,
     cfbtNone
     );
   TPascalCodeFoldBlockTypes = set of TPascalCodeFoldBlockType;
@@ -171,6 +172,7 @@ const
       cfbtSlashComment, // //
       // Internal type / not configurable
       cfbtCaseElse,
+      cfbtPackage,
       cfbtNone
     );
 
@@ -996,6 +998,8 @@ begin
         EndPascalCodeFoldBlock;
       end else if tfb = cfbtUnit then begin
         EndPascalCodeFoldBlock;
+      end else if tfb = cfbtPackage then begin
+        EndPascalCodeFoldBlock;
       end else if tfb = cfbtExcept then begin
         EndPascalCodeFoldBlock;
         if TopPascalCodeFoldBlockType = cfbtTry then
@@ -1191,8 +1195,11 @@ function TSynPasSyn.Func44: TtkTokenKind;
 begin
   if KeyComp('Set') then
     Result := tkKey
-  else if KeyComp('Package') then
-    Result := tkKey
+  else
+  if KeyComp('Package') and (TopPascalCodeFoldBlockType=cfbtNone) then begin
+    Result := tkKey;
+    StartPascalCodeFoldBlock(cfbtPackage);
+  end
   else
     Result := tkIdentifier;
 end;
@@ -1723,7 +1730,8 @@ function TSynPasSyn.Func95: TtkTokenKind;
 begin
   if KeyComp('Absolute') then
     Result := tkKey
-  else if KeyComp('Contains') then
+  else
+  if KeyComp('Contains') and (TopPascalCodeFoldBlockType=cfbtPackage) then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1904,7 +1912,10 @@ end;
 
 function TSynPasSyn.Func112: TtkTokenKind;
 begin
-  if KeyComp('Requires') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Requires') and (TopPascalCodeFoldBlockType=cfbtPackage) then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func117: TtkTokenKind;
