@@ -3634,6 +3634,7 @@ begin
     Anchors := AnchorAlign[FAlign];
   if not (csLoading in ComponentState) then
     BoundsRect:=BaseBounds;
+  //DebugLn(['TControl.SetAlign ',DbgSName(Self),' Cur=',DbgS(FAlign),' New=',DbgS(Value),' ',Anchors<>AnchorAlign[FAlign],' Anchors=',dbgs(Anchors)]);
   EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.setalign'){$ENDIF};
 end;
 
