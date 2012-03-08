@@ -1348,7 +1348,7 @@ begin
     end;
   end else begin
     StartTime:=Now;
-    //debugln(['TWikiHelp.DoSearch START Search=',Trim(Query.Phrases.Text)]);
+    //debugln(['TWikiHelp.DoSearch START Search=',Trim(Query.Phrases.Text),' Lang="',Query.Languages,'"']);
     FoundPages:=nil;
     Converter.Search(Query,Scoring,FoundPages);
     HTML:='<html>'+LineEnding
@@ -1360,6 +1360,7 @@ begin
          +'<body>'+LineEnding;
     for i:=0 to Min(FoundPages.Count-1,MaxResults) do begin
       Page:=TW2HelpPage(FoundPages[i]);
+      //debugln(['TWikiHelp.DoSearch ',Page.WikiDocumentName,' ',GetWikiPageLanguage(Page.WikiDocumentName),' ',WikiPageHasLanguage(Page.WikiDocumentName,Query.Languages)]);
       Node:=Page.GetNodeHighestScore(Query,Scoring);
       s:='<div class="wikiSearchResultItem">'+FoundNodeToHTMLSnippet(Page,Node,Query)+'</div>'+LineEnding;
       //debugln(['TWikiHelp.TestSearch Score=',Page.Score,' HTML="',s,'"']);

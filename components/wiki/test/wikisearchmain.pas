@@ -70,6 +70,7 @@ type
     procedure SearchEditChange(Sender: TObject);
     procedure ShowSearchToolButtonClick(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
+    procedure WikiSearchOptsWndOptionsChanged(Sender: TObject);
   private
     fLastSearchText: string;
     fLastLanguages: string;
@@ -228,6 +229,7 @@ begin
     Result:=WikiSearchOptsWnd.Languages
   else
     Result:='';
+  //debugln(['TWikiSearchDemoForm.GetLanguages "',Result,'"']);
 end;
 
 procedure TWikiSearchDemoForm.IpHtmlPanelHotClick(Sender: TObject);
@@ -303,6 +305,11 @@ begin
   ProgressLabel.Caption:=WikiHelp.GetProgressCaption;
   //debugln(['TWikiSearchDemoForm.Timer1Timer ',ProgressLabel.Caption]);
   Timer1.Enabled:=WikiHelp.Busy;
+end;
+
+procedure TWikiSearchDemoForm.WikiSearchOptsWndOptionsChanged(Sender: TObject);
+begin
+  SearchParamsChanged;
 end;
 
 procedure TWikiSearchDemoForm.WikiHelpScanned(Sender: TObject);
@@ -393,8 +400,10 @@ end;
 
 procedure TWikiSearchDemoForm.ShowOptions;
 begin
-  if WikiSearchOptsWnd=nil then
+  if WikiSearchOptsWnd=nil then begin
     WikiSearchOptsWnd:=TWikiSearchOptsWnd.Create(Self);
+    WikiSearchOptsWnd.OnOptionsChanged:=@WikiSearchOptsWndOptionsChanged;
+  end;
   WikiSearchOptsWnd.UpdateAvailableLanguages;
   WikiSearchOptsWnd.ShowOnTop;
 end;

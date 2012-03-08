@@ -17,7 +17,6 @@ begin
   RequireDerivedFormResource := True;
   Application.Initialize;
   Application.CreateForm(TWikiSearchDemoForm, WikiSearchDemoForm);
-  Application.CreateForm(TWikiSearchOptsWnd, WikiSearchOptsWnd);
   Application.Run;
 end.
 

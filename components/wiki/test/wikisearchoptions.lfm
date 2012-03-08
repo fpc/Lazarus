@@ -6,6 +6,7 @@ object WikiSearchOptsWnd: TWikiSearchOptsWnd
   Caption = 'WikiSearchOptsWnd'
   ClientHeight = 308
   ClientWidth = 364
+  OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.31'
@@ -31,6 +32,7 @@ object WikiSearchOptsWnd: TWikiSearchOptsWnd
       ShowRoot = False
       StateImages = ImageList1
       TabOrder = 0
+      OnMouseDown = LanguagesTreeViewMouseDown
       Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoToolTips, tvoThemedDraw]
     end
   end
