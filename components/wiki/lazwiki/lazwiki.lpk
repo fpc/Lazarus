@@ -19,7 +19,7 @@
     <Description Value="Parsing wiki exports, converters for fpdoc and html."/>
     <License Value="GPL-2"/>
     <Version Major="1" Release="1"/>
-    <Files Count="8">
+    <Files Count="7">
       <Item1>
         <Filename Value="wiki2fpdocconvert.pas"/>
         <UnitName Value="Wiki2FPDocConvert"/>
@@ -45,13 +45,9 @@
         <UnitName Value="Wiki2HTMLConvert"/>
       </Item6>
       <Item7>
-        <Filename Value="wikihtmlindexer.pas"/>
-        <UnitName Value="wikihtmlindexer"/>
-      </Item7>
-      <Item8>
         <Filename Value="wikistrconsts.pas"/>
-        <UnitName Value="wikistrconsts"/>
-      </Item8>
+        <UnitName Value="WikiStrConsts"/>
+      </Item7>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
