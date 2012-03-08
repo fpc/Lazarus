@@ -319,7 +319,6 @@ end;
  ------------------------------------------------------------------------------}
 destructor TQtMemoStrings.Destroy;
 begin
-  Clear;
   FStringList.Free;
   FOwner := nil;
   inherited Destroy;
@@ -504,7 +503,6 @@ end;
 
 destructor TQtComboStrings.Destroy;
 begin
-  Clear;
   FWinControl := nil;
   inherited Destroy;
 end;
@@ -640,7 +638,6 @@ end;
 
 destructor TQtListStrings.Destroy;
 begin
-  Clear;
   FWinControl := nil;
   inherited Destroy;
 end;
