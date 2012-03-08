@@ -51,6 +51,7 @@ type
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
   public
     constructor Create(AWinControl: TWinControl; AOwner: TQtComboBox);
+    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
@@ -73,6 +74,7 @@ type
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
   public
     constructor Create(AWinControl: TWinControl; AOwner: TQtListWidget);
+    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
@@ -319,6 +321,7 @@ destructor TQtMemoStrings.Destroy;
 begin
   Clear;
   FStringList.Free;
+  FOwner := nil;
   inherited Destroy;
 end;
 
@@ -362,7 +365,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.Clear;
 begin
-  FStringList.Clear;
+  if not Assigned(FOwner) then
+    exit;
+  if Assigned(FStringList) then
+    FStringList.Clear;
   if not (csDestroying in FOwner.ComponentState) and
     not (csFreeNotification in FOwner.ComponentState) and
     FOwner.HandleAllocated then
@@ -496,6 +502,13 @@ begin
   FOwner := AOwner;
 end;
 
+destructor TQtComboStrings.Destroy;
+begin
+  Clear;
+  FWinControl := nil;
+  inherited Destroy;
+end;
+
 procedure TQtComboStrings.Assign(Source: TPersistent);
 begin
   if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
@@ -623,6 +636,13 @@ begin
   inherited Create;
   FWinControl := AWinControl;
   FOwner := AOwner;
+end;
+
+destructor TQtListStrings.Destroy;
+begin
+  Clear;
+  FWinControl := nil;
+  inherited Destroy;
 end;
 
 procedure TQtListStrings.Assign(Source: TPersistent);
