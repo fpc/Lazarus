@@ -677,6 +677,7 @@ begin
   with TAutoScaleTransformData(FDrawData) do begin
     FMin := SafeInfinity;
     FMax := NegInfinity;
+    FOffset := 0.0;
     FScale := 1.0;
   end;
 end;
@@ -724,6 +725,8 @@ end;
 
 procedure TAutoScaleAxisTransform.UpdateBounds(var AMin, AMax: Double);
 begin
+  // Auto-scale is only defined for finite bounds.
+  if IsInfinite(AMin) or IsInfinite(AMax) then exit;
   with TAutoScaleTransformData(FDrawData) do begin
     UpdateMinMax(AMin, FMin, FMax);
     UpdateMinMax(AMax, FMin, FMax);
@@ -733,10 +736,8 @@ begin
       FScale := (MaxValue - MinValue) / (FMax - FMin);
     FOffset := MinValue - FMin * FScale;
   end;
-  if not IsInfinite(AMin) then
-    AMin := MinValue;
-  if not IsInfinite(AMax) then
-    AMax := MaxValue;
+  AMin := MinValue;
+  AMax := MaxValue;
 end;
 
 { TCumulNormDistrAxisTransform }
