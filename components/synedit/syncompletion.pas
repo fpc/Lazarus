@@ -376,34 +376,29 @@ type
 
   { TSynAutoComplete }
 
-  TSynAutoComplete = class(TComponent)
+  TSynAutoComplete = class(TLazSynMultiEditPlugin)
   private
-    fEditstuffs: TList;
+    FExecCommandID: TSynEditorCommand;
     FShortCut: TShortCut;
-    fEditors: TList;
     fAutoCompleteList: TStrings;
     FEndOfTokenChr: string;
     procedure SetAutoCompleteList(List: TStrings);
-    function GetEditor(i: integer): TCustomSynEdit;
-    function GetEdit: TCustomSynEdit;
-    procedure SetEdit(const Value: TCustomSynEdit);
   protected
+    procedure DoEditorAdded(AValue: TCustomSynEdit); override;
+    procedure DoEditorRemoving(AValue: TCustomSynEdit); override;
     procedure SetShortCut(Value: TShortCut);
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
-    procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-      virtual;
-    procedure EditorKeyPress(Sender: TObject; var Key: char); virtual;
-    procedure EditorUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
-      virtual;
     function GetPreviousToken(aEditor: TCustomSynEdit): string;
+    procedure TranslateKey(Sender: TObject; Code: word; SState: TShiftState;
+      var Data: pointer; var IsStartOfCombo: boolean; var Handled: boolean;
+      var Command: TSynEditorCommand; FinishComboOnly: Boolean;
+      var ComboKeyStrokes: TSynEditKeyStrokes);
+    procedure ProcessSynCommand(Sender: TObject; AfterProcessing: boolean;
+              var Handled: boolean; var Command: TSynEditorCommand;
+              var AChar: TUTF8Char; Data: pointer; HandlerData: pointer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Execute(token: string; aEditor: TCustomSynEdit);
-    property Editors[i: integer]: TCustomSynEdit read GetEditor;
-    procedure AddEditor(aEditor: TCustomSynEdit);
-    function RemoveEditor(aEditor: TCustomSynEdit): boolean;
     function EditorsCount: integer;
     function GetTokenList: string;
     function GetTokenValue(Token: string): string; 
@@ -411,16 +406,18 @@ type
     property AutoCompleteList: TStrings read fAutoCompleteList
       write SetAutoCompleteList;
     property EndOfTokenChr: string read FEndOfTokenChr write FEndOfTokenChr;
-    property Editor: TCustomSynEdit read GetEdit write SetEdit;
     property ShortCut: TShortCut read FShortCut write SetShortCut;
+    property ExecCommandID: TSynEditorCommand read FExecCommandID write FExecCommandID;
+    property Editor;
   end;
 
 procedure PrettyTextOut(c: TCanvas; x, y: integer; s: string);
 
 const
-  ecSynCompletionExecute   = ecPluginFirst +  0;
+  ecSynCompletionExecute     = ecPluginFirst +  0;
+  ecSynAutoCompletionExecute = ecPluginFirst +  1;
 
-  ecSynCompletionCount = 1;
+  ecSynCompletionCount = 2;
 
 implementation
 
@@ -1630,15 +1627,6 @@ end;
 
 { TSynCompletion }
 
-type
-  TRecordUsedToStoreEachEditorVars = record
-    KeyPress: TKeyPressEvent;
-    KeyDown: TKeyEvent;
-    UTF8KeyPress: TUTF8KeyPressEvent;
-    NoNextKey: boolean;
-  end;
-  PRecordUsedToStoreEachEditorVars = ^TRecordUsedToStoreEachEditorVars;
-
 procedure TSynCompletion.Backspace(Sender: TObject);
 var
   F: TSynBaseCompletionForm;
@@ -1858,35 +1846,13 @@ end;
 
 { TSynAutoComplete }
 
-procedure TSynAutoComplete.AddEditor(aEditor: TCustomSynEdit);
-var
-  p: PRecordUsedToStoreEachEditorVars;
-begin
-  if fEditors.IndexOf(aEditor) = -1 then begin
-    fEditors.Add(aEditor);
-    new(p);
-    p^.KeyPress := aEditor.OnKeyPress;
-    p^.KeyDown := aEditor.OnKeyDown;
-    p^.UTF8KeyPress := aEditor.OnUTF8KeyPress;
-    p^.NoNextKey := false;
-    fEditstuffs.add(p);
-    aEditor.FreeNotification(self);
-    if not (csDesigning in ComponentState) then begin
-      aEditor.OnKeyDown := {$IFDEF FPC}@{$ENDIF}EditorKeyDown;
-      aEditor.OnKeyPress := {$IFDEF FPC}@{$ENDIF}EditorKeyPress;
-      aEditor.OnUTF8KeyPress := {$IFDEF FPC}@{$ENDIF}EditorUTF8KeyPress;
-    end;
-  end;
-end;
-
 constructor TSynAutoComplete.Create(AOwner: TComponent);
 begin
   inherited;
-  fEditors := TList.Create;
-  fEditstuffs := TList.Create;
   FEndOfTokenChr := '()[].';
   fAutoCompleteList := TStringList.Create;
   fShortCut := Menus.ShortCut(Ord(' '), [ssShift]);
+  FExecCommandID := KeyOffset + ecSynAutoCompletionExecute;
 end;
 
 procedure TSynAutoComplete.SetShortCut(Value: TShortCut);
@@ -1896,75 +1862,13 @@ end;
 
 destructor TSynAutoComplete.destroy;
 begin
-  while feditors.count <> 0 do
-{$IFDEF FPC}
-    RemoveEditor(TCustomSynEdit(feditors.last));
-{$ELSE}
-    RemoveEditor(feditors.last);
-{$ENDIF}
-  FreeAndNil(fEditors);
-  FreeAndNil(fEditstuffs);
   FreeAndNil(fAutoCompleteList);
   inherited;
 end;
 
-procedure TSynAutoComplete.EditorKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-var
-  i: integer;
-  ShortCutKey: Word;
-  ShortCutShift: TShiftState;
-begin
-  ShortCutToKey(FShortCut, ShortCutKey, ShortCutShift);
-
-  i := fEditors.IndexOf(Sender);
-  if i <> -1 then begin
-    if (Shift = ShortCutShift) and (Key = ShortCutKey) and
-      not (Sender as TCustomSynEdit).ReadOnly
-    then begin
-      Execute(GetPreviousToken(Sender as TCustomSynEdit), Sender as TCustomSynEdit);
-      Key := 0;
-      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey := true;
-    end;
-    if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).KeyDown) then
-      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).KeyDown(sender, key, Shift);
-  end;
-end;
-
-procedure TSynAutoComplete.EditorKeyPress(Sender: TObject; var Key: char);
-var
-  i: integer;
-begin
-  i := fEditors.IndexOf(Sender);
-  if i <> -1 then begin
-    if TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey then begin
-      key := #0;
-      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey := false;
-    end;
-    if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).KeyPress) then
-      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).KeyPress(sender, key);
-  end;
-end;
-
-procedure TSynAutoComplete.EditorUTF8KeyPress(Sender: TObject;
-  var UTF8Key: TUTF8Char);
-var
-  i: integer;
-begin
-  i := fEditors.IndexOf(Sender);
-  if i <> -1 then begin
-    if TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey then begin
-      UTF8Key := #0;
-      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey := false;
-    end;
-    if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).UTF8KeyPress) then
-      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).UTF8KeyPress(sender, UTF8Key);
-  end;
-end;
-
 function TSynAutoComplete.EditorsCount: integer;
 begin
-  result := fEditors.count;
+  Result := EditorCount;
 end;
 
 procedure TSynAutoComplete.Execute(token: string; aEditor: TCustomSynEdit);
@@ -1976,8 +1880,6 @@ begin
 //Writeln('[TSynAutoComplete.Execute] Token is "',Token,'"');
   i := AutoCompleteList.IndexOf(token);
   if i <> -1 then begin
-    TRecordUsedToStoreEachEditorVars(
-                     fEditstuffs[fEditors.IndexOf(aEditor)]^).NoNextKey := true;
     for j := 1 to length(token) do
       aEditor.CommandProcessor(ecDeleteLastChar, ' ', nil);
     inc(i);
@@ -2010,22 +1912,6 @@ begin
   end;
 end;
 
-function TSynAutoComplete.GetEdit: TCustomSynEdit;
-begin
-  if EditorsCount > 0 then
-    result := Editors[0]
-  else
-    result := nil;
-end;
-
-function TSynAutoComplete.GetEditor(i: integer): TCustomSynEdit;
-begin
-  if (i < 0) or (i >= EditorsCount) then
-    result := nil
-  else
-    result := TCustomSynEdit(fEditors[i]);
-end;
-
 function TSynAutoComplete.GetPreviousToken(aEditor: TCustomSynEdit): string;
 var
   s: string;
@@ -2046,27 +1932,45 @@ begin
     result := '';
 end;
 
-procedure TSynAutoComplete.Notification(AComponent: TComponent; Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (fEditors <> nil) then
-    if fEditors.indexOf(AComponent) <> -1 then
-      RemoveEditor(AComponent as TCustomSynEdit);
-end;
-
-function TSynAutoComplete.RemoveEditor(aEditor: TCustomSynEdit): boolean;
+procedure TSynAutoComplete.TranslateKey(Sender: TObject; Code: word; SState: TShiftState;
+  var Data: pointer; var IsStartOfCombo: boolean; var Handled: boolean;
+  var Command: TSynEditorCommand; FinishComboOnly: Boolean;
+  var ComboKeyStrokes: TSynEditKeyStrokes);
 var
   i: integer;
-  P : PRecordUsedToStoreEachEditorVars;
-
+  ShortCutKey: Word;
+  ShortCutShift: TShiftState;
 begin
-  i := fEditors.Remove(aEditor);
-  result := i <> -1;
-  if result then begin
-    p := fEditStuffs[i];  //shane
-    dispose(p);           //shane
-//    dispose(fEditstuffs[i]);  //commented out by shane
-    fEditstuffs.delete(i);
+  if (Code = VK_UNKNOWN) or Handled or FinishComboOnly or (FExecCommandID = ecNone) then exit;
+
+  i := IndexOfEditor(Sender as TCustomSynEdit);
+  if i >= 0 then begin
+    ShortCutToKey(FShortCut, ShortCutKey, ShortCutShift);
+    if (SState = ShortCutShift) and (Code = ShortCutKey) then begin
+      Command := FExecCommandID;
+      Handled := True;
+    end;
+  end;
+end;
+
+procedure TSynAutoComplete.ProcessSynCommand(Sender: TObject; AfterProcessing: boolean;
+  var Handled: boolean; var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
+  HandlerData: pointer);
+var
+  i: integer;
+begin
+  if Handled or (Command <> FExecCommandID) then
+    exit;
+
+  i := IndexOfEditor(Sender as TCustomSynEdit);
+  if i >= 0 then begin
+    with sender as TCustomSynEdit do begin
+      if not ReadOnly then begin
+        Editor := Sender as TCustomSynEdit; // Will set Form.SetCurrentEditor
+        Execute(GetPreviousToken(Sender as TCustomSynEdit), Sender as TCustomSynEdit);
+        Handled := True;
+      end;
+    end;
   end;
 end;
 
@@ -2075,9 +1979,18 @@ begin
   fAutoCompleteList.Assign(List);
 end;
 
-procedure TSynAutoComplete.SetEdit(const Value: TCustomSynEdit);
+procedure TSynAutoComplete.DoEditorAdded(AValue: TCustomSynEdit);
 begin
-  AddEditor(Value);
+  inherited DoEditorAdded(AValue);
+  AValue.RegisterCommandHandler(@ProcessSynCommand, nil);
+  AValue.RegisterKeyTranslationHandler(@TranslateKey);
+end;
+
+procedure TSynAutoComplete.DoEditorRemoving(AValue: TCustomSynEdit);
+begin
+  inherited DoEditorRemoving(AValue);
+  AValue.UnregisterCommandHandler(@ProcessSynCommand);
+  AValue.UnRegisterKeyTranslationHandler(@TranslateKey);
 end;
 
 function TSynAutoComplete.GetTokenList: string;
@@ -2176,8 +2089,9 @@ begin
 end;
 
 const
-  SynComplutionCommandStrs: array[0..0] of TIdentMapEntry = (
-    (Value: ecSynCompletionExecute;       Name: 'ecSynCompletionExecute')
+  SynComplutionCommandStrs: array[0..1] of TIdentMapEntry = (
+    (Value: ecSynCompletionExecute;       Name: 'ecSynCompletionExecute'),
+    (Value: ecSynAutoCompletionExecute;   Name: 'ecSynAutoCompletionExecute')
   );
 
 function IdentToSynCompletionCommand(const Ident: string; var Cmd: longint): boolean;
