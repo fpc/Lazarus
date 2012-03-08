@@ -3451,7 +3451,7 @@ type
     property HotNode : TIpHtmlNode read FHotNode;                      {!!.12}
     function IsURLHtml(const URL: string): Boolean;
     procedure MakeAnchorVisible(const Name: string);
-    {$IFDEF VERSION4}
+    {$IF defined(VERSION4) and not defined(IP_LAZARUS)}
     procedure MouseWheelHandler(Var Message: TMessage); Override;      {!!.16}
     {$ENDIF}
     procedure OpenURL(const URL: string);
@@ -3565,7 +3565,7 @@ type
     property Visible;                                                  {!!.10}
     property VLinkColor;
     property WantTabs;
-    {$IFDEF VERSION4}
+    {$IF defined(VERSION4) and not defined(IP_LAZARUS)}
     property OnCanResize;                                              {!!.10}
     {$ENDIF}
     property OnClick;
@@ -19548,7 +19548,7 @@ begin
 end;
 
 {New in !!.16}
-{$IFDEF VERSION4}
+{$IF defined(VERSION4) and not defined(IP_LAZARUS)}
 procedure TIpHtmlCustomPanel.MouseWheelHandler(var Message: TMessage);
 begin
   inherited MouseWheelHandler(Message);

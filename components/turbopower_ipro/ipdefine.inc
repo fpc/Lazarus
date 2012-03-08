@@ -43,6 +43,8 @@
 {$MODE DELPHI}{$H+}
 
 {$DEFINE VERSION7}          { Delphi 7.0 or higher }
+{$DEFINE VERSION4}
+{$DEFINE VERSION5}
 {$DEFINE Version6OrHigher}
 {$DEFINE Version7OrHigher}
 
