@@ -66,7 +66,6 @@ type
     FOnCmdLineCreate : TOnCmdLineCreate;
     FOutputFilter: TOutputFilter;
     FTheProcess: TProcessUTF8;
-    FOldCurDir: string;
     {$IFDEF WithAsyncCompile}
     FFinishedCallback: TNotifyEvent;
     procedure CompilationFinished(Sender: TObject);
@@ -142,109 +141,99 @@ begin
   // if we want to show the compile progress, it's now time to show the dialog
   CompileProgress.Show;
 
-  // change working directory
-  FOldCurDir:=GetCurrentDirUTF8;
-  if not SetCurrentDirUTF8(WorkingDir) then begin
-    WriteError('TCompiler.Compile unable to set working directory '+WorkingDir);
-    exit;
+  CmdLine := CompilerFilename;
+
+  if Assigned(FOnCmdLineCreate) then begin
+    Abort:=false;
+    FOnCmdLineCreate(CmdLine,Abort);
+    if Abort then begin
+      Result:=mrAbort;
+      exit;
+    end;
   end;
   try
-    CmdLine := CompilerFilename;
-    
-    if Assigned(FOnCmdLineCreate) then begin
-      Abort:=false;
-      FOnCmdLineCreate(CmdLine,Abort);
-      if Abort then begin
-        Result:=mrAbort;
-        exit;
+    CheckIfFileIsExecutable(CmdLine);
+  except
+    on E: Exception do begin
+      WriteError(Format(lisCompilerErrorInvalidCompiler, [E.Message]));
+      if CmdLine='' then begin
+        WriteError(lisCompilerHintYouCanSetTheCompilerPath);
       end;
+      exit;
     end;
-    try
-      CheckIfFileIsExecutable(CmdLine);
-    except
-      on E: Exception do begin
-        WriteError(Format(lisCompilerErrorInvalidCompiler, [E.Message]));
-        if CmdLine='' then begin
-          WriteError(lisCompilerHintYouCanSetTheCompilerPath);
-        end;
-        exit;
-      end;
-    end;
-    if BuildAll then
-      CmdLine := CmdLine+' -B';
-    if SkipLinking and SkipAssembler then
-      CmdLine := CmdLine+' -s'
-    else if SkipLinking then
-      CmdLine := CmdLine+' -Cn';
-      
-    if CompilerParams<>'' then
-    CmdLine := CmdLine+' '+CompilerParams;
-    if Assigned(FOnCmdLineCreate) then begin
-      Abort:=false;
-      FOnCmdLineCreate(CmdLine,Abort);
-      if Abort then begin
-        Result:=mrAbort;
-        exit;
-      end;
-    end;
-    DebugLn('[TCompiler.Compile] CmdLine="',CmdLine,'"');
+  end;
+  if BuildAll then
+    CmdLine := CmdLine+' -B';
+  if SkipLinking and SkipAssembler then
+    CmdLine := CmdLine+' -s'
+  else if SkipLinking then
+    CmdLine := CmdLine+' -Cn';
 
+  if CompilerParams<>'' then
+  CmdLine := CmdLine+' '+CompilerParams;
+  if Assigned(FOnCmdLineCreate) then begin
+    Abort:=false;
+    FOnCmdLineCreate(CmdLine,Abort);
+    if Abort then begin
+      Result:=mrAbort;
+      exit;
+    end;
+  end;
+  DebugLn('[TCompiler.Compile] CmdLine="',CmdLine,'"');
+
+  try
+    if TheProcess=nil then
+      FTheProcess := TOutputFilterProcess.Create(nil);
+    TheProcess.CommandLine := CmdLine;
+    TheProcess.Options:= [poUsePipes, poStdErrToOutput];
+    TheProcess.ShowWindow := swoHide;
+    Result:=mrOk;
     try
-      if TheProcess=nil then
-        FTheProcess := TOutputFilterProcess.Create(nil);
-      TheProcess.CommandLine := CmdLine;
-      TheProcess.Options:= [poUsePipes, poStdErrToOutput];
-      TheProcess.ShowWindow := swoHide;
-      Result:=mrOk;
-      try
-        TheProcess.CurrentDirectory:=WorkingDir;
-        
-        if OutputFilter<>nil then begin
-          if BuildAll and Assigned(IDEMessagesWindow) then
-            IDEMessagesWindow.AddMsg(lisOptionsChangedRecompilingCleanWithB,
-              WorkingDir, -1);
-          OutputFilter.Options:=[ofoSearchForFPCMessages,ofoExceptionOnError];
-          OutputFilter.CompilerOptions:=AProject.CompilerOptions;
-          {$IFDEF WithAsyncCompile}
-          if aFinishedCallback <> nil then
-          begin
-            OutputFilter.ExecuteAsyncron(TheProcess, @CompilationFinished, Self);
-          end
-          else
-          {$ENDIF}
-            if not OutputFilter.Execute(TheProcess,Self) then
-              if OutputFilter.Aborted then
-                Result := mrAbort
-              else
-                Result := mrCancel;
-        end else begin
-          TheProcess.Execute;
-        end;
-      finally
-        if TheProcess.Running
-        {$IFDEF WithAsyncCompile} and ((OutputFilter = nil) or (aFinishedCallback = nil)) {$ENDIF}
-        then begin
-          TheProcess.WaitOnExit;
-          if not (TheProcess.ExitStatus in [0,1]) then  begin
-            WriteError(Format(listCompilerInternalError,[TheProcess.ExitStatus]));
-            Result:=mrCancel;
-          end;
-        end;
+      TheProcess.CurrentDirectory:=WorkingDir;
+
+      if OutputFilter<>nil then begin
+        if BuildAll and Assigned(IDEMessagesWindow) then
+          IDEMessagesWindow.AddMsg(lisOptionsChangedRecompilingCleanWithB,
+            WorkingDir, -1);
+        OutputFilter.Options:=[ofoSearchForFPCMessages,ofoExceptionOnError];
+        OutputFilter.CompilerOptions:=AProject.CompilerOptions;
+        {$IFDEF WithAsyncCompile}
+        if aFinishedCallback <> nil then
+        begin
+          OutputFilter.ExecuteAsyncron(TheProcess, @CompilationFinished, Self);
+        end
+        else
+        {$ENDIF}
+          if not OutputFilter.Execute(TheProcess,Self) then
+            if OutputFilter.Aborted then
+              Result := mrAbort
+            else
+              Result := mrCancel;
+      end else begin
+        TheProcess.Execute;
       end;
-    except
-      on e: EOutputFilterError do begin
-        Result:=mrCancel;
-        exit;
-      end;
-      on e: Exception do begin
-        DebugLn('[TCompiler.Compile] exception "',E.Message,'"');
-        WriteError(E.Message);
-        Result:=mrCancel;
-        exit;
+    finally
+      if TheProcess.Running
+      {$IFDEF WithAsyncCompile} and ((OutputFilter = nil) or (aFinishedCallback = nil)) {$ENDIF}
+      then begin
+        TheProcess.WaitOnExit;
+        if not (TheProcess.ExitStatus in [0,1]) then  begin
+          WriteError(Format(listCompilerInternalError,[TheProcess.ExitStatus]));
+          Result:=mrCancel;
+        end;
       end;
     end;
-  finally
-    SetCurrentDirUTF8(FOldCurDir);
+  except
+    on e: EOutputFilterError do begin
+      Result:=mrCancel;
+      exit;
+    end;
+    on e: Exception do begin
+      DebugLn('[TCompiler.Compile] exception "',E.Message,'"');
+      WriteError(E.Message);
+      Result:=mrCancel;
+      exit;
+    end;
   end;
   DebugLn('[TCompiler.Compile] end');
 end;
