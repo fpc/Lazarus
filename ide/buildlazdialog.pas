@@ -403,9 +403,9 @@ begin
       exit;
     end;
     NewTargetDirectory:=CleanAndExpandDirectory(NewTargetDirectory);
-    debugln('CreateBuildLazarusOptions Options.TargetDirectory=',NewTargetDirectory);
-    Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
-    if Result<>mrOk then exit;
+    NewUnitDirectory:=AppendPathDelim(NewTargetDirectory)+'units';
+    debugln('CreateBuildLazarusOptions TargetDirectory=',NewTargetDirectory);
+    debugln('CreateBuildLazarusOptions UnitsTargetDirectory=',NewUnitDirectory);
     if ExeLocked then begin
       // Allow for the case where this corresponds to the current executable
       NewTargetFilename:='lazarus'+GetExecutableExt(NewTargetOS);
@@ -481,7 +481,7 @@ begin
     if CurTargetFilename='' then
       CurTargetFilename:='lazarus'+GetExecutableExt(NewTargetOS);
     if not FilenameIsAbsolute(CurTargetFilename) then
-      CurTargetFilename:=NewTargetDirectory+PathDelim+CurTargetFilename;
+      CurTargetFilename:=AppendPathDelim(NewTargetDirectory)+CurTargetFilename;
     BundleDir:=ChangeFileExt(CurTargetFilename,'.app');
     //debugln(['CreateBuildLazarusOptions checking bundle ',BundleDir]);
     if not FileExistsCached(BundleDir) then begin

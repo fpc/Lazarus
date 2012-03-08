@@ -560,6 +560,7 @@ var i: integer;
 begin
   DoDirSeparators(Directory);
   Directory:=AppendPathDelim(Directory);
+  if DirPathExists(Directory) then exit(mrOk);
   i:=1;
   while i<=length(Directory) do begin
     if Directory[i]=PathDelim then begin
