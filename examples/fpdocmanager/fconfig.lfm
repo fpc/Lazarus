@@ -168,8 +168,8 @@ object CfgWizard: TCfgWizard
     end
     object MkLCL: TTabSheet
       Caption = 'LCL'
-      ClientHeight = 211
-      ClientWidth = 309
+      ClientHeight = 212
+      ClientWidth = 307
       OnShow = MkLCLShow
       object Label4: TLabel
         Left = 10
@@ -192,7 +192,7 @@ object CfgWizard: TCfgWizard
         Left = 100
         Height = 23
         Top = 66
-        Width = 200
+        Width = 198
         Anchors = [akTop, akLeft, akRight]
         OnChange = edLazDirChange
         TabOrder = 1
@@ -266,7 +266,7 @@ object CfgWizard: TCfgWizard
     end
     object NoParse: TTabSheet
       Caption = 'NoParse'
-      ClientHeight = 211
+      ClientHeight = 212
       ClientWidth = 307
       object Label7: TLabel
         Left = 10
@@ -289,7 +289,7 @@ object CfgWizard: TCfgWizard
       end
       object edNoParse: TMemo
         Left = 12
-        Height = 122
+        Height = 123
         Top = 88
         Width = 288
         Anchors = [akTop, akLeft, akRight, akBottom]

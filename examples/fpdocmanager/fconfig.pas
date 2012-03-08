@@ -164,7 +164,11 @@ begin
 
     edLazDir.Text := Manager.LazarusDir;
 
+  {$IFDEF FCLadds}
     swFCLads.Checked := Manager.IsExtended('fcl') <> '';
+  {$ELSE}
+    MkFCL.TabVisible := False;
+  {$ENDIF}
 
     swNoParse.Checked := Manager.ExcludeUnits;
     edNoParse.Lines.Assign(Manager.NoParseUnits);

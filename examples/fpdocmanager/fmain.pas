@@ -38,7 +38,7 @@ type
     edDefOut: TEdit;
     edUnit: TEdit;
     GroupBox1: TGroupBox;
-    GroupBox2: TGroupBox;
+    gbAltDir: TGroupBox;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -93,6 +93,7 @@ type
     procedure lbBackendExit(Sender: TObject);
     procedure lbPackagesClick(Sender: TObject);
     procedure lbUnitsClick(Sender: TObject);
+    procedure lbUnitsDblClick(Sender: TObject);
     procedure mnConfigClick(Sender: TObject);
     procedure mnExitClick(Sender: TObject);
     procedure mnImportLpkClick(Sender: TObject);
@@ -133,6 +134,7 @@ implementation
 uses
   fConfig, fLogView, fUpdateView,
   //dwlinear,
+  fEditor,
   dWriter;
 
 {$R *.lfm}
@@ -145,6 +147,10 @@ var
   s: string;
   l: TStringList;
 begin
+{$IFDEF FCLAdds}
+{$ELSE}
+  gbAltDir.Visible := False;
+{$ENDIF}
   Manager := TFPDocManager.Create(self);
   Manager.OnChange := @ProjectsChanged;
   if not Manager.LoadConfig(GetCurrentDir) then begin
@@ -495,11 +501,15 @@ begin
   //load units...
   lbUnits.Items.BeginUpdate;
   lbUnits.Clear;
+{$IFDEF old}
   for i := 0 to pkg.Units.Count - 1 do begin
     //fn := Manager.UnitName(pkg.Inputs, i);
     fn := pkg.Units.Names[i];
     lbUnits.AddItem(fn, nil);
   end;
+{$ELSE}
+  pkg.EnumUnits(lbUnits.Items);
+{$ENDIF}
   lbUnits.Sorted := True;
   lbUnits.Items.EndUpdate;
 //remember selection
@@ -549,6 +559,20 @@ begin
   edUnit.Text := CurUnit; //further depends on swSingle
   swSingle.Checked := True; //assume test single unit
   ShowUpdate;
+end;
+
+procedure TMain.lbUnitsDblClick(Sender: TObject);
+var
+  u: string;
+begin
+//edit unit description in LazDE form
+//setup unit
+  //CurUnit := lbUnits.Items[lbUnits.ItemIndex]; - already set
+  u := Manager.Package.DescrFileName(CurUnit);
+//create form
+  ModuleEditor := TModuleEditor.CreateFor(u, self);
+//show it
+  ModuleEditor.Show;
 end;
 
 procedure TMain.swSingleClick(Sender: TObject);

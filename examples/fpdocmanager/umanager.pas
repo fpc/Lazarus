@@ -74,6 +74,7 @@ type
     FRequires: TStrings;
     FUnitPath: string;
     FUnits: TStrings;
+    function GetAltDir: string;
     procedure SetAllDirs(AValue: boolean);
     procedure SetAltDir(AValue: string);
     procedure SetCompOpts(AValue: string);
@@ -99,6 +100,8 @@ type
     function  CreateProject(APrj: TFPDocHelper; const AFile: string): boolean; virtual; //new package project
     function  ImportProject(APrj: TFPDocHelper; APkg: TFPDocPackage; const AFile: string): boolean;
     procedure UpdateConfig;
+    procedure EnumUnits(AList: TStrings); virtual;
+    function  DescrFileName(const AUnit: string): string;
     property Name: string read FName write SetName;
     property Loaded: boolean read FLoaded write SetLoaded;
     property ProjectFile: string read FProjectFile write SetProjectFile; //xml?
@@ -110,7 +113,7 @@ type
     property ProjectDir: string read FProjectDir write SetProjectDir;
     property DescrDir: string read FDescrDir write SetDescrDir;
     property Descriptions: TStrings read FDescriptions write SetDescriptions;
-    property AltDir: string read FAltDir write SetAltDir;
+    property AltDir: string read GetAltDir write SetAltDir;
     property InputDir: string read FInputDir write SetInputDir;
     property SrcDirs: TStrings read FSrcDirs;
     property Units: TStrings read FUnits write SetUnits;
@@ -439,6 +442,15 @@ begin
   FAllDirs:=AValue;
 end;
 
+function TDocPackage.GetAltDir: string;
+begin
+{$IFDEF FCLadds}
+  Result := FAltDir;
+{$ELSE}
+  Result := '';
+{$ENDIF}
+end;
+
 procedure TDocPackage.SetDescriptions(AValue: TStrings);
 (* Shall we allow for multiple descriptions? (general + OS specific!?)
 *)
@@ -751,7 +763,7 @@ begin
   Config.WriteString(SecDoc, 'inputdir', InputDir);
   Config.WriteString(SecDoc, 'options', CompOpts);
   Config.WriteString(SecDoc, 'descrdir', DescrDir);
-  Config.WriteString(SecDoc, 'AltDir', AltDir);
+  Config.WriteString(SecDoc, 'AltDir', FAltDir);
   Config.WriteBool(SecDoc, 'AllDirs', AllDirs);
   Config.WriteString(SecDoc, 'requires', Requires.CommaText);
 //units
@@ -761,6 +773,25 @@ begin
 //all done
   Config.Flush;
   Loaded := True;
+end;
+
+procedure TDocPackage.EnumUnits(AList: TStrings);
+var
+  i: integer;
+begin
+//override to add further units (from AltDir...)
+  for i := 0 to Units.Count - 1 do
+    AList.Add(Units.Names[i]);
+end;
+
+function TDocPackage.DescrFileName(const AUnit: string): string;
+begin
+(* [ProjectDir +] DescrDir + AUnit + .xml
+*)
+  Result := DescrDir;
+  if (Result = '') or (Result[1] = '.') then
+    Result := ProjectDir + Result;
+  Result := Result + DirectorySeparator + AUnit + '.xml';
 end;
 
 function TDocPackage.IniFileName: string;
@@ -1163,11 +1194,15 @@ function TFPDocManager.IsExtended(const APkg: string): string;
 var
   pkg: TDocPackage;
 begin
+{$IFDEF FCLadds}
   pkg := AddPackage(APkg);
   if pkg = nil then
     Result := ''
   else
     Result := pkg.AltDir;
+{$ELSE}
+  Result := '';
+{$ENDIF}
 end;
 
 function TFPDocManager.ImportLpk(const AFile: string): TDocPackage;

@@ -1,0 +1,9 @@
+object ModuleEditor: TModuleEditor
+  Left = 758
+  Height = 624
+  Top = 140
+  Width = 686
+  Caption = 'ModuleEditor'
+  OnCreate = NewCreate
+  LCLVersion = '0.9.31'
+end

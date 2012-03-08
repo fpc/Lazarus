@@ -10,6 +10,7 @@ object Main: TMain
   Menu = MainMenu1
   OnCreate = FormCreate
   OnResize = FormResize
+  ShowHint = True
   LCLVersion = '0.9.31'
   object lbPackages: TComboBox
     Left = 0
@@ -38,11 +39,13 @@ object Main: TMain
       object lbUnits: TListBox
         Left = 0
         Height = 436
+        Hint = 'Double click to edit the description file'
         Top = 0
         Width = 100
         Align = alLeft
         ItemHeight = 0
         OnClick = lbUnitsClick
+        OnDblClick = lbUnitsDblClick
         TabOrder = 0
       end
       object Panel1: TPanel
@@ -68,6 +71,7 @@ object Main: TMain
           object swAll: TRadioButton
             Left = 10
             Height = 19
+            Hint = 'Action on all package units'
             Top = 10
             Width = 32
             Caption = 'all'
@@ -78,6 +82,7 @@ object Main: TMain
           object swSingle: TRadioButton
             Left = 48
             Height = 19
+            Hint = 'Actions only on the selected unit'
             Top = 10
             Width = 43
             Caption = 'only'
@@ -87,6 +92,7 @@ object Main: TMain
           object edUnit: TEdit
             Left = 96
             Height = 23
+            Hint = 'The selected unit'
             Top = 10
             Width = 260
             Anchors = [akTop, akLeft, akRight]
@@ -96,6 +102,7 @@ object Main: TMain
           object buRefresh: TButton
             Left = 96
             Height = 25
+            Hint = 'Update descriptions from source files'
             Top = 40
             Width = 75
             Caption = 'Refresh'
@@ -122,6 +129,7 @@ object Main: TMain
           object buTest: TButton
             Left = 9
             Height = 25
+            Hint = 'Syntax check of the description file'
             Top = 40
             Width = 75
             Caption = 'Test only'
@@ -179,7 +187,7 @@ object Main: TMain
             TabOrder = 9
           end
         end
-        object GroupBox2: TGroupBox
+        object gbAltDir: TGroupBox
           Left = 1
           Height = 95
           Top = 1
@@ -440,11 +448,11 @@ object Main: TMain
     end
     object ViewXML: TTabSheet
       Caption = 'Project'
-      ClientHeight = 315
+      ClientHeight = 436
       ClientWidth = 467
       inline edXML: TSynEdit
         Left = 0
-        Height = 315
+        Height = 436
         Top = 0
         Width = 467
         Align = alClient
@@ -928,16 +936,16 @@ object Main: TMain
     end
     object ViewINI: TTabSheet
       Caption = 'INI'
-      ClientHeight = 375
+      ClientHeight = 436
       ClientWidth = 467
       object edINI: TMemo
         Left = 0
-        Height = 375
+        Height = 436
         Top = 0
         Width = 467
         Align = alClient
         Lines.Strings = (
-          'edINI'
+          ''
         )
         ScrollBars = ssAutoBoth
         TabOrder = 0
