@@ -317,7 +317,6 @@ var
   HTML: String;
 begin
   UpdateProgress;
-
   HTML:=WikiHelp.ResultsHTML;
   if HTML='' then exit;
   LoadHTML(ResultsIpHtmlPanel,HTML);

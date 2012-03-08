@@ -33,6 +33,8 @@ resourcestring
   rsLanguageSpanish      = 'Spanish';
   rsLanguageTurkish      = 'Turkish';
   rsLanguageUkrainian    = 'Ukrainian';
+  wrsWikiSearchOptions = 'Wiki Search Options';
+  wrsLanguages = 'Languages';
 
 implementation
 

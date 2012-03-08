@@ -98,6 +98,7 @@ function WikiHeaderToLink(Header: string): string;
 function WikiCreateCommonCodeTagList(AddLazWikiLangs: boolean): TKeyWordFunctionList;
 function GetWikiPageLanguage(const Page: string): string;
 function WikiPageHasLanguage(const Page, Languages: string): boolean;
+function WikiLangInLanguageFilter(const Lang, Languages: string): boolean;
 
 function ComparePagesWithFilenames(Page1, Page2: Pointer): integer;
 function CompareFilenameWithPage(Filename, Page: Pointer): integer;
@@ -477,15 +478,18 @@ begin
 end;
 
 function WikiPageHasLanguage(const Page, Languages: string): boolean;
+begin
+  Result:=WikiLangInLanguageFilter(GetWikiPageLanguage(Page),Languages);
+end;
+
+function WikiLangInLanguageFilter(const Lang, Languages: string): boolean;
 // * = fits any
 // de = fits 'de' and original
 // -,de = fits only 'de'
 var
-  Lang: String;
   p: PChar;
   StartPos: PChar;
 begin
-  Lang:=GetWikiPageLanguage(Page);
   if (Languages='') then
     exit(Lang='');
   p:=PChar(Languages);
@@ -507,7 +511,6 @@ begin
     end;
     while p^=',' do inc(p);
   end;
-  Result:=false;
 end;
 
 function ComparePagesWithFilenames(Page1, Page2: Pointer): integer;

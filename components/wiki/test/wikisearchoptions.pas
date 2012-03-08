@@ -25,14 +25,16 @@ unit WikiSearchOptions;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, AvgLvlTree, WikiHelpManager, WikiFormat, Forms,
-  Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, ComCtrls;
+  Classes, SysUtils, FileUtil, AvgLvlTree, LazLogger, WikiHelpManager,
+  WikiFormat, WikiStrConsts, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  StdCtrls, ComCtrls;
 
 type
 
   { TWikiSearchOptsWnd }
 
   TWikiSearchOptsWnd = class(TForm)
+    ImageList1: TImageList;
     LanguagesGroupBox: TGroupBox;
     LanguagesSplitter: TSplitter;
     LanguagesTreeView: TTreeView;
@@ -40,10 +42,13 @@ type
   private
     FLanguages: string;
     procedure SetLanguages(AValue: string);
+    function LangNodeTextToCode(NodeText: string): string;
+    function LangToNodeText(LangID: string; Count: integer = -1): string;
   public
     property Languages: string read FLanguages write SetLanguages;
     procedure UpdateAvailableLanguages;
-    procedure UpdateSelectedLanguages;
+    procedure UpdateEnabledLanguages;
+    function LangCodeEnabled(const ID: string): boolean;
   end;
 
 var
@@ -57,14 +62,33 @@ implementation
 
 procedure TWikiSearchOptsWnd.FormCreate(Sender: TObject);
 begin
-  Caption:='Wiki Search Options';
-  LanguagesGroupBox.Caption:='Languages';
+  Caption:=wrsWikiSearchOptions;
+  LanguagesGroupBox.Caption:=wrsLanguages;
 end;
 
 procedure TWikiSearchOptsWnd.SetLanguages(AValue: string);
 begin
   if FLanguages=AValue then Exit;
   FLanguages:=AValue;
+end;
+
+function TWikiSearchOptsWnd.LangNodeTextToCode(NodeText: string): string;
+var
+  p: SizeInt;
+begin
+  p:=Pos(' (',NodeText);
+  if p>0 then Delete(NodeText,p,length(NodeText));
+  Result:=WikiHelp.LangCaptionToCode(NodeText)
+end;
+
+function TWikiSearchOptsWnd.LangToNodeText(LangID: string; Count: integer
+  ): string;
+begin
+  Result:=WikiHelp.LangCodeToCaption(LangID);
+  if Count<0 then
+    Result+=' (?)'
+  else
+    Result+=' ('+IntToStr(Count)+')';
 end;
 
 procedure TWikiSearchOptsWnd.UpdateAvailableLanguages;
@@ -87,14 +111,14 @@ begin
       end;
       for S2PItem in LangToCount do
         if S2PItem^.Name<>'' then
-          Langs.Add(WikiHelp.LangCodeToCaption(S2PItem^.Name)+' ('+IntToStr({%H-}PtrUInt(S2PItem^.Value))+')');
+          Langs.Add(LangToNodeText(S2PItem^.Name,{%H-}PtrUInt(S2PItem^.Value)));
       Langs.Sort;
-      Langs.Insert(0,WikiHelp.LangCodeToCaption('')+' ('+IntToStr({%H-}PtrUInt(LangToCount['']))+')');
+      Langs.Insert(0,LangToNodeText('',{%H-}PtrUInt(LangToCount[''])));
     finally
       LangToCount.Free;
     end;
   end else begin
-    Langs.Add(WikiHelp.LangCodeToCaption(''));
+    Langs.Add(LangToNodeText(''));
   end;
 
   LanguagesTreeView.BeginUpdate;
@@ -113,12 +137,28 @@ begin
     LanguagesTreeView.EndUpdate;
     Langs.Free;
   end;
-  UpdateSelectedLanguages;
+  UpdateEnabledLanguages;
 end;
 
-procedure TWikiSearchOptsWnd.UpdateSelectedLanguages;
+procedure TWikiSearchOptsWnd.UpdateEnabledLanguages;
+var
+  i: Integer;
+  TVNode: TTreeNode;
+  LangEnabled: Boolean;
 begin
+  for i:=0 to LanguagesTreeView.Items.TopLvlCount-1 do begin
+    TVNode:=LanguagesTreeView.Items.TopLvlItems[i];
+    LangEnabled:=LangCodeEnabled(LangNodeTextToCode(TVNode.Text));
+    if LangEnabled then
+      TVNode.StateIndex:=1
+    else
+      TVNode.StateIndex:=0;
+  end;
+end;
 
+function TWikiSearchOptsWnd.LangCodeEnabled(const ID: string): boolean;
+begin
+  Result:=WikiLangInLanguageFilter(ID,Languages);
 end;
 
 end.

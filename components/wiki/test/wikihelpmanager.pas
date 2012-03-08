@@ -1544,7 +1544,7 @@ end;
 
 function TWikiHelp.LangCodeToCaption(ID: string): string;
 begin
-  if ID='' then Result:='English, original'
+  if ID='' then Result:=rsLanguageEnglishOriginal
   else if CompareText(ID,'af')=0 then Result:=rsLanguageAfrikaans
   else if CompareText(ID,'ar')=0 then Result:=rsLanguageArabic
   else if CompareText(ID,'ca')=0 then Result:=rsLanguageCatalan
@@ -1574,8 +1574,8 @@ end;
 
 function TWikiHelp.LangCaptionToCode(Caption: string): string;
 begin
-  Result:='';
-  if Caption=rsLanguageEnglish then Result:='en'
+  if Caption=rsLanguageEnglishOriginal then Result:=''
+  else if Caption=rsLanguageEnglish then Result:='en'
   else if Caption=rsLanguageAfrikaans then Result:='af'
   else if Caption=rsLanguageArabic then Result:='ar'
   else if Caption=rsLanguageCatalan then Result:='ca'
@@ -1599,6 +1599,7 @@ begin
   else if Caption=rsLanguageSpanish then Result:='es'
   else if Caption=rsLanguageTurkish then Result:='tk'
   else if Caption=rsLanguageUkrainian then Result:='uk'
+  else Result:=Caption;
 end;
 
 function TWikiHelp.GetProgressCaption: string;
