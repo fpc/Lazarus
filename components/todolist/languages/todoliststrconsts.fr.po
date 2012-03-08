@@ -1,0 +1,95 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Beuselinck Vincent <vincent@beuselinck.fr>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: todoliststrconsts:listodolistrefresh
+msgid "Refresh todo items"
+msgstr "Rafraîchir les éléments ToDo"
+
+#: todoliststrconsts:listodolistgotoline
+msgid "Goto selected source line"
+msgstr "Aller à la ligne de la source sélectionnée"
+
+#: todoliststrconsts:listodolistprintlist
+msgid "Print todo items"
+msgstr "imprimer les éléments ToDo"
+
+#: todoliststrconsts:listodolistoptions
+msgid "ToDo options..."
+msgstr "Options ToDo..."
+
+#: todoliststrconsts:lisctinsertmacro
+msgid "Insert Macro"
+msgstr "Insère Macro"
+
+#: todoliststrconsts:listodoldone
+msgid "Done"
+msgstr "Fait"
+
+#: todoliststrconsts:listodoldescription
+msgid "Description"
+msgstr "Description"
+
+#: todoliststrconsts:listodolpriority
+msgid "Priority"
+msgstr "Priorité"
+
+#: todoliststrconsts:listodolfile
+msgid "Module"
+msgstr "Module"
+
+#: todoliststrconsts:listodolline
+msgid "Line"
+msgstr "ligne"
+
+#: todoliststrconsts:listodolowner
+msgid "Owner"
+msgstr "Propriétaire"
+
+#: todoliststrconsts:listtodolcategory
+msgid "Category"
+msgstr "Catégorie"
+
+#: todoliststrconsts:listodogoto
+msgid "Goto"
+msgstr "Aller"
+
+#: todoliststrconsts:listodoexport
+msgid "Export"
+msgstr "Export"
+
+#: todoliststrconsts:dlgfropts
+msgid "Options"
+msgstr "Options"
+
+#: todoliststrconsts:lisprint
+msgid "Print"
+msgstr "Imprimer"
+
+#: todoliststrconsts:dlgunitdeprefresh
+msgid "Refresh"
+msgstr "Rafraîchir"
+
+#: todoliststrconsts:listddinserttodo
+msgid "Insert ToDo"
+msgstr "insère un ToDo"
+
+#: todoliststrconsts:lisviewtodolist
+msgid "View ToDo List"
+msgstr "Voir la liste ToDo"
+
+#: todoliststrconsts:listodolist
+msgid "ToDo List"
+msgstr "Liste ToDo"
+
+#: todoliststrconsts:lispkgfiletypetext
+msgid "Text"
+msgstr "Texte"
+

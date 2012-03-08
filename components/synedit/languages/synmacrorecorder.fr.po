@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-07-16 17:58+0100\n"
-"Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
+"PO-Revision-Date: 2012-03-07 16:08+0100\n"
+"Last-Translator: Beuselinck Vincent <vincent@beuselinck.fr>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -13,7 +13,7 @@ msgstr ""
 
 #: synmacrorecorder.scannotpause
 msgid "Can only pause when recording"
-msgstr "Faire pause seulement en enregistrant"
+msgstr "peut seulement mettre en pause lors de l'enregistrement"
 
 #: synmacrorecorder.scannotplay
 msgid "Cannot playback macro when recording"
@@ -25,5 +25,5 @@ msgstr "Impossible d'enregistrer la macro en enregistrant"
 
 #: synmacrorecorder.scannotresume
 msgid "Can only resume when paused"
-msgstr "Résumé seulement en pause"
+msgstr "Peut seulement reprendre lors d'une pause"
 
