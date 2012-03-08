@@ -399,8 +399,7 @@ begin
           // no new input, but process still running
           Sleep(30);
         end;
-      end;
-      if (TheAsyncProcess=nil) and (fProcess.Output<>nil) then begin
+      end else if (TheAsyncProcess=nil) and (fProcess.Output<>nil) then begin
         // using a blocking TProcess
         Count:=fProcess.Output.NumBytesAvailable;
         if (Count=0) and (not fProcess.Running) then
