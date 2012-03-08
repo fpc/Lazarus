@@ -252,6 +252,8 @@ type
     
     procedure SetViewStyle(AStyle: TViewStyle);
 
+    procedure CheckChanged(AIndex: Integer; AChecked: Boolean); override;
+
     procedure DoColumnClicked(MouseX,MouseY: Integer);
     procedure SetItemsCount(ACount: Integer); 
     function NeedDeliverMouseEvent(Msg: Integer; const AMessage): Boolean; override;
@@ -1757,6 +1759,32 @@ begin
   ListViewModes[FStyle].Apply(Self);
   if FStyle <> vsReport then
     ShowAsList(True);
+end;
+
+procedure TCarbonListView.CheckChanged(AIndex: Integer; AChecked: Boolean);
+var
+  Msg: TLMNotify;
+  NMLV: TNMListView;
+begin
+  inherited CheckChanged(AIndex, AChecked);
+
+  if FDestroying then Exit;
+  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(NMLV, SizeOf(NMLV), #0);
+
+  Msg.Msg := CN_NOTIFY;
+
+  NMLV.hdr.hwndfrom := LCLObject.Handle;
+  NMLV.hdr.code := LVN_ITEMCHANGED;
+
+  NMLV.iItem := AIndex;
+
+  NMLV.uNewState := UINT(AChecked);
+  NMLV.uChanged := LVIF_STATE;
+
+  Msg.NMHdr := @NMLV.hdr;
+
+  DeliverMessage(LCLObject, Msg);
 end;
 
 procedure TCarbonListView.DoColumnClicked(MouseX, MouseY: Integer);
