@@ -1340,8 +1340,6 @@ type
     FSorting: Boolean;
     FSortChanged: QHeaderView_hookH;
     {$ENDIF}
-    FItemDoubleClickedHook: QTreeWidget_hookH;
-    FItemClickedHook: QTreeWidget_hookH;
     FItemActivatedHook: QTreeWidget_hookH;
     FItemChangedHook: QTreeWidget_hookH;
     FItemEnteredHook: QTreeWidget_hookH;
@@ -1417,8 +1415,6 @@ type
     function getClientOffset: TPoint; override;
 
     procedure setSelectionMode(AMode: QAbstractItemViewSelectionMode); override;
-    procedure SignalItemClicked(item: QTreeWidgetItemH; column: Integer); cdecl;
-    procedure SignalItemDoubleClicked(item: QTreeWidgetItemH; column: Integer); cdecl;
     procedure SignalItemActivated(item: QTreeWidgetItemH; column: Integer); cdecl;
     procedure SignalItemEntered(item: QTreeWidgetItemH; column: Integer); cdecl;
     procedure SignalItemChanged(item: QTreeWidgetItemH; column: Integer); cdecl;
@@ -12502,16 +12498,11 @@ procedure TQtTreeWidget.AttachEvents;
 begin
   inherited AttachEvents;
 
-  FItemDoubleClickedHook := QTreeWidget_hook_create(Widget);
-  FItemClickedHook := QTreeWidget_hook_create(Widget);
   FItemActivatedHook := QTreeWidget_hook_create(Widget);
   FItemChangedHook := QTreeWidget_hook_create(Widget);
   FItemEnteredHook := QTreeWidget_hook_create(Widget);
   FSelectionChangedHook := QTreeWidget_hook_create(Widget);
 
-  QTreeWidget_hook_hook_ItemDoubleClicked(FItemDoubleClickedHook, @SignalItemDoubleClicked);
-
-  QTreeWidget_hook_hook_ItemClicked(FItemClickedHook, @SignalItemClicked);
 
   QTreeWidget_hook_hook_ItemActivated(FItemActivatedHook, @SignalItemActivated);
 
@@ -12525,16 +12516,6 @@ end;
 
 procedure TQtTreeWidget.DetachEvents;
 begin
-  if FItemDoubleClickedHook <> nil then
-  begin
-    QTreeWidget_hook_destroy(FItemDoubleClickedHook);
-    FItemDoubleClickedHook := nil;
-  end;
-  if FItemClickedHook <> nil then
-  begin
-    QTreeWidget_hook_destroy(FItemClickedHook);
-    FItemClickedHook := nil;
-  end;
   if FItemActivatedHook <> nil then
   begin
     QTreeWidget_hook_destroy(FItemActivatedHook);
@@ -12673,103 +12654,6 @@ begin
   inherited setSelectionMode(AMode);
   if SavedItem <> nil then
     setItemSelected(SavedItem, True);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtTreeWidget.SignalItemClicked
-  Params:  Integer
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtTreeWidget.SignalItemClicked(item: QTreeWidgetItemH;
-  column: Integer); cdecl;
-var
-  MsgN: TLMNotify;
-  NMLV: TNMListView;
-  R: TRect;
-  Pt: TPoint;
-  i: Integer;
-begin
-  // we'll send also which item is clicked ... probably future
-  // lcl implementation of OnItemClick.
-  if not Checkable then
-    exit;
-  {$warning remove usage of TQtTreeWidget.SignalItemClicked }
-  EXIT;
-
-  FillChar(MsgN, SizeOf(MsgN), #0);
-  FillChar(NMLV, SizeOf(NMLV), #0);
-
-  MsgN.Msg := LM_CLICKED;
-
-  NMLV.hdr.hwndfrom := LCLObject.Handle;
-  NMLV.hdr.code := NM_CLICK;
-
-  NMLV.iItem := getRow(Item);
-
-  NMLV.iSubItem := Column;
-  NMLV.uNewState := UINT(NM_CLICK);
-  NMLV.uChanged :=  LVIS_SELECTED;
-
-  QTreeWidget_visualItemRect(QTreeWidgetH(Widget), @R, Item);
-
-  pt.X := R.Left;
-  pt.Y := R.Top;
-
-  NMLV.ptAction := pt;
-
-  MsgN.NMHdr := @NMLV.hdr;
-
-  DeliverMessage(MsgN);
-
-  {sync LCL items for selected property}
-  if (LCLObject <> nil) and (LCLObject is TListView) then
-    for i := 0 to TListView(LCLObject).Items.Count - 1 do
-      TListView(LCLObject).Items[i].Selected;
-
-  {inform LCL about current change}
-  MsgN.Msg := CN_NOTIFY;
-  NMLV.hdr.code := LVN_ITEMCHANGED;
-  NMLV.uNewState := 0;
-  NMLV.uOldState := 0;
-  if QTreeWidget_isItemSelected(QTreeWidgetH(Widget), Item) then
-    NMLV.uNewState := LVIS_SELECTED
-  else
-    NMLV.uOldState := LVIS_SELECTED;
-  NMLV.uChanged :=  LVIF_STATE;
-  MsgN.NMHdr := @NMLV.hdr;
-  DeliverMessage(Msgn);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtTreeWidget.SignalItemDoubleClicked
-  Params:  Integer
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtTreeWidget.SignalItemDoubleClicked(item: QTreeWidgetItemH;
-  column: Integer); cdecl;
-var
-  Msg: TLMNotify;
-  NMLV: TNMListView;
-begin
-  {$warning REMOVE TQtTreeWidget.SignalItemDoubleClicked it's not used}
-  FillChar(Msg, SizeOf(Msg), #0);
-  FillChar(NMLV, SizeOf(NMLV), #0);
-
-  Msg.Msg := LM_LBUTTONDBLCLK;
-
-  NMLV.hdr.hwndfrom := LCLObject.Handle;
-  NMLV.hdr.code := NM_DBLCLK;
-
-  NMLV.iItem := getRow(Item);
-
-  NMLV.iSubItem := Column;
-  NMLV.uNewState := UINT(NM_DBLCLK);
-  NMLV.uChanged := LVIS_SELECTED;
-  // LVIF_STATE;
-  
-  Msg.NMHdr := @NMLV.hdr;
-  {we send dblclick over TQtAbstractItemView.itemViewViewportEventFilter }
- // DeliverMessage( Msg);
 end;
 
 {------------------------------------------------------------------------------
