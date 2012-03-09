@@ -1915,6 +1915,7 @@ function SysColorToSysColorIndex(Color: TColor): integer;
 function ColorToRGB(Color: TColor): Longint;
 function ColorToString(Color: TColor): AnsiString;
 function StringToColor(const S: shortstring): TColor;
+function StringToColorDef(const S: shortstring; const DefaultValue: TColor): TColor;
 procedure GetColorValues(Proc: TGetColorStringProc);
 function InvertColor(AColor: TColor): TColor;
 function DecColor(AColor: TColor; AQuantity: Byte): TColor;
@@ -2571,6 +2572,13 @@ begin
   Result := clNone;
   if not IdentToColor(S, Longint(Result)) then
     Result := TColor(StrToInt(S));
+end;
+
+function StringToColorDef(const S: shortstring; const DefaultValue: TColor): TColor;
+begin
+  Result := DefaultValue;
+  if not IdentToColor(S, Longint(Result)) then
+    Result := TColor(StrToIntDef(S,DefaultValue));
 end;
 
 procedure GetColorValues(Proc: TGetColorStringProc);

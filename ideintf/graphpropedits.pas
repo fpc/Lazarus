@@ -402,7 +402,7 @@ begin
     Rectangle(ARect.Left, ARect.Top, vRight, vBottom);
 
     // set things up and do the work
-    Brush.Color := StringToColor(CurValue);
+    Brush.Color := StringToColorDef(CurValue,clNone);
     Pen.Color := ColorToBorderColor(ColorToRGB(Brush.Color));
     Rectangle(ARect.Left + 1, ARect.Top + 1, vRight - 1, vBottom - 1);
     
