@@ -23,7 +23,6 @@ unit WikiHelpManager;
 {$mode objfpc}{$H+}
 
 { $DEFINE VerboseWikiHelp}
-{$DEFINE TestWikiSearch}
 
 interface
 
@@ -73,7 +72,7 @@ type
   public
     Phrases: TStrings;
     LoPhrases: TStrings; // Phrases lowercase
-    Languages: string; // comma separated list, '-' means not in the original, 'de' = german
+    Languages: string; // comma separated list, '-' means not the original, 'de' = german, '*' = all
     Scoring: TWHScoring;
     FreeScoring: boolean;
     constructor Create(const SearchText: string; const aLang: string = '';
@@ -1259,9 +1258,6 @@ begin
         if FindFirstUTF8(Help.XMLDirectory+AllFilesMask,faAnyFile,FileInfo)=0 then begin
           repeat
             if CompareFileExt(FileInfo.Name,'.xml',false)<>0 then continue;
-            {$IFDEF TestWikiSearch}
-            //if FileInfo.Name[1]<>'L' then continue;
-            {$ENDIF}
             Files.Add(FileInfo.Name);
           until FindNextUTF8(FileInfo)<>0;
         end;

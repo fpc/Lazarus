@@ -48,6 +48,7 @@ type
   TWiki2XHTMLConverter = class(TWiki2FormatConverter)
   private
     FCSSFilename: string;
+    FLinkToBaseDocument: string;
     FMaxH: integer;
     FPageFileExt: string;
     procedure SetCSSFilename(AValue: string);
@@ -80,6 +81,7 @@ type
     function PageToFilename(Page: string; IsInternalLink, Full: boolean): string; virtual;
     function PageToFilename(Page: TW2XHTMLPage; Full: boolean): string; virtual;
     property PageFileExt: string read FPageFileExt write SetPageFileExt;
+    property LinkToBaseDocument: string read FLinkToBaseDocument write FLinkToBaseDocument;
   end;
 
 implementation
@@ -253,6 +255,7 @@ var
   CSSNode: TDOMElement;
   Node: TDOMElement;
   CurCSSFilename: String;
+  Link: String;
 begin
   Page.ClearConversion;
   if Page.WikiPage=nil then exit;
@@ -295,6 +298,20 @@ begin
     Page.SectionLevel:=0;
     Page.CurNode:=Page.BodyNode;
     Page.WikiPage.Parse(@OnWikiToken,Page);
+
+    if LinkToBaseDocument<>'' then begin
+      // add <a href="BaseURL+WikiDocumentName">LinkToBaseDocument</a><br>
+      Node:=doc.CreateElement('a');
+      Page.BodyNode.AppendChild(Node);
+      Link:=Page.WikiPage.BaseURL;
+      if (Link<>'') and (Link[length(Link)]<>'/') then
+        Link+='/';
+      Link+=Page.WikiDocumentName;
+      Node.SetAttribute('href',Link);
+      Node.AppendChild(doc.CreateTextNode(LinkToBaseDocument));
+      Node:=doc.CreateElement('br');
+      Page.BodyNode.AppendChild(Node);
+    end;
   finally
     Page.BodyNode:=nil;
     Page.CurNode:=nil;
@@ -712,6 +729,7 @@ begin
   FPageFileExt:='.xhtml';
   ShortFilenameToPage:=TFilenameToPointerTree.Create(false);
   UsedImages:=TFilenameToPointerTree.Create(false);
+  LinkToBaseDocument:='Online version';
 end;
 
 destructor TWiki2XHTMLConverter.Destroy;
