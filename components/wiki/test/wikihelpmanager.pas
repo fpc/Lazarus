@@ -35,16 +35,51 @@ uses
 type
   TWikiHelp = class;
 
+  TWHFitsCategory = (
+    whfcNone,
+    whfcLink,
+    whfcText,
+    whfcHeader,
+    whfcPageTitle
+    );
+  TWHFitsCategories = set of TWHFitsCategory;
+
+  TWHFitsStringFlag = (
+    whfsPart,
+    whfsWholeWord
+    );
+  TWHFitsStringFlags = set of TWHFitsStringFlag;
+
+  TWHPhrasePageFit = record
+    Category: TWHFitsCategory;
+    Quality: TWHFitsStringFlag;
+  end;
+  PWHPhrasePageFit = ^TWHPhrasePageFit;
+
+  TWHScore = single;
+
+  { TWHScoring }
+
+  TWHScoring = class(TPersistent)
+  public
+    Phrases: array[TWHFitsCategory,TWHFitsStringFlag] of TWHScore;
+    function Equals(Obj: TObject): boolean; override;
+    procedure Assign(Source: TPersistent); override;
+  end;
+
   { TWikiHelpQuery }
 
-  TWikiHelpQuery = class
+  TWikiHelpQuery = class(TPersistent)
   public
     Phrases: TStrings;
     LoPhrases: TStrings; // Phrases lowercase
     Languages: string; // comma separated list, '-' means not in the original, 'de' = german
-    constructor Create(const SearchText: string; const aLang: string = '');
+    Scoring: TWHScoring;
+    constructor Create(const SearchText: string; const aLang: string = '';
+      aScoring: TWHScoring = nil);
     destructor Destroy; override;
     function Equals(Obj: TObject): boolean; override;
+    procedure Assign(Source: TPersistent); override;
   end;
 
   TWHTextNodeType = (
@@ -86,33 +121,6 @@ type
     function CalcMemSize: SizeInt;
   end;
 
-  TWHFitsCategory = (
-    whfcNone,
-    whfcLink,
-    whfcText,
-    whfcHeader,
-    whfcPageTitle
-    );
-  TWHFitsCategories = set of TWHFitsCategory;
-
-  TWHFitsStringFlag = (
-    whfsPart,
-    whfsWholeWord
-    );
-  TWHFitsStringFlags = set of TWHFitsStringFlag;
-
-  TWHPhrasePageFit = record
-    Category: TWHFitsCategory;
-    Quality: TWHFitsStringFlag;
-  end;
-  PWHPhrasePageFit = ^TWHPhrasePageFit;
-
-  TWHScore = single;
-  TWHScoring = class
-  public
-    Phrases: array[TWHFitsCategory,TWHFitsStringFlag] of TWHScore;
-  end;
-
   { TW2HelpPage }
 
   TW2HelpPage = class(TW2HTMLPage)
@@ -121,9 +129,9 @@ type
     CurNode: TWHTextNode;
     Score: single;
     destructor Destroy; override;
-    function GetScore(Query: TWikiHelpQuery; Scoring: TWHScoring): TWHScore;
+    function GetScore(Query: TWikiHelpQuery): TWHScore;
     procedure GetFit(Query: TWikiHelpQuery; Fit: PWHPhrasePageFit);
-    function GetNodeHighestScore(Query: TWikiHelpQuery; Scoring: TWHScoring): TWHTextNode;
+    function GetNodeHighestScore(Query: TWikiHelpQuery): TWHTextNode;
   end;
 
   { TWiki2HelpConverter }
@@ -131,7 +139,6 @@ type
   TWiki2HelpConverter = class(TWiki2HTMLConverter)
   private
     FCurQuery: TWikiHelpQuery;
-    FCurScoring: TWHScoring;
     FHelp: TWikiHelp;
   protected
     PagesPerThread: integer;
@@ -150,8 +157,7 @@ type
     procedure LoadPages;
     procedure ConvertInit; override;
     procedure ExtractAllTexts;
-    procedure Search(Query: TWikiHelpQuery; Scoring: TWHScoring;
-      var FoundPages: TFPList);
+    procedure Search(Query: TWikiHelpQuery; var FoundPages: TFPList);
     procedure SavePageAsHTMLToStream(Page: TW2HelpPage; aStream: TStream);
     function PageToFilename(Page: string; IsInternalLink, {%H-}Full: boolean
       ): string; override;
@@ -194,7 +200,7 @@ type
     FOnScanned: TNotifyEvent;
     FOnSearched: TNotifyEvent;
     FQuery: TWikiHelpQuery;
-    FScoring: TWHScoring;
+    FDefaultScoring: TWHScoring;
     FResultsCSS: string;
     FResultsCSSURL: string;
     FResultsHTML: string;
@@ -239,10 +245,11 @@ type
     function LangCaptionToCode(Caption: string): string;
 
     // search
-    procedure Search(const Term: string; const Languages: string = '');
+    procedure Search(const Term: string; const Languages: string = '';
+                     Scoring: TWHScoring = nil);
     procedure Search(aQuery: TWikiHelpQuery);
     property Query: TWikiHelpQuery read FQuery;
-    property Scoring: TWHScoring read FScoring;
+    property DefaultScoring: TWHScoring read FDefaultScoring;
     property MaxResults: integer read FMaxResults write SetMaxResults;
     property ResultsHTML: string read FResultsHTML;
 
@@ -546,24 +553,58 @@ begin
     exit(0);
 end;
 
+{ TWHScoring }
+
+function TWHScoring.Equals(Obj: TObject): boolean;
+var
+  c: TWHFitsCategory;
+  f: TWHFitsStringFlag;
+  Src: TWHScoring;
+begin
+  if Self=Obj then exit(true);
+  Result:=false;
+  if Obj=nil then exit;
+  if Obj is TWHScoring then begin
+    Src:=TWHScoring(Obj);
+    for c:=Low(TWHFitsCategory) to high(TWHFitsCategory) do
+      for f:=Low(TWHFitsStringFlag) to high(TWHFitsStringFlag) do
+        if Phrases[c,f]<>Src.Phrases[c,f] then exit;
+  end;
+  Result:=true;
+end;
+
+procedure TWHScoring.Assign(Source: TPersistent);
+var
+  Src: TWHScoring;
+begin
+  if Source is TWHScoring then begin
+    Src:=TWHScoring(Source);
+    debugln(['TWHScoring.Assign ',SizeOf(Phrases)]);
+    Move(Src.Phrases,Phrases,SizeOf(Phrases));
+  end else
+    inherited Assign(Source);
+end;
+
 { TWikiHelpQuery }
 
-constructor TWikiHelpQuery.Create(const SearchText: string; const aLang: string
-  );
+constructor TWikiHelpQuery.Create(const SearchText: string;
+  const aLang: string; aScoring: TWHScoring);
 var
   i: Integer;
 begin
-  Languages:=aLang;
   Phrases:=SearchTextToPhrases(SearchText);
   LoPhrases:=TStringList.Create;
   for i:=0 to Phrases.Count-1 do
     LoPhrases.Add(UTF8LowerCase(Phrases[i]));
+  Languages:=aLang;
+  Scoring:=aScoring;
 end;
 
 destructor TWikiHelpQuery.Destroy;
 begin
   FreeAndNil(Phrases);
   FreeAndNil(LoPhrases);
+  FreeAndNil(Scoring);
   inherited Destroy;
 end;
 
@@ -571,15 +612,30 @@ function TWikiHelpQuery.Equals(Obj: TObject): boolean;
 var
   Src: TWikiHelpQuery;
 begin
-  Result:=inherited Equals(Obj);
-  if Result then exit;
+  if Obj=Self then exit(true);
   Result:=false;
+  if Obj=nil then exit;
   if not (Obj is TWikiHelpQuery) then exit;
   Src:=TWikiHelpQuery(Obj);
   if not Phrases.Equals(Src.Phrases) then exit;
   // LoPhrases is computed from Phrases
   if Languages<>Src.Languages then exit;
+  if not Scoring.Equals(Src.Scoring) then exit;
   Result:=true;
+end;
+
+procedure TWikiHelpQuery.Assign(Source: TPersistent);
+var
+  Src: TWikiHelpQuery;
+begin
+  if Source is TWikiHelpQuery then begin
+    Src:=TWikiHelpQuery(Source);
+    Phrases.Assign(Src.Phrases);
+    LoPhrases.Assign(Src.LoPhrases);
+    Languages:=Src.Languages;
+    Scoring.Assign(Src.Scoring);
+  end else
+    inherited Assign(Source);
 end;
 
 { TW2HelpPage }
@@ -590,8 +646,7 @@ begin
   inherited Destroy;
 end;
 
-function TW2HelpPage.GetScore(Query: TWikiHelpQuery; Scoring: TWHScoring
-  ): TWHScore;
+function TW2HelpPage.GetScore(Query: TWikiHelpQuery): TWHScore;
 var
   PhrasesFit: PWHPhrasePageFit;
   Size: Integer;
@@ -612,7 +667,7 @@ begin
     GetFit(Query,PhrasesFit);
     for i:=0 to Query.LoPhrases.Count-1 do begin
       Fit:=@PhrasesFit[i];
-      Result+=Scoring.Phrases[Fit^.Category,Fit^.Quality];
+      Result+=Query.Scoring.Phrases[Fit^.Category,Fit^.Quality];
     end;
   finally
     FreeMem(PhrasesFit);
@@ -668,8 +723,7 @@ begin
   Traverse(TextRoot);
 end;
 
-function TW2HelpPage.GetNodeHighestScore(Query: TWikiHelpQuery;
-  Scoring: TWHScoring): TWHTextNode;
+function TW2HelpPage.GetNodeHighestScore(Query: TWikiHelpQuery): TWHTextNode;
 
   function GetNodeScore(Node: TWHTextNode): TWHScore;
   var
@@ -697,7 +751,7 @@ function TW2HelpPage.GetNodeHighestScore(Query: TWikiHelpQuery;
         Quality:=whfsWholeWord
       else
         Quality:=whfsPart;
-      Result+=Scoring.Phrases[Category,Quality];
+      Result+=Query.Scoring.Phrases[Category,Quality];
     end;
   end;
 
@@ -1032,7 +1086,7 @@ begin
   if Help.Aborting then exit;
   for i:=StartIndex to EndIndex do begin
     Page:=TW2HelpPage(Pages[i]);
-    Page.Score:=Page.GetScore(FCurQuery,FCurScoring);
+    Page.Score:=Page.GetScore(FCurQuery);
   end;
   Help.EnterCritSect;
   try
@@ -1088,7 +1142,7 @@ begin
 end;
 
 procedure TWiki2HelpConverter.Search(Query: TWikiHelpQuery;
-  Scoring: TWHScoring; var FoundPages: TFPList);
+  var FoundPages: TFPList);
 var
   i: Integer;
   Page: TW2HelpPage;
@@ -1102,7 +1156,6 @@ begin
     Help.LeaveCritSect;
   end;
   FCurQuery:=Query;
-  FCurScoring:=Scoring;
   if FoundPages=nil then
     FoundPages:=TFPList.Create;
   ProcThreadPool.DoParallel(@ParallelComputeScores,0,(Count-1) div PagesPerThread);
@@ -1350,7 +1403,7 @@ begin
     StartTime:=Now;
     //debugln(['TWikiHelp.DoSearch START Search=',Trim(Query.Phrases.Text),' Lang="',Query.Languages,'"']);
     FoundPages:=nil;
-    Converter.Search(Query,Scoring,FoundPages);
+    Converter.Search(Query,FoundPages);
     HTML:='<html>'+LineEnding
          +'<head>'+LineEnding
          +' <meta content="text/html; charset=utf-8" http-equiv="Content-Type">'+LineEnding;
@@ -1361,7 +1414,7 @@ begin
     for i:=0 to Min(FoundPages.Count-1,MaxResults) do begin
       Page:=TW2HelpPage(FoundPages[i]);
       //debugln(['TWikiHelp.DoSearch ',Page.WikiDocumentName,' ',GetWikiPageLanguage(Page.WikiDocumentName),' ',WikiPageHasLanguage(Page.WikiDocumentName,Query.Languages)]);
-      Node:=Page.GetNodeHighestScore(Query,Scoring);
+      Node:=Page.GetNodeHighestScore(Query);
       s:='<div class="wikiSearchResultItem">'+FoundNodeToHTMLSnippet(Page,Node,Query)+'</div>'+LineEnding;
       //debugln(['TWikiHelp.TestSearch Score=',Page.Score,' HTML="',s,'"']);
       HTML+=s;
@@ -1434,15 +1487,17 @@ begin
   FConverter:=TWiki2HelpConverter.Create;
   FConverter.CodeTags:=WikiCreateCommonCodeTagList(true);
   FConverter.FHelp:=Self;
-  FScoring:=TWHScoring.Create;
-  FScoring.Phrases[whfcPageTitle,whfsWholeWord]:=128;
-  FScoring.Phrases[whfcPageTitle,whfsPart]:=64;
-  FScoring.Phrases[whfcHeader,whfsWholeWord]:=32;
-  FScoring.Phrases[whfcHeader,whfsPart]:=16;
-  FScoring.Phrases[whfcText,whfsWholeWord]:=8;
-  FScoring.Phrases[whfcText,whfsPart]:=4;
-  FScoring.Phrases[whfcLink,whfsWholeWord]:=2;
-  FScoring.Phrases[whfcLink,whfsPart]:=1;
+  FDefaultScoring:=TWHScoring.Create;
+  with FDefaultScoring do begin
+    Phrases[whfcPageTitle,whfsWholeWord]:=128;
+    Phrases[whfcPageTitle,whfsPart]:=64;
+    Phrases[whfcHeader,whfsWholeWord]:=32;
+    Phrases[whfcHeader,whfsPart]:=16;
+    Phrases[whfcText,whfsWholeWord]:=8;
+    Phrases[whfcText,whfsPart]:=4;
+    Phrases[whfcLink,whfsWholeWord]:=2;
+    Phrases[whfcLink,whfsPart]:=1;
+  end;
   FMaxResults:=10;
   fProgressStep:=whpsNone;
 end;
@@ -1452,7 +1507,7 @@ begin
   AbortLoading(true);
   FConverter.CodeTags.Free;
   FreeAndNil(FConverter);
-  FreeAndNil(FScoring);
+  FreeAndNil(FDefaultScoring);
   FreeAndNil(FQuery);
   inherited Destroy;
   DoneCriticalsection(FCritSec);
@@ -1627,21 +1682,32 @@ begin
   Result:=not (fProgressStep in [whpsWikiLoadComplete,whpsWikiSearchComplete]);
 end;
 
-procedure TWikiHelp.Search(const Term: string; const Languages: string);
+procedure TWikiHelp.Search(const Term: string; const Languages: string;
+  Scoring: TWHScoring);
 begin
-  Search(TWikiHelpQuery.Create(Term,Languages));
+  if Scoring=nil then Scoring:=DefaultScoring;
+  Search(TWikiHelpQuery.Create(Term,Languages,Scoring));
 end;
 
 procedure TWikiHelp.Search(aQuery: TWikiHelpQuery);
+
+  procedure FreeQuery(var aQuery: TWikiHelpQuery);
+  begin
+    if aQuery=nil then exit;
+    if aQuery.Scoring=DefaultScoring then
+      aQuery.Scoring:=nil;
+    FreeAndNil(aQuery);
+  end;
+
 begin
   EnterCritSect;
   try
     if (aQuery<>nil) and (FQuery<>nil) and (FQuery.Equals(aQuery)) then begin
       // same query
-      FreeAndNil(aQuery);
+      FreeQuery(aQuery);
       exit;
     end;
-    FreeAndNil(FQuery);
+    FreeQuery(FQuery);
     FQuery:=aQuery;
     if LoadingContent then exit;
   finally
