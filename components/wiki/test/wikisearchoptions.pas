@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LazLogger, BasicCodeTools,
   CodeToolsStructs, WikiHelpManager, WikiFormat, WikiStrConsts, Forms, Controls,
-  Graphics, Dialogs, ExtCtrls, StdCtrls, ComCtrls;
+  Graphics, Dialogs, ExtCtrls, StdCtrls, ComCtrls, Grids;
 
 type
 
@@ -38,19 +38,26 @@ type
     LanguagesGroupBox: TGroupBox;
     LanguagesSplitter: TSplitter;
     LanguagesTreeView: TTreeView;
+    ScoresGroupBox: TGroupBox;
+    ScoresStringGrid: TStringGrid;
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure LanguagesTreeViewMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
       {%H-}Shift: TShiftState; X, Y: Integer);
+    procedure ScoresStringGridEditingDone(Sender: TObject);
   private
     FLanguages: TStringToStringTree;
     FOnOptionsChanged: TNotifyEvent;
+    FScoring: TWHScoring;
     function GetLangCodeEnabled(const ID: string): boolean;
     function GetLanguages: string;
     function LangNodeTextToCode(NodeText: string): string;
     function LangToNodeText(LangID: string; Count: integer = -1): string;
     procedure SetLangCodeEnabled(const ID: string; AValue: boolean);
     procedure SetLanguages(AValue: string);
+    procedure FillScoresGrid;
+    function Score2String(s: single): string;
+    procedure DoOptionsChanged;
   public
     property Languages: string read GetLanguages write SetLanguages;
     property LangCodeEnabled[const ID: string]: boolean read GetLangCodeEnabled
@@ -58,6 +65,7 @@ type
     procedure UpdateAvailableLanguages;
     procedure UpdateEnabledLanguages;
     property OnOptionsChanged: TNotifyEvent read FOnOptionsChanged write FOnOptionsChanged;
+    property Scoring: TWHScoring read FScoring;
   end;
 
 var
@@ -71,16 +79,34 @@ implementation
 
 procedure TWikiSearchOptsWnd.FormCreate(Sender: TObject);
 begin
+  FScoring:=TWHScoring.Create;
+  FScoring.Assign(WikiHelp.DefaultScoring);
+
   Caption:=wrsWikiSearchOptions;
   LanguagesGroupBox.Caption:=wrsLanguages;
   FLanguages:=TStringToStringTree.Create(false);
   FLanguages['']:='1';
+
+  ScoresGroupBox.Caption:=wrsScores;
+  with ScoresStringGrid do begin
+    RowCount:=9;
+    Cells[0, 1]:=wrsPageTitleWholeWord;
+    Cells[0, 2]:=wrsPageTitlePart;
+    Cells[0, 3]:=wrsHeaderWholeWord;
+    Cells[0, 4]:=wrsHeaderPart;
+    Cells[0, 5]:=wrsTextWholeWord;
+    Cells[0, 6]:=wrsTextPart;
+    Cells[0, 7]:=wrsLinkWholeWord;
+    Cells[0, 8]:=wrsLinkPart;
+  end;
+  FillScoresGrid;
 end;
 
 procedure TWikiSearchOptsWnd.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   FreeAndNil(FLanguages);
+  FreeAndNil(FScoring);
 end;
 
 procedure TWikiSearchOptsWnd.LanguagesTreeViewMouseDown(Sender: TObject;
@@ -94,6 +120,41 @@ begin
   if x>=TVNode.DisplayStateIconLeft then begin
     LangID:=LangNodeTextToCode(TVNode.Text);
     LangCodeEnabled[LangID]:=not LangCodeEnabled[LangID];
+  end;
+end;
+
+procedure TWikiSearchOptsWnd.ScoresStringGridEditingDone(Sender: TObject);
+var
+  Category: TWHFitsCategory;
+  FitsString: TWHFitsStringFlag;
+  OldScore: Single;
+  NewScore: Extended;
+  Row: Integer;
+  Col: Integer;
+begin
+  Row:=ScoresStringGrid.Row;
+  Col:=ScoresStringGrid.Col;
+  if Col=1 then begin
+    case Row of
+    1: begin Category:=whfcPageTitle; FitsString:=whfsWholeWord; end;
+    2: begin Category:=whfcPageTitle; FitsString:=whfsPart; end;
+    3: begin Category:=whfcHeader; FitsString:=whfsWholeWord; end;
+    4: begin Category:=whfcHeader; FitsString:=whfsPart; end;
+    5: begin Category:=whfcText; FitsString:=whfsWholeWord; end;
+    6: begin Category:=whfcText; FitsString:=whfsPart; end;
+    7: begin Category:=whfcLink; FitsString:=whfsWholeWord; end;
+    8: begin Category:=whfcLink; FitsString:=whfsPart; end;
+    else exit;
+    end;
+    OldScore:=Scoring.Phrases[Category,FitsString];
+    NewScore:=StrToFloatDef(ScoresStringGrid.Cells[Col,Row],OldScore);
+    if (NewScore<-10000) then NewScore:=-10000;
+    if (NewScore>10000) then NewScore:=10000;
+    ScoresStringGrid.Cells[Col,Row]:=Score2String(NewScore);
+    if OldScore<>NewScore then begin
+      Scoring.Phrases[Category,FitsString]:=NewScore;
+      DoOptionsChanged;
+    end;
   end;
 end;
 
@@ -134,6 +195,31 @@ begin
   UpdateEnabledLanguages;
 end;
 
+procedure TWikiSearchOptsWnd.FillScoresGrid;
+begin
+  with ScoresStringGrid do begin
+    Cells[1,1]:=Score2String(Scoring.Phrases[whfcPageTitle,whfsWholeWord]);
+    Cells[1,2]:=Score2String(Scoring.Phrases[whfcPageTitle,whfsPart]);
+    Cells[1,3]:=Score2String(Scoring.Phrases[whfcHeader,whfsWholeWord]);
+    Cells[1,4]:=Score2String(Scoring.Phrases[whfcHeader,whfsPart]);
+    Cells[1,5]:=Score2String(Scoring.Phrases[whfcText,whfsWholeWord]);
+    Cells[1,6]:=Score2String(Scoring.Phrases[whfcText,whfsPart]);
+    Cells[1,7]:=Score2String(Scoring.Phrases[whfcLink,whfsWholeWord]);
+    Cells[1,8]:=Score2String(Scoring.Phrases[whfcLink,whfsPart]);
+  end;
+end;
+
+function TWikiSearchOptsWnd.Score2String(s: single): string;
+begin
+  Result:=FloatToStrF(s,ffGeneral,5,2);
+end;
+
+procedure TWikiSearchOptsWnd.DoOptionsChanged;
+begin
+  if Assigned(OnOptionsChanged) then
+    OnOptionsChanged(Self);
+end;
+
 procedure TWikiSearchOptsWnd.SetLangCodeEnabled(const ID: string;
   AValue: boolean);
 begin
@@ -143,8 +229,7 @@ begin
   else
     FLanguages.Remove(ID);
   UpdateEnabledLanguages;
-  if Assigned(OnOptionsChanged) then
-    OnOptionsChanged(Self);
+  DoOptionsChanged;
 end;
 
 function TWikiSearchOptsWnd.LangNodeTextToCode(NodeText: string): string;

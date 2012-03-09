@@ -70,18 +70,19 @@ type
     procedure SearchEditChange(Sender: TObject);
     procedure ShowSearchToolButtonClick(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
-    procedure WikiSearchOptsWndOptionsChanged(Sender: TObject);
   private
     fLastSearchText: string;
     fLastLanguages: string;
+    fLastScoring: TWHScoring;
     FIdleConnected: boolean;
     FURLDataProvider: TWikiIpHtmlDataProvider;
-    procedure SearchParamsChanged;
+    procedure QueryChanged;
     procedure SetIdleConnected(AValue: boolean);
     procedure UpdateProgress;
     procedure LoadHTML(Target: TIpHtmlPanel; HTML: string); overload;
     procedure LoadHTML(Target: TIpHtmlPanel; aStream: TStream); overload;
     procedure ShowOptions;
+    procedure WikiSearchOptsWndOptionsChanged(Sender: TObject);
     procedure WikiHelpScanned(Sender: TObject);
     procedure WikiHelpSearched(Sender: TObject);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
@@ -139,6 +140,8 @@ begin
   FURLDataProvider.OnGetImage:=@DataProviderGetImage;
 
   WikiHelp:=TWikiHelp.Create(nil);
+  fLastScoring:=TWHScoring.Create;
+  fLastScoring.Assign(WikiHelp.DefaultScoring);
   WikiHelp.XMLDirectory:=SetDirSeparators('../wikixml');
   WikiHelp.ImagesDirectory:=SetDirSeparators('../images');
   WikiHelp.Converter.OutputDir:='';
@@ -193,11 +196,14 @@ end;
 
 procedure TWikiSearchDemoForm.FormDestroy(Sender: TObject);
 begin
+  IdleConnected:=false;
+  FreeAndNil(WikiSearchOptsWnd);
   // free pages before dataprovider
   FreeAndNil(ResultsIpHtmlPanel);
   FreeAndNil(PageIpHtmlPanel);
   FreeAndNil(FURLDataProvider);
   FreeAndNil(WikiHelp);
+  FreeAndNil(fLastScoring);
 end;
 
 procedure TWikiSearchDemoForm.HideSearchButtonClick(Sender: TObject);
@@ -219,7 +225,7 @@ end;
 
 procedure TWikiSearchDemoForm.OnIdle(Sender: TObject; var Done: Boolean);
 begin
-  SearchParamsChanged;
+  QueryChanged;
   IdleConnected:=false;
 end;
 
@@ -309,7 +315,7 @@ end;
 
 procedure TWikiSearchDemoForm.WikiSearchOptsWndOptionsChanged(Sender: TObject);
 begin
-  SearchParamsChanged;
+  QueryChanged;
 end;
 
 procedure TWikiSearchDemoForm.WikiHelpScanned(Sender: TObject);
@@ -329,18 +335,23 @@ begin
   LoadHTML(ResultsIpHtmlPanel,HTML);
 end;
 
-procedure TWikiSearchDemoForm.SearchParamsChanged;
+procedure TWikiSearchDemoForm.QueryChanged;
 var
   NewSearchText: String;
   NewLanguages: String;
 begin
+  if ComponentState*[csDestroying,csLoading]<>[] then exit;
   NewSearchText:=UTF8Trim(SearchEdit.Text);
   NewLanguages:=GetLanguages;
-  if (NewSearchText=fLastSearchText) and (NewLanguages=fLastLanguages) then
+  if (NewSearchText=fLastSearchText) and (NewLanguages=fLastLanguages)
+  and ((WikiSearchOptsWnd=nil) or fLastScoring.Equals(WikiSearchOptsWnd.Scoring))
+  then
     exit;
   fLastSearchText:=NewSearchText;
   fLastLanguages:=NewLanguages;
-  WikiHelp.Search(NewSearchText,NewLanguages);
+  if WikiSearchOptsWnd<>nil then
+    fLastScoring.Assign(WikiSearchOptsWnd.Scoring);
+  WikiHelp.Search(NewSearchText,NewLanguages,fLastScoring);
   Timer1.Enabled:=true;
 end;
 

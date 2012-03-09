@@ -1,30 +1,30 @@
 object WikiSearchOptsWnd: TWikiSearchOptsWnd
   Left = 364
-  Height = 308
+  Height = 300
   Top = 392
-  Width = 364
+  Width = 449
   Caption = 'WikiSearchOptsWnd'
-  ClientHeight = 308
-  ClientWidth = 364
+  ClientHeight = 300
+  ClientWidth = 449
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object LanguagesGroupBox: TGroupBox
     Left = 0
-    Height = 308
+    Height = 300
     Top = 0
-    Width = 194
-    Align = alLeft
+    Width = 218
+    Align = alClient
     Caption = 'LanguagesGroupBox'
-    ClientHeight = 292
-    ClientWidth = 190
+    ClientHeight = 284
+    ClientWidth = 214
     TabOrder = 0
     object LanguagesTreeView: TTreeView
       Left = 0
-      Height = 292
+      Height = 284
       Top = 0
-      Width = 190
+      Width = 214
       Align = alClient
       DefaultItemHeight = 16
       ReadOnly = True
@@ -37,10 +37,54 @@ object WikiSearchOptsWnd: TWikiSearchOptsWnd
     end
   end
   object LanguagesSplitter: TSplitter
-    Left = 194
-    Height = 308
+    Left = 218
+    Height = 300
     Top = 0
     Width = 5
+    Align = alRight
+    ResizeAnchor = akRight
+  end
+  object ScoresGroupBox: TGroupBox
+    Left = 223
+    Height = 300
+    Top = 0
+    Width = 226
+    Align = alRight
+    Caption = 'ScoresGroupBox'
+    ClientHeight = 284
+    ClientWidth = 222
+    TabOrder = 2
+    object ScoresStringGrid: TStringGrid
+      Left = 0
+      Height = 284
+      Top = 0
+      Width = 222
+      Align = alClient
+      AutoFillColumns = True
+      ColCount = 2
+      Columns = <      
+        item
+          Color = clBtnFace
+          MinSize = 100
+          MaxSize = 300
+          ReadOnly = True
+          SizePriority = 2
+          Title.Caption = 'Item'
+          Width = 110
+        end      
+        item
+          Title.Caption = 'Score'
+          Width = 110
+        end>
+      FixedCols = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goAlwaysShowEditor, goColSpanning, goDblClickAutoSize, goSmoothScroll]
+      TabOrder = 0
+      OnEditingDone = ScoresStringGridEditingDone
+      ColWidths = (
+        110
+        110
+      )
+    end
   end
   object ImageList1: TImageList
     left = 70

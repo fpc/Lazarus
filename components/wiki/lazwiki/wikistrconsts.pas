@@ -42,6 +42,15 @@ resourcestring
 
   wrsWikiSearchOptions = 'Wiki Search Options';
   wrsLanguages = 'Languages';
+  wrsPageTitleWholeWord = 'Page title, whole word';
+  wrsScores = 'Scores';
+  wrsPageTitlePart = 'Page title, part';
+  wrsHeaderWholeWord = 'Header, whole word';
+  wrsHeaderPart = 'Header, part';
+  wrsTextWholeWord = 'Text, whole word';
+  wrsTextPart = 'Text, part';
+  wrsLinkWholeWord = 'Link, whole word';
+  wrsLinkPart = 'Link, part';
   wrsAll = 'All';
 
 implementation

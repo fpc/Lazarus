@@ -75,8 +75,10 @@ type
     LoPhrases: TStrings; // Phrases lowercase
     Languages: string; // comma separated list, '-' means not in the original, 'de' = german
     Scoring: TWHScoring;
+    FreeScoring: boolean;
     constructor Create(const SearchText: string; const aLang: string = '';
-      aScoring: TWHScoring = nil);
+      aScoring: TWHScoring = nil; aFreeScoring: boolean = false);
+    constructor Clone(Query: TWikiHelpQuery);
     destructor Destroy; override;
     function Equals(Obj: TObject): boolean; override;
     procedure Assign(Source: TPersistent); override;
@@ -246,7 +248,7 @@ type
 
     // search
     procedure Search(const Term: string; const Languages: string = '';
-                     Scoring: TWHScoring = nil);
+                     Scoring: TWHScoring = nil; FreeScoring: boolean = false);
     procedure Search(aQuery: TWikiHelpQuery);
     property Query: TWikiHelpQuery read FQuery;
     property DefaultScoring: TWHScoring read FDefaultScoring;
@@ -579,7 +581,6 @@ var
 begin
   if Source is TWHScoring then begin
     Src:=TWHScoring(Source);
-    debugln(['TWHScoring.Assign ',SizeOf(Phrases)]);
     Move(Src.Phrases,Phrases,SizeOf(Phrases));
   end else
     inherited Assign(Source);
@@ -588,7 +589,7 @@ end;
 { TWikiHelpQuery }
 
 constructor TWikiHelpQuery.Create(const SearchText: string;
-  const aLang: string; aScoring: TWHScoring);
+  const aLang: string; aScoring: TWHScoring; aFreeScoring: boolean);
 var
   i: Integer;
 begin
@@ -598,13 +599,26 @@ begin
     LoPhrases.Add(UTF8LowerCase(Phrases[i]));
   Languages:=aLang;
   Scoring:=aScoring;
+  FreeScoring:=aFreeScoring;
+end;
+
+constructor TWikiHelpQuery.Clone(Query: TWikiHelpQuery);
+begin
+  Phrases:=TStringList.Create;
+  LoPhrases:=TStringList.Create;
+  Scoring:=TWHScoring.Create;
+  FreeScoring:=true;
+  Assign(Query);
 end;
 
 destructor TWikiHelpQuery.Destroy;
 begin
   FreeAndNil(Phrases);
   FreeAndNil(LoPhrases);
-  FreeAndNil(Scoring);
+  if FreeScoring then
+    FreeAndNil(Scoring)
+  else
+    Scoring:=nil;
   inherited Destroy;
 end;
 
@@ -1697,36 +1711,39 @@ begin
 end;
 
 procedure TWikiHelp.Search(const Term: string; const Languages: string;
-  Scoring: TWHScoring);
+  Scoring: TWHScoring; FreeScoring: boolean);
+var
+  aQuery: TWikiHelpQuery;
 begin
   if Scoring=nil then Scoring:=DefaultScoring;
-  Search(TWikiHelpQuery.Create(Term,Languages,Scoring));
+  aQuery:=TWikiHelpQuery.Create(Term,Languages,
+    Scoring,FreeScoring and (Scoring<>DefaultScoring));
+  try
+    Search(aQuery);
+  finally
+    aQuery.Free;
+  end;
 end;
 
 procedure TWikiHelp.Search(aQuery: TWikiHelpQuery);
-
-  procedure FreeQuery(var aQuery: TWikiHelpQuery);
-  begin
-    if aQuery=nil then exit;
-    if aQuery.Scoring=DefaultScoring then
-      aQuery.Scoring:=nil;
-    FreeAndNil(aQuery);
-  end;
-
 begin
   EnterCritSect;
   try
-    if (aQuery<>nil) and (FQuery<>nil) and (FQuery.Equals(aQuery)) then begin
+    if aQuery=nil then exit;
+    if FQuery=nil then
+      // first query
+      FQuery:=TWikiHelpQuery.Clone(aQuery)
+    else if FQuery.Equals(aQuery) then begin
       // same query
-      FreeQuery(aQuery);
+      //debugln(['TWikiHelp.Search same query ',FQuery=aQuery,' ',FQuery.Scoring.Equals(aQuery.Scoring),' fquery.scoring=',FQuery.Scoring.Phrases[whfcPageTitle,whfsWholeWord],' aquery.scoring=',aQuery.Scoring.Phrases[whfcPageTitle,whfsWholeWord]]);
       exit;
-    end;
-    FreeQuery(FQuery);
-    FQuery:=aQuery;
+    end else
+      FQuery.Assign(aQuery);
     if LoadingContent then exit;
   finally
     LeaveCritSect;
   end;
+  //debugln(['TWikiHelp.Search searching']);
   DoSearch;
 end;
 
