@@ -1341,7 +1341,6 @@ type
     FSortChanged: QHeaderView_hookH;
     {$ENDIF}
     FItemActivatedHook: QTreeWidget_hookH;
-    FItemChangedHook: QTreeWidget_hookH;
     FItemEnteredHook: QTreeWidget_hookH;
     FSelectionChangedHook: QTreeWidget_hookH;
 
@@ -1417,7 +1416,6 @@ type
     procedure setSelectionMode(AMode: QAbstractItemViewSelectionMode); override;
     procedure SignalItemActivated(item: QTreeWidgetItemH; column: Integer); cdecl;
     procedure SignalItemEntered(item: QTreeWidgetItemH; column: Integer); cdecl;
-    procedure SignalItemChanged(item: QTreeWidgetItemH; column: Integer); cdecl;
     procedure SignalCurrentItemChanged(current: QTreeWidgetItemH; previous: QTreeWidgetItemH); cdecl;
     procedure SignalSelectionChanged(); cdecl;
     {$IFDEF TEST_QT_SORTING}
@@ -11948,7 +11946,6 @@ begin
   begin
     MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
     Item := itemAt(MousePos.x, MousePos.y);
-    // SlotMouse(Sender, Event);
     Result := inherited itemViewViewportEventFilter(Sender, Event);
 
     if Item <> nil then
@@ -12499,14 +12496,11 @@ begin
   inherited AttachEvents;
 
   FItemActivatedHook := QTreeWidget_hook_create(Widget);
-  FItemChangedHook := QTreeWidget_hook_create(Widget);
   FItemEnteredHook := QTreeWidget_hook_create(Widget);
   FSelectionChangedHook := QTreeWidget_hook_create(Widget);
 
 
   QTreeWidget_hook_hook_ItemActivated(FItemActivatedHook, @SignalItemActivated);
-
-  QTreeWidget_hook_hook_ItemChanged(FItemChangedHook, @SignalItemChanged);
 
   QTreeWidget_hook_hook_ItemEntered(FItemEnteredHook, @SignalItemEntered);
 
@@ -12520,11 +12514,6 @@ begin
   begin
     QTreeWidget_hook_destroy(FItemActivatedHook);
     FItemActivatedHook := nil;
-  end;
-  if FItemChangedHook <> nil then
-  begin
-    QTreeWidget_hook_destroy(FItemChangedHook);
-    FItemChangedHook := nil;
   end;
   if FItemEnteredHook <> nil then
   begin
@@ -12698,28 +12687,7 @@ var
 begin
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_ENTER;
-  // DebugLn('TQtTreeWidget.SignalItemEntered delivery ...');
   DeliverMessage(Msg);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtTreeWidget.SignalItemChanged
-  Params:  Integer
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtTreeWidget.SignalItemChanged(item: QTreeWidgetItemH;
-  column: Integer); cdecl;
-var
-  Msg: TLMessage;
-begin
-  if InUpdate then exit;
-  FillChar(Msg, SizeOf(Msg), #0);
-  Msg.Msg := LM_CHANGED;
-  {$warning REMOVE TQtTreeWidget.SignalItemChanged }
-  {$IFDEF QT_DEBUGTQTTREEWIDGET}
-  DebugLn('*** REMOVE ME *** TQtTreeWidget.SignalItemChanged delivery ...');
-  {$ENDIF}
-  // DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------
