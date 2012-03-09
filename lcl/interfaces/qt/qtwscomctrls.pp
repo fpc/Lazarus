@@ -1146,7 +1146,7 @@ begin
   begin
     LWI := TQtListWidget(ALV.Handle).getItem(AIndex);
     if LWI <> nil then
-      AState := QListWidgetItem_checkState(LWI);
+      AState := TQtListWidget(ALV).GetItemLastCheckState(LWI);
   end else
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
@@ -1315,6 +1315,7 @@ class procedure TQtWSCustomListView.ItemSetChecked(const ALV: TCustomListView;
 var
   QtListWidget: TQtListWidget;
   QtTreeWidget: TQtTreeWidget;
+  B: Boolean;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetChecked') then
     Exit;
@@ -1325,7 +1326,9 @@ begin
   if IsIconView(ALV) then
   begin
     QtListWidget := TQtListWidget(ALV.Handle);
-    QtListWidget.ItemChecked[AIndex] := AChecked;
+    B := QtListWidget.GetItemLastCheckState(QtListWidget.getItem(AIndex)) = QtChecked;
+    if B <> AChecked then
+      QtListWidget.ItemChecked[AIndex] := AChecked;
   end else
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);

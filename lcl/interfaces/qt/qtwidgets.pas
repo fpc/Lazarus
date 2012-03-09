@@ -1183,6 +1183,8 @@ type
     FItemClickedHook: QListWidget_hookH;
     FItemTextChangedHook: QListWidget_hookH;
     FDontPassSelChange: Boolean;
+    procedure HandleCheckChangedEvent(const AMousePos: TQtPoint;
+        AItem: QListWidgetItemH; AEvent: QEventH);
     function GetItemChecked(AIndex: Integer): Boolean;
     function getItemCount: Integer;
     function GetItemEnabled(AIndex: Integer): Boolean;
@@ -1196,8 +1198,8 @@ type
     procedure OwnerDataNeeded(ARect: TRect); override;
     function GetItemFlags(AIndex: Integer): QtItemFlags; override;
     procedure SetItemFlags(AIndex: Integer; AValue: QtItemFlags); override;
-    function GetItemLastCheckState(AItem: QListWidgetItemH): QtCheckState;
     procedure SetItemLastCheckState(AItem: QListWidgetItemH);
+    procedure SetItemLastCheckStateInternal(AItem: QListWidgetItemH; AState: QtCheckState);
     procedure SetNextStateMap(AItem: QListWidgetItemH); virtual;
   public
     FList: TStrings;
@@ -1218,6 +1220,7 @@ type
     procedure ClearItems;
     function currentRow: Integer;
     function currentItem: QListWidgetItemH;
+    function GetItemLastCheckState(AItem: QListWidgetItemH): QtCheckState;
     function IndexAt(APoint: PQtPoint): Integer;
     procedure insertItem(AIndex: Integer; AText: String); overload;
     procedure insertItem(AIndex: Integer; AText: PWideString); overload;
@@ -10220,6 +10223,14 @@ begin
   if AItem = nil then
     exit;
   AState := QListWidgetItem_checkState(AItem);
+  SetItemLastCheckStateInternal(AItem, AState);
+end;
+
+procedure TQtListWidget.SetItemLastCheckStateInternal(AItem: QListWidgetItemH;
+  AState: QtCheckState);
+var
+  v: QVariantH;
+begin
   v := QVariant_create(Ord(AState));
   QListWidgetItem_setData(AItem, QtCheckStateRole, v);
   QVariant_destroy(v);
@@ -10440,7 +10451,83 @@ begin
        Such events are handled by itemViewportEventFilter.
        With Qt TListBox and TCheckListBox are also affected. issue #21318}
     else
+    begin
       Result:=inherited EventFilter(Sender, Event);
+      if Checkable and
+        (QEvent_type(Event) = QEventKeyPress) and
+        (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Space) then
+      begin
+        if CurrentItem <> nil then
+          HandleCheckChangedEvent(QtPoint(0, 0), currentItem, Event);
+      end;
+    end;
+  end;
+end;
+
+procedure TQtListWidget.HandleCheckChangedEvent(const AMousePos: TQtPoint;
+  AItem: QListWidgetItemH; AEvent: QEventH);
+var
+  xx: Integer;
+  // Msg: TLMessage;
+  ItemRow: Integer;
+  B: Boolean;
+
+  procedure SendMessage;
+  var
+    Msg: TLMNotify;
+    NMLV: TNMListView;
+  begin
+    FillChar(Msg, SizeOf(Msg), #0);
+    FillChar(NMLV, SizeOf(NMLV), #0);
+
+    Msg.Msg := CN_NOTIFY;
+
+    NMLV.hdr.hwndfrom := HWND(Self);
+    NMLV.hdr.code := LVN_ITEMCHANGED;
+
+    NMLV.iItem := QListWidget_row(QListWidgetH(Widget), AItem);
+
+    NMLV.uNewState := UINT(B);
+    NMLV.uChanged := LVIF_STATE;
+
+    Msg.NMHdr := @NMLV.hdr;
+
+    // DebugLn('HandleCheckableMouseDown sending LVN_ITEMCHANGED ...');
+    DeliverMessage(Msg);
+  end;
+begin
+  if not Checkable or (AItem = nil) then
+    exit;
+
+  if ((QEvent_type(AEvent) = QEventMouseButtonPress) or
+    (QEvent_type(AEvent) = QEventMouseButtonDblClick)) and
+  (QMouseEvent_button(QMouseEventH(AEvent)) = QtLeftButton) then
+  begin
+    if (QListWidgetItem_flags(AItem) and QtItemIsUserCheckable) <> 0 then
+    begin
+      xx := GetPixelMetric(QStylePM_IndicatorWidth, nil, Widget);
+      if ((AMousePos.X > 2) and (AMousePos.X <= (xx + 2))) then
+      begin
+        B := QListWidgetItem_checkState(AItem) = QtUnChecked;
+        if B then
+          SetItemLastCheckStateInternal(AItem, QtChecked)
+        else
+          SetItemLastCheckStateInternal(AItem, QtUnChecked);
+
+        SendMessage;
+      end;
+    end;
+  end else
+  if (QEvent_type(AEvent) = QEventKeyPress) and
+    (QKeyEvent_key(QKeyEventH(AEvent)) = QtKey_Space) then
+  begin
+    B := QListWidgetItem_checkState(AItem) = QtUnChecked;
+    if B then
+      SetItemLastCheckStateInternal(AItem, QtChecked)
+    else
+      SetItemLastCheckStateInternal(AItem, QtUnChecked);
+
+    SendMessage;
   end;
 end;
 
@@ -10497,6 +10584,8 @@ begin
             begin
               Modifiers := QInputEvent_modifiers(QInputEventH(Event));
               SlotMouse(Sender, Event);
+
+              HandleCheckChangedEvent(MousePos, Item, Event);
 
               if not QListWidgetItem_isSelected(Item) then
               begin
@@ -10584,6 +10673,7 @@ begin
             end else
             begin
               SlotMouse(Sender, Event);
+              HandleCheckChangedEvent(MousePos, Item, Event);
               if not QListWidgetItem_isSelected(Item) then
                 QListWidget_setCurrentItem(QListWidgetH(Widget), Item, QItemSelectionModelSelect);
               QEvent_ignore(Event);
@@ -10591,6 +10681,14 @@ begin
               exit;
             end;
           end;
+        end;
+
+        if Checkable and (QEvent_type(Event) = QEventMouseButtonDblClick) then
+        begin
+          MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+          Item := itemAt(MousePos.x, MousePos.y);
+          if Item <> nil then
+            HandleCheckChangedEvent(MousePos, Item, Event);
         end;
 
         Result := inherited itemViewViewportEventFilter(Sender, Event);
