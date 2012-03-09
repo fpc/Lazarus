@@ -43,11 +43,14 @@ Known Issues:
 -------------------------------------------------------------------------------}
 
 unit SynEdit;
-{$IFDEF Windows}  {off $DEFINE WinIME} {$ENDIF}
+{$IFDEF Windows}
+  {$IFnDEF WithoutWinIME}
+    {$DEFINE WinIME}
+  {$ENDIF}
+{$ENDIF}
 
 {$I synedit.inc}
 
-{ $DEFINE SYNSCROLLDEBUG}
 
 {$IFDEF LCLGTK1}
 {$DEFINE EnableDoubleBuf} // gtk1 does not have double buffering
@@ -59,6 +62,7 @@ unit SynEdit;
 
 interface
 
+{ $DEFINE SYNSCROLLDEBUG}
 { $DEFINE VerboseKeys}
 { $DEFINE VerboseSynEditInvalidate}
 { $DEFINE SYNDEBUGPRINT}
