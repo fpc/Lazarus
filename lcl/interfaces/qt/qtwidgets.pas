@@ -2854,7 +2854,7 @@ begin
     S1 := 'NONE';
 
   writeln(' KEY=',QKeyEvent_key(QKeyEventH(Event)),' COUNT=',QKeyEvent_count(QKeyEventH(Event)),' TEXT=',Text);
-  writeln(' LCLKEY=',QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)), Text));
+  writeln(' LCLKEY=',QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)), Text, QKeyEventH(Event)));
   writeln(' MODIFIERS: ',S,' NATIVEMODIFIERS: ',S1);
   writeln(' HASEXTENDEDINFO: ',QKeyEvent_hasExtendedInfo(QKeyEventH(Event)),
   ' ISAUTOREPEAT: ',QKeyEvent_isAutoRepeat(QKeyEventH(Event)));
