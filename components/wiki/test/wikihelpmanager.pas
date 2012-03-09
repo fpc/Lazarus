@@ -1600,73 +1600,75 @@ end;
 
 function TWikiHelp.LangCodeToCaption(ID: string): string;
 begin
-  if ID='' then Result:=rsLanguageEnglishOriginal
-  else if CompareText(ID,'af')=0 then Result:=rsLanguageAfrikaans
-  else if CompareText(ID,'ar')=0 then Result:=rsLanguageArabic
-  else if CompareText(ID,'ca')=0 then Result:=rsLanguageCatalan
-  else if CompareText(ID,'cs')=0 then Result:=rsLanguageCzech
-  else if CompareText(ID,'de')=0 then Result:=rsLanguageGerman
-  else if CompareText(ID,'en')=0 then Result:=rsLanguageEnglish
-  else if CompareText(ID,'es')=0 then Result:=rsLanguageSpanish
-  else if CompareText(ID,'fa')=0 then Result:=rsLanguagePersian
-  else if CompareText(ID,'fi')=0 then Result:=rsLanguageFinnish
-  else if CompareText(ID,'fr')=0 then Result:=rsLanguageFrench
-  else if CompareText(ID,'he')=0 then Result:=rsLanguageHebrew
-  else if CompareText(ID,'hu')=0 then Result:=rsLanguageHungarian
-  else if CompareText(ID,'id')=0 then Result:=rsLanguageIndonesian
-  else if CompareText(ID,'it')=0 then Result:=rsLanguageItalian
-  else if CompareText(ID,'ja')=0 then Result:=rsLanguageJapanese
-  else if CompareText(ID,'ko')=0 then Result:=rsLanguageKorean
-  else if CompareText(ID,'lt')=0 then Result:=rsLanguageLithuanian
-  else if CompareText(ID,'mk')=0 then Result:=rsLanguageMacedonien
-  else if CompareText(ID,'nl')=0 then Result:=rsLanguageDutch
-  else if CompareText(ID,'pl')=0 then Result:=rsLanguagePolish
-  else if CompareText(ID,'pt')=0 then Result:=rsLanguagePortuguese
-  else if CompareText(ID,'pt_BR')=0 then Result:=rsLanguagePortugueseBr
-  else if CompareText(ID,'ro')=0 then Result:=rsLanguageRomanian
-  else if CompareText(ID,'ru')=0 then Result:=rsLanguageRussian
-  else if CompareText(ID,'sk')=0 then Result:=rsLanguageSlovak
-  else if CompareText(ID,'sq')=0 then Result:=rsLanguageAlbania
-  else if CompareText(ID,'tr')=0 then Result:=rsLanguageTurkish
-  else if CompareText(ID,'uk')=0 then Result:=rsLanguageUkrainian
-  else if CompareText(ID,'zh_CN')=0 then Result:=rsLanguageChinese
-  else if CompareText(ID,'zh_TW')=0 then Result:=rsLanguageChineseTaiwan
+  if ID='' then Result:=wrsLanguageEnglishOriginal
+  else if ID='*' then Result:=wrsAll
+  else if CompareText(ID,'af')=0 then Result:=wrsLanguageAfrikaans
+  else if CompareText(ID,'ar')=0 then Result:=wrsLanguageArabic
+  else if CompareText(ID,'ca')=0 then Result:=wrsLanguageCatalan
+  else if CompareText(ID,'cs')=0 then Result:=wrsLanguageCzech
+  else if CompareText(ID,'de')=0 then Result:=wrsLanguageGerman
+  else if CompareText(ID,'en')=0 then Result:=wrsLanguageEnglish
+  else if CompareText(ID,'es')=0 then Result:=wrsLanguageSpanish
+  else if CompareText(ID,'fa')=0 then Result:=wrsLanguagePersian
+  else if CompareText(ID,'fi')=0 then Result:=wrsLanguageFinnish
+  else if CompareText(ID,'fr')=0 then Result:=wrsLanguageFrench
+  else if CompareText(ID,'he')=0 then Result:=wrsLanguageHebrew
+  else if CompareText(ID,'hu')=0 then Result:=wrsLanguageHungarian
+  else if CompareText(ID,'id')=0 then Result:=wrsLanguageIndonesian
+  else if CompareText(ID,'it')=0 then Result:=wrsLanguageItalian
+  else if CompareText(ID,'ja')=0 then Result:=wrsLanguageJapanese
+  else if CompareText(ID,'ko')=0 then Result:=wrsLanguageKorean
+  else if CompareText(ID,'lt')=0 then Result:=wrsLanguageLithuanian
+  else if CompareText(ID,'mk')=0 then Result:=wrsLanguageMacedonien
+  else if CompareText(ID,'nl')=0 then Result:=wrsLanguageDutch
+  else if CompareText(ID,'pl')=0 then Result:=wrsLanguagePolish
+  else if CompareText(ID,'pt')=0 then Result:=wrsLanguagePortuguese
+  else if CompareText(ID,'pt_BR')=0 then Result:=wrsLanguagePortugueseBr
+  else if CompareText(ID,'ro')=0 then Result:=wrsLanguageRomanian
+  else if CompareText(ID,'ru')=0 then Result:=wrsLanguageRussian
+  else if CompareText(ID,'sk')=0 then Result:=wrsLanguageSlovak
+  else if CompareText(ID,'sq')=0 then Result:=wrsLanguageAlbania
+  else if CompareText(ID,'tr')=0 then Result:=wrsLanguageTurkish
+  else if CompareText(ID,'uk')=0 then Result:=wrsLanguageUkrainian
+  else if CompareText(ID,'zh_CN')=0 then Result:=wrsLanguageChinese
+  else if CompareText(ID,'zh_TW')=0 then Result:=wrsLanguageChineseTaiwan
   else Result:=ID;
 end;
 
 function TWikiHelp.LangCaptionToCode(Caption: string): string;
 begin
-  if Caption=rsLanguageEnglishOriginal then Result:=''
-  else if Caption=rsLanguageAfrikaans then Result:='af'
-  else if Caption=rsLanguageAlbania then Result:='sq'
-  else if Caption=rsLanguageArabic then Result:='ar'
-  else if Caption=rsLanguageCatalan then Result:='ca'
-  else if Caption=rsLanguageChinese then Result:='zh_CN'
-  else if Caption=rsLanguageChineseTaiwan then Result:='zh_TW'
-  else if Caption=rsLanguageCzech then Result:='cs'
-  else if Caption=rsLanguageDutch then Result:='nl'
-  else if Caption=rsLanguageEnglish then Result:='en'
-  else if Caption=rsLanguageFinnish then Result:='fi'
-  else if Caption=rsLanguageFrench then Result:='fr'
-  else if Caption=rsLanguageGerman then Result:='de'
-  else if Caption=rsLanguageHebrew then Result:='he'
-  else if Caption=rsLanguageHungarian then Result:='hu'
-  else if Caption=rsLanguageIndonesian then Result:='id'
-  else if Caption=rsLanguageItalian then Result:='it'
-  else if Caption=rsLanguageJapanese then Result:='ja'
-  else if Caption=rsLanguageKorean then Result:='ko'
-  else if Caption=rsLanguageLithuanian then Result:='lt'
-  else if Caption=rsLanguageMacedonien then Result:='mk'
-  else if Caption=rsLanguagePersian then Result:='fa'
-  else if Caption=rsLanguagePolish then Result:='pl'
-  else if Caption=rsLanguagePortuguese then Result:='pt'
-  else if Caption=rsLanguagePortugueseBr then Result:='pt_BR'
-  else if Caption=rsLanguageRomanian then Result:='ro'
-  else if Caption=rsLanguageRussian then Result:='ru'
-  else if Caption=rsLanguageSlovak then Result:='sk'
-  else if Caption=rsLanguageSpanish then Result:='es'
-  else if Caption=rsLanguageTurkish then Result:='tk'
-  else if Caption=rsLanguageUkrainian then Result:='uk'
+  if Caption=wrsLanguageEnglishOriginal then Result:=''
+  else if Caption=wrsAll then Result:='*'
+  else if Caption=wrsLanguageAfrikaans then Result:='af'
+  else if Caption=wrsLanguageAlbania then Result:='sq'
+  else if Caption=wrsLanguageArabic then Result:='ar'
+  else if Caption=wrsLanguageCatalan then Result:='ca'
+  else if Caption=wrsLanguageChinese then Result:='zh_CN'
+  else if Caption=wrsLanguageChineseTaiwan then Result:='zh_TW'
+  else if Caption=wrsLanguageCzech then Result:='cs'
+  else if Caption=wrsLanguageDutch then Result:='nl'
+  else if Caption=wrsLanguageEnglish then Result:='en'
+  else if Caption=wrsLanguageFinnish then Result:='fi'
+  else if Caption=wrsLanguageFrench then Result:='fr'
+  else if Caption=wrsLanguageGerman then Result:='de'
+  else if Caption=wrsLanguageHebrew then Result:='he'
+  else if Caption=wrsLanguageHungarian then Result:='hu'
+  else if Caption=wrsLanguageIndonesian then Result:='id'
+  else if Caption=wrsLanguageItalian then Result:='it'
+  else if Caption=wrsLanguageJapanese then Result:='ja'
+  else if Caption=wrsLanguageKorean then Result:='ko'
+  else if Caption=wrsLanguageLithuanian then Result:='lt'
+  else if Caption=wrsLanguageMacedonien then Result:='mk'
+  else if Caption=wrsLanguagePersian then Result:='fa'
+  else if Caption=wrsLanguagePolish then Result:='pl'
+  else if Caption=wrsLanguagePortuguese then Result:='pt'
+  else if Caption=wrsLanguagePortugueseBr then Result:='pt_BR'
+  else if Caption=wrsLanguageRomanian then Result:='ro'
+  else if Caption=wrsLanguageRussian then Result:='ru'
+  else if Caption=wrsLanguageSlovak then Result:='sk'
+  else if Caption=wrsLanguageSpanish then Result:='es'
+  else if Caption=wrsLanguageTurkish then Result:='tk'
+  else if Caption=wrsLanguageUkrainian then Result:='uk'
   else Result:=Caption;
 end;
 

@@ -189,11 +189,13 @@ begin
           Langs.Add(LangToNodeText(S2PItem^.Name,{%H-}PtrUInt(S2PItem^.Value)));
       Langs.Sort;
       Langs.Insert(0,LangToNodeText('',{%H-}PtrUInt(LangToCount[''])));
+      Langs.Add(LangToNodeText('*',WikiHelp.Converter.Count));
     finally
       LangToCount.Free;
     end;
   end else begin
     Langs.Add(LangToNodeText(''));
+    Langs.Add(LangToNodeText('*',0));
   end;
 
   LanguagesTreeView.BeginUpdate;
