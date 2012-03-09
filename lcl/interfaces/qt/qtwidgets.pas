@@ -10496,7 +10496,7 @@ var
     DeliverMessage(Msg);
   end;
 begin
-  if not Checkable or (AItem = nil) then
+  if not Checkable or (AItem = nil) or (ViewStyle < 0) then
     exit;
 
   if ((QEvent_type(AEvent) = QEventMouseButtonPress) or
