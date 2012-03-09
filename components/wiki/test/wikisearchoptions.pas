@@ -53,10 +53,10 @@ type
     procedure SetLanguages(AValue: string);
   public
     property Languages: string read GetLanguages write SetLanguages;
-    procedure UpdateAvailableLanguages;
-    procedure UpdateEnabledLanguages;
     property LangCodeEnabled[const ID: string]: boolean read GetLangCodeEnabled
                                                        write SetLangCodeEnabled;
+    procedure UpdateAvailableLanguages;
+    procedure UpdateEnabledLanguages;
     property OnOptionsChanged: TNotifyEvent read FOnOptionsChanged write FOnOptionsChanged;
   end;
 

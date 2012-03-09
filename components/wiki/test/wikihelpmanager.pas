@@ -1608,6 +1608,7 @@ begin
   else if CompareText(ID,'de')=0 then Result:=rsLanguageGerman
   else if CompareText(ID,'en')=0 then Result:=rsLanguageEnglish
   else if CompareText(ID,'es')=0 then Result:=rsLanguageSpanish
+  else if CompareText(ID,'fa')=0 then Result:=rsLanguagePersian
   else if CompareText(ID,'fi')=0 then Result:=rsLanguageFinnish
   else if CompareText(ID,'fr')=0 then Result:=rsLanguageFrench
   else if CompareText(ID,'he')=0 then Result:=rsLanguageHebrew
@@ -1615,29 +1616,36 @@ begin
   else if CompareText(ID,'id')=0 then Result:=rsLanguageIndonesian
   else if CompareText(ID,'it')=0 then Result:=rsLanguageItalian
   else if CompareText(ID,'ja')=0 then Result:=rsLanguageJapanese
+  else if CompareText(ID,'ko')=0 then Result:=rsLanguageKorean
   else if CompareText(ID,'lt')=0 then Result:=rsLanguageLithuanian
+  else if CompareText(ID,'mk')=0 then Result:=rsLanguageMacedonien
   else if CompareText(ID,'nl')=0 then Result:=rsLanguageDutch
   else if CompareText(ID,'pl')=0 then Result:=rsLanguagePolish
   else if CompareText(ID,'pt')=0 then Result:=rsLanguagePortuguese
   else if CompareText(ID,'pt_BR')=0 then Result:=rsLanguagePortugueseBr
+  else if CompareText(ID,'ro')=0 then Result:=rsLanguageRomanian
   else if CompareText(ID,'ru')=0 then Result:=rsLanguageRussian
   else if CompareText(ID,'sk')=0 then Result:=rsLanguageSlovak
+  else if CompareText(ID,'sq')=0 then Result:=rsLanguageAlbania
   else if CompareText(ID,'tr')=0 then Result:=rsLanguageTurkish
   else if CompareText(ID,'uk')=0 then Result:=rsLanguageUkrainian
   else if CompareText(ID,'zh_CN')=0 then Result:=rsLanguageChinese
+  else if CompareText(ID,'zh_TW')=0 then Result:=rsLanguageChineseTaiwan
   else Result:=ID;
 end;
 
 function TWikiHelp.LangCaptionToCode(Caption: string): string;
 begin
   if Caption=rsLanguageEnglishOriginal then Result:=''
-  else if Caption=rsLanguageEnglish then Result:='en'
   else if Caption=rsLanguageAfrikaans then Result:='af'
+  else if Caption=rsLanguageAlbania then Result:='sq'
   else if Caption=rsLanguageArabic then Result:='ar'
   else if Caption=rsLanguageCatalan then Result:='ca'
   else if Caption=rsLanguageChinese then Result:='zh_CN'
+  else if Caption=rsLanguageChineseTaiwan then Result:='zh_TW'
   else if Caption=rsLanguageCzech then Result:='cs'
   else if Caption=rsLanguageDutch then Result:='nl'
+  else if Caption=rsLanguageEnglish then Result:='en'
   else if Caption=rsLanguageFinnish then Result:='fi'
   else if Caption=rsLanguageFrench then Result:='fr'
   else if Caption=rsLanguageGerman then Result:='de'
@@ -1646,10 +1654,14 @@ begin
   else if Caption=rsLanguageIndonesian then Result:='id'
   else if Caption=rsLanguageItalian then Result:='it'
   else if Caption=rsLanguageJapanese then Result:='ja'
+  else if Caption=rsLanguageKorean then Result:='ko'
   else if Caption=rsLanguageLithuanian then Result:='lt'
+  else if Caption=rsLanguageMacedonien then Result:='mk'
+  else if Caption=rsLanguagePersian then Result:='fa'
   else if Caption=rsLanguagePolish then Result:='pl'
   else if Caption=rsLanguagePortuguese then Result:='pt'
   else if Caption=rsLanguagePortugueseBr then Result:='pt_BR'
+  else if Caption=rsLanguageRomanian then Result:='ro'
   else if Caption=rsLanguageRussian then Result:='ru'
   else if Caption=rsLanguageSlovak then Result:='sk'
   else if Caption=rsLanguageSpanish then Result:='es'
