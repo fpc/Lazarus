@@ -11397,11 +11397,7 @@ begin
             if (Item = nil) and (Sender = QWidget_mouseGrabber) then
               QWidget_releaseMouse(QWidgetH(Sender));
           end else
-          begin
-            MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
-            if Item = nil then
-              Result := inherited itemViewViewportEventFilter(Sender, Event);
-          end;
+            Result := SlotMouse(Sender, Event);
         end;
       else
       begin
@@ -11430,29 +11426,15 @@ begin
 
   if InUpdate or not GetVisible then
     exit;
-
-  // fires only when checkBox clicked.
-  QCursor_pos(@AGlobalPos);
-  QWidget_mapFromGlobal(Widget, @APos, @AGlobalPos);
-  AMouseEvent := QMouseEvent_create(QEventMouseButtonPress, @APos,
-    @AGlobalPos, QtLeftButton, QtLeftButton,
-    QApplication_keyboardModifiers());
-  SlotMouse(Widget, AMouseEvent);
-  QMouseEvent_destroy(AMouseEvent);
   {$note seem that we have qtbug with tristate listwidget items, so
    we must handle statemap somehow}
+
   //TODO try to fix nextstatemap
   if FCheckBoxClicked then
   begin
     FCheckBoxClicked := False;
     SetNextStateMap(item);
   end;
-
-  AMouseEvent := QMouseEvent_create(QEventMouseButtonRelease, @APos,
-    @AGlobalPos, QtLeftButton, QtLeftButton,
-    QApplication_keyboardModifiers());
-  SlotMouse(Widget, AMouseEvent);
-  QMouseEvent_destroy(AMouseEvent);
 end;
 
 procedure TQtCheckListBox.signalSelectionChanged(); cdecl;
