@@ -715,6 +715,15 @@ var i, j, FilenameEndPos: integer;
           and (strlcomp(PChar(Pointer(@s[Position])),
                         PChar(Pointer(SubStr)),length(SubStr))=0);
   end;
+
+  function CompErrorStr(et: TFPCErrorType; s: string; Position: integer): boolean;
+  var
+    ColonPos: Integer;
+  begin
+    if not CompStr(FErrorNames[et],s,Position) then exit(false);
+    ColonPos:=Position+length(FErrorNames[et]);
+    Result:=(ColonPos<=length(s)) and (s[ColonPos]=':');
+  end;
   
   function CheckForCompilingState(p: integer): boolean;
   var
@@ -778,17 +787,17 @@ var i, j, FilenameEndPos: integer;
     if CompStr('Fatal: ',s,p)
     or CompStr('Panic',s,p)
     or CompStr('Error: ',s,p)
-    or CompStr(FErrorNames[etFatal], s, p)
-    or CompStr(FErrorNames[etError], s, p)
+    or CompErrorStr(etFatal, s, p)
+    or CompErrorStr(etError, s, p)
     or CompStr('Closing script ppas.sh',s,p)
     then begin
       // always show fatal, panic and linker errors
       fLastMessageType:=omtFPC;
       if CompStr('Panic',s,p) then
         fLastErrorType:=etPanic
-      else if CompStr('Fatal: ',s,p) or CompStr(FErrorNames[etFatal], s, p) then
+      else if CompStr('Fatal: ',s,p) or CompErrorStr(etFatal, s, p) then
         fLastErrorType:=etFatal
-      else if CompStr('Error: ',s,p) or CompStr(FErrorNames[etError], s, p) then
+      else if CompStr('Error: ',s,p) or CompErrorStr(etError, s, p) then
         fLastErrorType:=etError
       else if CompStr('Closing script ppas.sh',s,p) then begin
         // linker error
@@ -836,7 +845,7 @@ var i, j, FilenameEndPos: integer;
   function CheckForNoteMessages(p: integer): boolean;
   begin
     Result:=false;
-    if CompStr('Note: ',s,p) or CompStr(FErrorNames[etNote], s, p) then begin
+    if CompStr('Note: ',s,p) or CompErrorStr(etNote, s, p) then begin
       DoAddFilteredLine(copy(s,p,length(s)));
       fLastErrorType:=etNote;
       CurrentMessageParts.Values['Stage']:='FPC';
