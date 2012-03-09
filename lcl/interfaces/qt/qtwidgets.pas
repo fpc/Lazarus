@@ -1346,6 +1346,13 @@ type
     FItemChangedHook: QTreeWidget_hookH;
     FItemEnteredHook: QTreeWidget_hookH;
     FSelectionChangedHook: QTreeWidget_hookH;
+
+    procedure HandleCheckChangedEvent(const AMousePos: TQtPoint;
+        AItem: QTreeWidgetItemH; AEvent: QEventH);
+
+    function GetItemLastCheckStateInternal(AItem: QTreeWidgetItemH): QtCheckState;
+    procedure SetItemLastCheckStateInternal(AItem: QTreeWidgetItemH; AState: QtCheckState);
+
     function getColCount: Integer;
     function getHeader: TQtHeaderView;
     function GetItemChecked(AIndex: Integer): Boolean;
@@ -1366,6 +1373,7 @@ type
     destructor Destroy; override;
     procedure DestroyNotify(AWidget: TQtWidget); override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure ClearItems;
     procedure clearSelection; override;
     procedure DeleteItem(const AIndex: integer);
@@ -1373,6 +1381,7 @@ type
     procedure setCurrentRow(row: Integer);
     function currentItem: QTreeWidgetItemH;
     procedure setCurrentItem(AItem: QTreeWidgetItemH);
+
     function getRow(AItem: QTreeWidgetItemH): integer;
     function headerItem: QTreeWidgetItemH;
     function itemAt(APoint: TPoint): QTreeWidgetItemH; overload;
@@ -11799,24 +11808,24 @@ begin
     exit;
   if Checkable then
   begin
-    if ( (QEvent_type(Event) = QEventKeyPress) or
-     (QEvent_type(Event) = QEventKeyRelease) ) and
-      (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Space) then
+    if (QEvent_type(Event) = QEventKeyPress) and
+      (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Space) and
+      (QKeyEvent_modifiers(QKeyEventH(Event)) and QtControlModifier = 0) then
     begin
-      if QEvent_type(Event) = QEventKeyRelease then
+      Result:=inherited EventFilter(Sender, Event);
+      if not Result then
       begin
-        item := currentItem;
-        if QTreeWidgetItem_checkState(Item, 0) = QtChecked then
-          QTreeWidgetItem_setCheckState(Item, 0, QtUnChecked)
-        else
-          QTreeWidgetItem_setCheckState(Item, 0, QtChecked);
-        // send click msg
-        if item <> nil then
-          SignalItemClicked(Item, 0);
-      end;
-      inherited EventFilter(Sender, Event);
-      QEvent_ignore(Event);
-      Result := True;
+        Item := currentItem;
+        if Item <> nil then
+        begin
+          Item := topLevelItem(getRow(Item));
+          if (Item <> nil) and
+            ((QTreeWidget_currentColumn(QTreeWidgetH(Widget)) = 0) or
+            TCustomListView(LCLObject).RowSelect) then
+          HandleCheckChangedEvent(QtPoint(0, 0), Item, Event);
+        end;
+      end else
+        QEvent_ignore(Event);
     end else
       Result:=inherited EventFilter(Sender, Event);
   end else
@@ -11826,6 +11835,131 @@ begin
     {eat mouse button events -> signalItemClicked is fired}
   else
     Result:=inherited EventFilter(Sender, Event);
+end;
+
+procedure TQtTreeWidget.SetItemLastCheckStateInternal(AItem: QTreeWidgetItemH;
+  AState: QtCheckState);
+var
+  v: QVariantH;
+begin
+  v := QVariant_create(Ord(AState));
+  QTreeWidgetItem_setData(AItem, 0, QtCheckStateRole, v);
+  QVariant_destroy(v);
+end;
+
+procedure TQtTreeWidget.HandleCheckChangedEvent(const AMousePos: TQtPoint;
+  AItem: QTreeWidgetItemH; AEvent: QEventH);
+var
+  xx: Integer;
+  B: Boolean;
+  R: TRect;
+
+  procedure SendMessage;
+  var
+    MsgA: TLMessage;
+    Msg: TLMNotify;
+    NMLV: TNMListView;
+  begin
+
+    FillChar(Msg, SizeOf(Msg), #0);
+    FillChar(NMLV, SizeOf(NMLV), #0);
+
+    Msg.Msg := CN_NOTIFY;
+
+    NMLV.hdr.hwndfrom := LCLObject.Handle;
+    NMLV.hdr.code := LVN_ITEMCHANGED;
+
+
+    NMLV.iItem := GetRow(AItem);
+
+    NMLV.uOldState := UINT(Ord(not B));
+    NMLV.uNewState := UINT(Ord(B));
+    NMLV.uChanged := LVIF_STATE;
+
+    Msg.NMHdr := @NMLV.hdr;
+    {$IFDEF QT_DEBUGTQTTREEWIDGET}
+    DebugLn('TQtTreeWidget.HandleCheckableMouseDown sending LVN_ITEMCHANGED Checked ',dbgs(B));
+    {$ENDIF}
+    DeliverMessage(Msg);
+  end;
+
+begin
+  if not Checkable or (AItem = nil) or (ViewStyle < 0) then
+    exit;
+
+  if ((QEvent_type(AEvent) = QEventMouseButtonPress) or
+    (QEvent_type(AEvent) = QEventMouseButtonDblClick)) and
+  (QMouseEvent_button(QMouseEventH(AEvent)) = QtLeftButton) then
+  begin
+    if (QTreeWidgetItem_flags(AItem) and QtItemIsUserCheckable) <> 0 then
+    begin
+      xx := GetPixelMetric(QStylePM_IndicatorWidth, nil, Widget);
+      R := visualItemRect(AItem);
+      if ((AMousePos.X > 2) and (AMousePos.X <= (xx + 2)))
+        and (AMousePos.Y > R.Top + 1) and (AMousePos.Y < (R.Bottom - 2))  then
+      begin
+        B := QTreeWidgetItem_checkState(AItem, 0) = QtUnChecked;
+        if B then
+          SetItemLastCheckStateInternal(AItem, QtChecked)
+        else
+          SetItemLastCheckStateInternal(AItem, QtUnChecked);
+
+        SendMessage;
+      end;
+    end;
+  end else
+  if (QEvent_type(AEvent) = QEventKeyPress) and
+    (QKeyEvent_key(QKeyEventH(AEvent)) = QtKey_Space) then
+  begin
+    B := QTreeWidgetItem_checkState(AItem, 0) = QtUnChecked;
+    if B then
+      SetItemLastCheckStateInternal(AItem, QtChecked)
+    else
+      SetItemLastCheckStateInternal(AItem, QtUnChecked);
+
+    SendMessage;
+  end;
+end;
+
+function TQtTreeWidget.GetItemLastCheckStateInternal(AItem: QTreeWidgetItemH
+  ): QtCheckState;
+var
+  v: QVariantH;
+  ok: Boolean;
+begin
+  Result := QtUnChecked;
+  if AItem = nil then
+    exit;
+  v := QVariant_create();
+  QTreeWidgetItem_data(AItem, v,  0, QtCheckStateRole);
+  ok := False;
+  if QVariant_isValid(v) then
+    Result := QtCheckState(QVariant_toInt(v, @Ok));
+  QVariant_destroy(v);
+end;
+
+function TQtTreeWidget.itemViewViewportEventFilter(Sender: QObjectH;
+  Event: QEventH): Boolean; cdecl;
+var
+  MousePos: TQtPoint;
+  Item: QTreeWidgetItemH;
+  NewState: QtCheckState;
+begin
+  Result := False;
+  if (ViewStyle = Ord(vsReport)) and Checkable and
+    ((QEvent_type(Event) = QEventMouseButtonPress) or
+    (QEvent_type(Event) = QEventMouseButtonDblClick)) then
+  begin
+    MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+    Item := itemAt(MousePos.x, MousePos.y);
+    // SlotMouse(Sender, Event);
+    Result := inherited itemViewViewportEventFilter(Sender, Event);
+
+    if Item <> nil then
+      HandleCheckChangedEvent(MousePos, Item, Event);
+
+  end else
+    Result := inherited itemViewViewportEventFilter(Sender, Event);
 end;
 
 procedure TQtTreeWidget.OwnerDataNeeded(ARect: TRect);
@@ -11975,7 +12109,8 @@ begin
   Result := False;
   AItem := topLevelItem(AIndex);
   if AItem <> nil then
-    Result := QTreeWidgetItem_checkState(AItem, 0) = QtChecked;
+    Result := GetItemLastCheckStateInternal(AItem) = QtChecked;
+   // Result := QTreeWidgetItem_checkState(AItem, 0) = QtChecked;
 end;
 
 function TQtTreeWidget.getItemCount: Integer;
@@ -12013,14 +12148,18 @@ end;
 procedure TQtTreeWidget.SetItemChecked(AIndex: Integer; AValue: Boolean);
 var
   AItem: QTreeWidgetItemH;
+  AState: QtCheckState;
 begin
   AItem := topLevelItem(AIndex);
   if AItem <> nil then
   begin
     if AValue then
-      QTreeWidgetItem_setCheckState(AItem, 0, QtChecked)
+      AState := QtChecked
     else
-      QTreeWidgetItem_setCheckState(AItem, 0, QtUnChecked);
+      AState := QtUnChecked;
+
+    QTreeWidgetItem_setCheckState(AItem, 0, AState);
+    SetItemLastCheckStateInternal(AItem, AState);
   end;
 end;
 
@@ -12317,7 +12456,12 @@ begin
 
   QTreeWidget_setItemSelected(QTreeWidgetH(Widget), AItem, ASelect);
   if not FSyncingItems then
+  begin
+    {$IFDEF QT_DEBUGTQTTREEWIDGET}
+    DebugLn('TQtTreeWidget.setItemSelected() delivering ASelect ',dbgs(ASelect));
+    {$ENDIF}
     DeliverMessage(Msg);
+  end;
 end;
 
 procedure TQtTreeWidget.setStretchLastSection(AValue: Boolean);
@@ -12549,6 +12693,9 @@ begin
   // lcl implementation of OnItemClick.
   if not Checkable then
     exit;
+  {$warning remove usage of TQtTreeWidget.SignalItemClicked }
+  EXIT;
+
   FillChar(MsgN, SizeOf(MsgN), #0);
   FillChar(NMLV, SizeOf(NMLV), #0);
 
@@ -12604,6 +12751,7 @@ var
   Msg: TLMNotify;
   NMLV: TNMListView;
 begin
+  {$warning REMOVE TQtTreeWidget.SignalItemDoubleClicked it's not used}
   FillChar(Msg, SizeOf(Msg), #0);
   FillChar(NMLV, SizeOf(NMLV), #0);
 
@@ -12666,6 +12814,7 @@ var
 begin
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_ENTER;
+  // DebugLn('TQtTreeWidget.SignalItemEntered delivery ...');
   DeliverMessage(Msg);
 end;
 
@@ -12682,7 +12831,11 @@ begin
   if InUpdate then exit;
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_CHANGED;
-  DeliverMessage(Msg);
+  {$warning REMOVE TQtTreeWidget.SignalItemChanged }
+  {$IFDEF QT_DEBUGTQTTREEWIDGET}
+  DebugLn('*** REMOVE ME *** TQtTreeWidget.SignalItemChanged delivery ...');
+  {$ENDIF}
+  // DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------

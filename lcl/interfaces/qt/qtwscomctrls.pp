@@ -1134,27 +1134,24 @@ var
   AState: QtCheckState;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemGetChecked') then
-    Exit;
+    Exit(False);
 
   Result := ALV.CheckBoxes;
   if not Result then
     exit;
 
-  AState := QtUnChecked;
-
   if IsIconView(ALV) then
   begin
+    AState := QtUnChecked;
     LWI := TQtListWidget(ALV.Handle).getItem(AIndex);
     if LWI <> nil then
       AState := TQtListWidget(ALV).GetItemLastCheckState(LWI);
+    Result := AState = QtChecked;
   end else
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
-    TWI := QtTreeWidget.topLevelItem(AIndex);
-    if TWI <> nil then
-      AState := QTreeWidgetItem_checkState(TWI, 0);
+    Result := QtTreeWidget.ItemChecked[AIndex];
   end;
-  Result := AState = QtChecked;
 end;
 
 {------------------------------------------------------------------------------
@@ -1332,7 +1329,8 @@ begin
   end else
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
-    QtTreeWidget.ItemChecked[AIndex] := AChecked;
+    if QtTreeWidget.ItemChecked[AIndex] <> AChecked then
+      QtTreeWidget.ItemChecked[AIndex] := AChecked;
   end;
 end;
 
