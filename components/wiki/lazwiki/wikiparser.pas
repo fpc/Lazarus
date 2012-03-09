@@ -335,6 +335,7 @@ var
 
 // normalize link to get the page, e.g. convert spaces to underscores
 function WikiInternalLinkToPage(Link: string): string;
+function WikiIsExternalLink(Link: string): boolean;
 
 function GetWikiPageID(doc: TDOMNode): string;
 function GetWikiPageID(s: TStream): string;
@@ -1558,6 +1559,25 @@ begin
     end;
     dec(i);
   end;
+end;
+
+function WikiIsExternalLink(Link: string): boolean;
+// check if Link starts with a scheme http://
+var
+  p: PChar;
+begin
+  Result:=false;
+  if Link='' then exit;
+  p:=PChar(Link);
+  while p^ in ['a'..'z','A'..'Z'] do inc(p);
+  if p=PChar(Link) then exit;
+  if p^<>':' then exit;
+  inc(p);
+  if p^<>'/' then exit;
+  inc(p);
+  if p^<>'/' then exit;
+  inc(p);
+  Result:=true;
 end;
 
 function GetWikiPageID(doc: TDOMNode): string;

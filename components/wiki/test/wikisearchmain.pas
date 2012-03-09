@@ -26,10 +26,10 @@ interface
 
 uses
   Classes, SysUtils, math, FileUtil, LazLogger, LazUTF8, LazFileUtils, laz2_DOM,
-  Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls, LCLIntf,
   IpHtml, Ipfilebroker, IpMsg,
   CodeToolManager, CodeCache,
-  WikiHelpManager, WikiSearchOptions;
+  WikiHelpManager, WikiSearchOptions, WikiParser;
 
 type
 
@@ -258,6 +258,12 @@ begin
     //Target := TIpHtmlNodeAREA(HotNode).Target;
   end;
   debugln(['TWikiSearchDemoForm.ResultsIpHtmlPanelHotClick href=',href]);
+  if WikiIsExternalLink(HRef) then begin
+    // open external page
+    OpenURL(HRef);
+    exit;
+  end;
+
   // open page in PageIpHtmlPanel
   ms:=TMemoryStream.Create;
   try
