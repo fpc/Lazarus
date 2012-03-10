@@ -28,8 +28,8 @@ uses
   Classes, SysUtils, math, FileUtil, LazLogger, LazUTF8, LazFileUtils, laz2_DOM,
   Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls, LCLIntf,
   IpHtml, Ipfilebroker, IpMsg,
-  CodeToolManager, CodeCache, SynEdit, SynHighlighterHTML,
-  WikiHelpManager, WikiSearchOptions, WikiParser;
+  CodeToolManager, CodeCache, SynEdit, SynHighlighterHTML, SynEditHighlighter,
+  WikiHelpManager, WikiSearchOptions, WikiParser, WikiFormat;
 
 type
 
@@ -56,9 +56,11 @@ type
     SearchPanel: TPanel;
     SearchLabel: TLabel;
     Splitter1: TSplitter;
+    SynHTMLSyn1: TSynHTMLSyn;
     Timer1: TTimer;
     ShowSearchToolButton: TToolButton;
     ShowHTMLToolButton: TToolButton;
+    ShowWikiSrcToolButton: TToolButton;
     function DataProviderCanHandle(Sender: TObject; const {%H-}URL: string): Boolean;
     procedure DataProviderGetImage(Sender: TIpHtmlNode; const URL: string;
       var Picture: TPicture);
@@ -71,6 +73,7 @@ type
     procedure SearchEditChange(Sender: TObject);
     procedure ShowHTMLToolButtonClick(Sender: TObject);
     procedure ShowSearchToolButtonClick(Sender: TObject);
+    procedure ShowWikiSrcToolButtonClick(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
   private
     fLastSearchText: string;
@@ -78,7 +81,8 @@ type
     fLastScoring: TWHScoring;
     FIdleConnected: boolean;
     FURLDataProvider: TWikiIpHtmlDataProvider;
-    FPageURL: string;
+    FPageDocumentName: string;
+    FPageAnchor: string;
     FPageSource: string;
     procedure QueryChanged;
     procedure SetIdleConnected(AValue: boolean);
@@ -86,6 +90,7 @@ type
     procedure LoadHTML(Target: TIpHtmlPanel; HTML: string); overload;
     procedure LoadHTML(Target: TIpHtmlPanel; aStream: TStream); overload;
     procedure ShowOptions;
+    procedure ViewSource(aTitle, aSource: string; aHighlighter: TSynCustomHighlighter);
     procedure WikiSearchOptsWndOptionsChanged(Sender: TObject);
     procedure WikiHelpScanned(Sender: TObject);
     procedure WikiHelpSearched(Sender: TObject);
@@ -137,6 +142,8 @@ begin
   // page panel
   ShowSearchToolButton.Caption:='Search';
   ShowHTMLToolButton.Hint:='View HTML Source';
+  ShowWikiSrcToolButton.Caption:='Source';
+  ShowWikiSrcToolButton.Hint:='View Wiki Source';
 
   FURLDataProvider:=TWikiIpHtmlDataProvider.Create(nil);
   ResultsIpHtmlPanel.DataProvider:=FURLDataProvider;
@@ -252,6 +259,7 @@ var
   Src: String;
   DocumentName: String;
   p: SizeInt;
+  AnchorName: String;
 begin
   Panel:=Sender as TIpHtmlPanel;
   HotNode:=Panel.HotNode;
@@ -277,6 +285,7 @@ begin
       p:=Pos('#',DocumentName);
       if p>0 then begin
         DocumentName:=LeftStr(DocumentName,p-1);
+        AnchorName:=copy(DocumentName,p+1,length(DocumentName));
         // ToDo: anchor
       end;
       WikiHelp.SavePageToStream(DocumentName,ms);
@@ -286,12 +295,16 @@ begin
         ms.Read(Src[1],length(Src));
       ms.Position:=0;
       LoadHTML(PageIpHtmlPanel,ms);
+      FPageDocumentName:=DocumentName;
+      FPageAnchor:=AnchorName;
       FPageSource:=Src;
-      FPageURL:=HRef;
     except
       on E: Exception do begin
         Src:='<html><body>Error: '+EncodeLesserAndGreaterThan(E.Message)+'</body></html>';
         LoadHTML(PageIpHtmlPanel,Src);
+        FPageDocumentName:='';
+        FPageAnchor:='';
+        FPageSource:=Src;
       end;
     end;
   finally
@@ -310,33 +323,9 @@ begin
 end;
 
 procedure TWikiSearchDemoForm.ShowHTMLToolButtonClick(Sender: TObject);
-var
-  ViewSrcForm: TForm;
-  SrcEdit: TSynEdit;
-  Highlighter: TSynHTMLSyn;
 begin
-  if (FPageURL='') then exit;
-  ViewSrcForm:=TForm.Create(Self);
-  ViewSrcForm.DisableAutoSizing;
-  try
-    ViewSrcForm.Caption:='HTML Source of '+FPageURL;
-    ViewSrcForm.Position:=poScreenCenter;
-    ViewSrcForm.Width:=500;
-    ViewSrcForm.Height:=500;
-
-    Highlighter:=TSynHTMLSyn.Create(ViewSrcForm);
-
-    SrcEdit:=TSynEdit.Create(ViewSrcForm);
-    SrcEdit.Align:=alClient;
-    SrcEdit.Text:=FPageSource;
-    SrcEdit.Highlighter:=Highlighter;
-    SrcEdit.Parent:=ViewSrcForm;
-    SrcEdit.ReadOnly:=true;
-
-    ViewSrcForm.Show;
-  finally
-    ViewSrcForm.EnableAutoSizing;
-  end;
+  if (FPageDocumentName='') then exit;
+  ViewSource('HTML of '+FPageDocumentName,FPageSource,SynHTMLSyn1);
 end;
 
 procedure TWikiSearchDemoForm.ShowSearchToolButtonClick(Sender: TObject);
@@ -351,6 +340,19 @@ begin
   finally
     EnableAutoSizing;
   end;
+end;
+
+procedure TWikiSearchDemoForm.ShowWikiSrcToolButtonClick(Sender: TObject);
+var
+  Page: TW2FormatPage;
+begin
+  if FPageDocumentName='' then exit;
+  Page:=WikiHelp.Converter.GetPageWithDocumentName(FPageDocumentName);
+  if (Page=nil) or (Page.WikiPage=nil) then begin
+    MessageDlg('Wiki source not found','Unable to find Wiki source of page "'+FPageDocumentName+'".',mtError,[mbCancel],0);
+    exit;
+  end;
+  ViewSource('Wiki source of '+FPageDocumentName,Page.WikiPage.Src,nil);
 end;
 
 procedure TWikiSearchDemoForm.Timer1Timer(Sender: TObject);
@@ -464,6 +466,33 @@ begin
   end;
   WikiSearchOptsWnd.UpdateAvailableLanguages;
   WikiSearchOptsWnd.ShowOnTop;
+end;
+
+procedure TWikiSearchDemoForm.ViewSource(aTitle, aSource: string;
+  aHighlighter: TSynCustomHighlighter);
+var
+  SrcEdit: TSynEdit;
+  ViewSrcForm: TForm;
+begin
+  ViewSrcForm:=TForm.Create(Self);
+  ViewSrcForm.DisableAutoSizing;
+  try
+    ViewSrcForm.Caption:=aTitle;
+    ViewSrcForm.Position:=poScreenCenter;
+    ViewSrcForm.Width:=500;
+    ViewSrcForm.Height:=500;
+
+    SrcEdit:=TSynEdit.Create(ViewSrcForm);
+    SrcEdit.Align:=alClient;
+    SrcEdit.Text:=aSource;
+    SrcEdit.Highlighter:=aHighlighter;
+    SrcEdit.Parent:=ViewSrcForm;
+    SrcEdit.ReadOnly:=true;
+
+    ViewSrcForm.Show;
+  finally
+    ViewSrcForm.EnableAutoSizing;
+  end;
 end;
 
 end.
