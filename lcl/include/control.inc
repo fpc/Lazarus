@@ -3280,6 +3280,7 @@ end;
 procedure TControl.InvalidateControl(CtrlIsVisible, CtrlIsOpaque: Boolean);
 var
   Rect: TRect;
+  Pt: TPoint;
 
   function BackgroundClipped: Boolean;
   var
@@ -3316,8 +3317,11 @@ begin
   // Note: it should invalidate, when this control is loaded/destroyed, but parent not
 
   if (CtrlIsVisible or ((csDesigning in ComponentState)
-  and not (csNoDesignVisible in ControlStyle))) then begin
+  and not (csNoDesignVisible in ControlStyle)))
+  then begin
+    Pt := Parent.GetClientScrollOffset;
     Rect := BoundsRect;
+    OffsetRect(Rect, -Pt.X, -Pt.Y);
     InvalidateRect(Parent.Handle, @Rect, not (CtrlIsOpaque or
       (csOpaque in Parent.ControlStyle) or BackgroundClipped));
   end;
