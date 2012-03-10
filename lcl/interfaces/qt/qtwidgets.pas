@@ -1182,6 +1182,7 @@ type
     FSelectionChangeHook: QListWidget_hookH;
     FItemClickedHook: QListWidget_hookH;
     FItemTextChangedHook: QListWidget_hookH;
+    FDelayedCheckItem: QListWidgetItemH;
     FDontPassSelChange: Boolean;
     procedure HandleCheckChangedEvent(const AMousePos: TQtPoint;
         AItem: QListWidgetItemH; AEvent: QEventH);
@@ -10253,6 +10254,7 @@ var
   Parent: QWidgetH;
 begin
   FCheckBoxClicked := False;
+  FDelayedCheckItem := nil;
   SetLength(FSavedSelection, 0);
   AllowGrayed := False;
   FSavedEvent := nil;
@@ -10479,7 +10481,7 @@ var
   ItemRow: Integer;
   B: Boolean;
 
-  procedure SendMessage;
+  procedure SendMessage(AnItem: QListWidgetItemH);
   var
     Msg: TLMNotify;
     NMLV: TNMListView;
@@ -10492,7 +10494,7 @@ var
     NMLV.hdr.hwndfrom := HWND(Self);
     NMLV.hdr.code := LVN_ITEMCHANGED;
 
-    NMLV.iItem := QListWidget_row(QListWidgetH(Widget), AItem);
+    NMLV.iItem := QListWidget_row(QListWidgetH(Widget), AnItem);
 
     NMLV.uNewState := UINT(B);
     NMLV.uChanged := LVIF_STATE;
@@ -10521,20 +10523,33 @@ begin
         else
           SetItemLastCheckStateInternal(AItem, QtUnChecked);
 
-        SendMessage;
+        SendMessage(AItem);
+        FDelayedCheckItem := AItem;
       end;
     end;
+  end else
+  if QEvent_type(AEvent) = LCLQt_ItemViewAfterMouseRelease then
+  begin
+    if (FDelayedCheckItem <> nil) and (FDelayedCheckItem <> AItem) then
+    begin
+      SetItemLastCheckStateInternal(FDelayedCheckItem, QListWidgetItem_checkState(FDelayedCheckItem));
+      SendMessage(FDelayedCheckItem);
+    end;
+    FDelayedCheckItem := nil;
+    SetItemLastCheckStateInternal(AItem, QListWidgetItem_checkState(AItem));
+    SendMessage(AItem);
   end else
   if (QEvent_type(AEvent) = QEventKeyPress) and
     (QKeyEvent_key(QKeyEventH(AEvent)) = QtKey_Space) then
   begin
+    FDelayedCheckItem := nil;
     B := QListWidgetItem_checkState(AItem) = QtUnChecked;
     if B then
       SetItemLastCheckStateInternal(AItem, QtChecked)
     else
       SetItemLastCheckStateInternal(AItem, QtUnChecked);
 
-    SendMessage;
+    SendMessage(AItem);
   end;
 end;
 
@@ -10547,6 +10562,7 @@ var
   Arr: TPtrIntArray;
   Modifiers: QtKeyboardModifiers;
   ItemRow, CurrItemRow: Integer;
+  ALCLEvent: QLCLMessageEventH;
 
   procedure SendEventToParent;
   begin
@@ -10569,9 +10585,32 @@ begin
   begin
     if ViewStyle >= 0 then
     begin
+      if QEvent_type(Event) = LCLQt_ItemViewAfterMouseRelease then
+      begin
+        ALCLEvent := QLCLMessageEventH(Event);
+        Item := QListWidgetItemH(QLCLMessageEvent_getLParam(ALCLEvent));
+        // sync lcl with qt state. This is needed only when mouse is pressed
+        // and moved out of item, or pressed on item and released over checkbox
+        if (Item <> nil) and (GetItemLastCheckState(Item) <>
+          QListWidgetItem_checkState(Item)) then
+          HandleCheckChangedEvent(MousePos, Item, Event);
+      end else
       if QEvent_type(Event) = QEventMouseButtonRelease then
-        PostponedMouseRelease(Event)
-      else
+      begin
+        PostponedMouseRelease(Event);
+        if Checkable then
+        begin
+          MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+          Item := itemAt(MousePos.x, MousePos.y);
+          if Item <> nil then
+          begin
+            ALCLEvent := QLCLMessageEvent_create(LCLQt_ItemViewAfterMouseRelease, 0,
+              PtrUInt(Item), PtrUInt(Item), 0);
+            QCoreApplication_postEvent(Sender, ALCLEvent);
+          end;
+        end;
+
+      end else
       begin
         if (QEvent_type(Event) = QEventMouseButtonPress) then
         begin
@@ -11327,6 +11366,7 @@ var
   Parent: QWidgetH;
 begin
   FCheckBoxClicked := False;
+  FDelayedCheckItem := nil;
   FSavedEvent := nil;
   FSavedEventTimer := nil;
   FSavedEventTimerHook := nil;
@@ -11967,8 +12007,8 @@ begin
       Item := QTreeWidgetItemH(QLCLMessageEvent_getLParam(ALCLEvent));
       // sync lcl with qt state. This is needed only when mouse is pressed
       // and moved out of item, or pressed on item and released over checkbox
-      if GetItemLastCheckStateInternal(Item) <>
-        QTreeWidgetItem_checkState(Item, 0) then
+      if (Item <> nil) and (GetItemLastCheckStateInternal(Item) <>
+        QTreeWidgetItem_checkState(Item, 0)) then
         HandleCheckChangedEvent(MousePos, Item, Event);
 
     end else
