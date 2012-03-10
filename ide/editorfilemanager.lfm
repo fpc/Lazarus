@@ -58,28 +58,29 @@ object EditorFileManagerForm: TEditorFileManagerForm
     ClientHeight = 334
     ClientWidth = 186
     TabOrder = 2
-    object SelectAllCheckBox: TCheckBox
+    object CheckAllCheckBox: TCheckBox
       AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = FileCountLabel
       AnchorSideTop.Side = asrBottom
       Left = 7
-      Height = 17
-      Top = 40
-      Width = 105
-      BorderSpacing.Top = 21
+      Height = 19
+      Top = 65
+      Width = 127
+      BorderSpacing.Top = 11
       BorderSpacing.Around = 6
-      Caption = 'SelectAllCheckBox'
-      OnClick = SelectAllCheckBoxClick
+      Caption = 'CheckAllCheckBox'
+      OnClick = CheckAllCheckBoxClick
       TabOrder = 0
     end
     object SaveCheckedButton: TBitBtn
       AnchorSideLeft.Control = Panel1
-      AnchorSideTop.Control = SelectAllCheckBox
+      AnchorSideTop.Control = CheckAllCheckBox
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
       Left = 7
-      Height = 23
-      Top = 63
+      Height = 25
+      Top = 90
       Width = 172
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -96,8 +97,8 @@ object EditorFileManagerForm: TEditorFileManagerForm
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
       Left = 7
-      Height = 23
-      Top = 92
+      Height = 25
+      Top = 121
       Width = 172
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -114,7 +115,7 @@ object EditorFileManagerForm: TEditorFileManagerForm
       AnchorSideTop.Side = asrBottom
       Left = 82
       Height = 26
-      Top = 139
+      Top = 170
       Width = 22
       BorderSpacing.Top = 24
       Enabled = False
@@ -129,7 +130,7 @@ object EditorFileManagerForm: TEditorFileManagerForm
       AnchorSideTop.Side = asrBottom
       Left = 82
       Height = 26
-      Top = 172
+      Top = 203
       Width = 22
       BorderSpacing.Top = 7
       Enabled = False
@@ -137,6 +138,17 @@ object EditorFileManagerForm: TEditorFileManagerForm
       OnClick = MoveDownBtnClick
       ShowHint = True
       ParentShowHint = False
+    end
+    object FileCountLabel: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Side = asrBottom
+      Left = 7
+      Height = 16
+      Top = 32
+      Width = 85
+      BorderSpacing.Around = 6
+      Caption = 'FileCountLabel'
+      ParentColor = False
     end
   end
   object FilterPanel: TPanel
