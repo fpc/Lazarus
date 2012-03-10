@@ -55,7 +55,18 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
         AutoSize = True
         Caption = 'Search'
         OnClick = ShowSearchToolButtonClick
+        ParentShowHint = False
+        ShowHint = True
         Visible = False
+      end
+      object ShowHTMLToolButton: TToolButton
+        Left = 47
+        Top = 2
+        AutoSize = True
+        Caption = 'HTML'
+        OnClick = ShowHTMLToolButtonClick
+        ParentShowHint = False
+        ShowHint = True
       end
     end
   end
