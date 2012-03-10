@@ -378,11 +378,8 @@ var
   // Source Editor's tab: Popupmenu
   SourceTabMenuRoot: TIDEMenuSection = nil;
     SrcEditMenuSectionPages: TIDEMenuSection;
-      SrcEditSubMenuOpenFile: TIDEMenuSection;
-        // Source Editor: File Specific dynamic section
-        //                The items are cleared automatically after each popup.
-        SrcEditMenuSectionFileDynamic: TIDEMenuSection;
       SrcEditSubMenuMovePage: TIDEMenuSection;
+    SrcEditMenuSectionEditors: TIDEMenuSection;
 
 
   // Source Editor(s): Popupmenu
@@ -394,6 +391,10 @@ var
     SrcEditMenuSectionFirstStatic: TIDEMenuSection;
       SrcEditSubMenuFind: TIDEMenuSection;
     SrcEditMenuSectionFiles: TIDEMenuSection;
+      SrcEditSubMenuOpenFile: TIDEMenuSection;
+        // Source Editor: File Specific dynamic section
+        //                The items are cleared automatically after each popup.
+        SrcEditMenuSectionFileDynamic: TIDEMenuSection;
     SrcEditMenuSectionMarks: TIDEMenuSection;
       SrcEditSubMenuGotoBookmarks: TIDEMenuSection;
       SrcEditSubMenuToggleBookmarks: TIDEMenuSection;

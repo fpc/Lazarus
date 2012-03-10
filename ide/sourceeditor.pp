@@ -1246,6 +1246,16 @@ begin
   Result := TSourceEditorManager(SourceEditorManagerIntf);
 end;
 
+procedure ExecuteEditorItemClick(Sender: TObject);
+var
+  s: String;
+begin
+  if SourceEditorManager = nil then exit;
+  s:=(sender as TIDEMenuCommand).Caption;
+  SourceEditorManager.ActiveEditor := SourceEditorManager.SourceEditorIntfWithFilename(s);
+  SourceEditorManager.ShowActiveWindowOnTop(True);
+end;
+
 procedure ExecuteIdeMenuClick(Sender: TObject);
 var
   ActEdit: TSourceEditor;
@@ -1272,24 +1282,25 @@ begin
 
   {%region *** Pages section ***}
   SrcEditMenuSectionPages:=RegisterIDEMenuSection(SourceTabMenuRoot, 'Pages');
+  AParent:=SrcEditMenuSectionPages;
 
-    SrcEditMenuClosePage := RegisterIDEMenuCommand(SrcEditMenuSectionPages,
+    SrcEditMenuClosePage := RegisterIDEMenuCommand(AParent,
         'Close Page', uemClosePage, nil, @ExecuteIdeMenuClick, nil, 'menu_close');
-    SrcEditMenuCloseOtherPages := RegisterIDEMenuCommand(SrcEditMenuSectionPages,
+    SrcEditMenuCloseOtherPages := RegisterIDEMenuCommand(AParent,
         'Close All Other Pages',uemCloseOtherPages, nil, @ExecuteIdeMenuClick);
 
     {$IFnDEF SingleSrcWindow}
     // Lock Editor
     SrcEditMenuEditorLock := RegisterIDEMenuCommand
-        (SrcEditMenuSectionPages, 'LockEditor', uemLockPage, nil, @ExecuteIdeMenuClick);
+        (AParent, 'LockEditor', uemLockPage, nil, @ExecuteIdeMenuClick);
     SrcEditMenuEditorLock.ShowAlwaysCheckable := True;
     // Move to other Window
     SrcEditMenuMoveToNewWindow := RegisterIDEMenuCommand
-        (SrcEditMenuSectionPages, 'MoveToNewWindow', uemMoveToNewWindow, nil, @ExecuteIdeMenuClick);
+        (AParent, 'MoveToNewWindow', uemMoveToNewWindow, nil, @ExecuteIdeMenuClick);
 
     {%region * Move To Other *}
       SrcEditMenuMoveToOtherWindow := RegisterIDESubMenu
-          (SrcEditMenuSectionPages, 'MoveToOtherWindow', uemMoveToOtherWindow);
+          (AParent, 'MoveToOtherWindow', uemMoveToOtherWindow);
 
       SrcEditMenuMoveToOtherWindowNew := RegisterIDEMenuCommand
           (SrcEditMenuMoveToOtherWindow, 'MoveToOtherWindowNew', uemMoveToOtherWindowNew,
@@ -1300,11 +1311,11 @@ begin
     {%endregion}
 
     SrcEditMenuCopyToNewWindow := RegisterIDEMenuCommand
-        (SrcEditMenuSectionPages, 'CopyToNewWindow', uemCopyToNewWindow, nil, @ExecuteIdeMenuClick);
+        (AParent, 'CopyToNewWindow', uemCopyToNewWindow, nil, @ExecuteIdeMenuClick);
 
     {%region * Copy To Other *}
       SrcEditMenuCopyToOtherWindow := RegisterIDESubMenu
-          (SrcEditMenuSectionPages, 'CopyToOtherWindow', uemCopyToOtherWindow);
+          (AParent, 'CopyToOtherWindow', uemCopyToOtherWindow);
 
       SrcEditMenuCopyToOtherWindowNew := RegisterIDEMenuCommand
           (SrcEditMenuCopyToOtherWindow, 'CopyToOtherWindowNew', uemCopyToOtherWindowNew,
@@ -1315,14 +1326,14 @@ begin
     {%endregion}
 
     SrcEditMenuFindInOtherWindow := RegisterIDESubMenu
-        (SrcEditMenuSectionPages, 'FindInOtherWindow', uemFindInOtherWindow);
+        (AParent, 'FindInOtherWindow', uemFindInOtherWindow);
     // Section for dynamically created targets
     SrcEditMenuFindInOtherWindowList := RegisterIDEMenuSection
         (SrcEditMenuFindInOtherWindow, 'FindInOtherWindowList Section');
     {$ENDIF}
 
     {%region * Move Page (left/right) *}
-      SrcEditSubMenuMovePage:=RegisterIDESubMenu(SrcEditMenuSectionPages, 'Move Page', lisMovePage);
+      SrcEditSubMenuMovePage:=RegisterIDESubMenu(AParent, 'Move Page', lisMovePage);
       AParent:=SrcEditSubMenuMovePage;
 
       SrcEditMenuMoveEditorLeft := RegisterIDEMenuCommand
@@ -1334,7 +1345,10 @@ begin
       SrcEditMenuMoveEditorLast := RegisterIDEMenuCommand
           (AParent,'MoveEditorRightmost', uemMovePageRightmost, nil, @ExecuteIdeMenuClick);
     {%endregion}
+  {%endregion}
 
+  {%region *** Editors section ***}
+  SrcEditMenuSectionEditors:=RegisterIDEMenuSection(SourceTabMenuRoot, 'Editors');
   {%endregion}
 end;
 
@@ -5371,6 +5385,7 @@ var
   PageCtrl: TPageControl;
   PopM: TPopupMenu;
   PageI: integer;
+  i: Integer;
 begin
   PopM:=TPopupMenu(Sender);
   SourceTabMenuRoot.MenuItem:=PopM.Items;
@@ -5386,12 +5401,6 @@ begin
       DebugLn(['TSourceNotebook.TabPopUpMenuPopup: Popup PageIndex=', PageI]);
     ASrcEdit:=Editors[PageIndex];
 
-    // editor layout
-    SrcEditMenuMoveEditorLeft.MenuItem.Enabled:= (PageCount>1);
-    SrcEditMenuMoveEditorRight.MenuItem.Enabled:= (PageCount>1);
-    SrcEditMenuMoveEditorFirst.MenuItem.Enabled:= (PageCount>1) and (PageIndex>0);
-    SrcEditMenuMoveEditorLast.MenuItem.Enabled:= (PageCount>1) and (PageIndex<(PageCount-1));
-
     {$IFnDEF SingleSrcWindow}
     SrcEditMenuEditorLock.Checked := ASrcEdit.IsLocked;       // Editor locks
     // Multi win
@@ -5400,7 +5409,7 @@ begin
     SrcEditMenuMoveToNewWindow.Visible := not NBAvail;
     SrcEditMenuMoveToNewWindow.Enabled := PageCount > 1;
     SrcEditMenuMoveToOtherWindow.Visible := NBAvail;
-    SrcEditMenuMoveToOtherWindowNew.Enabled := (PageCount > 1);
+    SrcEditMenuMoveToOtherWindowNew.Enabled := PageCount > 1;
 
     NBAvail := ToWindow(SrcEditMenuCopyToOtherWindowList, 'CopyToWindow',
                        @SrcEditMenuCopyToExistingWindowClicked);
@@ -5412,9 +5421,19 @@ begin
     SrcEditMenuFindInOtherWindow.Enabled := NBAvail;
     {$ENDIF}
 
-    if Assigned(Manager.OnPopupMenu) then
-      Manager.OnPopupMenu(@AddContextPopupMenuItem);
-    SourceTabMenuRoot.NotifySubSectionOnShow(Self);
+    // editor layout
+    SrcEditMenuMoveEditorLeft.MenuItem.Enabled:= (PageCount>1);
+    SrcEditMenuMoveEditorRight.MenuItem.Enabled:= (PageCount>1);
+    SrcEditMenuMoveEditorFirst.MenuItem.Enabled:= (PageCount>1) and (PageIndex>0);
+    SrcEditMenuMoveEditorLast.MenuItem.Enabled:= (PageCount>1) and (PageIndex<(PageCount-1));
+
+    if SourceEditorManager<>nil then begin
+      SrcEditMenuSectionEditors.Clear;
+      with SourceEditorManager do
+        for i := 0 to SourceEditorCount - 1 do
+          RegisterIDEMenuCommand(SrcEditMenuSectionEditors, 'File'+IntToStr(i),
+                   SourceEditors[i].FileName, nil, @ExecuteEditorItemClick, nil);
+    end;
   finally
     SourceTabMenuRoot.EndUpdate;
   end;
