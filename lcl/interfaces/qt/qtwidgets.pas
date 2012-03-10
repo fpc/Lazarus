@@ -1343,6 +1343,7 @@ type
     FItemActivatedHook: QTreeWidget_hookH;
     FItemEnteredHook: QTreeWidget_hookH;
     FSelectionChangedHook: QTreeWidget_hookH;
+    FDelayedCheckItem: QTreeWidgetItemH;
 
     procedure HandleCheckChangedEvent(const AMousePos: TQtPoint;
         AItem: QTreeWidgetItemH; AEvent: QEventH);
@@ -11748,6 +11749,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTreeWidget.Create');
   {$endif}
+  FDelayedCheckItem := nil;
   AllowGrayed := False;
   FSelection := TFPList.Create;
   FSavedEvent := nil;
@@ -11851,7 +11853,7 @@ var
   B: Boolean;
   R: TRect;
 
-  procedure SendMessage;
+  procedure SendMessage(AnItem: QTreeWidgetItemH);
   var
     MsgA: TLMessage;
     Msg: TLMNotify;
@@ -11867,7 +11869,7 @@ var
     NMLV.hdr.code := LVN_ITEMCHANGED;
 
 
-    NMLV.iItem := GetRow(AItem);
+    NMLV.iItem := GetRow(AnItem);
 
     NMLV.uOldState := UINT(Ord(not B));
     NMLV.uNewState := UINT(Ord(B));
@@ -11901,20 +11903,33 @@ begin
         else
           SetItemLastCheckStateInternal(AItem, QtUnChecked);
 
-        SendMessage;
+        SendMessage(AItem);
+        FDelayedCheckItem := AItem;
       end;
     end;
+  end else
+  if (QEvent_type(AEvent) = LCLQt_ItemViewAfterMouseRelease) then
+  begin
+    if (FDelayedCheckItem <> nil) and (FDelayedCheckItem <> AItem) then
+    begin
+      SetItemLastCheckStateInternal(FDelayedCheckItem, QTreeWidgetItem_checkState(FDelayedCheckItem, 0));
+      SendMessage(FDelayedCheckItem);
+    end;
+    FDelayedCheckItem := nil;
+    SetItemLastCheckStateInternal(AItem, QTreeWidgetItem_checkState(AItem, 0));
+    SendMessage(AItem);
   end else
   if (QEvent_type(AEvent) = QEventKeyPress) and
     (QKeyEvent_key(QKeyEventH(AEvent)) = QtKey_Space) then
   begin
+    FDelayedCheckItem := nil;
     B := QTreeWidgetItem_checkState(AItem, 0) = QtUnChecked;
     if B then
       SetItemLastCheckStateInternal(AItem, QtChecked)
     else
       SetItemLastCheckStateInternal(AItem, QtUnChecked);
 
-    SendMessage;
+    SendMessage(AItem);
   end;
 end;
 
@@ -11941,19 +11956,48 @@ var
   MousePos: TQtPoint;
   Item: QTreeWidgetItemH;
   NewState: QtCheckState;
+  ALCLEvent: QLCLMessageEventH;
 begin
   Result := False;
-  if (ViewStyle = Ord(vsReport)) and Checkable and
-    ((QEvent_type(Event) = QEventMouseButtonPress) or
-    (QEvent_type(Event) = QEventMouseButtonDblClick)) then
+  if (ViewStyle = Ord(vsReport)) and Checkable then
   begin
-    MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
-    Item := itemAt(MousePos.x, MousePos.y);
-    Result := inherited itemViewViewportEventFilter(Sender, Event);
+    if QEvent_type(Event) = LCLQt_ItemViewAfterMouseRelease then
+    begin
+      ALCLEvent := QLCLMessageEventH(Event);
+      Item := QTreeWidgetItemH(QLCLMessageEvent_getLParam(ALCLEvent));
+      // sync lcl with qt state. This is needed only when mouse is pressed
+      // and moved out of item, or pressed on item and released over checkbox
+      if GetItemLastCheckStateInternal(Item) <>
+        QTreeWidgetItem_checkState(Item, 0) then
+        HandleCheckChangedEvent(MousePos, Item, Event);
 
-    if Item <> nil then
-      HandleCheckChangedEvent(MousePos, Item, Event);
+    end else
+    if ((QEvent_type(Event) = QEventMouseButtonPress) or
+    (QEvent_type(Event) = QEventMouseButtonDblClick)) then
+    begin
+      MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+      Item := itemAt(MousePos.x, MousePos.y);
+      Result := inherited itemViewViewportEventFilter(Sender, Event);
 
+      if Item <> nil then
+        HandleCheckChangedEvent(MousePos, Item, Event);
+    end else
+    if (QEvent_type(Event) = QEventMouseButtonRelease) then
+    begin
+      if Checkable then
+      begin
+        MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+        Item := itemAt(MousePos.x, MousePos.y);
+        if Item <> nil then
+        begin
+          Item := topLevelItem(GetRow(Item));
+          ALCLEvent := QLCLMessageEvent_create(LCLQt_ItemViewAfterMouseRelease, 0,
+            PtrUInt(Item), PtrUInt(Item), 0);
+          QCoreApplication_postEvent(Sender, ALCLEvent);
+        end;
+      end;
+      Result := inherited itemViewViewportEventFilter(Sender, Event);
+    end;
   end else
     Result := inherited itemViewViewportEventFilter(Sender, Event);
 end;
@@ -12501,14 +12545,9 @@ begin
   FItemActivatedHook := QTreeWidget_hook_create(Widget);
   FItemEnteredHook := QTreeWidget_hook_create(Widget);
   FSelectionChangedHook := QTreeWidget_hook_create(Widget);
-
-
   QTreeWidget_hook_hook_ItemActivated(FItemActivatedHook, @SignalItemActivated);
-
   QTreeWidget_hook_hook_ItemEntered(FItemEnteredHook, @SignalItemEntered);
-
   QTreeWidget_hook_hook_itemSelectionChanged(FSelectionChangedHook, @SignalSelectionChanged);
-
 end;
 
 procedure TQtTreeWidget.DetachEvents;
@@ -12518,6 +12557,7 @@ begin
     QTreeWidget_hook_destroy(FItemActivatedHook);
     FItemActivatedHook := nil;
   end;
+
   if FItemEnteredHook <> nil then
   begin
     QTreeWidget_hook_destroy(FItemEnteredHook);

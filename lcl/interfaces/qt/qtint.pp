@@ -258,6 +258,9 @@ const
    // instead of using timer.
    LCLQt_ApplicationDeactivate_Check = QEventType(Ord(QEventUser) + $1007);
 
+   // needed by itemviews (TQtListWidget, TQtTreeWidget)
+   LCLQt_ItemViewAfterMouseRelease = QEventType(Ord(QEventUser) + $1008);
+
 var
   QtWidgetSet: TQtWidgetSet;
 
