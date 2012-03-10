@@ -10225,7 +10225,6 @@ end;
 
 procedure TQtListWidget.SetItemLastCheckState(AItem: QListWidgetItemH);
 var
-  v: QVariantH;
   AState: QtCheckState;
 begin
   if AItem = nil then
@@ -10477,8 +10476,6 @@ procedure TQtListWidget.HandleCheckChangedEvent(const AMousePos: TQtPoint;
   AItem: QListWidgetItemH; AEvent: QEventH);
 var
   xx: Integer;
-  // Msg: TLMessage;
-  ItemRow: Integer;
   B: Boolean;
 
   procedure SendMessage(AnItem: QListWidgetItemH);
@@ -10593,7 +10590,10 @@ begin
         // and moved out of item, or pressed on item and released over checkbox
         if (Item <> nil) and (GetItemLastCheckState(Item) <>
           QListWidgetItem_checkState(Item)) then
+        begin
+          MousePos := QtPoint(0, 0); // shutup compiler
           HandleCheckChangedEvent(MousePos, Item, Event);
+        end;
       end else
       if QEvent_type(Event) = QEventMouseButtonRelease then
       begin
@@ -11465,10 +11465,6 @@ begin
 end;
 
 procedure TQtCheckListBox.signalItemClicked(item: QListWidgetItemH); cdecl;
-var
-  AGlobalPos: TQtPoint;
-  APos: TQtPoint;
-  AMouseEvent: QMouseEventH;
 begin
 
   if InUpdate or not GetVisible then
@@ -11895,7 +11891,6 @@ var
 
   procedure SendMessage(AnItem: QTreeWidgetItemH);
   var
-    MsgA: TLMessage;
     Msg: TLMNotify;
     NMLV: TNMListView;
   begin
@@ -11995,7 +11990,6 @@ function TQtTreeWidget.itemViewViewportEventFilter(Sender: QObjectH;
 var
   MousePos: TQtPoint;
   Item: QTreeWidgetItemH;
-  NewState: QtCheckState;
   ALCLEvent: QLCLMessageEventH;
 begin
   Result := False;
@@ -12009,8 +12003,10 @@ begin
       // and moved out of item, or pressed on item and released over checkbox
       if (Item <> nil) and (GetItemLastCheckStateInternal(Item) <>
         QTreeWidgetItem_checkState(Item, 0)) then
+      begin
+        MousePos := QtPoint(0, 0); // shutup compiler
         HandleCheckChangedEvent(MousePos, Item, Event);
-
+      end;
     end else
     if ((QEvent_type(Event) = QEventMouseButtonPress) or
     (QEvent_type(Event) = QEventMouseButtonDblClick)) then
