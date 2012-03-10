@@ -2184,6 +2184,13 @@ begin
           Assigned(Win32WidgetSet.FOnAsyncSocketMsg) then
         Exit(Win32WidgetSet.FOnAsyncSocketMsg(WParam, LParam))
     end;
+    WM_IME_NOTIFY:
+    begin
+      LMessage.Msg := Msg;
+      LMessage.WParam := WParam;
+      LMessage.LParam := LParam;
+      //WinProcess := False;
+    end;
   else
     // pass along user defined messages
     if Msg >= WM_USER then

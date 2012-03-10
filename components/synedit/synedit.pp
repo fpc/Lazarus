@@ -436,14 +436,17 @@ type
   TCustomSynEdit = class(TSynEditBase)
     procedure SelAvailChange(Sender: TObject);
   private
+    {$IFDEF WinIME}
+    FImeWinX, FImeWinY: Integer;
+    procedure UpdateImeWinXY(aX, aY: Integer; aImc: HIMC = 0; aForce: Boolean = False);
+    procedure UpdateImeWinFont(aImc: HIMC = 0);
+    //procedure WMImeComposition(var Msg: TMessage); message WM_IME_COMPOSITION;
+    procedure WMImeNotify(var Msg: TMessage); message WM_IME_NOTIFY;
+    {$ENDIF}
     procedure WMDropFiles(var Msg: TMessage); message WM_DROPFILES;
     procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMHScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF}); message WM_HSCROLL;
-    {$IFDEF SYN_MBCSSUPPORT}
-    procedure WMImeComposition(var Msg: TMessage); message WM_IME_COMPOSITION;
-    procedure WMImeNotify(var Msg: TMessage); message WM_IME_NOTIFY;
-    {$ENDIF}
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
     procedure WMExit(var Message: TLMExit); message LM_EXIT;
     procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
@@ -2515,7 +2518,49 @@ begin
     Result := '';
 end;
 
-{$IFDEF SYN_MBCSSUPPORT}
+{$IFDEF WinIME}
+procedure TCustomSynEdit.UpdateImeWinXY(aX, aY: Integer; aImc: HIMC; aForce: Boolean);
+var
+  cf: CompositionForm;
+  imc: HIMC;
+begin
+  if not HandleAllocated then exit;
+  if (not aForce) and (aX = FImeWinX) and (aY = FImeWinY) then exit;
+  FImeWinX := aX;
+  FImeWinY := aY;
+
+  cf.dwStyle := CFS_POINT;
+  cf.ptCurrentPos := Point(aX, aY);
+  if aImc = 0 then
+    imc := ImmGetContext(Handle)
+  else
+    imc := aImc;
+  if (imc <> 0) then begin
+    ImmSetCompositionWindow(imc, @cf);
+    if (aImc = 0) then
+      ImmReleaseContext(Handle, imc);
+  end;
+end;
+
+procedure TCustomSynEdit.UpdateImeWinFont(aImc: HIMC);
+var
+  imc: HIMC;
+  logFont: TLogFont;
+begin
+  if not HandleAllocated then exit;
+  if aImc = 0 then
+    imc := ImmGetContext(Handle)
+  else
+    imc := aImc;
+  if (imc <> 0) then begin
+    GetObject(Font.Handle, SizeOf(TLogFont), @logFont);
+    ImmSetCompositionFontW(imc, @logFont);
+    if (aImc = 0) then
+      ImmReleaseContext(Handle, imc);
+  end;
+end;
+
+(*
 procedure TCustomSynEdit.WMImeComposition(var Msg: TMessage);
 var
   imc: HIMC;
@@ -2539,26 +2584,25 @@ begin
   end;
   inherited;
 end;
+*)
 
 procedure TCustomSynEdit.WMImeNotify(var Msg: TMessage);
 var
   imc: HIMC;
   logFont: TLogFont;
 begin
-  with Msg do begin
-    case WParam of
-      IMN_SETOPENSTATUS:
-        begin
+debugln(['TCustomSynEdit.WMImeNotify ', dbgHex(Msg.lParam), ' ,  ', dbgHex(Msg.wParam)]);
+
+  case Msg.WParam of
+    IMN_SETOPENSTATUS: begin
           imc := ImmGetContext(Handle);
           if (imc <> 0) then begin
-            GetObject(Font.Handle, SizeOf(TLogFont), @logFont);
-            ImmSetCompositionFont(imc, @logFont);
-
+            UpdateImeWinFont(imc);
+            UpdateImeWinXY(CaretXPix, CaretYPix, imc, True);
             ImmReleaseContext(Handle, imc);
           end;
         end;
     end;
-  end;
   inherited;
 end;
 {$ENDIF}
@@ -4249,11 +4293,8 @@ begin
 end;
 
 procedure TCustomSynEdit.UpdateCaret(IgnorePaintLock: Boolean = False);
-{$IFDEF WinIME}
 var
-  cf: CompositionForm;
-  imc: HIMC;
-{$ENDIF}
+  x, y: Integer;
 begin
   if ( (PaintLock <> 0) and not IgnorePaintLock ) or (not HandleAllocated)
   then begin
@@ -4263,17 +4304,12 @@ begin
     if eoAlwaysVisibleCaret in fOptions2 then
       MoveCaretToVisibleArea;
 
-    FScreenCaret.DisplayPos := Point(CaretXPix, CaretYPix);
-
-{$IFDEF WinIME}
-    if HandleAllocated then begin
-      cf.dwStyle := CFS_POINT;
-      cf.ptCurrentPos := Point(CaretXPix, CaretYPix);
-      imc := ImmGetContext(TWinControl(Owner).Handle);
-      ImmSetCompositionWindow(imc, @cf);
-      ImmReleaseContext(TWinControl(Owner).Handle, imc);
-    end;
-{$ENDIF}
+    x := CaretXPix;
+    y := CaretYPix;
+    FScreenCaret.DisplayPos := Point(x, y);
+    {$IFDEF WinIME}
+    UpdateImeWinXY(x, y);
+    {$ENDIF}
   end;
 end;
 
@@ -7555,6 +7591,9 @@ begin
   end;
   UpdateScrollBars;
 
+  {$IFDEF WinIME}
+  UpdateImeWinFont;
+  {$ENDIF}
   //debugln('TCustomSynEdit.RecalcCharExtent UseUTF8=',dbgs(UseUTF8),' Font.CanUTF8=',dbgs(Font.CanUTF8));
 end;
 
