@@ -135,6 +135,7 @@ begin
   SaveCheckedButton.Enabled:=HasChecked;
   CloseCheckedButton.Enabled:=HasChecked;
   CloseMenuItem.Enabled:=HasChecked;
+  CheckAllCheckBox.Enabled:=clb.Count>0;
   // If all items were unchecked, change CheckAllCheckBox state.
   if CheckAllCheckBox.Checked and not HasChecked then begin
     CheckAllCheckBox.Checked:=HasChecked;
@@ -157,7 +158,7 @@ begin
       FilterEdit.ItemWasClicked(CheckListBox1.Items[i], cb.Checked); // Notify the filter
     end;
   end;
-  CheckListBox1ItemClick(CheckListBox1, 0);
+  CheckListBox1ItemClick(CheckListBox1, CheckListBox1.Count-1);
 end;
 
 procedure TEditorFileManagerForm.SortAlphabeticallyButtonClick(Sender: TObject);
@@ -358,7 +359,7 @@ procedure TEditorFileManagerForm.UpdateButtons;
 // Update the filter and buttons. Reuse event handlers for it.
 begin
   FilterEdit.InvalidateFilter;
-  CheckListBox1ItemClick(CheckListBox1, 0);
+  CheckListBox1ItemClick(CheckListBox1, CheckListBox1.Count-1);
 end;
 
 procedure TEditorFileManagerForm.UpdateMoveButtons(ListIndex: integer);
