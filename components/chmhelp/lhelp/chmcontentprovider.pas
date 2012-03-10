@@ -418,7 +418,8 @@ begin
     try
       Doc.Free;
       Highlighter.Free;
-    finally
+    except
+      UseOrigStream := True;
     end;
   end;
 
@@ -675,7 +676,8 @@ var
   SearchText: String;
   Node: TTreeNode;
 begin
-  if not fIndexEdit.Focused then Exit;
+  if fIndexEdit <> Sender then
+    Exit;
   SearchText := LowerCase(fIndexEdit.Text);
   Node := fIndexView.Items.GetFirstNode;
   while Node<>nil do begin
