@@ -132,8 +132,8 @@ type
     procedure UpdateHistoryButtons;
     procedure UpdateProgress;
     procedure LoadWikiPage(Documentname, Anchor: string; AddToHistory: boolean);
-    procedure LoadHTML(Target: TIpHtmlPanel; HTML: string); overload;
-    procedure LoadHTML(Target: TIpHtmlPanel; aStream: TStream); overload;
+    procedure LoadHTML(Target: TIpHtmlPanel; HTML: string; Anchor: string = ''); overload;
+    procedure LoadHTML(Target: TIpHtmlPanel; aStream: TStream; Anchor: string = ''); overload;
     procedure ViewSource(aTitle, aSource: string; aHighlighter: TSynCustomHighlighter);
     procedure WikiSearchOptsWndOptionsChanged(Sender: TObject);
     procedure WikiHelpScanned(Sender: TObject);
@@ -429,8 +429,8 @@ begin
   DocumentName:=HRef;
   p:=Pos('#',DocumentName);
   if p>0 then begin
-    DocumentName:=LeftStr(DocumentName,p-1);
     AnchorName:=copy(DocumentName,p+1,length(DocumentName));
+    DocumentName:=LeftStr(DocumentName,p-1);
   end;
   LoadWikiPage(DocumentName,AnchorName,true);
 end;
@@ -583,8 +583,7 @@ begin
       if Src<>'' then
         ms.Read(Src[1],length(Src));
       ms.Position:=0;
-      // ToDo: anchor
-      LoadHTML(PageIpHtmlPanel,ms);
+      LoadHTML(PageIpHtmlPanel,ms,Anchor);
       FPageDocumentName:=DocumentName;
       FPageAnchor:=Anchor;
       FPageSource:=Src;
@@ -611,7 +610,8 @@ begin
   end;
 end;
 
-procedure TWikiSearchDemoForm.LoadHTML(Target: TIpHtmlPanel; HTML: string);
+procedure TWikiSearchDemoForm.LoadHTML(Target: TIpHtmlPanel; HTML: string;
+  Anchor: string);
 var
   ms: TMemoryStream;
 begin
@@ -622,7 +622,7 @@ begin
     try
       ms.Write(HTML[1],length(HTML));
       ms.Position:=0;
-      LoadHTML(Target,ms);
+      LoadHTML(Target,ms,Anchor);
     except
       on E: Exception do begin
         debugln(['TWikiSearchDemoForm.LoadHTML ',E.Message]);
@@ -633,15 +633,18 @@ begin
   end;
 end;
 
-procedure TWikiSearchDemoForm.LoadHTML(Target: TIpHtmlPanel; aStream: TStream);
+procedure TWikiSearchDemoForm.LoadHTML(Target: TIpHtmlPanel; aStream: TStream;
+  Anchor: string);
 var
   NewHTML: TIpHtml;
 begin
   try
     NewHTML:=TIpHtml.Create; // Beware: Will be freed automatically by IpHtmlPanel
-    //NewHTML.OnGetImageX:=@HTMLGetImageX;
     Target.SetHtml(NewHTML);
     NewHTML.LoadFromStream(aStream);
+    // ToDo: fix TIpHtmlNodeA.MakeVisible
+    if Anchor<>'' then
+      Target.MakeAnchorVisible(Anchor+'/'); // ipHTML store anchor names with / at end
   except
     on E: Exception do begin
       debugln(['TWikiSearchDemoForm.LoadHTML ',E.Message]);

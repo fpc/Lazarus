@@ -29,17 +29,29 @@ uses
   laz2_XMLWrite, LazUTF8, BasicCodeTools, KeywordFuncLists, CodeToolsStructs;
 
 type
+  TW2XHTMLStackItem = record
+    Node: TDOMElement;
+    Token: TWPTokenType;
+    Txt: string;
+  end;
+  PW2XHTMLStackItem = ^TW2XHTMLStackItem;
 
   { TW2XHTMLPage }
 
   TW2XHTMLPage = class(TW2FormatPage)
-  private
-    BodyNode: TDOMElement;
-    CurNode: TDOMElement; // current xhtml node
+  protected
+    BodyDOMNode: TDOMElement;
+    CurDOMNode: TDOMElement; // current xhtml node
     SectionLevel: integer;
+    Stack: PW2XHTMLStackItem;
+    StackPtr: integer;
+    StackCapacity: integer;
+    procedure Push(Node: TDOMElement; Token: TWPTokenType);
+    procedure Pop;
   public
     XHTML: TXMLDocument;
     Filename: string;
+    constructor Create(TheConverter: TWiki2FormatConverter); override;
     procedure ClearConversion; override;
   end;
 
@@ -172,7 +184,7 @@ var
           Node.SetAttribute('src', Filename);
           if Caption<>'' then
             Node.SetAttribute('alt', Caption);
-          Page.CurNode.AppendChild(Node);
+          Page.CurDOMNode.AppendChild(Node);
           exit(true);
         end;
         if WarnURL(LinkToken.Link) then
@@ -238,7 +250,7 @@ begin
     Node.SetAttribute('href', URL);
     if Caption<>'' then
       Node.AppendChild(doc.CreateTextNode(Caption));
-    Page.CurNode.AppendChild(Node);
+    Page.CurDOMNode.AppendChild(Node);
   end else if Caption<>'' then begin
     InsertText(LinkToken, Caption);
     Result:=true;
@@ -286,23 +298,23 @@ begin
     CSSNode.SetAttribute('rel','stylesheet');
   end;
   // <body>
-  Page.BodyNode:=doc.CreateElement('body');
-  RootNode.AppendChild(Page.BodyNode);
+  Page.BodyDOMNode:=doc.CreateElement('body');
+  RootNode.AppendChild(Page.BodyDOMNode);
   // title <h1 class="firstHeading">
   Node:=doc.CreateElement('h1');
-  Page.BodyNode.AppendChild(Node);
+  Page.BodyDOMNode.AppendChild(Node);
   Node.SetAttribute('class','firstHeading');
   Node.AppendChild(doc.CreateTextNode(Page.WikiPage.Title));
 
   try
     Page.SectionLevel:=0;
-    Page.CurNode:=Page.BodyNode;
+    Page.CurDOMNode:=Page.BodyDOMNode;
     Page.WikiPage.Parse(@OnWikiToken,Page);
 
     if LinkToBaseDocument<>'' then begin
       // add <a href="BaseURL+WikiDocumentName">LinkToBaseDocument</a><br>
       Node:=doc.CreateElement('a');
-      Page.BodyNode.AppendChild(Node);
+      Page.BodyDOMNode.AppendChild(Node);
       Link:=Page.WikiPage.BaseURL;
       if (Link<>'') and (Link[length(Link)]<>'/') then
         Link+='/';
@@ -310,11 +322,11 @@ begin
       Node.SetAttribute('href',Link);
       Node.AppendChild(doc.CreateTextNode(LinkToBaseDocument));
       Node:=doc.CreateElement('br');
-      Page.BodyNode.AppendChild(Node);
+      Page.BodyDOMNode.AppendChild(Node);
     end;
   finally
-    Page.BodyNode:=nil;
-    Page.CurNode:=nil;
+    Page.BodyDOMNode:=nil;
+    Page.CurDOMNode:=nil;
   end;
 end;
 
@@ -326,7 +338,7 @@ var
   procedure NodeNotOpen;
   begin
     raise Exception.Create('TWiki2XHTMLConverter.OnWikiToken can not close:'
-      +' Token='+dbgs(Token.Token)+' '+DbgSName(Token)+' CurNode='+Page.CurNode.TagName);
+      +' Token='+dbgs(Token.Token)+' '+DbgSName(Token)+' CurNode='+Page.CurDOMNode.TagName);
   end;
 
   procedure MissingNodeName;
@@ -344,6 +356,7 @@ var
   NameValueToken: TWPNameValueToken;
   CurName: String;
   CurValue: String;
+  HeaderTxt: DOMString;
 begin
   Page:=TW2XHTMLPage(Token.UserData);
   W:=Page.WikiPage;
@@ -360,16 +373,16 @@ begin
   wptLineBreak:
     begin
       // only append a br if there is something in front
-      if Page.CurNode.FirstChild<>nil then
-        Page.CurNode.AppendChild(doc.CreateElement('br'));
+      if Page.CurDOMNode.FirstChild<>nil then
+        Page.CurDOMNode.AppendChild(doc.CreateElement('br'));
       exit;
     end;
 
   wptHorizontalRow:
     begin
       // only append a hr if there is something in front
-      if Page.CurNode.FirstChild<>nil then
-        Page.CurNode.AppendChild(doc.CreateElement('hr'));
+      if Page.CurDOMNode.FirstChild<>nil then
+        Page.CurDOMNode.AppendChild(doc.CreateElement('hr'));
       exit;
     end;
 
@@ -378,7 +391,7 @@ begin
   wptPre, wptCenter,
   wptBulletList, wptNumberedList, wptDefinitionList,
   wptTable, wptTableRow, wptTableCell, wptTableHeadCell,
-  wptSection, wptHeader:
+  wptSection:
     begin
       // simple range
       NodeClass:='';
@@ -421,51 +434,78 @@ begin
           else if Token.Range=wprClose then
             dec(Page.SectionLevel);
         end;
-      wptHeader:
-        begin
-          if Page.SectionLevel<=1 then
-            NodeName:='h1'
-          else if Page.SectionLevel<=MaxH then
-            NodeName:='h'+IntToStr(Page.SectionLevel)
-          else if Page.SectionLevel>MaxH then begin
-            NodeName:='h'+IntToStr(MaxH);
-            NodeClass:='subTitle';
-          end;
-        end;
       end;
       if NodeName='' then
         MissingNodeName;
 
       if Token.Range=wprOpen then begin
         Node:=doc.CreateElement(NodeName);
-        Page.CurNode.AppendChild(Node);
+        Page.CurDOMNode.AppendChild(Node);
         if NodeClass<>'' then
           Node.SetAttribute('class',NodeClass);
-        Page.CurNode:=Node;
+        Page.CurDOMNode:=Node;
         exit;
       end else if Token.Range=wprClose then begin
-        if Page.CurNode.TagName<>NodeName then
+        if Page.CurDOMNode.TagName<>NodeName then
           NodeNotOpen;
-        Page.CurNode:=Page.CurNode.ParentNode as TDOMElement;
+        Page.CurDOMNode:=Page.CurDOMNode.ParentNode as TDOMElement;
+        exit;
+      end;
+    end;
+
+  wptHeader:
+    begin
+      if Page.SectionLevel<=1 then
+        NodeName:='h1'
+      else if Page.SectionLevel<=MaxH then
+        NodeName:='h'+IntToStr(Page.SectionLevel)
+      else if Page.SectionLevel>MaxH then begin
+        NodeName:='h'+IntToStr(MaxH);
+        NodeClass:='subTitle';
+      end;
+      if Token.Range=wprOpen then begin
+        // open header
+        Node:=doc.CreateElement(NodeName);
+        Page.CurDOMNode.AppendChild(Node);
+        if NodeClass<>'' then
+          Node.SetAttribute('class',NodeClass);
+        Page.CurDOMNode:=Node;
+        Page.Push(Node,wptHeader);
+        exit;
+      end else if Token.Range=wprClose then begin
+        // close header
+        if Page.CurDOMNode.TagName<>NodeName then
+          NodeNotOpen;
+        HeaderTxt:='';
+        if Page.CurDOMNode.FirstChild is TDOMText then
+          HeaderTxt:=TDOMText(Page.CurDOMNode.FirstChild).Data;
+        if HeaderTxt<>'' then begin
+          // add anchor
+          Node:=doc.CreateElement('a');
+          Node.SetAttribute('name',WikiHeaderToLink(HeaderTxt));
+          Page.CurDOMNode.ParentNode.InsertBefore(Node,Page.CurDOMNode);
+        end;
+        Page.CurDOMNode:=Page.CurDOMNode.ParentNode as TDOMElement;
+        Page.Pop;
         exit;
       end;
     end;
 
   wptListItem:
     if Token.Range=wprOpen then begin
-      if Page.CurNode.TagName='dl' then
+      if Page.CurDOMNode.TagName='dl' then
         NodeName:='dd'
       else
         NodeName:='li';
       Node:=doc.CreateElement(NodeName);
-      Page.CurNode.AppendChild(Node);
-      Page.CurNode:=Node;
+      Page.CurDOMNode.AppendChild(Node);
+      Page.CurDOMNode:=Node;
       exit;
     end else if Token.Range=wprClose then begin
-      if (Page.CurNode.TagName<>'dd')
-      and (Page.CurNode.TagName<>'li') then
+      if (Page.CurDOMNode.TagName<>'dd')
+      and (Page.CurDOMNode.TagName<>'li') then
         NodeNotOpen;
-      Page.CurNode:=Page.CurNode.ParentNode as TDOMElement;
+      Page.CurDOMNode:=Page.CurDOMNode.ParentNode as TDOMElement;
       exit;
     end;
 
@@ -474,7 +514,7 @@ begin
       NameValueToken:=TWPNameValueToken(Token);
       CurName:=copy(W.Src,NameValueToken.NameStartPos,NameValueToken.NameEndPos-NameValueToken.NameStartPos);
       CurValue:=copy(W.Src,NameValueToken.ValueStartPos,NameValueToken.ValueEndPos-NameValueToken.ValueStartPos);
-      Page.CurNode.SetAttribute(CurName,CurValue);
+      Page.CurDOMNode.SetAttribute(CurName,CurValue);
       exit;
     end;
 
@@ -486,7 +526,7 @@ begin
       Node:=doc.CreateElement('span');
       if CurName<>'' then
         Node.SetAttribute('class',CurName);
-      Page.CurNode.AppendChild(Node);
+      Page.CurDOMNode.AppendChild(Node);
       if CurValue<>'' then
         Node.AppendChild(doc.CreateTextNode(CurValue));
       exit;
@@ -541,22 +581,23 @@ procedure TWiki2XHTMLConverter.InsertText(Token: TWPToken; Txt: string);
 var
   Page: TW2XHTMLPage;
   doc: TXMLDocument;
+  CurNode: TDOMElement;
 begin
   Page:=TW2XHTMLPage(Token.UserData);
   doc:=Page.XHTML;
   //Log(['TWiki2XHTMLConverter.InsertText Txt="'+dbgstr(Txt)+'"']);
   if Txt='' then exit;
-  if Page.CurNode.TagName<>'pre' then begin
+  CurNode:=Page.CurDOMNode;
+  if CurNode.TagName<>'pre' then begin
     if UTF8Trim(Txt)='' then begin
       // skip empty text
       exit;
     end;
-    if Page.CurNode.FirstChild=nil then
+    if CurNode.FirstChild=nil then
       Txt:=UTF8Trim(Txt,[u8tKeepEnd]);
   end;
-  //Log('TWiki2XHTMLConverter.InsertText Node="'+Page.CurNode.TagName+'" Text="'+Txt+'"');
-  Txt:=EncodeLesserAndGreaterThan(Txt);
-  Page.CurNode.AppendChild(doc.CreateTextNode(Txt));
+  //Log('TWiki2XHTMLConverter.InsertText Node="'+Page.CurDOMNode.TagName+'" Text="'+Txt+'"');
+  CurNode.AppendChild(doc.CreateTextNode(Txt));
 end;
 
 procedure TWiki2XHTMLConverter.InsertCode(Token: TWPNameValueToken);
@@ -635,7 +676,7 @@ begin
     CurName:='pascal';
   if CurName<>'' then
     CodeNode.SetAttribute('class',CurName);
-  Page.CurNode.AppendChild(CodeNode);
+  Page.CurDOMNode.AppendChild(CodeNode);
   if CurValue<>'' then begin
     if (CurName='pascal') then begin
       p:=PChar(CurValue);
@@ -792,11 +833,44 @@ end;
 
 { TW2XHTMLPage }
 
+procedure TW2XHTMLPage.Push(Node: TDOMElement; Token: TWPTokenType);
+var
+  s: PW2XHTMLStackItem;
+  OldCapacity: Integer;
+begin
+  inc(StackPtr);
+  if StackPtr=StackCapacity then begin
+    OldCapacity:=StackCapacity;
+    StackCapacity:=StackCapacity*2+8;
+    ReAllocMem(Stack,SizeOf(TW2XHTMLStackItem)*StackCapacity);
+    FillByte(Stack[StackPtr],SizeOf(TW2XHTMLStackItem)*(StackCapacity-OldCapacity),0);
+  end;
+  s:=@Stack[StackPtr];
+  s^.Node:=Node;
+  s^.Token:=Token;
+end;
+
+procedure TW2XHTMLPage.Pop;
+begin
+  if StackPtr<0 then
+    raise Exception.Create('bug'); // push and pop are not balanced
+  dec(StackPtr);
+end;
+
+constructor TW2XHTMLPage.Create(TheConverter: TWiki2FormatConverter);
+begin
+  inherited Create(TheConverter);
+  StackPtr:=-1;
+end;
+
 procedure TW2XHTMLPage.ClearConversion;
 begin
-  BodyNode:=nil;
-  CurNode:=nil;
+  BodyDOMNode:=nil;
+  CurDOMNode:=nil;
   SectionLevel:=0;
+  ReAllocMem(Stack,0);
+  StackPtr:=-1;
+  StackCapacity:=0;
   FreeAndNil(XHTML);
 end;
 

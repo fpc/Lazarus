@@ -126,8 +126,8 @@ type
 
   TW2HelpPage = class(TW2HTMLPage)
   public
-    TextRoot: TWHTextNode;
-    CurNode: TWHTextNode;
+    WHRoot: TWHTextNode;
+    CurWHNode: TWHTextNode;
     Score: single;
     destructor Destroy; override;
     function GetScore(Query: TWikiHelpQuery): TWHScore;
@@ -655,7 +655,7 @@ end;
 
 destructor TW2HelpPage.Destroy;
 begin
-  FreeAndNil(TextRoot);
+  FreeAndNil(WHRoot);
   inherited Destroy;
 end;
 
@@ -733,7 +733,7 @@ procedure TW2HelpPage.GetFit(Query: TWikiHelpQuery; Fit: PWHPhrasePageFit);
 
 begin
   CheckTxt(WikiPage.Title,whfcPageTitle);
-  Traverse(TextRoot);
+  Traverse(WHRoot);
 end;
 
 function TW2HelpPage.GetNodeHighestScore(Query: TWikiHelpQuery): TWHTextNode;
@@ -789,7 +789,7 @@ var
 begin
   Result:=nil;
   NodeScore:=0;
-  Traverse(TextRoot,Result,NodeScore);
+  Traverse(WHRoot,Result,NodeScore);
 end;
 
 { TWHTextNode }
@@ -992,8 +992,8 @@ var
 begin
   Page:=TW2HelpPage(Token.UserData);
   W:=Page.WikiPage;
-  CurNode:=Page.CurNode;
-  if CurNode=nil then CurNode:=Page.TextRoot;
+  CurNode:=Page.CurWHNode;
+  if CurNode=nil then CurNode:=Page.WHRoot;
   case Token.Token of
   wptText:
     if Token is TWPTextToken then begin
@@ -1015,10 +1015,10 @@ begin
         NodeType:=whnHeader
       else
         NodeType:=whnTxt;
-      Page.CurNode:=TWHTextNode.Create(NodeType,CurNode);
+      Page.CurWHNode:=TWHTextNode.Create(NodeType,CurNode);
       exit;
     end else if Token.Range=wprClose then begin
-      Page.CurNode:=CurNode.Parent;
+      Page.CurWHNode:=CurNode.Parent;
       exit;
     end;
 
@@ -1111,14 +1111,14 @@ end;
 
 procedure TWiki2HelpConverter.ExtractPageText(Page: TW2HelpPage);
 begin
-  FreeAndNil(Page.TextRoot);
-  Page.TextRoot:=TWHTextNode.Create(whnTxt,nil);
+  FreeAndNil(Page.WHRoot);
+  Page.WHRoot:=TWHTextNode.Create(whnTxt,nil);
   try
-    Page.CurNode:=Page.TextRoot;
+    Page.CurWHNode:=Page.WHRoot;
     if Page.WikiPage<>nil then
       Page.WikiPage.Parse(@ExtractTextToken,Page);
   finally
-    Page.CurNode:=nil;
+    Page.CurWHNode:=nil;
   end;
 end;
 
@@ -1460,7 +1460,7 @@ begin
     +TextToHTMLSnipped(aPage.WikiPage.Title,aQuery.LoPhrases,200)+'</a><br>'+LineEnding;
   if aNode=nil then begin
     // get the first node with some text
-    aNode:=aPage.TextRoot;
+    aNode:=aPage.WHRoot;
     while (aNode<>nil) and (UTF8Trim(aNode.Txt)='') do
       aNode:=aNode.Next;
   end;
