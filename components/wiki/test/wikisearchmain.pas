@@ -27,9 +27,9 @@ interface
 uses
   Classes, SysUtils, math, FileUtil, LazLogger, LazUTF8, LazFileUtils, laz2_DOM,
   Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls, LCLIntf,
-  IpHtml, Ipfilebroker, IpMsg,
-  CodeToolManager, CodeCache, SynEdit, SynHighlighterHTML, SynEditHighlighter,
-  WikiHelpManager, WikiSearchOptions, WikiParser, WikiFormat;
+  Menus, IpHtml, Ipfilebroker, IpMsg, CodeToolManager, CodeCache, SynEdit,
+  SynHighlighterHTML, SynEditHighlighter, WikiHelpManager, WikiSearchOptions,
+  WikiParser, WikiFormat;
 
 type
 
@@ -42,13 +42,49 @@ type
   public
   end;
 
+  { TWikiPageHistoryItem }
+
+  TWikiPageHistoryItem = class
+  public
+    DocumentName: string;
+    Anchor: string;
+    Title: string;
+    constructor Create(TheDocumentName, TheAnchor, TheTitle: string);
+  end;
+
+  TWikiPageHistory = class
+  private
+    FCurrentIndex: integer;
+    FItems: TFPList; // list of TWikiPageHistoryItem
+    FMaxCount: integer;
+    function GetCurrent: TWikiPageHistoryItem;
+    function GetItems(Index: integer): TWikiPageHistoryItem;
+    procedure SetCurrentIndex(AValue: integer);
+    procedure SetMaxCount(AValue: integer);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    property CurrentIndex: integer read FCurrentIndex write SetCurrentIndex;
+    property Current: TWikiPageHistoryItem read GetCurrent;
+    property Items[Index: integer]: TWikiPageHistoryItem read GetItems; default;
+    function Count: integer;
+    property MaxCount: integer read FMaxCount write SetMaxCount;
+    function AddAfterCurrent(DocumentName, Anchor, Title: string): TWikiPageHistoryItem;
+    procedure Delete(Index: integer);
+  end;
+
   { TWikiSearchDemoForm }
 
   TWikiSearchDemoForm = class(TForm)
     HideSearchButton: TButton;
+    ImageList1: TImageList;
+    ViewWikiSourceMenuItem: TMenuItem;
+    ViewHTMLMenuItem: TMenuItem;
     OptionsButton: TButton;
     PagePanel: TPanel;
     PageIpHtmlPanel: TIpHtmlPanel;
+    PagePopupMenu: TPopupMenu;
     PageToolBar: TToolBar;
     ProgressLabel: TLabel;
     ResultsIpHtmlPanel: TIpHtmlPanel;
@@ -59,51 +95,144 @@ type
     SynHTMLSyn1: TSynHTMLSyn;
     Timer1: TTimer;
     ShowSearchToolButton: TToolButton;
-    ShowHTMLToolButton: TToolButton;
-    ShowWikiSrcToolButton: TToolButton;
+    SearchSepToolButton: TToolButton;
+    BackToolButton: TToolButton;
+    ForwardToolButton: TToolButton;
+    procedure BackToolButtonClick(Sender: TObject);
     function DataProviderCanHandle(Sender: TObject; const {%H-}URL: string): Boolean;
     procedure DataProviderGetImage(Sender: TIpHtmlNode; const URL: string;
       var Picture: TPicture);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure ForwardToolButtonClick(Sender: TObject);
     procedure HideSearchButtonClick(Sender: TObject);
     procedure LanguagesEditChange(Sender: TObject);
     procedure IpHtmlPanelHotClick(Sender: TObject);
     procedure OptionsButtonClick(Sender: TObject);
+    procedure PagePopupMenuPopup(Sender: TObject);
     procedure SearchEditChange(Sender: TObject);
-    procedure ShowHTMLToolButtonClick(Sender: TObject);
+    procedure ViewHTMLMenuItemClick(Sender: TObject);
     procedure ShowSearchToolButtonClick(Sender: TObject);
-    procedure ShowWikiSrcToolButtonClick(Sender: TObject);
+    procedure ViewWikiSourceMenuItemClick(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
   private
     fLastSearchText: string;
     fLastLanguages: string;
     fLastScoring: TWHScoring;
     FIdleConnected: boolean;
+    FPageHistory: TWikiPageHistory;
     FURLDataProvider: TWikiIpHtmlDataProvider;
     FPageDocumentName: string;
     FPageAnchor: string;
     FPageSource: string;
+    FPageTitle: string;
+    procedure GoToHistoryPage(Index: integer);
     procedure QueryChanged;
     procedure SetIdleConnected(AValue: boolean);
+    procedure UpdateHistoryButtons;
     procedure UpdateProgress;
+    procedure LoadWikiPage(Documentname, Anchor: string; AddToHistory: boolean);
     procedure LoadHTML(Target: TIpHtmlPanel; HTML: string); overload;
     procedure LoadHTML(Target: TIpHtmlPanel; aStream: TStream); overload;
-    procedure ShowOptions;
     procedure ViewSource(aTitle, aSource: string; aHighlighter: TSynCustomHighlighter);
     procedure WikiSearchOptsWndOptionsChanged(Sender: TObject);
     procedure WikiHelpScanned(Sender: TObject);
     procedure WikiHelpSearched(Sender: TObject);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
-    function GetLanguages: string;
   public
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
+    procedure ShowOptions;
+    function GetLanguages: string;
+    property PageHistory: TWikiPageHistory read FPageHistory;
   end;
 
 var
   WikiSearchDemoForm: TWikiSearchDemoForm = nil;
 
 implementation
+
+function TWikiPageHistory.GetItems(Index: integer): TWikiPageHistoryItem;
+begin
+  Result:=TWikiPageHistoryItem(FItems[Index]);
+end;
+
+function TWikiPageHistory.GetCurrent: TWikiPageHistoryItem;
+begin
+  if (CurrentIndex>=0) and (CurrentIndex<Count) then
+    Result:=Items[CurrentIndex]
+  else
+    Result:=nil;
+end;
+
+procedure TWikiPageHistory.SetCurrentIndex(AValue: integer);
+var
+  NewValue: Integer;
+begin
+  NewValue:=AValue;
+  if NewValue<-1 then NewValue:=-1;
+  if NewValue>=Count then NewValue:=Count-1;
+  if FCurrentIndex=NewValue then Exit;
+  FCurrentIndex:=NewValue;
+end;
+
+procedure TWikiPageHistory.SetMaxCount(AValue: integer);
+begin
+  if FMaxCount=AValue then Exit;
+  FMaxCount:=AValue;
+end;
+
+constructor TWikiPageHistory.Create;
+begin
+  FItems:=TFPList.Create;
+end;
+
+destructor TWikiPageHistory.Destroy;
+begin
+  Clear;
+  FreeAndNil(FItems);
+  inherited Destroy;
+end;
+
+procedure TWikiPageHistory.Clear;
+var
+  i: Integer;
+begin
+  for i:=0 to FItems.Count-1 do
+    TObject(FItems[i]).Free;
+  FItems.Clear;
+  FCurrentIndex:=-1;
+end;
+
+function TWikiPageHistory.Count: integer;
+begin
+  Result:=FItems.Count;
+end;
+
+function TWikiPageHistory.AddAfterCurrent(DocumentName, Anchor, Title: string
+  ): TWikiPageHistoryItem;
+begin
+  while Count>CurrentIndex+1 do
+    Delete(Count-1);
+  Result:=TWikiPageHistoryItem.Create(DocumentName,Anchor,Title);
+  FItems.Add(Result);
+  FCurrentIndex:=FItems.Count-1;
+end;
+
+procedure TWikiPageHistory.Delete(Index: integer);
+begin
+  TObject(FItems[Index]).Free;
+  FItems.Delete(Index);
+end;
+
+{ TWikiPageHistoryItem }
+
+constructor TWikiPageHistoryItem.Create(TheDocumentName, TheAnchor,
+  TheTitle: string);
+begin
+  DocumentName:=TheDocumentName;
+  Anchor:=TheAnchor;
+  Title:=TheTitle;
+end;
 
 { TWikiIpHtmlDataProvider }
 
@@ -130,6 +259,8 @@ procedure TWikiSearchDemoForm.FormCreate(Sender: TObject);
 var
   Code: TCodeBuffer;
 begin
+  FPageHistory:=TWikiPageHistory.Create;
+
   Caption:='Search Wiki (Proof of concept)';
 
   // search panel
@@ -140,10 +271,11 @@ begin
   OptionsButton.Caption:='Options';
 
   // page panel
-  ShowSearchToolButton.Caption:='Search';
-  ShowHTMLToolButton.Hint:='View HTML Source';
-  ShowWikiSrcToolButton.Caption:='Source';
-  ShowWikiSrcToolButton.Hint:='View Wiki Source';
+  ShowSearchToolButton.Hint:='Search';
+  BackToolButton.Hint:='Go back one page';
+  ForwardToolButton.Hint:='Go forward one page';
+  ViewHTMLMenuItem.Caption:='View HTML Source';
+  ViewWikiSourceMenuItem.Caption:='View Wiki Source';
 
   FURLDataProvider:=TWikiIpHtmlDataProvider.Create(nil);
   ResultsIpHtmlPanel.DataProvider:=FURLDataProvider;
@@ -165,6 +297,7 @@ begin
   if Code<>nil then
     WikiHelp.ResultsCSS:=Code.Source;
 
+  UpdateHistoryButtons;
   LoadHTML(ResultsIpHtmlPanel,'');
   LoadHTML(PageIpHtmlPanel,'');
 
@@ -178,6 +311,12 @@ function TWikiSearchDemoForm.DataProviderCanHandle(Sender: TObject;
 begin
   //debugln(['TWikiSearchDemoForm.DataProviderCanHandle URL=',URL]);
   Result:=false;
+end;
+
+procedure TWikiSearchDemoForm.BackToolButtonClick(Sender: TObject);
+begin
+  if PageHistory.CurrentIndex<=0 then exit;
+  GoToHistoryPage(PageHistory.CurrentIndex-1);
 end;
 
 procedure TWikiSearchDemoForm.DataProviderGetImage(Sender: TIpHtmlNode;
@@ -209,13 +348,24 @@ end;
 procedure TWikiSearchDemoForm.FormDestroy(Sender: TObject);
 begin
   IdleConnected:=false;
+
+  // free tool windows
   FreeAndNil(WikiSearchOptsWnd);
+
   // free pages before dataprovider
   FreeAndNil(ResultsIpHtmlPanel);
   FreeAndNil(PageIpHtmlPanel);
   FreeAndNil(FURLDataProvider);
+
+  FreeAndNil(FPageHistory);
   FreeAndNil(WikiHelp);
   FreeAndNil(fLastScoring);
+end;
+
+procedure TWikiSearchDemoForm.ForwardToolButtonClick(Sender: TObject);
+begin
+  if PageHistory.CurrentIndex>=PageHistory.Count-1 then exit;
+  GoToHistoryPage(PageHistory.CurrentIndex+1);
 end;
 
 procedure TWikiSearchDemoForm.HideSearchButtonClick(Sender: TObject);
@@ -255,8 +405,6 @@ var
   HotNode: TIpHtmlNode;
   HRef: String;
   Panel: TIpHtmlPanel;
-  ms: TMemoryStream;
-  Src: String;
   DocumentName: String;
   p: SizeInt;
   AnchorName: String;
@@ -277,39 +425,14 @@ begin
     exit;
   end;
 
-  // open page in PageIpHtmlPanel
-  ms:=TMemoryStream.Create;
-  try
-    try
-      DocumentName:=HRef;
-      p:=Pos('#',DocumentName);
-      if p>0 then begin
-        DocumentName:=LeftStr(DocumentName,p-1);
-        AnchorName:=copy(DocumentName,p+1,length(DocumentName));
-        // ToDo: anchor
-      end;
-      WikiHelp.SavePageToStream(DocumentName,ms);
-      ms.Position:=0;
-      SetLength(Src,ms.Size);
-      if Src<>'' then
-        ms.Read(Src[1],length(Src));
-      ms.Position:=0;
-      LoadHTML(PageIpHtmlPanel,ms);
-      FPageDocumentName:=DocumentName;
-      FPageAnchor:=AnchorName;
-      FPageSource:=Src;
-    except
-      on E: Exception do begin
-        Src:='<html><body>Error: '+EncodeLesserAndGreaterThan(E.Message)+'</body></html>';
-        LoadHTML(PageIpHtmlPanel,Src);
-        FPageDocumentName:='';
-        FPageAnchor:='';
-        FPageSource:=Src;
-      end;
-    end;
-  finally
-    ms.Free;
+  // load wiki page
+  DocumentName:=HRef;
+  p:=Pos('#',DocumentName);
+  if p>0 then begin
+    DocumentName:=LeftStr(DocumentName,p-1);
+    AnchorName:=copy(DocumentName,p+1,length(DocumentName));
   end;
+  LoadWikiPage(DocumentName,AnchorName,true);
 end;
 
 procedure TWikiSearchDemoForm.OptionsButtonClick(Sender: TObject);
@@ -317,12 +440,18 @@ begin
   ShowOptions;
 end;
 
+procedure TWikiSearchDemoForm.PagePopupMenuPopup(Sender: TObject);
+begin
+  ViewHTMLMenuItem.Enabled:=FPageDocumentName<>'';
+  ViewWikiSourceMenuItem.Enabled:=FPageDocumentName<>'';
+end;
+
 procedure TWikiSearchDemoForm.SearchEditChange(Sender: TObject);
 begin
   IdleConnected:=true;
 end;
 
-procedure TWikiSearchDemoForm.ShowHTMLToolButtonClick(Sender: TObject);
+procedure TWikiSearchDemoForm.ViewHTMLMenuItemClick(Sender: TObject);
 begin
   if (FPageDocumentName='') then exit;
   ViewSource('HTML of '+FPageDocumentName,FPageSource,SynHTMLSyn1);
@@ -342,7 +471,7 @@ begin
   end;
 end;
 
-procedure TWikiSearchDemoForm.ShowWikiSrcToolButtonClick(Sender: TObject);
+procedure TWikiSearchDemoForm.ViewWikiSourceMenuItemClick(Sender: TObject);
 var
   Page: TW2FormatPage;
 begin
@@ -404,6 +533,16 @@ begin
   Timer1.Enabled:=true;
 end;
 
+procedure TWikiSearchDemoForm.GoToHistoryPage(Index: integer);
+var
+  CurPage: TWikiPageHistoryItem;
+begin
+  PageHistory.CurrentIndex:=Index;
+  CurPage:=PageHistory.Current;
+  LoadWikiPage(CurPage.DocumentName, CurPage.Anchor, false);
+  UpdateHistoryButtons;
+end;
+
 procedure TWikiSearchDemoForm.SetIdleConnected(AValue: boolean);
 begin
   if FIdleConnected=AValue then Exit;
@@ -414,10 +553,62 @@ begin
     Application.RemoveOnIdleHandler(@OnIdle);
 end;
 
+procedure TWikiSearchDemoForm.UpdateHistoryButtons;
+begin
+  BackToolButton.Visible:=PageHistory.CurrentIndex>0;
+  ForwardToolButton.Visible:=PageHistory.CurrentIndex+1<PageHistory.Count;
+end;
+
 procedure TWikiSearchDemoForm.UpdateProgress;
 begin
   ProgressLabel.Caption:=WikiHelp.GetProgressCaption;
   Timer1.Enabled:=WikiHelp.Busy;
+end;
+
+procedure TWikiSearchDemoForm.LoadWikiPage(Documentname, Anchor: string;
+  AddToHistory: boolean);
+var
+  ms: TMemoryStream;
+  Src: string;
+  Page: TW2FormatPage;
+begin
+  // open page in PageIpHtmlPanel
+  ms:=TMemoryStream.Create;
+  try
+    try
+      WikiHelp.SavePageToStream(DocumentName,ms);
+      Page:=WikiHelp.Converter.GetPageWithDocumentName(Documentname);
+      ms.Position:=0;
+      SetLength(Src,ms.Size);
+      if Src<>'' then
+        ms.Read(Src[1],length(Src));
+      ms.Position:=0;
+      // ToDo: anchor
+      LoadHTML(PageIpHtmlPanel,ms);
+      FPageDocumentName:=DocumentName;
+      FPageAnchor:=Anchor;
+      FPageSource:=Src;
+      if (Page<>nil) and (Page.WikiPage<>nil) then
+        FPageTitle:=Page.WikiPage.Title
+      else
+        FPageTitle:=Documentname;
+    except
+      on E: Exception do begin
+        FPageDocumentName:='';
+        FPageAnchor:='';
+        FPageSource:=Src;
+        FPageTitle:='Error: '+E.Message;
+        Src:='<html><body>'+EncodeLesserAndGreaterThan(FPageTitle)+'</body></html>';
+        LoadHTML(PageIpHtmlPanel,Src);
+      end;
+    end;
+  finally
+    ms.Free;
+  end;
+  if AddToHistory and (FPageDocumentName<>'') then begin
+    PageHistory.AddAfterCurrent(FPageDocumentName,FPageAnchor,FPageTitle);
+    UpdateHistoryButtons;
+  end;
 end;
 
 procedure TWikiSearchDemoForm.LoadHTML(Target: TIpHtmlPanel; HTML: string);
