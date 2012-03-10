@@ -96,7 +96,10 @@ var
           w(StrToXMLValue(Element.Attributes[i].NodeValue));
           w('"');
         end;
-        w('>');
+        if Node.FirstChild <> nil then
+          w('>')
+        else
+          w('/>');
         LastNodeWasText:=PreserveSpace;
         if (Node.FirstChild<>nil) then begin
           Traverse(Node,PreserveSpace);
