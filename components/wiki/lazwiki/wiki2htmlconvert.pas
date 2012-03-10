@@ -56,6 +56,7 @@ procedure TWiki2HTMLConverter.SavePageToStream(Page: TW2XHTMLPage;
   aStream: TStream);
 var
   LastNodeWasText: boolean;
+  FirstLine: boolean;
 
   procedure w(s: string);
   begin
@@ -80,7 +81,10 @@ var
         w(s);
       end else if Node is TDOMElement then begin
         if not LastNodeWasText then begin
-          w(LineEnding);
+          if FirstLine then
+            FirstLine:=false
+          else
+            w(LineEnding);
           w(Space(Node.GetLevel*2-2));
         end;
         Element:=TDOMElement(Node);
@@ -127,6 +131,7 @@ var
 
 begin
   LastNodeWasText:=false;
+  FirstLine:=true;
   Traverse(Page.XHTML,false);
 end;
 
