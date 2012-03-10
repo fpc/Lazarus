@@ -1129,7 +1129,6 @@ class function  TQtWSCustomListView.ItemGetChecked(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem): Boolean;
 var
   QtTreeWidget: TQtTreeWidget;
-  TWI: QTreeWidgetItemH;
   LWI: QListWidgetItemH;
   AState: QtCheckState;
 begin
@@ -1145,7 +1144,7 @@ begin
     AState := QtUnChecked;
     LWI := TQtListWidget(ALV.Handle).getItem(AIndex);
     if LWI <> nil then
-      AState := TQtListWidget(ALV).GetItemLastCheckState(LWI);
+      AState := TQtListWidget(ALV.Handle).GetItemLastCheckState(LWI);
     Result := AState = QtChecked;
   end else
   begin
