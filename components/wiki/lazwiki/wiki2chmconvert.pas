@@ -94,8 +94,11 @@ begin
   inc(FilesCompressed);
   debugln(['chm processing ',FilesCompressed,' of ',Writer.FilesToCompress.Count,' "',DataName,'" ...']);
   Result := False; // Return true to abort compressing files
-  Filename:=DataName;
-  PathInChm:='/';
+  Filename:=ExtractFileName(DataName);
+  PathInChm:='/'+ExtractFilePath(DataName);
+  // cleanup string
+  PathInChm:=StringReplace(PathInChm, '\','/',[rfReplaceAll]);
+  PathInChm:=StringReplace(PathInChm, '//','/',[rfReplaceAll]);
   Page:=TW2CHMPage(DocumentNameToPage[DataName]);
   if Page<>nil then begin
     // a page
@@ -159,7 +162,6 @@ begin
       wl('  <li> <object type="text/sitemap">');
       wl('       <param name="Name" value="'+StrToXMLValue(Page.WikiPage.Title)+'">');
       wl('       <param name="Local" value="'+StrToXMLValue(GetPageLink(Page))+'">');
-      wl('       <object type="text/sitemap">');
     end;
   finally
     List.Free;
