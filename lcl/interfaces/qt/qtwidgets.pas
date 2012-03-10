@@ -2854,12 +2854,15 @@ begin
     S1 := 'NONE';
 
   writeln(' KEY=',QKeyEvent_key(QKeyEventH(Event)),' COUNT=',QKeyEvent_count(QKeyEventH(Event)),' TEXT=',Text);
-  writeln(' LCLKEY=',QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)), Text, QKeyEventH(Event)));
+  writeln(' LCLKEY=',QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)), Text, QKeyEventH(Event)),
+  ' SPONTANEOUS ', QEvent_spontaneous(Event));
   writeln(' MODIFIERS: ',S,' NATIVEMODIFIERS: ',S1);
   writeln(' HASEXTENDEDINFO: ',QKeyEvent_hasExtendedInfo(QKeyEventH(Event)),
-  ' ISAUTOREPEAT: ',QKeyEvent_isAutoRepeat(QKeyEventH(Event)));
+    ' ISAUTOREPEAT: ',QKeyEvent_isAutoRepeat(QKeyEventH(Event)));
   writeln(' NATIVESCANCODE: ',QKeyEvent_nativeScanCode(QKeyEventH(Event)),
     ' NATIVEVIRTUALKEY: ',QKeyEvent_nativeVirtualKey(QKeyEventH(Event)));
+
+  writeln('Key compression ? ',QWidget_testAttribute(QWidgetH(Sender), QtWA_KeyCompression));
   writeln('< TQtWidget.SlotKey dump end event=',EventTypeToStr(Event));
   {$ENDIF}
 
@@ -14397,6 +14400,12 @@ begin
 end;
 
 function TQtCustomControl.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+var
+  InputEvent: QInputMethodEventH;
+  WStr: WideString;
+  UnicodeOutLen: Integer;
+  UnicodeChar: Cardinal;
+  KeyEvent: QKeyEventH;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -14413,6 +14422,28 @@ begin
      (ClassType = TQtCustomControl) then
     Result := False
   else
+  if QEvent_type(Event) = QEventInputMethod then
+  begin
+    InputEvent := QInputMethodEventH(Event);
+    QInputMethodEvent_commitString(InputEvent, @WStr);
+    UnicodeChar := UTF8CharacterToUnicode(PChar(WStr), UnicodeOutLen);
+    {$IFDEF VerboseQtKeys}
+    writeln('> TQtCustomControl.EventFilter event=QEventInputMethod');
+    writeln(' commmitString ',WStr,' len ',length(WStr),' UnicodeChar ',UnicodeChar,
+      ' UnicodeLen ',UnicodeOutLen);
+    {$ENDIF}
+
+    KeyEvent := QKeyEvent_create(QEventKeyPress, PtrInt(UnicodeChar), QApplication_keyboardModifiers, @WStr, False, 1);
+    try
+      // do not send it to queue, just pass it to SlotKey
+      Result := SlotKey(Sender, KeyEvent);
+    finally
+      QKeyEvent_destroy(KeyEvent);
+    end;
+    {$IFDEF VerboseQtKeys}
+    writeln('< TQtCustomControl.EventFilter event=QEventInputMethod sent QEventKeyPress');
+    {$ENDIF}
+  end else
   if QEvent_type(Event) = QEventWheel then
   begin
     if not getEnabled then
