@@ -2855,16 +2855,18 @@ begin
   else
     S1 := 'NONE';
 
-  writeln(' KEY=',QKeyEvent_key(QKeyEventH(Event)),' COUNT=',QKeyEvent_count(QKeyEventH(Event)),' TEXT=',Text);
-  writeln(' LCLKEY=',QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)), Text, QKeyEventH(Event)),
-  ' SPONTANEOUS ', QEvent_spontaneous(Event));
+  writeln(' KEY=',QKeyEvent_key(QKeyEventH(Event)),' COUNT=',
+    QKeyEvent_count(QKeyEventH(Event)),' TEXT=',Text);
+  writeln(' LCLKEY=',QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)), Text,
+    QKeyEventH(Event)),' SPONTANEOUS ', QEvent_spontaneous(Event));
   writeln(' MODIFIERS: ',S,' NATIVEMODIFIERS: ',S1);
   writeln(' HASEXTENDEDINFO: ',QKeyEvent_hasExtendedInfo(QKeyEventH(Event)),
     ' ISAUTOREPEAT: ',QKeyEvent_isAutoRepeat(QKeyEventH(Event)));
   writeln(' NATIVESCANCODE: ',QKeyEvent_nativeScanCode(QKeyEventH(Event)),
     ' NATIVEVIRTUALKEY: ',QKeyEvent_nativeVirtualKey(QKeyEventH(Event)));
 
-  writeln('Key compression ? ',QWidget_testAttribute(QWidgetH(Sender), QtWA_KeyCompression));
+  writeln('Key compression ? ',
+    QWidget_testAttribute(QWidgetH(Sender), QtWA_KeyCompression));
   writeln('< TQtWidget.SlotKey dump end event=',EventTypeToStr(Event));
   {$ENDIF}
 
