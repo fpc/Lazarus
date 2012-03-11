@@ -124,7 +124,7 @@ var
   i: Integer;
 begin
   GetPageTranslations(Page.WikiDocumentName, LangToPage);
-  debugln(['TWiki2XHTMLConverter.DoAddLinksToTranslations ',Page.WikiDocumentName,' ',LangToPage.Count]);
+  //debugln(['TWiki2XHTMLConverter.DoAddLinksToTranslations ',Page.WikiDocumentName,' ',LangToPage.Count]);
   Captions:=TStringList.Create;
   try
     if (LangToPage=nil) or (LangToPage.Count<2) then exit;
@@ -586,6 +586,11 @@ begin
     if Token is TWPNameValueToken then begin
       NameValueToken:=TWPNameValueToken(Token);
       CurName:=copy(W.Src,NameValueToken.NameStartPos,NameValueToken.NameEndPos-NameValueToken.NameStartPos);
+      if CurName='' then begin
+        // special without class = alternative title
+        // the title is already written
+        exit;
+      end;
       CurValue:=copy(W.Src,NameValueToken.ValueStartPos,NameValueToken.ValueEndPos-NameValueToken.ValueStartPos);
       Node:=doc.CreateElement('span');
       if CurName<>'' then
