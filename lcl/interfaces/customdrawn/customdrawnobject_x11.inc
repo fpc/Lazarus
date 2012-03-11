@@ -99,7 +99,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWinCEWidgetSet.AppInit
+  Method: TCDWidgetSet.AppInit
   Params:  None
   Returns: Nothing
 
@@ -136,7 +136,10 @@ begin
 
   if InputContext = nil then DebugLn('[TCDWidgetSet.BackendInit] Failed to initialize the Keyboard handling!');
 
-  //
+  // Initialize ScreenInfo
+  ScreenInfo.PixelsPerInchX:= 96;
+  ScreenInfo.PixelsPerInchY:= 96;
+  ScreenInfo.Initialized:= True;
 
   //if (not (woX11SkipWMHints in WindowOptions)) and (woWindow in WindowOptions) then
   //begin
@@ -152,6 +155,9 @@ begin
 
   // Add watches to the XConnection
   XAddConnectionWatch(FDisplay, @MyXConnectionWatchProc, nil);
+
+  // Generic code
+  GenericAppInit();
 end;
 
 procedure TCDWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
@@ -538,6 +544,7 @@ end;
 procedure TCDWidgetSet.AppSetMainFormOnTaskBar(const DoSet: Boolean);
 begin
 end;
+
 
 {------------------------------------------------------------------------------
   function: CreateTimer

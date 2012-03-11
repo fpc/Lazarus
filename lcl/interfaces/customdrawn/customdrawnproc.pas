@@ -10,6 +10,10 @@ uses
   fpimage, fpcanvas, Math,
   // LazUtils
   fileutil,
+  {$ifndef CD_UseNativeText}
+  // LazFreeType
+  LazFreeTypeIntfDrawer, LazFreeType, EasyLazFreeType, IniFiles,
+  {$endif}
   // Custom Drawn Canvas
   IntfGraphics, lazcanvas, lazregions,
   // LCL
@@ -158,7 +162,11 @@ function FindTimerWithNativeHandle(ANativeHandle: PtrInt): TCDTimer;
 
 // Font choosing routines
 
+{$ifndef CD_UseNativeText}
 procedure VerifyAndCleanUpFontDirectories(AFontDirectories: TStringList);
+procedure FontsScanForTTF(APath: string; var AFontTable: THashedStringList);
+procedure FontsScanDir(APath: string; var AFontPaths: TStringList; var AFontList: THashedStringList);
+{$endif}
 
 implementation
 
@@ -697,6 +705,7 @@ begin
   end;
 end;
 
+{$ifndef CD_UseNativeText}
 procedure VerifyAndCleanUpFontDirectories(AFontDirectories: TStringList);
 var
   i, j: Integer;
@@ -734,6 +743,128 @@ begin
   if AFontDirectories.Count = 0 then
     raise Exception.Create('[VerifyAndCleanUpFontDirectories] After cleaning up no font directories were found.');
 end;
+
+{------------------------------------------------------------------------------
+ Procedure: BackendScanForTTF - Scope=local
+ Params: APath - path for a font directory
+         AFontTable - Font name to Font path Hashed List
+
+ Scan a directory for ttf fonts and updates the FontTable
+------------------------------------------------------------------------------}
+procedure FontsScanForTTF(APath: string; var AFontTable: THashedStringList);
+var
+  Rslt: TSearchRec;
+  AFace: TT_Face;
+  ErrNum: TT_Error;
+  I,J: Integer;
+  FontPath: String;
+  NameCount: Integer;
+  NameString: Pchar;
+  NameLen: Integer;
+  Platform,Encoding,Language: Integer;
+  NameID: Integer;
+  AName: String;
+{$ifdef CD_Debug_TTF}
+  DebugList: TstringList;
+{$endif}
+begin
+  I:= FindFirstUTF8(APath+'*.ttf',faAnyFile,Rslt);
+{$ifdef CD_Debug_TTF}
+  DebugList:= TStringList.Create;
+{$endif}
+  while I >= 0 do
+  begin
+    FontPath:= APath+Rslt.Name;
+    ErrNum:= TT_Open_Face(FontPath,AFace);
+    if ErrNum = TT_Err_Ok then
+    begin
+      NameCount:= TT_Get_Name_Count(AFace);
+      for J:= 0 to NameCount-1 do
+      begin
+        ErrNum:= TT_Get_Name_ID(AFace,J,Platform,Encoding,Language,NameID);
+{ -------------------------------------------------------------------
+    NameID: 0= Copyright
+            1= Font Family (e.g. Arial, Times, Liberation )
+            2= Font Subfamily (e.g. Bold, Italic, Condensed)
+            3= Unique Font Identifier
+            4= Full Name - Human readable - the one used by the IDE
+-----------------------------------------------------------------------}
+{$ifdef CD_Debug_TTF}
+        if ErrNum = TT_Err_Ok then
+        begin
+          ErrNum:= TT_Get_Name_String(AFace,J,NameString,NameLen);
+          AName:= NameString;
+          if NameString <> '' then //DBG
+          begin
+            SetLength(AName,NameLen);
+            DebugList.Add('ID='+IntToStr(NameID)+' '+AName);
+          end
+          else DebugList.Add('ID='+IntToStr(NameID)+' '+'<Empty String>');
+        end;
+{$endif}
+        if (ErrNum = TT_Err_Ok) and (NameID = 4) then begin
+          ErrNum:= TT_Get_Name_String(AFace,J,NameString,NameLen);
+          AName:= NameString;
+          // Skip empty entries
+          if NameString <> '' then begin
+            SetLength(AName,NameLen);
+            AFontTable.Add(AName+'='+FontPath);
+          end;
+        end;
+      end;
+    TT_Close_Face(AFace);
+    end;
+    {$ifdef CD_Debug_TTF}
+    DebugList.Add('------');
+    {$endif}
+    ErrNum:= TT_Close_Face(AFace);
+    I:= FindNextUTF8(Rslt);
+  end;
+  FindCloseUTF8(Rslt);
+{$ifdef CD_Debug_TTF}
+  AName:= ExtractFileDir(Apath);
+  AName:= ExtractFileName(AName) + '.txt';
+  DebugList.SaveToFile('/tmp/'+AName);
+  DebugList.Free;
+{$endif}
+end;
+
+{------------------------------------------------------------------------------
+ Procedure: BackendScanDir - Scope=Local
+ Params: APath - path for a font directory
+         AFontPaths - Font path List
+
+ Recursively scans font directories to find the ones populated only
+by fonts
+------------------------------------------------------------------------------}
+procedure FontsScanDir(APath: string; var AFontPaths: TStringList; var AFontList: THashedStringList);
+var
+  NextPath: string;
+  Rslt: TSearchRec;
+  I: Integer;
+  DirFound,DirEmpty: Boolean;
+  TmpList: THashedStringList;
+begin
+  DirFound:= False;
+  DirEmpty:= True;
+  I:= FindFirstUTF8(APath+'*',faAnyFile,Rslt);
+  while I >= 0 do begin
+    if (Rslt.Name <> '.') and (Rslt.Name <> '..') then begin
+      DirEmpty:= False;
+      if (Rslt.Attr and faDirectory) <> 0 then begin
+        NextPath:= APath + Rslt.Name + PathDelim;
+        DirFound:= true;
+        FontsScanDir(NextPath,AFontPaths,AFontList);
+      end;
+    end;
+    I:= FindNextUTF8(Rslt);
+  end;
+  FindCloseUTF8(Rslt);
+  if (not DirFound) and (not DirEmpty) then begin
+    AFontPaths.Add(APath);
+  end;
+end;
+{$endif}
 
 { TCDBitmap }
 

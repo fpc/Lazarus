@@ -81,8 +81,16 @@ begin
   end;
 end;
 
+procedure TCDWidgetSet.GenericAppInit;
+begin
+  {$ifndef CD_UseNativeText}
+  // if it's the first time, we must create the list
+  if FFontPaths.Count = 0 then BackendListFontPaths(FFontPaths, FFontList);
+  {$endif}
+end;
+
 {------------------------------------------------------------------------------
-  Method: TQtWidgetSet.Create
+  Method: TCDWidgetSet.Create
   Params:  None
   Returns: Nothing
 
@@ -95,6 +103,12 @@ begin
   CDWidgetSet := Self;
   FTerminating := False;
   DefaultFontSize := 10;
+
+  {$ifndef CD_UseNativeText}
+  FFontPaths:= TStringList.Create;
+  FFontList := THashedStringList.Create;
+  FFontList.CaseSensitive:= False;
+  {$endif}
 
   BackendCreate;
 end;
@@ -109,6 +123,11 @@ end;
 destructor TCDWidgetSet.Destroy;
 begin
   BackendDestroy;
+
+  {$ifndef CD_UseNativeText}
+  FFontPaths.Free;
+  FFontList.Free;
+  {$endif}
 
   CDWidgetSet := nil;
   inherited Destroy;

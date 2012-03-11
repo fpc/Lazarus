@@ -2212,6 +2212,8 @@ begin
     FreeFTFont := True;
   end;
   try
+    ftFont.SizeInPoints:= lFontSize;
+    lFontSize:= MulDiv(lFontSize,72,ftFont.DPI); // convert points to pixels
     RealX := X + lDestCanvas.WindowOrg.X + lDestCanvas.BaseWindowOrg.X;
     RealY := Y + lDestCanvas.WindowOrg.Y + lDestCanvas.BaseWindowOrg.Y + lFontSize;
     FTDrawer.DrawText(Str, ftFont, RealX, RealY, colBlack, 255);

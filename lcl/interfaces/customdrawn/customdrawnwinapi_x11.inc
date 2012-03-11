@@ -631,12 +631,13 @@ begin
 end;*)
 
 {$ifndef CD_UseNativeText}
-procedure TCDWidgetSet.BackendListFontPaths(var AFontPaths: TStringList);
+procedure TCDWidgetSet.BackendListFontPaths(var AFontPaths: TStringList; var AFontList: THashedStringList);
 var
   Doc: TXMLDocument;
   lFontDirectories: TStringList;
-  i, FontsCount: cint;
+  i,j, FontsCount: cint;
   lXFontPath: PPChar;
+  APath,strTmp: string;
   XMLFontConfig, XMLDir: TDOMNode;
   XMLFontConfigChilds: TDOMNodeList;
 const
@@ -644,8 +645,13 @@ const
 begin
   // First paths from X11
   lXFontPath := XGetFontPath(FDisplay, @FontsCount);
-  for i := 0 to FontsCount-1 do
-    AFontPaths.Add(lXFontPath[i]);
+  for i:= 0 to FontsCount-1 do begin
+    if Copy(lXFontPath[i],1,10) = 'catalogue:' then
+      APath:= PathDelim + Copy(lXFontPath[0],12,strlen(lXFontPath[0]))+ PathDelim
+    else
+      APath:= lXFontPath[i] + PathDelim;
+    FontsScanDir(APath,AFontPaths,AFontList);
+  end;
   XFreeFontPath(lXFontPath);
 
   // Paths from the global config file
@@ -659,51 +665,104 @@ begin
         XMLFontConfigChilds := XMLFontConfig.ChildNodes;
         for i := 0 to XMLFontConfigChilds.Count-1 do
           if UTF8CompareText(XMLFontConfigChilds.Item[i].NodeName, 'dir') = 0 then
-            AFontPaths.Add(XMLFontConfigChilds.Item[i].FirstChild.NodeValue);
+            FontsScanDir(XMLFontConfigChilds.Item[i].FirstChild.NodeValue,AFontPaths,AFontList);
       end;
     finally
       XMLFontConfig.Free;
       Doc.Free;
     end;
   end;
-
-  // Add a good standards too in case the list is empty
-  AFontPaths.Add('/usr/share/fonts/');
-  AFontPaths.Add('/usr/lib/X11/fonts/');
-  AFontPaths.Add('/usr/X11R6/lib/X11/fonts/');
-  AFontPaths.Add('/opt/ttfonts/');
-  AFontPaths.Add('/usr/share/fonts/TTF/liberation/');
+  // Add a good standards too in case the X server is remote, or something is missing
+  FontsScandir('/usr/share/fonts/',AFontPaths,AFontList);
+  FontsScandir('/usr/share/X11/fonts/',AFontPaths,AFontList);
+  FontsScandir('/usr/lib/X11/fonts/',AFontPaths,AFontList);
+  FontsScandir('/usr/X11R6/lib/X11/fonts/',AFontPaths,AFontList);
+  FontsScandir('/opt/ttfonts/',AFontPaths,AFontList);
+  FontsScandir(GetEnvironmentVariable('HOME')+'/.fonts/',AFontPaths,AFontList);
 
   // Now clear up the list, make sure all paths end with a path delim, etc
   VerifyAndCleanUpFontDirectories(AFontPaths);
+
+  // We have populated FontPaths, now we may build the font list
+  if AFontPaths.Count <> 0 then for i:= 0 to AFontPaths.Count -1 do begin;
+    APath:= AFontPaths[i];
+    FontsScandirScanForTTF(APath,AFontList);
+  end;
+  // default for recent distros
+  if lFontList.Values['Liberation Sans'] <> '' then LiberationFont:= True
+  else LiberationFont:= False;
+  // default for older distros
+  if lFontList.Values['Luxi Sans Regular'] <> '' then LuxiFont:= True
+  else LuxiFont:= False;
+
+{$ifdef Debug_TTF}
+  AFontPaths.SaveToFile('/tmp/lxfontpaths.txt');
+  AFontList.Sort;
+  AFontList.SaveToFile('/tmp/lxfontlist.txt');
+{$endif}
 end;
 
 function TCDWidgetSet.BackendGetFontPath(const LogFont: TLogFont; const LongFontName: string): string;
 var
-  lFontPaths: TStringList;
   i: Integer;
   Str: String;
+  AFontName: String;
 begin
-  lFontPaths := TStringList.Create;
-  try
-    BackendListFontPaths(lFontPaths);
-
-    // Classify and choose the fonts
-    // ToDo
-
-    // Fallback: Search for known fallback fonts
-    for i := 0 to lFontPaths.Count -1 do
-    begin
-      Str := lFontPaths.Strings[i] + 'LiberationSans-Regular.ttf';
-      if FileExistsUTF8(Str) then
-      begin
-        Result := Str;
-        Break;
-      end;
-    end;
-  finally
-    lFontPaths.Free;
+  // First look if font name matches a stored name
+  // but replace generic with reasonable default
+  AFontName:= '';
+  if LiberationFont then begin
+    if LowerCase(LongFontName) = 'default' then AFontName:= 'Liberation Sans'
+    else if LowerCase(LongFontName) = 'sans' then AFontName:= 'Liberation Sans'
+    else if LowerCase(LongFontName) = 'serif' then AFontName:= 'Liberation Serif'
+    else AFontName:= LongFontName;
+  end
+  else if LuxiFont then begin
+    if LowerCase(LongFontName) = 'default' then AFontName:= 'Luxi Sans Regular'
+    else if LowerCase(LongFontName) = 'sans' then AFontName:= 'Luxi Sans Regular'
+    else if LowerCase(LongFontName) = 'serif' then AFontName:= 'Luxi Serif Regular'
+    else AFontName:= LongFontName;
   end;
+
+  If AFontName = '' then AFontName:= LongFontName; // neither Liberation nor Luxi, but maybe we're lucky
+
+  str := lFontList.Values[AFontName];
+  if str <> '' then begin
+    Result:= str;
+    exit;
+  end;
+  // Here font name wasn't found - Carry on educated guesses
+
+  // Classify and choose the fonts
+
+  // ToDo
+
+  // Fallback: Search for known fallback fonts
+
+  AFontName:= '';
+  If LiberationFont then begin
+    if pos('sans',LowerCase(LongFontName)) <> 0 then AFontName:='Liberation Sans'
+    else if pos('serif',LowerCase(LongFontName)) <> 0 then AFontName:='Liberation Serif'
+    else if pos('mono',LowerCase(LongFontName)) <> 0 then AFontName:='Liberation Mono'
+    else if pos('bold',LowerCase(LongFontName)) <> 0 then AFontName:='Liberation Sans Bold'
+    else AFontName:= 'Liberation Sans';
+  end
+  else if LuxiFont then begin
+    if pos('sans',LowerCase(LongFontName)) <> 0 then AFontName:='Luxi Sans Regular'
+    else if pos('serif',LowerCase(LongFontName)) <> 0 then AFontName:='Luxi Serif Regular'
+    else if pos('mono',LowerCase(LongFontName)) <> 0 then AFontName:='Luxi Mono Regular'
+    else if pos('bold',LowerCase(LongFontName)) <> 0 then AFontName:='Luxi Sans Bold'
+    else AFontName:= 'Luxi Sans Regular';
+  end;
+
+  str := lFontList.Values[AFontName];
+  if str <> '' then begin
+    Result:= str;
+    exit;
+  end;
+  // No luck - Nothing was found
+  raise Exception.Create('[BackendGetFontPath] Unable to find a suitable font to replace '+LongFontName);
+
 end;
 {$endif}
 
@@ -3640,7 +3699,7 @@ begin
     WriteLn(Format('Trace:> [TQtWidgetSet.GetSystemMetrics] %d', [nIndex]));
   {$endif}
   Result := 0;
-(*  case nIndex of
+  case nIndex of
     SM_ARRANGE:
       begin
         {$ifdef VerboseQtWinAPI}
@@ -3654,7 +3713,7 @@ begin
         {$endif}
       end;
     SM_CMONITORS:
-      Result := QDesktopWidget_numScreens(QApplication_desktop());
+      Result := 1; //QDesktopWidget_numScreens(QApplication_desktop());
     SM_CMOUSEBUTTONS:
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CMOUSEBUTTONS    ');
@@ -3662,8 +3721,9 @@ begin
     SM_CXBORDER, SM_CYBORDER:
       begin
         // size of frame around controls
-        Result := QStyle_pixelMetric(QApplication_style(),
-                    QStylePM_DefaultFrameWidth, nil, nil);
+        Result:= 1;
+        {Result := QStyle_pixelMetric(QApplication_style(),
+                    QStylePM_DefaultFrameWidth, nil, nil);}
       end;
     SM_CXCURSOR:
       begin
@@ -3756,11 +3816,11 @@ begin
       end;
     SM_CXMENUSIZE:
       begin
-        Result := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorWidth, nil, nil);
+        //Result := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorWidth, nil, nil);
       end;
     SM_CYMENUSIZE:
       begin
-        Result := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorHeight, nil, nil);
+        //Result := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorHeight, nil, nil);
       end;
     SM_CXMIN:
       begin
@@ -3796,13 +3856,15 @@ begin
       end;
     SM_CXSCREEN:
       begin
-        QDesktopWidget_screenGeometry(QApplication_desktop(), @R, QDesktopWidget_primaryScreen(QApplication_desktop()));
-        Result := R.Right - R.Left;
+        //QDesktopWidget_screenGeometry(QApplication_desktop(), @R, QDesktopWidget_primaryScreen(QApplication_desktop()));
+        //Result := R.Right - R.Left;
+        Result := XDisplayWidth(FDisplay,0);
       end;
     SM_CYSCREEN:
       begin
-        QDesktopWidget_screenGeometry(QApplication_desktop(), @R, QDesktopWidget_primaryScreen(QApplication_desktop()));
-        Result := R.Bottom - R.Top;
+        //QDesktopWidget_screenGeometry(QApplication_desktop(), @R, QDesktopWidget_primaryScreen(QApplication_desktop()));
+        //Result := R.Bottom - R.Top;
+      Result := XDisplayHeight(FDisplay,0);
       end;
     SM_CXSIZE:
       begin
@@ -3815,7 +3877,7 @@ begin
     SM_CXSIZEFRAME,
     SM_CYSIZEFRAME:
       begin
-        Result := QStyle_pixelMetric(QApplication_style(), QStylePM_MDIFrameWidth, nil, nil);
+        //Result := QStyle_pixelMetric(QApplication_style(), QStylePM_MDIFrameWidth, nil, nil);
       end;
     SM_CXSMICON,
     SM_CYSMICON:
@@ -3832,22 +3894,24 @@ begin
       end;
     SM_CXVIRTUALSCREEN:
       begin
-        Result := QWidget_width(QApplication_desktop);
+        //Result := QWidget_width(QApplication_desktop);
+        Result := XDisplayWidth(FDisplay,0);
       end;
     SM_CYVIRTUALSCREEN:
       begin
-        Result := QWidget_height(QApplication_desktop);
+        //Result := QWidget_height(QApplication_desktop);
+        Result := XDisplayHeight(FDisplay,0);
       end;
     SM_CXVSCROLL,
     SM_CYVSCROLL,
     SM_CXHSCROLL,
     SM_CYHSCROLL:
       begin
-        Result := QStyle_pixelMetric(QApplication_Style, QStylePM_ScrollBarExtent, nil, nil);
+        //Result := QStyle_pixelMetric(QApplication_Style, QStylePM_ScrollBarExtent, nil, nil);
       end;
     SM_CYCAPTION:
       begin
-        Result := QStyle_pixelMetric(QApplication_Style, QStylePM_TitleBarHeight, nil, nil);
+        //Result := QStyle_pixelMetric(QApplication_Style, QStylePM_TitleBarHeight, nil, nil);
       end;
     SM_CYKANJIWINDOW:
       begin
@@ -3913,7 +3977,7 @@ begin
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_SWAPBUTTON       ');
       end;
-  end;*)
+  end;
 end;
 
 (*{------------------------------------------------------------------------------

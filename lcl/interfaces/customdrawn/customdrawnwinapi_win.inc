@@ -881,9 +881,49 @@ begin
   {$else}
   Result := Windows.CreateFontIndirect(@TempLogFont);
   {$endif}
+end;*)
+
+{$ifndef CD_UseNativeText}
+procedure TCDWidgetSet.BackendListFontPaths(var AFontPaths: TStringList; var AFontList: THashedStringList);
+var
+  lWinFontPath: array[0..MAX_PATH] of WideChar;
+  lPasWinFontPath: string;
+begin
+  // First C:\Windows\Fonts
+  Windows.GetWindowsDirectoryW(@lWinFontPath[0], MAX_PATH);
+  lPasWinFontPath := lWinFontPath;
+  lPasWinFontPath := IncludeTrailingPathDelimiter(lPasWinFontPath) + 'Fonts';
+  FontsScanDir(lPasWinFontPath, AFontPaths, AFontList);
 end;
 
-{------------------------------------------------------------------------------
+function TCDWidgetSet.BackendGetFontPath(const LogFont: TLogFont; const LongFontName: string): string;
+var
+  i: Integer;
+  Str: String;
+  AFontName: String;
+begin
+  // First look if font name matches a stored name
+  // but replace generic with reasonable default
+  AFontName:= '';
+  if LowerCase(LongFontName) = 'default' then AFontName:= 'Arial'
+  else if LowerCase(LongFontName) = 'sans' then AFontName:= 'Arial'
+  else if LowerCase(LongFontName) = 'serif' then AFontName:= 'Times New Roman'
+  else AFontName:= LongFontName;
+
+  str := FFontList.Values[AFontName];
+  if str <> '' then begin
+    Result:= str;
+    exit;
+  end;
+
+  // Here font name wasn't found - Carry on educated guesses
+
+  // No luck - Nothing was found
+  raise Exception.Create('[BackendGetFontPath] Unable to find a suitable font to replace '+LongFontName);
+end;
+{$endif}
+
+(*{------------------------------------------------------------------------------
   Method:  CreateIconIndirect
   Params:  IconInfo - pointer to Icon/Cursor Information record
   Returns: handle to a created icon/cursor

@@ -45,7 +45,7 @@ uses
   fileutil, lazutf8,
   {$ifndef CD_UseNativeText}
   // LazFreeType
-  LazFreeTypeIntfDrawer, LazFreeType, EasyLazFreeType,
+  LazFreeTypeIntfDrawer, LazFreeType, EasyLazFreeType, IniFiles,
   {$endif}
   // Widgetset
   customdrawnproc,
@@ -184,6 +184,15 @@ type
   // For generic methods added in customdrawn
   // They are used internally in LCL-CustomDrawn, LCL app should not use them
   public
+    {$ifndef CD_UseNativeText}
+    // Font Path List
+    FFontPaths: TstringList;
+    FFontList: THashedStringList;
+    // default fonts availability
+    LiberationFont: Boolean;
+    LuxiFont: Boolean;
+    {$endif}
+    //
     DefaultFontSize: Integer;
     //
     AccumulatedStr: string;
@@ -212,6 +221,8 @@ type
     //
     procedure BackendCreate;
     procedure BackendDestroy;
+    //
+    procedure GenericAppInit;
   public
     // ScreenDC and Image for doing Canvas operations outside the Paint event
     // and also for text drawing operations

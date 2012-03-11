@@ -258,6 +258,8 @@ begin
 
   // Thread.Synchronize support
   //WakeMainThread := @HandleWakeMainThread;
+
+  GenericAppInit();
 end;
 
 procedure TCDWidgetSet.AppRun(const ALoop: TApplicationMainLoop);

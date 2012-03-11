@@ -32,10 +32,11 @@
 {$endif}
 
 // Default options for various backends
-{$if defined(CD_Android) or defined(CD_Windows)}
-  {$define CD_UseNativeText}
-{$endif}
 {$if defined(CD_Android)}
+  {$define CD_UseNativeText}
   {$define CD_HasNativeSelectItemDialog}
+{$endif}
+{$if defined(CD_WINDOWS)}
+  //{$define CD_UseNativeText}
 {$endif}
 
