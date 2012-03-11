@@ -259,6 +259,7 @@ type
     procedure FreeInstance; override;
 
     function GetChildNodes: TDOMNodeList;
+    function GetChildCount: SizeInt; virtual;
 
     property NodeName: DOMString read GetNodeName;
     property NodeValue: DOMString read GetNodeValue write SetNodeValue;
@@ -277,7 +278,7 @@ type
     function GetNextNodeSkipChildren: TDOMNode; // first next sibling, then next sibling of parent, ...
     function GetPreviousNode: TDOMNode; // the reverse of GetNext
     function GetLastLeaf: TDOMNode; // get last child of last child of ...
-    function GetLevel: integer; // root node has 0
+    function GetLevel: SizeInt; // root node has 0
 
     function InsertBefore({%H-}NewChild, {%H-}RefChild: TDOMNode): TDOMNode; virtual;
     function ReplaceChild({%H-}NewChild, {%H-}OldChild: TDOMNode): TDOMNode; virtual;
@@ -314,6 +315,8 @@ type
     extended implementation of TDOMNode, the generic DOM::Node interface
     implementation. (Its main purpose is to save memory in a big node tree) }
 
+  { TDOMNode_WithChildren }
+
   TDOMNode_WithChildren = class(TDOMNode)
   protected
     FFirstChild, FLastChild: TDOMNode;
@@ -330,6 +333,7 @@ type
     function ReplaceChild(NewChild, OldChild: TDOMNode): TDOMNode; override;
     function DetachChild(OldChild: TDOMNode): TDOMNode; override;
     function HasChildNodes: Boolean; override;
+    function GetChildCount: SizeInt; override;
     function FindNode(const ANodeName: DOMString): TDOMNode; override;
     procedure InternalAppend(NewChild: TDOMNode);
   end;
@@ -1139,6 +1143,11 @@ begin
   Result := FOwnerDocument.GetChildNodeList(Self);
 end;
 
+function TDOMNode.GetChildCount: SizeInt;
+begin
+  Result:=0;
+end;
+
 function TDOMNode.GetEnumerator: TDOMNodeEnumerator;
 begin
   Result:=TDOMNodeEnumerator.Create(Self);
@@ -1194,7 +1203,7 @@ begin
   until false;
 end;
 
-function TDOMNode.GetLevel: integer;
+function TDOMNode.GetLevel: SizeInt;
 var
   Node: TDOMNode;
 begin
@@ -1708,6 +1717,23 @@ end;
 function TDOMNode_WithChildren.HasChildNodes: Boolean;
 begin
   Result := Assigned(FFirstChild);
+end;
+
+function TDOMNode_WithChildren.GetChildCount: SizeInt;
+var
+  Node: TDOMNode;
+begin
+  if FFirstChild=nil then exit(0);
+  if FChildNodes<>nil then
+    Result:=FChildNodes.Count
+  else begin
+    Result:=0;
+    Node:=FFirstChild;
+    while Node<>nil do begin
+      inc(Result);
+      Node:=Node.NextSibling;
+    end;
+  end;
 end;
 
 
