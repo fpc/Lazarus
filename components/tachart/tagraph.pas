@@ -299,6 +299,7 @@ type
     function GetLegendItems(AIncludeHidden: Boolean = false): TChartLegendItems;
     procedure PaintOnAuxCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
+    procedure Prepare;
     procedure SaveToBitmapFile(const AFileName: String); inline;
     procedure SaveToFile(AClass: TRasterImageClass; AFileName: String);
     function SaveToImage(AClass: TRasterImageClass): TRasterImage;
@@ -727,8 +728,9 @@ procedure TChart.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 var
   ldd: TChartLegendDrawingData;
   s: TBasicChartSeries;
-  a: TChartAxis;
 begin
+  Prepare;
+
   ADrawer.DrawingBegin(ARect);
   ADrawer.SetAntialiasingMode(AntialiasingMode);
   Clear(ADrawer, ARect);
@@ -740,16 +742,6 @@ begin
     FClipRect.Right -= Right;
     FClipRect.Bottom -= Bottom;
   end;
-
-  for a in AxisList do
-    if a.Transformations <> nil then
-      a.Transformations.SetChart(Self);
-  for s in Series do
-    s.BeforeDraw;
-
-  if not FIsZoomed then
-    FLogicalExtent := GetFullExtent;
-  FCurrentExtent := FLogicalExtent;
 
   with ClipRect do begin;
     FTitle.Draw(ADrawer, 1, Left, Right, Top);
@@ -1193,6 +1185,22 @@ begin
   end;
 
   AxisList.Prepare(FClipRect);
+end;
+
+procedure TChart.Prepare;
+var
+  a: TChartAxis;
+  s: TBasicChartSeries;
+begin
+  for a in AxisList do
+    if a.Transformations <> nil then
+      a.Transformations.SetChart(Self);
+  for s in Series do
+    s.BeforeDraw;
+
+  if not FIsZoomed then
+    FLogicalExtent := GetFullExtent;
+  FCurrentExtent := FLogicalExtent;
 end;
 
 function TChart.PrepareLegend(
