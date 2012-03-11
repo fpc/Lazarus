@@ -2037,6 +2037,7 @@ begin
         Result := GetCarbonThemeMetric(kThemeMetricTitleBarControlsHeight);
         Result := Result + (Result div 2) + 1;
       end;
+    SM_CYMENU: Result := 0;
   else
     DebugLn('TCarbonWidgetSet.GetSystemMetrics TODO ', DbgS(NIndex));;
   end;
