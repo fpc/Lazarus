@@ -248,14 +248,41 @@ end;
 function TGtkWidgetSet.ClientToScreen(Handle : HWND; var P : TPoint) : Boolean;
 var
   Position: TPoint;
-Begin
-  if Handle = 0
-  then begin
+  LCLObject: TObject;
+  List: PGList;
+  i: Integer;
+  Pt: TPoint;
+  Adjustment: PGtkAdjustment;
+  Scrolled: PGtkScrolledWindow;
+begin
+  if Handle = 0 then
+  begin
     Position.X := 0;
     Position.Y := 0;
-  end
-  else begin
-    Position:=GetWidgetClientOrigin(PGtkWidget(Handle));
+  end else
+  begin
+    Position := GetWidgetClientOrigin(PGtkWidget(Handle));
+    LCLObject:=GetLCLObject(PGtkWidget(Handle));
+    if (LCLObject <> nil) and (LCLObject is TScrollingWinControl) then
+    begin
+      List := gtk_container_children(PGtkContainer(PGtkWidget(Handle)));
+      if (g_list_length(List) > 0) and
+        GTK_IS_SCROLLED_WINDOW(g_list_nth_data(List, 0)) then
+      begin
+        Scrolled := PGtkScrolledWindow(g_list_nth_data(List, 0));
+        Pt := Point(0, 0);
+        Adjustment := gtk_scrolled_window_get_vadjustment(Scrolled);
+        if Adjustment <> nil then
+          Pt.Y := Round(Adjustment^.value);
+
+        Adjustment := gtk_scrolled_window_get_hadjustment(Scrolled);
+        if Adjustment <> nil then
+          Pt.X := Round(Adjustment^.value);
+        dec(Position.X, Pt.X);
+        dec(Position.Y, Pt.Y);
+      end;
+      glib.g_list_free(List);
+    end;
   end;
 
   Inc(P.X, Position.X);
@@ -6718,10 +6745,12 @@ var
   gdkRect : TGDKRectangle;
   Widget, PaintWidget: PGtkWidget;
   LCLObject: TObject;
-  {$IfNDef GTK1}
-  WidgetInfo: PWidgetInfo;
-  {$ENDIF}
   r: TRect;
+  List: PGList;
+  i: Integer;
+  Pt: TPoint;
+  Adjustment: PGtkAdjustment;
+  Scrolled: PGtkScrolledWindow;
 begin
   //  DebugLn(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
   Widget:=PGtkWidget(aHandle);
@@ -6761,20 +6790,26 @@ begin
   gdkRect.Width := (Rect^.Right - Rect^.Left);
   gdkRect.Height := (Rect^.Bottom - Rect^.Top);
 
-  {$IfNDef GTK1}
-    if (PaintWidget<>nil) and GTK_WIDGET_NO_WINDOW(PaintWidget)
-      and (not GtkWidgetIsA(PGTKWidget(PaintWidget),GTKAPIWidget_GetType))
-      and (Rect<>nil)
-    then begin
-      Inc(gdkRect.X, PaintWidget^.Allocation.x);
-      Inc(gdkRect.Y, PaintWidget^.Allocation.y);
+  if LCLObject is TScrollingWinControl then
+  begin
+    List := gtk_container_children(PGtkContainer(Widget));
+    if (g_list_length(List) > 0) and
+      GTK_IS_SCROLLED_WINDOW(g_list_nth_data(List, 0)) then
+    begin
+      Scrolled := PGtkScrolledWindow(g_list_nth_data(List, 0));
+      Pt := Point(0, 0);
+      Adjustment := gtk_scrolled_window_get_vadjustment(Scrolled);
+      if Adjustment <> nil then
+        Pt.Y := Round(Adjustment^.value);
+
+      Adjustment := gtk_scrolled_window_get_hadjustment(Scrolled);
+      if Adjustment <> nil then
+        Pt.X := Round(Adjustment^.value);
+      dec(gdkRect.X, Pt.X);
+      dec(gdkRect.Y, Pt.Y);
     end;
-
-  WidgetInfo := GetWidgetInfo(Widget, False); // True ??
-  if WidgetInfo <> nil then
-    UnionRect(WidgetInfo^.UpdateRect, WidgetInfo^.UpdateRect, Rect^);
-  {$EndIf}
-
+    g_list_free(List);
+  end;
   if bErase then
     gtk_widget_queue_clear_area(PaintWidget,
                               gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
