@@ -123,6 +123,7 @@ type
     procedure Remove(const Name: string); virtual;
     property CaseSensitive: boolean read FCaseSensitive;
     property Tree: TAVLTree read FTree; // tree of PStringMapItem
+    function Count: integer;
     function FindNode(const s: string): TAVLTreeNode;
     function Equals(OtherTree: TStringMap): boolean; reintroduce;
     procedure Assign(Source: TStringMap); virtual;
@@ -708,6 +709,11 @@ begin
     FTree.Delete(Node);
     Dispose(Item);
   end;
+end;
+
+function TStringMap.Count: integer;
+begin
+  Result:=Tree.Count;
 end;
 
 function TStringMap.Equals(OtherTree: TStringMap): boolean;
