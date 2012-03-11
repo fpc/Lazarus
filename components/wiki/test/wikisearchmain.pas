@@ -573,37 +573,47 @@ var
   Src: string;
   Page: TW2FormatPage;
 begin
-  // open page in PageIpHtmlPanel
-  ms:=TMemoryStream.Create;
-  try
+  if (FPageDocumentName=Documentname)
+  and (Anchor=FPageAnchor) then
+    exit;
+  if Documentname<>'' then begin
+    // open page in PageIpHtmlPanel
+    ms:=TMemoryStream.Create;
     try
-      WikiHelp.SavePageToStream(DocumentName,ms);
-      Page:=WikiHelp.Converter.GetPageWithDocumentName(Documentname);
-      ms.Position:=0;
-      SetLength(Src,ms.Size);
-      if Src<>'' then
-        ms.Read(Src[1],length(Src));
-      ms.Position:=0;
-      LoadHTML(PageIpHtmlPanel,ms,Anchor);
-      FPageDocumentName:=DocumentName;
-      FPageAnchor:=Anchor;
-      FPageSource:=Src;
-      if (Page<>nil) and (Page.WikiPage<>nil) then
-        FPageTitle:=Page.WikiPage.Title
-      else
-        FPageTitle:=Documentname;
-    except
-      on E: Exception do begin
-        FPageDocumentName:='';
-        FPageAnchor:='';
+      try
+        WikiHelp.SavePageToStream(DocumentName,ms);
+        Page:=WikiHelp.Converter.GetPageWithDocumentName(Documentname);
+        ms.Position:=0;
+        SetLength(Src,ms.Size);
+        if Src<>'' then
+          ms.Read(Src[1],length(Src));
+        ms.Position:=0;
+        LoadHTML(PageIpHtmlPanel,ms,Anchor);
+        FPageDocumentName:=DocumentName;
+        FPageAnchor:=Anchor;
         FPageSource:=Src;
-        FPageTitle:='Error: '+E.Message;
-        Src:='<html><body>'+EncodeLesserAndGreaterThan(FPageTitle)+'</body></html>';
-        LoadHTML(PageIpHtmlPanel,Src);
+        if (Page<>nil) and (Page.WikiPage<>nil) then
+          FPageTitle:=Page.WikiPage.Title
+        else
+          FPageTitle:=Documentname;
+      except
+        on E: Exception do begin
+          FPageDocumentName:='';
+          FPageAnchor:='';
+          FPageSource:=Src;
+          FPageTitle:='Error: '+E.Message;
+          Src:='<html><body>'+EncodeLesserAndGreaterThan(FPageTitle)+'</body></html>';
+          LoadHTML(PageIpHtmlPanel,Src);
+        end;
       end;
+    finally
+      ms.Free;
     end;
-  finally
-    ms.Free;
+  end else if Anchor<>'' then begin
+    // same page
+    PageIpHtmlPanel.MakeAnchorVisible(Anchor+'/'); // ipHTML stores anchor names with / at end
+  end else begin
+    exit;
   end;
   if AddToHistory and (FPageDocumentName<>'') then begin
     PageHistory.AddAfterCurrent(FPageDocumentName,FPageAnchor,FPageTitle);
@@ -645,7 +655,7 @@ begin
     NewHTML.LoadFromStream(aStream);
     // ToDo: fix TIpHtmlNodeA.MakeVisible, the areas are all 0,0,0,0 at this time
     if Anchor<>'' then
-      Target.MakeAnchorVisible(Anchor+'/'); // ipHTML store anchor names with / at end
+      Target.MakeAnchorVisible(Anchor+'/'); // ipHTML stores anchor names with / at end
   except
     on E: Exception do begin
       debugln(['TWikiSearchDemoForm.LoadHTML ',E.Message]);
