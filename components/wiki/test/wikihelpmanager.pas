@@ -29,7 +29,7 @@ interface
 uses
   Classes, SysUtils, math, LazFileUtils, LazLogger, LazDbgLog, LazUTF8,
   laz2_DOM, CodeToolsStructs, BasicCodeTools, KeywordFuncLists, MTProcs,
-  Wiki2HTMLConvert, Wiki2XHTMLConvert, WikiFormat, WikiParser, WikiStrConsts;
+  Wiki2HTMLConvert, Wiki2XHTMLConvert, WikiFormat, WikiParser;
 
 type
   TWikiHelp = class;
@@ -242,8 +242,6 @@ type
 
     // languages
     function CollectAllLanguages(AsCaption: boolean): TStrings;
-    function LangCodeToCaption(ID: string): string;
-    function LangCaptionToCode(Caption: string): string;
 
     // search
     procedure Search(const Term: string; const Languages: string = '';
@@ -1423,7 +1421,7 @@ begin
          +'<body>'+LineEnding;
     for i:=0 to Min(FoundPages.Count-1,MaxResults) do begin
       Page:=TW2HelpPage(FoundPages[i]);
-      //debugln(['TWikiHelp.DoSearch ',Page.WikiDocumentName,' ',GetWikiPageLanguage(Page.WikiDocumentName),' ',WikiPageHasLanguage(Page.WikiDocumentName,Query.Languages)]);
+      //debugln(['TWikiHelp.DoSearch ',Page.WikiDocumentName,' ',Page.WikiLanguage,' ',WikiPageHasLanguage(Page.WikiDocumentName,Query.Languages)]);
       Node:=Page.GetNodeHighestScore(Query);
       s:='<div class="wikiSearchResultItem">'+FoundNodeToHTMLSnippet(Page,Node,Query)+'</div>'+LineEnding;
       //debugln(['TWikiHelp.TestSearch Score=',Page.Score,' HTML="',s,'"']);
@@ -1584,7 +1582,7 @@ function TWikiHelp.CollectAllLanguages(AsCaption: boolean): TStrings;
   procedure Add(Code: string);
   begin
     if AsCaption then
-      Code:=LangCodeToCaption(Code);
+      Code:=WikiLangCodeToCaption(Code);
     CollectAllLanguages.Add(Code);
   end;
 
@@ -1606,80 +1604,6 @@ begin
         Add(Code);
     until Codes='';
   end;
-end;
-
-function TWikiHelp.LangCodeToCaption(ID: string): string;
-begin
-  if ID='' then Result:=wrsLanguageEnglishOriginal
-  else if ID='*' then Result:=wrsAll
-  else if CompareText(ID,'af')=0 then Result:=wrsLanguageAfrikaans
-  else if CompareText(ID,'ar')=0 then Result:=wrsLanguageArabic
-  else if CompareText(ID,'ca')=0 then Result:=wrsLanguageCatalan
-  else if CompareText(ID,'cs')=0 then Result:=wrsLanguageCzech
-  else if CompareText(ID,'de')=0 then Result:=wrsLanguageGerman
-  else if CompareText(ID,'en')=0 then Result:=wrsLanguageEnglish
-  else if CompareText(ID,'es')=0 then Result:=wrsLanguageSpanish
-  else if CompareText(ID,'fa')=0 then Result:=wrsLanguagePersian
-  else if CompareText(ID,'fi')=0 then Result:=wrsLanguageFinnish
-  else if CompareText(ID,'fr')=0 then Result:=wrsLanguageFrench
-  else if CompareText(ID,'he')=0 then Result:=wrsLanguageHebrew
-  else if CompareText(ID,'hu')=0 then Result:=wrsLanguageHungarian
-  else if CompareText(ID,'id')=0 then Result:=wrsLanguageIndonesian
-  else if CompareText(ID,'it')=0 then Result:=wrsLanguageItalian
-  else if CompareText(ID,'ja')=0 then Result:=wrsLanguageJapanese
-  else if CompareText(ID,'ko')=0 then Result:=wrsLanguageKorean
-  else if CompareText(ID,'lt')=0 then Result:=wrsLanguageLithuanian
-  else if CompareText(ID,'mk')=0 then Result:=wrsLanguageMacedonien
-  else if CompareText(ID,'nl')=0 then Result:=wrsLanguageDutch
-  else if CompareText(ID,'pl')=0 then Result:=wrsLanguagePolish
-  else if CompareText(ID,'pt')=0 then Result:=wrsLanguagePortuguese
-  else if CompareText(ID,'pt_BR')=0 then Result:=wrsLanguagePortugueseBr
-  else if CompareText(ID,'ro')=0 then Result:=wrsLanguageRomanian
-  else if CompareText(ID,'ru')=0 then Result:=wrsLanguageRussian
-  else if CompareText(ID,'sk')=0 then Result:=wrsLanguageSlovak
-  else if CompareText(ID,'sq')=0 then Result:=wrsLanguageAlbania
-  else if CompareText(ID,'tr')=0 then Result:=wrsLanguageTurkish
-  else if CompareText(ID,'uk')=0 then Result:=wrsLanguageUkrainian
-  else if CompareText(ID,'zh_CN')=0 then Result:=wrsLanguageChinese
-  else if CompareText(ID,'zh_TW')=0 then Result:=wrsLanguageChineseTaiwan
-  else Result:=ID;
-end;
-
-function TWikiHelp.LangCaptionToCode(Caption: string): string;
-begin
-  if Caption=wrsLanguageEnglishOriginal then Result:=''
-  else if Caption=wrsAll then Result:='*'
-  else if Caption=wrsLanguageAfrikaans then Result:='af'
-  else if Caption=wrsLanguageAlbania then Result:='sq'
-  else if Caption=wrsLanguageArabic then Result:='ar'
-  else if Caption=wrsLanguageCatalan then Result:='ca'
-  else if Caption=wrsLanguageChinese then Result:='zh_CN'
-  else if Caption=wrsLanguageChineseTaiwan then Result:='zh_TW'
-  else if Caption=wrsLanguageCzech then Result:='cs'
-  else if Caption=wrsLanguageDutch then Result:='nl'
-  else if Caption=wrsLanguageEnglish then Result:='en'
-  else if Caption=wrsLanguageFinnish then Result:='fi'
-  else if Caption=wrsLanguageFrench then Result:='fr'
-  else if Caption=wrsLanguageGerman then Result:='de'
-  else if Caption=wrsLanguageHebrew then Result:='he'
-  else if Caption=wrsLanguageHungarian then Result:='hu'
-  else if Caption=wrsLanguageIndonesian then Result:='id'
-  else if Caption=wrsLanguageItalian then Result:='it'
-  else if Caption=wrsLanguageJapanese then Result:='ja'
-  else if Caption=wrsLanguageKorean then Result:='ko'
-  else if Caption=wrsLanguageLithuanian then Result:='lt'
-  else if Caption=wrsLanguageMacedonien then Result:='mk'
-  else if Caption=wrsLanguagePersian then Result:='fa'
-  else if Caption=wrsLanguagePolish then Result:='pl'
-  else if Caption=wrsLanguagePortuguese then Result:='pt'
-  else if Caption=wrsLanguagePortugueseBr then Result:='pt_BR'
-  else if Caption=wrsLanguageRomanian then Result:='ro'
-  else if Caption=wrsLanguageRussian then Result:='ru'
-  else if Caption=wrsLanguageSlovak then Result:='sk'
-  else if Caption=wrsLanguageSpanish then Result:='es'
-  else if Caption=wrsLanguageTurkish then Result:='tk'
-  else if Caption=wrsLanguageUkrainian then Result:='uk'
-  else Result:=Caption;
 end;
 
 function TWikiHelp.GetProgressCaption: string;

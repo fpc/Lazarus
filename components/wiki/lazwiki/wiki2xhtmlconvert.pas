@@ -59,10 +59,13 @@ type
 
   TWiki2XHTMLConverter = class(TWiki2FormatConverter)
   private
+    FAddLinksToTranslations: boolean;
     FCSSFilename: string;
     FLinkToBaseDocument: string;
     FMaxH: integer;
     FPageFileExt: string;
+    procedure DoAddLinksToTranslations(var doc: TXMLDocument;
+      var Page: TW2XHTMLPage);
     procedure SetCSSFilename(AValue: string);
     procedure SetMaxH(AValue: integer);
     procedure SetPageFileExt(AValue: string);
@@ -94,6 +97,7 @@ type
     function PageToFilename(Page: TW2XHTMLPage; Full: boolean): string; virtual;
     property PageFileExt: string read FPageFileExt write SetPageFileExt;
     property LinkToBaseDocument: string read FLinkToBaseDocument write FLinkToBaseDocument;
+    property AddLinksToTranslations: boolean read FAddLinksToTranslations write FAddLinksToTranslations;
   end;
 
 implementation
@@ -104,6 +108,62 @@ procedure TWiki2XHTMLConverter.SetCSSFilename(AValue: string);
 begin
   if FCSSFilename=AValue then Exit;
   FCSSFilename:=AValue;
+end;
+
+procedure TWiki2XHTMLConverter.DoAddLinksToTranslations(var doc: TXMLDocument;
+  var Page: TW2XHTMLPage);
+var
+  TranslationPage: TW2XHTMLPage;
+  Lang: String;
+  S2PItem: PStringToPointerTreeItem;
+  LangToPage: TStringToPointerTree;
+  TranslationsNode: TDOMElement;
+  LinkCaption: String;
+  LinkNode: TDOMElement;
+  Captions: TStringList;
+  i: Integer;
+begin
+  GetPageTranslations(Page.WikiDocumentName, LangToPage);
+  debugln(['TWiki2XHTMLConverter.DoAddLinksToTranslations ',Page.WikiDocumentName,' ',LangToPage.Count]);
+  Captions:=TStringList.Create;
+  try
+    if (LangToPage=nil) or (LangToPage.Count<2) then exit;
+    // add translations
+    TranslationsNode:=doc.CreateElement('p');
+    TranslationsNode.SetAttribute('class','translationLinks');
+    Page.BodyDOMNode.AppendChild(TranslationsNode);
+    // get all translations
+    for S2PItem in LangToPage do begin
+      Lang:=S2PItem^.Name;
+      TranslationPage:=TW2XHTMLPage(S2PItem^.Value);
+      LinkCaption:=WikiLangCodeToCaption(Lang);
+      if Lang<>'' then LinkCaption+=' ('+Lang+')';
+      Captions.AddObject(LinkCaption,TranslationPage);
+    end;
+    // sort them alphabetically
+    Captions.CustomSort(@CompareStrListUTF8LowerCase);
+    // add links
+    for i:=0 to Captions.Count-1 do begin
+      LinkCaption:=Captions[i];
+      TranslationPage:=TW2XHTMLPage(Captions.Objects[i]);
+      // add separator |
+      if TranslationsNode.FirstChild<>nil then
+        TranslationsNode.AppendChild(doc.CreateTextNode(' | '));
+      if TranslationPage=Page then
+        // add current page as normal text
+        TranslationsNode.AppendChild(doc.CreateTextNode(LinkCaption))
+      else begin
+        // add link to other translations
+        LinkNode:=doc.CreateElement('a');
+        LinkNode.SetAttribute('href',TranslationPage.WikiDocumentName);
+        TranslationsNode.AppendChild(LinkNode);
+        LinkNode.AppendChild(doc.CreateTextNode(LinkCaption));
+      end;
+    end;
+  finally
+    LangToPage.Free;
+    Captions.Free;
+  end;
 end;
 
 procedure TWiki2XHTMLConverter.SetMaxH(AValue: integer);
@@ -305,6 +365,10 @@ begin
   Page.BodyDOMNode.AppendChild(Node);
   Node.SetAttribute('class','firstHeading');
   Node.AppendChild(doc.CreateTextNode(Page.WikiPage.Title));
+
+  // links to translations
+  if AddLinksToTranslations then
+    DoAddLinksToTranslations(doc,Page);
 
   try
     Page.SectionLevel:=0;
@@ -770,7 +834,8 @@ begin
   FPageFileExt:='.xhtml';
   ShortFilenameToPage:=TFilenameToPointerTree.Create(false);
   UsedImages:=TFilenameToPointerTree.Create(false);
-  LinkToBaseDocument:='Online version';
+  fLinkToBaseDocument:='Online version';
+  FAddLinksToTranslations:=true;
 end;
 
 destructor TWiki2XHTMLConverter.Destroy;

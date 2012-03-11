@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazLogger, BasicCodeTools,
-  CodeToolsStructs, WikiHelpManager, WikiFormat, WikiStrConsts, Forms, Controls,
+  CodeToolsStructs, WikiHelpManager, WikiStrConsts, WikiFormat, Forms, Controls,
   Graphics, Dialogs, ExtCtrls, StdCtrls, ComCtrls, Grids;
 
 type
@@ -185,7 +185,7 @@ begin
         end else  begin
           // a specific language
           Lang:=SubString(StartPos,p-StartPos);
-          if WikiHelp.LangCodeToCaption(Lang)<>Lang then
+          if WikiLangCodeToCaption(Lang)<>Lang then
             FLanguages[Lang]:='1';
         end;
       end;
@@ -238,13 +238,13 @@ var
 begin
   p:=Pos(' (',NodeText);
   if p>0 then Delete(NodeText,p,length(NodeText));
-  Result:=WikiHelp.LangCaptionToCode(NodeText);
+  Result:=WikiLangCaptionToCode(NodeText);
 end;
 
 function TWikiSearchOptsWnd.LangToNodeText(LangID: string; Count: integer
   ): string;
 begin
-  Result:=WikiHelp.LangCodeToCaption(LangID);
+  Result:=WikiLangCodeToCaption(LangID);
   if Count<0 then
     Result+=' (?)'
   else
@@ -266,7 +266,7 @@ begin
     LangToCount:=TStringToPointerTree.Create(true);
     try
       for i:=0 to WikiHelp.Converter.Count-1 do begin
-        Lang:=GetWikiPageLanguage(WikiHelp.Converter[i].WikiDocumentName);
+        Lang:=WikiHelp.Converter[i].WikiLanguage;
         LangToCount[Lang]:=LangToCount[Lang]+1;
       end;
       for S2PItem in LangToCount do

@@ -265,7 +265,7 @@ begin
 
   // search panel
   SearchLabel.Caption:='Search:';
-  SearchEdit.Text:='Documentation';
+  SearchEdit.Text:='translations';
   SearchEdit.Hint:='Type one or more words separated by space, use " for phrases with spaces';
   HideSearchButton.Caption:='Hide';
   OptionsButton.Caption:='Options';
@@ -642,7 +642,7 @@ begin
     NewHTML:=TIpHtml.Create; // Beware: Will be freed automatically by IpHtmlPanel
     Target.SetHtml(NewHTML);
     NewHTML.LoadFromStream(aStream);
-    // ToDo: fix TIpHtmlNodeA.MakeVisible
+    // ToDo: fix TIpHtmlNodeA.MakeVisible, the areas are all 0,0,0,0 at this time
     if Anchor<>'' then
       Target.MakeAnchorVisible(Anchor+'/'); // ipHTML store anchor names with / at end
   except
