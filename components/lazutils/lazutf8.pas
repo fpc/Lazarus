@@ -85,6 +85,7 @@ procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);
 
 function UTF8CompareStr(const S1, S2: string): Integer;
 function UTF8CompareText(const S1, S2: string): Integer;
+function CompareStrListUTF8LowerCase(List: TStringList; Index1, Index2: Integer): Integer;
 
 type
   TConvertResult = (trNoError, trNullSrc, trNullDest, trDestExhausted,
@@ -2457,6 +2458,12 @@ begin
   S1Lower := UTF8LowerCase(S1);
   S2Lower := UTF8LowerCase(S2);
   Result := UTF8CompareStr(S1Lower, S2Lower);
+end;
+
+function CompareStrListUTF8LowerCase(List: TStringList; Index1, Index2: Integer
+  ): Integer;
+begin
+  Result:=UTF8CompareText(List[Index1],List[Index2]);
 end;
 
 {------------------------------------------------------------------------------
