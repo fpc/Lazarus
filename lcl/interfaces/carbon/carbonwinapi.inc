@@ -2331,6 +2331,8 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.InvalidateRect(AHandle: HWND; Rect: pRect;
   bErase: Boolean): Boolean;
+var
+  Pt: TPoint;
 begin
   Result := False;
 
@@ -2339,7 +2341,12 @@ begin
   {$ENDIF}
   
   if not CheckWidget(AHandle, 'InvalidateRect') then Exit;
-  
+
+  if Rect <> nil then
+  begin
+    Pt := TCarbonWidget(AHandle).ScrollOffset;
+    OffsetRect(Rect^, -Pt.X, -Pt.Y);
+  end;
   TCarbonWidget(AHandle).Invalidate(Rect);
   Result := True;
 end;
