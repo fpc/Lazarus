@@ -214,6 +214,8 @@ var
     Node: TDOMElement;
     TargetPage: TW2XHTMLPage;
     FoundImgFile: String;
+    DocumentName: String;
+    Anchor: String;
   begin
     Result:=false;
     if LinkToken.Token=wptExternLink then exit;
@@ -277,10 +279,20 @@ var
 
     // default: a page
     if URL<>'' then begin
-      Filename:=PageToFilename(URL,true,false);
+      p:=Pos('#',URL);
+      if p<1 then begin
+        DocumentName:=URL;
+        Anchor:='';
+      end else begin
+        DocumentName:=LeftStr(URL,p-1);
+        Anchor:=copy(URL,p+1,length(URL));
+      end;
+      Filename:=PageToFilename(DocumentName,true,false);
       TargetPage:=TW2XHTMLPage(ShortFilenameToPage[Filename]);
       if (TargetPage<>nil) then begin
         URL:=GetPageLink(TargetPage);
+        if Anchor<>'' then
+          URL+='#'+Anchor;
       end else if (not FileExistsUTF8(Filename)) then begin
         if WarnMissingPageLinks and WarnURL(LinkToken.Link) then
           Log('WARNING: TWiki2XHTMLConverter.InsertLink "'+dbgstr(LinkToken.Link)+'": file not found: "'+Filename+'" at '+W.PosToStr(LinkToken.LinkStartPos,true));

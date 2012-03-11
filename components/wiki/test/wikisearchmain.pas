@@ -290,6 +290,7 @@ begin
   WikiHelp.ImagesDirectory:=SetDirSeparators('../images');
   WikiHelp.Converter.OutputDir:='';
   WikiHelp.Converter.CSSFilename:='wiki.css';
+  WikiHelp.Converter.WarnMissingPageLinks:=true;
   WikiHelp.OnScanned:=@WikiHelpScanned;
   WikiHelp.OnSearched:=@WikiHelpSearched;
   WikiHelp.ResultsCSSURL:='wiki.css';
