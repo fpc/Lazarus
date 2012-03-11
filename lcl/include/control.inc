@@ -3316,12 +3316,10 @@ begin
   then exit;
   // Note: it should invalidate, when this control is loaded/destroyed, but parent not
 
-  if (CtrlIsVisible or ((csDesigning in ComponentState)
-  and not (csNoDesignVisible in ControlStyle)))
-  then begin
-    Pt := Parent.GetClientScrollOffset;
+  if (CtrlIsVisible or ((csDesigning in ComponentState) and
+    not (csNoDesignVisible in ControlStyle))) then
+  begin
     Rect := BoundsRect;
-    OffsetRect(Rect, -Pt.X, -Pt.Y);
     InvalidateRect(Parent.Handle, @Rect, not (CtrlIsOpaque or
       (csOpaque in Parent.ControlStyle) or BackgroundClipped));
   end;

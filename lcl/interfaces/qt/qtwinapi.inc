@@ -4628,6 +4628,8 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
+var
+  Pt: TPoint;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI InvalidateRect]');
@@ -4638,6 +4640,13 @@ begin
   begin
     with TQtWidget(aHandle).getClientOffset do
       OffsetRect(Rect^, x, y);
+
+    if TQtWidget(AHandle).ChildOfComplexWidget = ccwScrollingWinControl then
+    begin
+      Pt := TQtCustomControl(AHandle).viewport.ScrolledOffset;
+      OffsetRect(Rect^, -Pt.X, -Pt.Y);
+    end;
+
     // no need to handle bErase. Qt automatically erase rect on paint event according to docs
     TQtWidget(aHandle).Update(Rect);
   end else

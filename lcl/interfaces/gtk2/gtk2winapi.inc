@@ -6472,6 +6472,8 @@ var
   LCLObject: TObject;
   WidgetInfo: PWidgetInfo;
   r: TRect;
+  Adjustment: PGtkAdjustment;
+  Pt: TPoint;
 begin
   //  DebugLn(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
   Widget:=PGtkWidget(aHandle);
@@ -6520,7 +6522,19 @@ begin
     Inc(gdkRect.X, PaintWidget^.Allocation.x);
     Inc(gdkRect.Y, PaintWidget^.Allocation.y);
   end;
-
+  if LCLObject is TScrollingWinControl then
+  begin
+    Pt := Point(0, 0);
+    Adjustment := gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(Widget));
+    if Adjustment <> nil then
+      Pt.Y := Round(Adjustment^.value);
+    Adjustment := gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(Widget));
+    if Adjustment <> nil then
+      Pt.X := Round(Adjustment^.value);
+    dec(gdkRect.x, Pt.X);
+    dec(gdkRect.y, Pt.Y);
+    OffsetRect(Rect^, -Pt.X, -Pt.Y);
+  end;
   WidgetInfo := GetWidgetInfo(Widget, False); // True ??
   if WidgetInfo <> nil then
     UnionRect(WidgetInfo^.UpdateRect, WidgetInfo^.UpdateRect, Rect^);
