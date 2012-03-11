@@ -6522,7 +6522,7 @@ begin
     Inc(gdkRect.X, PaintWidget^.Allocation.x);
     Inc(gdkRect.Y, PaintWidget^.Allocation.y);
   end;
-  if LCLObject is TScrollingWinControl then
+  if (LCLObject is TScrollingWinControl) and GTK_IS_SCROLLED_WINDOW(Widget) then
   begin
     Pt := Point(0, 0);
     Adjustment := gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(Widget));
