@@ -108,6 +108,7 @@ begin
   FFontPaths:= TStringList.Create;
   FFontList := THashedStringList.Create;
   FFontList.CaseSensitive:= False;
+  TT_Init_FreeType;
   {$endif}
 
   BackendCreate;
@@ -125,6 +126,7 @@ begin
   BackendDestroy;
 
   {$ifndef CD_UseNativeText}
+  TT_Done_FreeType;
   FFontPaths.Free;
   FFontList.Free;
   {$endif}

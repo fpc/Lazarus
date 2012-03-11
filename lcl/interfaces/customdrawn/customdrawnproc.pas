@@ -756,7 +756,7 @@ var
   Rslt: TSearchRec;
   AFace: TT_Face;
   ErrNum: TT_Error;
-  I,J: Integer;
+  SearchResult, J: Integer;
   FontPath: String;
   NameCount: Integer;
   NameString: Pchar;
@@ -768,11 +768,11 @@ var
   DebugList: TstringList;
 {$endif}
 begin
-  I:= FindFirstUTF8(APath+'*.ttf', faAnyFile, Rslt);
+  SearchResult := FindFirstUTF8(APath+'*.ttf', faAnyFile, Rslt);
 {$ifdef CD_Debug_TTF}
   DebugList:= TStringList.Create;
 {$endif}
-  while I >= 0 do
+  while SearchResult = 0 do
   begin
     FontPath:= APath+Rslt.Name;
     ErrNum:= TT_Open_Face(FontPath, AFace);
@@ -818,7 +818,7 @@ begin
     DebugList.Add('------');
     {$endif}
     ErrNum:= TT_Close_Face(AFace);
-    I:= FindNextUTF8(Rslt);
+    SearchResult := FindNextUTF8(Rslt);
   end;
   FindCloseUTF8(Rslt);
 {$ifdef CD_Debug_TTF}

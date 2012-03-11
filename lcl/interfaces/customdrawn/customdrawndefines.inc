@@ -37,6 +37,6 @@
   {$define CD_HasNativeSelectItemDialog}
 {$endif}
 {$if defined(CD_WINDOWS)}
-  {$define CD_UseNativeText}
+  //{$define CD_UseNativeText}
 {$endif}
 

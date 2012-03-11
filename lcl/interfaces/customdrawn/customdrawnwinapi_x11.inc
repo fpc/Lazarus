@@ -690,10 +690,10 @@ begin
     FontsScanForTTF(APath,AFontList);
   end;
   // default for recent distros
-  if lFontList.Values['Liberation Sans'] <> '' then LiberationFont:= True
+  if AFontList.Values['Liberation Sans'] <> '' then LiberationFont:= True
   else LiberationFont:= False;
   // default for older distros
-  if lFontList.Values['Luxi Sans Regular'] <> '' then LuxiFont:= True
+  if AFontList.Values['Luxi Sans Regular'] <> '' then LuxiFont:= True
   else LuxiFont:= False;
 
 {$ifdef CD_Debug_TTF}
@@ -727,7 +727,7 @@ begin
 
   If AFontName = '' then AFontName:= LongFontName; // neither Liberation nor Luxi, but maybe we're lucky
 
-  str := lFontList.Values[AFontName];
+  str := FFontList.Values[AFontName];
   if str <> '' then begin
     Result:= str;
     exit;
@@ -756,7 +756,7 @@ begin
     else AFontName:= 'Luxi Sans Regular';
   end;
 
-  str := lFontList.Values[AFontName];
+  str := FFontList.Values[AFontName];
   if str <> '' then begin
     Result:= str;
     exit;
