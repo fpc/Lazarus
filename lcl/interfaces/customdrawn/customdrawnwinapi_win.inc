@@ -888,12 +888,27 @@ procedure TCDWidgetSet.BackendListFontPaths(var AFontPaths: TStringList; var AFo
 var
   lWinFontPath: array[0..MAX_PATH] of WideChar;
   lPasWinFontPath: string;
+  i: Integer;
 begin
   // First C:\Windows\Fonts
   Windows.GetWindowsDirectoryW(@lWinFontPath[0], MAX_PATH);
   lPasWinFontPath := lWinFontPath;
-  lPasWinFontPath := IncludeTrailingPathDelimiter(lPasWinFontPath) + 'Fonts';
-  FontsScanDir(lPasWinFontPath, AFontPaths, AFontList);
+  lPasWinFontPath := IncludeTrailingPathDelimiter(lPasWinFontPath) + 'Fonts' + PathDelim;
+  AFontPaths.Add(lPasWinFontPath);
+  //FontsScanDir(lPasWinFontPath, AFontPaths, AFontList);
+
+  // We have populated FontPaths, now we may build the font list
+  for i := 0 to AFontPaths.Count -1 do
+  begin
+    lPasWinFontPath := AFontPaths[i];
+    FontsScanForTTF(lPasWinFontPath, AFontList);
+  end;
+
+  {$ifdef CD_Debug_TTF}
+    AFontPaths.SaveToFile('lxfontpaths.txt');
+    AFontList.Sort;
+    AFontList.SaveToFile('lxfontlist.txt');
+  {$endif}
 end;
 
 function TCDWidgetSet.BackendGetFontPath(const LogFont: TLogFont; const LongFontName: string): string;

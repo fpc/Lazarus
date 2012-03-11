@@ -635,9 +635,9 @@ procedure TCDWidgetSet.BackendListFontPaths(var AFontPaths: TStringList; var AFo
 var
   Doc: TXMLDocument;
   lFontDirectories: TStringList;
-  i,j, FontsCount: cint;
+  i, j, FontsCount: cint;
   lXFontPath: PPChar;
-  APath,strTmp: string;
+  APath, strTmp: string;
   XMLFontConfig, XMLDir: TDOMNode;
   XMLFontConfigChilds: TDOMNodeList;
 const
@@ -684,9 +684,10 @@ begin
   VerifyAndCleanUpFontDirectories(AFontPaths);
 
   // We have populated FontPaths, now we may build the font list
-  if AFontPaths.Count <> 0 then for i:= 0 to AFontPaths.Count -1 do begin;
+  for i := 0 to AFontPaths.Count -1 do
+  begin
     APath:= AFontPaths[i];
-    FontsScandirScanForTTF(APath,AFontList);
+    FontsScanForTTF(APath,AFontList);
   end;
   // default for recent distros
   if lFontList.Values['Liberation Sans'] <> '' then LiberationFont:= True
@@ -695,7 +696,7 @@ begin
   if lFontList.Values['Luxi Sans Regular'] <> '' then LuxiFont:= True
   else LuxiFont:= False;
 
-{$ifdef Debug_TTF}
+{$ifdef CD_Debug_TTF}
   AFontPaths.SaveToFile('/tmp/lxfontpaths.txt');
   AFontList.Sort;
   AFontList.SaveToFile('/tmp/lxfontlist.txt');

@@ -768,28 +768,28 @@ var
   DebugList: TstringList;
 {$endif}
 begin
-  I:= FindFirstUTF8(APath+'*.ttf',faAnyFile,Rslt);
+  I:= FindFirstUTF8(APath+'*.ttf', faAnyFile, Rslt);
 {$ifdef CD_Debug_TTF}
   DebugList:= TStringList.Create;
 {$endif}
   while I >= 0 do
   begin
     FontPath:= APath+Rslt.Name;
-    ErrNum:= TT_Open_Face(FontPath,AFace);
+    ErrNum:= TT_Open_Face(FontPath, AFace);
     if ErrNum = TT_Err_Ok then
     begin
       NameCount:= TT_Get_Name_Count(AFace);
       for J:= 0 to NameCount-1 do
       begin
-        ErrNum:= TT_Get_Name_ID(AFace,J,Platform,Encoding,Language,NameID);
-{ -------------------------------------------------------------------
-    NameID: 0= Copyright
-            1= Font Family (e.g. Arial, Times, Liberation )
-            2= Font Subfamily (e.g. Bold, Italic, Condensed)
-            3= Unique Font Identifier
-            4= Full Name - Human readable - the one used by the IDE
------------------------------------------------------------------------}
-{$ifdef CD_Debug_TTF}
+        ErrNum:= TT_Get_Name_ID(AFace, J, Platform, Encoding, Language, NameID);
+        { -------------------------------------------------------------------
+            NameID: 0= Copyright
+                    1= Font Family (e.g. Arial, Times, Liberation )
+                    2= Font Subfamily (e.g. Bold, Italic, Condensed)
+                    3= Unique Font Identifier
+                    4= Full Name - Human readable - the one used by the IDE
+        -----------------------------------------------------------------------}
+        {$ifdef CD_Debug_TTF}
         if ErrNum = TT_Err_Ok then
         begin
           ErrNum:= TT_Get_Name_String(AFace,J,NameString,NameLen);
@@ -801,7 +801,7 @@ begin
           end
           else DebugList.Add('ID='+IntToStr(NameID)+' '+'<Empty String>');
         end;
-{$endif}
+        {$endif}
         if (ErrNum = TT_Err_Ok) and (NameID = 4) then begin
           ErrNum:= TT_Get_Name_String(AFace,J,NameString,NameLen);
           AName:= NameString;
@@ -849,9 +849,11 @@ begin
   DirEmpty:= True;
   I:= FindFirstUTF8(APath+'*',faAnyFile,Rslt);
   while I >= 0 do begin
-    if (Rslt.Name <> '.') and (Rslt.Name <> '..') then begin
+    if (Rslt.Name <> '.') and (Rslt.Name <> '..') then
+    begin
       DirEmpty:= False;
-      if (Rslt.Attr and faDirectory) <> 0 then begin
+      if (Rslt.Attr and faDirectory) <> 0 then
+      begin
         NextPath:= APath + Rslt.Name + PathDelim;
         DirFound:= true;
         FontsScanDir(NextPath,AFontPaths,AFontList);
@@ -860,9 +862,8 @@ begin
     I:= FindNextUTF8(Rslt);
   end;
   FindCloseUTF8(Rslt);
-  if (not DirFound) and (not DirEmpty) then begin
+  if (not DirFound) and (not DirEmpty) then
     AFontPaths.Add(APath);
-  end;
 end;
 {$endif}
 
