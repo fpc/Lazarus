@@ -42,6 +42,9 @@ type
   protected
     BodyDOMNode: TDOMElement;
     CurDOMNode: TDOMElement; // current xhtml node
+    TOCNode: TDOMElement;
+    CurTOCNode: TDOMElement;
+    TOCNodeCount: integer;
     SectionLevel: integer;
     Stack: PW2XHTMLStackItem;
     StackPtr: integer;
@@ -60,12 +63,14 @@ type
   TWiki2XHTMLConverter = class(TWiki2FormatConverter)
   private
     FAddLinksToTranslations: boolean;
+    FAddTOCIfHeaderCountMoreThan: integer;
     FCSSFilename: string;
     FLinkToBaseDocument: string;
     FMaxH: integer;
     FPageFileExt: string;
-    procedure DoAddLinksToTranslations(var doc: TXMLDocument;
-      var Page: TW2XHTMLPage);
+    procedure DoAddLinksToTranslations(Page: TW2XHTMLPage);
+    procedure DoAddLinkToBaseDocument(Page: TW2XHTMLPage);
+    procedure OnHeaderToken(Token: TWPToken);
     procedure SetCSSFilename(AValue: string);
     procedure SetMaxH(AValue: integer);
     procedure SetPageFileExt(AValue: string);
@@ -73,6 +78,7 @@ type
     ShortFilenameToPage: TFilenameToPointerTree; // created in ConvertInit
     UsedImages: TFilenameToPointerTree; // image name to first page using the image
     procedure OnWikiToken(Token: TWPToken); virtual;
+    procedure RaiseNodeNotOpen(Token: TWPToken);
     function GetImageLink(ImgFilename: string): string; virtual;
     function FindImage(const ImgFilename: string): string; virtual;
     procedure MarkImageAsUsed(const ImgFilename: string; Page: TW2XHTMLPage); virtual;
@@ -97,7 +103,9 @@ type
     function PageToFilename(Page: TW2XHTMLPage; Full: boolean): string; virtual;
     property PageFileExt: string read FPageFileExt write SetPageFileExt;
     property LinkToBaseDocument: string read FLinkToBaseDocument write FLinkToBaseDocument;
-    property AddLinksToTranslations: boolean read FAddLinksToTranslations write FAddLinksToTranslations;
+    property AddLinksToTranslations: boolean read FAddLinksToTranslations write FAddLinksToTranslations default true;
+    property AddTOCIfHeaderCountMoreThan: integer read FAddTOCIfHeaderCountMoreThan
+                 write FAddTOCIfHeaderCountMoreThan default 2;
   end;
 
 implementation
@@ -110,8 +118,7 @@ begin
   FCSSFilename:=AValue;
 end;
 
-procedure TWiki2XHTMLConverter.DoAddLinksToTranslations(var doc: TXMLDocument;
-  var Page: TW2XHTMLPage);
+procedure TWiki2XHTMLConverter.DoAddLinksToTranslations(Page: TW2XHTMLPage);
 var
   TranslationPage: TW2XHTMLPage;
   Lang: String;
@@ -122,7 +129,9 @@ var
   LinkNode: TDOMElement;
   Captions: TStringList;
   i: Integer;
+  doc: TXMLDocument;
 begin
+  doc:=Page.XHTML;
   GetPageTranslations(Page.WikiDocumentName, LangToPage);
   //debugln(['TWiki2XHTMLConverter.DoAddLinksToTranslations ',Page.WikiDocumentName,' ',LangToPage.Count]);
   Captions:=TStringList.Create;
@@ -163,6 +172,85 @@ begin
   finally
     LangToPage.Free;
     Captions.Free;
+  end;
+end;
+
+procedure TWiki2XHTMLConverter.DoAddLinkToBaseDocument(Page: TW2XHTMLPage);
+var
+  Link: String;
+  Node: TDOMElement;
+  doc: TXMLDocument;
+begin
+  // add <a href="BaseURL+WikiDocumentName">LinkToBaseDocument</a><br>
+  doc:=Page.XHTML;
+  Node:=doc.CreateElement('a');
+  Page.BodyDOMNode.AppendChild(Node);
+  Link:=Page.WikiPage.BaseURL;
+  if (Link<>'') and (Link[length(Link)]<>'/') then
+    Link+='/';
+  Link+=Page.WikiDocumentName;
+  Node.SetAttribute('href', Link);
+  Node.AppendChild(doc.CreateTextNode(LinkToBaseDocument));
+  Node:=doc.CreateElement('br');
+  Page.BodyDOMNode.AppendChild(Node);
+end;
+
+procedure TWiki2XHTMLConverter.OnHeaderToken(Token: TWPToken);
+var
+  LinkNode: TDOMElement;
+  HeaderTxt: DOMString;
+  Page: TW2XHTMLPage;
+  doc: TXMLDocument;
+  NodeName: String;
+  NodeClass: String;
+  Node: TDOMElement;
+  HRef: String;
+  LINode: TDOMElement;
+begin
+  Page:=TW2XHTMLPage(Token.UserData);
+  doc:=Page.XHTML;
+  NodeClass:='';
+  if Page.SectionLevel<=1 then
+    NodeName:='h1'
+  else if Page.SectionLevel<=MaxH then
+    NodeName:='h'+IntToStr(Page.SectionLevel)
+  else if Page.SectionLevel>MaxH then begin
+    NodeName:='h'+IntToStr(MaxH);
+    NodeClass:='subTitle';
+  end;
+  if Token.Range=wprOpen then begin
+    // open header
+    Node:=doc.CreateElement(NodeName);
+    Page.CurDOMNode.AppendChild(Node);
+    if NodeClass<>'' then
+      Node.SetAttribute('class', NodeClass);
+    Page.CurDOMNode:=Node;
+    Page.Push(Node, wptHeader);
+  end else if Token.Range=wprClose then begin
+    // close header
+    if Page.CurDOMNode.TagName<>NodeName then
+      RaiseNodeNotOpen(Token);
+    HeaderTxt:='';
+    if Page.CurDOMNode.FirstChild is TDOMText then
+      HeaderTxt:=TDOMText(Page.CurDOMNode.FirstChild).Data;
+    if HeaderTxt<>'' then begin
+      HRef:=WikiHeaderToLink(HeaderTxt);
+      // add anchor
+      LinkNode:=doc.CreateElement('a');
+      LinkNode.SetAttribute('name', HRef);
+      Page.CurDOMNode.ParentNode.InsertBefore(LinkNode, Page.CurDOMNode);
+      // add TOC link
+      LINode:=doc.CreateElement('li');
+      LINode.SetAttribute('class', 'toclevel-'+IntToStr(Page.SectionLevel));
+      Page.CurTOCNode.AppendChild(LINode);
+      LinkNode:=doc.CreateElement('a');
+      LinkNode.SetAttribute('href', '#'+HRef);
+      LinkNode.AppendChild(doc.CreateTextNode(HeaderTxt));
+      LINode.AppendChild(LinkNode);
+      inc(Page.TOCNodeCount);
+    end;
+    Page.CurDOMNode:=Page.CurDOMNode.ParentNode as TDOMElement;
+    Page.Pop;
   end;
 end;
 
@@ -339,7 +427,6 @@ var
   CSSNode: TDOMElement;
   Node: TDOMElement;
   CurCSSFilename: String;
-  Link: String;
 begin
   Page.ClearConversion;
   if Page.WikiPage=nil then exit;
@@ -380,29 +467,28 @@ begin
 
   // links to translations
   if AddLinksToTranslations then
-    DoAddLinksToTranslations(doc,Page);
+    DoAddLinksToTranslations(Page);
 
   try
     Page.SectionLevel:=0;
+    Page.TOCNode:=doc.CreateElement('ul');
+    Page.TOCNodeCount:=0;
+    Page.CurTOCNode:=Page.TOCNode;
+    Page.BodyDOMNode.AppendChild(Page.TOCNode);
+
     Page.CurDOMNode:=Page.BodyDOMNode;
     Page.WikiPage.Parse(@OnWikiToken,Page);
 
-    if LinkToBaseDocument<>'' then begin
-      // add <a href="BaseURL+WikiDocumentName">LinkToBaseDocument</a><br>
-      Node:=doc.CreateElement('a');
-      Page.BodyDOMNode.AppendChild(Node);
-      Link:=Page.WikiPage.BaseURL;
-      if (Link<>'') and (Link[length(Link)]<>'/') then
-        Link+='/';
-      Link+=Page.WikiDocumentName;
-      Node.SetAttribute('href',Link);
-      Node.AppendChild(doc.CreateTextNode(LinkToBaseDocument));
-      Node:=doc.CreateElement('br');
-      Page.BodyDOMNode.AppendChild(Node);
-    end;
+    if LinkToBaseDocument<>'' then
+      DoAddLinkToBaseDocument(Page);
+
+    if Page.TOCNodeCount<=AddTOCIfHeaderCountMoreThan then
+      Page.TOCNode.Free;
   finally
     Page.BodyDOMNode:=nil;
     Page.CurDOMNode:=nil;
+    Page.TOCNode:=nil;
+    Page.CurTOCNode:=nil;
   end;
 end;
 
@@ -410,12 +496,6 @@ procedure TWiki2XHTMLConverter.OnWikiToken(Token: TWPToken);
 var
   Page: TW2XHTMLPage;
   W: TWikiPage;
-
-  procedure NodeNotOpen;
-  begin
-    raise Exception.Create('TWiki2XHTMLConverter.OnWikiToken can not close:'
-      +' Token='+dbgs(Token.Token)+' '+DbgSName(Token)+' CurNode='+Page.CurDOMNode.TagName);
-  end;
 
   procedure MissingNodeName;
   begin
@@ -432,7 +512,6 @@ var
   NameValueToken: TWPNameValueToken;
   CurName: String;
   CurValue: String;
-  HeaderTxt: DOMString;
 begin
   Page:=TW2XHTMLPage(Token.UserData);
   W:=Page.WikiPage;
@@ -466,8 +545,7 @@ begin
   wptSup, wptSub, wptSmall, wptEm, wptSpan, wptString, wptVar, wptKey,
   wptPre, wptCenter,
   wptBulletList, wptNumberedList, wptDefinitionList,
-  wptTable, wptTableRow, wptTableCell, wptTableHeadCell,
-  wptSection:
+  wptTable, wptTableRow, wptTableCell, wptTableHeadCell:
     begin
       // simple range
       NodeClass:='';
@@ -500,16 +578,6 @@ begin
       wptTableRow: NodeName:='tr';
       wptTableCell: NodeName:='td';
       wptTableHeadCell: NodeName:='th';
-
-      wptSection:
-        begin
-          NodeName:='div';
-          NodeClass:='section';
-          if Token.Range=wprOpen then
-            inc(Page.SectionLevel)
-          else if Token.Range=wprClose then
-            dec(Page.SectionLevel);
-        end;
       end;
       if NodeName='' then
         MissingNodeName;
@@ -523,48 +591,49 @@ begin
         exit;
       end else if Token.Range=wprClose then begin
         if Page.CurDOMNode.TagName<>NodeName then
-          NodeNotOpen;
+          RaiseNodeNotOpen(Token);
         Page.CurDOMNode:=Page.CurDOMNode.ParentNode as TDOMElement;
+        exit;
+      end;
+    end;
+
+  wptSection:
+    begin
+      NodeName:='div';
+      if Token.Range=wprOpen then begin
+        inc(Page.SectionLevel);
+        // start div
+        Node:=doc.CreateElement(NodeName);
+        Page.CurDOMNode.AppendChild(Node);
+        Node.SetAttribute('class','section');
+        Page.CurDOMNode:=Node;
+        // start TOC list
+        Node:=doc.CreateElement('ul');
+        Page.CurTOCNode.AppendChild(Node);
+        Page.CurTOCNode:=Node;
+
+        Page.Push(Node,Token.Token);
+        exit;
+      end else if Token.Range=wprClose then begin
+        dec(Page.SectionLevel);
+        // end div
+        if Page.CurDOMNode.TagName<>NodeName then
+          RaiseNodeNotOpen(Token);
+        Page.CurDOMNode:=Page.CurDOMNode.ParentNode as TDOMElement;
+        // end TOC list
+        Node:=Page.CurTOCNode;
+        Page.CurTOCNode:=Node.ParentNode as TDOMElement;
+        if Node.FirstChild=nil then
+          Node.Free;
+        Page.Pop;
         exit;
       end;
     end;
 
   wptHeader:
     begin
-      if Page.SectionLevel<=1 then
-        NodeName:='h1'
-      else if Page.SectionLevel<=MaxH then
-        NodeName:='h'+IntToStr(Page.SectionLevel)
-      else if Page.SectionLevel>MaxH then begin
-        NodeName:='h'+IntToStr(MaxH);
-        NodeClass:='subTitle';
-      end;
-      if Token.Range=wprOpen then begin
-        // open header
-        Node:=doc.CreateElement(NodeName);
-        Page.CurDOMNode.AppendChild(Node);
-        if NodeClass<>'' then
-          Node.SetAttribute('class',NodeClass);
-        Page.CurDOMNode:=Node;
-        Page.Push(Node,wptHeader);
-        exit;
-      end else if Token.Range=wprClose then begin
-        // close header
-        if Page.CurDOMNode.TagName<>NodeName then
-          NodeNotOpen;
-        HeaderTxt:='';
-        if Page.CurDOMNode.FirstChild is TDOMText then
-          HeaderTxt:=TDOMText(Page.CurDOMNode.FirstChild).Data;
-        if HeaderTxt<>'' then begin
-          // add anchor
-          Node:=doc.CreateElement('a');
-          Node.SetAttribute('name',WikiHeaderToLink(HeaderTxt));
-          Page.CurDOMNode.ParentNode.InsertBefore(Node,Page.CurDOMNode);
-        end;
-        Page.CurDOMNode:=Page.CurDOMNode.ParentNode as TDOMElement;
-        Page.Pop;
-        exit;
-      end;
+      OnHeaderToken(Token);
+      exit;
     end;
 
   wptListItem:
@@ -580,7 +649,7 @@ begin
     end else if Token.Range=wprClose then begin
       if (Page.CurDOMNode.TagName<>'dd')
       and (Page.CurDOMNode.TagName<>'li') then
-        NodeNotOpen;
+        RaiseNodeNotOpen(Token);
       Page.CurDOMNode:=Page.CurDOMNode.ParentNode as TDOMElement;
       exit;
     end;
@@ -629,6 +698,15 @@ begin
   end;
 
   Log('TWiki2XHTMLConverter.OnWikiToken ToDo: Token='+dbgs(Token.Token)+' Range='+dbgs(Token.Range)+' Class='+Token.ClassName+' '+W.PosToStr(W.CurrentPos));
+end;
+
+procedure TWiki2XHTMLConverter.RaiseNodeNotOpen(Token: TWPToken);
+var
+  Page: TW2XHTMLPage;
+begin
+  Page:=TW2XHTMLPage(Token.UserData);
+  raise Exception.Create('TWiki2XHTMLConverter.OnWikiToken can not close:'
+    +' Token='+dbgs(Token.Token)+' '+DbgSName(Token)+' CurNode='+Page.CurDOMNode.TagName);
 end;
 
 function TWiki2XHTMLConverter.GetImageLink(ImgFilename: string): string;
@@ -853,6 +931,7 @@ begin
   UsedImages:=TFilenameToPointerTree.Create(false);
   fLinkToBaseDocument:='Online version';
   FAddLinksToTranslations:=true;
+  FAddTOCIfHeaderCountMoreThan:=2;
 end;
 
 destructor TWiki2XHTMLConverter.Destroy;
