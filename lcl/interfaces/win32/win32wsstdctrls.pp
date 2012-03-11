@@ -1729,6 +1729,8 @@ end;
 
 class function TWin32WSRadioButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
+const
+  BM_SETDONTCLICK = $00F8;
 var
   Params: TCreateWindowExParams;
 begin
@@ -1743,6 +1745,8 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
+  // don't generate a BM_CLICK on focus
+  SendMessage(Result, BM_SETDONTCLICK, 1, 0);
 end;
 
 end.
