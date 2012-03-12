@@ -956,14 +956,14 @@ end;
 function PkgFileTypeIdentToType(const s: string): TPkgFileType;
 begin
   for Result:=Low(TPkgFileType) to High(TPkgFileType) do
-    if CompareText(s,PkgFileTypeIdents[Result])=0 then exit;
+    if SysUtils.CompareText(s,PkgFileTypeIdents[Result])=0 then exit;
   Result:=pftUnit;
 end;
 
 function LazPackageTypeIdentToType(const s: string): TLazPackageType;
 begin
   for Result:=Low(TLazPackageType) to High(TLazPackageType) do
-    if CompareText(s,LazPackageTypeIdents[Result])=0 then exit;
+    if SysUtils.CompareText(s,LazPackageTypeIdents[Result])=0 then exit;
   Result:=lptRunTime;
 end;
 
@@ -987,7 +987,7 @@ end;
 function NameToAutoUpdatePolicy(const s: string): TPackageUpdatePolicy;
 begin
   for Result:=Low(TPackageUpdatePolicy) to High(TPackageUpdatePolicy) do
-    if CompareText(AutoUpdateNames[Result],s)=0 then exit;
+    if SysUtils.CompareText(AutoUpdateNames[Result],s)=0 then exit;
   Result:=pupAsNeeded;
 end;
 
@@ -1193,7 +1193,7 @@ begin
   if Key<>nil then begin
     Name:=AnsiString(Key);
     Pkg:=TLazPackageID(Data);
-    Result:=CompareText(Name,Pkg.Name);
+    Result:=SysUtils.CompareText(Name,Pkg.Name);
   end else
     Result:=-1;
 end;
@@ -1215,7 +1215,7 @@ var
 begin
   Pkg1:=TLazPackageID(Data1);
   Pkg2:=TLazPackageID(Data2);
-  Result:=CompareText(Pkg1.Name,Pkg2.Name);
+  Result:=SysUtils.CompareText(Pkg1.Name,Pkg2.Name);
 end;
 
 function CompareNameWithPkgDependency(Key, Data: Pointer): integer;
@@ -1225,7 +1225,7 @@ var
 begin
   PkgName:=String(Key);
   Dependency:=TPkgDependency(Data);
-  Result:=CompareText(PkgName,Dependency.PackageName);
+  Result:=SysUtils.CompareText(PkgName,Dependency.PackageName);
 end;
 
 function ComparePkgDependencyNames(Data1, Data2: Pointer): integer;
@@ -1235,7 +1235,7 @@ var
 begin
   Dependency1:=TPkgDependency(Data1);
   Dependency2:=TPkgDependency(Data2);
-  Result:=CompareText(Dependency1.PackageName,Dependency2.PackageName);
+  Result:=SysUtils.CompareText(Dependency1.PackageName,Dependency2.PackageName);
 end;
 
 function CompareUnitsTree(UnitTree1, UnitTree2: TPkgUnitsTree): integer;
@@ -1310,7 +1310,7 @@ function FindDependencyByNameInList(First: TPkgDependency;
 begin
   Result:=First;
   while Result<>nil do begin
-    if CompareText(Result.PackageName,Name)=0 then exit;
+    if SysUtils.CompareText(Result.PackageName,Name)=0 then exit;
     Result:=Result.NextDependency[ListType];
   end;
 end;
@@ -1352,7 +1352,7 @@ begin
   if (Node=nil) or (PackageDependencies=nil) then exit;
   Result:=PackageDependencies.FindSuccessor(Node);
   if (Result<>nil)
-  and (CompareText(TPkgDependency(Node.Data).PackageName,
+  and (SysUtils.CompareText(TPkgDependency(Node.Data).PackageName,
                    TPkgDependency(Result.Data).PackageName)<>0)
   then
     Result:=nil;
@@ -1593,7 +1593,7 @@ var
 begin
   if FilenameIsPascalUnit(Filename) then begin
     NewUnitName:=ExtractFileNameOnly(Filename);
-    if CompareText(NewUnitName,FUnitName)<>0 then
+    if SysUtils.CompareText(NewUnitName,FUnitName)<>0 then
       FUnitName:=NewUnitName;
   end else
     FUnitName:='';
@@ -1704,7 +1704,7 @@ begin
   if FileType in PkgFileUnitTypes then begin
     // make sure the unitname makes sense
     CaseInsensitiveUnitName:=ExtractFileNameOnly(Filename);
-    if CompareText(fUnitName,CaseInsensitiveUnitName)<>0 then
+    if SysUtils.CompareText(fUnitName,CaseInsensitiveUnitName)<>0 then
       fUnitName:=CaseInsensitiveUnitName;
   end;
   FResourceBaseClass:=StrToComponentBaseClass(
@@ -1948,12 +1948,12 @@ end;
 function TPkgDependency.IsCompatible(const PkgName: string;
   const Version: TPkgVersion): boolean;
 begin
-  Result:=(CompareText(PkgName,PackageName)=0) and IsCompatible(Version);
+  Result:=(SysUtils.CompareText(PkgName,PackageName)=0) and IsCompatible(Version);
 end;
 
 function TPkgDependency.Compare(Dependency2: TPkgDependency): integer;
 begin
-  Result:=CompareText(PackageName,Dependency2.PackageName);
+  Result:=SysUtils.CompareText(PackageName,Dependency2.PackageName);
   if Result<>0 then exit;
   Result:=MinVersion.Compare(Dependency2.MinVersion);
   if Result<>0 then exit;
@@ -2175,7 +2175,7 @@ begin
   end;
 
   // check local macros
-  if CompareText(MacroName,'PkgOutDir')=0 then begin
+  if SysUtils.CompareText(MacroName,'PkgOutDir')=0 then begin
     Handled:=true;
     if Data=CompilerOptionMacroNormal then
       s:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir)
@@ -2183,12 +2183,12 @@ begin
       s:=CompilerOptions.ParsedOpts.GetParsedPIValue(pcosOutputDir);
     exit;
   end
-  else if CompareText(MacroName,'PkgDir')=0 then begin
+  else if SysUtils.CompareText(MacroName,'PkgDir')=0 then begin
     Handled:=true;
     s:=FDirectory;
     exit;
   end
-  else if CompareText(MacroName,'PkgName')=0 then begin
+  else if SysUtils.CompareText(MacroName,'PkgName')=0 then begin
     Handled:=true;
     s:=Name;
     exit;
@@ -3157,14 +3157,14 @@ begin
   for i:=0 to Cnt-1 do begin
     Result:=Files[i];
     if IgnorePkgFile=Result then continue;
-    if CompareText(Result.Unit_Name,TheUnitName)=0 then exit;
+    if SysUtils.CompareText(Result.Unit_Name,TheUnitName)=0 then exit;
   end;
   if not IgnoreRemoved then begin
     Cnt:=RemovedFilesCount;
     for i:=0 to Cnt-1 do begin
       Result:=RemovedFiles[i];
       if IgnorePkgFile=Result then continue;
-      if CompareText(Result.Unit_Name,TheUnitName)=0 then exit;
+      if SysUtils.CompareText(Result.Unit_Name,TheUnitName)=0 then exit;
     end;
   end;
   Result:=nil;
@@ -3375,7 +3375,7 @@ var
     if OnlyExact then exit;
     // then search for case insensitive match
     Result:=List.Count-1;
-    while (Result>=0) and (CompareText(Filename,List[Result])<>0) do
+    while (Result>=0) and (SysUtils.CompareText(Filename,List[Result])<>0) do
       dec(Result);
   end;
 
@@ -3780,7 +3780,7 @@ var
     if siffCaseSensitive in SearchFlags then
       Result:=SearchedFilename=TheFilename
     else
-      Result:=CompareText(SearchedFilename,TheFilename)=0;
+      Result:=SysUtils.CompareText(SearchedFilename,TheFilename)=0;
   end;
 
 begin
@@ -3810,7 +3810,7 @@ var
     if siffCaseSensitive in SearchFlags then
       Result:=SearchedFilename=TheFilename
     else
-      Result:=CompareText(SearchedFilename,TheFilename)=0;
+      Result:=SysUtils.CompareText(SearchedFilename,TheFilename)=0;
   end;
 
 begin
@@ -3862,7 +3862,7 @@ begin
   // compare with RTTI unit name
   if ComponentClass<>nil then begin
     TIUnitName:=GetClassUnitName(ComponentClass);
-    if CompareText(TIUnitName,Result)<>0 then
+    if SysUtils.CompareText(TIUnitName,Result)<>0 then
       Result:=TIUnitName;
   end;
 end;
@@ -4621,7 +4621,7 @@ begin
   Result:=Root;
   while (Result<>nil) do begin
     PkgFile:=TPkgFile(Result.Data);
-    Comp:=CompareText(AUnitName,PkgFile.Unit_Name);
+    Comp:=SysUtils.CompareText(AUnitName,PkgFile.Unit_Name);
     if Comp=0 then exit;
     if Comp<0 then begin
       Result:=Result.Left
@@ -4645,7 +4645,7 @@ end;
 
 function ComparePkgFilesUnitname(PkgFile1, PkgFile2: Pointer): integer;
 begin
-  Result := CompareText(
+  Result := SysUtils.CompareText(
               TPkgFile(PkgFile1).Unit_Name,
               TPkgFile(PkgFile2).Unit_Name);
 end;
