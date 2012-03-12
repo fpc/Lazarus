@@ -719,13 +719,13 @@ type
 
     // methods for 'save unit'
     function DoShowSaveFileAsDialog(var AFilename: string; AnUnitInfo: TUnitInfo;
-        var ResourceCode: TCodeBuffer; CanAbort: boolean): TModalResult;
+        var LFMCode, LRSCode: TCodeBuffer; CanAbort: boolean): TModalResult;
     function DoSaveUnitComponent(AnUnitInfo: TUnitInfo;
-        ResourceCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
+        LRSCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
     function DoRemoveDanglingEvents(AnUnitInfo: TUnitInfo;
         OkOnCodeErrors: boolean): TModalResult;
     function DoRenameUnit(AnUnitInfo: TUnitInfo; NewFilename, NewUnitName: string;
-        var ResourceCode: TCodeBuffer): TModalresult;
+        var LFMCode, LRSCode: TCodeBuffer): TModalresult;
 
     // methods for 'open unit' and 'open main unit'
     function DoOpenNotExistingFile(const AFileName:string;
@@ -735,7 +735,7 @@ type
     function DoOpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo;
         PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
     function DoLoadResourceFile(AnUnitInfo: TUnitInfo;
-        var LFMCode, ResourceCode: TCodeBuffer;
+        var LFMCode, LRSCode: TCodeBuffer;
         IgnoreSourceErrors, AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
     function DoLoadLFM(AnUnitInfo: TUnitInfo; OpenFlags: TOpenFlags;
                        CloseFlags: TCloseFlags): TModalResult;
@@ -5374,7 +5374,7 @@ begin
 end;
 
 function TMainIDE.DoLoadResourceFile(AnUnitInfo: TUnitInfo;
-  var LFMCode, ResourceCode: TCodeBuffer;
+  var LFMCode, LRSCode: TCodeBuffer;
   IgnoreSourceErrors, AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
 var
   LFMFilename: string;
@@ -5382,7 +5382,7 @@ var
   ResType: TResourceType;
 begin
   LFMCode:=nil;
-  ResourceCode:=nil;
+  LRSCode:=nil;
   //DebugLn(['TMainIDE.DoLoadResourceFile ',AnUnitInfo.Filename,' HasResources=',AnUnitInfo.HasResources,' IgnoreSourceErrors=',IgnoreSourceErrors,' AutoCreateResourceCode=',AutoCreateResourceCode]);
   if AnUnitInfo.HasResources then begin
     //writeln('TMainIDE.DoLoadResourceFile A "',AnUnitInfo.Filename,'" "',AnUnitInfo.ResourceFileName,'"');
@@ -5391,12 +5391,12 @@ begin
     if ResType=rtLRS then begin
       LRSFilename:=MainBuildBoss.FindLRSFilename(AnUnitInfo,false);
       if LRSFilename<>'' then begin
-        Result:=LoadCodeBuffer(ResourceCode,LRSFilename,[lbfUpdateFromDisk],ShowAbort);
+        Result:=LoadCodeBuffer(LRSCode,LRSFilename,[lbfUpdateFromDisk],ShowAbort);
         if Result<>mrOk then exit;
       end else begin
         LRSFilename:=MainBuildBoss.GetDefaultLRSFilename(AnUnitInfo);
         if AutoCreateResourceCode then begin
-          ResourceCode:=CodeToolBoss.CreateFile(LRSFilename);
+          LRSCode:=CodeToolBoss.CreateFile(LRSFilename);
         end else begin
           DebugLn(['TMainIDE.DoLoadResourceFile .lrs file not found of unit ',AnUnitInfo.Filename]);
           exit(mrCancel);
@@ -5404,7 +5404,7 @@ begin
       end;
     end else begin
       LRSFilename:='';
-      ResourceCode:=nil;
+      LRSCode:=nil;
     end;
 
     // if no resource file found (i.e. normally the .lrs file)
@@ -5500,7 +5500,7 @@ end;
 
 function TMainIDE.DoShowSaveFileAsDialog(var AFilename: string;
   AnUnitInfo: TUnitInfo;
-  var ResourceCode: TCodeBuffer; CanAbort: boolean): TModalResult;
+  var LFMCode, LRSCode: TCodeBuffer; CanAbort: boolean): TModalResult;
 var
   SaveDialog: TSaveDialog;
   SaveAsFilename, SaveAsFileExt, NewFilename, NewUnitName, NewFilePath,
@@ -5600,6 +5600,7 @@ begin
       exit;
     end;
     NewFilename:=ExpandFileNameUTF8(SaveDialog.Filename);
+    //debugln(['TMainIDE.DoShowSaveFileAsDialog SaveDialog.Filename="',SaveDialog.Filename,'" NewFilename="',NewFilename,'"']);
   finally
     InputHistories.StoreFileDialogSettings(SaveDialog);
     SaveDialog.Free;
@@ -5637,7 +5638,6 @@ begin
         mtWarning,[mbIgnore,mbCancel],CanAbort);
       if Result in [mrCancel,mrAbort] then exit;
       NewUnitName:=AlternativeUnitName;
-      Result:=mrCancel;
     end;
     if Project1.IndexOfUnitWithName(NewUnitName,true,AnUnitInfo)>=0 then
     begin
@@ -5693,7 +5693,7 @@ begin
 
   if AnUnitInfo<>nil then begin
     // rename unit
-    Result:=DoRenameUnit(AnUnitInfo,NewFilename,NewUnitName,ResourceCode);
+    Result:=DoRenameUnit(AnUnitInfo,NewFilename,NewUnitName,LFMCode,LRSCode);
     AFilename:=AnUnitInfo.Filename;
     if Result<>mrOk then exit;
   end else begin
@@ -5752,7 +5752,7 @@ begin
 end;
 
 function TMainIDE.DoSaveUnitComponent(AnUnitInfo: TUnitInfo;
-  ResourceCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
+  LRSCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
 
   function IsI18NEnabled(UnitOwners: TFPList): boolean;
   var
@@ -5817,7 +5817,7 @@ begin
   // <ClassName>.<PropertyName>=<PropertyValue>
   LRSFilename:='';
   ResType:=MainBuildBoss.GetResourceType(AnUnitInfo);
-  ResourceCode:=nil;
+  LRSCode:=nil;
 
   if (AnUnitInfo.Component<>nil) then begin
     // stream component to resource code and to lfm file
@@ -5893,9 +5893,9 @@ begin
 
       // create lazarus form resource code
       if ComponentSavingOk and (LRSFilename<>'') then begin
-        if ResourceCode=nil then begin
-          ResourceCode:=CodeToolBoss.CreateFile(LRSFilename);
-          ComponentSavingOk:=(ResourceCode<>nil);
+        if LRSCode=nil then begin
+          LRSCode:=CodeToolBoss.CreateFile(LRSFilename);
+          ComponentSavingOk:=(LRSCode<>nil);
         end;
         if ComponentSavingOk then begin
           // there is no bug in the source, so the resource code should be
@@ -5924,28 +5924,28 @@ begin
             // if resource name has changed, delete old resource
             if (AnUnitInfo.ComponentName<>AnUnitInfo.ComponentResourceName)
             and (AnUnitInfo.ComponentResourceName<>'') then begin
-              CodeToolBoss.RemoveLazarusResource(ResourceCode,
+              CodeToolBoss.RemoveLazarusResource(LRSCode,
                                           'T'+AnUnitInfo.ComponentResourceName);
             end;
             // add comment to resource file (if not already exists)
-            if (not CodeToolBoss.AddLazarusResourceHeaderComment(ResourceCode,
+            if (not CodeToolBoss.AddLazarusResourceHeaderComment(LRSCode,
                LRSComment)) then
             begin
               ACaption:=lisResourceSaveError;
               AText:=Format(lisUnableToAddResourceHeaderCommentToResourceFile, [
-                #13, '"', ResourceCode.FileName, '"', #13]);
+                #13, '"', LRSCode.FileName, '"', #13]);
               Result:=MessageDlg(ACaption,AText,mtError,[mbIgnore,mbAbort],0);
               if Result<>mrIgnore then exit;
             end;
             // add resource to resource file
-            if (not CodeToolBoss.AddLazarusResource(ResourceCode,
+            if (not CodeToolBoss.AddLazarusResource(LRSCode,
                'T'+AnUnitInfo.ComponentName,CompResourceCode)) then
             begin
               ACaption:=lisResourceSaveError;
               AText:=Format(
                 lisUnableToAddResourceTFORMDATAToResourceFileProbably, [
                 AnUnitInfo.ComponentName,
-                #13, '"', ResourceCode.FileName, '"', #13]
+                #13, '"', LRSCode.FileName, '"', #13]
                 );
               Result:=MessageDlg(ACaption, AText, mtError, [mbIgnore, mbAbort],0);
               if Result<>mrIgnore then exit;
@@ -5953,7 +5953,7 @@ begin
               AnUnitInfo.ComponentResourceName:=AnUnitInfo.ComponentName;
             end;
           end else begin
-            ResourceCode.Source:=CompResourceCode;
+            LRSCode.Source:=CompResourceCode;
           end;
         end;
       end;
@@ -6062,24 +6062,24 @@ begin
     writeln('TMainIDE.SaveFileResources F ',ResourceCode.Modified);
   {$ENDIF}
   // save binary stream (.lrs)
-  if ResourceCode<>nil then begin
+  if LRSCode<>nil then begin
     if (not (sfSaveToTestDir in Flags)) then
     begin
-      if (ResourceCode.Modified) then begin
-        if FilenameIsAbsolute(ResourceCode.Filename) then
-          LRSFilename:=ResourceCode.Filename
+      if (LRSCode.Modified) then begin
+        if FilenameIsAbsolute(LRSCode.Filename) then
+          LRSFilename:=LRSCode.Filename
         else if LRSFilename='' then
           LRSFilename:=MainBuildBoss.FindLRSFilename(AnUnitInfo,true);
         Result:=ForceDirectoryInteractive(ExtractFilePath(LRSFilename),[mbRetry]);
         if not Result=mrOk then exit;
-        Result:=SaveCodeBufferToFile(ResourceCode,LRSFilename);
+        Result:=SaveCodeBufferToFile(LRSCode,LRSFilename);
         if not Result=mrOk then exit;
       end;
     end else begin
       TestFilename:=MainBuildBoss.GetTestUnitFilename(AnUnitInfo);
-      Result:=SaveCodeBufferToFile(ResourceCode,
+      Result:=SaveCodeBufferToFile(LRSCode,
                  ChangeFileExt(TestFilename,
-                               ExtractFileExt(ResourceCode.Filename)));
+                               ExtractFileExt(LRSCode.Filename)));
       if not Result=mrOk then exit;
     end;
   end;
@@ -6127,17 +6127,17 @@ end;
 
 function TMainIDE.DoRenameUnit(AnUnitInfo: TUnitInfo;
   NewFilename, NewUnitName: string;
-  var ResourceCode: TCodeBuffer): TModalresult;
+  var LFMCode, LRSCode: TCodeBuffer): TModalresult;
 var
   NewLFMFilename: String;
   OldSourceCode: String;
   NewSource: TCodeBuffer;
   NewFilePath: String;
-  NewResFilePath: String;
+  NewLRSFilePath: String;
   OldFilePath: String;
-  OldResFilePath: String;
+  OldLRSFilePath: String;
   OldFilename: String;
-  NewResFilename: String;
+  NewLRSFilename: String;
   NewHighlighter: TLazSyntaxHighlighter;
   AmbiguousFiles: TStringList;
   AmbiguousText: string;
@@ -6149,7 +6149,7 @@ var
   OldPPUFilename: String;
   OutDir: string;
   Owners: TFPList;
-  LFMBuf: TCodeBuffer;
+  OldFileExisted: Boolean;
 begin
   Project1.BeginUpdate(false);
   try
@@ -6160,7 +6160,7 @@ begin
       OldLFMFilename:=ChangeFileExt(OldFilename,'.dfm');
     if NewUnitName='' then
       NewUnitName:=AnUnitInfo.Unit_Name;
-    debugln(['TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.Unit_Name,' ResourceCode=',ResourceCode<>nil,' NewFilename="',NewFilename,'"']);
+    debugln(['TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.Unit_Name,' LFMCode=',LFMCode<>nil,' LRSCode=',LRSCode<>nil,' NewFilename="',NewFilename,'"']);
 
     // check new resource file
     NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
@@ -6216,42 +6216,58 @@ begin
       end;
     end;
 
+    // rename lfm file
+    if FilenameIsAbsolute(NewLFMFilename) then begin
+      if (LFMCode=nil)
+      and (OldLFMFilename<>'')
+      and FilenameIsAbsolute(OldLFMFilename) and FileExistsUTF8(OldLFMFilename) then
+        LFMCode:=CodeToolBoss.LoadFile(OldLFMFilename,false,false);
+      if (LFMCode<>nil) then begin
+        Result:=SaveCodeBufferToFile(LFMCode,NewLFMFilename,true);
+        if not (Result in [mrOk,mrIgnore]) then begin
+          DebugLn(['TMainIDE.DoRenameUnit SaveCodeBufferToFile failed for "',NewLFMFilename,'"']);
+          exit;
+        end;
+        LFMCode:=CodeToolBoss.LoadFile(NewLFMFilename,true,false);
+      end;
+    end;
+
     // rename Resource file (.lrs)
-    if (ResourceCode<>nil) then begin
+    if (LRSCode<>nil) then begin
       // the resource include line in the code will be changed later after
       // changing the unitname
       if AnUnitInfo.IsPartOfProject
       and (not Project1.IsVirtual)
       and (pfLRSFilesInOutputDirectory in Project1.Flags) then begin
-        NewResFilename:=MainBuildBoss.GetDefaultLRSFilename(AnUnitInfo);
-        NewResFilename:=AppendPathDelim(ExtractFilePath(NewResFilename))
+        NewLRSFilename:=MainBuildBoss.GetDefaultLRSFilename(AnUnitInfo);
+        NewLRSFilename:=AppendPathDelim(ExtractFilePath(NewLRSFilename))
           +ExtractFileNameOnly(NewFilename)+ResourceFileExt;
       end else begin
-        OldResFilePath:=ExtractFilePath(ResourceCode.Filename);
-        NewResFilePath:=OldResFilePath;
+        OldLRSFilePath:=ExtractFilePath(LRSCode.Filename);
+        NewLRSFilePath:=OldLRSFilePath;
         if FilenameIsAbsolute(OldFilePath)
-        and FileIsInPath(OldResFilePath,OldFilePath) then begin
+        and FileIsInPath(OldLRSFilePath,OldFilePath) then begin
           // resource code was in the same or in a sub directory of source
           // -> try to keep this relationship
-          NewResFilePath:=NewFilePath
-                           +copy(ResourceCode.Filename,length(OldFilePath)+1,
-                             length(ResourceCode.Filename));
-          if not DirPathExists(NewResFilePath) then
-            NewResFilePath:=NewFilePath;
+          NewLRSFilePath:=NewFilePath
+                           +copy(LRSCode.Filename,length(OldFilePath)+1,
+                             length(LRSCode.Filename));
+          if not DirPathExists(NewLRSFilePath) then
+            NewLRSFilePath:=NewFilePath;
         end else begin
           // resource code was not in the same or in a sub directory of source
           // copy resource into the same directory as the source
-          NewResFilePath:=NewFilePath;
+          NewLRSFilePath:=NewFilePath;
         end;
-        NewResFilename:=NewResFilePath
+        NewLRSFilename:=NewLRSFilePath
                         +ExtractFileNameOnly(NewFilename)+ResourceFileExt;
       end;
-      Result:=ForceDirectoryInteractive(ExtractFilePath(NewResFilename),[mbRetry,mbIgnore]);
+      Result:=ForceDirectoryInteractive(ExtractFilePath(NewLRSFilename),[mbRetry,mbIgnore]);
       if Result=mrCancel then exit;
       if Result=mrOk then begin
-        if not CodeToolBoss.SaveBufferAs(ResourceCode,NewResFilename,ResourceCode)
+        if not CodeToolBoss.SaveBufferAs(LRSCode,NewLRSFilename,LRSCode)
         then
-          DebugLn(['TMainIDE.DoRenameUnit CodeToolBoss.SaveBufferAs failed: NewResFilename="',NewResFilename,'"']);
+          DebugLn(['TMainIDE.DoRenameUnit CodeToolBoss.SaveBufferAs failed: NewResFilename="',NewLRSFilename,'"']);
       end;
 
       {$IFDEF IDE_DEBUG}
@@ -6260,7 +6276,7 @@ begin
       if ResourceCode<>nil then debugln('*** ResourceFileName ',ResourceCode.Filename);
       {$ENDIF}
     end else begin
-      NewResFilename:='';
+      NewLRSFilename:='';
     end;
     // rename unit name of jit class
     if (AnUnitInfo.Component<>nil) then
@@ -6269,19 +6285,6 @@ begin
     if AnUnitInfo.Component<>nil then debugln('*** AnUnitInfo.Component ',dbgsName(AnUnitInfo.Component),' ClassUnitname=',GetClassUnitName(AnUnitInfo.Component.ClassType));
     debugln(['TMainIDE.DoRenameUnit D ',ResourceCode<>nil]);
     {$ENDIF}
-
-    // save new lfm
-    if FilenameIsAbsolute(OldLFMFilename) and FileExistsUTF8(OldLFMFilename) then
-    begin
-      LFMBuf:=CodeToolBoss.LoadFile(OldLFMFilename,false,false);
-      if (LFMBuf<>nil) and FilenameIsAbsolute(NewLFMFilename) then begin
-        Result:=SaveCodeBufferToFile(LFMBuf,NewLFMFilename,true);
-        if Result<>mrOk then begin
-          DebugLn(['TMainIDE.DoRenameUnit SaveCodeBufferToFile failed for ',NewLFMFilename]);
-        end;
-        if Result=mrAbort then exit;
-      end;
-    end;
 
     // set new codebuffer in unitinfo and sourceeditor
     AnUnitInfo.Source:=NewSource;
@@ -6293,12 +6296,12 @@ begin
 
     // change unitname in lpi and in main source file
     AnUnitInfo.Unit_Name:=NewUnitName;
-    if ResourceCode<>nil then begin
+    if LRSCode<>nil then begin
       // change resource filename in the source include directive
       if not CodeToolBoss.RenameMainInclude(AnUnitInfo.Source,
-        ExtractFilename(ResourceCode.Filename),false)
+        ExtractFilename(LRSCode.Filename),false)
       then
-        DebugLn(['TMainIDE.DoRenameUnit CodeToolBoss.RenameMainInclude failed: AnUnitInfo.Source="',AnUnitInfo.Source,'" ResourceCode="',ExtractFilename(ResourceCode.Filename),'"']);
+        DebugLn(['TMainIDE.DoRenameUnit CodeToolBoss.RenameMainInclude failed: AnUnitInfo.Source="',AnUnitInfo.Source,'" ResourceCode="',ExtractFilename(LRSCode.Filename),'"']);
     end;
 
     // change unitname on SourceNotebook
@@ -6326,6 +6329,8 @@ begin
     Result:=PkgBoss.OnRenameFile(OldFilename,AnUnitInfo.Filename,
                                  AnUnitInfo.IsPartOfProject);
     if Result=mrAbort then exit;
+
+    OldFileExisted:=FilenameIsAbsolute(OldFilename) and FileExistsUTF8(OldFilename);
 
     // delete ambiguous files
     NewFilePath:=ExtractFilePath(NewFilename);
@@ -6393,7 +6398,7 @@ begin
 
     // delete old pas, .pp, .ppu
     if (CompareFilenames(NewFilename,OldFilename)<>0)
-    and FilenameIsAbsolute(OldFilename) and FileExistsUTF8(OldFilename) then begin
+    and OldFileExisted then begin
       if MessageDlg(lisDeleteOldFile2,
         Format(lisDeleteOldFile, ['"', OldFilename, '"']),
         mtConfirmation,[mbYes,mbNo],0)=mrYes then
@@ -6401,6 +6406,7 @@ begin
         Result:=DeleteFileInteractive(OldFilename,[mbAbort]);
         if Result=mrAbort then exit;
         // delete old lfm
+        //debugln(['TMainIDE.DoRenameUnit NewLFMFilename=',NewLFMFilename,' exists=',FileExistsUTF8(NewLFMFilename),' Old=',OldLFMFilename,' exists=',FileExistsUTF8(OldLFMFilename)]);
         if FileExistsUTF8(NewLFMFilename) then begin
           // the new file has a lfm, so it is safe to delete the old
           // (if NewLFMFilename does not exist, it didn't belong to the unit
@@ -6412,7 +6418,7 @@ begin
           end;
         end;
         // delete old lrs
-        if (ResourceCode<>nil) and FileExistsUTF8(ResourceCode.Filename) then begin
+        if (LRSCode<>nil) and FileExistsUTF8(LRSCode.Filename) then begin
           // the new file has a lrs, so it is safe to delete the old
           // (if the new lrs does not exist, it didn't belong to the unit
           //  or there was an error during delete. Never delete files in doubt.)
@@ -9015,7 +9021,7 @@ function TMainIDE.DoSaveEditorFile(AEditor: TSourceEditorInterface;
 var
   AnUnitInfo: TUnitInfo;
   TestFilename, DestFilename: string;
-  ResourceCode, LFMCode: TCodeBuffer;
+  LRSCode, LFMCode: TCodeBuffer;
   MainUnitInfo: TUnitInfo;
   OldUnitName: String;
   OldFilename: String;
@@ -9106,10 +9112,10 @@ begin
 
   // load old resource file
   LFMCode:=nil;
-  ResourceCode:=nil;
+  LRSCode:=nil;
   if WasPascalSource then
   begin
-    Result:=DoLoadResourceFile(AnUnitInfo,LFMCode,ResourceCode,
+    Result:=DoLoadResourceFile(AnUnitInfo,LFMCode,LRSCode,
                                not (sfSaveAs in Flags),true,CanAbort);
     if not (Result in [mrIgnore,mrOk]) then
       exit;
@@ -9123,10 +9129,9 @@ begin
   if [sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs] then begin
     // let user choose a filename
     NewFilename:=OldFilename;
-    Result:=DoShowSaveFileAsDialog(NewFilename,AnUnitInfo,ResourceCode,CanAbort);
+    Result:=DoShowSaveFileAsDialog(NewFilename,AnUnitInfo,LFMCode,LRSCode,CanAbort);
     if not (Result in [mrIgnore,mrOk]) then
       exit;
-    LFMCode:=nil;
   end;
 
   // save source
@@ -9177,8 +9182,8 @@ begin
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoSaveEditorFile B');{$ENDIF}
   // save resource file and lfm file
-  if (ResourceCode<>nil) or (AnUnitInfo.Component<>nil) then begin
-    Result:=DoSaveUnitComponent(AnUnitInfo,ResourceCode,LFMCode,Flags);
+  if (LRSCode<>nil) or (AnUnitInfo.Component<>nil) then begin
+    Result:=DoSaveUnitComponent(AnUnitInfo,LRSCode,LFMCode,Flags);
     if not (Result in [mrIgnore, mrOk]) then
       exit;
   end;
@@ -13245,7 +13250,7 @@ var
   OldShortFilename: String;
   NewFilename: String;
   NewShortFilename: String;
-  ResourceCode: TCodeBuffer;
+  LFMCode, LRSCode: TCodeBuffer;
   NewUnitName: String;
 begin
   Result:=mrOk;
@@ -13272,8 +13277,9 @@ begin
     AnUnitInfo.ReadUnitNameFromSource(false);
     NewUnitName:=AnUnitInfo.CreateUnitName;
   end;
-  ResourceCode:=nil;
-  Result:=DoRenameUnit(AnUnitInfo,NewFilename,NewUnitName,ResourceCode);
+  LFMCode:=nil;
+  LRSCode:=nil;
+  Result:=DoRenameUnit(AnUnitInfo,NewFilename,NewUnitName,LFMCode,LRSCode);
 end;
 
 function TMainIDE.DoCheckFilesOnDisk(Instantaneous: boolean): TModalResult;

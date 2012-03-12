@@ -272,7 +272,10 @@ var
 begin
   if Backup then begin
     Result:=BackupFileInteractive(Filename);
-    if Result<>mrOk then exit;
+    if Result<>mrOk then begin
+      debugln(['SaveCodeBufferToFile backup failed: "',Filename,'"']);
+      exit;
+    end;
   end else
     Result:=mrOk;
   repeat

@@ -870,7 +870,6 @@ end;
 function TSourceLog.SaveToFile(const Filename: string): boolean;
 var 
   fs: TFileStream;
-  TheFilename: String;
   s: String;
 begin
   {$IFDEF VerboseCTSave}
@@ -881,14 +880,13 @@ begin
   LastError:='';
   try
     // keep filename case on disk
-    TheFilename := FindDiskFilename(Filename);
-    if FileExistsUTF8(TheFilename) then begin
-      InvalidateFileStateCache(TheFilename);
-      fs := TFileStream.Create(UTF8ToSys(TheFilename), fmOpenWrite or fmShareDenyNone);
+    if FileExistsUTF8(Filename) then begin
+      InvalidateFileStateCache(Filename);
+      fs := TFileStream.Create(UTF8ToSys(Filename), fmOpenWrite or fmShareDenyNone);
       fs.Size := 0;
     end else begin
       InvalidateFileStateCache; // invalidate all (samba shares)
-      fs := TFileStream.Create(UTF8ToSys(TheFilename), fmCreate);
+      fs := TFileStream.Create(UTF8ToSys(Filename), fmCreate);
     end;
     try
       s := Source;
