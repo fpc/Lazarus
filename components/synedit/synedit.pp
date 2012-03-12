@@ -38,7 +38,6 @@ Known Issues:
   -Font.CharSet
   -THintWindow
   -DragAcceptFiles
-  -Font DBCS / MBCS  double, multi byte character set
 
 -------------------------------------------------------------------------------}
 
@@ -46,6 +45,7 @@ unit SynEdit;
 {$IFDEF Windows}
   {$IFnDEF WithoutWinIME}
     {$DEFINE WinIME}
+    {$DEFINE WinIMEFull}
   {$ENDIF}
 {$ENDIF}
 
@@ -73,16 +73,13 @@ interface
 
 uses
   {$IFDEF WinIME}
-  windows, imm,
+  LazSynIMM,
   {$ENDIF}
   {$IFDEF USE_UTF8BIDI_LCL}
   FreeBIDI, utf8bidi,
   {$ENDIF}
   Types, LCLIntf, LCLType, LMessages, LazUTF8, LCLProc,
   SysUtils, Classes, Messages, Controls, Graphics, Forms, StdCtrls, ExtCtrls, Menus,
-  {$IFDEF SYN_MBCSSUPPORT}
-  Imm,
-  {$ENDIF}
   SynEditTypes, SynEditSearch, SynEditKeyCmds, SynEditMouseCmds, SynEditMiscProcs,
   SynEditPointClasses, SynBeautifier, SynEditMarks,
   // Markup
@@ -120,26 +117,6 @@ const
 
   // maximum scroll range
   MAX_SCROLL = 32767;
-
-{$IFDEF SYN_MBCSSUPPORT}
-{$IFNDEF SYN_COMPILER_4_UP}
-{Windows.pas in D4}
-const
-  C3_NONSPACING = 1;    { nonspacing character }
-  C3_DIACRITIC = 2;     { diacritic mark }
-  C3_VOWELMARK = 4;     { vowel mark }
-  C3_SYMBOL = 8;        { symbols }
-  C3_KATAKANA = $0010;  { katakana character }
-  C3_HIRAGANA = $0020;  { hiragana character }
-  C3_HALFWIDTH = $0040; { half width character }
-  C3_FULLWIDTH = $0080; { full width character }
-  C3_IDEOGRAPH = $0100; { ideographic character }
-  C3_KASHIDA = $0200;   { Arabic kashida character }
-  C3_LEXICAL = $0400;   { lexical character }
-  C3_ALPHA = $8000;     { any linguistic char (C1_ALPHA) }
-  C3_NOTAPPLICABLE = 0; { ctype 3 is not applicable }
-{$ENDIF}
-{$ENDIF}
 
 type
   TSynEditMarkupClass = SynEditMarkup.TSynEditMarkupClass;
@@ -395,6 +372,16 @@ type
 
   { TLazSynKeyDownEventList }
 
+  { TLazSynMouseDownEventList }
+
+  TLazSynMouseDownEventList = Class(TMethodList)
+  public
+    procedure CallMouseDownHandlers(Sender: TObject; Button: TMouseButton;
+                                    Shift: TShiftState; X, Y: Integer);
+  end;
+
+  { TLazSynKeyDownEventList }
+
   TLazSynKeyDownEventList = Class(TMethodList)
   public
     procedure CallKeyDownHandlers(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -437,11 +424,12 @@ type
     procedure SelAvailChange(Sender: TObject);
   private
     {$IFDEF WinIME}
-    FImeWinX, FImeWinY: Integer;
-    procedure UpdateImeWinXY(aX, aY: Integer; aImc: HIMC = 0; aForce: Boolean = False);
-    procedure UpdateImeWinFont(aImc: HIMC = 0);
-    //procedure WMImeComposition(var Msg: TMessage); message WM_IME_COMPOSITION;
+    FImeHandler: LazSynIme;
+    procedure WMImeRequest(var Msg: TMessage); message WM_IME_REQUEST;
     procedure WMImeNotify(var Msg: TMessage); message WM_IME_NOTIFY;
+    procedure WMImeStartComposition(var Msg: TMessage); message WM_IME_STARTCOMPOSITION;
+    procedure WMImeComposition(var Msg: TMessage); message WM_IME_COMPOSITION;
+    procedure WMImeEndComposition(var Msg: TMessage); message WM_IME_ENDCOMPOSITION;
     {$ENDIF}
     procedure WMDropFiles(var Msg: TMessage); message WM_DROPFILES;
     procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
@@ -473,10 +461,6 @@ type
     fMarkupSpecialChar : TSynEditMarkupSpecialChar;
     fFontDummy: TFont;
     FLastSetFontSize: Integer;
-    {$IFDEF SYN_MBCSSUPPORT}
-    fImeCount: Integer;
-    fMBCSStepAside: Boolean;
-    {$ENDIF}
     fInserting: Boolean;
     fLastMouseCaret: TPoint;  // Char; physical (screen)
     FLastMousePoint: TPoint;  // Pixel
@@ -543,6 +527,7 @@ type
     fTSearch: TSynEditSearch;
     fHookedCommandHandlers: TList;
     FHookedKeyTranslationList: TSynHookedKeyTranslationList;
+    FMouseDownEventList: TLazSynMouseDownEventList;
     FKeyDownEventList: TLazSynKeyDownEventList;
     FKeyPressEventList: TLazSynKeyPressEventList;
     FUtf8KeyPressEventList: TLazSynUtf8KeyPressEventList;
@@ -813,10 +798,6 @@ type
     function  GetTopView : Integer;
     procedure SetTopView(AValue : Integer);
     procedure MarkListChange(Sender: TSynEditMark; Changes: TSynEditMarkChangeReasons);
-{$IFDEF SYN_MBCSSUPPORT}
-    procedure MBCSGetSelRangeInLineWhenColumnSelectionMode(const s: string;
-      var ColFrom, ColTo: Integer);
-{$ENDIF}
     procedure NotifyHookedCommandHandlers(var Command: TSynEditorCommand;
       var AChar: TUTF8Char; Data: pointer; ATime: THookedCommandFlag); virtual;
     function NextWordLogicalPos(ABoundary: TLazSynWordBoundary = swbWordBegin; WordEndForDelete : Boolean = false): TPoint;
@@ -999,6 +980,9 @@ type
 
     procedure RegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent; AChanges: TSynStatusChanges);
     procedure UnRegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent);
+
+    procedure RegisterBeforeMouseDownHandler(AHandlerProc: TMouseEvent);
+    procedure UnregisterBeforeMouseDownHandler(AHandlerProc: TMouseEvent);
 
     procedure RegisterBeforeKeyDownHandler(AHandlerProc: TKeyEvent);
     procedure UnregisterBeforeKeyDownHandler(AHandlerProc: TKeyEvent);
@@ -1372,7 +1356,6 @@ type
   public
     constructor Create(AEvent: THookedCommandEvent; AData: pointer; AFlags: THookedCommandFlags);
   end;
-
 
 { TSynEditUndoCaret }
 
@@ -1989,6 +1972,18 @@ begin
   fMarkupManager.Caret := FCaret;
   fMarkupManager.InvalidateLinesMethod := @InvalidateLines;
 
+  {$IFDEF WinIME}
+  {$IFDEF WinIMEFull}
+  FImeHandler := LazSynImeFull.Create(Self);
+  LazSynImeFull(FImeHandler).UndoList := fUndoList;
+  LazSynImeFull(FImeHandler).RedoList := fRedoList;
+  {$ELSE}
+  FImeHandler := LazSynImeSimple.Create(Self);
+  LazSynImeSimple(FImeHandler).TextDrawer := FTextDrawer;
+  {$ENDIF}
+  {$ENDIF}
+  FImeHandler.InvalidateLinesMethod := @InvalidateLines;
+
   fFontDummy.Name := SynDefaultFontName;
   fFontDummy.Height := SynDefaultFontHeight;
   fFontDummy.Pitch := SynDefaultFontPitch;
@@ -2045,10 +2040,6 @@ begin
   FMouseActionSearchHandlerList := TSynEditMouseActionSearchList.Create;
   FMouseActionExecHandlerList  := TSynEditMouseActionExecList.Create;
 
-{$IFDEF SYN_MBCSSUPPORT}
-  fImeCount := 0;
-  fMBCSStepAside := False;
-{$ENDIF}
   fWantTabs := False;
   fTabWidth := 8;
   FOldTopView := 1;
@@ -2302,6 +2293,9 @@ begin
   FreeAndNil(FRightGutter);
   FreeAndNil(FPaintLineColor);
   FreeAndNil(FPaintLineColor2);
+  {$IFDEF WinIME}
+  FreeAndNil(FImeHandler);
+  {$ENDIF}
   FreeAndNil(fTextDrawer);
   FreeAndNil(fFontDummy);
   DestroyMarkList; // before detach from FLines
@@ -2323,6 +2317,7 @@ begin
   FBeautifier := nil;
   FreeAndNil(FDefaultBeautifier);
   FreeAndNil(FKeyDownEventList);
+  FreeAndNil(FMouseDownEventList);
   FreeAndNil(FKeyPressEventList);
   FreeAndNil(FUtf8KeyPressEventList);
   inherited Destroy;
@@ -2519,91 +2514,29 @@ begin
 end;
 
 {$IFDEF WinIME}
-procedure TCustomSynEdit.UpdateImeWinXY(aX, aY: Integer; aImc: HIMC; aForce: Boolean);
-var
-  cf: CompositionForm;
-  imc: HIMC;
+procedure TCustomSynEdit.WMImeRequest(var Msg: TMessage);
 begin
-  if not HandleAllocated then exit;
-  if (not aForce) and (aX = FImeWinX) and (aY = FImeWinY) then exit;
-  FImeWinX := aX;
-  FImeWinY := aY;
-
-  cf.dwStyle := CFS_POINT;
-  cf.ptCurrentPos := Point(aX, aY);
-  if aImc = 0 then
-    imc := ImmGetContext(Handle)
-  else
-    imc := aImc;
-  if (imc <> 0) then begin
-    ImmSetCompositionWindow(imc, @cf);
-    if (aImc = 0) then
-      ImmReleaseContext(Handle, imc);
-  end;
+  FImeHandler.WMImeRequest(Msg);
 end;
-
-procedure TCustomSynEdit.UpdateImeWinFont(aImc: HIMC);
-var
-  imc: HIMC;
-  logFont: TLogFont;
-begin
-  if not HandleAllocated then exit;
-  if aImc = 0 then
-    imc := ImmGetContext(Handle)
-  else
-    imc := aImc;
-  if (imc <> 0) then begin
-    GetObject(Font.Handle, SizeOf(TLogFont), @logFont);
-    ImmSetCompositionFontW(imc, @logFont);
-    if (aImc = 0) then
-      ImmReleaseContext(Handle, imc);
-  end;
-end;
-
-(*
-procedure TCustomSynEdit.WMImeComposition(var Msg: TMessage);
-var
-  imc: HIMC;
-  p: PChar;
-begin
-  if ((Msg.LParam and GCS_RESULTSTR) <> 0) then begin
-    imc := ImmGetContext(Handle);
-    try
-      fImeCount := ImmGetCompositionString(imc, GCS_RESULTSTR, nil, 0);
-      GetMem(p, fImeCount + 1);
-      try
-        ImmGetCompositionString(imc, GCS_RESULTSTR, p, fImeCount + 1);
-        p[fImeCount] := #0;
-        CommandProcessor(ecImeStr, #0, p);
-      finally
-        FreeMem(p, fImeCount + 1);
-      end;
-    finally
-      ImmReleaseContext(Handle, imc);
-    end;
-  end;
-  inherited;
-end;
-*)
 
 procedure TCustomSynEdit.WMImeNotify(var Msg: TMessage);
-var
-  imc: HIMC;
-  logFont: TLogFont;
 begin
-debugln(['TCustomSynEdit.WMImeNotify ', dbgHex(Msg.lParam), ' ,  ', dbgHex(Msg.wParam)]);
+    FImeHandler.WMImeNotify(Msg);
+end;
 
-  case Msg.WParam of
-    IMN_SETOPENSTATUS: begin
-          imc := ImmGetContext(Handle);
-          if (imc <> 0) then begin
-            UpdateImeWinFont(imc);
-            UpdateImeWinXY(CaretXPix, CaretYPix, imc, True);
-            ImmReleaseContext(Handle, imc);
-          end;
-        end;
-    end;
-  inherited;
+procedure TCustomSynEdit.WMImeComposition(var Msg: TMessage);
+begin
+  FImeHandler.WMImeComposition(Msg);
+end;
+
+procedure TCustomSynEdit.WMImeStartComposition(var Msg: TMessage);
+begin
+  FImeHandler.WMImeStartComposition(Msg);
+end;
+
+procedure TCustomSynEdit.WMImeEndComposition(var Msg: TMessage);
+begin
+  FImeHandler.WMImeEndComposition(Msg);
 end;
 {$ENDIF}
 
@@ -3199,6 +3132,10 @@ begin
   //DebugLn(['TCustomSynEdit.MouseDown START Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y]);
   Exclude(FStateFlags, sfHideCursor);
   FInMouseClickEvent := True;
+
+  if FMouseDownEventList <> nil then
+    FMouseDownEventList.CallMouseDownHandlers(Self, Button, Shift, X, Y);
+
   if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
   begin
     inherited MouseDown(Button, Shift, X, Y);
@@ -4307,9 +4244,6 @@ begin
     x := CaretXPix;
     y := CaretYPix;
     FScreenCaret.DisplayPos := Point(x, y);
-    {$IFDEF WinIME}
-    UpdateImeWinXY(x, y);
-    {$ENDIF}
   end;
 end;
 
@@ -4484,6 +4418,9 @@ begin
   end;
   if FHideSelection and SelAvail then
     Invalidate;
+  {$IFDEF WinIME}
+  FImeHandler.FocusKilled;
+  {$ENDIF}
   inherited;
 end;
 
@@ -6000,11 +5937,6 @@ var
   WP: TPoint;
   Caret: TPoint;
   CaretNew: TPoint;
-{$IFDEF SYN_MBCSSUPPORT}
-  StartOfBlock: TPoint;
-  i: integer;
-  s: string;
-{$ENDIF}
   counter: Integer;
   LogCounter: integer;
   LogCaretXY: TPoint;
@@ -6511,47 +6443,6 @@ begin
         begin
           DefaultSelectionMode := SEL_MODE[Command];
         end;
-{$IFDEF SYN_MBCSSUPPORT}
-      ecImeStr:
-        if not ReadOnly then begin
-          SetString(s, PChar(Data), StrLen(Data));
-          if SelAvail then begin
-            SetSelTextExternal(s);
-          end else begin
-            Temp := LineText;
-            Len := Length(Temp);
-            if Len < CaretX then
-              Temp := Temp + StringOfChar(' ', CaretX - Len);
-            try
-              FCaret.IncForcePastEOL;
-              StartOfBlock := CaretXY;
-// Processing of case character covers on LeadByte.
-              Len := Length(s);
-              if not fInserting then begin
-                i := (CaretX + Len);
-                if (ByteType(Temp, i) = mbTrailByte) then begin
-                  s := s + Temp[i - 1];
-                  Helper := Copy(Temp, CaretX, Len - 1);
-                end else
-                  Helper := Copy(Temp, CaretX, Len);
-                Delete(Temp, CaretX, Len);
-              end;
-              Insert(s, Temp, CaretX);
-              CaretX := (CaretX + Len);
-              FTheLinesView[CaretY - 1] := Temp;
-              if fInserting then
-                Helper := '';
-              fUndoList.AddChange(crInsert, StartOfBlock,
-                LogicalCaretXY,
-                Helper, smNormal);
-              if CaretX >= LeftChar + CharsInWindow then
-                LeftChar := LeftChar + min(25, CharsInWindow - 1);
-            finally
-              FCaret.DecForcePastEOL;
-            end;
-          end;
-        end;
-{$ENDIF}
       EcFoldLevel1..EcFoldLevel9:
         FoldAll(Command - EcFoldLevel1);
       EcFoldLevel0:
@@ -7185,28 +7076,6 @@ begin
   end;
 end;
 
-{$IFDEF SYN_MBCSSUPPORT}
-
-procedure TCustomSynEdit.MBCSGetSelRangeInLineWhenColumnSelectionMode(
-  const s: string; var ColFrom, ColTo: Integer);
-  // --ColFrom and ColTo are in/out parameter. their range
-  //    will be from 1 to MaxInt.
-  // --a range of selection means:  Copy(s, ColFrom, ColTo - ColFrom);
-  //    be careful what ColTo means.
-var
-  Len: Integer;
-begin
-  Len := Length(s);
-  if (0 < ColFrom) and (ColFrom <= Len) then
-    if mbTrailByte = ByteType(s, ColFrom) then
-      Inc(ColFrom);
-  if (0 < ColTo) and (ColTo <= Len) then
-    if mbTrailByte = ByteType(s, ColTo) then
-      Inc(ColTo);
-end;
-
-{$ENDIF}
-
 function TCustomSynEdit.IsPointInSelection(Value: TPoint): boolean;
 var
   ptBegin, ptEnd: TPoint;
@@ -7590,10 +7459,6 @@ begin
     FScreenCaret.UnLock;
   end;
   UpdateScrollBars;
-
-  {$IFDEF WinIME}
-  UpdateImeWinFont;
-  {$ENDIF}
   //debugln('TCustomSynEdit.RecalcCharExtent UseUTF8=',dbgs(UseUTF8),' Font.CanUTF8=',dbgs(Font.CanUTF8));
 end;
 
@@ -8627,6 +8492,19 @@ begin
   TSynStatusChangedHandlerList(FStatusChangedList).Remove(AStatusChangeProc);
 end;
 
+procedure TCustomSynEdit.RegisterBeforeMouseDownHandler(AHandlerProc: TMouseEvent);
+begin
+  if FMouseDownEventList = nil then
+    FMouseDownEventList := TLazSynMouseDownEventList.Create;
+  FMouseDownEventList.Add(TMethod(AHandlerProc));
+end;
+
+procedure TCustomSynEdit.UnregisterBeforeMouseDownHandler(AHandlerProc: TMouseEvent);
+begin
+  if FMouseDownEventList <> nil then
+    FMouseDownEventList.Remove(TMethod(AHandlerProc));
+end;
+
 procedure TCustomSynEdit.RegisterBeforeKeyDownHandler(AHandlerProc: TKeyEvent);
 begin
   if FKeyDownEventList = nil then
@@ -8951,6 +8829,18 @@ begin
   i:=Count;
   while NextDownIndex(i) do
     TKeyPressEvent(Items[i])(Sender, Key);
+end;
+
+{ TLazSynMouseDownEventList }
+
+procedure TLazSynMouseDownEventList.CallMouseDownHandlers(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  i: LongInt;
+begin
+  i:=Count;
+  while NextDownIndex(i) do
+    TMouseEvent(Items[i])(Sender, Button, Shift, X, Y);
 end;
 
 { TLazSynKeyDownEventList }

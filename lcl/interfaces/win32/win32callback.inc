@@ -1095,6 +1095,10 @@ begin
     begin
       {IME Windows the composition has finished}
       WindowInfo^.IMEComposed:=True;
+      LMessage.Msg := Msg;
+      LMessage.WParam := WParam;
+      LMessage.LParam := LParam;
+      //WinProcess := False;
     end;
     WM_CANCELMODE:
     begin
@@ -2184,12 +2188,20 @@ begin
           Assigned(Win32WidgetSet.FOnAsyncSocketMsg) then
         Exit(Win32WidgetSet.FOnAsyncSocketMsg(WParam, LParam))
     end;
-    WM_IME_NOTIFY:
+    WM_IME_COMPOSITION,
+    WM_IME_COMPOSITIONFULL,
+    WM_IME_CONTROL,
+    //WM_IME_ENDCOMPOSITION,
+    WM_IME_NOTIFY,
+    WM_IME_REQUEST,
+    WM_IME_SELECT,
+    WM_IME_SETCONTEXT,
+    WM_IME_STARTCOMPOSITION:
     begin
       LMessage.Msg := Msg;
       LMessage.WParam := WParam;
       LMessage.LParam := LParam;
-      //WinProcess := False;
+      WinProcess := False;
     end;
   else
     // pass along user defined messages
@@ -2445,6 +2457,18 @@ begin
       // if key not yet processed, let windows process it
       WinProcess := LMKey.Result = 0;
       WParam := LMKey.CharCode;
+    end;
+    WM_IME_COMPOSITION,
+    WM_IME_COMPOSITIONFULL,
+    WM_IME_CONTROL,
+    WM_IME_ENDCOMPOSITION,
+    WM_IME_NOTIFY,
+    WM_IME_REQUEST,
+    WM_IME_SELECT,
+    WM_IME_SETCONTEXT,
+    WM_IME_STARTCOMPOSITION:
+    begin
+      WinProcess := LMessage.Result = 0;
     end;
   else
     case Msg of
