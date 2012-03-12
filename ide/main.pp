@@ -11567,6 +11567,7 @@ var
   StateFilename: String;
   StateFileAge: LongInt;
   AnUnitInfo: TUnitInfo;
+  LFMFilename: String;
 begin
   NeedBuildAllFlag:=false;
   if (AProject.LastCompilerFilename<>CompilerFilename)
@@ -11633,10 +11634,19 @@ begin
   // check project files
   AnUnitInfo:=AProject.FirstPartOfProject;
   while AnUnitInfo<>nil do begin
-    if FileExistsCached(AnUnitInfo.Filename)
-    and (StateFileAge<FileAgeCached(AnUnitInfo.Filename)) then begin
-      DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
-      exit(mrYes);
+    if FileExistsCached(AnUnitInfo.Filename) then begin
+      if (StateFileAge<FileAgeCached(AnUnitInfo.Filename)) then begin
+        DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
+        exit(mrYes);
+      end;
+      if AnUnitInfo.ComponentName<>'' then begin
+        LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
+        if FileExistsCached(LFMFilename)
+        and (StateFileAge<FileAgeCached(LFMFilename)) then begin
+          DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  LFM has changed ',AProject.IDAsString,' ',LFMFilename);
+          exit(mrYes);
+        end;
+      end;
     end;
     AnUnitInfo:=AnUnitInfo.NextPartOfProject;
   end;
