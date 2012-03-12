@@ -664,14 +664,14 @@ var
   p1: TW2FormatPage absolute Page1;
   p2: TW2FormatPage absolute Page2;
 begin
-  Result:=BasicCodeTools.CompareText(p1.WikiDocumentName,p2.WikiDocumentName,true);
+  Result:=BasicCodeTools.CompareTextCT(p1.WikiDocumentName,p2.WikiDocumentName,true);
 end;
 
 function CompareDocumentNameWithPage(DocumentName, Page: Pointer): integer;
 var
   p: TW2FormatPage absolute Page;
 begin
-  Result:=BasicCodeTools.CompareText(AnsiString(DocumentName),p.WikiDocumentName,true);
+  Result:=BasicCodeTools.CompareTextCT(AnsiString(DocumentName),p.WikiDocumentName,true);
 end;
 
 function CompareDocumentNameWithPageIgnoreLang(DocumentName, Page: Pointer

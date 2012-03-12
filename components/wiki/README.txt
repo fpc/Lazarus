@@ -30,3 +30,14 @@ Creating HTML pages:
 Creating chm:
 ./wikiconvert --format=chm --css=chm/wiki.css wikixml/Lazarus_Documentation.g400.xml 'wikixml/*.xml'
 
+
+ToDos
+ToDos wiki parser: see wikiparser.pas
+
+ToDos iphtml:
+-too big space between paragraphs
+-jump to anchor after loading, Note: before first paint the areas are all 0,0,0,0
+-background for pre
+-backslashes in text are not shown
+-slow on some pages (e.g. lazarus_documentation)
+

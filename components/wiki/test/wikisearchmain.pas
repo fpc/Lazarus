@@ -556,7 +556,7 @@ end;
 
 procedure TWikiSearchDemoForm.UpdateHistoryButtons;
 begin
-  BackToolButton.Visible:=PageHistory.CurrentIndex>0;
+  BackToolButton.Enabled:=PageHistory.CurrentIndex>0;
   ForwardToolButton.Visible:=PageHistory.CurrentIndex+1<PageHistory.Count;
 end;
 

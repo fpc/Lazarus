@@ -153,7 +153,7 @@ procedure AdjustPositionAfterInsert(var p: integer; IsStart: boolean;
 // comparison
 function CompareText(Txt1: PChar; Len1: integer; Txt2: PChar; Len2: integer;
     CaseSensitive: boolean): integer; overload;
-function CompareText(const Txt1, Txt2: string;
+function CompareTextCT(const Txt1, Txt2: string;
     CaseSensitive: boolean = false): integer; overload;
 function CompareText(Txt1: PChar; Len1: integer; Txt2: PChar; Len2: integer;
     CaseSensitive, IgnoreSpace: boolean): integer; overload;
@@ -5382,7 +5382,7 @@ begin
     Result:=0;
 end;
 
-function CompareText(const Txt1, Txt2: string; CaseSensitive: boolean): integer;
+function CompareTextCT(const Txt1, Txt2: string; CaseSensitive: boolean): integer;
 begin
   Result:=CompareText(PChar(Pointer(Txt1)),length(Txt1),
                       PChar(Pointer(Txt2)),length(Txt2),CaseSensitive);
