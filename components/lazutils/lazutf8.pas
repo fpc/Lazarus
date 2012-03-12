@@ -74,6 +74,7 @@ type
     u8tKeepEnd,
     u8tKeepTabs,
     u8tKeepLineBreaks,
+    u8tKeepNoBreakSpaces,
     u8tKeepControlCodes // excluding tabs and line breaks
     );
   TUTF8TrimFlags = set of TUTF8TrimFlag;
@@ -2328,9 +2329,11 @@ var
   u: Cardinal;
   StartP: PtrUInt;
   l: Integer;
+  KeepAllNonASCII: boolean;
 begin
   Result:=s;
   if Result='' then exit;
+  KeepAllNonASCII:=[u8tKeepControlCodes,u8tKeepNoBreakSpaces]*Flags=[u8tKeepControlCodes,u8tKeepNoBreakSpaces];
   if not (u8tKeepStart in Flags) then begin
     // trim start
     p:=PChar(Result);
@@ -2356,13 +2359,18 @@ begin
           break;
       #128..#255:
         begin
-          if u8tKeepControlCodes in Flags then break;
+          if KeepAllNonASCII then break;
           u:=UTF8CharacterToUnicode(p,l);
           if (l<=1) then break; // invalid character
           case u of
           128..159, // C1 set of control codes
           8206, 8207: // left-to-right, right-to-left mark
-            ;
+            if u8tKeepControlCodes in Flags then break;
+          160,   // no break space
+          $2007, // figure space
+          $2026, // narrow no-break space
+          $FEFF: // zero with no-break space
+            if u8tKeepNoBreakSpaces in Flags then break;
           else
             break;
           end;
@@ -2398,17 +2406,23 @@ begin
           break;
       #128..#255:
         begin
-          if u8tKeepControlCodes in Flags then break;
+          if KeepAllNonASCII then break;
           StartP:=UTF8FindNearestCharStart(PChar(Result),length(Result),p-PChar(Result));
           u:=UTF8CharacterToUnicode(PChar(Result)+StartP,l);
           if (l<=1) then break; // invalid character
           case u of
           128..159, // C1 set of control codes
           8206, 8207: // left-to-right, right-to-left mark
-            p:=PChar(Result)+StartP;
+            if u8tKeepControlCodes in Flags then break;
+          160,   // no break space
+          $2007, // figure space
+          $2026, // narrow no-break space
+          $FEFF: // zero with no-break space
+            if u8tKeepNoBreakSpaces in Flags then break;
           else
             break;
           end;
+          p:=PChar(Result)+StartP;
         end;
       else
         break;
