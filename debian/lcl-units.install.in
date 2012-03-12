@@ -33,7 +33,7 @@
 #/usr/lib/lazarus/${VERSION}/components/customform
 #/usr/lib/lazarus/${VERSION}/components/prettyformat
 #/usr/lib/lazarus/${VERSION}/components/h2pas
-#/usr/lib/lazarus/${VERSION}/components/images
+/usr/lib/lazarus/${VERSION}/components/images
 /usr/lib/lazarus/${VERSION}/components/lazreport
 /usr/lib/lazarus/${VERSION}/components/lazutils
 /usr/lib/lazarus/${VERSION}/components/sqlite
@@ -44,7 +44,7 @@
 #/usr/lib/lazarus/${VERSION}/ide
 /usr/lib/lazarus/${VERSION}/ideintf
 /usr/lib/lazarus/${VERSION}/lcl/units/*/*.*
-/usr/lib/lazarus/${VERSION}/lcl/interfaces/*.lpk
 /usr/lib/lazarus/${VERSION}/lcl/*.lpk
+/usr/lib/lazarus/${VERSION}/lcl/*/*.lpk
 /usr/lib/lazarus/${VERSION}/packager
 /usr/lib/lazarus/${VERSION}/units
