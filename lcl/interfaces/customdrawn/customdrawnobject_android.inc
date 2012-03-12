@@ -786,6 +786,9 @@ begin
 
   if Application.LayoutAdjustmentPolicy = lapDefault then
     Application.LayoutAdjustmentPolicy := lapAutoAdjustWithoutHorizontalScrolling;
+
+  // Generic
+  GenericAppInit();
 end;
 
 procedure TCDWidgetSet.AppRun(const ALoop: TApplicationMainLoop);

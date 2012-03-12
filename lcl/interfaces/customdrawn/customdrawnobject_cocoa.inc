@@ -49,6 +49,9 @@ begin
   { Creates the application NSApp object }
   NsApp := NSApplication.sharedApplication;
   NSApp.setDelegate(delegate);
+
+  // Generic
+  GenericAppInit();
 end;
 
 {------------------------------------------------------------------------------

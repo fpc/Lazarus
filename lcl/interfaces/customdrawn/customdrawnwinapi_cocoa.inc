@@ -159,14 +159,53 @@ begin
 end;*)
 
 {$ifndef CD_UseNativeText}
-procedure TCDWidgetSet.BackendListFontPaths(var AFontPaths: TStringList);
+procedure TCDWidgetSet.BackendListFontPaths(var AFontPaths: TStringList; var AFontList: THashedStringList);
+var
+  i: Integer;
+  lFontPath: string;
 begin
+  // First /Library/Fonts/
   AFontPaths.Add('/Library/Fonts/');
+  //FontsScanDir(lPasWinFontPath, AFontPaths, AFontList);
+
+  // We have populated FontPaths, now we may build the font list
+  for i := 0 to AFontPaths.Count -1 do
+  begin
+    lFontPath := AFontPaths[i];
+    FontsScanForTTF(lFontPath, AFontList);
+  end;
+
+  {$ifdef CD_Debug_TTF}
+    AFontPaths.SaveToFile('lxfontpaths.txt');
+    AFontList.Sort;
+    AFontList.SaveToFile('lxfontlist.txt');
+  {$endif}
 end;
 
 function TCDWidgetSet.BackendGetFontPath(const LogFont: TLogFont; const LongFontName: string): string;
+var
+  i: Integer;
+  Str: String;
+  AFontName: String;
 begin
-  Result := '/Library/Fonts/Arial.ttf';
+  // First look if font name matches a stored name
+  // but replace generic with reasonable default
+  AFontName:= '';
+  if LowerCase(LongFontName) = 'default' then AFontName:= 'Arial'
+  else if LowerCase(LongFontName) = 'sans' then AFontName:= 'Arial'
+  else if LowerCase(LongFontName) = 'serif' then AFontName:= 'Times New Roman'
+  else AFontName:= LongFontName;
+
+  str := FFontList.Values[AFontName];
+  if str <> '' then begin
+    Result:= str;
+    exit;
+  end;
+
+  // Here font name wasn't found - Carry on educated guesses
+
+  // No luck - Nothing was found
+  raise Exception.Create('[BackendGetFontPath] Unable to find a suitable font to replace '+LongFontName);
 end;
 {$endif}
 
