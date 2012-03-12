@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Tomasz Wieckowski <tomek@ump.edu.pl>\n"
-"PO-Revision-Date: 2009-08-21 18:36+0100\n"
+"PO-Revision-Date: 2012-03-12 10:51+0100\n"
 "Project-Id-Version: objinspstrconsts\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "X-Poedit-Language: Polish\n"
@@ -959,11 +959,11 @@ msgstr "Ctrl+O"
 
 #: objinspstrconsts.oistdactfileopenwithheadline
 msgid "Open with..."
-msgstr ""
+msgstr "Otwórz z..."
 
 #: objinspstrconsts.oistdactfileopenwithhint
 msgid "Open with"
-msgstr ""
+msgstr "Otwórz z"
 
 #: objinspstrconsts.oistdactfilesaveasheadline
 msgid "Save &As..."
@@ -1465,7 +1465,7 @@ msgstr "Zapisz"
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"
-msgstr ""
+msgstr "Przechwyć klawisz"
 
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"
