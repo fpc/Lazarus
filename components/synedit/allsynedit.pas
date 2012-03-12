@@ -25,7 +25,7 @@ uses
   SynMacroRecorder, SynMemo, SynPluginSyncroEdit, SynPluginSyncronizedEditBase, 
   SynPluginTemplateEdit, SynPropertyEditObjectList, SynRegExpr, SynTextDrawer, 
   SynEditMarkupGutterMark, SynHighlighterBat, SynHighlighterIni, SynEditMarkupSpecialChar, 
-  LazSynEditText, LazSynTextArea, LazSynEditMouseCmdsTypes, SynHighlighterPo, LazSynIMM, 
+  LazSynEditText, LazSynTextArea, LazSynEditMouseCmdsTypes, SynHighlighterPo, 
   LazarusPackageIntf;
 
 implementation
