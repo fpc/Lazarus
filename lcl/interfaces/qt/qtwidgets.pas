@@ -7239,7 +7239,8 @@ var
   b: Boolean;
 begin
   {$ifdef VerboseQt}
-  writeln('TQtAbstractSlider.SlotValueChanged() to value ',p1,' inUpdate ',inUpdate,' maxIs ',getMax);
+  writeln('TQtAbstractSlider.SlotValueChanged() to value ',p1,' inUpdate ',inUpdate,' maxIs ',getMax,
+  ' FChildOfComplexWidget ',FChildOfComplexWidget);
   {$endif}
 
   FillChar(LMScroll, SizeOf(LMScroll), #0);
@@ -7253,6 +7254,15 @@ begin
 
   LMScroll.Pos := p1;
   LMScroll.ScrollCode := SIF_POS;
+
+  if (FChildOfComplexWidget = ccwAbstractScrollArea) and Assigned(FOwner) and
+    (FOwner.ChildOfComplexWidget = ccwScrollingWinControl) then
+  begin
+    if LMScroll.Msg = LM_VSCROLL then
+      TQtCustomControl(FOwner).viewport.FScrollY := -p1
+    else
+      TQtCustomControl(FOwner).viewport.FScrollX := -p1;
+  end;
 
   if not InUpdate then
     DeliverMessage(LMScroll);
