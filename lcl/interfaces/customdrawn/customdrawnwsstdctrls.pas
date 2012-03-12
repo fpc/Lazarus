@@ -249,6 +249,8 @@ type
 //    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
 //    class procedure SetShortcut(const AButton: TCustomButton; const ShortCutK1, ShortCutK2: TShortcut); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TCDWSCustomCheckBox }
@@ -1587,6 +1589,26 @@ begin
 
   if lCDWinControl.CDControl = nil then
     CreateCDControl(AWinControl, lCDWinControl.CDControl);
+end;
+
+class function TCDWSButton.GetText(const AWinControl: TWinControl;
+  var AText: String): Boolean;
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  AText := TCDIntfButton(lCDWinControl.CDControl).Caption;
+end;
+
+class procedure TCDWSButton.SetText(const AWinControl: TWinControl;
+  const AText: String);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  TCDIntfButton(lCDWinControl.CDControl).Caption := AText;
 end;
 
 (*class procedure TCDWSButton.SetDefault(const AButton: TCustomButton;
