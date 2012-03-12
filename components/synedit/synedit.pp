@@ -1981,8 +1981,8 @@ begin
   FImeHandler := LazSynImeSimple.Create(Self);
   LazSynImeSimple(FImeHandler).TextDrawer := FTextDrawer;
   {$ENDIF}
-  {$ENDIF}
   FImeHandler.InvalidateLinesMethod := @InvalidateLines;
+  {$ENDIF}
 
   fFontDummy.Name := SynDefaultFontName;
   fFontDummy.Height := SynDefaultFontHeight;
