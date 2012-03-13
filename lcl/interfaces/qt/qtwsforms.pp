@@ -383,8 +383,15 @@ var
       (AForm.PopupParent = nil) and (AForm.PopupMode = pmNone) then
     begin
       AWidget := TQtWidget(AForm.Handle).Widget;
-      {$IFDEF HASX11}
+      {$IFDEF DARWIN}
+      {$ELSE}
       QWidget_setParent(AWidget, QApplication_desktop());
+      {$IFDEF MSWINDOWS}
+      QWidget_setWindowFlags(Widget.Widget, QtDialog or
+        QtWindowSystemMenuHint or
+        GetQtBorderIcons(TCustomForm(AWinControl).BorderStyle,
+          TCustomForm(AWinControl).BorderIcons));
+      {$ENDIF}
       QWidget_setWindowModality(AWidget, QtWindowModal);
       {$ENDIF}
       Result := True;
