@@ -5140,17 +5140,10 @@ var
   OldBuffer: TSynEditStringList;
   LView: TSynEditStrings;
   i: Integer;
-  TempPlugins: TList;
 begin
   FLines.SendNotification(senrTextBufferChanging, FLines); // Send the old buffer
   DestroyMarkList;
 
-  // Remember all Plugins; Detach from Lines
-  TempPlugins := TList.Create;
-  for i := FPlugins.Count - 1 downto 0 do begin
-    TempPlugins.Add(FPlugins[i]);
-    TLazSynEditPlugin(FPlugins[i]).Editor := nil;
-  end;
   // Detach Highlighter
   if FHighlighter <> nil then
     FHighlighter.DetachFromLines(FLines);
@@ -5178,6 +5171,8 @@ begin
   NewBuffer.CopyHanlders(OldBuffer, fMarkupManager);
   for i := 0 to fMarkupManager.Count - 1 do
     NewBuffer.CopyHanlders(OldBuffer, fMarkupManager.Markup[i]);
+  for i := 0 to FPlugins.Count - 1 do
+    NewBuffer.CopyHanlders(OldBuffer, Plugin[i]);
 
   FUndoList := NewBuffer.UndoList;
   FRedoList := NewBuffer.RedoList;
@@ -5193,11 +5188,6 @@ begin
   // Attach Highlighter
   if FHighlighter <> nil then
     FHighlighter.AttachToLines(FLines);
-
-  // Restore Plugins; Attach to Lines
-  for i := 0 to TempPlugins.Count - 1 do
-    TLazSynEditPlugin(TempPlugins[i]).Editor := Self;
-  TempPlugins.Free;
 
   RemoveHandlers(OldBuffer);
   OldBuffer.DetachSynEdit(Self);
