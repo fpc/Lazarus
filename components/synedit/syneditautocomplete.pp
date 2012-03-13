@@ -45,7 +45,7 @@ interface
 
 uses
   LCLIntf, LCLType, LCLProc,
-  Classes, SynEdit, SynEditKeyCmds,
+  Classes, SynEdit, SynEditKeyCmds, SynEditPlugins,
   Controls;
 
 const
@@ -65,7 +65,7 @@ type
 
   { TCustomSynAutoComplete }
 
-  TCustomSynAutoComplete = class(TComponent)
+  TCustomSynAutoComplete = class(TLazSynMultiEditPlugin)
   private
     fOnTokenNotFound: TOnTokenNotFound;
     fIndentToTokenStart: boolean;
@@ -87,15 +87,14 @@ type
     function GetCompletions: TStrings;
     function GetCompletionComments: TStrings;
     function GetCompletionValues: TStrings;
-    function GetEditorCount: integer;
-    function GetNthEditor(Index: integer): TCustomSynEdit;
     procedure ParseCompletionList; virtual;
     procedure SetAutoCompleteList(Value: TStrings); virtual;
-    procedure SetEditor(Value: TCustomSynEdit);
     procedure SynEditCommandHandler(Sender: TObject; AfterProcessing: boolean;
       var Handled: boolean; var Command: TSynEditorCommand;
       var AChar: TUTF8Char;
       Data: pointer; HandlerData: pointer);
+    procedure DoEditorAdded(AValue: TCustomSynEdit); override;
+    procedure DoEditorRemoving(AValue: TCustomSynEdit); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -103,14 +102,9 @@ type
     procedure AddCompletion(AToken, AValue, AComment: string;
                             TheAttributes: TStrings = nil);
     procedure DeleteCompletion(Index: integer);
-    function AddEditor(AEditor: TCustomSynEdit): boolean;
     procedure Execute(AEditor: TCustomSynEdit); virtual;
     procedure ExecuteCompletion(AToken: string; AEditor: TCustomSynEdit);
       virtual;
-    procedure Loaded; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
-    function RemoveEditor(AEditor: TCustomSynEdit): boolean;
   public
     property AutoCompleteList: TStrings read fAutoCompleteList
       write SetAutoCompleteList;
@@ -118,9 +112,6 @@ type
     property Completions: TStrings read GetCompletions;
     property CompletionComments: TStrings read GetCompletionComments;
     property CompletionValues: TStrings read GetCompletionValues;
-    property Editor: TCustomSynEdit read fEditor write SetEditor;
-    property EditorCount: integer read GetEditorCount;
-    property Editors[Index: integer]: TCustomSynEdit read GetNthEditor;
     property EndOfTokenChr: string read fEOTokenChars write fEOTokenChars;
     property CompletionAttributes[Index: integer]: TStrings
                                                    read GetCompletionAttributes;
@@ -163,23 +154,6 @@ begin
       TheAttributes:=TStringList.Create;
     fAttributes.Add(TheAttributes);
   end;
-end;
-
-function TCustomSynAutoComplete.AddEditor(AEditor: TCustomSynEdit): boolean;
-var
-  i: integer;
-begin
-  if AEditor <> nil then begin
-    i := fEditors.IndexOf(AEditor);
-    if i = -1 then begin
-      AEditor.FreeNotification(Self);
-      fEditors.Add(AEditor);
-      if ComponentState * [csDesigning, csLoading] = [] then
-        AEditor.RegisterCommandHandler({$IFDEF FPC}@{$ENDIF}SynEditCommandHandler, nil);
-    end;
-    Result := TRUE;
-  end else
-    Result := FALSE;
 end;
 
 procedure TCustomSynAutoComplete.CompletionListChanged(Sender: TObject);
@@ -428,46 +402,6 @@ begin
   Result := fCompletionValues;
 end;
 
-function TCustomSynAutoComplete.GetEditorCount: integer;
-begin
-  Result := fEditors.Count;
-end;
-
-function TCustomSynAutoComplete.GetNthEditor(Index: integer): TCustomSynEdit;
-begin
-  if (Index >= 0) and (Index < fEditors.Count) then
-    Result := TCustomSynEdit(fEditors[Index])
-  else
-    Result := nil;
-end;
-
-procedure TCustomSynAutoComplete.Loaded;
-var
-  i: integer;
-  O: TObject;
-begin
-  inherited Loaded;
-  for i := 0 to fEditors.Count - 1 do begin
-    O := TObject(fEditors[i]);
-    (O as TCustomSynEdit).RegisterCommandHandler(
-       {$IFDEF FPC}@{$ENDIF}SynEditCommandHandler, nil);
-  end;
-end;
-
-procedure TCustomSynAutoComplete.Notification(AComponent: TComponent;
-  Operation: TOperation);
-var
-  i: integer;
-begin
-  inherited Notification(AComponent, Operation);
-  if (Operation = opRemove)
-  and (AComponent is TCustomSynEdit) then begin
-    i := fEditors.IndexOf(AComponent);
-    if i > -1 then
-      RemoveEditor(AComponent as TCustomSynEdit);
-  end;
-end;
-
 procedure TCustomSynAutoComplete.ParseCompletionList;
 
   procedure RemoveFirstLine(var Pattern: string);
@@ -605,40 +539,10 @@ begin
   fParsed:=true;
 end;
 
-function TCustomSynAutoComplete.RemoveEditor(AEditor: TCustomSynEdit): boolean;
-var
-  i: integer;
-begin
-  if AEditor <> nil then begin
-    i := fEditors.IndexOf(AEditor);
-    if i > -1 then begin
-      if fEditor = AEditor then
-        fEditor := nil;
-      fEditors.Delete(i);
-      AEditor.RemoveFreeNotification(Self);
-      if ComponentState * [csDesigning, csLoading] = [] then
-        AEditor.UnregisterCommandHandler(
-          {$IFDEF FPC}@{$ENDIF}SynEditCommandHandler);
-    end;
-  end;
-  Result := FALSE;
-end;
-
 procedure TCustomSynAutoComplete.SetAutoCompleteList(Value: TStrings);
 begin
   fAutoCompleteList.Assign(Value);
   fParsed := FALSE;
-end;
-
-procedure TCustomSynAutoComplete.SetEditor(Value: TCustomSynEdit);
-begin
-  if Value <> fEditor then begin
-    if fEditor <> nil then
-      RemoveEditor(fEditor);
-    fEditor := nil;
-    if (Value <> nil) and AddEditor(Value) then
-      fEditor := Value;
-  end;
 end;
 
 procedure TCustomSynAutoComplete.SynEditCommandHandler(Sender: TObject;
@@ -652,6 +556,18 @@ begin
     Handled := TRUE;
     Execute(Sender as TCustomSynEdit);
   end;
+end;
+
+procedure TCustomSynAutoComplete.DoEditorAdded(AValue: TCustomSynEdit);
+begin
+  inherited DoEditorAdded(AValue);
+  AValue.RegisterCommandHandler({$IFDEF FPC}@{$ENDIF}SynEditCommandHandler, nil);
+end;
+
+procedure TCustomSynAutoComplete.DoEditorRemoving(AValue: TCustomSynEdit);
+begin
+  inherited DoEditorRemoving(AValue);
+  AValue.UnregisterCommandHandler({$IFDEF FPC}@{$ENDIF}SynEditCommandHandler);
 end;
 
 end.
