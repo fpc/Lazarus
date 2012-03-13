@@ -2902,7 +2902,6 @@ begin
         end;
 
         // save lpi to disk
-        InvalidateFileStateCache;
         xmlconfig.Flush;
         Modified:=false;
         if SaveSessionInfoInLPI then
