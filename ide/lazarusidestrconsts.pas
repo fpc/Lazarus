@@ -3264,7 +3264,7 @@ resourcestring
   lisPkgFileTypeBinary = 'Binary';
   lisCreateNewPackage = '(Create new package)';
   lisCreateNewPackageComponent = 'Create new package component';
-  lisMenuNewComponent = 'New component';
+  lisMenuNewComponent = 'New Component';
   lisPkgSelectAPackage = 'Select a package';
 
   // view project units dialog
