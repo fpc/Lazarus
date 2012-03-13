@@ -533,11 +533,11 @@ end;
 
 procedure TControl.SetAction(Value: TBasicAction);
 begin
-  if (Value=Action) then exit;
   //debugln('TControl.SetAction A ',Name,':',ClassName,' Old=',DbgS(Action),' New=',DbgS(Value));
-  if Value = nil then begin
+  if Value = nil then
+  begin
     ActionLink.Free;
-    ActionLink:=nil;
+    ActionLink := nil;
     Exclude(FControlStyle, csActionClient);
   end
   else
