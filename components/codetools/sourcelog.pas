@@ -170,8 +170,8 @@ type
     function OldIsEqual(sl: TStrings): boolean;
     procedure Assign(sl: TStrings);
     procedure AssignTo(sl: TStrings; UseAddStrings: Boolean);
-    procedure LoadFromStream(s: TStream);
-    procedure SaveToStream(s: TStream);
+    procedure LoadFromStream(aStream: TStream);
+    procedure SaveToStream(aStream: TStream);
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
     property DiskEncoding: string read FDiskEncoding write FDiskEncoding;
     property MemEncoding: string read FMemEncoding write FMemEncoding;
@@ -1056,24 +1056,30 @@ begin
   end;
 end;
 
-procedure TSourceLog.LoadFromStream(s: TStream);
+procedure TSourceLog.LoadFromStream(aStream: TStream);
+var
+  NewSrcLen: integer;
+  NewSource: String;
 begin
   IncreaseHookLock;
-  Clear;
-  if s=nil then exit;
-  s.Position:=0;
-  fSrcLen:=s.Size-s.Position;
-  if fSrcLen>0 then begin
-    SetLength(fSource,fSrcLen);
-    s.Read(fSource[1],fSrcLen);
+  try
+    if aStream=nil then exit;
+    aStream.Position:=0;
+    NewSrcLen:=aStream.Size-aStream.Position;
+    NewSource:='';
+    if NewSrcLen>0 then begin
+      SetLength(NewSource,NewSrcLen);
+      aStream.Read(NewSource[1],NewSrcLen);
+    end;
+    Source:=NewSource;
+  finally
+    DecreaseHookLock;
   end;
-  fLineCount:=-1;
-  DecreaseHookLock;
 end;
 
-procedure TSourceLog.SaveToStream(s: TStream);
+procedure TSourceLog.SaveToStream(aStream: TStream);
 begin
-  if fSource<>'' then s.Write(fSource[1],fSrcLen);
+  if fSource<>'' then aStream.Write(fSource[1],fSrcLen);
 end;
 
 procedure TSourceLog.SetReadOnly(const Value: boolean);
