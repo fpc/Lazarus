@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Dialogs, FileProcs,
-  FileUtil, Laz_XMLCfg,
+  FileUtil, LazFileUtils, Laz_XMLCfg,
   {$IFNDEF OldXMLCfg}
   Laz2_XMLWrite,
   {$ELSE}
@@ -558,14 +558,16 @@ end;
 
 function ForceDirectoryInteractive(Directory: string;
   ErrorButtons: TMsgDlgButtons): TModalResult;
-var i: integer;
+var
+  i: integer;
   Dir: string;
 begin
   DoDirSeparators(Directory);
   Directory:=AppendPathDelim(Directory);
   if DirPathExists(Directory) then exit(mrOk);
-  i:=1;
-  while i<=length(Directory) do begin
+  // skip UNC path
+  i := Length(ExtractUNCVolume(Directory)) + 1;
+  while i <= Length(Directory) do begin
     if Directory[i]=PathDelim then begin
       Dir:=copy(Directory,1,i-1);
       if not DirPathExists(Dir) then begin
