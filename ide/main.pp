@@ -6070,10 +6070,13 @@ begin
           LRSFilename:=LRSCode.Filename
         else if LRSFilename='' then
           LRSFilename:=MainBuildBoss.FindLRSFilename(AnUnitInfo,true);
-        Result:=ForceDirectoryInteractive(ExtractFilePath(LRSFilename),[mbRetry]);
-        if not Result=mrOk then exit;
-        Result:=SaveCodeBufferToFile(LRSCode,LRSFilename);
-        if not Result=mrOk then exit;
+        if (LRSFilename<>'') and FilenameIsAbsolute(LRSFilename) then
+        begin
+          Result:=ForceDirectoryInteractive(ExtractFilePath(LRSFilename),[mbRetry]);
+          if not Result=mrOk then exit;
+          Result:=SaveCodeBufferToFile(LRSCode,LRSFilename);
+          if not Result=mrOk then exit;
+        end;
       end;
     end else begin
       TestFilename:=MainBuildBoss.GetTestUnitFilename(AnUnitInfo);

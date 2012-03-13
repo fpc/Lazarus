@@ -214,7 +214,7 @@ type
     function CreateFile(const AFilename: string): TCodeBuffer;
     function CreateTempFile(const AFilename: string): TCodeBuffer;
     procedure ReleaseTempFile(Buffer: TCodeBuffer);
-    function SaveBufferAs(OldBuffer: TCodeBuffer;const ExpandedFilename: string;
+    function SaveBufferAs(OldBuffer: TCodeBuffer; const ExpandedFilename: string;
                           out NewBuffer: TCodeBuffer): boolean;
     function FilenameHasSourceExt(const AFilename: string): boolean;
     function GetMainCode(Code: TCodeBuffer): TCodeBuffer;
