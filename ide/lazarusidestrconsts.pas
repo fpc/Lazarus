@@ -5456,6 +5456,7 @@ resourcestring
   lisFileFiltersInsertRow = 'Insert Row';
   lisFileFiltersSetDefaults = 'Set defaults';
   lisMenuPkgNewPackageComponent = 'New package component';
+  lisSaveChangedFiles = 'Save changed files?';
 
 implementation
 

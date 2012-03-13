@@ -8471,19 +8471,30 @@ begin
     if Result=mrNoToAll then exit(mrOk);
     if Result<>mrYes then exit(mrCancel);
   end
-  else if Project1.SessionStorage=pssNone then
-    // only session data changed and session is not saved => skip
-    exit(mrOk)
-  else if not SomethingOfProjectIsModified then
-    exit(mrOk)
+  else if SourceEditorManager.SomethingModified(false) then
+  begin
+    // some non project files were changes in the source editor
+    Result:=IDEQuestionDialog(lisSaveChangedFiles,lisSaveChangedFiles,
+      mtConfirmation, [mrYes, mrNoToAll, lisNo, mbCancel], '');
+    if Result=mrNoToAll then exit(mrOk);
+    if Result<>mrYes then exit(mrCancel);
+  end
   else begin
-    // only session data changed and session is saved separately
-    if EnvironmentOptions.AskSaveSessionOnly then begin
-      Result:=IDEQuestionDialog(lisProjectSessionChanged,
-        Format(lisSaveSessionChangesToProject, [Project1.GetTitleOrName]),
-        mtConfirmation, [mrYes, mrNoToAll, lisNo, mbCancel], '');
-      if Result=mrNoToAll then exit(mrOk);
-      if Result<>mrYes then exit(mrCancel);
+    // only session data changed
+    if Project1.SessionStorage=pssNone then
+      // session is not saved => skip
+      exit(mrOk)
+    else if not SomethingOfProjectIsModified then
+      exit(mrOk)
+    else begin
+      // session is saved separately
+      if EnvironmentOptions.AskSaveSessionOnly then begin
+        Result:=IDEQuestionDialog(lisProjectSessionChanged,
+          Format(lisSaveSessionChangesToProject, [Project1.GetTitleOrName]),
+          mtConfirmation, [mrYes, mrNoToAll, lisNo, mbCancel], '');
+        if Result=mrNoToAll then exit(mrOk);
+        if Result<>mrYes then exit(mrCancel);
+      end;
     end;
   end;
   Result:=DoSaveProject([sfCanAbort]);
