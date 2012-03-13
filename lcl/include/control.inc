@@ -3559,11 +3559,13 @@ end;
 
 procedure TControl.ReadState(Reader: TReader);
 begin
-  Include(FControlFlags,cfLoading);
+  Include(FControlFlags, cfLoading);
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.ReadState'){$ENDIF};
   try
+    Include(FControlState, csReadingState);
     inherited ReadState(Reader);
   finally
+    Exclude(FControlState, csReadingState);
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.ReadState'){$ENDIF};
   end;
 end;
