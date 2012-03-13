@@ -250,7 +250,14 @@ type
     procedure EditLinesDelete(LogY, ACount: Integer); virtual; abstract;
     procedure EditUndo(Item: TSynEditUndoItem); virtual; abstract;
     procedure EditRedo(Item: TSynEditUndoItem); virtual; abstract;
-    property IsInEditAction: Boolean read GetIsInEditAction;
+    (* IsInEditAction
+       While in EditAction a "senrEditAction" event is triggerred, that contains
+       more detailed line-count change info.
+       Yet senrLineCount is also sent.
+       IsInEditAction allows to skip senrLineCount, that are sent as senrEditAction
+       Currently used by FoldView
+    *)
+    property IsInEditAction: Boolean read GetIsInEditAction; // Todo: have individual event types instead
     property UndoList: TSynEditUndoList read GetUndoList;
     property RedoList: TSynEditUndoList read GetRedoList;
     property CurUndoList: TSynEditUndoList read GetCurUndoList; // Re or Undo (Redo while undoing)

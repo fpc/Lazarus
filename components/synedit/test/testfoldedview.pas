@@ -47,6 +47,7 @@ type
     function TestTextHide3: TStringArray;
     function TestTextHide4: TStringArray;
     function TestTextPlain: TStringArray;
+    function TestTextBug21473: TStringArray;
   protected
     procedure TstSetText(AName: String; AText: Array of String);
     procedure TstFold(AName: String; AFoldAtIndex: integer; AExpectedLines: Array of Integer);
@@ -545,6 +546,46 @@ begin
 
 end;
 
+function TTestFoldedView.TestTextBug21473: TStringArray;
+begin
+  SetLength(Result, 35);
+  Result[ 0] := 'program a;';
+  Result[ 1] := '';
+  Result[ 2] := '// 1';
+  Result[ 3] := '// 2';
+  Result[ 4] := 'procedure Bar;';
+  Result[ 5] := '';
+  Result[ 6] := '  procedure BarA;';
+  Result[ 7] := '  begin';
+  Result[ 8] := '  end;';
+  Result[ 9] := '';
+  Result[10] := '  procedure BarB;';
+  Result[11] := '  begin';
+  Result[12] := '  end;';
+  Result[13] := '';
+  Result[14] := 'begin';
+  Result[15] := 'end;';
+  Result[16] := '';
+  Result[17] := '// 1';
+  Result[18] := '// 2';
+  Result[19] := 'procedure Foo;';
+  Result[20] := '';
+  Result[21] := '  procedure FooA;';
+  Result[22] := '  begin';
+  Result[23] := '  end;';
+  Result[24] := '';
+  Result[25] := '  procedure FooB;';
+  Result[26] := '  begin';
+  Result[27] := '  end;';
+  Result[28] := '';
+  Result[29] := 'begin';
+  Result[30] := 'end;';
+  Result[31] := '';
+  Result[32] := 'end.';
+  Result[33] := '';
+  Result[34] := '';
+end;
+
 
 procedure TTestFoldedView.TestFold;
   procedure RunTest;
@@ -919,6 +960,7 @@ procedure TTestFoldedView.TestFoldEdit;
 var
   n: string;
   i: integer;
+  s: String;
 begin
 
   {%region simple}
@@ -1394,7 +1436,41 @@ begin
     TstFold('f2', 3, -1, 1, False, 1, [0, 1, 2, 3, 9, 10, 11]);
     TestNodeAtPos('n3', 15, 4);
 
+    PopBaseName;
   {%endregion}
+
+  {%region}
+    // 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33
+    TstSetText('TestTextBug21473', TestTextBug21473);
+    TstFold('FooB', 25, -1, 1, False, 1, [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,  28,29,30,31,32,33]);
+    TstFold('FooA', 21, -1, 1, False, 1, [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,  24,25,  28,29,30,31,32,33]);
+    TstFold('Foo ', 19, -1, 1, False, 1, [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,  31,32,33]);
+
+    TestNodeAtPos('n1', 1, 20);
+
+    s := SynEdit.TextBetweenPoints[point(1,7), point(1,10)];
+    SynEdit.TextBetweenPoints[point(1,6), point(1,9)] := '';
+
+    TestFoldedText('Cut', [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,   28,29,30]);
+    TestNodeAtPos('n1 Cut', 1, 17);
+
+    SynEdit.TextBetweenPoints[point(1,7), point(1,7)] := s;
+
+    TestFoldedText('Restore', [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,  31,32,33]);
+    TestNodeAtPos('n1 Restore', 1, 20);
+
+    SynEdit.Undo;
+    //debugln('*********AFTER UNDO');  FoldedView.debug;
+
+    TestFoldedText('Undone', [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,   28,29,30]);
+    TestNodeAtPos('n1 Undone', 1, 17);
+
+    //SetCaretAndSel(1, 4, 1, 8);
+    //SynEdit.CutToClipboard;
+    PopBaseName;
+  {%endregion}
+
+
 
 end;
 
@@ -2042,7 +2118,6 @@ begin
   CheckNode(TheList.HLNode[1],  1, 0,  0, 9,  1, 2,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
   CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
   PopBaseName;
-
 
 end;
 

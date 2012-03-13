@@ -842,6 +842,25 @@ begin
     dec(j);
     inc(PWidths);
   end;
+
+  //j := 0;
+  //for i := 0 to LineLen-1 do begin
+  //  if j = 0 then begin
+  //    j := UTF8CharacterLength(Line);
+  //    if (j=2) and
+  //       ( ( (Line^ = #$CC) and ((Line+1)^ in [#$80..#$FF]) ) or
+  //         ( (Line^ = #$CD) and ((Line+1)^ in [#$00..#$AF]) ) )
+  //    then
+  //      PWidths^ := 0 // Combining Diacritical Marks
+  //    else
+  //      PWidths^ := 1;
+  //    inc(Line, j);
+  //  end else begin
+  //    PWidths^ := 0;
+  //  end;
+  //  dec(j);
+  //  inc(PWidths);
+  //end;
 end;
 
 function TSynEditStringList.GetDisplayView: TLazSynDisplayView;
@@ -1191,7 +1210,9 @@ end;
 
 procedure TSynEditStringList.EditUndo(Item: TSynEditUndoItem);
 begin
+  IncIsInEditAction; // all undo calls edit actions
   EditRedo(Item);
+  DecIsInEditAction;
 end;
 
 procedure TSynEditStringList.UndoEditLinesDelete(LogY, ACount: Integer);
@@ -1211,7 +1232,9 @@ end;
 
 procedure TSynEditStringList.EditRedo(Item: TSynEditUndoItem);
 begin
+  IncIsInEditAction; // all undo calls edit actions
   Item.PerformUndo(self);
+  DecIsInEditAction;
 end;
 
 procedure TSynEditStringList.SendNotification(AReason: TSynEditNotifyReason;

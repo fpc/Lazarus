@@ -1126,8 +1126,10 @@ end;
 
 procedure TSynEditStringTrimmingList.EditRedo(Item: TSynEditUndoItem);
 begin
+  IncIsInEditAction; // all undo calls edit actions
   if not Item.PerformUndo(self) then
     inherited EditRedo(Item);
+  DecIsInEditAction;
 end;
 
 end.
