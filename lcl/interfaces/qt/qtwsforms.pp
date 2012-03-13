@@ -383,8 +383,7 @@ var
       (AForm.PopupParent = nil) and (AForm.PopupMode = pmNone) then
     begin
       AWidget := TQtWidget(AForm.Handle).Widget;
-      {$IFDEF DARWIN}
-      {$ELSE}
+      {$IFDEF HASX11}
       QWidget_setParent(AWidget, QApplication_desktop());
       QWidget_setWindowModality(AWidget, QtWindowModal);
       {$ENDIF}
