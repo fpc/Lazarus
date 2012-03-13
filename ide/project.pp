@@ -2902,7 +2902,7 @@ begin
         end;
 
         // save lpi to disk
-        debugln(['TProject.WriteProject ',DbgSName(xmlconfig),' CfgFilename=',CfgFilename]);
+        //debugln(['TProject.WriteProject ',DbgSName(xmlconfig),' CfgFilename=',CfgFilename]);
         xmlconfig.Flush;
         Modified:=false;
         if SaveSessionInfoInLPI then
