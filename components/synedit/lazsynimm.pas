@@ -68,8 +68,6 @@ type
     FImeBlockSelection, FImeBlockSelection2: TSynEditSelection;
     FImeMarkupSelection, FImeMarkupSelection2: TSynEditMarkupSelection;
     FInImeMsg: Boolean;
-    FRedoList: TSynEditUndoList;
-    FUndoList: TSynEditUndoList;
     procedure SetImeTempText(const s: string);
     procedure DoOnCommand(Sender: TObject; AfterProcessing: boolean; var Handled: boolean;
       var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
@@ -86,9 +84,6 @@ type
     procedure WMImeStartComposition(var Msg: TMessage); override;
     procedure WMImeEndComposition(var Msg: TMessage); override;
     procedure FocusKilled; override;
-
-    property UndoList: TSynEditUndoList read FUndoList write FUndoList;
-    property RedoList: TSynEditUndoList read FRedoList write FRedoList;
   end;
 
 implementation
@@ -389,11 +384,11 @@ begin
 
   f := FInImeMsg;
   FInImeMsg := True;
-  fUndoList.Lock;
-  fRedoList.Lock;
+  ViewedTextBuffer.UndoList.Lock;
+  ViewedTextBuffer.RedoList.Lock;
   FImeBlockSelection.SelText := s;
-  fUndoList.Unlock;
-  fRedoList.Unlock;
+  ViewedTextBuffer.UndoList.Unlock;
+  ViewedTextBuffer.RedoList.Unlock;
   FInImeMsg := f;
 
   p2 := FImeBlockSelection.FirstLineBytePos;

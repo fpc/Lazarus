@@ -1975,8 +1975,6 @@ begin
   {$IFDEF WinIME}
   {$IFDEF WinIMEFull}
   FImeHandler := LazSynImeFull.Create(Self);
-  LazSynImeFull(FImeHandler).UndoList := fUndoList;
-  LazSynImeFull(FImeHandler).RedoList := fRedoList;
   {$ELSE}
   FImeHandler := LazSynImeSimple.Create(Self);
   LazSynImeSimple(FImeHandler).TextDrawer := FTextDrawer;
