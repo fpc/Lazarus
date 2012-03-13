@@ -1,7 +1,7 @@
 unit cocoaprivate;
 
 {$mode objfpc}{$H+}
-{$modeswitch objectivec1}
+{$include customdrawndefines.inc}
 
 interface
 

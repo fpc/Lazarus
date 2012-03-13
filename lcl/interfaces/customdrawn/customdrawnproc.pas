@@ -55,6 +55,7 @@ type
     procedure IncInvalidateCount;
     function AdjustCoordinatesForScrolling(AX, AY: Integer): TPoint;
     property Props[AnIndex:String]:pointer read GetProps write SetProps;
+    procedure UpdateImageAndCanvas; virtual;
   end;
 
   { TCDWinControl }
@@ -65,7 +66,7 @@ type
     WinControl: TWinControl;
     CDControl: TCDControl;
     CDControlInjected: Boolean;
-    procedure UpdateImageAndCanvas;
+    procedure UpdateImageAndCanvas; override;
   end;
 
   { TCDForm }
@@ -86,6 +87,7 @@ type
     function GetFocusedControl: TWinControl;
     function GetFormVirtualHeight(AScreenHeight: Integer): Integer;
     procedure SanityCheckScrollPos();
+    procedure UpdateImageAndCanvas; override;
   end;
 
   TCDNonNativeForm = class(TCDForm)
@@ -545,26 +547,45 @@ procedure RenderForm(var AImage: TLazIntfImage; var ACanvas: TLazCanvas;
 var
   struct : TPaintStruct;
   lWindowHandle: TCDForm;
+  lFormCanvas: TLazCanvas;
 begin
   lWindowHandle := TCDForm(AForm.Handle);
+  {$ifndef CD_BufferFormImage}
   DrawFormBackground(AImage, ACanvas);
-
-  FillChar(struct, SizeOf(TPaintStruct), 0);
-  struct.hdc := HDC(ACanvas);
+  {$endif}
 
   // Consider the form scrolling
   // ToDo: Figure out why this "div 2" factor is necessary for drawing non-windows controls and remove this factor
   ACanvas.BaseWindowOrg := Point(0, - lWindowHandle.ScrollY div 2);
   ACanvas.WindowOrg := Point(0, 0);
 
-  // Send the paint message to the LCL
-  {$IFDEF VerboseCDForms}
-    DebugLn(Format('[RenderForm] OnPaint event started context: %x', [struct.hdc]));
-  {$ENDIF}
-  LCLSendPaintMsg(AForm, struct.hdc, @struct);
-  {$IFDEF VerboseCDForms}
-    DebugLn('[RenderForm] OnPaint event ended');
-  {$ENDIF}
+  lFormCanvas := ACanvas;
+  {$ifdef CD_BufferFormImage}
+  if lWindowHandle.InvalidateCount > 0 then
+  begin
+    lWindowHandle.UpdateImageAndCanvas();
+    lFormCanvas := lWindowHandle.ControlCanvas;
+    lWindowHandle.InvalidateCount := 0;
+    DrawFormBackground(lWindowHandle.ControlImage, lWindowHandle.ControlCanvas);
+  {$endif}
+
+    // Send the paint message to the LCL
+    {$IFDEF VerboseCDForms}
+      DebugLn(Format('[RenderForm] OnPaint event started context: %x', [struct.hdc]));
+    {$ENDIF}
+    FillChar(struct, SizeOf(TPaintStruct), 0);
+    struct.hdc := HDC(lFormCanvas);
+    LCLSendPaintMsg(AForm, struct.hdc, @struct);
+    {$IFDEF VerboseCDForms}
+      DebugLn('[RenderForm] OnPaint event ended');
+    {$ENDIF}
+  {$ifdef CD_BufferFormImage}
+  end;
+
+  // Here we actually blit the control to the form canvas
+  ACanvas.CanvasCopyRect(lWindowHandle.ControlCanvas, 0, 0, 0, 0,
+    AForm.ClientWidth, AForm.ClientHeight);
+  {$endif}
 
   // Now paint all child win controls
   RenderChildWinControls(AImage, ACanvas, GetCDWinControlList(AForm), lWindowHandle);
@@ -887,6 +908,8 @@ begin
     AFontPaths.Add(APath);
 end;
 
+{$endif}
+
 { TCDWinControl }
 
 procedure TCDWinControl.UpdateImageAndCanvas;
@@ -894,8 +917,6 @@ begin
   UpdateControlLazImageAndCanvas(ControlImage, ControlCanvas,
     WinControl.Width, WinControl.Height, clfARGB32);
 end;
-
-{$endif}
 
 { TCDBitmap }
 
@@ -962,6 +983,11 @@ begin
   Result := Point(AX + ScrollX, AY + ScrollY);
 end;
 
+procedure TCDBaseControl.UpdateImageAndCanvas;
+begin
+
+end;
+
 { TCDForm }
 
 constructor TCDForm.Create;
@@ -995,6 +1021,12 @@ procedure TCDForm.SanityCheckScrollPos;
 begin
   ScrollY := Max(ScrollY, 0);
   ScrollY := Min(ScrollY, GetFormVirtualHeight(Image.Height) - Image.Height);
+end;
+
+procedure TCDForm.UpdateImageAndCanvas;
+begin
+  UpdateControlLazImageAndCanvas(ControlImage, ControlCanvas,
+    LCLForm.ClientWIdth, LCLForm.ClientHeight, clfARGB32);
 end;
 
 end.

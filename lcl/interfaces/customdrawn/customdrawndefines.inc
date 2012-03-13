@@ -40,8 +40,16 @@
   //{$define CD_UseNativeText}
 {$endif}
 
+// ==================
 // Other options
+// ==================
 
 // This option makes the drawing faster by buffering previous drawing operations
-{$define CD_BufferControlImages}
+{$define CD_BufferControlImages} // for all wincontrols except the form
+//{$define CD_BufferFormImage} // for the form itself (excluding child wincontrols)
+
+// ==================
+// Debug options
+// ==================
+//{$define VerboseCDPaintProfiler}
 
