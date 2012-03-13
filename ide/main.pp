@@ -6080,9 +6080,8 @@ begin
       end;
     end else begin
       TestFilename:=MainBuildBoss.GetTestUnitFilename(AnUnitInfo);
-      Result:=SaveCodeBufferToFile(LRSCode,
-                 ChangeFileExt(TestFilename,
-                               ExtractFileExt(LRSCode.Filename)));
+      LRSFilename:=ChangeFileExt(TestFilename,ExtractFileExt(LRSCode.Filename));
+      Result:=SaveCodeBufferToFile(LRSCode,LRSFilename);
       if not Result=mrOk then exit;
     end;
   end;
@@ -6232,6 +6231,8 @@ begin
           exit;
         end;
         LFMCode:=CodeToolBoss.LoadFile(NewLFMFilename,true,false);
+        if LFMCode<>nil then
+          NewLFMFilename:=LFMCode.Filename;
       end;
     end;
 
