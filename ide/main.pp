@@ -9549,6 +9549,8 @@ begin
     NewUnitInfo := NewEditorInfo.UnitInfo;
     UnitIndex:=Project1.IndexOf(NewUnitInfo);
     AFilename:=NewUnitInfo.Filename;
+    if CompareFilenames(AFileName,DiskFilename)=0 then
+      AFileName:=DiskFilename;
     if NewUnitInfo.IsVirtual then begin
       if (not (ofQuiet in Flags)) then begin
         MessageDlg(lisRevertFailed, Format(lisFileIsVirtual, ['"', AFilename,
