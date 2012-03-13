@@ -448,8 +448,8 @@ begin
         Laz2_XMLWrite.WriteXMLFile(ADoc, ms, WriteFlags);
         ms.Position:=0;
         Buf.LoadFromStream(ms);
-        if not Buf.FileOnDiskNeedsUpdate then exit;
-        //debugln(['TCodeBufXMLConfig.WriteXMLFile ',AFileName]);
+        if Buf.FileOnDiskIsEqual then exit;
+        //debugln(['TCodeBufXMLConfig.WriteXMLFile writing ',AFileName,' ...']);
         if Buf.Save then exit; // success
       finally
         ms.Free;

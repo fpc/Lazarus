@@ -86,7 +86,7 @@ type
     function SaveToFile(const AFilename: string): boolean; override;
     function Save: boolean;
     function FileDateOnDisk: longint;
-    function FileNeedsUpdate: boolean;
+    function FileNeedsUpdate: boolean; // needs loading
     function FileOnDiskNeedsUpdate: boolean;
     function FileOnDiskHasChanged: boolean;
     function FileOnDiskIsEqual: boolean;
@@ -108,6 +108,7 @@ type
                                         write FLastIncludedByFile;
     property LoadDate: longint read FLoadDate;
     property LoadDateValid: boolean read FLoadDateValid;
+    property FileChangeStep: integer read FFileChangeStep; // last loaded/saved changestep, only valid if LoadDateValid=true
     property OnSetFilename: TNotifyEvent read FOnSetFilename write FOnSetFilename;
     property OnSetScanner: TNotifyEvent read FOnSetScanner write FOnSetScanner;
     property Scanner: TLinkScanner read FScanner write SetScanner;
@@ -1451,16 +1452,17 @@ begin
 end;
 
 function TCodeBuffer.FileOnDiskNeedsUpdate: boolean;
-// file on disk needs update (to be saved), if memory is modified or file does not exist
+// file on disk needs update (= file needs to be saved), if memory is modified or file does not exist
 begin
-  if LoadDateValid then
-    Result:=Modified or (FFileChangeStep<>ChangeStep)
-            or (not FileExistsCached(Filename))
-  else
-    Result:=false;
+  if IsVirtual or IsDeleted then exit(false);
+  Result:=Modified
+          or (not LoadDateValid) // file was created in memory, but not yet saved to disk
+          or (FFileChangeStep<>ChangeStep) // file was modified since last load/save
+          or (not FileExistsCached(Filename));
 end;
 
 function TCodeBuffer.FileOnDiskHasChanged: boolean;
+// file on disk has changed since last load/save
 begin
   if LoadDateValid and FileExistsCached(Filename) then
     Result:=(FileDateOnDisk<>LoadDate)
@@ -1470,7 +1472,17 @@ end;
 
 function TCodeBuffer.FileOnDiskIsEqual: boolean;
 begin
-  Result:=(not FileOnDiskNeedsUpdate) and (not FileOnDiskHasChanged);
+  if IsVirtual then
+    exit(true);
+  if IsDeleted then
+    exit(not FileExistsCached(Filename));
+  if (not LoadDateValid)
+  or Modified or (FFileChangeStep<>ChangeStep)
+  or (not FileExistsCached(Filename))
+  or (FileDateOnDisk<>LoadDate)
+  then
+    exit(false);
+  Result:=true;
 end;
 
 function TCodeBuffer.AutoRevertFromDisk: boolean;
