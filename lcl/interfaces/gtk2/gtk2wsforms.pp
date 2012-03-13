@@ -600,6 +600,7 @@ var
     Result := False;
     AForm := TCustomForm(AWinControl);
     if AWinControl.HandleObjectShouldBeVisible and
+      not (csDesigning in AForm.ComponentState) and
       not (fsModal in AForm.FormState) and
       (AForm.FormStyle <> fsMDIChild) and
       (ModalWindows <> nil) and (ModalWindows.Count > 0) and
