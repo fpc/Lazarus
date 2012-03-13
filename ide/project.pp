@@ -3861,12 +3861,12 @@ end;
 
 procedure TProject.SetModified(const AValue: boolean);
 begin
-  {$IFDEF VerboseTProjectSetModified}
-  if (not Modified) and AValue then begin
-    debugln(['TProject.SetModified ']);
+  { $IFDEF VerboseTProjectSetModified}
+  if Modified<>AValue then begin
+    debugln(['TProject.SetModified ================= ',AValue]);
     DumpStack;
   end;
-  {$ENDIF}
+  { $ENDIF}
 
   if fDestroying then exit;
   inherited SetModified(AValue);

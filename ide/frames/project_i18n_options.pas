@@ -84,16 +84,11 @@ begin
 end;
 
 procedure TProjectI18NOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
-var
-  AFilename: String;
 begin
   FProject := AOptions as TProject;
   with FProject do
   begin
-    AFilename := POOutputDirectory;
-    if not IsVirtual then
-      AFilename:=CreateRelativePath(AFilename,FProject.ProjectDirectory);
-    POOutDirEdit.Text := AFilename;
+    POOutDirEdit.Text := POOutputDirectory;
     EnableI18NCheckBox.Checked := Enablei18n;
     PoForFormsCheckBox.Checked:=EnableI18NForLFM;
     Enablei18nInfo(Enablei18n);
@@ -101,17 +96,10 @@ begin
 end;
 
 procedure TProjectI18NOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
-var
-  AFilename: String;
 begin
   with AOptions as TProject do
   begin
-    AFilename := ChompPathDelim(TrimFilename(POOutDirEdit.Text));
-    if EnableI18NCheckBox.Checked
-    and (AFilename<>'')
-    and (not FilenameIsAbsolute(AFilename)) and (not IsVirtual) then
-      AFilename:=AppendPathDelim(ProjectDirectory)+AFilename;
-    POOutputDirectory := AFilename;
+    POOutputDirectory := POOutDirEdit.Text;
     EnableI18N := EnableI18NCheckBox.Checked;
     EnableI18NForLFM := PoForFormsCheckBox.Checked;
   end;
