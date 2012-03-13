@@ -7,7 +7,6 @@
         <MainUnitHasUsesSectionForAllUnits Value="False"/>
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
-        <AlwaysBuild Value="False"/>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
@@ -21,7 +20,7 @@
       <UseVersionInfo Value="True"/>
       <MinorVersionNr Value="9"/>
       <RevisionNr Value="30"/>
-      <BuildNr Value="3"/>
+      <BuildNr Value="5"/>
       <CharSet Value="04B0"/>
       <StringTable ProductName="Lazarus IDE" ProductVersion=""/>
     </VersionInfo>
@@ -573,7 +572,7 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="9"/>
+    <Version Value="11"/>
     <Target>
       <Filename Value="../lazarus"/>
     </Target>

@@ -1,3 +1,9 @@
+lazarus (0.9.30.5-0) unstable; urgency=low
+
+  * Snapshot building.
+
+ -- Vincent Snijders <vincents@freepascal.org>  Tue, 13 Mar 2012 22:50:48 +0100  
+
 lazarus (0.9.30.3-0) unstable; urgency=low
 
   * Snapshot building.
