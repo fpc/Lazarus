@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LCLProc, Forms, LResources, Buttons,
-  StdCtrls, Dialogs, GL, OpenGLContext;
+  StdCtrls, Dialogs, Graphics, IntfGraphics, GL, FPimage, OpenGLContext;
 
 const
   GL_CLAMP_TO_EDGE = $812F;
@@ -70,6 +70,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure LoadTextures;
   private
     AreaInitialized: boolean;
     FrameCount: integer;
@@ -110,6 +111,12 @@ var AnExampleForm: TExampleForm;
 var direction: boolean;
     timer: single;
     LastMsecs: integer;
+
+function LoadFileToMemStream(const Filename: string): TMemoryStream;
+function LoadglTexImage2DFromBitmapFile(Filename:string;
+  var Image: TglTexture): boolean;
+function LoadglTexImage2DFromPNG(PNGFilename:string;
+  Image: TglTexture): boolean;
 
 implementation
 
@@ -251,11 +258,49 @@ begin
   Result:=true;
 end;
 
+function LoadglTexImage2DFromPNG(PNGFilename: string; Image: TglTexture
+  ): boolean;
+var
+  png: TPortableNetworkGraphic;
+  IntfImg: TLazIntfImage;
+  y: Integer;
+  x: Integer;
+  c: TFPColor;
+  p: PByte;
+begin
+  Result:=false;
+  png:=TPortableNetworkGraphic.Create;
+  IntfImg:=nil;
+  try
+    png.LoadFromFile(PNGFilename);
+    IntfImg:=png.CreateIntfImage;
+    Image.Width:=IntfImg.Width;
+    Image.Height:=IntfImg.Height;
+    GetMem(Image.Data,Image.Width*Image.Height * 3);
+    p:=PByte(Image.Data);
+    for y:=0 to IntfImg.Height-1 do begin
+      for x:=0 to IntfImg.Width-1 do begin
+        c:=IntfImg.Colors[x,y];
+        p^:=c.red shr 8;
+        inc(p);
+        p^:=c.green shr 8;
+        inc(p);
+        p^:=c.blue shr 8;
+        inc(p);
+      end;
+    end;
+  finally
+    png.Free;
+    IntfImg.Free;
+  end;
+  Result:=true;
+end;
 
+{ TExampleForm }
 
 constructor TExampleForm.Create(TheOwner: TComponent);
 begin
-  inherited Create(TheOwner);
+  inherited CreateNew(TheOwner);
   if LazarusResources.Find(ClassName)=nil then begin
     SetBounds((Screen.Width-800) div 2,(Screen.Height-600) div 2,800,600);
     Caption:='LCL example for the TOpenGLControl';
@@ -354,6 +399,9 @@ begin
     end;
 
   end;
+
+  LoadTextures;
+
   // now resize
   FormResize(Self);
 end;
@@ -368,6 +416,33 @@ begin
   FreeAndNil(ParticleEngine);
 
   inherited Destroy;
+end;
+
+procedure TExampleForm.LoadTextures;
+
+  procedure LoadglTexture(Filename:string; Image:TglTexture);
+  begin
+    Filename:=ExpandFileNameUTF8(Filename);
+    if not LoadglTexImage2DFromPNG(Filename,Image) then begin
+      MessageDlg('File not found',
+        'Image file not found: '+Filename,
+        mtError,[mbOk],0);
+      raise Exception.Create('Image file not found: '+Filename);
+    end;
+  end;
+
+var
+  i: Integer;
+begin
+  for i:=0 to 2 do begin
+    Textures[i]:=0;
+    MyglTextures[i]:=TglTexture.Create;
+  end;
+  {loading the texture and setting its parameters}
+
+  LoadglTexture('data/particle.png',MyglTextures[0]);
+  LoadglTexture('data/texture2.png',MyglTextures[1]);
+  LoadglTexture('data/texture3.png',MyglTextures[2]);
 end;
 
 // --------------------------------------------------------------------------
@@ -569,18 +644,8 @@ procedure TExampleForm.OpenGLControl1Paint(Sender: TObject);
 const GLInitialized: boolean = false;
 
 procedure InitGL;
-
-  procedure LoadglTexture(const Filename:string; var Image:TglTexture);
-  begin
-    if not LoadglTexImage2DFromBitmapFile(Filename,Image) then begin
-      MessageDlg('File not found',
-        'Image file not found: '+ExpandFileNameUTF8(Filename),
-        mtError,[mbOk],0);
-      raise Exception.Create('Image file not found: '+ExpandFileNameUTF8(Filename));
-    end;
-  end;
-
-var i: integer;
+var
+  i: Integer;
 begin
   if GLInitialized then exit;
   GLInitialized:=true;
@@ -598,17 +663,7 @@ begin
   glEnable(GL_LIGHT2);
   glEnable(GL_LIGHT3);
   glEnable(GL_LIGHT4);
-  {}
-  for i:=0 to 2 do begin
-    Textures[i]:=0;
-    MyglTextures[i]:=TglTexture.Create;
-  end;
-  {loading the texture and setting its parameters}
-  
-  LoadglTexture('data/particle.bmp',MyglTextures[0]);
-  LoadglTexture('data/texture2.bmp',MyglTextures[1]);
-  LoadglTexture('data/texture3.bmp',MyglTextures[2]);
-  
+
   glGenTextures(3, @textures[0]);
   for i:=0 to 2 do begin
     glBindTexture(GL_TEXTURE_2D, Textures[i]);
