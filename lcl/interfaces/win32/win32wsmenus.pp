@@ -966,6 +966,7 @@ procedure DrawMenuItemText(const AMenuItem: TMenuItem; const AHDC: HDC;
 var
   crText: COLORREF;
   crBkgnd: COLORREF;
+  oldBkMode: Longint;
   shortCutText: string;
   IsRightToLeft: Boolean;
   etoFlags: Cardinal;
@@ -1027,6 +1028,8 @@ begin
   Dec(ARect.Top, 1);
   Dec(ARect.Bottom, 1);
 
+  oldBkMode := SetBkMode(AHDC, TRANSPARENT);
+
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
   begin
@@ -1066,6 +1069,8 @@ begin
       DrawText(AHDC, PChar(shortCutText), Length(shortCutText), @ARect, dtFlags);
     {$endif}
   end;
+
+  SetBkMode(AHDC, oldBkMode);
 end;
 
 procedure DrawMenuItemIcon(const AMenuItem: TMenuItem; const AHDC: HDC;
