@@ -68,6 +68,7 @@ type
                               CreateNodes: boolean = false): TDomNode;
     procedure InternalCleanNode(Node: TDomNode);
   public
+    constructor Create(AOwner: TComponent); override; overload;
     constructor Create(const AFilename: String); overload; // create and load
     constructor CreateClean(const AFilename: String); // create new
     constructor CreateWithSource(const AFilename, Source: String); // create new and load from Source
@@ -130,10 +131,7 @@ implementation
 constructor TXMLConfig.Create(const AFilename: String);
 begin
   //DebugLn(['TXMLConfig.Create ',AFilename]);
-  // for compatibility with old TXMLConfig, which wrote #13 as #13, not as &xD;
-  FReadFlags:=[xrfAllowLowerThanInAttributeValue,xrfAllowSpecialCharsInAttributeValue];
-  FWriteFlags:=[xwfSpecialCharsInAttributeValue];
-  inherited Create(nil);
+  Create(nil);
   SetFilename(AFilename);
 end;
 
@@ -548,6 +546,14 @@ begin
     Node:=ParentNode;
     FModified := True;
   end;
+end;
+
+constructor TXMLConfig.Create(AOwner: TComponent);
+begin
+  // for compatibility with old TXMLConfig, which wrote #13 as #13, not as &xD;
+  FReadFlags:=[xrfAllowLowerThanInAttributeValue,xrfAllowSpecialCharsInAttributeValue];
+  FWriteFlags:=[xwfSpecialCharsInAttributeValue];
+  inherited Create(AOwner);
 end;
 
 procedure TXMLConfig.SetFilename(const AFilename: String);

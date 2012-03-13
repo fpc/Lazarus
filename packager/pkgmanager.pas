@@ -48,7 +48,7 @@ uses
   contnrs, StringHashList, Translations, LResources,
   // codetools
   CodeToolsConfig, CodeToolManager, CodeCache, CodeToolsStructs, BasicCodeTools,
-  FileProcs, Laz2_XMLCfg, laz2_XMLRead,
+  FileProcs, Laz2_XMLCfg,
   // IDE Interface
   SrcEditorIntf, NewItemIntf, ProjectIntf, PackageIntf, CompOptsIntf,
   MenuIntf, IDEWindowIntf, PropEdits, MacroIntf, LazIDEIntf,
@@ -2233,7 +2233,6 @@ begin
       try
         XMLConfig:=TCodeBufXMLConfig.Create(nil);
         try
-          XMLConfig.ReadFlags:=XMLConfig.ReadFlags+[xrfAllowLowerThanInAttributeValue];
           APackage.Filename:=AFilename;
           Result:=LoadXMLConfigFromCodeBuffer(AFilename,XMLConfig,
                                Code,[lbfUpdateFromDisk,lbfRevert],ShowAbort);
