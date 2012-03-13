@@ -244,8 +244,6 @@ type
   private
     FLastCell: Integer;
     FUndoRealCount, FRedoRealCount: Integer;
-    FRedoList: TSynEditUndoList;
-    FUndoList: TSynEditUndoList;
     FExternalEditLock: Integer;
   protected
     procedure SetUndoStart; // Handle undo/redo stuff
@@ -1106,9 +1104,9 @@ end;
 
 procedure TSynPluginCustomSyncroEdit.SetUndoStart;
 begin
-  FUndoList.ForceGroupEnd;
-  FUndoRealCount := FUndoList.RealCount;
-  FRedoRealCount := FRedoList.RealCount;
+  ViewedTextBuffer.UndoList.ForceGroupEnd;
+  FUndoRealCount := ViewedTextBuffer.UndoList.RealCount;
+  FRedoRealCount := ViewedTextBuffer.RedoList.RealCount;
 end;
 
 procedure TSynPluginCustomSyncroEdit.SetEditor(const AValue: TCustomSynEdit);
@@ -1116,14 +1114,10 @@ begin
   if Editor = AValue then exit;
   if Editor <> nil then begin
     CaretObj.RemoveChangeHandler(@DoCaretChanged);
-    FRedoList := nil;
-    FUndoList := nil;
   end;
   inherited SetEditor(AValue);
   if Editor <> nil then begin
     CaretObj.AddChangeHandler(@DoCaretChanged);
-    FRedoList := ViewedTextBuffer.RedoList;
-    FUndoList := ViewedTextBuffer.UndoList;
   end;
 end;
 
@@ -1165,10 +1159,10 @@ var
   c1, c2: Integer;
 begin
   inherited;
-  if IsUndoing and (FUndoRealCount >= 0) and (FUndoList.RealCount < FUndoRealCount)
+  if IsUndoing and (FUndoRealCount >= 0) and (ViewedTextBuffer.UndoList.RealCount < FUndoRealCount)
   then
     Active := false;
-  if IsRedoing and (FRedoRealCount >= 0) and (FRedoList.RealCount < FUndoRealCount)
+  if IsRedoing and (FRedoRealCount >= 0) and (ViewedTextBuffer.RedoList.RealCount < FUndoRealCount)
   then
     Active := false;
   if aUndoRedo or not Active then exit;
