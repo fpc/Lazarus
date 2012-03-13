@@ -222,7 +222,6 @@ uses
 
 const
   NameChars : set of char = ['0'..'9', 'a'..'z', 'A'..'Z', '_', '.', ':', '-'];
-  MaxFoldNestDeep = 500;
 
 constructor TSynXMLSyn.Create(AOwner: TComponent);
 begin

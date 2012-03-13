@@ -79,9 +79,6 @@ type
 
 implementation
 
-const
-  MaxFoldNestDeep = 500;
-
 function TSynCustomXmlHighlighter.CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList;
 begin
   Result := TSynHighlighterXmlRangeList.Create;

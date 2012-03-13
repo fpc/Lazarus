@@ -2644,6 +2644,7 @@ begin
     // Check 2nd stroke in SynEdit.KeyStrokes
     if FCurrentComboKeyStrokes <> nil then begin
       // Run hooked first, it might want to "steal" the key(s)
+      Cmd := 0;
       FHookedKeyTranslationList.CallHookedKeyTranslationHandlers(self,
         Key, Shift, Data, IsStartOfCombo, Handled, Cmd, FCurrentComboKeyStrokes);
 
@@ -3290,6 +3291,7 @@ begin
     FBlockSelection.IncPersistentLock;
   DoIncPaintLock(Self); // No editing is taking place
   try
+    CurMousePos:=Point(0,0);
     GetCursorPos(CurMousePos);
     CurMousePos:=ScreenToClient(CurMousePos);
     C := PixelsToLogicalPos(CurMousePos);
@@ -6778,7 +6780,7 @@ function TCustomSynEdit.IsBookmark(BookMark: integer): boolean;
 var
   x, y: integer;
 begin
-  Result := GetBookMark(BookMark, x, y);
+  Result := GetBookMark(BookMark, x{%H-}, y{%H-});
 end;
 
 procedure TCustomSynEdit.MarkTextAsSaved;

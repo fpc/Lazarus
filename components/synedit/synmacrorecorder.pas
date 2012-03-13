@@ -528,11 +528,13 @@ begin
   if aClear then
     Clear;
   fEvents := TList.Create;
+  cnt := 0;
   aSrc.Read(cnt, sizeof(cnt));
   i := 0;
   fEvents.Capacity := aSrc.Size div SizeOf( TSynEditorCommand );
   while (aSrc.Position < aSrc.Size) and (i < cnt) do
   begin
+    iCommand := 0;
     aSrc.Read( iCommand, SizeOf(TSynEditorCommand) );
     iEvent := CreateMacroEvent( iCommand );
     iEvent.Initialize( iCommand, #0, nil );
@@ -1048,6 +1050,7 @@ var
   l : Integer;
   Buff : PChar;
 begin
+  l:=0;
   aStream.Read(l, SizeOf(l));
   GetMem(Buff, l);
   try

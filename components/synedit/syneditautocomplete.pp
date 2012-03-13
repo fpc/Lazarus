@@ -277,7 +277,10 @@ begin
     ParseCompletionList;
   Len := Length(AToken);
   if (Len=0) and Assigned(OnTokenNotFound) then
+  begin
+    i := 0;
     OnTokenNotFound(Self,AToken,AEditor,i);
+  end;
   if (Len > 0) and (AEditor <> nil) and not AEditor.ReadOnly
     and (fCompletions.Count > 0)
   then begin
