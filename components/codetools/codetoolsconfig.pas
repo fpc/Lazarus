@@ -49,8 +49,7 @@ unit CodeToolsConfig;
 interface
 
 uses
-  Classes, SysUtils, Laz2_XMLCfg,
-  Laz2_XMLRead, Laz2_XMLWrite, Laz2_DOM,
+  Classes, SysUtils, Laz2_XMLCfg, Laz2_XMLRead, Laz2_XMLWrite, Laz2_DOM,
   FileProcs, CodeCache, DefineTemplates;
   
 type
@@ -417,11 +416,7 @@ begin
       try
         Buf.SaveToStream(ms);
         ms.Position:=0;
-        {$IFNDEF OldXMLCfg}
         Laz2_XMLRead.ReadXMLFile(ADoc, ms, ReadFlags);
-        {$ELSE}
-        Laz_XMLRead.ReadXMLFile(ADoc, ms);
-        {$ENDIF}
         exit; // success
       finally
         ms.Free;
@@ -450,14 +445,11 @@ begin
       fKeepFileAttributes:=true;
       ms:=TMemoryStream.Create;
       try
-        {$IFNDEF OldXMLCfg}
         Laz2_XMLWrite.WriteXMLFile(ADoc, ms, WriteFlags);
-        {$ELSE}
-        Laz_XMLWrite.WriteXMLFile(ADoc, ms);
-        {$ENDIF}
         ms.Position:=0;
         Buf.LoadFromStream(ms);
         if not Buf.FileOnDiskNeedsUpdate then exit;
+        //debugln(['TCodeBufXMLConfig.WriteXMLFile ',AFileName]);
         if Buf.Save then exit; // success
       finally
         ms.Free;

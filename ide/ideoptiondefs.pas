@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, types, LCLProc, FileUtil, Laz2_XMLCfg,
-  Forms, Controls, Buttons, CodeToolsConfig, BaseIDEIntf, LazConfigStorage,
+  Forms, Controls, Buttons, BaseIDEIntf, LazConfigStorage,
   IDEWindowIntf, LazConf;
 
 type

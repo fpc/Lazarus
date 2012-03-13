@@ -34,15 +34,9 @@ unit Laz_XMLStreaming;
 interface
 
 uses
-  SysUtils, Classes, TypInfo,
-  {$IFNDEF OldXMLCfg}
-  Laz2_DOM, Laz2_XMLWrite
-  {$ELSE}
-  Laz_DOM, Laz_XMLWrite
-  {$ENDIF};
+  SysUtils, Classes, TypInfo, Laz2_DOM, Laz2_XMLWrite;
 
 type
-
   TXMLObjectWriterStackElType = (elUnknown, elPropertyList, elChildrenList);
 
   TXMLObjectWriterStackEl = class
