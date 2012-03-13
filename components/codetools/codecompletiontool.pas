@@ -1277,6 +1277,7 @@ begin
       end;
       Node:=StartNode.Next;
       if Node<>nil then begin
+        // insert in front of second node
         InsertPos:=Node.StartPos;
         Indent:=GetLineIndent(Src,InsertPos);
       end else if StartNode.Desc=ctnImplementation then begin
@@ -1977,7 +1978,6 @@ begin
   DebugLn('  CompleteLocalVariableForIn: B CheckLocalVarForInSyntax ...');
   {$ENDIF}
   // check assignment syntax
-  debugln(['TCodeCompletionCodeTool.CompleteLocalVariableForIn AAA1']);
   if not CheckLocalVarForInSyntax(CleanCursorPos,
     VarNameAtom,TermAtom)
   then
