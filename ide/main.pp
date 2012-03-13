@@ -10987,6 +10987,7 @@ var
   FileReadable: Boolean;
   HandlerResult: TModalResult;
   AnEditorInfo: TUnitEditorInfo;
+  DiskFilename: String;
 begin
   Result:=mrCancel;
 
@@ -11013,6 +11014,13 @@ begin
   Result:=ChooseSymlink(AFilename);
   if Result<>mrOk then exit;
   Ext:=lowercase(ExtractFileExt(AFilename));
+
+  DiskFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(AFilename);
+  if DiskFilename<>AFilename then begin
+    // the case is different
+    DebugLn(['TMainIDE.DoOpenProjectFile Fixing file name: ',AFilename,' -> ',DiskFilename]);
+    AFilename:=DiskFilename;
+  end;
 
   // if there is a project info file, load that instead
   if (Ext<>'.lpi') and (FileExistsUTF8(ChangeFileExt(AFileName,'.lpi'))) then
