@@ -1261,8 +1261,8 @@ begin
   end;
   if InFrontOfNode<>nil then begin
     // insert in front
-    Indent:=GetLineIndent(Src,Node.StartPos);
-    InsertPos:=FindLineEndOrCodeInFrontOfPosition(Node.StartPos);
+    Indent:=GetLineIndent(Src,InFrontOfNode.StartPos);
+    InsertPos:=FindLineEndOrCodeInFrontOfPosition(InFrontOfNode.StartPos);
   end else begin
     Node:=FindMainUsesSection(false);
     if Node<>nil then begin
