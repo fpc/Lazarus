@@ -48,7 +48,7 @@ uses
   contnrs, StringHashList, Translations, LResources,
   // codetools
   CodeToolsConfig, CodeToolManager, CodeCache, CodeToolsStructs, BasicCodeTools,
-  FileProcs, Laz_XMLCfg,
+  FileProcs, Laz2_XMLCfg,
   // IDE Interface
   SrcEditorIntf, NewItemIntf, ProjectIntf, PackageIntf, CompOptsIntf,
   MenuIntf, IDEWindowIntf, PropEdits, MacroIntf, LazIDEIntf,

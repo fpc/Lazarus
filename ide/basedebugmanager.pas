@@ -41,7 +41,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, Forms, Project, SourceMarks, Debugger, ProjectDefs,
-  Laz_XMLCfg, IDEOptionsIntf, LazarusIDEStrConsts;
+  IDEOptionsIntf, LazarusIDEStrConsts, Laz2_XMLCfg;
 
 type
   TDebugDialogType = (

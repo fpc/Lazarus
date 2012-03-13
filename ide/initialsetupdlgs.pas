@@ -41,8 +41,7 @@ interface
 
 uses
   Classes, SysUtils, contnrs, LCLProc, Forms, Controls, Buttons, Dialogs,
-  FileUtil, Graphics, ComCtrls, ExtCtrls, StdCtrls,
-  Laz_XMLCfg,
+  FileUtil, Laz2_XMLCfg, Graphics, ComCtrls, ExtCtrls, StdCtrls,
   DefineTemplates, CodeToolManager,
   TextTools, IDEDialogs,
   TransferMacros, LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs,

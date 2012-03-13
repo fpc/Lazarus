@@ -25,9 +25,10 @@ unit editor_mouseaction_options_advanced;
 interface
 
 uses
-  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, sysutils,
-  StdCtrls, ExtCtrls, Classes, Controls, LCLProc, Grids, ComCtrls, Dialogs,
-  SynEditMouseCmds, Laz_XMLCfg, MouseActionDialog, math, KeyMapping, IDEImagesIntf;
+  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, sysutils, StdCtrls,
+  ExtCtrls, Classes, Controls, LCLProc, Grids, ComCtrls, Dialogs,
+  SynEditMouseCmds, Laz2_XMLCfg, MouseActionDialog, math, KeyMapping,
+  IDEImagesIntf;
 
 type
 

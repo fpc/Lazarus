@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, FileUtil, LCLProc, Laz_XMLCfg, SynRegExpr, ButtonPanel,
+  StdCtrls, FileUtil, Laz2_XMLCfg, LCLProc, SynRegExpr, ButtonPanel,
   IDEWindowIntf, IDEHelpIntf, LazarusIDEStrConsts, LazConf, IDEProcs,
   TransferMacros, InputHistory, ShowDeletingFilesDlg;
 

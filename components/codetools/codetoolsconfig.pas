@@ -49,12 +49,8 @@ unit CodeToolsConfig;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg,
-  {$IFNDEF OldXMLCfg}
+  Classes, SysUtils, Laz2_XMLCfg,
   Laz2_XMLRead, Laz2_XMLWrite, Laz2_DOM,
-  {$ELSE}
-  Laz_XMLRead, Laz_XMLWrite, Laz_DOM,
-  {$ENDIF}
   FileProcs, CodeCache, DefineTemplates;
   
 type

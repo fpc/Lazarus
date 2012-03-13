@@ -37,8 +37,8 @@ uses
 {$ifdef Windows}
   ShlObj,
 {$endif}
-  Classes, SysUtils, TypInfo, Graphics, Controls, Forms, LCLProc, FileProcs, Dialogs,
-  Laz_XMLCfg, LazConfigStorage,
+  Classes, SysUtils, TypInfo, Graphics, Controls, Forms, LCLProc, FileProcs,
+  Dialogs, CodeToolsConfig, LazConfigStorage, Laz2_XMLCfg,
   // IDEIntf
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
   CompOptsIntf, IDEExternToolIntf,

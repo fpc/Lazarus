@@ -46,9 +46,9 @@ uses
 {$ENDIF}
   // FPC + LCL
   Classes, SysUtils, FileProcs, FileUtil, LCLProc, Forms, Controls, Dialogs,
-  InterfaceBase,
+  Laz2_XMLCfg, InterfaceBase,
   // codetools
-  AVL_Tree, Laz_XMLCfg, DefineTemplates, CodeCache,
+  AVL_Tree, DefineTemplates, CodeCache,
   BasicCodeTools, CodeToolsStructs, NonPascalCodeTools, SourceChanger,
   CodeToolManager, DirectoryCacher,
   // IDEIntf,

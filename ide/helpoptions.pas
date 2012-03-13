@@ -36,11 +36,10 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  FileUtil, StdCtrls, Buttons, ExtCtrls, IDEContextHelpEdit, EnvironmentOpts,
-  ButtonPanel,
-  ObjectInspector, LazHelpIntf, IDEWindowIntf, IDEDialogs, Laz_XMLCfg,
-  IDEOptionsIntf, MacroIntf,
-  LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs;
+  FileUtil, Laz2_XMLCfg, StdCtrls, Buttons, ExtCtrls, IDEContextHelpEdit,
+  EnvironmentOpts, ButtonPanel, ObjectInspector, LazHelpIntf, IDEWindowIntf,
+  IDEDialogs, IDEOptionsIntf, MacroIntf, LazConf, LazarusIDEStrConsts, IDEProcs,
+  IDEOptionDefs;
 
 type
   { THelpOptions }

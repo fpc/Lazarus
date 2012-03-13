@@ -34,10 +34,11 @@ interface
 uses
   Classes, SysUtils, AVL_Tree,
   // LCL
-  LConvEncoding, InterfaceBase, LCLProc, Dialogs, FileUtil, Forms, Controls,
+  LConvEncoding, InterfaceBase, LCLProc, Dialogs, FileUtil, Laz2_XMLCfg, Forms,
+  Controls,
   // codetools
   ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates, CodeCache,
-  FileProcs, CodeToolsCfgScript, Laz_XMLCfg, CodeToolsStructs,
+  FileProcs, CodeToolsCfgScript, CodeToolsStructs,
   // IDEIntf
   SrcEditorIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
   CompOptsIntf, LazIDEIntf,

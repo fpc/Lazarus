@@ -32,10 +32,10 @@ unit KeyMapping;
 interface
 
 uses
-  LCLIntf, LCLType, LCLProc, AvgLvlTree,
+  LCLIntf, LCLType, LCLProc, AvgLvlTree, Laz2_XMLCfg,
   Forms, Classes, SysUtils, Buttons, LResources, Controls,
   Dialogs, StringHashList, ExtCtrls,
-  SynEditKeyCmds, SynPluginTemplateEdit, SynPluginSyncroEdit, Laz_XMLCfg,
+  SynEditKeyCmds, SynPluginTemplateEdit, SynPluginSyncroEdit,
   PropEdits, IDECommands, LazarusIDEStrConsts, Debugger;
 
 type

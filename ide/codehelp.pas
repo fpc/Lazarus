@@ -41,15 +41,11 @@ interface
 uses
   Classes, SysUtils, LazFileCache, LCLProc, Forms, Controls, FileUtil, Dialogs,
   AvgLvlTree, LCLType,
+  Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
   // codetools
   CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, BasicCodeTools,
   KeywordFuncLists, PascalParserTool, CodeCache, CacheCodeTools, CustomCodeTool,
   FileProcs, CTXMLFixFragment, DefineTemplates,
-  {$IFNDEF OldXMLCfg}
-  Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
-  {$ELSE}
-  Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
-  {$ENDIF}
   // synedit
   SynHighlighterPas,
   // IDEIntf

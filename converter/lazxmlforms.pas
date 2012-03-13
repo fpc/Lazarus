@@ -37,12 +37,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc,
-  {$IFNDEF OldXMLCfg}
-  laz2_DOM,
-  {$ELSE}
-  Laz_DOM,
-  {$ENDIF}
-  Laz_XMLCfg, Laz_XMLStreaming;
+  laz2_DOM, Laz2_XMLCfg, Laz_XMLStreaming;
 
 function CreateXMLWriter(ADoc: TDOMDocument; const Path: string;
   Append: Boolean; var DestroyDriver: boolean): TWriter;

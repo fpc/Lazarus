@@ -46,13 +46,7 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, InterfaceBase, FileUtil, LCLProc,
-  {$IFNDEF OldXMLCfg}
-  Laz2_XMLCfg,
-  {$ELSE}
-  Laz_XMLCfg,
-  {$ENDIF}
-  DefineTemplates;
+  SysUtils, Classes, InterfaceBase, FileUtil, LCLProc, DefineTemplates;
 
 const
   LazarusVersionStr = {$I version.inc};
@@ -69,8 +63,6 @@ const
       'cocoa (alpha)',
       'customdraw (alpha)'
     );
-type
-  TIDEXMLCfg = TXMLConfig;
 
 { Config Path Functions }
 

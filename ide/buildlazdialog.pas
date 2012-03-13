@@ -47,7 +47,7 @@ uses
   Classes, SysUtils, LCLProc, LConvEncoding, Forms, Controls, LCLType, LCLIntf,
   Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs, Types,
   InterfaceBase, Themes, ComCtrls, CheckLst, Menus, DividerBevel,
-  DefineTemplates, Laz_XMLCfg,
+  DefineTemplates,
   // IDEIntf
   LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf,
   // IDE

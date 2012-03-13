@@ -32,11 +32,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, ButtonPanel, FileUtil, LCLType, AvgLvlTree,
-  {$IFNDEF OldXMLCfg}
   Laz2_DOM,
-  {$ELSE}
-  Laz_DOM,
-  {$ENDIF}
   PackageIntf, ProjectIntf,
   CodeHelp, LazarusIDEStrConsts, PackageSystem, PackageDefs;
 

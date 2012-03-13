@@ -45,7 +45,7 @@ interface
 
 uses
   Classes, SysUtils, contnrs, typinfo, LCLProc, LCLType, LResources, Graphics,
-  Forms, FileProcs, FileUtil, AVL_Tree, LazConfigStorage, Laz_XMLCfg,
+  Forms, FileProcs, FileUtil, AVL_Tree, LazConfigStorage, Laz2_XMLCfg,
   BasicCodeTools, CodeToolsCfgScript, DefineTemplates, CodeToolManager,
   CodeCache, CodeToolsStructs,
   PropEdits, LazIDEIntf, MacroIntf, PackageIntf, IDEOptionsIntf,

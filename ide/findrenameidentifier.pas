@@ -32,12 +32,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, ExtCtrls, AvgLvlTree, ComCtrls,
-  // codetools
-  {$IFNDEF OldXMLCfg}
   laz2_DOM,
-  {$ELSE}
-  Laz_DOM,
-  {$ENDIF}
+  // codetools
   FileProcs, AVL_Tree, CTUnitGraph, CodeTree, CodeAtom, CodeCache,
   CodeToolManager,
   // IDE

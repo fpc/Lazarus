@@ -37,8 +37,8 @@ unit W32Manifest;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Process, LCLProc, Controls, Forms,
-  CodeToolManager, LazConf, Laz_XMLCfg, LResources,
+  Classes, SysUtils, FileUtil, Laz2_XMLCfg, Process, LCLProc, Controls, Forms,
+  CodeToolManager, LazConf, LResources,
   ProjectResourcesIntf, resource;
    
 type

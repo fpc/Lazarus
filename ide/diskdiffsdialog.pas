@@ -33,8 +33,9 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls,
+  Laz2_XMLWrite,
   SynEdit, SynHighlighterDiff, LCLType, ComCtrls, ExtCtrls,
-  FileProcs, CodeToolManager, CodeCache, Laz_XMLCfg, Laz_XMLWrite,
+  FileProcs, CodeToolManager, CodeCache,
   Project, DiffPatch, LazarusIDEStrConsts, EnvironmentOpts, EditorOptions,
   PackageDefs;
 

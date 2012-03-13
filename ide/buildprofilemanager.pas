@@ -31,12 +31,11 @@ unit BuildProfileManager;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, Buttons, StdCtrls, ComCtrls, Contnrs, ButtonPanel,
-  Laz_XMLCfg, DefineTemplates,
-  IDEImagesIntf, IDEMsgIntf, IDEHelpIntf,
-  LazarusIDEStrConsts, LazConf, InterfaceBase, IDEProcs,
-  IDEContextHelpEdit, CompilerOptions;
+  Classes, SysUtils, FileUtil, Laz2_XMLCfg, LResources, Forms, Controls,
+  Graphics, Dialogs, ExtCtrls, Buttons, StdCtrls, ComCtrls, Contnrs,
+  ButtonPanel, DefineTemplates, IDEImagesIntf, IDEMsgIntf, IDEHelpIntf,
+  LazarusIDEStrConsts, LazConf, InterfaceBase, IDEProcs, IDEContextHelpEdit,
+  CompilerOptions;
 
 type
 

@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, BuildLazDialog, BuildProfileManager,
-  CodeToolsStructs, TextTools, FileUtil, Laz_XMLCfg, LazConf, IDEProcs;
+  CodeToolsStructs, TextTools, FileUtil, Laz2_XMLCfg, LazConf, IDEProcs;
 
 type
   { TFindRenameIdentifierOptions }

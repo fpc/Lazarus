@@ -37,12 +37,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Dialogs, FileProcs,
-  FileUtil, LazFileUtils, Laz_XMLCfg,
-  {$IFNDEF OldXMLCfg}
-  Laz2_XMLWrite,
-  {$ELSE}
-  Laz_XMLWrite,
-  {$ENDIF}
+  Laz2_XMLWrite, FileUtil, LazFileUtils, Laz2_XMLCfg,
   CodeToolsConfig, CodeCache, CodeToolManager,
   AVL_Tree, LazIDEIntf,
   IDEProcs, LazarusIDEStrConsts, IDEDialogs;

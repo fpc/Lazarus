@@ -49,7 +49,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, TypInfo, FPCAdds, LCLProc, LCLIntf, LCLType, Forms,
-  FileUtil, Controls, Dialogs, InterfaceBase, maps,
+  FileUtil, Laz2_XMLCfg, Controls, Dialogs, InterfaceBase, maps,
   // codetools
   CodeToolsConfig, ExprEval, FileProcs, DefineTemplates,
   BasicCodeTools, CodeToolsCfgScript, CodeToolManager, CodeCache,
@@ -71,10 +71,10 @@ type
        const OldUnitName, NewUnitName: string;
        CheckIfAllowed: boolean;
        var Allowed: boolean) of object;
-  TOnLoadProjectInfo = procedure(TheProject: TProject; XMLConfig: TIDEXMLCfg;
+  TOnLoadProjectInfo = procedure(TheProject: TProject; XMLConfig: TXMLConfig;
                                  Merge: boolean) of object;
   TOnSaveProjectInfo = procedure(TheProject: TProject;
-               XMLConfig: TIDEXMLCfg; WriteFlags: TProjectWriteFlags) of object;
+               XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags) of object;
   TOnProjectGetTestDirectory = procedure(TheProject: TProject;
                                          out TestDir: string) of object;
   TOnChangeProjectInfoFile = procedure(TheProject: TProject) of object;

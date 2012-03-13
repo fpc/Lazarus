@@ -65,10 +65,10 @@ uses
   FileUtil, LResources, StdCtrls, Forms, Buttons, Menus, Controls, GraphType,
   HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, UTF8Process, LazLogger,
   //
-  LazUTF8,
+  LazUTF8, Laz2_XMLCfg,
   // codetools
   FileProcs, CodeBeautifier, FindDeclarationTool, LinkScanner, BasicCodeTools,
-  Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
+  CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
   KeywordFuncLists,
   // synedit
   AllSynEdit, SynEditKeyCmds, SynBeautifier, SynEditMarks,

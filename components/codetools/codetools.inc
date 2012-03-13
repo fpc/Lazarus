@@ -25,8 +25,6 @@
 
 }
 
-{off $DEFINE OldXMLCfg}
-
 {off $DEFINE MEM_CHECK}
 
 {off $DEFINE CTDEBUG}

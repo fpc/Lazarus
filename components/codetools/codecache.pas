@@ -39,7 +39,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, SourceLog, LinkScanner, FileProcs, DirectoryCacher,
-  Avl_Tree, Laz_XMLCfg;
+  Avl_Tree, Laz2_XMLCfg;
 
 const
   IncludeLinksFileVersion = 2;

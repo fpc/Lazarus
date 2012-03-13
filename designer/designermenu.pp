@@ -37,7 +37,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Menus, Graphics,
   GraphType, Buttons, StdCtrls, ExtCtrls, ComponentEditors, LazConf, ComCtrls,
-  Arrow, ButtonPanel, Laz_XMLCfg, LazarusIDEStrConsts, PropEdits, IDEProcs;
+  Arrow, ButtonPanel, Laz2_XMLCfg, LazarusIDEStrConsts, PropEdits, IDEProcs;
 
 const
   // Length of a field for storing index positions of DesignerMenuItem, we use it to find the right MenuItem

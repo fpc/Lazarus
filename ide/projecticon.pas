@@ -34,8 +34,8 @@ unit ProjectIcon;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Process, LCLProc, Controls, Forms,
-  CodeToolManager, CodeCache, LazConf, Laz_XMLCfg, LResources, resource,
+  Classes, SysUtils, FileUtil, Laz2_XMLCfg, Process, LCLProc, Controls, Forms,
+  CodeToolManager, CodeCache, LazConf, LResources, resource,
   DialogProcs, groupiconresource, ProjectIntf, ProjectResourcesIntf;
    
 type

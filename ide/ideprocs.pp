@@ -30,7 +30,7 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, FileUtil, LCLProc, AvgLvlTree, SourceLog,
+  Classes, SysUtils, FileUtil, LCLProc, AvgLvlTree, Laz2_XMLCfg, SourceLog,
   FileProcs, CodeToolManager, CodeToolsConfig, CodeCache, LazConf,
   StdCtrls, ExtCtrls, ComCtrls;
 

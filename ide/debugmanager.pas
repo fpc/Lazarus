@@ -42,9 +42,9 @@ uses
   {$ENDIF}
   // LCL
   Classes, SysUtils, Forms, Controls, Dialogs, Menus, ExtCtrls, FileUtil, LCLProc,
-  LCLType, LCLIntf, LazLoggerBase,
+  LCLType, LCLIntf, LazLoggerBase, Laz2_XMLCfg,
   // SynEdit, codetools
-  Laz_XMLCfg, SynEdit, CodeCache, CodeToolManager,
+  SynEdit, CodeCache, CodeToolManager,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
   CompOptsIntf, IDEDialogs,

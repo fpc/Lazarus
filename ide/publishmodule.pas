@@ -35,8 +35,8 @@ unit PublishModule;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg,
-  IDEProcs, SynRegExpr, FileUtil, LCLProc;
+  Classes, SysUtils,
+  IDEProcs, SynRegExpr, FileUtil, Laz2_XMLCfg, LCLProc;
 
 type
   { TPublishModuleOptions }

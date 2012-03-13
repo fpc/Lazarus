@@ -38,7 +38,7 @@ unit Debugger;
 interface
 
 uses
-  TypInfo, Classes, SysUtils, Laz_XMLCfg, math, FileUtil, LazLoggerBase, LazClasses,
+  TypInfo, Classes, SysUtils, Laz2_XMLCfg, math, FileUtil, LazLoggerBase, LazClasses,
   LCLProc, LazConfigStorage, IDEProcs, DebugUtils, maps;
 
 type

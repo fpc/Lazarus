@@ -53,7 +53,7 @@ interface
 
 uses
   Classes, SysUtils, LazUTF8, CodeToolsStrConsts, ExprEval, DirectoryCacher,
-  BasicCodeTools, Laz_XMLCfg, AVL_Tree, CodeToolsStructs,
+  BasicCodeTools, Laz2_XMLCfg, AVL_Tree, CodeToolsStructs,
   Process, KeywordFuncLists, LinkScanner, FileProcs;
 
 const

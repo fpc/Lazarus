@@ -32,6 +32,7 @@ interface
 uses
   // FCL
   Classes, SysUtils, StrUtils, contnrs,
+  Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
   // LCL
   LCLProc, LResources, StdCtrls, Buttons, ComCtrls, Controls, Dialogs,
   ExtCtrls, Forms, Graphics, LCLType,
@@ -40,11 +41,6 @@ uses
   // codetools
   BasicCodeTools, FileProcs, CodeAtom, CodeCache, CodeToolManager,
   CTXMLFixFragment,
-  {$IFNDEF OldXMLCfg}
-  Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
-  {$ELSE}
-  Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
-  {$ENDIF}
   // IDEIntf
   IDEWindowIntf, ProjectIntf, LazIDEIntf, IDEHelpIntf, LazHelpIntf, Menus,
   SrcEditorIntf, IDEDialogs,

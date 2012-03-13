@@ -33,9 +33,10 @@ uses
   // LCL FCL
   Classes, SysUtils, Math, Forms, Controls, StdCtrls, ComCtrls, Buttons,
   LResources, Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil, AVL_Tree,
+  Laz2_XMLCfg,
   // IDEIntf CodeTools
   IDEImagesIntf, MenuIntf, HelpIntfs, ExtCtrls, LazIDEIntf, ProjectIntf,
-  CodeToolsStructs, FormEditingIntf, Laz_XMLCfg, TreeFilterEdit, PackageIntf,
+  CodeToolsStructs, FormEditingIntf, TreeFilterEdit, PackageIntf,
   IDEDialogs, IDEHelpIntf, IDEOptionsIntf,
   // IDE
   MainIntf, IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,

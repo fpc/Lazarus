@@ -37,14 +37,8 @@ unit W32VersionInfo;
 interface
 
 uses
-  Classes, SysUtils, Process, LCLProc, Controls, Forms, FileUtil,
-  CodeToolManager, LazConf, Laz_XMLCfg,
-  {$IFNDEF OldXMLCfg}
-  laz2_DOM,
-  {$ELSE}
-  Laz_DOM,
-  {$ENDIF}
-  IDEProcs, ProjectIntf, CompOptsIntf,
+  Classes, SysUtils, Process, LCLProc, Controls, Forms, FileUtil, laz2_DOM,
+  Laz2_XMLCfg, CodeToolManager, LazConf, IDEProcs, ProjectIntf, CompOptsIntf,
   ProjectResourcesIntf, resource, versionresource, versiontypes;
 
 type
@@ -449,7 +443,7 @@ begin
     if Assigned(Node) then
     begin
       StringTable.Clear;
-      for i := 0 to Node.Attributes.{$IFNDEF OldXMLCfg}Length{$ELSE}Count{$ENDIF} - 1 do
+      for i := 0 to Node.Attributes.Length - 1 do
         StringTable[Node.Attributes[i].NodeName] := Node.Attributes[i].NodeValue;
       StringTable.AddRequired;
     end

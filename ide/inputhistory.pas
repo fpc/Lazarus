@@ -36,8 +36,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, FileProcs, DiffPatch, IDEProcs, AvgLvlTree,
-  SynEditTypes, Laz_XMLCfg, LazConf, Dialogs, LCLProc,
-  IDEDialogs, ProjectIntf;
+  Laz2_XMLCfg, SynEditTypes, LazConf, Dialogs, LCLProc, IDEDialogs, ProjectIntf;
 
 {$ifdef Windows}
 {$define CaseInsensitiveFilenames}

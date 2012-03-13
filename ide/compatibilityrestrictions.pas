@@ -35,13 +35,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, LCLProc, InterfaceBase, StringHashList,
-  ObjectInspector, OIFavouriteProperties,
-  {$IFNDEF OldXMLCfg}
   Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
-  {$ELSE}
-  Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
-  {$ENDIF}
-  PackageIntf,
+  ObjectInspector, OIFavouriteProperties, PackageIntf,
   PackageSystem, PackageDefs, ComponentReg, LazConf;
 
 type
