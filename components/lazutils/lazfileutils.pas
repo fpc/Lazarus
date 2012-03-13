@@ -80,8 +80,8 @@ function RemoveDirUTF8(const Dir: String): Boolean;
 function ForceDirectoriesUTF8(const Dir: string): Boolean;
 
 // UNC paths
-function IsUNCPath(const Path: String): Boolean;
-function ExtractUNCVolume(const Path: String): String;
+function IsUNCPath(const {%H-}Path: String): Boolean;
+function ExtractUNCVolume(const {%H-}Path: String): String;
 
 
 type
@@ -1197,10 +1197,15 @@ end;
 
 function IsUNCPath(const Path: String): Boolean;
 begin
+  {$IFDEF Windows}
   Result := (Length(Path) > 2) and (Path[1] = PathDelim) and (Path[2] = PathDelim);
+  {$ELSE}
+  Result := false;
+  {$ENDIF}
 end;
 
 function ExtractUNCVolume(const Path: String): String;
+{$IFDEF Windows}
 var
   I, Len: Integer;
 
@@ -1242,6 +1247,11 @@ begin
   end;
   Result := Copy(Path, 1, I);
 end;
+{$ELSE}
+begin
+  Result := '';
+end;
+{$ENDIF}
 
 end.
 
