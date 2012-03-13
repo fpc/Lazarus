@@ -3877,6 +3877,11 @@ help:
 		 @$(ECHO)
 		 @$(ECHO) "   Note: Windows users must execute 'lazbuild.exe --build-ide='"
 		 @$(ECHO)
+		 @$(ECHO) Clean up:
+		 @$(ECHO) "  There is no command to clean up a svn repository completely, but"
+		 @$(ECHO) "  you can use the following command under Linux/OS X:"
+		 @$(ECHO) "  svn status | grep '\?' | sed -e 's/\? *//' | xargs rm -r"
+		 @$(ECHO)
 		 @exit
 ide: 
 	$(MAKE) -C ide ide
