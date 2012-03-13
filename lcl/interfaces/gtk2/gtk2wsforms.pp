@@ -252,6 +252,14 @@ begin
               AppActive := True;
           end;
         end;
+        if GTK_IS_WINDOW(Widget) and
+          (g_object_get_data(PGObject(ACtl.Handle),'lcl_nonmodal_over_modal') <> nil) then
+        begin
+          if PGdkEventFocus(event)^._in = 0 then
+            gtk_window_set_modal(PGtkWindow(ACtl.Handle), False)
+          else
+            gtk_window_set_modal(PGtkWindow(ACtl.Handle), True);
+        end;
       end;
   end;
 end;
@@ -583,6 +591,30 @@ var
   AForm: TCustomForm;
   GtkWindow: PGtkWindow;
   Geometry: TGdkGeometry;
+
+  function ShowNonModalOverModal: Boolean;
+  var
+    AForm: TCustomForm;
+    AWindow: PGtkWindow;
+  begin
+    Result := False;
+    AForm := TCustomForm(AWinControl);
+    if AWinControl.HandleObjectShouldBeVisible and
+      not (fsModal in AForm.FormState) and
+      (AForm.FormStyle <> fsMDIChild) and
+      (ModalWindows <> nil) and (ModalWindows.Count > 0) and
+      not (AForm.FormStyle in fsAllStayOnTop) and
+      (AForm.BorderStyle in [bsDialog, bsSingle, bsSizeable]) and
+      (AForm.PopupParent = nil) and (AForm.PopupMode = pmNone) then
+    begin
+      AWindow := PGtkWindow(AForm.Handle);
+      gtk_window_set_modal(AWindow, True);
+      // lcl_nonmodal_over_modal is needed to track nonmodal form
+      // created and shown when we have active modal forms
+      g_object_set_data(PGObject(AWindow),'lcl_nonmodal_over_modal', AForm);
+      Result := True;
+    end;
+  end;
 begin
   AForm := TCustomForm(AWinControl);
   if not (csDesigning in AForm.ComponentState) then
@@ -605,6 +637,9 @@ begin
     GtkWindowShowModal(AForm, GtkWindow);
   end else
   begin
+    if ShowNonModalOverModal then
+    // issue #21459
+    else
     if (AForm.FormStyle <> fsMDIChild) and AForm.HandleObjectShouldBeVisible and
       (ModalWindows <> nil) and (ModalWindows.Count > 0) and
       (AForm.PopupParent = nil) and (AForm.BorderStyle = bsNone) then

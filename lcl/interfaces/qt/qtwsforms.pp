@@ -366,6 +366,29 @@ var
   ActiveWin: HWND;
   W: QWidgetH;
   Flags: Cardinal;
+
+  function ShowNonModalOverModal: Boolean;
+  var
+    AForm: TCustomForm;
+    AWidget: QWidgetH;
+  begin
+    Result := False;
+    AForm := TCustomForm(AWinControl);
+    if AWinControl.HandleObjectShouldBeVisible and
+      not (fsModal in AForm.FormState) and
+      (AForm.FormStyle <> fsMDIChild) and
+      not (AForm.FormStyle in fsAllStayOnTop) and
+      (QApplication_activeModalWidget() <> nil) and
+      (AForm.BorderStyle in [bsDialog, bsSingle, bsSizeable]) and
+      (AForm.PopupParent = nil) and (AForm.PopupMode = pmNone) then
+    begin
+      AWidget := TQtWidget(AForm.Handle).Widget;
+      QWidget_setParent(AWidget, QApplication_desktop());
+      QWidget_setWindowModality(AWidget, QtWindowModal);
+      Result := True;
+    end;
+  end;
+
 begin
   if not WSCheckHandleAllocated(AWinControl, 'ShowHide') then
     Exit;
@@ -445,6 +468,10 @@ begin
   Widget.BeginUpdate;
   if not (csDesigning in AWinControl.ComponentState) then
   begin
+
+    if ShowNonModalOverModal then
+    // issue #12459
+    else
     if AWinControl.HandleObjectShouldBeVisible
       and (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop) then
     begin
