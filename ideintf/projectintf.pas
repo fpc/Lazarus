@@ -390,6 +390,7 @@ type
     procedure SetCleanSourcesFileMask(const AValue: string);
     procedure SetFPDocPackageName(AValue: string);
     procedure SetFPDocPaths(const AValue: string);
+    procedure SetUseAppBundle(AValue: Boolean);
   protected
     FLazCompilerOptions: TLazCompilerOptions;
     FFlags: TProjectFlags;
@@ -467,7 +468,7 @@ type
     property CleanSourcesFileMask: string read FCleanSourcesFileMask write SetCleanSourcesFileMask; // saved in session
     property CustomData: TStringToStringTree read FCustomData;
     property CustomSessionData: TStringToStringTree read FCustomSessionData;
-    property UseAppBundle: Boolean read FUseAppBundle write FUseAppBundle;
+    property UseAppBundle: Boolean read FUseAppBundle write SetUseAppBundle;
     property Resources: TObject read FResources; // TAbstractProjectResources
     property UseManifest: boolean read GetUseManifest write SetUseManifest;
     property RunParameters: TAbstractRunParamsOptions read FRunParameters;
@@ -1058,6 +1059,13 @@ procedure TLazProject.SetFPDocPaths(const AValue: string);
 begin
   if FFPDocPaths=AValue then exit;
   FFPDocPaths:=AValue;
+  Modified:=true;
+end;
+
+procedure TLazProject.SetUseAppBundle(AValue: Boolean);
+begin
+  if FUseAppBundle=AValue then Exit;
+  FUseAppBundle:=AValue;
   Modified:=true;
 end;
 
