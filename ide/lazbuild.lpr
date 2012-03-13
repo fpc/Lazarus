@@ -31,7 +31,7 @@ uses
   Classes, SysUtils, CustApp, LCLProc, Dialogs, Forms, Controls, FileUtil,
   Interfaces, InterfaceBase, UTF8Process, LConvEncoding,
   // codetools
-  CodeCache, CodeToolManager, DefineTemplates, Laz_XMLCfg,
+  CodeCache, CodeToolManager, DefineTemplates, Laz2_XMLCfg,
   // IDEIntf
   MacroIntf, PackageIntf, IDEDialogs, ProjectIntf, IDEExternToolIntf, CompOptsIntf,
   // IDE
