@@ -185,8 +185,7 @@ begin
   if Modified and (Filename<>'') then
   begin
     //DebugLn(['TXMLConfig.Flush ',Filename]);
-    Laz2_XMLWrite.WriteXMLFile(Doc,Filename,WriteFlags);
-    InvalidateFileStateCache;
+    WriteXMLFile(Doc,Filename);
     FModified := False;
   end;
 end;
