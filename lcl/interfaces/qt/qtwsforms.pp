@@ -384,6 +384,10 @@ var
     begin
       AWidget := TQtWidget(AForm.Handle).Widget;
       {$IFDEF DARWIN}
+      QWidget_setParent(AWidget, QApplication_activeWindow());
+      QWidget_setWindowFlags(Widget.Widget, QtSheet or
+        GetQtBorderIcons(TCustomForm(AWinControl).BorderStyle,
+          TCustomForm(AWinControl).BorderIcons));
       {$ELSE}
       QWidget_setParent(AWidget, QApplication_desktop());
       {$IFDEF MSWINDOWS}
