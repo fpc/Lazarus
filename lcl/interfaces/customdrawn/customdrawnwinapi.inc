@@ -4681,6 +4681,7 @@ begin
   if lHandle is TCDWinControl then
   begin
     lControlHandle := TCDWinControl(lHandle);
+    lControlHandle.IncInvalidateCount();
     lControl := lControlHandle.WinControl;
     lControl := Forms.GetParentForm(lControl);
     Result := BackendInvalidateRect(lControl.Handle, Rect, BErase);

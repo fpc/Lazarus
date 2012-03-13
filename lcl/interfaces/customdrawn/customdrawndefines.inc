@@ -40,3 +40,8 @@
   //{$define CD_UseNativeText}
 {$endif}
 
+// Other options
+
+// This option makes the drawing faster by buffering previous drawing operations
+{$define CD_BufferControlImages}
+

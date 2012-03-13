@@ -1,6 +1,7 @@
 unit customdrawnproc;
 
 {$mode objfpc}{$H+}
+{$include customdrawndefines.inc}
 
 interface
 
@@ -42,8 +43,16 @@ type
     ScrollX, ScrollY: Integer;
     LastMousePos: TPoint;
     IsScrolling: Boolean;
+    // Counter to keep track of when we requested Invalidate
+    // Some systems like X11 and Win32 will keep sending unnecessary paint messages
+    // so for them we just throw the previously painted image
+    InvalidateCount: Integer;
+    // painting objects
+    ControlImage: TLazIntfImage;
+    ControlCanvas: TLazCanvas;
     constructor Create; virtual;
     destructor Destroy; override;
+    procedure IncInvalidateCount;
     function AdjustCoordinatesForScrolling(AX, AY: Integer): TPoint;
     property Props[AnIndex:String]:pointer read GetProps write SetProps;
   end;
@@ -56,6 +65,7 @@ type
     WinControl: TWinControl;
     CDControl: TCDControl;
     CDControlInjected: Boolean;
+    procedure UpdateImageAndCanvas;
   end;
 
   { TCDForm }
@@ -69,15 +79,10 @@ type
     FocusedControl: TWinControl; // The control focused in the form
     FocusedIntfControl: TWinControl; // The intf control focused in the form
     LayoutAutoAdjusted: Boolean; // Indicates if the form layout was already auto-adjusted once
-    // Counter to keep track of when we requested Invalidate
-    // Some systems like X11 and Win32 will keep sending unnecessary paint messages
-    // so for them we just throw the previously painted image
-    InvalidateCount: Integer;
-    // painting objects
+    // painting objects which represent the composed form image, don't confuse with ControlImage/ControlCanvas
     Image: TLazIntfImage;
     Canvas: TLazCanvas;
     constructor Create; virtual;
-    procedure IncInvalidateCount;
     function GetFocusedControl: TWinControl;
     function GetFormVirtualHeight(AScreenHeight: Integer): Integer;
     procedure SanityCheckScrollPos();
@@ -447,12 +452,10 @@ var
   lWinControl, lParentControl: TWinControl;
   struct : TPaintStruct;
   lCanvas: TCanvas;
+  lControlCanvas: TLazCanvas;
   lBaseWindowOrg: TPoint;
 begin
   Result := False;
-
-  FillChar(struct, SizeOf(TPaintStruct), 0);
-  struct.hdc := HDC(ACanvas);
 
   lWinControl := ACDWinControl.WinControl;
 
@@ -480,24 +483,42 @@ begin
     lWinControl.Width, lWinControl.Height);
   ACanvas.ClipRegion := ACDWinControl.Region;
 
-  // Special drawing for some native controls
-  if lWinControl is TCustomPanel then
+  lControlCanvas := ACanvas;
+  {$ifdef CD_BufferControlImages}
+  if ACDWinControl.InvalidateCount > 0 then
   begin
-    // Erase the background of TPanel controls, since it can draw it's own border, but fails to draw it's own background
-    ACanvas.SaveState;
-    ACanvas.Brush.FPColor := TColorToFPColor((lWinControl as TCustomPanel).GetRGBColorResolvingParent());
-    ACanvas.Pen.FPColor := ACanvas.Brush.FPColor;
-    ACanvas.Rectangle(Bounds(0, 0, lWinControl.Width, lWinControl.Height));
-    ACanvas.RestoreState(-1);
+    ACDWinControl.UpdateImageAndCanvas();
+    lControlCanvas := ACDWinControl.ControlCanvas;
+    ACDWinControl.InvalidateCount := 0;
+  {$endif}
+
+    // Special drawing for some native controls
+    if lWinControl is TCustomPanel then
+    begin
+      // Erase the background of TPanel controls, since it can draw it's own border, but fails to draw it's own background
+      lControlCanvas.SaveState;
+      lControlCanvas.Brush.FPColor := TColorToFPColor((lWinControl as TCustomPanel).GetRGBColorResolvingParent());
+      lControlCanvas.Pen.FPColor := lControlCanvas.Brush.FPColor;
+      lControlCanvas.Rectangle(Bounds(0, 0, lWinControl.Width, lWinControl.Height));
+      lControlCanvas.RestoreState(-1);
+    end;
+
+    // Send the drawing message
+    {$ifdef VerboseCDWinControl}
+    DebugLn('[RenderWinControl] before LCLSendPaintMsg');
+    {$endif}
+    FillChar(struct, SizeOf(TPaintStruct), 0);
+    struct.hdc := HDC(lControlCanvas);
+    LCLSendPaintMsg(lWinControl, struct.hdc, @struct);
+    {$ifdef VerboseCDWinControl}
+    DebugLn('[RenderWinControl] after LCLSendPaintMsg');
+    {$endif}
+  {$ifdef CD_BufferControlImages}
   end;
 
-  // Send the drawing message
-  {$ifdef VerboseCDWinControl}
-  DebugLn('[RenderWinControl] before LCLSendPaintMsg');
-  {$endif}
-  LCLSendPaintMsg(lWinControl, struct.hdc, @struct);
-  {$ifdef VerboseCDWinControl}
-  DebugLn('[RenderWinControl] after LCLSendPaintMsg');
+  // Here we actually blit the control to the form canvas
+  ACanvas.CanvasCopyRect(ACDWinControl.ControlCanvas, 0, 0, 0, 0,
+    lWinControl.Width, lWinControl.Height);
   {$endif}
 
   // Now restore it
@@ -865,6 +886,15 @@ begin
   if (not DirFound) and (not DirEmpty) then
     AFontPaths.Add(APath);
 end;
+
+{ TCDWinControl }
+
+procedure TCDWinControl.UpdateImageAndCanvas;
+begin
+  UpdateControlLazImageAndCanvas(ControlImage, ControlCanvas,
+    WinControl.Width, WinControl.Height, clfARGB32);
+end;
+
 {$endif}
 
 { TCDBitmap }
@@ -906,12 +936,24 @@ begin
   FProps := TStringList.Create;
   //FProps.CaseSensitive:=false; commented as in the qt widgetset
   FProps.Sorted:=true;
+  IncInvalidateCount(); // Always starts needing an invalidate
 end;
 
 destructor TCDBaseControl.Destroy;
 begin
   FProps.Free;
+
+  // Free the Canvas and Image if required
+  // Dont free for the Form because elsewhere this is taken care of
+  if ControlCanvas <> nil then ControlCanvas.Free;
+  if ControlImage <> nil then ControlImage.Free;
+
   inherited Destroy;
+end;
+
+procedure TCDBaseControl.IncInvalidateCount;
+begin
+  Inc(InvalidateCount);
 end;
 
 function TCDBaseControl.AdjustCoordinatesForScrolling(AX, AY: Integer): TPoint;
@@ -926,11 +968,6 @@ constructor TCDForm.Create;
 begin
   inherited Create;
   InvalidateCount := 1;
-end;
-
-procedure TCDForm.IncInvalidateCount;
-begin
-  Inc(InvalidateCount);
 end;
 
 function TCDForm.GetFocusedControl: TWinControl;
