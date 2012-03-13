@@ -2046,14 +2046,14 @@ interpreting/building canonical Internet dates and should
 NOT be internationalized!
 }
 
-  DayString : string =
+{  DayString : string =
     'SUNDAY   ' +
     'MONDAY   ' +
     'TUESDAY  ' +
     'WEDNESDAY' +
     'THURSDAY ' +
     'FRIDAY   ' +
-    'SATURDAY ';
+    'SATURDAY '; }
 
   MonthString : string =
     'JANUARY  ' +
