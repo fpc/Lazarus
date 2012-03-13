@@ -461,6 +461,7 @@ begin
         {$ENDIF}
         ms.Position:=0;
         Buf.LoadFromStream(ms);
+        if not Buf.FileOnDiskNeedsUpdate then exit;
         if Buf.Save then exit; // success
       finally
         ms.Free;

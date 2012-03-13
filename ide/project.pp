@@ -51,7 +51,7 @@ uses
   Classes, SysUtils, TypInfo, FPCAdds, LCLProc, LCLIntf, LCLType, Forms,
   FileUtil, Controls, Dialogs, InterfaceBase, maps,
   // codetools
-  Laz_XMLCfg, CodeToolsConfig, ExprEval, FileProcs, DefineTemplates,
+  CodeToolsConfig, ExprEval, FileProcs, DefineTemplates,
   BasicCodeTools, CodeToolsCfgScript, CodeToolManager, CodeCache,
   // IDEIntf
   PropEdits, CompOptsIntf, ProjectIntf, MacroIntf, LazIDEIntf,
@@ -71,10 +71,10 @@ type
        const OldUnitName, NewUnitName: string;
        CheckIfAllowed: boolean;
        var Allowed: boolean) of object;
-  TOnLoadProjectInfo = procedure(TheProject: TProject; XMLConfig: TXMLConfig;
+  TOnLoadProjectInfo = procedure(TheProject: TProject; XMLConfig: TIDEXMLCfg;
                                  Merge: boolean) of object;
   TOnSaveProjectInfo = procedure(TheProject: TProject;
-               XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags) of object;
+               XMLConfig: TIDEXMLCfg; WriteFlags: TProjectWriteFlags) of object;
   TOnProjectGetTestDirectory = procedure(TheProject: TProject;
                                          out TestDir: string) of object;
   TOnChangeProjectInfoFile = procedure(TheProject: TProject) of object;
@@ -2902,6 +2902,7 @@ begin
         end;
 
         // save lpi to disk
+        debugln(['TProject.WriteProject ',DbgSName(xmlconfig),' CfgFilename=',CfgFilename]);
         xmlconfig.Flush;
         Modified:=false;
         if SaveSessionInfoInLPI then
