@@ -706,7 +706,7 @@ type
     procedure FreeIDEWindows;
     function CloseQueryIDEWindows: boolean;
 
-    function GetLastActiveDesigner: TComponentEditorDesigner;
+    function GetActiveDesigner: TComponentEditorDesigner;
     procedure ReloadMenuShortCuts;
 
     // methods for 'new unit'
@@ -2364,14 +2364,20 @@ begin
   Result:=true;
 end;
 
-function TMainIDE.GetLastActiveDesigner: TComponentEditorDesigner;
+function TMainIDE.GetActiveDesigner: TComponentEditorDesigner;
+// returns the designer that is currently active
+var
+  ActForm: TCustomForm;
 begin
-  // skip MainIDE form
-  if (Screen.ActiveCustomForm = MainIDEBar) and
-     (Screen.CustomFormZOrderCount > 1) and
-     Assigned(Screen.CustomFormsZOrdered[1].Designer) and
-     (Screen.CustomFormsZOrdered[1].Designer is TComponentEditorDesigner) then
-    Result := TComponentEditorDesigner(Screen.CustomFormsZOrdered[1].Designer)
+  ActForm:=Screen.ActiveCustomForm;
+  if ActForm=MainIDEBar then
+  begin
+    // skip MainIDE form
+    if Screen.CustomFormZOrderCount < 2 then exit(nil);
+    ActForm:=Screen.CustomFormsZOrdered[1];
+  end;
+  if (ActForm<>nil) and (ActForm.Designer is TComponentEditorDesigner) then
+    Result := TComponentEditorDesigner(ActForm.Designer)
   else
     Result := nil;
 end;
@@ -3865,7 +3871,7 @@ begin
   SelAvail := Assigned(ASrcEdit) and ASrcEdit.SelectionAvailable;
   SelEditable := Editable and SelAvail;
   SrcEditorActive := FDisplayState = dsSource;
-  ActiveDesigner := GetLastActiveDesigner;
+  ActiveDesigner := GetActiveDesigner;
   with MainIDEBar do
   begin
     if Assigned(ActiveDesigner) then
@@ -18528,7 +18534,7 @@ procedure TMainIDE.mnuEditCopyClicked(Sender: TObject);
 var
   ActiveDesigner: TComponentEditorDesigner;
 begin
-  ActiveDesigner := GetLastActiveDesigner;
+  ActiveDesigner := GetActiveDesigner;
   if Assigned(ActiveDesigner) then
     ActiveDesigner.CopySelection
   else
@@ -18539,7 +18545,7 @@ procedure TMainIDE.mnuEditCutClicked(Sender: TObject);
 var
   ActiveDesigner: TComponentEditorDesigner;
 begin
-  ActiveDesigner := GetLastActiveDesigner;
+  ActiveDesigner := GetActiveDesigner;
   if Assigned(ActiveDesigner) then
     ActiveDesigner.CutSelection
   else
@@ -18550,7 +18556,7 @@ procedure TMainIDE.mnuEditPasteClicked(Sender: TObject);
 var
   ActiveDesigner: TComponentEditorDesigner;
 begin
-  ActiveDesigner := GetLastActiveDesigner;
+  ActiveDesigner := GetActiveDesigner;
   if Assigned(ActiveDesigner) then
     ActiveDesigner.PasteSelection([cpsfFindUniquePositions])
   else
