@@ -188,6 +188,7 @@ type
   private
     DragDropStarted: boolean;
     FCaretTimer: TTimer;
+    FOnChange: TNotifyEvent;
     function GetLeftTextMargin: Integer;
     function GetRightTextMargin: Integer;
     procedure HandleCaretTimer(Sender: TObject);
@@ -204,6 +205,8 @@ type
     FEditState: TCDEditStateEx; // Points to the same object as FStateEx, so don't Free!
     function GetControlId: TCDControlID; override;
     procedure CreateControlStateEx; override;
+    // for descendents to override
+    procedure DoChange; virtual;
     // keyboard
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -231,6 +234,7 @@ type
     property Enabled;
     property TabStop default True;
     property Text: string read GetText write SetText;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
   { TCDCheckBox }
@@ -693,10 +697,213 @@ type
     property OnUserAddedPage;
   end;
 
+  // ===================================
+  // Misc Tab
+  // ===================================
+
+  { TCDSpinEdit }
+
+  TCDSpinEdit = class(TCDEdit)
+  private
+    FDecimalPlaces: Byte;
+    FIncrement: Double;
+    FMaxValue: Double;
+    FMinValue: Double;
+    FValue: Double;
+    FUpDown: TUpDown;
+    procedure SetDecimalPlaces(AValue: Byte);
+    procedure SetIncrement(AValue: Double);
+    procedure SetMaxValue(AValue: Double);
+    procedure SetMinValue(AValue: Double);
+    procedure UpDownChanging(Sender: TObject; var AllowChange: Boolean);
+    procedure SetValue(AValue: Double);
+    procedure DoUpdateText;
+    procedure DoUpdateUpDown;
+  protected
+    procedure DoChange; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property DecimalPlaces: Byte read FDecimalPlaces write SetDecimalPlaces default 0;
+    property Increment: Double read FIncrement write SetIncrement;
+    property MinValue: Double read FMinValue write SetMinValue;
+    property MaxValue: Double read FMaxValue write SetMaxValue;
+    property Value: Double read FValue write SetValue;
+  end;
+
 implementation
 
 const
   sTABSHEET_DEFAULT_NAME = 'CTabSheet';
+
+{ TCDControl }
+
+procedure TCDControl.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  PrepareControlState;
+  PrepareControlStateEx;
+  FDrawer.CalculatePreferredSize(Canvas, GetControlId(), FState, FStateEx,
+    PreferredWidth, PreferredHeight, WithThemeSpace);
+end;
+
+procedure TCDControl.SetState(const AValue: TCDControlState);
+begin
+  if AValue <> FState then
+  begin
+    FState := AValue;
+    Invalidate;
+  end;
+end;
+
+procedure TCDControl.PrepareCurrentDrawer;
+var
+  OldDrawer: TCDDrawer;
+begin
+  OldDrawer := FDrawer;
+  FDrawer := GetDrawer(FDrawStyle);
+  if FDrawer = nil then FDrawer := GetDrawer(dsCommon); // avoid exceptions in the object inspector if an invalid drawer is selected
+  if FDrawer = nil then raise Exception.Create('[TCDControl.PrepareCurrentDrawer] No registered drawers were found. Please add the unit customdrawn_common to your uses clause and also the units of any other utilized drawers.');
+  if OldDrawer <> FDrawer then FDrawer.LoadPalette();
+end;
+
+procedure TCDControl.SetDrawStyle(const AValue: TCDDrawStyle);
+begin
+  if FDrawStyle = AValue then exit;
+  FDrawStyle := AValue;
+  Invalidate;
+  PrepareCurrentDrawer();
+
+  //FCurrentDrawer.SetClientRectPos(Self);
+end;
+
+function TCDControl.GetClientRect: TRect;
+begin
+  // Disable this, since although it works in Win32, it doesn't seam to work in LCL-Carbon
+  //if (FCurrentDrawer = nil) then
+    Result := inherited GetClientRect()
+  //else
+    //Result := FCurrentDrawer.GetClientRect(Self);
+end;
+
+function TCDControl.GetControlId: TCDControlID;
+begin
+  Result := cidControl;
+end;
+
+procedure TCDControl.CreateControlStateEx;
+begin
+  FStateEx := TCDControlStateEx.Create;
+end;
+
+procedure TCDControl.PrepareControlState;
+begin
+  if Focused then FState := FState + [csfHasFocus]
+  else FState := FState - [csfHasFocus];
+
+  if Enabled then FState := FState + [csfEnabled]
+  else FState := FState - [csfEnabled];
+end;
+
+procedure TCDControl.PrepareControlStateEx;
+begin
+  if Parent <> nil then FStateEx.ParentRGBColor := Parent.GetRGBColorResolvingParent
+  else FStateEx.ParentRGBColor := clSilver;
+
+  if Color = clDefault then FStateEx.RGBColor := FDrawer.GetControlDefaultColor(GetControlId())
+  else FStateEx.RGBColor := GetRGBColorResolvingParent;
+
+  FStateEx.Caption := Caption;
+  FStateEx.Font := Font;
+  FStateEx.AutoSize := AutoSize;
+end;
+
+procedure TCDControl.DoEnter;
+begin
+  Invalidate;
+  inherited DoEnter;
+end;
+
+procedure TCDControl.DoExit;
+begin
+  Invalidate;
+  inherited DoExit;
+end;
+
+procedure TCDControl.EraseBackground(DC: HDC);
+begin
+
+end;
+
+procedure TCDControl.Paint;
+var
+  ABmp: TBitmap;
+begin
+  inherited Paint;
+
+  DrawToCanvas(Canvas);
+end;
+
+procedure TCDControl.DrawToCanvas(ACanvas: TCanvas);
+var
+  lSize: TSize;
+  lControlId: TCDControlID;
+begin
+  PrepareCurrentDrawer();
+
+  lSize := Size(Width, Height);
+  lControlId := GetControlId();
+  PrepareControlState;
+  PrepareControlStateEx;
+  FDrawer.DrawControl(ACanvas, lSize, lControlId, FState, FStateEx);
+end;
+
+procedure TCDControl.MouseEnter;
+begin
+  FState := FState + [csfMouseOver];
+  inherited MouseEnter;
+end;
+
+procedure TCDControl.MouseLeave;
+begin
+  FState := FState - [csfMouseOver];
+  inherited MouseLeave;
+end;
+
+procedure TCDControl.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+  Y: integer);
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  SetFocus();
+end;
+
+constructor TCDControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  CreateControlStateEx;
+  PrepareCurrentDrawer();
+  {$ifdef CDControlsDoDoubleBuffer}
+  DoubleBuffered := True;
+  {$endif}
+end;
+
+destructor TCDControl.Destroy;
+begin
+  FStateEx.Free;
+  inherited Destroy;
+end;
+
+// A CalculatePreferredSize which is utilized by LCL-CustomDrawn
+procedure TCDControl.LCLWSCalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace, AAutoSize: Boolean);
+begin
+  PrepareControlState;
+  PrepareControlStateEx;
+  FStateEx.AutoSize := AAutoSize;
+  FDrawer.CalculatePreferredSize(Canvas, GetControlId(), FState, FStateEx,
+    PreferredWidth, PreferredHeight, WithThemeSpace);
+end;
 
 { TCDComboBox }
 
@@ -924,174 +1131,6 @@ begin
   FBottomScrollBar.Free;
   FSpacer.Free;
   inherited Destroy;
-end;
-
-{ TCDControl }
-
-procedure TCDControl.CalculatePreferredSize(var PreferredWidth,
-  PreferredHeight: integer; WithThemeSpace: Boolean);
-begin
-  PrepareControlState;
-  PrepareControlStateEx;
-  FDrawer.CalculatePreferredSize(Canvas, GetControlId(), FState, FStateEx,
-    PreferredWidth, PreferredHeight, WithThemeSpace);
-end;
-
-procedure TCDControl.SetState(const AValue: TCDControlState);
-begin
-  if AValue <> FState then
-  begin
-    FState := AValue;
-    Invalidate;
-  end;
-end;
-
-procedure TCDControl.PrepareCurrentDrawer;
-var
-  OldDrawer: TCDDrawer;
-begin
-  OldDrawer := FDrawer;
-  FDrawer := GetDrawer(FDrawStyle);
-  if FDrawer = nil then FDrawer := GetDrawer(dsCommon); // avoid exceptions in the object inspector if an invalid drawer is selected
-  if FDrawer = nil then raise Exception.Create('[TCDControl.PrepareCurrentDrawer] No registered drawers were found. Please add the unit customdrawn_common to your uses clause and also the units of any other utilized drawers.');
-  if OldDrawer <> FDrawer then FDrawer.LoadPalette();
-end;
-
-procedure TCDControl.SetDrawStyle(const AValue: TCDDrawStyle);
-begin
-  if FDrawStyle = AValue then exit;
-  FDrawStyle := AValue;
-  Invalidate;
-  PrepareCurrentDrawer();
-
-  //FCurrentDrawer.SetClientRectPos(Self);
-end;
-
-function TCDControl.GetClientRect: TRect;
-begin
-  // Disable this, since although it works in Win32, it doesn't seam to work in LCL-Carbon
-  //if (FCurrentDrawer = nil) then
-    Result := inherited GetClientRect()
-  //else
-    //Result := FCurrentDrawer.GetClientRect(Self);
-end;
-
-function TCDControl.GetControlId: TCDControlID;
-begin
-  Result := cidControl;
-end;
-
-procedure TCDControl.CreateControlStateEx;
-begin
-  FStateEx := TCDControlStateEx.Create;
-end;
-
-procedure TCDControl.PrepareControlState;
-begin
-  if Focused then FState := FState + [csfHasFocus]
-  else FState := FState - [csfHasFocus];
-
-  if Enabled then FState := FState + [csfEnabled]
-  else FState := FState - [csfEnabled];
-end;
-
-procedure TCDControl.PrepareControlStateEx;
-begin
-  if Parent <> nil then FStateEx.ParentRGBColor := Parent.GetRGBColorResolvingParent
-  else FStateEx.ParentRGBColor := clSilver;
-
-  if Color = clDefault then FStateEx.RGBColor := FDrawer.GetControlDefaultColor(GetControlId())
-  else FStateEx.RGBColor := GetRGBColorResolvingParent;
-
-  FStateEx.Caption := Caption;
-  FStateEx.Font := Font;
-  FStateEx.AutoSize := AutoSize;
-end;
-
-procedure TCDControl.DoEnter;
-begin
-  Invalidate;
-  inherited DoEnter;
-end;
-
-procedure TCDControl.DoExit;
-begin
-  Invalidate;
-  inherited DoExit;
-end;
-
-procedure TCDControl.EraseBackground(DC: HDC);
-begin
-
-end;
-
-procedure TCDControl.Paint;
-var
-  ABmp: TBitmap;
-begin
-  inherited Paint;
-
-  DrawToCanvas(Canvas);
-end;
-
-procedure TCDControl.DrawToCanvas(ACanvas: TCanvas);
-var
-  lSize: TSize;
-  lControlId: TCDControlID;
-begin
-  PrepareCurrentDrawer();
-
-  lSize := Size(Width, Height);
-  lControlId := GetControlId();
-  PrepareControlState;
-  PrepareControlStateEx;
-  FDrawer.DrawControl(ACanvas, lSize, lControlId, FState, FStateEx);
-end;
-
-procedure TCDControl.MouseEnter;
-begin
-  FState := FState + [csfMouseOver];
-  inherited MouseEnter;
-end;
-
-procedure TCDControl.MouseLeave;
-begin
-  FState := FState - [csfMouseOver];
-  inherited MouseLeave;
-end;
-
-procedure TCDControl.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
-  Y: integer);
-begin
-  inherited MouseDown(Button, Shift, X, Y);
-  SetFocus();
-end;
-
-constructor TCDControl.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  CreateControlStateEx;
-  PrepareCurrentDrawer();
-  {$ifdef CDControlsDoDoubleBuffer}
-  DoubleBuffered := True;
-  {$endif}
-end;
-
-destructor TCDControl.Destroy;
-begin
-  FStateEx.Free;
-  inherited Destroy;
-end;
-
-// A CalculatePreferredSize which is utilized by LCL-CustomDrawn
-procedure TCDControl.LCLWSCalculatePreferredSize(var PreferredWidth,
-  PreferredHeight: integer; WithThemeSpace, AAutoSize: Boolean);
-begin
-  PrepareControlState;
-  PrepareControlStateEx;
-  FStateEx.AutoSize := AAutoSize;
-  FDrawer.CalculatePreferredSize(Canvas, GetControlId(), FState, FStateEx,
-    PreferredWidth, PreferredHeight, WithThemeSpace);
 end;
 
 { TCDButtonDrawer }
@@ -1325,6 +1364,11 @@ begin
   FStateEx := FEditState;
 end;
 
+procedure TCDEdit.DoChange;
+begin
+  if Assigned(FOnChange) then FOnChange(Self);
+end;
+
 procedure TCDEdit.HandleCaretTimer(Sender: TObject);
 begin
   if FEditState.EventArrived then
@@ -1403,8 +1447,12 @@ begin
 end;
 
 procedure TCDEdit.SetText(AValue: string);
+var
+  OldCaption: TCaption;
 begin
+  OldCaption := Caption;
   Caption := AValue;
+  if (AValue <> OldCaption) then DoChange;
   Invalidate;
 end;
 
@@ -2949,6 +2997,98 @@ end;
 function TCDPageControl.GetPageIndex: integer;
 begin
   Result := FTabIndex;
+end;
+
+{ TCDSpinEdit }
+
+procedure TCDSpinEdit.UpDownChanging(Sender: TObject; var AllowChange: Boolean);
+begin
+  Value := FUpDown.Position / Power(10, FDecimalPlaces);
+end;
+
+procedure TCDSpinEdit.SetIncrement(AValue: Double);
+begin
+  if FIncrement=AValue then Exit;
+  FIncrement:=AValue;
+  DoUpdateUpDown;
+end;
+
+procedure TCDSpinEdit.SetDecimalPlaces(AValue: Byte);
+begin
+  if FDecimalPlaces=AValue then Exit;
+  FDecimalPlaces:=AValue;
+  DoUpdateUpDown;
+  DoUpdateText;
+end;
+
+procedure TCDSpinEdit.SetMaxValue(AValue: Double);
+begin
+  if FMaxValue=AValue then Exit;
+  FMaxValue:=AValue;
+  if FValue > FMaxValue then Value := FMaxValue;
+  DoUpdateUpDown;
+end;
+
+procedure TCDSpinEdit.SetMinValue(AValue: Double);
+begin
+  if FMinValue=AValue then Exit;
+  FMinValue:=AValue;
+  if FValue < FMinValue then Value := FMinValue;
+  DoUpdateUpDown;
+end;
+
+procedure TCDSpinEdit.SetValue(AValue: Double);
+begin
+  if FValue=AValue then Exit;
+  if FValue < FMinValue then Exit;
+  if FValue > FMaxValue then Exit;
+  FValue:=AValue;
+  DoUpdateText;
+  DoUpdateUpDown;
+end;
+
+procedure TCDSpinEdit.DoUpdateText;
+begin
+  if FDecimalPlaces > 0 then Text := FloatToStr(FValue)
+  else Text := IntToStr(Round(FValue));
+  Invalidate;
+end;
+
+procedure TCDSpinEdit.DoUpdateUpDown;
+begin
+  FUpDown.Min := Round(FMinValue * Power(10, FDecimalPlaces));
+  FUpDown.Max := Round(FMaxValue * Power(10, FDecimalPlaces));
+  FUpDown.Position := Round(FValue * Power(10, FDecimalPlaces));
+end;
+
+procedure TCDSpinEdit.DoChange;
+var
+  lValue: Extended;
+begin
+  if SysUtils.TryStrToFloat(Caption, lValue) then FValue := lValue;
+  DoUpdateUpDown;
+  inherited DoChange;
+end;
+
+constructor TCDSpinEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  FUpDown := TUpDown.Create(Self);
+  FUpDown.Align := alRight;
+  FUpDown.Parent := Self;
+  FUpDown.OnChanging :=@UpDownChanging;
+
+  FMinValue := 0;
+  FMaxValue := 100;
+  FIncrement := 1;
+
+  DoUpdateText();
+end;
+
+destructor TCDSpinEdit.Destroy;
+begin
+  inherited Destroy;
 end;
 
 end.

@@ -61,7 +61,7 @@ object Form1: TForm1
     Height = 240
     Top = 40
     Width = 463
-    PageIndex = 9
+    PageIndex = 0
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 2
     TabStop = True
@@ -419,6 +419,7 @@ object Form1: TForm1
         Width = 128
         DrawStyle = dsDefault
         Text = 'CDComboBox1'
+        ItemIndex = 0
       end
     end
     object pageScrollBars: TPage
@@ -1295,7 +1296,7 @@ object Form1: TForm1
     object pageSpins: TPage
       object SpinEdit1: TSpinEdit
         Left = 13
-        Height = 21
+        Height = 25
         Top = 24
         Width = 85
         TabOrder = 0
@@ -1303,7 +1304,7 @@ object Form1: TForm1
       end
       object FloatSpinEdit1: TFloatSpinEdit
         Left = 13
-        Height = 21
+        Height = 25
         Top = 104
         Width = 85
         Increment = 0.1
@@ -1311,6 +1312,18 @@ object Form1: TForm1
         MinValue = 0
         TabOrder = 1
         Value = 1.1
+      end
+      object CDSpinEdit1: TCDSpinEdit
+        Left = 160
+        Height = 25
+        Top = 24
+        Width = 80
+        DrawStyle = dsDefault
+        Text = 'CDSpinEdit1'
+        Increment = 1
+        MinValue = 0
+        MaxValue = 100
+        Value = 0
       end
     end
   end

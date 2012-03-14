@@ -36,6 +36,7 @@ type
     CDEdit1: TCDEdit;
     CDEdit2: TCDEdit;
     CDEdit3: TCDEdit;
+    CDSpinEdit1: TCDSpinEdit;
     CDTabControl1: TCDTabControl;
     ComboBox1: TComboBox;
     Edit2: TEdit;
