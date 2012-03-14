@@ -706,7 +706,7 @@ type
     procedure FreeIDEWindows;
     function CloseQueryIDEWindows: boolean;
 
-    function GetActiveDesigner: TComponentEditorDesigner;
+    function GetActiveDesignerSkipMainBar: TComponentEditorDesigner;
     procedure ReloadMenuShortCuts;
 
     // methods for 'new unit'
@@ -2364,16 +2364,19 @@ begin
   Result:=true;
 end;
 
-function TMainIDE.GetActiveDesigner: TComponentEditorDesigner;
+function TMainIDE.GetActiveDesignerSkipMainBar: TComponentEditorDesigner;
 // returns the designer that is currently active
 // the MainIDEBar is ignored
 var
   ActForm: TCustomForm;
+  ActControl: TWinControl;
 begin
   ActForm:=Screen.ActiveCustomForm;
   if ActForm=MainIDEBar then
   begin
-    // skip MainIDE form
+    ActControl:=ActForm.ActiveControl;
+    if (ActControl<>nil) and (GetFirstParentForm(ActControl)<>MainIDEBar) then
+      exit(nil); // a docked form has focus
     if Screen.CustomFormZOrderCount < 2 then exit(nil);
     ActForm:=Screen.CustomFormsZOrdered[1];
   end;
@@ -3872,7 +3875,7 @@ begin
   SelAvail := Assigned(ASrcEdit) and ASrcEdit.SelectionAvailable;
   SelEditable := Editable and SelAvail;
   SrcEditorActive := FDisplayState = dsSource;
-  ActiveDesigner := GetActiveDesigner;
+  ActiveDesigner := GetActiveDesignerSkipMainBar;
   with MainIDEBar do
   begin
     if Assigned(ActiveDesigner) then
@@ -3881,13 +3884,13 @@ begin
       itmEditUndo.Enabled := False;
       itmEditRedo.Enabled := False;
       itmEditCut.Enabled := ActiveDesigner.CanCopy;
-      itmEditCopy.Enabled := ActiveDesigner.CanCopy;
+      itmEditCopy.Enabled := itmEditCut.Enabled;
       itmEditPaste.Enabled := ActiveDesigner.CanPaste;
     end
     else
     begin
       itmEditUndo.Enabled := Editable and SrcEditorActive;
-      itmEditRedo.Enabled := Editable and SrcEditorActive;
+      itmEditRedo.Enabled := itmEditUndo.Enabled;
       itmEditCut.Enabled := SelEditable;
       itmEditCopy.Enabled := SelAvail;
       itmEditPaste.Enabled := Editable;
@@ -18535,7 +18538,7 @@ procedure TMainIDE.mnuEditCopyClicked(Sender: TObject);
 var
   ActiveDesigner: TComponentEditorDesigner;
 begin
-  ActiveDesigner := GetActiveDesigner;
+  ActiveDesigner := GetActiveDesignerSkipMainBar;
   if Assigned(ActiveDesigner) then
     ActiveDesigner.CopySelection
   else
@@ -18546,7 +18549,7 @@ procedure TMainIDE.mnuEditCutClicked(Sender: TObject);
 var
   ActiveDesigner: TComponentEditorDesigner;
 begin
-  ActiveDesigner := GetActiveDesigner;
+  ActiveDesigner := GetActiveDesignerSkipMainBar;
   if Assigned(ActiveDesigner) then
     ActiveDesigner.CutSelection
   else
@@ -18557,7 +18560,7 @@ procedure TMainIDE.mnuEditPasteClicked(Sender: TObject);
 var
   ActiveDesigner: TComponentEditorDesigner;
 begin
-  ActiveDesigner := GetActiveDesigner;
+  ActiveDesigner := GetActiveDesignerSkipMainBar;
   if Assigned(ActiveDesigner) then
     ActiveDesigner.PasteSelection([cpsfFindUniquePositions])
   else
