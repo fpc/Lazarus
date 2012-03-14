@@ -602,7 +602,8 @@ begin
   Result := AForm;
   lEventPos := Point(AX, AY); // Don't adjust for the scrolling because the regions are scrolled too
 
-  for i := 0 to AControlsList.Count-1 do
+  // The order of this loop is important to respect the Z-order of controls
+  for i := AControlsList.Count-1 downto 0 do
   begin
     lCurCDControl := TCDWinControl(AControlsList.Items[i]);
     if lCurCDControl.Region = nil then Continue;
