@@ -28,11 +28,11 @@ uses
   LineInfo,
   {$ENDIF}
   // rtl+fcl
-  Types, Classes, SysUtils, FPCAdds,
+  Types, Classes, SysUtils,
   // interfacebase
   InterfaceBase,
   // LCL
-  Dialogs, Controls, Forms, LCLStrConsts, LMessages,
+  Dialogs, Controls, Forms, LMessages,
   LCLProc, LCLIntf, LCLType, GraphType, Graphics, Menus, Themes,
   // widgetset
   WSLCLClasses;
@@ -48,22 +48,22 @@ type
   public
     function LCLPlatform: TLCLPlatform; override;
     // Application
-    procedure AppInit(var ScreenInfo: TScreenInfo); override;
+    procedure AppInit(var {%H-}ScreenInfo: TScreenInfo); override;
     procedure AppProcessMessages; override;
     procedure AppWaitMessage; override;
     procedure AppTerminate; override;
     procedure AppMinimize; override;
     procedure AppRestore; override;
     procedure AppBringToFront; override;
-    procedure AppSetTitle(const ATitle: string); override;
-    function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint; override;
+    procedure AppSetTitle(const {%H-}ATitle: string); override;
+    function EnumFontFamiliesEx({%H-}DC: HDC; {%H-}lpLogFont: PLogFont; {%H-}Callback: FontEnumExProc; {%H-}Lparam: LParam; {%H-}Flags: dword): longint; override;
   public
     constructor Create; override;
     destructor Destroy; override;
 
     // create and destroy
-    function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc) : THandle; override;
-    function DestroyTimer(TimerHandle: THandle) : boolean; override;
+    function CreateTimer({%H-}Interval: integer; {%H-}TimerFunc: TWSTimerProc) : THandle; override;
+    function DestroyTimer({%H-}TimerHandle: THandle) : boolean; override;
     procedure DestroyLCLComponent(Sender: TObject);virtual;
   public
   end;
@@ -72,9 +72,6 @@ var
   NoGUIWidgetSet: TNoGUIWidgetSet;
 
 implementation
-
-uses
-  NoGUIWSFactory;
 
 { TNoGUIWidgetSet }
 
