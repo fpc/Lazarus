@@ -3914,13 +3914,14 @@ cleanide:
 	$(MAKE) -C ide cleanide
 cleanlaz: cleanide
 	$(MAKE) -C lcl cleanall
-	$(MAKE) -C components bigideclean
+	$(MAKE) -C components cleanall
 	$(MAKE) -C packager/registration clean
 	$(MAKE) -C ideintf clean
 purge: cleanlaz
 	$(MAKE) -C examples clean
 	$(MAKE) -C tools clean
 clean: cleanlaz
+	$(MAKE) -C . cleanlaz LCL_PLATFORM=nogui
 cleanall: purge
 installbase:
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
