@@ -45,7 +45,7 @@ endif
 
 #-----------------------------------------------------------------------------
 [rules]
-.PHONY: help lcl components packager/registration ideintf bigidecomponents ide idepkg idebig bigide bigideclean starter lazbuild tools all clean cleanide purge examples install
+.PHONY: help lcl components packager/registration ideintf bigidecomponents lazbuild tools ide idepkg idebig cleanide bigide bigideclean useride starter all clean purge examples install
 
 #-----------------------------------------------------------------------------
 help:
@@ -104,6 +104,11 @@ idepkg:
 # build lazarus exe with bigide packages
 idebig:
 	$(MAKE) -C ide bigide
+
+#-----------------------------------------------------------------------------
+# build lazarus and packages with user's settings
+useride: lazbuild
+	./lazbuild $(SRCEXEEXT) --build-ide=
 
 #-----------------------------------------------------------------------------
 # build lazarus,lcl,startlazarus with bigide packages
@@ -170,7 +175,7 @@ else
 	$(MKDIR) $(INSTALL_MAN_DIR)/man1
 endif
 #-----------------------------------------------------------------------------
-# Many C expect 'make install' to copy the binaries to somewhere
+# Many "make" users expect 'make install' to copy the binaries to somewhere
 # Copy the lazarus tree to the install directory and set some links
 install:
 	$(MAKE) installbase

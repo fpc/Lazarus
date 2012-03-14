@@ -3845,7 +3845,7 @@ makefiles: fpc_makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
-.PHONY: help lcl components packager/registration ideintf bigidecomponents ide idepkg idebig bigide bigideclean starter lazbuild tools all clean cleanide purge examples install
+.PHONY: help lcl components packager/registration ideintf bigidecomponents lazbuild tools ide idepkg idebig cleanide bigide bigideclean useride starter all clean purge examples install
 help:
 		 @$(ECHO)
 		 @$(ECHO) " Targets"
@@ -3891,6 +3891,8 @@ idepkg:
 	$(MAKE) -C ide idepkg
 idebig:
 	$(MAKE) -C ide bigide
+useride: lazbuild
+	./lazbuild $(SRCEXEEXT) --build-ide=
 bigide: lazbuild lcl ideintf bigidecomponents idebig starter
 bigidecomponents:
 	$(MAKE) -C components bigidecomponents
