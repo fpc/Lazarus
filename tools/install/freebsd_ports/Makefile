@@ -115,7 +115,7 @@ LCL_PLATFORM=	gtk
 .endif
 
 .if defined(WITH_BIGIDE)
-LAZARUS_TARGET=	bigide lazbuilder
+LAZARUS_TARGET=	bigide lazbuild
 .endif
 
 .for OPT in ${ALL_UNITS}

@@ -6,7 +6,7 @@ if [ -n "$FPCCfg" ]; then
   make
   make bigide OPT="$MAKEOPTS" USESVN2REVISIONINC=0
   make tools OPT="$MAKEOPTS"
-  make lazbuilder OPT="$MAKEOPTS"
+  make lazbuild OPT="$MAKEOPTS"
   # build gtk2 .ppu
   export LCL_PLATFORM=gtk2
   make lcl ideintf packager/registration bigidecomponents OPT="$MAKEOPTS"

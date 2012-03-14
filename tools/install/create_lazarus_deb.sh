@@ -97,11 +97,11 @@ if [ -n "$FPCCfg" ]; then
   MAKEOPTS="$MAKEOPTS -n @$FPCCfg"
 fi
 # build for default platform
-make packager/registration lazutils lcl ideintf bigidecomponents PP=$ppcbin OPT="$MAKEOPTS"
+make lazutils lcl ideintf bigidecomponents PP=$ppcbin OPT="$MAKEOPTS"
 # build IDE
 export LCL_PLATFORM=$LCLWidgetset
 make bigide PP=$ppcbin USESVN2REVISIONINC=0 OPT="$MAKEOPTS"
-make lazbuilder PP=$ppcbin OPT="$MAKEOPTS"
+make lazbuild PP=$ppcbin OPT="$MAKEOPTS"
 make tools PP=$ppcbin OPT="$MAKEOPTS"
 export LCL_PLATFORM=
 
