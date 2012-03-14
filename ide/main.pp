@@ -2366,6 +2366,7 @@ end;
 
 function TMainIDE.GetActiveDesigner: TComponentEditorDesigner;
 // returns the designer that is currently active
+// the MainIDEBar is ignored
 var
   ActForm: TCustomForm;
 begin
