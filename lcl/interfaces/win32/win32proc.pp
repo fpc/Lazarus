@@ -283,10 +283,40 @@ begin
     // edit control messages start (todo: add more if needed)
     $00B0: Result := 'EM_GETSEL';
     $00B1: Result := 'EM_SETSEL';
+    $00B2: Result := 'EM_GETRECT';
+    $00B3: Result := 'EM_SETRECT';
+    $00B4: Result := 'EM_SETRECTNP';
+    $00B5: Result := 'EM_SCROLL';
+    $00B6: Result := 'EM_LINESCROLL';
     $00B7: Result := 'EM_SCROLLCARET';
+    $00B8: Result := 'EM_GETMODIFY';
+    $00B9: Result := 'EM_SETMODIFY';
+    $00BA: Result := 'EM_GETLINECOUNT';
+    $00BB: Result := 'EM_LINEINDEX';
+    $00BC: Result := 'EM_SETHANDLE';
+    $00BD: Result := 'EM_GETHANDLE';
+    $00BE: Result := 'EM_GETTHUMB';
+    $00C1: Result := 'EM_LINELENGTH';
+    $00C2: Result := 'EM_REPLACESEL';
+    $00C4: Result := 'EM_GETLINE';
     $00C5: Result := 'EM_LIMITTEXT';
+    $00C6: Result := 'EM_CANUNDO';
+    $00C7: Result := 'EM_UNDO';
+    $00C8: Result := 'EM_FMTLINES';
+    $00C9: Result := 'EM_LINEFROMCHAR';
+    $00CB: Result := 'EM_SETTABSTOPS';
     $00CC: Result := 'EM_SETPASSWORDCHAR';
+    $00CD: Result := 'EM_EMPTYUNDOBUFFER';
+    $00CE: Result := 'EM_GETFIRSTVISIBLELINE';
     $00CF: Result := 'EM_SETREADONLY';
+    $00D0: Result := 'EM_SETWORDBREAKPROC';
+    $00D1: Result := 'EM_GETWORDBREAKPROC';
+    $00D2: Result := 'EM_GETPASSWORDCHAR';
+    $00D3: Result := 'EM_SETMARGINS';
+    $00D4: Result := 'EM_GETMARGINS';
+    $00D5: Result := 'EM_GETLIMITTEXT';
+    $00D6: Result := 'EM_POSFROMCHAR';
+    $00D7: Result := 'EM_CHARFROMPOS';
     // edit control messages end
     // scrollbar control messages start
     $00E0: Result := 'SBM_SETPOS';
