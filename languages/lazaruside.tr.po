@@ -3537,6 +3537,7 @@ msgid "New class name:"
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pnewcomponent
+msgctxt "lazarusidestrconsts.lisa2pnewcomponent"
 msgid "New Component"
 msgstr ""
 
@@ -10884,7 +10885,8 @@ msgid "Make Resource String ..."
 msgstr "Kaynak Dizisi Yap ..."
 
 #: lazarusidestrconsts.lismenunewcomponent
-msgid "New component"
+msgctxt "lazarusidestrconsts.lismenunewcomponent"
+msgid "New Component"
 msgstr ""
 
 #: lazarusidestrconsts.lismenunewform
@@ -12099,7 +12101,7 @@ msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default i
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
-msgid "%soverride the project build mode."
+msgid "%soverride the project or IDE build mode."
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
@@ -14337,6 +14339,10 @@ msgstr ""
 #: lazarusidestrconsts.lissaveas
 msgctxt "lazarusidestrconsts.lissaveas"
 msgid "Save As"
+msgstr ""
+
+#: lazarusidestrconsts.lissavechangedfiles
+msgid "Save changed files?"
 msgstr ""
 
 #: lazarusidestrconsts.lissavechanges

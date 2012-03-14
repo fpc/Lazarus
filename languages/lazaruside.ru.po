@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-03-07 02:05+0400\n"
+"PO-Revision-Date: 2012-03-15 02:11+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3662,6 +3662,7 @@ msgid "New class name:"
 msgstr "Новое имя класса:"
 
 #: lazarusidestrconsts.lisa2pnewcomponent
+msgctxt "lazarusidestrconsts.lisa2pnewcomponent"
 msgid "New Component"
 msgstr "Новый компонент"
 
@@ -11035,7 +11036,9 @@ msgid "Make Resource String ..."
 msgstr "Создать строку ресурсов ..."
 
 #: lazarusidestrconsts.lismenunewcomponent
-msgid "New component"
+#| msgid "New component"
+msgctxt "lazarusidestrconsts.lismenunewcomponent"
+msgid "New Component"
 msgstr "Новый компонент"
 
 #: lazarusidestrconsts.lismenunewform
@@ -12223,8 +12226,9 @@ msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default i
 msgstr "%sперекрыть компилятор по умолчанию, например, ppc386, ppcx64, ppcppc и т. д. Значение по умолчанию хранится в environmentoptions.xml"
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
-msgid "%soverride the project build mode."
-msgstr "%sперекрыть режим сборки проекта."
+#| msgid "%soverride the project build mode."
+msgid "%soverride the project or IDE build mode."
+msgstr "%sперекрыть режим сборки проекта или IDE."
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
 msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
@@ -14491,6 +14495,10 @@ msgstr "Сохранить и перезапустить IDE"
 msgctxt "lazarusidestrconsts.lissaveas"
 msgid "Save As"
 msgstr "Сохранить как"
+
+#: lazarusidestrconsts.lissavechangedfiles
+msgid "Save changed files?"
+msgstr "Сохранить изменённые файлы?"
 
 #: lazarusidestrconsts.lissavechanges
 msgid "Save changes?"

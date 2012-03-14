@@ -3500,6 +3500,7 @@ msgid "New class name:"
 msgstr "Uusi luokan nimi:"
 
 #: lazarusidestrconsts.lisa2pnewcomponent
+msgctxt "lazarusidestrconsts.lisa2pnewcomponent"
 msgid "New Component"
 msgstr "Uusi komponentti"
 
@@ -10691,8 +10692,9 @@ msgid "Make Resource String ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenunewcomponent
-msgid "New component"
-msgstr ""
+msgctxt "lazarusidestrconsts.lismenunewcomponent"
+msgid "New Component"
+msgstr "Uusi komponentti"
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
@@ -11799,7 +11801,9 @@ msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default i
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
-msgid "%soverride the project build mode."
+#, fuzzy
+#| msgid "%soverride the project build mode."
+msgid "%soverride the project or IDE build mode."
 msgstr "%skorvaa projektin koontamoodi."
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
@@ -14030,6 +14034,10 @@ msgstr "Tallenna ja kokoa uudelleen"
 msgctxt "lazarusidestrconsts.lissaveas"
 msgid "Save As"
 msgstr "Tallenna nimellä"
+
+#: lazarusidestrconsts.lissavechangedfiles
+msgid "Save changed files?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavechanges
 msgid "Save changes?"

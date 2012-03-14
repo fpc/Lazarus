@@ -3752,6 +3752,7 @@ msgid "New class name:"
 msgstr "新規クラス名:"
 
 #: lazarusidestrconsts.lisa2pnewcomponent
+msgctxt "lazarusidestrconsts.lisa2pnewcomponent"
 msgid "New Component"
 msgstr "新規のコンポーネント"
 
@@ -11270,8 +11271,9 @@ msgid "Make Resource String ..."
 msgstr "リソース文字列作成 ..."
 
 #: lazarusidestrconsts.lismenunewcomponent
-msgid "New component"
-msgstr ""
+msgctxt "lazarusidestrconsts.lismenunewcomponent"
+msgid "New Component"
+msgstr "新規のコンポーネント"
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
@@ -12521,7 +12523,9 @@ msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default i
 msgstr "%sデフォルトコンパイラをオーバーライド。例：ppc386 ppcx64 ppcppc など。デフォルトはenvironmentoptions.xmlに保管されています"
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
-msgid "%soverride the project build mode."
+#, fuzzy
+#| msgid "%soverride the project build mode."
+msgid "%soverride the project or IDE build mode."
 msgstr "%sプロジェクト構築モードをオーバーライド"
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
@@ -14816,6 +14820,10 @@ msgstr "保存してIDEを再構築"
 msgctxt "lazarusidestrconsts.lissaveas"
 msgid "Save As"
 msgstr "名前を付けて保存"
+
+#: lazarusidestrconsts.lissavechangedfiles
+msgid "Save changed files?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavechanges
 msgid "Save changes?"

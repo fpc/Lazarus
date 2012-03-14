@@ -3724,6 +3724,7 @@ msgid "New class name:"
 msgstr "新建类名:"
 
 #: lazarusidestrconsts.lisa2pnewcomponent
+msgctxt "lazarusidestrconsts.lisa2pnewcomponent"
 msgid "New Component"
 msgstr "新建组件"
 
@@ -11187,8 +11188,9 @@ msgid "Make Resource String ..."
 msgstr "制作资源字符串 ..."
 
 #: lazarusidestrconsts.lismenunewcomponent
-msgid "New component"
-msgstr ""
+msgctxt "lazarusidestrconsts.lismenunewcomponent"
+msgid "New Component"
+msgstr "新建组件"
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
@@ -12420,7 +12422,7 @@ msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default i
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
-msgid "%soverride the project build mode."
+msgid "%soverride the project or IDE build mode."
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
@@ -14711,6 +14713,10 @@ msgstr "保存并重重新编译 IDE"
 msgctxt "lazarusidestrconsts.lissaveas"
 msgid "Save As"
 msgstr "另存为"
+
+#: lazarusidestrconsts.lissavechangedfiles
+msgid "Save changed files?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavechanges
 msgid "Save changes?"

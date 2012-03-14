@@ -3679,6 +3679,7 @@ msgid "New class name:"
 msgstr "Nieuwe Class naam:"
 
 #: lazarusidestrconsts.lisa2pnewcomponent
+msgctxt "lazarusidestrconsts.lisa2pnewcomponent"
 msgid "New Component"
 msgstr "Nieuw Component"
 
@@ -11060,8 +11061,9 @@ msgid "Make Resource String ..."
 msgstr "Maak Resource string ..."
 
 #: lazarusidestrconsts.lismenunewcomponent
-msgid "New component"
-msgstr ""
+msgctxt "lazarusidestrconsts.lismenunewcomponent"
+msgid "New Component"
+msgstr "Nieuw Component"
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
@@ -12277,7 +12279,7 @@ msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default i
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
-msgid "%soverride the project build mode."
+msgid "%soverride the project or IDE build mode."
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
@@ -14558,6 +14560,10 @@ msgstr "Opslaan and IDE opnieuw bouwen"
 msgctxt "lazarusidestrconsts.lissaveas"
 msgid "Save As"
 msgstr "Opslaan Als"
+
+#: lazarusidestrconsts.lissavechangedfiles
+msgid "Save changed files?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavechanges
 msgid "Save changes?"

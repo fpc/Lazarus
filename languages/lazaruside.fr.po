@@ -3665,6 +3665,7 @@ msgid "New class name:"
 msgstr "Nouveau nom de class:"
 
 #: lazarusidestrconsts.lisa2pnewcomponent
+msgctxt "lazarusidestrconsts.lisa2pnewcomponent"
 msgid "New Component"
 msgstr "Nouveau composant"
 
@@ -11129,8 +11130,9 @@ msgid "Make Resource String ..."
 msgstr "Construire une chaîne ressource ..."
 
 #: lazarusidestrconsts.lismenunewcomponent
-msgid "New component"
-msgstr ""
+msgctxt "lazarusidestrconsts.lismenunewcomponent"
+msgid "New Component"
+msgstr "Nouveau composant"
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
@@ -12358,7 +12360,7 @@ msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default i
 msgstr "%sredefinie le compilateur par défaut. par exemple, ppc386 ppcx64 ppcppc etc par défaut est stocké dans environmentoptions.xml"
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
-msgid "%soverride the project build mode."
+msgid "%soverride the project or IDE build mode."
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
@@ -14636,6 +14638,10 @@ msgstr "Enregistrer et recréer l'EDI"
 msgctxt "lazarusidestrconsts.lissaveas"
 msgid "Save As"
 msgstr "Enregistrer sous"
+
+#: lazarusidestrconsts.lissavechangedfiles
+msgid "Save changed files?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavechanges
 msgid "Save changes?"

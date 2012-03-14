@@ -3729,6 +3729,7 @@ msgid "New class name:"
 msgstr "שם המחלקה החדשה:"
 
 #: lazarusidestrconsts.lisa2pnewcomponent
+msgctxt "lazarusidestrconsts.lisa2pnewcomponent"
 msgid "New Component"
 msgstr "רכיב חדש"
 
@@ -11241,8 +11242,9 @@ msgid "Make Resource String ..."
 msgstr "צור מחרוזת משאבים ..."
 
 #: lazarusidestrconsts.lismenunewcomponent
-msgid "New component"
-msgstr ""
+msgctxt "lazarusidestrconsts.lismenunewcomponent"
+msgid "New Component"
+msgstr "רכיב חדש"
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
@@ -12486,7 +12488,9 @@ msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default i
 msgstr "דרוס את מהדר ברירת המחדל לדוגמא ppc386 ppcx64 ppcppc וכו'. מהדר ברירת המחדל מאוחסן בקובץ environmentoptions.xml"
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
-msgid "%soverride the project build mode."
+#, fuzzy
+#| msgid "%soverride the project build mode."
+msgid "%soverride the project or IDE build mode."
 msgstr "החלף את אופן הבנייה של הפרוייקט"
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
@@ -14787,6 +14791,10 @@ msgstr "שמור ובנה מחדש את ה IDE"
 msgctxt "lazarusidestrconsts.lissaveas"
 msgid "Save As"
 msgstr "שמור כ"
+
+#: lazarusidestrconsts.lissavechangedfiles
+msgid "Save changed files?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavechanges
 msgid "Save changes?"

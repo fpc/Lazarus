@@ -3732,6 +3732,7 @@ msgid "New class name:"
 msgstr "Naujos klasės pavadinimas:"
 
 #: lazarusidestrconsts.lisa2pnewcomponent
+msgctxt "lazarusidestrconsts.lisa2pnewcomponent"
 msgid "New Component"
 msgstr "Nauja komponentė"
 
@@ -11221,8 +11222,9 @@ msgid "Make Resource String ..."
 msgstr "Kurti išteklių eilutę…"
 
 #: lazarusidestrconsts.lismenunewcomponent
-msgid "New component"
-msgstr ""
+msgctxt "lazarusidestrconsts.lismenunewcomponent"
+msgid "New Component"
+msgstr "Nauja komponentė"
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
@@ -12451,7 +12453,7 @@ msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default i
 msgstr "%snaudoti kitą, nei numatyta, kompiliatorių. Pvz. ppc386 ppcx64 ppcppc ir pan. Numatytasis bus įrašytas failan „environmentoptions.xml“"
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
-msgid "%soverride the project build mode."
+msgid "%soverride the project or IDE build mode."
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
@@ -14749,6 +14751,10 @@ msgstr "Įrašyti ir daryti IKA"
 msgctxt "lazarusidestrconsts.lissaveas"
 msgid "Save As"
 msgstr "Įrašyti kaip"
+
+#: lazarusidestrconsts.lissavechangedfiles
+msgid "Save changed files?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavechanges
 msgid "Save changes?"

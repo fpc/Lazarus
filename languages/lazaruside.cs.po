@@ -3510,6 +3510,7 @@ msgid "New class name:"
 msgstr "Nové jméno třídy:"
 
 #: lazarusidestrconsts.lisa2pnewcomponent
+msgctxt "lazarusidestrconsts.lisa2pnewcomponent"
 msgid "New Component"
 msgstr "Nová komponenta"
 
@@ -10713,7 +10714,10 @@ msgid "Make Resource String ..."
 msgstr "Vytvořit zdrojový řetězec..."
 
 #: lazarusidestrconsts.lismenunewcomponent
-msgid "New component"
+#, fuzzy
+#| msgid "New component"
+msgctxt "lazarusidestrconsts.lismenunewcomponent"
+msgid "New Component"
 msgstr "Nová komponenta"
 
 #: lazarusidestrconsts.lismenunewform
@@ -11828,7 +11832,9 @@ msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default i
 msgstr "%spřepíše výchozí překladač. např. ppc386 ppcx64 ppcppc aj. výchozí je uložen v environmentoptions.xml"
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
-msgid "%soverride the project build mode."
+#, fuzzy
+#| msgid "%soverride the project build mode."
+msgid "%soverride the project or IDE build mode."
 msgstr "%spřepíše sestavovací mód projektu."
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
@@ -14063,6 +14069,10 @@ msgstr "Uložit a znovu sestavit IDE"
 msgctxt "lazarusidestrconsts.lissaveas"
 msgid "Save As"
 msgstr "Uložit jako"
+
+#: lazarusidestrconsts.lissavechangedfiles
+msgid "Save changed files?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavechanges
 msgid "Save changes?"

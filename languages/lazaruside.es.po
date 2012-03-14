@@ -3735,6 +3735,7 @@ msgid "New class name:"
 msgstr "Nuevo nombre de clase:"
 
 #: lazarusidestrconsts.lisa2pnewcomponent
+msgctxt "lazarusidestrconsts.lisa2pnewcomponent"
 msgid "New Component"
 msgstr "Nuevo Componente"
 
@@ -11237,8 +11238,9 @@ msgid "Make Resource String ..."
 msgstr "Crear ResourceString ..."
 
 #: lazarusidestrconsts.lismenunewcomponent
-msgid "New component"
-msgstr ""
+msgctxt "lazarusidestrconsts.lismenunewcomponent"
+msgid "New Component"
+msgstr "Nuevo Componente"
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
@@ -12474,7 +12476,9 @@ msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default i
 msgstr "%sreemplaza al compilador predeterminado. ej. ppc386 ppcx64 ppcppc etc. El predeterminado se almacena en environmentoptions.xml"
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
-msgid "%soverride the project build mode."
+#, fuzzy
+#| msgid "%soverride the project build mode."
+msgid "%soverride the project or IDE build mode."
 msgstr "%sreemplaza al modo de construcción del proyecto"
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
@@ -14769,6 +14773,10 @@ msgstr "Guardar y reconstruir el IDE"
 msgctxt "lazarusidestrconsts.lissaveas"
 msgid "Save As"
 msgstr "Guardar Como"
+
+#: lazarusidestrconsts.lissavechangedfiles
+msgid "Save changed files?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavechanges
 msgid "Save changes?"
