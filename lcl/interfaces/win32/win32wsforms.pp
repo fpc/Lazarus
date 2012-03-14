@@ -694,7 +694,11 @@ begin
       Windows.SendMessage(AWinControl.Handle, WM_SHOWWINDOW, 1, 0);
   end
   else
-    ShowWindow(AWinControl.Handle, SW_HIDE);
+  if fsModal in TCustomForm(AWinControl).FormState then
+    Windows.SetWindowPos(AWinControl.Handle, 0, 0, 0, 0, 0,
+      SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE or SWP_HIDEWINDOW)
+  else
+    Windows.ShowWindow(AWinControl.Handle, SW_HIDE);
 end;
 
 class procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);
