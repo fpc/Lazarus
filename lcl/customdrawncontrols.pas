@@ -3063,7 +3063,7 @@ end;
 
 procedure TCDSpinEdit.DoChange;
 var
-  lValue: Extended;
+  lValue: Double;
 begin
   if SysUtils.TryStrToFloat(Caption, lValue) then FValue := lValue;
   DoUpdateUpDown;
