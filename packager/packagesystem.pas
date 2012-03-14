@@ -558,6 +558,7 @@ begin
   BeginUpdate(false);
   try
     AFilename:=PkgLink.GetEffectiveFilename;
+    //debugln(['TLazPackageGraph.OpenDependencyWithPackageLink AFilename=',AFilename,' ',PkgLink.Origin=ploGlobal]);
     if not FileExistsUTF8(AFilename) then begin
       DebugLn('invalid Package Link: file "'+AFilename+'" does not exist.');
       PkgLink.FileDateValid:=false;
@@ -4441,9 +4442,12 @@ function TLazPackageGraph.OpenDependency(Dependency: TPkgDependency;
     PkgLink:=PkgLinks.AddUserLink(AFilename,Dependency.PackageName);
     if (PkgLink<>nil) then begin
       PkgLink.Reference;
-      if OpenDependencyWithPackageLink(Dependency,PkgLink,false)<>mrOk then
-        PkgLinks.RemoveLink(PkgLink);
-      PkgLink.Release;
+      try
+        if OpenDependencyWithPackageLink(Dependency,PkgLink,false)<>mrOk then
+          PkgLinks.RemoveUserLink(PkgLink);
+      finally
+        PkgLink.Release;
+      end;
     end;
   end;
 
@@ -4455,6 +4459,7 @@ var
   APackage: TLazPackage;
   PreferredFilename: string;
   PkgLink: TPackageLink;
+  IgnoreFiles: TFilenameToStringTree;
 begin
   if Dependency.LoadPackageResult=lprUndefined then begin
     //debugln(['TLazPackageGraph.OpenDependency ',Dependency.PackageName,' ',Dependency.DefaultFilename,' Prefer=',Dependency.PreferDefaultFilename]);
@@ -4488,18 +4493,27 @@ begin
       if APackage=nil then begin
         // no package with same name open
         // -> try package links
-        repeat
-          PkgLink:=PkgLinks.FindLinkWithDependency(Dependency);
-          if (PkgLink=nil) then break;
-          PkgLink.Reference;
-          try
-            MsgResult:=OpenDependencyWithPackageLink(Dependency,PkgLink,ShowAbort);
-            if MsgResult=mrOk then break;
-            PkgLinks.RemoveLink(PkgLink);
-          finally
-            PkgLink.Release;
-          end;
-        until MsgResult=mrAbort;
+        IgnoreFiles:=nil;
+        try
+          repeat
+            PkgLink:=PkgLinks.FindLinkWithDependency(Dependency,IgnoreFiles);
+            if (PkgLink=nil) then break;
+            //debugln(['TLazPackageGraph.OpenDependency PkgLink=',PkgLink.GetEffectiveFilename,' global=',PkgLink.Origin=ploGlobal]);
+            PkgLink.Reference;
+            try
+              MsgResult:=OpenDependencyWithPackageLink(Dependency,PkgLink,ShowAbort);
+              if MsgResult=mrOk then break;
+              if IgnoreFiles=nil then
+                IgnoreFiles:=TFilenameToStringTree.Create(false);
+              IgnoreFiles[PkgLink.GetEffectiveFilename]:='1';
+              PkgLinks.RemoveUserLink(PkgLink);
+            finally
+              PkgLink.Release;
+            end;
+          until MsgResult=mrAbort;
+        finally
+          IgnoreFiles.Free;
+        end;
         // try defaultfilename
         if (Dependency.LoadPackageResult=lprNotFound)
         and (Dependency.DefaultFilename<>'') then begin
