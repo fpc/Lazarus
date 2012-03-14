@@ -1,5 +1,7 @@
 /*.bak
 components/*.bak
+components/anchordocking/*.bak
+components/anchordocking/units
 components/chmhelp/*.bak
 components/chmhelp/democontrol/*.bak
 components/chmhelp/democontrol/units
@@ -304,8 +306,6 @@ docs/xml/units
 examples/*.bak
 examples/address_book/*.bak
 examples/address_book/units
-examples/anchordocking/*.bak
-examples/anchordocking/units
 examples/autosize/*.bak
 examples/autosize/childsizinglayout/*.bak
 examples/autosize/childsizinglayout/units
