@@ -3706,7 +3706,7 @@ ifeq ($(LAZARUS_OPT),)
 else
 	$(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
 endif
-lazbuilder:
+lazbuilder: $(COMPILER_UNITTARGETDIR)
 ifeq ($(LAZBUILD_OPT),)
 	$(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT)
 else
