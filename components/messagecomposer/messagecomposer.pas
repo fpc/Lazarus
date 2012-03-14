@@ -37,6 +37,14 @@ type
     KindMessageComboBox: TComboBox;
     KindMessageLabel: TLabel;
     MsgMemo: TMemo;
+    ButtonsNotebook: TNotebook;
+    PageString: TPage;
+    ButtonPanel: TPanel;
+    SourceNotebook: TNotebook;
+    Page1: TPage;
+    Page2: TPage;
+    PageIf: TPage;
+    PageCase: TPage;
     UpdateQuestioDlgResult: TAction;
     SetIfOrCase: TAction;
     PositionBevel: TBevel;
@@ -475,6 +483,10 @@ procedure TFormMessagesComposer.MessageSetupExecute(Sender: TObject);
 var indx: integer;
     ListResult: TStringList;
 begin
+  if KindMessageComboBox.ItemIndex in [0,1,2,3,4] then
+    ButtonsNotebook.PageIndex := 0 // ButtonsCheckGroup
+  else
+    ButtonsNotebook.PageIndex := 1; // ButtonsPanel
 //Msg
   case KindMessageComboBox.ItemIndex of
     0,1,2,3,4,5,6,7,8,9: begin
@@ -506,15 +518,6 @@ begin
     else begin
       DlgTypeComboBox.Color := clBtnFace;
       DlgTypeComboBox.Enabled := false;
-    end;
-  end;
-//BUTTONS (TMsgDlgButtons)
-  case KindMessageComboBox.ItemIndex of
-    0,1,2,3,4: begin
-      ButtonsCheckGroup.Enabled := true;
-    end;
-    else begin
-      ButtonsCheckGroup.Enabled := false;
     end;
   end;
 //HelpContext
@@ -563,17 +566,6 @@ begin
     else begin
       HelpFileNameEdit.Color := clBtnFace;
       HelpFileNameEdit.Enabled := false;
-    end;
-  end;
-//Params BUTTONS (array of const)
-  case KindMessageComboBox.ItemIndex of
-    5,6,8: begin
-      ButtonsPanel.Enabled := true;
-      ButtonsStringGrid.Color := clWindow;
-    end;
-    else begin
-      ButtonsPanel.Enabled := false;
-      ButtonsStringGrid.Color := clBtnFace;
     end;
   end;
 //Params (array of const)
@@ -636,22 +628,28 @@ begin
 //InputBox(); PasswordBox();
   case KindMessageComboBox.ItemIndex of
     12,13: begin
-      StringResultEdit.Enabled := true;
-      StringResultEdit.Color := clWindow;
-      IfResultComboBox.Enabled := false;
-      IfResultComboBox.Color := clBtnFace;
-      CaseResultCheckGroup.Enabled := false;
-      CaseOfEndElseRadioButton.Enabled := false;
-      CaseOfEndRadioButton.Enabled := false;
+      SourceNotebook.PageIndex := 2;
+      //StringResultEdit.Enabled := true;
+      //StringResultEdit.Color := clWindow;
+      //IfResultComboBox.Enabled := false;
+      //IfResultComboBox.Color := clBtnFace;
+      //CaseResultCheckGroup.Enabled := false;
+      //CaseOfEndElseRadioButton.Enabled := false;
+      //CaseOfEndRadioButton.Enabled := false;
     end;
-    else
-      StringResultEdit.Enabled := false;
-      StringResultEdit.Color := clBtnFace;
-      IfResultComboBox.Enabled := true;
-      IfResultComboBox.Color := clWindow;
-      CaseResultCheckGroup.Enabled := true;
-      CaseOfEndElseRadioButton.Enabled := true;
-      CaseOfEndRadioButton.Enabled := true;
+    else begin
+      if IfThenRadioButton.Checked or IfThenElseRadioButton.Checked then
+        SourceNotebook.PageIndex := 0
+      else
+        SourceNotebook.PageIndex := 1;
+      //StringResultEdit.Enabled := false;
+      //StringResultEdit.Color := clBtnFace;
+      //IfResultComboBox.Enabled := true;
+      //IfResultComboBox.Color := clWindow;
+      //CaseResultCheckGroup.Enabled := true;
+      //CaseOfEndElseRadioButton.Enabled := true;
+      //CaseOfEndRadioButton.Enabled := true;
+    end;
   end;
 
 //ShowMessage(); ShowMessageFmt(); ShowMessagePos();
@@ -775,15 +773,10 @@ procedure TFormMessagesComposer.SetIfOrCaseExecute(Sender: TObject);
 begin
   if (KindMessageComboBox.ItemIndex = 12)or
      (KindMessageComboBox.ItemIndex = 13) then exit;
-  if (Sender=IfThenRadioButton)or(Sender=IfThenElseRadioButton) then begin
-    IfResultComboBox.Color := clWindow;
-    IfResultComboBox.Enabled := true;
-    CaseResultCheckGroup.Enabled := false;
-  end else begin
-    IfResultComboBox.Color := clBtnFace;
-    IfResultComboBox.Enabled := false;
-    CaseResultCheckGroup.Enabled := true;
-  end;
+  if IfThenRadioButton.Checked or IfThenElseRadioButton.Checked then
+    SourceNotebook.PageIndex := 0
+  else
+    SourceNotebook.PageIndex := 1;
 end;
 
 procedure TFormMessagesComposer.TestExecute(Sender: TObject);
