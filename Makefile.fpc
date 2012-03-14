@@ -45,7 +45,7 @@ endif
 
 #-----------------------------------------------------------------------------
 [rules]
-.PHONY: help lcl components packager/registration ideintf bigidecomponents ide idepkg idebig bigide starter lazbuild tools all clean cleanide purge examples install
+.PHONY: help lcl components packager/registration ideintf bigidecomponents ide idepkg idebig bigide bigideclean starter lazbuild tools all clean cleanide purge examples install
 
 #-----------------------------------------------------------------------------
 help:
@@ -114,7 +114,7 @@ bigidecomponents:
 	$(MAKE) -C components bigidecomponents
 	
 #-----------------------------------------------------------------------------
-bigideclean: cleanlaz
+cleanbigide: cleanlaz
 
 #-----------------------------------------------------------------------------
 starter:
