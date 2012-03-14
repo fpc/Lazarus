@@ -206,7 +206,7 @@ end;
 constructor TCustomLabel.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  ControlStyle := [csSetCaption, csClickEvents, csDoubleClicks, csReplicatable];
+  ControlStyle := [csCaptureMouse, csSetCaption, csClickEvents, csDoubleClicks, csReplicatable];
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
   FShowAccelChar := True;
