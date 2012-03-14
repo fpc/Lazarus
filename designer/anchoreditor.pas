@@ -136,6 +136,7 @@ type
     procedure AnchorDesignerShow(Sender: TObject);
     procedure AnchorEnabledCheckBoxChange(Sender: TObject);
     procedure BorderSpaceSpinEditChange(Sender: TObject);
+    procedure FormDeactivate(Sender: TObject);
     procedure SiblingComboBoxChange(Sender: TObject);
     procedure ReferenceSideButtonClicked(Sender: TObject);
   private
@@ -388,6 +389,13 @@ begin
     GlobalDesignHook.Modified(Self);
     GlobalDesignHook.RefreshPropertyValues;
   end;
+end;
+
+procedure TAnchorDesigner.FormDeactivate(Sender: TObject);
+begin
+  // commit changes made by keyboard
+  if (ActiveControl is TComboBox) then
+    SiblingComboBoxChange(ActiveControl);
 end;
 
 function compareControlTop(Item1, Item2: pointer): Integer;
