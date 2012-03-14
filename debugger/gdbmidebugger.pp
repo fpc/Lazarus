@@ -3170,7 +3170,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
       {$PUSH}{$IFnDEF DBGMI_WITH_DISASS_OVERFLOW}{$Q-}{$R-}{$ENDIF} // Overflow is allowed to occur
       Addr := Itm^.Addr;
       Offs := TDBGPtr(Addr - AMemDump.Addr);
-      if (Offs < 0) or (Offs >= AMemDump.Count)
+      if (Offs >= AMemDump.Count)
       then Continue;
 
       if (NextItm <> nil) //and (NextItm^.Addr > Addr)
