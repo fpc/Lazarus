@@ -9991,6 +9991,12 @@ var
   const
     LogWarning = '&"Warning:\n"';
   begin
+    // check for symbol info
+    if Pos('No symbol table is loaded.  Use the \"file\" command.', Line) > 0
+    then begin
+      TargetInfo^.TargetFlags := TargetInfo^.TargetFlags - [tfHasSymbols];
+      DoDbgEvent(ecDebugger, etDefault, Format('File ''%s'' has no debug symbols', [FTheDebugger.FileName]));
+    end;
     DebugLn('[Debugger] Log output: ', Line);
     if Line = '&"kill\n"'
     then AResult.State := dsStop
