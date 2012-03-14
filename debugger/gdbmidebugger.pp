@@ -4232,9 +4232,7 @@ var
   R: TGDBMIExecResult;
   FileType, EntryPoint: String;
   List: TGDBMINameValueList;
-  //TargetPIDPart: String;
   CanContinue, HadTimeout: Boolean;
-  //CommandObj: TGDBMIDebuggerCommandExecute;
 begin
   Result := True;
   FSuccess := False;
