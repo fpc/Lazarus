@@ -60,18 +60,13 @@ uses
   {$ENDIF}
   {$IFDEF BigIDE}
     RunTimeTypeInfoControls, Printer4Lazarus, Printers4LazIDE,
-    MemDSLaz, SDFLaz, InstantFPCLaz, ExternHelp,
+    LeakView, MemDSLaz, SDFLaz, InstantFPCLaz, ExternHelp,
     TurboPowerIPro, {$ifdef UseTurbopowerInHelp}TurboPowerIProDsgn,{$endif}
     {$ifdef UseJCF}jcfidelazarus,{$endif}
     {$ifdef UseCHMHelp}chmhelppkg,{$endif}
     FPCUnitTestRunner, FPCUnitIDE, ProjTemplates, TAChartLazarusPkg,
     TodoListLaz,
-    {$IFDEF windows}
-      SQLDBLaz, DBFLaz,
-    {$ENDIF}
-    {$IFDEF Linux}
-      SQLDBLaz, DBFLaz,
-    {$ENDIF}
+    SQLDBLaz, DBFLaz,
   {$ENDIF}
   MainBase;
 

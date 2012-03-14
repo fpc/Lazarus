@@ -2212,6 +2212,7 @@ bigidecomponents: all
 	$(MAKE) -C fpcunit
 	$(MAKE) -C fpcunit/ide
 	$(MAKE) -C projecttemplates
+	$(MAKE) -C leakview
 	$(MAKE) -C memds
 	$(MAKE) -C sdf
 	$(MAKE) -C tachart
@@ -2221,10 +2222,8 @@ bigidecomponents: all
 	$(MAKE) -C chmhelp/packages/idehelp
 	$(MAKE) -C instantfpc
 	$(MAKE) -C externhelp
-ifneq ($(OS_TARGET),darwin)
 	$(MAKE) -C tdbf
 	$(MAKE) -C sqldb
-endif
 cleanall: bigideclean
 bigideclean: clean
 	$(MAKE) -C rtticontrols clean
@@ -2235,6 +2234,7 @@ bigideclean: clean
 	$(MAKE) -C fpcunit clean
 	$(MAKE) -C fpcunit/ide clean
 	$(MAKE) -C projecttemplates clean
+	$(MAKE) -C leakview clean
 	$(MAKE) -C memds clean
 	$(MAKE) -C sdf clean
 	$(MAKE) -C tachart clean
@@ -2244,7 +2244,5 @@ bigideclean: clean
 	$(MAKE) -C chmhelp/packages/idehelp clean
 	$(MAKE) -C instantfpc clean
 	$(MAKE) -C externhelp clean
-ifneq ($(OS_TARGET),darwin)
 	$(MAKE) -C tdbf clean
 	$(MAKE) -C sqldb clean
-endif
