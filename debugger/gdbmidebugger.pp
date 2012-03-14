@@ -4344,69 +4344,14 @@ begin
       Include(FTheDebugger.FDebuggerFlags, dfForceBreakDetected);
     end;
 
-    (* We need a brearpoint at entry-point or main, to continue initialization
+    (* We need a breakpoint at entry-point or main, to continue initialization
        "main" could map to more than one location, so we try entry point first
     *)
-    //if (EntryPoint <> '') then
-    //  FTheDebugger.FMainAddrBreak.SetAtCustomAddr(Self, StrToQWordDef(EntryPoint, 0));
-    //
-    //if not FTheDebugger.FMainAddrBreak.Enabled then
-    //  FTheDebugger.FMainAddrBreak.SetBoth(Self);
-
-    (* there is no handling for errors, before reaching entry point, so we do not need them yet *)
-    //FTheDebugger.FExceptionBreak.SetBoth(Self);
-    //FTheDebugger.FBreakErrorBreak.SetBoth(Self);
-    //FTheDebugger.FRunErrorBreak.SetBoth(Self);
-
-    //TargetInfo^.TargetPID := 0;
 
     TargetInfo^.TargetPID := RunToMain(EntryPoint);
 
-    //// fire the first step
-    //if FTheDebugger.FMainAddrBreak.Enabled
-    //then begin
-    //  CommandObj := TGDBMIDebuggerCommandExecute.Create(FTheDebugger, ectRun);
-    //  CommandObj.Execute;
-    //  // some versions of gdb (OSX) output the PID here
-    //  R := CommandObj.Result;
-    //  TargetPIDPart := GetPart(['process '], [' local', ']'], R.Values, True);
-    //  TargetInfo^.TargetPID := StrToIntDef(TargetPIDPart, 0);
-    //  R.State := dsNone;
-    //  CommandObj.DoFinished;
-    //end;
-    //
-    //FTheDebugger.FMainAddrBreak.Clear(Self);
-
     if DebuggerState = dsError
     then exit;
-
-    //// try to find PID (if not already found)
-    //if (TargetInfo^.TargetPID = 0)
-    //and ExecuteCommand('info program', [], R, [cfCheckState])
-    //then begin
-    //  TargetPIDPart := GetPart(['child process ', 'child thread ', 'lwp '],
-    //                           [' ', '.', ')'], R.Values, True);
-    //  TargetInfo^.TargetPID := StrToIntDef(TargetPIDPart, 0);
-    //end;
-    //
-    //// apple
-    //if (TargetInfo^.TargetPID = 0)
-    //and ExecuteCommand('info pid', [], R, [cfCheckState])
-    //and (R.State <> dsError)
-    //then begin
-    //  List := TGDBMINameValueList.Create(R);
-    //  TargetInfo^.TargetPID := StrToIntDef(List.Values['process-id'], 0);
-    //  List.Free;
-    //end;
-    //
-    //// apple / MacPort 7.1 / 32 bit dwarf
-    //if (TargetInfo^.TargetPID = 0)
-    //and ExecuteCommand('info threads', [], R, [cfCheckState])
-    //and (R.State <> dsError)
-    //then begin
-    //  TargetPIDPart := GetPart(['of process '], [' '], R.Values, True);
-    //  TargetInfo^.TargetPID := StrToIntDef(TargetPIDPart, 0);
-    //end;
 
     if TargetInfo^.TargetPID = 0
     then begin
