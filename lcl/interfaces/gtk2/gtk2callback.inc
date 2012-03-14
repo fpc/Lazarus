@@ -396,6 +396,21 @@ begin
   DeliverMessage(Data, Mess);
 end;
 
+function GtkEntryDelayCursorPos(AGtkWidget: Pointer): GBoolean; cdecl;
+var
+  Info: PWidgetInfo;
+begin
+  Result := AGtkWidget <> nil;
+  if AGtkWidget <> nil then
+  begin
+    g_idle_remove_by_data(AGtkWidget);
+    Info := GetWidgetInfo(AGtkWidget);
+    if Info <> nil then
+      gtkchanged_editbox(PGtkWidget(AGtkWidget),
+        Info^.LCLObject);
+  end;
+end;
+
 function gtkchanged_editbox( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
@@ -422,13 +437,31 @@ begin
       Info := GetWidgetInfo(Widget, False);
       {do not update position if backspace or delete pressed}
       if wwiInvalidEvent in Info^.Flags then
-        exclude(Info^.Flags, wwiInvalidEvent)
-      else
+      begin
+        Exclude(Info^.Flags, wwiInvalidEvent);
+
+        {take care of pasted data since it does not return proper cursor pos.}
+        // issue #7243
+        if g_object_get_data(PGObject(Widget),'lcl-delay-cm_textchaged') <> nil then
+        begin
+          g_object_set_data(PGObject(Widget),'lcl-delay-cm_textchaged',nil);
+          g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',Widget);
+          g_idle_add(@GtkEntryDelayCursorPos, Widget);
+          exit;
+        end;
+      end else
       begin
         // if we change selstart in OnChange event new cursor pos need to
         // be postponed in TGtk2WSCustomEdit.SetSelStart
-        NeedCursorCheck := True;
-        gtk_editable_set_position(PGtkEditable(Widget), GStart+1);
+        if g_object_get_data(PGObject(Widget),'lcl-gtkentry-pasted-data') <> nil then
+        begin
+          g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',nil);
+          gtk_editable_set_position(PGtkEditable(Widget), GStart);
+        end else
+        begin
+          NeedCursorCheck := True;
+          gtk_editable_set_position(PGtkEditable(Widget), GStart+1);
+        end;
       end;
     end;
   end;
@@ -2571,13 +2604,14 @@ var
 begin
   EventTrace('Paste from clip', data);
   if (Widget=nil) then ;
-  if (gtk_major_version = 2) and (gtk_minor_version < 17) then
+
+  // we must update cursor pos with delay otherwise selStart is wrong.issue #7243
+  if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
   begin
-    if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
-    begin
-      Info := GetWidgetInfo(Widget, False);
-      include(Info^.Flags, wwiInvalidEvent);
-    end;
+    Info := GetWidgetInfo(Widget, False);
+    Include(Info^.Flags, wwiInvalidEvent);
+    // happy end is inside gtkchanged_editbox() above.
+    g_object_set_data(PGObject(Widget),'lcl-delay-cm_textchaged', data);
   end;
   Mess.msg := LM_PASTE;
   Result:= DeliverMessage(Data, Mess) = 0;
