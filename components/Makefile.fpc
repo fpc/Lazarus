@@ -18,7 +18,7 @@ files=$(wildcard ./units/*$(OEXT)) \
       $(wildcard ./custom/*$(RSTEXT))
 
 [rules]
-.PHONY: bigidecomponents bigideclean
+.PHONY: clean cleanall bigidecomponents bigideclean
 
 bigidecomponents: all
         $(MAKE) -C rtticontrols
@@ -43,11 +43,9 @@ ifneq ($(OS_TARGET),darwin)
         $(MAKE) -C sqldb
 endif
 
-cleanlaz: clean
+cleanall: bigideclean
 
-cleanall: clean bigideclean
-
-bigideclean:
+bigideclean: clean
         $(MAKE) -C rtticontrols clean
         $(MAKE) -C printers clean
         $(MAKE) -C printers/design clean
