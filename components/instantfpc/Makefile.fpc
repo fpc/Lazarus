@@ -1,8 +1,8 @@
 #   File generated automatically by Lazarus Package Manager
 #
-#   Makefile.fpc for instantfpclaz 0.0
+#   Makefile.fpc for InstantFPCLaz 1.0
 #
-#   This file was generated on 10/01/2011
+#   This file was generated on 14-3-12
 
 [package]
 name=instantfpclaz
@@ -10,7 +10,7 @@ version=1.0
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
 options= -MObjFPC -Scghi -O1 -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]
@@ -50,6 +50,6 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/instantfpclaz$(PPUEXT)
 
 compiled:
-        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/instantfpclaz.compiled
+        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/InstantFPCLaz.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) instantfpclaz$(PPUEXT) compiled
