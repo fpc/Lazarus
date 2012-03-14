@@ -77,7 +77,7 @@ uses
   MacroIntf, IDECommands, IDEWindowIntf, ComponentReg, FormEditingIntf,
   SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf,
   PackageIntf, ProjectIntf, CompOptsIntf, MenuIntf, LazIDEIntf, IDEDialogs,
-  IDEOptionsIntf, IDEImagesIntf,
+  IDEOptionsIntf, IDEImagesIntf, ComponentEditors,
   // protocol
   IDEProtocol,
   // compile
@@ -706,6 +706,7 @@ type
     procedure FreeIDEWindows;
     function CloseQueryIDEWindows: boolean;
 
+    function GetLastActiveDesigner: TComponentEditorDesigner;
     procedure ReloadMenuShortCuts;
 
     // methods for 'new unit'
@@ -2363,6 +2364,18 @@ begin
   Result:=true;
 end;
 
+function TMainIDE.GetLastActiveDesigner: TComponentEditorDesigner;
+begin
+  // skip MainIDE form
+  if (Screen.ActiveCustomForm = MainIDEBar) and
+     (Screen.CustomFormZOrderCount > 1) and
+     Assigned(Screen.CustomFormsZOrdered[1].Designer) and
+     (Screen.CustomFormsZOrdered[1].Designer is TComponentEditorDesigner) then
+    Result := TComponentEditorDesigner(Screen.CustomFormsZOrdered[1].Designer)
+  else
+    Result := nil;
+end;
+
 procedure TMainIDE.ReloadMenuShortCuts;
 begin
   //LoadMenuShortCuts;
@@ -3845,30 +3858,44 @@ var
   SelAvail: Boolean;
   SelEditable: Boolean;
   SrcEditorActive: Boolean;
+  ActiveDesigner: TComponentEditorDesigner;
 begin
-  GetCurrentUnit(ASrcEdit,AnUnitInfo);
-  Editable:=(ASrcEdit<>nil) and (not ASrcEdit.ReadOnly);
-  SelAvail:=(ASrcEdit<>nil) and (ASrcEdit.SelectionAvailable);
-  SelEditable:=Editable and SelAvail;
-  SrcEditorActive:=FDisplayState=dsSource;
-  with MainIDEBar do begin
-    itmEditUndo.Enabled:=Editable and SrcEditorActive;
-    itmEditRedo.Enabled:=Editable and SrcEditorActive;
-  //itmEditClipboard: TIDEMenuSection;
-    itmEditCut.Enabled:=SelEditable;
-    itmEditCopy.Enabled:=SelAvail;
-    itmEditPaste.Enabled:=Editable;
+  GetCurrentUnit(ASrcEdit, AnUnitInfo);
+  Editable := Assigned(ASrcEdit) and not ASrcEdit.ReadOnly;
+  SelAvail := Assigned(ASrcEdit) and ASrcEdit.SelectionAvailable;
+  SelEditable := Editable and SelAvail;
+  SrcEditorActive := FDisplayState = dsSource;
+  ActiveDesigner := GetLastActiveDesigner;
+  with MainIDEBar do
+  begin
+    if Assigned(ActiveDesigner) then
+    begin
+      // activate them when Designer start to support Undo/Redo
+      itmEditUndo.Enabled := False;
+      itmEditRedo.Enabled := False;
+      itmEditCut.Enabled := ActiveDesigner.CanCopy;
+      itmEditCopy.Enabled := ActiveDesigner.CanCopy;
+      itmEditPaste.Enabled := ActiveDesigner.CanPaste;
+    end
+    else
+    begin
+      itmEditUndo.Enabled := Editable and SrcEditorActive;
+      itmEditRedo.Enabled := Editable and SrcEditorActive;
+      itmEditCut.Enabled := SelEditable;
+      itmEditCopy.Enabled := SelAvail;
+      itmEditPaste.Enabled := Editable;
+    end;
   //itmEditSelect: TIDEMenuSection; [...]
   //itmEditBlockActions: TIDEMenuSection;
-    itmEditIndentBlock.Enabled:=Editable;
-    itmEditUnindentBlock.Enabled:=Editable;
-    itmEditUpperCaseBlock.Enabled:=SelEditable;
-    itmEditLowerCaseBlock.Enabled:=SelEditable;
-    itmEditSwapCaseBlock.Enabled:=SelEditable;
-    itmEditSortBlock.Enabled:=SelEditable;
-    itmEditTabsToSpacesBlock.Enabled:=SelEditable;
-    itmEditSelectionBreakLines.Enabled:=SelEditable;
-    itmEditInsertCharacter.Enabled:=Editable;
+    itmEditIndentBlock.Enabled := Editable;
+    itmEditUnindentBlock.Enabled := Editable;
+    itmEditUpperCaseBlock.Enabled := SelEditable;
+    itmEditLowerCaseBlock.Enabled := SelEditable;
+    itmEditSwapCaseBlock.Enabled := SelEditable;
+    itmEditSortBlock.Enabled := SelEditable;
+    itmEditTabsToSpacesBlock.Enabled := SelEditable;
+    itmEditSelectionBreakLines.Enabled := SelEditable;
+    itmEditInsertCharacter.Enabled := Editable;
   end;
 end;
 
@@ -18498,18 +18525,36 @@ begin
 end;
 
 procedure TMainIDE.mnuEditCopyClicked(Sender: TObject);
+var
+  ActiveDesigner: TComponentEditorDesigner;
 begin
-  DoSourceEditorCommand(ecCopy);
+  ActiveDesigner := GetLastActiveDesigner;
+  if Assigned(ActiveDesigner) then
+    ActiveDesigner.CopySelection
+  else
+    DoSourceEditorCommand(ecCopy);
 end;
 
 procedure TMainIDE.mnuEditCutClicked(Sender: TObject);
+var
+  ActiveDesigner: TComponentEditorDesigner;
 begin
-  DoSourceEditorCommand(ecCut);
+  ActiveDesigner := GetLastActiveDesigner;
+  if Assigned(ActiveDesigner) then
+    ActiveDesigner.CutSelection
+  else
+    DoSourceEditorCommand(ecCut);
 end;
 
 procedure TMainIDE.mnuEditPasteClicked(Sender: TObject);
+var
+  ActiveDesigner: TComponentEditorDesigner;
 begin
-  DoSourceEditorCommand(ecPaste);
+  ActiveDesigner := GetLastActiveDesigner;
+  if Assigned(ActiveDesigner) then
+    ActiveDesigner.PasteSelection([cpsfFindUniquePositions])
+  else
+    DoSourceEditorCommand(ecPaste);
 end;
 
 procedure TMainIDE.mnuEditRedoClicked(Sender: TObject);
