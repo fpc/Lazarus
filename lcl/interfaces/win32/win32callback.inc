@@ -1060,19 +1060,13 @@ begin
   end else begin
     lWinControl := WindowInfo^.WinControl;
   end;
-{$ifdef MSG_DEBUG}
-  DebugLn(MessageStackDepth, 'lWinControl: ',DbgSName(lWinControl));
-{$endif}
   if (IgnoreNextCharWindow <> 0) and ((Msg = WM_CHAR) or (Msg = WM_SYSCHAR)) then
   begin
     if IgnoreNextCharWindow = Window then
     begin
       IgnoreNextCharWindow := 0;
-{$ifdef MSG_DEBUG}
-      DebugLn(MessageStackDepth, ' *ignoring this character');
-{$endif}
       Result := 1;
-      exit;
+      Exit;
     end;
     IgnoreNextCharWindow := 0;
   end;
@@ -1577,6 +1571,7 @@ begin
       end;
       WindowInfo^.IMEComposed:=False;
       WinProcess := false;
+      IgnoreNextCharWindow := Window;
     end;
     WM_KEYUP:
     begin
@@ -2087,6 +2082,7 @@ begin
         Result := 0;
       end;
       WinProcess := false;
+      IgnoreNextCharWindow := Window;
     end;
     WM_SYSKEYUP:
     begin
@@ -2564,21 +2560,8 @@ begin
   // ignore WM_(SYS)CHAR message if LCL handled WM_(SYS)KEYDOWN
   if ((Msg = WM_KEYDOWN) or (Msg = WM_SYSKEYDOWN)) then
   begin
-    if (PLMsg^.Result <> 0) then
-    begin
-{$ifdef MSG_DEBUG}
-      debugln(MessageStackDepth, ' *ignore next character');
-{$endif}
-      IgnoreNextCharWindow := Window;
-    end else begin
-      // stop ignoring if KEYUP has come by (not all keys generate CHAR)
-      // assume WM_CHAR is always preceded by WM_KEYDOWN
-{$ifdef MSG_DEBUG}
-      if IgnoreNextCharWindow <> 0 then
-        debugln(MessageStackDepth, ' *stop ignoring next character');
-{$endif}
+    if (PLMsg^.Result = 0) then
       IgnoreNextCharWindow := 0;
-    end;
   end;
 
   { LMInsertText has no Result field }
