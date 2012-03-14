@@ -3883,19 +3883,18 @@ help:
 		 @$(ECHO) "  svn status | grep '\?' | sed -e 's/\? *//' | xargs rm -r"
 		 @$(ECHO)
 		 @exit
-ide: 
-	$(MAKE) -C ide ide
 lazutils: packager/registration
 	$(MAKE) -C components/lazutils
+ide:
+	$(MAKE) -C ide ide
 idepkg:
 	$(MAKE) -C ide idepkg
-bigide: lazbuild lcl ideintf bigidecomponents idebig starter
 idebig:
 	$(MAKE) -C ide bigide
+bigide: lazbuild lcl ideintf bigidecomponents idebig starter
 bigidecomponents:
 	$(MAKE) -C components bigidecomponents
 bigideclean: cleanlaz
-	$(MAKE) -C components bigideclean
 starter:
 	$(MAKE) -C ide starter
 lazbuild: lazutils 
@@ -3907,13 +3906,13 @@ lazbuild: lazutils
 	$(MAKE) -C ide lazbuilder LCL_PLATFORM=nogui
 tools: lcl
 	$(MAKE) -C tools
-examples: lcl bigidecomponents
+examples: lazutils lcl bigidecomponents
 all: lazbuild lcl ideintf components ide starter
 cleanide:
 	$(MAKE) -C ide cleanide
 cleanlaz: cleanide
 	$(MAKE) -C lcl cleanall
-	$(MAKE) -C components clean
+	$(MAKE) -C components bigideclean
 	$(MAKE) -C packager/registration clean
 	$(MAKE) -C ideintf clean
 purge: cleanlaz

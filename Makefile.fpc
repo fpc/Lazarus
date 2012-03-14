@@ -87,23 +87,27 @@ help:
 		 @exit
 
 #-----------------------------------------------------------------------------
-ide: 
-	$(MAKE) -C ide ide
-
-#-----------------------------------------------------------------------------
 lazutils: packager/registration
 	$(MAKE) -C components/lazutils
 
 #-----------------------------------------------------------------------------
+# build lazarus exe with minimum of packages
+ide:
+	$(MAKE) -C ide ide
+
+#-----------------------------------------------------------------------------
+# build lazarus exe with user's packages
 idepkg:
 	$(MAKE) -C ide idepkg
 
 #-----------------------------------------------------------------------------
-bigide: lazbuild lcl ideintf bigidecomponents idebig starter
-
-#-----------------------------------------------------------------------------
+# build lazarus exe with bigide packages
 idebig:
 	$(MAKE) -C ide bigide
+
+#-----------------------------------------------------------------------------
+# build lazarus,lcl,startlazarus with bigide packages
+bigide: lazbuild lcl ideintf bigidecomponents idebig starter
 
 #-----------------------------------------------------------------------------
 bigidecomponents:
@@ -111,7 +115,6 @@ bigidecomponents:
 	
 #-----------------------------------------------------------------------------
 bigideclean: cleanlaz
-	$(MAKE) -C components bigideclean
 
 #-----------------------------------------------------------------------------
 starter:
@@ -131,7 +134,7 @@ tools: lcl
 	$(MAKE) -C tools
 	
 #-----------------------------------------------------------------------------
-examples: lcl bigidecomponents
+examples: lazutils lcl bigidecomponents
 
 #-----------------------------------------------------------------------------
 all: lazbuild lcl ideintf components ide starter
@@ -142,7 +145,7 @@ cleanide:
 
 cleanlaz: cleanide
 	$(MAKE) -C lcl cleanall
-	$(MAKE) -C components clean
+	$(MAKE) -C components bigideclean
 	$(MAKE) -C packager/registration clean
 	$(MAKE) -C ideintf clean
 
@@ -168,7 +171,7 @@ else
 endif
 #-----------------------------------------------------------------------------
 # Many C expect 'make install' to copy the binaries to somewhere
-# Copy the lazarus tree to the install directory and set a link
+# Copy the lazarus tree to the install directory and set some links
 install:
 	$(MAKE) installbase
 	$(COPYTREE) . $(LAZARUS_INSTALL_DIR)
