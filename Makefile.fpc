@@ -45,7 +45,7 @@ endif
 
 #-----------------------------------------------------------------------------
 [rules]
-.PHONY: help lcl components packager/registration ideintf bigidecomponents ide idepkg idebig bigide starter lazbuilder tools all clean cleanide cleannogui purge examples install lazbuild
+.PHONY: help lcl components packager/registration ideintf bigidecomponents ide idepkg idebig bigide starter lazbuild tools all clean cleanide cleannogui purge examples install
 
 #-----------------------------------------------------------------------------
 help:
@@ -91,8 +91,7 @@ ide:
 	$(MAKE) -C ide ide
 
 #-----------------------------------------------------------------------------
-lazutils: 
-	$(MAKE) -C packager/registration
+lazutils: packager/registration
 	$(MAKE) -C components/lazutils
 
 #-----------------------------------------------------------------------------
@@ -100,7 +99,7 @@ idepkg:
 	$(MAKE) -C ide idepkg
 
 #-----------------------------------------------------------------------------
-bigide: packager/registration lazutils lcl ideintf bigidecomponents idebig starter lazbuilder
+bigide: lazbuild lcl ideintf bigidecomponents idebig starter
 
 #-----------------------------------------------------------------------------
 idebig:
@@ -119,9 +118,12 @@ starter:
 	$(MAKE) -C ide starter
 
 #-----------------------------------------------------------------------------
-lazbuild: lazbuilder
-lazbuilder:
-	$(MAKE) -C lcl/interfaces/nogui 
+lazbuild: lazutils 
+	$(MAKE) -C components/codetools
+	$(MAKE) -C lcl lclbase intf LCL_PLATFORM=nogui
+	$(MAKE) -C ideintf all LCL_PLATFORM=nogui
+	$(MAKE) -C components/synedit all LCL_PLATFORM=nogui
+	$(MAKE) -C components/lazcontrols all LCL_PLATFORM=nogui
 	$(MAKE) -C ide lazbuilder LCL_PLATFORM=nogui
 
 #-----------------------------------------------------------------------------
@@ -129,20 +131,20 @@ tools: lcl
 	$(MAKE) -C tools
 	
 #-----------------------------------------------------------------------------
-examples: lcl components
+examples: lcl bigidecomponents
 
 #-----------------------------------------------------------------------------
-all: packager/registration lazutils lcl ideintf components ide starter lazbuilder
+all: lazbuild lcl ideintf components ide starter
 
 #-----------------------------------------------------------------------------
 cleannogui:
-	$(MAKE) -C lcl/interfaces/nogui clean LCL_PLATFORM=nogui
+	$(MAKE) -C lcl cleanintf LCL_PLATFORM=nogui
 
 cleanide:
 	$(MAKE) -C ide cleanide
 
-cleanlaz: cleanide cleannogui
-	$(MAKE) -C lcl clean
+cleanlaz: cleanide
+	$(MAKE) -C lcl cleanall
 	$(MAKE) -C components clean
 	$(MAKE) -C packager/registration clean
 	$(MAKE) -C ideintf clean
