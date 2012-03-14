@@ -1220,7 +1220,7 @@ type
       var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
     procedure RenameMethod(const CurName, NewName: String);
     procedure ShowMethod(const Name: String);
-    function MethodFromAncestor(const Method: TMethod):boolean;
+    function MethodFromAncestor(const Method: TMethod): boolean;
     procedure ChainCall(const AMethodName, InstanceName,
                         InstanceMethod: ShortString;  TypeData: PTypeData);
     // components
@@ -3828,10 +3828,10 @@ procedure TMethodPropertyEditor.Edit;
 var
   NewMethodName: shortstring;
 begin
-  NewMethodName:=GetValue;
+  NewMethodName := GetValue;
   //DebugLn('### TMethodPropertyEditor.Edit A OldValue=',NewMethodName);
-  if (not IsValidIdent(NewMethodName))
-  or PropertyHook.MethodFromAncestor(GetMethodValue) then begin
+  if not IsValidIdent(NewMethodName) or PropertyHook.MethodFromAncestor(GetMethodValue) then
+  begin
     // the current method is from the ancestor
     // -> add an override with the default name
     NewMethodName := GetFormMethodName;
@@ -3840,7 +3840,8 @@ begin
       raise EPropertyError.Create('Method name "'+NewMethodName+'" must be an identifier');
     SetValue(NewMethodName); // this will jump to the method
     PropertyHook.RefreshPropertyValues;
-  end else
+  end
+  else
     PropertyHook.ShowMethod(NewMethodName);
 end;
 
@@ -3971,25 +3972,27 @@ var
   IsNil: Boolean;
   NewMethod: TMethod;
 begin
-  CurValue:=GetValue;
-  if CurValue=NewValue then exit;
+  CurValue := GetValue;
+  if CurValue = NewValue then exit;
   //DebugLn('### TMethodPropertyEditor.SetValue A OldValue="',CurValue,'" NewValue=',NewValue);
-  IsNil:=(NewValue='') or (NewValue=oisNone);
+  IsNil := (NewValue='') or (NewValue=oisNone);
   
-  if (not IsNil) and (not IsValidIdent(NewValue))
-  then begin
+  if (not IsNil) and (not IsValidIdent(NewValue)) then
+  begin
     MessageDlg(oisIncompatibleIdentifier,
       Format(oisIsNotAValidMethodName,['"',NewValue,'"']), mtError,
       [mbCancel, mbIgnore], 0);
     exit;
   end;
   
-  NewMethodExists:=(not IsNil)
-      and PropertyHook.CompatibleMethodExists(NewValue,GetInstProp,
-                   NewMethodIsCompatible,NewMethodIsPublished,NewIdentIsMethod);
+  NewMethodExists := (not IsNil) and
+    PropertyHook.CompatibleMethodExists(NewValue, GetInstProp,
+                   NewMethodIsCompatible, NewMethodIsPublished, NewIdentIsMethod);
   //DebugLn('### TMethodPropertyEditor.SetValue B NewMethodExists=',NewMethodExists,' NewMethodIsCompatible=',NewMethodIsCompatible,' ',NewMethodIsPublished,' ',NewIdentIsMethod);
-  if NewMethodExists then begin
-    if not NewIdentIsMethod then begin
+  if NewMethodExists then
+  begin
+    if not NewIdentIsMethod then
+    begin
       if MessageDlg(oisIncompatibleIdentifier,
         Format(oisTheIdentifierIsNotAMethodPressCancelToUndoPressIgn, ['"',
           NewValue, '"', #13, #13]), mtWarning, [mbCancel, mbIgnore], 0)<>
@@ -3997,7 +4000,8 @@ begin
       then
         exit;
     end;
-    if not NewMethodIsPublished then begin
+    if not NewMethodIsPublished then
+    begin
       if MessageDlg(oisIncompatibleMethod,
         Format(oisTheMethodIsNotPublishedPressCancelToUndoPressIgnor, ['"',
           NewValue, '"', #13, #13]), mtWarning, [mbCancel, mbIgnore], 0)<>
@@ -4005,7 +4009,8 @@ begin
       then
         exit;
     end;
-    if not NewMethodIsCompatible then begin
+    if not NewMethodIsCompatible then
+    begin
       if MessageDlg(oisIncompatibleMethod,
         Format(oisTheMethodIsIncompatibleToThisEventPressCancelToUnd, ['"',
           NewValue, '"', GetName, #13, #13]), mtWarning, [mbCancel, mbIgnore], 0
@@ -4015,14 +4020,17 @@ begin
     end;
   end;
   //DebugLn('### TMethodPropertyEditor.SetValue C');
-  if IsNil then begin
-    NewMethod.Data:=nil;
-    NewMethod.Code:=nil;
+  if IsNil then
+  begin
+    NewMethod.Data := nil;
+    NewMethod.Code := nil;
     SetMethodValue(NewMethod);
-  end else
-  if IsValidIdent(CurValue)
-  and (not NewMethodExists)
-  and (not PropertyHook.MethodFromAncestor(GetMethodValue)) then begin
+  end
+  else
+  if IsValidIdent(CurValue) and
+     not NewMethodExists and
+     not PropertyHook.MethodFromAncestor(GetMethodValue) then
+  begin
     // rename the method
     // Note:
     //   All other not selected properties that use this method, contain just
@@ -4034,10 +4042,11 @@ begin
     //DebugLn('### TMethodPropertyEditor.SetValue E');
     CreateNewMethod := not NewMethodExists;
     SetMethodValue(
-       PropertyHook.CreateMethod(NewValue,GetPropType,
-                                 GetComponent(0),GetPropertyPath(0)));
+       PropertyHook.CreateMethod(NewValue, GetPropType,
+                                 GetComponent(0), GetPropertyPath(0)));
     //DebugLn('### TMethodPropertyEditor.SetValue F NewValue=',GetValue);
-    if CreateNewMethod then begin
+    if CreateNewMethod then
+    begin
       //DebugLn('### TMethodPropertyEditor.SetValue G');
       PropertyHook.ShowMethod(NewValue);
     end;
@@ -5030,14 +5039,16 @@ var
   i: Integer;
   Handler: TPropHookCreateMethod;
 begin
-  Result.Code:=nil;
-  Result.Data:=nil;
-  if IsValidIdent(Name) and (ATypeInfo<>nil) then begin
-    i:=GetHandlerCount(htCreateMethod);
-    while GetNextHandlerIndex(htCreateMethod,i) do begin
-      Handler:=TPropHookCreateMethod(FHandlers[htCreateMethod][i]);
-      Result:=Handler(Name,ATypeInfo,APersistent,APropertyPath);
-      if (Result.Data<>nil) or (Result.Code<>nil) then exit;
+  Result.Code := nil;
+  Result.Data := nil;
+  if IsValidIdent(Name) and Assigned(ATypeInfo) then
+  begin
+    i := GetHandlerCount(htCreateMethod);
+    while GetNextHandlerIndex(htCreateMethod, i) do
+    begin
+      Handler := TPropHookCreateMethod(FHandlers[htCreateMethod][i]);
+      Result := Handler(Name, ATypeInfo, APersistent, APropertyPath);
+      if Assigned(Result.Data) or Assigned(Result.Code) then exit;
     end;
   end;
 end;
@@ -5154,24 +5165,28 @@ begin
     TPropHookShowMethod(FHandlers[htShowMethod][i])(Name);
 end;
 
-function TPropertyEditorHook.MethodFromAncestor(const Method:TMethod):boolean;
-var AncestorClass: TClass;
+function TPropertyEditorHook.MethodFromAncestor(const Method: TMethod): boolean;
+var
+  AncestorClass: TClass;
   i: Integer;
   Handler: TPropHookMethodFromAncestor;
 begin
   // check if given Method is not in LookupRoot source,
   // but in one of its ancestors
-  i:=GetHandlerCount(htMethodFromAncestor);
-  if GetNextHandlerIndex(htMethodFromAncestor,i) then begin
-    Handler:=TPropHookMethodFromAncestor(FHandlers[htMethodFromAncestor][i]);
-    Result:=Handler(Method);
-  end else begin
-    if (Method.Data<>nil) and (Method.Code<>nil) then begin
-      AncestorClass:=TObject(Method.Data).ClassParent;
-      Result:=(AncestorClass<>nil)
-              and (AncestorClass.MethodName(Method.Code)<>'');
-    end else
-      Result:=false;
+  i := GetHandlerCount(htMethodFromAncestor);
+  if GetNextHandlerIndex(htMethodFromAncestor, i) then
+  begin
+    Handler := TPropHookMethodFromAncestor(FHandlers[htMethodFromAncestor][i]);
+    Result := Handler(Method);
+  end
+  else
+  begin
+    Result := Assigned(Method.Data) and Assigned(Method.Code);
+    if Result then
+    begin
+      AncestorClass := TObject(Method.Data).ClassParent;
+      Result := Assigned(AncestorClass) and (AncestorClass.MethodName(Method.Code)<>'');
+    end;
   end;
 end;
 
@@ -5475,28 +5490,31 @@ var
   APersistent: TPersistent;
   ARoot: TPersistent;
 begin
-  i:=GetHandlerCount(htModified);
+  i := GetHandlerCount(htModified);
   while GetNextHandlerIndex(htModified,i) do
     TPropHookModified(FHandlers[htModified][i])(Sender);
-  if Sender is TPropertyEditor then begin
+
+  if Sender is TPropertyEditor then 
+  begin
     // mark the designer form of every selected persistent
-    Editor:=TPropertyEditor(Sender);
-    List:=TFPList.Create;
+    Editor := TPropertyEditor(Sender);
+    List := TFPList.Create;
     try
-      for i:=0 to Editor.PropCount-1 do begin
+      for i := 0 to Editor.PropCount - 1 do 
+      begin
         // for every selected persistent ...
-        APersistent:=Editor.GetComponent(i);
-        if APersistent=nil then continue;
-        if List.IndexOf(APersistent)>=0 then continue;
+        APersistent := Editor.GetComponent(i);
+        if APersistent = nil then Continue;
+        if List.IndexOf(APersistent) >= 0 then Continue;
         List.Add(APersistent);
         // ... get the lookuproot ...
-        ARoot:=GetLookupRootForComponent(APersistent);
-        if ARoot=nil then continue;
-        if (ARoot<>APersistent) and (List.IndexOf(ARoot)>=0) then continue;
+        ARoot := GetLookupRootForComponent(APersistent);
+        if ARoot = nil then Continue;
+        if (ARoot <> APersistent) and (List.IndexOf(ARoot) >= 0) then Continue;
         List.Add(ARoot);
         // ... get the designer ...
-        AForm:=GetDesignerForm(ARoot);
-        if (AForm <> nil) and (AForm.Designer <> nil) then
+        AForm := GetDesignerForm(ARoot);
+        if Assigned(AForm) and Assigned(AForm.Designer) then
           AForm.Designer.Modified; // ... and mark it modified
       end;
     finally
@@ -5504,10 +5522,10 @@ begin
     end;
   end
   else 
-  if (FLookupRoot <> nil) then
+  if Assigned(FLookupRoot) then
   begin
     AForm := GetDesignerForm(FLookupRoot);
-    if (AForm <> nil) and (AForm.Designer <> nil) then
+    if Assigned(AForm) and Assigned(AForm.Designer) then
       AForm.Designer.Modified;
   end;
 end;
@@ -6145,7 +6163,10 @@ var
     // so we must avoid infinite recursion.
     if visited.IndexOf(ti) >= 0 then exit;
     visited.Add(ti);
-    PropCnt:=GetPropList(ti, propList);
+    // actual published properties can be different since the instance can be inherited
+    // so update type info from the instance
+    ti := obj.ClassInfo;
+    PropCnt := GetPropList(ti, propList);
     try
       for i := 0 to PropCnt - 1 do begin
         if not (propList^[i]^.PropType^.Kind in AFilter + [tkClass]) then continue;
