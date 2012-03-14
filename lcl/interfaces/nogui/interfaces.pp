@@ -29,7 +29,7 @@ uses
 implementation
 
 uses 
-  NoGUIInt, Forms;
+  NoGUIInt, NoGUIWSFactory{%H-}, Forms;
 
 initialization
   CreateWidgetset(TNoGUIWidgetSet);

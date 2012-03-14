@@ -114,7 +114,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="391">
+    <Files Count="395">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1936,6 +1936,26 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CustomDrawnWSLazDeviceAPIS"/>
       </Item391>
+      <Item392>
+        <Filename Value="nogui/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item392>
+      <Item393>
+        <Filename Value="nogui/interfaces.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Interfaces"/>
+      </Item393>
+      <Item394>
+        <Filename Value="nogui/noguiint.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="NoGUIInt"/>
+      </Item394>
+      <Item395>
+        <Filename Value="nogui/noguiwsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="NoGUIWSFactory"/>
+      </Item395>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
