@@ -141,11 +141,8 @@ begin
 end;
 
 destructor TListItemSubItems.Destroy;
-var
-  n: Integer;
 begin
-  for n := 0 to Count - 1 do
-    Dispose(PListItemImageObject(pointer(inherited GetObject(n))));
+  Clear;
   inherited Destroy;
 end;
 
