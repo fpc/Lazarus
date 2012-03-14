@@ -21,7 +21,7 @@
 }
 unit CustomDrawnWSStdCtrls;
 
-{$mode objfpc}{$H+}
+{$mode delphi}
 
 interface
 

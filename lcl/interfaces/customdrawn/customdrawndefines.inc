@@ -1,6 +1,6 @@
 
 {$ifdef Darwin}
-{$modeswitch objectivec1}
+{$modeswitch objectivec1}{$H+}// modeswitch seams to deactivate H+
 {$endif}
 
 // For now default to Android for arm-linux,
