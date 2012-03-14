@@ -405,13 +405,30 @@ var
   PkgOptions: String;
   InheritedOptionStrings: TInheritedCompOptsStrings;
   TargetDir: String;
+  i: Integer;
 begin
   Result:=false;
   Init;
 
   LoadMiscellaneousOptions;
   BuildLazProfiles:=MiscellaneousOptions.BuildLazProfiles;
-  CurProf:=BuildLazProfiles.Current;
+  if BuildModeOverride<>'' then
+  begin
+    i:=BuildLazProfiles.IndexByName(BuildModeOverride);
+    if i<0 then
+    begin
+      debugln(['ERROR: IDE build mode "'+BuildModeOverride+'" not found']);
+      debugln;
+      debugln('Available IDE buld modes:');
+      for i:=0 to BuildLazProfiles.Count-1 do
+        debugln('  ',BuildLazProfiles[i].Name);
+      debugln;
+      exit;
+    end;
+    CurProf:=BuildLazProfiles[i];
+  end else
+    CurProf:=BuildLazProfiles.Current;
+
   if (Length(OSOverride) <> 0) then
     CurProf.TargetOS:=OSOverride;
   if (Length(CPUOverride) <> 0) then
@@ -421,7 +438,12 @@ begin
     CurProf.TargetPlatform:=DirNameToLCLPlatform(WidgetSetOverride)
   else
     CurProf.TargetPlatform:=GetDefaultLCLWidgetType;
-  CurProf.ExtraOptions:=BuildIDEOptions;
+  if BuildIDEOptions<>'' then
+  begin
+    if CurProf.ExtraOptions<>'' then
+      CurProf.ExtraOptions:=CurProf.ExtraOptions+' ';
+    CurProf.ExtraOptions:=CurProf.ExtraOptions+BuildIDEOptions;
+  end;
   if BuildAll then
     CurProf.IdeBuildMode:=bmCleanAllBuild;
   MainBuildBoss.SetBuildTargetIDE;
@@ -1233,8 +1255,8 @@ begin
     LazConf.GetDefaultTargetCPU]),
                       75, 22)));
   writeln('');
-  writeln('--build-mode=<project build mode>');
-  writeln('or --bm=<project build mode>');
+  writeln('--build-mode=<project/ide build mode>');
+  writeln('or --bm=<project/ide build mode>');
   writeln(UTF8ToConsole(BreakString(Format(lisOverrideTheProjectBuildMode,
     [space]), 75, 22)));
   writeln('');
