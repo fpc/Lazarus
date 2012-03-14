@@ -4767,8 +4767,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       exit;
     end;
 
-    // The temp-at-start breakpoint is not checked. Ignore it
-    if (DebuggerState = dsRun) and (FTheDebugger.TargetPID <> 0) // not in startup
+    if (DebuggerState = dsRun)
     then begin
       debugln(['********** WARNING: breakpoint hit, but nothing known about it ABreakId=', ABreakID, ' brbtno=', List.Values['bkptno'] ]);
       {$IFDEF DBG_VERBOSE_BRKPOINT}
@@ -4927,14 +4926,9 @@ begin
       Exit;
     end;
 
-    // Some versions of GDB do not give any reason if hitting a temporary breakpoint
-    // (like the temp-at-main during startup)
-    if (FTheDebugger.TargetPID <> 0) // not in startup
-    then begin
-      DebugLn('[WARNING] Debugger: Unknown stopped reason: ', Reason);
-      SetDebuggerState(dsPause);
-      ProcessFrame(List.Values['frame']);
-    end;
+    DebugLn('[WARNING] Debugger: Unknown stopped reason: ', Reason);
+    SetDebuggerState(dsPause);
+    ProcessFrame(List.Values['frame']);
   finally
     FTheDebugger.FInProcessStopped := False;
     List.Free;
@@ -5345,7 +5339,7 @@ begin
   end;
 
   if (not ContinueExecution) and (DebuggerState = dsRun) and
-     (TargetInfo^.TargetPID <> 0) and (FTheDebugger.PauseWaitState <> pwsInternal)
+     (FTheDebugger.PauseWaitState <> pwsInternal)
   then begin
     // Handle the unforeseen
     if (StoppedParams <> '')
