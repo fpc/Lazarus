@@ -2805,16 +2805,15 @@ begin
         Result := ModalResult;
         if HandleAllocated and (GetActiveWindow <> Handle) then
           ActiveWindow := 0;
-        RestoreFocusedForm;
       finally
-        Screen.EnableForms(DisabledList);
         { guarantee execution of widgetset CloseModal }
         TWSCustomFormClass(WidgetSetClass).CloseModal(Self);
-
         // set our modalresult to mrCancel before hiding.
         if ModalResult = 0 then
           ModalResult := mrCancel;
         Hide;
+        Screen.EnableForms(DisabledList);
+        RestoreFocusedForm;
       end;
     finally
       RestoreFocusState(SavedFocusState);
