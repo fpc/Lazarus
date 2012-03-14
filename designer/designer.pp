@@ -261,6 +261,7 @@ type
     procedure SelectOnlyThisComponent(AComponent: TComponent); override;
     function CopySelection: boolean; override;
     function CutSelection: boolean; override;
+    function CanCopy: Boolean; override;
     function CanPaste: Boolean; override;
     function PasteSelection(PasteFlags: TComponentPasteSelectionFlags): boolean; override;
     function DeleteSelection: boolean; override;
@@ -1370,11 +1371,19 @@ begin
   Result := DoCopySelectionToClipboard and DoDeleteSelectedPersistents;
 end;
 
+function TDesigner.CanCopy: Boolean;
+begin
+  Result := (ControlSelection.Count > 0) and
+            (ControlSelection.SelectionForm = Form) and
+            not ControlSelection.OnlyInvisiblePersistentsSelected and
+            not ControlSelection.LookupRootSelected;
+end;
+
 function TDesigner.CanPaste: Boolean;
 begin
-  Result:=(Form<>nil)
-      and (FLookupRoot<>nil)
-      and (not (csDestroying in FLookupRoot.ComponentState));
+  Result:= Assigned(Form) and
+           Assigned(FLookupRoot) and
+           not (csDestroying in FLookupRoot.ComponentState);
 end;
 
 function TDesigner.PasteSelection(
@@ -3593,8 +3602,8 @@ begin
     DesignerMenuOrderForwardOne.Enabled := OneControlSelected and not OnlyNonVisualsAreSelected;
     DesignerMenuOrderBackOne.Enabled := OneControlSelected and not OnlyNonVisualsAreSelected;
 
-  DesignerMenuCut.Enabled := CompsAreSelected;
-  DesignerMenuCopy.Enabled := CompsAreSelected;
+  DesignerMenuCut.Enabled := CanCopy;
+  DesignerMenuCopy.Enabled := CanCopy;
   DesignerMenuPaste.Enabled := CanPaste;
   DesignerMenuDeleteSelection.Enabled := CompsAreSelected;
   

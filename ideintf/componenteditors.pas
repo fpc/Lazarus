@@ -58,7 +58,8 @@ type
     procedure Modified; override;
     function CopySelection: boolean; virtual; abstract;
     function CutSelection: boolean; virtual; abstract;
-    function CanPaste: boolean; virtual; abstract;
+    function CanCopy: Boolean; virtual; abstract;
+    function CanPaste: Boolean; virtual; abstract;
     function PasteSelection(Flags: TComponentPasteSelectionFlags): boolean; virtual; abstract;
     function DeleteSelection: boolean; virtual; abstract;
     function CopySelectionToStream(s: TStream): boolean; virtual; abstract;
