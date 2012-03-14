@@ -25,7 +25,7 @@ unit CustomDrawnWSStdCtrls;
 
 interface
 
-//{$I qtdefines.inc}
+{$include customdrawndefines.inc}
 
 uses
   // RTL

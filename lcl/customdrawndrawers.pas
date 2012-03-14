@@ -340,7 +340,7 @@ type
     procedure DrawScrollBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDPositionedCStateEx); virtual; abstract;
     // TCDGroupBox
-    procedure DrawGroupBox(ADest: TCanvas; ASize: TSize;
+    procedure DrawGroupBox(ADest: TFPCustomCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // TCDPanel
     procedure DrawPanel(ADest: TCanvas; ASize: TSize;

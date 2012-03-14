@@ -593,14 +593,17 @@ end;
 class procedure TCDWSCustomForm.EvMouseMove(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo;
   var Event: TXMotionEvent);
 var
-  lTarget: TWinControl;
-  lEventPos: TPoint;
+  lForm: TCDForm;
+{  lTarget: TWinControl;
+  lEventPos: TPoint;}
 begin
-  lTarget := FindControlWhichReceivedEvent(TCustomForm(AWinControl), AWindowInfo.Children, Event.x, Event.y);
+  lForm := TCDForm(AWinControl.Handle);
+  CallbackMouseMove(lForm, Event.x, Event.y, []);
+{  lTarget := FindControlWhichReceivedEvent(TCustomForm(AWinControl), AWindowInfo.Children, Event.x, Event.y);
 
   lEventPos := FormPosToControlPos(lTarget, Event.x, Event.y);
 
-  LCLSendMouseMoveMsg(lTarget, lEventPos.x, lEventPos.y, []);
+  LCLSendMouseMoveMsg(lTarget, lEventPos.x, lEventPos.y, []);}
 end;
 
 // Top-level windows receive LM_ACTIVATE while constrols receive LM_SETFOCUS

@@ -83,7 +83,7 @@ type
     procedure DrawScrollBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDPositionedCStateEx); override;
     // TCDGroupBox
-    procedure DrawGroupBox(ADest: TCanvas; ASize: TSize;
+    procedure DrawGroupBox(ADest: TFPCustomCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // TCDPanel
     procedure DrawPanel(ADest: TCanvas; ASize: TSize;
@@ -1163,48 +1163,52 @@ begin
   DrawRaisedFrame(ADest, lPos, lSize);
 end;
 
-procedure TCDDrawerCommon.DrawGroupBox(ADest: TCanvas;
+procedure TCDDrawerCommon.DrawGroupBox(ADest: TFPCustomCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
 var
-  FCaptionMiddle: integer;
+  FCaptionMiddle: integer = 0;
   lTextSize: TSize;
   lCaption: String;
 begin
-  FCaptionMiddle := ADest.TextHeight(cddTestStr) div 2;
+  if ADest is TCanvas then FCaptionMiddle := (ADest as TCanvas).TextHeight(cddTestStr) div 2;
   if FCaptionMiddle = 0 then FCaptionMiddle := AStateEx.Font.Size div 2;
   if FCaptionMiddle = 0 then FCaptionMiddle := 5;
 
   // Background
-  ADest.Brush.Color := AStateEx.ParentRGBColor;
+  ADest.Brush.FPColor := TColorToFPColor(AStateEx.ParentRGBColor);
   ADest.Brush.Style := bsSolid;
   ADest.Pen.Style := psSolid;
-  ADest.Pen.Color := AStateEx.ParentRGBColor;
+  ADest.Pen.FPColor := TColorToFPColor(AStateEx.ParentRGBColor);
   ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
 
   // frame
-  ADest.Pen.Color := WIN2000_FRAME_WHITE;
+  ADest.Pen.FPColor := TColorToFPColor(WIN2000_FRAME_WHITE);
   ADest.Pen.Style := psSolid;
   ADest.Brush.Style := bsClear;
   ADest.Rectangle(Bounds(1, 1+FCaptionMiddle, ASize.cx-1, ASize.cy-1-FCaptionMiddle));
-  ADest.Pen.Color := WIN2000_FRAME_GRAY;
+  ADest.Pen.FPColor := TColorToFPColor(WIN2000_FRAME_GRAY);
   ADest.Rectangle(Bounds(0, FCaptionMiddle, ASize.cx-1, ASize.cy-1-FCaptionMiddle));
-  ADest.Pixels[0, ASize.cy-1] := WIN2000_FRAME_WHITE;
-  ADest.Pixels[ASize.cx-1, FCaptionMiddle] := WIN2000_FRAME_WHITE;
+  if ADest is TCanvas then
+  begin
+    (ADest as TCanvas).Pixels[0, ASize.cy-1] := WIN2000_FRAME_WHITE;
+    (ADest as TCanvas).Pixels[ASize.cx-1, FCaptionMiddle] := WIN2000_FRAME_WHITE;
+  end;
 
   // ToDo: Make the caption smaller if it is too big
   lCaption := AStateEx.Caption;
-  lTextSize := ADest.TextExtent(lCaption);
+  if ADest is TCanvas then lTextSize := (ADest as TCanvas).TextExtent(lCaption)
+  else lTextSize := Size(50, AStateEx.Font.Size);
 
   // fill the text background
   ADest.Brush.Style := bsSolid;
-  ADest.Brush.Color := AStateEx.ParentRGBColor;
+  ADest.Brush.FPColor := TColorToFPColor(AStateEx.ParentRGBColor);
   ADest.Pen.Style := psClear;
   ADest.Rectangle(Bounds(FCaptionMiddle, 0, lTextSize.cx+5, lTextSize.cy));
 
   // paint text
   ADest.Pen.Style := psClear;
   ADest.Brush.Style := bsClear;
-  ADest.TextOut(FCaptionMiddle+3, 0, lCaption);
+  if ADest is TCanvas then ADest.TextOut(FCaptionMiddle+3, 0, lCaption);
 end;
 
 procedure TCDDrawerCommon.DrawPanel(ADest: TCanvas; ASize: TSize;

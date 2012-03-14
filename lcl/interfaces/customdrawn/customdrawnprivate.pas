@@ -168,6 +168,8 @@ begin
   else
     lTarget := AWindowHandle.LastMouseDownControl;
 
+  //DebugLn(Format('[CallbackMouseMove] X=%d Y=%d Control=%s', [X, Y, lTarget.Name]));
+
   lEventPos := FormPosToControlPos(lTarget, x, y);
   LCLSendMouseMoveMsg(lTarget, lEventPos.x, lEventPos.y, ShiftState);
 

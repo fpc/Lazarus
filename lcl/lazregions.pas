@@ -266,9 +266,11 @@ begin
   begin
     Result := nil;
 
-    for i := 0 to Childs.Count-1 do
+    // The order here is important to respect the Z-order of controls
+    for i := Childs.Count-1 downto 0 do
     begin
       Result := TLazRegionWithChilds(Childs.Items[i]).IsPointInRegion(AX, AY);
+      if Result <> nil then Break;
     end;
 
     // if it wasn't in any sub region, it is really in this region

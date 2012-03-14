@@ -16,10 +16,10 @@ uses
   LazFreeTypeIntfDrawer, LazFreeType, EasyLazFreeType, IniFiles,
   {$endif}
   // Custom Drawn Canvas
-  IntfGraphics, lazcanvas, lazregions,
+  IntfGraphics, lazcanvas, lazregions, customdrawndrawers, customdrawncontrols,
   // LCL
   GraphType, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc,
-  StdCtrls, ExtCtrls, Forms, Graphics, customdrawncontrols,
+  StdCtrls, ExtCtrls, Forms, Graphics, ComCtrls,
   InterfaceBase, LCLIntf;
 
 type
@@ -456,6 +456,7 @@ var
   lCanvas: TCanvas;
   lControlCanvas: TLazCanvas;
   lBaseWindowOrg: TPoint;
+  lControlStateEx: TCDControlStateEx;
 begin
   Result := False;
 
@@ -495,14 +496,31 @@ begin
   {$endif}
 
     // Special drawing for some native controls
-    if lWinControl is TCustomPanel then
+    if (lWinControl is TCustomPanel) or (lWinControl is TTabSheet)
+     or (lWinControl is TCustomPage) or (lWinControl is TNotebook)  then
     begin
       // Erase the background of TPanel controls, since it can draw it's own border, but fails to draw it's own background
+      // and also erase the background for TTabSheet (children of TPageControl) and TCustomPage (children of TNotebook)
       lControlCanvas.SaveState;
-      lControlCanvas.Brush.FPColor := TColorToFPColor((lWinControl as TCustomPanel).GetRGBColorResolvingParent());
+      lControlCanvas.Brush.FPColor := TColorToFPColor(lWinControl.GetRGBColorResolvingParent());
       lControlCanvas.Pen.FPColor := lControlCanvas.Brush.FPColor;
       lControlCanvas.Rectangle(Bounds(0, 0, lWinControl.Width, lWinControl.Height));
       lControlCanvas.RestoreState(-1);
+    end
+    else if lWinControl is TCustomGroupBox then
+    begin
+      lControlCanvas.SaveState;
+      lControlStateEx := TCDControlStateEx.Create;
+      try
+        lControlStateEx.Font := lWinControl.Font;
+        lControlStateEx.Caption := lWinControl.Caption;
+        lControlStateEx.ParentRGBColor := lWinControl.GetRGBColorResolvingParent();
+        GetDefaultDrawer().DrawGroupBox(lControlCanvas, Size(lWinControl.Width, lWinControl.Height),
+          [], lControlStateEx);
+      finally
+        lControlStateEx.Free;
+        lControlCanvas.RestoreState(-1);
+      end;
     end;
 
     // Send the drawing message
@@ -607,6 +625,7 @@ begin
   begin
     lCurCDControl := TCDWinControl(AControlsList.Items[i]);
     if lCurCDControl.Region = nil then Continue;
+    if not lCurCDControl.WinControl.HandleObjectShouldBeVisible then Continue;
     lRegionOfEvent := lCurCDControl.Region.IsPointInRegion(lEventPos.X, lEventPos.Y);
     if lRegionOfEvent <> nil then
     begin
