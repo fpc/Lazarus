@@ -1,17 +1,17 @@
 #   File generated automatically by Lazarus Package Manager
 #
-#   Makefile.fpc for synedit 1.0
+#   Makefile.fpc for SynEdit 1.0
 #
-#   This file was generated on 01/13/2011
+#   This file was generated on 14-3-12
 
 [package]
 name=synedit
 version=1.0
 
 [compiler]
-unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
-options= -MObjFPC -Scghi -O1 -gl -vew -l -dLCL -dLCL$(LCL_PLATFORM)
+unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM)
+unitdir=../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+options= -MObjFPC -Scghi -CR -O1 -g -gl -vewnh -l -vm4055,5024 -CR -dgc -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]
 units=allsynedit.pas
@@ -50,6 +50,6 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/allsynedit$(PPUEXT)
 
 compiled:
-        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/synedit.compiled
+        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/SynEdit.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) allsynedit$(PPUEXT) compiled
