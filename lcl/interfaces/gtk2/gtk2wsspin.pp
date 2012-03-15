@@ -33,7 +33,7 @@ uses
   Math, Controls, LCLType, LCLProc, Spin, StdCtrls,
   // Widgetset
   Gtk2Extra, Gtk2Def, Gtk2Int, Gtk2WSControls, Gtk2WSStdCtrls,
-  Gtk2Proc, WSLCLClasses, WSSpin;
+  Gtk2Proc, WSLCLClasses, WSProc, WSSpin;
 
 type
 
@@ -55,29 +55,14 @@ type
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
-function GetGtkSpinEntry(Spin: PGtkSpinButton): PGtkEntry;
-function GetSpinGtkEntry(const Spin: TWinControl): PGtkEntry;
-function GetGtkFloatSpinEditable(Spin: PGtkSpinButton): PGtkOldEditable;
-function GetSpinGtkEditable(const Spin: TWinControl): PGtkOldEditable;
-
 implementation
 
-function GetGtkSpinEntry(Spin: PGtkSpinButton): PGtkEntry;
+function GetGtkFloatSpinEditable(Spin: PGtkSpinButton): PGtkEntry;
 begin
   Result:=PGtkEntry(@(Spin^.entry));
 end;
 
-function GetSpinGtkEntry(const Spin: TWinControl): PGtkEntry;
-begin
-  Result:=GetGtkSpinEntry(PGtkSpinButton(Spin.Handle));
-end;
-
-function GetGtkFloatSpinEditable(Spin: PGtkSpinButton): PGtkOldEditable;
-begin
-  Result:=PGtkOldEditable(@(Spin^.entry));
-end;
-
-function GetSpinGtkEditable(const Spin: TWinControl): PGtkOldEditable;
+function GetSpinGtkEditable(const Spin: TWinControl): PGtkEntry;
 begin
   Result:=GetGtkFloatSpinEditable(PGtkSpinButton(Spin.Handle));
 end;
@@ -91,22 +76,30 @@ begin
 end;
 
 class function TGtk2WSCustomFloatSpinEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
+var
+  Entry: PGtkEntry;
 begin
-  Result :=WidgetGetSelStart(PGtkWidget(GetSpinGtkEntry(ACustomEdit)));
+  if not WSCheckHandleAllocated(ACustomEdit, 'GetSelStart') then
+    Exit(0);
+  Entry := @PGtkSpinButton(ACustomEdit.Handle)^.entry;
+  Result := Min(Entry^.current_pos, Entry^.selection_bound)
 end;
 
 class function TGtk2WSCustomFloatSpinEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
+var
+  AStart, AEnd: gint;
 begin
-  with GetSpinGtkEditable(ACustomEdit)^ do
-    Result := Abs(integer(selection_end_pos)-integer(selection_start_pos));
+  Result := 0;
+  if not WSCheckHandleAllocated(ACustomEdit, 'GetSelLength') then
+    Exit;
+  if gtk_editable_get_selection_bounds(PGtkEditable(GetSpinGtkEditable(ACustomEdit)), @AStart, @AEnd) then
+    Result := Abs(AEnd-AStart);
 end;
 
 class function TGtk2WSCustomFloatSpinEdit.GetValue(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double;
 begin
-  // developer.gnome.org/doc/API/2.2/gtk/GtkSpinButton.html:
-  // "function gtk_spin_button_get_value_as_float is deprecated, use gtk_spin_button_get_value() instead"
-  Result:=gtk_spin_button_get_value(PGtkSpinButton(ACustomFloatSpinEdit.Handle));
+  Result := gtk_spin_button_get_value(PGtkSpinButton(ACustomFloatSpinEdit.Handle));
 end;
 
 class procedure TGtk2WSCustomFloatSpinEdit.SetSelStart(const ACustomEdit: TCustomEdit;
@@ -117,9 +110,17 @@ end;
 
 class procedure TGtk2WSCustomFloatSpinEdit.SetSelLength(const ACustomEdit: TCustomEdit;
   NewLength: integer);
+var
+  Entry: PGtkEntry;
+  SelStart: Integer;
 begin
-  WidgetSetSelLength(PGtkWidget(GetSpinGtkEntry(ACustomEdit)),
-                     NewLength);
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetSelLength') then
+    Exit;
+  Entry := @PGtkSpinButton(ACustomEdit.Handle)^.entry;
+  SelStart := GetSelStart(ACustomEdit);
+  gtk_entry_select_region(Entry,
+    SelStart,
+    SelStart + NewLength);
 end;
 
 class procedure TGtk2WSCustomFloatSpinEdit.SetReadOnly(const ACustomEdit: TCustomEdit; ReadOnly: boolean);
@@ -204,6 +205,9 @@ begin
   WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
   Set_RC_Name(AWinControl, Widget);
   SetCallbacks(Widget, WidgetInfo);
+  if Result <> 0 then
+    g_object_set(gtk_widget_get_settings(@PGtkSpinButton(Result)^.entry),
+      'gtk-entry-select-on-focus', [0, nil]);
 end;
 
 end.

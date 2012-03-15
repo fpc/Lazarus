@@ -383,9 +383,6 @@ type
 {$I gtk2memostrings.inc}
 {$UNDEF MEMOHEADER}
 
-function  WidgetGetSelStart(const Widget: PGtkWidget): integer;
-procedure WidgetSetSelLength(const Widget: PGtkWidget; NewLength: integer);
-
 function GetComboBoxEntry(Widget: PGtkWidget): PGtkEntry;
 
 implementation
@@ -408,30 +405,6 @@ begin
     Result := PGtkEntry(GTK_BIN(Widget)^.child)
   else
     Result := nil;
-end;
-
-function WidgetGetSelStart(const Widget: PGtkWidget): integer;
-begin
-  if Widget <> nil then
-  begin
-    if PGtkOldEditable(Widget)^.selection_start_pos
-       < PGtkOldEditable(Widget)^.selection_end_pos
-    then
-      Result:= PGtkOldEditable(Widget)^.selection_start_pos
-    else
-      Result:= PGtkOldEditable(Widget)^.current_pos;// selection_end_pos
-  end else
-    Result:= 0;
-end;
-
-procedure WidgetSetSelLength(const Widget: PGtkWidget; NewLength: integer);
-begin
-  if Widget<>nil then
-  begin
-    gtk_editable_select_region(PGtkOldEditable(Widget),
-      gtk_editable_get_position(PGtkOldEditable(Widget)),
-      gtk_editable_get_position(PGtkOldEditable(Widget)) + NewLength);
-  end;
 end;
 
 {$I gtk2memostrings.inc}
@@ -1077,7 +1050,10 @@ begin
   // see bug http://bugs.freepascal.org/view.php?id=14615
   LockOnChange(PgtkObject(Widget), +1);
   try
-    gtk_entry_set_text(PGtkEntry(Widget), PChar(AText));
+    if GTK_IS_SPIN_BUTTON(Widget) then
+      gtk_entry_set_text(@PGtkSpinButton(Widget)^.entry, PChar(AText))
+    else
+      gtk_entry_set_text(PGtkEntry(Widget), PChar(AText));
   finally
     LockOnChange(PgtkObject(Widget), -1);
   end;

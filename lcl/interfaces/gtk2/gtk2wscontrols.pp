@@ -243,12 +243,13 @@ begin
         AText := StrPas(gtk_entry_get_text(PGtkEntry(PGtkCombo(Handle)^.entry)));
       end;
 
-    csEdit, csSpinEdit:
-       AText:= StrPas(gtk_entry_get_text(PgtkEntry(Handle)));
+    csEdit: AText:= StrPas(gtk_entry_get_text(PgtkEntry(Handle)));
+    csSpinEdit: AText:= StrPas(gtk_entry_get_text(@PGtkSpinButton(Handle)^.entry));
+
 
     csMemo:
       begin
-        CS := gtk_editable_get_chars(PGtkOldEditable(
+        CS := gtk_editable_get_chars(PGtkEditable(
           GetWidgetInfo(Pointer(Handle), True)^.CoreWidget), 0, -1);
         AText := StrPas(CS);
         g_free(CS);
