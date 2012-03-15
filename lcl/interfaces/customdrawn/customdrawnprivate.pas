@@ -231,6 +231,7 @@ var
   lTarget: TWinControl;
 begin
   lTarget := AWindowHandle.GetFocusedControl();
+  if lTarget = nil then Exit;
   {$ifdef VerboseCDEvents}
    DebugLn(Format('CallbackKeyUp FocusedControl=%s:%s', [lTarget.Name, lTarget.ClassName]));
   {$endif}

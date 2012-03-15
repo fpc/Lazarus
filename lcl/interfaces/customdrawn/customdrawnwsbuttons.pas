@@ -113,51 +113,17 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TCDWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph);
-(*const
-  IconModeToButtonState: array[QIconMode] of TButtonState =
-  (
-{ QIconNormal   } bsUp,
-{ QIconDisabled } bsDisabled,
-{ QIconActive   } bsHot,
-{ QIconSelected } bsDown
-  );
-
 var
-  AIcon: QIconH;
-  APixmap: QPixmapH;
-  AGlyph: TBitmap;
-  AIndex: Integer;
-  AEffect: TGraphicsDrawEffect;
-  Mode: QIconMode;
-  ASize: TSize;*)
+  lCDWinControl: TCDWinControl;
+  lCDControl: TCDIntfButton;
 begin
-{  if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph') then
-    Exit;
+  //  if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph') then
+  //    Exit;
 
-  TQtBitBtn(ABitBtn.Handle).GlyphLayout := Ord(ABitBtn.Layout);
-  AIcon := QIcon_create();
-  if ABitBtn.CanShowGlyph then
-  begin
-    AGlyph := TBitmap.Create;
-    APixmap := QPixmap_create();
+  lCDWinControl := TCDWinControl(ABitBtn.Handle);
+  lCDControl := TCDIntfButton(lCDWinControl.CDControl);
 
-    for Mode := QIconNormal to QIconSelected do
-    begin
-      AValue.GetImageIndexAndEffect(IconModeToButtonState[Mode], AIndex, AEffect);
-      AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
-      QPixmap_fromImage(APixmap, TQtImage(AGlyph.Handle).Handle);
-      QIcon_addPixmap(AIcon, APixmap, Mode, QIconOn);
-    end;
-    QPixmap_destroy(APixmap);
-    AGlyph.Free;
-
-    ASize.cx := AValue.Images.Width;
-    ASize.cy := AValue.Images.Height;
-    TQtBitBtn(ABitBtn.Handle).setIconSize(@ASize);
-  end;
-
-  TQtBitBtn(ABitBtn.Handle).setIcon(AIcon);
-  QIcon_destroy(AIcon);}
+  lCDControl.Glyph.Assign(AValue.Glyph);
 end;
 
 class procedure TCDWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;

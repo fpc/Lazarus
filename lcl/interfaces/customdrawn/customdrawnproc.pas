@@ -238,7 +238,6 @@ begin
   {$ENDIF}
   lFormInfo := TCDNonNativeForm.Create;
   lFormInfo.LCLForm := AForm;
-  lFormInfo.Children := TFPList.Create;
   AddFormWithCDHandle(lFormInfo);
   Result := lFormInfo;
 end;
@@ -986,11 +985,14 @@ begin
   //FProps.CaseSensitive:=false; commented as in the qt widgetset
   FProps.Sorted:=true;
   IncInvalidateCount(); // Always starts needing an invalidate
+
+  Children := TFPList.Create;
 end;
 
 destructor TCDBaseControl.Destroy;
 begin
   FProps.Free;
+  Children.Free;
 
   // Free the Canvas and Image if required
   // Dont free for the Form because elsewhere this is taken care of
