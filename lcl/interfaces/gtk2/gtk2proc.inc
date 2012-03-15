@@ -2149,6 +2149,28 @@ var
     // the gtk2 gtkentry handles the return key and emits an activate signal
     // The LCL does not use that and needs the return key event
     // => emulate it
+
+    // emulate VK_RETURN on GtkButton. issue #21483
+    if GtkWidgetIsA(TargetWidget, gtk_type_button) then
+    begin
+      if (gdk_event_get_type(AEvent) = GDK_KEY_RELEASE) and
+        (VKey = VK_RETURN) then
+      begin
+        FillChar(Msg, SizeOf(Msg), 0);
+        Msg.CharCode := VKey;
+        if SysKey then
+          Msg.msg := LM_SYSKEYUP
+        else
+          Msg.msg := LM_KEYUP;
+        Msg.KeyData := CommonKeyData or (Flags shl 16) or $0001 {TODO:  repeatcount};
+        // do not send next LM_CLICKED. issue #21483
+        g_object_set_data(PGObject(TargetWidget),'lcl-button-stop-clicked', TargetWidget);
+        NotifyApplicationUserInput(TControl(TargetObj), Msg.Msg);
+        DeliverKeyMessage(TargetObj, Msg);
+      end;
+
+    end else
+
     if (
         GtkWidgetIsA(TargetWidget, gtk_type_entry) or
         GtkWidgetIsA(TargetWidget, gtk_type_text_view)

@@ -2280,8 +2280,23 @@ var
 begin
   Result := CallBackDefaultReturn;
   if AInfo^.ChangeLock > 0 then Exit;
+
+   // do not send LM_CLICKED. issue #21483
+  if g_object_get_data(PGObject(AWidget),'lcl-button-stop-clicked') = AWidget then
+  begin
+    g_object_set_data(PGObject(AWidget),'lcl-button-stop-clicked', nil);
+    exit;
+  end;
   Msg.Msg := LM_CLICKED;
   Result := DeliverMessage(AInfo^.LCLObject, Msg) = 0;
+end;
+
+function Gtk2WSButtonPressedEvent(widget: PGtkWidget; event: pgdkEventButton; data: gPointer): GBoolean; cdecl;
+begin
+  Result := CallBackDefaultReturn;
+  // set to nil data if we pressed return before,
+  // otherwise LM_CLICKED won't trigger. issue #21483
+  g_object_set_data(PGObject(Widget),'lcl-button-stop-clicked', nil);
 end;
 
 procedure Gtk2WSButton_SizeAllocate(widget: PGtkWidget; allocation: PGtkAllocation; user_data: gpointer); cdecl;
@@ -2339,6 +2354,7 @@ class procedure TGtk2WSButton.SetCallbacks(const AGtkWidget: PGtkWidget;
 begin
   TGtk2WSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
   SignalConnect(AWidgetInfo^.CoreWidget, 'clicked', @Gtk2WSButton_Clicked, AWidgetInfo);
+  SignalConnect(AWidgetInfo^.CoreWidget, 'button-press-event', @Gtk2WSButtonPressedEvent, AWidgetInfo);
   SignalConnect(AWidgetInfo^.CoreWidget, 'size-allocate', @Gtk2WSButton_SizeAllocate, AWidgetInfo);
 end;
 
