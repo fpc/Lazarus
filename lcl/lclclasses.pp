@@ -200,7 +200,7 @@ begin
   then begin
     // raise some error ?
     {$IFNDEF DisableChecks}
-    DebugLn('TLCLReferenceComponent: Circulair reference creation');
+    DebugLn('TLCLReferenceComponent: Circular reference creation');
     {$ENDIF}
     Exit;
   end;
