@@ -42,17 +42,20 @@ type
   { TCDWSScrollBar }
 
   TCDWSScrollBar = class(TWSScrollBar)
+  public
+    class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
-{    class function  CreateHandle(const AWinControl: TWinControl;
+    class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure SetKind(const AScrollBar: TCustomScrollBar; const AIsHorizontal: Boolean); override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
-    class procedure ShowHide(const AWinControl: TWinControl); override;}
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TCDWSCustomGroupBox }
 
-  TCDWSCustomGroupBox = class(TWSCustomGroupBox)
+  TCDWSCustomGroupBox = class(TWSCustomGroupBox) // Receives direct rendering, so no control injection
   published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -328,33 +331,40 @@ implementation
 
 { TCDWSScrollBar }
 
-(*{------------------------------------------------------------------------------
-  Method: TCDWSCustomScrollBar.CreateHandle
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class function TCDWSScrollBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
-var
-  QtScrollBar: TQtScrollBar;
+class procedure TCDWSScrollBar.InjectCDControl(const AWinControl: TWinControl;
+  var ACDControlField: TCDControl);
 begin
-  QtScrollBar := TQtScrollBar.Create(AWinControl, AParams);
+  TCDIntfScrollBar(ACDControlField).LCLControl := TCustomScrollBar(AWinControl);
+  ACDControlField.Caption := AWinControl.Caption;
+  ACDControlField.Parent := AWinControl;
+  ACDControlField.Align := alClient;
+end;
 
-  QtScrollBar.AttachEvents;
-  
-  case TScrollBar(AWinControl).Kind of
-    sbHorizontal: QtScrollBar.SetOrientation(QtHorizontal);
-    sbVertical: QtScrollBar.SetOrientation(QtVertical);
-  end;
-  
-  Result := TLCLIntfHandle(QtScrollbar);
+class function TCDWSScrollBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  lCDWinControl: TCDWinControl;
+begin
+  Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
+  lCDWinControl := TCDWinControl(Result);
+  lCDWinControl.CDControl := TCDIntfScrollBar.Create(AWinControl);
+end;
+
+class procedure TCDWSScrollBar.DestroyHandle(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  lCDWinControl.CDControl.Free;
+  lCDWinControl.Free;
 end;
 
 class procedure TCDWSScrollBar.SetKind(const AScrollBar: TCustomScrollBar;
   const AIsHorizontal: Boolean);
-var
-  QtScrollBar: TQtScrollBar;
+{var
+  QtScrollBar: TQtScrollBar;  }
 begin
-  if not WSCheckHandleAllocated(AScrollBar, 'SetKind') then
+  {if not WSCheckHandleAllocated(AScrollBar, 'SetKind') then
     Exit;
   QtScrollBar := TQtScrollBar(AScrollBar.Handle);
   QtScrollBar.BeginUpdate;
@@ -381,21 +391,16 @@ begin
     end;
   finally
     QtScrollbar.EndUpdate;
-  end;
+  end;}
 end;
 
-{------------------------------------------------------------------------------
-  Method: TCDWSCustomScrollBar.SetParams
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
 class procedure TCDWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
-var
-  QtScrollBar: TQtScrollBar;
+{var
+  QtScrollBar: TQtScrollBar;   }
 begin
-  if not WSCheckHandleAllocated(AScrollBar, 'SetParams') then
+{  if not WSCheckHandleAllocated(AScrollBar, 'SetParams') then
     Exit;
-  QtScrollBar := TQtScrollBar(AScrollBar.Handle);	
+  QtScrollBar := TQtScrollBar(AScrollBar.Handle);
 
   QtScrollBar.BeginUpdate;
   try
@@ -432,27 +437,23 @@ begin
     end;
   finally
     QtScrollbar.EndUpdate;
-  end;
+  end;}
 end;
 
 class procedure TCDWSScrollBar.ShowHide(const AWinControl: TWinControl);
 var
-  Widget: TQtWidget;
+  lCDWinControl: TCDWinControl;
 begin
-  if not WSCheckHandleAllocated(AWincontrol, 'ShowHide') then
-    Exit;
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
 
-  Widget := TQtWidget(AWinControl.Handle);
+  TCDWSWinControl.ShowHide(AWinControl);
 
-  {reapply params just before visible since slider isn't updated
-   properly sometimes.}
-  if AWinControl.HandleObjectShouldBeVisible then
-    SetParams(TCustomScrollBar(AWinControl));
-
-  Widget.BeginUpdate;
-  Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
-  Widget.EndUpdate;
-end;*)
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
+end;
 
 { TCDWSCustomGroupBox }
 

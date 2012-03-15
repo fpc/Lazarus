@@ -9,7 +9,8 @@ uses
   Types, Classes, SysUtils,
   // LCL
   Controls, Graphics, stdctrls, extctrls, comctrls,
-  customdrawnproc, customdrawncontrols, lcltype, lclproc, lclintf;
+  customdrawnproc, customdrawncontrols, lcltype, lclproc, lclintf,
+  spin;
 
 type
 
@@ -37,6 +38,11 @@ type
     LCLControl: TCustomComboBox;
   end;
 
+  TCDIntfScrollBar = class(TCDScrollBar)
+  public
+    LCLControl: TCustomScrollBar;
+  end;
+
   // Additional Tab
 
   TCDIntfStaticText = class(TCDProgressBar)
@@ -59,6 +65,13 @@ type
   TCDIntfPageControl = class(TCDPageControl)
   public
     LCLControl: TCustomTabControl;
+  end;
+
+  // Misc
+
+  TCDIntfSpinEdit = class(TCDSpinEdit)
+  public
+    LCLControl: TCustomFloatSpinEdit;
   end;
 
 // These are default message handlers which backends might use to simplify their code

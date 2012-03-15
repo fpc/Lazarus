@@ -112,8 +112,8 @@ uses
  CustomDrawnWSExtCtrls,
  CustomDrawnWSForms,
 { WinCEWSImgList,
- WinCEWSMenus,
- WinCEWSSpin,}
+ WinCEWSMenus,}
+ CustomDrawnWSSpin,
  CustomDrawnWSStdCtrls,
  CustomDrawnWSLazDeviceAPIs{,
  WinCEWSGrids};
@@ -268,8 +268,8 @@ end;
 // StdCtrls
 function RegisterCustomScrollBar: Boolean; alias : 'WSRegisterCustomScrollBar';
 begin
-//  RegisterWSComponent(TCustomScrollBar, TWinCEWSScrollBar);
-  Result := False;
+  RegisterWSComponent(TCustomScrollBar, TCDWSScrollBar);
+  Result := True;
 end;
 
 function RegisterCustomGroupBox: Boolean; alias : 'WSRegisterCustomGroupBox';
@@ -547,8 +547,8 @@ end;
 
 function RegisterCustomFloatSpinEdit: Boolean; alias : 'WSRegisterCustomFloatSpinEdit';
 begin
-//  RegisterWSComponent(TCustomFloatSpinEdit, TWinCEWSCustomFloatSpinEdit);
-  Result := False;
+  RegisterWSComponent(TCustomFloatSpinEdit, TCDWSCustomFloatSpinEdit);
+  Result := True;
 end;
 
 function RegisterCustomRubberBand: Boolean; alias : 'WSRegisterCustomRubberBand';
