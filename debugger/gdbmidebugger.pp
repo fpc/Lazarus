@@ -4366,24 +4366,20 @@ begin
     FTheDebugger.FBreakErrorBreak.SetByAddr(Self);
     FTheDebugger.FRunErrorBreak.SetByAddr(Self);
 
-    //if R.State = dsNone
-    //then begin
-      SetDebuggerState(dsInit); // triggers all breakpoints to be set.
-      if FTheDebugger.FBreakAtMain <> nil
-      then begin
-        CanContinue := False;
-        TGDBMIBreakPoint(FTheDebugger.FBreakAtMain).Hit(CanContinue);
-      end
-      else CanContinue := True;
+    SetDebuggerState(dsInit); // triggers all breakpoints to be set.
+    if FTheDebugger.FBreakAtMain <> nil
+    then begin
+      CanContinue := False;
+      TGDBMIBreakPoint(FTheDebugger.FBreakAtMain).Hit(CanContinue);
+    end
+    else CanContinue := True;
 
-      if CanContinue and (FContinueCommand <> nil)
-      then begin
-        FTheDebugger.QueueCommand(FContinueCommand);
-        FContinueCommand := nil;
-      end else
-        SetDebuggerState(dsPause);
-    //end
-    //else SetDebuggerState(R.State);
+    if CanContinue and (FContinueCommand <> nil)
+    then begin
+      FTheDebugger.QueueCommand(FContinueCommand);
+      FContinueCommand := nil;
+    end else
+      SetDebuggerState(dsPause);
 
     if DebuggerState = dsPause
     then ProcessFrame;
