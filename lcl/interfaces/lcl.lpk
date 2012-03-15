@@ -114,7 +114,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="396">
+    <Files Count="397">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1961,6 +1961,11 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="customdrawnwsspin"/>
       </Item396>
+      <Item397>
+        <Filename Value="customdrawn/customdrawnwsbuttons.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="customdrawnwsbuttons"/>
+      </Item397>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>

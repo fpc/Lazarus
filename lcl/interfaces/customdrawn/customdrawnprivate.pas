@@ -20,7 +20,7 @@ type
 
   TCDIntfButton = class(TCDButton)
   public
-    LCLControl: TButton;
+    LCLControl: TCustomButton;
   end;
 
   TCDIntfEdit = class(TCDEdit)

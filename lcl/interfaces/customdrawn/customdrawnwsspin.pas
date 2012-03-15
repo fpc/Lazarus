@@ -29,9 +29,9 @@ interface
 
 uses
   // RTL
-
+  Classes,
   // LCL
-  Spin, SysUtils, Controls, Classes, LCLType, LCLProc, LCLIntf, Forms,
+  Spin, SysUtils, Controls, LCLType, LCLProc, LCLIntf, Forms,
   customdrawncontrols,
   // Widgetset
   WSProc, WSSpin, WSLCLClasses, CustomDrawnWsControls, customdrawnproc,

@@ -103,8 +103,8 @@ function RegisterLazDeviceAPIs: Boolean;
 implementation
 uses
  CustomDrawnWSArrow,
-{ WinCEWSButtons,
- WinCEWSCalendar,
+ CustomDrawnWSButtons,
+{ WinCEWSCalendar,
  WinCEWSCheckLst,}
  CustomDrawnWSComCtrls,
  CustomDrawnWSControls,
@@ -452,8 +452,8 @@ end;
 // Buttons
 function RegisterCustomBitBtn: Boolean; alias : 'WSRegisterCustomBitBtn';
 begin
-//  RegisterWSComponent(TCustomBitBtn, TWinCEWSBitBtn);
-  Result := False;
+  RegisterWSComponent(TCustomBitBtn, TCDWSBitBtn);
+  Result := True;
 end;
 
 function RegisterCustomSpeedButton: Boolean; alias : 'WSRegisterCustomSpeedButton';

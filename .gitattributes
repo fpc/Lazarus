@@ -5630,6 +5630,7 @@ lcl/interfaces/customdrawn/customdrawnwinapi_win.inc svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawnwinapi_x11.inc svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawnwinapih.inc svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawnwsarrow.pas svneol=native#text/plain
+lcl/interfaces/customdrawn/customdrawnwsbuttons.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawnwscomctrls.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawnwscontrols.pp svneol=native#text/plain
 lcl/interfaces/customdrawn/customdrawnwsextctrls.pas svneol=native#text/pascal
