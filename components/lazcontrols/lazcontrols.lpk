@@ -4,6 +4,7 @@
     <PathDelim Value="\"/>
     <Name Value="LazControls"/>
     <AddToProjectUsesSection Value="True"/>
+    <Author Value="Lazarus Team"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
@@ -15,6 +16,9 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="Some extra LCL controls needed by the IDE."/>
+    <License Value="modified LGPL-2"/>
+    <Version Major="1" Release="1"/>
     <Files Count="4">
       <Item1>
         <Filename Value="dividerbevel.pas"/>

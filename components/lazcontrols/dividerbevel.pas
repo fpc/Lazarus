@@ -1,6 +1,6 @@
 { DividerBevel
 
-  Copyright (C) 2010 <name of author> <contact>
+  Copyright (C) 2010 Lazarus team
 
   This library is free software; you can redistribute it and/or modify it
   under the same terms as the Lazarus Component Library (LCL)
