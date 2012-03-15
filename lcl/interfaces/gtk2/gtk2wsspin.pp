@@ -247,7 +247,7 @@ begin
         S := FloatToStr(FL);
         P := StrNew(PChar(S));
         g_object_set_data(PGObject(SpinButton),'lcl-eat-next-key-release', P);
-        g_object_set_data(PGObject(SpinButton),'lcl-eat-next-key-release-pos', TObject(ACurPos));
+        g_object_set_data(PGObject(SpinButton),'lcl-eat-next-key-release-pos', gpointer(ACurPos));
         Result := True;
       end;
     end;
