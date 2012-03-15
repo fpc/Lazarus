@@ -1363,16 +1363,7 @@ begin
   // register the first dynamic section for often used context sensitive stuff
   SrcEditMenuSectionFirstDynamic:=RegisterIDEMenuSection(SourceEditorMenuRoot, 'First dynamic section');
 
-  {%region *** Clipboard section ***}
-    SrcEditMenuSectionClipboard:=RegisterIDEMenuSection(SourceEditorMenuRoot, 'Clipboard');
-    AParent:=SrcEditMenuSectionClipboard;
-
-    SrcEditMenuCut:=RegisterIDEMenuCommand(AParent,'Cut',lisCut, nil, nil, nil, 'laz_cut');
-    SrcEditMenuCopy:=RegisterIDEMenuCommand(AParent,'Copy',lisCopy, nil, nil, nil, 'laz_copy');
-    SrcEditMenuPaste:=RegisterIDEMenuCommand(AParent,'Paste',lisPaste, nil, nil, nil, 'laz_paste');
-    SrcEditMenuCopyFilename:=RegisterIDEMenuCommand(AParent,'Copy filename', uemCopyFilename);
-  {%endregion}
-
+  // Felipe: Please keep "Find Declaration" as the first item
   {%region *** first static section *** }
     SrcEditMenuSectionFirstStatic:=RegisterIDEMenuSection(SourceEditorMenuRoot, 'First static section');
     AParent:=SrcEditMenuSectionFirstStatic;
@@ -1398,6 +1389,16 @@ begin
       SrcEditMenuFindIdentifierReferences := RegisterIDEMenuCommand
           (AParent, 'FindIdentifierReferences',lisMenuFindIdentifierRefs, nil, @ExecuteIdeMenuClick);
     {%endregion}
+  {%endregion}
+
+  {%region *** Clipboard section ***}
+    SrcEditMenuSectionClipboard:=RegisterIDEMenuSection(SourceEditorMenuRoot, 'Clipboard');
+    AParent:=SrcEditMenuSectionClipboard;
+
+    SrcEditMenuCut:=RegisterIDEMenuCommand(AParent,'Cut',lisCut, nil, nil, nil, 'laz_cut');
+    SrcEditMenuCopy:=RegisterIDEMenuCommand(AParent,'Copy',lisCopy, nil, nil, nil, 'laz_copy');
+    SrcEditMenuPaste:=RegisterIDEMenuCommand(AParent,'Paste',lisPaste, nil, nil, nil, 'laz_paste');
+    SrcEditMenuCopyFilename:=RegisterIDEMenuCommand(AParent,'Copy filename', uemCopyFilename);
   {%endregion}
 
   {%region *** Files section ***}
