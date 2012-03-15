@@ -915,23 +915,117 @@ function TCDWidgetSet.BackendGetFontPath(const LogFont: TLogFont; const LongFont
 var
   i: Integer;
   Str: String;
-  AFontName: String;
+  lLowerLongFontName: String;
+  lIsMonoSpace: Boolean = False;
+  lIsSerif: Boolean = False;
+  lIsBold: Boolean;
+  lIsItalic: Boolean;
 begin
-  // First look if font name matches a stored name
-  // but replace generic with reasonable default
-  AFontName:= '';
-  if LowerCase(LongFontName) = 'default' then AFontName:= 'Arial'
-  else if LowerCase(LongFontName) = 'sans' then AFontName:= 'Arial'
-  else if LowerCase(LongFontName) = 'serif' then AFontName:= 'Times New Roman'
-  else AFontName:= LongFontName;
+  lLowerLongFontName := UTF8LowerCase(LongFontName);
 
-  str := FFontList.Values[AFontName];
-  if str <> '' then begin
-    Result:= str;
-    exit;
+  // First try the long font name
+  str := FFontList.Values[LongFontName];
+  if str <> '' then Exit(str);
+
+  // Generic font names that the LCL uses
+
+  if 'default' = lLowerLongFontName then
+  begin
+    str := FFontList.Values['Tahoma'];
+    if str <> '' then Exit(str);
+  end;
+  if 'sans' = lLowerLongFontName then
+  begin
+    str := FFontList.Values['Tahoma'];
+    if str <> '' then Exit(str);
+  end;
+  if 'serif' = lLowerLongFontName then
+  begin
+    str := FFontList.Values['Times New Roman'];
+    if str <> '' then Exit(str);
   end;
 
-  // Here font name wasn't found - Carry on educated guesses
+  // Nothing directly found, so first classify the font and then guess
+
+  if Pos('serif', lLowerLongFontName) > 0 then lIsSerif := True;
+  if Pos('courier', lLowerLongFontName) > 0 then lIsMonoSpace := True;
+  if Pos('monospace', lLowerLongFontName) > 0 then lIsMonoSpace := True;
+  lIsBold := (LogFont.lfWeight >= FW_BOLD);
+  lIsItalic := (LogFont.lfItalic > 0);
+
+  // Try to get a font which matches the classification
+  // Tahoma is the default Windows XP font, so it is the prefered first choice
+  if (not lIsSerif) and (not lIsMonospace) then
+  begin
+    if lIsBold and lIsItalic then
+    begin
+      // In Windows XP there is no Tahoma Bold Italic nor Italic, but maybe they will add later
+      str := FFontList.Values['Tahoma Bold Italic'];
+      if str <> '' then Exit(str);
+      str := FFontList.Values['Arial Bold Italic'];
+      if str <> '' then Exit(str);
+    end;
+    if lIsBold then
+    begin
+      str := FFontList.Values['Tahoma Bold'];
+      if str <> '' then Exit(str);
+      str := FFontList.Values['Arial Bold'];
+      if str <> '' then Exit(str);
+    end;
+    if lIsItalic then
+    begin
+      str := FFontList.Values['Tahoma Italic'];
+      if str <> '' then Exit(str);
+      str := FFontList.Values['Arial Italic'];
+      if str <> '' then Exit(str);
+    end;
+    str := FFontList.Values['Tahoma'];
+    if str <> '' then Exit(str);
+    str := FFontList.Values['Arial'];
+    if str <> '' then Exit(str);
+  end
+  else if lIsSerif then
+  begin
+    if lIsBold and lIsItalic then
+    begin
+      str := FFontList.Values['Times New Roman Bold Italic'];
+      if str <> '' then Exit(str);
+    end;
+    if lIsBold then
+    begin
+      str := FFontList.Values['Times New Roman Bold'];
+      if str <> '' then Exit(str);
+    end;
+    if lIsItalic then
+    begin
+      str := FFontList.Values['Times New Roman Italic'];
+      if str <> '' then Exit(str);
+    end;
+    str := FFontList.Values['Times New Roman'];
+    if str <> '' then Exit(str);
+  end
+  else if lIsMonospace then
+  begin
+    if lIsBold and lIsItalic then
+    begin
+      str := FFontList.Values['Courier New Bold Italic'];
+      if str <> '' then Exit(str);
+    end;
+    if lIsBold then
+    begin
+      str := FFontList.Values['Courier New Bold'];
+      if str <> '' then Exit(str);
+    end;
+    if lIsItalic then
+    begin
+      str := FFontList.Values['Courier New Italic'];
+      if str <> '' then Exit(str);
+    end;
+    str := FFontList.Values['Courier New'];
+    if str <> '' then Exit(str);
+    str := FFontList.Values['Courier'];
+    if str <> '' then Exit(str);
+  end;
 
   // No luck - Nothing was found
   raise Exception.Create('[BackendGetFontPath] Unable to find a suitable font to replace '+LongFontName);
