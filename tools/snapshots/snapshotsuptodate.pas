@@ -21,7 +21,7 @@ type
     property Files : TStrings read GetFiles;
     property MatchingFiles: TStrings read GetMatchingFiles;
   public
-    class function FileMaskSuite(const AName, AFileMask: string): TTestSuite;
+    class function FileMaskSuite(const AName, AFileMask: string; updated: boolean): TTestSuite;
     constructor Create(const AName, AFileMask, ATestName: string); reintroduce;
     destructor Destroy; override;
   published
@@ -44,7 +44,7 @@ var
 begin
   if FileList=nil then begin
     FTPLister := TFTPLister.Create;
-    FileList := FTPLister.GetList('ftp.hu.freepascal.org', '/pub/lazarus');
+    FileList := FTPLister.GetList('ftp.hu.freepascal.org', '/pub/lazarus/snapshots');
     FTPLister.Free;
   end;
   Result := FileList;
@@ -70,12 +70,13 @@ begin
   Result := FMatchingFiles;
 end;
 
-class function TFtpMonitorTestcase.FileMaskSuite(const AName, AFileMask: string
-  ): TTestSuite;
+class function TFtpMonitorTestcase.FileMaskSuite(const AName,
+  AFileMask: string; updated: boolean): TTestSuite;
 begin
   Result := TTestSuite.Create(AName);
   Result.AddTest(Create(AName, AFileMask, 'NumberOfFiles'));
-  Result.AddTest(Create(AName, AFileMask, 'IsUptodateTest'));
+  if updated then
+    Result.AddTest(Create(AName, AFileMask, 'IsUptodateTest'));
 end;
 
 constructor TFtpMonitorTestcase.Create(const AName, AFileMask, ATestName: string);
@@ -126,7 +127,7 @@ var
   function CreateFileTestSuite(AFile: TFile) : TTestSuite;
   begin
     with AFile do
-      Result := TFtpMonitorTestcase.FileMaskSuite(Description, Mask);
+      Result := TFtpMonitorTestcase.FileMaskSuite(Description, Mask, Updated);
   end;
 
   function CreateFtpServerTestSuite(Server: TServer): TTestSuite;

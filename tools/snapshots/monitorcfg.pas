@@ -5,7 +5,7 @@ unit MonitorCfg;
 interface
 
 uses
-  strutils, contnrs, dom, xmlread;
+  sysutils, strutils, contnrs, dom, xmlread;
   
 type
   TServerType = (stFtp, stHttp);
@@ -72,10 +72,12 @@ type
   private
     FDescription: string;
     FMask: string;
+    FUpdated: boolean;
   public
     constructor Create;
     property Mask: string read FMask write FMask;
     property Description: string read FDescription write FDescription;
+    property Updated: boolean read FUpdated write FUpdated;
   end;
 
 implementation
@@ -108,7 +110,7 @@ begin
   NewFile := TFile.Create;
   NewFile.Description := OnReplaceString(GetAttributeValue(ServerNode, 'Description'));
   NewFile.Mask := OnReplaceString(GetAttributeValue(ServerNode, 'Mask'));
-
+  NewFile.Updated := StrToBoolDef(GetAttributeValue(ServerNode, 'Updated'), true);
   AddFile(NewFile);
 end;
 

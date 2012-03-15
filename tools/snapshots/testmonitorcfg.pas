@@ -37,10 +37,10 @@ end;
 
 procedure TTestMonitorCfg.TestVersion;
 begin
-  AssertEquals('Wrong Lazarus Version', '0.9.25', FMonitorCfg.LazVersion);
-  AssertEquals('Wrong FPC Release Version', '2.2.0', FMonitorCfg.FPCReleaseVersion);
-  AssertEquals('Wrong FPC Fixes Version', '2.2.1', FMonitorCfg.FPCFixesVersion);
-  AssertEquals('Wrong FPC Devel Version', '2.3.1', FMonitorCfg.FPCDevelVersion);
+  AssertEquals('Wrong Lazarus Version', '0.9.31', FMonitorCfg.LazVersion);
+  AssertEquals('Wrong FPC Release Version', '2.6.0', FMonitorCfg.FPCReleaseVersion);
+  AssertEquals('Wrong FPC Fixes Version', '2.6.1', FMonitorCfg.FPCFixesVersion);
+  AssertEquals('Wrong FPC Devel Version', '2.7.1', FMonitorCfg.FPCDevelVersion);
 end;
 
 procedure TTestMonitorCfg.SetUp; 

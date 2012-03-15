@@ -51,7 +51,7 @@ begin
   FtpFile := TFtpFile.Create(FtpLine);
   try
     AssertEquals('Wrong file name:', 'Lazarus-0.9.19-fpc-2.0.4-20061022-win32.exe', FtpFile.FileName);
-    AssertEquals('Wrong file date', '22-10-2008 14:34:00', DateTimeToStr(FtpFile.FileDate));
+    AssertEquals('Wrong file date', '22-10-2011 14:34:00', DateTimeToStr(FtpFile.FileDate));
   finally
     FtpFile.Free;
   end;

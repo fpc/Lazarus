@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
 <CONFIG>
     <Version
-        Lazarus="0.9.27"
-        FPC_Release="2.2.2"
-        FPC_Fixes="2.2.3"
-        FPC_Devel="2.3.1"
+        Lazarus="0.9.31"
+        FPC_Release="2.6.0"
+        FPC_Fixes="2.6.1"
+        FPC_Devel="2.7.1"
     />
     <Server Type="ftp" Name="Snapshot on scenergy">
         <File
@@ -41,63 +41,72 @@
         />
         <File
             Mask="Lazarus-$LAZVER-?????-fpc-$FPCFIXESVER-*-win64.exe"
-            Description="Lazarus win64 with fpc development branch ($FPCFIXESVER)"
+            Description="Lazarus win64 with fpc fixes branch ($FPCFIXESVER)"
         />
         <File
             Mask="Lazarus-$LAZVER-?????-fpc-$FPCDEVELVER-*-win64.exe"
-            Description="Lazarus win64 with fpc fixes branch ($FPCDEVELVER)"
+            Description="Lazarus win64 with fpc development branch ($FPCDEVELVER)"
         />
         <File
-            Mask="fpc-$FPCRELEASEVER-*-powerpc-macosx.dmg"
+            Mask="fpc-$FPCRELEASEVER.powerpc-macosx.dmg"
             Description="fpc $FPCRELEASEVER Mac OS X powerpc"
+            Updated="false"
         />
         <File
-            Mask="fpcsrc-$FPCRELEASEVER-*-powerpc-macosx.dmg"
+            Mask="fpcsrc-$FPCRELEASEVER.powerpc-macosx.dmg"
             Description="fpc source $FPCRELEASEVER Mac OS X powerpc"
+            Updated="false"
         />
         <File
             Mask="lazarus-$LAZVER.?????-*-powerpc-macosx.dmg"
             Description="lazarus Mac OS X powerpc"
         />
         <File
-            Mask="fpc-$FPCRELEASEVER-*-i386-macosx.dmg"
+            Mask="fpc-$FPCRELEASEVER.intel-macosx.dmg"
             Description="fpc $FPCRELEASEVER Mac OS X i386"
+            Updated="false"
         />
         <File
-            Mask="fpcsrc-$FPCRELEASEVER-*-i386-macosx.dmg"
+            Mask="fpcsrc-$FPCRELEASEVER.intel-macosx.dmg"
             Description="fpc source $FPCRELEASEVER Mac OS X i386"
+            Updated="false"
         />
         <File
-            Mask="lazarus-$LAZVER.?????-*-i386-macosx.dmg"
-            Description="lazarus Mac OS X i386"
+            Mask="lazarus-$LAZVER.*-i386-macosx.dmg"
+            Description="lazarus $LAZVER Mac OS X i386"
         />
         <File
             Mask="fpc-$FPCRELEASEVER-*.src.rpm"
             Description="fpc $FPCRELEASEVER source rpm"
+            Updated="false"
         />
         <File
-            Mask="fpc-$FPCRELEASEVER-*.i386.rpm"
-            Description="fpc $FPCRELEASEVER i386 rpm"
+            Mask="fpc-$FPCRELEASEVER-*.i686.rpm"
+            Description="fpc $FPCRELEASEVER i686 rpm"
+            Updated="false"
         />
         <File
-            Mask="fpc-src-$FPCRELEASEVER-*.i386.rpm"
-            Description="fpc source $FPCRELEASEVER i386 rpm"
+            Mask="fpc-src-$FPCRELEASEVER-*.i686.rpm"
+            Description="fpc source $FPCRELEASEVER i686 rpm"
+            Updated="false"
         />
         <File
-            Mask="lazarus-*.i386.rpm"
-            Description="lazarus i386 rpm"
+            Mask="lazarus-$LAZVER*.i686.rpm"
+            Description="lazarus $LAZVER i686 rpm"
         />
         <File
             Mask="fpc-$FPCRELEASEVER-*.x86_64.rpm"
             Description="fpc $FPCRELEASEVER x86_64 rpm"
+            Updated="false"
         />
         <File
             Mask="fpc-src-$FPCRELEASEVER-*.x86_64.rpm"
             Description="fpc source $FPCRELEASEVER x86_64 rpm"
+            Updated="false"
         />
         <File
-            Mask="lazarus-*.x86_64.rpm"
-            Description="lazarus x86_64 rpm"
+            Mask="lazarus-$LAZVER*.x86_64.rpm"
+            Description="lazarus $LAZVER x86_64 rpm"
         />
     </Server>
 </CONFIG>

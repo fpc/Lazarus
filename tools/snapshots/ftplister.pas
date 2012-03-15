@@ -5,7 +5,7 @@ unit ftplister;
 interface
 
 uses
-  classes, sysutils,
+  classes, sysutils, dateutils,
   lnet, lftp;
 
 type
@@ -58,6 +58,7 @@ var
   month:integer;
   year: string;
   timestr: string;
+  startpos: integer;
   
   procedure ParseMonth(Name: string);
   begin
@@ -68,16 +69,12 @@ var
       inc(month);
   end;
 
-  function GetCurrentYear: string;
-  var
-    d,m,y: word;
-  begin
-    DecodeDate(Now, y, m, d);
-    Result := IntToStr(y);
-  end;
 begin
-  FFileName := copy(AListLine, 57, length(AListLine)-56);
-  //writeln(FFileName);
+  startpos := 55;
+  while (AListLine[startpos]<>' ') do
+    inc(startpos);
+  FFileName := copy(AListLine, startpos+1, length(AListLine)-startpos);
+  writeln(FFileName);
   ParseMonth(copy(AListLine, 44, 3));
   TimeStr := copy(AListLine, 51, 5);
   if pos(':', timestr)=0 then begin
@@ -85,11 +82,20 @@ begin
     timestr := '';
   end
   else
-    Year := GetCurrentYear;
-  datestr := copy(AListLine, 48, 2) + '-' + IntToStr(month) + '-'+  Year +
-    ' ' + timestr;
-  ShortDateFormat := 'dd-mm-yyyy';
+    Year := IntToStr(YearOf(Now));;
+  datestr := copy(AListLine, 48, 2) + '-' + IntToStr(month) + '-'+  Year;
+  ShortDateFormat := 'DD-MM-YYYY';
+  DateSeparator:= '-';
+  if length(timestr)>0 then
+    datestr := datestr + ' ' + timestr;
   FFileDate := StrToDateTime(datestr);
+  if FFileDate > IncDay(Now) then
+  begin
+    // datum ligt in de toekomst, dan een jaar terug
+    Year := IntToStr(YearOf(Now)-1);
+    datestr := copy(AListLine, 48, 2) + '-' + IntToStr(month) + '-'+  Year + ' ' + timestr;
+    FFileDate := StrToDateTime(datestr);
+  end;
 end;
 
 { TFPTLister }
