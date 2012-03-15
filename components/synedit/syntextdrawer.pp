@@ -539,9 +539,9 @@ Procedure TheFontStock.CalcFontAdvance(DC: HDC; FontData: PheFontData;
     s1 := s;
     s2 := s1 + s;
     s3 := s2 + s;
-    if not(GetTextExtentPoint(DC, PChar(s1), 1, Size1) and
-           GetTextExtentPoint(DC, PChar(s2), 2, Size2) and
-           GetTextExtentPoint(DC, PChar(s3), 3, Size3)) then
+    if not(GetTextExtentPoint(DC, PChar(s1), 1, Size1{%H-}) and
+           GetTextExtentPoint(DC, PChar(s2), 2, Size2{%H-}) and
+           GetTextExtentPoint(DC, PChar(s3), 3, Size3{%H-})) then
     begin
       DebugFont('Failed to get GetTextExtentPoint for %s', [s1]);
       w := 0;
@@ -643,7 +643,7 @@ begin
   AdjustWHOForChar('''', Width, Height, OverHang, ETO);
 
   // Negative Overhang ?
-  if (not ETO) and GetTextExtentPoint(DC, PChar('Ta'), 2, Size1) then
+  if (not ETO) and GetTextExtentPoint(DC, PChar('Ta'), 2, Size1{%H-}) then
     if Size1.cx < 2 * Width then begin
       {$IFDEF SYNFONTDEBUG}
       DebugFont('Negative Overhang for "Ta" cx=%d  Width=%d Overhang=%d', [Size1.cx, Width, OverHang]);
@@ -656,7 +656,7 @@ begin
     Height := Max(Height, Size1.cy);
 
   // DoubleCheck the result with GetTextMetrics
-  GetTextMetrics(DC, TM);
+  GetTextMetrics(DC, TM{%H-});
   {$IFDEF SYNFONTDEBUG}
   DebugFont('TextMetrics tmHeight=%d, tmAve=%d, tmMax=%d, tmOver=%d', [TM.tmHeight, TM.tmAveCharWidth, TM.tmMaxCharWidth, TM.tmOverhang]);
   {$ENDIF}
