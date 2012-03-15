@@ -99,12 +99,16 @@ end;
 class function TGtk2WSCustomFloatSpinEdit.GetValue(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double;
 begin
+  if not WSCheckHandleAllocated(ACustomFloatSpinEdit, 'GetValue') then
+    Exit(0);
   Result := gtk_spin_button_get_value(PGtkSpinButton(ACustomFloatSpinEdit.Handle));
 end;
 
 class procedure TGtk2WSCustomFloatSpinEdit.SetSelStart(const ACustomEdit: TCustomEdit;
   NewStart: integer);
 begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetSelStart') then
+    Exit;
   gtk_editable_set_position(GetSpinGtkEditable(ACustomEdit), NewStart);
 end;
 
@@ -128,6 +132,8 @@ var
   Widget: PGtkWidget;
   AnAdjustment: PGtkAdjustment;
 begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetReadOnly') then
+    Exit;
   Widget := PGtkWidget(ACustomEdit.Handle);
   if GTK_IS_EDITABLE(Widget) then
     gtk_editable_set_editable(PGtkEditable(Widget), not ReadOnly);
@@ -155,6 +161,8 @@ var
   AMin, AMax: Double;
 begin
   //DebugLn(['TGtkWSCustomFloatSpinEdit.UpdateControl ',dbgsName(ACustomFloatSpinEdit)]);
+  if not WSCheckHandleAllocated(ACustomFloatSpinEdit, 'UpdateControl') then
+    Exit;
   wHandle := ACustomFloatSpinEdit.Handle;
   SpinWidget:=GTK_SPIN_BUTTON(Pointer(wHandle));
 
