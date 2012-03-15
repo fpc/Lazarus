@@ -1,17 +1,17 @@
 #   File generated automatically by Lazarus Package Manager
 #
-#   Makefile.fpc for FCL 1.0
+#   Makefile.fpc for FCL 1.0.1
 #
-#   This file was generated on 01/27/2011
+#   This file was generated on 15-3-12
 
 [package]
 name=fcl
-version=1.0
+version=1.0.1
 
 [compiler]
 unittargetdir=../units/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=.
-options= -MObjFPC -Scghi -O1 -gl -vewnhi -l
+options= -MObjFPC -Scghi -O1 -g -gl -vewnhi -l
 
 [target]
 units=fcllaz.pas

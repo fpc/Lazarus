@@ -6,7 +6,7 @@
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWigdetType)"/>
       </SearchPaths>
       <Other>
         <CompilerMessages>
@@ -75,7 +75,7 @@
       </Item13>
       <Item14>
         <Filename Value="codyopts.pas"/>
-        <UnitName Value="codyopts"/>
+        <UnitName Value="CodyOpts"/>
       </Item14>
     </Files>
     <LazDoc Paths="doc"/>
@@ -102,7 +102,7 @@
       </Item5>
       <Item6>
         <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True" Release="1"/>
+        <MinVersion Major="1" Release="1" Valid="True"/>
       </Item6>
     </RequiredPkgs>
     <UsageOptions>

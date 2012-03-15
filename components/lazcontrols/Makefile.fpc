@@ -1,15 +1,15 @@
 #   File generated automatically by Lazarus Package Manager
 #
-#   Makefile.fpc for LazControls 0.0
+#   Makefile.fpc for LazControls 1.0.1
 #
-#   This file was generated on 14-3-12
+#   This file was generated on 15-3-12
 
 [package]
 name=lazcontrols
-version=0.0
+version=1.0.1
 
 [compiler]
-unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM)
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
 options= -MObjFPC -Scghi -O1 -g -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
 

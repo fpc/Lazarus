@@ -23,7 +23,7 @@ unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
         ../components/synedit/units/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM) \
         ../components/lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM) \
         ../components/custom \
-        ../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM) \
+        ../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
         ../designer \
         ../debugger \
         ../debugger/frames \
