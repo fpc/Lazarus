@@ -239,7 +239,7 @@ type
     procedure SetOutputDirectoryOverride(const AValue: string);
   public
     // parsed
-    Values: array[TParsedCompilerOptString] of TParsedString;
+    Values: array[TParsedCompilerOptString] of TParseString;
     ParsedErrorOption: TParsedCompilerOptString;
     ParsedErrorMsg: string;
     ParsedErrorStamp: integer; // see CompilerParseStamp

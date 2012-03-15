@@ -171,23 +171,18 @@ var
   ExternalToolListClass: TExternalToolListClass; // set by ExtToolDialog
 
 type
-  TParsedEnvOptType = (
-    peoLazarusDirectory,
-    peoCompilerFilename,
-    peopFPCSourceDirectory,
-    peoTestBuildDirectory,
-    peoDebuggerFilename,
-    peoMakeFilename,
-    peoDebuggerSearchPath,
-    peoFPDocPaths,
-    peoCompilerMessagesFilename
+  TEnvOptParseType = (
+    eopLazarusDirectory,
+    eopCompilerFilename,
+    eopFPCSourceDirectory,
+    eopTestBuildDirectory,
+    eopDebuggerFilename,
+    eopMakeFilename,
+    eopDebuggerSearchPath,
+    eopFPDocPaths,
+    eopCompilerMessagesFilename
     );
-  TParsedEnvOptTypes = set of TParsedEnvOptType;
-  TParsedEnvOption = record
-    Value: string;
-    ParseStamp: integer;
-    Parsing: boolean;
-  end;
+  TEnvOptParseTypes = set of TEnvOptParseType;
 
 type
 
@@ -366,10 +361,10 @@ type
     procedure Save(OnlyDesktop:boolean);
     property Filename: string read FFilename write SetFilename;
     procedure CreateConfig;
-    function GetLazarusDirectory: string;
-    function GetTestBuildDirectory: string;
+    function GetParsedLazarusDirectory: string;
+    function GetParsedTestBuildDirectory: string;
     function GetCompilerFilename: string;
-    function GetFPCSourceDirectory: string;
+    function GetParsedFPCSourceDirectory: string;
 
     // macro functions
     procedure InitMacros(AMacroList: TTransferMacroList);
@@ -621,7 +616,21 @@ const
   MaxComboBoxCount: integer = 20;
   EnvOptsConfFileName = 'environmentoptions.xml';
   BakMaxCounterInfiniteTxt = 'infinite';
-  
+
+  EnvOptParseTypeNames: array[TEnvOptParseType] of string = (
+    'LazarusDir', // eopLazarusDirectory
+    'CompPath', // eopCompilerFilename
+    'FPCSrcDir', // eopFPCSourceDirectory
+    'TempDir', // eopTestBuildDirectory
+    'Debugger', // eopDebuggerFilename
+    'DebugPath', // eopDebuggerSearchPath
+    'Make', // eopMakeFilename
+    'FPDocPath', // eopFPDocPaths
+    'CompMsgFile' // eopCompilerMessagesFilename
+  );
+
+function dbgs(o: TEnvOptParseType): string; overload;
+
 implementation
 
 function PascalExtToType(const Ext: string): TPascalExtType;
@@ -721,6 +730,11 @@ begin
   end;
   StopChecking:=false;
   Result:=true;
+end;
+
+function dbgs(o: TEnvOptParseType): string;
+begin
+  Result:=EnvOptParseTypeNames[o];
 end;
 
 { TEnvironmentOptions }
@@ -920,7 +934,7 @@ begin
   Filename:=ConfFilename;
 end;
 
-function TEnvironmentOptions.GetLazarusDirectory: string;
+function TEnvironmentOptions.GetParsedLazarusDirectory: string;
 begin
   Result:=LazarusDirectory;
 end;
@@ -1662,12 +1676,12 @@ begin
   InitLayoutHelper(DefaultObjectInspectorName);
 end;
 
-function TEnvironmentOptions.GetTestBuildDirectory: string;
+function TEnvironmentOptions.GetParsedTestBuildDirectory: string;
 begin
   Result:=AppendPathDelim(TestBuildDirectory);
 end;
 
-function TEnvironmentOptions.GetFPCSourceDirectory: string;
+function TEnvironmentOptions.GetParsedFPCSourceDirectory: string;
 begin
   if (FFPCSrcDirParsedStamp=CTInvalidChangeStamp)
   or (FFPCSrcDirParsedStamp<>CompilerParseStamp)
@@ -1722,7 +1736,7 @@ end;
 function TEnvironmentOptions.MacroFuncFPCSrcDir(const s: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
-  Result:=GetFPCSourceDirectory;
+  Result:=GetParsedFPCSourceDirectory;
 end;
 
 function TEnvironmentOptions.MacroFuncLazarusDir(const s: string;
@@ -1752,7 +1766,7 @@ end;
 function TEnvironmentOptions.MacroFuncTestDir(const s: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
-  Result:=GetTestBuildDirectory;
+  Result:=GetParsedTestBuildDirectory;
 end;
 
 function TEnvironmentOptions.MacroFuncConfDir(const s: string;

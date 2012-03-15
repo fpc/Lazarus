@@ -68,7 +68,7 @@ begin
     Exit;
   end;
   if AProject.IsVirtual then
-    TargetExeName := EnvironmentOptions.GetTestBuildDirectory +
+    TargetExeName := EnvironmentOptions.GetParsedTestBuildDirectory +
       ExtractFilename(AProject.MainUnitInfo.Filename)
   else
     TargetExeName := AProject.CompilerOptions.CreateTargetFilename(

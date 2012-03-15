@@ -3699,7 +3699,7 @@ begin
                                       EnvironmentOptions.GetCompilerFilename);
     FPCMakeTool.CmdLineParams:='-q -TAll';
     FPCMakeTool.EnvironmentOverrides.Add(
-                            'FPCDIR='+EnvironmentOptions.GetFPCSourceDirectory);
+                            'FPCDIR='+EnvironmentOptions.GetParsedFPCSourceDirectory);
 
     // clear old errors
     if SourceEditorManagerIntf<>nil then

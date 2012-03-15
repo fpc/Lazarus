@@ -12006,7 +12006,7 @@ begin
     // create target output directory
     TargetExeName := Project1.CompilerOptions.CreateTargetFilename(Project1.MainFilename);
     if Project1.IsVirtual and (not FilenameIsAbsolute(TargetExeName)) then
-      TargetExeName := EnvironmentOptions.GetTestBuildDirectory + TargetExeName;
+      TargetExeName := EnvironmentOptions.GetParsedTestBuildDirectory + TargetExeName;
     TargetExeDirectory:=ExtractFilePath(TargetExeName);
     if (FilenameIsAbsolute(TargetExeDirectory))
     and (not DirPathExistsCached(TargetExeDirectory)) then begin
@@ -14808,7 +14808,7 @@ begin
     begin
       CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
         EnvironmentOptions.GetCompilerFilename,'','','',true);
-      if CheckFPCSrcDirQuality(EnvironmentOptions.GetFPCSourceDirectory,Note,
+      if CheckFPCSrcDirQuality(EnvironmentOptions.GetParsedFPCSourceDirectory,Note,
         CfgCache.GetFPCVer)=sddqInvalid
       then
         ShowSetupDialog:=true;
@@ -14823,7 +14823,7 @@ begin
     Variables[ExternalMacroStart+'LazarusDir']:=EnvironmentOptions.LazarusDirectory;
     Variables[ExternalMacroStart+'ProjPath']:=VirtualDirectory;
     Variables[ExternalMacroStart+'LCLWidgetType']:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
-    Variables[ExternalMacroStart+'FPCSrcDir']:=EnvironmentOptions.GetFPCSourceDirectory;
+    Variables[ExternalMacroStart+'FPCSrcDir']:=EnvironmentOptions.GetParsedFPCSourceDirectory;
   end;
 
   // the first template is the "use default" flag

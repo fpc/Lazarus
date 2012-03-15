@@ -527,7 +527,7 @@ end;
 
 function TBuildManager.GetTestBuildDirectory: string;
 begin
-  Result:=EnvironmentOptions.GetTestBuildDirectory;
+  Result:=EnvironmentOptions.GetParsedTestBuildDirectory;
 end;
 
 function TBuildManager.IsTestUnitFilename(const AFilename: string): boolean;
@@ -649,7 +649,7 @@ begin
   TargetOS:=GetTargetOS;
   TargetCPU:=GetTargetCPU;
   CompilerFilename:=EnvironmentOptions.GetCompilerFilename;
-  FPCSrcDir:=EnvironmentOptions.GetFPCSourceDirectory; // needs FPCVer macro
+  FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory; // needs FPCVer macro
 
   {$IFDEF VerboseFPCSrcScan}
   debugln(['TMainIDE.RescanCompilerDefines A ',

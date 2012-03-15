@@ -106,7 +106,7 @@ begin
     TargetOS:=BuildBoss.GetTargetOS;
     TargetCPU:=BuildBoss.GetTargetCPU;
     CompilerFilename:=EnvironmentOptions.GetCompilerFilename;
-    FPCSrcDir:=EnvironmentOptions.GetFPCSourceDirectory; // needs FPCVer macro
+    FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory; // needs FPCVer macro
     UnitSetCache:=CodeToolBoss.FPCDefinesCache.FindUnitSet(
       CompilerFilename,TargetOS,TargetCPU,'',FPCSrcDir,true);
     GatherFPCExecutable(UnitSetCache,sl);

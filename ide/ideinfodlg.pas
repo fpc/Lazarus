@@ -226,8 +226,8 @@ begin
   sl.Add('Real CompilerFilename='+EnvironmentOptions.GetCompilerFilename);
   sl.Add('CompilerMessagesFilename='+EnvironmentOptions.CompilerMessagesFilename);
   sl.Add('FPC source directory='+EnvironmentOptions.FPCSourceDirectory);
-  sl.Add('Real FPC source directory='+EnvironmentOptions.GetFPCSourceDirectory);
-  sl.Add('Test directory='+EnvironmentOptions.GetTestBuildDirectory);
+  sl.Add('Real FPC source directory='+EnvironmentOptions.GetParsedFPCSourceDirectory);
+  sl.Add('Test directory='+EnvironmentOptions.GetParsedTestBuildDirectory);
   sl.Add('');
 end;
 

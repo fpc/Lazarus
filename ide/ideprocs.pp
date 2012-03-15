@@ -225,7 +225,7 @@ procedure StringToStringList(const s: string; List: TStrings);
 
 // environment
 type
-  TParsedString = record
+  TParseString = record
     UnparsedValue: string;
     ParsedValue: string;
     ParseStamp: integer;
