@@ -5374,12 +5374,10 @@ begin
   if Stretched then
   begin
     sh := CalculatedHeight;
-//    sh := CalcHeight;
     {$IFDEF DebugLR}
     DebugLn('Height=%d CalculatedHeight=%d',[dy,sh]);
     {$ENDIF}
-    if sh > dy then
-      StretchObjects(sh);
+    StretchObjects(sh);
     maxdy := sh;
     if not PageBreak then
       CheckPageBreak(y, sh, False);
