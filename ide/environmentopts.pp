@@ -259,7 +259,7 @@ type
     fMsgViewFocus: boolean;
 
     // compiler + debugger + lazarus files
-    FLazarusDirectory: string;
+    FParseValues: array[TEnvOptParseType] of TParseString;
     FLazarusDirHistory: TStringList;
     FCompilerFilename: string;
     FCompilerFilenameParsed: string;
@@ -335,6 +335,7 @@ type
     FFileDialogFilter: string;
 
     function GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
+    function GetLazarusDirectory: string;
     procedure SetCompilerFilename(const AValue: string);
     procedure SetDebuggerEventLogColors(AIndex: TDBGEventType;
       const AValue: TDebuggerEventLogColor);
@@ -343,6 +344,7 @@ type
     procedure SetDebuggerFilename(const AValue: string);
     procedure SetFPCSourceDirectory(const AValue: string);
     procedure SetLazarusDirectory(const AValue: string);
+    procedure SetParseValue(o: TEnvOptParseType; const NewValue: string);
 
     procedure InitLayoutList;
     procedure SetFileName(const NewFilename: string);
@@ -363,8 +365,9 @@ type
     procedure CreateConfig;
     function GetParsedLazarusDirectory: string;
     function GetParsedTestBuildDirectory: string;
-    function GetCompilerFilename: string;
+    function GetParsedCompilerFilename: string;
     function GetParsedFPCSourceDirectory: string;
+    function GetParsedValue(o: TEnvOptParseType): string;
 
     // macro functions
     procedure InitMacros(AMacroList: TTransferMacroList);
@@ -473,7 +476,7 @@ type
                                             write FShowHintsForMainSpeedButtons;
     
     // files
-    property LazarusDirectory: string read FLazarusDirectory
+    property LazarusDirectory: string read GetLazarusDirectory
                                       write SetLazarusDirectory;
     property LazarusDirHistory: TStringList read FLazarusDirHistory
                                             write FLazarusDirHistory;
@@ -1115,7 +1118,7 @@ begin
       if not OnlyDesktop then begin
         // files
         s:=TrimFilename(
-           XMLConfig.GetValue(Path+'LazarusDirectory/Value',FLazarusDirectory));
+           XMLConfig.GetValue(Path+'LazarusDirectory/Value',LazarusDirectory));
         if not FilenameIsAbsolute(s) then
           s:=TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+s);
         LazarusDirectory:=s;
@@ -1455,7 +1458,7 @@ begin
 
       if not OnlyDesktop then begin
         // files
-        CurLazDir:=ChompPathDelim(FLazarusDirectory);
+        CurLazDir:=ChompPathDelim(LazarusDirectory);
         BaseDir:=ExtractFilePath(ChompPathDelim(GetPrimaryConfigPath));
         if (CompareFilenames(BaseDir,CurLazDir)=0)
         or FileIsInPath(CurLazDir,BaseDir) then begin
@@ -1693,7 +1696,29 @@ begin
   Result:=FFPCSrcDirParsed;
 end;
 
-function TEnvironmentOptions.GetCompilerFilename: string;
+function TEnvironmentOptions.GetParsedValue(o: TEnvOptParseType): string;
+begin
+  with FParseValues[o] do begin
+    if (ParseStamp<>CompilerParseStamp)
+    or (CompilerParseStamp=CTInvalidChangeStamp) then begin
+      if Parsing then begin
+        debugln(['TEnvironmentOptions.GetParsedValue circular macro dependency: ',dbgs(o)]);
+        exit('circularmacroerror');
+      end;
+      Parsing:=true;
+      try
+        ParsedValue:=UnparsedValue;
+        GlobalMacroList.SubstituteStr(ParsedValue);
+        ParseStamp:=CompilerParseStamp;
+      finally
+        Parsing:=false;
+      end;
+    end;
+    Result:=ParsedValue;
+  end;
+end;
+
+function TEnvironmentOptions.GetParsedCompilerFilename: string;
 begin
   if (FCompilerFilenameParsedStamp=CTInvalidChangeStamp)
   or (FCompilerFilenameParsedStamp<>CompilerParseStamp)
@@ -1730,7 +1755,7 @@ end;
 function TEnvironmentOptions.MacroFuncCompPath(const s: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
-  Result:=GetCompilerFilename;
+  Result:=GetParsedCompilerFilename;
 end;
 
 function TEnvironmentOptions.MacroFuncFPCSrcDir(const s: string;
@@ -1869,8 +1894,17 @@ var
   NewValue: String;
 begin
   NewValue:=AppendPathDelim(TrimFilename(AValue));
-  if FLazarusDirectory=NewValue then exit;
-  FLazarusDirectory:=NewValue;
+  if LazarusDirectory=NewValue then exit;
+  SetParseValue(eopLazarusDirectory,NewValue);
+end;
+
+procedure TEnvironmentOptions.SetParseValue(o: TEnvOptParseType;
+  const NewValue: string);
+begin
+  with FParseValues[o] do begin
+    UnparsedValue:=NewValue;
+    ParseStamp:=CTInvalidChangeStamp;
+  end;
 end;
 
 procedure TEnvironmentOptions.SetFPCSourceDirectory(const AValue: string);
@@ -1890,6 +1924,11 @@ end;
 function TEnvironmentOptions.GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
 begin
   Result := FDebuggerEventLogColors[AIndex];
+end;
+
+function TEnvironmentOptions.GetLazarusDirectory: string;
+begin
+  Result:=FParseValues[eopLazarusDirectory].UnparsedValue;
 end;
 
 procedure TEnvironmentOptions.SetDebuggerEventLogColors(AIndex: TDBGEventType; const AValue: TDebuggerEventLogColor);

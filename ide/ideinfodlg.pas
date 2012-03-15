@@ -223,7 +223,7 @@ begin
   sl.Add('Secondary config directory='+GetSecondaryConfigPath);
   sl.Add('LazarusDirectory='+EnvironmentOptions.LazarusDirectory);
   sl.Add('CompilerFilename='+EnvironmentOptions.CompilerFilename);
-  sl.Add('Real CompilerFilename='+EnvironmentOptions.GetCompilerFilename);
+  sl.Add('Real CompilerFilename='+EnvironmentOptions.GetParsedCompilerFilename);
   sl.Add('CompilerMessagesFilename='+EnvironmentOptions.CompilerMessagesFilename);
   sl.Add('FPC source directory='+EnvironmentOptions.FPCSourceDirectory);
   sl.Add('Real FPC source directory='+EnvironmentOptions.GetParsedFPCSourceDirectory);

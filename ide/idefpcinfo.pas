@@ -105,7 +105,7 @@ begin
 
     TargetOS:=BuildBoss.GetTargetOS;
     TargetCPU:=BuildBoss.GetTargetCPU;
-    CompilerFilename:=EnvironmentOptions.GetCompilerFilename;
+    CompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
     FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory; // needs FPCVer macro
     UnitSetCache:=CodeToolBoss.FPCDefinesCache.FindUnitSet(
       CompilerFilename,TargetOS,TargetCPU,'',FPCSrcDir,true);
@@ -134,7 +134,7 @@ var
 begin
   TargetOS:=BuildBoss.GetTargetOS;
   TargetCPU:=BuildBoss.GetTargetCPU;
-  CompilerFilename:=EnvironmentOptions.GetCompilerFilename;
+  CompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
   CompilerOptions:='';
   Cfg:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
                       CompilerFilename,CompilerOptions,TargetOS,TargetCPU,true);
@@ -230,7 +230,7 @@ begin
   sl.add('Global IDE options:');
   sl.Add('LazarusDirectory='+EnvironmentOptions.LazarusDirectory);
   sl.Add('CompilerFilename='+EnvironmentOptions.CompilerFilename);
-  sl.Add('ResolvedCompilerFilename='+EnvironmentOptions.GetCompilerFilename);
+  sl.Add('ResolvedCompilerFilename='+EnvironmentOptions.GetParsedCompilerFilename);
   sl.Add('CompilerMessagesFilename='+EnvironmentOptions.CompilerMessagesFilename);
   sl.Add('');
 end;

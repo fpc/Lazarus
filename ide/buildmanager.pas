@@ -648,7 +648,7 @@ begin
   // use current TargetOS, TargetCPU, compilerfilename and FPC source dir
   TargetOS:=GetTargetOS;
   TargetCPU:=GetTargetCPU;
-  CompilerFilename:=EnvironmentOptions.GetCompilerFilename;
+  CompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
   FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory; // needs FPCVer macro
 
   {$IFDEF VerboseFPCSrcScan}
@@ -1544,7 +1544,7 @@ function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
     if CodeToolBoss<>nil then begin
       // fetch the FPC version from the current compiler
       // Not from the fpc.exe, but from the real compiler
-      CompilerFilename:=EnvironmentOptions.GetCompilerFilename;
+      CompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
       if CompilerFilename='' then exit;
       TargetOS:=GetTargetOS;
       TargetCPU:=GetTargetCPU;

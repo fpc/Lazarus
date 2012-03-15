@@ -575,7 +575,7 @@ var
   BestDir: TSDFileInfo;
   List: TObjectList;
 begin
-  CompFile:=EnvironmentOptions.GetCompilerFilename;
+  CompFile:=EnvironmentOptions.GetParsedCompilerFilename;
   Quality:=CheckCompilerQuality(CompFile,Note,'');
   if Quality<>sddqInvalid then exit;
   debugln(['SetupCompilerFilename: The compiler path "',CompFile,'" is invalid (Error: ',Note,'). Searching a proper one ...']);

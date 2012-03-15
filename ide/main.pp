@@ -12487,7 +12487,7 @@ begin
       PkgCompileFlags:=PkgCompileFlags+[pcfCompileDependenciesClean];
       SourceEditorManager.ClearErrorLines;
       Result:=BuildLazarus(BuildLazProfiles,ExternalTools,GlobalMacroList,
-                           '',EnvironmentOptions.GetCompilerFilename,
+                           '',EnvironmentOptions.GetParsedCompilerFilename,
                            EnvironmentOptions.MakeFilename, [blfDontBuild]);
       if Result<>mrOk then begin
         DebugLn('TMainIDE.DoBuildLazarus: Clean up failed.');
@@ -12542,7 +12542,7 @@ begin
     // make lazarus ide and/or examples
     SourceEditorManager.ClearErrorLines;
     Result:=BuildLazarus(BuildLazProfiles,ExternalTools,GlobalMacroList,
-                         PkgOptions,EnvironmentOptions.GetCompilerFilename,
+                         PkgOptions,EnvironmentOptions.GetParsedCompilerFilename,
                          EnvironmentOptions.MakeFilename,IDEBuildFlags);
     if Result<>mrOk then exit;
 
@@ -14773,7 +14773,7 @@ begin
     'PROJECT',nil,@CTMacroFunctionProject);
 
   CodeToolsOpts.AssignTo(CodeToolBoss);
-  if (not FileExistsCached(EnvironmentOptions.GetCompilerFilename)) then begin
+  if (not FileExistsCached(EnvironmentOptions.GetParsedCompilerFilename)) then begin
     DebugLn('');
     DebugLn('NOTE: Compiler filename not set! (see Environment / Options ... / Environment / Files)');
   end;
@@ -14800,14 +14800,14 @@ begin
   begin
     if (not ShowSetupDialog)
     and ((CheckLazarusDirectoryQuality(EnvironmentOptions.LazarusDirectory,Note)<>sddqCompatible)
-      or (CheckCompilerQuality(EnvironmentOptions.GetCompilerFilename,Note,
+      or (CheckCompilerQuality(EnvironmentOptions.GetParsedCompilerFilename,Note,
                          CodeToolBoss.FPCDefinesCache.TestFilename)=sddqInvalid))
     then
       ShowSetupDialog:=true;
     if (not ShowSetupDialog) then
     begin
       CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
-        EnvironmentOptions.GetCompilerFilename,'','','',true);
+        EnvironmentOptions.GetParsedCompilerFilename,'','','',true);
       if CheckFPCSrcDirQuality(EnvironmentOptions.GetParsedFPCSourceDirectory,Note,
         CfgCache.GetFPCVer)=sddqInvalid
       then
