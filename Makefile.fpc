@@ -49,42 +49,42 @@ endif
 
 #-----------------------------------------------------------------------------
 help:
-		 @$(ECHO)
-		 @$(ECHO) " Targets"
-		 @$(ECHO) "   all          build minimal IDE, lazbuild, startlazarus"
-		 @$(ECHO) "   clean        deletes files that 'all' creates"
-		 @$(ECHO) "   lazbuild     build lazbuild and lcl with nogui widgetset"
-		 @$(ECHO) "   starter      build startlazarus"
-		 @$(ECHO) "   bigide       build IDE with a standard set of packages"
-		 @$(ECHO) "   cleanbigide  deletes files that 'bigide' creates"
-		 @$(ECHO) "   tools        build lazres, svn2revisioninc, updatepofiles, lrstolfm"
-		 @$(ECHO) "   examples     build basic examples. Note: special examples have their own directory"
-		 @$(ECHO) "   lcl          build lcl"
-		 @$(ECHO)
-		 @$(ECHO) " Examples:"
-		 @$(ECHO)
-		 @$(ECHO) " Updating svn and build a minimal IDE, startlazarus and lazbuild:"
-		 @$(ECHO) "   make clean"
-		 @$(ECHO) "   svn up"
-		 @$(ECHO) "   make clean all"
-		 @$(ECHO)
-		 @$(ECHO) " Note: You can start lazarus with 'startlazarus'"
-		 @$(ECHO) " Note: Use the IDE or lazbuild to compile your projects/packages."
-		 @$(ECHO)
-		 @$(ECHO) " Updating svn and build an IDE with your last set of packages:"
-		 @$(ECHO) "   make clean"
-		 @$(ECHO) "   svn up"
-		 @$(ECHO) "   make clean lazbuild"
-		 @$(ECHO) "   ./lazbuild --build-ide="
-		 @$(ECHO)
-		 @$(ECHO) "   Note: Windows users must execute 'lazbuild.exe --build-ide='"
-		 @$(ECHO)
-		 @$(ECHO) Clean up:
-		 @$(ECHO) "  There is no command to clean up a svn repository completely, but"
-		 @$(ECHO) "  you can use the following command under Linux/OS X:"
-		 @$(ECHO) "  svn status | grep '\?' | sed -e 's/\? *//' | xargs rm -r"
-		 @$(ECHO)
-		 @exit
+	@$(ECHO)
+	@$(ECHO) " Targets"
+	@$(ECHO) "   all          build minimal IDE, lazbuild, startlazarus"
+	@$(ECHO) "   clean        deletes files that 'all' creates"
+	@$(ECHO) "   lazbuild     build lazbuild and lcl with nogui widgetset"
+	@$(ECHO) "   starter      build startlazarus"
+	@$(ECHO) "   bigide       build IDE with a standard set of packages"
+	@$(ECHO) "   cleanbigide  deletes files that 'bigide' creates"
+	@$(ECHO) "   tools        build lazres, svn2revisioninc, updatepofiles, lrstolfm"
+	@$(ECHO) "   examples     build basic examples. Note: special examples have their own directory"
+	@$(ECHO) "   lcl          build lcl"
+	@$(ECHO)
+	@$(ECHO) " Examples:"
+	@$(ECHO)
+	@$(ECHO) " Updating svn and build a minimal IDE, startlazarus and lazbuild:"
+	@$(ECHO) "   make clean"
+	@$(ECHO) "   svn up"
+	@$(ECHO) "   make clean all"
+	@$(ECHO)
+	@$(ECHO) " Note: You can start lazarus with 'startlazarus'"
+	@$(ECHO) " Note: Use the IDE or lazbuild to compile your projects/packages."
+	@$(ECHO)
+	@$(ECHO) " Updating svn and build an IDE with your last set of packages:"
+	@$(ECHO) "   make clean"
+	@$(ECHO) "   svn up"
+	@$(ECHO) "   make clean lazbuild"
+	@$(ECHO) "   ./lazbuild --build-ide="
+	@$(ECHO)
+	@$(ECHO) "   Note: Windows users must execute 'lazbuild.exe --build-ide='"
+	@$(ECHO)
+	@$(ECHO) Clean up:
+	@$(ECHO) "  There is no command to clean up a svn repository completely, but"
+	@$(ECHO) "  you can use the following command under Linux/OS X:"
+	@$(ECHO) "  svn status | grep '\?' | sed -e 's/\? *//' | xargs rm -r"
+	@$(ECHO)
+	@exit
 
 #-----------------------------------------------------------------------------
 lazutils: packager/registration

@@ -102,4 +102,24 @@ ifeq ($(OS_TARGET),win32)
 LAZARUS_OPT+= -WG
 endif
 
+#-----------------------------------------------------------------------------
+[rules]
+.PHONY: help cleanall clean
+
+#-----------------------------------------------------------------------------
+help:
+	@$(ECHO)
+	@$(ECHO) " Targets"
+	@$(ECHO) "   all    build all simple examples"
+	@$(ECHO) "          Note: There are more complex examples in the sub directories."
+	@$(ECHO) "   clean  deletes files that 'all' creates"
+	@$(ECHO)
+	@$(ECHO) Clean up:
+	@$(ECHO) "  There is no command to clean up a svn repository completely, but"
+	@$(ECHO) "  you can use the following command under Linux/OS X:"
+	@$(ECHO) "  svn status | grep '\?' | sed -e 's/\? *//' | xargs rm -r"
+	@$(ECHO)
+	@exit
+
+
 cleanall: clean
