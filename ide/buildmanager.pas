@@ -255,8 +255,8 @@ end;
 constructor TBuildManager.Create(AOwner: TComponent);
 begin
   DefaultCfgVars:=TCTCfgScriptVariables.Create;
-  DefaultCfgVarsBuildMacroStamp:=InvalidParseStamp;
-  FFPCVerChangeStamp:=InvalidParseStamp;
+  DefaultCfgVarsBuildMacroStamp:=CTInvalidChangeStamp;
+  FFPCVerChangeStamp:=CTInvalidChangeStamp;
   MainBuildBoss:=Self;
   inherited Create(AOwner);
   fTargetOS:=GetDefaultTargetOS;

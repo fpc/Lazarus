@@ -1497,7 +1497,7 @@ begin
   DoDirSeparators(NewFilename);
   if Filename=NewFilename then exit;
   inherited SetFilename(NewFilename);
-  fFullFilenameStamp:=InvalidParseStamp;
+  fFullFilenameStamp:=CTInvalidChangeStamp;
   OldDirectory:=FDirectory;
   FDirectory:=ExtractFilePath(Filename);
   if OldDirectory<>FDirectory then begin
@@ -2406,7 +2406,7 @@ begin
     FDirectory:=FFilename
   else
     FDirectory:=ExtractFilePath(FFilename);
-  FDirectoryExpandedChangeStamp:=InvalidParseStamp;
+  FDirectoryExpandedChangeStamp:=CTInvalidChangeStamp;
   FHasDirectory:=(FDirectory<>'') and (FDirectory[length(FDirectory)]=PathDelim);
   FHasStaticDirectory:=FHasDirectory and FilenameIsAbsolute(FDirectory);
   FUsageOptions.BaseDirectory:=FDirectory;
@@ -2675,7 +2675,7 @@ begin
     FCompilerOptions.Clear;
     FDescription:='';
     FDirectory:='';
-    FDirectoryExpandedChangeStamp:=InvalidParseStamp;
+    FDirectoryExpandedChangeStamp:=CTInvalidChangeStamp;
     FEnableI18N:=false;
     FEnableI18NForLFM:=false;
     FPOOutputDirectory:='';

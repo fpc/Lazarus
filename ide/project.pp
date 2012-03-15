@@ -6670,7 +6670,7 @@ constructor TProjectBuildMacros.Create;
 begin
   FItems:=TStringList.Create;
   FCfgVars:=TCTCfgScriptVariables.Create;
-  FCfgVarsBuildMacroStamp:=InvalidParseStamp;
+  FCfgVarsBuildMacroStamp:=CTInvalidChangeStamp;
   FChangeStamp:=CTInvalidChangeStamp;
   fOnChanged:=TMethodList.Create;
 end;

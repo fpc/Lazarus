@@ -45,7 +45,8 @@ unit TransferMacros;
 
 interface
 
-uses Classes, SysUtils, LCLProc, FileUtil, LazarusIDEStrConsts, MacroIntf;
+uses Classes, SysUtils, LCLProc, FileUtil, FileProcs, LazarusIDEStrConsts,
+  MacroIntf;
 
 type
   TTransferMacro = class;
@@ -134,16 +135,12 @@ type
 var
   GlobalMacroList: TTransferMacroList = nil;
 
-const
-  MaxParseStamp = $7fffffff;
-  MinParseStamp = -$7fffffff;
-  InvalidParseStamp = MinParseStamp-1;
 type
   TCompilerParseStampIncreasedEvent = procedure of object;
 var
-  CompilerParseStamp: integer; // TimeStamp of base value for macros
+  CompilerParseStamp: integer = 0; // TimeStamp of base value for macros
   CompilerParseStampIncreased: TCompilerParseStampIncreasedEvent = nil;
-  BuildMacroChangeStamp: integer; // TimeStamp of base value for build macros
+  BuildMacroChangeStamp: integer = 0; // TimeStamp of base value for build macros
 
 procedure IncreaseCompilerParseStamp;
 procedure IncreaseBuildMacroChangeStamp; { called when a package dependency change
@@ -157,10 +154,7 @@ var
 
 procedure IncreaseCompilerParseStamp;
 begin
-  if CompilerParseStamp<MaxParseStamp then
-    inc(CompilerParseStamp)
-  else
-    CompilerParseStamp:=MinParseStamp;
+  CTIncreaseChangeStamp(CompilerParseStamp);
   if Assigned(CompilerParseStampIncreased) then
     CompilerParseStampIncreased();
 end;
@@ -168,10 +162,7 @@ end;
 procedure IncreaseBuildMacroChangeStamp;
 begin
   IncreaseCompilerParseStamp;
-  if BuildMacroChangeStamp<MaxParseStamp then
-    inc(BuildMacroChangeStamp)
-  else
-    BuildMacroChangeStamp:=MinParseStamp;
+  CTIncreaseChangeStamp(BuildMacroChangeStamp);
 end;
 
 { TTransferMacro }

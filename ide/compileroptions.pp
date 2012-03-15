@@ -1761,7 +1761,7 @@ var
   i: TInheritedCompilerOption;
   p: TCompilerOptionsParseType;
 begin
-  fInheritedOptParseStamps:=InvalidParseStamp;
+  fInheritedOptParseStamps:=CTInvalidChangeStamp;
   for p:=Low(TCompilerOptionsParseType) to High(TCompilerOptionsParseType) do
     for i:=Low(TInheritedCompilerOption) to High(TInheritedCompilerOption) do
     begin
@@ -3688,7 +3688,7 @@ end;
 
 function TParsedCompilerOptions.HasParsedError: boolean;
 begin
-  Result:=(ParsedErrorStamp<>InvalidParseStamp)
+  Result:=(ParsedErrorStamp<>CTInvalidChangeStamp)
       and (ParsedErrorStamp=CompilerParseStamp);
 end;
 
@@ -3803,8 +3803,8 @@ begin
   if Option=pcosBaseDir then
     InvalidateFiles
   else begin
-    ParsedStamp[Option]:=InvalidParseStamp;
-    ParsedPIStamp[Option]:=InvalidParseStamp;
+    ParsedStamp[Option]:=CTInvalidChangeStamp;
+    ParsedPIStamp[Option]:=CTInvalidChangeStamp;
   end;
   UnparsedValues[Option]:=NewValue;
 end;
@@ -3898,12 +3898,12 @@ var
 begin
   for Option:=Low(TParsedCompilerOptString) to High(TParsedCompilerOptString) do
   begin
-    ParsedStamp[Option]:=InvalidParseStamp;
-    ParsedPIStamp[Option]:=InvalidParseStamp;
+    ParsedStamp[Option]:=CTInvalidChangeStamp;
+    ParsedPIStamp[Option]:=CTInvalidChangeStamp;
   end;
-  InheritedMacroValuesStamp:=InvalidParseStamp;
-  MacroValuesStamp:=InvalidParseStamp;
-  ParsedErrorStamp:=InvalidParseStamp;
+  InheritedMacroValuesStamp:=CTInvalidChangeStamp;
+  MacroValuesStamp:=CTInvalidChangeStamp;
+  ParsedErrorStamp:=CTInvalidChangeStamp;
 end;
 
 procedure TParsedCompilerOptions.InvalidateFiles;
@@ -3912,8 +3912,8 @@ var
 begin
   for Option:=Low(TParsedCompilerOptString) to High(TParsedCompilerOptString) do
     if (Option in ParsedCompilerFiles) then begin
-      ParsedStamp[Option]:=InvalidParseStamp;
-      ParsedPIStamp[Option]:=InvalidParseStamp;
+      ParsedStamp[Option]:=CTInvalidChangeStamp;
+      ParsedPIStamp[Option]:=CTInvalidChangeStamp;
     end;
 end;
 

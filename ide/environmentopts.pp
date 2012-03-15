@@ -171,6 +171,25 @@ var
   ExternalToolListClass: TExternalToolListClass; // set by ExtToolDialog
 
 type
+  TParsedEnvOptType = (
+    peoLazarusDirectory,
+    peoCompilerFilename,
+    peopFPCSourceDirectory,
+    peoTestBuildDirectory,
+    peoDebuggerFilename,
+    peoMakeFilename,
+    peoDebuggerSearchPath,
+    peoFPDocPaths,
+    peoCompilerMessagesFilename
+    );
+  TParsedEnvOptTypes = set of TParsedEnvOptType;
+  TParsedEnvOption = record
+    Value: string;
+    ParseStamp: integer;
+  end;
+
+type
+
   { TEnvironmentOptions - class for storing environment options }
 
   TEnvironmentOptions = class(TAbstractIDEEnvironmentOptions)
@@ -245,7 +264,7 @@ type
 
     // compiler + debugger + lazarus files
     FLazarusDirectory: string;
-    FLazarusDirsHistory: TStringList;
+    FLazarusDirHistory: TStringList;
     FCompilerFilename: string;
     FCompilerFilenameParsed: string;
     FCompilerFilenameParsedStamp: integer;
@@ -346,9 +365,10 @@ type
     procedure Save(OnlyDesktop:boolean);
     property Filename: string read FFilename write SetFilename;
     procedure CreateConfig;
+    function GetLazarusDirectory: string;
     function GetTestBuildDirectory: string;
-    function GetFPCSourceDirectory: string;
     function GetCompilerFilename: string;
+    function GetFPCSourceDirectory: string;
 
     // macro functions
     procedure InitMacros(AMacroList: TTransferMacroList);
@@ -459,8 +479,8 @@ type
     // files
     property LazarusDirectory: string read FLazarusDirectory
                                       write SetLazarusDirectory;
-    property LazarusDirHistory: TStringList read FLazarusDirsHistory
-                                            write FLazarusDirsHistory;
+    property LazarusDirHistory: TStringList read FLazarusDirHistory
+                                            write FLazarusDirHistory;
     property CompilerFilename: string read FCompilerFilename
                                       write SetCompilerFilename;
     property CompilerFileHistory: TStringList read FCompilerFileHistory
@@ -780,12 +800,12 @@ begin
 
   // files
   LazarusDirectory:=IDEProcs.ProgramDirectory(true);
-  FLazarusDirsHistory:=TStringList.Create;
+  FLazarusDirHistory:=TStringList.Create;
   CompilerFilename:='';
-  FCompilerFilenameParsedStamp:=InvalidParseStamp;
+  FCompilerFilenameParsedStamp:=CTInvalidChangeStamp;
   FCompilerFileHistory:=TStringList.Create;
   FPCSourceDirectory:='';
-  FFPCSrcDirParsedStamp:=InvalidParseStamp;
+  FFPCSrcDirParsedStamp:=CTInvalidChangeStamp;
   FFPCSourceDirHistory:=TStringList.Create;
   MakeFilename:='';
   FMakeFileHistory:=TStringList.Create;
@@ -850,7 +870,7 @@ begin
   FreeAndNil(FRecentProjectFiles);
   FreeAndNil(FRecentPackageFiles);
   FreeAndNil(FObjectInspectorOptions);
-  FreeAndNil(FLazarusDirsHistory);
+  FreeAndNil(FLazarusDirHistory);
   FreeAndNil(FCompilerFileHistory);
   FreeAndNil(FFPCSourceDirHistory);
   FreeAndNil(FMakeFileHistory);
@@ -897,6 +917,11 @@ begin
     //DebugLn('Note: environment config file not found - using defaults');
   end;
   Filename:=ConfFilename;
+end;
+
+function TEnvironmentOptions.GetLazarusDirectory: string;
+begin
+
 end;
 
 procedure TEnvironmentOptions.SetFileName(const NewFilename: string);
@@ -1079,10 +1104,10 @@ begin
         if not FilenameIsAbsolute(s) then
           s:=TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+s);
         LazarusDirectory:=s;
-        LoadRecentList(XMLConfig,FLazarusDirsHistory,
+        LoadRecentList(XMLConfig,FLazarusDirHistory,
            Path+'LazarusDirectory/History/');
-        if FLazarusDirsHistory.Count=0 then
-          FLazarusDirsHistory.Add(ProgramDirectory(true));
+        if FLazarusDirHistory.Count=0 then
+          FLazarusDirHistory.Add(ProgramDirectory(true));
         CompilerFilename:=TrimFilename(XMLConfig.GetValue(
                               Path+'CompilerFilename/Value',FCompilerFilename));
         LoadRecentList(XMLConfig,FCompilerFileHistory,
@@ -1427,7 +1452,7 @@ begin
           CurLazDir:=CreateRelativePath(CurLazDir,GetPrimaryConfigPath);
         end;
         XMLConfig.SetDeleteValue(Path+'LazarusDirectory/Value',CurLazDir,'');
-        SaveRecentList(XMLConfig,FLazarusDirsHistory,
+        SaveRecentList(XMLConfig,FLazarusDirHistory,
            Path+'LazarusDirectory/History/');
         XMLConfig.SetDeleteValue(
            Path+'CompilerFilename/Value',FCompilerFilename,'');
@@ -1643,7 +1668,7 @@ end;
 
 function TEnvironmentOptions.GetFPCSourceDirectory: string;
 begin
-  if (FFPCSrcDirParsedStamp=InvalidParseStamp)
+  if (FFPCSrcDirParsedStamp=CTInvalidChangeStamp)
   or (FFPCSrcDirParsedStamp<>CompilerParseStamp)
   then begin
     FFPCSrcDirParsed:=FFPCSourceDirectory;
@@ -1655,7 +1680,7 @@ end;
 
 function TEnvironmentOptions.GetCompilerFilename: string;
 begin
-  if (FCompilerFilenameParsedStamp=InvalidParseStamp)
+  if (FCompilerFilenameParsedStamp=CTInvalidChangeStamp)
   or (FCompilerFilenameParsedStamp<>CompilerParseStamp)
   then begin
     FCompilerFilenameParsed:=FCompilerFilename;
@@ -1837,14 +1862,14 @@ procedure TEnvironmentOptions.SetFPCSourceDirectory(const AValue: string);
 begin
   if FFPCSourceDirectory=AValue then exit;
   FFPCSourceDirectory:=AppendPathDelim(TrimFilename(AValue));
-  FFPCSrcDirParsedStamp:=InvalidParseStamp;
+  FFPCSrcDirParsedStamp:=CTInvalidChangeStamp;
 end;
 
 procedure TEnvironmentOptions.SetCompilerFilename(const AValue: string);
 begin
   if FCompilerFilename=AValue then exit;
   FCompilerFilename:=TrimFilename(AValue);
-  FCompilerFilenameParsedStamp:=InvalidParseStamp;
+  FCompilerFilenameParsedStamp:=CTInvalidChangeStamp;
 end;
 
 function TEnvironmentOptions.GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
