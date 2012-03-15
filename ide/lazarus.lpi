@@ -678,7 +678,7 @@
     <SearchPaths>
       <IncludeFiles Value="include"/>
       <OtherUnitFiles Value="frames;../converter;../debugger;../debugger/frames;../packager;../designer;../packager/frames"/>
-      <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)"/>
+      <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>

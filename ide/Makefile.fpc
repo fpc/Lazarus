@@ -15,7 +15,7 @@ programs=lazarus startlazarus lazbuild
 
 [compiler]
 options=-gl -dlcl$(LCL_PLATFORM)
-unittargetdir=../units/$(CPU_TARGET)-$(OS_TARGET)
+unittargetdir=../units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
         ../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
         ../components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) \
@@ -31,7 +31,7 @@ unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
         ../packager \
         ../packager/frames \
         ../packager/units/$(CPU_TARGET)-$(OS_TARGET) \
-        ../units/$(CPU_TARGET)-$(OS_TARGET) \
+        ../units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
         frames \
         .
 includedir=include include/$(OS_TARGET) ../images

@@ -72,7 +72,7 @@
     <SearchPaths>
       <IncludeFiles Value="include;include/$(TargetOS)"/>
       <OtherUnitFiles Value="../designer;../packager;../debugger"/>
-      <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)"/>
+      <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
     </SearchPaths>
     <Other>
       <CompilerMessages>

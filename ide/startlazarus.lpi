@@ -52,14 +52,14 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <Target>
       <Filename Value="../startlazarus$(ExeExt)"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="include;include/$(TargetOS);include/$(SrcOS)"/>
       <OtherUnitFiles Value="../designer;../packager;../debugger"/>
-      <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)"/>
+      <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
