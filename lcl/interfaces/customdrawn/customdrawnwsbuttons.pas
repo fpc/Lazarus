@@ -80,7 +80,7 @@ var
 begin
   Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
   lCDWinControl := TCDWinControl(Result);
-  lCDWinControl.CDControl := TCDIntfSpinEdit.Create(AWinControl);
+  lCDWinControl.CDControl := TCDIntfButton.Create(AWinControl);
 end;
 
 class procedure TCDWSBitBtn.DestroyHandle(const AWinControl: TWinControl);

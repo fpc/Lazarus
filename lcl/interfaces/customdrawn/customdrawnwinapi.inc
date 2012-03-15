@@ -1139,16 +1139,73 @@ begin
     QStyleOptionFocusRect_destroy(StyleOption);
     QtDC.restore;
   end;
-end;
+end;*)
 
-function TQtWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; uType,
+function TCDWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; uType,
   uState: Cardinal): Boolean;
 var
-  QtDC: TQtDeviceContext;
-  Painter: QPainterH;
-  Widget: QWidgetH;
+  LazDC: TLazCanvas absolute DC;
+  lControlStateEx: TCDControlStateEx;
+begin
+  Result := False;
 
-  function uStatetoQStyleState: QStyleState;
+  if not IsValidDC(DC) then
+  begin
+    {$ifdef VerboseCDDrawing}
+    DebugLn(':<[WinAPI DrawFrameControl] Invalid DC!');
+    {$endif}
+    Exit(False);
+  end;
+
+  case uType of
+    DFC_BUTTON:
+    begin
+      lControlStateEx := TCDControlStateEx.Create;
+      try
+        lControlStateEx.Font := TFont.Create;
+        {if uState and DFCS_FLAT <> 0 then
+          Features := QStyleOptionButtonFlat
+        else
+          Features := QStyleOptionButtonNone;
+        if (uState and $1F) in [DFCS_BUTTONCHECK, DFCS_BUTTON3STATE] then
+          Element := QStyleCE_CheckBox
+        else
+        if (DFCS_BUTTONRADIO and uState) <> 0 then
+          Element := QStyleCE_RadioButton
+        else
+        if (DFCS_BUTTONPUSH and uState) <> 0 then
+          Element := QStyleCE_PushButton
+        else
+        if (DFCS_BUTTONRADIOIMAGE and uState) <> 0 then
+          Element := QStyleCE_RadioButton
+          //TODO: what to implement here ?
+        else
+        if (DFCS_BUTTONRADIOMASK and uState) <> 0 then
+          Element := QStyleCE_RadioButton
+          //TODO: what to implement here ?
+        ;}
+        {Opt := QStyleOptionButton_create();
+        QStyleOptionButton_setFeatures(Opt, Features);
+        QStyleOption_setRect(Opt, @Rect);
+        QStyleOption_setState(Opt, State);
+        QStyle_drawControl(QApplication_style(), Element, Opt, Painter, Widget);
+        QStyleOptionButton_destroy(Opt);}
+
+        //GetDefaultDrawer().DrawButton();
+      finally
+        lControlStateEx.Font.Free;
+        lControlStateEx.Free;
+      end;
+      begin
+    end;
+    end;
+    DFC_CAPTION: ; // title bar captions
+    DFC_MENU: ; // menu
+    DFC_SCROLL:
+    begin
+    end;//DrawScrollBarArrows;
+  end;
+  {function uStatetoQStyleState: QStyleState;
   begin
     Result := QStyleState_None;
     if (uState and DFCS_INACTIVE = 0) then
@@ -1175,44 +1232,6 @@ var
     //DFCS_ADJUSTRECT = 8192;
     //DFCS_FLAT = 16384;
     //DFCS_MONO = 32768;
-  end;
-
-  procedure DrawButton;
-  var
-    Opt: QStyleOptionButtonH;
-    Element: QStyleControlElement;
-    State: QStyleState;
-    Features: QStyleOptionButtonButtonFeatures;
-  begin
-    State := uStatetoQStyleState;
-    if uState and DFCS_FLAT <> 0 then
-      Features := QStyleOptionButtonFlat
-    else
-      Features := QStyleOptionButtonNone;
-    if (uState and $1F) in [DFCS_BUTTONCHECK, DFCS_BUTTON3STATE] then
-      Element := QStyleCE_CheckBox
-    else
-    if (DFCS_BUTTONRADIO and uState) <> 0 then
-      Element := QStyleCE_RadioButton
-    else
-    if (DFCS_BUTTONPUSH and uState) <> 0 then
-      Element := QStyleCE_PushButton
-    else
-    if (DFCS_BUTTONRADIOIMAGE and uState) <> 0 then
-      Element := QStyleCE_RadioButton
-      //TODO: what to implement here ?
-    else
-    if (DFCS_BUTTONRADIOMASK and uState) <> 0 then
-      Element := QStyleCE_RadioButton
-      //TODO: what to implement here ?
-    ;
-
-    Opt := QStyleOptionButton_create();
-    QStyleOptionButton_setFeatures(Opt, Features);
-    QStyleOption_setRect(Opt, @Rect);
-    QStyleOption_setState(Opt, State);
-    QStyle_drawControl(QApplication_style(), Element, Opt, Painter, Widget);
-    QStyleOptionButton_destroy(Opt);
   end;
 
   procedure DrawScrollBarArrows;
@@ -1243,24 +1262,10 @@ var
     QStyleOption_setState(Opt, State);
     QStyle_drawPrimitive(QApplication_style(), Element, Opt, Painter, Widget);
     QStyleOption_destroy(Opt);
-  end;
-
-begin
-  Result := False;
-  if not IsValidDC(DC) then
-    exit;
-  QtDC := TQtDeviceContext(DC);
-  Painter := QtDC.Widget;
-  Widget := QtDC.Parent;
-  case uType of
-    DFC_BUTTON: DrawButton;
-    DFC_CAPTION: ; // title bar captions
-    DFC_MENU: ; // menu
-    DFC_SCROLL: DrawScrollBarArrows;
-  end;
+  end;}
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Method:  DrawText
   Params:  DC, Str, Count, Rect, Flags
   Returns: If the string was drawn, or CalcRect run

@@ -536,7 +536,8 @@ begin
       fstFoldersFirst: Files.Sort(@FilesSortFoldersFirst);
     end;
 
-    for i:=0 to Files.Count-1 do begin
+    for i:=0 to Files.Count-1 do
+    begin
       FileItem:=TFileItem(Files[i]);
       if (i > 0) and (TFileItem(Files[i]).Name = TFileItem(Files[i - 1]).Name) then
         Continue; // cause Files is sorted // From patch from bug 17761: TShellListView Mask: duplicated items if mask is " *.ext;*.ext "

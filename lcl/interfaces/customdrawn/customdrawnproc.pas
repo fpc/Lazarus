@@ -837,6 +837,14 @@ begin
   while SearchResult = 0 do
   begin
     FontPath:= APath+Rslt.Name;
+
+    // Work around for fonts which cause errors. See bug 21456
+    if Rslt.Name = 'tunga.ttf' then
+    begin
+      SearchResult := FindNextUTF8(Rslt);
+      Continue;
+    end;
+
     ErrNum:= TT_Open_Face(FontPath, AFace);
     if ErrNum = TT_Err_Ok then
     begin
