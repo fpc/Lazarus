@@ -42,9 +42,11 @@ bigidecomponents: all
         $(MAKE) -C tdbf
         $(MAKE) -C sqldb
 
-cleanall: bigideclean
-
-bigideclean: clean
+cleanall:
+        $(MAKE) -C lazutils clean
+        $(MAKE) -C codetools clean
+        $(MAKE) -C synedit clean
+        $(MAKE) -C lazcontrols clean
         $(MAKE) -C rtticontrols clean
         $(MAKE) -C printers clean
         $(MAKE) -C printers/design clean
@@ -65,4 +67,8 @@ bigideclean: clean
         $(MAKE) -C externhelp clean
         $(MAKE) -C tdbf clean
         $(MAKE) -C sqldb clean
+
+clean: cleanall
+
+bigideclean: clean
 

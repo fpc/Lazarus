@@ -3914,7 +3914,7 @@ cleanide:
 	$(MAKE) -C ide cleanide
 cleanlaz: cleanide
 	$(MAKE) -C lcl cleanall
-	$(MAKE) -C components cleanall
+	$(MAKE) -C components clean
 	$(MAKE) -C packager/registration clean
 	$(MAKE) -C ideintf clean
 purge: cleanlaz
