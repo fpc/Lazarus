@@ -30,7 +30,7 @@ uses
   // Bindings
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   // RTL, FCL, LCL
-  Math, Controls, LCLType, LCLProc, Spin, StdCtrls,
+  SysUtils, Math, Controls, LCLType, LCLProc, Spin, StdCtrls,
   // Widgetset
   Gtk2Extra, Gtk2Def, Gtk2Int, Gtk2WSControls, Gtk2WSStdCtrls,
   Gtk2Proc, WSLCLClasses, WSProc, WSSpin;
@@ -193,6 +193,102 @@ begin
   SetReadOnly(TCustomEdit(ACustomFloatSpinEdit), ACustomFloatSpinEdit.ReadOnly);
 end;
 
+function HandleFloatSpinEditKeyPress(Widget: PGtkWidget; Event: PGdkEventKey; Data: gPointer): Boolean;
+var
+  Entry: PGtkEntry;
+  AChar: Array [0..0] of Char;
+  ACurPos: Integer;
+  ASelLen: Integer;
+  FL: Double;
+  S: String;
+  SSel: String;
+  P: PChar;
+  SpinButton: PGtkSpinButton;
+begin
+  Result := False;
+  Entry := GTK_ENTRY(Widget);
+  if (ABS(Entry^.current_pos - Entry^.selection_bound) >= 0) and
+    (Event^.keyval > 31) and (Event^.keyval < 256) then
+  begin
+    SpinButton := GTK_SPIN_BUTTON(Entry);
+    FL := gtk_spin_button_get_value(SpinButton);
+    ACurPos := Min(Entry^.current_pos, Entry^.selection_bound);
+    ASelLen := ABS(Entry^.current_pos - Entry^.selection_bound);
+    S := StrPas(gtk_entry_get_text(Entry));
+    // writeln(Format('Value %12.2n text %s start %d len %d',
+    //  [FL, StrPas(gtk_entry_get_text(Entry)), ACurPos, ASelLen]));
+
+    if ASelLen > 0 then
+    begin
+      if ASelLen = length(S) then
+      begin
+        gtk_spin_button_set_value(SpinButton, 0);
+        gtk_editable_set_position(Entry, 1);
+      end else
+      begin
+        SSel := Copy(S, ACurPos + 1, ASelLen);
+        if Pos(DecimalSeparator, SSel) > 0 then
+          SSel := Copy(S,ACurPos + 1, ASelLen + 1);
+
+        Delete(S, ACurPos + 1, ASelLen);
+        Insert(Chr(Event^.keyVal), S, ACurPos + 1);
+
+        // if clocale isn't included in our project we are in trouble.
+        S := StringReplace(S,',',DecimalSeparator,[rfReplaceAll]);
+        TryStrToFloat(S, FL);
+
+        g_object_set_data(PGObject(SpinButton),'lcl-do-not-change-selection', Data);
+
+        gtk_entry_set_text(Entry, PChar(S));
+        gtk_editable_set_position(Entry, ACurPos + 1);
+
+        // do not trigger OnChange in keyrelease
+        LockOnChange(PGtkObject(Widget), 1);
+        S := FloatToStr(FL);
+        P := StrNew(PChar(S));
+        g_object_set_data(PGObject(SpinButton),'lcl-eat-next-key-release', P);
+        g_object_set_data(PGObject(SpinButton),'lcl-eat-next-key-release-pos', TObject(ACurPos));
+        Result := True;
+      end;
+    end;
+  end;
+end;
+
+function GTKEntryKeyPress(Widget: PGtkWidget; Event: PGdkEventKey; Data: gPointer): GBoolean; cdecl;
+begin
+  Result := HandleFloatSpinEditKeyPress(Widget, Event, Data);
+end;
+
+function HandleFloatSpinEditKeyRelease(Widget: PGtkWidget; Event: PGdkEventKey; Data: gPointer): GBoolean;
+var
+  AData: PChar;
+  FL: Double;
+  APos: Integer;
+begin
+  Result := False;
+  if g_object_get_data(PGObject(Widget),'lcl-eat-next-key-release') <> nil then
+  begin
+    AData := g_object_get_data(PGObject(Widget),'lcl-eat-next-key-release');
+    FL := StrToFloat(StrPas(AData));
+    if g_object_get_data(PGObject(Widget),'lcl-eat-next-key-release-pos') <> nil then
+      APos := PtrInt(g_object_get_data(PGObject(Widget),'lcl-eat-next-key-release-pos'))
+    else
+      APos := 0;
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(Widget), FL);
+    if APos >= 0 then
+      gtk_editable_set_position(GTK_EDITABLE(Widget), APos + 1);
+    StrDispose(AData);
+    g_object_set_data(PGObject(Widget),'lcl-eat-next-key-release', nil);
+    Result := True;
+    LockOnChange(PGtkObject(Widget), -1);
+  end;
+end;
+
+function GTKEntryKeyRelease(Widget: PGtkWidget; Event: PGdkEventKey; Data: gPointer): GBoolean; cdecl;
+begin
+  Result := HandleFloatSpinEditKeyRelease(Widget, Event, Data);
+end;
+
 class function TGtk2WSCustomFloatSpinEdit.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
   ): TLCLIntfHandle;
@@ -200,6 +296,7 @@ var
   Adjustment: PGtkAdjustment;
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
+  Entry: PGtkEntry;
 begin
   Adjustment := PGtkAdjustment(gtk_adjustment_new(1, 1, 100, 1, 0,0));
   Widget := gtk_spin_button_new(Adjustment, 1, 0);
@@ -214,8 +311,21 @@ begin
   Set_RC_Name(AWinControl, Widget);
   SetCallbacks(Widget, WidgetInfo);
   if Result <> 0 then
-    g_object_set(gtk_widget_get_settings(@PGtkSpinButton(Result)^.entry),
+  begin
+    Entry := GTK_ENTRY(Widget);
+    // PGtkEntry(@PGtkSpinButton(Result)^.entry);
+    g_object_set(gtk_widget_get_settings(PGtkWidget(Entry)),
       'gtk-entry-select-on-focus', [0, nil]);
+
+    // issue #18679 , affected only gtk2 >= 2.18.
+    if (gtk_major_version = 2) and (gtk_minor_version >= 18) then
+    begin
+      g_signal_connect(Entry, 'key-press-event',
+        TGCallback(@GTKEntryKeyPress), WidgetInfo);
+      g_signal_connect(Entry, 'key-release-event',
+        TGCallback(@GTKEntryKeyRelease), WidgetInfo);
+    end;
+  end;
 end;
 
 end.

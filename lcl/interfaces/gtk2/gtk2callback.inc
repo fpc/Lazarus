@@ -428,48 +428,54 @@ begin
   NeedCursorCheck := False;
   if GTK_IS_ENTRY(Widget) then
   begin
-    {cheat GtkEditable to update cursor pos in gtkEntry. issue #7243}
-    gtk_editable_get_selection_bounds(PGtkEditable(Widget), @GStart, @GEnd);
-    EntryText := gtk_entry_get_text(PGtkEntry(Widget));
-    if (GStart = GEnd) and
-      (UTF8Length(EntryText) >= PGtkEntry(Widget)^.text_length) then
+    // lcl-do-not-change-selection comes from gtkKeyPress.
+    // Only floatspinedit sets that data, so default is nil. issue #18679
+    if g_object_get_data(PGObject(Widget),'lcl-do-not-change-selection') = nil then
     begin
-      Info := GetWidgetInfo(Widget, False);
-      {do not update position if backspace or delete pressed}
-      if wwiInvalidEvent in Info^.Flags then
+      {cheat GtkEditable to update cursor pos in gtkEntry. issue #7243}
+      gtk_editable_get_selection_bounds(PGtkEditable(Widget), @GStart, @GEnd);
+      EntryText := gtk_entry_get_text(PGtkEntry(Widget));
+      if (GStart = GEnd) and
+        (UTF8Length(EntryText) >= PGtkEntry(Widget)^.text_length) then
       begin
-        Exclude(Info^.Flags, wwiInvalidEvent);
+        Info := GetWidgetInfo(Widget, False);
+        {do not update position if backspace or delete pressed}
+        if wwiInvalidEvent in Info^.Flags then
+        begin
+          Exclude(Info^.Flags, wwiInvalidEvent);
 
-        {take care of pasted data since it does not return proper cursor pos.}
-        // issue #7243
-        if g_object_get_data(PGObject(Widget),'lcl-delay-cm_textchaged') <> nil then
-        begin
-          g_object_set_data(PGObject(Widget),'lcl-delay-cm_textchaged',nil);
-          g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',Widget);
-          g_idle_add(@GtkEntryDelayCursorPos, Widget);
-          exit;
-        end;
-      end else
-      begin
-        // if we change selstart in OnChange event new cursor pos need to
-        // be postponed in TGtk2WSCustomEdit.SetSelStart
-        if g_object_get_data(PGObject(Widget),'lcl-gtkentry-pasted-data') <> nil then
-        begin
-          g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',nil);
-          gtk_editable_set_position(PGtkEditable(Widget), GStart);
-        end else
-        begin
-          NeedCursorCheck := True;
-          if gtk_minor_version < 17 then
+          {take care of pasted data since it does not return proper cursor pos.}
+          // issue #7243
+          if g_object_get_data(PGObject(Widget),'lcl-delay-cm_textchaged') <> nil then
           begin
+            g_object_set_data(PGObject(Widget),'lcl-delay-cm_textchaged',nil);
             g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',Widget);
             g_idle_add(@GtkEntryDelayCursorPos, Widget);
             exit;
+          end;
+        end else
+        begin
+          // if we change selstart in OnChange event new cursor pos need to
+          // be postponed in TGtk2WSCustomEdit.SetSelStart
+          if g_object_get_data(PGObject(Widget),'lcl-gtkentry-pasted-data') <> nil then
+          begin
+            g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',nil);
+            gtk_editable_set_position(PGtkEditable(Widget), GStart);
           end else
-            gtk_editable_set_position(PGtkEditable(Widget), GStart + 1);
+          begin
+            NeedCursorCheck := True;
+            if gtk_minor_version < 17 then
+            begin
+              g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',Widget);
+              g_idle_add(@GtkEntryDelayCursorPos, Widget);
+              exit;
+            end else
+              gtk_editable_set_position(PGtkEditable(Widget), GStart + 1);
+          end;
         end;
       end;
-    end;
+    end else
+      g_object_set_data(PGObject(Widget),'lcl-do-not-change-selection', nil);
   end;
 
   if NeedCursorCheck then
@@ -482,13 +488,29 @@ begin
 end;
 
 function gtkchanged_spinbox(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+var
+  SText: String;
+  SValue: String;
 begin
   Result := CallBackDefaultReturn;
   if LockOnChange(PgtkObject(Widget),0) > 0 then exit;
   // prior to gtk2-2.12 there's bug with signalling of spin button
   // which leads to crash.See issue #18554
   if GTK_IS_SPIN_BUTTON(Widget) and (gtk_minor_version >= 12) then
-    gtk_spin_button_update(PGtkSpinButton(Widget));
+  begin
+    SText := '';
+    // do not call gtk_spin_button_update for no reason in floatspinedit.
+    if gtk_spin_button_get_digits(PGtkSpinButton(Widget)) > 0 then
+    begin
+      SText := StrPas(gtk_entry_get_text(GTK_ENTRY(Widget)));
+      SValue := FloatToStrF(gtk_spin_button_get_value(PGtkSpinButton(Widget)), ffFixed,
+        12, gtk_spin_button_get_digits(PGtkSpinButton(Widget)));
+    end else
+      SValue := '1';
+
+    if SText <> SValue then
+      gtk_spin_button_update(PGtkSpinButton(Widget));
+  end;
 end;
 
 function gtkchanged_editbox_backspace(widget: PGtkWidget;
