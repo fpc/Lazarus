@@ -238,11 +238,8 @@ type
     FOwner: TObject;
     procedure SetOutputDirectoryOverride(const AValue: string);
   public
-    UnparsedValues: array[TParsedCompilerOptString] of string;
     // parsed
-    ParsedValues: array[TParsedCompilerOptString] of string;
-    ParsedStamp: array[TParsedCompilerOptString] of integer; // see CompilerParseStamp
-    Parsing: array[TParsedCompilerOptString] of boolean;
+    Values: array[TParsedCompilerOptString] of TParsedString;
     ParsedErrorOption: TParsedCompilerOptString;
     ParsedErrorMsg: string;
     ParsedErrorStamp: integer; // see CompilerParseStamp
@@ -1182,52 +1179,52 @@ end;
 
 function TBaseCompilerOptions.GetCompilerPath: String;
 begin
-  Result:=ParsedOpts.UnparsedValues[pcosCompilerPath];
+  Result:=ParsedOpts.Values[pcosCompilerPath].UnparsedValue;
 end;
 
 function TBaseCompilerOptions.GetBaseDirectory: string;
 begin
-  Result:=ParsedOpts.UnparsedValues[pcosBaseDir];
+  Result:=ParsedOpts.Values[pcosBaseDir].UnparsedValue;
 end;
 
 function TBaseCompilerOptions.GetCustomOptions: string;
 begin
-  Result:=ParsedOpts.UnparsedValues[pcosCustomOptions];
+  Result:=ParsedOpts.Values[pcosCustomOptions].UnparsedValue;
 end;
 
 function TBaseCompilerOptions.GetDebugPath: string;
 begin
-  Result:=ParsedOpts.UnparsedValues[pcosDebugPath];
+  Result:=ParsedOpts.Values[pcosDebugPath].UnparsedValue;
 end;
 
 function TBaseCompilerOptions.GetIncludePaths: String;
 begin
-  Result:=ParsedOpts.UnparsedValues[pcosIncludePath];
+  Result:=ParsedOpts.Values[pcosIncludePath].UnparsedValue;
 end;
 
 function TBaseCompilerOptions.GetLibraryPaths: String;
 begin
-  Result:=ParsedOpts.UnparsedValues[pcosLibraryPath];
+  Result:=ParsedOpts.Values[pcosLibraryPath].UnparsedValue;
 end;
 
 function TBaseCompilerOptions.GetObjectPath: string;
 begin
-  Result:=ParsedOpts.UnparsedValues[pcosObjectPath];
+  Result:=ParsedOpts.Values[pcosObjectPath].UnparsedValue;
 end;
 
 function TBaseCompilerOptions.GetSrcPath: string;
 begin
-  Result:=ParsedOpts.UnparsedValues[pcosSrcPath];
+  Result:=ParsedOpts.Values[pcosSrcPath].UnparsedValue;
 end;
 
 function TBaseCompilerOptions.GetUnitOutputDir: string;
 begin
-  Result:=ParsedOpts.UnparsedValues[pcosOutputDir];
+  Result:=ParsedOpts.Values[pcosOutputDir].UnparsedValue;
 end;
 
 function TBaseCompilerOptions.GetUnitPaths: String;
 begin
-  Result:=ParsedOpts.UnparsedValues[pcosUnitPath];
+  Result:=ParsedOpts.Values[pcosUnitPath].UnparsedValue;
 end;
 
 procedure TBaseCompilerOptions.SetBaseDirectory(const AValue: string);
@@ -2031,7 +2028,7 @@ function TBaseCompilerOptions.GetUnitOutPath(RelativeToBaseDir: boolean;
   Parsed: TCompilerOptionsParseType): string;
 begin
   case Parsed of
-  coptUnparsed: Result:=ParsedOpts.UnparsedValues[pcosOutputDir];
+  coptUnparsed: Result:=ParsedOpts.Values[pcosOutputDir].UnparsedValue;
   coptParsed: Result:=ParsedOpts.GetParsedValue(pcosOutputDir);
   coptParsedPlatformIndependent:
               Result:=ParsedOpts.GetParsedPIValue(pcosOutputDir);
@@ -2170,7 +2167,7 @@ var
   InheritedPath: String;
 begin
   // current path
-  CurrentPath:=ParsedOpts.UnparsedValues[Option];
+  CurrentPath:=ParsedOpts.Values[Option].UnparsedValue;
   {$IFDEF VerbosePkgUnitPath}
   if Option=pcosUnitPath then
     debugln('TBaseCompilerOptions.GetUnparsedPath GetParsedValue ',dbgsName(Self),' RelativeToBaseDir=',dbgs(RelativeToBaseDir),' CurrentPath="',CurrentPath,'"');
@@ -2207,7 +2204,7 @@ begin
   // custom options
   case Parsed of
   coptParsed: CurCustomOptions:=ParsedOpts.GetParsedValue(pcosCustomOptions);
-  coptUnparsed: CurCustomOptions:=ParsedOpts.UnparsedValues[pcosCustomOptions];
+  coptUnparsed: CurCustomOptions:=ParsedOpts.Values[pcosCustomOptions].UnparsedValue;
   coptParsedPlatformIndependent:
                CurCustomOptions:=ParsedOpts.GetParsedPIValue(pcosCustomOptions);
   else
@@ -3480,42 +3477,42 @@ end;
 
 function TAdditionalCompilerOptions.GetUnitPath: string;
 begin
-  Result:=FParsedOpts.UnparsedValues[pcosUnitPath];
+  Result:=FParsedOpts.Values[pcosUnitPath].UnparsedValue;
 end;
 
 function TAdditionalCompilerOptions.GetIncludePath: string;
 begin
-  Result:=FParsedOpts.UnparsedValues[pcosIncludePath];
+  Result:=FParsedOpts.Values[pcosIncludePath].UnparsedValue;
 end;
 
 function TAdditionalCompilerOptions.GetBaseDirectory: string;
 begin
-  Result:=FParsedOpts.UnparsedValues[pcosBaseDir];
+  Result:=FParsedOpts.Values[pcosBaseDir].UnparsedValue;
 end;
 
 function TAdditionalCompilerOptions.GetCustomOptions: string;
 begin
-  Result:=FParsedOpts.UnparsedValues[pcosCustomOptions];
+  Result:=FParsedOpts.Values[pcosCustomOptions].UnparsedValue;
 end;
 
 function TAdditionalCompilerOptions.GetLibraryPath: string;
 begin
-  Result:=FParsedOpts.UnparsedValues[pcosLibraryPath];
+  Result:=FParsedOpts.Values[pcosLibraryPath].UnparsedValue;
 end;
 
 function TAdditionalCompilerOptions.GetLinkerOptions: string;
 begin
-  Result:=FParsedOpts.UnparsedValues[pcosLinkerOptions];
+  Result:=FParsedOpts.Values[pcosLinkerOptions].UnparsedValue;
 end;
 
 function TAdditionalCompilerOptions.GetObjectPath: string;
 begin
-  Result:=FParsedOpts.UnparsedValues[pcosObjectPath];
+  Result:=FParsedOpts.Values[pcosObjectPath].UnparsedValue;
 end;
 
 function TAdditionalCompilerOptions.GetSrcPath: string;
 begin
-  Result:=FParsedOpts.UnparsedValues[pcosSrcPath];
+  Result:=FParsedOpts.Values[pcosSrcPath].UnparsedValue;
 end;
 
 procedure TAdditionalCompilerOptions.SetBaseDirectory(const AValue: string);
@@ -3708,7 +3705,7 @@ var
   VarName: String;
   Vars: TCTCfgScriptVariables;
 begin
-  Result:=UnparsedValues[Option];
+  Result:=Values[Option].UnparsedValue;
   Opts:=nil;
   VarName:='';
   if (Owner is TBaseCompilerOptions) then
@@ -3749,25 +3746,22 @@ begin
       exit;
     end;
   end;
-  if ParsedStamp[Option]<>CompilerParseStamp then begin
-    if Parsing[Option] then begin
-      DebugLn('TParsedCompilerOptions.GetParsedValue Circle in Options: ',EnumToStr(Option),' Unparsed="',UnparsedValues[Option],'"');
+  if Values[Option].ParseStamp<>CompilerParseStamp then begin
+    if Values[Option].Parsing then begin
+      DebugLn('TParsedCompilerOptions.GetParsedValue Circle in Options: ',EnumToStr(Option),' Unparsed="',Values[Option].UnparsedValue,'"');
       ParsedError(Option, lisEndlessLoopInMacros);
       exit('');
     end;
-    Parsing[Option]:=true;
+    Values[Option].Parsing:=true;
     try
       s:=DoParseOption(GetUnparsedWithConditionals(Option),Option,false);
-      ParsedValues[Option]:=s;
-      ParsedStamp[Option]:=CompilerParseStamp;
-      //if Option=pcosCustomOptions then begin
-      //  DebugLn('TParsedCompilerOptions.GetParsedValue PARSED ',dbgs(ParsedStamp[Option]),' ',dbgs(CompilerParseStamp),' new="',ParsedValues[Option],'"');
-      //end;
+      Values[Option].ParsedValue:=s;
+      Values[Option].ParseStamp:=CompilerParseStamp;
     finally
-      Parsing[Option]:=false;
+      Values[Option].Parsing:=false;
     end;
   end;
-  Result:=ParsedValues[Option];
+  Result:=Values[Option].ParsedValue;
 end;
 
 function TParsedCompilerOptions.GetParsedPIValue(
@@ -3798,15 +3792,15 @@ end;
 procedure TParsedCompilerOptions.SetUnparsedValue(
   Option: TParsedCompilerOptString; const NewValue: string);
 begin
-  if NewValue=UnparsedValues[Option] then exit;
+  if NewValue=Values[Option].UnparsedValue then exit;
   if InvalidateParseOnChange then IncreaseCompilerParseStamp;
   if Option=pcosBaseDir then
     InvalidateFiles
   else begin
-    ParsedStamp[Option]:=CTInvalidChangeStamp;
+    Values[Option].ParseStamp:=CTInvalidChangeStamp;
     ParsedPIStamp[Option]:=CTInvalidChangeStamp;
   end;
-  UnparsedValues[Option]:=NewValue;
+  Values[Option].UnparsedValue:=NewValue;
 end;
 
 function TParsedCompilerOptions.DoParseOption(const OptionText: string;
@@ -3883,9 +3877,9 @@ begin
   InvalidateAll;
   for Option:=Low(TParsedCompilerOptString) to High(TParsedCompilerOptString) do
   begin
-    ParsedValues[Option]:='';
+    Values[Option].ParsedValue:='';
     ParsedPIValues[Option]:='';
-    UnparsedValues[Option]:='';
+    Values[Option].UnparsedValue:='';
   end;
   InheritedMacroValues.Clear;
   MacroValues.Variables.Clear;
@@ -3898,7 +3892,7 @@ var
 begin
   for Option:=Low(TParsedCompilerOptString) to High(TParsedCompilerOptString) do
   begin
-    ParsedStamp[Option]:=CTInvalidChangeStamp;
+    Values[Option].ParseStamp:=CTInvalidChangeStamp;
     ParsedPIStamp[Option]:=CTInvalidChangeStamp;
   end;
   InheritedMacroValuesStamp:=CTInvalidChangeStamp;
@@ -3912,7 +3906,7 @@ var
 begin
   for Option:=Low(TParsedCompilerOptString) to High(TParsedCompilerOptString) do
     if (Option in ParsedCompilerFiles) then begin
-      ParsedStamp[Option]:=CTInvalidChangeStamp;
+      Values[Option].ParseStamp:=CTInvalidChangeStamp;
       ParsedPIStamp[Option]:=CTInvalidChangeStamp;
     end;
 end;
@@ -3924,11 +3918,11 @@ var
   s: String;
 begin
   Changed:=[];
-  for o:=Low(UnparsedValues) to High(UnparsedValues) do
+  for o:=Low(Values) to High(Values) do
   begin
-    s:=UnparsedValues[o];
+    s:=Values[o].UnparsedValue;
     RenameIDEMacroInString(s,OldName,NewName);
-    if s<>UnparsedValues[o] then begin
+    if s<>Values[o].UnparsedValue then begin
       SetUnparsedValue(o,s);
       Include(Changed,o)
     end;

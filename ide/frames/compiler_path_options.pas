@@ -186,7 +186,7 @@ begin
         Msg:=Format(lisIWonderHowYouDidThatErrorInThe, [EnumToStr(o)]);
       end;
       Msg:=Msg+#13+FCompilerOpts.ParsedOpts.ParsedErrorMsg+#13
-        +lisValue3+dbgstr(FCompilerOpts.ParsedOpts.UnparsedValues[o]);
+        +lisValue3+dbgstr(FCompilerOpts.ParsedOpts.Values[o].UnparsedValue);
       IDEMessageDialog(lisCCOErrorCaption, Msg, mtError, [mbCancel]);
       exit;
     end;

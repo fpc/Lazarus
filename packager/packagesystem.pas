@@ -3835,7 +3835,7 @@ var
 begin
   // use the default output directory, if it is relative
   // (this way the fallback creates the same amount of target directories)
-  Dir:=APackage.CompilerOptions.ParsedOpts.UnparsedValues[pcosOutputDir];
+  Dir:=APackage.CompilerOptions.ParsedOpts.Values[pcosOutputDir].UnparsedValue;
   Dir:=APackage.SubstitutePkgMacros(Dir,false);
   if FilenameIsAbsolute(Dir) then begin
     // it is not relative => create a default one

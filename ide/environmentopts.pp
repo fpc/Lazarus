@@ -186,6 +186,7 @@ type
   TParsedEnvOption = record
     Value: string;
     ParseStamp: integer;
+    Parsing: boolean;
   end;
 
 type
@@ -921,7 +922,7 @@ end;
 
 function TEnvironmentOptions.GetLazarusDirectory: string;
 begin
-
+  Result:=LazarusDirectory;
 end;
 
 procedure TEnvironmentOptions.SetFileName(const NewFilename: string);

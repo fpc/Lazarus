@@ -30,9 +30,10 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LCLProc, AvgLvlTree, Laz2_XMLCfg, SourceLog,
-  FileProcs, CodeToolManager, CodeToolsConfig, CodeCache, LazConf,
-  StdCtrls, ExtCtrls, ComCtrls;
+  Classes, SysUtils, FileUtil, LCLProc, AvgLvlTree, Laz2_XMLCfg,
+  StdCtrls, ExtCtrls, ComCtrls,
+  SourceLog, FileProcs, CodeToolManager, CodeToolsConfig, CodeCache,
+  LazConf;
 
 type
   // comments
@@ -223,6 +224,14 @@ function StringListToString(List: TStrings; FromIndex, ToIndex: integer;
 procedure StringToStringList(const s: string; List: TStrings);
 
 // environment
+type
+  TParsedString = record
+    UnparsedValue: string;
+    ParsedValue: string;
+    ParseStamp: integer;
+    Parsing: boolean;
+  end;
+
 function GetCurrentUserName: string;
 function GetCurrentMailAddress: string;
 function GetProgramSearchPath: string;
