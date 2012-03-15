@@ -846,11 +846,11 @@ begin
       s:=LazarusDir
     else
       s:='<LazarusDirNotSet>';
-  end else if CompareText(MacroName,'TargetOS')=0 then
+  end else if (CompareText(MacroName,'TargetOS')=0) then
     s:=GetCompiledTargetOS
-  else if CompareText(MacroName,'TargetCPU')=0 then
+  else if (CompareText(MacroName,'TargetCPU')=0) then
     s:=GetCompiledTargetCPU
-  else if CompareText(MacroName,'SrcOS')=0 then
+  else if (CompareText(MacroName,'SrcOS')=0) then
     s:=GetDefaultSrcOSForTargetOS(GetCompiledTargetOS)
   else
     Handled:=false;

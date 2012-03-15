@@ -1471,6 +1471,8 @@ function TBuildManager.MacroFuncTargetCPU(const Param: string;
 begin
   if Data=CompilerOptionMacroPlatformIndependent then
     Result:='%(CPU_TARGET)'
+  else if SysUtils.CompareText(Param,'IDE')=0 then
+    Result:=GetCompiledTargetCPU
   else
     Result:=GetTargetCPU;
 end;
@@ -1480,6 +1482,8 @@ function TBuildManager.MacroFuncTargetOS(const Param: string;
 begin
   if Data=CompilerOptionMacroPlatformIndependent then
     Result:='%(OS_TARGET)'
+  else if SysUtils.CompareText(Param,'IDE')=0 then
+    Result:=GetCompiledTargetOS
   else
     Result:=GetTargetOS;
 end;
@@ -1520,6 +1524,8 @@ function TBuildManager.MacroFuncSrcOS(const Param: string; const Data: PtrInt;
 begin
   if Data=CompilerOptionMacroPlatformIndependent then
     Result:='%(OS_TARGET)'
+  else if Param<>'' then
+    Result:=GetDefaultSrcOSForTargetOS(Param)
   else
     Result:=GetDefaultSrcOSForTargetOS(GetTargetOS);
 end;
