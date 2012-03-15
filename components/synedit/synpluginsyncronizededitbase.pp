@@ -26,7 +26,7 @@ unit SynPluginSyncronizedEditBase;
 interface
 
 uses
-  Classes, SysUtils, Graphics, LCLProc, SynEditTextBase,
+  Classes, SysUtils, Graphics, LCLProc,
   SynEditMiscClasses, SynEdit, SynEditMarkup, SynEditMiscProcs, LazSynEditText,
   SynEditTextTrimmer, SynEditKeyCmds;
 

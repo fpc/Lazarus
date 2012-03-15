@@ -150,7 +150,7 @@ type
   protected
     function  DefaultGroup: Integer; virtual;
     function  MinCapacity: Integer; virtual;
-    procedure InvalidateNode(var AnInfo: TSynFoldNodeInfo);
+    procedure InvalidateNode(out AnInfo: TSynFoldNodeInfo);
     function  Match(const AnInfo: TSynFoldNodeInfo;
                     AnActionFilter: TSynFoldActions; AGroupFilter: Integer = 0): Boolean; virtual;
   public
@@ -437,7 +437,7 @@ begin
   Result:='';
   for i := low(TSynFoldAction) to high(TSynFoldAction) do
     if i in AFoldActions then begin
-      WriteStr(s, i);
+      WriteStr(s{%H-}, i);
       Result := Result + s + ',';
     end;
   if Result <> '' then Result := '[' + copy(Result, 1, Length(Result)-1) + ']';
@@ -549,7 +549,7 @@ begin
   Result := 8;
 end;
 
-procedure TLazSynFoldNodeInfoList.InvalidateNode(var AnInfo: TSynFoldNodeInfo);
+procedure TLazSynFoldNodeInfoList.InvalidateNode(out AnInfo: TSynFoldNodeInfo);
 begin
   AnInfo.FoldAction := [sfaInvalid];
   AnInfo.LineIndex := Line;

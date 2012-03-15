@@ -952,9 +952,9 @@ procedure TSynEditFoldExportStream.Compress;
      [NNXX[   (more then 21 bytes, from up to 64*64 back)
      ]X       (3 bytes from max 64 back)
      ]nx      ( reocurring space,x times, ever n pos)
-*)
 const
   max_single_len = 22 - 1;
+  *)
 var
   CurPos, EndPos, SearchPos: Integer;
   FndLen, FndPos, FndPos2: Integer;
@@ -4574,7 +4574,7 @@ end;
 
 function dbgs(AClassification: TFoldNodeClassification): String;
 begin
-  WriteStr(Result, AClassification);
+  WriteStr(Result{%H-}, AClassification);
 end;
 
 {$IFDEF SynDebug}

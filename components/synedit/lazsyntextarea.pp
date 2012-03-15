@@ -525,7 +525,7 @@ begin
   if (AClip.Top < FTextBounds.Top) then begin
     PadRect2 := Bounds;
     PadRect2.Bottom := FTextBounds.Top;
-    IntersectRect(PadRect, AClip, PadRect2);
+    IntersectRect(PadRect{%H-}, AClip, PadRect2);
     InternalFillRect(dc, PadRect);
   end;
   if (AClip.Bottom > FTextBounds.Bottom) then begin

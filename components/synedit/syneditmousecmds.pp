@@ -415,11 +415,13 @@ end;
 
 function SynMouseCmdToIdent(SynMouseCmd: Longint; out Ident: String): Boolean;
 begin
+  Ident := '';
   Result := IntToIdent(SynMouseCmd, Ident, SynMouseCommandNames);
 end;
 
 function IdentToSynMouseCmd(const Ident: string; out SynMouseCmd: Longint): Boolean;
 begin
+  SynMouseCmd := 0;
   Result := IdentToInt(Ident, SynMouseCmd, SynMouseCommandNames);
 end;
 

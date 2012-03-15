@@ -1101,6 +1101,7 @@ procedure TSynEditKeyStrokes.LoadFromStream(AStream: TStream);
 var
   Num: integer;
 begin
+  Num := 0;
   AStream.Read(Num, SizeOf(Num));
   while Num > 0 do begin
     with Add do
