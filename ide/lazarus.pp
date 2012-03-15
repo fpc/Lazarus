@@ -78,8 +78,10 @@ begin
 
   RequireDerivedFormResource := True;
 
-  // When quick rebuilding the IDE, FPC rebuilds only the lazarus.pp, so any
-  // flag that should work with quick build must be set here.
+  // When quick rebuilding the IDE (e.g. when the set of install packages have
+  // changed), only the unit paths have changed and so FPC rebuilds only the
+  // lazarus.pp.
+  // Any flag that should work with quick build must be set here.
   KeepInstalledPackages:={$IFDEF BigIDE}True{$ELSE}False{$ENDIF};
 
   // end of build flags

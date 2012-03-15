@@ -346,7 +346,6 @@ type
     procedure Save(OnlyDesktop:boolean);
     property Filename: string read FFilename write SetFilename;
     procedure CreateConfig;
-    procedure GetDefaultFPCSourceDirectory;
     function GetTestBuildDirectory: string;
     function GetFPCSourceDirectory: string;
     function GetCompilerFilename: string;
@@ -898,11 +897,6 @@ begin
     //DebugLn('Note: environment config file not found - using defaults');
   end;
   Filename:=ConfFilename;
-end;
-
-procedure TEnvironmentOptions.GetDefaultFPCSourceDirectory;
-begin
-
 end;
 
 procedure TEnvironmentOptions.SetFileName(const NewFilename: string);
