@@ -2692,7 +2692,7 @@ var
     size1 := -WCanvas.Font.Height + LineSpacing;
     maxWidth := dx - gapx - gapx;
     {$IFDEF DebugLR}
-    DebugLn('OutMemo: Size=%d Size1=%d MaxWidth=%d dx=%d gapx=%d',[Size,Size1,MaxWidth,dx,gapx]);
+    DebugLn('OutMemo I: Size=%d Size1=%d MaxWidth=%d y=%d dx=%d gapy=%d gapx=%d',[Size,Size1,MaxWidth,y,dx,gapy,gapx]);
     {$ENDIF}
     for i := 0 to Memo1.Count - 1 do
     begin
@@ -2703,6 +2703,9 @@ var
     end;
     VHeight := size - y + gapy;
     TextHeight := size1;
+    {$IFDEF DebugLR}
+    DebugLn('OutMemo E: Size=%d Size1=%d MaxWidth=%d y=%d dx=%d gapy=%d gapx=%d VHeight=%d',[Size,Size1,MaxWidth,y,dx,gapy,gapx,VHeight]);
+    {$ENDIF}
   end;
 
   procedure OutMemo90;
@@ -3184,7 +3187,9 @@ begin
   BeginDraw(TempBmp.Canvas);
   frInterpretator.DoScript(Script);
   if not Visible then Exit;
-
+  {$IFDEF DebugLR}
+  DebugLnEnter('TfrMemoView.CalcHeight INIT',[]);
+  {$ENDIF}
   CanExpandVar := True;
   Memo1.Assign(Memo);
   s := Memo1.Text;
@@ -3211,10 +3216,16 @@ begin
   begin
     WrapMemo;
     Result := VHeight;
+    {$IFDEF DebugLR}
+    DebugLn('Memo1.Count<>0: VHeight=%d',[VHeight]);
+    {$ENDIF}
   end;
   Font.Assign(OldFont);
   OldFont.Free;
   fFillColor := OldFill;
+  {$IFDEF DebugLR}
+  DebugLnExit('TfrMemoView.CalcHeight DONE result=%d',[Result]);
+  {$ENDIF}
 end;
 
 function TfrMemoView.MinHeight: Integer;
@@ -4734,7 +4745,7 @@ var
   
   function SubDoCalcHeight(CheckAll: Boolean): Integer;
   var
-    i, h: Integer;
+    i, h, vh: Integer;
     t: TfrView;
   begin
     CurBand := Self;
@@ -4747,7 +4758,11 @@ var
       if t is TfrStretcheable then
         if (t.Parent = Self) or CheckAll then
         begin
-          h := TfrStretcheable(t).CalcHeight + t.y;
+          vh := TfrStretcheable(t).CalcHeight;
+          h := vh + t.y;
+          {$IFDEF DebugLR}
+          DebugLn('View=%s t.y=%d t.dy=%d vh=%d h=%d result=%d',[ViewInfo(t),t.y,t.dy,vh,h,result]);
+          {$ENDIF}
           if h > Result then
             Result := h;
           if CheckAll then
@@ -4756,6 +4771,9 @@ var
     end;
   end;
 begin
+  {$IFDEF DebugLR}
+  DebugLnEnter('TfrBand.CalcHeight INIT CurDy=%d',[dy]);
+  {$ENDIF}
   Result := dy;
   if HasCross and (Typ <> btPageFooter) then
   begin
@@ -4794,6 +4812,9 @@ begin
   else
     Result := SubDoCalcHeight(False);
   CalculatedHeight := Result;
+  {$IFDEF DebugLR}
+  DebugLnExit('TfrBand.CalcHeight DONE CalculatedHeight=%d',[CalculatedHeight]);
+  {$ENDIF}
 end;
 
 procedure TfrBand.StretchObjects(MaxHeight: Integer);
@@ -4801,13 +4822,27 @@ var
   i: Integer;
   t: TfrView;
 begin
+  {$IFDEF DebugLR}
+  DebugLnEnter('TfrBand.StretchObjects INIT MaxHeight=%d',[MaxHeight]);
+  {$ENDIF}
   for i := 0 to Objects.Count - 1 do
   begin
     t :=TfrView(Objects[i]);
     if (t is TfrStretcheable) or (t is TfrLineView) then
       if (t.Flags and flStretched) <> 0 then
+      begin
+        {$IFDEF DebugLR}
+        DebugLn('i=%d View=%s Antes: y=%d dy=%d',[i,ViewInfo(t), t.y,t.dy]);
+        {$ENDIF}
         t.dy := MaxHeight - t.y;
+        {$IFDEF DebugLR}
+        DebugLn('i=%d View=%s After: y=%d dy=%d',[i,ViewInfo(t), t.y,t.dy]);
+        {$ENDIF}
+      end;
   end;
+  {$IFDEF DebugLR}
+  DebugLnExit('TfrBand.StretchObjects DONE');
+  {$ENDIF}
 end;
 
 procedure TfrBand.UnStretchObjects;
@@ -5340,6 +5375,9 @@ begin
   begin
     sh := CalculatedHeight;
 //    sh := CalcHeight;
+    {$IFDEF DebugLR}
+    DebugLn('Height=%d CalculatedHeight=%d',[dy,sh]);
+    {$ENDIF}
     if sh > dy then
       StretchObjects(sh);
     maxdy := sh;
