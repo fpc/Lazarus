@@ -1016,8 +1016,9 @@ begin
   DebugLn('');
   {$ENDIF}
 
-  // do not release capture widget here, as this will interfere
-  //ReleaseCaptureWidget(Widget);
+  // do not show selection when widget is unfocused
+  if GtkWidgetIsA(Widget, gtk_type_entry) then
+    gtk_editable_select_region(PGtkEditable(Widget), 0, 0);
 
   Result:=CallBackDefaultReturn;
 end;
