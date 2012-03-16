@@ -6225,6 +6225,10 @@ msgstr "Převést kódování projektů/balíčků"
 msgid "Convert project or package"
 msgstr "Převést projekt nebo balíček"
 
+#: lazarusidestrconsts.lisconverttarget
+msgid "Target"
+msgstr ""
+
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
 msgstr "Převaděč přidá podmíněný překlad k podpoře různých cílů"

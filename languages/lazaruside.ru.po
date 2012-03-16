@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-03-15 02:11+0400\n"
+"PO-Revision-Date: 2012-03-17 03:40+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -6412,6 +6412,10 @@ msgstr "Преобразовать кодировку проектов/паке�
 #: lazarusidestrconsts.lisconvertprojectorpackage
 msgid "Convert project or package"
 msgstr "Преобразование проекта либо пакета"
+
+#: lazarusidestrconsts.lisconverttarget
+msgid "Target"
+msgstr "Цель"
 
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"

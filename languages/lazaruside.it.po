@@ -6539,6 +6539,10 @@ msgstr "Converti codifica dei progetti/pacchetti"
 msgid "Convert project or package"
 msgstr "Converti progetto o pacchetto"
 
+#: lazarusidestrconsts.lisconverttarget
+msgid "Target"
+msgstr ""
+
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
 msgstr "La conversione aggiunge compilazione condizionale per supportare diverse piattaforme destinazione"

@@ -6501,6 +6501,10 @@ msgstr "转换工程/包的编码"
 msgid "Convert project or package"
 msgstr "转换工程或包"
 
+#: lazarusidestrconsts.lisconverttarget
+msgid "Target"
+msgstr ""
+
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
 msgstr ""

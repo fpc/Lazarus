@@ -6210,6 +6210,10 @@ msgstr "Muunna projektin/paketin merkistökoodaus"
 msgid "Convert project or package"
 msgstr "Muunna projekti tai paketti"
 
+#: lazarusidestrconsts.lisconverttarget
+msgid "Target"
+msgstr ""
+
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
 msgstr "Muunnin lisää ehdollista koodia (IFDEF) tukeakseen eri alustoja"

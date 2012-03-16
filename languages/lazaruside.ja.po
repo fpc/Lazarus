@@ -6546,6 +6546,10 @@ msgstr "プロジェクト/パッケージのエンコーディングを変換"
 msgid "Convert project or package"
 msgstr "プロジェクトもしくはパッケージを変換"
 
+#: lazarusidestrconsts.lisconverttarget
+msgid "Target"
+msgstr ""
+
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
 msgstr "コンバータは異なるターゲットをサポートするために条件コンパイルを追加します"

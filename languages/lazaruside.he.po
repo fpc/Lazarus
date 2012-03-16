@@ -6517,6 +6517,10 @@ msgstr "המר את קידוד הפרויקט/חבילה"
 msgid "Convert project or package"
 msgstr "המר פרויקט או חבילה"
 
+#: lazarusidestrconsts.lisconverttarget
+msgid "Target"
+msgstr ""
+
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
 msgstr "הממיר מוסיף הידור מותנה כדי לתמוך ביעדים שונים"
