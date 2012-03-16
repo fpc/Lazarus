@@ -452,10 +452,10 @@ begin
   if FAppHandle <> 0 then
   begin
     Windows.SendMessage(FAppHandle, WM_SETICON, ICON_SMALL, LPARAM(Small));
-    SetClassLong(FAppHandle, GCL_HICONSM, LONG(Small));
+    SetClassLongPtr(FAppHandle, GCL_HICONSM, LONG_PTR(Small));
 
     Windows.SendMessage(FAppHandle, WM_SETICON, ICON_BIG, LPARAM(Big));
-    SetClassLong(FAppHandle, GCL_HICON, LONG(Big));
+    SetClassLongPtr(FAppHandle, GCL_HICON, LONG_PTR(Big));
   end;
 end;
 

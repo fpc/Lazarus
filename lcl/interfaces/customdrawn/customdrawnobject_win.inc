@@ -529,10 +529,10 @@ begin
   if FAppHandle <> 0 then
   begin
     Windows.SendMessage(FAppHandle, WM_SETICON, ICON_SMALL, LPARAM(Small));
-    SetClassLong(FAppHandle, GCL_HICONSM, LONG(Small));
+    SetClassLongPtr(FAppHandle, GCL_HICONSM, LONG_PTR(Small));
 
     Windows.SendMessage(FAppHandle, WM_SETICON, ICON_BIG, LPARAM(Big));
-    SetClassLong(FAppHandle, GCL_HICON, LONG(Big));
+    SetClassLongPtr(FAppHandle, GCL_HICON, LONG_PTR(Big));
   end;
 end;
 
@@ -684,13 +684,13 @@ begin
     begin
       if TCustomForm(Sender).BorderStyle <> bsDialog then
       begin
-        SetClassLong(Handle, GCL_HICONSM, LONG(TCustomForm(Sender).SmallIconHandle));
-        SetClassLong(Handle, GCL_HICON, LONG(TCustomForm(Sender).BigIconHandle));
+        SetClassLongPtr(Handle, GCL_HICONSM, LONG_PTR(TCustomForm(Sender).SmallIconHandle));
+        SetClassLongPtr(Handle, GCL_HICON, LONG_PTR(TCustomForm(Sender).BigIconHandle));
       end
       else
       begin
-        SetClassLong(Handle, GCL_HICONSM, 0);
-        SetClassLong(Handle, GCL_HICON, 0);
+        SetClassLongPtr(Handle, GCL_HICONSM, 0);
+        SetClassLongPtr(Handle, GCL_HICON, 0);
       end;
     end;
   end

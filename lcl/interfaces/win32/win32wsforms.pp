@@ -621,10 +621,10 @@ begin
     Exit;
   Wnd := AForm.Handle;
   SendMessage(Wnd, WM_SETICON, ICON_SMALL, LPARAM(Small));
-  SetClassLong(Wnd, GCL_HICONSM, LONG(Small));
+  SetClassLongPtr(Wnd, GCL_HICONSM, LONG_PTR(Small));
 
   SendMessage(Wnd, WM_SETICON, ICON_BIG, LPARAM(Big));
-  SetClassLong(Wnd, GCL_HICON, LONG(Big));
+  SetClassLongPtr(Wnd, GCL_HICON, LONG_PTR(Big));
   // for some reason sometimes frame does not invalidate itself. lets ask it to invalidate always
   Windows.RedrawWindow(Wnd, nil, 0,
     RDW_INVALIDATE or RDW_FRAME or RDW_NOCHILDREN or RDW_ERASE);

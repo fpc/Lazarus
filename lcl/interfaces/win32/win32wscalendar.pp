@@ -83,7 +83,7 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, False);
   Result := Params.Window;
-  SetClassLong(Result, GCL_STYLE, GetClassLong(Result, GCL_STYLE) or CS_DBLCLKS);
+  SetClassLongPtr(Result, GCL_STYLE, GetClassLongPtr(Result, GCL_STYLE) or CS_DBLCLKS);
   // resize to proper size
   SetBounds(AWinControl, Params.Left, Params.Top, 0, 0);
 end;
