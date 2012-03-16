@@ -3905,7 +3905,26 @@ begin
   end;
 end;
 
-function TBookmarkList.Find(const Item: TBookmark; var AIndex: Integer): boolean;
+type
+  TDs=class(TDataset)
+  end;
+
+function MyCompareBookmarks(ds:Tdataset; b1,b2:TBookmark): Integer;
+begin
+  if b1=b2 then
+    result := 0
+  else
+  if b1=nil then
+    result := -1
+  else
+  if b2=nil then
+    result := 1
+  else begin
+    result := CompareMemRange(b1,b2,Tds(ds).bookmarksize);
+  end;
+end;
+
+  function TBookmarkList.Find(const Item: TBookmark; var AIndex: Integer): boolean;
 var
   L, R, I: Integer;
   CompareRes: PtrInt;
@@ -3917,7 +3936,8 @@ begin
   while (L <= R) do
   begin
     I := L + (R - L) div 2;
-    CompareRes := FDataset.CompareBookmarks(Item, TBookmark(FList[I]));
+    CompareRes := MyCompareBookmarks(FDataset, Item, TBookmark(FList[I]));
+    //CompareRes := FDataset.CompareBookmarks(Item, TBookmark(FList[I]));
     if (CompareRes > 0) then
       L := I + 1
     else
