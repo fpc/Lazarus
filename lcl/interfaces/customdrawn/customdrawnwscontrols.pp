@@ -35,7 +35,7 @@ uses
   lazcanvas, lazregions,
   // Widgetset
   InterfaceBase, WSProc, WSControls, WSLCLClasses, customdrawnint,
-  customdrawnproc;
+  customdrawnproc, cocoaprivate;
 
 type
 
@@ -50,6 +50,17 @@ type
       ALockedWindow: HWND; DoUnLock: Boolean): Boolean; override;
     class function ShowDragImage(const ADragImageList: TDragImageList;
       ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean; override;}
+  end;
+
+  { TCDWSLazAccessibleObject }
+
+  TCDWSLazAccessibleObject = class(TWSLazAccessibleObject)
+  public
+    class function CreateHandle(const AObject: TLazAccessibleObject): HWND; override;
+    class procedure DestroyHandle(const AObject: TLazAccessibleObject); override;
+    class procedure SetAccessibleDescription(const AObject: TLazAccessibleObject; const ADescription: string); override;
+    class procedure SetAccessibleValue(const AObject: TLazAccessibleObject; const AValue: string); override;
+    class procedure SetAccessibleRole(const AObject: TLazAccessibleObject; const ARole: TLazAccessibilityRole); override;
   end;
 
   { TCDWSControl }
@@ -139,6 +150,41 @@ type
 implementation
 
 uses customdrawnwsforms;
+
+{ TCDWSLazAccessibleObject }
+
+class function TCDWSLazAccessibleObject.CreateHandle(
+  const AObject: TLazAccessibleObject): HWND;
+begin
+  Result := HWND(TCocoaAccessibleObject.alloc.init);
+end;
+
+class procedure TCDWSLazAccessibleObject.DestroyHandle(
+  const AObject: TLazAccessibleObject);
+var
+  lAccessibleHandle: TCocoaAccessibleObject;
+begin
+  lAccessibleHandle := TCocoaAccessibleObject(AObject.Handle);
+  lAccessibleHandle.release;
+end;
+
+class procedure TCDWSLazAccessibleObject.SetAccessibleDescription(
+  const AObject: TLazAccessibleObject; const ADescription: string);
+begin
+
+end;
+
+class procedure TCDWSLazAccessibleObject.SetAccessibleValue(
+  const AObject: TLazAccessibleObject; const AValue: string);
+begin
+
+end;
+
+class procedure TCDWSLazAccessibleObject.SetAccessibleRole(
+  const AObject: TLazAccessibleObject; const ARole: TLazAccessibilityRole);
+begin
+
+end;
 
 class function  TCDWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 begin

@@ -103,6 +103,29 @@ type
     function accessibilityArrayAttributeValues_index_maxCount(attribute: NSString; index: NSUInteger; maxCount: NSUInteger): NSArray; message 'accessibilityArrayAttributeValues:index:maxCount:';}
   end;
 
+  { TCocoaAccessibleObject }
+
+  TCocoaAccessibleObject = objcclass(NSObject)
+  public
+    // Accessibility
+    //NSAccessibilityCategory = objccategory external (NSObject)
+    //function accessibilityAttributeNames: NSArray; override;
+    function accessibilityAttributeValue(attribute: NSString): id; override;
+    {function accessibilityIsAttributeSettable(attribute: NSString): Boolean; message 'accessibilityIsAttributeSettable:';
+    procedure accessibilitySetValue_forAttribute(value: id; attribute: NSString); message 'accessibilitySetValue:forAttribute:';
+    function accessibilityParameterizedAttributeNames: NSArray; message 'accessibilityParameterizedAttributeNames';
+    function accessibilityAttributeValue_forParameter(attribute: NSString; parameter: id): id; message 'accessibilityAttributeValue:forParameter:';
+    function accessibilityActionNames: NSArray; message 'accessibilityActionNames';
+    function accessibilityActionDescription(action: NSString): NSString; message 'accessibilityActionDescription:';
+    procedure accessibilityPerformAction(action: NSString); message 'accessibilityPerformAction:';
+    function accessibilityIsIgnored: Boolean; message 'accessibilityIsIgnored';
+    function accessibilityHitTest(point: NSPoint): id; message 'accessibilityHitTest:';
+    function accessibilityFocusedUIElement: id; message 'accessibilityFocusedUIElement';
+    function accessibilityIndexOfChild(child: id): NSUInteger; message 'accessibilityIndexOfChild:';
+    function accessibilityArrayAttributeCount(attribute: NSString): NSUInteger; message 'accessibilityArrayAttributeCount:';
+    function accessibilityArrayAttributeValues_index_maxCount(attribute: NSString; index: NSUInteger; maxCount: NSUInteger): NSArray; message 'accessibilityArrayAttributeValues:index:maxCount:';}
+  end;
+
 procedure SetViewDefaults(AView: NSView);
 
 function Cocoa_RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
@@ -289,6 +312,13 @@ begin
   end;
 
   Result := True;
+end;
+
+{ TCocoaAccessibleObject }
+
+function TCocoaAccessibleObject.accessibilityAttributeValue(attribute: NSString): id;
+begin
+  Result := inherited accessibilityAttributeValue(attribute);
 end;
 
 { TCocoaForm }
@@ -773,16 +803,30 @@ end;
 function TCocoaCustomControl.accessibilityAttributeValue(attribute: NSString): id;
 var
   lStrAttr: String;
+  lAResult: NSArray;
+  lResult: NSMutableArray;
+  lForm: TCustomForm;
+  lFormAO: TLazAccessibleObject;
 begin
-  inherited accessibilityAttributeValue(attribute);
+  Result := inherited accessibilityAttributeValue(attribute);
+  lAResult := NSArray(Result);
+  lResult := lAResult.mutableCopy();
 
-{  lStrAttr := NSStringToString(attribute);
-  DebugLn('[TCocoaCustomControl.accessibilityAttributeValue] attribute='+lStrAttr);
+  lStrAttr := NSStringToString(attribute);
+  //DebugLn('[TCocoaCustomControl.accessibilityAttributeValue] attribute='+lStrAttr);
 
   if attribute = NSAccessibilityChildrenAttribute then
   begin
-    DebugLn('[TCocoaCustomControl.accessibilityAttributeValue] NSAccessibilityChildrenAttribute');
-  end;}
+    {DebugLn('[TCocoaCustomControl.accessibilityAttributeValue] NSAccessibilityChildrenAttribute');
+    lForm := WindowHandle.LCLForm;
+    lFormAO := lForm.GetAccessibleObject();
+    for i := 0 to lFormAO.GetChildAccessibleObjectsCount() - 1 do
+    begin
+      lFormAO.GetChildAccessibleObjectsCount;
+    end;
+    lResult.addObject();
+    Result := lResult;}
+  end;
 end;
 
 procedure SetViewDefaults(AView:NSView);
