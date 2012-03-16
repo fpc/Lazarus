@@ -361,9 +361,9 @@ type
     procedure Save(OnlyDesktop:boolean);
     property Filename: string read FFilename write SetFilename;
     procedure CreateConfig;
-    function GetParsedLazarusDirectory: string;
+    function GetParsedLazarusDirectory: string; // ToDo
     function GetParsedTestBuildDirectory: string;
-    function GetParsedCompilerFilename: string;
+    function GetParsedCompilerFilename: string; // ToDo
     function GetParsedFPCSourceDirectory: string;
     function GetParsedValue(o: TEnvOptParseType): string;
 
@@ -1902,9 +1902,11 @@ begin
 end;
 
 procedure TEnvironmentOptions.SetTestBuildDirectory(const AValue: string);
+var
+  NewValue: String;
 begin
-  if TestBuildDirectory=AValue then exit;
-  SetParseValue(eopTestBuildDirectory,AValue);
+  NewValue:=AppendPathDelim(TrimFilename(AValue));
+  SetParseValue(eopTestBuildDirectory,NewValue);
 end;
 
 procedure TEnvironmentOptions.SetLazarusDirectory(const AValue: string);
@@ -1912,7 +1914,6 @@ var
   NewValue: String;
 begin
   NewValue:=AppendPathDelim(TrimFilename(AValue));
-  if LazarusDirectory=NewValue then exit;
   SetParseValue(eopLazarusDirectory,NewValue);
 end;
 
@@ -1920,8 +1921,10 @@ procedure TEnvironmentOptions.SetParseValue(o: TEnvOptParseType;
   const NewValue: string);
 begin
   with FParseValues[o] do begin
+    if UnparsedValue=NewValue then exit;
     UnparsedValue:=NewValue;
     ParseStamp:=CTInvalidChangeStamp;
+    IncreaseCompilerParseStamp;
   end;
 end;
 
