@@ -139,6 +139,11 @@ type
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class function GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; override;
+
+    class procedure Cut(const ACustomEdit: TCustomEdit); override;
+    class procedure Copy(const ACustomEdit: TCustomEdit); override;
+    class procedure Paste(const ACustomEdit: TCustomEdit); override;
+    class procedure Undo(const ACustomEdit: TCustomEdit); override;
   end;
   
   { TCarbonWSCustomMemo }
@@ -908,6 +913,26 @@ begin
   if not CheckHandle(ACustomEdit, Self, 'GetCaretPos') then Exit;
 
   Result := TCarbonCustomEdit(ACustomEdit.Handle).GetCaretPos;
+end;
+
+class procedure TCarbonWSCustomEdit.Cut(const ACustomEdit: TCustomEdit);
+begin
+  if not CheckHandle(ACustomEdit, Self, 'Cut') then Exit;
+end;
+
+class procedure TCarbonWSCustomEdit.Copy(const ACustomEdit: TCustomEdit);
+begin
+  if not CheckHandle(ACustomEdit, Self, 'Copy') then Exit;
+end;
+
+class procedure TCarbonWSCustomEdit.Paste(const ACustomEdit: TCustomEdit);
+begin
+  if not CheckHandle(ACustomEdit, Self, 'Paste') then Exit;
+end;
+
+class procedure TCarbonWSCustomEdit.Undo(const ACustomEdit: TCustomEdit);
+begin
+  if not CheckHandle(ACustomEdit, Self, 'Undo') then Exit;
 end;
 
 { TCarbonWSCustomMemo }
