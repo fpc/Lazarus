@@ -196,7 +196,7 @@ end;
 function HandleFloatSpinEditKeyPress(Widget: PGtkWidget; Event: PGdkEventKey; Data: gPointer): Boolean;
 var
   Entry: PGtkEntry;
-  AChar: Array [0..0] of Char;
+  AChar: Char;
   ACurPos: Integer;
   ASelLen: Integer;
   FL: Double;
@@ -204,19 +204,26 @@ var
   SSel: String;
   P: PChar;
   SpinButton: PGtkSpinButton;
+
+  function ValidNumberKey(out AKey: Char): Boolean;
+  begin
+    AKey := #0;
+    if Event^.length <> 1 then
+      exit(False);
+    AKey := Event^._string^;
+    Result := (Byte(Ord(AKey)) in [VK_0..VK_9]) or (AKey = DecimalSeparator);
+  end;
 begin
   Result := False;
   Entry := GTK_ENTRY(Widget);
   if (ABS(Entry^.current_pos - Entry^.selection_bound) >= 0) and
-    (Event^.keyval > 31) and (Event^.keyval < 256) then
+    ValidNumberKey(AChar) then
   begin
     SpinButton := GTK_SPIN_BUTTON(Entry);
     FL := gtk_spin_button_get_value(SpinButton);
     ACurPos := Min(Entry^.current_pos, Entry^.selection_bound);
     ASelLen := ABS(Entry^.current_pos - Entry^.selection_bound);
     S := StrPas(gtk_entry_get_text(Entry));
-    // writeln(Format('Value %12.2n text %s start %d len %d',
-    //  [FL, StrPas(gtk_entry_get_text(Entry)), ACurPos, ASelLen]));
 
     if ASelLen > 0 then
     begin
@@ -231,7 +238,7 @@ begin
           SSel := Copy(S,ACurPos + 1, ASelLen + 1);
 
         Delete(S, ACurPos + 1, ASelLen);
-        Insert(Chr(Event^.keyVal), S, ACurPos + 1);
+        Insert(AChar, S, ACurPos + 1);
 
         // if clocale isn't included in our project we are in trouble.
         S := StringReplace(S,',',DecimalSeparator,[rfReplaceAll]);
