@@ -3280,7 +3280,6 @@ end;
 procedure TControl.InvalidateControl(CtrlIsVisible, CtrlIsOpaque: Boolean);
 var
   Rect: TRect;
-  Pt: TPoint;
 
   function BackgroundClipped: Boolean;
   var
