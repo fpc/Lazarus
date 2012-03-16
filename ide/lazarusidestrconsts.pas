@@ -534,6 +534,7 @@ resourcestring
   lisBackupChangedFiles = 'Make backup of changed files';
   lisBackupHint = 'Creates a Backup directory under project directory';
   lisStartConversion = 'Start Conversion';
+  lisConvertTarget = 'Target';
   lisConvertTargetHint = 'Converter adds conditional compilation to support different targets';
   lisConvertTargetMultiPlatform = 'Multi-Platform';
   lisConvertTargetMultiPlatformHint = 'Multi-Platform versus Windows-only';

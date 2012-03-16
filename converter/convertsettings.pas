@@ -694,6 +694,7 @@ begin
   SupportDelphiCheckBox.Hint:=lisConvertTargetSupportDelphiHint;
   SameDfmCheckBox.Caption:=lisConvertTargetSameDfmFile;
   SameDfmCheckBox.Hint:=lisConvertTargetSameDfmFileHint;
+  TargetGroupBox.Caption:=lisConvertTarget;
   TargetGroupBox.Hint:=lisConvertTargetHint;
   // Unit Replacements
   UnitReplaceDivider.Caption:=lisConvUnitReplacements;
