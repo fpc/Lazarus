@@ -201,6 +201,7 @@ type
     function SetTXNSelection(iStart, iEnd: Integer): Boolean;
     procedure RegisterEvents; override;
   public
+    procedure Invalidate(Rect: PRect = nil); override;
     procedure BoundsChanged; override;
     procedure AllowMenuProcess(MenuHotKey: AnsiChar; State: TShiftState; var AllowMenu: Boolean); override;
     procedure TextDidChange; override;
@@ -2024,6 +2025,18 @@ begin
       RegisterEventHandler(@CarbonMemoBorder_Accessibility),
       4, @AccessibilitySpec[0], Pointer(Self), nil);
   end;
+end;
+
+procedure TCarbonMemo.Invalidate(Rect: PRect);
+var
+  R: TRect;
+begin
+  if Rect = nil then
+  begin
+    GetClientRect(R);
+    Rect := @R;
+  end;
+  inherited Invalidate(Rect);
 end;
 
 procedure TCarbonMemo.AllowMenuProcess(MenuHotKey: AnsiChar; State: TShiftState; var AllowMenu: Boolean);
