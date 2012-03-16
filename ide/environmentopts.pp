@@ -261,9 +261,6 @@ type
     // compiler + debugger + lazarus files
     FParseValues: array[TEnvOptParseType] of TParseString;
     FLazarusDirHistory: TStringList;
-    FCompilerFilename: string;
-    FCompilerFilenameParsed: string;
-    FCompilerFilenameParsedStamp: integer;
     FCompilerFileHistory: TStringList;
     FFPCSourceDirHistory: TStringList;
     FMakeFileName: string;
@@ -330,6 +327,7 @@ type
     FNewUnitTemplate: string;
     FFileDialogFilter: string;
 
+    function GetCompilerFilename: string;
     function GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
     function GetFPCSourceDirectory: string;
     function GetLazarusDirectory: string;
@@ -361,9 +359,9 @@ type
     procedure Save(OnlyDesktop:boolean);
     property Filename: string read FFilename write SetFilename;
     procedure CreateConfig;
-    function GetParsedLazarusDirectory: string; // ToDo
+    function GetParsedLazarusDirectory: string; // ToDo: use in IDE
     function GetParsedTestBuildDirectory: string;
-    function GetParsedCompilerFilename: string; // ToDo
+    function GetParsedCompilerFilename: string;
     function GetParsedFPCSourceDirectory: string;
     function GetParsedValue(o: TEnvOptParseType): string;
 
@@ -478,7 +476,7 @@ type
                                       write SetLazarusDirectory;
     property LazarusDirHistory: TStringList read FLazarusDirHistory
                                             write FLazarusDirHistory;
-    property CompilerFilename: string read FCompilerFilename
+    property CompilerFilename: string read GetCompilerFilename
                                       write SetCompilerFilename;
     property CompilerFileHistory: TStringList read FCompilerFileHistory
                                               write FCompilerFileHistory;
@@ -822,7 +820,6 @@ begin
   LazarusDirectory:=IDEProcs.ProgramDirectory(true);
   FLazarusDirHistory:=TStringList.Create;
   CompilerFilename:='';
-  FCompilerFilenameParsedStamp:=CTInvalidChangeStamp;
   FCompilerFileHistory:=TStringList.Create;
   FPCSourceDirectory:='';
   FFPCSourceDirHistory:=TStringList.Create;
@@ -940,7 +937,7 @@ end;
 
 function TEnvironmentOptions.GetParsedLazarusDirectory: string;
 begin
-  Result:=LazarusDirectory;
+  Result:=GetParsedValue(eopLazarusDirectory);
 end;
 
 procedure TEnvironmentOptions.SetFileName(const NewFilename: string);
@@ -1128,7 +1125,7 @@ begin
         if FLazarusDirHistory.Count=0 then
           FLazarusDirHistory.Add(ProgramDirectory(true));
         CompilerFilename:=TrimFilename(XMLConfig.GetValue(
-                              Path+'CompilerFilename/Value',FCompilerFilename));
+                              Path+'CompilerFilename/Value',CompilerFilename));
         LoadRecentList(XMLConfig,FCompilerFileHistory,
            Path+'CompilerFilename/History/');
         if FCompilerFileHistory.Count=0 then
@@ -1474,7 +1471,7 @@ begin
         SaveRecentList(XMLConfig,FLazarusDirHistory,
            Path+'LazarusDirectory/History/');
         XMLConfig.SetDeleteValue(
-           Path+'CompilerFilename/Value',FCompilerFilename,'');
+           Path+'CompilerFilename/Value',CompilerFilename,'');
         SaveRecentList(XMLConfig,FCompilerFileHistory,
            Path+'CompilerFilename/History/');
         XMLConfig.SetValue(
@@ -1738,14 +1735,7 @@ end;
 
 function TEnvironmentOptions.GetParsedCompilerFilename: string;
 begin
-  if (FCompilerFilenameParsedStamp=CTInvalidChangeStamp)
-  or (FCompilerFilenameParsedStamp<>CompilerParseStamp)
-  then begin
-    FCompilerFilenameParsed:=FCompilerFilename;
-    GlobalMacroList.SubstituteStr(FCompilerFilenameParsed);
-    FCompilerFilenameParsedStamp:=CompilerParseStamp;
-  end;
-  Result:=FCompilerFilenameParsed;
+  Result:=GetParsedValue(eopCompilerFilename);
 end;
 
 procedure TEnvironmentOptions.InitMacros(AMacroList: TTransferMacroList);
@@ -1935,15 +1925,21 @@ begin
 end;
 
 procedure TEnvironmentOptions.SetCompilerFilename(const AValue: string);
+var
+  NewValue: String;
 begin
-  if FCompilerFilename=AValue then exit;
-  FCompilerFilename:=TrimFilename(AValue);
-  FCompilerFilenameParsedStamp:=CTInvalidChangeStamp;
+  NewValue:=TrimFilename(AValue);
+  SetParseValue(eopCompilerFilename,NewValue);
 end;
 
 function TEnvironmentOptions.GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
 begin
   Result := FDebuggerEventLogColors[AIndex];
+end;
+
+function TEnvironmentOptions.GetCompilerFilename: string;
+begin
+  Result:=FParseValues[eopCompilerFilename].UnparsedValue;
 end;
 
 function TEnvironmentOptions.GetFPCSourceDirectory: string;
