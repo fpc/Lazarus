@@ -46,6 +46,7 @@ var
   LAZARUS_FOURCC: FourCharCode;    // = 'Laz ';
   WIDGETINFO_FOURCC: FourCharCode; // = 'WInf';
   MENU_FOURCC: FourCharCode;       // = 'Menu';
+  CREATESHEETWINDOW: PtrUInt = 0; // used to create sheet inside modal form.issue #21459
 
 type
 

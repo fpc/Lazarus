@@ -183,6 +183,8 @@ type
   { TCarbonWindow }
 
   TCarbonWindow = class(TCarbonScrollingWinControl)
+  private
+    FSheetWin: WindowRef;
   protected
     fWindowRef  : WindowRef;
     fHiddenWin  : WindowRef;
@@ -243,6 +245,7 @@ type
     procedure SetFormBorderStyle(AFormBorderStyle: TFormBorderStyle); virtual;
   public
     property Window: WindowRef read FWindowRef;
+    property SheetWin: WindowRef  read FSheetWin write FSheetWin; // used to show sheet in modal window
   end;
 
   { TCarbonHintWindow }

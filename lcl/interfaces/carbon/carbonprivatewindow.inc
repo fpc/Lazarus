@@ -1191,7 +1191,7 @@ var
   Attributes: WindowAttributes;
 begin
   // apply appropriate form style and form border style
-
+  FSheetWin := nil;
   if csDesigning in LCLObject.ComponentState then
   begin
     GroupClass := kDocumentWindowClass;
@@ -1219,21 +1219,34 @@ begin
       kFloatingWindowClass:
         Attributes := Attributes and (not (kWindowInWindowMenuAttribute or kWindowCollapseBoxAttribute));
     end;}
+    if CREATESHEETWINDOW = PtrUInt(LCLObject) then
+    begin
+      CREATESHEETWINDOW := 0;
+      GroupClass := kSheetWindowClass;
+    end;
   end;
 
   //DebugLn('TCarbonWindow.CreateWidget ' + DbgS(ParamsToCarbonRect(AParams)));
 
-  NewWindowClass:=kDocumentWindowClass;
+  if GroupClass = kSheetWindowClass then
+  begin
+    NewWindowClass := GroupClass;
+    Attributes := kWindowCompositingAttribute or kWindowStandardHandlerAttribute;
+  end else
+  begin
+    NewWindowClass:=kDocumentWindowClass;
+    Attributes := Attributes or kWindowCompositingAttribute or kWindowStandardHandlerAttribute
+      or kWindowLiveResizeAttribute;
+  end;
+
   if OSError(
     CreateNewWindow(NewWindowClass,
-      Attributes or kWindowCompositingAttribute or kWindowStandardHandlerAttribute
-      or kWindowLiveResizeAttribute, GetCarbonRect(0, 0, 0, 0), AWindow),
+      Attributes, GetCarbonRect(0, 0, 0, 0), AWindow),
     Self, SCreateWidget, 'CreateNewWindow') then
   begin
     DebugLn('Unable to create a window with selected class '+IntToStr(NewWindowClass)+ ', and attributes,'+IntToStr(Attributes)+', fallback to kDocumentWindowClass');
     if OSError(CreateNewWindow(kDocumentWindowClass,
-      Attributes or kWindowCompositingAttribute or kWindowStandardHandlerAttribute
-      or kWindowLiveResizeAttribute, GetCarbonRect(0, 0, 0, 0), AWindow),
+      Attributes, GetCarbonRect(0, 0, 0, 0), AWindow),
     Self, SCreateWidget, 'CreateNewWindow') then RaiseCreateWidgetError(LCLObject);
   end;
 

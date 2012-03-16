@@ -208,8 +208,61 @@ end;
 class procedure TCarbonWSCustomForm.ShowHide(const AWinControl: TWinControl);
 var
   nCmdShow : Integer;
+  ModalForm: TCustomForm;
+  ACurrentWindowClass: WindowClass;
+  AWinToDestroy: WindowRef;
+
+  function HaveModalForms: Boolean;
+  var
+    i: Integer;
+    AForm: TCustomForm;
+  begin
+    Result := False;
+    for i := 0 to Screen.CustomFormZOrderCount - 1 do
+    begin
+      AForm := Screen.CustomFormsZOrdered[i];
+      Result := AForm.Visible and AForm.HandleAllocated and (fsModal in AForm.FormState);
+      if Result then
+      begin
+        ModalForm := AForm;
+        break;
+      end;
+    end;
+  end;
+
+  function ShowNonModalOverModal(const AShowSheet: Boolean): Boolean;
+  var
+    AForm: TCustomForm;
+    OutOwner: WindowRef;
+    B: Boolean;
+  begin
+    Result := False;
+    AForm := TCustomForm(AWinControl);
+    ModalForm := nil;
+    if AWinControl.HandleObjectShouldBeVisible and
+      not (csDesigning in AForm.ComponentState) and
+      not (fsModal in AForm.FormState) and
+      (AForm.FormStyle <> fsMDIChild) and
+      not (AForm.FormStyle in fsAllStayOnTop) and
+      HaveModalForms and
+      (AForm.BorderStyle in [bsDialog, bsSingle, bsSizeable]) and
+      (AForm.PopupParent = nil) and (AForm.PopupMode = pmNone) then
+    begin
+      if AShowSheet then
+      begin
+        TCarbonWindow(ModalForm.Handle).SheetWin := TCarbonWindow(AForm.Handle).Window;
+        OSError(ShowSheetWindow(TCarbonWindow(AForm.Handle).Window, TCarbonWindow(ModalForm.Handle).Window),
+          Self,'ShowHide','ShowSheetWindow');
+      end;
+
+      Result := True;
+    end;
+  end;
 begin
   if not CheckHandle(AWinControl, Self, 'ShowHide') then Exit;
+
+  OSError(GetWindowClass(TCarbonWindow(AWinControl.Handle).Window, ACurrentWindowClass),
+    Self,'ShowHide','GetWindowClass');
 
   if AWinControl.HandleObjectShouldBeVisible then
   begin
@@ -220,11 +273,41 @@ begin
     else
       nCmdShow := SW_SHOW;
     end;
+    if (ACurrentWindowClass <> kSheetWindowClass) and ShowNonModalOverModal(False) then
+    begin
+      CREATESHEETWINDOW := PtrUInt(AWinControl);
+      RecreateWnd(AWinControl);
+      exit;
+    end;
+    if (ACurrentWindowClass = kSheetWindowClass) and
+      not ShowNonModalOverModal(False) then
+    begin
+      RecreateWnd(AWinControl);
+      exit;
+    end;
+
+    if (ACurrentWindowClass = kSheetWindowClass) then
+      ShowNonModalOverModal(True);
+
     TCarbonWindow(AWinControl.Handle).ShowHide(True);
     TCarbonWindow(AWinControl.Handle).Show(nCmdShow);
-  end
-  else
+  end else
+  begin
+    //TODO: check if we are hiding modal form, and it have opened sheet,
+    // first HideSheetWindow, and then modal form, otherwise we have crash..
+    //eg. when modal form is shown + sheet, then quit application via menu.
+    if not (csDesigning in AWinControl.ComponentState) then
+    begin
+      if TCarbonWindow(AWinControl.Handle).SheetWin <> nil then
+      begin
+        HideSheetWindow(TCarbonWindow(AWinControl.Handle).SheetWin);
+        TCarbonWindow(AWinControl.Handle).SheetWin := nil;
+      end else
+      if (ACurrentWindowClass = kSheetWindowClass) then
+        HideSheetWindow(TCarbonWindow(AWinControl.Handle).Window);
+    end;
     TCarbonWindow(AWinControl.Handle).ShowHide(False);
+  end;
 end;
 
 {------------------------------------------------------------------------------
