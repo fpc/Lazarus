@@ -32,7 +32,7 @@ uses
   // interfacebase
   InterfaceBase,
   // LCL
-  Dialogs, Controls, Forms, LMessages,
+  Dialogs, Controls, Forms,
   LCLProc, LCLIntf, LCLType, GraphType, Graphics, Menus, Themes,
   // widgetset
   WSLCLClasses;
