@@ -43,8 +43,8 @@ function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean;
 function TrimFilename(const AFilename: string): string;
 function CleanAndExpandFilename(const Filename: string): string; // empty string returns current directory
 function CleanAndExpandDirectory(const Filename: string): string; // empty string returns current directory
-function TrimAndExpandFilename(const Filename: string): string; // empty string returns empty string
-function TrimAndExpandDirectory(const Filename: string): string; // empty string returns empty string
+function TrimAndExpandFilename(const Filename: string; const BaseDir: string = ''): string; // empty string returns empty string
+function TrimAndExpandDirectory(const Filename: string; const BaseDir: string = ''): string; // empty string returns empty string
 function CreateRelativePath(const Filename, BaseDirectory: string;
                             UsePointDirectory: boolean = false): string;
 function FileIsInPath(const Filename, Path: string): boolean;
@@ -62,7 +62,7 @@ function FindPathInSearchPath(APath: PChar; APathLen: integer;
 function FileExistsUTF8(const Filename: string): boolean;
 function FileAgeUTF8(const FileName: string): Longint;
 function DirectoryExistsUTF8(const Directory: string): Boolean;
-function ExpandFileNameUTF8(const FileName: string): string;
+function ExpandFileNameUTF8(const FileName: string; const BaseDir: string = ''): string;
 function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
 function FindNextUTF8(var Rslt: TSearchRec): Longint;
 procedure FindCloseUTF8(var F: TSearchrec);
@@ -82,7 +82,6 @@ function ForceDirectoriesUTF8(const Dir: string): Boolean;
 // UNC paths
 function IsUNCPath(const {%H-}Path: String): Boolean;
 function ExtractUNCVolume(const {%H-}Path: String): String;
-
 
 type
   TInvalidateFileStateCacheEvent = procedure(const Filename: string);
@@ -684,7 +683,7 @@ end;
  ------------------------------------------------------------------------------}
 function CleanAndExpandFilename(const Filename: string): string;
 begin
-  Result:=ExpandFileNameUTF8(TrimFileName(Filename));
+  Result:=ExpandFileNameUTF8(TrimFileName(SetDirSeparators(Filename)));
 end;
 
 {------------------------------------------------------------------------------
@@ -695,18 +694,18 @@ begin
   Result:=AppendPathDelim(CleanAndExpandFilename(Filename));
 end;
 
-function TrimAndExpandFilename(const Filename: string): string;
+function TrimAndExpandFilename(const Filename: string; const BaseDir: string): string;
 begin
-  Result:=ChompPathDelim(TrimFilename(Filename));
+  Result:=ChompPathDelim(TrimFilename(SetDirSeparators(Filename)));
   if Result='' then exit;
-  Result:=TrimFilename(ExpandFileNameUTF8(Result));
+  Result:=TrimFilename(ExpandFileNameUTF8(Result,BaseDir));
 end;
 
-function TrimAndExpandDirectory(const Filename: string): string;
+function TrimAndExpandDirectory(const Filename: string; const BaseDir: string): string;
 begin
-  Result:=TrimFilename(Filename);
+  Result:=TrimFilename(SetDirSeparators(Filename));
   if Result='' then exit;
-  Result:=TrimFilename(AppendPathDelim(ExpandFileNameUTF8(Result)));
+  Result:=TrimFilename(AppendPathDelim(ExpandFileNameUTF8(Result,BaseDir)));
 end;
 
 function CreateRelativePath(const Filename, BaseDirectory: string;
@@ -1099,9 +1098,46 @@ begin
   Result:=SysUtils.DirectoryExists(UTF8ToSys(Directory));
 end;
 
-function ExpandFileNameUTF8(const FileName: string): string;
+function ExpandFileNameUTF8(const FileName: string; const BaseDir: string): string;
+{$IFDEF Unix}
+  {$DEFINE ExpandTilde}
+{$ENDIF}
+{$IFDEF Windows}
+  {$DEFINE UppercaseDrive}
+{$ENDIF}
+{$IFDEF ExpandTilde}
+var
+  HomeDir: String;
+{$ENDIF}
 begin
-  Result:=SysToUTF8(SysUtils.ExpandFileName(UTF8ToSys(Filename)));
+  Result:=FileName;
+  if Result='' then exit('');
+  Result:=SetDirSeparators(Result);
+  if BaseDir='' then
+  begin
+    // use RTL function, which uses GetCurrentDir
+    Result:=SysToUTF8(SysUtils.ExpandFileName(UTF8ToSys(Result)));
+  end else begin
+    {$IFDEF ExpandTilde}
+    // expand ~
+    if (Result<>'') and (Result[1]='~') then
+    begin
+      HomeDir := TrimAndExpandDirectory(GetEnvironmentVariable('HOME'));
+      Result := HomeDir+copy(Result,2,length(Result));
+    end;
+    {$ENDIF}
+    // trim
+    Result := TrimFilename(Result);
+    {$IFDEF UppercaseDrive}
+    if (Length(Result)>=2) and (Result[1] in ['a'..'z']) and (Result[2]=':') then
+      Result[1]:=chr(ord(Result[1])+ord('A')-ord('a'));
+    {$ENDIF}
+    // ToDo: expand C:a
+
+    // make absolute
+    if not FilenameIsAbsolute(Result) then
+      Result := TrimAndExpandDirectory(BaseDir) + Result;
+  end;
 end;
 
 function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec

@@ -107,8 +107,8 @@ function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean; inline;
 function TrimFilename(const AFilename: string): string; inline;
 function CleanAndExpandFilename(const Filename: string): string; inline;// empty string returns current directory
 function CleanAndExpandDirectory(const Filename: string): string; inline;// empty string returns current directory
-function TrimAndExpandFilename(const Filename: string): string; inline;// empty string returns empty string
-function TrimAndExpandDirectory(const Filename: string): string; inline;// empty string returns empty string
+function TrimAndExpandFilename(const Filename: string; const BaseDir: string = ''): string; inline;// empty string returns empty string
+function TrimAndExpandDirectory(const Filename: string; const BaseDir: string = ''): string; inline;// empty string returns empty string
 function CreateRelativePath(const Filename, BaseDirectory: string;
                             UsePointDirectory: boolean = false): string; inline;
 function FileIsInPath(const Filename, Path: string): boolean; inline;
@@ -525,14 +525,14 @@ begin
   Result:=LazFileUtils.CleanAndExpandDirectory(Filename);
 end;
 
-function TrimAndExpandFilename(const Filename: string): string;
+function TrimAndExpandFilename(const Filename: string; const BaseDir: string): string;
 begin
-  Result:=LazFileUtils.TrimAndExpandFilename(Filename);
+  Result:=LazFileUtils.TrimAndExpandFilename(Filename,BaseDir);
 end;
 
-function TrimAndExpandDirectory(const Filename: string): string;
+function TrimAndExpandDirectory(const Filename: string; const BaseDir: string): string;
 begin
-  Result:=LazFileUtils.TrimAndExpandDirectory(Filename);
+  Result:=LazFileUtils.TrimAndExpandDirectory(Filename,BaseDir);
 end;
 
 function CreateRelativePath(const Filename, BaseDirectory: string;
