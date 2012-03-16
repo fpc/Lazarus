@@ -412,6 +412,7 @@ begin
 
   LoadMiscellaneousOptions;
   BuildLazProfiles:=MiscellaneousOptions.BuildLazProfiles;
+  CurProf:=BuildLazProfiles.Current;
   if BuildModeOverride<>'' then
   begin
     i:=BuildLazProfiles.IndexByName(BuildModeOverride);
@@ -419,15 +420,21 @@ begin
     begin
       debugln(['ERROR: IDE build mode "'+BuildModeOverride+'" not found']);
       debugln;
-      debugln('Available IDE buld modes:');
+      debugln('Available IDE build modes:');
       for i:=0 to BuildLazProfiles.Count-1 do
-        debugln('  ',BuildLazProfiles[i].Name);
+      begin
+        if BuildLazProfiles[i]=CurProf then
+          dbgout('* ')
+        else
+          dbgout('  ');
+        debugln(BuildLazProfiles[i].Name);
+      end;
       debugln;
       exit;
     end;
     CurProf:=BuildLazProfiles[i];
-  end else
-    CurProf:=BuildLazProfiles.Current;
+  end;
+  debugln(['Building Lazarus IDE with profile "',CurProf.Name,'"']);
 
   if (Length(OSOverride) <> 0) then
     CurProf.TargetOS:=OSOverride;

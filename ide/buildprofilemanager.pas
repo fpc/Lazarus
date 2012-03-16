@@ -333,15 +333,10 @@ begin
 end;
 
 function TBuildLazarusProfiles.IndexByName(AName: string): integer;
-var
-  i: Integer;
 begin
-  Result:=-1;
-  for i:=0 to Count-1 do
-    if Items[i].Name=AName then begin
-      Result:=i;
-      break;
-    end;
+  Result:=Count-1;
+  while (Result>=0) and (AnsiCompareText(Items[Result].Name,AName)<>0) do
+    dec(Result);
 end;
 
 function TBuildLazarusProfiles.CreateDefaults: integer;
