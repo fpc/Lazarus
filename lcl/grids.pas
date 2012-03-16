@@ -7550,13 +7550,9 @@ begin
   case Key of
     ^C,^V,^X:;
     ^M, #27: Key:=#0; // key is already handled in KeyDown
-    #8:
-      if EditorIsReadOnly then
-        Key := #0;
     else begin
       AChar := Key;
-      EditorCanProcessKey(AChar);
-      if AChar='' then
+      if not EditorCanAcceptKey(AChar) or EditorIsReadOnly then
         Key := #0
       else
         Key := AChar[1];
@@ -7683,7 +7679,7 @@ procedure TCustomGrid.EditorShowChar(Ch: TUTF8Char);
 begin
   SelectEditor;
   if FEDitor<>nil then begin
-    if EditorCanProcessKey(Ch) and not EditorIsReadOnly then begin
+    if EditorCanAcceptKey(ch) and not EditorIsReadOnly then begin
       EditorShow(true);
       TWSCustomGridClass(WidgetSetClass).SendCharToEditor(Editor, Ch);
     end;
@@ -8972,7 +8968,7 @@ begin
         SelLength := 0;
         SelStart := Length(Text);
       end;
-    VK_DELETE:
+    VK_DELETE, VK_BACK:
       CheckEditingKey;
     VK_UP, VK_DOWN:
       doGridKeyDown;

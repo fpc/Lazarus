@@ -138,23 +138,26 @@ end;
 procedure TDBMemo.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
-  if Key=VK_ESCAPE then begin
-    //cancel out of editing by reset on esc
-    FDataLink.Reset;
-    SelectAll;
-    Key := VK_UNKNOWN;
-  end else
-  if Key in [VK_DELETE, VK_BACK] then begin
-    if not FDataLink.Edit then
-      Key := VK_UNKNOWN;
+  case key of
+    VK_ESCAPE:
+      begin
+       //cancel out of editing by reset on esc
+       FDataLink.Reset;
+       SelectAll;
+       Key := VK_UNKNOWN;
+      end;
+    VK_DELETE, VK_BACK:
+      begin
+        if not FieldIsEditable(FDatalink.Field) or not FDataLink.Edit then
+          Key := VK_UNKNOWN;
+      end;
   end;
 end;
 
 procedure TDBMemo.KeyPress(var Key: Char);
   function CheckValidChar: boolean;
   begin
-    result := FDBMemoLoaded and (FDatalink.Field<>nil) and
-      FDatalink.Field.IsValidChar(Key);
+    result := FDBMemoLoaded and FieldCanAcceptKey(FDatalink.Field, Key);
     if Result then
       FDatalink.Edit
     else
@@ -170,9 +173,8 @@ procedure TDBMemo.KeyPress(var Key: Char);
   end;
 begin
   inherited KeyPress(Key);
-  
   case key of
-    #32..#255: // alphabetic characters
+    ^X, ^V, ^Z, ^I, ^J, ^H, #32..#255: // alphabetic characters
       CheckValidChar;
     ^M: // enter key
       if not CheckEditingKey then
@@ -186,8 +188,6 @@ begin
     // Ctrl+I = Tab
     // Ctrl+J = LineFeed
     // Ctrl+H = Backspace
-    ^X, ^V, ^Z, ^I, ^J, ^H:
-      CheckEditingKey;
     // Don't do anything for special keys that don't change the text
     // Like Ctrl+C for example
   end;

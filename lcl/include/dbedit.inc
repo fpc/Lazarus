@@ -114,15 +114,19 @@ end;
 procedure TDBEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key,Shift);
-  if Key=VK_ESCAPE then begin
-    //cancel out of editing by reset on esc
-    FDataLink.Reset;
-    SelectAll;
-    Key := VK_UNKNOWN;
-  end else
-  if Key in [VK_DELETE, VK_BACK] then begin
-    if not FDataLink.Edit then
-      Key := VK_UNKNOWN;
+  case key of
+    VK_ESCAPE:
+      begin
+       //cancel out of editing by reset on esc
+       FDataLink.Reset;
+       SelectAll;
+       Key := VK_UNKNOWN;
+      end;
+    VK_DELETE, VK_BACK:
+      begin
+        if not FieldIsEditable(FDatalink.Field) or not FDataLink.Edit then
+          Key := VK_UNKNOWN;
+      end;
   end;
 end;
 
@@ -139,11 +143,11 @@ begin
     CharKey := #255;
 
   case CharKey of
-    #8: // special keys
-      if not FDatalink.Edit then
-        UTF8Key:='';
+    //#8: // special keys
+    //  if not FDatalink.Edit then
+    //    UTF8Key:='';
 
-    #32..#255: //standard keys
+    #8, #32..#255: //standard keys
       if not FieldCanAcceptKey(FDataLink.Field, CharKey) or not FDatalink.Edit then
         UTF8Key:='';
   end;//case

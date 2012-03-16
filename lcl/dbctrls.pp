@@ -1328,10 +1328,15 @@ begin
     Link.DataSource.FreeNotification(AControl);
 end;
 
+function FieldIsEditable(Field: TField): boolean;
+begin
+  result := (Field<>nil) and (not Field.Calculated) and
+            (Field.DataType<>ftAutoInc) and (not Field.Lookup)
+end;
+
 function FieldCanAcceptKey(Field: TField; AKey: char): boolean;
 begin
-  Result := (Field<>nil) and Field.IsValidChar(AKey) and
-            (Field.DataType<>ftAutoInc);
+  Result := FieldIsEditable(Field) and Field.IsValidChar(AKey);
 end;
 
 procedure Register;
