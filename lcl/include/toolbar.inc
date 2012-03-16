@@ -90,6 +90,7 @@ begin
   ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents,
     csDoubleClicks, csMenuEvents, csSetCaption, csParentBackground, csOpaque];
   FFlat := True;
+  Height := 32;
   FButtonWidth := 23;
   FButtonHeight := 22;
   Details := ThemeServices.GetElementDetails(ttbSplitButtonDropDownNormal);
