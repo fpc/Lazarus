@@ -84,6 +84,23 @@ type
     function lclFrame: TRect; message 'lclFrame';
     procedure lclSetFrame(const r: TRect); message 'lclSetFrame:';
     function lclClientFrame: TRect; message 'lclClientFrame';
+    // Accessibility
+    //NSAccessibilityCategory = objccategory external (NSObject)
+    //function accessibilityAttributeNames: NSArray; override;
+    function accessibilityAttributeValue(attribute: NSString): id; override;
+    {function accessibilityIsAttributeSettable(attribute: NSString): Boolean; message 'accessibilityIsAttributeSettable:';
+    procedure accessibilitySetValue_forAttribute(value: id; attribute: NSString); message 'accessibilitySetValue:forAttribute:';
+    function accessibilityParameterizedAttributeNames: NSArray; message 'accessibilityParameterizedAttributeNames';
+    function accessibilityAttributeValue_forParameter(attribute: NSString; parameter: id): id; message 'accessibilityAttributeValue:forParameter:';
+    function accessibilityActionNames: NSArray; message 'accessibilityActionNames';
+    function accessibilityActionDescription(action: NSString): NSString; message 'accessibilityActionDescription:';
+    procedure accessibilityPerformAction(action: NSString); message 'accessibilityPerformAction:';
+    function accessibilityIsIgnored: Boolean; message 'accessibilityIsIgnored';
+    function accessibilityHitTest(point: NSPoint): id; message 'accessibilityHitTest:';
+    function accessibilityFocusedUIElement: id; message 'accessibilityFocusedUIElement';
+    function accessibilityIndexOfChild(child: id): NSUInteger; message 'accessibilityIndexOfChild:';
+    function accessibilityArrayAttributeCount(attribute: NSString): NSUInteger; message 'accessibilityArrayAttributeCount:';
+    function accessibilityArrayAttributeValues_index_maxCount(attribute: NSString; index: NSUInteger; maxCount: NSUInteger): NSArray; message 'accessibilityArrayAttributeValues:index:maxCount:';}
   end;
 
 procedure SetViewDefaults(AView: NSView);
@@ -751,6 +768,21 @@ begin
   Result.Top:=0;
   Result.Right:=Round(r.size.width);
   Result.Bottom:=Round(r.size.height);
+end;
+
+function TCocoaCustomControl.accessibilityAttributeValue(attribute: NSString): id;
+var
+  lStrAttr: String;
+begin
+  inherited accessibilityAttributeValue(attribute);
+
+{  lStrAttr := NSStringToString(attribute);
+  DebugLn('[TCocoaCustomControl.accessibilityAttributeValue] attribute='+lStrAttr);
+
+  if attribute = NSAccessibilityChildrenAttribute then
+  begin
+    DebugLn('[TCocoaCustomControl.accessibilityAttributeValue] NSAccessibilityChildrenAttribute');
+  end;}
 end;
 
 procedure SetViewDefaults(AView:NSView);
