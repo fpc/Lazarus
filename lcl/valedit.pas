@@ -68,10 +68,11 @@ type
     procedure AdjustColumnWidths; virtual;
     procedure AdjustRowCount; virtual;
     procedure ColWidthsChanged; override;
+    procedure DefineCellsProperty(Filer: TFiler); override;
     function GetEditText(ACol, ARow: Integer): string; override;
     function GetCells(ACol, ARow: Integer): string; override;
     procedure SetCells(ACol, ARow: Integer; const AValue: string); override;
-    procedure SetEditText(ACol, ARow: Integer; const Value: string); override;
+    procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure TitlesChanged(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
@@ -429,6 +430,10 @@ begin
   inherited;
 end;
 
+procedure TValueListEditor.DefineCellsProperty(Filer: TFiler);
+begin
+end;
+
 function TValueListEditor.GetCells(ACol, ARow: Integer): string;
 var
   I: Integer;
@@ -464,7 +469,7 @@ begin
     Strings[I]:=Line;
 end;
 
-function TValueListEditor.GetEditText(ACol, ARow: Longint): string;
+function TValueListEditor.GetEditText(ACol, ARow: Integer): string;
 begin
   Result:= Cells[ACol, ARow];
   if Assigned(OnGetEditText) then

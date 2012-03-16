@@ -1518,6 +1518,7 @@ type
       procedure AutoAdjustColumn(aCol: Integer); override;
       procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); override;
       procedure DefineProperties(Filer: TFiler); override;
+      procedure DefineCellsProperty(Filer: TFiler); virtual;
       function  DoCompareCells(Acol,ARow,Bcol,BRow: Integer): Integer; override;
       procedure DoCopyToClipboard; override;
       procedure DoCutToClipboard; override;
@@ -9902,6 +9903,12 @@ begin
 end;
 
 procedure TCustomStringGrid.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+  DefineCellsProperty(Filer);
+end;
+
+procedure TCustomStringGrid.DefineCellsProperty(Filer: TFiler);
   function NeedCells: boolean;
   var
     i,j: integer;
@@ -9927,7 +9934,6 @@ procedure TCustomStringGrid.DefineProperties(Filer: TFiler);
           end;
   end;
 begin
-  inherited DefineProperties(Filer);
   with Filer do begin
     DefineProperty('Cells',  @ReadCells,  @WriteCells,  NeedCells);
   end;
