@@ -166,6 +166,7 @@ var
 begin
   while (DoBreakRun = False) do
   begin
+    if XPending(FDisplay) <= 0 then AppProcessInvalidates();
     AppWaitMessage();
     AppProcessMessage();
 
@@ -289,7 +290,11 @@ begin
   while True do
   begin
     // There are no more X messages to process
-    if XPending(FDisplay) <= 0 then Exit;
+    if XPending(FDisplay) <= 0 then
+    begin
+      AppProcessInvalidates();
+      Exit;
+    end;
     AppProcessMessage();
   end;
 end;
@@ -395,8 +400,6 @@ begin
     else
       DebugLn('LCL-CustomDrawn-X11: Unhandled X11 event received: ', GetXEventName(XEvent._type));
     end;
-
-    AppProcessInvalidates();
   end;
 end;
 
@@ -466,6 +469,7 @@ var
   rfds: baseunix.TFDSet;
   xconnnum, selectresult: integer;
   IsFirstTimeout: Boolean;
+  AnyTimerProcessed: Boolean = False;
   lTimer: TCDTimer;
   lTimeoutInterval: Integer; // miliseconds
   i: Integer;
@@ -512,10 +516,11 @@ begin
       if lTimer.NativeHandle >= lTimer.Interval then
       begin
         lTimer.TimerFunc();
-        AppProcessInvalidates();
+        AnyTimerProcessed := True;
         lTimer.NativeHandle := 0;
       end;
     end;
+    if AnyTimerProcessed then AppProcessInvalidates();
 
     if selectresult <> 0 then  // We got a X event or the timeout happened
       Exit
