@@ -1181,7 +1181,7 @@ begin
         // in FPC sources
         IsInFPCSrc:=true;
         BaseDir:=GetCurrentDirUTF8;
-        FPDocPaths:=EnvironmentOptions.FPDocPaths;
+        FPDocPaths:=EnvironmentOptions.GetParsedFPDocPaths;
         FPDocPackageName:='fcl';
         NewPath:=CreateRelativePath(SrcFilename,UnitSet.FPCSourceDirectory);
         if copy(NewPath,1,4)='rtl'+PathDelim then

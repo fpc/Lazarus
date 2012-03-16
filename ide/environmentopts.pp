@@ -314,9 +314,6 @@ type
     FAskForFilenameOnNewFile: boolean;
     FLowercaseDefaultFilename: boolean;
 
-    // fpdoc
-    FFPDocPaths: string;
-
     // language ID (see LazarusTranslations in translations.pas)
     fLanguageID: string;
 
@@ -329,6 +326,7 @@ type
     function GetCompilerMessagesFilename: string;
     function GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
     function GetFPCSourceDirectory: string;
+    function GetFPDocPaths: string;
     function GetLazarusDirectory: string;
     function GetMakeFilename: string;
     function GetTestBuildDirectory: string;
@@ -337,6 +335,7 @@ type
     procedure SetDebuggerEventLogColors(AIndex: TDBGEventType;
       const AValue: TDebuggerEventLogColor);
     procedure SetDebuggerSearchPath(const AValue: string);
+    procedure SetFPDocPaths(AValue: string);
     procedure SetMakeFilename(const AValue: string);
     procedure SetDebuggerFilename(const AValue: string);
     procedure SetFPCSourceDirectory(const AValue: string);
@@ -366,6 +365,7 @@ type
     function GetParsedFPCSourceDirectory: string;
     function GetParsedMakeFilename: string;
     function GetParsedCompilerMessagesFilename: string;
+    function GetParsedFPDocPaths: string;
     function GetParsedValue(o: TEnvOptParseType): string;
 
     // macro functions
@@ -575,7 +575,7 @@ type
                                                write FLowercaseDefaultFilename;
 
     // fpdoc
-    property FPDocPaths: string read FFPDocPaths write FFPDocPaths;
+    property FPDocPaths: string read GetFPDocPaths write SetFPDocPaths;
 
     // language
     property LanguageID: string read fLanguageID write fLanguageID;
@@ -613,7 +613,6 @@ function SimpleDirectoryCheck(const OldDir, NewDir,
   NotFoundErrMsg: string; out StopChecking: boolean): boolean;
 
 const
-  DefaultFPDocPath = '$(LazarusDir)/docs/xml/lcl';
   DefaultMsgViewFocus = {$IFDEF Windows}true{$ELSE}false{$ENDIF};
   MaxComboBoxCount: integer = 20;
   EnvOptsConfFileName = 'environmentoptions.xml';
@@ -875,9 +874,6 @@ begin
   //debug
   (* TODO: maybe revert relations. Create this in Debugger, and call environmentoptions for the configstore only? *)
   FDebuggerConfig := TDebuggerConfigStore.Create;
-
-  // FPdoc
-  FFPDocPaths:=SetDirSeparators(DefaultFPDocPath);
 end;
 
 destructor TEnvironmentOptions.Destroy;
@@ -1286,9 +1282,9 @@ begin
         Path+'LowercaseDefaultFilename/Value',true);
 
       // fpdoc
-      FFPDocPaths := XMLConfig.GetValue(Path+'LazDoc/Paths', DefaultFPDocPath);
+      FPDocPaths := XMLConfig.GetValue(Path+'LazDoc/Paths','');
       if FileVersion<=105 then
-        FFPDocPaths:=LineBreaksToDelimiter(FFPDocPaths,';');
+        FPDocPaths:=LineBreaksToDelimiter(FPDocPaths,';');
 
       // 'new items'
       FNewUnitTemplate:=XMLConfig.GetValue(Path+'New/UnitTemplate/Value',FileDescNamePascalUnit);
@@ -1597,7 +1593,7 @@ begin
                                FLowercaseDefaultFilename,true);
 
       // fpdoc
-      XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',FFPDocPaths,DefaultFPDocPath);
+      XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',FPDocPaths,'');
 
       // 'new items'
       XMLConfig.SetDeleteValue(Path+'New/UnitTemplate/Value',FNewUnitTemplate,FileDescNamePascalUnit);
@@ -1695,6 +1691,11 @@ end;
 function TEnvironmentOptions.GetParsedCompilerMessagesFilename: string;
 begin
   Result:=GetParsedValue(eopCompilerMessagesFilename);
+end;
+
+function TEnvironmentOptions.GetParsedFPDocPaths: string;
+begin
+  Result:=GetParsedValue(eopFPDocPaths);
 end;
 
 function TEnvironmentOptions.GetParsedValue(o: TEnvOptParseType): string;
@@ -1970,6 +1971,11 @@ begin
   Result:=FParseValues[eopFPCSourceDirectory].UnparsedValue;
 end;
 
+function TEnvironmentOptions.GetFPDocPaths: string;
+begin
+  Result:=FParseValues[eopFPDocPaths].UnparsedValue;
+end;
+
 function TEnvironmentOptions.GetLazarusDirectory: string;
 begin
   Result:=FParseValues[eopLazarusDirectory].UnparsedValue;
@@ -1997,6 +2003,14 @@ begin
   NewValue:=TrimSearchPath(AValue,'');
   if FDebuggerSearchPath=NewValue then exit;
   FDebuggerSearchPath:=NewValue;
+end;
+
+procedure TEnvironmentOptions.SetFPDocPaths(AValue: string);
+var
+  NewValue: String;
+begin
+  NewValue:=TrimSearchPath(AValue,'');
+  SetParseValue(eopFPDocPaths,NewValue);
 end;
 
 procedure TEnvironmentOptions.SetMakeFilename(const AValue: string);
