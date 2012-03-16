@@ -215,6 +215,11 @@ type
     class procedure SetColor(const AWinControl: TWinControl); override;
 
     class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
+
+    class procedure Cut(const ACustomEdit: TCustomEdit); override;
+    class procedure Copy(const ACustomEdit: TCustomEdit); override;
+    class procedure Paste(const ACustomEdit: TCustomEdit); override;
+    class procedure Undo(const ACustomEdit: TCustomEdit); override;
   end;
 
   { TGtk2WSCustomMemo }
@@ -1298,6 +1303,79 @@ begin
     taCenter: Alignment := 0.5;
   end;
   gtk_entry_set_alignment(Entry, Alignment);
+end;
+
+class procedure TGtk2WSCustomEdit.Cut(const ACustomEdit: TCustomEdit);
+var
+  ATextView: PGtkTextView;
+  ABuffer: PGtkTextBuffer;
+  AStart, AStop: PGtkTextIter;
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'Cut') then
+    Exit;
+
+  if ACustomEdit.FCompStyle = csMemo then
+  begin
+    ATextView := GTK_TEXT_VIEW(GetWidgetInfo(PGtkWidget(ACustomEdit.Handle))^.CoreWidget);
+    ABuffer := gtk_text_view_get_buffer(ATextView);
+    if ABuffer <> nil then
+    begin
+      AStart := nil;
+      AStop := nil;
+      if gtk_text_buffer_get_selection_bounds(ABuffer, AStart, AStop) then
+        gtk_text_buffer_cut_clipboard(ABuffer, gtk_clipboard_get(GDK_SELECTION_CLIPBOARD), not ACustomEdit.ReadOnly);
+    end;
+  end else
+    gtk_editable_cut_clipboard(PGtkEditable(ACustomEdit.Handle));
+end;
+
+class procedure TGtk2WSCustomEdit.Copy(const ACustomEdit: TCustomEdit);
+var
+  ATextView: PGtkTextView;
+  ABuffer: PGtkTextBuffer;
+  AStart, AStop: PGtkTextIter;
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'Copy') then
+    Exit;
+  if ACustomEdit.FCompStyle = csMemo then
+  begin
+    ATextView := GTK_TEXT_VIEW(GetWidgetInfo(PGtkWidget(ACustomEdit.Handle))^.CoreWidget);
+    ABuffer := gtk_text_view_get_buffer(ATextView);
+    if ABuffer <> nil then
+    begin
+      AStart := nil;
+      AStop := nil;
+      if gtk_text_buffer_get_selection_bounds(ABuffer, AStart, AStop) then
+        gtk_text_buffer_copy_clipboard(ABuffer, gtk_clipboard_get(GDK_SELECTION_CLIPBOARD));
+    end;
+  end else
+    gtk_editable_copy_clipboard(PGtkEditable(ACustomEdit.Handle));
+end;
+
+class procedure TGtk2WSCustomEdit.Paste(const ACustomEdit: TCustomEdit);
+var
+  ATextView: PGtkTextView;
+  ABuffer: PGtkTextBuffer;
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'Paste') then
+    Exit;
+  if ACustomEdit.FCompStyle = csMemo then
+  begin
+    ATextView := GTK_TEXT_VIEW(GetWidgetInfo(PGtkWidget(ACustomEdit.Handle))^.CoreWidget);
+    ABuffer := gtk_text_view_get_buffer(ATextView);
+    if ABuffer <> nil then
+      gtk_text_buffer_paste_clipboard(ABuffer,
+        gtk_clipboard_get(GDK_SELECTION_CLIPBOARD), nil, not ACustomEdit.ReadOnly);
+  end else
+    gtk_editable_paste_clipboard(PGtkEditable(ACustomEdit.Handle));
+end;
+
+class procedure TGtk2WSCustomEdit.Undo(const ACustomEdit: TCustomEdit);
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'Undo') then
+    Exit;
+  //TODO: I cannot find anything usefull in gtk2 to do this, seem
+  //that we have to make our own implementation.
 end;
 
 class procedure TGtk2WSCustomComboBox.ReCreateCombo(
