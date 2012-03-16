@@ -1122,6 +1122,7 @@ begin
     // expand ~
     if (Result<>'') and (Result[1]='~') then
     begin
+      {$Hint use GetEnvironmentVariableUTF8}
       HomeDir := TrimAndExpandDirectory(GetEnvironmentVariable('HOME'));
       Result := HomeDir+copy(Result,2,length(Result));
     end;
