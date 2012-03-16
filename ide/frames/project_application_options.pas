@@ -7,8 +7,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, Buttons, ComCtrls, ExtDlgs, Math, LCLType, IDEOptionsIntf,
-  Project, LazarusIDEStrConsts, EnvironmentOpts, ApplicationBundle, ProjectIcon,
-  W32Manifest, CompilerOptions;
+  LazIDEIntf, Project, LazarusIDEStrConsts, EnvironmentOpts, ApplicationBundle,
+  ProjectIcon, W32Manifest, CompilerOptions;
 
 type
 
@@ -68,7 +68,7 @@ begin
     Exit;
   end;
   if AProject.IsVirtual then
-    TargetExeName := EnvironmentOptions.GetParsedTestBuildDirectory +
+    TargetExeName := LazarusIDE.GetTestBuildDirectory +
       ExtractFilename(AProject.MainUnitInfo.Filename)
   else
     TargetExeName := AProject.CompilerOptions.CreateTargetFilename(

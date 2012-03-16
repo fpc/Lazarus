@@ -37,7 +37,7 @@ uses
   KeywordFuncLists, CodeToolManager, FileProcs, DefineTemplates,
   CodeToolsStructs,
   // IDEIntf
-  ProjectIntf, MacroIntf, IDEExternToolIntf,
+  ProjectIntf, MacroIntf, IDEExternToolIntf, LazIDEIntf,
   // IDE
   Project, PackageSystem, ExtToolEditDlg, IDEProcs, EnvironmentOpts,
   LazarusIDEStrConsts, PackageDefs, CompilerOptions, TransferMacros, LazConf;
@@ -302,7 +302,7 @@ begin
   TestGroupbox.Caption:=dlgCCOTestCompilingEmptyFile;
   
   // get Test directory
-  TestDir:=AppendPathDelim(EnvironmentOptions.TestBuildDirectory);
+  TestDir:=AppendPathDelim(LazarusIDE.GetTestBuildDirectory);
   if not DirPathExists(TestDir) then begin
     MessageDlg(lisCCOInvalidTestDir,
       Format(lisCCOCheckTestDir,[#13]),

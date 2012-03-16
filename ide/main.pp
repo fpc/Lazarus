@@ -10956,7 +10956,7 @@ begin
 
   // update all lrs files
   if sfSaveToTestDir in Flags then
-    MainBuildBoss.UpdateProjectAutomaticFiles(EnvironmentOptions.TestBuildDirectory)
+    MainBuildBoss.UpdateProjectAutomaticFiles(EnvironmentOptions.GetParsedTestBuildDirectory)
   else
     MainBuildBoss.UpdateProjectAutomaticFiles('');
 
@@ -11729,11 +11729,14 @@ begin
 end;
 
 function TMainIDE.DoSaveProjectToTestDirectory(Flags: TSaveFlags): TModalResult;
+var
+  TestDir: String;
 begin
   Result:=mrCancel;
-  if (EnvironmentOptions.TestBuildDirectory='')
-  or (not DirPathExists(EnvironmentOptions.TestBuildDirectory)) then begin
-    if (EnvironmentOptions.TestBuildDirectory<>'') then begin
+  TestDir:=GetTestBuildDirectory;
+  if (TestDir='')
+  or (not DirPathExists(TestDir)) then begin
+    if (TestDir<>'') then begin
       MessageDlg(Format(lisTheTestDirectoryCouldNotBeFoundSeeIDEOpt, [
         #13, '"', EnvironmentOptions.TestBuildDirectory, '"', #13]), mtError, [
         mbCancel], 0);
@@ -12006,7 +12009,7 @@ begin
     // create target output directory
     TargetExeName := Project1.CompilerOptions.CreateTargetFilename(Project1.MainFilename);
     if Project1.IsVirtual and (not FilenameIsAbsolute(TargetExeName)) then
-      TargetExeName := EnvironmentOptions.GetParsedTestBuildDirectory + TargetExeName;
+      TargetExeName := GetTestBuildDirectory + TargetExeName;
     TargetExeDirectory:=ExtractFilePath(TargetExeName);
     if (FilenameIsAbsolute(TargetExeDirectory))
     and (not DirPathExistsCached(TargetExeDirectory)) then begin

@@ -281,7 +281,6 @@ type
     FDebuggerShowStopMessage: Boolean;
     FShowCompileDialog: Boolean;       // show dialog during compile
     FAutoCloseCompileDialog: Boolean;  // auto close dialog after succesed compile
-    FTestBuildDirectory: string;
     FTestBuildDirHistory: TStringList;
     FDebuggerEventLogClearOnRun: Boolean;
     FDebuggerEventLogCheckLineLimit: Boolean;
@@ -334,6 +333,7 @@ type
     function GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
     function GetFPCSourceDirectory: string;
     function GetLazarusDirectory: string;
+    function GetTestBuildDirectory: string;
     procedure SetCompilerFilename(const AValue: string);
     procedure SetDebuggerEventLogColors(AIndex: TDBGEventType;
       const AValue: TDebuggerEventLogColor);
@@ -504,7 +504,7 @@ type
                                         write FShowCompileDialog;
     property AutoCloseCompileDialog: boolean read  FAutoCloseCompileDialog
                                              write FAutoCloseCompileDialog;
-    property TestBuildDirectory: string read FTestBuildDirectory
+    property TestBuildDirectory: string read GetTestBuildDirectory
                                         write SetTestBuildDirectory;
     property TestBuildDirHistory: TStringList read FTestBuildDirHistory
                                               write FTestBuildDirHistory;
@@ -1148,7 +1148,7 @@ begin
           GetDefaultMakeFilenames(FMakeFileHistory);
 
         TestBuildDirectory:=XMLConfig.GetValue(
-           Path+'TestBuildDirectory/Value',FTestBuildDirectory);
+           Path+'TestBuildDirectory/Value',TestBuildDirectory);
         LoadRecentList(XMLConfig,FTestBuildDirHistory,
            Path+'TestBuildDirectory/History/');
         if FTestBuildDirHistory.Count=0 then
@@ -1486,7 +1486,7 @@ begin
         SaveRecentList(XMLConfig,FMakeFileHistory,
            Path+'MakeFilename/History/');
         XMLConfig.SetValue(
-           Path+'TestBuildDirectory/Value',FTestBuildDirectory);
+           Path+'TestBuildDirectory/Value',TestBuildDirectory);
         SaveRecentList(XMLConfig,FTestBuildDirHistory,
            Path+'TestBuildDirectory/History/');
         XMLConfig.SetValue(
@@ -1682,7 +1682,7 @@ end;
 
 function TEnvironmentOptions.GetParsedTestBuildDirectory: string;
 begin
-  Result:=AppendPathDelim(TestBuildDirectory);
+  Result:=GetParsedValue(eopTestBuildDirectory);
 end;
 
 function TEnvironmentOptions.GetParsedFPCSourceDirectory: string;
@@ -1903,8 +1903,8 @@ end;
 
 procedure TEnvironmentOptions.SetTestBuildDirectory(const AValue: string);
 begin
-  if FTestBuildDirectory=AValue then exit;
-  FTestBuildDirectory:=AppendPathDelim(TrimFilename(AValue));
+  if TestBuildDirectory=AValue then exit;
+  SetParseValue(eopTestBuildDirectory,AValue);
 end;
 
 procedure TEnvironmentOptions.SetLazarusDirectory(const AValue: string);
@@ -1951,6 +1951,11 @@ end;
 function TEnvironmentOptions.GetLazarusDirectory: string;
 begin
   Result:=FParseValues[eopLazarusDirectory].UnparsedValue;
+end;
+
+function TEnvironmentOptions.GetTestBuildDirectory: string;
+begin
+  Result:=FParseValues[eopTestBuildDirectory].UnparsedValue;
 end;
 
 procedure TEnvironmentOptions.SetDebuggerEventLogColors(AIndex: TDBGEventType; const AValue: TDebuggerEventLogColor);
