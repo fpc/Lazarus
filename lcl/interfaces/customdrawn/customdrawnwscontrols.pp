@@ -35,7 +35,7 @@ uses
   lazcanvas, lazregions,
   // Widgetset
   InterfaceBase, WSProc, WSControls, WSLCLClasses, customdrawnint,
-  customdrawnproc, cocoaprivate;
+  customdrawnproc;
 
 type
 
@@ -149,23 +149,34 @@ type
 
 implementation
 
-uses customdrawnwsforms;
+uses
+  {$ifdef CD_Cocoa}
+  cocoaprivate,
+  {$endif}
+  customdrawnwsforms;
 
 { TCDWSLazAccessibleObject }
 
 class function TCDWSLazAccessibleObject.CreateHandle(
   const AObject: TLazAccessibleObject): HWND;
 begin
+  Result := 0;
+  {$ifdef CD_Cocoa}
   Result := HWND(TCocoaAccessibleObject.alloc.init);
+  {$endif}
 end;
 
 class procedure TCDWSLazAccessibleObject.DestroyHandle(
   const AObject: TLazAccessibleObject);
+{$ifdef CD_Cocoa}
 var
   lAccessibleHandle: TCocoaAccessibleObject;
+{$endif}
 begin
+  {$ifdef CD_Cocoa}
   lAccessibleHandle := TCocoaAccessibleObject(AObject.Handle);
   lAccessibleHandle.release;
+  {$endif}
 end;
 
 class procedure TCDWSLazAccessibleObject.SetAccessibleDescription(
