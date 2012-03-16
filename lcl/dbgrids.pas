@@ -130,6 +130,7 @@ type
   private
     FList: TFPList;
     FGrid: TCustomDbGrid;
+    FDataset: TDataset;
     function GetCount: integer;
     function GetCurrentRowSelected: boolean;
     function GetItem(AIndex: Integer): TBookmark;
@@ -3839,7 +3840,6 @@ procedure TBookmarkList.SetCurrentRowSelected(const AValue: boolean);
 var
   Bookmark: TBookmark;
   Index: Integer;
-  ADataset: TDataset;
 begin
   CheckActive;
 
@@ -3847,10 +3847,12 @@ begin
   if Bookmark = nil then
     Exit;
 
+  FDataset := FGrid.Datasource.Dataset;
+
   if Find(Bookmark, Index) then begin
-    FGrid.Datasource.Dataset.FreeBookmark(Bookmark);
+    FDataset.FreeBookmark(Bookmark);
     if not AValue then begin
-      FGrid.Datasource.Dataset.FreeBookmark(Items[Index]);
+      FDataset.FreeBookmark(Items[Index]);
       FList.Delete(Index);
       FGrid.Invalidate;
     end;
@@ -3887,7 +3889,7 @@ var
   i: Integer;
 begin
   for i:=0 to FList.Count-1 do
-    FGrid.Datasource.Dataset.FreeBookmark(Items[i]);
+    FDataset.FreeBookmark(Items[i]);
   FList.Clear;
   FGrid.Invalidate;
 end;
@@ -3895,12 +3897,10 @@ end;
 procedure TBookmarkList.Delete;
 var
   i: Integer;
-  ds: TDataSet;
 begin
-  ds := FGrid.Datasource.Dataset;
   for i := 0 to FList.Count - 1 do begin
-    ds.GotoBookmark(Items[i]);
-    ds.Delete;
+    FDataset.GotoBookmark(Items[i]);
+    FDataset.Delete;
     FList.Delete(i);
   end;
 end;
@@ -3909,17 +3909,15 @@ function TBookmarkList.Find(const Item: TBookmark; var AIndex: Integer): boolean
 var
   L, R, I: Integer;
   CompareRes: PtrInt;
-  ds: TDataSet;
 begin
   // From TStringList.Find() Use binary search.
   Result := False;
   L := 0;
   R := FList.Count - 1;
-  ds := FGrid.Datasource.Dataset;
   while (L <= R) do
   begin
     I := L + (R - L) div 2;
-    CompareRes := ds.CompareBookmarks(Item, TBookmark(FList[I]));
+    CompareRes := FDataset.CompareBookmarks(Item, TBookmark(FList[I]));
     if (CompareRes > 0) then
       L := I + 1
     else
@@ -3944,13 +3942,11 @@ end;
 
 function TBookmarkList.Refresh: boolean;
 var
-  ds: TDataset;
   i: LongInt;
 begin
   Result := False;
-  ds := FGrid.Datasource.Dataset;
   for i := FList.Count - 1 downto 0 do
-    if not ds.BookmarkValid(TBookMark(Items[i])) then begin
+    if not FDataset.BookmarkValid(TBookMark(Items[i])) then begin
       Result := True;
       Flist.Delete(i);
     end;
