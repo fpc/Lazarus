@@ -1686,7 +1686,7 @@ end;
 function TBuildManager.MacroFuncFPCMsgFile(const Param: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
-  Result:=EnvironmentOptions.CompilerMessagesFilename;
+  Result:=EnvironmentOptions.GetParsedCompilerMessagesFilename;
 end;
 
 function TBuildManager.MacroFuncMake(const Param: string; const Data: PtrInt;

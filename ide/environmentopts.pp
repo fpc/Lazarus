@@ -264,7 +264,6 @@ type
     FCompilerFileHistory: TStringList;
     FFPCSourceDirHistory: TStringList;
     FMakeFileHistory: TStringList;
-    FCompilerMessagesFilename: string;
     FCompilerMessagesFileHistory: TStringList;
 
    // TODO: store per debuggerclass options
@@ -327,12 +326,14 @@ type
     FFileDialogFilter: string;
 
     function GetCompilerFilename: string;
+    function GetCompilerMessagesFilename: string;
     function GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
     function GetFPCSourceDirectory: string;
     function GetLazarusDirectory: string;
     function GetMakeFilename: string;
     function GetTestBuildDirectory: string;
     procedure SetCompilerFilename(const AValue: string);
+    procedure SetCompilerMessagesFilename(AValue: string);
     procedure SetDebuggerEventLogColors(AIndex: TDBGEventType;
       const AValue: TDebuggerEventLogColor);
     procedure SetDebuggerSearchPath(const AValue: string);
@@ -364,6 +365,7 @@ type
     function GetParsedCompilerFilename: string;
     function GetParsedFPCSourceDirectory: string;
     function GetParsedMakeFilename: string;
+    function GetParsedCompilerMessagesFilename: string;
     function GetParsedValue(o: TEnvOptParseType): string;
 
     // macro functions
@@ -520,8 +522,8 @@ type
     property DebuggerEventLogUseColors: Boolean read FDebuggerEventLogUseColors write FDebuggerEventLogUseColors;
     property DebuggerEventLogColors[AIndex: TDBGEventType]: TDebuggerEventLogColor read GetDebuggerEventLogColors write SetDebuggerEventLogColors;
 
-    property CompilerMessagesFilename: string read FCompilerMessagesFilename
-                                              write FCompilerMessagesFilename;
+    property CompilerMessagesFilename: string read GetCompilerMessagesFilename
+                                              write SetCompilerMessagesFilename;
     property CompilerMessagesFileHistory: TStringList read FCompilerMessagesFileHistory
                                                      write FCompilerMessagesFileHistory;
 
@@ -1152,7 +1154,7 @@ begin
         if FTestBuildDirHistory.Count=0 then
           GetDefaultTestBuildDirs(FTestBuildDirHistory);
         CompilerMessagesFilename:=XMLConfig.GetValue(
-           Path+'CompilerMessagesFilename/Value',FCompilerMessagesFilename);
+           Path+'CompilerMessagesFilename/Value',CompilerMessagesFilename);
         LoadRecentList(XMLConfig, FCompilerMessagesFileHistory,
            Path+'CompilerMessagesFilename/History/');
 
@@ -1485,7 +1487,7 @@ begin
         SaveRecentList(XMLConfig,FTestBuildDirHistory,
            Path+'TestBuildDirectory/History/');
         XMLConfig.SetDeleteValue(
-           Path+'CompilerMessagesFilename/Value',FCompilerMessagesFilename,'');
+           Path+'CompilerMessagesFilename/Value',CompilerMessagesFilename,'');
         SaveRecentList(XMLConfig,FCompilerMessagesFileHistory,
            Path+'CompilerMessagesFilename/History/');
 
@@ -1688,6 +1690,11 @@ end;
 function TEnvironmentOptions.GetParsedMakeFilename: string;
 begin
   Result:=GetParsedValue(eopMakeFilename);
+end;
+
+function TEnvironmentOptions.GetParsedCompilerMessagesFilename: string;
+begin
+  Result:=GetParsedValue(eopCompilerMessagesFilename);
 end;
 
 function TEnvironmentOptions.GetParsedValue(o: TEnvOptParseType): string;
@@ -1935,6 +1942,14 @@ begin
   SetParseValue(eopCompilerFilename,NewValue);
 end;
 
+procedure TEnvironmentOptions.SetCompilerMessagesFilename(AValue: string);
+var
+  NewValue: String;
+begin
+  NewValue:=TrimFilename(AValue);
+  SetParseValue(eopCompilerMessagesFilename,NewValue);
+end;
+
 function TEnvironmentOptions.GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
 begin
   Result := FDebuggerEventLogColors[AIndex];
@@ -1943,6 +1958,11 @@ end;
 function TEnvironmentOptions.GetCompilerFilename: string;
 begin
   Result:=FParseValues[eopCompilerFilename].UnparsedValue;
+end;
+
+function TEnvironmentOptions.GetCompilerMessagesFilename: string;
+begin
+  Result:=FParseValues[eopCompilerMessagesFilename].UnparsedValue;
 end;
 
 function TEnvironmentOptions.GetFPCSourceDirectory: string;

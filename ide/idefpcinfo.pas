@@ -231,7 +231,7 @@ begin
   sl.Add('LazarusDirectory='+EnvironmentOptions.LazarusDirectory);
   sl.Add('CompilerFilename='+EnvironmentOptions.CompilerFilename);
   sl.Add('ResolvedCompilerFilename='+EnvironmentOptions.GetParsedCompilerFilename);
-  sl.Add('CompilerMessagesFilename='+EnvironmentOptions.CompilerMessagesFilename);
+  sl.Add('CompilerMessagesFilename='+EnvironmentOptions.GetParsedCompilerMessagesFilename);
   sl.Add('');
 end;
 

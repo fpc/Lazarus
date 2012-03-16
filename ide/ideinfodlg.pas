@@ -224,7 +224,7 @@ begin
   sl.Add('LazarusDirectory='+EnvironmentOptions.LazarusDirectory);
   sl.Add('CompilerFilename='+EnvironmentOptions.CompilerFilename);
   sl.Add('Real CompilerFilename='+EnvironmentOptions.GetParsedCompilerFilename);
-  sl.Add('CompilerMessagesFilename='+EnvironmentOptions.CompilerMessagesFilename);
+  sl.Add('CompilerMessagesFilename='+EnvironmentOptions.GetParsedCompilerMessagesFilename);
   sl.Add('FPC source directory='+EnvironmentOptions.FPCSourceDirectory);
   sl.Add('Real FPC source directory='+EnvironmentOptions.GetParsedFPCSourceDirectory);
   sl.Add('Test directory='+EnvironmentOptions.GetParsedTestBuildDirectory);
