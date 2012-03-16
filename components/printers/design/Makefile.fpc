@@ -2,15 +2,15 @@
 #
 #   Makefile.fpc for printers4lazide 0.0
 #
-#   This file was generated on 15-3-12
+#   This file was generated on 16-3-12
 
 [package]
 name=printers4lazide
 version=0.0
 
 [compiler]
-unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+unitdir=../lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
 options= -MObjFPC -Scgi -O1 -g -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]

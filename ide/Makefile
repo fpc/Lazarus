@@ -324,9 +324,9 @@ LAZARUS_OPT=$(LAZARUS_LIBPATHS)
 BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
   -Fu../components/rtticontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/printers/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
-  -Fu../components/printers/design/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/printers/design/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/tdbf/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
-  -Fu../components/turbopower_ipro/units/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/turbopower_ipro/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/turbopower_ipro/design/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/fpcunit/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/fpcunit/ide/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
@@ -336,12 +336,12 @@ BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
   -Fu../components/leakview/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/memds/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/tachart/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
-  -Fu../components/todolist/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/jcf2/IdePlugin/lazarus/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/chmhelp/packages/help/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/chmhelp/packages/idehelp/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/instantfpc/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/externhelp/lib/$(CPU_TARGET)-$(OS_TARGET)
+  -Fu../components/todolist/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fu../components/jcf2/IdePlugin/lazarus/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fu../components/chmhelp/packages/help/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fu../components/chmhelp/packages/idehelp/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fu../components/instantfpc/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fu../components/externhelp/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 LAZBUILD_OPT=$(LAZARUS_LIBPATHS)
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
 LAZARUS_OPT+= -WG

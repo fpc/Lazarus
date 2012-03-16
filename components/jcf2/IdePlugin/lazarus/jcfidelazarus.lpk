@@ -5,12 +5,12 @@
     <Name Value="jcfidelazarus"/>
     <AddToProjectUsesSection Value="True"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <IncludeFiles Value="..\..\Include;..\..\Ui\Settings"/>
         <OtherUnitFiles Value="..\..;..\..\Parse;..\..\Parse\PreProcessor;..\..\Parse\UI;..\..\Process;..\..\Process\Align;..\..\Process\Capitalisation;..\..\Process\Indent;..\..\Process\Info;..\..\Process\Obfuscate;..\..\Process\Onceoffs;..\..\Process\Returns;..\..\Process\Spacing;..\..\Process\Transform;..\..\Process\Warnings;..\..\ReadWrite;..\..\Settings;..\..\Settings\Streams;..\..\Ui;..\..\Ui\Settings;..\..\Utils;..\..\Utils\DragDrop"/>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>
       <Parsing>
         <SyntaxOptions>
