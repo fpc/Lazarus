@@ -293,9 +293,6 @@ begin
     TCarbonWindow(AWinControl.Handle).Show(nCmdShow);
   end else
   begin
-    //TODO: check if we are hiding modal form, and it have opened sheet,
-    // first HideSheetWindow, and then modal form, otherwise we have crash..
-    //eg. when modal form is shown + sheet, then quit application via menu.
     if not (csDesigning in AWinControl.ComponentState) then
     begin
       if TCarbonWindow(AWinControl.Handle).SheetWin <> nil then
