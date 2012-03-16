@@ -244,68 +244,9 @@ end;
 
 { TGtk2WidgetSet }
 
-{------------------------------------------------------------------------------
-  procedure TGtk2WidgetSet.AppendText(Sender: TObject; Str: PChar);
- ------------------------------------------------------------------------------}
-procedure TGtk2WidgetSet.AppendText(Sender: TObject; Str: PChar);
-var
-  Widget : PGtkWidget;
-  aTextBuffer : PGtkTextBuffer;
-  aTextIter1  : TGtkTextIter;
-  aTextIter2  : TGtkTextIter;
-begin
-  if Str=nil then exit;
-
-  if (Sender is TWinControl) then begin
-    case TWinControl(Sender).fCompStyle of
-      csMemo:
-      begin
-       Widget:= GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.CoreWidget;
-        aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
-        gtk_text_buffer_begin_user_action(aTextBuffer);
-        gtk_text_buffer_get_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
-        gtk_text_buffer_insert(aTextBuffer, @aTextIter2, str, StrLen(str));
-        gtk_text_buffer_end_user_action(aTextBuffer);
-      end;
-      {else
-        inherited AppendText(Sender, Str);}
-    end;
-  end;
-end;
-
 function TGtk2WidgetSet.GetDeviceContextClass: TGtkDeviceContextClass;
 begin
   Result := TGtk2DeviceContext;
-end;
-
-function TGtk2WidgetSet.GetText(Sender: TComponent; var Text: String): Boolean;
-var
-  CS: PChar;
-  Widget : PGtkWidget;
-  aTextBuffer : PGtkTextBuffer;
-  aTextIter1  : TGtkTextIter;
-  aTextIter2  : TGtkTextIter;
-begin
-  Result := True;
-  case TControl(Sender).fCompStyle of
-   csEdit: begin
-             Widget:= GTK_WIDGET(Pointer(TWinControl(Sender).Handle));
-             CS := gtk_editable_get_chars(GTK_EDITABLE(Widget), 0, -1);
-             Text := StrPas(CS);
-             g_free(CS);
-           end;
-
-   csMemo    : begin
-                 Widget:= GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.CoreWidget;
-                  aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
-                  gtk_text_buffer_get_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
-                  CS := gtk_text_buffer_get_text(aTextBuffer, @aTextIter1, @aTextIter2, True);
-                  Text := StrPas(CS);
-                  g_free(CS);
-               end;
-  {else
-    Result := inherited GetText(Sender, Text);}
-  end;
 end;
 
 {------------------------------------------------------------------------------

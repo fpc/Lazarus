@@ -85,8 +85,6 @@ type
     function GetTitleBarHeight: Integer;
     procedure SetAppActive(const AValue: Boolean);
   protected
-    procedure AppendText(Sender: TObject; Str: PChar);
-    function GetText(Sender: TComponent; var Text: String): Boolean;
     function CreateThemeServices: TThemeServices; override;
     function GetDeviceContextClass: TGtkDeviceContextClass;
   protected
@@ -144,11 +142,11 @@ type
     procedure FreeSystemBrushes;
     procedure PassCmdLineOptions; override;
 
-{$ifdef Unix}
+    {$ifdef Unix}
     procedure InitSynchronizeSupport;
     procedure ProcessChildSignal;
     procedure PrepareSynchronize(AObject: TObject);
-{$endif}
+    {$endif}
 
     procedure HandlePipeEvent(AData: PtrInt; AFlags: dword);
 
