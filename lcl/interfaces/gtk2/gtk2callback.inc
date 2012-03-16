@@ -662,23 +662,6 @@ begin
   //DebugLn(['gtkExposeEventAfter ',GetWidgetDebugReport(Widget),' ',dbgGRect(@Event^.Area)]);
 
   DeliverGtkPaintMessage(Data,Widget,@Event^.Area,false,true);
-
-  // Some widgets in gtk2 don't have their own exclusive "windows" so a synthetic event must be sent
-  // MG: That is already done by the gtk2. For which widgets does this not work?
-  //     Enabling this results in double painting, which is slower and
-  //     wrong for anitaliased text.
-  {if GTK_IS_FIXED(Widget) then begin
-    children := gtk_container_get_children(PGtkContainer(Widget));
-    while children <> nil do begin
-      if (children^.data <> nil) then begin
-        if GTK_WIDGET_NO_WINDOW(PGtkWidget(children^.data)) then
-          gtk_container_propagate_expose(PGtkContainer(Widget), PGtkWidget(children^.data), Event);
-        if children^.next = nil then break;
-        children := children^.next;
-      end;
-    end;
-    g_list_free(children);
-  end;}
 end;
 
 function gtkfrmactivateAfter(widget: PGtkWidget; Event : PgdkEventFocus;
