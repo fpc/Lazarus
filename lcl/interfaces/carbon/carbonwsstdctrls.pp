@@ -127,7 +127,7 @@ type
   TCarbonWSCustomEdit = class(TWSCustomEdit)
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-
+    class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
 
@@ -772,6 +772,14 @@ class function TCarbonWSCustomEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 begin
   Result := TLCLIntfHandle(TCarbonEdit.Create(AWinControl, AParams));
+end;
+
+class function TCarbonWSCustomEdit.GetCanUndo(const ACustomEdit: TCustomEdit
+  ): Boolean;
+begin
+  if not CheckHandle(ACustomEdit, Self, 'GetSelStart') then
+    Exit(False);
+  Result := TCarbonEdit(ACustomEdit.Handle).GetCanUndo;
 end;
 
 {------------------------------------------------------------------------------

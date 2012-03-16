@@ -112,6 +112,7 @@ type
 
   TCarbonCustomEdit = class(TCarbonControlWithEdit)
   public
+    function GetCanUndo: Boolean; virtual;
     procedure CopyToClip; virtual;
     procedure CutToClip; virtual;
     procedure PasteFromClip; virtual;
@@ -1029,6 +1030,14 @@ begin
 end;
 
 { TCarbonCustomEdit }
+
+function TCarbonCustomEdit.GetCanUndo: Boolean;
+var
+  AStr: CFStringRef;
+begin
+  AStr := nil;
+  Result := TXNCanUndoAction(HITextViewGetTXNObject(ControlRef(Widget)), AStr);
+end;
 
 procedure TCarbonCustomEdit.CopyToClip;
 begin
