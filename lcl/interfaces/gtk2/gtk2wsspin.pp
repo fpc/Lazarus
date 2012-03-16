@@ -204,6 +204,7 @@ var
   SSel: String;
   P: PChar;
   SpinButton: PGtkSpinButton;
+  ADecimalSeparator: Char;
 
   function ValidNumberKey(out AKey: Char): Boolean;
   begin
@@ -211,11 +212,19 @@ var
     if Event^.length <> 1 then
       exit(False);
     AKey := Event^._string^;
-    Result := (Byte(Ord(AKey)) in [VK_0..VK_9]) or (AKey = DecimalSeparator);
+    Result := (Byte(Ord(AKey)) in [VK_0..VK_9]) or (AKey = ADecimalSeparator);
   end;
 begin
   Result := False;
   Entry := GTK_ENTRY(Widget);
+
+
+  {$IF FPC_FULLVERSION<20600}
+  ADecimalSeparator := DecimalSeparator;
+  {$ELSE}
+  ADecimalSeparator := DefaultFormatSettings.DecimalSeparator;
+  {$ENDIF}
+
   if (ABS(Entry^.current_pos - Entry^.selection_bound) >= 0) and
     ValidNumberKey(AChar) then
   begin
@@ -234,14 +243,14 @@ begin
       end else
       begin
         SSel := Copy(S, ACurPos + 1, ASelLen);
-        if Pos(DecimalSeparator, SSel) > 0 then
+        if Pos(ADecimalSeparator, SSel) > 0 then
           SSel := Copy(S,ACurPos + 1, ASelLen + 1);
 
         Delete(S, ACurPos + 1, ASelLen);
         Insert(AChar, S, ACurPos + 1);
 
         // if clocale isn't included in our project we are in trouble.
-        S := StringReplace(S,',',DecimalSeparator,[rfReplaceAll]);
+        S := StringReplace(S,',',ADecimalSeparator,[rfReplaceAll]);
         TryStrToFloat(S, FL);
 
         g_object_set_data(PGObject(SpinButton),'lcl-do-not-change-selection', Data);
