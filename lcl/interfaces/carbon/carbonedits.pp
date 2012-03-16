@@ -517,6 +517,7 @@ begin
     Self, SGetText, SGetData) then Exit;
   try
     S := CFStringToStr(CFString);
+    S := StringReplace(S, #13, LineEnding, [rfReplaceAll]);
     Result := True;
   finally
     FreeCFString(CFString);
