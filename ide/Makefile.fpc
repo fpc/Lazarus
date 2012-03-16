@@ -109,9 +109,8 @@ BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
   -Fu../components/tdbf/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/turbopower_ipro/units/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/turbopower_ipro/design/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
-  -Fu../components/jpeg/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/fpcunit/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/fpcunit/ide/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/fpcunit/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fu../components/fpcunit/ide/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/projecttemplates/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/sqldb/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/sdf/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
