@@ -471,6 +471,7 @@ type
     EventMask: TGdkEventMask;
     DoubleBuffer: PGdkPixmap;
     CursorPos: integer;               // needed for delayed SetSelStart
+    SelLength: integer;               // needed for delayed SetSelLength
     ControlCursor: HCursor;           // current widget cursor
     Flags: TWidgetInfoFlags;
     ChangeLock: Integer;              // lock events
