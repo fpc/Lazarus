@@ -111,7 +111,7 @@ begin
     LPKFilename:=FindLPK(ExtractFilePath(MakefileCompiledFilename),MainSrcFilename,HasConditionals);
     //writeln('  MakefileCompiled=',CreateRelativePath(MakefileCompiledFilename,LazarusDir),' MainSrc=',MainSrcFilename,' lpk=',CreateRelativePath(LPKFilename,LazarusDir),' HasConditionals=',HasConditionals);
     if (LPKFilename<>'') and (not HasConditionals) then
-      LPKFiles.Add(LPKFilename);
+      LPKFiles.Add(CreateRelativePath(LPKFilename,LazarusDir));
   finally
     MakefileCompiled.Free;
   end;
