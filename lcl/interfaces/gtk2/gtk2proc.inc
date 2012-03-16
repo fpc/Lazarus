@@ -2151,7 +2151,9 @@ var
     // => emulate it
 
     // emulate VK_RETURN on GtkButton. issue #21483
-    if GtkWidgetIsA(TargetWidget, gtk_type_button) then
+    // spin button needs VK_RETURN to send OnEditingDone. issue #21224
+    if GtkWidgetIsA(TargetWidget, gtk_type_button) or
+     GtkWidgetIsA(TargetWidget, gtk_type_spin_button) then
     begin
       if (gdk_event_get_type(AEvent) = GDK_KEY_RELEASE) and
         (VKey = VK_RETURN) then
@@ -2179,7 +2181,7 @@ var
       (gdk_event_get_type(AEvent) = GDK_KEY_PRESS) and
       ((VKey = VK_RETURN) or (VKey = VK_TAB)) then
     begin
-      //DebugLn(['EmulateKeysEatenByGtk ']);
+      // DebugLn(['EmulateKeysEatenByGtk ']);
       FillChar(Msg, SizeOf(Msg), 0);
       Msg.CharCode := VKey;
       if SysKey then
