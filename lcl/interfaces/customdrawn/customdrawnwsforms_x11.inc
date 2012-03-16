@@ -696,7 +696,6 @@ begin
     //SIZENORMAL, SIZEICONIC, SIZEFULLSCREEN, SIZEZOOMSHOW, SIZEZOOMHIDE.
     LCLSendSizeMsg(AWinControl, Event.Width, Event.Height, SIZENORMAL);
 
-    AWinControl.Invalidate;
     //    TX11Canvas(Canvas).Resized(ClientWidth, ClientHeight); seams unnecessary here
   end;
 end;
