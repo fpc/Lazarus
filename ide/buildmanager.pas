@@ -1692,9 +1692,7 @@ end;
 function TBuildManager.MacroFuncMake(const Param: string; const Data: PtrInt;
   var Abort: boolean): string;
 begin
-  Result:=EnvironmentOptions.MakeFilename;
-  if (Result<>'') and (not FilenameIsAbsolute(Result)) then
-    Result:=FindDefaultExecutablePath(Result);
+  Result:=EnvironmentOptions.GetParsedMakeFilename;
   if Result='' then
     Result:=FindDefaultMakePath;
 end;

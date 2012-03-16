@@ -176,11 +176,11 @@ type
     eopCompilerFilename,
     eopFPCSourceDirectory,
     eopTestBuildDirectory,
-    eopDebuggerFilename,
     eopMakeFilename,
-    eopDebuggerSearchPath,
     eopFPDocPaths,
     eopCompilerMessagesFilename
+    //eopDebuggerFilename,
+    //eopDebuggerSearchPath
     );
   TEnvOptParseTypes = set of TEnvOptParseType;
 
@@ -263,7 +263,6 @@ type
     FLazarusDirHistory: TStringList;
     FCompilerFileHistory: TStringList;
     FFPCSourceDirHistory: TStringList;
-    FMakeFileName: string;
     FMakeFileHistory: TStringList;
     FCompilerMessagesFilename: string;
     FCompilerMessagesFileHistory: TStringList;
@@ -331,6 +330,7 @@ type
     function GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
     function GetFPCSourceDirectory: string;
     function GetLazarusDirectory: string;
+    function GetMakeFilename: string;
     function GetTestBuildDirectory: string;
     procedure SetCompilerFilename(const AValue: string);
     procedure SetDebuggerEventLogColors(AIndex: TDBGEventType;
@@ -363,6 +363,7 @@ type
     function GetParsedTestBuildDirectory: string;
     function GetParsedCompilerFilename: string;
     function GetParsedFPCSourceDirectory: string;
+    function GetParsedMakeFilename: string;
     function GetParsedValue(o: TEnvOptParseType): string;
 
     // macro functions
@@ -484,7 +485,7 @@ type
                                         write SetFPCSourceDirectory;
     property FPCSourceDirHistory: TStringList read FFPCSourceDirHistory
                                               write FFPCSourceDirHistory;
-    property MakeFilename: string read FMakeFilename
+    property MakeFilename: string read GetMakeFilename
                                       write SetMakeFilename;
     property MakeFileHistory: TStringList read FMakeFileHistory
                                               write FMakeFileHistory;
@@ -620,12 +621,12 @@ const
     'LazarusDir', // eopLazarusDirectory
     'CompPath', // eopCompilerFilename
     'FPCSrcDir', // eopFPCSourceDirectory
-    'TempDir', // eopTestBuildDirectory
-    'Debugger', // eopDebuggerFilename
-    'DebugPath', // eopDebuggerSearchPath
+    'TestDir', // eopTestBuildDirectory
     'Make', // eopMakeFilename
     'FPDocPath', // eopFPDocPaths
     'CompMsgFile' // eopCompilerMessagesFilename
+    //'Debugger', // eopDebuggerFilename
+    //'DebugPath', // eopDebuggerSearchPath
   );
 
 function dbgs(o: TEnvOptParseType): string; overload;
@@ -1138,7 +1139,7 @@ begin
 
         end;
         MakeFilename:=TrimFilename(XMLConfig.GetValue(
-           Path+'MakeFilename/Value',FMakeFilename));
+           Path+'MakeFilename/Value',MakeFilename));
         LoadRecentList(XMLConfig,FMakeFileHistory,
            Path+'MakeFilename/History/');
         if FMakeFileHistory.Count=0 then
@@ -1474,20 +1475,17 @@ begin
            Path+'CompilerFilename/Value',CompilerFilename,'');
         SaveRecentList(XMLConfig,FCompilerFileHistory,
            Path+'CompilerFilename/History/');
-        XMLConfig.SetValue(
-           Path+'FPCSourceDirectory/Value',FPCSourceDirectory);
+        XMLConfig.SetDeleteValue(Path+'FPCSourceDirectory/Value',FPCSourceDirectory,'');
         SaveRecentList(XMLConfig,FFPCSourceDirHistory,
            Path+'FPCSourceDirectory/History/');
-        XMLConfig.SetDeleteValue(
-           Path+'MakeFilename/Value',FMakeFilename,'');
+        XMLConfig.SetDeleteValue(Path+'MakeFilename/Value',MakeFilename,'');
         SaveRecentList(XMLConfig,FMakeFileHistory,
            Path+'MakeFilename/History/');
-        XMLConfig.SetValue(
-           Path+'TestBuildDirectory/Value',TestBuildDirectory);
+        XMLConfig.SetDeleteValue(Path+'TestBuildDirectory/Value',TestBuildDirectory,'');
         SaveRecentList(XMLConfig,FTestBuildDirHistory,
            Path+'TestBuildDirectory/History/');
-        XMLConfig.SetValue(
-           Path+'CompilerMessagesFilename/Value',FCompilerMessagesFilename);
+        XMLConfig.SetDeleteValue(
+           Path+'CompilerMessagesFilename/Value',FCompilerMessagesFilename,'');
         SaveRecentList(XMLConfig,FCompilerMessagesFileHistory,
            Path+'CompilerMessagesFilename/History/');
 
@@ -1687,6 +1685,11 @@ begin
   Result:=GetParsedValue(eopFPCSourceDirectory);
 end;
 
+function TEnvironmentOptions.GetParsedMakeFilename: string;
+begin
+  Result:=GetParsedValue(eopMakeFilename);
+end;
+
 function TEnvironmentOptions.GetParsedValue(o: TEnvOptParseType): string;
 begin
   with FParseValues[o] do begin
@@ -1709,10 +1712,10 @@ begin
         eopCompilerMessagesFilename:
           // data file
           ParsedValue:=TrimAndExpandFilename(ParsedValue,GetParsedLazarusDirectory);
-        eopDebuggerSearchPath,eopFPDocPaths:
+        eopFPDocPaths{,eopDebuggerSearchPath}:
           // search path
           ParsedValue:=TrimSearchPath(ParsedValue,GetParsedLazarusDirectory,true);
-        eopCompilerFilename,eopDebuggerFilename,eopMakeFilename:
+        eopCompilerFilename,eopMakeFilename{,eopDebuggerFilename}:
           // program
           begin
             ParsedValue:=TrimFilename(ParsedValue);
@@ -1952,6 +1955,11 @@ begin
   Result:=FParseValues[eopLazarusDirectory].UnparsedValue;
 end;
 
+function TEnvironmentOptions.GetMakeFilename: string;
+begin
+  Result:=FParseValues[eopMakeFilename].UnparsedValue;
+end;
+
 function TEnvironmentOptions.GetTestBuildDirectory: string;
 begin
   Result:=FParseValues[eopTestBuildDirectory].UnparsedValue;
@@ -1972,9 +1980,11 @@ begin
 end;
 
 procedure TEnvironmentOptions.SetMakeFilename(const AValue: string);
+var
+  NewValue: String;
 begin
-  if FMakeFilename=AValue then exit;
-  FMakeFilename:=TrimFilename(AValue);
+  NewValue:=TrimFilename(AValue);
+  SetParseValue(eopMakeFilename,NewValue);
 end;
 
 procedure TEnvironmentOptions.SetDebuggerFilename(const AValue: string);

@@ -12491,7 +12491,7 @@ begin
       SourceEditorManager.ClearErrorLines;
       Result:=BuildLazarus(BuildLazProfiles,ExternalTools,GlobalMacroList,
                            '',EnvironmentOptions.GetParsedCompilerFilename,
-                           EnvironmentOptions.MakeFilename, [blfDontBuild]);
+                           EnvironmentOptions.GetParsedMakeFilename, [blfDontBuild]);
       if Result<>mrOk then begin
         DebugLn('TMainIDE.DoBuildLazarus: Clean up failed.');
         exit;
@@ -12546,7 +12546,7 @@ begin
     SourceEditorManager.ClearErrorLines;
     Result:=BuildLazarus(BuildLazProfiles,ExternalTools,GlobalMacroList,
                          PkgOptions,EnvironmentOptions.GetParsedCompilerFilename,
-                         EnvironmentOptions.MakeFilename,IDEBuildFlags);
+                         EnvironmentOptions.GetParsedMakeFilename,IDEBuildFlags);
     if Result<>mrOk then exit;
 
   finally
