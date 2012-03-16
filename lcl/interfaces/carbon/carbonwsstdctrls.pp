@@ -918,21 +918,25 @@ end;
 class procedure TCarbonWSCustomEdit.Cut(const ACustomEdit: TCustomEdit);
 begin
   if not CheckHandle(ACustomEdit, Self, 'Cut') then Exit;
+  TCarbonCustomEdit(ACustomEdit.Handle).CutToClip;
 end;
 
 class procedure TCarbonWSCustomEdit.Copy(const ACustomEdit: TCustomEdit);
 begin
   if not CheckHandle(ACustomEdit, Self, 'Copy') then Exit;
+  TCarbonCustomEdit(ACustomEdit.Handle).CopyToClip;
 end;
 
 class procedure TCarbonWSCustomEdit.Paste(const ACustomEdit: TCustomEdit);
 begin
   if not CheckHandle(ACustomEdit, Self, 'Paste') then Exit;
+  TCarbonCustomEdit(ACustomEdit.Handle).PasteFromClip;
 end;
 
 class procedure TCarbonWSCustomEdit.Undo(const ACustomEdit: TCustomEdit);
 begin
   if not CheckHandle(ACustomEdit, Self, 'Undo') then Exit;
+  TCarbonCustomEdit(ACustomEdit.Handle).UndoClip;
 end;
 
 { TCarbonWSCustomMemo }

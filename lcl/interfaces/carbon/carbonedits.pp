@@ -112,6 +112,10 @@ type
 
   TCarbonCustomEdit = class(TCarbonControlWithEdit)
   public
+    procedure CopyToClip; virtual;
+    procedure CutToClip; virtual;
+    procedure PasteFromClip; virtual;
+    procedure UndoClip; virtual;
     procedure SetPasswordChar(AChar: Char); virtual; abstract;
     function FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean; override;
     function GetCaretPos: TPoint; virtual;
@@ -1025,6 +1029,26 @@ begin
 end;
 
 { TCarbonCustomEdit }
+
+procedure TCarbonCustomEdit.CopyToClip;
+begin
+  TXNCopy(HITextViewGetTXNObject(ControlRef(Widget)));
+end;
+
+procedure TCarbonCustomEdit.CutToClip;
+begin
+  TXNCut(HITextViewGetTXNObject(ControlRef(Widget)));
+end;
+
+procedure TCarbonCustomEdit.PasteFromClip;
+begin
+  TXNPaste(HITextViewGetTXNObject(ControlRef(Widget)));
+end;
+
+procedure TCarbonCustomEdit.UndoClip;
+begin
+  TXNUndo(HITextViewGetTXNObject(ControlRef(Widget)));
+end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonCustomEdit.FilterKeyPress
