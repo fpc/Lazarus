@@ -216,6 +216,7 @@ begin
     Result:=SearchFileInPath(Executable,'',
                              GetEnvironmentVariableUTF8('PATH'),':',
                              [sffDontSearchInBasePath]);
+  Result:=TrimFilename(Result);
 end;
 
 function GetDefaultLCLWidgetType: TLCLPlatform;

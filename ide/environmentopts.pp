@@ -265,9 +265,6 @@ type
     FCompilerFilenameParsed: string;
     FCompilerFilenameParsedStamp: integer;
     FCompilerFileHistory: TStringList;
-    FFPCSourceDirectory: string;
-    FFPCSrcDirParsed: string;
-    FFPCSrcDirParsedStamp: integer;
     FFPCSourceDirHistory: TStringList;
     FMakeFileName: string;
     FMakeFileHistory: TStringList;
@@ -335,6 +332,7 @@ type
     FFileDialogFilter: string;
 
     function GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
+    function GetFPCSourceDirectory: string;
     function GetLazarusDirectory: string;
     procedure SetCompilerFilename(const AValue: string);
     procedure SetDebuggerEventLogColors(AIndex: TDBGEventType;
@@ -484,7 +482,7 @@ type
                                       write SetCompilerFilename;
     property CompilerFileHistory: TStringList read FCompilerFileHistory
                                               write FCompilerFileHistory;
-    property FPCSourceDirectory: string read FFPCSourceDirectory
+    property FPCSourceDirectory: string read GetFPCSourceDirectory
                                         write SetFPCSourceDirectory;
     property FPCSourceDirHistory: TStringList read FFPCSourceDirHistory
                                               write FFPCSourceDirHistory;
@@ -743,8 +741,12 @@ end;
 { TEnvironmentOptions }
 
 constructor TEnvironmentOptions.Create;
+var
+  o: TEnvOptParseType;
 begin
   inherited Create;
+  for o:=low(FParseValues) to high(FParseValues) do
+    FParseValues[o].ParseStamp:=CTInvalidChangeStamp;
 
   FFilename:='';
 
@@ -823,7 +825,6 @@ begin
   FCompilerFilenameParsedStamp:=CTInvalidChangeStamp;
   FCompilerFileHistory:=TStringList.Create;
   FPCSourceDirectory:='';
-  FFPCSrcDirParsedStamp:=CTInvalidChangeStamp;
   FFPCSourceDirHistory:=TStringList.Create;
   MakeFilename:='';
   FMakeFileHistory:=TStringList.Create;
@@ -1133,7 +1134,7 @@ begin
         if FCompilerFileHistory.Count=0 then
           GetDefaultCompilerFilenames(FCompilerFileHistory);
         FPCSourceDirectory:=XMLConfig.GetValue(
-           Path+'FPCSourceDirectory/Value',FFPCSourceDirectory);
+           Path+'FPCSourceDirectory/Value',FPCSourceDirectory);
         LoadRecentList(XMLConfig,FFPCSourceDirHistory,
            Path+'FPCSourceDirectory/History/');
         if FFPCSourceDirHistory.Count=0 then begin
@@ -1477,7 +1478,7 @@ begin
         SaveRecentList(XMLConfig,FCompilerFileHistory,
            Path+'CompilerFilename/History/');
         XMLConfig.SetValue(
-           Path+'FPCSourceDirectory/Value',FFPCSourceDirectory);
+           Path+'FPCSourceDirectory/Value',FPCSourceDirectory);
         SaveRecentList(XMLConfig,FFPCSourceDirHistory,
            Path+'FPCSourceDirectory/History/');
         XMLConfig.SetDeleteValue(
@@ -1686,14 +1687,7 @@ end;
 
 function TEnvironmentOptions.GetParsedFPCSourceDirectory: string;
 begin
-  if (FFPCSrcDirParsedStamp=CTInvalidChangeStamp)
-  or (FFPCSrcDirParsedStamp<>CompilerParseStamp)
-  then begin
-    FFPCSrcDirParsed:=FFPCSourceDirectory;
-    GlobalMacroList.SubstituteStr(FFPCSrcDirParsed);
-    FFPCSrcDirParsedStamp:=CompilerParseStamp;
-  end;
-  Result:=FFPCSrcDirParsed;
+  Result:=GetParsedValue(eopFPCSourceDirectory);
 end;
 
 function TEnvironmentOptions.GetParsedValue(o: TEnvOptParseType): string;
@@ -1710,6 +1704,30 @@ begin
         ParsedValue:=UnparsedValue;
         GlobalMacroList.SubstituteStr(ParsedValue);
         ParseStamp:=CompilerParseStamp;
+
+        case o of
+        eopLazarusDirectory,eopFPCSourceDirectory,eopTestBuildDirectory:
+          // directory
+          ParsedValue:=TrimAndExpandDirectory(ParsedValue,GetParsedLazarusDirectory);
+        eopCompilerMessagesFilename:
+          // data file
+          ParsedValue:=TrimAndExpandFilename(ParsedValue,GetParsedLazarusDirectory);
+        eopDebuggerSearchPath,eopFPDocPaths:
+          // search path
+          ParsedValue:=TrimSearchPath(ParsedValue,GetParsedLazarusDirectory,true);
+        eopCompilerFilename,eopDebuggerFilename,eopMakeFilename:
+          // program
+          begin
+            ParsedValue:=TrimFilename(ParsedValue);
+            if (ParsedValue<>'') and (not FilenameIsAbsolute(ParsedValue)) then
+            begin
+              if ExtractFilePath(ParsedValue)='' then
+                ParsedValue:=FindDefaultExecutablePath(ParsedValue)
+              else
+                ParsedValue:=GetParsedLazarusDirectory+ParsedValue;
+            end;
+          end;
+        end;
       finally
         Parsing:=false;
       end;
@@ -1909,9 +1927,8 @@ end;
 
 procedure TEnvironmentOptions.SetFPCSourceDirectory(const AValue: string);
 begin
-  if FFPCSourceDirectory=AValue then exit;
-  FFPCSourceDirectory:=AppendPathDelim(TrimFilename(AValue));
-  FFPCSrcDirParsedStamp:=CTInvalidChangeStamp;
+  if FPCSourceDirectory=AValue then exit;
+  SetParseValue(eopFPCSourceDirectory,AValue);
 end;
 
 procedure TEnvironmentOptions.SetCompilerFilename(const AValue: string);
@@ -1924,6 +1941,11 @@ end;
 function TEnvironmentOptions.GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
 begin
   Result := FDebuggerEventLogColors[AIndex];
+end;
+
+function TEnvironmentOptions.GetFPCSourceDirectory: string;
+begin
+  Result:=FParseValues[eopFPCSourceDirectory].UnparsedValue;
 end;
 
 function TEnvironmentOptions.GetLazarusDirectory: string;
