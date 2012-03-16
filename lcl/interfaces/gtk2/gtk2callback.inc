@@ -489,26 +489,60 @@ end;
 
 function gtkchanged_spinbox(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 var
-  SText: String;
   SValue: String;
+  SNewValue: String;
+  AValue, AMin, AMax: Double;
+  NumDigits: Integer;
+  Mess : TLMessage;
+  ADecimalSeparator: Char;
 begin
   Result := CallBackDefaultReturn;
   if LockOnChange(PgtkObject(Widget),0) > 0 then exit;
+
   // prior to gtk2-2.12 there's bug with signalling of spin button
   // which leads to crash.See issue #18554
+  // we are passing this code only for gtk2 >= 2.12
   if GTK_IS_SPIN_BUTTON(Widget) and (gtk_minor_version >= 12) then
   begin
-    SText := '';
-    // do not call gtk_spin_button_update for no reason in floatspinedit.
-    if gtk_spin_button_get_digits(PGtkSpinButton(Widget)) > 0 then
+    NumDigits := gtk_spin_button_get_digits(PGtkSpinButton(Widget));
+    if NumDigits > 0 then
     begin
-      SText := StrPas(gtk_entry_get_text(GTK_ENTRY(Widget)));
-      SValue := FloatToStrF(gtk_spin_button_get_value(PGtkSpinButton(Widget)), ffFixed,
-        12, gtk_spin_button_get_digits(PGtkSpinButton(Widget)));
-    end else
-      SValue := '1';
+      {$IF FPC_FULLVERSION<20600}
+      ADecimalSeparator := DecimalSeparator;
+      {$ELSE}
+      ADecimalSeparator := DefaultFormatSettings.DecimalSeparator;
+      {$ENDIF}
+      SValue := gtk_entry_get_text(PGtkEntry(Widget));
+      SNewValue := SValue;
+      AValue := StrToFloatDef(SValue, 0);
+      gtk_spin_button_get_range(PGtkSpinButton(Widget), @AMin, @AMax);
 
-    if SText <> SValue then
+      // woohoo
+      // gtk2 have different meaning how validator should work and trigger
+      // so we change it. #18679
+      while (AValue < AMin) or (AValue > AMax) do
+      begin
+        Delete(SValue, length(SValue), 1);
+        AValue := StrToFloatDef(SValue, 0);
+      end;
+      if (Pos(ADecimalSeparator, SValue) > 0) and (length(SValue) > 1) then
+      begin
+        SNewValue := Copy(SValue,Pos(ADecimalSeparator, SValue) + 1, length(SValue));
+        while length(SNewValue) > NumDigits do
+        begin
+          Delete(SValue, length(SValue), 1);
+          inc(NumDigits);
+        end;
+      end;
+      if SNewValue <> SValue then
+        gtk_entry_set_text(PGtkEntry(Widget), PChar(SValue));
+
+      // inform LCL about our changes to entry
+      FillByte(Mess,SizeOf(Mess),0);
+      Mess.Msg := CM_TEXTCHANGED;
+      DeliverMessage(Data, Mess);
+    end else
+      // always signal update to pure TSpinEdit
       gtk_spin_button_update(PGtkSpinButton(Widget));
   end;
 end;
