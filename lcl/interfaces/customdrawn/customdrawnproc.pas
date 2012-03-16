@@ -80,6 +80,7 @@ type
     FocusedControl: TWinControl; // The control focused in the form
     FocusedIntfControl: TWinControl; // The intf control focused in the form
     LayoutAutoAdjusted: Boolean; // Indicates if the form layout was already auto-adjusted once
+    InvalidateRequestedInAnyControl: Boolean;
     // painting objects which represent the composed form image, don't confuse with ControlImage/ControlCanvas
     Image: TLazIntfImage;
     Canvas: TLazCanvas;

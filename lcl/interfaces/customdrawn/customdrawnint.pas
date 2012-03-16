@@ -164,6 +164,7 @@ type
 
     function FindWindowByXID(XWindowID: X.TWindow; out AWindowInfo: TX11WindowInfo): TWinControl;
     procedure AppProcessMessage;
+    procedure AppProcessInvalidates;
     {$endif}
     {$ifdef CD_Android}
     CombiningAccent: Cardinal;

@@ -288,7 +288,8 @@ procedure TCDWidgetSet.AppProcessMessages;
 begin
   while True do
   begin
-    if XPending(FDisplay) <= 0 then Exit; // There are no more X messages to process
+    // There are no more X messages to process
+    if XPending(FDisplay) <= 0 then Exit;
     AppProcessMessage();
   end;
 end;
@@ -395,6 +396,27 @@ begin
       DebugLn('LCL-CustomDrawn-X11: Unhandled X11 event received: ', GetXEventName(XEvent._type));
     end;
 
+    AppProcessInvalidates();
+  end;
+end;
+
+procedure TCDWidgetSet.AppProcessInvalidates;
+var
+  i: Integer;
+  CurWindowInfo: TX11WindowInfo;
+  lForm: TForm;
+begin
+  for i := 0 to Screen.FormCount-1 do
+  begin
+    lForm := Screen.Forms[i];
+    if (not lForm.HandleObjectShouldBeVisible) or
+      (not lForm.HandleAllocated) then Continue;
+    CurWindowInfo := TX11WindowInfo(Screen.Forms[i].Handle);
+    if CurWindowInfo.InvalidateRequestedInAnyControl then
+    begin
+      TCDWSCustomForm.EvPaint(lForm, CurWindowInfo);
+      CurWindowInfo.InvalidateRequestedInAnyControl := False;
+    end;
   end;
 end;
 
@@ -490,6 +512,7 @@ begin
       if lTimer.NativeHandle >= lTimer.Interval then
       begin
         lTimer.TimerFunc();
+        AppProcessInvalidates();
         lTimer.NativeHandle := 0;
       end;
     end;

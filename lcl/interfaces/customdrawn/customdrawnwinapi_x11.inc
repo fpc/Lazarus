@@ -631,7 +631,8 @@ begin
 end;*)
 
 {$ifndef CD_UseNativeText}
-procedure TCDWidgetSet.BackendListFontPaths(var AFontPaths: TStringList; var AFontList: THashedStringList);
+procedure TCDWidgetSet.BackendListFontPaths(var AFontPaths: TStringList;
+  var AFontList: THashedStringList);
 var
   Doc: TXMLDocument;
   lFontDirectories: TStringList;
@@ -4651,7 +4652,7 @@ var
   lFormHandle: TX11WindowInfo;
 begin
   lFormHandle := TX11WindowInfo(AHandle);
-  TCDWSCustomForm.EvPaint(lFormHandle.LCLForm, lFormHandle);
+  lFormHandle.InvalidateRequestedInAnyControl := True;
 
   Result := True;
 end;

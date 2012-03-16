@@ -126,7 +126,7 @@ begin
   BackendDestroy;
 
   {$ifndef CD_UseNativeText}
-  TT_Done_FreeType;
+  //TT_Done_FreeType; Causes crashes =( Uncomment when bug 21470 is fixed
   FFontPaths.Free;
   FFontList.Free;
   {$endif}
