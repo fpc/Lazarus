@@ -4076,10 +4076,15 @@ begin
     WriteLn('[WinAPI GetTextExtentPoint]');
   {$endif}
 
-  Result := False;
+  Result := IsValidDC(DC);
 
-  if not IsValidDC(DC) then Exit;
+  if not Result then
+    exit;
 
+  Size.cx := 0;
+  Size.cy := 0;
+  if (StrPas(Str) = '') or (Count <= 0) then
+    exit;
   WideStr := GetUtf8String(Str);
   Size.cx := QtDC.Metrics.width(@WideStr, Count);
   Size.cy := QtDC.Metrics.height;

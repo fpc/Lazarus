@@ -5947,7 +5947,7 @@ var
 begin
   Result := IsValidDC(DC);
   if not Result then Exit;
-  if Count <= 0 then
+  if (Count <= 0) or (StrPas(Str) = '') then
   begin
     FillChar(Size, SizeOf(Size), 0);
     Exit;
