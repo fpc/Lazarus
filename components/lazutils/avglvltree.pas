@@ -825,7 +825,8 @@ begin
 end;
     
 procedure TAvgLvlTree.BalanceAfterDelete(ANode: TAvgLvlTreeNode);
-var OldParent, OldRight, OldRightLeft, OldLeft, OldLeftRight,
+var
+  OldParent, OldRight, OldRightLeft, OldLeft, OldLeftRight,
   OldRightLeftLeft, OldRightLeftRight, OldLeftRightLeft, OldLeftRightRight
   : TAvgLvlTreeNode;
 begin
@@ -847,7 +848,7 @@ begin
     // Node is overweighted to the right
     OldRight:=ANode.Right;
     if (OldRight.Balance>=0) then begin
-      // OldRight.Balance=={0 or -1}
+      // OldRight.Balance is 0 or -1
       // rotate left
       OldRightLeft:=OldRight.Left;
       if (OldParent<>nil) then begin
@@ -863,7 +864,7 @@ begin
       OldRight.Left:=ANode;
       if (OldRightLeft<>nil) then
         OldRightLeft.Parent:=ANode;
-      ANode.Balance:=(1-OldRight.Balance);
+      ANode.Balance:=(1-OldRight.Balance); // toggle 0 and 1
       Dec(OldRight.Balance);
       BalanceAfterDelete(OldRight);
     end else begin
@@ -921,7 +922,7 @@ begin
       OldLeft.Right:=ANode;
       if (OldLeftRight<>nil) then
         OldLeftRight.Parent:=ANode;
-      ANode.Balance:=(-1-OldLeft.Balance);
+      ANode.Balance:=(-1-OldLeft.Balance); // toggle 0 and -1
       Inc(OldLeft.Balance);
       BalanceAfterDelete(OldLeft);
     end else begin
@@ -980,7 +981,14 @@ begin
       end;
       // OldParent.Balance=-2
       if (ANode.Balance=-1) then begin
-        // rotate
+        { rotate right
+             OldParentParent        OldParentParent
+                   |                     |
+               OldParent        =>     ANode
+                 /                        \
+            ANode                     OldParent
+                \                        /
+              OldRight               OldRight      }
         OldRight:=ANode.Right;
         OldParentParent:=OldParent.Parent;
         if (OldParentParent<>nil) then begin
@@ -1003,7 +1011,17 @@ begin
         OldParent.Balance:=0;
       end else begin
         // Node.Balance = +1
-        // double rotate
+        { double rotate = rotate left, right
+             OldParentParent             OldParentParent
+                    |                           |
+                OldParent                    OldRight
+                   /            =>          /        \
+                 ANode                   ANode      OldParent
+                    \                       \          /
+                   OldRight          OldRightLeft  OldRightRight
+                     / \
+          OldRightLeft OldRightRight
+        }
         OldParentParent:=OldParent.Parent;
         OldRight:=ANode.Right;
         OldRightLeft:=OldRight.Left;
@@ -1051,17 +1069,24 @@ begin
       end;
       // OldParent.Balance = +2
       if(ANode.Balance=+1) then begin
-        // rotate
+        { rotate left
+             OldParentParent        OldParentParent
+                   |                     |
+               OldParent        =>     ANode
+                    \                   /
+                  ANode               OldParent
+                   /                      \
+                OldLeft                 OldLeft      }
         OldLeft:=ANode.Left;
         OldParentParent:=OldParent.Parent;
         if (OldParentParent<>nil) then begin
-          // Parent has GrandParent . GrandParent gets new child
+          // Parent has GrandParent. GrandParent gets new child
           if(OldParentParent.Left=OldParent) then
             OldParentParent.Left:=ANode
           else
             OldParentParent.Right:=ANode;
         end else begin
-          // OldParent was fRoot node . new fRoot node
+          // OldParent was fRoot node. new fRoot node
           fRoot:=ANode;
         end;
         ANode.Parent:=OldParentParent;
@@ -1074,19 +1099,29 @@ begin
         OldParent.Balance:=0;
       end else begin
         // Node.Balance = -1
-        // double rotate
+        { double rotate = rotate right, left
+             OldParentParent             OldParentParent
+                    |                           |
+                OldParent                    OldLeft
+                     \            =>        /       \
+                    ANode               OldParent   ANode
+                     /                     \          /
+                  OldLeft          OldLeftLeft  OldLeftRight
+                    / \
+         OldLeftLeft OldLeftRight
+        }
         OldLeft:=ANode.Left;
         OldParentParent:=OldParent.Parent;
         OldLeftLeft:=OldLeft.Left;
         OldLeftRight:=OldLeft.Right;
         if (OldParentParent<>nil) then begin
-          // OldParent has GrandParent . GrandParent gets new child
+          // OldParent has GrandParent. GrandParent gets new child
           if (OldParentParent.Left=OldParent) then
             OldParentParent.Left:=OldLeft
           else
             OldParentParent.Right:=OldLeft;
         end else begin
-          // OldParent was fRoot node . new fRoot node
+          // OldParent was fRoot node. new fRoot node
           fRoot:=OldLeft;
         end;
         OldLeft.Parent:=OldParentParent;
