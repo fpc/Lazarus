@@ -66,7 +66,8 @@ type
   { TAvgLvlTree }
 
   TAvgLvlTree = class
-  private
+  protected
+    fRoot: TAvgLvlTreeNode;
     FCount: integer;
     FNodeMemManager: TAvgLvlTreeNodeMemManager;
     FOnCompare: TListSortCompare;
@@ -79,7 +80,7 @@ type
     procedure SetCompares(const NewCompare: TListSortCompare;
                           const NewObjectCompare: TObjectSortCompare);
   public
-    Root: TAvgLvlTreeNode;
+    property Root: TAvgLvlTreeNode read fRoot;
     function Compare(Data1, Data2: Pointer): integer;
     function Find(Data: Pointer): TAvgLvlTreeNode;
     function FindKey(Key: Pointer;
@@ -772,7 +773,7 @@ begin
   ANode.Left:=nil;
   ANode.Right:=nil;
   inc(FCount);
-  if Root<>nil then begin
+  if fRoot<>nil then begin
     InsertPos:=FindInsertPos(ANode.Data);
     InsertComp:=Compare(ANode.Data,InsertPos.Data);
     ANode.Parent:=InsertPos;
@@ -785,21 +786,21 @@ begin
     end;
     BalanceAfterInsert(ANode);
   end else begin
-    Root:=ANode;
+    fRoot:=ANode;
     ANode.Parent:=nil;
   end;
 end;
 
 function TAvgLvlTree.FindLowest: TAvgLvlTreeNode;
 begin
-  Result:=Root;
+  Result:=fRoot;
   if Result<>nil then
     while Result.Left<>nil do Result:=Result.Left;
 end;
 
 function TAvgLvlTree.FindHighest: TAvgLvlTreeNode;
 begin
-  Result:=Root;
+  Result:=fRoot;
   if Result<>nil then
     while Result.Right<>nil do Result:=Result.Right;
 end;
@@ -836,7 +837,7 @@ begin
         else
           OldParent.Right:=OldRight;
       end else
-        Root:=OldRight;
+        fRoot:=OldRight;
       ANode.Parent:=OldRight;
       ANode.Right:=OldRightLeft;
       OldRight.Parent:=OldParent;
@@ -858,7 +859,7 @@ begin
         else
           OldParent.Right:=OldRightLeft;
       end else
-        Root:=OldRightLeft;
+        fRoot:=OldRightLeft;
       ANode.Parent:=OldRightLeft;
       ANode.Right:=OldRightLeftLeft;
       OldRight.Parent:=OldRightLeft;
@@ -894,7 +895,7 @@ begin
         else
           OldParent.Right:=OldLeft;
       end else
-        Root:=OldLeft;
+        fRoot:=OldLeft;
       ANode.Parent:=OldLeft;
       ANode.Left:=OldLeftRight;
       OldLeft.Parent:=OldParent;
@@ -916,7 +917,7 @@ begin
         else
           OldParent.Right:=OldLeftRight;
       end else
-        Root:=OldLeftRight;
+        fRoot:=OldLeftRight;
       ANode.Parent:=OldLeftRight;
       ANode.Left:=OldLeftRightRight;
       OldLeft.Parent:=OldLeftRight;
@@ -968,8 +969,8 @@ begin
         else
           OldParentParent.Right:=ANode;
       end else begin
-        // OldParent was root node. New root node
-        Root:=ANode;
+        // OldParent was fRoot node. New fRoot node
+        fRoot:=ANode;
       end;
       ANode.Parent:=OldParentParent;
       ANode.Right:=OldParent;
@@ -993,8 +994,8 @@ begin
         else
           OldParentParent.Right:=OldRight;
       end else begin
-        // OldParent was root node. new root node
-        Root:=OldRight;
+        // OldParent was fRoot node. new fRoot node
+        fRoot:=OldRight;
       end;
       OldRight.Parent:=OldParentParent;
       OldRight.Left:=ANode;
@@ -1037,8 +1038,8 @@ begin
         else
           OldParentParent.Right:=ANode;
       end else begin
-        // OldParent was root node . new root node
-        Root:=ANode;
+        // OldParent was fRoot node . new fRoot node
+        fRoot:=ANode;
       end;
       ANode.Parent:=OldParentParent;
       ANode.Left:=OldParent;
@@ -1062,8 +1063,8 @@ begin
         else
           OldParentParent.Right:=OldLeft;
       end else begin
-        // OldParent was root node . new root node
-        Root:=OldLeft;
+        // OldParent was fRoot node . new fRoot node
+        fRoot:=OldLeft;
       end;
       OldLeft.Parent:=OldParentParent;
       OldLeft.Left:=OldParent;
@@ -1105,8 +1106,8 @@ procedure TAvgLvlTree.Clear;
 
 // Clear
 begin
-  DeleteNode(Root);
-  Root:=nil;
+  DeleteNode(fRoot);
+  fRoot:=nil;
   FCount:=0;
 end;
 
@@ -1153,7 +1154,7 @@ begin
       BalanceAfterDelete(OldParent);
     end else begin
       // Node is the only node of tree
-      Root:=nil;
+      fRoot:=nil;
     end;
     dec(FCount);
     if NodeMemManager<>nil then
@@ -1179,7 +1180,7 @@ begin
       end;
       BalanceAfterDelete(OldParent);
     end else begin
-      Root:=OldLeft;
+      fRoot:=OldLeft;
     end;
     dec(FCount);
     if NodeMemManager<>nil then
@@ -1205,7 +1206,7 @@ begin
       end;
       BalanceAfterDelete(OldParent);
     end else begin
-      Root:=OldRight;
+      fRoot:=OldRight;
     end;
     dec(FCount);
     if NodeMemManager<>nil then
@@ -1254,7 +1255,7 @@ begin
     else
       OldParent.Right:=Successor;
   end else
-    Root:=Successor;
+    fRoot:=Successor;
   // delete Node as usual
   Delete(ANode);
 end;
@@ -1290,7 +1291,7 @@ end;
 function TAvgLvlTree.Find(Data: Pointer): TAvgLvlTreeNode;
 var Comp: integer;
 begin
-  Result:=Root;
+  Result:=fRoot;
   while (Result<>nil) do begin
     Comp:=Compare(Data,Result.Data);
     if Comp=0 then exit;
@@ -1306,7 +1307,7 @@ function TAvgLvlTree.FindKey(Key: Pointer;
   OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
 var Comp: integer;
 begin
-  Result:=Root;
+  Result:=fRoot;
   while (Result<>nil) do begin
     Comp:=OnCompareKeyWithData(Key,Result.Data);
     if Comp=0 then exit;
@@ -1322,7 +1323,7 @@ function TAvgLvlTree.FindNearestKey(Key: Pointer;
   OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
 var Comp: integer;
 begin
-  Result:=Root;
+  Result:=fRoot;
   while (Result<>nil) do begin
     Comp:=OnCompareKeyWithData(Key,Result.Data);
     if Comp=0 then exit;
@@ -1391,7 +1392,7 @@ end;
 function TAvgLvlTree.FindNearest(Data: Pointer): TAvgLvlTreeNode;
 var Comp: integer;
 begin
-  Result:=Root;
+  Result:=fRoot;
   while (Result<>nil) do begin
     Comp:=Compare(Data,Result.Data);
     if Comp=0 then exit;
@@ -1448,7 +1449,7 @@ end;
 function TAvgLvlTree.FindInsertPos(Data: Pointer): TAvgLvlTreeNode;
 var Comp: integer;
 begin
-  Result:=Root;
+  Result:=fRoot;
   while (Result<>nil) do begin
     Comp:=Compare(Data,Result.Data);
     if Comp<0 then begin
@@ -1579,7 +1580,7 @@ var RealCount: integer;
 // TAvgLvlTree.ConsistencyCheck
 begin
   RealCount:=0;
-  Result:=CheckNode(Root);
+  Result:=CheckNode(fRoot);
   if Result<>0 then exit;
   if FCount<>RealCount then begin
     Result:=-1;
@@ -1601,7 +1602,7 @@ procedure TAvgLvlTree.FreeAndClear;
 // TAvgLvlTree.FreeAndClear
 begin
   // free all data
-  FreeNode(Root);
+  FreeNode(fRoot);
   // free all nodes
   Clear;
 end;
@@ -1666,7 +1667,7 @@ procedure TAvgLvlTree.WriteReportToStream(s: TStream);
 // TAvgLvlTree.WriteReportToStream
 begin
   WriteStr('-Start-of-AVL-Tree-------------------'+LineEnding);
-  WriteTreeNode(Root);
+  WriteTreeNode(fRoot);
   WriteStr('-End-Of-AVL-Tree---------------------'+LineEnding);
 end;
 
