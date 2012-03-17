@@ -943,6 +943,9 @@ type
     FHandle: PtrInt;
     FPosition: TPoint;
     FSize: TSize;
+    // only for GetChildAccessibleObject(Index)
+    FLastSearchNode: TAvgLvlTreeNode;
+    FLastSearchIndex: Integer;
     function GetHandle: PtrInt;
     function GetPosition: TPoint;
     function GetSize: TSize;
@@ -974,6 +977,7 @@ type
     procedure RemoveChildAccessibleObject(AObject: TLazAccessibleObject; AFreeObject: Boolean = True);
     function GetChildAccessibleObjectWithDataObject(ADataObject: TObject): TLazAccessibleObject;
     function GetChildAccessibleObjectsCount: Integer;
+    function GetChildAccessibleObject(AIndex: Integer): TLazAccessibleObject;
     function GetSelectedChildAccessibleObject: TLazAccessibleObject; virtual;
     function GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject; virtual;
     // Primary information

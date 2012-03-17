@@ -241,6 +241,25 @@ begin
     Result := FChildrenSortedForDataObject.Count;
 end;
 
+function TLazAccessibleObject.GetChildAccessibleObject(AIndex: Integer): TLazAccessibleObject;
+var
+  lNode: TAvgLvlTreeNode = nil;
+begin
+  Result := nil;
+  if AIndex = 0 then lNode := FChildrenSortedForDataObject.FindLowest()
+  else if AIndex = GetChildAccessibleObjectsCount()-1 then
+    lNode := FChildrenSortedForDataObject.FindHighest()
+  else if AIndex = FLastSearchIndex then lNode := FLastSearchNode
+  else if AIndex = FLastSearchIndex+1 then
+    lNode := FChildrenSortedForDataObject.FindSuccessor(FLastSearchNode)
+  else if AIndex = FLastSearchIndex-1 then
+    lNode := FChildrenSortedForDataObject.FindPrecessor(FLastSearchNode);
+
+  if lNode = nil then Exit;
+
+  Result := TLazAccessibleObject(lNode.Data);
+end;
+
 function TLazAccessibleObject.GetSelectedChildAccessibleObject: TLazAccessibleObject;
 begin
   Result := nil;

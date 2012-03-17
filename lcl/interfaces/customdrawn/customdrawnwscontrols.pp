@@ -163,6 +163,8 @@ begin
   Result := 0;
   {$ifdef CD_Cocoa}
   Result := HWND(TCocoaAccessibleObject.alloc.init);
+  TCocoaAccessibleObject(Result).LCLAcc := AObject;
+  TCocoaAccessibleObject(Result).LCLControl := AObject.OwnerControl;
   {$endif}
 end;
 

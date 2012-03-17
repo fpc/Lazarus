@@ -85,6 +85,7 @@ type
     procedure lclSetFrame(const r: TRect); message 'lclSetFrame:';
     function lclClientFrame: TRect; message 'lclClientFrame';
     // Accessibility
+    class function LazRoleToCocoaRole(ALazRole: TLazAccessibilityRole): NSString; message 'LazRoleToCocoaRole:';
     //NSAccessibilityCategory = objccategory external (NSObject)
     //function accessibilityAttributeNames: NSArray; override;
     function accessibilityAttributeValue(attribute: NSString): id; override;
@@ -108,6 +109,8 @@ type
   TCocoaAccessibleObject = objcclass(NSObject)
   public
     // Accessibility
+    LCLControl: TControl;
+    LCLAcc: TLazAccessibleObject;
     //NSAccessibilityCategory = objccategory external (NSObject)
     //function accessibilityAttributeNames: NSArray; override;
     function accessibilityAttributeValue(attribute: NSString): id; override;
@@ -312,13 +315,6 @@ begin
   end;
 
   Result := True;
-end;
-
-{ TCocoaAccessibleObject }
-
-function TCocoaAccessibleObject.accessibilityAttributeValue(attribute: NSString): id;
-begin
-  Result := inherited accessibilityAttributeValue(attribute);
 end;
 
 { TCocoaForm }
@@ -800,32 +796,160 @@ begin
   Result.Bottom:=Round(r.size.height);
 end;
 
+class function TCocoaCustomControl.LazRoleToCocoaRole(
+  ALazRole: TLazAccessibilityRole): NSString;
+begin
+  case ALazRole of
+    larAnimation: Result := NSAccessibilityImageRole;
+    larButton: Result := NSAccessibilityButtonRole;
+    larCell: Result := NSAccessibilityCellRole;
+    larChart: Result := NSAccessibilityImageRole;
+    larCheckBox: Result := NSAccessibilityCheckBoxRole;
+    larClock: Result := NSAccessibilityStaticTextRole;
+    larColorPicker: Result := NSAccessibilityColorWellRole;
+    larComboBox: Result := NSAccessibilityComboBoxRole;
+    larDateField: Result := NSAccessibilityStaticTextRole;//('AXDateField');
+    larGrid: Result := NSAccessibilityGridRole;
+    larGroup: Result := NSAccessibilityGroupRole;
+    larImage: Result := NSAccessibilityImageRole;
+    larLabel: Result := NSAccessibilityStaticTextRole;
+    larListBox: Result := NSAccessibilityListRole;
+    larListItem: Result := NSAccessibilityStaticTextRole;
+    larMenuBar: Result := NSAccessibilityMenuBarRole;
+    larMenuItem: Result := NSAccessibilityMenuItemRole;
+    larProgressIndicator: Result := NSAccessibilityProgressIndicatorRole;
+    larRadioButton: Result := NSAccessibilityRadioButtonRole;
+    larResizeGrip: Result := NSAccessibilityStaticTextRole; // VoiceOver cannot handle AXHandle in Mac 10.6, so we fallback to AXStaticText
+    larScrollBar: Result := NSAccessibilityScrollBarRole;
+    larSpinner: Result := NSAccessibilityIncrementorRole;
+    larTabControl: Result := NSAccessibilityTabGroupRole;
+    larTextEditorMultiline: Result := NSAccessibilityTextAreaRole;
+    larTextEditorSingleline: Result := NSAccessibilityTextFieldRole;
+    //  NSAccessibilityToolbarRole: NSString; cvar; external;
+    larTrackBar: Result := NSAccessibilitySliderRole;
+    larTreeView: Result := NSAccessibilityListRole;
+    larTreeItem: Result := NSAccessibilityStaticTextRole;
+    larWindow: Result := NSAccessibilityWindowRole;//NSAccessibilityUnknownRole;
+  else
+    Result := NSAccessibilityUnknownRole;
+  end;
+end;
+
 function TCocoaCustomControl.accessibilityAttributeValue(attribute: NSString): id;
 var
   lStrAttr: String;
   lAResult: NSArray;
-  lResult: NSMutableArray;
+  lMAResult: NSMutableArray;
+  i: Integer;
   lForm: TCustomForm;
-  lFormAO: TLazAccessibleObject;
+  lFormAcc, lChildAcc: TLazAccessibleObject;
 begin
   Result := inherited accessibilityAttributeValue(attribute);
-  lAResult := NSArray(Result);
-  lResult := lAResult.mutableCopy();
 
   lStrAttr := NSStringToString(attribute);
   //DebugLn('[TCocoaCustomControl.accessibilityAttributeValue] attribute='+lStrAttr);
 
-  if attribute = NSAccessibilityChildrenAttribute then
+  if attribute = NSAccessibilityRoleAttribute then
   begin
-    {DebugLn('[TCocoaCustomControl.accessibilityAttributeValue] NSAccessibilityChildrenAttribute');
+    DebugLn('[TCocoaCustomControl.accessibilityAttributeValue] NSAccessibilityRoleAttribute');
     lForm := WindowHandle.LCLForm;
-    lFormAO := lForm.GetAccessibleObject();
-    for i := 0 to lFormAO.GetChildAccessibleObjectsCount() - 1 do
+    lFormAcc := lForm.GetAccessibleObject();
+    Result := LazRoleToCocoaRole(lFormAcc.AccessibleRole);
+  end
+  else if attribute = NSAccessibilityChildrenAttribute then
+  begin
+    DebugLn('[TCocoaCustomControl.accessibilityAttributeValue] NSAccessibilityChildrenAttribute');
+    lAResult := NSArray(Result);
+    lMAResult := lAResult.mutableCopy();
+    lForm := WindowHandle.LCLForm;
+    lFormAcc := lForm.GetAccessibleObject();
+    for i := 0 to lFormAcc.GetChildAccessibleObjectsCount() - 1 do
     begin
-      lFormAO.GetChildAccessibleObjectsCount;
+      lChildAcc := lFormAcc.GetChildAccessibleObject(i);
+      lMAResult.addObject(TCocoaAccessibleObject(lChildAcc.Handle));
     end;
-    lResult.addObject();
-    Result := lResult;}
+    Result := lMAResult;
+  end;
+end;
+
+{ TCocoaAccessibleObject }
+
+function TCocoaAccessibleObject.accessibilityAttributeValue(attribute: NSString): id;
+var
+  lStrAttr: String;
+  lAResult: NSArray;
+  lMAResult: NSMutableArray;
+  i: Integer;
+  lChildAcc: TLazAccessibleObject;
+  lForm: TCustomForm;
+  lParent: TWinControl;
+begin
+  Result := inherited accessibilityAttributeValue(attribute);
+
+  lStrAttr := NSStringToString(attribute);
+  //DebugLn('[TCocoaAccessibleObject.accessibilityAttributeValue] attribute='+lStrAttr);
+
+  if attribute = NSAccessibilityRoleAttribute then
+  begin
+    {DebugLn('[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityRoleAttribute');
+    Result := TCocoaCustomControl.LazRoleToCocoaRole(LCLAcc.AccessibleRole);}
+  end
+  else if attribute = NSAccessibilityRoleDescriptionAttribute then
+  begin
+
+  end
+  else if attribute = NSAccessibilityValueAttribute then
+  begin
+
+  end
+  {else if attribute = NSAccessibilityMinValueAttribute: NSString; cvar; external;
+  NSAccessibilityMaxValueAttribute: NSString; cvar; external;}
+  else if attribute = NSAccessibilityEnabledAttribute then
+  begin
+
+  end
+  else if attribute = NSAccessibilityFocusedAttribute then
+  begin
+
+  end
+  else if attribute = NSAccessibilityParentAttribute then
+  begin
+{    lParent := LCLControl.Parent;
+    Result := TCocoaAccessibleObject(lParent.GetAccessibleObject().Handle);}
+  end
+  else if (attribute = NSAccessibilityChildrenAttribute)
+    or (attribute = NSAccessibilityVisibleChildrenAttribute) then
+  begin
+    {DebugLn('[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityChildrenAttribute');
+    lAResult := NSArray(Result);
+    lMAResult := lAResult.mutableCopy();
+    for i := 0 to LCLAcc.GetChildAccessibleObjectsCount() - 1 do
+    begin
+      lChildAcc := LCLAcc.GetChildAccessibleObject(i);
+      lMAResult.addObject(TCocoaAccessibleObject(lChildAcc.Handle));
+    end;
+    Result := lMAResult;}
+  end
+  else if attribute = NSAccessibilityWindowAttribute then
+  begin
+    {lForm := Forms.GetParentForm(LCLControl);
+    Result := TCocoaAccessibleObject(lForm.GetAccessibleObject().Handle);}
+  end
+  else if attribute = NSAccessibilityTopLevelUIElementAttribute then
+  begin
+
+  end
+  else if attribute = NSAccessibilitySelectedChildrenAttribute then
+  begin
+
+  end
+  else if attribute = NSAccessibilityPositionAttribute then
+  begin
+    //LCLAcc.Position;
+  end
+  else if attribute = NSAccessibilitySizeAttribute then
+  begin
+    //LCLAcc.Size;
   end;
 end;
 
