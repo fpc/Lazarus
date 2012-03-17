@@ -9,6 +9,8 @@ unit TestAvgLvlTree;
 
 {$mode objfpc}{$H+}
 
+{ $DEFINE VerboseTestSequence}
+
 interface
 
 uses
@@ -29,14 +31,13 @@ implementation
 { TTestAvgLvlTree }
 
 procedure TTestAvgLvlTree.TestSequence(Args: array of const);
-{ $DEFINE VerboseTestSequence}
 var
   Tree: TAvgLvlTree;
   i: Integer;
   Value: LongInt;
 begin
   Tree:=TAvgLvlTree.Create;
-  //writeln(Tree.ReportAsString);
+  //DebugLn(Tree.ReportAsString);
   Tree.ConsistencyCheck;
 
   for i:=Low(Args) to high(Args) do begin
@@ -48,6 +49,7 @@ begin
       {$ENDIF}
       Tree.Add(Pointer(Value));
     end else begin
+      Value:=-Value;
       {$IFDEF VerboseTestSequence}
       debugln(['  remove value ',Value]);
       {$ENDIF}
@@ -60,7 +62,7 @@ begin
   end;
 
   Tree.Clear;
-  //writeln(Tree.ReportAsString);
+  //DebugLn(Tree.ReportAsString);
   Tree.ConsistencyCheck;
 
   Tree.Free;
@@ -86,6 +88,16 @@ begin
 
   // double rotate left, right
   TestSequence([5,3,4]);
+
+  // test deletes
+  TestSequence([1,2,3,-1,-2,-3]);
+  TestSequence([1,2,3,-1,-3,-2]);
+  TestSequence([1,2,3,-2,-1,-3]);
+  TestSequence([1,2,3,-2,-3,-1]);
+  TestSequence([1,2,3,-3,-1,-2]);
+  TestSequence([1,2,3,-3,-2,-1]);
+
+  //
 end;
 
 initialization

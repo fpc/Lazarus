@@ -16,11 +16,17 @@
   
   Abstract:
     The Tree is sorted ascending from left to right. That means
-    Compare(Node.Left,Node.Right) <= 0 for all nodes.
+      Compare(Node.Left,Node.Right) <= 0 for all nodes.
 
     TAvgLvlTree is an Average Level binary Tree. This binary tree is always
     balanced, so that inserting, deleting and finding a node is performed in
     O(log(#Nodes)).
+
+    Duplicates are supported.
+    Order of duplicates is kept, that means the order is stable.
+
+    The compare function must define a total order, that means transitive
+      A >= B and B>=C means A >= C for all nodes A,B,C
 }
 unit AvgLvlTree;
 
@@ -79,11 +85,13 @@ type
     procedure BalanceAfterInsert(ANode: TAvgLvlTreeNode);
     procedure BalanceAfterDelete(ANode: TAvgLvlTreeNode);
     function FindInsertPos(Data: Pointer): TAvgLvlTreeNode;
+    procedure Init; virtual;
+    procedure RotateLeft(aNode: TAvgLvlTreeNode); virtual;
+    procedure RotateRight(aNode: TAvgLvlTreeNode); virtual;
     procedure SetOnCompare(const AValue: TListSortCompare);
     procedure SetOnObjectCompare(const AValue: TObjectSortCompare);
     procedure SetCompares(const NewCompare: TListSortCompare;
                           const NewObjectCompare: TObjectSortCompare);
-    procedure Init; virtual;
   public
     constructor Create(OnCompareMethod: TListSortCompare);
     constructor CreateObjectCompare(OnCompareMethod: TObjectSortCompare);
@@ -847,7 +855,7 @@ begin
       OldRight:=ANode.Right;
       if (OldRight.Balance>=0) then begin
         // OldRight.Balance is 0 or -1
-        // rotate left
+        // rotate ANode,OldRight left
         OldRightLeft:=OldRight.Left;
         if (OldParent<>nil) then begin
           if (OldParent.Left=ANode) then
@@ -867,7 +875,19 @@ begin
         ANode:=OldRight;
       end else begin
         // OldRight.Balance=-1
-        // double rotate right left
+        { double rotate
+          = rotate OldRightLeft,OldRight right
+            and then rotate ANode,OldRightLeft left
+                  OldParent                           OldParent
+                      |                                  |
+                    ANode                           OldRightLeft
+                       \                               /      \
+                    OldRight             =>          ANode    OldRight
+                      /                                \         /
+               OldRightLeft                OldRightLeftLeft OldRightLeftRight
+                   /     \
+        OldRightLeftLeft OldRightLeftRight
+        }
         OldRightLeft:=OldRight.Left;
         OldRightLeftLeft:=OldRightLeft.Left;
         OldRightLeftRight:=OldRightLeft.Right;
@@ -905,7 +925,7 @@ begin
       // Node is overweighted to the left
       OldLeft:=ANode.Left;
       if (OldLeft.Balance<=0) then begin
-        // rotate right
+        // rotate OldLeft,ANode right
         OldLeftRight:=OldLeft.Right;
         if (OldParent<>nil) then begin
           if (OldParent.Left=ANode) then
@@ -925,7 +945,19 @@ begin
         ANode:=OldLeft;
       end else begin
         // OldLeft.Balance = 1
-        // double rotate left right
+        { double rotate left right
+          = rotate OldRightLeft,OldRight right
+            and then rotate ANode,OldRightLeft left
+                    OldParent                           OldParent
+                        |                                  |
+                      ANode                            OldLeftRight
+                       /                               /         \
+                    OldLeft             =>          OldLeft    ANode
+                       \                                \         /
+                   OldLeftRight               OldLeftRightLeft OldLeftRightRight
+                     /     \
+          OldLeftRightLeft OldLeftRightRight
+        }
         OldLeftRight:=OldLeft.Right;
         OldLeftRightLeft:=OldLeftRight.Left;
         OldLeftRightRight:=OldLeftRight.Right;
@@ -964,8 +996,7 @@ end;
 
 procedure TAvgLvlTree.BalanceAfterInsert(ANode: TAvgLvlTreeNode);
 var
-  OldParent, OldParentParent, OldRight, OldRightLeft, OldRightRight, OldLeft,
-  OldLeftLeft, OldLeftRight: TAvgLvlTreeNode;
+  OldParent, OldRight, OldLeft: TAvgLvlTreeNode;
 begin
   OldParent:=ANode.Parent;
   while (OldParent<>nil) do begin
@@ -980,15 +1011,16 @@ begin
       end;
       // OldParent.Balance=-2
       if (ANode.Balance=-1) then begin
-        { rotate right
+        { rotate ANode,ANode.Parent right
              OldParentParent        OldParentParent
                    |                     |
                OldParent        =>     ANode
                  /                        \
-            ANode                     OldParent
+              ANode                     OldParent
                 \                        /
               OldRight               OldRight      }
-        OldRight:=ANode.Right;
+        RotateRight(OldParent);
+        {OldRight:=ANode.Right;
         OldParentParent:=OldParent.Parent;
         if (OldParentParent<>nil) then begin
           // OldParent has GrandParent. GrandParent gets new child
@@ -1005,12 +1037,14 @@ begin
         OldParent.Parent:=ANode;
         OldParent.Left:=OldRight;
         if (OldRight<>nil) then
-          OldRight.Parent:=OldParent;
+          OldRight.Parent:=OldParent;}
+
         ANode.Balance:=0;
         OldParent.Balance:=0;
       end else begin
         // Node.Balance = +1
-        { double rotate = rotate left, right
+        { double rotate
+          = rotate ANode,OldRight left and then rotate OldRight,OldParent right
              OldParentParent             OldParentParent
                     |                           |
                 OldParent                    OldRight
@@ -1021,8 +1055,10 @@ begin
                      / \
           OldRightLeft OldRightRight
         }
-        OldParentParent:=OldParent.Parent;
         OldRight:=ANode.Right;
+        RotateLeft(ANode);
+        RotateRight(OldParent);
+        {OldParentParent:=OldParent.Parent;
         OldRightLeft:=OldRight.Left;
         OldRightRight:=OldRight.Right;
         if (OldParentParent<>nil) then begin
@@ -1045,7 +1081,8 @@ begin
         if (OldRightLeft<>nil) then
           OldRightLeft.Parent:=ANode;
         if (OldRightRight<>nil) then
-          OldRightRight.Parent:=OldParent;
+          OldRightRight.Parent:=OldParent;}
+
         if (OldRight.Balance<=0) then
           ANode.Balance:=0
         else
@@ -1068,7 +1105,7 @@ begin
       end;
       // OldParent.Balance = +2
       if(ANode.Balance=+1) then begin
-        { rotate left
+        { rotate OldParent,ANode left
              OldParentParent        OldParentParent
                    |                     |
                OldParent        =>     ANode
@@ -1076,7 +1113,8 @@ begin
                   ANode               OldParent
                    /                      \
                 OldLeft                 OldLeft      }
-        OldLeft:=ANode.Left;
+        RotateLeft(OldParent);
+        {OldLeft:=ANode.Left;
         OldParentParent:=OldParent.Parent;
         if (OldParentParent<>nil) then begin
           // Parent has GrandParent. GrandParent gets new child
@@ -1093,12 +1131,13 @@ begin
         OldParent.Parent:=ANode;
         OldParent.Right:=OldLeft;
         if (OldLeft<>nil) then
-          OldLeft.Parent:=OldParent;
+          OldLeft.Parent:=OldParent;}
         ANode.Balance:=0;
         OldParent.Balance:=0;
       end else begin
         // Node.Balance = -1
-        { double rotate = rotate right, left
+        { double rotate
+          = rotate OldLeft,ANode right and then rotate OldParent,OldLeft right
              OldParentParent             OldParentParent
                     |                           |
                 OldParent                    OldLeft
@@ -1110,7 +1149,10 @@ begin
          OldLeftLeft OldLeftRight
         }
         OldLeft:=ANode.Left;
-        OldParentParent:=OldParent.Parent;
+        RotateRight(ANode);
+        RotateLeft(OldParent);
+
+        {OldParentParent:=OldParent.Parent;
         OldLeftLeft:=OldLeft.Left;
         OldLeftRight:=OldLeft.Right;
         if (OldParentParent<>nil) then begin
@@ -1133,7 +1175,8 @@ begin
         if (OldLeftLeft<>nil) then
           OldLeftLeft.Parent:=OldParent;
         if (OldLeftRight<>nil) then
-          OldLeftRight.Parent:=ANode;
+          OldLeftRight.Parent:=ANode;}
+
         if (OldLeft.Balance>=0) then
           ANode.Balance:=0
         else
@@ -1738,6 +1781,70 @@ begin
       FreeMem(List);
     end;
   end;
+end;
+
+procedure TAvgLvlTree.RotateLeft(aNode: TAvgLvlTreeNode);
+{    Parent                Parent
+       |                     |
+      Node        =>       OldRight
+      /  \                  /
+   Left OldRight          Node
+          /               /  \
+     OldRightLeft      Left OldRightLeft
+}
+var
+  OldRight: TAvgLvlTreeNode;
+  AParent: TAvgLvlTreeNode;
+  OldRightLeft: TAvgLvlTreeNode;
+begin
+  OldRight:=aNode.Right;
+  OldRightLeft:=OldRight.Left;
+  AParent:=aNode.Parent;
+  if AParent<>nil then begin
+    if AParent.Left=aNode then
+      AParent.Left:=OldRight
+    else
+      AParent.Right:=OldRight;
+  end else
+    fRoot:=OldRight;
+  OldRight.Parent:=AParent;
+  aNode.Parent:=OldRight;
+  aNode.Right:=OldRightLeft;
+  if OldRightLeft<>nil then
+    OldRightLeft.Parent:=aNode;
+  OldRight.Left:=aNode;
+end;
+
+procedure TAvgLvlTree.RotateRight(aNode: TAvgLvlTreeNode);
+{       Parent              Parent
+          |                   |
+         Node        =>     OldLeft
+         /   \                 \
+    OldLeft  Right            Node
+        \                     /  \
+   OldLeftRight      OldLeftRight Right
+}
+var
+  OldLeft: TAvgLvlTreeNode;
+  AParent: TAvgLvlTreeNode;
+  OldLeftRight: TAvgLvlTreeNode;
+begin
+  OldLeft:=aNode.Left;
+  OldLeftRight:=OldLeft.Right;
+  AParent:=aNode.Parent;
+  if AParent<>nil then begin
+    if AParent.Left=aNode then
+      AParent.Left:=OldLeft
+    else
+      AParent.Right:=OldLeft;
+  end else
+    fRoot:=OldLeft;
+  OldLeft.Parent:=AParent;
+  aNode.Parent:=OldLeft;
+  aNode.Left:=OldLeftRight;
+  if OldLeftRight<>nil then
+    OldLeftRight.Parent:=aNode;
+  OldLeft.Right:=aNode;
 end;
 
 procedure TAvgLvlTree.Init;
