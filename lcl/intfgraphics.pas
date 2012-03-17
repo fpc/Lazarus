@@ -4246,8 +4246,7 @@ var
   i: Integer;
 begin
   if FAVLPalette<>nil then begin
-    if FAVLPalette.ConsistencyCheck<>0 then
-      RaiseGDBException('TLazAVLPalette.ConsistencyCheck');
+    FAVLPalette.ConsistencyCheck;
     if FAVLPalette.Count<>FCount then
       RaiseGDBException('TLazAVLPalette.ConsistencyCheck');
   end;

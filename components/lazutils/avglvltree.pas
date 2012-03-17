@@ -50,6 +50,8 @@ type
     function FindPrecessor: TAvgLvlTreeNode; // next left
     procedure Clear;
     function TreeDepth: integer; // longest WAY down. e.g. only one node => 0 !
+    procedure ConsistencyCheck(Tree: TAvgLvlTree);
+    function GetCount: SizeInt;
   end;
   PAvgLvlTreeNode = ^TAvgLvlTreeNode;
 
@@ -135,7 +137,7 @@ type
     function GetEnumeratorHighToLow: TAvgLvlTreeNodeEnumerator;
 
     // consistency
-    function ConsistencyCheck: integer;
+    procedure ConsistencyCheck;
     procedure WriteReportToStream(s: TStream);
     function ReportAsString: string;
   end;
@@ -1547,64 +1549,23 @@ begin
   ANode:=RightMost;
 end;
 
-function TAvgLvlTree.ConsistencyCheck: integer;
-var RealCount: integer;
+procedure TAvgLvlTree.ConsistencyCheck;
 
-  function CheckNode(ANode: TAvgLvlTreeNode): integer;
-  var LeftDepth, RightDepth: integer;
+  procedure E(Msg: string);
   begin
-    if ANode=nil then begin
-      Result:=0;
-      exit;
-    end;
-    inc(RealCount);
-    // test left son
-    if ANode.Left<>nil then begin
-      if ANode.Left.Parent<>ANode then begin
-        Result:=-2;  exit;
-      end;
-      if Compare(ANode.Left.Data,ANode.Data)>0 then begin
-        Result:=-3;  exit;
-      end;
-      Result:=CheckNode(ANode.Left);
-      if Result<>0 then exit;
-    end;
-    // test right son
-    if ANode.Right<>nil then begin
-      if ANode.Right.Parent<>ANode then begin
-        Result:=-4;  exit;
-      end;
-      if Compare(ANode.Data,ANode.Right.Data)>0 then begin
-        Result:=-5;  exit;
-      end;
-      Result:=CheckNode(ANode.Right);
-      if Result<>0 then exit;
-    end;
-    // test balance
-    if ANode.Left<>nil then
-      LeftDepth:=ANode.Left.TreeDepth+1
-    else
-      LeftDepth:=0;
-    if ANode.Right<>nil then
-      RightDepth:=ANode.Right.TreeDepth+1
-    else
-      RightDepth:=0;
-    if ANode.Balance<>(RightDepth-LeftDepth) then begin
-      Result:=-6;  exit;
-    end;
-    // ok
-    Result:=0;
+    raise Exception.Create('TAvgLvlTree.ConsistencyCheck: '+Msg);
   end;
 
-// TAvgLvlTree.ConsistencyCheck
+var
+  RealCount: SizeInt;
 begin
   RealCount:=0;
-  Result:=CheckNode(fRoot);
-  if Result<>0 then exit;
-  if FCount<>RealCount then begin
-    Result:=-1;
-    exit;
+  if FRoot<>nil then begin
+    FRoot.ConsistencyCheck(Self);
+    RealCount:=FRoot.GetCount;
   end;
+  if FCount<>RealCount then
+    E('FCount<>RealCount');
 end;
 
 procedure TAvgLvlTree.FreeAndClear;
@@ -1783,6 +1744,53 @@ begin
     Result:=LeftDepth
   else
     Result:=RightDepth;
+end;
+
+procedure TAvgLvlTreeNode.ConsistencyCheck(Tree: TAvgLvlTree);
+
+  procedure E(Msg: string);
+  begin
+    raise Exception.Create('TAvgLvlTreeNode.ConsistencyCheck: '+Msg);
+  end;
+
+var
+  LeftDepth: SizeInt;
+  RightDepth: SizeInt;
+begin
+  // test left son
+  if Left<>nil then begin
+    if Left.Parent<>Self then
+      E('Left.Parent<>Self');
+    if Tree.Compare(Left.Data,Data)>0 then
+      E('Compare(Left.Data,Data)>0');
+    Left.ConsistencyCheck(Tree);
+  end;
+  // test right son
+  if Right<>nil then begin
+    if Right.Parent<>Self then
+      E('Right.Parent<>Self');
+    if Tree.Compare(Data,Right.Data)>0 then
+      E('Compare(Data,Right.Data)>0');
+    Right.ConsistencyCheck(Tree);
+  end;
+  // test balance
+  if Left<>nil then
+    LeftDepth:=Left.TreeDepth+1
+  else
+    LeftDepth:=0;
+  if Right<>nil then
+    RightDepth:=Right.TreeDepth+1
+  else
+    RightDepth:=0;
+  if Balance<>(RightDepth-LeftDepth) then
+    E('Balance['+IntToStr(Balance)+']<>(RightDepth['+IntToStr(RightDepth)+']-LeftDepth['+IntToStr(LeftDepth)+'])');
+end;
+
+function TAvgLvlTreeNode.GetCount: SizeInt;
+begin
+  Result:=1;
+  if Left<>nil then inc(Result,Left.GetCount);
+  if Right<>nil then inc(Result,Right.GetCount);
 end;
 
 function TAvgLvlTreeNode.FindSuccessor: TAvgLvlTreeNode;

@@ -402,8 +402,7 @@ begin
     RaiseGDBException('');
 
   // check items
-  if FItems.ConsistencyCheck <> 0 then
-    RaiseGDBException('');
+  FItems.ConsistencyCheck;
   ANode := FItems.FindLowest;
   while ANode <> nil do
   begin
@@ -433,8 +432,7 @@ begin
   end;
   
   // check Descriptors
-  if FDescriptors.ConsistencyCheck <> 0 then
-    RaiseGDBException('');
+  FDescriptors.ConsistencyCheck;
   ANode := FDescriptors.FindLowest;
   while ANode <> nil do
   begin
