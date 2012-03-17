@@ -252,7 +252,7 @@ type
     property Values[const s: string]: boolean read GetValues write SetValues; default;
   end;
 
-  { TStringToStringTree - Associative array }
+  { TOldStringToStringTree - Associative array }
 
   TStringToStringItem = record
     Name: string;
@@ -269,9 +269,47 @@ type
     property Current: PStringToStringItem read GetCurrent;
   end;
 
-  { TNewStringToStringTree }
+  {$IFDEF DisableNewStringToStringTree}
+  { TOldStringToStringTree }
 
-  TNewStringToStringTree = class(TCustomStringMap)
+  TOldStringToStringTree = class
+  private
+    FCompareItems: TListSortCompare;
+    FCompareNameWithItem: TListSortCompare;
+    FItems: TAvgLvlTree;
+    function GetCount: Integer;
+    function GetValues(const Name: string): string;
+    procedure SetValues(const Name: string; const AValue: string);
+    function FindNode(const Name: string): TAvgLvlTreeNode;
+    function GetNode(Node: TAvgLvlTreeNode; out Name, Value: string): Boolean;
+  public
+    constructor Create(CaseSensitive: boolean);
+    constructor Create(const ACompareItems, ACompareNameWithItem: TListSortCompare);
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Assign(Src: TOldStringToStringTree);
+    function Contains(const Name: string): Boolean;
+    procedure Delete(const Name: string);
+    procedure Add(const Name, Value, Delimiter: string);
+    procedure AddNameValues(List: TStrings);
+    procedure AddValues(List: TStrings); inline; deprecated;
+    procedure AddNames(List: TStrings);
+    function GetFirst(out Name, Value: string): Boolean;
+    function GetLast(out Name, Value: string): Boolean;
+    function GetNext(const Name: string; out NextName, NextValue: string): Boolean;
+    function GetPrev(const Name: string; out PrevName, PrevValue: string): Boolean;
+    property Count: Integer read GetCount;
+    property Values[const Name: string]: string read GetValues write SetValues; default;
+    property Tree: TAvgLvlTree read FItems;
+    property CompareItems: TListSortCompare read FCompareItems;
+    property CompareNameWithItem: TListSortCompare read FCompareNameWithItem;
+  end;
+  TStringToStringTree = TOldStringToStringTree;
+  {$ENDIF}
+
+  { TStringToStringTree }
+
+  TStringToStringTree = class(TCustomStringMap)
   private
     function GetValues(const s: string): string;
     procedure SetValues(const s: string; const AValue: string);
@@ -296,41 +334,6 @@ type
     function GetLast(out Name, Value: string): Boolean;
     function GetNext(const Name: string; out NextName, NextValue: string): Boolean;
     function GetPrev(const Name: string; out PrevName, PrevValue: string): Boolean;
-  end;
-
-  { TStringToStringTree }
-
-  TStringToStringTree = class
-  private
-    FCompareItems: TListSortCompare;
-    FCompareNameWithItem: TListSortCompare;
-    FItems: TAvgLvlTree;
-    function GetCount: Integer;
-    function GetValues(const Name: string): string;
-    procedure SetValues(const Name: string; const AValue: string);
-    function FindNode(const Name: string): TAvgLvlTreeNode;
-    function GetNode(Node: TAvgLvlTreeNode; out Name, Value: string): Boolean;
-  public
-    constructor Create(CaseSensitive: boolean);
-    constructor Create(const ACompareItems, ACompareNameWithItem: TListSortCompare);
-    destructor Destroy; override;
-    procedure Clear;
-    procedure Assign(Src: TStringToStringTree);
-    function Contains(const Name: string): Boolean;
-    procedure Delete(const Name: string);
-    procedure Add(const Name, Value, Delimiter: string);
-    procedure AddNameValues(List: TStrings);
-    procedure AddValues(List: TStrings); inline; deprecated;
-    procedure AddNames(List: TStrings);
-    function GetFirst(out Name, Value: string): Boolean;
-    function GetLast(out Name, Value: string): Boolean;
-    function GetNext(const Name: string; out NextName, NextValue: string): Boolean;
-    function GetPrev(const Name: string; out PrevName, PrevValue: string): Boolean;
-    property Count: Integer read GetCount;
-    property Values[const Name: string]: string read GetValues write SetValues; default;
-    property Tree: TAvgLvlTree read FItems;
-    property CompareItems: TListSortCompare read FCompareItems;
-    property CompareNameWithItem: TListSortCompare read FCompareNameWithItem;
   end;
 
   { TStringToPointerTree - Associative array from string to pointer }
@@ -523,9 +526,9 @@ begin
   Result:=PStringToPointerItem(FCurrent.Data);
 end;
 
-{ TNewStringToStringTree }
+{ TStringToStringTree }
 
-function TNewStringToStringTree.GetValues(const s: string): string;
+function TStringToStringTree.GetValues(const s: string): string;
 var
   Node: TAvgLvlTreeNode;
 begin
@@ -536,31 +539,33 @@ begin
     Result:=''
 end;
 
-procedure TNewStringToStringTree.SetValues(const s: string;
+procedure TStringToStringTree.SetValues(const s: string;
   const AValue: string);
 var
   Node: TAvgLvlTreeNode;
-  NewItem: PStringToStringItem;
+  Item: PStringToStringItem;
 begin
   Node:=FindNode(s);
   if Node<>nil then begin
-    PStringToStringItem(Node.Data)^.Value:=AValue;
+    Item:=PStringToStringItem(Node.Data);
+    Item^.Name:=s; // update case
+    Item^.Value:=AValue;
   end else begin
-    New(NewItem);
-    NewItem^.Name:=s;
-    NewItem^.Value:=AValue;
-    FTree.Add(NewItem);
+    New(Item);
+    Item^.Name:=s;
+    Item^.Value:=AValue;
+    FTree.Add(Item);
   end;
 end;
 
-procedure TNewStringToStringTree.DisposeItem(p: PStringMapItem);
+procedure TStringToStringTree.DisposeItem(p: PStringMapItem);
 var
   Item: PStringToStringItem absolute p;
 begin
   Dispose(Item);
 end;
 
-function TNewStringToStringTree.ItemsAreEqual(p1, p2: PStringMapItem): boolean;
+function TStringToStringTree.ItemsAreEqual(p1, p2: PStringMapItem): boolean;
 var
   Item1: PStringToStringItem absolute p1;
   Item2: PStringToStringItem absolute p2;
@@ -569,7 +574,7 @@ begin
       and (Item1^.Value=Item2^.Value);
 end;
 
-function TNewStringToStringTree.CreateCopy(Src: PStringMapItem): PStringMapItem;
+function TStringToStringTree.CreateCopy(Src: PStringMapItem): PStringMapItem;
 var
   SrcItem: PStringToStringItem absolute Src;
   NewItem: PStringToStringItem;
@@ -580,7 +585,7 @@ begin
   Result:=PStringMapItem(NewItem);
 end;
 
-function TNewStringToStringTree.GetNode(Node: TAvgLvlTreeNode; out Name,
+function TStringToStringTree.GetNode(Node: TAvgLvlTreeNode; out Name,
   Value: string): Boolean;
 var
   Item: PStringToStringItem;
@@ -597,7 +602,7 @@ begin
   end;
 end;
 
-function TNewStringToStringTree.GetString(const Name: string; out Value: string
+function TStringToStringTree.GetString(const Name: string; out Value: string
   ): boolean;
 var
   Node: TAvgLvlTreeNode;
@@ -611,12 +616,12 @@ begin
   end;
 end;
 
-procedure TNewStringToStringTree.Add(const Name, Value: string);
+procedure TStringToStringTree.Add(const Name, Value: string);
 begin
   Values[Name]:=Value;
 end;
 
-procedure TNewStringToStringTree.Add(const Name, Value, Delimiter: string);
+procedure TStringToStringTree.Add(const Name, Value, Delimiter: string);
 var
   OldValue: string;
 begin
@@ -627,7 +632,7 @@ begin
   Values[Name]:=OldValue;
 end;
 
-procedure TNewStringToStringTree.AddNameValues(List: TStrings);
+procedure TStringToStringTree.AddNameValues(List: TStrings);
 var
   i: Integer;
 begin
@@ -635,12 +640,12 @@ begin
     Values[List.Names[i]]:=List.ValueFromIndex[i];
 end;
 
-procedure TNewStringToStringTree.AddValues(List: TStrings);
+procedure TStringToStringTree.AddValues(List: TStrings);
 begin
   AddNames(List);
 end;
 
-procedure TNewStringToStringTree.AddNames(List: TStrings);
+procedure TStringToStringTree.AddNames(List: TStrings);
 var
   i: Integer;
 begin
@@ -648,22 +653,22 @@ begin
     Values[List[i]]:='';
 end;
 
-procedure TNewStringToStringTree.Delete(const Name: string);
+procedure TStringToStringTree.Delete(const Name: string);
 begin
   Remove(Name);
 end;
 
-function TNewStringToStringTree.GetFirst(out Name, Value: string): Boolean;
+function TStringToStringTree.GetFirst(out Name, Value: string): Boolean;
 begin
   Result:=GetNode(Tree.FindLowest,Name,Value);
 end;
 
-function TNewStringToStringTree.GetLast(out Name, Value: string): Boolean;
+function TStringToStringTree.GetLast(out Name, Value: string): Boolean;
 begin
   Result:=GetNode(Tree.FindHighest,Name,Value);
 end;
 
-function TNewStringToStringTree.GetNext(const Name: string; out NextName,
+function TStringToStringTree.GetNext(const Name: string; out NextName,
   NextValue: string): Boolean;
 var
   Node: TAvgLvlTreeNode;
@@ -674,7 +679,7 @@ begin
   Result:=GetNode(Node,NextName,NextValue);
 end;
 
-function TNewStringToStringTree.GetPrev(const Name: string; out PrevName,
+function TStringToStringTree.GetPrev(const Name: string; out PrevName,
   PrevValue: string): Boolean;
 var
   Node: TAvgLvlTreeNode;
@@ -685,7 +690,7 @@ begin
   Result:=GetNode(Node,PrevName,PrevValue);
 end;
 
-function TNewStringToStringTree.AsText: string;
+function TStringToStringTree.AsText: string;
 var
   Node: TAvgLvlTreeNode;
   Item: PStringToStringItem;
@@ -699,7 +704,7 @@ begin
   end;
 end;
 
-procedure TNewStringToStringTree.Assign(Source: TCustomStringMap);
+procedure TStringToStringTree.Assign(Source: TCustomStringMap);
 var
   Node: TAvgLvlTreeNode;
   Item: PStringToStringItem;
@@ -715,7 +720,7 @@ begin
   end;
 end;
 
-function TNewStringToStringTree.GetEnumerator: TStringToStringTreeEnumerator;
+function TStringToStringTree.GetEnumerator: TStringToStringTreeEnumerator;
 begin
   Result:=TStringToStringTreeEnumerator.Create(FTree);
 end;
@@ -1802,14 +1807,15 @@ begin
   end;
 end;
 
-{ TStringToStringTree }
+{$IFDEF DisableNewStringToStringTree}
+{ TOldStringToStringTree }
 
-function TStringToStringTree.GetCount: Integer;
+function TOldStringToStringTree.GetCount: Integer;
 begin
   Result:=FItems.Count;
 end;
 
-function TStringToStringTree.GetValues(const Name: string): string;
+function TOldStringToStringTree.GetValues(const Name: string): string;
 var
   Node: TAvgLvlTreeNode;
 begin
@@ -1820,7 +1826,7 @@ begin
     Result:='';
 end;
 
-procedure TStringToStringTree.SetValues(const Name: string; const AValue: string);
+procedure TOldStringToStringTree.SetValues(const Name: string; const AValue: string);
 var
   NewItem: PStringToStringItem;
   Node: TAvgLvlTreeNode;
@@ -1836,12 +1842,12 @@ begin
   end;
 end;
 
-function TStringToStringTree.FindNode(const Name: string): TAvgLvlTreeNode;
+function TOldStringToStringTree.FindNode(const Name: string): TAvgLvlTreeNode;
 begin
    Result:=FItems.FindKey(Pointer(Name),FCompareNameWithItem);
 end;
 
-function TStringToStringTree.GetNode(Node: TAvgLvlTreeNode;
+function TOldStringToStringTree.GetNode(Node: TAvgLvlTreeNode;
   out Name, Value: string): Boolean;
 var
   Item: PStringToStringItem;
@@ -1858,7 +1864,7 @@ begin
   end;
 end;
 
-constructor TStringToStringTree.Create(CaseSensitive: boolean);
+constructor TOldStringToStringTree.Create(CaseSensitive: boolean);
 begin
   if CaseSensitive then
     Create(@CompareStringToStringItems,@CompareAnsiStringWithStrToStrItem)
@@ -1866,7 +1872,7 @@ begin
     Create(@CompareStringToStringItemsI,@CompareAnsiStringWithStrToStrItemI);
 end;
 
-constructor TStringToStringTree.Create(const ACompareItems,
+constructor TOldStringToStringTree.Create(const ACompareItems,
   ACompareNameWithItem: TListSortCompare);
 begin
   FCompareItems:=ACompareItems;
@@ -1874,14 +1880,14 @@ begin
   FItems:=TAvgLvlTree.Create(FCompareItems);
 end;
 
-destructor TStringToStringTree.Destroy;
+destructor TOldStringToStringTree.Destroy;
 begin
   Clear;
   FItems.Free;
   inherited Destroy;
 end;
 
-procedure TStringToStringTree.Clear;
+procedure TOldStringToStringTree.Clear;
 var
   Node: TAvgLvlTreeNode;
   Item: PStringToStringItem;
@@ -1895,7 +1901,7 @@ begin
   FItems.Clear;
 end;
 
-procedure TStringToStringTree.Assign(Src: TStringToStringTree);
+procedure TOldStringToStringTree.Assign(Src: TOldStringToStringTree);
 var
   Node: TAvgLvlTreeNode;
   Item: PStringToStringItem;
@@ -1910,12 +1916,12 @@ begin
   end;
 end;
 
-function TStringToStringTree.Contains(const Name: string): Boolean;
+function TOldStringToStringTree.Contains(const Name: string): Boolean;
 begin
   Result:=FindNode(Name)<>nil;
 end;
 
-procedure TStringToStringTree.Delete(const Name: string);
+procedure TOldStringToStringTree.Delete(const Name: string);
 var
   Node: TAvgLvlTreeNode;
   Item: PStringToStringItem;
@@ -1927,7 +1933,7 @@ begin
   Dispose(Item);
 end;
 
-procedure TStringToStringTree.Add(const Name, Value, Delimiter: string);
+procedure TOldStringToStringTree.Add(const Name, Value, Delimiter: string);
 var
   OldValue: string;
 begin
@@ -1938,7 +1944,7 @@ begin
   Values[Name]:=OldValue;
 end;
 
-procedure TStringToStringTree.AddNameValues(List: TStrings);
+procedure TOldStringToStringTree.AddNameValues(List: TStrings);
 var
   i: Integer;
 begin
@@ -1946,12 +1952,12 @@ begin
     Values[List.Names[i]]:=List.ValueFromIndex[i];
 end;
 
-procedure TStringToStringTree.AddValues(List: TStrings);
+procedure TOldStringToStringTree.AddValues(List: TStrings);
 begin
   AddNames(List);
 end;
 
-procedure TStringToStringTree.AddNames(List: TStrings);
+procedure TOldStringToStringTree.AddNames(List: TStrings);
 var
   i: Integer;
 begin
@@ -1959,17 +1965,17 @@ begin
     Values[List[i]]:='';
 end;
 
-function TStringToStringTree.GetFirst(out Name, Value: string): Boolean;
+function TOldStringToStringTree.GetFirst(out Name, Value: string): Boolean;
 begin
   Result:=GetNode(Tree.FindLowest,Name,Value);
 end;
 
-function TStringToStringTree.GetLast(out Name, Value: string): Boolean;
+function TOldStringToStringTree.GetLast(out Name, Value: string): Boolean;
 begin
   Result:=GetNode(Tree.FindHighest,Name,Value);
 end;
 
-function TStringToStringTree.GetNext(const Name: string; out NextName,
+function TOldStringToStringTree.GetNext(const Name: string; out NextName,
   NextValue: string): Boolean;
 var
   Node: TAvgLvlTreeNode;
@@ -1980,7 +1986,7 @@ begin
   Result:=GetNode(Node,NextName,NextValue);
 end;
 
-function TStringToStringTree.GetPrev(const Name: string; out PrevName,
+function TOldStringToStringTree.GetPrev(const Name: string; out PrevName,
   PrevValue: string): Boolean;
 var
   Node: TAvgLvlTreeNode;
@@ -1990,7 +1996,7 @@ begin
     Node:=Node.FindPrecessor;
   Result:=GetNode(Node,PrevName,PrevValue);
 end;
-
+{$ENDIF}
 
 { TPointerToPointerTree }
 
