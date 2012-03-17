@@ -39,7 +39,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="14">
+    <Units Count="15">
       <Unit0>
         <Filename Value="runtests.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -110,6 +110,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestLazXML"/>
       </Unit13>
+      <Unit14>
+        <Filename Value="lazutils\testavglvltree.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestAvgLvlTree"/>
+      </Unit14>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
