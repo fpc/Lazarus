@@ -1232,6 +1232,7 @@ begin
       Result := LCL_CAPABILITY_NO;
     lcAntialiasingEnabledByDefault:
       Result := LCL_CAPABILITY_YES;
+    lcAccessibilitySupport: Result := LCL_CAPABILITY_YES;
   else
     Result := inherited;
   end;

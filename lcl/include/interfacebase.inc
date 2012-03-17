@@ -100,6 +100,7 @@ begin
     lcSendsUTF8KeyPress:
       if IntfSendsUTF8KeyPress() then Result := LCL_CAPABILITY_YES
       else Result := LCL_CAPABILITY_NO;
+    lcAccessibilitySupport: Result := LCL_CAPABILITY_NO;
   else
     Result := LCL_CAPABILITY_NO;
   end;

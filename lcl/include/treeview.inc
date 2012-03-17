@@ -3070,7 +3070,7 @@ begin
   // Accessibility
   AccessibleDescription := rsTTreeViewAccessibilityDescription;
   AccessibleRole := larTreeView;
-  FAccessibilityOn := True;
+  FAccessibilityOn := WidgetSet.GetLCLCapability(lcAccessibilitySupport) = LCL_CAPABILITY_YES;
 end;
 
 destructor TCustomTreeView.Destroy;
