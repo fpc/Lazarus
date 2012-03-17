@@ -544,6 +544,17 @@ resourcestring
     +' continue debugging. This may NOT be safe. Press "Abort" to stop the '
     +'debugger.%0:sException: %1:s with message "%2:s"%0:sContext: %4:s. State'
     +': %5:s %0:s%0:s%3:s';
+  gdbmiCommandStartMainBreakError = 'The debugger could not set a breakpoint on'
+    + ' the application''s entry point.%0:s'
+    + 'This may be caused by missing debug info.';
+  gdbmiCommandStartMainRunError = 'The debugger could not run the application.%0:s'
+    + 'This may be caused by missing debug info.';
+  gdbmiCommandStartMainRunToStopError = 'The debugger was unable to initalize itself.%0:s'
+    + 'The application did run (and terminated) before the debugger could set'
+    + ' any breakpoints. %0:s'
+    + 'This may be caused by missing debug info.';
+  gdbmiCommandStartMainRunNoPIDError = 'The debugger failed to get the application''s PID.%0:s'
+    + 'This may be caused by missing debug info.';
 
 
 implementation
@@ -4151,14 +4162,16 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
            If no main break can be set, it may still be possible (desirable) to run
            the app, without debug-capacbilities
         *)
-        SetDebuggerState(dsError);
+        SetDebuggerErrorState(Format(gdbmiCommandStartMainBreakError, [LineEnding]),
+                              ErrorStateInfo);
         exit; // failed to find a main breakpoint
       end;
 
       // RUN
       if not ExecuteCommand(Cmd, R)
       then begin
-        SetDebuggerState(dsError);
+        SetDebuggerErrorState(Format(gdbmiCommandStartMainRunError, [LineEnding]),
+                              ErrorStateInfo);
         exit;
       end;
       s := r.Values + FLogWarnings;
@@ -4197,25 +4210,24 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
     if DebuggerState = dsError then
       exit;
 
-    if not(R.State in [dsRun, dsStop])
+    if R.State = dsStop
     then begin
-      SetDebuggerState(dsError);
+      {$IFDEF DBG_VERBOSE}
+      debugln('Debugger INIT failed. App has already run');
+      {$ENDIF}
+      SetDebuggerErrorState(Format(gdbmiCommandStartMainRunToStopError, [LineEnding]),
+                            ErrorStateInfo);
+      exit;
+    end;
+
+    if not(R.State = dsRun)
+    then begin
+      SetDebuggerErrorState(Format(gdbmiCommandStartMainRunError, [LineEnding]),
+                            ErrorStateInfo);
       exit;
     end;
 
     FTheDebugger.FMainAddrBreak.Clear(Self);
-
-    if R.State = dsStop then begin
-      {$IFDEF DBG_VERBOSE}
-      debugln('Debugger INIT failed. App has already run');
-      {$ENDIF}
-      SetDebuggerState(dsError);
-      exit;
-      //if (DebuggerState = dsStop) then // and (tfHasSymbols in TargetInfo^.TargetFlags)
-      //  SetDebuggerState(dsInit); // make sure state changes are triggered
-      //SetDebuggerState(dsStop);
-      //exit;
-    end;
 
     SetDebuggerState(dsRun); // TODO: should not be needed here
 
@@ -4254,7 +4266,8 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       if Result <> 0 then exit;
     end;
 
-    SetDebuggerState(dsError); // no PID found
+    // no PID found
+    SetDebuggerErrorState(Format(gdbmiCommandStartMainRunNoPIDError, [LineEnding]));
   end;
 
 var
@@ -4377,6 +4390,13 @@ begin
 
     TargetInfo^.TargetPID := RunToMain(EntryPoint);
 
+    if DebuggerState = dsStop
+    then begin
+      Result := False;
+      FSuccess := False;
+      Exit;
+    end;
+
     if DebuggerState = dsError
     then begin
       Result := False;
@@ -4391,9 +4411,6 @@ begin
       SetDebuggerState(dsError);
       Exit;
     end;
-
-    //if DebuggerState = dsStop
-    //then exit;
 
     DebugLn('[Debugger] Target PID: %u', [TargetInfo^.TargetPID]);
 
