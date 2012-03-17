@@ -7,9 +7,9 @@ unit LazSynIMM;
 interface
 
 uses
-  windows, imm, Classes, SysUtils, LMessages, LazLoggerBase, LCLType, LCLProc, Controls,
+  windows, imm, Classes, SysUtils, LazLoggerBase, LCLType, LCLProc, Controls,
   Graphics, SynEditMiscClasses, SynTextDrawer, SynEditPointClasses, SynEditMarkupSelection,
-  SynEditMarkup, SynEditTypes, SynEditKeyCmds, SynEditTextBase, LazSynEditText;
+  SynEditMarkup, SynEditTypes, SynEditKeyCmds, LazSynEditText;
 
 type
 
@@ -691,8 +691,6 @@ begin
 end;
 
 procedure LazSynImeFull.WMImeStartComposition(var Msg: TMessage);
-var
-  imc: HIMC;
 begin
   //debugln(['TCustomSynEdit.WMImeStartComposition ']);
   FImeBlockSelection.StartLineBytePos := CaretObj.LineBytePos;
