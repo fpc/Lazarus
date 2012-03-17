@@ -1937,6 +1937,11 @@ const
 
   SM_SWSCROLLBARSPACING = 120;
 
+  {needed for accurate maximized window size, since under X11 we cannot get it until
+   window is decorated by wm. see issue #21119.}
+  SM_LCLMAXIMIZEDWIDTH = 121;
+  SM_LCLMAXIMIZEDHEIGHT = 122;
+
 //==============================================
 // SystemParametersInfo constants
 //==============================================

@@ -5902,6 +5902,16 @@ begin
             gtk_widget_style_get(P, 'scrollbar-spacing', @result, nil);
         end;
       end;
+
+    SM_LCLMAXIMIZEDWIDTH:
+      begin
+        Result := GetSystemMetrics(SM_CXMAXIMIZED);
+      end;
+    SM_LCLMAXIMIZEDHEIGHT:
+      begin
+        Result := GetSystemMetrics(SM_CYMAXIMIZED) - 1 -
+          (GetSystemMetrics(SM_CYCAPTION) - (GetSystemMetrics(SM_CYSIZEFRAME) * 2));
+      end;
   end;
 end;
 

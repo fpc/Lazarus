@@ -3957,6 +3957,15 @@ begin
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_SWAPBUTTON       ');
       end;
+    SM_LCLMAXIMIZEDWIDTH:
+      begin
+        Result := GetSystemMetrics(SM_CXMAXIMIZED);
+      end;
+    SM_LCLMAXIMIZEDHEIGHT:
+      begin
+        Result := GetSystemMetrics(SM_CYMAXIMIZED) - 1 -
+          (GetSystemMetrics(SM_CYCAPTION) - (GetSystemMetrics(SM_CYSIZEFRAME) * 2));
+      end;
   end;
 end;
 

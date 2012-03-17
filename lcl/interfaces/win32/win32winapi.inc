@@ -2042,7 +2042,17 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.GetSystemMetrics(NIndex: Integer): Integer;
 begin
-  Result := Windows.GetSystemMetrics(NIndex);
+  case nIndex of
+    SM_LCLMAXIMIZEDWIDTH:
+      Result := Windows.GetSystemMetrics(SM_CXMAXIMIZED) -
+        (Windows.GetSystemMetrics(SM_CYSIZEFRAME) * 2);
+    SM_LCLMAXIMIZEDHEIGHT:
+      Result := Windows.GetSystemMetrics(SM_CYMAXIMIZED) -
+        (Windows.GetSystemMetrics(SM_CYCAPTION) +
+        (Windows.GetSystemMetrics(SM_CYSIZEFRAME) * 2));
+  else
+    Result := Windows.GetSystemMetrics(NIndex);
+  end;
 end;
 
 function TWin32WidgetSet.GetTextColor(DC: HDC): TColorRef;

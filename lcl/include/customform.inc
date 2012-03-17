@@ -74,8 +74,60 @@ end;
   Gets called after the construction of the object
  ------------------------------------------------------------------------------}
 procedure TCustomForm.AfterConstruction;
+var
+  NewWidth, NewHeight: Integer;
 begin
-  //DebugLn(['TCustomForm.AfterConstruction ']);
+  // issue #21119, prepare maximized or fullscreen form to accurate dimensions.
+  // we avoid flickering also in this case.
+  if not (csDesigning in ComponentState) then
+  begin
+    if (WindowState = wsMaximized) and (FormStyle <> fsMDIChild) then
+    begin
+      {$IFDEF DEBUG_SM_LCLMAXIMIZED}
+      DebugLn('TCustomForm.AfterConstruction: SM_CYCAPTION ',
+        dbgs(GetSystemMetrics(SM_CYCAPTION)),
+      ' SM_CYSIZEFRAME ',dbgs(GetSystemMetrics(SM_CYSIZEFRAME)),
+      ' SM_CXMAXIMIZED ',dbgs(GetSystemMetrics(SM_CXMAXIMIZED)),
+      ' SM_CYMAXIMIZED ',dbgs(GetSystemMetrics(SM_CYMAXIMIZED)),
+      ' SM_LCLMAXIMIZEDHEIGHT ',dbgs(GetSystemMetrics(SM_LCLMAXIMIZEDHEIGHT)),
+      ' SM_LCLMAXIMIZEDWIDTH ',dbgs(GetSystemMetrics(SM_LCLMAXIMIZEDWIDTH)));
+      {$ENDIF}
+      if (BorderStyle <> bsNone) and (FormStyle <> fsSplash) then
+      begin
+        NewHeight := GetSystemMetrics(SM_LCLMAXIMIZEDHEIGHT);
+        NewWidth := GetSystemMetrics(SM_LCLMAXIMIZEDWIDTH);
+        // if some ws does not implement this then provide normal metrics.
+        if NewHeight = 0 then
+          NewHeight := GetSystemMetrics(SM_CYMAXIMIZED);
+        if NewWidth = 0 then
+          NewHeight := GetSystemMetrics(SM_CXMAXIMIZED);
+      end else
+      begin
+        NewHeight := GetSystemMetrics(SM_CYMAXIMIZED);
+        NewWidth := GetSystemMetrics(SM_CXMAXIMIZED);
+      end;
+
+      if Constraints.MaxWidth > 0 then
+        NewWidth := Min(Constraints.MaxWidth, NewWidth);
+      if Constraints.MaxHeight > 0 then
+        NewHeight := Min(Constraints.MaxHeight, NewHeight);
+      Width := NewWidth;
+      Height := NewHeight;
+    end;
+
+    if (WindowState = wsFullScreen) and (FormStyle <> fsMDIChild) then
+    begin
+      NewWidth := LCLIntf.GetSystemMetrics(SM_CXFULLSCREEN);
+      NewHeight := LCLIntf.GetSystemMetrics(SM_CYFULLSCREEN);
+      if Constraints.MaxWidth > 0 then
+        NewWidth := Min(Constraints.MaxWidth, NewWidth);
+      if Constraints.MaxHeight > 0 then
+        NewHeight := Min(Constraints.MaxHeight, NewHeight);
+      Width := NewWidth;
+      Height := NewHeight;
+    end;
+  end;
+
   DoCreate;
   EndFormUpdate; // the BeginFormUpdate is in CreateNew
   inherited AfterConstruction;
