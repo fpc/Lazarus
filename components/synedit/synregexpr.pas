@@ -3202,7 +3202,7 @@ function TRegExpr.MatchPrim (prog : PRegExprChar) : boolean;
                 // If it could work, try it.
                 if (nextch = #0) or (reginput^ = nextch) then begin
                   {$IFDEF ComplexBraces}
-                  System.Move (LoopStack, SavedLoopStack, SizeOf (LoopStack)); //###0.925
+                  System.Move (LoopStack, SavedLoopStack{%H-}, SizeOf (LoopStack)); //###0.925
                   SavedLoopStackIdx := LoopStackIdx;
                   {$ENDIF}
                   if MatchPrim (next) then begin
