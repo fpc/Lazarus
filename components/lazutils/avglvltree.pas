@@ -39,11 +39,15 @@ type
   TObjectSortCompare = function(Tree: TAvgLvlTree; Data1, Data2: Pointer
                                 ): integer of object;
 
+  { TAvgLvlTreeNode }
+
   TAvgLvlTreeNode = class
   public
     Parent, Left, Right: TAvgLvlTreeNode;
-    Balance: integer;
+    Balance: integer; // = RightDepth-LeftDepth  -2..+2, after balancing: -1,0,+1
     Data: Pointer;
+    function FindSuccessor: TAvgLvlTreeNode; // next right
+    function FindPrecessor: TAvgLvlTreeNode; // next left
     procedure Clear;
     function TreeDepth: integer; // longest WAY down. e.g. only one node => 0 !
   end;
@@ -55,13 +59,15 @@ type
 
   TAvgLvlTreeNodeEnumerator = class
   protected
-    FTree: TAvgLvlTree;
     FCurrent: TAvgLvlTreeNode;
+    FLowToHigh: boolean;
+    FTree: TAvgLvlTree;
   public
-    constructor Create(Tree: TAvgLvlTree);
+    constructor Create(Tree: TAvgLvlTree; aLowToHigh: boolean = true);
     function MoveNext: Boolean;
     property Current: TAvgLvlTreeNode read FCurrent;
-  end;
+    property LowToHigh: boolean read FLowToHigh;
+ end;
 
   { TAvgLvlTree }
 
@@ -80,15 +86,36 @@ type
     procedure SetCompares(const NewCompare: TListSortCompare;
                           const NewObjectCompare: TObjectSortCompare);
   public
+    constructor Create(OnCompareMethod: TListSortCompare);
+    constructor CreateObjectCompare(OnCompareMethod: TObjectSortCompare);
+    constructor Create;
+    destructor Destroy; override;
+    property OnCompare: TListSortCompare read FOnCompare write SetOnCompare;
+    property OnObjectCompare: TObjectSortCompare read FOnObjectCompare write SetOnObjectCompare;
+
+    // add, delete, remove, move
+    procedure Add(ANode: TAvgLvlTreeNode);
+    function Add(Data: Pointer): TAvgLvlTreeNode;
+    procedure Delete(ANode: TAvgLvlTreeNode);
+    procedure Remove(Data: Pointer);
+    procedure RemovePointer(Data: Pointer);
+    procedure MoveDataLeftMost(var ANode: TAvgLvlTreeNode);
+    procedure MoveDataRightMost(var ANode: TAvgLvlTreeNode);
+    procedure Clear;
+    procedure FreeAndClear;
+    procedure FreeAndDelete(ANode: TAvgLvlTreeNode);
+
+    // search
     property Root: TAvgLvlTreeNode read fRoot;
+    property Count: integer read FCount;
     function Compare(Data1, Data2: Pointer): integer;
     function Find(Data: Pointer): TAvgLvlTreeNode;
     function FindKey(Key: Pointer;
                      OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
     function FindNearestKey(Key: Pointer;
                        OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
-    function FindSuccessor(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode;
-    function FindPrecessor(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode;
+    function FindSuccessor(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode; inline;
+    function FindPrecessor(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode; inline;
     function FindLowest: TAvgLvlTreeNode;
     function FindHighest: TAvgLvlTreeNode;
     function FindNearest(Data: Pointer): TAvgLvlTreeNode;
@@ -101,28 +128,16 @@ type
                        OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
     function FindLeftMostSameKey(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode;
     function FindRightMostSameKey(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode;
-    procedure Add(ANode: TAvgLvlTreeNode);
-    function Add(Data: Pointer): TAvgLvlTreeNode;
-    procedure Delete(ANode: TAvgLvlTreeNode);
-    procedure Remove(Data: Pointer);
-    procedure RemovePointer(Data: Pointer);
-    procedure MoveDataLeftMost(var ANode: TAvgLvlTreeNode);
-    procedure MoveDataRightMost(var ANode: TAvgLvlTreeNode);
-    property OnCompare: TListSortCompare read FOnCompare write SetOnCompare;
-    property OnObjectCompare: TObjectSortCompare read FOnObjectCompare write SetOnObjectCompare;
-    procedure Clear;
-    procedure FreeAndClear;
-    procedure FreeAndDelete(ANode: TAvgLvlTreeNode);
-    property Count: integer read FCount;
+    property NodeMemManager: TAvgLvlTreeNodeMemManager read FNodeMemManager write FNodeMemManager;
+
+    // enumerators
+    function GetEnumerator: TAvgLvlTreeNodeEnumerator;
+    function GetEnumeratorHighToLow: TAvgLvlTreeNodeEnumerator;
+
+    // consistency
     function ConsistencyCheck: integer;
     procedure WriteReportToStream(s: TStream);
     function ReportAsString: string;
-    property NodeMemManager: TAvgLvlTreeNodeMemManager read FNodeMemManager write FNodeMemManager;
-    constructor Create(OnCompareMethod: TListSortCompare);
-    constructor CreateObjectCompare(OnCompareMethod: TObjectSortCompare);
-    constructor Create;
-    destructor Destroy; override;
-    function GetEnumerator: TAvgLvlTreeNodeEnumerator;
   end;
   PAvgLvlTree = ^TAvgLvlTree;
 
@@ -422,17 +437,26 @@ end;
 
 { TAvgLvlTreeNodeEnumerator }
 
-constructor TAvgLvlTreeNodeEnumerator.Create(Tree: TAvgLvlTree);
+constructor TAvgLvlTreeNodeEnumerator.Create(Tree: TAvgLvlTree;
+  aLowToHigh: boolean);
 begin
   FTree:=Tree;
+  FLowToHigh:=aLowToHigh;
 end;
 
 function TAvgLvlTreeNodeEnumerator.MoveNext: Boolean;
 begin
-  if FCurrent=nil then
-    FCurrent:=FTree.FindLowest
-  else
-    FCurrent:=FTree.FindSuccessor(FCurrent);
+  if FLowToHigh then begin
+    if FCurrent<>nil then
+      FCurrent:=FCurrent.FindSuccessor
+    else
+      FCurrent:=FTree.FindLowest;
+  end else begin
+    if FCurrent<>nil then
+      FCurrent:=FCurrent.FindPrecessor
+    else
+      FCurrent:=FTree.FindHighest;
+  end;
   Result:=FCurrent<>nil;
 end;
 
@@ -666,7 +690,7 @@ var
 begin
   Node:=FindNode(Name);
   if Node<>nil then
-    Node:=Tree.FindSuccessor(Node);
+    Node:=Node.FindSuccessor;
   Result:=GetNode(Node,NextName,NextValue);
 end;
 
@@ -677,7 +701,7 @@ var
 begin
   Node:=FindNode(Name);
   if Node<>nil then
-    Node:=Tree.FindPrecessor(Node);
+    Node:=Node.FindPrecessor;
   Result:=GetNode(Node,PrevName,PrevValue);
 end;
 
@@ -691,7 +715,7 @@ begin
   while Node<>nil do begin
     Item:=PStringToStringItem(Node.Data);
     Result:=Result+Item^.Name+'='+Item^.Value+LineEnding;
-    Node:=Tree.FindSuccessor(Node);
+    Node:=Node.FindSuccessor;
   end;
 end;
 
@@ -707,7 +731,7 @@ begin
   while Node<>nil do begin
     Item:=PStringToStringItem(Node.Data);
     Values[Item^.Name]:=Item^.Value;
-    Node:=Source.Tree.FindSuccessor(Node);
+    Node:=Node.FindSuccessor;
   end;
 end;
 
@@ -1217,7 +1241,7 @@ begin
   end;
   // DelNode has both: Left and Right
   // Replace ANode with symmetric Successor
-  Successor:=FindSuccessor(ANode);
+  Successor:=ANode.FindSuccessor;
   OldLeft:=ANode.Left;
   OldRight:=ANode.Right;
   OldSuccParent:=Successor.Parent;
@@ -1285,7 +1309,12 @@ end;
 
 function TAvgLvlTree.GetEnumerator: TAvgLvlTreeNodeEnumerator;
 begin
-  Result:=TAvgLvlTreeNodeEnumerator.Create(Self);
+  Result:=TAvgLvlTreeNodeEnumerator.Create(Self,true);
+end;
+
+function TAvgLvlTree.GetEnumeratorHighToLow: TAvgLvlTreeNodeEnumerator;
+begin
+  Result:=TAvgLvlTreeNodeEnumerator.Create(Self,false);
 end;
 
 function TAvgLvlTree.Find(Data: Pointer): TAvgLvlTreeNode;
@@ -1362,7 +1391,7 @@ begin
     Data:=ANode.Data;
     Result:=ANode;
     repeat
-      LeftNode:=FindPrecessor(Result);
+      LeftNode:=Result.FindPrecessor;
       if (LeftNode=nil) or (Compare(Data,LeftNode.Data)<>0) then break;
       Result:=LeftNode;
     until false;
@@ -1380,7 +1409,7 @@ begin
     Data:=ANode.Data;
     Result:=ANode;
     repeat
-      RightNode:=FindSuccessor(Result);
+      RightNode:=Result.FindSuccessor;
       if (RightNode=nil) or (Compare(Data,RightNode.Data)<>0) then break;
       Result:=RightNode;
     until false;
@@ -1416,7 +1445,7 @@ begin
   Result:=FindLeftMost(Data);
   while (Result<>nil) do begin
     if Result.Data=Data then break;
-    Result:=FindSuccessor(Result);
+    Result:=Result.FindSuccessor;
     if Result=nil then exit(nil);
     if Compare(Data,Result.Data)<>0 then exit(nil);
   end;
@@ -1428,7 +1457,7 @@ var
 begin
   Result:=Find(Data);
   while (Result<>nil) do begin
-    Left:=FindPrecessor(Result);
+    Left:=Result.FindPrecessor;
     if (Left=nil) or (Compare(Data,Left.Data)<>0) then break;
     Result:=Left;
   end;
@@ -1440,7 +1469,7 @@ var
 begin
   Result:=Find(Data);
   while (Result<>nil) do begin
-    Right:=FindSuccessor(Result);
+    Right:=Result.FindSuccessor;
     if (Right=nil) or (Compare(Data,Right.Data)<>0) then break;
     Result:=Right;
   end;
@@ -1468,28 +1497,18 @@ end;
 
 function TAvgLvlTree.FindSuccessor(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode;
 begin
-  Result:=ANode.Right;
-  if Result<>nil then begin
-    while (Result.Left<>nil) do Result:=Result.Left;
-  end else begin
-    Result:=ANode;
-    while (Result.Parent<>nil) and (Result.Parent.Right=Result) do
-      Result:=Result.Parent;
-    Result:=Result.Parent;
-  end;
+  if ANode<>nil then
+    Result:=ANode.FindSuccessor
+  else
+    Result:=nil;
 end;
 
 function TAvgLvlTree.FindPrecessor(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode;
 begin
-  Result:=ANode.Left;
-  if Result<>nil then begin
-    while (Result.Right<>nil) do Result:=Result.Right;
-  end else begin
-    Result:=ANode;
-    while (Result.Parent<>nil) and (Result.Parent.Left=Result) do
-      Result:=Result.Parent;
-    Result:=Result.Parent;
-  end;
+  if ANode<>nil then
+    Result:=ANode.FindPrecessor
+  else
+    Result:=nil;
 end;
 
 procedure TAvgLvlTree.MoveDataLeftMost(var ANode: TAvgLvlTreeNode);
@@ -1499,7 +1518,7 @@ begin
   if ANode=nil then exit;
   LeftMost:=ANode;
   repeat
-    PreNode:=FindPrecessor(LeftMost);
+    PreNode:=LeftMost.FindPrecessor;
     if (PreNode=nil) or (Compare(ANode,PreNode)<>0) then break;
     LeftMost:=PreNode;
   until false;
@@ -1517,7 +1536,7 @@ begin
   if ANode=nil then exit;
   RightMost:=ANode;
   repeat
-    PostNode:=FindSuccessor(RightMost);
+    PostNode:=RightMost.FindSuccessor;
     if (PostNode=nil) or (Compare(ANode,PostNode)<>0) then break;
     RightMost:=PostNode;
   until false;
@@ -1721,7 +1740,7 @@ begin
       while ANode<>nil do begin
         List[i]:=ANode.Data;
         inc(i);
-        ANode:=FindSuccessor(ANode);
+        ANode:=ANode.FindSuccessor;
       end;
       // clear the tree
       Clear;
@@ -1764,6 +1783,32 @@ begin
     Result:=LeftDepth
   else
     Result:=RightDepth;
+end;
+
+function TAvgLvlTreeNode.FindSuccessor: TAvgLvlTreeNode;
+begin
+  Result:=Right;
+  if Result<>nil then begin
+    while (Result.Left<>nil) do Result:=Result.Left;
+  end else begin
+    Result:=Self;
+    while (Result.Parent<>nil) and (Result.Parent.Right=Result) do
+      Result:=Result.Parent;
+    Result:=Result.Parent;
+  end;
+end;
+
+function TAvgLvlTreeNode.FindPrecessor: TAvgLvlTreeNode;
+begin
+  Result:=Left;
+  if Result<>nil then begin
+    while (Result.Right<>nil) do Result:=Result.Right;
+  end else begin
+    Result:=Self;
+    while (Result.Parent<>nil) and (Result.Parent.Left=Result) do
+      Result:=Result.Parent;
+    Result:=Result.Parent;
+  end;
 end;
 
 procedure TAvgLvlTreeNode.Clear;
@@ -1953,7 +1998,7 @@ begin
   while Node<>nil do begin
     Item:=PStringToStringItem(Node.Data);
     Dispose(Item);
-    Node:=FItems.FindSuccessor(Node);
+    Node:=Node.FindSuccessor;
   end;
   FItems.Clear;
 end;
@@ -1969,7 +2014,7 @@ begin
   while Node<>nil do begin
     Item:=PStringToStringItem(Node.Data);
     Values[Item^.Name]:=Item^.Value;
-    Node:=Src.Tree.FindSuccessor(Node);
+    Node:=Node.FindSuccessor;
   end;
 end;
 
@@ -2039,7 +2084,7 @@ var
 begin
   Node:=FindNode(Name);
   if Node<>nil then
-    Node:=Tree.FindSuccessor(Node);
+    Node:=Node.FindSuccessor;
   Result:=GetNode(Node,NextName,NextValue);
 end;
 
@@ -2050,7 +2095,7 @@ var
 begin
   Node:=FindNode(Name);
   if Node<>nil then
-    Node:=Tree.FindPrecessor(Node);
+    Node:=Node.FindPrecessor;
   Result:=GetNode(Node,PrevName,PrevValue);
 end;
 
@@ -2133,7 +2178,7 @@ begin
   while Node<>nil do begin
     Item:=PPointerToPointerItem(Node.Data);
     Dispose(Item);
-    Node:=FItems.FindSuccessor(Node);
+    Node:=Node.FindSuccessor;
   end;
   FItems.Clear;
 end;
@@ -2172,7 +2217,7 @@ var
 begin
   Node:=FindNode(Key);
   if Node<>nil then
-    Node:=Tree.FindSuccessor(Node);
+    Node:=Node.FindSuccessor;
   Result:=GetNode(Node,NextKey,NextValue);
 end;
 
@@ -2183,7 +2228,7 @@ var
 begin
   Node:=FindNode(Key);
   if Node<>nil then
-    Node:=Tree.FindPrecessor(Node);
+    Node:=Node.FindPrecessor;
   Result:=GetNode(Node,PrevKey,PrevValue);
 end;
 
@@ -2199,7 +2244,7 @@ begin
   if FCurrent=nil then
     FCurrent:=FTree.FindLowest
   else
-    FCurrent:=FTree.FindSuccessor(FCurrent);
+    FCurrent:=FCurrent.FindSuccessor;
   Result:=FCurrent<>nil;
 end;
 
@@ -2262,7 +2307,7 @@ begin
   Node:=FTree.FindLowest;
   while Node<>nil do begin
     DisposeItem(PStringMapItem(Node.Data));
-    Node:=FTree.FindSuccessor(Node);
+    Node:=Node.FindSuccessor;
   end;
   FTree.Clear;
 end;
@@ -2281,7 +2326,7 @@ begin
   while Node<>nil do begin
     Item:=PStringMapItem(Node.Data);
     List.Add(Item^.Name);
-    Node:=Tree.FindSuccessor(Node);
+    Node:=Node.FindSuccessor;
   end;
 end;
 
@@ -2320,8 +2365,8 @@ begin
     Item:=PStringMapItem(Node.Data);
     OtherItem:=PStringMapItem(OtherNode.Data);
     if not ItemsAreEqual(Item,OtherItem) then exit;
-    OtherNode:=OtherTree.Tree.FindSuccessor(OtherNode);
-    Node:=Tree.FindSuccessor(Node);
+    OtherNode:=OtherNode.FindSuccessor;
+    Node:=Node.FindSuccessor;
   end;
   if OtherNode<>nil then exit;
   Result:=true;
@@ -2339,7 +2384,7 @@ begin
   while SrcNode<>nil do begin
     SrcItem:=PStringMapItem(SrcNode.Data);
     Tree.Add(CreateCopy(SrcItem));
-    SrcNode:=Source.Tree.FindSuccessor(SrcNode);
+    SrcNode:=SrcNode.FindSuccessor;
   end;
 end;
 
