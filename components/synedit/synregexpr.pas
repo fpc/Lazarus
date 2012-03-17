@@ -333,7 +333,7 @@ type
     function ParsePiece (var flagp : integer) : PRegExprChar;
     // something followed by possible [*+?]
 
-    function ParseAtom (var flagp : integer) : PRegExprChar;
+    function ParseAtom (out flagp : integer) : PRegExprChar;
     // the lowest level
 
     function GetCompilerErrorPos : PtrInt;
@@ -2058,7 +2058,7 @@ function TRegExpr.ParsePiece (var flagp : integer) : PRegExprChar;
  end; { of function TRegExpr.ParsePiece
 --------------------------------------------------------------}
 
-function TRegExpr.ParseAtom (var flagp : integer) : PRegExprChar;
+function TRegExpr.ParseAtom (out flagp : integer) : PRegExprChar;
 // the lowest level
 // Optimization:  gobbles an entire sequence of ordinary characters so that
 // it can turn them into a single node, which is smaller to store and
