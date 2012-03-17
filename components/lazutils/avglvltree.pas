@@ -48,14 +48,12 @@ type
     Data: Pointer;
     function FindSuccessor: TAvgLvlTreeNode; // next right
     function FindPrecessor: TAvgLvlTreeNode; // next left
-    procedure Clear;
     function TreeDepth: integer; // longest WAY down. e.g. only one node => 0 !
     procedure ConsistencyCheck(Tree: TAvgLvlTree);
     function GetCount: SizeInt;
   end;
+  TAvgLvlTreeNodeClass = class of TAvgLvlTreeNode;
   PAvgLvlTreeNode = ^TAvgLvlTreeNode;
-
-  TAvgLvlTreeNodeMemManager = class;
 
   { TAvgLvlTreeNodeEnumerator - left to right, low to high }
 
@@ -77,7 +75,7 @@ type
   protected
     fRoot: TAvgLvlTreeNode;
     FCount: integer;
-    FNodeMemManager: TAvgLvlTreeNodeMemManager;
+    FNodeClass: TAvgLvlTreeNodeClass;
     FOnCompare: TListSortCompare;
     FOnObjectCompare: TObjectSortCompare;
     procedure BalanceAfterInsert(ANode: TAvgLvlTreeNode);
@@ -87,6 +85,7 @@ type
     procedure SetOnObjectCompare(const AValue: TObjectSortCompare);
     procedure SetCompares(const NewCompare: TListSortCompare;
                           const NewObjectCompare: TObjectSortCompare);
+    procedure Init; virtual;
   public
     constructor Create(OnCompareMethod: TListSortCompare);
     constructor CreateObjectCompare(OnCompareMethod: TObjectSortCompare);
@@ -94,6 +93,7 @@ type
     destructor Destroy; override;
     property OnCompare: TListSortCompare read FOnCompare write SetOnCompare;
     property OnObjectCompare: TObjectSortCompare read FOnObjectCompare write SetOnObjectCompare;
+    property NodeClass: TAvgLvlTreeNodeClass read FNodeClass write FNodeClass; // used for new nodes
 
     // add, delete, remove, move
     procedure Add(ANode: TAvgLvlTreeNode);
@@ -130,7 +130,6 @@ type
                        OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
     function FindLeftMostSameKey(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode;
     function FindRightMostSameKey(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode;
-    property NodeMemManager: TAvgLvlTreeNodeMemManager read FNodeMemManager write FNodeMemManager;
 
     // enumerators
     function GetEnumerator: TAvgLvlTreeNodeEnumerator;
@@ -142,29 +141,6 @@ type
     function ReportAsString: string;
   end;
   PAvgLvlTree = ^TAvgLvlTree;
-
-  TAvgLvlTreeNodeMemManager = class
-  private
-    FFirstFree: TAvgLvlTreeNode;
-    FFreeCount: integer;
-    FCount: integer;
-    FMinFree: integer;
-    FMaxFreeRatio: integer;
-    procedure SetMaxFreeRatio(NewValue: integer);
-    procedure SetMinFree(NewValue: integer);
-    procedure DisposeFirstFreeNode;
-  public
-    procedure DisposeNode(ANode: TAvgLvlTreeNode);
-    function NewNode: TAvgLvlTreeNode;
-    property MinimumFreeNode: integer read FMinFree write SetMinFree;
-    property MaximumFreeNodeRatio: integer
-                read FMaxFreeRatio write SetMaxFreeRatio; // in one eighth steps
-    property Count: integer read FCount;
-    procedure Clear;
-    constructor Create;
-    destructor Destroy; override;
-  end;
-
 
 type
   { TPointerToPointerTree - Associative array }
@@ -782,10 +758,7 @@ end;
 
 function TAvgLvlTree.Add(Data: Pointer): TAvgLvlTreeNode;
 begin
-  if NodeMemManager<>nil then
-    Result:=NodeMemManager.NewNode
-  else
-    Result:=TAvgLvlTreeNode.Create;
+  Result:=NodeClass.Create;
   Result.Data:=Data;
   Add(Result);
 end;
@@ -1124,10 +1097,7 @@ procedure TAvgLvlTree.Clear;
       if ANode.Left<>nil then DeleteNode(ANode.Left);
       if ANode.Right<>nil then DeleteNode(ANode.Right);
     end;
-    if NodeMemManager<>nil then
-      NodeMemManager.DisposeNode(ANode)
-    else
-      ANode.Free;
+    ANode.Free;
   end;
 
 // Clear
@@ -1141,6 +1111,7 @@ constructor TAvgLvlTree.Create(OnCompareMethod: TListSortCompare);
 begin
   inherited Create;
   FOnCompare:=OnCompareMethod;
+  Init;
 end;
 
 constructor TAvgLvlTree.CreateObjectCompare(
@@ -1148,6 +1119,7 @@ constructor TAvgLvlTree.CreateObjectCompare(
 begin
   inherited Create;
   FOnObjectCompare:=OnCompareMethod;
+  Init;
 end;
 
 constructor TAvgLvlTree.Create;
@@ -1183,10 +1155,7 @@ begin
       fRoot:=nil;
     end;
     dec(FCount);
-    if NodeMemManager<>nil then
-      NodeMemManager.DisposeNode(ANode)
-    else
-      ANode.Free;
+    ANode.Free;
     exit;
   end;
   if (ANode.Right=nil) then begin
@@ -1209,10 +1178,7 @@ begin
       fRoot:=OldLeft;
     end;
     dec(FCount);
-    if NodeMemManager<>nil then
-      NodeMemManager.DisposeNode(ANode)
-    else
-      ANode.Free;
+    ANode.Free;
     exit;
   end;
   if (ANode.Left=nil) then begin
@@ -1235,10 +1201,7 @@ begin
       fRoot:=OldRight;
     end;
     dec(FCount);
-    if NodeMemManager<>nil then
-      NodeMemManager.DisposeNode(ANode)
-    else
-      ANode.Free;
+    ANode.Free;
     exit;
   end;
   // DelNode has both: Left and Right
@@ -1717,6 +1680,11 @@ begin
   end;
 end;
 
+procedure TAvgLvlTree.Init;
+begin
+  FNodeClass:=TAvgLvlTreeNode;
+end;
+
 function TAvgLvlTree.Compare(Data1, Data2: Pointer): integer;
 begin
   if Assigned(FOnCompare) then
@@ -1817,105 +1785,6 @@ begin
       Result:=Result.Parent;
     Result:=Result.Parent;
   end;
-end;
-
-procedure TAvgLvlTreeNode.Clear;
-begin
-  Parent:=nil;
-  Left:=nil;
-  Right:=nil;
-  Balance:=0;
-  Data:=nil;
-end;
-
-{ TAvgLvlTreeNodeMemManager }
-
-constructor TAvgLvlTreeNodeMemManager.Create;
-begin
-  inherited Create;
-  FFirstFree:=nil;
-  FFreeCount:=0;
-  FCount:=0;
-  FMinFree:=100;
-  FMaxFreeRatio:=8; // 1:1
-end;
-
-destructor TAvgLvlTreeNodeMemManager.Destroy;
-begin
-  Clear;
-  inherited Destroy;
-end;
-
-procedure TAvgLvlTreeNodeMemManager.DisposeNode(ANode: TAvgLvlTreeNode);
-begin
-  if ANode=nil then exit;
-  if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
-  begin
-    // add ANode to Free list
-    ANode.Clear;
-    ANode.Right:=FFirstFree;
-    FFirstFree:=ANode;
-    inc(FFreeCount);
-    if (FFreeCount>(((8+FMaxFreeRatio)*FCount) shr 3)) then begin
-      DisposeFirstFreeNode;
-      DisposeFirstFreeNode;
-    end;
-  end else begin
-    // free list full -> free the ANode
-    ANode.Free;
-  end;
-  dec(FCount);
-end;
-
-function TAvgLvlTreeNodeMemManager.NewNode: TAvgLvlTreeNode;
-begin
-  if FFirstFree<>nil then begin
-    // take from free list
-    Result:=FFirstFree;
-    FFirstFree:=FFirstFree.Right;
-    Result.Right:=nil;
-  end else begin
-    // free list empty -> create new node
-    Result:=TAvgLvlTreeNode.Create;
-  end;
-  inc(FCount);
-end;
-
-procedure TAvgLvlTreeNodeMemManager.Clear;
-var ANode: TAvgLvlTreeNode;
-begin
-  while FFirstFree<>nil do begin
-    ANode:=FFirstFree;
-    FFirstFree:=FFirstFree.Right;
-    ANode.Right:=nil;
-    ANode.Free;
-  end;
-  FFreeCount:=0;
-end;
-
-procedure TAvgLvlTreeNodeMemManager.SetMaxFreeRatio(NewValue: integer);
-begin
-  if NewValue<0 then NewValue:=0;
-  if NewValue=FMaxFreeRatio then exit;
-  FMaxFreeRatio:=NewValue;
-end;
-
-procedure TAvgLvlTreeNodeMemManager.SetMinFree(NewValue: integer);
-begin
-  if NewValue<0 then NewValue:=0;
-  if NewValue=FMinFree then exit;
-  FMinFree:=NewValue;
-end;
-
-procedure TAvgLvlTreeNodeMemManager.DisposeFirstFreeNode;
-var OldNode: TAvgLvlTreeNode;
-begin
-  if FFirstFree=nil then exit;
-  OldNode:=FFirstFree;
-  FFirstFree:=FFirstFree.Right;
-  dec(FFreeCount);
-  OldNode.Right:=nil;
-  OldNode.Free;
 end;
 
 { TStringToStringTree }
