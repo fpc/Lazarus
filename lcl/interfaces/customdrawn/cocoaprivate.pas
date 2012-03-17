@@ -877,8 +877,14 @@ end;
 function TCocoaAccessibleObject.accessibilityAttributeValue(attribute: NSString): id;
 var
   lStrAttr: String;
+  //
   lAResult: NSArray;
   lMAResult: NSMutableArray;
+  lSize: TSize;
+  lNSSize: NSSize;
+  lPoint: TPoint;
+  lNSPoint: NSPoint;
+  //
   i: Integer;
   lChildAcc: TLazAccessibleObject;
   lForm: TCustomForm;
@@ -891,8 +897,8 @@ begin
 
   if attribute = NSAccessibilityRoleAttribute then
   begin
-    {DebugLn('[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityRoleAttribute');
-    Result := TCocoaCustomControl.LazRoleToCocoaRole(LCLAcc.AccessibleRole);}
+    DebugLn('[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityRoleAttribute');
+    Result := TCocoaCustomControl.LazRoleToCocoaRole(LCLAcc.AccessibleRole);
   end
   else if attribute = NSAccessibilityRoleDescriptionAttribute then
   begin
@@ -914,13 +920,14 @@ begin
   end
   else if attribute = NSAccessibilityParentAttribute then
   begin
-{    lParent := LCLControl.Parent;
-    Result := TCocoaAccessibleObject(lParent.GetAccessibleObject().Handle);}
+    lParent := LCLControl.Parent;
+    if lParent <> nil then
+      Result := TCocoaAccessibleObject(lParent.GetAccessibleObject().Handle);
   end
   else if (attribute = NSAccessibilityChildrenAttribute)
     or (attribute = NSAccessibilityVisibleChildrenAttribute) then
   begin
-    {DebugLn('[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityChildrenAttribute');
+    DebugLn('[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityChildrenAttribute');
     lAResult := NSArray(Result);
     lMAResult := lAResult.mutableCopy();
     for i := 0 to LCLAcc.GetChildAccessibleObjectsCount() - 1 do
@@ -928,12 +935,12 @@ begin
       lChildAcc := LCLAcc.GetChildAccessibleObject(i);
       lMAResult.addObject(TCocoaAccessibleObject(lChildAcc.Handle));
     end;
-    Result := lMAResult;}
+    Result := lMAResult;
   end
   else if attribute = NSAccessibilityWindowAttribute then
   begin
-    {lForm := Forms.GetParentForm(LCLControl);
-    Result := TCocoaAccessibleObject(lForm.GetAccessibleObject().Handle);}
+    lForm := Forms.GetParentForm(LCLControl);
+    Result := TCocoaAccessibleObject(lForm.GetAccessibleObject().Handle);
   end
   else if attribute = NSAccessibilityTopLevelUIElementAttribute then
   begin
@@ -945,11 +952,19 @@ begin
   end
   else if attribute = NSAccessibilityPositionAttribute then
   begin
-    //LCLAcc.Position;
+    lPoint := LCLAcc.Position;
+    lNSPoint.x := lPoint.X;
+    lNSPoint.y := lPoint.Y;
+    Result := NSValue.valueWithPoint(lNSPoint);
+    DebugLn(Format('[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityPositionAttribute Result=%d,%d', [lPoint.X, lPoint.Y]));
   end
   else if attribute = NSAccessibilitySizeAttribute then
   begin
-    //LCLAcc.Size;
+    lSize := LCLAcc.Size;
+    lNSSize.width := lSize.CX;
+    lNSSize.height := lSize.CY;
+    Result := NSValue.valueWithSize(lNSSize);
+    DebugLn(Format('[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilitySizeAttribute Result=%d,%d', [lSize.CX, lSize.CY]));
   end;
 end;
 
