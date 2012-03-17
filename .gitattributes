@@ -2013,7 +2013,6 @@ components/plotfunction/regplotpanel.lrs svneol=native#text/pascal
 components/plotfunction/regplotpanel.pp svneol=native#text/plain
 components/plotfunction/tplotexpressionpanel.png -text svneol=unset#image/png
 components/plotfunction/tplotfunctionpanel.png -text svneol=unset#image/png
-components/pochecker/.directory svneol=native#text/plain
 components/pochecker/Proj/README.txt svneol=native#text/plain
 components/pochecker/Proj/pochecker.lpi svneol=native#text/plain
 components/pochecker/Proj/pochecker.lpr svneol=native#text/plain
