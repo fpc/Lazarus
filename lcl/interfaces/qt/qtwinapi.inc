@@ -4016,6 +4016,17 @@ begin
     AStr := GetUtf8String(Str);
     Size.cx := 0;
     Size.cY := Font.Metrics.Height;
+    if (AStr = '') then
+    begin
+      if MaxCount <> nil then
+        MaxCount^ := 0;
+      if PartialWidths <> nil then
+      begin
+        for i := 0 to Count - 1 do
+          PartialWidths[i] := 0;
+      end;
+      exit(True);
+    end;
     if PartialWidths = nil then
     begin
       if MaxCount <> nil then
