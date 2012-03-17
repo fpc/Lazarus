@@ -65,7 +65,7 @@ type
     function MoveNext: Boolean;
     property Current: TAvgLvlTreeNode read FCurrent;
     property LowToHigh: boolean read FLowToHigh;
- end;
+  end;
 
   { TAvgLvlTree }
 
@@ -152,7 +152,7 @@ type
   TPointerToPointerTree = class
   private
     FItems: TAvgLvlTree;
-    function GetCount: Integer;
+    function GetCount: SizeInt;
     function GetValues(const Key: Pointer): Pointer;
     procedure SetValues(const Key: Pointer; const AValue: Pointer);
     function FindNode(const Key: Pointer): TAvgLvlTreeNode;
@@ -167,7 +167,7 @@ type
     function GetLast(out Key, Value: Pointer): Boolean;
     function GetNext(const Key: Pointer; out NextKey, NextValue: Pointer): Boolean;
     function GetPrev(const Key: Pointer; out PrevKey, PrevValue: Pointer): Boolean;
-    property Count: Integer read GetCount;
+    property Count: SizeInt read GetCount;
     property Values[const Key: Pointer]: Pointer read GetValues write SetValues; default;
     property Tree: TAvgLvlTree read FItems;
   end;
@@ -221,7 +221,7 @@ type
     property CaseSensitive: boolean read FCaseSensitive;
     property Tree: TAvgLvlTree read FTree; // tree of PStringMapItem
     function FindNode(const s: string): TAvgLvlTreeNode;
-    function Count: integer; inline;
+    function Count: SizeInt; inline;
     function Equals(OtherTree: TCustomStringMap): boolean; reintroduce;
     procedure Assign(Source: TCustomStringMap); virtual;
     property CompareItemsFunc: TListSortCompare read GetCompareItemsFunc;
@@ -240,7 +240,7 @@ type
     property Current: string read GetCurrent;
   end;
 
-  { TStringMap }
+  { TStringMap - associative array string to boolean }
 
   TStringMap = class(TCustomStringMap)
   public
@@ -329,7 +329,7 @@ type
     property CompareNameWithItem: TListSortCompare read FCompareNameWithItem;
   end;
 
-  { TStringToPointerTree - Associative array }
+  { TStringToPointerTree - Associative array from string to pointer }
 
   TStringToPointerItem = record
     Name: string;
@@ -1977,7 +1977,7 @@ end;
 
 { TPointerToPointerTree }
 
-function TPointerToPointerTree.GetCount: Integer;
+function TPointerToPointerTree.GetCount: SizeInt;
 begin
   Result:=FItems.Count;
 end;
@@ -2218,7 +2218,7 @@ begin
   end;
 end;
 
-function TCustomStringMap.Count: integer;
+function TCustomStringMap.Count: SizeInt;
 begin
   Result:=Tree.Count;
 end;
