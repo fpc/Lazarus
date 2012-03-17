@@ -24,6 +24,10 @@
         <UnitName Value="idelogger"/>
       </Item1>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
