@@ -30,6 +30,12 @@ unit EditorOptions;
 
 {$mode objfpc}{$H+}
 
+{$IFDEF Windows}
+  {$IFnDEF WithoutWinIME}
+    {$DEFINE WinIME}
+  {$ENDIF}
+{$ENDIF}
+
 interface
 
 uses
@@ -1161,6 +1167,9 @@ type
     FHideSingleTabInWindow: Boolean;
     FPasStringKeywordMode: TSynPasStringMode;
     FTopInfoView: boolean;
+    {$IFDEF WinIME}
+    FUseMinimumIme: Boolean;
+    {$ENDIF}
     xmlconfig: TRttiXMLConfig;
 
     // general options
@@ -1408,6 +1417,10 @@ type
   published { use RTTIConf}
     property TabPosition: TTabPosition
       read fTabPosition write fTabPosition default tpTop;
+    // General - Misc
+    {$IFDEF WinIME}
+    property UseMinimumIme: Boolean read FUseMinimumIme write FUseMinimumIme default False;
+    {$ENDIF}
     // Display
     property ShowOverviewGutter: boolean
       read FShowOverviewGutter write FShowOverviewGutter default True;
@@ -4650,6 +4663,14 @@ begin
   ASynEdit.TrimSpaceType := FTrimSpaceType;
   ASynEdit.TabWidth := fTabWidth;
   ASynEdit.BracketHighlightStyle := FBracketHighlightStyle;
+  {$IFDEF WinIME}
+  if ASynEdit is TIDESynEditor then begin
+    if UseMinimumIme
+    then TIDESynEditor(ASynEdit).CreateMinimumIme
+    else TIDESynEditor(ASynEdit).CreateFullIme;
+  end;
+  {$ENDIF}
+
 
   // Display options
   ASynEdit.Gutter.Visible := fVisibleGutter;

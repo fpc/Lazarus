@@ -1517,6 +1517,7 @@ resourcestring
   dlgTrimSpaceTypeCaretMove = 'Caret or Edit';
   dlgTrimSpaceTypePosOnly = 'Position Only';
   dlgCopyPasteKeepFolds = 'Copy/Paste with fold info';
+  dlgUseMinimumIme = 'Ime handled by System';
   dlgUndoLimit = 'Undo limit';
   dlgTabWidths = 'Tab widths';
   dlgMarginGutter = 'Margin and gutter';

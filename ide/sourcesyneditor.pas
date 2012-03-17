@@ -34,9 +34,18 @@ unit SourceSynEditor;
 
 interface
 
+{$IFDEF Windows}
+  {$IFnDEF WithoutWinIME}
+    {$DEFINE WinIME}
+  {$ENDIF}
+{$ENDIF}
+
 {$I ide.inc}
 
 uses
+  {$IFDEF WinIME}
+  LazSynIMM,
+  {$ENDIF}
   Classes, SysUtils, Controls, LCLProc, LCLType, Graphics, Menus, math, LazarusIDEStrConsts,
   SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks,
   SynEditTypes,  SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
@@ -154,6 +163,10 @@ type
     //////
     property TopInfoMarkup: TSynSelectedColor read FTopInfoMarkup write SetTopInfoMarkup;
     property ShowTopInfo: boolean read FShowTopInfo write SetShowTopInfo;
+    {$IFDEF WinIME}
+    procedure CreateMinimumIme;
+    procedure CreateFullIme;
+    {$ENDIF}
   end;
 
   TIDESynHighlighterPasRangeList = class(TSynHighlighterPasRangeList)
@@ -793,6 +806,29 @@ function TIDESynEditor.TextIndexToViewPos(aTextIndex: Integer): Integer;
 begin
   Result := TextView.TextIndexToViewPos(aTextIndex - 1);
 end;
+
+{$IFDEF WinIME}
+procedure TIDESynEditor.CreateMinimumIme;
+var
+  Ime: LazSynIme;
+begin
+  if ImeHandler is LazSynImeSimple then exit;
+  Ime := LazSynImeSimple.Create(Self);
+  LazSynImeSimple(Ime).TextDrawer := TextDrawer;
+  Ime.InvalidateLinesMethod := @InvalidateLines;
+  ImeHandler := Ime;
+end;
+
+procedure TIDESynEditor.CreateFullIme;
+var
+  Ime: LazSynIme;
+begin
+  if ImeHandler is LazSynImeFull then exit;
+  Ime := LazSynImeFull.Create(Self);
+  Ime.InvalidateLinesMethod := @InvalidateLines;
+  ImeHandler := Ime;
+end;
+{$ENDIF}
 
 { TIDESynPasSyn }
 

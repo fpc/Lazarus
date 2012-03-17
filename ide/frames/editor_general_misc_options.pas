@@ -22,6 +22,12 @@ unit editor_general_misc_options;
 
 {$mode objfpc}{$H+}
 
+{$IFDEF Windows}
+  {$IFnDEF WithoutWinIME}
+    {$DEFINE WinIME}
+  {$ENDIF}
+{$ENDIF}
+
 interface
 
 uses
@@ -79,6 +85,9 @@ begin
     Items.Add(dlgFindTextatCursor);
     Items.Add(dlgCopyWordAtCursorOnCopyNone);
     Items.Add(dlgCopyPasteKeepFolds);
+    {$IFDEF WinIME}
+    Items.Add(dlgUseMinimumIme);
+    {$ENDIF}
   end;
   EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeLeaveLine);
   EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeEditLine);
@@ -106,6 +115,9 @@ begin
       Checked[2] := FindTextAtCursor;
       Checked[3] := CopyWordAtCursorOnCopyNone;
       Checked[4] := eoFoldedCopyPaste in SynEditOptions2;
+      {$IFDEF WinIME}
+      Checked[5] := UseMinimumIme;
+      {$ENDIF}
     end;
     EditorTrimSpaceTypeCheckBox.ItemIndex := ord(TrimSpaceType);
     EditorTabPositionCheckBox.ItemIndex := TabPosToIndex[TabPosition];
@@ -138,6 +150,9 @@ begin
       SynEditOptions2 := SynEditOptions2 - [eoFoldedCopyPaste];
     TrimSpaceType := TSynEditStringTrimmingType(EditorTrimSpaceTypeCheckBox.ItemIndex);
     TabPosition := TabIndexToPos[EditorTabPositionCheckBox.ItemIndex];
+    {$IFDEF WinIME}
+    UseMinimumIme := EditorOptionsGroupBox.Checked[5];
+    {$ENDIF}
   end;
 end;
 

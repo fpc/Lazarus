@@ -422,15 +422,20 @@ type
 
   TCustomSynEdit = class(TSynEditBase)
     procedure SelAvailChange(Sender: TObject);
+  {$IFDEF WinIME}
   private
-    {$IFDEF WinIME}
     FImeHandler: LazSynIme;
+    procedure SetImeHandler(AValue: LazSynIme);
     procedure WMImeRequest(var Msg: TMessage); message WM_IME_REQUEST;
     procedure WMImeNotify(var Msg: TMessage); message WM_IME_NOTIFY;
     procedure WMImeStartComposition(var Msg: TMessage); message WM_IME_STARTCOMPOSITION;
     procedure WMImeComposition(var Msg: TMessage); message WM_IME_COMPOSITION;
     procedure WMImeEndComposition(var Msg: TMessage); message WM_IME_ENDCOMPOSITION;
-    {$ENDIF}
+  protected
+    // SynEdit takes ownership
+    property ImeHandler: LazSynIme read FImeHandler write SetImeHandler;
+  {$ENDIF}
+  private
     procedure WMDropFiles(var Msg: TMessage); message WM_DROPFILES;
     procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
@@ -741,6 +746,8 @@ type
     procedure SetUpdateState(NewUpdating: Boolean; Sender: TObject); virtual;      // Called *before* paintlock, and *after* paintlock
 
     property PaintLockOwner: TSynEditBase read GetPaintLockOwner write SetPaintLockOwner;
+    property TextDrawer: TheTextDrawer read fTextDrawer;
+
   protected
     procedure CreateHandle; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -2515,6 +2522,13 @@ end;
 procedure TCustomSynEdit.WMImeRequest(var Msg: TMessage);
 begin
   FImeHandler.WMImeRequest(Msg);
+end;
+
+procedure TCustomSynEdit.SetImeHandler(AValue: LazSynIme);
+begin
+  if FImeHandler = AValue then Exit;
+  FreeAndNil(FImeHandler);
+  FImeHandler := AValue;
 end;
 
 procedure TCustomSynEdit.WMImeNotify(var Msg: TMessage);

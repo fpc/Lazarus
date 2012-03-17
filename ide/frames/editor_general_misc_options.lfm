@@ -1,5 +1,7 @@
-inherited EditorGeneralMiscOptionsFrame: TEditorGeneralMiscOptionsFrame
+object EditorGeneralMiscOptionsFrame: TEditorGeneralMiscOptionsFrame
+  Left = 0
   Height = 232
+  Top = 0
   Width = 460
   ClientHeight = 232
   ClientWidth = 460
@@ -7,7 +9,7 @@ inherited EditorGeneralMiscOptionsFrame: TEditorGeneralMiscOptionsFrame
   Visible = False
   DesignLeft = 138
   DesignTop = 138
-  object EditorTrimSpaceTypeLabel: TLabel[0]
+  object EditorTrimSpaceTypeLabel: TLabel
     AnchorSideLeft.Control = EditorTrimSpaceTypeCheckBox
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = EditorTrimSpaceTypeCheckBox
@@ -20,7 +22,7 @@ inherited EditorGeneralMiscOptionsFrame: TEditorGeneralMiscOptionsFrame
     Caption = 'EditorTrimSpaceTypeLabel'
     ParentColor = False
   end
-  object EditorOptionsGroupBox: TCheckGroup[1]
+  object EditorOptionsGroupBox: TCheckGroup
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
@@ -48,7 +50,7 @@ inherited EditorGeneralMiscOptionsFrame: TEditorGeneralMiscOptionsFrame
     OnItemClick = EditorOptionsGroupBoxItemClick
     TabOrder = 0
   end
-  object EditorTrimSpaceTypeCheckBox: TComboBox[2]
+  object EditorTrimSpaceTypeCheckBox: TComboBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = EditorOptionsGroupBox
     AnchorSideTop.Side = asrBottom
@@ -61,7 +63,7 @@ inherited EditorGeneralMiscOptionsFrame: TEditorGeneralMiscOptionsFrame
     Style = csDropDownList
     TabOrder = 1
   end
-  object EditorTabPositionCheckBox: TComboBox[3]
+  object EditorTabPositionCheckBox: TComboBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = EditorTrimSpaceTypeCheckBox
     AnchorSideTop.Side = asrBottom
@@ -74,7 +76,7 @@ inherited EditorGeneralMiscOptionsFrame: TEditorGeneralMiscOptionsFrame
     Style = csDropDownList
     TabOrder = 2
   end
-  object EditorTabPositionLabel: TLabel[4]
+  object EditorTabPositionLabel: TLabel
     AnchorSideLeft.Control = EditorTrimSpaceTypeCheckBox
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = EditorTabPositionCheckBox
