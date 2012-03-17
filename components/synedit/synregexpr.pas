@@ -330,7 +330,7 @@ type
     function ParseBranch (out flagp : integer) : PRegExprChar;
     // one alternative of an | operator
 
-    function ParsePiece (var flagp : integer) : PRegExprChar;
+    function ParsePiece (out flagp : integer) : PRegExprChar;
     // something followed by possible [*+?]
 
     function ParseAtom (out flagp : integer) : PRegExprChar;
@@ -1837,7 +1837,7 @@ function TRegExpr.ParseBranch (out flagp : integer) : PRegExprChar;
  end; { of function TRegExpr.ParseBranch
 --------------------------------------------------------------}
 
-function TRegExpr.ParsePiece (var flagp : integer) : PRegExprChar;
+function TRegExpr.ParsePiece (out flagp : integer) : PRegExprChar;
 // something followed by possible [*+?{]
 // Note that the branching code sequences used for ? and the general cases
 // of * and + and { are somewhat optimized:  they use the same NOTHING node as
@@ -1920,6 +1920,7 @@ function TRegExpr.ParsePiece (var flagp : integer) : PRegExprChar;
   end;
 
  begin
+  flagp := WORST;
   Result := ParseAtom (flags);
   if Result = nil
    then EXIT;
