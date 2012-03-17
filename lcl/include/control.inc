@@ -48,6 +48,11 @@ begin
   Result := FHandle;
 end;
 
+function TLazAccessibleObject.GetAccessibleValue: TCaption;
+begin
+  Result := FAccessibleValue;
+end;
+
 function TLazAccessibleObject.GetPosition: TPoint;
 begin
   if (OwnerControl <> nil) and (OwnerControl.GetAccessibleObject() = Self) then

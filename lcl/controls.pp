@@ -958,6 +958,8 @@ type
     FAccessibleValue: TCaption;
     FAccessibleRole: TLazAccessibilityRole;
     class procedure WSRegisterClass; virtual;//override;
+    // provided for descendents to override and implement
+    function GetAccessibleValue: TCaption; virtual;
   public
     OwnerControl: TControl;
     Parent: TLazAccessibleObject;
@@ -982,7 +984,7 @@ type
     function GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject; virtual;
     // Primary information
     property AccessibleDescription: TCaption read FAccessibleDescription write SetAccessibleDescription;
-    property AccessibleValue: TCaption read FAccessibleValue write SetAccessibleValue;
+    property AccessibleValue: TCaption read GetAccessibleValue write SetAccessibleValue;
     property AccessibleRole: TLazAccessibilityRole read FAccessibleRole write SetAccessibleRole;
     property Position: TPoint read GetPosition write SetPosition;
     property Size: TSize read GetSize write SetSize;
