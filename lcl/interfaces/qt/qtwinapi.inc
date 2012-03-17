@@ -4013,7 +4013,10 @@ begin
   if not IsValidDC(DC) then Exit;
   with TQtDeviceContext(DC) do
   begin
-    AStr := GetUtf8String(Str);
+    if Str = nil then
+      AStr := ''
+    else
+      AStr := GetUtf8String(Str);
     Size.cx := 0;
     Size.cY := Font.Metrics.Height;
     if (AStr = '') then
@@ -4094,7 +4097,7 @@ begin
 
   Size.cx := 0;
   Size.cy := 0;
-  if (StrPas(Str) = '') or (Count <= 0) then
+  if (Count <= 0) or (Str = nil) or (StrPas(Str) = '') then
     exit;
   WideStr := GetUtf8String(Str);
   Size.cx := QtDC.Metrics.width(@WideStr, Count);
