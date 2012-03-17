@@ -3762,14 +3762,6 @@ begin
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYFIXEDFRAME     ');
       end;
-    SM_CXFULLSCREEN:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXFULLSCREEN     ');
-      end;
-    SM_CYFULLSCREEN:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYFULLSCREEN     ');
-      end;
     SM_CXHTHUMB,
     SM_CYVTHUMB:
       begin
@@ -3790,11 +3782,15 @@ begin
       end;
     SM_CXMAXIMIZED:
       begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMAXIMIZED      ');
+        QDesktopWidget_availableGeometry(QApplication_desktop(), @R,
+          QDesktopWidget_primaryScreen(QApplication_desktop()));
+        Result := R.Right - R.Left;
       end;
     SM_CYMAXIMIZED:
       begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMAXIMIZED      ');
+        QDesktopWidget_availableGeometry(QApplication_desktop(), @R,
+          QDesktopWidget_primaryScreen(QApplication_desktop()));
+        Result := R.Bottom - R.Top;
       end;
     SM_CXMAXTRACK:
       begin
@@ -3844,11 +3840,13 @@ begin
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMINTRACK       ');
       end;
+    SM_CXFULLSCREEN,
     SM_CXSCREEN:
       begin
         QDesktopWidget_screenGeometry(QApplication_desktop(), @R, QDesktopWidget_primaryScreen(QApplication_desktop()));
         Result := R.Right - R.Left;
       end;
+    SM_CYFULLSCREEN,
     SM_CYSCREEN:
       begin
         QDesktopWidget_screenGeometry(QApplication_desktop(), @R, QDesktopWidget_primaryScreen(QApplication_desktop()));

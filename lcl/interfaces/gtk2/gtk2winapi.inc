@@ -5647,14 +5647,6 @@ begin
       begin
         //DebugLn('Trace:TODO: [TGtk2WidgetSet.GetSystemMetrics] --> SM_CYFIXEDFRAME     ');
       end;
-    SM_CXFULLSCREEN:
-      begin
-        //DebugLn('Trace:TODO: [TGtk2WidgetSet.GetSystemMetrics] --> SM_CXFULLSCREEN     ');
-      end;
-    SM_CYFULLSCREEN:
-      begin
-        //DebugLn('Trace:TODO: [TGtk2WidgetSet.GetSystemMetrics] --> SM_CYFULLSCREEN     ');
-      end;
     SM_CXHSCROLL:
       begin
         P := GetStyleWidget(lgsVerticalScrollbar);
@@ -5767,6 +5759,7 @@ begin
       begin
         //DebugLn('Trace:TODO: [TGtk2WidgetSet.GetSystemMetrics] --> SM_CYMINTRACK       ');
       end;
+    SM_CXFULLSCREEN,
     SM_CXSCREEN:
       begin
         screen := gdk_screen_get_default();
@@ -5777,6 +5770,7 @@ begin
       begin
         Result := gdk_Screen_Width;
       end;
+    SM_CYFULLSCREEN,
     SM_CYSCREEN:
       begin
         screen := gdk_screen_get_default();

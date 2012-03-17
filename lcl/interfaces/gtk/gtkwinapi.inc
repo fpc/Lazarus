@@ -5877,14 +5877,6 @@ begin
       begin
         //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYFIXEDFRAME     ');
       end;
-    SM_CXFULLSCREEN:
-      begin
-        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXFULLSCREEN     ');
-      end;
-    SM_CYFULLSCREEN:
-      begin
-        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYFULLSCREEN     ');
-      end;
     SM_CXHSCROLL:
       begin
         P := GetStyleWidget(lgsVerticalScrollbar);
@@ -5998,39 +5990,30 @@ begin
       begin
         //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMINTRACK       ');
       end;
+    SM_CXFULLSCREEN,
     SM_CXSCREEN:
       begin
-        {$ifdef GTK1} { Partial fix for multi monitor systems - force use of first one }
+        { Partial fix for multi monitor systems - force use of first one }
         {$ifdef UseXinerama}
         if GetFirstScreen then
           result := FirstScreen.x
         else
         {$endif}
           result := gdk_Screen_Width;
-        {$else}
-        screen := gdk_screen_get_default();
-        gdk_screen_get_monitor_geometry(screen, 0, @ARect);
-        Result := ARect.width;
-        {$endif}
       end;
     SM_CXVIRTUALSCREEN:
       begin
         Result := gdk_Screen_Width;
       end;
+    SM_CYFULLSCREEN,
     SM_CYSCREEN:
       begin
-        {$ifdef GTK1}
         {$ifdef UseXinerama}
         if GetFirstScreen then
           result := FirstScreen.y
         else
         {$endif}
         result := gdk_Screen_Height;
-        {$else}
-        screen := gdk_screen_get_default();
-        gdk_screen_get_monitor_geometry(screen, 0, @ARect);
-        Result := ARect.height;
-        {$endif}
       end;
     SM_CYVIRTUALSCREEN:
       begin
