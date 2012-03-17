@@ -676,6 +676,12 @@ begin
     gtk_window_set_geometry_hints(GtkWindow, nil, @Geometry,
       GDK_HINT_POS or GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
   end;
+
+  if not (csDesigning in AForm.ComponentState) and
+    AForm.HandleObjectShouldBeVisible and (AForm.WindowState = wsFullScreen) then
+      gtk_window_fullscreen(GtkWindow);
+
+
   InvalidateLastWFPResult(AWinControl, AWinControl.BoundsRect);
 end;
 
