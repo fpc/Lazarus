@@ -4141,11 +4141,19 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
 
     Cmd := '-exec-run';
     rval := '';
+    R.State := dsError;
     FTheDebugger.FMainAddrBreak.Clear(Self);
     while true do begin
       SetMainBrk;
       if not FTheDebugger.FMainAddrBreak.Enabled
-      then exit; // failed to find a main breakpoint
+      then begin
+        (* TODO:
+           If no main break can be set, it may still be possible (desirable) to run
+           the app, without debug-capacbilities
+        *)
+        SetDebuggerState(dsError);
+        exit; // failed to find a main breakpoint
+      end;
 
       // RUN
       if not ExecuteCommand(Cmd, R)
@@ -4159,6 +4167,11 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       if R.State = dsRun
       then begin
         ProcessRunning(s2, R);
+        if pos('reason="exited-normally"', s2) > 0 then begin
+          // app has already run
+          R.State := dsStop;
+          break;
+        end;
         R.State := dsRun; // restore cmd state
         s := s + s2 + R.Values;
         Cmd := '-exec-continue'; // untill we hit one of the breakpoints
@@ -4181,16 +4194,31 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
 
     end;
 
-    if R.State <> dsRun
+    if DebuggerState = dsError then
+      exit;
+
+    if not(R.State in [dsRun, dsStop])
     then begin
       SetDebuggerState(dsError);
       exit;
     end;
 
+    FTheDebugger.FMainAddrBreak.Clear(Self);
+
+    if R.State = dsStop then begin
+      {$IFDEF DBG_VERBOSE}
+      debugln('Debugger INIT failed. App has already run');
+      {$ENDIF}
+      SetDebuggerState(dsError);
+      exit;
+      //if (DebuggerState = dsStop) then // and (tfHasSymbols in TargetInfo^.TargetFlags)
+      //  SetDebuggerState(dsInit); // make sure state changes are triggered
+      //SetDebuggerState(dsStop);
+      //exit;
+    end;
+
     SetDebuggerState(dsRun); // TODO: should not be needed here
 
-
-    FTheDebugger.FMainAddrBreak.Clear(Self);
     // and we should ave hit a breakpoint
     //List := TGDBMINameValueList.Create(R.Values);
     //Reason := List.Values['reason'];
@@ -4226,6 +4254,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       if Result <> 0 then exit;
     end;
 
+    SetDebuggerState(dsError); // no PID found
   end;
 
 var
@@ -4349,7 +4378,11 @@ begin
     TargetInfo^.TargetPID := RunToMain(EntryPoint);
 
     if DebuggerState = dsError
-    then exit;
+    then begin
+      Result := False;
+      FSuccess := False;
+      Exit;
+    end;
 
     if TargetInfo^.TargetPID = 0
     then begin
@@ -4358,6 +4391,9 @@ begin
       SetDebuggerState(dsError);
       Exit;
     end;
+
+    //if DebuggerState = dsStop
+    //then exit;
 
     DebugLn('[Debugger] Target PID: %u', [TargetInfo^.TargetPID]);
 
