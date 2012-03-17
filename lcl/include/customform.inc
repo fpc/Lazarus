@@ -76,10 +76,9 @@ end;
 procedure TCustomForm.AfterConstruction;
 var
   NewWidth, NewHeight: Integer;
-begin
-  // issue #21119, prepare maximized or fullscreen form to accurate dimensions.
-  // we avoid flickering also in this case.
-  if not (csDesigning in ComponentState) then
+  OldWindowState: TWindowState;
+
+  procedure ChangeFormDimensions(AIsBeforeOnCreate: Boolean);
   begin
     if (WindowState = wsMaximized) and (FormStyle <> fsMDIChild) then
     begin
@@ -90,8 +89,10 @@ begin
       ' SM_CXMAXIMIZED ',dbgs(GetSystemMetrics(SM_CXMAXIMIZED)),
       ' SM_CYMAXIMIZED ',dbgs(GetSystemMetrics(SM_CYMAXIMIZED)),
       ' SM_LCLMAXIMIZEDHEIGHT ',dbgs(GetSystemMetrics(SM_LCLMAXIMIZEDHEIGHT)),
-      ' SM_LCLMAXIMIZEDWIDTH ',dbgs(GetSystemMetrics(SM_LCLMAXIMIZEDWIDTH)));
+      ' SM_LCLMAXIMIZEDWIDTH ',dbgs(GetSystemMetrics(SM_LCLMAXIMIZEDWIDTH)),
+      ' AIsBeforeOnCreate ',dbgs(AIsBeforeOnCreate));
       {$ENDIF}
+
       if (BorderStyle <> bsNone) and (FormStyle <> fsSplash) then
       begin
         NewHeight := GetSystemMetrics(SM_LCLMAXIMIZEDHEIGHT);
@@ -127,8 +128,23 @@ begin
       Height := NewHeight;
     end;
   end;
+begin
+  // issue #21119, prepare maximized or fullscreen form to accurate dimensions.
+  // we avoid flickering also in this case.
+  if not (csDesigning in ComponentState) then
+    ChangeFormDimensions(True);
 
+  OldWindowState := WindowState;
   DoCreate;
+
+  // if we change WindowState in constructor and handle isn't allocated
+  // then change our dimensions to accurate one
+  if not (csDesigning in ComponentState) and not HandleAllocated and
+    (OldWindowState <> WindowState) and
+    not (OldWindowState in [wsMaximized, wsFullScreen]) and
+    (WindowState in [wsMaximized, wsFullScreen]) then
+      ChangeFormDimensions(False);
+
   EndFormUpdate; // the BeginFormUpdate is in CreateNew
   inherited AfterConstruction;
 end;
