@@ -1,13 +1,11 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="lazsvnpkg"/>
-    <AddToProjectUsesSection Value="False"/>
     <Author Value="Darius Blaszyk"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <SearchPaths>
-        <OtherUnitFiles Value="$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS);$(LazarusDir)/ideintf/units/$(TargetCPU)-$(TargetOS);$(LazarusDir)/components/lazsvnpkg/lib/$(TargetCPU)-$(TargetOS);$(LazarusDir)/units/$(TargetCPU)-$(TargetOS);$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS);$(LazarusDir)/components/synedit/units/$(TargetCPU)-$(TargetOS)"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
