@@ -44,14 +44,6 @@ interface
 
 {$IFDEF FPC}
   {$MODE Delphi}
-  {$DEFINE SYN_COMPILER_1_UP}
-  {$DEFINE SYN_COMPILER_2_UP}
-  {$DEFINE SYN_COMPILER_3_UP}
-  {$DEFINE SYN_COMPILER_4_UP}
-  {$DEFINE SYN_DELPHI_2_UP}
-  {$DEFINE SYN_DELPHI_3_UP}
-  {$DEFINE SYN_DELPHI_4_UP}
-  {$DEFINE SYN_DELPHI_5_UP}
   {$DEFINE SYN_LAZARUS}
 {$ENDIF}
 
@@ -70,9 +62,6 @@ interface
 {$BOOLEVAL OFF}
 {$EXTENDEDSYNTAX ON}
 {$LONGSTRINGS ON}
-{$IFNDEF SYN_LAZARUS}
-{$OPTIMIZATION ON}
-{$ENDIF}
 {$IFDEF D6}
   {$WARN SYMBOL_PLATFORM OFF} // Suppress .Net warnings
 {$ENDIF}
@@ -80,11 +69,6 @@ interface
   {$WARN UNSAFE_CAST OFF} // Suppress .Net warnings
   {$WARN UNSAFE_TYPE OFF} // Suppress .Net warnings
   {$WARN UNSAFE_CODE OFF} // Suppress .Net warnings
-{$ENDIF}
-{$IFDEF FPC}
- {$IFNDEF SYN_LAZARUS}
- {$MODE DELPHI} // Delphi-compatible mode in FreePascal
- {$ENDIF}
 {$ENDIF}
 
 // ======== Define options for TRegExpr engine
@@ -659,16 +643,6 @@ function RegExprSubExpressions (const ARegExpr : string;
 
 
 implementation
-
-{$IFDEF SYN_LAZARUS}
-{$ELSE}
-uses
-{$IFDEF SYN_WIN32}
- Windows; // CharUpper/Lower
-{$ELSE}
-  Libc; //Qt.pas from Borland does not expose char handling functions
-{$ENDIF}
-{$ENDIF}
 
 const
  TRegExprVersionMajor : integer = 0;
@@ -3951,7 +3925,7 @@ function TRegExpr.Replace (AInputStr : RegExprString;
       AReplaceFunc : TRegExprReplaceFunction)
      : RegExprString;
  begin
-  {$IFDEF SYN_LAZARUS}Result:={$ENDIF}ReplaceEx (AInputStr, AReplaceFunc);
+  Result := ReplaceEx (AInputStr, AReplaceFunc);
  end; { of function TRegExpr.Replace
 --------------------------------------------------------------}
 {$ENDIF}
