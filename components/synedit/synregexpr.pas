@@ -848,9 +848,11 @@ function RegExprSubExpressions (const ARegExpr : string;
             do inc (i);
            if i > Len
             then Result := -1 // unbalansed '('
-            else
-             if TRegExpr.ParseModifiersStr (System.Copy (ARegExpr, i, i - i0), Modif)
-              then AExtendedSyntax := (Modif and MaskModX) <> 0;
+            else begin
+             Modif := 0;
+             if TRegExpr.ParseModifiersStr (System.Copy (ARegExpr, i, i - i0), Modif) then
+               AExtendedSyntax := (Modif and MaskModX) <> 0;
+             end;
           end
          else begin // subexpression starts
            ASubExprs.Add (''); // just reserve space
