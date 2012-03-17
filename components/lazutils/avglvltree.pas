@@ -830,135 +830,134 @@ var
   OldRightLeftLeft, OldRightLeftRight, OldLeftRightLeft, OldLeftRightRight
   : TAvgLvlTreeNode;
 begin
-  if (ANode=nil) then exit;
-  if ((ANode.Balance=+1) or (ANode.Balance=-1)) then exit;
-  OldParent:=ANode.Parent;
-  if (ANode.Balance=0) then begin
-    // Treeheight has decreased by one
-    if (OldParent<>nil) then begin
+  while ANode<>nil do begin
+    if ((ANode.Balance=+1) or (ANode.Balance=-1)) then exit;
+    OldParent:=ANode.Parent;
+    if (ANode.Balance=0) then begin
+      // Treeheight has decreased by one
+      if (OldParent=nil) then
+        exit;
       if(OldParent.Left=ANode) then
         Inc(OldParent.Balance)
       else
         Dec(OldParent.Balance);
-      BalanceAfterDelete(OldParent);
-    end;
-    exit;
-  end;
-  if (ANode.Balance=+2) then begin
-    // Node is overweighted to the right
-    OldRight:=ANode.Right;
-    if (OldRight.Balance>=0) then begin
-      // OldRight.Balance is 0 or -1
-      // rotate left
-      OldRightLeft:=OldRight.Left;
-      if (OldParent<>nil) then begin
-        if (OldParent.Left=ANode) then
-          OldParent.Left:=OldRight
+      ANode:=OldParent;
+    end else if (ANode.Balance=+2) then begin
+      // Node is overweighted to the right
+      OldRight:=ANode.Right;
+      if (OldRight.Balance>=0) then begin
+        // OldRight.Balance is 0 or -1
+        // rotate left
+        OldRightLeft:=OldRight.Left;
+        if (OldParent<>nil) then begin
+          if (OldParent.Left=ANode) then
+            OldParent.Left:=OldRight
+          else
+            OldParent.Right:=OldRight;
+        end else
+          fRoot:=OldRight;
+        ANode.Parent:=OldRight;
+        ANode.Right:=OldRightLeft;
+        OldRight.Parent:=OldParent;
+        OldRight.Left:=ANode;
+        if (OldRightLeft<>nil) then
+          OldRightLeft.Parent:=ANode;
+        ANode.Balance:=(1-OldRight.Balance); // toggle 0 and 1
+        Dec(OldRight.Balance);
+        ANode:=OldRight;
+      end else begin
+        // OldRight.Balance=-1
+        // double rotate right left
+        OldRightLeft:=OldRight.Left;
+        OldRightLeftLeft:=OldRightLeft.Left;
+        OldRightLeftRight:=OldRightLeft.Right;
+        if (OldParent<>nil) then begin
+          if (OldParent.Left=ANode) then
+            OldParent.Left:=OldRightLeft
+          else
+            OldParent.Right:=OldRightLeft;
+        end else
+          fRoot:=OldRightLeft;
+        ANode.Parent:=OldRightLeft;
+        ANode.Right:=OldRightLeftLeft;
+        OldRight.Parent:=OldRightLeft;
+        OldRight.Left:=OldRightLeftRight;
+        OldRightLeft.Parent:=OldParent;
+        OldRightLeft.Left:=ANode;
+        OldRightLeft.Right:=OldRight;
+        if (OldRightLeftLeft<>nil) then
+          OldRightLeftLeft.Parent:=ANode;
+        if (OldRightLeftRight<>nil) then
+          OldRightLeftRight.Parent:=OldRight;
+        if (OldRightLeft.Balance<=0) then
+          ANode.Balance:=0
         else
-          OldParent.Right:=OldRight;
-      end else
-        fRoot:=OldRight;
-      ANode.Parent:=OldRight;
-      ANode.Right:=OldRightLeft;
-      OldRight.Parent:=OldParent;
-      OldRight.Left:=ANode;
-      if (OldRightLeft<>nil) then
-        OldRightLeft.Parent:=ANode;
-      ANode.Balance:=(1-OldRight.Balance); // toggle 0 and 1
-      Dec(OldRight.Balance);
-      BalanceAfterDelete(OldRight);
+          ANode.Balance:=-1;
+        if (OldRightLeft.Balance>=0) then
+          OldRight.Balance:=0
+        else
+          OldRight.Balance:=+1;
+        OldRightLeft.Balance:=0;
+        ANode:=OldRightLeft;
+      end;
     end else begin
-      // OldRight.Balance=-1
-      // double rotate right left
-      OldRightLeft:=OldRight.Left;
-      OldRightLeftLeft:=OldRightLeft.Left;
-      OldRightLeftRight:=OldRightLeft.Right;
-      if (OldParent<>nil) then begin
-        if (OldParent.Left=ANode) then
-          OldParent.Left:=OldRightLeft
+      // Node.Balance=-2
+      // Node is overweighted to the left
+      OldLeft:=ANode.Left;
+      if (OldLeft.Balance<=0) then begin
+        // rotate right
+        OldLeftRight:=OldLeft.Right;
+        if (OldParent<>nil) then begin
+          if (OldParent.Left=ANode) then
+            OldParent.Left:=OldLeft
+          else
+            OldParent.Right:=OldLeft;
+        end else
+          fRoot:=OldLeft;
+        ANode.Parent:=OldLeft;
+        ANode.Left:=OldLeftRight;
+        OldLeft.Parent:=OldParent;
+        OldLeft.Right:=ANode;
+        if (OldLeftRight<>nil) then
+          OldLeftRight.Parent:=ANode;
+        ANode.Balance:=(-1-OldLeft.Balance); // toggle 0 and -1
+        Inc(OldLeft.Balance);
+        ANode:=OldLeft;
+      end else begin
+        // OldLeft.Balance = 1
+        // double rotate left right
+        OldLeftRight:=OldLeft.Right;
+        OldLeftRightLeft:=OldLeftRight.Left;
+        OldLeftRightRight:=OldLeftRight.Right;
+        if (OldParent<>nil) then begin
+          if (OldParent.Left=ANode) then
+            OldParent.Left:=OldLeftRight
+          else
+            OldParent.Right:=OldLeftRight;
+        end else
+          fRoot:=OldLeftRight;
+        ANode.Parent:=OldLeftRight;
+        ANode.Left:=OldLeftRightRight;
+        OldLeft.Parent:=OldLeftRight;
+        OldLeft.Right:=OldLeftRightLeft;
+        OldLeftRight.Parent:=OldParent;
+        OldLeftRight.Left:=OldLeft;
+        OldLeftRight.Right:=ANode;
+        if (OldLeftRightLeft<>nil) then
+          OldLeftRightLeft.Parent:=OldLeft;
+        if (OldLeftRightRight<>nil) then
+          OldLeftRightRight.Parent:=ANode;
+        if (OldLeftRight.Balance>=0) then
+          ANode.Balance:=0
         else
-          OldParent.Right:=OldRightLeft;
-      end else
-        fRoot:=OldRightLeft;
-      ANode.Parent:=OldRightLeft;
-      ANode.Right:=OldRightLeftLeft;
-      OldRight.Parent:=OldRightLeft;
-      OldRight.Left:=OldRightLeftRight;
-      OldRightLeft.Parent:=OldParent;
-      OldRightLeft.Left:=ANode;
-      OldRightLeft.Right:=OldRight;
-      if (OldRightLeftLeft<>nil) then
-        OldRightLeftLeft.Parent:=ANode;
-      if (OldRightLeftRight<>nil) then
-        OldRightLeftRight.Parent:=OldRight;
-      if (OldRightLeft.Balance<=0) then
-        ANode.Balance:=0
-      else
-        ANode.Balance:=-1;
-      if (OldRightLeft.Balance>=0) then
-        OldRight.Balance:=0
-      else
-        OldRight.Balance:=+1;
-      OldRightLeft.Balance:=0;
-      BalanceAfterDelete(OldRightLeft);
-    end;
-  end else begin
-    // Node.Balance=-2
-    // Node is overweighted to the left
-    OldLeft:=ANode.Left;
-    if (OldLeft.Balance<=0) then begin
-      // rotate right
-      OldLeftRight:=OldLeft.Right;
-      if (OldParent<>nil) then begin
-        if (OldParent.Left=ANode) then
-          OldParent.Left:=OldLeft
+          ANode.Balance:=+1;
+        if (OldLeftRight.Balance<=0) then
+          OldLeft.Balance:=0
         else
-          OldParent.Right:=OldLeft;
-      end else
-        fRoot:=OldLeft;
-      ANode.Parent:=OldLeft;
-      ANode.Left:=OldLeftRight;
-      OldLeft.Parent:=OldParent;
-      OldLeft.Right:=ANode;
-      if (OldLeftRight<>nil) then
-        OldLeftRight.Parent:=ANode;
-      ANode.Balance:=(-1-OldLeft.Balance); // toggle 0 and -1
-      Inc(OldLeft.Balance);
-      BalanceAfterDelete(OldLeft);
-    end else begin
-      // OldLeft.Balance = 1
-      // double rotate left right
-      OldLeftRight:=OldLeft.Right;
-      OldLeftRightLeft:=OldLeftRight.Left;
-      OldLeftRightRight:=OldLeftRight.Right;
-      if (OldParent<>nil) then begin
-        if (OldParent.Left=ANode) then
-          OldParent.Left:=OldLeftRight
-        else
-          OldParent.Right:=OldLeftRight;
-      end else
-        fRoot:=OldLeftRight;
-      ANode.Parent:=OldLeftRight;
-      ANode.Left:=OldLeftRightRight;
-      OldLeft.Parent:=OldLeftRight;
-      OldLeft.Right:=OldLeftRightLeft;
-      OldLeftRight.Parent:=OldParent;
-      OldLeftRight.Left:=OldLeft;
-      OldLeftRight.Right:=ANode;
-      if (OldLeftRightLeft<>nil) then
-        OldLeftRightLeft.Parent:=OldLeft;
-      if (OldLeftRightRight<>nil) then
-        OldLeftRightRight.Parent:=ANode;
-      if (OldLeftRight.Balance>=0) then
-        ANode.Balance:=0
-      else
-        ANode.Balance:=+1;
-      if (OldLeftRight.Balance<=0) then
-        OldLeft.Balance:=0
-      else
-        OldLeft.Balance:=-1;
-      OldLeftRight.Balance:=0;
-      BalanceAfterDelete(OldLeftRight);
+          OldLeft.Balance:=-1;
+        OldLeftRight.Balance:=0;
+        ANode:=OldLeftRight;
+      end;
     end;
   end;
 end;
