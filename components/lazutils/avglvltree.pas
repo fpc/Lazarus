@@ -1083,122 +1083,83 @@ var
   OldParent, OldLeft, OldRight, Successor, OldSuccParent, OldSuccLeft,
   OldSuccRight: TAvgLvlTreeNode;
   OldBalance: integer;
+  Child: TAvgLvlTreeNode;
 begin
   OldParent:=ANode.Parent;
   OldBalance:=ANode.Balance;
   ANode.Parent:=nil;
   ANode.Balance:=0;
-  if ((ANode.Left=nil) and (ANode.Right=nil)) then begin
-    // Node is Leaf (no children)
+  if (ANode.Left<>nil) and (ANode.Right<>nil) then begin
+    // DelNode has both: Left and Right
+    // Replace ANode with symmetric Successor
+    Successor:=ANode.FindSuccessor;
+    OldLeft:=ANode.Left;
+    OldRight:=ANode.Right;
+    OldSuccParent:=Successor.Parent;
+    OldSuccLeft:=Successor.Left;
+    OldSuccRight:=Successor.Right;
+    ANode.Balance:=Successor.Balance;
+    Successor.Balance:=OldBalance;
+    if (OldSuccParent<>ANode) then begin
+      // at least one node between ANode and Successor
+      ANode.Parent:=Successor.Parent;
+      if (OldSuccParent.Left=Successor) then
+        OldSuccParent.Left:=ANode
+      else
+        OldSuccParent.Right:=ANode;
+      Successor.Right:=OldRight;
+      OldRight.Parent:=Successor;
+    end else begin
+      // Successor is right child of ANode
+      ANode.Parent:=Successor;
+      Successor.Right:=ANode;
+    end;
+    Successor.Left:=OldLeft;
+    if OldLeft<>nil then
+      OldLeft.Parent:=Successor;
+    Successor.Parent:=OldParent;
+    ANode.Left:=OldSuccLeft;
+    if ANode.Left<>nil then
+      ANode.Left.Parent:=ANode;
+    ANode.Right:=OldSuccRight;
+    if ANode.Right<>nil then
+      ANode.Right.Parent:=ANode;
+    if (OldParent<>nil) then begin
+      if (OldParent.Left=ANode) then
+        OldParent.Left:=Successor
+      else
+        OldParent.Right:=Successor;
+    end else
+      fRoot:=Successor;
+    // delete Node as usual
+    Delete(ANode);
+  end else begin
+    // left or right is nil
+    if ANode.Left<>nil then
+      Child:=ANode.Left
+    else
+      Child:=ANode.Right;
+    if Child<>nil then
+      Child.Parent:=OldParent;
     if (OldParent<>nil) then begin
       // Node has parent
       if (OldParent.Left=ANode) then begin
         // Node is left child of OldParent
-        OldParent.Left:=nil;
+        OldParent.Left:=Child;
         Inc(OldParent.Balance);
       end else begin
         // Node is right child of OldParent
-        OldParent.Right:=nil;
+        OldParent.Right:=Child;
         Dec(OldParent.Balance);
       end;
       BalanceAfterDelete(OldParent);
     end else begin
       // Node is the only node of tree
-      fRoot:=nil;
+      fRoot:=Child;
     end;
     dec(FCount);
     ANode.Free;
-    exit;
   end;
-  if (ANode.Right=nil) then begin
-    // Left is only child
-    // and because DelNode is AVL, Right has no childrens
-    // replace DelNode with Left
-    OldLeft:=ANode.Left;
-    ANode.Left:=nil;
-    OldLeft.Parent:=OldParent;
-    if (OldParent<>nil) then begin
-      if (OldParent.Left=ANode) then begin
-        OldParent.Left:=OldLeft;
-        Inc(OldParent.Balance);
-      end else begin
-        OldParent.Right:=OldLeft;
-        Dec(OldParent.Balance);
-      end;
-      BalanceAfterDelete(OldParent);
-    end else begin
-      fRoot:=OldLeft;
-    end;
-    dec(FCount);
-    ANode.Free;
-    exit;
-  end;
-  if (ANode.Left=nil) then begin
-    // Right is only child
-    // and because DelNode is AVL, Left has no childrens
-    // replace DelNode with Right
-    OldRight:=ANode.Right;
-    ANode.Right:=nil;
-    OldRight.Parent:=OldParent;
-    if (OldParent<>nil) then begin
-      if (OldParent.Left=ANode) then begin
-        OldParent.Left:=OldRight;
-        Inc(OldParent.Balance);
-      end else begin
-        OldParent.Right:=OldRight;
-        Dec(OldParent.Balance);
-      end;
-      BalanceAfterDelete(OldParent);
-    end else begin
-      fRoot:=OldRight;
-    end;
-    dec(FCount);
-    ANode.Free;
-    exit;
-  end;
-  // DelNode has both: Left and Right
-  // Replace ANode with symmetric Successor
-  Successor:=ANode.FindSuccessor;
-  OldLeft:=ANode.Left;
-  OldRight:=ANode.Right;
-  OldSuccParent:=Successor.Parent;
-  OldSuccLeft:=Successor.Left;
-  OldSuccRight:=Successor.Right;
-  ANode.Balance:=Successor.Balance;
-  Successor.Balance:=OldBalance;
-  if (OldSuccParent<>ANode) then begin
-    // at least one node between ANode and Successor
-    ANode.Parent:=Successor.Parent;
-    if (OldSuccParent.Left=Successor) then
-      OldSuccParent.Left:=ANode
-    else
-      OldSuccParent.Right:=ANode;
-    Successor.Right:=OldRight;
-    OldRight.Parent:=Successor;
-  end else begin
-    // Successor is right child of ANode
-    ANode.Parent:=Successor;
-    Successor.Right:=ANode;
-  end;
-  Successor.Left:=OldLeft;
-  if OldLeft<>nil then
-    OldLeft.Parent:=Successor;
-  Successor.Parent:=OldParent;
-  ANode.Left:=OldSuccLeft;
-  if ANode.Left<>nil then
-    ANode.Left.Parent:=ANode;
-  ANode.Right:=OldSuccRight;
-  if ANode.Right<>nil then
-    ANode.Right.Parent:=ANode;
-  if (OldParent<>nil) then begin
-    if (OldParent.Left=ANode) then
-      OldParent.Left:=Successor
-    else
-      OldParent.Right:=Successor;
-  end else
-    fRoot:=Successor;
-  // delete Node as usual
-  Delete(ANode);
 end;
 
 procedure TAvgLvlTree.Remove(Data: Pointer);
