@@ -74,6 +74,11 @@ type
     procedure drawRect(dirtyRect: NSRect); override;
     procedure Draw(ControlContext: NSGraphicsContext; const Abounds, dirty:NSRect); message 'draw:Context:bounds:';
   public
+    // Keyboard events
+    function acceptsFirstResponder: Boolean; override;
+    procedure keyDown(theEvent: NSEvent); override;
+    procedure keyUp(theEvent: NSEvent); override;
+    //
     function lclInitWithCreateParams(const AParams: TCreateParams): id; message 'lclInitWithCreateParams:';
     //
     function lclIsVisible: Boolean; message 'lclIsVisible';
@@ -86,22 +91,7 @@ type
     function lclClientFrame: TRect; message 'lclClientFrame';
     // Accessibility
     class function LazRoleToCocoaRole(ALazRole: TLazAccessibilityRole): NSString; message 'LazRoleToCocoaRole:';
-    //NSAccessibilityCategory = objccategory external (NSObject)
-    //function accessibilityAttributeNames: NSArray; override;
     function accessibilityAttributeValue(attribute: NSString): id; override;
-    {function accessibilityIsAttributeSettable(attribute: NSString): Boolean; message 'accessibilityIsAttributeSettable:';
-    procedure accessibilitySetValue_forAttribute(value: id; attribute: NSString); message 'accessibilitySetValue:forAttribute:';
-    function accessibilityParameterizedAttributeNames: NSArray; message 'accessibilityParameterizedAttributeNames';
-    function accessibilityAttributeValue_forParameter(attribute: NSString; parameter: id): id; message 'accessibilityAttributeValue:forParameter:';
-    function accessibilityActionNames: NSArray; message 'accessibilityActionNames';
-    function accessibilityActionDescription(action: NSString): NSString; message 'accessibilityActionDescription:';
-    procedure accessibilityPerformAction(action: NSString); message 'accessibilityPerformAction:';
-    function accessibilityIsIgnored: Boolean; message 'accessibilityIsIgnored';
-    function accessibilityHitTest(point: NSPoint): id; message 'accessibilityHitTest:';
-    function accessibilityFocusedUIElement: id; message 'accessibilityFocusedUIElement';
-    function accessibilityIndexOfChild(child: id): NSUInteger; message 'accessibilityIndexOfChild:';
-    function accessibilityArrayAttributeCount(attribute: NSString): NSUInteger; message 'accessibilityArrayAttributeCount:';
-    function accessibilityArrayAttributeValues_index_maxCount(attribute: NSString; index: NSUInteger; maxCount: NSUInteger): NSArray; message 'accessibilityArrayAttributeValues:index:maxCount:';}
   end;
 
   { TCocoaAccessibleObject }
@@ -112,19 +102,19 @@ type
     LCLControl: TControl;
     LCLAcc: TLazAccessibleObject;
     //NSAccessibilityCategory = objccategory external (NSObject)
-    //function accessibilityAttributeNames: NSArray; override;
+    function accessibilityAttributeNames: NSArray; override;
     function accessibilityAttributeValue(attribute: NSString): id; override;
-    {function accessibilityIsAttributeSettable(attribute: NSString): Boolean; message 'accessibilityIsAttributeSettable:';
-    procedure accessibilitySetValue_forAttribute(value: id; attribute: NSString); message 'accessibilitySetValue:forAttribute:';
-    function accessibilityParameterizedAttributeNames: NSArray; message 'accessibilityParameterizedAttributeNames';
-    function accessibilityAttributeValue_forParameter(attribute: NSString; parameter: id): id; message 'accessibilityAttributeValue:forParameter:';
-    function accessibilityActionNames: NSArray; message 'accessibilityActionNames';
-    function accessibilityActionDescription(action: NSString): NSString; message 'accessibilityActionDescription:';
-    procedure accessibilityPerformAction(action: NSString); message 'accessibilityPerformAction:';
-    function accessibilityIsIgnored: Boolean; message 'accessibilityIsIgnored';
-    function accessibilityHitTest(point: NSPoint): id; message 'accessibilityHitTest:';
-    function accessibilityFocusedUIElement: id; message 'accessibilityFocusedUIElement';
-    function accessibilityIndexOfChild(child: id): NSUInteger; message 'accessibilityIndexOfChild:';
+    function accessibilityIsAttributeSettable(attribute: NSString): Boolean; override;
+    procedure accessibilitySetValue_forAttribute(value: id; attribute: NSString); override;
+    function accessibilityParameterizedAttributeNames: NSArray; override;
+    function accessibilityAttributeValue_forParameter(attribute: NSString; parameter: id): id; override;
+    function accessibilityActionNames: NSArray; override;
+    function accessibilityActionDescription(action: NSString): NSString; override;
+    procedure accessibilityPerformAction(action: NSString); override;
+    function accessibilityIsIgnored: Boolean; override;
+    function accessibilityHitTest(point: NSPoint): id; override;
+    function accessibilityFocusedUIElement: id; override;
+    {function accessibilityIndexOfChild(child: id): NSUInteger; message 'accessibilityIndexOfChild:';
     function accessibilityArrayAttributeCount(attribute: NSString): NSUInteger; message 'accessibilityArrayAttributeCount:';
     function accessibilityArrayAttributeValues_index_maxCount(attribute: NSString; index: NSUInteger; maxCount: NSUInteger): NSArray; message 'accessibilityArrayAttributeValues:index:maxCount:';}
   end;
@@ -399,9 +389,9 @@ var
   lUTF8Char: TUTF8Char;
   lSendKey, lSendChar: Boolean;
 begin
-  inherited keyDown(theEvent);
+  //inherited keyDown(theEvent); Don't call inherited or else Cocoa will think you didn't handle the event and beep on key input
   lKey := MacKeyCodeToLCLKey(theEvent, lSendKey, lSendChar, lUTF8Char);
-  //DebugLn('KeyDown='+IntToHex(theEvent.keyCode(), 4));
+  DebugLn('[TCocoaForm] KeyDown='+IntToHex(theEvent.keyCode(), 4));
   if lSendKey then CallbackKeyDown(WindowHandle, lKey);
   if lSendChar then CallbackKeyChar(WindowHandle, 0, lUTF8Char);
 end;
@@ -412,7 +402,7 @@ var
   lUTF8Char: TUTF8Char;
   lSendKey, lSendChar: Boolean;
 begin
-  inherited keyUp(theEvent);
+  //inherited keyUp(theEvent); Don't call inherited or else Cocoa will think you didn't handle the event and beep on key input
   lKey := MacKeyCodeToLCLKey(theEvent, lSendKey, lSendChar, lUTF8Char);
   if lSendKey then CallbackKeyUp(WindowHandle, lKey);
 end;
@@ -704,6 +694,22 @@ begin
   {$ENDIF}
 end;
 
+function TCocoaCustomControl.acceptsFirstResponder: Boolean;
+begin
+  Result := True;
+end;
+
+procedure TCocoaCustomControl.keyDown(theEvent: NSEvent);
+begin
+  //DebugLn('[TCocoaCustomControl] KeyDown='+IntToHex(theEvent.keyCode(), 4));
+  WindowHandle.CocoaForm.keyDown(theEvent);
+end;
+
+procedure TCocoaCustomControl.keyUp(theEvent: NSEvent);
+begin
+  WindowHandle.CocoaForm.keyUp(theEvent);
+end;
+
 function RectToViewCoord(view: NSView; const r: TRect): NSRect;
 var
   b: NSRect;
@@ -843,6 +849,7 @@ var
   i: Integer;
   lForm: TCustomForm;
   lFormAcc, lChildAcc: TLazAccessibleObject;
+  lAccObject: TCocoaAccessibleObject;
 begin
   Result := inherited accessibilityAttributeValue(attribute);
 
@@ -866,13 +873,39 @@ begin
     for i := 0 to lFormAcc.GetChildAccessibleObjectsCount() - 1 do
     begin
       lChildAcc := lFormAcc.GetChildAccessibleObject(i);
-      lMAResult.addObject(TCocoaAccessibleObject(lChildAcc.Handle));
+      lAccObject := TCocoaAccessibleObject(lChildAcc.Handle);
+      lMAResult.addObject(lAccObject);
     end;
     Result := lMAResult;
   end;
 end;
 
 { TCocoaAccessibleObject }
+
+function TCocoaAccessibleObject.accessibilityAttributeNames: NSArray;
+var
+  lResult: NSMutableArray;
+  lCocoaRole: NSString;
+begin
+  lResult := NSMutableArray.array_();
+
+  lCocoaRole := TCocoaCustomControl.LazRoleToCocoaRole(LCLAcc.AccessibleRole);
+  if lCocoaRole.caseInsensitiveCompare(NSAccessibilityButtonRole) = NSOrderedSame then
+  begin
+    lResult.addObject(NSAccessibilityDescriptionAttribute);
+    lResult.addObject(NSAccessibilityFocusedAttribute);
+    lResult.addObject(NSAccessibilityParentAttribute);
+    lResult.addObject(NSAccessibilityPositionAttribute);
+    lResult.addObject(NSAccessibilityRoleAttribute);
+    lResult.addObject(NSAccessibilitySizeAttribute);
+    lResult.addObject(NSAccessibilityTitleAttribute);
+    lResult.addObject(NSAccessibilityTopLevelUIElementAttribute);
+    lResult.addObject(NSAccessibilityWindowAttribute);
+    lResult.addObject(NSAccessibilityTitleAttribute);
+  end;
+
+  Result := lResult;
+end;
 
 function TCocoaAccessibleObject.accessibilityAttributeValue(attribute: NSString): id;
 var
@@ -895,30 +928,32 @@ begin
   lStrAttr := NSStringToString(attribute);
   //DebugLn('[TCocoaAccessibleObject.accessibilityAttributeValue] attribute='+lStrAttr);
 
-  if attribute = NSAccessibilityRoleAttribute then
+  if attribute.caseInsensitiveCompare(NSAccessibilityRoleAttribute) = NSOrderedSame then
   begin
     DebugLn('[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityRoleAttribute');
     Result := TCocoaCustomControl.LazRoleToCocoaRole(LCLAcc.AccessibleRole);
   end
-  else if attribute = NSAccessibilityRoleDescriptionAttribute then
+  else if attribute.caseInsensitiveCompare(NSAccessibilityRoleDescriptionAttribute) = NSOrderedSame then
   begin
 
   end
-  else if attribute = NSAccessibilityValueAttribute then
+  else if attribute.caseInsensitiveCompare(NSAccessibilityValueAttribute) = NSOrderedSame then
   begin
 
   end
   {else if attribute = NSAccessibilityMinValueAttribute: NSString; cvar; external;
   NSAccessibilityMaxValueAttribute: NSString; cvar; external;}
-  else if attribute = NSAccessibilityEnabledAttribute then
+  else if attribute.caseInsensitiveCompare(NSAccessibilityEnabledAttribute) = NSOrderedSame then
   begin
-
+    Result := NSNumber.numberWithBool(LCLControl.Enabled);
   end
-  else if attribute = NSAccessibilityFocusedAttribute then
+  else if attribute.caseInsensitiveCompare(NSAccessibilityFocusedAttribute) = NSOrderedSame then
   begin
-
+    if LCLControl is TWinControl then
+      Result := NSNumber.numberWithBool(TWinControl(LCLControl).Focused)
+    else Result := NSNumber.numberWithBool(False);
   end
-  else if attribute = NSAccessibilityParentAttribute then
+  else if attribute.caseInsensitiveCompare(NSAccessibilityParentAttribute) = NSOrderedSame then
   begin
     lParent := LCLControl.Parent;
     if lParent <> nil then
@@ -937,7 +972,7 @@ begin
     end;
     Result := lMAResult;
   end
-  else if attribute = NSAccessibilityWindowAttribute then
+  else if attribute.caseInsensitiveCompare(NSAccessibilityWindowAttribute) = NSOrderedSame then
   begin
     lForm := Forms.GetParentForm(LCLControl);
     Result := TCocoaAccessibleObject(lForm.GetAccessibleObject().Handle);
@@ -966,6 +1001,78 @@ begin
     Result := NSValue.valueWithSize(lNSSize);
     DebugLn(Format('[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilitySizeAttribute Result=%d,%d', [lSize.CX, lSize.CY]));
   end;
+end;
+
+function TCocoaAccessibleObject.accessibilityIsAttributeSettable(
+  attribute: NSString): Boolean;
+begin
+  Result := False;
+end;
+
+procedure TCocoaAccessibleObject.accessibilitySetValue_forAttribute(value: id;
+  attribute: NSString);
+begin
+
+end;
+
+function TCocoaAccessibleObject.accessibilityParameterizedAttributeNames: NSArray;
+var
+  lResult: NSMutableArray;
+  lCocoaRole: NSString;
+begin
+  lResult := NSMutableArray.array_();
+
+  lCocoaRole := TCocoaCustomControl.LazRoleToCocoaRole(LCLAcc.AccessibleRole);
+
+  Result := lResult;
+end;
+
+function TCocoaAccessibleObject.accessibilityAttributeValue_forParameter(
+  attribute: NSString; parameter: id): id;
+begin
+  Result := nil;
+end;
+
+function TCocoaAccessibleObject.accessibilityActionNames: NSArray;
+var
+  lResult: NSMutableArray;
+  lCocoaRole: NSString;
+begin
+  lResult := NSMutableArray.array_();
+
+  lCocoaRole := TCocoaCustomControl.LazRoleToCocoaRole(LCLAcc.AccessibleRole);
+  if lCocoaRole.caseInsensitiveCompare(NSAccessibilityButtonRole) = NSOrderedSame then
+  begin
+    lResult.addObject(NSAccessibilityPressAction);
+  end;
+
+  Result := lResult;
+end;
+
+function TCocoaAccessibleObject.accessibilityActionDescription(action: NSString): NSString;
+begin
+  if action = NSAccessibilityPressAction then Result := NSSTR('Press')
+  else Result := NSSTR('');
+end;
+
+procedure TCocoaAccessibleObject.accessibilityPerformAction(action: NSString);
+begin
+
+end;
+
+function TCocoaAccessibleObject.accessibilityIsIgnored: Boolean;
+begin
+  Result := LCLAcc.AccessibleRole = larIgnore;
+end;
+
+function TCocoaAccessibleObject.accessibilityHitTest(point: NSPoint): id;
+begin
+  Result := inherited accessibilityHitTest(point);
+end;
+
+function TCocoaAccessibleObject.accessibilityFocusedUIElement: id;
+begin
+  Result := inherited accessibilityFocusedUIElement;
 end;
 
 procedure SetViewDefaults(AView:NSView);
