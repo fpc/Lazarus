@@ -1615,32 +1615,59 @@ begin
 end;
 
 procedure TAvgLvlTree.WriteReportToStream(s: TStream);
-var h: string;
 
   procedure WriteStr(const Txt: string);
   begin
-    if s<>nil then
-      s.Write(Txt[1],length(Txt));
+    if Txt='' then exit;
+    s.Write(Txt[1],length(Txt));
   end;
 
-  procedure WriteTreeNode(ANode: TAvgLvlTreeNode; const Prefix: string);
-  var b: string;
+  procedure WriteTreeNode(ANode: TAvgLvlTreeNode);
+  var
+    b: String;
+    IsLeft: boolean;
+    AParent: TAvgLvlTreeNode;
+    WasLeft: Boolean;
   begin
     if ANode=nil then exit;
-    WriteTreeNode(ANode.Right,Prefix+'  ');
-    b:=Prefix+Format('%p      Self=%p  Parent=%p  Balance=%d#13#10', [
+    WriteTreeNode(ANode.Right);
+    AParent:=ANode;
+    WasLeft:=false;
+    b:='';
+    while AParent<>nil do begin
+      if AParent.Parent=nil then begin
+        if AParent=ANode then
+          b:='--'+b
+        else
+          b:='  '+b;
+        break;
+      end;
+      IsLeft:=AParent.Parent.Left=AParent;
+      if AParent=ANode then begin
+        if IsLeft then
+          b:='\-'
+        else
+          b:='/-';
+      end else begin
+        if WasLeft=IsLeft then
+          b:='  '+b
+        else
+          b:='| '+b;
+      end;
+      WasLeft:=IsLeft;
+      AParent:=AParent.Parent;
+    end;
+    b+=Format('%p      Self=%p  Parent=%p  Balance=%d'+LineEnding, [
       ANode.Data, Pointer(ANode),Pointer(ANode.Parent), ANode.Balance]);
     WriteStr(b);
-    WriteTreeNode(ANode.Left,Prefix+'  ');
+    WriteTreeNode(ANode.Left);
   end;
 
 // TAvgLvlTree.WriteReportToStream
 begin
-  h:='Consistency: '+IntToStr(ConsistencyCheck)+' ---------------------'+#13#10;
-  WriteStr(h);
-  WriteTreeNode(Root,'  ');
-  h:='-End-Of-AVL-Tree---------------------'+#13#10;
-  WriteStr(h);
+  WriteStr('-Start-of-AVL-Tree-------------------'+LineEnding);
+  WriteTreeNode(Root);
+  WriteStr('-End-Of-AVL-Tree---------------------'+LineEnding);
 end;
 
 function TAvgLvlTree.ReportAsString: string;
