@@ -113,7 +113,7 @@ type
   public
     constructor Create(AIdType: TMapIdType; ADataSize: Cardinal);
     procedure Clear;
-    function Count: Integer;
+    function Count: SizeInt;
     function Delete(const AId): Boolean;
     destructor Destroy; override;
   end;
@@ -246,7 +246,7 @@ begin
   end;
 end;
 
-function TBaseMap.Count: Integer;
+function TBaseMap.Count: SizeInt;
 begin
   Result := FTree.Count;
 end;

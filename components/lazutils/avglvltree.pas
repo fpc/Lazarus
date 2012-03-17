@@ -15,14 +15,12 @@
   Author: Mattias Gaertner
   
   Abstract:
-    The Tree is sorted ascending from left to right. That means Compare gives
-    positive values for comparing right with left.
-  
+    The Tree is sorted ascending from left to right. That means
+    Compare(Node.Left,Node.Right) <= 0 for all nodes.
+
     TAvgLvlTree is an Average Level binary Tree. This binary tree is always
     balanced, so that inserting, deleting and finding a node is performed in
     O(log(#Nodes)).
-
-    Tree is sorted ascending.
 }
 unit AvgLvlTree;
 
@@ -74,7 +72,7 @@ type
   TAvgLvlTree = class
   protected
     fRoot: TAvgLvlTreeNode;
-    FCount: integer;
+    FCount: SizeInt;
     FNodeClass: TAvgLvlTreeNodeClass;
     FOnCompare: TListSortCompare;
     FOnObjectCompare: TObjectSortCompare;
@@ -109,7 +107,7 @@ type
 
     // search
     property Root: TAvgLvlTreeNode read fRoot;
-    property Count: integer read FCount;
+    property Count: SizeInt read FCount;
     function Compare(Data1, Data2: Pointer): integer;
     function Find(Data: Pointer): TAvgLvlTreeNode;
     function FindKey(Key: Pointer;
@@ -1527,8 +1525,8 @@ begin
     FRoot.ConsistencyCheck(Self);
     RealCount:=FRoot.GetCount;
   end;
-  if FCount<>RealCount then
-    E('FCount<>RealCount');
+  if Count<>RealCount then
+    E('Count<>RealCount');
 end;
 
 procedure TAvgLvlTree.FreeAndClear;
