@@ -1141,6 +1141,7 @@ type
     procedure SetDirection(const AValue: TDBNavButtonDirection);
     procedure SetFlat(const AValue: Boolean);
     procedure SetHints(const AValue: TStrings);
+    procedure SetOptions(AValue: TDBNavigatorOptions);
     procedure SetShowButtonHints(const AValue: boolean);
     procedure SetVisibleButtons(const AValue: TDBNavButtonSet);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
@@ -1172,7 +1173,7 @@ type
     property Direction: TDBNavButtonDirection read FDirection write SetDirection default nbdHorizontal;
     property Flat: Boolean read FFlat write SetFlat default False;
     property Hints: TStrings read GetHints write SetHints;
-    property Options: TDBNavigatorOptions read FOptions write FOptions;
+    property Options: TDBNavigatorOptions read FOptions write SetOptions;
     property OnClick: TDBNavClickEvent read FOnNavClick write FOnNavClick;
     property VisibleButtons: TDBNavButtonSet read FVisibleButtons
                              write SetVisibleButtons default DefaultDBNavigatorButtons;

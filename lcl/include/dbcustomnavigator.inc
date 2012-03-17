@@ -116,6 +116,14 @@ begin
     FHints.Assign(AValue);
 end;
 
+procedure TDBCustomNavigator.SetOptions(AValue: TDBNavigatorOptions);
+begin
+  if FOptions=AValue then Exit;
+  FOptions:=AValue;
+  if not (csLoading in ComponentState) then
+    UpdateButtons;
+end;
+
 procedure TDBCustomNavigator.SetShowButtonHints(const AValue: boolean);
 begin
   if FShowButtonHints=AValue then exit;
@@ -240,6 +248,13 @@ begin
   else
     ChildSizing.Layout:=cclTopToBottomThenLeftToRight;
 
+  // force insertion in predefined order
+  for CurButtonType:=Low(Buttons) to High(Buttons) do
+  begin
+    FreeThenNil(Buttons[CurButtonType]);
+    FreeThenNil(FocusableButtons[CurButtonType]);
+  end;
+
   // not-focusable buttons
   for CurButtonType:=Low(Buttons) to High(Buttons) do
   begin
@@ -263,8 +278,10 @@ begin
     CurButton.Flat:=Flat;
     CurButton.Index:=CurButtonType;
     CurButton.Visible:=CurButtonType in FVisibleButtons;
-    if not (navFocusableButtons in FOptions) then CurButton.Parent := Self
-    else CurButton.Parent := nil;
+    if not (navFocusableButtons in FOptions) and CurButton.Visible then
+      CurButton.Parent := Self
+    else
+      CurButton.Parent := nil;
   end;
 
   // focusable buttons
@@ -290,8 +307,10 @@ begin
     // update button properties
     CurFocusableButton.Index:=CurButtonType;
     CurFocusableButton.Visible:=CurButtonType in FVisibleButtons;
-    if (navFocusableButtons in FOptions) then CurFocusableButton.Parent := Self
-    else CurFocusableButton.Parent := nil;
+    if (navFocusableButtons in FOptions) and CurFocusableButton.Visible then
+      CurFocusableButton.Parent := Self
+    else
+      CurFocusableButton.Parent := nil;
   end;
 
   EnableAlign;
