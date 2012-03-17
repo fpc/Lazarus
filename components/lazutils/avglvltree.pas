@@ -152,7 +152,7 @@ type
   TPointerToPointerTree = class
   private
     FItems: TAvgLvlTree;
-    function GetCount: SizeInt;
+    function GetCount: SizeInt; inline;
     function GetValues(const Key: Pointer): Pointer;
     procedure SetValues(const Key: Pointer; const AValue: Pointer);
     function FindNode(const Key: Pointer): TAvgLvlTreeNode;
@@ -162,7 +162,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure Remove(Key: Pointer);
-    function Contains(const Key: Pointer): Boolean;
+    function Contains(const Key: Pointer): Boolean; inline;
     function GetFirst(out Key, Value: Pointer): Boolean;
     function GetLast(out Key, Value: Pointer): Boolean;
     function GetNext(const Key: Pointer; out NextKey, NextValue: Pointer): Boolean;
@@ -215,7 +215,7 @@ type
                        TheCaseSensitive: boolean = false);
     destructor Destroy; override;
     procedure Clear; virtual;
-    function Contains(const s: string): boolean;
+    function Contains(const s: string): boolean; inline;
     procedure GetNames(List: TStrings);
     procedure Remove(const Name: string); virtual;
     property CaseSensitive: boolean read FCaseSensitive;
@@ -243,9 +243,13 @@ type
   { TStringMap - associative array string to boolean }
 
   TStringMap = class(TCustomStringMap)
+  private
+    function GetValues(const s: string): boolean;
+    procedure SetValues(const s: string; AValue: boolean);
   public
     procedure Add(const Name: string);
     function GetEnumerator: TStringMapEnumerator;
+    property Values[const s: string]: boolean read GetValues write SetValues; default;
   end;
 
   { TStringToStringTree - Associative array }
@@ -724,6 +728,19 @@ begin
 end;
 
 { TStringMap }
+
+function TStringMap.GetValues(const s: string): boolean;
+begin
+  Result:=Contains(s);
+end;
+
+procedure TStringMap.SetValues(const s: string; AValue: boolean);
+begin
+  if AValue then
+    Add(s)
+  else
+    Remove(s);
+end;
 
 procedure TStringMap.Add(const Name: string);
 var
