@@ -175,7 +175,7 @@ type
     procedure SwitchPositionWithSuccessor(aNode, aSuccessor: TAvgLvlTreeNode); override;
   public
     function GetNodeAtIndex(Index: integer): TIndexedAVLTreeNode;
-    property Items[Index: SizeInt]: Pointer read GetItems;
+    property Items[Index: SizeInt]: Pointer read GetItems; default;
     procedure ConsistencyCheck; override;
     function NodeToReportStr(aNode: TAvgLvlTreeNode): string; override;
   end;
