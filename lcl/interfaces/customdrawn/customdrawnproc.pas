@@ -530,6 +530,7 @@ begin
     {$endif}
     FillChar(struct, SizeOf(TPaintStruct), 0);
     struct.hdc := HDC(lControlCanvas);
+    LCLSendEraseBackgroundMsg(lWinControl, struct.hdc);
     LCLSendPaintMsg(lWinControl, struct.hdc, @struct);
     {$ifdef VerboseCDWinControl}
     DebugLn('[RenderWinControl] after LCLSendPaintMsg');

@@ -142,6 +142,8 @@ begin
   GetCursorPos(MouseDownPos);}
 
   lTarget := FindControlWhichReceivedEvent(AWindowHandle.LCLForm, AWindowHandle.Children, x, y);
+  //DebugLn(Format('CallbackMouseDown lEventPos X=%d y=%d lTarget %s:%s',
+  //  [lEventPos.X, lEventPos.y, lTarget.Name, lTarget.ClassName]));
   AWindowHandle.LastMouseDownControl := lTarget;
   AWindowHandle.FocusedControl := lTarget;
   AWindowHandle.FocusedIntfControl := nil;

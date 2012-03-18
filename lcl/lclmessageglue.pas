@@ -67,6 +67,7 @@ function LCLSendCopyToClipboardMsg(const Target: TControl): PtrInt;
 function LCLSendPasteFromClipboardMsg(const Target: TControl): PtrInt;
 function LCLSendConfigureEventMsg(const Target: TControl): PtrInt;
 function LCLSendPaintMsg(const Target: TControl;const  DC: HDC; const PaintStruct: PPaintStruct): PtrInt;
+function LCLSendEraseBackgroundMsg(const Target: TControl;const  DC: HDC): PtrInt;
 function LCLSendKeyDownEvent(const Target: TControl; var CharCode: Word; KeyData: PtrInt; BeforeEvent, IsSysKey: Boolean): PtrInt;
 function LCLSendKeyUpEvent(const Target: TControl; var CharCode: Word; KeyData: PtrInt; BeforeEvent, IsSysKey: Boolean): PtrInt;
 function LCLSendCharEvent(const Target: TControl; var CharCode: Word; KeyData: PtrInt; BeforeEvent, IsSysKey, ANotifyUserInput: Boolean): PtrInt;
@@ -84,6 +85,10 @@ function LCLSendDropDownMsg(const Target: TControl): PtrInt;
 function LCLSendCloseUpMsg(const Target: TControl): PtrInt;
 
 implementation
+
+type
+  TWinControlAccess = class(TWinControl)
+  end;
 
 function DeliverMessage(const Target: TObject; var AMessage): PtrInt;
 var
@@ -789,6 +794,19 @@ begin
   Mess.PaintStruct := PaintStruct;
   
   Result := DeliverMessage(Target, Mess);
+end;
+
+function LCLSendEraseBackgroundMsg(const Target: TControl; const DC: HDC): PtrInt;
+var
+  Mess: TLMEraseBkgnd;
+begin
+  FillChar(Mess, SizeOf(Mess), 0);
+  Mess.Msg := LM_ERASEBKGND;
+  Mess.DC := DC;
+
+  Include(TWinControlAccess(Target).FWinControlFlags, wcfEraseBackground);
+  Result := DeliverMessage(Target, Mess);
+  Exclude(TWinControlAccess(Target).FWinControlFlags, wcfEraseBackground);
 end;
 
 {******************************************************************************
