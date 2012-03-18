@@ -172,6 +172,7 @@ type
     FEditing: Boolean;
     FPaintLock: Integer;
     FOwnPaintLock: Integer;
+    FTextBufferChanging: Boolean;
 
     fMarkupInfo: TSynSelectedColor;
     fMarkupInfoSync: TSynSelectedColor;
@@ -196,7 +197,10 @@ type
     FMarkupArea: TSynPluginSyncronizedEditMarkupArea;
     procedure MarkupChanged(AMarkup: TObject);
     function  CreateMarkup: TSynPluginSyncronizedEditMarkup; virtual;
-    procedure SetEditor(const AValue: TCustomSynEdit); override;
+    procedure DoEditorRemoving(AValue: TCustomSynEdit); override;
+    procedure DoEditorAdded(AValue: TCustomSynEdit); override;
+    procedure DoBufferChanging(Sender: TObject);
+    procedure DoBufferChanged(Sender: TObject);
     procedure DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
                             aLineBrkCnt: Integer; aText: String);
     procedure ApplyChangeList;
@@ -247,7 +251,8 @@ type
     FExternalEditLock: Integer;
   protected
     procedure SetUndoStart; // Handle undo/redo stuff
-    procedure SetEditor(const AValue: TCustomSynEdit); override;
+    procedure DoEditorRemoving(AValue: TCustomSynEdit); override;
+    procedure DoEditorAdded(AValue: TCustomSynEdit); override;
     procedure DoOnActivate; override;
     procedure DoOnDeactivate; override;
     procedure DoBeforeEdit(aX, aY, aCount, aLineBrkCnt: Integer; aUndoRedo: Boolean); override;
@@ -712,6 +717,7 @@ begin
   FEnabled := True;
   Active := False;
   FEditing := False;
+  FTextBufferChanging := False;
 end;
 
 destructor TSynPluginSyncronizedEditBase.Destroy;
@@ -736,11 +742,14 @@ begin
   DoClear;
 end;
 
-procedure TSynPluginSyncronizedEditBase.SetEditor(const AValue: TCustomSynEdit);
+procedure TSynPluginSyncronizedEditBase.DoEditorRemoving(AValue: TCustomSynEdit);
 begin
-  if AValue = Editor then exit;
   Active := False;
   if Editor <> nil then begin
+    if not FTextBufferChanging then begin
+      ViewedTextBuffer.RemoveGenericHandler(senrTextBufferChanging, TMethod({$IFDEF FPC}@{$ENDIF}DoBufferChanging));
+      ViewedTextBuffer.RemoveGenericHandler(senrTextBufferChanged, TMethod({$IFDEF FPC}@{$ENDIF}DoBufferChanged));
+    end;
     ViewedTextBuffer.RemoveEditHandler(@DoLinesEdited);
     ViewedTextBuffer.RemoveNotifyHandler(senrAfterIncPaintLock, @DoIncPaintLock);
     ViewedTextBuffer.RemoveNotifyHandler(senrBeforeDecPaintLock, @DoDecPaintLock);
@@ -753,8 +762,13 @@ begin
       FreeAndNil(FMarkupArea);
     end;
   end;
-  inherited SetEditor(AValue);
-  if AValue <> nil then begin
+  inherited DoEditorRemoving(AValue);
+end;
+
+procedure TSynPluginSyncronizedEditBase.DoEditorAdded(AValue: TCustomSynEdit);
+begin
+  inherited DoEditorAdded(AValue);
+  if Editor <> nil then begin
     FMarkup := CreateMarkup;
     FMarkup.Cells := FCells;
     FMarkup.CurrentCell := FCurrentCell;
@@ -768,7 +782,29 @@ begin
     ViewedTextBuffer.AddEditHandler(@DoLinesEdited);
     ViewedTextBuffer.AddNotifyHandler(senrAfterIncPaintLock, @DoIncPaintLock);
     ViewedTextBuffer.AddNotifyHandler(senrBeforeDecPaintLock, @DoDecPaintLock);
+    if not FTextBufferChanging then begin
+      ViewedTextBuffer.AddGenericHandler(senrTextBufferChanging, TMethod({$IFDEF FPC}@{$ENDIF}DoBufferChanging));
+      ViewedTextBuffer.AddGenericHandler(senrTextBufferChanged, TMethod({$IFDEF FPC}@{$ENDIF}DoBufferChanged));
+    end;
   end;
+end;
+
+procedure TSynPluginSyncronizedEditBase.DoBufferChanging(Sender: TObject);
+begin
+  if FTextBufferChanging then
+    exit;
+  FTextBufferChanging := True;
+  if Editor <> nil then
+    DoEditorRemoving(Editor);
+end;
+
+procedure TSynPluginSyncronizedEditBase.DoBufferChanged(Sender: TObject);
+begin
+  if not FTextBufferChanging then
+    exit;
+  if Editor <> nil then
+    DoEditorAdded(Editor);
+  FTextBufferChanging := False;
 end;
 
 procedure TSynPluginSyncronizedEditBase.SetCurrentCell(const AValue: Integer);
@@ -1109,13 +1145,17 @@ begin
   FRedoRealCount := ViewedTextBuffer.RedoList.RealCount;
 end;
 
-procedure TSynPluginCustomSyncroEdit.SetEditor(const AValue: TCustomSynEdit);
+procedure TSynPluginCustomSyncroEdit.DoEditorRemoving(AValue: TCustomSynEdit);
 begin
-  if Editor = AValue then exit;
   if Editor <> nil then begin
     CaretObj.RemoveChangeHandler(@DoCaretChanged);
   end;
-  inherited SetEditor(AValue);
+  inherited DoEditorRemoving(AValue);
+end;
+
+procedure TSynPluginCustomSyncroEdit.DoEditorAdded(AValue: TCustomSynEdit);
+begin
+  inherited DoEditorAdded(AValue);
   if Editor <> nil then begin
     CaretObj.AddChangeHandler(@DoCaretChanged);
   end;

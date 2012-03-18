@@ -227,7 +227,8 @@ type
     function DoHandleMouseAction(AnAction: TSynEditMouseAction;
                                  var AnInfo: TSynEditMouseActionInfo): Boolean;
 
-    procedure SetEditor(const AValue: TCustomSynEdit); override;
+    procedure DoEditorRemoving(AValue: TCustomSynEdit); override;
+    procedure DoEditorAdded(AValue: TCustomSynEdit); override;
     procedure DoClear; override;
     procedure DoModeChanged;
 
@@ -1289,9 +1290,8 @@ begin
   end;
 end;
 
-procedure TSynPluginSyncroEdit.SetEditor(const AValue: TCustomSynEdit);
+procedure TSynPluginSyncroEdit.DoEditorRemoving(AValue: TCustomSynEdit);
 begin
-  if Editor = AValue then exit;
   if Editor <> nil then begin
     SelectionObj.RemoveChangeHandler(@DoSelectionChanged);
     Editor.UnregisterCommandHandler(@ProcessSynCommand);
@@ -1300,7 +1300,12 @@ begin
     Editor.UnregisterMouseActionExecHandler(@DoHandleMouseAction);
     FLowerLines.Lines := nil;
   end;
-  inherited SetEditor(AValue);
+  inherited DoEditorRemoving(AValue);
+end;
+
+procedure TSynPluginSyncroEdit.DoEditorAdded(AValue: TCustomSynEdit);
+begin
+  inherited DoEditorAdded(AValue);
   if Editor <> nil then begin
     FLowerLines.Lines := ViewedTextBuffer;
     Editor.RegisterMouseActionSearchHandler(@MaybeHandleMouseAction);

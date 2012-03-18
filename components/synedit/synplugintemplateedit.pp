@@ -56,7 +56,8 @@ type
     procedure SetKeystrokes(const AValue: TSynEditKeyStrokes);
     procedure SetKeystrokesOffCell(const AValue: TSynEditKeyStrokes);
   protected
-    procedure SetEditor(const AValue: TCustomSynEdit); override;
+    procedure DoEditorRemoving(AValue: TCustomSynEdit); override;
+    procedure DoEditorAdded(AValue: TCustomSynEdit); override;
     procedure TranslateKey(Sender: TObject; Code: word; SState: TShiftState;
       var Data: pointer; var IsStartOfCombo: boolean; var Handled: boolean;
       var Command: TSynEditorCommand; FinishComboOnly: Boolean;
@@ -141,14 +142,18 @@ begin
   else Result := ecNone;
 end;
 
-procedure TSynPluginTemplateEdit.SetEditor(const AValue: TCustomSynEdit);
+procedure TSynPluginTemplateEdit.DoEditorRemoving(AValue: TCustomSynEdit);
 begin
-  if Editor = AValue then exit;
   if Editor <> nil then begin
     Editor.UnRegisterKeyTranslationHandler(@TranslateKey);
     Editor.UnregisterCommandHandler(@ProcessSynCommand);
   end;
-  inherited SetEditor(AValue);
+  inherited DoEditorRemoving(AValue);
+end;
+
+procedure TSynPluginTemplateEdit.DoEditorAdded(AValue: TCustomSynEdit);
+begin
+  inherited DoEditorAdded(AValue);
   if Editor <> nil then begin
     Editor.RegisterCommandHandler(@ProcessSynCommand, nil);
     Editor.RegisterKeyTranslationHandler(@TranslateKey);
