@@ -67,7 +67,7 @@ function LCLSendCopyToClipboardMsg(const Target: TControl): PtrInt;
 function LCLSendPasteFromClipboardMsg(const Target: TControl): PtrInt;
 function LCLSendConfigureEventMsg(const Target: TControl): PtrInt;
 function LCLSendPaintMsg(const Target: TControl;const  DC: HDC; const PaintStruct: PPaintStruct): PtrInt;
-function LCLSendEraseBackgroundMsg(const Target: TControl;const  DC: HDC): PtrInt;
+function LCLSendEraseBackgroundMsg(const Target: TWinControl;const  DC: HDC): PtrInt;
 function LCLSendKeyDownEvent(const Target: TControl; var CharCode: Word; KeyData: PtrInt; BeforeEvent, IsSysKey: Boolean): PtrInt;
 function LCLSendKeyUpEvent(const Target: TControl; var CharCode: Word; KeyData: PtrInt; BeforeEvent, IsSysKey: Boolean): PtrInt;
 function LCLSendCharEvent(const Target: TControl; var CharCode: Word; KeyData: PtrInt; BeforeEvent, IsSysKey, ANotifyUserInput: Boolean): PtrInt;
@@ -796,7 +796,7 @@ begin
   Result := DeliverMessage(Target, Mess);
 end;
 
-function LCLSendEraseBackgroundMsg(const Target: TControl; const DC: HDC): PtrInt;
+function LCLSendEraseBackgroundMsg(const Target: TWinControl; const DC: HDC): PtrInt;
 var
   Mess: TLMEraseBkgnd;
 begin
