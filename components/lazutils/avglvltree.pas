@@ -150,7 +150,35 @@ type
     function NodeToReportStr(aNode: TAvgLvlTreeNode): string; virtual;
     function ReportAsString: string;
   end;
+  TAvgLvlTreeClass = class of TAvgLvlTree;
   PAvgLvlTree = ^TAvgLvlTree;
+
+type
+  TIndexedAVLTreeNode = class(TAvgLvlTreeNode)
+  public
+    LeftCount: SizeInt; // number of nodes in the Left side
+  end;
+
+  { TIndexedAVLTree }
+
+  TIndexedAVLTree = class(TAvgLvlTree)
+  private
+    function GetItems(Index: SizeInt): Pointer; inline;
+  protected
+    fLastIndex: SizeInt;
+    fLastNode: TIndexedAVLTreeNode;
+    procedure DeletingNode(aNode: TAvgLvlTreeNode); override;
+    procedure Init; override;
+    procedure NodeAdded(aNode: TAvgLvlTreeNode); override;
+    procedure RotateLeft(aNode: TAvgLvlTreeNode); override;
+    procedure RotateRight(aNode: TAvgLvlTreeNode); override;
+    procedure SwitchPositionWithSuccessor(aNode, aSuccessor: TAvgLvlTreeNode); override;
+  public
+    function GetNodeAtIndex(Index: integer): TIndexedAVLTreeNode;
+    property Items[Index: SizeInt]: Pointer read GetItems;
+    procedure ConsistencyCheck; override;
+    function NodeToReportStr(aNode: TAvgLvlTreeNode): string; override;
+  end;
 
 type
   { TPointerToPointerTree - Associative array }
@@ -1801,6 +1829,166 @@ begin
       Result:=Result.Parent;
     Result:=Result.Parent;
   end;
+end;
+
+{ TIndexedAVLTree }
+
+function TIndexedAVLTree.GetItems(Index: SizeInt): Pointer;
+begin
+  Result:=GetNodeAtIndex(Index).Data;
+end;
+
+procedure TIndexedAVLTree.DeletingNode(aNode: TAvgLvlTreeNode);
+var
+  aParent: TAvgLvlTreeNode;
+begin
+  fLastNode:=nil;
+  repeat
+    aParent:=aNode.Parent;
+    if (aParent=nil) then exit;
+    if aParent.Left=aNode then
+      TIndexedAVLTreeNode(aParent).LeftCount-=1;
+    aNode:=aParent;
+  until false;
+end;
+
+procedure TIndexedAVLTree.Init;
+begin
+  FNodeClass:=TIndexedAVLTreeNode;
+end;
+
+procedure TIndexedAVLTree.NodeAdded(aNode: TAvgLvlTreeNode);
+var
+  aParent: TAvgLvlTreeNode;
+begin
+  fLastNode:=nil;
+  repeat
+    aParent:=aNode.Parent;
+    if (aParent=nil) then exit;
+    if aParent.Left=aNode then
+      TIndexedAVLTreeNode(aParent).LeftCount+=1;
+    aNode:=aParent;
+  until false;
+end;
+
+procedure TIndexedAVLTree.RotateLeft(aNode: TAvgLvlTreeNode);
+{    Parent                Parent
+       |                     |
+    CurNode        =>     OldRight
+      /  \                  /
+   Left OldRight         CurNode
+          /               /  \
+     OldRightLeft      Left OldRightLeft  }
+var
+  CurNode: TIndexedAVLTreeNode absolute aNode;
+  OldRight: TIndexedAVLTreeNode;
+begin
+  OldRight:=TIndexedAVLTreeNode(aNode.Right);
+  inherited RotateLeft(aNode);
+  OldRight.LeftCount += 1+CurNode.LeftCount;
+end;
+
+procedure TIndexedAVLTree.RotateRight(aNode: TAvgLvlTreeNode);
+{       Parent              Parent
+          |                   |
+        CurNode        =>   OldLeft
+         /   \                 \
+    OldLeft  Right          CurNode
+        \                     /  \
+   OldLeftRight      OldLeftRight Right  }
+var
+  CurNode: TIndexedAVLTreeNode absolute aNode;
+  OldLeft: TIndexedAVLTreeNode;
+begin
+  OldLeft:=TIndexedAVLTreeNode(aNode.Left);
+  inherited RotateRight(aNode);
+  CurNode.LeftCount -= (1 + OldLeft.LeftCount);
+end;
+
+procedure TIndexedAVLTree.SwitchPositionWithSuccessor(aNode,
+  aSuccessor: TAvgLvlTreeNode);
+var
+  CurNode: TIndexedAVLTreeNode absolute aNode;
+  CurSucc: TIndexedAVLTreeNode absolute aSuccessor;
+  h: SizeInt;
+begin
+  h:=CurNode.LeftCount;
+  CurNode.LeftCount:=CurSucc.LeftCount;
+  CurSucc.LeftCount:=h;
+  inherited SwitchPositionWithSuccessor(aNode, aSuccessor);
+end;
+
+function TIndexedAVLTree.GetNodeAtIndex(Index: integer): TIndexedAVLTreeNode;
+
+  procedure RaiseOutOfBounds;
+  begin
+    raise Exception.Create('TIndexedAVLTree: Index '+IntToStr(Index)+' out of bounds 0..'+IntToStr(Count));
+  end;
+
+begin
+  if (Index<0) or (Index>=Count) then
+    RaiseOutOfBounds;
+
+  if fLastNode<>nil then begin
+    if Index=fLastIndex then
+      exit(fLastNode)
+    else if Index=fLastIndex+1 then begin
+      fLastIndex:=Index;
+      fLastNode:=TIndexedAVLTreeNode(fLastNode.Successor);
+      exit(fLastNode);
+    end else if Index=fLastIndex-1 then begin
+      fLastIndex:=Index;
+      fLastNode:=TIndexedAVLTreeNode(fLastNode.Precessor);
+      exit(fLastNode);
+    end;
+  end;
+
+  fLastIndex:=Index;
+  Result:=TIndexedAVLTreeNode(Root);
+  repeat
+    if Result.LeftCount>Index then
+      Result:=TIndexedAVLTreeNode(Result.Left)
+    else if Result.LeftCount=Index then begin
+      fLastNode:=TIndexedAVLTreeNode(Result);
+      exit;
+    end
+    else begin
+      Index -= Result.LeftCount+1;
+      Result:=TIndexedAVLTreeNode(Result.Right);
+    end;
+  until false;
+end;
+
+procedure TIndexedAVLTree.ConsistencyCheck;
+
+  procedure E(Msg: string);
+  begin
+    raise Exception.Create('TIndexedAVLTree.ConsistencyCheck: '+Msg);
+  end;
+
+var
+  Node: TAvgLvlTreeNode;
+  i: SizeInt;
+  LeftCount: SizeInt;
+begin
+  inherited ConsistencyCheck;
+  i:=0;
+  for Node in Self do begin
+    if Node.Left<>nil then
+      LeftCount:=Node.Left.GetCount
+    else
+      LeftCount:=0;
+    if TIndexedAVLTreeNode(Node).LeftCount<>LeftCount then
+      E(Format('Node.LeftCount=%d<>%d',[TIndexedAVLTreeNode(Node).LeftCount,LeftCount]));
+    if GetNodeAtIndex(i)<>Node then
+      E(Format('GetNodeAtIndex(%d)<>%P',[i,Node]));
+    inc(i);
+  end;
+end;
+
+function TIndexedAVLTree.NodeToReportStr(aNode: TAvgLvlTreeNode): string;
+begin
+  Result:=inherited NodeToReportStr(aNode)+' LeftCount='+IntToStr(TIndexedAVLTreeNode(aNode).LeftCount);
 end;
 
 {$IFDEF DisableNewStringToStringTree}

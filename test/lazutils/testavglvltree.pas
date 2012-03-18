@@ -4,6 +4,7 @@
 
  Test specific with:
      ./runtests --format=plain --suite=TestAVLTreeAddsDeletes
+     ./runtests --format=plain --suite=TestIndexedAVLTreeAddsDeletes
 }
 unit TestAvgLvlTree;
 
@@ -21,9 +22,12 @@ type
 
   TTestAvgLvlTree = class(TTestCase)
   private
+    fTreeClass: TAvgLvlTreeClass;
     procedure TestSequence(Args: array of const);
+    procedure TestAVLTree;
   published
     procedure TestAVLTreeAddsDeletes;
+    procedure TestIndexedAVLTreeAddsDeletes;
   end;
 
 implementation
@@ -36,7 +40,7 @@ var
   i: Integer;
   Value: LongInt;
 begin
-  Tree:=TAvgLvlTree.Create;
+  Tree:=fTreeClass.Create;
   //DebugLn(Tree.ReportAsString);
   Tree.ConsistencyCheck;
 
@@ -68,7 +72,7 @@ begin
   Tree.Free;
 end;
 
-procedure TTestAvgLvlTree.TestAVLTreeAddsDeletes;
+procedure TTestAvgLvlTree.TestAVLTree;
 begin
   // rotate left
   TestSequence([]);
@@ -96,8 +100,18 @@ begin
   TestSequence([1,2,3,-2,-3,-1]);
   TestSequence([1,2,3,-3,-1,-2]);
   TestSequence([1,2,3,-3,-2,-1]);
+end;
 
-  //
+procedure TTestAvgLvlTree.TestAVLTreeAddsDeletes;
+begin
+  fTreeClass:=TAvgLvlTree;
+  TestAVLTree;
+end;
+
+procedure TTestAvgLvlTree.TestIndexedAVLTreeAddsDeletes;
+begin
+  fTreeClass:=TIndexedAVLTree;
+  TestAVLTree;
 end;
 
 initialization
