@@ -7037,9 +7037,10 @@ var
       ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
                                               ExprType.Context.Node.FirstChild);
     end
-    else if (Scanner.CompilerMode=cmDELPHI) and (ExprType.Desc=xtContext)
+    else if (ExprType.Desc=xtContext)
     and (ExprType.Context.Node.Desc=ctnPointerType)
-    and (ExprType.Context.Node<>StartNode) then begin
+    and (ExprType.Context.Node<>StartNode)
+    and (cmsAutoderef in Scanner.CompilerModeSwitches) then begin
       // Delphi knows . as shortcut for ^.
       // -> check for pointer type
       // left side of expression has defined a special context

@@ -159,7 +159,7 @@ type
     cmsMac_procvar,   { macpas style procvars }
     cmsRepeat_forward,      { repeating forward declarations is needed }
     cmsPointer_2_procedure, { allows the assignement of pointers to  procedure variables }
-    cmsAutoderef,           { does auto dereferencing of struct. vars }
+    cmsAutoderef,           { does auto dereferencing of struct. vars, e.g. a.b -> a^.b }
     cmsInitfinal,           { initialization/finalization for units }
     cmsAdd_pointer,
     cmsDefault_ansistring, { ansistring turned on by default }
@@ -186,7 +186,7 @@ const
     [cmsResult,cmsProperty,cmsNested_comment,cmsCvar_support],
     // cmDELPHI
     [cmsDefault_ansistring,cmsResult,cmsAdvancedRecords,cmsProperty,
-     cmsCvar_support,cmsOut,cmsObjpas],
+     cmsCvar_support,cmsOut,cmsObjpas,cmsAutoderef],
     // cmDELPHIUNICODE
     [cmsDefault_ansistring,cmsResult,cmsAdvancedRecords,cmsProperty,
      cmsCvar_support,cmsOut,cmsObjpas,cmsSystemCodepage],
