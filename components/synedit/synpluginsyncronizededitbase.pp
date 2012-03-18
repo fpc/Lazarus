@@ -736,6 +736,8 @@ end;
 
 procedure TSynPluginSyncronizedEditBase.Clear;
 begin
+  if FMarkup <> nil then
+    FMarkup.DoEnabledChanged(nil); // invalidate lines
   FCells.Clear;
   CurrentCell := -1;
   Active := False;
