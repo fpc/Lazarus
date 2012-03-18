@@ -6,7 +6,7 @@ interface
 
 uses
   // RTL
-  Classes, SysUtils, Types,
+  Classes, SysUtils, Types, fpcanvas, fpimage,
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
   Graphics, Controls, LCLType,
   //
@@ -38,7 +38,7 @@ type
     // Standard Tab
     // ===================================
     // TCDButton
-    procedure DrawButton(ADest: TCanvas; ASize: TSize;
+    procedure DrawButton(ADest: TFPCustomCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDButtonStateEx); override;
     // TCDEdit
     procedure DrawEditFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
@@ -152,9 +152,10 @@ begin
     ADest.Line(ADestPos.X+i, ADestPos.Y+4-i, ADestPos.X+i, ADestPos.Y+3+4-i);
 end;
 
-procedure TCDDrawerWinXP.DrawButton(ADest: TCanvas;
+procedure TCDDrawerWinXP.DrawButton(ADest: TFPCustomCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDButtonStateEx);
 var
+  lDest: TCanvas absolute ADest;
   Str: string;
   lColor: TColor;
   lRect: TRect;
@@ -163,39 +164,39 @@ var
 begin
   // Background corners
   lColor := AStateEx.ParentRGBColor;
-  ADest.Pixels[0, 0] := lColor;
-  ADest.Pixels[ASize.cx-1, 0] := lColor;
-  ADest.Pixels[0, ASize.cy-1] := lColor;
-  ADest.Pixels[ASize.cx-1, ASize.cy-1] := lColor;
+  lDest.Pixels[0, 0] := lColor;
+  lDest.Pixels[ASize.cx-1, 0] := lColor;
+  lDest.Pixels[0, ASize.cy-1] := lColor;
+  lDest.Pixels[ASize.cx-1, ASize.cy-1] := lColor;
 
   // Main body
   if csfSunken in AState then
   begin
     ADest.Brush.Style := bsSolid;
-    ADest.Brush.Color := WINXP_BUTTON_SUNKEN_BODY_BOTTOM;
-    ADest.Pen.Color := WINXP_BUTTON_SUNKEN_BODY_BOTTOM;
+    lDest.Brush.Color := WINXP_BUTTON_SUNKEN_BODY_BOTTOM;
+    lDest.Pen.Color := WINXP_BUTTON_SUNKEN_BODY_BOTTOM;
     ADest.Rectangle(1, 1, ASize.cx-1, ASize.cy-1);
   end
   else if csfEnabled in AState then
   begin
     // First the gradient
     lRect := Bounds(1, 1, ASize.cx-4, ASize.cy-5);
-    ADest.GradientFill(lRect, WINXP_BUTTON_BODY_TOP, WINXP_BUTTON_BODY_BOTTOM, gdVertical);
+    lDest.GradientFill(lRect, WINXP_BUTTON_BODY_TOP, WINXP_BUTTON_BODY_BOTTOM, gdVertical);
     // Now the extra lines which make the bottom-right
-    ADest.Pen.Color := WINXP_BUTTON_BODY_LINES_PREPRELAST;
+    lDest.Pen.Color := WINXP_BUTTON_BODY_LINES_PREPRELAST;
     ADest.Line(1, ASize.cy-4, ASize.cx-3, ASize.cy-4);
     ADest.Line(ASize.cx-3, ASize.cy-4, ASize.cx-3, 1);
-    ADest.Pen.Color := WINXP_BUTTON_BODY_LINES_PRELAST;
+    lDest.Pen.Color := WINXP_BUTTON_BODY_LINES_PRELAST;
     ADest.Line(2, ASize.cy-3, ASize.cx-2, ASize.cy-3);
     ADest.Line(ASize.cx-2, ASize.cy-3, ASize.cx-2, 2);
-    ADest.Pen.Color := WINXP_BUTTON_BODY_LINES_LAST;
+    lDest.Pen.Color := WINXP_BUTTON_BODY_LINES_LAST;
     ADest.Line(3, ASize.cy-1, ASize.cx-3, ASize.cy-1);
   end
   else // disabled
   begin
     ADest.Brush.Style := bsSolid;
-    ADest.Brush.Color := WINXP_BUTTON_DISABLED_BODY;
-    ADest.Pen.Color := WINXP_BUTTON_DISABLED_BODY;
+    lDest.Brush.Color := WINXP_BUTTON_DISABLED_BODY;
+    lDest.Pen.Color := WINXP_BUTTON_DISABLED_BODY;
     ADest.Rectangle(1, 1, ASize.cx-1, ASize.cy-1);
   end;
 
@@ -215,35 +216,35 @@ begin
     lFrameLight := WINXP_BUTTON_FRAME_LIGHT_DISABLED;
   end;
 
-  ADest.Pixels[1, 0] := lFrameMedium;
-  ADest.Pixels[0, 1] := lFrameMedium;
-  ADest.Pixels[1, 1] := lFrameMedDark;
-  ADest.Pixels[2, 1] := lFrameLight;
-  ADest.Pixels[1, 2] := lFrameLight;
+  lDest.Pixels[1, 0] := lFrameMedium;
+  lDest.Pixels[0, 1] := lFrameMedium;
+  lDest.Pixels[1, 1] := lFrameMedDark;
+  lDest.Pixels[2, 1] := lFrameLight;
+  lDest.Pixels[1, 2] := lFrameLight;
 
-  ADest.Pixels[ASize.cx-2, 0] := lFrameMedium;
-  ADest.Pixels[ASize.cx-1, 1] := lFrameMedium;
-  ADest.Pixels[ASize.cx-2, 1] := lFrameMedDark;
-  ADest.Pixels[ASize.cx-3, 1] := lFrameLight;
-  ADest.Pixels[ASize.cx-2, 2] := lFrameLight;
+  lDest.Pixels[ASize.cx-2, 0] := lFrameMedium;
+  lDest.Pixels[ASize.cx-1, 1] := lFrameMedium;
+  lDest.Pixels[ASize.cx-2, 1] := lFrameMedDark;
+  lDest.Pixels[ASize.cx-3, 1] := lFrameLight;
+  lDest.Pixels[ASize.cx-2, 2] := lFrameLight;
 
-  ADest.Pixels[1, ASize.cy-1] := lFrameMedium;
-  ADest.Pixels[0, ASize.cy-2] := lFrameMedium;
-  ADest.Pixels[1, ASize.cy-2] := lFrameMedDark;
-  ADest.Pixels[2, ASize.cy-2] := lFrameLight;
-  ADest.Pixels[1, ASize.cy-3] := lFrameLight;
+  lDest.Pixels[1, ASize.cy-1] := lFrameMedium;
+  lDest.Pixels[0, ASize.cy-2] := lFrameMedium;
+  lDest.Pixels[1, ASize.cy-2] := lFrameMedDark;
+  lDest.Pixels[2, ASize.cy-2] := lFrameLight;
+  lDest.Pixels[1, ASize.cy-3] := lFrameLight;
 
-  ADest.Pixels[ASize.cx-2, ASize.cy-1] := lFrameMedium;
-  ADest.Pixels[ASize.cx-1, ASize.cy-2] := lFrameMedium;
-  ADest.Pixels[ASize.cx-2, ASize.cy-2] := lFrameMedDark;
-  ADest.Pixels[ASize.cx-3, ASize.cy-2] := lFrameLight;
-  ADest.Pixels[ASize.cx-2, ASize.cy-3] := lFrameLight;
+  lDest.Pixels[ASize.cx-2, ASize.cy-1] := lFrameMedium;
+  lDest.Pixels[ASize.cx-1, ASize.cy-2] := lFrameMedium;
+  lDest.Pixels[ASize.cx-2, ASize.cy-2] := lFrameMedDark;
+  lDest.Pixels[ASize.cx-3, ASize.cy-2] := lFrameLight;
+  lDest.Pixels[ASize.cx-2, ASize.cy-3] := lFrameLight;
 
-  ADest.Pen.Color := lFrameDark;
-  ADest.Line(2, 0, ASize.cx-2, 0);
-  ADest.Line(2, ASize.cy-1, ASize.cx-2, ASize.cy-1);
-  ADest.Line(0, 2, 0, ASize.cy-2);
-  ADest.Line(ASize.cx-1, 2, ASize.cx-1, ASize.cy-2);
+  lDest.Pen.Color := lFrameDark;
+  lDest.Line(2, 0, ASize.cx-2, 0);
+  lDest.Line(2, ASize.cy-1, ASize.cx-2, ASize.cy-1);
+  lDest.Line(0, 2, 0, ASize.cy-2);
+  lDest.Line(ASize.cx-1, 2, ASize.cx-1, ASize.cy-2);
 
   // Now focus / mouseover indication, note that both disappear when sunked in WinXP
   if ((csfHasFocus in AState) or (csfMouseOver in AState)) and not (csfSunken in AState) then
@@ -264,19 +265,19 @@ begin
     end;
 
     // Top
-    ADest.Pen.Color := lSelTop;
+    lDest.Pen.Color := lSelTop;
     ADest.Line(2, 1, ASize.cx-2, 1);
-    ADest.Pen.Color := lSelTopGrad;
+    lDest.Pen.Color := lSelTopGrad;
     ADest.Line(1, 2, ASize.cx-1, 2);
     // Gradient
     lRect := Bounds(1, 2, 2, ASize.cy-4);
-    ADest.GradientFill(lRect, lSelTopGrad, lSelBottomGrad, gdVertical);
+    lDest.GradientFill(lRect, lSelTopGrad, lSelBottomGrad, gdVertical);
     lRect := Bounds(ASize.cx-3, 2, 2, ASize.cy-4);
-    ADest.GradientFill(lRect, lSelTopGrad, lSelBottomGrad, gdVertical);
+    lDest.GradientFill(lRect, lSelTopGrad, lSelBottomGrad, gdVertical);
     // Bottom
-    ADest.Pen.Color := lSelBottomGrad;
+    lDest.Pen.Color := lSelBottomGrad;
     ADest.Line(1, ASize.cy-3, ASize.cx-1, ASize.cy-3);
-    ADest.Pen.Color := lSelBottom;
+    lDest.Pen.Color := lSelBottom;
     ADest.Line(2, ASize.cy-2, ASize.cx-2, ASize.cy-2);
   end;
 
@@ -285,8 +286,8 @@ begin
   ADest.Brush.Style := bsClear;
   ADest.Pen.Style := psSolid;
   Str := AStateEx.Caption;
-  ADest.TextOut((ASize.cx - ADest.TextWidth(Str)) div 2,
-    (ASize.cy - ADest.TextHeight(Str)) div 2, Str);
+  lDest.TextOut((ASize.cx - lDest.TextWidth(Str)) div 2,
+    (ASize.cy - lDest.TextHeight(Str)) div 2, Str);
 end;
 
 procedure TCDDrawerWinXP.DrawEditFrame(ADest: TCanvas; ADestPos: TPoint;

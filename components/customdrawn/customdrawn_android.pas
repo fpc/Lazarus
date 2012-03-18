@@ -57,7 +57,7 @@ type
     // Standard Tab
     // ===================================
     // TCDButton
-    procedure DrawButton(ADest: TCanvas; ASize: TSize;
+    procedure DrawButton(ADest: TFPCustomCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDButtonStateEx); override;
 {    // TCDEdit
     procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
@@ -310,9 +310,10 @@ begin
   // Don't draw anything, tickmarks are impressed into the general images
 end;
 
-procedure TCDDrawerAndroid.DrawButton(ADest: TCanvas; ASize: TSize;
+procedure TCDDrawerAndroid.DrawButton(ADest: TFPCustomCanvas; ASize: TSize;
   AState: TCDControlState; AStateEx: TCDButtonStateEx);
 var
+  lDest: TCanvas absolute ADest;
   Str: string;
   lGlyphLeftSpacing: Integer = 0;
   lTextOutPos: TPoint;
@@ -320,90 +321,91 @@ var
   lColor: TColor;
   lRect: TRect;
 begin
+  if not (ADest is TCanvas) then Exit; // ToDo
   // Background corners
   lColor := AStateEx.ParentRGBColor;
-  ADest.Pixels[0, 0] := lColor;
-  ADest.Pixels[1, 0] := lColor;
-  ADest.Pixels[0, 1] := lColor;
-  ADest.Pixels[ASize.cx-1, 0] := lColor;
-  ADest.Pixels[ASize.cx-2, 0] := lColor;
-  ADest.Pixels[ASize.cx-1, 1] := lColor;
-  ADest.Pixels[0, ASize.cy-1] := lColor;
-  ADest.Pixels[1, ASize.cy-1] := lColor;
-  ADest.Pixels[0, ASize.cy-2] := lColor;
-  ADest.Pixels[ASize.cx-1, ASize.cy-1] := lColor;
-  ADest.Pixels[ASize.cx-2, ASize.cy-1] := lColor;
-  ADest.Pixels[ASize.cx-1, ASize.cy-2] := lColor;
+  lDest.Pixels[0, 0] := lColor;
+  lDest.Pixels[1, 0] := lColor;
+  lDest.Pixels[0, 1] := lColor;
+  lDest.Pixels[ASize.cx-1, 0] := lColor;
+  lDest.Pixels[ASize.cx-2, 0] := lColor;
+  lDest.Pixels[ASize.cx-1, 1] := lColor;
+  lDest.Pixels[0, ASize.cy-1] := lColor;
+  lDest.Pixels[1, ASize.cy-1] := lColor;
+  lDest.Pixels[0, ASize.cy-2] := lColor;
+  lDest.Pixels[ASize.cx-1, ASize.cy-1] := lColor;
+  lDest.Pixels[ASize.cx-2, ASize.cy-1] := lColor;
+  lDest.Pixels[ASize.cx-1, ASize.cy-2] := lColor;
 
   // Darker corners
   lColor := ANDROID_BUTTON_CORNERS;
-  ADest.Pixels[1, 1] := lColor;
-  ADest.Pixels[2, 0] := lColor;
-  ADest.Pixels[0, 2] := lColor;
-  ADest.Pixels[ASize.cx-3, 0] := lColor;
-  ADest.Pixels[ASize.cx-2, 1] := lColor;
-  ADest.Pixels[ASize.cx-1, 2] := lColor;
-  ADest.Pixels[0, ASize.cy-3] := lColor;
-  ADest.Pixels[1, ASize.cy-2] := lColor;
-  ADest.Pixels[2, ASize.cy-1] := lColor;
-  ADest.Pixels[ASize.cx-1, ASize.cy-3] := lColor;
-  ADest.Pixels[ASize.cx-2, ASize.cy-2] := lColor;
-  ADest.Pixels[ASize.cx-3, ASize.cy-1] := lColor;
+  lDest.Pixels[1, 1] := lColor;
+  lDest.Pixels[2, 0] := lColor;
+  lDest.Pixels[0, 2] := lColor;
+  lDest.Pixels[ASize.cx-3, 0] := lColor;
+  lDest.Pixels[ASize.cx-2, 1] := lColor;
+  lDest.Pixels[ASize.cx-1, 2] := lColor;
+  lDest.Pixels[0, ASize.cy-3] := lColor;
+  lDest.Pixels[1, ASize.cy-2] := lColor;
+  lDest.Pixels[2, ASize.cy-1] := lColor;
+  lDest.Pixels[ASize.cx-1, ASize.cy-3] := lColor;
+  lDest.Pixels[ASize.cx-2, ASize.cy-2] := lColor;
+  lDest.Pixels[ASize.cx-3, ASize.cy-1] := lColor;
 
   // Button image
   if csfSunken in AState then
   begin
     // Top lines
-    DrawAndroidAlternatedHorzLine(ADest, 3, ASize.cx-3, 0, ANDROID_BUTTON_SUNKEN_FIRST_LINE_A, ANDROID_BUTTON_SUNKEN_FIRST_LINE_B);
-    DrawAndroidAlternatedHorzLine(ADest, 2, ASize.cx-2, 1, ANDROID_BUTTON_SUNKEN_SECOND_LINE_A, ANDROID_BUTTON_SUNKEN_SECOND_LINE_B);
-    DrawAndroidAlternatedHorzLine(ADest, 1, ASize.cx-1, 2, ANDROID_BUTTON_SUNKEN_THIRD_LINE_A, ANDROID_BUTTON_SUNKEN_THIRD_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 3, ASize.cx-3, 0, ANDROID_BUTTON_SUNKEN_FIRST_LINE_A, ANDROID_BUTTON_SUNKEN_FIRST_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 2, ASize.cx-2, 1, ANDROID_BUTTON_SUNKEN_SECOND_LINE_A, ANDROID_BUTTON_SUNKEN_SECOND_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 1, ASize.cx-1, 2, ANDROID_BUTTON_SUNKEN_THIRD_LINE_A, ANDROID_BUTTON_SUNKEN_THIRD_LINE_B);
 
     // The central gradient
     lRect := Bounds(0, 3, ASize.cx, (ASize.cy-6) div 3+1);
-    DrawAndroidMixedVertGradientFill(ADest, lRect, ANDROID_BUTTON_SUNKEN_TOP_GRADIENT_A,
+    DrawAndroidMixedVertGradientFill(lDest, lRect, ANDROID_BUTTON_SUNKEN_TOP_GRADIENT_A,
       ANDROID_BUTTON_SUNKEN_MIDDLE_GRADIENT_A, ANDROID_BUTTON_SUNKEN_TOP_GRADIENT_B, ANDROID_BUTTON_SUNKEN_MIDDLE_GRADIENT_B);
     lRect := Bounds(0, 3+(ASize.cy-6) div 3, ASize.cx, (ASize.cy-6) div 3+1);
-    DrawAndroidMixedFill(ADest, lRect, ANDROID_BUTTON_SUNKEN_MIDDLE_GRADIENT_A, ANDROID_BUTTON_SUNKEN_MIDDLE_GRADIENT_B);
+    DrawAndroidMixedFill(lDest, lRect, ANDROID_BUTTON_SUNKEN_MIDDLE_GRADIENT_A, ANDROID_BUTTON_SUNKEN_MIDDLE_GRADIENT_B);
     lRect := Bounds(0, 3+2*(ASize.cy-6) div 3, ASize.cx, (ASize.cy-6) div 3+1);
-    DrawAndroidMixedVertGradientFill(ADest, lRect, ANDROID_BUTTON_SUNKEN_MIDDLE_GRADIENT_A,
+    DrawAndroidMixedVertGradientFill(lDest, lRect, ANDROID_BUTTON_SUNKEN_MIDDLE_GRADIENT_A,
       ANDROID_BUTTON_SUNKEN_BOTTOM_GRADIENT_A, ANDROID_BUTTON_SUNKEN_MIDDLE_GRADIENT_B, ANDROID_BUTTON_SUNKEN_BOTTOM_GRADIENT_B);
 
     // Bottom lines
-    DrawAndroidAlternatedHorzLine(ADest, 1, ASize.cx-1, ASize.cy-3, ANDROID_BUTTON_SUNKEN_PREPRELAST_LINE_A, ANDROID_BUTTON_SUNKEN_PREPRELAST_LINE_B);
-    DrawAndroidAlternatedHorzLine(ADest, 2, ASize.cx-2, ASize.cy-2, ANDROID_BUTTON_SUNKEN_PRELAST_LINE_A, ANDROID_BUTTON_SUNKEN_PRELAST_LINE_B);
-    DrawAndroidAlternatedHorzLine(ADest, 3, ASize.cx-3, ASize.cy-1, ANDROID_BUTTON_SUNKEN_LAST_LINE_A, ANDROID_BUTTON_SUNKEN_LAST_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 1, ASize.cx-1, ASize.cy-3, ANDROID_BUTTON_SUNKEN_PREPRELAST_LINE_A, ANDROID_BUTTON_SUNKEN_PREPRELAST_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 2, ASize.cx-2, ASize.cy-2, ANDROID_BUTTON_SUNKEN_PRELAST_LINE_A, ANDROID_BUTTON_SUNKEN_PRELAST_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 3, ASize.cx-3, ASize.cy-1, ANDROID_BUTTON_SUNKEN_LAST_LINE_A, ANDROID_BUTTON_SUNKEN_LAST_LINE_B);
   end
   else
   begin
     // Top lines
-    DrawAndroidAlternatedHorzLine(ADest, 3, ASize.cx-3, 0, ANDROID_BUTTON_FIRST_LINE_A, ANDROID_BUTTON_FIRST_LINE_B);
-    DrawAndroidAlternatedHorzLine(ADest, 2, ASize.cx-2, 1, ANDROID_BUTTON_SECOND_LINE_A, ANDROID_BUTTON_SECOND_LINE_B);
-    DrawAndroidAlternatedHorzLine(ADest, 1, ASize.cx-1, 2, ANDROID_BUTTON_THIRD_LINE_A, ANDROID_BUTTON_THIRD_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 3, ASize.cx-3, 0, ANDROID_BUTTON_FIRST_LINE_A, ANDROID_BUTTON_FIRST_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 2, ASize.cx-2, 1, ANDROID_BUTTON_SECOND_LINE_A, ANDROID_BUTTON_SECOND_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 1, ASize.cx-1, 2, ANDROID_BUTTON_THIRD_LINE_A, ANDROID_BUTTON_THIRD_LINE_B);
 
     // The central gradient
     lRect := Bounds(0, 3, ASize.cx, (ASize.cy-6) div 3+1);
-    DrawAndroidMixedVertGradientFill(ADest, lRect, ANDROID_BUTTON_TOP_GRADIENT_A,
+    DrawAndroidMixedVertGradientFill(lDest, lRect, ANDROID_BUTTON_TOP_GRADIENT_A,
       ANDROID_BUTTON_MIDDLE_GRADIENT_A, ANDROID_BUTTON_TOP_GRADIENT_B, ANDROID_BUTTON_MIDDLE_GRADIENT_B);
     lRect := Bounds(0, 3+(ASize.cy-6) div 3, ASize.cx, (ASize.cy-6) div 3+1);
-    DrawAndroidMixedFill(ADest, lRect, ANDROID_BUTTON_MIDDLE_GRADIENT_A, ANDROID_BUTTON_MIDDLE_GRADIENT_B);
+    DrawAndroidMixedFill(lDest, lRect, ANDROID_BUTTON_MIDDLE_GRADIENT_A, ANDROID_BUTTON_MIDDLE_GRADIENT_B);
     lRect := Bounds(0, 3+2*(ASize.cy-6) div 3, ASize.cx, (ASize.cy-6) div 3+1);
-    DrawAndroidMixedVertGradientFill(ADest, lRect, ANDROID_BUTTON_MIDDLE_GRADIENT_A,
+    DrawAndroidMixedVertGradientFill(lDest, lRect, ANDROID_BUTTON_MIDDLE_GRADIENT_A,
       ANDROID_BUTTON_BOTTOM_GRADIENT_A, ANDROID_BUTTON_MIDDLE_GRADIENT_B, ANDROID_BUTTON_BOTTOM_GRADIENT_B);
 
     // Bottom lines
-    DrawAndroidAlternatedHorzLine(ADest, 1, ASize.cx-1, ASize.cy-3, ANDROID_BUTTON_PREPRELAST_LINE_A, ANDROID_BUTTON_PREPRELAST_LINE_B);
-    DrawAndroidAlternatedHorzLine(ADest, 2, ASize.cx-2, ASize.cy-2, ANDROID_BUTTON_PRELAST_LINE_A, ANDROID_BUTTON_PRELAST_LINE_B);
-    DrawAndroidAlternatedHorzLine(ADest, 3, ASize.cx-3, ASize.cy-1, ANDROID_BUTTON_LAST_LINE_A, ANDROID_BUTTON_LAST_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 1, ASize.cx-1, ASize.cy-3, ANDROID_BUTTON_PREPRELAST_LINE_A, ANDROID_BUTTON_PREPRELAST_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 2, ASize.cx-2, ASize.cy-2, ANDROID_BUTTON_PRELAST_LINE_A, ANDROID_BUTTON_PRELAST_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 3, ASize.cx-3, ASize.cy-1, ANDROID_BUTTON_LAST_LINE_A, ANDROID_BUTTON_LAST_LINE_B);
   end;
 
   if csfHasFocus in AState then
-    DrawFocusRect(ADest, Point(5, 5), Size(ASize.cx-10, ASize.cy-10));
+    DrawFocusRect(lDest, Point(5, 5), Size(ASize.cx-10, ASize.cy-10));
 
   // Position calculations
   ADest.Font.Assign(AStateEx.Font);
   Str := AStateEx.Caption;
-  lGlyphCaptionHeight := Max(ADest.TextHeight(Str), AStateEx.Glyph.Height);
-  lTextOutPos.X := (ASize.cx - ADest.TextWidth(Str) - AStateEx.Glyph.Width) div 2;
+  lGlyphCaptionHeight := Max(lDest.TextHeight(Str), AStateEx.Glyph.Height);
+  lTextOutPos.X := (ASize.cx - lDest.TextWidth(Str) - AStateEx.Glyph.Width) div 2;
   lTextOutPos.Y := (ASize.cy - lGlyphCaptionHeight) div 2;
   lTextOutPos.X := Max(lTextOutPos.X, 5);
   lTextOutPos.Y := Max(lTextOutPos.Y, 5);
@@ -411,13 +413,13 @@ begin
   // Button glyph
   if not AStateEx.Glyph.Empty then
   begin
-    ADest.Draw(lTextOutPos.X, lTextOutPos.Y, AStateEx.Glyph);
+    lDest.Draw(lTextOutPos.X, lTextOutPos.Y, AStateEx.Glyph);
     lGlyphLeftSpacing := AStateEx.Glyph.Width+5;
   end;
 
   // Button text
   lTextOutPos.X := lTextOutPos.X + lGlyphLeftSpacing;
-  lTextOutPos.Y := (ASize.cy - ADest.TextHeight(Str)) div 2;
+  lTextOutPos.Y := (ASize.cy - lDest.TextHeight(Str)) div 2;
   ADest.Brush.Style := bsClear;
   ADest.Pen.Style := psSolid;
   if csfSunken in AState then
@@ -425,7 +427,7 @@ begin
     Inc(lTextOutPos.X);
     Inc(lTextOutPos.Y);
   end;
-  ADest.TextOut(lTextOutPos.X, lTextOutPos.Y, Str)
+  lDest.TextOut(lTextOutPos.X, lTextOutPos.Y, Str)
 end;
 
 procedure TCDDrawerAndroid.DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint;

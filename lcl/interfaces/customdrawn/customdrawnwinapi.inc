@@ -1146,6 +1146,8 @@ function TCDWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; uType,
 var
   LazDC: TLazCanvas absolute DC;
   lControlStateEx: TCDControlStateEx;
+  lState: TCDControlState;
+  lSize: TSize;
 begin
   Result := False;
 
@@ -1160,44 +1162,50 @@ begin
   case uType of
     DFC_BUTTON:
     begin
-      lControlStateEx := TCDControlStateEx.Create;
+      lSize := Types.Size(Rect.Right-Rect.Left, Rect.Bottom-Rect.Top);
+
+      if (DFCS_BUTTONPUSH and uState) <> 0 then
+        lControlStateEx := TCDButtonStateEx.Create
+      else
+        lControlStateEx := TCDControlStateEx.Create;
+
       try
         lControlStateEx.Font := TFont.Create;
-        {if uState and DFCS_FLAT <> 0 then
-          Features := QStyleOptionButtonFlat
-        else
-          Features := QStyleOptionButtonNone;
-        if (uState and $1F) in [DFCS_BUTTONCHECK, DFCS_BUTTON3STATE] then
-          Element := QStyleCE_CheckBox
-        else
-        if (DFCS_BUTTONRADIO and uState) <> 0 then
-          Element := QStyleCE_RadioButton
-        else
-        if (DFCS_BUTTONPUSH and uState) <> 0 then
-          Element := QStyleCE_PushButton
-        else
-        if (DFCS_BUTTONRADIOIMAGE and uState) <> 0 then
-          Element := QStyleCE_RadioButton
-          //TODO: what to implement here ?
-        else
-        if (DFCS_BUTTONRADIOMASK and uState) <> 0 then
-          Element := QStyleCE_RadioButton
-          //TODO: what to implement here ?
-        ;}
-        {Opt := QStyleOptionButton_create();
-        QStyleOptionButton_setFeatures(Opt, Features);
-        QStyleOption_setRect(Opt, @Rect);
-        QStyleOption_setState(Opt, State);
-        QStyle_drawControl(QApplication_style(), Element, Opt, Painter, Widget);
-        QStyleOptionButton_destroy(Opt);}
+        lControlStateEx.ParentRGBColor := clSilver;
+        lControlStateEx.FPParentRGBColor := colSilver;
+        lControlStateEx.RGBColor := GetDefaultDrawer().FallbackPalette.BtnFace;
+        lControlStateEx.FPRGBColor := TColorToFPColor(lControlStateEx.RGBColor);
 
-        //GetDefaultDrawer().DrawButton();
+        //if uState and DFCS_FLAT <> 0 then lState := [csfEnabled];
+        if uState and DFCS_INACTIVE = 0 then lState := lState + [csfEnabled];
+        if uState and DFCS_PUSHED <> 0 then lState := lState + [csfSunken];
+
+        if (uState and $1F) in [DFCS_BUTTONCHECK, DFCS_BUTTON3STATE] then
+        begin
+          //Element := QStyleCE_CheckBox
+        end
+        else if (DFCS_BUTTONRADIO and uState) <> 0 then
+        begin
+          //Element := QStyleCE_RadioButton
+        end
+        else if (DFCS_BUTTONPUSH and uState) <> 0 then
+        begin
+          GetDefaultDrawer().DrawButton(LazDC, lSize, lState, TCDButtonStateEx(lControlStateEx));
+        end
+        else if (DFCS_BUTTONRADIOIMAGE and uState) <> 0 then
+        begin
+          //Element := QStyleCE_RadioButton
+          //TODO: what to implement here ?
+        end
+        else if (DFCS_BUTTONRADIOMASK and uState) <> 0 then
+        begin
+          //Element := QStyleCE_RadioButton
+          //TODO: what to implement here ?
+        end;
       finally
         lControlStateEx.Font.Free;
         lControlStateEx.Free;
       end;
-      begin
-    end;
     end;
     DFC_CAPTION: ; // title bar captions
     DFC_MENU: ; // menu

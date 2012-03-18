@@ -6,7 +6,7 @@ interface
 
 uses
   // RTL / FCL
-  Classes, SysUtils, Types, Math, fpcanvas,
+  Classes, SysUtils, Types, Math, fpcanvas, fpimage,
   // LazUtils
   lazutf8,
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
@@ -55,7 +55,7 @@ type
     // Standard Tab
     // ===================================
     // TCDButton
-    procedure DrawButton(ADest: TCanvas; ASize: TSize;
+    procedure DrawButton(ADest: TFPCustomCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDButtonStateEx); override;
     // TCDEdit
     procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
@@ -638,7 +638,7 @@ begin
   ADest.FillRect(0, 0, ASize.cx, ASize.cy);
 end;
 
-procedure TCDDrawerCommon.DrawButton(ADest: TCanvas;
+procedure TCDDrawerCommon.DrawButton(ADest: TFPCustomCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDButtonStateEx);
 var
   Str: string;
@@ -648,20 +648,20 @@ var
 begin
   // background
   ADest.Brush.Style := bsSolid;
-  ADest.Brush.Color := AStateEx.RGBColor;
-  ADest.Pen.Color := clWhite;
+  ADest.Brush.FPColor := AStateEx.FPRGBColor;
+  ADest.Pen.FPColor := colWhite;
   ADest.Pen.Style := psSolid;
   ADest.Rectangle(0, 0, ASize.cx - 1, ASize.cy - 1);
-  ADest.Pen.Color := clWhite;
+  ADest.Pen.FPColor := colWhite;
   ADest.Line(0, 0, ASize.cx - 1, 0);
   ADest.Line(0, 0, 0, ASize.cy - 1);
-  ADest.Pen.Color := clGray;
+  ADest.Pen.FPColor := colGray;
   ADest.Line(0, ASize.cy - 1, ASize.cx - 1, ASize.cy - 1);
   ADest.Line(ASize.cx - 1, ASize.cy - 1, ASize.cx - 1, -1);
-  ADest.Pen.Color := $0099A8AC;
+  ADest.Pen.FPColor := TColorToFPColor($0099A8AC);
   ADest.Line(1, ASize.cy - 2, ASize.cx - 2, ASize.cy - 2);
   ADest.Line(ASize.cx - 2, ASize.cx - 2, ASize.cx - 2, 0);
-  ADest.Pen.Color := $00E2EFF1;
+  ADest.Pen.FPColor := TColorToFPColor($00E2EFF1);
   ADest.Line(1, 1, ASize.cx - 2, 1);
   ADest.Line(1, 1, 1, ASize.cy - 2);
 
@@ -669,70 +669,74 @@ begin
   if csfSunken in AState then
   begin
     ADest.Brush.Style := bsSolid;
-    ADest.Brush.Color := AStateEx.RGBColor;
-    ADest.Pen.Color := clWhite;
+    ADest.Brush.FPColor := AStateEx.FPRGBColor;
+    ADest.Pen.FPColor := colWhite;
     ADest.Pen.Style := psSolid;
     ADest.Rectangle(0, 0, ASize.cx - 1, ASize.cy - 1);
-    ADest.Pen.Color := clGray;
+    ADest.Pen.FPColor := colGray;
     ADest.Line(0, 0, ASize.cx - 1, 0);
     ADest.Line(0, 0, 0, ASize.cy - 1);
-    ADest.Pen.Color := clWhite;
+    ADest.Pen.FPColor := colWhite;
     ADest.Line(0, ASize.cy - 1, ASize.cx - 1, ASize.cy - 1);
     ADest.Line(ASize.cx - 1, ASize.cy - 1, ASize.cx - 1, -1);
-    ADest.Pen.Color := $00E2EFF1;
+    ADest.Pen.FPColor := TColorToFPColor($00E2EFF1);
     ADest.Line(1, ASize.cy - 2, ASize.cx - 2, ASize.cy - 2);
     ADest.Line(ASize.cx - 2, ASize.cy - 2, ASize.cx - 2, 0);
-    ADest.Pen.Color := $0099A8AC;
+    ADest.Pen.FPColor := TColorToFPColor($0099A8AC);
     ADest.Line(1, 1, ASize.cx - 2, 1);
     ADest.Line(1, 1, 1, ASize.cy - 2);
   end
   else if csfHasFocus in AState then
   begin
-    DrawFocusRect(ADest, Point(3, 3), Size(ASize.cx - 7, ASize.cy - 7));
+    if ADest is TCanvas then
+      DrawFocusRect(TCanvas(ADest), Point(3, 3), Size(ASize.cx - 7, ASize.cy - 7));
   end;
 
   // Position calculations
-  ADest.Font.Assign(AStateEx.Font);
-  Str := AStateEx.Caption;
-  lGlyphCaptionHeight := Max(ADest.TextHeight(Str), AStateEx.Glyph.Height);
-  lTextOutPos.X := (ASize.cx - ADest.TextWidth(Str) - AStateEx.Glyph.Width) div 2;
-  lTextOutPos.Y := (ASize.cy - lGlyphCaptionHeight) div 2;
-  lTextOutPos.X := Max(lTextOutPos.X, 5);
-  lTextOutPos.Y := Max(lTextOutPos.Y, 5);
-
-  // Button glyph
-  if not AStateEx.Glyph.Empty then
+  if ADest is TCanvas then
   begin
-    ADest.Draw(lTextOutPos.X, lTextOutPos.Y, AStateEx.Glyph);
-    lGlyphLeftSpacing := AStateEx.Glyph.Width+5;
-  end;
+    ADest.Font.Assign(AStateEx.Font);
+    Str := AStateEx.Caption;
+    lGlyphCaptionHeight := Max(TCanvas(ADest).TextHeight(Str), AStateEx.Glyph.Height);
+    lTextOutPos.X := (ASize.cx - TCanvas(ADest).TextWidth(Str) - AStateEx.Glyph.Width) div 2;
+    lTextOutPos.Y := (ASize.cy - lGlyphCaptionHeight) div 2;
+    lTextOutPos.X := Max(lTextOutPos.X, 5);
+    lTextOutPos.Y := Max(lTextOutPos.Y, 5);
 
-  // Button text
-  lTextOutPos.X := lTextOutPos.X + lGlyphLeftSpacing;
-  lTextOutPos.Y := (ASize.cy - ADest.TextHeight(Str)) div 2;
-  ADest.Brush.Style := bsClear;
-  ADest.Pen.Style := psSolid;
-  if csfEnabled in AState then
-  begin
-    if csfSunken in AState then
+    // Button glyph
+    if not AStateEx.Glyph.Empty then
     begin
+      TCanvas(ADest).Draw(lTextOutPos.X, lTextOutPos.Y, AStateEx.Glyph);
+      lGlyphLeftSpacing := AStateEx.Glyph.Width+5;
+    end;
+
+    // Button text
+    lTextOutPos.X := lTextOutPos.X + lGlyphLeftSpacing;
+    lTextOutPos.Y := (ASize.cy - TCanvas(ADest).TextHeight(Str)) div 2;
+    ADest.Brush.Style := bsClear;
+    ADest.Pen.Style := psSolid;
+    if csfEnabled in AState then
+    begin
+      if csfSunken in AState then
+      begin
+        Inc(lTextOutPos.X);
+        Inc(lTextOutPos.Y);
+      end;
+      ADest.TextOut(lTextOutPos.X, lTextOutPos.Y, Str)
+    end
+    else
+    begin
+      // The disabled text is composed by a white shadow under it and a grey text
+      TCanvas(ADest).Font.Color := clWhite;
       Inc(lTextOutPos.X);
       Inc(lTextOutPos.Y);
+      TCanvas(ADest).TextOut(lTextOutPos.X, lTextOutPos.Y, Str);
+      //
+      TCanvas(ADest).Font.Color := WIN2000_DISABLED_TEXT;
+      Dec(lTextOutPos.X);
+      Dec(lTextOutPos.Y);
+      ADest.TextOut(lTextOutPos.X, lTextOutPos.Y, Str);
     end;
-    ADest.TextOut(lTextOutPos.X, lTextOutPos.Y, Str)
-  end
-  else
-  begin
-    // The disabled text is composed by a white shadow under it and a grey text
-    ADest.Font.Color := clWhite;
-    Inc(lTextOutPos.X);
-    Inc(lTextOutPos.Y);
-    ADest.TextOut(lTextOutPos.X, lTextOutPos.Y, Str);
-    //
-    ADest.Font.Color := WIN2000_DISABLED_TEXT;
-    Dec(lTextOutPos.X);
-    Dec(lTextOutPos.Y);
-    ADest.TextOut(lTextOutPos.X, lTextOutPos.Y, Str);
   end;
 end;
 
@@ -1175,10 +1179,10 @@ begin
   if FCaptionMiddle = 0 then FCaptionMiddle := 5;
 
   // Background
-  ADest.Brush.FPColor := TColorToFPColor(AStateEx.ParentRGBColor);
+  ADest.Brush.FPColor := AStateEx.FPParentRGBColor;
   ADest.Brush.Style := bsSolid;
   ADest.Pen.Style := psSolid;
-  ADest.Pen.FPColor := TColorToFPColor(AStateEx.ParentRGBColor);
+  ADest.Pen.FPColor := AStateEx.FPParentRGBColor;
   ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
 
   // frame
@@ -1201,7 +1205,7 @@ begin
 
   // fill the text background
   ADest.Brush.Style := bsSolid;
-  ADest.Brush.FPColor := TColorToFPColor(AStateEx.ParentRGBColor);
+  ADest.Brush.FPColor := AStateEx.FPParentRGBColor;
   ADest.Pen.Style := psClear;
   ADest.Rectangle(Bounds(FCaptionMiddle, 0, lTextSize.cx+5, lTextSize.cy));
 

@@ -32,7 +32,7 @@ type
     // Standard Tab
     // ===================================
     // TCDButton
-    procedure DrawButton(ADest: TCanvas; ASize: TSize;
+    procedure DrawButton(ADest: TFPCustomCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDButtonStateEx); override;
     // TCDEdit
     procedure DrawEditFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
@@ -85,41 +85,43 @@ begin
   ADest.Rectangle(Bounds(ADestPos.X, ADestPos.Y, ASize.cx, ASize.cy));
 end;
 
-procedure TCDDrawerWinCE.DrawButton(ADest: TCanvas;
+procedure TCDDrawerWinCE.DrawButton(ADest: TFPCustomCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDButtonStateEx);
 var
+  lDest: TCanvas absolute ADest;
   Str: string;
 begin
+  if not (ADest is TCanvas) then Exit; // ToDo support non-TCanvas
   // Button background
   if csfSunken in AState then
   begin
     ADest.Brush.Style := bsSolid;
-    ADest.Brush.Color := Palette.BtnShadow;
-    ADest.Pen.Color := clBlack;
+    lDest.Brush.Color := Palette.BtnShadow;
+    lDest.Pen.Color := clBlack;
     ADest.Pen.Style := psSolid;
     ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
   end
   else
   begin
     ADest.Brush.Style := bsSolid;
-    ADest.Brush.Color := AStateEx.RGBColor;
-    ADest.Pen.Color := clBlack;
+    lDest.Brush.Color := AStateEx.RGBColor;
+    lDest.Pen.Color := clBlack;
     ADest.Pen.Style := psSolid;
     ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
   end;
 
   // Focus
   if (csfHasFocus in AState) and not (csfSunken in AState) then
-    DrawFocusRect(ADest, Point(4, 4), Size(ASize.cx-8, ASize.cy-8));
+    DrawFocusRect(lDest, Point(4, 4), Size(ASize.cx-8, ASize.cy-8));
 
   // Button text
   ADest.Font.Assign(AStateEx.Font);
   ADest.Brush.Style := bsClear;
   ADest.Pen.Style := psSolid;
-  if csfSunken in AState then ADest.Font.Color := clWhite;
+  if csfSunken in AState then lDest.Font.Color := clWhite;
   Str := AStateEx.Caption;
-  ADest.TextOut((ASize.cx - ADest.TextWidth(Str)) div 2,
-    (ASize.cy - ADest.TextHeight(Str)) div 2, Str);
+  lDest.TextOut((ASize.cx - lDest.TextWidth(Str)) div 2,
+    (ASize.cy - lDest.TextHeight(Str)) div 2, Str);
 end;
 
 procedure TCDDrawerWinCE.DrawEditFrame(ADest: TCanvas; ADestPos: TPoint;

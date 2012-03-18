@@ -5,7 +5,7 @@ unit customdrawndrawers;
 interface
 
 uses
-  Classes, SysUtils, Types, fpcanvas,
+  Classes, SysUtils, Types, fpcanvas, fpimage,
   // LCL for types
   Controls, Graphics, ComCtrls, ExtCtrls;
 
@@ -129,7 +129,9 @@ type
   TCDControlStateEx = class
   public
     ParentRGBColor: TColor;
+    FPParentRGBColor: TFPColor;
     RGBColor: TColor;
+    FPRGBColor: TFPColor;
     Caption: string;
     Font: TFont; // Just a reference, never Free
     AutoSize: Boolean;
@@ -312,7 +314,7 @@ type
     procedure DrawControl(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // TCDButton
-    procedure DrawButton(ADest: TCanvas; ASize: TSize;
+    procedure DrawButton(ADest: TFPCustomCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDButtonStateEx); virtual; abstract;
     // TCDEdit
     procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;

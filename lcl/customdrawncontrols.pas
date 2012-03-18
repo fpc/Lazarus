@@ -810,9 +810,11 @@ procedure TCDControl.PrepareControlStateEx;
 begin
   if Parent <> nil then FStateEx.ParentRGBColor := Parent.GetRGBColorResolvingParent
   else FStateEx.ParentRGBColor := clSilver;
+  FStateEx.FPParentRGBColor := TColorToFPColor(FStateEx.ParentRGBColor);
 
   if Color = clDefault then FStateEx.RGBColor := FDrawer.GetControlDefaultColor(GetControlId())
   else FStateEx.RGBColor := GetRGBColorResolvingParent;
+  FStateEx.FPRGBColor := TColorToFPColor(FStateEx.RGBColor);
 
   FStateEx.Caption := Caption;
   FStateEx.Font := Font;
