@@ -50,10 +50,10 @@ type
     Parent, Left, Right: TAvgLvlTreeNode;
     Balance: integer; // = RightDepth-LeftDepth  -2..+2, after balancing: -1,0,+1
     Data: Pointer;
-    function FindSuccessor: TAvgLvlTreeNode; // next right
-    function FindPrecessor: TAvgLvlTreeNode; // next left
+    function Successor: TAvgLvlTreeNode; // next right
+    function Precessor: TAvgLvlTreeNode; // next left
     function TreeDepth: integer; // longest WAY down. e.g. only one node => 0 !
-    procedure ConsistencyCheck(Tree: TAvgLvlTree);
+    procedure ConsistencyCheck(Tree: TAvgLvlTree); virtual;
     function GetCount: SizeInt;
   end;
   TAvgLvlTreeNodeClass = class of TAvgLvlTreeNode;
@@ -84,10 +84,13 @@ type
     FOnObjectCompare: TObjectSortCompare;
     procedure BalanceAfterInsert(ANode: TAvgLvlTreeNode);
     procedure BalanceAfterDelete(ANode: TAvgLvlTreeNode);
+    procedure DeletingNode({%H-}aNode: TAvgLvlTreeNode); virtual;
     function FindInsertPos(Data: Pointer): TAvgLvlTreeNode;
     procedure Init; virtual;
+    procedure NodeAdded({%H-}aNode: TAvgLvlTreeNode); virtual;
     procedure RotateLeft(aNode: TAvgLvlTreeNode); virtual;
     procedure RotateRight(aNode: TAvgLvlTreeNode); virtual;
+    procedure SwitchPositionWithSuccessor(aNode, aSuccessor: TAvgLvlTreeNode); virtual;
     procedure SetOnCompare(const AValue: TListSortCompare);
     procedure SetOnObjectCompare(const AValue: TObjectSortCompare);
     procedure SetCompares(const NewCompare: TListSortCompare;
@@ -142,8 +145,9 @@ type
     function GetEnumeratorHighToLow: TAvgLvlTreeNodeEnumerator;
 
     // consistency
-    procedure ConsistencyCheck;
+    procedure ConsistencyCheck; virtual;
     procedure WriteReportToStream(s: TStream);
+    function NodeToReportStr(aNode: TAvgLvlTreeNode): string; virtual;
     function ReportAsString: string;
   end;
   PAvgLvlTree = ^TAvgLvlTree;
@@ -439,12 +443,12 @@ function TAvgLvlTreeNodeEnumerator.MoveNext: Boolean;
 begin
   if FLowToHigh then begin
     if FCurrent<>nil then
-      FCurrent:=FCurrent.FindSuccessor
+      FCurrent:=FCurrent.Successor
     else
       FCurrent:=FTree.FindLowest;
   end else begin
     if FCurrent<>nil then
-      FCurrent:=FCurrent.FindPrecessor
+      FCurrent:=FCurrent.Precessor
     else
       FCurrent:=FTree.FindHighest;
   end;
@@ -683,7 +687,7 @@ var
 begin
   Node:=FindNode(Name);
   if Node<>nil then
-    Node:=Node.FindSuccessor;
+    Node:=Node.Successor;
   Result:=GetNode(Node,NextName,NextValue);
 end;
 
@@ -694,7 +698,7 @@ var
 begin
   Node:=FindNode(Name);
   if Node<>nil then
-    Node:=Node.FindPrecessor;
+    Node:=Node.Precessor;
   Result:=GetNode(Node,PrevName,PrevValue);
 end;
 
@@ -708,7 +712,7 @@ begin
   while Node<>nil do begin
     Item:=PStringToStringItem(Node.Data);
     Result:=Result+Item^.Name+'='+Item^.Value+LineEnding;
-    Node:=Node.FindSuccessor;
+    Node:=Node.Successor;
   end;
 end;
 
@@ -724,7 +728,7 @@ begin
   while Node<>nil do begin
     Item:=PStringToStringItem(Node.Data);
     Values[Item^.Name]:=Item^.Value;
-    Node:=Node.FindSuccessor;
+    Node:=Node.Successor;
   end;
 end;
 
@@ -811,10 +815,12 @@ begin
       // insert to the right
       InsertPos.Right:=ANode;
     end;
+    NodeAdded(ANode);
     BalanceAfterInsert(ANode);
   end else begin
     fRoot:=ANode;
     ANode.Parent:=nil;
+    NodeAdded(ANode);
   end;
 end;
 
@@ -928,6 +934,13 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TAvgLvlTree.DeletingNode(aNode: TAvgLvlTreeNode);
+// called by Delete
+// Node.Left=nil or Node.Right=nil
+begin
+  // for descendants to override
 end;
 
 procedure TAvgLvlTree.BalanceAfterInsert(ANode: TAvgLvlTreeNode);
@@ -1080,65 +1093,17 @@ end;
 
 procedure TAvgLvlTree.Delete(ANode: TAvgLvlTreeNode);
 var
-  OldParent, OldLeft, OldRight, Successor, OldSuccParent, OldSuccLeft,
-  OldSuccRight: TAvgLvlTreeNode;
-  OldBalance: integer;
+  OldParent: TAvgLvlTreeNode;
   Child: TAvgLvlTreeNode;
 begin
-  while (ANode.Left<>nil) and (ANode.Right<>nil) do begin
+  if (ANode.Left<>nil) and (ANode.Right<>nil) then begin
     // ANode has both: Left and Right
     // Switch ANode position with Successor
     // Because ANode.Right<>nil the Successor is a child of ANode
-    Successor:=ANode.FindSuccessor;
-
-    OldBalance:=ANode.Balance;
-    ANode.Balance:=Successor.Balance;
-    Successor.Balance:=OldBalance;
-
-    OldParent:=ANode.Parent;
-    OldLeft:=ANode.Left;
-    OldRight:=ANode.Right;
-    OldSuccParent:=Successor.Parent;
-    OldSuccLeft:=Successor.Left;
-    OldSuccRight:=Successor.Right;
-
-    if OldParent<>nil then begin
-      if OldParent.Left=ANode then
-        OldParent.Left:=Successor
-      else
-        OldParent.Right:=Successor;
-    end else
-      fRoot:=Successor;
-    Successor.Parent:=OldParent;
-
-    if OldSuccParent<>ANode then begin
-      if OldSuccParent.Left=Successor then
-        OldSuccParent.Left:=ANode
-      else
-        OldSuccParent.Right:=ANode;
-      Successor.Right:=OldRight;
-      ANode.Parent:=OldSuccParent;
-      if OldRight<>nil then
-        OldRight.Parent:=Successor;
-    end else begin
-      {  ANode            Successor
-           \          =>    \
-           Successor       ANode  }
-      Successor.Right:=ANode;
-      ANode.Parent:=Successor;
-    end;
-
-    ANode.Left:=OldSuccLeft;
-    if OldSuccLeft<>nil then
-      OldSuccLeft.Parent:=ANode;
-    ANode.Right:=OldSuccRight;
-    if OldSuccRight<>nil then
-      OldSuccRight.Parent:=ANode;
-    Successor.Left:=OldLeft;
-    if OldLeft<>nil then
-      OldLeft.Parent:=Successor;
+    SwitchPositionWithSuccessor(ANode,ANode.Successor);
   end;
   // left or right is nil
+  DeletingNode(aNode);
   OldParent:=ANode.Parent;
   ANode.Parent:=nil;
   if ANode.Left<>nil then
@@ -1160,7 +1125,7 @@ begin
     end;
     BalanceAfterDelete(OldParent);
   end else begin
-    // Node is the only node of tree
+    // Node was Root
     fRoot:=Child;
   end;
   dec(FCount);
@@ -1274,7 +1239,7 @@ begin
     Data:=ANode.Data;
     Result:=ANode;
     repeat
-      LeftNode:=Result.FindPrecessor;
+      LeftNode:=Result.Precessor;
       if (LeftNode=nil) or (Compare(Data,LeftNode.Data)<>0) then break;
       Result:=LeftNode;
     until false;
@@ -1292,7 +1257,7 @@ begin
     Data:=ANode.Data;
     Result:=ANode;
     repeat
-      RightNode:=Result.FindSuccessor;
+      RightNode:=Result.Successor;
       if (RightNode=nil) or (Compare(Data,RightNode.Data)<>0) then break;
       Result:=RightNode;
     until false;
@@ -1328,7 +1293,7 @@ begin
   Result:=FindLeftMost(Data);
   while (Result<>nil) do begin
     if Result.Data=Data then break;
-    Result:=Result.FindSuccessor;
+    Result:=Result.Successor;
     if Result=nil then exit(nil);
     if Compare(Data,Result.Data)<>0 then exit(nil);
   end;
@@ -1340,7 +1305,7 @@ var
 begin
   Result:=Find(Data);
   while (Result<>nil) do begin
-    Left:=Result.FindPrecessor;
+    Left:=Result.Precessor;
     if (Left=nil) or (Compare(Data,Left.Data)<>0) then break;
     Result:=Left;
   end;
@@ -1352,7 +1317,7 @@ var
 begin
   Result:=Find(Data);
   while (Result<>nil) do begin
-    Right:=Result.FindSuccessor;
+    Right:=Result.Successor;
     if (Right=nil) or (Compare(Data,Right.Data)<>0) then break;
     Result:=Right;
   end;
@@ -1381,7 +1346,7 @@ end;
 function TAvgLvlTree.FindSuccessor(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode;
 begin
   if ANode<>nil then
-    Result:=ANode.FindSuccessor
+    Result:=ANode.Successor
   else
     Result:=nil;
 end;
@@ -1389,7 +1354,7 @@ end;
 function TAvgLvlTree.FindPrecessor(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode;
 begin
   if ANode<>nil then
-    Result:=ANode.FindPrecessor
+    Result:=ANode.Precessor
   else
     Result:=nil;
 end;
@@ -1401,7 +1366,7 @@ begin
   if ANode=nil then exit;
   LeftMost:=ANode;
   repeat
-    PreNode:=LeftMost.FindPrecessor;
+    PreNode:=LeftMost.Precessor;
     if (PreNode=nil) or (Compare(ANode,PreNode)<>0) then break;
     LeftMost:=PreNode;
   until false;
@@ -1419,7 +1384,7 @@ begin
   if ANode=nil then exit;
   RightMost:=ANode;
   repeat
-    PostNode:=RightMost.FindSuccessor;
+    PostNode:=RightMost.Successor;
     if (PostNode=nil) or (Compare(ANode,PostNode)<>0) then break;
     RightMost:=PostNode;
   until false;
@@ -1519,8 +1484,7 @@ procedure TAvgLvlTree.WriteReportToStream(s: TStream);
       WasLeft:=IsLeft;
       AParent:=AParent.Parent;
     end;
-    b+=Format('%p      Self=%p  Parent=%p  Balance=%d'+LineEnding, [
-      ANode.Data, Pointer(ANode),Pointer(ANode.Parent), ANode.Balance]);
+    b+=NodeToReportStr(ANode)+LineEnding;
     WriteStr(b);
     WriteTreeNode(ANode.Left);
   end;
@@ -1530,6 +1494,12 @@ begin
   WriteStr('-Start-of-AVL-Tree-------------------'+LineEnding);
   WriteTreeNode(fRoot);
   WriteStr('-End-Of-AVL-Tree---------------------'+LineEnding);
+end;
+
+function TAvgLvlTree.NodeToReportStr(aNode: TAvgLvlTreeNode): string;
+begin
+  Result:=Format('%p      Self=%p  Parent=%p  Balance=%d',
+             [aNode.Data, Pointer(aNode),Pointer(aNode.Parent), aNode.Balance]);
 end;
 
 function TAvgLvlTree.ReportAsString: string;
@@ -1582,7 +1552,7 @@ begin
       while ANode<>nil do begin
         List[i]:=ANode.Data;
         inc(i);
-        ANode:=ANode.FindSuccessor;
+        ANode:=ANode.Successor;
       end;
       // clear the tree
       Clear;
@@ -1605,8 +1575,7 @@ procedure TAvgLvlTree.RotateLeft(aNode: TAvgLvlTreeNode);
       /  \                  /
    Left OldRight          Node
           /               /  \
-     OldRightLeft      Left OldRightLeft
-}
+     OldRightLeft      Left OldRightLeft  }
 var
   OldRight: TAvgLvlTreeNode;
   AParent: TAvgLvlTreeNode;
@@ -1637,8 +1606,7 @@ procedure TAvgLvlTree.RotateRight(aNode: TAvgLvlTreeNode);
          /   \                 \
     OldLeft  Right            Node
         \                     /  \
-   OldLeftRight      OldLeftRight Right
-}
+   OldLeftRight      OldLeftRight Right  }
 var
   OldLeft: TAvgLvlTreeNode;
   AParent: TAvgLvlTreeNode;
@@ -1662,9 +1630,76 @@ begin
   OldLeft.Right:=aNode;
 end;
 
+procedure TAvgLvlTree.SwitchPositionWithSuccessor(aNode,
+  aSuccessor: TAvgLvlTreeNode);
+{ called by delete, when aNode.Left<>nil and aNode.Right<>nil
+  Switch ANode position with Successor
+  Because ANode.Right<>nil the Successor is a child of ANode }
+var
+  OldBalance: Integer;
+  OldParent: TAvgLvlTreeNode;
+  OldLeft: TAvgLvlTreeNode;
+  OldRight: TAvgLvlTreeNode;
+  OldSuccParent: TAvgLvlTreeNode;
+  OldSuccLeft: TAvgLvlTreeNode;
+  OldSuccRight: TAvgLvlTreeNode;
+begin
+  OldBalance:=aNode.Balance;
+  aNode.Balance:=aSuccessor.Balance;
+  aSuccessor.Balance:=OldBalance;
+
+  OldParent:=aNode.Parent;
+  OldLeft:=aNode.Left;
+  OldRight:=aNode.Right;
+  OldSuccParent:=aSuccessor.Parent;
+  OldSuccLeft:=aSuccessor.Left;
+  OldSuccRight:=aSuccessor.Right;
+
+  if OldParent<>nil then begin
+    if OldParent.Left=aNode then
+      OldParent.Left:=aSuccessor
+    else
+      OldParent.Right:=aSuccessor;
+  end else
+    fRoot:=aSuccessor;
+  aSuccessor.Parent:=OldParent;
+
+  if OldSuccParent<>aNode then begin
+    if OldSuccParent.Left=aSuccessor then
+      OldSuccParent.Left:=aNode
+    else
+      OldSuccParent.Right:=aNode;
+    aSuccessor.Right:=OldRight;
+    aNode.Parent:=OldSuccParent;
+    if OldRight<>nil then
+      OldRight.Parent:=aSuccessor;
+  end else begin
+    {  aNode            aSuccessor
+         \          =>    \
+         aSuccessor       aNode  }
+    aSuccessor.Right:=aNode;
+    aNode.Parent:=aSuccessor;
+  end;
+
+  aNode.Left:=OldSuccLeft;
+  if OldSuccLeft<>nil then
+    OldSuccLeft.Parent:=aNode;
+  aNode.Right:=OldSuccRight;
+  if OldSuccRight<>nil then
+    OldSuccRight.Parent:=aNode;
+  aSuccessor.Left:=OldLeft;
+  if OldLeft<>nil then
+    OldLeft.Parent:=aSuccessor;
+end;
+
 procedure TAvgLvlTree.Init;
 begin
   FNodeClass:=TAvgLvlTreeNode;
+end;
+
+procedure TAvgLvlTree.NodeAdded(aNode: TAvgLvlTreeNode);
+begin
+  // for descendants to override
 end;
 
 function TAvgLvlTree.Compare(Data1, Data2: Pointer): integer;
@@ -1674,7 +1709,6 @@ begin
   else
     Result:=FOnObjectCompare(Self,Data1,Data2);
 end;
-
 
 { TAvgLvlTreeNode }
 
@@ -1743,7 +1777,7 @@ begin
   if Right<>nil then inc(Result,Right.GetCount);
 end;
 
-function TAvgLvlTreeNode.FindSuccessor: TAvgLvlTreeNode;
+function TAvgLvlTreeNode.Successor: TAvgLvlTreeNode;
 begin
   Result:=Right;
   if Result<>nil then begin
@@ -1756,7 +1790,7 @@ begin
   end;
 end;
 
-function TAvgLvlTreeNode.FindPrecessor: TAvgLvlTreeNode;
+function TAvgLvlTreeNode.Precessor: TAvgLvlTreeNode;
 begin
   Result:=Left;
   if Result<>nil then begin
@@ -2038,7 +2072,7 @@ begin
   while Node<>nil do begin
     Item:=PPointerToPointerItem(Node.Data);
     Dispose(Item);
-    Node:=Node.FindSuccessor;
+    Node:=Node.Successor;
   end;
   FItems.Clear;
 end;
@@ -2077,7 +2111,7 @@ var
 begin
   Node:=FindNode(Key);
   if Node<>nil then
-    Node:=Node.FindSuccessor;
+    Node:=Node.Successor;
   Result:=GetNode(Node,NextKey,NextValue);
 end;
 
@@ -2088,7 +2122,7 @@ var
 begin
   Node:=FindNode(Key);
   if Node<>nil then
-    Node:=Node.FindPrecessor;
+    Node:=Node.Precessor;
   Result:=GetNode(Node,PrevKey,PrevValue);
 end;
 
@@ -2104,7 +2138,7 @@ begin
   if FCurrent=nil then
     FCurrent:=FTree.FindLowest
   else
-    FCurrent:=FCurrent.FindSuccessor;
+    FCurrent:=FCurrent.Successor;
   Result:=FCurrent<>nil;
 end;
 
@@ -2167,7 +2201,7 @@ begin
   Node:=FTree.FindLowest;
   while Node<>nil do begin
     DisposeItem(PStringMapItem(Node.Data));
-    Node:=Node.FindSuccessor;
+    Node:=Node.Successor;
   end;
   FTree.Clear;
 end;
@@ -2186,7 +2220,7 @@ begin
   while Node<>nil do begin
     Item:=PStringMapItem(Node.Data);
     List.Add(Item^.Name);
-    Node:=Node.FindSuccessor;
+    Node:=Node.Successor;
   end;
 end;
 
@@ -2225,8 +2259,8 @@ begin
     Item:=PStringMapItem(Node.Data);
     OtherItem:=PStringMapItem(OtherNode.Data);
     if not ItemsAreEqual(Item,OtherItem) then exit;
-    OtherNode:=OtherNode.FindSuccessor;
-    Node:=Node.FindSuccessor;
+    OtherNode:=OtherNode.Successor;
+    Node:=Node.Successor;
   end;
   if OtherNode<>nil then exit;
   Result:=true;
@@ -2244,7 +2278,7 @@ begin
   while SrcNode<>nil do begin
     SrcItem:=PStringMapItem(SrcNode.Data);
     Tree.Add(CreateCopy(SrcItem));
-    SrcNode:=SrcNode.FindSuccessor;
+    SrcNode:=SrcNode.Successor;
   end;
 end;
 
