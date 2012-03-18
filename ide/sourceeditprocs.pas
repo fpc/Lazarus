@@ -707,7 +707,7 @@ begin
     Result:=Result+',';
   end;
 
-  if IdentItem.GetDesc=ctnUseUnit then begin
+  if (IdentItem.GetDesc=ctnUseUnit) and (AddChar<>'.') then begin
     Result:=Result+'.';
   end;
 
