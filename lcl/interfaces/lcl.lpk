@@ -1731,9 +1731,9 @@ end;"/>
         <UnitName Value="CocoaGDIObjects"/>
       </Item346>
       <Item347>
-        <Filename Value="customdrawn/cocoaprivate.pas"/>
+        <Filename Value="customdrawn/customdrawn_cocoaproc.pas"/>
         <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="cocoaprivate"/>
+        <UnitName Value="customdrawn_cocoaproc"/>
       </Item347>
       <Item348>
         <Filename Value="customdrawn/cocoautils.pas"/>

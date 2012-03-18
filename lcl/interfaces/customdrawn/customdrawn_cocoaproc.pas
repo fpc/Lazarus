@@ -1,4 +1,4 @@
-unit cocoaprivate;
+unit customdrawn_cocoaproc;
 
 {$mode objfpc}{$H+}
 {$include customdrawndefines.inc}
@@ -123,6 +123,8 @@ procedure SetViewDefaults(AView: NSView);
 
 function Cocoa_RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
 function RawImage_DescriptionToBitmapType(ADesc: TRawImageDescription; out bmpType: TCocoaBitmapType): Boolean;
+
+function CalcNSWindowStyle(const AWinControl: TWinControl; const AParams: TCreateParams): NSUInteger;
 
 implementation
 
@@ -307,6 +309,24 @@ begin
   Result := True;
 end;
 
+function CalcNSWindowStyle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): NSUInteger;
+var
+  lForm: TCustomForm absolute AWinControl;
+begin
+  case lForm.BorderStyle of
+    bsNone: Result := NSBorderlessWindowMask;
+    bsSingle: Result := NSTitledWindowMask or NSClosableWindowMask;
+    // bsToolWindow should be created by building a NSPanel instead of a NSWindow
+    bsToolWindow: Result := NSTitledWindowMask or NSClosableWindowMask;
+    bsSizeToolWin: Result := NSClosableWindowMask or NSResizableWindowMask;
+  else
+    Result := NSTitledWindowMask or NSClosableWindowMask or NSResizableWindowMask;
+  end;
+
+  if biMinimize in lForm.BorderIcons then Result := Result or NSMiniaturizableWindowMask;
+end;
+
 { TCocoaForm }
 
 function TCocoaForm.windowShouldClose(sender: id): LongBool;
@@ -391,7 +411,7 @@ var
 begin
   //inherited keyDown(theEvent); Don't call inherited or else Cocoa will think you didn't handle the event and beep on key input
   lKey := MacKeyCodeToLCLKey(theEvent, lSendKey, lSendChar, lUTF8Char);
-  DebugLn('[TCocoaForm] KeyDown='+IntToHex(theEvent.keyCode(), 4));
+  //DebugLn('[TCocoaForm] KeyDown='+IntToHex(theEvent.keyCode(), 4));
   if lSendKey then CallbackKeyDown(WindowHandle, lKey);
   if lSendChar then CallbackKeyChar(WindowHandle, 0, lUTF8Char);
 end;

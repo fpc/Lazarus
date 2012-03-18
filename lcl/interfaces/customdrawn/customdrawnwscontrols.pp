@@ -151,7 +151,7 @@ implementation
 
 uses
   {$ifdef CD_Cocoa}
-  cocoaprivate,
+  customdrawn_cocoaproc,
   {$endif}
   customdrawnwsforms;
 

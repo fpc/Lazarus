@@ -10,8 +10,6 @@ var
   cnt : TCocoaCustomControl;
   ns  : NSString;
   lRect: NSRect;
-const
-  WinMask = NSTitledWindowMask or NSClosableWindowMask or NSMiniaturizableWindowMask or NSResizableWindowMask;
 begin
   win := TCocoaForm(TCocoaForm.alloc);
 
@@ -27,7 +25,8 @@ begin
   if Application.ApplicationType = atMobileEmulator then lRect := GetNSRect(200, 200, 240, 320)
   // else ToDo: for atPDA make it fullscreen
   else lRect := CreateParamsToNSRect(AParams);
-  win:=TCocoaForm(win.initWithContentRect_styleMask_backing_defer(lRect, WinMask, NSBackingStoreBuffered, False));
+  win:=TCocoaForm(win.initWithContentRect_styleMask_backing_defer(
+    lRect, CalcNSWindowStyle(AWinControl, AParams), NSBackingStoreBuffered, False));
   win.WindowHandle := winhandle;
   win.setDelegate(win);
   ns:=NSStringUtf8(AWinControl.Caption);
