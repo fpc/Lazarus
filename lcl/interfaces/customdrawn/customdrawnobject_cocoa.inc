@@ -24,6 +24,11 @@
 
 { TCDWidgetSet }
 
+function TCDWidgetSet.GetAppHandle: THandle; override;
+begin
+  Result := THandle(NSApp);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCDWidgetSet.AppInit
   Params:  ScreenInfo

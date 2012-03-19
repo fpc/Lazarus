@@ -217,8 +217,8 @@ type
   //
   protected
     {function CreateThemeServices: TThemeServices; override;}
-    {function GetAppHandle: THandle; override;
-    procedure SetAppHandle(const AValue: THandle); override;}
+    function GetAppHandle: THandle; override; //BackendSpecific
+    //procedure SetAppHandle(const AValue: THandle); override;
     //
     procedure BackendCreate;
     procedure BackendDestroy;

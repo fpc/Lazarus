@@ -423,6 +423,11 @@ begin
   end;
 end;
 
+function TCDWidgetSet.GetAppHandle: THandle;
+begin
+  Result := THandle(FDisplay);
+end;
+
 (*
 procedure TWinCEWidgetSet.CheckPipeEvents;
 var

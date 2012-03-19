@@ -720,6 +720,11 @@ begin
   end;
 end;
 
+function TCDWidgetSet.GetAppHandle: THandle;
+begin
+  Result := 0;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCDWidgetSet.Create
   Params:  None

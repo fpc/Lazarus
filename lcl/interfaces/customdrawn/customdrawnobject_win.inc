@@ -85,6 +85,11 @@ begin
   {$endif}
 end;
 
+function TCDWidgetSet.GetAppHandle: THandle;
+begin
+  Result := FAppHandle;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCDWidgetSet.Create
   Params:  None
