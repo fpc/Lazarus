@@ -118,7 +118,6 @@ type
   { TSourceEditCompletion }
 
   TSourceEditCompletion=class(TSynCompletion)
-    procedure CompletionFormResized(Sender: TObject);
   private
     FIdentCompletionJumpToError: boolean;
     ccSelection: String;
@@ -147,6 +146,7 @@ type
 
     function InitIdentCompletionValues(S: TStrings): boolean;
     procedure StartShowCodeHelp;
+    procedure CompletionFormResized(Sender: TObject);
   protected
     CurrentCompletionType: TCompletionType;
     function Manager: TSourceEditorManager;
@@ -1252,6 +1252,8 @@ var
 begin
   if SourceEditorManager = nil then exit;
   s:=(sender as TIDEMenuCommand).Caption;
+  if s='' then exit;
+  if s[1]='*' then System.Delete(s,1,1);
   SourceEditorManager.ActiveEditor := SourceEditorManager.SourceEditorIntfWithFilename(s);
   SourceEditorManager.ShowActiveWindowOnTop(True);
 end;
@@ -5388,6 +5390,7 @@ var
   PopM: TPopupMenu;
   PageI: integer;
   i: Integer;
+  NewCaption: String;
 begin
   PopM:=TPopupMenu(Sender);
   SourceTabMenuRoot.MenuItem:=PopM.Items;
@@ -5433,8 +5436,13 @@ begin
       SrcEditMenuSectionEditors.Clear;
       with SourceEditorManager do
         for i := 0 to SourceEditorCount - 1 do
+        begin
+          NewCaption:=SourceEditors[i].FileName;
+          if SourceEditors[i].Modified then
+            NewCaption:='*'+NewCaption;
           RegisterIDEMenuCommand(SrcEditMenuSectionEditors, 'File'+IntToStr(i),
-                   SourceEditors[i].FileName, nil, @ExecuteEditorItemClick, nil);
+                   NewCaption, nil, @ExecuteEditorItemClick, nil);
+        end;
     end;
   finally
     SourceTabMenuRoot.EndUpdate;
