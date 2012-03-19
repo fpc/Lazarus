@@ -178,17 +178,22 @@ begin
       NewPageIndex:=fNoteBook.PageIndex+1;
   end;
 
-   // move Page in notebook handle
-  FNotebook.WSMovePage(APage, NewIndex);
+  fNoteBook.DisableAutoSizing;
+  try
+     // move Page in notebook handle
+    FNotebook.WSMovePage(APage, NewIndex);
 
-  // move Page in fPageList
-  fPageList.Move(CurIndex, NewIndex);
+    // move Page in fPageList
+    fPageList.Move(CurIndex, NewIndex);
 
-  // move in wincontrol list
-  fNoteBook.SetControlIndex(APage,NewControlIndex);
-  
-  // update PageIndex
-  fNoteBook.PageIndex:=NewPageIndex;
+    // move in wincontrol list
+    fNoteBook.SetControlIndex(APage,NewControlIndex);
+
+    // update PageIndex
+    fNoteBook.PageIndex:=NewPageIndex;
+  finally
+    FNotebook.EnableAutoSizing;
+  end;
 end;
 
 
