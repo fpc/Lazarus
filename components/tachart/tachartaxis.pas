@@ -76,6 +76,7 @@ type
     FCount: Integer;
     FFirstMark: Integer;
     FLastMark: Integer;
+    FMargin: Integer;
     FSize: Integer;
     FTitleSize: Integer;
   end;
@@ -106,6 +107,7 @@ type
     FGroup: Integer;
     FHelper: TAxisDrawHelper;
     FInverted: Boolean;
+    FMargin: TChartDistance;
     FMinors: TChartMinorAxisList;
     FOnMarkToText: TChartAxisMarkToTextEvent;
     FRange: TChartRange;
@@ -117,6 +119,7 @@ type
     procedure SetAxisPen(AValue: TChartAxisPen);
     procedure SetGroup(AValue: Integer);
     procedure SetInverted(AValue: Boolean);
+    procedure SetMargin(AValue: TChartDistance);
     procedure SetMarks(AValue: TChartAxisMarks);
     procedure SetMinors(AValue: TChartMinorAxisList);
     procedure SetOnMarkToText(AValue: TChartAxisMarkToTextEvent);
@@ -154,6 +157,7 @@ type
     property Group: Integer read FGroup write SetGroup default 0;
     // Inverts the axis scale from increasing to decreasing.
     property Inverted: boolean read FInverted write SetInverted default false;
+    property Margin: TChartDistance read FMargin write SetMargin default 0;
     property Marks: TChartAxisMarks read GetMarks write SetMarks;
     property Minors: TChartMinorAxisList read FMinors write SetMinors;
     property Range: TChartRange read FRange write SetRange;
@@ -668,6 +672,7 @@ begin
   with AMeasureData do begin
     FSize := Max(sz, FSize);
     FTitleSize := Max(TitleSize, FTitleSize);
+    FMargin := Max(Margin, FMargin);
   end;
   if minc < MaxInt then begin
     UpdateFirstLast(minc, mini, rmin, rmax);
@@ -726,6 +731,13 @@ procedure TChartAxis.SetInverted(AValue: Boolean);
 begin
   if FInverted = AValue then exit;
   FInverted := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartAxis.SetMargin(AValue: TChartDistance);
+begin
+  if FMargin = AValue then exit;
+  FMargin := AValue;
   StyleChanged(Self);
 end;
 
@@ -918,7 +930,7 @@ begin
       ai += 1;
     end;
     // Axises of the same group should have the same Alignment and ZPosition.
-    Result[axis.Alignment] += g^.FSize + g^.FTitleSize;
+    Result[axis.Alignment] += g^.FSize + g^.FTitleSize + g^.FMargin;
   end;
   ai := 0;
   for i := 0 to High(FGroups) do begin
@@ -948,7 +960,7 @@ begin
       axis.FTitleRect := ARect;
       ai += 1;
     end;
-    SideByAlignment(ARect, axis.Alignment, g.FTitleSize);
+    SideByAlignment(ARect, axis.Alignment, g.FTitleSize + g.FMargin);
   end;
   InitAndSort(FZOrder, @AxisZCompare);
 end;
