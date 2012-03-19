@@ -453,6 +453,7 @@ procedure TChartAxis.Draw;
         // Only draw minor marks strictly inside the major mark interval.
         FValueMin := Max(FAxisTransf(AMin), FValueMin);
         FValueMax := Min(FAxisTransf(AMax), FValueMax);
+        if FValueMax <= FValueMin then continue;
         ExpandRange(FValueMin, FValueMax, -EPS);
         try
           BeginDrawing;
@@ -542,22 +543,27 @@ var
   d: TValuesInRangeParams;
   vis: TChartOnVisitSources;
   t: TChartValueText;
+  axisMin, axisMax: Double;
 begin
   with FHelper do begin
-    FValueMin := GetTransform.GraphToAxis(FValueMin);
-    FValueMax := GetTransform.GraphToAxis(FValueMax);
-    EnsureOrder(FValueMin, FValueMax);
-    Marks.Range.Intersect(FValueMin, FValueMax);
-    d := MakeValuesInRangeParams(FValueMin, FValueMax);
-    FValueMin := GetTransform.AxisToGraph(FValueMin);
-    FValueMax := GetTransform.AxisToGraph(FValueMax);
+    axisMin := GetTransform.GraphToAxis(FValueMin);
+    axisMax := GetTransform.GraphToAxis(FValueMax);
   end;
+  EnsureOrder(axisMin, axisMax);
+  Marks.Range.Intersect(axisMin, axisMax);
+  d := MakeValuesInRangeParams(axisMin, axisMax);
   SetLength(FMarkValues, 0);
   vis := TChartAxisList(Collection).OnVisitSources;
-  if Marks.AtDataOnly and Assigned(vis) then
-    vis(@VisitSource, Self, d)
+  if Marks.AtDataOnly and Assigned(vis) then begin
+    vis(@VisitSource, Self, d);
+    // FIXME: Intersect axisMin/Max with the union of series extents.
+  end
   else
     Marks.SourceDef.ValuesInRange(d, FMarkValues);
+  with FHelper do begin
+    FValueMin := GetTransform.AxisToGraph(axisMin);
+    FValueMax := GetTransform.AxisToGraph(axisMax);
+  end;
   if Inverted then
     for i := 0 to High(FMarkValues) div 2 do begin
       t := FMarkValues[i];
@@ -814,10 +820,10 @@ end;
 procedure TChartAxis.VisitSource(ASource: TCustomChartSource; var AData);
 var
   ext: TDoubleRect;
-  p: TValuesInRangeParams;
+  p: TValuesInRangeParams absolute AData;
 begin
   ext := ASource.Extent;
-  p := TValuesInRangeParams(AData);
+  //p := TValuesInRangeParams(AData);
   p.FMin := Max(TDoublePointBoolArr(ext.a)[IsVertical], p.FMin);
   p.FMax := Min(TDoublePointBoolArr(ext.b)[IsVertical], p.FMax);
   Marks.SourceDef.ValuesInRange(p, FMarkValues);
