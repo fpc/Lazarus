@@ -91,6 +91,7 @@ type
   strict private
     FListener: TListener;
     FMarkValues: TChartValueTextArray;
+    FTitlePos: Integer;
 
     procedure GetMarkValues;
     procedure VisitSource(ASource: TCustomChartSource; var AData);
@@ -136,7 +137,7 @@ type
   public
     procedure Assign(ASource: TPersistent); override;
     procedure Draw;
-    procedure DrawTitle(const ACenter: TPoint; ASize: Integer);
+    procedure DrawTitle(ASize: Integer);
     function GetChart: TCustomChart; inline;
     function GetTransform: TChartAxisTransformations;
     function IsVertical: Boolean; inline;
@@ -185,7 +186,6 @@ type
     FOnVisitSources: TChartOnVisitSources;
     function GetAxes(AIndex: Integer): TChartAxis;
   strict private
-    FCenterPoint: TPoint;
     FGroupOrder: TFPList;
     FGroups: array of TChartAxisGroup;
     FZOrder: TFPList;
@@ -483,14 +483,13 @@ begin
   FHelper.EndDrawing;
 end;
 
-procedure TChartAxis.DrawTitle(const ACenter: TPoint; ASize: Integer);
+procedure TChartAxis.DrawTitle(ASize: Integer);
 var
   p: TPoint;
   dummy: TPointArray = nil;
   d: Integer;
 begin
-  if not Visible or (ASize = 0) then exit;
-  p := ACenter;
+  if not Visible or (ASize = 0) or (FTitlePos = MaxInt) then exit;
   if Title.DistanceToCenter then
     d := Title.Distance
   else
@@ -501,6 +500,7 @@ begin
     calRight: p.X := FTitleRect.Right + d;
     calBottom: p.Y := FTitleRect.Bottom + d;
   end;
+  TPointBoolArr(p)[IsVertical] := FTitlePos;
   p += FHelper.FZOffset;
   Title.DrawLabel(FHelper.FDrawer, p, p, Title.Caption, dummy);
 end;
@@ -672,7 +672,10 @@ begin
   if minc < MaxInt then begin
     UpdateFirstLast(minc, mini, rmin, rmax);
     UpdateFirstLast(maxc, maxi, rmin, rmax);
-  end;
+    FTitlePos := (maxc + minc) div 2;
+  end
+  else
+    FTitlePos := MaxInt;
 
   if Arrow.Visible then
     with AMeasureData do begin
@@ -840,7 +843,7 @@ begin
       if ACurrentZ < ZPosition then break;
       try
         Draw;
-        DrawTitle(FCenterPoint, FGroups[FGroupIndex].FTitleSize);
+        DrawTitle(FGroups[FGroupIndex].FTitleSize);
       except
         Visible := false;
         raise;
@@ -935,7 +938,6 @@ var
   g: TChartAxisGroup;
   axisRect: TRect;
 begin
-  FCenterPoint := CenterPoint(ARect);
   ai := 0;
   for g in FGroups do begin
     axisRect := ARect;
