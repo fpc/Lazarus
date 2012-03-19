@@ -451,8 +451,8 @@ procedure TChartAxis.Draw;
       with FHelper.Clone do begin
         FAxis := Minors[j];
         // Only draw minor marks strictly inside the major mark interval.
-        FValueMin := FAxisTransf(AMin);
-        FValueMax := FAxisTransf(AMax);
+        FValueMin := Max(FAxisTransf(AMin), FValueMin);
+        FValueMax := Min(FAxisTransf(AMax), FValueMax);
         ExpandRange(FValueMin, FValueMax, -EPS);
         try
           BeginDrawing;
