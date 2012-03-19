@@ -6463,22 +6463,32 @@ begin
   then
     exit;
 
-  Edit := FindSourceEditorWithPageIndex(OldPageIndex);
-  DestWin.NoteBookInsertPage(NewPageIndex, Edit.PageName);
-  DestWin.PageIndex := NewPageIndex;
+  DisableAutoSizing;
+  try
+    DestWin.DisableAutoSizing;
+    try
+      Edit := FindSourceEditorWithPageIndex(OldPageIndex);
+      DestWin.NoteBookInsertPage(NewPageIndex, Edit.PageName);
+      DestWin.PageIndex := NewPageIndex;
 
-  ReleaseEditor(Edit);
-  Edit.UpdateNoteBook(DestWin, DestWin.NoteBookPage[NewPageIndex]);
-  DestWin.AcceptEditor(Edit);
-  DestWin.NotebookPage[NewPageIndex].ReAlign;
+      ReleaseEditor(Edit);
+      Edit.UpdateNoteBook(DestWin, DestWin.NoteBookPage[NewPageIndex]);
+      DestWin.AcceptEditor(Edit);
+      DestWin.NotebookPage[NewPageIndex].ReAlign;
 
-  NoteBookDeletePage(OldPageIndex);
-  UpdatePageNames;
-  UpdateProjectFiles;
-  DestWin.UpdatePageNames;
-  DestWin.UpdateProjectFiles(Edit);
-  DestWin.UpdateActiveEditColors(Edit.EditorComponent);
-  DestWin.UpdateStatusBar;
+      NoteBookDeletePage(OldPageIndex);
+      UpdatePageNames;
+      UpdateProjectFiles;
+      DestWin.UpdatePageNames;
+      DestWin.UpdateProjectFiles(Edit);
+      DestWin.UpdateActiveEditColors(Edit.EditorComponent);
+      DestWin.UpdateStatusBar;
+    finally
+      DestWin.EnableAutoSizing;
+    end;
+  finally
+    EnableAutoSizing;
+  end;
 
   if (PageCount = 0) and (Parent=nil) and not FIsClosing then
     Close;
