@@ -150,7 +150,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <Libraries Value="/home/felipe/Programas/android-ndk-r5/platforms/android-8/arch-arm/usr/lib/;/home/felipe/Programas/android-ndk-r5/toolchains/arm-eabi-4.4.0/prebuilt/linux-x86/lib/gcc/arm-eabi/4.4.0/"/>
+      <Libraries Value="../../../android-ndk-r7/platforms/android-8/arch-arm/usr/lib;../../../android-ndk-r7/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.4.3"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <CodeGeneration>
