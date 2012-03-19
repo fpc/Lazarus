@@ -4015,6 +4015,7 @@ begin
   FAOwner := ANewNoteBook;
   FPageName := ANewNoteBook.NoteBookPages[ANewNoteBook.NoteBookIndexOfPage(ANewPage)];
 
+  EditorComponent.Parent := nil;
   // Change the Owner of the SynEdit
   EditorComponent.Owner.RemoveComponent(EditorComponent);
   FSourceNoteBook.InsertComponent(EditorComponent);
