@@ -576,6 +576,8 @@ begin
 
   // Consider the form scrolling
   // ToDo: Figure out why this "div 2" factor is necessary for drawing non-windows controls and remove this factor
+  // If you remove this factor then the wincontrols are fine,
+  // but graphiccontrols scroll with a different speed which is a huge problem
   ACanvas.BaseWindowOrg := Point(0, - lWindowHandle.ScrollY div 2);
   ACanvas.WindowOrg := Point(0, 0);
 

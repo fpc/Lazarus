@@ -1147,7 +1147,7 @@ var
   LazDC: TLazCanvas absolute DC;
   lControlStateEx: TCDControlStateEx;
   lState: TCDControlState;
-  lSize: TSize;
+  lSize: Types.TSize;
 begin
   Result := False;
 
