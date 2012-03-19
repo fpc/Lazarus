@@ -491,7 +491,10 @@ var
 begin
   if not Visible or (ASize = 0) then exit;
   p := ACenter;
-  d := (ASize + Title.Distance) div 2;
+  if Title.DistanceToCenter then
+    d := Title.Distance
+  else
+    d := (ASize + Title.Distance) div 2;
   case Alignment of
     calLeft: p.X := FTitleRect.Left - d;
     calTop: p.Y := FTitleRect.Top - d;
