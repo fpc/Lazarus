@@ -41,6 +41,15 @@ located at http://SynEdit.SourceForge.net
      Start or End of a FoldBlock
 *)
 
+(* TODO : Workaround for bug #20850
+   Remove when FPC 2.6.2 is out
+*)
+{$IFDEF CPU64}
+{$IF (FPC_FULLVERSION = 2060) or (FPC_FULLVERSION = 20501)}
+  {$DEFINE ISSUE_20850 }
+{$ENDIF}
+{$ENDIF}
+
 unit SynEditHighlighterFoldBase;
 
 {$I synedit.inc}
@@ -716,18 +725,36 @@ end;
 
 function TSynCustomFoldHighlighter.FoldBlockOpeningCount(ALineIndex: TLineIdx;
   const AFilter: TSynFoldBlockFilter): integer;
+{$IFDEF ISSUE_20850}
+var x : integer;
+{$ENDIF}
 begin
   if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count) then
     exit(0);
+  {$IFDEF ISSUE_20850}
+  x      := FoldBlockEndLevel(ALineIndex, AFilter);
+  Result := FoldBlockMinLevel(ALineIndex, AFilter);
+  Result := x - Result;
+  {$ELSE}
   Result := FoldBlockEndLevel(ALineIndex, AFilter) - FoldBlockMinLevel(ALineIndex, AFilter);
+  {$ENDIF}
 end;
 
 function TSynCustomFoldHighlighter.FoldBlockClosingCount(ALineIndex: TLineIdx;
   const AFilter: TSynFoldBlockFilter): integer;
+{$IFDEF ISSUE_20850}
+var x : integer;
+{$ENDIF}
 begin
   if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count) then
     exit(0);
+  {$IFDEF ISSUE_20850}
+  x      := FoldBlockEndLevel(ALineIndex - 1, AFilter);
+  Result := FoldBlockMinLevel(ALineIndex, AFilter);
+  Result := x - Result;
+  {$ELSE}
   Result := FoldBlockEndLevel(ALineIndex - 1, AFilter) - FoldBlockMinLevel(ALineIndex, AFilter);
+  {$ENDIF}
 end;
 
 function TSynCustomFoldHighlighter.FoldBlockEndLevel(ALineIndex: TLineIdx;
