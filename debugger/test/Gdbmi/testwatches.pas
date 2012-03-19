@@ -1288,6 +1288,7 @@ begin
     r := AddRecForArrFmtDef(v+'ArgTDynDynArrayTRec1[1][0]', 1, 85, []);
     //if v = 'V' then UpdResMinFpc(r, stDwarf2All, 020600);
     r := AddRecForArrFmtDef(v+'ArgTDynDynArrayTRec1[1][1]', 1, 86, []);
+    r := AddRecForArrFmtDef(v+'ArgTDynDynArrayTRec1[1,1]', 1, 86, []);          // comma separated index
     //if v = 'V' then UpdResMinFpc(r, stDwarf2All, 020600);
       //TDynDynArrayPRec1   = array of array of ^TRecForArray1;
       //TDynStatArrayTRec1  = array of array [3..5] of TRecForArray1;
@@ -1367,6 +1368,7 @@ begin
   r := AddArrayFmtDef('ArgTStatDynArrayTRec1[4]', '.', '', []); // TODO? typename = array of ...
   r := AddRecForArrFmtDef('ArgTStatDynArrayTRec1[4][0]', 1, 45, []);
   r := AddRecForArrFmtDef('ArgTStatDynArrayTRec1[4][1]', 1, 46, []);
+  r := AddRecForArrFmtDef('ArgTStatDynArrayTRec1[4,1]', 1, 46, []);            // comma separated index
     //TStatDynArrayPRec1  = array [3..5] of array of ^TRecForArray1;
     //TStatStatArrayTRec1 = array [3..5] of array [3..5] of TRecForArray1;
     //TStatStatArrayPRec1 = array [3..5] of array [3..5] of ^TRecForArray1;
@@ -1620,6 +1622,12 @@ begin
 
 
       // stat arrays of named arrays
+
+  // comma separated index
+  r := AddRecForArrFmtDef('GlobAStatDynDynArrayTRec2[4][0][1]', 2, 401, []);
+  r := AddRecForArrFmtDef('GlobAStatDynDynArrayTRec2[4,0][1]', 2, 401, []);
+  r := AddRecForArrFmtDef('GlobAStatDynDynArrayTRec2[4][0,1]', 2, 401, []);
+  r := AddRecForArrFmtDef('GlobAStatDynDynArrayTRec2[4,0,1]', 2, 401, []);
 
 end;
 

@@ -1580,8 +1580,22 @@
       globastatdualarraytrec2[4,3].c := 302;            globastatdualarraytrec2[4,3].recs := nil;
 
 
+      //       GlobAStatDynDynArrayTRec2  : array [3..5] of array of array of TRecForArray2;
+
       SetLength(GlobAStatDynDynArrayTRec2[3], 3);
+      SetLength(GlobAStatDynDynArrayTRec2[3][0], 2);
+      SetLength(GlobAStatDynDynArrayTRec2[3][1], 2);
       SetLength(GlobAStatDynDynArrayTRec2[4], 3);
+      SetLength(GlobAStatDynDynArrayTRec2[4][0], 2);
+      SetLength(GlobAStatDynDynArrayTRec2[4][1], 2);
+      GlobAStatDynDynArrayTRec2[3][0][0].c := 300;
+      GlobAStatDynDynArrayTRec2[3][0][1].c := 301;
+      GlobAStatDynDynArrayTRec2[3][1][0].c := 310;
+      GlobAStatDynDynArrayTRec2[3][1][1].c := 311;
+      GlobAStatDynDynArrayTRec2[4][0][0].c := 400;
+      GlobAStatDynDynArrayTRec2[4][0][1].c := 401;
+      GlobAStatDynDynArrayTRec2[4][1][0].c := 410;
+      GlobAStatDynDynArrayTRec2[4][1][1].c := 411;
 
       SetLength(GlobADynDynStatArrayTRec2, 3);
 

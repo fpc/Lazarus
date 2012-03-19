@@ -143,10 +143,11 @@ type
     function GetParts(Index: Integer): TGDBExpressionPart; override;
   public
     constructor CreateSimple(AText: PChar; ATextLen: Integer);
-    constructor Create(AText: PChar; ATextLen: Integer);
-    constructor Create(ATextStr: String);
+    constructor Create(AText: PChar; ATextLen: Integer); virtual; overload;
+    constructor Create(ATextStr: String); overload;
     destructor Destroy; override;
     function PartCount: Integer; override;
+    function IsCommaSeparated: Boolean;
   end;
 
   { TGDBExpressionPartBracketed }
@@ -156,7 +157,7 @@ type
     function GetTextFixed(AStringFixed: Boolean): String; override;
     function GetPlainText: String;
   public
-    constructor Create(AText: PChar; ATextLen: Integer);
+    constructor Create(AText: PChar; ATextLen: Integer); override; overload;
   end;
 
   { TGDBExpressionPartListBase }
@@ -172,13 +173,22 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure ClearShared;
-    function Add(APart: TGDBExpressionPart):Integer;
-    function PartCount: Integer; override;
+    function  Add(APart: TGDBExpressionPart):Integer;
+    procedure Insert(AIndex: Integer; APart: TGDBExpressionPart);
+    procedure Delete(AIndex: Integer);
+    function  PartCount: Integer; override;
   end;
 
   TGDBExpressionPartList = class(TGDBExpressionPartListBase)
   public
     function AddList(APartList: TGDBExpressionPartList):Integer;
+  end;
+
+  { TGDBExpressionPartCommaList }
+
+  TGDBExpressionPartCommaList = class(TGDBExpressionPartList)
+  protected
+    function GetTextFixed(AStringFixed: Boolean): String; override;
   end;
 
   { TGDBExpressionPartArrayIdx }
@@ -209,6 +219,8 @@ type
     property ArrayPTypeIsPointer: boolean read GetArrayPTypeIsPointer;
     property ArrayPTypeNestIdx: integer read FArrayPTypeNestIdx write FArrayPTypeNestIdx;
     property ArrayPTypePointerIdx: integer read FArrayPTypePointerIdx write FArrayPTypePointerIdx;
+    // for comma separated
+    function CreateExpressionForSubIndex(AIndex: Integer): TGDBExpressionPartArrayIdx;
   end;
 
   { TGDBExpressionPartArray }
@@ -896,6 +908,20 @@ begin
     ;
 end;
 
+{ TGDBExpressionPartCommaList }
+
+function TGDBExpressionPartCommaList.GetTextFixed(AStringFixed: Boolean): String;
+var
+  i: Integer;
+begin
+  Result := '';
+  if PartCount = 0 then
+    exit;
+  Result := Parts[0].GetTextFixed(AStringFixed);
+  for i := 1 to PartCount - 1 do
+    Result := Result + ',' + Parts[i].GetTextFixed(AStringFixed);
+end;
+
 { TGDBExpressionPartArrayIdx }
 
 function TGDBExpressionPartArrayIdx.GetArrayPTypeIsDeRef: boolean;
@@ -976,6 +1002,12 @@ begin
      Result := inherited GetTextFixed(AStringFixed);
 end;
 
+function TGDBExpressionPartArrayIdx.CreateExpressionForSubIndex(AIndex: Integer): TGDBExpressionPartArrayIdx;
+begin
+  Result := TGDBExpressionPartArrayIdx.Create
+            (FText.Ptr^ + Parts[AIndex].GetText + (FText.Ptr + FText.Len-1)^);
+end;
+
 { TGDBExpressionPartList }
 
 function TGDBExpressionPartList.AddList(APartList: TGDBExpressionPartList): Integer;
@@ -992,8 +1024,18 @@ end;
 { TGDBExpressionPartArray }
 
 function TGDBExpressionPartArray.GetIndexParts(Index: Integer): TGDBExpressionPartArrayIdx;
+var
+  j: Integer;
 begin
   Result := TGDBExpressionPartArrayIdx(Parts[Index+1]);
+
+  if Result.IsCommaSeparated then begin
+    Delete(Index+1);
+    For j := 0 to Result.PartCount-1 do
+      Insert(Index + 1 + j, Result.CreateExpressionForSubIndex(j));
+    Result.Free;
+    Result := TGDBExpressionPartArrayIdx(Parts[Index+1]);
+  end;
 end;
 
 function TGDBExpressionPartArray.GetTextFixed(AStringFixed: Boolean): String;
@@ -1135,15 +1177,17 @@ var
   s: String;
 begin
   Result := False;
+  // Index
   for i := 1 to PartCount - 1 do
     if Parts[i].NeedValidation(AReqPtr) then
       Result := True;
 
-  if Parts[0].NeedValidation(AReqPtr)
+  if Parts[0].NeedValidation(AReqPtr) // Array-Variable
   then begin
     Result := True;
     exit;
   end;
+  if Result then exit;
 
   i := 0;
   while i < IndexCount do begin
@@ -1337,7 +1381,7 @@ var
 
   procedure ScanToWordStart;
   begin
-    while (CurPtr < EndPtr) and not (CurPtr^ in WordChar)
+    while (CurPtr < EndPtr) and not( (CurPtr^ in WordChar) or (CurPtr^  = ',') )
     do inc(CurPtr);
   end;
 
@@ -1425,12 +1469,14 @@ var
   CurList: TGDBExpressionPartList;
   CurArray: TGDBExpressionPartArray;
   CurCast: TGDBExpressionPartCastCall;
+  FCommaList: TGDBExpressionPartCommaList;
 begin
   Result := nil;
+  FCommaList := nil;
   CurPtr := AText;
   EndPtr := AText + ATextLen;
 
-  while (CurPtr < EndPtr) and not(CurPtr^ in ['[', '(']) do inc(CurPtr);
+  while (CurPtr < EndPtr) and not(CurPtr^ in ['[', '(', ',']) do inc(CurPtr);
   if CurPtr = EndPtr then exit; // no fixup needed
 
   CurPtr := AText;
@@ -1439,6 +1485,16 @@ begin
 
   while CurPtr < EndPtr do begin
 
+    if (CurPtr^ = ',')
+    then begin
+      if FCommaList = nil then
+        FCommaList := TGDBExpressionPartCommaList.Create;
+      AddExpPart(CurList);
+      FCommaList.Add(Result);
+      Result := nil;
+      inc(CurPtr);
+    end
+    else
     if CurPtr^ in WordChar
     then begin
       if CurArray <> nil then CurArray.NeedTypeCast := True;
@@ -1483,6 +1539,13 @@ begin
 
   AddExpPart(CurList);
   CurList.Free;
+
+  if FCommaList <> nil then begin
+    if Result <> nil then
+      FCommaList.Add(Result);
+    Result := FCommaList;
+  end;
+
 
   if CurPtr < EndPtr then debugln(['Scan aborted: ', PCLenToString(FText)]);
   if CurPtr < EndPtr then FreeAndNil(Result);
@@ -1580,6 +1643,16 @@ begin
   Result := FList.Add(APart);
 end;
 
+procedure TGDBExpressionPartListBase.Insert(AIndex: Integer; APart: TGDBExpressionPart);
+begin
+  FList.Insert(AIndex, APart);
+end;
+
+procedure TGDBExpressionPartListBase.Delete(AIndex: Integer);
+begin
+  FList.Delete(AIndex);
+end;
+
 function TGDBExpressionPartListBase.PartCount: Integer;
 begin
   Result := FList.Count;
@@ -1637,6 +1710,11 @@ begin
   if FExpressionPart is TGDBExpressionPartList
   then Result := FExpressionPart.PartCount
   else Result := 1;
+end;
+
+function TGDBExpression.IsCommaSeparated: Boolean;
+begin
+  Result := (FExpressionPart <> nil) and (FExpressionPart is TGDBExpressionPartCommaList);
 end;
 
 { TGDBPTypeRequestCache }
