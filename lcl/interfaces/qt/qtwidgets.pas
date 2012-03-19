@@ -793,6 +793,8 @@ type
     FUndoAvailableHook: QTextEdit_hookH;
     FTextChangedHook: QTextEdit_hookH;
     FUndoAvailable: Boolean;
+    function GetAcceptRichText: Boolean;
+    procedure SetAcceptRichText(AValue: Boolean);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -835,6 +837,7 @@ type
     procedure setContextMenuPolicy(const AValue: QtContextMenuPolicy); override;
     procedure SignalUndoAvailable(b: Boolean); cdecl;
     procedure SignalTextChanged(); cdecl;
+    property AcceptRichText: Boolean read GetAcceptRichText write SetAcceptRichText;
   end;
 
   { TQtTabBar }
@@ -7882,6 +7885,16 @@ begin
 end;
 
 { TQtTextEdit }
+
+function TQtTextEdit.GetAcceptRichText: Boolean;
+begin
+  Result := QTextEdit_acceptRichText(QTextEditH(Widget));
+end;
+
+procedure TQtTextEdit.SetAcceptRichText(AValue: Boolean);
+begin
+  QTextEdit_setAcceptRichText(QTextEditH(Widget), AValue);
+end;
 
 function TQtTextEdit.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var

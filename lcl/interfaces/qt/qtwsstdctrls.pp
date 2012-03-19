@@ -718,6 +718,7 @@ var
   QtTextEdit: TQtTextEdit;
 begin
   QtTextEdit := TQtTextEdit.Create(AWinControl, AParams);
+  QtTextEdit.AcceptRichText := False;
   QtTextEdit.ClearText;
   QtTextEdit.setBorder(TCustomMemo(AWinControl).BorderStyle = bsSingle);
   QtTextEdit.setReadOnly(TCustomMemo(AWinControl).ReadOnly);
