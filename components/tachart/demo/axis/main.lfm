@@ -258,6 +258,7 @@ object Form1: TForm1
             TickLength = 3
             AxisPen.Color = clGreen
             AxisPen.Visible = True
+            Margin = 8
             Marks.LabelFont.Color = clGreen
             Minors = <>
             Title.LabelFont.Color = clGreen
@@ -273,6 +274,7 @@ object Form1: TForm1
             TickLength = 3
             AxisPen.Color = clNavy
             AxisPen.Visible = True
+            Margin = 8
             Marks.LabelFont.Color = clNavy
             Minors = <>
             Title.LabelFont.Color = clNavy
@@ -285,6 +287,7 @@ object Form1: TForm1
             Intervals.Options = [aipUseMaxLength, aipUseMinLength]
             TickLength = 3
             AxisPen.Visible = True
+            Margin = 8
             Marks.Format = '%0:.4g'
             Marks.Style = smsCustom
             Minors = <>
