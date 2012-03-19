@@ -930,25 +930,23 @@ end;
 
 procedure TChartAxisList.Prepare(ARect: TRect);
 var
-  i, j, ai: Integer;
+  i, ai: Integer;
   axis: TChartAxis;
-  g: ^TChartAxisGroup;
+  g: TChartAxisGroup;
+  axisRect: TRect;
 begin
   FCenterPoint := CenterPoint(ARect);
   ai := 0;
-  for i := 0 to High(FGroups) do begin
-    g := @FGroups[i];
-    for j := 0 to g^.FCount - 1 do begin
-      axis := TChartAxis(FGroupOrder[ai + j]);
-      axis.FAxisRect := ARect;
-    end;
-    SideByAlignment(ARect, axis.Alignment, g^.FSize);
-    for j := 0 to g^.FCount - 1 do begin
+  for g in FGroups do begin
+    axisRect := ARect;
+    SideByAlignment(ARect, TChartAxis(FGroupOrder[ai]).Alignment, g.FSize);
+    for i := 0 to g.FCount - 1 do begin
       axis := TChartAxis(FGroupOrder[ai]);
+      axis.FAxisRect := axisRect;
       axis.FTitleRect := ARect;
       ai += 1;
     end;
-    SideByAlignment(ARect, axis.Alignment, g^.FTitleSize);
+    SideByAlignment(ARect, axis.Alignment, g.FTitleSize);
   end;
   InitAndSort(FZOrder, @AxisZCompare);
 end;
