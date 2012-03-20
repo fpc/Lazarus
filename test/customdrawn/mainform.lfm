@@ -61,7 +61,7 @@ object Form1: TForm1
     Height = 240
     Top = 40
     Width = 463
-    PageIndex = 0
+    PageIndex = 9
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 2
     TabStop = True
@@ -165,13 +165,13 @@ object Form1: TForm1
       end
       object Edit1: TEdit
         Left = 8
-        Height = 21
+        Height = 25
         Top = 28
         Width = 80
         TabOrder = 1
-        Text = 'Edit1'
+        Text = 'Native'
       end
-      object CDEdit2: TCDEdit
+      object editWinCE: TCDEdit
         Left = 119
         Height = 25
         Top = 62
@@ -185,11 +185,11 @@ object Form1: TForm1
         Top = 96
         Width = 88
         DrawStyle = dsWinXP
-        Text = 'editWinXP'
+        Text = 'dsWinXP'
       end
       object Edit2: TEdit
         Left = 8
-        Height = 21
+        Height = 25
         Top = 56
         Width = 80
         Enabled = False
@@ -204,6 +204,14 @@ object Form1: TForm1
         DrawStyle = dsDefault
         Enabled = False
         Text = 'disabled'
+      end
+      object editAndroid: TCDEdit
+        Left = 119
+        Height = 25
+        Top = 128
+        Width = 88
+        DrawStyle = dsAndroid
+        Text = 'dsAndroid'
       end
     end
     object pageEditMultiline: TPage
@@ -412,13 +420,31 @@ object Form1: TForm1
         TabOrder = 0
         Text = 'TComboBox'
       end
-      object CDComboBox1: TCDComboBox
+      object comboDefault: TCDComboBox
         Left = 160
         Height = 25
         Top = 20
         Width = 128
         DrawStyle = dsDefault
-        Text = 'CDComboBox1'
+        Text = 'dsDefault'
+        ItemIndex = 0
+      end
+      object comboAndroid: TCDComboBox
+        Left = 160
+        Height = 25
+        Top = 88
+        Width = 128
+        DrawStyle = dsAndroid
+        Text = 'dsAndroid'
+        ItemIndex = 0
+      end
+      object comboWinXP: TCDComboBox
+        Left = 160
+        Height = 25
+        Top = 56
+        Width = 128
+        DrawStyle = dsWinXP
+        Text = 'dsWinXP'
         ItemIndex = 0
       end
     end
