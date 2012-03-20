@@ -5705,6 +5705,10 @@ begin
       end;
       RecalcCharExtent;
       ScanRanges; // Todo: Skip if paintlocked
+      // There may not have been a scan
+      if fHighlighter <> nil then
+        FHighlighter.CurrentLines := FLines;
+      FLines.SendNotification(senrHighlightChanged, FLines, -1, -1);
     finally
       DecPaintLock;
     end;

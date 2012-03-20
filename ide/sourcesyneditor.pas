@@ -933,6 +933,7 @@ begin
   TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged,
     TMethod({$IFDEF FPC}@{$ENDIF}BufferChanged));
   //LineCountChanged(nil, 0, 0);
+  HighlightChanged(nil,-1,-1);
 end;
 
 procedure TIDESynGutterLOvProviderPascal.HighlightChanged(Sender: TSynEditStrings; AIndex,
