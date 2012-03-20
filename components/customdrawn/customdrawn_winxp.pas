@@ -31,7 +31,7 @@ type
     procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;}
-    procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); override;
+    procedure DrawTickmark(ADest: TFPCustomCanvas; ADestPos: TPoint; AState: TCDControlState); override;
     {procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); override;
     procedure DrawCompactArrow(ADest: TCanvas; ADestPos: TPoint; ADirection: TCDControlState); override;}
     // ===================================
@@ -111,6 +111,7 @@ const
   WINXP_CHECKBOX_GRADIENT_20 = $00FFF7F7;
 
   WINXP_TICKMARK = $0021A521;
+  WINXP_GRAY_TICKMARK = $0099A8AC;
 
   WINXP_FRAME_BLUE = $00B99D7F;
   WINXP_FORM       = $00D8E9EC;
@@ -138,11 +139,12 @@ begin
   Palette.Form := WINXP_FORM;
 end;
 
-procedure TCDDrawerWinXP.DrawTickmark(ADest: TCanvas; ADestPos: TPoint);
+procedure TCDDrawerWinXP.DrawTickmark(ADest: TFPCustomCanvas; ADestPos: TPoint; AState: TCDControlState);
 var
   i: Integer;
 begin
-  ADest.Pen.Color := WINXP_TICKMARK;
+  if csfPartiallyOn in AState then ADest.Pen.FPColor := TColorToFPColor(WINXP_GRAY_TICKMARK)
+  else ADest.Pen.FPColor := TColorToFPColor(WINXP_TICKMARK);
   ADest.Pen.Style := psSolid;
   // 3 lines going down and to the right
   for i := 0 to 2 do

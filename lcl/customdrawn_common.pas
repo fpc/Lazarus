@@ -42,7 +42,7 @@ type
       const FrameWidth : integer; const Style : TBevelCut); override;
     procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
-    procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); override;
+    procedure DrawTickmark(ADest: TFPCustomCanvas; ADestPos: TPoint; AState: TCDControlState); override;
     procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); override;
     procedure DrawArrow(ADest: TCanvas; ADestPos: TPoint; ADirection: TCDControlState; ASize: Integer = 7); override;
     // Extra buttons drawing routines
@@ -140,6 +140,7 @@ const
   WIN2000_SELECTION_BACKGROUND = $00C56A31;
 
   WIN2000_SCROLLBAR_BACKGROUND = $00ECF4F6;
+  WIN2000_LIGHTGRAY_BACKGROUND = $00ECF4F6;
 
   WIN2000_PROGRESSBAR_BLUE = $00C56A31;
 
@@ -453,22 +454,25 @@ begin
   ADest.LineTo(ADestPos.X + ASize.cx-1, ADestPos.Y-1);
 end;
 
-procedure TCDDrawerCommon.DrawTickmark(ADest: TCanvas; ADestPos: TPoint);
+procedure TCDDrawerCommon.DrawTickmark(ADest: TFPCustomCanvas; ADestPos: TPoint; AState: TCDControlState);
 var
   i: Integer;
   lSpacing5, lFirstLinesEnd, lSecondLinesEnd: Integer;
 begin
-  ADest.Pen.Color := clBlack;
+  if csfPartiallyOn in AState then
+    ADest.Pen.FPColor := TColorToFPColor(WIN2000_FRAME_GRAY)
+  else
+    ADest.Pen.FPColor := colBlack;
   ADest.Pen.Style := psSolid;
 
   if Screen.PixelsPerInch <= 125 then
   begin
     // 4 lines going down and to the right
     for i := 0 to 3 do
-      ADest.Line(ADestPos.X+2+i, ADestPos.Y+2+i, ADestPos.X+2+i, ADestPos.Y+5+i);
+      ADest.Line(ADestPos.X+1+i, ADestPos.Y+2+i, ADestPos.X+1+i, ADestPos.Y+5+i);
     // Now 5 lines going up and to the right
     for i := 4 to 8 do
-     ADest.Line(ADestPos.X+2+i, ADestPos.Y+2+6-i, ADestPos.X+2+i, ADestPos.Y+5+6-i);
+     ADest.Line(ADestPos.X+1+i, ADestPos.Y+2+6-i, ADestPos.X+1+i, ADestPos.Y+5+6-i);
     Exit;
   end;
 
@@ -891,7 +895,8 @@ begin
   // the square background
   ADest.Pen.Style := psClear;
   ADest.Brush.Style := bsSolid;
-  ADest.Brush.Color := Palette.Window;
+  if csfPartiallyOn in AState then ADest.Brush.Color := WIN2000_LIGHTGRAY_BACKGROUND
+  else ADest.Brush.Color := Palette.Window;
   ADest.Rectangle(Bounds(1, lHalf - lSquareHalf, lSquareHeight, lSquareHeight));
 
   // the square frame
@@ -932,8 +937,8 @@ begin
   DrawCheckBoxSquare(ADest, Point(0, 0), ASize, AState, AStateEx);
 
   // The Tickmark
-  if csfOn in AState then
-    DrawTickmark(ADest, Point(lValue3, ASize.cy div 2 - GetMeasures(TCDCHECKBOX_SQUARE_HALF_HEIGHT)+lValue3));
+  if (csfOn in AState) or (csfPartiallyOn in AState) then
+    DrawTickmark(ADest, Point(lValue3, ASize.cy div 2 - GetMeasures(TCDCHECKBOX_SQUARE_HALF_HEIGHT)+lValue3), AState);
 
   // The text selection
   if csfHasFocus in AState then

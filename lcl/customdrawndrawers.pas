@@ -304,7 +304,7 @@ type
       const FrameWidth : integer; const Style : TBevelCut); virtual; abstract;
     procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
-    procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); virtual; abstract;
+    procedure DrawTickmark(ADest: TFPCustomCanvas; ADestPos: TPoint; AState: TCDControlState); virtual; abstract;
     procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); virtual; abstract;
     procedure DrawArrow(ADest: TCanvas; ADestPos: TPoint; ADirection: TCDControlState; ASize: Integer = 7); virtual; abstract;
     // Extra buttons drawing routines

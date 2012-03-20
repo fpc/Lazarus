@@ -21,6 +21,8 @@ type
   TCDDrawerAndroid = class(TCDDrawerCommon)
   private
     bmpCheckbox, bmpCheckboxChecked: TBitmap;
+    // Alternative checkbox drawing, not currently utilized
+    procedure DrawCheckBoxBitmap;
     // Draws a line alternating between two colors
     procedure DrawAndroidAlternatedHorzLine(ADest: TCanvas; X1, X2,
       Y: Integer; AColor1, AColor2: TColor);
@@ -50,7 +52,7 @@ type
     procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;}
-    procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); override;
+    procedure DrawTickmark(ADest: TFPCustomCanvas; ADestPos: TPoint; AState: TCDControlState); override;
     {procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); override;
     procedure DrawCompactArrow(ADest: TCanvas; ADestPos: TPoint; ADirection: TCDControlState); override;}
     // ===================================
@@ -120,6 +122,28 @@ const
   ANDROID_BUTTON_SUNKEN_LAST_LINE_A = $0000D300;
   ANDROID_BUTTON_SUNKEN_LAST_LINE_B = $0000D700;
 
+  // Checkbox
+
+var
+  ANDROID_CHECKBOX_A: array[0..29] of TColor =
+    ($F5F5F5, $EBF0EC, $EBF0EC, $EBEBEB, $EBEBEB,
+     $E1E6E2, $EBE6EA, $E1E1E1, $E1E1E1, $D6D0D7,
+     $E1DDE0, $CDCECD, $D6D3D5, $CDCECD, $CDCECD,
+     $C3C4C3, $CCC9CC, $C3C0C2, $C3C4C3, $BABFBB,
+     $C3C0C2, $BABFBB, $BABBBA, $AFB0AF, $AFACAF,
+     $AFACAF, $AFACAF, $AFB0AF, $BABDBA, $C3C4C3);
+  ANDROID_CHECKBOX_B: array[0..29] of TColor =
+    ($EBF0EC, $F5F0F4, $EBEBEB, $EBE6EA, $E1E6E2,
+     $EBE6EA, $E1E1E1, $D6DCD7, $D6DCD7, $D6DCD7,
+     $D6D7D6, $D5D3D6, $CDCECD, $CCC9CC, $C3C4C3,
+     $C3C4C3, $C3C0C2, $C3C0C2, $BABFBB, $BABBBA,
+     $BABBBA, $B9B6B9, $AFB6B1, $AFB0AF, $AFB0AF,
+     $AFB0AF, $AFB0AF, $AFB0AF, $BABDBA, $CCC9CC);
+
+const
+  ANDROID_CHECKBOX_CORNER_DARK_GRAY = $585A58;
+  ANDROID_CHECKBOX_CORNER_GRAY = $8A8C8A;
+
 {procedure TCDButtonDrawerAndroid.DrawToIntfImage(ADest: TFPImageCanvas;
   CDButton: TCDButton);
 begin
@@ -166,6 +190,47 @@ initialization
   RegisterButtonDrawer(TCDButtonDrawerAndroid.Create, dsAndroid);}
 
 { TCDDrawerAndroid }
+
+procedure TCDDrawerAndroid.DrawCheckBoxBitmap;
+var
+  lDest: TCanvas;
+  i: Integer;
+begin
+  lDest := bmpCheckbox.Canvas;
+
+  // Background
+  for i := 0 to 29 do
+    DrawAndroidAlternatedHorzLine(lDest, 0, 31, i, ANDROID_CHECKBOX_A[i], ANDROID_CHECKBOX_B[i]);
+
+  // Corners
+  lDest.Pixels[0, 0] := clBlack;
+  lDest.Pixels[1, 0] := clBlack;
+  lDest.Pixels[0, 1] := clBlack;
+  lDest.Pixels[0, 2] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
+  lDest.Pixels[2, 0] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
+  lDest.Pixels[1, 1] := ANDROID_CHECKBOX_CORNER_GRAY;
+  //
+  lDest.Pixels[29, 0] := clBlack;
+  lDest.Pixels[28, 0] := clBlack;
+  lDest.Pixels[29, 1] := clBlack;
+  lDest.Pixels[29, 2] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
+  lDest.Pixels[27, 0] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
+  lDest.Pixels[26, 1] := ANDROID_CHECKBOX_CORNER_GRAY;
+  //
+  lDest.Pixels[0, 29] := clBlack;
+  lDest.Pixels[1, 29] := clBlack;
+  lDest.Pixels[0, 28] := clBlack;
+  lDest.Pixels[0, 27] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
+  lDest.Pixels[2, 29] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
+  lDest.Pixels[1, 28] := ANDROID_CHECKBOX_CORNER_GRAY;
+  //
+  lDest.Pixels[29, 29] := clBlack;
+  lDest.Pixels[28, 29] := clBlack;
+  lDest.Pixels[29, 28] := clBlack;
+  lDest.Pixels[29, 27] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
+  lDest.Pixels[27, 29] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
+  lDest.Pixels[28, 28] := ANDROID_CHECKBOX_CORNER_GRAY;
+end;
 
 procedure TCDDrawerAndroid.DrawAndroidAlternatedHorzLine(ADest: TCanvas;
   X1, X2, Y: Integer; AColor1, AColor2: TColor);
@@ -305,9 +370,9 @@ begin
   end;
 end;
 
-procedure TCDDrawerAndroid.DrawTickmark(ADest: TCanvas; ADestPos: TPoint);
+procedure TCDDrawerAndroid.DrawTickmark(ADest: TFPCustomCanvas; ADestPos: TPoint; AState: TCDControlState);
 begin
-  // Don't draw anything, tickmarks are impressed into the general images
+
 end;
 
 procedure TCDDrawerAndroid.DrawButton(ADest: TFPCustomCanvas; ASize: TSize;
@@ -398,11 +463,14 @@ begin
     DrawAndroidAlternatedHorzLine(lDest, 3, ASize.cx-3, ASize.cy-1, ANDROID_BUTTON_LAST_LINE_A, ANDROID_BUTTON_LAST_LINE_B);
   end;
 
-  if csfHasFocus in AState then
-    DrawFocusRect(lDest, Point(5, 5), Size(ASize.cx-10, ASize.cy-10));
+  // The full focus rect is too invasive for Android, just make a underline font style instead
+  //if csfHasFocus in AState then
+  //  DrawFocusRect(lDest, Point(5, 5), Size(ASize.cx-10, ASize.cy-10));
 
   // Position calculations
   ADest.Font.Assign(AStateEx.Font);
+  if csfHasFocus in AState then
+    ADest.Font.Underline := True;
   Str := AStateEx.Caption;
   lGlyphCaptionHeight := Max(lDest.TextHeight(Str), AStateEx.Glyph.Height);
   lTextOutPos.X := (ASize.cx - lDest.TextWidth(Str) - AStateEx.Glyph.Width) div 2;
@@ -438,8 +506,7 @@ begin
 end;
 
 initialization
-  {$I customdrawnimages/android.lrs}
-
+  {$include customdrawnimages/android.lrs}
   RegisterDrawer(TCDDrawerAndroid.Create, dsAndroid);
 end.
 
