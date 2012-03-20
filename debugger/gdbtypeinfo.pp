@@ -2061,7 +2061,7 @@ var
     begin
       inc(n);
       S := Lines[n];
-      if S = '' then Continue;
+      if S = '' then Continue; // TODO: clear location (private, peblic)
       if S = 'end' then break;
       if S = '  private' then Location := flPrivate
       else if S = '  protected' then Location := flProtected
@@ -2218,6 +2218,9 @@ var
       exit;
     end
     else begin
+      // before type cast
+      FTypeDeclaration := PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName);
+
       if (gtcfAutoCastClass in FCreationFlags) then begin
         if not RequireRequests([gptrInstanceClassName]) then
           exit;
@@ -2774,7 +2777,7 @@ begin
   finally
     WriteStr(s, FProcessState);
     DebugLnExit(DBGMI_TYPE_INFO, ['<<Exit:  TGDBType.ProcessExpression: state = ', s, '  Result=', dbgs(Result),
-                 ' Kind=', dbgs(Kind), ' Attr=', dbgs(Attributes), ' Typename="', TypeName, '" InternTpName="', FInternalTypeName,'"']);
+                 ' Kind=', dbgs(Kind), ' Attr=', dbgs(Attributes), ' Typename="', TypeName, '" InternTpName="', FInternalTypeName,'" TypeDeclaration="', TypeDeclaration, '"']);
   end;
 end;
 

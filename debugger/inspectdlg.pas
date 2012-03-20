@@ -30,7 +30,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics,
   IDEWindowIntf, DebuggerStrConst, ComCtrls, ObjectInspector, PropEdits, Debugger, DebuggerDlg, BaseDebugManager,
-  LazarusIDEStrConsts, LCLType, Grids, StdCtrls;
+  LazarusIDEStrConsts, LCLType, Grids, StdCtrls, Menus;
 
 type
 
@@ -47,13 +47,16 @@ type
 
   TIDEInspectDlg = class(TDebuggerDlg)
     EditInspected: TEdit;
+    menuClassType: TMenuItem;
     PageControl: TPageControl;
+    PopupMenu1: TPopupMenu;
     StatusBar1: TStatusBar;
     DataPage: TTabSheet;
     PropertiesPage: TTabSheet;
     MethodsPage: TTabSheet;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure menuClassTypeClick(Sender: TObject);
   private
     //FDataGridHook,
     //FPropertiesGridHook,
@@ -132,12 +135,19 @@ begin
     Close;
 end;
 
+procedure TIDEInspectDlg.menuClassTypeClick(Sender: TObject);
+begin
+  menuClassType.Checked := not menuClassType.Checked;
+  UpdateData;
+end;
+
 procedure TIDEInspectDlg.Localize;
 begin
   Caption := lisInspectDialog;
   DataPage.Caption := lisInspectData;
   PropertiesPage.Caption := lisInspectProperties;
   MethodsPage.Caption := lisInspectMethods;
+  menuClassType.Caption := drsUseInstanceClassType;
 end;
 
 procedure TIDEInspectDlg.InspectClass;
@@ -514,12 +524,17 @@ begin
 end;
 
 procedure TIDEInspectDlg.UpdateData;
+var
+  Opts: TDBGEvaluateFlags;
 begin
   FreeAndNil(FDBGInfo);
   if FExpression = ''
   then exit;
 
-  if not DebugBoss.Evaluate(FExpression, FHumanReadable, FDBGInfo, [defFullTypeInfo])
+  Opts := [defFullTypeInfo];
+  if menuClassType.Checked then
+    include(Opts, defClassAutoCast);
+  if not DebugBoss.Evaluate(FExpression, FHumanReadable, FDBGInfo, Opts)
   or not assigned(FDBGInfo) then
   begin
     FreeAndNil(FDBGInfo);

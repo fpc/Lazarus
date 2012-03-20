@@ -67,6 +67,8 @@ resourcestring
   drsInspectColWidthMethReturns = 'Method returns column';
   drsInspectColWidthMethAddress = 'Method address column';
 
+  drsUseInstanceClassType = 'Use Instance class type';
+
 
 implementation
 

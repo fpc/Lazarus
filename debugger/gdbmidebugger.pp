@@ -12394,6 +12394,7 @@ constructor TGDBMIDebuggerCommandEvaluate.Create(AOwner: TGDBMIDebugger;
   AWatchValue: TCurrentWatchValue);
 begin
   Create(AOwner, AWatchValue.Watch.Expression, AWatchValue.DisplayFormat);
+  EvalFlags := AWatchValue.EvaluateFlags;
   FWatchValue := AWatchValue;
   FWatchValue.AddFreeeNotification(@DoWatchFreed);
 end;

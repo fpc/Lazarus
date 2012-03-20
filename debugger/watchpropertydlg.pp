@@ -39,8 +39,8 @@ unit WatchPropertyDlg;
 interface
 
 uses
-  Classes, Forms, StdCtrls, Extctrls, ButtonPanel,
-  IDEHelpIntf, Debugger, BaseDebugManager;
+  Classes, Forms, StdCtrls, Extctrls, ButtonPanel, LazarusIDEStrConsts,
+  IDEHelpIntf, Debugger, BaseDebugManager, DebuggerStrConst;
 
 type
 
@@ -48,6 +48,7 @@ type
 
   TWatchPropertyDlg = class(TForm)
     ButtonPanel: TButtonPanel;
+    chkUseInstanceClass: TCheckBox;
     lblExpression: TLabel;
     lblRepCount: TLabel;
     lblDigits: TLabel;
@@ -70,9 +71,6 @@ implementation
 
 {$R *.lfm}
 
-uses
-  LazarusIDEStrConsts;
-  
 { TWatchPropertyDlg }
 
 procedure TWatchPropertyDlg.btnOKClick(Sender: TObject);
@@ -96,6 +94,9 @@ begin
   then FWatch.DisplayFormat := StyleToDispFormat[rgStyle.ItemIndex]
   else FWatch.DisplayFormat := wdfDefault;
 
+  if chkUseInstanceClass.Checked
+  then FWatch.EvaluateFlags := [defClassAutoCast]
+  else FWatch.EvaluateFlags := [];
   FWatch.Enabled := chkEnabled.Checked;
 end;
 
@@ -141,6 +142,7 @@ begin
   lblDigits.Caption:= lisDigits;
   chkEnabled.Caption:= lisEnabled;
   chkAllowFunc.Caption:= lisAllowFunctio;
+  chkUseInstanceClass.Caption := drsUseInstanceClassType;
   rgStyle.Caption:= lisStyle;
   rgStyle.Items[0]:= lisCharacter;
   rgStyle.Items[1]:= lisString;

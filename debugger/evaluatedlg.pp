@@ -38,15 +38,16 @@ interface
 
 uses
   Classes, SysUtils, LCLType, Forms,
-  IDEWindowIntf,
+  IDEWindowIntf, IDEImagesIntf, LazarusIDEStrConsts,
   ComCtrls, StdCtrls, DebuggerDlg, BaseDebugManager,
-  InputHistory, Debugger;
+  InputHistory, Debugger, DebuggerStrConst;
 
 type
 
   { TEvaluateDlg }
 
   TEvaluateDlg = class(TDebuggerDlg)
+    chkTypeCast: TCheckBox;
     cmbExpression: TComboBox;
     cmbNewValue: TComboBox;
     Label1: TLabel;
@@ -85,9 +86,6 @@ implementation
 
 {$R *.lfm}
 
-uses
-  IDEImagesIntf, LazarusIDEStrConsts;
-
 var
   EvaluateDlgWindowCreator: TIDEWindowCreator;
 
@@ -108,6 +106,7 @@ begin
   Label1.Caption := lisDBGEMExpression;
   Label2.Caption := lisDBGEMResult;
   lblNewValue.Caption := lisDBGEMNewValue;
+  chkTypeCast.Caption := drsUseInstanceClassType;
 
   ToolBar1.Images := IDEImages.Images_16;
   tbInspect.ImageIndex := IDEImages.LoadImage(16, 'debugger_inspect');
@@ -120,11 +119,15 @@ procedure TEvaluateDlg.Evaluate;
 var
   S, R: String;
   DBGType: TDBGType;
+  Opts: TDBGEvaluateFlags;
 begin
   S := cmbExpression.Text;
   InputHistories.HistoryLists.Add(ClassName, S);
   DBGType:=nil;
-  if DebugBoss.Evaluate(S, R, DBGType)
+  Opts := [];
+  if chkTypeCast.Checked then
+    Opts := [defClassAutoCast];
+  if DebugBoss.Evaluate(S, R, DBGType, Opts)
   then begin
     if cmbExpression.Items.IndexOf(S) = -1
     then cmbExpression.Items.Insert(0, S);
