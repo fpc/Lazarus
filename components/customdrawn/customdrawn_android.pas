@@ -1,6 +1,7 @@
 unit customdrawn_android;
 
 {$mode objfpc}{$H+}
+{ $define CD_UseImageResources}
 
 interface
 
@@ -10,7 +11,7 @@ uses
   // fpimage
   fpcanvas, fpimgcanv, fpimage,
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
-  Graphics, Controls, LCLType, LCLIntf, IntfGraphics, LResources,
+  Graphics, Controls, LCLType, LCLIntf, IntfGraphics, LResources, Forms,
   //
   customdrawndrawers, customdrawn_common;
 
@@ -22,7 +23,11 @@ type
   private
     bmpCheckbox, bmpCheckboxChecked: TBitmap;
     // Alternative checkbox drawing, not currently utilized
-    procedure DrawCheckBoxBitmap;
+    procedure DrawCheckBoxBitmap(ADest: TFPCustomCanvas; AState: TCDControlState);
+    procedure DrawTransparentRoundCorners(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize; AColor: TFPColor);
+    // Draws a vertical line with different first and last pixels
+    procedure DrawVerticalLineWithFirstLast(ADest: TFPCustomCanvas;
+      X, Y1, Y2: Integer; AColorTop, AColorMiddle, AColorEnd: TFPColor);
     // Draws a line alternating between two colors
     procedure DrawAndroidAlternatedHorzLine(ADest: TCanvas; X1, X2,
       Y: Integer; AColor1, AColor2: TColor);
@@ -61,9 +66,11 @@ type
     // TCDButton
     procedure DrawButton(ADest: TFPCustomCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDButtonStateEx); override;
-{    // TCDEdit
+    // TCDEdit
     procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
-      AState: TCDControlState; AStateEx: TCDEditStateEx); override;}
+      AState: TCDControlState; AStateEx: TCDEditStateEx); override;
+    procedure DrawEditFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDEditStateEx); override;
     // TCDCheckBox
     procedure DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
@@ -191,45 +198,135 @@ initialization
 
 { TCDDrawerAndroid }
 
-procedure TCDDrawerAndroid.DrawCheckBoxBitmap;
+procedure TCDDrawerAndroid.DrawCheckBoxBitmap(ADest: TFPCustomCanvas; AState: TCDControlState);
 var
-  lDest: TCanvas;
   i: Integer;
+  lDest: TCanvas;
 begin
-  lDest := bmpCheckbox.Canvas;
-
+  lDest := TCanvas(ADest);
   // Background
   for i := 0 to 29 do
     DrawAndroidAlternatedHorzLine(lDest, 0, 31, i, ANDROID_CHECKBOX_A[i], ANDROID_CHECKBOX_B[i]);
 
   // Corners
-  lDest.Pixels[0, 0] := clBlack;
-  lDest.Pixels[1, 0] := clBlack;
-  lDest.Pixels[0, 1] := clBlack;
+  ADest.Colors[0, 0] := colBlack;
+  ADest.Colors[1, 0] := colBlack;
+  ADest.Colors[0, 1] := colBlack;
   lDest.Pixels[0, 2] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
   lDest.Pixels[2, 0] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
   lDest.Pixels[1, 1] := ANDROID_CHECKBOX_CORNER_GRAY;
   //
-  lDest.Pixels[29, 0] := clBlack;
-  lDest.Pixels[28, 0] := clBlack;
-  lDest.Pixels[29, 1] := clBlack;
+  ADest.Colors[29, 0] := colBlack;
+  ADest.Colors[28, 0] := colBlack;
+  ADest.Colors[29, 1] := colBlack;
   lDest.Pixels[29, 2] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
   lDest.Pixels[27, 0] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
   lDest.Pixels[26, 1] := ANDROID_CHECKBOX_CORNER_GRAY;
   //
-  lDest.Pixels[0, 29] := clBlack;
-  lDest.Pixels[1, 29] := clBlack;
-  lDest.Pixels[0, 28] := clBlack;
+  ADest.Colors[0, 29] := colBlack;
+  ADest.Colors[1, 29] := colBlack;
+  ADest.Colors[0, 28] := colBlack;
   lDest.Pixels[0, 27] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
   lDest.Pixels[2, 29] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
   lDest.Pixels[1, 28] := ANDROID_CHECKBOX_CORNER_GRAY;
   //
-  lDest.Pixels[29, 29] := clBlack;
-  lDest.Pixels[28, 29] := clBlack;
-  lDest.Pixels[29, 28] := clBlack;
+  ADest.Colors[29, 29] := colBlack;
+  ADest.Colors[28, 29] := colBlack;
+  ADest.Colors[29, 28] := colBlack;
   lDest.Pixels[29, 27] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
   lDest.Pixels[27, 29] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
   lDest.Pixels[28, 28] := ANDROID_CHECKBOX_CORNER_GRAY;
+
+  // Tickmark
+  if csfOff in AState then
+  begin
+    // first 6 descending lines
+    for i := 0 to 5 do
+      DrawVerticalLineWithFirstLast(ADest, 7+i, 12+i, 18+i,
+        TColorToFPColor($828081), TColorToFPColor($AFB0AF), TColorToFPColor($9D9E9D));
+    // now 11 ascending lines
+    for i := 6 to 17 do
+      DrawVerticalLineWithFirstLast(ADest, 7+i, 12+10-i, 18+10-i,
+        TColorToFPColor($939193), TColorToFPColor($AFB0AF), TColorToFPColor($9D9E9D));
+    // left part adjusts
+    lDest.Pixels[7, 12] := $A6A7A6;
+    lDest.Pixels[6, 13] := $828482;
+    lDest.Pixels[5, 14] := $949193;
+    lDest.Pixels[5, 15] := $9D9E9D;
+    lDest.Pixels[5, 16] := $A6A7A6;
+    lDest.Pixels[6, 14] := $A6A3A5;
+    lDest.Pixels[6, 15] := $AFACAF;
+    lDest.Pixels[6, 16] := $A6A7A6;
+    lDest.Pixels[6, 17] := $9DA29E;
+    // right part adjusts
+    lDest.Pixels[24,  6] := $9D9A9C;
+    lDest.Pixels[24,  7] := $AFBDAF;
+    lDest.Pixels[24,  8] := $CCC9CC;
+    lDest.Pixels[24,  9] := $BABBBA;
+    lDest.Pixels[24, 10] := $B9B6B9;
+    lDest.Pixels[25,  6] := $AFB0AF;
+    lDest.Pixels[25,  7] := $A6A7A6;
+    lDest.Pixels[25,  8] := $B9B6B9;
+    lDest.Pixels[25,  9] := $BABBBA;
+  end
+  else
+  begin
+    // first 6 descending lines
+    for i := 0 to 5 do
+      DrawVerticalLineWithFirstLast(ADest, 7+i, 12+i, 18+i,
+        TColorToFPColor($007500), TColorToFPColor($00D300), TColorToFPColor($089A08));
+    // now 11 ascending lines
+    for i := 6 to 17 do
+      DrawVerticalLineWithFirstLast(ADest, 7+i, 12+10-i, 18+10-i,
+        TColorToFPColor($009200), TColorToFPColor($00D300), TColorToFPColor($089A08));
+    // left part adjusts
+    lDest.Pixels[7, 12] := $849E84;
+    lDest.Pixels[6, 13] := $187518;
+    lDest.Pixels[5, 14] := $188A18;
+    lDest.Pixels[5, 15] := $109E10;
+    lDest.Pixels[5, 16] := $73A273;
+    lDest.Pixels[6, 14] := $00A600;
+    lDest.Pixels[6, 15] := $00BE00;
+    lDest.Pixels[6, 16] := $00B200;
+    lDest.Pixels[6, 17] := $4A9E4A;
+    // right part adjusts
+    lDest.Pixels[24,  6] := $427D42;
+    lDest.Pixels[24,  7] := $00A200;
+    lDest.Pixels[24,  8] := $00C700;
+    lDest.Pixels[24,  9] := $00B200;
+    lDest.Pixels[24, 10] := $31A231;
+    lDest.Pixels[25,  6] := $739E73;
+    lDest.Pixels[25,  7] := $009200;
+    lDest.Pixels[25,  8] := $00AA00;
+    lDest.Pixels[25,  9] := $4AA64A;
+  end;
+end;
+
+procedure TCDDrawerAndroid.DrawTransparentRoundCorners(ADest: TFPCustomCanvas;
+  ADestPos: TPoint; ASize: TSize; AColor: TFPColor);
+begin
+  ADest.Colors[ADestPos.X+0, ADestPos.Y+0] := AColor;
+  ADest.Colors[ADestPos.X+1, ADestPos.Y+0] := AColor;
+  ADest.Colors[ADestPos.X+0, ADestPos.Y+1] := AColor;
+  ADest.Colors[ADestPos.X+ASize.cx-1, ADestPos.Y+0] := AColor;
+  ADest.Colors[ADestPos.X+ASize.cx-2, ADestPos.Y+0] := AColor;
+  ADest.Colors[ADestPos.X+ASize.cx-1, ADestPos.Y+1] := AColor;
+  ADest.Colors[ADestPos.X+0, ADestPos.Y+ASize.cy-1] := AColor;
+  ADest.Colors[ADestPos.X+1, ADestPos.Y+ASize.cy-1] := AColor;
+  ADest.Colors[ADestPos.X+0, ADestPos.Y+ASize.cy-2] := AColor;
+  ADest.Colors[ADestPos.X+ASize.cx-1, ADestPos.Y+ASize.cy-1] := AColor;
+  ADest.Colors[ADestPos.X+ASize.cx-2, ADestPos.Y+ASize.cy-1] := AColor;
+  ADest.Colors[ADestPos.X+ASize.cx-1, ADestPos.Y+ASize.cy-2] := AColor;
+end;
+
+procedure TCDDrawerAndroid.DrawVerticalLineWithFirstLast(
+  ADest: TFPCustomCanvas; X, Y1, Y2: Integer; AColorTop, AColorMiddle,
+  AColorEnd: TFPColor);
+begin
+  ADest.Colors[X, Y1] := AColorTop;
+  ADest.Pen.FPColor := AColorMiddle;
+  ADest.Line(X, Y1+1, X, Y2);
+  ADest.Colors[X, Y2] := AColorEnd;
 end;
 
 procedure TCDDrawerAndroid.DrawAndroidAlternatedHorzLine(ADest: TCanvas;
@@ -316,13 +413,25 @@ begin
 end;
 
 procedure TCDDrawerAndroid.LoadResources;
+var
+  lDPI: Word;
 begin
+  {$ifdef CD_UseImageResources}
   bmpCheckbox.LoadFromLazarusResource('android_checkbox');
   bmpCheckboxChecked.LoadFromLazarusResource('android_checkbox_checked');
+  {$else}
+  bmpCheckbox.Width := 30;
+  bmpCheckbox.Height := 30;
+  bmpCheckboxChecked.Width := 30;
+  bmpCheckboxChecked.Height := 30;
+  DrawCheckBoxBitmap(bmpCheckbox.Canvas, [csfOff]);
+  DrawCheckBoxBitmap(bmpCheckboxChecked.Canvas, [csfOn]);
+  {$endif}
 
-  // for now hardcoded to ldpi
-  ScaleRasterImage(bmpCheckbox, 160, 96);
-  ScaleRasterImage(bmpCheckboxChecked, 160, 96);
+  // DPI adjustment
+  lDPI := Max(96, Screen.PixelsPerInch);
+  ScaleRasterImage(bmpCheckbox, 160, lDPI);
+  ScaleRasterImage(bmpCheckboxChecked, 160, lDPI);
 end;
 
 procedure TCDDrawerAndroid.FreeResources;
@@ -344,8 +453,8 @@ begin
   TCDEDIT_TOP_TEXT_SPACING: Result := 3;
   TCDEDIT_BOTTOM_TEXT_SPACING: Result := 3;}
   //
-  TCDCHECKBOX_SQUARE_HALF_HEIGHT: Result := 9;
-  TCDCHECKBOX_SQUARE_HEIGHT: Result := 18;
+  TCDCHECKBOX_SQUARE_HALF_HEIGHT: Floor(GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT)/2);
+  TCDCHECKBOX_SQUARE_HEIGHT: Result := DPIAdjustment(18);
 {  //
   TCDRADIOBUTTON_CIRCLE_HEIGHT: Result := 15;
   //
@@ -388,19 +497,7 @@ var
 begin
   if not (ADest is TCanvas) then Exit; // ToDo
   // Background corners
-  lColor := AStateEx.ParentRGBColor;
-  lDest.Pixels[0, 0] := lColor;
-  lDest.Pixels[1, 0] := lColor;
-  lDest.Pixels[0, 1] := lColor;
-  lDest.Pixels[ASize.cx-1, 0] := lColor;
-  lDest.Pixels[ASize.cx-2, 0] := lColor;
-  lDest.Pixels[ASize.cx-1, 1] := lColor;
-  lDest.Pixels[0, ASize.cy-1] := lColor;
-  lDest.Pixels[1, ASize.cy-1] := lColor;
-  lDest.Pixels[0, ASize.cy-2] := lColor;
-  lDest.Pixels[ASize.cx-1, ASize.cy-1] := lColor;
-  lDest.Pixels[ASize.cx-2, ASize.cy-1] := lColor;
-  lDest.Pixels[ASize.cx-1, ASize.cy-2] := lColor;
+  DrawTransparentRoundCorners(ADest, Point(0, 0), ASize, AStateEx.FPParentRGBColor);
 
   // Darker corners
   lColor := ANDROID_BUTTON_CORNERS;
@@ -498,15 +595,99 @@ begin
   lDest.TextOut(lTextOutPos.X, lTextOutPos.Y, Str)
 end;
 
+procedure TCDDrawerAndroid.DrawEditBackground(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDEditStateEx);
+var
+  lRect: TRect;
+begin
+  // The first half is a gradient
+  lRect := Bounds(3, 3, ASize.cx-5, (ASize.cy-5) div 2);
+  ADest.GradientFill(lRect, $D8DAD6, $F3F6F4, gdVertical);
+  // The second is a plain color
+  lRect := Bounds(3, 3+(ASize.cy-6) div 2, ASize.cx-6, (ASize.cy-5) div 2);
+  ADest.Brush.Color := $F3F6F4;
+  ADest.Brush.Style := bsSolid;
+  ADest.FillRect(lRect);
+end;
+
+procedure TCDDrawerAndroid.DrawEditFrame(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDEditStateEx);
+begin
+  ADest.Pen.Style := psSolid;
+  if csfHasFocus in AState then
+  begin
+    // Top lines
+    ADest.Pen.Color := $6BB0FF;
+    ADest.Line(2, 0, ASize.cx-1, 0);
+    ADest.Pen.Color := $3E9FFE;
+    ADest.Line(1, 1, ASize.cx, 1);
+    ADest.Pen.Color := $2897FD;
+    ADest.Line(0, 2, ASize.cx+1, 2);
+    // Left&Right
+    ADest.Pen.Color := $007FFE;
+    ADest.Line(0, 3, 0, ASize.CY-2);
+    ADest.Line(1, 3, 1, ASize.CY-2);
+    ADest.Line(ASize.cx-1, 3, ASize.cx-1, ASize.CY-2);
+    ADest.Line(ASize.cx-2, 3, ASize.cx-2, ASize.CY-2);
+    ADest.Pen.Color := $96B1CA;
+    ADest.Line(2, 3, 2, ASize.CY-2);
+    ADest.Line(ASize.cx-3, 3, ASize.cx-3, ASize.CY-2);
+    // Bottom
+    ADest.Pen.Color := $0075FD;
+    ADest.Line(0, ASize.cy-3, ASize.cx-1, ASize.cy-3);
+    ADest.Pen.Color := $0079F6;
+    ADest.Line(1, ASize.cy-2, ASize.cx-2, ASize.cy-2);
+    ADest.Pen.Color := $007FFE;
+    ADest.Line(2, ASize.cy-1, ASize.cx-3, ASize.cy-1);
+  end
+  else
+  begin
+    // Top lines
+    ADest.Pen.Color := $737674;
+    ADest.Line(2, 0, ASize.cx-1, 0);
+    ADest.Pen.Color := $B6B9B7;
+    ADest.Line(1, 1, ASize.cx, 1);
+    ADest.Pen.Color := $C3C6C4;
+    ADest.Line(0, 2, ASize.cx+1, 2);
+    // Left&Right
+    ADest.Pen.Color := $565956;
+    ADest.Line(0, 3, 0, ASize.CY-2);
+    ADest.Line(ASize.cx-1, 3, ASize.cx-1, ASize.CY-2);
+    ADest.Pen.Color := $D1D4D1;
+    ADest.Line(1, 3, 1, ASize.CY-2);
+    ADest.Line(ASize.cx-2, 3, ASize.cx-2, ASize.CY-2);
+    ADest.Pen.Color := $DCE0DC;
+    ADest.Line(2, 3, 2, ASize.CY-2);
+    ADest.Line(ASize.cx-3, 3, ASize.cx-3, ASize.CY-2);
+    // Bottom
+    ADest.Pen.Color := $D4D7D5;
+    ADest.Line(0, ASize.cy-3, ASize.cx-1, ASize.cy-3);
+    ADest.Pen.Color := $D4D7D5;// is actually $FCFFFD but looks strange
+    ADest.Line(1, ASize.cy-2, ASize.cx-2, ASize.cy-2);
+    ADest.Pen.Color := $3B3E3C;
+    ADest.Line(2, ASize.cy-1, ASize.cx-3, ASize.cy-1);
+  end;
+
+  // Transparent corners
+  DrawTransparentRoundCorners(ADest, ADestPos, ASize, AStateEx.FPParentRGBColor);
+end;
+
 procedure TCDDrawerAndroid.DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
 begin
   if csfOn in AState then ADest.Draw(0, 0, bmpCheckboxChecked)
   else ADest.Draw(0, 0, bmpCheckbox);
+
+  // Transparent corners
+  DrawTransparentRoundCorners(ADest, ADestPos,
+    Size(GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT), GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT)),
+    AStateEx.FPParentRGBColor);
 end;
 
 initialization
+  {$ifdef CD_UseImageResources}
   {$include customdrawnimages/android.lrs}
+  {$endif}
   RegisterDrawer(TCDDrawerAndroid.Create, dsAndroid);
 end.
 
