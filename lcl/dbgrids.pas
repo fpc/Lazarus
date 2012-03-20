@@ -2369,6 +2369,14 @@ procedure TCustomDBGrid.PrepareCanvas(aCol, aRow: Integer;
   aState: TGridDrawState);
 begin
   inherited PrepareCanvas(aCol, aRow, aState);
+
+  if gdFixed in aState then begin
+    if gdHot in aState then
+      Canvas.Brush.Color := FixedHotColor
+    else
+      Canvas.Brush.Color := GetColumnColor(aCol, gdFixed in AState);
+  end;
+
   if (not FDatalink.Active) and ((gdSelected in aState) or (gdFocused in aState)) then
     Canvas.Brush.Color := Self.Color;
 end;
@@ -2746,7 +2754,7 @@ begin
   if gdFixed in aState then DbgOut('F');
   {$endif dbgGridPaint}
 
-  if DefaultDrawing then
+  if (gdFixed in aState) or DefaultDrawing then
     DefaultDrawCell(aCol, aRow, aRect, aState);
 
   if (ARow>=FixedRows) and Assigned(OnDrawColumnCell) and
