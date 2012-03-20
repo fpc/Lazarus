@@ -602,6 +602,7 @@ var
     if AWinControl.HandleObjectShouldBeVisible and
       not (csDesigning in AForm.ComponentState) and
       not (fsModal in AForm.FormState) and
+      (AForm.Parent = nil) and
       (AForm.FormStyle <> fsMDIChild) and
       (ModalWindows <> nil) and (ModalWindows.Count > 0) and
       not (AForm.FormStyle in fsAllStayOnTop) and

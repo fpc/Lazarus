@@ -378,6 +378,7 @@ var
       not (fsModal in AForm.FormState) and
       (AForm.FormStyle <> fsMDIChild) and
       not (AForm.FormStyle in fsAllStayOnTop) and
+      (AForm.Parent = nil) and
       (QApplication_activeModalWidget() <> nil) and
       (AForm.BorderStyle in [bsDialog, bsSingle, bsSizeable]) and
       (AForm.PopupParent = nil) and (AForm.PopupMode = pmNone) then

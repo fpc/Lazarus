@@ -246,6 +246,7 @@ var
       not (AForm.FormStyle in fsAllStayOnTop) and
       HaveModalForms and
       (AForm.BorderStyle in [bsDialog, bsSingle, bsSizeable]) and
+      (AForm.Parent = nil) and
       (AForm.PopupParent = nil) and (AForm.PopupMode = pmNone) then
     begin
       if AShowSheet then
