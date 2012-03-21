@@ -249,7 +249,6 @@ type
     FOnKeyDown: TKeyEvent;
 
     FSourceNoteBook: TSourceNotebook;
-
     procedure EditorMouseMoved(Sender: TObject; Shift: TShiftState; X,Y:Integer);
     procedure EditorMouseDown(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
@@ -1249,13 +1248,12 @@ end;
 
 procedure ExecuteEditorItemClick(Sender: TObject);
 var
-  s: String;
+  Editor: TSourceEditor;
 begin
   if SourceEditorManager = nil then exit;
-  s:=(sender as TIDEMenuCommand).Caption;
-  if s='' then exit;
-  if s[1]='*' then System.Delete(s,1,1);
-  SourceEditorManager.ActiveEditor := SourceEditorManager.SourceEditorIntfWithFilename(s);
+
+  Editor := TSourceEditor((sender as TIDEMenuCommand).UserTag);
+  SourceEditorManager.ActiveEditor :=Editor;
   SourceEditorManager.ShowActiveWindowOnTop(True);
 end;
 
@@ -5403,7 +5401,9 @@ var
   PopM: TPopupMenu;
   PageI: integer;
   i: Integer;
-  NewCaption: String;
+  S: String;
+  PageList: TList;
+  EditorCur: TSourceEditor;
 begin
   PopM:=TPopupMenu(Sender);
   SourceTabMenuRoot.MenuItem:=PopM.Items;
@@ -5447,15 +5447,26 @@ begin
 
     if SourceEditorManager<>nil then begin
       SrcEditMenuSectionEditors.Clear;
-      with SourceEditorManager do
-        for i := 0 to SourceEditorCount - 1 do
-        begin
-          NewCaption:=SourceEditors[i].FileName;
-          if SourceEditors[i].Modified then
-            NewCaption:='*'+NewCaption;
-          RegisterIDEMenuCommand(SrcEditMenuSectionEditors, 'File'+IntToStr(i),
-                   NewCaption, nil, @ExecuteEditorItemClick, nil);
-        end;
+      PageList := TList.Create;
+
+      //first add all pages in the correct order since the editor order can be different from the tab order
+      for i := 0 to Count - 1 do
+          PageList.Add(FindSourceEditorWithPageIndex(i));
+
+      for i := 0 to PageList.Count - 1 do
+      begin
+        EditorCur := TSourceEditor(PageList[i]);
+        S := ExtractFileName(EditorCur.FileName);
+        // check for modification
+        if EditorCur.Modified then
+          S := '*'+S;
+        //swap around so file name is first followed by the directory
+        if S <> EditorCur.FileName then
+          S := S +' in '+ExtractFileDir(EditorCur.FileName);
+        RegisterIDEMenuCommand(SrcEditMenuSectionEditors, 'File'+IntToStr(i),
+                 s, nil, @ExecuteEditorItemClick, nil, '', PtrUInt(EditorCur));
+      end;
+      PageList.Free;
     end;
   finally
     SourceTabMenuRoot.EndUpdate;
