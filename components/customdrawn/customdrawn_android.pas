@@ -744,8 +744,12 @@ begin
   // external circle
   DrawAndroidGradientCircle(ADest, ADestPos, lSize, $848484, $EFEFEF, $BDBDBD);
   // internal circle
-  DrawAndroidGradientCircle(ADest, Point(ADestPos.X+lSize.cx div 4, ADestPos.y+lSize.cy div 4),
-    Size(lSize.cx div 2, lSize.cy div 2), $9C9A9C, $CECECE, $BDBDBD);
+  if csfOn in AState then
+    DrawAndroidGradientCircle(ADest, Point(ADestPos.X+lSize.cx div 4, ADestPos.y+lSize.cy div 4),
+      Size(lSize.cx div 2, lSize.cy div 2), $317931, $21DB10, $00BE00)
+  else
+    DrawAndroidGradientCircle(ADest, Point(ADestPos.X+lSize.cx div 4, ADestPos.y+lSize.cy div 4),
+      Size(lSize.cx div 2, lSize.cy div 2), $9C9A9C, $CECECE, $BDBDBD);
 end;
 
 initialization
