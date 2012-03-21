@@ -4,11 +4,13 @@
     <Version Value="9"/>
     <PathDelim Value="\"/>
     <General>
+      <Flags>
+        <SaveOnlyProjectUnits Value="True"/>
+      </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
-      <Icon Value="0"/>
     </General>
     <i18n>
       <EnableI18N LFM="False"/>
@@ -37,7 +39,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="5">
+    <Units Count="6">
       <Unit0>
         <Filename Value="pochecker.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -46,25 +48,34 @@
       <Unit1>
         <Filename Value="pocheckermain.pp"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="PoCheckerForm"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="pocheckermain"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\pofamilies.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="pofamilies"/>
+        <UnitName Value="PoFamilies"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\resultdlg.pp"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="ResultDlgForm"/>
         <HasResources Value="True"/>
-        <UnitName Value="resultdlg"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ResultDlg"/>
       </Unit3>
       <Unit4>
         <Filename Value="..\simplepofiles.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="simplepofiles"/>
       </Unit4>
+      <Unit5>
+        <Filename Value="..\pocheckerconsts.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="pocheckerconsts"/>
+      </Unit5>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -9,7 +9,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, StringHashList,
   //{$IFDEF UNIX}{$IFNDEF DisableCWString}, cwstring{$ENDIF}{$ENDIF},
-  SimplePoFiles;
+  SimplePoFiles, pocheckerconsts;
 
 Type
 
@@ -99,37 +99,18 @@ const
 
   Divider = '-------------------------------------------------------';
 
-resourcestring
-  sOriginal = 'Original';
-  sTranslation = 'Translation';
-  sErrorsByTest = 'Errors / warnings reported by %s for:';
-  sCheckFormatArgs = 'CheckFormatArgs';
-  sCheckMissingIdentifiers = 'CheckMissingIdentifiers';
-  sCheckNrOfItems =  'CheckNrOfItems';
-  sCheckMismatchedOriginals = 'CheckMismatchedOriginals';
-  sCheckDuplicateOriginals = 'CheckDuplicateOriginals';
-  sIncompatibleFormatArgs = '[Line: %d] Incompatible format() arguments for:' ;
-
-  sNrErrorsFound = 'Found %d errors.';
-  sNrWarningsFound = 'Found %d warnings.';
-  sLineInFileName = '[Line %d] in %s:';
-  sIdentifierNotFoundIn = 'Identifier [%s] not found in %s';
-  sMissingMasterIdentifier = 'Identifier [%s] found in %s, but it does not exist in %s';
-  sLineNr = '[Line: %d]';
-
   sFormatArgsID = '%s %s';
   sFormatArgsValues = '%s%s"   (= %s)';
-
-  sNrOfItemsMisMatch = 'Mismatch in number of items for master and child';
-  sNrOfItemsMismatchM = '%s: %d items';
-  sNrOfItemsMismatchC = '%s: %d items';
 
   sMismatchOriginalsID = '%s';
   sMismatchOriginalsM = '%s: %s';
   sMismatchOriginalsC = '%s: %s';
 
-  sDuplicateOriginals = 'The (untranslated) value "%s" is used for more than 1 entry:';
-  sDuplicateLineNrWithValue = '[Line %d] %s';
+  sCheckFormatArgs = 'CheckFormatArgs';
+  sCheckNrOfItems =  'CheckNrOfItems';
+  sCheckMissingIdentifiers = 'CheckMissingIdentifiers';
+  sCheckMismatchedOriginals = 'CheckMismatchedOriginals';
+  sCheckDuplicateOriginals = 'CheckDuplicateOriginals';
 
 //Helper functions
 
@@ -338,8 +319,8 @@ begin
     ErrorLog.Add(Divider);
     ErrorLog.Add('');
     ErrorLog.Add(sNrOfItemsMismatch);
-    ErrorLog.Add(Format(sNrOfItemsMismatchM,[ShortMasterName,FMaster.Count]));
-    ErrorLog.Add(Format(sNrOfItemsMismatchC,[ShortChildName,FChild.Count]));
+    ErrorLog.Add(Format(sNrOfItemsMismatchD,[ShortMasterName,FMaster.Count]));
+    ErrorLog.Add(Format(sNrOfItemsMismatchD,[ShortChildName,FChild.Count]));
     ErrorLog.Add(Divider);
     ErrorLog.Add('');
     ErrorLog.Add('');

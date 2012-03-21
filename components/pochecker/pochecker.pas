@@ -2,20 +2,21 @@
   This source is only used to compile and install the package.
  }
 
-unit PoChecker; 
+unit PoChecker;
 
 interface
 
 uses
-  ResultDlg, PoFamilies, pocheckermain, SimplePoFiles, LazarusPackageIntf;
+  ResultDlg, PoFamilies, pocheckermain, SimplePoFiles, pocheckerconsts, 
+  LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('pocheckermain', @pocheckermain.Register); 
-end; 
+  RegisterUnit('pocheckermain', @pocheckermain.Register);
+end;
 
 initialization
-  RegisterPackage('PoChecker', @Register); 
+  RegisterPackage('PoChecker', @Register);
 end.

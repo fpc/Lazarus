@@ -20,7 +20,7 @@
     <Description Value="Check the validity of translated PO files.
 "/>
     <Version Major="1"/>
-    <Files Count="6">
+    <Files Count="7">
       <Item1>
         <Filename Value="resultdlg.pp"/>
         <UnitName Value="ResultDlg"/>
@@ -46,7 +46,15 @@
         <Filename Value="pocheckermain.lfm"/>
         <Type Value="LFM"/>
       </Item6>
+      <Item7>
+        <Filename Value="pocheckerconsts.pas"/>
+        <UnitName Value="pocheckerconsts"/>
+      </Item7>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
       <Item1>
@@ -65,5 +73,8 @@
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
   </Package>
 </CONFIG>

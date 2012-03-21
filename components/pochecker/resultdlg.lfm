@@ -27,10 +27,10 @@ object ResultDlgForm: TResultDlgForm
     object CloseBtn: TBitBtn
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      Left = 661
+      Left = 643
       Height = 26
       Top = 12
-      Width = 71
+      Width = 89
       Anchors = [akRight]
       AutoSize = True
       BorderSpacing.Right = 10
@@ -41,10 +41,10 @@ object ResultDlgForm: TResultDlgForm
     end
     object SaveBtn: TBitBtn
       AnchorSideRight.Control = CloseBtn
-      Left = 553
+      Left = 534
       Height = 26
       Top = 12
-      Width = 98
+      Width = 99
       Anchors = [akRight]
       AutoSize = True
       BorderSpacing.Around = 10
@@ -90,10 +90,10 @@ object ResultDlgForm: TResultDlgForm
     end
     object CopyBtn: TBitBtn
       AnchorSideRight.Control = SaveBtn
-      Left = 416
+      Left = 395
       Height = 26
       Top = 12
-      Width = 127
+      Width = 129
       Anchors = [akRight]
       AutoSize = True
       BorderSpacing.Around = 10
@@ -668,6 +668,16 @@ object ResultDlgForm: TResultDlgForm
     ReadOnly = True
     ScrollBars = ssAutoBoth
     BracketHighlightStyle = sbhsBoth
+    BracketMatchColor.Background = clNone
+    BracketMatchColor.Foreground = clNone
+    BracketMatchColor.Style = [fsBold]
+    FoldedCodeColor.Background = clNone
+    FoldedCodeColor.Foreground = clGray
+    FoldedCodeColor.FrameColor = clGray
+    MouseLinkColor.Background = clNone
+    MouseLinkColor.Foreground = clBlue
+    LineHighlightColor.Background = clNone
+    LineHighlightColor.Foreground = clNone
     inline SynLeftGutterPartList1: TSynGutterPartList
       object SynGutterLineNumber1: TSynGutterLineNumber
         Width = 17

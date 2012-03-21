@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, Buttons, ClipBrd, LCLType, LCLProc, SynEdit, SynHighlighterPo;
+  ExtCtrls, Buttons, ClipBrd, LCLType, LCLProc, SynEdit, SynHighlighterPo,
+  pocheckerconsts;
 
 type
 
@@ -38,16 +39,11 @@ implementation
 
 {$R *.lfm}
 
-ResourceString
-  sSaveError = 'Error saving file:' + LineEnding + '%s';
-  sSaveCaption = 'Save to file';
-  sCopyCaption = 'Copy to clipboard';
-
-
 { TResultDlgForm }
 
 procedure TResultDlgForm.FormCreate(Sender: TObject);
 begin
+  Caption := sResults;
   LogMemo.Lines.Clear;
   LogMemo.Align := alClient;
   FLog := TStringList.Create;

@@ -25,14 +25,15 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, LCLProc, CheckLst, Buttons, ExtCtrls,
-  SimplePoFiles, PoFamilies, ResultDlg;
+  StdCtrls, LCLProc, CheckLst, Buttons, ExtCtrls, Translations,
+  SimplePoFiles, PoFamilies, ResultDlg, pocheckerconsts;
 
 type
 
   { TPoCheckerForm }
 
   TPoCheckerForm = class(TForm)
+    FindAllPOsCheckBox: TCheckBox;
     SelectAllCheckBox: TCheckBox;
     CurTestHeaderLabel: TLabel;
     CurPoHeaderLabel: TLabel;
@@ -67,20 +68,6 @@ type
 
   end; 
 
-resourcestring
-  rsPoChecker = 'PO File Checker';
-  sSelectAllTests = 'Select all tests';
-  sUnSelectAllTests = 'Unselect all tests';
-  sCannotFindMaster = 'Cannot find master po file:' + LineEnding + '%s' + LineEnding + 'for selected file' + LineEnding + '%s';
-  sNotAProperFileName = 'Selected filename' + LineEnding + '%s' + LineEnding + 'does not seem to be a proper name for a po-file';
-  sErrorOnCreate = 'Error creating an instance of TPoFamily:' + LineEnding + '%s';
-  sErrorOnCleanup = 'An unrecoverable error occurred' + LineEnding + '%s' + LineEnding + 'Please close the program';
-
-  sTotalErrors =   'Total errors found  : %d';
-  sTotalWarnings = 'Total warnings found: %d';
-  //sNoErrorsFound = 'No errors found.';
-  sNoTestSelected = 'There are no tests selected.';
-
 var
   PoCheckerForm: TPoCheckerForm;
 
@@ -91,10 +78,31 @@ implementation
 { TPoCheckerForm }
 
 procedure TPoCheckerForm.FormCreate(Sender: TObject);
+var
+  Lang, T: string;
 begin
+  //Initializing translation
+  Lang := GetEnvironmentVariableUTF8('LANG');
+  if Lang = '' then
+    LCLGetLanguageIDs(Lang, T);
+  if Lang <> '' then
+  begin
+    Lang := copy(Lang, 1, 2);
+    Translations.TranslateUnitResourceStrings('PoCheckerConsts', '..'+DirectorySeparator+'languages'+DirectorySeparator+'pocheckerconsts.'+Lang+'.po');
+    Translations.TranslateUnitResourceStrings('LCLStrConsts', '..'+DirectorySeparator+'languages'+DirectorySeparator+'lclstrconsts.'+Lang+'.po');
+  end;
+
+  Caption := sGUIPoFileCheckingTool;
+  SelectTestLabel.Caption := sSelectTestTypes;
+  FindAllPOsCheckBox.Caption := sFindAllTranslatedPoFiles;
+  OpenBtn.Caption := sOpenAPoFile;
+  RunBtn.Caption := sRunSelectedTests;
+  NoErrLabel.Caption := sNoErrorsFound;
   FillTestListBox;
   ClearAndDisableStatusPanel;
   NoErrLabel.Visible := False;
+  CurTestHeaderLabel.Caption := sCurrentTest;
+  CurPoHeaderLabel.Caption := sCurrentPoFile;
 end;
 
 procedure TPoCheckerForm.FormDestroy(Sender: TObject);
@@ -158,8 +166,16 @@ procedure TPoCheckerForm.FillTestListBox;
 var
   Opt: TPoTestOption;
 begin
-  for Opt := Low(PoTestOptionNames) to High(PoTestOptionNames) do
-    TestListBox.Items.Add(PoTestOptionNames[Opt]);
+  for Opt := Low(PoTestOptionNames) to Pred(High(PoTestOptionNames)) do
+    case Opt of
+      ptoCheckNrOfItems: TestListBox.Items.Add(sCheckNumberOfItems);
+      ptoCheckFormatArgs: TestListBox.Items.Add(sCheckForIncompatibleFormatArguments);
+      ptoCheckMissingIdentifiers: TestListBox.Items.Add(sCheckMissingIdentifiers);
+      ptoCheckMismatchedOriginals: TestListBox.Items.Add(sCheckForMismatchesInUntranslatedStrings);
+      ptoCheckDuplicateOriginals: TestListBox.Items.Add(sCheckForDuplicateUntranslatedValues);
+      else
+        TestListBox.Items.Add(PoTestOptionNames[Opt]);
+    end;
   SelectAllCheckBox.Caption := sSelectAllTests;
 end;
 
@@ -169,7 +185,7 @@ var
   Index: Integer;
 begin
   Result := [];
-  for Opt := Low(TpoTestOption) to High(TPoTestOption) do
+  for Opt := Low(TpoTestOption) to Pred(High(TPoTestOption)) do
   begin
     Index := Ord(Opt);
     if (Index < TestListBox.Count) then
@@ -178,6 +194,8 @@ begin
         Result := Result + [Opt];
     end;
   end;
+  if FindAllPOsCheckBox.Checked then
+    Result := Result + [High(TPoTestOption)];
 end;
 
 procedure TPoCheckerForm.ShowError(const Msg: String);

@@ -1,0 +1,203 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: pocheckerconsts.rspochecker
+msgid "PO File Checker"
+msgstr "Проверка файлов PO"
+
+#: pocheckerconsts.scannotfindmaster
+msgid ""
+"Cannot find master po file:\n"
+"%s\n"
+"for selected file\n"
+"%s\n"
+msgstr ""
+"Невозможно найти главный файл PO:\n"
+"%s\n"
+"для выбранного файла\n"
+"%s\n"
+
+#: pocheckerconsts.scheckforduplicateuntranslatedvalues
+msgid "Check for duplicate untranslated values"
+msgstr "Поиск дублирующихся непереведённых строк"
+
+#: pocheckerconsts.scheckforincompatibleformatarguments
+msgid "Check for incompatible format arguments"
+msgstr "Поиск несовместимых аргументов форматирования"
+
+#: pocheckerconsts.scheckformismatchesinuntranslatedstrings
+msgid "Check for mismatches in untranslated strings"
+msgstr "Поиск несоответствий непереведённых строк"
+
+#: pocheckerconsts.scheckmissingidentifiers
+msgid "Check missing identifiers"
+msgstr "Поиск отсутствующих идентификаторов"
+
+#: pocheckerconsts.schecknumberofitems
+msgid "Check number of items"
+msgstr "Проверка числа строк"
+
+#: pocheckerconsts.scopycaption
+msgid "Copy to clipboard"
+msgstr "Копировать в буфер обмена"
+
+#: pocheckerconsts.scurrentpofile
+msgid "Current po-file:"
+msgstr "Текущий файл PO:"
+
+#: pocheckerconsts.scurrenttest
+msgid "Current Test:"
+msgstr "Текущий тест:"
+
+#: pocheckerconsts.sduplicatelinenrwithvalue
+msgid "[Line %d] %s"
+msgstr "[Строка %d] %s"
+
+#: pocheckerconsts.sduplicateoriginals
+msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+msgstr "Исходное значение \"%s\" имеется в нескольких элементах:"
+
+#: pocheckerconsts.serroroncleanup
+msgid ""
+"An unrecoverable error occurred\n"
+"%s\n"
+"Please close the program\n"
+msgstr ""
+"Возникла неустранимая ошибка\n"
+"%s\n"
+"Программу следует закрыть\n"
+
+#: pocheckerconsts.serroroncreate
+msgid ""
+"Error creating an instance of TPoFamily:\n"
+"%s\n"
+msgstr ""
+"Ошибка создания экземпляра класса TPoFamily:\n"
+"%s\n"
+
+#: pocheckerconsts.serrorsbytest
+msgid "Errors / warnings reported by %s for:"
+msgstr "Ошибки и предупреждения, найденные %s для:"
+
+#: pocheckerconsts.sfindalltranslatedpofiles
+msgid "Find all translated po-files"
+msgstr "Найти все переведённые файлы PO"
+
+#: pocheckerconsts.sguipofilecheckingtool
+msgid "GUI Po-file checking tool"
+msgstr "Средство проверки файлов PO"
+
+#: pocheckerconsts.sidentifiernotfoundin
+msgid "Identifier [%s] not found in %s"
+msgstr "Идентификатор [%s] не найден в %s"
+
+#: pocheckerconsts.sincompatibleformatargs
+msgid "[Line: %d] Incompatible format() arguments for:"
+msgstr "[Строка: %d] Несовместимые аргументы для Format() в:"
+
+#: pocheckerconsts.slineinfilename
+msgid "[Line %d] in %s:"
+msgstr "[Строка %d] в %s:"
+
+#: pocheckerconsts.slinenr
+msgid "[Line: %d]"
+msgstr "[Строка: %d]"
+
+#: pocheckerconsts.smissingmasteridentifier
+msgid "Identifier [%s] found in %s, but it does not exist in %s"
+msgstr "Идентификатор [%s] найден в %s, но отсутствует в %s"
+
+#: pocheckerconsts.snoerrorsfound
+msgid "No errors found"
+msgstr "Ошибок не найдено"
+
+#: pocheckerconsts.snotaproperfilename
+msgid ""
+"Selected filename\n"
+"%s\n"
+"does not seem to be a proper name for a po-file\n"
+msgstr ""
+"Выбранное имя файла\n"
+"%s\n"
+"не выглядит корректно для файла PO\n"
+
+#: pocheckerconsts.snotestselected
+msgid "There are no tests selected."
+msgstr "Не выбрано ни одного теста."
+
+#: pocheckerconsts.snrerrorsfound
+msgid "Found %d errors."
+msgstr "Найдено ошибок: %d"
+
+#: pocheckerconsts.snrofitemsmismatch
+msgid "Mismatch in number of items for master and child"
+msgstr "Несоответствие количества элементов в главном и дочернем файлах"
+
+#: pocheckerconsts.snrofitemsmismatchd
+msgid "%s: %d items"
+msgstr "%s: %d элементов"
+
+#: pocheckerconsts.snrwarningsfound
+msgid "Found %d warnings."
+msgstr "Найдено предупреждений: %d"
+
+#: pocheckerconsts.sopenapofile
+msgid "&Open a po-file"
+msgstr "&Открыть файл PO"
+
+#: pocheckerconsts.soriginal
+msgid "Original"
+msgstr "Исходная строка"
+
+#: pocheckerconsts.sresults
+msgid "Results"
+msgstr "Результаты"
+
+#: pocheckerconsts.srunselectedtests
+msgid "&Run Selected Tests"
+msgstr "&Запустить выбранные тесты"
+
+#: pocheckerconsts.ssavecaption
+msgid "Save to file"
+msgstr "Сохранить в файл"
+
+#: pocheckerconsts.ssaveerror
+msgid ""
+"Error saving file:\n"
+"%s\n"
+msgstr ""
+"Ошибка сохранения файла:\n"
+"%s\n"
+
+#: pocheckerconsts.sselectalltests
+msgid "Select all tests"
+msgstr "Выбрать все тесты"
+
+#: pocheckerconsts.sselecttesttypes
+msgid "Select test types"
+msgstr "Выбор тестов"
+
+#: pocheckerconsts.stotalerrors
+msgid "Total errors / warnings found: %d"
+msgstr "Всего найдено ошибок и предупреждений: %d"
+
+#: pocheckerconsts.stotalwarnings
+msgid "Total warnings found: %d"
+msgstr "Всего найдено предупреждений: %d"
+
+#: pocheckerconsts.stranslation
+msgid "Translation"
+msgstr "Перевод"
+
+#: pocheckerconsts.sunselectalltests
+msgid "Unselect all tests"
+msgstr "Отменить выбор всех тестов"
+
