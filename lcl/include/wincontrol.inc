@@ -6886,7 +6886,12 @@ var
   end;
 
 begin
-  if Message.WindowPos=nil then exit;
+  if not Assigned(Message.WindowPos) or
+    ((Message.WindowPos^.flags and SWP_SourceIsInterface) = 0) then
+  begin
+    inherited WMWindowPosChanged(Message);
+    Exit;
+  end;
 
   {$IFDEF VerboseAllAutoSize}
   DebugLn(DbgSName(Self) + ' : ' + DbgSWindowPosFlags(Message.WindowPos^.flags));
@@ -6904,12 +6909,6 @@ begin
   DebugLn(['TWinControl.WMWindowPosChanged START ',DbgSName(Self),' Message=',NewLeft,',',NewTop,',',NewWidth,'x',NewHeight,
     ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.WindowPos^.flags and SWP_SourceIsInterface)>0,' ClientRectInvalid=',ClientRectNeedsInterfaceUpdate]);
   {$ENDIF}
-
-  if (Message.WindowPos=nil) or ((Message.WindowPos^.flags and SWP_SourceIsInterface) = 0) then
-  begin
-    inherited WMWindowPosChanged(Message);
-    exit;
-  end;
 
   // interface widget has moved/resized
   // -> update realized bounds
