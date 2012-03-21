@@ -815,9 +815,9 @@ begin
 
   MainBuildBoss:=TBuildManager.Create(nil);
   MainBuildBoss.HasGUI:=false;
+  SetupMacros;
   LoadEnvironmentOptions;
   LoadMiscellaneousOptions;
-  SetupMacros;
   SetupLazarusDirectory;
   SetupCodetools;
   SetupCompilerFilename;

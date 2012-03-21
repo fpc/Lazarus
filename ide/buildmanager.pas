@@ -254,6 +254,7 @@ end;
 
 constructor TBuildManager.Create(AOwner: TComponent);
 begin
+  EnvironmentOptions := TEnvironmentOptions.Create;
   DefaultCfgVars:=TCTCfgScriptVariables.Create;
   DefaultCfgVarsBuildMacroStamp:=CTInvalidChangeStamp;
   FFPCVerChangeStamp:=CTInvalidChangeStamp;

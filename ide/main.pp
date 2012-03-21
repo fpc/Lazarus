@@ -1204,23 +1204,30 @@ var
 
 var
   i: integer;
+  ConfFileName: String;
+  Cfg: TXMLConfig;
 begin
   StartedByStartLazarus:=false;
   SkipAutoLoadingLastProject:=false;
   EnableRemoteControl:=false;
   if IsHelpRequested then
   begin
-    EnvironmentOptions := nil;
     HelpLang := GetLanguageSpecified;
-    if HelpLang <> '' then
-      TranslateResourceStrings(ProgramDirectory(true), HelpLang)
-    else
+    if HelpLang = '' then
     begin
-      EnvironmentOptions := TEnvironmentOptions.Create;
-      EnvironmentOptions.CreateConfig;
-      EnvironmentOptions.Load(true);
-      TranslateResourceStrings(ProgramDirectory(true), EnvironmentOptions.LanguageID);
+      ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+EnvOptsConfFileName);
+      try
+        Cfg:=TXMLConfig.Create(ConfFileName);
+        try
+          HelpLang:=Cfg.GetValue('EnvironmentOptions/Language/ID','');
+        finally
+          Cfg.Free;
+        end;
+      except
+      end;
     end;
+    if HelpLang<>'' then
+      TranslateResourceStrings(ProgramDirectory(true), HelpLang);
 
     AHelp := TStringList.Create;
     AddHelp([lislazarusOptionsProjectFilename]);
@@ -1272,7 +1279,6 @@ begin
    
     WriteHelp(AHelp.Text);
     AHelp.Free;
-    FreeThenNil(EnvironmentOptions);
     exit;
   end;
   if IsVersionRequested then
@@ -1292,7 +1298,6 @@ end;
 procedure TMainIDE.LoadGlobalOptions;
 // load environment, miscellaneous, editor and codetools options
 begin
-  EnvironmentOptions := TEnvironmentOptions.Create;
   with EnvironmentOptions do
   begin
     OnBeforeRead := @DoEnvironmentOptionsBeforeRead;
@@ -1384,6 +1389,8 @@ begin
   MainBuildBoss:=TBuildManager.Create(nil);
   MainBuildBoss.HasGUI:=true;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create BUILD MANAGER');{$ENDIF}
+  // setup macros before loading options
+  SetupTransferMacros;
 
   // load options
   CreatePrimaryConfigPath;
@@ -1396,7 +1403,6 @@ begin
   ToolStatus:=itNone;
 
   // setup macros
-  SetupTransferMacros;
   SetupCodeMacros;
 
   // setup the code tools

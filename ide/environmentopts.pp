@@ -1707,8 +1707,7 @@ begin
       Parsing:=true;
       try
         ParsedValue:=UnparsedValue;
-        if GlobalMacroList<>nil then
-          GlobalMacroList.SubstituteStr(ParsedValue);
+        GlobalMacroList.SubstituteStr(ParsedValue);
         ParseStamp:=CompilerParseStamp;
 
         case o of
