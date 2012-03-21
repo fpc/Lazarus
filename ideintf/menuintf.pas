@@ -229,6 +229,7 @@ type
     FRadioItem: Boolean;
     FRightJustify: boolean;
     FShowAlwaysCheckable: boolean;
+    FUserTag: PtrUInt;
   protected
     procedure MenuItemClick(Sender: TObject); override;
     procedure SetAutoCheck(const AValue: boolean); virtual;
@@ -253,6 +254,7 @@ type
     property RightJustify: boolean read FRightJustify write SetRightJustify;
     property ShowAlwaysCheckable: boolean read FShowAlwaysCheckable
                                           write SetShowAlwaysCheckable;
+    property UserTag: PtrUInt read FUserTag write FUserTag;
   end;
   TIDEMenuCommandClass = class of TIDEMenuCommand;
   
@@ -463,13 +465,15 @@ function RegisterIDEMenuCommand(Parent: TIDEMenuSection;
                                 const OnClickMethod: TNotifyEvent = nil;
                                 const OnClickProc: TNotifyProcedure = nil;
                                 const Command: TIDECommand = nil;
-                                const ResourceName: String = ''
+                                const ResourceName: String = '';
+                                const UserTag: PtrUint = 0
                                 ): TIDEMenuCommand; overload;
 function RegisterIDEMenuCommand(const Path, Name, Caption: string;
                                 const OnClickMethod: TNotifyEvent = nil;
                                 const OnClickProc: TNotifyProcedure = nil;
                                 const Command: TIDECommand = nil;
-                                const ResourceName: String = ''
+                                const ResourceName: String = '';
+                                const UserTag: PtrUInt = 0
                                 ): TIDEMenuCommand; overload;
 
 implementation
@@ -531,7 +535,8 @@ function RegisterIDEMenuCommand(Parent: TIDEMenuSection;
                                 const OnClickMethod: TNotifyEvent = nil;
                                 const OnClickProc: TNotifyProcedure = nil;
                                 const Command: TIDECommand = nil;
-                                const ResourceName: String = ''
+                                const ResourceName: String = '';
+                                const UserTag: PtrUInt = 0
                                 ): TIDEMenuCommand;
 begin
   Result := TIDEMenuCommand.Create(Name);
@@ -540,6 +545,7 @@ begin
   Result.OnClickProc := OnClickProc;
   Result.Command := Command;
   Result.ResourceName := ResourceName;
+  Result.UserTag := UserTag;
   Parent.AddLast(Result);
 end;
 
@@ -547,7 +553,8 @@ function RegisterIDEMenuCommand(const Path, Name, Caption: string;
                                 const OnClickMethod: TNotifyEvent = nil;
                                 const OnClickProc: TNotifyProcedure = nil;
                                 const Command: TIDECommand = nil;
-                                const ResourceName: String = ''
+                                const ResourceName: String = '';
+                                const UserTag: PtrUInt = 0
                                 ): TIDEMenuCommand;
 var
   Parent: TIDEMenuSection;
@@ -555,7 +562,7 @@ begin
   //debugln('RegisterIDEMenuCommand Path="',Path,'" Name="',Name,'"');
   Parent := IDEMenuRoots.FindByPath(Path,true) as TIDEMenuSection;
   Result := RegisterIDEMenuCommand(Parent, Name, Caption,
-    OnClickMethod, OnClickProc, Command, ResourceName);
+    OnClickMethod, OnClickProc, Command, ResourceName, UserTag);
 end;
 
 { TIDEMenuItem }
