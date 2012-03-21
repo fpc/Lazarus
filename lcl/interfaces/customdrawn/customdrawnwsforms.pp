@@ -124,6 +124,7 @@ type
     class procedure EvFocusIn(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
     class procedure EvFocusOut(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
     class procedure EvPaint(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
+    class procedure EvPaintEx(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
     class procedure EvConfigureNotify(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo;
       var Event: TXConfigureEvent);
     class procedure EvClientMessage(const AWinControl: TWinControl;

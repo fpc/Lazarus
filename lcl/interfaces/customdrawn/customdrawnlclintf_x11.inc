@@ -132,6 +132,7 @@ function TCDWidgetSet.PromptUser(const DialogCaption : string;
                                        DefaultIndex  : LongInt;
                                        EscapeResult  : LongInt) : LongInt;
 begin
+  Result := -1;
 end;
 
 {------------------------------------------------------------------------------
@@ -166,6 +167,7 @@ end;
 
 procedure TCDWidgetset.ShowVirtualKeyboard();
 begin
+
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

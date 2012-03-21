@@ -30,6 +30,38 @@ begin
   else CDWidgetset.XConnections.Remove(Pointer(fd));
 end;
 
+function TCDWidgetSet.CheckInvalidateWindowForX(XWIndowID: X.TWindow): Boolean;
+var
+  I: integer;
+  AWindowInfo: TX11WindowInfo;
+begin
+  Result:= False;
+  for I:= 0 to XWindowList.Count -1 do begin
+    AWindowInfo:= TX11WindowInfo(XWindowList.Objects[I]);
+    if AWindowInfo.Window = XWIndowID then begin
+      if XWindowList.Strings[I] <> 'Paint' then begin
+        XWindowList.Strings[I] := 'Paint';
+        Result:= True;
+        Exit;
+      end;
+    end;
+  end;
+end;
+
+procedure TCDWidgetSet.WindowUpdated(XWIndowID: X.TWindow);
+var
+  I: integer;
+  AWindowInfo: TX11WindowInfo;
+begin
+  for I:= 0 to XWindowList.Count -1 do begin
+    AWindowInfo:= TX11WindowInfo(XWindowList.Objects[I]);
+    if AWindowInfo.Window = XWIndowID then begin
+      XWindowList.Strings[I] := 'Done';
+      Exit;
+      end;
+    end;
+end;
+
 function TCDWidgetSet.FindWindowByXID(XWindowID: X.TWindow; out AWindowInfo: TX11WindowInfo): TWinControl;
 var
   i: Integer;
@@ -80,6 +112,7 @@ begin
   ScreenDC := TLazCanvas.Create(ScreenImage);
 
   XConnections := TFPList.Create;
+  XWindowList := TStringList.Create;
 end;
 
 {------------------------------------------------------------------------------
@@ -90,8 +123,13 @@ end;
   destructor for the class.
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.BackendDestroy;
+var
+  I: Integer;
 begin
   XConnections.Free;
+  for I:= 0 to XWindowList.Count -1 do
+    XWindowList.Objects[I].Free;
+  XWindowList.Free;
 
   { Release the screen DC and Image }
   ScreenDC.Free;
@@ -303,6 +341,7 @@ end;
 procedure TCDWidgetSet.AppProcessMessage;
 var
   XEvent: TXEvent;
+  XClientEvent: TXClientMessageEvent absolute XEvent ;
   WindowEntry: TWinControl;
   Sum: Integer;
   NewEvent: TXEvent;
@@ -395,7 +434,15 @@ begin
      end;
      X.ClientMessage:
      begin
-       TCDWSCustomForm.EvClientMessage(WindowEntry, CurWindowInfo, XEvent.xclient);
+       if XClientEvent.message_type = CDWidgetSet.FWMPaint then begin
+         {$ifdef VerboseCDEvents}
+         DebugLn(Format('X11 event WM_PAINT - Window %d',[CurWindowInfo.Window]));
+         {$endif}
+         TCDWSCustomForm.EvPaintEx(WindowEntry, CurWindowInfo);
+         WindowUpdated(CurWindowInfo.Window);
+       end
+       else
+         TCDWSCustomForm.EvClientMessage(WindowEntry, CurWindowInfo, XEvent.xclient);
      end;
     else
       DebugLn('LCL-CustomDrawn-X11: Unhandled X11 event received: ', GetXEventName(XEvent._type));
@@ -421,6 +468,15 @@ begin
       CurWindowInfo.InvalidateRequestedInAnyControl := False;
     end;
   end;
+end;
+
+function TCDWidgetSet.XStateToLCLState(XKeyState: cuint): TShiftState;
+begin
+  Result:= [];
+  if (XKeyState and X.ShiftMask) <> 0 then Include(Result,ssShift);
+  if (XKeyState and X.ControlMask) <> 0 then Include(Result,ssCtrl);
+  if (XKeyState and X.Mod1Mask) <> 0 then Include(Result,ssAlt);
+  if (XKeyState and X.Mod5Mask) <> 0 then Include(Result,ssAltGr);
 end;
 
 function TCDWidgetSet.GetAppHandle: THandle;

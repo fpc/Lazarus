@@ -499,6 +499,7 @@ begin
   lKey := X11KeyToLCLKey(KeySym);
   CDWidgetset.LastKeySym := KeySym;
   CDWidgetset.LastKey := lKey;
+  CDWidgetSet.ShiftState := CDWidgetSet.XStateToLCLState(Event.state);
 
   CallbackKeyDown(lForm, lKey);
 
@@ -527,6 +528,7 @@ begin
   lForm := TCDForm(AWinControl.Handle);
 
   lKey := CDWidgetset.LastKey;
+  CDWidgetSet.ShiftState := CDWidgetSet.XStateToLCLState(Event.state);
   CallbackKeyUp(lForm, lKey);
 
   // Do not call EndComposing, as this would generate duplicate KeyChar events!}
@@ -624,6 +626,8 @@ var
   lWidth, lHeight: Integer;
   lBitmap, lMask: HBITMAP;
   lRawImage: TRawImage;
+  Event: TXClientMessageEvent;
+  reslt: Integer;
   {$IFDEF VerboseCDPaintProfiler}
   lTimeStart, lCDTimeEnd, lNativeTimeStart: TDateTime;
   {$ENDIF}
@@ -662,9 +666,25 @@ begin
   lNativeTimeStart := NowUTC();
   {$ENDIF}
 
+  {$ifdef CD_X11_NewNativePaint}
+  // if not already done, send a message to X
+  if CDWidgetSet.CheckInvalidateWindowForX(AWindowInfo.Window) then
+  begin
+    FillChar(Event,sizeof(Event),0);
+    Event._type:= ClientMessage;
+    Event.display:=CDWidgetSet.FDisplay;
+    Event.window:=AWindowInfo.Window;
+    Event.message_type:= CDWidgetSet.FWMPaint;
+    Event.format:= 32; // Must hold a culong for TXID
+    Event.data.l[0]:= AWindowInfo.Window;
+    reslt := XSendEvent(CDWidgetSet.FDisplay,AWindowInfo.Window,{Propagate=}True,0,@Event);
+    // Painting will carried out from main event loop
+  end;
+  {$else}
   // Now render it into the control
   AWindowInfo.Image.GetRawImage(lRawImage);
   DrawRawImageToGC(lRawImage, AWindowInfo, 0, 0, lWidth, lHeight);
+  {$endif}
 
   {$IFDEF VerboseCDPaintProfiler}
   DebugLn(Format('[TCDWSCustomForm.EvPaint] Total Paint duration: %d ms of this CustomDrawn: %d ms Native: %d',
@@ -673,6 +693,18 @@ begin
      DateTimeToMilliseconds(NowUTC() - lNativeTimeStart)
     ]));
   {$ENDIF}
+end;
+
+class procedure TCDWSCustomForm.EvPaintEx(const AWinControl: TWinControl;
+  AWindowInfo: TX11WindowInfo);
+var
+  lWidth, lHeight: Integer;
+  lRawImage: TRawImage;
+begin
+  lWidth := Round(AWinControl.width);
+  lHeight := Round(AWinControl.height);
+  AWindowInfo.Image.GetRawImage(lRawImage);
+  DrawRawImageToGC(lRawImage, AWindowInfo, 0, 0, lWidth, lHeight);
 end;
 
 class procedure TCDWSCustomForm.EvConfigureNotify(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo;
@@ -1777,9 +1809,9 @@ begin
     0xfd1d   U0000   f   # 3270_PrintScreen
     0xfd1e   U0000   f   # 3270_Enter
     0xfe01   U0000   f   # ISO_Lock
-    0xfe02   U0000   f   # ISO_Level2_Latch
-    0xfe03   U0000   f   # ISO_Level3_Shift
-    0xfe04   U0000   f   # ISO_Level3_Latch
+    0xfe02   U0000   f   # ISO_Level2_Latch}
+    $FE03: Result := VK_RMENU; // ISO_Level3_Shift
+    {0xfe04   U0000   f   # ISO_Level3_Latch
     0xfe05   U0000   f   # ISO_Level3_Lock
     0xfe06   U0000   f   # ISO_Group_Latch
     0xfe07   U0000   f   # ISO_Group_Lock
@@ -1922,8 +1954,8 @@ begin
     $FF54: Result := VK_DOWN;
     $FF55: Result := VK_PRIOR;
     $FF56: Result := VK_NEXT;
-{    0xff57   U0000   f   # End
-    0xff58   U0000   f   # Begin
+    $ff57: Result := VK_END;
+{    0xff58   U0000   f   # Begin
     0xff60   U0000   f   # Select
     0xff61   U0000   f   # Print
     0xff62   U0000   f   # Execute
@@ -2015,15 +2047,15 @@ begin
 {    0xffe5   U0000   f   # Caps_Lock
     0xffe6   U0000   f   # Shift_Lock
     0xffe7   U0000   f   # Meta_L
-    0xffe8   U0000   f   # Meta_R
-    0xffe9   U0000   f   # Alt_L
-    0xffea   U0000   f   # Alt_R
+    0xffe8   U0000   f   # Meta_R}
+    $FFE9: Result := VK_LMENU;
+    {0xffea   U0000   f   # Alt_R
     0xffeb   U0000   f   # Super_L
     0xffec   U0000   f   # Super_R
     0xffed   U0000   f   # Hyper_L
     0xffee   U0000   f   # Hyper_R
-    0xffff   U0000   f   # Delete
-    $FFFF: Result := VK_DEL;   }
+    0xffff   U0000   f   # Delete }
+    $FFFF: Result := VK_DELETE;
 {    0xffffff U0000   f   # VoidSymbol
 
     # Various XFree86 extensions since X11R6.4
@@ -2443,7 +2475,6 @@ begin
   else
     Result := 0;
   end;
-
   if Result = 0 then DebugLn('[X11KeyToLCLKey] Unknown KeySym: $' + IntToHex(AX11Key, 4));
 end;
 
@@ -2569,6 +2600,11 @@ begin
      CDWidgetSet.FWMProtocols := XInternAtom(CDWidgetSet.FDisplay, 'WM_PROTOCOLS', False);
     if CDWidgetSet.FWMDeleteWindow = 0 then
      CDWidgetSet.FWMDeleteWindow := XInternAtom(CDWidgetSet.FDisplay, 'WM_DELETE_WINDOW', False);
+    {$ifdef CD_X11_NewNativePaint}
+    // Client Message for Paint Event
+    if CDWidgetSet.FWMPaint = 0 then
+      CDWidgetSet.FWMPaint := XInternAtom(CDWidgetSet.FDisplay, 'WM_PAINT', False);
+    {$endif}
 
      // send close event instead of quitting the whole application...
      XSetWMProtocols(CDWidgetSet.FDisplay, lWindow, @CDWidgetSet.FWMDeleteWindow, 1);
@@ -2591,6 +2627,10 @@ begin
   lWindowInfo.ColorDepth := lWindowInfo.Attr.depth;
   CreateX11Canvas(lWindowInfo);
   Result := TLCLIntfHandle(lWindowInfo);
+
+  {$ifdef CD_X11_NewNativePaint}
+  CDWidgetSet.XWindowList.AddObject('New',TObject(lWindowInfo));
+  {$endif}
 
   {$ifdef VerboseCDForms}
   DebugLn(Format(':<[TCDWSCustomForm.CreateHandle] Result=%x',

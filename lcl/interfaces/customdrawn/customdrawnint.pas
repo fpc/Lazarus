@@ -36,7 +36,7 @@ uses
   // Platform specific
   {$ifdef CD_Windows}Windows, customdrawn_WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, customdrawn_cocoaproc, CocoaGDIObjects,{$endif}
-  {$ifdef CD_X11}X, XLib, XUtil, BaseUnix, customdrawn_x11proc,{$ifdef CD_UseNativeText}xft, fontconfig,{$endif}{$endif}
+  {$ifdef CD_X11}X, XLib, XUtil, BaseUnix, customdrawn_x11proc, contnrs,{$ifdef CD_UseNativeText}xft, fontconfig,{$endif}{$endif}
   {$ifdef CD_Android}
   customdrawn_androidproc, jni, bitmap, log, keycodes,
   {$endif}
@@ -150,6 +150,7 @@ type
     FWMProtocols: TAtom;	  // Atom for "WM_PROTOCOLS"
     FWMDeleteWindow: TAtom;	  // Atom for "WM_DELETE_WINDOW"
     FWMHints: TAtom;		  // Atom for "_MOTIF_WM_HINTS"
+    FWMPaint: TAtom;		  // Atom for "WM_PAINT"
 
     // For composing character events
     ComposeBuffer: string;
@@ -159,12 +160,21 @@ type
     LastKeySym: TKeySym; // Used for KeyRelease event
     LastKey: Word;       // Used for KeyRelease event
 
+    ShiftState: TShiftState; // Keeps ShiftState from X
+
     // XConnections list
     XConnections: TFPList;
+    // Windows Info List
+    XWindowList: TStringList;
+
+    // Functions to keep track of windows needing repaint
+    function CheckInvalidateWindowForX(XWIndowID: X.TWindow): Boolean;
+    procedure WindowUpdated(XWIndowID: X.TWindow);
 
     function FindWindowByXID(XWindowID: X.TWindow; out AWindowInfo: TX11WindowInfo): TWinControl;
     procedure AppProcessMessage;
     procedure AppProcessInvalidates;
+    function XStateToLCLState(XKeyState: cuint): TShiftState;
     {$endif}
     {$ifdef CD_Android}
     CombiningAccent: Cardinal;
@@ -411,6 +421,7 @@ const
   {$ifdef CD_X11}
 const
   CDBackendNativeHandle = nhtX11TWindow;
+
   {$define CD_HasNativeFormHandle}
   {$endif}
   {$ifdef CD_Cocoa}

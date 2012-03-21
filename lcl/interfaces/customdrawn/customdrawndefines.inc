@@ -48,10 +48,17 @@
 {$define CD_BufferControlImages} // for all wincontrols except the form
 { $define CD_BufferFormImage} // for the form itself (excluding child wincontrols)
 
+
+// ==================
+// X11 options
+// ==================
+{$define CD_X11_NewNativePaint}
+
 // ==================
 // Debug options
 // ==================
 {.$define VerboseCDPaintProfiler}
 {.$define VerboseCDDrawing}
 {.$define VerboseCDBitmap}
+{ $define VerboseCDForms}
 

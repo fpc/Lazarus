@@ -2861,8 +2861,9 @@ begin
     {$endif}
   end;
 end;
+*)
 
-function TQtWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
+function TCDWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 const
   StateDown    = SmallInt($FF80);
   {StateToggled = SmallInt($0001);}
@@ -2871,14 +2872,16 @@ begin
 
   case nVirtKey of
     VK_LSHIFT:   nVirtKey := VK_SHIFT;
+    VK_RSHIFT:   nVirtKey := VK_SHIFT;
     VK_LCONTROL: nVirtKey := VK_CONTROL;
+    VK_RCONTROL: nVirtKey := VK_CONTROL;
     VK_LMENU:    nVirtKey := VK_MENU;
   end;
 
   // where to track toggle state?
 
   case nVirtKey of
-    VK_LBUTTON:
+(*    VK_LBUTTON:
       if (QApplication_mouseButtons and QtLeftButton) > 0 then
         Result := Result or StateDown;
     VK_RBUTTON:
@@ -2896,22 +2899,24 @@ begin
     VK_MENU:
       if (QApplication_keyboardModifiers and QtAltModifier) > 0 then
         Result := Result or StateDown;
+*)
     VK_SHIFT:
-      if (QApplication_keyboardModifiers and QtShiftModifier) > 0 then
+      if ssShift in ShiftState then
         Result := Result or StateDown;
     VK_CONTROL:
-      if (QApplication_keyboardModifiers and QtControlModifier) > 0 then
+      if ssCtrl in ShiftState then
         Result := Result or StateDown;
-    VK_LWIN, VK_RWIN:
+(*    VK_LWIN, VK_RWIN:
       if (QApplication_keyboardModifiers and QtMetaModifier) > 0 then
         Result := Result or StateDown;
    {$ifdef VerboseQtWinAPI}
     else
       DebugLn('TQtWidgetSet.GetKeyState TODO ', DbgSVKCode(Word(nVirtkey)));
-   {$endif}
+   {$endif}  *)
   end;
 end;
 
+(*
 function TQtWidgetSet.GetMapMode(DC: HDC): Integer;
 begin
   if IsValidDC(DC) then
