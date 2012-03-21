@@ -127,7 +127,8 @@ type
   private
     FDependencyOwnerGetPkgFilename: TDependencyOwnerGetPkgFilename;
     FGlobalLinks: TAvgLvlTree; // tree of global TPackageLink sorted for ID
-    FModified: boolean;
+    FChangeStamp: integer;
+    FSavedChangeStamp: integer;
     FUserLinksSortID: TAvgLvlTree; // tree of user TPackageLink sorted for ID
     FUserLinksSortFile: TAvgLvlTree; // tree of user TPackageLink sorted for
                                      // Filename and FileDate
@@ -141,6 +142,7 @@ type
       Dependency: TPkgDependency; IgnoreFiles: TFilenameToStringTree): TPackageLink;
     function FindLinkWithPackageIDInTree(LinkTree: TAvgLvlTree;
       APackageID: TLazPackageID): TPackageLink;
+    function GetModified: boolean;
     procedure IteratePackagesInTree(MustExist: boolean; LinkTree: TAvgLvlTree;
       Event: TIteratePackagesEvent);
     procedure SetModified(const AValue: boolean);
@@ -172,8 +174,10 @@ type
     function AddUserLink(const PkgFilename, PkgName: string): TPackageLink;// do not this use if package is open in IDE
     procedure RemoveUserLink(Link: TPackageLink);
     procedure RemoveUserLinks(APackageID: TLazPackageID);
+    procedure IncreaseChangeStamp;
   public
-    property Modified: boolean read FModified write SetModified;
+    property Modified: boolean read GetModified write SetModified;
+    property ChangeStamp: integer read FChangeStamp;
     property DependencyOwnerGetPkgFilename: TDependencyOwnerGetPkgFilename
                                            read FDependencyOwnerGetPkgFilename
                                            write FDependencyOwnerGetPkgFilename;
@@ -327,6 +331,8 @@ begin
   FGlobalLinks:=TAvgLvlTree.Create(@ComparePackageLinks);
   FUserLinksSortID:=TAvgLvlTree.Create(@ComparePackageLinks);
   FUserLinksSortFile:=TAvgLvlTree.Create(@CompareLinksForFilenameAndFileAge);
+  FSavedChangeStamp:=CTInvalidChangeStamp;
+  FChangeStamp:=CTInvalidChangeStamp;
 end;
 
 destructor TPackageLinks.Destroy;
@@ -504,8 +510,8 @@ begin
 
   // check if file has changed
   ConfigFilename:=GetUserLinkFile;
-  if UserLinkLoadTimeValid and FileExistsUTF8(ConfigFilename)
-  and (FileAgeUTF8(ConfigFilename)=UserLinkLoadTime) then
+  if UserLinkLoadTimeValid and FileExistsCached(ConfigFilename)
+  and (FileAgeCached(ConfigFilename)=UserLinkLoadTime) then
     exit;
   
   // copy system default if needed
@@ -513,6 +519,7 @@ begin
   
   FUserLinksSortID.FreeAndClear;
   FUserLinksSortFile.Clear;
+  IncreaseChangeStamp;
   FileVersion:=PkgLinksFileVersion;
   XMLConfig:=nil;
   try
@@ -790,6 +797,11 @@ begin
     Result:=nil;
 end;
 
+function TPackageLinks.GetModified: boolean;
+begin
+  Result:=FSavedChangeStamp<>FChangeStamp;
+end;
+
 procedure TPackageLinks.IteratePackagesInTree(MustExist: boolean;
   LinkTree: TAvgLvlTree; Event: TIteratePackagesEvent);
 var
@@ -810,8 +822,11 @@ end;
 
 procedure TPackageLinks.SetModified(const AValue: boolean);
 begin
-  if FModified=AValue then exit;
-  FModified:=AValue;
+  if Modified=AValue then exit;
+  if not AValue then
+    FSavedChangeStamp:=FChangeStamp
+  else
+    IncreaseChangeStamp;
 end;
 
 function TPackageLinks.FindLinkWithPkgName(const PkgName: string): TPackageLink;
@@ -882,7 +897,7 @@ begin
     if NewLink.MakeSense then begin
       FUserLinksSortID.Add(NewLink);
       FUserLinksSortFile.Add(NewLink);
-      Modified:=true;
+      IncreaseChangeStamp;
     end else begin
       NewLink.Release;
       NewLink:=nil;
@@ -933,7 +948,7 @@ begin
     if NewLink.MakeSense then begin
       FUserLinksSortID.Add(NewLink);
       FUserLinksSortFile.Add(NewLink);
-      Modified:=true;
+      IncreaseChangeStamp;
     end else begin
       NewLink.Release;
       NewLink:=nil;
@@ -960,7 +975,7 @@ begin
       FUserLinksSortID.RemovePointer(Link);
       FUserLinksSortFile.RemovePointer(Link);
       Link.Release;
-      Modified:=true;
+      IncreaseChangeStamp;
     end;
   finally
     EndUpdate;
@@ -982,11 +997,16 @@ begin
       FUserLinksSortID.Delete(ANode);
       FUserLinksSortFile.RemovePointer(OldLink);
       OldLink.Release;
-      Modified:=true;
+      IncreaseChangeStamp;
     until false;
   finally
     EndUpdate;
   end;
+end;
+
+procedure TPackageLinks.IncreaseChangeStamp;
+begin
+  CTIncreaseChangeStamp(FChangeStamp);
 end;
 
 initialization
