@@ -3401,6 +3401,8 @@ end;
 ------------------------------------------------------------------------------}
 function TWin32WidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 begin
+  if nCmdShow = SW_SHOWFULLSCREEN then
+    nCmdShow := SW_SHOWMAXIMIZED;
   Result := Boolean(Windows.ShowWindow(hWnd, nCmdShow));
 end;
 
