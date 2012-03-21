@@ -406,6 +406,7 @@ var
   InheritedOptionStrings: TInheritedCompOptsStrings;
   TargetDir: String;
   i: Integer;
+  s: String;
 begin
   Result:=false;
   Init;
@@ -447,9 +448,11 @@ begin
     CurProf.TargetPlatform:=GetDefaultLCLWidgetType;
   if BuildIDEOptions<>'' then
   begin
-    if CurProf.ExtraOptions<>'' then
-      CurProf.ExtraOptions:=CurProf.ExtraOptions+' ';
-    CurProf.ExtraOptions:=CurProf.ExtraOptions+BuildIDEOptions;
+    s:=CurProf.ExtraOptions;
+    if s<>'' then
+      s+=' ';
+    s+=BuildIDEOptions;
+    CurProf.ExtraOptions:=s;
   end;
   if BuildAll then
     CurProf.IdeBuildMode:=bmCleanAllBuild;
