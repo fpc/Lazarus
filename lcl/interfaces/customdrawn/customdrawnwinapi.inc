@@ -371,10 +371,16 @@ begin
   RSS := GetBytesPerLine(Width, BitCount, rileWordBoundary);
   if BitmapBits <> nil then
   begin
+    {$ifdef VerboseCDBitmap}
+      DebugLn('Trace: [WinAPI CreateBitmap] BitmapBits <> nil');
+    {$endif}
     ARowStride := GetBytesPerLine(Width, BitCount, rileDWordBoundary);
     if not CopyImageData(Width, Height, RSS, BitCount, BitmapBits, Types.Rect(0, 0, Width, Height),
       riloBottomToTop, riloBottomToTop, rileDWordBoundary, NewBits, NewBitsSize) then
     begin
+      {$ifdef VerboseCDBitmap}
+        DebugLn('Trace: [WinAPI CreateBitmap] CopyImageData failed');
+      {$endif}
       // this was never tested
       ARowStride := RSS;
       NewBitsSize := RSS * Height;
@@ -388,6 +394,9 @@ begin
   end
   else
   begin
+    {$ifdef VerboseCDBitmap}
+      DebugLn('Trace: [WinAPI CreateBitmap] Creating Data');
+    {$endif}
     lRawImage.CreateData(True);
     RawImage_CreateBitmaps(lRawImage, Result, lMask, True);
   end;
@@ -406,15 +415,18 @@ function TCDWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 var
   lBrush: TFPCustomBrush;
 begin
-  {$ifdef VerboseCDDrawing}
-    DebugLn(Format(':>[TCDWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x',
-      [LogBrush.lbStyle, LogBrush.lbColor]));
-  {$endif}
-
   lBrush := TFPCustomBrush.Create;
   Result := HBRUSH(lBrush);
+
+  {$ifdef VerboseCDDrawing}
+    DebugLn(Format(':>[TCDWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x Result:%x',
+      [LogBrush.lbStyle, LogBrush.lbColor, Result]));
+  {$endif}
+
+  // brush color
   lBrush.FPColor := TColorToFPColor(LogBrush.lbColor);
 
+  // brush style
   case LogBrush.lbStyle of
     BS_NULL:  lBrush.Style := bsClear; // Same as BS_HOLLOW.
     BS_SOLID: lBrush.Style := bsSolid;
@@ -451,16 +463,6 @@ begin
   else
     DebugLn(Format('Unsupported Brush Style %d',[LogBrush.lbStyle]));
   end;
-
-(*    // set brush color
-    Color := QBrush_Color(QtBrush.FHandle)^;
-    ColorRefToTQColor(ColorToRGB(TColor(logBrush.lbColor)), Color);
-    QtBrush.setColor(@Color);
-    Result := HBRUSH(QtBrush);
-  except
-    Result := 0;
-    DebugLn('TQtWidgetSet.CreateBrushIndirect: Failed');
-  end;*)
 
   {$ifdef VerboseCDDrawing}
     DebugLn(':<[WinAPI CreateBrushIndirect] Result: ', dbghex(Result));
@@ -670,13 +672,14 @@ function TCDWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
 var
   lPen: TFPCustomPen;
 begin
-  {$ifdef VerboseCDDrawing}
-    DebugLn(Format(':>[TCDWidgetSet.CreatePenIndirect]  Style: %d, Color: %8x',
-      [LogPen.lopnStyle, LogPen.lopnColor]));
-  {$endif}
-
   lPen := TFPCustomPen.Create;
   Result := HBRUSH(lPen);
+
+  {$ifdef VerboseCDDrawing}
+    DebugLn(Format(':>[TCDWidgetSet.CreatePenIndirect]  Style: %d, Color: %8x Result:"%x',
+      [LogPen.lopnStyle, LogPen.lopnColor, Result]));
+  {$endif}
+
   lPen.FPColor := TColorToFPColor(LogPen.lopnColor);
 
   case LogPen.lopnStyle and PS_STYLE_MASK of
@@ -690,13 +693,7 @@ begin
     lPen.Style := psSolid;
   end;
 
-(*  if lopnWidth.X <= 0 then
-      QtPen.setCosmetic(True)
-    else
-    begin*)
-//      QtPen.setCosmetic(False);
-
-  lPen.Width := LogPen.lopnWidth.X;
+  lPen.Width := Max(1, LogPen.lopnWidth.X);
 end;
 
 {------------------------------------------------------------------------------
@@ -786,11 +783,11 @@ end;
 function TCDWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
 var
   aObject: TObject;
-  {$ifdef VerboseCDDrawing}
+  {$if defined(VerboseCDDrawing) or defined(VerboseCDBitmap)}
     ObjType: string;
   {$endif}
 begin
-  {$ifdef VerboseCDDrawing}
+  {$if defined(VerboseCDDrawing) or defined(VerboseCDBitmap)}
     DebugLn('Trace:> [WinAPI DeleteObject] GDIObject: ', dbghex(GDIObject));
     ObjType := 'Unidentifyed';
   {$endif}
@@ -811,7 +808,7 @@ begin
    ------------------------------------------------------------------------------}
   if aObject is TFPCustomFont then
   begin
-    {$ifdef VerboseCDDrawing}
+    {$if defined(VerboseCDDrawing) or defined(VerboseCDBitmap)}
       ObjType := 'Font';
     {$endif}
   end
@@ -820,7 +817,7 @@ begin
    ------------------------------------------------------------------------------}
   else if aObject is TFPCustomBrush then
   begin
-    {$ifdef VerboseCDDrawing}
+    {$if defined(VerboseCDDrawing) or defined(VerboseCDBitmap)}
       ObjType := 'Brush';
     {$endif}
   end
@@ -829,7 +826,7 @@ begin
    ------------------------------------------------------------------------------}
   else if aObject is TCDBitmap then
   begin
-    {$ifdef VerboseCDDrawing}
+    {$if defined(VerboseCDDrawing) or defined(VerboseCDBitmap)}
       ObjType := 'Image';
     {$endif}
   end
@@ -838,7 +835,7 @@ begin
    ------------------------------------------------------------------------------}
   else if aObject is TLazRegion then
   begin
-    {$ifdef VerboseCDDrawing}
+    {$if defined(VerboseCDDrawing) or defined(VerboseCDBitmap)}
       ObjType := 'Region';
     {$endif}
   end
@@ -847,7 +844,7 @@ begin
    ------------------------------------------------------------------------------}
   else if aObject is TFPCustomPen then
   begin
-    {$ifdef VerboseCDDrawing}
+    {$if defined(VerboseCDDrawing) or defined(VerboseCDBitmap)}
       ObjType := 'Pen';
     {$endif}
   end;
@@ -868,7 +865,7 @@ begin
 
   Result := True;
 
-  {$ifdef VerboseCDDrawing}
+  {$if defined(VerboseCDDrawing) or defined(VerboseCDBitmap)}
     DebugLn('Trace:< [WinAPI DeleteObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
   {$endif}
 end;

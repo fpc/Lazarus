@@ -51,5 +51,7 @@
 // ==================
 // Debug options
 // ==================
-{$define VerboseCDPaintProfiler}
+{.$define VerboseCDPaintProfiler}
+{.$define VerboseCDDrawing}
+{.$define VerboseCDBitmap}
 
