@@ -169,6 +169,7 @@ var
   lcSameStart, lcSameEnd: TStrings;
   lsSourceLine, lsDestLine: string;
   liStart, liIndex, liMaxIndex: integer;
+  hasSourceLine: Boolean;
 begin
   if pcUnit = nil then
     exit;
@@ -191,7 +192,8 @@ begin
     liMaxIndex := Max(lcSourceLines.Count, lcDestLines.Count);
     while (liIndex < liMaxIndex) do
     begin
-      if liIndex < lcSourceLines.Count then
+      hasSourceLine := liIndex < lcSourceLines.Count;
+      if hasSourceLine then
         lsSourceLine := lcSourceLines[liIndex]
       else
         lsSourceLine := '';
@@ -201,6 +203,9 @@ begin
       else
         lsDestLine := '';
 
+      if not hasSourceLine then
+        pcUnit.InsertLine(liStart + liIndex + 1, lsDestLine, True)
+      else
       if not AnsiSameStr(lsSourceLine, lsDestLine) then
         // the line is different, replace it
         pcUnit.ReplaceLines(liStart + liIndex + 1, liStart + liIndex + 1, lsDestLine, True);
