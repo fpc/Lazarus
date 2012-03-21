@@ -545,10 +545,19 @@ end;
 procedure TCDDrawer.ScaleRasterImage(ARasterImage: TRasterImage; ASourceDPI, ADestDPI: Word);
 var
   lNewWidth, lNewHeight: Int64;
+  lTmpBmp: TBitmap;
 begin
   lNewWidth := Round(ARasterImage.Width * ADestDPI / ASourceDPI);
   lNewHeight := Round(ARasterImage.Height * ADestDPI / ASourceDPI);
-  ARasterImage.Canvas.StretchDraw(Bounds(0, 0, lNewWidth, lNewHeight), ARasterImage);
+  lTmpBmp := TBitmap.Create;
+  try
+    lTmpBmp.Width := ARasterImage.Width;
+    lTmpBmp.Height := ARasterImage.Height;
+    lTmpBmp.Canvas.Draw(0, 0, ARasterImage);
+    ARasterImage.Canvas.StretchDraw(Bounds(0, 0, lNewWidth, lNewHeight), lTmpBmp);
+  finally
+    lTmpBmp.Free;
+  end;
   ARasterImage.Width := lNewWidth;
   ARasterImage.Height := lNewHeight;
 end;
