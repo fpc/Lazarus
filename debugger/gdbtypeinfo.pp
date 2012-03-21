@@ -982,7 +982,7 @@ end;
 
 procedure TGDBExpressionPartArrayIdx.InitIndexReq(var AReqPtr: PGDBPTypeRequest);
 begin
-  FPTypeIndexReq.Request := '-data-evaluate-expression ' + GetPlainText;
+  FPTypeIndexReq.Request := '-data-evaluate-expression ' + Quote(GetPlainText);
   FPTypeIndexReq.Error := '';
   FPTypeIndexReq.ReqType := gcrtEvalExpr;
   FPTypeIndexReq.Next := AReqPtr;
@@ -1824,15 +1824,15 @@ function TGDBType.RequireRequests(ARequired: TGDBTypeProcessRequests; ACustomDat
       gptrPTypeOfWhatis:    Result := 'ptype ' + PCLenToString(FReqResults[gptrWhatisExpr].Result.BaseName);
       gptrPTypeExprDeRef:   Result := 'ptype ' + ApplyBrackets(FExpression) + '^';
       gptrPTypeExprDeDeRef: Result := 'ptype ' + ApplyBrackets(FExpression) + '^^';
-      gptrEvalExpr:       Result := '-data-evaluate-expression '+FExpression;
-      gptrEvalExprDeRef:  Result := '-data-evaluate-expression '+FExpression+'^';
-      gptrEvalExprCast:   Result := '-data-evaluate-expression '+InternalTypeName+'('+FExpression+')';
-      gptrEvalExpr2:      Result := '-data-evaluate-expression '+ACustomData;
-      gptrEvalExprDeRef2: Result := '-data-evaluate-expression '+ACustomData+'^';
-      gptrEvalExprCast2:  Result := '-data-evaluate-expression '+InternalTypeName+'('+ACustomData+')';
+      gptrEvalExpr:       Result := '-data-evaluate-expression '+Quote(FExpression);
+      gptrEvalExprDeRef:  Result := '-data-evaluate-expression '+Quote(FExpression+'^');
+      gptrEvalExprCast:   Result := '-data-evaluate-expression '+Quote(InternalTypeName+'('+FExpression+')');
+      gptrEvalExpr2:      Result := '-data-evaluate-expression '+Quote(ACustomData);
+      gptrEvalExprDeRef2: Result := '-data-evaluate-expression '+Quote(ACustomData+'^');
+      gptrEvalExprCast2:  Result := '-data-evaluate-expression '+Quote(InternalTypeName+'('+ACustomData+')');
       gptrPtypeCustomFixCast, gptrPtypeCustomAutoCast, gptrPtypeCustomAutoCast2:
                          Result := 'ptype ' + ACustomData;
-      gptrInstanceClassName: Result := '-data-evaluate-expression (^^^char('+FExpression+')^+3)^';
+      gptrInstanceClassName: Result := '-data-evaluate-expression '+Quote('(^^^char('+FExpression+')^+3)^');
     end;
   end;
 

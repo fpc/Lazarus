@@ -305,7 +305,6 @@
 
 {* ******************** CLASSES ******************** *}
 {%region  CLASSES  TypeCast }
-  {%region  TYPE}
     {$IFDEF Global_Type}
       //type
       TClassTCast = class                        public b: Integer;  end;
@@ -700,4 +699,62 @@
     GlobPNewFooClass,         GlobPNewFooClass,
   {$ENDIF}
 {%endregion GLOBAL}
+
+
+{%region  CLASSES  Auto-TypeCast }
+    {$IFDEF Global_Type}
+      //type
+      TAutoCastClassBase = class
+      public
+        b: Integer;
+      end;
+      TAutoCastClass = class(TAutoCastClassBase)
+      public
+        C: Integer;
+        N1: TAutoCastClass;
+        N2, VarAutoCastClassBase1: TAutoCastClassBase;
+      end;
+
+    {$ENDIF}
+
+    {$IFDEF FooFunc_LocalVar}
+      // VarO..., VarNO... : TObject; // cast to real class
+      VarAutoCastClassBase1: TAutoCastClassBase;
+      VarAutoCastClassBaseArr: Array [1..4] of TAutoCastClassBase;
+    {$ENDIF}
+
+    {$IFDEF FooFunc_Body}
+      VarAutoCastClassBase1 := TAutoCastClass.Create;
+      TAutoCastClass(VarAutoCastClassBase1).b := 2;
+      TAutoCastClass(VarAutoCastClassBase1).C := 3;
+      TAutoCastClass(VarAutoCastClassBase1).N1 := TAutoCastClass.Create;
+      TAutoCastClass(TAutoCastClass(VarAutoCastClassBase1).N1).b := 105;
+      TAutoCastClass(TAutoCastClass(VarAutoCastClassBase1).N1).c := 1;
+      TAutoCastClass(VarAutoCastClassBase1).N2 := TAutoCastClass.Create;
+      TAutoCastClass(TAutoCastClass(VarAutoCastClassBase1).N2).b := 101;
+      TAutoCastClass(TAutoCastClass(VarAutoCastClassBase1).N2).c := 1;
+      TAutoCastClass(VarAutoCastClassBase1).VarAutoCastClassBase1 := TAutoCastClass.Create;
+      TAutoCastClass(TAutoCastClass(VarAutoCastClassBase1).VarAutoCastClassBase1).b := 104;
+      TAutoCastClass(TAutoCastClass(VarAutoCastClassBase1).VarAutoCastClassBase1).c := 4;
+
+      VarAutoCastClassBaseArr[1] := TAutoCastClass.Create;
+      TAutoCastClass(VarAutoCastClassBaseArr[1]).b := 11;
+      TAutoCastClass(VarAutoCastClassBaseArr[1]).c := 111;
+
+      VarAutoCastClassBaseArr[2] := TAutoCastClass.Create;
+      TAutoCastClass(VarAutoCastClassBaseArr[1]).b := 12;
+      TAutoCastClass(VarAutoCastClassBaseArr[1]).c := 112;
+
+      VarAutoCastClassBaseArr[3] := TAutoCastClass.Create;
+      TAutoCastClass(VarAutoCastClassBaseArr[1]).b := 13;
+      TAutoCastClass(VarAutoCastClassBaseArr[1]).c := 113;
+
+      VarAutoCastClassBaseArr[4] := TAutoCastClass.Create;
+      TAutoCastClass(VarAutoCastClassBaseArr[1]).b := 14;
+      TAutoCastClass(VarAutoCastClassBaseArr[1]).c := 114;
+
+
+    {$ENDIF}
+{%endregion  CLASSES  Auto-TypeCast}
+
 

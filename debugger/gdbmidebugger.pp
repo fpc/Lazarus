@@ -7673,7 +7673,7 @@ begin
           Result := Result and (R.State <> dsError);
           if not Result then exit;
           WatchDecl := PCLenToString(ParseTypeFromGdb(R.Values).Name);
-          Result := ExecuteCommand('-data-evaluate-expression @%s', [WatchExpr], R);
+          Result := ExecuteCommand('-data-evaluate-expression %s', [Quote('@'+WatchExpr)], R);
           Result := Result and (R.State <> dsError);
           if not Result then exit;
           WatchAddr := StripLN(GetPart('value="', '"', R.Values));
@@ -9332,7 +9332,7 @@ begin
     Exit(True);
   end;
 
-  Result := ADebuggerCommand.ExecuteCommand('-data-evaluate-expression %s', [AText], R)
+  Result := ADebuggerCommand.ExecuteCommand('-data-evaluate-expression %s', [Quote(AText)], R)
         and (R.State <> dsError);
 
   ResultList := TGDBMINameValueList.Create(R);
@@ -12116,7 +12116,7 @@ var
     case FDisplayFormat of
       wdfStructure:
         begin
-          Result := ExecuteCommand('-data-evaluate-expression %s', [AnExpression], R);
+          Result := ExecuteCommand('-data-evaluate-expression %s', [Quote(AnExpression)], R);
           Result := Result and (R.State <> dsError);
           if (not Result) then begin
             ParseLastError;

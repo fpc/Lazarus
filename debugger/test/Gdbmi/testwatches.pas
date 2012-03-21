@@ -1121,6 +1121,12 @@ begin
   AddFmtDef('ArgPInt64',        '',      sk,      'PInt64', []);
   AddFmtDef('VArgPInt64',        '',      sk,      'PInt64', []);
   *)
+
+  // spaces
+  AddFmtDef('ArgWord + 1',        '^27$',      skSimple,      'Word|long', [fTpMtch]);
+  AddFmtDef('ArgWord or 64',      '^90$',      skSimple,      'Word|long', [fTpMtch]);
+  AddFmtDef('ArgWord and 67',     '^2$',       skSimple,      'Word|long', [fTpMtch]);
+
   {%endregion    * Simple * }
 
   {%region    * Enum/Set * }
@@ -1301,6 +1307,13 @@ begin
       //TDynDynArrayPRec2   = array of array of ^TRecForArray2;
       //TDynStatArrayTRec2  = array of array [3..5] of TRecForArray2;
       //TDynStatArrayPRec2  = array of array [3..5] of ^TRecForArray2;
+
+      (* Array in expression*)
+      //Add(v+'ArgTDynArrayTRec1[0].a+'+v+'ArgTDynArrayTRec1[1].a', wdfDefault, '^181$', skSimple, M_Int, [fTpMtch] );
+      //Add(v+'ArgTDynArrayTRec1[0].a+'+'ArgTDynArrayTRec1[1].a', wdfDefault, '^181$', skSimple, M_Int, [fTpMtch] );
+      //Add('ArgTDynArrayTRec1[0].a+'+v+'ArgTDynArrayTRec1[1].a', wdfDefault, '^181$', skSimple, M_Int, [fTpMtch] );
+      //Add(v+'ArgTDynArrayTRec1[0].a+'+v+'ArgTDynArrayTRec1[1].a', wdfDefault, '^181$', skSimple, M_Int, [fTpMtch] );
+
       {%endregion DYN ARRAY (norm)}
 
     {%region DYN ARRAY (VAR)}

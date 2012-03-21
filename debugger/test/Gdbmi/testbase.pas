@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, fpcunit, testutils, testregistry,
-  EnvironmentOpts, LCLProc, CompileHelpers, Dialogs, ExtToolDialog,
+  EnvironmentOpts, LCLProc, LazLogger, CompileHelpers, Dialogs, ExtToolDialog,
   Debugger, GDBMIDebugger;
 
 (*
@@ -224,6 +224,8 @@ type
     function GetCompilerInfo: TCompilerInfo;
     function GetDebuggerInfo: TDebuggerInfo;
     function GetSymbolType: TSymbolType;
+    procedure DoDbgOut(Sender: TObject; S: string; var Handled: Boolean);
+    procedure DoDebugln(Sender: TObject; S: string; var Handled: Boolean);
   protected
     function CreateResult: TTestResult; override;
     function GetLogActive: Boolean;
@@ -383,6 +385,16 @@ begin
   Result := TGDBMIDebugger;
 end;
 
+procedure TGDBTestCase.DoDbgOut(Sender: TObject; S: string; var Handled: Boolean);
+begin
+  LogToFile('# '+S);
+end;
+
+procedure TGDBTestCase.DoDebugln(Sender: TObject; S: string; var Handled: Boolean);
+begin
+  LogToFile('# '+S);
+end;
+
 function TGDBTestCase.GetCompilerInfo: TCompilerInfo;
 begin
   Result := Parent.CompilerInfo;
@@ -437,6 +449,9 @@ begin
     AssignFile(FLogFile, FLogFileName);
     Rewrite(FLogFile);
     FLogFileCreated := True;
+
+    DebugLogger.OnDbgOut  := @DoDbgOut;
+    DebugLogger.OnDebugLn  := @DoDebugln;
   //end;
 end;
 
@@ -453,6 +468,8 @@ end;
 procedure TGDBTestCase.TearDown;
 begin
   inherited TearDown;
+  DebugLogger.OnDbgOut := nil;
+  DebugLogger.OnDebugLn := nil;
   if FLogFileCreated then begin
     CloseFile(FLogFile);
 

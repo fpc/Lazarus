@@ -60,6 +60,7 @@ var
   dbg: TGDBMIDebugger;
   TestExeName, s: string;
   i: TGDBMIDebuggerStartBreak;
+  IgnoreRes: String;
 begin
   if SkipTest then exit;
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint')] then exit;
@@ -82,8 +83,16 @@ begin
       end;
 
       dbg.Run;
-      TestTrue(s+' not in error state 1', dbg.State <> dsError);
-	  TestTrue(s+' at break', FCurLine = BREAK_LINE_FOOFUNC);
+
+      IgnoreRes := '';
+      case DebuggerInfo.Version of
+        070400..070499: if i =  gdsbAddZero then IgnoreRes:= 'gdb 7.4.x does not work with gdsbAddZero';
+      end;
+
+      TestTrue(s+' not in error state 1', dbg.State <> dsError, 0, IgnoreRes);
+	  TestTrue(s+' at break', FCurLine = BREAK_LINE_FOOFUNC, 0, IgnoreRes);
+
+      TGDBMIDebuggerProperties(dbg.GetProperties).InternalStartBreak := gdsbDefault;
     finally
       dbg.Done;
       CleanGdb;
@@ -397,6 +406,7 @@ begin
     // 7.1.x seems to always pass
     // 7.2.x seems to always pass
     070300..070399: IgnoreRes:= 'gdb 7.3.x may or may not fail';
+    070400..070499: IgnoreRes:= 'gdb 7.4.x may or may not fail';
   end;
   TestEquals('Passed none-pause run', '', Err, 0, IgnoreRes);
 

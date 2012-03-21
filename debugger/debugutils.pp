@@ -71,6 +71,7 @@ function ConvertPathDelims(const AFileName: String): String;
 function DeleteEscapeChars(const AValue: String; const AEscapeChar: Char = '\'): String;
 function UnEscapeBackslashed(const AValue: String; AFlags: TGdbUnEscapeFlags = [uefOctal]; ATabWidth: Integer = 0): String;
 function UnQuote(const AValue: String): String;
+function Quote(const AValue: String; AForce: Boolean=False): String;
 function ConvertGdbPathAndFile(const AValue: String): String; // fix path, delim, unescape, and to utf8
 function ParseGDBString(const AValue: String): String; // remove quotes(') and convert #dd chars: #9'ab'#9'x'
 
@@ -296,6 +297,13 @@ begin
   if (AValue[1] = '"') and (AValue[len] = '"')
   then Result := Copy(AValue, 2, len - 2)
   else Result := AValue;
+end;
+
+function Quote(const AValue: String; AForce: Boolean): String;
+begin
+  if (pos(' ', AValue) < 1) and (pos(#9, AValue) < 1) and (not AForce) then
+    exit(AValue);
+  Result := '"' + StringReplace(AValue, '"', '\"', [rfReplaceAll]) + '"';
 end;
 
 function ConvertGdbPathAndFile(const AValue: String): String;
