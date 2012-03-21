@@ -2286,20 +2286,21 @@ var
         Dec(Height, Windows.GetSystemMetrics(SM_CYCAPTION));
   end;
 
-begin
+  procedure SetWidthHeightFromRect(const R: TRect); inline;
+  begin
+    with R do
+    begin
+      Width := Right - Left;
+      Height := Bottom - Top;
+    end;
+  end;
 
+begin
   WP.length := SizeOf(WP);
   Result := Boolean(Windows.GetWindowPlacement(Handle, WP));
 
   if not Result then
     Exit;
-
-  if (WP.showCmd = SW_MINIMIZE) or (WP.showCmd = SW_SHOWMINIMIZED) then
-  begin
-    Width := 0;
-    Height := 0;
-    Exit;
-  end;
 
   // if it is a top level window then you can't use the normal size:
   // maximized or aero snap windows will have problems
@@ -2310,30 +2311,27 @@ begin
     Result := GetWindowInfo(Handle, @Info);
     if Result then
     begin
-      with Info.rcWindow do
-      begin
-        Width := Right - Left;
-        Height := Bottom - Top;
-      end;
+      // for minimized window use normal position, in other case use rcWindow of WindowInfo
+      if (WP.showCmd = SW_MINIMIZE) or (WP.showCmd = SW_SHOWMINIMIZED) then
+        SetWidthHeightFromRect(WP.rcNormalPosition)
+      else
+        SetWidthHeightFromRect(Info.rcWindow);
       Width := Width - 2 * Integer(Info.cxWindowBorders);
       Height := Height - 2 * Integer(Info.cyWindowBorders);
       ExcludeCaption;
       //WriteLn('W = ', Width, ' H = ', Height);
       Exit;
     end;
-    Result := Boolean(Windows.GetWindowRect(Handle, @R));
-    with R do
+    if (WP.showCmd = SW_MINIMIZE) or (WP.showCmd = SW_SHOWMINIMIZED) then
+      SetWidthHeightFromRect(WP.rcNormalPosition)
+    else
     begin
-      Width := Right - Left;
-      Height := Bottom - Top;
+      Result := Boolean(Windows.GetWindowRect(Handle, @R));
+      SetWidthHeightFromRect(R);
     end;
   end
   else
-    with WP.rcNormalPosition do
-    begin
-      Width := Right - Left;
-      Height := Bottom - Top;
-    end;
+    SetWidthHeightFromRect(WP.rcNormalPosition);
 
   WindowInfo := GetWin32WindowInfo(Handle);
 
