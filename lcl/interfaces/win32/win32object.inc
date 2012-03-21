@@ -205,9 +205,18 @@ end;
   Brings the entire application on top of all other non-topmost programs
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppBringToFront;
+var
+  Window: HWND;
 begin
-  if (FAppHandle <> 0) and not (Assigned(Application) and Application.MainFormOnTaskBar) then
-    Windows.SetForegroundWindow(FAppHandle);
+  if Assigned(Screen) and Assigned(Screen.ActiveCustomForm) and Screen.ActiveCustomForm.HandleAllocated then
+    Window := Screen.ActiveCustomForm.Handle
+  else
+  if Assigned(Application) and Application.MainFormOnTaskBar then
+    Window := Application.MainFormHandle
+  else
+    Window := FAppHandle;
+  if (Window <> 0) and IsWindowVisible(Window) and IsWindowEnabled(Window) then
+    Windows.SetForegroundWindow(Window);
 end;
 
 procedure TWin32WidgetSet.SetDesigning(AComponent: TComponent);
