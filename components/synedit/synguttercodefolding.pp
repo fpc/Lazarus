@@ -172,7 +172,7 @@ begin
   end;
 
   if (Result in [cfFoldBody, cfFoldEnd]) and
-     not(fncBlockSelection in FoldView.FoldClasifications[AScreenLine])
+     not(fncBlockSelection in FoldView.FoldClasifications[AScreenLine-1])
   then begin
     tmp := FoldView.FoldType[AScreenLine - 1];
     if tmp * [cfHideStart, cfFoldStart, cfCollapsedFold, cfCollapsedHide]

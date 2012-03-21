@@ -3036,7 +3036,7 @@ begin
     if (FSelection.LastLineBytePos.Y  = ALineIdx+1) then Result := [cfFoldEnd];
     if (FSelection.FirstLineBytePos.Y = ALineIdx+1) then Result := [cfHideStart];
     if (FSelection.FirstLineBytePos.Y = ALineIdx+1) and
-       (FSelection.LastLineBytePos.Y  = ALineIdx+1) then Result := [cfSingleLineHide];
+       (FSelection.LastLineBytePos.Y  = ALineIdx+1) then Result := [cfHideStart, cfSingleLineHide];
   end;
   if (FHighlighter = nil) or (ALineIdx < 0) then
     exit;
