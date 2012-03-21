@@ -24,6 +24,7 @@ type
     bmpCheckbox, bmpCheckboxChecked: TBitmap;
     // Alternative checkbox drawing, not currently utilized
     procedure DrawCheckBoxBitmap(ADest: TFPCustomCanvas; AState: TCDControlState);
+    // Makes pixels in each corner transparent for a rounded effect
     procedure DrawTransparentRoundCorners(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize; AColor: TFPColor);
     // Draws a vertical line with different first and last pixels
     procedure DrawVerticalLineWithFirstLast(ADest: TFPCustomCanvas;
@@ -36,6 +37,8 @@ type
       AStart1, AStop1, AStart2, AStop2: TColor);
     // Fills a rectangular area alternating between two pixels
     procedure DrawAndroidMixedFill(ADest: TCanvas; ARect: TRect; AColor1, AColor2: TColor);
+    // Draws a circle with a border and a gradient inside it
+    procedure DrawAndroidGradientCircle(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; ABorderColor, ATopColor, ABottomColor: TColor);
   public
     procedure CreateResources; override;
     procedure LoadResources; override;
@@ -73,6 +76,9 @@ type
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
     // TCDCheckBox
     procedure DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); override;
+    // TCDRadioButton
+    procedure DrawRadioButtonCircle(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
   end;
 
@@ -406,6 +412,49 @@ begin
   end;
 end;
 
+procedure TCDDrawerAndroid.DrawAndroidGradientCircle(ADest: TCanvas;
+  ADestPos: TPoint; ASize: TSize; ABorderColor, ATopColor, ABottomColor: TColor);
+var
+  i, x, y, center_x, center_y, radius, Count: Integer;
+  RStart1, RStop1: Byte;
+  GStart1, GStop1: Byte;
+  BStart1, BStop1: Byte;
+  RDiff1, GDiff1, BDiff1: Integer;
+  lColor: TColor;
+begin
+  center_x := ADestPos.X + ASize.cx div 2;
+  center_y := ADestPos.Y + ASize.cy div 2;
+  radius := ASize.cx div 2;
+  Count := ASize.cx;
+
+  RedGreenBlue(ColorToRGB(ATopColor), RStart1, GStart1, BStart1);
+  RedGreenBlue(ColorToRGB(ABottomColor),  RStop1,  GStop1,  BStop1);
+
+  RDiff1 := RStop1 - RStart1;
+  GDiff1 := GStop1 - GStart1;
+  BDiff1 := BStop1 - BStart1;
+
+  // First the inside part
+  for x := ADestPos.X to ADestPos.X+ASize.CX-1 do
+    for y := ADestPos.Y to ADestPos.Y+ASize.CY-1 do
+    begin
+      if Sqr(x-center_x) + Sqr(y - center_y) < Sqr(radius) then
+      begin
+        i := Y - ADestPos.Y;
+        lColor := RGBToColor(RStart1 + (i * RDiff1) div Count,
+                             GStart1 + (i * GDiff1) div Count,
+                             BStart1 + (i * BDiff1) div Count);
+        ADest.Pixels[x, y] := lColor;
+      end;
+    end;
+
+  // Now the border
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := ABorderColor;
+  ADest.Brush.Style := bsClear;
+  ADest.Ellipse(ADestPos.X, ADestPos.Y, ADestPos.X+ASize.CX, ADestPos.Y+ASize.CY);
+end;
+
 procedure TCDDrawerAndroid.CreateResources;
 begin
   bmpCheckbox := TBitmap.Create;
@@ -454,11 +503,11 @@ begin
   TCDEDIT_BOTTOM_TEXT_SPACING: Result := 3;}
   //
   TCDCHECKBOX_SQUARE_HALF_HEIGHT: Floor(GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT)/2);
-  TCDCHECKBOX_SQUARE_HEIGHT: Result := DPIAdjustment(18);
-{  //
-  TCDRADIOBUTTON_CIRCLE_HEIGHT: Result := 15;
+  TCDCHECKBOX_SQUARE_HEIGHT: Result := DPIAdjustment(20);
   //
-  TCDSCROLLBAR_BUTTON_WIDTH: Result := 17;
+  TCDRADIOBUTTON_CIRCLE_HEIGHT: Result := DPIAdjustment(20);
+  //
+{  TCDSCROLLBAR_BUTTON_WIDTH: Result := 17;
   TCDSCROLLBAR_LEFT_SPACING: Result := 17;
   TCDSCROLLBAR_RIGHT_SPACING: Result := 17;
   TCDSCROLLBAR_LEFT_BUTTON_POS: Result := 0;
@@ -682,6 +731,21 @@ begin
   DrawTransparentRoundCorners(ADest, ADestPos,
     Size(GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT), GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT)),
     AStateEx.FPParentRGBColor);
+end;
+
+procedure TCDDrawerAndroid.DrawRadioButtonCircle(ADest: TCanvas;
+  ADestPos: TPoint; ASize: TSize; AState: TCDControlState;
+  AStateEx: TCDControlStateEx);
+var
+  lSize: TSize;
+begin
+  lSize.cx := GetMeasures(TCDRADIOBUTTON_CIRCLE_HEIGHT);
+  lSize.cy := lSize.cx;
+  // external circle
+  DrawAndroidGradientCircle(ADest, ADestPos, lSize, $848484, $EFEFEF, $BDBDBD);
+  // internal circle
+  DrawAndroidGradientCircle(ADest, Point(ADestPos.X+lSize.cx div 4, ADestPos.y+lSize.cy div 4),
+    Size(lSize.cx div 2, lSize.cy div 2), $9C9A9C, $CECECE, $BDBDBD);
 end;
 
 initialization
