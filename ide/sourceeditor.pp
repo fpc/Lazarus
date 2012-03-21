@@ -377,6 +377,7 @@ type
     function SelectionAvailable: boolean; override;
     function GetText(OnlySelection: boolean): string; override;
     procedure SelectText(const StartPos, EndPos: TPoint); override;
+    procedure InsertLine(StartLine: Integer; const NewText: String; aKeepMarks: Boolean = False); override;
     procedure ReplaceLines(StartLine, EndLine: integer; const NewText: string; aKeepMarks: Boolean = False); override;
     procedure EncloseSelection;
     procedure UpperCaseSelection;
@@ -4269,6 +4270,18 @@ Procedure TSourceEditor.SelectText(const StartPos, EndPos: TPoint);
 Begin
   FEditor.BlockBegin := StartPos;
   FEditor.BlockEnd := EndPos;
+end;
+
+procedure TSourceEditor.InsertLine(StartLine: Integer; const NewText: String;
+  aKeepMarks: Boolean);
+const
+  MarksMode: array[Boolean] of TSynMarksAdjustMode = (smaMoveUp, smaKeep);
+begin
+  if not ReadOnly then
+    FEditor.SetTextBetweenPoints(
+      Point(1, StartLine),
+      Point(1, StartLine),
+      NewText + LineEnding, [], scamEnd, MarksMode[aKeepMarks]);
 end;
 
 procedure TSourceEditor.ReplaceLines(StartLine, EndLine: integer;
