@@ -1085,7 +1085,7 @@ begin
   if AIdx < 0 then exit;
 
   for i := 0 to AIdx do begin
-    IdxPart := IndexPart[i];
+    IdxPart := TGDBExpressionPartArrayIdx(Parts[i + 1]);
     PTResult := IdxPart.ArrayPTypeResult;
     if PCastCnt > 0 then dec(PCastCnt);
 
@@ -1361,7 +1361,7 @@ const
   // include "." (dots). currently there is no need to break expressions like "foo.bar"
   // Include "^" (deref)
   // do NOT include "@", it is applied after []() resolution
-  WordChar = [' ', #9, 'a'..'z', 'A'..'Z', '0'..'9', '_', '.', '^'];
+  WordChar = ['a'..'z', 'A'..'Z', '0'..'9', '_', '#', '$', '%', '&', '^', '.'];
 var
   CurPtr, EndPtr: PChar;
   CurPartPtr: PChar;
@@ -1372,11 +1372,26 @@ var
   end;
 
   procedure ScanToWordEnd;
+  var
+    c: Char;
+    f: Boolean;
   begin
     // include "." (dots). currently there is no need to break expressions like "foo.bar"
     // Include "^" (deref)
-    while (CurPtr < EndPtr) and (CurPtr^ in WordChar)
-    do inc(CurPtr);
+    while (CurPtr < EndPtr) do begin
+      c := CurPtr^;
+      if (c in WordChar) then begin
+        inc(CurPtr);
+      end
+      else if (c in [' ', #9]) then begin
+        f := ((CurPtr-1)^ in ['.', '^']);
+        SkipSpaces;
+        if not(f  or  ((CurPtr < EndPtr) and (CurPtr^ in ['.', '^'])) ) then
+          break;
+      end
+      else
+        break;
+    end;
   end;
 
   procedure ScanToWordStart;
@@ -1480,7 +1495,6 @@ begin
   if CurPtr = EndPtr then exit; // no fixup needed
 
   CurPtr := AText;
-  CurArray := nil;
   CurList:= TGDBExpressionPartList.Create;
 
   while CurPtr < EndPtr do begin
@@ -1497,16 +1511,15 @@ begin
     else
     if CurPtr^ in WordChar
     then begin
-      if CurArray <> nil then CurArray.NeedTypeCast := True;
-      CurArray := nil;
       CurPartPtr := CurPtr;
       ScanToWordEnd;
       CurList.Add(TGDBExpression.CreateSimple(CurPartPtr, CurPtr - CurPartPtr));
+      if CurPtr^ in WordChar then // 2 words => named operator (and/or)
+        AddExpPart(CurList);
     end
     else
     if (CurList.PartCount > 0) and (CurPtr^ = '[')
     then begin
-      if CurArray <> nil then CurArray.NeedTypeCast := True;
       CurArray := TGDBExpressionPartArray.Create(MoveListToCopy(CurList));
       CurList.Add(CurArray);
       while (CurPtr^ = '[') do begin
@@ -1515,12 +1528,12 @@ begin
         CurArray.AddIndex(TGDBExpressionPartArrayIdx.Create(CurPartPtr, CurPtr - CurPartPtr));
         SkipSpaces;
       end;
+      if (CurPtr < EndPtr ) and (CurPtr^ in ['.', '^', '(']) then
+        CurArray.NeedTypeCast := True;
     end
     else
     if (CurList.PartCount > 0) and (CurPtr^ = '(')
     then begin
-      if CurArray <> nil then CurArray.NeedTypeCast := True;
-      CurArray := nil;
       CurCast := TGDBExpressionPartCastCall.Create(MoveListToCopy(CurList));
       CurList.Add(CurCast);
       CurPartPtr := CurPtr;
@@ -1528,7 +1541,6 @@ begin
       CurCast.AddBrackets(TGDBExpressionPartBracketed.Create(CurPartPtr, CurPtr - CurPartPtr));
     end
     else begin
-      CurArray := nil;
       CurPartPtr := CurPtr;
       ScanToWordStart;
       CurList.Add(TGDBExpression.CreateSimple(CurPartPtr, CurPtr - CurPartPtr));

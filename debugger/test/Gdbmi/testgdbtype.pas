@@ -611,13 +611,13 @@ procedure TTestGdbType.TestExpressionBreaker;
     FreeAndNil(b);
     r := nil;
     b := TGDBExpression.Create(e);
-    v := b.NeedValidation(r);
     debugln('##### '+e);
     DumpGExp(b);
+    AssertEquals(e+' as text', e, b.Text);
+    v := b.NeedValidation(r);
     if r <> nil then DumpReq(r);
     debugln;
 
-    AssertEquals(e+' as text', e, b.Text);
   end;
   procedure ContinueExpr(b: TGDBExpression; out r: PGDBPTypeRequest; out v: Boolean);
   begin
@@ -797,6 +797,17 @@ begin
 
   n := 'Cast(foo^.bar[1][foo[2]]+Call[x()]((f+1)^))+bar(1).z.x[1](m)(n)';
   InitExpr(n, b, r, v);
+
+  n := 'abc[1,2,3].x[1]';
+  InitExpr(n, b, r, v);
+
+  n := 'abc[1,2,3].x and abc[1,2][3].y';
+  InitExpr(n, b, r, v);
+
+  n := '1+abc[1,2,3].x and b . cc [ 1 , 2 or x ]';
+  InitExpr(n, b, r, v);
+
+
   b.Free;
 end;
 

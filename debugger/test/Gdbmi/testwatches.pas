@@ -1309,10 +1309,13 @@ begin
       //TDynStatArrayPRec2  = array of array [3..5] of ^TRecForArray2;
 
       (* Array in expression*)
-      //Add(v+'ArgTDynArrayTRec1[0].a+'+v+'ArgTDynArrayTRec1[1].a', wdfDefault, '^181$', skSimple, M_Int, [fTpMtch] );
-      //Add(v+'ArgTDynArrayTRec1[0].a+'+'ArgTDynArrayTRec1[1].a', wdfDefault, '^181$', skSimple, M_Int, [fTpMtch] );
-      //Add('ArgTDynArrayTRec1[0].a+'+v+'ArgTDynArrayTRec1[1].a', wdfDefault, '^181$', skSimple, M_Int, [fTpMtch] );
-      //Add(v+'ArgTDynArrayTRec1[0].a+'+v+'ArgTDynArrayTRec1[1].a', wdfDefault, '^181$', skSimple, M_Int, [fTpMtch] );
+      Add(v+'ArgTDynArrayTRec1[0].a+'+v+'ArgTDynArrayTRec1[1].a', wdfDefault, '^181$', skSimple, M_Int+'|long', [fTpMtch] );
+      Add(v+'ArgTDynArrayTRec1[0].a+'+'ArgTDynArrayTRec1[1].a', wdfDefault, '^181$', skSimple, M_Int+'|long', [fTpMtch] );
+      Add('ArgTDynArrayTRec1[0].a+'+v+'ArgTDynArrayTRec1[1].a', wdfDefault, '^181$', skSimple, M_Int+'|long', [fTpMtch] );
+      Add(v+'ArgTDynArrayTRec1[0].a and '+v+'ArgTDynArrayTRec1[1].a', wdfDefault, '^90$', skSimple, M_Int+'|long', [fTpMtch] );
+
+      Add(v+'ArgTDynDynArrayTRec1[1][1].a+'+v+'ArgTDynArrayPRec1[1]^.a', wdfDefault, '^177$', skSimple, M_Int+'|long', [fTpMtch] );
+      Add(v+'ArgTDynArrayPRec1[1]^.a+'+v+'ArgTDynDynArrayTRec1[1][1].a', wdfDefault, '^177$', skSimple, M_Int+'|long', [fTpMtch] );
 
       {%endregion DYN ARRAY (norm)}
 
