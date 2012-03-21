@@ -706,32 +706,53 @@ var
     lControl: TControl;
     BoundsOffset: TRect;
     ACursor: TCursor;
+    MouseMessage: Word;
   begin
-    if (lWinControl <> nil) and not (csDesigning in lWinControl.ComponentState)
-      and (LOWORD(LParam) = HTCLIENT) then
+    if Assigned(lWinControl) then
     begin
-      ACursor := Screen.Cursor;
-      if ACursor = crDefault then
+      if not (csDesigning in lWinControl.ComponentState) and (LOWORD(LParam) = HTCLIENT) then
       begin
-        Windows.GetCursorPos(Windows.POINT(P));
-        Windows.ScreenToClient(Window, Windows.POINT(P));
-        if GetLCLClientBoundsOffset(lWinControl, BoundsOffset) then
+        ACursor := Screen.Cursor;
+        if ACursor = crDefault then
         begin
-          Dec(P.X, BoundsOffset.Left);
-          Dec(P.Y, BoundsOffset.Top);
+          Windows.GetCursorPos(Windows.POINT(P));
+          Windows.ScreenToClient(Window, Windows.POINT(P));
+          if GetLCLClientBoundsOffset(lWinControl, BoundsOffset) then
+          begin
+            Dec(P.X, BoundsOffset.Left);
+            Dec(P.Y, BoundsOffset.Top);
+          end;
+          // TGraphicControl controls do not get WM_SETCURSOR messages...
+          lControl := lWinControl.ControlAtPos(P, [capfOnlyClientAreas,
+            capfAllowWinControls, capfHasScrollOffset, capfRecursive]);
+          if lControl = nil then
+            lControl := lWinControl;
+          ACursor := lControl.Cursor;
         end;
-        // TGraphicControl controls do not get WM_SETCURSOR messages...
-        lControl := lWinControl.ControlAtPos(P, [capfOnlyClientAreas,
-          capfAllowWinControls, capfHasScrollOffset, capfRecursive]);
-        if lControl = nil then
-          lControl := lWinControl;
-        ACursor := lControl.Cursor;
-      end;
-      if ACursor <> crDefault then
+        if ACursor <> crDefault then
+        begin
+          // DebugLn('Set cursor. Control = ', LControl.Name, ' cur = ',ACursor);
+          Windows.SetCursor(Screen.Cursors[ACursor]);
+          LMessage.Result := 1;
+        end;
+      end
+      else
+      if (LOWORD(LParam) = Word(HTERROR)) then
       begin
-        // DebugLn('Set cursor. Control = ', LControl.Name, ' cur = ',ACursor);
-        Windows.SetCursor(Screen.Cursors[ACursor]);
-        LMessage.Result := 1;
+        MouseMessage := HIWORD(LParam);
+        // a mouse click on a window
+        if ((MouseMessage = WM_LBUTTONDOWN) or
+            (MouseMessage = WM_RBUTTONDOWN) or
+            (MouseMessage = WM_XBUTTONDOWN)) and
+           Assigned(Screen) and Assigned(Screen.ActiveCustomForm) and
+           Screen.ActiveCustomForm.HandleAllocated and
+           (GetForegroundWindow <> Screen.ActiveCustomForm.Handle) then
+        begin
+          // A mouse click is happen on our application window which is not active
+          // we need to active it ourself. This is needed only when click is happen
+          // on disabled window (e.g. ShowModal is called and non modal window is clicked)
+          Win32WidgetSet.AppBringToFront;
+        end;
       end;
     end;
     if LMessage.Result = 0 then
@@ -1005,7 +1026,6 @@ begin
   WinProcess := True;
   NotifyUserInput := False;
 
-  //WriteLn('Msg: ', WM_To_String(Msg), ' ', WndClassName(Window));
   WindowInfo := GetWin32WindowInfo(Window);
   if WindowInfo^.isChildEdit then
   begin
