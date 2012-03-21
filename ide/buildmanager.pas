@@ -1074,7 +1074,7 @@ begin
             if (ANode<>nil) and (not IgnoreAll) then begin
               DebugLn(['TBuildManager.CheckUnitPathForAmbiguousPascalFiles CurUnitName="',CurUnitName,'" CurFilename="',CurFilename,'" OtherUnitName="',PUnitFile(ANode.Data)^.FileUnitName,'" OtherFilename="',PUnitFile(ANode.Data)^.Filename,'"']);
               // pascal unit exists twice
-              Result:=QuestionDlg(lisAmbiguousUnitFound2,
+              Result:=IDEQuestionDialog(lisAmbiguousUnitFound2,
                 Format(lisTheUnitExistsTwiceInTheUnitPathOfThe, [CurUnitName,
                   ContextDescription])
                 +#13
@@ -1083,7 +1083,7 @@ begin
                 +'2. "'+CurFilename+'"'#13
                 +#13
                 +lisHintCheckIfTwoPackagesContainAUnitWithTheSameName,
-                mtWarning, [mrIgnore, mrYesToAll, lisIgnoreAll, mrAbort], 0);
+                mtWarning, [mrIgnore, mrYesToAll, lisIgnoreAll, mrAbort]);
               case Result of
               mrIgnore: ;
               mrYesToAll: IgnoreAll:=true;

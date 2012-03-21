@@ -37,7 +37,7 @@ uses
   KeywordFuncLists, CodeToolManager, FileProcs, DefineTemplates,
   CodeToolsStructs,
   // IDEIntf
-  ProjectIntf, MacroIntf, IDEExternToolIntf, LazIDEIntf,
+  ProjectIntf, MacroIntf, IDEExternToolIntf, LazIDEIntf, IDEDialogs,
   // IDE
   Project, PackageSystem, ExtToolEditDlg, IDEProcs, EnvironmentOpts,
   LazarusIDEStrConsts, PackageDefs, CompilerOptions, TransferMacros, LazConf;
@@ -222,8 +222,8 @@ begin
     AddWarning(Title + ' ' + Warning);
   if ErrorMsg <> '' then
   begin
-    Result := QuestionDlg(lisCCOInvalidSearchPath, Title + ' ' + ErrorMsg, mtError,
-      [mrIgnore, lisCCOSkip, mrAbort], 0);
+    Result := IDEQuestionDialog(lisCCOInvalidSearchPath, Title + ' ' + ErrorMsg, mtError,
+      [mrIgnore, lisCCOSkip, mrAbort]);
   end else
   begin
     if Warning = '' then
@@ -263,9 +263,9 @@ begin
     CheckIfFileIsExecutable(CompilerFilename);
   except
     on e: Exception do begin
-      Result:=QuestionDlg(lisCCOInvalidCompiler,
+      Result:=IDEQuestionDialog(lisCCOInvalidCompiler,
         Format(lisCCOCompilerNotAnExe,[CompilerFilename,#13,E.Message]),
-        mtError,[mrIgnore,lisCCOSkip,mrAbort],0);
+        mtError,[mrIgnore,lisCCOSkip,mrAbort]);
       exit;
     end;
   end;

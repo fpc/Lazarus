@@ -7420,9 +7420,9 @@ begin
        or (EditorOpts.DoNotWarnForFont<>CurFont.Name))
   then begin
     {$IFDEF HasMonoSpaceFonts}
-    DummyResult:=QuestionDlg(lisUEFontWith,
+    DummyResult:=IDEQuestionDialog(lisUEFontWith,
       Format(lisUETheCurre, [#13, #13]),
-      mtWarning, [mrIgnore, mrYesToAll, lisUEDoNotSho], 0);
+      mtWarning, [mrIgnore, mrYesToAll, lisUEDoNotSho]);
     {$ELSE}
     DummyResult:=mrYesToAll;
     {$ENDIF}

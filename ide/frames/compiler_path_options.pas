@@ -407,12 +407,12 @@ begin
       Result:=false;
       Duplicates.Delimiter:=#13;
       Duplicates.StrictDelimiter:=true;
-      if QuestionDlg(lisDuplicateSearchPath,
+      if IDEQuestionDialog(lisDuplicateSearchPath,
         Format(lisTheOtherSourcesContainsADirectoryWhichIsAlreadyInT, [#13#13,
           Duplicates.DelimitedText]),
         mtError,
-        [mrCancel, mrYes, lisRemoveThePathsFromOtherSources, 'IsDefault'],
-        0)=mrYes
+        [mrCancel, mrYes, lisRemoveThePathsFromOtherSources, 'IsDefault']
+        )=mrYes
       then begin
         // remove paths from SrcPath
         OldUnparsedSrcPath:=FCompilerOpts.SrcPath;

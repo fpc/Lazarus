@@ -2505,9 +2505,9 @@ begin
   and ((FindDebuggerClass(EnvironmentOptions.DebuggerConfig.DebuggerClass)=nil)
     or (not FileIsExecutable(EnvironmentOptions.DebuggerFilename)))
   then begin
-    if QuestionDlg(lisDbgMangNoDebuggerSpecified,
+    if IDEQuestionDialog(lisDbgMangNoDebuggerSpecified,
       Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo, [#13]),
-      mtWarning, [mrCancel, mrIgnore, lisDbgMangSetTheBreakpointAnyway], 0)
+      mtWarning, [mrCancel, mrIgnore, lisDbgMangSetTheBreakpointAnyway])
       <>mrIgnore
     then
       exit;
@@ -2525,9 +2525,9 @@ begin
   and ((FindDebuggerClass(EnvironmentOptions.DebuggerConfig.DebuggerClass)=nil)
     or (not FileIsExecutable(EnvironmentOptions.DebuggerFilename)))
   then begin
-    if QuestionDlg(lisDbgMangNoDebuggerSpecified,
+    if IDEQuestionDialog(lisDbgMangNoDebuggerSpecified,
       Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo, [#13]),
-      mtWarning, [mrCancel, mrIgnore, lisDbgMangSetTheBreakpointAnyway], 0)
+      mtWarning, [mrCancel, mrIgnore, lisDbgMangSetTheBreakpointAnyway])
       <>mrIgnore
     then
       exit;

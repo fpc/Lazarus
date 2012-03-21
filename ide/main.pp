@@ -2177,10 +2177,10 @@ procedure TMainIDE.SetupStartProject;
   function AskIfLoadLastFailingProject: boolean;
   begin
     debugln(['AskIfLoadLastFailingProject START']);
-    Result:=QuestionDlg(lisOpenProject2,
+    Result:=IDEQuestionDialog(lisOpenProject2,
       Format(lisAnErrorOccuredAtLastStartupWhileLoadingLoadThisPro, [
         EnvironmentOptions.LastSavedProjectFile, #13, #13]), mtWarning,
-        [mrYes, lisOpenProjectAgain, mrNoToAll, lisStartWithANewProject], 0)=
+        [mrYes, lisOpenProjectAgain, mrNoToAll, lisStartWithANewProject])=
           mrYes;
     debugln(['AskIfLoadLastFailingProject END ',dbgs(Result)]);
   end;
@@ -3017,10 +3017,10 @@ begin
   end;
   if NeedSave = 1 then begin
     Ed := TSourceEditor(SourceEditorManager.UniqueSourceEditors[Idx]);
-    r := QuestionDlg(lisSourceModified,
+    r := IDEQuestionDialog(lisSourceModified,
                      Format(lisSourceOfPageHasChangedSave, ['"', Ed.PageName, '"']),
                      mtConfirmation,
-                     [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrAbort], 0);
+                     [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrAbort]);
     case r of
       mrYes: DoSaveEditorFile(Ed, [sfCheckAmbiguousFiles]);
       mrNo: ; // don't save
@@ -3033,12 +3033,12 @@ begin
       if CheckEditorNeedsSave(SourceEditorManager.UniqueSourceEditors[i], False) then begin
         dec(NeedSave);
         Ed := TSourceEditor(SourceEditorManager.UniqueSourceEditors[i]);
-        r := QuestionDlg(lisSourceModified,
+        r := IDEQuestionDialog(lisSourceModified,
                          Format(lisSourceOfPageHasChangedSaveExtended, ['"', Ed.PageName, '"', NeedSave]),
                          mtConfirmation,
                          [mrYes, lisMenuSave, mrAll, lisSaveAll,
                           mrNo, lisDiscardChanges, mrIgnore, lisDiscardChangesAll,
-                          mrAbort], 0);
+                          mrAbort]);
         case r of
           mrYes: DoSaveEditorFile(Ed, [sfCheckAmbiguousFiles]);
           mrNo: ; // don't save
@@ -3104,10 +3104,10 @@ begin
     end;
     if NeedSave = 1 then begin
       Ed := ActiveSrcNoteBook.Editors[Idx];
-      r := QuestionDlg(lisSourceModified,
+      r := IDEQuestionDialog(lisSourceModified,
                        Format(lisSourceOfPageHasChangedSave, ['"', Ed.PageName, '"']),
                        mtConfirmation,
-                       [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrAbort], 0);
+                       [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrAbort]);
       case r of
         mrYes: DoSaveEditorFile(Ed, [sfCheckAmbiguousFiles]);
         mrNo: ; // don't save
@@ -3120,12 +3120,12 @@ begin
         if CheckEditorNeedsSave(ActiveSrcNoteBook.Editors[i], True) then begin
           dec(NeedSave);
           Ed := ActiveSrcNoteBook.Editors[i];
-          r := QuestionDlg(lisSourceModified,
+          r := IDEQuestionDialog(lisSourceModified,
                            Format(lisSourceOfPageHasChangedSaveExtended, ['"', Ed.PageName, '"', NeedSave]),
                            mtConfirmation,
                            [mrYes, lisMenuSave, mrAll, lisSaveAll,
                             mrNo, lisDiscardChanges, mrIgnore, lisDiscardChangesAll,
-                            mrAbort], 0);
+                            mrAbort]);
           case r of
             mrYes: DoSaveEditorFile(Ed, [sfCheckAmbiguousFiles]);
             mrNo: ; // don't save
@@ -3829,9 +3829,9 @@ begin
     itDebugger:
       begin
         if (rfInteractive in AFlags)
-        and (QuestionDlg(lisStopDebugging,
+        and (IDEQuestionDialog(lisStopDebugging,
             lisStopTheDebugging, mtConfirmation,
-            [mrYes, lisMenuStop, mrCancel, lisContinue], 0) <> mrYes)
+            [mrYes, lisMenuStop, mrCancel, lisContinue]) <> mrYes)
         then exit;
         if (DebugBoss.DoStopProject = mrOK) and (ToolStatus = itDebugger) and (rfCloseOnDone in AFlags) then
           FWaitForClose := True;
@@ -4177,19 +4177,19 @@ begin
             // or it is not yet a lazarus project ;)
             LPIFilename:=ChangeFileExt(AFilename,'.lpi');
             if FileExistsUTF8(LPIFilename) then begin
-              if QuestionDlg(lisProjectInfoFileDetected,
+              if IDEQuestionDialog(lisProjectInfoFileDetected,
                   Format(lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarusP, [
                   AFilename]), mtConfirmation,
-                  [mrOk, lisOpenProject2, mrCancel], 0)
+                  [mrOk, lisOpenProject2, mrCancel])
                 <>mrOk
               then
                 exit;
               AFilename:=LPIFilename;
             end else begin
-              if QuestionDlg(lisFileHasNoProject,
+              if IDEQuestionDialog(lisFileHasNoProject,
                 Format(lisTheFileIsNotALazarusProjectCreateANewProjectForThi, [
                   '"', AFilename, '"', #13, '"'+lowercase(SourceType)+'"']),
-                mtConfirmation, [mrYes, lisCreateProject, mrCancel], 0)<>mrYes
+                mtConfirmation, [mrYes, lisCreateProject, mrCancel])<>mrYes
               then
                 exit;
               DoCreateProjectForProgram(PreReadBuf);
@@ -4219,11 +4219,10 @@ begin
 
   // check project
   if SomethingOfProjectIsModified then begin
-    DlgResult:=QuestionDlg(lisProjectChanged,
+    DlgResult:=IDEQuestionDialog(lisProjectChanged,
       Format(lisSaveChangesToProject, [Project1.GetTitleOrName]), mtConfirmation,
       [mrYes, lisMenuSave, mrNoToAll, lisDiscardChanges,
-       mrAbort, lisDoNotCloseTheProject],
-      0);
+       mrAbort, lisDoNotCloseTheProject]);
     case DlgResult of
     mrYes:
       if not (DoSaveProject([]) in [mrOk,mrIgnore]) then exit;
@@ -6004,11 +6003,11 @@ begin
           if LFMCode=nil then begin
             LFMCode:=CodeToolBoss.CreateFile(LFMFilename);
             if LFMCode=nil then begin
-              Result:=QuestionDlg(lisUnableToCreateFile,
+              Result:=IDEQuestionDialog(lisUnableToCreateFile,
                 Format(lisUnableToCreateFile2, ['"', LFMFilename, '"']),
                 mtWarning, [mrIgnore, lisContinueWithoutLoadingForm,
                            mrCancel, lisCancelLoadingUnit,
-                           mrAbort, lisAbortAllLoading], 0);
+                           mrAbort, lisAbortAllLoading]);
               if Result<>mrIgnore then exit;
             end;
           end;
@@ -6530,12 +6529,11 @@ var
 begin
   if ofProjectLoading in Flags then begin
     // this is a file, that was loaded last time, but was removed from disk
-    Result:=QuestionDlg(lisFileNotFound,
+    Result:=IDEQuestionDialog(lisFileNotFound,
       Format(lisTheFileWasNotFoundIgnoreWillGoOnLoadingTheProject, ['"',
         AFilename, '"', #13, #13, #13]),
       mtError, [mrIgnore, lisSkipFileAndContinueLoading,
-                mrAbort, lisAbortLoadingProject],
-      0);
+                mrAbort, lisAbortLoadingProject]);
     exit;
   end;
 
@@ -6607,10 +6605,10 @@ begin
         // or it is not yet a lazarus project ;)
         LPIFilename:=ChangeFileExt(AFilename,'.lpi');
         if FileExistsUTF8(LPIFilename) then begin
-          if QuestionDlg(lisProjectInfoFileDetected,
+          if IDEQuestionDialog(lisProjectInfoFileDetected,
             Format(lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarusP, [
               AFilename]), mtConfirmation,
-              [mrOk, lisOpenProject2, mrCancel, lisOpenTheFileAsNormalSource], 0)
+              [mrOk, lisOpenProject2, mrCancel, lisOpenTheFileAsNormalSource])
             =mrOk then
           begin
             Result:=DoOpenProjectFile(LPIFilename,[]);
@@ -7405,14 +7403,14 @@ var
       Project1.ConvertToLPIFilename(UsingFilename);
       UsedFilename:=UnitCode.Filename;
       Project1.ConvertToLPIFilename(UsedFilename);
-      TheModalResult:=QuestionDlg(lisCodeTemplError,
+      TheModalResult:=IDEQuestionDialog(lisCodeTemplError,
         Format(lisClassConflictsWithLfmFileTheUnitUsesTheUnitWhic, [#13,
           UsingFilename, #13, UsedFilename, #13, AComponentClassName, #13, #13,
           #13, AComponentClassName]),
         mtError,
           [mrCancel, lisCancelLoadingThisComponent,
            mrAbort, lisAbortWholeLoading,
-           mrIgnore, lisIgnoreUseTFormAsAncestor], 0);
+           mrIgnore, lisIgnoreUseTFormAsAncestor]);
       exit;
     end;
     // there is no .lfm file
@@ -7560,11 +7558,11 @@ begin
 
   // check for circles
   if AnUnitInfo.LoadingComponent then begin
-    Result:=QuestionDlg(lisCodeTemplError, Format(
+    Result:=IDEQuestionDialog(lisCodeTemplError, Format(
       lisUnableToLoadTheComponentClassBecauseItDependsOnIts, ['"',
       AComponentClassName, '"']),
       mtError, [mrCancel, lisCancelLoadingThisComponent,
-               mrAbort, lisAbortWholeLoading], 0);
+               mrAbort, lisAbortWholeLoading]);
     exit;
   end;
 
@@ -7619,12 +7617,12 @@ begin
     end;
 
     // not found => tell the user
-    Result:=QuestionDlg(lisCodeTemplError,
+    Result:=IDEQuestionDialog(lisCodeTemplError,
       Format(lisUnableToFindTheLfmFileOfComponentClassNeededByUnit, [
         AComponentClassName, #13, #13, AnUnitInfo.Filename]),
       mtError, [mrCancel, lisCancelLoadingThisComponent,
                mrAbort, lisAbortWholeLoading,
-               mrIgnore, lisIgnoreUseTFormAsAncestor], 0);
+               mrIgnore, lisIgnoreUseTFormAsAncestor]);
   finally
     AnUnitInfo.LoadingComponent:=false;
   end;
@@ -9359,9 +9357,9 @@ begin
           AText:=Format(lisSourceOfPageHasChangedSave, ['"',
             TSourceEditor(AEditor).PageName, '"']);
         ACaption:=lisSourceModified;
-        Result:=QuestionDlg(ACaption, AText,
+        Result:=IDEQuestionDialog(ACaption, AText,
             mtConfirmation, [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrAbort
-              ], 0);
+              ]);
       end else
         Result:=mrYes;
       if Result=mrYes then begin
@@ -9563,9 +9561,9 @@ begin
     // check if file is a lazarus project (.lpi)
     if (CompareFileExt(AFilename,'.lpi',false)=0) then begin
       case
-        QuestionDlg(
+        IDEQuestionDialog(
           lisOpenProject, Format(lisOpenTheProject, [AFilename]), mtConfirmation,
-          [mrYes, lisOpenProject2, mrNoToAll, lisOpenAsXmlFile, mrCancel], 0)
+          [mrYes, lisOpenProject2, mrNoToAll, lisOpenAsXmlFile, mrCancel])
       of
         mrYes: begin
           Result:=DoOpenProjectFile(AFilename,[ofAddToRecent]);
@@ -9579,9 +9577,9 @@ begin
     // check if file is a lazarus package (.lpk)
     if (CompareFileExt(AFilename,'.lpk',false)=0) then begin
       case
-        QuestionDlg(
+        IDEQuestionDialog(
           lisOpenPackage, Format(lisOpenThePackage, [AFilename]), mtConfirmation,
-          [mrYes, lisCompPalOpenPackage, mrNoToAll, lisOpenAsXmlFile, mrCancel], 0)
+          [mrYes, lisCompPalOpenPackage, mrNoToAll, lisOpenAsXmlFile, mrCancel])
       of
         mrYes: begin
           Result:=PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent],CanAbort);
@@ -11076,9 +11074,9 @@ begin
     if Result=mrAbort then exit;
   end;
   if not FileReadable then begin
-    Result:=QuestionDlg(lisUnableToReadFile,
+    Result:=IDEQuestionDialog(lisUnableToReadFile,
       Format(lisUnableToReadFilename, ['"', AFilename, '"']),
-      mtError, [mrCancel, lisSkipFile, mrAbort, lisAbortAllLoading], 0);
+      mtError, [mrCancel, lisSkipFile, mrAbort, lisAbortAllLoading]);
     exit;
   end;
 
@@ -13382,7 +13380,7 @@ begin
     InvalidateFileStateCache;
 
     if Project1.HasProjectInfoFileChangedOnDisk then begin
-      if QuestionDlg(lisProjectChangedOnDisk,
+      if IDEQuestionDialog(lisProjectChangedOnDisk,
         Format(lisTheProjectInformationFileHasChangedOnDisk, ['"',
           Project1.ProjectInfoFile, '"', #13]), mtConfirmation, [mrYes,
             lisReopenProject, mrIgnore], '')
@@ -17334,9 +17332,8 @@ begin
   end;
 
   CloseAction := caHide;
-  case QuestionDlg(lisCloseAllTabsTitle, lisCloseAllTabsQuestion, mtConfirmation,
-                  [mrYes, lisCloseAllTabsClose, mrNo, lisCloseAllTabsHide, mrCancel],
-                  0)
+  case IDEQuestionDialog(lisCloseAllTabsTitle, lisCloseAllTabsQuestion, mtConfirmation,
+                  [mrYes, lisCloseAllTabsClose, mrNo, lisCloseAllTabsHide, mrCancel])
   of
     mrYes : begin
         SourceEditorManager.IncUpdateLock;

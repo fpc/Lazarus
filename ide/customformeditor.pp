@@ -47,8 +47,8 @@ uses
   // IDE
   LazarusIDEStrConsts, ControlSelection, Project, JITForms, MainIntf,
   CustomNonFormDesigner, NonControlDesigner, FrameDesigner, ComponentReg,
-  IDEProcs, ComponentEditors, IDEOptionsIntf, KeyMapping, EditorOptions,
-  EnvironmentOpts, DesignerProcs;
+  IDEProcs, ComponentEditors, IDEOptionsIntf, IDEDialogs, KeyMapping,
+  EditorOptions, EnvironmentOpts, DesignerProcs;
 
 const
   OrdinalTypes = [tkInteger,tkChar,tkEnumeration,tkbool];
@@ -1832,7 +1832,6 @@ var
   aCaption, aMsg: string;
   DlgType: TMsgDlgType;
   Buttons: TMsgDlgButtons;
-  HelpCtx: Longint;
   JITComponentList: TJITComponentList;
   StreamClass: TComponentClass;
   AnUnitInfo: TUnitInfo;
@@ -1844,8 +1843,7 @@ begin
   aMsg:='';
   DlgType:=mtError;
   Buttons:=[mbCancel];
-  HelpCtx:=0;
-  
+
   // get current lfm filename
   LFMFilename:='';
   if (JITComponentList.CurReadStreamClass<>nil)
@@ -1895,14 +1893,14 @@ begin
       end;
   end;
   if Buttons=[mbIgnore,mbCancel] then begin
-    Action:=QuestionDlg(aCaption,aMsg,DlgType,
+    Action:=IDEQuestionDialog(aCaption,aMsg,DlgType,
       [mrIgnore, lisCFEContinueLoading,
        mrCancel, lisCFECancelLoadingThisResource,
-       mrAbort, lisCFEStopAllLoading], HelpCtx);
+       mrAbort, lisCFEStopAllLoading]);
   end else begin
-    Action:=QuestionDlg(aCaption,aMsg,DlgType,
+    Action:=IDEQuestionDialog(aCaption,aMsg,DlgType,
       [mrCancel, lisCFECancelLoadingThisResource,
-       mrAbort, lisCFEStopAllLoading], HelpCtx);
+       mrAbort, lisCFEStopAllLoading]);
   end;
 end;
 

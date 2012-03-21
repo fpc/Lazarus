@@ -343,12 +343,11 @@ begin
     if s = '' then
       Exit(mrOk);
 
-    MsgResult:=QuestionDlg(lisMissingEvents,
+    MsgResult:=IDEQuestionDialog(lisMissingEvents,
       Format(lisTheFollowingMethodsUsedByAreNotInTheSourceRemoveTh, [DbgSName(
         RootComponent), #13, PascalBuffer.Filename, #13, #13, s, #13])
        ,mtConfirmation,
-       [mrYes, lisRemoveThem, mrIgnore, lisKeepThemAndContinue, mrCancel],
-         0);
+       [mrYes, lisRemoveThem, mrIgnore, lisKeepThemAndContinue, mrCancel]);
      if MsgResult=mrYes then begin
        ClearDanglingEvents(ListOfPInstancePropInfo);
        ComponentModified:=true;

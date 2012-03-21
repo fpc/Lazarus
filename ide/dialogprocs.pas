@@ -440,10 +440,10 @@ begin
   end else begin
     // file already exists
     if WarnOverwrite then begin
-      Result:=QuestionDlg(lisOverwriteFile,
+      Result:=IDEQuestionDialog(lisOverwriteFile,
         Format(lisAFileAlreadyExistsReplaceIt, ['"', AFilename, '"', #13]),
         mtConfirmation,
-        [mrYes, lisOverwriteFileOnDisk, mbCancel], 0);
+        [mrYes, lisOverwriteFileOnDisk, mbCancel]);
       if Result=mrCancel then exit;
     end;
     if CreateBackup then begin
@@ -513,10 +513,10 @@ begin
   try
     TargetFilename:=ReadAllLinks(Filename,true);
     if TargetFilename<>Filename then begin
-      case QuestionDlg(lisFileIsSymlink,
+      case IDEQuestionDialog(lisFileIsSymlink,
         Format(lisTheFileIsASymlinkOpenInstead, ['"', Filename, '"', #13, #13,
           '"', TargetFilename, '"']),
-        mtConfirmation, [mbYes, lisOpenTarget, mbNo, lisOpenSymlink, mbCancel], 0)
+        mtConfirmation, [mbYes, lisOpenTarget, mbNo, lisOpenSymlink, mbCancel])
       of
       mrYes: Filename:=TargetFilename;
       mrNo:  ;
@@ -709,9 +709,9 @@ begin
   ErrMsg:=CodeToolBoss.ErrorMessage;
   LazarusIDE.DoJumpToCodeToolBossError;
   if Ask then begin
-    Result:=QuestionDlg(lisCCOErrorCaption,
+    Result:=IDEQuestionDialog(lisCCOErrorCaption,
       Format(lisTheCodetoolsFoundAnError, [#13, ErrMsg, #13]),
-      mtWarning, [mrIgnore, lisIgnoreAndContinue, mrAbort], 0);
+      mtWarning, [mrIgnore, lisIgnoreAndContinue, mrAbort]);
     if Result=mrIgnore then Result:=mrCancel;
   end else begin
     Result:=mrCancel;

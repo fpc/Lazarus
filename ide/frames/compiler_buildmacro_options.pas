@@ -33,8 +33,9 @@ uses
   StdCtrls, Grids, LCLType, Buttons, ExtCtrls, Dialogs, ComCtrls, Menus,
   AvgLvlTree, SynEdit, SynHighlighterPas, SynEditKeyCmds, SynCompletion,
   KeywordFuncLists, CodeToolsCfgScript, IDEImagesIntf, IDECommands, ProjectIntf,
-  PackageIntf, IDEOptionsIntf, MacroIntf, CompilerOptions, EditorOptions, CompOptsIntf,
-  LazarusIDEStrConsts, CompOptsModes, SourceSynEditor, PackageDefs;
+  PackageIntf, IDEOptionsIntf, MacroIntf, CompilerOptions, EditorOptions,
+  CompOptsIntf, IDEDialogs, LazarusIDEStrConsts, CompOptsModes, SourceSynEditor,
+  PackageDefs;
 
 type
   TCBMNodeType = (
@@ -390,10 +391,10 @@ begin
         if (Prefix<>'') and (SysUtils.CompareText(Prefix,copy(S,1,length(Prefix)))<>0)
         then  begin
           BetterName:=GetMacroNamePrefix(cbmpMedium)+S;
-          DlgResult:=QuestionDlg(lisCCOWarningCaption,
+          DlgResult:=IDEQuestionDialog(lisCCOWarningCaption,
             Format(lisTheMacroDoesNotBeginWith, [S, Prefix]),
             mtWarning, [mrCancel, mrYes, Format(lisRenameTo, [BetterName]),
-              mrIgnore], 0);
+              mrIgnore]);
           if DlgResult=mrIgnore then begin
           end else if DlgResult=mrYes then
             S:=BetterName

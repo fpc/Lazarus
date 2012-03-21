@@ -4592,10 +4592,10 @@ begin
     if (not Quiet) and DirPathExistsCached(PkgLinks.GetGlobalLinkDirectory)
     then begin
       // tell the user
-      CurResult:=QuestionDlg(lisPkgSysPackageFileNotFound,
+      CurResult:=IDEQuestionDialog(lisPkgSysPackageFileNotFound,
         Format(lisPkgSysThePackageIsInstalledButNoValidPackageFileWasFound, ['"',
           BrokenPackage.Name, '"', #13]),
-        mtError,[mrOk,mrYesToAll,'Skip these warnings'],0);
+        mtError,[mrOk,mrYesToAll,'Skip these warnings']);
       if CurResult=mrYesToAll then
         Quiet:=true;
     end;
