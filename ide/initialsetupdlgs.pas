@@ -301,7 +301,7 @@ begin
   Result:=nil;
 
   // first check the value in the options
-  if CheckDir(EnvironmentOptions.LazarusDirectory,Result) then exit;
+  if CheckDir(EnvironmentOptions.GetParsedLazarusDirectory,Result) then exit;
 
   // then check the directory of the executable
   Dir:=ProgramDirectory(true);
@@ -348,10 +348,10 @@ var
   BestDir: TSDFileInfo;
   List: TObjectList;
 begin
-  Dir:=EnvironmentOptions.LazarusDirectory;
+  Dir:=EnvironmentOptions.GetParsedLazarusDirectory;
   Quality:=CheckLazarusDirectoryQuality(Dir,Note);
   if Quality<>sddqInvalid then exit;
-  debugln(['SetupLazarusDirectory: The Lazarus directory "',Dir,'" is invalid (Error: ',Note,'). Searching a proper one ...']);
+  debugln(['SetupLazarusDirectory: The Lazarus directory "',EnvironmentOptions.LazarusDirectory,'" is invalid (Error: ',Note,'). Searching a proper one ...']);
   List:=SearchLazarusDirectoryCandidates(true);
   try
     BestDir:=nil;
@@ -579,7 +579,7 @@ begin
   Quality:=CheckCompilerQuality(CompFile,Note,'');
   if Quality<>sddqInvalid then exit;
   debugln(['SetupCompilerFilename: The compiler path "',CompFile,'" is invalid (Error: ',Note,'). Searching a proper one ...']);
-  List:=SearchCompilerCandidates(true,EnvironmentOptions.LazarusDirectory,
+  List:=SearchCompilerCandidates(true,EnvironmentOptions.GetParsedLazarusDirectory,
                                  CodeToolBoss.FPCDefinesCache.TestFilename);
   try
     BestDir:=nil;

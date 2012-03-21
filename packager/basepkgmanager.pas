@@ -231,7 +231,7 @@ begin
     end else if DepOwner is TProject then begin
       Directory:=TProject(DepOwner).ProjectDirectory;
     end else if DepOwner=PkgBoss then begin
-      Directory:=EnvironmentOptions.LazarusDirectory;
+      Directory:=EnvironmentOptions.GetParsedLazarusDirectory;
     end else begin
       Directory:=''
     end;

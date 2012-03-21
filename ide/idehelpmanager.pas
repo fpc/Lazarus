@@ -943,7 +943,7 @@ begin
           or (URLPath='lazdoc.css')
           then begin
             OpenFile(Result,
-              EnvironmentOptions.LazarusDirectory+SetDirSeparators('/docs/'+URLPath),
+              EnvironmentOptions.GetParsedLazarusDirectory+SetDirSeparators('/docs/'+URLPath),
               true);
           end;
         end;
@@ -1085,7 +1085,7 @@ begin
   if (BasePathObject is THelpBasePathObject) then
     Result:=THelpBasePathObject(BasePathObject).BasePath
   else if (BasePathObject=HelpBoss) or (BasePathObject=MainIDEInterface) then
-    Result:=EnvironmentOptions.LazarusDirectory
+    Result:=EnvironmentOptions.GetParsedLazarusDirectory
   else if BasePathObject is TProject then
     Result:=TProject(BasePathObject).ProjectDirectory
   else if BasePathObject is TLazPackage then

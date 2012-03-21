@@ -1466,7 +1466,7 @@ end;
 
 procedure TPkgManager.LoadAutoInstallPackages;
 begin
-  FLastLazarusSrcDir:=EnvironmentOptions.LazarusDirectory;
+  FLastLazarusSrcDir:=EnvironmentOptions.GetParsedLazarusDirectory;
   PackageGraph.LoadAutoInstallPackages(
     MiscellaneousOptions.BuildLazProfiles.StaticAutoInstallPackages);
 end;
@@ -2063,7 +2063,7 @@ end;
 
 function TPkgManager.ShowConfigureCustomComponents: TModalResult;
 begin
-  Result:=ShowConfigureCustomComponentDlg(EnvironmentOptions.LazarusDirectory);
+  Result:=ShowConfigureCustomComponentDlg(EnvironmentOptions.GetParsedLazarusDirectory);
 end;
 
 function TPkgManager.DoNewPackage: TModalResult;
@@ -2523,7 +2523,7 @@ var
 begin
   if PackageGraph=nil then exit;
   OldLazarusSrcDir:=FLastLazarusSrcDir;
-  NewLazarusSrcDir:=EnvironmentOptions.LazarusDirectory;
+  NewLazarusSrcDir:=EnvironmentOptions.GetParsedLazarusDirectory;
   FLastLazarusSrcDir:=NewLazarusSrcDir;
   if CompareFilenames(OldLazarusSrcDir,NewLazarusSrcDir)=0 then exit;
   debugln(['TPkgManager.LazarusSrcDirChanged loading new lpl files from ',PkgLinks.GetGlobalLinkDirectory]);
@@ -3706,7 +3706,7 @@ begin
 
     // check consistency
     Result:=CheckPackageGraphForCompilation(APackage,nil,
-                                     EnvironmentOptions.LazarusDirectory,false);
+                            EnvironmentOptions.GetParsedLazarusDirectory,false);
     if Result<>mrOk then exit;
     
     // get all required packages, which will also be auto installed
@@ -4234,7 +4234,7 @@ begin
 
     // check consistency
     Result:=CheckPackageGraphForCompilation(nil,Dependencies,
-                                EnvironmentOptions.LazarusDirectory,false);
+                            EnvironmentOptions.GetParsedLazarusDirectory,false);
     if Result<>mrOk then exit;
     //DebugLn(['TPkgManager.DoCompileAutoInstallPackages LCLUnitPath=',PackageGraph.LCLPackage.CompilerOptions.GetUnitPath(true)]);
 

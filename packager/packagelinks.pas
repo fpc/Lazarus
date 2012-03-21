@@ -297,9 +297,8 @@ end;
 function TPackageLink.GetEffectiveFilename: string;
 begin
   Result:=Filename;
-  if (not FilenameIsAbsolute(Result))
-  and (EnvironmentOptions.LazarusDirectory<>'') then
-    Result:=TrimFilename(EnvironmentOptions.LazarusDirectory+PathDelim+Result);
+  if (not FilenameIsAbsolute(Result)) then
+    Result:=TrimFilename(EnvironmentOptions.GetParsedLazarusDirectory+PathDelim+Result);
 end;
 
 procedure TPackageLink.Reference;
@@ -361,7 +360,7 @@ end;
 
 function TPackageLinks.GetGlobalLinkDirectory: string;
 begin
-  Result:=AppendPathDelim(EnvironmentOptions.LazarusDirectory)
+  Result:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)
                                   +'packager'+PathDelim+'globallinks'+PathDelim;
 end;
 
@@ -471,9 +470,8 @@ begin
       IDEMacros.SubstituteMacros(NewFilename);
       //debugln(['TPackageLinks.UpdateGlobalLinks EnvironmentOptions.LazarusDirectory=',EnvironmentOptions.LazarusDirectory]);
       NewFilename:=TrimFilename(NewFilename);
-      if (EnvironmentOptions.LazarusDirectory<>'')
-      and (FileIsInDirectory(NewFilename,EnvironmentOptions.LazarusDirectory)) then
-        NewFilename:=CreateRelativePath(NewFilename,EnvironmentOptions.LazarusDirectory);
+      if (FileIsInDirectory(NewFilename,EnvironmentOptions.GetParsedLazarusDirectory)) then
+        NewFilename:=CreateRelativePath(NewFilename,EnvironmentOptions.GetParsedLazarusDirectory);
       NewPkgLink.Filename:=NewFilename;
       //debugln('TPackageLinks.UpdateGlobalLinks PkgName="',NewPkgLink.Name,'" ',
       //  ' PkgVersion=',NewPkgLink.Version.AsString,
@@ -656,7 +654,7 @@ begin
   if not NeedSaveUserLinks(ConfigFilename) then exit;
   //DebugLn(['TPackageLinks.SaveUserLinks saving ... ',ConfigFilename,' Modified=',Modified,' UserLinkLoadTimeValid=',UserLinkLoadTimeValid,' ',FileAgeUTF8(ConfigFilename)=UserLinkLoadTime]);
 
-  LazSrcDir:=EnvironmentOptions.LazarusDirectory;
+  LazSrcDir:=EnvironmentOptions.GetParsedLazarusDirectory;
 
   XMLConfig:=nil;
   try

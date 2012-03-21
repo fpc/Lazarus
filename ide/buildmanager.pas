@@ -551,9 +551,9 @@ end;
 
 procedure TBuildManager.UpdateEnglishErrorMsgFilename;
 begin
-  if EnvironmentOptions.LazarusDirectory<>'' then begin
+  if EnvironmentOptions.GetParsedLazarusDirectory<>'' then begin
     CodeToolBoss.DefinePool.EnglishErrorMsgFilename:=
-      AppendPathDelim(EnvironmentOptions.LazarusDirectory)+
+      AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)+
         SetDirSeparators('components/codetools/fpc.errore.msg');
     CodeToolBoss.FPCDefinesCache.ExtraOptions:=
                           '-Fr'+CodeToolBoss.DefinePool.EnglishErrorMsgFilename;

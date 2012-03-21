@@ -236,7 +236,7 @@ begin
 
     // clean up
     if (Options.IdeBuildMode=bmCleanAllBuild) and ([blfDontCleanAll,blfOnlyIDE]*Flags=[]) then begin
-      WorkingDirectory:=EnvironmentOptions.LazarusDirectory;
+      WorkingDirectory:=EnvironmentOptions.GetParsedLazarusDirectory;
       if not CheckDirectoryWritable(WorkingDirectory) then exit(mrCancel);
 
       // clean lazarus source directories
@@ -255,7 +255,7 @@ begin
 
     // build IDE
     if not (blfDontBuild in Flags) then begin
-      WorkingDirectory:=EnvironmentOptions.LazarusDirectory;
+      WorkingDirectory:=EnvironmentOptions.GetParsedLazarusDirectory;
       if blfDontCleanAll in Flags then
         Options.IdeBuildMode:=bmBuild;
       Tool.Title:=lisIDE;

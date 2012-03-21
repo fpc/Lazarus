@@ -222,12 +222,15 @@ begin
   sl.Add('Primary config directory='+GetPrimaryConfigPath);
   sl.Add('Secondary config directory='+GetSecondaryConfigPath);
   sl.Add('LazarusDirectory='+EnvironmentOptions.LazarusDirectory);
+  sl.Add('Real LazarusDirectory='+EnvironmentOptions.GetParsedLazarusDirectory);
   sl.Add('CompilerFilename='+EnvironmentOptions.CompilerFilename);
   sl.Add('Real CompilerFilename='+EnvironmentOptions.GetParsedCompilerFilename);
-  sl.Add('CompilerMessagesFilename='+EnvironmentOptions.GetParsedCompilerMessagesFilename);
+  sl.Add('CompilerMessagesFilename='+EnvironmentOptions.CompilerMessagesFilename);
+  sl.Add('Real CompilerMessagesFilename='+EnvironmentOptions.GetParsedCompilerMessagesFilename);
   sl.Add('FPC source directory='+EnvironmentOptions.FPCSourceDirectory);
   sl.Add('Real FPC source directory='+EnvironmentOptions.GetParsedFPCSourceDirectory);
-  sl.Add('Test directory='+EnvironmentOptions.GetParsedTestBuildDirectory);
+  sl.Add('Test directory='+EnvironmentOptions.TestBuildDirectory);
+  sl.Add('Real Test directory='+EnvironmentOptions.GetParsedTestBuildDirectory);
   sl.Add('');
 end;
 

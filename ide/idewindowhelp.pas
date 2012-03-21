@@ -111,7 +111,7 @@ implementation
 
 function GetIDEWindowHelpFilename: string;
 begin
-  Result:=AppendPathDelim(EnvironmentOptions.LazarusDirectory)
+  Result:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)
            +SetDirSeparators(IDEWindowHelpTreeFile);
 end;
 

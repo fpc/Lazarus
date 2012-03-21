@@ -204,7 +204,7 @@ begin
     DirectoryComboBox.Items.Clear;
     DirectoryComboBox.Text:='';
     RootDirectoryEdit.Text:='';
-    AllDirs:=FindAllDirectories(EnvironmentOptions.LazarusDirectory);
+    AllDirs:=FindAllDirectories(EnvironmentOptions.GetParsedLazarusDirectory);
     try
       for i:=0 to AllDirs.Count-1 do begin
         LastDir:=ExtractFileName(AllDirs[i]);

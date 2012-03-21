@@ -845,7 +845,7 @@ begin
         Application.GetOptionValue('language'));
       EnvironmentOptions.LanguageID:=Application.GetOptionValue('language');
     end;
-    TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
+    TranslateResourceStrings(EnvironmentOptions.GetParsedLazarusDirectory,
                              EnvironmentOptions.LanguageID);
     TExternalToolList(ExternalTools).OnNeedsOutputFilter:=@OnExtToolNeedsOutputFilter;
     TExternalToolList(ExternalTools).OnFreeOutputFilter:=@OnExtToolFreeOutputFilter;

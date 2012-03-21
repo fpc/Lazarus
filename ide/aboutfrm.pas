@@ -243,7 +243,7 @@ begin
   Contributors.Align:=alClient;
 
   ContributorsFileName:=
-    AppendPathDelim(EnvironmentOptions.LazarusDirectory)
+    AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)
     +'docs'+PathDelim+'Contributors.txt';
   //writeln('TAboutForm.LoadContributors ',FileExistsUTF8(ContributorsFileName),' ',ContributorsFileName);
 
@@ -263,7 +263,7 @@ begin
   Acknowledgements.Align:=alClient;
 
   AcknowledgementsFileName:=
-    AppendPathDelim(EnvironmentOptions.LazarusDirectory)
+    AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)
     +'docs'+PathDelim+'acknowledgements.txt';
 
   if FileExistsUTF8(AcknowledgementsFileName) then

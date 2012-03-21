@@ -1211,7 +1211,7 @@ begin
         FPDocPackageName:=GetFPDocPackageNameByOwner(APackage);
       end else if NewOwner=LazarusHelp then begin
         // in IDE
-        BaseDir:=EnvironmentOptions.LazarusDirectory;
+        BaseDir:=EnvironmentOptions.GetParsedLazarusDirectory;
         FPDocPaths:=GetIDESrcFPDocPath;
         FPDocPackageName:=IDEProjectName;
       end else begin
@@ -1757,7 +1757,7 @@ var
   LazDir: String;
 begin
   Result:='';
-  LazDir:=AppendPathDelim(EnvironmentOptions.LazarusDirectory);
+  LazDir:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory);
   if (LazDir='') or not FilenameIsAbsolute(LazDir) then exit;
   Result:=LazDir+SetDirSeparators('docs/xml/ide/');
 end;
@@ -1767,7 +1767,7 @@ var
   LazDir: String;
 begin
   Result:=false;
-  LazDir:=AppendPathDelim(EnvironmentOptions.LazarusDirectory);
+  LazDir:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory);
   if (LazDir='') or not FilenameIsAbsolute(LazDir) then exit;
   if not FileIsInPath(SrcFilename,LazDir) then exit;
   // check if SrcFilename is in one of the IDE directories or sub directories

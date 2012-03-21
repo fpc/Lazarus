@@ -1007,7 +1007,6 @@ var
   Cfg: TXMLOptionsStorage;
   EventType: TDBGEventType;
   NodeName: String;
-  s: String;
 begin
   Cfg:=nil;
   try
@@ -1114,11 +1113,7 @@ begin
 
       if not OnlyDesktop then begin
         // files
-        s:=TrimFilename(
-           XMLConfig.GetValue(Path+'LazarusDirectory/Value',LazarusDirectory));
-        if not FilenameIsAbsolute(s) then
-          s:=TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+s);
-        LazarusDirectory:=s;
+        LazarusDirectory:=XMLConfig.GetValue(Path+'LazarusDirectory/Value',LazarusDirectory);
         LoadRecentList(XMLConfig,FLazarusDirHistory,
            Path+'LazarusDirectory/History/');
         if FLazarusDirHistory.Count=0 then
@@ -1456,15 +1451,17 @@ begin
       if not OnlyDesktop then begin
         // files
         CurLazDir:=ChompPathDelim(LazarusDirectory);
-        BaseDir:=ExtractFilePath(ChompPathDelim(GetPrimaryConfigPath));
-        if (CompareFilenames(BaseDir,CurLazDir)=0)
-        or FileIsInPath(CurLazDir,BaseDir) then begin
-          // the pcp directory is in the lazarus directory
-          // or the lazarus directory is a sibling or a sub dir of a sibling of the pcp
-          // examples:
-          //   pcp=C:\Lazarus\config, lazdir=C:\Lazarus => store '..'
-          //   pcp=/home/user/.lazarus, lazdir=/home/user/freepascal/lazarus => store ../freepascal/lazarus
-          CurLazDir:=CreateRelativePath(CurLazDir,GetPrimaryConfigPath);
+        if not GlobalMacroList.StrHasMacros(CurLazDir) then begin
+          BaseDir:=ExtractFilePath(ChompPathDelim(GetPrimaryConfigPath));
+          if (CompareFilenames(BaseDir,CurLazDir)=0)
+          or FileIsInPath(CurLazDir,BaseDir) then begin
+            // the pcp directory is in the lazarus directory
+            // or the lazarus directory is a sibling or a sub dir of a sibling of the pcp
+            // examples:
+            //   pcp=C:\Lazarus\config, lazdir=C:\Lazarus => store '..'
+            //   pcp=/home/user/.lazarus, lazdir=/home/user/freepascal/lazarus => store ../freepascal/lazarus
+            CurLazDir:=CreateRelativePath(CurLazDir,GetPrimaryConfigPath);
+          end;
         end;
         XMLConfig.SetDeleteValue(Path+'LazarusDirectory/Value',CurLazDir,'');
         SaveRecentList(XMLConfig,FLazarusDirHistory,
@@ -1710,11 +1707,15 @@ begin
       Parsing:=true;
       try
         ParsedValue:=UnparsedValue;
-        GlobalMacroList.SubstituteStr(ParsedValue);
+        if GlobalMacroList<>nil then
+          GlobalMacroList.SubstituteStr(ParsedValue);
         ParseStamp:=CompilerParseStamp;
 
         case o of
-        eopLazarusDirectory,eopFPCSourceDirectory,eopTestBuildDirectory:
+        eopLazarusDirectory:
+          // lazarus directory
+          ParsedValue:=TrimAndExpandDirectory(ParsedValue,GetPrimaryConfigPath);
+        eopFPCSourceDirectory,eopTestBuildDirectory:
           // directory
           ParsedValue:=TrimAndExpandDirectory(ParsedValue,GetParsedLazarusDirectory);
         eopCompilerMessagesFilename:
@@ -1786,7 +1787,7 @@ end;
 function TEnvironmentOptions.MacroFuncLazarusDir(const s: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
-  Result:=LazarusDirectory;
+  Result:=GetParsedLazarusDirectory;
 end;
 
 function TEnvironmentOptions.MacroFuncExeExt(const s: string;

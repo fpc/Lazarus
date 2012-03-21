@@ -1315,7 +1315,7 @@ begin
 
     Application.BidiMode := Application.Direction(EnvironmentOptions.LanguageID);
 
-    TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
+    TranslateResourceStrings(EnvironmentOptions.GetParsedLazarusDirectory,
                              EnvironmentOptions.LanguageID);
 
     Application.ShowButtonGlyphs := ShowButtonGlyphs;
@@ -4972,7 +4972,7 @@ begin
   UpdateDefaultPascalFileExtensions;
   if OldLanguage <> EnvironmentOptions.LanguageID then
   begin
-    TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
+    TranslateResourceStrings(EnvironmentOptions.GetParsedLazarusDirectory,
                              EnvironmentOptions.LanguageID);
     PkgBoss.TranslateResourceStrings;
   end;
@@ -4982,8 +4982,8 @@ begin
   FPCSrcDirChanged:=false;
   FPCCompilerChanged:=OldCompilerFilename<>EnvironmentOptions.CompilerFilename;
   LazarusSrcDirChanged:=false;
-  ChangeMacroValue('LazarusDir',EnvironmentOptions.LazarusDirectory);
-  ChangeMacroValue('FPCSrcDir',EnvironmentOptions.FPCSourceDirectory);
+  ChangeMacroValue('LazarusDir',EnvironmentOptions.GetParsedLazarusDirectory);
+  ChangeMacroValue('FPCSrcDir',EnvironmentOptions.GetParsedFPCSourceDirectory);
 
   if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
   //debugln(['TMainIDE.DoEnvironmentOptionsAfterWrite FPCCompilerChanged=',FPCCompilerChanged,' FPCSrcDirChanged=',FPCSrcDirChanged,' LazarusSrcDirChanged=',LazarusSrcDirChanged]);
@@ -12438,7 +12438,7 @@ begin
 
   // check ambiguous units
   CodeToolBoss.GetFPCVersionForDirectory(
-                             EnvironmentOptions.LazarusDirectory,
+                             EnvironmentOptions.GetParsedLazarusDirectory,
                              FPCVersion,FPCRelease,FPCPatch);
   if (FPCVersion=0) or (FPCRelease=0) or (FPCPatch=0) then ;
 
@@ -12515,12 +12515,12 @@ begin
                 PackageGraph.FirstAutoInstallDependency,InheritedOptionStrings);
 
     // check ambiguous units
-    CodeToolBoss.GetFPCVersionForDirectory(EnvironmentOptions.LazarusDirectory,
+    CodeToolBoss.GetFPCVersionForDirectory(EnvironmentOptions.GetParsedLazarusDirectory,
                                            FPCVersion,FPCRelease,FPCPatch);
     if FPCPatch=0 then ;
     CompiledUnitExt:=GetDefaultCompiledUnitExt(FPCVersion,FPCRelease);
     Result:=MainBuildBoss.CheckUnitPathForAmbiguousPascalFiles(
-                     EnvironmentOptions.LazarusDirectory+PathDelim+'ide',
+                     EnvironmentOptions.GetParsedLazarusDirectory+PathDelim+'ide',
                      InheritedOptionStrings[icoUnitPath],
                      CompiledUnitExt,'IDE');
     if Result<>mrOk then begin
@@ -14131,7 +14131,7 @@ function TMainIDE.FindUnitFile(const AFilename: string; TheOwner: TObject;
     UnitInFilename: String;
   begin
     AnUnitName:=ExtractFileNameOnly(AFilename);
-    BaseDir:=EnvironmentOptions.LazarusDirectory+PathDelim+'ide';
+    BaseDir:=EnvironmentOptions.GetParsedLazarusDirectory+PathDelim+'ide';
     UnitInFilename:='';
     Result:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
                                        BaseDir,AnUnitName,UnitInFilename,true);
@@ -14780,7 +14780,7 @@ begin
   end;
 
   if (EnvironmentOptions.LazarusDirectory='')
-  or not DirPathExists(EnvironmentOptions.LazarusDirectory) then begin
+  or not DirPathExists(EnvironmentOptions.GetParsedLazarusDirectory) then begin
     DebugLn('');
     DebugLn(
       'NOTE: Lazarus source directory not set!  (see Environment / Options ... / Environment / Files)');
@@ -14800,7 +14800,7 @@ begin
   if InteractiveSetup then
   begin
     if (not ShowSetupDialog)
-    and ((CheckLazarusDirectoryQuality(EnvironmentOptions.LazarusDirectory,Note)<>sddqCompatible)
+    and ((CheckLazarusDirectoryQuality(EnvironmentOptions.GetParsedLazarusDirectory,Note)<>sddqCompatible)
       or (CheckCompilerQuality(EnvironmentOptions.GetParsedCompilerFilename,Note,
                          CodeToolBoss.FPCDefinesCache.TestFilename)=sddqInvalid))
     then
@@ -14821,7 +14821,7 @@ begin
 
   // set global macros
   with CodeToolBoss.GlobalValues do begin
-    Variables[ExternalMacroStart+'LazarusDir']:=EnvironmentOptions.LazarusDirectory;
+    Variables[ExternalMacroStart+'LazarusDir']:=EnvironmentOptions.GetParsedLazarusDirectory;
     Variables[ExternalMacroStart+'ProjPath']:=VirtualDirectory;
     Variables[ExternalMacroStart+'LCLWidgetType']:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
     Variables[ExternalMacroStart+'FPCSrcDir']:=EnvironmentOptions.GetParsedFPCSourceDirectory;

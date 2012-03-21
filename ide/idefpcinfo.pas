@@ -229,9 +229,11 @@ procedure TIDEFPCInfoDialog.GatherGlobalOptions(sl: TStrings);
 begin
   sl.add('Global IDE options:');
   sl.Add('LazarusDirectory='+EnvironmentOptions.LazarusDirectory);
+  sl.Add('Real LazarusDirectory='+EnvironmentOptions.GetParsedLazarusDirectory);
   sl.Add('CompilerFilename='+EnvironmentOptions.CompilerFilename);
-  sl.Add('ResolvedCompilerFilename='+EnvironmentOptions.GetParsedCompilerFilename);
-  sl.Add('CompilerMessagesFilename='+EnvironmentOptions.GetParsedCompilerMessagesFilename);
+  sl.Add('Real CompilerFilename='+EnvironmentOptions.GetParsedCompilerFilename);
+  sl.Add('CompilerMessagesFilename='+EnvironmentOptions.CompilerMessagesFilename);
+  sl.Add('Real CompilerMessagesFilename='+EnvironmentOptions.GetParsedCompilerMessagesFilename);
   sl.Add('');
 end;
 

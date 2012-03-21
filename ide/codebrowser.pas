@@ -1358,7 +1358,7 @@ var
     Item: PStringToStringTreeItem;
   begin
     // use unitset of the lazarus source directory
-    LazDir:=AppendPathDelim(EnvironmentOptions.LazarusDirectory);
+    LazDir:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory);
     if (LazDir='') or (not FilenameIsAbsolute(LazDir)) then exit;
     UnitSetID:=CodeToolBoss.GetUnitSetIDForDirectory(LazDir);
     if UnitSetID='' then exit;
@@ -1451,7 +1451,7 @@ var
     SrcPath: String;
     LazDir: String;
   begin
-    LazDir:=AppendPathDelim(EnvironmentOptions.LazarusDirectory);
+    LazDir:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory);
     if not DirectoryExistsUTF8(LazDir) then begin
       DebugLn(['AddFilesOfIDE WARNING: lazarus directory not found: "',LazDir,'"']);
       exit;
