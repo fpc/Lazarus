@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="ProjTemplates"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
-      <Version Value="9"/>
+      <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
@@ -15,7 +15,6 @@
       </Parsing>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
-        <CreateMakefileOnBuild Value="True"/>
       </Other>
     </CompilerOptions>
     <Description Value="IDE extension to create projects based on project templates
@@ -70,14 +69,11 @@
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)/"/>
+      <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
-    <CustomOptions Children="ExternHelp">
-      <_ExternHelp Children="Count"/>
-    </CustomOptions>
   </Package>
 </CONFIG>
