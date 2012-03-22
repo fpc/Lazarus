@@ -539,14 +539,15 @@ begin
     for i:=0 to Files.Count-1 do
     begin
       FileItem:=TFileItem(Files[i]);
-      if (i > 0) and (TFileItem(Files[i]).Name = TFileItem(Files[i - 1]).Name) then
+      if (i < Files.Count - 1) and (TFileItem(Files[i]).Name = TFileItem(Files[i + 1]).Name) then
         Continue; // cause Files is sorted // From patch from bug 17761: TShellListView Mask: duplicated items if mask is " *.ext;*.ext "
       if FileItem.isFolder then
         AResult.AddObject(FileItem.Name, ObjectData)
       else
         AResult.AddObject(FileItem.Name, nil);
-      FileItem.Free;
     end;
+    for i:=0 to Files.Count-1 do
+      TFileItem(Files[i]).Free;
     Files.Free;
   end;
 
