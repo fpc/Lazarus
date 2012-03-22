@@ -467,7 +467,8 @@ resourcestring
   lisEditorWindowManager = 'Editor Window Manager';
 
   lisSearchProjectsFrom = 'Search projects from';
-  lisMEOther = 'Other';
+  lisMEOther = 'Other tabs';
+  lisTabsFor = 'Tabs for %s';
   lisIncludeExamples = 'Include Examples';
   lisIncludeTestcases = 'Include Testcases';
   lisMEProjects = 'Projects';
@@ -1108,7 +1109,7 @@ resourcestring
   dlgAutoSave = 'Auto Save';
   lisAskBeforeSavingProjectSSession = 'Ask before saving project''s session';
   dlgEdFiles = 'Editor Files';
-  dlgEnvProject = 'Project';
+  dlgEnvProject = 'Tabs for project';
   lisNumberOfFilesToConvert = 'Number of files to convert: %s';
   lisConvertEncoding = 'Convert Encoding';
   lisConvertProjectOrPackage = 'Convert project or package';

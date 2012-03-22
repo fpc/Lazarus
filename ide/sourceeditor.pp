@@ -5441,8 +5441,10 @@ begin
     SrcEditMenuMoveEditorFirst.MenuItem.Enabled:= (PageCount>1) and (PageIndex>0);
     SrcEditMenuMoveEditorLast.MenuItem.Enabled:= (PageCount>1) and (PageIndex<(PageCount-1));
 
-    if SourceEditorManager<>nil then begin
-      SrcEditMenuSectionEditors.Clear;
+    SrcEditMenuSectionEditors.Clear;
+    if Manager <> nil then begin
+      RegisterIDESubMenu(SrcEditMenuSectionEditors, dlgEnvProject, dlgEnvProject).Visible := False;
+      RegisterIDESubMenu(SrcEditMenuSectionEditors, lisMEOther, lisMEOther).Visible := False;
 
       //first add all pages in the correct order since the editor order can be different from the tab order
       for i := 0 to EditorCount - 1 do
@@ -5454,13 +5456,14 @@ begin
         else begin
           Manager.OnPackageForSourceEditor(P, EditorCur);
           if P <> nil then
-            s := p.Name;
+            s := Format(lisTabsFor, [p.Name]);
         end;
 
         if SrcEditMenuSectionEditors.FindByName(S) is TIDEMenuSection then
           M := TIDEMenuSection(SrcEditMenuSectionEditors.FindByName(S))
         else
           M := RegisterIDESubMenu(SrcEditMenuSectionEditors, S, S);
+        M.Visible := True;
 
         S := ExtractFileName(EditorCur.FileName);
         // check for modification
