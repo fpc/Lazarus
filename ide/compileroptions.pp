@@ -445,6 +445,7 @@ type
     fCompilerMessages: TCompilerMessagesList;
 
     procedure OnItemChanged(Sender: TObject);
+    procedure SetCreateMakefileOnBuild(AValue: boolean);
   protected
     function GetCompilerPath: String;
     function GetBaseDirectory: string;
@@ -582,7 +583,7 @@ type
     property ExecuteBefore: TCompilationToolOptions read fExecuteBefore;
     property ExecuteAfter: TCompilationToolOptions read fExecuteAfter;
     property CreateMakefileOnBuild: boolean read FCreateMakefileOnBuild
-                                            write FCreateMakefileOnBuild;
+                                            write SetCreateMakefileOnBuild;
                                             
     // compiler messages
     property CompilerMessages: TCompilerMessagesList read fCompilerMessages;
@@ -1174,6 +1175,13 @@ end;
 
 procedure TBaseCompilerOptions.OnItemChanged(Sender: TObject);
 begin
+  IncreaseChangeStamp;
+end;
+
+procedure TBaseCompilerOptions.SetCreateMakefileOnBuild(AValue: boolean);
+begin
+  if FCreateMakefileOnBuild=AValue then Exit;
+  FCreateMakefileOnBuild:=AValue;
   IncreaseChangeStamp;
 end;
 

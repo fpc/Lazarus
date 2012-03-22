@@ -45,7 +45,6 @@ type
     lblRunIfExecAfter: TLabel;
     lblRunIfExecBefore: TLabel;
   private
-    { private declarations }
   public
     function GetTitle: string; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
