@@ -2239,8 +2239,6 @@ var
   StartPos, EndPos, MoveToPos: TPoint;
   CodeToolsInSync: Boolean;
   i: Integer;
-  CarXY: TPoint;
-  TopL: Integer;
 begin
   {$IFDEF IDE_DEBUG}
   debugln(['[TSourceEditor.OnCodeBufferChanged] A ',FIgnoreCodeBufferLock,' ',SrcLogEntry<>nil]);
@@ -2249,8 +2247,6 @@ begin
   DebugBoss.LockCommandProcessing;
   SynEditor.BeginUpdate;
   try
-    CarXY := SynEditor.CaretXY;
-    TopL  := SynEditor.TopLine;
     CodeToolsInSync:=not NeedsUpdateCodeBuffer;
     if SrcLogEntry<>nil then begin
       SynEditor.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditorSharedValues.OnCodeBufferChanged'){$ENDIF};
@@ -2314,8 +2310,6 @@ begin
       FEditorStampCommitedToCodetools:=TSynEditLines(SynEditor.Lines).TextChangeStamp;
     end;
   finally
-    SynEditor.CaretXY := CarXY;
-    SynEditor.TopLine := TopL;
     SynEditor.EndUpdate;
     DebugBoss.UnLockCommandProcessing;
   end;

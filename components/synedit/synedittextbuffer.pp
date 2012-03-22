@@ -159,7 +159,6 @@ type
     procedure InsertItem(Index: integer; const S: string);
     procedure SetFlags(Index: Integer; const AValue: TSynEditStringFlags);
     procedure SetModified(const AValue: Boolean);
-    procedure SendCachedNotify;
   protected
     function GetExpandedString(Index: integer): string; override;
     function GetLengthOfLongestLine: integer; override;
@@ -228,6 +227,7 @@ type
     property  AttachedSynEdits[Index: Integer]: TSynEditBase read GetAttachedSynEdits;
     procedure CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject = nil);
     procedure RemoveHanlders(AOwner: TObject);
+    procedure SendCachedNotify; // ToDO: review caghing versus changes to topline and other values
   public
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;    
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
@@ -1037,10 +1037,11 @@ end;
 procedure TSynEditStringList.SendCachedNotify;
 begin
 //debugln(['--- send cached notify  ', FCachedNotifyStart,' / ',FCachedNotifyCount]);
-  if FCachedNotifyCount <> 0 then;
+  if (FCachedNotifyCount <> 0) and FCachedNotify then begin
+    FCachedNotify := False;
     TLineRangeNotificationList(FNotifyLists[senrLineCount])
       .CallRangeNotifyEvents(FCachedNotifySender, FCachedNotifyStart, FCachedNotifyCount);
-  FCachedNotify := False;
+  end;
 end;
 
 procedure TSynEditStringList.MarkModified(AFirst, ALast: Integer);

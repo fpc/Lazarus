@@ -4692,12 +4692,14 @@ end;
 
 procedure TCustomSynEdit.SetTopView(AValue : Integer);
 begin
-  // don't use MinMax here, it will fail in design mode (Lines.Count is zero,
+  //  don't use MinMax here, it will fail in design mode (Lines.Count is zero,
   // but the painting code relies on TopLine >= 1)
   {$IFDEF SYNSCROLLDEBUG}
   if (fPaintLock = 0) and (not FIsInDecPaintLock) then debugln(['SetTopView outside Paintlock New=',AValue, ' Old=', FFoldedLinesView.TopLine]);
   if (sfHasScrolled in fStateFlags) then debugln(['SetTopView with sfHasScrolled Value=',AValue, '  FOldTopView=',FOldTopView ]);
   {$ENDIF}
+  TSynEditStringList(FLines).SendCachedNotify; // TODO: review
+
   AValue := Min(AValue, CurrentMaxTopView);
   AValue := Max(AValue, 1);
 
