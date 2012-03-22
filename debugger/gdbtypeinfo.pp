@@ -121,11 +121,15 @@ type
     function GetTextStrFixed: String;
     function ParseExpression(AText: PChar; ATextLen: Integer): TGDBExpressionPart;
     procedure Init; virtual;
+    procedure InitReq(var AReqPtr: PGDBPTypeRequest; var AReqVar: TGDBPTypeRequest;
+                      AReqText: String; AType: TGDBCommandRequestType = gcrtPType);
   public
     function NeedValidation(var AReqPtr: PGDBPTypeRequest): Boolean; virtual;
     function MayNeedStringFix: Boolean; virtual;
+    function MayNeedTypeCastFix: Boolean; virtual;
   public
     constructor Create;
+    function IsNamedOperator: Boolean;
     function PartCount: Integer; virtual;
     property Parts[Index: Integer]: TGDBExpressionPart read GetParts;
     property Text: String read GetText;
@@ -206,7 +210,7 @@ type
     function GetArrayPTypeResult: TGDBPTypeResult;
   protected
     procedure Init; override;
-    procedure InitReq(var AReqPtr: PGDBPTypeRequest; AReqText: String);
+    procedure InitReq(var AReqPtr: PGDBPTypeRequest; AReqText: String); overload;
     procedure InitDeRefReq(var AReqPtr: PGDBPTypeRequest; AReqText: String);
     procedure InitIndexReq(var AReqPtr: PGDBPTypeRequest);
     function GetTextFixed(AStringFixed: Boolean): String; override;
@@ -244,12 +248,25 @@ type
   end;
 
   { TGDBExpressionPartCastCall }
+  TTypeCastFixFlag = (tcfUnknown, tcfEvalNeeded, tcfNoFixNeeded, tcfFixNeeded);
 
   TGDBExpressionPartCastCall = class(TGDBExpressionPartListBase)
   private
+    FIsFunction: Boolean;
+    FIsTypeCast: Boolean;
+    FPTypeReq: TGDBPTypeRequest;
+    FTypeCastFixFlag: TTypeCastFixFlag;
+  protected
+    procedure Init; override;
+    function GetTextFixed(AStringFixed: Boolean): String; override;
+    property PTypeReq: TGDBPTypeRequest read FPTypeReq write FPTypeReq;
   public
     constructor Create(ALeadExpresion: TGDBExpressionPart);
     function AddBrackets(APart: TGDBExpressionPart):Integer;
+    function NeedValidation(var AReqPtr: PGDBPTypeRequest): Boolean; override;
+    function MayNeedTypeCastFix: Boolean; override;
+    property IsFunction: Boolean read FIsFunction;
+    property IsTypeCast: Boolean read FIsTypeCast;
   end;
 
 
@@ -299,7 +316,7 @@ type
   TGDBTypeCreationFlags = set of TGDBTypeCreationFlag;
 
   TGDBTypeProcessState =
-    (gtpsInitial, gtpsInitialSimple, gtpsInitFixTypeCast,
+    (gtpsInitial, gtpsInitialSimple,
      gtpsSimplePointer,
      gtpsClass, gtpsClassAutoCast, gtpsClassPointer, gtpsClassAncestor,
      gtpsArray,
@@ -345,7 +362,7 @@ type
 
     FParsedExpression: TGDBExpression;
 
-    FHasTypeCastFix, FHasAutoTypeCastFix: Boolean;
+    FHasAutoTypeCastFix: Boolean;
     FAutoTypeCastName: String;
 
     procedure AddTypeReq(var AReq :TGDBPTypeRequest; const ACmd: string = '');
@@ -388,6 +405,10 @@ function dbgs(AReq: TGDBPTypeRequest): string; overload;
 
 implementation
 
+const
+  GdbCmdPType = 'ptype ';
+  GdbCmdWhatIs = 'whatis ';
+  GdbCmdEvaluate = '-data-evaluate-expression ';
 var
   DBGMI_TYPE_INFO: PLazLoggerLogGroup;
 
@@ -961,33 +982,19 @@ end;
 
 procedure TGDBExpressionPartArrayIdx.InitReq(var AReqPtr: PGDBPTypeRequest; AReqText: String);
 begin
-  FPTypeReq.Request := AReqText;
-  FPTypeReq.Error := '';
-  FPTypeReq.ReqType := gcrtPType;
-  FPTypeReq.Next := AReqPtr;
-  FPTypeReq.Result.Kind := ptprkError;
-  AReqPtr := @FPTypeReq;
+  InitReq(AReqPtr, FPTypeReq, AReqText, gcrtPType);
 end;
 
 procedure TGDBExpressionPartArrayIdx.InitDeRefReq(var AReqPtr: PGDBPTypeRequest;
   AReqText: String);
 begin
-  FPTypeDeRefReq.Request := AReqText;
-  FPTypeDeRefReq.Error := '';
-  FPTypeDeRefReq.ReqType := gcrtPType;
-  FPTypeDeRefReq.Next := AReqPtr;
-  FPTypeDeRefReq.Result.Kind := ptprkError;
-  AReqPtr := @FPTypeDeRefReq;
+  InitReq(AReqPtr, FPTypeDeRefReq, AReqText, gcrtPType);
 end;
 
 procedure TGDBExpressionPartArrayIdx.InitIndexReq(var AReqPtr: PGDBPTypeRequest);
 begin
-  FPTypeIndexReq.Request := '-data-evaluate-expression ' + Quote(GetPlainText);
-  FPTypeIndexReq.Error := '';
-  FPTypeIndexReq.ReqType := gcrtEvalExpr;
-  FPTypeIndexReq.Next := AReqPtr;
-  FPTypeIndexReq.Result.Kind := ptprkError;
-  AReqPtr := @FPTypeIndexReq;
+  InitReq(AReqPtr, FPTypeIndexReq,
+          GdbCmdEvaluate + Quote(GetPlainText), gcrtEvalExpr);
 end;
 
 function TGDBExpressionPartArrayIdx.GetTextFixed(AStringFixed: Boolean): String;
@@ -1200,7 +1207,7 @@ begin
     if PTReq.Result.Kind = ptprkNotEvaluated
     then begin
       IdxPart.VarParam := False;
-      IdxPart.InitReq(AReqPtr, 'ptype ' + GetTextToIdx(i-1));
+      IdxPart.InitReq(AReqPtr, GdbCmdPType + GetTextToIdx(i-1));
       Result := True;
       exit;
     end
@@ -1209,7 +1216,7 @@ begin
     then begin
       // FPC 2.2.4 encoded "var param" in a special way, and we need an extra deref)
       IdxPart.VarParam := True;
-      IdxPart.InitReq(AReqPtr, 'ptype ' + GetTextToIdx(i-1) + '^');
+      IdxPart.InitReq(AReqPtr, GdbCmdPType + GetTextToIdx(i-1) + '^');
       Result := True;
       exit;
     end;
@@ -1223,8 +1230,8 @@ begin
        (PTDeRefReq.Result.Kind = ptprkNotEvaluated)
     then begin
       if IdxPart.VarParam
-      then IdxPart.InitDeRefReq(AReqPtr, 'ptype ' + GetTextToIdx(i-1) + '^^')
-      else IdxPart.InitDeRefReq(AReqPtr, 'ptype ' + GetTextToIdx(i-1) + '^');
+      then IdxPart.InitDeRefReq(AReqPtr, GdbCmdPType + GetTextToIdx(i-1) + '^^')
+      else IdxPart.InitDeRefReq(AReqPtr, GdbCmdPType + GetTextToIdx(i-1) + '^');
       Result := True;
       exit;
     end;
@@ -1311,15 +1318,89 @@ end;
 
 { TGDBExpressionPartCastCall }
 
+procedure TGDBExpressionPartCastCall.Init;
+begin
+  inherited Init;
+  FPTypeReq.Result.Kind := ptprkNotEvaluated;
+end;
+
+function TGDBExpressionPartCastCall.GetTextFixed(AStringFixed: Boolean): String;
+begin
+  Result := inherited GetTextFixed(AStringFixed);
+  if FTypeCastFixFlag = tcfFixNeeded then
+    Result := '^'+Result;
+end;
+
+function TGDBExpressionPartCastCall.NeedValidation(var AReqPtr: PGDBPTypeRequest): Boolean;
+begin
+  Result := inherited NeedValidation(AReqPtr);
+
+  if IsFunction or (FTypeCastFixFlag <> tcfEvalNeeded) then
+    exit;
+
+  if FPTypeReq.Result.Kind = ptprkNotEvaluated then begin
+    InitReq(AReqPtr, FPTypeReq, GdbCmdPType + Parts[0].GetText , gcrtPType);
+    Result := True;
+    exit;
+  end;
+
+  if (FPTypeReq.Result.Kind = ptprkError) or (FPTypeReq.Error <> '') then begin
+    FTypeCastFixFlag := tcfNoFixNeeded;
+    exit;
+  end;
+
+  if FPTypeReq.Result.Kind = ptprkClass then begin
+    FTypeCastFixFlag := tcfFixNeeded;
+    FIsTypeCast := True;
+    exit;
+  end;
+
+  if FPTypeReq.Result.Kind in [ptprkProcedure, ptprkFunction] then begin
+    FTypeCastFixFlag := tcfNoFixNeeded;
+    FIsFunction := True;
+    exit;
+  end;
+
+end;
+
 constructor TGDBExpressionPartCastCall.Create(ALeadExpresion: TGDBExpressionPart);
+var
+  i, l: Integer;
+  s: String;
 begin
   inherited Create;
   Add(ALeadExpresion);
+  FIsFunction := False;
+  FIsTypeCast := False;
+  FTypeCastFixFlag := tcfUnknown;
+  s := ALeadExpresion.GetText;
+  i := 1;
+  l := Length(s);
+  while (i <= l) and (s[i] in [' ', #9]) do inc(i);
+  if i < l then begin
+    while (i <= l) and (s[i] in ['a'..'z', 'A'..'Z', '0'..'9', '_']) do inc(i);
+    while (i <= l) and (s[i] in [' ', #9]) do inc(i);
+    FIsFunction := i < l;  // Contains chars that are not allowed in type identifiers (like foo.bar())
+  end;
+
 end;
 
 function TGDBExpressionPartCastCall.AddBrackets(APart: TGDBExpressionPart): Integer;
 begin
   Result := Add(APart);
+end;
+
+function TGDBExpressionPartCastCall.MayNeedTypeCastFix: Boolean;
+begin
+  Result := inherited MayNeedTypeCastFix;
+  if IsFunction then
+    exit;
+
+  if not(FTypeCastFixFlag in [tcfUnknown, tcfEvalNeeded]) then
+    exit;
+
+  Result := True;
+  FTypeCastFixFlag := tcfEvalNeeded;
 end;
 
 { TGDBExpressionPartBracketed }
@@ -1485,6 +1566,7 @@ var
   CurArray: TGDBExpressionPartArray;
   CurCast: TGDBExpressionPartCastCall;
   FCommaList: TGDBExpressionPartCommaList;
+  CurWord: TGDBExpression;
 begin
   Result := nil;
   FCommaList := nil;
@@ -1513,8 +1595,9 @@ begin
     then begin
       CurPartPtr := CurPtr;
       ScanToWordEnd;
-      CurList.Add(TGDBExpression.CreateSimple(CurPartPtr, CurPtr - CurPartPtr));
-      if CurPtr^ in WordChar then // 2 words => named operator (and/or)
+      CurWord := TGDBExpression.CreateSimple(CurPartPtr, CurPtr - CurPartPtr);
+      CurList.Add(CurWord);
+      if (CurPtr^ in WordChar) or CurWord.IsNamedOperator then // 2 words => named operator (and/or)
         AddExpPart(CurList);
     end
     else
@@ -1568,6 +1651,17 @@ begin
   //
 end;
 
+procedure TGDBExpressionPart.InitReq(var AReqPtr: PGDBPTypeRequest;
+  var AReqVar: TGDBPTypeRequest; AReqText: String; AType: TGDBCommandRequestType);
+begin
+  AReqVar.Request := AReqText;
+  AReqVar.Error := '';
+  AReqVar.ReqType := AType;
+  AReqVar.Next := AReqPtr;
+  AReqVar.Result.Kind := ptprkError;
+  AReqPtr := @AReqVar;
+end;
+
 function TGDBExpressionPart.NeedValidation(var AReqPtr: PGDBPTypeRequest): Boolean;
 var
   i: Integer;
@@ -1588,9 +1682,27 @@ begin
       Result := True;
 end;
 
+function TGDBExpressionPart.MayNeedTypeCastFix: Boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  for i := 0 to PartCount - 1 do
+    if Parts[i].MayNeedTypeCastFix then
+      Result := True;
+end;
+
 constructor TGDBExpressionPart.Create;
 begin
   Init;
+end;
+
+function TGDBExpressionPart.IsNamedOperator: Boolean;
+var
+  s: String;
+begin
+  s := LowerCase(Trim(GetText));
+  Result := (s = 'not') or (s = 'or') or (s = 'xor') or (s = 'and');
 end;
 
 function TGDBExpressionPart.GetTextStrFixed: String;
@@ -1831,20 +1943,20 @@ function TGDBType.RequireRequests(ARequired: TGDBTypeProcessRequests; ACustomDat
   function GetReqText(AReq: TGDBTypeProcessRequest): String;
   begin
     case areq of
-      gptrPTypeExpr:        Result := 'ptype ' + FExpression;
-      gptrWhatisExpr:       Result := 'whatis ' + FExpression;
-      gptrPTypeOfWhatis:    Result := 'ptype ' + PCLenToString(FReqResults[gptrWhatisExpr].Result.BaseName);
-      gptrPTypeExprDeRef:   Result := 'ptype ' + ApplyBrackets(FExpression) + '^';
-      gptrPTypeExprDeDeRef: Result := 'ptype ' + ApplyBrackets(FExpression) + '^^';
-      gptrEvalExpr:       Result := '-data-evaluate-expression '+Quote(FExpression);
-      gptrEvalExprDeRef:  Result := '-data-evaluate-expression '+Quote(FExpression+'^');
-      gptrEvalExprCast:   Result := '-data-evaluate-expression '+Quote(InternalTypeName+'('+FExpression+')');
-      gptrEvalExpr2:      Result := '-data-evaluate-expression '+Quote(ACustomData);
-      gptrEvalExprDeRef2: Result := '-data-evaluate-expression '+Quote(ACustomData+'^');
-      gptrEvalExprCast2:  Result := '-data-evaluate-expression '+Quote(InternalTypeName+'('+ACustomData+')');
+      gptrPTypeExpr:        Result := GdbCmdPType + FExpression;
+      gptrWhatisExpr:       Result := GdbCmdWhatIs + FExpression;
+      gptrPTypeOfWhatis:    Result := GdbCmdPType + PCLenToString(FReqResults[gptrWhatisExpr].Result.BaseName);
+      gptrPTypeExprDeRef:   Result := GdbCmdPType + ApplyBrackets(FExpression) + '^';
+      gptrPTypeExprDeDeRef: Result := GdbCmdPType + ApplyBrackets(FExpression) + '^^';
+      gptrEvalExpr:       Result := GdbCmdEvaluate+Quote(FExpression);
+      gptrEvalExprDeRef:  Result := GdbCmdEvaluate+Quote(FExpression+'^');
+      gptrEvalExprCast:   Result := GdbCmdEvaluate+Quote(InternalTypeName+'('+FExpression+')');
+      gptrEvalExpr2:      Result := GdbCmdEvaluate+Quote(ACustomData);
+      gptrEvalExprDeRef2: Result := GdbCmdEvaluate+Quote(ACustomData+'^');
+      gptrEvalExprCast2:  Result := GdbCmdEvaluate+Quote(InternalTypeName+'('+ACustomData+')');
       gptrPtypeCustomFixCast, gptrPtypeCustomAutoCast, gptrPtypeCustomAutoCast2:
-                         Result := 'ptype ' + ACustomData;
-      gptrInstanceClassName: Result := '-data-evaluate-expression '+Quote('(^^^char('+FExpression+')^+3)^');
+                         Result := GdbCmdPType + ACustomData;
+      gptrInstanceClassName: Result := GdbCmdEvaluate+Quote('(^^^char('+FExpression+')^+3)^');
     end;
   end;
 
@@ -1901,7 +2013,6 @@ begin
   FNextProcessingSubType := nil;
   FProcessState := gtpsInitial;
   FHasExprEvaluatedAsText := False;
-  FHasTypeCastFix := False;
   FHasAutoTypeCastFix := False;
   FAutoTypeCastName := '';
 end;
@@ -1917,6 +2028,7 @@ end;
 function TGDBType.ProcessExpression: Boolean;
 var
   Lines: TStringList;
+  procedure ProcessInitial; forward;
   procedure ProcessInitialSimple; forward;
   procedure ProcessSimplePointer; forward;
 
@@ -2413,7 +2525,6 @@ var
     end;
 
     // TODO: stringFixed need to know about:
-    // - ProcessInitFixTypeCast
     // - AutoTypeCast
 
     if (saInternalPointer in FAttributes) then begin
@@ -2473,31 +2584,23 @@ var
 
   procedure ProcessInitialSimple;
   var
-    i, j: Integer;
+    i: Integer;
     PTypeResult: TGDBPTypeResult;
   begin
     FProcessState := gtpsInitialSimple;
 
-    (* Will get gptrWhatisExpr later, it may fail, if expression is a typecast and needs ^ prefix *)
-    //if (gtcfFullTypeInfo in FCreationFlags)
-    //and not (gtcfExprIsType in FCreationFlags)
-    //then wi := [gptrWhatisExpr]
-    //else wi := [];
+    // TODO: ptype may be known by FParsedExpression
     if not RequireRequests([gptrPTypeExpr]) //+wi)
     then exit;
 
     if IsReqError(gptrPTypeExpr) then begin
-      // maybe a typecast
-      if not FHasTypeCastFix then begin
-        j := length(FExpression);
-        i := 1;
-        while (i < j) and (FExpression[i] in ['a'..'z', 'A'..'Z', '0'..'9', '_']) do inc(i);
-        if (i <= j) and (i > 1) and (FExpression[i] = '(')
-        then begin
-          RequireRequests([gptrPtypeCustomFixCast], copy(FExpression, 1, i-1));
-          FProcessState := gtpsInitFixTypeCast;
-          exit;
-        end;
+       //Cannot access memory at address 0x0
+      if (pos('address 0x0', FReqResults[gptrPTypeExpr].Error) > 0) and
+         FParsedExpression.MayNeedTypeCastFix
+      then begin
+        exclude(FProccesReuestsMade, gptrPTypeExpr);
+        ProcessInitial;
+        exit;
       end;
 
       FEvalError := True;
@@ -2661,6 +2764,7 @@ var
 
   procedure ProcessInitial;
   begin
+    FProcessState := gtpsInitial;
     if FExpression = '' then begin;
       ProcessInitialSimple;
       exit;
@@ -2674,25 +2778,6 @@ var
 
     FExpression := FParsedExpression.Text;
 
-    ProcessInitialSimple;
-  end;
-
-  procedure ProcessInitFixTypeCast;
-  begin
-    // Some GDB can not process: "TFoo(SomeFoo).Bar"
-    // Because TFoo Is actually ^TFoo, therefore they need "^TFoo(SomeFoo).Bar"
-    if FHasTypeCastFix or IsReqError(gptrPtypeCustomFixCast) or
-       not(FReqResults[gptrPtypeCustomFixCast].Result.Kind = ptprkClass)
-    then begin
-      FEvalError := True;
-      exit;
-    end;
-
-    FHasTypeCastFix := True;
-    FExpression := '^' + FExpression;
-
-    // Redo the ptype
-    exclude(FProccesReuestsMade, gptrPTypeExpr);
     ProcessInitialSimple;
   end;
 
@@ -2757,7 +2842,6 @@ begin
   case FProcessState of
     gtpsInitial:         ProcessInitial;
     gtpsInitialSimple:   ProcessInitialSimple;
-    gtpsInitFixTypeCast: ProcessInitFixTypeCast;
     gtpsSimplePointer:   ProcessSimplePointer;
     gtpsClass:           ProcessClass;
     gtpsClassAutoCast:   ProcessClassAutoCast;
