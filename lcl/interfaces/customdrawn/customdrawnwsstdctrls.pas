@@ -297,6 +297,7 @@ type
 
   { TCDWSRadioButton }
 
+  // Make sure to override all methods from TCDWSCustomCheckBox which call CreateCDControl
   TCDWSRadioButton = class(TWSRadioButton)
   public
     class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);

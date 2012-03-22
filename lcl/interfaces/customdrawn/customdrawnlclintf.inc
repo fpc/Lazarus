@@ -343,6 +343,10 @@ end;
 
   The memory allocation code was added because it is necessary for
   TBitmap.LoadFromDevice support. For other operations it isnt needed
+
+  Make sure to copy the image into a new buffer here!!! If we just pass the memory
+  from our main TLazIntfImage then it will make a double release and corrupt the memory
+  See bug 21274
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
 var
@@ -358,7 +362,7 @@ begin
   ABitmap := 0;
   AMask := 0;
 
-  // Copy the data
+  // Copy the data (see bug 21274 as to why it is necessary)
   if ARawImage.DataSize > 0 then
   begin
     NewData := AllocMem(ARawImage.DataSize);
