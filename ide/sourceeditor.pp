@@ -5494,6 +5494,8 @@ begin
         M.Visible := True;
 
         AddEditorToMenuSection(EditorCur, M, i);
+        // use tag to count modified
+        if EditorCur.Modified then M.Tag := m.Tag + 1;
       end;
 
       EdList.Free;
@@ -5508,6 +5510,20 @@ begin
         RecMenu.Visible := True;
       end;
 
+      for i := 0 to SrcEditMenuSectionEditors.Count - 1 do
+        if SrcEditMenuSectionEditors.Items[i] is TIDEMenuSection then begin
+          if SrcEditMenuSectionEditors.Items[i].Tag = 0 then
+            SrcEditMenuSectionEditors.Items[i].Caption
+              := SrcEditMenuSectionEditors.Items[i].Caption
+              +  Format(' (%d)',
+                        [(SrcEditMenuSectionEditors.Items[i] as TIDEMenuSection).Count])
+          else
+            SrcEditMenuSectionEditors.Items[i].Caption
+              := SrcEditMenuSectionEditors.Items[i].Caption
+              +  Format(' (*%d/%d)',
+                        [SrcEditMenuSectionEditors.Items[i].Tag,
+                         (SrcEditMenuSectionEditors.Items[i] as TIDEMenuSection).Count]);
+        end;
     end;
   finally
     SourceTabMenuRoot.EndUpdate;
