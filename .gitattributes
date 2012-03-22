@@ -2017,6 +2017,7 @@ components/pochecker/Proj/pochecker.lpr svneol=native#text/plain
 components/pochecker/Proj/pocheckermain.lfm svneol=native#text/plain
 components/pochecker/Proj/pocheckermain.pp svneol=native#text/plain
 components/pochecker/README.txt svneol=native#text/plain
+components/pochecker/languages/pocheckerconsts.de.po svneol=native#text/plain
 components/pochecker/languages/pocheckerconsts.po svneol=native#text/plain
 components/pochecker/languages/pocheckerconsts.ru.po svneol=native#text/plain
 components/pochecker/pochecker.lpk svneol=native#text/plain
