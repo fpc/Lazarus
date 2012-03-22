@@ -306,6 +306,8 @@ type
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
 
+    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
+
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
     class function RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
@@ -1744,6 +1746,7 @@ var
 begin
   Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
   lCDWinControl := TCDWinControl(Result);
+  lCDWinControl.CDControl := nil;
 end;
 
 class procedure TCDWSRadioButton.DestroyHandle(const AWinControl: TWinControl);
@@ -1765,6 +1768,22 @@ begin
 
   if lCDWinControl.CDControl = nil then
     CreateCDControl(AWinControl, lCDWinControl.CDControl);
+end;
+
+class procedure TCDWSRadioButton.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+
+  if lCDWinControl.CDControl = nil then
+    CreateCDControl(AWinControl, lCDWinControl.CDControl);
+
+  lCDWinControl.CDControl.LCLWSCalculatePreferredSize(
+    PreferredWidth, PreferredHeight, WithThemeSpace, AWinControl.AutoSize);
+  DebugLn(Format('[TCDWSRadioButton.GetPreferredSize] Width=%d Height=%d', [PreferredWidth, PreferredHeight]));
 end;
 
 {------------------------------------------------------------------------------
