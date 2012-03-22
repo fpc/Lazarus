@@ -215,7 +215,7 @@ type
     function GetSourceFilesOfOwners(OwnerList: TFPList): TStrings; override;
     function GetPossibleOwnersOfUnit(const UnitFilename: string;
                                      Flags: TPkgIntfOwnerSearchFlags): TFPList; override;
-    function GetPackageOfCurrentSourceEditor(out APackage: TLazPackage): TPkgFile;
+    function GetPackageOfCurrentSourceEditor(out APackage: TIDEPackage): TPkgFile;
     function GetPackageOfSourceEditor(out APackage: TIDEPackage; ASrcEdit: TObject): TLazPackageFile; override;
     function IsOwnerDependingOnPkg(AnOwner: TObject; const PkgName: string;
                                    out DependencyOwner: TObject): boolean; override;
@@ -516,11 +516,11 @@ end;
 
 procedure TPkgManager.OnOpenPackageForCurrentSrcEditFile(Sender: TObject);
 var
-  APackage: TLazPackage;
+  APackage: TIDEPackage;
 begin
   GetPackageOfCurrentSourceEditor(APackage);
-  if APackage<>nil then
-    DoOpenPackage(APackage,[],false);
+  if APackage is TLazPackage then
+    DoOpenPackage(TLazPackage(APackage),[],false);
 end;
 
 procedure TPkgManager.CreateIDEWindow(Sender: TObject; aFormName: string; var
@@ -1716,7 +1716,7 @@ end;
 procedure TPkgManager.OnSourceEditorPopupMenu(
   const AddMenuItemProc: TAddMenuItemProc);
 var
-  APackage: TLazPackage;
+  APackage: TIDEPackage;
 begin
   GetPackageOfCurrentSourceEditor(APackage);
   if APackage<>nil then
@@ -3185,7 +3185,7 @@ begin
     FreeThenNil(Result);
 end;
 
-function TPkgManager.GetPackageOfCurrentSourceEditor(out APackage: TLazPackage
+function TPkgManager.GetPackageOfCurrentSourceEditor(out APackage: TIDEPackage
   ): TPkgFile;
 var
   SrcEdit: TSourceEditor;
