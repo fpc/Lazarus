@@ -38,7 +38,7 @@ uses
   ShlObj,
 {$endif}
   Classes, SysUtils, TypInfo, Graphics, Controls, Forms, LCLProc, FileProcs,
-  Dialogs, CodeToolsConfig, LazConfigStorage, Laz2_XMLCfg,
+  Dialogs, LazConfigStorage, Laz2_XMLCfg,
   // IDEIntf
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
   CompOptsIntf, IDEExternToolIntf,
