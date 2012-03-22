@@ -20,10 +20,12 @@ uses
 
 type
   TCocoaForm = objcclass;
+  TCocoaCustomControl = objcclass;
 
   TCocoaWindow = class(TCDForm)
   public
     CocoaForm: TCocoaForm;
+    ClientArea: TCocoaCustomControl;
   end;
 
   { TCocoaForm }
@@ -62,6 +64,8 @@ type
     procedure CallbackDeactivate; message 'CallbackDeactivate';
     procedure CallbackCloseQuery(var CanClose: Boolean); message 'CallbackCloseQuery:';
     procedure CallbackResize; message 'CallbackResize';
+    // Accessibility
+    function accessibilityAttributeValue(attribute: NSString): id; override;
   end;
 
   { TCocoaCustomControl }
@@ -665,6 +669,28 @@ begin
     LCLSendSizeMsg(WindowHandle.LCLForm, Round(sz.width), Round(sz.height), SIZENORMAL);
 end;
 
+function TCocoaForm.accessibilityAttributeValue(attribute: NSString): id;
+var
+  lStrAttr: String;
+  lAResult: NSArray;
+  lMAResult: NSMutableArray;
+begin
+  Result := inherited accessibilityAttributeValue(attribute);
+
+  //lStrAttr := NSStringToString(attribute);
+  //DebugLn('[TCocoaCustomControl.accessibilityAttributeValue] attribute='+lStrAttr);
+
+  if attribute.isEqualToString(NSAccessibilityChildrenAttribute) then
+  begin
+    // Strangely Cocoa doesn't add automatically the client area to the array
+    DebugLn('[TCocoaForm.accessibilityAttributeValue] NSAccessibilityChildrenAttribute');
+    lAResult := NSArray(Result);
+    lMAResult := lAResult.mutableCopy();
+    lMAResult.addObject(WindowHandle.ClientArea);
+    Result := lMAResult;
+  end;
+end;
+
 { TCocoaCustomControl }
 
 procedure TCocoaCustomControl.drawRect(dirtyRect:NSRect);
@@ -876,14 +902,14 @@ begin
   lStrAttr := NSStringToString(attribute);
   //DebugLn('[TCocoaCustomControl.accessibilityAttributeValue] attribute='+lStrAttr);
 
-  if attribute = NSAccessibilityRoleAttribute then
+  if attribute.isEqualToString(NSAccessibilityRoleAttribute) then
   begin
     DebugLn('[TCocoaCustomControl.accessibilityAttributeValue] NSAccessibilityRoleAttribute');
     lForm := WindowHandle.LCLForm;
     lFormAcc := lForm.GetAccessibleObject();
     Result := LazRoleToCocoaRole(lFormAcc.AccessibleRole);
   end
-  else if attribute = NSAccessibilityChildrenAttribute then
+  else if attribute.isEqualToString(NSAccessibilityChildrenAttribute) then
   begin
     DebugLn('[TCocoaCustomControl.accessibilityAttributeValue] NSAccessibilityChildrenAttribute');
     lAResult := NSArray(Result);
@@ -895,7 +921,9 @@ begin
       lChildAcc := lFormAcc.GetChildAccessibleObject(i);
       lAccObject := TCocoaAccessibleObject(lChildAcc.Handle);
       lMAResult.addObject(lAccObject);
+      //Debug(Format(' Adding object %s : %x', [lChildAcc.OwnerControl.ClassName, PtrUInt(lAccObject)]);
     end;
+    //DebugLn('');
     Result := lMAResult;
   end;
 end;
@@ -910,7 +938,7 @@ begin
   lResult := NSMutableArray.array_();
 
   lCocoaRole := TCocoaCustomControl.LazRoleToCocoaRole(LCLAcc.AccessibleRole);
-  if lCocoaRole.caseInsensitiveCompare(NSAccessibilityButtonRole) = NSOrderedSame then
+  if lCocoaRole.isEqualToString(NSAccessibilityButtonRole) then
   begin
     lResult.addObject(NSAccessibilityDescriptionAttribute);
     lResult.addObject(NSAccessibilityFocusedAttribute);
@@ -948,39 +976,39 @@ begin
   lStrAttr := NSStringToString(attribute);
   //DebugLn('[TCocoaAccessibleObject.accessibilityAttributeValue] attribute='+lStrAttr);
 
-  if attribute.caseInsensitiveCompare(NSAccessibilityRoleAttribute) = NSOrderedSame then
+  if attribute.isEqualToString(NSAccessibilityRoleAttribute) then
   begin
     DebugLn('[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityRoleAttribute');
     Result := TCocoaCustomControl.LazRoleToCocoaRole(LCLAcc.AccessibleRole);
   end
-  else if attribute.caseInsensitiveCompare(NSAccessibilityRoleDescriptionAttribute) = NSOrderedSame then
+  else if attribute.isEqualToString(NSAccessibilityRoleDescriptionAttribute) then
   begin
 
   end
-  else if attribute.caseInsensitiveCompare(NSAccessibilityValueAttribute) = NSOrderedSame then
+  else if attribute.isEqualToString(NSAccessibilityValueAttribute) then
   begin
 
   end
   {else if attribute = NSAccessibilityMinValueAttribute: NSString; cvar; external;
   NSAccessibilityMaxValueAttribute: NSString; cvar; external;}
-  else if attribute.caseInsensitiveCompare(NSAccessibilityEnabledAttribute) = NSOrderedSame then
+  else if attribute.isEqualToString(NSAccessibilityEnabledAttribute) then
   begin
     Result := NSNumber.numberWithBool(LCLControl.Enabled);
   end
-  else if attribute.caseInsensitiveCompare(NSAccessibilityFocusedAttribute) = NSOrderedSame then
+  else if attribute.isEqualToString(NSAccessibilityFocusedAttribute) then
   begin
     if LCLControl is TWinControl then
       Result := NSNumber.numberWithBool(TWinControl(LCLControl).Focused)
     else Result := NSNumber.numberWithBool(False);
   end
-  else if attribute.caseInsensitiveCompare(NSAccessibilityParentAttribute) = NSOrderedSame then
+  else if attribute.isEqualToString(NSAccessibilityParentAttribute) then
   begin
     lParent := LCLControl.Parent;
     if lParent <> nil then
       Result := TCocoaAccessibleObject(lParent.GetAccessibleObject().Handle);
   end
-  else if (attribute = NSAccessibilityChildrenAttribute)
-    or (attribute = NSAccessibilityVisibleChildrenAttribute) then
+  else if attribute.isEqualToString(NSAccessibilityChildrenAttribute)
+    or attribute.isEqualToString(NSAccessibilityVisibleChildrenAttribute) then
   begin
     DebugLn('[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityChildrenAttribute');
     lAResult := NSArray(Result);
@@ -992,20 +1020,20 @@ begin
     end;
     Result := lMAResult;
   end
-  else if attribute.caseInsensitiveCompare(NSAccessibilityWindowAttribute) = NSOrderedSame then
+  else if attribute.isEqualToString(NSAccessibilityWindowAttribute) then
   begin
     lForm := Forms.GetParentForm(LCLControl);
     Result := TCocoaAccessibleObject(lForm.GetAccessibleObject().Handle);
   end
-  else if attribute = NSAccessibilityTopLevelUIElementAttribute then
+  else if attribute.isEqualToString(NSAccessibilityTopLevelUIElementAttribute) then
   begin
 
   end
-  else if attribute = NSAccessibilitySelectedChildrenAttribute then
+  else if attribute.isEqualToString(NSAccessibilitySelectedChildrenAttribute) then
   begin
 
   end
-  else if attribute = NSAccessibilityPositionAttribute then
+  else if attribute.isEqualToString(NSAccessibilityPositionAttribute) then
   begin
     lPoint := LCLAcc.Position;
     lNSPoint.x := lPoint.X;
@@ -1013,7 +1041,7 @@ begin
     Result := NSValue.valueWithPoint(lNSPoint);
     DebugLn(Format('[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityPositionAttribute Result=%d,%d', [lPoint.X, lPoint.Y]));
   end
-  else if attribute = NSAccessibilitySizeAttribute then
+  else if attribute.isEqualToString(NSAccessibilitySizeAttribute) then
   begin
     lSize := LCLAcc.Size;
     lNSSize.width := lSize.CX;

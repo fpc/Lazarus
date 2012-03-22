@@ -39,6 +39,7 @@ begin
   win.setContentView(cnt);
 
   winhandle.CocoaForm := win;
+  winhandle.ClientArea := cnt;
   Result := TLCLIntfHandle(winhandle);
 end;
 

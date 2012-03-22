@@ -555,6 +555,11 @@ begin
   end;
 end;
 
+function TCDWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
+begin
+  Result := inherited GetKeyState(nVirtKey);
+end;
+
 (*function TCocoaWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
 var
   ScreenID: NSScreen absolute hMonitor;

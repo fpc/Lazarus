@@ -24,7 +24,7 @@
 
 { TCDWidgetSet }
 
-function TCDWidgetSet.GetAppHandle: THandle; override;
+function TCDWidgetSet.GetAppHandle: THandle;
 begin
   Result := THandle(NSApp);
 end;
