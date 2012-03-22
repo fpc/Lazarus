@@ -82,7 +82,7 @@ uses
 {$ENDIF}
   Classes, SysUtils, Process, UTF8Process,
   LCLProc, FileProcs, FileUtil, Forms, Controls, Dialogs,
-  IDECmdLine, LazConf, Splash;
+  IDECmdLine, LazConf, Splash, IDEDialogs;
   
 type
   TLazarusProcess = class
@@ -300,8 +300,7 @@ begin
               +CustomExe+#13
               +'(date: '+DateTimeToStr(FileDateToDateTimeDef(FileAgeUTF8(CustomExe)))+')'#13
               ,mtConfirmation,
-              [mrYes,'Start system default',mrNo,'Start my custom',mrAbort],0
-              );
+              [mrYes,'Start system default',mrNo,'Start my custom',mrAbort]);
             case MsgResult of
             mrYes: FLazarusPath:=DefaultExe;
             mrNo: FLazarusPath:=CustomExe;
