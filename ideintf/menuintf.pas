@@ -59,6 +59,7 @@ type
     FSectionIndex: Integer;
     FSize: integer;
     FTag: Integer;
+    FUserTag: PtrUInt;
     FVisible: Boolean;
     FLastVisibleActive: boolean;
     procedure MenuItemDestroy(Sender: TObject);
@@ -115,6 +116,7 @@ type
     property AutoFreeMenuItem: boolean read FAutoFreeMenuItem write FAutoFreeMenuItem;
     property ResourceName: String read FResourceName write SetResourceName;
     property Tag: Integer read FTag write FTag;
+    property UserTag: PtrUInt read FUserTag write FUserTag;
   end;
   TIDEMenuItemClass = class of TIDEMenuItem;
   
@@ -229,7 +231,6 @@ type
     FRadioItem: Boolean;
     FRightJustify: boolean;
     FShowAlwaysCheckable: boolean;
-    FUserTag: PtrUInt;
   protected
     procedure MenuItemClick(Sender: TObject); override;
     procedure SetAutoCheck(const AValue: boolean); virtual;
@@ -254,7 +255,6 @@ type
     property RightJustify: boolean read FRightJustify write SetRightJustify;
     property ShowAlwaysCheckable: boolean read FShowAlwaysCheckable
                                           write SetShowAlwaysCheckable;
-    property UserTag: PtrUInt read FUserTag write FUserTag;
   end;
   TIDEMenuCommandClass = class of TIDEMenuCommand;
   

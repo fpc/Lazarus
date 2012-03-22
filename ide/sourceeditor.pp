@@ -579,6 +579,7 @@ type
     procedure NotebookShowTabHint(Sender: TObject; HintInfo: PHintInfo);
     procedure OpenAtCursorClicked(Sender: TObject);
     procedure OnPopupMenuOpenFile(Sender: TObject);
+    procedure OnPopupOpenPackageFile(Sender: TObject);
     procedure TabPopUpMenuPopup(Sender: TObject);
     procedure SrcPopUpMenuPopup(Sender: TObject);
     procedure DbgPopUpMenuPopup(Sender: TObject);
@@ -5479,6 +5480,7 @@ begin
       begin
         EditorCur := TSourceEditor(EdList.Objects[i]);
         s := lisMEOther;
+        P := nil;
         if (EditorCur.GetProjectFile <> nil) and (EditorCur.GetProjectFile.IsPartOfProject) then
           s := dlgEnvProject
         else begin
@@ -5487,10 +5489,12 @@ begin
             s := Format(lisTabsFor, [p.Name]);
         end;
 
-        if SrcEditMenuSectionEditors.FindByName(S) is TIDEMenuSection then
+        if SrcEditMenuSectionEditors.FindByName(S) is TIDEMenuSection then begin
           M := TIDEMenuSection(SrcEditMenuSectionEditors.FindByName(S))
-        else
+        end else begin
           M := RegisterIDESubMenu(SrcEditMenuSectionEditors, S, S);
+          M.UserTag := PtrUInt(P);
+        end;
         M.Visible := True;
 
         AddEditorToMenuSection(EditorCur, M, i);
@@ -5510,20 +5514,22 @@ begin
         RecMenu.Visible := True;
       end;
 
-      for i := 0 to SrcEditMenuSectionEditors.Count - 1 do
+      for i := 0 to SrcEditMenuSectionEditors.Count - 1 do begin
         if SrcEditMenuSectionEditors.Items[i] is TIDEMenuSection then begin
-          if SrcEditMenuSectionEditors.Items[i].Tag = 0 then
-            SrcEditMenuSectionEditors.Items[i].Caption
-              := SrcEditMenuSectionEditors.Items[i].Caption
-              +  Format(' (%d)',
-                        [(SrcEditMenuSectionEditors.Items[i] as TIDEMenuSection).Count])
+          M := SrcEditMenuSectionEditors.Items[i] as TIDEMenuSection;
+
+          if M.Tag = 0 then
+            M.Caption := M.Caption +  Format(' (%d)', [M.Count])
           else
-            SrcEditMenuSectionEditors.Items[i].Caption
-              := SrcEditMenuSectionEditors.Items[i].Caption
-              +  Format(' (*%d/%d)',
-                        [SrcEditMenuSectionEditors.Items[i].Tag,
-                         (SrcEditMenuSectionEditors.Items[i] as TIDEMenuSection).Count]);
+            M.Caption := M.Caption +  Format(' (*%d/%d)', [M.Tag, M.Count]);
+
+          if M.UserTag <> 0 then
+            RegisterIDEMenuCommand(
+                    RegisterIDEMenuSection(M as TIDEMenuSection, 'Open lpk sect '+TIDEPackage(M.UserTag).Filename),
+                   'Open lpk '+TIDEPackage(M.UserTag).Filename,
+                   lisCompPalOpenPackage, @OnPopupOpenPackageFile, nil, nil, '', M.UserTag);
         end;
+      end;
     end;
   finally
     SourceTabMenuRoot.EndUpdate;
@@ -6692,6 +6698,14 @@ begin
     MainIDEInterface.DoOpenEditorFile(aFilename,
       PageIndex+1, Manager.IndexOfSourceWindow(self),
       [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
+end;
+
+procedure TSourceNotebook.OnPopupOpenPackageFile(Sender: TObject);
+begin
+  if (Sender as TIDEMenuItem).UserTag <> 0 then begin
+    PackageEditingInterface.DoOpenPackageFile
+      (TIDEPackage((Sender as TIDEMenuItem).UserTag).Filename,[pofAddToRecent],false)
+  end;
 end;
 
 Procedure TSourceNotebook.OpenAtCursorClicked(Sender: TObject);
