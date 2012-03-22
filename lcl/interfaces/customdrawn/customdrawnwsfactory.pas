@@ -134,9 +134,8 @@ end;
 
 function RegisterLazAccessibleObject: Boolean; alias : 'WSRegisterLazAccessibleObject';
 begin
-//      RegisterWSLazAccessibleObject(TGtk2WSLazAccessibleObject);
-//      Result := True;
-  Result := False;
+  RegisterWSLazAccessibleObject(TCDWSLazAccessibleObject);
+  Result := True;
 end;
 
 function RegisterControl: Boolean; alias : 'WSRegisterControl';

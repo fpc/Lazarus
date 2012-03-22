@@ -157,28 +157,24 @@ uses
 
 { TCDWSLazAccessibleObject }
 
+{$ifdef CD_Cocoa}
 class function TCDWSLazAccessibleObject.CreateHandle(
   const AObject: TLazAccessibleObject): HWND;
 begin
   Result := 0;
-  {$ifdef CD_Cocoa}
+  if AObject = nil then Exit;
   Result := HWND(TCocoaAccessibleObject.alloc.init);
   TCocoaAccessibleObject(Result).LCLAcc := AObject;
   TCocoaAccessibleObject(Result).LCLControl := AObject.OwnerControl;
-  {$endif}
 end;
 
 class procedure TCDWSLazAccessibleObject.DestroyHandle(
   const AObject: TLazAccessibleObject);
-{$ifdef CD_Cocoa}
 var
   lAccessibleHandle: TCocoaAccessibleObject;
-{$endif}
 begin
-  {$ifdef CD_Cocoa}
   lAccessibleHandle := TCocoaAccessibleObject(AObject.Handle);
   lAccessibleHandle.release;
-  {$endif}
 end;
 
 class procedure TCDWSLazAccessibleObject.SetAccessibleDescription(
@@ -198,6 +194,36 @@ class procedure TCDWSLazAccessibleObject.SetAccessibleRole(
 begin
 
 end;
+{$else}
+class function TCDWSLazAccessibleObject.CreateHandle(
+  const AObject: TLazAccessibleObject): HWND;
+begin
+  Result := 0;
+end;
+
+class procedure TCDWSLazAccessibleObject.DestroyHandle(
+  const AObject: TLazAccessibleObject);
+begin
+end;
+
+class procedure TCDWSLazAccessibleObject.SetAccessibleDescription(
+  const AObject: TLazAccessibleObject; const ADescription: string);
+begin
+
+end;
+
+class procedure TCDWSLazAccessibleObject.SetAccessibleValue(
+  const AObject: TLazAccessibleObject; const AValue: string);
+begin
+
+end;
+
+class procedure TCDWSLazAccessibleObject.SetAccessibleRole(
+  const AObject: TLazAccessibleObject; const ARole: TLazAccessibilityRole);
+begin
+
+end;
+{$endif}
 
 class function  TCDWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 begin

@@ -946,6 +946,7 @@ type
     // only for GetChildAccessibleObject(Index)
     FLastSearchNode: TAvgLvlTreeNode;
     FLastSearchIndex: Integer;
+    FLastSearchInSubcontrols: Boolean;
     function GetHandle: PtrInt;
     function GetPosition: TPoint;
     function GetSize: TSize;
@@ -977,9 +978,14 @@ type
     procedure InsertChildAccessibleObject(AObject: TLazAccessibleObject);
     procedure ClearChildAccessibleObjects;
     procedure RemoveChildAccessibleObject(AObject: TLazAccessibleObject; AFreeObject: Boolean = True);
+    // These search only in the child objects added manually
     function GetChildAccessibleObjectWithDataObject(ADataObject: TObject): TLazAccessibleObject;
     function GetChildAccessibleObjectsCount: Integer;
     function GetChildAccessibleObject(AIndex: Integer): TLazAccessibleObject;
+    // These search in all subcontrols too
+    function GetFirstChildAccessibleObject: TLazAccessibleObject;
+    function GetNextChildAccessibleObject: TLazAccessibleObject;
+    //
     function GetSelectedChildAccessibleObject: TLazAccessibleObject; virtual;
     function GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject; virtual;
     // Primary information

@@ -61,4 +61,5 @@
 {.$define VerboseCDDrawing}
 {.$define VerboseCDBitmap}
 { $define VerboseCDForms}
+{$define VerboseCDAccessibility}
 

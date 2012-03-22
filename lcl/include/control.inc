@@ -265,6 +265,44 @@ begin
   Result := TLazAccessibleObject(lNode.Data);
 end;
 
+function TLazAccessibleObject.GetFirstChildAccessibleObject: TLazAccessibleObject;
+begin
+  Result := nil;
+  FLastSearchInSubcontrols := False;
+  if GetChildAccessibleObjectsCount() > 0 then
+    Result := GetChildAccessibleObject(0)
+  else if (OwnerControl <> nil) and (OwnerControl is TWinControl) then
+  begin
+    FLastSearchIndex := 1;
+    FLastSearchInSubcontrols := True;
+    Result := TWinControl(OwnerControl).Controls[0].GetAccessibleObject();
+  end;
+end;
+
+function TLazAccessibleObject.GetNextChildAccessibleObject: TLazAccessibleObject;
+begin
+  Result := nil;
+  if not FLastSearchInSubcontrols then
+  begin
+    if GetChildAccessibleObjectsCount() < FLastSearchIndex then
+      Result := GetChildAccessibleObject(FLastSearchIndex)
+    else if (OwnerControl <> nil) and (OwnerControl is TWinControl) then
+    begin
+      FLastSearchIndex := 1;
+      FLastSearchInSubcontrols := True;
+      Result := TWinControl(OwnerControl).Controls[0].GetAccessibleObject();
+    end;
+  end
+  else
+  begin
+    if TWinControl(OwnerControl).ControlCount < FLastSearchIndex then
+    begin
+      Result := TWinControl(OwnerControl).Controls[FLastSearchIndex].GetAccessibleObject();
+      Inc(FLastSearchIndex);
+    end;
+  end;
+end;
+
 function TLazAccessibleObject.GetSelectedChildAccessibleObject: TLazAccessibleObject;
 begin
   Result := nil;

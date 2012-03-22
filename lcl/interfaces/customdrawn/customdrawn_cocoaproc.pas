@@ -683,7 +683,9 @@ begin
   if attribute.isEqualToString(NSAccessibilityChildrenAttribute) then
   begin
     // Strangely Cocoa doesn't add automatically the client area to the array
-    DebugLn('[TCocoaForm.accessibilityAttributeValue] NSAccessibilityChildrenAttribute');
+    {$ifdef VerboseCDAccessibility}
+    //DebugLn('[TCocoaForm.accessibilityAttributeValue] NSAccessibilityChildrenAttribute');
+    {$endif}
     lAResult := NSArray(Result);
     lMAResult := lAResult.mutableCopy();
     lMAResult.addObject(WindowHandle.ClientArea);
@@ -904,26 +906,38 @@ begin
 
   if attribute.isEqualToString(NSAccessibilityRoleAttribute) then
   begin
+    {$ifdef VerboseCDAccessibility}
     DebugLn('[TCocoaCustomControl.accessibilityAttributeValue] NSAccessibilityRoleAttribute');
+    {$endif}
     lForm := WindowHandle.LCLForm;
     lFormAcc := lForm.GetAccessibleObject();
     Result := LazRoleToCocoaRole(lFormAcc.AccessibleRole);
   end
   else if attribute.isEqualToString(NSAccessibilityChildrenAttribute) then
   begin
-    DebugLn('[TCocoaCustomControl.accessibilityAttributeValue] NSAccessibilityChildrenAttribute');
+    {$ifdef VerboseCDAccessibility}
+    lStrAttr := '[TCocoaCustomControl.accessibilityAttributeValue] NSAccessibilityChildrenAttribute';
+    {$endif}
     lAResult := NSArray(Result);
     lMAResult := lAResult.mutableCopy();
     lForm := WindowHandle.LCLForm;
     lFormAcc := lForm.GetAccessibleObject();
-    for i := 0 to lFormAcc.GetChildAccessibleObjectsCount() - 1 do
+    lChildAcc := lFormAcc.GetFirstChildAccessibleObject();
+    while lChildAcc <> nil do
     begin
-      lChildAcc := lFormAcc.GetChildAccessibleObject(i);
       lAccObject := TCocoaAccessibleObject(lChildAcc.Handle);
-      lMAResult.addObject(lAccObject);
-      //Debug(Format(' Adding object %s : %x', [lChildAcc.OwnerControl.ClassName, PtrUInt(lAccObject)]);
+      if lAccObject <> nil then
+      begin
+        lMAResult.addObject(lAccObject);
+        {$ifdef VerboseCDAccessibility}
+        lStrAttr := lStrAttr + Format(' Adding object %s : %x', [lChildAcc.OwnerControl.ClassName, PtrUInt(lAccObject)]);
+        {$endif}
+      end;
+      lChildAcc := lFormAcc.GetNextChildAccessibleObject();
     end;
-    //DebugLn('');
+    {$ifdef VerboseCDAccessibility}
+    DebugLn(lStrAttr);
+    {$endif}
     Result := lMAResult;
   end;
 end;
@@ -935,6 +949,9 @@ var
   lResult: NSMutableArray;
   lCocoaRole: NSString;
 begin
+  {$ifdef VerboseCDAccessibility}
+  DebugLn(Format('[TCocoaAccessibleObject.accessibilityAttributeNames] Self=%x', [PtrUInt(Self)]));
+  {$endif}
   lResult := NSMutableArray.array_();
 
   lCocoaRole := TCocoaCustomControl.LazRoleToCocoaRole(LCLAcc.AccessibleRole);
@@ -950,7 +967,23 @@ begin
     lResult.addObject(NSAccessibilityTopLevelUIElementAttribute);
     lResult.addObject(NSAccessibilityWindowAttribute);
     lResult.addObject(NSAccessibilityTitleAttribute);
+  end
+  else
+  begin
+    lResult.addObject(NSAccessibilityDescriptionAttribute);
+    lResult.addObject(NSAccessibilityFocusedAttribute);
+    lResult.addObject(NSAccessibilityParentAttribute);
+    lResult.addObject(NSAccessibilityPositionAttribute);
+    lResult.addObject(NSAccessibilityRoleAttribute);
+    lResult.addObject(NSAccessibilitySizeAttribute);
+    lResult.addObject(NSAccessibilityTitleAttribute);
+    lResult.addObject(NSAccessibilityTopLevelUIElementAttribute);
+    lResult.addObject(NSAccessibilityWindowAttribute);
+    lResult.addObject(NSAccessibilityTitleAttribute);
   end;
+
+  // This one we use to put LCL object and class names to help debugging =)
+  lResult.addObject(NSAccessibilityUnitDescriptionAttribute);
 
   Result := lResult;
 end;
@@ -971,14 +1004,20 @@ var
   lForm: TCustomForm;
   lParent: TWinControl;
 begin
-  Result := inherited accessibilityAttributeValue(attribute);
+  //Result := inherited accessibilityAttributeValue(attribute); -> This raises errors, so don't
+  Result := nil;
 
   lStrAttr := NSStringToString(attribute);
-  //DebugLn('[TCocoaAccessibleObject.accessibilityAttributeValue] attribute='+lStrAttr);
+  {$ifdef VerboseCDAccessibility}
+  DebugLn(Format(':>[TCocoaAccessibleObject.accessibilityAttributeValue] Self=%x LCLControl=%x',
+    [PtrUInt(Self), PtrUInt(LCLControl)]));
+  {$endif}
 
   if attribute.isEqualToString(NSAccessibilityRoleAttribute) then
   begin
-    DebugLn('[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityRoleAttribute');
+    {$ifdef VerboseCDAccessibility}
+    DebugLn(':<[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityRoleAttribute');
+    {$endif}
     Result := TCocoaCustomControl.LazRoleToCocoaRole(LCLAcc.AccessibleRole);
   end
   else if attribute.isEqualToString(NSAccessibilityRoleDescriptionAttribute) then
@@ -1005,12 +1044,31 @@ begin
   begin
     lParent := LCLControl.Parent;
     if lParent <> nil then
-      Result := TCocoaAccessibleObject(lParent.GetAccessibleObject().Handle);
+    begin
+      {$ifdef VerboseCDAccessibility}
+      DebugLn(Format(':<[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityParentAttribute Self=%s Parent=%s',
+        [LCLControl.ClassName, lParent.ClassName]));
+      {$endif}
+      // if the parent is a form, pass to the custom control
+      if lParent is TCustomForm then
+        Result := TCocoaWindow(lParent.Handle).ClientArea
+      else
+        Result := TCocoaAccessibleObject(lParent.GetAccessibleObject().Handle);
+    end
+    else
+    begin
+      {$ifdef VerboseCDAccessibility}
+      DebugLn(':<[TCocoaAccessibleObject.accessibilityAttributeValue] ERROR: Parent is nil!');
+      {$endif}
+      Result := nil;
+    end;
   end
   else if attribute.isEqualToString(NSAccessibilityChildrenAttribute)
     or attribute.isEqualToString(NSAccessibilityVisibleChildrenAttribute) then
   begin
-    DebugLn('[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityChildrenAttribute');
+    {$ifdef VerboseCDAccessibility}
+    DebugLn(':[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityChildrenAttribute');
+    {$endif}
     lAResult := NSArray(Result);
     lMAResult := lAResult.mutableCopy();
     for i := 0 to LCLAcc.GetChildAccessibleObjectsCount() - 1 do
@@ -1039,7 +1097,9 @@ begin
     lNSPoint.x := lPoint.X;
     lNSPoint.y := lPoint.Y;
     Result := NSValue.valueWithPoint(lNSPoint);
-    DebugLn(Format('[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityPositionAttribute Result=%d,%d', [lPoint.X, lPoint.Y]));
+    {$ifdef VerboseCDAccessibility}
+    DebugLn(Format(':<[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityPositionAttribute Result=%d,%d', [lPoint.X, lPoint.Y]));
+    {$endif}
   end
   else if attribute.isEqualToString(NSAccessibilitySizeAttribute) then
   begin
@@ -1047,20 +1107,29 @@ begin
     lNSSize.width := lSize.CX;
     lNSSize.height := lSize.CY;
     Result := NSValue.valueWithSize(lNSSize);
-    DebugLn(Format('[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilitySizeAttribute Result=%d,%d', [lSize.CX, lSize.CY]));
+    {$ifdef VerboseCDAccessibility}
+    DebugLn(Format(':<[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilitySizeAttribute Result=%d,%d', [lSize.CX, lSize.CY]));
+    {$endif}
+  end
+  // This one we use to put LCL object and class names to help debugging =)
+  else if attribute.isEqualToString(NSAccessibilityUnitDescriptionAttribute) then
+  begin
+    Result := NSStringUtf8(LCLControl.Name+':'+LCLControl.ClassName);
   end;
 end;
 
 function TCocoaAccessibleObject.accessibilityIsAttributeSettable(
   attribute: NSString): Boolean;
 begin
+  {$ifdef VerboseCDAccessibility}
+  DebugLn('[TCocoaAccessibleObject.accessibilityIsAttributeSettable]');
+  {$endif}
   Result := False;
 end;
 
 procedure TCocoaAccessibleObject.accessibilitySetValue_forAttribute(value: id;
   attribute: NSString);
 begin
-
 end;
 
 function TCocoaAccessibleObject.accessibilityParameterizedAttributeNames: NSArray;
@@ -1078,6 +1147,9 @@ end;
 function TCocoaAccessibleObject.accessibilityAttributeValue_forParameter(
   attribute: NSString; parameter: id): id;
 begin
+  {$ifdef VerboseCDAccessibility}
+  DebugLn('[TCocoaAccessibleObject.accessibilityAttributeValue_forParameter]');
+  {$endif}
   Result := nil;
 end;
 
@@ -1086,6 +1158,9 @@ var
   lResult: NSMutableArray;
   lCocoaRole: NSString;
 begin
+  {$ifdef VerboseCDAccessibility}
+  DebugLn('[TCocoaAccessibleObject.accessibilityActionNames]');
+  {$endif}
   lResult := NSMutableArray.array_();
 
   lCocoaRole := TCocoaCustomControl.LazRoleToCocoaRole(LCLAcc.AccessibleRole);
