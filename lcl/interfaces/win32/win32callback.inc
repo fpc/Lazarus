@@ -752,6 +752,7 @@ var
           // we need to active it ourself. This is needed only when click is happen
           // on disabled window (e.g. ShowModal is called and non modal window is clicked)
           Win32WidgetSet.AppBringToFront;
+          LMessage.Result := 1;
         end;
       end;
     end;
