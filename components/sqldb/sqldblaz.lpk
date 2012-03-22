@@ -1,11 +1,10 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="SQLDBLaz"/>
-    <AddToProjectUsesSection Value="False"/>
     <Author Value="Joost van der Sluis"/>
     <CompilerOptions>
-      <Version Value="9"/>
+      <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
@@ -16,7 +15,6 @@
       </Parsing>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
-        <CreateMakefileOnBuild Value="True"/>
       </Other>
     </CompilerOptions>
     <Description Value="Lazarus package for the FCL SQLdb components.
@@ -66,7 +64,7 @@
       </Item4>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)/"/>
+      <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>

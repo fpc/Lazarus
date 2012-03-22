@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="RunTimeTypeInfoControls"/>
+    <AddToProjectUsesSection Value="True"/>
     <Author Value="Mattias Gaertner"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
@@ -15,7 +16,6 @@
       </Parsing>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
-        <CreateMakefileOnBuild Value="True"/>
       </Other>
     </CompilerOptions>
     <Description Value="LCL controls using the FreePascal RTTI to access TPersistent properties.
@@ -39,7 +39,7 @@
         <Type Value="LRS"/>
       </Item3>
     </Files>
-    <LazDoc Paths="/home/mattias/pascal/wichtig/lazarus/components/rtticontrols/fpdoc/"/>
+    <LazDoc Paths="/home/mattias/pascal/wichtig/lazarus/components/rtticontrols/fpdoc"/>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
       <Item1>
@@ -55,7 +55,7 @@
       </Item3>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)/"/>
+      <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
