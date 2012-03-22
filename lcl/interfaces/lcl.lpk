@@ -76,7 +76,7 @@ end;"/>
         <Count Value="2"/>
         <Item1>
           <Identifier Value="LCLWidgetType"/>
-          <Values Count="11">
+          <Values Count="10">
             <Item1 Value="gtk"/>
             <Item2 Value="gtk2"/>
             <Item3 Value="qt"/>
@@ -86,10 +86,9 @@ end;"/>
             <Item7 Value="nogui"/>
             <Item8 Value="carbon"/>
             <Item9 Value="cocoa"/>
-            <Item10 Value="android"/>
-            <Item11 Value="customdrawn"/>
+            <Item10 Value="customdrawn"/>
           </Values>
-          <ValueDescriptions Count="11"/>
+          <ValueDescriptions Count="10"/>
         </Item1>
         <Item2>
           <Identifier Value="fpGUIPlatform"/>
