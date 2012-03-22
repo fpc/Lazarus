@@ -18,7 +18,6 @@
       </Parsing>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
-        <CreateMakefileOnBuild Value="True"/>
       </Other>
     </CompilerOptions>
     <Description Value="FPCUnit gui test runner form"/>
