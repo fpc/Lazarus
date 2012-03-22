@@ -33,6 +33,11 @@ type
     LCLControl: TCustomCheckBox;
   end;
 
+  TCDIntfRadioButton = class(TCDRadioButton)
+  public
+    LCLControl: TCustomCheckBox;
+  end;
+
   TCDIntfComboBox = class(TCDComboBox)
   public
     LCLControl: TCustomComboBox;

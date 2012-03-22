@@ -249,6 +249,7 @@ type
     class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
 //    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
 //    class procedure SetShortcut(const AButton: TCustomButton; const ShortCutK1, ShortCutK2: TShortcut); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
@@ -264,6 +265,7 @@ type
   published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
 
     class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
@@ -296,14 +298,17 @@ type
   { TCDWSRadioButton }
 
   TCDWSRadioButton = class(TWSRadioButton)
+  public
+    class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
-{    class function  CreateHandle(const AWinControl: TWinControl;
+    class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
 
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
-
-    class function RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;}
+    class function RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
   end;
 
   { TCDWSCustomStaticText }
@@ -314,6 +319,7 @@ type
   published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
 
 {    class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
@@ -1522,6 +1528,16 @@ begin
   lCDWinControl := TCDWinControl(Result);
 end;
 
+class procedure TCDWSCustomStaticText.DestroyHandle(
+  const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  lCDWinControl.CDControl.Free;
+  lCDWinControl.Free;
+end;
+
 class procedure TCDWSCustomStaticText.ShowHide(const AWinControl: TWinControl);
 var
   lCDWinControl: TCDWinControl;
@@ -1578,6 +1594,15 @@ var
 begin
   Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
   lCDWinControl := TCDWinControl(Result);
+end;
+
+class procedure TCDWSButton.DestroyHandle(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  lCDWinControl.CDControl.Free;
+  lCDWinControl.Free;
 end;
 
 class procedure TCDWSButton.ShowHide(const AWinControl: TWinControl);
@@ -1656,6 +1681,15 @@ begin
   lCDWinControl := TCDWinControl(Result);
 end;
 
+class procedure TCDWSCustomCheckBox.DestroyHandle(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  lCDWinControl.CDControl.Free;
+  lCDWinControl.Free;
+end;
+
 class procedure TCDWSCustomCheckBox.ShowHide(const AWinControl: TWinControl);
 var
   lCDWinControl: TCDWinControl;
@@ -1686,14 +1720,66 @@ end;
 
 { TCDWSRadioButton }
 
-(*{------------------------------------------------------------------------------
+class procedure TCDWSRadioButton.CreateCDControl(
+  const AWinControl: TWinControl; var ACDControlField: TCDControl);
+begin
+  ACDControlField := TCDIntfRadioButton.Create(AWinControl);
+  TCDIntfRadioButton(ACDControlField).LCLControl := TCustomCheckBox(AWinControl);
+  ACDControlField.Parent := AWinControl;
+  ACDControlField.Caption := AWinControl.Caption;
+  ACDControlField.Align := alClient;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCDWSRadioButton.CreateHandle
+  Params:  None
+  Returns: Nothing
+
+  Allocates memory and resources for the control and shows it
+ ------------------------------------------------------------------------------}
+class function TCDWSRadioButton.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  lCDWinControl: TCDWinControl;
+begin
+  Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
+  lCDWinControl := TCDWinControl(Result);
+end;
+
+class procedure TCDWSRadioButton.DestroyHandle(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  lCDWinControl.CDControl.Free;
+  lCDWinControl.Free;
+end;
+
+class procedure TCDWSRadioButton.ShowHide(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+
+  TCDWSWinControl.ShowHide(AWinControl);
+
+  if lCDWinControl.CDControl = nil then
+    CreateCDControl(AWinControl, lCDWinControl.CDControl);
+end;
+
+{------------------------------------------------------------------------------
   Method: TCDWSRadioButton.RetrieveState
   Params:  None
   Returns: The state of the control
  ------------------------------------------------------------------------------}
 class function TCDWSRadioButton.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+var
+  lCDWinControl: TCDWinControl;
 begin
-  if TQtRadioButton(ACustomCheckBox.Handle).isChecked then
+  Result := cbUnchecked;
+  lCDWinControl := TCDWinControl(ACustomCheckBox.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  if TCDIntfRadioButton(lCDWinControl.CDControl).Checked then
     Result := cbChecked
   else
     Result := cbUnchecked;
@@ -1707,7 +1793,7 @@ end;
 class procedure TCDWSRadioButton.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
   const ShortCutK1, ShortCutK2: TShortCut);
 begin
-  TQtRadioButton(ACustomCheckBox.Handle).setShortcut(ShortCutK1, ShortCutK2);
+//  TQtRadioButton(ACustomCheckBox.Handle).setShortcut(ShortCutK1, ShortCutK2);
 end;
 
 {------------------------------------------------------------------------------
@@ -1718,37 +1804,17 @@ end;
   Sets the state of the control
  ------------------------------------------------------------------------------}
 class procedure TCDWSRadioButton.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
-var
-  QtRadioButton: TQtRadioButton;
 begin
   //enclose the call between Begin/EndUpdate to avoid send LM_CHANGE message
-  QtRadioButton := TQtRadioButton(ACustomCheckBox.Handle);
+{  QtRadioButton := TQtRadioButton(ACustomCheckBox.Handle);
   QtRadioButton.BeginUpdate;
   QtRadioButton.setChecked(NewState = cbChecked);
-  QtRadioButton.EndUpdate;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TCDWSRadioButton.CreateHandle
-  Params:  None
-  Returns: Nothing
-
-  Allocates memory and resources for the control and shows it
- ------------------------------------------------------------------------------}
-class function TCDWSRadioButton.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
-var
-  QtRadioButton: TQtRadioButton;
-begin
-  QtRadioButton := TQtRadioButton.Create(AWinControl, AParams);
-  QtRadioButton.AttachEvents;
-
-  Result := TLCLIntfHandle(QtRadioButton);
+  QtRadioButton.EndUpdate;}
 end;
 
 { TCDWSToggleBox }
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Method: TCDWSToggleBox.RetrieveState
   Params:  None
   Returns: Nothing
