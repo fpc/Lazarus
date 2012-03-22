@@ -1757,6 +1757,8 @@ var
   Info: PWidgetInfo;
   Old: TObject;
   Mess: TLMessage;
+  Path: PGtkTreePath;
+  Column: PGtkTreeViewColumn;
   {$IFDEF VerboseMouseBugfix}
   AWinControl: TWinControl;
   {$ENDIF}
@@ -1843,10 +1845,13 @@ begin
        Issues #16972, #17888. }
       if Result and GTK_IS_TREE_VIEW(Widget) and (event^.button = 3) then
       begin
-        Result := False;
-        FillChar(Mess,SizeOf(Mess),0);
-        Mess.msg := LM_SelChange;
-        DeliverMessage(TWinControl(Data), Mess);
+        Column := gtk_tree_view_get_column(GTK_TREE_VIEW(Widget), 0);
+        if gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(Widget), Round(Event^.x), Round(Event^.y),
+          Path, Column, @x, @y) then
+        begin
+          gtk_tree_view_set_cursor(GTK_TREE_VIEW(Widget), Path, Column, False);
+          gtk_widget_queue_draw(Widget);
+        end;
         g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
       end;
 
