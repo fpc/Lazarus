@@ -459,7 +459,19 @@ end;
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; ARect: PRect = nil): Boolean;
 var
+  Desc: TRawImageDescription absolute ARawImage.Description;
   CDBitmap: TCDBitmap;
+  lBmpRawImage: TRawImage;
+  NewData: PByte;
+  (*var
+    Image: TQtImage absolute ABitmap;
+    Mask: TQtImage absolute AMask;
+
+    WorkImage, WorkMask: TQtImage;
+    R: TRect;
+    Width, Height: Integer;
+    InvertPixels: Boolean;
+    Px: QRgb;*)
 begin
   {$ifdef VerboseCDBitmap}
   DebugLn(Format('[TCDWidgetSet.RawImage_FromBitmap] ABitmap=%x', [ABitmap]));
@@ -474,28 +486,23 @@ begin
 
   CDBitmap := TCDBitmap(ABitmap);
 
-  CDBitmap.Image.GetRawImage(ARawImage);
-end;
-(*var
-  Desc: TRawImageDescription absolute ARawImage.Description;
-  Image: TQtImage absolute ABitmap;
-  Mask: TQtImage absolute AMask;
-  
-  WorkImage, WorkMask: TQtImage;
-  R: TRect;
-  Width, Height: Integer;
-  InvertPixels: Boolean;
-  Px: QRgb;
-begin
-  Result := False;
-  
-  if not CheckBitmap(ABitmap, 'RawImage_FromBitmap') then Exit;
-  if (AMask <> 0) and not CheckBitmap(AMask, 'RawImage_FromBitmap (mask)') then Exit;
-
   ARawImage.Init;
   RawImage_DescriptionFromBitmap(ABitmap, Desc);
 
-  if ARect = nil
+  // Copy the data
+  CDBitmap.Image.GetRawImage(lBmpRawImage);
+  if lBmpRawImage.DataSize > 0 then
+  begin
+    NewData := AllocMem(lBmpRawImage.DataSize);
+    System.Move(lBmpRawImage.Data^, NewData^, lBmpRawImage.DataSize);
+  end
+  else
+    NewData := nil;
+
+  ARawImage.Data := NewData;
+  ARawImage.DataSize := lBmpRawImage.DataSize;
+
+(*  if ARect = nil
   then begin
     Width := Image.Width;
     Height := Image.Height;
@@ -565,12 +572,12 @@ begin
   if WorkImage <> Image then
     WorkImage.Free;
   if WorkMask <> Mask then
-    WorkMask.Free;
+    WorkMask.Free;*)
 
   Result := True;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: RawImage_FromDevice
   Params: ADC:
           ARect:

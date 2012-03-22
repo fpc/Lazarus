@@ -3142,6 +3142,7 @@ end;
 
 procedure TLazIntfImage.FreeData;
 begin
+  DebugLn(Format('[TLazIntfImage.FreeData] Self=%x Data=%x', [PtrUInt(Self), PtrUInt(FRawImage.Data)]));
   if FDataOwner
   then ReallocMem(FRawImage.Data, 0)
   else FRawImage.Data := nil;
@@ -3150,7 +3151,7 @@ begin
   if FLineStarts <> nil then Dispose(FLineStarts);
   FLineStarts := nil;
   
-  if FDataOwner
+  if FDataOwner and (FRawImage.Mask <> nil)
   then ReallocMem(FRawImage.Mask, 0)
   else FRawImage.Mask := nil;
   FRawImage.MaskSize := 0;
@@ -3159,7 +3160,7 @@ begin
   FMaskLineStarts := nil;
   FMaskSet := False;
   
-  if FDataOwner
+  if FDataOwner and (FRawImage.Palette <> nil)
   then ReallocMem(FRawImage.Palette, 0)
   else FRawImage.Palette := nil;
   FRawImage.PaletteSize := 0;
