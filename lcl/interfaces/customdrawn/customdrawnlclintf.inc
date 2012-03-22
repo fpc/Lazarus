@@ -366,12 +366,18 @@ begin
   end
   else
     NewData := nil;
-    
+  {$ifdef VerboseCDBitmap}
+  DebugLn(Format(':[TCDWidgetSet.RawImage_CreateBitmaps] Data=%x Data size=%d NewData=%x',
+    [PtrUInt(ARawImage.Data), ARawImage.DataSize, PtrUInt(NewData)]));
+  {$endif}
+
   // this is only a rough implementation, there is no check against bitsperpixel
   lBitmap := TCDBitmap.Create;
   ABitmap := HBITMAP(lBitmap);
   System.Move(ARawImage, lRawImage, SizeOf(TRawImage));
   lRawImage.Data := NewData;
+  lRawImage.Mask := nil;
+  lRawImage.Palette := nil;
   lBitmap.Image := TLazIntfImage.Create(lRawImage, True);
   Result := ABitmap <> 0;
 

@@ -59,7 +59,7 @@
 // ==================
 {.$define VerboseCDPaintProfiler}
 {.$define VerboseCDDrawing}
-{.$define VerboseCDBitmap}
+{ $define VerboseCDBitmap}
 { $define VerboseCDForms}
-{$define VerboseCDAccessibility}
+{.$define VerboseCDAccessibility}
 

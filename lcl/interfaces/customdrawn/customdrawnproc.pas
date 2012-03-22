@@ -886,7 +886,6 @@ begin
           end;
         end;
       end;
-    TT_Close_Face(AFace);
     end;
     {$ifdef CD_Debug_TTF}
     DebugList.Add('------');
