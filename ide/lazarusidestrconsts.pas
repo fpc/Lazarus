@@ -469,6 +469,7 @@ resourcestring
   lisSearchProjectsFrom = 'Search projects from';
   lisMEOther = 'Other tabs';
   lisTabsFor = 'Tabs for %s';
+  lisRecentTabs = 'Recent tabs';
   lisIncludeExamples = 'Include Examples';
   lisIncludeTestcases = 'Include Testcases';
   lisMEProjects = 'Projects';
@@ -3629,6 +3630,10 @@ resourcestring
   lisFindFileDirectory = 'D&irectory';
   lisFindFileFileMask = 'Fi&le mask';
   lisFindFileIncludeSubDirectories = 'Include &sub directories';
+  lisFindFileIgnoreBackupDirectores = 'Ignore backup directories';
+  lisFindFileIgnoreBackupDirectoresHint = 'Ignore files in subdirectories from '+LineEnding
+                                        + 'Environment Options - Backup setting';
+  lisFindFileDirectoryIgnoreMask = 'Directory ignore mask';
   lisFindFileOnlyTextFiles = 'Only text files';
 
   // package manager

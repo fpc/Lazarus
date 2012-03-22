@@ -5389,6 +5389,22 @@ var
     end;
   end;
   {$ENDIF}
+  procedure AddEditorToMenuSection(AEditor: TSourceEditor; AMenu: TIDEMenuSection; AIndex: Integer);
+  var
+    S: String;
+  begin
+    S := ExtractFileName(AEditor.FileName);
+        //swap around so file name is first followed by the directory
+        if S <> AEditor.FileName then
+          S := S +' in '+ExtractFileDir(AEditor.FileName);
+        // check for modification after since * makes it different
+        if AEditor.Modified then
+          S := '*'+S;
+
+        RegisterIDEMenuCommand(AMenu, 'File'+IntToStr(AIndex),
+                 S, @ExecuteEditorItemClick, nil, nil, '', PtrUInt(AEditor));
+
+  end;
 
 var
   NBAvail: Boolean;
@@ -5399,7 +5415,7 @@ var
   S: String;
   EditorCur: TSourceEditor;
   P: TIDEPackage;
-  M: TIDEMenuSection;
+  RecMenu, M: TIDEMenuSection;
 begin
   PopM:=TPopupMenu(Sender);
   SourceTabMenuRoot.MenuItem:=PopM.Items;
@@ -5443,6 +5459,8 @@ begin
 
     SrcEditMenuSectionEditors.Clear;
     if Manager <> nil then begin
+      RecMenu := RegisterIDESubMenu(SrcEditMenuSectionEditors, lisRecentTabs, lisRecentTabs);
+      RecMenu.Visible := False;
       RegisterIDESubMenu(SrcEditMenuSectionEditors, dlgEnvProject, dlgEnvProject).Visible := False;
       RegisterIDESubMenu(SrcEditMenuSectionEditors, lisMEOther, lisMEOther).Visible := False;
 
@@ -5465,16 +5483,19 @@ begin
           M := RegisterIDESubMenu(SrcEditMenuSectionEditors, S, S);
         M.Visible := True;
 
-        S := ExtractFileName(EditorCur.FileName);
-        // check for modification
-        if EditorCur.Modified then
-          S := '*'+S;
-        //swap around so file name is first followed by the directory
-        if S <> EditorCur.FileName then
-          S := S +' in '+ExtractFileDir(EditorCur.FileName);
-        RegisterIDEMenuCommand(M, 'File'+IntToStr(i),
-                 s, @ExecuteEditorItemClick, nil, nil, '', PtrUInt(EditorCur));
+        AddEditorToMenuSection(EditorCur, M, i);
       end;
+
+      // add recent tabs. skip 0 since that is the active tab
+      for i := 1 to Min(10, FHistoryList.Count-1) do
+      begin
+        //HistoryGetTopPageIndex;
+        EditorCur := FindSourceEditorWithPageIndex(TTabSheet(FHistoryList[i]).PageIndex);
+        if not EditorCur.FEditor.HandleAllocated then continue; // show only if it was visited
+        AddEditorToMenuSection(EditorCur, RecMenu, i);
+        RecMenu.Visible := True;
+      end;
+
     end;
   finally
     SourceTabMenuRoot.EndUpdate;
