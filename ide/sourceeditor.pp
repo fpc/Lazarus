@@ -5416,6 +5416,7 @@ var
   EditorCur: TSourceEditor;
   P: TIDEPackage;
   RecMenu, M: TIDEMenuSection;
+  EdList: TStringList;
 begin
   PopM:=TPopupMenu(Sender);
   SourceTabMenuRoot.MenuItem:=PopM.Items;
@@ -5457,17 +5458,26 @@ begin
     SrcEditMenuMoveEditorFirst.MenuItem.Enabled:= (PageCount>1) and (PageIndex>0);
     SrcEditMenuMoveEditorLast.MenuItem.Enabled:= (PageCount>1) and (PageIndex<(PageCount-1));
 
+
     SrcEditMenuSectionEditors.Clear;
     if Manager <> nil then begin
+      EdList := TStringList.Create;
+      EdList.OwnsObjects := False;
+      EdList.Sorted := True;
+      // sort
+      for i := 0 to EditorCount - 1 do
+        EdList.AddObject(ExtractFileName(Editors[i].FileName)+' '+Editors[i].FileName, Editors[i]);
+
+
       RecMenu := RegisterIDESubMenu(SrcEditMenuSectionEditors, lisRecentTabs, lisRecentTabs);
       RecMenu.Visible := False;
       RegisterIDESubMenu(SrcEditMenuSectionEditors, dlgEnvProject, dlgEnvProject).Visible := False;
       RegisterIDESubMenu(SrcEditMenuSectionEditors, lisMEOther, lisMEOther).Visible := False;
 
       //first add all pages in the correct order since the editor order can be different from the tab order
-      for i := 0 to EditorCount - 1 do
+      for i := 0 to EdList.Count - 1 do
       begin
-        EditorCur := FindSourceEditorWithPageIndex(i);
+        EditorCur := TSourceEditor(EdList.Objects[i]);
         s := lisMEOther;
         if (EditorCur.GetProjectFile <> nil) and (EditorCur.GetProjectFile.IsPartOfProject) then
           s := dlgEnvProject
@@ -5485,6 +5495,8 @@ begin
 
         AddEditorToMenuSection(EditorCur, M, i);
       end;
+
+      EdList.Free;
 
       // add recent tabs. skip 0 since that is the active tab
       for i := 1 to Min(10, FHistoryList.Count-1) do
