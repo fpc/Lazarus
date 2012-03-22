@@ -3142,7 +3142,7 @@ end;
 
 procedure TLazIntfImage.FreeData;
 begin
-  DebugLn(Format('[TLazIntfImage.FreeData] Self=%x Data=%x', [PtrUInt(Self), PtrUInt(FRawImage.Data)]));
+  //DebugLn(Format('[TLazIntfImage.FreeData] Self=%x Data=%x', [PtrUInt(Self), PtrUInt(FRawImage.Data)]));
   if FDataOwner
   then ReallocMem(FRawImage.Data, 0)
   else FRawImage.Data := nil;
