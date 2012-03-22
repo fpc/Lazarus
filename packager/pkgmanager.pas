@@ -216,6 +216,7 @@ type
     function GetPossibleOwnersOfUnit(const UnitFilename: string;
                                      Flags: TPkgIntfOwnerSearchFlags): TFPList; override;
     function GetPackageOfCurrentSourceEditor(out APackage: TLazPackage): TPkgFile;
+    function GetPackageOfSourceEditor(out APackage: TIDEPackage; ASrcEdit: TObject): TLazPackageFile; override;
     function IsOwnerDependingOnPkg(AnOwner: TObject; const PkgName: string;
                                    out DependencyOwner: TObject): boolean; override;
     function AddDependencyToOwners(OwnerList: TFPList; APackage: TIDEPackage;
@@ -3188,14 +3189,24 @@ function TPkgManager.GetPackageOfCurrentSourceEditor(out APackage: TLazPackage
   ): TPkgFile;
 var
   SrcEdit: TSourceEditor;
-  Filename: String;
-  i: Integer;
 begin
   Result:=nil;
   APackage:=nil;
   SrcEdit:=SourceEditorManager.GetActiveSE;
   if SrcEdit=nil then exit;
-  Filename:=SrcEdit.FileName;
+  Result := TPkgFile(GetPackageOfSourceEditor(APackage, SrcEdit));
+end;
+
+function TPkgManager.GetPackageOfSourceEditor(out APackage: TIDEPackage;
+  ASrcEdit: TObject): TLazPackageFile;
+var
+  Filename: String;
+  i: Integer;
+begin
+  Result:=nil;
+  APackage:=nil;
+  if ASrcEdit=nil then exit;
+  Filename:=TSourceEditor(ASrcEdit).FileName;
   Result:=SearchFile(Filename,[],nil);
   if Result<>nil then begin
     APackage:=Result.LazPackage;
@@ -3203,7 +3214,7 @@ begin
   end;
   for i:=0 to PackageGraph.Count-1 do begin
     APackage:=PackageGraph[i];
-    if CompareFilenames(APackage.GetSrcFilename,SrcEdit.FileName)=0 then
+    if CompareFilenames(TLazPackage(APackage).GetSrcFilename,FileName)=0 then
       exit;
   end;
   APackage:=nil;

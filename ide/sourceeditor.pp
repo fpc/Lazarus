@@ -70,6 +70,7 @@ uses
 type
   TSourceNotebook = class;
   TSourceEditorManager = class;
+  TSourceEditor = class;
 
   TNotifyFileEvent = procedure(Sender: TObject; Filename : AnsiString) of object;
 
@@ -77,6 +78,9 @@ type
             Command: word; var Handled: boolean) of object;
   TOnUserCommandProcessed = procedure(Sender: TObject;
             Command: word; var Handled: boolean) of object;
+
+  TPackageForSourceEditorEvent = function(out APackage: TIDEPackage;
+    ASrcEdit: TObject): TLazPackageFile of object;
 
   TOnLinesInsertedDeleted = procedure(Sender : TObject;
              FirstLine,Count : Integer) of Object;
@@ -155,8 +159,6 @@ type
     property IdentCompletionJumpToError: Boolean
       read FIdentCompletionJumpToError write FIdentCompletionJumpToError;
   end;
-
-  TSourceEditor = class;
 
   { TSourceEditorSharedValues }
 
@@ -1073,6 +1075,7 @@ type
     FOnMouseLink: TSynMouseLinkEvent;
     FOnNoteBookCloseQuery: TCloseEvent;
     FOnOpenFileAtCursorClicked: TNotifyEvent;
+    FOnPackageForSourceEditor: TPackageForSourceEditorEvent;
     FOnPlaceMark: TPlaceBookMarkEvent;
     FOnPopupMenu: TSrcEditPopupMenuEvent;
     FOnProcessUserCommand: TOnProcessUserCommand;
@@ -1137,6 +1140,8 @@ type
     property OnPopupMenu: TSrcEditPopupMenuEvent read FOnPopupMenu write FOnPopupMenu;
     property OnNoteBookCloseQuery: TCloseEvent
              read FOnNoteBookCloseQuery write FOnNoteBookCloseQuery;
+    property OnPackageForSourceEditor: TPackageForSourceEditorEvent
+             read FOnPackageForSourceEditor write FOnPackageForSourceEditor;
   end;
 
 function SourceEditorManager: TSourceEditorManager;
@@ -5392,8 +5397,9 @@ var
   PageI: integer;
   i: Integer;
   S: String;
-  PageList: TList;
   EditorCur: TSourceEditor;
+  P: TIDEPackage;
+  M: TIDEMenuSection;
 begin
   PopM:=TPopupMenu(Sender);
   SourceTabMenuRoot.MenuItem:=PopM.Items;
@@ -5437,15 +5443,25 @@ begin
 
     if SourceEditorManager<>nil then begin
       SrcEditMenuSectionEditors.Clear;
-      PageList := TList.Create;
 
       //first add all pages in the correct order since the editor order can be different from the tab order
-      for i := 0 to Count - 1 do
-          PageList.Add(FindSourceEditorWithPageIndex(i));
-
-      for i := 0 to PageList.Count - 1 do
+      for i := 0 to EditorCount - 1 do
       begin
-        EditorCur := TSourceEditor(PageList[i]);
+        EditorCur := FindSourceEditorWithPageIndex(i);
+        s := lisMEOther;
+        if (EditorCur.GetProjectFile <> nil) and (EditorCur.GetProjectFile.IsPartOfProject) then
+          s := dlgEnvProject
+        else begin
+          Manager.OnPackageForSourceEditor(P, EditorCur);
+          if P <> nil then
+            s := p.Name;
+        end;
+
+        if SrcEditMenuSectionEditors.FindByName(S) is TIDEMenuSection then
+          M := TIDEMenuSection(SrcEditMenuSectionEditors.FindByName(S))
+        else
+          M := RegisterIDESubMenu(SrcEditMenuSectionEditors, S, S);
+
         S := ExtractFileName(EditorCur.FileName);
         // check for modification
         if EditorCur.Modified then
@@ -5453,10 +5469,9 @@ begin
         //swap around so file name is first followed by the directory
         if S <> EditorCur.FileName then
           S := S +' in '+ExtractFileDir(EditorCur.FileName);
-        RegisterIDEMenuCommand(SrcEditMenuSectionEditors, 'File'+IntToStr(i),
+        RegisterIDEMenuCommand(M, 'File'+IntToStr(i),
                  s, @ExecuteEditorItemClick, nil, nil, '', PtrUInt(EditorCur));
       end;
-      PageList.Free;
     end;
   finally
     SourceTabMenuRoot.EndUpdate;

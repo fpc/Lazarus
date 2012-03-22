@@ -2098,6 +2098,7 @@ begin
   SourceEditorManager.OnViewJumpHistory := @OnSrcNotebookViewJumpHistory;
   SourceEditorManager.OnPopupMenu := @OnSrcNoteBookPopupMenu;
   SourceEditorManager.OnNoteBookCloseQuery := @OnSrcNoteBookCloseQuery;
+  SourceEditorManager.OnPackageForSourceEditor := @PkgBoss.GetPackageOfSourceEditor;
   DebugBoss.ConnectSourceNotebookEvents;
 
   OnSearchResultsViewSelectionChanged := @SearchResultsViewSelectionChanged;
