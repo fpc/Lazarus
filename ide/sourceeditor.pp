@@ -558,6 +558,7 @@ type
     FBaseCaption: String;
     FIsClosing: Boolean;
     TabPopUpMenu, SrcPopUpMenu, DbgPopUpMenu: TPopupMenu;
+    procedure ExecuteEditorItemClick(Sender: TObject);
   protected
     procedure CompleteCodeMenuItemClick(Sender: TObject);
     procedure ExtractProcMenuItemClick(Sender: TObject);
@@ -1244,17 +1245,6 @@ var
 function SourceEditorManager: TSourceEditorManager;
 begin
   Result := TSourceEditorManager(SourceEditorManagerIntf);
-end;
-
-procedure ExecuteEditorItemClick(Sender: TObject);
-var
-  Editor: TSourceEditor;
-begin
-  if SourceEditorManager = nil then exit;
-
-  Editor := TSourceEditor((sender as TIDEMenuCommand).UserTag);
-  SourceEditorManager.ActiveEditor :=Editor;
-  SourceEditorManager.ShowActiveWindowOnTop(True);
 end;
 
 procedure ExecuteIdeMenuClick(Sender: TObject);
@@ -5464,7 +5454,7 @@ begin
         if S <> EditorCur.FileName then
           S := S +' in '+ExtractFileDir(EditorCur.FileName);
         RegisterIDEMenuCommand(SrcEditMenuSectionEditors, 'File'+IntToStr(i),
-                 s, nil, @ExecuteEditorItemClick, nil, '', PtrUInt(EditorCur));
+                 s, @ExecuteEditorItemClick, nil, nil, '', PtrUInt(EditorCur));
       end;
       PageList.Free;
     end;
@@ -6865,6 +6855,17 @@ procedure TSourceNotebook.FormMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   Cursor:=crDefault;
+end;
+
+procedure TSourceNotebook.ExecuteEditorItemClick(Sender: TObject);
+var
+  Editor: TSourceEditor;
+begin
+  if SourceEditorManager = nil then exit;
+
+  Editor := TSourceEditor((sender as TIDEMenuCommand).UserTag);
+  SourceEditorManager.ActiveEditor :=Editor;
+  SourceEditorManager.ShowActiveWindowOnTop(True);
 end;
 
 procedure TSourceNotebook.CloseTabClicked(Sender: TObject);
