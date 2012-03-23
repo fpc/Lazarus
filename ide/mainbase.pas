@@ -1131,6 +1131,8 @@ begin
   //create source page menuitems
   itmTabListProject.Visible := False;
   itmTabListOther.Visible := False;
+  itmTabListProject.MenuItem.Checked := False;
+  itmTabListOther.MenuItem.Checked := False;
   itmTabListPackage.Clear;
 
   if SourceEditorManager.SourceEditorCount > 0 then begin
@@ -1182,7 +1184,8 @@ begin
       else
         CurMenuItem.Caption := EditorCur.PageName;
       CurMenuItem.MenuItem.Checked := SourceEditorManager.ActiveEditor = EditorCur;
-      M.MenuItem.Checked := SourceEditorManager.ActiveEditor = EditorCur;
+      if SourceEditorManager.ActiveEditor = EditorCur then
+        M.MenuItem.Checked := true;
       CurMenuItem.OnClick := @mnuWindowSourceItemClick;
       CurMenuItem.Tag := j;
     end;
