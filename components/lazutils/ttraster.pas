@@ -141,13 +141,13 @@ type
     function Draw_Sweep(MinY, MaxY: integer; PixelGrain: integer): boolean;
     procedure Horizontal_Gray_Sweep_Drop(y: Int; x1, x2: TT_F26dot6; Left,
       Right: TProfile);
-    procedure Horizontal_Gray_Sweep_Span(y: Int; x1, x2: TT_F26dot6; Left,
-      Right: TProfile);
+    procedure Horizontal_Gray_Sweep_Span(y: Int; x1, x2: TT_F26dot6; {%H-}Left,
+      {%H-}Right: TProfile);
     procedure Horizontal_Sweep_Drop(y: Int; x1, x2: TT_F26dot6; Left,
       Right: TProfile);
-    procedure Horizontal_Sweep_Init(var min, max: Int);
-    procedure Horizontal_Sweep_Span(y: Int; x1, x2: TT_F26dot6; Left,
-      Right: TProfile);
+    procedure Horizontal_Sweep_Init(var {%H-}min, {%H-}max: Int);
+    procedure Horizontal_Sweep_Span(y: Int; x1, x2: TT_F26dot6; {%H-}Left,
+      {%H-}Right: TProfile);
     procedure Horizontal_Sweep_Step;
     function ProcessCoordinate(var List: TProfile): integer;
     procedure Raster_Object_Init;
@@ -156,19 +156,19 @@ type
       PixelGrain: integer): boolean;
     {$IFNDEF CONST_PREC}procedure Set_High_Precision(High: boolean);
     procedure Set_Second_Pass(Pass: boolean);
-    procedure Vertical_Gray_Sweep_Init(var min, max: Int);
+    procedure Vertical_Gray_Sweep_Init(var min, {%H-}max: Int);
     procedure Vertical_Gray_Sweep_Init_Direct(var min, max: Int);
     procedure Vertical_Gray_Sweep_Init_Direct_HQ(var min, max: Int);
-    procedure Vertical_Gray_Sweep_Init_HQ(var min, max: Int);
+    procedure Vertical_Gray_Sweep_Init_HQ(var min, {%H-}max: Int);
     procedure Vertical_Gray_Sweep_Step;
     procedure Vertical_Gray_Sweep_Step_Direct;
     procedure Vertical_Gray_Sweep_Step_Direct_HQ;
     procedure Vertical_Gray_Sweep_Step_HQ;
     procedure Vertical_Sweep_Drop(y: Int; x1, x2: TT_F26dot6; Left,
       Right: TProfile);
-    procedure Vertical_Sweep_Init(var min, max: Int);
-    procedure Vertical_Sweep_Span(y: Int; x1, x2: TT_F26dot6; Left,
-      Right: TProfile);
+    procedure Vertical_Sweep_Init(var min, {%H-}max: Int);
+    procedure Vertical_Sweep_Span({%H-}y: Int; x1, x2: TT_F26dot6; {%H-}Left,
+      {%H-}Right: TProfile);
     procedure Vertical_Sweep_Step;
 {$ENDIF}
   public
