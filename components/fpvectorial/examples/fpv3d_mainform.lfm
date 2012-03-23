@@ -2,10 +2,10 @@ object formFPV3D: TformFPV3D
   Left = 336
   Height = 470
   Top = 171
-  Width = 514
+  Width = 542
   Caption = 'formFPV3D'
   ClientHeight = 470
-  ClientWidth = 514
+  ClientWidth = 542
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   LCLVersion = '0.9.31'
@@ -13,7 +13,7 @@ object formFPV3D: TformFPV3D
     Left = 12
     Height = 21
     Top = 8
-    Width = 280
+    Width = 496
     DialogOptions = []
     FilterIndex = 0
     HideDirectories = False
@@ -40,7 +40,7 @@ object formFPV3D: TformFPV3D
     Left = 5
     Height = 337
     Top = 128
-    Width = 504
+    Width = 532
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 5
     BorderSpacing.Right = 5
@@ -78,7 +78,7 @@ object formFPV3D: TformFPV3D
     Left = 345
     Height = 25
     Top = 38
-    Width = 111
+    Width = 103
     Caption = 'Rot Around Z'
     OnClick = buttonRotZClick
     TabOrder = 6
@@ -96,16 +96,33 @@ object formFPV3D: TformFPV3D
     Left = 178
     Height = 25
     Top = 72
-    Width = 278
+    Width = 270
     Caption = 'Convert 3D point array to height map'
     OnClick = btnConvert3DPointArrayToHeightMapClick
     TabOrder = 8
   end
   object progressBar: TProgressBar
-    Left = 12
+    Left = 112
     Height = 20
     Top = 104
     Width = 220
     TabOrder = 9
+  end
+  object labelStatus: TLabel
+    Left = 12
+    Height = 14
+    Top = 104
+    Width = 81
+    Caption = 'Please load a file'
+    ParentColor = False
+  end
+  object btnRotY: TButton
+    Left = 456
+    Height = 25
+    Top = 38
+    Width = 81
+    Caption = 'Rot Around Y'
+    OnClick = btnRotYClick
+    TabOrder = 10
   end
 end

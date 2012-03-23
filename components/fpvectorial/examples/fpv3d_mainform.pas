@@ -16,6 +16,7 @@ type
   TformFPV3D = class(TForm)
     Button1: TButton;
     btnConvert3DPointArrayToHeightMap: TButton;
+    btnRotY: TButton;
     buttonCutFile: TButton;
     buttonRotZ: TButton;
     buttonZoomIn: TButton;
@@ -23,8 +24,10 @@ type
     buttonZoomOut: TButton;  buttonLoad: TButton;
     editFileName: TFileNameEdit;
     glControl: TOpenGLControl;
+    labelStatus: TLabel;
     progressBar: TProgressBar;
     procedure btnConvert3DPointArrayToHeightMapClick(Sender: TObject);
+    procedure btnRotYClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure buttonCutFileClick(Sender: TObject);
     procedure buttonLoadClick(Sender: TObject);
@@ -47,7 +50,7 @@ type
     { public declarations }
     VecDoc: TvVectorialDocument;
     glAltitude: Integer;
-    glRotateAngle, glRotateX, glRotateY, glRotateZ: Double;
+    glRotateAngleY, glRotateAngleZ: Double;
     HeightMap: TvRasterImage;
   end; 
 
@@ -100,8 +103,10 @@ begin
 
   glTranslatef(0.0, 0.0,-glAltitude);
 
-  if glRotateAngle <> 0 then
-    glRotatef(glRotateAngle, glRotateX, glRotateY, glRotateZ);
+  if glRotateAngleY <> 0 then
+    glRotatef(glRotateAngleY, 0, 1, 0);
+  if glRotateAngleZ <> 0 then
+    glRotatef(glRotateAngleZ, 0, 0, 1);
 
   VecPage := VecDoc.GetCurrentPage();
   if VecPage = nil then Exit;
@@ -259,6 +264,12 @@ begin
   gluLookAt(212, 60, 194,  186, 55, 171,  0, 1, 0);	  // This Determines Where The Camera's Position And View Is
   glScalef(scaleValue, scaleValue * HEIGHT_RATIO, scaleValue);
 
+  // Rotation
+  if glRotateAngleY <> 0 then
+    glRotatef(glRotateAngleY, 0, 1, 0);
+  if glRotateAngleZ <> 0 then
+    glRotatef(glRotateAngleZ, 0, 0, 1);
+
   RenderHeightMapV1Helper(True);
   RenderHeightMapV1Helper(False);
 end;
@@ -271,17 +282,16 @@ end;
 
 procedure TformFPV3D.buttonLoadClick(Sender: TObject);
 begin
+  labelStatus.Caption := 'Loading file';
   VecDoc.OnProgress := @HandleVecDocProgress;
   VecDoc.ReadFromFile(editFileName.FileName);
+  labelStatus.Caption := 'Done';
   glControl.Invalidate;
 end;
 
 procedure TformFPV3D.buttonRotZClick(Sender: TObject);
 begin
-  glRotateAngle := glRotateAngle + 10;
-  glRotateX := 0.0;
-  glRotateY := 0.0;
-  glRotateZ := 1.0;
+  glRotateAngleZ := glRotateAngleZ + 10;
   glControl.Invalidate;
 end;
 
@@ -329,6 +339,12 @@ begin
     lFile.Free;
   end;
 
+  glControl.Invalidate;
+end;
+
+procedure TformFPV3D.btnRotYClick(Sender: TObject);
+begin
+  glRotateAngleY := glRotateAngleY + 10;
   glControl.Invalidate;
 end;
 
