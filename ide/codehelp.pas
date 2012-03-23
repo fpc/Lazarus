@@ -692,7 +692,7 @@ begin
   Result := Result.FirstChild;
   while (Result <> nil) do begin
     if (Result.NodeName = 'topic') and (Result is TDomElement) and
-        (SysUtils.CompareText(TDomElement(Result).GetAttribute('name'), Name) = 0)
+        (CompareTextIgnoringSpace(TDomElement(Result).GetAttribute('name'), Name,false) = 0)
     then
       exit;
     Result := Result.NextSibling;
