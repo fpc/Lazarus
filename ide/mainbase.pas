@@ -1073,7 +1073,7 @@ const
 
 var
   WindowsList: TFPList;
-  i, ItemCount, ItemCountProject, ItemCountOther: Integer;
+  i, j, ItemCount, ItemCountProject, ItemCountOther: Integer;
   CurMenuItem: TIDEMenuItem;
   AForm: TForm;
   t: TDateTime;
@@ -1140,15 +1140,18 @@ begin
     EdList.OwnsObjects := False;
     EdList.Sorted := True;
     // sort
-    for i := 0 to SourceEditorManager.SourceEditorCount - 1 do
+    for i := 0 to SourceEditorManager.SourceEditorCount - 1 do begin
       EdList.AddObject(SourceEditorManager.SourceEditors[i].PageName+' '
                        +SourceEditorManager.SourceEditors[i].FileName
                        +SourceEditorManager.SourceEditors[i].Owner.Name,
-                       SourceEditorManager.SourceEditors[i]);
+                       TObject(PtrUInt(i))
+                      );
+    end;
 
     for i := 0 to EdList.Count - 1 do
     begin
-      EditorCur := TSourceEditor(EdList.Objects[i]);
+      j := PtrUInt(EdList.Objects[i]);
+      EditorCur := SourceEditorManager.SourceEditors[j];
 
       if (EditorCur.GetProjectFile <> nil) and (EditorCur.GetProjectFile.IsPartOfProject) then begin
         M := itmTabListProject;
@@ -1181,7 +1184,7 @@ begin
       CurMenuItem.MenuItem.Checked := SourceEditorManager.ActiveEditor = EditorCur;
       M.MenuItem.Checked := SourceEditorManager.ActiveEditor = EditorCur;
       CurMenuItem.OnClick := @mnuWindowSourceItemClick;
-      CurMenuItem.Tag := i;
+      CurMenuItem.Tag := j;
     end;
 
     EdList.Free;
