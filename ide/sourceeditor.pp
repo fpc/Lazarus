@@ -4556,6 +4556,7 @@ begin
 
   case AnAction.Option2 of
     1: FMouseActionPopUpMenu := SourceNotebook.DbgPopUpMenu;
+    2: FMouseActionPopUpMenu := SourceNotebook.TabPopUpMenu;
     else
       FMouseActionPopUpMenu := PopupMenu;
   end;
@@ -5424,13 +5425,14 @@ begin
   SourceTabMenuRoot.BeginUpdate;
   try
     // Get the tab that was clicked
-    Assert(PopM.PopupComponent is TPageControl, 'PopupComponent is not TPageControl');
-    PageCtrl:=TPageControl(PopM.PopupComponent);
-    PageI:=PageCtrl.TabIndexAtClientPos(PageCtrl.ScreenToClient(PopM.PopupPoint));
-    if (PageI>=0) and (PageI<PageCtrl.PageCount) then
-      PageIndex:=PageI
-    else
-      DebugLn(['TSourceNotebook.TabPopUpMenuPopup: Popup PageIndex=', PageI]);
+    if PopM.PopupComponent is TPageControl then begin
+      PageCtrl:=TPageControl(PopM.PopupComponent);
+      PageI:=PageCtrl.TabIndexAtClientPos(PageCtrl.ScreenToClient(PopM.PopupPoint));
+      if (PageI>=0) and (PageI<PageCtrl.PageCount) then
+        PageIndex:=PageI  // Todo: This should be in MouseDown / or both, whichever is first
+      else
+        DebugLn(['TSourceNotebook.TabPopUpMenuPopup: Popup PageIndex=', PageI]);
+    end;
     ASrcEdit:=Editors[PageIndex];
 
     {$IFnDEF SingleSrcWindow}

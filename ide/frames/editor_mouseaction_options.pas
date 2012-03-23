@@ -573,6 +573,7 @@ procedure TEditorMouseOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
     ACombo.Items.Add(dlfMouseSimpleButtonZoomReset);         // mbaZoomReset
     ACombo.Items.Add(dlfMouseSimpleButtonContextMenu);       // mbaContextMenu
     ACombo.Items.Add(dlfMouseSimpleButtonContextMenuDbg);    // mbaContextMenuDebug;
+    ACombo.Items.Add(dlfMouseSimpleButtonContextMenuTab);    // mbaContextMenuTab;
   end;
 
   procedure SetupWheelCombo(ACombo: TComboBox);

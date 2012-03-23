@@ -708,6 +708,7 @@ type
     mbaZoomReset,
     mbaContextMenu,
     mbaContextMenuDebug,
+    mbaContextMenuTab,
 
     // Old values, needed to load old config
     moTCLNone, moTMIgnore,
@@ -716,7 +717,7 @@ type
     moTCLJumpOrBlock
   );
 
-  TMouseOptButtonAction = mbaNone..mbaContextMenuDebug;
+  TMouseOptButtonAction = mbaNone..mbaContextMenuTab;
 
 const
   MouseOptButtonActionOld: Array [moTCLNone..moTCLJumpOrBlock] of TMouseOptButtonActionOld = (
@@ -917,7 +918,7 @@ type
     property TextAltRightClick: TMouseOptButtonAction read FTextAltRightClick write FTextAltRightClick
              default mbaNone;
     property TextCtrlRightClick: TMouseOptButtonAction read FTextCtrlRightClick write FTextCtrlRightClick
-             default mbaNone;
+             default mbaContextMenuTab;
     property TextShiftAltRightClick: TMouseOptButtonAction read FTextShiftAltRightClick write FTextShiftAltRightClick
              default mbaNone;
     property TextShiftCtrlRightClick: TMouseOptButtonAction read FTextShiftCtrlRightClick write FTextShiftCtrlRightClick
@@ -2613,7 +2614,7 @@ begin
   FTextRightClick := mbaContextMenu;
   FTextAltCtrlRightClick := mbaNone;
   FTextAltRightClick := mbaNone;
-  FTextCtrlRightClick := mbaNone;
+  FTextCtrlRightClick := mbaContextMenuTab;
   FTextShiftAltCtrlRightClick := mbaNone;
   FTextShiftAltRightClick := mbaNone;
   FTextShiftCtrlRightClick := mbaNone;
@@ -2752,6 +2753,8 @@ procedure TEditorMouseOptions.ResetTextToDefault;
             AddCommand(emcContextMenu, AMoveCaret, AButton, AClickCount, ADir, AShift, AShiftMask, emcoSelectionCaretMoveNever);
         mbaContextMenuDebug:
             AddCommand(emcContextMenu, True,       AButton, AClickCount, ADir, AShift, AShiftMask, emcoSelectionCaretMoveOutside, 0, 1);
+        mbaContextMenuTab:
+            AddCommand(emcContextMenu, True,       AButton, AClickCount, ADir, AShift, AShiftMask, emcoSelectionCaretMoveOutside, 0, 2);
       end;
     end;
   end;
@@ -3005,7 +3008,7 @@ begin
   FTextCtrlDoubleLeftClick   := Src.TextCtrlDoubleLeftClick;
     // left + modifier click
   FTextAltLeftClick          := Src.TextAltLeftClick;
-  FTextCtrlLeftClick    := Src.TextCtrlLeftClick;
+  FTextCtrlLeftClick         := Src.TextCtrlLeftClick;
   FTextAltCtrlLeftClick      := Src.TextAltCtrlLeftClick;
   FTextShiftLeftClick        := Src.TextShiftLeftClick;
   FTextShiftAltLeftClick     := Src.TextShiftAltLeftClick;

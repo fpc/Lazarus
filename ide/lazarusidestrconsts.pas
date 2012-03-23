@@ -1415,6 +1415,7 @@ resourcestring
   dlfMouseSimpleButtonZoomReset        = 'Reset zoom';
   dlfMouseSimpleButtonContextMenu      = 'Context Menu';
   dlfMouseSimpleButtonContextMenuDbg   = 'Context Menu (debug)';
+  dlfMouseSimpleButtonContextMenuTab   = 'Context Menu (tab)';
 
   dlfMouseSimpleWheelNothing           = 'Nothing/Default';
   dlfMouseSimpleWheelSrollDef          = 'Scroll (System speed)';
