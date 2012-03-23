@@ -724,19 +724,22 @@ begin
   AddTemplate(ADefTempl,false,
              'NOTE: Could not create Define Template for Free Pascal Compiler');
   // create template for FPC source directory
-  ADefTempl:=CreateFPCSourceTemplate(UnitSetCache,nil);
-  AddTemplate(ADefTempl,false,lisNOTECouldNotCreateDefineTemplateForFreePascal);
+  if HasGUI then
+  begin
+    ADefTempl:=CreateFPCSourceTemplate(UnitSetCache,nil);
+    AddTemplate(ADefTempl,false,lisNOTECouldNotCreateDefineTemplateForFreePascal);
 
-  // create compiler macros for the lazarus sources
-  if CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSrcDir,
-    true)=nil
-  then begin
-    ADefTempl:=CreateLazarusSourceTemplate(
-      '$('+ExternalMacroStart+'LazarusDir)',
-      '$('+ExternalMacroStart+'LCLWidgetType)',
-      MiscellaneousOptions.BuildLazOpts.ExtraOptions,nil);
-    AddTemplate(ADefTempl,true,
-      lisNOTECouldNotCreateDefineTemplateForLazarusSources);
+    // create compiler macros for the lazarus sources
+    if CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSrcDir,
+      true)=nil
+    then begin
+      ADefTempl:=CreateLazarusSourceTemplate(
+        '$('+ExternalMacroStart+'LazarusDir)',
+        '$('+ExternalMacroStart+'LCLWidgetType)',
+        MiscellaneousOptions.BuildLazOpts.ExtraOptions,nil);
+      AddTemplate(ADefTempl,true,
+        lisNOTECouldNotCreateDefineTemplateForLazarusSources);
+    end;
   end;
 
   CodeToolBoss.DefineTree.ClearCache;
