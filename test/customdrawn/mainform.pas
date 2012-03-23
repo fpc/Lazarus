@@ -18,12 +18,15 @@ type
     Button2: TButton;
     Button3: TButton;
     CDButton1: TCDButton;
+    buttonGlyphAndroid: TCDButton;
     CDButton2: TCDButton;
     CDButton3: TCDButton;
     CDButton4: TCDButton;
     CDButton5: TCDButton;
     CDButton6: TCDButton;
     CDButton7: TCDButton;
+    buttonGlyphWinCE: TCDButton;
+    buttonGlyphWinXP: TCDButton;
     CDCheckBox1: TCDCheckBox;
     CDCheckBox2: TCDCheckBox;
     CDCheckBox3: TCDCheckBox;

@@ -62,4 +62,5 @@
 { $define VerboseCDBitmap}
 { $define VerboseCDForms}
 {.$define VerboseCDAccessibility}
+{ $define CD_Debug_TTF}
 

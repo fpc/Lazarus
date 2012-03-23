@@ -647,6 +647,7 @@ procedure TCDDrawerCommon.DrawButton(ADest: TFPCustomCanvas;
 var
   Str: string;
   lGlyphLeftSpacing: Integer = 0;
+  lGlyphExtra: Integer = 0;
   lTextOutPos: TPoint;
   lGlyphCaptionHeight: Integer;
 begin
@@ -710,7 +711,8 @@ begin
     // Button glyph
     if not AStateEx.Glyph.Empty then
     begin
-      TCanvas(ADest).Draw(lTextOutPos.X, lTextOutPos.Y, AStateEx.Glyph);
+      if csfSunken in AState then lGlyphExtra := 1;
+      TCanvas(ADest).Draw(lTextOutPos.X + lGlyphExtra, lTextOutPos.Y + lGlyphExtra, AStateEx.Glyph);
       lGlyphLeftSpacing := AStateEx.Glyph.Width+5;
     end;
 

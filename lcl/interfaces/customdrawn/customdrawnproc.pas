@@ -842,6 +842,10 @@ begin
   begin
     FontPath:= APath+Rslt.Name;
 
+    {$ifdef CD_Debug_TTF}
+      DebugLn(Format('[FontsScanForTTF] font=', [FontPath]));
+    {$endif}
+
     // Work around for fonts which cause errors. See bug 21456
     if Rslt.Name = 'tunga.ttf' then
     begin
