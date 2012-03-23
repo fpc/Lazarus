@@ -164,7 +164,6 @@ end;
 
 procedure TEditorConverter.WriteToIDE(const pcUnit: TSourceEditorInterface; const psText: string);
 var
-  lsOriginalSource: string;
   lcSourceLines, lcDestLines: TStrings;
   lcSameStart, lcSameEnd: TStrings;
   lsSourceLine, lsDestLine: string;
@@ -174,9 +173,8 @@ begin
   if pcUnit = nil then
     exit;
 
-  lsOriginalSource := fcConverter.InputCode;
   lcSourceLines := TStringList.Create;
-  lcSourceLines.Text := lsOriginalSource;
+  lcSourceLines.Text := fcConverter.InputCode;
   lcDestLines := TStringList.Create;
   lcDestLines.Text := psText;
   lcSameStart := TStringList.Create;
