@@ -94,13 +94,17 @@ type
   private
     fUpdateLock: integer;
     FFlags: TLazFPDocFileFlags;
+    FDocChangeStamp: int64;
+    FDocSaveChangeStamp: int64;
+    function GetDocModified: boolean;
+    procedure SetDocModified(AValue: boolean);
   public
     Filename: string;// the fpdoc xml filename
     Doc: TXMLdocument;// IMPORTANT: if you change this, call DocChanging and DocChanged to notify the references
     DocErrorMsg: string; // if xml is broken, Doc could not be created
-    DocModified: boolean;
     CodeBufferChangeStep: integer;// the CodeBuffer.ChangeStep value, when Doc was built
     CodeBuffer: TCodeBuffer;
+    constructor Create;
     destructor Destroy; override;
     function GetPackageNode: TDOMNode; // the lazarus project or package
     function GetPackageName: string;
@@ -117,6 +121,8 @@ type
     function GetValuesFromNode(Node: TDOMNode): TFPDocElementValues;
     function GetValueFromNode(Node: TDOMNode; Item: TFPDocItem): string;
     procedure SetChildValue(Node: TDOMNode; const ChildName: string; NewValue: string);
+    property DocModified: boolean read GetDocModified write SetDocModified;
+    property DocChangeStamp: int64 read FDocChangeStamp;
     procedure DocChanging;
     procedure DocChanged;
     procedure BeginUpdate;
@@ -570,6 +576,25 @@ end;
 
 { TLazFPDocFile }
 
+function TLazFPDocFile.GetDocModified: boolean;
+begin
+  Result:=FDocSaveChangeStamp<>FDocChangeStamp;
+end;
+
+procedure TLazFPDocFile.SetDocModified(AValue: boolean);
+begin
+  if AValue then
+    CTIncreaseChangeStamp64(FDocChangeStamp)
+  else
+    FDocSaveChangeStamp:=FDocChangeStamp;
+end;
+
+constructor TLazFPDocFile.Create;
+begin
+  FDocChangeStamp:=CTInvalidChangeStamp64;
+  FDocSaveChangeStamp:=CTInvalidChangeStamp64;
+end;
+
 destructor TLazFPDocFile.Destroy;
 begin
   FreeAndNil(Doc);
@@ -628,42 +653,42 @@ end;
 
 function TLazFPDocFile.GetModuleTopicCount: Integer;
 var
-  n: TDOMNode;
+  Node: TDOMNode;
 begin
   Result := 0;
-  n := GetModuleNode;
-  if n = nil then exit;
-  n := n.FirstChild;
-  while (n <> nil) do begin
-    if (n.NodeName = 'topic') then inc(result);
-    n := n.NextSibling;
+  Node := GetModuleNode;
+  if Node = nil then exit;
+  Node := Node.FirstChild;
+  while (Node <> nil) do begin
+    if (Node.NodeName = 'topic') then inc(result);
+    Node := Node.NextSibling;
   end;
 end;
 
 function TLazFPDocFile.GetModuleTopicName(Index: Integer): String;
 var
-  n: TDOMNode;
+  Node: TDOMNode;
 begin
   Result := '';
-  n := GetModuleNode;
-  if n = nil then exit;
-  n := n.FirstChild;
-  while (n <> nil) and (Index >= 0) do begin
-    if (n.NodeName = 'topic') and (n is TDomElement) then begin
+  Node := GetModuleNode;
+  if Node = nil then exit;
+  Node := Node.FirstChild;
+  while (Node <> nil) and (Index >= 0) do begin
+    if (Node.NodeName = 'topic') and (Node is TDomElement) then begin
       if Index = 0 then begin
-        Result := TDomElement(n).GetAttribute('name');
+        Result := TDomElement(Node).GetAttribute('name');
         exit;
       end;
       dec(Index);
     end;
-    n := n.NextSibling;
+    Node := Node.NextSibling;
   end;
 end;
 
 function TLazFPDocFile.GetModuleTopic(Name: String): TDOMNode;
 begin
   Result := GetModuleNode;
-  if Result = nil then exit;
+  if Result = nil then exit(nil);
   Result := Result.FirstChild;
   while (Result <> nil) do begin
     if (Result.NodeName = 'topic') and (Result is TDomElement) and
@@ -679,13 +704,16 @@ var
   ModuleNode: TDOMNode;
 begin
   ModuleNode := GetModuleNode;
-  if ModuleNode = nil then exit;
+  if ModuleNode = nil then exit(nil);
 
-  Result:=Doc.CreateElement('topic');
   DocChanging;
-  TDOMElement(Result).SetAttribute('name', Name);
-  ModuleNode.AppendChild(Result);
-  DocChanged;
+  try
+    Result:=Doc.CreateElement('topic');
+    TDOMElement(Result).SetAttribute('name', Name);
+    ModuleNode.AppendChild(Result);
+  finally
+    DocChanged;
+  end;
 end;
 
 function TLazFPDocFile.GetFirstElement: TDOMNode;
@@ -716,10 +744,9 @@ begin
   end;
   // check module name
   if (ModuleNode is TDomElement)
-  and (SysUtils.CompareText(TDomElement(ModuleNode).GetAttribute('name'),ElementName)=0)
+  and (CompareTextIgnoringSpace(TDomElement(ModuleNode).GetAttribute('name'),ElementName,false)=0)
   then begin
-    Result:=ModuleNode;
-    exit;
+    exit(ModuleNode);
   end;
   // check elements
   Result:=GetFirstElement;
@@ -728,18 +755,21 @@ begin
     //DebugLn(['TLazFPDocFile.GetElementWithName ',dbgsName(Result)]);
     //if Result is TDomElement then DebugLn(['TLazFPDocFile.GetElementWithName ',TDomElement(Result).GetAttribute('name')]);
     if (Result is TDomElement)
-    and (SysUtils.CompareText(TDomElement(Result).GetAttribute('name'),ElementName)=0)
+    and (CompareTextIgnoringSpace(TDomElement(Result).GetAttribute('name'),ElementName,false)=0)
     then
       exit;
     Result:=Result.NextSibling;
   end;
   if (Result=nil) and CreateIfNotExists then begin
     DebugLn(['TLazFPDocFile.GetElementWithName creating ',ElementName]);
-    Result:=Doc.CreateElement('element');
     DocChanging;
-    TDOMElement(Result).SetAttribute('name',ElementName);
-    ModuleNode.AppendChild(Result);
-    DocChanged;
+    try
+      Result:=Doc.CreateElement('element');
+      TDOMElement(Result).SetAttribute('name',ElementName);
+      ModuleNode.AppendChild(Result);
+    finally
+      DocChanged;
+    end;
   end;
 end;
 
@@ -1012,21 +1042,22 @@ end;
 
 procedure TLazFPDocFile.DocChanging;
 begin
+  if (ldffDocChangingCalled in FFlags) then exit;
   DocModified:=true;
-  if (fUpdateLock>0) then begin
-    if (ldffDocChangingCalled in FFlags) then exit;
-    Include(FFlags,ldffDocChangingCalled);
-  end;
+  Include(FFlags,ldffDocChangingCalled);
   CodeHelpBoss.CallDocChangeEvents(chmhDocChanging,Self);
 end;
 
 procedure TLazFPDocFile.DocChanged;
 begin
+  if not (ldffDocChangingCalled in FFlags) then
+    raise Exception.Create('TLazFPDocFile.DocChanged missing call to DocChanging');
   if (fUpdateLock>0) then begin
     Include(FFlags,ldffDocChangedNeedsCalling);
     exit;
   end;
   Exclude(FFlags,ldffDocChangedNeedsCalling);
+  Exclude(FFlags,ldffDocChangingCalled);
   CodeHelpBoss.CallDocChangeEvents(chmhDocChanged,Self);
 end;
 
@@ -1040,7 +1071,6 @@ begin
   dec(fUpdateLock);
   if fUpdateLock<0 then RaiseGDBException('TLazFPDocFile.EndUpdate');
   if fUpdateLock=0 then begin
-    Exclude(FFlags,ldffDocChangingCalled);
     if ldffDocChangedNeedsCalling in FFlags then
       DocChanged;
   end;
