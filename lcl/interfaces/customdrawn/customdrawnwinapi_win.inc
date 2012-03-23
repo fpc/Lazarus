@@ -2020,7 +2020,7 @@ end;
 function TWin32WidgetSet.GetIconInfo(AIcon: HICON; AIconInfo: PIconInfo): Boolean;
 begin
   Result := Windows.GetIconInfo(AIcon, AIconInfo);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method:  GetKeyState
@@ -2031,12 +2031,12 @@ end;
 
   The GetKeyState function retrieves the status of the specified virtual key.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
+function TCDWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 begin
   Result := Windows.GetKeyState(nVirtKey);
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Method: GetMapMode
   Params: DC - display device context
 

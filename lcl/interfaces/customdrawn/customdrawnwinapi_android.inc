@@ -2741,16 +2741,13 @@ begin
       WriteLn;
     {$endif}
   end;
-end;
+end;*)
 
-function TQtWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
-const
-  StateDown    = SmallInt($FF80);
-  {StateToggled = SmallInt($0001);}
+function TCDWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 begin
   Result := 0;
 
-  case nVirtKey of
+(*  case nVirtKey of
     VK_LSHIFT:   nVirtKey := VK_SHIFT;
     VK_LCONTROL: nVirtKey := VK_CONTROL;
     VK_LMENU:    nVirtKey := VK_MENU;
@@ -2790,10 +2787,10 @@ begin
     else
       DebugLn('TQtWidgetSet.GetKeyState TODO ', DbgSVKCode(Word(nVirtkey)));
    {$endif}
-  end;
+  end;*)
 end;
 
-function TQtWidgetSet.GetMapMode(DC: HDC): Integer;
+(*function TQtWidgetSet.GetMapMode(DC: HDC): Integer;
 begin
   if IsValidDC(DC) then
     Result := TQtDeviceContext(DC).vMapMode
