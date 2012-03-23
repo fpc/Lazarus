@@ -107,8 +107,8 @@ idebig:
 
 #-----------------------------------------------------------------------------
 # build lazarus and packages with user's settings
-useride: lazbuild
-	./lazbuild $(SRCEXEEXT) --build-ide=
+useride: 
+	./lazbuild$(SRCEXEEXT) --build-ide=
 
 #-----------------------------------------------------------------------------
 # build lazarus,lcl,startlazarus with bigide packages
