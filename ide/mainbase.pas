@@ -1183,8 +1183,9 @@ begin
         //  + ' ('+IntToStr(1+SourceEditorManager.IndexOfSourceWindow(TSourceEditorWindowInterface(EditorCur.Owner)))+')'
       else
         CurMenuItem.Caption := EditorCur.PageName;
-      CurMenuItem.MenuItem.Checked := SourceEditorManager.ActiveEditor = EditorCur;
-      if SourceEditorManager.ActiveEditor = EditorCur then
+      if CurMenuItem.MenuItem <> nil then
+        CurMenuItem.MenuItem.Checked := SourceEditorManager.ActiveEditor = EditorCur;
+      if (SourceEditorManager.ActiveEditor = EditorCur) and (M.MenuItem <> nil) then
         M.MenuItem.Checked := true;
       CurMenuItem.OnClick := @mnuWindowSourceItemClick;
       CurMenuItem.Tag := j;
