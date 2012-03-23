@@ -32,6 +32,9 @@ type
     CDCheckBox6: TCDCheckBox;
     CDCheckBox7: TCDCheckBox;
     CDCheckBox8: TCDCheckBox;
+    CDRadioButton4: TCDRadioButton;
+    CDRadioButton5: TCDRadioButton;
+    CDRadioButton6: TCDRadioButton;
     comboWinXP: TCDComboBox;
     comboDefault: TCDComboBox;
     comboAndroid: TCDComboBox;
@@ -44,6 +47,7 @@ type
     Edit2: TEdit;
     editAndroid: TCDEdit;
     FloatSpinEdit1: TFloatSpinEdit;
+    GroupBox4: TGroupBox;
     pageSpins: TPage;
     sbCommon1: TCDScrollBar;
     sbCommon2: TCDScrollBar;

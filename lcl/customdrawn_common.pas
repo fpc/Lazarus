@@ -830,6 +830,7 @@ begin
 
   // The text
   ADest.Pen.Style := psClear;
+  ADest.Brush.Style := bsClear;
   if AStateEx.SelLength = 0 then
   begin
     lVisibleText := UTF8Copy(lControlText, AStateEx.VisibleTextStart.X, lControlTextLen);
@@ -1048,6 +1049,7 @@ procedure TCDDrawerCommon.DrawRadioButton(ADest: TCanvas;
 var
   lColor: TColor;
   lCircleHeight: Integer;
+  lTextHeight, lTextY: Integer;
 begin
   lCircleHeight := GetMeasures(TCDRADIOBUTTON_CIRCLE_HEIGHT);
 
@@ -1069,7 +1071,11 @@ begin
   // Now the text
   ADest.Brush.Style := bsClear;
   ADest.Font.Assign(AStateEx.Font);
-  ADest.TextOut(lCircleHeight+5, 0, AStateEx.Caption);
+  lTextHeight := ADest.TextHeight(cddTestStr);
+  if lCircleHeight > lTextHeight then lTextY := (lCircleHeight - ADest.TextHeight(cddTestStr)) div 2
+  else lTextY := 0;
+  lTextY := lTextY - 1;
+  ADest.TextOut(lCircleHeight+5, lTextY, AStateEx.Caption);
 end;
 
 procedure TCDDrawerCommon.DrawComboBox(ADest: TCanvas; ASize: TSize;
