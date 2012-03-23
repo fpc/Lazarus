@@ -785,9 +785,9 @@ begin
     // Populated later with a list of editor names
     CreateMenuSeparatorSection(mnuWindow,itmWindowLists,'itmWindowLists');
     CreateMenuSeparatorSection(mnuWindow,itmTabLists,'itmTabLists');
-    CreateMenuSubSection(mnuWindow,itmTabListProject,'itmTabListProject', dlgEnvProject);
-    CreateMenuSeparatorSection(mnuWindow, itmTabListPackage, 'itmTabListPackage');
-    CreateMenuSubSection(mnuWindow,itmTabListOther,'itmTabListOther', lisMEOther);
+    CreateMenuSubSection(itmTabLists,itmTabListProject,'itmTabListProject', dlgEnvProject);
+    CreateMenuSeparatorSection(itmTabLists, itmTabListPackage, 'itmTabListPackage');
+    CreateMenuSubSection(itmTabLists,itmTabListOther,'itmTabListOther', lisMEOther);
   end;
 end;
 
