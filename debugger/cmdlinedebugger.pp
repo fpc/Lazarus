@@ -39,7 +39,7 @@ unit CmdLineDebugger;
 interface
 
 uses
-  Classes, Types, Process, FileUtil, Debugger, LCLProc, Forms, DebugUtils;
+  Classes, Types, Process, FileUtil, Debugger, LCLProc, LazLoggerBase, Forms, DebugUtils;
 
 type
 
@@ -96,6 +96,9 @@ uses
    Unix,BaseUnix,
 {$ENDIF}
   SysUtils;
+
+var
+  DBG_CMD_ECHO, DBG_CMD_ECHO_FULL: PLazLoggerLogGroup;
 
 {------------------------------------------------------------------------------
   Function: WaitForHandles
@@ -466,25 +469,20 @@ begin
   if FFlushAfterRead 
   then FOutputBuf := '';
   FFlushAfterRead := False;
-  //writeln('TCmdLineDebugger.ReadLine returns ', result);
-  {$IFDEF DBG_VERBOSE}
-  {$IFnDEF DBG_VERBOSE_FULL_DATA} if length(Result) < 300 then  {$ENDIF}
-  debugln('<< TCmdLineDebugger.ReadLn "',Result,'"')
-  {$IFnDEF DBG_VERBOSE_FULL_DATA}
-  else  debugln(['<< TCmdLineDebugger.ReadLn "',copy(Result, 1, 200), '" ..(',length(Result)-250,').. "',copy(Result, length(Result)-99, 100),'"'])
-  {$ENDIF}
-  ;
-  {$ENDIF}
+
+  if ((DBG_CMD_ECHO_FULL <> nil) and (DBG_CMD_ECHO_FULL^.Enabled)) or (length(Result) < 300)
+  then debugln(DBG_CMD_ECHO_FULL, '<< TCmdLineDebugger.ReadLn "',Result,'"')
+  else debugln(DBG_CMD_ECHO, ['<< TCmdLineDebugger.ReadLn "',copy(Result, 1, 200), '" ..(',length(Result)-250,').. "',copy(Result, length(Result)-99, 100),'"']);
 end;
 
 procedure TCmdLineDebugger.SendCmdLn(const ACommand: String); overload;
 var
   LE: string[2];
 begin
-  //writeln('TCmdLineDebugger.SendCmdLn "',ACommand,'"');
-  {$IFDEF DBG_VERBOSE}
-  debugln('>> TCmdLineDebugger.SendCmdLn "',ACommand,'"');
-  {$ENDIF}
+  if (DBG_CMD_ECHO_FULL <> nil) and (DBG_CMD_ECHO_FULL^.Enabled)
+  then debugln(DBG_CMD_ECHO_FULL, '>> TCmdLineDebugger.SendCmdLn "',ACommand,'"')
+  else debugln(DBG_CMD_ECHO,      '>> TCmdLineDebugger.SendCmdLn "',ACommand,'"');
+
   if DebugProcessRunning
   then begin
     DoDbgOutput('<' + ACommand + '>');
@@ -522,4 +520,7 @@ begin
 end;
 
 initialization
+  DBG_CMD_ECHO      := DebugLogger.RegisterLogGroup('DBG_CMD_ECHO' {$IF defined(DBG_VERBOSE) or defined(DBG_CMD_ECHO)} , True {$ENDIF} );
+  DBG_CMD_ECHO_FULL := DebugLogger.RegisterLogGroup('DBG_CMD_ECHO_FULL' {$IF defined(DBG_VERBOSE_FULL_DATA) or defined(DBG_CMD_ECHO_FULL)} , True {$ENDIF} );
+
 end.
