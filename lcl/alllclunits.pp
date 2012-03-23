@@ -26,7 +26,8 @@ uses
   WSStdCtrls, WSToolwin, ActnList, Arrow, AsyncProcess, ButtonPanel, Buttons, 
   Calendar, RegisterLCL, ValEdit, lazcanvas, lazdialogs, lazregions, 
   customdrawn_common, customdrawncontrols, customdrawndrawers, lazdeviceapis, 
-  LDockTree, LazFreeTypeIntfDrawer, LazarusPackageIntf;
+  LDockTree, LazFreeTypeIntfDrawer, customdrawn_winxp, customdrawn_android, 
+  LazarusPackageIntf;
 
 implementation
 

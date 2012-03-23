@@ -31,7 +31,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="289">
+    <Files Count="291">
       <Item1>
         <Filename Value="barchart.pp"/>
         <UnitName Value="BarChart"/>
@@ -1193,6 +1193,14 @@
         <Filename Value="lazfreetypeintfdrawer.pas"/>
         <UnitName Value="LazFreeTypeIntfDrawer"/>
       </Item289>
+      <Item290>
+        <Filename Value="customdrawn_winxp.pas"/>
+        <UnitName Value="customdrawn_winxp"/>
+      </Item290>
+      <Item291>
+        <Filename Value="customdrawn_android.pas"/>
+        <UnitName Value="customdrawn_android"/>
+      </Item291>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>

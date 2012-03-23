@@ -9,7 +9,9 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, customdrawn, mainform
+  Forms, customdrawn,
+  customdrawn_android, customdrawn_winxp,
+  mainform
   { you can add units after this };
 
 begin

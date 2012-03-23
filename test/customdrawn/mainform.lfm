@@ -411,27 +411,25 @@ object Form1: TForm1
         TabOrder = 2
         object CDRadioButton4: TCDRadioButton
           Left = 9
-          Height = 16
-          Top = 3
-          Width = 100
+          Height = 18
+          Top = 0
+          Width = 103
           Caption = 'CDRadioButton4'
-          Checked = True
           DrawStyle = dsAndroid
         end
         object CDRadioButton5: TCDRadioButton
           Left = 9
-          Height = 16
-          Top = 23
-          Width = 100
+          Height = 18
+          Top = 24
+          Width = 103
           Caption = 'CDRadioButton5'
-          Checked = True
           DrawStyle = dsAndroid
         end
         object CDRadioButton6: TCDRadioButton
           Left = 9
-          Height = 16
+          Height = 18
           Top = 48
-          Width = 100
+          Width = 103
           Caption = 'CDRadioButton6'
           Checked = True
           DrawStyle = dsAndroid

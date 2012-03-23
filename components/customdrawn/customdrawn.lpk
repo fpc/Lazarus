@@ -17,7 +17,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="8">
+    <Files Count="6">
       <Item1>
         <Filename Value="customdrawnextras.pas"/>
         <HasRegisterProc Value="True"/>
@@ -32,25 +32,17 @@
         <UnitName Value="customdrawn_win2000"/>
       </Item3>
       <Item4>
-        <Filename Value="customdrawn_winxp.pas"/>
-        <UnitName Value="customdrawn_winxp"/>
-      </Item4>
-      <Item5>
-        <Filename Value="customdrawn_android.pas"/>
-        <UnitName Value="customdrawn_android"/>
-      </Item5>
-      <Item6>
         <Filename Value="customdrawn_extra1.pas"/>
         <UnitName Value="customdrawn_extra1"/>
-      </Item6>
-      <Item7>
+      </Item4>
+      <Item5>
         <Filename Value="customdrawn_kde.pas"/>
         <UnitName Value="customdrawn_kde"/>
-      </Item7>
-      <Item8>
+      </Item5>
+      <Item6>
         <Filename Value="customdrawn_gnome.pas"/>
         <UnitName Value="customdrawn_gnome"/>
-      </Item8>
+      </Item6>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
