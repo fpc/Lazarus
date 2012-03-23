@@ -1963,7 +1963,6 @@ begin
   Ok:=false;
   try
     if (FPCSrcDir='') or (not DirPathExists(FPCSrcDir)) then begin
-      CTDumpStack;
       DebugLn(['CreateFPCSrcTemplate FPCSrcDir does not exist: FPCSrcDir="',FPCSrcDir,'"']);
       exit;
     end;
