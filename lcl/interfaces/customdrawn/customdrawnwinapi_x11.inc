@@ -687,8 +687,6 @@ begin
   // Debug info before the TTF scanning starts to get results before exceptions
   {$ifdef CD_Debug_TTF}
     AFontPaths.SaveToFile('/tmp/lxfontpaths.txt');
-    AFontList.Sort;
-    AFontList.SaveToFile('/tmp/lxfontlist.txt');
   {$endif}
 
   // We have populated FontPaths, now we may build the font list
@@ -703,6 +701,11 @@ begin
   // default for older distros
   if AFontList.Values['Luxi Sans Regular'] <> '' then LuxiFont:= True
   else LuxiFont:= False;
+
+  {$ifdef CD_Debug_TTF}
+    AFontList.Sort;
+    AFontList.SaveToFile('/tmp/lxfontlist.txt');
+  {$endif}
 end;
 
 function TCDWidgetSet.BackendGetFontPath(const LogFont: TLogFont; const LongFontName: string): string;
