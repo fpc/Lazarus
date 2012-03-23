@@ -142,7 +142,7 @@ type
     FTopInfoMarkup: TSynSelectedColor;
 
     function GetIDEGutterMarks: TIDESynGutterMarks;
-    procedure GetTopInfoMarkupForLine(Sender: TObject; Line: integer; var Special: boolean;
+    procedure GetTopInfoMarkupForLine(Sender: TObject; {%H-}Line: integer; var Special: boolean;
       aMarkup: TSynSelectedColor);
     procedure SetShowTopInfo(AValue: boolean);
     procedure SetTopInfoMarkup(AValue: TSynSelectedColor);
@@ -184,7 +184,7 @@ type
     function GetInitializationLine: Integer;
     function GetInterfaceLine: Integer;
   protected
-    function CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList; override;
+    function CreateRangeList({%H-}ALines: TSynEditStringsBase): TSynHighlighterRangeList; override;
     function StartCodeFoldBlock(ABlockType: Pointer;
               IncreaseLevel: Boolean = true): TSynCustomCodeFoldBlock; override;
   public
@@ -221,7 +221,7 @@ type
     procedure SetSingleLine(const AValue: Boolean);
   protected
     procedure BufferChanged(Sender: TObject);
-    procedure HighlightChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
+    procedure HighlightChanged(Sender: TSynEditStrings; {%H-}AIndex, {%H-}ACount : Integer);
     procedure ReCalc; override;
 
     procedure Paint(Canvas: TCanvas; AClip: TRect; TopOffset: integer); override;
@@ -649,7 +649,7 @@ begin
 
       InfCnt := List.Count;
       for i := InfCnt-1 downto 0 do begin
-        if not(TPascalCodeFoldBlockType(PtrUInt(List.NodeFoldType[i])) in
+        if not(TPascalCodeFoldBlockType({%H-}PtrUInt(List.NodeFoldType[i])) in
            [cfbtClass, cfbtClassSection, cfbtProcedure])
         then
           continue;
@@ -658,7 +658,7 @@ begin
         if sfaInvalid in Inf.FoldAction then
           continue;
 
-        NodeFoldType:=TPascalCodeFoldBlockType(PtrUInt(Inf.FoldType));
+        NodeFoldType:=TPascalCodeFoldBlockType({%H-}PtrUInt(Inf.FoldType));
         if (NodeFoldType in [cfbtClassSection]) and (ListCnt = 0) then begin
           InfList[ListCnt] := Inf;
           inc(ListCnt);
@@ -674,7 +674,7 @@ begin
           inc(ListCnt);
         end;
         if (NodeFoldType in [cfbtProcedure]) and (ListCnt = 2) and
-           (TPascalCodeFoldBlockType(PtrUInt(InfList[ListCnt-1].FoldType)) = cfbtProcedure)
+           (TPascalCodeFoldBlockType({%H-}PtrUInt(InfList[ListCnt-1].FoldType)) = cfbtProcedure)
         then begin
           InfList[ListCnt-1] := Inf;
         end;
@@ -864,8 +864,8 @@ end;
 function TIDESynPasSyn.StartCodeFoldBlock(ABlockType: Pointer;
   IncreaseLevel: Boolean): TSynCustomCodeFoldBlock;
 begin
-  if (ABlockType = Pointer(PtrInt(cfbtUnitSection))) or
-     (ABlockType = Pointer(PtrInt(cfbtUnitSection)) + PtrUInt(CountPascalCodeFoldBlockOffset))
+  if (ABlockType = Pointer(PtrUInt(cfbtUnitSection))) or
+     (ABlockType = Pointer(PtrUInt(cfbtUnitSection)) + {%H-}PtrUInt(CountPascalCodeFoldBlockOffset))
   then begin
     if KeyComp('Interface') then
       TIDESynHighlighterPasRangeList(CurrentRanges).FInterfaceLine := LineIndex  + 1;
@@ -1427,7 +1427,7 @@ begin
       dec(j);
       if FoldView.IsFoldedAtTextIndex(i,j) then begin
         FldInf := FoldView.FoldProvider.FoldOpenInfo(i, j);
-        if TPascalCodeFoldBlockType(PtrUInt(FldInf.FoldType)) in
+        if TPascalCodeFoldBlockType({%H-}PtrUInt(FldInf.FoldType)) in
            [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment]
         then begin
           FoldView.UnFoldAtTextIndex(i, j, 1, False, 0);
@@ -1452,7 +1452,7 @@ begin
     while j > 0 do begin
       dec(j);
       FldInf := FoldView.FoldProvider.FoldOpenInfo(i, j);
-      if (TPascalCodeFoldBlockType(PtrUInt(FldInf.FoldType)) in
+      if (TPascalCodeFoldBlockType({%H-}PtrUInt(FldInf.FoldType)) in
           [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment]) and
          (sfaFoldFold in FldInf.FoldAction)
       then begin
@@ -1476,7 +1476,7 @@ begin
     while j > 0 do begin
       dec(j);
       FldInf := FoldView.FoldProvider.FoldOpenInfo(i, j);
-      if (TPascalCodeFoldBlockType(PtrUInt(FldInf.FoldType)) in
+      if (TPascalCodeFoldBlockType({%H-}PtrUInt(FldInf.FoldType)) in
           [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment]) and
          (sfaFoldHide in FldInf.FoldAction)
       then begin
@@ -1539,7 +1539,7 @@ begin
         j := FoldView.FoldProvider.FoldOpenCount(i);
         while j > 0 do begin
           dec(j);
-          ft := TPascalCodeFoldBlockType(PtrUInt(FoldView.FoldProvider.FoldOpenInfo(i, j).FoldType));
+          ft := TPascalCodeFoldBlockType({%H-}PtrUInt(FoldView.FoldProvider.FoldOpenInfo(i, j).FoldType));
           if ((ft in Foldable) or (ft in HideAble)) and FoldView.IsFoldedAtTextIndex(i,j) then
             HasCollapsedComments := True
           else begin

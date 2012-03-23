@@ -90,9 +90,9 @@ type
     procedure Assign(Source: TLazBuildMacro); override;
     function Equals(Other: TLazBuildMacro): boolean; reintroduce;
     procedure LoadFromXMLConfig(aXMLConfig: TXMLConfig; const Path: string;
-                                DoSwitchPathDelims: boolean);
+                                {%H-}DoSwitchPathDelims: boolean);
     procedure SaveToXMLConfig(aXMLConfig: TXMLConfig; const Path: string;
-                              UsePathDelim: TPathDelimSwitch);
+                              {%H-}UsePathDelim: TPathDelimSwitch);
     function CreateDiff(OtherMode: TLazBuildMacro; Tool: TCompilerDiffTool = nil): boolean;
     procedure IncreaseChangeStamp;
     property ChangeStamp: integer read FChangeStamp;
@@ -711,6 +711,7 @@ const
 
 function EnumToStr(opt: TParsedCompilerOptString): string;
 begin
+  Result:='';
   WriteStr(Result, opt);
 end;
 
@@ -1661,6 +1662,7 @@ begin
   { Linking }
   p:=Path+'Linking/';
   aXMLConfig.SetDeleteValue(p+'Debugging/GenerateDebugInfo/Value', GenerateDebugInfo, True); // Default = True, since version 11 (was False before)
+  s:='';
   WriteStr(s, DebugInfoType);
   aXMLConfig.SetDeleteValue(p+'Debugging/DebugInfoType/Value', s, 'dsAuto');
   aXMLConfig.DeletePath(p+'Debugging/GenerateDwarf'); // old deprecated setting

@@ -30,7 +30,7 @@ unit MiscOptions;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, BuildLazDialog, BuildProfileManager,
+  Classes, SysUtils, LCLProc, BuildProfileManager,
   CodeToolsStructs, TextTools, FileUtil, Laz2_XMLCfg, LazConf, IDEProcs;
 
 type

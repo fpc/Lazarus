@@ -45,14 +45,13 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LConvEncoding, Forms, Controls, LCLType, LCLIntf,
-  Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs, Types,
-  InterfaceBase, Themes, ComCtrls, CheckLst, Menus, DividerBevel,
+  Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs,
+  InterfaceBase, Themes, CheckLst, Menus, DividerBevel,
   DefineTemplates,
   // IDEIntf
   LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf,
   // IDE
-  LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
-  IDEContextHelpEdit, MainBar,
+  LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs, MainBar,
   InputHistory, ExtToolDialog, ExtToolEditDlg, EnvironmentOpts,
   {$IFDEF win32}
   CodeToolManager, // added for windres workaround
@@ -111,7 +110,7 @@ type
     procedure CompileAdvancedButtonClick(Sender: TObject);
     procedure CompileButtonClick(Sender: TObject);
     procedure DefinesButtonClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -160,8 +159,6 @@ implementation
 
 const
   DefaultIDEMakeOptionFilename = 'idemake.cfg';
-  ButtonSize = 24;
-  ModeColumnWidth = 170;
 
 function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
 // mrOk=save

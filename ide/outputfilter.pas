@@ -94,8 +94,8 @@ type
   public
     constructor Create(TheFilter: TOutputFilter);
     procedure Init(const aLine, aWorkDir: string; const aLineNumber: integer);
-    procedure LineChanged(const OldValue: string); override;
-    procedure WorkingDirectoryChanged(const OldValue: string); override;
+    procedure LineChanged(const {%H-}OldValue: string); override;
+    procedure WorkingDirectoryChanged(const {%H-}OldValue: string); override;
     property Filter: TOutputFilter read FFilter;
   end;
 
@@ -159,7 +159,7 @@ type
     procedure ClearScanners;
     procedure InitExecute;
     procedure CleanUpExecute;
-    procedure ContinueAsyncExecute(Data: PtrInt);
+    procedure ContinueAsyncExecute({%H-}Data: PtrInt);
   protected
     procedure SetErrorName(errtype: TFPCErrorType; const AValue: String );
     function GetErrorName(errtype: TFPCErrorType): string;

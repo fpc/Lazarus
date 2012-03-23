@@ -43,7 +43,7 @@ uses
   Classes, SysUtils, contnrs, LCLProc, Forms, Controls, Buttons, Dialogs,
   FileUtil, Laz2_XMLCfg, Graphics, ComCtrls, ExtCtrls, StdCtrls,
   DefineTemplates, CodeToolManager,
-  TextTools, IDEDialogs,
+  TextTools,
   TransferMacros, LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs,
   AboutFrm;
   
@@ -106,7 +106,7 @@ type
     procedure PropertiesTreeViewSelectionChanged(Sender: TObject);
     procedure StartIDEBitBtnClick(Sender: TObject);
     procedure WelcomePaintBoxPaint(Sender: TObject);
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
   private
     FFPCSrcNeedsUpdate: boolean;
     FCompilerNeedsUpdate: boolean;
@@ -174,9 +174,9 @@ type
 
   TSetupMacros = class(TTransferMacroList)
   protected
-    procedure DoSubstitution(TheMacro: TTransferMacro; const MacroName: string;
-      var s: string; const Data: PtrInt; var Handled, Abort: boolean;
-      Depth: integer); override;
+    procedure DoSubstitution({%H-}TheMacro: TTransferMacro; const MacroName: string;
+      var s: string; const {%H-}Data: PtrInt; var Handled, {%H-}Abort: boolean;
+      {%H-}Depth: integer); override;
   public
     FPCVer: string;
     LazarusDir: string;

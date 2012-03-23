@@ -172,7 +172,7 @@ type
     function CreateUniqueCategoryName(const AName: string): string;
     function CreateUniqueCommandName(const AName: string): string;
     function CreateNewCommandID: word;
-    function CreateCategory(Parent: TIDECommandCategory;
+    function CreateCategory({%H-}Parent: TIDECommandCategory;
                             const AName, Description: string;
                             Scope: TIDECommandScope = nil): TIDECommandCategory; override;
     function CreateCommand(Category: TIDECommandCategory;

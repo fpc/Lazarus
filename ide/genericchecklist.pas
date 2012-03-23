@@ -6,8 +6,7 @@ unit GenericCheckList;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls, CheckLst, LazarusIDEStrConsts, Buttons;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel, CheckLst, LazarusIDEStrConsts, Buttons;
 
 type
 

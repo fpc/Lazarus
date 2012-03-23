@@ -370,22 +370,22 @@ type
 
     // macro functions
     procedure InitMacros(AMacroList: TTransferMacroList);
-    function MacroFuncCompPath(const s:string; const Data: PtrInt;
-                               var Abort: boolean): string;
-    function MacroFuncFPCSrcDir(const s:string; const Data: PtrInt;
-                                var Abort: boolean): string;
-    function MacroFuncLazarusDir(const s:string; const Data: PtrInt;
-                                 var Abort: boolean): string;
-    function MacroFuncExeExt(const s:string; const Data: PtrInt;
-                                 var Abort: boolean): string;
-    function MacroFuncLanguageID(const s:string; const Data: PtrInt;
-                                 var Abort: boolean): string;
-    function MacroFuncLanguageName(const s:string; const Data: PtrInt;
-                                   var Abort: boolean): string;
-    function MacroFuncTestDir(const s:string; const Data: PtrInt;
-                              var Abort: boolean): string;
-    function MacroFuncConfDir(const s:string; const Data: PtrInt;
-                              var Abort: boolean): string;
+    function MacroFuncCompPath(const {%H-}s:string; const {%H-}Data: PtrInt;
+                               var {%H-}Abort: boolean): string;
+    function MacroFuncFPCSrcDir(const {%H-}s:string; const {%H-}Data: PtrInt;
+                                var {%H-}Abort: boolean): string;
+    function MacroFuncLazarusDir(const {%H-}s:string; const {%H-}Data: PtrInt;
+                                 var {%H-}Abort: boolean): string;
+    function MacroFuncExeExt(const {%H-}s:string; const {%H-}Data: PtrInt;
+                                 var {%H-}Abort: boolean): string;
+    function MacroFuncLanguageID(const {%H-}s:string; const {%H-}Data: PtrInt;
+                                 var {%H-}Abort: boolean): string;
+    function MacroFuncLanguageName(const {%H-}s:string; const {%H-}Data: PtrInt;
+                                   var {%H-}Abort: boolean): string;
+    function MacroFuncTestDir(const {%H-}s:string; const {%H-}Data: PtrInt;
+                              var {%H-}Abort: boolean): string;
+    function MacroFuncConfDir(const {%H-}s:string; const {%H-}Data: PtrInt;
+                              var {%H-}Abort: boolean): string;
 
     // debugger
     procedure SaveDebuggerPropertiesList;

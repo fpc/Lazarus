@@ -68,9 +68,9 @@ type
     PnlTitle : TPanel;
     tmrCloseForm: TTimer;
     procedure BCloseClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure tmrCloseFormTimer(Sender: TObject);
   private
     NHints    : Integer;

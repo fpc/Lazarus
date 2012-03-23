@@ -43,7 +43,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileUtil,
-  LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls,
+  LCLType, Controls, Forms, Buttons, StdCtrls,
   Dialogs, ExtCtrls, LCLProc, ButtonPanel,
   IDEMsgIntf, IDEExternToolIntf, IDEHelpIntf,
   PropEdits, TransferMacros, LazarusIDEStrConsts,
@@ -95,7 +95,7 @@ type
     procedure MacrosListboxClick(Sender: TObject);
     procedure MacrosListboxDblClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
-    procedure OpenButtonClick(sender : TOBject);
+    procedure OpenButtonClick({%H-}sender : TOBject);
     procedure ScannersButtonClick(Sender: TObject);
   private
     fOptions: TExternalToolOptions;

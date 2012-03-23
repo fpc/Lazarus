@@ -87,13 +87,13 @@ type
     procedure SetItems(Index: integer; NewMacro: TTransferMacro);
     procedure SetMarkUnhandledMacros(const AValue: boolean);
   protected
-    function MF_Ext(const Filename:string; const Data: PtrInt; var Abort: boolean):string; virtual;
-    function MF_Path(const Filename:string; const Data: PtrInt; var Abort: boolean):string; virtual;
-    function MF_Name(const Filename:string; const Data: PtrInt; var Abort: boolean):string; virtual;
-    function MF_NameOnly(const Filename:string; const Data: PtrInt; var Abort: boolean):string; virtual;
-    function MF_MakeDir(const Filename:string; const Data: PtrInt; var Abort: boolean):string; virtual;
-    function MF_MakeFile(const Filename:string; const Data: PtrInt; var Abort: boolean):string; virtual;
-    function MF_Trim(const Filename:string; const Data: PtrInt; var Abort: boolean):string; virtual;
+    function MF_Ext(const Filename:string; const {%H-}Data: PtrInt; var {%H-}Abort: boolean):string; virtual;
+    function MF_Path(const Filename:string; const {%H-}Data: PtrInt; var {%H-}Abort: boolean):string; virtual;
+    function MF_Name(const Filename:string; const {%H-}Data: PtrInt; var {%H-}Abort: boolean):string; virtual;
+    function MF_NameOnly(const Filename:string; const {%H-}Data: PtrInt; var {%H-}Abort: boolean):string; virtual;
+    function MF_MakeDir(const Filename:string; const {%H-}Data: PtrInt; var {%H-}Abort: boolean):string; virtual;
+    function MF_MakeFile(const Filename:string; const {%H-}Data: PtrInt; var {%H-}Abort: boolean):string; virtual;
+    function MF_Trim(const Filename:string; const {%H-}Data: PtrInt; var {%H-}Abort: boolean):string; virtual;
     procedure DoSubstitution(TheMacro: TTransferMacro; const MacroName: string;
       var s:string; const Data: PtrInt; var Handled, Abort: boolean;
       Depth: integer); virtual;

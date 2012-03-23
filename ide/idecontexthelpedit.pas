@@ -57,7 +57,7 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure Run;
     destructor Destroy; override;
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
   end;
 
 
@@ -83,7 +83,7 @@ type
     WindowControlsGroupBox: TGroupBox;
     procedure ControlsTreeViewShowHint(Sender: TObject; HintInfo: PHintInfo);
     procedure CreateHelpNodeForControlButtonClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure HelpNodesTreeViewSelectionChanged(Sender: TObject);

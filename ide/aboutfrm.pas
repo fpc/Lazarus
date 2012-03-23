@@ -87,11 +87,11 @@ type
     ContributorsPage: TTabSheet;
     AcknowledgementsPage:TTabSheet;
     procedure AboutFormCreate(Sender:TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure miVerToClipboardClick(Sender: TObject);
     procedure NotebookPageChanged(Sender: TObject);
-    procedure URLLabelMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure URLLabelMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
+      {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure URLLabelMouseEnter(Sender: TObject);
     procedure URLLabelMouseLeave(Sender: TObject);
   private

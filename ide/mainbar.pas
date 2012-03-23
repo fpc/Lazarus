@@ -38,7 +38,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, LCLProc, StdCtrls, Forms, Controls, Buttons, Menus,
+  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, Menus,
   ComCtrls, ExtCtrls, Dialogs, LMessages,
   // IDEIntf
   ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf,
