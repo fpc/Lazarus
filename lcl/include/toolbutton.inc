@@ -57,7 +57,7 @@ begin
   FImageIndex := -1;
   FStyle := tbsButton;
   FShowCaption := true;
-  ControlStyle := [csCaptureMouse, csSetCaption, csDesignNoSmoothResize];
+  ControlStyle := [csSetCaption, csDesignNoSmoothResize];
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
 end;
@@ -458,14 +458,14 @@ end;
 
 procedure TToolButton.MouseEnter;
 begin
-  //DebugLn('TToolButton.MouseEnter ',Name);
+  // DebugLn('TToolButton.MouseEnter ',Name);
   inherited MouseEnter;
   SetMouseInControl(true);
 end;
 
 procedure TToolButton.MouseLeave;
 begin
-  //DebugLn('TToolButton.MouseLeave ',Name);
+  // DebugLn('TToolButton.MouseLeave ',Name);
   inherited MouseLeave;
   SetMouseInControl(false);
   if (not MouseCapture) and ([tbfPressed, tbfArrowPressed] * FToolButtonFlags <> []) then
@@ -622,6 +622,10 @@ begin
   if FStyle = Value then exit;
   FStyle := Value;
   InvalidatePreferredSize;
+  if FStyle = tbsDropDown then
+    ControlStyle := ControlStyle + [csCaptureMouse]
+  else
+    ControlStyle := ControlStyle - [csCaptureMouse];
   if IsControlVisible then
     UpdateVisibleToolbar;
 end;
