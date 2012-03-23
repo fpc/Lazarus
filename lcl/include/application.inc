@@ -399,7 +399,6 @@ var
 begin
   ReleaseComponents;
   ProcessAsyncCallQueue;
-  UpdateMouseHint(GetControlAtMouse);
 
   Done := True;
   if (FIdleLockCount=0) then begin
