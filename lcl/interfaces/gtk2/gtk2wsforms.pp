@@ -83,11 +83,6 @@ type
                              const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle,
                        AOldFormStyle: TFormStyle); override;
-{    class function GetDefaultClientRect(const AWinControl: TWinControl;
-             const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
-             ): boolean; override;
-    class procedure SetBorderIcons(const AForm: TCustomForm;
-                                   const ABorderIcons: TBorderIcons); override;}
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
@@ -544,28 +539,6 @@ begin
     gtk_window_set_keep_above(PGtkWindow(AForm.Handle),
       GBoolean(AFormStyle in fsAllStayOnTop));
 end;
-
-{class function TGtk2WSCustomForm.GetDefaultClientRect(
-  const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer;
-  var aClientRect: TRect): boolean;
-begin
-  Result:=false;
-  if AWinControl.HandleAllocated then begin
-
-  end else begin
-    FrameBorders:=GetStyleFormFrameBorders(TCustomForm(AWinControl).Menu<>nil);
-    aClientRect:=Rect(0,0,
-                 Max(0,aWidth-FrameBorders.Left-FrameBorders.Right),
-                 Max(0,aHeight-FrameBorders.Top-FrameBorders.Bottom));
-    Result:=true;
-  end;
-end;
-
-class procedure TGtk2WSCustomForm.SetBorderIcons(const AForm: TCustomForm;
-  const ABorderIcons: TBorderIcons);
-begin
-  gtk_window_get_modal();
-end;}
 
 class procedure TGtk2WSCustomForm.SetAllowDropFiles(const AForm: TCustomForm;
   AValue: Boolean);
