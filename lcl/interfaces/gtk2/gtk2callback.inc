@@ -1756,7 +1756,6 @@ var
   W: PGtkWidget;
   Info: PWidgetInfo;
   Old: TObject;
-  Mess: TLMessage;
   Path: PGtkTreePath;
   Column: PGtkTreeViewColumn;
   {$IFDEF VerboseMouseBugfix}
