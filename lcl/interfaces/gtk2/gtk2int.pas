@@ -162,8 +162,6 @@ type
     procedure DestroyEmptySubmenu(Sender: TObject);
     procedure DestroyConnectedWidget(Widget: PGtkWidget;
                                      CheckIfDestroying: boolean);
-    function  RecreateWnd(Sender: TObject): Integer;
-
     // clipboard
     procedure SetClipboardWidget(TargetWidget: PGtkWidget);
 
@@ -174,7 +172,6 @@ type
     procedure DisposeDC(aDC: TGtkDeviceContext);
     function CreateDCForWidget(AWidget: PGtkWidget; AWindow: PGdkWindow;
                                AWithChildWindows: Boolean; ADoubleBuffer: PgdkDrawable = nil): HDC;
-    function GetDoubleBufferedDC(Handle: HWND): HDC;
 
     // GDIObjects
     function IsValidGDIObject(const AGDIObj: HGDIOBJ): Boolean;
