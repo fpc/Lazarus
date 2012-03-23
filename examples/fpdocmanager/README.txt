@@ -6,8 +6,7 @@ A configuration wizard helps in the setup of the basic RTL, FCL and LCL docs.
 Configuration and output is kept in a single user selectable directory.
 
 A package FPDocEngine is supplied for use in commandline or GUI applications.
-uMakeSkel is a copy of parts of the FPDoc and MakeSkel programs, modified
-with workarounds for known problems with these FPC tools.
+uMakeSkel is a copy of parts of the FPDoc and MakeSkel programs.
 
 Organization
 ------------
