@@ -34,6 +34,8 @@ unit RegisterEasyDockMgr;
 
 {$DEFINE DockMaster}  //must match IDE setting
 
+{.$DEFINE oldPos} //as implemented by Mattias? (problem with multiple monitors!)
+
 interface
 
 uses
@@ -84,6 +86,7 @@ var
   IDEEasyDockMaster: TIDEEasyDockMaster = nil;
 
 procedure Register;
+function FitToMonitor(const tlbr: TRect): TRect;
 
 implementation
 
@@ -96,6 +99,47 @@ begin
 {$ELSE}
   //should not be required
 {$ENDIF}
+end;
+
+function FitInto(const src, dst: TRect): TRect;
+begin
+(* Adjust src to fit into dst.
+   Keep src extent if possible.
+*)
+  if src.Right > dst.Right then begin
+    //shift left
+    Result.Right := dst.Right;
+    Result.Left := Max(dst.Left, Result.Right - (src.Right - src.Left));
+  end else if src.Left < dst.Left then begin
+    //shift right
+    Result.Left := src.Left;
+    Result.Right := Min(dst.Right, Result.Left + (src.Right - src.Left));
+  end else begin
+    Result.Left := src.Left;
+    Result.Right:= src.Right;
+  end;
+  if src.Bottom > dst.Bottom then begin
+    //shift up
+    Result.Bottom := dst.Bottom;
+    Result.Top := Max(dst.Top, Result.Bottom - (src.Bottom - src.Top));
+  end else if src.Top < dst.Top then begin
+    //shift down
+    Result.Top := dst.Top;
+    Result.Bottom := Min(dst.Bottom, Result.Top + (src.Bottom - src.Top));
+  end else begin
+    Result.Top := src.Top;
+    Result.Bottom := src.Bottom;
+  end;
+end;
+
+function FitToMonitor(const tlbr: TRect): TRect;
+var
+  r: TRect;
+  m: TMonitor;
+begin
+  m := Screen.MonitorFromPoint(tlbr.BottomRight, mdNearest);
+  r := m.BoundsRect;
+  Result := FitInto(tlbr, r);
 end;
 
 { TIDEEasyDockMaster }
@@ -117,7 +161,11 @@ procedure TIDEEasyDockMaster.GetDefaultBounds(AForm: TCustomForm; out
   Creator: TIDEWindowCreator; out NewBounds: TRect; out DockSiblingName: string;
   out DockAlign: TAlign);
 begin
+{$IFDEF oldPos}
   NewBounds:=Rect(0,0,0,0);
+{$ELSE}
+  NewBounds:=AForm.BoundsRect;
+{$ENDIF}
   DockSiblingName:='';
   DockAlign:=alNone;
   Creator:=IDEWindowCreators.FindWithName(AForm.Name);
@@ -129,10 +177,14 @@ begin
     DockSiblingName:=Creator.DockSibling;
     DockAlign:=Creator.DockAlign;
   end;
+{$IFDEF oldPos}
   NewBounds.Left:=Min(10000,Max(-10000,NewBounds.Left));
   NewBounds.Top:=Min(10000,Max(-10000,NewBounds.Top));
   NewBounds.Right:=Max(NewBounds.Left+100,NewBounds.Right);
   NewBounds.Bottom:=Max(NewBounds.Top+100,NewBounds.Bottom);
+{$ELSE}
+  NewBounds := FitToMonitor(NewBounds);
+{$ENDIF}
 end;
 
 constructor TIDEEasyDockMaster.Create;
@@ -171,8 +223,10 @@ var
 begin
   debugln(['TIDEEasyDockMaster.MakeIDEWindowDockSite BEFORE ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect)]);
   GetDefaultBounds(AForm,Creator,NewBounds,DockSiblingName,DockAlign);
-  if Creator<>nil then
+  if Creator<>nil then begin
+    debugln(['TIDEEasyDockMaster.MakeIDEWindowDockSite Creator ',DbgSName(AForm),' ',dbgs(NewBounds)]);
     AForm.BoundsRect:=NewBounds;
+  end;
   DockMaster.AddElasticSites(AForm, ASides);
   debugln(['TIDEEasyDockMaster.MakeIDEWindowDockSite AFTER ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect)]);
 end;
@@ -240,17 +294,35 @@ var
   AControl: TControl;
 begin
   debugln(['TIDEEasyDockMaster.ShowForm ',DbgSName(AForm),' BringToFront=',BringToFront,' IsDockSite=',IsDockSite(AForm),' IsDockable=',IsDockable(AForm)]);
+{$IFDEF oldPos}
+{$ELSE}
+  if AForm.HostDockSite <> nil then begin
+    //check host dock site position?
+    Parent:=GetParentForm(AForm);
+    Parent.BoundsRect := FitToMonitor(Parent.BoundsRect);
+    exit; //never move docked forms
+  end;
+{$ENDIF}
+
+//Somewhere down here the form shrinks to the bottom right of the screen.
+
+//This prevents minimizing, but does not force initial show
+//if AForm.Visible then exit;
+
   try
     AForm.DisableAlign;
     if AForm.HostDockSite<>nil then
     begin
-      // already docked
+      // already docked - check dkDock?
+      //MakeIDEWindowDockable(AForm);
     end else if not (IsDockSite(AForm) or IsDockable(AForm)) then
     begin
       // this form was not yet docked
       // place it at a default position and make it dockable
       GetDefaultBounds(AForm,Creator,NewBounds,DockSiblingName,DockAlign);
-      if Creator<>nil then
+      DebugLn('default bounds: ', DbgS(NewBounds));
+    {$IFDEF oldPos}
+      if (Creator<>nil) then
       begin
         // this window should become dockable
         NewBounds.Left:=Min(10000,Max(-10000,NewBounds.Left));
@@ -281,6 +353,15 @@ begin
           MakeIDEWindowDockable(AForm);
         end;
       end;
+    {$ELSE}
+      begin
+        AForm.BoundsRect := FitToMonitor(NewBounds);
+        DebugLn('default bounds: ', DbgS(NewBounds));
+        //AForm.BoundsRect := NewBounds;
+        MakeIDEWindowDockable(AForm);
+        DebugLn('After MakeDockable: ', DbgS(NewBounds));
+      end;
+    {$ENDIF}
     end;
 
   finally
@@ -294,6 +375,7 @@ begin
         AControl.Visible:=true;
     {$ELSE}
       AControl.Visible := True;
+      //if AControl.Parent = nil then AControl.BoundsRect := NewBounds; //top form, if floating
     {$ENDIF}
       AControl:=AControl.Parent;
     end;
@@ -301,11 +383,16 @@ begin
 
     if BringToFront then begin
       Parent:=GetParentForm(AForm);
-      if Parent<>nil then
+      if Parent<>nil then begin
         Parent.ShowOnTop;
+        //Parent.BoundsRect := FitToMonitor(NewBounds);
+      end;
     end;
   end;
-  debugln(['TIDEEasyDockMaster.ShowForm END ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect)]);
+  Parent:=GetParentForm(AForm);
+  if Parent <> nil then
+    debugln(['TIDEEasyDockMaster.ShowForm END Parent ',dbgs(Parent.BoundsRect)]);
+  debugln(['TIDEEasyDockMaster.ShowForm END ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect)])
 end;
 
 procedure TIDEEasyDockMaster.CloseAll;

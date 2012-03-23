@@ -356,6 +356,9 @@ function  FindOwnedComponent(const AName: string; AOwner: TComponent): TComponen
 const
   CustomDockSiteID = 1;
 //var  AppDockBookClass: TDockBookClass;
+  AlignNames: array[TAlign] of string = (
+    'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient', 'alCustom'
+  );
 
 var //debug only, these are valid only until drop
   DropOn: TControl;

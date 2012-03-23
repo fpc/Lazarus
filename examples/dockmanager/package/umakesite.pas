@@ -196,6 +196,7 @@ begin
 {$ELSE}
   po := AForm; //owned by the form - proper destruction
 {$ENDIF}
+DebugLn('AddElastic BEFORE %s %s', [AForm.Name, DbgS(AForm.BoundsRect)]);
   AForm.DisableAlign;
   for side := low(side) to high(side) do begin
     if (side in AllowedSides) and (side in Sides) then begin
@@ -245,7 +246,9 @@ begin
       LastPanel := pnl; //for reload layout
     end;
   end;
+DebugLn('AddElastic added  %s %s', [AForm.Name, DbgS(AForm.BoundsRect)]);
   AForm.EnableAlign;
+DebugLn('AddElastic AFTER  %s %s', [AForm.Name, DbgS(AForm.BoundsRect)]);
 end;
 
 function TDockMaster.CreateDockable(const AName: string;
@@ -498,6 +501,8 @@ Notebooks?
     site.EnableAutoSizing;
     site.Show;
   end;
+// --- debug ---
+  //DumpSites; - crash! ???
 end;
 
 procedure TDockMaster.SaveToStream(Stream: TStream);
