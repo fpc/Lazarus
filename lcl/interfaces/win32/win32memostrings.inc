@@ -131,10 +131,10 @@ begin
   if Source is TStrings then
   begin
     // to prevent Clear and then SetText we need to use our own Assign
+    TextLineBreakStyle := S.TextLineBreakStyle; //put this first to call CheckSpecialChars if not done yet
     QuoteChar := S.QuoteChar;
     Delimiter := S.Delimiter;
     NameValueSeparator := S.NameValueSeparator;
-    TextLineBreakStyle := S.TextLineBreakStyle;
     Text := S.Text;
   end
   else
