@@ -580,6 +580,7 @@ type
     procedure OpenAtCursorClicked(Sender: TObject);
     procedure OnPopupMenuOpenFile(Sender: TObject);
     procedure OnPopupOpenPackageFile(Sender: TObject);
+    procedure OnPopupOpenProjectInsp(Sender: TObject);
     procedure TabPopUpMenuPopup(Sender: TObject);
     procedure SrcPopUpMenuPopup(Sender: TObject);
     procedure DbgPopUpMenuPopup(Sender: TObject);
@@ -5412,7 +5413,7 @@ var
   S: String;
   EditorCur: TSourceEditor;
   P: TIDEPackage;
-  RecMenu, M: TIDEMenuSection;
+  RecMenu, ProjMenu, M: TIDEMenuSection;
   EdList: TStringList;
 begin
   PopM:=TPopupMenu(Sender);
@@ -5469,7 +5470,8 @@ begin
 
       RecMenu := RegisterIDESubMenu(SrcEditMenuSectionEditors, lisRecentTabs, lisRecentTabs);
       RecMenu.Visible := False;
-      RegisterIDESubMenu(SrcEditMenuSectionEditors, dlgEnvProject, dlgEnvProject).Visible := False;
+      ProjMenu := RegisterIDESubMenu(SrcEditMenuSectionEditors, dlgEnvProject, dlgEnvProject);
+      ProjMenu.Visible := False;
       RegisterIDESubMenu(SrcEditMenuSectionEditors, lisMEOther, lisMEOther).Visible := False;
 
       //first add all pages in the correct order since the editor order can be different from the tab order
@@ -5527,6 +5529,13 @@ begin
                    lisCompPalOpenPackage, @OnPopupOpenPackageFile, nil, nil, '', M.UserTag);
         end;
       end;
+
+      if ProjMenu.Visible then begin
+        RegisterIDEMenuCommand(
+                RegisterIDEMenuSection(ProjMenu, 'Open proj sect '),
+               'Open proj', lisOpenProject2, @OnPopupOpenProjectInsp);
+      end;
+
     end;
   finally
     SourceTabMenuRoot.EndUpdate;
@@ -6703,6 +6712,11 @@ begin
     PackageEditingInterface.DoOpenPackageFile
       (TIDEPackage((Sender as TIDEMenuItem).UserTag).Filename,[pofAddToRecent],false)
   end;
+end;
+
+procedure TSourceNotebook.OnPopupOpenProjectInsp(Sender: TObject);
+begin
+  MainIDEInterface.DoShowProjectInspector(True);
 end;
 
 Procedure TSourceNotebook.OpenAtCursorClicked(Sender: TObject);
