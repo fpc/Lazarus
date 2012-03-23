@@ -1578,10 +1578,7 @@ end;
 
 {$I scrollbar.inc}
 {$I memoscrollbar.inc}
-{$I memo.inc}
 {$I memostrings.inc}
-
-{$I edit.inc}
 
 {$I buttoncontrol.inc}
 {$I buttons.inc}

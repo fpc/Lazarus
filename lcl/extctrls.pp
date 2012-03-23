@@ -1157,7 +1157,6 @@ end;
 
 {$I page.inc}
 {$I notebook.inc}
-{$I timer.inc}
 {$I idletimer.inc}
 {$I shape.inc}
 {$I customsplitter.inc}
