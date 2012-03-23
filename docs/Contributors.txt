@@ -101,6 +101,7 @@ Laurent Jacques
 Leslie Kaye
 Louis Hoefler
 Luca Olivetti
+Ludo Brands
 Luis R. Hilario B.
 Luis Rodrigues made TChart and misc patches
 Luiz Americo
