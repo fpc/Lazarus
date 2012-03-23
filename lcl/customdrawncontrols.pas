@@ -271,6 +271,8 @@ type
     property TabStop default True;
   end;
 
+  TKeyboardInputBehavior = (kibAutomatic, kibRequires, kibDoesntRequire);
+
   { TCDComboBox }
 
   TCDComboBox = class(TCDEdit)
@@ -278,9 +280,11 @@ type
     FIsClickingButton: Boolean;
     FItemIndex: Integer;
     FItems: TStringList;
+    FKeyboardInputBehavior: TKeyboardInputBehavior;
     function GetItems: TStrings;
     procedure OnShowSelectItemDialogResult(ASelectedItem: Integer);
     procedure SetItemIndex(AValue: Integer);
+    procedure SetKeyboardInputBehavior(AValue: TKeyboardInputBehavior);
   protected
     function GetControlId: TCDControlID; override;
     // mouse
@@ -293,6 +297,8 @@ type
   published
     property Items: TStrings read GetItems;
     property ItemIndex: Integer read FItemIndex write SetItemIndex;
+    // This allows controlling the virtual keyboard behavior, mostly for Android
+    property KeyboardInputBehavior: TKeyboardInputBehavior read FKeyboardInputBehavior write SetKeyboardInputBehavior;
   end;
 
   { TCDPositionedControl }
@@ -934,6 +940,14 @@ begin
   if lValue >= 0 then Text := FItems.Strings[lValue];
 end;
 
+procedure TCDComboBox.SetKeyboardInputBehavior(AValue: TKeyboardInputBehavior);
+begin
+  if FKeyboardInputBehavior=AValue then Exit;
+  FKeyboardInputBehavior:=AValue;
+  if AValue = kibRequires then ControlStyle := ControlStyle + [csRequiresKeyboardInput]
+  else ControlStyle := ControlStyle + [csRequiresKeyboardInput];
+end;
+
 function TCDComboBox.GetControlId: TCDControlID;
 begin
   Result := cidComboBox;
@@ -977,6 +991,10 @@ end;
 constructor TCDComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+
+  // The keyboard input is mostly an annoyance in the combobox in Android,
+  // but we offer the property RequiresKeyboardInput to override this setting
+  ControlStyle := ControlStyle - [csRequiresKeyboardInput];
 
   FItems := TStringList.Create;
 end;
