@@ -19,7 +19,7 @@ unit TTCMap;
 
 interface
 
-uses LazFreeType, TTTypes;
+uses TTTypes;
 
 type
   (********************************************************************)
@@ -106,6 +106,7 @@ type
                  Version : word;
                  Loaded  : Boolean;
                  CannotLoad: Boolean;
+                 StreamPtr: ^TT_Stream;
                  Offset  : Long;
 
                  case Byte of
@@ -135,8 +136,9 @@ uses
    num_SH, u  : UShort;
    i          : Int;
    num_segs   : Int;
+   stream: TT_Stream;
  label
-   Fail;
+   Fail, SimpleExit;
  begin
    CharMap_Load := Failure;
 
@@ -146,7 +148,9 @@ uses
      exit;
    end;
 
-   if TT_Seek_File( cmap.offset ) then exit;
+   TT_Use_Stream(cmap.StreamPtr^, stream);
+
+   if TT_Seek_File( cmap.offset ) then goto SimpleExit;
 
    case cmap.format of
 
@@ -266,15 +270,20 @@ uses
 
      else
        error := TT_Err_Invalid_Charmap_Format;
-       exit;
+       goto SimpleExit;
    end;
 
    CharMap_Load := success;
    cmap.Loaded := True;
-   exit;
+   goto SimpleExit;
 
  Fail:
    CharMap_Free( cmap );
+   exit;
+
+ SimpleExit:
+   TT_Done_Stream(cmap.StreamPtr^);
+
  end;
 
 
@@ -309,6 +318,7 @@ uses
    cmap.format  := 0;
    cmap.length  := 0;
    cmap.version := 0;
+   cmap.StreamPtr := nil;
  end;
 
 

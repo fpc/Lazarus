@@ -1532,7 +1532,7 @@ procedure TLazIntfImage.ChooseGetSetColorFunctions;
       then Positions := not Positions; // reverse positions
     end;
     
-    // the locations of A,R,G,B are now coded in 2 bits each: AARRBBGG
+    // the locations of A,R,G,B are now coded in 2 bits each: AARRGGBB
     // the 2-bit value (0..3) represents the location of the channel,
     // counting from left
     case Positions of

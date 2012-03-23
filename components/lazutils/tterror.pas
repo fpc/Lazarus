@@ -19,7 +19,7 @@ unit TTError;
 
 interface
 
-uses LazFreeType;
+uses TTTypes;
 
   procedure Check_Error( error : Integer );
 

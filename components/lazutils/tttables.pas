@@ -29,7 +29,7 @@ Unit TTTables;
 
 interface
 
-uses LazFreeType, TTTypes;
+uses TTTypes;
 
 (***************************************************************************)
 (*                                                                         *)

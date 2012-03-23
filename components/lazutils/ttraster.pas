@@ -47,93 +47,10 @@ uses
 {$IFDEF VIRTUALPASCAL}
      Use32,
 {$ENDIF}
-     LazFreeType,
-     TTTypes;
+     TTTypes,
+     TTProfile;
 
-  function Render_Glyph( var glyph  : TT_Outline;
-                         var target : TT_Raster_Map ) : TError;
-
-  (* Render one glyph in the target bitmap (1-bit per pixel)       *)
-
-  function Render_Gray_Glyph( var glyph   : TT_Outline;
-                              var target  : TT_Raster_Map;
-                              palette : PTT_Gray_Palette ) : TError;
-
-  (* Render one gray-level glyph in the target pixmap              *)
-  (* palette points to an array of 5 colors used for the rendering *)
-  (* use nil to reuse the last palette. Default is VGA graylevels  *)
-
-  function Render_Gray_Glyph_HQ( var glyph   : TT_Outline;
-                              var target  : TT_Raster_Map ) : TError;
-
-  function Render_Directly_Gray_Glyph( var glyph   : TT_Outline;
-                              x,y,tx,ty: integer;
-                              OnRender: TDirectRenderingFunction;
-                              palette : PTT_Gray_Palette) : TError;
-
-  function Render_Directly_Gray_Glyph_HQ( var glyph   : TT_Outline;
-                              x,y,tx,ty: integer;
-                              OnRender: TDirectRenderingFunction) : TError;
-
-
-  procedure Set_High_Precision( High : boolean );
-  (* Set rendering precision. Should be set to TRUE for small sizes only *)
-  (* ( typically < 20 ppem )                                             *)
-
-  procedure Set_Second_Pass( Pass : boolean );
-  (* Set second pass flag *)
-
-  function  TTRaster_Init : TError;
-  procedure TTRaster_Done;
-
-  function IncludeFullGrainMin(minValue: integer; Grain: integer): integer;
-  function IncludeFullGrainMax(maxValue: integer; Grain: integer): integer;
-
-
-implementation
-
-uses
-     TTError,
-     TTProfile,
-     SysUtils;
-
-const
-  Pixel_Bits = 6;        (* fractional bits of input coordinates  *)
-
-const
-  LMask : array[0..7] of Byte
-        = ($FF,$7F,$3F,$1F,$0F,$07,$03,$01);
-
-  RMask : array[0..7] of Byte
-        = ($80,$C0,$E0,$F0,$F8,$FC,$FE,$FF);
-
-  (* left and right fill bitmasks *)
-
-type
-  Function_Sweep_Init = procedure( var min, max : Int );
-
-  Function_Sweep_Span = procedure( y     : Int;
-                                   x1    : TT_F26dot6;
-                                   x2    : TT_F26dot6;
-                                   Left  : TProfile;
-                                   Right : TProfile );
-
-  Function_Sweep_Step = procedure;
-
-  (* prototypes used for sweep function dispatch *)
-
-{$IFNDEF CONST_PREC}
-
-var
-  Precision_Bits   : Int;       (* Fractional bits of Raster coordinates *)
-  Precision        : Int;
-  Precision_Half   : Int;
-  Precision_Step   : Int;       (* Bezier subdivision minimal step       *)
-  Precision_Shift  : Int;       (* Shift used to convert coordinates     *)
-  Precision_Mask   : Longint;   (* integer truncatoin mask               *)
-  Precision_Jitter : Int;
-
-{$ELSE}
+{$IFDEF CONST_PREC}
 
 const
   Precision_Bits   = 6;
@@ -146,60 +63,201 @@ const
 
 {$ENDIF}
 
+type
+  Function_Sweep_Init = procedure( var min, max : Int ) of object;
+
+  Function_Sweep_Span = procedure( y     : Int;
+                                   x1    : TT_F26dot6;
+                                   x2    : TT_F26dot6;
+                                   Left  : TProfile;
+                                   Right : TProfile ) of object;
+
+  Function_Sweep_Step = procedure of object;
+
+  { TFreeTypeRasterizer }
+
+  TFreeTypeRasterizer = class(TFreeTypeCustomRasterizer)
+  private
+    Precision_Bits   : Int;       (* Fractional bits of Raster coordinates *)
+    Precision        : Int;
+    Precision_Half   : Int;
+    Precision_Step   : Int;       (* Bezier subdivision minimal step       *)
+    Precision_Shift  : Int;       (* Shift used to convert coordinates     *)
+    Precision_Mask   : Longint;   (* integer truncatoin mask               *)
+    Precision_Jitter : Int;
+
+    Pool     : TRenderPool;(* Profiles buffer a.k.a. Render Pool *)
+
+    Cible      : TT_Raster_Map; (* Description of target map *)
+
+    BWidth     : integer;
+    BCible     : PByte;   (* target bitmap buffer *)
+    GCible     : PByte;   (* target pixmap buffer *)
+
+    TraceBOfs   : Int;     (* current offset in target bitmap         *)
+    TraceBIncr  : Int;     (* increment to next line in target bitmap *)
+    TraceGOfs   : Int;     (* current offset in targer pixmap         *)
+    TraceGIncr  : Int;     (* increment to next line in target pixmap *)
+
+    gray_min_x : Int;     (* current min x during gray rendering *)
+    gray_max_x : Int;     (* current max x during gray rendering *)
+
+    (* Dispatch variables : *)
+
+    Proc_Sweep_Init : Function_Sweep_Init;  (* Sweep initialisation *)
+    Proc_Sweep_Span : Function_Sweep_Span;  (* Span drawing         *)
+    Proc_Sweep_Drop : Function_Sweep_Span;  (* Drop out control     *)
+    Proc_Sweep_Step : Function_Sweep_Step;  (* Sweep line step      *)
+    Proc_Sweep_Direct: TDirectRenderingFunction; (* Direct rendering *)
+
+    Direct_X, Direct_Y, Direct_TX: integer;
+
+    Points   : TT_Points;
+    Flags    : PByte;           (* current flags array     *)
+    Outs     : TT_PConStarts;   (* current endpoints array *)
+
+    //nPoints,            (* current number of points   *)
+    nContours : Int;    (* current number of contours *)
+
+    DropOutControl : Byte;  (* current drop-out control mode *)
+
+    Grays : TT_Gray_Palette;
+    (* gray palette used during gray-levels rendering *)
+    (* 0 : background .. 4 : foreground               *)
+
+    BGray_Data  : PByte;   { temporary bitmap for grayscale      }
+    BGray_Incr  : integer; { increment for temp bitmap           }
+    BGray_End   : integer; { ending offset of temporary bitmap   }
+    BGray_Capacity: integer; { current capacity of temp bitmap   }
+
+    Second_Pass : boolean;
+    (* indicates wether an horizontal pass should be performed  *)
+    (* to control drop-out accurately when calling Render_Glyph *)
+    (* Note that there is no horizontal pass during gray render *)
+
+    (* better set it off at ppem >= 18                          *)
+
+    procedure BGray_NeedCapacity(c: integer);
+    function Draw_Sweep(MinY, MaxY: integer; PixelGrain: integer): boolean;
+    procedure Horizontal_Gray_Sweep_Drop(y: Int; x1, x2: TT_F26dot6; Left,
+      Right: TProfile);
+    procedure Horizontal_Gray_Sweep_Span(y: Int; x1, x2: TT_F26dot6; Left,
+      Right: TProfile);
+    procedure Horizontal_Sweep_Drop(y: Int; x1, x2: TT_F26dot6; Left,
+      Right: TProfile);
+    procedure Horizontal_Sweep_Init(var min, max: Int);
+    procedure Horizontal_Sweep_Span(y: Int; x1, x2: TT_F26dot6; Left,
+      Right: TProfile);
+    procedure Horizontal_Sweep_Step;
+    function ProcessCoordinate(var List: TProfile): integer;
+    procedure Raster_Object_Init;
+    procedure Raster_Object_Done;
+    function Render_Single_Pass(vertical: Boolean; OutputMinY, OutputMaxY,
+      PixelGrain: integer): boolean;
+    {$IFNDEF CONST_PREC}procedure Set_High_Precision(High: boolean);
+    procedure Set_Second_Pass(Pass: boolean);
+    procedure Vertical_Gray_Sweep_Init(var min, max: Int);
+    procedure Vertical_Gray_Sweep_Init_Direct(var min, max: Int);
+    procedure Vertical_Gray_Sweep_Init_Direct_HQ(var min, max: Int);
+    procedure Vertical_Gray_Sweep_Init_HQ(var min, max: Int);
+    procedure Vertical_Gray_Sweep_Step;
+    procedure Vertical_Gray_Sweep_Step_Direct;
+    procedure Vertical_Gray_Sweep_Step_Direct_HQ;
+    procedure Vertical_Gray_Sweep_Step_HQ;
+    procedure Vertical_Sweep_Drop(y: Int; x1, x2: TT_F26dot6; Left,
+      Right: TProfile);
+    procedure Vertical_Sweep_Init(var min, max: Int);
+    procedure Vertical_Sweep_Span(y: Int; x1, x2: TT_F26dot6; Left,
+      Right: TProfile);
+    procedure Vertical_Sweep_Step;
+{$ENDIF}
+  public
+    function Render_Glyph( var glyph  : TT_Outline;
+                           var target : TT_Raster_Map ) : TError; override;
+
+    (* Render one glyph in the target bitmap (1-bit per pixel)       *)
+
+    function Render_Gray_Glyph( var glyph   : TT_Outline;
+                                var target  : TT_Raster_Map;
+                                palette : PTT_Gray_Palette ) : TError; override;
+
+    (* Render one gray-level glyph in the target pixmap              *)
+    (* palette points to an array of 5 colors used for the rendering *)
+    (* use nil to reuse the last palette. Default is VGA graylevels  *)
+
+    function Render_Gray_Glyph_HQ( var glyph   : TT_Outline;
+                                var target  : TT_Raster_Map ) : TError; override;
+
+    function Render_Directly_Gray_Glyph( var glyph   : TT_Outline;
+                                x,y,tx,ty: integer;
+                                OnRender: TDirectRenderingFunction;
+                                palette : PTT_Gray_Palette) : TError; override;
+
+    function Render_Directly_Gray_Glyph_HQ( var glyph   : TT_Outline;
+                                x,y,tx,ty: integer;
+                                OnRender: TDirectRenderingFunction) : TError; override;
+
+    procedure Set_Raster_Palette(const palette: TT_Gray_Palette); override;
+
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+  { These functions round up minimum and maximum value of an interval over
+    data which is organized by grains of constant size. For example, if
+    the size of the grain is 4, then minimum values can be 0, 4, 8, etc.
+    and maximum values can be 3, 7, 11, etc. }
+  function IncludeFullGrainMin(minValue: integer; Grain: integer): integer;
+  function IncludeFullGrainMax(maxValue: integer; Grain: integer): integer;
+
+  function TTRaster_Init: TError;
+  procedure TTRaster_Done;
+
+  function TTGetDefaultRasterizer: TFreeTypeRasterizer;
+
+implementation
+
+uses
+     TTError,
+     SysUtils;
+
+const
+  Pixel_Bits = 6;        (* fractional bits of input coordinates  *)
+
+const
+  LMask : array[0..7] of Byte
+        = ($FF,$7F,$3F,$1F,$0F,$07,$03,$01);
+
+  RMask : array[0..7] of Byte
+        = ($80,$C0,$E0,$F0,$F8,$FC,$FE,$FF);
+  (* left and right fill bitmasks *)
+
 var
-  Pool     : TRenderPool;(* Profiles buffer a.k.a. Render Pool *)
+    Count_Table : array[0..255] of Word;
+    (* Look-up table used to quickly count set bits in a gray 2x2 cell *)
 
-  Cible      : TT_Raster_Map; (* Description of target map *)
+    BitCountTable: packed array[0..255] of byte; //number of bits 'on' in a byte
 
-  BWidth     : integer;
-  BCible     : PByte;   (* target bitmap buffer *)
-  GCible     : PByte;   (* target pixmap buffer *)
+function IncludeFullGrainMin(minValue: integer; Grain: integer): integer;
+begin
+  if minValue mod Grain <> 0 then
+  begin
+    if minValue > 0 then result := minValue - (minValue mod Grain)
+      else result := minValue - (Grain - (-minValue) mod Grain);
+  end else
+    result := minValue;
+end;
 
-  TraceBOfs   : Int;     (* current offset in target bitmap         *)
-  TraceBIncr  : Int;     (* increment to next line in target bitmap *)
-  TraceGOfs   : Int;     (* current offset in targer pixmap         *)
-  TraceGIncr  : Int;     (* increment to next line in target pixmap *)
-
-  gray_min_x : Int;     (* current min x during gray rendering *)
-  gray_max_x : Int;     (* current max x during gray rendering *)
-
-  (* Dispatch variables : *)
-
-  Proc_Sweep_Init : Function_Sweep_Init;  (* Sweep initialisation *)
-  Proc_Sweep_Span : Function_Sweep_Span;  (* Span drawing         *)
-  Proc_Sweep_Drop : Function_Sweep_Span;  (* Drop out control     *)
-  Proc_Sweep_Step : Function_Sweep_Step;  (* Sweep line step      *)
-  Proc_Sweep_Direct: TDirectRenderingFunction; (* Direct rendering *)
-
-  Points   : TT_Points;
-  Flags    : PByte;           (* current flags array     *)
-  Outs     : TT_PConStarts;   (* current endpoints array *)
-
-  //nPoints,            (* current number of points   *)
-  nContours : Int;    (* current number of contours *)
-
-  DropOutControl : Byte;  (* current drop-out control mode *)
-
-  Count_Table : array[0..255] of Word;
-  (* Look-up table used to quickly count set bits in a gray 2x2 cell *)
-
-  BitCountTable: packed array[0..255] of byte; //number of bits 'on' in a byte
-
-  Grays : TT_Gray_Palette;
-  (* gray palette used during gray-levels rendering *)
-  (* 0 : background .. 4 : foreground               *)
-
-  BGray_Data  : PByte;   { temporary bitmap for grayscale      }
-  BGray_Incr  : integer; { increment for temp bitmap           }
-  BGray_End   : integer; { ending offset of temporary bitmap   }
-  BGray_Capacity: integer; { current capacity of temp bitmap   }
-
-  Second_Pass : boolean;
-  (* indicates wether an horizontal pass should be performed  *)
-  (* to control drop-out accurately when calling Render_Glyph *)
-  (* Note that there is no horizontal pass during gray render *)
-
-  (* better set it off at ppem >= 18                          *)
+function IncludeFullGrainMax(maxValue: integer; Grain: integer): integer;
+begin
+  if maxValue mod Grain <> Grain-1 then
+  begin
+    if maxValue > 0 then result := maxValue + (Grain-1 - (maxValue mod Grain))
+    else result := maxValue + (((-maxValue) mod Grain) - 1);
+  end
+  else
+    result := maxValue;
+end;
 
 {$IFNDEF CONST_PREC}
 
@@ -214,7 +272,7 @@ var
 (*                                                                          *)
 (****************************************************************************)
 
-procedure Set_High_Precision( High : boolean );
+procedure TFreeTypeRasterizer.Set_High_Precision( High : boolean );
 begin
   if High then
     begin
@@ -238,24 +296,24 @@ end;
 
 {$ENDIF}
 
-procedure Set_Second_Pass( Pass : boolean );
+procedure TFreeTypeRasterizer.Set_Second_Pass( Pass : boolean );
 begin
   second_pass := pass;
 end;
 
 
-
-
   (************************************************)
   (*                                              *)
   (*  Process next coordinate                     *)
+  (*  Returns: count                              *)
   (*                                              *)
   (************************************************)
 
-  procedure ProcessCoordinate( var List : TProfile );
+  function TFreeTypeRasterizer.ProcessCoordinate( var List : TProfile ): integer;
   var
     current : TProfile;
   begin
+    result := 0;
     if List = nil then exit;
 
     current := list;
@@ -266,31 +324,10 @@ end;
         inc( offset, flow );
         dec( height );
         current := nextInList;
+        inc(result);
       end;
     until current = nil;
   end;
-
-  function IncludeFullGrainMin(minValue: integer; Grain: integer): integer;
-  begin
-    if minValue mod Grain <> 0 then
-    begin
-      if minValue > 0 then result := minValue - (minValue mod Grain)
-        else result := minValue - (Grain - (-minValue) mod Grain);
-    end else
-      result := minValue;
-  end;
-
-  function IncludeFullGrainMax(maxValue: integer; Grain: integer): integer;
-  begin
-    if maxValue mod Grain <> Grain-1 then
-    begin
-      if maxValue > 0 then result := maxValue + (Grain-1 - (maxValue mod Grain))
-      else result := maxValue + (((-maxValue) mod Grain) - 1);
-    end
-    else
-      result := maxValue;
-  end;
-
 
 (********************************************************************)
 (*                                                                  *)
@@ -300,7 +337,7 @@ end;
 (*                                                                  *)
 (********************************************************************)
 
-function Draw_Sweep(MinY,MaxY: integer; PixelGrain: integer) : boolean;
+function TFreeTypeRasterizer.Draw_Sweep(MinY,MaxY: integer; PixelGrain: integer) : boolean;
 
 label
   Skip_To_Next;
@@ -328,6 +365,7 @@ var
   P_Right, Q_Right : TProfile;
 
   dropouts  : Int;
+  countLeft, countRight: integer;
 
 begin
   if Pool.ProfileColl.fProfile = nil then
@@ -411,11 +449,11 @@ begin
     end;
 
     (* Get next coordinate *)
-    ProcessCoordinate( Draw_Left );
-    ProcessCoordinate( Draw_Right );
+    countLeft := ProcessCoordinate( Draw_Left );
+    countRight := ProcessCoordinate( Draw_Right );
     dropouts  := 0;
 
-    if ProfileList_Count(Draw_Left) = ProfileList_Count(Draw_Right) then
+    if countLeft = countRight then
     begin
       (* sort the drawing lists *)
 
@@ -571,7 +609,7 @@ end;
 (*                                                                          *)
 (****************************************************************************)
 
-function Render_Single_Pass( vertical : Boolean; OutputMinY, OutputMaxY, PixelGrain: integer ) : boolean;
+function TFreeTypeRasterizer.Render_Single_Pass( vertical : Boolean; OutputMinY, OutputMaxY, PixelGrain: integer ) : boolean;
 var
   OutputY, OutputBandY, BandHeight: Integer;
 begin
@@ -634,7 +672,7 @@ end;
 (*                                                                          *)
 (****************************************************************************)
 
-function Render_Glyph( var glyph  : TT_Outline;
+function TFreeTypeRasterizer.Render_Glyph( var glyph  : TT_Outline;
                        var target : TT_Raster_Map ) : TError;
 begin
 
@@ -714,7 +752,7 @@ begin
  Render_Glyph := Success;
 end;
 
-procedure BGray_NeedCapacity(c: integer);
+procedure TFreeTypeRasterizer.BGray_NeedCapacity(c: integer);
 begin
  if c > BGray_Capacity then
  begin
@@ -738,7 +776,7 @@ end;
 (*                                                                          *)
 (****************************************************************************)
 
-  function Render_Gray_Glyph( var glyph   : TT_Outline;
+  function TFreeTypeRasterizer.Render_Gray_Glyph( var glyph   : TT_Outline;
                               var target  : TT_Raster_Map;
                               palette : PTT_Gray_Palette ) : TError;
   const Zoom = 2;
@@ -816,7 +854,7 @@ begin
 
 end;
 
-function Render_Gray_Glyph_HQ( var glyph   : TT_Outline;
+function TFreeTypeRasterizer.Render_Gray_Glyph_HQ( var glyph   : TT_Outline;
                             var target  : TT_Raster_Map ) : TError;
 const Zoom = 8;
 begin
@@ -868,10 +906,7 @@ end;
 
 {************************ direct rendering ********************}
 
-var
-  Direct_X, Direct_Y, Direct_TX: integer;
-
-procedure Vertical_Gray_Sweep_Init_Direct_HQ( var min, max : Int );
+procedure TFreeTypeRasterizer.Vertical_Gray_Sweep_Init_Direct_HQ( var min, max : Int );
 begin
   Vertical_Gray_Sweep_Init_HQ ( min, max);
   dec(Direct_Y, min div 8);
@@ -879,7 +914,7 @@ begin
   TraceGIncr:= 0;
 end;
 
-procedure Vertical_Gray_Sweep_Step_Direct_HQ;
+procedure TFreeTypeRasterizer.Vertical_Gray_Sweep_Step_Direct_HQ;
 begin
   Vertical_Gray_Sweep_Step_HQ;
   If TraceBOfs = 0 then
@@ -890,7 +925,7 @@ begin
   end;
 end;
 
-procedure Vertical_Gray_Sweep_Init_Direct( var min, max : Int );
+procedure TFreeTypeRasterizer.Vertical_Gray_Sweep_Init_Direct( var min, max : Int );
 begin
   Vertical_Gray_Sweep_Init ( min, max);
   dec(Direct_Y, min div 2);
@@ -898,7 +933,7 @@ begin
   TraceGIncr:= 0;
 end;
 
-procedure Vertical_Gray_Sweep_Step_Direct;
+procedure TFreeTypeRasterizer.Vertical_Gray_Sweep_Step_Direct;
 begin
   Vertical_Gray_Sweep_Step;
   If TraceBOfs = 0 then
@@ -909,7 +944,7 @@ begin
   end;
 end;
 
-function Render_Directly_Gray_Glyph(var glyph: TT_Outline; x, y, tx,
+function TFreeTypeRasterizer.Render_Directly_Gray_Glyph(var glyph: TT_Outline; x, y, tx,
   ty: integer; OnRender: TDirectRenderingFunction; palette : PTT_Gray_Palette): TError;
 const Zoom = 2;
 begin
@@ -973,7 +1008,7 @@ begin
 
 end;
 
-function Render_Directly_Gray_Glyph_HQ( var glyph   : TT_Outline;
+function TFreeTypeRasterizer.Render_Directly_Gray_Glyph_HQ( var glyph   : TT_Outline;
                             x,y,tx,ty: integer;
                             OnRender: TDirectRenderingFunction) : TError;
 const Zoom = 8;
@@ -1035,6 +1070,21 @@ begin
 
 end;
 
+procedure TFreeTypeRasterizer.Set_Raster_Palette(const palette: TT_Gray_Palette);
+begin
+  move( palette, Grays, sizeof(TT_Gray_Palette) );
+end;
+
+constructor TFreeTypeRasterizer.Create;
+begin
+  Raster_Object_Init;
+end;
+
+destructor TFreeTypeRasterizer.Destroy;
+begin
+  Raster_Object_Done;
+end;
+
 
 
 (****************************************************************************)
@@ -1051,17 +1101,43 @@ end;
 (*                                                                          *)
 (****************************************************************************)
 
-function TTRaster_Init : TError;
-var
-  i, j, c, l : integer;
+procedure TFreeTypeRasterizer.Raster_Object_Init;
 const
   Default_Grays : array[0..4] of Byte
                 = ( 0, 23, 27, 29, 31 );
+var i: integer;
 begin
   Pool := nil;
   BGray_Data := nil;
   BGray_Capacity := 0;
 
+  (* default Grays takes the gray levels of the standard VGA *)
+  (* 256 colors mode                                                *)
+
+  for i := 0 to high(Grays) do
+    Grays[i] := Default_Grays[i];
+
+  Set_High_Precision(False);
+  Set_Second_Pass(False);
+  Pool := TRenderPool.Create(Precision,Precision_Step);
+
+  DropOutControl := 2;
+  Error          := Err_Ras_None;
+end;
+
+procedure TFreeTypeRasterizer.Raster_Object_Done;
+begin
+  Pool.Free;
+  if BGray_Data <> nil then
+    FreeMem( BGray_Data, BGray_Capacity );
+end;
+
+var
+  DefaultRasterizer: TFreeTypeRasterizer;
+
+function TTRaster_Init: TError;
+var l,c,i,j: integer;
+begin
   { Initialisation of Count_Table }
 
   for i := 0 to 255 do
@@ -1084,41 +1160,22 @@ begin
        (i shr 4 and 1) + (i shr 5 and 1) + (i shr 6 and 1) + (i shr 7 and 1);
   end;
 
-  (* default Grays takes the gray levels of the standard VGA *)
-  (* 256 colors mode                                                *)
+  DefaultRasterizer := nil;
 
-  for i := 0 to high(Grays) do
-    Grays[i] := Default_Grays[i];
-
-  Set_High_Precision(False);
-  Set_Second_Pass(False);
-  Pool := TRenderPool.Create(Precision,Precision_Step);
-
-  DropOutControl := 2;
-  Error          := Err_Ras_None;
-
-  TTRaster_Init := Success;
-end;
-
-procedure Cycle_DropOut;
-begin
-  case DropOutControl of
-
-    0 : DropOutControl := 1;
-    1 : DropOutControl := 2;
-    2 : DropOutControl := 4;
-    4 : DropOutControl := 5;
-  else
-    DropOutControl := 0;
-  end;
+  result := Success;
 end;
 
 procedure TTRaster_Done;
 begin
-  Pool.Free;
-  if BGray_Data <> nil then
-    FreeMem( BGray_Data, BGray_Capacity );
+  if DefaultRasterizer <> nil then
+    DefaultRasterizer.Free;
 end;
 
+function TTGetDefaultRasterizer: TFreeTypeRasterizer;
+begin
+  if DefaultRasterizer = nil then
+    DefaultRasterizer := TFreeTypeRasterizer.Create;
+  result := DefaultRasterizer;
+end;
 
 end.

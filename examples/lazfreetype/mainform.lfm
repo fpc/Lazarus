@@ -2,11 +2,11 @@ object Form1: TForm1
   Left = 238
   Height = 240
   Top = 161
-  Width = 323
+  Width = 344
   Align = alBottom
   Caption = 'Form1'
   ClientHeight = 240
-  ClientWidth = 323
+  ClientWidth = 344
   KeyPreview = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -17,16 +17,16 @@ object Form1: TForm1
     Left = 0
     Height = 40
     Top = 200
-    Width = 323
+    Width = 344
     Align = alBottom
     ClientHeight = 40
-    ClientWidth = 323
+    ClientWidth = 344
     TabOrder = 0
     object TrackBar_Size: TTrackBar
-      Left = 8
+      Left = 96
       Height = 25
       Top = 8
-      Width = 253
+      Width = 186
       Frequency = 0
       Max = 300
       Min = 1
@@ -36,7 +36,7 @@ object Form1: TForm1
       TabOrder = 0
     end
     object LFontSize: TLabel
-      Left = 266
+      Left = 287
       Height = 16
       Top = 12
       Width = 51
@@ -45,6 +45,25 @@ object Form1: TForm1
       AutoSize = False
       Caption = 'LFontSize'
       ParentColor = False
+    end
+    object Label1: TLabel
+      Left = 6
+      Height = 16
+      Top = 12
+      Width = 33
+      Caption = 'Zoom'
+      ParentColor = False
+    end
+    object SpinEdit_Zoom: TSpinEdit
+      Left = 48
+      Height = 23
+      Top = 8
+      Width = 40
+      MaxValue = 9
+      MinValue = 1
+      OnChange = SpinEdit_ZoomChange
+      TabOrder = 1
+      Value = 1
     end
   end
 end

@@ -25,7 +25,7 @@ Unit TTLoad;
 
 interface
 
-uses LazFreeType, TTTypes, TTTables, TTCMap, TTObjs;
+uses TTTypes, TTTables, TTCMap, TTObjs;
 
  function LookUp_TrueType_Table( face : PFace;
                                  aTag : string ) : int;
@@ -214,7 +214,7 @@ uses TTError, TTMemory, TTFile;
       begin
         (* file is a collection. Check the index *)
         if ( faceIndex < 0 ) or
-           ( faceIndex >= face^.ttcHeader.dirCount ) then
+           ( ulong(faceIndex) >= face^.ttcHeader.dirCount ) then
           begin
             error := TT_Err_Bad_Argument;
             exit;
@@ -1045,6 +1045,7 @@ uses TTError, TTMemory, TTFile;
 
        TT_Forget_Frame;
 
+       cmap^.StreamPtr := @face^.stream;
        cmap^.offset := TT_File_Pos;
 
      end;  (* for n *)
@@ -1247,9 +1248,9 @@ uses TTError, TTMemory, TTFile;
      fsSelection      := Get_UShort;
      usFirstCharIndex := Get_UShort;
      usLastCharIndex  := Get_UShort;
-     sTypoAscender    := Get_UShort;
-     sTypoDescender   := Get_UShort;
-     sTypoLineGap     := Get_UShort;
+     sTypoAscender    := Get_Short;
+     sTypoDescender   := Get_Short;
+     sTypoLineGap     := Get_Short;
      usWinAscent      := Get_UShort;
      usWinDescent     := Get_UShort;
 

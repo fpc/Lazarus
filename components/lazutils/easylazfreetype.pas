@@ -17,11 +17,19 @@ to do :
 interface
 
 uses
-  Classes, SysUtils, LazFreeType, AvgLvlTree, fpimage, Types, lazutf8; // Graphics, LCLType
+  Classes, SysUtils, LazFreeType, TTTypes, TTRASTER, AvgLvlTree, fpimage, Types, lazutf8; // Graphics, LCLType
 
 type
   TGlyphRenderQuality = (grqMonochrome, grqLowQuality, grqHighQuality);
   ArrayOfSingle= array of single;
+  TCharPosition= record
+    x,width,
+    yTop,yBase,yBottom: single;
+  end;
+  ArrayOfCharPosition = array of TCharPosition;
+  TFreeTypeAlignment = (ftaLeft,ftaCenter,ftaRight,ftaJustify,ftaTop,ftaBaseline,ftaBottom);
+  TFreeTypeAlignments = set of TFreeTypeAlignment;
+
   TFreeTypeGlyph = class;
 
   { TFreeTypeRenderableFont }
@@ -30,16 +38,30 @@ type
   protected
     function GetClearType: boolean; virtual; abstract;
     procedure SetClearType(const AValue: boolean); virtual; abstract;
+    function GetLineFullHeight: single; virtual; abstract;
+    function GetAscent: single; virtual; abstract;
+    function GetDescent: single; virtual; abstract;
+    function GetLineSpacing: single; virtual; abstract;
+
   public
+    function TextWidth(AText: string): single; virtual; abstract;
+    function TextHeight(AText: string): single; virtual; abstract;
+    procedure GetTextSize(AText: string; out w,h: single); virtual;
     procedure RenderText(AText: string; x,y: single; ARect: TRect; OnRender : TDirectRenderingFunction); virtual; abstract;
     property ClearType: boolean read GetClearType write SetClearType;
+    property Ascent: single read GetAscent;
+    property Descent: single read GetDescent;
+    property LineSpacing: single read GetLineSpacing;
+    property LineFullHeight: single read GetLineFullHeight;
   end;
 
   { TFreeTypeDrawer }
 
   TFreeTypeDrawer = class
-    procedure DrawText(AText: string; AFont: TFreeTypeRenderableFont; x,y: single; AColor: TFPColor; AOpactiy: Byte); virtual; abstract; overload;
-    procedure DrawText(AText: string; AFont: TFreeTypeRenderableFont; x,y: single; AColor: TFPColor); overload;
+    procedure DrawText(AText: string; AFont: TFreeTypeRenderableFont; x,y: single; AColor: TFPColor; AOpacity: Byte); virtual; overload;
+    procedure DrawText(AText: string; AFont: TFreeTypeRenderableFont; x,y: single; AColor: TFPColor; AOpacity: Byte; AAlign: TFreeTypeAlignments); virtual; overload;
+    procedure DrawText(AText: string; AFont: TFreeTypeRenderableFont; x,y: single; AColor: TFPColor); virtual; abstract; overload;
+    procedure DrawText(AText: string; AFont: TFreeTypeRenderableFont; x,y: single; AColor: TFPColor; AAlign: TFreeTypeAlignments); virtual; overload;
   end;
 
   { TFreeTypeFont }
@@ -59,6 +81,7 @@ type
     function GetPixelSize: single;
     procedure SetDPI(const AValue: integer);
     procedure SetHinted(const AValue: boolean);
+    procedure SetLineFullHeight(AValue: single);
     procedure SetName(const AValue: String);
     procedure DiscardFace;
     procedure DiscardInstance;
@@ -68,6 +91,7 @@ type
                             glyph_index : Word): boolean;
     procedure SetWidthFactor(const AValue: single);
     procedure UpdateSizeInPoints;
+    procedure UpdateMetrics;
     procedure GetCharmap;
   protected
     FFace: TT_Face;
@@ -77,15 +101,24 @@ type
     FGlyphTable: TAvgLvlTree;
     FCharMap: TT_CharMap;
     FCharmapOk: boolean;
+    FAscentValue, FDescentValue, FLineGapValue, FLargeLineGapValue: single;
     function GetClearType: boolean; override;
     procedure SetClearType(const AValue: boolean); override;
+    function GetLineFullHeight: single; override;
+    function GetAscent: single; override;
+    function GetDescent: single; override;
+    function GetLineSpacing: single; override;
   public
     Quality : TGlyphRenderQuality;
+    SmallLinePadding: boolean;
     constructor Create;
     destructor Destroy; override;
     procedure RenderText(AText: string; x,y: single; ARect: TRect; OnRender : TDirectRenderingFunction); override;
-    function TextWidth(AText: string): single;
+    function TextWidth(AText: string): single; override;
+    function TextHeight(AText: string): single; override;
     function CharsWidth(AText: string): ArrayOfSingle;
+    function CharsPosition(AText: string): ArrayOfCharPosition; overload;
+    function CharsPosition(AText: string; AAlign: TFreeTypeAlignments): ArrayOfCharPosition; overload;
     property Name: String read FName write SetName;
     property DPI: integer read GetDPI write SetDPI;
     property SizeInPoints: single read FPointSize write SetPointSize;
@@ -95,6 +128,7 @@ type
     property CharIndex[AChar: integer]: integer read GetCharIndex;
     property Hinted: boolean read FHinted write SetHinted;
     property WidthFactor: single read FWidthFactor write SetWidthFactor;
+    property LineFullHeight: single read GetLineFullHeight write SetLineFullHeight;
   end;
 
   { TFreeTypeGlyph }
@@ -110,6 +144,7 @@ type
   public
     constructor Create(AFont: TFreeTypeFont; AIndex: integer);
     function RenderDirectly(x,y: single; Rect: TRect; OnRender : TDirectRenderingFunction; quality : TGlyphRenderQuality; ClearType: boolean = false): boolean;
+    function RenderDirectly(ARasterizer: TFreeTypeRasterizer; x,y: single; Rect: TRect; OnRender : TDirectRenderingFunction; quality : TGlyphRenderQuality; ClearType: boolean = false): boolean;
     destructor Destroy; override;
     property Loaded: boolean read FLoaded;
     property Data: TT_Glyph read FGlyphData;
@@ -124,11 +159,14 @@ type
   TFreeTypeRasterMap = class
   protected
     map: TT_Raster_Map;
+    FRasterizer: TFreeTypeRasterizer;
     function GetHeight: integer; virtual;
     function GetWidth: integer; virtual;
     function GetScanLine(y: integer): pointer;
+    procedure Init(AWidth,AHeight: integer); virtual; abstract;
   public
-    constructor Create(AWidth,AHeight: integer); virtual; abstract;
+    constructor Create(AWidth,AHeight: integer); virtual;
+    constructor Create(ARasterizer: TFreeTypeRasterizer; AWidth,AHeight: integer); virtual;
     procedure Clear;
     procedure Fill;
     function RenderGlyph(glyph : TFreeTypeGlyph; x,y: single) : boolean; virtual; abstract;
@@ -148,8 +186,9 @@ type
     ScanBit: byte;
     ScanX: integer;
     function GetPixelsInHorizlineNoBoundsChecking(x,y,x2: integer) : integer; inline;
+  protected
+    procedure Init(AWidth,AHeight: integer); override;
   public
-    constructor Create(AWidth,AHeight: integer); override;
     function RenderGlyph(glyph : TFreeTypeGlyph; x,y: single) : boolean; override;
     procedure ScanMoveTo(x,y: integer); override;
     function ScanNextPixel: boolean;
@@ -166,9 +205,10 @@ type
   private
     ScanPtrStart: pbyte;
     ScanX: integer;
+  protected
+    procedure Init(AWidth, AHeight: integer); override;
   public
     RenderQuality: TGlyphRenderQuality;
-    constructor Create(AWidth,AHeight: integer); override;
     function RenderGlyph(glyph : TFreeTypeGlyph; x,y: single) : boolean; override;
     procedure ScanMoveTo(x,y: integer); override;
     function ScanNextPixel: byte;
@@ -179,8 +219,6 @@ type
 
 
 implementation
-
-uses TTRaster;//, LCLIntf, LCLProc;
 
 var
   BitCountTable: packed array[0..255] of byte;
@@ -198,12 +236,64 @@ begin
     raise Exception.Create('FreeType cannot be initialized');
 end;
 
+{ TFreeTypeRenderableFont }
+
+procedure TFreeTypeRenderableFont.GetTextSize(AText: string; out w, h: single);
+begin
+  w := TextWidth(AText);
+  h := TextHeight(AText);
+end;
+
 { TFreeTypeDrawer }
 
 procedure TFreeTypeDrawer.DrawText(AText: string;
-  AFont: TFreeTypeRenderableFont; x, y: single; AColor: TFPColor);
+  AFont: TFreeTypeRenderableFont; x, y: single; AColor: TFPColor; AOpacity: Byte);
+var col: TFPColor;
 begin
-  DrawText(AText, AFont, x,y, AColor, 255);
+  col := AColor;
+  col.alpha := col.alpha*AOpacity div 255;
+  DrawText(AText, AFont, x,y, col, []);
+end;
+
+procedure TFreeTypeDrawer.DrawText(AText: string;
+  AFont: TFreeTypeRenderableFont; x, y: single; AColor: TFPColor; AOpacity: Byte; AAlign: TFreeTypeAlignments);
+var col: TFPColor;
+begin
+  col := AColor;
+  col.alpha := col.alpha*AOpacity div 255;
+  DrawText(AText, AFont, x,y, col, AAlign);
+end;
+
+procedure TFreeTypeDrawer.DrawText(AText: string;
+  AFont: TFreeTypeRenderableFont; x, y: single; AColor: TFPColor; AAlign: TFreeTypeAlignments);
+var idx : integer;
+begin
+  if not (ftaBaseline in AAlign) then
+  begin
+    if ftaTop in AAlign then
+      y += AFont.Ascent else
+    if ftaBottom in AAlign then
+      y -= AFont.TextHeight(AText) - AFont.Ascent;
+  end;
+  AAlign -= [ftaTop,ftaBaseline,ftaBottom];
+
+  idx := pos(LineEnding, AText);
+  while idx <> 0 do
+  begin
+    DrawText(copy(AText,1,idx-1), AFont, x,y, AColor, AAlign);
+    delete(AText,1,idx+length(LineEnding)-1);
+    idx := pos(LineEnding, AText);
+    y += AFont.LineFullHeight;
+  end;
+
+  if not (ftaLeft in AAlign) then
+  begin
+    if ftaCenter in AAlign then
+      x -= AFont.TextWidth(AText)/2 else
+    if ftaRight in AAlign then
+      x -= AFont.TextWidth(AText);
+  end;
+  DrawText(AText, AFont, x,y, AColor);
 end;
 
 { TFreeTypeGlyph }
@@ -249,6 +339,13 @@ end;
 
 function TFreeTypeGlyph.RenderDirectly(x, y: single; Rect: TRect;
   OnRender: TDirectRenderingFunction; quality : TGlyphRenderQuality; ClearType: boolean): boolean;
+begin
+  result := RenderDirectly(TTGetDefaultRasterizer, x,y, Rect, OnRender, quality, ClearType);
+end;
+
+function TFreeTypeGlyph.RenderDirectly(ARasterizer: TFreeTypeRasterizer; x,
+  y: single; Rect: TRect; OnRender: TDirectRenderingFunction;
+  quality: TGlyphRenderQuality; ClearType: boolean): boolean;
 var mono: TFreeTypeMonochromeMap;
     tx,xb,yb: integer;
     pdest: pbyte;
@@ -275,7 +372,7 @@ begin
   case quality of
     grqMonochrome: begin
                       tx := rect.right-rect.left;
-                      mono := TFreeTypeMonochromeMap.Create(tx,rect.bottom-rect.top);
+                      mono := TFreeTypeMonochromeMap.Create(ARasterizer,tx,rect.bottom-rect.top);
                       result := mono.RenderGlyph(self,x-rect.left,y-rect.top);
                       if result then
                       begin
@@ -299,10 +396,10 @@ begin
                       mono.Free;
                    end;
     grqLowQuality: begin
-                     TT_Set_Raster_Palette(RegularGray5);
-                     result := TT_Render_Directly_Glyph_Gray(FGlyphData, round((x-rect.left)*64), round((rect.bottom-y)*64), rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top, OnRender) = TT_Err_Ok;
+                     ARasterizer.Set_Raster_Palette(RegularGray5);
+                     result := TT_Render_Directly_Glyph_Gray(FGlyphData, round((x-rect.left)*64), round((rect.bottom-y)*64), rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top, OnRender, ARasterizer) = TT_Err_Ok;
                    end;
-    grqHighQuality: result := TT_Render_Directly_Glyph_HQ(FGlyphData, round((x-rect.left)*64), round((rect.bottom-y)*64), rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top, OnRender) = TT_Err_Ok;
+    grqHighQuality: result := TT_Render_Directly_Glyph_HQ(FGlyphData, round((x-rect.left)*64), round((rect.bottom-y)*64), rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top, OnRender, ARasterizer) = TT_Err_Ok;
   else
     result := false;
   end;
@@ -330,6 +427,7 @@ begin
     FFaceLoaded:= true;
     FName:=AValue;
 
+    UpdateMetrics;
     GetCharmap;
 
     errorNum := TT_New_Instance(FFace, FInstance);
@@ -374,6 +472,11 @@ begin
   end;
 end;
 
+function TFreeTypeFont.GetAscent: single;
+begin
+  result := FAscentValue*SizeInPixels;
+end;
+
 function TFreeTypeFont.GetClearType: boolean;
 begin
   Result:= FClearType;
@@ -385,6 +488,11 @@ begin
     result := TT_Char_Index(FCharMap, AChar)
   else
     result := AChar;
+end;
+
+function TFreeTypeFont.GetDescent: single;
+begin
+  result := FDescentValue*SizeInPixels;
 end;
 
 function TFreeTypeFont.GetGlyph(Index: integer): TFreeTypeGlyph;
@@ -417,6 +525,19 @@ begin
 end;
 {$hints on}
 
+function TFreeTypeFont.GetLineFullHeight: single;
+begin
+  result := (FAscentValue + FDescentValue)*SizeInPixels + GetLineSpacing;
+end;
+
+function TFreeTypeFont.GetLineSpacing: single;
+begin
+  if not SmallLinePadding then
+    result := FLargeLineGapValue*SizeInPixels
+  else
+    result := FLineGapValue*SizeInPixels;
+end;
+
 function TFreeTypeFont.GetPixelSize: single;
 begin
   result := SizeInPoints * DPI / 72;
@@ -443,6 +564,20 @@ begin
   if FHinted=AValue then exit;
   FHinted:=AValue;
   FGlyphTable.FreeAndClear;
+end;
+
+procedure TFreeTypeFont.SetLineFullHeight(AValue: single);
+var Ratio: single;
+begin
+  Ratio := FAscentValue + FDescentValue;
+  if not SmallLinePadding then
+    Ratio += FLargeLineGapValue
+  else
+    Ratio += FLineGapValue;
+  if Ratio <> 0 then
+    SizeInPixels := AValue / Ratio
+  else
+    SizeInPixels := AValue;
 end;
 
 procedure TFreeTypeFont.DiscardFace;
@@ -511,6 +646,55 @@ begin
     if TT_Set_Instance_CharSizes(FInstance,charsizex,round(FPointSize*64)) <> TT_Err_Ok then
       raise Exception.Create('Unable to set point size');
     FGlyphTable.FreeAndClear;
+  end;
+end;
+
+procedure TFreeTypeFont.UpdateMetrics;
+var prop: TT_Face_Properties;
+begin
+  if FFaceLoaded then
+  begin
+    TT_Get_Face_Properties(FFace,prop);
+    FAscentValue := prop.horizontal^.ascender;
+    FDescentValue := prop.horizontal^.descender;
+    FLineGapValue:= prop.horizontal^.line_gap;
+    FLargeLineGapValue:= FLineGapValue;
+
+    if (FAscentValue = 0) and (FDescentValue = 0) then
+    begin
+      if prop.os2^.version <> $ffff then
+      begin
+        if (prop.os2^.usWinAscent <> 0) or (prop.os2^.usWinDescent <> 0) then
+        begin
+          FAscentValue := prop.os2^.usWinAscent;
+          FDescentValue := -prop.os2^.usWinDescent;
+        end else
+        begin
+          FAscentValue := prop.os2^.sTypoAscender;
+          FDescentValue := prop.os2^.sTypoDescender;
+        end;
+      end;
+    end;
+
+    if prop.os2^.version <> $ffff then
+    begin
+      if prop.os2^.sTypoLineGap > FLargeLineGapValue then
+        FLargeLineGapValue := prop.os2^.sTypoLineGap;
+    end;
+
+    FAscentValue /= prop.header^.units_per_EM;
+    FDescentValue /= -prop.header^.units_per_EM;
+    FLineGapValue /= prop.header^.units_per_EM;
+    FLargeLineGapValue /= prop.header^.units_per_EM;
+
+    if FLargeLineGapValue = 0 then
+      FLargeLineGapValue := (FAscentValue+FDescentValue)*0.1;
+
+  end else
+  begin
+    FAscentValue := -0.5;
+    FDescentValue := 0.5;
+    FLineGapValue := 0;
   end;
 end;
 
@@ -585,6 +769,7 @@ begin
   FHinted := true;
   FWidthFactor := 1;
   FClearType := false;
+  SmallLinePadding:= true;
 end;
 
 destructor TFreeTypeFont.Destroy;
@@ -600,8 +785,17 @@ procedure TFreeTypeFont.RenderText(AText: string; x, y: single; ARect: TRect;
 var
   pstr: pchar;
   left,charcode,charlen: integer;
+  idx: integer;
 begin
   if AText = '' then exit;
+  idx := pos(LineEnding,AText);
+  while idx <> 0 do
+  begin
+    RenderText(copy(AText,1,idx-1),x,y,ARect,OnRender);
+    delete(AText,1,idx+length(LineEnding)-1);
+    y += LineFullHeight;
+    idx := pos(LineEnding,AText);
+  end;
   pstr := @AText[1];
   left := length(AText);
   while left > 0 do
@@ -611,7 +805,10 @@ begin
     dec(left,charlen);
     with Glyph[CharIndex[charcode]] do
     begin
-      RenderDirectly(x,y,ARect,OnRender,quality,FClearType);
+      if Hinted then
+       RenderDirectly(x,round(y),ARect,OnRender,quality,FClearType)
+      else
+       RenderDirectly(x,y,ARect,OnRender,quality,FClearType);
       if FClearType then
         x += Advance/3
       else
@@ -624,9 +821,27 @@ function TFreeTypeFont.TextWidth(AText: string): single;
 var
   pstr: pchar;
   left,charcode,charlen: integer;
+  maxWidth,w: single;
+  idx: integer;
 begin
   result := 0;
   if AText = '' then exit;
+
+  maxWidth := 0;
+  idx := pos(LineEnding,AText);
+  while idx <> 0 do
+  begin
+    w := TextWidth(copy(AText,1,idx-1));
+    if w > maxWidth then maxWidth:= w;
+    delete(AText,1,idx+length(LineEnding)-1);
+    idx := pos(LineEnding,AText);
+  end;
+  if AText = '' then
+  begin
+    result := maxWidth;
+    exit;
+  end;
+
   pstr := @AText[1];
   left := length(AText);
   while left > 0 do
@@ -642,13 +857,36 @@ begin
         result += Advance;
     end;
   end;
+  if maxWidth > result then
+    result := maxWidth;
+end;
+
+function TFreeTypeFont.TextHeight(AText: string): single;
+var idx: integer;
+    nb: integer;
+begin
+  if AText= '' then result := 0
+   else
+  begin
+    result := LineFullHeight;
+    nb := 1;
+    idx := pos(LineEnding,AText);
+    while idx <> 0 do
+    begin
+      nb += 1;
+      delete(AText,1,idx+length(LineEnding)-1);
+      idx := pos(LineEnding,AText);
+    end;
+    result *= nb;
+  end;
 end;
 
 function TFreeTypeFont.CharsWidth(AText: string): ArrayOfSingle;
 var
   pstr: pchar;
   left,charcode,charlen: integer;
-  resultIndex: integer;
+  resultIndex,i: integer;
+  w: single;
 begin
   if AText = '' then exit;
   pstr := @AText[1];
@@ -664,17 +902,155 @@ begin
     with Glyph[CharIndex[charcode]] do
     begin
       if FClearType then
-        result[resultIndex] := Advance/3
+        w := Advance/3
       else
-        result[resultIndex] := Advance;
+        w := Advance;
     end;
-    inc(resultIndex);
+
+    for i := 1 to charlen do
+    begin
+      result[resultIndex] := w;
+      inc(resultIndex);
+    end;
+  end;
+end;
+
+function TFreeTypeFont.CharsPosition(AText: string): ArrayOfCharPosition;
+begin
+  result := CharsPosition(AText, []);
+end;
+
+function TFreeTypeFont.CharsPosition(AText: string; AAlign: TFreeTypeAlignments): ArrayOfCharPosition;
+var
+  resultIndex,resultLineStart: integer;
+  curX: single;
+
+  procedure ApplyHorizAlign;
+  var delta: single;
+      i: integer;
+  begin
+    if ftaLeft in AAlign then exit;
+    if ftaCenter in AAlign then
+      delta := -curX/2
+    else if ftaRight in AAlign then
+      delta := -curX
+    else
+      exit;
+
+    for i := resultLineStart to resultIndex-1 do
+      result[i].x += delta;
+  end;
+
+var
+  pstr: pchar;
+  left,charcode,charlen: integer;
+  i : integer;
+  w,h,y,yTopRel,yBottomRel: single;
+  Found: boolean;
+  StrLineEnding: string; // a string version of LineEnding, don't remove or else wont compile in UNIXes
+begin
+  if AText = '' then exit;
+  StrLineEnding := LineEnding;
+  pstr := @AText[1];
+  left := length(AText);
+  setlength(result, UTF8Length(AText)+1);
+  resultIndex := 0;
+  resultLineStart := 0;
+  if ftaLeft in AAlign then AAlign -= [ftaLeft, ftaCenter, ftaRight];
+  if ftaBaseline in AAlign then AAlign -= [ftaTop, ftaBaseline, ftaBottom];
+  curX := 0;
+  y := 0;
+  if ftaTop in AAlign then
+  begin
+    y += Ascent;
+    AAlign -= [ftaTop, ftaBottom];
+  end;
+  yTopRel := -Ascent;
+  yBottomRel := Descent;
+  h := LineFullHeight;
+  while left > 0 do
+  begin
+    if (left > length(StrLineEnding)) and (pstr^ = StrLineEnding[1]) then
+    begin
+      Found := true;
+      for i := 2 to length(StrLineEnding) do
+        if (pstr+(i-1))^ <> StrLineEnding[i] then
+        begin
+          Found := false;
+          break;
+        end;
+      if Found then
+      begin
+        for i := 1 to length(StrLineEnding) do
+        begin
+          with result[resultIndex] do
+          begin
+            x := curX;
+            width := 0;
+            yTop := y+yTopRel;
+            yBase := y;
+            yBottom := y+yBottomRel;
+          end;
+          inc(resultIndex);
+          inc(pstr);
+          dec(left);
+        end;
+        ApplyHorizAlign;
+        y += h;
+        curX := 0;
+        resultLineStart := resultIndex;
+        if left <= 0 then break;
+      end;
+    end;
+    charcode := UTF8CharacterToUnicode(pstr, charlen);
+    inc(pstr,charlen);
+    dec(left,charlen);
+    with Glyph[CharIndex[charcode]] do
+    begin
+      if FClearType then
+        w := Advance/3
+      else
+        w := Advance;
+    end;
+    for i := 1 to charlen do
+    with result[resultIndex] do
+    begin
+      x := curX;
+      width := w;
+      yTop := y+yTopRel;
+      yBase := y;
+      yBottom := y+yBottomRel;
+      inc(resultIndex);
+    end;
+    curX += w;
+  end;
+  with result[resultIndex] do
+  begin
+    x := curX;
+    width := 0;
+    yTop := y+yTopRel;
+    yBase := y;
+    yBottom := y+yBottomRel;
+  end;
+  inc(resultIndex);
+  ApplyHorizAlign;
+
+  if ftaBottom in AAlign then
+  begin
+    y += LineFullHeight-Ascent;
+    for i := 0 to high(result) do
+    with result[i] do
+    begin
+      yTop -= y;
+      yBase -= y;
+      yBottom -= y;
+    end;
   end;
 end;
 
 { TFreeTypeGrayscaleMap }
 
-constructor TFreeTypeGrayscaleMap.Create(AWidth,AHeight: integer);
+procedure TFreeTypeGrayscaleMap.Init(AWidth, AHeight: integer);
 begin
   map.Width := AWidth;
   map.Rows := AHeight;
@@ -696,7 +1072,7 @@ begin
     grqMonochrome:
       begin
         tx := Width;
-        mono := TFreeTypeMonochromeMap.Create(tx,Height);
+        mono := TFreeTypeMonochromeMap.Create(FRasterizer, tx,Height);
         result := mono.RenderGlyph(glyph,x,y);
         if result then
         begin
@@ -723,12 +1099,12 @@ begin
       end;
     grqLowQuality:
       begin
-        TT_Set_Raster_Palette(RegularGray5);
-        result := TT_Get_Glyph_Pixmap(glyph.data, map, round(x*64), round((height-y)*64)) = TT_Err_Ok;
+        FRasterizer.Set_Raster_Palette(RegularGray5);
+        result := TT_Get_Glyph_Pixmap(glyph.data, map, round(x*64), round((height-y)*64), FRasterizer) = TT_Err_Ok;
       end;
     grqHighQuality:
       begin
-        result := TT_Get_Glyph_Pixmap_HQ(glyph.data, map, round(x*64), round((height-y)*64)) = TT_Err_Ok;
+        result := TT_Get_Glyph_Pixmap_HQ(glyph.data, map, round(x*64), round((height-y)*64), FRasterizer) = TT_Err_Ok;
       end;
   end;
 end;
@@ -800,6 +1176,19 @@ begin
     Result:= pointer(pbyte(map.Buffer) + y*map.Cols);
 end;
 
+constructor TFreeTypeRasterMap.Create(AWidth, AHeight: integer);
+begin
+  FRasterizer := TTGetDefaultRasterizer;
+  Init(AWidth,AHeight);
+end;
+
+constructor TFreeTypeRasterMap.Create(ARasterizer: TFreeTypeRasterizer; AWidth,
+  AHeight: integer);
+begin
+  FRasterizer := ARasterizer;
+  Init(AWidth,AHeight);
+end;
+
 procedure TFreeTypeRasterMap.Clear;
 begin
   fillchar(map.Buffer^, map.Size, 0);
@@ -818,20 +1207,9 @@ end;
 
 { TFreeTypeMonochromeMap }
 
-constructor TFreeTypeMonochromeMap.Create(AWidth,AHeight: integer);
-begin
-  map.Width := AWidth;
-  map.Rows := AHeight;
-  map.Cols:= (AWidth+7) shr 3;
-  map.flow:= TT_Flow_Down;
-  map.Size:= map.Rows*map.Cols;
-  getmem(map.Buffer,map.Size);
-  Clear;
-end;
-
 function TFreeTypeMonochromeMap.RenderGlyph(glyph: TFreeTypeGlyph; x,y: single): boolean;
 begin
-  result := TT_Get_Glyph_Bitmap(glyph.data, map, round(x*64), round((height-y)*64)) = TT_Err_Ok;
+  result := TT_Get_Glyph_Bitmap(glyph.data, map, round(x*64), round((height-y)*64), FRasterizer) = TT_Err_Ok;
 end;
 
 procedure TFreeTypeMonochromeMap.ScanMoveTo(x, y: integer);
@@ -955,6 +1333,17 @@ begin
     result += BitCountTable[ p^ and ($ff shl (x2 and 7 xor 7)) ];
   end else
     result += BitCountTable[ p^ and ($ff shr (x and 7)) and ($ff shl (x2 and 7 xor 7))];
+end;
+
+procedure TFreeTypeMonochromeMap.Init(AWidth, AHeight: integer);
+begin
+  map.Width := AWidth;
+  map.Rows := AHeight;
+  map.Cols:= (AWidth+7) shr 3;
+  map.flow:= TT_Flow_Down;
+  map.Size:= map.Rows*map.Cols;
+  getmem(map.Buffer,map.Size);
+  Clear;
 end;
 
 procedure TFreeTypeMonochromeMap.TogglePixel(x, y: integer);

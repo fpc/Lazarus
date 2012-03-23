@@ -13,7 +13,7 @@ uses
   fileutil,
   {$ifndef CD_UseNativeText}
   // LazFreeType
-  LazFreeTypeIntfDrawer, LazFreeType, EasyLazFreeType, IniFiles,
+  TTTypes, LazFreeTypeIntfDrawer, LazFreeType, EasyLazFreeType, IniFiles,
   {$endif}
   // Custom Drawn Canvas
   IntfGraphics, lazcanvas, lazregions, customdrawndrawers, customdrawncontrols,

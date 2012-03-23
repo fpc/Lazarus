@@ -48,8 +48,7 @@ interface
 
 {$I TTCONFIG.INC}
 
-uses LazFreeType,
-     TTTypes,
+uses TTTypes,
      TTError;
 
   function  TTFile_Init : TError;
@@ -71,7 +70,7 @@ uses LazFreeType,
  (* should only be used for a typeface object's main stream  *)
 
  function  TT_Use_Stream( org_stream : TT_Stream;
-                          var stream : TT_Stream ) : TError;
+                          out stream : TT_Stream ) : TError;
  (* notices the component that we're going to use the file   *)
  (* opened in 'org_stream', and report errors to the 'error' *)
  (* variable. the 'stream' variable is untouched, except in  *)
@@ -498,7 +497,7 @@ var
  ******************************************************************)
 
  function  TT_Use_Stream( org_stream : TT_Stream;
-                          var stream : TT_Stream ) : TError;
+                          out stream : TT_Stream ) : TError;
  var
    rec : PStream_Rec;
  begin

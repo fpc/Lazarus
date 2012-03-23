@@ -27,8 +27,7 @@ interface
 
 {$mode Delphi}
 
-uses LazFreeType,
-     TTTypes,
+uses TTTypes,
      TTObjs;
 
   function Run_Ins( exec : PExec_Context ) : Boolean;
@@ -37,6 +36,21 @@ uses LazFreeType,
 implementation
 uses
   TTCalc;
+
+const
+  TT_Round_Off            = 5;
+  TT_Round_To_Half_Grid   = 0;
+  TT_Round_To_Grid        = 1;
+  TT_Round_To_Double_Grid = 2;
+  TT_Round_Up_To_Grid     = 4;
+  TT_Round_Down_To_Grid   = 3;
+  TT_Round_Super          = 6;
+  TT_ROund_Super_45       = 7;
+
+  TT_Flag_Touched_X    = $02;  (* X touched flag *)
+  TT_Flag_Touched_Y    = $04;  (* Y touched flag *)
+
+  TT_Flag_Touched_Both = TT_Flag_Touched_X or TT_FLag_Touched_Y;
 
 type
   TInstruction_Function = procedure( args : PStorage );

@@ -8,7 +8,6 @@ uses
 {$IFDEF VIRTUALPASCAL}
      Use32,
 {$ENDIF}
-     LazFreeType,
      TTTypes,
      SysUtils;
 

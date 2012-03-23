@@ -9,7 +9,7 @@
 (*                                                                     *)
 (***********************************************************************)
 
-procedure Vertical_Sweep_Init( var min, {%H-}max : Int );
+procedure TFreeTypeRasterizer.Vertical_Sweep_Init( var min, {%H-}max : Int );
 begin
   case Cible.flow of
 
@@ -28,7 +28,7 @@ end;
 
 
 
-procedure Vertical_Sweep_Span( {%H-}y     : Int;
+procedure TFreeTypeRasterizer.Vertical_Sweep_Span( {%H-}y     : Int;
                                x1,
                                x2    : TT_F26dot6;
                                {%H-}Left,
@@ -39,109 +39,6 @@ var
   f1, f2  : Int;
   base    : PByte;
 begin
-{$IFDEF VERTICAL_SWEEP_SPAN_ASM} {$asmmode intel}
-  asm
-    push esi
-    push ebx
-    push ecx
-
-    mov  eax, X1
-    mov  ebx, X2
-    mov  ecx, [Precision_Bits]
-
-    sub  ebx, eax
-    add  eax, [Precision]
-    dec  eax
-
-    sub  ebx, [Precision]
-    cmp  ebx, [Precision_Jitter]
-    jg @No_Jitter
-
-  @Do_Jitter:
-    mov  ebx, eax
-    jmp @0
-
-  @No_Jitter:
-    mov  ebx, X2
-
-  @0:
-    sar  ebx, cl
-    js   @Sortie
-
-    sar  eax, cl
-    mov  ecx, [BWidth]
-
-    cmp  eax, ebx
-    jg   @Sortie
-
-    cmp  eax, ecx
-    jge  @Sortie
-
-    test eax, eax
-    jns  @1
-    xor  eax, eax
-  @1:
-    cmp  ebx, ecx
-    jl   @2
-    lea  ebx, [ecx-1]
-  @2:
-
-    mov  edx, eax
-    mov  ecx, ebx
-    and  edx, 7
-    sar  eax, 3
-    and  ecx, 7
-    sar  ebx, 3
-
-    cmp  eax, [gray_min_X]
-    jge  @3
-    mov  [gray_min_X], eax
-
-  @3:
-    cmp  ebx, [gray_max_X]
-    jl   @4
-    mov  [gray_max_X], ebx
-
-  @4:
-    mov esi, ebx
-
-    mov ebx, [BCible]
-    add ebx, [TraceBOfs]
-    add ebx, eax
-
-    sub esi, eax
-    jz @5
-
-    mov  al, [LMask + edx].byte
-    or   [ebx], al
-    inc  ebx
-    dec  esi
-    jz @6
-    mov  eax, -1
-  @7:
-    mov [ebx].byte, al
-    dec esi
-    lea ebx, [ebx+1]
-    jnz @7
-
-  @6:
-    mov al, [RMask + ecx].byte
-    or [ebx], al
-    jmp @8
-
-  @5:
-    mov al, [LMask + edx].byte
-    and al, [RMask + ecx].byte
-    or  [ebx], al
-
-  @8:
-  @Sortie:
-    pop  ecx
-    pop  ebx
-    pop  esi
-  end;
-{$ELSE}
-
   e1 := (( x1+Precision-1 ) and Precision_Mask) div Precision;
 
   if ( x2-x1-Precision <= Precision_Jitter ) then
@@ -179,11 +76,10 @@ begin
          base^[0] := base^[0] or RMask[f2];
        end
     end;
-{$ENDIF}
 end;
 
 
-procedure Vertical_Sweep_Drop( y     : Int;
+procedure TFreeTypeRasterizer.Vertical_Sweep_Drop( y     : Int;
                                x1,
                                x2    : TT_F26dot6;
                                Left,
@@ -296,7 +192,7 @@ end;
 
 
 
-procedure Vertical_Sweep_Step;
+procedure TFreeTypeRasterizer.Vertical_Sweep_Step;
 begin
   inc( TraceBOfs, traceBIncr );
 end;
@@ -311,13 +207,13 @@ end;
 (*                                                                     *)
 (***********************************************************************)
 
-procedure Horizontal_Sweep_Init( var {%H-}min, {%H-}max : Int );
+procedure TFreeTypeRasterizer.Horizontal_Sweep_Init( var {%H-}min, {%H-}max : Int );
 begin
   (* Nothing, really *)
 end;
 
 
-procedure Horizontal_Sweep_Span( y     : Int;
+procedure TFreeTypeRasterizer.Horizontal_Sweep_Span( y     : Int;
                                  x1,
                                  x2    : TT_F26dot6;
                                  {%H-}Left,
@@ -389,7 +285,7 @@ end;
 
 
 
-procedure Horizontal_Sweep_Drop( y     : Int;
+procedure TFreeTypeRasterizer.Horizontal_Sweep_Drop( y     : Int;
                                  x1,
                                  x2    : TT_F26dot6;
                                  Left,
@@ -484,7 +380,7 @@ end;
 
 
 
-procedure Horizontal_Sweep_Step;
+procedure TFreeTypeRasterizer.Horizontal_Sweep_Step;
 begin
   (* Nothing, really *)
 end;
@@ -506,7 +402,7 @@ end;
 (*                                                                     *)
 (***********************************************************************)
 
-procedure Vertical_Gray_Sweep_Init( var min, {%H-}max : Int );
+procedure TFreeTypeRasterizer.Vertical_Gray_Sweep_Init( var min, {%H-}max : Int );
 begin
   case Cible.flow of
 
@@ -525,7 +421,7 @@ begin
   gray_max_x := -Cible.Cols;
 end;
 
-procedure Vertical_Gray_Sweep_Init_HQ( var min, {%H-}max : Int );
+procedure TFreeTypeRasterizer.Vertical_Gray_Sweep_Init_HQ( var min, {%H-}max : Int );
 begin
   case Cible.flow of
 
@@ -551,7 +447,7 @@ begin
 end;
 
 
-procedure Vertical_Gray_Sweep_Step;
+procedure TFreeTypeRasterizer.Vertical_Gray_Sweep_Step;
 var
   j, c1, c2 : Int;
 begin
@@ -598,7 +494,7 @@ begin
   end;
 end;
 
-procedure Vertical_Gray_Sweep_Step_HQ;
+procedure TFreeTypeRasterizer.Vertical_Gray_Sweep_Step_HQ;
 var
   j, c1 : Int;
   c2, c3: byte;
@@ -669,7 +565,7 @@ end;
 (*                                                                     *)
 (***********************************************************************)
 
-procedure Horizontal_Gray_Sweep_Span( y     : Int;
+procedure TFreeTypeRasterizer.Horizontal_Gray_Sweep_Span( y     : Int;
                                       x1,
                                       x2    : TT_F26dot6;
                                       {%H-}Left,
@@ -711,7 +607,7 @@ begin
 end;
 
 
-procedure Horizontal_Gray_Sweep_Drop( y     : Int;
+procedure TFreeTypeRasterizer.Horizontal_Gray_Sweep_Drop( y     : Int;
                                       x1,
                                       x2    : TT_F26dot6;
                                       Left,
