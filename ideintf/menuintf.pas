@@ -370,6 +370,10 @@ var
     mnuWindow: TIDEMenuSection;
       itmWindowManagers: TIDEMenuSection;
       itmWindowLists: TIDEMenuSection;
+      itmTabLists: TIDEMenuSection;
+        itmTabListProject: TIDEMenuSection;
+        itmTabListOther: TIDEMenuSection;
+        itmTabListPackage: TIDEMenuSection;
 
     // help menu
     mnuHelp: TIDEMenuSection;
