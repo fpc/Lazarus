@@ -95,10 +95,10 @@ type
     constructor Create; override;
     destructor Destroy; override;
 
-    procedure DoAfterBuild(AResources: TAbstractProjectResources;
-      AReason: TCompileReason; SaveToTestDir: boolean); override;
+    procedure DoAfterBuild({%H-}AResources: TAbstractProjectResources;
+      AReason: TCompileReason; {%H-}SaveToTestDir: boolean); override;
     function UpdateResources(AResources: TAbstractProjectResources;
-      const MainFilename: string): boolean; override;
+      const {%H-}MainFilename: string): boolean; override;
     procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; Path: string); override;
     procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; Path: string); override;
 

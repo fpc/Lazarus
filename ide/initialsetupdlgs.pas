@@ -351,7 +351,18 @@ begin
   Dir:=EnvironmentOptions.GetParsedLazarusDirectory;
   Quality:=CheckLazarusDirectoryQuality(Dir,Note);
   if Quality<>sddqInvalid then exit;
-  debugln(['SetupLazarusDirectory: The Lazarus directory "',EnvironmentOptions.LazarusDirectory,'" is invalid (Error: ',Note,'). Searching a proper one ...']);
+  // bad lazarus directory
+  dbgout('SetupLazarusDirectory:');
+  if EnvironmentOptions.LazarusDirectory<>'' then
+  begin
+    dbgout(' The Lazarus directory "',EnvironmentOptions.LazarusDirectory,'"');
+    if EnvironmentOptions.LazarusDirectory<>Dir then
+      dbgout(' => "',Dir,'"');
+    dbgout(' is invalid (Error: ',Note,')');
+    debugln(' Searching a proper one ...');
+  end else begin
+    debugln(' Searching ...');
+  end;
   List:=SearchLazarusDirectoryCandidates(true);
   try
     BestDir:=nil;
@@ -578,7 +589,18 @@ begin
   CompFile:=EnvironmentOptions.GetParsedCompilerFilename;
   Quality:=CheckCompilerQuality(CompFile,Note,'');
   if Quality<>sddqInvalid then exit;
-  debugln(['SetupCompilerFilename: The compiler path "',CompFile,'" is invalid (Error: ',Note,'). Searching a proper one ...']);
+  // bad compiler
+  dbgout('SetupCompilerFilename:');
+  if EnvironmentOptions.CompilerFilename<>'' then
+  begin
+    dbgout(' The compiler path "',EnvironmentOptions.CompilerFilename,'"');
+    if EnvironmentOptions.CompilerFilename<>CompFile then
+      dbgout(' => "',CompFile,'"');
+    dbgout(' is invalid (Error: ',Note,')');
+    debugln(' Searching a proper one ...');
+  end else begin
+    debugln(' Searching compiler ...');
+  end;
   List:=SearchCompilerCandidates(true,EnvironmentOptions.GetParsedLazarusDirectory,
                                  CodeToolBoss.FPCDefinesCache.TestFilename);
   try

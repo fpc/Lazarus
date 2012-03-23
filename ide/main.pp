@@ -14860,8 +14860,10 @@ begin
 
   CompilerParseStampIncreased:=@OnCompilerParseStampIncreased;
 
+  {$IFDEF CheckNodeTool}
   // codetools consistency check
   CodeToolBoss.ConsistencyCheck;
+  {$ENDIF}
 end;
 
 procedure TMainIDE.ActivateCodeToolAbortableMode;

@@ -258,7 +258,7 @@ type
     procedure ApplyFileDialogSettings(DestDialog: TFileDialog);
     procedure StoreFileDialogSettings(SourceDialog: TFileDialog);
     procedure SetFileDialogSettingsInitialDir(const InitialDir: string);
-    function SelectDirectory(const Title: string;
+    function SelectDirectory(const {%H-}Title: string;
                              MustExist: boolean = true;
                              const InitialDir: string = '';
                              const Directory: string = ''): string;

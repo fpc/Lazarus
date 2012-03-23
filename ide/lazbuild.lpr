@@ -835,8 +835,6 @@ end;
 
 procedure TLazBuildApplication.LoadEnvironmentOptions;
 begin
-  if EnvironmentOptions<>nil then exit;
-  EnvironmentOptions:=TEnvironmentOptions.Create;
   with EnvironmentOptions do begin
     CreateConfig;
     Load(false);
@@ -882,6 +880,10 @@ begin
   CodeToolBoss.SourceCache.OnEncodeSaving:=@OnCodeBufferEncodeSaving;
   CodeToolBoss.SourceCache.OnDecodeLoaded:=@OnCodeBufferDecodeLoaded;
   CodeToolBoss.SourceCache.DefaultEncoding:=EncodingUTF8;
+
+  MainBuildBoss.LoadFPCDefinesCaches;
+  // create a test unit needed to get from the compiler all macros and search paths
+  CodeToolBoss.FPCDefinesCache.TestFilename:=CreateCompilerTestPascalFilename;
 end;
 
 procedure TLazBuildApplication.SetupPackageSystem;
