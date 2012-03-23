@@ -5396,16 +5396,11 @@ var
     S: String;
   begin
     S := AEditor.PageName;
-        //swap around so file name is first followed by the directory
-        if ExtractFileDir(AEditor.FileName) <> '' then
-          S := S +' in '+ExtractFileDir(AEditor.FileName);
-        // check for modification after since * makes it different
-        if AEditor.Modified then
-          S := '*'+S;
+    if AEditor.Modified then
+      S := '*'+S;
 
-        RegisterIDEMenuCommand(AMenu, 'File'+IntToStr(AIndex),
-                 S, @ExecuteEditorItemClick, nil, nil, '', PtrUInt(AEditor));
-
+    RegisterIDEMenuCommand(AMenu, 'File'+IntToStr(AIndex),
+             S, @ExecuteEditorItemClick, nil, nil, '', PtrUInt(AEditor));
   end;
 
 var
