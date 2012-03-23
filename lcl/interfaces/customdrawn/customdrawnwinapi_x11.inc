@@ -656,7 +656,7 @@ begin
   XFreeFontPath(lXFontPath);
 
   // Paths from the global config file
-  if FileUtil. FileExistsUTF8(GlobalFontsConfFile) then
+  if FileUtil.FileExistsUTF8(GlobalFontsConfFile) then
   begin
     try
       ReadXMLFile(Doc, GlobalFontsConfFile);
