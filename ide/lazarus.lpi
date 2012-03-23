@@ -63,7 +63,7 @@
         <PackageName Value="SynEdit"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="89">
+    <Units Count="90">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -668,6 +668,14 @@
         <HasResources Value="True"/>
         <UnitName Value="MsgView"/>
       </Unit88>
+      <Unit89>
+        <Filename Value="frames/editor_multiwindow_options.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="EditorMultiWindowOptionsFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="editor_multiwindow_options"/>
+      </Unit89>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
