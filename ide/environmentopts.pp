@@ -926,7 +926,7 @@ procedure TEnvironmentOptions.CreateConfig;
 var
   ConfFileName: string;
 begin
-  ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+EnvOptsConfFileName);
+  ConfFileName:=TrimFilename(SetDirSeparators(GetPrimaryConfigPath+'/'+EnvOptsConfFileName));
   CopySecondaryConfigFile(EnvOptsConfFileName);
   if (not FileExistsUTF8(ConfFileName)) then begin
     //DebugLn('Note: environment config file not found - using defaults');

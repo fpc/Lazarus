@@ -53,8 +53,10 @@ type
     FBuildModeOverride: String;
     FBuildRecursive: boolean;
     fCompilerOverride: String;
+    fCompilerInCfg: string;
     FCreateMakefile: boolean;
     fLazarusDirOverride : String;
+    fLazarusDirInCfg: string;
     fCPUOverride: String;
     fOSOverride: String;
     FSkipDependencies: boolean;
@@ -121,6 +123,7 @@ type
     procedure SetupCodetools;
     procedure SetupPackageSystem;
     procedure SetupDialogs;
+    procedure StoreBaseSettings;
     function RepairedCheckOptions(Const ShortOptions : String;
                    Const Longopts : TStrings; Opts,NonOpts : TStrings) : String;
   public
@@ -825,6 +828,8 @@ begin
   SetupOutputFilter;
   MainBuildBoss.SetupCompilerInterface;
 
+  StoreBaseSettings;
+
   // load static base packages
   PackageGraph.LoadStaticBasePackages;
 
@@ -838,6 +843,9 @@ begin
   with EnvironmentOptions do begin
     CreateConfig;
     Load(false);
+    fCompilerInCfg:=CompilerFilename;
+    fLazarusDirInCfg:=LazarusDirectory;
+
     if Application.HasOption('language') then begin
       debugln('TLazBuildApplication.Init overriding language with command line: ',
         Application.GetOptionValue('language'));
@@ -904,6 +912,39 @@ procedure TLazBuildApplication.SetupDialogs;
 begin
   IDEMessageDialog:=@OnIDEMessageDialog;
   IDEQuestionDialog:=@OnIDEQuestionDialog;
+end;
+
+procedure TLazBuildApplication.StoreBaseSettings;
+var
+  StoreLazDir: Boolean;
+  StoreCompPath: Boolean;
+  Cfg: TXMLConfig;
+begin
+  StoreLazDir:=(fLazarusDirInCfg='') and (EnvironmentOptions.LazarusDirectory<>'');
+  StoreCompPath:=(fCompilerInCfg='') and (EnvironmentOptions.CompilerFilename<>'');
+  if (not StoreLazDir) and (not StoreCompPath) then exit;
+
+  try
+    dbgout('storing');
+    if StoreLazDir then
+      dbgout(' Lazarus directory "',EnvironmentOptions.LazarusDirectory,'"');
+    if StoreCompPath then
+      dbgout(' Compiler path "',EnvironmentOptions.CompilerFilename,'"');
+    debugln(' in "',EnvironmentOptions.Filename,'"');
+    Cfg:=TXMLConfig.Create(EnvironmentOptions.Filename);
+    try
+      if StoreLazDir then
+        Cfg.SetValue('EnvironmentOptions/LazarusDirectory/Value',
+                     EnvironmentOptions.LazarusDirectory);
+      if StoreCompPath then
+        Cfg.SetValue('EnvironmentOptions/CompilerFilename/Value',
+                     EnvironmentOptions.CompilerFilename);
+      Cfg.Flush;
+    finally
+      Cfg.Free;
+    end;
+  except
+  end;
 end;
 
 function TLazBuildApplication.RepairedCheckOptions(const ShortOptions: String;
