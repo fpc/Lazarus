@@ -1927,6 +1927,7 @@ var
   TargetWidget: PGtkWidget;
   TargetObj: gPointer;
   KeyPressesChar: char;
+  PassUTF8AsKeyPress: Boolean;
 
   procedure StopKeyEvent;
   begin
@@ -1961,7 +1962,7 @@ var
   function GetSpecialChar: Char;
   begin
     if (AEvent^.keyval > $FF00) and (AEvent^.keyval < $FF20) and
-       (AEvent^.keyval <> GDK_KEY_Tab) then
+       (AEvent^.keyval <> GDK_KEY_TAB) then
       Result := Chr(AEvent^.keyval xor $FF00)
     else
       Result := #0;
@@ -2392,21 +2393,25 @@ begin
         end;
 
       {$IFDEF VerboseKeyboard}
-      debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS UTF8="',DbgStr(Character),'"');
+      debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS UTF8="',DbgStr(Character),'"',
+      ' EventStopped ',dbgs(EventStopped),' CanSendChar ',dbgs(CanSendChar));
       {$ENDIF}
 
-      if Character <> ''
-      then begin
+      // we must pass KeyPress if UTF8KeyPress returned false result. issue #21489
+      PassUTF8AsKeyPress := False;
+      if Character <> '' then
+      begin
         LCLObject := GetNearestLCLObject(TargetWidget);
-        if LCLObject is TWinControl
-        then begin
+        if LCLObject is TWinControl then
+        begin
           OldCharacter := Character;
           // send the key after navigation keys were handled
           Result := TWinControl(LCLObject).IntfUTF8KeyPress(Character, 1, SysKey);
-          if Result or (Character = '')
-          then StopKeyEvent
-          else if (Character <> OldCharacter)
-          then begin
+          if Result or (Character = '') then
+            StopKeyEvent
+          else
+          if (Character <> OldCharacter) then
+          begin
             WS := UTF8ToUTF16(Character);
             if Length(WS) > 0 then
             begin
@@ -2425,32 +2430,36 @@ begin
               end
               else
                 AEvent^.length := 1;
-            end
-            else
+            end else
               StopKeyEvent;
           end;
         end;
+        PassUTF8AsKeyPress := not EventStopped and not Result;
       end;
     end;
 
     //  send a normal KeyPress Event for Delphi compatibility
-    if not EventStopped and CanSendChar
-    then begin
+    if not EventStopped and (CanSendChar or PassUTF8AsKeyPress) then
+    begin
       {$IFDEF EventTrace}
       EventTrace('char', data);
       {$ENDIF}
 
       KeyPressesChar := #0;
-      if AEvent^.Length = 1
-      then begin
+      if AEvent^.Length = 1 then
+      begin
         // ASCII key was pressed
         KeyPressesChar := EventString^;
-      end
-      else
+      end else
+      begin
         KeyPressesChar := GetSpecialChar;
+        //NonAscii key was pressed, and UTF8KeyPress didn't handle it.issue #21489
+        if PassUTF8AsKeyPress and (KeyPressesChar = #0) then
+          KeyPressesChar := Char($3F);
+      end;
 
-      if KeyPressesChar <> #0
-      then begin
+      if KeyPressesChar <> #0 then
+      begin
         FillChar(Msg, SizeOf(Msg), 0);
 
         Msg.KeyData := CommonKeyData;
@@ -2459,24 +2468,23 @@ begin
         // send the (Sys)Char message directly (not queued) to the LCL
         Msg.Result:=0;
         Msg.CharCode := Ord(KeyPressesChar);
-        if DeliverKeyMessage(TargetObj, Msg)
-        and (Ord(KeyPressesChar) <> Msg.CharCode)
-        then begin
+        if DeliverKeyMessage(TargetObj, Msg) and
+          (Ord(KeyPressesChar) <> Msg.CharCode) then
+        begin
           // key was changed by lcl
-          if (Msg.CharCode=0) or (Msg.CharCode>=128)
-          then begin
+          if (Msg.CharCode=0) or (Msg.CharCode>=128) then
+          begin
             // key set to invalid => just stop
             StopKeyEvent;
-          end
-          else begin
+          end else
+          begin
             // try to change the key
             CharToKeyVal(chr(Msg.CharCode), AEvent^.KeyVal, AEvent^.length);
             if AEvent^.length = 1 then
             begin
               EventString^ := Character[1];
               EventString[1] := #0;
-            end
-            else
+            end else
               EventString^ := #0;
             gdk_event_key_set_string(AEvent, EventString);
           end;
