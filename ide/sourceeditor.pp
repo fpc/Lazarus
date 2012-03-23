@@ -5394,9 +5394,9 @@ var
   var
     S: String;
   begin
-    S := ExtractFileName(AEditor.FileName);
+    S := AEditor.PageName;
         //swap around so file name is first followed by the directory
-        if S <> AEditor.FileName then
+        if ExtractFileDir(AEditor.FileName) <> '' then
           S := S +' in '+ExtractFileDir(AEditor.FileName);
         // check for modification after since * makes it different
         if AEditor.Modified then
@@ -5467,7 +5467,7 @@ begin
       EdList.Sorted := True;
       // sort
       for i := 0 to EditorCount - 1 do
-        EdList.AddObject(ExtractFileName(Editors[i].FileName)+' '+Editors[i].FileName, Editors[i]);
+        EdList.AddObject(Editors[i].PageName+' '+Editors[i].FileName, Editors[i]);
 
 
       RecMenu := RegisterIDESubMenu(SrcEditMenuSectionEditors, lisRecentTabs, lisRecentTabs);
