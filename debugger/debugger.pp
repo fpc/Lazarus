@@ -455,7 +455,7 @@ type
   private
     FSnapshots: TDebuggerDataSnapShotList;
   protected
-    function CreateSnapshot(CreateEmpty: Boolean = False): TObject; virtual;
+    function CreateSnapshot({%H-}CreateEmpty: Boolean = False): TObject; virtual;
     function GetSnapshotObj(AnID: Pointer): TObject; virtual;
   public
     constructor Create;
@@ -553,7 +553,7 @@ type
     procedure DoBreakHitCountChange; virtual;
     procedure DoExpressionChange; virtual;
     procedure DoEnableChange; virtual;
-    procedure DoHit(const ACount: Integer; var AContinue: Boolean); virtual;
+    procedure DoHit(const ACount: Integer; var {%H-}AContinue: Boolean); virtual;
     procedure SetHitCount(const AValue: Integer);
     procedure DoKindChange; virtual;
     procedure SetValid(const AValue: TValidState);
@@ -690,7 +690,7 @@ type
     procedure DoStateChange(const AOldState: TDBGState); virtual;
     procedure DoLogMessage(const AMessage: String); virtual;
     procedure DoLogCallStack(const Limit: Integer); virtual;
-    procedure DoLogExpression(const AnExpression: String); virtual; // implemented in TGDBMIBreakpoint
+    procedure DoLogExpression(const {%H-}AnExpression: String); virtual; // implemented in TGDBMIBreakpoint
     property  Debugger: TDebugger read GetDebugger;
   public
     constructor Create(ACollection: TCollection); override;
@@ -801,7 +801,7 @@ type
     function Find(const ASource: String; const ALine: Integer): TDBGBreakPoint; overload;
     function Find(const ASource: String; const ALine: Integer; const AIgnore: TDBGBreakPoint): TDBGBreakPoint; overload;
     function Find(const AAddress: TDBGPtr): TDBGBreakPoint; overload;
-    function Find(const AAddress: TDBGPtr; const AIgnore: TDBGBreakPoint): TDBGBreakPoint; overload;
+    function Find(const AAddress: TDBGPtr; const {%H-}AIgnore: TDBGBreakPoint): TDBGBreakPoint; overload;
     function Find(const AData: String; const AScope: TDBGWatchPointScope;
                   const AKind: TDBGWatchPointKind): TDBGBreakPoint; overload;
     function Find(const AData: String; const AScope: TDBGWatchPointScope;
@@ -1111,9 +1111,9 @@ type
                      const AnEvaluateFlags: TDBGEvaluateFlags): TWatchValue;
     function GetEntryByIdx(AnIndex: integer): TWatchValue;
   protected
-    function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer;
-                         const ADisplayFormat: TWatchDisplayFormat;
-                         const AnEvaluateFlags: TDBGEvaluateFlags): TWatchValue; virtual;
+    function CreateEntry(const {%H-}AThreadId: Integer; const {%H-}AStackFrame: Integer;
+                         const {%H-}ADisplayFormat: TWatchDisplayFormat;
+                         const {%H-}AnEvaluateFlags: TDBGEvaluateFlags): TWatchValue; virtual;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                 APath: string);
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
@@ -1391,7 +1391,7 @@ type
     function GetEntry(const AThreadId: Integer; const AStackFrame: Integer): TLocals;
     function GetEntryByIdx(const AnIndex: Integer): TLocals;
   protected
-    function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer): TLocals; virtual;
+    function CreateEntry(const {%H-}AThreadId: Integer; const {%H-}AStackFrame: Integer): TLocals; virtual;
     procedure Add(AnEntry: TLocals);
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                 APath: string);
@@ -1498,15 +1498,15 @@ type
 
   TBaseLineInfo = class(TObject)
   protected
-    function GetSource(const AnIndex: integer): String; virtual;
+    function GetSource(const {%H-}AnIndex: integer): String; virtual;
   public
     constructor Create;
     function Count: Integer; virtual;
-    function GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr; virtual;
+    function GetAddress(const {%H-}AIndex: Integer; const {%H-}ALine: Integer): TDbgPtr; virtual;
     function GetAddress(const ASource: String; const ALine: Integer): TDbgPtr;
-    function GetInfo(AAdress: TDbgPtr; out ASource, ALine, AOffset: Integer): Boolean; virtual;
-    function IndexOf(const ASource: String): integer; virtual;
-    procedure Request(const ASource: String); virtual;
+    function GetInfo({%H-}AAdress: TDbgPtr; out {%H-}ASource, {%H-}ALine, {%H-}AOffset: Integer): Boolean; virtual;
+    function IndexOf(const {%H-}ASource: String): integer; virtual;
+    procedure Request(const {%H-}ASource: String); virtual;
   public
     property Sources[const AnIndex: Integer]: String read GetSource;
   end;
@@ -1525,7 +1525,7 @@ type
   private
     FNotificationList: TList;
     FMaster: TDBGLineInfo;
-    procedure LineInfoChanged(const ASender: TObject; const ASource: String);
+    procedure LineInfoChanged(const {%H-}ASender: TObject; const ASource: String);
     procedure SetMaster(const AMaster: TDBGLineInfo);
   protected
     function GetSource(const AIndex: Integer): String; override;
@@ -1553,7 +1553,7 @@ type
   protected
     procedure Changed(ASource: String); virtual;
     procedure DoChange(ASource: String);
-    procedure DoStateChange(const AOldState: TDBGState); virtual;
+    procedure DoStateChange(const {%H-}AOldState: TDBGState); virtual;
     property Debugger: TDebugger read FDebugger;
   public
     constructor Create(const ADebugger: TDebugger);
@@ -1598,9 +1598,9 @@ type
   protected
     FUpdateCount: Integer;
     FFormatList: TRegistersFormatList;
-    function GetModified(const AnIndex: Integer): Boolean; virtual;
-    function GetName(const AnIndex: Integer): String; virtual;
-    function GetValue(const AnIndex: Integer): String; virtual;
+    function GetModified(const {%H-}AnIndex: Integer): Boolean; virtual;
+    function GetName(const {%H-}AnIndex: Integer): String; virtual;
+    function GetValue(const {%H-}AnIndex: Integer): String; virtual;
     function GetFormat(const AnIndex: Integer): TRegisterDisplayFormat;
     procedure SetFormat(const AnIndex: Integer; const AValue: TRegisterDisplayFormat); virtual;
     procedure ChangeUpdating; virtual;
@@ -1662,8 +1662,8 @@ type
   protected
     procedure Changed; virtual;
     procedure DoChange;
-    procedure DoStateChange(const AOldState: TDBGState); virtual;
-    procedure FormatChanged(const AnIndex: Integer); virtual;
+    procedure DoStateChange(const {%H-}AOldState: TDBGState); virtual;
+    procedure FormatChanged(const {%H-}AnIndex: Integer); virtual;
     function GetCount: Integer; virtual;
     procedure ChangeUpdating; override;
     property Debugger: TDebugger read FDebugger;
@@ -1764,7 +1764,7 @@ type
 
     procedure Clear; virtual;
     function  GetCount: Integer; virtual;
-    procedure SetCount(ACount: Integer); virtual;
+    procedure SetCount({%H-}ACount: Integer); virtual;
     function  GetEntry(AIndex: Integer): TCallStackEntry; virtual;
     procedure AddEntry(AnEntry: TCallStackEntry); virtual; // must be added in correct order
     procedure AssignEntriesTo(AnOther: TCallStack); virtual;
@@ -1781,7 +1781,7 @@ type
     constructor CreateCopy(const ASource: TCallStack);
     destructor Destroy; override;
     procedure Assign(AnOther: TCallStack);
-    procedure PrepareRange(AIndex, ACount: Integer); virtual;
+    procedure PrepareRange({%H-}AIndex, {%H-}ACount: Integer); virtual;
     procedure ChangeCurrentIndex(ANewIndex: Integer); virtual;
     property Count: Integer read GetCount write SetCount;
     property CurrentIndex: Integer read GetCurrent write SetCurrent;
@@ -1959,8 +1959,8 @@ type
     function IndexError(AIndex: Integer): TCallStackEntry;
     function GetEntry(AIndex: Integer): TDisassemblerEntry;
   protected
-    function  InternalGetEntry(AIndex: Integer): TDisassemblerEntry; virtual;
-    function  InternalGetEntryPtr(AIndex: Integer): PDisassemblerEntry; virtual;
+    function  InternalGetEntry({%H-}AIndex: Integer): TDisassemblerEntry; virtual;
+    function  InternalGetEntryPtr({%H-}AIndex: Integer): PDisassemblerEntry; virtual;
     procedure DoChanged; virtual;
     procedure Changed;
     procedure LockChanged;
@@ -1975,7 +1975,7 @@ type
     destructor Destroy; override;
     procedure Clear; virtual;
     // Returns "True", if the range is valid, if not a ChangeNotification will be triggered later
-    function PrepareRange(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): Boolean; virtual;
+    function PrepareRange({%H-}AnAddr: TDbgPtr; {%H-}ALinesBefore, {%H-}ALinesAfter: Integer): Boolean; virtual;
     property BaseAddr: TDbgPtr read FBaseAddr;
     property CountAfter: Integer read FCountAfter;
     property CountBefore: Integer read FCountBefore;
@@ -2103,9 +2103,9 @@ type
     function  InternalGetEntry(AIndex: Integer): TDisassemblerEntry; override;
     function  InternalGetEntryPtr(AIndex: Integer): PDisassemblerEntry; override;
     // PrepareEntries returns True, if it already added some entries
-    function  PrepareEntries(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): boolean; virtual;
-    function  HandleRangeWithInvalidAddr(ARange: TDBGDisassemblerEntryRange;AnAddr:
-                 TDbgPtr; var ALinesBefore, ALinesAfter: Integer): boolean; virtual;
+    function  PrepareEntries({%H-}AnAddr: TDbgPtr; {%H-}ALinesBefore, {%H-}ALinesAfter: Integer): boolean; virtual;
+    function  HandleRangeWithInvalidAddr(ARange: TDBGDisassemblerEntryRange;{%H-}AnAddr:
+                 TDbgPtr; var {%H-}ALinesBefore, {%H-}ALinesAfter: Integer): boolean; virtual;
     property Debugger: TDebugger read FDebugger;
     property EntryRanges: TDBGDisassemblerEntryMap read FEntryRanges;
   public
@@ -2245,7 +2245,7 @@ type
     function  GetMonitor: TThreadsMonitor;
     procedure SetMonitor(const AValue: TThreadsMonitor);
   protected
-    procedure ChangeCurrentThread(ANewId: Integer); virtual;
+    procedure ChangeCurrentThread({%H-}ANewId: Integer); virtual;
     procedure RequestMasterData; virtual;
     procedure DoStateEnterPause; override;
     procedure DoStateLeavePause; override;
@@ -2452,10 +2452,10 @@ type
   protected
     procedure AssignTo(Dest: TPersistent); override;
   public
-    procedure LoadFromXMLConfig(const AXMLConfig: TXMLConfig;
-                                const APath: string);
-    procedure SaveToXMLConfig(const AXMLConfig: TXMLConfig;
-                              const APath: string);
+    procedure LoadFromXMLConfig(const {%H-}AXMLConfig: TXMLConfig;
+                                const {%H-}APath: string);
+    procedure SaveToXMLConfig(const {%H-}AXMLConfig: TXMLConfig;
+                              const {%H-}APath: string);
     procedure ResetMaster;
   end;
 
@@ -2505,10 +2505,10 @@ type
     function Find(const AName: String): TIDESignal;
     property Master: TDBGSignals read FMaster write SetMaster;
   public
-    procedure LoadFromXMLConfig(const AXMLConfig: TXMLConfig;
-                                const APath: string);
-    procedure SaveToXMLConfig(const AXMLConfig: TXMLConfig;
-                              const APath: string);
+    procedure LoadFromXMLConfig(const {%H-}AXMLConfig: TXMLConfig;
+                                const {%H-}APath: string);
+    procedure SaveToXMLConfig(const {%H-}AXMLConfig: TXMLConfig;
+                              const {%H-}APath: string);
     property Items[const AIndex: Integer]: TIDESignal read GetItem
                                                       write SetItem; default;
   end;
@@ -2708,7 +2708,7 @@ type
   private
   public
     constructor Create; virtual;
-    procedure Assign(Source: TPersistent); override;
+    procedure Assign({%H-}Source: TPersistent); override;
   published
   end;
   TDebuggerPropertiesClass= class of TDebuggerProperties;
@@ -2980,17 +2980,17 @@ end;
 
 function dbgs(ADataState: TDebuggerDataState): String;
 begin
-  writestr(Result, ADataState);
+  writestr(Result{%H-}, ADataState);
 end;
 
 function dbgs(AKind: TDBGSymbolKind): String;
 begin
-  writestr(Result, AKind);
+  writestr(Result{%H-}, AKind);
 end;
 
 function dbgs(AnAttribute: TDBGSymbolAttribute): String;
 begin
-  writestr(Result, AnAttribute);
+  writestr(Result{%H-}, AnAttribute);
 end;
 
 function dbgs(AnAttributes: TDBGSymbolAttributes): String;
@@ -3008,7 +3008,7 @@ end;
 
 function dbgs(AFlag: TDebuggerLocationFlag): String;
 begin
-  writestr(Result, AFlag);
+  writestr(Result{%H-}, AFlag);
 end;
 
 function dbgs(AFlags: TDebuggerLocationFlags): String;
@@ -3026,7 +3026,7 @@ end;
 
 function dbgs(ACategory: TDBGEventCategory): String;
 begin
-  writestr(Result, ACategory);
+  writestr(Result{%H-}, ACategory);
 end;
 
 function dbgs(ADisassRange: TDBGDisassemblerEntryRange): String; overload;
@@ -3444,7 +3444,7 @@ end;
 function TDebuggerUnitInfo.DebugText: String;
 var s: String;
 begin
-  writestr(s, FLocationType);
+  writestr(s{%H-}, FLocationType);
   Result
     := ' FileName="'+FFileName+'" '
     +  'DbgFullName="' + FDbgFullName+'" '
@@ -3501,7 +3501,7 @@ procedure TDebuggerUnitInfo.SaveDataToXMLConfig(const AConfig: TXMLConfig;
 var
   s: String;
 begin
-  WriteStr(s, LocationType);
+  WriteStr(s{%H-}, LocationType);
   AConfig.SetValue(APath + 'Type', s);
   AConfig.SetValue(APath + 'File', FileName);
 
@@ -4764,7 +4764,7 @@ begin
   AConfig.SetValue(APath + 'ThreadId', FThreadId);
   AConfig.SetValue(APath + 'StackFrame', FStackFrame);
   AConfig.SetValue(APath + 'Value', FValue);
-  WriteStr(s, FDisplayFormat);
+  WriteStr(s{%H-}, FDisplayFormat);
   AConfig.SetDeleteValue(APath + 'DisplayFormat', s, 'wdfDefault');
   WriteStr(s, FValidity);
   AConfig.SetDeleteValue(APath + 'Validity', s, 'ddsValid');
@@ -7076,7 +7076,7 @@ begin
   AConfig.SetDeleteValue(APath+'Address/Value',Address,0);
 
   AConfig.SetDeleteValue(APath+'WatchData/Value', FWatchData, '');
-  WriteStr(s, FWatchScope);
+  WriteStr(s{%H-}, FWatchScope);
   AConfig.SetDeleteValue(APath+'WatchScope/Value', s, '');
   WriteStr(s, FWatchKind);
   AConfig.SetDeleteValue(APath+'WatchKind/Value', s, '');
@@ -8223,7 +8223,7 @@ var
 begin
   AConfig.SetDeleteValue(APath + 'Enabled', FEnabled, True);
   AConfig.SetDeleteValue(APath + 'Expression', FExpression, '');
-  WriteStr(s, FDisplayFormat);
+  WriteStr(s{%H-}, FDisplayFormat);
   AConfig.SetDeleteValue(APath + 'DisplayFormat', s, 'wdfDefault');
 
   FValueList.SaveDataToXMLConfig(AConfig, APath + 'ValueList/');
@@ -9154,7 +9154,7 @@ begin
     else
       FUnitInfo.SaveDataToXMLConfig(AConfig, APath + 'UnitInfo/');
   end;
-  WriteStr(s, FState);
+  WriteStr(s{%H-}, FState);
   AConfig.SetValue(APath + 'State', s);
 end;
 
