@@ -1052,6 +1052,7 @@ begin
     exit;
 
   LinePos := CurLine.LineNum;
+  LineBSize := 0;
   FInternalIterator.Invalidate; // TODO: better notification system
 
   if aLineBrkCnt > 0 then begin

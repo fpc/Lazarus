@@ -3831,6 +3831,10 @@ resourcestring
   lisPkgMangThePackageIsMarkedForInstallationButCanNotBeFound = 'The package %'
     +'s%s%s is marked for installation, but can not be found.%sRemove '
     +'dependency from the installation list of packages?';
+  lisERRORInvalidBuildMode = 'ERROR: invalid build mode "%s"';
+  lisAvailableProjectBuildModes = 'Available project build modes:';
+  lisThisProjectHasOnlyTheDefaultBuildMode = 'This project has only the '
+    +'default build mode.';
   lisPkgMangstaticPackagesConfigFile = 'static packages config file';
   lisPkgMangUnableToCreateTargetDirectoryForLazarus = 'Unable to create '
     +'target directory for lazarus:%s%s%s%s.%sThis directory is needed for '

@@ -434,7 +434,7 @@ begin
         debugln(BuildLazProfiles[i].Name);
       end;
       debugln;
-      exit;
+      Halt(ErrorBuildFailed);
     end;
     CurProf:=BuildLazProfiles[i];
   end;
@@ -634,6 +634,7 @@ var
   TargetExeDir: String;
   NewBuildMode: TProjectBuildMode;
   CompilePolicy: TPackageUpdatePolicy;
+  i: Integer;
 begin
   Result:=false;
   CloseProject(Project1);
@@ -649,7 +650,26 @@ begin
   if (BuildModeOverride<>'') then begin
     NewBuildMode:=Project1.BuildModes.Find(BuildModeOverride);
     if NewBuildMode=nil then
-      Error(ErrorBuildFailed,'invalid build mode '+BuildModeOverride);
+    begin
+      debugln([Format(lisERRORInvalidBuildMode, [BuildModeOverride])]);
+      debugln;
+      if Project1.BuildModes.Count>1 then
+      begin
+        debugln(lisAvailableProjectBuildModes);
+        for i:=0 to Project1.BuildModes.Count-1 do
+        begin
+          if Project1.BuildModes[i]=Project1.ActiveBuildMode then
+            dbgout('* ')
+          else
+            dbgout('  ');
+          debugln(Project1.BuildModes[i].Name);
+        end;
+      end else begin
+        debugln(lisThisProjectHasOnlyTheDefaultBuildMode);
+      end;
+      debugln;
+      Halt(ErrorBuildFailed);
+    end;
     Project1.ActiveBuildMode:=NewBuildMode;
   end;
   // then override specific options
