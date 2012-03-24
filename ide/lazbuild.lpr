@@ -833,7 +833,8 @@ begin
   if fInitialized then exit(fInitResult);
   fInitResult:=false;
   fInitialized:=true;
-  
+
+  debugln(['primary config path: ',GetPrimaryConfigPath]);
   CreatePrimaryConfigPath;
 
   MainBuildBoss:=TBuildManager.Create(nil);
