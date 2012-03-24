@@ -142,15 +142,12 @@ begin
   else
     CharKey := #255;
 
-  case CharKey of
-    //#8: // special keys
-    //  if not FDatalink.Edit then
-    //    UTF8Key:='';
-
-    #8, #32..#255: //standard keys
-      if not FieldCanAcceptKey(FDataLink.Field, CharKey) or not FDatalink.Edit then
-        UTF8Key:='';
-  end;//case
+  //handle standard keys
+  if CharKey in [#32..#255] then
+  begin
+    if not FieldCanAcceptKey(FDataLink.Field, CharKey) or not FDatalink.Edit then
+      UTF8Key := '';
+  end;
 end;
 
 procedure TDBEdit.Notification(AComponent: TComponent; Operation: TOperation);
