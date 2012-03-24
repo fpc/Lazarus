@@ -4549,7 +4549,7 @@ begin
             debugln(['  The Lazarus directory is not set. Pass parameter --lazarusdir.']);
           end else if not DirPathExistsCached(PkgLinks.GetGlobalLinkDirectory)
           then begin
-            debugln(['  The lpl directory is missing. Check that the Lazarus directory is correct.']);
+            debugln(['  The lpl directory is missing. Check that the Lazarus (--lazarusdir) directory is correct.']);
           end;
         end;
         if APackage.AutoCreated then

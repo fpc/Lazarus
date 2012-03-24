@@ -1215,7 +1215,7 @@ begin
     HelpLang := GetLanguageSpecified;
     if HelpLang = '' then
     begin
-      ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+EnvOptsConfFileName);
+      ConfFileName:=TrimFilename(SetDirSeparators(GetPrimaryConfigPath+'/'+EnvOptsConfFileName));
       try
         Cfg:=TXMLConfig.Create(ConfFileName);
         try
