@@ -2919,17 +2919,17 @@ begin
     if (ACommand = emcWheelScrollDown)
     then begin
       // sroll dependant on visible scrollbar / or not at all
-      if  (sfVertScrollbarVisible in fStateFlags) then ACommand := emcWheelVertScrollDown
-      else
-      if  (sfHorizScrollbarVisible in fStateFlags) then ACommand := emcWheelHorizScrollDown;
+      if  (fStateFlags * [sfVertScrollbarVisible, sfHorizScrollbarVisible] = [sfHorizScrollbarVisible])
+      then ACommand := emcWheelHorizScrollDown
+      else ACommand := emcWheelVertScrollDown;
     end;
 
     if (ACommand = emcWheelScrollUp)
     then begin
       // sroll dependant on visible scrollbar / or not at all
-      if  (sfVertScrollbarVisible in fStateFlags) then ACommand := emcWheelVertScrollUp
-      else
-      if  (sfHorizScrollbarVisible in fStateFlags) then ACommand := emcWheelHorizScrollUp;
+      if  (fStateFlags * [sfVertScrollbarVisible, sfHorizScrollbarVisible] = [sfHorizScrollbarVisible])
+      then ACommand := emcWheelHorizScrollUp
+      else ACommand := emcWheelVertScrollUp;
     end;
 
     case ACommand of
@@ -4292,6 +4292,9 @@ begin
       ShowScrollBar(Handle, SB_Horz, sfHorizScrollbarVisible in fStateFlags);
       RecalcCharsAndLinesInWin(True);
     end;
+    {$IFnDEF SynNewScrollBarUpdate}
+    if (sfHorizScrollbarVisible in fStateFlags) then begin
+    {$ENDIF}
     ScrollInfo.nPage := CharsInWindow;
     ScrollInfo.nPos := LeftChar;
     SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
@@ -4299,6 +4302,9 @@ begin
     if not (sfHorizScrollbarVisible in fStateFlags) then
       ShowScrollBar(Handle, SB_Horz, False);
     {$ENDIF} {$ENDIF}
+    {$IFnDEF SynNewScrollBarUpdate}
+    end;
+    {$ENDIF}
     //DebugLn('[TCustomSynEdit.UpdateScrollbars] nMin=',ScrollInfo.nMin,' nMax=',ScrollInfo.nMax,
     //' nPage=',ScrollInfo.nPage,' nPos=',ScrollInfo.nPos,' ClientW=',ClientWidth);
 
@@ -4318,6 +4324,9 @@ begin
       ShowScrollBar(Handle, SB_Vert, sfVertScrollbarVisible in fStateFlags);
       RecalcCharsAndLinesInWin(True);
     end;
+    {$IFnDEF SynNewScrollBarUpdate}
+    if (sfVertScrollbarVisible in fStateFlags) then begin
+    {$ENDIF}
     ScrollInfo.nPage := LinesInWindow;
     ScrollInfo.nPos := TopView;
     SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
@@ -4325,6 +4334,9 @@ begin
     if not (sfVertScrollbarVisible in fStateFlags) then
       ShowScrollBar(Handle, SB_Vert, False);
     {$ENDIF} {$ENDIF}
+    {$IFnDEF SynNewScrollBarUpdate}
+    end;
+    {$ENDIF}
   end;
 end;
 
