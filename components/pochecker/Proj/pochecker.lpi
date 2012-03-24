@@ -46,35 +46,35 @@
         <UnitName Value="pochecker"/>
       </Unit0>
       <Unit1>
-        <Filename Value="pocheckermain.pp"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="PoCheckerForm"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="pocheckermain"/>
-      </Unit1>
-      <Unit2>
         <Filename Value="..\pofamilies.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="PoFamilies"/>
-      </Unit2>
-      <Unit3>
+      </Unit1>
+      <Unit2>
         <Filename Value="..\resultdlg.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ResultDlgForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ResultDlg"/>
-      </Unit3>
-      <Unit4>
+      </Unit2>
+      <Unit3>
         <Filename Value="..\simplepofiles.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="simplepofiles"/>
-      </Unit4>
-      <Unit5>
+      </Unit3>
+      <Unit4>
         <Filename Value="..\pocheckerconsts.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="pocheckerconsts"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="..\pocheckermain.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="PoCheckerForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="pocheckermain"/>
       </Unit5>
     </Units>
   </ProjectOptions>
@@ -100,6 +100,7 @@
       <CompilerMessages>
         <MsgFileName Value=""/>
       </CompilerMessages>
+      <CustomOptions Value="-dPoCheckerStandAlone"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

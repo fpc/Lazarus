@@ -26,6 +26,9 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, LCLProc, CheckLst, Buttons, ExtCtrls, IDEIntf, MenuIntf,
+  {$IFDEF POCHECKERSTANDALONE}
+  Translations,
+  {$ENDIF}
   SimplePoFiles, PoFamilies, ResultDlg, pocheckerconsts;
 
 type
@@ -88,7 +91,24 @@ end;
 { TPoCheckerForm }
 
 procedure TPoCheckerForm.FormCreate(Sender: TObject);
+{$IFDEF POCHECKERSTANDALONE}
+var
+  Lang, T: string;
+{$ENDIF}
 begin
+  {$IFDEF POCHECKERSTANDALONE}
+  //Initializing translation
+  Lang := GetEnvironmentVariableUTF8('LANG');
+  if Lang = '' then
+    LCLGetLanguageIDs(Lang, T);
+  if Lang <> '' then
+  begin
+    Lang := copy(Lang, 1, 2);
+    Translations.TranslateUnitResourceStrings('PoCheckerConsts', '..'+DirectorySeparator+'languages'+DirectorySeparator+'pocheckerconsts.'+Lang+'.po');
+    Translations.TranslateUnitResourceStrings('LCLStrConsts', '..'+DirectorySeparator+'languages'+DirectorySeparator+'lclstrconsts.'+Lang+'.po');
+  end;
+  {$ENDIF}
+
   Caption := sGUIPoFileCheckingTool;
   SelectTestLabel.Caption := sSelectTestTypes;
   FindAllPOsCheckBox.Caption := sFindAllTranslatedPoFiles;
