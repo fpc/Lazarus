@@ -129,7 +129,7 @@ begin
   lblAutoSave.Caption := dlgAutoSave;
   AskSavingOnlySessionCheckBox.Caption:=lisAskBeforeSavingProjectSSession;
   AutoSaveEditorFilesCheckBox.Caption := dlgEdFiles;
-  AutoSaveProjectCheckBox.Caption := dlgEnvProject;
+  AutoSaveProjectCheckBox.Caption := dlgProject;
   AutoSaveIntervalInSecsLabel.Caption := dlgIntvInSec;
 
   // desktop files

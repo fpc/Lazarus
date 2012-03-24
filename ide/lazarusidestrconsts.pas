@@ -2246,6 +2246,7 @@ resourcestring
   dlgFromCursor = '&From cursor';
   dlgFromBeginning = 'From b&eginning';
   dlgScope = 'Scope';
+  dlgProject = 'Project';
   lisWithRequiredPackages = 'With required packages';
   lisLevels = 'Levels';
   lisShowPackages = 'Show packages';

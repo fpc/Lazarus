@@ -243,7 +243,7 @@ begin
   end;
   LibraryPathEdit.AnchorToNeighbour(akRight,0,LibraryPathButton);
 
-  ProjectGroupBox.Caption := dlgEnvProject;
+  ProjectGroupBox.Caption := dlgProject;
   AddPackageUnitToProjectCheckBox.Caption := podAddPackageUnitToUsesSection;
 end;
 

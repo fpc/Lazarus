@@ -576,7 +576,7 @@ end;
 
 function TNewLazIDEItemCategoryProject.LocalizedName: string;
 begin
-  Result := dlgEnvProject;
+  Result := dlgProject;
 end;
 
 function TNewLazIDEItemCategoryProject.Description: string;

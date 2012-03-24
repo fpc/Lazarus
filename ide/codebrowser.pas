@@ -442,7 +442,7 @@ begin
   FOptions:=TCodeBrowserViewOptions.Create;
   
   FIDEDescription:=lisLazarusIDE;
-  FProjectDescription:=dlgEnvProject;
+  FProjectDescription:=dlgProject;
 
   Name:=NonModalIDEWindowNames[nmiwCodeBrowser];
   Caption := lisCodeBrowser;

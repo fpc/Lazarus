@@ -424,7 +424,7 @@ begin
 
   SelectUnitButton.Caption:=lisOpen;
   RefreshButton.Caption:=dlgUnitDepRefresh;
-  ShowProjectButton.Caption:=dlgEnvProject;
+  ShowProjectButton.Caption:=dlgProject;
   CloseButton.Caption:=lisBtnClose;
   UnitTreeView.Images := IDEImages.Images_16;
   ToolBar.Images := IDEImages.Images_16;
