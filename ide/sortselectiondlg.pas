@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, SynEdit, Buttons, StdCtrls,
-  ExtCtrls, IDEOptionDefs, Dialogs, BasicCodeTools, Graphics,
+  ExtCtrls, IDEOptionDefs, Dialogs, BasicCodeTools, Graphics, ButtonPanel,
   AVL_Tree, TextTools, IDEWindowIntf,
   LazarusIDEStrConsts, EditorOptions, MiscOptions, SynEditHighlighter;
   
@@ -48,20 +48,20 @@ type
   TSortSelDlgState = (ssdPreviewNeedsUpdate, ssdSortedTextNeedsUpdate);
   TSortSelDlgStates = set of TSortSelDlgState;
   
+  { TSortSelectionDialog }
+
   TSortSelectionDialog = class(TForm)
+    ButtonPanel: TButtonPanel;
+    OptionsCheckGroup: TCheckGroup;
     PreviewGroupBox: TGroupBox;
     PreviewSynEdit: TSynEdit;
     DirectionRadioGroup: TRadioGroup;
     DomainRadioGroup: TRadioGroup;
-    OptionsCheckGroup: TCheckGroup;
-    OkButton: TButton;
-    CancelButton: TButton;
     procedure DirectionRadioGroupClick(Sender: TObject);
     procedure DomainRadioGroupClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCreate(Sender: TObject);
     procedure OptionsCheckGroupItemClick(Sender: TObject; Index: integer);
-    procedure SortSelectionDialogClose(Sender: TObject;
-                                       var CloseAction: TCloseAction);
-    procedure SortSelectionDialogResize(Sender: TObject);
   private
     FCaseSensitive: boolean;
     FDirection: TSortDirection;
@@ -78,7 +78,6 @@ type
     procedure SetIgnoreSpace(const AValue: boolean);
     procedure SetTheText(const AValue: string);
   public
-    constructor Create(TheOwner: TComponent); override;
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure UpdatePreview;
@@ -98,6 +97,8 @@ function SortText(const TheText: string; Direction: TSortDirection;
   Domain: TSortDomain; CaseSensitive, IgnoreSpace: boolean): string;
 
 implementation
+
+{$R *.lfm}
 
 function ShowSortSelectionDialog(const TheText: string;
   Highlighter: TSynCustomHighlighter;
@@ -322,36 +323,6 @@ end;
 
 { TSortSelectionDialog }
 
-procedure TSortSelectionDialog.SortSelectionDialogResize(Sender: TObject);
-begin
-  with PreviewGroupBox do
-    SetBounds(Left,Top,Self.ClientWidth-2*Left,Self.ClientHeight-Top-110);
-
-  with DirectionRadioGroup do
-    SetBounds(Left,PreviewGroupBox.Top+PreviewGroupBox.Height+5,
-       ((Self.ClientWidth-5) div 2)-Left,Height);
-
-  with DomainRadioGroup do
-    SetBounds(DirectionRadioGroup.Left+DirectionRadioGroup.Width+5,
-              DirectionRadioGroup.Top,
-              DirectionRadioGroup.Width,DirectionRadioGroup.Height);
-
-  with OptionsCheckGroup do
-    SetBounds(DirectionRadioGroup.Left,
-              DirectionRadioGroup.Top+DirectionRadioGroup.Height+5,
-              DirectionRadioGroup.Width,DirectionRadioGroup.Height);
-
-  with OkButton do begin
-    Left:=Self.ClientWidth-200;
-    Top:=Self.ClientHeight-35;
-  end;
-
-  with CancelButton do begin
-    Left:=Self.ClientWidth-100;
-    Top:=OkButton.Top;
-  end;
-end;
-
 procedure TSortSelectionDialog.DirectionRadioGroupClick(Sender: TObject);
 begin
   if DirectionRadioGroup.ItemIndex=0 then
@@ -371,6 +342,69 @@ begin
   end;
 end;
 
+procedure TSortSelectionDialog.FormClose(Sender: TObject; var CloseAction:
+  TCloseAction);
+begin
+  MiscellaneousOptions.SortSelDirection:=Direction;
+  MiscellaneousOptions.SortSelDomain:=Domain;
+  MiscellaneousOptions.Save;
+end;
+
+procedure TSortSelectionDialog.FormCreate(Sender: TObject);
+begin
+  FIgnoreSpace:=true;
+  FDirection:=MiscellaneousOptions.SortSelDirection;
+  FDomain:=MiscellaneousOptions.SortSelDomain;
+  FStates:=FStates+[ssdPreviewNeedsUpdate,ssdSortedTextNeedsUpdate];
+
+  IDEDialogLayoutList.ApplyLayout(Self,600,450);
+  Caption:=lisSortSelSortSelection;
+
+  PreviewGroupBox.Caption:=lisSortSelPreview;
+
+  with DirectionRadioGroup do begin
+    Caption:=dlgDirection;
+    with Items do begin
+      BeginUpdate;
+      Add(lisSortSelAscending);
+      Add(lisSortSelDescending);
+      case FDirection of
+      sdAscending: ItemIndex:=0;
+      else         ItemIndex:=1;
+      end;
+      EndUpdate;
+    end;
+  end;
+
+  with DomainRadioGroup do begin
+    Caption:=lisSortSelDomain;
+    with Items do begin
+      BeginUpdate;
+      Add(lisSortSelLines);
+      Add(lisSortSelWords);
+      Add(lisSortSelParagraphs);
+      case FDomain of
+      sdLines: ItemIndex:=0;
+      sdWords: ItemIndex:=1;
+      else     ItemIndex:=2;
+      end;
+      EndUpdate;
+    end;
+  end;
+
+  with OptionsCheckGroup do begin
+    Caption:=lisSortSelOptions;
+    with Items do begin
+      BeginUpdate;
+      Add(lisSortSelCaseSensitive);
+      Add(lisSortSelIgnoreSpace);
+      EndUpdate;
+    end;
+  end;
+
+  ButtonPanel.OKButton.Caption:=lisSortSelSort;
+end;
+
 procedure TSortSelectionDialog.OptionsCheckGroupItemClick(Sender: TObject;
   Index: integer);
 begin
@@ -378,14 +412,6 @@ begin
   0: CaseSensitive:=OptionsCheckGroup.Checked[0];
   1: IgnoreSpace:=OptionsCheckGroup.Checked[1];
   end;
-end;
-
-procedure TSortSelectionDialog.SortSelectionDialogClose(Sender: TObject;
-  var CloseAction: TCloseAction);
-begin
-  MiscellaneousOptions.SortSelDirection:=Direction;
-  MiscellaneousOptions.SortSelDomain:=Domain;
-  MiscellaneousOptions.Save;
 end;
 
 procedure TSortSelectionDialog.SetDirection(const AValue: TSortDirection);
@@ -439,130 +465,6 @@ begin
   FTheText:=AValue;
   FStates:=FStates+[ssdPreviewNeedsUpdate,ssdSortedTextNeedsUpdate];
   UpdatePreview;
-end;
-
-constructor TSortSelectionDialog.Create(TheOwner: TComponent);
-begin
-  inherited CreateNew(TheOwner, 1);
-  FIgnoreSpace:=true;
-  FDirection:=MiscellaneousOptions.SortSelDirection;
-  FDomain:=MiscellaneousOptions.SortSelDomain;
-  FStates:=FStates+[ssdPreviewNeedsUpdate,ssdSortedTextNeedsUpdate];
-
-  Position:=poScreenCenter;
-  IDEDialogLayoutList.ApplyLayout(Self,600,400);
-  Caption:=lisSortSelSortSelection;
-
-  PreviewGroupBox:=TGroupBox.Create(Self);
-  with PreviewGroupBox do begin
-    Name:='PreviewGroupBox';
-    Parent:=Self;
-    BorderSpacing.Around:=5;
-    Align:=alTop;
-    Height:=Self.ClientHeight-Top-140;
-    Caption:=lisSortSelPreview;
-  end;
-
-  PreviewSynEdit:=TSynEdit.Create(Self);
-  with PreviewSynEdit do begin
-    Name:='PreviewSynEdit';
-    Parent:=PreviewGroupBox;
-    Align:=alClient;
-    ReadOnly:=true;
-  end;
-
-  DirectionRadioGroup:=TRadioGroup.Create(Self);
-  with DirectionRadioGroup do begin
-    Name:='DirectionRadioGroup';
-    Parent:=Self;
-    Left:=5;
-    Top:=PreviewGroupBox.Top+PreviewGroupBox.Height+5;
-    Width:=((Self.ClientWidth-5) div 2)-Left;
-    Height:=45;
-    Caption:=dlgDirection;
-    with Items do begin
-      BeginUpdate;
-      Add(lisSortSelAscending);
-      Add(lisSortSelDescending);
-      Columns:=2;
-      case FDirection of
-      sdAscending: ItemIndex:=0;
-      else         ItemIndex:=1;
-      end;
-      EndUpdate;
-    end;
-    OnClick:=@DirectionRadioGroupClick;
-  end;
-  
-  DomainRadioGroup:=TRadioGroup.Create(Self);
-  with DomainRadioGroup do begin
-    Name:='DomainRadioGroup';
-    Parent:=Self;
-    Left:=DirectionRadioGroup.Left+DirectionRadioGroup.Width+5;
-    Top:=DirectionRadioGroup.Top;
-    Width:=DirectionRadioGroup.Width;
-    Height:=DirectionRadioGroup.Height;
-    Caption:=lisSortSelDomain;
-    with Items do begin
-      BeginUpdate;
-      Add(lisSortSelLines);
-      Add(lisSortSelWords);
-      Add(lisSortSelParagraphs);
-      case FDomain of
-      sdLines: ItemIndex:=0;
-      sdWords: ItemIndex:=1;
-      else     ItemIndex:=2;
-      end;
-      Columns:=3;
-      EndUpdate;
-    end;
-    OnClick:=@DomainRadioGroupClick;
-  end;
-  
-  OptionsCheckGroup:=TCheckGroup.Create(Self);
-  with OptionsCheckGroup do begin
-    Name:='OptionsCheckGroup';
-    Parent:=Self;
-    Left:=DirectionRadioGroup.Left;
-    Top:=DirectionRadioGroup.Top+DirectionRadioGroup.Height+5;
-    Width:=DirectionRadioGroup.Width;
-    Height:=DirectionRadioGroup.Height;
-    Columns:=2;
-    Caption:=lisSortSelOptions;
-    with Items do begin
-      BeginUpdate;
-      Add(lisSortSelCaseSensitive);
-      Add(lisSortSelIgnoreSpace);
-      EndUpdate;
-    end;
-    OnItemClick:=@OptionsCheckGroupItemClick;
-  end;
-  
-  OkButton:=TButton.Create(Self);
-  with OkButton do begin
-    Name:='OkButton';
-    Parent:=Self;
-    Left:=Self.ClientWidth-200;
-    Top:=Self.ClientHeight-35;
-    Caption:=lisSortSelSort;
-    ModalResult:=mrOk;
-    Default:=true;
-  end;
-  
-  CancelButton:=TButton.Create(Self);
-  with CancelButton do begin
-    Name:='CancelButton';
-    Parent:=Self;
-    Left:=Self.ClientWidth-100;
-    Top:=OkButton.Top;
-    Caption:=lisCancel;
-    ModalResult:=mrCancel;
-    Cancel:=true;
-  end;
-  
-  OnResize:=@SortSelectionDialogResize;
-  OnClose:=@SortSelectionDialogClose;
-  OnResize(Self);
 end;
 
 procedure TSortSelectionDialog.BeginUpdate;

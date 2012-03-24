@@ -4466,6 +4466,7 @@ ide/showcompileropts.lfm svneol=native#text/plain
 ide/showcompileropts.pas svneol=native#text/pascal
 ide/showdeletingfilesdlg.lfm svneol=native#text/plain
 ide/showdeletingfilesdlg.pas svneol=native#text/plain
+ide/sortselectiondlg.lfm svneol=native#text/plain
 ide/sortselectiondlg.pas svneol=native#text/pascal
 ide/sourceeditor.lfm svneol=native#text/plain
 ide/sourceeditor.pp svneol=native#text/pascal
