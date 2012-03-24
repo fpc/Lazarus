@@ -229,11 +229,11 @@ procedure TIDEFPCInfoDialog.GatherGlobalOptions(sl: TStrings);
 begin
   sl.add('Global IDE options:');
   sl.Add('LazarusDirectory='+EnvironmentOptions.LazarusDirectory);
-  sl.Add('Real LazarusDirectory='+EnvironmentOptions.GetParsedLazarusDirectory);
+  sl.Add('Resolved LazarusDirectory='+EnvironmentOptions.GetParsedLazarusDirectory);
   sl.Add('CompilerFilename='+EnvironmentOptions.CompilerFilename);
-  sl.Add('Real CompilerFilename='+EnvironmentOptions.GetParsedCompilerFilename);
+  sl.Add('Resolved CompilerFilename='+EnvironmentOptions.GetParsedCompilerFilename);
   sl.Add('CompilerMessagesFilename='+EnvironmentOptions.CompilerMessagesFilename);
-  sl.Add('Real CompilerMessagesFilename='+EnvironmentOptions.GetParsedCompilerMessagesFilename);
+  sl.Add('Resolved CompilerMessagesFilename='+EnvironmentOptions.GetParsedCompilerMessagesFilename);
   sl.Add('');
 end;
 
@@ -283,6 +283,7 @@ begin
       sl.Add('RealTargetOS='+CfgCache.RealTargetOS);
       sl.Add('RealTargetCPU='+CfgCache.RealTargetCPU);
       sl.Add('RealCompilerInPath='+CfgCache.RealCompilerInPath);
+      sl.Add('Version='+CfgCache.FullVersion);
       HasCfgs:=false;
       if CfgCache.ConfigFiles<>nil then begin
         for i:=0 to CfgCache.ConfigFiles.Count-1 do begin

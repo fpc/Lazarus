@@ -678,6 +678,7 @@ type
     RealTargetOS: string;
     RealTargetCPU: string;
     RealCompilerInPath: string; // the ppc<target> in PATH
+    FullVersion: string;
     ConfigFiles: TFPCConfigFileStateList;
     UnitPaths: TStrings;
     Defines: TStringToStringTree; // macro to value
@@ -704,7 +705,7 @@ type
     function FindRealCompilerInPath(aTargetCPU: string; ResolveLinks: boolean): string;
     function GetUnitPaths: string;
     function GetFPCVerNumbers(out FPCVersion, FPCRelease, FPCPatch: integer): boolean;
-    function GetFPCVer: string;
+    function GetFPCVer: string; // e.g. 2.7.1
     function IndexOfUsedCfgFile: integer;
     procedure IncreaseChangeStamp;
     property ChangeStamp: integer read FChangeStamp;
@@ -6696,6 +6697,7 @@ begin
   RealTargetCPU:='';
   RealTargetOS:='';
   RealCompilerInPath:='';
+  FullVersion:='';
   HasPPUs:=false;
   ConfigFiles.Clear;
   ErrorMsg:='';
@@ -6751,6 +6753,7 @@ begin
     or (RealTargetOS<>Item.RealTargetOS)
     or (RealTargetCPU<>Item.RealTargetCPU)
     or (RealCompilerInPath<>Item.RealCompilerInPath)
+    or (FullVersion<>Item.FullVersion)
     or (HasPPUs<>Item.HasPPUs)
     or (not ConfigFiles.Equals(Item.ConfigFiles,true))
   then
@@ -6780,6 +6783,7 @@ begin
     RealTargetOS:=Item.RealTargetOS;
     RealTargetCPU:=Item.RealTargetCPU;
     RealCompilerInPath:=Item.RealCompilerInPath;
+    FullVersion:=Item.FullVersion;
     HasPPUs:=Item.HasPPUs;
     ConfigFiles.Assign(Item.ConfigFiles);
     if Item.Defines<>nil then begin
@@ -6841,6 +6845,7 @@ begin
   RealTargetOS:=XMLConfig.GetValue(Path+'RealCompiler/OS','');
   RealTargetCPU:=XMLConfig.GetValue(Path+'RealCompiler/CPU','');
   RealCompilerInPath:=XMLConfig.GetValue(Path+'RealCompiler/InPath','');
+  FullVersion:=XMLConfig.GetValue(Path+'RealCompiler/FullVersion','');
   HasPPUs:=XMLConfig.GetValue(Path+'HasPPUs',true);
   ConfigFiles.LoadFromXMLConfig(XMLConfig,Path+'Configs/');
 
@@ -6949,6 +6954,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'RealCompiler/OS',RealTargetOS,'');
   XMLConfig.SetDeleteValue(Path+'RealCompiler/CPU',RealTargetCPU,'');
   XMLConfig.SetDeleteValue(Path+'RealCompiler/InPath',RealCompilerInPath,'');
+  XMLConfig.SetDeleteValue(Path+'RealCompiler/FullVersion',FullVersion,'');
   XMLConfig.SetDeleteValue(Path+'HasPPUs',HasPPUs,true);
   ConfigFiles.SaveToXMLConfig(XMLConfig,Path+'Configs/');
 
@@ -7145,6 +7151,7 @@ var
   CfgFileDate: Integer;
   Info: String;
   Infos: TFPCInfoStrings;
+  InfoTypes: TFPCInfoTypes;
 begin
   OldOptions:=TFPCTargetConfigCache.Create(nil);
   CfgFiles:=nil;
@@ -7159,10 +7166,12 @@ begin
       ExtraOptions:=GetFPCInfoCmdLineOptions(ExtraOptions);
 
       // get real OS and CPU
-      Info:=RunFPCInfo(Compiler,[fpciTargetOS,fpciTargetProcessor],ExtraOptions);
-      if ParseFPCInfo(Info,[fpciTargetOS,fpciTargetProcessor],Infos) then begin
+      InfoTypes:=[fpciTargetOS,fpciTargetProcessor,fpciFullVersion];
+      Info:=RunFPCInfo(Compiler,InfoTypes,ExtraOptions);
+      if ParseFPCInfo(Info,InfoTypes,Infos) then begin
         RealTargetOS:=Infos[fpciTargetOS];
         RealTargetCPU:=Infos[fpciTargetProcessor];
+        FullVersion:=Infos[fpciFullVersion];
       end else begin
         RealTargetOS:=TargetOS;
         if RealTargetOS='' then

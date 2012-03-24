@@ -49,8 +49,6 @@ type
     HelpTabSheet: TTabSheet;
     procedure FormCreate(Sender: TObject);
   private
-    procedure GatherHelpDB(Prefix: string; const HelpDB: THelpDatabase; const sl: TStrings);
-    procedure GatherHelpViewer(Prefix: string; const Viewer: THelpViewer; const sl: TStrings);
     // general
     procedure GatherIDEVersion(sl: TStrings);
     procedure GatherParameters(sl: TStrings);
@@ -62,6 +60,8 @@ type
     // help
     procedure GatherHelpDatabases(sl: TStrings);
     procedure GatherHelpViewers(sl: TStrings);
+    procedure GatherHelpDB(Prefix: string; const HelpDB: THelpDatabase; const sl: TStrings);
+    procedure GatherHelpViewer(Prefix: string; const Viewer: THelpViewer; const sl: TStrings);
   public
     procedure UpdateGeneralMemo;
     procedure UpdateModifiedMemo;
