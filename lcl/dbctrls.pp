@@ -171,7 +171,7 @@ Type
   TDBEdit = class(TCustomMaskEdit)
   private
     FDataLink: TFieldDataLink;
-
+    FCustomEditMask: Boolean;
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
     function GetDataField: string;
@@ -202,9 +202,9 @@ Type
     destructor Destroy; override;
     property Field: TField read GetField;
   published
+    property CustomEditMask: Boolean read FCustomEditMask write FCustomEditMask default False;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
-
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
 
     property Anchors;

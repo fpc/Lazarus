@@ -30,8 +30,9 @@ var
 begin
   DataLinkField := FDataLink.Field;
   if DataLinkField <> nil then begin
-    //use the right EditMask if any
-    //EditMask := FDataLink.Field.EditMask; doesn't exist yet
+    //use Field EditMask by default
+    if not FCustomEditMask then
+      EditMask := DataLinkField.EditMask;
     Alignment := DataLinkField.Alignment;
 
     //if we are focused its possible to edit,
@@ -47,8 +48,8 @@ begin
       MaxLength := DatalinkField.Size;
   end
   else begin
-    //todo: uncomment this when TField implements EditMask
-    //EditMask := ''
+    if not FCustomEditMask then
+      EditMask := '';
     Text := '';
     MaxLength := 0;
   end;
