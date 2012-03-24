@@ -1340,6 +1340,9 @@ begin
   writeln('');
   writeln(LanguageOpt);
   writeln(UTF8ToConsole(BreakString(space+lisOverrideLanguage,75, 22)));
+  writeln('');
+  writeln('--lazarusdir=<Lazarus directory>');
+  writeln(UTF8ToConsole(BreakString(space+lisLazarusDirOverride, 75, 22)));
 
   writeln('');
   writeln('--create-makefile');

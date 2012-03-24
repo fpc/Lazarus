@@ -4537,7 +4537,27 @@ begin
       end else begin
         // there is already a package with this name, but wrong version open
         // -> unable to load this dependency due to conflict
-        debugln(['TLazPackageGraph.OpenDependency another package with wrong version is already open: Dependency=',Dependency.AsString,' Pkg=',APackage.IDAsString]);
+        debugln('TLazPackageGraph.OpenDependency:');
+        if IsStaticBasePackage(APackage.Name) then
+        begin
+          debugln(['  LazarusDir="',EnvironmentOptions.GetParsedLazarusDirectory,'"']);
+          // wrong base package
+          if (EnvironmentOptions.LazarusDirectory='')
+          or (not DirPathExistsCached(EnvironmentOptions.GetParsedLazarusDirectory))
+          then begin
+            // the lazarus directory is not set
+            debugln(['  The Lazarus directory is not set. Pass parameter --lazarusdir.']);
+          end else if not DirPathExistsCached(PkgLinks.GetGlobalLinkDirectory)
+          then begin
+            debugln(['  The lpl directory is missing. Check that the Lazarus directory is correct.']);
+          end;
+        end;
+        if APackage.AutoCreated then
+        begin
+          debugln(['  The lpk is missing for dependency=',Dependency.AsString])
+        end else begin
+          debugln(['  Another package with wrong version is already open: Dependency=',Dependency.AsString,' Pkg=',APackage.IDAsString])
+        end;
         Dependency.LoadPackageResult:=lprLoadError;
       end;
     end;
@@ -4588,7 +4608,7 @@ begin
       EndUpdate;
     end;
     AddPackage(BrokenPackage);
-    DebugLn('TLazPackageGraph.OpenInstalledDependency ',BrokenPackage.IDAsString,' ',dbgs(ord(BrokenPackage.AutoInstall)));
+    //DebugLn('TLazPackageGraph.OpenInstalledDependency ',BrokenPackage.IDAsString,' ',dbgs(ord(BrokenPackage.AutoInstall)));
     if (not Quiet) and DirPathExistsCached(PkgLinks.GetGlobalLinkDirectory)
     then begin
       // tell the user
