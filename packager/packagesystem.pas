@@ -2814,7 +2814,7 @@ begin
           Result:=mrYes;
           o:=RequiredPackage.GetOutputDirType;
           if not RequiredPackage.LastCompile[o].StateFileLoaded then begin
-            DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  No state file for ',RequiredPackage.IDAsString);
+            DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  Missing state file for ',RequiredPackage.IDAsString,': ',RequiredPackage.GetStateFilename);
             exit;
           end;
           if StateFileAge<RequiredPackage.LastCompile[o].StateFileDate then begin
@@ -2979,7 +2979,7 @@ begin
   Result:=LoadPackageCompiledState(APackage,false,true);
   if Result<>mrOk then exit;
   if not Stats^.StateFileLoaded then begin
-    DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  No state file for ',APackage.IDAsString);
+    DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Missing state file for ',APackage.IDAsString,': ',StateFilename);
     ConfigChanged:=true;
     exit(mrYes);
   end;

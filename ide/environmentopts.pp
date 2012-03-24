@@ -819,7 +819,7 @@ begin
   FShowMenuGlyphs := sbgSystem;
 
   // files
-  LazarusDirectory:=IDEProcs.ProgramDirectory(true);
+  LazarusDirectory:='';
   FLazarusDirHistory:=TStringList.Create;
   CompilerFilename:='';
   FCompilerFileHistory:=TStringList.Create;
