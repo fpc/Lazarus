@@ -14,6 +14,22 @@ msgstr ""
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "Возникла ошибка отладчика при попытке запустить/сделать шаг в приложении:%0:s%0:s%1:s%0:s%0:sНажмите \"ОК\" для удаления точек останова и продолжения отладки (приостановлена), и затем исправьте проблему, или выберите другую команду запуска.%0:sНажмите \"Остановить\", чтобы закончить отладку."
 
+#: gdbmidebugger.gdbmicommandstartmainbreakerror
+msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
+msgstr "Отладчик не смог установить точку останова на входе в приложение.%0:sЭто может быть вызвано отсутствием отладочной информации."
+
+#: gdbmidebugger.gdbmicommandstartmainrunerror
+msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
+msgstr "Отладчик не смог запустить приложение.%0:sЭто может быть вызвано отсутствием отладочной информации."
+
+#: gdbmidebugger.gdbmicommandstartmainrunnopiderror
+msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
+msgstr "Отладчик не смог получить идентификатор процесса приложения.%0:sЭто может быть вызвано отсутствием отладочной информации."
+
+#: gdbmidebugger.gdbmicommandstartmainruntostoperror
+msgid "The debugger was unable to initalize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
+msgstr "Отладчик не смог инициализироваться.%0:sПриложение было запущено (и завершило работу) до того, как отладчик установил точки останова. %0:sЭто может быть вызвано отсутствием отладочной информации."
+
 #: gdbmidebugger.gdbmierroronruncommand
 #| msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command%0:sPress \"Stop\" to end the debug session"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."

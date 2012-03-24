@@ -61,6 +61,10 @@ msgstr ""
 msgid "Context Menu (debug)"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenutab
+msgid "Context Menu (tab)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr ""
@@ -1561,7 +1565,9 @@ msgid "Other Files"
 msgstr "Kiti failai"
 
 #: lazarusidestrconsts.dlgenvproject
-msgid "Project"
+#, fuzzy
+#| msgid "Project"
+msgid "Tabs for project"
 msgstr "Projektas"
 
 #: lazarusidestrconsts.dlgenvtype
@@ -2795,6 +2801,10 @@ msgstr "Startui ir derinimui naudoti programą-rišulį (tik dėl Darwin)"
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Naudoti manifest failą temų įgalinimui (tik dėl Windows)"
 
+#: lazarusidestrconsts.dlgproject
+msgid "Project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojectoptions
 msgid "Project Options"
 msgstr "Projekto parinktys"
@@ -3353,6 +3363,10 @@ msgstr "Naudoti standartinį kompiliatoriaus nustatymų failą (fpc.cfg)"
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Naudoti paleidžiančiąją programą"
+
+#: lazarusidestrconsts.dlguseminimumime
+msgid "Ime handled by System"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusemsgfile
 msgid "Use messages file"
@@ -11827,8 +11841,10 @@ msgid "&Window"
 msgstr "&Langai"
 
 #: lazarusidestrconsts.lismeother
+#, fuzzy
+#| msgid "Other"
 msgctxt "lazarusidestrconsts.lismeother"
-msgid "Other"
+msgid "Other tabs"
 msgstr "Kiti"
 
 #: lazarusidestrconsts.lismeprojects
@@ -14402,6 +14418,10 @@ msgstr "Baigti Lazarus darbą"
 msgid "Read Error"
 msgstr "Skaitymo klaida"
 
+#: lazarusidestrconsts.lisrecenttabs
+msgid "Recent tabs"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr "Įrašas/Struktūra"
@@ -15285,6 +15305,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listaborderuphint
 msgid "Move the selected control up in tab order"
+msgstr ""
+
+#: lazarusidestrconsts.listabsfor
+msgid "Tabs for %s"
 msgstr ""
 
 #: lazarusidestrconsts.listakesnapshot

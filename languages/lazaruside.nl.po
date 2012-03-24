@@ -59,6 +59,10 @@ msgstr ""
 msgid "Context Menu (debug)"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenutab
+msgid "Context Menu (tab)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr ""
@@ -1544,7 +1548,9 @@ msgid "Other Files"
 msgstr "Andere bestanden"
 
 #: lazarusidestrconsts.dlgenvproject
-msgid "Project"
+#, fuzzy
+#| msgid "Project"
+msgid "Tabs for project"
 msgstr "Project"
 
 #: lazarusidestrconsts.dlgenvtype
@@ -2749,6 +2755,10 @@ msgstr ""
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgproject
+msgid "Project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojectoptions
 msgid "Project Options"
 msgstr "Project Opties"
@@ -3295,6 +3305,10 @@ msgstr "Gebruik standaard compiler configuratie bestand (fpc.cfg)"
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Gebruik start programma"
+
+#: lazarusidestrconsts.dlguseminimumime
+msgid "Ime handled by System"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusemsgfile
 msgid "Use messages file"
@@ -11659,8 +11673,10 @@ msgid "&Window"
 msgstr ""
 
 #: lazarusidestrconsts.lismeother
+#, fuzzy
+#| msgid "Other"
 msgctxt "lazarusidestrconsts.lismeother"
-msgid "Other"
+msgid "Other tabs"
 msgstr "Ander"
 
 #: lazarusidestrconsts.lismeprojects
@@ -14223,6 +14239,10 @@ msgstr "Verlaat Lazarus"
 msgid "Read Error"
 msgstr "Leesfout"
 
+#: lazarusidestrconsts.lisrecenttabs
+msgid "Recent tabs"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr ""
@@ -15092,6 +15112,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listaborderuphint
 msgid "Move the selected control up in tab order"
+msgstr ""
+
+#: lazarusidestrconsts.listabsfor
+msgid "Tabs for %s"
 msgstr ""
 
 #: lazarusidestrconsts.listakesnapshot

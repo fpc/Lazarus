@@ -54,6 +54,10 @@ msgstr ""
 msgid "Context Menu (debug)"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenutab
+msgid "Context Menu (tab)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr "Hyppää toteutukseen"
@@ -1461,7 +1465,9 @@ msgid "Other Files"
 msgstr "Muut tiedostot"
 
 #: lazarusidestrconsts.dlgenvproject
-msgid "Project"
+#, fuzzy
+#| msgid "Project"
+msgid "Tabs for project"
 msgstr "Projekti"
 
 #: lazarusidestrconsts.dlgenvtype
@@ -2627,6 +2633,10 @@ msgstr ""
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgproject
+msgid "Project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojectoptions
 msgid "Project Options"
 msgstr "Projektin asetukset"
@@ -3137,6 +3147,10 @@ msgstr ""
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Käytä käynnistävää ohjelmaa"
+
+#: lazarusidestrconsts.dlguseminimumime
+msgid "Ime handled by System"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusemsgfile
 msgid "Use messages file"
@@ -11197,8 +11211,10 @@ msgid "&Window"
 msgstr "Ikkunat"
 
 #: lazarusidestrconsts.lismeother
+#, fuzzy
+#| msgid "Other"
 msgctxt "lazarusidestrconsts.lismeother"
-msgid "Other"
+msgid "Other tabs"
 msgstr "Muu"
 
 #: lazarusidestrconsts.lismeprojects
@@ -13701,6 +13717,10 @@ msgstr "Poistu Lazaruksesta"
 msgid "Read Error"
 msgstr "Lukuvirhe"
 
+#: lazarusidestrconsts.lisrecenttabs
+msgid "Recent tabs"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr ""
@@ -14559,6 +14579,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listaborderuphint
 msgid "Move the selected control up in tab order"
+msgstr ""
+
+#: lazarusidestrconsts.listabsfor
+msgid "Tabs for %s"
 msgstr ""
 
 #: lazarusidestrconsts.listakesnapshot

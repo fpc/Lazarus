@@ -59,6 +59,10 @@ msgstr ""
 msgid "Context Menu (debug)"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenutab
+msgid "Context Menu (tab)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr ""
@@ -1552,7 +1556,9 @@ msgid "Other Files"
 msgstr "Інші файли"
 
 #: lazarusidestrconsts.dlgenvproject
-msgid "Project"
+#, fuzzy
+#| msgid "Project"
+msgid "Tabs for project"
 msgstr "Проект"
 
 #: lazarusidestrconsts.dlgenvtype
@@ -2785,6 +2791,10 @@ msgstr "Використовувати Пакет Програм для запу
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Використовувати manifest-файл для ввімкнення тем (лише Windows)"
 
+#: lazarusidestrconsts.dlgproject
+msgid "Project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojectoptions
 msgid "Project Options"
 msgstr "Параметри проекту"
@@ -3337,6 +3347,10 @@ msgstr "Використовувати стандартний файл нала�
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Використовувати програму для запуску"
+
+#: lazarusidestrconsts.dlguseminimumime
+msgid "Ime handled by System"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusemsgfile
 msgid "Use messages file"
@@ -11722,8 +11736,10 @@ msgid "&Window"
 msgstr "&Вікно"
 
 #: lazarusidestrconsts.lismeother
+#, fuzzy
+#| msgid "Other"
 msgctxt "lazarusidestrconsts.lismeother"
-msgid "Other"
+msgid "Other tabs"
 msgstr "Інше"
 
 #: lazarusidestrconsts.lismeprojects
@@ -14280,6 +14296,10 @@ msgstr "Вийти з Lazarus"
 msgid "Read Error"
 msgstr "Помилка читання"
 
+#: lazarusidestrconsts.lisrecenttabs
+msgid "Recent tabs"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr "Запис/Структура"
@@ -15147,6 +15167,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listaborderuphint
 msgid "Move the selected control up in tab order"
+msgstr ""
+
+#: lazarusidestrconsts.listabsfor
+msgid "Tabs for %s"
 msgstr ""
 
 #: lazarusidestrconsts.listakesnapshot

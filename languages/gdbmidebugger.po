@@ -5,6 +5,22 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr ""
 
+#: gdbmidebugger.gdbmicommandstartmainbreakerror
+msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
+msgstr ""
+
+#: gdbmidebugger.gdbmicommandstartmainrunerror
+msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
+msgstr ""
+
+#: gdbmidebugger.gdbmicommandstartmainrunnopiderror
+msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
+msgstr ""
+
+#: gdbmidebugger.gdbmicommandstartmainruntostoperror
+msgid "The debugger was unable to initalize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
+msgstr ""
+
 #: gdbmidebugger.gdbmierroronruncommand
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr ""

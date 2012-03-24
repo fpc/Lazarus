@@ -61,6 +61,10 @@ msgstr "Menu contexto"
 msgid "Context Menu (debug)"
 msgstr "Menu contexto (depuração)"
 
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenutab
+msgid "Context Menu (tab)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr "Saltar para implementação"
@@ -1536,7 +1540,9 @@ msgid "Other Files"
 msgstr "Outros arquivos"
 
 #: lazarusidestrconsts.dlgenvproject
-msgid "Project"
+#, fuzzy
+#| msgid "Project"
+msgid "Tabs for project"
 msgstr "Projeto"
 
 #: lazarusidestrconsts.dlgenvtype
@@ -2743,6 +2749,10 @@ msgstr "Usar aplicação encartada para execução e depuração (somente Darwin
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Usar arquivo de manifesto para ativar temas (somente windows)"
 
+#: lazarusidestrconsts.dlgproject
+msgid "Project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojectoptions
 msgid "Project Options"
 msgstr "Opções de Projeto"
@@ -3278,6 +3288,10 @@ msgstr "Usar arquivo padrão de configuração do compilador (fpc.cfg)"
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Usar inicialização de aplicação"
+
+#: lazarusidestrconsts.dlguseminimumime
+msgid "Ime handled by System"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusemsgfile
 msgid "Use messages file"
@@ -11596,8 +11610,10 @@ msgid "&Window"
 msgstr "&Janela"
 
 #: lazarusidestrconsts.lismeother
+#, fuzzy
+#| msgid "Other"
 msgctxt "lazarusidestrconsts.lismeother"
-msgid "Other"
+msgid "Other tabs"
 msgstr "Outros"
 
 #: lazarusidestrconsts.lismeprojects
@@ -14148,6 +14164,10 @@ msgstr "Sair do Lazarus"
 msgid "Read Error"
 msgstr "Erro de Leitura"
 
+#: lazarusidestrconsts.lisrecenttabs
+msgid "Recent tabs"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr "Registro/Estrutura"
@@ -15018,6 +15038,10 @@ msgstr "Calcular a ordem de tabulação dos controles pelas suas posições X- e
 #: lazarusidestrconsts.listaborderuphint
 msgid "Move the selected control up in tab order"
 msgstr "Mover o controle selecionado acima na ordem de tabulação"
+
+#: lazarusidestrconsts.listabsfor
+msgid "Tabs for %s"
+msgstr ""
 
 #: lazarusidestrconsts.listakesnapshot
 msgid "Take a Snapshot"

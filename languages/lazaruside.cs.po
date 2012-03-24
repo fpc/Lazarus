@@ -64,6 +64,10 @@ msgstr "Kontextové menu"
 msgid "Context Menu (debug)"
 msgstr "Kontextové menu (ladění)"
 
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenutab
+msgid "Context Menu (tab)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr "Skočit na implementaci"
@@ -1475,7 +1479,9 @@ msgid "Other Files"
 msgstr "Jiné soubory"
 
 #: lazarusidestrconsts.dlgenvproject
-msgid "Project"
+#, fuzzy
+#| msgid "Project"
+msgid "Tabs for project"
 msgstr "Projekt"
 
 #: lazarusidestrconsts.dlgenvtype
@@ -2642,6 +2648,10 @@ msgstr "Použít aplikační balík pro spuštění a ladění (pouze Darwin)"
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Použít soubor manifest k povolení grafických stylů (pouze Windows)"
 
+#: lazarusidestrconsts.dlgproject
+msgid "Project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojectoptions
 msgid "Project Options"
 msgstr "Volby projektu"
@@ -3150,6 +3160,10 @@ msgstr "Použít standardní konfigurační soubor překladače (fpc.cfg)"
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Použít spouštěcí aplikaci"
+
+#: lazarusidestrconsts.dlguseminimumime
+msgid "Ime handled by System"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusemsgfile
 msgid "Use messages file"
@@ -11226,8 +11240,10 @@ msgid "&Window"
 msgstr "&Okno"
 
 #: lazarusidestrconsts.lismeother
+#, fuzzy
+#| msgid "Other"
 msgctxt "lazarusidestrconsts.lismeother"
-msgid "Other"
+msgid "Other tabs"
 msgstr "Jiné"
 
 #: lazarusidestrconsts.lismeprojects
@@ -13736,6 +13752,10 @@ msgstr "Ukončit Lazarus"
 msgid "Read Error"
 msgstr "Chyba čtení"
 
+#: lazarusidestrconsts.lisrecenttabs
+msgid "Recent tabs"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr "Záznam/Struktura"
@@ -14596,6 +14616,10 @@ msgstr "Vypočítat pořadí záložek prvků podle jejich X a Y souřadnic"
 #: lazarusidestrconsts.listaborderuphint
 msgid "Move the selected control up in tab order"
 msgstr "Přesunout vybraný prvek nahoru v pořadí záložek"
+
+#: lazarusidestrconsts.listabsfor
+msgid "Tabs for %s"
+msgstr ""
 
 #: lazarusidestrconsts.listakesnapshot
 msgid "Take a Snapshot"

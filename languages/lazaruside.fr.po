@@ -62,6 +62,10 @@ msgstr ""
 msgid "Context Menu (debug)"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenutab
+msgid "Context Menu (tab)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr ""
@@ -1525,7 +1529,9 @@ msgid "Other Files"
 msgstr "Autres fichiers"
 
 #: lazarusidestrconsts.dlgenvproject
-msgid "Project"
+#, fuzzy
+#| msgid "Project"
+msgid "Tabs for project"
 msgstr "Projet"
 
 #: lazarusidestrconsts.dlgenvtype
@@ -2734,6 +2740,10 @@ msgstr "Utiliser le paquet d'application  pour exécuter et corriger  (Darwin se
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Utiliser le fichier manifest pourautoriser les thèmes (Windows seulement)"
 
+#: lazarusidestrconsts.dlgproject
+msgid "Project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojectoptions
 msgid "Project Options"
 msgstr "Options du projet"
@@ -3284,6 +3294,10 @@ msgstr "Utiliser le fichier de configuration standard du compilateur (fpc.cfg)"
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Utiliser une application de démarrage"
+
+#: lazarusidestrconsts.dlguseminimumime
+msgid "Ime handled by System"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusemsgfile
 msgid "Use messages file"
@@ -11730,8 +11744,10 @@ msgid "&Window"
 msgstr "Fe&nêtre "
 
 #: lazarusidestrconsts.lismeother
+#, fuzzy
+#| msgid "Other"
 msgctxt "lazarusidestrconsts.lismeother"
-msgid "Other"
+msgid "Other tabs"
 msgstr "Autre"
 
 #: lazarusidestrconsts.lismeprojects
@@ -14298,6 +14314,10 @@ msgstr "Quitter Lazarus"
 msgid "Read Error"
 msgstr "Erreur de lecture"
 
+#: lazarusidestrconsts.lisrecenttabs
+msgid "Recent tabs"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr "Enregistrement/Structure"
@@ -15168,6 +15188,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listaborderuphint
 msgid "Move the selected control up in tab order"
+msgstr ""
+
+#: lazarusidestrconsts.listabsfor
+msgid "Tabs for %s"
 msgstr ""
 
 #: lazarusidestrconsts.listakesnapshot

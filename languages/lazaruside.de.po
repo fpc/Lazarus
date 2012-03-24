@@ -62,6 +62,10 @@ msgstr "Kontextmenü"
 msgid "Context Menu (debug)"
 msgstr "Kontextmenü (Debuggen)"
 
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenutab
+msgid "Context Menu (tab)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr "Zur Implementierung springen"
@@ -1542,7 +1546,9 @@ msgid "Other Files"
 msgstr "Andere Dateien"
 
 #: lazarusidestrconsts.dlgenvproject
-msgid "Project"
+#, fuzzy
+#| msgid "Project"
+msgid "Tabs for project"
 msgstr "Projekt"
 
 #: lazarusidestrconsts.dlgenvtype
@@ -2761,6 +2767,10 @@ msgstr "Anwendungs-Bundle für Start und Debug verwenden (nur Darwin)"
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Themen mit Manifest-Datei einschalten (nur in Windows)"
 
+#: lazarusidestrconsts.dlgproject
+msgid "Project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojectoptions
 msgid "Project Options"
 msgstr "Projekteinstellungen"
@@ -3303,6 +3313,10 @@ msgstr "Standard-Compilerkonfigurationsdatei (fpc.cfg) einbinden"
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Startprogramm verwenden"
+
+#: lazarusidestrconsts.dlguseminimumime
+msgid "Ime handled by System"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusemsgfile
 msgid "Use messages file"
@@ -11655,8 +11669,10 @@ msgid "&Window"
 msgstr "&Fenster"
 
 #: lazarusidestrconsts.lismeother
+#, fuzzy
+#| msgid "Other"
 msgctxt "lazarusidestrconsts.lismeother"
-msgid "Other"
+msgid "Other tabs"
 msgstr "Andere"
 
 #: lazarusidestrconsts.lismeprojects
@@ -14224,6 +14240,10 @@ msgstr "Lazarus beenden"
 msgid "Read Error"
 msgstr "Lesefehler"
 
+#: lazarusidestrconsts.lisrecenttabs
+msgid "Recent tabs"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr "Record/Struktur"
@@ -15096,6 +15116,10 @@ msgstr "Tab-Reihenfolge aller untergeordneten Elemente nach ihren Positionen sor
 #: lazarusidestrconsts.listaborderuphint
 msgid "Move the selected control up in tab order"
 msgstr "Bewegt das gewählte Steuerelement in der Tabulatorreihenfolge nach oben"
+
+#: lazarusidestrconsts.listabsfor
+msgid "Tabs for %s"
+msgstr ""
 
 #: lazarusidestrconsts.listakesnapshot
 msgid "Take a Snapshot"

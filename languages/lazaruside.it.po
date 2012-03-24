@@ -61,6 +61,10 @@ msgstr ""
 msgid "Context Menu (debug)"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenutab
+msgid "Context Menu (tab)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr ""
@@ -1560,7 +1564,9 @@ msgid "Other Files"
 msgstr "Altri file"
 
 #: lazarusidestrconsts.dlgenvproject
-msgid "Project"
+#, fuzzy
+#| msgid "Project"
+msgid "Tabs for project"
 msgstr "Progetto"
 
 #: lazarusidestrconsts.dlgenvtype
@@ -2801,6 +2807,10 @@ msgstr "Usa Application Bundle per esecuzione e debug (solo darwin)"
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Usa il file manifest per abilitare i temi (solo Windows)"
 
+#: lazarusidestrconsts.dlgproject
+msgid "Project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojectoptions
 msgid "Project Options"
 msgstr "Opzioni progetto"
@@ -3363,6 +3373,10 @@ msgstr "Usa file di configurazione compilatore standard (fpc.cfg)"
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Lancia da un altro programma:"
+
+#: lazarusidestrconsts.dlguseminimumime
+msgid "Ime handled by System"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusemsgfile
 msgid "Use messages file"
@@ -11884,8 +11898,10 @@ msgid "&Window"
 msgstr "&Finestre"
 
 #: lazarusidestrconsts.lismeother
+#, fuzzy
+#| msgid "Other"
 msgctxt "lazarusidestrconsts.lismeother"
-msgid "Other"
+msgid "Other tabs"
 msgstr "Varie"
 
 #: lazarusidestrconsts.lismeprojects
@@ -14463,6 +14479,10 @@ msgstr "Esci da Lazarus"
 msgid "Read Error"
 msgstr "Errore di lettura"
 
+#: lazarusidestrconsts.lisrecenttabs
+msgid "Recent tabs"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr "Record/Struttura"
@@ -15340,6 +15360,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listaborderuphint
 msgid "Move the selected control up in tab order"
+msgstr ""
+
+#: lazarusidestrconsts.listabsfor
+msgid "Tabs for %s"
 msgstr ""
 
 #: lazarusidestrconsts.listakesnapshot

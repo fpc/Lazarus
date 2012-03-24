@@ -62,6 +62,10 @@ msgstr ""
 msgid "Context Menu (debug)"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenutab
+msgid "Context Menu (tab)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr ""
@@ -1553,7 +1557,9 @@ msgid "Other Files"
 msgstr "其余文件"
 
 #: lazarusidestrconsts.dlgenvproject
-msgid "Project"
+#, fuzzy
+#| msgid "Project"
+msgid "Tabs for project"
 msgstr "工程"
 
 #: lazarusidestrconsts.dlgenvtype
@@ -2776,6 +2782,10 @@ msgstr "用程序包运行或调试(仅darwin)"
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "使用 manifest 文件启用主题 (仅windows)"
 
+#: lazarusidestrconsts.dlgproject
+msgid "Project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojectoptions
 msgid "Project Options"
 msgstr "工程选项"
@@ -3338,6 +3348,10 @@ msgstr "使用标准编译器配置文件 (fpc.cfg)"
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "使用运行的应用程序"
+
+#: lazarusidestrconsts.dlguseminimumime
+msgid "Ime handled by System"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusemsgfile
 msgid "Use messages file"
@@ -11794,8 +11808,10 @@ msgid "&Window"
 msgstr "窗口(&W)"
 
 #: lazarusidestrconsts.lismeother
+#, fuzzy
+#| msgid "Other"
 msgctxt "lazarusidestrconsts.lismeother"
-msgid "Other"
+msgid "Other tabs"
 msgstr "其余的"
 
 #: lazarusidestrconsts.lismeprojects
@@ -14372,6 +14388,10 @@ msgstr "退出 Lazarus"
 msgid "Read Error"
 msgstr "读取错误"
 
+#: lazarusidestrconsts.lisrecenttabs
+msgid "Recent tabs"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr "记录/结构"
@@ -15247,6 +15267,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listaborderuphint
 msgid "Move the selected control up in tab order"
+msgstr ""
+
+#: lazarusidestrconsts.listabsfor
+msgid "Tabs for %s"
 msgstr ""
 
 #: lazarusidestrconsts.listakesnapshot

@@ -58,6 +58,10 @@ msgstr ""
 msgid "Context Menu (debug)"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenutab
+msgid "Context Menu (tab)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr ""
@@ -1563,7 +1567,9 @@ msgid "Other Files"
 msgstr "その他のファイル"
 
 #: lazarusidestrconsts.dlgenvproject
-msgid "Project"
+#, fuzzy
+#| msgid "Project"
+msgid "Tabs for project"
 msgstr "プロジェクト"
 
 #: lazarusidestrconsts.dlgenvtype
@@ -2804,6 +2810,10 @@ msgstr "アプリケーションバンドルを実行およびデバッグに用
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "テーマを使用可能とするためマニフェストファイルを用いる（Windowsのみ）"
 
+#: lazarusidestrconsts.dlgproject
+msgid "Project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojectoptions
 msgid "Project Options"
 msgstr "プロジェクトオプション"
@@ -3366,6 +3376,10 @@ msgstr "標準コンパイラ設定ファイル(fpc.cfg)を使用"
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "アプリケーション起動を使用"
+
+#: lazarusidestrconsts.dlguseminimumime
+msgid "Ime handled by System"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusemsgfile
 msgid "Use messages file"
@@ -11893,8 +11907,10 @@ msgid "&Window"
 msgstr "ウィンドウ(&W)"
 
 #: lazarusidestrconsts.lismeother
+#, fuzzy
+#| msgid "Other"
 msgctxt "lazarusidestrconsts.lismeother"
-msgid "Other"
+msgid "Other tabs"
 msgstr "その他"
 
 #: lazarusidestrconsts.lismeprojects
@@ -14477,6 +14493,10 @@ msgstr "Lazarusを終了"
 msgid "Read Error"
 msgstr "読み取りエラー"
 
+#: lazarusidestrconsts.lisrecenttabs
+msgid "Recent tabs"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr "構造体"
@@ -15354,6 +15374,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listaborderuphint
 msgid "Move the selected control up in tab order"
+msgstr ""
+
+#: lazarusidestrconsts.listabsfor
+msgid "Tabs for %s"
 msgstr ""
 
 #: lazarusidestrconsts.listakesnapshot

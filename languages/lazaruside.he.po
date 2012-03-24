@@ -62,6 +62,10 @@ msgstr ""
 msgid "Context Menu (debug)"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenutab
+msgid "Context Menu (tab)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr ""
@@ -1561,7 +1565,9 @@ msgid "Other Files"
 msgstr "קבצים אחרים"
 
 #: lazarusidestrconsts.dlgenvproject
-msgid "Project"
+#, fuzzy
+#| msgid "Project"
+msgid "Tabs for project"
 msgstr "פרויקט"
 
 #: lazarusidestrconsts.dlgenvtype
@@ -2798,6 +2804,10 @@ msgstr "השתמש בחבורת היישום להרצה ולניפוי שגיא�
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "השתמש בקובץ הרשימות לאפשר ערכות נושא (חלונות בלבד)"
 
+#: lazarusidestrconsts.dlgproject
+msgid "Project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojectoptions
 msgid "Project Options"
 msgstr "אפשרויות פרויקט"
@@ -3354,6 +3364,10 @@ msgstr "השתמש בקובץ ההגדרות הסטנדרטי של המהדר (f
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "השתמש ביישום משגר"
+
+#: lazarusidestrconsts.dlguseminimumime
+msgid "Ime handled by System"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusemsgfile
 msgid "Use messages file"
@@ -11863,8 +11877,10 @@ msgid "&Window"
 msgstr "חל&ון"
 
 #: lazarusidestrconsts.lismeother
+#, fuzzy
+#| msgid "Other"
 msgctxt "lazarusidestrconsts.lismeother"
-msgid "Other"
+msgid "Other tabs"
 msgstr "אחר"
 
 #: lazarusidestrconsts.lismeprojects
@@ -14447,6 +14463,10 @@ msgstr "צא מלזרוס"
 msgid "Read Error"
 msgstr "שגיאת קריאה"
 
+#: lazarusidestrconsts.lisrecenttabs
+msgid "Recent tabs"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr "רשומה/מבנה נתונים"
@@ -15327,6 +15347,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listaborderuphint
 msgid "Move the selected control up in tab order"
+msgstr ""
+
+#: lazarusidestrconsts.listabsfor
+msgid "Tabs for %s"
 msgstr ""
 
 #: lazarusidestrconsts.listakesnapshot

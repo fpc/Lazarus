@@ -54,6 +54,10 @@ msgstr ""
 msgid "Context Menu (debug)"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenutab
+msgid "Context Menu (tab)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr ""
@@ -1465,7 +1469,7 @@ msgid "Other Files"
 msgstr ""
 
 #: lazarusidestrconsts.dlgenvproject
-msgid "Project"
+msgid "Tabs for project"
 msgstr ""
 
 #: lazarusidestrconsts.dlgenvtype
@@ -2632,6 +2636,10 @@ msgstr ""
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgproject
+msgid "Project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojectoptions
 msgid "Project Options"
 msgstr ""
@@ -3139,6 +3147,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseminimumime
+msgid "Ime handled by System"
 msgstr ""
 
 #: lazarusidestrconsts.dlgusemsgfile
@@ -11202,7 +11214,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismeother
 msgctxt "lazarusidestrconsts.lismeother"
-msgid "Other"
+msgid "Other tabs"
 msgstr ""
 
 #: lazarusidestrconsts.lismeprojects
@@ -13699,6 +13711,10 @@ msgstr ""
 msgid "Read Error"
 msgstr ""
 
+#: lazarusidestrconsts.lisrecenttabs
+msgid "Recent tabs"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr ""
@@ -14554,6 +14570,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listaborderuphint
 msgid "Move the selected control up in tab order"
+msgstr ""
+
+#: lazarusidestrconsts.listabsfor
+msgid "Tabs for %s"
 msgstr ""
 
 #: lazarusidestrconsts.listakesnapshot
