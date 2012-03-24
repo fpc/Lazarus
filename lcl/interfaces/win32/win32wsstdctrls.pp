@@ -952,9 +952,17 @@ class procedure TWin32WSCustomComboBox.SetDropDownCount(
 var
   StringList: TWin32ComboBoxStringList;
 begin
-  StringList := GetStringList(ACustomComboBox);
-  if StringList <> nil then
-    StringList.DropDownCount := NewCount;
+  if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+  begin
+    //Use CB_SETMINVISIBLE in vista or above
+    SendMessage(ACustomComboBox.Handle, CB_SETMINVISIBLE, NewCount, 0);
+  end
+  else
+  begin
+    StringList := GetStringList(ACustomComboBox);
+    if StringList <> nil then
+      StringList.DropDownCount := NewCount;
+  end;
 end;
 
 class procedure TWin32WSCustomComboBox.SetDroppedDown(
