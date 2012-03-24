@@ -602,6 +602,10 @@ const
          It now uses all fields. Old entries will copy Foreground to Frame and
          set sfeBottom
   }
+  EditorMouseOptsFormatVersion = 1;
+  { * Changes in Version 6:
+      - MouseWheel is nov configurable
+  }
 
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of
     TCustomSynClass =
@@ -804,6 +808,7 @@ type
     FTextShiftAltExtra2Click: TMouseOptButtonAction;
     FTextShiftCtrlExtra2Click: TMouseOptButtonAction;
     FTextShiftExtra2Click: TMouseOptButtonAction;
+    FVersion: Integer;
     // wheel
     FWheel: TMouseOptWheelAction;
     FAltWheel: TMouseOptWheelAction;
@@ -982,6 +987,7 @@ type
     // the flag below is set by CalcCustomSavedActions
     property CustomSavedActions: Boolean read FCustomSavedActions write FCustomSavedActions;
     property SelectedUserScheme: String read FSelectedUserScheme write SetSelectedUserScheme;
+    property Version : Integer read FVersion write FVersion;
   end;
 
   { TEditorMouseOptionPresets }
@@ -2556,6 +2562,7 @@ begin
   FGutterActionsFoldCol := TSynEditMouseActions.Create(nil);
   FGutterActionsLines   := TSynEditMouseActions.Create(nil);
   FUserSchemes := TQuickStringlist.Create;
+  FVersion := 0;
 end;
 
 destructor TEditorMouseOptions.Destroy;
@@ -3204,6 +3211,14 @@ begin
     LoadMouseAct(aPath + 'GutterFoldExp/', GutterActionsFoldExp);
     LoadMouseAct(aPath + 'GutterFoldCol/', GutterActionsFoldCol);
     LoadMouseAct(aPath + 'GutterLineNum/', GutterActionsLines);
+
+    if Version < 1 then begin
+      try
+        FMainActions.AddCommand(emcWheelVertScrollDown,       False,  mbXWheelDown, ccAny, cdDown, [], []);
+        FMainActions.AddCommand(emcWheelVertScrollUp,         False,  mbXWheelUp,   ccAny, cdDown, [], []);
+      except
+      end;
+    end;
   end
   else
   if (FSelectedUserScheme <> '') then begin
@@ -3239,6 +3254,7 @@ procedure TEditorMouseOptions.SaveToXml(aXMLConfig: TRttiXMLConfig; aPath: Strin
 var
   DefMouseSettings: TEditorMouseOptions;
 begin
+  FVersion := EditorMouseOptsFormatVersion;
   DefMouseSettings := TEditorMouseOptions.Create;
   CalcCustomSavedActions;
   aXMLConfig.WriteObject(aPath + 'Default/', Self, DefMouseSettings);
