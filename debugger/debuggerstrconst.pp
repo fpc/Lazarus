@@ -68,6 +68,7 @@ resourcestring
   drsInspectColWidthMethAddress = 'Method address column';
 
   drsUseInstanceClassType = 'Use Instance class type';
+  drsLen = 'Len=%d: ';
 
 
 implementation

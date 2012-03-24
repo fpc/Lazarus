@@ -980,6 +980,9 @@ type
     FTypeName: String;
     FTypeDeclaration: String;
     FDBGValue: TDBGValue;
+    FBoundHigh: Integer;
+    FBoundLow: Integer;
+    FLen: Integer;
     procedure Init; virtual;
   public
     Value: TDBGValue;
@@ -993,7 +996,10 @@ type
     property Attributes: TDBGSymbolAttributes read FAttributes;
     property TypeName: String read FTypeName;               // Name/Alias as in type section. One pascal token, or empty
     property TypeDeclaration: String read FTypeDeclaration; // Declaration (for array, set, enum, ..)
-    property Members: TStrings read FMembers;
+    property Members: TStrings read FMembers;               // Set & ENUM
+    property Len: Integer read FLen;                        // Array
+    property BoundLow: Integer read FBoundLow;              // Array
+    property BoundHigh: Integer read FBoundHigh;            // Array
     property Result: TDBGType read FResult;
   end;
 {%endregion   ^^^^^  Debug Info  ^^^^^   }

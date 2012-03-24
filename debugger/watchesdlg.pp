@@ -38,7 +38,7 @@ unit WatchesDlg;
 interface
 
 uses
-  Classes, Forms, Controls, math, LazLoggerBase,
+  Classes, Forms, Controls, math, sysutils, LazLoggerBase,
   IDEWindowIntf, Menus, ComCtrls, ActnList, IDEImagesIntf, LazarusIDEStrConsts, DebuggerStrConst,
   Debugger, DebuggerDlg, BaseDebugManager;
 
@@ -660,8 +660,15 @@ begin
   WatchValue := AWatch.Values[GetThreadId, GetStackframe];
   if (WatchValue <> nil) and
      ( (GetSelectedSnapshot = nil) or not(WatchValue.Validity in [ddsUnknown, ddsEvaluating, ddsRequested]) )
-  then AItem.SubItems[0] := ClearMultiline(WatchValue.Value)
-  else AItem.SubItems[0] := '<not evaluated>';
+  then begin
+    if (WatchValue.TypeInfo <> nil) and
+       (WatchValue.TypeInfo.Attributes * [saArray, saDynArray] <> []) and
+       (WatchValue.TypeInfo.Len >= 0)
+    then AItem.SubItems[0] := Format(drsLen, [WatchValue.TypeInfo.Len]) + ClearMultiline(WatchValue.Value)
+    else AItem.SubItems[0] := ClearMultiline(WatchValue.Value);
+  end
+  else
+    AItem.SubItems[0] := '<not evaluated>';
   exclude(FStateFlags, wdsfUpdating);
   if wdsfNeedDeleteCurrent in FStateFlags then
     popDeleteClick(nil);

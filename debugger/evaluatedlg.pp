@@ -132,6 +132,10 @@ begin
     if cmbExpression.Items.IndexOf(S) = -1
     then cmbExpression.Items.Insert(0, S);
     tbModify.Enabled := True;
+
+    if (DBGType <> nil) and (DBGType.Attributes * [saArray, saDynArray] <> []) and (DBGType.Len >= 0)
+    then R := Format(drsLen, [DBGType.Len]) + LineEnding + R;
+
   end
   else
     tbModify.Enabled := False;

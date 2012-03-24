@@ -34,7 +34,7 @@ unit GDBTypeInfo;
 interface
 
 uses
-  Classes, SysUtils, Debugger, LclProc, LazLoggerBase, DebugUtils, GDBMIMiscClasses;
+  Classes, SysUtils, Debugger, LclProc, math, LazLoggerBase, DebugUtils, GDBMIMiscClasses;
 
 (*
   ptype = {
@@ -320,16 +320,18 @@ type
      gtpsSimplePointer,
      gtpsClass, gtpsClassAutoCast, gtpsClassPointer, gtpsClassAncestor,
      gtpsArray,
-     gtpsEvalExpr,
+     gtpsEvalExpr, gtpsEvalExprArray, gtpsEvalExprDynArray, gtpsEvalExprDynArrayGetData,
      gtpsFinished
     );
+
   TGDBTypeProcessRequest =
     (gptrPTypeExpr, gptrWhatisExpr, gptrPTypeOfWhatis,
      gptrPTypeExprDeRef, gptrPTypeExprDeDeRef,  // "Foo^", "Foo^^"  for Foo=Object, or &Object
      gptrEvalExpr, gptrEvalExprDeRef, gptrEvalExprCast,
      gptrEvalExpr2, gptrEvalExprDeRef2, gptrEvalExprCast2, // used by MaybeString
      gptrPtypeCustomFixCast, gptrPtypeCustomAutoCast, gptrPtypeCustomAutoCast2,
-     gptrInstanceClassName
+     gptrInstanceClassName,
+     gptrPtypeCustomEval
     );
   TGDBTypeProcessRequests = set of TGDBTypeProcessRequest;
 
@@ -337,6 +339,7 @@ type
   private
     FInternalTypeName: string;
   private
+    FEvalStarted: Boolean;
     FExpression, FOrigExpression: string;
     FHasStringExprEvaluatedAsText: Boolean;
     FCreationFlags: TGDBTypeCreationFlags;
@@ -350,7 +353,9 @@ type
     FFirstProcessingSubType, FNextProcessingSubType: TGDBType;
     FStringExprEvaluatedAsText: String;
     FTypeInfoAncestor: TGDBType;
-    FTypeInfoArrayExpression: TGDBType;
+
+    FArrayIndexValues: Array of TGDBType;
+    FArrayIndexValueLimit: Integer;
 
     // Gdb-Requests
     FEvalError: boolean;
@@ -1957,6 +1962,7 @@ function TGDBType.RequireRequests(ARequired: TGDBTypeProcessRequests; ACustomDat
       gptrPtypeCustomFixCast, gptrPtypeCustomAutoCast, gptrPtypeCustomAutoCast2:
                          Result := GdbCmdPType + ACustomData;
       gptrInstanceClassName: Result := GdbCmdEvaluate+Quote('(^^^char('+FExpression+')^+3)^');
+      gptrPtypeCustomEval:   Result := GdbCmdEvaluate+Quote(ACustomData);
     end;
   end;
 
@@ -2008,6 +2014,7 @@ begin
   FOrigExpression := FExpression;
   FCreationFlags := AFlags;
   FExprEvaluateFormat := AFormat;
+  FEvalStarted := False;
   FEvalRequest := nil;
   FFirstProcessingSubType := nil;
   FNextProcessingSubType := nil;
@@ -2015,13 +2022,18 @@ begin
   FHasExprEvaluatedAsText := False;
   FHasAutoTypeCastFix := False;
   FAutoTypeCastName := '';
+  FArrayIndexValueLimit := 5;
 end;
 
 destructor TGDBType.Destroy;
+var
+  i: Integer;
 begin
   inherited Destroy;
   FreeAndNil(FTypeInfoAncestor);
-  FreeAndNil(FTypeInfoArrayExpression);
+  for i := 0 to Length(FArrayIndexValues) - 1 do
+    FArrayIndexValues[i].Free;
+  FArrayIndexValues := nil;
   FreeAndNil(FParsedExpression);
 end;
 
@@ -2492,33 +2504,198 @@ var
   {%endregion    * Simple * }
 
   {%region    * EvaluateExpression * }
+  function GetParsedFromResult(AGdbDesc, AField: String): String;
+  var
+    ResultList: TGDBMINameValueList;
+  begin
+    ResultList := TGDBMINameValueList.Create(AGdbDesc);
+    Result := ResultList.Values[AField];
+    //FTextValue := DeleteEscapeChars(FTextValue);
+    ResultList.Free;
+  end;
+  procedure ParseFromResult(AGdbDesc, AField: String);
+  begin
+    FExprEvaluatedAsText := GetParsedFromResult(AGdbDesc, AField);
+    FHasExprEvaluatedAsText := True;
+  end;
+  procedure ParseFromResultForStrFixed(AGdbDesc, AField: String);
+  begin
+    FStringExprEvaluatedAsText := GetParsedFromResult(AGdbDesc, AField);
+    FHasStringExprEvaluatedAsText := True;
+  end;
+
+  procedure EvaluateExpressionDynArrayGetData;
+  var
+    i, m: Integer;
+    s: String;
+  begin
+    FProcessState := gtpsEvalExprDynArrayGetData;
+
+    if (FLen <= 0) or (FArrayIndexValueLimit <= 0) then begin
+      Result := True;
+      exit;
+    end;
+
+    if (Length(FArrayIndexValues) > 0) then begin
+      FExprEvaluatedAsText := '';
+      for i := 0 to Length(FArrayIndexValues) - 1 do begin
+        s := FArrayIndexValues[i].ExprEvaluatedAsText;
+        if (pos(' ', s) > 0) or (pos(',', s) > 0) then
+          s := '('+s+')';
+        if i > 0 then
+          FExprEvaluatedAsText := FExprEvaluatedAsText + ', ';
+        FExprEvaluatedAsText := FExprEvaluatedAsText + s;
+      end;
+      if FArrayIndexValueLimit < FLen then
+        FExprEvaluatedAsText := FExprEvaluatedAsText + ', ...';
+
+      Result := True;
+      exit;
+    end;
+
+    if (FExprEvaluatedAsText <> '') and
+       (FExprEvaluatedAsText[1] = '{')   // gdb returned array data
+    then begin
+      if (FLen = 0) or
+         ((Length(FExprEvaluatedAsText) > 1) and (FExprEvaluatedAsText[2] <> '}') )
+      then begin
+        Result := True;
+        exit;
+      end;
+    end;
+
+    // Get Data
+    m := Min(FArrayIndexValueLimit, FLen);
+    SetLength(FArrayIndexValues, m);
+    for i := 0 to m-1 do begin
+      FArrayIndexValues[i] := TGDBType.CreateForExpression(FExpression+'['+IntToStr(i)+']',
+        FCreationFlags + [gtcfExprEvaluate]);
+      if i = 0
+      then FArrayIndexValues[i].FArrayIndexValueLimit := FArrayIndexValueLimit - 2
+      else FArrayIndexValues[i].FArrayIndexValueLimit := FArrayIndexValueLimit - 3;
+      AddSubType(FArrayIndexValues[i]);
+    end;
+  end;
+
+  procedure EvaluateExpressionDynArray;
+  begin
+    FProcessState := gtpsEvalExprDynArray;
+    if FExprEvaluateFormat <> wdfDefault then begin;
+      Result := True;
+      exit;
+    end;
+
+
+    FBoundLow :=  -1;
+    FBoundHigh := -1;
+    FLen := -1;
+
+    if not RequireRequests([gptrPtypeCustomEval], '^longint('+FExpression+')[-1]') then exit;
+    if not IsReqError(gptrPtypeCustomEval, False) then begin
+      FBoundLow :=  0;
+      FBoundHigh  := StrToIntDef(GetParsedFromResult(FReqResults[gptrPtypeCustomEval].Result.GdbDescription, 'value'), -1);
+      FLen := FBoundHigh + 1;
+    end;
+
+    if (saInternalPointer in FAttributes) then begin
+      if not RequireRequests([gptrEvalExprDeRef]) then exit;
+      if not IsReqError(gptrEvalExprDeRef, False) then begin
+        ParseFromResult(FReqResults[gptrEvalExprDeRef].Result.GdbDescription, 'value');
+        EvaluateExpressionDynArrayGetData;
+        exit;
+      end;
+    end;
+
+    if (saRefParam in FAttributes) then begin
+      if not RequireRequests([gptrEvalExprCast]) then exit;
+      if not IsReqError(gptrEvalExprCast, False) then begin
+        ParseFromResult(FReqResults[gptrEvalExprCast].Result.GdbDescription, 'value');
+        EvaluateExpressionDynArrayGetData;
+        exit;
+      end;
+    end;
+
+    if not RequireRequests([gptrEvalExpr]) then exit;
+    if not IsReqError(gptrEvalExpr, False) then begin
+      ParseFromResult(FReqResults[gptrEvalExpr].Result.GdbDescription, 'value');
+      EvaluateExpressionDynArrayGetData;
+      exit;
+    end;
+
+    if FLen > 0 then begin
+      EvaluateExpressionDynArrayGetData;
+      exit;
+    end;
+
+    // TODO: set Validity = error
+    ParseFromResult(FReqResults[gptrEvalExpr].Result.GdbDescription, 'msg');
+    Result := True;
+  end;
+
+  procedure EvaluateExpressionArray;
+  var
+    PTypeResult: TGDBPTypeResult;
+  begin
+    FProcessState := gtpsEvalExprArray;
+    if FExprEvaluateFormat <> wdfDefault then begin;
+      Result := True;
+      exit;
+    end;
+
+    PTypeResult := FReqResults[gptrPTypeExpr].Result;
+    FBoundLow :=  PCLenToInt(PTypeResult.BoundLow);
+    FBoundHigh := PCLenToInt(PTypeResult.BoundHigh);
+    FLen := PCLenToInt(PTypeResult.BoundHigh) - PCLenToInt(PTypeResult.BoundLow) + 1;
+
+
+    if (saInternalPointer in FAttributes) then begin
+      if not RequireRequests([gptrEvalExprDeRef]) then exit;
+      if not IsReqError(gptrEvalExprDeRef, False) then begin
+        ParseFromResult(FReqResults[gptrEvalExprDeRef].Result.GdbDescription, 'value');
+        Result := True;
+        exit;
+      end;
+    end;
+
+    if (saRefParam in FAttributes) then begin
+      if not RequireRequests([gptrEvalExprCast]) then exit;
+      if not IsReqError(gptrEvalExprCast, False) then begin
+        ParseFromResult(FReqResults[gptrEvalExprCast].Result.GdbDescription, 'value');
+        Result := True;
+        exit;
+      end;
+    end;
+
+    if not RequireRequests([gptrEvalExpr]) then exit;
+    if not IsReqError(gptrEvalExpr, False) then begin
+      ParseFromResult(FReqResults[gptrEvalExpr].Result.GdbDescription, 'value');
+      Result := True;
+      exit;
+    end;
+
+    // TODO: set Validity = error
+    ParseFromResult(FReqResults[gptrEvalExpr].Result.GdbDescription, 'msg');
+    Result := True;
+  end;
+
   procedure EvaluateExpression;
-    procedure ParseFromResult(AGdbDesc, AField: String);
-    var
-      ResultList: TGDBMINameValueList;
-    begin
-      ResultList := TGDBMINameValueList.Create(AGdbDesc);
-      FExprEvaluatedAsText := ResultList.Values[AField];
-      FHasExprEvaluatedAsText := True;
-      //FTextValue := DeleteEscapeChars(FTextValue);
-      ResultList.Free;
-    end;
-    procedure ParseFromResultForStrFixed(AGdbDesc, AField: String);
-    var
-      ResultList: TGDBMINameValueList;
-    begin
-      ResultList := TGDBMINameValueList.Create(AGdbDesc);
-      FStringExprEvaluatedAsText := ResultList.Values[AField];
-      FHasStringExprEvaluatedAsText := True;
-      //FTextValue := DeleteEscapeChars(FTextValue);
-      ResultList.Free;
-    end;
   begin
     FProcessState := gtpsEvalExpr;
+
     if not(gtcfExprEvaluate in FCreationFlags) then begin
       Result := True;
       exit;
     end;
+
+    if saDynArray in FAttributes then begin
+      EvaluateExpressionDynArray;
+      exit;
+    end;
+    if saArray in FAttributes then begin
+      EvaluateExpressionArray;
+      exit;
+    end;
+
     if FExprEvaluateFormat <> wdfDefault then begin;
       Result := True;
       exit;
@@ -2772,7 +2949,7 @@ var
 
     if FParsedExpression = nil
     then FParsedExpression := TGDBExpression.Create(FExpression);
-    // Does not set FLastEvalRequest, so there can be no MergeSubProcessRequests
+    // Does not set FLastEvalRequest
     if FParsedExpression.NeedValidation(FEvalRequest)
     then exit;
 
@@ -2789,7 +2966,15 @@ var
     while SubType <> nil do begin
       if (FEvalRequest =  nil)
       then FEvalRequest := SubType.FEvalRequest
-      else FLastEvalRequest^.Next := SubType.FEvalRequest;;
+      else if FLastEvalRequest <> nil
+      then FLastEvalRequest^.Next := SubType.FEvalRequest
+      else begin
+        // Find last req
+        FLastEvalRequest := FEvalRequest;
+        while (FLastEvalRequest^.Next <> nil) do
+          FLastEvalRequest := FLastEvalRequest^.Next;
+        FLastEvalRequest^.Next := SubType.FEvalRequest;
+      end;
       FLastEvalRequest := SubType.FLastEvalRequest;
       SubType := SubType.FNextProcessingSubType;
     end;
@@ -2799,20 +2984,22 @@ var
   var
     SubType, PrevSubType: TGDBType;
   begin
-    Result := False;
     PrevSubType := nil;
     SubType := FFirstProcessingSubType;
-    Result := SubType = nil;
     while SubType <> nil do begin
+      DebugLnEnter(DBGMI_TYPE_INFO, ['>>Enter Sub-Request']);
       if SubType.ProcessExpression then begin
-        Result := True;
         if PrevSubType = nil
         then FFirstProcessingSubType := SubType.FNextProcessingSubType
         else PrevSubType.FNextProcessingSubType := SubType.FNextProcessingSubType;
-      end;
-      PrevSubType := SubType;
+      end
+      else
+        PrevSubType := SubType;
       SubType := SubType.FNextProcessingSubType;
+      DebugLnExit(DBGMI_TYPE_INFO, ['>>Leave Sub-Request']);
     end;
+
+    Result := FFirstProcessingSubType = nil;
   end;
 
 var
@@ -2840,21 +3027,25 @@ begin
   OldReqMade := FProccesReuestsMade;
 
   case FProcessState of
-    gtpsInitial:         ProcessInitial;
-    gtpsInitialSimple:   ProcessInitialSimple;
-    gtpsSimplePointer:   ProcessSimplePointer;
-    gtpsClass:           ProcessClass;
-    gtpsClassAutoCast:   ProcessClassAutoCast;
-    gtpsClassPointer:    ProcessClassPointer;
-    gtpsClassAncestor:   ProcessClassAncestor;
-    gtpsArray:           ProcessArray;
-    gtpsEvalExpr:        EvaluateExpression;
+    gtpsInitial:          ProcessInitial;
+    gtpsInitialSimple:    ProcessInitialSimple;
+    gtpsSimplePointer:    ProcessSimplePointer;
+    gtpsClass:            ProcessClass;
+    gtpsClassAutoCast:    ProcessClassAutoCast;
+    gtpsClassPointer:     ProcessClassPointer;
+    gtpsClassAncestor:    ProcessClassAncestor;
+    gtpsArray:            ProcessArray;
+    gtpsEvalExpr:         EvaluateExpression;
+    gtpsEvalExprArray:    EvaluateExpressionArray;
+    gtpsEvalExprDynArray: EvaluateExpressionDynArray;
+    gtpsEvalExprDynArrayGetData: EvaluateExpressionDynArrayGetData;
   end;
 
   FreeAndNil(Lines);
-  if Result and not(FProcessState = gtpsEvalExpr)
+  if Result and not(FEvalStarted)
   then begin
     Result := False;
+    FEvalStarted := True;
     EvaluateExpression;
   end;
 
