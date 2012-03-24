@@ -278,15 +278,16 @@ var
   CodeBuf: TCodeBuffer;
   MissingUnitname: String;
   NamePos, InPos: Integer;
-  Line, Col: Integer;
   UsedByUnit: String;
   NewFilename: String;
+  Tool: TCodeTool;
+  Caret: TCodeXYPosition;
 begin
   if Step<>imqfoImproveMessage then exit;
   //DebugLn('QuickFixUnitNotFoundPosition ');
 
   if not REMatches(Msg.Msg,'Can''t find unit ([a-z_0-9]+)','I') then begin
-    DebugLn('QuickFixUnitNotFoundPosition invalid message ',Msg.Msg);
+    //DebugLn('QuickFixUnitNotFoundPosition invalid message ',Msg.Msg);
     exit;
   end;
   MissingUnitname:=REVar(1);
@@ -311,6 +312,8 @@ begin
     end;
   end;
   if CodeBuf=nil then exit;
+
+  debugln(['TQuickFixUnitNotFoundPosition.Execute File=',CodeBuf.Filename]);
   LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
   if not CodeToolBoss.FindUnitInAllUsesSections(CodeBuf,MissingUnitname,NamePos,InPos)
   then begin
@@ -318,14 +321,15 @@ begin
     //LazarusIDE.DoJumpToCodeToolBossError;
     exit;
   end;
-  if InPos=0 then ;
-  CodeBuf.AbsoluteToLineCol(NamePos,Line,Col);
-  if (Line>0) and (Col>0) then begin
+  Tool:=CodeToolBoss.CurCodeTool;
+  if Tool=nil then exit;
+  if not Tool.CleanPosToCaret(NamePos,Caret) then exit;
+  if (Caret.X>0) and (Caret.Y>0) then begin
     //DebugLn('QuickFixUnitNotFoundPosition Line=',dbgs(Line),' Col=',dbgs(Col));
-    NewFilename:=CodeBuf.Filename;
+    NewFilename:=Caret.Code.Filename;
     if (Msg.Directory<>'') and (FilenameIsAbsolute(Msg.Directory)) then
       NewFilename:=CreateRelativePath(NewFilename,Msg.Directory);
-    Msg.SetSourcePosition(NewFilename,Line,Col);
+    Msg.SetSourcePosition(NewFilename,Caret.Y,Caret.X);
   end;
 end;
 
