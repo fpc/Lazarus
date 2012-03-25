@@ -96,7 +96,6 @@ procedure GetDefaultMakeFilenames(List: TStrings); // list of standard paths of 
 function GetDefaultFPCSrcDirectories: TStringList;
 function GetDefaultLazarusSrcDirectories: TStringList;
 function CheckFPCSourceDir(ADirectory: string): boolean;
-function CheckLazarusDirectory(const ADirectory: string): boolean;
 
 function GetDefaultTargetCPU: string;
 function GetDefaultTargetOS: string;
@@ -424,33 +423,6 @@ begin
   Result:=TStringList.Create;
   for i:=low(DefaultFPCSrcDirs) to high(DefaultFPCSrcDirs) do
     Result.Add(DefaultFPCSrcDirs[i]);
-end;
-
-function FindDefaultLazarusSrcDirectory: string;
-var
-  i: integer;
-begin
-  for i:=Low(DefaultLazarusSrcDirs) to High(DefaultLazarusSrcDirs) do begin
-    Result:=DefaultLazarusSrcDirs[i];
-    if CheckLazarusDirectory(Result) then exit;
-  end;
-  Result:='';
-end;
-
-function CheckLazarusDirectory(const ADirectory: string): boolean;
-var
-  Dir: String;
-begin
-  Result:=false;
-  if DirPathExists(ADirectory) then begin
-    Dir:=AppendPathDelim(ADirectory);
-    Result:=DirPathExists(Dir+'lcl')
-        and DirPathExists(Dir+'components')
-        and DirPathExists(Dir+'ide')
-        and DirPathExists(Dir+'ideintf')
-        and DirPathExists(Dir+'designer')
-        and DirPathExists(Dir+'debugger');
-  end;
 end;
 
 initialization

@@ -1254,8 +1254,6 @@ resourcestring
   lisShowStatusBarInObjectInspector = 'Show status bar';
   lisShowInfoBoxInObjectInspector = 'Show information box';
   dlgEnvBackupHelpNote = 'Notes: Project files are all files in the project directory';
-  lisEnvOptDlgInvalidCompilerFilename = 'Invalid compiler filename';
-  lisEnvOptDlgInvalidCompilerFilenameMsg = 'The compiler file "%s" is not an executable.';
   lisEnvOptDlgInvalidMakeFilename = 'Invalid make filename';
   lisEnvOptDlgInvalidMakeFilenameMsg = 'The make file "%s" is not an executable.';
   lisEnvOptDlgInvalidDebuggerFilename = 'Invalid debugger filename';
@@ -1267,12 +1265,6 @@ resourcestring
   lisInstallationFailed = 'Installation failed';
   lisPkgMangThePackageFailedToCompileRemoveItFromTheInstallati = 'The package %'
     +'s%s%s failed to compile.%sRemove it from the installation list?';
-  lisEnvOptDlgLazarusDirNotFoundMsg = 'Lazarus directory "%s" not found.';
-  lisEnvOptDlgInvalidLazarusDir = 'The lazarus directory "%s" does not look correct.'
-    +' Normally it contains directories like lcl, debugger, designer, components, ... .';
-  lisEnvOptDlgFPCSrcDirNotFoundMsg = 'FPC source directory "%s" not found.';
-  lisEnvOptDlgInvalidFPCSrcDir = 'The FPC source directory "%s" does not look correct.'
-    +' Normally it contains directories like rtl/inc, packages/fcl-base, ... .';
   lisEnvOptDlgTestDirNotFoundMsg = 'Test directory "%s" not found.';
 
   // editor options
@@ -2090,6 +2082,12 @@ resourcestring
     +'abstract methods of the current class, because';
   lisCCOUnableToGetFileDate = 'Unable to get file date of %s.';
   lisCCOWarningCaption = 'Warning';
+  lisTheCompilerFileDoesNotLookCorrect = 'The compiler file "%s" does not look'
+    +' correct:%s%s';
+  lisTheFPCSourceDirectoryDoesNotLookCorrect = 'The FPC source directory "%s" '
+    +'does not look correct:%s%s';
+  lisTheLazarusDirectoryDoesNotLookCorrect = 'The Lazarus directory "%s" does '
+    +'not look correct:%s%s';
   lisTheContainsANotExistingDirectory = 'The %s contains a not existing '
     +'directory:%s%s';
   lisTheProjectDoesNotUseTheLCLUnitInterfacesButItSeems = 'The project does '

@@ -604,7 +604,6 @@ function AmbiguousFileActionNameToType(const Action: string): TAmbiguousFileActi
 function CharCaseFileActionNameToType(const Action: string): TCharCaseFileAction;
 function UnitRenameReferencesActionNameToType(const Action: string): TUnitRenameReferencesAction;
 
-function CheckFileChanged(const OldFilename, NewFilename: string): boolean;
 function CheckExecutable(const OldFilename, NewFilename: string;
   const ErrorCaption, ErrorMsg: string; SearchInPath: boolean = false): boolean;
 function CheckDirPathExists(const Dir,
@@ -669,12 +668,6 @@ begin
   Result:=urraAsk;
 end;
 
-function CheckFileChanged(const OldFilename,
-  NewFilename: string): boolean;
-begin
-  Result:=(NewFilename<>OldFilename) and (NewFilename<>'');
-end;
-
 function CheckExecutable(const OldFilename,
   NewFilename: string; const ErrorCaption, ErrorMsg: string;
   SearchInPath: boolean): boolean;
@@ -682,7 +675,7 @@ var
   Filename: String;
 begin
   Result:=true;
-  if not CheckFileChanged(OldFilename,NewFilename) then exit;
+  if OldFilename=NewFilename then exit;
   Filename:=NewFilename;
   if (not FilenameIsAbsolute(NewFilename)) and SearchInPath then begin
     Filename:=FindDefaultExecutablePath(NewFilename);
@@ -715,7 +708,7 @@ var
   SubResult: TModalResult;
 begin
   StopChecking:=true;
-  if not CheckFileChanged(OldDir,NewDir) then begin
+  if OldDir=NewDir then begin
     Result:=true;
     exit;
   end;
