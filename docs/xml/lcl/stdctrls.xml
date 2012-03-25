@@ -1493,21 +1493,15 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.SelStart">
-        <short>The <b>zero-based</b> index of the begin of the selection in the edit box.</short>
-        <descr>
-          <p>If text is selected, this is the starting position, otherwise the cursor position.
-          </p>
-          <p>When no text is selected, SelStart is the cursor position, and SelLength=0.
-          </p><p>
-            Writing moves the cursor, and removes the selection.
-            Set SelLength after changing SelStart, to establish a new selection.
-          </p><p>
-            SelStart is a <b>zero-based</b> index into Text, in contrast to usual <b>1-based</b> string indices.
-          </p>
+        <short>The <b>zero-based</b> UTF-8 index of the begin of the selection in the edit box.</short>
+        <descr><p>If text is selected, this is the starting position, otherwise the cursor position.
+</p><p>When no text is selected, SelStart is the cursor position, and SelLength=0.
+</p><p>Writing moves the cursor, and removes the selection.
+Set SelLength after changing SelStart, to establish a new selection.
+</p><p>SelStart is a <b>zero-based</b> UTF-8 index into Text, in contrast to usual <b>1-based</b> string indices. A value 1 means the second UTF-8 character.
+</p>
         </descr>
-        <seealso>
-          <link id="TCustomComboBox.SelLength"/>
-          <link id="TCustomComboBox.SelText"/>
+        <seealso><link id="TCustomComboBox.SelLength"/><link id="TCustomComboBox.SelText"/>
         </seealso>
       <notes><note>?</note>
         </notes>
@@ -1515,8 +1509,8 @@
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.SelText">
         <short>The selected text in the edit box.</short>
-        <descr>Assign an new string to replace the selected text.
-        </descr>
+        <descr>This string is defined by SelStart and SelLength.
+Assign an new string to replace the selected text.</descr>
         <seealso>
           <link id="TCustomComboBox.SelStart"/>
           <link id="TCustomComboBox.SelLength"/>
