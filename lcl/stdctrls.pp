@@ -394,8 +394,8 @@ type
     property Items: TStrings read FItems write SetItems;
     property ItemIndex: integer read GetItemIndex write SetItemIndex default -1;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly stored IsReadOnlyStored;
-    property SelLength: integer read GetSelLength write SetSelLength;// byte length
-    property SelStart: integer read GetSelStart write SetSelStart;// byte position
+    property SelLength: integer read GetSelLength write SetSelLength;// UTF-8 length
+    property SelStart: integer read GetSelStart write SetSelStart;// UTF-8 position
     property SelText: String read GetSelText write SetSelText;
     property Style: TComboBoxStyle read FStyle write SetStyle default csDropDown;
     property TabStop default true;

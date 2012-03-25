@@ -320,6 +320,8 @@ begin
   AssignToComboBox(DirectoryComboBox, InputHistories.FindInFilesPathHistory);
   if (SrcEdit<>nil) and (FilenameIsAbsolute(SrcEdit.FileName)) then
     AddFileToComboBox(DirectoryComboBox, ExtractFilePath(SrcEdit.FileName));
+  if DirectoryComboBox.Items.Count>0 then
+    DirectoryComboBox.Text:=DirectoryComboBox.Items[0];
   // show last used file masks
   AssignToComboBox(FileMaskComboBox, InputHistories.FindInFilesMaskHistory);
   Options := InputHistories.FindInFilesSearchOptions;
