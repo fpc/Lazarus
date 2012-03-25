@@ -9,16 +9,6 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
   Visible = False
   DesignLeft = 303
   DesignTop = 99
-  object HelpLabel: TLabel
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Owner
-    Left = 0
-    Height = 15
-    Top = 0
-    Width = 56
-    Caption = 'HelpLabel'
-    ParentColor = False
-  end
   object TreeView: TTreeView
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = FilterEdit
@@ -26,18 +16,18 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 402
-    Top = 48
+    Height = 420
+    Top = 30
     Width = 461
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
-    DefaultItemHeight = 16
+    DefaultItemHeight = 18
     PopupMenu = PopupMenu1
     ReadOnly = True
     RightClickSelect = True
     RowSelect = True
     ScrollBars = ssAutoBoth
-    TabOrder = 0
+    TabOrder = 1
     OnDblClick = TreeViewDblClick
     OnKeyPress = TreeViewKeyPress
     OnSelectionChanged = TreeViewSelectionChanged
@@ -45,34 +35,33 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
   end
   object FilterEdit: TTreeFilterEdit
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = HelpLabel
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 21
-    Width = 224
+    Height = 21
+    Top = 6
+    Width = 232
     ButtonWidth = 23
     NumGlyphs = 0
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     MaxLength = 0
-    TabOrder = 1
+    TabOrder = 0
     FilteredTreeview = TreeView
     ExpandAllInitially = True
   end
   object ClearButton: TBitBtn
     AnchorSideRight.Side = asrBottom
-    Left = 380
+    Left = 381
     Height = 25
     Top = 455
-    Width = 81
+    Width = 80
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Bottom = 6
     Caption = 'ClearButton'
     OnClick = ClearButtonClick
-    TabOrder = 2
+    TabOrder = 3
   end
   object FindKeyButton: TBitBtn
     AnchorSideLeft.Control = Owner
@@ -80,28 +69,28 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     Left = 0
     Height = 25
     Top = 455
-    Width = 93
+    Width = 94
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Bottom = 6
     Caption = 'FindKeyButton'
     OnClick = FindKeyButtonClick
-    TabOrder = 3
+    TabOrder = 2
   end
   object ConsistencyCheckButton: TBitBtn
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 308
+    Left = 306
     Height = 25
     Top = 485
-    Width = 153
+    Width = 155
     Anchors = [akRight, akBottom]
     AutoSize = True
     Caption = 'ConsistencyCheckButton'
     OnClick = ConsistencyCheckButtonClick
-    TabOrder = 4
+    TabOrder = 5
   end
   object ChooseSchemeButton: TBitBtn
     AnchorSideLeft.Control = Owner
@@ -115,7 +104,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AutoSize = True
     Caption = 'ChooseSchemeButton'
     OnClick = ChooseSchemeButtonClick
-    TabOrder = 5
+    TabOrder = 4
   end
   object SchemeLabel: TLabel
     AnchorSideLeft.Control = ChooseSchemeButton
@@ -123,11 +112,40 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideTop.Control = ChooseSchemeButton
     AnchorSideTop.Side = asrCenter
     Left = 144
-    Height = 15
-    Top = 490
+    Height = 16
+    Top = 489
     Width = 76
     BorderSpacing.Around = 6
     Caption = 'SchemeLabel'
+    ParentColor = False
+  end
+  object EditButton: TBitBtn
+    AnchorSideTop.Control = ClearButton
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = ClearButton
+    Left = 301
+    Height = 25
+    Top = 455
+    Width = 74
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    Caption = 'EditButton'
+    OnClick = EditButtonClick
+    TabOrder = 6
+  end
+  object CommandLabel: TLabel
+    AnchorSideTop.Control = EditButton
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = EditButton
+    Left = 207
+    Height = 16
+    Top = 459
+    Width = 88
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
+    Caption = 'CommandLabel'
     ParentColor = False
   end
   object PopupMenu1: TPopupMenu

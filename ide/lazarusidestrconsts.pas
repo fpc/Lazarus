@@ -1534,8 +1534,7 @@ resourcestring
   dlgCheckConsistency = 'Check consistency';
   lisEdOptsLoadAScheme = 'Load a scheme';
   lisFindKeyCombination = 'Find key combination';
-  lisClearKeyMapping = 'Clear Command''s Mapping';
-  lisEditKeyMapping = 'Edit Command''s Mapping';
+  lisSelectedCommandsMapping = 'Selected Command''s Mapping';
   lisNowLoadedScheme = 'Now loaded: ';
   dlgLang = 'Language';
   dlgEditSchemDefaults = 'Scheme globals';
@@ -5161,7 +5160,6 @@ resourcestring
 
   //Jump History dialog
   lisJHJumpHistory = 'Jump History';
-  lisCommandEditHint = 'Edit command''s mapping with double click, Return key or Popup menu';
   lisTheGNUDebuggerThroughSshAllowsToRemoteDebugViaASsh =
       'The GNU debugger '
     +'through ssh allows to remote debug via a ssh connection. See docs/'

@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, TreeFilterEdit, Forms, StdCtrls, ComCtrls,
-  Controls, Dialogs, LCLType, LCLProc, Menus, Buttons, EditorOptions,
+  Controls, Dialogs, LCLType, LCLProc, Menus, Buttons, Clipbrd, EditorOptions,
   LazarusIDEStrConsts, IDEOptionsIntf, IDEImagesIntf, editor_general_options,
   KeymapSchemeDlg, KeyMapping, IDECommands, KeyMapShortCutDlg, SrcEditorIntf;
 
@@ -37,16 +37,18 @@ type
   TEditorKeymappingOptionsFrame = class(TAbstractIDEOptionsEditor)
     ChooseSchemeButton: TBitBtn;
     ClearButton: TBitBtn;
+    EditButton: TBitBtn;
     ConsistencyCheckButton: TBitBtn;
     FilterEdit: TTreeFilterEdit;
     FindKeyButton: TBitBtn;
-    HelpLabel: TLabel;
+    CommandLabel: TLabel;
     SchemeLabel: TLabel;
     TreeView: TTreeView;
     EditMenuItem: TMenuItem;
     ClearMenuItem: TMenuItem;
     PopupMenu1: TPopupMenu;
     procedure ClearMenuItemClick(Sender: TObject);
+    procedure EditButtonClick(Sender: TObject);
     procedure EditMenuItemClick(Sender: TObject);
     procedure ChooseSchemeButtonClick(Sender: TObject);
     procedure ClearButtonClick(Sender: TObject);
@@ -88,10 +90,16 @@ var
   imgKeyCategory, imgKeyItem: Integer;
 
 type
+
+  { TKeyMapErrorsForm }
+
   TKeyMapErrorsForm = class(TForm)
     ListBox: TListBox;
     BackButton: TButton;
+    ErrorsPopupMenu: TPopupMenu;
+    CopyMenuItem: TMenuItem;
     procedure BackButtonClick(Sender: TObject);
+    procedure CopyMenuItemClick(Sender: TObject);
   public
     constructor Create(AnOwner: TComponent); override;
   end;
@@ -106,7 +114,7 @@ begin
   with ListBox do
   begin
     Name := 'ListBox';
-    Align:=alTop;
+    Align := alTop;
     Parent := Self;
   end;
 
@@ -114,20 +122,35 @@ begin
   with BackButton do
   begin
     Name := 'BackButton';
-    AutoSize:=true;
-    Anchors:=[akLeft,akBottom];
+    AutoSize := true;
+    Anchors := [akLeft,akBottom];
     Parent := Self;
     AnchorParallel(akBottom,6,Self);
     AnchorParallel(akLeft,6,Self);
     Caption := dlgEdBack;
     OnClick := @BackButtonClick;
   end;
+
+  ErrorsPopupMenu := TPopupMenu.Create(Self);
+  ErrorsPopupMenu.Name := 'ErrorsPopupMenu';
+  CopyMenuItem := TMenuItem.Create(Self);
+  CopyMenuItem.Caption := lisCopyAllItemsToClipboard;
+  CopyMenuItem.OnClick := @CopyMenuItemClick;
+  CopyMenuItem.ImageIndex := IDEImages.LoadImage(16, 'laz_copy');
+  ErrorsPopupMenu.Items.Add(CopyMenuItem);
+
   ListBox.AnchorToNeighbour(akBottom,6,BackButton);
+  ListBox.PopupMenu := ErrorsPopupMenu;
 end;
 
 procedure TKeyMapErrorsForm.BackButtonClick(Sender: TObject);
 begin
   ModalResult := mrOk;
+end;
+
+procedure TKeyMapErrorsForm.CopyMenuItemClick(Sender: TObject);
+begin
+  Clipboard.AsText := ListBox.Items.Text;
 end;
 
 { TEditorKeymappingOptionsFrame }
@@ -136,6 +159,7 @@ constructor TEditorKeymappingOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   EditingKeyMap := TKeyCommandRelationList.Create;
+  EditButton.Enabled:=false;
   ClearButton.Enabled:=false;
   fModified:=False;
 end;
@@ -160,13 +184,17 @@ begin
   UpdateSchemeLabel;
 end;
 
+procedure TEditorKeymappingOptionsFrame.EditButtonClick(Sender: TObject);
+begin
+  EditCommandMapping(TreeView.Selected);
+end;
+
 procedure TEditorKeymappingOptionsFrame.ClearButtonClick(Sender: TObject);
 begin
   ClearCommandMapping(TreeView.Selected);
 end;
 
-procedure TEditorKeymappingOptionsFrame.ConsistencyCheckButtonClick(
-  Sender: TObject);
+procedure TEditorKeymappingOptionsFrame.ConsistencyCheckButtonClick(Sender: TObject);
 var
   Protocol: TStringList;
   ErrorCount, Index1, Index2: Integer;
@@ -230,8 +258,9 @@ var
   ANode: TTreeNode;
 begin
   ANode := TreeView.Selected;
-  ClearButton.Enabled:=
+  EditButton.Enabled:=
     (ANode<>nil) and (ANode.Data<>nil) and (TObject(ANode.Data) is TKeyCommandRelation);
+  ClearButton.Enabled:=EditButton.Enabled;
 end;
 
 procedure TEditorKeymappingOptionsFrame.PopupMenu1Popup(Sender: TObject);
@@ -267,13 +296,14 @@ end;
 procedure TEditorKeymappingOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   FDialog := ADialog;
-  HelpLabel.Caption := lisCommandEditHint;
   ChooseSchemeButton.Caption := lisEdOptsLoadAScheme;
   ConsistencyCheckButton.Caption := dlgCheckConsistency;
   FindKeyButton.Caption := lisFindKeyCombination;
-  ClearButton.Caption := lisClearKeyMapping;
-  ClearMenuItem.Caption := lisClearKeyMapping;
-  EditMenuItem.Caption := lisEditKeyMapping;
+  CommandLabel.Caption := lisSelectedCommandsMapping;
+  EditButton.Caption := lisEdit;
+  ClearButton.Caption := lisClear;
+  EditMenuItem.Caption := lisEdit;
+  ClearMenuItem.Caption := lisClear;
 
   TreeView.Images := IDEImages.Images_16;
   imgKeyCategory := IDEImages.LoadImage(16, 'item_keyboard');
@@ -281,10 +311,11 @@ begin
   ChooseSchemeButton.LoadGlyphFromLazarusResource('item_keyboard'); // keymapcategory
   ConsistencyCheckButton.LoadGlyphFromLazarusResource('menu_tool_check_lfm');
   FindKeyButton.LoadGlyphFromLazarusResource('menu_search_find');
+  EditButton.LoadGlyphFromLazarusResource('laz_edit');
   ClearButton.LoadGlyphFromLazarusResource('menu_clean');
   PopupMenu1.Images := IDEImages.Images_16;
-  ClearMenuItem.ImageIndex := IDEImages.LoadImage(16, 'menu_clean');
   EditMenuItem.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
+  ClearMenuItem.ImageIndex := IDEImages.LoadImage(16, 'menu_clean');
 
   FillKeyMappingTreeView;
   UpdateSchemeLabel;
