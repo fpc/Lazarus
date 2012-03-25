@@ -1499,18 +1499,8 @@ begin
 end;
 
 procedure TWikiPage.FixUTF8;
-var
-  p: PChar;
-  e: PChar;
 begin
-  if FSrc='' then exit;
-  UniqueString(FSrc);
-  p:=PChar(FSrc);
-  e:=p+length(FSrc);
-  while p<e do begin
-    UTF8FixBroken(p);
-    inc(p,UTF8CharacterLength(p));
-  end;
+  UTF8FixBroken(FSrc);
 end;
 
 procedure Init;

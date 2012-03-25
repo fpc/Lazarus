@@ -1706,10 +1706,8 @@ begin
   for i:=1 to length(Result) do
     if Result[i] in [#0..#31,#127] then Result[i]:=' ';
   if Result='' then exit;
-  if FixUTF8 then begin
-    UniqueString(Result);
-    UTF8FixBroken(PChar(Result));
-  end;
+  if FixUTF8 then
+    UTF8FixBroken(Result);
   Result:=UTF8Trim(Result);
 end;
 

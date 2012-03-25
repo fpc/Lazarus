@@ -278,7 +278,7 @@ It returns 0 if the codepoint can not be represented as a 1 to 4 byte UTF-8 sequ
       </element>
       <!-- procedure Visibility: default -->
       <element name="UTF8FixBroken">
-        <short/>
+        <short>Replaces all invalid UTF8 characters with spaces. Stops at #0.</short>
         <descr/>
         <errors/>
         <seealso/>

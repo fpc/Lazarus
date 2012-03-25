@@ -54,7 +54,8 @@ function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
 function UTF8CharStart(UTF8Str: PChar; Len, CharIndex: PtrInt): PChar;
 // find the byte index of the n-th UTF8 character, ignoring BIDI (byte len of substr)
 function UTF8CharToByteIndex(UTF8Str: PChar; Len, CharIndex: PtrInt): PtrInt;
-procedure UTF8FixBroken(P: PChar);
+procedure UTF8FixBroken(P: PChar); overload;
+procedure UTF8FixBroken(var S: string); overload;
 function UTF8CharacterStrictLength(P: PChar): integer;
 function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: PtrInt) : string;
 function UTF8Pos(const SearchForText, SearchInText: string): PtrInt;
@@ -523,7 +524,7 @@ begin
         c:=((ord(p^) and %00011111) shl 6);
            //or (ord(p[1]) and %00111111);
         if c<(1 shl 7) then
-          p^:=' '
+          p^:=' '  // fix XSS attack
         else
           inc(p,2)
       end
@@ -538,7 +539,7 @@ begin
            or ((ord(p[1]) and %00111111) shl 6);
            //or (ord(p[2]) and %00111111);
         if c<(1 shl 11) then
-          p^:=' '
+          p^:=' '  // fix XSS attack
         else
           inc(p,3);
       end else
@@ -554,7 +555,7 @@ begin
            or ((ord(p[2]) and %00111111) shl 6);
            //or (ord(p[3]) and %00111111);
         if c<(1 shl 16) then
-          p^:=' '
+          p^:=' ' // fix XSS attack
         else
           inc(p,4)
       end else
@@ -565,6 +566,14 @@ begin
       inc(p);
     end;
   end;
+end;
+
+procedure UTF8FixBroken(var S: string);
+begin
+  if S='' then exit;
+  if FindInvalidUTF8Character(PChar(S),length(S),true)<0 then exit;
+  UniqueString(S);
+  UTF8FixBroken(PChar(S));
 end;
 
 function UTF8CharacterStrictLength(P: PChar): integer;
