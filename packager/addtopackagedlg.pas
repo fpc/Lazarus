@@ -122,10 +122,8 @@ type
     FilesListView: TListView;
     NewFileBtnPanel: TPanel;
     AddFilesBtnPanel: TPanel;
-    procedure AddToPackageDlgClose(Sender: TObject;
-                                   var CloseAction: TCloseAction);
-    procedure AddToPackageDlgKeyDown(Sender: TObject; var Key: Word;
-                                     Shift: TShiftState);
+    procedure AddToPackageDlgClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure AddToPackageDlgKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure AncestorComboBoxChange(Sender: TObject);
     procedure AncestorComboBoxCloseUp(Sender: TObject);
     procedure AncestorShowAllCheckBoxClick(Sender: TObject);
@@ -141,7 +139,7 @@ type
     procedure FilesBrowseButtonClick(Sender: TObject);
     procedure FilesDeleteButtonClick(Sender: TObject);
     procedure FilesDirButtonClick(Sender: TObject);
-    procedure FilesListViewClick(Sender: TObject);
+    procedure FilesListViewSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure FilesShortenButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -614,31 +612,15 @@ begin
     LastParams:=nil;
     i:=0;
     while i<FilesListView.Items.Count do begin
+      if not FilesListView.Items[i].Selected then begin
+        Inc(i);
+        Continue;
+      end;
       Filename:=FilesListView.Items[i].Caption;
       LazPackage.LongenFilename(Filename);
-
-      // skip directories
-      if DirPathExists(Filename) then begin
-        FilesListView.Items.Delete(i);
-        continue;
-      end;
-      
-      // skip not existing files
-      if (not FileExistsUTF8(Filename)) then begin
-        if QuestionDlg(lisFileNotFound,
-          Format(lisPkgMangFileNotFound, ['"', Filename, '"']),
-          mtError,[mrIgnore,mrCancel],0)<>mrIgnore
-        then
-          exit;
-        FilesListView.Items.Delete(i);
-        continue;
-      end;
-
-      NewFileType:=FileNameToPkgFileType(Filename);
-
+      Assert(not DirPathExists(Filename));
       if LazPackage.FindPkgFile(Filename,true,false)<>nil then begin
-        // file already in package
-        FilesListView.Items.Delete(i);
+        FilesListView.Items.Delete(i);     // file already in package
         continue;
       end;
 
@@ -647,12 +629,11 @@ begin
         CurParams:=LastParams.Next;
       end else
         CurParams:=Params;
-
       CurParams.Clear;
       CurParams.AddType:=d2ptFile;
       CurParams.UnitFilename:=Filename;
+      NewFileType:=FileNameToPkgFileType(Filename);
       CurParams.FileType:=NewFileType;
-
       if NewFileType=pftUnit then begin
         CurParams.AddType:=d2ptUnit;
         Include(CurParams.PkgFileFlags,pffAddToPkgUsesSection);
@@ -690,7 +671,7 @@ begin
       LastParams:=CurParams;
       inc(i);
     end;
-    OkButton.Enabled:=FilesListView.Items.Count>0;
+    OkButton.Enabled:=FilesListView.SelCount>0;
     ok:=LastParams<>nil;
   finally
     if not ok then Params.Clear;
@@ -732,6 +713,7 @@ begin
             NewListItem.Caption:=AFilename;
             NewPgkFileType:=FileNameToPkgFileType(AFilename);
             NewListItem.SubItems.Add(GetPkgFileTypeLocalizedName(NewPgkFileType));
+            NewListItem.Selected:=True;
           end;
         end;
       end;
@@ -772,6 +754,7 @@ begin
         NewListItem.Caption:=AFilename;
         NewPgkFileType:=FileNameToPkgFileType(AFilename);
         NewListItem.SubItems.Add(GetPkgFileTypeLocalizedName(NewPgkFileType));
+        NewListItem.Selected:=True;
       end;
     end;
     CheckFilesButtonsOk;
@@ -780,7 +763,8 @@ begin
   end;
 end;
 
-procedure TAddToPackageDlg.FilesListViewClick(Sender: TObject);
+procedure TAddToPackageDlg.FilesListViewSelectItem(Sender: TObject;
+  Item: TListItem; Selected: Boolean);
 begin
   CheckFilesButtonsOk;
 end;
@@ -810,7 +794,7 @@ begin
   FilesDeleteButton.Enabled:=FilesListView.SelCount>0;
   Result:=FilesListView.Items.Count>0;
   FilesShortenButton.Enabled:=Result;
-  OkButton.Enabled:=Result;
+  OkButton.Enabled:=FilesListView.SelCount>0;
 end;
 
 procedure TAddToPackageDlg.FormCreate(Sender: TObject);

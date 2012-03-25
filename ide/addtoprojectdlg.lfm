@@ -46,6 +46,7 @@ object AddToProjectDialog: TAddToProjectDialog
         Columns = <>
         MultiSelect = True
         TabOrder = 0
+        OnSelectItem = AddFileListViewSelectItem
       end
     end
     object NewDependPage: TTabSheet

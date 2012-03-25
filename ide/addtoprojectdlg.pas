@@ -81,6 +81,8 @@ type
     // add files page
     FilesListView: TListView;
     procedure AddFileButtonClick(Sender: TObject);
+    procedure AddFileListViewSelectItem(Sender: TObject; Item: TListItem;
+      Selected: Boolean);
     procedure AddToProjectDialogClose(Sender: TObject;
                                       var CloseAction: TCloseAction);
     procedure DependPkgNameComboBoxChange(Sender: TObject);
@@ -322,6 +324,12 @@ begin
   ModalResult:=mrOk;
 end;
 
+procedure TAddToProjectDialog.AddFileListViewSelectItem(Sender: TObject;
+  Item: TListItem; Selected: Boolean);
+begin
+  ButtonPanel.OkButton.Enabled:=AddFileListView.SelCount>0;
+end;
+
 procedure TAddToProjectDialog.FilesAddButtonClick(Sender: TObject);
 var
   i: Integer;
@@ -434,7 +442,7 @@ begin
     0: begin              // Add Editor Files
       ButtonPanel.OKButton.Caption:=lisA2PAddFiles;
       ButtonPanel.OkButton.OnClick:=@AddFileButtonClick;
-      ButtonPanel.OkButton.Enabled:=AddFileListView.Items.Count>0;
+      ButtonPanel.OkButton.Enabled:=AddFileListView.SelCount>0;
     end;
     1: begin              // New Requirement
       ButtonPanel.OkButton.Caption:=lisA2PCreateNewReq;
@@ -643,14 +651,14 @@ begin
     end;
   end;
   AddFileListView.Items.EndUpdate;
-  ButtonPanel.OkButton.Enabled:=AddFileListView.Items.Count>0;
+  ButtonPanel.OkButton.Enabled:=AddFileListView.SelCount>0;
 end;
 
 procedure TAddToProjectDialog.UpdateFilesButtons;
 begin
   FilesShortenButton.Enabled:=FilesListView.Items.Count>0;
   FilesDeleteButton.Enabled:=FilesListView.SelCount>0;
-  ButtonPanel.OKButton.Enabled:=FilesListView.Items.Count>0;
+  ButtonPanel.OKButton.Enabled:=FilesListView.SelCount>0;
 end;
 
 { TAddToProjectResult }

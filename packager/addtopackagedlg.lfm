@@ -384,7 +384,7 @@ object AddToPackageDlg: TAddToPackageDlg
         MultiSelect = True
         TabOrder = 0
         ViewStyle = vsReport
-        OnClick = FilesListViewClick
+        OnSelectItem = FilesListViewSelectItem
       end
       object AddFilesBtnPanel: TPanel
         Left = 0
