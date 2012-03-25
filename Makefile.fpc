@@ -142,7 +142,7 @@ tools: lcl
 examples: lazutils lcl bigidecomponents
 
 #-----------------------------------------------------------------------------
-all: lazbuild lcl ideintf components ide starter
+all: lazbuild lcl ideintf components tools ide starter
 
 #-----------------------------------------------------------------------------
 cleanide:
