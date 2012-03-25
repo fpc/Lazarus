@@ -12550,7 +12550,7 @@ begin
 
     // make lazarus ide and/or examples
     SourceEditorManager.ClearErrorLines;
-    IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg];
+    IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg,blfDontCleanAll];
     Result:=BuildLazarus(BuildLazProfiles.Current,ExternalTools,GlobalMacroList,
                          PkgOptions,EnvironmentOptions.GetParsedCompilerFilename,
                          EnvironmentOptions.GetParsedMakeFilename,IDEBuildFlags,
