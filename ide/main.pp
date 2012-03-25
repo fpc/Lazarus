@@ -12272,7 +12272,7 @@ const
       end;
       //DebugLn('Setting CommandLine');
       CmdLine := ExeName +
-         ' --lazarus-pid='+IntToStr(GetProcessID) + ' '                                                   +
+         ' --lazarus-pid='+IntToStr(GetProcessID) + ' '+
          GetCommandLineParameters(Params, False);
 
       DebugLn('CommandLine 1 : %s', [CmdLine]);
@@ -12293,6 +12293,7 @@ const
 var CanClose: boolean;
 begin
   DebugLn(['TMainIDE.DoRestart ']);
+  CompileProgress.Close;
   CanClose:=true;
   MainIDEBar.OnCloseQuery(Self, CanClose);
   if not CanClose then exit;
@@ -12581,7 +12582,6 @@ begin
       and (BuildLazProfiles.Current.TargetDirectory='')
       and MainBuildBoss.BuildTargetIDEIsDefault
       then begin
-        CompileProgress.Close;
         mnuRestartClicked(nil);
       end
     end
