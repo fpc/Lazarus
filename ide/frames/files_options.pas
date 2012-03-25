@@ -406,6 +406,7 @@ var
   Quality: TSDFilenameQuality;
   Note: string;
 begin
+  if EnvironmentOptions.LazarusDirectory=FOldLazarusDir then exit(true);
   Result := False;
   EnvironmentOptions.LazarusDirectory:=LazarusDirComboBox.Text;
   NewLazarusDir := EnvironmentOptions.GetParsedLazarusDirectory;
@@ -430,6 +431,7 @@ var
   CfgCache: TFPCTargetConfigCache;
   FPCVer: String;
 begin
+  if EnvironmentOptions.FPCSourceDirectory=FOldFPCSourceDir then exit(true);
   Result:=false;
   CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
     EnvironmentOptions.GetParsedCompilerFilename,'','','',true);
@@ -455,6 +457,7 @@ var
   Note: string;
   Quality: TSDFilenameQuality;
 begin
+  if EnvironmentOptions.CompilerFilename=FOldCompilerFilename then exit(true);
   Result:=false;
   EnvironmentOptions.CompilerFilename:=CompilerPathComboBox.Text;
   NewCompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
@@ -477,17 +480,18 @@ var
   NewTestDir: string;
   StopChecking: boolean;
 begin
+  if EnvironmentOptions.TestBuildDirectory=FOldTestDir then exit(true);
   EnvironmentOptions.TestBuildDirectory:=TestBuildDirComboBox.Text;
   NewTestDir:=EnvironmentOptions.GetParsedTestBuildDirectory;
   Result:=SimpleDirectoryCheck(FOldRealTestDir,NewTestDir,
                                lisEnvOptDlgTestDirNotFoundMsg,StopChecking);
-  if (not Result) or StopChecking then exit;
 end;
 
 function TFilesOptionsFrame.CheckMake: boolean;
 var
   NewMakeFilename: String;
 begin
+  if EnvironmentOptions.MakeFilename=FOldMakeFilename then exit(true);
   EnvironmentOptions.MakeFilename:=MakePathComboBox.Text;
   NewMakeFilename:=EnvironmentOptions.GetParsedMakeFilename;
   Result:=CheckExecutable(FOldRealMakeFilename,NewMakeFilename,
