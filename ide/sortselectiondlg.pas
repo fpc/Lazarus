@@ -352,6 +352,7 @@ end;
 
 procedure TSortSelectionDialog.FormCreate(Sender: TObject);
 begin
+  FCaseSensitive:=false;
   FIgnoreSpace:=true;
   FDirection:=MiscellaneousOptions.SortSelDirection;
   FDomain:=MiscellaneousOptions.SortSelDomain;
@@ -399,6 +400,8 @@ begin
       Add(lisSortSelCaseSensitive);
       Add(lisSortSelIgnoreSpace);
       EndUpdate;
+      Checked[0]:=FCaseSensitive;
+      Checked[1]:=FIgnoreSpace;
     end;
   end;
 
