@@ -206,6 +206,33 @@ function BuildLazarus(Profile: TBuildLazarusProfile;
                mtError,[mbCancel],0);
   end;
 
+  procedure CleanLazarusSrcDir(Dir: string);
+  var
+    FileInfo: TSearchRec;
+    Ext: String;
+    Filename: TFilename;
+  begin
+    Dir:=AppendPathDelim(TrimFilename(Dir));
+    if FindFirstUTF8(Dir+AllFilesMask,faAnyFile,FileInfo)=0 then begin
+      repeat
+        if (FileInfo.Name='') or (FileInfo.Name='.') or (FileInfo.Name='..')
+        or (FileInfo.Name='.svn') or (FileInfo.Name='.git') then
+          continue;
+        Filename:=Dir+FileInfo.Name;
+        if faDirectory and FileInfo.Attr>0 then
+          CleanLazarusSrcDir(Filename)
+        else begin
+          Ext:=LowerCase(ExtractFileExt(FileInfo.Name));
+          if (Ext='.ppu') or (Ext='.o') or (Ext='.rst') then begin
+            if not DeleteFileUTF8(Filename) then
+              debugln(['CleanLazarusSrcDir failed to delete file "',Filename,'"']);
+          end;
+        end;
+      until FindNextUTF8(FileInfo)<>0;
+    end;
+    FindCloseUTF8(FileInfo);
+  end;
+
 var
   Tool: TExternalToolOptions;
   ExOptions: String;
@@ -250,6 +277,9 @@ begin
       if not CheckDirectoryWritable(WorkingDirectory) then exit(mrCancel);
 
       // clean lazarus source directories
+      CleanLazarusSrcDir(WorkingDirectory);
+
+      // call make to clean up
       Tool.Title:=lisCleanLazarusSource;
       Tool.WorkingDirectory:=WorkingDirectory;
       Tool.CmdLineParams:='cleanlaz';
