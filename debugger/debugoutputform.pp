@@ -156,7 +156,7 @@ begin
   txtOutput.Lines.Clear;
   Caption:= lisMenuViewDebugOutput;
 
-  popClear.Caption:=lisUIDClear;
+  popClear.Caption:=lisClear;
   popCopyAll.Caption:=lisCopyAllOutputClipboard;
 end;
 

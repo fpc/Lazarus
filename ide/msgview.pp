@@ -266,7 +266,7 @@ begin
   MessagesMenuRoot := RegisterIDEMenuRoot(MessagesMenuRootName);
   Path := MessagesMenuRoot.Name;
   MsgQuickFixMenuSection := RegisterIDEMenuSection(Path, 'Quick Fix');
-  MsgClearMenuItem := RegisterIDEMenuCommand(Path, 'Clear', lisUIDClear);
+  MsgClearMenuItem := RegisterIDEMenuCommand(Path, 'Clear', lisClear);
   MsgCopyMenuItem := RegisterIDEMenuCommand(Path, 'Copy selected',lisCopySelectedMessagesToClipboard);
   MsgCopyAllMenuItem := RegisterIDEMenuCommand(Path, 'Copy all',lisCopyAllShownMessagesToClipboard);
   MsgCopyAllAndHiddenMenuItem := RegisterIDEMenuCommand(Path,

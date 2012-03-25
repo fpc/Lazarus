@@ -55,6 +55,7 @@ resourcestring
   lisBtnReplace = '&Replace';
   lisBtnDlgReplace = '&Replace ...';
   lisEdit = 'Edit';
+  lisClear = 'Clear';
   lisOpen = 'Open';
   lisSave = 'Save';
   lisDlgSave = 'Save ...';
@@ -3283,7 +3284,6 @@ resourcestring
   lisUIDType = 'Type:';
   lisUIDinProject = 'in Project:';
   lisUIDIncludedBy = 'Included by:';
-  lisUIDClear = 'Clear';
   lisUIDPathsReadOnly = 'Paths (Read Only)';
   lisUIDUnit = 'Unit';
   lisUIDSize = 'Size:';
