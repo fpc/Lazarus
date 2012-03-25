@@ -927,7 +927,7 @@ begin
   ecBlockUnindent:       SetCombo(VK_U,[ssCtrl],VK_UNKNOWN,[], VK_K,[SSCtrl],VK_U,[]);
   ecDeleteLastChar:      SetSingle(VK_BACK,[], VK_BACK,[ssShift]); // ctrl H used for scroll window.
   ecDeleteChar:          SetSingle(VK_DELETE,[]); // ctrl G conflicts with GO
-  ecDeleteWord:          SetSingle(VK_T,[ssCtrl]);
+  ecDeleteWord:          SetSingle(VK_T,[ssCtrl], VK_DELETE,[ssCtrl]);
   ecDeleteLastWord:      SetSingle(VK_BACK,[ssCtrl]);
   ecDeleteBOL:           SetSingle(VK_UNKNOWN,[]);
   ecDeleteEOL:           SetCombo(VK_Y,[ssCtrl,ssShift],VK_UNKNOWN,[], VK_Q,[ssCtrl],VK_Y,[]);
