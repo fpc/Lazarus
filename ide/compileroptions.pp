@@ -2239,12 +2239,8 @@ begin
 end;
 
 function TBaseCompilerOptions.TrimCustomOptions(o: string): string;
-var
-  i: Integer;
 begin
-  Result:=Trim(o);
-  for i:=length(Result) downto 1 do
-    if Result[i] in [#0..#31,#127] then System.Delete(Result,i,1);
+  Result:=SpecialCharsToSpaces(o,true);
 end;
 
 function TBaseCompilerOptions.GetOptionsForCTDefines: string;
