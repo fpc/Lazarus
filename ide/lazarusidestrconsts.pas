@@ -2958,6 +2958,9 @@ resourcestring
   lisAutomatically = 'Automatically';
   lisCleanCommonFiles = 'Clean common files';
   lisCleanAll = 'Clean all';
+  lisCleanOnlyOnce = 'Clean only once';
+  lisAfterCleaningUpSwitchToAutomaticClean = 'After cleaning up, switch to '
+    +'automatic clean';
   lisLazBuildManageProfiles ='Manage Build Profiles';
   lisLazBuildProfile ='Profile to build';
   lisLazBuildRefresh ='Refresh';
@@ -2976,9 +2979,6 @@ resourcestring
   lisLazBuildEditDefinesDialogCaption = 'Edit Defines';
   lisLazBuildNameOfTheActiveProfile = 'Name of the active profile';
   lisLazBuildManageProfiles2 = 'Manage profiles';
-  lisLazBuildIdeBuildHint = 'Build = "make ide", %s'+
-                            'Clean + Build = "make cleanide ide", %s' +
-                            'Clean All + Build = "make cleanlaz ide"';
   lisLazBuildDefinesWithoutD = 'Defines without -d';
   lisLazBuildOptionsPassedToCompiler = 'Options passed to compiler';
   lisLazBuildUpdateRevisionInfoInAboutLazarusDialog = 'Update revision info '

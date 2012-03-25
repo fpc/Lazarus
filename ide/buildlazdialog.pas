@@ -73,6 +73,10 @@ type
   { TConfigureBuildLazarusDlg }
 
   TConfigureBuildLazarusDlg = class(TForm)
+    CleanAllRadioButton: TRadioButton;
+    CleanAutoRadioButton: TRadioButton;
+    CleanCommonRadioButton: TRadioButton;
+    CleanOnceCheckBox: TCheckBox;
     CommonsDividerBevel: TDividerBevel;
     ConfirmBuildCheckBox: TCheckBox;
     DefinesButton: TButton;
@@ -87,7 +91,7 @@ type
     LCLWidgetTypeComboBox: TComboBox;
     OptionsLabel: TLabel;
     OptionsMemo: TMemo;
-    CleanUpRadioGroup: TRadioGroup;
+    CleanUpGroupBox: TGroupBox;
     RestartAfterBuildCheckBox: TCheckBox;
     ShowOptsMenuItem: TMenuItem;
     DetailsPanel: TPanel;
@@ -200,12 +204,14 @@ var
   ExOptions: String;
   WorkingDirectory: String;
   OutputDirRedirected, UpdateRevisionInc: boolean;
+  IdeBuildMode: TIdeBuildMode;
 begin
   Result:=mrCancel;
 
   Options:=Profiles.Current;
   if LazarusIDE<>nil then
     LazarusIDE.MainBarSubTitle:=Options.Name;
+  IdeBuildMode:=Options.IdeBuildMode;
 
   Tool:=TExternalToolOptions.Create;
   try
@@ -232,7 +238,8 @@ begin
     Tool.ScanOutputForMakeMessages:=true;
 
     // clean up
-    if (Options.IdeBuildMode=bmCleanAllBuild) and ([blfDontCleanAll,blfOnlyIDE]*Flags=[]) then begin
+    if (IdeBuildMode=bmCleanAllBuild) and ([blfDontCleanAll,blfOnlyIDE]*Flags=[])
+    then begin
       WorkingDirectory:=EnvironmentOptions.GetParsedLazarusDirectory;
       if not CheckDirectoryWritable(WorkingDirectory) then exit(mrCancel);
 
@@ -248,16 +255,19 @@ begin
         Tool.CmdLineParams:=Tool.CmdLineParams+' CPU_TARGET='+Options.FPCTargetCPU;
       Result:=ExternalTools.Run(Tool,Macros,false);
       if Result<>mrOk then exit;
+
+      if Options.CleanOnce then
+        Options.IdeBuildMode:=bmBuild;
     end;
 
     // build IDE
     if not (blfDontBuild in Flags) then begin
       WorkingDirectory:=EnvironmentOptions.GetParsedLazarusDirectory;
       if blfDontCleanAll in Flags then
-        Options.IdeBuildMode:=bmBuild;
+        IdeBuildMode:=bmBuild;
       Tool.Title:=lisIDE;
       Tool.WorkingDirectory:=WorkingDirectory;
-      if Options.IdeBuildMode=bmCleanBuild then
+      if IdeBuildMode=bmCleanBuild then
         Tool.CmdLineParams:='cleanide ide'
       else
         Tool.CmdLineParams:='ide';        // bmBuild or bmCleanAllBuild
@@ -286,6 +296,8 @@ begin
       // run
       Result:=ExternalTools.Run(Tool,Macros,false);
       if Result<>mrOk then exit;
+      if Options.CleanOnce then
+        Options.IdeBuildMode:=bmBuild;
     end;
     Result:=mrOk;
   finally
@@ -642,11 +654,6 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self,700,480);
 
   Caption := Format(lisConfigureBuildLazarus, ['"', '"']);
-  CleanUpRadioGroup.Caption:=lisCleanUp;
-  CleanUpRadioGroup.Items.Add(lisAutomatically);
-  CleanUpRadioGroup.Items.Add(lisCleanCommonFiles);
-  CleanUpRadioGroup.Items.Add(lisCleanAll);
-  CleanUpRadioGroup.ItemIndex:=0;
 
   // Show Build target names in combobox.
   LCLWidgetTypeLabel.Caption := lisLCLWidgetType;
@@ -654,41 +661,46 @@ begin
     LCLWidgetTypeComboBox.Items.Add(LCLPlatformDisplayNames[LCLInterface]);
 
   BuildProfileLabel.Caption:=lisLazBuildProfile;
+  BuildProfileButton.Hint := lisLazBuildManageProfiles2;
+  BuildProfileComboBox.Hint := lisLazBuildNameOfTheActiveProfile;
   OptionsLabel.Caption := lisLazBuildOptions;
   TargetOSLabel.Caption := lisLazBuildTargetOS;
   TargetCPULabel.Caption := lisLazBuildTargetCPU;
   TargetDirectoryLabel.Caption := lisLazBuildTargetDirectory;
 
+  DefinesListBox.Hint := lisLazBuildDefinesWithoutD;
+  DefinesLabel.Caption := lisLazBuildDefines;
+  DefinesButton.Caption := lisLazBuildEditDefines;
+  DefinesButton.Hint := lisLazBuildEditListOfDefinesWhichCanBeUsedByAnyProfile;
+
+  CleanUpGroupBox.Caption:=lisCleanUp;
+  CleanAutoRadioButton.Caption:=lisAutomatically;
+  CleanCommonRadioButton.Caption:=lisCleanCommonFiles;
+  CleanAllRadioButton.Caption:=lisCleanAll;
+  CleanOnceCheckBox.Caption:=lisCleanOnlyOnce;
+  CleanOnceCheckBox.Hint:=lisAfterCleaningUpSwitchToAutomaticClean;
+
   UpdateRevisionIncCheckBox.Caption := lisLazBuildUpdateRevInc;
+  UpdateRevisionIncCheckBox.Hint := lisLazBuildUpdateRevisionInfoInAboutLazarusDialog;
 
   CommonsDividerBevel.Caption := lisLazBuildCommonSettings;
   RestartAfterBuildCheckBox.Caption := lisLazBuildRestartAfterBuild;
+  RestartAfterBuildCheckBox.Hint := lisLazBuildRestartLazarusAutomatically;
   ConfirmBuildCheckBox.Caption := lisLazBuildConfirmBuild;
+  ConfirmBuildCheckBox.Hint := lisLazBuildShowConfirmationDialogWhenBuilding;
 
   CompileButton.Caption := lisBuild;
-  CompileAdvancedButton.Caption := lisLazBuildBuildMany;
-  SaveSettingsButton.Caption := lisSaveSettings;
-  CancelButton.Caption := lisCancel;
-  HelpButton.Caption := lisMenuHelp;
-
-  DefinesLabel.Caption := lisLazBuildDefines;
-  DefinesButton.Caption := lisLazBuildEditDefines;
-
-  BuildProfileComboBox.Hint := lisLazBuildNameOfTheActiveProfile;
-  BuildProfileButton.Hint := lisLazBuildManageProfiles2;
-  CleanUpRadioGroup.Hint := Format(lisLazBuildIdeBuildHint, [LineEnding, LineEnding]);
-  DefinesListBox.Hint := lisLazBuildDefinesWithoutD;
-  OptionsMemo.Hint := lisLazBuildOptionsPassedToCompiler;
-  UpdateRevisionIncCheckBox.Hint := lisLazBuildUpdateRevisionInfoInAboutLazarusDialog;
-  RestartAfterBuildCheckBox.Hint := lisLazBuildRestartLazarusAutomatically;
-  ConfirmBuildCheckBox.Hint := lisLazBuildShowConfirmationDialogWhenBuilding;
-  DefinesButton.Hint := lisLazBuildEditListOfDefinesWhichCanBeUsedByAnyProfile;
-
   CompileButton.LoadGlyphFromLazarusResource('menu_build');
+  CompileAdvancedButton.Caption := lisLazBuildBuildMany;
   CompileAdvancedButton.LoadGlyphFromLazarusResource('menu_build_all');
+  SaveSettingsButton.Caption := lisSaveSettings;
   SaveSettingsButton.LoadGlyphFromStock(idButtonSave);
   if SaveSettingsButton.Glyph.Empty then
     SaveSettingsButton.LoadGlyphFromLazarusResource('laz_save');
+  CancelButton.Caption := lisCancel;
+  HelpButton.Caption := lisMenuHelp;
+
+  OptionsMemo.Hint := lisLazBuildOptionsPassedToCompiler;
 
   with TargetOSComboBox do
   begin
@@ -796,7 +808,12 @@ begin
   TargetOSComboBox.Text             :=AProfile.TargetOS;
   TargetDirectoryComboBox.Text      :=AProfile.TargetDirectory;
   TargetCPUComboBox.Text            :=AProfile.TargetCPU;
-  CleanUpRadioGroup.ItemIndex      :=ord(AProfile.IdeBuildMode);
+  case AProfile.IdeBuildMode of
+  bmBuild: CleanAutoRadioButton.Checked:=true;
+  bmCleanBuild: CleanCommonRadioButton.Checked:=true;
+  bmCleanAllBuild: CleanAllRadioButton.Checked:=true;
+  end;
+  CleanOnceCheckBox.Checked:=AProfile.CleanOnce;
   OptionsMemo.Lines.Assign(AProfile.OptionsLines);
   for i:=0 to DefinesListBox.Items.Count-1 do
     DefinesListBox.Checked[i]:=AProfile.Defines.IndexOf(DefinesListBox.Items[i]) > -1;
@@ -811,7 +828,13 @@ begin
   AProfile.TargetOS          :=TargetOSComboBox.Text;
   AProfile.TargetDirectory   :=TargetDirectoryComboBox.Text;
   AProfile.TargetCPU         :=TargetCPUComboBox.Text;
-  AProfile.IdeBuildMode      :=TIdeBuildMode(CleanUpRadioGroup.ItemIndex);
+  if CleanAllRadioButton.Checked then
+    AProfile.IdeBuildMode := bmCleanAllBuild
+  else if CleanCommonRadioButton.Checked then
+    AProfile.IdeBuildMode := bmCleanBuild
+  else
+    AProfile.IdeBuildMode := bmBuild;
+  AProfile.CleanOnce:=CleanOnceCheckBox.Checked;
   AProfile.OptionsLines.Assign(OptionsMemo.Lines);
   AProfile.Defines.Clear;
   for i:=0 to DefinesListBox.Items.Count-1 do

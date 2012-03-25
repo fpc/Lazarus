@@ -51,6 +51,7 @@ type
 
   TBuildLazarusProfile = class
   private
+    FCleanOnce: boolean;
     fOwnerCnt: TBuildLazarusProfiles;
     fName: string;
     fTargetOS: string;
@@ -80,6 +81,7 @@ type
     property TargetCPU: string read fTargetCPU write fTargetCPU;
     property TargetPlatform: TLCLPlatform read fTargetPlatform write fTargetPlatform;
     property IdeBuildMode: TIdeBuildMode read fIdeBuildMode write fIdeBuildMode;
+    property CleanOnce: boolean read FCleanOnce write FCleanOnce;
     property UpdateRevisionInc: boolean read fUpdateRevisionInc write fUpdateRevisionInc;
     property OptionsLines: TStringList read fOptions;
     property Defines: TStringList read fDefines;
@@ -217,6 +219,7 @@ begin
   FTargetDirectory:=AppendPathDelim(SetDirSeparators(
       XMLConfig.GetValue(Path+'TargetDirectory/Value', DefaultTargetDirectory)));
   IdeBuildMode:=StrToIdeBuildMode(XMLConfig.GetValue(Path+'IdeBuildMode/Value',''));
+  CleanOnce:=XMLConfig.GetValue(Path+'CleanOnce/Value',false);
   FUpdateRevisionInc :=XMLConfig.GetValue(Path+'UpdateRevisionInc/Value',true);
   LoadStringList(XMLConfig,fOptions,Path+'Options/');
   if fOptions.Count=0 then     // Support a syntax used earlier by profiles.
@@ -234,6 +237,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'TargetDirectory/Value',
                            FTargetDirectory,DefaultTargetDirectory);
   XMLConfig.SetDeleteValue(Path+'IdeBuildMode/Value',IdeBuildModeToStr(IdeBuildMode),'');
+  XMLConfig.SetDeleteValue(Path+'CleanOnce/Value',CleanOnce,false);
   XMLConfig.SetDeleteValue(Path+'UpdateRevisionInc/Value',FUpdateRevisionInc,true);
   SaveStringList(XMLConfig,fOptions,Path+'Options/');
   SaveStringList(XMLConfig,fDefines,Path+'Defines/');
@@ -249,6 +253,7 @@ begin
   TargetCPU         :=Source.TargetCPU;
   TargetPlatform    :=Source.TargetPlatform;
   IdeBuildMode      :=Source.IdeBuildMode;
+  CleanOnce         :=Source.CleanOnce;
   UpdateRevisionInc :=Source.UpdateRevisionInc;
   fOptions.Assign(Source.fOptions);
   fDefines.Assign(Source.fDefines);

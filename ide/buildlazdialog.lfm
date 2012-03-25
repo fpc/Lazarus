@@ -1,7 +1,7 @@
 object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
-  Left = 354
+  Left = 349
   Height = 480
-  Top = 78
+  Top = 200
   Width = 700
   VertScrollBar.Visible = False
   BorderIcons = [biSystemMenu]
@@ -232,14 +232,14 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       ParentColor = False
     end
     object UpdateRevisionIncCheckBox: TCheckBox
-      AnchorSideLeft.Control = CleanUpRadioGroup
-      AnchorSideTop.Control = CleanUpRadioGroup
+      AnchorSideLeft.Control = CleanUpGroupBox
+      AnchorSideTop.Control = CleanUpGroupBox
       AnchorSideTop.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
       Left = 340
       Height = 22
       Hint = 'Increment revision? (ToDo: get a better hint)'
-      Top = 245
+      Top = 336
       Width = 181
       BorderSpacing.Top = 6
       Caption = 'UpdateRevisionIncCheckBox'
@@ -361,23 +361,23 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       ItemHeight = 0
       TabOrder = 7
     end
-    object CleanUpRadioGroup: TRadioGroup
+    object CleanUpGroupBox: TGroupBox
       AnchorSideLeft.Control = DefinesListBox
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = DefinesListBox
+      AnchorSideTop.Control = TargetDirectoryComboBox
+      AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = DetailsPanel
       AnchorSideRight.Side = asrBottom
       Left = 340
-      Height = 4
-      Top = 235
+      Height = 116
+      Top = 214
       Width = 353
       Anchors = [akTop, akLeft, akRight]
-      AutoFill = True
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
-      Caption = 'Building IDE'
+      Caption = 'Clean up'
       ChildSizing.LeftRightSpacing = 6
       ChildSizing.TopBottomSpacing = 6
       ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
@@ -386,9 +386,44 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
+      ClientHeight = 100
+      ClientWidth = 349
       ParentShowHint = False
       ShowHint = True
       TabOrder = 13
+      object CleanAutoRadioButton: TRadioButton
+        Left = 6
+        Height = 22
+        Top = 6
+        Width = 337
+        Caption = 'CleanAutoRadioButton'
+        Checked = True
+        TabOrder = 0
+      end
+      object CleanCommonRadioButton: TRadioButton
+        Left = 6
+        Height = 22
+        Top = 28
+        Width = 337
+        Caption = 'CleanCommonRadioButton'
+        TabOrder = 1
+      end
+      object CleanAllRadioButton: TRadioButton
+        Left = 6
+        Height = 22
+        Top = 50
+        Width = 337
+        Caption = 'CleanAllRadioButton'
+        TabOrder = 2
+      end
+      object CleanOnceCheckBox: TCheckBox
+        Left = 6
+        Height = 22
+        Top = 72
+        Width = 337
+        Caption = 'CleanOnceCheckBox'
+        TabOrder = 3
+      end
     end
   end
   object CBLDBtnPanel: TPanel
