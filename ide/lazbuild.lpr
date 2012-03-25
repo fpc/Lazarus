@@ -410,6 +410,7 @@ var
   TargetDir: String;
   i: Integer;
   s: String;
+  ProfileChanged: boolean;
 begin
   Result:=false;
   Init;
@@ -491,18 +492,19 @@ begin
            PackageGraph.FirstAutoInstallDependency,InheritedOptionStrings{%H-});
 
   // save
-  CurResult:=SaveIDEMakeOptions(BuildLazProfiles,GlobalMacroList,PkgOptions,Flags);
+  CurResult:=SaveIDEMakeOptions(BuildLazProfiles.Current,GlobalMacroList,PkgOptions,Flags);
   if CurResult<>mrOk then begin
     DebugLn('TLazBuildApplication.BuildLazarusIDE: failed saving idemake.cfg');
     exit;
   end;
 
   // compile IDE
-  CurResult:=BuildLazarus(BuildLazProfiles,
+  ProfileChanged:=false;
+  CurResult:=BuildLazarus(BuildLazProfiles.Current,
                           EnvironmentOptions.ExternalTools,GlobalMacroList,
                           PkgOptions,EnvironmentOptions.CompilerFilename,
                           EnvironmentOptions.MakeFilename,
-                          Flags+[blfUseMakeIDECfg,blfReplaceExe]);
+                          Flags+[blfUseMakeIDECfg,blfReplaceExe],ProfileChanged);
   if CurResult<>mrOk then begin
     DebugLn('TLazBuildApplication.BuildLazarusIDE: Building IDE failed.');
     exit;
