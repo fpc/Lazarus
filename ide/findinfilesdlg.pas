@@ -130,10 +130,8 @@ begin
     SelectDirectoryDialog.InitialDir := Dir
   else
     SelectDirectoryDialog.InitialDir := GetCurrentDirUTF8;
-  if SelectDirectoryDialog.Execute
-  and (CompareFilenames(SelectDirectoryDialog.FileName,Dir)<>0) then begin
-    DirectoryComboBox.Text := SelectDirectoryDialog.FileName;
-  end;
+  if SelectDirectoryDialog.Execute then
+    DirectoryComboBox.Text := AppendPathDelim(TrimFilename(SelectDirectoryDialog.FileName));
   StoreIDEFileDialog(SelectDirectoryDialog);
 end;
 
@@ -281,11 +279,12 @@ procedure TLazFindInFilesDialog.LoadHistory;
       AComboBox.ItemIndex := 0;
   end;
 
-  procedure AddFileToComboBox(AComboBox: TComboBox; const Filename: string);
+  procedure AddFileToComboBox(AComboBox: TComboBox; Filename: string);
   var
     i: Integer;
   begin
     if Filename='' then exit;
+    Filename:=AppendPathDelim(TrimFilename(Filename));
     for i:=0 to AComboBox.Items.Count-1 do begin
       if CompareFilenames(Filename,AComboBox.Items[i])=0 then begin
         // move to front (but not top, top should be the last used directory)
@@ -327,9 +326,13 @@ begin
 end;
 
 procedure TLazFindInFilesDialog.SaveHistory;
+var
+  Dir: String;
 begin
   InputHistories.AddToFindHistory(FindText);
-  InputHistories.AddToFindInFilesPathHistory(DirectoryComboBox.Text);
+  Dir:=AppendPathDelim(TrimFilename(DirectoryComboBox.Text));
+  if Dir<>'' then
+    InputHistories.AddToFindInFilesPathHistory(Dir);
   InputHistories.AddToFindInFilesMaskHistory(FileMaskComboBox.Text);
   InputHistories.FindInFilesSearchOptions:=Options;
   InputHistories.Save;
@@ -359,8 +362,12 @@ Begin
 end;
 
 procedure TLazFindInFilesDialog.InitFromLazSearch(Sender: TObject);
+var
+  Dir: String;
 begin
-  DirectoryComboBox.Text:= TLazSearch(Sender).SearchDirectory;
+  Dir:=AppendPathDelim(TrimFilename(TLazSearch(Sender).SearchDirectory));
+  if Dir<>'' then
+    DirectoryComboBox.Text:= Dir;
   Options:= TLazSearch(Sender).SearchOptions;
   FileMaskComboBox.Text:= TLazSearch(Sender).SearchMask;
 end;
