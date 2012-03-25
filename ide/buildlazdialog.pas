@@ -87,7 +87,7 @@ type
     LCLWidgetTypeComboBox: TComboBox;
     OptionsLabel: TLabel;
     OptionsMemo: TMemo;
-    BuildIdeRadioGroup: TRadioGroup;
+    CleanUpRadioGroup: TRadioGroup;
     RestartAfterBuildCheckBox: TCheckBox;
     ShowOptsMenuItem: TMenuItem;
     DetailsPanel: TPanel;
@@ -642,11 +642,11 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self,700,480);
 
   Caption := Format(lisConfigureBuildLazarus, ['"', '"']);
-  BuildIdeRadioGroup.Caption:=lisLazBuildBuildingIDE;
-  BuildIdeRadioGroup.Items.Add(lisLazBuildBuild);
-  BuildIdeRadioGroup.Items.Add(lisLazBuildCleanBuild);
-  BuildIdeRadioGroup.Items.Add(lisLazBuildCleanAllBuild);
-  BuildIdeRadioGroup.ItemIndex:=0;
+  CleanUpRadioGroup.Caption:=lisCleanUp;
+  CleanUpRadioGroup.Items.Add(lisAutomatically);
+  CleanUpRadioGroup.Items.Add(lisCleanCommonFiles);
+  CleanUpRadioGroup.Items.Add(lisCleanAll);
+  CleanUpRadioGroup.ItemIndex:=0;
 
   // Show Build target names in combobox.
   LCLWidgetTypeLabel.Caption := lisLCLWidgetType;
@@ -665,7 +665,7 @@ begin
   RestartAfterBuildCheckBox.Caption := lisLazBuildRestartAfterBuild;
   ConfirmBuildCheckBox.Caption := lisLazBuildConfirmBuild;
 
-  CompileButton.Caption := lisLazBuildBuild;
+  CompileButton.Caption := lisBuild;
   CompileAdvancedButton.Caption := lisLazBuildBuildMany;
   SaveSettingsButton.Caption := lisSaveSettings;
   CancelButton.Caption := lisCancel;
@@ -676,7 +676,7 @@ begin
 
   BuildProfileComboBox.Hint := lisLazBuildNameOfTheActiveProfile;
   BuildProfileButton.Hint := lisLazBuildManageProfiles2;
-  BuildIdeRadioGroup.Hint := Format(lisLazBuildIdeBuildHint, [LineEnding, LineEnding]);
+  CleanUpRadioGroup.Hint := Format(lisLazBuildIdeBuildHint, [LineEnding, LineEnding]);
   DefinesListBox.Hint := lisLazBuildDefinesWithoutD;
   OptionsMemo.Hint := lisLazBuildOptionsPassedToCompiler;
   UpdateRevisionIncCheckBox.Hint := lisLazBuildUpdateRevisionInfoInAboutLazarusDialog;
@@ -796,7 +796,7 @@ begin
   TargetOSComboBox.Text             :=AProfile.TargetOS;
   TargetDirectoryComboBox.Text      :=AProfile.TargetDirectory;
   TargetCPUComboBox.Text            :=AProfile.TargetCPU;
-  BuildIdeRadioGroup.ItemIndex      :=ord(AProfile.IdeBuildMode);
+  CleanUpRadioGroup.ItemIndex      :=ord(AProfile.IdeBuildMode);
   OptionsMemo.Lines.Assign(AProfile.OptionsLines);
   for i:=0 to DefinesListBox.Items.Count-1 do
     DefinesListBox.Checked[i]:=AProfile.Defines.IndexOf(DefinesListBox.Items[i]) > -1;
@@ -811,7 +811,7 @@ begin
   AProfile.TargetOS          :=TargetOSComboBox.Text;
   AProfile.TargetDirectory   :=TargetDirectoryComboBox.Text;
   AProfile.TargetCPU         :=TargetCPUComboBox.Text;
-  AProfile.IdeBuildMode      :=TIdeBuildMode(BuildIdeRadioGroup.ItemIndex);
+  AProfile.IdeBuildMode      :=TIdeBuildMode(CleanUpRadioGroup.ItemIndex);
   AProfile.OptionsLines.Assign(OptionsMemo.Lines);
   AProfile.Defines.Clear;
   for i:=0 to DefinesListBox.Items.Count-1 do

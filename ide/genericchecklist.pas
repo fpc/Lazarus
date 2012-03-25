@@ -42,7 +42,7 @@ begin
   BitButtonYes:=TBitBtn.Create(ButtonPanel1);
   BitButtonYes.Kind:=bkCustom;
   BitButtonYes.ModalResult:=mrYes;
-  BitButtonYes.Caption:=lisLazBuildBuild;
+  BitButtonYes.Caption:=lisBuild;
   BitButtonYes.Align:=alRight;
   BitButtonYes.Parent:=ButtonPanel1;
 end;

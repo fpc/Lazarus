@@ -2952,11 +2952,12 @@ resourcestring
   lisLazBuildRenameProfInfo = 'New name for profile:';
   lisCTDTemplates = 'Templates';
   lisSaveSettings = 'Save Settings';
-  lisLazBuildBuild = 'Build';
+  lisBuild = 'Build';
+  lisCleanUp = 'Clean up';
   lisLazBuildBuildMany = 'Build Many';
-  lisLazBuildBuildingIDE = 'Building IDE';
-  lisLazBuildCleanBuild = 'Clean + Build';
-  lisLazBuildCleanAllBuild = 'Clean All + Build';
+  lisAutomatically = 'Automatically';
+  lisCleanCommonFiles = 'Clean common files';
+  lisCleanAll = 'Clean all';
   lisLazBuildManageProfiles ='Manage Build Profiles';
   lisLazBuildProfile ='Profile to build';
   lisLazBuildRefresh ='Refresh';
