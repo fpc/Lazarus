@@ -1955,9 +1955,9 @@ begin
   MainIDEBar.ViewFormsSpeedBtn   := CreateButton(MainIDEBar.tbViewDebug, 'ViewFormsSpeedBtn'  , 'menu_view_forms'           , @mnuViewFormsClicked, lisHintViewForms);
   MainIDEBar.tbDivider3          := CreateDivider(MainIDEBar.tbViewDebug);
   MainIDEBar.BuildModeSpeedButton:= CreateButton(MainIDEBar.tbViewDebug, 'BuildModeSpeedButton', 'menu_compiler_options'    , @mnuChgBuildModeClicked, lisChangeBuildMode);
-  MainIDEBar.RunSpeedButton      := CreateButton(MainIDEBar.tbViewDebug, 'RunSpeedButton'     , 'menu_run'                  , @mnuRunProjectClicked, lisHintRun);
-  MainIDEBar.PauseSpeedButton    := CreateButton(MainIDEBar.tbViewDebug, 'PauseSpeedButton'   , 'menu_pause'                , @mnuPauseProjectClicked, lisHintPause);
-  MainIDEBar.StopSpeedButton     := CreateButton(MainIDEBar.tbViewDebug, 'StopSpeedButton'    , 'menu_stop'                 , @mnuStopProjectClicked, lisHintStop);
+  MainIDEBar.RunSpeedButton      := CreateButton(MainIDEBar.tbViewDebug, 'RunSpeedButton'     , 'menu_run'                  , @mnuRunProjectClicked, lisRun);
+  MainIDEBar.PauseSpeedButton    := CreateButton(MainIDEBar.tbViewDebug, 'PauseSpeedButton'   , 'menu_pause'                , @mnuPauseProjectClicked, lisPause);
+  MainIDEBar.StopSpeedButton     := CreateButton(MainIDEBar.tbViewDebug, 'StopSpeedButton'    , 'menu_stop'                 , @mnuStopProjectClicked, lisStop);
   MainIDEBar.StepIntoSpeedButton := CreateButton(MainIDEBar.tbViewDebug, 'StepIntoSpeedButton', 'menu_stepinto'             , @mnuStepIntoProjectClicked, lisHintStepInto);
   MainIDEBar.StepOverSpeedButton := CreateButton(MainIDEBar.tbViewDebug, 'StepOverpeedButton' , 'menu_stepover'             , @mnuStepOverProjectClicked, lisHintStepOver);
   MainIDEBar.StepOutSpeedButton  := CreateButton(MainIDEBar.tbViewDebug, 'StepOutSpeedButton' , 'menu_stepout'              , @mnuStepOutProjectClicked, lisHintStepOut);
@@ -3838,7 +3838,7 @@ begin
         if (rfInteractive in AFlags)
         and (IDEQuestionDialog(lisStopDebugging,
             lisStopTheDebugging, mtConfirmation,
-            [mrYes, lisMenuStop, mrCancel, lisContinue]) <> mrYes)
+            [mrYes, lisStop, mrCancel, lisContinue]) <> mrYes)
         then exit;
         if (DebugBoss.DoStopProject = mrOK) and (ToolStatus = itDebugger) and (rfCloseOnDone in AFlags) then
           FWaitForClose := True;

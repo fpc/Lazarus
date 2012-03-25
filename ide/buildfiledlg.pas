@@ -551,13 +551,13 @@ begin
   OverrideRunProjectCheckbox.Caption:=
     lisBFOnRunProjectExecuteTheRunFileCommandInstead;
 
-  BuildPage.Caption:=lisBFBuild;
+  BuildPage.Caption:=lisBuild;
   BuildWorkingDirGroupbox.Caption:=lisBFWorkingDirectoryLeaveEmptyForFilePath;
   BuildCommandGroupbox.Caption:=lisBFBuildCommand;
   BuildScanForFPCMsgCheckbox.Caption:=lisCOScanForFPCMessages;
   BuildScanForMakeMsgCheckbox.Caption:=lisCOScanForMakeMessages;
 
-  RunPage.Caption:=lisBFRun;
+  RunPage.Caption:=lisRun;
   AlwaysCompileFirstCheckbox.Caption:=lisBFAlwaysBuildBeforeRun;
   RunWorkDirGroupbox.Caption:=lisBFWorkingDirectoryLeaveEmptyForFilePath;
   RunCommandGroupbox.Caption:=lisBFRunCommand;

@@ -55,9 +55,9 @@ begin
   AutoSize := False;
   Memo1.Visible := not Memo1.Visible;
   if Memo1.Visible then
-    ButtonPanel1.HelpButton.Caption := lisDebuggerFeedbackLess
+    ButtonPanel1.HelpButton.Caption := lisLess
   else
-    ButtonPanel1.HelpButton.Caption := lisDebuggerFeedbackMore;
+    ButtonPanel1.HelpButton.Caption := lisMore;
   AutoSize := True;
 end;
 
@@ -79,7 +79,7 @@ begin
   memo1.Text := AInfo;
   memo1.Visible := False;
   if AInfo <> '' then begin
-    ButtonPanel1.HelpButton.Caption := lisDebuggerFeedbackMore;
+    ButtonPanel1.HelpButton.Caption := lisMore;
     ButtonPanel1.HelpButton.Visible := True;
   end
   else begin
@@ -90,7 +90,7 @@ begin
   ButtonPanel1.CancelButton.Visible := frStop in AButtons;
 
   ButtonPanel1.OKButton.Caption := lisMenuOk;
-  ButtonPanel1.CancelButton.Caption := lisDebuggerFeedbackStop;
+  ButtonPanel1.CancelButton.Caption := lisStop;
 
   case ShowModal of
     mrOk: Result := frOk;

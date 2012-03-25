@@ -461,7 +461,7 @@ begin
   // register the section for compiling the package
   PkgEditMenuSectionCompile:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Compile');
   AParent:=PkgEditMenuSectionCompile;
-  PkgEditMenuCompile:=RegisterIDEMenuCommand(AParent,'Compile',lisPckEditCompile);
+  PkgEditMenuCompile:=RegisterIDEMenuCommand(AParent,'Compile',lisCompile);
   PkgEditMenuRecompileClean:=RegisterIDEMenuCommand(AParent,'Recompile Clean',lisPckEditRecompileClean);
   PkgEditMenuRecompileAllRequired:=RegisterIDEMenuCommand(AParent,'Recompile All Required',lisPckEditRecompileAllRequired);
   PkgEditMenuCreateMakefile:=RegisterIDEMenuCommand(AParent,'Create Makefile',lisPckEditCreateMakefile);
@@ -1282,7 +1282,7 @@ begin
   FilterEdit.OnGetImageIndex:=@ChooseImageIndex;
 
   SaveBitBtn    := CreateToolButton('SaveBitBtn', lisMenuSave, lisPckEditSavePackage, 'laz_save', @SaveBitBtnClick);
-  CompileBitBtn := CreateToolButton('CompileBitBtn', lisPckEditCompile, lisPckEditCompilePackage, 'pkg_compile', @CompileBitBtnClick);
+  CompileBitBtn := CreateToolButton('CompileBitBtn', lisCompile, lisPckEditCompilePackage, 'pkg_compile', @CompileBitBtnClick);
   UseBitBtn     := CreateToolButton('UseBitBtn', lisPckEditInstall, lisPckEditInstallPackageInTheIDE, 'pkg_install', nil);
   CreateDivider;
   AddBitBtn     := CreateToolButton('AddBitBtn', lisAdd, lisPckEditAddAnItem, 'laz_add', @AddBitBtnClick);

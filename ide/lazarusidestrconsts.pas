@@ -97,6 +97,13 @@ resourcestring
   lisVariable = 'Variable';
   lisPath = 'Path';
   lisId = 'ID';
+  lisCompile = 'Compile';
+  lisBuild = 'Build';
+  lisRun = 'Run';
+  lisPause = 'Pause';
+  lisStop = 'Stop';
+  lisLess = 'Less';
+  lisMore = 'More';
 
   // errors
   lisErrInvalidOption = 'Invalid option at position %d: "%s"';
@@ -375,12 +382,8 @@ resourcestring
   lisMenuViewProjectSource = '&View Project Source';
   lisMenuProjectOptions = 'Project Options ...';
 
-  lisMenuCompile = 'Compile';
-  lisBFBuild = 'Build';
-  lisBFRun = 'Run';
   lisBFWorkingDirectoryLeaveEmptyForFilePath = 'Working directory (leave empty for file path)';
   lisBFBuildCommand = 'Build Command';
-  lisMenuBuild = 'Build';
   lisMenuQuickCompile = 'Quick Compile';
   lisMenuCleanUpCompiled = 'Clean up Build Files ...';
   lisMenuAbortBuild = 'Abort Build';
@@ -392,7 +395,6 @@ resourcestring
   lisDisAssGotoAddressHint = 'Goto Address';
 
   lisBFRunCommand = 'Run Command';
-  lisMenuPause = 'Pause';
   lisMenuShowExecutionPoint = 'S&how Execution Point';
   lisMenuStepInto = 'Step In&to';
   lisMenuStepOver = '&Step Over';
@@ -405,7 +407,6 @@ resourcestring
   lisMenuStepOut = 'Step O&ut';
   lisMenuRunToCursor = 'Run to &Cursor';
   lisKMStopProgram = 'Stop Program';
-  lisMenuStop = 'Stop';
   lisContinueAndDoNotAskAgain = 'Continue and do not ask again';
   lisSuspiciousUnitPath = 'Suspicious unit path';
   lisThePackageAddsThePathToTheUnitPathOfTheIDEThisIsPr = 'The package %s '
@@ -950,9 +951,6 @@ resourcestring
   lisHintToggleFormUnit = 'Toggle Form/Unit';
   lisHintViewUnits = 'View Units';
   lisHintViewForms = 'View Forms';
-  lisHintRun = 'Run';
-  lisHintPause = 'Pause';
-  lisHintStop = 'Stop';
   lisHintStepInto = 'Step Into';
   lisHintStepOver = 'Step Over';
   lisHintStepOut  = 'Run until function returns';
@@ -1976,9 +1974,6 @@ resourcestring
     +'standard config.';
   lisCOClickOKIfAreSureToDoThat = '%s%sClick OK if you are sure to do that.';
   lisCOCallOn = 'Call on:';
-  lisCOCallOnCompile = 'Compile';
-  lisCOCallOnBuild = 'Build';
-  lisCOCallOnRun = 'Run';
   dlgCOCreateMakefile = 'Create Makefile';
   lisCOExecuteAfter = 'Execute after';
   lisCOExecuteBefore = 'Execute before';
@@ -2949,7 +2944,6 @@ resourcestring
   lisLazBuildRenameProfInfo = 'New name for profile:';
   lisCTDTemplates = 'Templates';
   lisSaveSettings = 'Save Settings';
-  lisBuild = 'Build';
   lisCleanUp = 'Clean up';
   lisLazBuildBuildMany = 'Build Many';
   lisAutomatically = 'Automatically';
@@ -4052,7 +4046,6 @@ resourcestring
     +'preferred filename of dependency';
   lisRemoveNonExistingFiles = 'Remove non existing files';
   lisPckEditReAddDependency = 'Re-Add dependency';
-  lisPckEditCompile = 'Compile';
   lisPckEditRecompileClean = 'Recompile Clean';
   lisPckEditRecompileAllRequired = 'Recompile All Required';
   lisPckEditCreateMakefile = 'Create Makefile';
@@ -4666,7 +4659,6 @@ resourcestring
   lisViewSource = 'View Source';
   lisViewSourceDisass = 'View Assembler';
   lisMaxS = 'Max %d';
-  lisMore = 'More';
   lisGotoSelectedSourceLine = 'Goto selected source line';
   lisCopyAll = 'Copy All';
   lisIndex = 'Index';
@@ -5403,9 +5395,6 @@ resourcestring
   lisDebuggerFeedbackInformation = 'Debugger Information';
   lisDebuggerFeedbackWarning = 'Debugger Warning';
   lisDebuggerFeedbackError = 'Debugger Error';
-  lisDebuggerFeedbackStop = 'Stop';
-  lisDebuggerFeedbackLess = 'Less';
-  lisDebuggerFeedbackMore = 'More';
 
   // breakpointgroups
   dbgBreakGroupDlgCaptionEnable = 'Select Groups';

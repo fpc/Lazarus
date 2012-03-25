@@ -70,9 +70,9 @@ begin
   chkCreateMakefile.Caption := dlgCOCreateMakefile;
 
   ExecuteBeforeGroupBox.Caption := lisCOExecuteBefore;
-  chkExecBeforeBuild.Caption := lisCOCallOnBuild;
-  chkExecBeforeCompile.Caption := lisCOCallOnCompile;
-  chkExecBeforeRun.Caption := lisCOCallOnRun;
+  chkExecBeforeBuild.Caption := lisBuild;
+  chkExecBeforeCompile.Caption := lisCompile;
+  chkExecBeforeRun.Caption := lisRun;
   ExecuteBeforeCommandEdit.Text := '';
   ExecuteBeforeCommandLabel.Caption := lisCOCommand;
   ExecuteBeforeScanLabel.Caption := lisCOScanForMessages;
@@ -82,20 +82,20 @@ begin
   lblRunIfExecBefore.Caption := lisCOCallOn;
 
   grpCompiler.Caption := lisCompiler;
-  chkCompilerBuild.Caption := lisCOCallOnBuild;
+  chkCompilerBuild.Caption := lisBuild;
   chkCompilerBuild.Checked := True;
-  chkCompilerCompile.Caption := lisCOCallOnCompile;
+  chkCompilerCompile.Caption := lisCompile;
   chkCompilerCompile.Checked := True;
-  chkCompilerRun.Caption := lisCOCallOnRun;
+  chkCompilerRun.Caption := lisRun;
   chkCompilerRun.Checked := True;
   edtCompiler.Text := '';
   lblCompiler.Caption := lisCOCommand;
   lblRunIfCompiler.Caption := lisCOCallOn;
 
   ExecuteAfterGroupBox.Caption := lisCOExecuteAfter;
-  chkExecAfterBuild.Caption := lisCOCallOnBuild;
-  chkExecAfterCompile.Caption := lisCOCallOnCompile;
-  chkExecAfterRun.Caption := lisCOCallOnRun;
+  chkExecAfterBuild.Caption := lisBuild;
+  chkExecAfterCompile.Caption := lisCompile;
+  chkExecAfterRun.Caption := lisRun;
   ExecuteAfterCommandEdit.Text := '';
   ExecuteAfterCommandLabel.Caption := lisCOCommand;
   ExecuteAfterScanLabel.Caption := lisCOScanForMessages;
@@ -145,7 +145,7 @@ begin
       chkCompilerCompile.Checked := crCompile in CompileReasons;
       chkCompilerBuild.Checked := crBuild in CompileReasons;
       chkCompilerRun.Checked := crRun in CompileReasons;
-      chkCompilerCompile.Caption := lisCOCallOnCompile;
+      chkCompilerCompile.Caption := lisCompile;
       chkCompilerCompile.Visible := True;
       chkCompilerBuild.Visible := True;
       chkCompilerRun.Visible := True;
