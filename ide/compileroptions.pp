@@ -2088,8 +2088,6 @@ var
   InheritedPath: String;
   ParsedBaseDir: String;
 begin
-  // the first path is searched first
-
   // current path
   if Option<>pcosNone then begin
     CurrentPath:=ParsedOpts.GetParsedValue(Option);
@@ -2224,16 +2222,13 @@ begin
   end;
   // inherited custom options
   InhCustomOptions:=GetInheritedOption(icoCustomOptions,true,Parsed);
-
-  Result:=InhCustomOptions;
   // concatenate
   if CurCustomOptions<>'' then
-  begin
-    if Result<>'' then
-      Result+=' ';
-    Result+=CurCustomOptions;
-  end;
-
+    Result:=CurCustomOptions+' '+InhCustomOptions
+  else
+    Result:=InhCustomOptions;
+  if Result='' then exit;
+  
   // eliminate line breaks
   Result:=SpecialCharsToSpaces(Result,true);
 end;

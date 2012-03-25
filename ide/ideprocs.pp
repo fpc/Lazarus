@@ -30,7 +30,7 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LCLProc, AvgLvlTree, Laz2_XMLCfg, LazUTF8,
+  Classes, SysUtils, FileUtil, LCLProc, AvgLvlTree, Laz2_XMLCfg,
   StdCtrls, ExtCtrls,
   SourceLog, FileProcs, CodeToolManager, CodeToolsConfig, CodeCache,
   LazConf;
@@ -1688,7 +1688,6 @@ var
   p: LongInt;
 begin
   Result:=s;
-  if Result='' then exit;
   // convert line breaks to single spaces
   i:=length(Result);
   while (i>=1) do begin
@@ -1707,10 +1706,13 @@ begin
     if Result[i] in [#0..#31,#127] then Result[i]:=' ';
   if Result='' then exit;
   if FixUTF8 then begin
+    Result:=copy(Result,1,strlen(PChar(Result)));
+    if Result='' then exit;
     UniqueString(Result);
     UTF8FixBroken(PChar(Result));
   end;
-  Result:=UTF8Trim(Result);
+  if (Result[1]=' ') or (Result[length(Result)]=' ') then
+    Result:=Trim(Result);
 end;
 
 function SpecialCharsToHex(const s: string): string;
