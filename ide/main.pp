@@ -12451,7 +12451,7 @@ begin
   if (FPCVersion=0) or (FPCRelease=0) or (FPCPatch=0) then ;
 
   // save extra options
-  Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazProfiles,
+  Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazProfiles.Current,
                              GlobalMacroList,PkgOptions,Flags+[blfOnlyIDE]);
   if Result<>mrOk then exit;
 end;
@@ -12469,6 +12469,7 @@ var
   CompiledUnitExt: String;
   FPCVersion, FPCRelease, FPCPatch: integer;
   PkgCompileFlags: TPkgCompileFlags;
+  ProfileChanged: Boolean;
 begin
   if ToolStatus<>itNone then begin
     MessageDlg(lisNotNow,
@@ -12485,6 +12486,7 @@ begin
   end;
 
   MessagesView.BeginBlock;
+  ProfileChanged:=false;
   with MiscellaneousOptions do
   try
     MainBuildBoss.SetBuildTargetIDE;
@@ -12495,9 +12497,10 @@ begin
     and (BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild) then begin
       PkgCompileFlags:=PkgCompileFlags+[pcfCompileDependenciesClean];
       SourceEditorManager.ClearErrorLines;
-      Result:=BuildLazarus(BuildLazProfiles,ExternalTools,GlobalMacroList,
+      Result:=BuildLazarus(BuildLazProfiles.Current,ExternalTools,GlobalMacroList,
                            '',EnvironmentOptions.GetParsedCompilerFilename,
-                           EnvironmentOptions.GetParsedMakeFilename, [blfDontBuild]);
+                           EnvironmentOptions.GetParsedMakeFilename, [blfDontBuild],
+                           ProfileChanged);
       if Result<>mrOk then begin
         DebugLn('TMainIDE.DoBuildLazarus: Clean up failed.');
         exit;
@@ -12538,23 +12541,24 @@ begin
 
     // save extra options
     IDEBuildFlags:=Flags;
-    if BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild then
-      Include(IDEBuildFlags,blfDontCleanAll);
-    Result:=SaveIDEMakeOptions(BuildLazProfiles,GlobalMacroList,PkgOptions,
-                               IDEBuildFlags-[blfUseMakeIDECfg]);
+    Result:=SaveIDEMakeOptions(BuildLazProfiles.Current,GlobalMacroList,PkgOptions,
+                               IDEBuildFlags-[blfUseMakeIDECfg,blfDontCleanAll]);
     if Result<>mrOk then begin
       DebugLn('TMainIDE.DoBuildLazarus: Save IDEMake options failed.');
       exit;
     end;
-    IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg];
 
     // make lazarus ide and/or examples
     SourceEditorManager.ClearErrorLines;
-    Result:=BuildLazarus(BuildLazProfiles,ExternalTools,GlobalMacroList,
+    IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg];
+    Result:=BuildLazarus(BuildLazProfiles.Current,ExternalTools,GlobalMacroList,
                          PkgOptions,EnvironmentOptions.GetParsedCompilerFilename,
-                         EnvironmentOptions.GetParsedMakeFilename,IDEBuildFlags);
+                         EnvironmentOptions.GetParsedMakeFilename,IDEBuildFlags,
+                         ProfileChanged);
     if Result<>mrOk then exit;
 
+    if ProfileChanged then
+      MiscellaneousOptions.Save;
   finally
     MainBuildBoss.SetBuildTargetProject1(true);
 
