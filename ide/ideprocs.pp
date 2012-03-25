@@ -75,7 +75,7 @@ function BackupFile(const Filename, BackupFilename: string): boolean;
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 function CreateEmptyFile(const Filename: string): boolean;
 function CopyFileWithMethods(const SrcFilename, DestFilename: string;
-             OnCopyError: TOnCopyErrorMethod; Data: TObject): boolean;
+             {%H-}OnCopyError: TOnCopyErrorMethod; {%H-}Data: TObject): boolean;
 function CopyDirectoryWithMethods(const SrcDirectory, DestDirectory: string;
              OnCopyFile: TOnCopyFileMethod; OnCopyError: TOnCopyErrorMethod;
              Data: TObject): boolean;
@@ -446,8 +446,10 @@ begin
     OldFilename:=List[i];
     NewFilename:=ReadAllLinks(OldFilename,false);
     //DebugLn(['ResolveLinksInFileList OldFilename=',OldFilename,' NewFilename=',NewFilename]);
-    if NewFilename='' then
-      List.Delete(i)
+    if NewFilename='' then begin
+      if RemoveDanglingLinks then
+        List.Delete(i);
+    end
     else if NewFilename<>OldFilename then
       List[i]:=NewFilename;
   end;
@@ -1446,7 +1448,7 @@ end;
 -------------------------------------------------------------------------------}
 function BackupFile(const Filename, BackupFilename: string): boolean;
 
-  function FileIsLocked(const FileName: String): Boolean;
+  function FileIsLocked(const {%H-}FileName: String): Boolean;
   {$ifdef Windows}
   var
     FHandle: THandle;
