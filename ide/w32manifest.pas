@@ -52,7 +52,7 @@ type
     procedure SetUseManifest(const AValue: boolean);
   public
     constructor Create; override;
-    function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; override;
+    function UpdateResources(AResources: TAbstractProjectResources; const {%H-}MainFilename: string): Boolean; override;
     procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; Path: String); override;
     procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; Path: String); override;
 
