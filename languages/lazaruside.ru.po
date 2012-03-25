@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-03-24 19:03+0400\n"
+"PO-Revision-Date: 2012-03-25 18:12+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -4049,6 +4049,10 @@ msgstr "Имя модуля: "
 msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "Файл %s%s%s уже существует.%s Заменить?"
 
+#: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
+msgid "After cleaning up, switch to automatic clean"
+msgstr "После выполнения очистки переключаться в автоматический режим"
+
 #: lazarusidestrconsts.lisalignment
 msgid "Alignment"
 msgstr "Выравнивание"
@@ -4248,6 +4252,10 @@ msgctxt "lazarusidestrconsts.lisautomatic"
 msgid "Automatic"
 msgstr "Автоматически"
 
+#: lazarusidestrconsts.lisautomatically
+msgid "Automatically"
+msgstr "Автоматическая"
+
 #: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr "Автоматически преобразовывать файлы LFM в файлы LRS"
@@ -4284,6 +4292,10 @@ msgstr "Показывать инспектор объектов автомат�
 #: lazarusidestrconsts.lisavailablepackages
 msgid "Available packages"
 msgstr "Доступные пакеты"
+
+#: lazarusidestrconsts.lisavailableprojectbuildmodes
+msgid "Available project build modes:"
+msgstr "Доступные режимы сборки проекта:"
 
 #: lazarusidestrconsts.lisbackupchangedfiles
 msgid "Make backup of changed files"
@@ -4443,6 +4455,11 @@ msgstr "&Удалить"
 #: lazarusidestrconsts.lisbtnreplace
 msgid "&Replace"
 msgstr "&Заменить"
+
+#: lazarusidestrconsts.lisbuild
+msgctxt "lazarusidestrconsts.lisbuild"
+msgid "Build"
+msgstr "Собрать"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
 msgid "build all files of project/package/IDE"
@@ -5248,9 +5265,25 @@ msgstr "Удалить файлы по фильтру"
 msgid "Simple Syntax (e.g. * instead of .*)"
 msgstr "Простой синтаксис (например, * вместо .*)"
 
+#: lazarusidestrconsts.liscleanall
+msgid "Clean all"
+msgstr "Очищать всё"
+
+#: lazarusidestrconsts.liscleancommonfiles
+msgid "Clean common files"
+msgstr "Очищать типичные файлы"
+
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Очистить каталог исходного кода Lazarus"
+
+#: lazarusidestrconsts.liscleanonlyonce
+msgid "Clean only once"
+msgstr "Очищать только один раз"
+
+#: lazarusidestrconsts.liscleanup
+msgid "Clean up"
+msgstr "Очистка"
 
 #: lazarusidestrconsts.liscleanupandbuild
 msgid "Clean up and build"
@@ -7995,6 +8028,10 @@ msgstr "Ошибка в путях поиска в поле \"Другие мо�
 msgid "Error in the \"unit output directory\":"
 msgstr "Ошибка в поле \"Каталог вывода модулей\":"
 
+#: lazarusidestrconsts.liserrorinvalidbuildmode
+msgid "ERROR: invalid build mode \"%s\""
+msgstr "ОШИБКА: некорректный режим сборки \"%s\""
+
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
 msgstr "Ошибка загрузки файла"
@@ -10062,11 +10099,6 @@ msgstr "Выберите каталог для вывода исполнимог
 msgid "Are you sure you want to delete this build profile?"
 msgstr "Вы действительно хотите удалить этот профиль сборки?"
 
-#: lazarusidestrconsts.lislazbuildbuild
-msgctxt "lazarusidestrconsts.lislazbuildbuild"
-msgid "Build"
-msgstr "Собрать"
-
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "Собрать CodeTools"
@@ -10079,10 +10111,6 @@ msgstr "Собрать компоненты (SynEdit, CodeTools)"
 msgid "Build IDE"
 msgstr "Собрать IDE"
 
-#: lazarusidestrconsts.lislazbuildbuildingide
-msgid "Building IDE"
-msgstr "Сборка IDE"
-
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Собрать JITForm"
@@ -10094,15 +10122,6 @@ msgstr "Собрать несколько"
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
 msgstr "Собрать SynEdit"
-
-#: lazarusidestrconsts.lislazbuildcleanallbuild
-msgid "Clean All + Build"
-msgstr "Очистить всё и собрать"
-
-#: lazarusidestrconsts.lislazbuildcleanbuild
-#| msgid "Clean+Build"
-msgid "Clean + Build"
-msgstr "Очистить и собрать"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
 msgid "Common Settings"
@@ -10147,11 +10166,6 @@ msgstr "Редактировать список определений для и
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "Ошибка записи файла"
-
-#: lazarusidestrconsts.lislazbuildidebuildhint
-#| msgid "Build = \"make ide\", %sClean + Build = \"make cleanide ide\", %sClean All + Build = \"make cleanlaz ide\", "
-msgid "Build = \"make ide\", %sClean + Build = \"make cleanide ide\", %sClean All + Build = \"make cleanlaz ide\""
-msgstr "Собрать = \"make ide\", %sОчистить и собрать = \"make cleanide ide\", %sОчистить всё и собрать = \"make cleanlaz ide\""
 
 #: lazarusidestrconsts.lislazbuildidewithoutpackages
 msgid "IDE without Packages"
@@ -15580,6 +15594,10 @@ msgstr "Содержимое этого файла похоже на исход�
 #: lazarusidestrconsts.listhisprojecthasnomainsourcefile
 msgid "This project has no main source file"
 msgstr "Этот проект не имеет главного файла исходного хода"
+
+#: lazarusidestrconsts.listhisprojecthasonlythedefaultbuildmode
+msgid "This project has only the default build mode."
+msgstr "Этот проект имеет только режим сборки по умолчанию."
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."

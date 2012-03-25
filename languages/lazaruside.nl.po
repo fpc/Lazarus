@@ -4071,6 +4071,10 @@ msgstr "Unitnaam: "
 msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "Een bestand %s%s%s bestaat al.%sOverschrijven?"
 
+#: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
+msgid "After cleaning up, switch to automatic clean"
+msgstr ""
+
 #: lazarusidestrconsts.lisalignment
 msgid "Alignment"
 msgstr "Uitlijning"
@@ -4272,6 +4276,10 @@ msgctxt "lazarusidestrconsts.lisautomatic"
 msgid "Automatic"
 msgstr ""
 
+#: lazarusidestrconsts.lisautomatically
+msgid "Automatically"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr ""
@@ -4309,6 +4317,10 @@ msgstr ""
 #: lazarusidestrconsts.lisavailablepackages
 msgid "Available packages"
 msgstr "Beschikbare pakketten"
+
+#: lazarusidestrconsts.lisavailableprojectbuildmodes
+msgid "Available project build modes:"
+msgstr ""
 
 #: lazarusidestrconsts.lisbackupchangedfiles
 msgid "Make backup of changed files"
@@ -4468,6 +4480,11 @@ msgstr ""
 #: lazarusidestrconsts.lisbtnreplace
 msgid "&Replace"
 msgstr ""
+
+#: lazarusidestrconsts.lisbuild
+msgctxt "lazarusidestrconsts.lisbuild"
+msgid "Build"
+msgstr "Bouw"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
 msgid "build all files of project/package/IDE"
@@ -5264,9 +5281,25 @@ msgstr "Overeenkomende bestanden verwijderen"
 msgid "Simple Syntax (e.g. * instead of .*)"
 msgstr "Eenvoudige syntax (* i.p.v. .*)"
 
+#: lazarusidestrconsts.liscleanall
+msgid "Clean all"
+msgstr ""
+
+#: lazarusidestrconsts.liscleancommonfiles
+msgid "Clean common files"
+msgstr ""
+
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Maak Lazarus-broncode schoon"
+
+#: lazarusidestrconsts.liscleanonlyonce
+msgid "Clean only once"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanup
+msgid "Clean up"
+msgstr ""
 
 #: lazarusidestrconsts.liscleanupandbuild
 msgid "Clean up and build"
@@ -8003,6 +8036,10 @@ msgstr ""
 msgid "Error in the \"unit output directory\":"
 msgstr ""
 
+#: lazarusidestrconsts.liserrorinvalidbuildmode
+msgid "ERROR: invalid build mode \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
 msgstr ""
@@ -10050,11 +10087,6 @@ msgstr ""
 msgid "Are you sure you want to delete this build profile?"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildbuild
-msgctxt "lazarusidestrconsts.lislazbuildbuild"
-msgid "Build"
-msgstr "Bouw"
-
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "Bouw CodeTools"
@@ -10067,10 +10099,6 @@ msgstr ""
 msgid "Build IDE"
 msgstr "Bouw IDE"
 
-#: lazarusidestrconsts.lislazbuildbuildingide
-msgid "Building IDE"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Bouw JITForm"
@@ -10082,16 +10110,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
 msgstr "Bouw SynEdit"
-
-#: lazarusidestrconsts.lislazbuildcleanallbuild
-msgid "Clean All + Build"
-msgstr ""
-
-#: lazarusidestrconsts.lislazbuildcleanbuild
-#, fuzzy
-#| msgid "Clean+Build"
-msgid "Clean + Build"
-msgstr "Maak schoon + Bouw"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
 msgid "Common Settings"
@@ -10135,10 +10153,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "Fout bij schrijven bestand"
-
-#: lazarusidestrconsts.lislazbuildidebuildhint
-msgid "Build = \"make ide\", %sClean + Build = \"make cleanide ide\", %sClean All + Build = \"make cleanlaz ide\""
-msgstr ""
 
 #: lazarusidestrconsts.lislazbuildidewithoutpackages
 msgid "IDE without Packages"
@@ -15654,6 +15668,10 @@ msgstr "Dit lijkt op een pascal bestand.%sAangeraden wordt om alleen kleine lett
 
 #: lazarusidestrconsts.listhisprojecthasnomainsourcefile
 msgid "This project has no main source file"
+msgstr ""
+
+#: lazarusidestrconsts.listhisprojecthasonlythedefaultbuildmode
+msgid "This project has only the default build mode."
 msgstr ""
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis

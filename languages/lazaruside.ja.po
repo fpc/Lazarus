@@ -4146,6 +4146,10 @@ msgstr "ユニット名: "
 msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "ファイル %s%s%s はすでに存在します.%s置き換えますか？"
 
+#: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
+msgid "After cleaning up, switch to automatic clean"
+msgstr ""
+
 #: lazarusidestrconsts.lisalignment
 msgid "Alignment"
 msgstr "整列"
@@ -4347,6 +4351,10 @@ msgctxt "lazarusidestrconsts.lisautomatic"
 msgid "Automatic"
 msgstr "自動"
 
+#: lazarusidestrconsts.lisautomatically
+msgid "Automatically"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr ".lfm files から .lrs include files への自動変換 "
@@ -4384,6 +4392,10 @@ msgstr "オブジェクトインスペクタを自動表示"
 #: lazarusidestrconsts.lisavailablepackages
 msgid "Available packages"
 msgstr "利用可能パッケージ"
+
+#: lazarusidestrconsts.lisavailableprojectbuildmodes
+msgid "Available project build modes:"
+msgstr ""
 
 #: lazarusidestrconsts.lisbackupchangedfiles
 msgid "Make backup of changed files"
@@ -4549,6 +4561,11 @@ msgstr "消去(&R)"
 #: lazarusidestrconsts.lisbtnreplace
 msgid "&Replace"
 msgstr "置換(&R)"
+
+#: lazarusidestrconsts.lisbuild
+msgctxt "lazarusidestrconsts.lisbuild"
+msgid "Build"
+msgstr "構築"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
 msgid "build all files of project/package/IDE"
@@ -5363,9 +5380,25 @@ msgstr "フィルタに適合するファイルを削除"
 msgid "Simple Syntax (e.g. * instead of .*)"
 msgstr "簡単な表記法 (例 * instead of .*)"
 
+#: lazarusidestrconsts.liscleanall
+msgid "Clean all"
+msgstr ""
+
+#: lazarusidestrconsts.liscleancommonfiles
+msgid "Clean common files"
+msgstr ""
+
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Lazarusソースを消去"
+
+#: lazarusidestrconsts.liscleanonlyonce
+msgid "Clean only once"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanup
+msgid "Clean up"
+msgstr ""
 
 #: lazarusidestrconsts.liscleanupandbuild
 msgid "Clean up and build"
@@ -8145,6 +8178,10 @@ msgstr ""
 msgid "Error in the \"unit output directory\":"
 msgstr ""
 
+#: lazarusidestrconsts.liserrorinvalidbuildmode
+msgid "ERROR: invalid build mode \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
 msgstr "ファイル読み込み中にエラー"
@@ -10236,11 +10273,6 @@ msgstr "IDE実行ファイルの出力ディレクトリを選択してくださ
 msgid "Are you sure you want to delete this build profile?"
 msgstr "本当にこの構築プロファイルを削除してもよろしいですか？"
 
-#: lazarusidestrconsts.lislazbuildbuild
-msgctxt "lazarusidestrconsts.lislazbuildbuild"
-msgid "Build"
-msgstr "構築"
-
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "コードツールを構築"
@@ -10253,10 +10285,6 @@ msgstr "コンポーネントを構築 (SynEdit, コードツール)"
 msgid "Build IDE"
 msgstr "IDEを構築"
 
-#: lazarusidestrconsts.lislazbuildbuildingide
-msgid "Building IDE"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "JITFormを構築"
@@ -10268,16 +10296,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
 msgstr "SynEditを構築"
-
-#: lazarusidestrconsts.lislazbuildcleanallbuild
-msgid "Clean All + Build"
-msgstr ""
-
-#: lazarusidestrconsts.lislazbuildcleanbuild
-#, fuzzy
-#| msgid "Clean+Build"
-msgid "Clean + Build"
-msgstr "消去＋構築"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
 msgid "Common Settings"
@@ -10323,10 +10341,6 @@ msgstr "どのプロファイルでも使えるdefineリストを編集"
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "ファイルへの書き込み中にエラー"
-
-#: lazarusidestrconsts.lislazbuildidebuildhint
-msgid "Build = \"make ide\", %sClean + Build = \"make cleanide ide\", %sClean All + Build = \"make cleanlaz ide\""
-msgstr ""
 
 #: lazarusidestrconsts.lislazbuildidewithoutpackages
 msgid "IDE without Packages"
@@ -15919,6 +15933,10 @@ msgstr "これはpascalファイルのようです。%sいくつかのファイ�
 #: lazarusidestrconsts.listhisprojecthasnomainsourcefile
 msgid "This project has no main source file"
 msgstr "このプロジェクトにはメインソースファイルがありません。"
+
+#: lazarusidestrconsts.listhisprojecthasonlythedefaultbuildmode
+msgid "This project has only the default build mode."
+msgstr ""
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."

@@ -3881,6 +3881,10 @@ msgstr "Käännösyksikön nimi: "
 msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "Tiedosto %s%s%s on jo olemassa.%skorvataanko se? "
 
+#: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
+msgid "After cleaning up, switch to automatic clean"
+msgstr ""
+
 #: lazarusidestrconsts.lisalignment
 msgid "Alignment"
 msgstr "Kohdistus"
@@ -4078,6 +4082,10 @@ msgctxt "lazarusidestrconsts.lisautomatic"
 msgid "Automatic"
 msgstr "Automaattinen"
 
+#: lazarusidestrconsts.lisautomatically
+msgid "Automatically"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr "Automaattisesti muuta .lfm tiedostot .lrs tiedostoiksi"
@@ -4113,6 +4121,10 @@ msgstr "Näytä automaattisesti"
 #: lazarusidestrconsts.lisavailablepackages
 msgid "Available packages"
 msgstr "Tarjolla olevat paketit"
+
+#: lazarusidestrconsts.lisavailableprojectbuildmodes
+msgid "Available project build modes:"
+msgstr ""
 
 #: lazarusidestrconsts.lisbackupchangedfiles
 msgid "Make backup of changed files"
@@ -4268,6 +4280,11 @@ msgstr "Poista"
 #: lazarusidestrconsts.lisbtnreplace
 msgid "&Replace"
 msgstr "Korvaa"
+
+#: lazarusidestrconsts.lisbuild
+msgctxt "lazarusidestrconsts.lisbuild"
+msgid "Build"
+msgstr "Kokoa"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
 msgid "build all files of project/package/IDE"
@@ -5066,9 +5083,25 @@ msgstr "Poista suodattimen mukaiset tiedostot"
 msgid "Simple Syntax (e.g. * instead of .*)"
 msgstr "Yksinkertainen kielioppi (kuten * eikä .*)"
 
+#: lazarusidestrconsts.liscleanall
+msgid "Clean all"
+msgstr ""
+
+#: lazarusidestrconsts.liscleancommonfiles
+msgid "Clean common files"
+msgstr ""
+
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Siivoa Lazaruksen lähdekoodi"
+
+#: lazarusidestrconsts.liscleanonlyonce
+msgid "Clean only once"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanup
+msgid "Clean up"
+msgstr ""
 
 #: lazarusidestrconsts.liscleanupandbuild
 msgid "Clean up and build"
@@ -7775,6 +7808,10 @@ msgstr ""
 msgid "Error in the \"unit output directory\":"
 msgstr ""
 
+#: lazarusidestrconsts.liserrorinvalidbuildmode
+msgid "ERROR: invalid build mode \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
 msgstr "Virhe ladattaessa tiedostoa"
@@ -9797,11 +9834,6 @@ msgstr ""
 msgid "Are you sure you want to delete this build profile?"
 msgstr "Tahdotko varmasti poistaa tämän koontaprofiilin?"
 
-#: lazarusidestrconsts.lislazbuildbuild
-msgctxt "lazarusidestrconsts.lislazbuildbuild"
-msgid "Build"
-msgstr "Kokoa"
-
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "Kokoa CodeTools"
@@ -9814,10 +9846,6 @@ msgstr "Kokoa komponentit (SynEdit, CodeTools)"
 msgid "Build IDE"
 msgstr "Kokoa IDE"
 
-#: lazarusidestrconsts.lislazbuildbuildingide
-msgid "Building IDE"
-msgstr "Kootaan IDE"
-
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Kokoa JITForm"
@@ -9829,14 +9857,6 @@ msgstr "Kokoa monta"
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
 msgstr "Kokoa SynEdit"
-
-#: lazarusidestrconsts.lislazbuildcleanallbuild
-msgid "Clean All + Build"
-msgstr "Siivoa kaikki + kokoa"
-
-#: lazarusidestrconsts.lislazbuildcleanbuild
-msgid "Clean + Build"
-msgstr "Siivoa + kokoa"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
 msgid "Common Settings"
@@ -9880,10 +9900,6 @@ msgstr "Muokkaa määrite-luetteloa, mitä voidaan käyttää kaikille profiilei
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "Virhe kirjoitettaessa tiedostoa"
-
-#: lazarusidestrconsts.lislazbuildidebuildhint
-msgid "Build = \"make ide\", %sClean + Build = \"make cleanide ide\", %sClean All + Build = \"make cleanlaz ide\""
-msgstr ""
 
 #: lazarusidestrconsts.lislazbuildidewithoutpackages
 msgid "IDE without Packages"
@@ -15101,6 +15117,10 @@ msgstr "Tämä vaikuttaa pascal-tiedostolta.%sOn suositeltavaa käyttää pieni�
 #: lazarusidestrconsts.listhisprojecthasnomainsourcefile
 msgid "This project has no main source file"
 msgstr "Tällä projektilla ei ole pää-lähdekooditiedostoa"
+
+#: lazarusidestrconsts.listhisprojecthasonlythedefaultbuildmode
+msgid "This project has only the default build mode."
+msgstr ""
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."

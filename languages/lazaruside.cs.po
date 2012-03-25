@@ -3892,6 +3892,10 @@ msgstr "Jméno jednotky: "
 msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "Soubor %s%s%s už existuje.%sNahradit?"
 
+#: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
+msgid "After cleaning up, switch to automatic clean"
+msgstr ""
+
 #: lazarusidestrconsts.lisalignment
 msgid "Alignment"
 msgstr "Zarovnání"
@@ -4089,6 +4093,10 @@ msgctxt "lazarusidestrconsts.lisautomatic"
 msgid "Automatic"
 msgstr "Automaticky"
 
+#: lazarusidestrconsts.lisautomatically
+msgid "Automatically"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr "Automaticky převést .lfm soubor na .lrs zahrnuté soubory"
@@ -4124,6 +4132,10 @@ msgstr "Automaticky ukázat"
 #: lazarusidestrconsts.lisavailablepackages
 msgid "Available packages"
 msgstr "Dostupné balíčky"
+
+#: lazarusidestrconsts.lisavailableprojectbuildmodes
+msgid "Available project build modes:"
+msgstr ""
 
 #: lazarusidestrconsts.lisbackupchangedfiles
 msgid "Make backup of changed files"
@@ -4279,6 +4291,11 @@ msgstr "&Odstranit"
 #: lazarusidestrconsts.lisbtnreplace
 msgid "&Replace"
 msgstr "&Nahradit"
+
+#: lazarusidestrconsts.lisbuild
+msgctxt "lazarusidestrconsts.lisbuild"
+msgid "Build"
+msgstr "Sestavit"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
 msgid "build all files of project/package/IDE"
@@ -5075,9 +5092,25 @@ msgstr "Odstranit soubory odpovídající filtru"
 msgid "Simple Syntax (e.g. * instead of .*)"
 msgstr "Jednoduchá syntaxe (např. * namísto .*)"
 
+#: lazarusidestrconsts.liscleanall
+msgid "Clean all"
+msgstr ""
+
+#: lazarusidestrconsts.liscleancommonfiles
+msgid "Clean common files"
+msgstr ""
+
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Vyčistit zdrojové soubory Lazarusu"
+
+#: lazarusidestrconsts.liscleanonlyonce
+msgid "Clean only once"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanup
+msgid "Clean up"
+msgstr ""
 
 #: lazarusidestrconsts.liscleanupandbuild
 msgid "Clean up and build"
@@ -7790,6 +7823,10 @@ msgstr "Chyba v prohledávaných cestách pro \"Ostatní soubory jednotek\":"
 msgid "Error in the \"unit output directory\":"
 msgstr "Chyba v \"výstupní adresář jednotek\":"
 
+#: lazarusidestrconsts.liserrorinvalidbuildmode
+msgid "ERROR: invalid build mode \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
 msgstr "Chyba načítání souboru"
@@ -9815,11 +9852,6 @@ msgstr "Vybrat výstupní adresář spustitelných souborů IDE "
 msgid "Are you sure you want to delete this build profile?"
 msgstr "Jste si jisti smazáním tohoto sestavovacího profilu?"
 
-#: lazarusidestrconsts.lislazbuildbuild
-msgctxt "lazarusidestrconsts.lislazbuildbuild"
-msgid "Build"
-msgstr "Sestavit"
-
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "Sestavit kódové nástroje"
@@ -9832,10 +9864,6 @@ msgstr "Sestavit komponenty (SynEdit, CodeTools)"
 msgid "Build IDE"
 msgstr "Sestavit IDE"
 
-#: lazarusidestrconsts.lislazbuildbuildingide
-msgid "Building IDE"
-msgstr "Sestavování IDE"
-
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Sestavit JITForm"
@@ -9847,14 +9875,6 @@ msgstr "Sestavit více"
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
 msgstr "Sestavit SynEdit"
-
-#: lazarusidestrconsts.lislazbuildcleanallbuild
-msgid "Clean All + Build"
-msgstr "Vyčistit vše + Sestavit"
-
-#: lazarusidestrconsts.lislazbuildcleanbuild
-msgid "Clean + Build"
-msgstr "Vyčistit + Sestavit"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
 msgid "Common Settings"
@@ -9898,10 +9918,6 @@ msgstr "Upravit seznam definic použitelných libovolným profilem"
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "Chyba zapisování souboru"
-
-#: lazarusidestrconsts.lislazbuildidebuildhint
-msgid "Build = \"make ide\", %sClean + Build = \"make cleanide ide\", %sClean All + Build = \"make cleanlaz ide\""
-msgstr "Sestavit = \"make ide\", %sVyčistit + Sestavit = \"make cleanide ide\", %sVyčistit vše + Sestavit = \"make cleanlaz ide\""
 
 #: lazarusidestrconsts.lislazbuildidewithoutpackages
 msgid "IDE without Packages"
@@ -15138,6 +15154,10 @@ msgstr "Vypadá to jako pascalovský soubor.%sDoporučujeme ve jméně použít 
 #: lazarusidestrconsts.listhisprojecthasnomainsourcefile
 msgid "This project has no main source file"
 msgstr "Tento projekt nemá hlavní zdrojový soubor"
+
+#: lazarusidestrconsts.listhisprojecthasonlythedefaultbuildmode
+msgid "This project has only the default build mode."
+msgstr ""
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."

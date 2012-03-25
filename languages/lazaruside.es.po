@@ -4128,6 +4128,10 @@ msgstr "Nombre de Unidad:"
 msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "Ya existe el archivo %s%s%s.%s¿Reemplazarlo?"
 
+#: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
+msgid "After cleaning up, switch to automatic clean"
+msgstr ""
+
 #: lazarusidestrconsts.lisalignment
 msgid "Alignment"
 msgstr "Alineación"
@@ -4328,6 +4332,10 @@ msgctxt "lazarusidestrconsts.lisautomatic"
 msgid "Automatic"
 msgstr "Automatico"
 
+#: lazarusidestrconsts.lisautomatically
+msgid "Automatically"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr "Convierte automaticamente archivos .lfm a archivos de inclusión .lrs"
@@ -4364,6 +4372,10 @@ msgstr "Mostrar Automáticamente"
 #: lazarusidestrconsts.lisavailablepackages
 msgid "Available packages"
 msgstr "Paquetes disponibles"
+
+#: lazarusidestrconsts.lisavailableprojectbuildmodes
+msgid "Available project build modes:"
+msgstr ""
 
 #: lazarusidestrconsts.lisbackupchangedfiles
 msgid "Make backup of changed files"
@@ -4527,6 +4539,11 @@ msgstr "&Eliminar"
 #: lazarusidestrconsts.lisbtnreplace
 msgid "&Replace"
 msgstr "&Reemplazar"
+
+#: lazarusidestrconsts.lisbuild
+msgctxt "lazarusidestrconsts.lisbuild"
+msgid "Build"
+msgstr "Construir"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
 msgid "build all files of project/package/IDE"
@@ -5341,9 +5358,25 @@ msgstr "Eliminar archivos según el filtro determinado"
 msgid "Simple Syntax (e.g. * instead of .*)"
 msgstr "sintaxis simple (e.j. * en vez de .*)"
 
+#: lazarusidestrconsts.liscleanall
+msgid "Clean all"
+msgstr ""
+
+#: lazarusidestrconsts.liscleancommonfiles
+msgid "Clean common files"
+msgstr ""
+
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Limpiar código fuente de Lazarus"
+
+#: lazarusidestrconsts.liscleanonlyonce
+msgid "Clean only once"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanup
+msgid "Clean up"
+msgstr ""
 
 #: lazarusidestrconsts.liscleanupandbuild
 msgid "Clean up and build"
@@ -8119,6 +8152,10 @@ msgstr "Error en la ruta de búsqueda de \"Otros archivos de unidad\":"
 msgid "Error in the \"unit output directory\":"
 msgstr "Error en el \"Directorio de salida de la unidad\":"
 
+#: lazarusidestrconsts.liserrorinvalidbuildmode
+msgid "ERROR: invalid build mode \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
 msgstr "Error cargando archivo"
@@ -10208,11 +10245,6 @@ msgstr "Elija el directorio de salida para el ejecutable del IDE"
 msgid "Are you sure you want to delete this build profile?"
 msgstr "¿Esta seguro de querer borrar este perfil de construcción?"
 
-#: lazarusidestrconsts.lislazbuildbuild
-msgctxt "lazarusidestrconsts.lislazbuildbuild"
-msgid "Build"
-msgstr "Reconstruir"
-
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "Construir CodeTools"
@@ -10225,10 +10257,6 @@ msgstr "Construir componentes (SynEdit, CodeTools)"
 msgid "Build IDE"
 msgstr "Construir IDE"
 
-#: lazarusidestrconsts.lislazbuildbuildingide
-msgid "Building IDE"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Construir JITForm"
@@ -10240,16 +10268,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
 msgstr "Construir SynEdit"
-
-#: lazarusidestrconsts.lislazbuildcleanallbuild
-msgid "Clean All + Build"
-msgstr ""
-
-#: lazarusidestrconsts.lislazbuildcleanbuild
-#, fuzzy
-#| msgid "Clean+Build"
-msgid "Clean + Build"
-msgstr "Limpiar+Construir"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
 msgid "Common Settings"
@@ -10294,10 +10312,6 @@ msgstr "Editar la lista de defines que pueden ser usadas por cualquier perfil"
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "Error escribiendo archivo"
-
-#: lazarusidestrconsts.lislazbuildidebuildhint
-msgid "Build = \"make ide\", %sClean + Build = \"make cleanide ide\", %sClean All + Build = \"make cleanlaz ide\""
-msgstr ""
 
 #: lazarusidestrconsts.lislazbuildidewithoutpackages
 msgid "IDE without Packages"
@@ -15876,6 +15890,10 @@ msgstr "Esto parece un archivo Pascal.%sEs recomendable usar minúsculas para lo
 #: lazarusidestrconsts.listhisprojecthasnomainsourcefile
 msgid "This project has no main source file"
 msgstr "El proyecto no tiene un archivo fuente principal."
+
+#: lazarusidestrconsts.listhisprojecthasonlythedefaultbuildmode
+msgid "This project has only the default build mode."
+msgstr ""
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."
