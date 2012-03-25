@@ -1254,8 +1254,6 @@ resourcestring
   lisShowStatusBarInObjectInspector = 'Show status bar';
   lisShowInfoBoxInObjectInspector = 'Show information box';
   dlgEnvBackupHelpNote = 'Notes: Project files are all files in the project directory';
-  lisEnvOptDlgInvalidMakeFilename = 'Invalid make filename';
-  lisEnvOptDlgInvalidMakeFilenameMsg = 'The make file "%s" is not an executable.';
   lisEnvOptDlgInvalidDebuggerFilename = 'Invalid debugger filename';
   lisEnvOptDlgInvalidDebuggerFilenameMsg = 'The debugger file "%s" is not an executable.';
   lisEnvOptDlgDirectoryNotFound = 'Directory not found';
@@ -2082,6 +2080,7 @@ resourcestring
     +'abstract methods of the current class, because';
   lisCCOUnableToGetFileDate = 'Unable to get file date of %s.';
   lisCCOWarningCaption = 'Warning';
+  lisThePathOfMakeIsNotCorrect = 'The path of "make" is not correct: "%s"';
   lisTheCompilerFileDoesNotLookCorrect = 'The compiler file "%s" does not look'
     +' correct:%s%s';
   lisTheFPCSourceDirectoryDoesNotLookCorrect = 'The FPC source directory "%s" '

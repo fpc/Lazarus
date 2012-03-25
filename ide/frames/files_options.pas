@@ -86,9 +86,10 @@ type
     fOldShowCompileDialog: boolean;
     fOldAutoCloseCompileDialog: boolean;
     function CheckLazarusDir(Buttons: TMsgDlgButtons): boolean;
-    function CheckFPCSourceDir(Buttons: TMsgDlgButtons): boolean;
     function CheckCompiler(Buttons: TMsgDlgButtons): boolean;
+    function CheckFPCSourceDir(Buttons: TMsgDlgButtons): boolean;
     function CheckTestDir: boolean;
+    function CheckMake: boolean;
   public
     function Check: Boolean; override;
     function GetTitle: String; override;
@@ -133,9 +134,7 @@ begin
       end else if Sender=MakePathButton then begin
         // check make filename
         SetComboBoxText(MakePathComboBox,AFilename,cstFilename);
-        CheckExecutable(FOldMakeFilename,MakePathComboBox.Text,
-          lisEnvOptDlgInvalidMakeFilename,
-          lisEnvOptDlgInvalidMakeFilenameMsg);
+        CheckMake;
       end;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
@@ -280,13 +279,9 @@ begin
   // check fpc source directory
   if not CheckFPCSourceDir([mbIgnore,mbCancel]) then exit;
   // check make filename
-  if not CheckExecutable(FOldMakeFilename,MakePathComboBox.Text,
-    lisEnvOptDlgInvalidMakeFilename,lisEnvOptDlgInvalidMakeFilenameMsg,true)
-  then
-    Exit;
+  if not CheckMake then exit;
   // check test directory
-  if not CheckTestDir then 
-    Exit;
+  if not CheckTestDir then exit;
   Result := True;
 end;
 
@@ -482,10 +477,21 @@ var
   NewTestDir: string;
   StopChecking: boolean;
 begin
+  EnvironmentOptions.TestBuildDirectory:=TestBuildDirComboBox.Text;
   NewTestDir:=EnvironmentOptions.GetParsedTestBuildDirectory;
   Result:=SimpleDirectoryCheck(FOldRealTestDir,NewTestDir,
                                lisEnvOptDlgTestDirNotFoundMsg,StopChecking);
   if (not Result) or StopChecking then exit;
+end;
+
+function TFilesOptionsFrame.CheckMake: boolean;
+var
+  NewMakeFilename: String;
+begin
+  EnvironmentOptions.MakeFilename:=MakePathComboBox.Text;
+  NewMakeFilename:=EnvironmentOptions.GetParsedMakeFilename;
+  Result:=CheckExecutable(FOldRealMakeFilename,NewMakeFilename,
+    lisCCOWarningCaption, Format(lisThePathOfMakeIsNotCorrect, [NewMakeFilename]));
 end;
 
 class function TFilesOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
