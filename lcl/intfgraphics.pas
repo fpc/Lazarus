@@ -5299,7 +5299,10 @@ begin
 
   // if there is no alpha in real (all alpha values = 0) then update the description
   if FUpdateDescription and FIgnoreAlpha and (Depth = 32) then
-    FImage.DataDescription.AlphaPrec := 0;
+  begin
+    Desc.AlphaPrec:=0;
+    FImage.DataDescription:=Desc;
+  end;
 
   Progress(psEnding, 100, false, Rect(0,0,0,0), '', FContinue);
 end;
