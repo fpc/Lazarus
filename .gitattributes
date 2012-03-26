@@ -3472,6 +3472,7 @@ examples/androidlcl/android/AndroidManifest.xml svneol=native#text/plain
 examples/androidlcl/android/build.properties svneol=native#text/plain
 examples/androidlcl/android/build.sh svneol=native#text/plain
 examples/androidlcl/android/build.xml svneol=native#text/plain
+examples/androidlcl/android/build_debug_apk.bat svneol=native#text/plain
 examples/androidlcl/android/default.properties svneol=native#text/plain
 examples/androidlcl/android/local.properties svneol=native#text/plain
 examples/androidlcl/android/res/drawable-hdpi/icon.png -text svneol=unset#image/png
