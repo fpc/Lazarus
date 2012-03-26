@@ -7,6 +7,24 @@ lazarus (0.9.31-0) unstable; urgency=low
 lazarus (0.9.30.4-1) unstable; urgency=low
 
   * Checked conformance to policy 3.9.3 and updated standard version.
+  * New upstream release many fixes and new features.
+    - The detailed list of changes can be found here:
+      http://wiki.lazarus.freepascal.org/Lazarus_0.9.30_fixes_branch#Fixes_for_0.9.30.3
+  * LCL changes:
+    - Officially support FPC-2.6.0.
+  	- Added csCaptureMouse to TScrollBox for compatibility with Delphi.
+    - GTK2:
+        + Fixed issue with GetWindowRect.
+        + Fixed various odd behaviour related to different window managers.
+  * IDE changes:
+    - Fixed issue with trimming trailing spaces.
+  * Debugger / Editor changes:
+    - Many fixes in debugger and code tool including memory leaks
+    - Focus on editor after hitting a breakpoint.
+  * Componenets changes:
+    - TAChart: Many fixes in TAChart component
+    - SynEdit: Fixed synchronized mode
+    - CodeTool: Fix wrting and reading streamed properties.
 
  -- Abou Al Montacir <abou.almontacir@sfr.fr>  Tue, 20 Mar 2012 17:52:45 +0100
 
