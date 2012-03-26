@@ -395,8 +395,10 @@ end;
 
 destructor TEditorFileManagerForm.Destroy;
 begin
-  SourceEditorManager.UnRegisterChangeEvent(semEditorCreate, @DoEditorsChanged);
-  SourceEditorManager.UnRegisterChangeEvent(semEditorDestroy, @DoEditorsChanged);
+  if SourceEditorManager <> nil then begin
+    SourceEditorManager.UnRegisterChangeEvent(semEditorCreate, @DoEditorsChanged);
+    SourceEditorManager.UnRegisterChangeEvent(semEditorDestroy, @DoEditorsChanged);
+  end;
   inherited Destroy;
 end;
 
