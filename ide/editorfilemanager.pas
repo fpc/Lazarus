@@ -7,7 +7,7 @@ interface
 uses
   Classes, sysutils, Forms, Controls, CheckLst, ButtonPanel, StdCtrls,
   Buttons, ExtCtrls, Menus, LCLProc, LCLType, IDEImagesIntf, LazIDEIntf,
-  SourceEditor, LazarusIDEStrConsts, ListFilterEdit;
+  SrcEditorIntf, SourceEditor, LazarusIDEStrConsts, ListFilterEdit;
 
 type
 
@@ -35,6 +35,7 @@ type
     procedure CheckListBox1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure CheckListBox1KeyPress(Sender: TObject; var Key: char);
+    procedure DoEditorsChanged(Sender: TObject);
     procedure MoveDownBtnClick(Sender: TObject);
     procedure MoveUpBtnClick(Sender: TObject);
     procedure CheckListBox1Click(Sender: TObject);
@@ -57,29 +58,33 @@ type
     procedure UpdateButtons;
     procedure UpdateMoveButtons(ListIndex: integer);
   public
+    destructor Destroy; override;
     property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
   end;
 
-  function ShowEditorFileManagerForm: TModalResult;
+  procedure ShowEditorFileManagerForm;
 
 implementation
 
 {$R *.lfm}
 
-function ShowEditorFileManagerForm: TModalResult;
+var
+  EditorFileManagerForm: TEditorFileManagerForm;
+
+procedure ShowEditorFileManagerForm;
 begin
-  with TEditorFileManagerForm.Create(Nil) do
-  try
-    Result:=ShowModal;
-  finally
-    Free;
-  end;
+  if EditorFileManagerForm = nil then
+    EditorFileManagerForm := TEditorFileManagerForm.Create(SourceEditorManager);
+  EditorFileManagerForm.Show;
 end;
 
 { TEditorFileManagerForm }
 
 procedure TEditorFileManagerForm.FormCreate(Sender: TObject);
 begin
+  SourceEditorManager.RegisterChangeEvent(semEditorCreate, @DoEditorsChanged);
+  SourceEditorManager.RegisterChangeEvent(semEditorDestroy, @DoEditorsChanged);
+
   PopulateList;          // Populate the list with all open editor file names
   // Captions
   Caption:=lisEditorWindowManager;
@@ -235,6 +240,11 @@ begin
     ActivateButtonClick(nil);
 end;
 
+procedure TEditorFileManagerForm.DoEditorsChanged(Sender: TObject);
+begin
+  PopulateList;
+end;
+
 procedure TEditorFileManagerForm.MoveDownBtnClick(Sender: TObject);
 var
   SrcEdit: TSourceEditor;
@@ -381,6 +391,13 @@ begin
   end;
   MoveUpBtn.Enabled:=UpEnabled;
   MoveDownBtn.Enabled:=DownEnabled;
+end;
+
+destructor TEditorFileManagerForm.Destroy;
+begin
+  SourceEditorManager.UnRegisterChangeEvent(semEditorCreate, @DoEditorsChanged);
+  SourceEditorManager.UnRegisterChangeEvent(semEditorDestroy, @DoEditorsChanged);
+  inherited Destroy;
 end;
 
 end.
