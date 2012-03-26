@@ -99,6 +99,8 @@ resourcestring
   lisId = 'ID';
   lisCompile = 'Compile';
   lisBuild = 'Build';
+  lisBuildCaption = 'Build';
+  lisBuildStage = 'Build';
   lisRun = 'Run';
   lisPause = 'Pause';
   lisStop = 'Stop';

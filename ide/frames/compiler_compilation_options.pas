@@ -70,7 +70,7 @@ begin
   chkCreateMakefile.Caption := dlgCOCreateMakefile;
 
   ExecuteBeforeGroupBox.Caption := lisCOExecuteBefore;
-  chkExecBeforeBuild.Caption := lisBuild;
+  chkExecBeforeBuild.Caption := lisBuildStage;
   chkExecBeforeCompile.Caption := lisCompile;
   chkExecBeforeRun.Caption := lisRun;
   ExecuteBeforeCommandEdit.Text := '';
@@ -82,7 +82,7 @@ begin
   lblRunIfExecBefore.Caption := lisCOCallOn;
 
   grpCompiler.Caption := lisCompiler;
-  chkCompilerBuild.Caption := lisBuild;
+  chkCompilerBuild.Caption := lisBuildStage;
   chkCompilerBuild.Checked := True;
   chkCompilerCompile.Caption := lisCompile;
   chkCompilerCompile.Checked := True;
@@ -93,7 +93,7 @@ begin
   lblRunIfCompiler.Caption := lisCOCallOn;
 
   ExecuteAfterGroupBox.Caption := lisCOExecuteAfter;
-  chkExecAfterBuild.Caption := lisBuild;
+  chkExecAfterBuild.Caption := lisBuildStage;
   chkExecAfterCompile.Caption := lisCompile;
   chkExecAfterRun.Caption := lisRun;
   ExecuteAfterCommandEdit.Text := '';
