@@ -54,7 +54,7 @@ implementation
 
 procedure TfrmCanvasTest.btnBrushClick(Sender: TObject);
 begin
-  frmBrush.ShowModal;
+  frmBrush.Show;
 end;
 
 procedure TfrmCanvasTest.btnCloseClick(Sender: TObject);
@@ -64,42 +64,42 @@ end;
 
 procedure TfrmCanvasTest.btnDrawClick(Sender: TObject);
 begin
-  frmDraw.ShowModal;
+  frmDraw.Show;
 end;
 
 procedure TfrmCanvasTest.btnEllipseClick(Sender: TObject);
 begin
-  frmEllipse.ShowModal;
+  frmEllipse.Show;
 end;
 
 procedure TfrmCanvasTest.btnFontClick(Sender: TObject);
 begin
-  frmFont.ShowModal;
+  frmFont.Show;
 end;
 
 procedure TfrmCanvasTest.btnImageClick(Sender: TObject);
 begin
-  frmImage.ShowModal;
+  frmImage.Show;
 end;
 
 procedure TfrmCanvasTest.btnPenClick(Sender: TObject);
 begin
-  frmPen.ShowModal;
+  frmPen.Show;
 end;
 
 procedure TfrmCanvasTest.btnRectanglesClick(Sender: TObject);
 begin
-  frmRectangles.ShowModal;
+  frmRectangles.Show;
 end;
 
 procedure TfrmCanvasTest.btnScreenshotClick(Sender: TObject);
 begin
-  frmScreenshot.ShowModal;
+  frmScreenshot.Show;
 end;
 
 procedure TfrmCanvasTest.btnShapedWindowClick(Sender: TObject);
 begin
-  frmShapedWindow.ShowModal;
+  frmShapedWindow.Show;
 end;
 
 end.
