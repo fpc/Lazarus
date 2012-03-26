@@ -854,7 +854,8 @@ const
   stduri_xml: DOMString = 'http://www.w3.org/XML/1998/namespace';
   stduri_xmlns: DOMString = 'http://www.w3.org/2000/xmlns/';
 
-function StrToXMLValue(const s: string): string;
+function StrToXMLValue(const s: string): string; // removes #0
+function XMLValueToStr(const s: string): string; // reverse of StrToXMLValue (except for invalid #0)
 function EncodeLesserAndGreaterThan(const s: string): string;
 
 // =======================================================
@@ -922,6 +923,78 @@ begin
   SetLength(Result,NewLen);
   if NewLen=0 then exit;
   Convert(PChar(Result),NewLen);
+end;
+
+function XMLValueToStr(const s: string): string;
+// convert &amp &quot &apos &lt &gt
+var
+  Src: PChar;
+  Dst: PChar;
+begin
+  if Pos('&',s)<1 then exit(s);
+  SetLength(Result,length(s));
+  Src:=PChar(s);
+  Dst:=PChar(Result);
+  repeat
+    case Src^ of
+    #0:
+      if Src-PChar(s)=length(s) then
+        break
+      else
+        inc(Src);
+    '&':
+      begin
+        inc(Src);
+        case Src^ of
+        'a':
+          if (Src[1]='m') and (Src[2]='p') then begin
+            inc(Src,3);
+            if Src^=';' then inc(Src);
+            Dst^:='&';
+            inc(Dst);
+            continue;
+          end else if (Src[1]='p') and (Src[2]='o') and (Src[3]='s') then begin
+            inc(Src,4);
+            if Src^=';' then inc(Src);
+            Dst^:='''';
+            inc(Dst);
+            continue;
+          end;
+        'q':
+          if (Src[1]='u') and (Src[2]='o') and (Src[3]='t') then begin
+            inc(Src,4);
+            if Src^=';' then inc(Src);
+            Dst^:='"';
+            inc(Dst);
+            continue;
+          end;
+        'l':
+          if (Src[1]='t') then begin
+            inc(Src,2);
+            if Src^=';' then inc(Src);
+            Dst^:='<';
+            inc(Dst);
+            continue;
+          end;
+        'g':
+          if (Src[1]='t') then begin
+            inc(Src,2);
+            if Src^=';' then inc(Src);
+            Dst^:='>';
+            inc(Dst);
+            continue;
+          end;
+        end;
+        Dst^:='&';
+        inc(Dst);
+      end;
+    else
+      Dst^:=Src^;
+      inc(Src);
+      inc(Dst);
+    end;
+  until false;
+  SetLength(Result,Dst-PChar(Result));
 end;
 
 function EncodeLesserAndGreaterThan(const s: string): string;
