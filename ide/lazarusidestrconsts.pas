@@ -98,6 +98,7 @@ resourcestring
   lisPath = 'Path';
   lisId = 'ID';
   lisCompile = 'Compile';
+  lisCompile2 = 'Compile';
   lisBuild = 'Build';
   lisBuildCaption = 'Build';
   lisBuildStage = 'Build';
