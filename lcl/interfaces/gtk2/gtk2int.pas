@@ -258,6 +258,9 @@ type
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     procedure DCRedraw(CanvasHandle: HDC); override;
+    {used by 3rd party components eg. opengl implementation}
+    procedure FinishCreateHandle(const AWinControl: TWinControl;
+      Widget: PGtkWidget; const AParams: TCreateParams);
 
   private
     {$IFDEF HASX}
