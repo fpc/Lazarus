@@ -469,6 +469,7 @@ begin
   with Result do begin
     Add('code',@AllwaysTrue);
     Add('source',@AllwaysTrue);
+    Add('syntaxhighlight',@AllwaysTrue);
     Add('pascal',@AllwaysTrue);
     Add('delphi',@AllwaysTrue);
     if AddLazWikiLangs then begin

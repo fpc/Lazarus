@@ -34,12 +34,12 @@ uses
   {$IF FPC_FULLVERSION<20701}
   myfphttpclient,
   {$ELSE}
-  fphttpclient,
+  fphttpclient, HTTPDefs,
   {$ENDIF}
   WikiParser, WikiFormat;
 
 const
-  IgnorePrefixes: array[1..11] of string = (
+  IgnorePrefixes: array[1..12] of string = (
     'Special:',
     'Help:',
     'Random:',
@@ -50,6 +50,7 @@ const
     'Category:',
     'User:',
     'User_talk:',
+    'Lazarus_wiki:',
     'index.php'
     );
 type
@@ -76,8 +77,8 @@ type
     FAllImages: TStringToStringTree; // image name to filename
   protected
     procedure DoRun; override;
-    procedure GetAll;
-    procedure GetRecent(Days: integer);
+    procedure GetAll(Version: integer = 2; SaveTOC: boolean = false);
+    procedure GetRecent(Days: integer; Version: integer = 2);
     procedure DownloadPage(Page: string);
     procedure DownloadFirstNeededPage;
     procedure CheckNotUsedPages(Show, Delete: boolean);
@@ -185,7 +186,7 @@ begin
       if RecentDays<1 then
         E('invalid --recent value "'+GetOptionValue('recent')+'"');
     end;
-    GetAll;
+    GetAll(2);
     if RecentDays>0 then
       GetRecent(RecentDays);
   end;
@@ -210,7 +211,7 @@ begin
   Terminate;
 end;
 
-procedure TWikiGet.GetAll;
+procedure TWikiGet.GetAll(Version: integer; SaveTOC: boolean);
 var
   Client: TFPHTTPClient;
   Response: TMemoryStream;
@@ -222,41 +223,45 @@ var
   URLs: TStringList;
   i: Integer;
   Page: String;
-  SaveTOC: Boolean;
 begin
   Client:=nil;
-  SaveTOC:=false;
   URLs:=TStringList.Create;
-  SaveTOC:=false;
   try
     Client:=TFPHTTPClient.Create(nil);
     Response:=TMemoryStream.Create;
     // get list of range pages
-    //URL:=BaseURL+'index.php?title=Special:Allpages&action=submit&namespace=0&from=';
-    URL:=BaseURL+'index.php?title=Special:Allpages';
+    //URL:=BaseURL+'index.php?title=Special:AllPages&action=submit&namespace=0&from=';
+    if Version=1 then
+      URL:=BaseURL+'index.php?title=Special:Allpages'
+    else
+      URL:=BaseURL+'index.php?title=Special:AllPages';
     writeln('getting page "',URL,'" ...');
     Client.Get(URL,Response);
     //Client.ResponseHeaders.SaveToFile('responseheaders.txt');
-    if SaveTOC then begin
-      Response.Position:=0;
-      Filename:='all.html';
-      writeln('saving page "',Filename,'" ...');
-      if not NoWrite then
-        Response.SaveToFile(Filename);
-    end;
+    debugln(['TWikiGet.GetAll ',SaveTOC]);
     if Response.Size>0 then begin
+      if SaveTOC then begin
+        Response.Position:=0;
+        Filename:='all.html';
+        writeln('saving page "',Filename,'" ...');
+        if not NoWrite then
+          Response.SaveToFile(Filename);
+      end;
       Response.Position:=0;
       SetLength(s,Response.Size);
       Response.Read(s[1],length(s));
       repeat
-        p:=Pos('<a href="/Special:Allpages/',s);
+        if Version=1 then
+          p:=Pos('<a href="/Special:Allpages/',s)
+        else
+          p:=Pos('<a href="/index.php?title=Special:AllPages&amp;from=',s);
         if p<1 then break;
         inc(p,length('<a href="'));
         StartPos:=p;
         while (p<=length(s)) and (s[p]<>'"') do inc(p);
-        URL:=copy(s,StartPos,p-StartPos);
+        URL:=XMLValueToStr(copy(s,StartPos,p-StartPos));
         if (URL<>'') and (URLs.IndexOf(URL)<0) then begin;
-          //writeln('TWikiGet.GetAll URL="',URL,'"');
+          writeln('TWikiGet.GetAll URL="',URL,'"');
           URLs.Add(URL);
         end;
         System.Delete(s,1,p);
@@ -311,7 +316,7 @@ begin
   end;
 end;
 
-procedure TWikiGet.GetRecent(Days: integer);
+procedure TWikiGet.GetRecent(Days: integer; Version: integer);
 const
   linksstart = '<a href="/index.php?title=';
 var
@@ -333,7 +338,10 @@ begin
   try
     Client:=TFPHTTPClient.Create(nil);
     Response:=TMemoryStream.Create;
-    URL:=BaseURL+'index.php?title=Special:Recentchanges&days='+IntToStr(Days)+'&limit=500';
+    if Version=1 then
+      URL:=BaseURL+'index.php?title=Special:Recentchanges&days='+IntToStr(Days)+'&limit=500'
+    else
+      URL:=BaseURL+'index.php?title=Special:RecentChanges&days='+IntToStr(Days)+'&limit=500';
     writeln('getting page "',URL,'" ...');
     Client.Get(URL,Response);
     //Client.ResponseHeaders.SaveToFile('responseheaders.txt');
