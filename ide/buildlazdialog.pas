@@ -206,7 +206,7 @@ function BuildLazarus(Profile: TBuildLazarusProfile;
                mtError,[mbCancel],0);
   end;
 
-  procedure CleanLazarusSrcDir(Dir: string);
+  procedure CleanLazarusSrcDir(Dir: string; Recursive: boolean = true);
   var
     FileInfo: TSearchRec;
     Ext: String;
@@ -216,11 +216,15 @@ function BuildLazarus(Profile: TBuildLazarusProfile;
     if FindFirstUTF8(Dir+AllFilesMask,faAnyFile,FileInfo)=0 then begin
       repeat
         if (FileInfo.Name='') or (FileInfo.Name='.') or (FileInfo.Name='..')
-        or (FileInfo.Name='.svn') or (FileInfo.Name='.git') then
+        or (FileInfo.Name='.svn') or (FileInfo.Name='.git')
+        then
           continue;
         Filename:=Dir+FileInfo.Name;
         if faDirectory and FileInfo.Attr>0 then
-          CleanLazarusSrcDir(Filename)
+        begin
+          if Recursive then
+            CleanLazarusSrcDir(Filename)
+        end
         else begin
           Ext:=LowerCase(ExtractFileExt(FileInfo.Name));
           if (Ext='.ppu') or (Ext='.o') or (Ext='.rst') then begin
@@ -277,7 +281,17 @@ begin
       if not CheckDirectoryWritable(WorkingDirectory) then exit(mrCancel);
 
       // clean lazarus source directories
-      CleanLazarusSrcDir(WorkingDirectory);
+      // Note: Some installations put the fpc units into the lazarus directory
+      CleanLazarusSrcDir(WorkingDirectory,false);
+      CleanLazarusSrcDir(WorkingDirectory+PathDelim+'examples');
+      CleanLazarusSrcDir(WorkingDirectory+PathDelim+'components');
+      CleanLazarusSrcDir(WorkingDirectory+PathDelim+'units');
+      CleanLazarusSrcDir(WorkingDirectory+PathDelim+'ide');
+      CleanLazarusSrcDir(WorkingDirectory+PathDelim+'packager');
+      CleanLazarusSrcDir(WorkingDirectory+PathDelim+'lcl');
+      CleanLazarusSrcDir(WorkingDirectory+PathDelim+'ideintf');
+      CleanLazarusSrcDir(WorkingDirectory+PathDelim+'tools');
+      CleanLazarusSrcDir(WorkingDirectory+PathDelim+'test');
 
       // call make to clean up
       Tool.Title:=lisCleanLazarusSource;
