@@ -248,8 +248,8 @@ type
     semWindowDestroy,   // Called after removal of a Window
     semWindowActivate,  // Window is now ActiveSourceWindow (does not vave to be focused)
     semWindowFocused,   // The window became the active win of the application
-    semEditorCreate,
-    semEditorDestroy,
+    semEditorCreate,    // Called after a new editor was created and added to list
+    semEditorDestroy,   // Called when an Editor is destroyed / after it is removed fron the list of editors
     semEditorActivate,  // Editor is ActiveEditor
     semEditorStatus     // any status change of the editor (Caret, Selection, topline, ...)
   );

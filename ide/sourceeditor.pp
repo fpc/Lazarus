@@ -659,8 +659,8 @@ type
     function NewSE(Pagenum: Integer; NewPagenum: Integer = -1;
                    ASharedEditor: TSourceEditor = nil;
                    ATabCaption: String = ''): TSourceEditor;
-    procedure AcceptEditor(AnEditor: TSourceEditor);
-    procedure ReleaseEditor(AnEditor: TSourceEditor);
+    procedure AcceptEditor(AnEditor: TSourceEditor; SendEvent: Boolean = False);
+    procedure ReleaseEditor(AnEditor: TSourceEditor; SendEvent: Boolean = False);
     procedure EditorChanged(Sender: TObject);
     procedure DoClose(var CloseAction: TCloseAction); override;
     procedure DoShow; override;
@@ -975,6 +975,8 @@ type
   protected
     procedure NewEditorCreated(AEditor: TSourceEditor);
     procedure EditorRemoved(AEditor: TSourceEditor);
+    procedure SendEditorCreated(AEditor: TSourceEditor);
+    procedure SendEditorDestroyed(AEditor: TSourceEditor);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RemoveWindow(AWindow: TSourceNotebook);
   public
@@ -2525,7 +2527,7 @@ begin
     UnbindEditor;
     FEditor.Visible:=false;
     FEditor.Parent:=nil;
-    TSourceNotebook(FAOwner).ReleaseEditor(self);
+    TSourceNotebook(FAOwner).ReleaseEditor(self, True);
     // free the synedit control after processing the events
     EditorComponent.Owner.RemoveComponent(EditorComponent);
     Application.ReleaseComponent(FEditor);
@@ -6123,14 +6125,14 @@ begin
   {$ENDIF}
   Result := TSourceEditor.Create(Self, NotebookPage[PageNum], ASharedEditor);
   Result.FPageName := NoteBookPages[Pagenum];
-  AcceptEditor(Result);
+  AcceptEditor(Result, True);
   PageIndex := Pagenum;
   {$IFDEF IDE_DEBUG}
   debugln('TSourceNotebook.NewSE end ');
   {$ENDIF}
 end;
 
-procedure TSourceNotebook.AcceptEditor(AnEditor: TSourceEditor);
+procedure TSourceNotebook.AcceptEditor(AnEditor: TSourceEditor; SendEvent: Boolean);
 begin
   FSourceEditorList.Add(AnEditor);
 
@@ -6143,11 +6145,16 @@ begin
   AnEditor.OnKeyDown := @EditorKeyDown;
   AnEditor.EditorComponent.Beautifier.OnGetDesiredIndent := @EditorGetIndent;
   AnEditor.EditorComponent.EndUpdate;
+
+  if SendEvent then
+    Manager.SendEditorCreated(AnEditor)
 end;
 
-procedure TSourceNotebook.ReleaseEditor(AnEditor: TSourceEditor);
+procedure TSourceNotebook.ReleaseEditor(AnEditor: TSourceEditor; SendEvent: Boolean);
 begin
   FSourceEditorList.Remove(AnEditor);
+  if SendEvent then
+    Manager.SendEditorDestroyed(AnEditor)
 end;
 
 function TSourceNotebook.FindSourceEditorWithPageIndex(APageIndex: integer): TSourceEditor;
@@ -8719,13 +8726,21 @@ procedure TSourceEditorManager.NewEditorCreated(AEditor: TSourceEditor);
 begin
   if FDefaultCompletionForm <> nil then
     FDefaultCompletionForm.AddEditor(AEditor.EditorComponent);
-  FChangeNotifyLists[semEditorCreate].CallNotifyEvents(AEditor);
 end;
 
 procedure TSourceEditorManager.EditorRemoved(AEditor: TSourceEditor);
 begin
   if FDefaultCompletionForm <> nil then
     FDefaultCompletionForm.RemoveEditor(AEditor.EditorComponent);
+end;
+
+procedure TSourceEditorManager.SendEditorCreated(AEditor: TSourceEditor);
+begin
+  FChangeNotifyLists[semEditorCreate].CallNotifyEvents(AEditor);
+end;
+
+procedure TSourceEditorManager.SendEditorDestroyed(AEditor: TSourceEditor);
+begin
   FChangeNotifyLists[semEditorDestroy].CallNotifyEvents(AEditor);
 end;
 
