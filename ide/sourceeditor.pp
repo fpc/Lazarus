@@ -4271,12 +4271,18 @@ procedure TSourceEditor.InsertLine(StartLine: Integer; const NewText: String;
   aKeepMarks: Boolean);
 const
   MarksMode: array[Boolean] of TSynMarksAdjustMode = (smaMoveUp, smaKeep);
+var
+  Pt: TPoint;
 begin
   if not ReadOnly then
-    FEditor.SetTextBetweenPoints(
-      Point(1, StartLine),
-      Point(1, StartLine),
-      NewText + LineEnding, [], scamEnd, MarksMode[aKeepMarks]);
+  begin
+    if StartLine > 1 then
+      Pt := Point(Length(FEditor.Lines[StartLine - 2]) + 1, StartLine - 1)
+    else
+      Pt := Point(1, 1);
+    FEditor.SetTextBetweenPoints(Pt, Pt,
+      LineEnding + NewText, [], scamEnd, MarksMode[aKeepMarks]);
+  end;
 end;
 
 procedure TSourceEditor.ReplaceLines(StartLine, EndLine: integer;
