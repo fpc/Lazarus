@@ -42,13 +42,23 @@ uses
   ProjectResourcesIntf, resource;
    
 type
+  TXPManifestExecutionLevel = (
+    xmelAsInvoker,
+    xmelHighestAvailable,
+    xmelRequireAdministrator
+  );
+
   { TProjectXPManifest }
 
   TProjectXPManifest = class(TAbstractProjectResource)
   private
+    FExecutionLevel: TXPManifestExecutionLevel;
     FIsDpiaAware: boolean;
+    FUIAccess: Boolean;
     FUseManifest: boolean;
     procedure SetDpiAware(const AValue: boolean);
+    procedure SetExecutionLevel(AValue: TXPManifestExecutionLevel);
+    procedure SetUIAccess(AValue: Boolean);
     procedure SetUseManifest(const AValue: boolean);
   public
     constructor Create; override;
@@ -58,8 +68,16 @@ type
 
     property UseManifest: boolean read FUseManifest write SetUseManifest;
     property DpiAware: boolean read FIsDpiaAware write SetDpiAware;
+    property ExecutionLevel: TXPManifestExecutionLevel read FExecutionLevel write SetExecutionLevel;
+    property UIAccess: Boolean read FUIAccess write SetUIAccess;
   end;
 
+const
+  ExecutionLevelToStr: array[TXPManifestExecutionLevel] of String = (
+    'asInvoker',
+    'highestAvailable',
+    'requireAdministrator'
+  );
 implementation
 
 const
@@ -76,7 +94,7 @@ const
     ' <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">'#$D#$A+
     '  <security>'#$D#$A+
     '   <requestedPrivileges>'#$D#$A+
-    '    <requestedExecutionLevel level="asInvoker" uiAccess="false"/>'#$D#$A+
+    '    <requestedExecutionLevel level="%s" uiAccess="%s"/>'#$D#$A+
     '   </requestedPrivileges>'#$D#$A+
     '  </security>'#$D#$A+
     ' </trustInfo>'#$D#$A;
@@ -103,11 +121,27 @@ begin
   Modified := True;
 end;
 
+procedure TProjectXPManifest.SetExecutionLevel(AValue: TXPManifestExecutionLevel);
+begin
+  if FExecutionLevel = AValue then Exit;
+  FExecutionLevel := AValue;
+  Modified := True;
+end;
+
+procedure TProjectXPManifest.SetUIAccess(AValue: Boolean);
+begin
+  if FUIAccess = AValue then Exit;
+  FUIAccess := AValue;
+  Modified := True;
+end;
+
 constructor TProjectXPManifest.Create;
 begin
   inherited Create;
   UseManifest := False;
   DpiAware := False;
+  ExecutionLevel := xmelAsInvoker;
+  UIAccess := False;
 end;
 
 function TProjectXPManifest.UpdateResources(AResources: TAbstractProjectResources;
@@ -125,7 +159,7 @@ begin
     Res := TGenericResource.Create(RType, RName);
     RType.Free; //no longer needed
     RName.Free;
-    ManifestFileData := sManifestFileDataStart;
+    ManifestFileData := Format(sManifestFileDataStart, [ExecutionLevelToStr[ExecutionLevel], BoolToStr(UIAccess, 'true', 'false')]);
     if DpiAware then
       ManifestFileData := ManifestFileData + sManifestFileDataDpiAware;
     ManifestFileData := ManifestFileData + sManifestFileDataEnd;
@@ -138,12 +172,16 @@ procedure TProjectXPManifest.WriteToProjectFile(AConfig: TObject; Path: String);
 begin
   TXMLConfig(AConfig).SetDeleteValue(Path+'General/UseXPManifest/Value', UseManifest, False);
   TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/DpiAware/Value', DpiAware, False);
+  TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/ExecutionLevel/Value', Ord(ExecutionLevel), 0);
+  TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/UIAccess/Value', UIAccess, False);
 end;
 
 procedure TProjectXPManifest.ReadFromProjectFile(AConfig: TObject; Path: String);
 begin
   UseManifest := TXMLConfig(AConfig).GetValue(Path+'General/UseXPManifest/Value', False);
   DpiAware := TXMLConfig(AConfig).GetValue(Path+'General/XPManifest/DpiAware/Value', False);
+  ExecutionLevel := TXPManifestExecutionLevel(TXMLConfig(AConfig).GetValue(Path+'General/XPManifest/ExecutionLevel/Value', 0));
+  UIAccess := TXMLConfig(AConfig).GetValue(Path+'General/XPManifest/UIAccess/Value', False);
 end;
 
 initialization

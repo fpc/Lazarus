@@ -16,6 +16,8 @@ type
 
   TProjectApplicationOptionsFrame = class(TAbstractIDEOptionsEditor)
     AppSettingsGroupBox: TGroupBox;
+    UIAccessCheckBox: TCheckBox;
+    ExecutionLevelComboBox: TComboBox;
     DpiAwareCheckBox: TCheckBox;
     ClearIconButton: TBitBtn;
     CreateAppBundleButton: TBitBtn;
@@ -24,6 +26,7 @@ type
     IconPanel: TPanel;
     IconTrack: TTrackBar;
     IconTrackLabel: TLabel;
+    ExecutionLevelLabel: TLabel;
     LoadIconButton: TBitBtn;
     OpenPictureDialog1: TOpenPictureDialog;
     SaveIconButton: TBitBtn;
@@ -151,6 +154,9 @@ end;
 procedure TProjectApplicationOptionsFrame.UseXPManifestCheckBoxChange(Sender: TObject);
 begin
   DpiAwareCheckBox.Enabled := UseXPManifestCheckBox.Checked;
+  ExecutionLevelLabel.Enabled := UseXPManifestCheckBox.Checked;
+  ExecutionLevelComboBox.Enabled := UseXPManifestCheckBox.Checked;
+  UIAccessCheckBox.Enabled := UseXPManifestCheckBox.Checked;
 end;
 
 procedure TProjectApplicationOptionsFrame.SetIconFromStream(Value: TStream);
@@ -182,14 +188,22 @@ begin
 end;
 
 procedure TProjectApplicationOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+var
+  ExecutionLevel: TXPManifestExecutionLevel;
 begin
   AppSettingsGroupBox.Caption := dlgApplicationSettings;
   TitleLabel.Caption := dlgPOTitle;
   TitleEdit.Text := '';
   UseAppBundleCheckBox.Caption := dlgPOUseAppBundle;
   UseAppBundleCheckBox.Checked := False;
+
+  // manifest
   UseXPManifestCheckBox.Caption := dlgPOUseManifest;
   DpiAwareCheckBox.Caption := dlgPODpiAware;
+  ExecutionLevelLabel.Caption := dlgPOExecutionLevel;
+  for ExecutionLevel := Low(TXPManifestExecutionLevel) to High(TXPManifestExecutionLevel) do
+    ExecutionLevelComboBox.Items.Add(ExecutionLevelToStr[ExecutionLevel]);
+
   CreateAppBundleButton.Caption := dlgPOCreateAppBundle;
   CreateAppBundleButton.LoadGlyphFromLazarusResource('pkg_compile');
 
@@ -219,7 +233,12 @@ begin
     UseAppBundleCheckBox.Checked := UseAppBundle;
     UseXPManifestCheckBox.Checked := TProjectXPManifest(ProjResources[TProjectXPManifest]).UseManifest;
     DpiAwareCheckBox.Checked := TProjectXPManifest(ProjResources[TProjectXPManifest]).DpiAware;
+    ExecutionLevelComboBox.ItemIndex := Ord(TProjectXPManifest(ProjResources[TProjectXPManifest]).ExecutionLevel);
+    UIAccessCheckBox.Checked := TProjectXPManifest(ProjResources[TProjectXPManifest]).UIAccess;
     DpiAwareCheckBox.Enabled := UseXPManifestCheckBox.Checked;
+    ExecutionLevelLabel.Enabled := UseXPManifestCheckBox.Checked;
+    ExecutionLevelComboBox.Enabled := UseXPManifestCheckBox.Checked;
+    UIAccessCheckBox.Enabled := UseXPManifestCheckBox.Checked;
     AStream := TProjectIcon(ProjResources[TProjectIcon]).GetStream;
     try
       SetIconFromStream(AStream);
@@ -245,6 +264,8 @@ begin
     UseAppBundle := UseAppBundleCheckBox.Checked;
     TProjectXPManifest(ProjResources[TProjectXPManifest]).UseManifest := UseXPManifestCheckBox.Checked;
     TProjectXPManifest(ProjResources[TProjectXPManifest]).DpiAware := DpiAwareCheckBox.Checked;
+    TProjectXPManifest(ProjResources[TProjectXPManifest]).ExecutionLevel := TXPManifestExecutionLevel(ExecutionLevelComboBox.ItemIndex);
+    TProjectXPManifest(ProjResources[TProjectXPManifest]).UIAccess := UIAccessCheckBox.Checked;
   end;
 end;
 
