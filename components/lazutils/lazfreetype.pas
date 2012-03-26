@@ -418,18 +418,21 @@ const
   (*                                                               *)
   function  TT_Get_Name_ID( face         : TT_Face;
                             nameIndex    : integer;
-                            var platform : integer;
-                            var encoding : integer;
-                            var language : integer;
-                            var nameid   : integer ) : TT_Error;
+                            out platform : integer;
+                            out encoding : integer;
+                            out language : integer;
+                            out nameid   : integer ) : TT_Error;
 
   (*****************************************************************)
   (*  Return a given name table string                             *)
   (*                                                               *)
   function  TT_Get_Name_String( face      : TT_Face;
                                 nameIndex : integer;
-                                var str   : Pointer;
-                                var len   : integer ) : TT_Error;
+                                out str   : Pointer;
+                                out len   : integer ) : TT_Error;
+
+  function  TT_Get_Name_String( face      : TT_Face;
+                                nameIndex : integer ) : string;
 
   (***********************************************************************)
   (*                                                                     *)
@@ -1520,10 +1523,10 @@ uses
   (*                                                               *)
   function  TT_Get_Name_ID( face         : TT_Face;
                             nameIndex    : integer;
-                            var platform : integer;
-                            var encoding : integer;
-                            var language : integer;
-                            var nameid   : integer ) : TT_Error;
+                            out platform : integer;
+                            out encoding : integer;
+                            out language : integer;
+                            out nameid   : integer ) : TT_Error;
   var
     faze  : PFace;
     table : PName_Table;
@@ -1567,8 +1570,8 @@ uses
   (*                                                               *)
   function  TT_Get_Name_String( face      : TT_Face;
                                 nameIndex : integer;
-                                var str   : Pointer;
-                                var len   : integer ) : TT_Error;
+                                out str   : Pointer;
+                                out len   : integer ) : TT_Error;
   var
     faze  : PFace;
     table : PName_Table;
@@ -1603,6 +1606,15 @@ uses
     len := 0;
   end;
 
+  function TT_Get_Name_String(face: TT_Face; nameIndex: integer): string;
+  var
+    str: pointer;
+    len: integer;
+  begin
+    TT_Get_Name_String(face, nameIndex, str, len);
+    setlength(result,len);
+    if len <> 0 then move(str^, result[1], len);
+  end;
 
   (*****************************************************************)
   (*  Access font data and copies it into user block               *)

@@ -138,19 +138,19 @@ begin
   ftFont1.ClearType := true;
   ftFont1.Quality := grqHighQuality;
   ftFont1.SmallLinePadding := false;
-  drawer.DrawText(testtext, ftFont1, x, y, colBlack, [ftaRight, ftaBottom]);
+  drawer.DrawText(ftFont1.Information[ftiFullName], ftFont1, x, y, colBlack, [ftaRight, ftaBottom]);
 
   ftFont2.Hinted := false;
   ftFont2.ClearType := false;
   ftFont2.Quality := grqHighQuality;
-  drawer.DrawText(testtext, ftFont2, x, y, colRed, 192, [ftaCenter, ftaBaseline]);
+  drawer.DrawText(ftFont2.Information[ftiFullName], ftFont2, x, y, colRed, 192, [ftaCenter, ftaBaseline]);
 
   ftFont3.Hinted := false;
   ftFont3.ClearType := false;
   ftFont3.Quality := grqMonochrome;
-  drawer.DrawText(testtext, ftFont3, x, y, colBlack, 128, [ftaLeft, ftaTop]);
+  drawer.DrawText(ftFont3.Information[ftiFullName]+' '+ftFont3.VersionNumber, ftFont3, x, y, colBlack, 128, [ftaLeft, ftaTop]);
 
-  p := ftFont1.CharsPosition(testtext,[ftaRight, ftaBottom]);
+  p := ftFont1.CharsPosition(ftFont1.Information[ftiFullName],[ftaRight, ftaBottom]);
   for i := 0 to high(p) do
   begin
     drawer.DrawVertLine(round(x+p[i].x),round(y+p[i].yTop),round(y+p[i].yBottom), TColorToFPColor(clBlue));

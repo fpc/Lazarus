@@ -30,6 +30,10 @@ type
   TFreeTypeAlignment = (ftaLeft,ftaCenter,ftaRight,ftaJustify,ftaTop,ftaBaseline,ftaBottom);
   TFreeTypeAlignments = set of TFreeTypeAlignment;
 
+  TFreeTypeInformation = (ftiCopyrightNotice, ftiFamily, ftiStyle, ftiIdentifier, ftiFullName,
+     ftiVersionString, ftiPostscriptName, ftiTrademark, ftiManufacturer, ftiDesigner,
+     ftiVendorURL, ftiDesignerURL, ftiLicenseDescription, ftiLicenseInfoURL);
+
   TFreeTypeGlyph = class;
 
   { TFreeTypeRenderableFont }
@@ -73,12 +77,16 @@ type
     FHinted: boolean;
     FWidthFactor: single;
     FClearType: boolean;
+    FNamesArray: array of string;
     function FindGlyphNode(Index: Integer): TAvgLvlTreeNode;
     function GetCharIndex(AChar: integer): integer;
     function GetDPI: integer;
+    function GetFamily: string;
     function GetGlyph(Index: integer): TFreeTypeGlyph;
     function GetGlyphCount: integer;
+    function GetInformation(AIndex: TFreeTypeInformation): string;
     function GetPixelSize: single;
+    function GetVersionNumber: string;
     procedure SetDPI(const AValue: integer);
     procedure SetHinted(const AValue: boolean);
     procedure SetLineFullHeight(AValue: single);
@@ -108,6 +116,7 @@ type
     function GetAscent: single; override;
     function GetDescent: single; override;
     function GetLineSpacing: single; override;
+    procedure FetchNames;
   public
     Quality : TGlyphRenderQuality;
     SmallLinePadding: boolean;
@@ -129,6 +138,9 @@ type
     property Hinted: boolean read FHinted write SetHinted;
     property WidthFactor: single read FWidthFactor write SetWidthFactor;
     property LineFullHeight: single read GetLineFullHeight write SetLineFullHeight;
+    property Information[AIndex: TFreeTypeInformation]: string read GetInformation;
+    property VersionNumber: string read GetVersionNumber;
+    property Family: string read GetFamily;
   end;
 
   { TFreeTypeGlyph }
@@ -455,6 +467,12 @@ begin
       result := 96;
   end;
 end;
+
+function TFreeTypeFont.GetFamily: string;
+begin
+  result := Information[ftiFamily];
+end;
+
 {$hints on}
 
 function TFreeTypeFont.FindGlyphNode(Index: Integer): TAvgLvlTreeNode;
@@ -523,6 +541,16 @@ begin
       result := prop.num_glyphs;
   end;
 end;
+
+function TFreeTypeFont.GetInformation(AIndex: TFreeTypeInformation): string;
+begin
+  if FNamesArray = nil then FetchNames;
+  if (ord(AIndex) < 0) or (ord(AIndex) > high(FNamesArray)) then
+    result := ''
+  else
+    result := FNamesArray[ord(AIndex)];
+end;
+
 {$hints on}
 
 function TFreeTypeFont.GetLineFullHeight: single;
@@ -541,6 +569,21 @@ end;
 function TFreeTypeFont.GetPixelSize: single;
 begin
   result := SizeInPoints * DPI / 72;
+end;
+
+function TFreeTypeFont.GetVersionNumber: string;
+var VersionStr: string;
+    idxStart,idxEnd: integer;
+begin
+  VersionStr := Information[ftiVersionString];
+  idxStart := 1;
+  while (idxStart < length(VersionStr)) and not (VersionStr[idxStart] in['0'..'9']) do
+    inc(idxStart);
+  idxEnd := idxStart;
+  while (idxEnd+1 <= length(VersionStr)) and (VersionStr[idxEnd+1] in['0'..'9']) do inc(idxEnd);
+  if (idxEnd+1 <= length(VersionStr)) and (VersionStr[idxEnd+1] = '.') then inc(idxEnd);
+  while (idxEnd+1 <= length(VersionStr)) and (VersionStr[idxEnd+1] in['0'..'9']) do inc(idxEnd);
+  result := copy(VersionStr,idxStart,idxEnd-idxStart+1);
 end;
 
 procedure TFreeTypeFont.SetClearType(const AValue: boolean);
@@ -586,6 +629,7 @@ begin
   begin
     TT_Close_Face(FFace);
     FFaceLoaded := false;
+    FNamesArray := nil;
   end;
   FCharmapOk := false;
 end;
@@ -770,6 +814,7 @@ begin
   FWidthFactor := 1;
   FClearType := false;
   SmallLinePadding:= true;
+  Quality := grqHighQuality;
 end;
 
 destructor TFreeTypeFont.Destroy;
@@ -1044,6 +1089,49 @@ begin
       yTop -= y;
       yBase -= y;
       yBottom -= y;
+    end;
+  end;
+end;
+
+procedure TFreeTypeFont.FetchNames;
+const
+  maxNameIndex = 22;
+var i,j: integer;
+  nrPlatformID,nrEncodingID,nrLanguageID,nrNameID,len: integer;
+  value,value2: string;
+
+begin
+  setlength(FNamesArray, maxNameIndex+1);
+  if FFaceLoaded then
+  begin
+    for i := 0 to TT_Get_Name_Count(FFace)-1 do
+    begin
+      if TT_Get_Name_ID(FFace, i, nrPlatformID, nrEncodingID,
+                        nrLanguageID, nrNameID) <> TT_Err_Ok then continue;
+
+      if (nrNameID < 0) or (nrNameID > maxNameIndex) then continue;
+
+        { check for Microsoft, Unicode, English }
+      if ((nrPlatformID=3) and (nrEncodingID=1) and
+         ((nrLanguageID=$0409) or (nrLanguageID=$0809) or
+          (nrLanguageID=$0c09) or (nrLanguageID=$1009) or
+          (nrLanguageID=$1409) or (nrLanguageID=$1809))) or
+        { or for Unicode, English }
+        ((nrPlatformID=0) and
+         (nrLanguageID=0)) then
+      begin
+        value := TT_Get_Name_String(FFace, i);
+        for j := 1 to length(value) div 2 do
+          pword(@value[j*2-1])^ := BEtoN(pword(@value[j*2-1])^);
+        setlength(value2, 3*(length(value) div 2) + 1); //maximum is 3-byte chars and NULL char at the end
+        len := system.UnicodeToUtf8(@value2[1],length(value2),PUnicodeChar( @value[1] ),length(value) div 2);
+        if len > 0 then
+        begin
+          setlength(value2, len-1 );
+          value := value2;
+        end;
+        FNamesArray[nrNameID] := value;
+      end;
     end;
   end;
 end;
