@@ -6125,7 +6125,7 @@ begin
   {$ENDIF}
   Result := TSourceEditor.Create(Self, NotebookPage[PageNum], ASharedEditor);
   Result.FPageName := NoteBookPages[Pagenum];
-  AcceptEditor(Result, True);
+  AcceptEditor(Result);
   PageIndex := Pagenum;
   {$IFDEF IDE_DEBUG}
   debugln('TSourceNotebook.NewSE end ');
@@ -6147,14 +6147,14 @@ begin
   AnEditor.EditorComponent.EndUpdate;
 
   if SendEvent then
-    Manager.SendEditorCreated(AnEditor)
+    Manager.SendEditorCreated(AnEditor);
 end;
 
 procedure TSourceNotebook.ReleaseEditor(AnEditor: TSourceEditor; SendEvent: Boolean);
 begin
   FSourceEditorList.Remove(AnEditor);
   if SendEvent then
-    Manager.SendEditorDestroyed(AnEditor)
+    Manager.SendEditorDestroyed(AnEditor);
 end;
 
 function TSourceNotebook.FindSourceEditorWithPageIndex(APageIndex: integer): TSourceEditor;
@@ -6886,6 +6886,7 @@ Begin
       UpdatePageNames;
       UpdateProjectFiles(Result);
       UpdateStatusBar;
+      Manager.SendEditorCreated(Result);
     finally
       EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
     end;
@@ -6914,11 +6915,11 @@ begin
   //debugln(['TSourceNotebook.CloseFile ',TempEditor.FileName,' ',TempEditor.APageIndex]);
   EndIncrementalFind;
   TempEditor.Close;
+  NoteBookDeletePage(APageIndex); // delete page before sending notification senEditorDestroyed
   TempEditor.Free;
   TempEditor:=nil;
   // delete the page
   //debugln('TSourceNotebook.CloseFile B  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
-  NoteBookDeletePage(APageIndex);
   //debugln('TSourceNotebook.CloseFile C  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
   UpdateProjectFiles;
   UpdatePageNames;
