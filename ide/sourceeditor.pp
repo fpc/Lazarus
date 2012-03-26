@@ -341,10 +341,10 @@ type
     function IsSharedWith(AnOtherEditor: TSourceEditor): Boolean;
     procedure BeforeCodeBufferReplace;
     procedure AfterCodeBufferReplace;
+    function Close: Boolean;
   public
     constructor Create(AOwner: TComponent; AParent: TWinControl; ASharedEditor: TSourceEditor = nil);
     destructor Destroy; override;
-    function Close: Boolean;
 
     // codebuffer
     procedure BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF}; override;
