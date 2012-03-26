@@ -2745,9 +2745,13 @@ msgstr "Utwórz Zestaw Aplikacji"
 
 #: lazarusidestrconsts.dlgpodpiaware
 #, fuzzy
-#| msgid "Dpi Aware application (for Vista+)"
-msgid "Dpi aware application (for Vista+)"
+#| msgid "Dpi aware application (for Vista+)"
+msgid "Enabled DPI Awareness (for Vista+)"
 msgstr "Aplikacja obsługuje większe DPI (dla Vista+)"
+
+#: lazarusidestrconsts.dlgpoexecutionlevel
+msgid "Execution Level"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
@@ -4418,11 +4422,6 @@ msgstr ""
 msgid "Always build before run"
 msgstr "Zawsze buduj przed uruchomieniem"
 
-#: lazarusidestrconsts.lisbfbuild
-msgctxt "lazarusidestrconsts.lisbfbuild"
-msgid "Build"
-msgstr "Buduj"
-
 #: lazarusidestrconsts.lisbfbuildcommand
 msgid "Build Command"
 msgstr "Polecenie budowania"
@@ -4434,11 +4433,6 @@ msgstr ""
 #: lazarusidestrconsts.lisbfonrunprojectexecutetherunfilecommandinstead
 msgid "On run project execute the Run File command instead"
 msgstr ""
-
-#: lazarusidestrconsts.lisbfrun
-msgctxt "lazarusidestrconsts.lisbfrun"
-msgid "Run"
-msgstr "Uruchom"
 
 #: lazarusidestrconsts.lisbfruncommand
 msgid "Run Command"
@@ -4552,6 +4546,11 @@ msgstr "Buduj"
 msgid "build all files of project/package/IDE"
 msgstr ""
 
+#: lazarusidestrconsts.lisbuildcaption
+msgctxt "lazarusidestrconsts.lisbuildcaption"
+msgid "Build"
+msgstr "Buduj"
+
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr ""
@@ -4591,6 +4590,11 @@ msgstr ""
 #: lazarusidestrconsts.lisbuildproject
 msgid "Build project"
 msgstr ""
+
+#: lazarusidestrconsts.lisbuildstage
+msgctxt "lazarusidestrconsts.lisbuildstage"
+msgid "Build"
+msgstr "Buduj"
 
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
@@ -5377,12 +5381,13 @@ msgstr "Czyść i buduj projekt"
 msgid "Clean up unit path?"
 msgstr ""
 
+#: lazarusidestrconsts.lisclear
+msgctxt "lazarusidestrconsts.lisclear"
+msgid "Clear"
+msgstr "Czyść"
+
 #: lazarusidestrconsts.liscleardirectory
 msgid "Clear Directory?"
-msgstr ""
-
-#: lazarusidestrconsts.lisclearkeymapping
-msgid "Clear Command's Mapping"
 msgstr ""
 
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
@@ -5457,21 +5462,6 @@ msgstr ""
 #: lazarusidestrconsts.liscocallon
 msgid "Call on:"
 msgstr "Wykonaj:"
-
-#: lazarusidestrconsts.liscocallonbuild
-msgctxt "lazarusidestrconsts.liscocallonbuild"
-msgid "Build"
-msgstr "Buduj"
-
-#: lazarusidestrconsts.liscocalloncompile
-msgctxt "lazarusidestrconsts.liscocalloncompile"
-msgid "Compile"
-msgstr "Kompiluj"
-
-#: lazarusidestrconsts.liscocallonrun
-msgctxt "lazarusidestrconsts.liscocallonrun"
-msgid "Run"
-msgstr "Uruchom"
 
 #: lazarusidestrconsts.liscoclickokifaresuretodothat
 msgid "%s%sClick OK if you are sure to do that."
@@ -6147,13 +6137,14 @@ msgstr ""
 msgid "Command after publishing module"
 msgstr "Polecenie po module publikacji"
 
-#: lazarusidestrconsts.liscommandedithint
-msgid "Edit command's mapping with double click, Return key or Popup menu"
-msgstr ""
-
 #: lazarusidestrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
 msgstr "Parametry wiersza poleceń programu"
+
+#: lazarusidestrconsts.liscompile
+msgctxt "lazarusidestrconsts.liscompile"
+msgid "Compile"
+msgstr "Kompiluj"
 
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
@@ -6192,6 +6183,11 @@ msgstr "UWAGA: ładuję stary plik opcji codetools"
 #: lazarusidestrconsts.liscompileroptionsforproject
 msgid "Compiler Options for Project: %s"
 msgstr "Opcje kompilatora dla projektu: %s"
+
+#: lazarusidestrconsts.liscompilestage
+msgctxt "lazarusidestrconsts.liscompilestage"
+msgid "Compile"
+msgstr "Kompiluj"
 
 #: lazarusidestrconsts.liscompiling
 msgid "%s (compiling ...)"
@@ -7056,20 +7052,6 @@ msgstr ""
 msgid "Debugger Information"
 msgstr ""
 
-#: lazarusidestrconsts.lisdebuggerfeedbackless
-msgid "Less"
-msgstr ""
-
-#: lazarusidestrconsts.lisdebuggerfeedbackmore
-msgctxt "lazarusidestrconsts.lisdebuggerfeedbackmore"
-msgid "More"
-msgstr "Więcej"
-
-#: lazarusidestrconsts.lisdebuggerfeedbackstop
-msgctxt "lazarusidestrconsts.lisdebuggerfeedbackstop"
-msgid "Stop"
-msgstr "Zatrzymaj"
-
 #: lazarusidestrconsts.lisdebuggerfeedbackwarning
 msgid "Debugger Warning"
 msgstr ""
@@ -7694,10 +7676,6 @@ msgstr ""
 msgid "Edit help"
 msgstr ""
 
-#: lazarusidestrconsts.liseditkeymapping
-msgid "Edit Command's Mapping"
-msgstr ""
-
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
 msgstr ""
@@ -7963,18 +7941,6 @@ msgstr ""
 msgid "Directory not found"
 msgstr "Nie znalazłem katalogu"
 
-#: lazarusidestrconsts.lisenvoptdlgfpcsrcdirnotfoundmsg
-msgid "FPC source directory \"%s\" not found."
-msgstr "Nie znalazłem katalogu ze źródłami FPC \"%s\"."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidcompilerfilename
-msgid "Invalid compiler filename"
-msgstr "Błędna nazwa pliku kompilatora"
-
-#: lazarusidestrconsts.lisenvoptdlginvalidcompilerfilenamemsg
-msgid "The compiler file \"%s\" is not an executable."
-msgstr "Plik kompilatora \"%s\" nie jest wykonywalny."
-
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
 msgstr "Błędna nazwa pliku odpluskwiacza"
@@ -7982,26 +7948,6 @@ msgstr "Błędna nazwa pliku odpluskwiacza"
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilenamemsg
 msgid "The debugger file \"%s\" is not an executable."
 msgstr "Plik odpluskwiacza \"%s\" nie jest wykonywalny."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidfpcsrcdir
-msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl/inc, packages/fcl-base, ... ."
-msgstr ""
-
-#: lazarusidestrconsts.lisenvoptdlginvalidlazarusdir
-msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."
-msgstr "Katalog Lazarusa \"%s\" wygląda na niepoprawny. Powinien zawierać katalogi jak lcl, debugger, designer, components, ... ."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidmakefilename
-msgid "Invalid make filename"
-msgstr ""
-
-#: lazarusidestrconsts.lisenvoptdlginvalidmakefilenamemsg
-msgid "The make file \"%s\" is not an executable."
-msgstr ""
-
-#: lazarusidestrconsts.lisenvoptdlglazarusdirnotfoundmsg
-msgid "Lazarus directory \"%s\" not found."
-msgstr "Nie znalazłem katalogu Lazarusa \"%s\"."
 
 #: lazarusidestrconsts.lisenvoptdlgtestdirnotfoundmsg
 msgid "Test directory \"%s\" not found."
@@ -8865,16 +8811,6 @@ msgstr ""
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr ""
 
-#: lazarusidestrconsts.lishintpause
-msgctxt "lazarusidestrconsts.lishintpause"
-msgid "Pause"
-msgstr ""
-
-#: lazarusidestrconsts.lishintrun
-msgctxt "lazarusidestrconsts.lishintrun"
-msgid "Run"
-msgstr "Uruchom"
-
 #: lazarusidestrconsts.lishintsaveall
 msgid "Save all"
 msgstr "Zapisz wszystko"
@@ -8890,11 +8826,6 @@ msgstr ""
 #: lazarusidestrconsts.lishintstepover
 msgid "Step Over"
 msgstr "Przejdź przez"
-
-#: lazarusidestrconsts.lishintstop
-msgctxt "lazarusidestrconsts.lishintstop"
-msgid "Stop"
-msgstr "Zatrzymaj"
 
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
@@ -10386,6 +10317,11 @@ msgstr ""
 msgid "Left space equally"
 msgstr ""
 
+#: lazarusidestrconsts.lisless
+msgctxt "lazarusidestrconsts.lisless"
+msgid "Less"
+msgstr ""
+
 #: lazarusidestrconsts.lislevels
 msgid "Levels"
 msgstr "Poziomy"
@@ -10677,11 +10613,6 @@ msgstr "Dodaj czujkę ..."
 msgid "Break Lines in Selection"
 msgstr "Łam linie w zaznaczeniu"
 
-#: lazarusidestrconsts.lismenubuild
-msgctxt "lazarusidestrconsts.lismenubuild"
-msgid "Build"
-msgstr "Buduj"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Zbuduj plik"
@@ -10737,11 +10668,6 @@ msgstr ""
 #| msgid "Comment selection"
 msgid "Comment Selection"
 msgstr "Zakomentuj zaznaczone"
-
-#: lazarusidestrconsts.lismenucompile
-msgctxt "lazarusidestrconsts.lismenucompile"
-msgid "Compile"
-msgstr "Kompiluj"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -11277,11 +11203,6 @@ msgstr "Lista pakietów ..."
 msgid "Package Links ..."
 msgstr "Odnośniki pakietów ..."
 
-#: lazarusidestrconsts.lismenupause
-msgctxt "lazarusidestrconsts.lismenupause"
-msgid "Pause"
-msgstr "Wstrzymaj"
-
 #: lazarusidestrconsts.lismenupkgnewpackagecomponent
 msgid "New package component"
 msgstr ""
@@ -11510,11 +11431,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
 msgid "Step Over Instruction"
 msgstr ""
-
-#: lazarusidestrconsts.lismenustop
-msgctxt "lazarusidestrconsts.lismenustop"
-msgid "Stop"
-msgstr "Zatrzymaj"
 
 #: lazarusidestrconsts.lismenuswapcaseselection
 msgid "Swap Case in Selection"
@@ -12563,6 +12479,11 @@ msgstr ""
 msgid "Path to failed Instance:"
 msgstr ""
 
+#: lazarusidestrconsts.lispause
+msgctxt "lazarusidestrconsts.lispause"
+msgid "Pause"
+msgstr "Wstrzymaj"
+
 #: lazarusidestrconsts.lispckcleartousethepackagename
 msgid "Clear to use the package name"
 msgstr ""
@@ -12593,11 +12514,6 @@ msgstr "Wywołaj procedurę %sRegister%s bieżącego modułu"
 #: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
 msgid "Clear default/preferred filename of dependency"
 msgstr ""
-
-#: lazarusidestrconsts.lispckeditcompile
-msgctxt "lazarusidestrconsts.lispckeditcompile"
-msgid "Compile"
-msgstr "Kompiluj"
 
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
@@ -14563,6 +14479,16 @@ msgstr ""
 msgid "Root"
 msgstr ""
 
+#: lazarusidestrconsts.lisrun
+msgctxt "lazarusidestrconsts.lisrun"
+msgid "Run"
+msgstr "Uruchom"
+
+#: lazarusidestrconsts.lisrunbuttonhint
+msgctxt "lazarusidestrconsts.lisrunbuttonhint"
+msgid "Run"
+msgstr "Uruchom"
+
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr ""
@@ -14574,6 +14500,11 @@ msgstr "Plik nie jest wykonywalny"
 #: lazarusidestrconsts.lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
 msgstr "Aplikacja hosta %s%s%s nie jest wykonywalna."
+
+#: lazarusidestrconsts.lisrunstage
+msgctxt "lazarusidestrconsts.lisrunstage"
+msgid "Run"
+msgstr "Uruchom"
 
 #: lazarusidestrconsts.lisruntimeonlycannotbeinstalledinide
 msgid "Runtime only, can not be installed in IDE"
@@ -14789,6 +14720,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
+msgstr ""
+
+#: lazarusidestrconsts.lisselectedcommandsmapping
+msgid "Selected Command's Mapping"
 msgstr ""
 
 #: lazarusidestrconsts.lisselectedleftneighbour
@@ -15084,6 +15019,11 @@ msgstr ""
 msgid "Start with a new project"
 msgstr ""
 
+#: lazarusidestrconsts.lisstop
+msgctxt "lazarusidestrconsts.lisstop"
+msgid "Stop"
+msgstr "Zatrzymaj"
+
 #: lazarusidestrconsts.lisstopcurrentdebuggingandrebuildproject
 msgid "Stop current debugging and rebuild project?"
 msgstr ""
@@ -15194,7 +15134,7 @@ msgid "Tab Order of %s"
 msgstr "Kolejność kontrolek dla %s"
 
 #: lazarusidestrconsts.listabordersorthint
-msgid "Calculate the tab order of controls by their X- and Y- positions"
+msgid "Calculate tab order for controls by their X- and Y- positions"
 msgstr ""
 
 #: lazarusidestrconsts.listaborderuphint
@@ -15268,6 +15208,10 @@ msgstr "Polecenie po %s%s%s nie jest wykonywalne."
 
 #: lazarusidestrconsts.listhecommandafterpublishingisinvalid
 msgid "The command after publishing is invalid:%s%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
+msgid "The compiler file \"%s\" does not look correct:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.listhecomponentcannotbedeletedbecauseitisnotownedby
@@ -15423,6 +15367,10 @@ msgstr ""
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr ""
 
+#: lazarusidestrconsts.listhefpcsourcedirectorydoesnotlookcorrect
+msgid "The FPC source directory \"%s\" does not look correct:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
 msgstr ""
@@ -15457,6 +15405,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
 msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file \"ide%slazarus.lpi\". The translation files are located there too."
+msgstr ""
+
+#: lazarusidestrconsts.listhelazarusdirectorydoesnotlookcorrect
+msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
@@ -15549,6 +15501,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listhepackageisnotadesigntimepackageitcannotbeinstall
 msgid "The package %s is not a design time package. It can not be installed in the IDE"
+msgstr ""
+
+#: lazarusidestrconsts.listhepathofmakeisnotcorrect
+msgid "The path of \"make\" is not correct: \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
@@ -15929,10 +15885,6 @@ msgstr ""
 #: lazarusidestrconsts.lisuidbytes
 msgid "%s bytes"
 msgstr "%s bajtów"
-
-#: lazarusidestrconsts.lisuidclear
-msgid "Clear"
-msgstr "Czyść"
 
 #: lazarusidestrconsts.lisuidincludedby
 msgid "Included by:"

@@ -2734,7 +2734,11 @@ msgid "Create Application Bundle"
 msgstr "Sukurti programą-rišulį"
 
 #: lazarusidestrconsts.dlgpodpiaware
-msgid "Dpi aware application (for Vista+)"
+msgid "Enabled DPI Awareness (for Vista+)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpoexecutionlevel
+msgid "Execution Level"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpofroms
@@ -4412,11 +4416,6 @@ msgstr ""
 msgid "Always build before run"
 msgstr "Prieš startuojant visada daryti"
 
-#: lazarusidestrconsts.lisbfbuild
-msgctxt "lazarusidestrconsts.lisbfbuild"
-msgid "Build"
-msgstr "Daryti"
-
 #: lazarusidestrconsts.lisbfbuildcommand
 msgid "Build Command"
 msgstr "Darymo komanda"
@@ -4428,11 +4427,6 @@ msgstr "Darant projektą, iš tikro vykdyti komandą „Kurti failą“"
 #: lazarusidestrconsts.lisbfonrunprojectexecutetherunfilecommandinstead
 msgid "On run project execute the Run File command instead"
 msgstr "Startuojant projektą, iš tikro vykdyti komandą „Startuoti failą“"
-
-#: lazarusidestrconsts.lisbfrun
-msgctxt "lazarusidestrconsts.lisbfrun"
-msgid "Run"
-msgstr "Startuoti"
 
 #: lazarusidestrconsts.lisbfruncommand
 msgid "Run Command"
@@ -4554,6 +4548,11 @@ msgstr "Daryti"
 msgid "build all files of project/package/IDE"
 msgstr "daryti visus projekto/paketo/IKA failus"
 
+#: lazarusidestrconsts.lisbuildcaption
+msgctxt "lazarusidestrconsts.lisbuildcaption"
+msgid "Build"
+msgstr "Daryti"
+
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr "kartu su IKA daryti ir paketus"
@@ -4595,6 +4594,11 @@ msgstr "Darymo numeris"
 #: lazarusidestrconsts.lisbuildproject
 msgid "Build project"
 msgstr ""
+
+#: lazarusidestrconsts.lisbuildstage
+msgctxt "lazarusidestrconsts.lisbuildstage"
+msgid "Build"
+msgstr "Daryti"
 
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
@@ -5395,15 +5399,14 @@ msgstr ""
 msgid "Clean up unit path?"
 msgstr "Apvalyti modulių kelią?"
 
+#: lazarusidestrconsts.lisclear
+msgctxt "lazarusidestrconsts.lisclear"
+msgid "Clear"
+msgstr "Clear"
+
 #: lazarusidestrconsts.liscleardirectory
 msgid "Clear Directory?"
 msgstr "Išvalyti aplanką?"
-
-#: lazarusidestrconsts.lisclearkeymapping
-#, fuzzy
-#| msgid "Clear Key Mapping"
-msgid "Clear Command's Mapping"
-msgstr "Išvalyti klavišų priskyrimus"
 
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
@@ -5477,21 +5480,6 @@ msgstr "Neaiškus papildomas kompiliatoriaus nustatymų failas"
 #: lazarusidestrconsts.liscocallon
 msgid "Call on:"
 msgstr "Iššaukti kai:"
-
-#: lazarusidestrconsts.liscocallonbuild
-msgctxt "lazarusidestrconsts.liscocallonbuild"
-msgid "Build"
-msgstr "Daryti"
-
-#: lazarusidestrconsts.liscocalloncompile
-msgctxt "lazarusidestrconsts.liscocalloncompile"
-msgid "Compile"
-msgstr "Kompiliuojama"
-
-#: lazarusidestrconsts.liscocallonrun
-msgctxt "lazarusidestrconsts.liscocallonrun"
-msgid "Run"
-msgstr "Startuoti"
 
 #: lazarusidestrconsts.liscoclickokifaresuretodothat
 msgid "%s%sClick OK if you are sure to do that."
@@ -6177,13 +6165,14 @@ msgstr "Klaidinga komanda esanti po"
 msgid "Command after publishing module"
 msgstr "Komanda po modulio paskelbimo"
 
-#: lazarusidestrconsts.liscommandedithint
-msgid "Edit command's mapping with double click, Return key or Popup menu"
-msgstr ""
-
 #: lazarusidestrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
 msgstr "Programos komandinės eilutės parametrai"
+
+#: lazarusidestrconsts.liscompile
+msgctxt "lazarusidestrconsts.liscompile"
+msgid "Compile"
+msgstr "Kompiliuojama"
 
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
@@ -6222,6 +6211,11 @@ msgstr "Pastaba: įkeliami senasis CodeTools parinkčių failas: "
 #: lazarusidestrconsts.liscompileroptionsforproject
 msgid "Compiler Options for Project: %s"
 msgstr "Kompiliatoriaus parinktys projektui: %s"
+
+#: lazarusidestrconsts.liscompilestage
+msgctxt "lazarusidestrconsts.liscompilestage"
+msgid "Compile"
+msgstr "Kompiliuojama"
 
 #: lazarusidestrconsts.liscompiling
 msgid "%s (compiling ...)"
@@ -7096,20 +7090,6 @@ msgstr ""
 msgid "Debugger Information"
 msgstr ""
 
-#: lazarusidestrconsts.lisdebuggerfeedbackless
-msgid "Less"
-msgstr ""
-
-#: lazarusidestrconsts.lisdebuggerfeedbackmore
-msgctxt "lazarusidestrconsts.lisdebuggerfeedbackmore"
-msgid "More"
-msgstr "Daugiau"
-
-#: lazarusidestrconsts.lisdebuggerfeedbackstop
-msgctxt "lazarusidestrconsts.lisdebuggerfeedbackstop"
-msgid "Stop"
-msgstr "Stabdyti"
-
 #: lazarusidestrconsts.lisdebuggerfeedbackwarning
 msgid "Debugger Warning"
 msgstr ""
@@ -7734,10 +7714,6 @@ msgstr "Keisti kontekstinį žinyną"
 msgid "Edit help"
 msgstr ""
 
-#: lazarusidestrconsts.liseditkeymapping
-msgid "Edit Command's Mapping"
-msgstr ""
-
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
 msgstr ""
@@ -8003,18 +7979,6 @@ msgstr ""
 msgid "Directory not found"
 msgstr "Aplankas nerastas"
 
-#: lazarusidestrconsts.lisenvoptdlgfpcsrcdirnotfoundmsg
-msgid "FPC source directory \"%s\" not found."
-msgstr "Nerastas FPC pirminio kodo aplankas „%s“."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidcompilerfilename
-msgid "Invalid compiler filename"
-msgstr "Klaidingas kompiliatoriaus failas"
-
-#: lazarusidestrconsts.lisenvoptdlginvalidcompilerfilenamemsg
-msgid "The compiler file \"%s\" is not an executable."
-msgstr "Kompiliatoriaus failas „%s“ nėra paleidžiamasis."
-
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
 msgstr "Klaidingas derintuvės failas"
@@ -8022,27 +7986,6 @@ msgstr "Klaidingas derintuvės failas"
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilenamemsg
 msgid "The debugger file \"%s\" is not an executable."
 msgstr "Derintuvės failas „%s“ nėra paleidžiamasis."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidfpcsrcdir
-#| msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, packages, compiler, ... ."
-msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl/inc, packages/fcl-base, ... ."
-msgstr "FPC pirminio kodo aplankas „%s“ nėra geras. Įprastai jame būna aplankai „rtl/inc“, „packages/fcl-base“, … ."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidlazarusdir
-msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."
-msgstr "Lazarus aplankas „%s“ nėra geras. Įprastai jame yra aplankai „lcl“, „debugger“, „designer“, „components“, … ."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidmakefilename
-msgid "Invalid make filename"
-msgstr "Klaidingas make failas"
-
-#: lazarusidestrconsts.lisenvoptdlginvalidmakefilenamemsg
-msgid "The make file \"%s\" is not an executable."
-msgstr "Programos make failas „%s“ nėra vykdomasis."
-
-#: lazarusidestrconsts.lisenvoptdlglazarusdirnotfoundmsg
-msgid "Lazarus directory \"%s\" not found."
-msgstr "Nerastas Lazarus aplankas „%s“."
 
 #: lazarusidestrconsts.lisenvoptdlgtestdirnotfoundmsg
 msgid "Test directory \"%s\" not found."
@@ -8917,16 +8860,6 @@ msgstr ""
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Užuomina: Tikrinti ar du paketai turi modulius tuo pačiu pavadinimu."
 
-#: lazarusidestrconsts.lishintpause
-msgctxt "lazarusidestrconsts.lishintpause"
-msgid "Pause"
-msgstr "Pauzė"
-
-#: lazarusidestrconsts.lishintrun
-msgctxt "lazarusidestrconsts.lishintrun"
-msgid "Run"
-msgstr "Startuoti"
-
 #: lazarusidestrconsts.lishintsaveall
 msgid "Save all"
 msgstr "Įrašyti visus"
@@ -8942,11 +8875,6 @@ msgstr "Vykdyti iki kol bus grįžta iš funkcijos"
 #: lazarusidestrconsts.lishintstepover
 msgid "Step Over"
 msgstr "Žengti virš"
-
-#: lazarusidestrconsts.lishintstop
-msgctxt "lazarusidestrconsts.lishintstop"
-msgid "Stop"
-msgstr "Stabdyti"
 
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
@@ -10468,6 +10396,11 @@ msgstr "Sutapdinti kairiuosius kraštus"
 msgid "Left space equally"
 msgstr "Tolygiai rikiuoti pagal kairiuosius kraštus"
 
+#: lazarusidestrconsts.lisless
+msgctxt "lazarusidestrconsts.lisless"
+msgid "Less"
+msgstr ""
+
 #: lazarusidestrconsts.lislevels
 msgid "Levels"
 msgstr "Lygiai"
@@ -10764,11 +10697,6 @@ msgstr "Pridėti stebimąjį…"
 msgid "Break Lines in Selection"
 msgstr "Laužyti eilutes pažymėtoje srityje"
 
-#: lazarusidestrconsts.lismenubuild
-msgctxt "lazarusidestrconsts.lismenubuild"
-msgid "Build"
-msgstr "Daryti"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Daryti failą"
@@ -10824,11 +10752,6 @@ msgstr "Surinkti .po failus"
 #| msgid "Comment selection"
 msgid "Comment Selection"
 msgstr "Uždėti komentarą pažymėtajam"
-
-#: lazarusidestrconsts.lismenucompile
-msgctxt "lazarusidestrconsts.lismenucompile"
-msgid "Compile"
-msgstr "Kompiliuojama"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -11366,11 +11289,6 @@ msgstr "Paketų grafas…"
 msgid "Package Links ..."
 msgstr "Paketo saitai…"
 
-#: lazarusidestrconsts.lismenupause
-msgctxt "lazarusidestrconsts.lismenupause"
-msgid "Pause"
-msgstr "Pauzė"
-
 #: lazarusidestrconsts.lismenupkgnewpackagecomponent
 msgid "New package component"
 msgstr ""
@@ -11603,11 +11521,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
 msgid "Step Over Instruction"
 msgstr ""
-
-#: lazarusidestrconsts.lismenustop
-msgctxt "lazarusidestrconsts.lismenustop"
-msgid "Stop"
-msgstr "Stabdyti"
 
 #: lazarusidestrconsts.lismenuswapcaseselection
 msgid "Swap Case in Selection"
@@ -12658,6 +12571,11 @@ msgstr "Kelias iki programos „make“"
 msgid "Path to failed Instance:"
 msgstr "Kelias iki nesėkmingojo:"
 
+#: lazarusidestrconsts.lispause
+msgctxt "lazarusidestrconsts.lispause"
+msgid "Pause"
+msgstr "Pauzė"
+
 #: lazarusidestrconsts.lispckcleartousethepackagename
 msgid "Clear to use the package name"
 msgstr ""
@@ -12688,11 +12606,6 @@ msgstr "Iškviesti pažymėto modulio %sRegister%s procedūrą"
 #: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
 msgid "Clear default/preferred filename of dependency"
 msgstr "Išvalyti priklausomybės numatytą/pageidautiną failo pavadinimą"
-
-#: lazarusidestrconsts.lispckeditcompile
-msgctxt "lazarusidestrconsts.lispckeditcompile"
-msgid "Compile"
-msgstr "Kompiliuojama"
 
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
@@ -14675,6 +14588,16 @@ msgstr "Tolygiai rikiuoti pagal dešiniuosius kraštus"
 msgid "Root"
 msgstr "Šakninis"
 
+#: lazarusidestrconsts.lisrun
+msgctxt "lazarusidestrconsts.lisrun"
+msgid "Run"
+msgstr "Startuoti"
+
+#: lazarusidestrconsts.lisrunbuttonhint
+msgctxt "lazarusidestrconsts.lisrunbuttonhint"
+msgid "Run"
+msgstr "Startuoti"
+
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr ""
@@ -14686,6 +14609,11 @@ msgstr "Failas nėra vykdomasis"
 #: lazarusidestrconsts.lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
 msgstr "Programa-šeimininkas %s%s%s nėra vykdomasis failas."
+
+#: lazarusidestrconsts.lisrunstage
+msgctxt "lazarusidestrconsts.lisrunstage"
+msgid "Run"
+msgstr "Startuoti"
 
 #: lazarusidestrconsts.lisruntimeonlycannotbeinstalledinide
 msgid "Runtime only, can not be installed in IDE"
@@ -14904,6 +14832,10 @@ msgstr "Pažymėtas"
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
 msgstr "(pažymėtas apatinysis kaimynas)"
+
+#: lazarusidestrconsts.lisselectedcommandsmapping
+msgid "Selected Command's Mapping"
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
@@ -15202,6 +15134,11 @@ msgstr ""
 msgid "Start with a new project"
 msgstr "Startuoti su nauju projektu"
 
+#: lazarusidestrconsts.lisstop
+msgctxt "lazarusidestrconsts.lisstop"
+msgid "Stop"
+msgstr "Stabdyti"
+
 #: lazarusidestrconsts.lisstopcurrentdebuggingandrebuildproject
 msgid "Stop current debugging and rebuild project?"
 msgstr "Sustabdyti šiuo metu vykdomą programos derinimą ir daryti projektą iš naujo?"
@@ -15314,7 +15251,7 @@ msgid "Tab Order of %s"
 msgstr "Vieta tabuliatoriaus eilėje"
 
 #: lazarusidestrconsts.listabordersorthint
-msgid "Calculate the tab order of controls by their X- and Y- positions"
+msgid "Calculate tab order for controls by their X- and Y- positions"
 msgstr ""
 
 #: lazarusidestrconsts.listaborderuphint
@@ -15393,6 +15330,10 @@ msgstr "Komanda esanti po %s%s%s nėra vykdomasis failas."
 #: lazarusidestrconsts.listhecommandafterpublishingisinvalid
 msgid "The command after publishing is invalid:%s%s%s%s"
 msgstr "Komanda esanti po paskelbimo yra klaidinga:%s%s%s%s"
+
+#: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
+msgid "The compiler file \"%s\" does not look correct:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.listhecomponentcannotbedeletedbecauseitisnotownedby
 msgid "The component %s can not be deleted, because it is not owned by %s."
@@ -15561,6 +15502,10 @@ msgstr ""
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "Šių metodų, kuriuos naudoja %s, nėra pirminiame kode%s%s%s%s%s%sPašalinti betikslius įrašus?"
 
+#: lazarusidestrconsts.listhefpcsourcedirectorydoesnotlookcorrect
+msgid "The FPC source directory \"%s\" does not look correct:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
 msgstr ""
@@ -15597,6 +15542,10 @@ msgstr "Nerasta paleidžiančioji programa%s%s%s%s, arba ji nėra paleidžiamasi
 
 #: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
 msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file \"ide%slazarus.lpi\". The translation files are located there too."
+msgstr ""
+
+#: lazarusidestrconsts.listhelazarusdirectorydoesnotlookcorrect
+msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
@@ -15691,6 +15640,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listhepackageisnotadesigntimepackageitcannotbeinstall
 msgid "The package %s is not a design time package. It can not be installed in the IDE"
+msgstr ""
+
+#: lazarusidestrconsts.listhepathofmakeisnotcorrect
+msgid "The path of \"make\" is not correct: \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
@@ -16076,10 +16029,6 @@ msgstr "Išvalyti įtraukiamų failų podėlį"
 #: lazarusidestrconsts.lisuidbytes
 msgid "%s bytes"
 msgstr "%s baitų"
-
-#: lazarusidestrconsts.lisuidclear
-msgid "Clear"
-msgstr "Clear"
 
 #: lazarusidestrconsts.lisuidincludedby
 msgid "Included by:"

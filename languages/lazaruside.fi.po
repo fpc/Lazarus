@@ -2572,7 +2572,11 @@ msgid "Create Application Bundle"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpodpiaware
-msgid "Dpi aware application (for Vista+)"
+msgid "Enabled DPI Awareness (for Vista+)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpoexecutionlevel
+msgid "Execution Level"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpofroms
@@ -4158,11 +4162,6 @@ msgstr "Näkyy parhaiten kun asentaa HTML komponentin kuten turbopoweriprodsgn"
 msgid "Always build before run"
 msgstr "Kokoa aina ennen suoritusta"
 
-#: lazarusidestrconsts.lisbfbuild
-msgctxt "lazarusidestrconsts.lisbfbuild"
-msgid "Build"
-msgstr "Kokoa"
-
 #: lazarusidestrconsts.lisbfbuildcommand
 msgid "Build Command"
 msgstr "Koontakomento"
@@ -4174,11 +4173,6 @@ msgstr "Projektia kootessa suorita tiedoston käännöskomento"
 #: lazarusidestrconsts.lisbfonrunprojectexecutetherunfilecommandinstead
 msgid "On run project execute the Run File command instead"
 msgstr "Projektia ajettaessa suorita tiedoston ajokomento"
-
-#: lazarusidestrconsts.lisbfrun
-msgctxt "lazarusidestrconsts.lisbfrun"
-msgid "Run"
-msgstr "Suorita"
 
 #: lazarusidestrconsts.lisbfruncommand
 msgid "Run Command"
@@ -4290,6 +4284,11 @@ msgstr "Kokoa"
 msgid "build all files of project/package/IDE"
 msgstr "kokoa kaikki projektin/paketin/IDEn tiedostot"
 
+#: lazarusidestrconsts.lisbuildcaption
+msgctxt "lazarusidestrconsts.lisbuildcaption"
+msgid "Build"
+msgstr "Kokoa"
+
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr "kokoa IDE paketteineen"
@@ -4329,6 +4328,11 @@ msgstr "Koontanumero"
 #: lazarusidestrconsts.lisbuildproject
 msgid "Build project"
 msgstr "Kokoa projekti"
+
+#: lazarusidestrconsts.lisbuildstage
+msgctxt "lazarusidestrconsts.lisbuildstage"
+msgid "Build"
+msgstr "Kokoa"
 
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
@@ -5115,15 +5119,14 @@ msgstr "Siivoa ja kokoa projekti"
 msgid "Clean up unit path?"
 msgstr "Siivotaanko käännösyksikköjen polku?"
 
+#: lazarusidestrconsts.lisclear
+msgctxt "lazarusidestrconsts.lisclear"
+msgid "Clear"
+msgstr "Tyhjennä"
+
 #: lazarusidestrconsts.liscleardirectory
 msgid "Clear Directory?"
 msgstr "Tyhjennä hakemisto?"
-
-#: lazarusidestrconsts.lisclearkeymapping
-#, fuzzy
-#| msgid "Clear Key Mapping"
-msgid "Clear Command's Mapping"
-msgstr "Tyhjennä näppäinkartta"
 
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
@@ -5197,21 +5200,6 @@ msgstr "Toinen ristiriitainen kääntäjän asetustiedosto"
 #: lazarusidestrconsts.liscocallon
 msgid "Call on:"
 msgstr ""
-
-#: lazarusidestrconsts.liscocallonbuild
-msgctxt "lazarusidestrconsts.liscocallonbuild"
-msgid "Build"
-msgstr "Kokoa"
-
-#: lazarusidestrconsts.liscocalloncompile
-msgctxt "lazarusidestrconsts.liscocalloncompile"
-msgid "Compile"
-msgstr "Käännä"
-
-#: lazarusidestrconsts.liscocallonrun
-msgctxt "lazarusidestrconsts.liscocallonrun"
-msgid "Run"
-msgstr "Suorita"
 
 #: lazarusidestrconsts.liscoclickokifaresuretodothat
 msgid "%s%sClick OK if you are sure to do that."
@@ -5879,13 +5867,14 @@ msgstr "Komento virheellisen jälkeen"
 msgid "Command after publishing module"
 msgstr "Komento julkaistun moduulin jälkeen"
 
-#: lazarusidestrconsts.liscommandedithint
-msgid "Edit command's mapping with double click, Return key or Popup menu"
-msgstr ""
-
 #: lazarusidestrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
 msgstr "Ohjelman komentorivi-parametrit"
+
+#: lazarusidestrconsts.liscompile
+msgctxt "lazarusidestrconsts.liscompile"
+msgid "Compile"
+msgstr "Käännä"
 
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
@@ -5922,6 +5911,11 @@ msgstr ""
 #: lazarusidestrconsts.liscompileroptionsforproject
 msgid "Compiler Options for Project: %s"
 msgstr "Kääntäjän optiot projektissa: %s"
+
+#: lazarusidestrconsts.liscompilestage
+msgctxt "lazarusidestrconsts.liscompilestage"
+msgid "Compile"
+msgstr "Käännä"
 
 #: lazarusidestrconsts.liscompiling
 msgid "%s (compiling ...)"
@@ -6773,20 +6767,6 @@ msgstr ""
 msgid "Debugger Information"
 msgstr ""
 
-#: lazarusidestrconsts.lisdebuggerfeedbackless
-msgid "Less"
-msgstr "Vähemmän"
-
-#: lazarusidestrconsts.lisdebuggerfeedbackmore
-msgctxt "lazarusidestrconsts.lisdebuggerfeedbackmore"
-msgid "More"
-msgstr "Lisää"
-
-#: lazarusidestrconsts.lisdebuggerfeedbackstop
-msgctxt "lazarusidestrconsts.lisdebuggerfeedbackstop"
-msgid "Stop"
-msgstr "Pysäytä"
-
 #: lazarusidestrconsts.lisdebuggerfeedbackwarning
 msgid "Debugger Warning"
 msgstr "Virheenjäljittimen varoitus"
@@ -7410,10 +7390,6 @@ msgstr "Muokkaa tilannekohtaista ohjetta"
 msgid "Edit help"
 msgstr ""
 
-#: lazarusidestrconsts.liseditkeymapping
-msgid "Edit Command's Mapping"
-msgstr ""
-
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
 msgstr "Editorin tiedostojen tyypit"
@@ -7679,18 +7655,6 @@ msgstr "Hyppää viestistä lähdekoodiin kaksoisklikkauksella (muuten yksi klik
 msgid "Directory not found"
 msgstr "Kansiota ei löytynyt"
 
-#: lazarusidestrconsts.lisenvoptdlgfpcsrcdirnotfoundmsg
-msgid "FPC source directory \"%s\" not found."
-msgstr "FPC:n lähdekoodin kansiota \"%s\" ei löytynyt."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidcompilerfilename
-msgid "Invalid compiler filename"
-msgstr "Kääntäjän tiedostonimi on virheellinen"
-
-#: lazarusidestrconsts.lisenvoptdlginvalidcompilerfilenamemsg
-msgid "The compiler file \"%s\" is not an executable."
-msgstr "Kääntäjän tiedosto \"%s\" ei ole ajettavissa."
-
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
 msgstr "Kelvoton debuggerin tiedostonimi"
@@ -7698,26 +7662,6 @@ msgstr "Kelvoton debuggerin tiedostonimi"
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilenamemsg
 msgid "The debugger file \"%s\" is not an executable."
 msgstr "Debuggeri \"%s\" ei ole suoritettava tiedosto."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidfpcsrcdir
-msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl/inc, packages/fcl-base, ... ."
-msgstr "Kansio \"%s\" ei vaikuta FPC lähdekoodin kansiolta. Sen pitäisi sisältää kansioita kuten rtl/inc, packages/fcl-base jne."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidlazarusdir
-msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."
-msgstr "Kansio \"%s\" ei vaikuta Lazaruksen kansiolta. Sen pitäisi sisältää kansioita kuten lcl, debugger, designer, components jne."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidmakefilename
-msgid "Invalid make filename"
-msgstr "Kelvoton make tiedostonimi"
-
-#: lazarusidestrconsts.lisenvoptdlginvalidmakefilenamemsg
-msgid "The make file \"%s\" is not an executable."
-msgstr "Make \"%s\" ei ole suoritettava tiedosto."
-
-#: lazarusidestrconsts.lisenvoptdlglazarusdirnotfoundmsg
-msgid "Lazarus directory \"%s\" not found."
-msgstr "Lazarus:n kansiota \"%s\" ei löytynyt."
 
 #: lazarusidestrconsts.lisenvoptdlgtestdirnotfoundmsg
 msgid "Test directory \"%s\" not found."
@@ -8574,16 +8518,6 @@ msgstr "Vihje: oletusarvo voidaan määritellä ehtolauseessa."
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Vihje: Tarkista sisältääkö kaksi komponenttipakettia käännösyksikön samalla nimellä."
 
-#: lazarusidestrconsts.lishintpause
-msgctxt "lazarusidestrconsts.lishintpause"
-msgid "Pause"
-msgstr "Keskeytä"
-
-#: lazarusidestrconsts.lishintrun
-msgctxt "lazarusidestrconsts.lishintrun"
-msgid "Run"
-msgstr "Suorita"
-
 #: lazarusidestrconsts.lishintsaveall
 msgid "Save all"
 msgstr "Tallenna kaikki"
@@ -8599,11 +8533,6 @@ msgstr "Jatka funktion loppuun asti"
 #: lazarusidestrconsts.lishintstepover
 msgid "Step Over"
 msgstr "Askella yli"
-
-#: lazarusidestrconsts.lishintstop
-msgctxt "lazarusidestrconsts.lishintstop"
-msgid "Stop"
-msgstr "Pysäytä"
 
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
@@ -10063,6 +9992,11 @@ msgstr "Vasemmat reunat"
 msgid "Left space equally"
 msgstr ""
 
+#: lazarusidestrconsts.lisless
+msgctxt "lazarusidestrconsts.lisless"
+msgid "Less"
+msgstr "Vähemmän"
+
 #: lazarusidestrconsts.lislevels
 msgid "Levels"
 msgstr "Tasot"
@@ -10338,11 +10272,6 @@ msgstr "Lisää vahti ..."
 msgid "Break Lines in Selection"
 msgstr "Rivitä valinta uudelleen"
 
-#: lazarusidestrconsts.lismenubuild
-msgctxt "lazarusidestrconsts.lismenubuild"
-msgid "Build"
-msgstr "Kokoa"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Kokoa tiedosto"
@@ -10386,11 +10315,6 @@ msgstr "Kerää .po tiedostot"
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment Selection"
 msgstr "Kommentoi valinta"
-
-#: lazarusidestrconsts.lismenucompile
-msgctxt "lazarusidestrconsts.lismenucompile"
-msgid "Compile"
-msgstr "Käännä"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -10813,11 +10737,6 @@ msgstr "Pakettikuvaaja"
 msgid "Package Links ..."
 msgstr "Pakettilinkit ..."
 
-#: lazarusidestrconsts.lismenupause
-msgctxt "lazarusidestrconsts.lismenupause"
-msgid "Pause"
-msgstr "Keskeytä"
-
 #: lazarusidestrconsts.lismenupkgnewpackagecomponent
 msgid "New package component"
 msgstr ""
@@ -11005,11 +10924,6 @@ msgstr "Askella yli käskystä"
 msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
 msgid "Step Over Instruction"
 msgstr "Askella yli käskystä"
-
-#: lazarusidestrconsts.lismenustop
-msgctxt "lazarusidestrconsts.lismenustop"
-msgid "Stop"
-msgstr "Pysäytä"
 
 #: lazarusidestrconsts.lismenuswapcaseselection
 msgid "Swap Case in Selection"
@@ -12008,6 +11922,11 @@ msgstr "Polku make-työkaluun"
 msgid "Path to failed Instance:"
 msgstr "Polku epäonnistuneeseen tapaukseen:"
 
+#: lazarusidestrconsts.lispause
+msgctxt "lazarusidestrconsts.lispause"
+msgid "Pause"
+msgstr "Keskeytä"
+
 #: lazarusidestrconsts.lispckcleartousethepackagename
 msgid "Clear to use the package name"
 msgstr ""
@@ -12036,11 +11955,6 @@ msgstr "Kutsu valitun käännösyksikön %sRegisteröintiä%s"
 #: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
 msgid "Clear default/preferred filename of dependency"
 msgstr ""
-
-#: lazarusidestrconsts.lispckeditcompile
-msgctxt "lazarusidestrconsts.lispckeditcompile"
-msgid "Compile"
-msgstr "Käännä"
 
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
@@ -13966,6 +13880,16 @@ msgstr ""
 msgid "Root"
 msgstr "Juuri"
 
+#: lazarusidestrconsts.lisrun
+msgctxt "lazarusidestrconsts.lisrun"
+msgid "Run"
+msgstr "Suorita"
+
+#: lazarusidestrconsts.lisrunbuttonhint
+msgctxt "lazarusidestrconsts.lisrunbuttonhint"
+msgid "Run"
+msgstr "Suorita"
+
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr "%s (suorittaa ...)"
@@ -13977,6 +13901,11 @@ msgstr "Tiedosto ei ole suoritettava"
 #: lazarusidestrconsts.lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
 msgstr "Isäntä-ohjelma %s%s%s ei ole suoritettava."
+
+#: lazarusidestrconsts.lisrunstage
+msgctxt "lazarusidestrconsts.lisrunstage"
+msgid "Run"
+msgstr "Suorita"
 
 #: lazarusidestrconsts.lisruntimeonlycannotbeinstalledinide
 msgid "Runtime only, can not be installed in IDE"
@@ -14186,6 +14115,10 @@ msgstr "Valittu"
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
 msgstr "(valittu alapuolen naapuri)"
+
+#: lazarusidestrconsts.lisselectedcommandsmapping
+msgid "Selected Command's Mapping"
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
@@ -14480,6 +14413,11 @@ msgstr "Käynnistä IDE"
 msgid "Start with a new project"
 msgstr "Aloita uusi projekti"
 
+#: lazarusidestrconsts.lisstop
+msgctxt "lazarusidestrconsts.lisstop"
+msgid "Stop"
+msgstr "Pysäytä"
+
 #: lazarusidestrconsts.lisstopcurrentdebuggingandrebuildproject
 msgid "Stop current debugging and rebuild project?"
 msgstr "Pysäytetäänkö nykyinen virheenjäljitys ja kokoa uudelleen?"
@@ -14590,7 +14528,7 @@ msgid "Tab Order of %s"
 msgstr "%s:n tabulointijärjestys"
 
 #: lazarusidestrconsts.listabordersorthint
-msgid "Calculate the tab order of controls by their X- and Y- positions"
+msgid "Calculate tab order for controls by their X- and Y- positions"
 msgstr ""
 
 #: lazarusidestrconsts.listaborderuphint
@@ -14664,6 +14602,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listhecommandafterpublishingisinvalid
 msgid "The command after publishing is invalid:%s%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
+msgid "The compiler file \"%s\" does not look correct:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.listhecomponentcannotbedeletedbecauseitisnotownedby
@@ -14818,6 +14760,10 @@ msgstr "Ensimmäinen koontamoodi on oletusmoodi ja se pitää tallentaa projekti
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "Seuraavia metodeja käyttää %s mutta niitä ei löydy lähdekoodista%s%s%s%s%s%sPoistetaanko 'roikkuva' viittaus?"
 
+#: lazarusidestrconsts.listhefpcsourcedirectorydoesnotlookcorrect
+msgid "The FPC source directory \"%s\" does not look correct:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
 msgstr "Free Pascal kääntäjän nimi on tyypillisesti \"%s\". Se voi olla myös tietylle kohteelle tehty kääntäjä kuten \"%s\". Anna koko tiedostopolku."
@@ -14853,6 +14799,10 @@ msgstr ""
 #: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
 msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file \"ide%slazarus.lpi\". The translation files are located there too."
 msgstr "Lazarus hakemistossa ovat IDEn lähdekoodit sekä LCL:n ja muiden pakettien tiedostot. Siellä on esimerkiksi tiedosto \"ide%slazarus.lpi\". Myös käännöstiedostot ovat siellä."
+
+#: lazarusidestrconsts.listhelazarusdirectorydoesnotlookcorrect
+msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
 msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Tools -> Options -> Files"
@@ -14944,6 +14894,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listhepackageisnotadesigntimepackageitcannotbeinstall
 msgid "The package %s is not a design time package. It can not be installed in the IDE"
+msgstr ""
+
+#: lazarusidestrconsts.listhepathofmakeisnotcorrect
+msgid "The path of \"make\" is not correct: \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
@@ -15320,10 +15274,6 @@ msgstr "Tyhjennä include-tiedostojen välimuisti"
 #: lazarusidestrconsts.lisuidbytes
 msgid "%s bytes"
 msgstr "%s tavua"
-
-#: lazarusidestrconsts.lisuidclear
-msgid "Clear"
-msgstr "Tyhjennä"
 
 #: lazarusidestrconsts.lisuidincludedby
 msgid "Included by:"

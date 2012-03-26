@@ -2715,7 +2715,11 @@ msgid "Create Application Bundle"
 msgstr "创建应用程序包"
 
 #: lazarusidestrconsts.dlgpodpiaware
-msgid "Dpi aware application (for Vista+)"
+msgid "Enabled DPI Awareness (for Vista+)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpoexecutionlevel
+msgid "Execution Level"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpofroms
@@ -4403,11 +4407,6 @@ msgstr ""
 msgid "Always build before run"
 msgstr "运行前总是构建"
 
-#: lazarusidestrconsts.lisbfbuild
-msgctxt "lazarusidestrconsts.lisbfbuild"
-msgid "Build"
-msgstr "构建"
-
 #: lazarusidestrconsts.lisbfbuildcommand
 msgid "Build Command"
 msgstr "构建命令"
@@ -4419,11 +4418,6 @@ msgstr "构建工程执行文件时构建文件命令发生变化"
 #: lazarusidestrconsts.lisbfonrunprojectexecutetherunfilecommandinstead
 msgid "On run project execute the Run File command instead"
 msgstr "运行工程执行文件时运行文件命令发生变化"
-
-#: lazarusidestrconsts.lisbfrun
-msgctxt "lazarusidestrconsts.lisbfrun"
-msgid "Run"
-msgstr "运行"
 
 #: lazarusidestrconsts.lisbfruncommand
 msgid "Run Command"
@@ -4543,6 +4537,11 @@ msgstr "构建"
 msgid "build all files of project/package/IDE"
 msgstr "构建project/package/IDE的所有文件"
 
+#: lazarusidestrconsts.lisbuildcaption
+msgctxt "lazarusidestrconsts.lisbuildcaption"
+msgid "Build"
+msgstr "构建"
+
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr "构建IDE和包"
@@ -4584,6 +4583,11 @@ msgstr "构建编号"
 #: lazarusidestrconsts.lisbuildproject
 msgid "Build project"
 msgstr ""
+
+#: lazarusidestrconsts.lisbuildstage
+msgctxt "lazarusidestrconsts.lisbuildstage"
+msgid "Build"
+msgstr "构建"
 
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
@@ -5378,13 +5382,14 @@ msgstr ""
 msgid "Clean up unit path?"
 msgstr "清除单元路径?"
 
+#: lazarusidestrconsts.lisclear
+msgctxt "lazarusidestrconsts.lisclear"
+msgid "Clear"
+msgstr "清除"
+
 #: lazarusidestrconsts.liscleardirectory
 msgid "Clear Directory?"
 msgstr "清除目录"
-
-#: lazarusidestrconsts.lisclearkeymapping
-msgid "Clear Command's Mapping"
-msgstr ""
 
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
@@ -5458,21 +5463,6 @@ msgstr "不明确的附加的编译器配置文件"
 #: lazarusidestrconsts.liscocallon
 msgid "Call on:"
 msgstr "调用:"
-
-#: lazarusidestrconsts.liscocallonbuild
-msgctxt "lazarusidestrconsts.liscocallonbuild"
-msgid "Build"
-msgstr "构建"
-
-#: lazarusidestrconsts.liscocalloncompile
-msgctxt "lazarusidestrconsts.liscocalloncompile"
-msgid "Compile"
-msgstr "编译"
-
-#: lazarusidestrconsts.liscocallonrun
-msgctxt "lazarusidestrconsts.liscocallonrun"
-msgid "Run"
-msgstr "运行"
 
 #: lazarusidestrconsts.liscoclickokifaresuretodothat
 msgid "%s%sClick OK if you are sure to do that."
@@ -6158,13 +6148,14 @@ msgstr "错误后运行命令"
 msgid "Command after publishing module"
 msgstr "发布后运行命令"
 
-#: lazarusidestrconsts.liscommandedithint
-msgid "Edit command's mapping with double click, Return key or Popup menu"
-msgstr ""
-
 #: lazarusidestrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
 msgstr "程序命令行参数"
+
+#: lazarusidestrconsts.liscompile
+msgctxt "lazarusidestrconsts.liscompile"
+msgid "Compile"
+msgstr "编译"
 
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
@@ -6203,6 +6194,11 @@ msgstr "注意: 装载旧的 codetools 配置文件 "
 #: lazarusidestrconsts.liscompileroptionsforproject
 msgid "Compiler Options for Project: %s"
 msgstr "工程编译选项: %s"
+
+#: lazarusidestrconsts.liscompilestage
+msgctxt "lazarusidestrconsts.liscompilestage"
+msgid "Compile"
+msgstr "编译"
 
 #: lazarusidestrconsts.liscompiling
 msgid "%s (compiling ...)"
@@ -7073,20 +7069,6 @@ msgstr ""
 msgid "Debugger Information"
 msgstr ""
 
-#: lazarusidestrconsts.lisdebuggerfeedbackless
-msgid "Less"
-msgstr ""
-
-#: lazarusidestrconsts.lisdebuggerfeedbackmore
-msgctxt "lazarusidestrconsts.lisdebuggerfeedbackmore"
-msgid "More"
-msgstr "更多"
-
-#: lazarusidestrconsts.lisdebuggerfeedbackstop
-msgctxt "lazarusidestrconsts.lisdebuggerfeedbackstop"
-msgid "Stop"
-msgstr "停止"
-
 #: lazarusidestrconsts.lisdebuggerfeedbackwarning
 msgid "Debugger Warning"
 msgstr ""
@@ -7711,10 +7693,6 @@ msgstr "编辑上下文关联帮助"
 msgid "Edit help"
 msgstr ""
 
-#: lazarusidestrconsts.liseditkeymapping
-msgid "Edit Command's Mapping"
-msgstr ""
-
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
 msgstr ""
@@ -7980,18 +7958,6 @@ msgstr ""
 msgid "Directory not found"
 msgstr "目录未找到"
 
-#: lazarusidestrconsts.lisenvoptdlgfpcsrcdirnotfoundmsg
-msgid "FPC source directory \"%s\" not found."
-msgstr "FPC 源代码目录 \"%s\" 未找到."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidcompilerfilename
-msgid "Invalid compiler filename"
-msgstr "无效编译器文件名"
-
-#: lazarusidestrconsts.lisenvoptdlginvalidcompilerfilenamemsg
-msgid "The compiler file \"%s\" is not an executable."
-msgstr "编译器 \"%s\" 不是可执行文件."
-
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
 msgstr "无效的调试器名"
@@ -7999,28 +7965,6 @@ msgstr "无效的调试器名"
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilenamemsg
 msgid "The debugger file \"%s\" is not an executable."
 msgstr "调试器 \"%s\" 不是可执行文件."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidfpcsrcdir
-#, fuzzy
-#| msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, packages, compiler, ... ."
-msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl/inc, packages/fcl-base, ... ."
-msgstr "FPC 源文件目录 \"%s\" 似乎不正确. 通常它包含目录如 rtl, packages, compiler, ... ."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidlazarusdir
-msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."
-msgstr "lazarus 目录 \"%s\" 不正确. 通常情况下它包含以下目录 lcl, debugger, designer, components, ... ."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidmakefilename
-msgid "Invalid make filename"
-msgstr "无效的 make 文件名"
-
-#: lazarusidestrconsts.lisenvoptdlginvalidmakefilenamemsg
-msgid "The make file \"%s\" is not an executable."
-msgstr "make 文件 \"%s\" 不是可执行文件."
-
-#: lazarusidestrconsts.lisenvoptdlglazarusdirnotfoundmsg
-msgid "Lazarus directory \"%s\" not found."
-msgstr "Lazarus 目录 \"%s\" 未找到"
 
 #: lazarusidestrconsts.lisenvoptdlgtestdirnotfoundmsg
 msgid "Test directory \"%s\" not found."
@@ -8890,16 +8834,6 @@ msgstr ""
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "提示: 两个包包含了同名单元."
 
-#: lazarusidestrconsts.lishintpause
-msgctxt "lazarusidestrconsts.lishintpause"
-msgid "Pause"
-msgstr "暂停"
-
-#: lazarusidestrconsts.lishintrun
-msgctxt "lazarusidestrconsts.lishintrun"
-msgid "Run"
-msgstr "运行"
-
 #: lazarusidestrconsts.lishintsaveall
 msgid "Save all"
 msgstr "保存所有"
@@ -8915,11 +8849,6 @@ msgstr ""
 #: lazarusidestrconsts.lishintstepover
 msgid "Step Over"
 msgstr "下一步"
-
-#: lazarusidestrconsts.lishintstop
-msgctxt "lazarusidestrconsts.lishintstop"
-msgid "Stop"
-msgstr "停止"
 
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
@@ -10437,6 +10366,11 @@ msgstr "左边"
 msgid "Left space equally"
 msgstr "左边空白相等"
 
+#: lazarusidestrconsts.lisless
+msgctxt "lazarusidestrconsts.lisless"
+msgid "Less"
+msgstr ""
+
 #: lazarusidestrconsts.lislevels
 msgid "Levels"
 msgstr ""
@@ -10732,11 +10666,6 @@ msgstr "添加观察点..."
 msgid "Break Lines in Selection"
 msgstr "选中节自动分行"
 
-#: lazarusidestrconsts.lismenubuild
-msgctxt "lazarusidestrconsts.lismenubuild"
-msgid "Build"
-msgstr "构建"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "构建文件"
@@ -10792,11 +10721,6 @@ msgstr "搜集 .po 文件"
 #| msgid "Comment selection"
 msgid "Comment Selection"
 msgstr "注释所选"
-
-#: lazarusidestrconsts.lismenucompile
-msgctxt "lazarusidestrconsts.lismenucompile"
-msgid "Compile"
-msgstr "编译"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -11335,11 +11259,6 @@ msgstr "包关系图..."
 msgid "Package Links ..."
 msgstr "包连接关系..."
 
-#: lazarusidestrconsts.lismenupause
-msgctxt "lazarusidestrconsts.lismenupause"
-msgid "Pause"
-msgstr "暂停"
-
 #: lazarusidestrconsts.lismenupkgnewpackagecomponent
 msgid "New package component"
 msgstr ""
@@ -11570,11 +11489,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
 msgid "Step Over Instruction"
 msgstr ""
-
-#: lazarusidestrconsts.lismenustop
-msgctxt "lazarusidestrconsts.lismenustop"
-msgid "Stop"
-msgstr "停止"
 
 #: lazarusidestrconsts.lismenuswapcaseselection
 msgid "Swap Case in Selection"
@@ -12627,6 +12541,11 @@ msgstr ""
 msgid "Path to failed Instance:"
 msgstr ""
 
+#: lazarusidestrconsts.lispause
+msgctxt "lazarusidestrconsts.lispause"
+msgid "Pause"
+msgstr "暂停"
+
 #: lazarusidestrconsts.lispckcleartousethepackagename
 msgid "Clear to use the package name"
 msgstr ""
@@ -12657,11 +12576,6 @@ msgstr "调用 %s注册所选单元%s 的过程"
 #: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
 msgid "Clear default/preferred filename of dependency"
 msgstr ""
-
-#: lazarusidestrconsts.lispckeditcompile
-msgctxt "lazarusidestrconsts.lispckeditcompile"
-msgid "Compile"
-msgstr "编译"
 
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
@@ -14637,6 +14551,16 @@ msgstr "相等的隔开右边"
 msgid "Root"
 msgstr ""
 
+#: lazarusidestrconsts.lisrun
+msgctxt "lazarusidestrconsts.lisrun"
+msgid "Run"
+msgstr "运行"
+
+#: lazarusidestrconsts.lisrunbuttonhint
+msgctxt "lazarusidestrconsts.lisrunbuttonhint"
+msgid "Run"
+msgstr "运行"
+
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr ""
@@ -14648,6 +14572,11 @@ msgstr "文件不是可执行程序"
 #: lazarusidestrconsts.lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
 msgstr "宿主程序 %s%s%s 不是可执行程序."
+
+#: lazarusidestrconsts.lisrunstage
+msgctxt "lazarusidestrconsts.lisrunstage"
+msgid "Run"
+msgstr "运行"
 
 #: lazarusidestrconsts.lisruntimeonlycannotbeinstalledinide
 msgid "Runtime only, can not be installed in IDE"
@@ -14865,6 +14794,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
+msgstr ""
+
+#: lazarusidestrconsts.lisselectedcommandsmapping
+msgid "Selected Command's Mapping"
 msgstr ""
 
 #: lazarusidestrconsts.lisselectedleftneighbour
@@ -15164,6 +15097,11 @@ msgstr ""
 msgid "Start with a new project"
 msgstr "以新的工程开始"
 
+#: lazarusidestrconsts.lisstop
+msgctxt "lazarusidestrconsts.lisstop"
+msgid "Stop"
+msgstr "停止"
+
 #: lazarusidestrconsts.lisstopcurrentdebuggingandrebuildproject
 msgid "Stop current debugging and rebuild project?"
 msgstr "停止调试程序并重新编译?"
@@ -15276,7 +15214,7 @@ msgid "Tab Order of %s"
 msgstr "Tab 键顺序"
 
 #: lazarusidestrconsts.listabordersorthint
-msgid "Calculate the tab order of controls by their X- and Y- positions"
+msgid "Calculate tab order for controls by their X- and Y- positions"
 msgstr ""
 
 #: lazarusidestrconsts.listaborderuphint
@@ -15351,6 +15289,10 @@ msgstr "%s%s%s 后运行的命令不可执行."
 #: lazarusidestrconsts.listhecommandafterpublishingisinvalid
 msgid "The command after publishing is invalid:%s%s%s%s"
 msgstr "发布后运行的命令无效:%s%s%s%s"
+
+#: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
+msgid "The compiler file \"%s\" does not look correct:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.listhecomponentcannotbedeletedbecauseitisnotownedby
 msgid "The component %s can not be deleted, because it is not owned by %s."
@@ -15519,6 +15461,10 @@ msgstr ""
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "%s 使用的 methods 不在源文件 %s%s%s%s%s%s 中移除涉及的内容么?"
 
+#: lazarusidestrconsts.listhefpcsourcedirectorydoesnotlookcorrect
+msgid "The FPC source directory \"%s\" does not look correct:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
 msgstr ""
@@ -15555,6 +15501,10 @@ msgstr "运行的应用程序 %s%s%s%s不存在或者不是可执行程序.%s%s�
 
 #: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
 msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file \"ide%slazarus.lpi\". The translation files are located there too."
+msgstr ""
+
+#: lazarusidestrconsts.listhelazarusdirectorydoesnotlookcorrect
+msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
@@ -15649,6 +15599,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listhepackageisnotadesigntimepackageitcannotbeinstall
 msgid "The package %s is not a design time package. It can not be installed in the IDE"
+msgstr ""
+
+#: lazarusidestrconsts.listhepathofmakeisnotcorrect
+msgid "The path of \"make\" is not correct: \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
@@ -16029,10 +15983,6 @@ msgstr "清除包含的缓存"
 #: lazarusidestrconsts.lisuidbytes
 msgid "%s bytes"
 msgstr "%s 字节"
-
-#: lazarusidestrconsts.lisuidclear
-msgid "Clear"
-msgstr "清除"
 
 #: lazarusidestrconsts.lisuidincludedby
 msgid "Included by:"

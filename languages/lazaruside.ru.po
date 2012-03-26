@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-03-25 18:12+0400\n"
+"PO-Revision-Date: 2012-03-27 01:22+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -2694,9 +2694,13 @@ msgid "Create Application Bundle"
 msgstr "Создать Application Bundle"
 
 #: lazarusidestrconsts.dlgpodpiaware
-#| msgid "Dpi Aware application (for Vista+)"
-msgid "Dpi aware application (for Vista+)"
-msgstr "Приложение с поддержкой различных DPI (для Vista+)"
+#| msgid "Dpi aware application (for Vista+)"
+msgid "Enabled DPI Awareness (for Vista+)"
+msgstr "Поддержка различных DPI (для Vista+)"
+
+#: lazarusidestrconsts.dlgpoexecutionlevel
+msgid "Execution Level"
+msgstr "Уровень исполнения"
 
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
@@ -4330,11 +4334,6 @@ msgstr "Отображается наилучшим образом при уст
 msgid "Always build before run"
 msgstr "Всегда собирать перед запуском"
 
-#: lazarusidestrconsts.lisbfbuild
-msgctxt "lazarusidestrconsts.lisbfbuild"
-msgid "Build"
-msgstr "Сборка"
-
 #: lazarusidestrconsts.lisbfbuildcommand
 msgid "Build Command"
 msgstr "Команда Собрать"
@@ -4346,11 +4345,6 @@ msgstr "При сборке проекта выполнить 'Собрать Ф
 #: lazarusidestrconsts.lisbfonrunprojectexecutetherunfilecommandinstead
 msgid "On run project execute the Run File command instead"
 msgstr "При запуске проекта выполнить 'Запустить Файл'"
-
-#: lazarusidestrconsts.lisbfrun
-msgctxt "lazarusidestrconsts.lisbfrun"
-msgid "Run"
-msgstr "Запуск"
 
 #: lazarusidestrconsts.lisbfruncommand
 msgid "Run Command"
@@ -4465,6 +4459,11 @@ msgstr "Собрать"
 msgid "build all files of project/package/IDE"
 msgstr "собрать все файлы проекта/пакета/IDE"
 
+#: lazarusidestrconsts.lisbuildcaption
+msgctxt "lazarusidestrconsts.lisbuildcaption"
+msgid "Build"
+msgstr "Сборка"
+
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr "собрать IDE с пакетами"
@@ -4505,6 +4504,11 @@ msgstr "Номер сборки"
 #: lazarusidestrconsts.lisbuildproject
 msgid "Build project"
 msgstr "Собрать проект"
+
+#: lazarusidestrconsts.lisbuildstage
+msgctxt "lazarusidestrconsts.lisbuildstage"
+msgid "Build"
+msgstr "сборке"
 
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
@@ -5297,14 +5301,14 @@ msgstr "Очистка и сборка проекта"
 msgid "Clean up unit path?"
 msgstr "Очистить пути к модулям?"
 
+#: lazarusidestrconsts.lisclear
+msgctxt "lazarusidestrconsts.lisclear"
+msgid "Clear"
+msgstr "Очистить"
+
 #: lazarusidestrconsts.liscleardirectory
 msgid "Clear Directory?"
 msgstr "Очистить каталог?"
-
-#: lazarusidestrconsts.lisclearkeymapping
-#| msgid "Clear Key Mapping"
-msgid "Clear Command's Mapping"
-msgstr "Удалить комбинацию клавиш команды"
 
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
@@ -5377,21 +5381,6 @@ msgstr "Дублирующийся файл настройки компилят�
 #: lazarusidestrconsts.liscocallon
 msgid "Call on:"
 msgstr "Вызов при:"
-
-#: lazarusidestrconsts.liscocallonbuild
-msgctxt "lazarusidestrconsts.liscocallonbuild"
-msgid "Build"
-msgstr "сборке"
-
-#: lazarusidestrconsts.liscocalloncompile
-msgctxt "lazarusidestrconsts.liscocalloncompile"
-msgid "Compile"
-msgstr "компиляции"
-
-#: lazarusidestrconsts.liscocallonrun
-msgctxt "lazarusidestrconsts.liscocallonrun"
-msgid "Run"
-msgstr "запуске"
 
 #: lazarusidestrconsts.liscoclickokifaresuretodothat
 msgid "%s%sClick OK if you are sure to do that."
@@ -6067,13 +6056,14 @@ msgstr "Команда \"после\" некорректна"
 msgid "Command after publishing module"
 msgstr "Команда после установки модуля"
 
-#: lazarusidestrconsts.liscommandedithint
-msgid "Edit command's mapping with double click, Return key or Popup menu"
-msgstr "Редактируйте комбинации клавиш двойным щелчком мышью, клавишей Ввод либо всплывающим меню"
-
 #: lazarusidestrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
 msgstr "Параметры командной строки программы"
+
+#: lazarusidestrconsts.liscompile
+msgctxt "lazarusidestrconsts.liscompile"
+msgid "Compile"
+msgstr "Компилировать"
 
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
@@ -6111,6 +6101,11 @@ msgstr "ЗАМЕТКА: загружается старый файл парам�
 #: lazarusidestrconsts.liscompileroptionsforproject
 msgid "Compiler Options for Project: %s"
 msgstr "Параметры компилятора для проекта: %s"
+
+#: lazarusidestrconsts.liscompilestage
+msgctxt "lazarusidestrconsts.liscompilestage"
+msgid "Compile"
+msgstr "компиляции"
 
 #: lazarusidestrconsts.liscompiling
 msgid "%s (compiling ...)"
@@ -6987,20 +6982,6 @@ msgstr "Ошибка отладчика"
 msgid "Debugger Information"
 msgstr "Уведомление отладчика"
 
-#: lazarusidestrconsts.lisdebuggerfeedbackless
-msgid "Less"
-msgstr "Скрыть подробности"
-
-#: lazarusidestrconsts.lisdebuggerfeedbackmore
-msgctxt "lazarusidestrconsts.lisdebuggerfeedbackmore"
-msgid "More"
-msgstr "Подробности"
-
-#: lazarusidestrconsts.lisdebuggerfeedbackstop
-msgctxt "lazarusidestrconsts.lisdebuggerfeedbackstop"
-msgid "Stop"
-msgstr "Остановить"
-
 #: lazarusidestrconsts.lisdebuggerfeedbackwarning
 msgid "Debugger Warning"
 msgstr "Предупреждение отладчика"
@@ -7629,10 +7610,6 @@ msgstr "Редактировать контекстно-зависимую сп�
 msgid "Edit help"
 msgstr "Редактировать справку"
 
-#: lazarusidestrconsts.liseditkeymapping
-msgid "Edit Command's Mapping"
-msgstr "Редактировать комбинацию клавиш команды"
-
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
 msgstr "Типы файлов редактора"
@@ -7898,18 +7875,6 @@ msgstr "Переходить с сообщения на строку кода п
 msgid "Directory not found"
 msgstr "Каталог не найден"
 
-#: lazarusidestrconsts.lisenvoptdlgfpcsrcdirnotfoundmsg
-msgid "FPC source directory \"%s\" not found."
-msgstr "Каталог исходного кода FPC \"%s\" не найден."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidcompilerfilename
-msgid "Invalid compiler filename"
-msgstr "Некорректное имя компилятора"
-
-#: lazarusidestrconsts.lisenvoptdlginvalidcompilerfilenamemsg
-msgid "The compiler file \"%s\" is not an executable."
-msgstr "Файл компилятора \"%s\" не является исполнимым."
-
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
 msgstr "Некорректное имя отладчика"
@@ -7917,27 +7882,6 @@ msgstr "Некорректное имя отладчика"
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilenamemsg
 msgid "The debugger file \"%s\" is not an executable."
 msgstr "Файл отладчика \"%s\" не является исполнимым."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidfpcsrcdir
-#| msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, packages, compiler, ... ."
-msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl/inc, packages/fcl-base, ... ."
-msgstr "Каталог с исходным кодом FPC \"%s\" имеет некорректную структуру. Обычно он содержит такие подкаталоги, как rtl/inc, packages/fcl-base, ... ."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidlazarusdir
-msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."
-msgstr "Каталог Lazarus \"%s\" выглядит некорректно. Обычно он содержит каталоги lcl, debugger, designer, components, ... ."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidmakefilename
-msgid "Invalid make filename"
-msgstr "Неверное имя файла Make"
-
-#: lazarusidestrconsts.lisenvoptdlginvalidmakefilenamemsg
-msgid "The make file \"%s\" is not an executable."
-msgstr "Файл Make \"%s\" не является исполнимым."
-
-#: lazarusidestrconsts.lisenvoptdlglazarusdirnotfoundmsg
-msgid "Lazarus directory \"%s\" not found."
-msgstr "Каталог Lazarus \"%s\" не найден."
 
 #: lazarusidestrconsts.lisenvoptdlgtestdirnotfoundmsg
 msgid "Test directory \"%s\" not found."
@@ -8806,16 +8750,6 @@ msgstr "Подсказка: значение по умолчанию может 
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Подсказка: проверьте, содержат ли два пакета модули с одинаковым именем."
 
-#: lazarusidestrconsts.lishintpause
-msgctxt "lazarusidestrconsts.lishintpause"
-msgid "Pause"
-msgstr "Приостановить"
-
-#: lazarusidestrconsts.lishintrun
-msgctxt "lazarusidestrconsts.lishintrun"
-msgid "Run"
-msgstr "Запустить"
-
 #: lazarusidestrconsts.lishintsaveall
 msgid "Save all"
 msgstr "Сохранить все"
@@ -8831,11 +8765,6 @@ msgstr "Исполнять до выхода из функции"
 #: lazarusidestrconsts.lishintstepover
 msgid "Step Over"
 msgstr "Шаг в обход"
-
-#: lazarusidestrconsts.lishintstop
-msgctxt "lazarusidestrconsts.lishintstop"
-msgid "Stop"
-msgstr "Остановить"
 
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
@@ -10336,6 +10265,11 @@ msgstr "Левые края"
 msgid "Left space equally"
 msgstr "Равномерно по левым краям"
 
+#: lazarusidestrconsts.lisless
+msgctxt "lazarusidestrconsts.lisless"
+msgid "Less"
+msgstr "Скрыть подробности"
+
 #: lazarusidestrconsts.lislevels
 msgid "Levels"
 msgstr "Уровни"
@@ -10623,11 +10557,6 @@ msgstr "Добавить &наблюдение ..."
 msgid "Break Lines in Selection"
 msgstr "Разбить строки в выделенном"
 
-#: lazarusidestrconsts.lismenubuild
-msgctxt "lazarusidestrconsts.lismenubuild"
-msgid "Build"
-msgstr "Собрать"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Собрать файл"
@@ -10679,11 +10608,6 @@ msgstr "Собрать файлы .po"
 #| msgid "Comment selection"
 msgid "Comment Selection"
 msgstr "Закомментировать выделенное"
-
-#: lazarusidestrconsts.lismenucompile
-msgctxt "lazarusidestrconsts.lismenucompile"
-msgid "Compile"
-msgstr "Компилировать"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -11168,11 +11092,6 @@ msgstr "Диаграмма пакетов"
 msgid "Package Links ..."
 msgstr "Ссылки на пакеты ..."
 
-#: lazarusidestrconsts.lismenupause
-msgctxt "lazarusidestrconsts.lismenupause"
-msgid "Pause"
-msgstr "Приостановить"
-
 #: lazarusidestrconsts.lismenupkgnewpackagecomponent
 msgid "New package component"
 msgstr "Новый компонент пакета"
@@ -11391,11 +11310,6 @@ msgstr "Шаг в обход инструкции"
 msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
 msgid "Step Over Instruction"
 msgstr "Шаг в обход инструкции"
-
-#: lazarusidestrconsts.lismenustop
-msgctxt "lazarusidestrconsts.lismenustop"
-msgid "Stop"
-msgstr "Остановить"
 
 #: lazarusidestrconsts.lismenuswapcaseselection
 #| msgid "Swap case in selection"
@@ -12427,6 +12341,11 @@ msgstr "Путь к утилите Make"
 msgid "Path to failed Instance:"
 msgstr "Путь к необработанному экземпляру:"
 
+#: lazarusidestrconsts.lispause
+msgctxt "lazarusidestrconsts.lispause"
+msgid "Pause"
+msgstr "Приостановить"
+
 #: lazarusidestrconsts.lispckcleartousethepackagename
 msgid "Clear to use the package name"
 msgstr "Очистите это поле для использования имени пакета"
@@ -12456,11 +12375,6 @@ msgstr "Вызвать процедуру %sRegister%s выбранного мо
 #: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
 msgid "Clear default/preferred filename of dependency"
 msgstr "Очистить выбранное имя файла зависимости"
-
-#: lazarusidestrconsts.lispckeditcompile
-msgctxt "lazarusidestrconsts.lispckeditcompile"
-msgid "Compile"
-msgstr "Компилировать"
 
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
@@ -14421,6 +14335,16 @@ msgstr "Равномерно по правым краям"
 msgid "Root"
 msgstr "Корневой элемент"
 
+#: lazarusidestrconsts.lisrun
+msgctxt "lazarusidestrconsts.lisrun"
+msgid "Run"
+msgstr "Запуск"
+
+#: lazarusidestrconsts.lisrunbuttonhint
+msgctxt "lazarusidestrconsts.lisrunbuttonhint"
+msgid "Run"
+msgstr "Запустить"
+
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr "%s (идёт исполнение ...)"
@@ -14432,6 +14356,11 @@ msgstr "Файл не является исполнимым"
 #: lazarusidestrconsts.lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
 msgstr "Главное приложение %s%s%s не является исполнимым файлом."
+
+#: lazarusidestrconsts.lisrunstage
+msgctxt "lazarusidestrconsts.lisrunstage"
+msgid "Run"
+msgstr "запуске"
 
 #: lazarusidestrconsts.lisruntimeonlycannotbeinstalledinide
 msgid "Runtime only, can not be installed in IDE"
@@ -14645,6 +14574,10 @@ msgstr "Выбор"
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
 msgstr "(выбран сосед снизу)"
+
+#: lazarusidestrconsts.lisselectedcommandsmapping
+msgid "Selected Command's Mapping"
+msgstr "Комбинация выбранной команды"
 
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
@@ -14941,6 +14874,11 @@ msgstr "Запустить IDE"
 msgid "Start with a new project"
 msgstr "Начать новый проект"
 
+#: lazarusidestrconsts.lisstop
+msgctxt "lazarusidestrconsts.lisstop"
+msgid "Stop"
+msgstr "Остановить"
+
 #: lazarusidestrconsts.lisstopcurrentdebuggingandrebuildproject
 msgid "Stop current debugging and rebuild project?"
 msgstr "Остановить текущую отладку и пересобрать проект?"
@@ -15052,7 +14990,8 @@ msgid "Tab Order of %s"
 msgstr "Порядок перехода для %s"
 
 #: lazarusidestrconsts.listabordersorthint
-msgid "Calculate the tab order of controls by their X- and Y- positions"
+#| msgid "Calculate the tab order of controls by their X- and Y- positions"
+msgid "Calculate tab order for controls by their X- and Y- positions"
 msgstr "Вычислить порядок перехода по координатам X и Y компонентов"
 
 #: lazarusidestrconsts.listaborderuphint
@@ -15128,6 +15067,10 @@ msgstr "Команда после %s%s%s"
 #: lazarusidestrconsts.listhecommandafterpublishingisinvalid
 msgid "The command after publishing is invalid:%s%s%s%s"
 msgstr "Команда после опубликования некорректна:%s%s%s%s"
+
+#: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
+msgid "The compiler file \"%s\" does not look correct:%s%s"
+msgstr "Файл компилятора \"%s\", вероятно, некорректен:%s%s"
 
 #: lazarusidestrconsts.listhecomponentcannotbedeletedbecauseitisnotownedby
 msgid "The component %s can not be deleted, because it is not owned by %s."
@@ -15289,6 +15232,10 @@ msgstr "Первый режим сборки является режимом с�
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "Следующие методы, используемые %s, отсутствуют в исходном коде%s%s%s%s%s%sУдалить некорректные ссылки?"
 
+#: lazarusidestrconsts.listhefpcsourcedirectorydoesnotlookcorrect
+msgid "The FPC source directory \"%s\" does not look correct:%s%s"
+msgstr "Каталог исходного кода FPC \"%s\", вероятно, некорректен:%s%s"
+
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
 msgstr "Исполнимый файл компилятора Free Pascal обычно имеет имя \"%s\". Вы также можете использовать компилятор для определённой платформы, например, \"%s\". Задайте полный путь к файлу."
@@ -15326,6 +15273,10 @@ msgstr "Запускающее приложение %s%s%s%sне существ�
 #| msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file ide%slazarus.lpi. The translation files are located there too."
 msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file \"ide%slazarus.lpi\". The translation files are located there too."
 msgstr "Каталог Lazarus содержит исходный код IDE, а также файлы LCL и многих стандартных пакетов. Например, он содержит файл \"ide%slazarus.lpi\". Также в нём располагаются файлы переводов."
+
+#: lazarusidestrconsts.listhelazarusdirectorydoesnotlookcorrect
+msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
+msgstr "Каталог Lazarus \"%s\", вероятно, некорректен:%s%s"
 
 #: lazarusidestrconsts.listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
 #| msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
@@ -15419,6 +15370,10 @@ msgstr "Пакет %s уже имеется в списке"
 #: lazarusidestrconsts.listhepackageisnotadesigntimepackageitcannotbeinstall
 msgid "The package %s is not a design time package. It can not be installed in the IDE"
 msgstr "Пакет %s не является пакетом времени разработки. Он не может быть установлен в IDE."
+
+#: lazarusidestrconsts.listhepathofmakeisnotcorrect
+msgid "The path of \"make\" is not correct: \"%s\""
+msgstr "Путь к \"Make\" некорректен: \"%s\""
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
@@ -15798,10 +15753,6 @@ msgstr "Очистить кэш включаемых файлов"
 #: lazarusidestrconsts.lisuidbytes
 msgid "%s bytes"
 msgstr "%s байт"
-
-#: lazarusidestrconsts.lisuidclear
-msgid "Clear"
-msgstr "Очистить"
 
 #: lazarusidestrconsts.lisuidincludedby
 msgid "Included by:"

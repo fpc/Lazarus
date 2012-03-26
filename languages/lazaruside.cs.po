@@ -2587,8 +2587,14 @@ msgid "Create Application Bundle"
 msgstr "Vytvořit aplikační balík"
 
 #: lazarusidestrconsts.dlgpodpiaware
-msgid "Dpi aware application (for Vista+)"
+#, fuzzy
+#| msgid "Dpi aware application (for Vista+)"
+msgid "Enabled DPI Awareness (for Vista+)"
 msgstr "Aplikace zohledňující DPI (pro Vista+)"
+
+#: lazarusidestrconsts.dlgpoexecutionlevel
+msgid "Execution Level"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
@@ -4169,11 +4175,6 @@ msgstr "Nejlépe zobrazíte instalací HTML ovládacího prvku jako turbopowerip
 msgid "Always build before run"
 msgstr "Vždy sestavit před spuštěním"
 
-#: lazarusidestrconsts.lisbfbuild
-msgctxt "lazarusidestrconsts.lisbfbuild"
-msgid "Build"
-msgstr "Sestavit"
-
 #: lazarusidestrconsts.lisbfbuildcommand
 msgid "Build Command"
 msgstr "Sestavit povel"
@@ -4185,11 +4186,6 @@ msgstr "Při sestavení projektu vykonej příkaz Souboru sestavení"
 #: lazarusidestrconsts.lisbfonrunprojectexecutetherunfilecommandinstead
 msgid "On run project execute the Run File command instead"
 msgstr "Pro spuštění projektu spusťte příkaz Spustit soubor"
-
-#: lazarusidestrconsts.lisbfrun
-msgctxt "lazarusidestrconsts.lisbfrun"
-msgid "Run"
-msgstr "Spustit"
 
 #: lazarusidestrconsts.lisbfruncommand
 msgid "Run Command"
@@ -4301,6 +4297,11 @@ msgstr "Sestavit"
 msgid "build all files of project/package/IDE"
 msgstr "sestavit všechny soubory projektu/balíčku/IDE"
 
+#: lazarusidestrconsts.lisbuildcaption
+msgctxt "lazarusidestrconsts.lisbuildcaption"
+msgid "Build"
+msgstr "Sestavit"
+
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr "sestavit IDE s balíčky"
@@ -4340,6 +4341,11 @@ msgstr "Číslo sestavení"
 #: lazarusidestrconsts.lisbuildproject
 msgid "Build project"
 msgstr "Sestavit projekt"
+
+#: lazarusidestrconsts.lisbuildstage
+msgctxt "lazarusidestrconsts.lisbuildstage"
+msgid "Build"
+msgstr "Sestavit"
 
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
@@ -5124,15 +5130,14 @@ msgstr "Vyčistit a sestavit projekt"
 msgid "Clean up unit path?"
 msgstr "Vyčistit cestu jednotky?"
 
+#: lazarusidestrconsts.lisclear
+msgctxt "lazarusidestrconsts.lisclear"
+msgid "Clear"
+msgstr "Smazat"
+
 #: lazarusidestrconsts.liscleardirectory
 msgid "Clear Directory?"
 msgstr "Vyprázdnit adresář?"
-
-#: lazarusidestrconsts.lisclearkeymapping
-#, fuzzy
-#| msgid "Clear Key Mapping"
-msgid "Clear Command's Mapping"
-msgstr "Vymazat mapování klávesy"
 
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
@@ -5206,21 +5211,6 @@ msgstr "Víceznačný přídavný konfigurační soubor překladače"
 #: lazarusidestrconsts.liscocallon
 msgid "Call on:"
 msgstr "Volat při:"
-
-#: lazarusidestrconsts.liscocallonbuild
-msgctxt "lazarusidestrconsts.liscocallonbuild"
-msgid "Build"
-msgstr "Sestavit"
-
-#: lazarusidestrconsts.liscocalloncompile
-msgctxt "lazarusidestrconsts.liscocalloncompile"
-msgid "Compile"
-msgstr "Přeložit"
-
-#: lazarusidestrconsts.liscocallonrun
-msgctxt "lazarusidestrconsts.liscocallonrun"
-msgid "Run"
-msgstr "Spustit"
 
 #: lazarusidestrconsts.liscoclickokifaresuretodothat
 msgid "%s%sClick OK if you are sure to do that."
@@ -5892,13 +5882,14 @@ msgstr "Příkaz po neplatném"
 msgid "Command after publishing module"
 msgstr "Příkaz po publikování modulu"
 
-#: lazarusidestrconsts.liscommandedithint
-msgid "Edit command's mapping with double click, Return key or Popup menu"
-msgstr ""
-
 #: lazarusidestrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
 msgstr "Parametry příkazového řádku programu"
+
+#: lazarusidestrconsts.liscompile
+msgctxt "lazarusidestrconsts.liscompile"
+msgid "Compile"
+msgstr "Přeložit"
 
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
@@ -5935,6 +5926,11 @@ msgstr "Poznámka: načítání starého souboru voleb Nástrojů Kódu: "
 #: lazarusidestrconsts.liscompileroptionsforproject
 msgid "Compiler Options for Project: %s"
 msgstr "Volby překladače pro projekt %s"
+
+#: lazarusidestrconsts.liscompilestage
+msgctxt "lazarusidestrconsts.liscompilestage"
+msgid "Compile"
+msgstr "Přeložit"
 
 #: lazarusidestrconsts.liscompiling
 msgid "%s (compiling ...)"
@@ -6789,20 +6785,6 @@ msgstr "Chyba ladění"
 msgid "Debugger Information"
 msgstr "Informace ladění"
 
-#: lazarusidestrconsts.lisdebuggerfeedbackless
-msgid "Less"
-msgstr "Méně"
-
-#: lazarusidestrconsts.lisdebuggerfeedbackmore
-msgctxt "lazarusidestrconsts.lisdebuggerfeedbackmore"
-msgid "More"
-msgstr "Více"
-
-#: lazarusidestrconsts.lisdebuggerfeedbackstop
-msgctxt "lazarusidestrconsts.lisdebuggerfeedbackstop"
-msgid "Stop"
-msgstr "Zastavit"
-
 #: lazarusidestrconsts.lisdebuggerfeedbackwarning
 msgid "Debugger Warning"
 msgstr "Varování ladění"
@@ -7425,10 +7407,6 @@ msgstr "Upravit kontextovou nápovědu"
 msgid "Edit help"
 msgstr "Upravit nápovědu"
 
-#: lazarusidestrconsts.liseditkeymapping
-msgid "Edit Command's Mapping"
-msgstr ""
-
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
 msgstr "Typy souborů editoru"
@@ -7694,18 +7672,6 @@ msgstr "Skoč ze zprávy do zdrojové řádky při dvojkliku (jinak jednoduchý 
 msgid "Directory not found"
 msgstr "Složka nenalezena"
 
-#: lazarusidestrconsts.lisenvoptdlgfpcsrcdirnotfoundmsg
-msgid "FPC source directory \"%s\" not found."
-msgstr "Zdrojový adresář FPC \"%s\" nenalezen."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidcompilerfilename
-msgid "Invalid compiler filename"
-msgstr "Neplatný název souboru překladače"
-
-#: lazarusidestrconsts.lisenvoptdlginvalidcompilerfilenamemsg
-msgid "The compiler file \"%s\" is not an executable."
-msgstr "Soubor překladače \"%s\" není spustitelný."
-
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
 msgstr "Neplatný název souboru ladiče"
@@ -7713,26 +7679,6 @@ msgstr "Neplatný název souboru ladiče"
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilenamemsg
 msgid "The debugger file \"%s\" is not an executable."
 msgstr "Soubor ladiče \"%s\" není spustitelný."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidfpcsrcdir
-msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl/inc, packages/fcl-base, ... ."
-msgstr "Adresář zdrojových kódů FPC \"%s\" vypadá poškozený. Běžně obsahuje adresáře jako rtl/inc, packages/fcl-base, ... ."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidlazarusdir
-msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."
-msgstr "Adresář Lazarusu \"%s\" vypadá poškozený. Běžně obsahuje adresáře jako lcl, debugger, designer, components, ... ."
-
-#: lazarusidestrconsts.lisenvoptdlginvalidmakefilename
-msgid "Invalid make filename"
-msgstr "Neplatné jméno make"
-
-#: lazarusidestrconsts.lisenvoptdlginvalidmakefilenamemsg
-msgid "The make file \"%s\" is not an executable."
-msgstr "Soubor Make \"%s\" není spustitelný."
-
-#: lazarusidestrconsts.lisenvoptdlglazarusdirnotfoundmsg
-msgid "Lazarus directory \"%s\" not found."
-msgstr "Nenalezen adresář Lazarusu \"%s\"."
 
 #: lazarusidestrconsts.lisenvoptdlgtestdirnotfoundmsg
 msgid "Test directory \"%s\" not found."
@@ -8590,16 +8536,6 @@ msgstr "Tip: přednastavená hodnota může být definována v podmíněných."
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Tip: Zkontrolujte, zda dva balíčky neobsahují jednotku se stejným jménem."
 
-#: lazarusidestrconsts.lishintpause
-msgctxt "lazarusidestrconsts.lishintpause"
-msgid "Pause"
-msgstr "Pozastavit"
-
-#: lazarusidestrconsts.lishintrun
-msgctxt "lazarusidestrconsts.lishintrun"
-msgid "Run"
-msgstr "Spustit"
-
 #: lazarusidestrconsts.lishintsaveall
 msgid "Save all"
 msgstr "Uložit vše"
@@ -8615,11 +8551,6 @@ msgstr "Spustit do návratu z funkce"
 #: lazarusidestrconsts.lishintstepover
 msgid "Step Over"
 msgstr "Přejít přes"
-
-#: lazarusidestrconsts.lishintstop
-msgctxt "lazarusidestrconsts.lishintstop"
-msgid "Stop"
-msgstr "Zastavit"
 
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
@@ -10085,6 +10016,11 @@ msgstr "Levé strany"
 msgid "Left space equally"
 msgstr "Shodná levá vzdálenost"
 
+#: lazarusidestrconsts.lisless
+msgctxt "lazarusidestrconsts.lisless"
+msgid "Less"
+msgstr "Méně"
+
 #: lazarusidestrconsts.lislevels
 msgid "Levels"
 msgstr "Úrovně"
@@ -10360,11 +10296,6 @@ msgstr "Přidat sledování ..."
 msgid "Break Lines in Selection"
 msgstr "Zalomit řádky ve výběru"
 
-#: lazarusidestrconsts.lismenubuild
-msgctxt "lazarusidestrconsts.lismenubuild"
-msgid "Build"
-msgstr "Sestavit"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Sestavit soubor"
@@ -10408,11 +10339,6 @@ msgstr "Sbírat soubory .po"
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment Selection"
 msgstr "Zakomentovat výběr"
-
-#: lazarusidestrconsts.lismenucompile
-msgctxt "lazarusidestrconsts.lismenucompile"
-msgid "Compile"
-msgstr "Přeložit"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -10837,11 +10763,6 @@ msgstr "Graf balíčku"
 msgid "Package Links ..."
 msgstr "Odkazy balíčku ..."
 
-#: lazarusidestrconsts.lismenupause
-msgctxt "lazarusidestrconsts.lismenupause"
-msgid "Pause"
-msgstr "Pozastavit"
-
 #: lazarusidestrconsts.lismenupkgnewpackagecomponent
 msgid "New package component"
 msgstr "Nová komponenta balíčku"
@@ -11032,11 +10953,6 @@ msgstr "Krok přes instrukci"
 msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
 msgid "Step Over Instruction"
 msgstr "Krok přes instrukci"
-
-#: lazarusidestrconsts.lismenustop
-msgctxt "lazarusidestrconsts.lismenustop"
-msgid "Stop"
-msgstr "Zastavit"
 
 #: lazarusidestrconsts.lismenuswapcaseselection
 msgid "Swap Case in Selection"
@@ -12039,6 +11955,11 @@ msgstr "Cesta nástroje make"
 msgid "Path to failed Instance:"
 msgstr "Cesta ke špatné instanci:"
 
+#: lazarusidestrconsts.lispause
+msgctxt "lazarusidestrconsts.lispause"
+msgid "Pause"
+msgstr "Pozastavit"
+
 #: lazarusidestrconsts.lispckcleartousethepackagename
 msgid "Clear to use the package name"
 msgstr "Vyčistit pro použití jména balíčku"
@@ -12067,11 +11988,6 @@ msgstr "Volání %sRegistr%s procedura vybrané jednotky"
 #: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
 msgid "Clear default/preferred filename of dependency"
 msgstr "Vyčistit přednastavené/preferované jméno souboru závislosti"
-
-#: lazarusidestrconsts.lispckeditcompile
-msgctxt "lazarusidestrconsts.lispckeditcompile"
-msgid "Compile"
-msgstr "Přeložit"
 
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
@@ -14001,6 +13917,16 @@ msgstr "Stejná pravá vzdálenost"
 msgid "Root"
 msgstr "Kořen"
 
+#: lazarusidestrconsts.lisrun
+msgctxt "lazarusidestrconsts.lisrun"
+msgid "Run"
+msgstr "Spustit"
+
+#: lazarusidestrconsts.lisrunbuttonhint
+msgctxt "lazarusidestrconsts.lisrunbuttonhint"
+msgid "Run"
+msgstr "Spustit"
+
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr "%s (běžící ...)"
@@ -14012,6 +13938,11 @@ msgstr "Soubor není spustitelný"
 #: lazarusidestrconsts.lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
 msgstr "Hostitelská aplikace %s%s%s není spustitelná."
+
+#: lazarusidestrconsts.lisrunstage
+msgctxt "lazarusidestrconsts.lisrunstage"
+msgid "Run"
+msgstr "Spustit"
 
 #: lazarusidestrconsts.lisruntimeonlycannotbeinstalledinide
 msgid "Runtime only, can not be installed in IDE"
@@ -14222,6 +14153,10 @@ msgstr "Vybrané"
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
 msgstr "(vybraný dolní soused)"
+
+#: lazarusidestrconsts.lisselectedcommandsmapping
+msgid "Selected Command's Mapping"
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
@@ -14516,6 +14451,11 @@ msgstr "Spustit IDE"
 msgid "Start with a new project"
 msgstr "Začít s novým projektem"
 
+#: lazarusidestrconsts.lisstop
+msgctxt "lazarusidestrconsts.lisstop"
+msgid "Stop"
+msgstr "Zastavit"
+
 #: lazarusidestrconsts.lisstopcurrentdebuggingandrebuildproject
 msgid "Stop current debugging and rebuild project?"
 msgstr "Zastavit aktuální ladění a znovu sestavit projekt?"
@@ -14626,7 +14566,9 @@ msgid "Tab Order of %s"
 msgstr "Pořadí záložek %s"
 
 #: lazarusidestrconsts.listabordersorthint
-msgid "Calculate the tab order of controls by their X- and Y- positions"
+#, fuzzy
+#| msgid "Calculate the tab order of controls by their X- and Y- positions"
+msgid "Calculate tab order for controls by their X- and Y- positions"
 msgstr "Vypočítat pořadí záložek prvků podle jejich X a Y souřadnic"
 
 #: lazarusidestrconsts.listaborderuphint
@@ -14701,6 +14643,10 @@ msgstr "Příkaz po %s%s%s není spustitelný."
 #: lazarusidestrconsts.listhecommandafterpublishingisinvalid
 msgid "The command after publishing is invalid:%s%s%s%s"
 msgstr "Příkaz za publikováním je neplatný:%s%s%s%s"
+
+#: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
+msgid "The compiler file \"%s\" does not look correct:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.listhecomponentcannotbedeletedbecauseitisnotownedby
 msgid "The component %s can not be deleted, because it is not owned by %s."
@@ -14855,6 +14801,10 @@ msgstr "První sestavovací mód je předvolený mód a musí být uložen v pro
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "Následující metody použité v %s nejsou v zdrojovém kódu%s%s%s%s%s%sOdstranit tyto odkazy?"
 
+#: lazarusidestrconsts.listhefpcsourcedirectorydoesnotlookcorrect
+msgid "The FPC source directory \"%s\" does not look correct:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
 msgstr "Spustitelný soubor Free Pascal překladače má obvykle jméno \"%s\". Můžete rovněž použít překladač specifický pro cílovou platformu jako \"%s\". Zadejte, prosím, kompletní souborovou cestu."
@@ -14890,6 +14840,10 @@ msgstr "Spouštěcí aplikace %s%s%s%sneexistuje, nebo není spustitelná.%s%sVi
 #: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
 msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file \"ide%slazarus.lpi\". The translation files are located there too."
 msgstr "Adresář Lazarusu obsahuje zdrojové kódy IDE a soubory balíčků LCL a mnoha standardních balíčků. Obsahuje například soubor \"ide%slazarus.lpi\". Soubory překladů jsou umístěny také tam."
+
+#: lazarusidestrconsts.listhelazarusdirectorydoesnotlookcorrect
+msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
 msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Tools -> Options -> Files"
@@ -14982,6 +14936,10 @@ msgstr "Balíček %s je již v seznamu"
 #: lazarusidestrconsts.listhepackageisnotadesigntimepackageitcannotbeinstall
 msgid "The package %s is not a design time package. It can not be installed in the IDE"
 msgstr "Balíček %s není balíčkem času návrhu. Nelze jej nainstalovat v IDE"
+
+#: lazarusidestrconsts.listhepathofmakeisnotcorrect
+msgid "The path of \"make\" is not correct: \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
@@ -15357,10 +15315,6 @@ msgstr "Smazat vyrovnávací paměť pro include"
 #: lazarusidestrconsts.lisuidbytes
 msgid "%s bytes"
 msgstr "%s bajtů"
-
-#: lazarusidestrconsts.lisuidclear
-msgid "Clear"
-msgstr "Smazat"
 
 #: lazarusidestrconsts.lisuidincludedby
 msgid "Included by:"
