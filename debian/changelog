@@ -4,6 +4,12 @@ lazarus (0.9.31-0) unstable; urgency=low
 
  -- Abou Al Montacir <abou.almontacir@sfr.fr>  Tue, 06 Mar 2012 09:16:00 +0100
 
+lazarus (0.9.30.4-1) unstable; urgency=low
+
+  * Checked conformance to policy 3.9.3 and updated standard version.
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Tue, 20 Mar 2012 17:52:45 +0100
+
 lazarus (0.9.30.2-3) unstable; urgency=low
 
   * Set priority according to version in lcl-utils and lazarus-ide-gtk so that
