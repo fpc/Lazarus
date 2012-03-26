@@ -2173,7 +2173,7 @@ resourcestring
   dlgPOUseAppBundle = 'Use Application Bundle for running and debugging (Darwin only)';
   dlgPOCreateAppBundle = 'Create Application Bundle';
   dlgPOUseManifest = 'Use manifest file to enable themes (Windows only)';
-  dlgPODpiAware = 'Dpi aware application (for Vista+)';
+  dlgPODpiAware = 'Enabled DPI Awareness (for Vista+)';
   dlgPOIcon = 'Icon:';
   dlgPOLoadIcon = 'Load Icon';
   dlgPOSaveIcon = 'Save Icon';
