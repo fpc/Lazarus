@@ -1,42 +1,68 @@
 This patch fixes dist_clean target used to remove generated files before
 packaging sources.
 
-diff -urNad lazarus-0.9.26.1-0~/Makefile.fpc lazarus-0.9.26.1-0/Makefile.fpc
---- lazarus-0.9.26.1-0~/Makefile.fpc	2008-10-11 19:19:59.000000000 +0200
-+++ lazarus-0.9.26.1-0/Makefile.fpc	2008-10-11 19:20:01.000000000 +0200
-@@ -11,7 +11,7 @@
+diff -urNad lazarus~/Makefile.fpc lazarus/Makefile.fpc
+Index: lazarus/ide/Makefile.fpc
+===================================================================
+--- lazarus/ide/Makefile.fpc	(revision 36339)
++++ lazarus/ide/Makefile.fpc	(working copy)
+@@ -180,7 +180,7 @@
+ endif
+ 
+ #-----------------------------------------------------------------------------
+-all: ide starter lazbuilder
++all: bigide starter lazbuilder
+ 
+ #-----------------------------------------------------------------------------
+ cleanide:
+Index: lazarus/Makefile.fpc
+===================================================================
+--- lazarus/Makefile.fpc	(revision 36339)
++++ lazarus/Makefile.fpc	(working copy)
+@@ -10,8 +10,8 @@
+ packages=regexpr
  
  [target]
- programs=lazarus startlazarus
+-programs=lazarus startlazarus
 -dirs=lcl packager/registration ideintf components
-+dirs=lcl packager/registration ideintf components ide tools
++programs=
++dirs=packager/registration components/lazutils lcl ideintf components ide tools examples
  exampledirs=examples
  
  [compiler]
-@@ -48,10 +48,6 @@
- .PHONY: lcl components packager/registration ideintf bigidecomponents ide idepkg idebig bigide starter lazbuilder tools all clean cleanide cleannogui purge examples install lazbuild
+@@ -51,8 +51,9 @@
+ help:
+ 	@$(ECHO)
+ 	@$(ECHO) " Targets"
+-	@$(ECHO) "   all          build minimal IDE, lazbuild, startlazarus"
++	@$(ECHO) "   all          build IDE with all packages, lazbuild, startlazarus"
+ 	@$(ECHO) "   clean        deletes files that 'all' creates"
++	@$(ECHO) "   ide          build IDE with a minimal set of packages"
+ 	@$(ECHO) "   lazbuild     build lazbuild and lcl with nogui widgetset"
+ 	@$(ECHO) "   starter      build startlazarus"
+ 	@$(ECHO) "   bigide       build IDE with a standard set of packages"
+@@ -107,8 +108,8 @@
  
  #-----------------------------------------------------------------------------
--ide: 
--	$(MAKE) -C ide ide
--
--#-----------------------------------------------------------------------------
- lazutils: 
- 	$(MAKE) -C packager/registration
- 	$(MAKE) -C components/lazutils
-@@ -87,13 +83,12 @@
+ # build lazarus and packages with user's settings
+-useride: 
+-	./lazbuild$(SRCEXEEXT) --build-ide=
++useride: lazbuild
++	./lazbuild $(SRCEXEEXT) --build-ide=
  
  #-----------------------------------------------------------------------------
- tools: lcl
--	$(MAKE) -C tools
+ # build lazarus,lcl,startlazarus with bigide packages
+@@ -139,12 +140,9 @@
+ 	$(MAKE) -C tools
  	
  #-----------------------------------------------------------------------------
- examples: lcl components
+-examples: lazutils lcl bigidecomponents
++examples: lcl bigidecomponents
  
  #-----------------------------------------------------------------------------
--all: packager/registration lazutils lcl ideintf components ide starter lazbuilder
-+all: packager/registration lazutils lcl ideintf components bigidecomponents bigide starter lazbuilder tools examples
+-all: lazbuild lcl ideintf components tools ide starter
+-
+-#-----------------------------------------------------------------------------
+ cleanide:
+ 	$(MAKE) -C ide cleanide
  
- #-----------------------------------------------------------------------------
- cleannogui:
-
