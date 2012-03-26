@@ -8397,11 +8397,11 @@ begin
   FreeAndNil(FCompletionPlugins);
   FreeAndNil(FSourceWindowList);
   FreeAndNil(FSourceWindowByFocusList);
+  inherited Destroy;
   for cr := low(TsemChangeReason) to high(TsemChangeReason) do
     FreeAndNil(FChangeNotifyLists[cr]);
   for h:=low(FHandlers) to high(FHandlers) do
     FreeAndNil(FHandlers[h]);
-  inherited Destroy;
 end;
 
 procedure TSourceEditorManagerBase.RegisterChangeEvent(
