@@ -892,7 +892,7 @@ begin
   ecSelectionEnclose:    SetSingle(VK_N,[ssShift,ssCtrl]);
   ecSelectionComment:    SetSingle(VK_V,[ssShift,ssCtrl]);
   ecSelectionUncomment:  SetSingle(VK_U,[ssShift,ssCtrl]);
-  ecToggleComment:       SetSingle(VK_T,[ssShift,ssCtrl], VK_OEM_2,[ssCtrl]);
+  ecToggleComment:       SetSingle(VK_OEM_2,[ssCtrl]);
   ecSelectionEncloseIFDEF:SetSingle(VK_D,[ssShift,ssCtrl]);
   ecSelectionSort:       SetSingle(VK_UNKNOWN,[]);
   ecSelectionBreakLines: SetSingle(VK_UNKNOWN,[]);
