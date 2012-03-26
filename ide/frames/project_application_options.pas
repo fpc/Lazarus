@@ -203,6 +203,7 @@ begin
   ExecutionLevelLabel.Caption := dlgPOExecutionLevel;
   for ExecutionLevel := Low(TXPManifestExecutionLevel) to High(TXPManifestExecutionLevel) do
     ExecutionLevelComboBox.Items.Add(ExecutionLevelToStr[ExecutionLevel]);
+  UIAccessCheckBox.Caption := 'UIAccess';
 
   CreateAppBundleButton.Caption := dlgPOCreateAppBundle;
   CreateAppBundleButton.LoadGlyphFromLazarusResource('pkg_compile');
