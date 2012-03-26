@@ -98,11 +98,13 @@ resourcestring
   lisPath = 'Path';
   lisId = 'ID';
   lisCompile = 'Compile';
-  lisCompile2 = 'Compile';
+  lisCompileStage = 'Compile';
   lisBuild = 'Build';
   lisBuildCaption = 'Build';
   lisBuildStage = 'Build';
   lisRun = 'Run';
+  lisRunStage = 'Run';
+  lisRunButtonHint = 'Run';
   lisPause = 'Pause';
   lisStop = 'Stop';
   lisLess = 'Less';

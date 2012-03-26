@@ -71,8 +71,8 @@ begin
 
   ExecuteBeforeGroupBox.Caption := lisCOExecuteBefore;
   chkExecBeforeBuild.Caption := lisBuildStage;
-  chkExecBeforeCompile.Caption := lisCompile2;
-  chkExecBeforeRun.Caption := lisRun;
+  chkExecBeforeCompile.Caption := lisCompileStage;
+  chkExecBeforeRun.Caption := lisRunStage;
   ExecuteBeforeCommandEdit.Text := '';
   ExecuteBeforeCommandLabel.Caption := lisCOCommand;
   ExecuteBeforeScanLabel.Caption := lisCOScanForMessages;
@@ -84,9 +84,9 @@ begin
   grpCompiler.Caption := lisCompiler;
   chkCompilerBuild.Caption := lisBuildStage;
   chkCompilerBuild.Checked := True;
-  chkCompilerCompile.Caption := lisCompile2;
+  chkCompilerCompile.Caption := lisCompileStage;
   chkCompilerCompile.Checked := True;
-  chkCompilerRun.Caption := lisRun;
+  chkCompilerRun.Caption := lisRunStage;
   chkCompilerRun.Checked := True;
   edtCompiler.Text := '';
   lblCompiler.Caption := lisCOCommand;
@@ -94,8 +94,8 @@ begin
 
   ExecuteAfterGroupBox.Caption := lisCOExecuteAfter;
   chkExecAfterBuild.Caption := lisBuildStage;
-  chkExecAfterCompile.Caption := lisCompile2;
-  chkExecAfterRun.Caption := lisRun;
+  chkExecAfterCompile.Caption := lisCompileStage;
+  chkExecAfterRun.Caption := lisRunStage;
   ExecuteAfterCommandEdit.Text := '';
   ExecuteAfterCommandLabel.Caption := lisCOCommand;
   ExecuteAfterScanLabel.Caption := lisCOScanForMessages;
@@ -145,7 +145,7 @@ begin
       chkCompilerCompile.Checked := crCompile in CompileReasons;
       chkCompilerBuild.Checked := crBuild in CompileReasons;
       chkCompilerRun.Checked := crRun in CompileReasons;
-      chkCompilerCompile.Caption := lisCompile2;
+      chkCompilerCompile.Caption := lisCompileStage;
       chkCompilerCompile.Visible := True;
       chkCompilerBuild.Visible := True;
       chkCompilerRun.Visible := True;
