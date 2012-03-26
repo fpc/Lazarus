@@ -732,6 +732,7 @@ type
     property ChangeStamp: integer read FChangeStamp;
     function Find(CompilerFilename, CompilerOptions, TargetOS, TargetCPU: string;
                   CreateIfNotExists: boolean): TFPCTargetConfigCache;
+    function GetListing: string;
   end;
 
   TFPCSourceCaches = class;
@@ -7075,18 +7076,18 @@ var
 begin
   Result:=true;
   if (not FileExistsCached(Compiler)) then begin
-    debugln(['TFPCTargetConfigCache.NeedsUpdate compiler file missing "',Compiler,'"']);
+    debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" compiler file missing "',Compiler,'"']);
     exit;
   end;
   if (FileAgeCached(Compiler)<>CompilerDate) then begin
-    debugln(['TFPCTargetConfigCache.NeedsUpdate compiler file changed "',Compiler,'" FileAge=',FileAgeCached(Compiler),' StoredAge=',CompilerDate]);
+    debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" compiler file changed "',Compiler,'" FileAge=',FileAgeCached(Compiler),' StoredAge=',CompilerDate]);
     exit;
   end;
   if (RealCompiler<>'') and (CompareFilenames(RealCompiler,Compiler)<>0)
   then begin
     if (not FileExistsCached(RealCompiler))
     or (FileAgeCached(RealCompiler)<>RealCompilerDate) then begin
-      debugln(['TFPCTargetConfigCache.NeedsUpdate real compiler file changed "',RealCompiler,'"']);
+      debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" real compiler file changed "',RealCompiler,'"']);
       exit;
     end;
   end;
@@ -7094,18 +7095,18 @@ begin
   // and that is the RealCompiler
   AFilename:=FindRealCompilerInPath(TargetCPU,true);
   if RealCompilerInPath<>AFilename then begin
-    debugln(['TFPCTargetConfigCache.NeedsUpdate real compiler in PATH changed from "',RealCompilerInPath,'" to "',AFilename,'"']);
+    debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" real compiler in PATH changed from "',RealCompilerInPath,'" to "',AFilename,'"']);
     exit;
   end;
   for i:=0 to ConfigFiles.Count-1 do begin
     Cfg:=ConfigFiles[i];
     if Cfg.Filename='' then continue;
     if FileExistsCached(Cfg.Filename)<>Cfg.FileExists then begin
-      debugln(['TFPCTargetConfigCache.NeedsUpdate config fileexists changed "',Cfg.Filename,'"']);
+      debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" config fileexists changed "',Cfg.Filename,'"']);
       exit;
     end;
     if Cfg.FileExists and (FileAgeCached(Cfg.Filename)<>Cfg.FileDate) then begin
-      debugln(['TFPCTargetConfigCache.NeedsUpdate config file changed "',Cfg.Filename,'"']);
+      debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" config file changed "',Cfg.Filename,'"']);
       exit;
     end;
   end;
@@ -7463,6 +7464,26 @@ begin
     end;
   finally
     Cmp.Free;
+  end;
+end;
+
+function TFPCTargetConfigCaches.GetListing: string;
+var
+  Node: TAVLTreeNode;
+  CfgCache: TFPCTargetConfigCache;
+  i: Integer;
+begin
+  Result:='TFPCTargetConfigCaches.GetListing Count='+dbgs(fItems.Count)+LineEnding;
+  i:=0;
+  for Node in fItems do begin
+    inc(i);
+    CfgCache:=TFPCTargetConfigCache(Node.Data);
+    Result+='  '+dbgs(i)+':'
+           +' TargetOS="'+CfgCache.TargetOS+'"'
+           +' TargetCPU="'+CfgCache.TargetCPU+'"'
+           +' Compiler="'+CfgCache.Compiler+'"'
+           +' CompilerOptions="'+CfgCache.CompilerOptions+'"'
+           +LineEnding;
   end;
 end;
 

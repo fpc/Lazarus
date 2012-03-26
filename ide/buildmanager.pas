@@ -669,6 +669,15 @@ begin
     exit;
   end;
 
+  if FileExistsCached(EnvironmentOptions.GetParsedCompilerFilename) then
+  begin
+    // first check the default targetos, targetcpu of the default compiler
+    UnitSetCache:=CodeToolBoss.FPCDefinesCache.FindUnitSet(
+      EnvironmentOptions.GetParsedCompilerFilename,'','','',FPCSrcDir,true);
+    UnitSetCache.GetConfigCache(true);
+  end;
+
+  // create a cache for the current project settings
   UnitSetCache:=CodeToolBoss.FPCDefinesCache.FindUnitSet(
     CompilerFilename,TargetOS,TargetCPU,'',FPCSrcDir,true);
 
