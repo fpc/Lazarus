@@ -726,7 +726,7 @@ type
     function DoRemoveDanglingEvents(AnUnitInfo: TUnitInfo;
         OkOnCodeErrors: boolean): TModalResult;
     function DoRenameUnit(AnUnitInfo: TUnitInfo; NewFilename, NewUnitName: string;
-        var LFMCode, LRSCode: TCodeBuffer): TModalresult;
+        var LFMCode, LRSCode: TCodeBuffer): TModalResult;
 
     // methods for 'open unit' and 'open main unit'
     function DoOpenNotExistingFile(const AFileName:string;
@@ -6199,6 +6199,7 @@ var
   OutDir: string;
   Owners: TFPList;
   OldFileExisted: Boolean;
+  ConvTool: TConvDelphiCodeTool;
 begin
   Project1.BeginUpdate(false);
   try
@@ -6280,6 +6281,14 @@ begin
         LFMCode:=CodeToolBoss.LoadFile(NewLFMFilename,true,false);
         if LFMCode<>nil then
           NewLFMFilename:=LFMCode.Filename;
+      end;
+
+      ConvTool:=TConvDelphiCodeTool.Create(NewSource);
+      try
+        if not ConvTool.RenameResourceDirectives then
+          debugln(['TMainIDE.DoRenameUnit WARNING: unable to rename resource directive in "',NewSource.Filename,'"']);
+      finally
+        ConvTool.Free;
       end;
     end;
 
@@ -9088,7 +9097,6 @@ var
   Confirm: Boolean;
   SaveProjectFlags: TSaveFlags;
   WasPascalSource: Boolean;
-  ConvTool: TConvDelphiCodeTool;
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoSaveEditorFile A PageIndex=',PageIndex,' Flags=',SaveFlagsToString(Flags));
@@ -9144,7 +9152,7 @@ begin
   end;
 
   // if nothing modified then a simple Save can be skipped
-  //writeln('TMainIDE.DoSaveEditorFile A ',AnUnitInfo.Filename,' ',AnUnitInfo.NeedsSaveToDisk);
+  //debugln(['TMainIDE.DoSaveEditorFile A ',AnUnitInfo.Filename,' ',AnUnitInfo.NeedsSaveToDisk]);
   if ([sfSaveToTestDir,sfSaveAs]*Flags=[])
   and (not AnUnitInfo.NeedsSaveToDisk) then
   begin
@@ -9190,16 +9198,6 @@ begin
     Result:=DoShowSaveFileAsDialog(NewFilename,AnUnitInfo,LFMCode,LRSCode,CanAbort);
     if not (Result in [mrIgnore,mrOk]) then
       exit;
-    if LFMSuffix='.dfm' then begin
-      // ToDo: Read the full source to AnUnitInfo.Source.
-      //       Now is has only interface part.
-      ConvTool:=TConvDelphiCodeTool.Create(AnUnitInfo.Source);
-      try
-        if not ConvTool.RenameResourceDirectives then exit;
-      finally
-        ConvTool.Free;
-      end;
-    end;
   end;
 
   // save source
