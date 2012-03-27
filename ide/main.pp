@@ -103,7 +103,7 @@ uses
   CodeToolsDefines, DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
   SourceEditProcs, MsgQuickFixes, ViewUnit_dlg, FPDocEditWindow,
   // converter
-  ChgEncodingDlg, ConvertDelphi, MissingPropertiesDlg, LazXMLForms,
+  ChgEncodingDlg, ConvertDelphi, ConvCodeTool, MissingPropertiesDlg, LazXMLForms,
   // environment option frames
   editor_general_options, formed_options, OI_options,
   files_options, desktop_options, window_options,
@@ -736,7 +736,7 @@ type
     function DoOpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo;
         PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
     function DoLoadResourceFile(AnUnitInfo: TUnitInfo;
-        var LFMCode, LRSCode: TCodeBuffer;
+        var LFMCode, LRSCode: TCodeBuffer; out LFMSuffix: string;
         IgnoreSourceErrors, AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
     function DoLoadLFM(AnUnitInfo: TUnitInfo; OpenFlags: TOpenFlags;
                        CloseFlags: TCloseFlags): TModalResult;
@@ -5417,19 +5417,39 @@ begin
 end;
 
 function TMainIDE.DoLoadResourceFile(AnUnitInfo: TUnitInfo;
-  var LFMCode, LRSCode: TCodeBuffer;
+  var LFMCode, LRSCode: TCodeBuffer; out LFMSuffix: string;
   IgnoreSourceErrors, AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
+const
+  LfmSuffices: array[0..1] of string = ('.lfm', '.dfm');
 var
   LFMFilename: string;
   LRSFilename: String;
   ResType: TResourceType;
+  i: Integer;
 begin
   LFMCode:=nil;
   LRSCode:=nil;
+  LFMSuffix:='';
   //DebugLn(['TMainIDE.DoLoadResourceFile ',AnUnitInfo.Filename,' HasResources=',AnUnitInfo.HasResources,' IgnoreSourceErrors=',IgnoreSourceErrors,' AutoCreateResourceCode=',AutoCreateResourceCode]);
+  // Load the lfm file (without parsing)
+  if not AnUnitInfo.IsVirtual then begin  // and (AnUnitInfo.Component<>nil)
+    Result:=mrNone;
+    for i := Low(LfmSuffices) to High(LfmSuffices) do begin
+      LFMSuffix:=LfmSuffices[i];
+      LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,LFMSuffix);
+      if (FileExistsUTF8(LFMFilename)) then begin
+        Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],ShowAbort);
+        if not (Result in [mrOk,mrIgnore]) then
+          exit;
+//???   Result:=DoLoadLFM(AnUnitInfo,LFMCode, [ofOnlyIfExists], [cfSaveDependencies]);
+        Break;
+      end;
+    end;
+    if Result=mrNone then
+      LFMSuffix:='';                       // Not found.
+  end;
   if AnUnitInfo.HasResources then begin
     //writeln('TMainIDE.DoLoadResourceFile A "',AnUnitInfo.Filename,'" "',AnUnitInfo.ResourceFileName,'"');
-
     ResType:=MainBuildBoss.GetResourceType(AnUnitInfo);
     if ResType=rtLRS then begin
       LRSFilename:=MainBuildBoss.FindLRSFilename(AnUnitInfo,false);
@@ -5449,20 +5469,8 @@ begin
       LRSFilename:='';
       LRSCode:=nil;
     end;
-
     // if no resource file found (i.e. normally the .lrs file)
     // don't bother the user, because it is created automatically anyway
-
-    // then load the lfm file (without parsing)
-    if (not AnUnitInfo.IsVirtual) and (AnUnitInfo.Component<>nil) then begin
-      LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
-      if not FileExistsUTF8(LFMFilename) then
-        LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.dfm');
-      if (FileExistsUTF8(LFMFilename)) then begin
-        Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],ShowAbort);
-        if not (Result in [mrOk,mrIgnore]) then exit;
-      end;
-    end;
   end;
   Result:=mrOk;
 end;
@@ -6751,16 +6759,12 @@ begin
         exit;
       end;
     end;
-
     //debugln('TMainIDE.DoLoadLFM LFM file loaded, parsing "',LFMBuf.Filename,'" ...');
 
-    if not AnUnitInfo.HasResources then begin
-      // someone created a .lfm file -> Update HasResources
-      AnUnitInfo.HasResources:=true;
-    end;
+    // someone created a .lfm file -> Update HasResources
+    AnUnitInfo.HasResources:=true;
 
     //debugln('TMainIDE.DoLoadLFM LFM="',LFMBuf.Source,'"');
-
     if AnUnitInfo.Component=nil then begin
       // load/create new instance
 
@@ -9077,7 +9081,7 @@ function TMainIDE.DoSaveEditorFile(AEditor: TSourceEditorInterface;
   Flags: TSaveFlags): TModalResult;
 var
   AnUnitInfo: TUnitInfo;
-  TestFilename, DestFilename: string;
+  TestFilename, DestFilename, LFMSuffix: string;
   LRSCode, LFMCode: TCodeBuffer;
   MainUnitInfo: TUnitInfo;
   OldUnitName: String;
@@ -9089,6 +9093,7 @@ var
   Confirm: Boolean;
   SaveProjectFlags: TSaveFlags;
   WasPascalSource: Boolean;
+  ConvTool: TConvDelphiCodeTool;
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoSaveEditorFile A PageIndex=',PageIndex,' Flags=',SaveFlagsToString(Flags));
@@ -9170,9 +9175,10 @@ begin
   // load old resource file
   LFMCode:=nil;
   LRSCode:=nil;
+  LFMSuffix:='';
   if WasPascalSource then
   begin
-    Result:=DoLoadResourceFile(AnUnitInfo,LFMCode,LRSCode,
+    Result:=DoLoadResourceFile(AnUnitInfo,LFMCode,LRSCode,LFMSuffix,
                                not (sfSaveAs in Flags),true,CanAbort);
     if not (Result in [mrIgnore,mrOk]) then
       exit;
@@ -9189,6 +9195,16 @@ begin
     Result:=DoShowSaveFileAsDialog(NewFilename,AnUnitInfo,LFMCode,LRSCode,CanAbort);
     if not (Result in [mrIgnore,mrOk]) then
       exit;
+    if LFMSuffix='.dfm' then begin
+      // ToDo: Read the full source to AnUnitInfo.Source.
+      //       Now is has only interface part.
+      ConvTool:=TConvDelphiCodeTool.Create(AnUnitInfo.Source);
+      try
+        if not ConvTool.RenameResourceDirectives then exit;
+      finally
+        ConvTool.Free;
+      end;
+    end;
   end;
 
   // save source
