@@ -75,6 +75,7 @@ type
   TConvDelphiCodeTool = class
   private
     fCTLink: TCodeToolLink;
+    fCTLinkCreated: boolean;
     fIsConsoleApp: Boolean;
     fHasFormFile: boolean;
     fLowerCaseRes: boolean;
@@ -85,15 +86,16 @@ type
     fFuncsToReplace: TObjectList;
 
     function AddModeDelphiDirective: boolean;
-    function RenameResourceDirectives: boolean;
     function ReplaceFuncsInSource: boolean;
     function RememberProcDefinition(aNode: TCodeTreeNode): TCodeTreeNode;
     function ReplaceFuncCalls(aIsConsoleApp: boolean): boolean;
   public
+    constructor Create(APascalBuffer: TCodeBuffer);
     constructor Create(ACTLink: TCodeToolLink);
     destructor Destroy; override;
     function Convert: TModalResult;
     function FindApptypeConsole: boolean;
+    function RenameResourceDirectives: boolean;
     function FixMainClassAncestor(const AClassName: string;
                                   AReplaceTypes: TStringToStringTree): boolean;
   public
@@ -161,16 +163,29 @@ end;
 
 { TConvDelphiCodeTool }
 
+constructor TConvDelphiCodeTool.Create(APascalBuffer: TCodeBuffer);
+begin
+  inherited Create;
+  fCTLink:=TCodeToolLink.Create(APascalBuffer);
+  fCTLink.AskAboutError:=False;
+  fLowerCaseRes:=True;
+  fIsConsoleApp:=False;
+  fCTLinkCreated:=True;
+end;
+
 constructor TConvDelphiCodeTool.Create(ACTLink: TCodeToolLink);
 begin
   inherited Create;
   fCTLink:=ACTLink;
   fLowerCaseRes:=False;
   fIsConsoleApp:=False;
+  fCTLinkCreated:=False;
 end;
 
 destructor TConvDelphiCodeTool.Destroy;
 begin
+  if fCTLinkCreated then
+    fCTLink.Free;
   inherited Destroy;
 end;
 
@@ -269,7 +284,7 @@ begin
       LowKey:=LowerCase(Key);
       // Form file resource rename or lowercase:
       if (LowKey='dfm') or (LowKey='xfm') then begin
-        if fCTLink.Settings.SupportDelphi then begin
+        if Assigned(fCTLink.Settings) and fCTLink.Settings.SupportDelphi then begin
           // Use the same dfm file. Lowercase existing key.
           if fCTLink.Settings.SameDfmFile then begin
             if Key<>LowKey then
