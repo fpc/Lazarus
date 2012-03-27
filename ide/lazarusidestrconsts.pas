@@ -230,13 +230,13 @@ resourcestring
   lisPERevertPackage = 'Revert Package';
   lisMenuOpenRecent = 'Open &Recent';
   lisMenuSave = '&Save';
+  lisMenuSaveAs = 'Save &As ...';
   lisKMSaveAs = 'SaveAs';
   lisKMSaveAll = 'SaveAll';
   lisDiscardChanges = 'Discard changes';
   lisDiscardChangesAll = 'Discard all changes';
   lisDoNotCloseTheProject = 'Do not close the project';
   lisDoNotCloseTheIDE = 'Do not close the IDE';
-  lisMenuSaveAs = 'Save &As ...';
   lisConvert = 'Convert';
   lisPLDOnlyExistingFiles = 'Only existing files';
   lisPLDShowGlobalLinks = 'Show global links';

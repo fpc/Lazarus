@@ -561,9 +561,8 @@ begin
   SaveDialog:=TSaveDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(SaveDialog);
-    SaveDialog.InitialDir :=
-      LazPackage.GetFileDialogInitialDir(SaveDialog.InitialDir);
-    SaveDialog.Title := lisMenuSaveAs;
+    SaveDialog.InitialDir := LazPackage.GetFileDialogInitialDir(SaveDialog.InitialDir);
+    SaveDialog.Title := lisSaveAs;
     SaveDialog.Options := SaveDialog.Options+[ofPathMustExist];
     if SaveDialog.Execute then begin
       AFilename := CleanAndExpandFilename(SaveDialog.Filename);
