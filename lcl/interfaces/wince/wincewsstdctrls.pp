@@ -29,7 +29,7 @@ interface
 uses
   // Libs
   Windows,
-  {$ifndef ver2_2_0}{$ifndef win32}oleauto,{$endif}{$endif}
+  {$ifndef win32}oleauto,{$endif}
   // Compatibility
   {$ifdef Win32}win32compat,{$endif}
   // RTL, FCL, LCL

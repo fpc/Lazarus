@@ -1267,12 +1267,8 @@ begin
       CurStream.Free;
     end;
   end else
-    {$if not (defined(ver2_2_2) or defined(ver2_2_0))}
     {$IF FPC_FULLVERSION>20402}
     Result:=inherited Equals(Obj);
-    {$ELSE}
-    Result:=false;
-    {$ENDIF}
     {$ELSE}
     Result:=false;
     {$ENDIF}

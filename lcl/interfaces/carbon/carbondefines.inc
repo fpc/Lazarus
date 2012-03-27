@@ -22,11 +22,8 @@
 
 {$ifndef CarbonDontUseCocoa}
   {$define CarbonUseCocoa}
-{$endif}
-
-{$ifndef VER2_2}{$ifndef VER2_4}{$ifndef CarbonDontUseCocoa}
   {$define CarbonUseCocoaAll}
-{$endif}{$endif}{$endif}
+{$endif}
 
 // Show debug info when tracing:
 

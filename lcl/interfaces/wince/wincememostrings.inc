@@ -111,9 +111,7 @@ begin
     QuoteChar := S.QuoteChar;
     Delimiter := S.Delimiter;
     NameValueSeparator := S.NameValueSeparator;
-    {$ifndef ver2_2_0}
     TextLineBreakStyle := S.TextLineBreakStyle;
-    {$endif}
     Text := S.Text;
   end
   else

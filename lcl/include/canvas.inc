@@ -71,10 +71,8 @@ var
   LogicalRect: TRect;
 begin
   inherited SetClipRect(ARect);
-  {$ifndef ver2_2}
   if inherited GetClipping then
   begin
-  {$endif}
     // ARect is in logical coords. CreateRectRGN accepts device coords.
     // So we need to translate them
     LogicalRect := ARect;
@@ -83,9 +81,7 @@ begin
       RGN := CreateRectRGN(Left, Top, Right, Bottom);
     SelectClipRGN(Handle, RGN);
     DeleteObject(RGN);
-  {$ifndef ver2_2}
   end;
-  {$endif}
 end;
 
 function TCanvas.GetClipping: Boolean;
@@ -97,9 +93,7 @@ end;
 
 procedure TCanvas.SetClipping(const AValue: boolean);
 begin
-  {$ifndef ver2_2}
   inherited SetClipping(AValue);
-  {$endif}
   if AValue then
     SetClipRect(inherited GetClipRect)
   else

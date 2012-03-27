@@ -31,8 +31,8 @@ uses
   Controls,  InterfaceBase, LCLProc,
   // RTL, FCL
   Windows, Classes, SysUtils,
-  {$ifndef ver2_2_0}commctrl,
-  {$ifndef win32}aygshell,{$endif}{$endif}
+  commctrl,
+  {$ifndef win32}aygshell,{$endif}
   // widgetset
   WinceInt, WinceProc, WinCEWSImgList,
   WSMenus, WSLCLClasses;
@@ -111,11 +111,7 @@ implementation
 
 uses strutils;
 
-{$ifndef ver2_2_0}
 {$R wincemenures.rc}
-{$else}
-{$R wincemenures.res}
-{$endif}
 
 { helper routines }
 

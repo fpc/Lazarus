@@ -40,9 +40,7 @@ uses
   FPCAdds, TypInfo, DynQueue, LCLProc, LCLStrConsts, LazConfigStorage;
 
 {$DEFINE UseLRS}
-{$ifndef ver2_2}
 {$DEFINE UseRES}
-{$endif}
 
 const
   LRSComment =  // do not translate this!
@@ -180,9 +178,7 @@ type
     function ReadStr: String; override;
     function ReadString(StringType: TValueType): String; override;
     function ReadWideString: WideString; override;
-    {$ifndef VER2_2}
     function ReadUnicodeString: UnicodeString; override;
-    {$endif}
     procedure SkipComponent(SkipComponentInfos: Boolean); override;
     procedure SkipValue; override;
   public
@@ -295,9 +291,7 @@ type
     procedure WriteSet(Value: LongInt; SetType: Pointer); override;
     procedure WriteString(const Value: String); override;
     procedure WriteWideString(const Value: WideString); override;
-    {$ifndef VER2_2}
     procedure WriteUnicodeString(const Value: UnicodeString); override;
-    {$endif}
 
     property WriteEmptyInheritedChilds: boolean read FWriteEmptyInheritedChilds write FWriteEmptyInheritedChilds;
     property Writer: TWriter read FWriter write FWriter;
@@ -2331,10 +2325,8 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
         vaWString: Result:='vaWString';
         vaInt64: Result:='vaInt64';
         vaUTF8String: Result:='vaUTF8String';
-        {$IFNDEF VER2_2}
         vaUString: Result:='vaUString';
         vaQWord : Result:='vaQWord';
-        {$ENDIF}
         else Result:='Unknown ValueType='+dbgs(Ord(ValueType));
         end;
       end;
@@ -2491,7 +2483,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
             ACurrency:=ReadLRSCurrency(Input);
             OutLn(FloatToStr(ACurrency));
           end;
-        vaWString{$IFNDEF VER2_2},vaUString{$ENDIF}: begin
+        vaWString,vaUString: begin
             AWideString:=ReadLRSWideString(Input);
             OutWideString(AWideString);
             OutLn('');
@@ -4156,11 +4148,7 @@ begin
       Value := GetEnumValue(PTypeInfo(EnumType), Name);
       if Value = -1 then
         PropValueError;
-      {$IFNDEF VER2_2_0}
       include(tset(result),Value);
-      {$ELSE}
-      Result := Result or (1 shl Value);
-      {$ENDIF}
     end;
   except
     SkipSetBody;
@@ -4210,7 +4198,6 @@ begin
   //debugln('TLRSObjectReader.ReadWideString ',Result);
 end;
 
-{$ifndef VER2_2}
 function TLRSObjectReader.ReadUnicodeString: UnicodeString;
 var
   i: Integer;
@@ -4221,7 +4208,6 @@ begin
     Read(Pointer(@Result[1])^, i*2);
   //debugln('TLRSObjectReader.ReadWideString ',Result);
 end;
-{$endif}
 
 procedure TLRSObjectReader.SkipComponent(SkipComponentInfos: Boolean);
 var
@@ -4288,7 +4274,7 @@ begin
         Count:=ReadIntegerContent;
         SkipBytes(Count);
       end;
-    vaWString{$IFNDEF VER2_2}, vaUString{$ENDIF}:
+    vaWString, vaUString:
       begin
         Count:=ReadIntegerContent;
         SkipBytes(Count*2);
@@ -4861,24 +4847,12 @@ type
   tset = set of 0..31;
 var
   i: Integer;
-  {$IFDEF VER2_2_0}
-  Mask: LongInt;
-  {$ENDIF}
 begin
   WriteValue(vaSet);
-  {$IFDEF VER2_2_0}
-  Mask := 1;
-  {$ENDIF}
   for i := 0 to 31 do
   begin
-    {$IFNDEF VER2_2_0}
     if (i in tset(Value)) then
       WriteStr(GetEnumName(PTypeInfo(SetType), i));
-    {$ELSE}
-    if (Value and Mask) <> 0 then
-      WriteStr(GetEnumName(PTypeInfo(SetType), i));
-    Mask := Mask shl 1;
-    {$ENDIF}
   end;
   WriteStr('');
 end;
@@ -4913,7 +4887,6 @@ begin
   WriteWideStringContent(Value);
 end;
 
-{$ifndef VER2_2}
 procedure TLRSObjectWriter.WriteUnicodeString(const Value: UnicodeString);
 var
   i: Integer;
@@ -4923,7 +4896,6 @@ begin
   WriteIntegerContent(i);
   WriteWideStringContent(Value);
 end;
-{$endif}
 
 { TLRPositionLinks }
 
@@ -5565,11 +5537,7 @@ begin
   if ascii then
     fToken:=Classes.toString
   else
-    {$ifdef ver2_2_0}
-    fToken:=Classes.toString
-    {$else}
     fToken:=toWString;
-    {$endif}
 end;
 
 procedure TUTF8Parser.HandleMinus;

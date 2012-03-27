@@ -124,10 +124,6 @@ function pango_attr_gravity_new(gravity: TPangoGravity): PPangoAttribute; cdecl;
 
 function pango_version_check(required_major, required_minor, required_micro: integer): PChar; cdecl; external pangolib;
 
-{$if defined(VER2_2_0)}
-function pango_layout_get_font_description(layout:PPangoLayout):PPangoFontDescription; cdecl; external pangolib;
-{$ifend}
-
 {$IF FPC_FULLVERSION<20501}
 function pango_font_family_is_monospace(family:PPangoFontFamily):gboolean; cdecl; external pangolib;
 {$ENDIF}
@@ -262,10 +258,3 @@ var
   // since 2.10
   gtk_tree_view_set_grid_lines: procedure(tree_view: PGtkTreeView; grid_lines: TGtkTreeViewGridLines); cdecl;
   gtk_tree_view_get_grid_lines: function(tree_view: PGtkTreeView): TGtkTreeViewGridLines; cdecl;
-
-{$ifdef ver2_2}
-{$ifdef darwin}
-// this linklib statement is not present in gtk2.pas
-{$linklib gthread-2.0}
-{$endif}
-{$endif}

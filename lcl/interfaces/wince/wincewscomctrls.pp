@@ -27,7 +27,7 @@ interface
 uses
   // RTL, FCL
   Windows, Classes, SysUtils, WinExt, Forms,
-  {$ifndef ver2_2_0}commctrl,{$endif}
+  commctrl,
   // Compatibility
   {$ifdef Win32}win32compat,{$endif}
   // LCL

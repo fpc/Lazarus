@@ -56,9 +56,7 @@ procedure ShowCalendarPopup(const Position: TPoint; ADate: TDateTime;
 
 implementation
 
-{$ifndef ver2_2}
 {$R *.lfm}
-{$ENDIF}
 
 procedure ShowCalendarPopup(const Position: TPoint; ADate: TDateTime;
   const CalendarDisplaySettings: TDisplaySettings;

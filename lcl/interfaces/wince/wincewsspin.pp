@@ -27,7 +27,7 @@ interface
 
 uses
   // Libs
-  {$ifndef ver2_2_0}commctrl,{$endif}
+  commctrl,
   Windows,
   // LCL
   Spin, Controls, StdCtrls, LCLType, LCLProc,

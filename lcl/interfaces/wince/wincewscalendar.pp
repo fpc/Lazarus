@@ -28,7 +28,7 @@ interface
 
 uses
   // Libs
-  {$ifndef ver2_2_0}commctrl,{$endif}
+  commctrl,
   Windows,
   // LCL
   Calendar, SysUtils, Controls, LCLType,

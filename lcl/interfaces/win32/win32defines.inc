@@ -29,17 +29,7 @@
 
 {$IFNDEF DisableWindowsUnicodeSupport}
 // Enable WindowsUnicodeSupport for fpc 2.2.1 and higher
-{$IFNDEF VER2_2_0}
 {$DEFINE WindowsUnicodeSupport}
-{$ENDIF VER2_2_0}
 {$ENDIF DisableWindowsUnicodeSupport}
-
-{$IFDEF WindowsUnicodeSupport}
-{$IFDEF VER2_2_0}
-// A check to prevent that WindowsUnicodeSupport is enabled for fpc 2.2.0
-{$FATAL Use fpc 2.2.1 or later, if you want to enable Windows Unicode Support}
-{$ENDIF}
-{$ENDIF}
-
 {$DEFINE UseVistaDialogs}
 {.$DEFINE RedirectDestroyMessages}

@@ -546,10 +546,8 @@ procedure Register;
 
 implementation
 
-{$ifndef ver2_2}
 {$R forms/finddlgunit.lfm}
 {$R forms/replacedlgunit.lfm}
-{$ENDIF}
 
 uses 
   Math, WSDialogs;

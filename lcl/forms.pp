@@ -1809,10 +1809,8 @@ begin
   if Keys and MK_LButton <> 0 then Include(Result, ssLeft);
   if Keys and MK_RButton <> 0 then Include(Result, ssRight);
   if Keys and MK_MButton <> 0 then Include(Result, ssMiddle);
-  {$ifndef ver2_2_0}
   if Keys and MK_XBUTTON1 <> 0 then Include(Result, ssExtra1);
   if Keys and MK_XBUTTON2 <> 0 then Include(Result, ssExtra2);
-  {$endif}
   if GetKeyState(VK_MENU) < 0 then Include(Result, ssAlt);
   if (GetKeyState(VK_LWIN) < 0) or (GetKeyState(VK_RWIN) < 0) then Include(Result, ssMeta);
 end;
@@ -1830,10 +1828,8 @@ begin
   if ssLeft   in ShiftState then Result := Result or MK_LBUTTON;
   if ssRight  in ShiftState then Result := Result or MK_RBUTTON;
   if ssMiddle in ShiftState then Result := Result or MK_MBUTTON;
-  {$ifndef ver2_2_0}
   if ssExtra1 in ShiftState then Result := Result or MK_XBUTTON1;
   if ssExtra2 in ShiftState then Result := Result or MK_XBUTTON2;
-  {$endif}
 end;
 
 function WindowStateToStr(const State: TWindowState): string;
