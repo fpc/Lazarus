@@ -85,11 +85,7 @@ uses Controls, udlgSelectPrinter, udlgPropertiesPrinter, FileUtil;
     
 uses
   Controls, Math, CarbonProc,
-{$ifdef ver2_2_0}
-  FPCMacOSAll,
-{$else}
   MacOSAll,
-{$endif}
   LCLProc;
 {$I carbonprndialogs.inc}
 

@@ -23,13 +23,7 @@ unit Laz_XMLStreaming;
 {$H+}
 
 {$DEFINE HasReadWriteBuf}
-{$IF defined(VER2_2_0)}
-{$UNDEF HasReadWriteBuf}
-{$ENDIF}
-
-{$IF (FPC_VERSION = 2) AND (FPC_RELEASE >= 3)}
-  {$DEFINE USE_NEW_READER_WRITER}
-{$IFEND}
+{$DEFINE USE_NEW_READER_WRITER}
 
 interface
 

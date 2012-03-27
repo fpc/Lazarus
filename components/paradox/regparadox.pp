@@ -16,10 +16,6 @@ unit regparadox;
 
 {$mode objfpc}{$H+}
 
-{$IF defined(VER2_2_0)}
-{$ERROR this package requires at least fpc 2.2.1}
-{$ENDIF}
-
 interface
 
 uses

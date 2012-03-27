@@ -571,7 +571,7 @@ begin
                                  GDK_WINDOW_XWINDOW(drawable),
                                  {$ENDIF}
                                  PrivateContext^.glxcontext)
-                                 {$IFDEF VER2_2}=true{$ENDIF});
+                                 );
 end;
 
 procedure gdk_gl_swap_buffers(drawable: PGdkDrawable);

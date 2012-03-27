@@ -476,11 +476,7 @@ var
   RegisterFPLibProcName: String;
 begin
   Result:=true;
-  {$IFDEF VER2_2_0}
-  LibName:=Name+'.so';
-  {$ELSE}
   LibName:=Name+'.'+SharedSuffix;
-  {$ENDIF}
   // needed groups in topological order
   if Groups.GroupGraph.GetGraphNode(KeyNode,false)=nil then
     raise Exception.Create('inconsistency');

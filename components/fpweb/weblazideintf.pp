@@ -19,9 +19,7 @@
 {$H+}
 unit WebLazIDEIntf;
 
-{$IFNDEF VER2_2}
-  {$DEFINE HasFastCGISupport}
-{$ENDIF VER2_2}
+{$DEFINE HasFastCGISupport}
 
 interface
 
@@ -156,8 +154,8 @@ begin
   RegisterComponents(fpWebTab,[THTMLDatasetContentProducer,
                                THTMLSelectProducer,
                                THTMLDatasetSelectProducer,
-                               THTMLEntityProducer
-                               {$IFNDEF VER2_2},THTMLPageProducer{$ENDIF}
+                               THTMLEntityProducer,
+                               THTMLPageProducer
                                ])
 
 end;

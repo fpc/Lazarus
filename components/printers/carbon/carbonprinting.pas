@@ -11,11 +11,7 @@ interface
 
 uses
   Classes, SysUtils,
-{$ifdef ver2_2_0}
-  FPCMacOSAll;
-{$else}
   MacOSAll;
-{$endif}
 
 // functions missing in MacOSAll
 type
