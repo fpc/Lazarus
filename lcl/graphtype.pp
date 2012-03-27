@@ -147,7 +147,7 @@ type
     PaletteBitOrder: TRawImageBitOrder;
     PaletteByteOrder: TRawImageByteOrder;
     
-    // don't use a contructor here, it will break compatibility with a record
+    // don't use a constructor here, it will break compatibility with a record
     procedure Init;
 
     // 1-bit mono format
@@ -207,7 +207,7 @@ type
     Palette: PByte;
     PaletteSize: PtrUInt;
     
-    // don't use a contructor here, it will break compatebility with a record
+    // don't use a constructor here, it will break compatibility with a record
     procedure Init;
     procedure CreateData(AZeroMem: Boolean);
 
@@ -241,7 +241,7 @@ type
   public
     Positions: array of TRawImagePosition;
 
-    // don't use a contructor here, it will break compatibility with a record
+    // don't use a constructor here, it will break compatibility with a record
     procedure Init(AWidth, AHeight: cardinal; ABitsPerPixel: Byte; ALineEnd: TRawImageLineEnd; ALineOrder: TRawImageLineOrder);
     function GetPosition(x, y: cardinal): TRawImagePosition;
   end;
