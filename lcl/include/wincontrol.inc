@@ -2387,6 +2387,14 @@ begin
   {$ENDIF}
 end;
 
+function TWinControl.AutoSizeDelayedReport: string;
+begin
+  if csDestroyingHandle in ControlState then
+    Result:='csDestroyingHandle'
+  else
+    Result:=inherited AutoSizeDelayedReport;
+end;
+
 {------------------------------------------------------------------------------
   TWinControl AutoSizeDelayedHandle
 
@@ -3308,7 +3316,7 @@ begin
   {$ENDIF}
   if not (caspComputingBounds in AutoSizePhases) then begin
     {$IFDEF VerboseAllAutoSize}
-    DebugLn(['TWinControl.DoAutoSize DELAYED AutoSizePhase=',AutoSizePhaseNames[AutoSizePhase]]);
+    DebugLn(['TWinControl.DoAutoSize DELAYED AutoSizePhases=',dbgs(AutoSizePhases)]);
     {$ENDIF}
     AdjustSize;
     exit;
@@ -3505,7 +3513,7 @@ begin
       inc(UpdateShowingCounter);
       // make child handles visible
       {$IFDEF VerboseAllAutoSize}
-      DebugLn(['TWinControl.DoAllAutoSize UPDATESHOWING ',DbgSName(Self),' lclbounds=',dbgs(BoundsRect)]);
+      DebugLn(['TWinControl.DoAllAutoSize UPDATESHOWING children ',DbgSName(Self),' lclbounds=',dbgs(BoundsRect)]);
       {$ENDIF}
       Include(FWinControlFlags,wcfUpdateShowing);
       try
@@ -3525,14 +3533,19 @@ begin
   // make handle visible => this can trigger events like Form.OnShow where
   // application does arbitrary stuff
   {$IFDEF VerboseAllAutoSize}
-  DebugLn(['TWinControl.DoAllAutoSize UPDATESHOWING ',DbgSName(Self),' lclbounds=',dbgs(BoundsRect)]);
+  DebugLn(['TWinControl.DoAllAutoSize UPDATESHOWING self ',DbgSName(Self),' lclbounds=',dbgs(BoundsRect)]);
   {$ENDIF}
   if not (wcfUpdateShowing in FWinControlFlags) then
   begin
     Include(FWinControlFlags, wcfUpdateShowing);
     try
       if HandleObjectShouldBeVisible and not Showing then
-        UpdateShowing;
+        UpdateShowing
+      else begin
+        {$IFDEF VerboseAllAutoSize}
+        DebugLn(['TWinControl.DoAllAutoSize not UPDATESHOWING self ',DbgSName(Self),' because HandleObjectShouldBeVisible=',HandleObjectShouldBeVisible,' Showing=',Showing]);
+        {$ENDIF}
+      end;
     finally
       Exclude(FWinControlFlags, wcfUpdateShowing);
     end;
@@ -4310,7 +4323,7 @@ begin
     if AutoSizeDelayed or (not (caspShowing in AutoSizePhases)) then
     begin
       {$IFDEF VerboseShowing}
-      if AutoSizeDelayed then DebugLn(['TWinControl.UpdateShowing ',DbgSName(Self),' SKIPPING because AutoSizeDelayed']);
+      if AutoSizeDelayed then DebugLn(['TWinControl.UpdateShowing ',DbgSName(Self),' SKIPPING because AutoSizeDelayed: ',AutoSizeDelayedReport]);
       if (not (caspShowing in AutoSizePhases)) then DebugLn(['TWinControl.UpdateShowing ',DbgSName(Self),' SKIPPING because wrong phase']);
       {$ENDIF}
       exit;

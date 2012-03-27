@@ -2983,6 +2983,26 @@ begin
   {$ENDIF}
 end;
 
+function TControl.AutoSizeDelayedReport: string;
+begin
+  if (FAutoSizingLockCount>0) then
+    Result:='FAutoSizingLockCount='+dbgs(FAutoSizingLockCount)
+  else if csLoading in ComponentState then
+    Result:='csLoading'
+  else if csDestroying in ComponentState then
+    Result:='csDestroying'
+  else if cfLoading in FControlFlags then
+    Result:='cfLoading'
+  else if IsControlVisible then
+    Result:='not IsControlVisible'
+  else if AutoSizeDelayedHandle then
+    Result:='AutoSizeDelayedHandle'
+  else if Parent<>nil then
+    Result:=Parent.AutoSizeDelayedReport
+  else
+    Result:='?';
+end;
+
 {------------------------------------------------------------------------------
   TControl AutoSizeDelayedHandle
 

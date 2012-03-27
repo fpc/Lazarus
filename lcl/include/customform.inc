@@ -2610,10 +2610,10 @@ end;
 procedure TCustomForm.UpdateShowing;
 begin
   if csLoading in ComponentState then exit;
-  {$IFDEF CHECK_POSITION}
-  DebugLn('[TCustomForm.UpdateShowing] A  ',DbgSName(Self),' Pos=',DbgS(Left),',',DbgS(Top),' Visible=',DbgS(Visible));
+  {$IF defined(CHECK_POSITION) or defined(VerboseFormUpdateShowing) or defined(VerboseShowing)}
+  DebugLn(['[TCustomForm.UpdateShowing] STAR  ',DbgSName(Self),' Pos=',Left,',',Top,' Visible=',Visible,' Showing=',Showing]);
   {$ENDIF}
-  { If the the form is about to show, calculate its metrics }
+  // If the the form is about to show, calculate its metrics
   if Visible and (not (csDestroying in ComponentState)) then
   begin
     if not (csDesigning in ComponentState) then
@@ -2624,12 +2624,12 @@ begin
       DoFirstShow;
     end;
   end;
-  {$IFDEF CHECK_POSITION}
-  DebugLn('[TCustomForm.UpdateShowing] B  ',Name,':',Classname,' Pos=',DbgS(Left),',',DbgS(Top));
+  {$IF defined(CHECK_POSITION) or defined(VerboseFormUpdateShowing) or defined(VerboseShowing)}
+  DebugLn(['[TCustomForm.UpdateShowing] calling inherited  ',dbgsname(Self),' Pos=',Left,',',Top]);
   {$ENDIF}
   inherited UpdateShowing;
-  {$IFDEF CHECK_POSITION}
-  DebugLn('[TCustomForm.UpdateShowing] END  ',Name,':',Classname,' Pos=',DbgS(Left),',',DbgS(Top));
+  {$IF defined(CHECK_POSITION) or defined(VerboseFormUpdateShowing) or defined(VerboseShowing)}
+  DebugLn(['[TCustomForm.UpdateShowing] activating  ',dbgsname(Self),' Pos=',Left,',',Top]);
   {$ENDIF}
   // activate focus if visible
   if Showing and (not (csDestroying in ComponentState)) then

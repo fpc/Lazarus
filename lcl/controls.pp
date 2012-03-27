@@ -1434,6 +1434,7 @@ type
     procedure AdjustSize; virtual;// smart calling DoAutoSize
     function AutoSizePhases: TControlAutoSizePhases; virtual;
     function AutoSizeDelayed: boolean; virtual;
+    function AutoSizeDelayedReport: string; virtual;
     function AutoSizeDelayedHandle: Boolean; virtual;
     procedure AnchorToNeighbour(Side: TAnchorKind; Space: integer;
                                 Sibling: TControl);
@@ -2099,6 +2100,7 @@ type
     // size, position, bounds
     function AutoSizePhases: TControlAutoSizePhases; override;
     function AutoSizeDelayed: boolean; override;
+    function AutoSizeDelayedReport: string; override;
     function AutoSizeDelayedHandle: Boolean; override;
     procedure BeginUpdateBounds; // disable SetBounds
     procedure EndUpdateBounds;   // enable SetBounds
