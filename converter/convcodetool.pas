@@ -171,6 +171,12 @@ begin
   fLowerCaseRes:=True;
   fIsConsoleApp:=False;
   fCTLinkCreated:=True;
+  try
+    fCTLink.CodeTool.BuildTree(lsrInitializationStart);
+  except
+    on e: Exception do
+      CodeToolBoss.HandleException(e);
+  end;
 end;
 
 constructor TConvDelphiCodeTool.Create(ACTLink: TCodeToolLink);
@@ -184,8 +190,10 @@ end;
 
 destructor TConvDelphiCodeTool.Destroy;
 begin
-  if fCTLinkCreated then
+  if fCTLinkCreated then begin
+    fCTLink.SrcCache.Apply;
     fCTLink.Free;
+  end;
   inherited Destroy;
 end;
 

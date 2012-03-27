@@ -736,7 +736,7 @@ type
     function DoOpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo;
         PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
     function DoLoadResourceFile(AnUnitInfo: TUnitInfo;
-        var LFMCode, LRSCode: TCodeBuffer; out LFMSuffix: string;
+        var LFMCode, LRSCode: TCodeBuffer;
         IgnoreSourceErrors, AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
     function DoLoadLFM(AnUnitInfo: TUnitInfo; OpenFlags: TOpenFlags;
                        CloseFlags: TCloseFlags): TModalResult;
@@ -5417,7 +5417,7 @@ begin
 end;
 
 function TMainIDE.DoLoadResourceFile(AnUnitInfo: TUnitInfo;
-  var LFMCode, LRSCode: TCodeBuffer; out LFMSuffix: string;
+  var LFMCode, LRSCode: TCodeBuffer;
   IgnoreSourceErrors, AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
 const
   LfmSuffices: array[0..1] of string = ('.lfm', '.dfm');
@@ -5429,24 +5429,18 @@ var
 begin
   LFMCode:=nil;
   LRSCode:=nil;
-  LFMSuffix:='';
   //DebugLn(['TMainIDE.DoLoadResourceFile ',AnUnitInfo.Filename,' HasResources=',AnUnitInfo.HasResources,' IgnoreSourceErrors=',IgnoreSourceErrors,' AutoCreateResourceCode=',AutoCreateResourceCode]);
   // Load the lfm file (without parsing)
   if not AnUnitInfo.IsVirtual then begin  // and (AnUnitInfo.Component<>nil)
-    Result:=mrNone;
     for i := Low(LfmSuffices) to High(LfmSuffices) do begin
-      LFMSuffix:=LfmSuffices[i];
-      LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,LFMSuffix);
+      LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,LfmSuffices[i]);
       if (FileExistsUTF8(LFMFilename)) then begin
         Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],ShowAbort);
         if not (Result in [mrOk,mrIgnore]) then
           exit;
-//???   Result:=DoLoadLFM(AnUnitInfo,LFMCode, [ofOnlyIfExists], [cfSaveDependencies]);
         Break;
       end;
     end;
-    if Result=mrNone then
-      LFMSuffix:='';                       // Not found.
   end;
   if AnUnitInfo.HasResources then begin
     //writeln('TMainIDE.DoLoadResourceFile A "',AnUnitInfo.Filename,'" "',AnUnitInfo.ResourceFileName,'"');
@@ -9178,10 +9172,9 @@ begin
   // load old resource file
   LFMCode:=nil;
   LRSCode:=nil;
-  LFMSuffix:='';
   if WasPascalSource then
   begin
-    Result:=DoLoadResourceFile(AnUnitInfo,LFMCode,LRSCode,LFMSuffix,
+    Result:=DoLoadResourceFile(AnUnitInfo,LFMCode,LRSCode,
                                not (sfSaveAs in Flags),true,CanAbort);
     if not (Result in [mrIgnore,mrOk]) then
       exit;
