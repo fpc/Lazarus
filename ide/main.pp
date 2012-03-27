@@ -5620,8 +5620,7 @@ begin
     // append a filter for all editor files
     CreateFileDialogFilterForSourceEditorFiles(Filter,AllEditorExt,AllFilter);
     if AllEditorExt<>'' then
-      Filter:=Filter+ '|' + lisEditorFileTypes + ' (' + AllEditorExt + ')|' +
-        AllEditorExt;
+      Filter:=Filter+ '|' + lisEditorFileTypes + ' (' + AllEditorExt + ')|' + AllEditorExt;
 
     // append an any file filter *.*
     Filter:=Filter+ '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
@@ -5891,8 +5890,7 @@ begin
     // stream component to binary stream
     BinCompStream:=TExtMemoryStream.Create;
     if AnUnitInfo.ComponentLastBinStreamSize>0 then
-      BinCompStream.Capacity:=
-                       AnUnitInfo.ComponentLastBinStreamSize+LRSStreamChunkSize;
+      BinCompStream.Capacity:=AnUnitInfo.ComponentLastBinStreamSize+LRSStreamChunkSize;
     Writer:=nil;
     DestroyDriver:=false;
     Grubber:=nil;
@@ -5917,7 +5915,8 @@ begin
             Ancestor:=AncestorUnit.Component;
           //DebugLn(['TMainIDE.DoSaveUnitComponent Writer.WriteDescendent ARoot=',AnUnitInfo.Component,' Ancestor=',DbgSName(Ancestor)]);
           Writer.WriteDescendent(AnUnitInfo.Component,Ancestor);
-          if DestroyDriver then Writer.Driver.Free;
+          if DestroyDriver then
+            Writer.Driver.Free;
           FreeAndNil(Writer);
           AnUnitInfo.ComponentLastBinStreamSize:=BinCompStream.Size;
         except
@@ -5928,8 +5927,7 @@ begin
             DumpExceptionBackTrace;
             ACaption:=lisStreamingError;
             AText:=Format(lisUnableToStreamT, [AnUnitInfo.ComponentName,
-                          AnUnitInfo.ComponentName]) + LineEnding
-                          +E.Message;
+                          AnUnitInfo.ComponentName]) + LineEnding + E.Message;
             if PropPath<>'' then
               AText := Atext + LineEnding + LineEnding + lisPathToInstance
                      + LineEnding + PropPath;
@@ -5949,8 +5947,7 @@ begin
           ComponentSavingOk:=(LRSCode<>nil);
         end;
         if ComponentSavingOk then begin
-          // there is no bug in the source, so the resource code should be
-          // changed too
+          // there is no bug in the source, so the resource code should be changed too
           MemStream:=TExtMemoryStream.Create;
           if AnUnitInfo.ComponentLastLRSStreamSize>0 then
             MemStream.Capacity:=AnUnitInfo.ComponentLastLRSStreamSize+LRSStreamChunkSize;
@@ -5979,8 +5976,7 @@ begin
                                           'T'+AnUnitInfo.ComponentResourceName);
             end;
             // add comment to resource file (if not already exists)
-            if (not CodeToolBoss.AddLazarusResourceHeaderComment(LRSCode,
-               LRSComment)) then
+            if (not CodeToolBoss.AddLazarusResourceHeaderComment(LRSCode,LRSComment)) then
             begin
               ACaption:=lisResourceSaveError;
               AText:=Format(lisUnableToAddResourceHeaderCommentToResourceFile, [
@@ -9069,8 +9065,7 @@ begin
   end;
 end;
 
-function TMainIDE.DoSaveEditorFile(PageIndex:integer;
-  Flags: TSaveFlags):TModalResult;
+function TMainIDE.DoSaveEditorFile(PageIndex:integer; Flags: TSaveFlags):TModalResult;
 begin
   Result := DoSaveEditorFile(
     SourceEditorManager.ActiveSourceWindow.FindSourceEditorWithPageIndex(PageIndex),
@@ -9210,8 +9205,7 @@ begin
   // save source
 
   // a) do before save events
-  if EditorOpts.AutoRemoveEmptyMethods
-  and (AnUnitInfo.Component<>nil) then begin
+  if EditorOpts.AutoRemoveEmptyMethods and (AnUnitInfo.Component<>nil) then begin
     // Note: When removing published methods, the source, the lfm, the lrs
     //       and the form must be changed. At the moment editing the lfm without
     //       the component is not yet implemented.
@@ -9464,7 +9458,7 @@ function TMainIDE.DoOpenEditorFile(AFileName: string; PageIndex,
   ): TModalResult;
 var
   UnitIndex: integer;
-  UnknownFile, Handled:boolean;
+  UnknownFile, Handled: boolean;
   NewUnitInfo:TUnitInfo;
   NewBuf: TCodeBuffer;
   FilenameNoPath: String;
