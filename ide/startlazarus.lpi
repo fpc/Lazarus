@@ -61,11 +61,6 @@
       <OtherUnitFiles Value="../designer;../packager;../debugger"/>
       <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
     </SearchPaths>
-    <Parsing>
-      <SyntaxOptions>
-        <CStyleOperator Value="False"/>
-      </SyntaxOptions>
-    </Parsing>
     <Linking>
       <Options>
         <Win32>

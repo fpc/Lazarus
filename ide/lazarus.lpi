@@ -688,11 +688,6 @@
       <OtherUnitFiles Value="frames;../converter;../debugger;../debugger/frames;../packager;../designer;../packager/frames"/>
       <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
     </SearchPaths>
-    <Parsing>
-      <SyntaxOptions>
-        <CStyleOperator Value="False"/>
-      </SyntaxOptions>
-    </Parsing>
     <Other>
       <CompilerMessages>
         <UseMsgFile Value="True"/>
