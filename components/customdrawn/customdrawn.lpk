@@ -17,7 +17,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="6">
+    <Files Count="7">
       <Item1>
         <Filename Value="customdrawnextras.pas"/>
         <HasRegisterProc Value="True"/>
@@ -43,6 +43,10 @@
         <Filename Value="customdrawn_gnome.pas"/>
         <UnitName Value="customdrawn_gnome"/>
       </Item6>
+      <Item7>
+        <Filename Value="customdrawnlcldrawers.pas"/>
+        <UnitName Value="customdrawnlcldrawers"/>
+      </Item7>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
