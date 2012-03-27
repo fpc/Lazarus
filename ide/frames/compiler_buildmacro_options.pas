@@ -76,11 +76,7 @@ type
       var AllowEdit: Boolean);
     procedure BuildMacrosTreeViewSelectionChanged(Sender: TObject);
     procedure CondSynEditChange(Sender: TObject);
-    procedure CondSynEditKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure CondSynEditKeyPress(Sender: TObject; var Key: char);
-    procedure CondSynEditProcessCommand(Sender: TObject;
-      var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
     procedure CondSynEditProcessUserCommand(Sender: TObject;
       var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
     procedure CondSynEditStatusChange(Sender: TObject;
@@ -168,21 +164,10 @@ begin
   IdleConnected:=true;
 end;
 
-procedure TCompOptBuildMacrosFrame.CondSynEditKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
-begin
-end;
-
 procedure TCompOptBuildMacrosFrame.CondSynEditKeyPress(Sender: TObject;
   var Key: char);
 begin
   //debugln(['TCompOptBuildMacrosFrame.CondSynEditKeyPress ',ord(Key)]);
-end;
-
-procedure TCompOptBuildMacrosFrame.CondSynEditProcessCommand(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
-begin
-
 end;
 
 procedure TCompOptBuildMacrosFrame.CondSynEditProcessUserCommand(
