@@ -18,9 +18,6 @@
  *                                                                         *
  ***************************************************************************
 }
-{$ifdef ver2_2}
-{$define onlyoldobjects}
-{$endif}
 unit dicteditor;
 
 {$mode objfpc}{$H+}

@@ -71,11 +71,7 @@ uses Windows;
 {$endif}
 {$IFDEF Darwin}
 uses
-{$ifdef ver2_2_0}
-  FPCMacOSAll;
-{$else}
   MacOSAll;
-{$endif}
 {$ENDIF}
 
 { TfrmTrayTest }

@@ -44,9 +44,9 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  {$IF defined(Unix) and not defined(VER2_2_0) and not defined(VER2_2_2)}
+  {$IF defined(Unix)}
   clocale,
-  {$ENDIF}
+  {$IFEND}
   SysUtils,
   Interfaces,
   Forms, LCLProc,

@@ -1772,13 +1772,10 @@ const
     TInt64PropertyEditor,      // tkInt64
     TQWordPropertyEditor,      // tkQWord
     nil,                       // tkDynArray
-    nil                        // tkInterfaceRaw,
-{$IF declared(tkUString)}
-// can be replaced by {$IFNDEF VER2_2} later, if grace period of older 2.3.1 ends
-    ,nil,                      // tkProcVar
+    nil,                       // tkInterfaceRaw,
+    nil,                       // tkProcVar
     nil,                       // tkUString
     nil                        // tkUChar
-{$ENDIF}
 {$IF declared(tkHelper)}
     ,nil                       // tkHelper
 {$ENDIF}

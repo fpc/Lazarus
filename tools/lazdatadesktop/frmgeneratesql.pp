@@ -220,11 +220,9 @@ begin
         CreateInsertSQLStrings(FL,MInsert.Lines);
         CreateUpdateSQLStrings(FL,KL,MUpdate.Lines);
         CreateDeleteSQLStrings(KL,MDelete.Lines);
-{$IFNDEF VER2_2}
         If CBIgnoreSelection.Checked  then
           CreateTableSQLStrings(MCreate.Lines)
         else
-{$ENDIF}
           CreateCreateSQLStrings(FL,KL,MCreate.Lines);
         end;
       FSQLGenerated:=True;
@@ -315,9 +313,6 @@ begin
   CLBOptions.Link.TIObject:=FGenerator;
   SEIndent.Link.TIObject:=FGenerator;
   SELineLength.Link.TIObject:=FGenerator;
-{$IFDEF VER2_2}
-  CBIgnoreSelection.Visible:=False;
-{$ENDIF VER2_2}
 end;
 
 procedure TGenerateSQLForm.BGenerateClick(Sender: TObject);

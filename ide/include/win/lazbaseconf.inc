@@ -145,15 +145,10 @@ begin
   DefaultDrive := ExtractFileDrive(ProgramDirectory);
   DefaultFPCTarget:= GetDefaultTargetCPU + '-' + GetDefaultTargetOS;
   DefaultFPCVersion:= {$I %FPCVERSION%};
-  {$ifndef ver2_2_0}
   // the last part of the path returned by GetAppConfigDir is the application
   // name. Replace that by 'lazarus', to make sure that lazbuild uses
   // the same primary config path
   PrimaryConfigPath:= ExtractFilePath(ChompPathDelim(SysToUTF8(GetAppConfigDir(False)))) + 'lazarus';
-  {$else}
-  // fpc 2.2.0 cannot handle spaces in path in some circumstances
-  PrimaryConfigPath:=ChompPathDelim(ProgramDirectory);
-  {$endif}
   SecondaryConfigPath:=ChompPathDelim(ProgramDirectory);
   DefaultFPCSrcDirs[1] := AppendPathDelim(ProgramDirectory) + 'fpcsrc';
   DefaultLazarusSrcDirs[1] := DefaultDrive + '\lazarus';
