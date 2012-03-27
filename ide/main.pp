@@ -9079,7 +9079,7 @@ function TMainIDE.DoSaveEditorFile(AEditor: TSourceEditorInterface;
   Flags: TSaveFlags): TModalResult;
 var
   AnUnitInfo: TUnitInfo;
-  TestFilename, DestFilename, LFMSuffix: string;
+  TestFilename, DestFilename: string;
   LRSCode, LFMCode: TCodeBuffer;
   MainUnitInfo: TUnitInfo;
   OldUnitName: String;
