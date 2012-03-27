@@ -875,9 +875,9 @@ begin
           if NameString <> '' then //DBG
           begin
             SetLength(AName,NameLen);
-            DebugList.Add('ID='+IntToStr(NameID)+' '+AName);
+            DebugList.Add('ID='+IntToStr(NameID)+' Path='+FontPath+' Name='+AName);
           end
-          else DebugList.Add('ID='+IntToStr(NameID)+' '+'<Empty String>');
+          else DebugList.Add('ID='+IntToStr(NameID)+' Path='+FontPath+' Name=<Empty String>');
         end;
         {$endif}
         if (ErrNum = TT_Err_Ok) and (NameID = 4) then begin
@@ -901,7 +901,7 @@ begin
 {$ifdef CD_Debug_TTF}
   AName:= ExtractFileDir(Apath);
   AName:= ExtractFileName(AName) + '.txt';
-  DebugList.SaveToFile('/tmp/'+AName);
+  DebugList.SaveToFile({$ifdef UNIX}'/tmp/'+{$endif}{$ifdef Windows}'C:\'+{$endif}AName);
   DebugList.Free;
 {$endif}
 end;
