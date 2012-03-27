@@ -23,10 +23,6 @@ unit FPCAdds;
 
 {$mode objfpc}{$H+}{$inline on}
 
-{$IFDEF VER2_3}
-{$DEFINE FPC_HAS_QWORDCOMPAREVALUE}
-{$ENDIF}
-
 interface
 
 uses
@@ -39,13 +35,6 @@ type
   TCompareMemSize = integer;
   PHandle = ^THandle;
 
-{$IFNDEF FPC_HAS_QWORDCOMPAREVALUE}
-function CompareValue ( const A, B  : QWord) : TValueRelationship; inline;
-// other CompareValue functions have to be declare too, otherwise fpc
-// doesn't find them: http://www.freepascal.org/mantis/view.php?id=8620
-function CompareValue ( const A, B  : Integer) : TValueRelationship; inline;
-function CompareValue ( const A, B  : Int64) : TValueRelationship; inline;
-{$ENDIF}
 function StrToWord(const s: string): word;
 
 function AlignToPtr(const p: Pointer): Pointer;
@@ -82,27 +71,5 @@ begin
   Result := p;
 {$ENDIF}
 end;
-
-{$IFNDEF FPC_HAS_QWORDCOMPAREVALUE}
-function CompareValue (const A, B  : QWord) : TValueRelationship;
-begin
-  result:=GreaterThanValue;
-  if a=b then
-    result:=EqualsValue
-  else
-   if a<b then
-     result:=LessThanValue;
-end;
-
-function CompareValue(const A, B: Integer): TValueRelationship; inline;
-begin
-  Result := Math.CompareValue(A, B);
-end;
-
-function CompareValue(const A, B: Int64): TValueRelationship; inline;
-begin
-  Result := Math.CompareValue(A, B);
-end;
-{$ENDIF}
 
 end.
