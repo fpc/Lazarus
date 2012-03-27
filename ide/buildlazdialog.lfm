@@ -135,13 +135,14 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       AnchorSideLeft.Control = OptionsMemo
       AnchorSideTop.Control = DefinesLabel
       AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = CleanUpGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 7
       Height = 126
       Hint = 'Defines without -d'
       Top = 229
-      Width = 327
-      Anchors = [akTop, akLeft, akBottom]
+      Width = 489
+      Anchors = [akTop, akLeft, akRight, akBottom]
       ItemHeight = 0
       ParentShowHint = False
       PopupMenu = OptionsPopupMenu
@@ -236,10 +237,10 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       AnchorSideTop.Control = CleanUpGroupBox
       AnchorSideTop.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 340
+      Left = 502
       Height = 22
       Hint = 'Increment revision? (ToDo: get a better hint)'
-      Top = 336
+      Top = 342
       Width = 181
       BorderSpacing.Top = 6
       Caption = 'UpdateRevisionIncCheckBox'
@@ -368,11 +369,11 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = DetailsPanel
       AnchorSideRight.Side = asrBottom
-      Left = 340
-      Height = 116
+      Left = 502
+      Height = 122
       Top = 214
-      Width = 353
-      Anchors = [akTop, akLeft, akRight]
+      Width = 191
+      Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -386,8 +387,8 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 100
-      ClientWidth = 349
+      ClientHeight = 106
+      ClientWidth = 187
       ParentShowHint = False
       ShowHint = True
       TabOrder = 13
@@ -395,16 +396,17 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         Left = 6
         Height = 22
         Top = 6
-        Width = 337
+        Width = 175
         Caption = 'CleanAutoRadioButton'
         Checked = True
         TabOrder = 0
+        TabStop = True
       end
       object CleanCommonRadioButton: TRadioButton
         Left = 6
         Height = 22
         Top = 28
-        Width = 337
+        Width = 175
         Caption = 'CleanCommonRadioButton'
         TabOrder = 1
       end
@@ -412,15 +414,16 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         Left = 6
         Height = 22
         Top = 50
-        Width = 337
+        Width = 175
         Caption = 'CleanAllRadioButton'
         TabOrder = 2
       end
       object CleanOnceCheckBox: TCheckBox
         Left = 6
         Height = 22
-        Top = 72
-        Width = 337
+        Top = 78
+        Width = 175
+        BorderSpacing.Top = 6
         Caption = 'CleanOnceCheckBox'
         TabOrder = 3
       end
