@@ -88,7 +88,7 @@ object Form1: TForm1
   end
   object ComboBox1: TComboBox
     Left = 72
-    Height = 27
+    Height = 21
     Top = 128
     Width = 140
     AutoSize = False

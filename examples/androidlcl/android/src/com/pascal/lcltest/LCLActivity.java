@@ -9,6 +9,7 @@ import android.graphics.*;
 import android.text.*;
 import android.view.*;
 import android.view.inputmethod.*;
+import android.view.MenuItem.*;
 import android.content.res.Configuration;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -247,6 +248,40 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
     //Log.i("lclapp", "onConfigurationChanged finished");
   }
 
+  @Override public boolean onPrepareOptionsMenu (Menu menu)
+  {
+    super.onPrepareOptionsMenu(menu);
+
+    int i;
+
+    // First clear the captions list
+    for (i = 0; i<6; i++)
+      lclmenu_captions[i] = "";
+
+    // Now ask the LCL to fill it
+    LCLOnMenuAction(0, 0);
+
+    // And fill the menus with it
+    menu.clear();
+    for (i = 0; i<6; i++)
+    {
+      if (lclmenu_captions[i] != "")
+      {
+        MenuItem lMenuItem = menu.add(0, i, 0, lclmenu_captions[i]);
+        lMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener()
+        {
+          public boolean onMenuItemClick(MenuItem item)
+          {
+            LCLOnMenuAction(1, item.getItemId());
+            return true;
+          }
+        });
+      };
+    };
+
+    return true;
+  }
+
   // -------------------------------------------
   // JNI table of Pascal functions
   // -------------------------------------------
@@ -258,6 +293,7 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   public native int LCLOnTimer(Runnable timerid);
   public native int LCLOnConfigurationChanged(int ANewDPI, int ANewWidth);
   public native int LCLOnSensorChanged(int ASensorKind, double[] AValues);
+  public native int LCLOnMenuAction(int kind, int itemIndex);
 
   // -------------------------------------------
   // Functions exported to the Pascal side
@@ -628,6 +664,8 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   // for LazDeviceAPIs
   public String lcldestination;
   public int lclkind;
+  // for the menus
+  public String[] lclmenu_captions = new String[6];
 
   static
   {
