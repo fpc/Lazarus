@@ -5641,6 +5641,7 @@ lcl/interfaces/customdrawn/customdrawnwsarrow.pas svneol=native#text/plain
 lcl/interfaces/customdrawn/customdrawnwsbuttons.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawnwscomctrls.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawnwscontrols.pp svneol=native#text/plain
+lcl/interfaces/customdrawn/customdrawnwsdialogs.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawnwsextctrls.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawnwsfactory.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawnwsforms.pp svneol=native#text/plain

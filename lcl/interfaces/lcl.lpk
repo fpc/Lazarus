@@ -113,7 +113,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="397">
+    <Files Count="398">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1965,6 +1965,11 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="customdrawnwsbuttons"/>
       </Item397>
+      <Item398>
+        <Filename Value="customdrawn/customdrawnwsdialogs.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSDialogs"/>
+      </Item398>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
