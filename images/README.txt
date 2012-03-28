@@ -5,7 +5,6 @@ in png or xpm format.
 bookmark.lrs - Icons for bookmarks
 codetoolsdefines.lrs - Icons for CodeTools Defines Editor
 components_images.lrs - Icons and pics for lcl components
-mainicon.lrs - This is the IDE program icon.
 laz_images.lrs - The icons for the speedbuttons, the menu (Open, Save,...),
                  package windows, codeexplorer
 splash.lrs - the lazarus logo at IDE start
@@ -28,26 +27,20 @@ cd <lazarusdir>/images/
 ../tools/lazres components_images.lrs @components_images_list.txt
 
 
-3. mainicon.lrs
-
-cd <lazarusdir>/images/
-../tools/lazres mainicon.lrs mainicon.ico
-
-
-4. laz_images.lrs
+3. laz_images.lrs
 
 cd <lazarusdir>/images/
 ../tools/lazres laz_images.lrs @laz_images_list.txt
 rm ../main.ppu
 
 
-5. splash.lrs
+4. splash.lrs
 
 cd <lazarusdir>/images
 ./tools/lazres splash_logo.lrs splash_logo.png
 
 
-6. lazdoc.lrs
+5. lazdoc.lrs
 
 cd <lazarusdir>/images/
 ../../tools/lazres ../ide/lazdoc.lrs @lazdoc.txt
