@@ -193,7 +193,7 @@ type
     property EditorComponent: TSourceEditorInterface
              read FEditorComponent write SetEditorComponent;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string; SaveFold: Boolean);
   public
     property IsVisibleTab: Boolean read FIsVisibleTab write SetIsVisibleTab;
     property PageIndex: Integer read FPageIndex write SetPageIndex;
@@ -1273,7 +1273,8 @@ begin
                      LazSyntaxHighlighterNames[UnitInfo.DefaultSyntaxHighlighter]));
 end;
 
-procedure TUnitEditorInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+procedure TUnitEditorInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+  SaveFold: Boolean);
 begin
     XMLConfig.SetDeleteValue(Path+'IsVisibleTab/Value', FIsVisibleTab, False);
     XMLConfig.SetDeleteValue(Path+'EditorIndex/Value', FPageIndex, -1);
@@ -1282,7 +1283,10 @@ begin
     XMLConfig.SetDeleteValue(Path+'CursorPos/X', FCursorPos.X, -1);
     XMLConfig.SetDeleteValue(Path+'CursorPos/Y', FCursorPos.Y, -1);
     XMLConfig.SetDeleteValue(Path+'IsLocked/Value', FIsLocked, False);
-    XMLConfig.SetDeleteValue(Path+'FoldState/Value', FoldState, '');
+    if SaveFold then
+      XMLConfig.SetDeleteValue(Path+'FoldState/Value', FoldState, '')
+    else
+      XMLConfig.DeletePath(Path+'FoldState');
     XMLConfig.SetDeleteValue(Path+'SyntaxHighlighter/Value',
                              LazSyntaxHighlighterNames[fSyntaxHighlighter],
                              LazSyntaxHighlighterNames[UnitInfo.DefaultSyntaxHighlighter]);
@@ -1704,10 +1708,11 @@ begin
   // session data
   if SaveSession then 
   begin
-    FEditorInfoList[0].SaveToXMLConfig(XMLConfig, Path);
+    FEditorInfoList[0].SaveToXMLConfig(XMLConfig, Path, pfSaveFoldState in Project.Flags);
     XMLConfig.SetDeleteValue(Path+'ExtraEditorCount/Value', FEditorInfoList.Count-1, 0);
     for i := 1 to FEditorInfoList.Count - 1 do
-      FEditorInfoList[i].SaveToXMLConfig(XMLConfig, Path + 'ExtraEditor'+IntToStr(i)+'/');
+      FEditorInfoList[i].SaveToXMLConfig(XMLConfig, Path + 'ExtraEditor'+IntToStr(i)+'/',
+                                         pfSaveFoldState in Project.Flags);
 
     XMLConfig.SetDeleteValue(Path+'ComponentState/Value',Ord(FComponentState),0);
 
@@ -2735,8 +2740,12 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
 
     if (not (pfSaveOnlyProjectUnits in Flags))
     and (not (pwfSkipJumpPoints in ProjectWriteFlags)) then begin
-      FJumpHistory.DeleteInvalidPositions;
-      FJumpHistory.SaveToXMLConfig(aConfig,Path);
+      if (pfSaveJumpHistory in Flags) then begin
+        FJumpHistory.DeleteInvalidPositions;
+        FJumpHistory.SaveToXMLConfig(aConfig,Path);
+      end
+      else
+        aConfig.DeletePath(Path+'JumpHistory');
     end;
 
     // save custom session data

@@ -4488,6 +4488,8 @@ resourcestring
   lisPOSaveInIDEConfigDirectory = 'Save in IDE config directory';
   lisPODoNotSaveAnySessionInfo = 'Do not save any session info';
   lisPOSaveSessionInformationIn = 'Save session information in';
+  lisPOSaveSessionJumpHistory = 'Save jump history';
+  lisPOSaveSessionFoldState = 'Save fold info';
   lisMVSaveMessagesToFileTxt = 'Save messages to file (*.txt)';
   lisTabOrderOf = 'Tab Order of %s';
 

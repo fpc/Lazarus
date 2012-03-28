@@ -248,7 +248,9 @@ type
     pfAlwaysBuild, // skip IDE's smart check if compilation is needed and always compile
     pfUseDesignTimePackages, // compile design time packages to project
     pfLRSFilesInOutputDirectory, // put .lrs files in output directory
-    pfUseDefaultCompilerOptions // load users default compiler options
+    pfUseDefaultCompilerOptions, // load users default compiler options
+    pfSaveJumpHistory,
+    pfSaveFoldState
     );
   TProjectFlags = set of TProjectFlag;
 
@@ -512,7 +514,9 @@ const
                          pfMainUnitHasCreateFormStatements,
                          pfMainUnitHasTitleStatement,
                          pfRunnable,
-                         pfLRSFilesInOutputDirectory];
+                         pfLRSFilesInOutputDirectory,
+                         pfSaveJumpHistory,
+                         pfSaveFoldState];
   ProjectFlagNames : array[TProjectFlag] of string = (
       'SaveClosedFiles',
       'SaveOnlyProjectUnits',
@@ -524,7 +528,9 @@ const
       'AlwaysBuild',
       'UseDesignTimePackages',
       'LRSInOutputDirectory',
-      'UseDefaultCompilerOptions'
+      'UseDefaultCompilerOptions',
+      'SaveJumpHistory',
+      'SaveFoldState'
     );
 
   ProjectSessionStorageNames: array[TProjectSessionStorage] of string = (

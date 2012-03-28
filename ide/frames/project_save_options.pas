@@ -14,6 +14,8 @@ type
   { TProjectSaveOptionsFrame }
 
   TProjectSaveOptionsFrame = class(TAbstractIDEOptionsEditor)
+    SaveJumpHistory: TCheckBox;
+    SaveFoldState: TCheckBox;
     SaveClosedUnitInfoCheckBox: TCheckBox;
     SaveOnlyProjectUnitInfoCheckBox: TCheckBox;
     SaveSessionLocationRadioGroup: TRadioGroup;
@@ -87,6 +89,8 @@ begin
   SaveClosedUnitInfoCheckBox.Caption := dlgSaveEditorInfo;
   SaveOnlyProjectUnitInfoCheckBox.Caption := dlgSaveEditorInfoProject;
   SaveSessionLocationRadioGroup.Caption := lisPOSaveSessionInformationIn;
+  SaveJumpHistory.Caption := lisPOSaveSessionJumpHistory;
+  SaveFoldState.Caption := lisPOSaveSessionFoldState;
   for s := Low(TProjectSessionStorage) to High(TProjectSessionStorage) do
     SaveSessionLocationRadioGroup.Items.Add(ProjectSessionStorageToLocalizedName(s));
 end;
@@ -100,6 +104,8 @@ begin
     SaveClosedUnitInfoCheckBox.Checked := (pfSaveClosedUnits in Flags);
     SaveOnlyProjectUnitInfoCheckBox.Checked := (pfSaveOnlyProjectUnits in Flags);
     SaveSessionLocationRadioGroup.ItemIndex := ord(SessionStorage);
+    SaveJumpHistory.Checked := (pfSaveJumpHistory in Flags);
+    SaveFoldState.Checked := (pfSaveFoldState in Flags);
   end;
 end;
 
@@ -119,6 +125,14 @@ begin
       include(AFlags, pfSaveOnlyProjectUnits)
     else
       exclude(AFlags, pfSaveOnlyProjectUnits);
+    if SaveJumpHistory.Checked then
+      include(AFlags, pfSaveJumpHistory)
+    else
+      exclude(AFlags, pfSaveJumpHistory);
+    if SaveFoldState.Checked then
+      include(AFlags, pfSaveFoldState)
+    else
+      exclude(AFlags, pfSaveFoldState);
     if SaveSessionLocationRadioGroup.ItemIndex >= 0 then
       SessionStorage := Self.GetSessionLocation;
     Flags := AFlags;
