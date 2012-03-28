@@ -7475,7 +7475,8 @@ var
 begin
   Result:='TFPCTargetConfigCaches.GetListing Count='+dbgs(fItems.Count)+LineEnding;
   i:=0;
-  for Node in fItems do begin
+  Node:=fItems.FindLowest;
+  while Node<>nil do begin
     inc(i);
     CfgCache:=TFPCTargetConfigCache(Node.Data);
     Result+='  '+dbgs(i)+':'
@@ -7484,6 +7485,7 @@ begin
            +' Compiler="'+CfgCache.Compiler+'"'
            +' CompilerOptions="'+CfgCache.CompilerOptions+'"'
            +LineEnding;
+    Node:=fItems.FindSuccessor(Node);
   end;
 end;
 
