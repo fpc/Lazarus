@@ -4151,7 +4151,7 @@ msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "Um arquivo %s%s%s já existe.%sSubstituí-lo?"
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
-msgid "After cleaning up, switch to automatic clean"
+msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
 msgstr ""
 
 #: lazarusidestrconsts.lisalignment
@@ -5392,7 +5392,7 @@ msgid "Clean Lazarus Source"
 msgstr "Limpar o Fonte do Lazarus (Clean)"
 
 #: lazarusidestrconsts.liscleanonlyonce
-msgid "Clean only once"
+msgid "Switch after building to automatically"
 msgstr ""
 
 #: lazarusidestrconsts.liscleanup
@@ -13931,9 +13931,17 @@ msgstr "Salvar em arquivo .lpi"
 msgid "Save in .lps file in project directory"
 msgstr "Salvar em arquivo .lps no diretório de projeto"
 
+#: lazarusidestrconsts.lisposavesessionfoldstate
+msgid "Save fold info"
+msgstr ""
+
 #: lazarusidestrconsts.lisposavesessioninformationin
 msgid "Save session information in"
 msgstr "Salvar informação de sessão em"
+
+#: lazarusidestrconsts.lisposavesessionjumphistory
+msgid "Save jump history"
+msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"

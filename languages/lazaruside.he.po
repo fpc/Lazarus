@@ -4127,7 +4127,7 @@ msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "הקובץ %s%s%s כבר קיים.%sהאם להחליפו?"
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
-msgid "After cleaning up, switch to automatic clean"
+msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
 msgstr ""
 
 #: lazarusidestrconsts.lisalignment
@@ -5369,7 +5369,7 @@ msgid "Clean Lazarus Source"
 msgstr "נקה את קוד המקור של לזרוס"
 
 #: lazarusidestrconsts.liscleanonlyonce
-msgid "Clean only once"
+msgid "Switch after building to automatically"
 msgstr ""
 
 #: lazarusidestrconsts.liscleanup
@@ -13922,9 +13922,17 @@ msgstr "שמור בקובץ lpi."
 msgid "Save in .lps file in project directory"
 msgstr "שמור בקובץ lps. בתיקיית הפרוייקט"
 
+#: lazarusidestrconsts.lisposavesessionfoldstate
+msgid "Save fold info"
+msgstr ""
+
 #: lazarusidestrconsts.lisposavesessioninformationin
 msgid "Save session information in"
 msgstr "שמור מידע session ב"
+
+#: lazarusidestrconsts.lisposavesessionjumphistory
+msgid "Save jump history"
+msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"

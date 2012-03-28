@@ -3899,7 +3899,7 @@ msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "Soubor %s%s%s už existuje.%sNahradit?"
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
-msgid "After cleaning up, switch to automatic clean"
+msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
 msgstr ""
 
 #: lazarusidestrconsts.lisalignment
@@ -5111,7 +5111,7 @@ msgid "Clean Lazarus Source"
 msgstr "Vyčistit zdrojové soubory Lazarusu"
 
 #: lazarusidestrconsts.liscleanonlyonce
-msgid "Clean only once"
+msgid "Switch after building to automatically"
 msgstr ""
 
 #: lazarusidestrconsts.liscleanup
@@ -13232,9 +13232,17 @@ msgstr "Uložit v souboru .lpi"
 msgid "Save in .lps file in project directory"
 msgstr "Uložit v souboru .lps v adresáři projektu"
 
+#: lazarusidestrconsts.lisposavesessionfoldstate
+msgid "Save fold info"
+msgstr ""
+
 #: lazarusidestrconsts.lisposavesessioninformationin
 msgid "Save session information in"
 msgstr "Uložit informace sezení v"
+
+#: lazarusidestrconsts.lisposavesessionjumphistory
+msgid "Save jump history"
+msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"

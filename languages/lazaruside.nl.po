@@ -4076,7 +4076,7 @@ msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "Een bestand %s%s%s bestaat al.%sOverschrijven?"
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
-msgid "After cleaning up, switch to automatic clean"
+msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
 msgstr ""
 
 #: lazarusidestrconsts.lisalignment
@@ -5298,7 +5298,7 @@ msgid "Clean Lazarus Source"
 msgstr "Maak Lazarus-broncode schoon"
 
 #: lazarusidestrconsts.liscleanonlyonce
-msgid "Clean only once"
+msgid "Switch after building to automatically"
 msgstr ""
 
 #: lazarusidestrconsts.liscleanup
@@ -13703,9 +13703,17 @@ msgstr "Opslaan in .lpi bestand"
 msgid "Save in .lps file in project directory"
 msgstr "Opslaan in .lps bestand in project directory"
 
+#: lazarusidestrconsts.lisposavesessionfoldstate
+msgid "Save fold info"
+msgstr ""
+
 #: lazarusidestrconsts.lisposavesessioninformationin
 msgid "Save session information in"
 msgstr "Sessie informatie opslaan in"
+
+#: lazarusidestrconsts.lisposavesessionjumphistory
+msgid "Save jump history"
+msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"

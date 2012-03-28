@@ -4123,7 +4123,7 @@ msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "文件 %s%s%s 已经存在.%s替换吗?"
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
-msgid "After cleaning up, switch to automatic clean"
+msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
 msgstr ""
 
 #: lazarusidestrconsts.lisalignment
@@ -5363,7 +5363,7 @@ msgid "Clean Lazarus Source"
 msgstr "清除 Lazarus 源代码"
 
 #: lazarusidestrconsts.liscleanonlyonce
-msgid "Clean only once"
+msgid "Switch after building to automatically"
 msgstr ""
 
 #: lazarusidestrconsts.liscleanup
@@ -13848,9 +13848,17 @@ msgstr "保存到 .lpi 文件"
 msgid "Save in .lps file in project directory"
 msgstr "在工程目录保存 .lps 文件"
 
+#: lazarusidestrconsts.lisposavesessionfoldstate
+msgid "Save fold info"
+msgstr ""
+
 #: lazarusidestrconsts.lisposavesessioninformationin
 msgid "Save session information in"
 msgstr "保存会话信息到"
+
+#: lazarusidestrconsts.lisposavesessionjumphistory
+msgid "Save jump history"
+msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"

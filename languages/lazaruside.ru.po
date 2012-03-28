@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-03-27 01:22+0400\n"
+"PO-Revision-Date: 2012-03-29 02:20+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -4054,8 +4054,9 @@ msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "Файл %s%s%s уже существует.%s Заменить?"
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
-msgid "After cleaning up, switch to automatic clean"
-msgstr "После выполнения очистки переключаться в автоматический режим"
+#| msgid "After cleaning up, switch to automatic clean"
+msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
+msgstr "После выполнения очистки (всех файлов или только типичных) переключаться в автоматический режим"
 
 #: lazarusidestrconsts.lisalignment
 msgid "Alignment"
@@ -5282,8 +5283,9 @@ msgid "Clean Lazarus Source"
 msgstr "Очистить каталог исходного кода Lazarus"
 
 #: lazarusidestrconsts.liscleanonlyonce
-msgid "Clean only once"
-msgstr "Очищать только один раз"
+#| msgid "Clean only once"
+msgid "Switch after building to automatically"
+msgstr "После сборки переключаться в автоматический режим"
 
 #: lazarusidestrconsts.liscleanup
 msgid "Clean up"
@@ -13640,9 +13642,17 @@ msgstr "Сохранять в файле .lpi"
 msgid "Save in .lps file in project directory"
 msgstr "Сохранять в файле .lps в каталоге проекта"
 
+#: lazarusidestrconsts.lisposavesessionfoldstate
+msgid "Save fold info"
+msgstr "Сохранять информацию о свёрнутости"
+
 #: lazarusidestrconsts.lisposavesessioninformationin
 msgid "Save session information in"
 msgstr "Сохранять информацию о сеансе работы в"
+
+#: lazarusidestrconsts.lisposavesessionjumphistory
+msgid "Save jump history"
+msgstr "Сохранять историю переходов"
 
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"

@@ -4131,7 +4131,7 @@ msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "Failas %s%s%s jau egzistuoja.%sPerrašyti?"
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
-msgid "After cleaning up, switch to automatic clean"
+msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
 msgstr ""
 
 #: lazarusidestrconsts.lisalignment
@@ -5380,7 +5380,7 @@ msgid "Clean Lazarus Source"
 msgstr "Apvalyti Lazarus aplankus"
 
 #: lazarusidestrconsts.liscleanonlyonce
-msgid "Clean only once"
+msgid "Switch after building to automatically"
 msgstr ""
 
 #: lazarusidestrconsts.liscleanup
@@ -13878,9 +13878,17 @@ msgstr "Įrašyti .lpi faile"
 msgid "Save in .lps file in project directory"
 msgstr "Įrašyti .lps faile, projekto aplanke"
 
+#: lazarusidestrconsts.lisposavesessionfoldstate
+msgid "Save fold info"
+msgstr ""
+
 #: lazarusidestrconsts.lisposavesessioninformationin
 msgid "Save session information in"
 msgstr "Sesijos informaciją įrašyti į"
+
+#: lazarusidestrconsts.lisposavesessionjumphistory
+msgid "Save jump history"
+msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
