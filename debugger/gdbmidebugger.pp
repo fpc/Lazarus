@@ -11612,95 +11612,121 @@ var
   var
     R: TGDBMIExecResult;
     List: TGDBMINameValueList;
-    ParentFp, Fp: String;
+    ParentFp, Fp, LastFp: String;
     i, j, ThreadId: Integer;
     FrameCache: PGDBMIDebuggerParentFrameCache;
+    ParentFpNum, FpNum, FpDiff, LastFpDiff: QWord;
+    FpDir: Integer;
   begin
     if FWatchValue <> nil
     then ThreadId := FWatchValue.ThreadId
     else ThreadId := FTheDebugger.FCurrentThreadId;
     FrameCache := TGDBMIWatches(FTheDebugger.Watches).GetParentFPList(ThreadId);
     List := nil;
+    try
 
-    i := length(FrameCache^.ParentFPList);
-    j := Max(i, aFrameIdx+1);
-    if j >= i
-    then SetLength(FrameCache^.ParentFPList, j + 3);
-
-    // Did a previous check for parentfp fail?
-    ParentFP := FrameCache^.ParentFPList[aFrameIdx].parentfp;
-    if ParentFp = '-'
-    then Exit(False);
-
-    if ParentFp = '' then begin
-      // not yet evaluated
-      if ExecuteCommand('-data-evaluate-expression parentfp', R)
-      and (R.State <> dsError)
-      then begin
-        List := TGDBMINameValueList.Create(R);
-        ParentFP := List.Values['value'];
-      end;
-      if ParentFp = '' then begin
-        FrameCache^.ParentFPList[aFrameIdx].parentfp := '-'; // mark as no parentfp
-        List.Free;
-        Exit(False);
-      end;
-      FrameCache^.ParentFPList[aFrameIdx].parentfp := ParentFp;
-    end;
-
-    if StrToQWordDef(ParentFp, 0) = 0 then begin
-      FrameCache^.ParentFPList[aFrameIdx].parentfp := '-'; // mark as no parentfp
-      List.Free;
-      Exit(False);
-    end;
-
-    if List = nil
-    then List := TGDBMINameValueList.Create('');
-
-    repeat
-      Inc(aFrameIdx);
       i := length(FrameCache^.ParentFPList);
       j := Max(i, aFrameIdx+1);
       if j >= i
-      then SetLength(FrameCache^.ParentFPList, j + 5);
+      then SetLength(FrameCache^.ParentFPList, j + 3);
 
-      Fp := FrameCache^.ParentFPList[aFrameIdx].Fp;
-      if Fp = '-'
-      then begin
-        List.Free;
+      // Did a previous check for parentfp fail?
+      ParentFP := FrameCache^.ParentFPList[aFrameIdx].parentfp;
+      if ParentFp = '-'
+      then Exit(False);
+
+      if ParentFp = '' then begin
+        // not yet evaluated
+        if ExecuteCommand('-data-evaluate-expression parentfp', R)
+        and (R.State <> dsError)
+        then begin
+          List := TGDBMINameValueList.Create(R);
+          ParentFP := List.Values['value'];
+        end;
+        if ParentFp = '' then begin
+          FrameCache^.ParentFPList[aFrameIdx].parentfp := '-'; // mark as no parentfp
+          Exit(False);
+        end;
+        FrameCache^.ParentFPList[aFrameIdx].parentfp := ParentFp;
+      end;
+
+      ParentFpNum := StrToQWordDef(ParentFp, 0);
+      if ParentFpNum = 0 then begin
+        FrameCache^.ParentFPList[aFrameIdx].parentfp := '-'; // mark as no parentfp
         Exit(False);
       end;
 
-      if (Fp = '') or (Fp = ParentFP) then begin
-        if not ExecuteCommand('-stack-select-frame %u', [aFrameIdx], R)
-        or (R.State = dsError)
-         then begin
-          FrameCache^.ParentFPList[aFrameIdx].Fp := '-'; // mark as no Fp (not accesible)
-          List.Free;
+      if List = nil
+      then List := TGDBMINameValueList.Create('');
+
+      LastFp := '';
+      LastFpDiff := 0;
+      FpDir := 0;
+      repeat
+        Inc(aFrameIdx);
+        i := length(FrameCache^.ParentFPList);
+        j := Max(i, aFrameIdx+1);
+        if j >= i
+        then SetLength(FrameCache^.ParentFPList, j + 5);
+
+        Fp := FrameCache^.ParentFPList[aFrameIdx].Fp;
+        if Fp = '-'
+        then begin
           Exit(False);
         end;
-        FStackFrameChanged := True; // Force UnSelectContext() to restore current frame
-        FTheDebugger.FInternalStackFrame := aFrameIdx;
 
-        if (Fp = '') then begin
-          if not ExecuteCommand('-data-evaluate-expression $fp', R)
+        if (Fp = '') or (Fp = ParentFP) then begin
+          if not ExecuteCommand('-stack-select-frame %u', [aFrameIdx], R)
           or (R.State = dsError)
-          then begin
+           then begin
             FrameCache^.ParentFPList[aFrameIdx].Fp := '-'; // mark as no Fp (not accesible)
-            List.Free;
             Exit(False);
           end;
-          List.Init(R.Values);
-          Fp := List.Values['value'];
-          if Fp = ''
-          then Fp := '-';
-          FrameCache^.ParentFPList[aFrameIdx].Fp := Fp;
-        end;
-      end;
-    until ParentFP = Fp;
-    List.Free;
+          FStackFrameChanged := True; // Force UnSelectContext() to restore current frame
+          FTheDebugger.FInternalStackFrame := aFrameIdx;
 
-    Result := True;
+          if (Fp = '') then begin
+            if not ExecuteCommand('-data-evaluate-expression $fp', R)
+            or (R.State = dsError)
+            then begin
+              FrameCache^.ParentFPList[aFrameIdx].Fp := '-'; // mark as no Fp (not accesible)
+              Exit(False);
+            end;
+            List.Init(R.Values);
+            Fp := List.Values['value'];
+            if Fp = ''
+            then Fp := '-';
+            FrameCache^.ParentFPList[aFrameIdx].Fp := Fp;
+          end;
+        end;
+
+        if FP = LastFp then          // Propably top of stack, FP no longer changes
+          Exit(False);
+        LastFp := Fp;
+
+        // check that FP gets closer to ParentFp
+        FpNum := StrToQWordDef(Fp, 0);
+        if FpNum > ParentFpNum then begin
+          if FpDir = 1 then exit; // went to far
+          FpDir := -1;
+          FpDiff := FpNum - ParentFpNum;
+        end else begin
+          if FpDir = -1 then exit; // went to far
+          FpDir := 1;
+          FpDiff := ParentFpNum - FpNum;
+        end;
+        if (LastFpDiff <> 0) and (FpDir >= LastFpDiff) then
+          Exit(False);
+
+        LastFpDiff := FpDiff;
+
+      until ParentFP = Fp;
+
+      Result := True;
+
+    finally
+      List.Free;
+    end;
   end;
 
   function PascalizePointer(AString: String; const TypeCast: String = ''): String;
