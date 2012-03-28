@@ -3247,20 +3247,19 @@ end;
 function TControl.GetText: TCaption;
 var
   len: Integer;
+  GetTextMethod: TMethod;
 begin
-  // Check if GetTextBuf is overridden, otherwise
-  // we can call RealGetText directly
-  if TMethod(@Self.GetTextBuf).Code = Pointer(@TControl.GetTextBuf)
-  then begin
+  // Check if GetTextBuf is overridden, otherwise we can call RealGetText directly
+  Assert(Assigned(@Self.GetTextBuf), 'TControl.GetText: GetTextBuf Method is Nil');
+  GetTextMethod := TMethod(@Self.GetTextBuf);
+  if GetTextMethod.Code = Pointer(@TControl.GetTextBuf) then begin
     Result := RealGetText;
   end
   else begin
     // Bummer, we have to do it the compatible way.
     DebugLn('Note: GetTextBuf is overridden for: ', Classname);
-    
     len := GetTextLen;
-    if len = 0 
-    then begin
+    if len = 0 then begin
       Result := '';
     end
     else begin
