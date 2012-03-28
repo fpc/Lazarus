@@ -4,8 +4,9 @@ object Form1: TForm1
   Top = 137
   Width = 220
   Caption = 'Form1'
-  ClientHeight = 257
+  ClientHeight = 230
   ClientWidth = 220
+  Menu = MainMenu1
   OnClick = FormClick
   OnCreate = FormCreate
   OnKeyDown = Button1KeyDown
@@ -100,5 +101,13 @@ object Form1: TForm1
     )
     TabOrder = 7
     Text = 'ComboBox1'
+  end
+  object MainMenu1: TMainMenu
+    left = 23
+    top = 60
+    object MenuItem1: TMenuItem
+      Caption = 'New Item1'
+      OnClick = MenuItem1Click
+    end
   end
 end

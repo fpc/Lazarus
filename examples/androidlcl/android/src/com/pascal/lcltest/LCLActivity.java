@@ -160,8 +160,18 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
       else
       {
         //Log.v("lclproject", "BackKey not going to home");
-        return true;
       }
+
+      // Handling of the Menu hardware key
+      if (keyCode == KeyEvent.KEYCODE_MENU)
+      {
+        flagIsMenuOpen = false; // hard-coding now has a good result, we might change in the future if we ever start getting key events even while the menu is open
+        if (flagIsMenuOpen) closeOptionsMenu();
+        else openOptionsMenu();
+        flagIsMenuOpen = !flagIsMenuOpen;
+      }
+
+      return true;
     }
 
     @Override public boolean onTouchEvent (MotionEvent event)
@@ -248,14 +258,22 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
     //Log.i("lclapp", "onConfigurationChanged finished");
   }
 
+  @Override public boolean onCreateOptionsMenu(Menu menu)
+  {
+    Log.i("lclapp", "onCreateOptionsMenu");
+    return super.onCreateOptionsMenu(menu);
+  }
+
   @Override public boolean onPrepareOptionsMenu (Menu menu)
   {
+    Log.i("lclapp", "onPrepareOptionsMenu");
+
     super.onPrepareOptionsMenu(menu);
 
     int i;
 
     // First clear the captions list
-    for (i = 0; i<6; i++)
+    for (i = 0; i < lclmenu_captions.length; i++)
       lclmenu_captions[i] = "";
 
     // Now ask the LCL to fill it
@@ -263,15 +281,17 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
 
     // And fill the menus with it
     menu.clear();
-    for (i = 0; i<6; i++)
+    for (i = 0; i< lclmenu_captions.length; i++)
     {
       if (lclmenu_captions[i] != "")
       {
+        Log.i("lclapp", "onPrepareOptionsMenu item=" + lclmenu_captions[i]);
         MenuItem lMenuItem = menu.add(0, i, 0, lclmenu_captions[i]);
         lMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener()
         {
           public boolean onMenuItemClick(MenuItem item)
           {
+            flagIsMenuOpen = false;
             LCLOnMenuAction(1, item.getItemId());
             return true;
           }
@@ -666,6 +686,7 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   public int lclkind;
   // for the menus
   public String[] lclmenu_captions = new String[6];
+  public boolean flagIsMenuOpen = false;
 
   static
   {

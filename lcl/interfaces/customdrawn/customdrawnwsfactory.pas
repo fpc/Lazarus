@@ -111,8 +111,8 @@ uses
 { WinCEWSDialogs,}
  CustomDrawnWSExtCtrls,
  CustomDrawnWSForms,
-{ WinCEWSImgList,
- WinCEWSMenus,}
+// WinCEWSImgList,
+ CustomDrawnWSMenus,
  CustomDrawnWSSpin,
  CustomDrawnWSStdCtrls,
  CustomDrawnWSLazDeviceAPIs{,
@@ -513,14 +513,14 @@ end;
 // Menus
 function RegisterMenuItem: Boolean; alias : 'WSRegisterMenuItem';
 begin
-//  RegisterWSComponent(TMenuItem, TWinCEWSMenuItem);
-  Result := False;
+  RegisterWSComponent(TMenuItem, TCDWSMenuItem);
+  Result := True;
 end;
 
 function RegisterMenu: Boolean; alias : 'WSRegisterMenu';
 begin
-//  RegisterWSComponent(TMenu, TWinCEWSMenu);
-  Result := False;
+  RegisterWSComponent(TMenu, TCDWSMenu);
+  Result := True;
 end;
 
 function RegisterMainMenu: Boolean; alias : 'WSRegisterMainMenu';
@@ -530,7 +530,7 @@ end;
 
 function RegisterPopupMenu: Boolean; alias : 'WSRegisterPopupMenu';
 begin
-//  RegisterWSComponent(TPopupMenu, TWinCEWSPopupMenu);
+//  RegisterWSComponent(TPopupMenu, TCDWSPopupMenu);
   Result := False;
 end;
 

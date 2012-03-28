@@ -22,6 +22,8 @@ type
     CheckBox1: TCheckBox;
     ComboBox1: TComboBox;
     Label1: TLabel;
+    MainMenu1: TMainMenu;
+    MenuItem1: TMenuItem;
     ProgressBar1: TProgressBar;
     TrackBar1: TTrackBar;
     procedure Arrow1Click(Sender: TObject);
@@ -44,6 +46,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure FormPaint(Sender: TObject);
+    procedure MenuItem1Click(Sender: TObject);
   private
     { private declarations }
   public
@@ -232,6 +235,11 @@ begin
   Canvas.Rectangle(100, 100, 200, 200);
   Canvas.Brush.Color := clBlue;
   Canvas.Rectangle(200, 200, 300, 300);}
+end;
+
+procedure TForm1.MenuItem1Click(Sender: TObject);
+begin
+  DebugLn('[TForm1.MenuItem1Click]');
 end;
 
 procedure TForm1.HandleMessageDialogFinished(Sender: TObject; AResult: Integer);

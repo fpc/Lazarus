@@ -335,36 +335,79 @@ begin
 end;
 
 function Java_com_pascal_lclproject_LCLActivity_LCLOnMenuAction(
-  env:PJNIEnv; this:jobject; kind: jint; itemIndex: jint): jint; cdecl;
+  env:PJNIEnv; this:jobject; kind, itemIndex: jint): jint; cdecl;
 var
   javaField_lclmenu_captions: jfieldid;
-  javaObject_lclmenu_captions: jobject;
+  javaObject_lclmenu_captions: jobjectarray;
   lJavaString: jstring;
   lCurrentForm: TCDNonNativeForm;
   lMenu: TMainMenu;
+  StrPas: string;
   Str: PChar;
   lMenuItem: TMenuItem;
-  i, CurIndex: Integer;
+  i, CurIndex, NumMenuItems: Integer;
 begin
   Result := 0;
   //{$ifdef VerboseCDEvents}
-  __android_log_write(ANDROID_LOG_INFO,'lclapp',PChar(
-    Format('LCLOnMenuAction called kind=%d itemIndex=%d', [kind, itemIndex])));
+  DebugLn(Format('LCLOnMenuAction called kind=%d itemIndex=%d', [kind, itemIndex]));
   //{$endif}
 
   if (javaEnvRef = nil) then Exit;
 
+  lCurrentForm := GetCurrentForm();
+  if lCurrentForm = nil then Exit;
+  lMenu := lCurrentForm.LCLForm.Menu;
+  if lMenu = nil then Exit;
+
   // kind=0 means that we should create the menu items list
   if kind = 0 then
   begin
-    lCurrentForm := GetCurrentForm();
-    if lCurrentForm = nil then Exit;
-    lMenu := lCurrentForm.LCLForm.Menu;
-    if lMenu = nil then Exit;
+    // First calculate the number of menu items
+    NumMenuItems := 0;
+    for i := 0 to lMenu.Items.Count-1 do
+    begin
+      lMenuItem := lMenu.Items[i];
+      // Various things might make a menu item invalid and therefore not part of the list
+      if not lMenuItem.Visible then Continue;
+      if lMenuItem.Caption = '-' then Continue;
+      Inc(NumMenuItems);
+    end;
 
+    // Now fill the items
     javaField_lclmenu_captions := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclmenu_captions', '[Ljava/lang/String;');
-    javaObject_lclmenu_captions := javaEnvRef^^.GetObjectField(javaEnvRef, javaActivityClass, javaField_lclmenu_captions);
+//    javaObject_lclmenu_captions := javaEnvRef^^.GetObjectField(javaEnvRef, javaActivityClass, javaField_lclmenu_captions);
+    javaObject_lclmenu_captions := javaEnvRef^^.NewObjectArray(javaEnvRef, NumMenuItems,
+      javaJavaLangStringClass, javaEnvRef^^.NewStringUTF(javaEnvRef, ''));
+//     DebugLn(Format('LCLOnMenuAction lclmenu_captions field=%x object=%x', [PtrUInt(javaField_lclmenu_captions), PtrUInt(javaObject_lclmenu_captions)]));
 
+    CurIndex := 0;
+    StrPas := '';
+    for i := 0 to lMenu.Items.Count-1 do
+    begin
+      DebugLn(Format('LCLOnMenuAction item=%d', [i]));
+      lMenuItem := lMenu.Items[i];
+      // Various things might make a menu item invalid and therefore not part of the list
+      if not lMenuItem.Visible then Continue;
+      if lMenuItem.Caption = '-' then Continue;
+
+      StrPas := lMenuItem.Caption;
+      Str := PChar(StrPas);
+      lJavaString := javaEnvRef^^.NewStringUTF(javaEnvRef, Str);
+      DebugLn(Format('LCLOnMenuAction lJavaString=%x Str=%s', [PtrUInt(lJavaString), StrPas]));
+      javaEnvRef^^.SetObjectArrayElement(javaEnvRef, javaObject_lclmenu_captions, CurIndex, lJavaString);
+      javaEnvRef^^.DeleteLocalRef(javaEnvRef, str);
+
+      Inc(CurIndex);
+
+      if CurIndex >= NumMenuItems then Break;
+    end;
+
+    javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, javaField_lclmenu_captions, javaObject_lclmenu_captions);
+  end
+  // kind=1 means a button click event
+  else
+  begin
+    // Searched for the clicked item
     CurIndex := 0;
     for i := 0 to lMenu.Items.Count-1 do
     begin
@@ -373,23 +416,17 @@ begin
       if not lMenuItem.Visible then Continue;
       if lMenuItem.Caption = '-' then Continue;
 
-      Str := PChar(lMenuItem.Caption);
-      lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, Str);
-      javaEnvRef^^.SetObjectArrayElement(javaEnvRef, javaObject_lclmenu_captions, CurIndex, lJavaString);
+      if itemIndex = CurIndex then Break;
 
       Inc(CurIndex);
-
-      if CurIndex >= 6 then Break;
     end;
-  end
-  // kind=1 means a button click event
-  else
-  begin
 
+    lMenuItem.Click();
   end;
 
   // This sends messages like Invalidate requests
   Result := eventResult;
+  DebugLn('Fim');
 end;
 
 const NativeMethods: array[0..8] of JNINativeMethod=
@@ -451,10 +488,11 @@ begin
   end;
   // Now other classes
   javaAndroidAppActivityClass := javaEnvRef^^.FindClass(javaEnvRef,'android/app/Activity');
-  javaJavaLandSystemClass := javaEnvRef^^.FindClass(javaEnvRef,'java/lang/System');
+  javaJavaLangSystemClass := javaEnvRef^^.FindClass(javaEnvRef,'java/lang/System');
   javaAndroidOSBuildClass := javaEnvRef^^.FindClass(javaEnvRef,'android/os/Build');
   javaAndroidOSVibratorClass := javaEnvRef^^.FindClass(javaEnvRef,'android/os/Vibrator');
   javaAndroidContentContextClass := javaEnvRef^^.FindClass(javaEnvRef,'android/content/Context');
+  javaJavaLangStringClass := javaEnvRef^^.FindClass(javaEnvRef,'java/lang/String');
 
   // Register Pascal exported calls
   if javaEnvRef^^.RegisterNatives(javaEnvRef, javaActivityClass, @NativeMethods[0],length(NativeMethods))<0 then
@@ -522,7 +560,7 @@ begin
   // Methods from android.app.Activity
   javaMethod_Activity_finish := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidAppActivityClass, 'finish', '()V');
   // Methods from java.lang.System
-  javaMethod_System_exit := javaEnvRef^^.GetStaticMethodID(javaEnvRef, javaJavaLandSystemClass, 'exit', '(I)V');
+  javaMethod_System_exit := javaEnvRef^^.GetStaticMethodID(javaEnvRef, javaJavaLangSystemClass, 'exit', '(I)V');
   // Generic methods from Context
   javaMethod_getSystemService := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidContentContextClass, 'getSystemService', '(Ljava/lang/String;)Ljava/lang/Object;');
 
@@ -1038,7 +1076,7 @@ begin
 
   // Call the method
   lParams[0].i := 0;
-  javaEnvRef^^.CallStaticVoidMethodA(javaEnvRef, javaJavaLandSystemClass, javaMethod_System_exit, @lParams[0]);
+  javaEnvRef^^.CallStaticVoidMethodA(javaEnvRef, javaJavaLangSystemClass, javaMethod_System_exit, @lParams[0]);
 
   DebugLn('[TCDWidgetSet.AppTerminate] End');
 end;

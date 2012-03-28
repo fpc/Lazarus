@@ -320,7 +320,7 @@ function Java_com_pascal_lclproject_LCLActivity_LCLOnConfigurationChanged(
 function Java_com_pascal_lclproject_LCLActivity_LCLOnSensorChanged(
     env:PJNIEnv; this:jobject; ASensorKind: jint; AValues: JDoubleArray): jint; cdecl;
 function Java_com_pascal_lclproject_LCLActivity_LCLOnMenuAction(
-  env:PJNIEnv; this:jobject; kind: jint; itemIndex: jint): jint; cdecl;
+  env:PJNIEnv; this:jobject; kind, itemIndex: jint): jint; cdecl;
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
 procedure JNI_OnUnload(vm:PJavaVM;reserved:pointer); cdecl;
 
@@ -332,10 +332,11 @@ var
 
   // Other classes and objects
   javaAndroidAppActivityClass: JClass = nil;
-  javaJavaLandSystemClass: JClass = nil;
+  javaJavaLangSystemClass: JClass = nil;
   javaAndroidOSBuildClass: JClass = nil;
   javaAndroidOSVibratorClass: JClass = nil;
   javaAndroidContentContextClass: JClass = nil;
+  javaJavaLangStringClass: JClass = nil;
 
   // Fields of our Activity
   // Strings

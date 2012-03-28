@@ -131,7 +131,7 @@ begin
   //DebugLn('TMenuItem.CreateHandle ',dbgsName(Self),' ',dbgs(Self));
   //DebugLn('TMenuItem.CreateHandle START ',Name,':',ClassName);
   if not FVisible then RaiseGDBException('');
-  Handle := TWSMenuItemClass(WidgetSetClass).CreateHandle(Self);
+  FHandle := TWSMenuItemClass(WidgetSetClass).CreateHandle(Self);
   CheckChildrenHandles;
 
   if Parent <> nil then
