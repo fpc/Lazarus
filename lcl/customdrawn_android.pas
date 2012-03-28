@@ -23,7 +23,7 @@ type
   private
     bmpCheckbox, bmpCheckboxChecked: TBitmap;
     // Alternative checkbox drawing, not currently utilized
-    procedure DrawCheckBoxBitmap(ADest: TFPCustomCanvas; AState: TCDControlState);
+    procedure DrawCheckBoxBitmap(ADest: TFPCustomCanvas; ADestPos: TPoint; AState: TCDControlState; ASize: Integer);
     // Makes pixels in each corner transparent for a rounded effect
     procedure DrawTransparentRoundCorners(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize; AColor: TFPColor);
     // Draws a vertical line with different first and last pixels
@@ -204,44 +204,44 @@ initialization
 
 { TCDDrawerAndroid }
 
-procedure TCDDrawerAndroid.DrawCheckBoxBitmap(ADest: TFPCustomCanvas; AState: TCDControlState);
+procedure TCDDrawerAndroid.DrawCheckBoxBitmap(ADest: TFPCustomCanvas; ADestPos: TPoint; AState: TCDControlState; ASize: Integer);
 var
   i: Integer;
   lDest: TCanvas;
 begin
   lDest := TCanvas(ADest);
   // Background
-  for i := 0 to 29 do
-    DrawAndroidAlternatedHorzLine(lDest, 0, 31, i, ANDROID_CHECKBOX_A[i], ANDROID_CHECKBOX_B[i]);
+  for i := 0 to ASize-1 do
+    DrawAndroidAlternatedHorzLine(lDest, 0, ASize-1, i, ANDROID_CHECKBOX_A[i], ANDROID_CHECKBOX_B[i]);
 
   // Corners
-  ADest.Colors[0, 0] := colBlack;
-  ADest.Colors[1, 0] := colBlack;
-  ADest.Colors[0, 1] := colBlack;
-  lDest.Pixels[0, 2] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
-  lDest.Pixels[2, 0] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
-  lDest.Pixels[1, 1] := ANDROID_CHECKBOX_CORNER_GRAY;
+  ADest.Colors[ADestPos.X+0, ADestPos.Y+0] := colBlack;
+  ADest.Colors[ADestPos.X+1, ADestPos.Y+0] := colBlack;
+  ADest.Colors[ADestPos.X+0, ADestPos.Y+1] := colBlack;
+  lDest.Pixels[ADestPos.X+0, ADestPos.Y+2] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
+  lDest.Pixels[ADestPos.X+2, ADestPos.Y+0] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
+  lDest.Pixels[ADestPos.X+1, ADestPos.Y+1] := ANDROID_CHECKBOX_CORNER_GRAY;
   //
-  ADest.Colors[29, 0] := colBlack;
-  ADest.Colors[28, 0] := colBlack;
-  ADest.Colors[29, 1] := colBlack;
-  lDest.Pixels[29, 2] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
-  lDest.Pixels[27, 0] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
-  lDest.Pixels[26, 1] := ANDROID_CHECKBOX_CORNER_GRAY;
+  ADest.Colors[ADestPos.X+ASize-1, ADestPos.Y+0] := colBlack;
+  ADest.Colors[ADestPos.X+ASize-2, ADestPos.Y+0] := colBlack;
+  ADest.Colors[ADestPos.X+ASize-1, ADestPos.Y+1] := colBlack;
+  lDest.Pixels[ADestPos.X+ASize-1, ADestPos.Y+2] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
+  lDest.Pixels[ADestPos.X+ASize-3, ADestPos.Y+0] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
+  lDest.Pixels[ADestPos.X+ASize-4, ADestPos.Y+1] := ANDROID_CHECKBOX_CORNER_GRAY;
   //
-  ADest.Colors[0, 29] := colBlack;
-  ADest.Colors[1, 29] := colBlack;
-  ADest.Colors[0, 28] := colBlack;
-  lDest.Pixels[0, 27] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
-  lDest.Pixels[2, 29] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
-  lDest.Pixels[1, 28] := ANDROID_CHECKBOX_CORNER_GRAY;
+  ADest.Colors[ADestPos.X+0, ADestPos.Y+ASize-1] := colBlack;
+  ADest.Colors[ADestPos.X+1, ADestPos.Y+ASize-1] := colBlack;
+  ADest.Colors[ADestPos.X+0, ADestPos.Y+ASize-2] := colBlack;
+  lDest.Pixels[ADestPos.X+0, ADestPos.Y+ASize-3] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
+  lDest.Pixels[ADestPos.X+2, ADestPos.Y+ASize-1] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
+  lDest.Pixels[ADestPos.X+1, ADestPos.Y+ASize-2] := ANDROID_CHECKBOX_CORNER_GRAY;
   //
-  ADest.Colors[29, 29] := colBlack;
-  ADest.Colors[28, 29] := colBlack;
-  ADest.Colors[29, 28] := colBlack;
-  lDest.Pixels[29, 27] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
-  lDest.Pixels[27, 29] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
-  lDest.Pixels[28, 28] := ANDROID_CHECKBOX_CORNER_GRAY;
+  ADest.Colors[ADestPos.X+ASize-1, ADestPos.Y+ASize-1] := colBlack;
+  ADest.Colors[ADestPos.X+ASize-2, ADestPos.Y+ASize-1] := colBlack;
+  ADest.Colors[ADestPos.X+ASize-1, ADestPos.Y+ASize-2] := colBlack;
+  lDest.Pixels[ADestPos.X+ASize-1, ADestPos.Y+ASize-3] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
+  lDest.Pixels[ADestPos.X+ASize-3, ADestPos.Y+ASize-1] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
+  lDest.Pixels[ADestPos.X+ASize-2, ADestPos.Y+ASize-2] := ANDROID_CHECKBOX_CORNER_GRAY;
 
   // Tickmark
   if csfOff in AState then
@@ -331,6 +331,7 @@ procedure TCDDrawerAndroid.DrawVerticalLineWithFirstLast(
 begin
   ADest.Colors[X, Y1] := AColorTop;
   ADest.Pen.FPColor := AColorMiddle;
+  ADest.Pen.Style := psSolid;
   ADest.Line(X, Y1+1, X, Y2);
   ADest.Colors[X, Y2] := AColorEnd;
 end;
@@ -457,15 +458,15 @@ end;
 
 procedure TCDDrawerAndroid.CreateResources;
 begin
-  bmpCheckbox := TBitmap.Create;
-  bmpCheckboxChecked := TBitmap.Create;
+{  bmpCheckbox := TBitmap.Create;
+  bmpCheckboxChecked := TBitmap.Create;}
 end;
 
 procedure TCDDrawerAndroid.LoadResources;
 var
   lDPI: Word;
 begin
-  {$ifdef CD_UseImageResources}
+(*  {$ifdef CD_UseImageResources}
   bmpCheckbox.LoadFromLazarusResource('android_checkbox');
   bmpCheckboxChecked.LoadFromLazarusResource('android_checkbox_checked');
   {$else}
@@ -473,20 +474,20 @@ begin
   bmpCheckbox.Height := 30;
   bmpCheckboxChecked.Width := 30;
   bmpCheckboxChecked.Height := 30;
-  DrawCheckBoxBitmap(bmpCheckbox.Canvas, [csfOff]);
-  DrawCheckBoxBitmap(bmpCheckboxChecked.Canvas, [csfOn]);
+  DrawCheckBoxBitmap(bmpCheckbox.Canvas, Point(0, 0), [csfOff], 30);
+  DrawCheckBoxBitmap(bmpCheckboxChecked.Canvas, Point(0, 0), [csfOn], 30);
   {$endif}
 
   // DPI adjustment
   lDPI := Max(96, Screen.PixelsPerInch);
   ScaleRasterImage(bmpCheckbox, 160, lDPI);
-  ScaleRasterImage(bmpCheckboxChecked, 160, lDPI);
+  ScaleRasterImage(bmpCheckboxChecked, 160, lDPI);*)
 end;
 
 procedure TCDDrawerAndroid.FreeResources;
 begin
-  bmpCheckbox.Free;
-  bmpCheckboxChecked.Free;
+{  bmpCheckbox.Free;
+  bmpCheckboxChecked.Free;}
 end;
 
 function TCDDrawerAndroid.GetDrawStyle: TCDDrawStyle;
@@ -503,7 +504,7 @@ begin
   TCDEDIT_BOTTOM_TEXT_SPACING: Result := 3;}
   //
   TCDCHECKBOX_SQUARE_HALF_HEIGHT: Floor(GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT)/2);
-  TCDCHECKBOX_SQUARE_HEIGHT: Result := DPIAdjustment(20);
+  TCDCHECKBOX_SQUARE_HEIGHT: Result := DPIAdjustment(30);
   //
   TCDRADIOBUTTON_CIRCLE_HEIGHT: Result := DPIAdjustment(20); // Must be dividable by 4
   //
@@ -723,14 +724,19 @@ end;
 
 procedure TCDDrawerAndroid.DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
+var
+  lCheckboxSquare: Integer;
 begin
-  if csfOn in AState then ADest.Draw(0, 0, bmpCheckboxChecked)
-  else ADest.Draw(0, 0, bmpCheckbox);
+  lCheckboxSquare := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT);
+
+  //if csfOn in AState then ADest.Draw(0, 0, bmpCheckboxChecked)
+  //else ADest.Draw(0, 0, bmpCheckbox);
+
+  DrawCheckBoxBitmap(ADest, ADestPos, AState, lCheckboxSquare);
 
   // Transparent corners
   DrawTransparentRoundCorners(ADest, ADestPos,
-    Size(GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT), GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT)),
-    AStateEx.FPParentRGBColor);
+    Size(lCheckboxSquare, lCheckboxSquare), AStateEx.FPParentRGBColor);
 end;
 
 procedure TCDDrawerAndroid.DrawRadioButtonCircle(ADest: TCanvas;

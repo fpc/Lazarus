@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   LCLProc, Arrow, StdCtrls, ComCtrls, LCLType, LCLIntf, InterfaceBase,
-  lazdeviceapis, Menus;
+  lazdeviceapis, Menus, ExtDlgs, customdrawncontrols;
 
 type
   TSubControl = class;

@@ -925,6 +925,7 @@ procedure TCDDrawerCommon.DrawCheckBox(ADest: TCanvas;
 var
   lColor: TColor;
   lSquareHeight, lValue3: Integer;
+  lTextHeight, lTextY: Integer;
 begin
   lSquareHeight := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT);
   lValue3 := DPIAdjustment(3);
@@ -952,7 +953,13 @@ begin
   ADest.Brush.Style := bsClear;
   ADest.Pen.Style := psClear;
   ADest.Font.Assign(AStateEx.Font);
-  ADest.TextOut(lSquareHeight+5, 0, AStateEx.Caption);
+  lTextHeight := ADest.TextHeight(cddTestStr);
+  // put the text in the center
+  if lSquareHeight > lTextHeight then lTextY := (lSquareHeight - ADest.TextHeight(cddTestStr)) div 2
+  else lTextY := 0;
+  lTextY := Max(0, lTextY - 1);
+
+  ADest.TextOut(lSquareHeight+5, lTextY, AStateEx.Caption);
 end;
 
 procedure TCDDrawerCommon.DrawRadioButtonCircle(ADest: TCanvas;
@@ -1074,9 +1081,10 @@ begin
   ADest.Brush.Style := bsClear;
   ADest.Font.Assign(AStateEx.Font);
   lTextHeight := ADest.TextHeight(cddTestStr);
+  // put the text in the center
   if lCircleHeight > lTextHeight then lTextY := (lCircleHeight - ADest.TextHeight(cddTestStr)) div 2
   else lTextY := 0;
-  lTextY := lTextY - 1;
+  lTextY := Max(0, lTextY - 1);
   ADest.TextOut(lCircleHeight+5, lTextY, AStateEx.Caption);
 end;
 

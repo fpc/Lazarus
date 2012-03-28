@@ -1821,6 +1821,7 @@ begin
   ControlStyle := ControlStyle - [csAcceptsControls];
   AutoSize := True;
   FHasOnOffStates := True;
+  FState := FState + [csfOff];
 end;
 
 destructor TCDCheckBox.Destroy;
