@@ -348,6 +348,10 @@ var
   i, CurIndex, NumMenuItems: Integer;
 begin
   Result := 0;
+
+  // Very strangely in the emulator it crashes if we don't refresh the Activity class here
+  javaActivityClass := javaEnvRef^^.FindClass(javaEnvRef,'com/pascal/lcltest/LCLActivity');
+
   //{$ifdef VerboseCDEvents}
   DebugLn(Format('LCLOnMenuAction called kind=%d itemIndex=%d', [kind, itemIndex]));
   //{$endif}
@@ -393,9 +397,9 @@ begin
       StrPas := lMenuItem.Caption;
       Str := PChar(StrPas);
       lJavaString := javaEnvRef^^.NewStringUTF(javaEnvRef, Str);
-      DebugLn(Format('LCLOnMenuAction lJavaString=%x Str=%s', [PtrUInt(lJavaString), StrPas]));
+      DebugLn(Format('LCLOnMenuAction lJavaString=%x Str=%s javaObject_lclmenu_captions=%x', [PtrUInt(lJavaString), StrPas, PtrUInt(javaObject_lclmenu_captions)]));
       javaEnvRef^^.SetObjectArrayElement(javaEnvRef, javaObject_lclmenu_captions, CurIndex, lJavaString);
-      javaEnvRef^^.DeleteLocalRef(javaEnvRef, str);
+      javaEnvRef^^.DeleteLocalRef(javaEnvRef, javaObject_lclmenu_captions);
 
       Inc(CurIndex);
 

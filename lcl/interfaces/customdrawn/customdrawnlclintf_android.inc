@@ -288,18 +288,28 @@ var
   lJavaString: JString;
   i: Integer;
 begin
-  //__android_log_write(ANDROID_LOG_INFO, 'lclapp', '[TCDWidgetset.ShowSelectItemDialog]');
+  //{$define VerboseCDShowSelectItemDialog}
+  {$ifdef VerboseCDShowSelectItemDialog}
+  DebugLn(Format('[TCDWidgetset.ShowSelectItemDialog] javaEnvRef=%x', [PtrUInt(javaEnvRef)]));
+  {$endif}
 
   // First get the classes
   javaAndroidAppAlertDialogBuilderClass := javaEnvRef^^.FindClass(javaEnvRef, 'android/app/AlertDialog$Builder');
   javaCharSequence := javaEnvRef^^.FindClass(javaEnvRef, 'java/lang/String');//'java/lang/CharSequence');
-  //__android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar('[TCDWidgetset.ShowSelectItemDialog] 2 javaAndroidAppAlertDialogBuilderClass='+IntToStr(PtrInt(javaAndroidAppAlertDialogBuilderClass))));
+  {$ifdef VerboseCDShowSelectItemDialog}
+  DebugLn('[TCDWidgetset.ShowSelectItemDialog] 2 javaAndroidAppAlertDialogBuilderClass='+IntToStr(PtrInt(javaAndroidAppAlertDialogBuilderClass)));
+  {$endif}
 
   // final AlertDialog.Builder ad = new AlertDialog.Builder(this);
   javaMethod_AlertDialogBuilder_new := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidAppAlertDialogBuilderClass, '<init>', '(Landroid/content/Context;)V');
   lParams[0].l := javaActivityObject;
   javaAlertDialog := javaEnvRef^^.NewObjectA(javaEnvRef, javaAndroidAppAlertDialogBuilderClass, javaMethod_AlertDialogBuilder_new, @lParams[0]);
-  //__android_log_write(ANDROID_LOG_INFO, 'lclapp', '[TCDWidgetset.ShowSelectItemDialog] 3');
+  {$ifdef VerboseCDShowSelectItemDialog}
+  DebugLn(Format('[TCDWidgetset.ShowSelectItemDialog] 3 javaActivityClass=%x', [PtrUInt(javaActivityClass)]));
+  {$endif}
+
+  // Very strangely in the emulator it crashes if we don't refresh the Activity class here
+  javaActivityClass := javaEnvRef^^.FindClass(javaEnvRef,'com/pascal/lcltest/LCLActivity');
 
   // ad.setSingleChoiceItems( adapter, -1, MyOnClickListener);
   // DialogInterface.OnClickListener lclselectitemcallback;
@@ -316,17 +326,23 @@ begin
   end;
   lParams[1].i := -1;
   lParams[2].l := javaAlertDialog;
-{  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar('[TCDWidgetset.ShowSelectItemDialog] JavaMethod_LCLDoPrepareSelectItemDialog='+IntToStr(PtrInt(JavaMethod_LCLDoPrepareSelectItemDialog))));
-  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar('[TCDWidgetset.ShowSelectItemDialog] lParams[0].l='+IntToStr(PtrInt(lParams[0].l))));
-  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar('[TCDWidgetset.ShowSelectItemDialog] lParams[1].i='+IntToStr(lParams[1].i)));
-  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar('[TCDWidgetset.ShowSelectItemDialog] lParams[2].l='+IntToStr(PtrInt(lParams[2].l))));
-  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar('[TCDWidgetset.ShowSelectItemDialog] javaActivityClass='+IntToStr(PtrInt(javaActivityClass))));}
+  {$ifdef VerboseCDShowSelectItemDialog}
+  DebugLn('[TCDWidgetset.ShowSelectItemDialog] JavaMethod_LCLDoPrepareSelectItemDialog='+IntToStr(PtrInt(JavaMethod_LCLDoPrepareSelectItemDialog)));
+  DebugLn('[TCDWidgetset.ShowSelectItemDialog] lParams[0].l='+IntToStr(PtrInt(lParams[0].l)));
+  DebugLn('[TCDWidgetset.ShowSelectItemDialog] lParams[1].i='+IntToStr(lParams[1].i));
+  DebugLn('[TCDWidgetset.ShowSelectItemDialog] lParams[2].l='+IntToStr(PtrInt(lParams[2].l)));
+  DebugLn('[TCDWidgetset.ShowSelectItemDialog] javaActivityClass='+IntToStr(PtrInt(javaActivityClass)));
+  {$endif}
   javaEnvRef^^.CallVoidMethodA(javaEnvRef, javaActivityObject, JavaMethod_LCLDoPrepareSelectItemDialog, @lParams[0]);
 
   // ad.show();
-//  __android_log_write(ANDROID_LOG_INFO, 'lclapp', '[TCDWidgetset.ShowSelectItemDialog] 4');
+  {$ifdef VerboseCDShowSelectItemDialog}
+  DebugLn('[TCDWidgetset.ShowSelectItemDialog] 4');
+  {$endif}
   javaMethod_AlertDialogBuilder_show := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidAppAlertDialogBuilderClass, 'show', '()Landroid/app/AlertDialog;');
-//  __android_log_write(ANDROID_LOG_INFO, 'lclapp', '[TCDWidgetset.ShowSelectItemDialog] 5');
+  {$ifdef VerboseCDShowSelectItemDialog}
+  __android_log_write(ANDROID_LOG_INFO, 'lclapp', '[TCDWidgetset.ShowSelectItemDialog] 5');
+  {$endif}
   javaEnvRef^^.CallObjectMethod(javaEnvRef, javaAlertDialog, javaMethod_AlertDialogBuilder_show);
 
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', '[TCDWidgetset.ShowSelectItemDialog] END');
