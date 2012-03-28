@@ -54,7 +54,7 @@ uses
   lazcanvas, lazregions, lazdeviceapis,
   InterfaceBase,
   Controls,  Forms, lclproc, IntfGraphics, GraphType,
-  LCLType, LMessages, Graphics, LCLStrConsts, LazLoggerBase;
+  LCLType, LMessages, Graphics, LCLStrConsts, Menus, LazLoggerBase;
 
 type
   {$ifdef CD_Windows}
@@ -319,6 +319,8 @@ function Java_com_pascal_lclproject_LCLActivity_LCLOnConfigurationChanged(
     env:PJNIEnv; this:jobject; ANewDPI, ANewWidth: jint): jint; cdecl;
 function Java_com_pascal_lclproject_LCLActivity_LCLOnSensorChanged(
     env:PJNIEnv; this:jobject; ASensorKind: jint; AValues: JDoubleArray): jint; cdecl;
+function Java_com_pascal_lclproject_LCLActivity_LCLOnMenuAction(
+  env:PJNIEnv; this:jobject; kind: jint; itemIndex: jint): jint; cdecl;
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
 procedure JNI_OnUnload(vm:PJavaVM;reserved:pointer); cdecl;
 

@@ -334,7 +334,65 @@ begin
   Result := eventResult;
 end;
 
-const NativeMethods: array[0..7] of JNINativeMethod=
+function Java_com_pascal_lclproject_LCLActivity_LCLOnMenuAction(
+  env:PJNIEnv; this:jobject; kind: jint; itemIndex: jint): jint; cdecl;
+var
+  javaField_lclmenu_captions: jfieldid;
+  javaObject_lclmenu_captions: jobject;
+  lJavaString: jstring;
+  lCurrentForm: TCDNonNativeForm;
+  lMenu: TMainMenu;
+  Str: PChar;
+  lMenuItem: TMenuItem;
+  i, CurIndex: Integer;
+begin
+  Result := 0;
+  //{$ifdef VerboseCDEvents}
+  __android_log_write(ANDROID_LOG_INFO,'lclapp',PChar(
+    Format('LCLOnMenuAction called kind=%d itemIndex=%d', [kind, itemIndex])));
+  //{$endif}
+
+  if (javaEnvRef = nil) then Exit;
+
+  // kind=0 means that we should create the menu items list
+  if kind = 0 then
+  begin
+    lCurrentForm := GetCurrentForm();
+    if lCurrentForm = nil then Exit;
+    lMenu := lCurrentForm.LCLForm.Menu;
+    if lMenu = nil then Exit;
+
+    javaField_lclmenu_captions := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclmenu_captions', '[Ljava/lang/String;');
+    javaObject_lclmenu_captions := javaEnvRef^^.GetObjectField(javaEnvRef, javaActivityClass, javaField_lclmenu_captions);
+
+    CurIndex := 0;
+    for i := 0 to lMenu.Items.Count-1 do
+    begin
+      lMenuItem := lMenu.Items[i];
+      // Various things might make a menu item invalid and therefore not part of the list
+      if not lMenuItem.Visible then Continue;
+      if lMenuItem.Caption = '-' then Continue;
+
+      Str := PChar(lMenuItem.Caption);
+      lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, Str);
+      javaEnvRef^^.SetObjectArrayElement(javaEnvRef, javaObject_lclmenu_captions, CurIndex, lJavaString);
+
+      Inc(CurIndex);
+
+      if CurIndex >= 6 then Break;
+    end;
+  end
+  // kind=1 means a button click event
+  else
+  begin
+
+  end;
+
+  // This sends messages like Invalidate requests
+  Result := eventResult;
+end;
+
+const NativeMethods: array[0..8] of JNINativeMethod=
   ((name:'LCLDrawToBitmap';
     signature:'(IILandroid/graphics/Bitmap;)I';
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap;),
@@ -358,7 +416,10 @@ const NativeMethods: array[0..7] of JNINativeMethod=
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnConfigurationChanged;),
    (name:'LCLOnSensorChanged';
     signature:'(I[D)I';
-    fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnSensorChanged;)
+    fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnSensorChanged;),
+   (name:'LCLOnMenuAction';
+    signature:'(II)I';
+    fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnMenuAction;)
   );
 
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
