@@ -1027,6 +1027,7 @@ procedure TLazProject.SetFlags(const AValue: TProjectFlags);
 begin
   if FFlags=AValue then exit;
   FFlags:=AValue;
+  Modified:=true;
 end;
 
 procedure TLazProject.SetSessionStorage(const AValue: TProjectSessionStorage);
