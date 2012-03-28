@@ -11648,6 +11648,12 @@ var
       FrameCache^.ParentFPList[aFrameIdx].parentfp := ParentFp;
     end;
 
+    if StrToQWordDef(ParentFp, 0) = 0 then begin
+      FrameCache^.ParentFPList[aFrameIdx].parentfp := '-'; // mark as no parentfp
+      List.Free;
+      Exit(False);
+    end;
+
     if List = nil
     then List := TGDBMINameValueList.Create('');
 
