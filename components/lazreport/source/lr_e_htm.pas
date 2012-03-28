@@ -399,7 +399,7 @@ end;
 
 procedure TfrHTMExportFilter.OnData(x, y: Integer; View: TfrView);
 begin
-  FLastField := AddData(x, y, View);
+  FLastField := AddData({x, y,} View);
 end;
 
 procedure TfrHTMExportFilter.OnText(X, Y: Integer; const Text: String;

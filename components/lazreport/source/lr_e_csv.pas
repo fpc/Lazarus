@@ -134,7 +134,7 @@ end;
 
 procedure TfrCSVExportFilter.OnData(x, y: Integer; View: TfrView);
 begin
-  AddData(x, y, View);
+  AddData({x, y,} View);
 end;
 
 procedure TfrCSVExportFilter.OnText(X, Y: Integer; const Text: String;

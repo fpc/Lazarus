@@ -16,7 +16,7 @@ interface
 
 uses
   SysUtils, {$IFDEF UNIX}CLocale,{$ENDIF} Classes, MaskUtils, Controls, FileUtil,
-  Forms, ComCtrls, Dialogs, Menus, Variants, DB, Graphics, Printers, osPrinters,
+  Forms, {ComCtrls,} Dialogs, Menus, Variants, DB, Graphics, Printers, osPrinters,
   DOM, XMLRead, XMLConf, LCLType, LCLIntf, TypInfo, LCLProc, LR_View, LR_Pars,
   LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const;
 
@@ -357,7 +357,7 @@ type
     function MinHeight: Integer; override;
     function RemainHeight: Integer; override;
     procedure GetBlob(b: TfrTField); override;
-    procedure FontChange(sender: TObject);
+    procedure FontChange(Sender: TObject);
     procedure ResetLastValue; override;
 
     property IsLastValueSet: boolean read GetIsLastValueSet write SetIsLastValueSet;
@@ -459,7 +459,7 @@ type
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToStream(Stream: TStream); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
-    procedure DefinePopupMenu(Popup: TPopupMenu); override;
+    procedure DefinePopupMenu({%H-}Popup: TPopupMenu); override;
   end;
 
   { TfrPictureView }
@@ -511,7 +511,7 @@ type
     constructor Create; override;
 
     procedure Draw(aCanvas: TCanvas); override;
-    procedure DefinePopupMenu(Popup: TPopupMenu); override;
+    procedure DefinePopupMenu({%H-}Popup: TPopupMenu); override;
     function GetClipRgn(rt: TfrRgnType): HRGN; override;
     function PointInView(aX,aY: Integer): Boolean; override;
     
@@ -568,7 +568,7 @@ type
     procedure DrawCrossCell(Parnt: TfrBand; CurX: Integer);
     procedure DrawCross;
     function CheckPageBreak(ay, ady: Integer; PBreak: Boolean): Boolean;
-    function CheckNextColumn: boolean;
+    procedure CheckNextColumn;
     procedure DrawPageBreak;
     function HasCross: Boolean;
     function DoCalcHeight: Integer;
@@ -703,7 +703,7 @@ type
     procedure ShowBandByType(bt: TfrBandType);
     procedure NewPage;
     procedure NewColumn(Band: TfrBand);
-    procedure NextColumn(Band: TFrBand);
+    procedure NextColumn({%H-}Band: TFrBand);
     function RowsLayout: boolean;
     procedure StartColumn;
     procedure StartRowsLayoutNonDataBand(Band: TfrBand);
@@ -836,7 +836,7 @@ type
     Lines: TFpList;
     procedure ClearLines;
     procedure Setup; virtual;
-    function  AddData(x, y: Integer; view: TfrView): pointer; virtual;
+    function  AddData({x, y: Integer;} view: TfrView): pointer; virtual;
     procedure NewRec(View: TfrView; const AText:string; var P:Pointer); virtual;
     procedure AddRec(ALineIndex: Integer; ARec: Pointer); virtual;
     function  GetviewText(View:TfrView): string; virtual;
@@ -848,8 +848,8 @@ type
     procedure OnEndDoc; virtual;
     procedure OnBeginPage; virtual;
     procedure OnEndPage; virtual;
-    procedure OnData(x, y: Integer; View: TfrView); virtual;
-    procedure OnText(x, y: Integer; const text: String; View: TfrView); virtual;
+    procedure OnData({%H-}x, {%H-}y: Integer; {%H-}View: TfrView); virtual;
+    procedure OnText({%H-}x, {%H-}y: Integer; const {%H-}text: String; {%H-}View: TfrView); virtual;
 
     property BandTypes: TfrBandTypes read FBandTypes write FBandTypes;
     property UseProgressbar: boolean read FUseProgressBar write FUseProgressBar;
@@ -1079,7 +1079,7 @@ type
 
   TfrObjEditorForm = class(TForm)
   public
-    procedure ShowEditor(t: TfrView); virtual;
+    procedure ShowEditor({%H-}t: TfrView); virtual;
   end;
 
   TfrFunctionDescription = class(TObject)
@@ -1112,8 +1112,8 @@ type
   TfrCompressor = class(TObject)
   public
     Enabled: Boolean;
-    procedure Compress(StreamIn, StreamOut: TStream); virtual;
-    procedure DeCompress(StreamIn, StreamOut: TStream); virtual;
+    procedure Compress({%H-}StreamIn, {%H-}StreamOut: TStream); virtual;
+    procedure DeCompress({%H-}StreamIn, {%H-}StreamOut: TStream); virtual;
   end;
 
 
@@ -1588,7 +1588,7 @@ begin
   fFrameWidth := 1;
   fFrameColor := clBlack;
   fFillColor := clNone;
-  fFormat := 2*256 + Ord(DecimalSeparator);
+  fFormat := 2*256 + Ord(DefaultFormatSettings.DecimalSeparator);
   BaseName := 'View';
   Visible := True;
   StreamMode := smDesigning;
@@ -1880,7 +1880,7 @@ begin
     Read(dy, 4);
     Read(Flags, 2);
 
-    Read(S, SizeOf(S)); fFrameWidth := S;
+    Read(S{%H-}, SizeOf(S)); fFrameWidth := S;
     Read(fFrameColor, SizeOf(fFrameColor));
     Read(fFrames,SizeOf(fFrames));
     Read(fFrameStyle, SizeOf(fFrameStyle));
@@ -1897,12 +1897,12 @@ begin
     if (frVersion >= 23) and (StreamMode = smDesigning) then
     begin
       ReadMemo(Stream, Script);
-      Read(wb,2);
+      Read(wb{%H-},2);
       Visible:=(Wb<>0);
     end;
 
     if (frVersion >= 25) then begin
-      Read(I, 4);
+      Read(I{%H-}, 4);
       ParentBandType := TfrBandType(I);
     end;
 
@@ -2444,7 +2444,7 @@ var
     i := 1;
     repeat
       while (i < Length(s)) and (s[i] <> '[') do Inc(i);
-      s1 := GetBrackedVariable(s, i, j);
+      s1 := GetBrackedVariable(s, i, j{%H-});
       if i <> j then
       begin
         Delete(s, i, j - i + 1);
@@ -2767,7 +2767,7 @@ var
       aw: Integer;
       {$ENDIF}
       n, nw, w, curx: Integer;
-      ParaEnd: Boolean;
+      //ParaEnd: Boolean;
       Ts: TTextStyle;
     begin
       if not Streaming and (cury + th < DR.Bottom) then
@@ -2775,13 +2775,13 @@ var
         n := Length(St);
         w := Ord(St[n - 1]) * 256 + Ord(St[n]);
         SetLength(St, n - 2);
-        ParaEnd := True;
+        //ParaEnd := True;
         if Length(St) > 0 then
         begin
           if St[Length(St)] = #1 then
             SetLength(St, Length(St) - 1)
           else
-            ParaEnd := False;
+            //ParaEnd := False;
         end;
 
         // handle any alignment with same code
@@ -2860,17 +2860,11 @@ var
 
     procedure OutLine(str: String);
     var
-      i, n, cury: Integer;
-      ParaEnd: Boolean;
+      cury: Integer;
     begin
       SetLength(str, Length(str) - 2);
       if str[Length(str)] = #1 then
-      begin
-        ParaEnd := True;
         SetLength(str, Length(str) - 1);
-      end
-      else
-        ParaEnd := False;
       cury := 0;
       case Alignment of
           Classes.taLeftJustify : CurY :=y + dy-gapy;
@@ -3254,9 +3248,9 @@ begin
   Font.Name := ReadString(Stream);
   with Stream do
   begin
-    Read(i, 4);
+    Read({%H-}i, 4);
     Font.Size := i;
-    Read(w, 2);
+    Read({%H-}w, 2);
     Font.Style := frSetFontStyle(w);
     Read(i, 4);
     Font.Color := i;
@@ -3271,9 +3265,9 @@ begin
     end;
     
 
-    Read(TmpAlign,SizeOf(TmpAlign));
-    Read(TmpLayout,SizeOf(TmpLayout));
-    Read(tmpAngle,SizeOf(tmpAngle));
+    Read({%H-}TmpAlign,SizeOf(TmpAlign));
+    Read({%H-}TmpLayout,SizeOf(TmpLayout));
+    Read({%H-}tmpAngle,SizeOf(tmpAngle));
 
     BeginUpdate;
     Alignment := tmpAlign;
@@ -3387,7 +3381,7 @@ begin
   end;
 end;
 
-procedure TfrMemoView.FontChange(sender: TObject);
+procedure TfrMemoView.FontChange(Sender: TObject);
 begin
   AfterChange;
 end;
@@ -3694,7 +3688,7 @@ end;
 
 procedure TfrBandView.Draw(aCanvas: TCanvas);
 var
-  St     : String;
+  //St     : String;
   R      : TRect;
 begin
   fFrameWidth := 1;
@@ -3753,7 +3747,7 @@ begin
         Pen.Color := clBlack;
         MoveTo(r.Right-1, r.Top);
         LineTo(r.Right-1, r.Bottom);
-        st:=frBandNames[BandType];
+        //st:=frBandNames[BandType];
         Font.Orientation := 0;
         Brush.Color:=clBtnFace;
         TextOut(r.left+5, r.top+1, frBandNames[BandType]);
@@ -3781,7 +3775,7 @@ end;
 function TfrBandView.GetClipRgn(rt: TfrRgnType): HRGN;
 var
   R,R1,R2: HRGN;
-  RR : LongInt;
+//  RR : LongInt;
 begin
   if not ShowBandTitles then
   begin
@@ -3799,7 +3793,7 @@ begin
 
   R2:=CreateRectRgn(0,0,0,0);
 
-  RR:=CombineRgn(R2, R, R1, RGN_OR);
+  {RR:=}CombineRgn(R2, R, R1, RGN_OR);
   Result:=R2;
 
   
@@ -4108,11 +4102,13 @@ var
   w, h, w1, h1: Integer;
 
   procedure PrintBitmap(DestRect: TRect; Bitmap: TBitmap);
+  {
   var
     BitmapHeader: pBitmapInfo;
     BitmapImage: Pointer;
     HeaderSize: DWord;
     ImageSize: DWord;
+  }
   begin
     aCanvas.StretchDraw(DestRect, Bitmap);
     //**
@@ -4235,7 +4231,7 @@ begin
   SetLength(S, Stream.Size*2);
   c := 1;
   for i:=1 to Stream.Size div SizeOf(Buf) do begin
-    Stream.Read(Buf, SizeOf(buf));
+    Stream.Read(Buf{%H-}, SizeOf(buf));
     WriteBuf(SizeOf(Buf));
   end;
   i := Stream.Size mod SizeOf(Buf);
@@ -4267,12 +4263,12 @@ procedure TfrPictureView.LoadFromStream(Stream: TStream);
 var
   b: Byte;
   n: Integer;
-  AGraphicClass: TGraphicClass;
+  //AGraphicClass: TGraphicClass;
   Graphic: TGraphic;
-  Ext: string;
+  //Ext: string;
 begin
   inherited LoadFromStream(Stream);
-  Stream.Read(b, 1);
+  Stream.Read({%H-}b, 1);
 
   if b=pkAny then
     Graphic := ExtensionToGraphic(Stream.ReadAnsiString)
@@ -4281,7 +4277,7 @@ begin
 
   FSharedName := Stream.ReadAnsiString;
 
-  Stream.Read(n, 4);
+  Stream.Read({%H-}n, 4);
 
   Picture.Graphic := Graphic;
   if Graphic <> nil then
@@ -4376,7 +4372,7 @@ end;
 procedure TfrPictureView.SaveToXML(XML: TLrXMLConfig; const Path: String);
 var
   b: Byte;
-  n, o: Integer;
+  //n, o: Integer;
   m: TMemoryStream;
 begin
   inherited SaveToXML(XML, Path);
@@ -4660,7 +4656,7 @@ end;
 
 function TfrLineView.PointInView(aX, aY: Integer): Boolean;
 var
-  bx, by, bx1, by1, w1, w2: Integer;
+  bx, by, bx1, by1, w1: Integer;
 begin
   if FrameStyle=frsDouble then
     w1 := Round(FrameWidth * 1.5)
@@ -5174,7 +5170,7 @@ begin
   {$ENDIF}
 end;
 
-function TfrBand.CheckNextColumn: boolean;
+procedure TfrBand.CheckNextColumn;
 var
   BandHeight: Integer;
 begin
@@ -6581,7 +6577,6 @@ var
   var
     WasPrinted: Boolean;
     b, b1, b2: TfrBand;
-    BM       : Pointer;
 
     procedure InitGroups(b: TfrBand);
     begin
@@ -6861,13 +6856,13 @@ begin
     Read(pgSize, 4);
     Read(dx, 4); //Width
     Read(dy, 4); //Height
-    Read(Rc, Sizeof(Rc));
+    Read({%H-}Rc, Sizeof(Rc));
     Margins.AsRect:=Rc;
-    Read(b, 1);
+    Read({%H-}b, 1);
     Orientation:=TPrinterOrientation(b);
     if frVersion < 23 then
-      Read(s[1], 6);
-    Read(Bool, 2);
+      Read({%H-}s[1], 6);
+    Read({%H-}Bool, 2);
     PrintToPrevPage:=Bool;
     Read(Bool, 2);
     UseMargins:=Bool;
@@ -7055,16 +7050,14 @@ begin
         AddObject(b, '');
       t.LoadFromStream(Stream);
       if AnsiUpperCase(s) = 'TFRFRAMEDMEMOVIEW' then
-        Stream.Read(buf[1], 8);
+        Stream.Read({%H-}buf[1], 8);
     end;
   end;
 end;
 
 procedure TfrPages.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 var
-  b: Byte;
   t: TfrView;
-  s: string;
   procedure AddObject(aPage: TFrPage; ot: Byte; clname: String);
   begin
     aPage.Objects.Add(frCreateObject(ot, clname));
@@ -7121,7 +7114,6 @@ var
   b: Byte;
   i, j: Integer;
   t: TfrView;
-  S:string;
 begin
   Stream.Write(Parent.PrintToDefault, 2);
   Stream.Write(Parent.DoublePass, 2);
@@ -7161,7 +7153,6 @@ end;
 
 procedure TfrPages.SavetoXML(XML: TLrXMLConfig; const Path: String);
 var
-  b: Byte;
   i, j: Integer;
   t: TfrView;
   aPath,aSubPath: String;
@@ -7299,7 +7290,7 @@ begin
     Stream.Read(frVersion, 1);
     while Stream.Position < Stream.Size do
     begin
-      Stream.Read(b, 1);
+      Stream.Read({%H-}b, 1);
       if b = gtAddIn then
         s := ReadString(Stream) else
         s := '';
@@ -7329,7 +7320,7 @@ begin
     Stream.Read(frVersion, 1);
     while Stream.Position < Stream.Size do
     begin
-      Stream.Read(b, 1);
+      Stream.Read({%H-}b, 1);
       if b = gtAddIn then
         s := ReadString(Stream)
       else
@@ -7416,7 +7407,6 @@ var
   i, o, c: Integer;
   b, compr: Byte;
   p: PfrPageInfo;
-  s: TMemoryStream;
 
   procedure ReadVersion22;
   var
@@ -7463,7 +7453,7 @@ var
 
 begin
   Clear;
-  AStream.Read(compr, 1);
+  AStream.Read({%H-}compr, 1);
   if not (compr in [0, 1, 255]) then
   begin
     AStream.Seek(0, soFromBeginning);
@@ -7483,17 +7473,17 @@ var
 
 begin
   if AReadHeader then begin
-    AStream.Read(compr, 1);
+    AStream.Read({%H-}compr, 1);
     if not (compr in [0, 1, 255]) then
     begin
       Exit;
     end;
   end;
   Parent.SetPrinterTo(frReadString(AStream));
-  AStream.Read(c, 4);
+  AStream.Read({%H-}c, 4);
   i := 0;
   repeat
-    AStream.Read(o, 4);
+    AStream.Read({%H-}o, 4);
     GetMem(p, SizeOf(TfrPageInfo));
     FillChar(p^, SizeOf(TfrPageInfo), #0);
     FPages.Add(p);
@@ -7502,7 +7492,7 @@ begin
       AStream.Read(pgSize, 2);
       AStream.Read(pgWidth, 4);
       AStream.Read(pgHeight, 4);
-      AStream.Read(b, 1);
+      AStream.Read({%H-}b, 1);
       pgOr := TPrinterOrientation(b);
       AStream.Read(b, 1);
       pgMargins := Boolean(b);
@@ -7650,7 +7640,7 @@ var
   var
     n: Byte;
   begin
-    Stream.Read(n, 1);
+    Stream.Read({%H-}n, 1);
     SetLength(Result, n);
     Stream.Read(Result[1], n);
   end;
@@ -7660,7 +7650,7 @@ begin
   FItems.Sorted := False;
   with Stream do
   begin
-    ReadBuffer(n, SizeOf(n));
+    ReadBuffer({%H-}n, SizeOf(n));
     for i := 0 to n - 1 do
     begin
       j := AddValue;
@@ -7821,7 +7811,7 @@ procedure TfrReport.ReadBinaryData(Stream: TStream);
 var
   n: Integer;
 begin
-  Stream.Read(n, 4); // version
+  Stream.Read({%H-}n, 4); // version
   if FStoreInDFM then
   begin
     Stream.Read(n, 4);
@@ -7870,8 +7860,6 @@ procedure TfrReport.InternalOnGetValue(ParName: String; var ParValue: String);
 var
   i, j, AFormat: Integer;
   AFormatStr: String;
-  V : Variant;
-  ValStr: String;
 begin
   SubValue := '';
   AFormat := CurView.Format;
@@ -8443,8 +8431,8 @@ begin
   if Load then
   begin
     ReadMemo(Stream, fm);
-    Stream.Read(pos, 4);
-    Stream.Read(b, 1);
+    Stream.Read(pos{%H-}, 4);
+    Stream.Read({%H-}b, 1);
     if b <> 0 then
       fb.LoadFromStream(Stream);
     Stream.Position := pos;
@@ -9433,23 +9421,23 @@ begin
     FOnSetup(Self);
 end;
 
-function TfrExportFilter.AddData(x, y: Integer; view: TfrView):pointer;
+function TfrExportFilter.AddData({x, y: Integer;} view: TfrView):pointer;
 var
   p: PfrTextRec;
   s: string;
 begin
   result := nil;
 
-  if (View = nil) or not (View.ParentBandType in BandTypes) then
+  if (view = nil) or not (view.ParentBandType in BandTypes) then
     exit;
 
-  if View.Flags and flStartRecord<>0 then
+  if view.Flags and flStartRecord<>0 then
     Inc(FLineIndex);
 
-  if CheckView(View) then
+  if CheckView(view) then
   begin
-    s := GetViewText(View);
-    NewRec(View, s, p);
+    s := GetViewText(view);
+    NewRec(view, s, {%H-}p);
     AddRec(FLineIndex, p);
     result := p;
   end;
