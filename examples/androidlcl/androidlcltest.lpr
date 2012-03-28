@@ -6,7 +6,7 @@ uses
   customdrawnint,
   Interfaces,
   Forms,
-  mainform, secondform;
+  mainform, secondform, customdrawn_android, customdrawndrawers;
 
 exports
   Java_com_pascal_lclproject_LCLActivity_LCLOnTouch name 'Java_com_pascal_lcltest_LCLActivity_LCLOnTouch',
@@ -22,6 +22,7 @@ exports
 
 procedure MyActivityOnCreate;
 begin
+  DefaultStyle := dsAndroid;
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.CreateForm(TForm2, Form2);

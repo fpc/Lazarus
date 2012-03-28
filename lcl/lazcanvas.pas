@@ -574,7 +574,9 @@ begin
       begin
         Self.Colors[CurDestX, CurDestY] := ASource.Colors[CurSrcX, CurSrcY];
       end
-      else if MaskValue > $00 then
+      // Theorically it should be > 0 but we make a filter here to exclude low-alpha pixels
+      // because those cause small white pixels in the image
+      else if MaskValue > $4000 then
       begin
         SrcColor := ASource.Colors[CurSrcX, CurSrcY];
 
