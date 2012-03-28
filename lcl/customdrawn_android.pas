@@ -206,13 +206,24 @@ initialization
 
 procedure TCDDrawerAndroid.DrawCheckBoxBitmap(ADest: TFPCustomCanvas; ADestPos: TPoint; AState: TCDControlState; ASize: Integer);
 var
-  i: Integer;
+  i, scaledI: Integer;
   lDest: TCanvas;
+  lValue5, lValue7, lValue12, lValue17, lValue18, lValueSum24: Integer;
 begin
   lDest := TCanvas(ADest);
+  lValue5 := DPIAdjustment(5);
+  lValue7 := DPIAdjustment(7);
+  lValue12 := DPIAdjustment(12);
+  lValue18 := DPIAdjustment(18);
+  lValue17 := DPIAdjustment(17);
+  lValueSum24 := lValue7+lValue17;
+
   // Background
   for i := 0 to ASize-1 do
-    DrawAndroidAlternatedHorzLine(lDest, 0, ASize-1, i, ANDROID_CHECKBOX_A[i], ANDROID_CHECKBOX_B[i]);
+  begin
+    scaledI := Round(i * 30 / ASize);
+    DrawAndroidAlternatedHorzLine(lDest, 0, ASize-1, i, ANDROID_CHECKBOX_A[scaledI], ANDROID_CHECKBOX_B[scaledI]);
+  end;
 
   // Corners
   ADest.Colors[ADestPos.X+0, ADestPos.Y+0] := colBlack;
@@ -247,64 +258,84 @@ begin
   if csfOff in AState then
   begin
     // first 6 descending lines
-    for i := 0 to 5 do
-      DrawVerticalLineWithFirstLast(ADest, 7+i, 12+i, 18+i,
+    for i := 0 to lValue5 do
+      DrawVerticalLineWithFirstLast(ADest, lValue7+i, lValue12+i, lValue18+i,
         TColorToFPColor($828081), TColorToFPColor($AFB0AF), TColorToFPColor($9D9E9D));
     // now 11 ascending lines
-    for i := 6 to 17 do
-      DrawVerticalLineWithFirstLast(ADest, 7+i, 12+10-i, 18+10-i,
+    for i := lValue5+1 to lValue17 do
+      DrawVerticalLineWithFirstLast(ADest, lValue7+i, lValue12+lValue5*2-i, lValue18+lValue5*2-i,
         TColorToFPColor($939193), TColorToFPColor($AFB0AF), TColorToFPColor($9D9E9D));
     // left part adjusts
-    lDest.Pixels[7, 12] := $A6A7A6;
-    lDest.Pixels[6, 13] := $828482;
-    lDest.Pixels[5, 14] := $949193;
-    lDest.Pixels[5, 15] := $9D9E9D;
-    lDest.Pixels[5, 16] := $A6A7A6;
-    lDest.Pixels[6, 14] := $A6A3A5;
-    lDest.Pixels[6, 15] := $AFACAF;
-    lDest.Pixels[6, 16] := $A6A7A6;
-    lDest.Pixels[6, 17] := $9DA29E;
+    lDest.Pixels[lValue7, lValue12] := $A6A7A6;
+    lDest.Pixels[lValue7-1, lValue12+1] := $828482;
+    lDest.Pixels[lValue7-2, lValue12+2] := $949193;
+    lDest.Pixels[lValue7-2, lValue12+3] := $9D9E9D;
+    lDest.Pixels[lValue7-2, lValue12+4] := $A6A7A6;
+    lDest.Pixels[lValue7-1, lValue12+2] := $A6A3A5;
+    lDest.Pixels[lValue7-1, lValue12+3] := $AFACAF;
+    lDest.Pixels[lValue7-1, lValue12+4] := $A6A7A6;
+    lDest.Pixels[lValue7-1, lValue12+5] := $9DA29E;
+    for i := 1 to lValue18 - lValue12 - 6 do
+    begin
+      lDest.Pixels[lValue7-2, lValue12+4+i] := $A6A7A6;
+      lDest.Pixels[lValue7-1, lValue12+5+i] := $9DA29E;
+    end;
     // right part adjusts
-    lDest.Pixels[24,  6] := $9D9A9C;
-    lDest.Pixels[24,  7] := $AFBDAF;
-    lDest.Pixels[24,  8] := $CCC9CC;
-    lDest.Pixels[24,  9] := $BABBBA;
-    lDest.Pixels[24, 10] := $B9B6B9;
-    lDest.Pixels[25,  6] := $AFB0AF;
-    lDest.Pixels[25,  7] := $A6A7A6;
-    lDest.Pixels[25,  8] := $B9B6B9;
-    lDest.Pixels[25,  9] := $BABBBA;
+    lDest.Pixels[lValueSum24,  lValue12-6] := $9D9A9C;
+    lDest.Pixels[lValueSum24,  lValue12-5] := $AFBDAF;
+    lDest.Pixels[lValueSum24,  lValue12-4] := $CCC9CC;
+    lDest.Pixels[lValueSum24,  lValue12-3] := $BABBBA;
+    lDest.Pixels[lValueSum24, lValue12-2] := $B9B6B9;
+    lDest.Pixels[lValueSum24+1,  lValue12-6] := $AFB0AF;
+    lDest.Pixels[lValueSum24+1,  lValue12-5] := $A6A7A6;
+    lDest.Pixels[lValueSum24+1,  lValue12-4] := $B9B6B9;
+    lDest.Pixels[lValueSum24+1,  lValue12-3] := $BABBBA;
+    for i := 1 to lValue18 - lValue12 - 6 do
+    begin
+      lDest.Pixels[lValueSum24,  lValue12-6-i] := $9D9A9C;
+      lDest.Pixels[lValueSum24+1,  lValue12-6-i] := $AFB0AF;
+    end;
   end
   else
   begin
     // first 6 descending lines
-    for i := 0 to 5 do
-      DrawVerticalLineWithFirstLast(ADest, 7+i, 12+i, 18+i,
+    for i := 0 to lValue5 do
+      DrawVerticalLineWithFirstLast(ADest, lValue7+i, lValue12+i, lValue18+i,
         TColorToFPColor($007500), TColorToFPColor($00D300), TColorToFPColor($089A08));
     // now 11 ascending lines
-    for i := 6 to 17 do
-      DrawVerticalLineWithFirstLast(ADest, 7+i, 12+10-i, 18+10-i,
+    for i := lValue5+1 to lValue17 do
+      DrawVerticalLineWithFirstLast(ADest, lValue7+i, lValue12+lValue5*2-i, lValue18+lValue5*2-i,
         TColorToFPColor($009200), TColorToFPColor($00D300), TColorToFPColor($089A08));
     // left part adjusts
-    lDest.Pixels[7, 12] := $849E84;
-    lDest.Pixels[6, 13] := $187518;
-    lDest.Pixels[5, 14] := $188A18;
-    lDest.Pixels[5, 15] := $109E10;
-    lDest.Pixels[5, 16] := $73A273;
-    lDest.Pixels[6, 14] := $00A600;
-    lDest.Pixels[6, 15] := $00BE00;
-    lDest.Pixels[6, 16] := $00B200;
-    lDest.Pixels[6, 17] := $4A9E4A;
+    lDest.Pixels[lValue7, lValue12] := $849E84;
+    lDest.Pixels[lValue7-1, lValue12+1] := $187518;
+    lDest.Pixels[lValue7-2, lValue12+2] := $188A18;
+    lDest.Pixels[lValue7-2, lValue12+3] := $109E10;
+    lDest.Pixels[lValue7-2, lValue12+4] := $73A273;
+    lDest.Pixels[lValue7-1, lValue12+2] := $00A600;
+    lDest.Pixels[lValue7-1, lValue12+3] := $00BE00;
+    lDest.Pixels[lValue7-1, lValue12+4] := $00B200;
+    lDest.Pixels[lValue7-1, lValue12+5] := $4A9E4A;
+    for i := 1 to lValue18 - lValue12 - 6 do
+    begin
+      lDest.Pixels[lValue7-2, lValue12+4+i] := $73A273;
+      lDest.Pixels[lValue7-1, lValue12+5+i] := $4A9E4A;
+    end;
     // right part adjusts
-    lDest.Pixels[24,  6] := $427D42;
-    lDest.Pixels[24,  7] := $00A200;
-    lDest.Pixels[24,  8] := $00C700;
-    lDest.Pixels[24,  9] := $00B200;
-    lDest.Pixels[24, 10] := $31A231;
-    lDest.Pixels[25,  6] := $739E73;
-    lDest.Pixels[25,  7] := $009200;
-    lDest.Pixels[25,  8] := $00AA00;
-    lDest.Pixels[25,  9] := $4AA64A;
+    lDest.Pixels[lValueSum24,  lValue12-6] := $427D42;
+    lDest.Pixels[lValueSum24,  lValue12-5] := $00A200;
+    lDest.Pixels[lValueSum24,  lValue12-4] := $00C700;
+    lDest.Pixels[lValueSum24,  lValue12-3] := $00B200;
+    lDest.Pixels[lValueSum24, lValue12-2] := $31A231;
+    lDest.Pixels[lValueSum24+1,  lValue12-6] := $739E73;
+    lDest.Pixels[lValueSum24+1,  lValue12-5] := $009200;
+    lDest.Pixels[lValueSum24+1,  lValue12-4] := $00AA00;
+    lDest.Pixels[lValueSum24+1,  lValue12-3] := $4AA64A;
+    for i := 1 to lValue18 - lValue12 - 6 do
+    begin
+      lDest.Pixels[lValueSum24,  lValue12-6-i] := $427D42;
+      lDest.Pixels[lValueSum24+1,  lValue12-6-i] := $739E73;
+    end;
   end;
 end;
 
