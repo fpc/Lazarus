@@ -9492,7 +9492,11 @@ begin
     if B then
       gtk_widget_show(PGtkWidget(GtkWindow))
     else
+    begin
+      gtk_window_deiconify(GtkWindow);
+      gtk_window_unfullscreen(GtkWindow);
       gtk_window_maximize(GtkWindow);
+    end;
 
   SW_SHOWFULLSCREEN:
     if B then
