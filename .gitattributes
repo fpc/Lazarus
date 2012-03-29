@@ -1024,6 +1024,7 @@ components/fpvectorial/pdfvectorialreader.pas svneol=native#text/plain
 components/fpvectorial/pdfvrlexico.pas svneol=native#text/plain
 components/fpvectorial/pdfvrsemantico.pas svneol=native#text/plain
 components/fpvectorial/pdfvrsintatico.pas svneol=native#text/plain
+components/fpvectorial/rawvectorialreadwrite.pas svneol=native#text/plain
 components/fpvectorial/svgvectorialreader.pas svneol=native#text/plain
 components/fpvectorial/svgvectorialwriter.pas svneol=native#text/plain
 components/fpweb/README.txt svneol=native#text/plain

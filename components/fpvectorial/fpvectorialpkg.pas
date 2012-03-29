@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit fpvectorialpkg; 
+unit fpvectorialpkg;
 
 interface
 
@@ -10,14 +10,14 @@ uses
   svgvectorialwriter, fpvtocanvas, fpvectorial, fpvectbuildunit, 
   dxfvectorialreader, cdrvectorialreader, avisozlib, avisocncgcodewriter, 
   avisocncgcodereader, svgvectorialreader, epsvectorialreader, fpvutils, 
-  lasvectorialreader, LazarusPackageIntf;
+  lasvectorialreader, rawvectorialreadwrite, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-end; 
+end;
 
 initialization
-  RegisterPackage('fpvectorialpkg', @Register); 
+  RegisterPackage('fpvectorialpkg', @Register);
 end.

@@ -12,7 +12,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="13">
+    <Files Count="14">
       <Item1>
         <Filename Value="svgvectorialwriter.pas"/>
         <UnitName Value="svgvectorialwriter"/>
@@ -65,6 +65,10 @@
         <Filename Value="lasvectorialreader.pas"/>
         <UnitName Value="lasvectorialreader"/>
       </Item13>
+      <Item14>
+        <Filename Value="rawvectorialreadwrite.pas"/>
+        <UnitName Value="rawvectorialreadwrite"/>
+      </Item14>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
@@ -73,7 +77,7 @@
       </Item1>
       <Item2>
         <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True" Release="1"/>
+        <MinVersion Major="1" Release="1" Valid="True"/>
       </Item2>
     </RequiredPkgs>
     <UsageOptions>

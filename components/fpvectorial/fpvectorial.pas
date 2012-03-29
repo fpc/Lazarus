@@ -40,7 +40,10 @@ type
     { Printing formats }
     vfPostScript, vfEncapsulatedPostScript,
     { GCode formats }
-    vfGCodeAvisoCNCPrototipoV5, vfGCodeAvisoCNCPrototipoV6);
+    vfGCodeAvisoCNCPrototipoV5, vfGCodeAvisoCNCPrototipoV6,
+    { Other formats }
+    vfRAW
+    );
 
 const
   { Default extensions }
@@ -53,6 +56,7 @@ const
   STR_AUTOCAD_EXCHANGE_EXTENSION = '.dxf';
   STR_ENCAPSULATEDPOSTSCRIPT_EXTENSION = '.eps';
   STR_LAS_EXTENSION = '.las';
+  STR_RAW_EXTENSION = '.raw';
 
 type
   TvCustomVectorialWriter = class;
@@ -1451,6 +1455,7 @@ begin
   else if AnsiCompareText(lExt, STR_AUTOCAD_EXCHANGE_EXTENSION) = 0 then Result := vfDXF
   else if AnsiCompareText(lExt, STR_ENCAPSULATEDPOSTSCRIPT_EXTENSION) = 0 then Result := vfEncapsulatedPostScript
   else if AnsiCompareText(lExt, STR_LAS_EXTENSION) = 0 then Result := vfLAS
+  else if AnsiCompareText(lExt, STR_RAW_EXTENSION) = 0 then Result := vfRAW
   else
     raise Exception.Create('TvVectorialDocument.GetFormatFromExtension: The extension (' + lExt + ') doesn''t match any supported formats.');
 end;
