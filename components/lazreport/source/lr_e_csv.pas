@@ -37,12 +37,12 @@ type
     FSeparator: TUTF8Char;
   protected
     procedure GetUsedFont; override;
-    procedure CalcXCoords(var x,w: integer); override;
+    procedure CalcXCoords(var {%H-}x,{%H-}w: integer); override;
   public
     constructor Create(AStream: TStream); override;
     procedure OnEndPage; override;
     procedure OnData(x, y: Integer; View: TfrView); override;
-    procedure OnText(X, Y: Integer; const Text: String; View: TfrView); override;
+    procedure OnText({%H-}X, {%H-}Y: Integer; const {%H-}Text: String; {%H-}View: TfrView); override;
 
     property QuoteChar: TUTF8Char read FQuoteChar write FQuoteChar;
     property QuoteType: TfrQuoteType read FQuoteType write FQuoteType;
@@ -75,7 +75,7 @@ end;
 
 function CompareIntervals(Item1, Item2: Pointer): Integer;
 begin
-  result := PtrInt(Item1)-PtrInt(Item2);
+  result := {%H-}PtrInt(Item1)-{%H-}PtrInt(Item2);
 end;
 
 procedure TfrCSVExportFilter.OnEndPage;

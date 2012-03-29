@@ -37,14 +37,14 @@ type
     procedure GetUsedFont; virtual;
     procedure Setup; override;
     procedure NewRec(View: TfrView; const AText:string; var p:pointer); override;
-    procedure CalcXCoords(var x,w: integer); virtual;
+    procedure CalcXCoords(var {%H-}x,{%H-}w: integer); virtual;
     function  CheckView(View: TfrView): boolean; override;
   public
     constructor Create(AStream: TStream); override;
     procedure OnBeginDoc; override;
     procedure OnEndPage; override;
     procedure OnBeginPage; override;
-    procedure OnText(X, Y: Integer; const Text: String; View: TfrView); override;
+    procedure OnText({%H-}X, Y: Integer; const Text: String; View: TfrView); override;
 
     property UsedFont: integer read FUsedFont write FUsedFont;
     property UseBOM: boolean read FUseBOM write FUseBOM;
@@ -160,12 +160,13 @@ end;
 procedure TfrTextExportFilter.OnText(X, Y: Integer; const Text: String;
   View: TfrView);
 var
-  p, p1, p2: PfrTextRec;
+  p: PfrTextRec;
 begin
   if View = nil then
     Exit;
   Y := Round(Y / UsedFont);
 
+  p:=nil;
   NewRec(View, Text, p);
   AddRec(Y, p);
 end;
