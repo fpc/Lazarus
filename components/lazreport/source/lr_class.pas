@@ -3800,7 +3800,7 @@ begin
   R2:=CreateRectRgn(0,0,0,0);
 
   RR:=CombineRgn(R2, R, R1, RGN_OR);
-  Result:=R2;
+  Result:=RR;
 
   
   DeleteObject(R);
