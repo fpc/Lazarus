@@ -814,10 +814,11 @@ var i, j, FilenameEndPos: integer;
       if fLastErrorType in [etPanic,etFatal] then begin
         // fatal and panic errors are not very informative
         // -> prepend current file
-        if CompStr(UnableToOpen, NewLine, 1) then
+        if CompStr(UnableToOpen, NewLine, 1) then begin
           CurrentMessageParts.Values['Filename']:=
             TrimFilename(SetDirSeparators(Copy(NewLine,Length(UnableToOpen)+1,Length(NewLine))))
-        else if (fCompilingHistory<>nil) and (fCompilingHistory.Count>0) then begin
+        end else if (fCompilingHistory<>nil) and (fCompilingHistory.Count>0)
+        then begin
           LastFile:=fCompilingHistory[fCompilingHistory.Count-1];
           if not FilenameIsAbsolute(LastFile) then
             FullFilename:=TrimFilename(fCurrentDirectory+LastFile)

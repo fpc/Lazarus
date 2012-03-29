@@ -274,6 +274,9 @@ end;
 
 procedure TQuickFixUnitNotFoundPosition.Execute(const Msg: TIDEMessageLine;
   Step: TIMQuickFixStep);
+// for example:
+// Fatal: Can't find unit Unit12 used by testunit1
+// /home/user/laz/main.pp(1,1) Fatal: Can't find unit lazreport used by lazarus
 var
   CodeBuf: TCodeBuffer;
   MissingUnitname: String;
@@ -286,22 +289,33 @@ begin
   if Step<>imqfoImproveMessage then exit;
   //DebugLn('QuickFixUnitNotFoundPosition ');
 
-  if not REMatches(Msg.Msg,'Can''t find unit ([a-z_0-9]+)','I') then begin
-    //DebugLn('QuickFixUnitNotFoundPosition invalid message ',Msg.Msg);
+  if not REMatches(Msg.Msg,'Can''t find unit ([a-z_.0-9]+) used by ','I') then begin
+    DebugLn('QuickFixUnitNotFoundPosition invalid message ',Msg.Msg);
     exit;
   end;
   MissingUnitname:=REVar(1);
-  if REMatches(Msg.Msg,'Can''t find unit ([a-z_0-9]+) used by ([a-z_0-9]+)','I')
+  if REMatches(Msg.Msg,'Can''t find unit ([a-z_.0-9]+) used by ([a-z_.0-9]+)','I')
   then begin
     UsedByUnit:=REVar(2);
+    //debugln(['TQuickFixUnitNotFoundPosition.Execute Missing="',MissingUnitname,'" used by "',UsedByUnit,'"']);
     if SysUtils.CompareText(UsedByUnit,MissingUnitname)<>0 then
     begin
       // the message belongs to another unit
-      NewFilename:=LazarusIDE.FindUnitFile(UsedByUnit);
+      NewFilename:='';
+      if FilenameIsAbsolute(Msg.Directory) then
+      begin
+        // For example: /path/laz/main.pp(1,1) Fatal: Can't find unit lazreport used by lazarus
+        // => search source lazarus in directory
+        NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitInDirectory(
+                                                 Msg.Directory,UsedByUnit,true);
+      end;
       if NewFilename='' then begin
-        DebugLn('QuickFixUnitNotFoundPosition unit not found: ',UsedByUnit);
-        //ShowError('QuickFix: UnitNotFoundPosition unit not found: '+UsedByUnit);
-        exit;
+        NewFilename:=LazarusIDE.FindUnitFile(UsedByUnit);
+        if NewFilename='' then begin
+          DebugLn('QuickFixUnitNotFoundPosition unit not found: ',UsedByUnit);
+          //ShowError('QuickFix: UnitNotFoundPosition unit not found: '+UsedByUnit);
+          exit;
+        end;
       end;
       CodeBuf:=CodeToolBoss.LoadFile(NewFilename,false,false);
       if CodeBuf=nil then begin
