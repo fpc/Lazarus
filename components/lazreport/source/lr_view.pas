@@ -153,8 +153,8 @@ type
     procedure DelPageBtnClick(Sender: TObject);
     procedure NewPageBtnClick(Sender: TObject);
     procedure HelpBtnClick(Sender: TObject);
-    procedure FormMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure FormMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
+      {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure FormActivate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
   private
@@ -169,8 +169,6 @@ type
     PaintAllowed: Boolean;
     FindStr: String;
     CaseSensitive: Boolean;
-    StrFound: Boolean;
-    StrBounds: TRect;
     LastFoundPage, LastFoundObject: Integer;
     HF: String;
     
@@ -918,17 +916,19 @@ begin
 end;
 
 procedure TfrPreviewForm.HScrollBarChange(Sender: TObject);
+{$IFDEF WIN32}
 var
   p, pp: Integer;
   r: TRect;
+{$ENDIF}
 begin
   if EMFPages = nil then Exit;
+  {$IFDEF WIN32}
   p := HScrollBar.Position;
   pp := OldH - p;
   OldH := p;
   ofx := -p;
   r := Rect(0, 0, PBox.Width, PBox.Height);
-  {$IFDEF WIN32}
   ScrollWindowEx(PBox.Handle, pp, 0, @r, @r, 0, nil, SW_INVALIDATE);
   UpdateWindow(Pbox.Handle);
   {$ELSE}
@@ -1282,8 +1282,6 @@ end;
 
 procedure TfrPreviewForm.FormMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  c: TControl;
 begin
 //  HelpBtn.Down := False;
   Screen.Cursor := crDefault;
