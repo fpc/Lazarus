@@ -267,6 +267,7 @@ begin
   fCurrentDirectory:=TrimFilename(fProcess.CurrentDirectory);
   if fCurrentDirectory='' then fCurrentDirectory:=GetCurrentDirUTF8;
   fCurrentDirectory:=AppendPathDelim(fCurrentDirectory);
+  fLastBuffer:=nil;
 
   ErrorExists:=true;
   Aborted:=false;
@@ -1260,7 +1261,7 @@ begin
         CurrentMessageParts.Values['Filename']:=AbsFilename;
         Line:=StrToIntDef(LineNumberStr,1);
         Col:=StrToIntDef(ColNumberStr,1);
-        if (MsgType in [etHint,etNone,etWarning])
+        if (MsgType in [etHint,etNote,etWarning])
         and HasHideDirective(AbsFilename,Line,Col) then
           SkipMessage:=true;
       end else
@@ -1715,6 +1716,7 @@ var
   Src: String;
 begin
   Result:=false;
+
   if (Line<1) or (Column<1) then exit;
   if not FilenameIsAbsolute(Filename) then exit;
   Filename:=TrimFilename(Filename);
@@ -1735,7 +1737,7 @@ begin
   while (p>1) do begin
     if Src[p] in [#10,#13,',',';'] then exit;
     if Src[p]='}' then begin
-      // could be a IDE directive
+      // could be an IDE directive
       while (p>0) do begin
         case Src[p] of
         #10,#13: exit;
