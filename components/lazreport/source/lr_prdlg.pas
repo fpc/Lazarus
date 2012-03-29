@@ -43,8 +43,8 @@ type
     PropButton: TButton;
     PrinterSetupDialog1: TPrinterSetupDialog;
     Image1: TImage;
-    procedure CB1DrawItem(Control: TWinControl; Index: Integer;
-      ARect: TRect; State: TOwnerDrawState);
+    procedure CB1DrawItem({%H-}Control: TWinControl; Index: Integer;
+      ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure FormCreate(Sender: TObject);
     procedure PropButtonClick(Sender: TObject);
     procedure CB1Click(Sender: TObject);

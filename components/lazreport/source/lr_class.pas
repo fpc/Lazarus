@@ -16,7 +16,7 @@ interface
 
 uses
   SysUtils, {$IFDEF UNIX}CLocale,{$ENDIF} Classes, MaskUtils, Controls, FileUtil,
-  Forms, ComCtrls, Dialogs, Menus, Variants, DB, Graphics, Printers, osPrinters,
+  Forms, Dialogs, Menus, Variants, DB, Graphics, Printers, osPrinters,
   DOM, XMLRead, XMLConf, LCLType, LCLIntf, TypInfo, LCLProc, LR_View, LR_Pars,
   LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const;
 
@@ -836,11 +836,11 @@ type
     Lines: TFpList;
     procedure ClearLines;
     procedure Setup; virtual;
-    function  AddData(x, y: Integer; view: TfrView): pointer; virtual;
+    function  AddData({%H-}x, {%H-}y: Integer; view: TfrView): pointer; virtual;
     procedure NewRec(View: TfrView; const AText:string; var P:Pointer); virtual;
     procedure AddRec(ALineIndex: Integer; ARec: Pointer); virtual;
     function  GetviewText(View:TfrView): string; virtual;
-    function  CheckView(View:TfrView): boolean; virtual;
+    function  CheckView({%H-}View:TfrView): boolean; virtual;
   public
     constructor Create(AStream: TStream); virtual;
     destructor Destroy; override;
@@ -848,8 +848,8 @@ type
     procedure OnEndDoc; virtual;
     procedure OnBeginPage; virtual;
     procedure OnEndPage; virtual;
-    procedure OnData(x, y: Integer; View: TfrView); virtual;
-    procedure OnText(x, y: Integer; const text: String; View: TfrView); virtual;
+    procedure OnData({%H-}x, {%H-}y: Integer; {%H-}View: TfrView); virtual;
+    procedure OnText({%H-}x, {%H-}y: Integer; const {%H-}text: String; {%H-}View: TfrView); virtual;
 
     property BandTypes: TfrBandTypes read FBandTypes write FBandTypes;
     property UseProgressbar: boolean read FUseProgressBar write FUseProgressBar;
@@ -1079,7 +1079,7 @@ type
 
   TfrObjEditorForm = class(TForm)
   public
-    procedure ShowEditor(t: TfrView); virtual;
+    procedure ShowEditor({%H-}t: TfrView); virtual;
   end;
 
   TfrFunctionDescription = class(TObject)
@@ -1112,8 +1112,8 @@ type
   TfrCompressor = class(TObject)
   public
     Enabled: Boolean;
-    procedure Compress(StreamIn, StreamOut: TStream); virtual;
-    procedure DeCompress(StreamIn, StreamOut: TStream); virtual;
+    procedure Compress({%H-}StreamIn, {%H-}StreamOut: TStream); virtual;
+    procedure DeCompress({%H-}StreamIn, {%H-}StreamOut: TStream); virtual;
   end;
 
 
@@ -9448,6 +9448,7 @@ begin
   if CheckView(View) then
   begin
     s := GetViewText(View);
+    p := nil;
     NewRec(View, s, p);
     AddRec(FLineIndex, p);
     result := p;
@@ -10444,7 +10445,7 @@ begin
   Name:=XML.GetValue(Path+'Name/Value','');
   if Name='' then
     CreateUniqueName;
-  Visible:=XML.GetValue(Path+'Visible/Value', true);
+  Visible:=XML.GetValue(Path+'Visible/Value'{%H-}, true);
 end;
 
 procedure TfrObject.SaveToXML(XML: TLrXMLConfig; const Path: String);
@@ -10479,18 +10480,18 @@ begin
   inherited LoadFromXML(XML, Path);
 
 
-  pgSize := XML.GetValue(Path+'PgSize/Value', 0); // TODO chk
-  rc.left := XML.GetValue(Path+'Margins/left/Value', 0); // TODO chk
-  rc.top := XML.GetValue(Path+'Margins/Top/Value', 0); // TODO chk
-  rc.Right := XML.GetValue(Path+'Margins/Right/Value', 0); // TODO chk
-  rc.Bottom := XML.GetValue(Path+'Margins/Bottom/Value', 0); // TODO chk
+  pgSize := XML.GetValue(Path+'PgSize/Value'{%H-}, 0); // TODO chk
+  rc.left := XML.GetValue(Path+'Margins/left/Value'{%H-}, 0); // TODO chk
+  rc.top := XML.GetValue(Path+'Margins/Top/Value'{%H-}, 0); // TODO chk
+  rc.Right := XML.GetValue(Path+'Margins/Right/Value'{%H-}, 0); // TODO chk
+  rc.Bottom := XML.GetValue(Path+'Margins/Bottom/Value'{%H-}, 0); // TODO chk
   Margins.AsRect := rc;
   RestoreProperty('Orientation',XML.GetValue(Path+'Orientation/Value',''));
 
-  UseMargins := XML.GetValue(Path+'UseMargins/Value', True); // TODO chk
-  PrintToPrevPage := XML.GetValue(Path+'PrintToPrevPage/Value', True); // TODO chk
-  ColCount := XML.GetValue(Path+'ColCount/Value', 1); // TODO chk
-  ColGap := XML.GetValue(Path+'ColGap/Value', 0);
+  UseMargins := XML.GetValue(Path+'UseMargins/Value'{%H-}, True); // TODO chk
+  PrintToPrevPage := XML.GetValue(Path+'PrintToPrevPage/Value'{%H-}, True); // TODO chk
+  ColCount := XML.GetValue(Path+'ColCount/Value'{%H-}, 1); // TODO chk
+  ColGap := XML.GetValue(Path+'ColGap/Value'{%H-}, 0);
   RestoreProperty('LayoutOrder',XML.GetValue(Path+'LayoutOrder/Value','loColumns'));
   ChangePaper(pgSize, Width, Height, Orientation);
 end;
@@ -10502,16 +10503,16 @@ begin
   inherited SavetoXML(XML, Path);
   
   Rc:=Margins.AsRect;
-  XML.SetValue(Path+'PgSize/Value', PgSize);
-  XML.SetValue(Path+'Margins/left/Value', Rc.Left);
-  XML.SetValue(Path+'Margins/Top/Value', Rc.Top);
-  XML.SetValue(Path+'Margins/Right/Value', Rc. Right);
-  XML.SetValue(Path+'Margins/Bottom/Value', Rc.Bottom);
+  XML.SetValue(Path+'PgSize/Value'{%H-}, PgSize);
+  XML.SetValue(Path+'Margins/left/Value'{%H-}, Rc.Left);
+  XML.SetValue(Path+'Margins/Top/Value'{%H-}, Rc.Top);
+  XML.SetValue(Path+'Margins/Right/Value'{%H-}, Rc. Right);
+  XML.SetValue(Path+'Margins/Bottom/Value'{%H-}, Rc.Bottom);
   XML.SetValue(Path+'Orientation/Value', GetSaveProperty('Orientation'));
-  XML.SetValue(Path+'UseMargins/Value', UseMargins);
-  XML.SetValue(Path+'PrintToPrevPage/Value', PrintToPrevPage);
-  XML.SetValue(Path+'ColCount/Value', ColCount);
-  XML.SetValue(Path+'ColGap/Value', ColGap);
+  XML.SetValue(Path+'UseMargins/Value'{%H-}, UseMargins);
+  XML.SetValue(Path+'PrintToPrevPage/Value'{%H-}, PrintToPrevPage);
+  XML.SetValue(Path+'ColCount/Value'{%H-}, ColCount);
+  XML.SetValue(Path+'ColGap/Value'{%H-}, ColGap);
   XML.SetValue(Path+'LayoutOrder/Value', GetSaveProperty('LayoutOrder'));
 end;
 
@@ -10594,7 +10595,7 @@ var
   wValue: widestring;
 begin
   if frUnWrapRead then
-    result := inherited GetValue(APath, ADefault)
+    result := {%H-}inherited GetValue(APath, ADefault{%H-})
   else
   begin
     WValue := inherited GetValue(UTF8Decode(APath), UTF8Decode(ADefault));
