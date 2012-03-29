@@ -26,7 +26,7 @@ type
     function GetIdentify(const s: String; var i: Integer): String;
     function GetString(const s: String; var i: Integer):String;
     procedure Get3Parameters(const s: String; var i: Integer;
-      var s1, s2, s3: String);
+      out s1, s2, s3: String);
   public
     function Str2OPZ(s: String): String;
     function CalcOPZ(const s: String): Variant;
@@ -322,7 +322,7 @@ begin
 end;
 
 procedure TfrParser.Get3Parameters(const s: String; var i: Integer;
-  var s1, s2, s3: String);
+  out s1, s2, s3: String);
 var
   c, d, oi, ci: Integer;
 begin

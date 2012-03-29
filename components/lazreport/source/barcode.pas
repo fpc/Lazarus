@@ -70,7 +70,7 @@ interface
 {$I lr_vers.inc}
 
 uses
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs;
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs;
 
 type
   TBarcodeType = (bcCode_2_5_interleaved,
@@ -115,7 +115,7 @@ type
     modules: array[0..3] of shortint;
 
 
-    procedure OneBarProps(code: char; var aWidth: integer; var lt: TBarLineType);
+    procedure OneBarProps(code: char; out aWidth: integer; out lt: TBarLineType);
 
     procedure DoLines(Data: string; Canvas: TCanvas);
 
@@ -307,7 +307,7 @@ calculate the width and the linetype of a sigle bar
         'C'   black           150%*Ratio          2/5  (used for PostNet)
         'D'   black           200%*Ratio          2/5  (used for PostNet)
 }
-procedure TBarcode.OneBarProps(code: char; var aWidth: integer; var lt: TBarLineType);
+procedure TBarcode.OneBarProps(code: char; out aWidth: integer; out lt: TBarLineType);
 begin
   case code of
     '0':

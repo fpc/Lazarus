@@ -23,10 +23,10 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure GetValue(const Name: String; var Value: Variant); virtual;
-    procedure SetValue(const Name: String; Value: Variant); virtual;
-    procedure DoFunction(const name: String; p1, p2, p3: Variant;
-                         var val: Variant); virtual;
+    procedure GetValue(const {%H-}Name: String; var {%H-}Value: Variant); virtual;
+    procedure SetValue(const {%H-}Name: String; {%H-}Value: Variant); virtual;
+    procedure DoFunction(const {%H-}name: String; {%H-}p1, {%H-}p2, {%H-}p3: Variant;
+                         var {%H-}val: Variant); virtual;
     procedure PrepareScript(MemoFrom, MemoTo, MemoErr: TStringList); virtual;
     procedure DoScript(Memo: TStringList); virtual;
   end;
@@ -661,7 +661,6 @@ procedure DoFuncId; forward;
   end;
 
   procedure DoFuncId;
-  label 1;
   begin
     SkipSpace;
     if buf^[cur] in ['A'..'Z', 'a'..'z'] then

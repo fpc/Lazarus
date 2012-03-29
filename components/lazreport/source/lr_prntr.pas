@@ -81,7 +81,7 @@ type
 
 const
   PAPERCOUNT    = 117;
-  OLDPAPERCOUNT = 67;  // show only that much paper names when using virtual printer
+  //OLDPAPERCOUNT = 67;  // show only that much paper names when using virtual printer
   
   PaperInfo: Array[0..PAPERCOUNT - 1] of TPaperInfo = (
     (Typ:1;  Name: ''; X:2159; Y:2794),
@@ -639,7 +639,6 @@ end;
 function PaperSizeToWinPaper(const aWidth,aHeight: Integer): Integer;
 var
   i: integer;
-  PW,PL: Integer;
   Dw,DL: Integer;
   FW,FL: Integer;
 begin
@@ -969,8 +968,6 @@ end;
 procedure TfrPrinter.FillPrnInfo(var p: TfrPrnInfo);
 var
   kx, ky: Double;
-  fx, fy: Double;
-  
 begin
   kx := 93 / 1.022;
   ky := 93 / 1.015;

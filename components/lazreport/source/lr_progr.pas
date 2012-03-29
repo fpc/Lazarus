@@ -41,7 +41,7 @@ type
     { Private declarations }
     fDoc: TfrReport;
     fOnBeforeModal: TNotifyEvent;
-    procedure DoBeforeModal(Data: ptrint);
+    procedure DoBeforeModal({%H-}Data: ptrint);
   public
     { Public declarations }
     FirstCaption: String;

@@ -40,7 +40,7 @@ procedure frGetDataSetAndField(ComplexName: String;
   var DataSet: TfrTDataSet; out Field: TfrTField);
 function frGetFontStyle(Style: TFontStyles): Integer;
 function frSetFontStyle(Style: Integer): TFontStyles;
-procedure frInitFont(aFont : TFont; aColor : TColor; aSize : Integer; aStyle : TFontStyles);
+procedure frInitFont(aFont : TFont; aColor : TColor; {%H-}aSize : Integer; aStyle : TFontStyles);
 function frFindComponent(Owner: TComponent; const Name: String): TComponent;
 procedure frGetComponents(Owner: TComponent; ClassRef: TClass;
   List: TStrings; Skip: TComponent);
@@ -113,6 +113,7 @@ var
   n: Word;
 begin
   l.Clear;
+  n := 0;
   Stream.Read(n, 2);
   if n > 0 then
     repeat
@@ -120,6 +121,7 @@ begin
       SetLength(s, n);
       Stream.Read(s[1], n);
       l.Add(s);
+      b := 0;
       Stream.Read(b, 1);
     until b = 0
   else
@@ -154,9 +156,11 @@ var
   n: Word;
   b: Byte;
 begin
+  n := 0;
   Stream.Read(n, 2);
   SetLength(s, n);
   Stream.Read(s[1], n);
+  b := 0;
   Stream.Read(b, 1);
   Result := s;
 end;
@@ -183,6 +187,7 @@ begin
   l.Clear;
   i := 1;
   repeat
+    b := 0;
     Stream.Read(b,1);
     if (b = 13) or (b = 0) then
     begin
@@ -210,6 +215,7 @@ begin
   SetLength(s, 4096);
   i := 1;
   repeat
+    b := 0;
     Stream.Read(b, 1);
     if b = 0 then
       SetLength(s, i - 1)

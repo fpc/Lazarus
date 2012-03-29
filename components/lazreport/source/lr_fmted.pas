@@ -90,8 +90,7 @@ end;
 
 procedure TfrFmtForm.ComboBox1Change(Sender: TObject);
 var
-  i, k: Integer;
-  s: String;
+  k: Integer;
 begin
   k := ComboBox1.ItemIndex;
   if (k = -1) or (k=fOldC1) then Exit;

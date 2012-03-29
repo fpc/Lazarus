@@ -53,7 +53,7 @@ type
 
 implementation
 
-uses LR_Utils, LR_Const;
+uses LR_Const;
 
 
 procedure TfrTextExportFilter.GetUsedFont;

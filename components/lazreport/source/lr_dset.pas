@@ -41,8 +41,8 @@ type
     procedure Refresh; virtual;
 
     function GetBookMark : Pointer; virtual;
-    procedure GotoBookMark(BM : Pointer); virtual;
-    procedure FreeBookMark(BM : Pointer); virtual;
+    procedure GotoBookMark({%H-}BM : Pointer); virtual;
+    procedure FreeBookMark({%H-}BM : Pointer); virtual;
     procedure DisableControls; virtual;
     procedure EnableControls; virtual;
     

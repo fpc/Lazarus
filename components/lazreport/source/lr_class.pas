@@ -929,12 +929,12 @@ type
     procedure SetPrinterTo(const PrnName: String);
     procedure SetVars(Value: TStrings);
     procedure ClearAttribs;
-    procedure Loaded; override;
   protected
     procedure DefineProperties(Filer: TFiler); override;
     procedure ReadBinaryData(Stream: TStream);
     procedure WriteBinaryData(Stream: TStream);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure Loaded; override;
   public
     CanRebuild                : Boolean;            // true, if report can be rebuilded
     Terminated                : Boolean;
