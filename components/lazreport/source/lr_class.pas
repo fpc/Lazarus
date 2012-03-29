@@ -459,7 +459,7 @@ type
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToStream(Stream: TStream); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
-    procedure DefinePopupMenu(Popup: TPopupMenu); override;
+    procedure DefinePopupMenu({%H-}Popup: TPopupMenu); override;
   end;
 
   { TfrPictureView }
@@ -511,7 +511,7 @@ type
     constructor Create; override;
 
     procedure Draw(aCanvas: TCanvas); override;
-    procedure DefinePopupMenu(Popup: TPopupMenu); override;
+    procedure DefinePopupMenu({%H-}Popup: TPopupMenu); override;
     function GetClipRgn(rt: TfrRgnType): HRGN; override;
     function PointInView(aX,aY: Integer): Boolean; override;
     
@@ -703,7 +703,7 @@ type
     procedure ShowBandByType(bt: TfrBandType);
     procedure NewPage;
     procedure NewColumn(Band: TfrBand);
-    procedure NextColumn(Band: TFrBand);
+    procedure NextColumn({%H-}Band: TFrBand);
     function RowsLayout: boolean;
     procedure StartColumn;
     procedure StartRowsLayoutNonDataBand(Band: TfrBand);
@@ -814,9 +814,9 @@ type
     procedure Delete(Index: Integer);
     procedure LoadFromStream(AStream: TStream);
     procedure AddPagesFromStream(AStream: TStream; AReadHeader: boolean=true);
-    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String);
+    procedure LoadFromXML({%H-}XML: TLrXMLConfig; const {%H-}Path: String);
     procedure SaveToStream(AStream: TStream);
-    procedure SaveToXML(XML: TLrXMLConfig; const Path: String);
+    procedure SaveToXML({%H-}XML: TLrXMLConfig; const {%H-}Path: String);
     property Pages[Index: Integer]: PfrPageInfo read GetPages; default;
     property Count: Integer read GetCount;
   end;
@@ -1051,16 +1051,16 @@ type
   public
     Page: TfrPage;
     Modified: Boolean;
-    procedure RegisterObject(ButtonBmp: TBitmap; const ButtonHint: String;
+    procedure {%H-}RegisterObject(ButtonBmp: TBitmap; const ButtonHint: String;
       ButtonTag: Integer); virtual; abstract;
-    procedure RegisterTool(const MenuCaption: String; ButtonBmp: TBitmap;
+    procedure {%H-}RegisterTool(const MenuCaption: String; ButtonBmp: TBitmap;
       NotifyOnClick: TNotifyEvent); virtual; abstract;
-    procedure BeforeChange; virtual; abstract;
-    procedure AfterChange; virtual; abstract;
-    procedure RedrawPage; virtual; abstract;
+    procedure {%H-}BeforeChange; virtual; abstract;
+    procedure {%H-}AfterChange; virtual; abstract;
+    procedure {%H-}RedrawPage; virtual; abstract;
     //
-    function PointsToUnits(x: Integer): Double;  virtual; abstract;
-    function UnitsToPoints(x: Double): Integer;  virtual; abstract;
+    function {%H-}PointsToUnits(x: Integer): Double;  virtual; abstract;
+    function {%H-}UnitsToPoints(x: Double): Integer;  virtual; abstract;
   end;
 
   TfrDataManager = class(TObject)
@@ -4063,7 +4063,7 @@ end;
 procedure TfrSubReportView.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited LoadFromXML(XML, Path);
-  SubPage := XML.GetValue(Path+'SubPage/Value', 0); // todo chk
+  SubPage := XML.GetValue(Path+'SubPage/Value'{%H-}, 0); // todo chk
 end;
 
 procedure TfrSubReportView.SaveToStream(Stream: TStream);
@@ -4075,7 +4075,7 @@ end;
 procedure TfrSubReportView.SaveToXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited SaveToXML(XML, Path);
-  XML.SetValue(Path+'SubPage/Value', SubPage);
+  XML.SetValue(Path+'SubPage/Value'{%H-}, SubPage);
 end;
 
 {----------------------------------------------------------------------------}
@@ -4109,10 +4109,7 @@ var
 
   procedure PrintBitmap(DestRect: TRect; Bitmap: TBitmap);
   var
-    BitmapHeader: pBitmapInfo;
-    BitmapImage: Pointer;
-    HeaderSize: DWord;
-    ImageSize: DWord;
+    {%H-}BitmapHeader: pBitmapInfo;
   begin
     aCanvas.StretchDraw(DestRect, Bitmap);
     //**
@@ -4231,11 +4228,11 @@ var
     end;
   end;
 begin
-  XML.SetValue(Path+'Size/Value', Stream.Size);
+  XML.SetValue(Path+'Size/Value'{%H-}, Stream.Size);
   SetLength(S, Stream.Size*2);
   c := 1;
   for i:=1 to Stream.Size div SizeOf(Buf) do begin
-    Stream.Read(Buf, SizeOf(buf));
+    Stream.Read(Buf{%H-}, SizeOf(buf));
     WriteBuf(SizeOf(Buf));
   end;
   i := Stream.Size mod SizeOf(Buf);
@@ -4249,10 +4246,10 @@ end;
 procedure XMLToStream(XML: TLrXMLConfig; Path: String; Stream: TStream);
 var
   S: String;
-  i,Size,cd: integer;
+  i,Size,{%H-}cd: integer;
   B: Byte;
 begin
-  Size := XML.GetValue(Path+'Size/Value', 0);
+  Size := XML.GetValue(Path+'Size/Value'{%H-}, 0);
   if Size>0 then begin
     S := XML.GetValue(Path+'Data/Value', '');
     if S<>'' then
@@ -4267,11 +4264,10 @@ procedure TfrPictureView.LoadFromStream(Stream: TStream);
 var
   b: Byte;
   n: Integer;
-  AGraphicClass: TGraphicClass;
   Graphic: TGraphic;
-  Ext: string;
 begin
   inherited LoadFromStream(Stream);
+  b := 0;
   Stream.Read(b, 1);
 
   if b=pkAny then
@@ -4281,6 +4277,7 @@ begin
 
   FSharedName := Stream.ReadAnsiString;
 
+  n := 0;
   Stream.Read(n, 4);
 
   Picture.Graphic := Graphic;
@@ -4314,7 +4311,7 @@ begin
   inherited LoadFromXML(XML, Path);
 
   SharedName := XML.GetValue(Path+'Picture/SharedName/Value','');
-  b := XML.GetValue(Path+'Picture/Type/Value', pkNone);
+  b := XML.GetValue(Path+'Picture/Type/Value'{%H-}, pkNone);
   Ext := XML.GetValue(Path+'Picture/Type/Ext', '');
 
   M := nil;
@@ -4376,14 +4373,13 @@ end;
 procedure TfrPictureView.SaveToXML(XML: TLrXMLConfig; const Path: String);
 var
   b: Byte;
-  n, o: Integer;
   m: TMemoryStream;
 begin
   inherited SaveToXML(XML, Path);
   b := GetPictureType;
 
   XML.SetValue(Path+'Picture/SharedName/Value', SharedName);
-  XML.SetValue(Path+'Picture/Type/Value', b);
+  XML.SetValue(Path+'Picture/Type/Value'{%H-}, b);
   if b <> pkNone then
   begin
     XML.SetValue(Path+'Picture/Type/Ext',
@@ -4660,7 +4656,7 @@ end;
 
 function TfrLineView.PointInView(aX, aY: Integer): Boolean;
 var
-  bx, by, bx1, by1, w1, w2: Integer;
+  bx, by, bx1, by1, w1: Integer;
 begin
   if FrameStyle=frsDouble then
     w1 := Round(FrameWidth * 1.5)
@@ -5194,6 +5190,7 @@ begin
       {$ENDIF}
     end;
   end;
+  Result := true;
 end;
 
 procedure TfrBand.DrawPageBreak;
@@ -6581,8 +6578,6 @@ var
   var
     WasPrinted: Boolean;
     b, b1, b2: TfrBand;
-    BM       : Pointer;
-
     procedure InitGroups(b: TfrBand);
     begin
       while b <> nil do
@@ -6861,12 +6856,14 @@ begin
     Read(pgSize, 4);
     Read(dx, 4); //Width
     Read(dy, 4); //Height
-    Read(Rc, Sizeof(Rc));
+    Read(Rc{%H-}, Sizeof(Rc));
     Margins.AsRect:=Rc;
+    b := 0;
     Read(b, 1);
     Orientation:=TPrinterOrientation(b);
     if frVersion < 23 then
-      Read(s[1], 6);
+      Read({%H-}s[1], 6);
+    Bool := false;
     Read(Bool, 2);
     PrintToPrevPage:=Bool;
     Read(Bool, 2);
@@ -6886,9 +6883,9 @@ var
 begin
   inherited LoadFromXML(XML,Path);
   
-  dx := XML.GetValue(Path+'Width/Value', 0); // TODO chk
-  dy := XML.GetValue(Path+'Height/Value', 0); // TODO chk
-  b := XML.GetValue(Path+'Height/PageType', ord(PageType));
+  dx := XML.GetValue(Path+'Width/Value'{%H-}, 0); // TODO chk
+  dy := XML.GetValue(Path+'Height/Value'{%H-}, 0); // TODO chk
+  b := XML.GetValue(Path+'Height/PageType'{%H-}, ord(PageType));
   PageType:=TfrPageType(b);
 end;
 
@@ -6921,9 +6918,9 @@ end;
 procedure TfrPage.SavetoXML(XML: TLrXMLConfig; const Path: String);
 begin
   Inherited SavetoXML(XML,Path);
-  XML.SetValue(Path+'Width/Value', Width);
-  XML.SetValue(Path+'Height/Value', Height);
-  XML.SetValue(Path+'Height/PageType', ord(PageType));
+  XML.SetValue(Path+'Width/Value'{%H-}, Width);
+  XML.SetValue(Path+'Height/Value'{%H-}, Height);
+  XML.SetValue(Path+'Height/PageType'{%H-}, ord(PageType));
 end;
 
 {-----------------------------------------------------------------------}
@@ -7055,16 +7052,14 @@ begin
         AddObject(b, '');
       t.LoadFromStream(Stream);
       if AnsiUpperCase(s) = 'TFRFRAMEDMEMOVIEW' then
-        Stream.Read(buf[1], 8);
+        Stream.Read({%H-}buf[1], 8);
     end;
   end;
 end;
 
 procedure TfrPages.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 var
-  b: Byte;
   t: TfrView;
-  s: string;
   procedure AddObject(aPage: TFrPage; ot: Byte; clname: String);
   begin
     aPage.Objects.Add(frCreateObject(ot, clname));
@@ -7079,11 +7074,11 @@ begin
   {$IFDEF DebugLR}
   DebugLn('TfrPages.LoadFromXML: LoadingFrom: ', Path);
   {$ENDIF}
-  Parent.PrintToDefault:= XML.GetValue(Path+'PrintToDefault/Value', True);
-  Parent.DoublePass :=    XML.GetValue(Path+'DoublePass/Value', False); // TODO: check default
+  Parent.PrintToDefault:= XML.GetValue(Path+'PrintToDefault/Value'{%H-}, True);
+  Parent.DoublePass :=    XML.GetValue(Path+'DoublePass/Value'{%H-}, False); // TODO: check default
   clName :=               XML.GetValue(Path+'SelectedPrinter/Value','');
   Parent.SetPrinterTo(clName); // TODO: check default
-  aCount := XML.GetValue(Path+'PageCount/Value', 0);
+  aCount := XML.GetValue(Path+'PageCount/Value'{%H-}, 0);
   for i := 0 to aCount - 1 do // adding pages at first
   begin
     aPath := Path+'Page'+IntToStr(i+1)+'/';
@@ -7091,7 +7086,7 @@ begin
     add(clName);
     
     Pages[i].LoadFromXML(XML, aPath);
-    oCount := XML.GetValue(aPath+'ObjectCount/Value', 0);
+    oCount := XML.GetValue(aPath+'ObjectCount/Value'{%H-}, 0);
     for j:=0 to oCount - 1 do
     begin
       aSubPath := aPath + 'Object'+IntTostr(j+1)+'/';
@@ -7121,7 +7116,6 @@ var
   b: Byte;
   i, j: Integer;
   t: TfrView;
-  S:string;
 begin
   Stream.Write(Parent.PrintToDefault, 2);
   Stream.Write(Parent.DoublePass, 2);
@@ -7161,20 +7155,19 @@ end;
 
 procedure TfrPages.SavetoXML(XML: TLrXMLConfig; const Path: String);
 var
-  b: Byte;
   i, j: Integer;
   t: TfrView;
   aPath,aSubPath: String;
 begin
-  XML.SetValue(Path+'PrintToDefault/Value', Parent.PrintToDefault);
-  XML.SetValue(Path+'DoublePass/Value', Parent.DoublePass);
+  XML.SetValue(Path+'PrintToDefault/Value'{%H-}, Parent.PrintToDefault);
+  XML.SetValue(Path+'DoublePass/Value'{%H-}, Parent.DoublePass);
   XML.SetValue(Path+'SelectedPrinter/Value', Prn.Printers[Prn.PrinterIndex]);
-  XML.SetValue(Path+'PageCount/Value', Count);
+  XML.SetValue(Path+'PageCount/Value'{%H-}, Count);
   for i := 0 to Count - 1 do // adding pages at first
   begin
     aPath := Path+'Page'+IntToStr(i+1)+'/';
     Pages[i].SaveToXML(XML, aPath);
-    XML.SetValue(aPath+'ObjectCount/Value', Pages[i].Objects.count);
+    XML.SetValue(aPath+'ObjectCount/Value'{%H-}, Pages[i].Objects.count);
     for j:=0 to Pages[i].Objects.count - 1 do
     begin
       aSubPath := aPath + 'Object'+IntTostr(j+1)+'/';
@@ -7299,6 +7292,7 @@ begin
     Stream.Read(frVersion, 1);
     while Stream.Position < Stream.Size do
     begin
+      b := 0;
       Stream.Read(b, 1);
       if b = gtAddIn then
         s := ReadString(Stream) else
@@ -7329,6 +7323,7 @@ begin
     Stream.Read(frVersion, 1);
     while Stream.Position < Stream.Size do
     begin
+      b := 0;
       Stream.Read(b, 1);
       if b = gtAddIn then
         s := ReadString(Stream)
@@ -7416,8 +7411,6 @@ var
   i, o, c: Integer;
   b, compr: Byte;
   p: PfrPageInfo;
-  s: TMemoryStream;
-
   procedure ReadVersion22;
   var
     Pict: TfrPictureView;
@@ -7463,6 +7456,7 @@ var
 
 begin
   Clear;
+  compr := 0;
   AStream.Read(compr, 1);
   if not (compr in [0, 1, 255]) then
   begin
@@ -7483,6 +7477,7 @@ var
 
 begin
   if AReadHeader then begin
+    compr := 0;
     AStream.Read(compr, 1);
     if not (compr in [0, 1, 255]) then
     begin
@@ -7490,9 +7485,11 @@ begin
     end;
   end;
   Parent.SetPrinterTo(frReadString(AStream));
+  c := 0;
   AStream.Read(c, 4);
   i := 0;
   repeat
+    o := 0;
     AStream.Read(o, 4);
     GetMem(p, SizeOf(TfrPageInfo));
     FillChar(p^, SizeOf(TfrPageInfo), #0);
@@ -7502,6 +7499,7 @@ begin
       AStream.Read(pgSize, 2);
       AStream.Read(pgWidth, 4);
       AStream.Read(pgHeight, 4);
+      b := 0;
       AStream.Read(b, 1);
       pgOr := TPrinterOrientation(b);
       AStream.Read(b, 1);
@@ -7629,13 +7627,13 @@ var
   i: integer;
   aSubPath: String;
 begin
-  XML.SetValue(Path+'Count/Value', FItems.Count);
+  XML.SetValue(Path+'Count/Value'{%H-}, FItems.Count);
   for i:= 0 to FItems.Count-1 do
   with Objects[i] do
   begin
     aSubPath := Path+'Objects'+InttoStr(i+1)+'/';
-    XML.SetValue(aSubPath+'Typ/Value', Ord(Typ));
-    XML.SetValue(aSubPath+'OtherKind/Value', OtherKind);
+    XML.SetValue(aSubPath+'Typ/Value'{%H-}, Ord(Typ));
+    XML.SetValue(aSubPath+'OtherKind/Value'{%H-}, OtherKind);
     XML.SetValue(aSubPath+'Dataset/Value', DataSet);
     XML.SetValue(aSubPath+'Field/Value', Field);
     XML.SetValue(aSubPath+'Item/Value', FItems[i]);
@@ -7650,6 +7648,7 @@ var
   var
     n: Byte;
   begin
+    n := 0;
     Stream.Read(n, 1);
     SetLength(Result, n);
     Stream.Read(Result[1], n);
@@ -7660,6 +7659,7 @@ begin
   FItems.Sorted := False;
   with Stream do
   begin
+    n := 0;
     ReadBuffer(n, SizeOf(n));
     for i := 0 to n - 1 do
     begin
@@ -7683,15 +7683,15 @@ var
 begin
   clear;
   FItems.Sorted := False;
-  n := XML.GetValue(Path+'Count/Value', 0);
+  n := XML.GetValue(Path+'Count/Value'{%H-}, 0);
   for i:= 0 to n - 1 do
   begin
     j := AddValue;
     with Objects[j] do
     begin
       aSubPath := Path+'Objects'+InttoStr(i+1)+'/';
-      Typ := TfrValueType(XML.GetValue(aSubPath+'Typ/Value', 0)); // TODO check default value
-      OtherKind := XML.GetValue( aSubPath+'OtherKind/Value', 0); // TODO check default value
+      Typ := TfrValueType(XML.GetValue(aSubPath+'Typ/Value'{%H-}, 0)); // TODO check default value
+      OtherKind := XML.GetValue( aSubPath+'OtherKind/Value'{%H-}, 0); // TODO check default value
       DataSet := XML.GetValue(aSubPath+'Dataset/Value', ''); // TODO check default value
       Field := XML.GetValue(aSubPath+'Field/Value', ''); // TODO check default value
       FItems[j] := XML.GetValue(aSubPath+'Item/Value', ''); // TODO check default value
@@ -7821,6 +7821,7 @@ procedure TfrReport.ReadBinaryData(Stream: TStream);
 var
   n: Integer;
 begin
+  n := 0;
   Stream.Read(n, 4); // version
   if FStoreInDFM then
   begin
@@ -7870,8 +7871,6 @@ procedure TfrReport.InternalOnGetValue(ParName: String; var ParValue: String);
 var
   i, j, AFormat: Integer;
   AFormatStr: String;
-  V : Variant;
-  ValStr: String;
 begin
   SubValue := '';
   AFormat := CurView.Format;
@@ -8214,7 +8213,7 @@ var
   ATitle: string;
 begin
   CurReport := Self;
-  frVersion := XML.GetValue(Path+'Version/Value', 21);
+  frVersion := XML.GetValue(Path+'Version/Value'{%H-}, 21);
   fComments.Text := XML.GetValue(Path+'Comments/Value', '');
   fKeyWords := XML.GetValue(Path+'KeyWords/Value', '');
   fSubject  := XML.GetValue(Path+'Subject/Value', '');
@@ -8327,7 +8326,7 @@ procedure TfrReport.SavetoXML(XML: TLrXMLConfig; const Path: String);
 begin
   CurReport := Self;
   frVersion := frCurrentVersion;
-  XML.SetValue(Path+'Version/Value', frVersion);
+  XML.SetValue(Path+'Version/Value'{%H-}, frVersion);
 
   XML.SetValue(Path+'Title/Value', fTitle);
   XML.SetValue(Path+'Subject/Value', fSubject);
@@ -8443,7 +8442,9 @@ begin
   if Load then
   begin
     ReadMemo(Stream, fm);
+    pos := 0;
     Stream.Read(pos, 4);
+    b := 0;
     Stream.Read(b, 1);
     if b <> 0 then
       fb.LoadFromStream(Stream);
