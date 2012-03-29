@@ -560,7 +560,7 @@ resourcestring
 implementation
 
 var
-  DBGMI_QUEUE_DEBUG: PLazLoggerLogGroup;
+  DBGMI_QUEUE_DEBUG, DBGMI_STRUCT_PARSER: PLazLoggerLogGroup;
 
 
 const
@@ -11324,7 +11324,7 @@ var
     if not Composite
     then begin
       //It is not a record
-      debugln('Expected record, but found: "', ATextInfo, '"');
+      debugln(DBGMI_STRUCT_PARSER, 'Expected record, but found: "', ATextInfo, '"');
       exit;
     end;
 
@@ -11334,26 +11334,26 @@ var
     begin
       if not GDBParser.ParseNext(Composite, Payload, StopChar)
       then begin
-        debugln('Premature end of parsing');
+        debugln(DBGMI_STRUCT_PARSER, 'Premature end of parsing');
         Break;
       end;
 
       if Payload <> AType.Fields[j].Name
       then begin
-        debugln('Field name does not match, expected "', AType.Fields[j].Name, '" but found "', Payload,'"');
+        debugln(DBGMI_STRUCT_PARSER, 'Field name does not match, expected "', AType.Fields[j].Name, '" but found "', Payload,'"');
         Break;
       end;
 
       if StopChar <> '='
       then begin
-        debugln('Expected assignement, but other found.');
+        debugln(DBGMI_STRUCT_PARSER, 'Expected assignement, but other found.');
         Break;
       end;
 
       //Field name verified...
       if not GDBParser.ParseNext(Composite, Payload, StopChar)
       then begin
-        debugln('Premature end of parsing');
+        debugln(DBGMI_STRUCT_PARSER, 'Premature end of parsing');
         Break;
       end;
 
@@ -11423,7 +11423,7 @@ var
         StartPtr := HelpPtr + 1;
         SkipSpaces;
         if StartPtr^ <> '=' then begin
-          debugln('WARNING: PutValuesInClass: Expected "=" for ancestor "' + NewName + '" in: ' + AWarnText);
+          debugln(DBGMI_STRUCT_PARSER, 'WARNING: PutValuesInClass: Expected "=" for ancestor "' + NewName + '" in: ' + AWarnText);
           AWarnText := '';
           SkipToEndOfField;
           // continue fields, or end
@@ -11434,7 +11434,7 @@ var
           if StartPtr^ <> '{'
           then begin
             //It is not a class
-            debugln('WARNING: PutValuesInClass: Expected "{" for ancestor "' + NewName + '" in: ' + AWarnText);
+            debugln(DBGMI_STRUCT_PARSER, 'WARNING: PutValuesInClass: Expected "{" for ancestor "' + NewName + '" in: ' + AWarnText);
             AWarnText := '';
             SkipToEndOfField;
           end
@@ -11454,7 +11454,7 @@ var
         StartPtr := HelpPtr;
         SkipSpaces;
         if StartPtr^ <> '=' then begin
-          debugln('WARNING: PutValuesInClass: Expected "=" for field"' + NewName + '" in: ' + AWarnText);
+          debugln(DBGMI_STRUCT_PARSER, 'WARNING: PutValuesInClass: Expected "=" for field"' + NewName + '" in: ' + AWarnText);
           AWarnText := '';
           SkipToEndOfField;
           continue;
@@ -11477,7 +11477,7 @@ var
 
         if i < 0 then begin
           if (uppercase(ATypeName) <> 'TOBJECT') or (pos('vptr', NewName) < 1)
-          then debugln('WARNING: PutValuesInClass: No field for "' + ATypeName + '"."' + NewName + '"');
+          then debugln(DBGMI_STRUCT_PARSER, 'WARNING: PutValuesInClass: No field for "' + ATypeName + '"."' + NewName + '"');
         end
         else
           AType.Fields[i].DBGType.Value.AsString := HexCToHexPascal(NewVal);
@@ -11501,79 +11501,12 @@ var
     if StartPtr^ <> '{'
     then begin
       //It is not a class
-      debugln('ERROR: PutValuesInClass: Expected class, but found: "', ATextInfo, '"');
+      debugln(DBGMI_STRUCT_PARSER, 'ERROR: PutValuesInClass: Expected class, but found: "', ATextInfo, '"');
       exit;
     end;
 
     ProcessAncestor(AType.TypeName);
 
-////
-(*
-
-
-    GDBParser := TGDBStringIterator.Create(ATextInfo);
-    GDBParser.ParseNext(Composite, Payload, StopChar);
-    GDBParser.Free;
-
-    if not Composite
-    then begin
-      //It is not a record
-      debugln('Expected class, but found: "', ATextInfo, '"');
-      exit;
-    end;
-
-    //Parse information between brackets...
-    GDBParser := TGDBStringIterator.Create(Payload);
-    try
-      if not GDBParser.ParseNext(Composite, Payload, StopChar)
-      then begin
-        debugln('Premature end of parsing.');
-        exit;
-      end;
-
-      //APayload holds the ancestor name
-      if '<' + AType.Ancestor + '>' <> Payload
-      then begin
-        debugln('Ancestor does not match, expected ', AType.Ancestor,' but found ', Payload);
-        exit;
-      end;
-
-      //Special hidden field, skip as a decomposable, parse and forget...
-      if not GDBParser.ParseNext(Composite, Payload, StopChar)
-      then begin
-        debugln('Premature end of parsing.');
-        exit;
-      end;
-
-      while GDBParser.ParseNext(Composite, Payload, StopChar) do
-      begin
-        if StopChar <> '='
-        then begin
-          debugln('Expected assignement, but other found.');
-          exit;
-        end;
-
-        for j := 0 to AType.Fields.Count-1 do
-        begin
-          if Payload <> AType.Fields[j].Name then Continue;
-
-          //Field name verified...
-          if not GDBParser.ParseNext(Composite, Payload, StopChar)
-          then begin
-            debugln('Premature end of parsing.');
-            exit;
-          end;
-
-          if Composite
-          then THackDBGType(AType.Fields[j].DBGType).FKind := skRecord;
-          AType.Fields[j].DBGType.Value.AsString := HexCToHexPascal(Payload);
-          Break;
-        end;
-      end;
-    finally
-      GDBParser.Free;
-    end;
-*)
   end;
 
   procedure PutValuesInTree();
@@ -12450,5 +12383,6 @@ end;
 initialization
   RegisterDebugger(TGDBMIDebugger);
   DBGMI_QUEUE_DEBUG := DebugLogger.RegisterLogGroup('DBGMI_QUEUE_DEBUG' {$IFDEF DBGMI_QUEUE_DEBUG} , True {$ENDIF} );
+  DBGMI_STRUCT_PARSER := DebugLogger.RegisterLogGroup('DBGMI_STRUCT_PARSER' {$IFDEF DBGMI_STRUCT_PARSER} , True {$ENDIF} );
 
 end.
