@@ -3485,7 +3485,6 @@ resourcestring
   lisCPOpenUnit = 'Open Unit %s';
   lisCompPalOpenUnit = 'Open unit';
   lisCompPalComponentList = 'View All';
-  lisCompPalFindComponent = 'Find component (to be removed)';
 
   // macro promp dialog
   lisMacroPromptEnterData = 'Enter data';

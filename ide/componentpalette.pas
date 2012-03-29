@@ -42,8 +42,7 @@ uses
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
   {$ENDIF}
-  LazarusIDEStrConsts, ComponentReg, DesignerProcs, PackageDefs,
-  FindPaletteComp, EnvironmentOpts;
+  LazarusIDEStrConsts, ComponentReg, DesignerProcs, PackageDefs, EnvironmentOpts;
 
 type
   TComponentSelectionMode = (
@@ -63,7 +62,6 @@ type
     procedure OpenPackageClicked(Sender: TObject);
     procedure OpenUnitClicked(Sender: TObject);
     procedure ComponentListClicked(Sender: TObject);
-    procedure FindComponentClicked(Sender: TObject);
     procedure PalettePopupMenuPopup(Sender: TObject);
     procedure PopupMenuPopup(Sender: TObject);
   private
@@ -207,14 +205,6 @@ begin
   MainIDE.DoShowComponentList(true);
 end;
 
-procedure TComponentPalette.FindComponentClicked(Sender: TObject);
-var
-  AComponent: TRegisteredComponent;
-begin
-  if ShowFindPaletteComponentDlg(AComponent)<>mrOk then exit;
-  Selected:=AComponent;
-end;
-
 procedure TComponentPalette.PalettePopupMenuPopup(Sender: TObject);
 begin
   ;
@@ -270,14 +260,6 @@ begin
         Name:='ComponentListMenuItem';
         Caption:=lisCompPalComponentList;
         OnClick:=@ComponentListClicked;
-      end;
-      PalettePopupMenu.Items.Add(MenuItem);
-      // Find Component
-      MenuItem:=TMenuItem.Create(PalettePopupMenu);
-      with MenuItem do begin
-        Name:='FindComponentMenuItem';
-        Caption:=lisCompPalFindComponent;
-        OnClick:=@FindComponentClicked;
       end;
       PalettePopupMenu.Items.Add(MenuItem);
     end;
