@@ -357,7 +357,7 @@ type
     function MinHeight: Integer; override;
     function RemainHeight: Integer; override;
     procedure GetBlob(b: TfrTField); override;
-    procedure FontChange(sender: TObject);
+    procedure FontChange({%H-}sender: TObject);
     procedure ResetLastValue; override;
 
     property IsLastValueSet: boolean read GetIsLastValueSet write SetIsLastValueSet;
@@ -1100,7 +1100,7 @@ type
     destructor Destroy; override;
     function OnFunction(const FName: String; p1, p2, p3: Variant;
       var val: Variant): Boolean;
-    procedure DoFunction(FNo: Integer; p1, p2, p3: Variant; var val: Variant);
+    procedure {%H-}DoFunction(FNo: Integer; p1, p2, p3: Variant; var val: Variant);
       virtual; abstract;
     procedure UpdateDescriptions; virtual;
     procedure Add(const funName:string; IsExtra:boolean=false);
@@ -1880,6 +1880,7 @@ begin
     Read(dy, 4);
     Read(Flags, 2);
 
+    S := 0;
     Read(S, SizeOf(S)); fFrameWidth := S;
     Read(fFrameColor, SizeOf(fFrameColor));
     Read(fFrames,SizeOf(fFrames));
@@ -1897,11 +1898,13 @@ begin
     if (frVersion >= 23) and (StreamMode = smDesigning) then
     begin
       ReadMemo(Stream, Script);
+      wb := 0;
       Read(wb,2);
       Visible:=(Wb<>0);
     end;
 
     if (frVersion >= 25) then begin
+      I := 0;
       Read(I, 4);
       ParentBandType := TfrBandType(I);
     end;
@@ -1917,7 +1920,7 @@ var
   S:string;
 begin
   inherited LoadFromXML(XML,Path);
-  StreamMode := TfrStreamMode(XML.GetValue(Path+'StreamMode/Value', 0)); // TODO Check default
+  StreamMode := TfrStreamMode(XML.GetValue(Path+'StreamMode/Value'{%H-}, 0)); // TODO Check default
   if StreamMode = smDesigning then
   begin
     if frVersion >= 23 then
@@ -1926,11 +1929,11 @@ begin
       CreateUniqueName;
   end;
 
-  x  := XML.GetValue(Path + 'Size/Left/Value', 0);
-  y  := XML.GetValue(Path + 'Size/Top/Value', 0);
-  dx := XML.GetValue(Path + 'Size/Width/Value', 100);
-  dy := XML.GetValue(Path + 'Size/Height/Value', 100);
-  Flags := Word(XML.GetValue(Path + 'Flags/Value', 0)); // TODO Check default
+  x  := XML.GetValue(Path + 'Size/Left/Value'{%H-}, 0);
+  y  := XML.GetValue(Path + 'Size/Top/Value'{%H-}, 0);
+  dx := XML.GetValue(Path + 'Size/Width/Value'{%H-}, 100);
+  dy := XML.GetValue(Path + 'Size/Height/Value'{%H-}, 100);
+  Flags := Word(XML.GetValue(Path + 'Flags/Value'{%H-}, 0)); // TODO Check default
 
   FFrameWidth := StringToFloatDef(XML.GetValue(Path+'Frames/FrameWidth/Value', ''), 1.0);
   FFramecolor := StringToColor(XML.GetValue(Path+'Frames/FrameColor/Value', 'clBlack')); // TODO Check default
@@ -1946,7 +1949,7 @@ begin
   FFillColor := StringToColor(XML.GetValue(Path+'FillColor/Value', 'clWindow')); // TODO Check default
   if StreamMode = smDesigning then
   begin
-    fFormat     := XML.GetValue(Path+'Data/Format/Value', Format); // TODO Check default
+    fFormat     := XML.GetValue(Path+'Data/Format/Value'{%H-}, Format); // TODO Check default
     fFormatStr  := XML.GetValue(Path+'Data/FormatStr/Value', FormatStr);
     Memo.Text  := XML.GetValue(Path+'Data/Memo/Value', '');   // TODO Check default
     Script.Text:= XML.GetValue(Path+'Data/Script/Value', '');   // TODO Check default
@@ -2009,12 +2012,12 @@ procedure TfrView.SaveToXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited SaveToXML(XML,Path);
   XML.SetValue(Path+'Typ/Value', frTypeObjectToStr(Typ));
-  XML.SetValue(Path+'StreamMode/Value', Ord(StreamMode)); //todo: use symbolic valuess
-  XML.SetValue(Path+'Size/Left/Value', x);
-  XML.SetValue(Path+'Size/Top/Value', y);
-  XML.SetValue(Path+'Size/Width/Value', dx);
-  XML.SetValue(Path+'Size/Height/Value', dy);
-  XML.SetValue(Path+'Flags/Value', flags);
+  XML.SetValue(Path+'StreamMode/Value'{%H-}, Ord(StreamMode)); //todo: use symbolic valuess
+  XML.SetValue(Path+'Size/Left/Value'{%H-}, x);
+  XML.SetValue(Path+'Size/Top/Value'{%H-}, y);
+  XML.SetValue(Path+'Size/Width/Value'{%H-}, dx);
+  XML.SetValue(Path+'Size/Height/Value'{%H-}, dy);
+  XML.SetValue(Path+'Flags/Value'{%H-}, flags);
   
   if IsPublishedProp(self,'FillColor') then
     XML.SetValue(Path+'FillColor/Value', GetSaveProperty('FillColor'));
@@ -2034,7 +2037,7 @@ begin
   if StreamMode = smDesigning then
   begin
     if IsPublishedProp(self,'Format') then
-      XML.SetValue(Path+'Data/Format/Value', Format);
+      XML.SetValue(Path+'Data/Format/Value'{%H-}, Format);
     if IsPublishedProp(self,'FormatStr') then
        XML.SetValue(Path+'Data/FormatStr/Value', FormatStr);
     if IsPublishedProp(self,'Memo') then
@@ -2767,7 +2770,6 @@ var
       aw: Integer;
       {$ENDIF}
       n, nw, w, curx: Integer;
-      ParaEnd: Boolean;
       Ts: TTextStyle;
     begin
       if not Streaming and (cury + th < DR.Bottom) then
@@ -2775,13 +2777,10 @@ var
         n := Length(St);
         w := Ord(St[n - 1]) * 256 + Ord(St[n]);
         SetLength(St, n - 2);
-        ParaEnd := True;
         if Length(St) > 0 then
         begin
           if St[Length(St)] = #1 then
-            SetLength(St, Length(St) - 1)
-          else
-            ParaEnd := False;
+            SetLength(St, Length(St) - 1);
         end;
 
         // handle any alignment with same code
@@ -2860,17 +2859,11 @@ var
 
     procedure OutLine(str: String);
     var
-      i, n, cury: Integer;
-      ParaEnd: Boolean;
+      cury: Integer;
     begin
       SetLength(str, Length(str) - 2);
       if str[Length(str)] = #1 then
-      begin
-        ParaEnd := True;
         SetLength(str, Length(str) - 1);
-      end
-      else
-        ParaEnd := False;
       cury := 0;
       case Alignment of
           Classes.taLeftJustify : CurY :=y + dy-gapy;
@@ -3254,9 +3247,9 @@ begin
   Font.Name := ReadString(Stream);
   with Stream do
   begin
-    Read(i, 4);
+    Read(i{%H-}, 4);
     Font.Size := i;
-    Read(w, 2);
+    Read(w{%H-}, 2);
     Font.Style := frSetFontStyle(w);
     Read(i, 4);
     Font.Color := i;
@@ -3271,8 +3264,9 @@ begin
     end;
     
 
-    Read(TmpAlign,SizeOf(TmpAlign));
-    Read(TmpLayout,SizeOf(TmpLayout));
+    Read(TmpAlign{%H-},SizeOf(TmpAlign));
+    Read(TmpLayout{%H-},SizeOf(TmpLayout));
+    tmpAngle := 0;
     Read(tmpAngle,SizeOf(tmpAngle));
 
     BeginUpdate;
@@ -3291,13 +3285,13 @@ begin
   inherited LoadFromXML(XML, Path);
 
   Font.Name := XML.GetValue(Path+'Font/Name/Value', 'Arial'); // todo chk
-  Font.Size := XML.GetValue(Path+'Font/Size/Value', 10); // todo chk
+  Font.Size := XML.GetValue(Path+'Font/Size/Value'{%H-}, 10); // todo chk
   RestoreProperty('CharSet',XML.GetValue(Path+'Font/Charset/Value',''),Font);
   RestoreProperty('Style',XML.GetValue(Path+'Font/Style/Value',''),Font);
   Font.Color := StringToColor(XML.GetValue(Path+'Font/Color/Value','clBlack')); // todo chk
 
   if StreamMode = smDesigning then begin
-    Highlight.FontStyle := XML.GetValue(Path+'Highlight/FontStyle/Value', 0); // todo chk
+    Highlight.FontStyle := XML.GetValue(Path+'Highlight/FontStyle/Value'{%H-}, 0); // todo chk
     Highlight.FontColor := StringToColor(XML.GetValue(Path+'Highlight/FontColor/Value', 'clBlack'));
     Highlight.FillColor := StringToColor(XML.GetValue(Path+'Highlight/FillColor/Value', 'clWhite'));
     HighlightStr := XML.GetValue(Path+'Highlight/HighlightStr/Value', HighlightStr);
@@ -3305,7 +3299,7 @@ begin
   
   RestoreProperty('Alignment',XML.GetValue(Path+'Alignment/Value',''));
   RestoreProperty('Layout',XML.GetValue(Path+'Layout/Value',''));
-  Angle := XML.GetValue(Path+'Angle/Value', 0);
+  Angle := XML.GetValue(Path+'Angle/Value'{%H-}, 0);
 end;
 
 procedure TfrMemoView.SaveToStream(Stream: TStream);
@@ -3350,21 +3344,21 @@ procedure TfrMemoView.SaveToXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited SaveToXML(XML, Path);
   XML.SetValue(Path+'Font/Name/Value', Font.name);
-  XML.SetValue(Path+'Font/Size/Value', Font.Size);
+  XML.SetValue(Path+'Font/Size/Value'{%H-}, Font.Size);
   XML.SetValue(Path+'Font/Color/Value', ColorToString(Font.Color));
   XML.SetValue(Path+'Font/Charset/Value', GetSaveProperty('CharSet',Font));
   XML.SetValue(Path+'Font/Style/Value', GetSaveProperty('Style',Font));
 
   if StreamMode=smDesigning then
   begin
-    XML.SetValue(Path+'Highlight/FontStyle/Value', HighLight.FontStyle);
+    XML.SetValue(Path+'Highlight/FontStyle/Value'{%H-}, HighLight.FontStyle);
     XML.SetValue(Path+'Highlight/FontColor/Value', ColorToString(Highlight.FontColor));
     XML.SetValue(Path+'Highlight/FillColor/Value', ColorToString(Highlight.FillColor));
     XML.SetValue(Path+'Highlight/HighlightStr/Value', HighlightStr);
   end;
   XML.SetValue(Path+'Alignment/Value',GetSaveProperty('Alignment'));
   XML.SetValue(Path+'Layout/Value', GetSaveProperty('Layout'));
-  XML.SetValue(Path+'Angle/Value', Angle);
+  XML.SetValue(Path+'Angle/Value'{%H-}, Angle);
 end;
 
 procedure TfrMemoView.GetBlob(b: TfrTField);
@@ -3756,7 +3750,7 @@ begin
         st:=frBandNames[BandType];
         Font.Orientation := 0;
         Brush.Color:=clBtnFace;
-        TextOut(r.left+5, r.top+1, frBandNames[BandType]);
+        TextOut(r.left+5, r.top+1, st);
       end;
     end
     else
@@ -9195,7 +9189,7 @@ begin
   Designer.Name := DesName + '__';
   Designer.Page := nil;
   frDesigner := TfrReportDesigner(frDesigner.ClassType.NewInstance);
-  frDesigner.Create(nil);
+  frDesigner.Create(nil){%H-};
   Stream := TMemoryStream.Create;
   SaveToStream(Stream);
   Pages.Clear;

@@ -66,9 +66,6 @@ implementation
 
 uses LR_Class, LR_Const;
 
-var
-  LocalDescri: string;
-
 procedure frInitFont(aFont : TFont; aColor : TColor; aSize : Integer; aStyle : TFontStyles);
 begin
   with aFont do

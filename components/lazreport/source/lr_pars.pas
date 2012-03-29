@@ -35,7 +35,7 @@ type
     property OnFunction: TFunctionEvent read FOnFunction write FOnFunction;
   end;
 
-function GetBrackedVariable(s: String; var i, j: Integer): String;
+function GetBrackedVariable(s: String; var i: integer; out j: Integer): String;
 
 implementation
 
@@ -53,7 +53,7 @@ const
   ttNot = #12; ttMod = #13; ttRound = #14;
 
 
-function GetBrackedVariable(s: String; var i, j: Integer): String;
+function GetBrackedVariable(s: String; var i: integer; out j: Integer): String;
 var
   c: Integer;
   fl1, fl2: Boolean;
