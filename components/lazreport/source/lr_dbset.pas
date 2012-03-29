@@ -131,35 +131,49 @@ begin
 end;
 
 function TfrDBDataSet.GetBookMark: Pointer;
+var
+  ds: TDataset;
 begin
   Result:=inherited GetBookMark;
-  
-  if Assigned(Dataset) then
-    Result:=Dataset.GetBookmark;
+  ds := DataSet;
+  if Assigned(ds) then
+    Result:=ds.GetBookmark;
 end;
 
 procedure TfrDBDataSet.GotoBookMark(BM: Pointer);
+var
+  ds: TDataset;
 begin
-  if Assigned(Dataset) then
-    Dataset.GotoBookmark(BM);
+  ds := DataSet;
+  if Assigned(ds) then
+    ds.GotoBookmark(BM);
 end;
 
 procedure TfrDBDataSet.FreeBookMark(BM: Pointer);
+var
+  ds: TDataset;
 begin
-  if Assigned(Dataset) and Assigned(BM) then
-    Dataset.FreeBookmark(BM);
+  ds := DataSet;
+  if Assigned(ds) and Assigned(BM) then
+    ds.FreeBookmark(BM);
 end;
 
 procedure TfrDBDataSet.DisableControls;
+var
+  ds: TDataset;
 begin
-  if Assigned(Dataset) then
-    Dataset.DisableControls;
+  ds := DataSet;
+  if Assigned(ds) then
+    ds.DisableControls;
 end;
 
 procedure TfrDBDataSet.EnableControls;
+var
+  ds: TDataset;
 begin
-  if Assigned(Dataset) then
-    Dataset.EnableControls;
+  ds := DataSet;
+  if Assigned(ds) then
+    ds.EnableControls;
 end;
 
 procedure TfrDBDataSet.Init;
@@ -171,12 +185,15 @@ begin
 end;
 
 procedure TfrDBDataSet.Exit;
+var
+  ds: TDataset;
 begin
   if FBookMark <> frEmptyBookmark then
   begin
+    ds := GetDataSet;
     if (FRangeBegin = rbCurrent) or (FRangeEnd = reCurrent) then
-      frGotoBookmark(TfrTDataSet(GetDataSet), FBookmark);
-    frFreeBookmark(TfrTDataSet(GetDataSet), FBookmark);
+      frGotoBookmark(TfrTDataSet(ds), FBookmark);
+    frFreeBookmark(TfrTDataSet(ds), FBookmark);
   end;
   FBookMark := frEmptyBookmark;
   Close;
@@ -195,24 +212,29 @@ end;
 procedure TfrDBDataSet.Next;
 var
   b: TfrBookmark;
+  ds: TDataset;
 begin
   FEof := False;
+  ds := GetDataSet;
   if FRangeEnd = reCurrent then
   begin
-    b := frGetBookmark(GetDataSet);
-    if frIsBookmarksEqual(GetDataSet, b, FBookmark) then
+    b := frGetBookmark(TfrTDataSet(ds));
+    if frIsBookmarksEqual(TfrTDataSet(ds), b, FBookmark) then
       FEof := True;
-    frFreeBookmark(GetDataSet, b);
+    frFreeBookmark(TfrTDataSet(ds), b);
     System.Exit;
   end;
-  GetDataSet.Next;
+  ds.Next;
   inherited Next;
 end;
 
 procedure TfrDBDataSet.Refresh;
+var
+  ds: TDataset;
 begin
-  if GetDataset<>nil then
-    GetDataset.Refresh;
+  ds := GetDataSet;
+  if ds<>nil then
+    ds.Refresh;
 end;
 
 function TfrDBDataSet.Eof: Boolean;

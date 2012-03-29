@@ -8740,22 +8740,21 @@ procedure TfrReport.FillQueryParams;
 var
   i, j: Integer;
   t: TfrView;
-  procedure PrepareDS(ds: TfrDataSet);
+  procedure PrepareDS(ds: TComponent);
   begin
-    if (ds <> nil) and (ds is TfrDBDataSet) then
-      frDataManager.PrepareDataSet(TfrTDataSet((ds as TfrDBDataSet).GetDataSet));
+    if ds is TfrDBDataSet then
+      frDataManager.PrepareDataSet(TfrDBDataSet(ds).GetDataSet);
   end;
 begin
   if frDataManager = nil then Exit;
   frDataManager.BeforePreparing;
-  if Dataset <> nil then
-    PrepareDS(DataSet);
+  PrepareDS(DataSet);
   for i := 0 to Pages.Count - 1 do
     for j := 0 to Pages[i].Objects.Count-1 do
     begin
       t :=TfrView(Pages[i].Objects[j]);
       if t is TfrBandView then
-        PrepareDS(frFindComponent(CurReport.Owner, TfrBandView(t).DataSet) as TfrDataSet);
+        PrepareDS(frFindComponent(CurReport.Owner, TfrBandView(t).DataSet));
     end;
   frDataManager.AfterPreparing;
 end;

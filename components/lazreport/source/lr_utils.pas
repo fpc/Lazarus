@@ -35,7 +35,7 @@ function frReadString2217(Stream: TStream): String;
 procedure frWriteString(Stream: TStream; s: String);
 procedure frEnableControls(c: Array of TControl; e: Boolean);
 function frControlAtPos(Win: TWinControl; p: TPoint): TControl;
-function frGetDataSet(ComplexName: String): TfrTDataSet;
+function frGetDataSet(const ComplexName: String): TfrTDataSet;
 procedure frGetDataSetAndField(ComplexName: String;
   var DataSet: TfrTDataSet; out Field: TfrTField);
 function frGetFontStyle(Style: TFontStyles): Integer;
@@ -308,26 +308,31 @@ begin
   end;
 end;
 
-function frGetDataSet(ComplexName: String): TfrTDataSet;
+function frGetDataSet(const ComplexName: String): TfrTDataSet;
+var
+  Component: TComponent;
 begin
-  Result := nil;
-  if not Assigned(frFindComponent(CurReport.Owner, ComplexName)) then exit;
-  if frFindComponent(CurReport.Owner, ComplexName) is TDataSet then
-    Result := TfrTDataSet(frFindComponent(CurReport.Owner, ComplexName))
+  Component := frFindComponent(CurReport.Owner, ComplexName);
+  if Assigned(Component) then
+  begin
+    if Component is TDataSet then
+      Result := TfrTDataSet(Component)
+    else if Component is TDataSource then
+      Result := TfrTDataSet(TDataSource(Component).DataSet);
+  end
   else
-   if frFindComponent(CurReport.Owner, ComplexName) is TDataSource then
-     Result := TfrTDataSet(TDataSource(frFindComponent(CurReport.Owner, ComplexName)).DataSet);
+    Result := nil;
 end;
 
 procedure frGetDataSetAndField(ComplexName: String; var DataSet: TfrTDataSet;
   out Field: TfrTField);
 var
   n: Integer;
-  f: TComponent;
+  Owner, Component: TComponent;
   s1, s2, s3, s4: String;
 begin
   Field := nil;
-  f := CurReport.Owner;
+  Owner := CurReport.Owner;
   n := Pos('.', ComplexName);
   if n <> 0 then
   begin
@@ -337,20 +342,20 @@ begin
     begin
       s3 := Copy(s2, Pos('.', s2) + 1, 255);
       s2 := Copy(s2, 1, Pos('.', s2) - 1);
-      f:=FindGlobalComponent(S1);
-      if f <> nil then
+      Owner:=FindGlobalComponent(S1);
+      if Owner <> nil then
       begin
         n:=Pos('.', S3);                      //test for frame name
         if n>0 then                           //if frame name present
         begin
           S4:=Copy(S3, 1, n-1);
           Delete(S3, 1, n);
-          f:=F.FindComponent(S2);
-          if Assigned(F)then
-            DataSet := TfrTDataSet(f.FindComponent(s4));
+          Owner:=Owner.FindComponent(S2);
+          if Assigned(Owner)then
+            DataSet := TfrTDataSet(Owner.FindComponent(s4));
         end
         else
-          DataSet := TfrTDataSet(f.FindComponent(s2));
+          DataSet := TfrTDataSet(Owner.FindComponent(s2));
         RemoveQuotes(s3);
         if DataSet <> nil then
           Field := TfrTField(DataSet.FindField(s3));
@@ -358,12 +363,13 @@ begin
     end
     else
     begin
-      if Assigned(frFindComponent(f, s1)) then
+      Component := frFindComponent(Owner, s1);
+      if Assigned(Component) then
         begin
-          if TfrTDataSet(frFindComponent(f, s1)) is TDataSet then
-            DataSet := TfrTDataSet(frFindComponent(f, s1))
-          else if frFindComponent(f, s1) is TDataSource then
-            DataSet := TfrTDataSet(TDataSource(frFindComponent(f, s1)).DataSet);
+          if Component is TDataSet then
+            DataSet := TfrTDataSet(Component)
+          else if Component is TDataSource then
+            DataSet := TfrTDataSet(TDataSource(Component).DataSet);
         end;
       RemoveQuotes(s2);
       if DataSet <> nil then
