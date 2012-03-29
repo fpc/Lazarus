@@ -189,6 +189,7 @@ const
    defaultFontSize = 10;
 
 {$HINTS OFF}
+{$NOTES OFF}
 function isNumeric(St: String): Boolean;
 var
   {%H-}R: Double;
@@ -197,6 +198,7 @@ begin
   Val(St, R, E);
   Result := (E = 0);
 end;
+{$NOTES ON}
 {$HINTS ON}
 
 function TfrBarCodeView.GetBarType: TBarcodeType;
