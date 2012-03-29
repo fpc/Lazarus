@@ -78,10 +78,10 @@ type
   TfrPBox = class(TPanel)
   public
     Preview: TfrPreviewForm;
-    procedure WMEraseBackground(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
+    procedure WMEraseBackground(var {%H-}Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure Paint; override;
     procedure MouseDown(Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer); override;
+      {%H-}Shift: TShiftState; X, Y: Integer); override;
     procedure DblClick; override;
 
     property OnMouseWheelDown;
@@ -185,9 +185,9 @@ type
     procedure ConnectBack;
     procedure ScrollbarDelta(const VertDelta,HorzDelta: Integer);
     procedure MouseWheelDown(Sender: TObject; Shift: TShiftState;
-      MousePos: TPoint; var Handled: Boolean);
+      {%H-}MousePos: TPoint; var Handled: Boolean);
     procedure MouseWheelUp(Sender: TObject; Shift: TShiftState;
-      MousePos: TPoint; var Handled: Boolean);
+      {%H-}MousePos: TPoint; var Handled: Boolean);
     function ExportToWithFilterIndex(AFilterIndex:Integer; AFileName: string): boolean;
     function Print: boolean;
   public
@@ -200,10 +200,10 @@ implementation
 
 {$R *.lfm}
 
-uses LR_Class, LR_Prntr, LR_Srch, Registry, LR_PrDlg,Printers;
+uses LR_Class, LR_Prntr, LR_Srch, LR_PrDlg,Printers;
 
 type
-  THackControl = class(TControl)
+  THackControl = class(TWinControl)
   end;
 
 var
@@ -491,7 +491,7 @@ end;
 {----------------------------------------------------------------------------}
 procedure TfrPreviewForm.FormCreate(Sender: TObject);
 var
-  W,H: Integer;
+  W: Integer;
 begin
   PBox := TfrPBox.Create(Self);
   with PBox do
@@ -559,7 +559,6 @@ end;
 
 procedure TfrPreviewForm.Show_Modal(ADoc: Pointer);
 var
-  Ini: TRegIniFile;
   GrayedButtons: Boolean;
 begin
   Connect(ADoc);
@@ -677,10 +676,10 @@ function TfrPreviewForm.ExportToWithFilterIndex(AFilterIndex: Integer;
 begin
   if (AFilterIndex<0) or (AFilterIndex>=frFiltersCount) then
     raise exception.Create(sExportFilterIndexError);
-
   ConnectBack;
   TfrReport(Doc).ExportTo(frFilters[AFilterIndex].ClassRef, AFileName);
   Connect(Doc);
+  Result:=true;
 end;
 
 procedure TfrPreviewForm.Connect(ADoc: Pointer);
@@ -888,23 +887,26 @@ end;
 
 procedure TfrPreviewForm.VScrollBarChange(Sender: TObject);
 var
-  i, p, pp: Integer;
+  {$IFDEF WIN32}
+  p, pp: Integer;
   r: TRect;
+  {$ENDIF}
+  i: integer;
   Pages: TfrEMFPages;
 begin
   if EMFPages = nil then Exit;
-  Pages := TfrEMFPages(EMFPages);
+  {$IFDEF WIN32}
   p := VScrollBar.Position;
   pp := OldV - p;
   OldV := p;
   ofy := -p;
   r := Rect(0, 0, PBox.Width, PBox.Height);
-  {$IFDEF WIN32}
   ScrollWindowEx(PBox.Handle, 0, pp, @r, @r, 0, nil, SW_INVALIDATE);
   UpdateWindow(Pbox.Handle);
   {$ELSE}
   PBox.Invalidate;
   {$ENDIF}
+  Pages := TfrEMFPages(EMFPages);
   for i := 0 to Pages.Count-1 do
     if (Pages[i]^.r.Top < -ofy + 11) and
       (Pages[i]^.r.Bottom > -ofy + 11) then
