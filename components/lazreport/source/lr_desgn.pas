@@ -109,11 +109,11 @@ type
 
     procedure BtnClick(Sender : TObject);
     procedure HeaderMDown(Sender: TOBject; Button: TMouseButton;
-                  Shift: TShiftState; X, Y: Integer);
-    procedure HeaderMMove(Sender: TObject; Shift: TShiftState; X,
-                  Y: Integer);
-    procedure HeaderMUp(Sender: TOBject; Button: TMouseButton;
-                   Shift: TShiftState; X, Y: Integer);
+                  {%H-}Shift: TShiftState; X, Y: Integer);
+    procedure HeaderMMove(Sender: TObject; {%H-}Shift: TShiftState; {%H-}X,
+                  {%H-}Y: Integer);
+    procedure HeaderMUp(Sender: TOBject; {%H-}Button: TMouseButton;
+                   {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     {$ENDIF}
   protected
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
@@ -148,8 +148,7 @@ type
     FDesigner: TfrDesignerForm;
     
     fOldFocusRect : TRect;
-    fForm         : TfrDialogForm;
-    
+
     procedure NormalizeRect(var r: TRect);
     procedure NormalizeCoord(t: TfrView);
     function FindNearestEdge(var x, y: Integer): Boolean;
@@ -372,8 +371,8 @@ type
     procedure ZB2Click(Sender: TObject);
     procedure PgB1Click(Sender: TObject);
     procedure PgB2Click(Sender: TObject);
-    procedure OB2MouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure OB2MouseDown(Sender: TObject; {%H-}Button: TMouseButton;
+      Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure OB1Click(Sender: TObject);
     procedure CutBClick(Sender: TObject);
     procedure CopyBClick(Sender: TObject);
@@ -391,8 +390,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure N8Click(Sender: TObject);
-    procedure C2DrawItem(Control: TWinControl; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState);
+    procedure C2DrawItem({%H-}Control: TWinControl; Index: Integer; Rect: TRect;
+      {%H-}State: TOwnerDrawState);
     procedure HlB1Click(Sender: TObject);
     procedure FileBtn4Click(Sender: TObject);
     procedure N42Click(Sender: TObject);
@@ -421,12 +420,12 @@ type
     procedure SB1Click(Sender: TObject);
     procedure SB2Click(Sender: TObject);
     procedure HelpBtnClick(Sender: TObject);
-    procedure FormMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure FormMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
+      {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure N22Click(Sender: TObject);
     procedure Tab1MouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure frDesignerFormClose(Sender: TObject; var CloseAction: TCloseAction);
+      {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+    procedure frDesignerFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure frDesignerFormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure frSpeedButton1Click(Sender: TObject);
     procedure StB1Click(Sender: TObject);
@@ -3672,7 +3671,6 @@ procedure TfrDesignerForm.DuplicateView(View: TfrView; Data: PtrInt);
 var
   DeltaX,DeltaY: Integer;
   t: TfrView;
-  p,q: TPoint;
 begin
   // check if view is unique instance band kind and if there is already one
   if (View is TfrBandView) and
@@ -5426,7 +5424,7 @@ procedure TfrDesignerForm.Tab1MouseDown(Sender: TObject;
 var
   p: TPoint;
 begin
-  GetCursorPos(p);
+  GetCursorPos(p{%H-});
   
   if Button = mbRight then
     Popup2.PopUp(p.X,p.Y);
@@ -5804,9 +5802,9 @@ begin
 end;
 
 procedure TfrDesignerForm.WndProc(var Message: TLMessage);
-var
-  MenuItem: TMenuItem;
-  CCanvas: TCanvas;
+//var
+  //MenuItem: TMenuItem;
+  //CCanvas: TCanvas;
 
   function FindItem(ItemId: Integer): TMenuItem;
   begin
@@ -6722,7 +6720,6 @@ procedure TfrObjectInspector.Select(Obj: TObject);
 var
   i      : Integer;
   NewSel : TPersistentSelectionList;
-  frDsg: TfrDesignerForm;
 begin
   if Objects.Count <> fcboxObjList.Items.Count then
   begin

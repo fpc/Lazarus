@@ -21,7 +21,7 @@ uses
 
   LCLType,LCLIntf,LCLProc,
   
-  LR_Class, LR_Insp, lr_propedit, SynEdit, SynHighlighterPas;
+  LR_Class, lr_propedit, SynEdit, SynHighlighterPas;
 
 type
 
