@@ -184,7 +184,6 @@ procedure PaintGrad(Cv: TCanvas; X, Y, X1, Y1: Word;
 var
   FromR, FromG, FromB: Integer; //These are the separate color values for RGB
   DiffR, DiffG, DiffB: Integer; // of color values.
-  rct: TRect;                   //Rectangle used to draw frame around button
   bm: TBitMap;
 
   {To speed things up and reduce flicker, I use a Bitmap to draw the button in
@@ -361,7 +360,6 @@ begin
     if Cv = nil then Exit;
     bm.Width := X1 - X;          //Set BMP dimensions to match control's
     bm.Height :=Y1 - Y;
-    rct := Rect(0, 0, bm.Width, bm.Height);  //Set rectangle size for later use
     FromR := FBeginClr and $000000ff;  //Strip out separate RGB values
     FromG := (FBeginClr shr 8) and $000000ff;
     FromB := (FBeginClr shr 16) and $000000ff;

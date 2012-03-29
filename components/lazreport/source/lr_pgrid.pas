@@ -51,7 +51,6 @@ type
     fShowHdOnAllPage      : boolean;
     FCaption              : String;
     FShowCaption          : Boolean;
-    FWidth                : Integer;
     FDataSet              : TDataset;
     FColumnsInfo          : array of TColumnInfo;
     FTemplate             : string;

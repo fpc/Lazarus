@@ -51,13 +51,13 @@ type
   protected
     procedure AppendLine(const s: AnsiString);
     procedure InsertLine(const s: AnsiString; position: Integer);
-    function  GetviewText(View:TfrView): string; override;
+    function  GetviewText({%H-}View:TfrView): string; override;
     procedure CalcXCoords(var x,w: integer); override;
   public
     constructor Create(AStream: TStream); override;
     destructor Destroy; override;
     procedure OnData(x, y: Integer; View: TfrView); override;
-    procedure OnText(X, Y: Integer; const Text: String; View: TfrView); override;
+    procedure OnText({%H-}X, {%H-}Y: Integer; const Text: String; {%H-}View: TfrView); override;
     procedure OnEndPage; override;
     procedure OnEndDoc; override;
 

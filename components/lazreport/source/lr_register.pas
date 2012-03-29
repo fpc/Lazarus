@@ -32,8 +32,8 @@ type
 
   TfrRepEditor = class(TComponentEditor)
   public
-    procedure ExecuteVerb(Index: Integer); override;
-    function GetVerb(Index: Integer): string; override;
+    procedure ExecuteVerb({%H-}Index: Integer); override;
+    function GetVerb({%H-}Index: Integer): string; override;
     function GetVerbCount: Integer; override;
     procedure DoDesign;
   end;
