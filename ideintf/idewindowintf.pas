@@ -1388,7 +1388,8 @@ end;
 { TSimpleWindowLayoutList }
 
 procedure TSimpleWindowLayoutList.Clear;
-var i: integer;
+var
+  i: integer;
 begin
   for i:=0 to Count-1 do Items[i].Free;
   fItems.Clear;
@@ -1452,9 +1453,9 @@ begin
     Items[i].LoadFromConfig(Config,Path);
 end;
 
-procedure TSimpleWindowLayoutList.SaveToConfig(Config: TConfigStorage;
-  const Path: string);
-var i: integer;
+procedure TSimpleWindowLayoutList.SaveToConfig(Config: TConfigStorage; const Path: string);
+var
+  i: integer;
 begin
   Config.SetDeleteValue(Path+'Desktop/FormIdCount',Count,0);
   //debugln(['TSimpleWindowLayoutList.SaveToConfig ',Count]);
@@ -1470,7 +1471,8 @@ begin
 end;
 
 function TSimpleWindowLayoutList.ItemByForm(AForm: TCustomForm): TSimpleWindowLayout;
-var i: integer;
+var
+  i: integer;
 begin
   i:=Count-1;
   while (i>=0) do begin
@@ -1481,9 +1483,9 @@ begin
   Result:=nil;
 end;
 
-function TSimpleWindowLayoutList.ItemByFormID(const FormID: string
-  ): TSimpleWindowLayout;
-var i: integer;
+function TSimpleWindowLayoutList.ItemByFormID(const FormID: string): TSimpleWindowLayout;
+var
+  i: integer;
 begin
   i:=IndexOf(FormID);
   if i>=0 then
@@ -1492,9 +1494,9 @@ begin
     Result:=nil;
 end;
 
-function TSimpleWindowLayoutList.ItemByFormCaption(const aFormCaption: string
-  ): TSimpleWindowLayout;
-var i: integer;
+function TSimpleWindowLayoutList.ItemByFormCaption(const aFormCaption: string): TSimpleWindowLayout;
+var
+  i: integer;
 begin
   i := Count - 1;
   while i >= 0 do begin
