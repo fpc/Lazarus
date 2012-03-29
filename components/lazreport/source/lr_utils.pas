@@ -58,7 +58,7 @@ function lrValidFieldReference(s: string):boolean;
 function UTF8Desc(S:string; var Desc: string): Integer;
 function UTF8Char(S:string; index:Integer; Desc:string): TUTF8Char;
 function UTF8Range(S:string; index,count:Integer; Desc:String):string;
-function UTF8Index(S:string; index:integer; desc:string): Integer;
+function UTF8Index(index:integer; desc:string): Integer;
 function UTF8CharIn(ch:TUTF8Char; const arrstr:array of string): boolean;
 function UTF8QuotedStr(s:string; Quote: TUTF8Char; desc:string=''): string;
 
@@ -679,7 +679,7 @@ begin
     inc(i);
     Dec(Count);
   end;
-  i := UTF8Index(S, Index, Desc);
+  i := UTF8Index(Index, Desc);
   if i>0 then begin
     SetLength(Result, c);
     Move(S[i],Result[1],c);
@@ -687,7 +687,7 @@ begin
 end;
 
 // this assume index is in valid range
-function UTF8Index(S: string; index: integer; desc: string): Integer;
+function UTF8Index(index: integer; desc: string): Integer;
 var
   i,c: integer;
 begin
