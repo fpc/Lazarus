@@ -901,9 +901,9 @@ var
   Cnt: integer;
 begin
   Cnt:= 0;
-  ListPage:=SearchResultsView.AddSearch(SearchText, SearchText,
-                                        ReplaceText,SearchDirectory,
-                                        SearchMask, SearchOptions);
+  LazarusIDE.DoShowSearchResultsView(True);
+  ListPage:=SearchResultsView.AddSearch(SearchText,SearchText,
+                            ReplaceText,SearchDirectory,SearchMask,SearchOptions);
   try
     (* BeginUpdate prevents ListPage from being closed,
       other pages can still be closed or inserted, so PageIndex can change *)

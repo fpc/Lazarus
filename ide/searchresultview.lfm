@@ -11,7 +11,7 @@ object SearchResultsView: TSearchResultsView
   OnClose = FormClose
   OnCreate = Form1Create
   OnKeyDown = FormKeyDown
-  Position = poScreenCenter
+  Position = poDefault
   LCLVersion = '0.9.31'
   object ResultsNoteBook: TPageControl
     AnchorSideTop.Control = ToolBar

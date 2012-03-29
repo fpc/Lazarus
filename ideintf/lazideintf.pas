@@ -288,6 +288,9 @@ type
     function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; virtual; abstract;
     procedure AbortBuild; virtual; abstract;
 
+    // search results
+    procedure DoShowSearchResultsView(Show: boolean); virtual; abstract;
+
     // designer
     function GetDesignerForProjectEditor(AEditor: TSourceEditorInterface;
                               LoadForm: boolean): TIDesigner; virtual; abstract;

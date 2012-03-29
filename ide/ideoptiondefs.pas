@@ -94,7 +94,7 @@ type
 const
   // This is the list of IDE windows, that will not be automatically reopened
   // on startup. These windows are opened automatically when needed.
-  NonModalIDEWindowManualOpen = [
+{  NonModalIDEWindowManualOpen = [
     nmiwNone,
     nmiwMainIDEName,
     nmiwSourceNoteBookName,
@@ -103,7 +103,7 @@ const
     nmiwSearchResultsViewName,
     nmiwAnchorEditor
     ];
-
+}
   // form names for non modal IDE windows:
   NonModalIDEWindowNames: array[TNonModalIDEWindow] of string = (
     '?',

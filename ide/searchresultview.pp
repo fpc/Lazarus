@@ -37,10 +37,10 @@ unit SearchResultView;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  ExtCtrls, StdCtrls, Buttons, LCLType, LCLIntf, Menus, strutils, IDEWindowIntf,
-  IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory, IDEProcs,
-  Project, MainIntf, Clipbrd, ActnList, IDECommands, TreeFilterEdit;
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, ComCtrls, LCLType, LCLIntf,
+  Menus, strutils, IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
+  IDEProcs, Project, MainIntf, Clipbrd, ActnList, IDECommands, TreeFilterEdit;
+
 
 type
   { TLazSearchMatchPos }
@@ -211,11 +211,8 @@ type
     property Items[Index: integer]: TStrings read GetItems write SetItems;
   end;
 
-function SearchResultsView: TSearchResultsView;
-
-procedure ShowSearchResultView(BringToFront: boolean);
-
 var
+  SearchResultsView: TSearchResultsView = nil;
   OnSearchResultsViewSelectionChanged: TNotifyEvent = nil;
   OnSearchAgainClicked: TNotifyEvent = nil;
 
@@ -223,12 +220,8 @@ implementation
 
 {$R *.lfm}
 
-{ TSearchResultsView }
-
 const
   MaxTextLen = 80;
-var
-  SearchResultsViewSingleton: TSearchResultsView = nil;
 
 function CopySearchMatchPos(var Src, Dest: TLazSearchMatchPos): Boolean;
 begin
@@ -260,29 +253,17 @@ begin
   sl.Free;
 end;
 
-function SearchResultsView: TSearchResultsView;
-begin
-  Result := SearchResultsViewSingleton;
-  if Result <> nil then exit;
-  Application.CreateForm(TSearchResultsView, SearchResultsViewSingleton);
-  SearchResultsViewSingleton.OnSelectionChanged := OnSearchResultsViewSelectionChanged;
-  Result := SearchResultsViewSingleton;
-end;
-
-procedure ShowSearchResultView(BringToFront: boolean);
-begin
-  IDEWindowCreators.ShowForm(SearchResultsView,BringToFront);
-end;
+{ TSearchResultsView }
 
 procedure TSearchResultsView.Form1Create(Sender: TObject);
 var
   CloseCommand: TIDECommand;
 begin
   FMaxItems:=50000;
-  
   ResultsNoteBook.Options:= ResultsNoteBook.Options+[nboShowCloseButtons];
   ResultsNoteBook.Update;
 
+  Name:=NonModalIDEWindowNames[nmiwSearchResultsViewName];
   Caption:=lisMenuViewSearchResults;
 
   SearchAgainButton.Hint:=rsStartANewSearch;
@@ -297,8 +278,6 @@ begin
       actClosePage.SecondaryShortCuts.Append(ShortCutToText(
         ShortCut(CloseCommand.ShortcutB.Key1, CloseCommand.ShortcutB.Shift1)));
   end;
-
-  Name := NonModalIDEWindowNames[nmiwSearchResultsViewName];
   fOnSelectionChanged:= nil;
   ShowHint:= True;
   fMouseOverIndex:= -1;
@@ -308,10 +287,9 @@ begin
   mniCopyAll.Caption := lisCopyAllItemsToClipboard;
   mniExpandAll.Caption := lisExpandAll;
   mniCollapseAll.Caption := lisCollapseAll;
-end;//Create
+end;
 
-procedure TSearchResultsView.FormClose(Sender: TObject;
-  var CloseAction: TCloseAction);
+procedure TSearchResultsView.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   // Using a dock manager...
   if Parent<>nil then

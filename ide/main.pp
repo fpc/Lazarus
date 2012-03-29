@@ -1088,7 +1088,7 @@ type
 
     // search results
     function DoJumpToSearchResult(FocusEditor: boolean): boolean;
-    procedure DoShowSearchResultsView(Show, BringToFront: boolean);
+    procedure DoShowSearchResultsView(Show: boolean); override;
 
     // form editor and designer
     procedure DoBringToFrontFormOrUnit;
@@ -1548,6 +1548,7 @@ begin
   FreeAndNil(LazFindReplaceDialog);
   FreeAndNil(MessagesView);
   FreeThenNil(AnchorDesigner);
+  FreeThenNil(SearchResultsView);
   FreeThenNil(ObjectInspector1);
   FreeThenNil(SourceEditorManagerIntf);
 
@@ -1891,7 +1892,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TMainIDE.SetupSpeedButtons;
 
-  function CreateButton(AToolBar: TToolBar; const AName, APixName: String;     
+  function CreateButton(AToolBar: TToolBar; const AName, APixName: String;
     const AOnClick: TNotifyEvent; const AHint: String): TToolButton;
   begin
     Result := TToolButton.Create(OwningComponent);
@@ -4084,7 +4085,7 @@ end;
 
 procedure TMainIDE.mnuViewSearchResultsClick(Sender: TObject);
 Begin
-  ShowSearchResultView(true);
+  DoShowSearchResultsView(true);
 End;
 
 procedure TMainIDE.mnuNewProjectClicked(Sender: TObject);
@@ -10212,7 +10213,7 @@ begin
   end
   else if ItIs(NonModalIDEWindowNames[nmiwSearchResultsViewName]) then
   begin
-    DoShowSearchResultsView(false,false);
+    DoShowSearchResultsView(false);
     AForm:=SearchResultsView;
   end
   else if ItIs(NonModalIDEWindowNames[nmiwAnchorEditor]) then
@@ -14092,15 +14093,14 @@ begin
     SourceEditorManager.ShowActiveWindowOnTop(False);
 end;
 
-procedure TMainIDE.DoShowSearchResultsView(Show, BringToFront: boolean);
+procedure TMainIDE.DoShowSearchResultsView(Show: boolean);
 begin
-  //set the event here for the selectionchanged event
-  if not assigned(SearchresultsView.OnSelectionChanged) then
-    SearchresultsView.OnSelectionChanged := @SearchresultsViewSelectionChanged;
-
-  if Show and (not SearchResultsView.IsVisible) then
-  begin
-    IDEWindowCreators.ShowForm(SearchResultsView,BringToFront);
+  if SearchresultsView=Nil then begin
+    SearchresultsView:=TSearchResultsView.Create(OwningComponent);
+    SearchresultsView.OnSelectionChanged := OnSearchResultsViewSelectionChanged;
+  end;
+  if Show then begin
+    IDEWindowCreators.ShowForm(SearchresultsView,Show);
     // the sourcenotebook is more interesting than the search results
     SourceEditorManager.ShowActiveWindowOnTop(False);
   end;
