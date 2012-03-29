@@ -3280,7 +3280,6 @@ docs/xml/lcl/checklst.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/clipbrd.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/colorbox.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/comctrls.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/comctrls/TrackBarEx.pas -text
 docs/xml/lcl/comctrls/ttoolbutton.pas svneol=native#text/plain
 docs/xml/lcl/comctrls/ttreenode_data.pas svneol=native#text/plain
 docs/xml/lcl/commctrl.xml svneol=LF#text/xml eol=lf
@@ -3306,7 +3305,6 @@ docs/xml/lcl/dynhasharray.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dynqueue.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/editbtn.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/extctrls.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/extctrls/radiobutton.pas -text
 docs/xml/lcl/extctrls/statusbar.pas svneol=native#text/plain
 docs/xml/lcl/extdlgs.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/extendedstrings.xml svneol=LF#text/xml eol=lf
@@ -4084,7 +4082,6 @@ examples/trayicon/createbundle.sh svneol=native#text/plain
 examples/trayicon/frmtest.dfm -text
 examples/trayicon/frmtest.lfm -text
 examples/trayicon/frmtest.lrs svneol=native#text/pascal
-examples/trayicon/frmtest.pas -text
 examples/trayicon/icon.ico -text
 examples/trayicon/wndtray.dpr -text
 examples/trayicon/wndtray.lpi -text
@@ -5695,7 +5692,6 @@ lcl/interfaces/gtk/gtk1int.pp svneol=native#text/pascal
 lcl/interfaces/gtk/gtk1memostrings.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtk1memostringsh.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtk1privatelist.inc svneol=native#text/pascal
-lcl/interfaces/gtk/gtk1trayicon.inc -text
 lcl/interfaces/gtk/gtk1widgetset.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtk1wsprivate.pp svneol=native#text/pascal
 lcl/interfaces/gtk/gtkcallback.inc svneol=native#text/pascal
