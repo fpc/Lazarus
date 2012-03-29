@@ -9477,6 +9477,7 @@ begin
           gtk_widget_show(PGtkWidget(GtkWindow));
         gtk_window_deiconify(GtkWindow);
         gtk_window_unmaximize(GtkWindow);
+        gtk_window_unfullscreen(GtkWindow);
       end;
     end;
 
