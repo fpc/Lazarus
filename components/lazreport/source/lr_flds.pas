@@ -33,10 +33,10 @@ type
     procedure FormDeactivate(Sender: TObject);
     procedure ValListDblClick(Sender: TObject);
     procedure ValListKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+      {%H-}Shift: TShiftState);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure ValListSelectionChange(Sender: TObject; User: boolean);
+      {%H-}Shift: TShiftState);
+    procedure ValListSelectionChange(Sender: TObject; {%H-}User: boolean);
   private
     { Private declarations }
     procedure FillValCombo;

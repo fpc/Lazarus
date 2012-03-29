@@ -95,7 +95,7 @@ type
     procedure SaveToStream(Stream: TStream); override;
     procedure Draw(aCanvas: TCanvas); override;
     procedure Print(Stream: TStream); override;
-    procedure DefinePopupMenu(Popup: TPopupMenu); override;
+    procedure DefinePopupMenu({%H-}Popup: TPopupMenu); override;
     
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
@@ -133,7 +133,7 @@ type
     RB2: TRadioButton;
     RB3: TRadioButton;
     RB4: TRadioButton;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure VarBtnClick(Sender: TObject);
     procedure DBBtnClick(Sender: TObject);
@@ -191,7 +191,7 @@ const
 {$HINTS OFF}
 function isNumeric(St: String): Boolean;
 var
-  R: Double;
+  {%H-}R: Double;
   E: Integer;
 begin
   Val(St, R, E);
@@ -753,14 +753,9 @@ begin
 end;
 
 initialization
-
-//  frBarCodeForm:=nil;
-  if not assigned(frBarCodeForm) {and not (csDesigning in ComponentState)} then
-  begin
-    frBarCodeForm := TfrBarCodeForm.Create(nil);
-    frRegisterObject(TfrBarCodeView, frBarCodeForm.Image1.Picture.Bitmap,
-                           sInsBarcode, frBarCodeForm);
-  end;
+  frBarCodeForm := TfrBarCodeForm.Create(nil);
+  frRegisterObject(TfrBarCodeView, frBarCodeForm.Image1.Picture.Bitmap,
+                         sInsBarcode, frBarCodeForm);
 finalization
   if Assigned(frBarCodeForm) then
     frBarCodeForm.Free;

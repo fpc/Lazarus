@@ -17,7 +17,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources,
   Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,ExtCtrls, BarChart, ButtonPanel,
+  Buttons, StdCtrls,ExtCtrls, ButtonPanel,
   LR_Const;
 
 type

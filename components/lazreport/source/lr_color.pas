@@ -27,7 +27,7 @@ type
     FOtherBtn: TSpeedButton;
     FOnColorSelected: TNotifyEvent;
     procedure ButtonClick(Sender: TObject);
-    procedure SetColor(Value: TColor);
+    procedure SetColor(Value: TColor); reintroduce;
   public
     constructor Create(AOwner: TComponent); override;
     property Color: TColor read FColor write SetColor;

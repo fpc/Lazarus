@@ -56,8 +56,8 @@ type
     TabSheet2: TTabSheet;
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure ListBox1DrawItem(Control: TWinControl; Index: Integer;
-      ARect: TRect; State: TOwnerDrawState);
+    procedure ListBox1DrawItem({%H-}Control: TWinControl; Index: Integer;
+      ARect: TRect; {%H-}State: TOwnerDrawState);
   private
     { Private declarations }
   public
@@ -108,8 +108,6 @@ end;
 
 procedure TfrDocOptForm.ListBox1DrawItem(Control: TWinControl; Index: Integer;
   ARect: TRect; State: TOwnerDrawState);
-var
-  ImgRect:TRect;
 begin
   ListBox1.Canvas.FillRect(ARect);       { clear the rectangle }
   if ListBox1.Items.Count > Index then

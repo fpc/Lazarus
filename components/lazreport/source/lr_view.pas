@@ -211,10 +211,6 @@ type
 var
   LastScale     : Double = 1;
   LastScaleMode : TfrScaleMode = mdNone;
-  CurPreview    : TfrPreviewForm;
-  RecordNum     : Integer;
-
-
 {----------------------------------------------------------------------------}
 constructor TfrPreview.Create(AOwner: TComponent);
 begin
@@ -1274,8 +1270,7 @@ begin
   RedrawAll;
 end;
 
-type
-  THackBtn = class(TBitBtn);
+//type THackBtn = class(TBitBtn);
 
 procedure TfrPreviewForm.HelpBtnClick(Sender: TObject);
 begin

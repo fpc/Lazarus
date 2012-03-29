@@ -164,14 +164,14 @@ type
     procedure DrawDialog;
 
     procedure MDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure MUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure MUp(Sender: TObject; Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure MMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-    procedure CMMouseLeave(var Message: TLMessage); message CM_MOUSELEAVE;
+    procedure CMMouseLeave(var {%H-}Message: TLMessage); message CM_MOUSELEAVE;
     procedure DClick(Sender: TObject);
     procedure MoveResize(Kx,Ky:Integer; UseFrames,AResize: boolean);
   protected
     procedure Paint; override;
-    procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
+    procedure WMEraseBkgnd(var {%H-}Message: TLMEraseBkgnd); message LM_ERASEBKGND;
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -522,7 +522,7 @@ type
     procedure GetDefaultSize(var dx, dy: Integer);
     function SelStatus: TfrSelectionStatus;
     procedure UpdScrollbars;
-    procedure InsertFieldsFormCloseQuery(Sender: TObject; var CanClose: boolean);
+    procedure InsertFieldsFormCloseQuery(Sender: TObject; var {%H-}CanClose: boolean);
     procedure InsertDbFields;
     {$ifdef sbod}
     procedure DrawStatusPanel(const ACanvas:TCanvas; const rect:  TRect);
@@ -552,7 +552,7 @@ type
     procedure ShowMemoEditor;
     procedure ShowEditor;
     procedure RedrawPage; override;
-    procedure OnModify(sender: TObject);
+    procedure OnModify({%H-}sender: TObject);
     function PointsToUnits(x: Integer): Double;  override;
     function UnitsToPoints(x: Double): Integer;  override;
     procedure MoveObjects(dx, dy: Integer; aResize: Boolean);
@@ -1383,7 +1383,7 @@ begin
   begin
     DrawPage(dmSelection);
     Down := False;
-    GetCursorPos(p);
+    GetCursorPos(p{%H-});
     //FDesigner.Popup1Popup(nil);
     
     FDesigner.Popup1.PopUp(p.X,p.Y);
@@ -2275,9 +2275,9 @@ end;
 
 function EnumFontsProc(
   var LogFont: TEnumLogFontEx;
-  var Metric: TNewTextMetricEx;
+  var {%H-}Metric: TNewTextMetricEx;
   FontType: Longint;
-  Data: LParam):LongInt; stdcall;
+  {%H-}Data: LParam):LongInt; stdcall;
 var
   S: String;
 begin
@@ -3669,7 +3669,6 @@ end;
 
 procedure TfrDesignerForm.DuplicateView(View: TfrView; Data: PtrInt);
 var
-  DeltaX,DeltaY: Integer;
   t: TfrView;
 begin
   // check if view is unique instance band kind and if there is already one

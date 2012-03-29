@@ -31,13 +31,13 @@ type
     Label1: TLabel;
     procedure ValListDblClick(Sender: TObject);
     procedure ValListKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+      {%H-}Shift: TShiftState);
     procedure ValComboClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+      {%H-}Shift: TShiftState);
   private
     { Private declarations }
     function CurVal: String;
