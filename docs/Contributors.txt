@@ -1,5 +1,6 @@
 #The following people contributed to Lazarus:
 
+Reinier Olislagers
 A. J. Venter
 Aleksey Lagunov
 Alexander Grau
