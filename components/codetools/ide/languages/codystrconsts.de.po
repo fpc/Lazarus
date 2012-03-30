@@ -161,6 +161,10 @@ msgstr ""
 msgid "Identifier Dictionary"
 msgstr ""
 
+#: codystrconsts.crscontains
+msgid "Contains"
+msgstr ""
+
 #: codystrconsts.crscopydeclarationtoclipboard
 msgid "Copy declaration to Clipboard"
 msgstr "Deklaration in Zwischenablage kopieren"
@@ -285,6 +289,10 @@ msgstr "&Hilfe"
 msgid "Hide units of other projects"
 msgstr "Units anderer Projekte verbergen"
 
+#: codystrconsts.crsideintegration
+msgid "IDE Integration"
+msgstr ""
+
 #: codystrconsts.crsidentifiernotfound
 msgid "Identifier not found"
 msgstr "Bezeichner nicht gefunden"
@@ -325,6 +333,10 @@ msgstr ""
 msgid "Linked files"
 msgstr ""
 
+#: codystrconsts.crsloaddictionaryafter
+msgid "Load dictionary after %s"
+msgstr ""
+
 #: codystrconsts.crslocalvariableof
 msgid "Local variable of %s"
 msgstr "Lokale Variable von %s"
@@ -339,6 +351,10 @@ msgstr ""
 
 #: codystrconsts.crsmemberof
 msgid "%s member of %s %s"
+msgstr ""
+
+#: codystrconsts.crsminutes
+msgid "%s minutes"
 msgstr ""
 
 #: codystrconsts.crsmissing
@@ -469,8 +485,24 @@ msgstr ""
 msgid "Report"
 msgstr "Bericht"
 
+#: codystrconsts.crssavedictionaryevery
+msgid "Save dictionary every %s"
+msgstr ""
+
+#: codystrconsts.crssavedictionarynow
+msgid "Save dictionary now"
+msgstr ""
+
+#: codystrconsts.crssavetofile
+msgid "Save to file %s"
+msgstr ""
+
 #: codystrconsts.crssearching
 msgid "searching ..."
+msgstr ""
+
+#: codystrconsts.crsseconds
+msgid "%s seconds"
 msgstr ""
 
 #: codystrconsts.crsselectexpression
@@ -479,6 +511,14 @@ msgstr "Ausdruck wählen"
 
 #: codystrconsts.crsshowcodetoolsnodeinfo
 msgid "Show CodeTools Node Info ..."
+msgstr ""
+
+#: codystrconsts.crsshowonlyidentifierscontainingfiltertext
+msgid "Show only identifiers containing filter text"
+msgstr ""
+
+#: codystrconsts.crsshowonlyidentifiersstartingwithfiltertext
+msgid "Show only identifiers starting with filter text"
 msgstr ""
 
 #: codystrconsts.crsshowunitidentifierdictionary
@@ -499,6 +539,18 @@ msgstr "Größe der .ppu-Datei"
 
 #: codystrconsts.crssource
 msgid "Source: %s"
+msgstr ""
+
+#: codystrconsts.crsstarts
+msgid "Starts"
+msgstr ""
+
+#: codystrconsts.crsthedictionaryisloadedondemandorafterthistime
+msgid "The dictionary is loaded on demand or after this time"
+msgstr ""
+
+#: codystrconsts.crsthedictionaryissavedinintervals
+msgid "The dictionary is saved in intervals"
 msgstr ""
 
 #: codystrconsts.crstheidentifierisalreadydefined
@@ -548,6 +600,10 @@ msgstr "Unit"
 #: codystrconsts.crsunit2
 msgid "Unit: %s"
 msgstr "Unit: %s"
+
+#: codystrconsts.crsunitidentifierdictionary
+msgid "Unit / Identifier Dictionary"
+msgstr ""
 
 #: codystrconsts.crsunitnameclash
 msgid "Unit name clash"

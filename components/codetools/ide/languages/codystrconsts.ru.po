@@ -165,6 +165,10 @@ msgstr "Сведения об элементе кода"
 msgid "Identifier Dictionary"
 msgstr "Словарь идентификаторов"
 
+#: codystrconsts.crscontains
+msgid "Contains"
+msgstr "Содержит"
+
 #: codystrconsts.crscopydeclarationtoclipboard
 #| msgid "Copy declaration to clipboard"
 msgid "Copy declaration to Clipboard"
@@ -292,6 +296,10 @@ msgstr "&Справка"
 msgid "Hide units of other projects"
 msgstr "Скрывать модули других проектов"
 
+#: codystrconsts.crsideintegration
+msgid "IDE Integration"
+msgstr "Интеграция в IDE"
+
 #: codystrconsts.crsidentifiernotfound
 msgid "Identifier not found"
 msgstr "Идентификатор не найден"
@@ -335,6 +343,10 @@ msgstr "кБ"
 msgid "Linked files"
 msgstr "Скомпонованные файлы"
 
+#: codystrconsts.crsloaddictionaryafter
+msgid "Load dictionary after %s"
+msgstr "Загружать словарь спустя %s"
+
 #: codystrconsts.crslocalvariableof
 msgid "Local variable of %s"
 msgstr "Локальная переменная в %s"
@@ -350,6 +362,10 @@ msgstr "МБ"
 #: codystrconsts.crsmemberof
 msgid "%s member of %s %s"
 msgstr "Элемент секции %s в %s %s"
+
+#: codystrconsts.crsminutes
+msgid "%s minutes"
+msgstr "%s минут"
 
 #: codystrconsts.crsmissing
 msgid "missing ..."
@@ -482,9 +498,25 @@ msgstr "Обновить"
 msgid "Report"
 msgstr "Отчёт"
 
+#: codystrconsts.crssavedictionaryevery
+msgid "Save dictionary every %s"
+msgstr "Сохранять словарь каждые %s"
+
+#: codystrconsts.crssavedictionarynow
+msgid "Save dictionary now"
+msgstr "Сохранить словарь сейчас"
+
+#: codystrconsts.crssavetofile
+msgid "Save to file %s"
+msgstr "Сохранить в файл %s"
+
 #: codystrconsts.crssearching
 msgid "searching ..."
 msgstr "поиск ..."
+
+#: codystrconsts.crsseconds
+msgid "%s seconds"
+msgstr "%s секунд"
 
 #: codystrconsts.crsselectexpression
 msgid "Select expression"
@@ -494,6 +526,14 @@ msgstr "Выберите выражение"
 #| msgid "Show CodeTools node info ..."
 msgid "Show CodeTools Node Info ..."
 msgstr "Показать сведения об элементе CodeTools ..."
+
+#: codystrconsts.crsshowonlyidentifierscontainingfiltertext
+msgid "Show only identifiers containing filter text"
+msgstr "Показывать только идентификаторы, содержащие текст фильтра"
+
+#: codystrconsts.crsshowonlyidentifiersstartingwithfiltertext
+msgid "Show only identifiers starting with filter text"
+msgstr "Показывать только идентификаторы, начинающиеся с текста фильтра"
 
 #: codystrconsts.crsshowunitidentifierdictionary
 msgid "Show Unit / Identifier Dictionary ..."
@@ -515,6 +555,18 @@ msgstr "Размер файла .ppu"
 #: codystrconsts.crssource
 msgid "Source: %s"
 msgstr "Файл исходного кода: %s"
+
+#: codystrconsts.crsstarts
+msgid "Starts"
+msgstr "Начинается"
+
+#: codystrconsts.crsthedictionaryisloadedondemandorafterthistime
+msgid "The dictionary is loaded on demand or after this time"
+msgstr "Словарь загружается по необходимости или спустя данное время"
+
+#: codystrconsts.crsthedictionaryissavedinintervals
+msgid "The dictionary is saved in intervals"
+msgstr "Словарь сохраняется с указанным интервалом времени"
 
 #: codystrconsts.crstheidentifierisalreadydefined
 msgid "The identifier \"%s\" is already defined."
@@ -563,6 +615,10 @@ msgstr "Модуль"
 #: codystrconsts.crsunit2
 msgid "Unit: %s"
 msgstr "Модуль: %s"
+
+#: codystrconsts.crsunitidentifierdictionary
+msgid "Unit / Identifier Dictionary"
+msgstr "Словарь модулей и идентификаторов"
 
 #: codystrconsts.crsunitnameclash
 msgid "Unit name clash"

@@ -165,6 +165,10 @@ msgstr "Інформація про Вузол Коду"
 msgid "Identifier Dictionary"
 msgstr ""
 
+#: codystrconsts.crscontains
+msgid "Contains"
+msgstr ""
+
 #: codystrconsts.crscopydeclarationtoclipboard
 #, fuzzy
 #| msgid "Copy declaration to clipboard"
@@ -295,6 +299,10 @@ msgstr "&Довідка"
 msgid "Hide units of other projects"
 msgstr ""
 
+#: codystrconsts.crsideintegration
+msgid "IDE Integration"
+msgstr ""
+
 #: codystrconsts.crsidentifiernotfound
 msgid "Identifier not found"
 msgstr ""
@@ -337,6 +345,10 @@ msgstr "кБ"
 msgid "Linked files"
 msgstr "Зв'язані файли"
 
+#: codystrconsts.crsloaddictionaryafter
+msgid "Load dictionary after %s"
+msgstr ""
+
 #: codystrconsts.crslocalvariableof
 msgid "Local variable of %s"
 msgstr "Локальні змінні %s"
@@ -352,6 +364,10 @@ msgstr "МБ"
 #: codystrconsts.crsmemberof
 msgid "%s member of %s %s"
 msgstr "%s членів %s %s"
+
+#: codystrconsts.crsminutes
+msgid "%s minutes"
+msgstr ""
 
 #: codystrconsts.crsmissing
 msgid "missing ..."
@@ -483,9 +499,25 @@ msgstr "Оновити"
 msgid "Report"
 msgstr "Звіт"
 
+#: codystrconsts.crssavedictionaryevery
+msgid "Save dictionary every %s"
+msgstr ""
+
+#: codystrconsts.crssavedictionarynow
+msgid "Save dictionary now"
+msgstr ""
+
+#: codystrconsts.crssavetofile
+msgid "Save to file %s"
+msgstr ""
+
 #: codystrconsts.crssearching
 msgid "searching ..."
 msgstr "пошук ..."
+
+#: codystrconsts.crsseconds
+msgid "%s seconds"
+msgstr ""
 
 #: codystrconsts.crsselectexpression
 msgid "Select expression"
@@ -496,6 +528,14 @@ msgstr ""
 #| msgid "Show CodeTools node info ..."
 msgid "Show CodeTools Node Info ..."
 msgstr "Показати інфо про вузол CodeTools ..."
+
+#: codystrconsts.crsshowonlyidentifierscontainingfiltertext
+msgid "Show only identifiers containing filter text"
+msgstr ""
+
+#: codystrconsts.crsshowonlyidentifiersstartingwithfiltertext
+msgid "Show only identifiers starting with filter text"
+msgstr ""
 
 #: codystrconsts.crsshowunitidentifierdictionary
 msgid "Show Unit / Identifier Dictionary ..."
@@ -518,6 +558,18 @@ msgstr "Розмір .ppu файлу"
 #: codystrconsts.crssource
 msgid "Source: %s"
 msgstr "Вихідний код: %s"
+
+#: codystrconsts.crsstarts
+msgid "Starts"
+msgstr ""
+
+#: codystrconsts.crsthedictionaryisloadedondemandorafterthistime
+msgid "The dictionary is loaded on demand or after this time"
+msgstr ""
+
+#: codystrconsts.crsthedictionaryissavedinintervals
+msgid "The dictionary is saved in intervals"
+msgstr ""
 
 #: codystrconsts.crstheidentifierisalreadydefined
 msgid "The identifier \"%s\" is already defined."
@@ -566,6 +618,10 @@ msgstr "Модуль"
 #: codystrconsts.crsunit2
 msgid "Unit: %s"
 msgstr "Модуль: %s"
+
+#: codystrconsts.crsunitidentifierdictionary
+msgid "Unit / Identifier Dictionary"
+msgstr ""
 
 #: codystrconsts.crsunitnameclash
 msgid "Unit name clash"

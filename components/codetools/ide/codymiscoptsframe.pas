@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, FileUtil, DividerBevel, LResources, Forms, Controls,
   StdCtrls, ComCtrls, FileProcs,
   IDEOptionsIntf, LazIDEIntf,
-  CodyOpts, CodyIdentifiersDlg;
+  CodyOpts, CodyIdentifiersDlg, CodyStrConsts;
 
 type
   { TCodyMiscOptionsFrame }
@@ -107,25 +107,27 @@ end;
 function TCodyMiscOptionsFrame.SecondsToStr(Seconds: integer): string;
 begin
   if Seconds>=60 then
-    Result:=IntToStr(Seconds div 60)+' minutes'
+    Result:=Format(crsMinutes, [IntToStr(Seconds div 60)])
   else
-    Result:=IntToStr(Seconds)+' seconds';
+    Result:=Format(crsSeconds, [IntToStr(Seconds)]);
 end;
 
 procedure TCodyMiscOptionsFrame.UDUpdateLoadDelayInfo;
 begin
-  UDLoadDelayLabel.Caption:='Load dictionary after '+SecondsToStr(CodyUnitDictionary.LoadAfterStartInS);
+  UDLoadDelayLabel.Caption:=Format(crsLoadDictionaryAfter, [SecondsToStr(
+    CodyUnitDictionary.LoadAfterStartInS)]);
 end;
 
 procedure TCodyMiscOptionsFrame.UDUpdateSaveIntervalInfo;
 begin
-  UDSaveIntervalLabel.Caption:='Save dictionary every '+SecondsToStr(CodyUnitDictionary.SaveIntervalInS);
+  UDSaveIntervalLabel.Caption:=Format(crsSaveDictionaryEvery, [SecondsToStr(
+    CodyUnitDictionary.SaveIntervalInS)]);
 end;
 
 constructor TCodyMiscOptionsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  UDDividerBevel.Caption:='Unit / Identifier Dictionary';
+  UDDividerBevel.Caption:=crsUnitIdentifierDictionary;
   FOldOptions:=TCodyMiscOptions.Create;
 end;
 
@@ -137,7 +139,7 @@ end;
 
 function TCodyMiscOptionsFrame.GetTitle: String;
 begin
-  Result:='Cody';
+  Result:=crsIDEIntegration;
 end;
 
 procedure TCodyMiscOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions
@@ -157,18 +159,18 @@ procedure TCodyMiscOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog
   );
 begin
   UDLoadDelayTrackBar.ShowHint:=true;
-  UDLoadDelayTrackBar.Hint:='The dictionary is loaded on demand or after this time';
+  UDLoadDelayTrackBar.Hint:=crsTheDictionaryIsLoadedOnDemandOrAfterThisTime;
   UDLoadDelayTrackBar.Min:=Low(UDLoadDelayTrackbarValues);
   UDLoadDelayTrackBar.Max:=High(UDLoadDelayTrackbarValues);
 
-  UDSaveIntervalLabel.ShowHint:=true;
-  UDSaveIntervalLabel.Hint:='The dictionary is saved in intervals';
+  UDSaveIntervalTrackBar.ShowHint:=true;
+  UDSaveIntervalTrackBar.Hint:=crsTheDictionaryIsSavedInIntervals;
   UDSaveIntervalTrackBar.Min:=Low(UDSaveIntervalTrackbarValues);
   UDSaveIntervalTrackBar.Max:=High(UDSaveIntervalTrackbarValues);
 
-  UDSaveButton.Caption:='Save dictionary now';
+  UDSaveButton.Caption:=crsSaveDictionaryNow;
   UDSaveButton.ShowHint:=true;
-  UDSaveButton.Hint:='Save to file '+CodyUnitDictionary.GetFilename;
+  UDSaveButton.Hint:=Format(crsSaveToFile, [CodyUnitDictionary.GetFilename]);
 end;
 
 class function TCodyMiscOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

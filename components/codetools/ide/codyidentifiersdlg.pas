@@ -807,11 +807,11 @@ begin
   FJumpButton.Caption:= crsJumpTo;
 
   StartsSpeedButton.Down:=true;
-  StartsSpeedButton.Caption:='Starts';
-  StartsSpeedButton.Hint:='Show only identifiers starting with filter text';
+  StartsSpeedButton.Caption:=crsStarts;
+  StartsSpeedButton.Hint:=crsShowOnlyIdentifiersStartingWithFilterText;
   ContainsSpeedButton.Down:=false;
-  ContainsSpeedButton.Caption:='Contains';
-  ContainsSpeedButton.Hint:='Show only identifiers containing filter text';
+  ContainsSpeedButton.Caption:=crsContains;
+  ContainsSpeedButton.Hint:=crsShowOnlyIdentifiersContainingFilterText;
 end;
 
 procedure TCodyIdentifiersDlg.HideOtherProjectsCheckBoxChange(Sender: TObject);

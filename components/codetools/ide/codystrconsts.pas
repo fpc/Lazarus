@@ -171,6 +171,12 @@ resourcestring
     +'added to the implementation section and needed unit needs to be added, '
     +'add to the uses section of the implementation';
   crsJumpTo = '&Jump to';
+  crsStarts = 'Starts';
+  crsShowOnlyIdentifiersStartingWithFilterText = 'Show only identifiers '
+    +'starting with filter text';
+  crsContains = 'Contains';
+  crsShowOnlyIdentifiersContainingFilterText = 'Show only identifiers '
+    +'containing filter text';
   crsUseIdentifier = '&Use identifier';
   crsAndMoreIdentifiers = '... and %s more identifiers';
   crsCodyIdentifierDictionary = 'Identifier Dictionary';
@@ -208,6 +214,18 @@ resourcestring
     +' Maybe the identifier does not exist for this platform or maybe the'
     +' identifier was deleted/renamed.';
   crsPackage2 = 'Package: %s';
+
+  crsIDEIntegration = 'IDE Integration';
+  crsMinutes = '%s minutes';
+  crsSeconds = '%s seconds';
+  crsLoadDictionaryAfter = 'Load dictionary after %s';
+  crsSaveDictionaryEvery = 'Save dictionary every %s';
+  crsUnitIdentifierDictionary = 'Unit / Identifier Dictionary';
+  crsTheDictionaryIsLoadedOnDemandOrAfterThisTime = 'The dictionary is loaded '
+    +'on demand or after this time';
+  crsTheDictionaryIsSavedInIntervals = 'The dictionary is saved in intervals';
+  crsSaveDictionaryNow = 'Save dictionary now';
+  crsSaveToFile = 'Save to file %s';
 
 implementation
 
