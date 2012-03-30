@@ -32,7 +32,7 @@ unit TabOrderDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs, Buttons, ComCtrls, IDEWindowIntf,
+  Classes, SysUtils, Forms, Controls, Dialogs, Buttons, ComCtrls,
   LCLType, PropEdits, LazarusIDEStrConsts;
 
 type
