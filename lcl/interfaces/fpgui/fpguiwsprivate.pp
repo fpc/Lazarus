@@ -15,7 +15,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -535,7 +535,7 @@ end;
 
 procedure TFPGUIPrivateWidget.ResizeHandler(Sender: TObject);
 begin
-  LCLSendSizeMsg(FLCLObject,Widget.Width,Widget.Height,SIZENORMAL,true);
+  LCLSendSizeMsg(FLCLObject,Widget.Width,Widget.Height,SIZE_RESTORED,true);
 end;
 
 procedure TFPGUIPrivateWidget.MsgDeactivate(var fpgmsg: TfpgMessageRec);
@@ -583,7 +583,7 @@ end;
 
 procedure TFPGUIPrivateWidget.MsgResize(var fpgmsg: TfpgMessageRec);
 begin
-  LCLSendSizeMsg(LCLObject, fpgmsg.Params.rect.Width,fpgmsg.Params.rect.Height, SIZENORMAL, false);
+  LCLSendSizeMsg(LCLObject, fpgmsg.Params.rect.Width,fpgmsg.Params.rect.Height, SIZE_RESTORED, false);
 end;
 
 procedure TFPGUIPrivateWidget.MsgMove(var fpgmsg: TfpgMessageRec);
@@ -773,7 +773,7 @@ end;
 procedure TFPGUIPrivateWidget.SetSize(AWidth, AHeight: LongInt);
 begin
   FWidget.SetPosition(FWidget.Left, FWidget.Top, AWidth, AHeight);
-  LCLSendSizeMsg(FLCLObject,AWidth,AHeight,SIZENORMAL,false);
+  LCLSendSizeMsg(FLCLObject,AWidth,AHeight,SIZE_RESTORED,false);
 end;
 
 procedure TFPGUIPrivateWidget.SetPosition(AX, AY: Integer);

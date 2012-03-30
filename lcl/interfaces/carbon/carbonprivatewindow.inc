@@ -1042,13 +1042,13 @@ begin
   
   Kind := -1;
   case EventKind of
-  kEventWindowCollapsed: Kind := SIZEICONIC;
+  kEventWindowCollapsed: Kind := SIZE_MINIMIZED;
   kEventWindowExpanded, kEventWindowZoomed:
     begin
       if IsWindowInStandardState(TCarbonWindow(AWidget).fWindowRef, nil, nil) then
-        Kind := SIZEFULLSCREEN
+        Kind := SIZE_MAXIMIZED
       else
-        Kind := SIZENORMAL;
+        Kind := SIZE_RESTORED;
     end;
   else
     DebugLn('CarbonWindow_ShowWindow invalid event kind: ' + DbgS(EventKind));

@@ -864,18 +864,19 @@ const
   SWP_SourceIsInterface = $10000; // this flag can be combined with the above
 
 { WMSIZE message constants}
-  Size_Restored = 0; // the default
-  Size_Minimized = 1;
-  Size_Maximized = 2;
-  Size_MaxShow = 3;
-  Size_MaxHide = 4;
+  SIZE_RESTORED   = 0; // the default
+  SIZE_MINIMIZED  = 1;
+  SIZE_MAXIMIZED  = 2;
+  SIZE_MAXSHOW    = 3;
+  SIZE_MAXHIDE    = 4;
+  SIZE_FULLSCREEN = 16; // non-winapi value to support wsFullScreen state
   Size_SourceIsInterface = 128; // this flag can be combined with the above
 
-  SIZENORMAL = Size_Restored;
-  SIZEICONIC = Size_Minimized;
-  SIZEFULLSCREEN = Size_Maximized;
-  SIZEZOOMSHOW = Size_MaxShow;
-  SIZEZOOMHIDE = Size_MaxHide;
+  SIZENORMAL = SIZE_RESTORED;
+  SIZEICONIC = SIZE_MINIMIZED;
+  SIZEFULLSCREEN = SIZE_MAXIMIZED;
+  SIZEZOOMSHOW = SIZE_MAXSHOW;
+  SIZEZOOMHIDE = SIZE_MAXHIDE;
 
 { WMMove Message Constants }
   Move_Default = 0;

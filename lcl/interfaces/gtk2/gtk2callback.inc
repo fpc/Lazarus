@@ -1146,27 +1146,28 @@ begin
             end;
           end;
           {$ENDIF}
-          SizeMsg.SizeType := SIZEICONIC;
+          SizeMsg.SizeType := SIZE_MINIMIZED;
         end
         else if (GDK_WINDOW_STATE_MAXIMIZED and state^.new_window_state)>0 then
         begin
           // it can be both maximized + iconified and just loose iconified state
           if (state^.changed_mask and (GDK_WINDOW_STATE_MAXIMIZED or GDK_WINDOW_STATE_ICONIFIED)) = 0 then Exit;
-          SizeMsg.SizeType := SIZEFULLSCREEN;
+          SizeMsg.SizeType := SIZE_MAXIMIZED;
         end
         else
-          SizeMsg.SizeType := SIZENORMAL;
+          SizeMsg.SizeType := SIZE_RESTORED;
 
         if (TheForm = Application.MainForm) and
-          (SizeMsg.SizeType <> SIZEICONIC) and
+          (SizeMsg.SizeType <> SIZE_MINIMIZED) and
           (TheForm.WindowState = wsMinimized) then
             Application.IntfAppRestore;
 
         // don't bother the LCL if nothing changed
         case SizeMsg.SizeType of
-          SIZENORMAL: if TheForm.WindowState=wsNormal then exit;
-          SIZEICONIC: if TheForm.WindowState=wsMinimized then exit;
-          SIZEFULLSCREEN: if TheForm.WindowState=wsMaximized then exit;
+          SIZE_RESTORED: if TheForm.WindowState=wsNormal then exit;
+          SIZE_MINIMIZED: if TheForm.WindowState=wsMinimized then exit;
+          SIZE_MAXIMIZED: if TheForm.WindowState=wsMaximized then exit;
+          SIZE_FULLSCREEN: if TheForm.WindowState=wsFullScreen then exit;
         end;
 
         with SizeMsg do

@@ -702,10 +702,10 @@ begin
   begin
     OldState := FWindowState;
     case (Message.SizeType and not SIZE_SourceIsInterface) of
-      SIZENORMAL:
+      SIZE_RESTORED:
         if Showing then
           FWindowState := wsNormal;
-      SIZEICONIC:
+      SIZE_MINIMIZED:
       begin
         if Showing then
           FWindowState := wsMinimized;
@@ -713,9 +713,12 @@ begin
           and (Application.MainForm = Self) then
             Application.Minimize;
       end;
-      SIZEFULLSCREEN:
+      SIZE_MAXIMIZED:
         if Showing then
           FWindowState := wsMaximized;
+      SIZE_FULLSCREEN:
+        if Showing then
+          FWindowState := wsFullScreen;
     end;
     if OldState <> FWindowState then
     begin
@@ -731,7 +734,7 @@ begin
 
   inherited WMSize(Message);
 
-  if (Message.SizeType and Size_Restored) > 0 then
+  if (Message.SizeType and SIZE_RESTORED) > 0 then
   begin
     FRestoredLeft := Left;
     FRestoredTop := Top;

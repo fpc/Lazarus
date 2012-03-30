@@ -250,8 +250,7 @@ end;
  *                                                                            *
  * Target        : The Control that will recieve the message LM_SIZE          *
  * Width, Height : The new Width and Height for the control                   *
- * SizeType      : SIZENORMAL, SIZEICONIC, SIZEFULLSCREEN, SIZEZOOMSHOW or    *
- *                 SIZEZOOMHIDE. (In LCLType)                                 *
+ * SizeType      : SIZE_RESTORED, SIZE_MINIMIZED, SIZE_MAXIMIZED,...          *
  * FromInterface : True if this message was sent from the widgetset to notify *
  *                 the LCL of a change.  False to make the widgetset change   *
  *                 the size of the control. Default = True                    *
@@ -267,7 +266,6 @@ begin
   Mess.Msg := LM_SIZE;
   Mess.Width := Width;
   Mess.Height := Height;
-  //SIZENORMAL, SIZEICONIC, SIZEFULLSCREEN, SIZEZOOMSHOW, SIZEZOOMHIDE.
   Mess.SizeType := SizeType;
   if FromInterface then
     Mess.SizeType := Mess.SizeType or Size_SourceIsInterface;

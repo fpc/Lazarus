@@ -3723,11 +3723,11 @@ begin
   Msg.Msg := LM_SIZE;
 
   case getWindowState of
-    QtWindowMinimized: Msg.SizeType := SIZEICONIC;
-    QtWindowMaximized: Msg.SizeType := SIZEFULLSCREEN;
-    QtWindowFullScreen: Msg.SizeType := SIZEFULLSCREEN;
+    QtWindowMinimized: Msg.SizeType := SIZE_MINIMIZED;
+    QtWindowMaximized: Msg.SizeType := SIZE_MAXIMIZED;
+    QtWindowFullScreen: Msg.SizeType := SIZE_FULLSCREEN;
   else
-    Msg.SizeType := SIZENORMAL;
+    Msg.SizeType := SIZE_RESTORED;
   end;
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
@@ -6351,14 +6351,16 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_SIZE;
-  Msg.SizeType := SIZENORMAL;
+  Msg.SizeType := SIZE_RESTORED;
 
   if getWindowState and QtWindowMinimized <> 0 then
-    Msg.SizeType := SIZEICONIC
+    Msg.SizeType := SIZE_MINIMIZED
   else
-  if (getWindowState and QtWindowFullScreen <> 0) or
-     (getWindowState and QtWindowMaximized <> 0) then
-    Msg.SizeType := SIZEFULLSCREEN;
+  if (getWindowState and QtWindowFullScreen <> 0) then
+    Msg.SizeType := SIZE_FULLSCREEN
+  else
+  if (getWindowState and QtWindowMaximized <> 0) then
+    Msg.SizeType := SIZE_MAXIMIZED;
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
 

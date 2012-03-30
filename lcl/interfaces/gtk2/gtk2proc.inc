@@ -6484,12 +6484,13 @@ begin
       Result := 0;
       Msg := LM_SIZE;
       if LCLControl is TCustomForm then begin
-        // if the LCL gets an event without a State it resets it to SIZENORMAL
+        // if the LCL gets an event without a State it resets it to SIZE_RESTORED
         // so we send it the state it already is
         case TCustomForm(LCLControl).WindowState of
-          wsNormal: SizeType := SIZENORMAL;
-          wsMinimized: SizeType := SIZEICONIC;
-          wsMaximized: SizeType := SIZEFULLSCREEN;
+          wsNormal: SizeType := SIZE_RESTORED;
+          wsMinimized: SizeType := SIZE_MINIMIZED;
+          wsMaximized: SizeType := SIZE_MAXIMIZED;
+          wsFullScreen: SizeType := SIZE_FULLSCREEN;
         end;
       end
       else

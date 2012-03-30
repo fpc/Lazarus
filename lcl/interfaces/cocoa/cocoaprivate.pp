@@ -1003,7 +1003,7 @@ end;
 
 function LCLObjectExtension.lclWindowState: Integer;
 begin
-  Result := SIZENORMAL;
+  Result := SIZE_RESTORED;
 end;
 
 procedure LCLObjectExtension.lclInvalidateRect(const r: TRect);
@@ -1300,13 +1300,14 @@ end;
 
 function LCLWindowExtension.lclWindowState: Integer;
 begin
+  // todo: check fullscreen using NSFullScreenWindowMask
   if isMiniaturized then
-    Result := SIZEICONIC
+    Result := SIZE_MINIMIZED
   else
   if isZoomed then
-    Result := SIZEFULLSCREEN
+    Result := SIZE_MAXIMIZED
   else
-    Result := SIZENORMAL;
+    Result := SIZE_RESTORED;
 end;
 
 procedure LCLWindowExtension.lclInvalidateRect(const r: TRect);
