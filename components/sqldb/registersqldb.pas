@@ -30,10 +30,25 @@ unit registersqldb;
 {$DEFINE HASSQLPARSER}
 {$ENDIF}
 
+{$IF FPC_FULLVERSION>= 20700}
+{$IF DEFINED(BEOS) OR DEFINED(HAIKU) OR DEFINED(LINUX) OR DEFINED(FREEBSD) OR DEFINED (NETBSD) OR DEFINED(OPENBSD) OR DEFINED(WIN32) }
+// MS SQL Server and Sybase ASE connectors were introduced in the FPC 2.7 development branch.
+// Operating systems should match FPC packages\fcl-db\fpmake.pp
+{$DEFINE HASMSSQLCONNECTION}
+{$DEFINE HASSYBASECONNECTION}
+{$ENDIF}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, SysUtils, LResources, db, sqldb, ibconnection, odbcconn,
+  Classes, SysUtils, LResources, db, sqldb,
+  ibconnection,
+{$IFDEF HASMSSQLCONNECTION}  
+  // mssqlconn provide both MS SQL Server and Sybase ASE connectors.
+  mssqlconn,
+{$ENDIF}
+  odbcconn,
 {$IFDEF HASPQCONNECTION}
   pqconnection,
 {$ENDIF}
@@ -122,6 +137,12 @@ begin
                               TSQLTransaction,
                               TSQLScript,
                               TSQLConnector,
+{$IFDEF HASMSSQLCONNECTION}                                
+                              TMSSQLConnection,
+{$ENDIF}
+{$IFDEF HASSYBASECONNECTION}                                
+                              TSybaseConnection,
+{$ENDIF}                              
 {$IFDEF HASPQCONNECTION}
                               TPQConnection,
 {$ENDIF}

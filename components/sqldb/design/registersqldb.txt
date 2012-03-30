@@ -1,4 +1,5 @@
 tibconnection.png
+tmssqlconnection.png
 tmysql40connection.png
 tmysql41connection.png
 tmysql50connection.png
@@ -12,3 +13,4 @@ tsqlite3connection.png
 tsqlquery.png
 tsqlscript.png
 tsqltransaction.png
+tsybaseconnection.png
