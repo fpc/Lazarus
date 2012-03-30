@@ -470,9 +470,13 @@ begin
 end;
 
 procedure TAddToProjectDialog.SetupAddEditorFilePage;
+var
+  CurColumn: TListColumn;
 begin
   AddEditorFilePage.Caption := lisProjAddEditorFile;
   AddFileLabel.Caption:=lisProjFiles;
+  CurColumn:=AddFileListView.Columns.Add;
+  CurColumn.Caption:=lisA2PFilename2;
 end;
 
 procedure TAddToProjectDialog.SetupAddRequirementPage;
@@ -495,13 +499,11 @@ var
 begin
   AddFilesPage.Caption := lisA2PAddFiles;
 
-  with FilesListView do begin
-    CurColumn:=Columns.Add;
-    CurColumn.Width:=200;
-    CurColumn.Caption:=lisA2PFilename2;
-    CurColumn:=Columns.Add;
-    CurColumn.Caption:=dlgEnvType;
-  end;
+  CurColumn:=FilesListView.Columns.Add;
+  CurColumn.Width:=200;
+  CurColumn.Caption:=lisA2PFilename2;
+  CurColumn:=FilesListView.Columns.Add;
+  CurColumn.Caption:=dlgEnvType;
 
   with FilesBrowseButton do begin
     Caption:=lisA2PAddFiles;

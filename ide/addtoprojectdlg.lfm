@@ -23,11 +23,11 @@ object AddToProjectDialog: TAddToProjectDialog
     OnChange = NotebookChange
     object AddEditorFilePage: TTabSheet
       Caption = 'AddEditorFilePage'
-      ClientHeight = 265
+      ClientHeight = 266
       ClientWidth = 590
       object AddFileLabel: TLabel
         Left = 6
-        Height = 15
+        Height = 16
         Top = 6
         Width = 578
         Align = alTop
@@ -38,10 +38,11 @@ object AddToProjectDialog: TAddToProjectDialog
       object AddFileListView: TListView
         Left = 6
         Height = 230
-        Top = 27
+        Top = 28
         Width = 578
         Align = alTop
         Anchors = [akTop, akLeft, akRight, akBottom]
+        AutoWidthLastColumn = True
         BorderSpacing.Around = 6
         Columns = <>
         MultiSelect = True
@@ -79,13 +80,13 @@ object AddToProjectDialog: TAddToProjectDialog
       end
       object DependPkgNameComboBox: TComboBox
         Left = 218
-        Height = 22
+        Height = 23
         Top = 14
         Width = 366
         Anchors = [akTop, akLeft, akRight]
         AutoComplete = True
         AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
-        ItemHeight = 0
+        ItemHeight = 15
         OnChange = DependPkgNameComboBoxChange
         TabOrder = 0
         Text = 'DependPkgNameComboBox'
@@ -111,11 +112,11 @@ object AddToProjectDialog: TAddToProjectDialog
     end
     object AddFilesPage: TTabSheet
       Caption = 'AddFilesPage'
-      ClientHeight = 265
+      ClientHeight = 266
       ClientWidth = 590
       object FilesListView: TListView
         Left = 6
-        Height = 217
+        Height = 218
         Top = 6
         Width = 578
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -129,10 +130,10 @@ object AddToProjectDialog: TAddToProjectDialog
       object FilesDirButton: TBitBtn
         AnchorSideLeft.Control = FilesBrowseButton
         AnchorSideLeft.Side = asrBottom
-        Left = 128
-        Height = 24
+        Left = 135
+        Height = 25
         Top = 234
-        Width = 90
+        Width = 100
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 6
@@ -142,9 +143,9 @@ object AddToProjectDialog: TAddToProjectDialog
       end
       object FilesBrowseButton: TBitBtn
         Left = 6
-        Height = 24
+        Height = 25
         Top = 234
-        Width = 116
+        Width = 123
         Anchors = [akLeft, akBottom]
         AutoSize = True
         Caption = 'FilesBrowseButton'
@@ -154,10 +155,10 @@ object AddToProjectDialog: TAddToProjectDialog
       object FilesShortenButton: TBitBtn
         AnchorSideLeft.Control = FilesDirButton
         AnchorSideLeft.Side = asrBottom
-        Left = 224
-        Height = 24
+        Left = 241
+        Height = 25
         Top = 234
-        Width = 118
+        Width = 126
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 6
@@ -168,10 +169,10 @@ object AddToProjectDialog: TAddToProjectDialog
       object FilesDeleteButton: TBitBtn
         AnchorSideLeft.Control = FilesShortenButton
         AnchorSideLeft.Side = asrBottom
-        Left = 348
-        Height = 24
+        Left = 373
+        Height = 25
         Top = 234
-        Width = 110
+        Width = 118
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 6
