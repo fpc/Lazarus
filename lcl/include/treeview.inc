@@ -2025,8 +2025,6 @@ begin
       Node.Delete;
       Node := GetLastNode;
     end;
-    if (FUpdateCount = 0) and Assigned(Owner) then
-      Owner.Invalidate;
   end;
   FSelection.Clear;
   if (FOwner <> nil) then
@@ -2256,8 +2254,6 @@ begin
       Result.Parent.Expanded:=true;
     if (Owner<>nil) and (not (csReading in Owner.ComponentState)) then
       Owner.Added(Result);
-    if (FUpdateCount=0) and (Owner<>nil) then
-      Owner.Invalidate;
     ok:=true;
     if ok and (Owner<>nil) and (Owner.AccessibilityOn) then
     begin
@@ -2960,11 +2956,9 @@ var
   ANode, NextNode: TTreeNode;
   ALevel, i: Integer;
   CurrStr: string;
-  ok: boolean;
 begin
   List := TStringList.Create;
   Owner.BeginUpdate;
-  ok:=false;
   try
     Clear;
     List.LoadFromStream(Stream);
@@ -2988,12 +2982,9 @@ begin
       else TreeViewError('TTreeStrings.LoadTreeFromStream: Level='
         +IntToStr(ALevel)+' CuurStr="'+CurrStr+'"');
     end;
-    ok:=true;
   finally
     Owner.EndUpdate;
     List.Free;
-    if not ok then
-      Owner.Owner.Invalidate;  // force repaint on exception
   end;
 end;
 
@@ -3173,7 +3164,6 @@ begin
   if Items.FUpdateCount=0 then begin
     // ToDo: only refresh if something changed
     UpdateScrollBars;
-    Invalidate;
   end;
 end;
 
@@ -3199,7 +3189,6 @@ begin
     Items.ClearCache;
     FStates:= FStates+[tvsTopsNeedsUpdate, tvsTopItemNeedsUpdate,
                        tvsBottomItemNeedsUpdate,tvsScrollbarChanged];
-    Invalidate;
     EndUpdate;
   end;
 end;
