@@ -534,6 +534,12 @@ begin
     lcApplicationWindow: Result := LCL_CAPABILITY_YES;
     lcLMHelpSupport: Result := LCL_CAPABILITY_YES;
     lcNeedMininimizeAppWithMainForm: Result := LCL_CAPABILITY_NO;
+    lcSendsUTF8KeyPress:
+      {$ifdef WindowsUnicodeSupport}
+      Result := LCL_CAPABILITY_YES;
+      {$else}
+      Result := LCL_CAPABILITY_NO;
+      {$endif}
   else
     Result := inherited;
   end;

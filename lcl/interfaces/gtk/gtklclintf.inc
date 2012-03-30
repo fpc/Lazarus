@@ -854,16 +854,6 @@ begin
     Result:=nil;
 end;
 
-{------------------------------------------------------------------------------
-  function TGtkWidgetSet.IntfSendsUTF8KeyPress: boolean;
-
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.IntfSendsUTF8KeyPress: boolean;
-begin
-  Result:=true;
-end;
-
-
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 

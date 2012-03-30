@@ -54,7 +54,6 @@ function FontIsMonoSpace(Font: HFont): boolean; override;
 
 function GetDesignerDC(WindowHandle: HWND): HDC; override;
 
-function IntfSendsUTF8KeyPress: boolean; override;
 function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; override;
 
 function PromptUser(const DialogCaption : string;

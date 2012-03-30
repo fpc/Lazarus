@@ -136,15 +136,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  IntfSendsUTF8KeyPress
-  Returns: If the interface sends UTF-8 key press events
- ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.IntfSendsUTF8KeyPress: boolean;
-begin
-  Result := True;
-end;
-
-{------------------------------------------------------------------------------
   Method:  IsDesignerDC
   Params:  WindowHandle - Handle of window
            DC           - Handle of device context

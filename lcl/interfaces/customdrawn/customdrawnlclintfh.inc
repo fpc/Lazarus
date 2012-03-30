@@ -53,7 +53,7 @@ function GetNativeHandle(Handle: HWND; AHandleType: TNativeHandleType; AAllowFal
 
 procedure HideVirtualKeyboard();
 
-(*function IntfSendsUTF8KeyPress: boolean; override;
+(*
 function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; override;*)
 function IsMobilePlatform: Boolean; override;
 

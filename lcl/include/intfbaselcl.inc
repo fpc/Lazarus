@@ -473,7 +473,7 @@ end;
 
 function TWidgetSet.IntfSendsUTF8KeyPress: boolean;
 begin
-  Result:=false;
+  Result := GetLCLCapability(lcSendsUTF8KeyPress) = LCL_CAPABILITY_YES;
 end;
 
 function TWidgetSet.InvalidateFrame(aHandle: HWND; ARect: pRect;

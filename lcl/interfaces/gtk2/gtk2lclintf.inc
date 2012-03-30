@@ -867,15 +867,6 @@ begin
     Result:=nil;
 end;
 
-{------------------------------------------------------------------------------
-  function TGtk2WidgetSet.IntfSendsUTF8KeyPress: boolean;
-
- ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.IntfSendsUTF8KeyPress: boolean;
-begin
-  Result:=true;
-end;
-
 function PromptUserBoxClosed(Widget : PGtkWidget; Event : PGdkEvent;
   data: gPointer) : GBoolean; cdecl;
 var

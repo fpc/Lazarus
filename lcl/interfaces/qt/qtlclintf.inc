@@ -366,17 +366,6 @@ begin
     Result := GetDC(WindowHandle);
 end;
 
-{------------------------------------------------------------------------------
-  Function: IntfSendsUTF8KeyPress
-  Params:
-  Returns:
- ------------------------------------------------------------------------------}
-
-function TQtWidgetSet.IntfSendsUTF8KeyPress: boolean;
-begin
-  Result := True;
-end;
-
 function TQtWidgetSet.IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean;
 begin
   Result := (WindowHandle <> 0) and (TQtWidget(WindowHandle) is TQtDesignWidget);

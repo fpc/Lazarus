@@ -52,8 +52,6 @@ function RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TR
 // override only when queried formats are different from screen description
 function RawImage_QueryDescription(AFlags: TRawImageQueryFlags; var ADesc: TRawImageDescription): Boolean; override;
 
-function IntfSendsUTF8KeyPress: boolean; override;
-
 procedure RemoveEventHandler(var AHandler: PEventHandler); override;
 procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); override;
 procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); override;

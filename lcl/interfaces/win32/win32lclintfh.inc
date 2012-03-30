@@ -55,7 +55,6 @@ function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState)
 function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetDesignerDC(WindowHandle: HWND): HDC; override;
 
-function IntfSendsUTF8KeyPress: boolean; override;
 function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; override;
 
 function PromptUser(const DialogCaption, DialogMessage: String; DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint; override;

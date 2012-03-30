@@ -54,8 +54,6 @@ function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState)
 function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetLCLOwnerObject(Handle: HWnd): TObject; override;
 
-function IntfSendsUTF8KeyPress: boolean; override;
-
 function PromptUser(const DialogCaption : string;
                     const DialogMessage : string;
                           DialogType    : LongInt;

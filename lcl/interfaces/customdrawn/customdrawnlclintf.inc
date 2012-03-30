@@ -305,18 +305,7 @@ begin
   {$endif}
 end;
 
-{------------------------------------------------------------------------------
-  Function: IntfSendsUTF8KeyPress
-  Params:
-  Returns:
- ------------------------------------------------------------------------------}
-
-(*function TQtWidgetSet.IntfSendsUTF8KeyPress: boolean;
-begin
-  Result := True;
-end;
-
-function TQtWidgetSet.IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean;
+(*function TQtWidgetSet.IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean;
 begin
   Result := (WindowHandle <> 0) and (TQtWidget(WindowHandle) is TQtDesignWidget);
   if Result then

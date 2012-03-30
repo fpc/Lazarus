@@ -645,19 +645,6 @@ begin
   Result := Windows.GetDC(OverlayWindow);
 end;
 
-{------------------------------------------------------------------------------
-  function TWin32WidgetSet.IntfSendsUTF8KeyPress: boolean;
-
- ------------------------------------------------------------------------------}
-function TWin32WidgetSet.IntfSendsUTF8KeyPress: boolean;
-begin
-  {$ifdef WindowsUnicodeSupport}
-  Result := true;
-  {$else}
-  Result := false;
-  {$endif}
-end;
-
 function TWin32WidgetSet.IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean;
 var
   OverlayWindow: HWND;

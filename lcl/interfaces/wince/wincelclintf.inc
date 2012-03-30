@@ -554,16 +554,6 @@ end;
 
 
 {------------------------------------------------------------------------------
-  function TWin32WidgetSet.IntfSendsUTF8KeyPress: boolean;
-
- ------------------------------------------------------------------------------}
-function TWinCEWidgetSet.IntfSendsUTF8KeyPress: boolean;
-begin
-  Result := true;
-end;
-
-
-{------------------------------------------------------------------------------
   Method: CallbackAllocateHWnd
   Params: None
   Returns: Nothing
