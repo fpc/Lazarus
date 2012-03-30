@@ -286,6 +286,9 @@ var
   NewFilename: String;
   Tool: TCodeTool;
   Caret: TCodeXYPosition;
+  Dir: String;
+  PPUFilename: String;
+  s: String;
 begin
   if Step<>imqfoImproveMessage then exit;
   //DebugLn('QuickFixUnitNotFoundPosition ');
@@ -296,6 +299,8 @@ begin
   end;
   MissingUnitname:=REVar(1);
   CodeBuf:=nil;
+  Dir:=TrimFilename(Msg.Directory);
+  UsedByUnit:='';
   if REMatches(Msg.Msg,'Can''t find unit ([a-z_.0-9]+) used by ([a-z_.0-9]+)','I')
   then begin
     UsedByUnit:=REVar(2);
@@ -304,12 +309,12 @@ begin
     begin
       // the message belongs to another unit
       NewFilename:='';
-      if FilenameIsAbsolute(Msg.Directory) then
+      if FilenameIsAbsolute(Dir) then
       begin
         // For example: /path/laz/main.pp(1,1) Fatal: Can't find unit lazreport used by lazarus
         // => search source lazarus in directory
         NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitInDirectory(
-                                                 Msg.Directory,UsedByUnit,true);
+                                                 Dir,UsedByUnit,true);
       end;
       if NewFilename='' then begin
         NewFilename:=LazarusIDE.FindUnitFile(UsedByUnit);
@@ -345,10 +350,23 @@ begin
       if (Msg.Directory<>'') and (FilenameIsAbsolute(Msg.Directory)) then
         NewFilename:=CreateRelativePath(NewFilename,Msg.Directory);
       Msg.SetSourcePosition(NewFilename,Caret.Y,Caret.X);
+      Dir:=TrimFilename(Msg.Directory);
     end;
   end;
 
-
+  if FilenameIsAbsolute(Dir) then begin
+    PPUFilename:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInCompletePath(
+                                                           Dir,MissingUnitname);
+    if PPUFilename<>'' then begin
+      // there is a ppu file, but the compiler didn't like it
+      // => change message
+      s:='Fatal: unit '+MissingUnitname;
+      if UsedByUnit<>'' then
+        s+=' used by '+UsedByUnit;
+      s+=' needs rebuilding. ppu='+CreateRelativePath(PPUFilename,Dir);
+      Msg.Msg:=s;
+    end;
+  end;
 end;
 
 { TQuickFixLinkerUndefinedReference }
