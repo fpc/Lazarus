@@ -92,22 +92,17 @@ implementation
 
 function CompareFileReferences(Data1, Data2: Pointer): integer;
 var
-  FileRef1: TFileReference;
-  FileRef2: TFileReference;
+  FileRef1: TFileReference absolute Data1;
+  FileRef2: TFileReference absolute Data2;
 begin
-  FileRef1:=TFileReference(Data1);
-  FileRef2:=TFileReference(Data2);
   Result:=CompareFilenames(FileRef1.Filename,FileRef2.Filename);
 end;
 
 function CompareFileNameAndReference(Key, Data: Pointer): integer;
 var
-  Filename: String;
-  FileRef: TFileReference;
+  FileRef: TFileReference absolute Data;
 begin
-  Filename:=String(Key);
-  FileRef:=TFileReference(Data);
-  Result:=CompareFilenames(Filename,FileRef.Filename);
+  Result:=CompareFilenames(AnsiString(Key),FileRef.Filename);
 end;
 
 { TFileReferenceList }
