@@ -129,7 +129,6 @@ type
     fBlockLevel: integer;
     FLastSelectedIndex: integer;
     ImgIDNone: integer;
-    ImgIDHasQuickFix: integer;
     ImgIDInformation: integer;
     ImgIDHint: integer;
     ImgIDNote: integer;
@@ -329,9 +328,7 @@ begin
   ImgIDWarning := IDEImages.LoadImage(12, 'state12x12_warning');
   ImgIDError := IDEImages.LoadImage(12, 'state12x12_error');
   ImgIDFatal := IDEImages.LoadImage(12, 'state12x12_fatal');
-  ImgIDHasQuickFix := IDEImages.LoadImage(12, 'quickfix12x12');
   MessageTreeView.Images:=IDEImages.Images_12;
-  MessageTreeView.StateImages:=IDEImages.Images_12;
 
   Caption := lisMenuViewMessages;
   MessageTreeView.OnAdvancedCustomDrawItem := @MessageViewDrawItem;
@@ -1195,7 +1192,6 @@ begin
             if (imqfoMenuItem in QuickFixItem.Steps)
             and QuickFixItem.IsApplicable(Msg) then begin
               Msg.Flags:=Msg.Flags+[lmlfHasQuickFix];
-              TVNode.StateIndex:=ImgIDHasQuickFix;
               TVNode.SelectedIndex:=TVNode.ImageIndex;
             end;
           end;
@@ -1246,10 +1242,7 @@ var
   ImgID: LongInt;
 begin
   ImgID:=ImgIDNone;
-  if (lmlfHasQuickFixValid in Msg.Flags)
-  and (lmlfHasQuickFix in Msg.Flags) then
-    ImgID:=ImgIDHasQuickFix
-  else if Msg.Parts<>nil then begin
+  if Msg.Parts<>nil then begin
     if Msg.Parts.Values['Stage']='FPC' then begin
       Typ:=Msg.Parts.Values['Type'];
       if Typ='Hint' then
