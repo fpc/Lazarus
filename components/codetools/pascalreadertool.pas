@@ -1884,7 +1884,7 @@ end;
 function TPascalReaderTool.FindInheritanceNode(ClassNode: TCodeTreeNode): TCodeTreeNode;
 begin
   Result:=ClassNode.FirstChild;
-  while (Result<>nil) and (Result.Desc in [ctnClassSealed,ctnClassAbstract]) do
+  while (Result<>nil) and (Result.Desc in [ctnClassSealed,ctnClassAbstract,ctnClassExternal]) do
     Result:=Result.NextBrother;
   if (Result<>nil) and (Result.Desc<>ctnClassInheritance) then
     Result:=nil;
@@ -2027,7 +2027,24 @@ begin
   if ProcNode.Desc<>ctnProcedure then exit;
   MoveCursorToNodeStart(ProcNode);
   ReadNextAtom;
+  if UpAtomIs('CLASS') then ReadNextAtom;
   Result:=UpAtomIs('CONSTRUCTOR');
+  if not Result and UpAtomIs('FUNCTION')
+  and ([cmsObjectiveC1,cmsObjectiveC2]*Scanner.CompilerModeSwitches<>[]) then
+  begin
+    ProcNode:=ProcNode.FirstChild;
+    if ProcNode=nil then exit;
+    if (ProcNode.SubDesc and ctnsNeedJITParsing)>0 then
+      BuildSubTreeForProcHead(ProcNode);
+    ProcNode:=ProcNode.FirstChild;
+    if (ProcNode=nil) then exit;
+    if ProcNode.Desc=ctnParameterList then
+      ProcNode:=ProcNode.NextBrother;
+    if (ProcNode=nil) then exit;
+    MoveCursorToNodeStart(ProcNode);
+    ReadNextAtom;
+    Result:=UpAtomIs('ID');
+  end;
 end;
 
 function TPascalReaderTool.NodeIsDestructor(ProcNode: TCodeTreeNode): boolean;

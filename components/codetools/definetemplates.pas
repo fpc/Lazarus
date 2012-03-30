@@ -2033,6 +2033,18 @@ begin
         da_DefineRecurse));
     RTLDir.AddChild(IFTempl);
 
+    // rtl: IF TargetOS=iphonesim then add include path rtl/unix, rtl/macos
+    IFTempl:=TDefineTemplate.Create('If TargetOS=iphonesim','If TargetOS=iphonesim',
+      '',''''+TargetOSMacro+'''=''iphonesim''',da_If);
+    IFTempl.AddChild(TDefineTemplate.Create('Include Path',
+        Format(ctsIncludeDirectoriesPlusDirs,['unix,macos']),
+        ExternalMacroStart+'IncPath',
+        IncPathMacro
+        +';'+Dir+'rtl'+DS+'unix'
+        +';'+Dir+'rtl'+DS+'macos',
+        da_DefineRecurse));
+    RTLDir.AddChild(IFTempl);
+
     // add processor and SrcOS alias defines for the RTL
     AddProcessorTypeDefine(RTLDir);
     AddSrcOSDefines(RTLDir);

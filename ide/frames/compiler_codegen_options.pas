@@ -168,6 +168,7 @@ begin
       Add('symbian');
       Add('java');
       Add('android');
+      Add('iphonesim');
     end;
     ItemIndex := 0;
   end;
