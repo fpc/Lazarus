@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, FileUtil,
   Clipbrd, StdCtrls, Buttons, Process, AVL_Tree, AsyncProcess, Menus, ExtCtrls,
-  UTF8Process, ButtonPanel,
+  UTF8Process, ButtonPanel, ComCtrls,
   // codetools
   KeywordFuncLists, CodeToolManager, FileProcs, DefineTemplates,
   CodeToolsStructs,
@@ -67,10 +67,10 @@ type
     ButtonPanel: TButtonPanel;
     CopyOutputMenuItem: TMenuItem;
     OutputPopupMenu: TPopupMenu;
+    OutputTreeView: TTreeView;
     Splitter1: TSplitter;
     TestMemo: TMemo;
     TestGroupbox: TGroupBox;
-    OutputListbox: TListbox;
     OutputGroupBox: TGroupBox;
     procedure ApplicationOnIdle(Sender: TObject; var Done: Boolean);
     procedure CopyOutputMenuItemClick(Sender: TObject);
@@ -189,8 +189,14 @@ begin
 end;
 
 procedure TCheckCompilerOptsDlg.CopyOutputMenuItemClick(Sender: TObject);
+var
+  s: String;
+  TVNode: TTreeNode;
 begin
-  Clipboard.AsText:=OutputListbox.Items.Text;
+  s:='';
+  for TVNode in OutputTreeView.Items do
+    s+=TVNode.Text+LineEnding;
+  Clipboard.AsText:=s;
 end;
 
 procedure TCheckCompilerOptsDlg.SetOptions(const AValue: TCompilerOptions);
@@ -940,7 +946,7 @@ begin
 
     // ToDo: check ppu checksums and versions
 
-    if OutputListbox.Items.Count=0 then
+    if OutputTreeView.Items.Count=0 then
       AddMsg(lisCCOTestsSuccess,'',-1);
 
   finally
@@ -984,14 +990,14 @@ var
   i: Integer;
 begin
   if FLastLineIsProgress then begin
-    OutputListbox.Items[OutputListbox.Items.Count-1]:=Msg;
+    OutputTreeView.Items[OutputTreeView.Items.Count-1].Text:=Msg;
   end else begin
-    OutputListbox.Items.Add(Msg);
+    OutputTreeView.Items.Add(nil,Msg);
   end;
   FLastLineIsProgress:=ProgressLine;
-  i:=OutputListbox.Items.Count-1;
+  i:=OutputTreeView.Items.Count-1;
   SetMsgDirectory(i,CurDir);
-  OutputListbox.TopIndex:=OutputListbox.Items.Count-1;
+  OutputTreeView.TopItem:=OutputTreeView.Items.GetLastNode;
   if OriginalIndex=0 then ;
 end;
 

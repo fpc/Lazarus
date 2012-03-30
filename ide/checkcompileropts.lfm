@@ -3,7 +3,6 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
   Height = 307
   Top = 220
   Width = 624
-  ActiveControl = OutputListbox
   BorderIcons = [biSystemMenu]
   Caption = 'CheckCompilerOptsDlg'
   ClientHeight = 307
@@ -12,7 +11,7 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
   LCLVersion = '0.9.31'
   object OutputGroupBox: TGroupBox
     Left = 6
-    Height = 153
+    Height = 145
     Top = 116
     Width = 612
     Align = alClient
@@ -21,19 +20,20 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
     Caption = 'Output'
-    ClientHeight = 135
+    ClientHeight = 129
     ClientWidth = 608
     TabOrder = 0
-    object OutputListbox: TListBox
-      Left = 6
-      Height = 123
-      Top = 6
-      Width = 596
+    object OutputTreeView: TTreeView
+      Left = 0
+      Height = 129
+      Top = 0
+      Width = 608
       Align = alClient
-      BorderSpacing.Around = 6
-      ItemHeight = 0
+      DefaultItemHeight = 16
       PopupMenu = OutputPopupMenu
+      ReadOnly = True
       TabOrder = 0
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
   end
   object TestGroupbox: TGroupBox
@@ -47,16 +47,17 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     Caption = 'Test'
-    ClientHeight = 87
+    ClientHeight = 89
     ClientWidth = 608
     TabOrder = 1
     object TestMemo: TMemo
       Left = 6
-      Height = 75
+      Height = 77
       Top = 6
       Width = 596
       Align = alClient
       BorderSpacing.Around = 6
+      ScrollBars = ssAutoBoth
       TabOrder = 0
     end
   end
@@ -71,8 +72,8 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 275
+    Height = 34
+    Top = 267
     Width = 612
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -87,8 +88,8 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
     ShowBevel = False
   end
   object OutputPopupMenu: TPopupMenu
-    left = 110
-    top = 260
+    left = 160
+    top = 175
     object CopyOutputMenuItem: TMenuItem
       Caption = 'CopyOutputMenuItem'
       OnClick = CopyOutputMenuItemClick
