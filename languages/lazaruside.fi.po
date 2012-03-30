@@ -5958,12 +5958,6 @@ msgstr "Komponentin nimi (name) %s%s%s ei ole sallittu tunniste"
 msgid "View All"
 msgstr ""
 
-#: lazarusidestrconsts.liscomppalfindcomponent
-#, fuzzy
-#| msgid "Find component"
-msgid "Find component (to be removed)"
-msgstr "Etsi komponentti"
-
 #: lazarusidestrconsts.liscomppalopenpackage
 msgid "Open package"
 msgstr "Avaa paketti"

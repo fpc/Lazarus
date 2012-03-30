@@ -6247,12 +6247,6 @@ msgstr "שם הרכיב s%s%s% אינו מזהה חוקי"
 msgid "View All"
 msgstr ""
 
-#: lazarusidestrconsts.liscomppalfindcomponent
-#, fuzzy
-#| msgid "Find component"
-msgid "Find component (to be removed)"
-msgstr "מצא רכיב"
-
 #: lazarusidestrconsts.liscomppalopenpackage
 msgid "Open package"
 msgstr "פתח חבילה"

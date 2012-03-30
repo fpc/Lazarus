@@ -6253,12 +6253,6 @@ msgstr "El nombre del Componente %s%s%s no es un identificador válido"
 msgid "View All"
 msgstr ""
 
-#: lazarusidestrconsts.liscomppalfindcomponent
-#, fuzzy
-#| msgid "Find component"
-msgid "Find component (to be removed)"
-msgstr "Buscar componente"
-
 #: lazarusidestrconsts.liscomppalopenpackage
 msgid "Open package"
 msgstr "Abrir paquete"

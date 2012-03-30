@@ -6150,11 +6150,6 @@ msgstr "Имя компонента %s%s%s не является коррект�
 msgid "View All"
 msgstr "Просмотреть все"
 
-#: lazarusidestrconsts.liscomppalfindcomponent
-#| msgid "Find component"
-msgid "Find component (to be removed)"
-msgstr "Найти компонент (будет убран)"
-
 #: lazarusidestrconsts.liscomppalopenpackage
 msgid "Open package"
 msgstr "Открыть пакет"

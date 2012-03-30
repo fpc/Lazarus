@@ -6275,12 +6275,6 @@ msgstr "コンポーネント名 %s%s%s は無効な識別子です"
 msgid "View All"
 msgstr ""
 
-#: lazarusidestrconsts.liscomppalfindcomponent
-#, fuzzy
-#| msgid "Find component"
-msgid "Find component (to be removed)"
-msgstr "コンポーネントを検索"
-
 #: lazarusidestrconsts.liscomppalopenpackage
 msgid "Open package"
 msgstr "パッケージを開く"

@@ -6014,10 +6014,6 @@ msgstr "%s%s%s bileşeninin adı, geçerli bir tanımlayıcı değil"
 msgid "View All"
 msgstr ""
 
-#: lazarusidestrconsts.liscomppalfindcomponent
-msgid "Find component (to be removed)"
-msgstr ""
-
 #: lazarusidestrconsts.liscomppalopenpackage
 msgid "Open package"
 msgstr ""

@@ -6182,12 +6182,6 @@ msgstr "Der Komponentenname %s%s%s ist als Bezeichner ungültig"
 msgid "View All"
 msgstr "Alle anzeigen"
 
-#: lazarusidestrconsts.liscomppalfindcomponent
-#, fuzzy
-#| msgid "Find component"
-msgid "Find component (to be removed)"
-msgstr "Komponente finden"
-
 #: lazarusidestrconsts.liscomppalopenpackage
 msgid "Open package"
 msgstr "Package  öffnen"

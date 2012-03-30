@@ -6258,12 +6258,6 @@ msgstr "Komponento pavadinimas %s%s%s nėra identifikatorius"
 msgid "View All"
 msgstr ""
 
-#: lazarusidestrconsts.liscomppalfindcomponent
-#, fuzzy
-#| msgid "Find component"
-msgid "Find component (to be removed)"
-msgstr "Ieškoti komponentės"
-
 #: lazarusidestrconsts.liscomppalopenpackage
 msgid "Open package"
 msgstr "Atverti paketą"

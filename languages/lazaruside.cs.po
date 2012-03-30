@@ -5973,10 +5973,6 @@ msgstr "Jméno komponenty není platný identifikátor"
 msgid "View All"
 msgstr "Zobrazit vše"
 
-#: lazarusidestrconsts.liscomppalfindcomponent
-msgid "Find component (to be removed)"
-msgstr "Najít komponentu (k odstranění)"
-
 #: lazarusidestrconsts.liscomppalopenpackage
 msgid "Open package"
 msgstr "Otevřít balíček"
