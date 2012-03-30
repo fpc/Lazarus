@@ -1299,10 +1299,14 @@ begin
 end;
 
 function LCLWindowExtension.lclWindowState: Integer;
+const
+  NSFullScreenWindowMask = 1 shl 14;
 begin
-  // todo: check fullscreen using NSFullScreenWindowMask
   if isMiniaturized then
     Result := SIZE_MINIMIZED
+  else
+  if (styleMask and NSFullScreenWindowMask) <> 0 then
+    Result := SIZE_FULLSCREEN
   else
   if isZoomed then
     Result := SIZE_MAXIMIZED
