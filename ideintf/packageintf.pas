@@ -115,10 +115,17 @@ type
     property IDAsWord: string read FIDAsWord;
   end;
 
+  TPackageInstallType = (
+    pitNope,
+    pitStatic,
+    pitDynamic
+    );
+
   { TIDEPackage }
 
   TIDEPackage = class(TLazPackageID)
   protected
+    FAutoInstall: TPackageInstallType;
     FCustomOptions: TConfigStorage;
     FFilename: string;
     FChangeStamp: integer;
@@ -131,6 +138,7 @@ type
     procedure SetModified(const AValue: boolean); virtual; abstract;
     function GetRemovedCount: integer; virtual; abstract;
     function GetRemovedPkgFiles(Index: integer): TLazPackageFile; virtual; abstract;
+    procedure SetAutoInstall(AValue: TPackageInstallType); virtual; abstract;
   public
     procedure AssignOptions(Source: TPersistent); override;
     function IsVirtual: boolean; virtual; abstract;
@@ -139,6 +147,8 @@ type
     destructor Destroy; override;
     procedure ClearCustomOptions;
   public
+    property AutoInstall: TPackageInstallType read FAutoInstall
+                                              write SetAutoInstall;
     property Filename: string read FFilename write SetFilename;//the .lpk filename
     property Modified: boolean read GetModified write SetModified;
     property DirectoryExpanded: string read GetDirectoryExpanded;

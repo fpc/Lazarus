@@ -41,7 +41,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Buttons, ComCtrls, StdCtrls,
   FileCtrl, Dialogs, LCLProc, ExtCtrls,
-  IDEHelpIntf, IDEWindowIntf,
+  IDEHelpIntf, IDEWindowIntf, PackageIntf,
   PackageDefs, LazarusIDEStrConsts, PackageSystem;
 
 type

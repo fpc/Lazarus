@@ -41,8 +41,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, Controls, Dialogs, FileUtil, KeywordFuncLists,
   BasicCodeTools, CodeTree, CodeAtom, CodeCache, CodeToolManager,
-  IDEMsgIntf, TextTools, ProjectIntf, LazIDEIntf,
-  AbstractsMethodsDlg, LazarusIDEStrConsts;
+  DirectoryCacher, FileProcs, IDEMsgIntf, TextTools, ProjectIntf, LazIDEIntf,
+  PackageIntf, AbstractsMethodsDlg, LazarusIDEStrConsts, EnvironmentOpts;
   
 type
 
@@ -117,6 +117,7 @@ procedure QuickFixUnitNotUsed(Sender: TObject; Step: TIMQuickFixStep;
 
 function GetMsgLineFile(Msg: TIDEMessageLine;
                         out CodeBuf: TCodeBuffer; Quiet: boolean): boolean;
+function IsFileInIDESrcDir(Filename: string): boolean;
 
 procedure InitStandardIDEQuickFixItems;
 procedure FreeStandardIDEQuickFixItems;
@@ -234,6 +235,20 @@ begin
   Result:=true;
 end;
 
+function IsFileInIDESrcDir(Filename: string): boolean;
+var
+  LazDir: String;
+begin
+  Filename:=TrimFilename(Filename);
+  if not FilenameIsAbsolute(Filename) then exit(false);
+  LazDir:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory);
+  Result:=FileIsInPath(Filename,LazDir+'ide')
+       or FileIsInPath(Filename,LazDir+'debugger')
+       or FileIsInPath(Filename,LazDir+'packager')
+       or FileIsInPath(Filename,LazDir+'converter')
+       or FileIsInPath(Filename,LazDir+'designer');
+end;
+
 procedure InitStandardIDEQuickFixItems;
 begin
   IDEMsgQuickFixes:=TIDEMsgQuickFixItems.Create;
@@ -278,61 +293,15 @@ procedure TQuickFixUnitNotFoundPosition.Execute(const Msg: TIDEMessageLine;
 // for example:
 // Fatal: Can't find unit Unit12 used by testunit1
 // /home/user/laz/main.pp(1,1) Fatal: Can't find unit lazreport used by lazarus
-var
-  CodeBuf: TCodeBuffer;
-  MissingUnitname: String;
-  NamePos, InPos: Integer;
-  UsedByUnit: String;
-  NewFilename: String;
-  Tool: TCodeTool;
-  Caret: TCodeXYPosition;
-  Dir: String;
-  PPUFilename: String;
-  s: String;
-begin
-  if Step<>imqfoImproveMessage then exit;
-  //DebugLn('QuickFixUnitNotFoundPosition ');
 
-  if not REMatches(Msg.Msg,'Can''t find unit ([a-z_.0-9]+) used by ','I') then begin
-    DebugLn('QuickFixUnitNotFoundPosition invalid message ',Msg.Msg);
-    exit;
-  end;
-  MissingUnitname:=REVar(1);
-  CodeBuf:=nil;
-  Dir:=TrimFilename(Msg.Directory);
-  UsedByUnit:='';
-  if REMatches(Msg.Msg,'Can''t find unit ([a-z_.0-9]+) used by ([a-z_.0-9]+)','I')
-  then begin
-    UsedByUnit:=REVar(2);
-    //debugln(['TQuickFixUnitNotFoundPosition.Execute Missing="',MissingUnitname,'" used by "',UsedByUnit,'"']);
-    if SysUtils.CompareText(UsedByUnit,MissingUnitname)<>0 then
-    begin
-      // the message belongs to another unit
-      NewFilename:='';
-      if FilenameIsAbsolute(Dir) then
-      begin
-        // For example: /path/laz/main.pp(1,1) Fatal: Can't find unit lazreport used by lazarus
-        // => search source lazarus in directory
-        NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitInDirectory(
-                                                 Dir,UsedByUnit,true);
-      end;
-      if NewFilename='' then begin
-        NewFilename:=LazarusIDE.FindUnitFile(UsedByUnit);
-        if NewFilename='' then begin
-          DebugLn('QuickFixUnitNotFoundPosition unit not found: ',UsedByUnit);
-          //ShowError('QuickFix: UnitNotFoundPosition unit not found: '+UsedByUnit);
-        end;
-      end;
-      if NewFilename<>'' then begin
-        CodeBuf:=CodeToolBoss.LoadFile(NewFilename,false,false);
-        if CodeBuf=nil then begin
-          DebugLn('QuickFixUnitNotFoundPosition unable to load unit: ',NewFilename);
-          //ShowError('QuickFix: UnitNotFoundPosition unable to load unit: '+NewFilename);
-        end;
-      end;
-    end;
-  end;
-  if CodeBuf<>nil then begin
+  procedure FixSourcePos(CodeBuf: TCodeBuffer; MissingUnitname: string;
+    var NewFilename: string; var Dir: string);
+  var
+    Caret: TCodeXYPosition;
+    Tool: TCodeTool;
+    InPos: Integer;
+    NamePos: Integer;
+  begin
     debugln(['TQuickFixUnitNotFoundPosition.Execute File=',CodeBuf.Filename]);
     LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
     if not CodeToolBoss.FindUnitInAllUsesSections(CodeBuf,MissingUnitname,NamePos,InPos)
@@ -350,13 +319,114 @@ begin
       if (Msg.Directory<>'') and (FilenameIsAbsolute(Msg.Directory)) then
         NewFilename:=CreateRelativePath(NewFilename,Msg.Directory);
       Msg.SetSourcePosition(NewFilename,Caret.Y,Caret.X);
-      Dir:=TrimFilename(Msg.Directory);
+      Dir:=AppendPathDelim(TrimFilename(Msg.Directory));
     end;
   end;
 
+var
+  CodeBuf: TCodeBuffer;
+  MissingUnitname: String;
+  UsedByUnit: String;
+  NewFilename: String;
+  Dir: String;
+  PPUFilename: String;
+  s: String;
+  i: Integer;
+  Pkg: TIDEPackage;
+  UnitOutDir: String;
+  Filename: string;
+  Line: integer;
+  Col: integer;
+  DirCache: TCTDirectoryCache;
+begin
+  if Step<>imqfoImproveMessage then exit;
+  //DebugLn('QuickFixUnitNotFoundPosition ');
+
+  if not REMatches(Msg.Msg,'Can''t find unit ([a-z_.0-9]+) used by ','I') then begin
+    DebugLn('QuickFixUnitNotFoundPosition invalid message ',Msg.Msg);
+    exit;
+  end;
+  Dir:=AppendPathDelim(TrimFilename(Msg.Directory));
+  if Dir='' then exit;
+
+  Msg.GetSourcePosition(Filename,Line,Col);
+  MissingUnitname:=REVar(1);
+  UsedByUnit:='';
+  if REMatches(Msg.Msg,'Can''t find unit ([a-z_.0-9]+) used by ([a-z_.0-9]+)','I')
+  then begin
+    UsedByUnit:=REVar(2);
+    //debugln(['TQuickFixUnitNotFoundPosition.Execute Missing="',MissingUnitname,'" used by "',UsedByUnit,'"']);
+
+    if (CompareFilenames(ExtractFileName(Filename),'staticpackages.inc')=0)
+    and IsFileInIDESrcDir(Dir+'test') then begin
+      // common case: when building the IDE a package unit is missing
+      // staticpackages.inc(1,1) Fatal: Can't find unit sqldblaz used by Lazarus
+      // change to lazarus.pp(1,1)
+      NewFilename:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)+'ide'+PathDelim;
+      Msg.SetSourcePosition(NewFilename,1,1);
+      Msg.Msg:='lazarus.pp(1,1) Fatal: Can''t find a valid '+MissingUnitname+'.ppu';
+      Dir:=AppendPathDelim(TrimFilename(Msg.Directory));
+    end else if SysUtils.CompareText(ExtractFileNameOnly(Filename),UsedByUnit)<>0
+    then begin
+      // the message belongs to another unit
+      NewFilename:='';
+      if FilenameIsAbsolute(Dir) then
+      begin
+        // For example: /path/laz/main.pp(1,1) Fatal: Can't find unit lazreport used by lazarus
+        // => search source lazarus in directory
+        NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitInDirectory(
+                                                 Dir,UsedByUnit,true);
+      end;
+      if NewFilename='' then begin
+        NewFilename:=LazarusIDE.FindUnitFile(UsedByUnit);
+        if NewFilename='' then begin
+          DebugLn('QuickFixUnitNotFoundPosition unit not found: ',UsedByUnit);
+          //ShowError('QuickFix: UnitNotFoundPosition unit not found: '+UsedByUnit);
+        end;
+      end;
+    end;
+  end;
+
+  // load source
+  CodeBuf:=nil;
+  if NewFilename<>'' then begin
+    CodeBuf:=CodeToolBoss.LoadFile(NewFilename,false,false);
+    if CodeBuf=nil then begin
+      DebugLn('QuickFixUnitNotFoundPosition unable to load unit: ',NewFilename);
+      //ShowError('QuickFix: UnitNotFoundPosition unable to load unit: '+NewFilename);
+    end;
+  end;
+
+  // fix line and column
+  if CodeBuf<>nil then begin
+    FixSourcePos(CodeBuf,MissingUnitname,NewFilename,Dir);
+  end;
+
+  // if the ppu is there then improve the message
+  //debugln(['TQuickFixUnitNotFoundPosition.Execute Dir=',Dir]);
   if FilenameIsAbsolute(Dir) then begin
     PPUFilename:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInCompletePath(
                                                            Dir,MissingUnitname);
+    //debugln(['TQuickFixUnitNotFoundPosition.Execute AAA1 PPUFilename=',PPUFilename,' IsFileInIDESrcDir=',IsFileInIDESrcDir(Dir+'test')]);
+    if (PPUFilename='') and IsFileInIDESrcDir(Dir+'test') then begin
+      // search in installed packages
+      for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
+        Pkg:=PackageEditingInterface.GetPackages(i);
+        if Pkg.AutoInstall=pitNope then continue;
+        UnitOutDir:=Pkg.LazCompilerOptions.GetUnitOutputDirectory(false);
+        //debugln(['TQuickFixUnitNotFoundPosition.Execute ',Pkg.Name,' UnitOutDir=',UnitOutDir]);
+        if FilenameIsAbsolute(UnitOutDir) then begin
+          DirCache:=CodeToolBoss.DirectoryCachePool.GetCache(UnitOutDir,true,false);
+          PPUFilename:=DirCache.FindFile(MissingUnitname+'.ppu',ctsfcLoUpCase);
+          //debugln(['TQuickFixUnitNotFoundPosition.Execute ShortPPU=',PPUFilename]);
+          if PPUFilename<>'' then begin
+            PPUFilename:=AppendPathDelim(DirCache.Directory)+PPUFilename;
+            break;
+          end;
+        end;
+      end;
+    end;
+
     if PPUFilename<>'' then begin
       // there is a ppu file, but the compiler didn't like it
       // => change message

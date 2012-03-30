@@ -512,12 +512,6 @@ type
     );
   TLazPackageFlags = set of TLazPackageFlag;
   
-  TPackageInstallType = (
-    pitNope,
-    pitStatic,
-    pitDynamic
-    );
-    
   TPackageUpdatePolicy = (
     pupManually,
     pupOnRebuildingAll,
@@ -564,7 +558,6 @@ type
     FAddToProjectUsesSection: boolean;
     FAuthor: string;
     FAutoCreated: boolean;
-    FAutoInstall: TPackageInstallType;
     FAutoUpdate: TPackageUpdatePolicy;
     FFPDocPackageName: string;
     FOptionsBackup: TLazPackage;
@@ -621,7 +614,6 @@ type
     procedure SetAuthor(const AValue: string);
     procedure SetAutoCreated(const AValue: boolean);
     procedure SetAutoIncrementVersionOnBuild(const AValue: boolean);
-    procedure SetAutoInstall(const AValue: TPackageInstallType);
     procedure SetAutoUpdate(const AValue: TPackageUpdatePolicy);
     procedure SetDescription(const AValue: string);
     procedure SetEnableI18NForLFM(AValue: boolean);
@@ -660,6 +652,7 @@ type
     procedure VersionChanged(Sender: TObject); override;
     function GetRemovedCount: integer; override;
     function GetRemovedPkgFiles(Index: integer): TLazPackageFile; override;
+    procedure SetAutoInstall(AValue: TPackageInstallType); override;
   public
     procedure AssignOptions(Source: TPersistent); override;
     constructor Create;
@@ -783,8 +776,6 @@ type
     property AutoIncrementVersionOnBuild: boolean
                                            read GetAutoIncrementVersionOnBuild
                                            write SetAutoIncrementVersionOnBuild;
-    property AutoInstall: TPackageInstallType read FAutoInstall
-                                              write SetAutoInstall;
     property AutoUpdate: TPackageUpdatePolicy read FAutoUpdate
                                               write SetAutoUpdate;
     property CompilerOptions: TPkgCompilerOptions read FCompilerOptions;
@@ -2359,7 +2350,7 @@ begin
   Modified:=true;
 end;
 
-procedure TLazPackage.SetAutoInstall(const AValue: TPackageInstallType);
+procedure TLazPackage.SetAutoInstall(AValue: TPackageInstallType);
 begin
   if FAutoInstall=AValue then exit;
   FAutoInstall:=AValue;
