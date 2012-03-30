@@ -723,6 +723,7 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self,700,480);
 
   Caption := Format(lisConfigureBuildLazarus, ['"', '"']);
+  PageControl1.ActivePage:=BuildTabSheet;
   BuildTabSheet.Caption:='Build';
 
   // Show Build target names in combobox.
