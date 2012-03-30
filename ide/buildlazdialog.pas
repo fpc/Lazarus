@@ -64,7 +64,7 @@ type
   TBuildLazarusFlag = (
     blfDontBuild,           // skip all building, only cleaning
     blfOnlyIDE,             // skip all but IDE (for example build IDE, but not packages, not lazbuild, ...)
-    blfDontCleanAll,        // ignore clean up option in profile
+    blfDontClean,        // ignore clean up option in profile
     blfUseMakeIDECfg,       // append @idemake.cfg
     blfReplaceExe           // ignore OSLocksExecutables and do not create lazarus.new.exe
     );
@@ -243,6 +243,7 @@ var
   WorkingDirectory: String;
   OutputDirRedirected, UpdateRevisionInc: boolean;
   IdeBuildMode: TIdeBuildMode;
+  CmdLineParams: String;
 begin
   Result:=mrCancel;
 
@@ -271,38 +272,47 @@ begin
         exit;
       end;
     end;
+    // add -w option to print leaving/entering messages
+    CmdLineParams:=' -w';
+    // append target OS
+    if Profile.TargetOS<>'' then
+      CmdLineParams+=' OS_TARGET='+Profile.FPCTargetOS;
+    // append target CPU
+    if Profile.TargetCPU<>'' then
+      CmdLineParams+=' CPU_TARGET='+Profile.FPCTargetCPU;
+
     Tool.ScanOutputForFPCMessages:=true;
     Tool.ScanOutputForMakeMessages:=true;
 
     // clean up
-    if (IdeBuildMode=bmCleanAllBuild) and ([blfDontCleanAll,blfOnlyIDE]*Flags=[])
-    then begin
+    if (IdeBuildMode<>bmBuild) and (not (blfDontClean in Flags)) then begin
       WorkingDirectory:=EnvironmentOptions.GetParsedLazarusDirectory;
       if not CheckDirectoryWritable(WorkingDirectory) then exit(mrCancel);
 
-      // clean lazarus source directories
-      // Note: Some installations put the fpc units into the lazarus directory
-      CleanLazarusSrcDir(WorkingDirectory,false);
-      CleanLazarusSrcDir(WorkingDirectory+PathDelim+'examples');
-      CleanLazarusSrcDir(WorkingDirectory+PathDelim+'components');
-      CleanLazarusSrcDir(WorkingDirectory+PathDelim+'units');
-      CleanLazarusSrcDir(WorkingDirectory+PathDelim+'ide');
-      CleanLazarusSrcDir(WorkingDirectory+PathDelim+'packager');
-      CleanLazarusSrcDir(WorkingDirectory+PathDelim+'lcl');
-      CleanLazarusSrcDir(WorkingDirectory+PathDelim+'ideintf');
-      CleanLazarusSrcDir(WorkingDirectory+PathDelim+'tools');
-      CleanLazarusSrcDir(WorkingDirectory+PathDelim+'test');
+      if (IdeBuildMode=bmCleanAllBuild) and (not (blfOnlyIDE in Flags)) then begin
+        // clean all lazarus source directories
+        // Note: Some installations put the fpc units into the lazarus directory
+        //       => clean only the known directories
+        CleanLazarusSrcDir(WorkingDirectory,false);
+        CleanLazarusSrcDir(WorkingDirectory+PathDelim+'examples');
+        CleanLazarusSrcDir(WorkingDirectory+PathDelim+'components');
+        CleanLazarusSrcDir(WorkingDirectory+PathDelim+'units');
+        CleanLazarusSrcDir(WorkingDirectory+PathDelim+'ide');
+        CleanLazarusSrcDir(WorkingDirectory+PathDelim+'packager');
+        CleanLazarusSrcDir(WorkingDirectory+PathDelim+'lcl');
+        CleanLazarusSrcDir(WorkingDirectory+PathDelim+'ideintf');
+        CleanLazarusSrcDir(WorkingDirectory+PathDelim+'tools');
+        CleanLazarusSrcDir(WorkingDirectory+PathDelim+'test');
+      end;
 
       // call make to clean up
       Tool.Title:=lisCleanLazarusSource;
       Tool.WorkingDirectory:=WorkingDirectory;
-      Tool.CmdLineParams:='cleanlaz';
-      // append target OS
-      if Profile.TargetOS<>'' then
-        Tool.CmdLineParams:=Tool.CmdLineParams+' OS_TARGET='+Profile.FPCTargetOS;
-      // append target CPU
-      if Profile.TargetCPU<>'' then
-        Tool.CmdLineParams:=Tool.CmdLineParams+' CPU_TARGET='+Profile.FPCTargetCPU;
+      if IdeBuildMode=bmCleanBuild then
+        Tool.CmdLineParams:='cleanide'
+      else
+        Tool.CmdLineParams:='cleanlaz';
+      Tool.CmdLineParams:=Tool.CmdLineParams+CmdLineParams;
       Result:=ExternalTools.Run(Tool,Macros,false);
       if Result<>mrOk then exit;
 
@@ -312,14 +322,14 @@ begin
     // build IDE
     if not (blfDontBuild in Flags) then begin
       WorkingDirectory:=EnvironmentOptions.GetParsedLazarusDirectory;
-      if blfDontCleanAll in Flags then
+      if blfDontClean in Flags then
         IdeBuildMode:=bmBuild;
       Tool.Title:=lisIDE;
       Tool.WorkingDirectory:=WorkingDirectory;
-      if IdeBuildMode=bmCleanBuild then
-        Tool.CmdLineParams:='cleanide ide'
+      if IdeBuildMode=bmBuild then
+        Tool.CmdLineParams:='ide'
       else
-        Tool.CmdLineParams:='ide';        // bmBuild or bmCleanAllBuild
+        Tool.CmdLineParams:='cleanide ide';
       // append extra Profile
       ExOptions:='';
       Result:=CreateBuildLazarusOptions(Profile,Macros,PackageOptions,Flags,
@@ -334,14 +344,7 @@ begin
         Tool.EnvironmentOverrides.Values['OPT'] := ExOptions;
       if not UpdateRevisionInc then
         Tool.EnvironmentOverrides.Values['USESVN2REVISIONINC'] := '0';
-      // add -w option to print leaving/entering messages
-      Tool.CmdLineParams:=Tool.CmdLineParams+' -w';
-      // append target OS
-      if Profile.TargetOS<>'' then
-        Tool.CmdLineParams:=Tool.CmdLineParams+' OS_TARGET='+Profile.FPCTargetOS;
-      // append target CPU
-      if Profile.TargetCPU<>'' then
-        Tool.CmdLineParams:=Tool.CmdLineParams+' CPU_TARGET='+Profile.FPCTargetCPU;
+      Tool.CmdLineParams:=Tool.CmdLineParams+CmdLineParams;
       // run
       Result:=ExternalTools.Run(Tool,Macros,false);
       if Result<>mrOk then exit;
@@ -451,13 +454,12 @@ begin
   //DebugLn(['CreateBuildLazarusOptions NewTargetOS=',NewTargetOS,' NewTargetCPU=',NewTargetCPU]);
   if (Profile.TargetDirectory<>'') then begin
     // Case 1. the user has set a target directory
-    NewTargetDirectory:=Profile.TargetDirectory;
-    if not Macros.SubstituteStr(NewTargetDirectory) then begin
+    NewTargetDirectory:=Profile.GetParsedTargetDirectory(Macros);
+    if NewTargetDirectory='' then begin
       debugln('CreateBuildLazarusOptions macro aborted Options.TargetDirectory=',Profile.TargetDirectory);
       Result:=mrAbort;
       exit;
     end;
-    NewTargetDirectory:=CleanAndExpandDirectory(NewTargetDirectory);
     NewUnitDirectory:=AppendPathDelim(NewTargetDirectory)+'units';
     debugln('CreateBuildLazarusOptions TargetDirectory=',NewTargetDirectory);
     debugln('CreateBuildLazarusOptions UnitsTargetDirectory=',NewUnitDirectory);

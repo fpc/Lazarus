@@ -31,10 +31,10 @@ unit BuildProfileManager;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Laz2_XMLCfg, LResources, Forms, Controls,
-  Graphics, Dialogs, ExtCtrls, Buttons, StdCtrls, ComCtrls, Contnrs,
+  Classes, SysUtils, FileUtil, Laz2_XMLCfg, LazLogger, LResources, Forms,
+  Controls, Graphics, Dialogs, ExtCtrls, Buttons, StdCtrls, ComCtrls, Contnrs,
   ButtonPanel, DefineTemplates, IDEImagesIntf, IDEMsgIntf, IDEHelpIntf,
-  LazarusIDEStrConsts, LazConf, InterfaceBase, IDEProcs,
+  LazarusIDEStrConsts, LazConf, InterfaceBase, IDEProcs, TransferMacros,
   CompilerOptions;
 
 type
@@ -73,6 +73,7 @@ type
     procedure Save(XMLConfig: TXMLConfig; const Path: string);
     function FPCTargetOS: string;
     function FPCTargetCPU: string;
+    function GetParsedTargetDirectory(Macros: TTransferMacroList): string;
   public
     property Name: string read fName;
     property ExtraOptions: string read GetExtraOptions write SetExtraOptions;
@@ -267,6 +268,19 @@ end;
 function TBuildLazarusProfile.FPCTargetCPU: string;
 begin
   Result:=GetFPCTargetCPU(TargetCPU);
+end;
+
+function TBuildLazarusProfile.GetParsedTargetDirectory(
+  Macros: TTransferMacroList): string;
+begin
+  Result:=TargetDirectory;
+  if Result='' then exit;
+  if not Macros.SubstituteStr(Result) then begin
+    DebugLn('TBuildLazarusProfile.GetParsedTargetDirectory macro aborted Options.TargetDirectory=',TargetDirectory);
+    Result:='';
+    exit;
+  end;
+  Result:=CleanAndExpandDirectory(Result);
 end;
 
 function TBuildLazarusProfile.GetExtraOptions: string;

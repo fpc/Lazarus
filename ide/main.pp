@@ -12495,17 +12495,19 @@ begin
 
     // clean up
     PkgCompileFlags:=[];
-    if (not (blfDontCleanAll in Flags))
-    and (BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild) then begin
+    if (not (blfDontClean in Flags))
+    and (BuildLazProfiles.Current.IdeBuildMode<>bmBuild) then begin
       PkgCompileFlags:=PkgCompileFlags+[pcfCompileDependenciesClean];
-      SourceEditorManager.ClearErrorLines;
-      Result:=BuildLazarus(BuildLazProfiles.Current,ExternalTools,GlobalMacroList,
-                           '',EnvironmentOptions.GetParsedCompilerFilename,
-                           EnvironmentOptions.GetParsedMakeFilename, [blfDontBuild],
-                           ProfileChanged);
-      if Result<>mrOk then begin
-        DebugLn('TMainIDE.DoBuildLazarus: Clean up failed.');
-        exit;
+      if BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild then begin
+        SourceEditorManager.ClearErrorLines;
+        Result:=BuildLazarus(BuildLazProfiles.Current,ExternalTools,GlobalMacroList,
+                             '',EnvironmentOptions.GetParsedCompilerFilename,
+                             EnvironmentOptions.GetParsedMakeFilename, [blfDontBuild],
+                             ProfileChanged);
+        if Result<>mrOk then begin
+          DebugLn('TMainIDE.DoBuildLazarus: Clean all failed.');
+          exit;
+        end;
       end;
     end;
 
@@ -12544,15 +12546,15 @@ begin
     // save extra options
     IDEBuildFlags:=Flags;
     Result:=SaveIDEMakeOptions(BuildLazProfiles.Current,GlobalMacroList,PkgOptions,
-                               IDEBuildFlags-[blfUseMakeIDECfg,blfDontCleanAll]);
+                               IDEBuildFlags-[blfUseMakeIDECfg,blfDontClean]);
     if Result<>mrOk then begin
       DebugLn('TMainIDE.DoBuildLazarus: Save IDEMake options failed.');
       exit;
     end;
 
-    // make lazarus ide and/or examples
+    // make lazarus ide
     SourceEditorManager.ClearErrorLines;
-    IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg,blfDontCleanAll];
+    IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean];
     Result:=BuildLazarus(BuildLazProfiles.Current,ExternalTools,GlobalMacroList,
                          PkgOptions,EnvironmentOptions.GetParsedCompilerFilename,
                          EnvironmentOptions.GetParsedMakeFilename,IDEBuildFlags,
