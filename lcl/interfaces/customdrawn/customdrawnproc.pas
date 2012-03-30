@@ -463,6 +463,7 @@ var
   lControlCanvas: TLazCanvas;
   lBaseWindowOrg: TPoint;
   lControlStateEx: TCDControlStateEx;
+  lDrawControl: Boolean;
 begin
   Result := False;
 
@@ -475,6 +476,10 @@ begin
   {$endif}
 
   if lWinControl.Visible = False then Exit;
+
+  // Disable the drawing itself, but keep the window org and region operations
+  // or else clicking and other things are broken
+  lDrawControl := ACDWinControl.IsControlBackgroundVisible();
 
   // Save the Canvas state
   ACanvas.SaveState;
@@ -493,13 +498,12 @@ begin
   ACanvas.ClipRegion := ACDWinControl.Region;
 
   lControlCanvas := ACanvas;
-  {$ifdef CD_BufferControlImages}
-  if ACDWinControl.InvalidateCount > 0 then
+
+  if (ACDWinControl.InvalidateCount > 0) and lDrawControl then
   begin
     ACDWinControl.UpdateImageAndCanvas();
     lControlCanvas := ACDWinControl.ControlCanvas;
     ACDWinControl.InvalidateCount := 0;
-  {$endif}
 
     // Special drawing for some native controls
     if (lWinControl is TCustomPanel) or (lWinControl is TTabSheet)
@@ -540,13 +544,12 @@ begin
     {$ifdef VerboseCDWinControl}
     DebugLn('[RenderWinControl] after LCLSendPaintMsg');
     {$endif}
-  {$ifdef CD_BufferControlImages}
   end;
 
   // Here we actually blit the control to the form canvas
+  if lDrawControl then
   ACanvas.CanvasCopyRect(ACDWinControl.ControlCanvas, 0, 0, 0, 0,
     lWinControl.Width, lWinControl.Height);
-  {$endif}
 
   // Now restore it
   ACanvas.RestoreState(-1);
@@ -558,9 +561,7 @@ end;
 procedure RenderWinControlAndChildren(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; ACDWinControl: TCDWinControl; ACDForm: TCDForm);
 begin
-  // Draw the control
-  if ACDWinControl.IsControlBackgroundVisible() then
-    if not RenderWinControl(AImage, ACanvas, ACDWinControl, ACDForm) then Exit;
+  if not RenderWinControl(AImage, ACanvas, ACDWinControl, ACDForm) then Exit;
 
   // Now Draw all sub-controls
   if ACDWinControl.Children <> nil then
@@ -574,15 +575,16 @@ var
   struct : TPaintStruct;
   lWindowHandle: TCDForm;
   lFormCanvas: TLazCanvas;
+  lDrawControl: Boolean;
 begin
   lWindowHandle := TCDForm(AForm.Handle);
 
-  if lWindowHandle.IsControlBackgroundVisible() then
-  begin
+  // Disable the drawing itself, but keep the window org and region operations
+  // or else clicking and other things are broken, specially in Android
+  lDrawControl := lWindowHandle.IsControlBackgroundVisible();
 
-  {$ifndef CD_BufferFormImage}
-  DrawFormBackground(AImage, ACanvas);
-  {$endif}
+  if lDrawControl then
+    DrawFormBackground(AImage, ACanvas);
 
   // Consider the form scrolling
   // ToDo: Figure out why this "div 2" factor is necessary for drawing non-windows controls and remove this factor
@@ -592,15 +594,9 @@ begin
   ACanvas.WindowOrg := Point(0, 0);
 
   lFormCanvas := ACanvas;
-  {$ifdef CD_BufferFormImage}
-  if lWindowHandle.InvalidateCount > 0 then
-  begin
-    lWindowHandle.UpdateImageAndCanvas();
-    lFormCanvas := lWindowHandle.ControlCanvas;
-    lWindowHandle.InvalidateCount := 0;
-    DrawFormBackground(lWindowHandle.ControlImage, lWindowHandle.ControlCanvas);
-  {$endif}
 
+  if lDrawControl then
+  begin
     // Send the paint message to the LCL
     {$IFDEF VerboseCDForms}
       DebugLn(Format('[RenderForm] OnPaint event started context: %x', [struct.hdc]));
@@ -611,13 +607,6 @@ begin
     {$IFDEF VerboseCDForms}
       DebugLn('[RenderForm] OnPaint event ended');
     {$ENDIF}
-  {$ifdef CD_BufferFormImage}
-  end;
-
-  // Here we actually blit the control to the form canvas
-  ACanvas.CanvasCopyRect(lWindowHandle.ControlCanvas, 0, 0, 0, 0,
-    AForm.ClientWidth, AForm.ClientHeight);
-  {$endif}
   end;
 
   // Now paint all child win controls
