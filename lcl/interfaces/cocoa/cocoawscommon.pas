@@ -26,6 +26,7 @@ type
       FPropStorage: TStringList;
       FContext: TCocoaContext;
       FHasCaret: Boolean;
+      FTarget: TWinControl;
     function GetHasCaret: Boolean;
     procedure SetHasCaret(AValue: Boolean);
   protected
@@ -34,7 +35,6 @@ type
     procedure OffsetMousePos(var Point: NSPoint);
   public
     Owner: NSObject;
-    Target: TWinControl;
     class constructor Create;
     constructor Create(AOwner: NSObject; ATarget: TWinControl); virtual;
     destructor Destroy; override;
@@ -55,6 +55,7 @@ type
     function ResetCursorRects: Boolean; virtual;
 
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
+    property Target: TWinControl read FTarget;
   end;
 
   TLCLCommonCallBackClass = class of TLCLCommonCallBack;
@@ -65,6 +66,7 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class function GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
@@ -201,7 +203,7 @@ constructor TLCLCommonCallback.Create(AOwner: NSObject; ATarget: TWinControl);
 begin
   inherited Create;
   Owner := AOwner;
-  Target := ATarget;
+  FTarget := ATarget;
   FContext := nil;
   FHasCaret := False;
   FPropStorage := TStringList.Create;
@@ -213,6 +215,7 @@ destructor TLCLCommonCallback.Destroy;
 begin
   FContext.Free;
   FPropStorage.Free;
+  FTarget := nil;
   inherited Destroy;
 end;
 
@@ -855,6 +858,18 @@ class function TCocoaWSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 begin
   Result := TCocoaWSCustomControl.CreateHandle(AWinControl, AParams);
+end;
+
+class procedure TCocoaWSWinControl.DestroyHandle(const AWinControl: TWinControl);
+var
+  obj: NSObject;
+begin
+  if not AWinControl.HandleAllocated then
+    Exit;
+  obj := NSObject(AWinControl.Handle);
+  if obj.isKindOfClass_(NSView) then
+    NSView(obj).removeFromSuperview;
+  obj.release;
 end;
 
 class procedure TCocoaWSWinControl.SetText(const AWinControl: TWinControl; const AText: String);
