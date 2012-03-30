@@ -710,7 +710,7 @@ var
   AImage: TLazIntfImage;
   ACanvas: TLazCanvas;
   {$IFDEF VerboseCDPaintProfiler}
-  lTimeStart: TDateTime;
+  lTimeStart, lNativeStart: TDateTime;
   {$ENDIF}
 begin
   {$IFDEF VerboseCDPaintProfiler}
@@ -732,13 +732,19 @@ begin
     // Draw the form
     RenderForm(WindowHandle.Image, WindowHandle.Canvas, WindowHandle.LCLForm);
 
+    {$IFDEF VerboseCDPaintProfiler}
+    lNativeStart := NowUTC();
+    {$ENDIF}
+
     // Now render it into the control
     WindowHandle.Image.GetRawImage(lRawImage);
     Cocoa_RawImage_CreateBitmaps(lRawImage, lBitmap, lMask, True);
     Context.DrawBitmap(0, 0, TCocoaBitmap(lBitmap));
   end;
   {$IFDEF VerboseCDPaintProfiler}
-  DebugLn(Format('[TCocoaCustomControl.Draw] Paint duration: %d ms', [DateTimeToMilliseconds(NowUTC() - lTimeStart)]));
+  DebugLn(Format('[TCocoaCustomControl.Draw] Paint LCL-CustomDrawn: %d ms Native: %d ms',
+    [DateTimeToMilliseconds(lNativeStart - lTimeStart),
+     DateTimeToMilliseconds(NowUTC() - lNativeStart)]));
   {$ENDIF}
 end;
 

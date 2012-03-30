@@ -35,6 +35,8 @@ type
     FProps: TStringList;
     function GetProps(AnIndex: String): pointer;
     procedure SetProps(AnIndex: String; AValue: pointer);
+  protected
+    FWinControl: TWinControl;
   public
     Children: TFPList; // of TCDWinControl;
     // For scrolling a control
@@ -54,8 +56,9 @@ type
     destructor Destroy; override;
     procedure IncInvalidateCount;
     function AdjustCoordinatesForScrolling(AX, AY: Integer): TPoint;
-    property Props[AnIndex:String]:pointer read GetProps write SetProps;
     procedure UpdateImageAndCanvas; virtual;
+    function IsControlBackgroundVisible: Boolean; virtual;
+    property Props[AnIndex:String]:pointer read GetProps write SetProps;
   end;
 
   { TCDWinControl }
@@ -67,6 +70,7 @@ type
     CDControl: TCDControl;
     CDControlInjected: Boolean;
     procedure UpdateImageAndCanvas; override;
+    function IsControlBackgroundVisible: Boolean; override;
   end;
 
   { TCDForm }
@@ -90,6 +94,7 @@ type
     function GetFormVirtualHeight(AScreenHeight: Integer): Integer;
     procedure SanityCheckScrollPos();
     procedure UpdateImageAndCanvas; override;
+    function IsControlBackgroundVisible: Boolean; override;
   end;
 
   TCDNonNativeForm = class(TCDForm)
@@ -554,7 +559,8 @@ procedure RenderWinControlAndChildren(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; ACDWinControl: TCDWinControl; ACDForm: TCDForm);
 begin
   // Draw the control
-  if not RenderWinControl(AImage, ACanvas, ACDWinControl, ACDForm) then Exit;
+  if ACDWinControl.IsControlBackgroundVisible() then
+    if not RenderWinControl(AImage, ACanvas, ACDWinControl, ACDForm) then Exit;
 
   // Now Draw all sub-controls
   if ACDWinControl.Children <> nil then
@@ -570,6 +576,10 @@ var
   lFormCanvas: TLazCanvas;
 begin
   lWindowHandle := TCDForm(AForm.Handle);
+
+  if lWindowHandle.IsControlBackgroundVisible() then
+  begin
+
   {$ifndef CD_BufferFormImage}
   DrawFormBackground(AImage, ACanvas);
   {$endif}
@@ -608,6 +618,7 @@ begin
   ACanvas.CanvasCopyRect(lWindowHandle.ControlCanvas, 0, 0, 0, 0,
     AForm.ClientWidth, AForm.ClientHeight);
   {$endif}
+  end;
 
   // Now paint all child win controls
   RenderChildWinControls(AImage, ACanvas, GetCDWinControlList(AForm), lWindowHandle);
@@ -953,6 +964,12 @@ begin
     WinControl.Width, WinControl.Height, clfARGB32);
 end;
 
+function TCDWinControl.IsControlBackgroundVisible: Boolean;
+begin
+  FWinControl := WinControl;
+  Result:=inherited IsControlBackgroundVisible;
+end;
+
 { TCDBitmap }
 
 destructor TCDBitmap.Destroy;
@@ -1026,6 +1043,39 @@ begin
 
 end;
 
+// This is utilized for optimizing the painting. If we figure out that there is
+// nothing visible from a control, just give up drawing it completely
+//
+// What usually happens is that child controls might completely cover their
+// parent controls
+//
+// We should watch out for alpha-blending, however
+function TCDBaseControl.IsControlBackgroundVisible: Boolean;
+var
+  i: Integer;
+  lChild: TControl;
+  lWinChild: TWinControl;
+begin
+  Result := True;
+  if FWinControl = nil then Exit;
+  for i := 0 to FWinControl.ControlCount-1 do
+  begin
+    lChild := FWinControl.Controls[i];
+    if not (lChild is TWinControl) then Continue;
+    lWinChild := TWinControl(lChild);
+
+    // ToDo: Ignore alpha blended controls
+
+    // Basic case: alClient
+    if lWinChild.Align = alClient then Exit(False);
+
+    // Another case: coordinates match
+    if (lWinChild.Left = 0) and (lWinChild.Top = 0) and
+       (lWinChild.Width = FWinControl.Width) and (lWinChild.Height = FWinControl.Height) then
+       Exit(False);
+  end;
+end;
+
 { TCDForm }
 
 constructor TCDForm.Create;
@@ -1065,6 +1115,12 @@ procedure TCDForm.UpdateImageAndCanvas;
 begin
   UpdateControlLazImageAndCanvas(ControlImage, ControlCanvas,
     LCLForm.ClientWIdth, LCLForm.ClientHeight, clfARGB32);
+end;
+
+function TCDForm.IsControlBackgroundVisible: Boolean;
+begin
+  FWinControl := LCLForm;
+  Result:=inherited IsControlBackgroundVisible;
 end;
 
 end.
