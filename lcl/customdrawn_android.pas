@@ -23,7 +23,7 @@ type
   private
     bmpCheckbox, bmpCheckboxChecked: TBitmap;
     // Alternative checkbox drawing, not currently utilized
-    procedure DrawCheckBoxBitmap(ADest: TFPCustomCanvas; ADestPos: TPoint; AState: TCDControlState; ASize: Integer);
+    procedure DrawCheckBoxBitmap(ADest: TFPCustomCanvas; ADestPos: TPoint; AState: TCDControlState; ASize: Integer; ABackgroundColor: TFPColor);
     // Makes pixels in each corner transparent for a rounded effect
     procedure DrawTransparentRoundCorners(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize; AColor: TFPColor);
     // Draws a vertical line with different first and last pixels
@@ -204,7 +204,7 @@ initialization
 
 { TCDDrawerAndroid }
 
-procedure TCDDrawerAndroid.DrawCheckBoxBitmap(ADest: TFPCustomCanvas; ADestPos: TPoint; AState: TCDControlState; ASize: Integer);
+procedure TCDDrawerAndroid.DrawCheckBoxBitmap(ADest: TFPCustomCanvas; ADestPos: TPoint; AState: TCDControlState; ASize: Integer; ABackgroundColor: TFPColor);
 var
   i, scaledI: Integer;
   lDest: TCanvas;
@@ -225,7 +225,7 @@ begin
     DrawAndroidAlternatedHorzLine(lDest, 0, ASize-1, i, ANDROID_CHECKBOX_A[scaledI], ANDROID_CHECKBOX_B[scaledI]);
   end;
 
-  // Corners
+{  // Corners >>> The corners look bad if the background isn't black
   ADest.Colors[ADestPos.X+0, ADestPos.Y+0] := colBlack;
   ADest.Colors[ADestPos.X+1, ADestPos.Y+0] := colBlack;
   ADest.Colors[ADestPos.X+0, ADestPos.Y+1] := colBlack;
@@ -252,7 +252,7 @@ begin
   ADest.Colors[ADestPos.X+ASize-1, ADestPos.Y+ASize-2] := colBlack;
   lDest.Pixels[ADestPos.X+ASize-1, ADestPos.Y+ASize-3] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
   lDest.Pixels[ADestPos.X+ASize-3, ADestPos.Y+ASize-1] := ANDROID_CHECKBOX_CORNER_DARK_GRAY;
-  lDest.Pixels[ADestPos.X+ASize-2, ADestPos.Y+ASize-2] := ANDROID_CHECKBOX_CORNER_GRAY;
+  lDest.Pixels[ADestPos.X+ASize-2, ADestPos.Y+ASize-2] := ANDROID_CHECKBOX_CORNER_GRAY;  }
 
   // Tickmark
   if csfOff in AState then
@@ -281,15 +281,17 @@ begin
       lDest.Pixels[lValue7-1, lValue12+5+i] := $9DA29E;
     end;
     // right part adjusts
-    lDest.Pixels[lValueSum24,  lValue12-6] := $9D9A9C;
-    lDest.Pixels[lValueSum24,  lValue12-5] := $AFBDAF;
-    lDest.Pixels[lValueSum24,  lValue12-4] := $CCC9CC;
-    lDest.Pixels[lValueSum24,  lValue12-3] := $BABBBA;
+    lDest.Pixels[lValueSum24, lValue12-6] := $9D9A9C;
+    lDest.Pixels[lValueSum24, lValue12-5] := $AFBDAF;
+    lDest.Pixels[lValueSum24, lValue12-4] := $BABBBA;
+    lDest.Pixels[lValueSum24, lValue12-3] := $BABBBA;
     lDest.Pixels[lValueSum24, lValue12-2] := $B9B6B9;
+    lDest.Pixels[lValueSum24, lValue12-1] := $9D9E9D;
     lDest.Pixels[lValueSum24+1,  lValue12-6] := $AFB0AF;
     lDest.Pixels[lValueSum24+1,  lValue12-5] := $A6A7A6;
     lDest.Pixels[lValueSum24+1,  lValue12-4] := $B9B6B9;
     lDest.Pixels[lValueSum24+1,  lValue12-3] := $BABBBA;
+    lDest.Pixels[lValueSum24+1,  lValue12-2] := $9D9E9D;
     for i := 1 to lValue18 - lValue12 - 6 do
     begin
       lDest.Pixels[lValueSum24,  lValue12-6-i] := $9D9A9C;
@@ -322,21 +324,25 @@ begin
       lDest.Pixels[lValue7-1, lValue12+5+i] := $4A9E4A;
     end;
     // right part adjusts
-    lDest.Pixels[lValueSum24,  lValue12-6] := $427D42;
-    lDest.Pixels[lValueSum24,  lValue12-5] := $00A200;
-    lDest.Pixels[lValueSum24,  lValue12-4] := $00C700;
-    lDest.Pixels[lValueSum24,  lValue12-3] := $00B200;
+    lDest.Pixels[lValueSum24, lValue12-6] := $427D42;
+    lDest.Pixels[lValueSum24, lValue12-5] := $00A200;
+    lDest.Pixels[lValueSum24, lValue12-4] := $00C700;
+    lDest.Pixels[lValueSum24, lValue12-3] := $00B200;
     lDest.Pixels[lValueSum24, lValue12-2] := $31A231;
+    lDest.Pixels[lValueSum24, lValue12-1] := $089A08;
     lDest.Pixels[lValueSum24+1,  lValue12-6] := $739E73;
     lDest.Pixels[lValueSum24+1,  lValue12-5] := $009200;
     lDest.Pixels[lValueSum24+1,  lValue12-4] := $00AA00;
     lDest.Pixels[lValueSum24+1,  lValue12-3] := $4AA64A;
+    lDest.Pixels[lValueSum24+1,  lValue12-2] := $089A08;
     for i := 1 to lValue18 - lValue12 - 6 do
     begin
       lDest.Pixels[lValueSum24,  lValue12-6-i] := $427D42;
       lDest.Pixels[lValueSum24+1,  lValue12-6-i] := $739E73;
     end;
   end;
+
+  DrawTransparentRoundCorners(ADest, ADestPos, Size(ASize, ASize), ABackgroundColor);
 end;
 
 procedure TCDDrawerAndroid.DrawTransparentRoundCorners(ADest: TFPCustomCanvas;
@@ -577,10 +583,8 @@ var
   lRect: TRect;
 begin
   if not (ADest is TCanvas) then Exit; // ToDo
-  // Background corners
-  DrawTransparentRoundCorners(ADest, Point(0, 0), ASize, AStateEx.FPParentRGBColor);
 
-  // Darker corners
+{  // Darker corners >>> Don't draw them, they look bad in a light background
   lColor := ANDROID_BUTTON_CORNERS;
   lDest.Pixels[1, 1] := lColor;
   lDest.Pixels[2, 0] := lColor;
@@ -593,15 +597,15 @@ begin
   lDest.Pixels[2, ASize.cy-1] := lColor;
   lDest.Pixels[ASize.cx-1, ASize.cy-3] := lColor;
   lDest.Pixels[ASize.cx-2, ASize.cy-2] := lColor;
-  lDest.Pixels[ASize.cx-3, ASize.cy-1] := lColor;
+  lDest.Pixels[ASize.cx-3, ASize.cy-1] := lColor; }
 
   // Button image
   if csfSunken in AState then
   begin
     // Top lines
-    DrawAndroidAlternatedHorzLine(lDest, 3, ASize.cx-3, 0, ANDROID_BUTTON_SUNKEN_FIRST_LINE_A, ANDROID_BUTTON_SUNKEN_FIRST_LINE_B);
-    DrawAndroidAlternatedHorzLine(lDest, 2, ASize.cx-2, 1, ANDROID_BUTTON_SUNKEN_SECOND_LINE_A, ANDROID_BUTTON_SUNKEN_SECOND_LINE_B);
-    DrawAndroidAlternatedHorzLine(lDest, 1, ASize.cx-1, 2, ANDROID_BUTTON_SUNKEN_THIRD_LINE_A, ANDROID_BUTTON_SUNKEN_THIRD_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 0, ASize.cx, 0, ANDROID_BUTTON_SUNKEN_FIRST_LINE_A, ANDROID_BUTTON_SUNKEN_FIRST_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 0, ASize.cx, 1, ANDROID_BUTTON_SUNKEN_SECOND_LINE_A, ANDROID_BUTTON_SUNKEN_SECOND_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 0, ASize.cx, 2, ANDROID_BUTTON_SUNKEN_THIRD_LINE_A, ANDROID_BUTTON_SUNKEN_THIRD_LINE_B);
 
     // The central gradient
     lRect := Bounds(0, 3, ASize.cx, (ASize.cy-6) div 3+1);
@@ -614,16 +618,16 @@ begin
       ANDROID_BUTTON_SUNKEN_BOTTOM_GRADIENT_A, ANDROID_BUTTON_SUNKEN_MIDDLE_GRADIENT_B, ANDROID_BUTTON_SUNKEN_BOTTOM_GRADIENT_B);
 
     // Bottom lines
-    DrawAndroidAlternatedHorzLine(lDest, 1, ASize.cx-1, ASize.cy-3, ANDROID_BUTTON_SUNKEN_PREPRELAST_LINE_A, ANDROID_BUTTON_SUNKEN_PREPRELAST_LINE_B);
-    DrawAndroidAlternatedHorzLine(lDest, 2, ASize.cx-2, ASize.cy-2, ANDROID_BUTTON_SUNKEN_PRELAST_LINE_A, ANDROID_BUTTON_SUNKEN_PRELAST_LINE_B);
-    DrawAndroidAlternatedHorzLine(lDest, 3, ASize.cx-3, ASize.cy-1, ANDROID_BUTTON_SUNKEN_LAST_LINE_A, ANDROID_BUTTON_SUNKEN_LAST_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 0, ASize.cx, ASize.cy-3, ANDROID_BUTTON_SUNKEN_PREPRELAST_LINE_A, ANDROID_BUTTON_SUNKEN_PREPRELAST_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 0, ASize.cx, ASize.cy-2, ANDROID_BUTTON_SUNKEN_PRELAST_LINE_A, ANDROID_BUTTON_SUNKEN_PRELAST_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 0, ASize.cx, ASize.cy-1, ANDROID_BUTTON_SUNKEN_LAST_LINE_A, ANDROID_BUTTON_SUNKEN_LAST_LINE_B);
   end
   else
   begin
     // Top lines
-    DrawAndroidAlternatedHorzLine(lDest, 3, ASize.cx-3, 0, ANDROID_BUTTON_FIRST_LINE_A, ANDROID_BUTTON_FIRST_LINE_B);
-    DrawAndroidAlternatedHorzLine(lDest, 2, ASize.cx-2, 1, ANDROID_BUTTON_SECOND_LINE_A, ANDROID_BUTTON_SECOND_LINE_B);
-    DrawAndroidAlternatedHorzLine(lDest, 1, ASize.cx-1, 2, ANDROID_BUTTON_THIRD_LINE_A, ANDROID_BUTTON_THIRD_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 0, ASize.cx, 0, ANDROID_BUTTON_FIRST_LINE_A, ANDROID_BUTTON_FIRST_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 0, ASize.cx, 1, ANDROID_BUTTON_SECOND_LINE_A, ANDROID_BUTTON_SECOND_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 0, ASize.cx, 2, ANDROID_BUTTON_THIRD_LINE_A, ANDROID_BUTTON_THIRD_LINE_B);
 
     // The central gradient
     lRect := Bounds(0, 3, ASize.cx, (ASize.cy-6) div 3+1);
@@ -636,10 +640,13 @@ begin
       ANDROID_BUTTON_BOTTOM_GRADIENT_A, ANDROID_BUTTON_MIDDLE_GRADIENT_B, ANDROID_BUTTON_BOTTOM_GRADIENT_B);
 
     // Bottom lines
-    DrawAndroidAlternatedHorzLine(lDest, 1, ASize.cx-1, ASize.cy-3, ANDROID_BUTTON_PREPRELAST_LINE_A, ANDROID_BUTTON_PREPRELAST_LINE_B);
-    DrawAndroidAlternatedHorzLine(lDest, 2, ASize.cx-2, ASize.cy-2, ANDROID_BUTTON_PRELAST_LINE_A, ANDROID_BUTTON_PRELAST_LINE_B);
-    DrawAndroidAlternatedHorzLine(lDest, 3, ASize.cx-3, ASize.cy-1, ANDROID_BUTTON_LAST_LINE_A, ANDROID_BUTTON_LAST_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 0, ASize.cx, ASize.cy-3, ANDROID_BUTTON_PREPRELAST_LINE_A, ANDROID_BUTTON_PREPRELAST_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 0, ASize.cx, ASize.cy-2, ANDROID_BUTTON_PRELAST_LINE_A, ANDROID_BUTTON_PRELAST_LINE_B);
+    DrawAndroidAlternatedHorzLine(lDest, 0, ASize.cx, ASize.cy-1, ANDROID_BUTTON_LAST_LINE_A, ANDROID_BUTTON_LAST_LINE_B);
   end;
+
+  // Background corners
+  DrawTransparentRoundCorners(ADest, Point(0, 0), ASize, AStateEx.FPParentRGBColor);
 
   // The full focus rect is too invasive for Android, just make a underline font style instead
   //if csfHasFocus in AState then
@@ -763,7 +770,7 @@ begin
   //if csfOn in AState then ADest.Draw(0, 0, bmpCheckboxChecked)
   //else ADest.Draw(0, 0, bmpCheckbox);
 
-  DrawCheckBoxBitmap(ADest, ADestPos, AState, lCheckboxSquare);
+  DrawCheckBoxBitmap(ADest, ADestPos, AState, lCheckboxSquare, AStateEx.FPParentRGBColor);
 
   // Transparent corners
   DrawTransparentRoundCorners(ADest, ADestPos,
