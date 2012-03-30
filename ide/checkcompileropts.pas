@@ -882,6 +882,9 @@ begin
     TargetCPU:=Options.TargetCPU;
     CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(CompilerFilename,
                                                     '',TargetOS,TargetCPU,true);
+    if CfgCache.NeedsUpdate then
+      CfgCache.Update(CodeToolBoss.FPCDefinesCache.TestFilename,
+                      CodeToolBoss.FPCDefinesCache.ExtraOptions);
 
     // check compiler config
     Result:=CheckCompilerConfig(CfgCache);
