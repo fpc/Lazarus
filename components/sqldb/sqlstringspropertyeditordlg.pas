@@ -54,7 +54,7 @@ type
     FTransaction:TSQLTransaction;
 
     function CheckConnection:boolean;
-    procedure CheckSQLSyntax(SQL: TStrings);
+    procedure CheckSQLSyntax({%H-}SQL: TStrings);
     procedure CleanupDelphiCode;
     procedure CreateConstant;
   public
@@ -77,12 +77,14 @@ uses
 {$R *.lfm}
 
 resourcestring
-  SSQLTabCaption    = 'SQL Code';
   SResultTabCaption = 'Results';
+  SSQLTabCaption    = 'SQL Code';
+  {$IFDEF HASSQLPARSER}
   SSQLOK            = 'SQL OK';
   SQLSyntaxOK       = 'No syntax errors in SQL statement.';
   SSQLError         = 'SQL Error';
   SSQLSyntaxError   = 'Syntax error in SQL statement:'+slineBreak+'%s';
+  {$ENDIF}
 
 { TSQLStringsPropertyEditorDlg }
 
@@ -222,6 +224,7 @@ Var
   I : Integer;
 
 begin
+  C:='';
   For I:=0 to SQLEditor.Lines.Count-1 do
     begin
     S:=SQLEditor.Lines[i];

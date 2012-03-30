@@ -104,9 +104,9 @@ Type
     constructor Create; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
-    function GetResourceSource(const ResourceName: string): string; override;
-    function CreateSource(const Filename, SourceName,
-                          ResourceName: string): string; override;
+    function GetResourceSource(const {%H-}ResourceName: string): string; override;
+    function CreateSource(const {%H-}Filename, {%H-}SourceName,
+                          {%H-}ResourceName: string): string; override;
   end;
 
 
