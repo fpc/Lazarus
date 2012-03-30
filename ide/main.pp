@@ -184,6 +184,7 @@ type
     procedure OnApplicationDropFiles(Sender: TObject; const FileNames: array of String);
     procedure OnApplicationQueryEndSession(var Cancel: Boolean);
     procedure OnApplicationEndSession(Sender: TObject);
+    procedure OnScreenChangedForm(Sender: TObject; Form: TCustomForm);
     procedure OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
     procedure OnRemoteControlTimer(Sender: TObject);
     procedure OnSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
@@ -1509,6 +1510,7 @@ begin
   Application.AddOnQueryEndSessionHandler(@OnApplicationQueryEndSession);
   Application.AddOnEndSessionHandler(@OnApplicationEndSession);
   Screen.AddHandlerRemoveForm(@OnScreenRemoveForm);
+  Screen.AddHandlerActiveFormChanged(@OnScreenChangedForm);
   SetupHints;
   SetupIDEWindowsLayout;
   RestoreIDEWindows;
@@ -16596,7 +16598,7 @@ begin
   SrcEditor := TSourceEditor(Sender);
   p :=Project1.EditorInfoWithEditorComponent(SrcEditor);
   if (p <> nil) then
-    p.EditorComponent := nil // Set EditorIndex := -1
+    p.EditorComponent := nil; // Set EditorIndex := -1
 end;
 
 procedure TMainIDE.OnSrcNotebookCurCodeBufferChanged(Sender: TObject);
@@ -17453,7 +17455,6 @@ begin
     debugln(['TMainIDE.OnApplicationIdle FUserInputSinceLastIdle']);
     {$ENDIF}
     FUserInputSinceLastIdle:=false;
-    UpdateWindowMenu;
     FormEditor1.CheckDesignerPositions;
     FormEditor1.PaintAllDesignerItems;
     GetCurrentUnit(SrcEdit,AnUnitInfo);
@@ -17619,6 +17620,16 @@ end;
 procedure TMainIDE.OnApplicationEndSession(Sender: TObject);
 begin
  QuitIDE;
+end;
+
+procedure TMainIDE.OnScreenChangedForm(Sender: TObject; Form: TCustomForm);
+begin
+  if (Screen.ActiveForm = MainIDEBar) or
+     (WindowMenuActiveForm = Screen.ActiveForm)
+  then
+    exit;
+  WindowMenuActiveForm := Screen.ActiveForm;
+  UpdateWindowMenu(True);
 end;
 
 procedure TMainIDE.OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);

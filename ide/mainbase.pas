@@ -83,6 +83,7 @@ type
   TMainIDEBase = class(TMainIDEInterface)
   private
     FToolStatus: TIDEToolStatus;
+    FWindowMenuActiveForm: TCustomForm;
   protected
     FNeedUpdateHighlighters: boolean;
     FLastWindowMenuUpdate: TDateTime;
@@ -120,6 +121,7 @@ type
     function GetToolStatus: TIDEToolStatus; override;
     procedure SetToolStatus(const AValue: TIDEToolStatus); virtual;
 
+    procedure DoMnuWindowClicked(Sender: TObject);
     procedure mnuWindowItemClick(Sender: TObject); virtual;
     procedure mnuWindowSourceItemClick(Sender: TObject); virtual;
     procedure OnMainBarDestroy(Sender: TObject); virtual;
@@ -161,6 +163,7 @@ type
                              ): TModalResult; override;
 
     procedure UpdateWindowMenu(Immediately: boolean = false); override;
+    property  WindowMenuActiveForm: TCustomForm read FWindowMenuActiveForm write FWindowMenuActiveForm;
     procedure SetRecentSubMenu(Section: TIDEMenuSection; FileList: TStringList;
                                OnClickEvent: TNotifyEvent); override;
     procedure UpdateHighlighters(Immediately: boolean = false); override;
@@ -292,6 +295,11 @@ begin
   Result:=MainIDEBar;
 end;
 
+procedure TMainIDEBase.DoMnuWindowClicked(Sender: TObject);
+begin
+  UpdateWindowMenu(True);
+end;
+
 function TMainIDEBase.CreateMenuSeparator : TMenuItem;
 begin
   Result := TMenuItem.Create(MainIDEBar);
@@ -358,6 +366,7 @@ begin
     mnuComponent:=mnuPackage;
     CreateMainMenuItem(mnuTools,'Tools',lisMenuTools);
     CreateMainMenuItem(mnuWindow,'Window',lisMenuWindow);
+    mnuWindow.OnClick  := @DoMnuWindowClicked;
     CreateMainMenuItem(mnuHelp,'Help',lisMenuHelp);
   end;
 end;
@@ -1124,7 +1133,7 @@ begin
   begin
     CurMenuItem := GetMenuItem(i, itmWindowLists);
     CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
-    CurMenuItem.MenuItem.Checked := Screen.ActiveCustomForm = TCustomForm(WindowsList[i]);
+    CurMenuItem.MenuItem.Checked := WindowMenuActiveForm = TCustomForm(WindowsList[i]);
     CurMenuItem.OnClick:=@mnuWindowItemClick;
   end;
 
