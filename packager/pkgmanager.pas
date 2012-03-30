@@ -960,9 +960,10 @@ end;
 
 procedure TPkgManager.OnApplicationIdle(Sender: TObject; var Done: Boolean);
 begin
+  if PackageGraph = nil then Exit;
+  if MainIDE.ToolStatus<>itNone then exit;
   if (Screen.ActiveCustomForm<>nil)
   and (fsModal in Screen.ActiveCustomForm.FormState) then exit;
-  if PackageGraph = nil then Exit;
   PackageGraph.CloseUnneededPackages;
 end;
 
