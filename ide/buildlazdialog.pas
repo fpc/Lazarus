@@ -121,7 +121,6 @@ type
     procedure DefinesButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
@@ -724,7 +723,7 @@ begin
 
   Caption := Format(lisConfigureBuildLazarus, ['"', '"']);
   PageControl1.ActivePage:=BuildTabSheet;
-  BuildTabSheet.Caption:='Build';
+  BuildTabSheet.Caption:=lisBuildCaption;
 
   // Show Build target names in combobox.
   LCLWidgetTypeLabel.Caption := lisLCLWidgetType;
@@ -823,11 +822,6 @@ begin
   end;
 
   SetupInfoPage;
-end;
-
-procedure TConfigureBuildLazarusDlg.FormDestroy(Sender: TObject);
-begin
-
 end;
 
 procedure TConfigureBuildLazarusDlg.FormResize(Sender: TObject);
@@ -939,7 +933,7 @@ end;
 
 procedure TConfigureBuildLazarusDlg.SetupInfoPage;
 begin
-  InfoTabSheet.Caption:='Information';
+  InfoTabSheet.Caption:=lisInformation;
 
   fImageIndexPackage := IDEImages.LoadImage(16, 'item_package');
   fImageIndexRequired := IDEImages.LoadImage(16, 'pkg_required');
