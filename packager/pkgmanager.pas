@@ -1730,7 +1730,7 @@ var
   i: Integer;
 begin
   PkgList:=nil;
-  OnGetAllRequiredPackages(PackageGraph.FirstAutoInstallDependency,PkgList);
+  PackageGraph.GetAllRequiredPackages(PackageGraph.FirstAutoInstallDependency,PkgList);
   if PkgList=nil then exit;
   for i:=0 to PkgList.Count-1 do
     if TObject(PkgList[i]) is TLazPackage then

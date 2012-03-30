@@ -140,8 +140,8 @@ var
       InheritedChildDatas := TList.Create;
     InheritedChildDatas.Add(ChildData);
 
-    if length(Value) > 100 then
-      VisibleValue := copy(Value, 1, 100) + '[...]'
+    if UTF8Length(Value) > 100 then
+      VisibleValue := UTF8Copy(Value, 1, 100) + '[...]'
     else
       VisibleValue := Value;
     ChildNode := InhTreeView.Items.AddChildObject(AncestorNode,
@@ -209,20 +209,16 @@ begin
         with AncestorOptions.ParsedOpts do
         begin
           AddChildNode(lisunitPath,
-            CreateRelativeSearchPath(GetParsedValue(pcosUnitPath),
-            CompilerOpts.BaseDirectory),
+            CreateRelativeSearchPath(GetParsedValue(pcosUnitPath),CompilerOpts.BaseDirectory),
             icoUnitPath);
           AddChildNode(lisincludePath,
-            CreateRelativeSearchPath(GetParsedValue(pcosIncludePath),
-            CompilerOpts.BaseDirectory),
+            CreateRelativeSearchPath(GetParsedValue(pcosIncludePath),CompilerOpts.BaseDirectory),
             icoIncludePath);
           AddChildNode(lisobjectPath,
-            CreateRelativeSearchPath(GetParsedValue(pcosObjectPath),
-            CompilerOpts.BaseDirectory),
+            CreateRelativeSearchPath(GetParsedValue(pcosObjectPath),CompilerOpts.BaseDirectory),
             icoObjectPath);
           AddChildNode(lislibraryPath,
-            CreateRelativeSearchPath(GetParsedValue(pcosLibraryPath),
-            CompilerOpts.BaseDirectory),
+            CreateRelativeSearchPath(GetParsedValue(pcosLibraryPath),CompilerOpts.BaseDirectory),
             icoLibraryPath);
           AddChildNode(lislinkerOptions, GetParsedValue(pcosLinkerOptions),
             icoLinkerOptions);

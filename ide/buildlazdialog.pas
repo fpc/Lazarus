@@ -45,11 +45,12 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LConvEncoding, Forms, Controls, LCLType, LCLIntf,
-  Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs,
-  InterfaceBase, Themes, CheckLst, Menus, DividerBevel,
+  Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, LazUTF8, Dialogs,
+  InterfaceBase, Themes, CheckLst, Menus, ComCtrls, DividerBevel,
   DefineTemplates,
   // IDEIntf
   LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf,
+  CompOptsIntf,
   // IDE
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs, MainBar,
   InputHistory, ExtToolDialog, ExtToolEditDlg, EnvironmentOpts,
@@ -57,7 +58,7 @@ uses
   CodeToolManager, // added for windres workaround
   {$ENDIF}
   ApplicationBundle, CompilerOptions, BuildProfileManager,
-  GenericListEditor, GenericCheckList;
+  GenericListEditor, GenericCheckList, PackageSystem, PackageDefs;
 
 type
 
@@ -87,11 +88,14 @@ type
     BuildProfileComboBox: TComboBox;
     CompileButton: TBitBtn;
     CompileAdvancedButton: TBitBtn;
+    InhTreeView: TTreeView;
+    InhNoteLabel: TLabel;
     LCLWidgetTypeLabel: TLabel;
     LCLWidgetTypeComboBox: TComboBox;
     OptionsLabel: TLabel;
     OptionsMemo: TMemo;
     CleanUpGroupBox: TGroupBox;
+    PageControl1: TPageControl;
     RestartAfterBuildCheckBox: TCheckBox;
     ShowOptsMenuItem: TMenuItem;
     DetailsPanel: TPanel;
@@ -101,6 +105,8 @@ type
     Panel2: TPanel;
     SaveSettingsButton: TBitBtn;
     BuildProfileButton: TButton;
+    BuildTabSheet: TTabSheet;
+    InfoTabSheet: TTabSheet;
     TargetCPUComboBox: TComboBox;
     TargetCPULabel: TLabel;
     TargetDirectoryButton: TButton;
@@ -127,7 +133,12 @@ type
     // Data is copied by caller before and after opening this dialog.
     fProfiles: TBuildLazarusProfiles;
     fUpdatingProfileCombo: Boolean;
+    fImageIndexPackage: Integer;
+    fImageIndexRequired: Integer;
+    fImageIndexInherited: Integer;
     procedure PrepareClose;
+    procedure SetupInfoPage;
+    procedure UpdateInheritedTree;
   public
     constructor Create(TheOwner: TComponent); overload; reintroduce;
     destructor Destroy; override;
@@ -713,6 +724,7 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self,700,480);
 
   Caption := Format(lisConfigureBuildLazarus, ['"', '"']);
+  BuildTabSheet.Caption:='Build';
 
   // Show Build target names in combobox.
   LCLWidgetTypeLabel.Caption := lisLCLWidgetType;
@@ -809,11 +821,13 @@ begin
     end;
     ItemIndex:=0;
   end;
+
+  SetupInfoPage;
 end;
 
 procedure TConfigureBuildLazarusDlg.FormDestroy(Sender: TObject);
 begin
-  ;
+
 end;
 
 procedure TConfigureBuildLazarusDlg.FormResize(Sender: TObject);
@@ -921,6 +935,81 @@ begin
   fUpdatingProfileCombo:=False;
   RestartAfterBuildCheckBox.Checked:=fProfiles.RestartAfterBuild;
   ConfirmBuildCheckBox.Checked     :=fProfiles.ConfirmBuild;
+end;
+
+procedure TConfigureBuildLazarusDlg.SetupInfoPage;
+begin
+  InfoTabSheet.Caption:='Information';
+
+  fImageIndexPackage := IDEImages.LoadImage(16, 'item_package');
+  fImageIndexRequired := IDEImages.LoadImage(16, 'pkg_required');
+  fImageIndexInherited := IDEImages.LoadImage(16, 'pkg_inherited');
+  InhNoteLabel.Caption := lisAdditionalCompilerOptionsInheritedFromPackages;
+  InhTreeView.Images := IDEImages.Images_16;
+
+  UpdateInheritedTree;
+end;
+
+procedure TConfigureBuildLazarusDlg.UpdateInheritedTree;
+var
+  AncestorNode: TTreeNode;
+
+  procedure AddChildNode(const NewNodeName, Value: string);
+  var
+    VisibleValue: string;
+    ChildNode: TTreeNode;
+  begin
+    VisibleValue := UTF8Trim(Value);
+    if VisibleValue = '' then
+      exit;
+    ChildNode := InhTreeView.Items.AddChild(AncestorNode,
+      NewNodeName + ' = "' + VisibleValue + '"');
+    ChildNode.ImageIndex := fImageIndexRequired;
+    ChildNode.SelectedIndex := ChildNode.ImageIndex;
+  end;
+
+var
+  PkgList: TFPList;
+  i: Integer;
+  Pkg: TLazPackage;
+  AncestorOptions: TPkgAdditionalCompilerOptions;
+  LazDir: String;
+begin
+  PkgList:=nil;
+  InhTreeView.BeginUpdate;
+  LazDir:=EnvironmentOptions.GetParsedLazarusDirectory;
+  try
+    PackageGraph.GetAllRequiredPackages(PackageGraph.FirstAutoInstallDependency,PkgList);
+
+    // add detail nodes
+    if PkgList<>nil then
+      for i := 0 to PkgList.Count - 1 do
+      begin
+        Pkg:=TLazPackage(PkgList[i]);
+        AncestorOptions := Pkg.UsageOptions;
+        AncestorNode := InhTreeView.Items.Add(nil, '');
+        AncestorNode.Text := AncestorOptions.GetOwnerName;
+        AncestorNode.ImageIndex := fImageIndexPackage;
+        AncestorNode.SelectedIndex := AncestorNode.ImageIndex;
+        with AncestorOptions.ParsedOpts do
+        begin
+          AddChildNode(lisunitPath,
+            CreateRelativeSearchPath(GetParsedValue(pcosUnitPath),LazDir));
+          AddChildNode(lisincludePath,
+            CreateRelativeSearchPath(GetParsedValue(pcosIncludePath),LazDir));
+          AddChildNode(lisobjectPath,
+            CreateRelativeSearchPath(GetParsedValue(pcosObjectPath),LazDir));
+          AddChildNode(lislibraryPath,
+            CreateRelativeSearchPath(GetParsedValue(pcosLibraryPath),LazDir));
+          AddChildNode(lislinkerOptions, GetParsedValue(pcosLinkerOptions));
+          AddChildNode(liscustomOptions, GetParsedValue(pcosCustomOptions));
+        end;
+        AncestorNode.Expanded := True;
+      end;
+  finally
+    InhTreeView.EndUpdate;
+    PkgList.Free;
+  end;
 end;
 
 procedure TConfigureBuildLazarusDlg.PrepareClose;

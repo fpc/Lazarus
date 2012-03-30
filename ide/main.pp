@@ -4759,7 +4759,13 @@ var
   LazSrcDirTemplate: TDefineTemplate;
   DlgResult: TModalResult;
 begin
-  DlgResult:=ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazProfiles);
+  MainBuildBoss.SetBuildTargetIDE;
+  try
+    DlgResult:=ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazProfiles);
+  finally
+    MainBuildBoss.SetBuildTargetProject1(true);
+  end;
+
   if DlgResult in [mrOk,mrYes,mrAll] then begin
     MiscellaneousOptions.Save;
     IncreaseCompilerParseStamp;

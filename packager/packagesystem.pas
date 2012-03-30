@@ -1719,11 +1719,9 @@ var
   ConfigDir: String;
 begin
   Result:='';
-  if not Assigned(OnGetAllRequiredPackages) then exit;
-
   // get all required packages
   PkgList:=nil;
-  OnGetAllRequiredPackages(FirstDependency,PkgList);
+  GetAllRequiredPackages(FirstDependency,PkgList);
   if PkgList=nil then exit;
   // get all usage options
   AddOptionsList:=GetUsageOptionsList(PkgList);
