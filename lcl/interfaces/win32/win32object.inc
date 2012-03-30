@@ -347,7 +347,7 @@ begin
       pHandles := nil;
     retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount,
       pHandles, False, 0, QS_ALLINPUT);
-    if (WAIT_OBJECT_0 <= retVal) and (retVal < WAIT_OBJECT_0 + FWaitHandleCount) then
+    if (retVal < WAIT_OBJECT_0 + FWaitHandleCount) then
     begin
       index := retVal-WAIT_OBJECT_0;
       CallWaitHandler;
@@ -440,8 +440,8 @@ begin
     pHandles := nil;
   retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount, pHandles,
     false, timeout, QS_ALLINPUT);
-  if (WAIT_OBJECT_0 <= retVal) and (retVal < WAIT_OBJECT_0 + FWaitHandleCount) then
-    FPendingWaitHandlerIndex := retVal-WAIT_OBJECT_0;
+  if (retVal < WAIT_OBJECT_0 + FWaitHandleCount) then
+    FPendingWaitHandlerIndex := retVal - WAIT_OBJECT_0;
 end;
 
 {------------------------------------------------------------------------------
