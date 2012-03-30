@@ -244,6 +244,7 @@ var
   OutputDirRedirected, UpdateRevisionInc: boolean;
   IdeBuildMode: TIdeBuildMode;
   CmdLineParams: String;
+  Dir: String;
 begin
   Result:=mrCancel;
 
@@ -303,6 +304,16 @@ begin
         CleanLazarusSrcDir(WorkingDirectory+PathDelim+'ideintf');
         CleanLazarusSrcDir(WorkingDirectory+PathDelim+'tools');
         CleanLazarusSrcDir(WorkingDirectory+PathDelim+'test');
+
+        // clean config directory
+        CleanLazarusSrcDir(GetPrimaryConfigPath+PathDelim+'units');
+
+        // clean custom target directory
+        if Profile.TargetDirectory<>'' then begin
+          Dir:=Profile.GetParsedTargetDirectory(Macros);
+          if (Dir<>'') and DirPathExists(Dir) then
+            CleanLazarusSrcDir(Dir);
+        end;
       end;
 
       // call make to clean up
