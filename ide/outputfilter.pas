@@ -31,8 +31,7 @@ uses
   Classes, Math, SysUtils, Forms, Controls, Dialogs, CompilerOptions,
   AsyncProcess, LCLProc, DynQueue, FileUtil, UTF8Process,
   CodeCache, CodeToolManager,
-  IDEDialogs, IDEMsgIntf, IDEExternToolIntf,
-  IDEProcs, LazConf;
+  IDEDialogs, IDEMsgIntf, IDEExternToolIntf, IDEProcs, LazConf;
 
 type
 
@@ -107,6 +106,7 @@ type
   private
     FAsyncDataAvailable: boolean;
     FAsyncProcessTerminated: boolean;
+    FAutoBeginUpdate: boolean;
     FLastAsyncExecuteTime: TDateTime;
     FCaller: TObject;
     FFinishedCallback: TNotifyEvent;
@@ -144,6 +144,7 @@ type
     DarwinLinkerLine : String;
     FErrorNames : array [TFPCErrorType] of string; {customizable error names}
     fLastBuffer: TCodeBuffer;
+    FUpdating: Boolean;
     procedure DoAddFilteredLine(const s: string; OriginalIndex: integer = -1);
     procedure DoAddLastLinkerMessages(SkipLastLine: boolean);
     procedure DoAddLastAssemblerMessages;
@@ -259,6 +260,8 @@ begin
   FStopExecute:=false;
   fLastSearchedShortIncFilename:='';
   fLastSearchedIncFilename:='';
+  FUpdating:=false;
+  FAutoBeginUpdate:=true;
 end;
 
 procedure TOutputFilter.InitExecute;
@@ -321,7 +324,6 @@ var
   OutputLine, Buf : String;
   TheAsyncProcess: TAsyncProcess;
   LastProcessMessages: TDateTime;
-  EndUpdateNeeded: Boolean;
   ExceptionMsg: String;
   Wait: double;
 begin
@@ -340,7 +342,6 @@ begin
   SetLength(Buf,BufSize);
   OutputLine:='';
   TheAsyncProcess:=nil;
-  EndUpdateNeeded:=false;
   ExceptionMsg:='';
 
   try
@@ -368,14 +369,10 @@ begin
       if (Application<>nil) and (abs(LastProcessMessages-Now)>Wait)
       then begin
         LastProcessMessages:=Now;
-        if EndUpdateNeeded then begin
-          EndUpdateNeeded:=false;
+        if FUpdating then
           EndUpdate;
-        end;
         Application.ProcessMessages;
         Application.Idle(false);
-        BeginUpdate;
-        EndUpdateNeeded:=true;
       end;
       if StopExecute then begin
         fProcess.Terminate(0);
@@ -456,7 +453,7 @@ begin
     {$IFDEF VerboseOFExecute}
     WriteLn('TOutputFilter.Execute W1');
     {$ENDIF}
-    if EndUpdateNeeded then
+    if FUpdating then
       EndUpdate;
     CleanUpExecute;
   end;
@@ -551,8 +548,6 @@ begin
     SetLength(Buf,BufSize);
     OutputLine:='';
     try
-      BeginUpdate;
-
       repeat
         // Read data
         Count:=0;
@@ -613,7 +608,8 @@ begin
       FLastAsyncExecuteTime := AsyncExecuteTime;
       if (FState = ofsSucceded) and FHasReadErrorLine then
         FState := ofsFailed;
-      EndUpdate;
+      if FUpdating then
+        EndUpdate;
       if FState = ofsRunning then
         Application.QueueAsyncCall(@ContinueAsyncExecute, 0)
       else begin
@@ -648,6 +644,8 @@ begin
       s:=FScanLine.Line;
     end;
     if Assigned(OnReadLine) then begin
+      if not FUpdating and FAutoBeginUpdate then
+        BeginUpdate;
       OnReadLine(FScanLine);
       s:=FScanLine.Line;
     end;
@@ -676,7 +674,9 @@ var
   Line: String;
 begin
   Line:=s;
+  FAutoBeginUpdate := false;
   ReadLine(Line,DontFilterLine);
+  FAutoBeginUpdate := true;
 end;
 
 function TOutputFilter.ReadFPCompilerLine(const s: string): boolean;
@@ -1320,7 +1320,11 @@ begin
   fFilteredOutput.Add(s);
   fFilteredOutput.OriginalIndices[fFilteredOutput.Count-1]:=OriginalIndex;
   if Assigned(OnAddFilteredLine) then
+  begin
+    if not FUpdating and FAutoBeginUpdate then
+      BeginUpdate;
     OnAddFilteredLine(s,fCurrentDirectory,OriginalIndex,CurrentMessageParts);
+  end;
 end;
 
 procedure TOutputFilter.DoAddLastLinkerMessages(SkipLastLine: boolean);
@@ -1694,11 +1698,13 @@ end;
 procedure TOutputFilter.BeginUpdate;
 begin
   if Assigned(OnBeginUpdate) then OnBeginUpdate(Self);
+  FUpdating:=true;
 end;
 
 procedure TOutputFilter.EndUpdate;
 begin
   if Assigned(OnEndUpdate) then OnEndUpdate(Self);
+  FUpdating:=false;
 end;
 
 procedure TOutputFilter.RaiseOutputFilterError(const Msg: string);
