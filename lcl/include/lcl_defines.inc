@@ -1,3 +1,3 @@
 // Add defines here. This file should be included in all LCL units headers
-{$define UseCLDefault}
-
+{$DEFINE UseCLDefault}
+{$WARN SYMBOL_PLATFORM OFF}
