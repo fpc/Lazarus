@@ -579,6 +579,8 @@ begin
       Parts.Values['Line']:=IntToStr(LineNumber);
     if Column>0 then
       Parts.Values['Column']:=IntToStr(Column);
+    if ExtractFilePath(Filename)<>'' then
+      Directory:=ExtractFilePath(Filename);
   end;
   BracketOpenPos:=System.Pos('(',Msg);
   if (BracketOpenPos>0) then begin

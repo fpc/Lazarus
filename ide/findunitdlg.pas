@@ -113,7 +113,7 @@ type
     property MainOwnerName: string read FMainOwnerName;
   end;
 
-  { TQuickFixUnitNotFound_Search }
+  { TQuickFixUnitNotFound_Search - add menu item to open this search dialog }
 
   TQuickFixUnitNotFound_Search = class(TIDEMsgQuickFixItem)
   public
@@ -122,7 +122,7 @@ type
     procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
   end;
 
-  { TQuickFixIncludeNotFound_Search }
+  { TQuickFixIncludeNotFound_Search - add menu item to open this search dialog }
 
   TQuickFixIncludeNotFound_Search = class(TIDEMsgQuickFixItem)
   public
@@ -180,7 +180,7 @@ begin
   if Step=imqfoMenuItem then begin
     DebugLn(['TQuickFixUnitNotFound_Search.Execute ']);
     // get source position
-    if not GetMsgLineFilename(Msg,CodeBuf,false) then exit;
+    if not GetMsgLineFile(Msg,CodeBuf,false) then exit;
     Msg.GetSourcePosition(Filename,Caret.Y,Caret.X);
     if not LazarusIDE.BeginCodeTools then begin
       DebugLn(['TQuickFixUnitNotFound_Search.Execute failed because IDE busy']);
@@ -650,7 +650,7 @@ begin
   if Step=imqfoMenuItem then begin
     DebugLn(['TQuickFixIncludeNotFound_Search.Execute ']);
     // get source position
-    if not GetMsgLineFilename(Msg,CodeBuf,false) then exit;
+    if not GetMsgLineFile(Msg,CodeBuf,false) then exit;
     Msg.GetSourcePosition(Filename,Caret.Y,Caret.X);
     if not LazarusIDE.BeginCodeTools then begin
       DebugLn(['TQuickFixIncludeNotFound_Search.Execute failed because IDE busy']);

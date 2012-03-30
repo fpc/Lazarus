@@ -366,7 +366,7 @@ type
     property UpdateNeeded: boolean read FUpdateNeeded write SetUpdateNeeded;
   end;
   
-  { TQuickFixIdentifierNotFound_Search }
+  { TQuickFixIdentifierNotFound_Search - add menu item to open codebrowser }
 
   TQuickFixIdentifierNotFound_Search = class(TIDEMsgQuickFixItem)
   public
@@ -3244,7 +3244,7 @@ begin
     // get source position
     // (FPC reports position right after the unknown identifier
     //  for example right after FilenameIsAbsolute)
-    if not GetMsgLineFilename(Msg,CodeBuf,false) then exit;
+    if not GetMsgLineFile(Msg,CodeBuf,false) then exit;
     Msg.GetSourcePosition(Filename,Caret.Y,Caret.X);
     if not LazarusIDE.BeginCodeTools then begin
       DebugLn(['TQuickFixIdentifierNotFound_Search.Execute failed because IDE busy']);

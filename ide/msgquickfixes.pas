@@ -29,6 +29,7 @@
       2. option: remove the method
       3. option: add a virtual method to the ancestor
     - complete function implementations with missing parameters
+    - private variable not used => remove
 
 }
 unit MsgQuickFixes;
@@ -54,7 +55,7 @@ type
     procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
   end;
 
-  { TQuickFixUnitNotFoundPosition }
+  { TQuickFixUnitNotFoundPosition - improve message }
 
   TQuickFixUnitNotFoundPosition = class(TIDEMsgQuickFixItem)
   public
@@ -63,7 +64,7 @@ type
     procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
   end;
   
-  { TQuickFixUnitNotFound_Remove }
+  { TQuickFixUnitNotFound_Remove - add menu item to remove unit from uses section }
 
   TQuickFixUnitNotFound_Remove = class(TIDEMsgQuickFixItem)
   public
@@ -114,8 +115,8 @@ procedure QuickFixParameterNotUsed(Sender: TObject; Step: TIMQuickFixStep;
 procedure QuickFixUnitNotUsed(Sender: TObject; Step: TIMQuickFixStep;
                               Msg: TIDEMessageLine);
 
-function GetMsgLineFilename(Msg: TIDEMessageLine;
-                            out CodeBuf: TCodeBuffer; Quiet: boolean): boolean;
+function GetMsgLineFile(Msg: TIDEMessageLine;
+                        out CodeBuf: TCodeBuffer; Quiet: boolean): boolean;
 
 procedure InitStandardIDEQuickFixItems;
 procedure FreeStandardIDEQuickFixItems;
@@ -167,7 +168,7 @@ var
   OldChange: Boolean;
 begin
   if Step<>imqfoMenuItem then exit;
-  if not GetMsgLineFilename(Msg,CodeBuf,false) then exit;
+  if not GetMsgLineFile(Msg,CodeBuf,false) then exit;
   
   if not REMatches(Msg.Msg,'Unit "([a-z_0-9]+)" not used','I') then begin
     DebugLn('QuickFixUnitNotUsed invalid message ',Msg.Msg);
@@ -195,7 +196,7 @@ begin
   Msg.Msg:='';
 end;
 
-function GetMsgLineFilename(Msg: TIDEMessageLine; out CodeBuf: TCodeBuffer;
+function GetMsgLineFile(Msg: TIDEMessageLine; out CodeBuf: TCodeBuffer;
   Quiet: boolean): boolean;
 var
   Filename: String;
@@ -294,6 +295,7 @@ begin
     exit;
   end;
   MissingUnitname:=REVar(1);
+  CodeBuf:=nil;
   if REMatches(Msg.Msg,'Can''t find unit ([a-z_.0-9]+) used by ([a-z_.0-9]+)','I')
   then begin
     UsedByUnit:=REVar(2);
@@ -314,37 +316,39 @@ begin
         if NewFilename='' then begin
           DebugLn('QuickFixUnitNotFoundPosition unit not found: ',UsedByUnit);
           //ShowError('QuickFix: UnitNotFoundPosition unit not found: '+UsedByUnit);
-          exit;
         end;
       end;
-      CodeBuf:=CodeToolBoss.LoadFile(NewFilename,false,false);
-      if CodeBuf=nil then begin
-        DebugLn('QuickFixUnitNotFoundPosition unable to load unit: ',NewFilename);
-        //ShowError('QuickFix: UnitNotFoundPosition unable to load unit: '+NewFilename);
-        exit;
+      if NewFilename<>'' then begin
+        CodeBuf:=CodeToolBoss.LoadFile(NewFilename,false,false);
+        if CodeBuf=nil then begin
+          DebugLn('QuickFixUnitNotFoundPosition unable to load unit: ',NewFilename);
+          //ShowError('QuickFix: UnitNotFoundPosition unable to load unit: '+NewFilename);
+        end;
       end;
     end;
   end;
-  if CodeBuf=nil then exit;
+  if CodeBuf<>nil then begin
+    debugln(['TQuickFixUnitNotFoundPosition.Execute File=',CodeBuf.Filename]);
+    LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
+    if not CodeToolBoss.FindUnitInAllUsesSections(CodeBuf,MissingUnitname,NamePos,InPos)
+    then begin
+      DebugLn('QuickFixUnitNotFoundPosition failed due to syntax errors or '+MissingUnitname+' is not used in '+CodeBuf.Filename);
+      //LazarusIDE.DoJumpToCodeToolBossError;
+      exit;
+    end;
+    Tool:=CodeToolBoss.CurCodeTool;
+    if Tool=nil then exit;
+    if not Tool.CleanPosToCaret(NamePos,Caret) then exit;
+    if (Caret.X>0) and (Caret.Y>0) then begin
+      //DebugLn('QuickFixUnitNotFoundPosition Line=',dbgs(Line),' Col=',dbgs(Col));
+      NewFilename:=Caret.Code.Filename;
+      if (Msg.Directory<>'') and (FilenameIsAbsolute(Msg.Directory)) then
+        NewFilename:=CreateRelativePath(NewFilename,Msg.Directory);
+      Msg.SetSourcePosition(NewFilename,Caret.Y,Caret.X);
+    end;
+  end;
 
-  debugln(['TQuickFixUnitNotFoundPosition.Execute File=',CodeBuf.Filename]);
-  LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
-  if not CodeToolBoss.FindUnitInAllUsesSections(CodeBuf,MissingUnitname,NamePos,InPos)
-  then begin
-    DebugLn('QuickFixUnitNotFoundPosition failed due to syntax errors or '+MissingUnitname+' is not used in '+CodeBuf.Filename);
-    //LazarusIDE.DoJumpToCodeToolBossError;
-    exit;
-  end;
-  Tool:=CodeToolBoss.CurCodeTool;
-  if Tool=nil then exit;
-  if not Tool.CleanPosToCaret(NamePos,Caret) then exit;
-  if (Caret.X>0) and (Caret.Y>0) then begin
-    //DebugLn('QuickFixUnitNotFoundPosition Line=',dbgs(Line),' Col=',dbgs(Col));
-    NewFilename:=Caret.Code.Filename;
-    if (Msg.Directory<>'') and (FilenameIsAbsolute(Msg.Directory)) then
-      NewFilename:=CreateRelativePath(NewFilename,Msg.Directory);
-    Msg.SetSourcePosition(NewFilename,Caret.Y,Caret.X);
-  end;
+
 end;
 
 { TQuickFixLinkerUndefinedReference }
@@ -508,7 +512,7 @@ begin
     // get source position
     // (FPC reports position right after the constructor call
     //  for example right after TStrings.Create)
-    if not GetMsgLineFilename(Msg,CodeBuf,false) then exit;
+    if not GetMsgLineFile(Msg,CodeBuf,false) then exit;
     Msg.GetSourcePosition(Filename,Caret.Y,Caret.X);
     if not LazarusIDE.BeginCodeTools then begin
       DebugLn(['TQuickFixClassWithAbstractMethods.Execute failed because IDE busy']);
@@ -630,7 +634,7 @@ begin
     // get source position
     // (FPC reports position right after the unknown identifier
     //  for example right after FilenameIsAbsolute)
-    if not GetMsgLineFilename(Msg,CodeBuf,false) then exit;
+    if not GetMsgLineFile(Msg,CodeBuf,false) then exit;
     Msg.GetSourcePosition(Filename,Caret.Y,Caret.X);
 
     if not LazarusIDE.BeginCodeTools then begin
@@ -714,7 +718,7 @@ begin
   if Step=imqfoMenuItem then begin
     DebugLn(['TQuickFixUnitNotFound_Remove.Execute ']);
     // get source position
-    if not GetMsgLineFilename(Msg,CodeBuf,false) then exit;
+    if not GetMsgLineFile(Msg,CodeBuf,false) then exit;
     Msg.GetSourcePosition(Filename,Caret.Y,Caret.X);
     if not LazarusIDE.BeginCodeTools then begin
       DebugLn(['TQuickFixUnitNotFound_Remove.Execute failed because IDE busy']);
@@ -795,7 +799,7 @@ begin
   if Step=imqfoMenuItem then begin
     DebugLn(['TQuickFixLocalVariableNotUsed_Remove.Execute ']);
     // get source position
-    if not GetMsgLineFilename(Msg,CodeBuf,false) then exit;
+    if not GetMsgLineFile(Msg,CodeBuf,false) then exit;
     Msg.GetSourcePosition(Filename,Caret.Y,Caret.X);
     if not LazarusIDE.BeginCodeTools then begin
       DebugLn(['TQuickFixLocalVariableNotUsed_Remove.Execute failed because IDE busy']);
@@ -865,7 +869,7 @@ begin
   if Step=imqfoMenuItem then begin
     DebugLn(['TQuickFixHint_Hide.Execute ']);
     // get source position
-    if not GetMsgLineFilename(Msg,CodeBuf,false) then exit;
+    if not GetMsgLineFile(Msg,CodeBuf,false) then exit;
     Msg.GetSourcePosition(Filename,Caret.Y,Caret.X);
     if not LazarusIDE.BeginCodeTools then begin
       DebugLn(['TQuickFixHint_Hide.Execute failed because IDE busy']);
