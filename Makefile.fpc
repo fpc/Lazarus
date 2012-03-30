@@ -55,10 +55,9 @@ help:
 	@$(ECHO) "   clean        deletes files that 'all' creates"
 	@$(ECHO) "   lazbuild     build lazbuild and lcl with nogui widgetset"
 	@$(ECHO) "   starter      build startlazarus"
-	@$(ECHO) "   bigide       build IDE with a standard set of packages"
-	@$(ECHO) "   cleanbigide  deletes files that 'bigide' creates"
+	@$(ECHO) "   bigide       build IDE with some stable extra packages"
 	@$(ECHO) "   tools        build lazres, svn2revisioninc, updatepofiles, lrstolfm"
-	@$(ECHO) "   examples     build basic examples. Note: special examples have their own directory"
+	@$(ECHO) "   examples     build basic examples. Note: There are more examples having their own directory"
 	@$(ECHO) "   lcl          build lcl"
 	@$(ECHO)
 	@$(ECHO) " Examples:"
@@ -119,9 +118,6 @@ bigidecomponents:
 	$(MAKE) -C components bigidecomponents
 	
 #-----------------------------------------------------------------------------
-cleanbigide: cleanlaz
-
-#-----------------------------------------------------------------------------
 starter:
 	$(MAKE) -C ide starter
 
@@ -154,13 +150,15 @@ cleanlaz: cleanide
 	$(MAKE) -C packager/registration clean
 	$(MAKE) -C ideintf clean
 
-purge: cleanlaz
+clean: cleanlaz
+	$(MAKE) -C . cleanlaz LCL_PLATFORM=nogui
+
+cleanbigide: clean
+
+purge: clean
 	$(MAKE) -C examples clean
 #	$(MAKE) -C doceditor clean
 	$(MAKE) -C tools clean
-
-clean: cleanlaz
-	$(MAKE) -C . cleanlaz LCL_PLATFORM=nogui
 
 cleanall: purge
 
