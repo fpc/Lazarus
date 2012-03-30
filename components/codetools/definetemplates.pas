@@ -7277,6 +7277,7 @@ end;
 
 function TFPCTargetConfigCache.GetUnitPaths: string;
 begin
+  if UnitPaths=nil then exit('');
   UnitPaths.Delimiter:=';';
   UnitPaths.StrictDelimiter:=true;
   Result:=UnitPaths.DelimitedText;
