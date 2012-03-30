@@ -15,14 +15,15 @@
   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
   
   Example:
-  ppc386 -gl -Fu../lcl/units/i386-linux/ iconvtable.pas && ./iconvtable CP1250 UTF-8
+    ./iconvtable CP1250 UTF-8
+    ./iconvtable CP1250 UTF-8
 }
 program iconvtable;
 
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, Unix, LCLProc, FileUtil;
+  Classes, SysUtils, Unix, LazUTF8, FileUtil;
 
 var
   Table: array[0..255] of shortstring;
