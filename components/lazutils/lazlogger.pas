@@ -627,8 +627,8 @@ function DbgStr(const p: PChar; Len: PtrInt): string;
 const
   Hex: array[0..15] of char='0123456789ABCDEF';
 var
-  UsedLen: PtrUInt;
-  ResultLen: PtrUInt;
+  UsedLen: PtrInt;
+  ResultLen: PtrInt;
   Src: PChar;
   Dest: PChar;
   c: Char;
