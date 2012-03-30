@@ -286,7 +286,7 @@ begin
       FCanvas.Font := Font;
     if Brush <> nil then
       FCanvas.Brush := Brush;
-    if (ItemID >= 0) and (odSelected in ItemState) then
+    if (ItemID <> UINT(-1)) and (odSelected in ItemState) then
     begin
       FCanvas.Brush.Color := clHighlight;
       FCanvas.Font.Color := clHighlightText

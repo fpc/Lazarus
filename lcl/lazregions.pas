@@ -79,7 +79,7 @@ type
     UserData: TObject; // available link to another object
     constructor Create; override;
     destructor Destroy; override;
-    function IsPointInRegion(AX, AY: Integer): TLazRegionWithChilds; virtual;
+    function IsPointInRegion(AX, AY: Integer): TLazRegionWithChilds; virtual; reintroduce;
   end;
 
 function IsPointInPolygon(AX, AY: Integer; const APolygon: array of TPoint): Boolean;
