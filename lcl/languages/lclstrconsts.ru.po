@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-02-09 01:28+0400\n"
+"PO-Revision-Date: 2012-03-31 03:30+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -518,7 +518,7 @@ msgstr "(файл не найден: \"%s\")"
 
 #: lclstrconsts.rsfileinformation
 msgid "File information"
-msgstr "Информация о файле"
+msgstr "Сведения о файле"
 
 #: lclstrconsts.rsfind
 msgid "Find"

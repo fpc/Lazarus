@@ -15,7 +15,7 @@ msgstr "О форматировании кода JEDI"
 
 #: jcfuiconsts.lisaboutfindmoreinformationonthewebat
 msgid "Find more information on the web at: %s"
-msgstr "Более подробную информацию можно получить в сети по адресу: %s"
+msgstr "Более подробные сведения можно получить в сети по адресу: %s"
 
 #: jcfuiconsts.lisaboutthisprogramisopensource
 #| msgid "This program is open source software. It is released under the Mozilla Public licence (MPL).  http://www.mozilla.org/MPL"
