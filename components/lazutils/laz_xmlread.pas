@@ -1337,7 +1337,7 @@ procedure ReadXMLFile(out ADoc: TXMLDocument; var f: File);
 var
   reader: TXMLReader;
   buf: PChar;
-  BufSize: LongInt;
+  BufSize: Int64;
 begin
   ADoc := nil;
   BufSize := FileSize(f) + 1;
@@ -1411,7 +1411,7 @@ procedure ReadXMLFragment(AParentNode: TDOMNode; var f: File);
 var
   Reader: TXMLReader;
   buf: PChar;
-  BufSize: LongInt;
+  BufSize: Int64;
 begin
   BufSize := FileSize(f) + 1;
   if BufSize <= 1 then
@@ -1479,7 +1479,7 @@ procedure ReadDTDFile(var ADoc: TXMLDocument; var f: File);
 var
   Reader: TXMLReader;
   buf: PChar;
-  BufSize: LongInt;
+  BufSize: Int64;
 begin
   ADoc := nil;
   BufSize := FileSize(f) + 1;
