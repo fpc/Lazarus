@@ -2492,7 +2492,8 @@ begin
     Include(Owner.FStates,tvsUpdating)
   else
     Exclude(Owner.FStates,tvsUpdating);
-  if not Updating then Owner.Refresh;
+  if not Updating then
+    Owner.Invalidate;
 end;
 
 procedure TTreeNodes.EndUpdate;
@@ -2909,7 +2910,8 @@ end;
 procedure TTreeStrings.SetUpdateState(Updating: Boolean);
 begin
   //SendMessage(Owner.Handle, WM_SETREDRAW, Ord(not Updating), 0);
-  if not Updating then Owner.Owner.Refresh;
+  if not Updating then
+    Owner.Owner.Invalidate;
 end;
 
 function TTreeStrings.Add(const S: string): Integer;
