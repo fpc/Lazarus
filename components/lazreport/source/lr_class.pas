@@ -1488,23 +1488,27 @@ end;
 
 function GetDefaultDataSet: TfrTDataSet;
 var
-  Res: TfrDataset;
+  FRDataset: TfrDataset;
 begin
-  Result := nil; Res := nil;
+  FRDataset := nil;
   if CurBand <> nil then
+  begin
     case CurBand.Typ of
       btMasterData, btReportSummary, btMasterFooter,
       btGroupHeader, btGroupFooter:
-        Res := CurPage.Bands[btMasterData].DataSet;
+        FRDataset := CurPage.Bands[btMasterData].DataSet;
       btDetailData, btDetailFooter:
-        Res := CurPage.Bands[btDetailData].DataSet;
+        FRDataset := CurPage.Bands[btDetailData].DataSet;
       btSubDetailData, btSubDetailFooter:
-        Res := CurPage.Bands[btSubDetailData].DataSet;
+        FRDataset := CurPage.Bands[btSubDetailData].DataSet;
       btCrossData, btCrossFooter:
-        Res := CurPage.Bands[btCrossData].DataSet;
+        FRDataset := CurPage.Bands[btCrossData].DataSet;
     end;
-  if (Res <> nil) and (Res is TfrDBDataset) then
-    Result := TfrDBDataSet(Res).GetDataSet;
+  end;
+  if FRDataset is TfrDBDataset then
+    Result := TfrDBDataSet(FRDataset).GetDataSet
+  else
+    Result := nil;
 end;
 
 function ReadString(Stream: TStream): String;
