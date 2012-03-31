@@ -2090,8 +2090,8 @@ resourcestring
   lisTheContainsANotExistingDirectory = 'The %s contains a not existing '
     +'directory:%s%s';
   lisTheProjectDoesNotUseTheLCLUnitInterfacesButItSeems = 'The project does '
-    +'not use the LCL unit interfaces, but it seems it needs it.%sYou will '
-    +'get strange linker errors if you use the LCL forms without interfaces.';
+    +'not use the LCL unit interfaces, which is required by LCLBase.%sYou will '
+    +'get strange linker errors if you use the LCL without interfaces.';
   lisAddUnitInterfaces = 'Add unit interfaces';
   lisCCODatesDiffer = 'The dates of the .ppu files of FPC'
     +' differ more than one hour.%s'

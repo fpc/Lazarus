@@ -11797,10 +11797,10 @@ begin
   MainUnitInfo:=Project1.MainUnitInfo;
   if (MainUnitInfo=nil) or (MainUnitInfo.Source=nil) then exit;
   if PackageGraph.FindDependencyRecursively(Project1.FirstRequiredDependency,
-    PackageGraph.LCLPackage)=nil
+    PackageGraph.LCLBasePackage)=nil
   then
-    exit; // project does not use LCL
-  // project uses LCL
+    exit; // project does not use LCLBase
+  // project uses LCLBase
   MainUsesSection:=nil;
   ImplementationUsesSection:=nil;
   try

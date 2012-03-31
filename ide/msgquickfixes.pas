@@ -323,6 +323,55 @@ procedure TQuickFixUnitNotFoundPosition.Execute(const Msg: TIDEMessageLine;
     end;
   end;
 
+  procedure CheckUnitUsedByIDE(MissingUnitname: string;
+    var PPUFilename, PkgName: string);
+  var
+    i, j: Integer;
+    Pkg: TIDEPackage;
+    PkgFile: TLazPackageFile;
+    DirCache: TCTDirectoryCache;
+    UnitOutDir: String;
+  begin
+    // search ppu in installed packages
+    if PPUFilename='' then begin
+      for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
+        Pkg:=PackageEditingInterface.GetPackages(i);
+        if Pkg.AutoInstall=pitNope then continue;
+        UnitOutDir:=Pkg.LazCompilerOptions.GetUnitOutputDirectory(false);
+        //debugln(['TQuickFixUnitNotFoundPosition.Execute ',Pkg.Name,' UnitOutDir=',UnitOutDir]);
+        if FilenameIsAbsolute(UnitOutDir) then begin
+          DirCache:=CodeToolBoss.DirectoryCachePool.GetCache(UnitOutDir,true,false);
+          PPUFilename:=DirCache.FindFile(MissingUnitname+'.ppu',ctsfcLoUpCase);
+          //debugln(['TQuickFixUnitNotFoundPosition.Execute ShortPPU=',PPUFilename]);
+          if PPUFilename<>'' then begin
+            PkgName:=Pkg.Name;
+            PPUFilename:=AppendPathDelim(DirCache.Directory)+PPUFilename;
+            break;
+          end;
+        end;
+      end;
+    end;
+    if PkgName='' then begin
+      // search unit in installed packages
+      for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
+        Pkg:=PackageEditingInterface.GetPackages(i);
+        if Pkg.AutoInstall=pitNope then continue;
+        if CompareTextCT(Pkg.Name,MissingUnitname)=0 then begin
+          PkgName:=Pkg.Name;
+          break;
+        end;
+        for j:=0 to Pkg.FileCount-1 do begin
+          PkgFile:=Pkg.Files[j];
+          if not FilenameIsPascalUnit(PkgFile.Filename) then continue;
+          if CompareTextCT(ExtractFileNameOnly(PkgFile.Filename),MissingUnitname)<>0
+          then continue;
+          PkgName:=Pkg.Name;
+          break;
+        end;
+      end;
+    end;
+  end;
+
 var
   CodeBuf: TCodeBuffer;
   MissingUnitname: String;
@@ -331,16 +380,10 @@ var
   Dir: String;
   PPUFilename: String;
   s: String;
-  i: Integer;
-  Pkg: TIDEPackage;
-  UnitOutDir: String;
   Filename: string;
   Line: integer;
   Col: integer;
-  DirCache: TCTDirectoryCache;
   PkgName: String;
-  PkgFile: TLazPackageFile;
-  j: Integer;
 begin
   if Step<>imqfoImproveMessage then exit;
   //DebugLn('QuickFixUnitNotFoundPosition ');
@@ -413,44 +456,7 @@ begin
     //debugln(['TQuickFixUnitNotFoundPosition.Execute AAA1 PPUFilename=',PPUFilename,' IsFileInIDESrcDir=',IsFileInIDESrcDir(Dir+'test')]);
     PkgName:='';
     if IsFileInIDESrcDir(Dir+'test') then begin
-      // search ppu in installed packages
-      if PPUFilename='' then begin
-        for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
-          Pkg:=PackageEditingInterface.GetPackages(i);
-          if Pkg.AutoInstall=pitNope then continue;
-          UnitOutDir:=Pkg.LazCompilerOptions.GetUnitOutputDirectory(false);
-          //debugln(['TQuickFixUnitNotFoundPosition.Execute ',Pkg.Name,' UnitOutDir=',UnitOutDir]);
-          if FilenameIsAbsolute(UnitOutDir) then begin
-            DirCache:=CodeToolBoss.DirectoryCachePool.GetCache(UnitOutDir,true,false);
-            PPUFilename:=DirCache.FindFile(MissingUnitname+'.ppu',ctsfcLoUpCase);
-            //debugln(['TQuickFixUnitNotFoundPosition.Execute ShortPPU=',PPUFilename]);
-            if PPUFilename<>'' then begin
-              PkgName:=Pkg.Name;
-              PPUFilename:=AppendPathDelim(DirCache.Directory)+PPUFilename;
-              break;
-            end;
-          end;
-        end;
-      end;
-      if PkgName='' then begin
-        // search unit in installed packages
-        for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
-          Pkg:=PackageEditingInterface.GetPackages(i);
-          if Pkg.AutoInstall=pitNope then continue;
-          if CompareTextCT(Pkg.Name,MissingUnitname)=0 then begin
-            PkgName:=Pkg.Name;
-            break;
-          end;
-          for j:=0 to Pkg.FileCount-1 do begin
-            PkgFile:=Pkg.Files[j];
-            if not FilenameIsPascalUnit(PkgFile.Filename) then continue;
-            if CompareTextCT(ExtractFileNameOnly(PkgFile.Filename),MissingUnitname)<>0
-            then continue;
-            PkgName:=Pkg.Name;
-            break;
-          end;
-        end;
-      end;
+      CheckUnitUsedByIDE(MissingUnitname,PPUFilename,PkgName);
     end;
 
     if PPUFilename<>'' then begin
