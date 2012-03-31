@@ -266,6 +266,7 @@ var
   Src, Dst, SrcRowPtr, DstRowPtr: PByte;
   x, y: Cardinal;
   CreateWithAlpha: boolean;
+  ADivResult, ARemainder: DWord;
 begin
   Result := False;
   ABitmap := 0;
@@ -364,7 +365,11 @@ begin
           // gtkPixbuf doesn't like invalid dataSize/MaskSize < 32. issue #8553.
           if (ARawImage.MaskSize > 0) and (ImgDepth = 32) then
           begin
-            CreateWithAlpha := Trunc(ARawImage.DataSize / ARawImage.MaskSize) = 32;
+            // seem that gdkPixbuf does not like many of our masks
+            ADivResult := 0;
+            ARemainder := 0;
+            DivMod(ARawImage.DataSize, ARawImage.MaskSize, ADivResult, ARemainder);
+            CreateWithAlpha := ARemainder = 0;
             {$IFDEF VerboseRawImage}
             if not CreateWithAlpha then
               DebugLn('TGtk2WidgetSet.CreateBitmapFromRawImage B WARNING: This image have invalid DataSize / MaskSize.');
