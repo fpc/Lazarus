@@ -4,6 +4,16 @@ unit WSFactory;
 
 interface
 
+{ These functions are implemented by the LCL backends.
+  If you get a linker error for one of these functions you probably forgot
+  to add the unit "interfaces" to your program.
+  The unit interfaces must be added as one of the first units of the main program.
+
+  Example for a linker error:
+    /path/to/lazarus/lcl/units/x86_64-linux/wsimglist.o: In function `REGISTERCUSTOMIMAGELIST':
+    /path/to/lazarus/lcl//widgetset/wsimglist.pp:266: undefined reference to `WSRegisterCustomImageList'
+}
+
 // imglist
 function WSRegisterCustomImageList: Boolean; external name 'WSRegisterCustomImageList';
 // controls
