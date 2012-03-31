@@ -6289,13 +6289,13 @@ begin
         LFMCode:=CodeToolBoss.LoadFile(NewLFMFilename,true,false);
         if LFMCode<>nil then
           NewLFMFilename:=LFMCode.Filename;
-      end;
-      ConvTool:=TConvDelphiCodeTool.Create(NewSource);
-      try
-        if not ConvTool.RenameResourceDirectives then
-          debugln(['TMainIDE.DoRenameUnit WARNING: unable to rename resource directive in "',NewSource.Filename,'"']);
-      finally
-        ConvTool.Free;
+        ConvTool:=TConvDelphiCodeTool.Create(NewSource);
+        try
+          if not ConvTool.RenameResourceDirectives then
+            debugln(['TMainIDE.DoRenameUnit WARNING: unable to rename resource directive in "',NewSource.Filename,'"']);
+        finally
+          ConvTool.Free;
+        end;
       end;
     end;
 
