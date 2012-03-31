@@ -10022,7 +10022,7 @@ begin
     UnitDependenciesView.OnOpenFile:=@UnitDependenciesViewOpenFile;
   end;
 
-  if not UnitDependenciesView.RootValid then begin
+  if (Project1 <> nil) and (not UnitDependenciesView.RootValid) then begin
     if Project1.MainUnitID>=0 then begin
       UnitDependenciesView.BeginUpdate;
       UnitDependenciesView.RootFilename:=Project1.MainUnitInfo.Filename;
