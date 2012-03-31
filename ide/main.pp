@@ -6208,15 +6208,20 @@ begin
   try
     OldFilename:=AnUnitInfo.Filename;
     OldFilePath:=ExtractFilePath(OldFilename);
-    OldLFMFilename:=ChangeFileExt(OldFilename,'.lfm');
-    if not FileExistsUTF8(OldLFMFilename) then
-      OldLFMFilename:=ChangeFileExt(OldFilename,'.dfm');
+    OldLFMFilename:='';
+    //if FilenameIsPascalUnit(OldFilename) then begin
+      OldLFMFilename:=ChangeFileExt(OldFilename,'.lfm');
+      if not FileExistsUTF8(OldLFMFilename) then
+        OldLFMFilename:=ChangeFileExt(OldFilename,'.dfm');
+   // end;
     if NewUnitName='' then
       NewUnitName:=AnUnitInfo.Unit_Name;
     debugln(['TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.Unit_Name,' LFMCode=',LFMCode<>nil,' LRSCode=',LRSCode<>nil,' NewFilename="',NewFilename,'"']);
 
     // check new resource file
-    NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
+    NewLFMFilename:='';
+    //if FilenameIsPascalUnit(NewFilename) then
+       NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
     if AnUnitInfo.ComponentName='' then begin
       // unit has no component
       // -> remove lfm file, so that it will not be auto loaded on next open
@@ -6285,7 +6290,6 @@ begin
         if LFMCode<>nil then
           NewLFMFilename:=LFMCode.Filename;
       end;
-
       ConvTool:=TConvDelphiCodeTool.Create(NewSource);
       try
         if not ConvTool.RenameResourceDirectives then

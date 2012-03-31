@@ -126,6 +126,8 @@ end;
 procedure TCodeToolLink.InitCodeTool;
 begin
   // Initialize codetools. (Copied from TCodeToolManager.)
+  fCodeTool:=nil;
+  fSrcCache:=nil;
   if not CodeToolBoss.InitCurCodeTool(fCode) then exit;
   try
     fCodeTool:=CodeToolBoss.CurCodeTool;
@@ -165,12 +167,15 @@ end;
 
 constructor TConvDelphiCodeTool.Create(APascalBuffer: TCodeBuffer);
 begin
+  debugln(['TConvDelphiCodeTool.Create ',DbgSName(APascalBuffer)]);
+  debugln(['TConvDelphiCodeTool.Create ',APascalBuffer.Filename]);
   inherited Create;
   fCTLink:=TCodeToolLink.Create(APascalBuffer);
   fCTLink.AskAboutError:=False;
   fLowerCaseRes:=True;
   fIsConsoleApp:=False;
   fCTLinkCreated:=True;
+  if fCTLink.CodeTool=nil then exit;
   try
     fCTLink.CodeTool.BuildTree(lsrInitializationStart);
   except
@@ -190,9 +195,10 @@ end;
 
 destructor TConvDelphiCodeTool.Destroy;
 begin
-  if fCTLinkCreated then begin
+  if fCTLinkCreated and (fCTLink.SrcCache<>nil) and (fCTLink.CodeTool<>nil)
+  and (fCTLink.SrcCache.MainScanner=fCTLink.CodeTool.Scanner) then begin
     fCTLink.SrcCache.Apply;
-    fCTLink.Free;
+    FreeAndNil(fCTLink);
   end;
   inherited Destroy;
 end;
@@ -204,6 +210,7 @@ function TConvDelphiCodeTool.Convert: TModalResult;
 // TODO: fix delphi ambiguouties like incomplete proc implementation headers
 begin
   Result:=mrCancel;
+  if fCTLink.CodeTool=nil then exit;
   try
     fCTLink.SrcCache.BeginUpdate;
     try
@@ -230,8 +237,10 @@ var
   ParamPos, ACleanPos: Integer;
 begin
   Result:=false;
+  if fCTLink.CodeTool=nil then exit;
   ACleanPos:=0;
   with fCTLink.CodeTool do begin
+    if Scanner=nil then exit;
     BuildTree(lsrImplementationStart);
     ACleanPos:=FindNextCompilerDirectiveWithName(Src, 1, 'Apptype',
                                                  Scanner.NestedComments, ParamPos);
@@ -277,51 +286,54 @@ var
   s: string;
 begin
   Result:=false;
+  if fCTLink.CodeTool=nil then exit;
   ACleanPos:=1;
   // find $R directive
-  with fCTLink.CodeTool do
-  repeat
-    ACleanPos:=FindNextCompilerDirectiveWithName(Src, ACleanPos, 'R',
-                                                 Scanner.NestedComments, ParamPos);
-    if (ACleanPos<1) or (ACleanPos>SrcLen) or (ParamPos>SrcLen-6) then break;
-    NewKey:='';
-    if (Src[ACleanPos]='{') and
-       (Src[ParamPos]='*') and (Src[ParamPos+1]='.') and (Src[ParamPos+5]='}')
-    then begin
-      Key:=copy(Src,ParamPos+2,3);
-      LowKey:=LowerCase(Key);
-      // Form file resource rename or lowercase:
-      if (LowKey='dfm') or (LowKey='xfm') then begin
-        if Assigned(fCTLink.Settings) and fCTLink.Settings.SupportDelphi then begin
-          // Use the same dfm file. Lowercase existing key.
-          if fCTLink.Settings.SameDfmFile then begin
-            if Key<>LowKey then
-              NewKey:=LowKey;
+  with fCTLink.CodeTool do begin
+    if Scanner=nil then exit;
+    repeat
+      ACleanPos:=FindNextCompilerDirectiveWithName(Src, ACleanPos, 'R',
+                                                   Scanner.NestedComments, ParamPos);
+      if (ACleanPos<1) or (ACleanPos>SrcLen) or (ParamPos>SrcLen-6) then break;
+      NewKey:='';
+      if (Src[ACleanPos]='{') and
+         (Src[ParamPos]='*') and (Src[ParamPos+1]='.') and (Src[ParamPos+5]='}')
+      then begin
+        Key:=copy(Src,ParamPos+2,3);
+        LowKey:=LowerCase(Key);
+        // Form file resource rename or lowercase:
+        if (LowKey='dfm') or (LowKey='xfm') then begin
+          if Assigned(fCTLink.Settings) and fCTLink.Settings.SupportDelphi then begin
+            // Use the same dfm file. Lowercase existing key.
+            if fCTLink.Settings.SameDfmFile then begin
+              if Key<>LowKey then
+                NewKey:=LowKey;
+            end
+            else begin
+              // Add IFDEF for .lfm and .dfm allowing Delphi to use .dfm.
+              s:='{$IFNDEF FPC}'+LineEnding+
+                 '  {$R *.dfm}'+LineEnding+
+                 '{$ELSE}'+LineEnding+
+                 '  {$R *.lfm}'+LineEnding+
+                 '{$ENDIF}';
+              Result:=fCTLink.SrcCache.Replace(gtNone,gtNone,ACleanPos,ParamPos+6,s);
+            end;
           end
-          else begin
-            // Add IFDEF for .lfm and .dfm allowing Delphi to use .dfm.
-            s:='{$IFNDEF FPC}'+LineEnding+
-               '  {$R *.dfm}'+LineEnding+
-               '{$ELSE}'+LineEnding+
-               '  {$R *.lfm}'+LineEnding+
-               '{$ENDIF}';
-            Result:=fCTLink.SrcCache.Replace(gtNone,gtNone,ACleanPos,ParamPos+6,s);
-          end;
+          else       // Change .dfm to .lfm.
+            NewKey:='lfm';
         end
-        else       // Change .dfm to .lfm.
-          NewKey:='lfm';
-      end
-      // lowercase {$R *.RES} to {$R *.res}
-      else if (Key='RES') and fLowerCaseRes then
-        NewKey:=LowKey;
-      // Change a single resource name.
-      if NewKey<>'' then begin
-        if not fCTLink.SrcCache.Replace(gtNone,gtNone,ParamPos+2,ParamPos+5,NewKey) then
-          exit;
+        // lowercase {$R *.RES} to {$R *.res}
+        else if (Key='RES') and fLowerCaseRes then
+          NewKey:=LowKey;
+        // Change a single resource name.
+        if NewKey<>'' then begin
+          if not fCTLink.SrcCache.Replace(gtNone,gtNone,ParamPos+2,ParamPos+5,NewKey) then
+            exit;
+        end;
       end;
-    end;
-    ACleanPos:=FindCommentEnd(Src, ACleanPos, Scanner.NestedComments);
-  until false;
+      ACleanPos:=FindCommentEnd(Src, ACleanPos, Scanner.NestedComments);
+    until false;
+  end;
   Result:=true;
 end;
 
@@ -334,7 +346,9 @@ var
   OldType, NewType: String;
 begin
   Result:=false;
+  if fCTLink.CodeTool=nil then exit;
   with fCTLink.CodeTool do begin
+    if Scanner=nil then exit;
     BuildTree(lsrImplementationStart);
     // Find the class name that the main class inherits from.
     ANode:=FindClassNodeInUnit(AClassName,true,false,false,false);
