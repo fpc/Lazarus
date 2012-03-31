@@ -338,6 +338,9 @@ var
   Line: integer;
   Col: integer;
   DirCache: TCTDirectoryCache;
+  PkgName: String;
+  PkgFile: TLazPackageFile;
+  j: Integer;
 begin
   if Step<>imqfoImproveMessage then exit;
   //DebugLn('QuickFixUnitNotFoundPosition ');
@@ -408,19 +411,42 @@ begin
     PPUFilename:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInCompletePath(
                                                            Dir,MissingUnitname);
     //debugln(['TQuickFixUnitNotFoundPosition.Execute AAA1 PPUFilename=',PPUFilename,' IsFileInIDESrcDir=',IsFileInIDESrcDir(Dir+'test')]);
-    if (PPUFilename='') and IsFileInIDESrcDir(Dir+'test') then begin
-      // search in installed packages
-      for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
-        Pkg:=PackageEditingInterface.GetPackages(i);
-        if Pkg.AutoInstall=pitNope then continue;
-        UnitOutDir:=Pkg.LazCompilerOptions.GetUnitOutputDirectory(false);
-        //debugln(['TQuickFixUnitNotFoundPosition.Execute ',Pkg.Name,' UnitOutDir=',UnitOutDir]);
-        if FilenameIsAbsolute(UnitOutDir) then begin
-          DirCache:=CodeToolBoss.DirectoryCachePool.GetCache(UnitOutDir,true,false);
-          PPUFilename:=DirCache.FindFile(MissingUnitname+'.ppu',ctsfcLoUpCase);
-          //debugln(['TQuickFixUnitNotFoundPosition.Execute ShortPPU=',PPUFilename]);
-          if PPUFilename<>'' then begin
-            PPUFilename:=AppendPathDelim(DirCache.Directory)+PPUFilename;
+    PkgName:='';
+    if IsFileInIDESrcDir(Dir+'test') then begin
+      // search ppu in installed packages
+      if PPUFilename='' then begin
+        for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
+          Pkg:=PackageEditingInterface.GetPackages(i);
+          if Pkg.AutoInstall=pitNope then continue;
+          UnitOutDir:=Pkg.LazCompilerOptions.GetUnitOutputDirectory(false);
+          //debugln(['TQuickFixUnitNotFoundPosition.Execute ',Pkg.Name,' UnitOutDir=',UnitOutDir]);
+          if FilenameIsAbsolute(UnitOutDir) then begin
+            DirCache:=CodeToolBoss.DirectoryCachePool.GetCache(UnitOutDir,true,false);
+            PPUFilename:=DirCache.FindFile(MissingUnitname+'.ppu',ctsfcLoUpCase);
+            //debugln(['TQuickFixUnitNotFoundPosition.Execute ShortPPU=',PPUFilename]);
+            if PPUFilename<>'' then begin
+              PkgName:=Pkg.Name;
+              PPUFilename:=AppendPathDelim(DirCache.Directory)+PPUFilename;
+              break;
+            end;
+          end;
+        end;
+      end;
+      if PkgName='' then begin
+        // search unit in installed packages
+        for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
+          Pkg:=PackageEditingInterface.GetPackages(i);
+          if Pkg.AutoInstall=pitNope then continue;
+          if CompareTextCT(Pkg.Name,MissingUnitname)=0 then begin
+            PkgName:=Pkg.Name;
+            break;
+          end;
+          for j:=0 to Pkg.FileCount-1 do begin
+            PkgFile:=Pkg.Files[j];
+            if not FilenameIsPascalUnit(PkgFile.Filename) then continue;
+            if CompareTextCT(ExtractFileNameOnly(PkgFile.Filename),MissingUnitname)<>0
+            then continue;
+            PkgName:=Pkg.Name;
             break;
           end;
         end;
@@ -430,11 +456,20 @@ begin
     if PPUFilename<>'' then begin
       // there is a ppu file, but the compiler didn't like it
       // => change message
-      s:='Fatal: unit '+MissingUnitname;
+      s:='Fatal: Rebuild needed of unit '+MissingUnitname;
       if UsedByUnit<>'' then
         s+=' used by '+UsedByUnit;
-      s+=' needs rebuilding. ppu='+CreateRelativePath(PPUFilename,Dir);
+      s+=', ppu='+CreateRelativePath(PPUFilename,Dir);
+      if PkgName<>'' then
+        s+=', package '+PkgName;
       Msg.Msg:=s;
+    end else if PkgName<>'' then begin
+      // ppu is missing, but the package is known
+      // => change message
+      s:='Fatal: Can''t find ppu of unit '+MissingUnitname;
+      if UsedByUnit<>'' then
+        s+=' used by '+UsedByUnit;
+      s+='. Maybe package '+PkgName+' needs a clean rebuild.';
     end;
   end;
 end;
