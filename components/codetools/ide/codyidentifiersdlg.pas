@@ -43,7 +43,7 @@ uses
   Buttons, PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf, CompOptsIntf,
   IDEDialogs, CodeCache, BasicCodeTools, CustomCodeTool, CodeToolManager,
   UnitDictionary, CodeTree, LinkScanner, DefineTemplates, CodeToolsStructs,
-  CodyStrConsts, CodyUtils, CodyOpts;
+  FindDeclarationTool, CodyStrConsts, CodyUtils, CodyOpts;
 
 const
   PackageNameFPCSrcDir = 'FPCSrcDir';
@@ -416,6 +416,8 @@ procedure TCodyUnitDictionary.ToolTreeChanged(Tool: TCustomCodeTool;
   NodesDeleting: boolean);
 begin
   if fParsingTool=Tool then exit;
+  if not (Tool is TFindDeclarationTool) then exit;
+  if TFindDeclarationTool(Tool).GetSourceType<>ctnUnit then exit;
   //debugln(['TCodyUnitDictionary.ToolTreeChanged ',Tool.MainFilename]);
   if fQueuedTools.Find(Tool)<>nil then exit;
   fQueuedTools.Add(Tool);
