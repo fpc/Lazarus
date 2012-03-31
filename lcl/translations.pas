@@ -506,7 +506,7 @@ begin
     if (VItem=Item) then
       FIdentLowVarToItem.Remove(VarName);
 
-    //FOriginalToItem.Remove(Item.Original); // isn't this tricky?
+    FOriginalToItem.Remove(Item.Original);
     FItems.Delete(i);
     Item.Free;
   end;
@@ -780,8 +780,9 @@ begin
   P := Pos('.', Identifier);
   if P>0 then
     FIdentLowVarToItem.Add(copy(Item.IdentifierLow, P+1, Length(Item.IdentifierLow)), Item);
-  
-  FOriginalToItem.Add(OriginalValue,Item);
+
+  if OriginalValue<>'' then
+    FOriginalToItem.Add(OriginalValue,Item);
 end;
 
 function TPOFile.Translate(const Identifier, OriginalValue: String): String;
@@ -1040,7 +1041,7 @@ begin
     if Item.Tag<>aTag then
       Continue;
     FIdentifierLowToItem.Remove(Item.IdentifierLow);
-    //FOriginalToItem.Remove(Item.Original); // isn't this tricky?
+    FOriginalToItem.Remove(Item.Original);
     FItems.Delete(i);
     Item.Free;
   end;
