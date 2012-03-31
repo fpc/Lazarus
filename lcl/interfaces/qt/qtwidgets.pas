@@ -7317,12 +7317,14 @@ begin
   case SliderAction of
     QAbstractSliderSliderNoAction:
     begin
-      if getTracking and getSliderDown then
+      // this is called from mouse release while qt still thinks that
+      // slider is pressed, we must update position.issue #14728, #21610
+      if getSliderDown then
       begin
         LMScroll.ScrollCode := SB_THUMBPOSITION;
         DeliverMessage(LMScroll);
       end;
-    LMScroll.ScrollCode := SB_ENDSCROLL;
+      LMScroll.ScrollCode := SB_ENDSCROLL;
     end;
     QAbstractSliderSliderSingleStepAdd:
       begin
@@ -7361,12 +7363,28 @@ begin
       end;
     QAbstractSliderSliderToMaximum:
       begin
+        // issue #21610
+        // if we are reaching maximum with eg. mouse wheel
+        // and our parent is TScrollingWinControl then update thumbposition.
+        if not getSliderDown then
+        begin
+          LMScroll.ScrollCode := SB_THUMBPOSITION;
+          DeliverMessage(LMScroll);
+        end;
+
         if LMScroll.Msg = LM_HSCROLL then
           LMScroll.ScrollCode := SB_RIGHT
         else
           LMScroll.ScrollCode := SB_BOTTOM;
       end;
-    QAbstractSliderSliderMove: LMScroll.ScrollCode := SB_THUMBTRACK;
+    QAbstractSliderSliderMove:
+      begin
+        if getTracking then
+          LMScroll.ScrollCode := SB_THUMBTRACK
+        else
+        if not getSliderDown then
+          LMScroll.ScrollCode := SB_THUMBPOSITION;
+      end;
   end;
 
   DeliverMessage(LMScroll);
