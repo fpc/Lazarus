@@ -302,6 +302,7 @@ end;
 
 procedure TPPUListDialog.FormDestroy(Sender: TObject);
 begin
+  IdleConnected:=false;
   FreeAndNil(FSearchingItems);
   FItems.FreeAndClear;
   FreeAndNil(FItems);
@@ -405,6 +406,7 @@ end;
 procedure TPPUListDialog.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
+  IdleConnected:=false;
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
