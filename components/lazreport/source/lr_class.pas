@@ -930,6 +930,17 @@ type
     procedure SetVars(Value: TStrings);
     procedure ClearAttribs;
   protected
+    procedure DoBeginBand(Band: TfrBand); virtual;
+    procedure DoBeginColumn(Band: TfrBand); virtual;
+    procedure DoBeginDoc; virtual;
+    procedure DoBeginPage(pgNo: Integer); virtual;
+    procedure DoEndBand(Band: TfrBand); virtual;
+    procedure DoEndDoc; virtual;
+    procedure DoEndPage(pgNo: Integer); virtual;
+    procedure DoEnterRect(Memo: TStringList; View: TfrView); virtual;
+    procedure DoGetValue(const ParName: String; var ParValue: Variant); virtual;
+    procedure DoPrintColumn(ColNo: Integer; var Width: Integer); virtual;
+    procedure DoUserFunction(const AName: String; p1, p2, p3: Variant; var Val: Variant); virtual;
     procedure DefineProperties(Filer: TFiler); override;
     procedure ReadBinaryData(Stream: TStream);
     procedure WriteBinaryData(Stream: TStream);
@@ -958,8 +969,6 @@ type
     procedure InternalOnExportText(x, y: Integer; const text: String; View: TfrView);
     procedure InternalOnGetValue(ParName: String; var ParValue: String);
     procedure InternalOnProgress(Percent: Integer);
-    procedure InternalOnBeginColumn(Band: TfrBand);
-    procedure InternalOnPrintColumn(ColNo: Integer; var ColWidth: Integer);
     procedure FillQueryParams;
     // load/save methods
     procedure LoadFromStream(Stream: TStream);
@@ -4772,7 +4781,7 @@ begin
   if HasCross and (Typ <> btPageFooter) then
   begin
     Parent.ColPos := 1;
-    CurReport.InternalOnBeginColumn(Self);
+    CurReport.DoBeginColumn(Self);
     if Parent.BandExists(Parent.Bands[btCrossData]) then
     begin
       Bnd := Parent.Bands[btCrossData];
@@ -4788,7 +4797,7 @@ begin
         while not DS.Eof do
         begin
           ddx := 0;
-          CurReport.InternalOnPrintColumn(Parent.ColPos, ddx);
+          CurReport.DoPrintColumn(Parent.ColPos, ddx);
           CalculatedHeight := SubDoCalcHeight(True);
           if CalculatedHeight > Result then
             Result := CalculatedHeight;
@@ -5082,7 +5091,7 @@ begin
   sfpage := PageNo;
   if Typ = btPageFooter then Exit;
   IsColumns := True;
-  CurReport.InternalOnBeginColumn(Self);
+  CurReport.DoBeginColumn(Self);
 
   if Parent.BandExists(Parent.Bands[btCrossHeader]) then
   begin
@@ -5109,7 +5118,7 @@ begin
         while not DS.Eof do
         begin
           ddx := Bnd.dx;
-          CurReport.InternalOnPrintColumn(Parent.ColPos, ddx);
+          CurReport.DoPrintColumn(Parent.ColPos, ddx);
           CheckColumnPageBreak(ddx);
           Bnd.DrawCrossCell(Self, CurX);
 
@@ -5472,8 +5481,7 @@ begin
   CalculatedHeight := -1;
   ForceNewPage := False;
   ForceNewColumn := False;
-  if Assigned(CurReport.FOnBeginBand) then
-    CurReport.FOnBeginBand(Self);
+  CurReport.DoBeginBand(Self);
   frInterpretator.DoScript(Script);
 
   if Parent.RowsLayout and IsDataBand then begin
@@ -5572,8 +5580,7 @@ begin
 
   end;
   
-  if Assigned(CurReport.FOnEndBand) then
-    CurReport.FOnEndBand(Self);
+  CurReport.DoEndBand(Self);
 
   Parent.LastBandType := typ;
 
@@ -6331,11 +6338,10 @@ begin
     begin
       if not (Append and WasPF) then
       begin
-        if (CurReport <> nil) and Assigned(CurReport.FOnEndPage) then
-          CurReport.FOnEndPage(PageNo);
-        if (MasterReport <> CurReport) and (MasterReport <> nil) and
-          Assigned(MasterReport.FOnEndPage) then
-          MasterReport.FOnEndPage(PageNo);
+        if CurReport <> nil then
+          CurReport.DoEndPage(PageNo);
+        if (MasterReport <> CurReport) and (MasterReport <> nil) then
+          MasterReport.DoEndPage(PageNo);
         if not RowsLayout then
           ShowBand(Bands[btPageFooter]);
       end;
@@ -7389,11 +7395,10 @@ end;
 procedure TfrEMFPages.Add(APage: TfrPage);
 begin
   Insert(FPages.Count, APage);
-  if (CurReport <> nil) and Assigned(CurReport.FOnBeginPage) then
-    CurReport.FOnBeginPage(PageNo);
-  if (MasterReport <> CurReport) and (MasterReport <> nil) and
-    Assigned(MasterReport.FOnBeginPage) then
-    MasterReport.FOnBeginPage(PageNo);
+  if CurReport <> nil then
+    CurReport.DoBeginPage(PageNo);
+  if (MasterReport <> CurReport) and (MasterReport <> nil) then
+    MasterReport.DoBeginPage(PageNo);
 end;
 
 procedure TfrEMFPages.Delete(Index: Integer);
@@ -7947,8 +7952,7 @@ begin
   with View do
     if (FDataSet <> nil) and frIsBlob(TfrTField(FDataSet.FindField(FField))) then
       GetBlob(TfrTField(FDataSet.FindField(FField)));
-  if Assigned(FOnEnterRect) then
-     FOnEnterRect(Memo, View);
+  DoEnterRect(Memo, View);
 end;
 
 procedure TfrReport.InternalOnExportData(View: TfrView);
@@ -7960,16 +7964,6 @@ procedure TfrReport.InternalOnExportText(x, y: Integer; const text: String;
   View: TfrView);
 begin
   FCurrentFilter.OnText(x, y, text, View);
-end;
-
-procedure TfrReport.InternalOnBeginColumn(Band: TfrBand);
-begin
-  if Assigned(FOnBeginColumn) then FOnBeginColumn(Band);
-end;
-
-procedure TfrReport.InternalOnPrintColumn(ColNo: Integer; var ColWidth: Integer);
-begin
-  if Assigned(FOnPrintColumn) then FOnPrintColumn(ColNo, ColWidth);
 end;
 
 function TfrReport.FormatValue(V: Variant;
@@ -8073,8 +8067,7 @@ var
 begin
   TVarData(aValue).VType := varEmpty;
 
-  if Assigned(FOnGetValue) then
-     FOnGetValue(s,aValue);
+  DoGetValue(s,aValue);
      
   if TVarData(aValue).VType = varEmpty then
   begin
@@ -8176,8 +8169,7 @@ begin
     if frFunctions[i].FunctionLibrary.OnFunction(aName, p1, p2, p3, val) then
       exit;
   if AggrBand.Visible then
-    if Assigned(FOnFunction) then
-       FOnFunction(aName, p1, p2, p3, val);
+    DoUserFunction(aName, p1, p2, p3, val);
 end;
 
 // load/save methods
@@ -8556,7 +8548,7 @@ begin
   Values.Items.Sorted := True;
   frParser.OnGetValue := @GetVariableValue;
   frParser.OnFunction := @OnGetParsFunction;
-  if Assigned(FOnBeginDoc) then FOnBeginDoc;
+  DoBeginDoc;
 
   Result := False;
   ParamOk := True;
@@ -8573,8 +8565,7 @@ begin
   if frDataManager <> nil then
     frDataManager.AfterParamsDialog;
     
-  if Assigned(FOnEndDoc) then
-    FOnEndDoc;
+  DoEndDoc;
   {$IFDEF DebugLR}
   DebugLnExit('TfrReport.PrepareReport DONE');
   {$ENDIF}
@@ -9255,6 +9246,73 @@ begin
   ReportLastChange := Now;
 end;
 
+procedure TfrReport.DoBeginBand(Band: TfrBand);
+begin
+  if Assigned(FOnBeginBand) then
+    FOnBeginBand(Band);
+end;
+
+procedure TfrReport.DoBeginColumn(Band: TfrBand);
+begin
+  if Assigned(FOnBeginColumn) then
+    OnBeginColumn(Band);
+end;
+
+procedure TfrReport.DoBeginDoc;
+begin
+  if Assigned(FOnBeginDoc) then
+    FOnBeginDoc;
+end;
+
+procedure TfrReport.DoBeginPage(pgNo: Integer);
+begin
+  if Assigned(FOnBeginPage) then
+    FOnBeginPage(pgNo);
+end;
+
+procedure TfrReport.DoEndBand(Band: TfrBand);
+begin
+  if Assigned(FOnEndBand) then
+    FOnEndBand(Band);
+end;
+
+procedure TfrReport.DoEndDoc;
+begin
+  if Assigned(FOnEndDoc) then
+    FOnEndDoc;
+end;
+
+procedure TfrReport.DoEndPage(pgNo: Integer);
+begin
+  if Assigned(FOnEndPage) then
+    FOnEndPage(pgNo);
+end;
+
+procedure TfrReport.DoEnterRect(Memo: TStringList; View: TfrView);
+begin
+  if Assigned(FOnEnterRect) then
+    FOnEnterRect(Memo, View);
+end;
+
+procedure TfrReport.DoGetValue(const ParName: String; var ParValue: Variant);
+begin
+  if Assigned(FOnGetValue) then
+    FOnGetValue(ParName, ParValue);
+end;
+
+procedure TfrReport.DoPrintColumn(ColNo: Integer; var Width: Integer);
+begin
+  if Assigned(FOnPrintColumn) then
+    FOnPrintColumn(ColNo, Width);
+end;
+
+procedure TfrReport.DoUserFunction(const AName: String; p1, p2, p3: Variant;
+  var Val: Variant);
+begin
+  if Assigned(FOnFunction) then
+    FOnFunction(AName, p1, p2, p3, Val);
+end;
+
 procedure TfrReport.Loaded;
 begin
   inherited Loaded;
@@ -9361,8 +9419,8 @@ begin
         TfrReport(Reports[i + 1]).Pages[0].PrintToPrevPage then
         CompositeMode := True;
     CurReport := Doc;
-    if Assigned(Doc.FOnBeginDoc) and FirstTime then
-      Doc.FOnBeginDoc;
+    if FirstTime then
+      Doc.DoBeginDoc;
     ParamOk := True;
     if (frDataManager <> nil) and FirstTime then
     begin
@@ -9373,8 +9431,8 @@ begin
       Doc.DoBuildReport;
     if (frDataManager <> nil) and FinalPass then
       frDataManager.AfterParamsDialog;
-    if Assigned(Doc.FOnEndDoc) and FinalPass then
-      Doc.FOnEndDoc;
+    if FinalPass then
+      Doc.DoEndDoc;
     Append := CompositeMode;
     CompositeMode := False;
     if Terminated then break;

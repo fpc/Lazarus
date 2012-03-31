@@ -32,6 +32,9 @@ type
     FOnFirst, FOnNext, FOnLast: TNotifyEvent;
     FOnCheckEOF: TCheckEOFEvent;
     FRecNo: Integer;
+    procedure DoCheckEOF(var Eof: Boolean); virtual;
+    procedure DoFirst; virtual;
+    procedure DoNext; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Init; virtual;
@@ -68,6 +71,24 @@ type
 
 implementation
 
+procedure TfrDataset.DoCheckEOF(var Eof: Boolean);
+begin
+  if Assigned(FOnCheckEOF) then
+     FOnCheckEOF(Self, Eof);
+end;
+
+procedure TfrDataset.DoFirst;
+begin
+  if Assigned(FOnFirst) then
+    FOnFirst(Self);
+end;
+
+procedure TfrDataset.DoNext;
+begin
+  if Assigned(FOnNext) then
+    FOnNext(Self);
+end;
+
 constructor TfrDataSet.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -86,13 +107,13 @@ end;
 procedure TfrDataSet.First;
 begin
   FRecNo := 0;
-  if Assigned(FOnFirst) then FOnFirst(Self);
+  DoFirst;
 end;
 
 procedure TfrDataSet.Next;
 begin
   Inc(FRecNo);
-  if Assigned(FOnNext) then FOnNext(Self);
+  DoNext;
 end;
 
 procedure TfrDataset.Refresh;
@@ -129,8 +150,7 @@ begin
   Result := False;
   if (FRangeEnd = reCount) and (FRecNo >= FRangeEndCount) then
     Result := True;
-  if Assigned(FOnCheckEOF) then
-     FOnCheckEOF(Self, Result);
+  DoCheckEOF(Result);
 end;
 
 
