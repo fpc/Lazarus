@@ -73,9 +73,9 @@ type
     procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
   end;
 
-  { TQuickFixLinkerUndefinedReference }
+  { TQuickFixJumpToLinkerUndefinedReference }
 
-  TQuickFixLinkerUndefinedReference = class(TIDEMsgQuickFixItem)
+  TQuickFixJumpToLinkerUndefinedReference = class(TIDEMsgQuickFixItem)
   public
     constructor Create;
     procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
@@ -261,7 +261,7 @@ begin
     
   RegisterIDEMsgQuickFix(TQuickFixUnitNotFoundPosition.Create);
   RegisterIDEMsgQuickFix(TQuickFixUnitNotFound_Remove.Create);
-  RegisterIDEMsgQuickFix(TQuickFixLinkerUndefinedReference.Create);
+  RegisterIDEMsgQuickFix(TQuickFixJumpToLinkerUndefinedReference.Create);
   RegisterIDEMsgQuickFix(TQuickFixClassWithAbstractMethods.Create);
   RegisterIDEMsgQuickFix(TQuickFixIdentifierNotFoundAddLocal.Create);
   RegisterIDEMsgQuickFix(TQuickFixLocalVariableNotUsed_Remove.Create);
@@ -480,25 +480,39 @@ begin
   end;
 end;
 
-{ TQuickFixLinkerUndefinedReference }
+{ TQuickFixJumpToLinkerUndefinedReference }
 
-constructor TQuickFixLinkerUndefinedReference.Create;
+constructor TQuickFixJumpToLinkerUndefinedReference.Create;
+var
+  re: String;
 begin
   Name:='Linker: undefined reference to';
   Steps:=[imqfoJump];
-  RegExpression:='^((.*:[0-9]+)?: .* `(.*)'')|((.*)\(\.text.*?\): .* `([A-Z0-9_$]+)'':)$';
+  re:='((.*:[0-9]+)?: .* `(.*)'')'; // e.g. some.inc:37: undefined reference to `DoesNotExist'
+  re+='|((.*)\(\.text.*?\): .* `([A-Z0-9_$]+)'':)'; // e.g. unit1.o(.text+0x1a): In function `SubProc':
+  re+='|((.*)\.o: .* `([A-Z0-9_$]+)'':)'; // e.g. unit1.o: In function `SubProc':
+  re:='^'+re+'$';
+  RegExpression:=re;
 end;
 
-procedure TQuickFixLinkerUndefinedReference.Execute(const Msg: TIDEMessageLine;
+procedure TQuickFixJumpToLinkerUndefinedReference.Execute(const Msg: TIDEMessageLine;
   Step: TIMQuickFixStep);
 { Examples:
   /usr/lib/fpc/2.1.1/units/i386-linux/gtk2/gtk2.o(.text+0xbba1): In function `GTK2_GTK_TYPE_CELL_RENDERER_COMBO$$LONGWORD':
   : undefined reference to `gtk_cell_renderer_combo_get_type'
 
   unit1.o(.text+0x1a): In function `SubProc':
-  unit1.pas:37: undefined reference to `DoesNotExist'
-  unit1.o(.text+0x3a):unit1.pas:48: undefined reference to `DoesNotExist'
+  some.inc:37: undefined reference to `DoesNotExist'
+
+  unit1.o(.text+0x3a):some.inc:48: undefined reference to `DoesNotExist'
+
+  unit1.o: In function `SubProc':
+  some.inc:37: undefined reference to `DoesNotExist'
 }
+const
+  REFileIdentifier = '^(.*\.o)(\(\.text.*?\))?: .* `([a-zA-Z0-9_$]+)'':$';
+  REOptFileLineIdentifier = '^(.*:[0-9]+)?: .* `(.*)''$';
+  REFileLineIdentifier = '^(.*):([0-9]+): .* `(.*)''$';
 
   procedure JumpTo(Line1, Line2: TIDEMessageLine);
   var
@@ -513,22 +527,25 @@ procedure TQuickFixLinkerUndefinedReference.Execute(const Msg: TIDEMessageLine;
     SourceFilename: String;
     SourceLine: Integer;
   begin
-    DebugLn(['TQuickFixLinkerUndefinedReference.JumpTo START ',Line1.Msg]);
+    DebugLn('TQuickFixLinkerUndefinedReference.JumpTo START');
+    Debugln('  Line1=',Line1.Msg);
+    if Line2<>nil then
+      Debugln('  Line2=',Line2.Msg);
     Filename:='';
     MangledFunction:='';
     Identifier:='';
     SourceFilename:='';
     SourceLine:=0;
-    if REMatches(Line1.Msg,'^(.*)\(\.text.*?\): .* `([a-zA-Z0-9_$]+)'':$') then
+    if REMatches(Line1.Msg,REFileIdentifier) then
     begin
       // example: unit1.o(.text+0x1a): In function `SubProc':
       Filename:=REVar(1);
-      MangledFunction:=REVar(2);
+      MangledFunction:=REVar(3);
       if (Line2<>nil) and REMatches(Line2.Msg,'^: .* `(.*)''$') then begin
         // example: ": undefined reference to `gtk_cell_renderer_combo_get_type'"
         Identifier:=REVar(1);
       end else if (Line2<>nil)
-      and REMatches(Line2.Msg,'^(.*):([0-9]+): .* `(.*)''$') then begin
+      and REMatches(Line2.Msg,REFileLineIdentifier) then begin
         // example: unit1.pas:37: undefined reference to `DoesNotExist'
         SourceFilename:=REVar(1);
         SourceLine:=StrToIntDef(REVar(2),0);
@@ -546,7 +563,8 @@ procedure TQuickFixLinkerUndefinedReference.Execute(const Msg: TIDEMessageLine;
       SourceLine:=StrToIntDef(REVar(3),0);
       Identifier:=REVar(4);
     end
-    else if REMatches(Line1.Msg,'^(.*):([0-9]+): .* `([a-zA-Z0-9_$]+)''$') then begin
+    else if REMatches(Line1.Msg,REFileLineIdentifier) then
+    begin
       // example: unit1.pas:48: undefined reference to `DoesNotExist'
       Filename:=REVar(1);
       SourceFilename:=Filename;
@@ -556,6 +574,11 @@ procedure TQuickFixLinkerUndefinedReference.Execute(const Msg: TIDEMessageLine;
       DebugLn('JumpTo Line1 does not match: "',Line1.Msg,'"');
       exit;
     end;
+    Filename:=TrimFilename(Filename); // for example uni1.o
+    SourceFilename:=TrimFilename(SourceFilename); // for example wsimagelist.pp
+    // Beware: SourceFilename might be an include file
+    // Linker errors are emitted when compiling the project
+    // => search the unit of the .o file
     DebugLn(['TQuickFixLinkerUndefinedReference.JumpTo Filename="',Filename,'" MangledFunction="',MangledFunction,'" Identifier="',Identifier,'" SourceFilename="',SourceFilename,'" SourceLine=',SourceLine]);
     CurProject:=LazarusIDE.ActiveProject;
     if CurProject=nil then begin
@@ -591,20 +614,45 @@ procedure TQuickFixLinkerUndefinedReference.Execute(const Msg: TIDEMessageLine;
                                       NewTopLine,-1,-1,[]);
   end;
   
+var
+  MsgBefore: TIDEMessageLine;
+  MsgAfter: TIDEMessageLine;
 begin
   inherited Execute(Msg, Step);
   if Step=imqfoJump then begin
-    //DebugLn(['TQuickFixLinkerUndefinedReference.Execute ',Msg.Msg]);
-    if REMatches(Msg.Msg,'^(.*)\(\.text.*?\):.*:([0-9]+): .* `([a-zA-Z0-9_$]+)''$') then
-      // example: unit1.o(.text+0x3a):unit1.pas:48: undefined reference to `DoesNotExist'
+    DebugLn(['TQuickFixLinkerUndefinedReference.Execute ',Msg.Msg]);
+    MsgBefore:=nil;
+    if Msg.Position>0 then
+      MsgBefore:=IDEMessagesWindow[Msg.Position-1];
+    MsgAfter:=nil;
+    if Msg.Position+1<IDEMessagesWindow.LinesCount then
+      MsgAfter:=IDEMessagesWindow[Msg.Position+1];
+    if REMatches(Msg.Msg,'^(.*)\(\.text.*?\):.*:([0-9]+): .* `([a-zA-Z0-9_$]+)''$')
+    then begin
+      // example:
+      //   unit1.o(.text+0x3a):unit1.pas:48: undefined reference to `DoesNotExist'
       JumpTo(Msg,nil)
-    else if (Msg.Position>0) and REMatches(Msg.Msg,'^(.*:[0-9]+)?: .* `(.*)''$') then
-      // example: unit1.pas:37: undefined reference to `DoesNotExist'
-      JumpTo(IDEMessagesWindow[Msg.Position-1],Msg)
-    else if (Msg.Position<IDEMessagesWindow.LinesCount-1)
-    and REMatches(Msg.Msg,'^(.*)\(\.text.*?\): .* `([a-zA-Z0-9_$]+)'':$') then
-      // example: unit1.o(.text+0x1a): In function `SubProc':
-      JumpTo(Msg,IDEMessagesWindow[Msg.Position+1]);
+    end
+    else if REMatches(Msg.Msg,REFileIdentifier) then
+    begin
+      // example:
+      // -> unit1.o(.text+0x1a): In function `SubProc':
+      //    some.inc:37: undefined reference to `DoesNotExist'
+      JumpTo(Msg,MsgAfter);
+    end
+    else if (MsgBefore<>nil)
+    and REMatches(MsgBefore.Msg,REFileIdentifier)
+    and REMatches(Msg.Msg,REOptFileLineIdentifier) then begin
+      // example:
+      //    unit1.o(.text+0x1a): In function `SubProc':
+      // -> some.inc:37: undefined reference to `DoesNotExist'
+      JumpTo(MsgBefore,Msg)
+    end
+    else if REMatches(Msg.Msg,REFileLineIdentifier) then begin
+      // example:
+      //   some.inc:37: undefined reference to `DoesNotExist'
+      JumpTo(Msg,nil);
+    end;
   end;
 end;
 
