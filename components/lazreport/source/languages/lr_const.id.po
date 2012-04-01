@@ -1017,6 +1017,10 @@ msgstr "Simpan laporan"
 msgid "Select all"
 msgstr "Pilih semua"
 
+#: lr_const.sfrdesignerformselectsameclass
+msgid "Select same class objects"
+msgstr ""
+
 #: lr_const.sfrdesignerformselobj
 msgid "Select object"
 msgstr "Pilih obyek"

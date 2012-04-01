@@ -1018,6 +1018,10 @@ msgstr "Salva report"
 msgid "Select all"
 msgstr "Seleziona tutto"
 
+#: lr_const.sfrdesignerformselectsameclass
+msgid "Select same class objects"
+msgstr ""
+
 #: lr_const.sfrdesignerformselobj
 msgid "Select object"
 msgstr "Seleziona oggetto"

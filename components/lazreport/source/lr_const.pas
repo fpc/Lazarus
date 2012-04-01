@@ -485,6 +485,7 @@ resourcestring
   sFRDesignerFormBackColor = 'Background color';
   sFRDesignerFormFrameColor = 'Frame color';
   sFRDesignerFormFrameWidth = 'Frame width';
+  sFRDesignerFormSelectSameClass = 'Select same class objects';
   //  53131 = 'Frame width';
   sFRDesignerFormSelObj = 'Select object';
   sFRDesignerFormInsRect = 'Insert rectangle object';

@@ -1018,6 +1018,10 @@ msgstr "Įrašyti pranešimą"
 msgid "Select all"
 msgstr "Pažymėti viską"
 
+#: lr_const.sfrdesignerformselectsameclass
+msgid "Select same class objects"
+msgstr ""
+
 #: lr_const.sfrdesignerformselobj
 msgid "Select object"
 msgstr "Pažymėti objektą"

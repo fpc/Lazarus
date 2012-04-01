@@ -1017,6 +1017,10 @@ msgstr "Сохранить отчёт"
 msgid "Select all"
 msgstr "Выделить всё"
 
+#: lr_const.sfrdesignerformselectsameclass
+msgid "Select same class objects"
+msgstr ""
+
 #: lr_const.sfrdesignerformselobj
 msgid "Select object"
 msgstr "Выбрать объект"

@@ -511,7 +511,6 @@ type
     constructor Create; override;
 
     procedure Draw(aCanvas: TCanvas); override;
-    procedure DefinePopupMenu({%H-}Popup: TPopupMenu); override;
     function GetClipRgn(rt: TfrRgnType): HRGN; override;
     function PointInView(aX,aY: Integer): Boolean; override;
     
@@ -519,6 +518,7 @@ type
     property FrameColor;
     property FrameStyle;
     property FrameWidth;
+    property Stretched;
   end;
 
   TfrRect = Class(TPersistent)
@@ -4620,6 +4620,7 @@ begin
   Typ := gtLine;
   fFrames:=[frbLeft];
   BaseName := 'Line';
+  SetBit(Flags, false, flStretched);
 end;
 
 procedure TfrLineView.Draw(aCanvas: TCanvas);
@@ -4629,11 +4630,6 @@ begin
   CalcGaps;
   ShowFrame;
   RestoreCoord;
-end;
-
-procedure TfrLineView.DefinePopupMenu(Popup: TPopupMenu);
-begin
-  // no specific items in popup menu
 end;
 
 function TfrLineView.GetClipRgn(rt: TfrRgnType): HRGN;

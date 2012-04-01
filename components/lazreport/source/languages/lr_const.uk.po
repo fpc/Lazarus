@@ -1017,6 +1017,10 @@ msgstr "Зберегти звіт"
 msgid "Select all"
 msgstr "Вибрати все"
 
+#: lr_const.sfrdesignerformselectsameclass
+msgid "Select same class objects"
+msgstr ""
+
 #: lr_const.sfrdesignerformselobj
 msgid "Select object"
 msgstr "Вибрати об'єкт"

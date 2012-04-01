@@ -5,8 +5,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-02-17 16:34+0100\n"
-"Last-Translator: javivf <javivf@gmail.com>\n"
+"PO-Revision-Date: 2012-04-01 05:10-0600\n"
+"Last-Translator: Jesus Reyes Aguilar <jesusrmx@yahoo.com.mx>\n"
 "Language-Team: \n"
 
 #: lr_const.saboutformcapt
@@ -1016,6 +1016,10 @@ msgstr "Guardar reporte"
 #: lr_const.sfrdesignerformselectall
 msgid "Select all"
 msgstr "Seleccionar todo"
+
+#: lr_const.sfrdesignerformselectsameclass
+msgid "Select same class objects"
+msgstr "Seleccionar objetos de la misma clase"
 
 #: lr_const.sfrdesignerformselobj
 msgid "Select object"

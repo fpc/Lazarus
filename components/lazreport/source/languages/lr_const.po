@@ -1012,6 +1012,10 @@ msgstr ""
 msgid "Select all"
 msgstr ""
 
+#: lr_const.sfrdesignerformselectsameclass
+msgid "Select same class objects"
+msgstr ""
+
 #: lr_const.sfrdesignerformselobj
 msgid "Select object"
 msgstr ""

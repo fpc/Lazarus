@@ -13,7 +13,6 @@ unit LR_Desgn;
 interface
 
 {$I lr_vers.inc}
-
 {.$Define ExtOI} // External Custom Object inspector (Christian)
 {.$Define StdOI} // External Standard Object inspector (Jesus)
 {$define sbod}  // status bar owner draw
@@ -529,6 +528,9 @@ type
     procedure StatusBar1DrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel;
       const Rect: TRect);
     {$endif}
+    procedure DefineExtraPopupSelected(popup: TPopupMenu);
+    procedure SelectSameClassClick(Sender: TObject);
+    procedure SelectSameClass(View: TfrView);
   private
     FDuplicateCount: Integer;
     FDupDeltaX,FDupDeltaY: Integer;
@@ -3608,6 +3610,56 @@ begin
     DrawStatusPanel(StatusBar.Canvas, Rect);
 end;
 
+procedure TfrDesignerForm.DefineExtraPopupSelected(popup: TPopupMenu);
+var
+  m: TMenuItem;
+begin
+  m := TMenuItem.Create(Popup);
+  m.Caption := '-';
+  Popup.Items.Add(m);
+
+  m := TMenuItem.Create(Popup);
+  m.Caption := sFRDesignerFormSelectSameClass;
+  m.OnClick := @SelectSameClassClick;
+  m.Tag := PtrInt(Objects[TopSelected]);
+  Popup.Items.Add(m);
+end;
+
+procedure TfrDesignerForm.SelectSameClassClick(Sender: TObject);
+var
+  View: TfrView;
+begin
+  if Sender is TMenuItem then
+  begin
+    View := TfrView(TMenuItem(Sender).Tag);
+    if Objects.IndexOf(View)>=0 then
+    begin
+      PageView.DrawPage(dmSelection);
+      SelectSameClass(View);
+      PageView.GetMultipleSelected;
+      PageView.DrawPage(dmSelection);
+      SelectionChanged;
+    end;
+  end;
+end;
+
+procedure TfrDesignerForm.SelectSameClass(View: TfrView);
+var
+  i: Integer;
+  v: TfrView;
+begin
+  SelNum := 0;
+  for i := 0 to Objects.Count - 1 do
+  begin
+    v := TfrView(Objects[i]);
+    if v.ClassName=View.ClassName then
+    begin
+      v.Selected := True;
+      Inc(SelNum);
+    end;
+  end;
+end;
+
 // if AList is specified always process the list being objects selected or not
 // if AList is not specified, all objects are processed but check Selected state
 procedure TfrDesignerForm.ViewsAction(Views: TFpList; TheAction: TViewAction;
@@ -5325,9 +5377,12 @@ begin
 
   while Popup1.Items.Count > 7 do
     Popup1.Items.Delete(7);
-    
+
   if SelNum = 1 then
-    TfrView(Objects[TopSelected]).DefinePopupMenu(Popup1)
+  begin
+    DefineExtraPopupSelected(Popup1);
+    TfrView(Objects[TopSelected]).DefinePopupMenu(Popup1);
+  end
   else
     if SelNum > 1 then
     begin
