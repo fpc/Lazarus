@@ -234,7 +234,7 @@ begin
     WriteLn('[TQtWSMenuItem.SetCaption] Caption: ' + AMenuItem.Caption + ' NewCaption: ', ACaption);
   {$endif}
 
-  if not WSCheckMenuItem(AMenuItem, 'SetEnable') then
+  if not WSCheckMenuItem(AMenuItem, 'SetCaption') then
     Exit;
 
   Widget := TQtWidget(AMenuItem.Handle);
@@ -262,7 +262,7 @@ begin
     WriteLn('[TQtWSMenuItem.SetCaption] SetShortCut: ' + AMenuItem.Caption);
   {$endif}
 
-  if not WSCheckMenuItem(AMenuItem, 'SetEnable') then
+  if not WSCheckMenuItem(AMenuItem, 'SetShortCut') then
     Exit;
 
   Widget := TQtWidget(AMenuItem.Handle);
