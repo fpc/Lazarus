@@ -113,7 +113,7 @@ type
 
     // IDE
     function BuildLazarusIDE: boolean;
-    function CompileAutoInstallPackages: boolean;
+    function CompileAutoInstallPackages(Clean: boolean): boolean;
 
     function Init: boolean;
     procedure LoadEnvironmentOptions;
@@ -474,6 +474,20 @@ begin
     exit;
   end;
 
+  // clean
+  ProfileChanged:=false;
+  if BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild then begin
+    CurResult:=MakeLazarus(BuildLazProfiles.Current,
+                EnvironmentOptions.ExternalTools,GlobalMacroList,
+                '',EnvironmentOptions.GetParsedCompilerFilename,
+                EnvironmentOptions.GetParsedMakeFilename, [blfDontBuild],
+                ProfileChanged);
+    if CurResult<>mrOk then begin
+      DebugLn('TLazBuildApplication.BuildLazarusIDE: Clean all failed.');
+      exit;
+    end;
+  end;
+
   // save configs for 'make'
   CurResult:=PackageGraph.SaveAutoInstallConfig;
   if CurResult<>mrOk then begin
@@ -482,7 +496,8 @@ begin
   end;
 
   // compile auto install static packages
-  if not CompileAutoInstallPackages then begin
+  if not CompileAutoInstallPackages(BuildLazProfiles.Current.IdeBuildMode<>bmBuild)
+  then begin
     DebugLn('TLazBuildApplication.BuildLazarusIDE: Compile AutoInstall Packages failed.');
     exit;
   end;
@@ -499,12 +514,12 @@ begin
   end;
 
   // compile IDE
-  ProfileChanged:=false;
-  CurResult:=BuildLazarus(BuildLazProfiles.Current,
-                          EnvironmentOptions.ExternalTools,GlobalMacroList,
-                          PkgOptions,EnvironmentOptions.CompilerFilename,
-                          EnvironmentOptions.MakeFilename,
-                          Flags+[blfUseMakeIDECfg,blfReplaceExe],ProfileChanged);
+  CurResult:=MakeLazarus(BuildLazProfiles.Current,
+                         EnvironmentOptions.ExternalTools,GlobalMacroList,
+                         PkgOptions,EnvironmentOptions.CompilerFilename,
+                         EnvironmentOptions.MakeFilename,
+                         Flags+[blfUseMakeIDECfg,blfReplaceExe,blfOnlyIDE],
+                         ProfileChanged);
   if CurResult<>mrOk then begin
     DebugLn('TLazBuildApplication.BuildLazarusIDE: Building IDE failed.');
     exit;
@@ -513,7 +528,7 @@ begin
   Result:=true;
 end;
 
-function TLazBuildApplication.CompileAutoInstallPackages: boolean;
+function TLazBuildApplication.CompileAutoInstallPackages(Clean: boolean): boolean;
 var
   Dependency: TPkgDependency;
   OldDependency: TPkgDependency;
@@ -540,7 +555,7 @@ begin
 
     // compile all auto install dependencies
     CompilePolicy:=pupAsNeeded;
-    if BuildRecursive and BuildAll then
+    if (BuildRecursive and BuildAll) or Clean then
       CompilePolicy:=pupOnRebuildingAll;
     CurResult:=PackageGraph.CompileRequiredPackages(nil,
                    PackageGraph.FirstAutoInstallDependency,false,CompilePolicy);

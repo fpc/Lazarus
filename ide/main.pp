@@ -12512,7 +12512,7 @@ begin
       PkgCompileFlags:=PkgCompileFlags+[pcfCompileDependenciesClean];
       if BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild then begin
         SourceEditorManager.ClearErrorLines;
-        Result:=BuildLazarus(BuildLazProfiles.Current,ExternalTools,GlobalMacroList,
+        Result:=MakeLazarus(BuildLazProfiles.Current,ExternalTools,GlobalMacroList,
                              '',EnvironmentOptions.GetParsedCompilerFilename,
                              EnvironmentOptions.GetParsedMakeFilename, [blfDontBuild],
                              ProfileChanged);
@@ -12567,7 +12567,7 @@ begin
     // make lazarus ide
     SourceEditorManager.ClearErrorLines;
     IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean];
-    Result:=BuildLazarus(BuildLazProfiles.Current,ExternalTools,GlobalMacroList,
+    Result:=MakeLazarus(BuildLazProfiles.Current,ExternalTools,GlobalMacroList,
                          PkgOptions,EnvironmentOptions.GetParsedCompilerFilename,
                          EnvironmentOptions.GetParsedMakeFilename,IDEBuildFlags,
                          ProfileChanged);

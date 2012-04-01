@@ -64,7 +64,7 @@ type
   TBuildLazarusFlag = (
     blfDontBuild,           // skip all building, only cleaning
     blfOnlyIDE,             // skip all but IDE (for example build IDE, but not packages, not lazbuild, ...)
-    blfDontClean,        // ignore clean up option in profile
+    blfDontClean,           // ignore clean up option in profile
     blfUseMakeIDECfg,       // append @idemake.cfg
     blfReplaceExe           // ignore OSLocksExecutables and do not create lazarus.new.exe
     );
@@ -149,12 +149,17 @@ type
 
 function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
 
-function BuildLazarus(Profile: TBuildLazarusProfile;
+{ Clean all
+  clean ide
+  ide
+  clean ide + ide
+}
+function MakeLazarus(Profile: TBuildLazarusProfile;
   ExternalTools: TBaseExternalToolList; Macros: TTransferMacroList;
   const PackageOptions, CompilerPath, MakePath: string;
   Flags: TBuildLazarusFlags; var ProfileChanged: boolean): TModalResult;
 
-function CreateBuildLazarusOptions(Profile: TBuildLazarusProfile;
+function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
   Macros: TTransferMacroList; const PackageOptions: string;
   Flags: TBuildLazarusFlags; var AExOptions: string;
   out UpdateRevisionInc: boolean; out OutputDirRedirected: boolean): TModalResult;
@@ -192,7 +197,7 @@ begin
   end;
 end;
 
-function BuildLazarus(Profile: TBuildLazarusProfile;
+function MakeLazarus(Profile: TBuildLazarusProfile;
   ExternalTools: TBaseExternalToolList; Macros: TTransferMacroList;
   const PackageOptions, CompilerPath, MakePath: string;
   Flags: TBuildLazarusFlags; var ProfileChanged: boolean): TModalResult;
@@ -328,7 +333,7 @@ begin
       // call make to clean up
       Tool.Title:=lisCleanLazarusSource;
       Tool.WorkingDirectory:=WorkingDirectory;
-      if IdeBuildMode=bmCleanBuild then
+      if (IdeBuildMode=bmCleanBuild) or (blfOnlyIDE in Flags) then
         Tool.CmdLineParams:='cleanide'
       else
         Tool.CmdLineParams:='cleanlaz';
@@ -352,7 +357,7 @@ begin
         Tool.CmdLineParams:='cleanide ide';
       // append extra Profile
       ExOptions:='';
-      Result:=CreateBuildLazarusOptions(Profile,Macros,PackageOptions,Flags,
+      Result:=CreateIDEMakeOptions(Profile,Macros,PackageOptions,Flags,
                                ExOptions,UpdateRevisionInc,OutputDirRedirected);
       if Result<>mrOk then exit;
 
@@ -378,7 +383,7 @@ begin
   end;
 end;
 
-function CreateBuildLazarusOptions(Profile: TBuildLazarusProfile;
+function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
   Macros: TTransferMacroList; const PackageOptions: string;
   Flags: TBuildLazarusFlags; var AExOptions: string;
   out UpdateRevisionInc: boolean; out OutputDirRedirected: boolean): TModalResult;
@@ -668,7 +673,7 @@ var
   OutputDirRedirected: boolean;
 begin
   ExOptions:='';
-  Result:=CreateBuildLazarusOptions(Profile, Macros, PackageOptions, Flags,
+  Result:=CreateIDEMakeOptions(Profile, Macros, PackageOptions, Flags,
                                ExOptions, UpdateRevisionInc, OutputDirRedirected);
   if Result<>mrOk then exit;
   Filename:=GetMakeIDEConfigFilename;
