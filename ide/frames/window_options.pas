@@ -420,6 +420,10 @@ begin
   if Fits('CodeBrowser',lisCodeBrowser) then exit;
   if Fits('IssueBrowser',lisMenuViewRestrictionBrowser) then exit;
   if Fits('JumpHistory',lisJHJumpHistory) then exit;
+  if Fits('PseudoTerminal', lisMenuViewPseudoTerminal) then exit;
+  if Fits('Threads', lisMenuViewThreads) then exit;
+  if Fits('DbgHistory', lisMenuViewHistory) then exit;
+  if Fits('ComponentList', lisFPComponents) then exit;
   Result:=ALayout.FormCaption;
 end;
 
