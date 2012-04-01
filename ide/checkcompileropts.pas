@@ -435,7 +435,7 @@ begin
     for i:=0 to CfgCache.ConfigFiles.Count-1 do begin
       CfgFile:=CfgCache.ConfigFiles[i];
       if CfgFile.FileExists then begin
-        AddHint('using config file '+CfgFile.Filename);
+        AddHint(Format(dlgCCOUsingConfigFile, [CfgFile.Filename]));
         break;
       end;
     end;
@@ -808,7 +808,7 @@ begin
     // PPUFiles now contains all orphaned ppu/o files
     PPUFiles.Sort;
     for i:=0 to PPUFiles.Count-1 do
-      AddWarning('orphaned file found: '+PPUFiles[i]);
+      AddWarning(Format(dlgCCOOrphanedFileFound, [PPUFiles[i]]));
   finally
     PPUFiles.Free;
   end;

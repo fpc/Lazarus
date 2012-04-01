@@ -2022,6 +2022,7 @@ resourcestring
   dlgCCOTestCheckingFPCConfigs = 'Test: Checking fpc configs ...';
   lisCCONoCfgFound = 'no fpc.cfg found';
   lisCCOMultipleCfgFound = 'multiple compiler configs found: ';
+  dlgCCOUsingConfigFile = 'using config file %s';
   dlgCCOTestCompilingEmptyFile = 'Test: Compiling an empty file ...';
   lisCCOInvalidTestDir = 'Invalid Test Directory';
   lisCCOCheckTestDir = 'Please check the Test directory under %s'
@@ -2106,6 +2107,7 @@ resourcestring
     +'directory of %s is listed in the unit search path of %s.';
   lisTheOutputDirectoryShouldBeASeparateDirectoryAndNot = ' The output '
     +'directory should be a separate directory and not contain any source files.';
+  dlgCCOOrphanedFileFound = 'orphaned file found: %s';
   lisTheOutputDirectoryOfIsListedInTheIncludeSearchPath = 'The output '
     +'directory of %s is listed in the include search path of %s.';
   lisTheOutputDirectoryOfIsListedInTheInheritedUnitSear = 'The output '
