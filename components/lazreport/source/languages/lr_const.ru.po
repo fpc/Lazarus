@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-12-04 16:51+0400\n"
+"PO-Revision-Date: 2012-04-01 14:58+0400\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -1019,7 +1019,7 @@ msgstr "Выделить всё"
 
 #: lr_const.sfrdesignerformselectsameclass
 msgid "Select same class objects"
-msgstr ""
+msgstr "Выделить однотипные объекты"
 
 #: lr_const.sfrdesignerformselobj
 msgid "Select object"

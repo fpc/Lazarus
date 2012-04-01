@@ -724,6 +724,10 @@ msgstr "תלוי ברי&שיות"
 msgid "Checking compiler options"
 msgstr "בודק את אפשרויות המהדר"
 
+#: lazarusidestrconsts.dlgccoorphanedfilefound
+msgid "orphaned file found: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgccoresults
 msgid "Results"
 msgstr "תוצאות"
@@ -764,6 +768,10 @@ msgstr "בדיקה: בודק מקורות בנתיבי החיפוש של ppu ש�
 #: lazarusidestrconsts.dlgccotesttoolcompilingemptyfile
 msgid "Test: Compiling an empty file"
 msgstr "בדיקה: מהדר קובץ ריק ..."
+
+#: lazarusidestrconsts.dlgccousingconfigfile
+msgid "using config file %s"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcdtclassorder
 msgid "Class order"
@@ -15698,7 +15706,9 @@ msgid "The project compiler options and the directives in the main source differ
 msgstr "אפשרויות המהדר לפרוייקט, וההוראות בקובץ הקוד הראשי שונות. עבור היחידה החדשה משתמש באפשרויות האופן וסוג המחרוזות של הפרוייקט."
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
-msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
+#, fuzzy
+#| msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
+msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr "הפרוייקט לא משתמש ביחידות ממשקים של LCL, אבל נראה שהיא זקוקה להן. תקבל שגיאות מקשר מוזרות אם תשתמש בטפסי LCL ללא ממשקים."
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile

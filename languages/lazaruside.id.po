@@ -710,6 +710,10 @@ msgstr ""
 msgid "Checking compiler options"
 msgstr ""
 
+#: lazarusidestrconsts.dlgccoorphanedfilefound
+msgid "orphaned file found: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgccoresults
 msgid "Results"
 msgstr ""
@@ -749,6 +753,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgccotesttoolcompilingemptyfile
 msgid "Test: Compiling an empty file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgccousingconfigfile
+msgid "using config file %s"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcdtclassorder
@@ -15515,7 +15523,7 @@ msgid "The project compiler options and the directives in the main source differ
 msgstr ""
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
-msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
+msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr ""
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile

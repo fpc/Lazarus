@@ -703,6 +703,10 @@ msgstr "&Rozlišovat velikost znaků"
 msgid "Checking compiler options"
 msgstr "Kontrolování voleb překladače"
 
+#: lazarusidestrconsts.dlgccoorphanedfilefound
+msgid "orphaned file found: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgccoresults
 msgid "Results"
 msgstr "Výsledky"
@@ -743,6 +747,10 @@ msgstr "Test: Kontrola zdrojových souborů ve vyhledávacích cestách fpc..."
 #: lazarusidestrconsts.dlgccotesttoolcompilingemptyfile
 msgid "Test: Compiling an empty file"
 msgstr "Test: Překládání prázdného souboru."
+
+#: lazarusidestrconsts.dlgccousingconfigfile
+msgid "using config file %s"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcdtclassorder
 msgid "Class order"
@@ -14954,7 +14962,9 @@ msgid "The project compiler options and the directives in the main source differ
 msgstr "Volby překladače projektu a příkazy v hlavním zdroji se liší. Nové jednotky použijí mód a řetězcový typ z voleb projektu:"
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
-msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
+#, fuzzy
+#| msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
+msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr "Projekt nepoužívá rozhraní jednotek LCL, ale zdá se, že je potřebuje.%sDostanete různé chyby při linkování, pokud použijete LCL formulář bez rozhraní."
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile

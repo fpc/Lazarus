@@ -718,6 +718,10 @@ msgstr "&Klein-/Großschreibung beachten"
 msgid "Checking compiler options"
 msgstr "Prüfe Compilereinstellungen"
 
+#: lazarusidestrconsts.dlgccoorphanedfilefound
+msgid "orphaned file found: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgccoresults
 msgid "Results"
 msgstr "Ergebnisse"
@@ -758,6 +762,10 @@ msgstr "Test: Prüfe die Quellen in den ppu-Suchpfaden von FPC..."
 #: lazarusidestrconsts.dlgccotesttoolcompilingemptyfile
 msgid "Test: Compiling an empty file"
 msgstr "Test: Kompiliere eine leere Datei"
+
+#: lazarusidestrconsts.dlgccousingconfigfile
+msgid "using config file %s"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcdtclassorder
 msgid "Class order"
@@ -15451,7 +15459,9 @@ msgid "The project compiler options and the directives in the main source differ
 msgstr "Die Projekt-Compilereinstellungen unterscheiden sich von den Direktiven in der Hauptquelldatei. Für die neue Unit werden der Modus und der String-Typ der Projekteinstellungen verwendet:"
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
-msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
+#, fuzzy
+#| msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
+msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr "Das Projekt bindet die LCL-Unit-Schnittstelllen nicht ein, scheint sie aber zu brauchen.%sEs führt zu Linker-Fehlern, wenn die LCL-Fenster ohne ihre Interfaces eingebunden werden."
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile

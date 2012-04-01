@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-03-31 03:30+0400\n"
+"PO-Revision-Date: 2012-04-01 15:22+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -727,6 +727,10 @@ msgstr "&Учитывать регистр"
 msgid "Checking compiler options"
 msgstr "Проверка параметров компилятора"
 
+#: lazarusidestrconsts.dlgccoorphanedfilefound
+msgid "orphaned file found: %s"
+msgstr "найден брошенный файл: %s"
+
 #: lazarusidestrconsts.dlgccoresults
 msgid "Results"
 msgstr "Результаты"
@@ -767,6 +771,10 @@ msgstr "Тест: проверка наличия файлов исходног�
 #: lazarusidestrconsts.dlgccotesttoolcompilingemptyfile
 msgid "Test: Compiling an empty file"
 msgstr "Тест: компиляция пустого файла"
+
+#: lazarusidestrconsts.dlgccousingconfigfile
+msgid "using config file %s"
+msgstr "используется файл настройки %s"
 
 #: lazarusidestrconsts.dlgcdtclassorder
 msgid "Class order"
@@ -15389,8 +15397,9 @@ msgid "The project compiler options and the directives in the main source differ
 msgstr "Параметры компилятора для проекта не соответствуют директивам в главном файле исходного кода. В новом модуле будут использованы режим синтаксиса и тип строк в соответствии с параметрами проекта:"
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
-msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
-msgstr "Проект не использует модуль LCL Interfaces, но, вероятно, требует его.%sКомпоновщик будет выдавать непонятные ошибки, если формы LCL будут использоваться без модуля Interfaces."
+#| msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
+msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
+msgstr "Проект не использует модуль LCL Interfaces, требующийся LCLBase.%sКомпоновщик будет выдавать непонятные ошибки, если LCL будет использоваться без модуля Interfaces."
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile
 msgid "The project has no main source file."

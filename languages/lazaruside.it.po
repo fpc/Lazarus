@@ -722,6 +722,10 @@ msgstr "Maiuscolo/Minuscolo"
 msgid "Checking compiler options"
 msgstr "Verifica opzioni del compilatore"
 
+#: lazarusidestrconsts.dlgccoorphanedfilefound
+msgid "orphaned file found: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgccoresults
 msgid "Results"
 msgstr "Risultati"
@@ -762,6 +766,10 @@ msgstr "Test: Controllo sorgenti nei percorsi fpc ppu ..."
 #: lazarusidestrconsts.dlgccotesttoolcompilingemptyfile
 msgid "Test: Compiling an empty file"
 msgstr "Test: Compilazione di un file vuoto"
+
+#: lazarusidestrconsts.dlgccousingconfigfile
+msgid "using config file %s"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcdtclassorder
 msgid "Class order"
@@ -15711,7 +15719,9 @@ msgid "The project compiler options and the directives in the main source differ
 msgstr "Le opzioni per compilatore del progetto e le direttive nel sorgente principale sono diverse. Per le nuove unit sono usati questa stringa di opzioni e questo modo di costruzione:"
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
-msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
+#, fuzzy
+#| msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
+msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr "Il progretto non usa le unit di interfaccia LCL, ma sembra averne bisogno.%sSe non usate le interfacce LCL avrete strani errori dal linker in fase di costruzione del progetto."
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile
