@@ -22,8 +22,8 @@
     <LazDoc Paths="docs/xml/ide"/>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
-      <MinorVersionNr Value="9"/>
-      <RevisionNr Value="31"/>
+      <MajorVersionNr Value="1"/>
+      <MinorVersionNr Value="1"/>
       <CharSet Value="04B0"/>
       <StringTable ProductName="Lazarus IDE" ProductVersion=""/>
     </VersionInfo>
