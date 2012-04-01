@@ -1,0 +1,115 @@
+object Form1: TForm1
+  Left = 238
+  Height = 314
+  Top = 145
+  Width = 456
+  Caption = 'Form1'
+  ClientHeight = 314
+  ClientWidth = 456
+  OnCreate = FormCreate
+  LCLVersion = '0.9.31'
+  object DBGrid1: TDBGrid
+    Left = 43
+    Height = 195
+    Top = 97
+    Width = 365
+    Color = clWindow
+    Columns = <>
+    DataSource = Datasource1
+    TabOrder = 0
+  end
+  object SQLTransaction1: TSQLTransaction
+    Active = False
+    Action = caNone
+    Database = SybaseConnection1
+    left = 208
+    top = 32
+  end
+  object SQLQuery1: TSQLQuery
+    FieldDefs = <    
+      item
+        Name = 'srvid'
+        DataType = ftSmallint
+        Precision = -1
+        Size = 0
+      end    
+      item
+        Name = 'srvstatus'
+        DataType = ftSmallint
+        Precision = -1
+        Size = 0
+      end    
+      item
+        Name = 'srvname'
+        DataType = ftFixedChar
+        Precision = -1
+        Size = 60
+      end    
+      item
+        Name = 'srvnetname'
+        DataType = ftFixedChar
+        Precision = -1
+        Size = 510
+      end    
+      item
+        Name = 'srvclass'
+        DataType = ftSmallint
+        Precision = -1
+        Size = 0
+      end    
+      item
+        Name = 'srvsecmech'
+        DataType = ftFixedChar
+        Precision = -1
+        Size = 60
+      end    
+      item
+        Name = 'srvcost'
+        DataType = ftSmallint
+        Precision = -1
+        Size = 0
+      end    
+      item
+        Name = 'srvstatus2'
+        DataType = ftBCD
+        Precision = 10
+        Size = 0
+      end    
+      item
+        Name = 'srvprincipal'
+        DataType = ftFixedChar
+        Precision = -1
+        Size = 510
+      end>
+    Database = SybaseConnection1
+    Transaction = SQLTransaction1
+    SQL.Strings = (
+      'select * from sysservers'
+    )
+    Params = <>
+    left = 280
+    top = 32
+  end
+  object Datasource1: TDatasource
+    DataSet = SQLQuery1
+    left = 352
+    top = 32
+  end
+  object SybaseConnection1: TSybaseConnection
+    Connected = False
+    LoginPrompt = False
+    KeepConnection = False
+    Transaction = SQLTransaction1
+    UserName = 'sa'
+    LogEvents = []
+    left = 128
+  end
+  object MSSQLConnection1: TMSSQLConnection
+    Connected = False
+    LoginPrompt = False
+    KeepConnection = False
+    LogEvents = []
+    left = 128
+    top = 48
+  end
+end

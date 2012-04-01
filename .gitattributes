@@ -3962,6 +3962,13 @@ examples/motiongraphics/motiongraphics.ico -text
 examples/motiongraphics/motiongraphics.lpi svneol=native#text/plain
 examples/motiongraphics/motiongraphics.lpr svneol=native#text/pascal
 examples/motiongraphics/motiongraphics.res -text
+examples/mssql/README.txt svneol=native#text/plain
+examples/mssql/dbform.lfm svneol=native#text/plain
+examples/mssql/dbform.pas svneol=native#text/plain
+examples/mssql/dbloginform.lfm svneol=native#text/plain
+examples/mssql/dbloginform.pas svneol=native#text/plain
+examples/mssql/mssqlconnsample.lpi svneol=native#text/plain
+examples/mssql/mssqlconnsample.lpr svneol=native#text/plain
 examples/multithreading/criticalsectionexample1.lpi svneol=native#text/plain
 examples/multithreading/criticalsectionexample1.lpr svneol=native#text/plain
 examples/multithreading/criticalsectionunit1.lfm svneol=native#text/plain
