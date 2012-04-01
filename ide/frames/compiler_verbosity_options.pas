@@ -44,7 +44,7 @@ begin
     AutoSize := True;
 
     Items.Add(dlgCOShowErr + ' (-ve)');
-    Items.Add(dlgHintsParameterSenderNotUsed + ' (none)');
+    Items.Add(dlgHintsParameterSenderNotUsed + ' ' + dlgPOIconDescNone);
     Items.Add(dlgShowWarnings + ' (-vw)');
     Items.Add(dlgShowDebugInfo + ' (-vd)');
     Items.Add(dlgShowNotes + ' (-vn)');
@@ -59,9 +59,9 @@ begin
     Items.Add(dlgShowConditionals + ' (-vc)');
     Items.Add(dlgShowEverything + ' (-va)');
     Items.Add(dlgShowExecutableInfo + ' (-vx)');
-    Items.Add(dlgShowSummary + ' (none)');
+    Items.Add(dlgShowSummary + ' ' + dlgPOIconDescNone);
     Items.Add(dlgShowNothing + ' (-v0)');
-    Items.Add(dlgHintsUnused + ' (none)');
+    Items.Add(dlgHintsUnused + ' ' + dlgPOIconDescNone);
     Items.Add(dlgWriteFPCLogo + ' (-l)');
   end;
 
