@@ -745,19 +745,20 @@ end;
 constructor TfrBarCodeObject.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
-  
-(*  if not assigned(frBarCodeForm) {and not (csDesigning in ComponentState)} then
+
+  if not assigned(frBarCodeForm) {and not (csDesigning in ComponentState)} then
   begin
     frBarCodeForm := TfrBarCodeForm.Create(nil);
-    frRegisterObject(TfrBarCodeView, frBarCodeForm.Image1.Picture.Bitmap,
-                           sInsBarcode, frBarCodeForm);
-  end;*)
+    frSetAddinEditor(TfrBarcodeView, frBarcodeForm);
+    frSetAddinIcon(TfrBarcodeView, frBarCodeForm.Image1.Picture.Bitmap);
+    frSetAddinHint(TfrBarcodeView, sInsBarcode);
+  end;
 end;
 
 initialization
-  frBarCodeForm := TfrBarCodeForm.Create(nil);
-  frRegisterObject(TfrBarCodeView, frBarCodeForm.Image1.Picture.Bitmap,
-                         sInsBarcode, frBarCodeForm);
+  frBarcodeForm := nil;
+  frRegisterObject(TfrBarCodeView, nil, '', nil);
+
 finalization
   if Assigned(frBarCodeForm) then
     frBarCodeForm.Free;
