@@ -2033,15 +2033,16 @@ begin
         da_DefineRecurse));
     RTLDir.AddChild(IFTempl);
 
-    // rtl: IF TargetOS=iphonesim then add include path rtl/unix, rtl/macos
+    // rtl: IF TargetOS=iphonesim then add include path rtl/unix, rtl/bsd, rtl/darwin
     IFTempl:=TDefineTemplate.Create('If TargetOS=iphonesim','If TargetOS=iphonesim',
       '',''''+TargetOSMacro+'''=''iphonesim''',da_If);
     IFTempl.AddChild(TDefineTemplate.Create('Include Path',
-        Format(ctsIncludeDirectoriesPlusDirs,['unix,macos']),
+        Format(ctsIncludeDirectoriesPlusDirs,['unix,bsd,darwin']),
         ExternalMacroStart+'IncPath',
         IncPathMacro
         +';'+Dir+'rtl'+DS+'unix'
-        +';'+Dir+'rtl'+DS+'macos',
+        +';'+Dir+'rtl'+DS+'bsd'
+        +';'+Dir+'rtl'+DS+'darwin',
         da_DefineRecurse));
     RTLDir.AddChild(IFTempl);
 
