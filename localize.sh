@@ -29,6 +29,7 @@ fi
 
 RSTFILES=(
   ". lazarusidestrconsts lazaruside"
+  ". debuggerstrconst"
   ". gdbmidebugger"
   "ideintf objinspstrconsts"
   "components/codetools codetoolsstrconsts"

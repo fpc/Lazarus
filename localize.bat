@@ -39,7 +39,12 @@ echo on
 tools\updatepofiles %IDE_RST% languages\lazaruside.po
 @if exist %IDE_RST% echo RST found
 
-@REM Debugger
+@REM Debugger dialogs
+@set DBGD_RST=units\%ArchOsWS%\DebuggerStrConst.rst
+tools\updatepofiles %DBGD_RST% languages\debuggerstrconst.po
+@if exist %DBGD_RST% echo RST found
+
+@REM Debugger MI interface
 @set DBG_RST=units\%ArchOsWS%\gdbmidebugger.rst
 tools\updatepofiles %DBG_RST% languages\gdbmidebugger.po
 @if exist %DBG_RST% echo RST found

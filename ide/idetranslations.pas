@@ -428,13 +428,9 @@ end;
   Result: none
 
   Translates all resourcestrings of the resource string files:
-    - lclstrconsts.pas
-    - codetoolsstrconsts.pas
     - lazarusidestrconsts.pas
-    - objinspstrconsts.pas
-    - syneditstrconst.pp
-    - synmacrorecorder.pas
     - gdbmidebugger.pp
+    - debuggerstrconst.pp
 -------------------------------------------------------------------------------}
 procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
 const
@@ -460,6 +456,9 @@ begin
   // GDB MI interface
   TranslateUnitResourceStrings('GDBMIDebugger',
     Dir+'languages/gdbmidebugger'+Ext,Lang,FallbackLang);
+  // Debugger GUI
+  TranslateUnitResourceStrings('DebuggerStrConst',
+    Dir+'languages/debuggerstrconst'+Ext,Lang,FallbackLang);
 end;
 
 { TLazarusTranslations }
