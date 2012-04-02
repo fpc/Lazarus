@@ -2977,13 +2977,23 @@ begin
       end;
     end;
 
+  ecTab:
+    begin
+      AddChar:=true;
+      if AutoCompleteChar(aChar,AddChar,acoTab) then begin
+        // completed
+      end;
+      if not AddChar then Command:=ecNone;
+    end;
+
   ecChar:
     begin
       AddChar:=true;
       //debugln(['TSourceEditor.ProcessCommand AChar="',AChar,'" AutoIdentifierCompletion=',dbgs(EditorOpts.AutoIdentifierCompletion),' Interval=',SourceCompletionTimer.Interval,' ',Dbgs(FEditor.CaretXY),' ',FEditor.IsIdentChar(aChar)]);
       if (aChar=' ') and AutoCompleteChar(aChar,AddChar,acoSpace) then begin
         // completed
-      end else if (not FEditor.IsIdentChar(aChar))
+      end
+      else if (not FEditor.IsIdentChar(aChar))
       and AutoCompleteChar(aChar,AddChar,acoWordEnd) then begin
         // completed
       end else if CodeToolsOpts.IdentComplAutoStartAfterPoint then begin
@@ -3906,6 +3916,9 @@ begin
     //DebugLn(['TSourceEditor.AutoCompleteChar ',AToken,' SrcToken=',SrcToken,' CatName=',CatName,' Index=',Manager.CodeTemplateModul.CompletionAttributes[i].IndexOfName(CatName)]);
     if (AnsiCompareText(AToken,SrcToken)=0)
     and (Manager.CodeTemplateModul.CompletionAttributes[i].IndexOfName(CatName)>=0)
+    and ( (not FEditor.SelAvail) or
+          (Manager.CodeTemplateModul.CompletionAttributes[i].IndexOfName(
+             AutoCompleteOptionNames[acoIgnoreForSelection]) < 0)  )
     then begin
       Result:=true;
       //DebugLn(['TSourceEditor.AutoCompleteChar ',AToken,' SrcToken=',SrcToken,' CatName=',CatName,' Index=',Manager.CodeTemplateModul.CompletionAttributes[i].IndexOfName(CatName)]);

@@ -4606,7 +4606,9 @@ resourcestring
   rsAddInverse = 'Add Inverse';
   lisAutomaticallyOnLineBreak = 'line break';
   lisAutomaticallyOnSpace = 'space';
+  lisAutomaticallyOnTab = 'tab';
   lisAutomaticallyOnWordEnd = 'word end';
+  lisAutomaticallyIgnoreForSelection = 'Do not complete selection';
   lisAutomaticallyRemoveCharacter = 'do not add character';
   lisKeepSubIndentation = 'Keep indentation';
   lisPckOptsThisPackageProvidesTheSameAsTheFollowingPackages = 'This package '
