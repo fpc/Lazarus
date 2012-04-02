@@ -1125,10 +1125,12 @@ type
     procedure DeCompress({%H-}StreamIn, {%H-}StreamOut: TStream); virtual;
   end;
 
+  TfrAddinInitProc = procedure;
+
 
 function frCreateObject(Typ: Byte; const ClassName: String): TfrView;
 procedure frRegisterObject(ClassRef: TFRViewClass; ButtonBmp: TBitmap;
-  const ButtonHint: String; EditorForm: TfrObjEditorForm);
+  const ButtonHint: String; EditorForm: TfrObjEditorForm; InitProc:TfrAddinInitProc=nil);
 procedure frSetAddinEditor(ClassRef: TfrViewClass; EditorForm: TfrObjEditorForm);
 procedure frSetAddinIcon(ClassRef: TfrViewClass; ButtonBmp: TBitmap);
 procedure frSetAddinHint(ClassRef: TfrViewClass; ButtonHint: string);
@@ -1177,6 +1179,7 @@ type
     EditorForm: TfrObjEditorForm;
     ButtonBmp: TBitmap;
     ButtonHint: String;
+    InitializeProc: TfrAddinInitProc;
   end;
 
   TfrExportFilterInfo = record
@@ -1449,15 +1452,19 @@ begin
 end;
 
 procedure frRegisterObject(ClassRef: TfrViewClass; ButtonBmp: TBitmap;
-  const ButtonHint: String; EditorForm: TfrObjEditorForm);
+  const ButtonHint: String; EditorForm: TfrObjEditorForm; InitProc:TfrAddinInitProc=nil);
 begin
   frAddIns[frAddInsCount].ClassRef := ClassRef;
   frAddIns[frAddInsCount].EditorForm := EditorForm;
   frAddIns[frAddInsCount].ButtonBmp := ButtonBmp;
   frAddIns[frAddInsCount].ButtonHint := ButtonHint;
-  if frDesigner <> nil then
+  frAddIns[frAddInsCount].InitializeProc := InitProc;
+  if frDesigner <> nil then begin
+    if Assigned(InitProc) then
+      InitProc;
     frDesigner.RegisterObject(ButtonBmp, ButtonHint,
       Integer(gtAddIn) + frAddInsCount);
+  end;
   Inc(frAddInsCount);
 end;
 

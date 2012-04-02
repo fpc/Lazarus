@@ -17,7 +17,7 @@ object frBarCodeForm: TfrBarCodeForm
   OnCreate = FormCreate
   Position = poScreenCenter
   ShowHint = True
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object Label1: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner

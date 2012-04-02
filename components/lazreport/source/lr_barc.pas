@@ -739,13 +739,8 @@ begin
   end;
 end;
 
-
-{ TfrBarCodeObject }
-
-constructor TfrBarCodeObject.Create(aOwner: TComponent);
+procedure InitializeBarcAddin;
 begin
-  inherited Create(aOwner);
-
   if not assigned(frBarCodeForm) {and not (csDesigning in ComponentState)} then
   begin
     frBarCodeForm := TfrBarCodeForm.Create(nil);
@@ -755,9 +750,17 @@ begin
   end;
 end;
 
+{ TfrBarCodeObject }
+
+constructor TfrBarCodeObject.Create(aOwner: TComponent);
+begin
+  inherited Create(aOwner);
+  InitializeBarcAddin;
+end;
+
 initialization
   frBarcodeForm := nil;
-  frRegisterObject(TfrBarCodeView, nil, '', nil);
+  frRegisterObject(TfrBarCodeView, nil, '', nil, @InitializeBarcAddin);
 
 finalization
   if Assigned(frBarCodeForm) then
