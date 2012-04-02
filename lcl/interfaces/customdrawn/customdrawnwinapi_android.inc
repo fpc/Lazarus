@@ -2020,6 +2020,7 @@ begin
   // Prepare the input
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, Str);
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
   javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, lFontSize);
 
   // Call the method to measure the text
@@ -3905,6 +3906,7 @@ begin
   // Prepare the input
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(lTextStr));
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
   javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, lFontSize);
   javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lclmaxwidth, MaxWidth);
 
@@ -3972,6 +3974,7 @@ begin
   // Prepare the input
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, Str);
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
   javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, lFontSize);
 
   // Call the method
@@ -4018,6 +4021,7 @@ begin
   // Prepare the input for getting the average width of a char
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar('x'));
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
   javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, lFontSize);
 
   // Call the method
@@ -4028,6 +4032,7 @@ begin
   // Prepare the input for getting the max height of a text and other metrics
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar('Íg'));
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
   javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, lFontSize);
 
   // Call the method
@@ -4665,8 +4670,11 @@ begin
   // String fields
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, lpText);
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
+  //
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, lpCaption);
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltitle, lJavaString);
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
 
   // Add all buttons
   javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton1, -1);

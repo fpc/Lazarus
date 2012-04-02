@@ -194,8 +194,11 @@ begin
   // String fields
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(DialogMessage));
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
+  //
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(DialogCaption));
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltitle, lJavaString);
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
 
   // Read the buttons
   javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton1, -1);
@@ -238,6 +241,7 @@ begin
         javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton3, BtnKind);
       end;
     end;
+    javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
   end;
 
   // Call the method

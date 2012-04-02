@@ -129,9 +129,12 @@ begin
   lStr := AMsg.Body;
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(lStr));
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
+  //
   lStr := AMsg.destinationAddress.Text;
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(lStr));
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcldestination, lJavaString);
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
   // Message type
   javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclkind, 1);
   // Call the method
