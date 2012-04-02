@@ -815,7 +815,6 @@ resourcestring
   lisTheComponentIsInheritedFromToRenameAnInheritedComp = 'The component %s '
     +'is inherited from %s.%sTo rename an inherited component open the '
     +'ancestor and rename it there.';
-  lisSorryNotImplementedYet = 'Sorry, not implemented yet';
   lisUnableToFindMethod = 'Unable to find method.';
   lisUnableToCreateNewMethod = 'Unable to create new method.';
   lisUnableToShowMethod = 'Unable to show method.';
@@ -1831,7 +1830,6 @@ resourcestring
   lisWhenEnabledTheCurrentOptionsAreSavedToTheTemplateW = 'When enabled the '
     +'current options are saved to the template, which is used when creating '
     +'new projects';
-  lisPkgEdOnlineHelpNotYetImplemented = 'Online Help not yet implemented';
   lisPkgEdRightClickOnTheItemsTreeToGetThePopupmenuWithAllAv = 'Right click '
     +'on the items tree to get the popupmenu with all available package functions.';
   dlgSearchPaths = 'Paths';
@@ -2378,8 +2376,6 @@ resourcestring
   uemRefactor = 'Refactoring';
   uemEditorproperties='Editor Properties';
   ueNotImplCap='Not implemented yet';
-  ueNotImplText='If You can help us to implement this feature, mail to lazarus@miraclec.com';
-  ueNotImplCapAgain='I told You: Not implemented yet';
   ueFileROCap= 'File is readonly';
   ueFileROText1='The file "';
   ueFileROText2='" is not writable.';
@@ -4019,7 +4015,6 @@ resourcestring
   lisCurrentState = 'Current state: ';
   lisInstalled = 'installed';
   lisNotInstalled = 'not installed';
-  lisState = 'State: ';
   lisOIPThisPackageWasAutomaticallyCreated = '%sThis package was automatically created';
   lisOIPThisPackageIsInstalledButTheLpkFileWasNotFound = '%sThis package is '
     +'installed, but the lpk file was not found';
@@ -4608,7 +4603,7 @@ resourcestring
   lisAutomaticallyOnSpace = 'space';
   lisAutomaticallyOnTab = 'tab';
   lisAutomaticallyOnWordEnd = 'word end';
-  lisAutomaticallyIgnoreForSelection = 'Do not complete selection';
+  lisAutomaticallyIgnoreForSelection = 'do not complete selection';
   lisAutomaticallyRemoveCharacter = 'do not add character';
   lisKeepSubIndentation = 'Keep indentation';
   lisPckOptsThisPackageProvidesTheSameAsTheFollowingPackages = 'This package '
@@ -4695,7 +4690,6 @@ resourcestring
   lisDisableAllInSameSource = 'Disable All in same source';
   lisEnableAllInSameSource = 'Enable All in same source';
   lisDeleteAllInSameSource = 'Delete All in same source';
-  lisNotImplementedYet2 = 'Not implemented yet.';
   lisDeleteAllSelectedBreakpoints = 'Delete all selected breakpoints?';
   lisDeleteBreakpointAtLine = 'Delete breakpoint at%s"%s" line %d?';
   lisDeleteBreakpointForAddress = 'Delete breakpoint for address %s?';
