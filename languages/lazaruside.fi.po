@@ -7653,10 +7653,6 @@ msgstr "Merkistö on tiedostossa %s%s%s%skoodattu %s-koodauksella. Koodaukseksi 
 msgid "Endless loop in macros"
 msgstr ""
 
-#: lazarusidestrconsts.lisentertransla
-msgid "Enter translation language"
-msgstr "Anna käännöksen kieli"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr "Ympäristömuuttuja, nimi parametrina"
@@ -9797,10 +9793,6 @@ msgstr "Kokoa komponentit (SynEdit, CodeTools)"
 msgid "Build IDE"
 msgstr "Kokoa IDE"
 
-#: lazarusidestrconsts.lislazbuildbuildjitform
-msgid "Build JITForm"
-msgstr "Kokoa JITForm"
-
 #: lazarusidestrconsts.lislazbuildbuildmany
 msgid "Build Many"
 msgstr "Kokoa monta"
@@ -9984,10 +9976,6 @@ msgstr ""
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr ""
-
-#: lazarusidestrconsts.lisleaveemptyfo
-msgid "Leave empty for default .po file"
-msgstr "Jätä tyhjäksi oletus .po tiedostoa varten"
 
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
@@ -10330,10 +10318,6 @@ msgstr "Sulje projekti"
 msgid "CodeTools Defines Editor ..."
 msgstr ""
 
-#: lazarusidestrconsts.lismenucollectpofil
-msgid "Collect .po files"
-msgstr "Kerää .po tiedostot"
-
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment Selection"
 msgstr "Kommentoi valinta"
@@ -10394,10 +10378,6 @@ msgstr "Muunna projektin/paketin merkistökoodaus ..."
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "Luo FPDoc tiedostot"
-
-#: lazarusidestrconsts.lismenucreatepofile
-msgid "Create .po files"
-msgstr "Luo .po tiedostot"
 
 #: lazarusidestrconsts.lismenudebugwindows
 msgid "Debug Windows"

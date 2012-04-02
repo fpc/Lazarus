@@ -7930,10 +7930,6 @@ msgstr "Kódovanie súboru %s%s%s%sna disku je %s. Nové kódovanie je %s."
 msgid "Endless loop in macros"
 msgstr ""
 
-#: lazarusidestrconsts.lisentertransla
-msgid "Enter translation language"
-msgstr "Zadajte jazyk prekladu"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr ""
@@ -10139,10 +10135,6 @@ msgstr "Vybudovať komponenty (SynEdit, CodeTools)"
 msgid "Build IDE"
 msgstr "Vybudovať IDE"
 
-#: lazarusidestrconsts.lislazbuildbuildjitform
-msgid "Build JITForm"
-msgstr "Vybudovať formulár JIT"
-
 #: lazarusidestrconsts.lislazbuildbuildmany
 msgid "Build Many"
 msgstr ""
@@ -10336,10 +10328,6 @@ msgstr ""
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr "Jednotku %s nevlastní žiadny balíček alebo projekt.%sProsím pridajte jednotku do balíčka alebo projektu.%sNemožno vytvoriť súbor fpdoc."
-
-#: lazarusidestrconsts.lisleaveemptyfo
-msgid "Leave empty for default .po file"
-msgstr "Nechajte prázdne pre predvolený .po súbor"
 
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
@@ -10708,10 +10696,6 @@ msgstr "Zatvoriť projekt"
 msgid "CodeTools Defines Editor ..."
 msgstr "Editor definícií CodeTools ..."
 
-#: lazarusidestrconsts.lismenucollectpofil
-msgid "Collect .po files"
-msgstr "Zhromaždiť súbory .po"
-
 #: lazarusidestrconsts.lismenucommentselection
 #, fuzzy
 #| msgid "Comment selection"
@@ -10788,10 +10772,6 @@ msgstr "Konvertovať kódovanie projektov/balíčkov ..."
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "Vytvoriť súbory FPDoc"
-
-#: lazarusidestrconsts.lismenucreatepofile
-msgid "Create .po files"
-msgstr "Vytvoriť .po súbory"
 
 #: lazarusidestrconsts.lismenudebugwindows
 #, fuzzy

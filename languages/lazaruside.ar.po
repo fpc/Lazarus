@@ -7669,10 +7669,6 @@ msgstr ""
 msgid "Endless loop in macros"
 msgstr ""
 
-#: lazarusidestrconsts.lisentertransla
-msgid "Enter translation language"
-msgstr ""
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr ""
@@ -9814,10 +9810,6 @@ msgstr ""
 msgid "Build IDE"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildbuildjitform
-msgid "Build JITForm"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildbuildmany
 msgid "Build Many"
 msgstr ""
@@ -10004,10 +9996,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
-msgstr ""
-
-#: lazarusidestrconsts.lisleaveemptyfo
-msgid "Leave empty for default .po file"
 msgstr ""
 
 #: lazarusidestrconsts.lisleft
@@ -10351,10 +10339,6 @@ msgstr ""
 msgid "CodeTools Defines Editor ..."
 msgstr ""
 
-#: lazarusidestrconsts.lismenucollectpofil
-msgid "Collect .po files"
-msgstr ""
-
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment Selection"
 msgstr ""
@@ -10415,10 +10399,6 @@ msgstr ""
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr ""
-
-#: lazarusidestrconsts.lismenucreatepofile
-msgid "Create .po files"
-msgstr "أنشئ جذاذة ترجمة"
 
 #: lazarusidestrconsts.lismenudebugwindows
 msgid "Debug Windows"

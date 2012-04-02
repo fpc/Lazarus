@@ -7996,10 +7996,6 @@ msgstr "La codificación de página del archivo %s%s%s%sen disco es %s. La nueva
 msgid "Endless loop in macros"
 msgstr ""
 
-#: lazarusidestrconsts.lisentertransla
-msgid "Enter translation language"
-msgstr "Indroduzca idioma de traducción"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr "Variable de Entorno, nombre como parámetro"
@@ -10207,10 +10203,6 @@ msgstr "Construir componentes (SynEdit, CodeTools)"
 msgid "Build IDE"
 msgstr "Construir IDE"
 
-#: lazarusidestrconsts.lislazbuildbuildjitform
-msgid "Build JITForm"
-msgstr "Construir JITForm"
-
 #: lazarusidestrconsts.lislazbuildbuildmany
 msgid "Build Many"
 msgstr ""
@@ -10404,10 +10396,6 @@ msgstr ""
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr "La unidad %s no es propiedad de ningún paquete o proyecto.%sPor favor, añada la la unidad a un paquete o proyecto.%sNo se pudo crear el archivo fpdoc."
-
-#: lazarusidestrconsts.lisleaveemptyfo
-msgid "Leave empty for default .po file"
-msgstr "Dejar vacío para el fichero .po predeterminado"
 
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
@@ -10783,10 +10771,6 @@ msgstr "Cerrar Proyecto"
 msgid "CodeTools Defines Editor ..."
 msgstr "Editor de defines de CodeTools ..."
 
-#: lazarusidestrconsts.lismenucollectpofil
-msgid "Collect .po files"
-msgstr "Recoger archivos .po"
-
 #: lazarusidestrconsts.lismenucommentselection
 #, fuzzy
 #| msgid "Comment selection"
@@ -10863,10 +10847,6 @@ msgstr "Convertir Codificación de página de proyectos/paquetes ..."
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "Crear archivos FPDoc"
-
-#: lazarusidestrconsts.lismenucreatepofile
-msgid "Create .po files"
-msgstr "Crear archivos .po"
 
 #: lazarusidestrconsts.lismenudebugwindows
 #, fuzzy

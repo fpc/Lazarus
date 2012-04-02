@@ -7672,10 +7672,6 @@ msgstr "Kódování souboru %s%s%s%sna disku je %s. Nové kódování je %s."
 msgid "Endless loop in macros"
 msgstr "Nekonečná smyčka v makrech"
 
-#: lazarusidestrconsts.lisentertransla
-msgid "Enter translation language"
-msgstr "Zadejte překladový jazyk"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr "Proměnná prostředí, jméno jako parametr"
@@ -9819,10 +9815,6 @@ msgstr "Sestavit komponenty (SynEdit, CodeTools)"
 msgid "Build IDE"
 msgstr "Sestavit IDE"
 
-#: lazarusidestrconsts.lislazbuildbuildjitform
-msgid "Build JITForm"
-msgstr "Sestavit JITForm"
-
 #: lazarusidestrconsts.lislazbuildbuildmany
 msgid "Build Many"
 msgstr "Sestavit více"
@@ -10010,10 +10002,6 @@ msgstr "Neplatná cesta FPDoc"
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr "Jednotka %s není vlastněna žádným balíčkem nebo projektem.%sProsím přidejte jednotku do balíčku nebo projektu.%sNelze vytvořit soubor fpdoc."
-
-#: lazarusidestrconsts.lisleaveemptyfo
-msgid "Leave empty for default .po file"
-msgstr "Nechejte prázdné pro výchozí soubor .po"
 
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
@@ -10356,10 +10344,6 @@ msgstr "Zavřít projekt"
 msgid "CodeTools Defines Editor ..."
 msgstr "Editor definic pro CodeTools ..."
 
-#: lazarusidestrconsts.lismenucollectpofil
-msgid "Collect .po files"
-msgstr "Sbírat soubory .po"
-
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment Selection"
 msgstr "Zakomentovat výběr"
@@ -10420,10 +10404,6 @@ msgstr "Převést kódování projektů/balíčků ..."
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "Vytvořit soubory FPDoc"
-
-#: lazarusidestrconsts.lismenucreatepofile
-msgid "Create .po files"
-msgstr "Vytvořit soubory .po"
 
 #: lazarusidestrconsts.lismenudebugwindows
 msgid "Debug Windows"

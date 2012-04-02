@@ -7977,10 +7977,6 @@ msgstr "Failo diske %s%s%s%skoduotė yra %s. Naujoji koduotė yra %s."
 msgid "Endless loop in macros"
 msgstr ""
 
-#: lazarusidestrconsts.lisentertransla
-msgid "Enter translation language"
-msgstr "Įveskite vertimo kalbą"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr "Aplinkos kintamasis, pavadinimas – tai jo parametras"
@@ -10187,10 +10183,6 @@ msgstr "Daryti komponentus (SynEdit, CodeTools)"
 msgid "Build IDE"
 msgstr "Daryti IKA"
 
-#: lazarusidestrconsts.lislazbuildbuildjitform
-msgid "Build JITForm"
-msgstr "Daryti JITForm"
-
 #: lazarusidestrconsts.lislazbuildbuildmany
 msgid "Build Many"
 msgstr ""
@@ -10384,10 +10376,6 @@ msgstr ""
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr "Modulis %s nepriklauso jokiam paketui ar projektui.%sPriskirkite modulį paketui ar projektui.%sNeina sukurti FPDoc failo."
-
-#: lazarusidestrconsts.lisleaveemptyfo
-msgid "Leave empty for default .po file"
-msgstr "Palikite tuščią jei naudosite numatytąjį .po failą"
 
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
@@ -10765,10 +10753,6 @@ msgstr "Užverti projektą"
 msgid "CodeTools Defines Editor ..."
 msgstr "CodeTools apibrėžčių rengyklė…"
 
-#: lazarusidestrconsts.lismenucollectpofil
-msgid "Collect .po files"
-msgstr "Surinkti .po failus"
-
 #: lazarusidestrconsts.lismenucommentselection
 #, fuzzy
 #| msgid "Comment selection"
@@ -10845,10 +10829,6 @@ msgstr "Konvertuoti projektų/paketų koduotę…"
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "Sukurti FPDoc failus"
-
-#: lazarusidestrconsts.lismenucreatepofile
-msgid "Create .po files"
-msgstr "Kurti .po failus"
 
 #: lazarusidestrconsts.lismenudebugwindows
 #, fuzzy

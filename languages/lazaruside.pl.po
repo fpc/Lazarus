@@ -7939,10 +7939,6 @@ msgstr ""
 msgid "Endless loop in macros"
 msgstr ""
 
-#: lazarusidestrconsts.lisentertransla
-msgid "Enter translation language"
-msgstr ""
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr ""
@@ -10112,10 +10108,6 @@ msgstr ""
 msgid "Build IDE"
 msgstr "Buduj IDE"
 
-#: lazarusidestrconsts.lislazbuildbuildjitform
-msgid "Build JITForm"
-msgstr "Buduj JITForm"
-
 #: lazarusidestrconsts.lislazbuildbuildmany
 msgid "Build Many"
 msgstr "Buduj wiele"
@@ -10308,10 +10300,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
-msgstr ""
-
-#: lazarusidestrconsts.lisleaveemptyfo
-msgid "Leave empty for default .po file"
 msgstr ""
 
 #: lazarusidestrconsts.lisleft
@@ -10681,10 +10669,6 @@ msgstr "Zamknij projekt"
 msgid "CodeTools Defines Editor ..."
 msgstr "Edytor symboli CodeTools..."
 
-#: lazarusidestrconsts.lismenucollectpofil
-msgid "Collect .po files"
-msgstr ""
-
 #: lazarusidestrconsts.lismenucommentselection
 #, fuzzy
 #| msgid "Comment selection"
@@ -10761,10 +10745,6 @@ msgstr "Konwertuj kodowanie projektów/pakietów ..."
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "Utwórz pliki FPDoc"
-
-#: lazarusidestrconsts.lismenucreatepofile
-msgid "Create .po files"
-msgstr "Utwórz pliki .po"
 
 #: lazarusidestrconsts.lismenudebugwindows
 #, fuzzy

@@ -7870,10 +7870,6 @@ msgstr "Codificação no arquivo %s%s%s%sno disco é %s. Nova codificação é %
 msgid "Endless loop in macros"
 msgstr "Laço infinito em macros"
 
-#: lazarusidestrconsts.lisentertransla
-msgid "Enter translation language"
-msgstr "Entre com o idioma de tradução"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr "Variável ambiente, nome como parâmetro"
@@ -10056,10 +10052,6 @@ msgstr "Construir componentes (SynEdit, Ferramentas de Código)"
 msgid "Build IDE"
 msgstr "Construir IDE"
 
-#: lazarusidestrconsts.lislazbuildbuildjitform
-msgid "Build JITForm"
-msgstr "Construir JITForm"
-
 #: lazarusidestrconsts.lislazbuildbuildmany
 msgid "Build Many"
 msgstr "Construir muitos"
@@ -10251,10 +10243,6 @@ msgstr ""
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr "A unidade %s não é propriedade de nenhum pacote ou projeto.%sFavor adicionar a unidade a um pacote ou projeto.%sImpossível criar o arquivo \"fpdoc\"."
-
-#: lazarusidestrconsts.lisleaveemptyfo
-msgid "Leave empty for default .po file"
-msgstr "Deixar vazio por padrão o arquivo .po"
 
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
@@ -10616,10 +10604,6 @@ msgstr "Fechar Projeto"
 msgid "CodeTools Defines Editor ..."
 msgstr "Editor de definições das Ferramentas de Código ..."
 
-#: lazarusidestrconsts.lismenucollectpofil
-msgid "Collect .po files"
-msgstr "Coletar arquivos .po"
-
 #: lazarusidestrconsts.lismenucommentselection
 #| msgid "Comment selection"
 msgid "Comment Selection"
@@ -10688,10 +10672,6 @@ msgstr "Converter codificação dos projetos/pacotes ..."
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "Criar arquivos \"FPDoc\""
-
-#: lazarusidestrconsts.lismenucreatepofile
-msgid "Create .po files"
-msgstr "Criar arquivos .po"
 
 #: lazarusidestrconsts.lismenudebugwindows
 #| msgid "Debug windows"

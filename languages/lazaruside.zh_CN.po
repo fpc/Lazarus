@@ -7956,10 +7956,6 @@ msgstr "编码文件%s%s%s%在磁盘上是%s，新的编码是%s."
 msgid "Endless loop in macros"
 msgstr ""
 
-#: lazarusidestrconsts.lisentertransla
-msgid "Enter translation language"
-msgstr "输入翻译的语言"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr ""
@@ -10161,10 +10157,6 @@ msgstr "构建组件 (SynEdit, CodeTools)"
 msgid "Build IDE"
 msgstr "构建 IDE"
 
-#: lazarusidestrconsts.lislazbuildbuildjitform
-msgid "Build JITForm"
-msgstr "构建 JITForm"
-
 #: lazarusidestrconsts.lislazbuildbuildmany
 msgid "Build Many"
 msgstr ""
@@ -10358,10 +10350,6 @@ msgstr ""
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr "单元文件 %s 不属于任何包或工程.%s请添加单元文件到一个包或工程.%s不能建立 fpdoc 文件."
-
-#: lazarusidestrconsts.lisleaveemptyfo
-msgid "Leave empty for default .po file"
-msgstr "默认 .po 文件为空"
 
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
@@ -10734,10 +10722,6 @@ msgstr "关闭工程"
 msgid "CodeTools Defines Editor ..."
 msgstr "代码工具自定义编辑器 ..."
 
-#: lazarusidestrconsts.lismenucollectpofil
-msgid "Collect .po files"
-msgstr "搜集 .po 文件"
-
 #: lazarusidestrconsts.lismenucommentselection
 #, fuzzy
 #| msgid "Comment selection"
@@ -10814,10 +10798,6 @@ msgstr "转换工程/包的编码..."
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "创建 FPDoc 文件"
-
-#: lazarusidestrconsts.lismenucreatepofile
-msgid "Create .po files"
-msgstr "创建 .po 文件"
 
 #: lazarusidestrconsts.lismenudebugwindows
 #, fuzzy

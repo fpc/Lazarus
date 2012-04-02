@@ -8025,10 +8025,6 @@ msgstr "ディスクのファイル%s%s%s%sのエンコーディングは%sで�
 msgid "Endless loop in macros"
 msgstr ""
 
-#: lazarusidestrconsts.lisentertransla
-msgid "Enter translation language"
-msgstr "翻訳言語を入力してください"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr "環境変数、引数としての名前"
@@ -10238,10 +10234,6 @@ msgstr "コンポーネントを構築 (SynEdit, コードツール)"
 msgid "Build IDE"
 msgstr "IDEを構築"
 
-#: lazarusidestrconsts.lislazbuildbuildjitform
-msgid "Build JITForm"
-msgstr "JITFormを構築"
-
 #: lazarusidestrconsts.lislazbuildbuildmany
 msgid "Build Many"
 msgstr "多くを構築"
@@ -10437,10 +10429,6 @@ msgstr "有効なFPDocパスがありません"
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr "ユニット%sはどのパッケージもしくはプロジェクトにも所有されていません。%sいずれかのパッケージもしくはプロジェクトにユニットを追加してください。%sfpdocファイルを作成できません。"
-
-#: lazarusidestrconsts.lisleaveemptyfo
-msgid "Leave empty for default .po file"
-msgstr "デフォルトの.poファイルを空のままにする"
 
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
@@ -10817,10 +10805,6 @@ msgstr "プロジェクトを閉じる"
 msgid "CodeTools Defines Editor ..."
 msgstr "コードツール定義エディタ ..."
 
-#: lazarusidestrconsts.lismenucollectpofil
-msgid "Collect .po files"
-msgstr ".poファイルを集める"
-
 #: lazarusidestrconsts.lismenucommentselection
 #, fuzzy
 #| msgid "Comment selection"
@@ -10897,10 +10881,6 @@ msgstr "プロジェクト/パッケージのエンコーディングを変換"
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "FPDocファイルを作成"
-
-#: lazarusidestrconsts.lismenucreatepofile
-msgid "Create .po files"
-msgstr ".poファイルを作成"
 
 #: lazarusidestrconsts.lismenudebugwindows
 #, fuzzy

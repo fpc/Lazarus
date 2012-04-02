@@ -7913,10 +7913,6 @@ msgstr "Encodage du fichier %s%s%s%s sur disque est %s. Le nouvel encodage est %
 msgid "Endless loop in macros"
 msgstr ""
 
-#: lazarusidestrconsts.lisentertransla
-msgid "Enter translation language"
-msgstr "Entrez la langue de traduction"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr "variable d'environnement, nom comme paramètre"
@@ -10107,10 +10103,6 @@ msgstr "Création des composants (SynEdit, CodeTools)"
 msgid "Build IDE"
 msgstr "Création de l'EDI"
 
-#: lazarusidestrconsts.lislazbuildbuildjitform
-msgid "Build JITForm"
-msgstr "Création de JITForm"
-
 #: lazarusidestrconsts.lislazbuildbuildmany
 msgid "Build Many"
 msgstr ""
@@ -10303,10 +10295,6 @@ msgstr ""
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr "L'unité %s n'appartient à aucun paquet ou projet. %sVeuillez ajouter l'unité à un paquet ou à un projet. %s Impossible de créer le fichier fpdoc."
-
-#: lazarusidestrconsts.lisleaveemptyfo
-msgid "Leave empty for default .po file"
-msgstr "Laissez vide pour le fichier .po par défaut"
 
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
@@ -10680,10 +10668,6 @@ msgstr "Fermer le projet"
 msgid "CodeTools Defines Editor ..."
 msgstr "Editeur des directives des outils de code ..."
 
-#: lazarusidestrconsts.lismenucollectpofil
-msgid "Collect .po files"
-msgstr "Collecter les fichiers .po"
-
 #: lazarusidestrconsts.lismenucommentselection
 #, fuzzy
 #| msgid "Comment selection"
@@ -10760,10 +10744,6 @@ msgstr "Convertir le codage de projets/paquets..."
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "Créer un fichier FPDoc"
-
-#: lazarusidestrconsts.lismenucreatepofile
-msgid "Create .po files"
-msgstr "Créer les fichiers .po"
 
 #: lazarusidestrconsts.lismenudebugwindows
 #, fuzzy

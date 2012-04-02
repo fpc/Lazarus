@@ -7904,10 +7904,6 @@ msgstr "Kodierung der Datei %s%s%s%saus der Platte ist %s. Die neue Kodierung is
 msgid "Endless loop in macros"
 msgstr "Endlosschleife in Makros"
 
-#: lazarusidestrconsts.lisentertransla
-msgid "Enter translation language"
-msgstr "Übersetzungssprache angeben"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr "Umgebungsvariable, Name als Parameter"
@@ -10091,10 +10087,6 @@ msgstr "Komponenten  (SynEdit, CodeTools) kompilieren"
 msgid "Build IDE"
 msgstr "IDE kompilieren"
 
-#: lazarusidestrconsts.lislazbuildbuildjitform
-msgid "Build JITForm"
-msgstr "JIT-Formular kompilieren"
-
 #: lazarusidestrconsts.lislazbuildbuildmany
 msgid "Build Many"
 msgstr "Viele erstellen"
@@ -10288,10 +10280,6 @@ msgstr "Kein gültiger FPDoc-Pfad"
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr "Die Unit %s gehört zu keinem Package oder Projekt.%sBitte fügen Sie die Unit zu einem Package oder Projekt hinzu.%sKann die FPDoc-Datei nicht generieren."
-
-#: lazarusidestrconsts.lisleaveemptyfo
-msgid "Leave empty for default .po file"
-msgstr "Für voreingestellte .po-Datei freilassen"
 
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
@@ -10655,10 +10643,6 @@ msgstr "Projekt schließen"
 msgid "CodeTools Defines Editor ..."
 msgstr "Editor für CodeTools-Eigenschaften ..."
 
-#: lazarusidestrconsts.lismenucollectpofil
-msgid "Collect .po files"
-msgstr ".PO-Dateien sammeln"
-
 #: lazarusidestrconsts.lismenucommentselection
 #| msgid "Comment selection"
 msgid "Comment Selection"
@@ -10728,10 +10712,6 @@ msgstr "Kodierungen von Projekten/Packages konvertieren ..."
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "FPDoc-Dateien erzeugen"
-
-#: lazarusidestrconsts.lismenucreatepofile
-msgid "Create .po files"
-msgstr "Erzeuge .po-Dateien"
 
 #: lazarusidestrconsts.lismenudebugwindows
 #| msgid "Debug windows"

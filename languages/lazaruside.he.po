@@ -7992,10 +7992,6 @@ msgstr "הקידוד של הקובץ s%s%s% בדיסק sהוא %. הקידוד �
 msgid "Endless loop in macros"
 msgstr ""
 
-#: lazarusidestrconsts.lisentertransla
-msgid "Enter translation language"
-msgstr "הזן את השפה לתרגום"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr "משתנה סביבה, תן שם כמו לפרמטר"
@@ -10205,10 +10201,6 @@ msgstr "רכיבי בניה (SynEdit, CodeTools)"
 msgid "Build IDE"
 msgstr "בנה את ה IDE"
 
-#: lazarusidestrconsts.lislazbuildbuildjitform
-msgid "Build JITForm"
-msgstr "בנה JITForm"
-
 #: lazarusidestrconsts.lislazbuildbuildmany
 msgid "Build Many"
 msgstr ""
@@ -10404,10 +10396,6 @@ msgstr ""
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr "היחידה s% אינה בבעלות חבילה או פרוייקט כלשהם. הוסף את היחידה לחבילה או לפרוייקט. לא יכול ליצור את קובץ ה fpdoc."
-
-#: lazarusidestrconsts.lisleaveemptyfo
-msgid "Leave empty for default .po file"
-msgstr "השאר ריק עבור קובץ po. ברירת המחדל"
 
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
@@ -10782,10 +10770,6 @@ msgstr "סגור פרויקט"
 msgid "CodeTools Defines Editor ..."
 msgstr "הגדרת עורך ע\"י CodeTools"
 
-#: lazarusidestrconsts.lismenucollectpofil
-msgid "Collect .po files"
-msgstr "אסוף קבצי po."
-
 #: lazarusidestrconsts.lismenucommentselection
 #, fuzzy
 #| msgid "Comment selection"
@@ -10862,10 +10846,6 @@ msgstr "המר את קידוד הפרויקט/חבילה ..."
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "צור קבצי FPDoc"
-
-#: lazarusidestrconsts.lismenucreatepofile
-msgid "Create .po files"
-msgstr "צור קבצי po."
 
 #: lazarusidestrconsts.lismenudebugwindows
 #, fuzzy
