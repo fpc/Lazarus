@@ -143,8 +143,8 @@ type
     procedure AddMessage(const Msg, Directory: string);
     function OutputDirectoryIsWritable(APackage: TLazPackage; Directory: string;
                                        Verbose: boolean): boolean;
+    function GetPackageCompilerParams(APackage: TLazPackage): string;
     function CheckIfCurPkgOutDirNeedsCompile(APackage: TLazPackage;
-                    const CompilerFilename, CompilerParams, SrcFilename: string;
                     CheckDependencies, SkipDesignTimePackages: boolean;
                     out NeedBuildAllFlag, ConfigChanged, DependenciesChanged: boolean): TModalResult;
     procedure InvalidateStateFile(APackage: TLazPackage);
@@ -289,7 +289,6 @@ type
                           SkipDesignTimePackages: boolean; StateFileAge: longint
                           ): TModalResult;
     function CheckIfPackageNeedsCompilation(APackage: TLazPackage;
-                    const CompilerFilename, CompilerParams, SrcFilename: string;
                     SkipDesignTimePackages: boolean;
                     out NeedBuildAllFlag: boolean): TModalResult;
     function PreparePackageOutputDirectory(APackage: TLazPackage;
@@ -644,6 +643,14 @@ begin
     Result:=true;
   end else
     Result:=DirectoryIsWritableCached(Directory);
+end;
+
+function TLazPackageGraph.GetPackageCompilerParams(APackage: TLazPackage
+  ): string;
+begin
+  Result:=APackage.CompilerOptions.MakeOptionsString(
+          APackage.CompilerOptions.DefaultMakeOptionsFlags+[ccloAbsolutePaths])
+          +' '+CreateRelativePath(APackage.GetSrcFilename,APackage.Directory);
 end;
 
 constructor TLazPackageGraph.Create;
@@ -2846,7 +2853,6 @@ begin
 end;
 
 function TLazPackageGraph.CheckIfPackageNeedsCompilation(APackage: TLazPackage;
-  const CompilerFilename, CompilerParams, SrcFilename: string;
   SkipDesignTimePackages: boolean; out NeedBuildAllFlag: boolean): TModalResult;
 var
   OutputDir: String;
@@ -2867,7 +2873,6 @@ begin
 
   // check the current output directory
   Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
-             CompilerFilename,CompilerParams,SrcFilename,
              true,SkipDesignTimePackages,
              NeedBuildAllFlag,ConfigChanged,DependenciesChanged);
   if Result=mrNo then exit; // the current output is valid
@@ -2889,7 +2894,6 @@ begin
     if (NewOutputDir=OutputDir) or (NewOutputDir='') then exit;
     APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=NewOutputDir;
     Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
-               CompilerFilename,CompilerParams,SrcFilename,
                true,SkipDesignTimePackages,
                NeedBuildAllFlag,ConfigChanged,DependenciesChanged);
   end else begin
@@ -2911,7 +2915,6 @@ begin
     APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:='';
     OldNeedBuildAllFlag:=NeedBuildAllFlag;
     DefResult:=CheckIfCurPkgOutDirNeedsCompile(APackage,
-               CompilerFilename,CompilerParams,SrcFilename,
                true,SkipDesignTimePackages,
                NeedBuildAllFlag,ConfigChanged,DependenciesChanged);
     if DefResult=mrNo then begin
@@ -2927,8 +2930,7 @@ begin
 end;
 
 function TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile(
-  APackage: TLazPackage; const CompilerFilename, CompilerParams,
-  SrcFilename: string;
+  APackage: TLazPackage;
   CheckDependencies, SkipDesignTimePackages: boolean;
   out NeedBuildAllFlag,
   ConfigChanged, DependenciesChanged: boolean): TModalResult;
@@ -2947,6 +2949,7 @@ var
   Stats: PPkgLastCompileStats;
   SrcPPUFile: String;
   AFilename: String;
+  CompilerFilename, CompilerParams, SrcFilename: string;
 begin
   Result:=mrYes;
   {$IFDEF VerbosePkgCompile}
@@ -2957,6 +2960,11 @@ begin
   DependenciesChanged:=false;
   
   if APackage.AutoUpdate=pupManually then exit(mrNo);
+
+  SrcFilename:=APackage.GetSrcFilename;
+  CompilerFilename:=APackage.GetCompilerFilename;
+  // Note: use absolute paths, because some external tools resolve symlinked directories
+  CompilerParams:=GetPackageCompilerParams(APackage);
 
   o:=APackage.GetOutputDirType;
   Stats:=@APackage.LastCompile[o];
@@ -2977,6 +2985,7 @@ begin
   Result:=LoadPackageCompiledState(APackage,false,true);
   if Result<>mrOk then exit;
   if not Stats^.StateFileLoaded then begin
+    // package was not compiled via Lazarus nor via Makefile
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Missing state file for ',APackage.IDAsString,': ',StateFilename);
     ConfigChanged:=true;
     exit(mrYes);
@@ -3167,18 +3176,9 @@ function TLazPackageGraph.CompilePackage(APackage: TLazPackage;
     Result:='install_package_compile_failed:'+APackage.Filename;
   end;
 
-  function GetCompilerParams: string;
-  begin
-    Result:=APackage.CompilerOptions.MakeOptionsString(
-            APackage.CompilerOptions.DefaultMakeOptionsFlags+[ccloAbsolutePaths])
-            +' '+CreateRelativePath(APackage.GetSrcFilename,APackage.Directory);
-  end;
-
 var
   PkgCompileTool: TIDEExternalToolOptions;
   CompilerFilename: String;
-  CompilerParams: String;
-  SrcFilename: String;
   EffectiveCompilerParams: String;
   CompilePolicy: TPackageUpdatePolicy;
   BlockBegan: Boolean;
@@ -3186,6 +3186,7 @@ var
   CompileResult, MsgResult: TModalResult;
   SrcPPUFile: String;
   SrcPPUFileExists: Boolean;
+  CompilerParams: String;
 begin
   Result:=mrCancel;
 
@@ -3212,17 +3213,10 @@ begin
       end;
     end;
 
-    SrcFilename:=APackage.GetSrcFilename;
-    CompilerFilename:=APackage.GetCompilerFilename;
-    // Note: use absolute paths, because some external tools resolve symlinked directories
-    CompilerParams:=GetCompilerParams;
-    //DebugLn(['TLazPackageGraph.CompilePackage SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"']);
-
     // check if compilation is needed and if a clean build is needed
     NeedBuildAllFlag:=false;
     Result:=CheckIfPackageNeedsCompilation(APackage,
-                          CompilerFilename,CompilerParams,
-                          SrcFilename,pcfSkipDesignTimePackages in Flags,
+                          pcfSkipDesignTimePackages in Flags,
                           NeedBuildAllFlag);
     if (pcfOnlyIfNeeded in Flags) then begin
       if Result=mrNo then begin
@@ -3250,8 +3244,6 @@ begin
         DebugLn('TLazPackageGraph.CompilePackage PreparePackageOutputDirectory failed: ',APackage.IDAsString);
         exit;
       end;
-      // maybe output directory changed: update parameters
-      CompilerParams:=GetCompilerParams;
 
       // create package main source file
       Result:=SavePackageMainSource(APackage,Flags,ShowAbort);
@@ -3288,13 +3280,12 @@ begin
       end;
 
       // create external tool to run the compiler
-      //DebugLn('TPkgManager.DoCompilePackage Compiler="',CompilerFilename,'"');
-      //DebugLn('TPkgManager.DoCompilePackage Params="',CompilerParams,'"');
       //DebugLn('TPkgManager.DoCompilePackage WorkingDir="',APackage.Directory,'"');
 
       if (not APackage.CompilerOptions.SkipCompiler)
       and (not (pcfDoNotCompilePackage in Flags)) then begin
         // check compiler filename
+        CompilerFilename:=APackage.GetCompilerFilename;
         try
           CheckIfFileIsExecutable(CompilerFilename);
         except
@@ -3309,6 +3300,7 @@ begin
         end;
 
         // change compiler parameters for compiling clean
+        CompilerParams:=GetPackageCompilerParams(APackage);
         EffectiveCompilerParams:=CompilerParams;
         if (pcfCleanCompile in Flags) or NeedBuildAllFlag then begin
           if EffectiveCompilerParams<>'' then
