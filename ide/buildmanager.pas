@@ -62,6 +62,10 @@ type
   private
     CurrentParsedCompilerOption: TParsedCompilerOptions;
     FUnitSetCache: TFPCUnitSetCache;
+    procedure OnMacroSubstitution(TheMacro: TTransferMacro;
+                               const MacroName: string; var s: string;
+                               const Data: PtrInt; var Handled, Abort: boolean;
+                               Depth: integer);
     function OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
                                         const UnparsedValue: string;
                                         PlatformIndependent: boolean): string;
@@ -240,6 +244,22 @@ end;
 
 { TBuildManager }
 
+procedure TBuildManager.OnMacroSubstitution(TheMacro: TTransferMacro;
+  const MacroName: string; var s: string; const Data: PtrInt; var Handled,
+  Abort: boolean; Depth: integer);
+begin
+  if TheMacro=nil then begin
+    DebugLn('WARNING: Macro not defined: "'+MacroName+'".');
+    {$IFDEF VerboseMacroNotDefined}
+    DumpStack;
+    {$ENDIF}
+    s:='';
+    //IDEMessageDlg('Unknown Macro','Macro not defined: "'+s+'".',mtError,[mbAbort],0);
+    Handled:=true;
+    exit;
+  end;
+end;
+
 function TBuildManager.OnSubstituteCompilerOption(
   Options: TParsedCompilerOptions; const UnparsedValue: string;
   PlatformIndependent: boolean): string;
@@ -288,6 +308,7 @@ procedure TBuildManager.SetupTransferMacros;
 begin
   LazConfMacroFunc:=@BMLazConfMacroFunction;
   GlobalMacroList:=TTransferMacroList.Create;
+  GlobalMacroList.OnSubstitution:=@OnMacroSubstitution;
   IDEMacros:=TLazIDEMacros.Create;
   CompilerOptions.OnParseString:=@OnSubstituteCompilerOption;
 

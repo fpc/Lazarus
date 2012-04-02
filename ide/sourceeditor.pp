@@ -1017,6 +1017,10 @@ type
                                var Abort: boolean): string;
     function MacroFuncPrompt(const s:string; const Data: PtrInt;
                              var Abort: boolean): string;
+    function MacroFuncSave(const s:string; const Data: PtrInt;
+                           var Abort: boolean): string;
+    function MacroFuncSaveAll(const s:string; const Data: PtrInt;
+                              var Abort: boolean): string;
   public
     procedure InitMacros(AMacroList: TTransferMacroList);
     procedure SetupShortCuts;
@@ -8943,6 +8947,21 @@ begin
   Abort:=(ShowMacroPromptDialog(Result)<>mrOk);
 end;
 
+function TSourceEditorManager.MacroFuncSave(const s: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  Result:='';
+  if SourceEditorCount > 0 then
+    Abort:=LazarusIDE.DoSaveEditorFile(ActiveEditor,[sfCheckAmbiguousFiles]) <> mrOk;
+end;
+
+function TSourceEditorManager.MacroFuncSaveAll(const s: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  Result:='';
+  Abort:=LazarusIDE.DoSaveAll([sfCheckAmbiguousFiles])<>mrOk;
+end;
+
 procedure TSourceEditorManager.InitMacros(AMacroList: TTransferMacroList);
 begin
   AMacroList.Add(TTransferMacro.Create('Col','',
@@ -8955,6 +8974,10 @@ begin
                  lisExpandedFilenameOfCurrentEditor,@MacroFuncEdFile,[]));
   AMacroList.Add(TTransferMacro.Create('Prompt','',
                  lisPromptForValue,@MacroFuncPrompt,[tmfInteractive]));
+  AMacroList.Add(TTransferMacro.Create('Save','',
+                 lisSaveCurrentEditorFile,@MacroFuncSave,[tmfInteractive]));
+  AMacroList.Add(TTransferMacro.Create('SaveAll','',
+                 lisSaveAllModified,@MacroFuncSaveAll,[tmfInteractive]));
 end;
 
 procedure TSourceEditorManager.SetupShortCuts;
