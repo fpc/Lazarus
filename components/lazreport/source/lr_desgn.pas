@@ -2373,6 +2373,8 @@ begin
   for i := 0 to frAddInsCount - 1 do
   with frAddIns[i] do
   begin
+    if Assigned(frAddIns[i].InitializeProc) then
+      frAddIns[i].InitializeProc;
     RegisterObject(ButtonBMP, ButtonHint, Integer(gtAddIn) + i);
   end;
 

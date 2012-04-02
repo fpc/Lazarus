@@ -1125,10 +1125,15 @@ type
     procedure DeCompress({%H-}StreamIn, {%H-}StreamOut: TStream); virtual;
   end;
 
+  TfrAddinInitProc = procedure;
+
 
 function frCreateObject(Typ: Byte; const ClassName: String): TfrView;
 procedure frRegisterObject(ClassRef: TFRViewClass; ButtonBmp: TBitmap;
-  const ButtonHint: String; EditorForm: TfrObjEditorForm);
+  const ButtonHint: String; EditorForm: TfrObjEditorForm; InitProc:TfrAddinInitProc=nil);
+procedure frSetAddinEditor(ClassRef: TfrViewClass; EditorForm: TfrObjEditorForm);
+procedure frSetAddinIcon(ClassRef: TfrViewClass; ButtonBmp: TBitmap);
+procedure frSetAddinHint(ClassRef: TfrViewClass; ButtonHint: string);
 procedure frRegisterExportFilter(ClassRef: TfrExportFilterClass;
   const FilterDesc, FilterExt: String);
 procedure frRegisterFunctionLibrary(ClassRef: TClass);
@@ -1174,6 +1179,7 @@ type
     EditorForm: TfrObjEditorForm;
     ButtonBmp: TBitmap;
     ButtonHint: String;
+    InitializeProc: TfrAddinInitProc;
   end;
 
   TfrExportFilterInfo = record
@@ -1446,16 +1452,66 @@ begin
 end;
 
 procedure frRegisterObject(ClassRef: TfrViewClass; ButtonBmp: TBitmap;
-  const ButtonHint: String; EditorForm: TfrObjEditorForm);
+  const ButtonHint: String; EditorForm: TfrObjEditorForm; InitProc:TfrAddinInitProc=nil);
 begin
   frAddIns[frAddInsCount].ClassRef := ClassRef;
   frAddIns[frAddInsCount].EditorForm := EditorForm;
   frAddIns[frAddInsCount].ButtonBmp := ButtonBmp;
   frAddIns[frAddInsCount].ButtonHint := ButtonHint;
-  if frDesigner <> nil then
+  frAddIns[frAddInsCount].InitializeProc := InitProc;
+  if frDesigner <> nil then begin
+    if Assigned(InitProc) then
+      InitProc;
     frDesigner.RegisterObject(ButtonBmp, ButtonHint,
       Integer(gtAddIn) + frAddInsCount);
+  end;
   Inc(frAddInsCount);
+end;
+
+function frGetAddinIndex(ClassRef: TfrViewClass): Integer;
+var
+  i: Integer;
+begin
+  result := -1;
+  for i:=0 to frAddinsCount-1 do
+    if frAddIns[i].ClassRef = ClassRef then
+    begin
+      result := i;
+      break;
+    end;
+end;
+
+procedure frSetAddinEditor(ClassRef: TfrViewClass; EditorForm: TfrObjEditorForm);
+var
+  i: Integer;
+begin
+  i := frGetAddinIndex(ClassRef);
+  if i>=0 then
+    frAddins[i].EditorForm := EditorForm
+  else
+    raise Exception.CreateFmt(sClassObjectNotFound,[Classref.ClassName]);
+end;
+
+procedure frSetAddinIcon(ClassRef: TfrViewClass; ButtonBmp: TBitmap);
+var
+  i: Integer;
+begin
+  i := frGetAddinIndex(ClassRef);
+  if i>=0 then
+    frAddins[i].ButtonBmp := ButtonBmp
+  else
+    raise Exception.CreateFmt(sClassObjectNotFound,[Classref.ClassName]);
+end;
+
+procedure frSetAddinHint(ClassRef: TfrViewClass; ButtonHint: string);
+var
+  i: Integer;
+begin
+  i := frGetAddinIndex(ClassRef);
+  if i>=0 then
+    frAddins[i].ButtonHint := ButtonHint
+  else
+    raise Exception.CreateFmt(sClassObjectNotFound,[Classref.ClassName]);
 end;
 
 procedure frRegisterExportFilter(ClassRef: TfrExportFilterClass;
@@ -8186,9 +8242,12 @@ begin
 {$ENDIF}
     Pages.LoadFromStream(Stream);
   except
-    Pages.Clear;
-    Pages.Add;
-    MessageDlg(sFRFError,mtError,[mbOk],0)
+    on E:Exception do
+    begin
+      Pages.Clear;
+      Pages.Add;
+      MessageDlg(sFRFError+^M+E.Message,mtError,[mbOk],0)
+    end;
   end
   else
     MessageDlg(sFRFError,mtError,[mbOk],0);
