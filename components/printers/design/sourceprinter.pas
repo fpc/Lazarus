@@ -76,22 +76,27 @@ procedure TSourcePrinter.PrintPage(Text: TStrings; PageNum: integer);
 var
   l: integer;
   s: string;
-  LineNum: integer;
+  LineNum, PrintNum: integer;
 begin
   //print all lines on the current page
-  for l := 1 to LinesPerPage do
+  for l := 0 to LinesPerPage - 1 do
   begin
     LineNum := Pred(PageNum) * LinesPerPage + l;
 
     //check if end of text is reached
-    if LineNum <= Text.Count then
+    if LineNum < Text.Count then
     begin
-      if ShowLineNumbers then
-        s := Format('%4d: ',[LineNum])
+      PrintNum := PtrUInt(Text.Objects[LineNum]);
+      if ShowLineNumbers then begin
+        if (PrintNum > 0) then
+          s := Format('%4d: ',[PrintNum])
+        else
+          s := '      ';
+        end
       else
-        s := '      ';
+        s := '';
 
-      s := s + Text[Pred(LineNum)];
+      s := s + Text[LineNum];
 
       Printer.Canvas.TextOut(Margin, Round(LineHeight * l), s);
     end;
@@ -99,8 +104,12 @@ begin
 end;
 
 procedure TSourcePrinter.Execute(Text: TStrings);
+const
+  MIN_LINE_LEN = 10; // Minimum 1
 var
   p: integer;
+  i, j, l, l2: Integer;
+  s, s2: String;
 begin
   if PrintDialog.Execute then
   begin
@@ -111,6 +120,38 @@ begin
     //calculate page dimensions
     LineHeight := Printer.Canvas.TextHeight('X') * 1.2;
     LinesPerPage := Round(Printer.PageHeight / LineHeight - 3);
+
+    // break long lines
+    i := 1;
+    j := 0;
+    s2 := '';
+    while j < Text.Count do begin
+      Text.Objects[j] := TObject(PtrUInt(i));
+      s := Text[j];
+      if ShowLineNumbers then s2 := Format('%4d: ',[i]);
+      l := Printer.Canvas.TextFitInfo(s2 + s, Printer.PageWidth - 2 * Margin);
+      l := l - Length(s2);
+      while (l > MIN_LINE_LEN) and (l < length(s)) do begin
+        l2 := l;
+        while (l2 > MIN_LINE_LEN) and
+              (s[l2] in ['a'..'z', 'A'..'Z', '_', '0'..'1', '#', '$', '%']) and
+              (s[l2+1] in ['a'..'z', 'A'..'Z', '_', '0'..'1', '#', '$', '%'])
+        do
+          dec(l2);
+        if l2 <= MIN_LINE_LEN then
+          l2 := l;
+        Text[j] := copy(s, 1, l2);
+        delete(s, 1, l2);
+        inc(j);
+        Text.InsertObject(j, '', nil);
+        l := Printer.Canvas.TextFitInfo(s2 + s, Printer.PageWidth - 2 * Margin);
+        l := l - Length(s2);
+      end;
+      Text[j] := s;
+      inc(i);
+      inc(j);
+    end;
+
 
     PageCount := Text.Count div LinesPerPage;
     if Text.Count mod LinesPerPage <> 0 then
