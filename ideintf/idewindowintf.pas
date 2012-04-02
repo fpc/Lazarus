@@ -141,24 +141,25 @@ type
   TSimpleWindowLayoutDividerPos = class
   private
     FDefaultSize: integer;
-    FDisplayName: String;
+    FDisplayName: PString;
     FId: Integer;
     FIdString: String;
     FPlacement: TSimpleWindowLayoutDividerPosPlacement;
     FSize: integer;
+    function GetDisplayName: String;
   protected
-    procedure SetDisplayName(ADisplayName: String);
+    procedure SetDisplayName(ADisplayName: PString);
     procedure SetId(AnId: Integer);
   public
     constructor Create(AnIdString: String);
-    constructor Create(AnIdString: String; AnId: Integer; ADisplayName: String);
+    constructor Create(AnIdString: String; AnId: Integer; ADisplayName: PString);
     procedure Assign(ADividerPos: TSimpleWindowLayoutDividerPos); reintroduce;
     procedure LoadFromConfig(Config: TConfigStorage; const Path: string);
     function  SaveToConfig(Config: TConfigStorage; const Path: string) : Boolean;
     procedure Clear;
     property IdString: String read FIdString;
     property Id: Integer read FId;
-    property DisplayName: String read FDisplayName;
+    property DisplayName: String read GetDisplayName;
     property Placement: TSimpleWindowLayoutDividerPosPlacement read FPlacement write FPlacement;
     property Size: integer read FSize write FSize;
     property DefaultSize: integer read FDefaultSize write FDefaultSize;
@@ -181,7 +182,7 @@ type
     procedure SaveToConfig(Config: TConfigStorage; const Path: string);
     procedure Clear;
     procedure ClearItems;
-    function Add(AnIdString: String; AnId: Integer; ADisplayName: String): TSimpleWindowLayoutDividerPos;
+    function Add(AnIdString: String; AnId: Integer; ADisplayName: PString): TSimpleWindowLayoutDividerPos;
     function Add(AnIdString: String): TSimpleWindowLayoutDividerPos;
     function Count: Integer;
     function NamedCount: Integer;
@@ -561,7 +562,7 @@ begin
   if AnItem.Id < 0 then
     AnItem.SetId(old.Id);
   if AnItem.DisplayName = '' then
-    AnItem.SetDisplayName(old.DisplayName);
+    AnItem.SetDisplayName(old.FDisplayName);
   if AnItem.DefaultSize < 0 then
     AnItem.DefaultSize := old.DefaultSize;
 
@@ -639,7 +640,7 @@ begin
 end;
 
 function TSimpleWindowLayoutDividerPosList.Add(AnIdString: String;
-  AnId: Integer; ADisplayName: String): TSimpleWindowLayoutDividerPos;
+  AnId: Integer; ADisplayName: PString): TSimpleWindowLayoutDividerPos;
 var
   i: Integer;
 begin
@@ -651,14 +652,14 @@ begin
   end
   else begin
     Result := Items[i];
-    if ADisplayName = '' then
+    if ADisplayName = nil then
       Result.SetDisplayName(ADisplayName);
   end
 end;
 
 function TSimpleWindowLayoutDividerPosList.Add(AnIdString: String): TSimpleWindowLayoutDividerPos;
 begin
-  Result := Add(AnIdString, -1, '');
+  Result := Add(AnIdString, -1, nil);
 end;
 
 function TSimpleWindowLayoutDividerPosList.Count: Integer;
@@ -725,7 +726,15 @@ end;
 
 { TSimpleWindowLayoutDividerPos }
 
-procedure TSimpleWindowLayoutDividerPos.SetDisplayName(ADisplayName: String);
+function TSimpleWindowLayoutDividerPos.GetDisplayName: String;
+begin
+  if FDisplayName = nil then
+    Result := ''
+  else
+    Result := FDisplayName^;
+end;
+
+procedure TSimpleWindowLayoutDividerPos.SetDisplayName(ADisplayName: PString);
 begin
   FDisplayName := ADisplayName;
 end;
@@ -737,11 +746,11 @@ end;
 
 constructor TSimpleWindowLayoutDividerPos.Create(AnIdString: String);
 begin
-  Create(AnIdString, -1, '');
+  Create(AnIdString, -1, nil);
 end;
 
-constructor TSimpleWindowLayoutDividerPos.Create(AnIdString: String;
-  AnId: Integer; ADisplayName: String);
+constructor TSimpleWindowLayoutDividerPos.Create(AnIdString: String; AnId: Integer;
+  ADisplayName: PString);
 begin
   FDefaultSize := -1;
   Clear;

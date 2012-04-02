@@ -819,11 +819,11 @@ initialization
   CallStackDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
   CallStackDlgWindowCreator.OnSetDividerSize := @CallStackDlgColSizeSetter;
   CallStackDlgWindowCreator.OnGetDividerSize := @CallStackDlgColSizeGetter;
-  CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackBrkPoint', COL_STACK_BRKPOINT, drsColWidthBrkPointImg);
-  CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackIndex',    COL_STACK_INDEX,    drsColWidthIndex);
-  CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackSource',   COL_STACK_SOURCE,   drsColWidthSource);
-  CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackLine',     COL_STACK_LINE,     drsColWidthLine);
-  CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackFunc',     COL_STACK_FUNC,     drsColWidthFunc);
+  CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackBrkPoint', COL_STACK_BRKPOINT, @drsColWidthBrkPointImg);
+  CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackIndex',    COL_STACK_INDEX,    @drsColWidthIndex);
+  CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackSource',   COL_STACK_SOURCE,   @drsColWidthSource);
+  CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackLine',     COL_STACK_LINE,     @drsColWidthLine);
+  CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackFunc',     COL_STACK_FUNC,     @drsColWidthFunc);
   CallStackDlgWindowCreator.CreateSimpleLayout;
 
   DBG_DATA_MONITORS := DebugLogger.FindOrRegisterLogGroup('DBG_DATA_MONITORS' {$IFDEF DBG_DATA_MONITORS} , True {$ENDIF} );

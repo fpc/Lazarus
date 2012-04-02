@@ -569,14 +569,14 @@ initialization
   InspectDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
   InspectDlgWindowCreator.OnSetDividerSize := @InspectDlgColSizeSetter;
   InspectDlgWindowCreator.OnGetDividerSize := @InspectDlgColSizeGetter;
-  InspectDlgWindowCreator.DividerTemplate.Add('InspectDataName',  COL_INSPECT_DNAME, drsInspectColWidthDataName);
-  InspectDlgWindowCreator.DividerTemplate.Add('InspectDataType',  COL_INSPECT_DTYPE, drsInspectColWidthDataType);
-  InspectDlgWindowCreator.DividerTemplate.Add('InspectDataValue', COL_INSPECT_DVALUE, drsInspectColWidthDataValue);
+  InspectDlgWindowCreator.DividerTemplate.Add('InspectDataName',  COL_INSPECT_DNAME, @drsInspectColWidthDataName);
+  InspectDlgWindowCreator.DividerTemplate.Add('InspectDataType',  COL_INSPECT_DTYPE, @drsInspectColWidthDataType);
+  InspectDlgWindowCreator.DividerTemplate.Add('InspectDataValue', COL_INSPECT_DVALUE, @drsInspectColWidthDataValue);
 
-  InspectDlgWindowCreator.DividerTemplate.Add('InspectMethName',    COL_INSPECT_MNAME,    drsInspectColWidthMethName);
-  InspectDlgWindowCreator.DividerTemplate.Add('InspectMethType',    COL_INSPECT_MTYPE,    drsInspectColWidthMethType);
-  InspectDlgWindowCreator.DividerTemplate.Add('InspectMethReturns', COL_INSPECT_MRETURNS, drsInspectColWidthMethReturns);
-  InspectDlgWindowCreator.DividerTemplate.Add('InspectMethAddress', COL_INSPECT_MADDRESS, drsInspectColWidthMethAddress);
+  InspectDlgWindowCreator.DividerTemplate.Add('InspectMethName',    COL_INSPECT_MNAME,    @drsInspectColWidthMethName);
+  InspectDlgWindowCreator.DividerTemplate.Add('InspectMethType',    COL_INSPECT_MTYPE,    @drsInspectColWidthMethType);
+  InspectDlgWindowCreator.DividerTemplate.Add('InspectMethReturns', COL_INSPECT_MRETURNS, @drsInspectColWidthMethReturns);
+  InspectDlgWindowCreator.DividerTemplate.Add('InspectMethAddress', COL_INSPECT_MADDRESS, @drsInspectColWidthMethAddress);
   InspectDlgWindowCreator.CreateSimpleLayout;
 
 end.

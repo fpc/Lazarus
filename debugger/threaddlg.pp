@@ -263,13 +263,13 @@ initialization
   ThreadDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
   ThreadDlgWindowCreator.OnSetDividerSize := @ThreadsDlgColSizeSetter;
   ThreadDlgWindowCreator.OnGetDividerSize := @ThreadsDlgColSizeGetter;
-  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadBrkPoint', COL_THREAD_BRKPOINT,  drsColWidthBrkPointImg);
-  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadIndex',    COL_THREAD_INDEX,     drsColWidthIndex);
-  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadName',     COL_THREAD_NAME,      drsColWidthName);
-  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadState',    COL_THREAD_STATE,     drsColWidthState);
-  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadSource',   COL_THREAD_SOURCE,    drsColWidthSource);
-  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadLine',     COL_THREAD_LINE,      drsColWidthLine);
-  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadFunc',     COL_THREAD_FUNC,      drsColWidthFunc);
+  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadBrkPoint', COL_THREAD_BRKPOINT,  @drsColWidthBrkPointImg);
+  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadIndex',    COL_THREAD_INDEX,     @drsColWidthIndex);
+  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadName',     COL_THREAD_NAME,      @drsColWidthName);
+  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadState',    COL_THREAD_STATE,     @drsColWidthState);
+  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadSource',   COL_THREAD_SOURCE,    @drsColWidthSource);
+  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadLine',     COL_THREAD_LINE,      @drsColWidthLine);
+  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadFunc',     COL_THREAD_FUNC,      @drsColWidthFunc);
   ThreadDlgWindowCreator.CreateSimpleLayout;
 
   DBG_DATA_MONITORS := DebugLogger.FindOrRegisterLogGroup('DBG_DATA_MONITORS' {$IFDEF DBG_DATA_MONITORS} , True {$ENDIF} );

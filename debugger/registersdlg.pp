@@ -379,8 +379,8 @@ initialization
   RegisterDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
   RegisterDlgWindowCreator.OnSetDividerSize := @RegisterDlgColSizeSetter;
   RegisterDlgWindowCreator.OnGetDividerSize := @RegisterDlgColSizeGetter;
-  RegisterDlgWindowCreator.DividerTemplate.Add('RegisterName',  COL_REGISTER_NAME,  drsColWidthName);
-  RegisterDlgWindowCreator.DividerTemplate.Add('RegisterValue', COL_REGISTER_VALUE, drsColWidthValue);
+  RegisterDlgWindowCreator.DividerTemplate.Add('RegisterName',  COL_REGISTER_NAME,  @drsColWidthName);
+  RegisterDlgWindowCreator.DividerTemplate.Add('RegisterValue', COL_REGISTER_VALUE, @drsColWidthValue);
   RegisterDlgWindowCreator.CreateSimpleLayout;
 
 end.

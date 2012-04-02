@@ -364,8 +364,8 @@ initialization
   LocalsDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
   LocalsDlgWindowCreator.OnSetDividerSize := @LocalsDlgColSizeSetter;
   LocalsDlgWindowCreator.OnGetDividerSize := @LocalsDlgColSizeGetter;
-  LocalsDlgWindowCreator.DividerTemplate.Add('LocalsName',  COL_LOCALS_NAME,  drsColWidthName);
-  LocalsDlgWindowCreator.DividerTemplate.Add('LocalsValue', COL_LOCALS_VALUE, drsColWidthValue);
+  LocalsDlgWindowCreator.DividerTemplate.Add('LocalsName',  COL_LOCALS_NAME,  @drsColWidthName);
+  LocalsDlgWindowCreator.DividerTemplate.Add('LocalsValue', COL_LOCALS_VALUE, @drsColWidthValue);
   LocalsDlgWindowCreator.CreateSimpleLayout;
 
   DBG_DATA_MONITORS := DebugLogger.FindOrRegisterLogGroup('DBG_DATA_MONITORS' {$IFDEF DBG_DATA_MONITORS} , True {$ENDIF} );

@@ -777,8 +777,8 @@ initialization
   WatchWindowCreator.OnCreateFormProc := @CreateDebugDialog;
   WatchWindowCreator.OnSetDividerSize := @WatchesDlgColSizeSetter;
   WatchWindowCreator.OnGetDividerSize := @WatchesDlgColSizeGetter;
-  WatchWindowCreator.DividerTemplate.Add('ColumnWatchExpr',  COL_WATCH_EXPR,  drsColWidthExpression);
-  WatchWindowCreator.DividerTemplate.Add('ColumnWatchValue', COL_WATCH_VALUE, drsColWidthValue);
+  WatchWindowCreator.DividerTemplate.Add('ColumnWatchExpr',  COL_WATCH_EXPR,  @drsColWidthExpression);
+  WatchWindowCreator.DividerTemplate.Add('ColumnWatchValue', COL_WATCH_VALUE, @drsColWidthValue);
   WatchWindowCreator.CreateSimpleLayout;
 
   DBG_DATA_MONITORS := DebugLogger.FindOrRegisterLogGroup('DBG_DATA_MONITORS' {$IFDEF DBG_DATA_MONITORS} , True {$ENDIF} );
