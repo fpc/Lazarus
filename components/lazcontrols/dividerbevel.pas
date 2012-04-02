@@ -31,10 +31,12 @@ type
     FBevelTop: Integer;
     FBevelHeight: Integer;
     FNeedCalcSize: Boolean;
+    FTransparent: Boolean;
 
     procedure CalcSize;
     procedure SetCaptionSpacing(const AValue: Integer);
     procedure SetLeftIndent(const AValue: Integer);
+    procedure SetTransparent(AValue: Boolean);
   protected
     class function GetControlClassDefaultSize: TSize; override;
     procedure Paint; override;
@@ -59,6 +61,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property ShowHint;
+    property Transparent: Boolean read FTransparent write SetTransparent default True;
     property Visible;
   published
     property CaptionSpacing: Integer read FCaptionSpacing write SetCaptionSpacing
@@ -111,6 +114,13 @@ begin
   Invalidate;
 end;
 
+procedure TDividerBevel.SetTransparent(AValue: Boolean);
+begin
+  if FTransparent = AValue then Exit;
+  FTransparent := AValue;
+  Invalidate;
+end;
+
 class function TDividerBevel.GetControlClassDefaultSize: TSize;
 begin
   Result.CX := 150;
@@ -122,9 +132,11 @@ var
   PaintRect: TRect;
 begin
   CalcSize;
-  Canvas.Brush.Color := Color;
-  Canvas.Brush.Style := bsSolid;
-  Canvas.FillRect(ClientRect);
+  if not FTransparent then begin
+    Canvas.Brush.Color := Color;
+    Canvas.Brush.Style := bsSolid;
+    Canvas.FillRect(ClientRect);
+  end;
 
   Canvas.Pen.Color := Font.Color;
   PaintRect.Top := FBevelTop;
@@ -144,6 +156,7 @@ begin
   PaintRect.Right := Width;
   Canvas.Frame3D(PaintRect, 1, bvLowered);
 
+  Canvas.Brush.Style := bsClear;
   Canvas.TextOut(FLeftIndent + FCaptionSpacing, 0, Caption);
 end;
 
@@ -176,6 +189,7 @@ begin
   inherited Create(AOwner);
   ControlStyle := [csSetCaption];
   FCaptionSpacing := 10;
+  FTransparent := True;
   LeftIndent := 60;
   FNeedCalcSize := True;
   if (AOwner = nil) or not(csLoading in AOwner.ComponentState) then
