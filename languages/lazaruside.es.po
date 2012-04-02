@@ -4352,6 +4352,10 @@ msgstr ""
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr "Convierte automaticamente archivos .lfm a archivos de inclusión .lrs"
 
+#: lazarusidestrconsts.lisautomaticallyignoreforselection
+msgid "do not complete selection"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
 msgstr "Invocar automáticamente despues del punto"
@@ -4363,6 +4367,10 @@ msgstr "romper línea"
 #: lazarusidestrconsts.lisautomaticallyonspace
 msgid "space"
 msgstr "espacio"
+
+#: lazarusidestrconsts.lisautomaticallyontab
+msgid "tab"
+msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonwordend
 msgid "word end"
@@ -6880,6 +6888,10 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "Actual"
 
+#: lazarusidestrconsts.liscurrentstate
+msgid "Current state: "
+msgstr ""
+
 #: lazarusidestrconsts.liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
 msgstr "Columna del cursor en el editor actual"
@@ -8300,6 +8312,10 @@ msgstr "Expandir nombre de archivo del archivo actual del editor"
 msgid "Export ..."
 msgstr "Exportar ..."
 
+#: lazarusidestrconsts.lisexporthtml
+msgid "Export as HTML"
+msgstr ""
+
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
 msgstr "Exportar lista"
@@ -9316,6 +9332,10 @@ msgstr "Propiedades"
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
 msgstr "Falló la instalación"
+
+#: lazarusidestrconsts.lisinstalled
+msgid "installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
@@ -12151,9 +12171,9 @@ msgstr "No implementado"
 msgid "Not implemented yet:%s%s"
 msgstr "No implementado todavía:%s%s"
 
-#: lazarusidestrconsts.lisnotimplementedyet2
-msgid "Not implemented yet."
-msgstr "Aún no implementado"
+#: lazarusidestrconsts.lisnotinstalled
+msgid "not installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisnotnow
 msgid "Not now"
@@ -13195,10 +13215,6 @@ msgstr "¿Revertir paquete?"
 #| msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgstr "El archivo %s%s%s%sno está actualmente en la ruta de unidades del paquete.%s%s¿Añadir a la ruta de unidades?"
-
-#: lazarusidestrconsts.lispkgedonlinehelpnotyetimplemented
-msgid "Online Help not yet implemented"
-msgstr "Ayuda en línea no implementada todavía"
 
 #: lazarusidestrconsts.lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
@@ -15043,10 +15059,6 @@ msgstr "Más pequeño en lugar de más rápido"
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"
 msgstr "Coincidencias"
-
-#: lazarusidestrconsts.lissorrynotimplementedyet
-msgid "Sorry, not implemented yet"
-msgstr "Lo siento, aún no implementado"
 
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
@@ -18706,14 +18718,6 @@ msgstr "Ver pila de llamadas"
 #: lazarusidestrconsts.uenotimplcap
 msgid "Not implemented yet"
 msgstr "No implementado todavía"
-
-#: lazarusidestrconsts.uenotimplcapagain
-msgid "I told You: Not implemented yet"
-msgstr "Se lo dije: No implementado todavía"
-
-#: lazarusidestrconsts.uenotimpltext
-msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
-msgstr "Si puede ayudarnos a implementar esta característica, envíenos un correo electrónico a lazarus@miracle.com"
 
 #: lazarusidestrconsts.uepins
 msgid "INS"

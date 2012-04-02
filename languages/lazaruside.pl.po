@@ -4358,6 +4358,10 @@ msgstr ""
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr ""
 
+#: lazarusidestrconsts.lisautomaticallyignoreforselection
+msgid "do not complete selection"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
 msgstr "Automatycznie wywołaj po kropce"
@@ -4369,6 +4373,10 @@ msgstr ""
 #: lazarusidestrconsts.lisautomaticallyonspace
 msgid "space"
 msgstr "spacja"
+
+#: lazarusidestrconsts.lisautomaticallyontab
+msgid "tab"
+msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonwordend
 msgid "word end"
@@ -6836,6 +6844,10 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr ""
 
+#: lazarusidestrconsts.liscurrentstate
+msgid "Current state: "
+msgstr ""
+
 #: lazarusidestrconsts.liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
 msgstr "Kolumna w miejscu kursora"
@@ -8241,6 +8253,10 @@ msgstr "Rozszerzona nazwa bieżącego pliku w edytorze"
 msgid "Export ..."
 msgstr "Eksportuj ..."
 
+#: lazarusidestrconsts.lisexporthtml
+msgid "Export as HTML"
+msgstr ""
+
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
 msgstr "Eksportuj listę"
@@ -9243,6 +9259,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
+msgstr ""
+
+#: lazarusidestrconsts.lisinstalled
+msgid "installed"
 msgstr ""
 
 #: lazarusidestrconsts.lisinstallitilikethefat
@@ -12038,8 +12058,8 @@ msgstr ""
 msgid "Not implemented yet:%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.lisnotimplementedyet2
-msgid "Not implemented yet."
+#: lazarusidestrconsts.lisnotinstalled
+msgid "not installed"
 msgstr ""
 
 #: lazarusidestrconsts.lisnotnow
@@ -13074,10 +13094,6 @@ msgstr "Chcesz przywrócić pakiet?"
 #| msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgstr "Plik %s%s%s%sis jest poza ścieżką do modułów .%s%sCzy dodać %s%s%s do ścieżki do modułów?"
-
-#: lazarusidestrconsts.lispkgedonlinehelpnotyetimplemented
-msgid "Online Help not yet implemented"
-msgstr "Pomoc sieciowa jeszcze nie działa"
 
 #: lazarusidestrconsts.lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
@@ -14907,10 +14923,6 @@ msgstr "raczej mniejsze niż szybsze"
 
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"
-msgstr ""
-
-#: lazarusidestrconsts.lissorrynotimplementedyet
-msgid "Sorry, not implemented yet"
 msgstr ""
 
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
@@ -18496,14 +18508,6 @@ msgstr "Pokaż stos wywołań"
 #: lazarusidestrconsts.uenotimplcap
 msgid "Not implemented yet"
 msgstr "Jeszcze nie zaimplementowane"
-
-#: lazarusidestrconsts.uenotimplcapagain
-msgid "I told You: Not implemented yet"
-msgstr "Ostrzegałem: Jeszcze nie zaimplementowane"
-
-#: lazarusidestrconsts.uenotimpltext
-msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
-msgstr "Jeśli możesz nam pomóc zrealizować tą funkcje, napisz pod adres lazarus@miraclec.com"
 
 #: lazarusidestrconsts.uepins
 msgid "INS"

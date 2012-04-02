@@ -4102,6 +4102,10 @@ msgstr ""
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr "Automaattisesti muuta .lfm tiedostot .lrs tiedostoiksi"
 
+#: lazarusidestrconsts.lisautomaticallyignoreforselection
+msgid "do not complete selection"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
 msgstr "Tuo automaattisesti esiin pisteen jälkeen"
@@ -4113,6 +4117,10 @@ msgstr "rivin vaihto"
 #: lazarusidestrconsts.lisautomaticallyonspace
 msgid "space"
 msgstr "välilyönti"
+
+#: lazarusidestrconsts.lisautomaticallyontab
+msgid "tab"
+msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonwordend
 msgid "word end"
@@ -6551,6 +6559,10 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "Nykyinen"
 
+#: lazarusidestrconsts.liscurrentstate
+msgid "Current state: "
+msgstr ""
+
 #: lazarusidestrconsts.liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
 msgstr "Kursorin sarake nykyisessä editorissa"
@@ -7955,6 +7967,10 @@ msgstr "Laajenna nykyisen editorin tiedoston nimi"
 msgid "Export ..."
 msgstr "Vie ..."
 
+#: lazarusidestrconsts.lisexporthtml
+msgid "Export as HTML"
+msgstr ""
+
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
 msgstr "Vie luettelo"
@@ -8944,6 +8960,10 @@ msgstr "Ominaisuudet"
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
 msgstr "Asennus epäonnistui"
+
+#: lazarusidestrconsts.lisinstalled
+msgid "installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
@@ -11489,9 +11509,9 @@ msgstr "Ei toteutettu"
 msgid "Not implemented yet:%s%s"
 msgstr "Ei toteutettu vielä:%s%s"
 
-#: lazarusidestrconsts.lisnotimplementedyet2
-msgid "Not implemented yet."
-msgstr "Ei toteutettu vielä."
+#: lazarusidestrconsts.lisnotinstalled
+msgid "not installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisnotnow
 msgid "Not now"
@@ -12491,10 +12511,6 @@ msgstr "Palauta paketti?"
 #: lazarusidestrconsts.lispkgeditthefileiscurrentlynotintheunitpathofthepackage
 msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgstr "Tiedosto %s%s%s%sei ole komponenttipaketin hakupolussa.%s%sLisätäänkö %s%s%s polkuun?"
-
-#: lazarusidestrconsts.lispkgedonlinehelpnotyetimplemented
-msgid "Online Help not yet implemented"
-msgstr "Avustusta ei ole vielä tehty"
 
 #: lazarusidestrconsts.lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
@@ -14302,10 +14318,6 @@ msgstr "pienempi mieluummin kuin nopeampi"
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"
 msgstr "Löydetty"
-
-#: lazarusidestrconsts.lissorrynotimplementedyet
-msgid "Sorry, not implemented yet"
-msgstr ""
 
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
@@ -17805,14 +17817,6 @@ msgstr "Näytä kutsupino"
 #: lazarusidestrconsts.uenotimplcap
 msgid "Not implemented yet"
 msgstr "Ei vielä toteutettu"
-
-#: lazarusidestrconsts.uenotimplcapagain
-msgid "I told You: Not implemented yet"
-msgstr "Usko nyt: Ei vielä toteutettu"
-
-#: lazarusidestrconsts.uenotimpltext
-msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
-msgstr "Jos voit auttaa tämän ominaisuuden kanssa, lähetä viesti: lazarus@miraclec.com"
 
 #: lazarusidestrconsts.uepins
 msgid "INS"

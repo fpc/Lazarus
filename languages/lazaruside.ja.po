@@ -3782,6 +3782,7 @@ msgid "New class name:"
 msgstr "新規クラス名:"
 
 #: lazarusidestrconsts.lisa2pnewcomponent
+msgctxt "lazarusidestrconsts.lisa2pnewcomponent"
 msgid "New Component"
 msgstr "新規のコンポーネント"
 
@@ -4374,6 +4375,10 @@ msgstr ""
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr ".lfm files から .lrs include files への自動変換 "
 
+#: lazarusidestrconsts.lisautomaticallyignoreforselection
+msgid "do not complete selection"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
 msgstr "ポイントの後に自動的に呼び出し"
@@ -4385,6 +4390,10 @@ msgstr "改行"
 #: lazarusidestrconsts.lisautomaticallyonspace
 msgid "space"
 msgstr "スペース"
+
+#: lazarusidestrconsts.lisautomaticallyontab
+msgid "tab"
+msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonwordend
 msgid "word end"
@@ -6907,6 +6916,10 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "現在"
 
+#: lazarusidestrconsts.liscurrentstate
+msgid "Current state: "
+msgstr ""
+
 #: lazarusidestrconsts.liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
 msgstr "現在のエディタのカーソル列"
@@ -8328,6 +8341,10 @@ msgstr "現在のエディタファイルの拡張されたファイル名"
 msgid "Export ..."
 msgstr "エクスポート..."
 
+#: lazarusidestrconsts.lisexporthtml
+msgid "Export as HTML"
+msgstr ""
+
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
 msgstr "エクスポートリスト"
@@ -9345,6 +9362,10 @@ msgstr "プロパティ"
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
 msgstr "インストールに失敗"
+
+#: lazarusidestrconsts.lisinstalled
+msgid "installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
@@ -11232,6 +11253,7 @@ msgstr "リソース文字列作成 ..."
 #: lazarusidestrconsts.lismenunewcomponent
 #, fuzzy
 #| msgid "New component"
+msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "新しいコンポーネント"
 
@@ -12201,9 +12223,9 @@ msgstr "実装されていません"
 msgid "Not implemented yet:%s%s"
 msgstr "まだ実装されていません:%s%s"
 
-#: lazarusidestrconsts.lisnotimplementedyet2
-msgid "Not implemented yet."
-msgstr "まだ実装されていません。"
+#: lazarusidestrconsts.lisnotinstalled
+msgid "not installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisnotnow
 msgid "Not now"
@@ -13241,10 +13263,6 @@ msgstr "パッケージを復帰しますか？"
 #| msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgstr "ファイル %s%s%sはまだパッケージのユニットパスにありません。%s%s %s%s%s をユニットパスに追加しますか？"
-
-#: lazarusidestrconsts.lispkgedonlinehelpnotyetimplemented
-msgid "Online Help not yet implemented"
-msgstr "オンラインヘルプはまだ実装されていません。"
 
 #: lazarusidestrconsts.lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
@@ -15093,10 +15111,6 @@ msgstr "速度より最小化を優先"
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"
 msgstr "一致"
-
-#: lazarusidestrconsts.lissorrynotimplementedyet
-msgid "Sorry, not implemented yet"
-msgstr "すみません、まだ実装されてません"
 
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
@@ -18749,14 +18763,6 @@ msgstr "呼び出しスタックを表示"
 #: lazarusidestrconsts.uenotimplcap
 msgid "Not implemented yet"
 msgstr "まだ実装されていません。"
-
-#: lazarusidestrconsts.uenotimplcapagain
-msgid "I told You: Not implemented yet"
-msgstr "「まだ実装されていません」とあなたに伝えました"
-
-#: lazarusidestrconsts.uenotimpltext
-msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
-msgstr "もしあなたがこの機能を実装する手伝いをできる場合は、 lazarus@miraclec.comにメールを下さい。"
 
 #: lazarusidestrconsts.uepins
 msgid "INS"

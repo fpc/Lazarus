@@ -4323,6 +4323,10 @@ msgstr ""
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr "Автоматично конвертувати файли .lfm в файли заголовків .lrs"
 
+#: lazarusidestrconsts.lisautomaticallyignoreforselection
+msgid "do not complete selection"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
 msgstr "Автозаклик після крапки"
@@ -4334,6 +4338,10 @@ msgstr "розрив рядка"
 #: lazarusidestrconsts.lisautomaticallyonspace
 msgid "space"
 msgstr "пробіл"
+
+#: lazarusidestrconsts.lisautomaticallyontab
+msgid "tab"
+msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonwordend
 msgid "word end"
@@ -6821,6 +6829,10 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "Поточний"
 
+#: lazarusidestrconsts.liscurrentstate
+msgid "Current state: "
+msgstr ""
+
 #: lazarusidestrconsts.liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
 msgstr "Колонка курсора в цьому редакторі"
@@ -8236,6 +8248,10 @@ msgstr "Повна назва файлу в поточному редактор�
 msgid "Export ..."
 msgstr "Експорт ..."
 
+#: lazarusidestrconsts.lisexporthtml
+msgid "Export as HTML"
+msgstr ""
+
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
 msgstr "Список експорту"
@@ -9234,6 +9250,10 @@ msgstr "Властивості"
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
 msgstr "Встановлення не вдалося"
+
+#: lazarusidestrconsts.lisinstalled
+msgid "installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
@@ -12016,9 +12036,9 @@ msgstr "Не реалізовано"
 msgid "Not implemented yet:%s%s"
 msgstr "Ще не реалізовано:%s%s"
 
-#: lazarusidestrconsts.lisnotimplementedyet2
-msgid "Not implemented yet."
-msgstr "Ще не реалізовано."
+#: lazarusidestrconsts.lisnotinstalled
+msgid "not installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisnotnow
 msgid "Not now"
@@ -13052,10 +13072,6 @@ msgstr "Повернути пакунок?"
 #: lazarusidestrconsts.lispkgeditthefileiscurrentlynotintheunitpathofthepackage
 msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgstr "Файл %s%s%s%sзараз не знаходиться в списку шляхів модулів пакунку.%s%sДодати %s%s%s в шлях?"
-
-#: lazarusidestrconsts.lispkgedonlinehelpnotyetimplemented
-msgid "Online Help not yet implemented"
-msgstr "Довідка по мережі ще не реалізована"
 
 #: lazarusidestrconsts.lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
@@ -14888,10 +14904,6 @@ msgstr ""
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"
 msgstr "Збіги"
-
-#: lazarusidestrconsts.lissorrynotimplementedyet
-msgid "Sorry, not implemented yet"
-msgstr "Вибачте, ще не реалізовано"
 
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
@@ -18502,14 +18514,6 @@ msgstr "Показувати стек викликів"
 #: lazarusidestrconsts.uenotimplcap
 msgid "Not implemented yet"
 msgstr "Ще не реалізовано"
-
-#: lazarusidestrconsts.uenotimplcapagain
-msgid "I told You: Not implemented yet"
-msgstr "Таки я Вам кажу, що це ще не реалізовано"
-
-#: lazarusidestrconsts.uenotimpltext
-msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
-msgstr "Якщо Ви можете допомогти нам реалізувати цю функцію, напишіть lazarus@miraclec.com"
 
 #: lazarusidestrconsts.uepins
 msgid "INS"

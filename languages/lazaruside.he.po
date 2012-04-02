@@ -4346,6 +4346,10 @@ msgstr ""
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr "המר אוטומטית קבצי lfm. לקבצי lrs. \"כלול\""
 
+#: lazarusidestrconsts.lisautomaticallyignoreforselection
+msgid "do not complete selection"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
 msgstr "הפעל אוטומטית אחרי נקודה"
@@ -4357,6 +4361,10 @@ msgstr "שבירת שורה"
 #: lazarusidestrconsts.lisautomaticallyonspace
 msgid "space"
 msgstr "רווח"
+
+#: lazarusidestrconsts.lisautomaticallyontab
+msgid "tab"
+msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonwordend
 msgid "word end"
@@ -6875,6 +6883,10 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "נוכחי"
 
+#: lazarusidestrconsts.liscurrentstate
+msgid "Current state: "
+msgstr ""
+
 #: lazarusidestrconsts.liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
 msgstr "העמודה בה נמצא הסמן בעורך הנוכחי"
@@ -8296,6 +8308,10 @@ msgstr "הרחב את שם הקובץ של הקובץ הנוכחי שנערך"
 msgid "Export ..."
 msgstr "ייצא ..."
 
+#: lazarusidestrconsts.lisexporthtml
+msgid "Export as HTML"
+msgstr ""
+
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
 msgstr "ייצא רשימה"
@@ -9311,6 +9327,10 @@ msgstr "תכונות"
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
 msgstr "ההתקנה נכשלה"
+
+#: lazarusidestrconsts.lisinstalled
+msgid "installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
@@ -12164,9 +12184,9 @@ msgstr "לא ממומש"
 msgid "Not implemented yet:%s%s"
 msgstr "לא ממומש עדיין: %s%s"
 
-#: lazarusidestrconsts.lisnotimplementedyet2
-msgid "Not implemented yet."
-msgstr "לא ממומש עדיין."
+#: lazarusidestrconsts.lisnotinstalled
+msgid "not installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisnotnow
 msgid "Not now"
@@ -13210,10 +13230,6 @@ msgstr "לשחזר חבילה?"
 #| msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgstr "הקובץ  %s%s%s%s אינו בנתיב החבילה כרגע. להוסיף אותו לנתיב החבילה?"
-
-#: lazarusidestrconsts.lispkgedonlinehelpnotyetimplemented
-msgid "Online Help not yet implemented"
-msgstr "העזרה המקוונת עוד לא ממומשת"
 
 #: lazarusidestrconsts.lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
@@ -15063,10 +15079,6 @@ msgstr "קטן עדיף על מהיר"
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"
 msgstr "התאמות"
-
-#: lazarusidestrconsts.lissorrynotimplementedyet
-msgid "Sorry, not implemented yet"
-msgstr "מצטער, לא ממומש עדיין"
 
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
@@ -18724,14 +18736,6 @@ msgstr "הצג את מחסנית הקריאות"
 #: lazarusidestrconsts.uenotimplcap
 msgid "Not implemented yet"
 msgstr "לא ממומש עדיין"
-
-#: lazarusidestrconsts.uenotimplcapagain
-msgid "I told You: Not implemented yet"
-msgstr "אמרתי לך: לא ממומש עדיין"
-
-#: lazarusidestrconsts.uenotimpltext
-msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
-msgstr "אם אתה יכול לעזור לנו במימוש תכונה זאת שלח דואר ל lazarus@miraclec.com"
 
 #: lazarusidestrconsts.uepins
 msgid "INS"

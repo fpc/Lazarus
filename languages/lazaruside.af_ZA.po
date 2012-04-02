@@ -4114,6 +4114,10 @@ msgstr ""
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr ""
 
+#: lazarusidestrconsts.lisautomaticallyignoreforselection
+msgid "do not complete selection"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
 msgstr ""
@@ -4124,6 +4128,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonspace
 msgid "space"
+msgstr ""
+
+#: lazarusidestrconsts.lisautomaticallyontab
+msgid "tab"
 msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonwordend
@@ -6570,6 +6578,10 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr ""
 
+#: lazarusidestrconsts.liscurrentstate
+msgid "Current state: "
+msgstr ""
+
 #: lazarusidestrconsts.liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
 msgstr ""
@@ -7971,6 +7983,10 @@ msgstr ""
 msgid "Export ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisexporthtml
+msgid "Export as HTML"
+msgstr ""
+
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
 msgstr ""
@@ -8963,6 +8979,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
+msgstr ""
+
+#: lazarusidestrconsts.lisinstalled
+msgid "installed"
 msgstr ""
 
 #: lazarusidestrconsts.lisinstallitilikethefat
@@ -11589,8 +11609,8 @@ msgstr ""
 msgid "Not implemented yet:%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.lisnotimplementedyet2
-msgid "Not implemented yet."
+#: lazarusidestrconsts.lisnotinstalled
+msgid "not installed"
 msgstr ""
 
 #: lazarusidestrconsts.lisnotnow
@@ -12590,10 +12610,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lispkgeditthefileiscurrentlynotintheunitpathofthepackage
 msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
-msgstr ""
-
-#: lazarusidestrconsts.lispkgedonlinehelpnotyetimplemented
-msgid "Online Help not yet implemented"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
@@ -14410,10 +14426,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"
-msgstr ""
-
-#: lazarusidestrconsts.lissorrynotimplementedyet
-msgid "Sorry, not implemented yet"
 msgstr ""
 
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
@@ -17945,14 +17957,6 @@ msgstr ""
 #: lazarusidestrconsts.uenotimplcap
 msgid "Not implemented yet"
 msgstr "Nog nie geimplementeer nie"
-
-#: lazarusidestrconsts.uenotimplcapagain
-msgid "I told You: Not implemented yet"
-msgstr ""
-
-#: lazarusidestrconsts.uenotimpltext
-msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
-msgstr ""
 
 #: lazarusidestrconsts.uepins
 msgid "INS"

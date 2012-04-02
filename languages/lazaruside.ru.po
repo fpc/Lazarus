@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-01 15:22+0400\n"
+"PO-Revision-Date: 2012-04-03 01:31+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -4273,6 +4273,10 @@ msgstr "Автоматическая"
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr "Автоматически преобразовывать файлы LFM в файлы LRS"
 
+#: lazarusidestrconsts.lisautomaticallyignoreforselection
+msgid "do not complete selection"
+msgstr "не завершать выделенное"
+
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
 msgstr "Автоматически вызывать после ввода точки"
@@ -4284,6 +4288,10 @@ msgstr "конца строки"
 #: lazarusidestrconsts.lisautomaticallyonspace
 msgid "space"
 msgstr "пробела"
+
+#: lazarusidestrconsts.lisautomaticallyontab
+msgid "tab"
+msgstr "символа табуляции"
 
 #: lazarusidestrconsts.lisautomaticallyonwordend
 msgid "word end"
@@ -6766,6 +6774,10 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "Текущий"
 
+#: lazarusidestrconsts.liscurrentstate
+msgid "Current state: "
+msgstr "Текущее состояние: "
+
 #: lazarusidestrconsts.liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
 msgstr "Номер столбца под курсором в текущем редакторе"
@@ -8180,6 +8192,10 @@ msgstr "Полное имя файла в текущем редакторе"
 msgid "Export ..."
 msgstr "Экспортировать ..."
 
+#: lazarusidestrconsts.lisexporthtml
+msgid "Export as HTML"
+msgstr "Экспортировать в HTML"
+
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
 msgstr "Список экспорта"
@@ -9185,6 +9201,10 @@ msgstr "Свойства"
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
 msgstr "Установка не удалась"
+
+#: lazarusidestrconsts.lisinstalled
+msgid "installed"
+msgstr "установлен"
 
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
@@ -11908,9 +11928,9 @@ msgstr "Не реализовано"
 msgid "Not implemented yet:%s%s"
 msgstr "Ещё не реализовано:%s%s"
 
-#: lazarusidestrconsts.lisnotimplementedyet2
-msgid "Not implemented yet."
-msgstr "Еще не реализовано."
+#: lazarusidestrconsts.lisnotinstalled
+msgid "not installed"
+msgstr "не установлен"
 
 #: lazarusidestrconsts.lisnotnow
 msgid "Not now"
@@ -12929,10 +12949,6 @@ msgstr "Возвратить пакет?"
 #| msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgstr "Файл %s%s%s%sсейчас не находится в списке путей к модулям пакета.%s%sДобавить %s%s%s к списку путей к модулям?"
-
-#: lazarusidestrconsts.lispkgedonlinehelpnotyetimplemented
-msgid "Online Help not yet implemented"
-msgstr "Контекстная справка ещё не реализована"
 
 #: lazarusidestrconsts.lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
@@ -14765,10 +14781,6 @@ msgstr "Приоритет размера над скоростью"
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"
 msgstr "Совпадения"
-
-#: lazarusidestrconsts.lissorrynotimplementedyet
-msgid "Sorry, not implemented yet"
-msgstr "Извините, пока не реализовано"
 
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
@@ -18358,14 +18370,6 @@ msgstr "Показать стек вызовов"
 #: lazarusidestrconsts.uenotimplcap
 msgid "Not implemented yet"
 msgstr "Еще не реализовано"
-
-#: lazarusidestrconsts.uenotimplcapagain
-msgid "I told You: Not implemented yet"
-msgstr "Вам сказано: не реализовано"
-
-#: lazarusidestrconsts.uenotimpltext
-msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
-msgstr "Если Вы можете помочь нам реализовать эту функцию, пишите на lazarus@miraclec.com"
 
 #: lazarusidestrconsts.uepins
 msgid "INS"

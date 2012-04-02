@@ -4302,6 +4302,10 @@ msgstr ""
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr ""
 
+#: lazarusidestrconsts.lisautomaticallyignoreforselection
+msgid "do not complete selection"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
 msgstr ""
@@ -4312,6 +4316,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonspace
 msgid "space"
+msgstr ""
+
+#: lazarusidestrconsts.lisautomaticallyontab
+msgid "tab"
 msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonwordend
@@ -6798,6 +6806,10 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr ""
 
+#: lazarusidestrconsts.liscurrentstate
+msgid "Current state: "
+msgstr ""
+
 #: lazarusidestrconsts.liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
 msgstr "Kolom kursor dalam editor saat ini"
@@ -8205,6 +8217,10 @@ msgstr "Nama file lebar dari file editor saat ini"
 msgid "Export ..."
 msgstr "Ekspor ..."
 
+#: lazarusidestrconsts.lisexporthtml
+msgid "Export as HTML"
+msgstr ""
+
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
 msgstr "Daftar ekspor"
@@ -9210,6 +9226,10 @@ msgstr ""
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
 msgstr "Instalasi gagal"
+
+#: lazarusidestrconsts.lisinstalled
+msgid "installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
@@ -12009,8 +12029,8 @@ msgstr ""
 msgid "Not implemented yet:%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.lisnotimplementedyet2
-msgid "Not implemented yet."
+#: lazarusidestrconsts.lisnotinstalled
+msgid "not installed"
 msgstr ""
 
 #: lazarusidestrconsts.lisnotnow
@@ -13041,10 +13061,6 @@ msgstr "Kembalikan paket?"
 #| msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgstr "File %s%s%s%ssaat ini tidak dalam unitpath dari paket.%s%sTambah %s%s%s ke UnitPath?"
-
-#: lazarusidestrconsts.lispkgedonlinehelpnotyetimplemented
-msgid "Online Help not yet implemented"
-msgstr "Panduan Online belum diimplementasikan"
 
 #: lazarusidestrconsts.lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
@@ -14885,10 +14901,6 @@ msgstr ""
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"
 msgstr "Sama"
-
-#: lazarusidestrconsts.lissorrynotimplementedyet
-msgid "Sorry, not implemented yet"
-msgstr ""
 
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
@@ -18483,14 +18495,6 @@ msgstr "Lihat Panggilan Stack"
 #: lazarusidestrconsts.uenotimplcap
 msgid "Not implemented yet"
 msgstr "Belum Di Imlementasikan"
-
-#: lazarusidestrconsts.uenotimplcapagain
-msgid "I told You: Not implemented yet"
-msgstr "Sudah saya bilang: Belum diimplementasikan"
-
-#: lazarusidestrconsts.uenotimpltext
-msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
-msgstr "Jika anda bisa membantu kami untuk mengimplementasikan fitur ini, suratkan ke lazarus@miraclec.com"
 
 #: lazarusidestrconsts.uepins
 msgid "INS"

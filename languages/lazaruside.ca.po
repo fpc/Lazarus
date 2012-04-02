@@ -4288,6 +4288,10 @@ msgstr ""
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr ""
 
+#: lazarusidestrconsts.lisautomaticallyignoreforselection
+msgid "do not complete selection"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
 msgstr ""
@@ -4298,6 +4302,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonspace
 msgid "space"
+msgstr ""
+
+#: lazarusidestrconsts.lisautomaticallyontab
+msgid "tab"
 msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonwordend
@@ -6760,6 +6768,10 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr ""
 
+#: lazarusidestrconsts.liscurrentstate
+msgid "Current state: "
+msgstr ""
+
 #: lazarusidestrconsts.liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
 msgstr "Columna del cursor en l'editor actual"
@@ -8163,6 +8175,10 @@ msgstr "Nom del fitxer estès de l'actual fitxer editor"
 msgid "Export ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisexporthtml
+msgid "Export as HTML"
+msgstr ""
+
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
 msgstr "Exporta la llista"
@@ -9162,6 +9178,10 @@ msgstr ""
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
 msgstr "Instal·lació fallida"
+
+#: lazarusidestrconsts.lisinstalled
+msgid "installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
@@ -11921,8 +11941,8 @@ msgstr ""
 msgid "Not implemented yet:%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.lisnotimplementedyet2
-msgid "Not implemented yet."
+#: lazarusidestrconsts.lisnotinstalled
+msgid "not installed"
 msgstr ""
 
 #: lazarusidestrconsts.lisnotnow
@@ -12953,10 +12973,6 @@ msgstr "Voleu revertir el paquet?"
 #| msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgstr "El fitxer %s%s%s%sja no és a la trajectòria d'unitats del paquet.%s%sVoleu afegir %s%s%s a la trajectòria de les unitats? "
-
-#: lazarusidestrconsts.lispkgedonlinehelpnotyetimplemented
-msgid "Online Help not yet implemented"
-msgstr "L'ajuda en línia encara no està implementada"
 
 #: lazarusidestrconsts.lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
@@ -14790,10 +14806,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"
-msgstr ""
-
-#: lazarusidestrconsts.lissorrynotimplementedyet
-msgid "Sorry, not implemented yet"
 msgstr ""
 
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
@@ -18377,14 +18389,6 @@ msgstr "Mostra la pila de les crides"
 #: lazarusidestrconsts.uenotimplcap
 msgid "Not implemented yet"
 msgstr "Encara no està implementat"
-
-#: lazarusidestrconsts.uenotimplcapagain
-msgid "I told You: Not implemented yet"
-msgstr "Us ho he dit: Encara NO està implementat"
-
-#: lazarusidestrconsts.uenotimpltext
-msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
-msgstr "Si ens podeu ajudar a implementar aquesta característica, escriviu a lazarus@miraclec.com"
 
 #: lazarusidestrconsts.uepins
 msgid "INS"

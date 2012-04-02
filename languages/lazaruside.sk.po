@@ -4319,6 +4319,10 @@ msgstr ""
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr ""
 
+#: lazarusidestrconsts.lisautomaticallyignoreforselection
+msgid "do not complete selection"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
 msgstr ""
@@ -4330,6 +4334,10 @@ msgstr "koniec riadka"
 #: lazarusidestrconsts.lisautomaticallyonspace
 msgid "space"
 msgstr "medzera"
+
+#: lazarusidestrconsts.lisautomaticallyontab
+msgid "tab"
+msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonwordend
 msgid "word end"
@@ -6825,6 +6833,10 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "Aktuálny"
 
+#: lazarusidestrconsts.liscurrentstate
+msgid "Current state: "
+msgstr ""
+
 #: lazarusidestrconsts.liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
 msgstr "Stĺpec kurzora v aktuálnom editore"
@@ -8234,6 +8246,10 @@ msgstr "Úplné meno súboru aktuálneho súboru editora"
 msgid "Export ..."
 msgstr "Exportovať ..."
 
+#: lazarusidestrconsts.lisexporthtml
+msgid "Export as HTML"
+msgstr ""
+
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
 msgstr "Exportovať zoznam"
@@ -9249,6 +9265,10 @@ msgstr "Vlastnosti"
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
 msgstr "Inštalácia zlyhala"
+
+#: lazarusidestrconsts.lisinstalled
+msgid "installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
@@ -12068,9 +12088,9 @@ msgstr "Neimplementované"
 msgid "Not implemented yet:%s%s"
 msgstr "Zatiaľ neimplementované:%s%s"
 
-#: lazarusidestrconsts.lisnotimplementedyet2
-msgid "Not implemented yet."
-msgstr "Zatiaľ neimplementované."
+#: lazarusidestrconsts.lisnotinstalled
+msgid "not installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisnotnow
 msgid "Not now"
@@ -13106,10 +13126,6 @@ msgstr "Obnoviť balíček?"
 #| msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgstr "Súbor %s%s%s%smomentálne nie je v ceste jednotiek balíčka.%s%sPridať %s%s%s do cesty jednotiek?"
-
-#: lazarusidestrconsts.lispkgedonlinehelpnotyetimplemented
-msgid "Online Help not yet implemented"
-msgstr "Online pomoc zatiaľ nie je implementovaná"
 
 #: lazarusidestrconsts.lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
@@ -14954,10 +14970,6 @@ msgstr "radšej menšie ako rýchlejšie"
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"
 msgstr "Vhovujúce"
-
-#: lazarusidestrconsts.lissorrynotimplementedyet
-msgid "Sorry, not implemented yet"
-msgstr ""
 
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
@@ -18566,14 +18578,6 @@ msgstr "Zobraziť Zásobník volaní"
 #: lazarusidestrconsts.uenotimplcap
 msgid "Not implemented yet"
 msgstr "Zatiaľ neimplementované"
-
-#: lazarusidestrconsts.uenotimplcapagain
-msgid "I told You: Not implemented yet"
-msgstr "Vravel som. Zatiaľ neimplementované"
-
-#: lazarusidestrconsts.uenotimpltext
-msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
-msgstr "Ak nám chcete pomôcť implementovať túto vlastnosť, pošlite email na lazarus@miraclec.com"
 
 #: lazarusidestrconsts.uepins
 msgid "INS"
