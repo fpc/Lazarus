@@ -54,6 +54,7 @@ uses
   SynEditMiscClasses, SynEditMarkupHighAll, SynEditMarks,
   SynBeautifier, SynEditTextBase, LazSynEditText,
   SynPluginSyncronizedEditBase, SourceSynEditor, SynMacroRecorder,
+  SynExportHTML,
   // Intf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
   IDEWindowIntf, ProjectIntf,
@@ -416,6 +417,8 @@ type
     procedure SetSelection(const AValue: string); override;
     procedure CopyToClipboard; override;
     procedure CutToClipboard; override;
+
+    procedure ExportAsHtml(AFileName: String);
 
     // context help
     procedure FindHelpForSourceAtCursor;
@@ -3661,6 +3664,20 @@ end;
 procedure TSourceEditor.CutToClipboard;
 begin
   FEditor.CutToClipboard;
+end;
+
+procedure TSourceEditor.ExportAsHtml(AFileName: String);
+var
+  Html: TSynExporterHTML;
+begin
+  Html := TSynExporterHTML.Create(nil);
+  Html.Clear;
+  Html.ExportAsText := True;
+  Html.Highlighter := FEditor.Highlighter;
+  Html.Title := PageName;
+  Html.ExportAll(FEditor.Lines);
+  Html.SaveToFile(AFileName);
+  Html.Free;
 end;
 
 procedure TSourceEditor.FindHelpForSourceAtCursor;

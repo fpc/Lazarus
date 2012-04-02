@@ -61,6 +61,7 @@ resourcestring
   lisDlgSave = 'Save ...';
   lisSaveAs = 'Save As';
   lisSaveAll = 'Save All';
+  lisExportHtml = 'Export as HTML';
   lisCloseAll = 'Close All';
   lisFile = 'File';
   lisNew = 'New';

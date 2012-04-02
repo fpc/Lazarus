@@ -202,6 +202,7 @@ type
     procedure mnuSaveClicked(Sender: TObject);
     procedure mnuSaveAsClicked(Sender: TObject);
     procedure mnuSaveAllClicked(Sender: TObject);
+    procedure mnuExportHtml(Sender: TObject);
     procedure mnuCloseClicked(Sender: TObject);
     procedure mnuCloseAllClicked(Sender: TObject);
     procedure mnuCleanDirectoryClicked(Sender: TObject);
@@ -2470,6 +2471,7 @@ begin
     itmFileSave.OnClick := @mnuSaveClicked;
     itmFileSaveAs.OnClick := @mnuSaveAsClicked;
     itmFileSaveAll.OnClick := @mnuSaveAllClicked;
+    itmFileExportHtml.OnClick  := @mnuExportHtml;
     itmFileClose.Enabled := False;
     itmFileClose.OnClick := @mnuCloseClicked;
     itmFileCloseAll.Enabled := False;
@@ -2956,6 +2958,35 @@ end;
 procedure TMainIDE.mnuSaveAllClicked(Sender: TObject);
 begin
   DoSaveAll([sfCheckAmbiguousFiles]);
+end;
+
+procedure TMainIDE.mnuExportHtml(Sender: TObject);
+var
+  SrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+  Filename: string;
+  SaveDialog: TSaveDialog;
+begin
+  GetCurrentUnit(SrcEdit,AnUnitInfo);
+  if SrcEdit = nil then exit;
+
+  SaveDialog:=TSaveDialog.Create(nil);
+  try
+    SaveDialog.Title:=lisSaveSpace;
+    SaveDialog.FileName:=SrcEdit.PageName+'.html';
+    SaveDialog.Filter := ' (*.html;*.htm)|*.html;*.htm';
+    SaveDialog.Options := [ofOverwritePrompt, ofPathMustExist, ofNoReadOnlyReturn];
+    // show save dialog
+    if (not SaveDialog.Execute) or (ExtractFileName(SaveDialog.Filename)='')
+    then begin
+      exit;
+    end;
+    Filename:=ExpandFileNameUTF8(SaveDialog.Filename);
+  finally
+    SaveDialog.Free;
+  end;
+
+  SrcEdit.ExportAsHtml(Filename);
 end;
 
 procedure TMainIDE.mnuCloseClicked(Sender: TObject);
@@ -8031,6 +8062,7 @@ begin
   MainIDEBar.itmFileSave.Enabled :=
     ((SrcEdit<>nil) and SrcEdit.Modified)
     or ((AnUnitInfo<>nil) and (AnUnitInfo.IsVirtual));
+  MainIDEBar.itmFileExportHtml.Enabled := (SrcEdit<>nil);
   if UpdateSaveAll then
     MainIDEBar.itmFileSaveAll.Enabled := MainIDEBar.itmProjectSave.Enabled;
   // toolbar buttons
