@@ -200,7 +200,7 @@ end;
 
 procedure TCfgWizard.SelFPDirShow(Sender: TObject);
 begin
-  edFpcDir.Text := Manager.FpcDocDir;
+  edFpcDir.Text := Manager.FpcDir;
   buBack.Enabled := True;
   //buNext.Enabled := FpcDocDir <> '';
 end;

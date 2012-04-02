@@ -1,16 +1,16 @@
 object CfgWizard: TCfgWizard
   Left = 368
-  Height = 301
+  Height = 307
   Top = 116
   Width = 315
   Caption = 'Configuration Assistant'
-  ClientHeight = 301
+  ClientHeight = 307
   ClientWidth = 315
   OnShow = FormShow
   LCLVersion = '0.9.31'
   object Steps: TPageControl
     Left = 0
-    Height = 240
+    Height = 246
     Top = 0
     Width = 315
     ActivePage = SelRoot
@@ -19,21 +19,21 @@ object CfgWizard: TCfgWizard
     TabOrder = 0
     object SelRoot: TTabSheet
       Caption = 'RootDir'
-      ClientHeight = 212
+      ClientHeight = 218
       ClientWidth = 307
       OnShow = SelRootShow
       object Label1: TLabel
         Left = 10
-        Height = 121
+        Height = 151
         Top = 10
         Width = 264
-        Caption = 'The Root directory contains the configuration '#13#10'and all generated documentation.'#13#10#13#10'You can make this directory the working directory'#13#10'of the Documentation Manager, so that you don''t'#13#10'have to specify the root directory on every start.'#13#10#13#10'Please select this directory now.'
+        Caption = 'The FPDoc Manager stores its configuration '#13#10'and all generated documentation in a dedicated '#13#10'directory.'#13#10#13#10'You can make this directory the working directory'#13#10'of the FPDoc Manager, so that you don''t'#13#10'have to specify the root directory on every start.'#13#10#13#10'Please select this directory now, optionally'#13#10'create a new directory in the dialog.'
         ParentColor = False
       end
       object buSelRoot: TButton
         Left = 10
         Height = 25
-        Top = 152
+        Top = 168
         Width = 75
         Caption = 'Browse...'
         OnClick = buSelRootClick
@@ -42,7 +42,7 @@ object CfgWizard: TCfgWizard
       object edRoot: TEdit
         Left = 92
         Height = 23
-        Top = 154
+        Top = 170
         Width = 216
         OnChange = edRootChange
         TabOrder = 1
@@ -50,8 +50,8 @@ object CfgWizard: TCfgWizard
     end
     object SelFPDir: TTabSheet
       Caption = 'FPC'
-      ClientHeight = 211
-      ClientWidth = 309
+      ClientHeight = 218
+      ClientWidth = 307
       OnShow = SelFPDirShow
       object Label2: TLabel
         Left = 10
@@ -84,7 +84,7 @@ object CfgWizard: TCfgWizard
         Height = 23
         Hint = 'The FPC source directory contains subdirectories'#13#10'compiler, packages etc.'
         Top = 136
-        Width = 197
+        Width = 195
         Anchors = [akTop, akLeft, akRight]
         OnChange = edFpcDirChange
         TabOrder = 2
@@ -110,7 +110,7 @@ object CfgWizard: TCfgWizard
         Left = 100
         Height = 23
         Top = 168
-        Width = 197
+        Width = 195
         Anchors = [akTop, akLeft, akRight]
         OnChange = edFpcDocsChange
         TabOrder = 4
@@ -301,14 +301,14 @@ object CfgWizard: TCfgWizard
   object sb: TStatusBar
     Left = 0
     Height = 23
-    Top = 278
+    Top = 284
     Width = 315
     Panels = <>
   end
   object Panel1: TPanel
     Left = 0
     Height = 38
-    Top = 240
+    Top = 246
     Width = 315
     Align = alBottom
     ClientHeight = 38
