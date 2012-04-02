@@ -843,7 +843,7 @@ begin
     FontPath:= APath+Rslt.Name;
 
     {$ifdef CD_Debug_TTF}
-      DebugLn(Format('[FontsScanForTTF] font=', [FontPath]));
+      DebugLn(Format('[FontsScanForTTF] font=%s', [FontPath]));
     {$endif}
 
     // Work around for fonts which cause errors. See bug 21456

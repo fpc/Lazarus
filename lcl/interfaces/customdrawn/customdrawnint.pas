@@ -36,7 +36,7 @@ uses
   // Platform specific
   {$ifdef CD_Windows}Windows, customdrawn_WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, customdrawn_cocoaproc, CocoaGDIObjects,{$endif}
-  {$ifdef CD_X11}X, XLib, XUtil, BaseUnix, customdrawn_x11proc, contnrs,{$ifdef CD_UseNativeText}xft, fontconfig,{$endif}{$endif}
+  {$ifdef CD_X11}X, XLib, XUtil, BaseUnix, customdrawn_x11proc, {contnrs,}{$ifdef CD_UseNativeText}xft, fontconfig,{$endif}{$endif}
   {$ifdef CD_Android}
   customdrawn_androidproc, jni, bitmap, log, keycodes,
   {$endif}
@@ -166,6 +166,10 @@ type
     XConnections: TFPList;
     // Windows Info List
     XWindowList: TStringList;
+    // Timer queue head
+    {$ifdef CD_X11_UseNewTimer}
+    XTimerListHead: customdrawn_x11proc.TCDX11Timer;
+    {$endif}
 
     // Functions to keep track of windows needing repaint
     function CheckInvalidateWindowForX(XWIndowID: X.TWindow): Boolean;
@@ -424,7 +428,7 @@ const
   {$ifdef CD_X11}
 const
   CDBackendNativeHandle = nhtX11TWindow;
-
+  fpFD_SETSIZE = 1024; // As defined in deprecated Libc. Large enough for any practical purpose
   {$define CD_HasNativeFormHandle}
   {$endif}
   {$ifdef CD_Cocoa}

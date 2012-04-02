@@ -102,11 +102,18 @@ begin
     lx := APosition.x;
     ly := APosition.y;
 
-    XTranslateCoordinates(CDWidgetSet.FDisplay, lWindow,
+    {---------------------------------------------------------------------------
+    We must not call XTranslate:
+    if applied to the root window, this makes X crazy, because it attempts
+    to translate the coordinates to themselves.
+    If applied to another window, it's wrong, because window position has already
+    been determined by LCL
+    ---------------------------------------------------------------------------}
+    {XTranslateCoordinates(CDWidgetSet.FDisplay, lWindow,
         XDefaultRootWindow(CDWidgetSet.FDisplay),
         lx, ly, @dx, @dy, @cw);
     lx := dx;
-    ly := dy;
+    ly := dy;}
   end
   else
   begin
@@ -630,6 +637,7 @@ var
   reslt: Integer;
   {$IFDEF VerboseCDPaintProfiler}
   lTimeStart, lCDTimeEnd, lNativeTimeStart: TDateTime;
+  lTimeSend: Integer;
   {$ENDIF}
 begin
   {$IFDEF VerboseCDPaintProfiler}
@@ -677,6 +685,9 @@ begin
     Event.message_type:= CDWidgetSet.FWMPaint;
     Event.format:= 32; // Must hold a culong for TXID
     Event.data.l[0]:= AWindowInfo.Window;
+    {$IFDEF VerboseCDPaintProfiler}
+    Event.data.l[1]:= DateTimeToMilliseconds(Now());
+    {$ENDIF}
     reslt := XSendEvent(CDWidgetSet.FDisplay,AWindowInfo.Window,{Propagate=}True,0,@Event);
     // Painting will carried out from main event loop
   end;
@@ -700,6 +711,7 @@ class procedure TCDWSCustomForm.EvPaintEx(const AWinControl: TWinControl;
 var
   lWidth, lHeight: Integer;
   lRawImage: TRawImage;
+  reslt: integer;
 begin
   lWidth := Round(AWinControl.width);
   lHeight := Round(AWinControl.height);
@@ -734,20 +746,32 @@ end;
 
 class procedure TCDWSCustomForm.EvClientMessage(const AWinControl: TWinControl;
   AWindowInfo: TX11WindowInfo; var Event: TXClientMessageEvent);
-var
-  CanClose: Boolean;
 begin
   if Event.message_type = CDWidgetset.FWMProtocols then
   begin
     if Event.Data.l[0] = CDWidgetset.FWMDeleteWindow then
     begin
       // Message results : 0 - do nothing, 1 - destroy window (felipe: is this comment correct? taken from lcl-cocoa)
-      CanClose:=LCLSendCloseQueryMsg(AWinControl)>0;
-      if {CanClose} True then // CanClose is returning false -> ToDo: find out why
+      {--------------------------------------------------------
+      LCLSendCloseQueryMsg sends the message to TCustomForm.WMCloseQuery which
+      performs the close actions (query included) and always returns 0
+      No way to know here if the close action will actually be performed.
+      -----------------------------------------------------------------------}
+      LCLSendCloseQueryMsg(AWinControl);
+      {----------------------------------------------------------------------
+      No need to call LCLSendCloseUpMsg, because the form has already been closed,
+      if allowed by CanClose.
+      We can't ask X to destroy the window, because we don't know if CanClose was
+      true or false. Here we're just told by X that someone tried to close the
+      window, using WM functions. Moreover there are still hanging X events
+      to process. Either we implement AppTerminate, or we take yhe lazy
+      path and let the window be destroyed by the WM when the application terminates.
+      --------------------------------------------------------------------------}
+      (*if {CanClose} True then // CanClose is returning false -> ToDo: find out why
       begin
         LCLSendCloseUpMsg(AWinControl);
         XDestroyWindow(CDWidgetset.FDisplay, AWinControl.Handle);
-      end;
+      end;*)
     end
     else
       DebugLn(Format('LCL-CustomDrawn-X11: Unknown client protocol message: %d', [Event.Data.l[0]]));
@@ -2700,7 +2724,13 @@ begin
     {$ifdef VerboseCDForms}
     DebugLn(Format('[TCDWSCustomForm.ShowHide] Visible=False AWinControl=%x', [PtrInt(AWinControl)]));
     {$endif}
+    XUnmapWindow(CDWidgetSet.FDisplay, lWindow);
     // Don't remove it here, wait for a X11 Destroy event
+    {---------------------------------------------------------------------------
+    We will never get an X11 event, if we don't tell X11 to unmap the window!
+    Even if the WM attempts to close the window, it's the application which
+    triggers the actual operation. If CanClose is false, it doesn't do it.
+    ---------------------------------------------------------------------------}
   end;
 end;
 

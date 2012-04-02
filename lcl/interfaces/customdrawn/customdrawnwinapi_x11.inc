@@ -637,6 +637,7 @@ var
   Doc: TXMLDocument;
   lFontDirectories: TStringList;
   i, j, FontsCount: cint;
+  l: Integer;
   lXFontPath: PPChar;
   APath, strTmp: string;
   XMLFontConfig, XMLDir: TDOMNode;
@@ -648,9 +649,11 @@ begin
   lXFontPath := XGetFontPath(FDisplay, @FontsCount);
   for i:= 0 to FontsCount-1 do begin
     if Copy(lXFontPath[i],1,10) = 'catalogue:' then
-      APath:= PathDelim + Copy(lXFontPath[0],12,strlen(lXFontPath[0]))+ PathDelim
+      APath:= PathDelim + Copy(lXFontPath[0],12,strlen(lXFontPath[0]))
     else
-      APath:= lXFontPath[i] + PathDelim;
+      APath:= lXFontPath[i];
+    l:= Length(APath); ;
+    if APath[l] <> PathDelim then APath:= APath+PathDelim;
     FontsScanDir(APath,AFontPaths,AFontList);
   end;
   XFreeFontPath(lXFontPath);
@@ -3697,17 +3700,18 @@ end;*)
 
 {------------------------------------------------------------------------------
   Function: GetSystemMetrics
-  Params:
-  Returns: Nothing
+  Params: nIndex Integer
+  Returns: Integer
 
-
+  It returns the value for the System Metric requested in nIndex.
+  SM_.. constants are declared in LCLTypes
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
 var
   R: TRect;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn(Format('Trace:> [TQtWidgetSet.GetSystemMetrics] %d', [nIndex]));
+  {$ifdef VerboseCDX11WinAPI}
+    WriteLn(Format('Trace:> [TCDWidgetSet.GetSystemMetrics] %d', [nIndex]));
   {$endif}
   Result := 0;
   case nIndex of

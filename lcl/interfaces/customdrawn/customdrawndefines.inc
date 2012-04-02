@@ -48,14 +48,17 @@
 // X11 options
 // ==================
 {$define CD_X11_NewNativePaint}
+{$define CD_X11_UseLCL_MainLoop}
+{.$define CD_X11_UseNewTimer}
 
 // ==================
 // Debug options
 // ==================
 {.$define VerboseCDPaintProfiler}
+{.$define Verbose_CD_X11_Timer}
+{.$define CD_Debug_TTF}
 {.$define VerboseCDDrawing}
-{ $define VerboseCDBitmap}
-{ $define VerboseCDForms}
+{.$define VerboseCDBitmap}
+{.$define VerboseCDForms}
+{.$define VerboseCDX11WinAPI}
 {.$define VerboseCDAccessibility}
-{ $define CD_Debug_TTF}
-

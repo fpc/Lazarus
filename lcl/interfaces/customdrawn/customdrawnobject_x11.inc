@@ -113,6 +113,9 @@ begin
 
   XConnections := TFPList.Create;
   XWindowList := TStringList.Create;
+  {$ifdef CD_X11_UseNewTimer}
+  XTimerListHead := nil;
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -202,6 +205,9 @@ procedure TCDWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 var
   DoBreakRun: Boolean = False;
 begin
+{$IFDEF CD_X11_UseLCL_MainLoop}
+  Inherited;
+{$ELSE}
   while (DoBreakRun = False) do
   begin
     if XPending(FDisplay) <= 0 then AppProcessInvalidates();
@@ -211,6 +217,7 @@ begin
     DoBreakRun := Application.Terminated;
   end;
   DoBreakRun := False;
+  {$ENDIF}
 end;
 
 (*
@@ -246,7 +253,6 @@ end;
 
   Restore minimized whole application from taskbar
  ------------------------------------------------------------------------------}
-
 procedure TCDWidgetSet.AppRestore;
 begin
 //  Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_RESTORE, 0);
@@ -346,6 +352,9 @@ var
   Sum: Integer;
   NewEvent: TXEvent;
   CurWindowInfo: TX11WindowInfo;
+  {$IFDEF VerboseCDPaintProfiler}
+  lMessageTime: Integer;
+  {$ENDIF}
 begin
   XNextEvent(FDisplay, @XEvent);
 
@@ -438,6 +447,10 @@ begin
          {$ifdef VerboseCDEvents}
          DebugLn(Format('X11 event WM_PAINT - Window %d',[CurWindowInfo.Window]));
          {$endif}
+         {$IFDEF VerboseCDPaintProfiler}
+          lMessageTime:= DateTimeToMilliseconds(Now)-XClientEvent.data.l[1];
+          DebugLn(Format('X11 event WM_PAINT - Window %d, Delay %d ms',[CurWindowInfo.Window,lMessageTime]));
+         {$ENDIF}
          TCDWSCustomForm.EvPaintEx(WindowEntry, CurWindowInfo);
          WindowUpdated(CurWindowInfo.Window);
        end
@@ -531,23 +544,44 @@ var
   xconnnum, selectresult: integer;
   IsFirstTimeout: Boolean;
   AnyTimerProcessed: Boolean = False;
+  {$ifdef CD_X11_UseNewTimer}
+  lTimer,lNextTimer: TCDX11Timer;
+  {$else}
   lTimer: TCDTimer;
+  {$endif}
   lTimeoutInterval: Integer; // miliseconds
   i: Integer;
 begin
   IsFirstTimeout := True;
 
+  {$ifdef CD_X11_UseNewTimer}
+  if XTimerListHead = nil then lTimeoutInterval:= -1
+  else begin
+    lTimer := XTimerListHead;
+    lTimeoutInterval:= trunc((lTimer.Expires-now)*KMsToDateTime);
+    if lTimeoutInterval < 0 then lTimeoutInterval:= 0; // we missed a timer: a quick look to
+    // pending messages then go process the timer
+  end;
+  {$else}
   lTimeoutInterval := GetSmallestTimerInterval();
-  // Limit the maximum interval, even if only to process Application.OnIdle or
+  (*// Limit the maximum interval, even if only to process Application.OnIdle or
   // for general safety
   if (lTimeoutInterval < 0) or (lTimeoutInterval >= 1000) then lTimeoutInterval := 1000;
   // To avoid consuming too much CPU, if the interval is zero, act as if it was 1
-  if lTimeoutInterval = 0 then lTimeoutInterval := 1;
+  if lTimeoutInterval = 0 then lTimeoutInterval := 1;*)
 
+  if lTimeoutInterval < 0 then lTimeoutInterval:= -1 ;// No timers - wait forever
+  {$endif}
   while not Application.Terminated do
   begin
     xconnnum := XConnectionNumber(FDisplay);
-    XFlush(FDisplay);
+    {---------------------------------------------------------------------------
+    We should not call XFlush here to flush the output buffer because:
+    1 - We may throw away unprocessed messages, calling XFlush before XPending
+    2 - XPending already performs a flush of the output buffer
+    so calling XFlush is never required, except in very special cases
+    ---------------------------------------------------------------------------}
+    //XFlush(FDisplay);
 
     if XPending(FDisplay) > 0 then Exit; // We have a X message to process
 
@@ -561,9 +595,33 @@ begin
     // Add all other X connections
     for i := 0 to XConnections.Count-1 do
       fpFD_SET(cint(PtrInt(XConnections.Items[i])), rfds);
+    {---------------------------------------------------------------------------
+    Using here fpFD_SETSIZE (=1024) ensures that we will get a result for all
+    of our connections selected with fpFD_SET. Connection numbers are assigned
+    in sequence, including connections opened inside the application. Either
+    we keep track of the highest value in XConnections.Items, or we simply
+    use a large value. In old times one had to be more careful because a large
+    value gave a speed penalty, but in modern Unice's it doesn't make a difference.
+    Gnu Linux doesn't set an upper limit for that value,
+    ---------------------------------------------------------------------------}
+    selectresult := fpSelect(fpFD_SETSIZE, @rfds, nil, nil, lTimeoutInterval);
 
-    selectresult := fpSelect(xconnnum + 1, @rfds, nil, nil, lTimeoutInterval);
-
+    {$ifdef CD_X11_UseNewTimer}
+    // Process all timers
+    while (lTimer <> nil) and (lTimer.Expires <= now) do begin
+      {$ifdef Verbose_CD_X11_Timer}
+      Debugln('This Timer %d',[lTimer.Interval]);
+      {$endif}
+      lNextTimer := lTimer.Next;
+      lTimer.Expired;// Exec OnTimer, and readjust list
+      AnyTimerProcessed := True;
+      lTimer := lNextTimer;
+      {$ifdef Verbose_CD_X11_Timer}
+      if (lTimer <> nil) then
+       Debugln('Next Timer %d',[lTimer.Interval]);
+      {$endif}
+    end;
+    {$else}
     // Process all timers
     for i := 0 to GetTimerCount()-1 do
     begin
@@ -581,8 +639,13 @@ begin
         lTimer.NativeHandle := 0;
       end;
     end;
-    if AnyTimerProcessed then AppProcessInvalidates();
-
+    {$endif}
+    if AnyTimerProcessed then
+      {$IFDEF CD_X11_UseLCL_MainLoop}
+      selectresult:=1;
+      {$ELSE}
+      AppProcessInvalidates();
+      {$ENDIF}
     if selectresult <> 0 then  // We got a X event or the timeout happened
       Exit
     else
@@ -645,6 +708,16 @@ end;
     The TimerCallBackProc calls the TimerFunc.
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc) : THandle;
+{$ifdef CD_X11_UseNewTimer}
+var
+  lTimer: TCDX11Timer;
+begin
+  lTimer := TCDX11Timer.create(Interval,TimerFunc);
+  lTimer.Insert;
+  Result:= THandle(lTimer);
+end;
+
+{$else}
 var
   lTimer: TCDTimer;
 begin
@@ -654,6 +727,7 @@ begin
   AddTimer(lTimer);
   Result := THandle(lTimer);
 end;
+{$endif}
 
 {------------------------------------------------------------------------------
   function: DestroyTimer
@@ -661,6 +735,16 @@ end;
   Returns:
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.DestroyTimer(TimerHandle: THandle) : boolean;
+{$ifdef CD_X11_UseNewTimer}
+var
+  lTimer: TCDX11Timer absolute TimerHandle;
+begin
+  if TimerHandle <> 0 then begin
+    lTimer.destroy;
+  end;
+end;
+
+{$else}
 var
   lTimer: TCDTimer absolute TimerHandle;
 begin
@@ -670,6 +754,7 @@ begin
     lTimer.Free;
   end;
 end;
+{$endif}
 (*
 procedure TWinCEWidgetSet.HandleWakeMainThread(Sender: TObject);
 begin
