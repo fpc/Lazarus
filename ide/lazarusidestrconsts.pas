@@ -116,12 +116,6 @@ resourcestring
   lisErrNoOptionAllowed = 'Option at position %d does not allow an argument: %s';
   lisErrOptionNeeded = 'Option at position %d needs an argument : %s';
 
-  lisEnterTransla = 'Enter translation language';
-  // version
-  lisLeaveEmptyFo = 'Leave empty for default .po file';
-  lisMenuCollectPoFil = 'Collect .po files';
-  lisMenuCreatePoFile = 'Create .po files';
-
   // command line help
   listhisHelpMessage = 'this help message';
   lisprimaryConfigDirectoryWhereLazarusStoresItsConfig = 'primary config '+
@@ -2932,7 +2926,6 @@ resourcestring
   lisLazBuildTargetOS = 'Target OS:';
   lisLazBuildTargetCPU = 'Target CPU:';
   lisLazBuildTargetDirectory = 'Target directory:';
-  lisLazBuildBuildJITForm = 'Build JITForm';
   lisLazBuildRestartAfterBuild = 'Restart after building IDE';
   lisLazBuildUpdateRevInc = 'Update revision.inc';
   lisLazBuildCommonSettings = 'Common Settings';
