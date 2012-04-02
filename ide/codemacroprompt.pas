@@ -472,9 +472,7 @@ begin
 
     // New Caret
     p := Parser.DestCaret ;
-    if p.y < 0 then
-      p := AEditor.CaretXY
-    else begin
+    if p.y >= 0 then begin
       if p.y = 1 then
         p.x := p.x + TokenStartX - 1;
       p.y := p.y + AEditor.BlockBegin.y - 1; // Todo: logicalToPhysical
@@ -492,9 +490,14 @@ begin
         Parser.TrimEOTChar(EndOfTokenChr[i]);
     end;
 
-    i := AEditor.PluginCount - 1;
+    if Parser.EditCellList.Count > 0 then
+      i := AEditor.PluginCount - 1
+    else
+      i := -1;
     while i >= 0 do begin
       if AEditor.Plugin[i] is TSynPluginTemplateEdit then begin
+        if p.y < 1 then
+          p := AEditor.CaretXY;
         TSynPluginTemplateEdit(AEditor.Plugin[i]).CellParserEnabled := False;
         TSynPluginTemplateEdit(AEditor.Plugin[i]).SetTemplate(Parser.DestTemplate, p);
         TSynPluginTemplateEdit(AEditor.Plugin[i]).AddEditCells(Parser.EditCellList);
@@ -504,8 +507,9 @@ begin
     end;
     if i < 0 then begin
       // replace the selected text and position the caret
-      AEditor.SelText := Parser.DestTemplate;
-      AEditor.MoveCaretIgnoreEOL(p);
+      AEditor.SetTextBetweenPoints(AEditor.BlockBegin, AEditor.BlockEnd, Parser.DestTemplate, [], scamEnd);
+      if p.y > 0 then
+        AEditor.MoveCaretIgnoreEOL(p);
     end;
   finally
     AEditor.EndUpdate;
