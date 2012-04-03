@@ -1456,7 +1456,7 @@ begin
             CurLazDir:=CreateRelativePath(CurLazDir,GetPrimaryConfigPath);
           end;
         end;
-        XMLConfig.SetDeleteValue(Path+'LazarusDirectory/Value',CurLazDir,'');
+        XMLConfig.SetValue(Path+'LazarusDirectory/Value',CurLazDir); // always store, no SetDeleteValue
         SaveRecentList(XMLConfig,FLazarusDirHistory,
            Path+'LazarusDirectory/History/');
         XMLConfig.SetDeleteValue(
