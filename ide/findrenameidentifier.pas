@@ -289,12 +289,14 @@ var
   SearchPageIndex: TTabSheet;
 begin
   Result:=mrCancel;
+  LazarusIDE.DoShowSearchResultsView(false);
   SearchPageIndex:=nil;
   try
     // show result
     CodeToolBoss.GetIdentifierAt(DeclarationCode,
       DeclarationCaretXY.X,DeclarationCaretXY.Y,Identifier);
     // create a search result page
+    debugln(['ShowIdentifierReferences ',DbgSName(SearchResultsView)]);
     SearchPageIndex:=SearchResultsView.AddSearch(
       'References of '+Identifier,
       Identifier,
