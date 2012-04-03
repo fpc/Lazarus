@@ -1707,10 +1707,18 @@ begin
         case o of
         eopLazarusDirectory:
           // lazarus directory
-          ParsedValue:=TrimAndExpandDirectory(ParsedValue,GetPrimaryConfigPath);
+          begin
+            ParsedValue:=TrimAndExpandDirectory(ParsedValue,GetPrimaryConfigPath);
+            if ParsedValue='' then
+              ParsedValue:=GetPrimaryConfigPath;
+          end;
         eopFPCSourceDirectory,eopTestBuildDirectory:
           // directory
-          ParsedValue:=TrimAndExpandDirectory(ParsedValue,GetParsedLazarusDirectory);
+          begin
+            ParsedValue:=TrimAndExpandDirectory(ParsedValue,GetParsedLazarusDirectory);
+            if ParsedValue='' then
+              ParsedValue:=GetParsedLazarusDirectory;
+          end;
         eopCompilerMessagesFilename:
           // data file
           ParsedValue:=TrimAndExpandFilename(ParsedValue,GetParsedLazarusDirectory);
