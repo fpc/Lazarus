@@ -8107,6 +8107,7 @@ var
   Value: TfrValue;
   D: TfrTDataSet;
   F: TfrTField;
+  s1: String;
 
   function MasterBand: TfrBand;
   begin
@@ -8165,43 +8166,47 @@ begin
       else if (D<>nil) and (roIgnoreFieldNotFound in FReportOptions) and
               lrValidFieldReference(s) then
         aValue := Null
-      else if s = 'VALUE' then
-        aValue:= CurValue
-      else if s = frSpecFuncs[0] then
-        aValue:= PageNo + 1
-      else if s = frSpecFuncs[2] then
-        aValue := CurDate
-      else if s = frSpecFuncs[3] then
-        aValue:= CurTime
-      else if s = frSpecFuncs[4] then
-        aValue:= MasterBand.Positions[psLocal]
-      else if s = frSpecFuncs[5] then
-        aValue:= MasterBand.Positions[psGlobal]
-      else if s = frSpecFuncs[6] then
-        aValue:= CurPage.ColPos
-      else if s = frSpecFuncs[7] then
-        aValue:= CurPage.CurPos
-      else if s = frSpecFuncs[8] then
-        aValue:= SavedAllPages
       else
       begin
-        if frVariables.IndexOf(s) <> -1 then
+        s1 := AnsiUpperCase(s);
+        if s1 = 'VALUE' then
+          aValue:= CurValue
+        else if s1 = frSpecFuncs[0] then
+          aValue:= PageNo + 1
+        else if s1 = frSpecFuncs[2] then
+          aValue := CurDate
+        else if s1 = frSpecFuncs[3] then
+          aValue:= CurTime
+        else if s1 = frSpecFuncs[4] then
+          aValue:= MasterBand.Positions[psLocal]
+        else if s1 = frSpecFuncs[5] then
+          aValue:= MasterBand.Positions[psGlobal]
+        else if s1 = frSpecFuncs[6] then
+          aValue:= CurPage.ColPos
+        else if s1 = frSpecFuncs[7] then
+          aValue:= CurPage.CurPos
+        else if s1 = frSpecFuncs[8] then
+          aValue:= SavedAllPages
+        else
         begin
-          aValue:= frVariables[s];
-          Exit;
-        end else
-        if CompareText(s,'REPORTTITLE')=0 then
-        begin
-          aValue := Title;
-          Exit;
+          if frVariables.IndexOf(s) <> -1 then
+          begin
+            aValue:= frVariables[s];
+            Exit;
+          end else
+          if s1 = 'REPORTTITLE' then
+          begin
+            aValue := Title;
+            Exit;
+          end;
+          if s <> SubValue then
+          begin
+            SubValue := s;
+            aValue:= frParser.Calc(s);
+            SubValue := '';
+          end
+          else raise(EParserError.Create('Undefined symbol: ' + SubValue));
         end;
-        if s <> SubValue then
-        begin
-          SubValue := s;
-          aValue:= frParser.Calc(s);
-          SubValue := '';
-        end
-        else raise(EParserError.Create('Undefined symbol: ' + SubValue));
       end;
     end;
   end;
