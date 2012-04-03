@@ -14787,23 +14787,20 @@ begin
     'PROJECT',nil,@CTMacroFunctionProject);
 
   CodeToolsOpts.AssignTo(CodeToolBoss);
-  if (not FileExistsCached(EnvironmentOptions.GetParsedCompilerFilename)) then begin
-    DebugLn('');
-    DebugLn('NOTE: Compiler filename not set! (see Environment / Options ... / Environment / Files)');
-  end;
 
-  if (EnvironmentOptions.LazarusDirectory='')
-  or not DirPathExists(EnvironmentOptions.GetParsedLazarusDirectory) then begin
-    DebugLn('');
-    DebugLn(
-      'NOTE: Lazarus source directory not set!  (see Environment / Options ... / Environment / Files)');
-  end;
-  if (EnvironmentOptions.FPCSourceDirectory='') then
-  begin
-    // Note: the FPCSourceDirectory can contain the macro FPCVer, which depend
-    //       on the compiler. Do not check if file exists here.
-    DebugLn('');
-    DebugLn('NOTE: FPC source directory not set! (see Environment / Options ... / Environment / Files)');
+  if not InteractiveSetup then begin
+    if (not FileExistsCached(EnvironmentOptions.GetParsedCompilerFilename)) then begin
+      DebugLn('');
+      DebugLn('NOTE: invalid compiler filename! (see Tools / Options ... / Environment / Files)');
+    end;
+    if not DirPathExists(EnvironmentOptions.GetParsedLazarusDirectory) then begin
+      DebugLn('');
+      DebugLn('NOTE: Lazarus source directory not set!  (see Tools / Options ... / Environment / Files)');
+    end;
+    if (EnvironmentOptions.GetParsedFPCSourceDirectory='') then begin
+      DebugLn('');
+      DebugLn('NOTE: FPC source directory not set! (see Tools / Options ... / Environment / Files)');
+    end;
   end;
 
   // create a test unit needed to get from the compiler all macros and search paths
