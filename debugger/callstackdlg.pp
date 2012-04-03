@@ -705,8 +705,8 @@ begin
   for i:= 0 to mnuLimit.Items.Count-1 do
     mnuLimit.Items[i].Caption:= Format(lisMaxS, [mnuLimit.Items[i].Tag]);
   actViewMore.Caption := lisMore;
-  actViewTop.Caption := lisTop;
-  actViewBottom.Caption := lisBottom;
+  actViewTop.Caption := lisCSTop;
+  actViewBottom.Caption := lisCSBottom;
   actViewGoto.Caption := lisGotoSelectedSourceLine;
   actShow.Caption := lisViewSource;
   actShowDisass.Caption := lisViewSourceDisass;
