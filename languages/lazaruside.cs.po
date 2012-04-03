@@ -4223,11 +4223,6 @@ msgstr "Tlustě nevýchozí hodnoty"
 msgid "Border space"
 msgstr "Okrajový prostor"
 
-#: lazarusidestrconsts.lisbottom
-msgctxt "lazarusidestrconsts.lisbottom"
-msgid "Bottom"
-msgstr "Dolní"
-
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr "Dolní okrajový prostor. Tato hodnota je přidána k základnímu okraji a je použita pro místo pod prvkem."
@@ -6529,6 +6524,16 @@ msgstr "Vytvořit/aktualizovat soubor .po při uložení souboru lfm"
 #: lazarusidestrconsts.liscreatingfileindexoffpcsources
 msgid "Creating file index of FPC sources %s ..."
 msgstr "Vytváření indexového souboru zdrojových kódů FPC %s ..."
+
+#: lazarusidestrconsts.liscsbottom
+msgctxt "lazarusidestrconsts.liscsbottom"
+msgid "Bottom"
+msgstr "Dolní"
+
+#: lazarusidestrconsts.liscstop
+msgctxt "lazarusidestrconsts.liscstop"
+msgid "Top"
+msgstr "Nahoře"
 
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
@@ -11502,6 +11507,26 @@ msgstr "Není instalovatelný balíček"
 msgid "Not a valid pascal identifier"
 msgstr "Neplatný pascalovský identifikátor"
 
+#: lazarusidestrconsts.lisnotebooktabposbottom
+msgctxt "lazarusidestrconsts.lisnotebooktabposbottom"
+msgid "Bottom"
+msgstr "Dolní"
+
+#: lazarusidestrconsts.lisnotebooktabposleft
+msgctxt "lazarusidestrconsts.lisnotebooktabposleft"
+msgid "Left"
+msgstr "Vlevo"
+
+#: lazarusidestrconsts.lisnotebooktabposright
+msgctxt "lazarusidestrconsts.lisnotebooktabposright"
+msgid "Right"
+msgstr "Vpravo"
+
+#: lazarusidestrconsts.lisnotebooktabpostop
+msgctxt "lazarusidestrconsts.lisnotebooktabpostop"
+msgid "Top"
+msgstr "Nahoře"
+
 #: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
 msgid "NOTE: Could not create Define Template for Free Pascal Sources"
 msgstr "POZNÁMKA: Nelze vytvořit definiční šablonu pro zdroje Free Pascalu"
@@ -15232,11 +15257,6 @@ msgstr "Přepnout zobrazení názvů souborů s plnou cestou nebo s relativní c
 #: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
 msgid "To install you must compile and restart the IDE"
 msgstr "Pro instalaci musíte přeložit a restartovat IDE"
-
-#: lazarusidestrconsts.listop
-msgctxt "lazarusidestrconsts.listop"
-msgid "Top"
-msgstr "Nahoře"
 
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"

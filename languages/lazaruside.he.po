@@ -4464,11 +4464,6 @@ msgstr "הדגש (bold) ערכים שאינם ברירת מחדל"
 msgid "Border space"
 msgstr "מרווח גבול"
 
-#: lazarusidestrconsts.lisbottom
-msgctxt "lazarusidestrconsts.lisbottom"
-msgid "Bottom"
-msgstr "תחתית"
-
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr "רווח תחתון. רווח זה מתווסף לרווח הבסיסי של הפקד."
@@ -6833,6 +6828,16 @@ msgstr "צור/עדכן קובץ po. כאשר אתה שומר את קובץ lfm"
 #: lazarusidestrconsts.liscreatingfileindexoffpcsources
 msgid "Creating file index of FPC sources %s ..."
 msgstr "יוצר אינדקס לקובץ קוד של FPC "
+
+#: lazarusidestrconsts.liscsbottom
+msgctxt "lazarusidestrconsts.liscsbottom"
+msgid "Bottom"
+msgstr "תחתית"
+
+#: lazarusidestrconsts.liscstop
+msgctxt "lazarusidestrconsts.liscstop"
+msgid "Top"
+msgstr "פסגה"
 
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
@@ -12144,6 +12149,26 @@ msgstr "לא חבילה להתקנה"
 msgid "Not a valid pascal identifier"
 msgstr "זה אינו מזהה פסקל חוקי"
 
+#: lazarusidestrconsts.lisnotebooktabposbottom
+msgctxt "lazarusidestrconsts.lisnotebooktabposbottom"
+msgid "Bottom"
+msgstr "תחתית"
+
+#: lazarusidestrconsts.lisnotebooktabposleft
+msgctxt "lazarusidestrconsts.lisnotebooktabposleft"
+msgid "Left"
+msgstr "שמאל"
+
+#: lazarusidestrconsts.lisnotebooktabposright
+msgctxt "lazarusidestrconsts.lisnotebooktabposright"
+msgid "Right"
+msgstr "ימין"
+
+#: lazarusidestrconsts.lisnotebooktabpostop
+msgctxt "lazarusidestrconsts.lisnotebooktabpostop"
+msgid "Top"
+msgstr "פסגה"
+
 #: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
 msgid "NOTE: Could not create Define Template for Free Pascal Sources"
 msgstr "הערה: לא יכול להגדיר תבנית עבור קוד Free Pascal"
@@ -15980,11 +16005,6 @@ msgstr "החלף בין תצוגה עם נתיב מלא לבין נתיב יחס
 #: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
 msgid "To install you must compile and restart the IDE"
 msgstr "כדי להתקין אתה חייב להדר ולאתחל את ה  IDE"
-
-#: lazarusidestrconsts.listop
-msgctxt "lazarusidestrconsts.listop"
-msgid "Top"
-msgstr "פסגה"
 
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"

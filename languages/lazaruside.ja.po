@@ -4493,11 +4493,6 @@ msgstr "デフォルトでない値を太字に"
 msgid "Border space"
 msgstr "境界間隔"
 
-#: lazarusidestrconsts.lisbottom
-msgctxt "lazarusidestrconsts.lisbottom"
-msgid "Bottom"
-msgstr "底"
-
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr "下部の境界間隔。この値は基本境界間隔に加算され、コントロールの下の間隔に用いられます。"
@@ -6866,6 +6861,16 @@ msgstr "lfmファイルを保存する際にpoファイルを作成もしくは�
 #: lazarusidestrconsts.liscreatingfileindexoffpcsources
 msgid "Creating file index of FPC sources %s ..."
 msgstr "FPCソース %s のファイル索引を作成 ..."
+
+#: lazarusidestrconsts.liscsbottom
+msgctxt "lazarusidestrconsts.liscsbottom"
+msgid "Bottom"
+msgstr "底"
+
+#: lazarusidestrconsts.liscstop
+msgctxt "lazarusidestrconsts.liscstop"
+msgid "Top"
+msgstr "上端"
 
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
@@ -12183,6 +12188,26 @@ msgstr "インストールパッケージではありません"
 msgid "Not a valid pascal identifier"
 msgstr "パスカルの有効な識別子ではありません"
 
+#: lazarusidestrconsts.lisnotebooktabposbottom
+msgctxt "lazarusidestrconsts.lisnotebooktabposbottom"
+msgid "Bottom"
+msgstr "底"
+
+#: lazarusidestrconsts.lisnotebooktabposleft
+msgctxt "lazarusidestrconsts.lisnotebooktabposleft"
+msgid "Left"
+msgstr "左"
+
+#: lazarusidestrconsts.lisnotebooktabposright
+msgctxt "lazarusidestrconsts.lisnotebooktabposright"
+msgid "Right"
+msgstr "右"
+
+#: lazarusidestrconsts.lisnotebooktabpostop
+msgctxt "lazarusidestrconsts.lisnotebooktabpostop"
+msgid "Top"
+msgstr "上端"
+
 #: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
 msgid "NOTE: Could not create Define Template for Free Pascal Sources"
 msgstr "注意：Free Pascalソースのための宣言テンプレートを作成できませんでした。"
@@ -16011,11 +16036,6 @@ msgstr "ファイル名をフルパスで表示するか相対パスで表示す
 #: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
 msgid "To install you must compile and restart the IDE"
 msgstr "インストールするにはコンパイルしてIDEを再起動しなければなりません。"
-
-#: lazarusidestrconsts.listop
-msgctxt "lazarusidestrconsts.listop"
-msgid "Top"
-msgstr "上端"
 
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"

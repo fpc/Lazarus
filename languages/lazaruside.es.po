@@ -4469,11 +4469,6 @@ msgstr "Poner en negritas valores no predeterminados"
 msgid "Border space"
 msgstr "Espacio de borde"
 
-#: lazarusidestrconsts.lisbottom
-msgctxt "lazarusidestrconsts.lisbottom"
-msgid "Bottom"
-msgstr "Abajo"
-
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr "Espacio de borde inferior. Este valor se añade al valor base de espacio de borde y es usado para el espacio bajo el control."
@@ -6838,6 +6833,16 @@ msgstr "Crear/actualizar archivo .po cuando se guarde un archivo .lfm"
 #: lazarusidestrconsts.liscreatingfileindexoffpcsources
 msgid "Creating file index of FPC sources %s ..."
 msgstr "Creando un índice de las fuentes FPC %s ..."
+
+#: lazarusidestrconsts.liscsbottom
+msgctxt "lazarusidestrconsts.liscsbottom"
+msgid "Bottom"
+msgstr "Abajo"
+
+#: lazarusidestrconsts.liscstop
+msgctxt "lazarusidestrconsts.liscstop"
+msgid "Top"
+msgstr "Arriba"
 
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
@@ -12131,6 +12136,26 @@ msgstr "No es un paquete instalable"
 msgid "Not a valid pascal identifier"
 msgstr "Identificador pascal no valido"
 
+#: lazarusidestrconsts.lisnotebooktabposbottom
+msgctxt "lazarusidestrconsts.lisnotebooktabposbottom"
+msgid "Bottom"
+msgstr "Abajo"
+
+#: lazarusidestrconsts.lisnotebooktabposleft
+msgctxt "lazarusidestrconsts.lisnotebooktabposleft"
+msgid "Left"
+msgstr "Izquierda"
+
+#: lazarusidestrconsts.lisnotebooktabposright
+msgctxt "lazarusidestrconsts.lisnotebooktabposright"
+msgid "Right"
+msgstr "Derecho"
+
+#: lazarusidestrconsts.lisnotebooktabpostop
+msgctxt "lazarusidestrconsts.lisnotebooktabpostop"
+msgid "Top"
+msgstr "Arriba"
+
 #: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
 msgid "NOTE: Could not create Define Template for Free Pascal Sources"
 msgstr "NOTA: No se pudo crear la Plantilla de Defines para los fuentes de Free Pascal"
@@ -15961,11 +15986,6 @@ msgstr "Intercambiar mostrar ruta completa o relativa para nombres de archivo"
 #: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
 msgid "To install you must compile and restart the IDE"
 msgstr "Para instalar debe compilar y reiniciar el IDE"
-
-#: lazarusidestrconsts.listop
-msgctxt "lazarusidestrconsts.listop"
-msgid "Top"
-msgstr "Arriba"
 
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"

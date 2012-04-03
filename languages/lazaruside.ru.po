@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-03 01:31+0400\n"
+"PO-Revision-Date: 2012-04-04 02:06+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -4386,11 +4386,6 @@ msgstr "Выделять значения не по умолчанию жирн�
 msgid "Border space"
 msgstr "Зазор"
 
-#: lazarusidestrconsts.lisbottom
-msgctxt "lazarusidestrconsts.lisbottom"
-msgid "Bottom"
-msgstr "Вниз"
-
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr "Нижний зазор. Его значение добавляется к базовуму зазору и используется для определения пространства под компонентом."
@@ -6724,6 +6719,16 @@ msgstr "Создавать/обновлять файлы PO при сохран�
 #: lazarusidestrconsts.liscreatingfileindexoffpcsources
 msgid "Creating file index of FPC sources %s ..."
 msgstr "Создание индекса файлов исходного кода FPC %s ..."
+
+#: lazarusidestrconsts.liscsbottom
+msgctxt "lazarusidestrconsts.liscsbottom"
+msgid "Bottom"
+msgstr "Вниз"
+
+#: lazarusidestrconsts.liscstop
+msgctxt "lazarusidestrconsts.liscstop"
+msgid "Top"
+msgstr "Вверх"
 
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
@@ -10256,7 +10261,7 @@ msgstr "Модулем %s не владеет ни один из пакетов 
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
 msgid "Left"
-msgstr "Стрелка влево"
+msgstr "Влево"
 
 #: lazarusidestrconsts.lisleftborderspacespinedithint
 msgid "Left borderspace. This value is added to base borderspace and used for the space left to the control."
@@ -11887,6 +11892,26 @@ msgstr "Пакет не является устанавливаемым"
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
 msgid "Not a valid pascal identifier"
 msgstr "Неверный идентификатор Паскаля"
+
+#: lazarusidestrconsts.lisnotebooktabposbottom
+msgctxt "lazarusidestrconsts.lisnotebooktabposbottom"
+msgid "Bottom"
+msgstr "Снизу"
+
+#: lazarusidestrconsts.lisnotebooktabposleft
+msgctxt "lazarusidestrconsts.lisnotebooktabposleft"
+msgid "Left"
+msgstr "Слева"
+
+#: lazarusidestrconsts.lisnotebooktabposright
+msgctxt "lazarusidestrconsts.lisnotebooktabposright"
+msgid "Right"
+msgstr "Справа"
+
+#: lazarusidestrconsts.lisnotebooktabpostop
+msgctxt "lazarusidestrconsts.lisnotebooktabpostop"
+msgid "Top"
+msgstr "Сверху"
 
 #: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
 msgid "NOTE: Could not create Define Template for Free Pascal Sources"
@@ -14318,7 +14343,7 @@ msgstr "Возвращение не удалось"
 #: lazarusidestrconsts.lisright
 msgctxt "lazarusidestrconsts.lisright"
 msgid "Right"
-msgstr "Стрелка вправо"
+msgstr "Вправо"
 
 #: lazarusidestrconsts.lisrightanchoring
 msgid "Right anchoring"
@@ -15669,11 +15694,6 @@ msgstr "Переключение режимов показа имён файло
 #: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
 msgid "To install you must compile and restart the IDE"
 msgstr "Для установки следует перекомпилировать и перезапустить IDE"
-
-#: lazarusidestrconsts.listop
-msgctxt "lazarusidestrconsts.listop"
-msgid "Top"
-msgstr "Вверх"
 
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"

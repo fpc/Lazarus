@@ -4210,11 +4210,6 @@ msgstr "Lihavoi muutetut arvot"
 msgid "Border space"
 msgstr "Reuna-alue"
 
-#: lazarusidestrconsts.lisbottom
-msgctxt "lazarusidestrconsts.lisbottom"
-msgid "Bottom"
-msgstr "Alhaalla"
-
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr "Alapuolen reuna-alue. Tämä arvo lisätään yhteiseen reuna-alueeseen."
@@ -6509,6 +6504,16 @@ msgstr "Luo tai päivitä .po tiedosto kun lfm tiedosto talletetaan"
 #: lazarusidestrconsts.liscreatingfileindexoffpcsources
 msgid "Creating file index of FPC sources %s ..."
 msgstr "Luodaan tiedostohakemistoa FPC:n lähdekoodista %s ..."
+
+#: lazarusidestrconsts.liscsbottom
+msgctxt "lazarusidestrconsts.liscsbottom"
+msgid "Bottom"
+msgstr "Alhaalla"
+
+#: lazarusidestrconsts.liscstop
+msgctxt "lazarusidestrconsts.liscstop"
+msgid "Top"
+msgstr "Ylhäällä"
 
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
@@ -11469,6 +11474,26 @@ msgstr "Ei ole asennettava paketti"
 msgid "Not a valid pascal identifier"
 msgstr "Ei ole kelvollinen pascalin tunniste"
 
+#: lazarusidestrconsts.lisnotebooktabposbottom
+msgctxt "lazarusidestrconsts.lisnotebooktabposbottom"
+msgid "Bottom"
+msgstr "Alhaalla"
+
+#: lazarusidestrconsts.lisnotebooktabposleft
+msgctxt "lazarusidestrconsts.lisnotebooktabposleft"
+msgid "Left"
+msgstr "Vasen"
+
+#: lazarusidestrconsts.lisnotebooktabposright
+msgctxt "lazarusidestrconsts.lisnotebooktabposright"
+msgid "Right"
+msgstr "Oikea"
+
+#: lazarusidestrconsts.lisnotebooktabpostop
+msgctxt "lazarusidestrconsts.lisnotebooktabpostop"
+msgid "Top"
+msgstr "Ylhäällä"
+
 #: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
 msgid "NOTE: Could not create Define Template for Free Pascal Sources"
 msgstr ""
@@ -15187,11 +15212,6 @@ msgstr "Vaihda näyttö tiedostojen täyden polun ja suhteellisen polun välill�
 #: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
 msgid "To install you must compile and restart the IDE"
 msgstr "Asentaaksesi sinun pitää kääntää ja käynnistää Lazarus"
-
-#: lazarusidestrconsts.listop
-msgctxt "lazarusidestrconsts.listop"
-msgid "Top"
-msgstr "Ylhäällä"
 
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
