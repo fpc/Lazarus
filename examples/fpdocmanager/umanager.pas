@@ -1177,9 +1177,12 @@ begin
   else
     Result := FPackages.Objects[i] as TDocPackage;
   if Result = nil then begin
+  {$IFDEF FCLadds}
     if AName = 'fcl' then
       Result := TFCLDocPackage.Create
     else
+  {$ELSE}
+  {$ENDIF}
       Result := TDocPackage.Create;
     Result.Name := AName; //triggers load config --> register
     i := FPackages.IndexOfName(AName); //already registered?
