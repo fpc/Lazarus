@@ -2586,7 +2586,7 @@ begin
   Result := True;
 end;
 
-(*{------------------------------------------------------------------------------
+{------------------------------------------------------------------------------
   Function: GetClipBox
   Params: dc, lprect
   Returns: Integer
@@ -2601,62 +2601,45 @@ end;
       SimpleRegion
       ComplexRegion
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetClipBox(DC: hDC; lpRect: PRect): Longint;
+function TCDWidgetSet.GetClipBox(DC: hDC; lpRect: PRect): Longint;
 var
-  ARegion: QRegionH;
-  Pt: TPoint;
+  LazDC: TLazCanvas;
+  lClipRegion: TFPCustomRegion;
 begin
+  {$ifdef VerboseCDWinAPI}
+    DebugLn('[WinAPI GetClipBox] DC ' + dbghex(DC));
+  {$endif}
+
   Result := NULLREGION;
   if lpRect <> nil then
     lpRect^ := Rect(0,0,0,0);
 
+  if DC = 0 then DC := HDC(ScreenDC);
+
   if not IsValidDC(DC) then
     Result := ERROR;
 
-  if Result <> ERROR then
-  with TQtDeviceContext(DC) do
+  if Result = ERROR then Exit;
+
+  LazDC := TLazCanvas(DC);
+
+  if (lpRect<>nil) then
   begin
-    {$ifdef VerboseQtWinAPI}
-      Writeln('TQtWidgetSet.GetClipBox FastClip=',
-       ((vClipRect <> nil) and not vClipRectDirty) );
-    {$endif}
-
-    // the most correct way to get a clipbox if through
-    // region.boundingrect, but it's slower.
-
-    // TODO: remove "and false" below when vClipRectDirty is implemented
-    //       it should be "true" when user set a custom clip rect
-    //       and "false" on beginpaint
-    if (vClipRect<>nil) and not vClipRectDirty and false then
-      lpRect^ := vClipRect^
-    else
-    if getClipping then
+    lClipRegion := LazDC.ClipRegion;
+    if lClipRegion = nil then
     begin
-      ARegion := QRegion_Create;
-      try
-        QPainter_clipRegion(Widget, ARegion);
-        GetWindowOrgEx(DC, @Pt);
-        if (Pt.X <> 0) or (Pt.Y <> 0) then
-          SetWindowOrgEx(DC, Pt.X, Pt.Y, @Pt);
-        QRegion_boundingRect(ARegion, lpRect);
-      finally
-        QRegion_destroy(ARegion);
-      end;
-      Result := SIMPLEREGION;
+      Result := NULLREGION;
+      lpRect^ := Bounds(0, 0, LazDC.Width, LazDC.Height);
     end
     else
-      if vImage <> nil then
-      begin
-        lpRect^ := Rect(0, 0, vImage.width, vImage.height);
-        Result := SIMPLEREGION;
-      end;
-    {$ifdef VerboseQtWinAPI}
-    WriteLn('TQtWidgetSet.GetClipBox Rect=', dbgs(lprect^));
-    {$endif}
+    begin
+      Result := SIMPLEREGION;
+      lpRect^ := lClipRegion.GetBoundingRect();
+    end;
   end;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: GetClipRGN
   Params: dc, rgn
   Returns: Integer
