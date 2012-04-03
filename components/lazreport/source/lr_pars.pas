@@ -263,7 +263,7 @@ begin
               if Assigned(FOnGetValue) then
               begin
                 nm[st] := Null;
-                FOnGetValue(AnsiUpperCase(s1), nm[st]);
+                FOnGetValue(s1, nm[st]);
               end;
           end;
           i := k;
