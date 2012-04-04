@@ -2776,8 +2776,8 @@ resourcestring
   srkmecShowExecutionPoint        = 'show execution point';
   srkmecStopProgram               = 'stop program';
   srkmecResetDebugger             = 'reset debugger';
-  srkmecToggleBreakPoint          = 'toggle break point';
-  srkmecRemoveBreakPoint          = 'remove break point';
+  srkmecToggleBreakPoint          = 'toggle breakpoint';
+  srkmecRemoveBreakPoint          = 'remove breakpoint';
   srkmecRunParameters             = 'run parameters';
   srkmecCompilerOptions           = 'compiler options';
   srkmecBuildFile                 = 'build file';
